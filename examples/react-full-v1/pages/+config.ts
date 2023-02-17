@@ -11,6 +11,23 @@ export default {
   configDefinitions: {
     documentProps: {
       c_env: 'server-and-client'
+    },
+    onBeforeRenderIsomorphic: {
+      c_env: 'c_config',
+      sideEffect({ configDefinedBy, configValue }: { configValue: unknown; configDefinedBy: string }) {
+        if (typeof configValue !== 'boolean') {
+          throw `${configDefinedBy} should be a boolean`
+        }
+        if (configValue) {
+          return {
+            configDefinitions: {
+              onBeforeRender: {
+                c_env: 'server-and-client'
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

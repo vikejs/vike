@@ -17,8 +17,7 @@ import {
   objectEntries,
   scriptFileExtensions,
   transpileAndLoadScriptFile,
-  objectAssign,
-  hasProp
+  objectAssign
 } from '../../../utils'
 import path from 'path'
 import type {
@@ -104,9 +103,14 @@ async function loadPageConfigsData(
   pageIds.forEach(({ pageId2, routeFilesystem, pageConfigFile, routeFilesystemDefinedBy }) => {
     const pageConfigFilesRelevant = getPageConfigFilesRelevant(pageId2, pageConfigFiles)
     const configValueFilesRelevant = configValueFiles.filter((c) => c.pageId === pageId2)
-    let configDefinitionsRelevant = getConfigDefinitionsComputed(pageConfigFilesRelevant)
+    let configDefinitionsRelevant = getConfigDefinitions(pageConfigFilesRelevant)
 
-    configDefinitionsRelevant = applySideEffects(configDefinitionsRelevant)
+    configDefinitionsRelevant = applySideEffects(
+      configDefinitionsRelevant,
+      pageConfigFilesRelevant,
+      userRootDir,
+      configValueFilesRelevant
+    )
 
     if (pageConfigFile) {
       const pageConfigValues = getPageConfigValues(pageConfigFile)
@@ -415,10 +419,10 @@ function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): Config
         )
 
         // User can override an existing config definition
-        const def = {
-          ...(configDefinitionsAll[configName] as ConfigDefinition | undefined),
-          ...configDefinition
-        }
+        const def = mergeConfigDefinition(
+          configDefinitionsAll[configName] as ConfigDefinition | undefined,
+          configDefinition as ConfigDefinition
+        )
 
         // Validation
         /* TODO
@@ -449,20 +453,53 @@ function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): Config
   return configDefinitionsAll
 }
 
-function getConfigDefinitionsComputed(pageConfigFilesRelevant: PageConfigFile[]) {
-  return getConfigDefinitions(pageConfigFilesRelevant)
-  /*
-  if( hasProp(def, 'sideEffect') ) {
-    assertUsage(def.c_env==='c_config', 'TODO')
-    def.sideEffect({ })
+function mergeConfigDefinition(def: ConfigDefinition, mods: Partial<ConfigDefinition>): ConfigDefinition
+function mergeConfigDefinition(
+  def: ConfigDefinition | undefined,
+  mods: Partial<ConfigDefinition>
+): Partial<ConfigDefinition>
+function mergeConfigDefinition(
+  def: ConfigDefinition | undefined,
+  mods: Partial<ConfigDefinition>
+): Partial<ConfigDefinition> {
+  return {
+    ...def,
+    ...mods
   }
-  */
 }
 
-function applySideEffects(configDefinitionsRelevant: ConfigDefinitionsAll): ConfigDefinitionsAll {
-  const configDefinitionsMod: ConfigDefinitionsAll = {}
-  objectAssign(configDefinitionsMod, configDefinitionsRelevant)
-  return configDefinitionsMod
+function applySideEffects(
+  configDefinitionsRelevant: ConfigDefinitionsAll,
+  pageConfigFilesRelevant: PageConfigFile[],
+  userRootDir: string,
+  configValueFilesRelevant: ConfigValueFile[]
+): ConfigDefinitionsAll {
+  const configDefinitionsMods: ConfigDefinitionsAll = { ...configDefinitionsRelevant }
+  objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
+    if (configDef.sideEffect) {
+      assertUsage(configDef.c_env === 'c_config', 'TODO')
+      const configSource = resolveConfigSource(
+        configName,
+        configDef,
+        pageConfigFilesRelevant,
+        userRootDir,
+        configValueFilesRelevant
+      )
+      if (!configSource) return
+      assert('configValue' in configSource)
+      const { configValue, configDefinedByFile } = configSource
+      const mods = configDef.sideEffect({
+        configValue,
+        configDefinedBy: configDefinedByFile // TODO: align naming
+      })
+      objectEntries(mods).forEach(([configName, configDefMods]) => {
+        const configDef = configDefinitionsRelevant[configName]
+        assertUsage(configDef, `sideEffect of TODO returns unknown config '${configName}'`)
+        configDefinitionsMods[configName] = mergeConfigDefinition(configDef, configDefMods)
+      })
+    }
+  })
+  return configDefinitionsMods
 }
 
 type PageConfigFile = {
