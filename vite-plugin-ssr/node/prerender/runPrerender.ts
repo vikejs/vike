@@ -285,8 +285,8 @@ async function callPrerenderHooks(
             assert(typeof url === 'string')
             assert(url.startsWith('/'))
             assert(pageContext === null || isPlainObject(pageContext))
-            let pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find(
-              (pageContext) => pageContext.urlOriginal === url
+            let pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find((pageContext) =>
+              isSameUrl(pageContext.urlOriginal, url)
             )
             if (!pageContextFound) {
               const pageContext = createPageContext(url, renderContext, prerenderContext)
@@ -341,7 +341,7 @@ async function handlePagesWithStaticRoutes(
         assert(urlOriginal.startsWith('/'))
 
         // Already included in a `prerender()` hook
-        if (prerenderContext.pageContexts.find((pageContext) => pageContext.urlOriginal === urlOriginal)) {
+        if (prerenderContext.pageContexts.find((pageContext) => isSameUrl(pageContext.urlOriginal, urlOriginal))) {
           // Not sure if there is a use case for it, but why not allowing users to use a `prerender()` hook in order to provide some `pageContext` for a page with a static route
           return
         }
@@ -838,4 +838,11 @@ function assertLoadedConfig(
       assertUsage(false, '[prerender()] The Vite config `prerender({ viteConfig })` is missing vite-plugin-ssr.')
     }
   }
+}
+
+function isSameUrl(url1: string, url2: string) {
+  return normalizeUrl(url1) === normalizeUrl(url2)
+}
+function normalizeUrl(url: string) {
+  return '/' + url.split('/').filter(Boolean).join('/')
 }
