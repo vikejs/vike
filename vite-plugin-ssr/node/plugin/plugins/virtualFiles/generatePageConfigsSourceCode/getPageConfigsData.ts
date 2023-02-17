@@ -104,7 +104,9 @@ async function loadPageConfigsData(
   pageIds.forEach(({ pageId2, routeFilesystem, pageConfigFile, routeFilesystemDefinedBy }) => {
     const pageConfigFilesRelevant = getPageConfigFilesRelevant(pageId2, pageConfigFiles)
     const configValueFilesRelevant = configValueFiles.filter((c) => c.pageId === pageId2)
-    const configDefinitionsRelevant = getConfigDefinitionsComputed(pageConfigFilesRelevant)
+    let configDefinitionsRelevant = getConfigDefinitionsComputed(pageConfigFilesRelevant)
+
+    configDefinitionsRelevant = applySideEffects(configDefinitionsRelevant)
 
     if (pageConfigFile) {
       const pageConfigValues = getPageConfigValues(pageConfigFile)
@@ -160,12 +162,12 @@ function resolveConfigSource(
   userRootDir: string,
   configValueFilesRelevant: ConfigValueFile[]
 ): null | ConfigSource {
-  // TODO: implement warning if implemented in non-abstract +config.js as well as in +{configName}.js
+  // TODO: implement warning if defined in non-abstract +config.js as well as in +{configName}.js
 
   {
-    const configValueFiles = configValueFilesRelevant.filter((configValueFile) => {
-      configValueFile.configName === configName
-    })
+    const configValueFiles = configValueFilesRelevant.filter(
+      (configValueFile) => configValueFile.configName === configName
+    )
     if (configValueFiles.length !== 0) {
       assert(configValueFiles.length === 1)
       const configValueFile = configValueFiles[0]!
@@ -455,6 +457,12 @@ function getConfigDefinitionsComputed(pageConfigFilesRelevant: PageConfigFile[])
     def.sideEffect({ })
   }
   */
+}
+
+function applySideEffects(configDefinitionsRelevant: ConfigDefinitionsAll): ConfigDefinitionsAll {
+  const configDefinitionsMod: ConfigDefinitionsAll = {}
+  objectAssign(configDefinitionsMod, configDefinitionsRelevant)
+  return configDefinitionsMod
 }
 
 type PageConfigFile = {
