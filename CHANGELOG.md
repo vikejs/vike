@@ -1,3 +1,16 @@
+## [0.4.84](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.83...v0.4.84) (2023-02-17)
+
+
+### Bug Fixes
+
+* colorize dev logs ([3ce3f0d](https://github.com/brillout/vite-plugin-ssr/commit/3ce3f0d15d592e758e6190abefb4a0a0496b71d2))
+* improve error messages ([3ec176c](https://github.com/brillout/vite-plugin-ssr/commit/3ec176c96297c6d8f9946084f56dab016ab4abc9))
+* improve internal assertion ([549b5ab](https://github.com/brillout/vite-plugin-ssr/commit/549b5ab6b9333dc6d697a27481225c94a7d43da4))
+* swallow expected pageContext.urlOriginal access error ([58e991f](https://github.com/brillout/vite-plugin-ssr/commit/58e991f4729a629de10b0696ac9fda9047ddfe25))
+* update @brillout/vite-plugin-import-build ([622d8a4](https://github.com/brillout/vite-plugin-ssr/commit/622d8a434cec429be17c1aa632bf0e9f996ae7a4))
+
+
+
 ## [0.4.83](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.82...v0.4.83) (2023-02-17)
 
 
