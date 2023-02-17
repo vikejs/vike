@@ -1,3 +1,15 @@
+## [0.4.83](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.82...v0.4.83) (2023-02-17)
+
+
+### Bug Fixes
+
+* normalize URLs upon pre-rendering ([#654](https://github.com/brillout/vite-plugin-ssr/issues/654)) ([967b896](https://github.com/brillout/vite-plugin-ssr/commit/967b896df078aef7f25698dead311b73a325b0d2))
+* set globalThis._isVitePluginSsr = true ([9d3cc76](https://github.com/brillout/vite-plugin-ssr/commit/9d3cc76de9c966a9c38803553ecfcae740a02860))
+* update @brillout/vite-plugin-import-build ([5795486](https://github.com/brillout/vite-plugin-ssr/commit/5795486da1caee87db9fdba83216a4fd827fd401))
+* update link to https://vite-plugin-ssr.com/route-function#cannot-provide-pagecontext ([86944eb](https://github.com/brillout/vite-plugin-ssr/commit/86944ebbfaed769c1d4fe97321726d7126a5f546))
+
+
+
 ## [0.4.82](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.81...v0.4.82) (2023-02-13)
 
 
