@@ -68,7 +68,7 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`    pageConfigFilePathAll: ${JSON.stringify(pageConfigFilePathAll)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
-    lines.push(`    loadCodeFiles: async () => (await import('${codeFilesImporter}')).default,`)
+    lines.push(`    loadCodeFiles: async () => (await import(${JSON.stringify(codeFilesImporter)})).default,`)
     lines.push(`    configSources: {`)
     Object.entries(configSources).forEach(([configName, configSource]) => {
       // configNamesAll.add(configName)
