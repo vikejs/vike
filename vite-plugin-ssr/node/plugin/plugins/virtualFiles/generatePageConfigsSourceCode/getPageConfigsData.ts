@@ -15,7 +15,6 @@ import {
   addFileExtensionsToRequireResolve,
   assertDefaultExport,
   objectEntries,
-  hasProp,
   scriptFileExtensions,
   transpileAndLoadScriptFile,
   objectAssign
@@ -49,11 +48,11 @@ async function loadPageConfigsData(
   }
   const { pageConfigFiles } = result
 
-  const configValueFiles = await findAndLoadConfigValueFiles(
-    // TODO: pass configDefinitionsAll instead
-    configDefinitionsBuiltIn,
-    userRootDir
-  )
+  let configValueFiles: ConfigValueFile[]
+  {
+    const configDefinitionsAll = getConfigDefinitions(pageConfigFiles)
+    configValueFiles = await findAndLoadConfigValueFiles(configDefinitionsAll, userRootDir)
+  }
 
   const pageConfigGlobal: PageConfigGlobal = {}
   const pageConfigsData: PageConfigData[] = []
@@ -103,14 +102,14 @@ async function loadPageConfigsData(
 
   pageIds.forEach(({ pageId2, routeFilesystem, pageConfigFile, routeFilesystemDefinedBy }) => {
     const pageConfigFilesRelevant = getPageConfigFilesRelevant(pageId2, pageConfigFiles)
-    const configDefinitionsAll = getConfigDefinitionsAll(pageConfigFilesRelevant)
+    const configDefinitionsRelevant = getConfigDefinitions(pageConfigFilesRelevant)
 
     if (pageConfigFile) {
       const pageConfigValues = getPageConfigValues(pageConfigFile)
       Object.keys(pageConfigValues).forEach((configName) => {
         // TODO: this applies only against concrete config files, we should also apply to abstract config files
         assertUsage(
-          configName in configDefinitionsAll || configName === 'configDefinitions',
+          configName in configDefinitionsRelevant || configName === 'configDefinitions',
           `${pageConfigFile.pageConfigFilePath} defines an unknown config '${configName}'`
         )
       })
@@ -120,7 +119,7 @@ async function loadPageConfigsData(
     configValueFiles.forEach((configValueFile) => {
       if (configValueFile.pageId !== pageId2) return
       const { configName, configValueFilePath } = configValueFile
-      const configDef = configDefinitionsAll[configName]
+      const configDef = configDefinitionsRelevant[configName]
       assert(configDef)
       const configSource: ConfigSource = {
         c_env: configDef.c_env,
@@ -136,7 +135,7 @@ async function loadPageConfigsData(
       configSources[configName as ConfigName] = configSource
     })
 
-    objectEntries(configDefinitionsAll).forEach(([configName, configDef]) => {
+    objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
       const result = resolveConfig(configName, configDef, pageConfigFilesRelevant, userRootDir)
       if (!result) return
       if (configName in configSources) {
@@ -378,7 +377,7 @@ function getPageConfigValues(pageConfigFile: PageConfigFile): Record<string, unk
   return pageConfigValues
 }
 
-function getConfigDefinitionsAll(pageConfigFilesRelevant: PageConfigFile[]): ConfigDefinitionsAll {
+function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): ConfigDefinitionsAll {
   const configDefinitionsAll: ConfigDefinitionsAll = { ...configDefinitionsBuiltIn }
   pageConfigFilesRelevant.forEach((pageConfigFile) => {
     const { pageConfigFilePath } = pageConfigFile
@@ -401,6 +400,7 @@ function getConfigDefinitionsAll(pageConfigFilesRelevant: PageConfigFile[]): Con
         }
 
         // Validation
+        /* TODO
         {
           {
             const prop = 'c_env'
@@ -419,8 +419,9 @@ function getConfigDefinitionsAll(pageConfigFilesRelevant: PageConfigFile[]): Con
             )
           }
         }
+        */
 
-        configDefinitionsAll[configName] = def
+        configDefinitionsAll[configName] = def /* TODO: validate instead */ as any
       })
     }
   })
@@ -441,32 +442,32 @@ async function findAndLoadConfigValueFiles(
   configDefinitionsAll: ConfigDefinitionsAll,
   userRootDir: string
 ): Promise<ConfigValueFile[]> {
-  const configNames = Object.keys(configDefinitionsAll)
-  const pattern = configNames.map((configName) => `**/+${configName}.${scriptFileExtensions}`)
-  const found = await findUserFiles(pattern, userRootDir)
+  const found = await findUserFiles('**/+*', userRootDir)
   const configValueFiles: ConfigValueFile[] = await Promise.all(
-    found.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
-      const configName = extractConfigName(filePathRelativeToUserRootDir)
-      const configDef = configDefinitionsAll[configName]
-      assert(configDef)
-      const configValueFile: ConfigValueFile = {
-        configName,
-        pageId: determinePageId2(filePathRelativeToUserRootDir),
-        configValueFilePath: filePathRelativeToUserRootDir
-      }
-      if (configDef.c_env !== 'c_config') {
+    found
+      .filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) !== 'config')
+      .map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
+        const configName = extractConfigName(filePathRelativeToUserRootDir)
+        const configDef = configDefinitionsAll[configName]
+        assertUsage(configDef, `${configName} sets an unknown config '${configName}'`)
+        const configValueFile: ConfigValueFile = {
+          configName,
+          pageId: determinePageId2(filePathRelativeToUserRootDir),
+          configValueFilePath: filePathRelativeToUserRootDir
+        }
+        if (configDef.c_env !== 'c_config') {
+          return configValueFile
+        }
+        const result = await transpileAndLoadScriptFile(filePathAbsolute)
+        if ('err' in result) {
+          throw result.err
+        }
+        const fileExports = result.exports
+        assertDefaultExport(fileExports, filePathRelativeToUserRootDir)
+        const configValue = fileExports.default
+        objectAssign(configValueFile, { configValue })
         return configValueFile
-      }
-      const result = await transpileAndLoadScriptFile(filePathAbsolute)
-      if ('err' in result) {
-        throw result.err
-      }
-      const fileExports = result.exports
-      assertDefaultExport(fileExports, filePathRelativeToUserRootDir)
-      const configValue = fileExports.default
-      objectAssign(configValueFile, { configValue })
-      return configValueFile
-    })
+      })
   )
   return configValueFiles
 }
