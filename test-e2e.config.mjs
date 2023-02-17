@@ -92,7 +92,7 @@ function tolerateError(log) {
     return (
       log.logSource === 'stderr' &&
       log.logText.includes('[Warning]') &&
-      log.logText.includes('hook of') &&
+      log.logText.includes('hook') &&
       log.logText.includes('is taking more than 4 seconds')
     )
   }
