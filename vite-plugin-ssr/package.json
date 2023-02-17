@@ -4,7 +4,7 @@
   "dependencies": {
     "@brillout/import": "^0.2.1",
     "@brillout/json-serializer": "^0.5.3",
-    "@brillout/vite-plugin-import-build": "^0.2.6",
+    "@brillout/vite-plugin-import-build": "^0.2.7",
     "cac": "^6.7.12",
     "es-module-lexer": "^0.10.5",
     "fast-glob": "^3.2.11",
