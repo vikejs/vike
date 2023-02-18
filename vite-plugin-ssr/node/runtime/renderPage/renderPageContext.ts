@@ -51,7 +51,7 @@ type GetPageAssets = () => Promise<PageAsset[]>
 async function renderPageContext<
   PageContext extends {
     _pageId: null | string
-    _pageContextAlreadyProvidedByPrerenderHook?: true
+    _pageContextAlreadyProvidedByOnPrerenderHook?: true
     _isPageContextRequest: boolean
     _allPageIds: string[]
     is404: null | boolean
@@ -123,7 +123,7 @@ async function prerenderPageContext(
     routeParams: Record<string, string>
     _pageId: string
     _usesClientRouter: boolean
-    _pageContextAlreadyProvidedByPrerenderHook?: true
+    _pageContextAlreadyProvidedByOnPrerenderHook?: true
     is404: null | boolean
     _baseServer: string
   } & PageFiles &
@@ -242,11 +242,11 @@ function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfig[
 async function executeOnBeforeRenderHooks(
   pageContext: {
     _pageId: string
-    _pageContextAlreadyProvidedByPrerenderHook?: true
+    _pageContextAlreadyProvidedByOnPrerenderHook?: true
   } & PageContextExports &
     PageContextPublic
 ): Promise<void> {
-  if (pageContext._pageContextAlreadyProvidedByPrerenderHook) {
+  if (pageContext._pageContextAlreadyProvidedByOnPrerenderHook) {
     return
   }
   const hook = getHook(pageContext, 'onBeforeRender')

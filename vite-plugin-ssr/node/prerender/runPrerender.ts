@@ -87,7 +87,7 @@ type PageContext = {
   _pageConfigs: PageConfig[]
   _baseAssets: null | string
   _includeAssetsImportedByServer: boolean
-  _pageContextAlreadyProvidedByPrerenderHook?: true
+  _pageContextAlreadyProvidedByOnPrerenderHook?: true
 }
 
 type PrerenderOptions = {
@@ -376,7 +376,7 @@ async function callOnPrerenderHooks(
           }
           if (pageContext) {
             objectAssign(pageContextFound, {
-              _pageContextAlreadyProvidedByPrerenderHook: true,
+              _pageContextAlreadyProvidedByOnPrerenderHook: true,
               ...pageContext
             })
           }
