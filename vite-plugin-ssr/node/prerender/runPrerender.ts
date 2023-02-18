@@ -182,7 +182,7 @@ async function runPrerender(options: PrerenderOptions): Promise<void> {
   const doNotPrerenderList: DoNotPrerenderList = []
   await collectDoNoPrerenderList(renderContext, doNotPrerenderList, concurrencyLimit)
 
-  await callPrerenderHooks(prerenderContext, renderContext, concurrencyLimit)
+  await callOnPrerenderHooks(prerenderContext, renderContext, concurrencyLimit)
 
   await handlePagesWithStaticRoutes(prerenderContext, renderContext, doNotPrerenderList, concurrencyLimit)
 
@@ -290,16 +290,23 @@ function assertExportNames(pageFile: PageFile) {
   assert(exportNames || fileType === '.page.route' || fileType === '.css', pageFile.filePath)
 }
 
-async function callPrerenderHooks(
+async function callOnPrerenderHooks(
   prerenderContext: PrerenderContext,
   renderContext: RenderContext,
   concurrencyLimit: PLimit
 ) {
   const onPrerenderHooks: {
     hookFn: Function
-    hookName: 'prerender' | 'onPrerender'
+    // prettier-ignore
+    hookName:
+      // 0.4 design
+      | 'prerender'
+      // V1 design
+      | 'onPrerender'
     hookFilePath: string
   }[] = []
+
+  // V1 design
   await Promise.all(
     renderContext.pageConfigs.map((pageConfig) =>
       concurrencyLimit(async () => {
@@ -318,6 +325,8 @@ async function callPrerenderHooks(
       })
     )
   )
+
+  // 0.4 design
   await Promise.all(
     renderContext.pageFilesAll
       .filter((p) => {
@@ -354,9 +363,6 @@ async function callPrerenderHooks(
         const result = normalizePrerenderResult(prerenderResult, hookFilePath, hookName)
 
         result.forEach(({ url, pageContext }) => {
-          assert(typeof url === 'string')
-          assert(url.startsWith('/'))
-          assert(pageContext === null || isPlainObject(pageContext))
           let pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find((pageContext) =>
             isSameUrl(pageContext.urlOriginal, url)
           )
@@ -416,9 +422,8 @@ async function handlePagesWithStaticRoutes(
         }
         assert(urlOriginal.startsWith('/'))
 
-        // Already included in a `prerender()` hook
+        // Already included in a onPrerender() hook
         if (prerenderContext.pageContexts.find((pageContext) => isSameUrl(pageContext.urlOriginal, urlOriginal))) {
-          // Not sure if there is a use case for it, but why not allowing users to use a `prerender()` hook in order to provide some `pageContext` for a page with a static route
           return
         }
 
@@ -510,6 +515,7 @@ async function callOnBeforePrerenderHook(
 
   prerenderContext.pageContexts.forEach((pageContext) => {
     Object.defineProperty(pageContext, 'url', {
+      // TODO/v1-release: remove warning
       get() {
         assertWarning(
           false,
@@ -532,7 +538,7 @@ async function callOnBeforePrerenderHook(
     () =>
       onBeforePrerender({
         pageContexts: prerenderContext.pageContexts,
-        // TODO: remove upon next major release
+        // TODO/v1-release: remove warning
         get prerenderPageContexts() {
           assertWarning(false, `prerenderPageContexts has been renamed pageContexts, see ${docLink}`, {
             showStackTrace: true,
@@ -551,7 +557,7 @@ async function callOnBeforePrerenderHook(
   const errPrefix = `The onBeforePrerender() hook exported by ${hookFilePath}`
   const rightUsage = `${errPrefix} should return \`null\`, \`undefined\`, or \`{ prerenderContext: { pageContexts } }\`.`
 
-  // TODO: remove upon next major release
+  // TODO/v1-release: remove
   if (hasProp(result, 'globalContext')) {
     assertUsage(
       isObjectWithKeys(result, ['globalContext'] as const) &&
@@ -584,7 +590,7 @@ async function callOnBeforePrerenderHook(
       assertWarning(
         false,
         msgPrefix +
-          ' provided `pageContext.url` but it should provide `pageContext.urlOriginal` instead, see https://vite-plugin-ssr.com/migration/0.4.23',
+          ' provided pageContext.url but it should provide pageContext.urlOriginal instead, see https://vite-plugin-ssr.com/migration/0.4.23',
         { showStackTrace: false, onlyOnce: true }
       )
       pageContext.urlOriginal = pageContext.url

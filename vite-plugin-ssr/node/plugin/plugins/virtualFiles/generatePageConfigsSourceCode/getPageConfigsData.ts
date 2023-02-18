@@ -139,13 +139,7 @@ async function loadPageConfigsData(
       configSources[configName as ConfigName] = configSource
     })
 
-    configSources = applySideEffects(
-      configSources,
-      configDefinitionsRelevant,
-      pageConfigFilesRelevant,
-      userRootDir,
-      configValueFilesRelevant
-    )
+    configSources = applySideEffects(configSources, configDefinitionsRelevant)
 
     const isErrorPage: boolean = !!configSources.isErrorPage?.configValue
 
@@ -475,14 +469,9 @@ type ConfigSources = Record<string, ConfigSource>
 
 function applySideEffects(
   configSources: ConfigSources,
-  configDefinitionsRelevant: ConfigDefinitionsAll,
-  pageConfigFilesRelevant: PageConfigFile[],
-  userRootDir: string,
-  configValueFilesRelevant: ConfigValueFile[]
+  configDefinitionsRelevant: ConfigDefinitionsAll
 ): ConfigSources {
   const configSourcesMod = { ...configSources }
-
-  const configDefinitionsMod = { ...configDefinitionsRelevant }
 
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef.sideEffect) return
