@@ -78,7 +78,7 @@ type PrerenderContext = {
 
 type PageContext = {
   urlOriginal: string
-  pageContexts: PageContext[]
+  _pageContexts: PageContext[]
   _prerenderHookFile: string | null
   _baseServer: string
   _urlHandler: null
@@ -463,7 +463,7 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
   objectAssign(pageContext, {
     _urlHandler: null,
     _noExtraDir: prerenderContext._noExtraDir,
-    pageContexts: prerenderContext.pageContexts
+    _pageContexts: prerenderContext.pageContexts
   })
   /* We cannot add the computed URL properties because they can be iterated & copied in a `onBeforePrerender()` hook, e.g. `/examples/i18n/'
   addComputedUrlProps(pageContext)
