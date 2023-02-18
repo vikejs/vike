@@ -108,3 +108,5 @@ async function prerender() {
   return URLs
 }
 ```
+
+We basically use `prerender()` to determine URLs and/or load data, and use `onBeforePrerender()` merely to manipulate the URLs and set `pageContext.locale`.
