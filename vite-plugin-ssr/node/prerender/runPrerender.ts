@@ -80,6 +80,7 @@ type PageContext = {
   urlOriginal: string
   _pageContexts: PageContext[]
   _prerenderHookFile: string | null
+  _prerenderHookName: null | 'onPrerender' | 'prerender'
   _baseServer: string
   _urlHandler: null
   _allPageIds: string[]
@@ -366,16 +367,23 @@ async function callOnPrerenderHooks(
           let pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find((pageContext) =>
             isSameUrl(pageContext.urlOriginal, url)
           )
-          if (!pageContextFound) {
-            const pageContext = createPageContext(url, renderContext, prerenderContext)
-            objectAssign(pageContext, {
-              _prerenderHookFile: hookFilePath
-            })
-            prerenderContext.pageContexts.push(pageContext)
-            pageContextFound = pageContext
+          if (pageContextFound) {
+            assert(pageContextFound._prerenderHookFile)
+            assert(pageContextFound._prerenderHookName)
+            const providedTwice =
+              hookFilePath === pageContextFound._prerenderHookFile
+                ? `twice by the ${hookName}() hook (${hookFilePath})`
+                : `twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${pageContextFound._prerenderHookName}() (${pageContextFound._prerenderHookName})`
+            assertUsage(false, `URL '${url}' provided ${providedTwice}. Make sure to provide the URL only once instead.`)
           }
+          const pageContextNew = createPageContext(url, renderContext, prerenderContext)
+          objectAssign(pageContextNew, {
+            _prerenderHookFile: hookFilePath,
+            _prerenderHookName: hookName
+          })
+          prerenderContext.pageContexts.push(pageContextNew)
           if (pageContext) {
-            objectAssign(pageContextFound, {
+            objectAssign(pageContextNew, {
               _pageContextAlreadyProvidedByOnPrerenderHook: true,
               ...pageContext
             })
@@ -431,6 +439,7 @@ async function handlePagesWithStaticRoutes(
         const pageContext = createPageContext(urlOriginal, renderContext, prerenderContext)
         objectAssign(pageContext, {
           _prerenderHookFile: null,
+          _prerenderHookName: null,
           routeParams,
           _pageId: pageId,
           _routeMatches: [
