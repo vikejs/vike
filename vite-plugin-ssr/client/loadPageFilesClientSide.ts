@@ -19,7 +19,7 @@ async function loadPageFilesClientSide(
   try {
     // prettier-ignore
     const result = await Promise.all([
-      pageConfig && loadPageCode(pageConfig),
+      pageConfig && loadPageCode(pageConfig, import.meta.env.DEV),
       ...pageFilesClientSide.map((p) => p.loadFile?.()),
     ])
     pageConfigLoaded = result[0]

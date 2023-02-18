@@ -314,7 +314,7 @@ async function callOnPrerenderHooks(
         if (!pageConfig.configSources.onPrerender) return
         const codeFilePath = getCodeFilePath(pageConfig, 'onPrerender')
         assert(codeFilePath)
-        const pageConfigLoaded = await loadPageCode(pageConfig)
+        const pageConfigLoaded = await loadPageCode(pageConfig, false)
         const hookFn = pageConfigLoaded.configValues.onPrerender
         assert(hookFn)
         assertUsage(isCallable(hookFn), `The onPrerender() hook defined by ${codeFilePath} should be a function`)

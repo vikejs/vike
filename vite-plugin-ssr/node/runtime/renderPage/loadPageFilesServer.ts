@@ -12,6 +12,7 @@ import type { MediaType } from '../helpers'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig'
 import { analyzePage } from './analyzePage'
+import { getGlobalContext } from '../globalContext'
 
 type PageContext_loadPageFilesServer = PageContextGetPageAssets &
   PageContextDebug & {
@@ -24,7 +25,12 @@ async function loadPageFilesServer(pageContext: { _pageId: string } & PageContex
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext._pageId) // Make pageConfig globally available as pageContext._pageConfig?
 
   const [{ exports, exportsAll, pageExports, pageFilesLoaded, pageConfigLoaded }] = await Promise.all([
-    loadPageFilesServerSide(pageContext._pageFilesAll, pageConfig, pageContext._pageId),
+    loadPageFilesServerSide(
+      pageContext._pageFilesAll,
+      pageConfig,
+      pageContext._pageId,
+      !getGlobalContext().isProduction
+    ),
     analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
   ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =

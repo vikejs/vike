@@ -6,9 +6,14 @@ import type { PageFile } from '../getPageFileObject'
 import type { PageConfig } from '../../page-configs/PageConfig'
 import { loadPageCode } from '../../page-configs/loadPageCode'
 
-async function loadPageFilesServerSide(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string) {
+async function loadPageFilesServerSide(
+  pageFilesAll: PageFile[],
+  pageConfig: null | PageConfig,
+  pageId: string,
+  isDev: boolean
+) {
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
-  const pageConfigLoaded = !pageConfig ? null : await loadPageCode(pageConfig)
+  const pageConfigLoaded = !pageConfig ? null : await loadPageCode(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
   const { exports, exportsAll, pageExports } = getExports(pageFilesServerSide, pageConfigLoaded)
   return {
