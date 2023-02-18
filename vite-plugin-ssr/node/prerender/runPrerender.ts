@@ -364,17 +364,22 @@ async function callOnPrerenderHooks(
         const result = normalizePrerenderResult(prerenderResult, hookFilePath, hookName)
 
         result.forEach(({ url, pageContext }) => {
-          let pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find((pageContext) =>
-            isSameUrl(pageContext.urlOriginal, url)
-          )
-          if (pageContextFound) {
-            assert(pageContextFound._prerenderHookFile)
-            assert(pageContextFound._prerenderHookName)
-            const providedTwice =
-              hookFilePath === pageContextFound._prerenderHookFile
-                ? `twice by the ${hookName}() hook (${hookFilePath})`
-                : `twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${pageContextFound._prerenderHookName}() (${pageContextFound._prerenderHookName})`
-            assertUsage(false, `URL '${url}' provided ${providedTwice}. Make sure to provide the URL only once instead.`)
+          {
+            const pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find((pageContext) =>
+              isSameUrl(pageContext.urlOriginal, url)
+            )
+            if (pageContextFound) {
+              assert(pageContextFound._prerenderHookFile)
+              assert(pageContextFound._prerenderHookName)
+              const providedTwice =
+                hookFilePath === pageContextFound._prerenderHookFile
+                  ? `twice by the ${hookName}() hook (${hookFilePath})`
+                  : `twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${pageContextFound._prerenderHookName}() (${pageContextFound._prerenderHookName})`
+              assertUsage(
+                false,
+                `URL '${url}' provided ${providedTwice}. Make sure to provide the URL only once instead.`
+              )
+            }
           }
           const pageContextNew = createPageContext(url, renderContext, prerenderContext)
           objectAssign(pageContextNew, {
