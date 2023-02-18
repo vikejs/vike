@@ -110,3 +110,40 @@ async function prerender() {
 ```
 
 We basically use `prerender()` to determine URLs and/or load data, and use `onBeforePrerender()` merely to manipulate the URLs and set `pageContext.locale`.
+
+> Despite what the naming suggests, note that vite-plugin-ssr calls our `onBeforePrerender()` hook *after* our `prerender()` hooks.
+
+Alternatively, if we need to load data that depends on localization, we don't define any `onBeforePrerender()` and instead only use `prerender()` to generate localized URLs as well as fetch data:
+
+```js
+// /pages/product.page.server.js
+
+// In this example, we don't define any onBeforePrerender() and instead
+// only use prerender() to duplicate/localize all URLs and their pageContext
+export { prerender }
+
+async function prerender() {
+  // Load data
+  const products = await Product.findAll()
+
+  // Set pageContext + localize
+  const urlsWithPageContext = []
+  ['en-US', 'de-DE', 'fr-FR'].forEach(locale => {
+    products.forEach(product => {
+      urlsWithPageContext.push({
+        url: `/${locale}/product/${product.id}`,
+        pageContext: {
+          locale,
+          product: {
+            price: product.price,
+            description: product.description,
+            // ...
+          }
+        }
+      })
+    })
+  })
+
+  return urlsWithPageContext
+}
+```
