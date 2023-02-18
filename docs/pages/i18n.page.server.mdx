@@ -57,7 +57,7 @@ See <RepoLink path='/examples/i18n/' />.
 
 ## Pre-rendering
 
-For <Link text="pre-rendering" href="/pre-rendering" /> we can use `onBeforePrerender()`.
+If we use <Link text="pre-rendering" href="/pre-rendering" /> then, in addition to defining `onBeforeRoute()`, we also define a second hook `onBeforePrerender()`:
 
 ```js
 // _default.page.server.js
@@ -92,4 +92,19 @@ function onBeforePrerender(prerenderContext) {
 }
 ```
 
-See <RepoLink path='/examples/i18n/' /> for an example of using `onBeforePrerender()`.
+See <RepoLink path='/examples/i18n/' /> for an example using `onBeforePrerender()`.
+
+Our <Link text={<><code>prerender()</code> hooks</>} href="/prerender" /> (if we use any) should return URLs without any locale (e.g. `prerender()` returning `/product/42`). Instead, it's our `onBeforePrerender()` hook that duplicates and modifies URLs for each locale (e.g. duplicating `/product/42` into `/en-US/product/42`, `/de-DE/product/42`, `/fr-FR/product/42`).
+
+```js
+// /pages/product.page.server.js
+
+export { prerender }
+
+async function prerender() {
+  const products = await Product.findAll()
+  const URLs = products.map(({ id }) => '/product/' + id)
+  // We don't add the locale here, instead we let onBeforePrerender() add the locales
+  return URLs
+}
+```
