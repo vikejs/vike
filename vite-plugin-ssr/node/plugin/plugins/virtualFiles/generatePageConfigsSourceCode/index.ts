@@ -106,10 +106,8 @@ function generateSourceCodeOfPageConfigs(
   })
   lines.push('};')
 
-  // Make Vite invalidate virtual module upon + file creation/removal
   if (isDev) {
-    // The crawled files are never loaded, the only effect of this glob is to invalidate the virtual module whenever a + file is created/removed
-    lines.push("export const plusFilesGlob = import.meta.glob('/**/+*');")
+    lines.push(getInvalidatorGlob(isDev))
   } else {
     lines.push('export const plusFilesGlob = null;')
   }
@@ -141,12 +139,16 @@ async function generatePageConfigVirtualFile(
   assert(pageConfigsData)
   const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId2 === pageId)
   assert(pageConfigData)
-  const code = generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData, isForClientSide)
+  const code = generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData, isForClientSide, isDev)
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
   return code
 }
 
-function generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData: PageConfigData, isForClientSide: boolean): string {
+function generateSourceCodeOfLoadCodeFileVirtualFile(
+  pageConfigData: PageConfigData,
+  isForClientSide: boolean,
+  isDev: boolean
+): string {
   const lines: string[] = []
   const importStatements: string[] = []
   lines.push('export default [')
@@ -165,6 +167,16 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData: PageConfigD
     lines.push(`  },`)
   })
   lines.push('];')
+  if (isDev) {
+    lines.push(getInvalidatorGlob(isDev))
+  }
   const code = [...importStatements, ...lines].join('\n')
   return code
+}
+
+function getInvalidatorGlob(isDev: boolean) {
+  assert(isDev)
+  // The crawled files are never loaded (the plusFilesGlob export isn't used), the only effect of this glob is to invalidate the virtual module.
+  // We agressively invalidate the virual files because they are cheap and fast to re-create.
+  return "export const plusFilesGlob = import.meta.glob('/**/+*');"
 }
