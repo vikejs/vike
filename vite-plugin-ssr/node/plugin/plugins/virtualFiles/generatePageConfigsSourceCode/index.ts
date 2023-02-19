@@ -37,19 +37,21 @@ export const debug = createDebugger('vps:virtual-files')
 async function generatePageConfigsSourceCode(
   userRootDir: string,
   isForClientSide: boolean,
-  isDev: boolean
+  isDev: boolean,
+  id: string
 ): Promise<string> {
   const result = await loadPageConfigsData(userRootDir, isDev)
   pageConfigsData = result.pageConfigsData
   const { pageConfigGlobal } = result
-  return generateSourceCodeOfPageConfigs(pageConfigsData, pageConfigGlobal, isForClientSide, isDev)
+  return generateSourceCodeOfPageConfigs(pageConfigsData, pageConfigGlobal, isForClientSide, isDev, id)
 }
 
 function generateSourceCodeOfPageConfigs(
   pageConfigsData: PageConfigData[],
   pageConfigGlobal: PageConfigGlobal,
   isForClientSide: boolean,
-  isDev: boolean
+  isDev: boolean,
+  id: string
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
@@ -92,6 +94,12 @@ function generateSourceCodeOfPageConfigs(
           importStatements.push(importStatement)
         }
       }
+      // Inject import statement to ensure that Vite adds codeFilePath2 to its module graph (which is needed in order for Vite to properly invalidate the module graph if a module imported by codeFilePath2 is modified)
+      if (c_env === 'c_config' && isDev && codeFilePath2 && !isForClientSide) {
+        const { importStatement } = generateEagerImport(codeFilePath2)
+        generateEagerImport(codeFilePath2)
+        importStatements.push(importStatement)
+      }
       lines.push(`      },`)
     })
     lines.push(`    }`)
@@ -119,6 +127,7 @@ function generateSourceCodeOfPageConfigs(
   // lines.push(']);')
 
   const code = [...importStatements, ...lines].join('\n')
+  debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
   return code
 }
 
@@ -178,5 +187,6 @@ function getInvalidatorGlob(isDev: boolean) {
   assert(isDev)
   // The crawled files are never loaded (the plusFilesGlob export isn't used), the only effect of this glob is to invalidate the virtual module.
   // We agressively invalidate the virual files because they are cheap and fast to re-create.
+  // The plusFilesGlob export isn't really used: it's only used to assert that we don't glob any unexpected file.
   return "export const plusFilesGlob = import.meta.glob('/**/+*');"
 }

@@ -35,7 +35,7 @@ async function generatePageFilesVirtualFile(
   assert(isForClientSide === !viteIsSSR_options(options))
   const isClientRouting = id === virtualModuleIdPageFilesClientCR
   const isPrerendering = !!configVps.prerender
-  const code = await getCode(config, configVps, isForClientSide, isClientRouting, isPrerendering, isDev)
+  const code = await getCode(config, configVps, isForClientSide, isClientRouting, isPrerendering, isDev, id)
   return code
 }
 
@@ -45,7 +45,8 @@ async function getCode(
   isForClientSide: boolean,
   isClientRouting: boolean,
   isPrerendering: boolean,
-  isDev: boolean
+  isDev: boolean,
+  id: string
 ) {
   const { command } = config
   assert(command === 'serve' || command === 'build')
@@ -63,7 +64,8 @@ async function getCode(
       configVps,
       isPrerendering,
       config,
-      isDev
+      isDev,
+      id
     )
   }
   {
@@ -194,7 +196,8 @@ async function generateGlobImports(
   configVps: ConfigVpsResolved,
   isPrerendering: boolean,
   config: ResolvedConfig,
-  isDev: boolean
+  isDev: boolean,
+  id: string
 ) {
   let fileContent = `// Generatead by node/plugin/plugins/virtualFiles/index.ts
 
@@ -206,7 +209,7 @@ export const pageFilesList = [];
 export const neverLoaded = {};
 export const isGeneratedFile = true;
 
-${await generatePageConfigsSourceCode(config.root, isForClientSide, isDev)}
+${await generatePageConfigsSourceCode(config.root, isForClientSide, isDev, id)}
 
 `
 
