@@ -68,7 +68,11 @@ type DoNotPrerenderList = ({ pageId: string; setByConfigSrc: string } & (
 ))[]
 type ProvidedByHook = null | {
   hookFilePath: string
-  hookName: 'onPrerender' | 'prerender' | 'onBeforePrerender'
+  hookName: 'onPrerender' | 'prerender'
+}
+type TransformerHook = {
+  hookFilePath: string
+  hookName: 'onBeforePrerender'
 }
 type PrerenderedPageIds = Record<string, { urlOriginal: string; _providedByHook: ProvidedByHook }>
 
@@ -81,6 +85,7 @@ type PrerenderContext = {
 type PageContext = {
   urlOriginal: string
   _providedByHook: ProvidedByHook
+  _touchedByHook?: TransformerHook
   _baseServer: string
   _urlHandler: null
   _allPageIds: string[]
@@ -608,6 +613,13 @@ async function callOnBeforePrerenderHook(
     }
     delete pageContext.url
   })
+
+  prerenderContext.pageContexts.forEach((pageContext: PageContext) => {
+    pageContext._touchedByHook = {
+      hookFilePath,
+      hookName: 'onBeforePrerender'
+    }
+  })
 }
 
 async function routeAndPrerender(
@@ -623,7 +635,7 @@ async function routeAndPrerender(
   await Promise.all(
     prerenderContext.pageContexts.map((pageContext) =>
       concurrencyLimit(async () => {
-        const { urlOriginal, _providedByHook: providedByHook } = pageContext
+        const { urlOriginal } = pageContext
         assert(urlOriginal)
         const routeResult = await route(pageContext)
         assert(
@@ -631,18 +643,26 @@ async function routeAndPrerender(
             hasProp(routeResult.pageContextAddendum, '_pageId', 'string')
         )
         if (routeResult.pageContextAddendum._pageId === null) {
-          if (!providedByHook) {
+          let hookName: string | undefined
+          let hookFilePath: string | undefined
+          if (pageContext._providedByHook) {
+            hookName = pageContext._providedByHook.hookName
+            hookFilePath = pageContext._providedByHook.hookFilePath
+          } else if (pageContext._touchedByHook) {
+            hookName = pageContext._touchedByHook.hookName
+            hookFilePath = pageContext._touchedByHook.hookFilePath
+          }
+          if (hookName) {
+            assert(hookFilePath)
+            assertUsage(
+              false,
+              `Your ${hookName}() hook defined by ${hookFilePath} returns a URL '${urlOriginal}' that doesn't match any of your page routes. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
+            )
+          } else {
             // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
             assert(routeResult.pageContextAddendum._routingProvidedByOnBeforeRouteHook)
             // Abort since the URL doesn't correspond to any page
             return
-          } else {
-            const { hookFilePath, hookName } = providedByHook
-            assert(hookFilePath && hookName)
-            assertUsage(
-              false,
-              `Your ${hookName}() hook defined by ${hookFilePath} returns a URL '${urlOriginal}' that doesn't match any page route. Make sure that the URLs returned by ${hookName}() always match a page route.`
-            )
           }
         }
 
