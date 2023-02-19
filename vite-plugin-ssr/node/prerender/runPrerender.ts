@@ -655,7 +655,7 @@ async function routeAndPrerender(
             assert(hookFilePath)
             assertUsage(
               false,
-              `Your ${hookName}() hook defined by ${hookFilePath} returns a URL '${urlOriginal}' that doesn't match any of your page routes. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
+              `The ${hookName}() hook defined by ${hookFilePath} returns a URL '${urlOriginal}' that doesn't match any of your page routes. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
             )
           } else {
             // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
@@ -717,7 +717,7 @@ function warnContradictoryNoPrerenderList(
     const { setByConfigName, setByConfigValue, setByConfigSrc } = doNotPrerenderListEntry
     assertUsage(
       false,
-      `Your ${providedByHook.hookName}() hook defined by ${providedByHook.hookFilePath} returns the URL '${urlOriginal}', while ${setByConfigSrc} sets \`${setByConfigName}\` to \`${setByConfigValue}\`. This is contradictory: either don't set \`${setByConfigName}\` to \`${setByConfigValue}\` or remove the URL from the list of URLs to be pre-rendered.`
+      `The ${providedByHook.hookName}() hook defined by ${providedByHook.hookFilePath} returns the URL '${urlOriginal}', while ${setByConfigSrc} sets \`${setByConfigName}\` to \`${setByConfigValue}\`. This is contradictory: either don't set \`${setByConfigName}\` to \`${setByConfigValue}\` or remove the URL from the list of URLs to be pre-rendered.`
     )
   })
 }
