@@ -65,16 +65,22 @@ If we use <Link text="pre-rendering" href="/pre-rendering" /> then, in addition 
 export { onBeforePrerender }
 
 const locales = ['en-US', 'de-DE', 'fr-FR']
+const localeDefault = 'en-US'
 
 function onBeforePrerender(prerenderContext) {
   const pageContexts = []
   prerenderContext.pageContexts.forEach((pageContext) => {
     // Duplicate pageContext for each locale
     locales.forEach((locale) => {
-      // Localize URL and pageContext
+      // Localize URL
+      let { urlOriginal } = pageContext
+      if (locale !== localeDefault) {
+        urlOriginal = `/${locale}${pageContext.urlOriginal}`
+      }
       pageContexts.push({
         ...pageContext,
-        urlOriginal: `/${locale}${pageContext.urlOriginal}`,
+        urlOriginal,
+        // Set pageContext.locale
         locale
       })
     })
