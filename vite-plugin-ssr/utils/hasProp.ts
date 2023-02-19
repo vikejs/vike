@@ -1,6 +1,10 @@
-import { isCallable } from './isCallable'
-
 export { hasProp }
+
+// - https://2ality.com/2020/06/type-guards-assertion-functions-typescript.html
+// - https://www.typescriptlang.org/play?#code/GYVwdgxgLglg9mABDAzgFQJ4AcCmdgAUAbgIYA2IOAXIiWBgDSJTbWIDkARnHGTnewCUNUhRzIUibr35gA3AFgAUKEiwEEzLnzFylGnUbNWNdmBABbTjgBOQkXvGpE5q7cUrw0eElRa8hKL6tPRMLLimKFA2MGAA5vaIQU6SUTHxHqreGn6sOskGocYRHOAA1mBwAO5gickSiOWVNZle6r7oeYGOhUbhbGmxcYgAvKVgFdW1wlI8fHSIAN7KiMiExeIjW+OTNeyIgksrq4g2OFAgNkjRlMcAvsdnF1cb+EmOo9v9Hg9KyhAIKK0GhNKajRAAFgATMplCQUChbFACLltIQSEwzJZrHZBIJ-oCZAA6MhwOIEEj4v6eNQ+WgIpEEAFgAAmMHaIImzTAM3hiJsUEkzLZ7SOShOa0QTIQIp8hyelzAx1WUAAFjZqi4cFVEABRGwamwEdgAQQZArpADESDAyEJlHcgA
+
+import { isCallable } from './isCallable'
+import { isObject } from './isObject'
 
 // prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'boolean'):  obj is ObjectType & Record<PropName, boolean>;
@@ -30,8 +34,8 @@ function hasProp<ObjectType, PropName extends PropertyKey, Enum>(obj: ObjectType
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName): obj is ObjectType & Record<PropName, unknown>;
 // prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: string | string[] = 'unknown'): boolean {
-  const propExists = typeof obj === 'object' && obj !== null && prop in obj
-  if( !propExists ){
+  if( !isObject(obj) ) return false
+  if( !(prop in obj) ){
     return type === 'undefined'
   }
   if( type === 'unknown' ) {
@@ -40,6 +44,9 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
   const propValue = (obj as Record<any,unknown>)[prop]
   if( type === 'array') {
     return Array.isArray(propValue)
+  }
+  if( type === 'object') {
+    return isObject(propValue)
   }
   if( type === 'string[]') {
     return Array.isArray(propValue) && propValue.every(el => typeof el === 'string')
@@ -64,7 +71,3 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
   }
   return typeof propValue === type;
 }
-
-// Resources:
-//  - https://2ality.com/2020/06/type-guards-assertion-functions-typescript.html
-//  - https://www.typescriptlang.org/play?#code/GYVwdgxgLglg9mABDAzgFQJ4AcCmdgAUAbgIYA2IOAXIiWBgDSJTbWIDkARnHGTnewCUNUhRzIUibr35gA3AFgAUKEiwEEzLnzFylGnUbNWNdmBABbTjgBOQkXvGpE5q7cUrw0eElRa8hKL6tPRMLLimKFA2MGAA5vaIQU6SUTHxHqreGn6sOskGocYRHOAA1mBwAO5gickSiOWVNZle6r7oeYGOhUbhbGmxcYgAvKVgFdW1wlI8fHSIAN7KiMiExeIjW+OTNeyIgksrq4g2OFAgNkjRlMcAvsdnF1cb+EmOo9v9Hg9KyhAIKK0GhNKajRAAFgATMplCQUChbFACLltIQSEwzJZrHZBIJ-oCZAA6MhwOIEEj4v6eNQ+WgIpEEAFgAAmMHaIImzTAM3hiJsUEkzLZ7SOShOa0QTIQIp8hyelzAx1WUAAFjZqi4cFVEABRGwamwEdgAQQZArpADESDAyEJlHcgA

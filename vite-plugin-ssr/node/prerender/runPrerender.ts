@@ -9,7 +9,6 @@ import {
   assertUsage,
   assertWarning,
   hasProp,
-  isPlainObject,
   projectInfo,
   objectAssign,
   isObjectWithKeys,
@@ -19,7 +18,8 @@ import {
   hasPropertyGetter,
   assertPosixPath,
   urlToFile,
-  callHookWithTimeout
+  callHookWithTimeout,
+  isPlainObject
 } from './../utils'
 import { pLimit, PLimit } from '../../utils/pLimit'
 import {
@@ -876,28 +876,36 @@ function normalizeOnPrerenderHookResult(
       prerenderElement = { url: prerenderElement, pageContext: null }
     }
 
-    const errMsg1 = `The ${hookName}() hook defined in \`${prerenderHookFile}\` returned an invalid value`
-    const errMsg2 = `Make sure your ${hookName}() hook returns an object \`{ url, pageContext }\` or an array of such objects.`
-    assertUsage(isPlainObject(prerenderElement), `${errMsg1}. ${errMsg2}`)
-    assertUsage(hasProp(prerenderElement, 'url'), `${errMsg1}: \`url\` is missing. ${errMsg2}`)
+    const errMsg1 = `The ${hookName}() hook defined by ${prerenderHookFile} returned` as const
+    const errMsg2 = `${errMsg1} an invalid value` as const
+    const errHint =
+      `Make sure your ${hookName}() hook returns an object \`{ url, pageContext }\` or an array of such objects.` as const
+    assertUsage(isPlainObject(prerenderElement), `${errMsg2}. ${errHint}`)
+    assertUsage(hasProp(prerenderElement, 'url'), `${errMsg2}: \`url\` is missing. ${errHint}`)
     assertUsage(
       hasProp(prerenderElement, 'url', 'string'),
-      `${errMsg1}: \`url\` should be a string (but we got \`typeof url === "${typeof prerenderElement.url}"\`).`
+      `${errMsg2}: \`url\` should be a string (but \`typeof url === "${typeof prerenderElement.url}"\`).`
     )
     assertUsage(
       prerenderElement.url.startsWith('/'),
-      `${errMsg1}: the \`url\` with value \`${prerenderElement.url}\` doesn't start with \`/\`. Make sure each URL starts with \`/\`.`
+      `${errMsg1} a URL with an invalid value '${prerenderElement.url}' which doesn't start with '/'. Make sure each URL starts with '/'.`
     )
     Object.keys(prerenderElement).forEach((key) => {
-      assertUsage(key === 'url' || key === 'pageContext', `${errMsg1}: unexpected object key \`${key}\` ${errMsg2}`)
+      assertUsage(key === 'url' || key === 'pageContext', `${errMsg2}: unexpected object key \`${key}\`. ${errHint}`)
     })
     if (!hasProp(prerenderElement, 'pageContext')) {
-      prerenderElement['pageContext'] = null
+      prerenderElement.pageContext = null
+    } else if (!hasProp(prerenderElement, 'pageContext', 'null')) {
+      assertUsage(
+        hasProp(prerenderElement, 'pageContext', 'object'),
+        `${errMsg1} an invalid \`pageContext\` value: make sure \`pageContext\` is an object.`
+      )
+      assertUsage(
+        isPlainObject(prerenderElement.pageContext),
+        `${errMsg1} an invalid \`pageContext\` object: make sure \`pageContext\` is a plain JavaScript object.`
+      )
     }
-    assertUsage(
-      hasProp(prerenderElement, 'pageContext', 'object'),
-      `The \`${hookName}()\` hook exported by ${prerenderHookFile} returned an invalid \`pageContext\` value: make sure \`pageContext\` is a plain JavaScript object.`
-    )
+    assert(hasProp(prerenderElement, 'pageContext', 'object') || hasProp(prerenderElement, 'pageContext', 'null'))
     return prerenderElement
   }
 }
