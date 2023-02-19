@@ -123,16 +123,20 @@ async function prerender() {
 
   // Set pageContext + localize
   const urlsWithPageContext = []
-  ['en-US', 'de-DE', 'fr-FR'].forEach(locale => {
-    products.forEach(product => {
+  products.forEach(product => {
+    ['en-US', 'de-DE', 'fr-FR'].forEach(locale => {
       urlsWithPageContext.push({
         url: `/${locale}/product/${product.id}`,
         pageContext: {
           locale,
-          product: {
-            price: product.price,
-            description: product.description,
-            // ...
+          product,
+          pageProps: {
+            product: {
+              name: product.name,
+              description: product.description,
+              price: product.price,
+              // ...
+            }
           }
         }
       })
