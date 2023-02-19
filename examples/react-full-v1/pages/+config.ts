@@ -16,7 +16,7 @@ export default {
       c_env: 'c_config',
       sideEffect({ configDefinedBy, configValue }: { configValue: unknown; configDefinedBy: string }) {
         if (typeof configValue !== 'boolean') {
-          throw `${configDefinedBy} should be a boolean`
+          throw new Error(`${configDefinedBy} should be a boolean`)
         }
         if (configValue) {
           return {
