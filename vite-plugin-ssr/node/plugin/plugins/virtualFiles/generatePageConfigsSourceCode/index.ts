@@ -94,12 +94,6 @@ function generateSourceCodeOfPageConfigs(
           importStatements.push(importStatement)
         }
       }
-      // Inject import statement to ensure that Vite adds codeFilePath2 to its module graph (which is needed in order for Vite to properly invalidate the module graph if a module imported by codeFilePath2 is modified)
-      if (c_env === 'c_config' && isDev && codeFilePath2 && !isForClientSide) {
-        const { importStatement } = generateEagerImport(codeFilePath2)
-        generateEagerImport(codeFilePath2)
-        importStatements.push(importStatement)
-      }
       lines.push(`      },`)
     })
     lines.push(`    }`)
@@ -107,6 +101,28 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`  pageConfigs.push(${pageConfigVar})`)
     lines.push(`}`)
   })
+
+  // Inject import statement to ensure that Vite adds config files to its module graph (which is needed in order for Vite to properly invalidate if a module imported by a config file is modified)
+  if (isDev && !isForClientSide) {
+    const configFiles: Set<string> = new Set()
+    pageConfigsData.forEach((pageConfig) => {
+      const { configSources, pageConfigFilePathAll } = pageConfig
+      Object.entries(configSources).forEach(([_configName, configSource]) => {
+        const { c_env, codeFilePath2 } = configSource
+        if (c_env === 'c_config' && codeFilePath2) {
+          configFiles.add(codeFilePath2)
+        }
+      })
+      pageConfigFilePathAll.forEach((pageConfigFilePath) => {
+        configFiles.add(pageConfigFilePath)
+      })
+    })
+    Array.from(configFiles).forEach((configFile) => {
+      assert(configFile.startsWith('/'))
+      const { importStatement } = generateEagerImport(configFile)
+      importStatements.push(importStatement)
+    })
+  }
 
   lines.push('export const pageConfigGlobal = {')
   Object.entries(pageConfigGlobal).forEach(([configName, configValue]) => {
