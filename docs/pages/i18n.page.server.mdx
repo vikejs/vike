@@ -69,20 +69,15 @@ const locales = ['en-US', 'de-DE', 'fr-FR']
 function onBeforePrerender(prerenderContext) {
   const pageContexts = []
   prerenderContext.pageContexts.forEach((pageContext) => {
-    pageContexts.push({
-      ...pageContext,
-      locale: localeDefault
-    })
-    // We add the localized pages to the list of pages that are going to be pre-rendered
-    locales
-      .filter((locale) => locale !== localeDefault)
-      .forEach((locale) => {
-        pageContexts.push({
-          ...pageContext,
-          urlOriginal: `/${locale}${pageContext.urlOriginal}`,
-          locale
-        })
+    // Duplicate pageContext for each locale
+    locales.forEach((locale) => {
+      // Localize URL and pageContext
+      pageContexts.push({
+        ...pageContext,
+        urlOriginal: `/${locale}${pageContext.urlOriginal}`,
+        locale
       })
+    })
   })
   return {
     prerenderContext: {
@@ -111,15 +106,15 @@ async function prerender() {
 
 We basically use `prerender()` to determine URLs and/or load data, and use `onBeforePrerender()` merely to manipulate the URLs and set `pageContext.locale`.
 
-> Despite what the naming suggests, note that vite-plugin-ssr calls our `onBeforePrerender()` hook *after* our `prerender()` hooks.
+> Despite what the naming suggests, note that vite-plugin-ssr calls our `onBeforePrerender()` hook *after* our `prerender()` hooks. Also note that `onBeforePrerender(prerenderContext)` is a global hook we can define only once, while `prerender()` (it doesn't have any argument) is a per-page hook we can define multiple times.
 
-Alternatively, if we need to load data that depends on localization, we don't define any `onBeforePrerender()` and instead only use `prerender()` to generate localized URLs as well as fetch data:
+Alternatively, if we need to load data that depends on localization, instead of `onBeforePrerender()` we can use `prerender()` to localize `pageContext`:
 
 ```js
 // /pages/product.page.server.js
 
-// In this example, we don't define any onBeforePrerender() and instead
-// only use prerender() to duplicate/localize all URLs and their pageContext
+// In this example, we don't use onBeforePrerender() but, instead,
+// we use prerender() to duplicate and localize URLs and their pageContext
 export { prerender }
 
 async function prerender() {
@@ -145,5 +140,43 @@ async function prerender() {
   })
 
   return urlsWithPageContext
+}
+```
+
+We may still need to use `onBeforePrerender()` for localizing static pages that don't load data.
+
+```js
+// _default.page.server.js
+
+export { onBeforePrerender }
+
+import assert from 'assert'
+
+const locales = ['en-US', 'de-DE', 'fr-FR']
+
+function onBeforePrerender(prerenderContext) {
+  const pageContexts = []
+  prerenderContext.pageContexts.forEach((pageContext) => {
+    if(pageContext.locale) {
+      // Already localized by one of our prerender() hooks
+      assert(pageContext.urlOriginal.startsWith(`/${pagecontext.locale}/`))
+      pageContexts.push(pageContext)
+    } else {
+      // Duplicate pageContext for each locale
+      locales.forEach((locale) => {
+        // Localize URL and pageContext
+        pageContexts.push({
+          ...pageContext,
+          urlOriginal: `/${locale}${pageContext.urlOriginal}`,
+          locale
+        })
+      })
+    }
+  })
+  return {
+    prerenderContext: {
+      pageContexts
+    }
+  }
 }
 ```

@@ -6,7 +6,7 @@ import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { PageShell } from './PageShell'
-import { localeDefault, locales } from '../locales'
+import { locales } from '../locales'
 
 const passToClient = ['pageProps', 'locale']
 
@@ -29,23 +29,19 @@ function render(pageContext) {
     </html>`
 }
 
-// We only need this for pre-rendered apps
+// We only need this for pre-rendered apps https://vite-plugin-ssr.com/pre-rendering
 function onBeforePrerender(prerenderContext) {
   const pageContexts = []
   prerenderContext.pageContexts.forEach((pageContext) => {
-    pageContexts.push({
-      ...pageContext,
-      locale: localeDefault
-    })
-    locales
-      .filter((locale) => locale !== localeDefault)
-      .forEach((locale) => {
-        pageContexts.push({
-          ...pageContext,
-          urlOriginal: `/${locale}${pageContext.urlOriginal}`,
-          locale
-        })
+    // Duplicate pageContext for each locale
+    locales.forEach((locale) => {
+      // Localize URL and pageContext
+      pageContexts.push({
+        ...pageContext,
+        urlOriginal: `/${locale}${pageContext.urlOriginal}`,
+        locale
       })
+    })
   })
   return {
     prerenderContext: {
