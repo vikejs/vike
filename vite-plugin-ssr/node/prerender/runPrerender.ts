@@ -631,12 +631,6 @@ async function routeAndPrerender(
             hasProp(routeResult.pageContextAddendum, '_pageId', 'string')
         )
         if (routeResult.pageContextAddendum._pageId === null) {
-          /*
-        console.log(pageContext._providedByHook)
-        console.log(routeResult)
-        console.log(routeResult.pageContextAddendum)
-        console.log(urlOriginal)
-        */
           if (!providedByHook) {
             // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
             assert(routeResult.pageContextAddendum._routingProvidedByOnBeforeRouteHook)
@@ -647,7 +641,7 @@ async function routeAndPrerender(
             assert(hookFilePath && hookName)
             assertUsage(
               false,
-              `Your ${hookName}() hook defined by ${hookFilePath} returns a URL '${urlOriginal}' that doesn't match any page route. Make sure that the URLs returned by ${hookName}() to always match the URL of a page route.`
+              `Your ${hookName}() hook defined by ${hookFilePath} returns a URL '${urlOriginal}' that doesn't match any page route. Make sure that the URLs returned by ${hookName}() always match a page route.`
             )
           }
         }
