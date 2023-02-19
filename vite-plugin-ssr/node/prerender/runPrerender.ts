@@ -55,20 +55,22 @@ type HtmlFile = {
   pageId: string | null
 }
 
-type DoNotPrerenderList = ({ pageId: string; prerenderConfigSrc: string } & (
+type DoNotPrerenderList = ({ pageId: string; setByConfigSrc: string } & (
   | {
       // TODO/v1-release: remove 0.4 case
-      prerenderHookName: 'prerender'
-      prerenderConfigName: 'doNotPrerender'
-      prerenderConfigValue: true
+      setByConfigName: 'doNotPrerender'
+      setByConfigValue: true
     }
   | {
-      prerenderHookName: 'onPrerender'
-      prerenderConfigName: 'prerender'
-      prerenderConfigValue: false
+      setByConfigName: 'prerender'
+      setByConfigValue: false
     }
 ))[]
-type PrerenderedPageIds = Record<string, { urlOriginal: string; _prerenderHookFile: string | null }>
+type ProvidedByHook = null | {
+  hookFilePath: string
+  hookName: 'onPrerender' | 'prerender' | 'onBeforePrerender'
+}
+type PrerenderedPageIds = Record<string, { urlOriginal: string; _providedByHook: ProvidedByHook }>
 
 type PrerenderContext = {
   pageContexts: PageContext[]
@@ -78,8 +80,7 @@ type PrerenderContext = {
 
 type PageContext = {
   urlOriginal: string
-  _prerenderHookFile: string | null
-  _prerenderHookName: null | 'onPrerender' | 'prerender'
+  _providedByHook: ProvidedByHook
   _baseServer: string
   _urlHandler: null
   _allPageIds: string[]
@@ -230,10 +231,9 @@ async function collectDoNoPrerenderList(
       assert(configSource.configValue === false)
       doNotPrerenderList.push({
         pageId: pageConfig.pageId2,
-        prerenderConfigSrc: configSource.configSrc,
-        prerenderHookName: 'onPrerender',
-        prerenderConfigName: 'prerender',
-        prerenderConfigValue
+        setByConfigName: 'prerender',
+        setByConfigValue: false,
+        setByConfigSrc: configSource.configSrc
       })
     }
   })
@@ -275,10 +275,9 @@ async function collectDoNoPrerenderList(
         // Don't pre-render `pageId`
         doNotPrerenderList.push({
           pageId,
-          prerenderConfigSrc: `${p.filePath} > \`export { doNotPrerender }\``,
-          prerenderHookName: 'prerender',
-          prerenderConfigName: 'doNotPrerender',
-          prerenderConfigValue: doNotPrerender
+          setByConfigSrc: `${p.filePath} > \`export { doNotPrerender }\``,
+          setByConfigName: 'doNotPrerender',
+          setByConfigValue: doNotPrerender
         })
       }
     }
@@ -368,12 +367,11 @@ async function callOnPrerenderHooks(
               isSameUrl(pageContext.urlOriginal, url)
             )
             if (pageContextFound) {
-              assert(pageContextFound._prerenderHookFile)
-              assert(pageContextFound._prerenderHookName)
+              assert(pageContextFound._providedByHook)
               const providedTwice =
-                hookFilePath === pageContextFound._prerenderHookFile
+                hookFilePath === pageContextFound._providedByHook.hookFilePath
                   ? `twice by the ${hookName}() hook (${hookFilePath})`
-                  : `twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${pageContextFound._prerenderHookName}() (${pageContextFound._prerenderHookName})`
+                  : `twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${pageContextFound._providedByHook.hookFilePath}() (${pageContextFound._providedByHook.hookName})`
               assertUsage(
                 false,
                 `URL '${url}' provided ${providedTwice}. Make sure to provide the URL only once instead.`
@@ -382,8 +380,10 @@ async function callOnPrerenderHooks(
           }
           const pageContextNew = createPageContext(url, renderContext, prerenderContext)
           objectAssign(pageContextNew, {
-            _prerenderHookFile: hookFilePath,
-            _prerenderHookName: hookName
+            _providedByHook: {
+              hookFilePath,
+              hookName
+            }
           })
           prerenderContext.pageContexts.push(pageContextNew)
           if (pageContext) {
@@ -442,8 +442,7 @@ async function handlePagesWithStaticRoutes(
         const routeParams = {}
         const pageContext = createPageContext(urlOriginal, renderContext, prerenderContext)
         objectAssign(pageContext, {
-          _prerenderHookFile: null,
-          _prerenderHookName: null,
+          _providedByHook: null,
           routeParams,
           _pageId: pageId,
           _routeMatches: [
@@ -624,7 +623,7 @@ async function routeAndPrerender(
   await Promise.all(
     prerenderContext.pageContexts.map((pageContext) =>
       concurrencyLimit(async () => {
-        const { urlOriginal, _prerenderHookFile: prerenderHookFile } = pageContext
+        const { urlOriginal, _providedByHook: providedByHook } = pageContext
         assert(urlOriginal)
         const routeResult = await route(pageContext)
         assert(
@@ -632,16 +631,23 @@ async function routeAndPrerender(
             hasProp(routeResult.pageContextAddendum, '_pageId', 'string')
         )
         if (routeResult.pageContextAddendum._pageId === null) {
-          if (prerenderHookFile === null) {
+          /*
+        console.log(pageContext._providedByHook)
+        console.log(routeResult)
+        console.log(routeResult.pageContextAddendum)
+        console.log(urlOriginal)
+        */
+          if (!providedByHook) {
             // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
             assert(routeResult.pageContextAddendum._routingProvidedByOnBeforeRouteHook)
             // Abort since the URL doesn't correspond to any page
             return
           } else {
-            assert(prerenderHookFile)
+            const { hookFilePath, hookName } = providedByHook
+            assert(hookFilePath && hookName)
             assertUsage(
               false,
-              `Your \`prerender()\` hook defined in \`${prerenderHookFile}\ returns an URL \`${urlOriginal}\` that doesn't match any page route. Make sure the URLs your return in your \`prerender()\` hooks always match the URL of a page.`
+              `Your ${hookName}() hook defined by ${hookFilePath} returns a URL '${urlOriginal}' that doesn't match any page route. Make sure that the URLs returned by ${hookName}() to always match the URL of a page route.`
             )
           }
         }
@@ -685,19 +691,21 @@ async function routeAndPrerender(
 }
 
 function warnContradictoryNoPrerenderList(
-  prerenderPageIds: Record<string, { urlOriginal: string; _prerenderHookFile: string | null }>,
+  prerenderPageIds: Record<string, { urlOriginal: string; _providedByHook: ProvidedByHook }>,
   doNotPrerenderList: DoNotPrerenderList
 ) {
-  Object.entries(prerenderPageIds).forEach(([pageId, { urlOriginal, _prerenderHookFile }]) => {
-    const doNotPrerenderListHit = doNotPrerenderList.find((p) => p.pageId === pageId)
-    if (doNotPrerenderListHit) {
-      assert(_prerenderHookFile)
-      const { prerenderConfigSrc, prerenderHookName, prerenderConfigName, prerenderConfigValue } = doNotPrerenderListHit
-      assertUsage(
-        false,
-        `Your \`${prerenderHookName}()\` hook defined by ${_prerenderHookFile} returns the URL \`${urlOriginal}\` while \`${prerenderConfigSrc} is \`${prerenderConfigValue}\`. This is contradictory: either don't set \`${prerenderConfigName}\` to \`${prerenderConfigValue}\` or remove the URL from the list of URLs to be pre-rendered.`
-      )
+  Object.entries(prerenderPageIds).forEach(([pageId, pageContext]) => {
+    const doNotPrerenderListEntry = doNotPrerenderList.find((p) => p.pageId === pageId)
+    const { urlOriginal, _providedByHook: providedByHook } = pageContext
+    {
+      const isContradictory = !!doNotPrerenderListEntry && providedByHook
+      if (!isContradictory) return
     }
+    const { setByConfigName, setByConfigValue, setByConfigSrc } = doNotPrerenderListEntry
+    assertUsage(
+      false,
+      `Your ${providedByHook.hookName}() hook defined by ${providedByHook.hookFilePath} returns the URL '${urlOriginal}', while ${setByConfigSrc} sets \`${setByConfigName}\` to \`${setByConfigValue}\`. This is contradictory: either don't set \`${setByConfigName}\` to \`${setByConfigValue}\` or remove the URL from the list of URLs to be pre-rendered.`
+    )
   })
 }
 
