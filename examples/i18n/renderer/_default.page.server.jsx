@@ -6,7 +6,7 @@ import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { PageShell } from './PageShell'
-import { locales } from '../locales'
+import { locales, localeDefault } from '../locales'
 
 const passToClient = ['pageProps', 'locale']
 
@@ -35,10 +35,15 @@ function onBeforePrerender(prerenderContext) {
   prerenderContext.pageContexts.forEach((pageContext) => {
     // Duplicate pageContext for each locale
     locales.forEach((locale) => {
-      // Localize URL and pageContext
+      // Localize URL
+      let { urlOriginal } = pageContext
+      if (locale !== localeDefault) {
+        urlOriginal = `/${locale}${pageContext.urlOriginal}`
+      }
       pageContexts.push({
         ...pageContext,
-        urlOriginal: `/${locale}${pageContext.urlOriginal}`,
+        urlOriginal,
+        // Set pageContext.locale
         locale
       })
     })
