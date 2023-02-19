@@ -364,8 +364,7 @@ async function callOnPrerenderHooks(
     onPrerenderHooks.map(({ hookFn, hookName, hookFilePath }) =>
       concurrencyLimit(async () => {
         const prerenderResult: unknown = await hookFn()
-        const result = normalizePrerenderResult(prerenderResult, hookFilePath, hookName)
-
+        const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
         result.forEach(({ url, pageContext }) => {
           {
             const pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find((pageContext) =>
@@ -861,7 +860,7 @@ function write(
   })
 }
 
-function normalizePrerenderResult(
+function normalizeOnPrerenderHookResult(
   prerenderResult: unknown,
   prerenderHookFile: string,
   hookName: 'prerender' | 'onPrerender'
@@ -873,7 +872,9 @@ function normalizePrerenderResult(
   }
 
   function normalize(prerenderElement: unknown): { url: string; pageContext: null | Record<string, unknown> } {
-    if (typeof prerenderElement === 'string') return { url: prerenderElement, pageContext: null }
+    if (typeof prerenderElement === 'string') {
+      prerenderElement = { url: prerenderElement, pageContext: null }
+    }
 
     const errMsg1 = `The ${hookName}() hook defined in \`${prerenderHookFile}\` returned an invalid value`
     const errMsg2 = `Make sure your ${hookName}() hook returns an object \`{ url, pageContext }\` or an array of such objects.`
