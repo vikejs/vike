@@ -1,3 +1,18 @@
+## [0.4.85](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.84...v0.4.85) (2023-02-19)
+
+
+### Bug Fixes
+
+* add assertUsage() for onBeforePrerender() usage ([71211af](https://github.com/brillout/vite-plugin-ssr/commit/71211af847e0321ed1763086018fffc921fbbd24))
+* also assertUsage() prerender() string[] return ([3cfff0b](https://github.com/brillout/vite-plugin-ssr/commit/3cfff0b7e8a59083cc47f6888e672e8556ef527b))
+* forbid prerender hooks to provide the same URL twice ([#654](https://github.com/brillout/vite-plugin-ssr/issues/654)) ([594bc50](https://github.com/brillout/vite-plugin-ssr/commit/594bc50d8908cd2b6d0c33d0e25cdca8c8b59fea))
+* improve pre-rendering warnings ([c15cc80](https://github.com/brillout/vite-plugin-ssr/commit/c15cc8051e1136576126747496365ddd1acce511))
+* pageContext.pageContexts => pageContext._pageContexts ([7204a6f](https://github.com/brillout/vite-plugin-ssr/commit/7204a6f1b310188289d4076421cd60836f4b71a3))
+* polish pre-render assertUsage() messages ([348336b](https://github.com/brillout/vite-plugin-ssr/commit/348336bcab6a16f2cf8c751e5b86113ef91fc08a))
+* stop providing pageContext._pageContexts ([5860a9c](https://github.com/brillout/vite-plugin-ssr/commit/5860a9c7f1f519b07761070dbbd2c269991e5584))
+
+
+
 ## [0.4.84](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.83...v0.4.84) (2023-02-17)
 
 
