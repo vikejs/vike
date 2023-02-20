@@ -102,25 +102,25 @@ Integrating a browser tool is only a matter of following its official installati
 
 ## Server tools
 
-From a server architecture perspective, `vite-plugin-ssr` is just a server middleware.
+From the perspective of our server architecture, `vite-plugin-ssr` is just a server middleware.
 
 ```js
 // `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
 app.get('*', async (req, res) => {
-  // The `renderPage()` function, for a given URL, returns the result of our
-  // `render()` hook (usually an HTML string). It doesn't know anything about Express.js and
-  // can be used in any server environment, including serverless such as Cloudflare Workers
-  // or Vercel.
+  // renderPage() is just a function that, for a given URL, returns the result of
+  // of our render() hook (usually an HTML string). The renderPage() function
+  // can be used within any server environment, including serverless and edge
+  // environments such as AWS Lambda, Cloudflare Workers, and Vercel.
   const pageContext = await renderPage({ urlOriginal: req.url })
   res.send(pageContext.httpResponse.body)
 })
 ```
 
-By [pre-rendering](/pre-rendering) we can remove the need for a Node.js production server and deploy to any static host instead.
+By [pre-rendering](/pre-rendering) our pages we can remove the need for a production server and, instead, deploy to a static host.
 
 We can use:
 - Any server framework (Express, Koa, Fastify, Hapi, ...)
-- Any authentication strategy & tool (email/password, OAuth, NextAuth.js, Passport.js, Grant, Auth0, ...).
-- Any serverless environment (Cloudflare Workers, Vercel, Firebase, AWS Lambda, Google Cloud Functions, ...)
-- Any server environment (AWS EC2, Google Cloud, ...)
+- Any authentication strategy/tool (email/password, OAuth, Auth.js, Passport.js, Grant, Keycloak, Auth0, ...).
+- Any serverless/edge environment (Cloudflare Workers, Vercel, Firebase, AWS Lambda, Google Cloud Functions, ...)
+- Any virtual private server (AWS EC2, Google Cloud, ...)
 - Any static host (Cloudflare Pages, GitHub Pages, Netlify, ...)
