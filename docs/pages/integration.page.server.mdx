@@ -110,7 +110,7 @@ app.get('*', async (req, res) => {
   // renderPage() is just a function that, for a given URL, returns the result of
   // of our render() hook (usually an HTML string). The renderPage() function
   // can be used within any server environment, including serverless and edge
-  // environments such as AWS Lambda, Cloudflare Workers, and Vercel.
+  // environments such as AWS Lambda, Cloudflare Workers, Vercel, ...
   const pageContext = await renderPage({ urlOriginal: req.url })
   res.send(pageContext.httpResponse.body)
 })
