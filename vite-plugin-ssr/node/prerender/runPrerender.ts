@@ -525,7 +525,7 @@ async function callOnBeforePrerenderHook(
   const hook = hooks[0]!
   const { onBeforePrerender, hookFilePath } = hook
 
-  const msgPrefix = `\`export { onBeforePrerender }\` of ${hookFilePath}`
+  const msgPrefix = `The onBeforePrerender() hook defined by ${hookFilePath}` as const
 
   assertUsage(isCallable(onBeforePrerender), `${msgPrefix} should be a function.`)
 
@@ -536,7 +536,7 @@ async function callOnBeforePrerenderHook(
         assertWarning(
           false,
           msgPrefix +
-            ' uses `pageContext.url` but it should use `pageContext.urlOriginal` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
+            ' uses pageContext.url but it should use pageContext.urlOriginal instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
           { showStackTrace: true, onlyOnce: true }
         )
         return pageContext.urlOriginal
