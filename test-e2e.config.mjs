@@ -60,7 +60,7 @@ function getCiJobs() {
     },
     {
       name: 'Unit Tests E2E',
-      setups: [win18]
+      setups: [win18, ubuntu16]
     },
     {
       name: 'https://vite-plugin-ssr.com',
