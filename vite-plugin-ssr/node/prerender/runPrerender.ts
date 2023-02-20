@@ -537,7 +537,7 @@ async function callOnBeforePrerenderHook(
           false,
           msgPrefix +
             ' uses `pageContext.url` but it should use `pageContext.urlOriginal` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
-          { showStackTrace: false, onlyOnce: true }
+          { showStackTrace: true, onlyOnce: true }
         )
         return pageContext.urlOriginal
       },
