@@ -189,11 +189,11 @@ async function runPrerender(options: PrerenderOptions): Promise<void> {
   const doNotPrerenderList: DoNotPrerenderList = []
   await collectDoNoPrerenderList(renderContext, doNotPrerenderList, concurrencyLimit)
 
-  await callOnPrerenderHooks(prerenderContext, renderContext, concurrencyLimit)
+  await callOnBeforePrerenderStartHooks(prerenderContext, renderContext, concurrencyLimit)
 
   await handlePagesWithStaticRoutes(prerenderContext, renderContext, doNotPrerenderList, concurrencyLimit)
 
-  await callOnBeforePrerenderHook(prerenderContext, renderContext)
+  await callOnPrerenderStartHook(prerenderContext, renderContext)
 
   const prerenderPageIds: PrerenderedPageIds = {}
   const htmlFiles: HtmlFile[] = []
@@ -295,12 +295,12 @@ function assertExportNames(pageFile: PageFile) {
   assert(exportNames || fileType === '.page.route' || fileType === '.css', pageFile.filePath)
 }
 
-async function callOnPrerenderHooks(
+async function callOnBeforePrerenderStartHooks(
   prerenderContext: PrerenderContext,
   renderContext: RenderContext,
   concurrencyLimit: PLimit
 ) {
-  const onPrerenderHooks: {
+  const onBeforePrerenderStartHooks: {
     hookFn: Function
     // prettier-ignore
     hookName:
@@ -322,7 +322,7 @@ async function callOnPrerenderHooks(
         const hookFn = pageConfigLoaded.configValues.onBeforePrerenderStart
         assert(hookFn)
         assertUsage(isCallable(hookFn), `The onBeforePrerenderStart() hook defined by ${codeFilePath} should be a function`)
-        onPrerenderHooks.push({
+        onBeforePrerenderStartHooks.push({
           hookFn,
           hookName: 'onBeforePrerenderStart',
           hookFilePath: codeFilePath
@@ -352,7 +352,7 @@ async function callOnPrerenderHooks(
           assertUsage(isCallable(hookFn), `\`export { prerender }\` of ${p.filePath} should be a function.`)
           const hookFilePath = p.filePath
           assert(hookFilePath)
-          onPrerenderHooks.push({
+          onBeforePrerenderStartHooks.push({
             hookFn,
             hookName: 'prerender',
             hookFilePath
@@ -362,7 +362,7 @@ async function callOnPrerenderHooks(
   )
 
   await Promise.all(
-    onPrerenderHooks.map(({ hookFn, hookName, hookFilePath }) =>
+    onBeforePrerenderStartHooks.map(({ hookFn, hookName, hookFilePath }) =>
       concurrencyLimit(async () => {
         const prerenderResult: unknown = await hookFn()
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
@@ -487,7 +487,7 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
   return pageContext
 }
 
-async function callOnBeforePrerenderHook(
+async function callOnPrerenderStartHook(
   prerenderContext: {
     pageContexts: PageContext[]
   },
