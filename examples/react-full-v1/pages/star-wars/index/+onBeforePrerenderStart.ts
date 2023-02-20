@@ -1,9 +1,7 @@
-export default onPrerender
-
 import { filterMovieData } from '../filterMovieData'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
 
-async function onPrerender() {
+export default async function () {
   const movies = await getStarWarsMovies()
 
   return [

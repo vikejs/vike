@@ -19,7 +19,7 @@ type ConfigName =
   | 'onHydrationEnd'
   | 'onPageTransitionStart'
   | 'onPageTransitionEnd'
-  | 'onPrerender'
+  | 'onBeforePrerenderStart'
   | 'prerender'
   | 'Page'
   | 'passToClient'

@@ -1,7 +1,5 @@
-export default onPrerender
-
 import { names } from './names'
 
-function onPrerender(): string[] {
+export default function (): string[] {
   return ['/hello', ...names.map((name) => `/hello/${name}`)]
 }

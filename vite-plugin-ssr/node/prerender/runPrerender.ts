@@ -68,7 +68,7 @@ type DoNotPrerenderList = ({ pageId: string; setByConfigSrc: string } & (
 ))[]
 type ProvidedByHook = null | {
   hookFilePath: string
-  hookName: 'onPrerender' | 'prerender'
+  hookName: 'onBeforePrerenderStart' | 'prerender'
 }
 type TransformerHook = {
   hookFilePath: string
@@ -307,7 +307,7 @@ async function callOnPrerenderHooks(
       // 0.4 design
       | 'prerender'
       // V1 design
-      | 'onPrerender'
+      | 'onBeforePrerenderStart'
     hookFilePath: string
   }[] = []
 
@@ -315,16 +315,16 @@ async function callOnPrerenderHooks(
   await Promise.all(
     renderContext.pageConfigs.map((pageConfig) =>
       concurrencyLimit(async () => {
-        if (!pageConfig.configSources.onPrerender) return
-        const codeFilePath = getCodeFilePath(pageConfig, 'onPrerender')
+        if (!pageConfig.configSources.onBeforePrerenderStart) return
+        const codeFilePath = getCodeFilePath(pageConfig, 'onBeforePrerenderStart')
         assert(codeFilePath)
         const pageConfigLoaded = await loadPageCode(pageConfig, false)
-        const hookFn = pageConfigLoaded.configValues.onPrerender
+        const hookFn = pageConfigLoaded.configValues.onBeforePrerenderStart
         assert(hookFn)
-        assertUsage(isCallable(hookFn), `The onPrerender() hook defined by ${codeFilePath} should be a function`)
+        assertUsage(isCallable(hookFn), `The onBeforePrerenderStart() hook defined by ${codeFilePath} should be a function`)
         onPrerenderHooks.push({
           hookFn,
-          hookName: 'onPrerender',
+          hookName: 'onBeforePrerenderStart',
           hookFilePath: codeFilePath
         })
       })
@@ -439,7 +439,7 @@ async function handlePagesWithStaticRoutes(
         }
         assert(urlOriginal.startsWith('/'))
 
-        // Already included in a onPrerender() hook
+        // Already included in a onBeforePrerenderStart() hook
         if (prerenderContext.pageContexts.find((pageContext) => isSameUrl(pageContext.urlOriginal, urlOriginal))) {
           return
         }
@@ -867,7 +867,7 @@ function write(
 function normalizeOnPrerenderHookResult(
   prerenderResult: unknown,
   prerenderHookFile: string,
-  hookName: 'prerender' | 'onPrerender'
+  hookName: 'prerender' | 'onBeforePrerenderStart'
 ): { url: string; pageContext: null | Record<string, unknown> }[] {
   if (Array.isArray(prerenderResult)) {
     return prerenderResult.map(normalize)

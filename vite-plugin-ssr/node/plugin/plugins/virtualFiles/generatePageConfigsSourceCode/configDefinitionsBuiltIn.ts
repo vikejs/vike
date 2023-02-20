@@ -49,7 +49,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     c_code: true,
     c_env: 'server-only'
   },
-  onPrerender: {
+  onBeforePrerenderStart: {
     c_code: true,
     c_env: 'server-only'
   },
