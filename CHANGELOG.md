@@ -1,3 +1,16 @@
+## [0.4.86](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.85...v0.4.86) (2023-02-20)
+
+
+### Bug Fixes
+
+* add esbuild to list of dependencies (fix [#659](https://github.com/brillout/vite-plugin-ssr/issues/659)) ([535bc4b](https://github.com/brillout/vite-plugin-ssr/commit/535bc4b49c6d3ce23cc1cafdb2ef02ac911e35a4))
+* improve warning upon pre-render hook providing URL not matching any page route ([e933c00](https://github.com/brillout/vite-plugin-ssr/commit/e933c00762291cbc6cde658f1194b5d3a36ed0c7))
+* improve wording ([25903e3](https://github.com/brillout/vite-plugin-ssr/commit/25903e3128823aea8644e7ffc1c52308053f7b0f))
+* remove false positive of using pageContext.url ([#654](https://github.com/brillout/vite-plugin-ssr/issues/654)) ([ede98b3](https://github.com/brillout/vite-plugin-ssr/commit/ede98b33f27fdb601710d929cc2b7a44eb302778))
+* show stack trace upon pageContext.url usage warning ([44a21aa](https://github.com/brillout/vite-plugin-ssr/commit/44a21aa2ae6d94d8f8166a4b05b109a475949c19))
+
+
+
 ## [0.4.85](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.84...v0.4.85) (2023-02-19)
 
 
