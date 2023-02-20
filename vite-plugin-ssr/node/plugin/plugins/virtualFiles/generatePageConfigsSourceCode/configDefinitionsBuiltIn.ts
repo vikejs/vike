@@ -84,13 +84,13 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   isErrorPage: {
     c_env: 'c_config' // TODO: c_config instead?
   }
-  /* TODO
+  /*
   onBeforeRoute: {
     c_code: true,
     c_global: true,
     c_env: 'c_routing'
-  }
-  onBeforePrerender: {
+  },
+  onPrerenderStart: {
     c_code: true,
     c_global: true,
     c_env: 'server-only'

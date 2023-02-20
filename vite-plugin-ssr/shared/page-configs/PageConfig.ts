@@ -1,6 +1,5 @@
 export type { PageConfig }
 export type { PageConfigLoaded }
-export type { PageConfigGlobal }
 export type { c_Env }
 export type { PageConfigData }
 export type { ConfigName }
@@ -12,14 +11,10 @@ type ConfigName =
   | 'onRenderHtml'
   | 'onRenderClient'
   | 'onBeforeRender'
-  /*
-  | 'onBeforeRoute'
-  | 'onBeforePrerender'
-  */
+  | 'onBeforePrerenderStart'
   | 'onHydrationEnd'
   | 'onPageTransitionStart'
   | 'onPageTransitionEnd'
-  | 'onBeforePrerenderStart'
   | 'prerender'
   | 'Page'
   | 'passToClient'
@@ -75,13 +70,3 @@ type PageConfig = PageConfigData & {
 type PageConfigLoaded = PageConfig & {
   configValues: Partial<Record<ConfigName, unknown>>
 }
-
-type PageConfigGlobal = Partial<
-  Record<
-    ConfigName,
-    {
-      configFilePath: string
-      configValue: unknown
-    }
-  >
->
