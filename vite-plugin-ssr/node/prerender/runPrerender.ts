@@ -84,8 +84,9 @@ type PrerenderContext = {
 
 type PageContext = {
   urlOriginal: string
+  _urlOriginalBeforeHook?: string
+  _urlOriginalModifiedByHook?: TransformerHook
   _providedByHook: ProvidedByHook
-  _touchedByHook?: TransformerHook
   _baseServer: string
   _urlHandler: null
   _allPageIds: string[]
@@ -545,6 +546,7 @@ async function callOnBeforePrerenderHook(
     })
     assert(hasPropertyGetter(pageContext, 'url'))
     assert(pageContext.urlOriginal)
+    pageContext._urlOriginalBeforeHook = pageContext.urlOriginal
   })
 
   const docLink = 'https://vite-plugin-ssr.com/i18n#pre-rendering'
@@ -614,9 +616,11 @@ async function callOnBeforePrerenderHook(
   })
 
   prerenderContext.pageContexts.forEach((pageContext: PageContext) => {
-    pageContext._touchedByHook = {
-      hookFilePath,
-      hookName: 'onBeforePrerender'
+    if (pageContext.urlOriginal !== pageContext._urlOriginalBeforeHook) {
+      pageContext._urlOriginalModifiedByHook = {
+        hookFilePath,
+        hookName: 'onBeforePrerender'
+      }
     }
   })
 }
@@ -647,9 +651,9 @@ async function routeAndPrerender(
           if (pageContext._providedByHook) {
             hookName = pageContext._providedByHook.hookName
             hookFilePath = pageContext._providedByHook.hookFilePath
-          } else if (pageContext._touchedByHook) {
-            hookName = pageContext._touchedByHook.hookName
-            hookFilePath = pageContext._touchedByHook.hookFilePath
+          } else if (pageContext._urlOriginalModifiedByHook) {
+            hookName = pageContext._urlOriginalModifiedByHook.hookName
+            hookFilePath = pageContext._urlOriginalModifiedByHook.hookFilePath
           }
           if (hookName) {
             assert(hookFilePath)
