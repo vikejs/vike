@@ -8,6 +8,7 @@ export default {
     react(),
     mdx(),
     ssr({
+      // TODO
       prerender: true
     })
   ],
