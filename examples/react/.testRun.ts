@@ -13,6 +13,7 @@ import {
 } from '@brillout/test-e2e'
 import path from 'path'
 import url from 'url'
+import { createRequire } from 'module'
 
 function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   run(cmd)
@@ -43,11 +44,17 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
       if (platform !== 'linux') return
     }
     {
-      const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-      await testScreenshotFixture({
-        // __dirname isn't the directory of this file: because this file is bundled with the entry, e.g. __dirname is the directory examples/react-17/ of the entry /examples/react-17/.test-dev.test.ts
-        screenshotFixturePath: path.join(__dirname, '../react/.test-screenshot-fixture.png')
-      })
+      const dirname = path.dirname(url.fileURLToPath(import.meta.url))
+      const require = createRequire(import.meta.url)
+      let screenshotFixturePath: string
+      try {
+        // dirname isn't the directory of this file: because this file is bundled with the entry, e.g. dirname is the directory examples/react-17/ of the entry /examples/react-17/.test-dev.test.ts
+        screenshotFixturePath = require.resolve(path.join(dirname, '../react/.test-screenshot-fixture.png'))
+      } catch (err) {
+        console.log('dirname:', dirname)
+        throw err
+      }
+      await testScreenshotFixture({ screenshotFixturePath })
     }
   })
 
