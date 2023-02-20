@@ -603,7 +603,7 @@ async function callOnBeforePrerenderHook(
   prerenderContext.pageContexts = result.prerenderContext.pageContexts as PageContext[]
 
   prerenderContext.pageContexts.forEach((pageContext: PageContext & { url?: string }) => {
-    if (pageContext.url && !hasPropertyGetter(pageContext, 'url')) {
+    if (!hasPropertyGetter(pageContext, 'url') && pageContext.url) {
       assertWarning(
         false,
         msgPrefix +
