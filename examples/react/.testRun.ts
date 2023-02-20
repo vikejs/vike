@@ -45,13 +45,17 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
     }
     {
       const dirname = path.dirname(url.fileURLToPath(import.meta.url))
+      // dirname isn't the directory of this file: because this file is bundled with the entry, e.g. dirname is the directory examples/react-17/ of the entry /examples/react-17/.test-dev.test.ts
+      const repoRoot = path.join(dirname, `../../`)
+      const screenshotFixturePathUnresolved = path.join(repoRoot, 'examples/react/.test-screenshot-fixture.png')
       const require = createRequire(import.meta.url)
       let screenshotFixturePath: string
       try {
-        // dirname isn't the directory of this file: because this file is bundled with the entry, e.g. dirname is the directory examples/react-17/ of the entry /examples/react-17/.test-dev.test.ts
-        screenshotFixturePath = require.resolve(path.join(dirname, '../react/.test-screenshot-fixture.png'))
+        screenshotFixturePath = require.resolve(screenshotFixturePathUnresolved)
       } catch (err) {
         console.log('dirname:', dirname)
+        console.log('repoRoot:', repoRoot)
+        console.log('screenshotFixturePathUnresolved:', screenshotFixturePathUnresolved)
         throw err
       }
       await testScreenshotFixture({ screenshotFixturePath })
