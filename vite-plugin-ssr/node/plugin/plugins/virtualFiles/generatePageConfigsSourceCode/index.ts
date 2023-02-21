@@ -3,13 +3,13 @@ export { generatePageConfigVirtualFile }
 
 import { assert, createDebugger, objectEntries } from '../../../utils'
 
-import type { ConfigSource, PageConfigData } from '../../../../../shared/page-configs/PageConfig'
+import type { ConfigSource, PageConfigData, PageConfigGlobalData } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
 import {
   getVirutalModuleIdPageCodeFilesImporter,
   isVirutalModulePageCodeFilesImporter
 } from '../../../../commons/virtualIdPageCodeFilesImporter'
-import { loadPageConfigsData, type PageConfigGlobal } from './getPageConfigsData'
+import { loadPageConfigsData } from './getPageConfigsData'
 
 let pageConfigsData: null | PageConfigData[] = null
 
@@ -48,7 +48,7 @@ async function generatePageConfigsSourceCode(
 
 function generateSourceCodeOfPageConfigs(
   pageConfigsData: PageConfigData[],
-  pageConfigGlobal: PageConfigGlobal,
+  pageConfigGlobal: PageConfigGlobalData,
   isForClientSide: boolean,
   isDev: boolean,
   id: string

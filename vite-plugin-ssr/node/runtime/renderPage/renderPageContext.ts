@@ -37,7 +37,7 @@ import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } 
 import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
 import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
 import type { PageContextPromise } from '../html/injectAssets'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig'
+import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
@@ -206,16 +206,21 @@ function initPageContext(pageContextInit: { urlOriginal: string }, renderContext
 type RenderContext = {
   pageFilesAll: PageFile[]
   pageConfigs: PageConfig[]
+  pageConfigGlobal: PageConfigGlobal
   allPageIds: string[]
 }
 // TODO: remove getRenderContext() in favor of getGlobalObject() + reloadGlobalContext()
 async function getRenderContext(): Promise<RenderContext> {
   const globalContext = getGlobalContext()
-  const { pageFilesAll, allPageIds, pageConfigs } = await getPageFilesAll(false, globalContext.isProduction)
+  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = await getPageFilesAll(
+    false,
+    globalContext.isProduction
+  )
   assertNonMixedDesign(pageFilesAll, pageConfigs)
   const renderContext = {
     pageFilesAll: pageFilesAll,
     pageConfigs,
+    pageConfigGlobal,
     allPageIds: allPageIds
   }
   return renderContext

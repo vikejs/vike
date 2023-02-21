@@ -1,5 +1,4 @@
 export { loadPageConfigsData }
-export type { PageConfigGlobal }
 
 import {
   determinePageId2,
@@ -29,7 +28,7 @@ import type {
   ConfigSource,
   c_Env,
   PageConfigData,
-  PageConfigGlobal
+  PageConfigGlobalData
 } from '../../../../../shared/page-configs/PageConfig'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './configDefinitionsBuiltIn'
 import glob from 'fast-glob'
@@ -51,7 +50,7 @@ const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
 async function loadPageConfigsData(
   userRootDir: string,
   isDev: boolean
-): Promise<{ pageConfigsData: PageConfigData[]; pageConfigGlobal: PageConfigGlobal }> {
+): Promise<{ pageConfigsData: PageConfigData[]; pageConfigGlobal: PageConfigGlobalData }> {
   const result = await findAndLoadPageConfigFiles1(userRootDir)
   /* TODO: - remove this if we don't need this for optimizeDeps.entries
    *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead
@@ -71,7 +70,7 @@ async function loadPageConfigsData(
     configValueFiles = await findAndLoadConfigValueFiles(configDefinitionsAll, userRootDir)
   }
 
-  const pageConfigGlobal: PageConfigGlobal = {
+  const pageConfigGlobal: PageConfigGlobalData = {
     onBeforeRoute: null,
     onPrerenderStart: null
   }

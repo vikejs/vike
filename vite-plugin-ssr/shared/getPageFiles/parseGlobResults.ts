@@ -4,11 +4,15 @@ import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../uti
 import { assertExportValues } from './assertExports'
 import { getPageFileObject, type PageFile } from './getPageFileObject'
 import { fileTypes, type FileType } from './fileTypes'
-import type { PageConfig } from '../page-configs/PageConfig'
+import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
 import { assertPageConfigGlobal, assertPageConfigs } from '../page-configs/assertPageConfigs'
 
 // TODO: rename to parseVirtualFile
-function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; pageConfigs: PageConfig[] } {
+function parseGlobResults(pageFilesExports: unknown): {
+  pageFiles: PageFile[]
+  pageConfigs: PageConfig[]
+  pageConfigGlobal: PageConfigGlobal
+} {
   assert(hasProp(pageFilesExports, 'isGeneratedFile'))
   assert(pageFilesExports.isGeneratedFile !== false, `vite-plugin-ssr was re-installed(/re-built). Restart your app.`)
   assert(pageFilesExports.isGeneratedFile === true, `\`isGeneratedFile === ${pageFilesExports.isGeneratedFile}\``)
@@ -89,7 +93,7 @@ function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; p
     assert(!filePath.includes('\\'))
   })
 
-  return { pageFiles, pageConfigs }
+  return { pageFiles, pageConfigs, pageConfigGlobal }
 }
 
 type GlobResult = { filePath: string; pageFile: PageFile; globValue: unknown }[]

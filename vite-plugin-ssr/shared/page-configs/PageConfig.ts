@@ -3,6 +3,7 @@ export type { PageConfigLoaded }
 export type { c_Env }
 export type { PageConfigData }
 export type { PageConfigGlobal }
+export type { PageConfigGlobalData }
 export type { ConfigName }
 export type { ConfigSource }
 
@@ -73,7 +74,11 @@ type PageConfigLoaded = PageConfig & {
   configValues: Partial<Record<ConfigName, unknown>>
 }
 
-type PageConfigGlobal = {
+type PageConfigGlobalData = {
   onPrerenderStart: null | ConfigSource
   onBeforeRoute: null | ConfigSource
+}
+type PageConfigGlobal = {
+  onPrerenderStart: null | ConfigSource & { configValue: unknown }
+  onBeforeRoute: null | ConfigSource & { configValue: unknown }
 }

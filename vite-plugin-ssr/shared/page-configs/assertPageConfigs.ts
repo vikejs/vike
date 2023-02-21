@@ -26,18 +26,21 @@ function assertPageConfigGlobal(pageConfigGlobal: unknown): asserts pageConfigGl
   assertConfigSources(pageConfigGlobal, true)
 }
 
-function assertConfigSources(configSources: unknown, canBeNull: boolean) {
+function assertConfigSources(configSources: unknown, isGlobalConfig: boolean) {
   assert(isObject(configSources))
   Object.entries(configSources).forEach(([configName, configSource]) => {
     assert(isObject(configSource) || configSource === null)
     if (configSource === null) {
-      assert(canBeNull)
+      assert(isGlobalConfig)
       return
     }
     assert(hasProp(configSource, 'configSrc', 'string'))
     assert(hasProp(configSource, 'configFilePath2', 'string') || hasProp(configSource, 'configFilePath2', 'null'))
     assert(hasProp(configSource, 'c_env', 'string'))
     assert(hasProp(configSource, 'codeFilePath2', 'string') || hasProp(configSource, 'codeFilePath2', 'null'))
+    if (isGlobalConfig) {
+      assert(hasProp(configSource, 'configValue'))
+    }
     if (configSource.codeFilePath2) {
       const { codeFilePath2 } = configSource
       if (configName === 'route') {
