@@ -2,7 +2,7 @@ export { getErrorPageId }
 export { isErrorPageId }
 export { isErrorPage }
 
-import { assert, assertUsage } from './utils'
+import { assert, assertUsage, unique } from './utils'
 import type { PageConfig } from '../page-configs/PageConfig'
 import type { PageFile } from '../getPageFiles'
 
@@ -14,10 +14,10 @@ function getErrorPageId(pageFilesAll: PageFile[], pageConfigs: PageConfig[]): st
     return errorPageConfigs[0]!.pageId2
   }
   // TODO/v1-release: remove
-  const errorPageIds = pageFilesAll.map(({ pageId }) => pageId).filter((pageId) => isErrorPageId(pageId, false))
+  const errorPageIds = unique(pageFilesAll.map(({ pageId }) => pageId).filter((pageId) => isErrorPageId(pageId, false)))
   assertUsage(
     errorPageIds.length <= 1,
-    `Only one \`_error.page.js\` is allowed. Found several: ${errorPageIds.join(' ')}`
+    `Only one _error.page.js is allowed, but found several: ${errorPageIds.join(' ')}`
   )
   if (errorPageIds.length > 0) {
     const errorPageId = errorPageIds[0]
