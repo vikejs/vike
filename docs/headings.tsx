@@ -30,6 +30,10 @@ const redirections = [
     url: '/nextauth'
   },
   {
+    title: 'NextAuth.js',
+    url: '/NextAuth.js'
+  },
+  {
     title: 'HTML `<head>`',
     url: '/html-head'
   },
@@ -531,8 +535,8 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'NextAuth.js',
-    url: '/NextAuth.js'
+    title: 'Auth.js',
+    url: '/Auth.js'
   },
   {
     level: 2,

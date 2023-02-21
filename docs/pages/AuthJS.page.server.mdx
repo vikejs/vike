@@ -1,6 +1,6 @@
-import { Link } from '@brillout/docpress'
+import { Link, Note } from '@brillout/docpress'
 
-[NextAuth.js](https://next-auth.js.org/) can be used with Vite + `vite-plugin-ssr`.
+[Auth.js](https://next-auth.js.org/) (previously known as NextAuth.js) can be used with `vite-plugin-ssr`.
 
 ## Examples
 
@@ -14,19 +14,19 @@ To access environment variables on the client-side, such as `process.env.NEXTAUT
 or
 [`vite.config.js#envPrefix`](https://vitejs.dev/config/#envprefix).
 
-> Don't add `NEXTAUTH_` to `envPrefix` as it would leak `NEXTAUTH_SECRET`.
+<Note type='warning'>Don't add `NEXTAUTH_` to `envPrefix` as it would leak `NEXTAUTH_SECRET`.</Note>
 
 See also:
 - [Vite > Config > Environment Variables](https://vitejs.dev/config/#environment-variables)
 
-> We can use `process.env` as usual for server (e.g. Express.js) code. (Since server code is not processed by Vite.)
+> We can use `process.env` as usual for server (e.g. Express.js) code. (Since [server code isn't processed by Vite](https://github.com/brillout/vite-plugin-ssr/issues/562).)
 
 
 ## Fetch polyfill for `getSession()`
 
-In order to use NextAuth.js's [`getSession()`](https://next-auth.js.org/getting-started/client#getsession) on the server-side, we need to globally install a fetch polyfill.
+In order to use Auth.js's [`getSession()`](https://authjs.dev/reference/utilities/#getsession) on the server-side, we need to globally install a fetch polyfill.
 
-> A polyfill is not needed if we use `getSession()` only on the client-side, or if we use Node v18 which [natively supports `fetch()`](https://nodejs.org/en/blog/announcements/v18-release-announce/#fetch-experimental).
+> A polyfill is not needed if we use `getSession()` only on the client-side, or if we use Node.js 18 which [natively supports `fetch()`](https://nodejs.org/en/blog/announcements/v18-release-announce/#fetch-experimental).
 
 We can use [`node-fetch` to patch the global object](https://github.com/node-fetch/node-fetch#providing-global-access):
 
