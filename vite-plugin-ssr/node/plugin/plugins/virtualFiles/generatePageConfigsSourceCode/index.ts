@@ -1,9 +1,9 @@
 export { generatePageConfigsSourceCode }
 export { generatePageConfigVirtualFile }
 
-import { assert, createDebugger } from '../../../utils'
+import { assert, createDebugger, objectEntries } from '../../../utils'
 
-import type { PageConfigData } from '../../../../../shared/page-configs/PageConfig'
+import type { ConfigSource, PageConfigData } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
 import {
   getVirutalModuleIdPageCodeFilesImporter,
@@ -74,27 +74,8 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`    configSources: {`)
     Object.entries(configSources).forEach(([configName, configSource]) => {
       // configNamesAll.add(configName)
-      lines.push(`      ['${configName}']: {`)
-      const { configSrc, configDefinedByFile, c_env, codeFilePath2, configFilePath2 } = configSource
-      lines.push(`        configSrc: ${JSON.stringify(configSrc)},`)
-      lines.push(`        configDefinedByFile: ${JSON.stringify(configDefinedByFile)},`)
-      lines.push(`        codeFilePath2: ${JSON.stringify(codeFilePath2)},`)
-      lines.push(`        configFilePath2: ${JSON.stringify(configFilePath2)},`)
-      lines.push(`        c_env: '${c_env}',`)
-      if ('configValue' in configSource) {
-        const { configValue } = configSource
-        lines.push(`        configValue: ${JSON.stringify(configValue)}`)
-      } else {
-        assert(configSource.codeFilePath2)
-        const { codeFilePath2, c_env } = configSource
-        if (c_env === 'c_routing') {
-          const { importVar, importStatement } = generateEagerImport(codeFilePath2)
-          // TODO: expose all exports so that assertDefaultExport() can be applied
-          lines.push(`        configValue: ${importVar}.default`)
-          importStatements.push(importStatement)
-        }
-      }
-      lines.push(`      },`)
+      const whitespace = '      '
+      lines.push(serializeConfigSource(configSource, configName, importStatements, whitespace, false))
     })
     lines.push(`    }`)
     lines.push('  };')
@@ -125,8 +106,16 @@ function generateSourceCodeOfPageConfigs(
   }
 
   lines.push('export const pageConfigGlobal = {')
-  Object.entries(pageConfigGlobal).forEach(([configName, configValue]) => {
-    lines.push(`  ['${configName}']: ${configValue},`)
+  objectEntries(pageConfigGlobal).forEach(([configName, configSource]) => {
+    if (configName === 'onBeforeRoute') {
+      // if( isForClientSide && !isClientRouting ) return
+    } else if (configName === 'onPrerenderStart') {
+      if (isDev || isForClientSide) return
+    } else {
+      assert(false)
+    }
+    const whitespace = '  '
+    lines.push(serializeConfigSource(configSource, configName, importStatements, whitespace, true))
   })
   lines.push('};')
 
@@ -145,6 +134,41 @@ function generateSourceCodeOfPageConfigs(
   const code = [...importStatements, ...lines].join('\n')
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
   return code
+}
+
+function serializeConfigSource(
+  configSource: ConfigSource | null,
+  configName: string,
+  importStatements: string[],
+  whitespace: string,
+  eagerImport: boolean
+) {
+  if (configSource === null) return `${whitespace}['${configName}']: null,`
+  assert(/^\s+$/.test(whitespace))
+  const lines: string[] = []
+  lines.push(`${whitespace}['${configName}']: {`)
+  const { configSrc, configDefinedByFile, c_env, codeFilePath2, configFilePath2 } = configSource
+  lines.push(`${whitespace}  configSrc: ${JSON.stringify(configSrc)},`)
+  lines.push(`${whitespace}  configDefinedByFile: ${JSON.stringify(configDefinedByFile)},`)
+  lines.push(`${whitespace}  codeFilePath2: ${JSON.stringify(codeFilePath2)},`)
+  lines.push(`${whitespace}  configFilePath2: ${JSON.stringify(configFilePath2)},`)
+  lines.push(`${whitespace}  c_env: '${c_env}',`)
+  if ('configValue' in configSource) {
+    assert(!eagerImport)
+    const { configValue } = configSource
+    lines.push(`${whitespace}  configValue: ${JSON.stringify(configValue)}`)
+  } else {
+    assert(configSource.codeFilePath2)
+    const { codeFilePath2, c_env } = configSource
+    if (c_env === 'c_routing' || eagerImport) {
+      const { importVar, importStatement } = generateEagerImport(codeFilePath2)
+      // TODO: expose all exports so that assertDefaultExport() can be applied
+      lines.push(`${whitespace}  configValue: ${importVar}.default`)
+      importStatements.push(importStatement)
+    }
+  }
+  lines.push(`${whitespace}},`)
+  return lines.join('\n')
 }
 
 async function generatePageConfigVirtualFile(

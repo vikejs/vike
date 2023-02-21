@@ -21,21 +21,31 @@ import {
   transpileAndLoadScriptFile,
   objectAssign,
   hasProp,
-  isCallable,
   arrayIncludes
 } from '../../../utils'
 import path from 'path'
-import type { ConfigName, ConfigSource, c_Env, PageConfigData } from '../../../../../shared/page-configs/PageConfig'
+import type {
+  ConfigName,
+  ConfigSource,
+  c_Env,
+  PageConfigData,
+  PageConfigGlobal
+} from '../../../../../shared/page-configs/PageConfig'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './configDefinitionsBuiltIn'
 import glob from 'fast-glob'
 
 type ConfigDefinitionsAll = Record<string, ConfigDefinition>
 
-const configNamesGlobal = ['onPrerenderStart', 'onBeforeRoute'] as const
-type ConfigNameGlobal = typeof configNamesGlobal[number]
-type PageConfigGlobal = {
-  onPrerenderStart: null | Function
-  onBeforeRoute: null | Function
+type GlobalConfigName = 'onPrerenderStart' | 'onBeforeRoute'
+const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
+  onPrerenderStart: {
+    c_code: true,
+    c_env: 'server-only'
+  },
+  onBeforeRoute: {
+    c_code: true,
+    c_env: 'c_routing'
+  }
 }
 
 async function loadPageConfigsData(
@@ -70,7 +80,7 @@ async function loadPageConfigsData(
     pageConfigFiles.forEach((pageConfigFile) => {
       const { pageConfigFileExports, pageConfigFilePath } = pageConfigFile
       assertDefaultExportObject(pageConfigFileExports, pageConfigFilePath)
-      Object.entries(pageConfigFileExports.default).forEach(([configName, configValue]) => {
+      Object.entries(pageConfigFileExports.default).forEach(([configName]) => {
         if (!isGlobal(configName)) return
         // TODO/v1: add links to docs further explaining why
         assertUsage(
@@ -82,9 +92,24 @@ async function loadPageConfigsData(
               : `create a global config (e.g. /pages/+config.js) and define '${configName}' there instead`
           ].join(' ')
         )
-        assertUsage(configValue === null || isCallable(configValue), 'TODO')
-        pageConfigGlobal[configName] = configValue
       })
+    })
+    const configValueFilesRelevant = configValueFiles.filter((c) => {
+      if (!isGlobal(c.configName)) return false
+      // TODO: assert that there should be only one
+      // TODO: assert filesystem location
+      return true
+    })
+    objectEntries(globalConfigsDefinition).forEach(([configName, configDef]) => {
+      const configSource = resolveConfigSource(
+        configName,
+        configDef,
+        pageConfigFileGlobal ? [pageConfigFileGlobal] : [],
+        userRootDir,
+        configValueFilesRelevant
+      )
+      if (!configSource) return
+      pageConfigGlobal[configName] = configSource
     })
   }
 
@@ -726,6 +751,7 @@ function dir(filePath: string) {
   return path.posix.dirname(filePath)
 }
 
-function isGlobal(configName: string): configName is ConfigNameGlobal {
+function isGlobal(configName: string): configName is GlobalConfigName {
+  const configNamesGlobal = Object.keys(globalConfigsDefinition)
   return arrayIncludes(configNamesGlobal, configName)
 }

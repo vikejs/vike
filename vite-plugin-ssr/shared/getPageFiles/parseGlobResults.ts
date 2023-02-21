@@ -5,10 +5,11 @@ import { assertExportValues } from './assertExports'
 import { getPageFileObject, type PageFile } from './getPageFileObject'
 import { fileTypes, type FileType } from './fileTypes'
 import type { PageConfig } from '../page-configs/PageConfig'
-import { assertPageConfigs } from '../page-configs/assertPageConfigs'
+import { assertPageConfigGlobal, assertPageConfigs } from '../page-configs/assertPageConfigs'
 
+// TODO: rename to parseVirtualFile
 function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; pageConfigs: PageConfig[] } {
-  assert(hasProp(pageFilesExports, 'isGeneratedFile'), 'Missing `isGeneratedFile`.')
+  assert(hasProp(pageFilesExports, 'isGeneratedFile'))
   assert(pageFilesExports.isGeneratedFile !== false, `vite-plugin-ssr was re-installed(/re-built). Restart your app.`)
   assert(pageFilesExports.isGeneratedFile === true, `\`isGeneratedFile === ${pageFilesExports.isGeneratedFile}\``)
   assert(hasProp(pageFilesExports, 'pageFilesLazy', 'object'))
@@ -30,8 +31,10 @@ function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; p
   }
 
   assert(hasProp(pageFilesExports, 'pageConfigs'))
-  const { pageConfigs } = pageFilesExports
+  assert(hasProp(pageFilesExports, 'pageConfigGlobal'))
+  const { pageConfigs, pageConfigGlobal } = pageFilesExports
   assertPageConfigs(pageConfigs)
+  assertPageConfigGlobal(pageConfigGlobal)
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(pageFilesExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {

@@ -1,7 +1,8 @@
 export { assertPageConfigs }
+export { assertPageConfigGlobal }
 
 import { assert, isObject, hasProp, assertUsage, isCallable } from '../utils'
-import type { PageConfig } from './PageConfig'
+import type { PageConfig, PageConfigGlobal } from './PageConfig'
 
 function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageConfig[] {
   assert(Array.isArray(pageConfigs) || pageConfigs === null)
@@ -17,24 +18,38 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
     assert(hasProp(pageConfig, 'loadCodeFiles', 'function'))
     assert(hasProp(pageConfig, 'isErrorPage', 'boolean'))
     assert(hasProp(pageConfig, 'configSources', 'object'))
-    Object.entries(pageConfig.configSources).forEach(([configName, configSource]) => {
-      assert(hasProp(configSource, 'configSrc', 'string'))
-      assert(hasProp(configSource, 'configFilePath2', 'string') || hasProp(configSource, 'configFilePath2', 'null'))
-      assert(hasProp(configSource, 'c_env', 'string'))
-      assert(hasProp(configSource, 'codeFilePath2', 'string') || hasProp(configSource, 'codeFilePath2', 'null'))
-      if (configSource.codeFilePath2) {
-        const { codeFilePath2 } = configSource
-        if (configName === 'route') {
-          assert(hasProp(configSource, 'configValue')) // route files are eagerly loaded
-          const { configValue } = configSource
-          const configValueType = typeof configValue
-          // TODO: validate earlier?
-          assertUsage(
-            configValueType === 'string' || isCallable(configValue),
-            `${codeFilePath2} has a default export with an invalid type '${configValueType}': the default export should be a string or a function`
-          )
-        }
+    assertConfigSources(pageConfig.configSources, false)
+  })
+}
+
+function assertPageConfigGlobal(pageConfigGlobal: unknown): asserts pageConfigGlobal is PageConfigGlobal {
+  assertConfigSources(pageConfigGlobal, true)
+}
+
+function assertConfigSources(configSources: unknown, canBeNull: boolean) {
+  assert(isObject(configSources))
+  Object.entries(configSources).forEach(([configName, configSource]) => {
+    assert(isObject(configSource) || configSource === null)
+    if (configSource === null) {
+      assert(canBeNull)
+      return
+    }
+    assert(hasProp(configSource, 'configSrc', 'string'))
+    assert(hasProp(configSource, 'configFilePath2', 'string') || hasProp(configSource, 'configFilePath2', 'null'))
+    assert(hasProp(configSource, 'c_env', 'string'))
+    assert(hasProp(configSource, 'codeFilePath2', 'string') || hasProp(configSource, 'codeFilePath2', 'null'))
+    if (configSource.codeFilePath2) {
+      const { codeFilePath2 } = configSource
+      if (configName === 'route') {
+        assert(hasProp(configSource, 'configValue')) // route files are eagerly loaded
+        const { configValue } = configSource
+        const configValueType = typeof configValue
+        // TODO: validate earlier?
+        assertUsage(
+          configValueType === 'string' || isCallable(configValue),
+          `${codeFilePath2} has a default export with an invalid type '${configValueType}': the default export should be a string or a function`
+        )
       }
-    })
+    }
   })
 }

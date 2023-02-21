@@ -2,6 +2,7 @@ export type { PageConfig }
 export type { PageConfigLoaded }
 export type { c_Env }
 export type { PageConfigData }
+export type { PageConfigGlobal }
 export type { ConfigName }
 export type { ConfigSource }
 
@@ -25,6 +26,7 @@ type ConfigName =
   | 'clientEntry'
   | 'clientRouting'
 
+// TODO: rename configFilePath2 => configValueFilePath
 type ConfigSoureFile = {
   configSrc: string
   configDefinedByFile: string
@@ -69,4 +71,9 @@ type PageConfig = PageConfigData & {
 
 type PageConfigLoaded = PageConfig & {
   configValues: Partial<Record<ConfigName, unknown>>
+}
+
+type PageConfigGlobal = {
+  onPrerenderStart: null | ConfigSource
+  onBeforeRoute: null | ConfigSource
 }
