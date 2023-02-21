@@ -545,7 +545,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Tailwind CSS / Windi CSS',
+    title: 'Tailwind CSS',
     url: '/tailwind-css'
   },
   {
