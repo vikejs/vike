@@ -72,6 +72,7 @@ async function loadPageConfigsData(
       assertDefaultExportObject(pageConfigFileExports, pageConfigFilePath)
       Object.entries(pageConfigFileExports.default).forEach(([configName, configValue]) => {
         if (!isGlobal(configName)) return
+        // TODO/v1: add links to docs further explaining why
         assertUsage(
           pageConfigFile === pageConfigFileGlobal,
           [
