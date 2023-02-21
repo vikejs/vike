@@ -199,6 +199,7 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   return code
 }
 
+// TODO: collocate entire invalidation strategy
 function getInvalidatorGlob(isDev: boolean) {
   assert(isDev)
   // The crawled files are never loaded (the plusFilesGlob export isn't used), the only effect of this glob is to invalidate the virtual module.
