@@ -61,7 +61,7 @@ Vite's `vite.config.js#resolve.alias` only applies to files that are processed b
 (All following files and their imports: `*.page.js`, `*.page.server.js`,`*.page.client.js`, `*.page.route.js`.)
 
 Browser files are always processed by Vite,
-but this is not always the case for Node.js server files,
+but this isn't always the case for Node.js server files,
 for example <RepoLink path="/boilerplates/boilerplate-react/server/index.js" text="Express.js server code"/>.
 
 For these files we can use Node.js's built-in support `package.json#imports` or, alternatively, we can use one of many npm packages such as [`module-alias`](https://github.com/ilearnio/module-alias). (Example of using `module-alias`: [/examples/path-aliases (@c914dad)](https://github.com/brillout/vite-plugin-ssr/tree/c914dade5f0809ff330478c3531928055abdadef/examples/path-aliases).)

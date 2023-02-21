@@ -26,7 +26,7 @@ See also:
 
 In order to use Auth.js's [`getSession()`](https://authjs.dev/reference/utilities/#getsession) on the server-side, we need to globally install a fetch polyfill.
 
-> A polyfill is not needed if we use `getSession()` only on the client-side, or if we use Node.js 18 which [natively supports `fetch()`](https://nodejs.org/en/blog/announcements/v18-release-announce/#fetch-experimental).
+> A polyfill isn't needed if we use `getSession()` only on the client-side, or if we use Node.js 18 which [natively supports `fetch()`](https://nodejs.org/en/blog/announcements/v18-release-announce/#fetch-experimental).
 
 We can use [`node-fetch` to patch the global object](https://github.com/node-fetch/node-fetch#providing-global-access):
 
@@ -36,7 +36,7 @@ We can use [`node-fetch` to patch the global object](https://github.com/node-fet
 // Only install the polyfill on the server (e.g. Express.js). Browsers already implement
 // `fetch()` natively and it would be wasteful to load the polyfill on the browser-side.
 
-// Use node-fetch@2 instead of node-fetch@3 if your `package.json#type` is not `"module"`.
+// Use node-fetch@2 instead of node-fetch@3 if your `package.json#type` isn't `"module"`.
 // Or some other `fetch()` polyfill, e.g. `cross-fetch`.
 import fetch, { Headers, Request, Response } from 'node-fetch'
 

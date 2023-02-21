@@ -15,7 +15,7 @@ We compare these render modes with each other and explain which render mode shou
 
 Technically and precisely speaking, the difference between each render mode is the following.
  - **SSR**: the page is rendered twice. It's rendered to HTML on the server-side as well as rendered (hydrated) on the browser-side. (The page is loaded both in Node.js and in the browser.)
- - **SPA**: the page is only rendered in the browser. The page's content is not rendered to HTML. (The page is loaded only in the browser.)
+ - **SPA**: the page is only rendered in the browser. The page's content isn't rendered to HTML. (The page is loaded only in the browser.)
  - **HTML-only**: the page is rendered only on the server-side (to HTML). It's not rendered in the browser and has zero/minimal browser-side JavaScript. (The page is loaded only in Node.js.)
  - **Pre-rendering** (aka SSG): the page is rendered to HTML at build-time (instead of request-time).
 
@@ -26,7 +26,7 @@ SPA means that the page is loaded & rendered only in the browser.
 
 In general, if our page:
  1. doesn't need SEO (e.g. an Admin Panel doesn't need to appear in Google searches), and
- 2. mobile performance is not crucial (e.g. the user is expected to use the Admin Panel on a desktop device)
+ 2. mobile performance isn't crucial (e.g. the user is expected to use the Admin Panel on a desktop device).
 
 then SPA is an option.
 
