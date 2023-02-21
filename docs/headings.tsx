@@ -440,6 +440,11 @@ const headings: HeadingDefinition[] = [
     url: '/firebase'
   },
   {
+    level: 2,
+    title: 'PM2',
+    url: '/PM2'
+  },
+  {
     level: 4,
     title: 'Other'
   },
@@ -593,6 +598,16 @@ const headings: HeadingDefinition[] = [
   {
     level: 4,
     title: 'UI frameworks'
+  },
+  {
+    level: 2,
+    title: 'React',
+    url: '/react'
+  },
+  {
+    level: 2,
+    title: 'Vue',
+    url: '/vue'
   },
   {
     level: 2,
