@@ -3,6 +3,6 @@ contact_links:
   - name: "🙏 Help"
     url: https://github.com/brillout/vite-plugin-ssr/discussions
     about: Get help.
-  - name: "💬 Discussions"
+  - name: "💬 Chit-chat"
     url: https://discord.com/invite/dSDMGGJZQy
-    about: Discuss & criticize vite-plugin-ssr, show us what you're building, chit-chat with maintainers, ...
+    about: Casual conversations about vite-plugin-ssr and broader topics related to frontend development/frameworks/tools.
