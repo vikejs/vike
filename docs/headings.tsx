@@ -435,16 +435,6 @@ const headings: HeadingDefinition[] = [
     url: '/aws-lambda'
   },
   {
-    level: 2,
-    title: 'Firebase',
-    url: '/firebase'
-  },
-  {
-    level: 2,
-    title: 'PM2',
-    url: '/PM2'
-  },
-  {
     level: 4,
     title: 'Other'
   },
@@ -663,6 +653,11 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: 'Firebase',
     url: '/firebase'
+  },
+  {
+    level: 2,
+    title: 'PM2',
+    url: '/PM2'
   },
   {
     level: 2,
