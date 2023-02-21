@@ -9,8 +9,8 @@ function Integration({ toolTypeName }: { toolTypeName: string }) {
   return (
     <>
       <p>
-        In principle, you can use <code>vite-plugin-ssr</code> with any {toolTypeName}. However, if you are having
-        difficulties integrating {toolTypeName.startsWith('a') ? 'an' : 'a'} {toolTypeName}, <Invitation />.
+        In principle, we can use <code>vite-plugin-ssr</code> with any {toolTypeName}. If you're having difficulties
+        integrating {toolTypeName.startsWith('a') ? 'an' : 'a'} {toolTypeName}, <Invitation />.
       </p>
     </>
   )
