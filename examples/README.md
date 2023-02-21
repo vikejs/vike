@@ -4,10 +4,6 @@ For more examples search the docs [vite-plugin-ssr.com](https://vite-plugin-ssr.
 
 Integrations:
  - [`vite-plugin-ssr` + PM2](https://github.com/hemengke1997/vite-plugin-ssr-pm2)
- - [`vite-plugin-ssr` + Netlify](https://github.com/AaronBeaudoin/vite-plugin-ssr-example-netlify)
- - [`vite-plugin-ssr` + Relay](https://github.com/XiNiHa/vilay)
- - [`vite-plugin-ssr` + NextAuth.js (full fledged example)](https://github.com/iMrDJAi/vps-nextauth-example)
- - [`vite-plugin-ssr` + NextAuth.js](https://github.com/s-kris/vite-ssr-next-auth)
  - [`vite-plugin-ssr` + Cloudflare Pages](https://github.com/Immortalin/vite-plugin-ssr-cloudflare-pages-demo)
  - [`vite-plugin-ssr` + SASS](https://github.com/brillout/vite-plugin-ssr-sass)
  - [`vite-plugin-ssr` + HTTPS](https://github.com/aral/vite-plugin-ssr-with-tls)
