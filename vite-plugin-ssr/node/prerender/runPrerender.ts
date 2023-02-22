@@ -72,7 +72,7 @@ type ProvidedByHook = null | {
 }
 type TransformerHook = {
   hookFilePath: string
-  hookName: 'onBeforePrerender'
+  hookName: 'onPrerenderStart' | 'onBeforePrerender'
 }
 type PrerenderedPageIds = Record<string, { urlOriginal: string; _providedByHook: ProvidedByHook }>
 
@@ -321,7 +321,10 @@ async function callOnBeforePrerenderStartHooks(
         const pageConfigLoaded = await loadPageCode(pageConfig, false)
         const hookFn = pageConfigLoaded.configValues.onBeforePrerenderStart
         assert(hookFn)
-        assertUsage(isCallable(hookFn), `The onBeforePrerenderStart() hook defined by ${codeFilePath} should be a function`)
+        assertUsage(
+          isCallable(hookFn),
+          `The onBeforePrerenderStart() hook defined by ${codeFilePath} should be a function`
+        )
         onBeforePrerenderStartHooks.push({
           hookFn,
           hookName: 'onBeforePrerenderStart',
@@ -481,7 +484,7 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
     _urlHandler: null,
     _noExtraDir: prerenderContext._noExtraDir
   })
-  /* We cannot add the computed URL properties because they can be iterated & copied in a `onBeforePrerender()` hook, e.g. `/examples/i18n/'
+  /* We cannot add the computed URL properties because they can be iterated & copied in a `onPrerenderStart()` hook, e.g. `/examples/i18n/'
   addComputedUrlProps(pageContext)
   */
   return pageContext
@@ -493,41 +496,85 @@ async function callOnPrerenderStartHook(
   },
   renderContext: RenderContext
 ) {
-  const pageFilesWithOnBeforePrerenderHook = renderContext.pageFilesAll.filter((p) => {
-    assertExportNames(p)
-    if (!p.exportNames?.includes('onBeforePrerender')) return false
+  let onPrerenderStartHook:
+    | undefined
+    | {
+        hookFn: unknown
+        hookFilePath: string
+        // prettier-ignore
+        hookName:
+          // V1 design
+          'onPrerenderStart' |
+          // Old design
+      'onBeforePrerender'
+      }
+
+  // V1 design
+  if (renderContext.pageConfigs.length > 0) {
+    const configSource = renderContext.pageConfigGlobal.onPrerenderStart
+    if (configSource) {
+      const hookFn = configSource.configValue
+      const hookFilePath = configSource.codeFilePath2
+      assert(hookFilePath)
+      if (hookFn) {
+        onPrerenderStartHook = {
+          hookFn,
+          hookName: 'onPrerenderStart',
+          hookFilePath
+        }
+      }
+    }
+  }
+
+  // Old design
+  // TODO/v1-release: remove
+  if (renderContext.pageConfigs.length === 0) {
+    const pageFilesWithOnBeforePrerenderHook = renderContext.pageFilesAll.filter((p) => {
+      assertExportNames(p)
+      if (!p.exportNames?.includes('onBeforePrerender')) return false
+      assertUsage(
+        p.fileType !== '.page.client',
+        `${p.filePath} (which is a \`.page.client.js\` file) has \`export { onBeforePrerender }\` but it is only allowed in \`.page.server.js\` or \`.page.js\` files`
+      )
+      assertUsage(
+        p.isDefaultPageFile,
+        `${p.filePath} has \`export { onBeforePrerender }\` but it is only allowed in \`_defaut.page.\` files`
+      )
+      return true
+    })
+    if (pageFilesWithOnBeforePrerenderHook.length === 0) {
+      return
+    }
     assertUsage(
-      p.fileType !== '.page.client',
-      `${p.filePath} (which is a \`.page.client.js\` file) has \`export { onBeforePrerender }\` but it is only allowed in \`.page.server.js\` or \`.page.js\` files`
+      pageFilesWithOnBeforePrerenderHook.length === 1,
+      'There can be only one `onBeforePrerender()` hook. If you need to be able to define several, open a new GitHub issue.'
     )
-    assertUsage(
-      p.isDefaultPageFile,
-      `${p.filePath} has \`export { onBeforePrerender }\` but it is only allowed in \`_defaut.page.\` files`
-    )
-    return true
-  })
-  if (pageFilesWithOnBeforePrerenderHook.length === 0) {
+    await Promise.all(pageFilesWithOnBeforePrerenderHook.map((p) => p.loadFile?.()))
+    const hooks = pageFilesWithOnBeforePrerenderHook.map((p) => {
+      assert(p.fileExports)
+      const { onBeforePrerender } = p.fileExports
+      assert(onBeforePrerender)
+      const hookFilePath = p.filePath
+      return { hookFilePath, onBeforePrerender }
+    })
+    assert(hooks.length === 1)
+    const hook = hooks[0]!
+    onPrerenderStartHook = {
+      hookFn: hook.onBeforePrerender,
+      hookFilePath: hook.hookFilePath,
+      hookName: 'onBeforePrerender'
+    }
+  }
+
+  if (!onPrerenderStartHook) {
     return
   }
-  assertUsage(
-    pageFilesWithOnBeforePrerenderHook.length === 1,
-    'There can be only one `onBeforePrerender()` hook. If you need to be able to define several, open a new GitHub issue.'
-  )
-  await Promise.all(pageFilesWithOnBeforePrerenderHook.map((p) => p.loadFile?.()))
-  const hooks = pageFilesWithOnBeforePrerenderHook.map((p) => {
-    assert(p.fileExports)
-    const { onBeforePrerender } = p.fileExports
-    assert(onBeforePrerender)
-    const hookFilePath = p.filePath
-    return { hookFilePath, onBeforePrerender }
-  })
-  assert(hooks.length === 1)
-  const hook = hooks[0]!
-  const { onBeforePrerender, hookFilePath } = hook
 
-  const msgPrefix = `The onBeforePrerender() hook defined by ${hookFilePath}` as const
+  const msgPrefix =
+    `The ${onPrerenderStartHook.hookName}() hook defined by ${onPrerenderStartHook.hookFilePath}` as const
 
-  assertUsage(isCallable(onBeforePrerender), `${msgPrefix} should be a function.`)
+  const { hookFn, hookFilePath, hookName } = onPrerenderStartHook
+  assertUsage(isCallable(hookFn), `${msgPrefix} should be a function.`)
 
   prerenderContext.pageContexts.forEach((pageContext) => {
     Object.defineProperty(pageContext, 'url', {
@@ -553,7 +600,7 @@ async function callOnPrerenderStartHook(
 
   let result: unknown = await callHookWithTimeout(
     () =>
-      onBeforePrerender({
+      hookFn({
         pageContexts: prerenderContext.pageContexts,
         // TODO/v1-release: remove warning
         get prerenderPageContexts() {
@@ -564,14 +611,14 @@ async function callOnPrerenderStartHook(
           return prerenderContext.pageContexts
         }
       }),
-    'onBeforePrerender',
+    hookName,
     hookFilePath
   )
   if (result === null || result === undefined) {
     return
   }
 
-  const errPrefix = `The onBeforePrerender() hook exported by ${hookFilePath}`
+  const errPrefix = `The ${hookName}() hook exported by ${hookFilePath}`
   const rightUsage = `${errPrefix} should return \`null\`, \`undefined\`, or \`{ prerenderContext: { pageContexts } }\`.`
 
   // TODO/v1-release: remove
@@ -619,7 +666,7 @@ async function callOnPrerenderStartHook(
     if (pageContext.urlOriginal !== pageContext._urlOriginalBeforeHook) {
       pageContext._urlOriginalModifiedByHook = {
         hookFilePath,
-        hookName: 'onBeforePrerender'
+        hookName
       }
     }
   })

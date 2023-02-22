@@ -3,7 +3,13 @@ export { callHookWithTimeout }
 import { logPrefix, getProjectError } from './assert'
 import { humanizeTime } from './humanizeTime'
 
-type HookName = 'render' | 'onBeforeRender' | 'onBeforePrerender' | 'onBeforeRoute' | 'onHydrationEnd'
+type HookName =
+  | 'render'
+  | 'onBeforeRender'
+  | 'onPrerenderStart'
+  | 'onBeforePrerender'
+  | 'onBeforeRoute'
+  | 'onHydrationEnd'
 
 function callHookWithTimeout<T = unknown>(call: () => T, hookName: HookName, hookSrc: string): Promise<T> {
   const { timeoutErr, timeoutWarn } = getTimeouts(hookName)
