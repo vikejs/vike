@@ -63,6 +63,7 @@ function addExtensionsToOptimizeDeps(config: ResolvedConfig, configVps: ConfigVp
       .map(({ pageFilesDist }) => pageFilesDist)
       .flat()
       .filter(isNotNullish)
+      .filter(({ importPath }) => !importPath.endsWith('.css'))
       .map(({ importPath }) => importPath)
   )
   /* Doesn't work since `pageFilesSrc` is a directory. We could make it work by using find-glob.
