@@ -23,13 +23,14 @@ type PageRoutes = PageRoute[]
 type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
 
 async function loadPageRoutes(
+  // TODO: remove all arguments and use GlobalContext instead
   pageFilesAll: PageFile[],
   pageConfigs: PageConfig[],
   pageConfigGlobal: PageConfigGlobal,
   allPageIds: string[]
 ): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
   await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
-  const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll, pageConfigs)
+  const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll, pageConfigs, pageConfigGlobal)
   const pageRoutes = getPageRoutes(filesystemRoots, pageFilesAll, pageConfigs, allPageIds)
   return { pageRoutes, onBeforeRouteHook }
 }
@@ -175,27 +176,32 @@ function getPageRoutes(
 
 function getGlobalHooks(
   pageFilesAll: PageFile[],
-  pageConfigs: PageConfig[]
+  pageConfigs: PageConfig[],
+  pageConfigGlobal: PageConfigGlobal
 ): {
   onBeforeRouteHook: null | OnBeforeRouteHook
   filesystemRoots: FilesystemRoot[]
 } {
   // V1 Design
   if (pageConfigs.length > 0) {
-    /*
-          assertUsage(
-            isCallable(onBeforeRoute),
-            `The hook onBeforeRoute() defined by ${filePath} should be a function.` // TODO: move assertUsage() to a central place containing all assertUsage()?
-          )
-          */
-
+    if (pageConfigGlobal.onBeforeRoute) {
+      const hookFn = pageConfigGlobal.onBeforeRoute.configValue
+      if (hookFn) {
+        const hookFilePath = pageConfigGlobal.onBeforeRoute.codeFilePath2
+        assert(hookFilePath)
+        assertUsage(isCallable(hookFn), `The hook onBeforeRoute() defined by ${hookFilePath} should be a function.`)
+        const onBeforeRouteHook: OnBeforeRouteHook = {
+          hookSrc: hookFilePath,
+          onBeforeRoute: hookFn
+        }
+        return { onBeforeRouteHook, filesystemRoots: [] }
+      }
+    }
+    return { onBeforeRouteHook: null, filesystemRoots: [] }
   }
 
   // Old design
   // TODO/v1-release: remove
-  if (pageConfigs.length === 0) {
-  }
-
   let onBeforeRouteHook: null | OnBeforeRouteHook = null
   const filesystemRoots: FilesystemRoot[] = []
   pageFilesAll
