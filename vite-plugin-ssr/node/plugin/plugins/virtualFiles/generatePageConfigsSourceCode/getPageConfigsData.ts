@@ -94,10 +94,9 @@ async function loadPageConfigsData(
       })
     })
     const configValueFilesRelevant = configValueFiles.filter((c) => {
-      if (!isGlobal(c.configName)) return false
       // TODO: assert that there should be only one
       // TODO: assert filesystem location
-      return true
+      return isGlobal(c.configName)
     })
     objectEntries(globalConfigsDefinition).forEach(([configName, configDef]) => {
       const configSource = resolveConfigSource(
@@ -112,53 +111,16 @@ async function loadPageConfigsData(
     })
   }
 
-  const pageIds: {
-    pageId2: string
-    routeFilesystem: string
-    pageConfigFile: null | PageConfigFile
-    routeFilesystemDefinedBy: string
-  }[] = []
-  pageConfigFiles
-    .filter((p) => isDefiningPage(p))
-    .forEach((pageConfigFile) => {
-      const { pageConfigFilePath } = pageConfigFile
-      const pageId2 = determinePageId2(pageConfigFilePath)
-      const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
-      pageIds.push({
-        pageId2,
-        routeFilesystem,
-        pageConfigFile,
-        routeFilesystemDefinedBy: pageConfigFilePath
-      })
-    })
-  configValueFiles.map(({ configValueFilePath }) => {
-    const pageId2 = determinePageId2(configValueFilePath)
-    const routeFilesystem = determineRouteFromFilesystemPath(configValueFilePath)
-    assertPosixPath(configValueFilePath)
-    const routeFilesystemDefinedBy = path.posix.dirname(configValueFilePath) + '/'
-    assert(!routeFilesystemDefinedBy.endsWith('//'))
-    {
-      const alreadyIncluded = pageIds.some((p) => {
-        if (p.pageId2 === pageId2) {
-          assert(p.routeFilesystem === routeFilesystem)
-          return true
-        }
-        return false
-      })
-      if (alreadyIncluded) return
-    }
-    pageIds.push({
-      pageId2,
-      routeFilesystem,
-      pageConfigFile: null,
-      routeFilesystemDefinedBy
-    })
-  })
+  const pageIds = determinePageIds(pageConfigFiles, configValueFiles)
 
   const pageConfigsData: PageConfigData[] = []
   pageIds.forEach(({ pageId2, routeFilesystem, pageConfigFile, routeFilesystemDefinedBy }) => {
-    const pageConfigFilesRelevant = getPageConfigFilesRelevant(pageId2, pageConfigFiles)
-    const configValueFilesRelevant = configValueFiles.filter((c) => c.pageId === pageId2)
+    const pageConfigFilesRelevant = pageConfigFiles.filter(({ pageConfigFilePath }) =>
+      isRelevantConfigPath(pageConfigFilePath, pageId2)
+    )
+    const configValueFilesRelevant = configValueFiles
+      .filter(({ configValueFilePath }) => isRelevantConfigPath(configValueFilePath, pageId2))
+      .filter((configValueFile) => !isGlobal(configValueFile.configName))
     let configDefinitionsRelevant = getConfigDefinitions(pageConfigFilesRelevant)
 
     if (pageConfigFile) {
@@ -172,12 +134,10 @@ async function loadPageConfigsData(
       })
     }
 
+    // TODO: remove this and instead ensure that configs are always defined globally
     configValueFilesRelevant.forEach((configValueFile) => {
-      const { configName, configValueFilePath } = configValueFile
-      assertUsage(
-        configName in configDefinitionsRelevant || configName === 'configDefinitions',
-        `${configValueFilePath} defines an unknown config '${configName}'`
-      )
+      const { configName } = configValueFile
+      assert(configName in configDefinitionsRelevant || configName === 'configDefinitions')
     })
 
     let configSources: PageConfigData['configSources'] = {}
@@ -208,6 +168,54 @@ async function loadPageConfigsData(
   })
 
   return { pageConfigsData, pageConfigGlobal }
+}
+
+function determinePageIds(pageConfigFiles: PageConfigFile[], configValueFiles: ConfigValueFile[]) {
+  const pageIds: {
+    pageId2: string
+    routeFilesystem: string
+    pageConfigFile: null | PageConfigFile
+    routeFilesystemDefinedBy: string
+  }[] = []
+  pageConfigFiles
+    .filter((p) => isDefiningPage(p))
+    .forEach((pageConfigFile) => {
+      const { pageConfigFilePath } = pageConfigFile
+      const pageId2 = determinePageId2(pageConfigFilePath)
+      const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
+      pageIds.push({
+        pageId2,
+        routeFilesystem,
+        pageConfigFile,
+        routeFilesystemDefinedBy: pageConfigFilePath
+      })
+    })
+  configValueFiles.map((configValueFile) => {
+    if (!isConfigDefiningPage(configValueFile.configName)) return
+    const { configValueFilePath } = configValueFile
+    const pageId2 = determinePageId2(configValueFilePath)
+    const routeFilesystem = determineRouteFromFilesystemPath(configValueFilePath)
+    assertPosixPath(configValueFilePath)
+    const routeFilesystemDefinedBy = path.posix.dirname(configValueFilePath) + '/'
+    assert(!routeFilesystemDefinedBy.endsWith('//'))
+    {
+      const alreadyIncluded = pageIds.some((p) => {
+        if (p.pageId2 === pageId2) {
+          assert(p.routeFilesystem === routeFilesystem)
+          return true
+        }
+        return false
+      })
+      if (alreadyIncluded) return
+    }
+    pageIds.push({
+      pageId2,
+      routeFilesystem,
+      pageConfigFile: null,
+      routeFilesystemDefinedBy
+    })
+  })
+  return pageIds
 }
 
 function resolveConfigSource(
@@ -289,7 +297,10 @@ function resolveConfigSource(
 
 function isDefiningPage(pageConfigFile: PageConfigFile): boolean {
   const pageConfigValues = getPageConfigValues(pageConfigFile)
-  return !!pageConfigValues.Page || !!pageConfigValues.route || !!pageConfigValues.isErrorPage
+  return Object.keys(pageConfigValues).some((configName) => isConfigDefiningPage(configName))
+}
+function isConfigDefiningPage(configName: string): boolean {
+  return ['Page', 'route', 'isErrorPage'].includes(configName)
 }
 
 function getCodeFilePath(
@@ -580,6 +591,8 @@ type PageConfigFile = {
 }
 
 type ConfigValueFile = {
+  // TODO:
+  // rename determinePageId2(), and rename pageId to configId or remove pageId (instead use determinePageId2)
   pageId: string
   configName: string
   configValueFilePath: string
@@ -594,8 +607,9 @@ async function findAndLoadConfigValueFiles(
       .filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) !== 'config')
       .map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
         const configName = extractConfigName(filePathRelativeToUserRootDir)
-        const configDef = configDefinitionsAll[configName]
-        assertUsage(configDef, `${configName} sets an unknown config '${configName}'`)
+        const configDef =
+          configDefinitionsAll[configName] ?? (globalConfigsDefinition as Record<string, ConfigDefinition>)[configName]
+        assertUsage(configDef, `${filePathRelativeToUserRootDir} defines an unknown config '${configName}'`)
         const configValueFile: ConfigValueFile = {
           configName,
           pageId: determinePageId2(filePathRelativeToUserRootDir),
@@ -716,18 +730,29 @@ function handleBuildError(err: unknown, isDev: boolean) {
   }
 }
 
-function getPageConfigFilesRelevant(pageId: string, pageConfigFiles: PageConfigFile[]) {
-  const pageConfigFilesRelevant = pageConfigFiles.filter(({ pageConfigFilePath }) => {
-    assertPosixPath(pageConfigFilePath)
-    assert(pageConfigFilePath.startsWith('/'))
-    const configFsRoot = pageConfigFilePath
-      .split('/')
-      .filter((p) => p !== 'renderer')
-      .slice(0, -1) // remove filename +config.js
-      .join('/')
-    return pageId.startsWith(configFsRoot)
-  })
-  return pageConfigFilesRelevant
+function isRelevantConfigPath(
+  configPath: string, // Can be pageConfigFilePath or configValueFilePath
+  pageId: string
+): boolean {
+  const configFsRoot = removeDir(removeFilename(configPath), ['renderer', 'pages'])
+  const isRelevant = removeDir(pageId, ['pages']).startsWith(configFsRoot)
+  return isRelevant
+}
+function removeFilename(configPath: string) {
+  assertPosixPath(configPath)
+  assert(configPath.startsWith('/'))
+  const filename = configPath.split('/').slice(-1)[0]!
+  assert(filename.includes('.'))
+  assert(filename.startsWith('+'))
+  return configPath.split('/').slice(0, -1).join('/')
+}
+function removeDir(fsPath: string, dirs: string[]) {
+  assertPosixPath(fsPath)
+  assert(fsPath.startsWith('/'))
+  return fsPath
+    .split('/')
+    .filter((p) => !dirs.includes(p))
+    .join('/')
 }
 
 function getPageConfigGlobal(pageConfigFiles: PageConfigFile[]): null | PageConfigFile {

@@ -84,18 +84,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   isErrorPage: {
     c_env: 'c_config' // TODO: c_config instead?
   }
-  /*
-  onBeforeRoute: {
-    c_code: true,
-    c_global: true,
-    c_env: 'c_routing'
-  },
-  onPrerenderStart: {
-    c_code: true,
-    c_global: true,
-    c_env: 'server-only'
-  }
-  */
 }
 
 function getRouteValidator() {
