@@ -1,3 +1,13 @@
+## [0.4.87](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.86...v0.4.87) (2023-02-22)
+
+
+### Bug Fixes
+
+* don't add CSS files to optimizeDeps ([e8f5b17](https://github.com/brillout/vite-plugin-ssr/commit/e8f5b178f0e4c291d7a0a98b1ff5de2740c1536b))
+* unique error page assertion (fix [#661](https://github.com/brillout/vite-plugin-ssr/issues/661)) ([a2027a8](https://github.com/brillout/vite-plugin-ssr/commit/a2027a871564d9e4013881b49fb3ec27ec243d13))
+
+
+
 ## [0.4.86](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.85...v0.4.86) (2023-02-20)
 
 
