@@ -12,12 +12,13 @@ import { resolveRouteFunction } from './route/resolveRouteFunction'
 import { callOnBeforeRouteHook } from './route/callOnBeforeRouteHook'
 import { PageRoutes, loadPageRoutes, RouteType } from './route/loadPageRoutes'
 import { debug } from './route/debug'
-import type { PageConfig } from './page-configs/PageConfig'
+import type { PageConfig, PageConfigGlobal } from './page-configs/PageConfig'
 
 type PageContextForRoute = PageContextUrlSource & {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfig[]
   _allPageIds: string[]
+  _pageConfigGlobal: PageConfigGlobal
 }
 type RouteMatch = {
   pageId: string
@@ -41,6 +42,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     pageContext._pageFilesAll,
     pageContext._pageConfigs,
+    pageContext._pageConfigGlobal,
     pageContext._allPageIds
   )
   debug('Pages routes:', pageRoutes)

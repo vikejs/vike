@@ -41,7 +41,7 @@ import { setProduction } from '../../shared/setProduction'
 import { getPageFilesServerSide } from '../../shared/getPageFiles'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString'
-import type { PageConfig } from '../../shared/page-configs/PageConfig'
+import type { PageConfig, PageConfigGlobal } from '../../shared/page-configs/PageConfig'
 import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode'
 import { isErrorPage } from '../../shared/route/error-page'
@@ -89,12 +89,14 @@ type PageContext = {
   _providedByHook: ProvidedByHook
   _baseServer: string
   _urlHandler: null
-  _allPageIds: string[]
-  _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
   _baseAssets: null | string
   _includeAssetsImportedByServer: boolean
   _pageContextAlreadyProvidedByOnPrerenderHook?: true
+  // TODO: use GlobalNodeContext instead
+  _allPageIds: string[]
+  _pageFilesAll: PageFile[]
+  _pageConfigs: PageConfig[]
+  _pageConfigGlobal: PageConfigGlobal
 }
 
 type PrerenderOptions = {
@@ -416,6 +418,7 @@ async function handlePagesWithStaticRoutes(
   const { pageRoutes } = await loadPageRoutes(
     renderContext.pageFilesAll,
     renderContext.pageConfigs,
+    renderContext.pageConfigGlobal,
     renderContext.allPageIds
   )
   await Promise.all(

@@ -191,13 +191,15 @@ function initPageContext(pageContextInit: { urlOriginal: string }, renderContext
   const pageContextAddendum = {
     ...pageContextInit,
     _objectCreatedByVitePluginSsr: true,
-    _pageFilesAll: renderContext.pageFilesAll,
-    _pageConfigs: renderContext.pageConfigs,
-    _allPageIds: renderContext.allPageIds,
     // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
-    _includeAssetsImportedByServer: globalContext.includeAssetsImportedByServer
+    _includeAssetsImportedByServer: globalContext.includeAssetsImportedByServer,
+    // TODO: use GloablContext instead
+    _pageFilesAll: renderContext.pageFilesAll,
+    _pageConfigs: renderContext.pageConfigs,
+    _pageConfigGlobal: renderContext.pageConfigGlobal,
+    _allPageIds: renderContext.allPageIds
   }
 
   return pageContextAddendum
@@ -210,6 +212,7 @@ type RenderContext = {
   allPageIds: string[]
 }
 // TODO: remove getRenderContext() in favor of getGlobalObject() + reloadGlobalContext()
+// TODO: impl GlobalNodeContext + GlobalClientContext + GloablContext, and use GlobalContext instead of RenderContext
 async function getRenderContext(): Promise<RenderContext> {
   const globalContext = getGlobalContext()
   const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = await getPageFilesAll(

@@ -6,15 +6,16 @@ import { getGlobalContext } from '../globalContext'
 import { assert, assertUsage, assertInfo, compareString } from '../../utils'
 import pc from 'picocolors'
 import { isRenderErrorPageException } from './RenderErrorPage'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig'
+import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
 
 async function log404(pageContext: {
   urlPathname: string
   errorWhileRendering: null | Error
+  _isPageContextRequest: boolean
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfig[]
+  _pageConfigGlobal: PageConfigGlobal
   _allPageIds: string[]
-  _isPageContextRequest: boolean
 }) {
   const { urlPathname } = pageContext
 
@@ -32,6 +33,7 @@ async function log404(pageContext: {
   const { pageRoutes } = await loadPageRoutes(
     pageContext._pageFilesAll,
     pageContext._pageConfigs,
+    pageContext._pageConfigGlobal,
     pageContext._allPageIds
   )
   assertUsage(

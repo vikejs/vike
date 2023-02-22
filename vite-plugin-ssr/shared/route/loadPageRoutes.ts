@@ -4,7 +4,7 @@ import { assert, assertUsage, hasProp, slice } from './utils'
 import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath'
 import { isCallable } from '../utils'
-import type { PageConfig } from '../page-configs/PageConfig'
+import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
 
 export { loadPageRoutes }
 export { findPageRouteFile }
@@ -25,6 +25,7 @@ type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
 async function loadPageRoutes(
   pageFilesAll: PageFile[],
   pageConfigs: PageConfig[],
+  pageConfigGlobal: PageConfigGlobal,
   allPageIds: string[]
 ): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
   await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
@@ -43,7 +44,7 @@ function getPageRoutes(
 
   let pageIds = [...allPageIds]
 
-  // VPS 1.0
+  // V1 Design
   if (pageConfigs.length > 0) {
     const comesFromV1PageConfig = true
     pageConfigs
@@ -102,8 +103,11 @@ function getPageRoutes(
         assert(pageRoute)
         pageRoutes.push(pageRoute)
       })
-  } else {
-    // VPS 0.4
+  }
+
+  // Old design
+  // TODO/v1-release: remove
+  if (pageConfigs.length === 0) {
     const comesFromV1PageConfig = false
     pageIds
       .filter((pageId) => !isErrorPageId(pageId, false))
@@ -176,6 +180,22 @@ function getGlobalHooks(
   onBeforeRouteHook: null | OnBeforeRouteHook
   filesystemRoots: FilesystemRoot[]
 } {
+  // V1 Design
+  if (pageConfigs.length > 0) {
+    /*
+          assertUsage(
+            isCallable(onBeforeRoute),
+            `The hook onBeforeRoute() defined by ${filePath} should be a function.` // TODO: move assertUsage() to a central place containing all assertUsage()?
+          )
+          */
+
+  }
+
+  // Old design
+  // TODO/v1-release: remove
+  if (pageConfigs.length === 0) {
+  }
+
   let onBeforeRouteHook: null | OnBeforeRouteHook = null
   const filesystemRoots: FilesystemRoot[] = []
   pageFilesAll
@@ -205,26 +225,6 @@ function getGlobalHooks(
         })
       }
     })
-
-  /* TODO: define onBeforeRoute hook on globalConfig instead of pageConfigs
-  pageConfigs.forEach((pageConfig) => {
-    if (pageConfig.onBeforeRoute) {
-      for (const pageConfigFile of pageConfig.pageConfigFiles) {
-        const onBeforeRoute = pageConfigFile.pageConfigValues.onBeforeRoute
-        if (onBeforeRoute) {
-          const filePath = pageConfigFile.pageConfigFilePath
-          assertUsage(
-            isCallable(onBeforeRoute),
-            `The hook onBeforeRoute() defined by ${filePath} should be a function.` // TODO: move assertUsage() to a central place containing all assertUsage()?
-          )
-          assert(onBeforeRoute === pageConfig.onBeforeRoute) // pageConfig.pageConfigFiles should have the right order
-          onBeforeRouteHook = { filePath, onBeforeRoute }
-          break
-        }
-      }
-    }
-  })
-  */
 
   return { onBeforeRouteHook, filesystemRoots }
 }
