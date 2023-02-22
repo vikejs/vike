@@ -509,7 +509,7 @@ async function callOnPrerenderStartHook(
           // V1 design
           'onPrerenderStart' |
           // Old design
-      'onBeforePrerender'
+          'onBeforePrerender'
       }
 
   // V1 design

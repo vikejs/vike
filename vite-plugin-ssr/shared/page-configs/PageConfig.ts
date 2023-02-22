@@ -79,6 +79,6 @@ type PageConfigGlobalData = {
   onBeforeRoute: null | ConfigSource
 }
 type PageConfigGlobal = {
-  onPrerenderStart: null | ConfigSource & { configValue: unknown }
-  onBeforeRoute: null | ConfigSource & { configValue: unknown }
+  onPrerenderStart: null | (ConfigSource & { configValue: unknown })
+  onBeforeRoute: null | (ConfigSource & { configValue: unknown })
 }

@@ -23,4 +23,3 @@ function onRenderHtml(pageContext) {
       </body>
     </html>`
 }
-
