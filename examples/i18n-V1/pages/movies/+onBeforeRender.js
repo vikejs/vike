@@ -1,4 +1,4 @@
-export { onBeforeRender }
+export default onBeforeRender
 
 import fetch from 'node-fetch'
 

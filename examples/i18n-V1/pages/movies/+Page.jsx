@@ -1,4 +1,4 @@
-export { Page }
+export default Page
 
 import React from 'react'
 import { LocaleText } from '../../renderer/LocaleText'

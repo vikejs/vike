@@ -1,4 +1,4 @@
-export { onBeforeRoute }
+export default onBeforeRoute
 
 import { extractLocale } from '../locales'
 
