@@ -13,7 +13,7 @@ function resolveVpsConfig(vpsConfig: unknown): Plugin {
   return {
     name: 'vite-plugin-ssr:resolveVpsConfig',
     enforce: 'pre',
-    async configResolved(config) {
+    configResolved(config) {
       const configVpsPromise = resolveConfigVps(
         (vpsConfig ?? {}) as ConfigVpsUserProvided,
         ((config as Record<string, unknown>).vitePluginSsr ?? {}) as ConfigVpsUserProvided,
