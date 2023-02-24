@@ -22,6 +22,7 @@ async function render(pageContext) {
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html>
+      <head><meta charset="utf-8"></head>
       <body>
         <div id="page-content">${dangerouslySkipEscape(pageHtml)}</div>
       </body>

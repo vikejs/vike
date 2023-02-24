@@ -37,6 +37,7 @@ describe('preload tags', () => {
         "<!DOCTYPE html>
             <html>
               <head>
+                <meta charset=\\"utf-8\\">
                 <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/renderer/PageLayout.css?direct\\">
                 <script type=\\"module\\" defer>
         import RefreshRuntime from \\"/@react-refresh\\"
@@ -85,6 +86,7 @@ describe('preload tags', () => {
       "<!DOCTYPE html>
           <html>
             <head>
+              <meta charset=\\"utf-8\\">
               <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/renderer/PageLayout.css?direct\\">
               <script type=\\"module\\" defer>
       import RefreshRuntime from \\"/@react-refresh\\"
@@ -131,6 +133,7 @@ describe('preload tags', () => {
       "<!DOCTYPE html>
           <html>
             <head>
+              <meta charset=\\"utf-8\\">
               <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/renderer/PageLayout.css?direct\\">
               <script type=\\"module\\" defer>
       import RefreshRuntime from \\"/@react-refresh\\"
@@ -177,6 +180,7 @@ describe('preload tags', () => {
       "<!DOCTYPE html>
           <html>
             <head>
+              <meta charset=\\"utf-8\\">
               <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/renderer/PageLayout.css?direct\\">
               <script type=\\"module\\" defer>
       import RefreshRuntime from \\"/@react-refresh\\"

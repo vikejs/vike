@@ -25,6 +25,7 @@ function render(pageContext) {
 
   return escapeInject`<!DOCTYPE html>
     <html>
+      <head><meta charset="utf-8"></head>
       <body>
         <div id="react-container">${dangerouslySkipEscape(pageHtml)}</div>
       </body>

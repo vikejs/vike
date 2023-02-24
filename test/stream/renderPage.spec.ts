@@ -17,7 +17,7 @@ describe('renderPage()', () => {
     const body = await render(false)
     expect(body).toMatchInlineSnapshot(
       `
-      "<html><head><script type=\\"module\\" defer>
+      "<html><head><meta charset=\\"utf-8\\"><script type=\\"module\\" defer>
       import RefreshRuntime from \\"/@react-refresh\\"
       RefreshRuntime.injectIntoGlobalHook(window)
       window.$RefreshReg$ = () => {}
@@ -43,7 +43,7 @@ describe('renderPage()', () => {
       const body = await render(true)
       expect(body).toMatchInlineSnapshot(
         `
-        "<html><head><script type=\\"module\\" defer>
+        "<html><head><meta charset=\\"utf-8\\"><script type=\\"module\\" defer>
         import RefreshRuntime from \\"/@react-refresh\\"
         RefreshRuntime.injectIntoGlobalHook(window)
         window.$RefreshReg$ = () => {}
