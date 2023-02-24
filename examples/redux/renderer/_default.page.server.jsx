@@ -14,6 +14,7 @@ async function render(pageContext) {
   const { pageHtml } = pageContext
   return escapeInject`<!DOCTYPE html>
     <html>
+      <head><meta charset="utf-8"></head>
       <body>
         <div id="react-root">${dangerouslySkipEscape(pageHtml)}</div>
       </body>

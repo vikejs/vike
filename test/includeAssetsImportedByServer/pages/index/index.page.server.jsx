@@ -4,6 +4,7 @@ import logo2Url from './logo-2.svg?raw'
 export async function render() {
   return escapeInject`<!DOCTYPE html>
     <html>
+      <head><meta charset="utf-8"></head>
       <body>
         <img src="${logo1Url}" />
         ${dangerouslySkipEscape(logo2Url)}

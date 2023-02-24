@@ -233,7 +233,7 @@ function getTagClosing(tag: Tag) {
   return tagClosing
 }
 function getTagOpeningWithAttribute(tag: Tag, attribute: Attribute) {
-  const tagWithAttribute = new RegExp(`<${tag} ${attribute}=['"].*['"](>| [^>]*>| \/>)(\\s*<\/[\\s]*${tag}>)?`, 'i')
+  const tagWithAttribute = new RegExp(`<${tag} ${attribute}=['"].*['"](>| [^>]*>|\/>)(\\s*<\/[\\s]*${tag}>)?`, 'i')
   return tagWithAttribute
 }
 function isSelfClosing(tag: Tag) {
