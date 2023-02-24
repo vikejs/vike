@@ -27,6 +27,11 @@ const htmlHeadMetaCharsetWithClosingTag = `<html>
     <meta charset="utf-8"></meta>
   </head>
 </html>`
+const htmlHeadMetaCharsetSelfClosingTag = `<html>
+  <head>
+    <meta charset="utf-8"/>
+  </head>
+</html>`
 const htmlHeadMetaCharsetWithClosingTagAndWhitespace = `<html>
   <head>
     <meta charset="utf-8"> </ meta>
@@ -79,6 +84,16 @@ describe('injectHtmlTags', () => {
       "<html>
         <head>
           <meta charset=\\"utf-8\\"></meta>
+          <link href=\\"/foo.ttf\\">
+        </head>
+      </html>"
+    `
+    )
+    expect(injectHtmlFragments('HTML_BEGIN', tag1, htmlHeadMetaCharsetSelfClosingTag, null)).toMatchInlineSnapshot(
+      `
+      "<html>
+        <head>
+          <meta charset=\\"utf-8\\"/>
           <link href=\\"/foo.ttf\\">
         </head>
       </html>"

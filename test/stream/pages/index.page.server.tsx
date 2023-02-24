@@ -36,5 +36,5 @@ async function render(pageContext: { withStream: boolean }) {
     pageHtml = pipe
   }
 
-  return escapeInject`<html><body><div>${pageHtml}</div></body></html>`
+  return escapeInject`<html><head><meta charset="utf-8"></head><body><div>${pageHtml}</div></body></html>`
 }

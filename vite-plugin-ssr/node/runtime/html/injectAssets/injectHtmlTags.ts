@@ -44,7 +44,7 @@ function injectHtmlFragments(
     const metaCharsetState = getMetaCharsetState(htmlString)
 
     assertWarning(
-      metaCharsetState === 'missing',
+      metaCharsetState !== 'missing',
       'The <meta charset="${ENCODING}"> tag is missing from the html source. You may consider adding it as the first child tag of the head tag as it is a best practice to always include it in the HTML source. Not doing so could lead to a variety of issues. For further details see: https://github.com/brillout/vite-plugin-ssr/issues/638',
       {
         onlyOnce: true, showStackTrace: false
@@ -52,7 +52,7 @@ function injectHtmlFragments(
     ) 
 
     assertWarning(
-      metaCharsetState === 'exists',
+      metaCharsetState !== 'exists',
       'The <meta charset="${ENCODING}"> tag is not the first child tag of the head tag in the html source. The tag should occur as soon as possible inside the html source, to avoid running into a variety of issues. For further details see: https://github.com/brillout/vite-plugin-ssr/issues/638',
       {
         onlyOnce: true, showStackTrace: false
@@ -233,7 +233,7 @@ function getTagClosing(tag: Tag) {
   return tagClosing
 }
 function getTagOpeningWithAttribute(tag: Tag, attribute: Attribute) {
-  const tagWithAttribute = new RegExp(`<${tag} ${attribute}=['"].*['"](>| [^>]*>)(\\s*<\/[\\s]*${tag}>)?`, 'i') 
+  const tagWithAttribute = new RegExp(`<${tag} ${attribute}=['"].*['"](>| [^>]*>| \/>)(\\s*<\/[\\s]*${tag}>)?`, 'i')
   return tagWithAttribute
 }
 function isSelfClosing(tag: Tag) {
