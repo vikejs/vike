@@ -51,7 +51,7 @@ async function loadPageConfigsData(
   userRootDir: string,
   isDev: boolean
 ): Promise<{ pageConfigsData: PageConfigData[]; pageConfigGlobal: PageConfigGlobalData }> {
-  const result = await findAndLoadPageConfigFiles1(userRootDir)
+  const result = await findAndLoadPageConfigFiles1(userRootDir, isDev)
   /* TODO: - remove this if we don't need this for optimizeDeps.entries
    *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead
   if ('err' in result) {
@@ -67,7 +67,7 @@ async function loadPageConfigsData(
   let configValueFiles: ConfigValueFile[]
   {
     const configDefinitionsAll = getConfigDefinitions(pageConfigFiles)
-    configValueFiles = await findAndLoadConfigValueFiles(configDefinitionsAll, userRootDir)
+    configValueFiles = await findAndLoadConfigValueFiles(configDefinitionsAll, userRootDir, isDev)
   }
 
   const pageConfigGlobal: PageConfigGlobalData = {
@@ -599,9 +599,10 @@ type ConfigValueFile = {
 } & ({} | { configValue: unknown })
 async function findAndLoadConfigValueFiles(
   configDefinitionsAll: ConfigDefinitionsAll,
-  userRootDir: string
+  userRootDir: string,
+  isDev: boolean
 ): Promise<ConfigValueFile[]> {
-  const found = await findUserFiles('**/+*', userRootDir)
+  const found = await findUserFiles('**/+*', userRootDir, isDev)
   const configValueFiles: ConfigValueFile[] = await Promise.all(
     found
       .filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) !== 'config')
@@ -641,9 +642,10 @@ function extractConfigName(filePath: string) {
 }
 
 async function findAndLoadPageConfigFiles1(
-  userRootDir: string
+  userRootDir: string,
+  isDev: boolean
 ): Promise<{ err: unknown } | { pageConfigFiles: PageConfigFile[] }> {
-  const pageConfigFilePaths = await findUserFiles(`**/+config.${scriptFileExtensions}`, userRootDir)
+  const pageConfigFilePaths = await findUserFiles(`**/+config.${scriptFileExtensions}`, userRootDir, isDev)
 
   const pageConfigFiles: PageConfigFile[] = []
   // TODO: make esbuild build everyting at once
@@ -676,7 +678,7 @@ async function findAndLoadPageConfigFiles1(
   return { pageConfigFiles }
 }
 
-async function findUserFiles(pattern: string | string[], userRootDir: string) {
+async function findUserFiles(pattern: string | string[], userRootDir: string, isDev: boolean) {
   assertPosixPath(userRootDir)
   const timeBase = new Date().getTime()
   const result = await glob(pattern, {
@@ -685,14 +687,16 @@ async function findUserFiles(pattern: string | string[], userRootDir: string) {
     dot: false
   })
   const time = new Date().getTime() - timeBase
-  assertWarning(
-    time < 2 * 1000,
-    `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on vite-plugin-ssr's GitHub.`,
-    {
-      showStackTrace: false,
-      onlyOnce: 'slow-page-files-search'
-    }
-  )
+  if (isDev) {
+    assertWarning(
+      time < 2 * 1000,
+      `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on vite-plugin-ssr's GitHub.`,
+      {
+        showStackTrace: false,
+        onlyOnce: 'slow-page-files-search'
+      }
+    )
+  }
   const userFiles = result.map((p) => {
     p = toPosixPath(p)
     const filePathRelativeToUserRootDir = path.posix.join('/', p)
