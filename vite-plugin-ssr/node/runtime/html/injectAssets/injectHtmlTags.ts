@@ -192,7 +192,7 @@ function createHtmlHeadIfMissing(htmlString: string): string {
     return htmlString
   }
 
-  const htmlFragment = '<head></head>'
+  const htmlFragment = '<head><meta charset="utf-8"></head>'
 
   if (tagOpeningExists('html', htmlString)) {
     htmlString = injectAtOpeningTag('html', '', htmlString, htmlFragment)
