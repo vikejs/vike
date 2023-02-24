@@ -1,3 +1,13 @@
+## [0.4.88](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.87...v0.4.88) (2023-02-24)
+
+
+### Bug Fixes
+
+* only warn about slow file crawling in dev ([1cfefb7](https://github.com/brillout/vite-plugin-ssr/commit/1cfefb7d8f876a9d374a1d7644909cf9bd6b4ef0))
+* update @brillout/vite-plugin-import-build ([2f16a65](https://github.com/brillout/vite-plugin-ssr/commit/2f16a657d45f6f66b85688cfa08ae449c95271c4))
+
+
+
 ## [0.4.87](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.86...v0.4.87) (2023-02-22)
 
 
