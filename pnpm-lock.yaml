@@ -738,7 +738,7 @@ importers:
       express: ^4.17.1
       react: ^18.2.0
       react-dom: ^18.2.0
-      telefunc: ^0.1.48
+      telefunc: ^0.1.49
       typescript: ^4.8.4
       vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -750,7 +750,7 @@ importers:
       express: 4.18.2
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      telefunc: 0.1.48_react@18.2.0
+      telefunc: 0.1.49_react@18.2.0
       typescript: 4.9.4
       vite: 3.2.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -2171,12 +2171,6 @@ packages:
 
   /@brillout/vite-plugin-import-build/0.2.10:
     resolution: {integrity: sha512-mUEAUsZv7APa/zbDoDMLGPD8qbEGOhKDCrLZMYgPKy72wFtA7avQJmJGadKR4lJ32PkjrwHnZrY+6Yz2PmaXZQ==}
-    dependencies:
-      '@brillout/import': 0.2.2
-    dev: false
-
-  /@brillout/vite-plugin-import-build/0.2.7:
-    resolution: {integrity: sha512-UGqwRzrVEaY28EITklP7hvReKD8I7U+4H42E3PiMIV9fZY6Dnq5knkGKIZgdVvBZ1SN9bFXTXy6Qu7PnBNBfQQ==}
     dependencies:
       '@brillout/import': 0.2.2
     dev: false
@@ -9740,8 +9734,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /telefunc/0.1.48_react@18.2.0:
-    resolution: {integrity: sha512-botSV4MgUSAO6zI9KGzZp9PEFLC9D4t0NMJjwZ2GuDPSiZG1hhGKDIcnwWmxK9qxT5HuInGh/Bd2hYmHHCNBhw==}
+  /telefunc/0.1.49_react@18.2.0:
+    resolution: {integrity: sha512-NHvv+A7HMnuG2kUrru3L3pPf65+HswPYiOdm6zPAIomz8U4hOWAT8VZH7PiVp1ZKKijS5KA1mpxrcjJI53QPkg==}
     engines: {node: '>=12.19.0'}
     peerDependencies:
       react: ^18.0.0
@@ -9754,7 +9748,7 @@ packages:
     dependencies:
       '@brillout/import': 0.1.3
       '@brillout/json-serializer': 0.5.3
-      '@brillout/vite-plugin-import-build': 0.2.7
+      '@brillout/vite-plugin-import-build': 0.2.10
       es-module-lexer: 0.7.1
       picocolors: 1.0.0
       react: 18.2.0
