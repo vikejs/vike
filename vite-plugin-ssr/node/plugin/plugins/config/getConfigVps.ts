@@ -2,7 +2,7 @@ export { getConfigVps }
 export { checkConfigVps }
 
 // We import from node/utils.ts insead of node/plugin/utils.ts because this file is loaded by the server runtime
-import { assert, hasProp, isObject } from '../../../../node/utils'
+import { assert, hasProp, isObject } from '../../../utils'
 import type { ConfigVpsResolved } from './ConfigVps'
 
 function checkConfigVps(configVps: unknown): null | { prop: string; errMsg: `should be a${string}` } {

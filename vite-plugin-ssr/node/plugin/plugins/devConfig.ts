@@ -7,7 +7,7 @@ import { addSsrMiddleware, assertRoot, isViteCliCall, resolveRoot } from '../hel
 import { determineOptimizeDepsEntries } from './devConfig/determineOptimizeDepsEntries'
 import path from 'path'
 import fs from 'fs'
-import { getConfigVps } from './config/assertConfigVps'
+import { getConfigVps } from './config/getConfigVps'
 import { ConfigVpsResolved } from './config/ConfigVps'
 
 function devConfig(): Plugin[] {

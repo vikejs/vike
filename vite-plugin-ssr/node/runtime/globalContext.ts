@@ -21,7 +21,7 @@ import { loadBuild } from '../plugin/plugins/importBuild/loadBuild'
 import { setPageFiles } from '../../shared/getPageFiles'
 import { assertPluginManifest, PluginManifest } from '../plugin/plugins/manifest/assertPluginManifest'
 import type { ConfigVpsResolved } from '../plugin/plugins/config/ConfigVps'
-import { getConfigVps } from '../plugin/plugins/config/assertConfigVps'
+import { getConfigVps } from '../plugin/plugins/config/getConfigVps'
 import type { ViteDevServerEnhanced } from '../plugin/plugins/setGlobalContext'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext

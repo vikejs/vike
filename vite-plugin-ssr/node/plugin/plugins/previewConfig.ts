@@ -3,7 +3,7 @@ export { previewConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assertUsage, getOutDirs, determineOutDir } from '../utils'
 import { addSsrMiddleware } from '../helpers'
-import { getConfigVps } from './config/assertConfigVps'
+import { getConfigVps } from './config/getConfigVps'
 import fs from 'fs'
 import path from 'path'
 import type { ViteDevServer } from 'vite'

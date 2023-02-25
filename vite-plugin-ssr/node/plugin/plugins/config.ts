@@ -2,7 +2,7 @@ export { resolveVpsConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVpsUserProvided, ConfigVpsResolved } from './config/ConfigVps'
-import { checkConfigVps } from './config/assertConfigVps'
+import { checkConfigVps } from './config/getConfigVps'
 import { assertUsage } from '../utils'
 import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
 import { pickFirst } from './config/pickFirst'

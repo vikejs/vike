@@ -2,7 +2,7 @@ export { virtualFiles }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVpsResolved } from '../config/ConfigVps'
-import { getConfigVps } from '../config/assertConfigVps'
+import { getConfigVps } from '../config/getConfigVps'
 import { generatePageConfigVirtualFile } from './generatePageConfigsSourceCode'
 import { generatePageFilesVirtualFile } from './generatePageFilesVirtualFile'
 import { assert } from '../../utils'
