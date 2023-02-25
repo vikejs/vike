@@ -49,7 +49,7 @@ function devConfig(): Plugin[] {
           config,
           await determineOptimizeDepsEntries(
             config,
-            // This function is also called when running `$ vite preview` but tha's okay
+            // This function is also called when running `$ vite preview` but that's okay
             true
           )
         )
