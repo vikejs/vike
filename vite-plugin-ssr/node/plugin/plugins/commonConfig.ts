@@ -5,7 +5,10 @@ import type { Plugin, ResolvedConfig } from 'vite'
 function commonConfig(): Plugin {
   return {
     name: 'vite-plugin-ssr:commonConfig',
-    config: () => ({ appType: 'custom' }),
+    config: () => ({
+      ssr: { external: ['vite-plugin-ssr'] },
+      appType: 'custom'
+    }),
     configResolved(config) {
       setDefaultPort(config)
       workaroundCI(config)

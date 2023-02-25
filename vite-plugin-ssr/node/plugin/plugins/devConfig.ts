@@ -15,12 +15,13 @@ function devConfig(): Plugin[] {
   return [
     {
       name: 'vite-plugin-ssr:devConfig',
+      // There don't seem to be a straightforward way to descriminate between `$ vite preview` and `$ vite dev`
+      apply: 'serve',
       async config(config) {
         root = resolveRoot(config) // TODO: remove resolveRoot() helper?
         // TODO: remove?
         // await loadPagesConfig(root)
         return {
-          ssr: { external: ['vite-plugin-ssr'] },
           optimizeDeps: {
             exclude: [
               // We exclude the vite-plugin-ssr client to be able to use `import.meta.glob()`
@@ -44,7 +45,14 @@ function devConfig(): Plugin[] {
         assertRoot(root, config)
         const configVps = await getConfigVps(config)
         addExtensionsToOptimizeDeps(config, configVps)
-        addOptimizeDepsEntries(config, await determineOptimizeDepsEntries(config, true))
+        addOptimizeDepsEntries(
+          config,
+          await determineOptimizeDepsEntries(
+            config,
+            // This function is also called when running `$ vite preview` but tha's okay
+            true
+          )
+        )
         await determineFsAllowList(config, configVps)
       },
       configureServer(server) {

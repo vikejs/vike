@@ -37,8 +37,7 @@ function buildConfig(): Plugin {
           outDir: determineOutDir(config),
           manifest: !viteIsSSR(config),
           polyfillDynamicImport: false
-        },
-        ssr: { external: ['vite-plugin-ssr'] }
+        }
         /* We cannot do this because of https://github.com/brillout/vite-plugin-ssr/issues/447
         plublicDir: !viteIsSSR(config),
         */
