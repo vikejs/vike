@@ -105,7 +105,8 @@ async function analyzeAppRouting(config: ResolvedConfig) {
 async function getPageFileEntries(config: ResolvedConfig) {
   const pageFiles = await findPageFiles(
     config,
-    viteIsSSR(config) ? ['.page', '.page.server'] : ['.page', '.page.client']
+    viteIsSSR(config) ? ['.page', '.page.server'] : ['.page', '.page.client'],
+    false
   )
   const pageFileEntries = formatEntries(pageFiles, config)
   return pageFileEntries

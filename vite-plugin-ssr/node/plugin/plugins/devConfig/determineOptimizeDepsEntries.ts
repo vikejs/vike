@@ -9,8 +9,8 @@ import { findPageFiles } from '../../helpers'
 import { makeFilePathAbsolute } from '../../utils'
 
 // TODO v1
-async function determineOptimizeDepsEntries(config: ResolvedConfig): Promise<string[]> {
-  const pageFilesAll = (await findPageFiles(config, ['.page', '.page.client', '.page.route'])).map((p) =>
+async function determineOptimizeDepsEntries(config: ResolvedConfig, isDev: boolean): Promise<string[]> {
+  const pageFilesAll = (await findPageFiles(config, ['.page', '.page.client', '.page.route'], isDev)).map((p) =>
     getPageFileObject(p)
   )
   let pageFiles = pageFilesAll.filter((p) => p.fileType === '.page' || p.fileType === '.page.client')

@@ -688,6 +688,7 @@ async function findUserFiles(pattern: string | string[], userRootDir: string, is
   })
   const time = new Date().getTime() - timeBase
   if (isDev) {
+    // We only warn in dev, because while building it's expected to take a long time as fast-glob is competing for resources with other tasks
     assertWarning(
       time < 2 * 1000,
       `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on vite-plugin-ssr's GitHub.`,

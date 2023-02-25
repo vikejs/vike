@@ -40,10 +40,11 @@ function devConfig(): Plugin[] {
         }
       },
       async configResolved(config) {
+        config.command
         assertRoot(root, config)
         const configVps = await getConfigVps(config)
         addExtensionsToOptimizeDeps(config, configVps)
-        addOptimizeDepsEntries(config, await determineOptimizeDepsEntries(config))
+        addOptimizeDepsEntries(config, await determineOptimizeDepsEntries(config, true))
         await determineFsAllowList(config, configVps)
       },
       configureServer(server) {
