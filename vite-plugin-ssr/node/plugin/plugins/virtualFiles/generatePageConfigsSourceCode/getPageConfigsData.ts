@@ -51,7 +51,7 @@ async function loadPageConfigsData(
   userRootDir: string,
   isDev: boolean
 ): Promise<{ pageConfigsData: PageConfigData[]; pageConfigGlobal: PageConfigGlobalData }> {
-  const result = await findAndLoadPageConfigFiles1(userRootDir, isDev)
+  const result = await findAndLoadPageConfigFiles(userRootDir, isDev)
   /* TODO: - remove this if we don't need this for optimizeDeps.entries
    *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead
   if ('err' in result) {
@@ -641,7 +641,7 @@ function extractConfigName(filePath: string) {
   return configName
 }
 
-async function findAndLoadPageConfigFiles1(
+async function findAndLoadPageConfigFiles(
   userRootDir: string,
   isDev: boolean
 ): Promise<{ err: unknown } | { pageConfigFiles: PageConfigFile[] }> {
