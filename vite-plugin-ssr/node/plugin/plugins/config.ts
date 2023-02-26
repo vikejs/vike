@@ -14,7 +14,7 @@ function resolveVpsConfig(vpsConfig: unknown): Plugin {
     name: 'vite-plugin-ssr:resolveVpsConfig',
     enforce: 'pre',
     configResolved(config) {
-      const configVpsPromise = resolveConfigVps(
+      const configVpsPromise = resolveConfig(
         (vpsConfig ?? {}) as ConfigVpsUserProvided,
         ((config as Record<string, unknown>).vitePluginSsr ?? {}) as ConfigVpsUserProvided,
         config
@@ -24,7 +24,7 @@ function resolveVpsConfig(vpsConfig: unknown): Plugin {
   }
 }
 
-async function resolveConfigVps(
+async function resolveConfig(
   fromPluginOptions: ConfigVpsUserProvided,
   fromViteConfig: ConfigVpsUserProvided,
   config: ResolvedConfig
