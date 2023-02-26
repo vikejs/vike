@@ -2,7 +2,7 @@ export { renderPage }
 
 import { getRenderContext, initPageContext, RenderContext, renderPageContext } from './renderPage/renderPageContext'
 import { route, getErrorPageId } from '../../shared/route'
-import { assert, hasProp, objectAssign, isParsable, parseUrl } from '../utils'
+import { assert, hasProp, objectAssign, isParsable, parseUrl, assertServerEnv } from '../utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { isRenderErrorPageException } from './renderPage/RenderErrorPage'
 import { initGlobalContext } from './globalContext'
@@ -34,6 +34,7 @@ async function renderPage<
 > {
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string'))
+  assertServerEnv()
 
   let renderContext: RenderContext
   try {

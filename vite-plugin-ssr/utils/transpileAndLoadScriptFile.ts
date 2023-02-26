@@ -6,6 +6,9 @@ import path from 'path'
 import { import_ } from '@brillout/import'
 import { assertPosixPath } from './filesystemPathHandling'
 import { getRandomId } from './getRandomId'
+import { assertServerEnv_setIsNotProduction } from './assertServerEnv'
+
+assertServerEnv_setIsNotProduction()
 
 async function transpileAndLoadScriptFile(
   scriptFile: string

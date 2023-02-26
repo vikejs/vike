@@ -1,7 +1,7 @@
 export { previewConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assertUsage, getOutDirs, determineOutDir } from '../utils'
+import { assertUsage, getOutDirs, determineOutDir, assertServerEnv_setIsVitePreview } from '../utils'
 import { addSsrMiddleware } from '../helpers'
 import { getConfigVps } from './config/getConfigVps'
 import fs from 'fs'
@@ -28,6 +28,7 @@ function previewConfig(): Plugin {
       configVps = await getConfigVps(config)
     },
     configurePreviewServer(server) {
+      assertServerEnv_setIsVitePreview()
       return () => {
         assertDist()
         if (!configVps.prerender) {
