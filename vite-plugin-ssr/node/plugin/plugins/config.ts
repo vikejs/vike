@@ -30,7 +30,7 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
 
   assertVikeConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
     assert(fromPlusConfigFilePath)
-    return `${fromPlusConfigFilePath} > ${prop} ${errMsg}`
+    return `${fromPlusConfigFilePath} > config '${prop}' ${errMsg}`
   })
   assertVikeConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vitePluginSsr.${prop} ${errMsg}`)
   // TODO/v1: deprecate this
