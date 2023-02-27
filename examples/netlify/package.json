@@ -1,0 +1,19 @@
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite build && vite preview",
+    "netlify": "pnpm run build && netlify dev --dir dist/client --port 3000"
+  },
+  "dependencies": {
+    "@netlify/functions": "1.4.0",
+    "@vitejs/plugin-react": "^3.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-streaming": "^0.3.5",
+    "vite": "^4.1.4",
+    "vite-plugin-ssr": "0.4.89"
+  },
+  "type": "module",
+  "packageManager": "npm@9.5.0"
+}

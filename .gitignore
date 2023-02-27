@@ -1,3 +1,6 @@
 /node_modules/
 .pnpm-debug.log
 /deps/
+
+# Local Netlify folder
+.netlify
