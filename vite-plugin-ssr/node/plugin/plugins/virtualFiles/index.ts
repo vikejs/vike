@@ -5,13 +5,11 @@ import type { ConfigVpsResolved } from '../config/ConfigVps'
 import { getConfigVps } from '../config/getConfigVps'
 import { generatePageConfigVirtualFile } from './generatePageConfigsSourceCode'
 import { generatePageFilesVirtualFile } from './generatePageFilesVirtualFile'
-import { assert } from '../../utils'
+import { isDev_, isDev_onConfigureServer } from '../../utils'
 
 function virtualFiles(): Plugin {
   let config: ResolvedConfig
   let configVps: ConfigVpsResolved
-  let isDev = false
-  let loadHookWasCalled = false
   return {
     name: 'vite-plugin-ssr:virtualFiles',
     config() {
@@ -40,7 +38,7 @@ function virtualFiles(): Plugin {
     },
     */
     async load(id, options) {
-      loadHookWasCalled = true
+      const isDev = isDev_()
       if (id.startsWith('\0virtual:vite-plugin-ssr:')) {
         id = id.slice('\0'.length)
       } else {
@@ -56,8 +54,7 @@ function virtualFiles(): Plugin {
       return code
     },
     configureServer() {
-      isDev = true
-      assert(loadHookWasCalled === false)
+      isDev_onConfigureServer()
     }
   }
 }
