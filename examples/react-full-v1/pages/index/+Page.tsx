@@ -18,7 +18,6 @@ function Page() {
         </li>
       </ul>
       <p>
-        We <code>export const clientRouting = true</code> to enable Client Routing.{' '}
         <button
           onClick={() => {
             const randomIndex = Math.floor(Math.random() * 3)
