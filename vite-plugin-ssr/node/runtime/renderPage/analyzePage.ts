@@ -5,7 +5,6 @@ import { getVPSClientEntry } from '../../../shared/getPageFiles/analyzePageClien
 import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils'
-import { assert } from '../../utils'
 import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide'
 import { getVirutalModuleIdPageCodeFilesImporter } from '../../commons/virtualIdPageCodeFilesImporter'
 
@@ -16,8 +15,6 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pa
     const isHtmlOnly = !!clientEntryPageConfig
     const clientEntry = isHtmlOnly ? clientEntryPageConfig : getVPSClientEntry(isClientRouting)
     const clientDependencies: ClientDependency[] = []
-    assert(pageConfig.configSources.onRenderHtml)
-    assert(pageConfig.configSources.onRenderClient)
     clientDependencies.push({
       id: getVirutalModuleIdPageCodeFilesImporter(pageConfig.pageId2, true),
       onlyAssets: false,

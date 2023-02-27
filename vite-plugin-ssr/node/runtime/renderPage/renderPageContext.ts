@@ -273,6 +273,7 @@ async function executeOnBeforeRenderHooks(
 async function executeOnRenderHtmlHook(
   pageContext: PageContextPublic & {
     _pageId: string
+    _pageConfigs: PageConfig[]
     __getPageAssets: GetPageAssets
     _passToClient: string[]
     _isHtmlOnly: boolean
@@ -284,28 +285,37 @@ async function executeOnRenderHtmlHook(
   htmlRender: null | HtmlRender
 }> {
   let hook: null | Hook = null
+  let hookName: 'render' | 'onRenderHtml' | undefined
   {
     const renderHook = getHook(pageContext, 'render')
-    // assertWarning(!renderHook, 'Hook render() has been renamed to onRenderHtml() and onRenderClient()', { onlyOnce: true, showStackTrace: false }) // TODO/v1: replace this warning with waning that user should migrate to v1
-    hook = renderHook
+    if (renderHook) {
+      hook = renderHook
+      hookName = 'render'
+    }
   }
   {
     const renderHook = getHook(pageContext, 'onRenderHtml')
     if (renderHook) {
       hook = renderHook
+      hookName = 'onRenderHtml'
     }
   }
+  if (!hookName) {
+    hookName = pageContext._pageConfigs.length > 0 ? 'onRenderHtml' : 'render'
+  }
+
   assertUsage(
     hook,
     [
-      //'No onRenderHtml() hook found.',
-      'No render() hook found.', // TODO
-      'See https://vite-plugin-ssr.com/render-modes for more information.', // TODO
+      `No ${hookName}() hook found. Make sure to define one.`
+      /*
+      'See https://vite-plugin-ssr.com/render-modes for more information.',
       [
         // 'Loaded config files (none of them define the onRenderHtml() hook):',
         'Loaded server-side page files (none of them `export { render }`):',
         ...pageContext._pageFilePathsLoaded.map((f, i) => ` (${i + 1}): ${f}`)
       ].join('\n')
+      */
     ].join(' ')
   )
   const render = hook.hook
