@@ -5,12 +5,12 @@
     "@brillout/import": "^0.2.1",
     "@brillout/json-serializer": "^0.5.3",
     "@brillout/vite-plugin-import-build": "^0.2.11",
-    "cac": "^6.7.12",
-    "es-module-lexer": "^0.10.5",
-    "esbuild": "^0.17.10",
-    "fast-glob": "^3.2.11",
+    "cac": "^6.0.0",
+    "es-module-lexer": "^0.10.0",
+    "esbuild": "^0.17.0",
+    "fast-glob": "^3.0.0",
     "picocolors": "^1.0.0",
-    "sirv": "^2.0.2"
+    "sirv": "^2.0.0"
   },
   "scripts": {
     "build": "rimraf dist/ && tsc -b",
