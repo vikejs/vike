@@ -20,7 +20,8 @@ import {
   transpileAndLoadScriptFile,
   objectAssign,
   hasProp,
-  arrayIncludes
+  arrayIncludes,
+  objectKeys
 } from '../../../utils'
 import path from 'path'
 import type {
@@ -35,7 +36,7 @@ import glob from 'fast-glob'
 
 type ConfigDefinitionsAll = Record<string, ConfigDefinition>
 
-type GlobalConfigName = 'onPrerenderStart' | 'onBeforeRoute'
+type GlobalConfigName = 'onPrerenderStart' | 'onBeforeRoute' | 'prerender'
 const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
   onPrerenderStart: {
     c_code: true,
@@ -44,13 +45,21 @@ const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
   onBeforeRoute: {
     c_code: true,
     c_env: 'c_routing'
+  },
+  prerender: {
+    c_env: 'c_config'
   }
 }
 
 async function loadPageConfigsData(
   userRootDir: string,
   isDev: boolean
-): Promise<{ pageConfigsData: PageConfigData[]; pageConfigGlobal: PageConfigGlobalData }> {
+): Promise<{
+  pageConfigsData: PageConfigData[]
+  pageConfigGlobal: PageConfigGlobalData
+  vikeConfig: Record<string, unknown>
+  vikeConfigFilePath: string | null
+}> {
   const result = await findAndLoadPageConfigFiles(userRootDir, isDev)
   /* TODO: - remove this if we don't need this for optimizeDeps.entries
    *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead
@@ -70,12 +79,17 @@ async function loadPageConfigsData(
     configValueFiles = await findAndLoadConfigValueFiles(configDefinitionsAll, userRootDir, isDev)
   }
 
+  const vikeConfig: Record<string, unknown> = {}
+  let vikeConfigFilePath: string | null = null
   const pageConfigGlobal: PageConfigGlobalData = {
     onBeforeRoute: null,
     onPrerenderStart: null
   }
   {
     const pageConfigFileGlobal = getPageConfigGlobal(pageConfigFiles)
+    if (pageConfigFileGlobal) {
+      vikeConfigFilePath = pageConfigFileGlobal.pageConfigFilePath
+    }
     pageConfigFiles.forEach((pageConfigFile) => {
       const { pageConfigFileExports, pageConfigFilePath } = pageConfigFile
       assertDefaultExportObject(pageConfigFileExports, pageConfigFilePath)
@@ -107,7 +121,13 @@ async function loadPageConfigsData(
         configValueFilesRelevant
       )
       if (!configSource) return
-      pageConfigGlobal[configName] = configSource
+      if (arrayIncludes(objectKeys(pageConfigGlobal), configName)) {
+        assert(!('configValue' in configSource))
+        pageConfigGlobal[configName] = configSource
+      } else {
+        assert('configValue' in configSource)
+        vikeConfig[configName] = configSource.configValue
+      }
     })
   }
 
@@ -167,7 +187,7 @@ async function loadPageConfigsData(
     })
   })
 
-  return { pageConfigsData, pageConfigGlobal }
+  return { pageConfigsData, pageConfigGlobal, vikeConfig, vikeConfigFilePath }
 }
 
 function determinePageIds(pageConfigFiles: PageConfigFile[], configValueFiles: ConfigValueFile[]) {
@@ -596,7 +616,8 @@ type ConfigValueFile = {
   pageId: string
   configName: string
   configValueFilePath: string
-} & ({} | { configValue: unknown })
+  configValue?: unknown
+}
 async function findAndLoadConfigValueFiles(
   configDefinitionsAll: ConfigDefinitionsAll,
   userRootDir: string,

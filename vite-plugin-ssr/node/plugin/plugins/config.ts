@@ -3,40 +3,47 @@ export { resolveVpsConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVpsUserProvided, ConfigVpsResolved } from './config/ConfigVps'
 import { checkConfigVps } from './config/checkConfigVps'
-import { assertUsage } from '../utils'
+import { assert, assertUsage, isDev2 } from '../utils'
 import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
 import { pickFirst } from './config/pickFirst'
 import { resolveExtensions } from './config/resolveExtensions'
 import { resolveBase } from './config/resolveBase'
+import { loadPageConfigsData } from './virtualFiles/generatePageConfigsSourceCode/getPageConfigsData'
 
 function resolveVpsConfig(vpsConfig: unknown): Plugin {
   return {
     name: 'vite-plugin-ssr:resolveVpsConfig',
     enforce: 'pre',
     configResolved(config) {
-      const configVpsPromise = resolveConfig(
-        (vpsConfig ?? {}) as ConfigVpsUserProvided,
-        ((config as Record<string, unknown>).vitePluginSsr ?? {}) as ConfigVpsUserProvided,
-        config
-      )
-      ;(config as Record<string, unknown>).configVpsPromise = configVpsPromise
+      ;(config as Record<string, unknown>).configVpsPromise = resolveConfig(vpsConfig, config)
     }
   }
 }
 
-async function resolveConfig(
-  fromPluginOptions: ConfigVpsUserProvided,
-  fromViteConfig: ConfigVpsUserProvided,
-  config: ResolvedConfig
-): Promise<ConfigVpsResolved> {
+async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promise<ConfigVpsResolved> {
+  const fromPluginOptions = (vpsConfig ?? {}) as ConfigVpsUserProvided
+  const fromViteConfig = ((config as Record<string, unknown>).vitePluginSsr ?? {}) as ConfigVpsUserProvided
+  const { vikeConfig: fromPlusConfigFile, vikeConfigFilePath: fromPlusConfigFilePath } = await loadPageConfigsData(
+    config.root,
+    isDev2(config)
+  )
   {
     const validationErr = checkConfigVps(fromPluginOptions)
     if (validationErr)
       assertUsage(false, `vite.config.js > vite-plugin-ssr option ${validationErr.prop} ${validationErr.errMsg}`)
   }
   {
+    const validationErr = checkConfigVps(fromPlusConfigFile)
+    if (validationErr) {
+      assertUsage(false, `vite.config.js#vitePluginSsr.${validationErr.prop} ${validationErr.errMsg}`)
+    }
+  }
+  {
     const validationErr = checkConfigVps(fromViteConfig)
-    if (validationErr) assertUsage(false, `vite.config.js#vitePluginSsr.${validationErr.prop} ${validationErr.errMsg}`)
+    if (validationErr) {
+      assert(fromPlusConfigFilePath)
+      assertUsage(false, `${fromPlusConfigFilePath} > ${validationErr.prop} ${validationErr.errMsg}`)
+    }
   }
   const fromStemPackages = await findConfigVpsFromStemPackages(config.root)
   const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig]
