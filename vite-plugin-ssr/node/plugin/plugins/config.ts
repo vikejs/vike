@@ -2,7 +2,7 @@ export { resolveVpsConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVpsUserProvided, ConfigVpsResolved } from './config/ConfigVps'
-import { checkConfigVps } from './config/checkConfigVps'
+import { assertVikeConfig } from './config/checkConfigVps'
 import { assert, assertUsage, isDev2 } from '../utils'
 import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
 import { pickFirst } from './config/pickFirst'
@@ -27,26 +27,17 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
     config.root,
     isDev2(config)
   )
-  {
-    const validationErr = checkConfigVps(fromPluginOptions)
-    if (validationErr)
-      assertUsage(false, `vite.config.js > vite-plugin-ssr option ${validationErr.prop} ${validationErr.errMsg}`)
-  }
-  {
-    const validationErr = checkConfigVps(fromPlusConfigFile)
-    if (validationErr) {
-      assertUsage(false, `vite.config.js#vitePluginSsr.${validationErr.prop} ${validationErr.errMsg}`)
-    }
-  }
-  {
-    const validationErr = checkConfigVps(fromViteConfig)
-    if (validationErr) {
-      assert(fromPlusConfigFilePath)
-      assertUsage(false, `${fromPlusConfigFilePath} > ${validationErr.prop} ${validationErr.errMsg}`)
-    }
-  }
+
+  assertVikeConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
+    assert(fromPlusConfigFilePath)
+    return `${fromPlusConfigFilePath} > ${prop} ${errMsg}`
+  })
+  assertVikeConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vitePluginSsr.${prop} ${errMsg}`)
+  // TODO/v1: deprecate this
+  assertVikeConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vite-plugin-ssr option ${prop} ${errMsg}`)
+
   const fromStemPackages = await findConfigVpsFromStemPackages(config.root)
-  const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig]
+  const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig, fromPlusConfigFile]
 
   const { baseServer, baseAssets } = resolveBase(configs, config)
 

@@ -1,8 +1,21 @@
-export { checkConfigVps }
+export { assertVikeConfig }
 
-import { assert, hasProp, isObject } from '../../utils'
+import { assert, assertUsage, hasProp, isObject } from '../../utils'
+import type { ConfigVpsUserProvided } from './ConfigVps'
 
-function checkConfigVps(configVps: unknown): null | { prop: string; errMsg: `should be a${string}` } {
+type WrongUsage = { prop: string; errMsg: `should be a${string}` }
+
+function assertVikeConfig(
+  vikeConfig: unknown,
+  wrongUsageMsg: (wrongUsage: WrongUsage) => string
+): asserts vikeConfig is ConfigVpsUserProvided {
+  const wrongUsageError = checkConfigVps(vikeConfig)
+  if (wrongUsageError) {
+    assertUsage(false, wrongUsageMsg(wrongUsageError))
+  }
+}
+
+function checkConfigVps(configVps: unknown): null | WrongUsage {
   assert(isObject(configVps))
   {
     const prop = 'disableAutoFullBuild'
