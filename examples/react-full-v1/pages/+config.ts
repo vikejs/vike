@@ -8,6 +8,7 @@ export default {
   passToClient: ['pageProps', 'documentProps', 'someAsyncProps'],
   clientRouting: true,
   hydrationCanBeAborted: true,
+  prerender: true,
   configDefinitions: {
     documentProps: {
       c_env: 'server-and-client'

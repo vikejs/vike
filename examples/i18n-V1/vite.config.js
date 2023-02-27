@@ -4,9 +4,6 @@ import ssr from 'vite-plugin-ssr/plugin'
 export default {
   plugins: [
     react(),
-    ssr({
-      // TODO
-      prerender: true
-    })
+    ssr()
   ]
 }
