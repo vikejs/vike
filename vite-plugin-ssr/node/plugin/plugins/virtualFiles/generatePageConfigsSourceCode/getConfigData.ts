@@ -1,4 +1,4 @@
-export { loadPageConfigsData }
+export { getConfigData }
 
 import {
   determinePageId2,
@@ -60,7 +60,7 @@ const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
   }
 }
 
-function loadPageConfigsData(userRootDir: string, isDev: boolean, invalidate: boolean): Promise<ConfigData> {
+function getConfigData(userRootDir: string, isDev: boolean, invalidate: boolean): Promise<ConfigData> {
   let force = false
   if (invalidate) {
     assert([true, false].includes(isFirstInvalidation))
@@ -71,12 +71,12 @@ function loadPageConfigsData(userRootDir: string, isDev: boolean, invalidate: bo
     }
   }
   if (!configDataPromise || force) {
-    configDataPromise = load(userRootDir, isDev)
+    configDataPromise = loadConfigData(userRootDir, isDev)
   }
   return configDataPromise
 }
 
-async function load(userRootDir: string, isDev: boolean): Promise<ConfigData> {
+async function loadConfigData(userRootDir: string, isDev: boolean): Promise<ConfigData> {
   const result = await findAndLoadPageConfigFiles(userRootDir, isDev)
   /* TODO: - remove this if we don't need this for optimizeDeps.entries
    *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead

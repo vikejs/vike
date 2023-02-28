@@ -3,12 +3,12 @@ export { resolveVpsConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVpsUserProvided, ConfigVpsResolved } from './config/ConfigVps'
 import { assertVikeConfig } from './config/checkConfigVps'
-import { assert, assertUsage, isDev2 } from '../utils'
+import { assert, isDev2 } from '../utils'
 import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
 import { pickFirst } from './config/pickFirst'
 import { resolveExtensions } from './config/resolveExtensions'
 import { resolveBase } from './config/resolveBase'
-import { loadPageConfigsData } from './virtualFiles/generatePageConfigsSourceCode/getPageConfigsData'
+import { getConfigData } from './virtualFiles/generatePageConfigsSourceCode/getConfigData'
 
 function resolveVpsConfig(vpsConfig: unknown): Plugin {
   return {
@@ -23,7 +23,7 @@ function resolveVpsConfig(vpsConfig: unknown): Plugin {
 async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promise<ConfigVpsResolved> {
   const fromPluginOptions = (vpsConfig ?? {}) as ConfigVpsUserProvided
   const fromViteConfig = ((config as Record<string, unknown>).vitePluginSsr ?? {}) as ConfigVpsUserProvided
-  const { vikeConfig: fromPlusConfigFile, vikeConfigFilePath: fromPlusConfigFilePath } = await loadPageConfigsData(
+  const { vikeConfig: fromPlusConfigFile, vikeConfigFilePath: fromPlusConfigFilePath } = await getConfigData(
     config.root,
     isDev2(config),
     false
