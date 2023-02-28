@@ -78,7 +78,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
 }
 
 async function analyzeAppRouting(config: ResolvedConfig) {
-  const { pageConfigsData } = await loadPageConfigsData(config.root, false)
+  const { pageConfigsData } = await loadPageConfigsData(config.root, false, false)
 
   let hasClientRouting = false
   let hasServerRouting = false

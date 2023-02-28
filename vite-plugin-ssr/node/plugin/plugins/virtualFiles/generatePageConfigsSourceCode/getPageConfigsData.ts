@@ -34,6 +34,15 @@ import type {
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './configDefinitionsBuiltIn'
 import glob from 'fast-glob'
 
+type ConfigData = {
+  pageConfigsData: PageConfigData[]
+  pageConfigGlobal: PageConfigGlobalData
+  vikeConfig: Record<string, unknown>
+  vikeConfigFilePath: string | null
+}
+let configDataPromise: Promise<ConfigData> | null = null
+let isFirstInvalidation = true
+
 type ConfigDefinitionsAll = Record<string, ConfigDefinition>
 
 type GlobalConfigName = 'onPrerenderStart' | 'onBeforeRoute' | 'prerender'
@@ -51,15 +60,23 @@ const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
   }
 }
 
-async function loadPageConfigsData(
-  userRootDir: string,
-  isDev: boolean
-): Promise<{
-  pageConfigsData: PageConfigData[]
-  pageConfigGlobal: PageConfigGlobalData
-  vikeConfig: Record<string, unknown>
-  vikeConfigFilePath: string | null
-}> {
+function loadPageConfigsData(userRootDir: string, isDev: boolean, invalidate: boolean): Promise<ConfigData> {
+  let force = false
+  if (invalidate) {
+    assert([true, false].includes(isFirstInvalidation))
+    if (isFirstInvalidation) {
+      isFirstInvalidation = false
+    } else {
+      force = true
+    }
+  }
+  if (!configDataPromise || force) {
+    configDataPromise = load(userRootDir, isDev)
+  }
+  return configDataPromise
+}
+
+async function load(userRootDir: string, isDev: boolean): Promise<ConfigData> {
   const result = await findAndLoadPageConfigFiles(userRootDir, isDev)
   /* TODO: - remove this if we don't need this for optimizeDeps.entries
    *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead

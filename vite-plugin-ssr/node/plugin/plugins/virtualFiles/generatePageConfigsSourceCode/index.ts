@@ -11,8 +11,6 @@ import {
 } from '../../../../commons/virtualIdPageCodeFilesImporter'
 import { loadPageConfigsData } from './getPageConfigsData'
 
-let pageConfigsData: null | PageConfigData[] = null
-
 // TODO remove old debug:glob
 export const debug = createDebugger('vps:virtual-files')
 
@@ -40,9 +38,7 @@ async function generatePageConfigsSourceCode(
   isDev: boolean,
   id: string
 ): Promise<string> {
-  const result = await loadPageConfigsData(userRootDir, isDev)
-  pageConfigsData = result.pageConfigsData
-  const { pageConfigGlobal } = result
+  const { pageConfigsData, pageConfigGlobal } = await loadPageConfigsData(userRootDir, isDev, true)
   return generateSourceCodeOfPageConfigs(pageConfigsData, pageConfigGlobal, isForClientSide, isDev, id)
 }
 
@@ -181,10 +177,7 @@ async function generatePageConfigVirtualFile(
   if (!result) return null
   assert(result.isForClientSide === isForClientSide)
   const { pageId } = result
-  if (!pageConfigsData) {
-    const result = await loadPageConfigsData(userRootDir, isDev)
-    pageConfigsData = result.pageConfigsData
-  }
+  const { pageConfigsData } = await loadPageConfigsData(userRootDir, isDev, false)
   assert(pageConfigsData)
   const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId2 === pageId)
   assert(pageConfigData)

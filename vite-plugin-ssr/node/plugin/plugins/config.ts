@@ -25,7 +25,8 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
   const fromViteConfig = ((config as Record<string, unknown>).vitePluginSsr ?? {}) as ConfigVpsUserProvided
   const { vikeConfig: fromPlusConfigFile, vikeConfigFilePath: fromPlusConfigFilePath } = await loadPageConfigsData(
     config.root,
-    isDev2(config)
+    isDev2(config),
+    false
   )
 
   assertVikeConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
