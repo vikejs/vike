@@ -1,6 +1,8 @@
 export default {
+  // define properties in the `+config` itself
   route,
   onBeforePrerenderStart,
+  // or import them from other files
   onBeforeRender: () => import('./onBeforeRender').then((m) => m.default)
 }
 
