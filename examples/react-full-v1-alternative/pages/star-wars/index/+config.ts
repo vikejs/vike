@@ -1,7 +1,13 @@
-import { filterMovieData } from '../filterMovieData'
-import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
+export default {
+  // define functions either directly in the config
+  onBeforePrerenderStart,
+  // or use dynamic imports
+  onBeforeRender: () => import('./+onBeforeRender').then((m) => m.default)
+}
 
-export default async function () {
+async function onBeforePrerenderStart() {
+  const { filterMovieData } = await import('../filterMovieData')
+  const { filterMoviesData, getStarWarsMovies, getTitle } = await import('./getStarWarsMovies')
   const movies = await getStarWarsMovies()
 
   return [
