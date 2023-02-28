@@ -2,7 +2,7 @@ export default {
   // define functions either directly in the config
   onBeforePrerenderStart,
   // or use dynamic imports
-  onBeforeRender: () => import('./+onBeforeRender').then((m) => m.default)
+  onBeforeRender: () => import('./onBeforeRender').then((m) => m.default)
 }
 
 async function onBeforePrerenderStart() {
