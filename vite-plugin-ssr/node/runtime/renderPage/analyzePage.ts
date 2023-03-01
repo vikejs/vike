@@ -4,16 +4,16 @@ import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageC
 import { getVPSClientEntry } from '../../../shared/getPageFiles/analyzePageClientSide/determineClientEntry'
 import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
-import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils'
+import { getCodeFilePath } from '../../../shared/page-configs/utils'
 import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide'
 import { getVirutalModuleIdPageCodeFilesImporter } from '../../commons/virtualIdPageCodeFilesImporter'
+import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide'
 
 function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string): AnalysisResult {
   if (pageConfig) {
-    const isClientRouting = getConfigValue(pageConfig, 'clientRouting', 'boolean') ?? false
+    const { isClientSideRenderable, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
     const clientEntryPageConfig = getCodeFilePath(pageConfig, 'clientEntry')
-    const isHtmlOnly = !!clientEntryPageConfig
-    const clientEntry = isHtmlOnly ? clientEntryPageConfig : getVPSClientEntry(isClientRouting)
+    const clientEntry = !isClientSideRenderable ? clientEntryPageConfig : getVPSClientEntry(isClientRouting)
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
       id: getVirutalModuleIdPageCodeFilesImporter(pageConfig.pageId2, true),
@@ -42,14 +42,17 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pa
       }
     })
     */
-    clientDependencies.push({
-      id: clientEntry,
-      onlyAssets: false,
-      eagerlyImported: false
-    })
-    const clientEntries: string[] = [clientEntry]
+    const clientEntries: string[] = []
+    if (clientEntry) {
+      clientDependencies.push({
+        id: clientEntry,
+        onlyAssets: false,
+        eagerlyImported: false
+      })
+      clientEntries.push(clientEntry)
+    }
     return {
-      isHtmlOnly,
+      isHtmlOnly: !isClientSideRenderable,
       isClientRouting,
       clientEntries,
       clientDependencies,
@@ -57,7 +60,7 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pa
       pageFilesClientSide: [],
       pageFilesServerSide: []
     }
+  } else {
+    return analyzePageClientSide(pageFilesAll, pageId)
   }
-
-  return analyzePageClientSide(pageFilesAll, pageId)
 }
