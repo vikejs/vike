@@ -20,6 +20,7 @@ type AnalysisResult = {
   pageFilesServerSide: PageFile[]
 }
 
+// TODO/v1-release: remove analyzePageClientSide(), use analyzeClientSide() instead
 function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string): AnalysisResult {
   let pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
