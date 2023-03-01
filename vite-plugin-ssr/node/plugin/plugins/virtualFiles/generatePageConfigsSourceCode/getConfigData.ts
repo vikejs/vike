@@ -45,7 +45,15 @@ let isFirstInvalidation = true
 
 type ConfigDefinitionsAll = Record<string, ConfigDefinition>
 
-type GlobalConfigName = 'onPrerenderStart' | 'onBeforeRoute' | 'prerender'
+type GlobalConfigName =
+  | 'onPrerenderStart'
+  | 'onBeforeRoute'
+  | 'prerender'
+  | 'extensions'
+  | 'disableAutoFullBuild'
+  | 'includeAssetsImportedByServer'
+  | 'baseAssets'
+  | 'baseServer'
 const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
   onPrerenderStart: {
     c_code: true,
@@ -57,7 +65,12 @@ const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
   },
   prerender: {
     c_env: 'c_config'
-  }
+  },
+  extensions: { c_env: 'c_config' },
+  disableAutoFullBuild: { c_env: 'c_config' },
+  includeAssetsImportedByServer: { c_env: 'c_config' },
+  baseAssets: { c_env: 'c_config' },
+  baseServer: { c_env: 'c_config' }
 }
 
 function getConfigData(userRootDir: string, isDev: boolean, invalidate: boolean): Promise<ConfigData> {
