@@ -31,6 +31,7 @@ export const debug = createDebugger('vps:virtual-files')
 // TODO: check whether onBeforerRender() is isomorph or server-only in react-full-v1 example
 // TODO: rename configSrc/configSource to configDefinedBy
 // TODO: check error handling when no onRenderHtml defined
+// TODO: assertUsage() when configDefinitions sets a invalid c_env value
 
 async function generatePageConfigsSourceCode(
   userRootDir: string,
