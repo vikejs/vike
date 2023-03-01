@@ -8,9 +8,7 @@
 
 **Version history (& breaking changes)** :arrow_right: [CHANGELOG.md](/CHANGELOG.md)
 
-**Follow** :arrow_right:
- - [Twitter > @brillout](https://twitter.com/brillout)
- - [Mastodon > @brillout@webtoo.ls](https://m.webtoo.ls/@brillout)
+**Follow** :arrow_right: [Twitter > @brillout](https://twitter.com/brillout), or [Mastodon > @brillout@webtoo.ls](https://m.webtoo.ls/@brillout).
 
 **Report a bug** :arrow_right: [GitHub Issue > Bug Report](https://github.com/vitejs/vite/issues/new/choose).
 <br/>
@@ -19,7 +17,7 @@
 **Get help** :arrow_right: [GitHub Discussions](https://github.com/brillout/vite-plugin-ssr/discussions).
 <br/>
 **Chit-chat** :arrow_right: [Discord](https://discord.com/invite/dSDMGGJZQy). :warning: **DON'T use Discord to get help**: we use Discord for casual conversations about vite-plugin-ssr and broader topics.
+
+**Feel free to PM `brillout`** :arrow_right: On [Twitter](https://twitter.com/brillout), or on [Discord](https://discord.com/invite/dSDMGGJZQy) right-click on the username `brillout` => `Message`.
 <br/>
-**Feel free to PM me** :arrow_right: On [Twitter](https://twitter.com/brillout), or on [Discord](https://discord.com/invite/dSDMGGJZQy) right-click on my username `brillout` => `Message`. I enjoy casually talking with my users.
-<br/>
-**Sponsor me** :arrow_right: [Rom Brillout Sponsors](https://github.com/sponsors/brillout). You'll get a private Discord channel and get **live support from me directly**.
+**Sponsor `brillout`** :arrow_right: [Rom Brillout Sponsors](https://github.com/sponsors/brillout). You'll get a private Discord channel and get **live support from `brillout` directly**.

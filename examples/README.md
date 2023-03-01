@@ -1,1 +1,1 @@
-For more examples, see [`vite-plugin-ssr.com` > Integration > Examples](https://vite-plugin-ssr.com/integration#examples).
+For more examples, see the examples created by the community: many tools have community examples of being used with `vite-plugin-ssr` – search [vite-plugin-ssr.com](https://vite-plugin-ssr.com) (`CTRL+K`) for the tool you want an example of.
