@@ -475,8 +475,14 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Wildcard API (RPC)',
-    url: '/wildcard-api'
+    titleInNav: 'Telefunc (RPC)',
+    title: 'Telefunc',
+    url: '/telefunc'
+  },
+  {
+    level: 2,
+    title: 'tRPC',
+    url: '/tRPC'
   },
   {
     level: 2,
@@ -883,5 +889,5 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: '`_error.page.js`',
     url: '/error-page'
-  }
+  },
 ]
