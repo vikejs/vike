@@ -173,9 +173,9 @@ async function generatePageConfigVirtualFile(
   isForClientSide: boolean,
   userRootDir: string,
   isDev: boolean
-): Promise<null | string> {
+): Promise<string> {
   const result = isVirutalModulePageCodeFilesImporter(id)
-  if (!result) return null
+  assert(result)
   assert(result.isForClientSide === isForClientSide)
   const { pageId } = result
   const { pageConfigsData } = await getConfigData(userRootDir, isDev, false)

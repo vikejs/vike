@@ -5,7 +5,7 @@ import type { ConfigVpsResolved } from '../config/ConfigVps'
 import { getConfigVps } from '../config/getConfigVps'
 import { generatePageConfigVirtualFile } from './generatePageConfigsSourceCode'
 import { generatePageFilesVirtualFile } from './generatePageFilesVirtualFile'
-import { isDev1, isDev1_onConfigureServer } from '../../utils'
+import { assert, isDev1, isDev1_onConfigureServer } from '../../utils'
 
 function virtualFiles(): Plugin {
   let config: ResolvedConfig
@@ -39,19 +39,19 @@ function virtualFiles(): Plugin {
     */
     async load(id, options) {
       const isDev = isDev1()
-      if (id.startsWith('\0virtual:vite-plugin-ssr:')) {
-        id = id.slice('\0'.length)
-      } else {
-        return undefined
+      if (!id.startsWith('\0virtual:vite-plugin-ssr:')) {
+        return
       }
-
-      {
+      id = id.slice('\0'.length)
+      if (id.startsWith('virtual:vite-plugin-ssr:pageCodeFilesImporter:')) {
         const code = await generatePageConfigVirtualFile(id, !options?.ssr, config.root, isDev)
-        if (code) return code
+        return code
       }
-
-      const code = await generatePageFilesVirtualFile(id, options, configVps, config, isDev)
-      return code
+      if (id.startsWith('virtual:vite-plugin-ssr:pageFiles:')) {
+        const code = await generatePageFilesVirtualFile(id, options, configVps, config, isDev)
+        return code
+      }
+      assert(false)
     },
     configureServer() {
       isDev1_onConfigureServer()
