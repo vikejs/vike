@@ -1,4 +1,4 @@
 export default {
-  onRenderClient: './onRenderClient.js',
+  onRenderClient: './onRenderClient.jsx',
   onRenderHtml: './onRenderHtml.jsx'
 }
