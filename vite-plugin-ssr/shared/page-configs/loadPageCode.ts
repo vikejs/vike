@@ -13,7 +13,9 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
 
   const codeFiles = await pageConfig.loadCodeFiles()
   codeFiles.forEach(({ configName, codeFilePath3, codeFileExports }) => {
-    assertDefaultExport(codeFileExports, codeFilePath3)
+    if (configName !== 'clientEntry') {
+      assertDefaultExport(codeFileExports, codeFilePath3)
+    }
     assert(!(configName in configValues))
     configValues[configName] = codeFileExports.default
   })
