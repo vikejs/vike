@@ -465,13 +465,18 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Vue Query',
-    url: '/vue-query'
+    title: 'Relay (GraphQL)',
+    url: '/relay'
   },
   {
     level: 2,
-    title: 'Relay (GraphQL)',
-    url: '/relay'
+    title: 'urql (GraphQL)',
+    url: '/urql'
+  },
+  {
+    level: 2,
+    title: 'Vue Query',
+    url: '/vue-query'
   },
   {
     level: 2,
@@ -486,12 +491,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'urql (GraphQL)',
-    url: '/urql'
-  },
-  {
-    level: 2,
-    title: 'gRPC (RPC)',
+    title: 'gRPC',
     url: '/grpc'
   },
   {
