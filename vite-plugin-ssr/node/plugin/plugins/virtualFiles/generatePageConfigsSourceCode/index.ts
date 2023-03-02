@@ -10,6 +10,7 @@ import {
   isVirutalModulePageCodeFilesImporter
 } from '../../../../commons/virtualIdPageCodeFilesImporter'
 import { getConfigData } from './getConfigData'
+import { getInvalidatorGlob } from './invalidation'
 
 // TODO remove old debug:glob
 export const debug = createDebugger('vps:virtual-files')
@@ -182,16 +183,12 @@ async function generatePageConfigVirtualFile(
   assert(pageConfigsData)
   const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId2 === pageId)
   assert(pageConfigData)
-  const code = generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData, isForClientSide, isDev)
+  const code = generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData, isForClientSide)
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
   return code
 }
 
-function generateSourceCodeOfLoadCodeFileVirtualFile(
-  pageConfigData: PageConfigData,
-  isForClientSide: boolean,
-  isDev: boolean
-): string {
+function generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData: PageConfigData, isForClientSide: boolean): string {
   const lines: string[] = []
   const importStatements: string[] = []
   lines.push('export default [')
@@ -210,18 +207,6 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
     lines.push(`  },`)
   })
   lines.push('];')
-  if (isDev) {
-    lines.push(getInvalidatorGlob(isDev))
-  }
   const code = [...importStatements, ...lines].join('\n')
   return code
-}
-
-// TODO: collocate entire invalidation strategy
-function getInvalidatorGlob(isDev: boolean) {
-  assert(isDev)
-  // The crawled files are never loaded (the plusFilesGlob export isn't used), the only effect of this glob is to invalidate the virtual module.
-  // We agressively invalidate the virual files because they are cheap and fast to re-create.
-  // The plusFilesGlob export isn't really used: it's only used to assert that we don't glob any unexpected file.
-  return "export const plusFilesGlob = import.meta.glob('/**/+*');"
 }

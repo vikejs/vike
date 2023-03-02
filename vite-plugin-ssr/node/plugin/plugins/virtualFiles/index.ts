@@ -1,15 +1,17 @@
 export { virtualFiles }
 
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { ConfigVpsResolved } from '../config/ConfigVps'
 import { getConfigVps } from '../config/getConfigVps'
 import { generatePageConfigVirtualFile } from './generatePageConfigsSourceCode'
 import { generatePageFilesVirtualFile } from './generatePageFilesVirtualFile'
 import { assert, isDev1, isDev1_onConfigureServer } from '../../utils'
+import { invalidateCodeImporters } from './generatePageConfigsSourceCode/invalidation'
 
 function virtualFiles(): Plugin {
   let config: ResolvedConfig
   let configVps: ConfigVpsResolved
+  let server: ViteDevServer
   return {
     name: 'vite-plugin-ssr:virtualFiles',
     config() {
@@ -48,12 +50,14 @@ function virtualFiles(): Plugin {
         return code
       }
       if (id.startsWith('virtual:vite-plugin-ssr:pageFiles:')) {
+        if (isDev) invalidateCodeImporters(server)
         const code = await generatePageFilesVirtualFile(id, options, configVps, config, isDev)
         return code
       }
       assert(false)
     },
-    configureServer() {
+    configureServer(server_) {
+      server = server_
       isDev1_onConfigureServer()
     }
   }
