@@ -226,6 +226,24 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     }
   })
 
+  test("CSS of other pages isn't loaded", async () => {
+    {
+      const html = await fetchHtml('/')
+      expect(html.split('text/css').length).toBe(2)
+      if (!isPreview) {
+        expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css')
+      }
+    }
+    for (const page of ['html-only', 'html-js', 'spa', 'ssr']) {
+      const html = await fetchHtml(`/${page}`)
+      expect(html.split('text/css').length).toBe(3)
+      if (!isPreview) {
+        expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css')
+        expect(html).toContain(`<link rel="stylesheet" type="text/css" href="/pages/${page}/index.css`)
+      }
+    }
+  })
+
   return
 
   async function testColor(color: Color) {
