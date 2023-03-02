@@ -64,7 +64,9 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
 
   test('about page', async () => {
     await page.click('a[href="/about"]')
-    expect(await page.textContent('h1')).toBe('About')
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('About')
+    })
     expect(await page.textContent('p')).toBe('Example of using VPS.')
     const html = await fetchHtml('/about')
     expect(html).toContain('<h1>About</h1>')
