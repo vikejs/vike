@@ -4,12 +4,11 @@ export { distFileNames }
 //  - https://github.com/brillout/vite-plugin-ssr/commit/11a4c49e5403aa7c37c8020c462b499425b41854
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
-import { assertPosixPath, assert, assertUsage } from '../utils'
+import { assertPosixPath, assert, assertUsage, removeFileExtention } from '../utils'
 import type { Plugin, ResolvedConfig } from 'vite'
 import path from 'path'
-import { determinePageId } from '../../../shared/determinePageId'
-import { deduceRouteStringFromFilesystemPath } from '../../../shared/route/deduceRouteStringFromFilesystemPath'
 import { extractAssetsRE } from './extractAssetsPlugin'
+import { isVirutalModulePageCodeFilesImporter } from '../../commons/virtualIdPageCodeFilesImporter'
 
 // Same as `import type { PreRenderedChunk, PreRenderedAsset } from 'rollup'` but safe when Vite updates Rollup version
 type Output = Extract<ResolvedConfig['build']['rollupOptions']['output'], { chunkFileNames?: unknown }>
@@ -26,10 +25,10 @@ function distFileNames(): Plugin {
       // We need to support multiple outputs: @vite/plugin-legacy adds an ouput, see https://github.com/brillout/vite-plugin-ssr/issues/477#issuecomment-1406434802
       rollupOutputs.forEach((rollupOutput) => {
         if (!rollupOutput.entryFileNames) {
-          rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config)
+          rollupOutput.entryFileNames = (chunkInfo) => getScriptFileName(chunkInfo, config, true)
         }
         if (!rollupOutput.chunkFileNames) {
-          rollupOutput.chunkFileNames = (chunkInfo) => getChunkFileName(chunkInfo, config)
+          rollupOutput.chunkFileNames = (chunkInfo) => getScriptFileName(chunkInfo, config, false)
         }
         if (!rollupOutput.assetFileNames) {
           rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
@@ -65,54 +64,59 @@ function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): 
   return `${dir}/${name}.[hash][extname]`
 }
 
-function getChunkFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig): string {
+function getScriptFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, isEntry: boolean): string {
   const { root } = config
-  assertPosixPath(root)
   const assetsDir = getAssetsDir(config)
 
+  assertPosixPath(root)
   const id = chunkInfo.facadeModuleId
   if (id) assertPosixPath(id)
 
-  if (!id || id.includes('/node_modules/') || extractAssetsRE.test(id) || !id.startsWith(config.root)) {
-    if (config.build.ssr) {
-      return `chunks/[hash].js`
-    } else {
-      return `${assetsDir}/chunks/[hash].js`
+  let name: string | undefined
+  if (id) {
+    const result = isVirutalModulePageCodeFilesImporter(id)
+    if (result) {
+      const { pageId } = result
+      pageId.startsWith('/')
+      name = pageId.slice(1)
     }
   }
 
-  let { name } = chunkInfo
-  if (name.includes('.page.') || name.endsWith('.page')) {
-    const chunkName = deduceChunkNameFromFilesystemRouting(id, root)
-    if (chunkName) {
-      name = name.replace('index', chunkName)
+  {
+    const chunkName = config.build.ssr ? `chunks/[hash].js` : `${assetsDir}/chunks/[hash].js`
+    if (!name && !isEntry) {
+      if (!id || id.includes('/node_modules/') || extractAssetsRE.test(id) || !id.startsWith(config.root)) {
+        return chunkName
+      }
     }
   }
 
-  name = removeLeadingHash(name)
+  if (id && id.startsWith(config.root)) {
+    let scriptPath = path.posix.relative(root, id)
+    assert(!scriptPath.startsWith('.'))
+    assert(!scriptPath.startsWith('/'))
+    scriptPath = removeFileExtention(scriptPath)
+    name = scriptPath
+  }
+
+  if (!name) {
+    name = chunkInfo.name
+  }
+
   if (!config.build.ssr) {
     return `${assetsDir}/${name}.[hash].js`
   } else {
     name = workaroundGlob(name)
-    return `${name}.js`
-  }
-}
-
-function getEntryFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig): string {
-  const assetsDir = getAssetsDir(config)
-  let { name } = chunkInfo
-  name = removeLeadingHash(name)
-  // name = name.split('/').pop()!
-  if (!config.build.ssr) {
-    return `${assetsDir}/${name}.[hash].js`
-  } else {
-    name = workaroundGlob(name)
-    return `${name}.mjs`
+    return `${name}.${isEntry ? 'mjs' : 'js'}`
   }
 }
 
 // Ensure import.meta.glob() doesn't match dist/ files
 function workaroundGlob(name: string) {
+  // V1 design
+  name = name.split('+').join('')
+
+  // V0.4 design
   ;['client', 'server', 'route'].forEach((env) => {
     name = name.split(`.page.${env}`).join(`-page-${env}`)
   })
@@ -138,17 +142,6 @@ function getAssetsDir(config: ResolvedConfig) {
   assertUsage(assetsDir, `${assetsDir} cannot be an empty string`)
   assetsDir = assetsDir.split(/\/|\\/).filter(Boolean).join('/')
   return assetsDir
-}
-
-function deduceChunkNameFromFilesystemRouting(id: string, root: string): string | null {
-  assert(id?.startsWith(root), { id, root })
-  const pathRelative = path.posix.relative(root, id)
-  assert(!pathRelative.startsWith('.') && !pathRelative.startsWith('/'), { id, root })
-  const pageId = determinePageId('/' + pathRelative)
-  const routeString = deduceRouteStringFromFilesystemPath(pageId, [])
-  const dirS = routeString.split('/')
-  const pageFileName = dirS[dirS.length - 1]
-  return pageFileName ?? null
 }
 
 function removeLeadingHash(name: string): string {

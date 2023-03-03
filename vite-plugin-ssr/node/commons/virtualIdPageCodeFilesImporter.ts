@@ -14,6 +14,7 @@ function getVirutalModuleIdPageCodeFilesImporter(pageId: string, isForClientSide
 function isVirutalModulePageCodeFilesImporter(
   id: string
 ): null | { isForClientSide: boolean; pageId: string; isExtractAssets: boolean } {
+  id = removeZeroChar(id)
   if (!id.startsWith(idBase)) return null
   const idOriginal = id
   id = extractAssetsRemoveQuery(id)
@@ -34,4 +35,12 @@ function isVirutalModulePageCodeFilesImporter(
     }
   }
   assert(false)
+}
+
+function removeZeroChar(id: string): string {
+  const c = '\0'
+  if (id.startsWith(c)) {
+    id = id.slice(c.length)
+  }
+  return id
 }
