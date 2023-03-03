@@ -33,6 +33,8 @@ export const debug = createDebugger('vps:virtual-files')
 // TODO: rename configSrc/configSource to configDefinedBy
 // TODO: check error handling when no onRenderHtml defined
 // TODO: assertUsage() when configDefinitions sets a invalid c_env value
+// TODO: inspect bug when hitting `r` hotkey of Vite dev server
+// TODO: inprove `dist/` filenames
 
 async function generatePageConfigsSourceCode(
   userRootDir: string,
