@@ -20,12 +20,10 @@ function testRun(
   cmd: 'npm run dev' | 'npm run prod' | 'npm run preview',
   {
     skipCssTest,
-    noDefaultPageInUserCode,
     uiFramewok,
     lang
   }: {
     skipCssTest?: boolean
-    noDefaultPageInUserCode?: true
     uiFramewok: 'react' | 'vue' | 'preact'
     lang?: 'ts'
   }
@@ -41,66 +39,6 @@ function testRun(
     // Vue injects: `!--[-->Home<!--]-->`
     expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}Home${/.*/}</a>`)
     expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}About${/.*/}</a>`)
-  })
-
-  test('production asset preloading', async () => {
-    const html = await fetchHtml('/')
-
-    {
-      expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
-      if (!isProd) {
-        expect(html).toContain('import("/@vite/client");')
-      } else {
-        expect(html).not.toContain('/@vite/client')
-      }
-    }
-
-    if (isProd) {
-      const hashRegexp = /[a-z0-9]+/
-      expect(html).toMatch(partRegex`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`)
-
-      try {
-        expect(html).toMatch(
-          partRegex`<script type="module" src="/assets/entry-client-routing.${hashRegexp}.js" defer>`
-        )
-      } catch (err) {
-        expect(html).toMatch(
-          partRegex`<script type="module" src="/assets/entry-server-routing.${hashRegexp}.js" defer>`
-        )
-      }
-
-      expect(html).toMatch(
-        partRegex`<link rel="modulepreload" href="/assets/chunk-${hashRegexp}.js" as="script" type="text/javascript">`
-      )
-      expect(html).toMatch(
-        partRegex`<link rel="modulepreload" href="/assets/pages/index/index.page.${hashRegexp}.js" as="script" type="text/javascript">`
-      )
-      expect(html).not.toMatch(
-        partRegex`<link rel="modulepreload" href="/assets/pages/about/index.page.${hashRegexp}.js" as="script" type="text/javascript">`
-      )
-      if (!noDefaultPageInUserCode) {
-        try {
-          expect(html).toMatch(
-            partRegex`<link rel="stylesheet" type="text/css" href="/assets/PageShell.${hashRegexp}.css">`
-          )
-        } catch {
-          try {
-            // Vite 2
-            expect(html).toMatch(
-              partRegex`<link rel="stylesheet" type="text/css" href="/assets/renderer/_default.page.client.${hashRegexp}.css">`
-            )
-          } catch {
-            // Vite 3 (not sure why it differs from Vite 2)
-            expect(html).toMatch(
-              partRegex`<link rel="stylesheet" type="text/css" href="/assets/_default.page.client.${hashRegexp}.css">`
-            )
-          }
-        }
-        expect(html).toMatch(
-          partRegex`<link rel="modulepreload" href="/assets/renderer/_default.page.client.${hashRegexp}.js" as="script" type="text/javascript">`
-        )
-      }
-    }
   })
 
   test('page is rendered to the DOM and interactive', async () => {

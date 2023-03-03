@@ -1,6 +1,5 @@
-// We could also define `handleCounter()` in `index.page.client.js` instead of `_default.page.client.js`.
-// We define `_default.page.client.js` to showcase how to define the browser-side JavaScript for multiple pages.
-
+// TODO: rename to +client.js
+//
 handleCounter()
 
 function handleCounter() {

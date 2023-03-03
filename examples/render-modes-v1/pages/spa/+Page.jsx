@@ -1,4 +1,4 @@
-export { Page }
+export default Page
 
 import { Counter } from '../ssr/Counter'
 import './index.css'

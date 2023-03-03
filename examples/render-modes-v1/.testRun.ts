@@ -17,7 +17,8 @@ export { testRun }
 
 const HMR_SLEEP = 500
 
-function testRun(cmd: 'npm run dev' | 'npm run preview') {
+// TODO:v1/release: remove non-V1 design case
+function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
   run(cmd)
 
   const isPreview = cmd === 'npm run preview'
@@ -31,16 +32,15 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     expect(html).toContain('This page has zero browser-side JavaScript.')
     if (isPreview) {
       expect(html).not.toContain('<script')
-      expect(html).toMatch(partRegex`<link rel="stylesheet" type="text/css" href="/assets/PageLayout.${hash}.css">`)
-      try {
-        // Vite 2
+      if (isV1Design) {
+        const cssImport = isV1Design
+          ? partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/onRenderClient.${hash}.css">`
+          : partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/html-only.${hash}.css">`
+        expect(html).toMatch(cssImport)
+      } else {
+        expect(html).toMatch(partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/PageLayout.${hash}.css">`)
         expect(html).toMatch(
-          partRegex`<link rel="stylesheet" type="text/css" href="/assets/index.page.server.${hash}.css">`
-        )
-      } catch (err) {
-        // Vite 3
-        expect(html).toMatch(
-          partRegex`<link rel="stylesheet" type="text/css" href="/assets/pages/html-only/index.page.server.${hash}.css">`
+          partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/index.page.server.${hash}.css">`
         )
       }
     } else {
@@ -70,9 +70,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
         // No HMR for JavaScript
         {
           const navPromise = page.waitForNavigation()
-          editFile('./pages/html-only/index.page.server.jsx', (s) =>
-            s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>')
-          )
+          const file = isV1Design ? './pages/html-only/+Page.jsx' : './pages/html-only/index.page.server.jsx'
+          editFile(file, (s) => s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'))
           await navPromise
           // But auto reload works
           expect(await page.textContent('h1')).toBe('HTML-only !')
@@ -111,7 +110,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       {
         expect(await page.textContent('h1')).toBe('SPA')
         await sleep(HMR_SLEEP)
-        editFile('./pages/spa/index.page.client.jsx', (s) => s.replace('<h1>SPA</h1>', '<h1>SPA !</h1>'))
+        const file = isV1Design ? './pages/spa/+Page.jsx' : './pages/spa/index.page.client.jsx'
+        editFile(file, (s) => s.replace('<h1>SPA</h1>', '<h1>SPA !</h1>'))
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SPA !')
         })
@@ -142,11 +142,15 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       const html = await fetchHtml('/html-js')
       expect(html).toContain('This page is rendered to HTML and has only few lines of browser-side JavaScript.')
       if (isPreview) {
-        expect(html).toMatch(
-          partRegex`<script type="module" src="/assets/pages/html-js/_default.page.client.${hash}.js" defer>`
-        )
+        const jsImport = isV1Design
+          ? partRegex`<script type="module" src="/assets/pages/html-js/clientEntry.${hash}.js" defer></script>`
+          : partRegex`<script type="module" src="/assets/pages/html-js/default.page.client.${hash}.js" defer>`
+        expect(html).toMatch(jsImport)
       } else {
-        expect(html).toMatch(partRegex`import("/@fs/${path}/pages/html-js/_default.page.client.js");`)
+        const jsImport = isV1Design
+          ? partRegex`import("/@fs/${path}/pages/html-js/+clientEntry.js");`
+          : partRegex`import("/@fs/${path}/pages/html-js/_default.page.client.js");`
+        expect(html).toMatch(jsImport)
       }
     }
 
@@ -160,9 +164,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
         {
           // No HMR for HTML + JS
           const navPromise = page.waitForNavigation()
-          editFile('./pages/html-js/index.page.server.jsx', (s) =>
-            s.replace('<h1>HTML + JS</h1>', '<h1>HTML + JS !</h1>')
-          )
+          const file = isV1Design ? './pages/html-js/+Page.jsx' : './pages/html-js/index.page.server.jsx'
+          editFile(file, (s) => s.replace('<h1>HTML + JS</h1>', '<h1>HTML + JS !</h1>'))
           await navPromise
           // But auto reload works
           expect(await page.textContent('h1')).toBe('HTML + JS !')
@@ -200,7 +203,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       {
         expect(await page.textContent('h1')).toBe('SSR')
         await sleep(HMR_SLEEP)
-        editFile('./pages/ssr/index.page.jsx', (s) => s.replace('<h1>SSR</h1>', '<h1>SSR !</h1>'))
+        const file = isV1Design ? './pages/ssr/+Page.jsx' : './pages/ssr/index.page.jsx'
+        editFile(file, (s) => s.replace('<h1>SSR</h1>', '<h1>SSR !</h1>'))
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SSR !')
         })
@@ -256,7 +260,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     })
   }
   async function clickCounter() {
-    await page.waitForFunction(() => window.document.body.textContent.includes('Counter')) // Wait until page has loaded
+    await page.waitForFunction(() => window.document.body.textContent!.includes('Counter')) // Wait until page has loaded
     expect(await page.textContent('button')).toContain('Counter 0')
     await autoRetry(async () => {
       await page.click('button')

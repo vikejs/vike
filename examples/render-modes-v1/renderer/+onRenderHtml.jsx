@@ -1,14 +1,10 @@
-export { render }
-export { passToClient }
+export default onRenderHtml
 
 import ReactDOMServer from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { PageLayout } from './PageLayout'
 
-// See https://vite-plugin-ssr.com/data-fetching
-const passToClient = ['pageProps']
-
-function render(pageContext) {
+function onRenderHtml(pageContext) {
   let pageHtml
   if (!pageContext.Page) {
     // SPA

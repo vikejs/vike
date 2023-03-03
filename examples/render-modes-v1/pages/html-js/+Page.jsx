@@ -1,4 +1,4 @@
-export { Page }
+export default Page
 
 import './index.css'
 
