@@ -26,12 +26,7 @@ function distFileNames(): Plugin {
       // We need to support multiple outputs: @vite/plugin-legacy adds an ouput, see https://github.com/brillout/vite-plugin-ssr/issues/477#issuecomment-1406434802
       rollupOutputs.forEach((rollupOutput) => {
         if (!rollupOutput.entryFileNames) {
-          if (!config.build.ssr) {
-            const assetsDir = getAssetsDir(config)
-            rollupOutput.entryFileNames = `${assetsDir}/[name].[hash].js`
-          } else {
-            // We let Vite set the name of server entries
-          }
+          rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config)
         }
         if (!rollupOutput.chunkFileNames) {
           rollupOutput.chunkFileNames = (chunkInfo) => getChunkFileName(chunkInfo, config)
@@ -44,74 +39,86 @@ function distFileNames(): Plugin {
   }
 }
 
-const BLACK_LIST: string[] = [
-  /* There used to exist a file client/assertRenderHook.ts
-   * We need to check whether we still need such black list for Rollup 4
-  'assertRenderHook.css'
-  */
-]
 function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): string {
   const assetsDir = getAssetsDir(config)
-  const filename = assetInfo.name && path.basename(assetInfo.name)
+  const dir = assetsDir + '/static'
+  let { name } = assetInfo
 
-  // Not sure when/why this happens
-  if (filename && BLACK_LIST.includes(filename)) {
-    return `${assetsDir}/chunk-[hash][extname]`
+  if (!name) {
+    return `${dir}/[name].[hash][extname]`
   }
 
   // dist/client/assets/index.page.server.jsx_extractAssets_lang.e4e33422.css
   // => dist/client/assets/index.page.server.e4e33422.css
   if (
     // Vite 2
-    filename?.endsWith('_extractAssets_lang.css') ||
+    name?.endsWith('_extractAssets_lang.css') ||
     // Vite 3
-    filename?.endsWith('?extractAssets&lang.css')
+    name?.endsWith('?extractAssets&lang.css')
   ) {
-    const filenameBase = filename.split('.').slice(0, -2).join('.')
-    return `${assetsDir}/${filenameBase}.[hash][extname]`
+    name = name.split('.').slice(0, -2).join('.')
+    return `${dir}/${name}.[hash][extname]`
   }
 
-  return `${assetsDir}/[name].[hash][extname]`
+  name = removeLeadingHash(name)
+  name = name.split('.').slice(0, -1).join('.')
+  return `${dir}/${name}.[hash][extname]`
 }
 
-function getChunkFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig) {
+function getChunkFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig): string {
   const { root } = config
   assertPosixPath(root)
   const assetsDir = getAssetsDir(config)
 
   const id = chunkInfo.facadeModuleId
+  if (id) assertPosixPath(id)
 
-  /* TODO: remove
-  if (chunkInfo.isDynamicEntry || chunkInfo.isEntry) {
-    return `${assetsDir}/[name].[hash].js`
-  }
-  */
-
-  if (id) {
-    assertPosixPath(id)
-  }
-  assertPosixPath(root)
-
-  if (
-    !chunkInfo.isDynamicEntry ||
-    !id ||
-    id.includes('/node_modules/') ||
-    !id.startsWith(root) ||
-    (id.includes('.page.server.') && extractAssetsRE.test(id))
-  ) {
-    return `${assetsDir}/chunk-[hash].js`
-  }
-
-  let { name } = chunkInfo
-  if (name.startsWith('index.page.') || name === 'index.page') {
-    const chunkName = deduceChunkNameFromFilesystemRouting(id, root)
-    if (chunkName) {
-      name = name.replace('index', chunkName)
-      return `${assetsDir}/${name}.[hash].js`
+  if (!id || id.includes('/node_modules/') || extractAssetsRE.test(id) || !id.startsWith(config.root)) {
+    if (config.build.ssr) {
+      return `chunks/[hash].js`
+    } else {
+      return `${assetsDir}/chunks/[hash].js`
     }
   }
 
-  return `${assetsDir}/[name].[hash].js`
+  let { name } = chunkInfo
+  if (name.includes('.page.') || name.endsWith('.page')) {
+    const chunkName = deduceChunkNameFromFilesystemRouting(id, root)
+    if (chunkName) {
+      name = name.replace('index', chunkName)
+    }
+  }
+
+  name = removeLeadingHash(name)
+  if (!config.build.ssr) {
+    return `${assetsDir}/${name}.[hash].js`
+  } else {
+    name = workaroundGlob(name)
+    return `${name}.js`
+  }
+}
+
+function getEntryFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig): string {
+  const assetsDir = getAssetsDir(config)
+  let { name } = chunkInfo
+  name = removeLeadingHash(name)
+  // name = name.split('/').pop()!
+  if (!config.build.ssr) {
+    return `${assetsDir}/${name}.[hash].js`
+  } else {
+    name = workaroundGlob(name)
+    return `${name}.mjs`
+  }
+}
+
+// Ensure import.meta.glob() doesn't match dist/ files
+function workaroundGlob(name: string) {
+  ;['client', 'server', 'route'].forEach((env) => {
+    name = name.split(`.page.${env}`).join(`-page-${env}`)
+  })
+  name = name.split('.page.').join('-page.')
+  name = name.replace(/\.page$/, '-page')
+  return name
 }
 
 function getRollupOutputs(config: ResolvedConfig) {
@@ -142,4 +149,17 @@ function deduceChunkNameFromFilesystemRouting(id: string, root: string): string 
   const dirS = routeString.split('/')
   const pageFileName = dirS[dirS.length - 1]
   return pageFileName ?? null
+}
+
+function removeLeadingHash(name: string): string {
+  assert(!name.includes('\\'))
+  const paths = name.split('/')
+  const last = paths.length - 1
+  const file = paths[last]!
+  if (!file.startsWith('_') || file.startsWith('_default.page.') || file.startsWith('_error.page.')) {
+    return name
+  } else {
+    paths[last] = paths[last]!.slice(1)
+    return paths.join('/')
+  }
 }
