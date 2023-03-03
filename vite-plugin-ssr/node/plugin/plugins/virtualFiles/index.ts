@@ -46,7 +46,12 @@ function virtualFiles(): Plugin {
       }
       id = id.slice('\0'.length)
       if (id.startsWith('virtual:vite-plugin-ssr:pageCodeFilesImporter:')) {
-        const code = await generatePageConfigVirtualFile(id, !options?.ssr, config.root, isDev)
+        const code = await generatePageConfigVirtualFile(
+          id,
+          config.root,
+          isDev,
+          configVps.includeAssetsImportedByServer
+        )
         return code
       }
       if (id.startsWith('virtual:vite-plugin-ssr:pageFiles:')) {

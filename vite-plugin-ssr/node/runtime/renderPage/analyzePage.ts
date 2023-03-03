@@ -8,6 +8,7 @@ import { getCodeFilePath } from '../../../shared/page-configs/utils'
 import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide'
 import { getVirutalModuleIdPageCodeFilesImporter } from '../../commons/virtualIdPageCodeFilesImporter'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide'
+import { getGlobalContext } from '../globalContext'
 
 function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string): AnalysisResult {
   if (pageConfig) {
@@ -20,11 +21,15 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pa
       onlyAssets: false,
       eagerlyImported: false
     })
-    clientDependencies.push({
-      id: getVirutalModuleIdPageCodeFilesImporter(pageConfig.pageId2, false),
-      onlyAssets: true,
-      eagerlyImported: false
-    })
+    // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
+    if (!getGlobalContext().isProduction) {
+      clientDependencies.push({
+        id: getVirutalModuleIdPageCodeFilesImporter(pageConfig.pageId2, false),
+        onlyAssets: true,
+        eagerlyImported: false
+      })
+    }
+    //*/
     /* TODO: remove?
     Object.values(pageConfig.configSources).forEach((configSource) => {
       if (configSource.codeFilePath) {

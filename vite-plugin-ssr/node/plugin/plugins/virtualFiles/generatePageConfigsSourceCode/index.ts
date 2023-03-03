@@ -11,6 +11,7 @@ import {
 } from '../../../../commons/virtualIdPageCodeFilesImporter'
 import { getConfigData } from './getConfigData'
 import { getInvalidatorGlob } from './invalidation'
+import { extractAssetsAddQuery } from '../../extractAssetsPlugin/extractAssetsAddQuery'
 
 // TODO remove old debug:glob
 export const debug = createDebugger('vps:virtual-files')
@@ -173,24 +174,41 @@ function serializeConfigSource(
 
 async function generatePageConfigVirtualFile(
   id: string,
-  isForClientSide: boolean,
   userRootDir: string,
-  isDev: boolean
+  isDev: boolean,
+  includeAssetsImportedByServer: boolean
 ): Promise<string> {
   const result = isVirutalModulePageCodeFilesImporter(id)
   assert(result)
-  assert(result.isForClientSide === isForClientSide)
-  const { pageId } = result
+  /* This assertion fails when using includeAssetsImportedByServer
+  {
+    const isForClientSide = !config.build.ssr
+    assert(result.isForClientSide === isForClientSide)
+  }
+  */
+  const { pageId, isForClientSide } = result
   const { pageConfigsData } = await getConfigData(userRootDir, isDev, false)
   assert(pageConfigsData)
   const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId2 === pageId)
   assert(pageConfigData)
-  const code = generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData, isForClientSide)
+  const code = generateSourceCodeOfLoadCodeFileVirtualFile(
+    pageConfigData,
+    isForClientSide,
+    pageId,
+    includeAssetsImportedByServer,
+    isDev
+  )
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
   return code
 }
 
-function generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData: PageConfigData, isForClientSide: boolean): string {
+function generateSourceCodeOfLoadCodeFileVirtualFile(
+  pageConfigData: PageConfigData,
+  isForClientSide: boolean,
+  pageId: string,
+  includeAssetsImportedByServer: boolean,
+  isDev: boolean
+): string {
   const lines: string[] = []
   const importStatements: string[] = []
   lines.push('export default [')
@@ -209,6 +227,9 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData: PageConfigD
     lines.push(`  },`)
   })
   lines.push('];')
+  if (includeAssetsImportedByServer && isForClientSide && !isDev) {
+    lines.push(`import '${extractAssetsAddQuery(getVirutalModuleIdPageCodeFilesImporter(pageId, false))}'`)
+  }
   const code = [...importStatements, ...lines].join('\n')
   return code
 }
