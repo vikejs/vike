@@ -56,11 +56,12 @@ function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): 
     name?.endsWith('?extractAssets&lang.css')
   ) {
     name = name.split('.').slice(0, -2).join('.')
+    name = removeSpecialCharacters(name)
     return `${dir}/${name}.[hash][extname]`
   }
 
-  name = removeLeadingHash(name)
   name = name.split('.').slice(0, -1).join('.')
+  name = removeSpecialCharacters(name)
   return `${dir}/${name}.[hash][extname]`
 }
 
@@ -104,11 +105,20 @@ function getScriptFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, 
   }
 
   if (!config.build.ssr) {
+    name = removeSpecialCharacters(name)
     return `${assetsDir}/${name}.[hash].js`
   } else {
     name = workaroundGlob(name)
+    name = removeSpecialCharacters(name)
     return `${name}.${isEntry ? 'mjs' : 'js'}`
   }
+}
+
+function removeSpecialCharacters(name: string): string {
+  name = name.split('+').join('')
+  // GitHub Pages treat URLs with filename starting with `_` differently (removing the need for workaround of creating a .jekyll file)
+  name = name.split('_').join('')
+  return name
 }
 
 // Ensure import.meta.glob() doesn't match dist/ files
@@ -142,17 +152,4 @@ function getAssetsDir(config: ResolvedConfig) {
   assertUsage(assetsDir, `${assetsDir} cannot be an empty string`)
   assetsDir = assetsDir.split(/\/|\\/).filter(Boolean).join('/')
   return assetsDir
-}
-
-function removeLeadingHash(name: string): string {
-  assert(!name.includes('\\'))
-  const paths = name.split('/')
-  const last = paths.length - 1
-  const file = paths[last]!
-  if (!file.startsWith('_') || file.startsWith('_default.page.') || file.startsWith('_error.page.')) {
-    return name
-  } else {
-    paths[last] = paths[last]!.slice(1)
-    return paths.join('/')
-  }
 }
