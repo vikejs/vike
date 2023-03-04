@@ -1,3 +1,14 @@
+## [0.4.90](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.89...v0.4.90) (2023-03-04)
+
+
+### Bug Fixes
+
+* improve dist/ file names ([b1a232c](https://github.com/brillout/vite-plugin-ssr/commit/b1a232ce735a390d71a51db06344bc2489870626))
+* make dependency sharing with Vite much more likely ([a9949bd](https://github.com/brillout/vite-plugin-ssr/commit/a9949bdc3b33bff3bd71a81aede044a9b7636698))
+* remove special characters from emitted dist/ files ([b019fe7](https://github.com/brillout/vite-plugin-ssr/commit/b019fe7bbde3ad1ced1dc37716b24d3560cb9e0b))
+
+
+
 ## [0.4.89](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.88...v0.4.89) (2023-02-25)
 
 
