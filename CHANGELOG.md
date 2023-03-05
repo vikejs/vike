@@ -1,3 +1,13 @@
+## [0.4.91](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.90...v0.4.91) (2023-03-05)
+
+
+### Bug Fixes
+
+* fix and consolidate `pageContext.pageProps.is404` logic [#681](https://github.com/brillout/vite-plugin-ssr/issues/681) ([99e9e39](https://github.com/brillout/vite-plugin-ssr/commit/99e9e39c4c09515117860ca2758959414076fa60))
+* update @brillout/vite-plugin-import-build ([908cb17](https://github.com/brillout/vite-plugin-ssr/commit/908cb1707b366ef0e3b57b03190709458bec3c55))
+
+
+
 ## [0.4.90](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.89...v0.4.90) (2023-03-04)
 
 
