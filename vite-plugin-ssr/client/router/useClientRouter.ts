@@ -10,7 +10,8 @@ import {
   throttle,
   sleep,
   getGlobalObject,
-  callHookWithTimeout
+  callHookWithTimeout,
+  isObject
 } from './utils'
 import { navigationState } from '../navigationState'
 import { getPageContext, getPageContextErrorPage } from './getPageContext'
@@ -439,7 +440,7 @@ function onPageShow(listener: () => void) {
 }
 
 function checkIfAbort(err: unknown, pageContext: { urlOriginal: string; _isFirstRenderAttempt: boolean }): boolean {
-  if ((err as any)?._abortRendering) return true
+  if (isObject(err) && err._abortRendering) return true
 
   if (handleErrorFetchingStaticAssets(err, pageContext)) {
     return true
