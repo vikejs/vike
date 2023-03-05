@@ -1,16 +1,20 @@
 export { releasePageContext }
 export type { PageContextRelease }
 
-import { assert, assertUsage, isObject, objectAssign, getGlobalObject, checkType } from './utils'
+import { assert, assertUsage, isObject, objectAssign, getGlobalObject } from './utils'
 import { sortPageContext } from '../shared/sortPageContext'
 import type { PageContextExports } from '../shared/getPageFiles'
 const globalObject = getGlobalObject<{ disableAssertPassToClient?: string }>('releasePageContext.ts', {})
 import type { PageContextBuiltInClient as PageContextBuiltInClientServerRouter } from './types'
 import type { PageContextBuiltInClient as PageContextBuiltInClientClientRouter } from './router/types'
+import { addIs404ToPageProps } from '../shared/addIs404ToPageProps'
+import type { PageConfig } from '../shared/page-configs/PageConfig'
 
 type PageContextRelease = PageContextExports & {
   _pageContextRetrievedFromServer: null | Record<string, unknown>
   _comesDirectlyFromServer: boolean
+  _pageId: string
+  _pageConfigs: PageConfig[]
 }
 
 // Release `pageContext` for user consumption.
@@ -42,6 +46,7 @@ function releasePageContext<T extends PageContextRelease>(
   assert('exports' in pageContext)
   assert('exportsAll' in pageContext)
   assert('pageExports' in pageContext)
+  // TODO/v1-release: remove pageContext.pageExports
   assert(isObject(pageContext.pageExports))
 
   const Page = pageContext.exports.Page
@@ -58,6 +63,8 @@ function releasePageContext<T extends PageContextRelease>(
     ? // Not possible to achieve `getAssertPassToClientProxy()` if some `onBeforeRender()` hook defined in `.page.js` was called. (We cannot infer what `pageContext` properties came from the server-side or from the client-side. Which is fine because the user will likely dig into why the property is missing in `const pageContext = await runOnBeforeRenderServerHooks()` anyways, which does support throwing the helpul `assertPassToClient()` error message.)
       pageContext
     : getProxy(pageContext)
+
+  addIs404ToPageProps(pageContext)
 
   return pageContextReadyForRelease
 }

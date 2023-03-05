@@ -2,12 +2,11 @@ export { preparePageContextForRelease }
 export type { PageContextPublic }
 
 import type { ExportsAll } from '../../../shared/getPageFiles'
-import { assert, hasProp, isPlainObject, isObject } from '../../utils'
+import { assert, isPlainObject, isObject } from '../../utils'
 import { sortPageContext } from '../../../shared/sortPageContext'
-import { addIs404ToPageProps } from '../helpers'
 import { assertURLs, PageContextUrls } from '../../../shared/addComputedUrlProps'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
-import { isErrorPage } from '../../../shared/route/error-page'
+import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
 
 type PageContextPublic = {
   urlOriginal: string
@@ -36,8 +35,5 @@ function preparePageContextForRelease<T extends PageContextPublic>(pageContext: 
 
   sortPageContext(pageContext)
 
-  if (isErrorPage(pageContext._pageId, pageContext._pageConfigs)) {
-    assert(hasProp(pageContext, 'is404', 'boolean'))
-    addIs404ToPageProps(pageContext)
-  }
+  addIs404ToPageProps(pageContext)
 }

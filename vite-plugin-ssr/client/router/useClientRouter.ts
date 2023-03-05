@@ -14,7 +14,7 @@ import {
   isObject
 } from './utils'
 import { navigationState } from '../navigationState'
-import { getPageContext, getPageContextErrorPage } from './getPageContext'
+import { checkIf404, getPageContext, getPageContextErrorPage } from './getPageContext'
 import { createPageContext } from './createPageContext'
 import { addLinkPrefetchHandlers } from './prefetch'
 import { assertInfo, assertWarning, isReact, PromiseType } from './utils'
@@ -148,8 +148,13 @@ function useClientRouter() {
       pageContextAddendum = await getPageContext(pageContext)
     } catch (err: unknown) {
       if (checkIfAbort(err, pageContext)) return
-
-      console.error(err)
+      if (checkIf404(err)) {
+        objectAssign(pageContext, {
+          is404: true
+        })
+      } else {
+        console.error(err)
+      }
 
       try {
         pageContextAddendum = await getPageContextErrorPage(pageContext)

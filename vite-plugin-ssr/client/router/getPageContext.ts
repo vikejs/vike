@@ -1,3 +1,7 @@
+export { getPageContext }
+export { getPageContextErrorPage }
+export { checkIf404 }
+
 import { navigationState } from '../navigationState'
 import {
   assert,
@@ -7,7 +11,8 @@ import {
   objectAssign,
   getProjectError,
   serverSideRouteTo,
-  callHookWithTimeout
+  callHookWithTimeout,
+  isObject
 } from './utils'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
@@ -23,9 +28,6 @@ import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
 import type { PageConfig } from '../../shared/page-configs/PageConfig'
 import { getCodeFilePath, getPageConfig } from '../../shared/page-configs/utils'
-
-export { getPageContext }
-export { getPageContextErrorPage }
 
 type PageContextAddendum = {
   _pageId: string
@@ -235,10 +237,19 @@ async function getPageContextFromRoute(
   const routeResult = await route(pageContext)
   const pageContextFromRoute = routeResult.pageContextAddendum
   if (!pageContextFromRoute._pageId) {
-    throw new Error('No routing match')
+    const err = new Error('No routing match')
+    markIs404(err)
+    throw err
   }
   assert(hasProp(pageContextFromRoute, '_pageId', 'string'))
   return pageContextFromRoute
+}
+
+function markIs404(err: Error) {
+  objectAssign(err, { _is404: true })
+}
+function checkIf404(err: unknown): boolean {
+  return isObject(err) && err._is404 === true
 }
 
 async function retrievePageContextFromServer(pageContext: {

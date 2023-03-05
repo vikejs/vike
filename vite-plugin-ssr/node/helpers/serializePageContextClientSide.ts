@@ -1,10 +1,10 @@
 export { serializePageContextClientSide }
-export { addIs404ToPageProps }
 
 import { stringify } from '@brillout/json-serializer/stringify'
 import { assert, assertUsage, hasProp, isPlainObject, unique } from '../utils'
 import type { PageConfig } from '../../shared/page-configs/PageConfig'
 import { isErrorPage } from '../../shared/route/error-page'
+import { addIs404ToPageProps } from '../../shared/addIs404ToPageProps'
 
 type PageContextUser = Record<string, unknown>
 type PageContextClient = { _pageId: string } & Record<string, unknown>
@@ -66,13 +66,6 @@ function serializePageContextClientSide(pageContext: {
   }
 
   return pageContextSerialized
-}
-
-function addIs404ToPageProps(pageContext: { is404: boolean; pageProps?: Record<string, unknown> }) {
-  assert(typeof pageContext.is404 === 'boolean')
-  const pageProps = pageContext.pageProps || {}
-  pageProps['is404'] = pageProps['is404'] || pageContext.is404
-  pageContext.pageProps = pageProps
 }
 
 function lowercaseFirstLetter(str: string) {
