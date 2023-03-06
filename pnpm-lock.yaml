@@ -386,12 +386,14 @@ importers:
   examples/i18n:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
+      node-fetch: ^2.6.9
       react: ^18.1.0
       react-dom: ^18.1.0
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
+      node-fetch: 2.6.9
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       vite: 4.0.3
@@ -2190,7 +2192,7 @@ packages:
       chai: 4.3.6
       esbuild: 0.16.5
       fast-glob: 3.2.12
-      node-fetch: 2.6.7
+      node-fetch: 2.6.9
       picocolors: 1.0.0
       pixelmatch: 5.3.0
       playwright-chromium: 1.26.0
@@ -6875,7 +6877,7 @@ packages:
   /isomorphic-fetch/3.0.0:
     resolution: {integrity: sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==}
     dependencies:
-      node-fetch: 2.6.7
+      node-fetch: 2.6.9
       whatwg-fetch: 3.6.2
     transitivePeerDependencies:
       - encoding
@@ -8054,6 +8056,7 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
+    dev: false
 
   /node-fetch/2.6.9:
     resolution: {integrity: sha512-DJm/CJkZkRjKKj4Zi4BsKVZh3ValV5IR5s7LVZnW+6YMh0W1BfNA8XSs6DLMGYlId5F3KnA70uu2qepcR08Qqg==}
@@ -8065,7 +8068,6 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
-    dev: false
 
   /node-fetch/3.2.4:
     resolution: {integrity: sha512-WvYJRN7mMyOLurFR2YpysQGuwYrJN+qrrpHjJDuKMcSPdfFccRUla/kng2mz6HWSBxJcqPbvatS6Gb4RhOzCJw==}
