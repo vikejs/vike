@@ -32,6 +32,7 @@ jobs:
       fail-fast: false
     env:
       TEST_FILES: ${{ matrix.TEST_FILES }}
+      TEST_INSPECT: ${{ matrix.TEST_INSPECT }}
     runs-on: ${{ matrix.os }}
     name: '${{ matrix.jobName }}'
 

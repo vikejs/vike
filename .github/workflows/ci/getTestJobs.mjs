@@ -8,11 +8,12 @@ const args = process.argv
 
 const root = cmd('git rev-parse --show-toplevel')
 const configFileName = 'test-e2e.config.mjs'
+const projectFiles = getProjectFiles()
 
 export { getTestJobs }
 if (args.includes('--ci')) logMatrix()
 
-/** @typedef { { jobName: string, TEST_FILES: string, jobCmd: string } & Setup } MatrixEntry */
+/** @typedef { { jobName: string, TEST_FILES: string, jobCmd: string, TEST_INSPECT: string } & Setup } MatrixEntry */
 /** @typedef { { jobName: string, jobTestFiles?: string[], jobSetups: Setup[], jobCmd: string } } Job */
 /** @typedef { { os: string, node_version: string } } Setup */
 
@@ -27,12 +28,11 @@ function getProjectFiles() {
 
 /** @type { () => Promise<Job[]> } */
 async function getTestJobs() {
-  const projectFiles = getProjectFiles()
   const specFiles = projectFiles.filter((file) => file.includes('.spec.'))
   const testFiles = projectFiles.filter((file) => file.includes('.test.'))
 
   /** @type { Job[] } */
-  const jobs = [
+  let jobs = [
     // Unit tests
     {
       jobName: 'Unit Tests',
@@ -57,8 +57,6 @@ async function getTestJobs() {
 
 /** @type { (testFiles: string[]) => Promise<Job[]> } */
 async function crawlE2eJobs(testFiles) {
-  const projectFiles = getProjectFiles()
-
   /** @type { Job[] } */
   const jobs = []
 
@@ -177,7 +175,15 @@ function getTestJobFiles(projectFiles) {
 }
 
 async function getMatrix() {
-  const jobs = await getTestJobs()
+  let jobs = await getTestJobs()
+
+  const inspectFile = getInspectFile()
+  let TEST_INSPECT = ''
+  if (inspectFile) {
+    const inspectDir = path.dirname(inspectFile)
+    TEST_INSPECT = inspectDir
+    jobs = jobs.filter((job) => job.jobTestFiles?.some((testFile) => testFile.startsWith(inspectDir)))
+  }
 
   /** @type MatrixEntry[] */
   const matrix = []
@@ -187,6 +193,7 @@ async function getMatrix() {
         jobCmd,
         jobName: jobName + getSetupName(setup),
         TEST_FILES: (jobTestFiles ?? []).join(' '),
+        TEST_INSPECT,
         ...setup
       })
     })
@@ -237,4 +244,17 @@ function getSetupName(setup) {
   assert(node_version)
   const setupName = ` - ${osName} - Node.js ${node_version}`
   return setupName
+}
+
+// To debug `getInspectFile()` run `$ node ./getTestJobs.mjs --ci --debug`
+function getInspectFile() {
+  const inspectFiles = projectFiles.filter((file) => file.endsWith('/INSPECT'))
+  if (inspectFiles.length === 0) {
+    return null
+  }
+  assert(
+    inspectFiles.length === 1,
+    'There cannot be only one `focus` file but found multiple: ' + inspectFiles.join(' ')
+  )
+  return inspectFiles[0]
 }
