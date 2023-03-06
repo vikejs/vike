@@ -84,7 +84,9 @@ function tolerateError(log) {
     isSourceMapWarning() ||
     isCloudflareFalseError1() ||
     isCloudflareFalseError2() ||
-    isCloudflareVueWarning()
+    isCloudflareVueWarning() ||
+    isTwitterEmbedsError() ||
+    isGithubImageError()
   )
 
   // [vite-plugin-ssr@0.4.42][Warning] The onBeforeRender() hook of /pages/star-wars/index/index.page.server.ts is taking more than 4 seconds
@@ -178,6 +180,22 @@ function tolerateError(log) {
     return (
       log.logSource === 'stderr' &&
       log.logText.includes('Feature flags __VUE_OPTIONS_API__, __VUE_PROD_DEVTOOLS__ are not explicitly defined.')
+    )
+  }
+  function isTwitterEmbedsError() {
+    return (
+      log.logSource === 'Browser Error' &&
+      log.logText.includes('https://syndication.twitter.com') &&
+      log.logText.includes('the server responded with a status of 403')
+    )
+  }
+  function isGithubImageError() {
+    const txt = log.logText
+    return (
+      log.logSource === 'Browser Error' &&
+      txt.includes('https://github.com/') &&
+      txt.include('.png') &&
+      txt.includes('the server responded with a status of 429')
     )
   }
 }

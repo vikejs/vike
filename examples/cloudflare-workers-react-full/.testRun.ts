@@ -1,6 +1,6 @@
 export { testRun }
 
-import { page, test, expect, run, autoRetry, fetchHtml, isGithubAction, getServerUrl, skip } from '@brillout/test-e2e'
+import { page, test, expect, run, autoRetry, fetchHtml, isCI, getServerUrl, skip } from '@brillout/test-e2e'
 
 // Node.js 18's fetch implementation fails to resolve `localhost`.
 //  - Seems to happen only for wrangler
@@ -37,7 +37,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
   //*/
 
   {
-    const additionalTimeout = !isWrangler ? 0 : (isGithubAction() ? 2 : 1) * 10 * 1000
+    const additionalTimeout = !isWrangler ? 0 : (isCI() ? 2 : 1) * 10 * 1000
     const serverIsReadyMessage = (() => {
       if (isWrangler) {
         return 'Listening at'
