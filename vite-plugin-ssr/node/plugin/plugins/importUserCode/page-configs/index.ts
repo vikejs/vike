@@ -6,7 +6,7 @@ import { assert, createDebugger, objectEntries } from '../../../utils'
 import type { ConfigSource, PageConfigData, PageConfigGlobalData } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
 import {
-  getVirtualModuleIdImportPageCode,
+  getVirtualFileIdImportPageCode,
   isVirtualModuleIdImportPageCode
 } from '../../../../commons/virtual-files/virtualFileImportPageCode'
 import { getConfigData } from './getConfigData'
@@ -62,7 +62,7 @@ function generateSourceCodeOfPageConfigs(
   pageConfigsData.forEach((pageConfig, i) => {
     const { pageConfigFilePathAll, pageId2, routeFilesystem, routeFilesystemDefinedBy, configSources, isErrorPage } =
       pageConfig
-    const codeFilesImporter = getVirtualModuleIdImportPageCode(pageId2, isForClientSide)
+    const codeFilesImporter = getVirtualFileIdImportPageCode(pageId2, isForClientSide)
     const pageConfigVar = `pageConfig${i + 1}` // TODO: remove outdated & unncessary variable creation
     lines.push(`{`)
     lines.push(`  const ${pageConfigVar} = {`)
@@ -228,7 +228,7 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   })
   lines.push('];')
   if (includeAssetsImportedByServer && isForClientSide && !isDev) {
-    lines.push(`import '${extractAssetsAddQuery(getVirtualModuleIdImportPageCode(pageId, false))}'`)
+    lines.push(`import '${extractAssetsAddQuery(getVirtualFileIdImportPageCode(pageId, false))}'`)
   }
   const code = [...importStatements, ...lines].join('\n')
   return code

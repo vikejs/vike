@@ -1,5 +1,5 @@
 export { isVirtualModuleIdImportPageCode }
-export { getVirtualModuleIdImportPageCode }
+export { getVirtualFileIdImportPageCode }
 
 import { extractAssetsRemoveQuery } from '../../plugin/plugins/extractAssetsPlugin/extractAssetsAddQuery'
 import { assert, getVirtualFileId } from '../../utils'
@@ -8,7 +8,7 @@ const idBase = 'virtual:vite-plugin-ssr:importPageCode:'
 const idBaseClient = `${idBase}client:` as const
 const idBaseServer = `${idBase}server:` as const
 
-function getVirtualModuleIdImportPageCode(pageId: string, isForClientSide: boolean): string {
+function getVirtualFileIdImportPageCode(pageId: string, isForClientSide: boolean): string {
   return (isForClientSide ? idBaseClient : idBaseServer) + pageId
 }
 function isVirtualModuleIdImportPageCode(
