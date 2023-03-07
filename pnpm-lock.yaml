@@ -37,8 +37,8 @@ importers:
       compression: ^1.7.4
       cross-env: ^7.0.3
       express: ^4.18.1
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       sirv: ^2.0.2
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -47,8 +47,8 @@ importers:
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.18.1
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       sirv: 2.0.2
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -64,8 +64,8 @@ importers:
       compression: ^1.7.4
       cross-env: ^7.0.3
       express: ^4.18.1
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       sirv: ^2.0.2
       ts-node: ^10.9.1
       typescript: ^4.9.4
@@ -81,8 +81,8 @@ importers:
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.18.1
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       sirv: 2.0.2
       ts-node: 10.9.1_3v2cms72gsblw7jmali7btb3pu
       typescript: 4.9.4
@@ -170,14 +170,14 @@ importers:
   examples/base-url:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -188,8 +188,8 @@ importers:
       cors: ^2.8.5
       cross-env: ^7.0.3
       express: ^4.18.1
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
@@ -198,8 +198,8 @@ importers:
       cors: 2.8.5
       cross-env: 7.0.3
       express: 4.18.1
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -210,8 +210,8 @@ importers:
       cors: ^2.8.5
       cross-env: ^7.0.3
       express: ^4.18.1
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
@@ -308,14 +308,14 @@ importers:
   examples/file-structure-domain-driven:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -387,23 +387,23 @@ importers:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
       node-fetch: ^2.6.9
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
       node-fetch: 2.6.9
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/i18n-v1:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
@@ -416,14 +416,14 @@ importers:
   examples/layouts-react:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -452,8 +452,8 @@ importers:
       '@vitejs/plugin-react': ^3.0.0
       cross-env: ^7.0.3
       express: ^4.18.1
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       serve: ^13.0.2
       ts-node: ^10.7.0
       typescript: ^4.6.4
@@ -467,8 +467,8 @@ importers:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
       cross-env: 7.0.3
       express: 4.18.1
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       serve: 13.0.2
       ts-node: 10.7.0_l47be6km5p57gglrggidw5gsgm
       typescript: 4.6.4
@@ -614,18 +614,18 @@ importers:
   examples/react-router:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       react-router: ^6.3.0
       react-router-dom: ^6.3.0
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
-      react-router: 6.3.0_react@18.1.0
-      react-router-dom: 6.3.0_ef5jwxihqo6n7gxfmzogljlgcm
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-router: 6.3.0_react@18.2.0
+      react-router-dom: 6.3.0_biqbaboplfbrettd7655fr4n2y
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -635,8 +635,8 @@ importers:
       compression: ^1.7.4
       cross-env: ^7.0.3
       express: ^4.18.1
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       sirv: ^2.0.2
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -668,17 +668,17 @@ importers:
   examples/redux:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       react-redux: ^8.0.1
       redux: ^4.2.0
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
-      react-redux: 8.0.1_zi7aoi7ced5urpsfm5fjpojgnm
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-redux: 8.0.1_e42enmjmqb4imi3q3iaq2rrebm
       redux: 4.2.0
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -686,22 +686,22 @@ importers:
   examples/render-modes:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/render-modes-v1:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
@@ -793,8 +793,8 @@ importers:
       graphql: ^16.4.0
       isomorphic-fetch: ^3.0.0
       node-fetch: ^3.0.0
-      react: ^18.1.0
-      react-dom: ^18.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       react-ssr-prepass: ^1.5.0
       typescript: ^4.6.4
       urql: ^2.2.3
@@ -807,11 +807,11 @@ importers:
       graphql: 16.4.0
       isomorphic-fetch: 3.0.0
       node-fetch: 3.2.4
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
-      react-ssr-prepass: 1.5.0_react@18.1.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-ssr-prepass: 1.5.0_react@18.2.0
       typescript: 4.6.4
-      urql: 2.2.3_cxfcglayresyyxxylwnor5zopi
+      urql: 2.2.3_vhn3dl52tnao3zbypj777itz4y
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -8826,16 +8826,6 @@ packages:
       scheduler: 0.20.2
     dev: false
 
-  /react-dom/18.1.0_react@18.1.0:
-    resolution: {integrity: sha512-fU1Txz7Budmvamp7bshe4Zi32d0ll7ect+ccxNu9FlObT605GOEB8BfO4tmRJ39R5Zj831VCpvQ05QPBW5yb+w==}
-    peerDependencies:
-      react: ^18.1.0
-    dependencies:
-      loose-envify: 1.4.0
-      react: 18.1.0
-      scheduler: 0.22.0
-    dev: false
-
   /react-dom/18.2.0_react@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
@@ -8858,7 +8848,7 @@ packages:
     resolution: {integrity: sha512-Fl7FuabXsJnV5Q1qIOQwx/sagGF18kogb4gpfcG4gjLBWO0WDiiz1ko/ExayuxE7InyQkBLkxRFG5oxY6Uu3Kg==}
     dev: false
 
-  /react-redux/8.0.1_zi7aoi7ced5urpsfm5fjpojgnm:
+  /react-redux/8.0.1_e42enmjmqb4imi3q3iaq2rrebm:
     resolution: {integrity: sha512-LMZMsPY4DYdZfLJgd7i79n5Kps5N9XVLCJJeWAaPYTV+Eah2zTuBjTxKtNEbjiyitbq80/eIkm55CYSLqAub3w==}
     peerDependencies:
       '@types/react': ^16.8 || ^17.0 || ^18.0
@@ -8883,11 +8873,11 @@ packages:
       '@types/hoist-non-react-statics': 3.3.1
       '@types/use-sync-external-store': 0.0.3
       hoist-non-react-statics: 3.3.2
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       react-is: 18.1.0
       redux: 4.2.0
-      use-sync-external-store: 1.1.0_react@18.1.0
+      use-sync-external-store: 1.1.0_react@18.2.0
     dev: false
 
   /react-refresh/0.14.0:
@@ -8895,33 +8885,33 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /react-router-dom/6.3.0_ef5jwxihqo6n7gxfmzogljlgcm:
+  /react-router-dom/6.3.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-uaJj7LKytRxZNQV8+RbzJWnJ8K2nPsOOEuX7aQstlMZKQT0164C+X2w6bnkqU3sjtLvpd5ojrezAyfZ1+0sStw==}
     peerDependencies:
       react: '>=16.8'
       react-dom: '>=16.8'
     dependencies:
       history: 5.3.0
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
-      react-router: 6.3.0_react@18.1.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-router: 6.3.0_react@18.2.0
     dev: false
 
-  /react-router/6.3.0_react@18.1.0:
+  /react-router/6.3.0_react@18.2.0:
     resolution: {integrity: sha512-7Wh1DzVQ+tlFjkeo+ujvjSqSJmkt1+8JO+T5xklPlgrh70y7ogx75ODRW0ThWhY7S+6yEDks8TYrtQe/aoboBQ==}
     peerDependencies:
       react: '>=16.8'
     dependencies:
       history: 5.3.0
-      react: 18.1.0
+      react: 18.2.0
     dev: false
 
-  /react-ssr-prepass/1.5.0_react@18.1.0:
+  /react-ssr-prepass/1.5.0_react@18.2.0:
     resolution: {integrity: sha512-yFNHrlVEReVYKsLI5lF05tZoHveA5pGzjFbFJY/3pOqqjGOmMmqx83N4hIjN2n6E1AOa+eQEUxs3CgRnPmT0RQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
-      react: 18.1.0
+      react: 18.2.0
     dev: false
 
   /react-streaming/0.3.5_biqbaboplfbrettd7655fr4n2y:
@@ -8942,13 +8932,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: false
-
-  /react/18.1.0:
-    resolution: {integrity: sha512-4oL8ivCz5ZEPyclFQXaNksK3adutVS8l2xzZU0cqEFrE9Sb7fC0EFK5uEk74wIreL1DERyjvsU915j1pcT2uEQ==}
-    engines: {node: '>=0.10.0'}
-    dependencies:
-      loose-envify: 1.4.0
     dev: false
 
   /react/18.2.0:
@@ -9265,12 +9248,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: false
-
-  /scheduler/0.22.0:
-    resolution: {integrity: sha512-6QAm1BgQI88NPYymgGQLCZgvep4FyePDWFpXVK+zNSUgHwlqpJy8VEh8Et0KxTACS4VWwMousBElAZOH9nkkoQ==}
-    dependencies:
-      loose-envify: 1.4.0
     dev: false
 
   /scheduler/0.23.0:
@@ -10235,7 +10212,7 @@ packages:
     resolution: {integrity: sha512-DOE84vZT2fEcl9gqCUTcnAw5ZY5Id55ikUcziSUntuEFL3pRvavg5kwDmTEUJkeCHInTlV/HexFomgYnzO5kdQ==}
     dev: false
 
-  /urql/2.2.3_cxfcglayresyyxxylwnor5zopi:
+  /urql/2.2.3_vhn3dl52tnao3zbypj777itz4y:
     resolution: {integrity: sha512-XMkSYJKW9s4ZlbSuxcUz3fTBIykOn0sGileRXQeyZpaRBXJPVz5saSY05k7jdefNxShZtTI+/nr7PYUWQertfg==}
     peerDependencies:
       graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
@@ -10243,16 +10220,16 @@ packages:
     dependencies:
       '@urql/core': 2.6.1_graphql@16.4.0
       graphql: 16.4.0
-      react: 18.1.0
+      react: 18.2.0
       wonka: 4.0.15
     dev: false
 
-  /use-sync-external-store/1.1.0_react@18.1.0:
+  /use-sync-external-store/1.1.0_react@18.2.0:
     resolution: {integrity: sha512-SEnieB2FPKEVne66NpXPd1Np4R1lTNKfjuy3XdIoPQKYBAFdzbzSZlSn1KJZUiihQLQC5Znot4SBz1EOTBwQAQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
-      react: 18.1.0
+      react: 18.2.0
     dev: false
 
   /util-deprecate/1.0.2:
