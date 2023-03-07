@@ -1,2 +1,2 @@
-import { testRun } from '../i18n-V1/.testRun'
+import { testRun } from '../i18n-v1/.testRun'
 testRun('npm run preview')

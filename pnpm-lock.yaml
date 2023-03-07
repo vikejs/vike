@@ -399,7 +399,7 @@ importers:
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
-  examples/i18n-V1:
+  examples/i18n-v1:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
       react: ^18.1.0
