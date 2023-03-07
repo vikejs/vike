@@ -4,7 +4,7 @@ import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { ConfigVpsResolved } from '../config/ConfigVps'
 import { getConfigVps } from '../config/getConfigVps'
 import { generatePageConfigVirtualFile } from './page-configs'
-import { generatePageFilesVirtualFile } from './generatePageFilesVirtualFile'
+import { getPageFilesVirtualFile } from './page-files/getPageFilesVirtualFile'
 import { getVirtualFileId, isDev1, isDev1_onConfigureServer, isVirtualFileId, resolveVirtualFileId } from '../../utils'
 import { invalidateCodeImporters } from './page-configs/invalidation'
 
@@ -57,7 +57,7 @@ function importUserCode(): Plugin {
 
       if (id.startsWith('virtual:vite-plugin-ssr:pageFiles:')) {
         if (isDev) invalidateCodeImporters(server)
-        const code = await generatePageFilesVirtualFile(id, options, configVps, config, isDev)
+        const code = await getPageFilesVirtualFile(id, options, configVps, config, isDev)
         return code
       }
     },

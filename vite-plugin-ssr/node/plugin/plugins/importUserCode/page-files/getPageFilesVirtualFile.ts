@@ -1,22 +1,22 @@
-export { generatePageFilesVirtualFile }
+export { getPageFilesVirtualFile }
 
 // TODO/v1-release: remove old `.page.js`/`.page.client.js`/`.page.server.js` interface
 //  - Systematically remove all pageFilesAll references does the trick?
 
 import type { ResolvedConfig } from 'vite'
-import { assert, assertPosixPath, viteIsSSR_options, isNotNullish, scriptFileExtensions, debugGlob } from '../../utils'
-import type { ConfigVpsResolved } from '../config/ConfigVps'
+import { assert, assertPosixPath, viteIsSSR_options, isNotNullish, scriptFileExtensions, debugGlob } from '../../../utils'
+import type { ConfigVpsResolved } from '../../config/ConfigVps'
 import {
   virtualModuleIdPageFilesClientCR,
   virtualModuleIdPageFilesClientSR,
   virtualModuleIdPageFilesServer
-} from './virtualModuleIdPageFiles'
-import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes'
+} from '../virtualModuleIdPageFiles'
+import { type FileType, fileTypes, determineFileType } from '../../../../../shared/getPageFiles/fileTypes'
 import path from 'path'
-import { generatePageConfigsSourceCode } from './page-configs'
-import { generateEagerImport } from './generateEagerImport'
+import { generatePageConfigsSourceCode } from '../page-configs'
+import { generateEagerImport } from '../generateEagerImport'
 
-async function generatePageFilesVirtualFile(
+async function getPageFilesVirtualFile(
   id: string,
   options: { ssr?: boolean } | undefined,
   configVps: ConfigVpsResolved,
