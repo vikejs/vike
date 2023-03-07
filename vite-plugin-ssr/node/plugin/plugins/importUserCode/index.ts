@@ -1,4 +1,4 @@
-export { virtualFiles }
+export { importUserCode }
 
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { ConfigVpsResolved } from '../config/ConfigVps'
@@ -8,12 +8,12 @@ import { generatePageFilesVirtualFile } from './generatePageFilesVirtualFile'
 import { getVirtualFileId, isDev1, isDev1_onConfigureServer, isVirtualFileId, resolveVirtualFileId } from '../../utils'
 import { invalidateCodeImporters } from './page-configs/invalidation'
 
-function virtualFiles(): Plugin {
+function importUserCode(): Plugin {
   let config: ResolvedConfig
   let configVps: ConfigVpsResolved
   let server: ViteDevServer
   return {
-    name: 'vite-plugin-ssr:virtualFiles',
+    name: 'vite-plugin-ssr:importUserCode',
     config() {
       return {
         experimental: {

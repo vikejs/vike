@@ -12,7 +12,7 @@ import { devConfig } from './plugins/devConfig'
 import { manifest } from './plugins/manifest'
 import { packageJsonFile } from './plugins/packageJsonFile'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin'
-import { virtualFiles } from './plugins/importUserCode'
+import { importUserCode } from './plugins/importUserCode'
 import { resolveVpsConfig } from './plugins/config'
 import type { ConfigVpsUserProvided } from './plugins/config/ConfigVps'
 import { distFileNames } from './plugins/distFileNames'
@@ -30,7 +30,7 @@ function plugin(vpsConfig?: ConfigVpsUserProvided): any {
   const plugins: Plugin[] = [
     resolveVpsConfig(vpsConfig), // `resolveVpsConfig()`'s hook `configResolved()` should be the first called
     commonConfig(),
-    virtualFiles(),
+    importUserCode(),
     ...devConfig(),
     buildConfig(),
     previewConfig(),
