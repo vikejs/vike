@@ -15,7 +15,6 @@ function isVirtualFileId(id: string): boolean {
   return false
 }
 function getVirtualFileId(id: string): string {
-  assert(isVirtualFileId(id))
   if (id.startsWith(tag)) {
     id = id.slice(tag.length)
   }
