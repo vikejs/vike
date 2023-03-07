@@ -7,7 +7,7 @@ import type { ConfigSource, PageConfigData, PageConfigGlobalData } from '../../.
 import { generateEagerImport } from '../generateEagerImport'
 import {
   getVirtualFileIdImportPageCode,
-  isVirtualModuleIdImportPageCode
+  isVirtualFileIdImportPageCode
 } from '../../../../commons/virtual-files/virtualFileImportPageCode'
 import { getConfigData } from './getConfigData'
 import { getInvalidatorGlob } from './invalidation'
@@ -178,7 +178,7 @@ async function generatePageConfigVirtualFile(
   isDev: boolean,
   includeAssetsImportedByServer: boolean
 ): Promise<string> {
-  const result = isVirtualModuleIdImportPageCode(id)
+  const result = isVirtualFileIdImportPageCode(id)
   assert(result)
   /* This assertion fails when using includeAssetsImportedByServer
   {

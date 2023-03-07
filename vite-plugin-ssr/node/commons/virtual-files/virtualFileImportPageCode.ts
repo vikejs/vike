@@ -1,4 +1,4 @@
-export { isVirtualModuleIdImportPageCode }
+export { isVirtualFileIdImportPageCode }
 export { getVirtualFileIdImportPageCode }
 
 import { extractAssetsRemoveQuery } from '../../plugin/plugins/extractAssetsPlugin/extractAssetsAddQuery'
@@ -11,7 +11,7 @@ const idBaseServer = `${idBase}server:` as const
 function getVirtualFileIdImportPageCode(pageId: string, isForClientSide: boolean): string {
   return (isForClientSide ? idBaseClient : idBaseServer) + pageId
 }
-function isVirtualModuleIdImportPageCode(
+function isVirtualFileIdImportPageCode(
   id: string
 ): null | { isForClientSide: boolean; pageId: string; isExtractAssets: boolean } {
   id = getVirtualFileId(id)
