@@ -6,7 +6,7 @@ import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { getCodeFilePath } from '../../../shared/page-configs/utils'
 import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide'
-import { getVirutalModuleIdPageCodeFilesImporter } from '../../commons/virtual-files/virtualIdPageCodeFilesImporter'
+import { getVirutalModuleIdPageCodeFilesImporter } from '../../commons/virtual-files/virtualModuleImportPageCode'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide'
 import { getGlobalContext } from '../globalContext'
 
