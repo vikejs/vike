@@ -8,7 +8,7 @@ import { assertPosixPath, assert, assertUsage, removeFileExtention } from '../ut
 import type { Plugin, ResolvedConfig } from 'vite'
 import path from 'path'
 import { extractAssetsRE } from './extractAssetsPlugin'
-import { isVirtualModuleIdImportPageCode } from '../../commons/virtual-files/virtualModuleImportPageCode'
+import { isVirtualModuleIdImportPageCode } from '../../commons/virtual-files/virtualFileImportPageCode'
 
 // Same as `import type { PreRenderedChunk, PreRenderedAsset } from 'rollup'` but safe when Vite updates Rollup version
 type Output = Extract<ResolvedConfig['build']['rollupOptions']['output'], { chunkFileNames?: unknown }>

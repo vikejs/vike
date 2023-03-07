@@ -13,7 +13,7 @@ import {
   unique
 } from '../utils'
 import { findPageFiles } from '../helpers'
-import { virtualModuleIdImportUserCodeServer } from '../../commons/virtual-files/virtualModuleImportUserCode'
+import { virtualModuleIdImportUserCodeServer } from '../../commons/virtual-files/virtualFileImportUserCode'
 import { getConfigData } from './importUserCode/page-configs/getConfigData'
 import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils'
 type InputOption = ResolvedConfig['build']['rollupOptions']['input'] // same as `import type { InputOption } from 'rollup'` but safe when Vite updates Rollup version

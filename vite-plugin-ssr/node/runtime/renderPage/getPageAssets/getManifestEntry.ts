@@ -3,7 +3,7 @@ export { getManifestEntry }
 import type { ViteManifest, ViteManifestEntry } from '../../helpers'
 import { assert, slice, isNpmPackageModule } from '../../../utils'
 import { assertClientEntryId } from './assertClientEntryId'
-import { isVirtualModuleIdImportPageCode } from '../../../commons/virtual-files/virtualModuleImportPageCode'
+import { isVirtualModuleIdImportPageCode } from '../../../commons/virtual-files/virtualFileImportPageCode'
 
 function getManifestEntry(
   id: string,
