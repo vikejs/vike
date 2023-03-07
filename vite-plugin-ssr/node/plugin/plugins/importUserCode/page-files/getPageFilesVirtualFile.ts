@@ -4,13 +4,20 @@ export { getPageFilesVirtualFile }
 //  - Systematically remove all pageFilesAll references does the trick?
 
 import type { ResolvedConfig } from 'vite'
-import { assert, assertPosixPath, viteIsSSR_options, isNotNullish, scriptFileExtensions, debugGlob } from '../../../utils'
+import {
+  assert,
+  assertPosixPath,
+  viteIsSSR_options,
+  isNotNullish,
+  scriptFileExtensions,
+  debugGlob
+} from '../../../utils'
 import type { ConfigVpsResolved } from '../../config/ConfigVps'
 import {
-  virtualModuleIdPageFilesClientCR,
-  virtualModuleIdPageFilesClientSR,
-  virtualModuleIdPageFilesServer
-} from '../virtualModuleIdPageFiles'
+  virtualModuleIdImportUserCodeClientCR,
+  virtualModuleIdImportUserCodeClientSR,
+  virtualModuleIdImportUserCodeServer
+} from '../virtualModuleIdImportUserCode'
 import { type FileType, fileTypes, determineFileType } from '../../../../../shared/getPageFiles/fileTypes'
 import path from 'path'
 import { generatePageConfigsSourceCode } from '../page-configs'
@@ -26,14 +33,14 @@ async function getPageFilesVirtualFile(
   assert(
     // prettier-ignore
     [
-      virtualModuleIdPageFilesServer,
-      virtualModuleIdPageFilesClientCR,
-      virtualModuleIdPageFilesClientSR
+      virtualModuleIdImportUserCodeServer,
+      virtualModuleIdImportUserCodeClientCR,
+      virtualModuleIdImportUserCodeClientSR
     ].includes(id)
   )
-  const isForClientSide = id !== virtualModuleIdPageFilesServer
+  const isForClientSide = id !== virtualModuleIdImportUserCodeServer
   assert(isForClientSide === !viteIsSSR_options(options))
-  const isClientRouting = id === virtualModuleIdPageFilesClientCR
+  const isClientRouting = id === virtualModuleIdImportUserCodeClientCR
   const isPrerendering = !!configVps.prerender
   const code = await getCode(config, configVps, isForClientSide, isClientRouting, isPrerendering, isDev, id)
   return code

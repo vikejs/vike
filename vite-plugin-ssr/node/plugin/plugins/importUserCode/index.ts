@@ -34,8 +34,8 @@ function importUserCode(): Plugin {
     configureServer(server) {
       server.watcher.on('change', (filePath) => {
         console.log('filePath', filePath)
-        // server.moduleGraph.onFileChange(virtualModuleIdPageFilesServer)
-        // server.moduleGraph.onFileChange(virtualModuleIdPageFilesClientCR)
+        // server.moduleGraph.onFileChange(virtualModuleIdImportUserCodeServer)
+        // server.moduleGraph.onFileChange(virtualModuleIdImportUserCodeClientCR)
       })
     },
     */
