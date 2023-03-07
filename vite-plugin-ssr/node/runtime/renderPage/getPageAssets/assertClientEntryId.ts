@@ -13,7 +13,7 @@ function assertClientEntryId(id: string) {
     id.startsWith('@@vite-plugin-ssr/') ||
       // User files
       id.startsWith('/') ||
-      // Code files importer
+      // Page code importer
       isVirtualFileIdImportPageCode(id) ||
       // Stem packages
       isPkg,

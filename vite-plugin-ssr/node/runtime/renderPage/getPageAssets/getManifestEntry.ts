@@ -20,7 +20,7 @@ function getManifestEntry(
     return { manifestEntry, manifestKey }
   }
 
-  // Code files importer
+  // Page code importer
   if (isVirtualFileIdImportPageCode(id)) {
     const manifestKey = id
     let manifestEntry = clientManifest[manifestKey]
