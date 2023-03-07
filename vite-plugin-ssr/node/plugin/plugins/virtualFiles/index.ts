@@ -3,10 +3,10 @@ export { virtualFiles }
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { ConfigVpsResolved } from '../config/ConfigVps'
 import { getConfigVps } from '../config/getConfigVps'
-import { generatePageConfigVirtualFile } from './generatePageConfigsSourceCode'
+import { generatePageConfigVirtualFile } from './page-configs'
 import { generatePageFilesVirtualFile } from './generatePageFilesVirtualFile'
 import { getVirtualFileId, isDev1, isDev1_onConfigureServer, isVirtualFileId, resolveVirtualFileId } from '../../utils'
-import { invalidateCodeImporters } from './generatePageConfigsSourceCode/invalidation'
+import { invalidateCodeImporters } from './page-configs/invalidation'
 
 function virtualFiles(): Plugin {
   let config: ResolvedConfig

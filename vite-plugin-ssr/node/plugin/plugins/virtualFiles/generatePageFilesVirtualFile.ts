@@ -13,7 +13,7 @@ import {
 } from './virtualModuleIdPageFiles'
 import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes'
 import path from 'path'
-import { generatePageConfigsSourceCode } from './generatePageConfigsSourceCode'
+import { generatePageConfigsSourceCode } from './page-configs'
 import { generateEagerImport } from './generateEagerImport'
 
 async function generatePageFilesVirtualFile(
