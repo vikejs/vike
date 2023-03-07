@@ -889,5 +889,5 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: '`_error.page.js`',
     url: '/error-page'
-  },
+  }
 ]

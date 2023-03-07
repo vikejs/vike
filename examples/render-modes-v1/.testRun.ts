@@ -38,7 +38,9 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
           : partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/html-only.${hash}.css">`
         expect(html).toMatch(cssImport)
       } else {
-        expect(html).toMatch(partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/PageLayout.${hash}.css">`)
+        expect(html).toMatch(
+          partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/PageLayout.${hash}.css">`
+        )
         expect(html).toMatch(
           partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/index.page.server.${hash}.css">`
         )

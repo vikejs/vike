@@ -13,4 +13,3 @@ async function onRenderClient(pageContext) {
     </PageLayout>
   )
 }
-

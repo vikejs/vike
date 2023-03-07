@@ -25,7 +25,9 @@ function testRun(
     if (isDev) {
       expect(html).toContain(`<link rel="icon" href="${addBaseAssets('/renderer/logo.svg')}" />`)
     } else {
-      expect(html).toMatch(partRegex`<link rel="icon" href="${addBaseAssets('/assets/static/logo.')}${/[a-zA-Z0-9]+/}.svg" />`)
+      expect(html).toMatch(
+        partRegex`<link rel="icon" href="${addBaseAssets('/assets/static/logo.')}${/[a-zA-Z0-9]+/}.svg" />`
+      )
     }
   })
 
