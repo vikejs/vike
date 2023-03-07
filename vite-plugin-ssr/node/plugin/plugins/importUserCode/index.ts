@@ -55,7 +55,7 @@ function importUserCode(): Plugin {
         return code
       }
 
-      if (id.startsWith('virtual:vite-plugin-ssr:pageFiles:')) {
+      if (id.startsWith('virtual:vite-plugin-ssr:importUserCode:')) {
         if (isDev) invalidateCodeImporters(server)
         const code = await getPageFilesVirtualFile(id, options, configVps, config, isDev)
         return code
