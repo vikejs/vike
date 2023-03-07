@@ -14,7 +14,10 @@ import {
   styleFileRE,
   createDebugger,
   isDebugEnabled,
-  isScriptFile
+  isScriptFile,
+  resolveVirtualFileId,
+  isVirtualFileId,
+  getVirtualFileId
 } from '../utils'
 import { removeSourceMap, getImportStatements, type ImportStatement, isAsset } from '../helpers'
 import { extractAssetsAddQuery } from './extractAssetsPlugin/extractAssetsAddQuery'
@@ -158,6 +161,8 @@ function extractAssetsPlugin(): Plugin[] {
         config = config_
       },
       load(id) {
+        if (!isVirtualFileId(id)) return undefined
+        id = getVirtualFileId(id)
         if (id === EMPTY_MODULE_ID) {
           return '// Erased by `vite-plugin-ssr:extractAssets`.'
         }
@@ -173,7 +178,7 @@ function extractAssetsPlugin(): Plugin[] {
 
 function emptyModule(file: string, importer: string) {
   debugOperation('NUKED', file, importer)
-  return EMPTY_MODULE_ID
+  return resolveVirtualFileId(EMPTY_MODULE_ID)
 }
 function appendExtractAssetsQuery(file: string, importer: string) {
   debugOperation('TRANSFORMED', file, importer)

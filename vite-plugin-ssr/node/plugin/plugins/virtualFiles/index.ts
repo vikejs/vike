@@ -5,7 +5,14 @@ import type { ConfigVpsResolved } from '../config/ConfigVps'
 import { getConfigVps } from '../config/getConfigVps'
 import { generatePageConfigVirtualFile } from './generatePageConfigsSourceCode'
 import { generatePageFilesVirtualFile } from './generatePageFilesVirtualFile'
-import { assert, isDev1, isDev1_onConfigureServer } from '../../utils'
+import {
+  getVirtualFileId,
+  isDev1,
+  isDev1_onConfigureServer,
+  isVirtualFileId,
+  isVirtualFileIdUresolved,
+  resolveVirtualFileId
+} from '../../utils'
 import { invalidateCodeImporters } from './generatePageConfigsSourceCode/invalidation'
 
 function virtualFiles(): Plugin {
@@ -26,8 +33,8 @@ function virtualFiles(): Plugin {
       config = config_
     },
     resolveId(id) {
-      if (id.startsWith('virtual:vite-plugin-ssr:')) {
-        return '\0' + id
+      if (isVirtualFileIdUresolved(id)) {
+        return resolveVirtualFileId(id)
       }
     },
     /* TODO: remove
@@ -41,10 +48,10 @@ function virtualFiles(): Plugin {
     */
     async load(id, options) {
       const isDev = isDev1()
-      if (!id.startsWith('\0virtual:vite-plugin-ssr:')) {
-        return
-      }
-      id = id.slice('\0'.length)
+
+      if (!isVirtualFileId(id)) return undefined
+      id = getVirtualFileId(id)
+
       if (id.startsWith('virtual:vite-plugin-ssr:pageCodeFilesImporter:')) {
         const code = await generatePageConfigVirtualFile(
           id,
@@ -54,12 +61,12 @@ function virtualFiles(): Plugin {
         )
         return code
       }
+
       if (id.startsWith('virtual:vite-plugin-ssr:pageFiles:')) {
         if (isDev) invalidateCodeImporters(server)
         const code = await generatePageFilesVirtualFile(id, options, configVps, config, isDev)
         return code
       }
-      assert(false)
     },
     configureServer(server_) {
       server = server_
