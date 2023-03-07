@@ -25,5 +25,4 @@ test('page content is rendered to DOM', async () => {
     expect(await page.textContent('h2')).toContain('About')
   })
   expect(await page.textContent('button')).toContain('Count: 1')
-  expect('hello').toBe('hello patak')
 })
