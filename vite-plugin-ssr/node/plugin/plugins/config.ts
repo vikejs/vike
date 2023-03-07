@@ -8,7 +8,7 @@ import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPac
 import { pickFirst } from './config/pickFirst'
 import { resolveExtensions } from './config/resolveExtensions'
 import { resolveBase } from './config/resolveBase'
-import { getConfigData } from './virtualFiles/page-configs/getConfigData'
+import { getConfigData } from './importUserCode/page-configs/getConfigData'
 
 function resolveVpsConfig(vpsConfig: unknown): Plugin {
   return {
