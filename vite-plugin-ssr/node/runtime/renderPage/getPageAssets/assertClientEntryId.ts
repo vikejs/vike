@@ -2,7 +2,7 @@ export { assertClientEntryId }
 
 import { getGlobalContext } from '../../globalContext'
 import { assert, assertPosixPath, isNpmPackageModule } from '../../../utils'
-import { isVirutalModulePageCodeFilesImporter } from '../../../commons/virtual-files/virtualModuleImportPageCode'
+import { isVirtualModuleIdImportPageCode } from '../../../commons/virtual-files/virtualModuleImportPageCode'
 
 function assertClientEntryId(id: string) {
   assertPosixPath(id)
@@ -14,7 +14,7 @@ function assertClientEntryId(id: string) {
       // User files
       id.startsWith('/') ||
       // Code files importer
-      isVirutalModulePageCodeFilesImporter(id) ||
+      isVirtualModuleIdImportPageCode(id) ||
       // Stem packages
       isPkg,
     id

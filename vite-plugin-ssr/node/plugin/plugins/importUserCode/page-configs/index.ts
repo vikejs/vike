@@ -6,8 +6,8 @@ import { assert, createDebugger, objectEntries } from '../../../utils'
 import type { ConfigSource, PageConfigData, PageConfigGlobalData } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
 import {
-  getVirutalModuleIdPageCodeFilesImporter,
-  isVirutalModulePageCodeFilesImporter
+  getVirtualModuleIdImportPageCode,
+  isVirtualModuleIdImportPageCode
 } from '../../../../commons/virtual-files/virtualModuleImportPageCode'
 import { getConfigData } from './getConfigData'
 import { getInvalidatorGlob } from './invalidation'
@@ -62,7 +62,7 @@ function generateSourceCodeOfPageConfigs(
   pageConfigsData.forEach((pageConfig, i) => {
     const { pageConfigFilePathAll, pageId2, routeFilesystem, routeFilesystemDefinedBy, configSources, isErrorPage } =
       pageConfig
-    const codeFilesImporter = getVirutalModuleIdPageCodeFilesImporter(pageId2, isForClientSide)
+    const codeFilesImporter = getVirtualModuleIdImportPageCode(pageId2, isForClientSide)
     const pageConfigVar = `pageConfig${i + 1}` // TODO: remove outdated & unncessary variable creation
     lines.push(`{`)
     lines.push(`  const ${pageConfigVar} = {`)
@@ -178,7 +178,7 @@ async function generatePageConfigVirtualFile(
   isDev: boolean,
   includeAssetsImportedByServer: boolean
 ): Promise<string> {
-  const result = isVirutalModulePageCodeFilesImporter(id)
+  const result = isVirtualModuleIdImportPageCode(id)
   assert(result)
   /* This assertion fails when using includeAssetsImportedByServer
   {
@@ -228,7 +228,7 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   })
   lines.push('];')
   if (includeAssetsImportedByServer && isForClientSide && !isDev) {
-    lines.push(`import '${extractAssetsAddQuery(getVirutalModuleIdPageCodeFilesImporter(pageId, false))}'`)
+    lines.push(`import '${extractAssetsAddQuery(getVirtualModuleIdImportPageCode(pageId, false))}'`)
   }
   const code = [...importStatements, ...lines].join('\n')
   return code

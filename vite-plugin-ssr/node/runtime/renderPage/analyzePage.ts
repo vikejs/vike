@@ -6,7 +6,7 @@ import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { getCodeFilePath } from '../../../shared/page-configs/utils'
 import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide'
-import { getVirutalModuleIdPageCodeFilesImporter } from '../../commons/virtual-files/virtualModuleImportPageCode'
+import { getVirtualModuleIdImportPageCode } from '../../commons/virtual-files/virtualModuleImportPageCode'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide'
 import { getGlobalContext } from '../globalContext'
 
@@ -17,14 +17,14 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pa
     const clientEntry = !isClientSideRenderable ? clientEntryPageConfig : getVPSClientEntry(isClientRouting)
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
-      id: getVirutalModuleIdPageCodeFilesImporter(pageConfig.pageId2, true),
+      id: getVirtualModuleIdImportPageCode(pageConfig.pageId2, true),
       onlyAssets: false,
       eagerlyImported: false
     })
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
     if (!getGlobalContext().isProduction) {
       clientDependencies.push({
-        id: getVirutalModuleIdPageCodeFilesImporter(pageConfig.pageId2, false),
+        id: getVirtualModuleIdImportPageCode(pageConfig.pageId2, false),
         onlyAssets: true,
         eagerlyImported: false
       })
