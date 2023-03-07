@@ -7,6 +7,8 @@ import { generatePageConfigVirtualFile } from './page-configs'
 import { getPageFilesVirtualFile } from './page-files/getPageFilesVirtualFile'
 import { getVirtualFileId, isDev1, isDev1_onConfigureServer, isVirtualFileId, resolveVirtualFileId } from '../../utils'
 import { invalidateCodeImporters } from './page-configs/invalidation'
+import { isVirtualFileIdImportPageCode } from '../../../commons/virtual-files/virtualFileImportPageCode'
+import { isVirtualFileIdImportUserCode } from '../../../commons/virtual-files/virtualFileImportUserCode'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -37,7 +39,7 @@ function importUserCode(): Plugin {
       if (!isVirtualFileId(id)) return undefined
       id = getVirtualFileId(id)
 
-      if (id.startsWith('virtual:vite-plugin-ssr:importPageCode:')) {
+      if (isVirtualFileIdImportPageCode(id)) {
         const code = await generatePageConfigVirtualFile(
           id,
           config.root,
@@ -47,7 +49,7 @@ function importUserCode(): Plugin {
         return code
       }
 
-      if (id.startsWith('virtual:vite-plugin-ssr:importUserCode:')) {
+      if (isVirtualFileIdImportUserCode(id)) {
         if (isDev) invalidateCodeImporters(server)
         const code = await getPageFilesVirtualFile(id, options, configVps, config, isDev)
         return code

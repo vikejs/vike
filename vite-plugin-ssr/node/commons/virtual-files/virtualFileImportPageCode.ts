@@ -13,9 +13,9 @@ function getVirtualFileIdImportPageCode(pageId: string, isForClientSide: boolean
 }
 function isVirtualFileIdImportPageCode(
   id: string
-): null | { isForClientSide: boolean; pageId: string; isExtractAssets: boolean } {
+): false | { isForClientSide: boolean; pageId: string; isExtractAssets: boolean } {
   id = getVirtualFileId(id)
-  if (!id.startsWith(idBase)) return null
+  if (!id.startsWith(idBase)) return false
   const idOriginal = id
   id = extractAssetsRemoveQuery(id)
   const isExtractAssets = idOriginal !== id
