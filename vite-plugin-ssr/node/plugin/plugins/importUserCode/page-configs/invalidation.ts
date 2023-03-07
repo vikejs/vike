@@ -8,7 +8,7 @@ import { assert } from '../../../utils'
 // Instead we manually invalidate all code importers whenever the main virtual files is invalidated (which happens for every relevant change as per the glob `import.meta.glob('/**/+*')` below)
 function invalidateCodeImporters(server: ViteDevServer) {
   Array.from(server.moduleGraph.urlToModuleMap.keys())
-    .filter((modUrl) => modUrl.includes('virtual:vite-plugin-ssr:pageCodeFilesImporter:'))
+    .filter((modUrl) => modUrl.includes('virtual:vite-plugin-ssr:importPageCode:'))
     .forEach((modUrl) => {
       server.moduleGraph.onFileChange(modUrl)
     })

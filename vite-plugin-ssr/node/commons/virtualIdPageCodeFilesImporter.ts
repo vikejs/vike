@@ -4,7 +4,7 @@ export { getVirutalModuleIdPageCodeFilesImporter }
 import { extractAssetsRemoveQuery } from '../plugin/plugins/extractAssetsPlugin/extractAssetsAddQuery'
 import { assert } from '../utils'
 
-const idBase = 'virtual:vite-plugin-ssr:pageCodeFilesImporter:'
+const idBase = 'virtual:vite-plugin-ssr:importPageCode:'
 const idBaseClient = `${idBase}client:` as const
 const idBaseServer = `${idBase}server:` as const
 

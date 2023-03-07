@@ -17,6 +17,7 @@ function importUserCode(): Plugin {
     config() {
       return {
         experimental: {
+          // TODO/v1-release: remove
           importGlobRestoreExtension: true
         }
       }
@@ -36,7 +37,7 @@ function importUserCode(): Plugin {
       if (!isVirtualFileId(id)) return undefined
       id = getVirtualFileId(id)
 
-      if (id.startsWith('virtual:vite-plugin-ssr:pageCodeFilesImporter:')) {
+      if (id.startsWith('virtual:vite-plugin-ssr:importPageCode:')) {
         const code = await generatePageConfigVirtualFile(
           id,
           config.root,
