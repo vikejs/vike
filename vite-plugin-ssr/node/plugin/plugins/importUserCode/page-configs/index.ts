@@ -1,5 +1,5 @@
 export { generatePageConfigsSourceCode }
-export { generatePageConfigVirtualFile }
+export { getVirtualFileImportPageCode }
 
 import { assert, createDebugger, objectEntries } from '../../../utils'
 
@@ -172,7 +172,7 @@ function serializeConfigSource(
   return lines.join('\n')
 }
 
-async function generatePageConfigVirtualFile(
+async function getVirtualFileImportPageCode(
   id: string,
   userRootDir: string,
   isDev: boolean,

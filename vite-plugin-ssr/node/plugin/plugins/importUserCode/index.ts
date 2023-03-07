@@ -3,8 +3,8 @@ export { importUserCode }
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { ConfigVpsResolved } from '../config/ConfigVps'
 import { getConfigVps } from '../config/getConfigVps'
-import { generatePageConfigVirtualFile } from './page-configs'
-import { getPageFilesVirtualFile } from './page-files/getPageFilesVirtualFile'
+import { getVirtualFileImportPageCode } from './page-configs'
+import { getVirtualFileImportUserCode } from './page-files/getPageFilesVirtualFile'
 import { getVirtualFileId, isDev1, isDev1_onConfigureServer, isVirtualFileId, resolveVirtualFileId } from '../../utils'
 import { invalidateCodeImporters } from './page-configs/invalidation'
 import { isVirtualFileIdImportPageCode } from '../../../commons/virtual-files/virtualFileImportPageCode'
@@ -40,18 +40,13 @@ function importUserCode(): Plugin {
       id = getVirtualFileId(id)
 
       if (isVirtualFileIdImportPageCode(id)) {
-        const code = await generatePageConfigVirtualFile(
-          id,
-          config.root,
-          isDev,
-          configVps.includeAssetsImportedByServer
-        )
+        const code = await getVirtualFileImportPageCode(id, config.root, isDev, configVps.includeAssetsImportedByServer)
         return code
       }
 
       if (isVirtualFileIdImportUserCode(id)) {
         if (isDev) invalidateCodeImporters(server)
-        const code = await getPageFilesVirtualFile(id, options, configVps, config, isDev)
+        const code = await getVirtualFileImportUserCode(id, options, configVps, config, isDev)
         return code
       }
     },

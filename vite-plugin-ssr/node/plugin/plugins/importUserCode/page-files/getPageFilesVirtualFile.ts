@@ -1,4 +1,4 @@
-export { getPageFilesVirtualFile }
+export { getVirtualFileImportUserCode }
 
 // TODO/v1-release: remove old `.page.js`/`.page.client.js`/`.page.server.js` interface
 //  - Systematically remove all pageFilesAll references does the trick?
@@ -19,7 +19,7 @@ import path from 'path'
 import { generatePageConfigsSourceCode } from '../page-configs'
 import { generateEagerImport } from '../generateEagerImport'
 
-async function getPageFilesVirtualFile(
+async function getVirtualFileImportUserCode(
   id: string,
   options: { ssr?: boolean } | undefined,
   configVps: ConfigVpsResolved,
