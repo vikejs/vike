@@ -14,9 +14,9 @@ import {
 } from '../../../utils'
 import type { ConfigVpsResolved } from '../../config/ConfigVps'
 import {
-  virtualModuleIdImportUserCodeClientCR,
-  virtualModuleIdImportUserCodeClientSR,
-  virtualModuleIdImportUserCodeServer
+  virtualFileIdImportUserCodeClientCR,
+  virtualFileIdImportUserCodeClientSR,
+  virtualFileIdImportUserCodeServer
 } from '../../../../commons/virtual-files/virtualFileImportUserCode'
 import { type FileType, fileTypes, determineFileType } from '../../../../../shared/getPageFiles/fileTypes'
 import path from 'path'
@@ -33,14 +33,14 @@ async function getPageFilesVirtualFile(
   assert(
     // prettier-ignore
     [
-      virtualModuleIdImportUserCodeServer,
-      virtualModuleIdImportUserCodeClientCR,
-      virtualModuleIdImportUserCodeClientSR
+      virtualFileIdImportUserCodeServer,
+      virtualFileIdImportUserCodeClientCR,
+      virtualFileIdImportUserCodeClientSR
     ].includes(id)
   )
-  const isForClientSide = id !== virtualModuleIdImportUserCodeServer
+  const isForClientSide = id !== virtualFileIdImportUserCodeServer
   assert(isForClientSide === !viteIsSSR_options(options))
-  const isClientRouting = id === virtualModuleIdImportUserCodeClientCR
+  const isClientRouting = id === virtualFileIdImportUserCodeClientCR
   const isPrerendering = !!configVps.prerender
   const code = await getCode(config, configVps, isForClientSide, isClientRouting, isPrerendering, isDev, id)
   return code

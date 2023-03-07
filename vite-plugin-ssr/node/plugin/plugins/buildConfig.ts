@@ -13,7 +13,7 @@ import {
   unique
 } from '../utils'
 import { findPageFiles } from '../helpers'
-import { virtualModuleIdImportUserCodeServer } from '../../commons/virtual-files/virtualFileImportUserCode'
+import { virtualFileIdImportUserCodeServer } from '../../commons/virtual-files/virtualFileImportUserCode'
 import { getConfigData } from './importUserCode/page-configs/getConfigData'
 import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils'
 type InputOption = ResolvedConfig['build']['rollupOptions']['input'] // same as `import type { InputOption } from 'rollup'` but safe when Vite updates Rollup version
@@ -57,7 +57,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     return {
       // We don't add the page files because it seems to be a breaking change for the internal Vite plugin `vite:dep-scan` (not sure why?). It then throws an error `No known conditions for "./server" entry in "react-streaming" package` where it previously didn't.
       // ...pageFileEntries,
-      pageFiles: virtualModuleIdImportUserCodeServer, // TODO/next-major-release: rename to pageConfigFiles
+      pageFiles: virtualFileIdImportUserCodeServer, // TODO/next-major-release: rename to pageConfigFiles
       importBuild: resolve('dist/cjs/node/importBuild.js')
     }
   } else {

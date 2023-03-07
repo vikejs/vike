@@ -1,7 +1,7 @@
 import { setPageFilesAsync } from '../../../shared/getPageFiles'
 import { assert, debugGlob, isObject } from '../../utils'
 import { getGlobalContext } from '../globalContext'
-import { virtualModuleIdImportUserCodeServer } from '../../commons/virtual-files/virtualFileImportUserCode'
+import { virtualFileIdImportUserCodeServer } from '../../commons/virtual-files/virtualFileImportUserCode'
 import type { ViteDevServerEnhanced } from '../../plugin/plugins/setGlobalContext'
 import type { RollupError } from 'rollup'
 
@@ -12,10 +12,10 @@ async function getPageFilesExports(): Promise<Record<string, unknown>> {
   assert(!globalContext.isProduction)
   const { viteDevServer } = globalContext
   assert(viteDevServer)
-  const result = await transpileaAndLoadModule(virtualModuleIdImportUserCodeServer, viteDevServer)
+  const result = await transpileaAndLoadModule(virtualFileIdImportUserCodeServer, viteDevServer)
   if ('transpileError' in result) {
     const { transpileError } = result
-    debugGlob(`Glob error: ${virtualModuleIdImportUserCodeServer} transpile error: `, transpileError.message)
+    debugGlob(`Glob error: ${virtualFileIdImportUserCodeServer} transpile error: `, transpileError.message)
     throw transpileError
   } else {
     debugGlob('Glob result: ', result.moduleExports)
