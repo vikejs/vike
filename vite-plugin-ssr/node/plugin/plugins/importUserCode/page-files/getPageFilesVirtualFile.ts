@@ -17,7 +17,7 @@ import {
   virtualModuleIdImportUserCodeClientCR,
   virtualModuleIdImportUserCodeClientSR,
   virtualModuleIdImportUserCodeServer
-} from '../virtualModuleIdImportUserCode'
+} from '../../../../commons/virtual-files/virtualModuleImportUserCode'
 import { type FileType, fileTypes, determineFileType } from '../../../../../shared/getPageFiles/fileTypes'
 import path from 'path'
 import { generatePageConfigsSourceCode } from '../page-configs'
