@@ -163,6 +163,7 @@ function extractAssetsPlugin(): Plugin[] {
       load(id) {
         if (!isVirtualFileId(id)) return undefined
         id = getVirtualFileId(id)
+
         if (id === EMPTY_MODULE_ID) {
           return '// Erased by `vite-plugin-ssr:extractAssets`.'
         }

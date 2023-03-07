@@ -5,14 +5,7 @@ import type { ConfigVpsResolved } from '../config/ConfigVps'
 import { getConfigVps } from '../config/getConfigVps'
 import { generatePageConfigVirtualFile } from './generatePageConfigsSourceCode'
 import { generatePageFilesVirtualFile } from './generatePageFilesVirtualFile'
-import {
-  getVirtualFileId,
-  isDev1,
-  isDev1_onConfigureServer,
-  isVirtualFileId,
-  isVirtualFileIdUresolved,
-  resolveVirtualFileId
-} from '../../utils'
+import { getVirtualFileId, isDev1, isDev1_onConfigureServer, isVirtualFileId, resolveVirtualFileId } from '../../utils'
 import { invalidateCodeImporters } from './generatePageConfigsSourceCode/invalidation'
 
 function virtualFiles(): Plugin {
@@ -33,7 +26,7 @@ function virtualFiles(): Plugin {
       config = config_
     },
     resolveId(id) {
-      if (isVirtualFileIdUresolved(id)) {
+      if (isVirtualFileId(id)) {
         return resolveVirtualFileId(id)
       }
     },
