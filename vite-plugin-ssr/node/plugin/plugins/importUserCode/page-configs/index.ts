@@ -8,7 +8,7 @@ import { generateEagerImport } from '../generateEagerImport'
 import {
   getVirutalModuleIdPageCodeFilesImporter,
   isVirutalModulePageCodeFilesImporter
-} from '../../../../commons/virtualIdPageCodeFilesImporter'
+} from '../../../../commons/virtual-files/virtualIdPageCodeFilesImporter'
 import { getConfigData } from './getConfigData'
 import { getInvalidatorGlob } from './invalidation'
 import { extractAssetsAddQuery } from '../../extractAssetsPlugin/extractAssetsAddQuery'
