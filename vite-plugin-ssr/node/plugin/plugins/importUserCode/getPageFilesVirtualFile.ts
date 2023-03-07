@@ -4,20 +4,13 @@ export { getVirtualFileImportUserCode }
 //  - Systematically remove all pageFilesAll references does the trick?
 
 import type { ResolvedConfig } from 'vite'
-import {
-  assert,
-  assertPosixPath,
-  viteIsSSR_options,
-  isNotNullish,
-  scriptFileExtensions,
-  debugGlob
-} from '../../../utils'
-import type { ConfigVpsResolved } from '../../config/ConfigVps'
-import { isVirtualFileIdImportUserCode } from '../../../../commons/virtual-files/virtualFileImportUserCode'
-import { type FileType, fileTypes, determineFileType } from '../../../../../shared/getPageFiles/fileTypes'
+import { assert, assertPosixPath, viteIsSSR_options, isNotNullish, scriptFileExtensions, debugGlob } from '../../utils'
+import type { ConfigVpsResolved } from '../config/ConfigVps'
+import { isVirtualFileIdImportUserCode } from '../../../commons/virtual-files/virtualFileImportUserCode'
+import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes'
 import path from 'path'
-import { generatePageConfigsSourceCode } from '../page-configs'
-import { generateEagerImport } from '../generateEagerImport'
+import { generatePageConfigsSourceCode } from './page-configs'
+import { generateEagerImport } from './generateEagerImport'
 
 async function getVirtualFileImportUserCode(
   id: string,
