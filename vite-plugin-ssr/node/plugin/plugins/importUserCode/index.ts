@@ -30,15 +30,6 @@ function importUserCode(): Plugin {
         return resolveVirtualFileId(id)
       }
     },
-    /* TODO: remove
-    configureServer(server) {
-      server.watcher.on('change', (filePath) => {
-        console.log('filePath', filePath)
-        // server.moduleGraph.onFileChange(virtualModuleIdImportUserCodeServer)
-        // server.moduleGraph.onFileChange(virtualModuleIdImportUserCodeClientCR)
-      })
-    },
-    */
     async load(id, options) {
       const isDev = isDev1()
 
