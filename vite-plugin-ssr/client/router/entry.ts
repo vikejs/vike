@@ -1,6 +1,6 @@
 import './pageFiles'
-import { assertIsBundledOnce } from './utils'
 import { useClientRouter } from './useClientRouter'
+import { onClientEntry_ClientRouting } from './utils'
+onClientEntry_ClientRouting(import.meta.env.PROD)
 
-if (import.meta.env.PROD) assertIsBundledOnce()
 useClientRouter()

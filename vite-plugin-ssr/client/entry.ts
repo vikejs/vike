@@ -2,9 +2,9 @@ import './pageFiles'
 import { getPageContext } from './getPageContext'
 import { executeOnClientRender } from './executeOnClientRender'
 import { assertHook } from '../shared/getHook'
-import { assertIsBundledOnce } from './utils'
+import { onClientEntry_ServerRouting } from './utils'
+onClientEntry_ServerRouting(import.meta.env.PROD)
 
-if (import.meta.env.PROD) assertIsBundledOnce()
 hydrate()
 
 async function hydrate() {
