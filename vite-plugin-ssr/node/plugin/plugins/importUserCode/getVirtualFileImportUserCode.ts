@@ -9,7 +9,7 @@ import type { ConfigVpsResolved } from '../config/ConfigVps'
 import { isVirtualFileIdImportUserCode } from '../../../commons/virtual-files/virtualFileImportUserCode'
 import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes'
 import path from 'path'
-import { generatePageConfigsSourceCode } from './page-configs'
+import { getVirtualCodePageConfigs } from './page-configs/getVirtualCodePageConfigs'
 import { generateEagerImport } from './generateEagerImport'
 
 async function getVirtualFileImportUserCode(
@@ -198,7 +198,7 @@ export const pageFilesList = [];
 export const neverLoaded = {};
 export const isGeneratedFile = true;
 
-${await generatePageConfigsSourceCode(config.root, isForClientSide, isDev, id)}
+${await getVirtualCodePageConfigs(config.root, isForClientSide, isDev, id)}
 
 `
 

@@ -3,7 +3,7 @@ export { importUserCode }
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { ConfigVpsResolved } from '../config/ConfigVps'
 import { getConfigVps } from '../config/getConfigVps'
-import { getVirtualFileImportPageCode } from './page-configs'
+import { getVirtualFileImportPageCode } from './page-configs/getVirtualFileImportPageCode'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode'
 import { getVirtualFileId, isDev1, isDev1_onConfigureServer, isVirtualFileId, resolveVirtualFileId } from '../../utils'
 import { invalidateCodeImporters } from './page-configs/invalidation'
