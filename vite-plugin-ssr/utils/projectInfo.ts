@@ -1,4 +1,4 @@
-import { addPackageInstance } from './assertPackageInstances'
+import { addPackageInstance } from './assertSingleInstance'
 
 const PROJECT_VERSION = '0.4.91' as const
 
