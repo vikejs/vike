@@ -11,7 +11,7 @@ import type { ConfigVpsResolved } from '../config/ConfigVps'
 import { isVirtualFileIdImportUserCode } from '../../../commons/virtual-files/virtualFileImportUserCode'
 import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes'
 import path from 'path'
-import { getVirtualCodePageConfigs } from './v1-design/getVirtualCodePageConfigs'
+import { getVirtualCodePageConfigs } from './v1-design/getVirtualFilePageConfigs'
 import { generateEagerImport } from './helpers/generateEagerImport'
 
 async function getVirtualFileImportUserCode(
