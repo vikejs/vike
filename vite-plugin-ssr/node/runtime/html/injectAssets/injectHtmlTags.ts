@@ -12,26 +12,20 @@ import type { InjectToStream } from '../stream/react-streaming'
 type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 const POSITIONS = ['HTML_BEGIN' as const, 'HTML_END' as const, 'STREAM' as const]
 
-type HtmlFragment = {
-  htmlFragment: string
-  position: Position
-}
 function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], injectToStream: null | InjectToStream): string {
-  let htmlFragments: HtmlFragment[] = []
-  htmlTags.forEach(({ htmlTag, position }) => {
-    htmlFragments.push({
-      htmlFragment: resolveHtmlTag(htmlTag),
-      position
-    })
-  })
-  htmlFragments = bundleTags(htmlFragments)
-  htmlFragments.forEach((htmlFragment) => {
-    htmlString = injectHtmlFragments(htmlFragment.position, htmlFragment.htmlFragment, htmlString, injectToStream)
+  POSITIONS.forEach((position) => {
+    const htmlFragment = htmlTags
+      .filter((h) => h.position === position)
+      .map((h) => resolveHtmlTag(h.htmlTag))
+      .join('')
+    if (htmlFragment) {
+      htmlString = injectHtmlFragment(position, htmlFragment, htmlString, injectToStream)
+    }
   })
   return htmlString
 }
 
-function injectHtmlFragments(
+function injectHtmlFragment(
   position: Position,
   htmlFragment: string,
   htmlString: string,
@@ -59,22 +53,6 @@ function injectHtmlFragments(
     return htmlString
   }
   assert(false)
-}
-
-// Is this really needed?
-function bundleTags(htmlFragments: HtmlFragment[]): HtmlFragment[] {
-  const htmlFragmentsBundled: HtmlFragment[] = []
-  POSITIONS.forEach((position) => {
-    const fragments: string[] = htmlFragments.filter((h) => h.position === position).map((h) => h.htmlFragment)
-    if (fragments.length > 0) {
-      const bundle = fragments.join('')
-      htmlFragmentsBundled.push({
-        htmlFragment: bundle,
-        position
-      })
-    }
-  })
-  return htmlFragmentsBundled
 }
 
 function resolveHtmlTag(htmlTag: HtmlTag['htmlTag']) {
