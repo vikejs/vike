@@ -13,7 +13,6 @@ async function render(pageContext) {
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html>
-      <head><meta charset="utf-8"></head>
       <body>
         <div id="app">${stream}</div>
       </body>

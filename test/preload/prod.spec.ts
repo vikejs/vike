@@ -77,7 +77,6 @@ describe('preload tags', () => {
       "<!DOCTYPE html>
           <html>
             <head>
-              <meta charset=\\"utf-8\\">
               <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/assets/static/default.page.client.$HASH.css\\">
               <link rel=\\"preload\\" href=\\"/assets/static/Sono-Light.$HASH.ttf\\" as=\\"font\\" type=\\"font/ttf\\" crossorigin>
             </head>
@@ -163,7 +162,6 @@ describe('preload tags', () => {
       "<!DOCTYPE html>
           <html>
             <head>
-              <meta charset=\\"utf-8\\">
               <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/assets/static/default.page.client.$HASH.css\\">
             </head>
             <body>
@@ -244,7 +242,6 @@ describe('preload tags', () => {
       "<!DOCTYPE html>
           <html>
             <head>
-              <meta charset=\\"utf-8\\">
               <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/assets/static/default.page.client.$HASH.css\\">
               <link rel=\\"preload\\" href=\\"/assets/static/Sono-Light.$HASH.ttf\\" as=\\"font\\" type=\\"font/ttf\\" crossorigin>
               <link rel=\\"preload\\" href=\\"/assets/static/logo.$HASH.svg\\" as=\\"image\\" type=\\"image/svg+xml\\">
@@ -331,7 +328,6 @@ describe('preload tags', () => {
       "<!DOCTYPE html>
           <html>
             <head>
-              <meta charset=\\"utf-8\\">
               <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/assets/static/default.page.client.$HASH.css\\">
               <link rel=\\"preload\\" href=\\"/assets/static/Sono-Light.$HASH.ttf\\" as=\\"font\\" type=\\"font/ttf\\" crossorigin>
               <link rel=\\"preload\\" href=\\"/assets/static/logo.$HASH.svg\\" as=\\"image\\" type=\\"image/svg+xml\\">
