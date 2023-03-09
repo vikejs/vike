@@ -6,6 +6,6 @@ async function render() {
   /*/
   return escapeInject`<div id="react-container"></div>`
   /*/
-  return escapeInject`<head><meta charset="utf-8"></head>`
+  return escapeInject``
   //*/
 }
