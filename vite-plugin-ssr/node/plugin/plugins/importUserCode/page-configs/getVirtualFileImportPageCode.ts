@@ -2,7 +2,7 @@ export { getVirtualFileImportPageCode }
 
 import { assert } from '../../../utils'
 import type { PageConfigData } from '../../../../../shared/page-configs/PageConfig'
-import { generateEagerImport } from '../generateEagerImport'
+import { generateEagerImport } from '../helpers/generateEagerImport'
 import {
   getVirtualFileIdImportPageCode,
   isVirtualFileIdImportPageCode

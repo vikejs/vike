@@ -10,7 +10,7 @@ import { isVirtualFileIdImportUserCode } from '../../../commons/virtual-files/vi
 import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes'
 import path from 'path'
 import { getVirtualCodePageConfigs } from './page-configs/getVirtualCodePageConfigs'
-import { generateEagerImport } from './generateEagerImport'
+import { generateEagerImport } from './helpers/generateEagerImport'
 
 async function getVirtualFileImportUserCode(
   id: string,
