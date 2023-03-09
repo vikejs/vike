@@ -1,8 +1,7 @@
 // TODO: optimizeDeps
 // TODO: inspect bug when hitting `r` hotkey of Vite dev server
-// TODO: export type { Config } for users
-// TODO: use Math.random() instead of timestamp in built file + think why I had concurrent issues
 // TODO: check overall error handling
+// TODO: export type { Config } for users
 
 // TODO: ensure that client-side of Server Routing loads less than Client Routing
 
