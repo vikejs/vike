@@ -1,7 +1,9 @@
 export { getVirtualFileImportUserCode }
 
-// TODO/v1-release: remove old `.page.js`/`.page.client.js`/`.page.server.js` interface
-//  - Systematically remove all pageFilesAll references does the trick?
+// TODO/v1-release:
+//  - Remove this file
+//  - Remove old `.page.js`/`.page.client.js`/`.page.server.js` interface
+//    - Systematically remove all pageFilesAll references does the trick?
 
 import type { ResolvedConfig } from 'vite'
 import { assert, assertPosixPath, viteIsSSR_options, isNotNullish, scriptFileExtensions, debugGlob } from '../../utils'
