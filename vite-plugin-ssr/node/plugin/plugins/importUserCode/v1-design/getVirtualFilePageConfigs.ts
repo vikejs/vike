@@ -1,4 +1,4 @@
-export { getVirtualCodePageConfigs }
+export { getVirtualFilePageConfigs }
 
 import { assert, objectEntries } from '../../../utils'
 import type { ConfigSource, PageConfigData, PageConfigGlobalData } from '../../../../../shared/page-configs/PageConfig'
@@ -29,7 +29,7 @@ import { debug } from './debug'
 // TODO: rename configSrc/configSource to configDefinedBy
 // TODO: Define pageContext.pageId
 
-async function getVirtualCodePageConfigs(
+async function getVirtualFilePageConfigs(
   userRootDir: string,
   isForClientSide: boolean,
   isDev: boolean,
