@@ -31,7 +31,7 @@ import type {
   PageConfigData,
   PageConfigGlobalData
 } from '../../../../../shared/page-configs/PageConfig'
-import { configDefinitionsBuiltIn, type ConfigDefinition } from './configDefinitionsBuiltIn'
+import { configDefinitionsBuiltIn, type ConfigDefinition } from './getConfigData/configDefinitionsBuiltIn'
 import glob from 'fast-glob'
 
 type ConfigData = {

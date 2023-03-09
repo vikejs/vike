@@ -1,9 +1,9 @@
 export { configDefinitionsBuiltIn }
 export type { ConfigDefinition }
 
-import { assertUsage, isCallable } from '../../../utils'
-import type { ConfigName, c_Env } from '../../../../../shared/page-configs/PageConfig'
-import { assertRouteString } from '../../../../../shared/route/resolveRouteString'
+import { assertUsage, isCallable } from '../../../../utils'
+import type { ConfigName, c_Env } from '../../../../../../shared/page-configs/PageConfig'
+import { assertRouteString } from '../../../../../../shared/route/resolveRouteString'
 
 // TODO: remove c_ prefix
 type ConfigDefinition = {
