@@ -16,6 +16,8 @@ function isDev1(): boolean {
   return globalObject.isDev
 }
 function isDev1_onConfigureServer(): void | undefined {
+  // configureServer() is called more than once when user presses Vite's dev server reload hotkey <r>
+  if (globalObject.isDev) return
   assert(!globalObject.isDev_wasCalled)
   globalObject.isDev = true
 }

@@ -1,5 +1,4 @@
 // TODO: optimizeDeps
-// TODO: inspect bug when hitting `r` hotkey of Vite dev server
 // TODO: check overall error handling
 // TODO: export type { Config } for users
 
