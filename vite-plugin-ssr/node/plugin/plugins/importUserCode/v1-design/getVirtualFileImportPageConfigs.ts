@@ -8,27 +8,6 @@ import { getConfigData } from './getConfigData'
 import { getInvalidator } from './invalidation'
 import { debug } from './debug'
 
-// TODO: optimizeDeps
-// TODO: inspect bug when hitting `r` hotkey of Vite dev server
-// TODO: export type { Config } for users
-// TODO: use Math.random() instead of timestamp in built file + think why I had concurrent issues
-// TODO: check overall error handling
-
-// TODO: ensure that client-side of Server Routing loads less than Client Routing
-
-// TODO: check error handling when no onRenderHtml defined
-// TODO: improve Vite dev error handling upon user setting unknown config
-
-// TODO: if conf isn't file path then assert that it's serialazable
-// TODO: Improve Vite error logging when:
-//       ```
-//        /pages/+config.ts sets the config onRenderHtml to the value './+config/onRenderHtml.js' but a file wasn't found at /home/rom/code/vite-plugin-ssr/examples/vanilla-v1/pages/+config/onRenderHtml.js
-//       ```
-// TODO: assertUsage isErrorPage not allowed to be abstract
-// TODO: assertUsage() when configDefinitions sets a invalid c_env value
-// TODO: rename configSrc/configSource to configDefinedBy
-// TODO: Define pageContext.pageId
-
 async function getVirtualFileImportPageConfigs(
   userRootDir: string,
   isForClientSide: boolean,
