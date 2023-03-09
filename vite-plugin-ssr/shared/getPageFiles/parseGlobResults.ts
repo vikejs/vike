@@ -26,9 +26,9 @@ function parseGlobResults(pageFilesExports: unknown): {
   )
   assert(hasProp(pageFilesExports, 'pageFilesList', 'string[]'))
 
-  assert(hasProp(pageFilesExports, 'plusFilesGlob', 'object') || hasProp(pageFilesExports, 'plusFilesGlob', 'null'))
-  if (pageFilesExports.plusFilesGlob) {
-    Object.keys(pageFilesExports.plusFilesGlob).forEach((p) => {
+  assert(hasProp(pageFilesExports, 'invalidatingImportGlob', 'object') || hasProp(pageFilesExports, 'invalidatingImportGlob', 'null'))
+  if (pageFilesExports.invalidatingImportGlob) {
+    Object.keys(pageFilesExports.invalidatingImportGlob).forEach((p) => {
       const filename = p.split('/').slice(-1)[0]!
       assert(filename.startsWith('+'))
     })

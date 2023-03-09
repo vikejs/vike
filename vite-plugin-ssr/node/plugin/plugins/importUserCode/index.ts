@@ -6,7 +6,7 @@ import { getConfigVps } from '../config/getConfigVps'
 import { getVirtualFileImportPageCode } from './v1-design/getVirtualFileImportPageCode'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode'
 import { getVirtualFileId, isDev1, isDev1_onConfigureServer, isVirtualFileId, resolveVirtualFileId } from '../../utils'
-import { invalidateCodeImporters } from './v1-design/invalidation'
+import { invalidateVirtualFilesImportPageCode } from './v1-design/invalidation'
 import { isVirtualFileIdImportPageCode } from '../../../commons/virtual-files/virtualFileImportPageCode'
 import { isVirtualFileIdImportUserCode } from '../../../commons/virtual-files/virtualFileImportUserCode'
 
@@ -45,7 +45,7 @@ function importUserCode(): Plugin {
       }
 
       if (isVirtualFileIdImportUserCode(id)) {
-        if (isDev) invalidateCodeImporters(server)
+        if (isDev) invalidateVirtualFilesImportPageCode(server)
         const code = await getVirtualFileImportUserCode(id, options, configVps, config, isDev)
         return code
       }

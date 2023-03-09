@@ -5,7 +5,7 @@ import type { ConfigSource, PageConfigData, PageConfigGlobalData } from '../../.
 import { generateEagerImport } from '../helpers/generateEagerImport'
 import { getVirtualFileIdImportPageCode } from '../../../../commons/virtual-files/virtualFileImportPageCode'
 import { getConfigData } from './getConfigData'
-import { getInvalidatorGlob } from './invalidation'
+import { getInvalidatingImportGlob } from './invalidation'
 import { debug } from './debug'
 
 // TODO: optimizeDeps
@@ -113,9 +113,9 @@ function generateSourceCodeOfPageConfigs(
   lines.push('};')
 
   if (isDev) {
-    lines.push(getInvalidatorGlob(isDev))
+    lines.push(getInvalidatingImportGlob(isDev))
   } else {
-    lines.push('export const plusFilesGlob = null;')
+    lines.push('export const invalidatingImportGlob = null;')
   }
   // TODO: remove
   // lines.push('import.meta.glob([')
