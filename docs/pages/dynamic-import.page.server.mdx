@@ -45,8 +45,7 @@ function Map() {
   // useEffect() callbacks are only run in the browser, consequently the map component
   // is loaded and rendererd only in the browser.
   React.useEffect(() => {
-  // Typescript Implementations: Error can be ignored as lazy() return type should be a valid functional component
-  //@ts-ignore: Type 'LazyExoticComponent<ComponentType<any>>' is not assignable to type '(() => Element) | Element'.
+    // @ts-ignore React.lazy's type is wrong
     setComponent(() => React.lazy(() => import('some-heavy-map-component')))
   }, [])
 
