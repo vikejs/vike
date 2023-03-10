@@ -5,7 +5,7 @@ export { createHtmlHeadIfMissing }
 export { injectAtOpeningTag }
 export { injectAtClosingTag }
 
-import { assert, slice } from '../../../utils'
+import { assert, assertUsage, slice } from '../../../utils'
 import type { HtmlTag } from './getHtmlTags'
 import type { InjectToStream } from '../stream/react-streaming'
 
@@ -32,19 +32,25 @@ function injectHtmlFragment(
   injectToStream: null | InjectToStream
 ): string {
   if (position === 'HTML_BEGIN') {
+    {
+      const res = injectAtPaceholder(htmlFragment, htmlString, true)
+      if (res) return res
+    }
     assert(tagOpeningExists('head', htmlString))
     htmlString = injectAtOpeningTag('head', htmlString, htmlFragment)
     return htmlString
   }
   if (position === 'HTML_END') {
+    {
+      const res = injectAtPaceholder(htmlFragment, htmlString, false)
+      if (res) return res
+    }
     if (tagClosingExists('body', htmlString)) {
       return injectAtClosingTag('body', htmlString, htmlFragment)
     }
-
     if (tagClosingExists('html', htmlString)) {
       return injectAtClosingTag('html', htmlString, htmlFragment)
     }
-
     return htmlString + '\n' + htmlFragment
   }
   if (position === 'STREAM') {
@@ -170,4 +176,12 @@ function getTagOpening(tag: Tag) {
 function getTagClosing(tag: Tag) {
   const tagClosing = new RegExp(`</${tag}>`, 'i')
   return tagClosing
+}
+
+function injectAtPaceholder(htmlFragment: string, htmlString: string, isFirst: boolean): null | string {
+  const placeholder = isFirst ? '__VITE_PLUGIN_SSR__ASSETS_FIRST__' : '__VITE_PLUGIN__SSR_ASSETS_LAST__'
+  const parts = htmlString.split(placeholder)
+  if (parts.length === 1) return null
+  assertUsage(parts.length === 2, "You're inserting assets twice into your HTML")
+  return [parts[0], htmlFragment, parts[1]].join('')
 }
