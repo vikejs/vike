@@ -1,3 +1,12 @@
+## [0.4.93](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.92...v0.4.93) (2023-03-10)
+
+
+### Bug Fixes
+
+* improve dist/ filenames (fix [#696](https://github.com/brillout/vite-plugin-ssr/issues/696)) ([d594af8](https://github.com/brillout/vite-plugin-ssr/commit/d594af8da62bbfaf58d99638e47c3bb8441cbdd6))
+
+
+
 ## [0.4.92](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.91...v0.4.92) (2023-03-10)
 
 
