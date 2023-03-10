@@ -11,7 +11,7 @@ type HookName =
   | 'onBeforeRoute'
   | 'onHydrationEnd'
 
-function callHookWithTimeout<T = unknown>(call: () => T, hookName: HookName, hookSrc: string): Promise<T> {
+function callHookWithTimeout<T = unknown>(hookFn: () => T, hookName: HookName, hookSrc: string): Promise<T> {
   const { timeoutErr, timeoutWarn } = getTimeouts(hookName)
 
   let resolve!: (ret: T) => void
@@ -46,7 +46,7 @@ function callHookWithTimeout<T = unknown>(call: () => T, hookName: HookName, hoo
 
   ;(async () => {
     try {
-      const ret = await call()
+      const ret = await hookFn()
       resolve(ret)
     } catch (err) {
       reject(err)
