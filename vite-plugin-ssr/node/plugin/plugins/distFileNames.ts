@@ -73,35 +73,28 @@ function getScriptFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, 
   const id = chunkInfo.facadeModuleId
   if (id) assertPosixPath(id)
 
-  let name: string | undefined
-  if (id) {
-    const result = isVirtualFileIdImportPageCode(id)
-    if (result) {
-      const { pageId } = result
-      pageId.startsWith('/')
-      name = pageId.slice(1)
-    }
-  }
-
-  {
-    const chunkName = config.build.ssr ? `chunks/[hash].js` : `${assetsDir}/chunks/[hash].js`
-    if (!name && !isEntry) {
-      if (!id || id.includes('/node_modules/') || extractAssetsRE.test(id) || !id.startsWith(config.root)) {
-        return chunkName
+  let name: string
+  if (isEntry) {
+    name = chunkInfo.name
+  } else {
+    const isNodeModules = id?.includes('/node_modules/')
+    if (!id || isNodeModules || extractAssetsRE.test(id) || !id.startsWith(config.root)) {
+      return config.build.ssr ? `chunks/[hash].js` : `${assetsDir}/chunks/[hash].js`
+    } else {
+      const virtualFile = isVirtualFileIdImportPageCode(id)
+      if (virtualFile) {
+        const { pageId } = virtualFile
+        assert(pageId.startsWith('/'))
+        name = pageId.slice(1)
+      } else {
+        assert(id.startsWith(config.root) && !isNodeModules)
+        let scriptPath = path.posix.relative(root, id)
+        assert(!scriptPath.startsWith('.'))
+        assert(!scriptPath.startsWith('/'))
+        scriptPath = removeFileExtention(scriptPath)
+        name = scriptPath
       }
     }
-  }
-
-  if (id && id.startsWith(config.root)) {
-    let scriptPath = path.posix.relative(root, id)
-    assert(!scriptPath.startsWith('.'))
-    assert(!scriptPath.startsWith('/'))
-    scriptPath = removeFileExtention(scriptPath)
-    name = scriptPath
-  }
-
-  if (!name) {
-    name = chunkInfo.name
   }
 
   if (!config.build.ssr) {
