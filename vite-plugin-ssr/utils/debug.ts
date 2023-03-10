@@ -20,7 +20,7 @@ type Options = {
   }
 }
 
-function createDebugger(namespace: string, optionsGlobal?: Options) {
+function createDebugger(namespace: `vps:${string}`, optionsGlobal?: Options) {
   const debugWithOptions = (options: Options) => {
     return (...msgs: unknown[]) => {
       if (!isDebugEnabled(namespace)) return
