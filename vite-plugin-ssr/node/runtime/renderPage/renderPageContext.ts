@@ -9,20 +9,18 @@ export type { PageContextAfterRender }
 
 import { getErrorPageId } from '../../../shared/route'
 import { getHtmlString } from '../html/renderHtml'
-import { type PageFile, type PageContextExports, getPageFilesAll } from '../../../shared/getPageFiles'
-import { getHook } from '../../../shared/getHook'
-import { assert, assertUsage, hasProp, objectAssign, callHookWithTimeout, unique } from '../../utils'
-import { assertHookResult } from '../../../shared/assertHookResult'
+import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles'
+import { assert, assertUsage, hasProp, objectAssign, unique } from '../../utils'
 import { serializePageContextClientSide } from '../helpers'
 import { addComputedUrlProps, type PageContextUrls } from '../../../shared/addComputedUrlProps'
 import { getGlobalContext } from '../globalContext'
 import { createHttpResponseObject, HttpResponse } from './createHttpResponseObject'
 import { isNewError, logErrorWithVite } from './logError'
 import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } from './loadPageFilesServer'
-import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
 import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
 import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook'
+import { executeOnBeforeRenderHooks } from './executeOnBeforeRenderHook'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
@@ -229,27 +227,4 @@ function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfig[
       ...pageFilesAll.map((p) => indent + p.filePath)
     ].join('\n')
   )
-}
-
-async function executeOnBeforeRenderHooks(
-  pageContext: {
-    _pageId: string
-    _pageContextAlreadyProvidedByOnPrerenderHook?: true
-  } & PageContextExports &
-    PageContextPublic
-): Promise<void> {
-  if (pageContext._pageContextAlreadyProvidedByOnPrerenderHook) {
-    return
-  }
-  const hook = getHook(pageContext, 'onBeforeRender')
-  if (!hook) {
-    return
-  }
-  const onBeforeRender = hook.hook
-  preparePageContextForRelease(pageContext)
-  const hookResult = await callHookWithTimeout(() => onBeforeRender(pageContext), 'onBeforeRender', hook.hookSrc)
-
-  assertHookResult(hookResult, 'onBeforeRender', ['pageContext'], hook.hookSrc)
-  const pageContextFromHook = hookResult?.pageContext
-  Object.assign(pageContext, pageContextFromHook)
 }
