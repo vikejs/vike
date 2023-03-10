@@ -1,3 +1,19 @@
+## [0.4.92](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.91...v0.4.92) (2023-03-10)
+
+
+### Bug Fixes
+
+* aggressively add all page files to optimizeDeps.entries ([d20f92a](https://github.com/brillout/vite-plugin-ssr/commit/d20f92a604814a05a665a10677229d72a5991c17))
+* improve utils/assertSingleInstance.ts ([#691](https://github.com/brillout/vite-plugin-ssr/issues/691)) ([fee06f3](https://github.com/brillout/vite-plugin-ssr/commit/fee06f38179eb0fe1a2cef867d96ae682727358f))
+* support Vite's dev server hotkey <r> ([3054d2f](https://github.com/brillout/vite-plugin-ssr/commit/3054d2f384e25a5455f520c0b01f902e78bb16db))
+
+
+### Features
+
+* add placeholders for inserting assets into HTML ([#419](https://github.com/brillout/vite-plugin-ssr/issues/419), [#544](https://github.com/brillout/vite-plugin-ssr/issues/544), fix [#638](https://github.com/brillout/vite-plugin-ssr/issues/638)) ([b3a3de1](https://github.com/brillout/vite-plugin-ssr/commit/b3a3de1f0f87b36a7ea4b9800317e7cd45efac0a))
+
+
+
 ## [0.4.91](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.90...v0.4.91) (2023-03-05)
 
 
