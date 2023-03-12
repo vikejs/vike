@@ -345,33 +345,33 @@ importers:
 
   examples/graphql-apollo-vue:
     specifiers:
-      '@apollo/client': ^3.6.9
+      '@apollo/client': ^3.7.10
       '@vitejs/plugin-vue': ^4.0.0
-      '@vue/apollo-composable': ^4.0.0-alpha.19
-      '@vue/compiler-sfc': ^3.2.27
-      '@vue/server-renderer': ^3.2.27
+      '@vue/apollo-composable': ^4.0.0-beta.4
+      '@vue/compiler-sfc': ^3.2.47
+      '@vue/server-renderer': ^3.2.47
       compression: ^1.7.4
       cross-env: ^7.0.3
       cross-fetch: ^3.1.5
-      express: ^4.18.1
-      graphql: ^16.5.0
-      vite: ^4.0.3
+      express: ^4.18.2
+      graphql: ^16.6.0
+      vite: ^4.1.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
-      vue: ^3.2.27
+      vue: ^3.2.47
     dependencies:
-      '@apollo/client': 3.6.9_graphql@16.5.0
-      '@vitejs/plugin-vue': 4.0.0_vite@4.0.3+vue@3.2.37
-      '@vue/apollo-composable': 4.0.0-alpha.19_evl73agsd2l2vqwzmhm3tuflgi
-      '@vue/compiler-sfc': 3.2.37
-      '@vue/server-renderer': 3.2.37_vue@3.2.37
+      '@apollo/client': 3.7.10_graphql@16.6.0
+      '@vitejs/plugin-vue': 4.0.0_vite@4.1.4+vue@3.2.47
+      '@vue/apollo-composable': 4.0.0-beta.4_stdil44zyawjw5za4thoofbxee
+      '@vue/compiler-sfc': 3.2.47
+      '@vue/server-renderer': 3.2.47_vue@3.2.47
       compression: 1.7.4
       cross-env: 7.0.3
       cross-fetch: 3.1.5
-      express: 4.18.1
-      graphql: 16.5.0
-      vite: 4.0.3
+      express: 4.18.2
+      graphql: 16.6.0
+      vite: 4.1.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
-      vue: 3.2.37
+      vue: 3.2.47
 
   examples/html-fragments:
     specifiers:
@@ -1116,39 +1116,6 @@ packages:
     resolution: {integrity: sha512-8Afo0+xvYe1K8Wm4xHTymfTkpzy36aaqDvhXIayUwl+mecMG9Xzl3XjXa6swG6Bk8FBeQ646RyvmsYt6+2Be9g==}
     dev: false
 
-  /@apollo/client/3.6.9_graphql@16.5.0:
-    resolution: {integrity: sha512-Y1yu8qa2YeaCUBVuw08x8NHenFi0sw2I3KCu7Kw9mDSu86HmmtHJkCAifKVrN2iPgDTW/BbP3EpSV8/EQCcxZA==}
-    peerDependencies:
-      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-      graphql-ws: ^5.5.5
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-      subscriptions-transport-ws: ^0.9.0 || ^0.11.0
-    peerDependenciesMeta:
-      graphql-ws:
-        optional: true
-      react:
-        optional: true
-      react-dom:
-        optional: true
-      subscriptions-transport-ws:
-        optional: true
-    dependencies:
-      '@graphql-typed-document-node/core': 3.1.1_graphql@16.5.0
-      '@wry/context': 0.6.1
-      '@wry/equality': 0.5.2
-      '@wry/trie': 0.3.1
-      graphql: 16.5.0
-      graphql-tag: 2.12.6_graphql@16.5.0
-      hoist-non-react-statics: 3.3.2
-      optimism: 0.16.1
-      prop-types: 15.8.1
-      symbol-observable: 4.0.0
-      ts-invariant: 0.10.3
-      tslib: 2.4.0
-      zen-observable-ts: 1.2.5
-    dev: false
-
   /@apollo/client/3.6.9_phmus7xcbidy3raesi6r6zwaqe:
     resolution: {integrity: sha512-Y1yu8qa2YeaCUBVuw08x8NHenFi0sw2I3KCu7Kw9mDSu86HmmtHJkCAifKVrN2iPgDTW/BbP3EpSV8/EQCcxZA==}
     peerDependencies:
@@ -1178,6 +1145,40 @@ packages:
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      symbol-observable: 4.0.0
+      ts-invariant: 0.10.3
+      tslib: 2.4.0
+      zen-observable-ts: 1.2.5
+    dev: false
+
+  /@apollo/client/3.7.10_graphql@16.6.0:
+    resolution: {integrity: sha512-/k1MfrqPKYiPNdHcOzdxg9cEx96vhAGxAcSorzfBvV29XtFQcYW2cPNQOTjK/fpSMtqVo8UNmu5vwQAWD1gfCg==}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+      graphql-ws: ^5.5.5
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+      subscriptions-transport-ws: ^0.9.0 || ^0.11.0
+    peerDependenciesMeta:
+      graphql-ws:
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+      subscriptions-transport-ws:
+        optional: true
+    dependencies:
+      '@graphql-typed-document-node/core': 3.1.1_graphql@16.6.0
+      '@wry/context': 0.7.0
+      '@wry/equality': 0.5.2
+      '@wry/trie': 0.3.1
+      graphql: 16.6.0
+      graphql-tag: 2.12.6_graphql@16.6.0
+      hoist-non-react-statics: 3.3.2
+      optimism: 0.16.1
+      prop-types: 15.8.1
+      response-iterator: 0.2.6
       symbol-observable: 4.0.0
       ts-invariant: 0.10.3
       tslib: 2.4.0
@@ -3086,6 +3087,14 @@ packages:
       graphql: 16.5.0
     dev: false
 
+  /@graphql-typed-document-node/core/3.1.1_graphql@16.6.0:
+    resolution: {integrity: sha512-NQ17ii0rK1b34VZonlmT2QMJFI70m0TRwbknO/ihlbatXyaktDhN/98vBiUU6kNBPljqGqyIrl2T4nY2RpFANg==}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      graphql: 16.6.0
+    dev: false
+
   /@hutson/parse-repository-url/3.0.2:
     resolution: {integrity: sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==}
     engines: {node: '>=6.9.0'}
@@ -4059,8 +4068,8 @@ packages:
       vue: 3.2.47
     dev: false
 
-  /@vue/apollo-composable/4.0.0-alpha.19_evl73agsd2l2vqwzmhm3tuflgi:
-    resolution: {integrity: sha512-bxFjzV/j8j3kzWcG4iX8z4JnidTKjQytmVL2tJWRdjeKZbfZDV9nVr/XBVPP75+iR5ckZe6EKinDKkjnYFKhlg==}
+  /@vue/apollo-composable/4.0.0-beta.4_stdil44zyawjw5za4thoofbxee:
+    resolution: {integrity: sha512-lErWL+9LGfWfdfrSYY3DQB/A8Asqs46MiKwmgKeKSj7fe01tx0UpH43aiwMGj+VgEzBZ9AfqEa/Bxf0Nff/NNw==}
     peerDependencies:
       '@apollo/client': ^3.4.13
       '@vue/composition-api': ^1.0.0
@@ -4070,12 +4079,12 @@ packages:
       '@vue/composition-api':
         optional: true
     dependencies:
-      '@apollo/client': 3.6.9_graphql@16.5.0
-      graphql: 16.5.0
+      '@apollo/client': 3.7.10_graphql@16.6.0
+      graphql: 16.6.0
       throttle-debounce: 3.0.1
       ts-essentials: 9.1.2
-      vue: 3.2.37
-      vue-demi: 0.13.5_vue@3.2.37
+      vue: 3.2.47
+      vue-demi: 0.13.5_vue@3.2.47
     transitivePeerDependencies:
       - typescript
     dev: false
@@ -4335,6 +4344,13 @@ packages:
 
   /@wry/context/0.6.1:
     resolution: {integrity: sha512-LOmVnY1iTU2D8tv4Xf6MVMZZ+juIJ87Kt/plMijjN20NMAXGmH4u8bS1t0uT74cZ5gwpocYueV58YwyI8y+GKw==}
+    engines: {node: '>=8'}
+    dependencies:
+      tslib: 2.4.0
+    dev: false
+
+  /@wry/context/0.7.0:
+    resolution: {integrity: sha512-LcDAiYWRtwAoSOArfk7cuYvFXytxfVrdX7yxoUmK7pPITLk5jYh2F8knCwS7LjgYL8u1eidPlKKV6Ikqq0ODqQ==}
     engines: {node: '>=8'}
     dependencies:
       tslib: 2.4.0
@@ -6412,6 +6428,16 @@ packages:
       tslib: 2.4.0
     dev: false
 
+  /graphql-tag/2.12.6_graphql@16.6.0:
+    resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      graphql: 16.6.0
+      tslib: 2.4.0
+    dev: false
+
   /graphql/16.4.0:
     resolution: {integrity: sha512-tYDNcRvKCcfHREZYje3v33NSrSD/ZpbWWdPtBtUUuXx9NCo/2QDxYzNqCnMvfsrnbwRpEHMovVrPu/ERoLrIRg==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
@@ -6419,6 +6445,11 @@ packages:
 
   /graphql/16.5.0:
     resolution: {integrity: sha512-qbHgh8Ix+j/qY+a/ZcJnFQ+j8ezakqPiHwPiZhV/3PgGlgf96QMBB5/f2rkiC9sgLoy/xvT6TSiaf2nTHJh5iA==}
+    engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
+    dev: false
+
+  /graphql/16.6.0:
+    resolution: {integrity: sha512-KPIBPDlW7NxrbT/eh4qPXz5FiFdL5UbaA0XUNz2Rp3Z3hqBSkbj0GVjwFDztsWVauZUWsbKHgMg++sk8UX0bkw==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
     dev: false
 
@@ -9151,6 +9182,11 @@ packages:
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
+  /response-iterator/0.2.6:
+    resolution: {integrity: sha512-pVzEEzrsg23Sh053rmDUvLSkGXluZio0qu8VT6ukrYuvtjVfCbDZH9d6PGXb8HZfzdNZt8feXv/jvUzlhRgLnw==}
+    engines: {node: '>=0.8'}
+    dev: false
+
   /responselike/1.0.2:
     resolution: {integrity: sha1-kYcg7ztjHFZCvgaPFa3lpG9Loec=}
     dependencies:
@@ -10649,7 +10685,7 @@ packages:
       vue: 3.2.37
     dev: false
 
-  /vue-demi/0.13.5_vue@3.2.37:
+  /vue-demi/0.13.5_vue@3.2.47:
     resolution: {integrity: sha512-tO3K2bML3AwiHmVHeKCq6HLef2st4zBXIV5aEkoJl6HZ+gJWxWv2O8wLH8qrA3SX3lDoTDHNghLX1xZg83MXvw==}
     engines: {node: '>=12'}
     hasBin: true
@@ -10661,7 +10697,7 @@ packages:
       '@vue/composition-api':
         optional: true
     dependencies:
-      vue: 3.2.37
+      vue: 3.2.47
     dev: false
 
   /vue-router/4.0.14_vue@3.2.33:
