@@ -1,19 +1,28 @@
 export { commonConfig }
 
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
+import { toPosixPath } from '../utils'
 
 function commonConfig(): Plugin {
   return {
     name: 'vite-plugin-ssr:commonConfig',
-    config: () => ({
-      ssr: { external: ['vite-plugin-ssr'] },
-      appType: 'custom'
-    }),
+    config: () => {
+      const config: UserConfig = {
+        appType: 'custom'
+      }
+      // Workaround for Vite's behavior of noExternalizing linked dependencies, https://github.com/vitejs/vite/discussions/9367
+      if (isLinked()) config.ssr = { external: ['vite-plugin-ssr'] }
+      return config
+    },
     configResolved(config) {
       setDefaultPort(config)
       workaroundCI(config)
     }
   }
+}
+
+function isLinked() {
+  return !toPosixPath(__dirname).includes('/node_modules/')
 }
 
 function setDefaultPort(config: ResolvedConfig) {
