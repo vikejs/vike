@@ -10,13 +10,14 @@ export { RenderErrorPage } from './runtime/renderPage/RenderErrorPage'
 export type { PageContextBuiltIn } from './types'
 export type { InjectFilterEntry } from './runtime/html/injectAssets/getHtmlTags'
 
-import './runtime/page-files/setup'
-import { assertUsage, isBrowser } from './utils'
-
-assertUsage(!isBrowser(), 'The `vite-plugin-ssr` module cannot be imported in the browser.')
-
 // Help Telefunc detect the user's stack
 globalThis._isVitePluginSsr = true
 declare global {
   var _isVitePluginSsr: true
 }
+
+import { assertUsage, isBrowser, addRequireShim } from './utils'
+assertUsage(!isBrowser(), 'The `vite-plugin-ssr` module cannot be imported in the browser.')
+addRequireShim()
+
+import './runtime/page-files/setup'

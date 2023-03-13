@@ -5,6 +5,7 @@ export { assertServerEnv_setIsVitePreview }
 
 import { assert } from './assert'
 import { getGlobalObject } from './getGlobalObject'
+import { isVitest } from './isVitest'
 
 const state = getGlobalObject<{
   isNotProduction?: true
@@ -27,8 +28,4 @@ function assertServerEnv_setIsDev(): void | undefined {
 }
 function assertServerEnv_setIsVitePreview(): void | undefined {
   state.isVitePreview = true
-}
-
-function isVitest(): boolean {
-  return typeof process !== 'undefined' && typeof process.env !== 'undefined' && 'VITEST' in process.env
 }
