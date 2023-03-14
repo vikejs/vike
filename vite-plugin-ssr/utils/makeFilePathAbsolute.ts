@@ -16,15 +16,6 @@ function makeFilePathAbsolute(filePathRelative: string, config: ResolvedConfig):
   assert(filePathRelative.startsWith('/'))
   const { root } = config
   assert(!filePathRelative.startsWith(root))
-  assert(!isFilesystemAbsolute(filePathRelative))
   const filePathAbsolute = toPosixPath(require.resolve(path.join(root, filePathRelative)))
   return filePathAbsolute
-}
-
-function isFilesystemAbsolute(filePath: string) {
-  return getRootDir(filePath) === getRootDir(toPosixPath(process.cwd()))
-}
-function getRootDir(filePath: string) {
-  assertPosixPath(filePath)
-  return filePath.split('/').filter(Boolean)[0]
 }
