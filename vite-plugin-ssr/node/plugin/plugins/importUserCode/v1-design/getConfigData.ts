@@ -22,7 +22,8 @@ import {
   hasProp,
   arrayIncludes,
   objectKeys,
-  assertIsVitePluginCode
+  assertIsVitePluginCode,
+  getMostSimilar
 } from '../../../utils'
 import path from 'path'
 import type {
@@ -848,7 +849,7 @@ function isGlobal(configName: string): configName is GlobalConfigName {
 }
 
 function assertConfigName(configName: string, configNames: string[], definedBy: string) {
-  const configNameSimilar = configNames.find((name) => name.toLowerCase() === configName.toLowerCase())
+  const configNameSimilar = getMostSimilar(configName, configNames)
   const addendum = !configNameSimilar ? '' : `, did you mean to define '${configNameSimilar}' instead?`
   assertUsage(configNames.includes(configName), `${definedBy} defines an unknown config '${configName}'${addendum}`)
 }
