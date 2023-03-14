@@ -10,6 +10,7 @@ assert(!isBrowser())
 // Add require() to ESM modules, in order to workaround https://github.com/brillout/vite-plugin-ssr/issues/701
 //  - esbuild doesn't always transpile require() to import(), https://github.com/evanw/esbuild/issues/566#issuecomment-735551834
 //  - Vite's esbuild workaround plugin doesn't transform require() into ESM import for Node.js, https://github.com/vitejs/vite/blob/a595b115efbd38ac31c2de62ce5dd0faca424d02/packages/vite/src/node/optimizer/esbuildDepPlugin.ts#L290
+//  - Test: [/test/require-shim/](https://github.com/brillout/vite-plugin-ssr/tree/88a05ef4888d0df28a370d0ca0460bf8036aadf0/test/require-shim)
 //  - Playground: https://github.com/brillout/require-shim
 function addRequireShim() {
   let req: NodeRequire | undefined
