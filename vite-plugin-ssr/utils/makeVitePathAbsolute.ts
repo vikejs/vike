@@ -2,7 +2,7 @@ export { makeVitePathAbsolute }
 
 import path from 'path'
 import type { ResolvedConfig } from 'vite'
-import { assertPosixPath } from './filesystemPathHandling'
+import { assertPosixPath, toPosixPath } from './filesystemPathHandling'
 import { assert } from './assert'
 import { isNodeJS } from './isNodeJS'
 
@@ -22,6 +22,7 @@ function makeVitePathAbsolute(fileVitePath: string, config: ResolvedConfig): str
   } catch {
     assert(false)
   }
+  filePathAbsolute = toPosixPath(filePathAbsolute)
   assertPath(filePathAbsolute)
   return filePathAbsolute
 }
