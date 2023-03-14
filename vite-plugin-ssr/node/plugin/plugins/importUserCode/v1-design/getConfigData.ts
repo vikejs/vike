@@ -21,7 +21,8 @@ import {
   objectAssign,
   hasProp,
   arrayIncludes,
-  objectKeys
+  objectKeys,
+  assertIsVitePluginCode
 } from '../../../utils'
 import path from 'path'
 import type {
@@ -33,6 +34,8 @@ import type {
 } from '../../../../../shared/page-configs/PageConfig'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './getConfigData/configDefinitionsBuiltIn'
 import glob from 'fast-glob'
+
+assertIsVitePluginCode()
 
 type ConfigData = {
   pageConfigsData: PageConfigData[]
