@@ -4,7 +4,7 @@ export { plugin as ssr }
 export type { ConfigVpsUserProvided as UserConfig }
 
 import type { Plugin } from 'vite'
-import { assertUsage } from './utils'
+import { assertUsage, markEnvAsPlugin } from './utils'
 import { buildConfig } from './plugins/buildConfig'
 import { previewConfig } from './plugins/previewConfig'
 import { autoFullBuild } from './plugins/autoFullBuild'
@@ -24,6 +24,8 @@ import { importBuild } from './plugins/importBuild'
 import { commonConfig } from './plugins/commonConfig'
 import { extensionsAssets } from './plugins/extensionsAssets'
 import { baseUrls } from './plugins/baseUrls'
+
+markEnvAsPlugin()
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
 function plugin(vpsConfig?: ConfigVpsUserProvided): any {
