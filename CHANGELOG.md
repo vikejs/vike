@@ -1,3 +1,18 @@
+## [0.4.94](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.93...v0.4.94) (2023-03-14)
+
+
+### Bug Fixes
+
+* add `'vite-plugin-ssr'` to `ssr.external` only if strictly needed ([68b1fcb](https://github.com/brillout/vite-plugin-ssr/commit/68b1fcb7574ec3d0ab5bc0f0c3f944a1e0498d64))
+* improve makeFilePathAsbolute assertion (fix [#703](https://github.com/brillout/vite-plugin-ssr/issues/703)) ([2d6489b](https://github.com/brillout/vite-plugin-ssr/commit/2d6489b30220c019feff41ef9b778b5cf906f311))
+* remove unreliable isFilesystemAbsolute() assertion (fix [#703](https://github.com/brillout/vite-plugin-ssr/issues/703)) ([41adc4a](https://github.com/brillout/vite-plugin-ssr/commit/41adc4ad408b124fee00991ef42875ece8147f79))
+* shim `require()` for ESM modules (fix [#701](https://github.com/brillout/vite-plugin-ssr/issues/701)) ([7b269e0](https://github.com/brillout/vite-plugin-ssr/commit/7b269e0504a413d276baa28960baa06804198004))
+* suppress not actionable Rollup warnings ([e6925c4](https://github.com/brillout/vite-plugin-ssr/commit/e6925c49609066e8ddd1d5be8884a76761e44965))
+* update @brillout/vite-plugin-import-build ([ec4cf32](https://github.com/brillout/vite-plugin-ssr/commit/ec4cf32c6ff40016b88a7df127fedf11b6ac3e95))
+* use assertIsVitePluginCode() instead of isNodeJS() ([03f594d](https://github.com/brillout/vite-plugin-ssr/commit/03f594d40d4aa5949be71c34eff089ed1e650d2d))
+
+
+
 ## [0.4.93](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.92...v0.4.93) (2023-03-10)
 
 
