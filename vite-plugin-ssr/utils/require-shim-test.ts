@@ -8,5 +8,6 @@ function testRequireShim() {
     req = require
   } catch {}
   if (!req) return
+  // Ensure that our globalThis.require doesn't overwrite the native require() implementation
   assert(!('isShimAddedByVitePluginSsr' in require))
 }

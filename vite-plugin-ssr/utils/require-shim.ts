@@ -59,9 +59,10 @@ function addRequireShim() {
   assertRequireShim()
 }
 
+// Ensure that our globalThis.require doesn't overwrite the native require() implementation
 function assertRequireShim() {
+  // Seems like Vitest does some unusual thing
   if (isVitest()) return
-  // Ensure that our globalThis.require() doesn't overwrite the Node.js CJS built-in require()
   assert(require !== globalThis.require)
   assert(!('isShimAddedByVitePluginSsr' in require))
   import('./require-shim-test')
