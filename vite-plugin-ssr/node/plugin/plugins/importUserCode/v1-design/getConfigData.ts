@@ -180,9 +180,10 @@ async function loadConfigData(userRootDir: string, isDev: boolean): Promise<Conf
       const pageConfigValues = getPageConfigValues(pageConfigFile)
       Object.keys(pageConfigValues).forEach((configName) => {
         // TODO: this applies only against concrete config files, we should also apply to abstract config files
-        assertUsage(
-          configName in configDefinitionsRelevant || configName === 'configDefinitions',
-          `${pageConfigFile.pageConfigFilePath} defines an unknown config '${configName}'`
+        assertConfigName(
+          configName,
+          [...Object.keys(configDefinitionsRelevant), 'configDefinitions'],
+          pageConfigFile.pageConfigFilePath
         )
       })
     }
@@ -619,8 +620,7 @@ function applySideEffects(
           configSourcesMod[configTargetName]!.c_env = c_env
         })
       } else {
-        const configDef = configDefinitionsRelevant[configName]
-        assertUsage(configDef, `sideEffect of TODO returns unknown config '${configName}'`)
+        assertConfigName(configName, Object.keys(configDefinitionsRelevant), `sideEffect of TODO`)
         const configSourceTargetOld = configSourcesMod[configName]
         assert(configSourceTargetOld)
         configSourcesMod[configName] = {
@@ -662,9 +662,14 @@ async function findAndLoadConfigValueFiles(
       .filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) !== 'config')
       .map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
         const configName = extractConfigName(filePathRelativeToUserRootDir)
+        assertConfigName(
+          configName,
+          [...Object.keys(configDefinitionsAll), ...Object.keys(globalConfigsDefinition)],
+          filePathRelativeToUserRootDir
+        )
         const configDef =
           configDefinitionsAll[configName] ?? (globalConfigsDefinition as Record<string, ConfigDefinition>)[configName]
-        assertUsage(configDef, `${filePathRelativeToUserRootDir} defines an unknown config '${configName}'`)
+        assert(configDef)
         const configValueFile: ConfigValueFile = {
           configName,
           pageId: determinePageId2(filePathRelativeToUserRootDir),
@@ -840,4 +845,8 @@ function dir(filePath: string) {
 function isGlobal(configName: string): configName is GlobalConfigName {
   const configNamesGlobal = Object.keys(globalConfigsDefinition)
   return arrayIncludes(configNamesGlobal, configName)
+}
+
+function assertConfigName(configName: string, configNames: string[], definedBy: string) {
+  assertUsage(configNames.includes(configName), `${definedBy} defines an unknown config '${configName}'`)
 }
