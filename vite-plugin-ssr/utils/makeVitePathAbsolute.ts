@@ -28,5 +28,9 @@ function makeVitePathAbsolute(fileVitePath: string, config: ResolvedConfig): str
 
 function assertPath(p: string) {
   assertPosixPath(p)
-  assert(p.startsWith('/'))
+  if (process.platform === 'win32') {
+    assert(path.win32.isAbsolute(p))
+  } else {
+    assert(p.startsWith('/'))
+  }
 }
