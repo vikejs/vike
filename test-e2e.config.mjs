@@ -77,7 +77,6 @@ function tolerateError({ logSource, logText }) {
   return (
     isSlowHookWarning() ||
     isNoErrorPageWarning() ||
-    isFetchExperimentalWarning() ||
     isViteEsbuildBug() ||
     isGetPageAssetsDeprecationWarning() ||
     isDocpressAssetWarning() ||
@@ -105,15 +104,6 @@ function tolerateError({ logSource, logText }) {
       logSource === 'stderr' &&
       logText.includes(
         'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)'
-      )
-    )
-  }
-
-  function isFetchExperimentalWarning() {
-    return (
-      logSource === 'stderr' &&
-      logText.includes(
-        'ExperimentalWarning: The Fetch API is an experimental feature. This feature could change at any time'
       )
     )
   }
