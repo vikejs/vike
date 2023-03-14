@@ -1,14 +1,18 @@
+export { render }
+// See https://vite-plugin-ssr.com/data-fetching
+export const passToClient = ['pageProps', 'urlPathname']
+
 import { renderToString } from '@vue/server-renderer'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { createApp } from './app'
 import logoUrl from './logo.svg'
 
-export { render }
-// See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ['pageProps', 'urlPathname']
-
 async function render(pageContext) {
-  const app = createApp(pageContext)
+  const { Page, pageProps } = pageContext
+  // This render() hook only supports SSR, see https://vite-plugin-ssr.com/render-modes for how to modify render() to support SPA
+  if (!Page) throw new Error('My render() hook expects pageContext.Page to be defined')
+  const app = createApp(Page, pageProps, pageContext)
+
   const appHtml = await renderToString(app)
 
   // See https://vite-plugin-ssr.com/head

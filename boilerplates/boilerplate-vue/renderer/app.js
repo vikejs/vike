@@ -4,8 +4,7 @@ import { setPageContext } from './usePageContext'
 
 export { createApp }
 
-function createApp(pageContext) {
-  const { Page, pageProps } = pageContext
+function createApp(Page, pageProps, pageContext) {
   const PageWithLayout = {
     render() {
       return h(
@@ -22,7 +21,7 @@ function createApp(pageContext) {
 
   const app = createSSRApp(PageWithLayout)
 
-  // We make `pageContext` available from any Vue component
+  // We make pageContext available from any Vue component
   setPageContext(app, pageContext)
 
   return app
