@@ -13,7 +13,6 @@ assert(!isBrowser())
 //  - Test: [/test/require-shim/](https://github.com/brillout/vite-plugin-ssr/tree/88a05ef4888d0df28a370d0ca0460bf8036aadf0/test/require-shim)
 //  - Playground: https://github.com/brillout/require-shim
 function addRequireShim() {
-  return;
   let req: NodeRequire | undefined
   try {
     req = require
