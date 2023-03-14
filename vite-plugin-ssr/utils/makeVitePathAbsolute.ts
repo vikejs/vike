@@ -1,13 +1,12 @@
 export { makeVitePathAbsolute }
 
-import path from 'path'
 import type { ResolvedConfig } from 'vite'
 import { assertPosixPath, toPosixPath } from './filesystemPathHandling'
 import { assert } from './assert'
-import { isNodeJS } from './isNodeJS'
+import path from 'path'
+import { assertIsVitePluginCode } from './assertIsVitePluginCode'
 
-// This util should/is only used by node/plugin/utils.ts
-assert(isNodeJS())
+assertIsVitePluginCode()
 
 // Vite handles paths such as /pages/index.page.js which are relative to `config.root`.
 // Make them absolute starting from the filesystem root.
