@@ -9,25 +9,27 @@ import { isNodeJS } from './isNodeJS'
 // This util should/is only used by node/plugin/utils.ts
 assert(isNodeJS())
 
-// Vite handles paths such as `/pages/index.page.js` which are relative to `config.root`.
-// Make them absolute starting from the filesystem route `/`.
+// Vite handles paths such as /pages/index.page.js which are relative to `config.root`.
+// Make them absolute starting from the filesystem root.
 function makeVitePathAbsolute(fileVitePath: string, config: ResolvedConfig): string {
-  assertPath(fileVitePath)
+  assertPosixPath(fileVitePath)
+  assert(fileVitePath.startsWith('/'))
   const { root } = config
-  assertPath(root)
+  assertFsAbsolute(root)
   let filePathAbsolute = path.posix.join(root, fileVitePath)
-  assertPath(filePathAbsolute)
+  assertFsAbsolute(filePathAbsolute)
   try {
     filePathAbsolute = require.resolve(filePathAbsolute)
   } catch {
     assert(false)
   }
   filePathAbsolute = toPosixPath(filePathAbsolute)
-  assertPath(filePathAbsolute)
+  assertFsAbsolute(filePathAbsolute)
   return filePathAbsolute
 }
 
-function assertPath(p: string) {
+/** Assert path is filesystem absolute */
+function assertFsAbsolute(p: string) {
   assertPosixPath(p)
   if (process.platform === 'win32') {
     assert(path.win32.isAbsolute(p))
