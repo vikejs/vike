@@ -1,4 +1,4 @@
-export { makeFilePathAbsolute }
+export { makeVitePathAbsolute }
 
 import path from 'path'
 import type { ResolvedConfig } from 'vite'
@@ -11,11 +11,11 @@ assert(isNodeJS())
 
 // Vite handles paths such as `/pages/index.page.js` which are relative to `config.root`.
 // Make them absolute starting from the filesystem route `/`.
-function makeFilePathAbsolute(filePathRelative: string, config: ResolvedConfig): string {
-  assertPath(filePathRelative)
+function makeVitePathAbsolute(fileVitePath: string, config: ResolvedConfig): string {
+  assertPath(fileVitePath)
   const { root } = config
   assertPath(root)
-  let filePathAbsolute = path.posix.join(root, filePathRelative)
+  let filePathAbsolute = path.posix.join(root, fileVitePath)
   assertPath(filePathAbsolute)
   try {
     filePathAbsolute = require.resolve(filePathAbsolute)

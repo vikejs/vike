@@ -2,7 +2,7 @@ export { determineOptimizeDepsEntries }
 
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../helpers'
-import { makeFilePathAbsolute, unique } from '../../utils'
+import { makeVitePathAbsolute, unique } from '../../utils'
 import { getConfigData } from '../importUserCode/v1-design/getConfigData'
 
 async function determineOptimizeDepsEntries(config: ResolvedConfig, isDev: boolean): Promise<string[]> {
@@ -15,7 +15,7 @@ async function determineOptimizeDepsEntries(config: ResolvedConfig, isDev: boole
       Object.values(data.configSources).forEach((configSource) => {
         const { codeFilePath2, c_env } = configSource
         if (codeFilePath2 && (c_env === 'client-only' || c_env === 'server-and-client')) {
-          entries.push(makeFilePathAbsolute(codeFilePath2, config))
+          entries.push(makeVitePathAbsolute(codeFilePath2, config))
         }
       })
     })
@@ -25,7 +25,7 @@ async function determineOptimizeDepsEntries(config: ResolvedConfig, isDev: boole
   {
     const pageFiles = await findPageFiles(config, ['.page', '.page.client'], isDev)
     pageFiles.forEach((filePath) => {
-      const entry = makeFilePathAbsolute(filePath, config)
+      const entry = makeVitePathAbsolute(filePath, config)
       entries.push(entry)
     })
   }
