@@ -1,7 +1,7 @@
+export { assertIsVitePluginCode }
+export { markEnvAsDev }
+export { markEnvAsPreview }
 export { assertServerEnv }
-export { assertServerEnv_setIsNotProduction }
-export { assertServerEnv_setIsDev }
-export { assertServerEnv_setIsVitePreview }
 
 import { assert } from './assert'
 import { getGlobalObject } from './getGlobalObject'
@@ -11,7 +11,7 @@ const state = getGlobalObject<{
   isNotProduction?: true
   isDev?: true
   isVitePreview?: true
-}>('utils/assertServerEnv.ts', {})
+}>('utils/assertIsVitePluginCode.ts', {})
 
 function assertServerEnv(): void | undefined {
   if (isVitest()) return
@@ -20,12 +20,12 @@ function assertServerEnv(): void | undefined {
   }
 }
 
-function assertServerEnv_setIsNotProduction(): void | undefined {
+function assertIsVitePluginCode(): void | undefined {
   state.isNotProduction = true
 }
-function assertServerEnv_setIsDev(): void | undefined {
+function markEnvAsDev(): void | undefined {
   state.isDev = true
 }
-function assertServerEnv_setIsVitePreview(): void | undefined {
+function markEnvAsPreview(): void | undefined {
   state.isVitePreview = true
 }
