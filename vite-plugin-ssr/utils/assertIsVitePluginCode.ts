@@ -1,3 +1,5 @@
+// Mechanism to ensure code isn't loaded by production runtime
+
 export { assertIsVitePluginCode }
 export { markEnvAsDev }
 export { markEnvAsPreview }
@@ -15,19 +17,17 @@ const state = getGlobalObject<{
   isPlugin?: true
 }>('utils/assertIsVitePluginCode.ts', {})
 
-// Called by *.ts that want to ensure that they aren't included in the production runtime
+// Called by *.ts that want to ensure that they aren't loaded by the production runtime
 function assertIsVitePluginCode(): void | undefined {
   state.shouldBePlugin = true
 }
 
 // Called by Vite hook configureServer()
 function markEnvAsDev(): void | undefined {
-  assert(state.isPlugin)
   state.isDev = true
 }
 // Called by Vite hook configurePreviewServer()
 function markEnvAsPreview(): void | undefined {
-  assert(state.isPlugin)
   state.isPreview = true
 }
 // Called by ../node/plugin/index.ts
@@ -38,12 +38,12 @@ function markEnvAsPlugin() {
 // Called by ../node/runtime/index.ts
 function assertServerEnv(): void | undefined {
   if (isVitest()) return
-  const isViteServer = state.isDev || state.isPreview
-  if (state.isPlugin) {
-    assert(isViteServer)
-    assert(state.shouldBePlugin)
-  } else {
-    assert(!isViteServer)
+  if (!state.isDev && !state.isPreview) {
+    // Ensure that no plugin code is loaded by production runtime
+    assert(!state.isPlugin)
     assert(!state.shouldBePlugin)
+  } else {
+    assert(state.isPlugin)
+    assert(state.shouldBePlugin)
   }
 }
