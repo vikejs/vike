@@ -1,13 +1,8 @@
 export { testRun }
 
-import { autoRetry, fetchHtml, page, test, expect, run, getServerUrl, skip } from '@brillout/test-e2e'
+import { autoRetry, fetchHtml, page, test, expect, run, getServerUrl } from '@brillout/test-e2e'
 
 function testRun(cmd: 'npm run dev' | 'npm run prod') {
-  if (cmd === 'npm run prod') {
-    skip('SKIPPED prod until it properly supports Vite 3.')
-    return
-  }
-
   run(cmd)
 
   test('page is rendered to HTML', async () => {
