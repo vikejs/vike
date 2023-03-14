@@ -848,5 +848,7 @@ function isGlobal(configName: string): configName is GlobalConfigName {
 }
 
 function assertConfigName(configName: string, configNames: string[], definedBy: string) {
-  assertUsage(configNames.includes(configName), `${definedBy} defines an unknown config '${configName}'`)
+  const configNameSimilar = configNames.find((name) => name.toLowerCase() === configName.toLowerCase())
+  const addendum = !configNameSimilar ? '' : `, did you mean to define '${configNameSimilar}' instead?`
+  assertUsage(configNames.includes(configName), `${definedBy} defines an unknown config '${configName}'${addendum}`)
 }
