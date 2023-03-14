@@ -32,3 +32,27 @@ function parsePath(path_: string) {
   return { isAbsolute, parts }
 }
 //*/
+
+// Second version of pathDirname
+
+/*
+export { pathDirname }
+
+import { assert } from './assert'
+
+function pathDirname(filePath: string): string {
+  filePath = toPosix(filePath)
+  const fileDir = filePath.split('/').slice(0, -1).join('/')
+  return fileDir
+}
+
+function toPosix(p: string) {
+  if (p.includes('/')) {
+    assert(!p.includes('\\'))
+    return p
+  } else {
+    assert(!p.includes('/'))
+    return p.split('\\').join('/')
+  }
+}
+//*/
