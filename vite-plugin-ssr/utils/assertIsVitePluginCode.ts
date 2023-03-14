@@ -15,26 +15,36 @@ const state = getGlobalObject<{
   isPlugin?: true
 }>('utils/assertIsVitePluginCode.ts', {})
 
-function assertServerEnv(): void | undefined {
-  if (isVitest()) return
-  if (state.shouldBePlugin) {
-    assert(state.isPlugin)
-    assert(state.isDev || state.isPreview)
-  }
-}
-
+// Called by utils/*.ts that want to ensure that they aren't included in the production runtime
 function assertIsVitePluginCode(): void | undefined {
   assert(state.isPlugin)
   state.shouldBePlugin = true
 }
+
+// Called by Vite hook configureServer()
 function markEnvAsDev(): void | undefined {
   assert(state.isPlugin)
   state.isDev = true
 }
+// Called by Vite hook configurePreviewServer()
 function markEnvAsPreview(): void | undefined {
   assert(state.isPlugin)
   state.isPreview = true
 }
+// Called by ../node/plugin/index.ts
 function markEnvAsPlugin() {
   state.isPlugin = true
+}
+
+// Called by ../node/runtime/index.ts
+function assertServerEnv(): void | undefined {
+  if (isVitest()) return
+  const isViteServer = state.isDev || state.isPreview
+  if (state.isPlugin) {
+    assert(isViteServer)
+    assert(state.shouldBePlugin)
+  } else {
+    assert(!isViteServer)
+    assert(!state.shouldBePlugin)
+  }
 }
