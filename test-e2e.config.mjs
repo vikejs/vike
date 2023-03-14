@@ -73,7 +73,7 @@ function getCiJobs() {
   ]
 }
 
-function tolerateError(log) {
+function tolerateError({ logSource, logText }) {
   return (
     isSlowHookWarning() ||
     isNoErrorPageWarning() ||
@@ -92,18 +92,18 @@ function tolerateError(log) {
   // [vite-plugin-ssr@0.4.42][Warning] The onBeforeRender() hook of /pages/star-wars/index/index.page.server.ts is taking more than 4 seconds
   function isSlowHookWarning() {
     return (
-      log.logSource === 'stderr' &&
-      log.logText.includes('[Warning]') &&
-      log.logText.includes('hook') &&
-      log.logText.includes('is taking more than 4 seconds')
+      logSource === 'stderr' &&
+      logText.includes('[Warning]') &&
+      logText.includes('hook') &&
+      logText.includes('is taking more than 4 seconds')
     )
   }
 
   // [vite-plugin-ssr@0.4.42][Warning] No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)
   function isNoErrorPageWarning() {
     return (
-      log.logSource === 'stderr' &&
-      log.logText.includes(
+      logSource === 'stderr' &&
+      logText.includes(
         'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)'
       )
     )
@@ -111,8 +111,8 @@ function tolerateError(log) {
 
   function isFetchExperimentalWarning() {
     return (
-      log.logSource === 'stderr' &&
-      log.logText.includes(
+      logSource === 'stderr' &&
+      logText.includes(
         'ExperimentalWarning: The Fetch API is an experimental feature. This feature could change at any time'
       )
     )
@@ -134,68 +134,67 @@ function tolerateError(log) {
   function isViteEsbuildBug() {
     return (
       process.platform === 'win32' &&
-      log.logSource === 'stderr' &&
-      (log.logText.includes('The service is no longer running') || log.logText.includes('The service was stopped'))
+      logSource === 'stderr' &&
+      (logText.includes('The service is no longer running') || logText.includes('The service was stopped'))
     )
   }
 
   // [vite-plugin-ssr@0.4.51][Warning] pageContext._getPageAssets() deprecated, see https://vite-plugin-ssr.com/preload
   function isGetPageAssetsDeprecationWarning() {
     return (
-      log.logSource === 'stderr' &&
-      log.logText.includes('[vite-plugin-ssr@') &&
-      log.logText.includes('[Warning]') &&
-      log.logText.includes('pageContext._getPageAssets() deprecated')
+      logSource === 'stderr' &&
+      logText.includes('[vite-plugin-ssr@') &&
+      logText.includes('[Warning]') &&
+      logText.includes('pageContext._getPageAssets() deprecated')
     )
   }
 
   // /assets/Inter-Var-IOAEQULN.ttf referenced in /home/runner/work/vite-plugin-ssr/vite-plugin-ssr/node_modules/.pnpm/@brillout+docpress@0.1.12_6bdbsu2yzpeczxw5qylih75b3i/node_modules/@brillout/docpress/dist/renderer/_default.page.client.css?used didn't resolve at build time, it will remain unchanged to be resolved at runtime
   function isDocpressAssetWarning() {
     return (
-      log.logSource === 'stderr' &&
-      log.logText.includes("didn't resolve at build time, it will remain unchanged to be resolved at runtime") &&
-      log.logText.includes('node_modules/@brillout/docpress')
+      logSource === 'stderr' &&
+      logText.includes("didn't resolve at build time, it will remain unchanged to be resolved at runtime") &&
+      logText.includes('node_modules/@brillout/docpress')
     )
   }
 
   function isSourceMapWarning() {
     return (
-      log.logSource === 'stderr' &&
-      log.logText.includes('Sourcemap for "/@react-refresh" points to missing source files')
+      logSource === 'stderr' &&
+      logText.includes('Sourcemap for "/@react-refresh" points to missing source files')
     )
   }
 
   function isCloudflareFalseError1() {
     return (
-      log.logSource === 'stderr' &&
-      log.logText.includes(
+      logSource === 'stderr' &&
+      logText.includes(
         'Enabling node.js compatibility mode for built-ins and globals. This is experimental and has serious tradeoffs.'
       )
     )
   }
   function isCloudflareFalseError2() {
-    return log.logSource === 'stderr' && log.logText.includes('Script modified; context reset.')
+    return logSource === 'stderr' && logText.includes('Script modified; context reset.')
   }
   function isCloudflareVueWarning() {
     return (
-      log.logSource === 'stderr' &&
-      log.logText.includes('Feature flags __VUE_OPTIONS_API__, __VUE_PROD_DEVTOOLS__ are not explicitly defined.')
+      logSource === 'stderr' &&
+      logText.includes('Feature flags __VUE_OPTIONS_API__, __VUE_PROD_DEVTOOLS__ are not explicitly defined.')
     )
   }
   function isTwitterEmbedsError() {
     return (
-      log.logSource === 'Browser Error' &&
-      log.logText.includes('https://syndication.twitter.com') &&
-      log.logText.includes('the server responded with a status of 403')
+      logSource === 'Browser Error' &&
+      logText.includes('https://syndication.twitter.com') &&
+      logText.includes('the server responded with a status of 403')
     )
   }
   function isGithubImageError() {
-    const txt = log.logText
     return (
-      log.logSource === 'Browser Error' &&
-      txt.includes('https://github.com/') &&
-      txt.include('.png') &&
-      txt.includes('the server responded with a status of 429')
+      logSource === 'Browser Error' &&
+      logText.includes('https://github.com/') &&
+      logText.include('.png') &&
+      logText.includes('the server responded with a status of 429')
     )
   }
 }
