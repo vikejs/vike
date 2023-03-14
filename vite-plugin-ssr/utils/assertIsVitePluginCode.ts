@@ -15,9 +15,8 @@ const state = getGlobalObject<{
   isPlugin?: true
 }>('utils/assertIsVitePluginCode.ts', {})
 
-// Called by files that want to ensure that they aren't included in the production runtime
+// Called by *.ts that want to ensure that they aren't included in the production runtime
 function assertIsVitePluginCode(): void | undefined {
-  assert(state.isPlugin)
   state.shouldBePlugin = true
 }
 
