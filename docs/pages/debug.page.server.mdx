@@ -27,19 +27,19 @@ $ DEBUG=vite:* npm run dev
 
 If you have a problem with Vite, we recommend to consider injecting a bunch of `console.log()` inside `node_modules/vite/dist/**/*.js` to inspect what's going on.
 
+> It may sound scary to dig into Vite's source code, but it's sometimes quicker to find the root cause of your problem than treating Vite as a black box. Also:
+> - It's more interesting and more fun. (Vite's source code is well written and pleasurable to read.)
+> - You may end up being able to do a Vite PR solving your problem (and helping the whole community!). (If you open a Vite PR, feel free to reach out to the `vite-plugin-ssr` maintainers to get your PR merged quicker.)
+
 > Instead of:
 > ```bash
 > $ git clone git@github.com:vitejs/vite
 > $ cd vite/
 > $ pnpm install
 > $ pnpm run buid
-> $ cd ../path/to/my-app
+> $ cd ../path/to/my-app/
 > $ npm link ../vite/packages/vite/
 > ```
 > We recommend to:
 > - Browse the source code of `$ git clone git@github.com:vitejs/vite`.
-> - But: for an increased feedback loop, instead of building Vite, consider injecting `console.log()` directly inside `my-app/node_modules/vite/dist/**/*.js`.
-
-> It may sound scary to dig into Vite's source code, but it's sometimes quicker to find the root cause of your problem than treating Vite as a black box. Also:
-> - It's more interesting and more fun. (Vite's source code is well written and pleasurable to read.)
-> - You may end up being able to do a Vite PR solving your problem. (If you open a Vite PR, feel free to reach out to the `vite-plugin-ssr` maintainers to get your PR merged quicker.)
+> - But, for an increased feedback loop, instead of building Vite consider injecting `console.log()` directly inside `my-app/node_modules/vite/dist/**/*.js`.
