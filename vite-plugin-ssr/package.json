@@ -51,7 +51,8 @@
     ".": {
       "worker": "./dist/cjs/node/index.js",
       "node": "./dist/cjs/node/index.js",
-      "browser": "./dist/esm/client/node.js"
+      "browser": "./dist/esm/client/node.js",
+      "types": "./dist/cjs/node/index.js"
     },
     "./client": {
       "browser": "./dist/esm/client/index.js"
@@ -59,7 +60,8 @@
     "./client/router": {
       "worker": "./dist/cjs/node/client/router.js",
       "node": "./dist/cjs/node/client/router.js",
-      "browser": "./dist/esm/client/router/index.js"
+      "browser": "./dist/esm/client/router/index.js",
+      "types": "./dist/esm/client/router/index.js"
     },
     "./routing": {
       "worker": "./dist/cjs/shared/route/routing.js",

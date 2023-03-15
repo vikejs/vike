@@ -9,8 +9,6 @@
     "../node/**/*",
     "../shared/**/*",
     "../utils/**/*",
-    "../__internal/**/*",
-    "../client/router/navigate.ts",
-    "../client/router/utils.ts"
+    "../__internal/**/*"
   ]
 }
