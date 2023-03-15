@@ -37,7 +37,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   const internalError = createErrorWithCleanStackTrace(
     [
       `${internalErrorPrefix} You stumbled upon a bug in ${projectInfo.projectName}'s source code.`,
-      `Reach out at ${projectInfo.githubRepository}/issues/new or ${projectInfo.discordInviteToolChannel} and include this error stack (the error stack is usually enough to fix the problem).`,
+      `Go to ${projectInfo.githubRepository}/issues/new and copy-paste this error (the error alone is usually enough to fix the problem).`,
       'A maintainer will fix the bug (usually under 24 hours).',
       `Don't hesitate to reach out as it makes ${projectInfo.projectName} more robust.`,
       debugStr
