@@ -1,17 +1,13 @@
 export { isClientRouter }
-export { markAsClientRouter }
 
 import { assert } from './assert'
-import { getGlobalObject } from './getGlobalObject'
 import { isBrowser } from './isBrowser'
 
 assert(isBrowser())
 
-const globalObject = getGlobalObject('utils/isClientRouter.ts', { isClientRouter: false })
-
 function isClientRouter(): boolean {
-  return globalObject.isClientRouter
+  return globalThis.__vps_isClientRouter === true
 }
-function markAsClientRouter(): void | undefined {
-  globalObject.isClientRouter = true
+declare global {
+  var __vps_isClientRouter: true
 }

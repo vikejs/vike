@@ -1,5 +1,4 @@
-import { markAsClientRouter } from '../../utils/isClientRouter'
-markAsClientRouter()
+globalThis.__vps_isClientRouter === true
 
 import './pageFiles'
 import { useClientRouter } from './useClientRouter'
