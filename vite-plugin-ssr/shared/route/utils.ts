@@ -1,9 +1,7 @@
-// Utils needed by vite-plugin-ssr's:
-//  - server-side runtime
-//  - client-side runtime (Server Routing)
-//  - client-side runtime (Client Routing)
-
-// DON'T include `utils/*` that are needed by only a subset of the runtimes.
+// Utils needed by all runtiemes:
+//  - runtime of server
+//  - runtime of client (Server Routing)
+//  - runtime of client (Client Routing)
 
 export * from '../../utils/assert'
 export * from '../../utils/hasProp'

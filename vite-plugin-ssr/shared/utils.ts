@@ -1,10 +1,13 @@
-// Utils needed by vite-plugin-ssr's:
-//  - server-side runtime
-//  - client-side runtime (Client Routing)
+// Utils needed by:
+//  - runtime of server
+//  - runtime of client (Client Routing)
 
-// Note that these are NOT needed/loaded for the Server Routing client-side runtime.
-
-// DON'T include `utils/*` that are needed by only one of the runtimes.
+// Ensure we don't bloat runtime of Server Routing with the utils down below
+import { assertClientRouting } from '../utils/assertRoutingType'
+import { isBrowser } from '../utils/isBrowser'
+if (isBrowser()) {
+  assertClientRouting()
+}
 
 export * from '../utils/assert'
 export * from '../utils/parseUrl'
