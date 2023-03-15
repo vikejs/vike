@@ -1,17 +1,18 @@
-// TODO: check overall error handling
-// TODO: export type { Config } for users
-
 // TODO: ensure that client-side of Server Routing loads less than Client Routing
 
-// TODO: check error handling when no onRenderHtml defined
-// TODO: improve Vite dev error handling upon user setting unknown config
+// TODO: check error handling
+//       - overall
+//       - check error handling when no onRenderHtml defined
+//       - improve Vite dev error handling upon user setting unknown config
+//       - Improve Vite error logging when:
+//         ```
+//          /pages/+config.ts sets the config onRenderHtml to the value './+config/onRenderHtml.js' but a file wasn't found at /home/rom/code/vite-plugin-ssr/examples/vanilla-v1/pages/+config/onRenderHtml.js
+//         ```
 
 // TODO: if conf isn't file path then assert that it's serialazable
-// TODO: Improve Vite error logging when:
-//       ```
-//        /pages/+config.ts sets the config onRenderHtml to the value './+config/onRenderHtml.js' but a file wasn't found at /home/rom/code/vite-plugin-ssr/examples/vanilla-v1/pages/+config/onRenderHtml.js
-//       ```
 // TODO: assertUsage isErrorPage not allowed to be abstract
 // TODO: assertUsage() when configDefinitions sets a invalid c_env value
-// TODO: rename configSrc/configSource to configDefinedBy
+
 // TODO: Define pageContext.pageId
+// TODO: rename configSrc/configSource to configDefinedBy
+// TODO: export type { Config } for users
