@@ -3,7 +3,7 @@ export type { PageFile }
 
 import { determinePageId } from '../determinePageId'
 import { assertPageFilePath } from '../assertPageFilePath'
-import { isErrorPageId } from '../route'
+import { isErrorPageId } from '../error-page'
 import { assert, slice } from '../utils'
 import { determineFileType, FileType } from './fileTypes'
 

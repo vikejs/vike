@@ -7,7 +7,7 @@ export { getRenderContext }
 export type { RenderContext }
 export type { PageContextAfterRender }
 
-import { getErrorPageId } from '../../../shared/route'
+import { getErrorPageId } from '../../../shared/error-page'
 import { getHtmlString } from '../html/renderHtml'
 import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles'
 import { assert, assertUsage, hasProp, objectAssign, unique } from '../../utils'

@@ -1,6 +1,5 @@
 export { route }
 export { loadPageRoutes } from './route/loadPageRoutes'
-export { isErrorPageId, getErrorPageId } from './route/error-page'
 export type { PageRoutes, PageContextForRoute, RouteMatches }
 
 import type { PageFile } from './getPageFiles'

@@ -1,7 +1,7 @@
 export { addIs404ToPageProps }
 
 import { assert, assertWarning, hasProp, isObject } from './utils'
-import { isErrorPage } from './route/error-page'
+import { isErrorPage } from './error-page'
 import type { PageConfig } from './page-configs/PageConfig'
 
 function addIs404ToPageProps(pageContext: Record<string, unknown> & PageContextAssertIs404) {

@@ -44,7 +44,7 @@ import { getUrlFromRouteString } from '../../shared/route/resolveRouteString'
 import type { PageConfig, PageConfigGlobal } from '../../shared/page-configs/PageConfig'
 import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode'
-import { isErrorPage } from '../../shared/route/error-page'
+import { isErrorPage } from '../../shared/error-page'
 
 type HtmlFile = {
   urlOriginal: string

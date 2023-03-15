@@ -1,5 +1,5 @@
 import type { PageFile } from '../getPageFiles'
-import { isErrorPageId } from './error-page'
+import { isErrorPageId } from '../error-page'
 import { assert, assertUsage, hasProp, slice } from './utils'
 import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath'

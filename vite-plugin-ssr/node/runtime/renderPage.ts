@@ -1,7 +1,8 @@
 export { renderPage }
 
 import { getRenderContext, initPageContext, RenderContext, renderPageContext } from './renderPage/renderPageContext'
-import { route, getErrorPageId } from '../../shared/route'
+import { route } from '../../shared/route'
+import { getErrorPageId } from '../../shared/error-page'
 import { assert, hasProp, objectAssign, isParsable, parseUrl, assertServerEnv } from '../utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { isRenderErrorPageException } from './renderPage/RenderErrorPage'

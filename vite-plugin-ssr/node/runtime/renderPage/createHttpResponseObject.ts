@@ -23,7 +23,7 @@ import type { PageAsset, GetPageAssets } from './getPageAssets'
 import { assert, assertUsage, assertWarning } from '../../utils'
 import { getHtmlString, type HtmlRender } from '../html/renderHtml'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
-import { isErrorPage } from '../../../shared/route/error-page'
+import { isErrorPage } from '../../../shared/error-page'
 
 type StatusCode = 200 | 404 | 500
 type ContentType = 'application/json' | 'text/html;charset=utf-8'
