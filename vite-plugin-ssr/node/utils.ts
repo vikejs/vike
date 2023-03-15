@@ -4,7 +4,7 @@
 import '../utils/trackLogs'
 //*/
 
-// Ensure we don't bloat the client-side with server-side utils
+// Ensure we don't bloat the client-side with server utils
 import { isBrowser } from '../utils/isBrowser'
 import { assert } from '../utils/assert'
 assert(!isBrowser())

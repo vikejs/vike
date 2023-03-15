@@ -5,8 +5,8 @@ import { isBrowser } from '../../utils/isBrowser'
 import { assert } from '../../utils/assert'
 assert(isBrowser())
 // Ensure we don't bloat Server Routing with Client Routing utils
-import { isClientSideRouter } from '../../utils/isClientSideRouter'
-assert(isClientSideRouter())
+import { isClientRouter } from '../../utils/isClientRouter'
+assert(isClientRouter())
 
 export * from '../../utils/isExternalLink'
 export * from '../../utils/throttle'

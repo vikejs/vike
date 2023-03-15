@@ -31,9 +31,9 @@ type PageContextRelease = PageContextExports & {
 // ```
 function releasePageContext<T extends PageContextRelease>(
   pageContext: T,
-  isClientRouter: boolean
+  isClientRouting: boolean
 ): T & { Page: unknown } {
-  if (isClientRouter) {
+  if (isClientRouting) {
     const pageContextTyped = pageContext as any as PageContextBuiltInClientClientRouter
     assert([true, false].includes(pageContextTyped.isHydration))
     assert([true, false, null].includes(pageContextTyped.isBackwardNavigation))

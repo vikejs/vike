@@ -1,5 +1,5 @@
-import { setIsClientSideRouter } from '../../utils/isClientSideRouter'
-setIsClientSideRouter()
+import { markAsClientRouter } from '../../utils/isClientRouter'
+markAsClientRouter()
 
 import './pageFiles'
 import { useClientRouter } from './useClientRouter'

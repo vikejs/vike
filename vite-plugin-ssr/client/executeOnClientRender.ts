@@ -15,8 +15,8 @@ async function executeOnClientRender<
     _pageConfigs: PageConfig[]
   } & PageContextExports &
     PageContextRelease
->(pageContext: PC, isClientRouter: boolean): Promise<void> {
-  const pageContextReadyForRelease = releasePageContext(pageContext, isClientRouter)
+>(pageContext: PC, isClientRouting: boolean): Promise<void> {
+  const pageContextReadyForRelease = releasePageContext(pageContext, isClientRouting)
 
   let hook: null | Hook = null
   let hookName: 'render' | 'onClientRender'
