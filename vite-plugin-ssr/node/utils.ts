@@ -1,11 +1,13 @@
 // Utils needed by vite-plugin-ssr's server-side runtime.
 
-// DON'T include `util/*` that used only by the client-side.
-// DON'T include `plugin/helpers/*` which are used only by vite-plugin-ssr's Vite plugin. (The Vite plugin code is only loaded/needed in dev and while building; it is not and should be a server-side runtime requirement.)
-
 /* Track down log origins
 import '../utils/trackLogs'
 //*/
+
+// Ensure we don't bloat the client-side with server-side utils
+import { isBrowser } from '../utils/isBrowser'
+import { assert } from '../utils/assert'
+assert(!isBrowser())
 
 export * from '../utils/assert'
 export * from '../utils/cast'

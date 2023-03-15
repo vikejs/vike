@@ -32,7 +32,6 @@ const globalObject = getGlobalObject<{
 }>('useClientRouter.ts', { previousState: getState() })
 
 setupNativeScrollRestoration()
-
 initHistoryState()
 
 function disableClientRouting(err: unknown, logError: boolean) {

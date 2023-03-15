@@ -1,7 +1,12 @@
 // Utils needed by Server Routing.
 
-// DON'T include `utils/*` that are only needed by vite-plugin-ssr's server-side runtime.
-// DON'T include `utils/*` that are only needed by Client Routing.
+// Ensure we don't bloat the server-side with client utils
+import { isBrowser } from '../utils/isBrowser'
+import { assert } from '../utils/assert'
+assert(isBrowser())
+// Ensure we don't bloat Client Routing with Server Routing utils
+import { isClientSideRouter } from '../utils/isClientSideRouter'
+assert(!isClientSideRouter())
 
 export * from '../utils/getCurrentUrl'
 export * from '../utils/assert'

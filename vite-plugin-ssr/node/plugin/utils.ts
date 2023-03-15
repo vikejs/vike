@@ -1,5 +1,9 @@
 // Utils needed by vite-plugin-ssr's Vite plugin.
 
+// Ensure we don't bloat the server runtime with plugin utils
+import { assertIsVitePluginCode } from '../../utils/assertIsVitePluginCode'
+assertIsVitePluginCode()
+
 // We tolerate the fact that we load all of `node/utils/*` even though some of it is not needed
 export * from '../../node/utils'
 
