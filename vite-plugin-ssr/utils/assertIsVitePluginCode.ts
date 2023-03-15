@@ -8,7 +8,10 @@ export { assertServerEnv }
 
 import { assert } from './assert'
 import { getGlobalObject } from './getGlobalObject'
+import { isBrowser } from './isBrowser'
 import { isVitest } from './isVitest'
+
+assert(!isBrowser())
 
 const state = getGlobalObject<{
   shouldBePlugin?: true
