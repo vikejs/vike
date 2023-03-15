@@ -183,7 +183,7 @@ function tolerateError({ logSource, logText }) {
     return (
       logSource === 'Browser Error' &&
       logText.includes('https://github.com/') &&
-      logText.include('.png') &&
+      logText.includes('.png') &&
       logText.includes('the server responded with a status of 429')
     )
   }
