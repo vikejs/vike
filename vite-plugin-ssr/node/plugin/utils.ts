@@ -4,7 +4,7 @@
 import { assertIsVitePluginCode } from '../../utils/assertIsVitePluginCode'
 assertIsVitePluginCode()
 
-// We tolerate the fact that we load all of `node/utils/*` even though some of it is not needed
+// We tolerate the fact that we load all of `node/utils/*` even though some of it isn't needed
 export * from '../../node/utils'
 
 // Utils only needed by `plugin/*`
