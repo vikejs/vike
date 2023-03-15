@@ -1,7 +1,13 @@
-// Utils needed by all runtiemes:
+// Utils needed by:
 //  - runtime of server
-//  - runtime of client (Server Routing)
 //  - runtime of client (Client Routing)
+
+// Ensure we don't bloat runtime of Server Routing with the utils down below
+import { assertClientRouting } from '../../utils/assertRoutingType'
+import { isBrowser } from '../../utils/isBrowser'
+if (isBrowser()) {
+  assertClientRouting()
+}
 
 export * from '../../utils/assert'
 export * from '../../utils/hasProp'

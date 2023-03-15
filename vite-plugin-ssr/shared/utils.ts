@@ -1,15 +1,7 @@
-// Utils needed by:
+// Utils needed by all runtimes:
 //  - runtime of server
+//  - runtime of client (Server Routing)
 //  - runtime of client (Client Routing)
-
-// Ensure we don't bloat runtime of Server Routing with the utils down below
-/* TODO
-import { assertClientRouting } from '../utils/assertRoutingType'
-import { isBrowser } from '../utils/isBrowser'
-if (isBrowser()) {
-  assertClientRouting()
-}
-*/
 
 export * from '../utils/assert'
 export * from '../utils/parseUrl'
