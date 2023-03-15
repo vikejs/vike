@@ -1,4 +1,5 @@
-globalThis.__vps_isClientRouter === true
+import { assertClientRouting } from '../../utils/assertRoutingType'
+assertClientRouting()
 
 import './pageFiles'
 import { useClientRouter } from './useClientRouter'

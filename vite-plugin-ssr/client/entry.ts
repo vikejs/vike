@@ -1,3 +1,6 @@
+import { assertServerRouting } from '../utils/assertRoutingType'
+assertServerRouting()
+
 import './pageFiles'
 import { getPageContext } from './getPageContext'
 import { executeOnClientRender } from './executeOnClientRender'

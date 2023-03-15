@@ -5,8 +5,8 @@ import { isBrowser } from '../utils/isBrowser'
 import { assert } from '../utils/assert'
 assert(isBrowser())
 // Ensure we don't bloat Client Routing with Server Routing utils
-import { isClientRouter } from '../utils/isClientRouter'
-assert(!isClientRouter())
+import { assertServerRouting } from '../utils/assertRoutingType'
+assertServerRouting()
 
 export * from '../utils/getCurrentUrl'
 export * from '../utils/assert'
