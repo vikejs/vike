@@ -2,6 +2,13 @@ export { route }
 export { loadPageRoutes } from './route/loadPageRoutes'
 export type { PageRoutes, PageContextForRoute, RouteMatches }
 
+// Ensure we don't bloat runtime of Server Routing
+import { assertClientRouting } from '../utils/assertRoutingType'
+import { isBrowser } from '../utils/isBrowser'
+if (isBrowser()) {
+  assertClientRouting()
+}
+
 import type { PageFile } from './getPageFiles'
 import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils'
 import { addComputedUrlProps, PageContextUrlSource } from './addComputedUrlProps'
