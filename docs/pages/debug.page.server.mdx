@@ -27,7 +27,16 @@ $ DEBUG=vite:* npm run dev
 
 If you have a problem with Vite, we recommend to consider injecting a bunch of `console.log()` inside `node_modules/vite/dist/**/*.js` to inspect what's going on.
 
-> Instead of `$ git clone git@github.com:vitejs/vite && cd vite/ && npm install && npm run buid && cd ../path/to/my-app/ && npm link ../vite/packages/vite/`, we recommend to:
+> Instead of:
+> ```bash
+> $ git clone git@github.com:vitejs/vite
+> $ cd vite/
+> $ pnpm install
+> $ pnpm run buid
+> $ cd ../path/to/my-app
+> $ npm link ../vite/packages/vite/
+> ```
+> We recommend to:
 > - Browse the source code of `$ git clone git@github.com:vitejs/vite`.
 > - But: for an increased feedback loop, instead of building Vite, consider injecting `console.log()` directly inside `my-app/node_modules/vite/dist/**/*.js`.
 
