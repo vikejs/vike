@@ -25,7 +25,7 @@ To enable Vite's debug logs, set the environment variable `DEBUG` to `vite:*`.
 $ DEBUG=vite:* npm run dev
 ```
 
-If you have a problem with Vite, we recommend to consider injecting a bunch of `console.log()` inside `node_modules/vite/dist/**/*.js` to inspect what's going on.
+If you have a problem with Vite, we recommend to consider injecting a bunch of `console.log()` inside `node_modules/vite/dist/**/*.js` in order to inspect what's going on.
 
 > It may sound scary to dig into Vite's source code, but it's sometimes quicker to find the root cause of your problem than treating Vite as a black box. Also:
 > - It's more interesting and more fun. (Vite's source code is well written and pleasurable to read.)
@@ -36,8 +36,8 @@ If you have a problem with Vite, we recommend to consider injecting a bunch of `
 > $ git clone git@github.com:vitejs/vite
 > $ cd vite/
 > $ pnpm install
-> $ pnpm run buid
-> $ cd ../path/to/my-app/
+> $ pnpm run build
+> $ cd ../my-app/
 > $ npm link ../vite/packages/vite/
 > ```
 > We recommend to:
