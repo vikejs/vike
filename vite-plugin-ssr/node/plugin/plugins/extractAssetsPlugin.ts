@@ -20,7 +20,7 @@ import {
   getVirtualFileId
 } from '../utils'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery'
-import { getConfigVps } from './config/getConfigVps'
+import { getConfigVps } from '../../shared/getConfigVps'
 import type { ConfigVpsResolved } from '../../shared/ConfigVps'
 import { isAsset } from '../shared/isAsset'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule'

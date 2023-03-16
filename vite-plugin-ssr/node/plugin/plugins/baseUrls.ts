@@ -3,7 +3,7 @@ export { baseUrls }
 import type { Plugin } from 'vite'
 import { resolveBaseFromUserConfig } from '../plugins/config/resolveBase'
 import { assert } from '../utils'
-import { getConfigVps } from './config/getConfigVps'
+import { getConfigVps } from '../../shared/getConfigVps'
 import type { ConfigVpsUserProvided } from '../../shared/ConfigVps'
 
 function baseUrls(configVps?: ConfigVpsUserProvided): Plugin {

@@ -2,7 +2,7 @@ export { previewConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assertUsage, getOutDirs, determineOutDir, markEnvAsPreview } from '../utils'
-import { getConfigVps } from './config/getConfigVps'
+import { getConfigVps } from '../../shared/getConfigVps'
 import fs from 'fs'
 import path from 'path'
 import type { ViteDevServer } from 'vite'

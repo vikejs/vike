@@ -22,7 +22,7 @@ import { loadBuild } from '../shared/loadImportBuildCjs'
 import { setPageFiles } from '../../shared/getPageFiles'
 import { assertPluginManifest, PluginManifest } from '../plugin/plugins/manifest/assertPluginManifest'
 import type { ConfigVpsResolved } from '../shared/ConfigVps'
-import { getConfigVps } from '../plugin/plugins/config/getConfigVps'
+import { getConfigVps } from '../shared/getConfigVps'
 import type { ViteDevServerEnhanced } from '../plugin/plugins/setGlobalContext'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
