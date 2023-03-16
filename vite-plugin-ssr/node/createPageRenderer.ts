@@ -1,4 +1,4 @@
-// TODO: remove upon next major release
+// TODO/v1-release: remove this file
 
 //import { SsrEnv, setSsrEnv } from './ssrEnv'
 import { renderPage } from './runtime/renderPage'
