@@ -7,7 +7,7 @@ export { getRuntimeManifest }
 import { assert, assertUsage, getGlobalObject, isPlainObject } from './utils'
 import type { ViteManifest } from '../shared/ViteManifest'
 import type { ResolvedConfig } from 'vite'
-import { loadBuild } from '../shared/loadImportBuildCjs'
+import { loadImportBuild } from './globalContext/loadImportBuild'
 import { setPageFiles } from '../../shared/getPageFiles'
 import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest'
 import type { ConfigVpsResolved } from '../shared/ConfigVps'
@@ -68,7 +68,7 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
   const isProduction = !viteDevServer
 
   if (isProduction) {
-    const buildEntries = await loadBuild()
+    const buildEntries = await loadImportBuild()
     assertBuildEntries(buildEntries, isPrerendering ?? false)
     const { pageFiles, clientManifest, pluginManifest } = buildEntries
     setPageFiles(pageFiles)

@@ -1,9 +1,8 @@
-export { loadBuild }
-export { setLoaders }
+export { loadImportBuild }
+export { setImportBuildGetters }
 
 import { loadServerBuild } from '@brillout/vite-plugin-import-build/loadServerBuild'
-// We import from node/utils.ts insead of node/plugin/utils.ts because this file is loaded by the server runtime
-import { assert } from './utils'
+import { assert } from '../utils'
 
 const buildGetters = (globalThis.__vite_plugin_ssr__buildGetters = globalThis.__vite_plugin_ssr__buildGetters || {
   getters: null
@@ -15,11 +14,11 @@ type BuildGetters = null | {
   pluginManifest: () => Promise<Record<string, unknown>>
 }
 
-function setLoaders(getters: BuildGetters) {
+function setImportBuildGetters(getters: BuildGetters) {
   buildGetters.getters = getters
 }
 
-async function loadBuild() {
+async function loadImportBuild() {
   if (!buildGetters.getters) {
     await loadServerBuild()
     assert(buildGetters.getters)
