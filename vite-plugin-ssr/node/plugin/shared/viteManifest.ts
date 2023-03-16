@@ -2,7 +2,7 @@ export { assertViteManifest }
 export type { ViteManifest }
 export type { ViteManifestEntry }
 
-import { assert, isPlainObject } from '../runtime/utils'
+import { assert, isPlainObject } from '../../runtime/utils'
 
 type ViteManifestEntry = {
   src?: string

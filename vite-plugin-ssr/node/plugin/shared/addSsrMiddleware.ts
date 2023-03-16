@@ -1,10 +1,10 @@
 export { addSsrMiddleware }
 
-import { renderPage } from '../runtime/renderPage'
+import { renderPage } from '../../runtime/renderPage'
 import type { ViteDevServer } from 'vite'
 import pc from 'picocolors'
-import { assert, projectInfo } from '../runtime/utils'
-import type { OnRenderResult } from '../runtime/renderPage/onRenderResult'
+import { assert, projectInfo } from '../../runtime/utils'
+import type { OnRenderResult } from '../../runtime/renderPage/onRenderResult'
 
 type ConnectServer = ViteDevServer['middlewares']
 let isErrorPrevious: undefined | boolean
