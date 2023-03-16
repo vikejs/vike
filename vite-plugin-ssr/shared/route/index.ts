@@ -1,24 +1,24 @@
 export { route }
-export { loadPageRoutes } from './route/loadPageRoutes'
+export { loadPageRoutes } from './loadPageRoutes'
 export type { PageRoutes, PageContextForRoute, RouteMatches }
 
 // Ensure we don't bloat runtime of Server Routing
-import { assertClientRouting } from '../utils/assertRoutingType'
-import { isBrowser } from '../utils/isBrowser'
+import { assertClientRouting } from '../../utils/assertRoutingType'
+import { isBrowser } from '../../utils/isBrowser'
 if (isBrowser()) {
   assertClientRouting()
 }
 
-import type { PageFile } from './getPageFiles'
+import type { PageFile } from '../getPageFiles'
 import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils'
-import { addComputedUrlProps, PageContextUrlSource } from './addComputedUrlProps'
-import { resolvePrecendence } from './route/resolvePrecedence'
-import { resolveRouteString } from './route/resolveRouteString'
-import { resolveRouteFunction } from './route/resolveRouteFunction'
-import { callOnBeforeRouteHook } from './route/callOnBeforeRouteHook'
-import { PageRoutes, loadPageRoutes, RouteType } from './route/loadPageRoutes'
-import { debug } from './route/debug'
-import type { PageConfig, PageConfigGlobal } from './page-configs/PageConfig'
+import { addComputedUrlProps, PageContextUrlSource } from '../addComputedUrlProps'
+import { resolvePrecendence } from './resolvePrecedence'
+import { resolveRouteString } from './resolveRouteString'
+import { resolveRouteFunction } from './resolveRouteFunction'
+import { callOnBeforeRouteHook } from './callOnBeforeRouteHook'
+import { PageRoutes, loadPageRoutes, RouteType } from './loadPageRoutes'
+import { debug } from './debug'
+import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
 
 type PageContextForRoute = PageContextUrlSource & {
   _pageFilesAll: PageFile[]
