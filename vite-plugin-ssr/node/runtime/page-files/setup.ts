@@ -1,7 +1,7 @@
 import { setPageFilesAsync } from '../../../shared/getPageFiles'
 import { assert, debugGlob, isObject } from '../utils'
 import { getGlobalContext } from '../globalContext'
-import { virtualFileIdImportUserCodeServer } from '../../commons/virtual-files/virtualFileImportUserCode'
+import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode'
 import type { ViteDevServerEnhanced } from '../../plugin/plugins/setGlobalContext'
 import type { RollupError } from 'rollup'
 

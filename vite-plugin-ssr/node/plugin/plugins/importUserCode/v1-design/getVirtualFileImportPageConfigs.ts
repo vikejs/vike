@@ -3,7 +3,7 @@ export { getVirtualFileImportPageConfigs }
 import { assert, objectEntries } from '../../../utils'
 import type { ConfigSource, PageConfigData, PageConfigGlobalData } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../helpers/generateEagerImport'
-import { getVirtualFileIdImportPageCode } from '../../../../commons/virtual-files/virtualFileImportPageCode'
+import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files/virtualFileImportPageCode'
 import { getConfigData } from './getConfigData'
 import { getInvalidator } from './invalidation'
 import { debug } from './debug'

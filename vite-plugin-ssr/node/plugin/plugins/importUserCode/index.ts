@@ -7,8 +7,8 @@ import { getVirtualFileImportPageCode } from './v1-design/getVirtualFileImportPa
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode'
 import { getVirtualFileId, isDev1, isDev1_onConfigureServer, isVirtualFileId, resolveVirtualFileId } from '../../utils'
 import { invalidateVirtualFilesImportPageCode } from './v1-design/invalidation'
-import { isVirtualFileIdImportPageCode } from '../../../commons/virtual-files/virtualFileImportPageCode'
-import { isVirtualFileIdImportUserCode } from '../../../commons/virtual-files/virtualFileImportUserCode'
+import { isVirtualFileIdImportPageCode } from '../../../shared/virtual-files/virtualFileImportPageCode'
+import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig

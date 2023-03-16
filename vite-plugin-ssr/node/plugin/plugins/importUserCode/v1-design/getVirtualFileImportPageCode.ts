@@ -6,7 +6,7 @@ import { generateEagerImport } from '../helpers/generateEagerImport'
 import {
   getVirtualFileIdImportPageCode,
   isVirtualFileIdImportPageCode
-} from '../../../../commons/virtual-files/virtualFileImportPageCode'
+} from '../../../../shared/virtual-files/virtualFileImportPageCode'
 import { getConfigData } from './getConfigData'
 import { extractAssetsAddQuery } from '../../extractAssetsPlugin/extractAssetsAddQuery'
 import { debug } from './debug'
