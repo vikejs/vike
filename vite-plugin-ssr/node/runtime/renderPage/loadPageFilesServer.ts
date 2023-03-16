@@ -8,11 +8,11 @@ import { assertWarning, objectAssign, PromiseType } from '../utils'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets'
 import { loadPageFilesServerSide } from '../../../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { debugPageFiles, type PageContextDebug } from './debugPageFiles'
-import type { MediaType } from '../helpers'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig'
 import { analyzePage } from './analyzePage'
 import { getGlobalContext } from '../globalContext'
+import type { MediaType } from './inferMediaType'
 
 type PageContext_loadPageFilesServer = PageContextGetPageAssets &
   PageContextDebug & {

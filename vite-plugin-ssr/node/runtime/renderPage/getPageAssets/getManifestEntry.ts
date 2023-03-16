@@ -1,6 +1,6 @@
 export { getManifestEntry }
 
-import type { ViteManifest, ViteManifestEntry } from '../../helpers'
+import type { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest'
 import { assert, slice, isNpmPackageModule } from '../../utils'
 import { assertClientEntryId } from './assertClientEntryId'
 import { isVirtualFileIdImportPageCode } from '../../../commons/virtual-files/virtualFileImportPageCode'

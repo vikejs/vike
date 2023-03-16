@@ -1,9 +1,5 @@
-export { isAsset }
 export { inferMediaType }
 export type { MediaType }
-
-// Copied from Vite: https://github.com/vitejs/vite/blob/9d28ffd3410a3ea2b739cce31e845f59cebd3cc6/packages/vite/src/node/constants.ts#L83-L121
-// Alternatively: check sirv's source code (it needs to send the right Content-Type header)
 
 import { styleFileRE, isScriptFile } from '../../runtime/utils'
 
@@ -22,6 +18,8 @@ type MediaType = null | {
     | 'font/woff'
     | 'font/woff2'
 }
+
+
 function inferMediaType(href: string): MediaType {
   // Basics
   if (styleFileRE.test(href)) {
@@ -60,43 +58,4 @@ function inferMediaType(href: string): MediaType {
   }
 
   return null
-}
-
-const assetFileExtensions = [
-  // images
-  'png',
-  'jpg',
-  'jpeg',
-  'jfif',
-  'pjpeg',
-  'pjp',
-  'gif',
-  'svg',
-  'ico',
-  'webp',
-  'avif',
-
-  // media
-  'mp4',
-  'webm',
-  'ogg',
-  'mp3',
-  'wav',
-  'flac',
-  'aac',
-
-  // fonts
-  'woff2',
-  'woff',
-  'eot',
-  'ttf',
-  'otf',
-
-  // other
-  'webmanifest',
-  'pdf',
-  'txt'
-]
-function isAsset(file: string) {
-  return assetFileExtensions.some((ext) => file.endsWith('.' + ext))
 }

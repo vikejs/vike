@@ -5,8 +5,18 @@ export { setGlobalContextViteConfig }
 export { getRuntimeManifest }
 export { assertRuntimeManifest }
 
-import { assert, assertUsage, getGlobalObject, isObject, hasProp, isBaseServer, isBaseAssets, checkType } from './utils'
-import { assertViteManifest, type ViteManifest } from './helpers'
+import {
+  assert,
+  assertUsage,
+  getGlobalObject,
+  isObject,
+  hasProp,
+  isBaseServer,
+  isBaseAssets,
+  checkType,
+  isPlainObject
+} from './utils'
+import type { ViteManifest } from '../shared/ViteManifest'
 import type { ResolvedConfig } from 'vite'
 import { loadBuild } from '../plugin/plugins/importBuild/loadBuild'
 import { setPageFiles } from '../../shared/getPageFiles'
@@ -140,4 +150,15 @@ function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean):
     isPreRendering ? 'pre-rendering.' : 'running the server.'
   ].join(' ')
   assertUsage(buildEntries, errMsg)
+}
+
+function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest {
+  assert(isPlainObject(manifest))
+  Object.entries(manifest)
+    // circumvent esbuild bug: esbuild adds a `default` key to JSON upon `require('./some.json')`.
+    .filter(([key]) => key !== 'default')
+    .forEach(([_, entry]) => {
+      assert(isPlainObject(entry))
+      assert(typeof entry.file === 'string')
+    })
 }

@@ -1,7 +1,7 @@
 export { retrieveAssetsProd }
 
 import { assert, isNpmPackageModule } from '../../utils'
-import { ViteManifest } from '../../helpers'
+import type { ViteManifest } from '../../../shared/ViteManifest'
 import { getManifestEntry } from './getManifestEntry'
 import { extractAssetsAddQuery } from '../../../plugin/plugins/extractAssetsPlugin/extractAssetsAddQuery'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'

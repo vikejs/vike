@@ -16,7 +16,7 @@ import {
 import { retrieveAssetsDev } from './getPageAssets/retrieveAssetsDev'
 import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd'
 import path from 'path'
-import { inferMediaType, type MediaType, type ViteManifest } from '../helpers'
+import { inferMediaType, type MediaType } from './inferMediaType'
 import { getManifestEntry } from './getPageAssets/getManifestEntry'
 import type { ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
@@ -24,6 +24,7 @@ import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAsset
 import type { ConfigVpsResolved } from '../../plugin/plugins/config/ConfigVps'
 import { getGlobalContext } from '../globalContext'
 import { assertClientEntryId } from './getPageAssets/assertClientEntryId'
+import type { ViteManifest } from '../../shared/ViteManifest'
 
 type PageAsset = {
   src: string
