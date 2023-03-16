@@ -5,6 +5,7 @@ export { isNewError }
 import { assertRenderErrorPageExceptionUsage, isRenderErrorPageException } from './RenderErrorPage'
 import { assert, assertWarning, hasProp, isObject, isSameErrorMessage } from '../utils'
 import { getGlobalContext } from '../globalContext'
+import { isTranspileError, logTranspileError } from '../shared/logTranspileError'
 
 /** Log errors that don't originate from code transpiled by Vite. I.e. errors that aren't thrown from user code. */
 function logErrorWithoutVite(err: unknown) {
@@ -36,9 +37,9 @@ function logErrorWithVite(err: unknown): void {
       // Apply source maps
       viteDevServer.ssrFixStacktrace(err as Error)
     }
-    if (viteDevServer.isTranspileError(err)) {
+    if (isTranspileError(err)) {
       // We handle transpile errors globally in logError() because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
-      viteDevServer.logTranspileError(viteDevServer, err)
+      logTranspileError(viteDevServer, err)
       return
     }
   }

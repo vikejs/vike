@@ -2,8 +2,9 @@ import { setPageFilesAsync } from '../../../shared/getPageFiles'
 import { assert, debugGlob, isObject } from '../utils'
 import { getGlobalContext } from '../globalContext'
 import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode'
-import type { ViteDevServerEnhanced } from '../../plugin/plugins/setGlobalContext'
 import type { RollupError } from 'rollup'
+import type { ViteDevServer } from 'vite'
+import { isTranspileError } from '../shared/logTranspileError'
 
 setPageFilesAsync(getPageFilesExports)
 
@@ -25,7 +26,7 @@ async function getPageFilesExports(): Promise<Record<string, unknown>> {
 
 async function transpileaAndLoadModule(
   moduleId: string,
-  viteDevServer: ViteDevServerEnhanced
+  viteDevServer: ViteDevServer
 ): Promise<{ moduleExports: Record<string, unknown> } | { transpileError: RollupError }> {
   // Avoid redudant error logging, e.g. get rid of this:
   // ```
@@ -40,7 +41,7 @@ async function transpileaAndLoadModule(
   try {
     result = await viteDevServer.ssrLoadModule(moduleId)
   } catch (err) {
-    if (viteDevServer.isTranspileError(err)) {
+    if (isTranspileError(err)) {
       return { transpileError: err }
     }
     throw err

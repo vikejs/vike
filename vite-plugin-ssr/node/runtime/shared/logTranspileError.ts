@@ -1,4 +1,4 @@
-export { logError as logTranspileError }
+export { logTranspileError }
 export { isTranspileError }
 
 // Copied & adapted from https://github.com/vitejs/vite/blob/9c114c5c72a6af87e3330d5573362554b4511265/packages/vite/src/node/server/middlewares/error.ts
@@ -7,7 +7,7 @@ export { isTranspileError }
 import colors from 'picocolors'
 import type { ViteDevServer } from 'vite'
 import type { RollupError } from 'rollup'
-import { assertIsVitePluginCode, isObject } from '../../runtime/utils'
+import { assertIsVitePluginCode, isObject } from '../utils'
 
 assertIsVitePluginCode()
 
@@ -24,7 +24,7 @@ function buildErrorMessage(err: RollupError, args: string[] = [], includeStack =
   return args.join('\n')
 }
 
-export function logError(server: ViteDevServer, err: RollupError): void {
+function logTranspileError(server: ViteDevServer, err: RollupError): void {
   const msg = buildErrorMessage(err, [colors.red(`Transpilation Error. ${err.message}`)])
 
   server.config.logger.error(msg, {

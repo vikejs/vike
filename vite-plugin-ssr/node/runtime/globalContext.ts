@@ -6,17 +6,16 @@ export { getRuntimeManifest }
 
 import { assert, assertUsage, getGlobalObject, isPlainObject } from './utils'
 import type { ViteManifest } from '../shared/ViteManifest'
-import type { ResolvedConfig } from 'vite'
+import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { loadImportBuild } from './globalContext/loadImportBuild'
 import { setPageFiles } from '../../shared/getPageFiles'
 import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest'
 import type { ConfigVpsResolved } from '../shared/ConfigVps'
 import { getConfigVps } from '../shared/getConfigVps'
-import type { ViteDevServerEnhanced } from '../plugin/plugins/setGlobalContext'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
-  viteDevServer?: ViteDevServerEnhanced
+  viteDevServer?: ViteDevServer
   config?: ResolvedConfig
 }>('globalContext.ts', {})
 
@@ -24,7 +23,7 @@ type GlobalContext = (
   | {
       isProduction: false
       isPrerendering: false
-      viteDevServer: ViteDevServerEnhanced
+      viteDevServer: ViteDevServer
       config: ResolvedConfig
       configVps: ConfigVpsResolved
       clientManifest: null
@@ -50,7 +49,7 @@ function getGlobalContext(): GlobalContext {
   return globalObject.globalContext
 }
 
-function setGlobalContextViteDevServer(viteDevServer: ViteDevServerEnhanced) {
+function setGlobalContextViteDevServer(viteDevServer: ViteDevServer) {
   if (globalObject.viteDevServer) return
   assert(!globalObject.globalContext)
   globalObject.viteDevServer = viteDevServer
