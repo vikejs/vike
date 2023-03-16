@@ -7,9 +7,7 @@ export { isTranspileError }
 import colors from 'picocolors'
 import type { ViteDevServer } from 'vite'
 import type { RollupError } from 'rollup'
-import { assertIsVitePluginCode, isObject } from '../utils'
-
-assertIsVitePluginCode()
+import { isObject } from '../utils'
 
 function isTranspileError(err: unknown): err is RollupError {
   return isObject(err) && !!err.id && !!err.frame
