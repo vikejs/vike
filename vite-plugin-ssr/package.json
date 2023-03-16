@@ -52,7 +52,7 @@
       "worker": "./dist/cjs/node/runtime/index.js",
       "node": "./dist/cjs/node/runtime/index.js",
       "browser": "./dist/esm/client/node.js",
-      "types": "./dist/cjs/node/runtime/index.js"
+      "types": "./dist/cjs/node/runtime/index.d.ts"
     },
     "./client": {
       "browser": "./dist/esm/client/index.js"
@@ -61,7 +61,7 @@
       "worker": "./dist/cjs/node/client/router.js",
       "node": "./dist/cjs/node/client/router.js",
       "browser": "./dist/esm/client/router/index.js",
-      "types": "./dist/esm/client/router/index.js"
+      "types": "./dist/esm/client/router/index.d.ts"
     },
     "./routing": {
       "worker": "./dist/cjs/shared/route/routing.js",
