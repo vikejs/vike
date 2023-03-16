@@ -1,7 +1,7 @@
 export { test }
 
 import { expect, describe, it } from 'vitest'
-import { renderPage } from '../../vite-plugin-ssr/node'
+import { renderPage } from '../../vite-plugin-ssr/node/runtime'
 
 function test() {
   describe('Contra Simulation', () => {

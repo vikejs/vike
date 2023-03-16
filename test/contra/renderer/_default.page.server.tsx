@@ -1,6 +1,6 @@
 export { render }
 
-import { escapeInject } from '../../../vite-plugin-ssr/node'
+import { escapeInject } from '../../../vite-plugin-ssr/node/runtime'
 
 async function render() {
   /*/
