@@ -1,7 +1,7 @@
 export { serializePageContextClientSide }
 
 import { stringify } from '@brillout/json-serializer/stringify'
-import { assert, assertUsage, hasProp, isPlainObject, unique } from '../../runtime/utils'
+import { assert, assertUsage, hasProp, isPlainObject, unique } from '../utils'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { isErrorPage } from '../../../shared/error-page'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'

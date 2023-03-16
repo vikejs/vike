@@ -1,7 +1,7 @@
 export { inferMediaType }
 export type { MediaType }
 
-import { styleFileRE, isScriptFile } from '../../runtime/utils'
+import { styleFileRE, isScriptFile } from '../utils'
 
 type MediaType = null | {
   // List of `as` values: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#attr-as
@@ -18,7 +18,6 @@ type MediaType = null | {
     | 'font/woff'
     | 'font/woff2'
 }
-
 
 function inferMediaType(href: string): MediaType {
   // Basics
