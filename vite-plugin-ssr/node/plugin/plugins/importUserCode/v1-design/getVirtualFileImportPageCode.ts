@@ -8,7 +8,7 @@ import {
   isVirtualFileIdImportPageCode
 } from '../../../../shared/virtual-files/virtualFileImportPageCode'
 import { getConfigData } from './getConfigData'
-import { extractAssetsAddQuery } from '../../extractAssetsPlugin/extractAssetsAddQuery'
+import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery'
 import { debug } from './debug'
 
 async function getVirtualFileImportPageCode(

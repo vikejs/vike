@@ -19,7 +19,7 @@ import {
   isVirtualFileId,
   getVirtualFileId
 } from '../utils'
-import { extractAssetsAddQuery } from './extractAssetsPlugin/extractAssetsAddQuery'
+import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery'
 import { getConfigVps } from './config/getConfigVps'
 import type { ConfigVpsResolved } from '../../shared/ConfigVps'
 import { isAsset } from '../shared/isAsset'

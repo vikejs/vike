@@ -3,7 +3,7 @@ export { retrieveAssetsProd }
 import { assert, isNpmPackageModule } from '../../utils'
 import type { ViteManifest } from '../../../shared/ViteManifest'
 import { getManifestEntry } from './getManifestEntry'
-import { extractAssetsAddQuery } from '../../../plugin/plugins/extractAssetsPlugin/extractAssetsAddQuery'
+import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 
 function retrieveAssetsProd(

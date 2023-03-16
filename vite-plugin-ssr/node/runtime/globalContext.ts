@@ -18,7 +18,7 @@ import {
 } from './utils'
 import type { ViteManifest } from '../shared/ViteManifest'
 import type { ResolvedConfig } from 'vite'
-import { loadBuild } from '../plugin/plugins/importBuild/loadBuild'
+import { loadBuild } from '../shared/loadImportBuildCjs'
 import { setPageFiles } from '../../shared/getPageFiles'
 import { assertPluginManifest, PluginManifest } from '../plugin/plugins/manifest/assertPluginManifest'
 import type { ConfigVpsResolved } from '../shared/ConfigVps'
