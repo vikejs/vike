@@ -5,7 +5,7 @@ export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './html/str
 export { injectAssets__public as _injectAssets } from './html/injectAssets/injectAssets__public'
 export { RenderErrorPage } from './renderPage/RenderErrorPage'
 
-export type { PageContextBuiltIn } from '../types'
+export type { PageContextBuiltIn } from '../../shared/types'
 export type { InjectFilterEntry } from './html/injectAssets/getHtmlTags'
 
 // Help Telefunc detect the user's stack
