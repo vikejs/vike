@@ -19,11 +19,12 @@ import {
   isVirtualFileId,
   getVirtualFileId
 } from '../utils'
-import { removeSourceMap, getImportStatements, type ImportStatement } from '../helpers'
 import { extractAssetsAddQuery } from './extractAssetsPlugin/extractAssetsAddQuery'
 import { getConfigVps } from './config/getConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'
 import { isAsset } from '../../shared/isAsset'
+import { getImportStatements, type ImportStatement } from '../shared/parseEsModule'
+import { removeSourceMap } from '../shared/removeSourceMap'
 //type ResolvedId = NonNullable<Awaited<ReturnType<ThisParameterType<NonNullable<Plugin['resolveId']>>['resolve']>>> // same as `import type { ResolvedId } from 'rollup'` but safe when Vite updates Rollup version
 type ResolvedId = any // TODO
 

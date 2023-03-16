@@ -12,10 +12,10 @@ import {
   removeFileExtention,
   unique
 } from '../utils'
-import { findPageFiles } from '../helpers'
 import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode'
 import { getConfigData } from './importUserCode/v1-design/getConfigData'
 import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils'
+import { findPageFiles } from '../shared/findPageFiles'
 type InputOption = ResolvedConfig['build']['rollupOptions']['input'] // same as `import type { InputOption } from 'rollup'` but safe when Vite updates Rollup version
 
 function buildConfig(): Plugin {

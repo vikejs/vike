@@ -3,7 +3,7 @@ export type { ViteDevServerEnhanced }
 
 import type { Plugin, ViteDevServer } from 'vite'
 import { setGlobalContextViteDevServer, setGlobalContextViteConfig } from '../../runtime/globalContext'
-import { logTranspileError, isTranspileError } from '../helpers'
+import { isTranspileError, logTranspileError } from '../shared/logTranspileError'
 import { objectAssign } from '../utils'
 
 // We don't let the VPS runtime import logTranspileError() directly. Instead, we make the VPS runtime use viteDevServer.logTranspileError(). To avoid unnecessarily loading the code of logTranspileError() in production.

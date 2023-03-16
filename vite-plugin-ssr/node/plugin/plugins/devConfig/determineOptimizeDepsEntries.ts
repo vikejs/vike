@@ -1,7 +1,7 @@
 export { determineOptimizeDepsEntries }
 
 import type { ResolvedConfig } from 'vite'
-import { findPageFiles } from '../../helpers'
+import { findPageFiles } from '../../shared/findPageFiles'
 import { makeVitePathAbsolute, unique } from '../../utils'
 import { getConfigData } from '../importUserCode/v1-design/getConfigData'
 

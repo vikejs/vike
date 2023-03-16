@@ -3,12 +3,14 @@ export { devConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { searchForWorkspaceRoot } from 'vite'
 import { assert, isNotNullish, markEnvAsDev } from '../utils'
-import { addSsrMiddleware, assertRoot, isViteCliCall, resolveRoot } from '../helpers'
 import { determineOptimizeDepsEntries } from './devConfig/determineOptimizeDepsEntries'
 import path from 'path'
 import fs from 'fs'
 import { getConfigVps } from './config/getConfigVps'
 import { ConfigVpsResolved } from './config/ConfigVps'
+import { resolveRoot, assertRoot } from '../shared/resolveRoot'
+import { isViteCliCall } from '../shared/isViteCliCall'
+import { addSsrMiddleware } from '../shared/addSsrMiddleware'
 
 function devConfig(): Plugin[] {
   let root: string

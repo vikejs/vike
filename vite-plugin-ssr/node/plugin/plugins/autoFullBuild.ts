@@ -2,10 +2,10 @@ export { autoFullBuild }
 
 import { build, Plugin, ResolvedConfig } from 'vite'
 import { assertWarning } from '../utils'
-import { getViteBuildCliConfig, isViteCliCall } from '../helpers'
 import { prerender } from '../../prerender'
 import { getConfigVps } from './config/getConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'
+import { getViteBuildCliConfig, isViteCliCall } from '../shared/isViteCliCall'
 
 function autoFullBuild(): Plugin {
   let config: ResolvedConfig
