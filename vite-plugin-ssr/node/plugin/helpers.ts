@@ -1,7 +1,6 @@
 // Helpers needed by vite-plugin-ssr's Vite plugin.
 export * from './shared/logTranspileError'
 export * from './shared/assets'
-export * from './shared/serializePageContextClientSide'
 export * from './shared/viteManifest'
 export * from './shared/removeSourceMap'
 export * from './shared/isViteCliCall'
