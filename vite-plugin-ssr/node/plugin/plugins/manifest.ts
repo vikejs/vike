@@ -2,7 +2,7 @@ export { manifest }
 
 import { Plugin, ResolvedConfig } from 'vite'
 import { projectInfo, viteIsSSR, toPosixPath, assertPosixPath, isNotNullish } from '../utils'
-import { assertPluginManifest } from './manifest/assertPluginManifest'
+import { assertPluginManifest } from '../../shared/assertPluginManifest'
 import { isUsingClientRouter } from './extractExportNamesPlugin'
 import { getConfigVps } from '../../shared/getConfigVps'
 import type { ConfigVpsResolved } from '../../shared/ConfigVps'

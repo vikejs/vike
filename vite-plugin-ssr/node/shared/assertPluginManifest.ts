@@ -1,7 +1,7 @@
 export { assertPluginManifest }
 export type { PluginManifest }
 
-import { assertRuntimeManifest } from '../../../runtime/globalContext'
+import { assertRuntimeManifest } from '../runtime/globalContext'
 // We import from node/utils.ts insead of node/plugin/utils.ts because this file is loaded by the server runtime
 import {
   assert,
@@ -12,7 +12,7 @@ import {
   hasProp,
   isStringRecord,
   objectAssign
-} from '../../../runtime/utils'
+} from '../runtime/utils'
 
 type PluginManifest = {
   version: string
