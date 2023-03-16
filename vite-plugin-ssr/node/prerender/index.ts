@@ -1,7 +1,7 @@
 export { prerender }
 
-import { runPrerender } from './prerender/runPrerender'
-import type { PrerenderOptions } from './prerender/runPrerender'
+import { runPrerender } from './runPrerender'
+import type { PrerenderOptions } from './runPrerender'
 
 async function prerender(options: PrerenderOptions = {}): Promise<void> {
   await runPrerender(options)

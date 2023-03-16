@@ -72,7 +72,7 @@
       "node": "./dist/cjs/node/cli/index.js"
     },
     "./prerender": {
-      "node": "./dist/cjs/node/prerender.js"
+      "node": "./dist/cjs/node/prerender/index.js"
     },
     "./plugin": {
       "node": "./dist/cjs/node/plugin/index.js"
