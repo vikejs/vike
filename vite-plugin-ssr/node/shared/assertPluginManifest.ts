@@ -2,7 +2,6 @@ export { assertPluginManifest }
 export type { PluginManifest }
 
 import { assertRuntimeManifest } from './assertRuntimeManifest'
-// We import from node/utils.ts insead of node/plugin/utils.ts because this file is loaded by the server runtime
 import {
   assert,
   assertUsage,
