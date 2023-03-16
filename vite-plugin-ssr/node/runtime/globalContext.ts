@@ -3,19 +3,8 @@ export { getGlobalContext }
 export { setGlobalContextViteDevServer }
 export { setGlobalContextViteConfig }
 export { getRuntimeManifest }
-export { assertRuntimeManifest }
 
-import {
-  assert,
-  assertUsage,
-  getGlobalObject,
-  isObject,
-  hasProp,
-  isBaseServer,
-  isBaseAssets,
-  checkType,
-  isPlainObject
-} from './utils'
+import { assert, assertUsage, getGlobalObject, isPlainObject } from './utils'
 import type { ViteManifest } from '../shared/ViteManifest'
 import type { ResolvedConfig } from 'vite'
 import { loadBuild } from '../shared/loadImportBuildCjs'
@@ -24,6 +13,7 @@ import { assertPluginManifest, PluginManifest } from '../shared/assertPluginMani
 import type { ConfigVpsResolved } from '../shared/ConfigVps'
 import { getConfigVps } from '../shared/getConfigVps'
 import type { ViteDevServerEnhanced } from '../plugin/plugins/setGlobalContext'
+import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   viteDevServer?: ViteDevServerEnhanced
@@ -116,11 +106,6 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
   }
 }
 
-type RuntimeManifest = {
-  baseServer: string
-  baseAssets: string
-  includeAssetsImportedByServer: boolean
-}
 function getRuntimeManifest(configVps: ConfigVpsResolved): RuntimeManifest {
   const { includeAssetsImportedByServer, baseServer, baseAssets } = configVps
   const manifest = {
@@ -130,16 +115,6 @@ function getRuntimeManifest(configVps: ConfigVpsResolved): RuntimeManifest {
   }
   assertRuntimeManifest(manifest)
   return manifest
-}
-function assertRuntimeManifest(obj: unknown): asserts obj is RuntimeManifest & Record<string, unknown> {
-  assert(obj)
-  assert(isObject(obj))
-  assert(hasProp(obj, 'baseServer', 'string'))
-  assert(hasProp(obj, 'baseAssets', 'string'))
-  assert(isBaseServer(obj.baseServer))
-  assert(isBaseAssets(obj.baseAssets))
-  assert(hasProp(obj, 'includeAssetsImportedByServer', 'boolean'))
-  checkType<RuntimeManifest>(obj)
 }
 
 function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean): asserts buildEntries is T {

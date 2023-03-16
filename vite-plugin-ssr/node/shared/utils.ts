@@ -5,3 +5,13 @@ assert(!isBrowser())
 
 export * from '../../utils/assert'
 export * from '../../utils/getFileExtension'
+export * from '../../utils/isPlainObject'
+export * from '../../utils/projectInfo'
+export * from '../../utils/checkType'
+export * from '../../utils/hasProp'
+export * from '../../utils/isStringRecord'
+export * from '../../utils/objectAssign'
+export * from '../../utils/checkType'
+export * from '../../utils/hasProp'
+export * from '../../utils/parseUrl'
+export * from '../../utils/isObject'
