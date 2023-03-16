@@ -2,7 +2,7 @@ export { isVirtualFileIdImportPageCode }
 export { getVirtualFileIdImportPageCode }
 
 import { extractAssetsRemoveQuery } from '../extractAssetsQuery'
-import { assert, getVirtualFileId } from '../../runtime/utils'
+import { assert, getVirtualFileId } from '../utils'
 
 const idBase = 'virtual:vite-plugin-ssr:importPageCode:'
 const idBaseClient = `${idBase}client:` as const

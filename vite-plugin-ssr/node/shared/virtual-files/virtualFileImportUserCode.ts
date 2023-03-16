@@ -3,7 +3,7 @@ export { virtualFileIdImportUserCodeClientSR }
 export { virtualFileIdImportUserCodeClientCR }
 export { isVirtualFileIdImportUserCode }
 
-import { assert, getVirtualFileId } from '../../runtime/utils'
+import { assert, getVirtualFileId } from '../utils'
 
 const idBase = 'virtual:vite-plugin-ssr:importUserCode'
 const virtualFileIdImportUserCodeServer = `${idBase}:server`
