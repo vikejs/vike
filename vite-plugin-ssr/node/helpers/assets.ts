@@ -5,7 +5,7 @@ export type { MediaType }
 // Copied from Vite: https://github.com/vitejs/vite/blob/9d28ffd3410a3ea2b739cce31e845f59cebd3cc6/packages/vite/src/node/constants.ts#L83-L121
 // Altenratively: check sirv's source code (it needs to send the right Content-Type header)
 
-import { styleFileRE, isScriptFile } from '../utils'
+import { styleFileRE, isScriptFile } from '../runtime/utils'
 
 type MediaType = null | {
   // List of `as` values: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#attr-as

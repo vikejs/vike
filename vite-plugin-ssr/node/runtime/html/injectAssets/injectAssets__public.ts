@@ -1,6 +1,6 @@
 export { injectAssets__public }
 
-import { assertUsage, assertWarning, castProp, hasProp } from '../../../utils'
+import { assertUsage, assertWarning, castProp, hasProp } from '../../utils'
 import { injectHtmlTagsToString } from '../injectAssets'
 import type { PageAsset } from '../../renderPage/getPageAssets'
 

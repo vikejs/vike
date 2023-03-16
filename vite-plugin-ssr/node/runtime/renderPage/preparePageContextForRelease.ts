@@ -2,7 +2,7 @@ export { preparePageContextForRelease }
 export type { PageContextPublic }
 
 import type { ExportsAll } from '../../../shared/getPageFiles'
-import { assert, isPlainObject, isObject } from '../../utils'
+import { assert, isPlainObject, isObject } from '../utils'
 import { sortPageContext } from '../../../shared/sortPageContext'
 import { assertURLs, PageContextUrls } from '../../../shared/addComputedUrlProps'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'

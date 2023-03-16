@@ -2,7 +2,7 @@ export { resolveRoot }
 export { assertRoot }
 
 import type { ResolvedConfig, UserConfig } from 'vite'
-import { assert, toPosixPath } from '../utils'
+import { assert, toPosixPath } from '../runtime/utils'
 import path from 'path'
 
 function resolveRoot(config: UserConfig): string {

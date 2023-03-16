@@ -20,7 +20,7 @@ import {
 } from '../html/stream'
 import { inferEarlyHintLink } from '../html/injectAssets/inferHtmlTags'
 import type { PageAsset, GetPageAssets } from './getPageAssets'
-import { assert, assertUsage, assertWarning } from '../../utils'
+import { assert, assertUsage, assertWarning } from '../utils'
 import { getHtmlString, type HtmlRender } from '../html/renderHtml'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { isErrorPage } from '../../../shared/error-page'

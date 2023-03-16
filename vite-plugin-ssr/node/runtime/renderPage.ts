@@ -3,7 +3,7 @@ export { renderPage }
 import { getRenderContext, initPageContext, RenderContext, renderPageContext } from './renderPage/renderPageContext'
 import { route } from '../../shared/route'
 import { getErrorPageId } from '../../shared/error-page'
-import { assert, hasProp, objectAssign, isParsable, parseUrl, assertServerEnv } from '../utils'
+import { assert, hasProp, objectAssign, isParsable, parseUrl, assertServerEnv } from './utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { isRenderErrorPageException } from './renderPage/RenderErrorPage'
 import { initGlobalContext } from './globalContext'

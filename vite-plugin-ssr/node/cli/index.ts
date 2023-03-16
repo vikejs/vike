@@ -1,5 +1,5 @@
 import { prerender as prerenderOriginal } from '../prerender'
-import { assertWarning } from '../utils'
+import { assertWarning } from '../runtime/utils'
 export const prerender: typeof prerenderOriginal = (options) => {
   assertWarning(
     false,

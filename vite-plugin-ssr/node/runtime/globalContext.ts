@@ -5,16 +5,7 @@ export { setGlobalContextViteConfig }
 export { getRuntimeManifest }
 export { assertRuntimeManifest }
 
-import {
-  assert,
-  assertUsage,
-  getGlobalObject,
-  isObject,
-  hasProp,
-  isBaseServer,
-  isBaseAssets,
-  checkType
-} from '../utils'
+import { assert, assertUsage, getGlobalObject, isObject, hasProp, isBaseServer, isBaseAssets, checkType } from './utils'
 import { assertViteManifest, type ViteManifest } from './helpers'
 import type { ResolvedConfig } from 'vite'
 import { loadBuild } from '../plugin/plugins/importBuild/loadBuild'

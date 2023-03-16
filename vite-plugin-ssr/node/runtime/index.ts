@@ -14,7 +14,7 @@ declare global {
   var _isVitePluginSsr: true
 }
 
-import { assertUsage, isBrowser, addRequireShim } from '../utils'
+import { assertUsage, isBrowser, addRequireShim } from './utils'
 assertUsage(!isBrowser(), 'The `vite-plugin-ssr` module cannot be imported in the browser.')
 addRequireShim()
 

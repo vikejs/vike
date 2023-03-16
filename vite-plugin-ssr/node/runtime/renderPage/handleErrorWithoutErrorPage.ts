@@ -3,7 +3,7 @@ export { warnMissingErrorPage }
 
 import { stringify } from '@brillout/json-serializer/stringify'
 import { getGlobalContext } from '../globalContext'
-import { assert, assertWarning, objectAssign } from '../../utils'
+import { assert, assertWarning, objectAssign } from '../utils'
 import { createHttpResponseObject } from './createHttpResponseObject'
 import pc from 'picocolors'
 import type { GetPageAssets } from './getPageAssets'

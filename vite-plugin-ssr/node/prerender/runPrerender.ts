@@ -20,7 +20,7 @@ import {
   urlToFile,
   callHookWithTimeout,
   isPlainObject
-} from './../utils'
+} from '../runtime/utils'
 import { pLimit, PLimit } from '../../utils/pLimit'
 import {
   getRenderContext,

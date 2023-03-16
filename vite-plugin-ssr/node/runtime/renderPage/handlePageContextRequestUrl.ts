@@ -1,7 +1,7 @@
 export { handlePageContextRequestUrl }
 
 import { fileExtension, doNotCreateExtraDirectory } from '../../../shared/getPageContextRequestUrl'
-import { baseServer, parseUrl, assert, slice } from '../../utils'
+import { baseServer, parseUrl, assert, slice } from '../utils'
 
 // See shared/getPageContextRequestUrl.ts
 function handlePageContextRequestUrl(url: string): {

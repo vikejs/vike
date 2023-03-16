@@ -10,7 +10,7 @@ export type { PageContextAfterRender }
 import { getErrorPageId } from '../../../shared/error-page'
 import { getHtmlString } from '../html/renderHtml'
 import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles'
-import { assert, assertUsage, hasProp, objectAssign, unique } from '../../utils'
+import { assert, assertUsage, hasProp, objectAssign, unique } from '../utils'
 import { serializePageContextClientSide } from '../helpers'
 import { addComputedUrlProps, type PageContextUrls } from '../../../shared/addComputedUrlProps'
 import { getGlobalContext } from '../globalContext'

@@ -12,7 +12,7 @@ import {
   isNpmPackageModule,
   unique,
   isNotNullish
-} from '../../utils'
+} from '../utils'
 import { retrieveAssetsDev } from './getPageAssets/retrieveAssetsDev'
 import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd'
 import path from 'path'

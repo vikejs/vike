@@ -1,7 +1,7 @@
 import { cac } from 'cac'
 import { resolve } from 'path'
 import { runPrerender } from '../prerender/runPrerender'
-import { projectInfo, assertUsage } from '../utils'
+import { projectInfo, assertUsage } from '../runtime/utils'
 
 const cli = cac(projectInfo.projectName)
 

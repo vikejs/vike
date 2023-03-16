@@ -4,7 +4,7 @@ import { type PageContextExports } from '../../../shared/getPageFiles'
 import { getHook } from '../../../shared/getHook'
 import { assertHookResult } from '../../../shared/assertHookResult'
 import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
-import { callHookWithTimeout } from '../../utils'
+import { callHookWithTimeout } from '../utils'
 
 async function executeOnBeforeRenderHooks(
   pageContext: {

@@ -12,7 +12,7 @@ import {
   hasProp,
   isStringRecord,
   objectAssign
-} from '../../../../node/utils'
+} from '../../../runtime/utils'
 
 type PluginManifest = {
   version: string

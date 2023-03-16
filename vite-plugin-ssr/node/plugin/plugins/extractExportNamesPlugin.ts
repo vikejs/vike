@@ -5,7 +5,7 @@ export { extractExportNamesRE }
 import type { Plugin } from 'vite'
 import { assert, getFileExtension, viteIsSSR_options, createDebugger, isDebugEnabled } from '../utils'
 import { removeSourceMap, getExportNames } from '../helpers'
-import { getGlobalObject } from '../../utils'
+import { getGlobalObject } from '../../runtime/utils'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const debugNamespace = 'vps:extractExportNames'
 const debug = createDebugger(debugNamespace)

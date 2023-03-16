@@ -2,7 +2,7 @@
 
 //import { SsrEnv, setSsrEnv } from './ssrEnv'
 import { renderPage } from './runtime/renderPage'
-import { assertWarning } from './utils'
+import { assertWarning } from './runtime/utils'
 //import { importBuildWasLoaded } from './importBuild'
 
 export { createPageRenderer }

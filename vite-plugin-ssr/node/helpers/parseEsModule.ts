@@ -3,7 +3,7 @@ export { getImportStatements }
 export type { ImportStatement }
 
 import { init, parse } from 'es-module-lexer'
-import { assert } from '../utils'
+import { assert } from '../runtime/utils'
 
 type ParseResult = ReturnType<typeof parse>
 type ImportStatement = ParseResult[0][0]

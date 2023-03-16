@@ -3,7 +3,7 @@ export { logErrorWithoutVite }
 export { isNewError }
 
 import { assertRenderErrorPageExceptionUsage, isRenderErrorPageException } from './RenderErrorPage'
-import { assert, assertWarning, hasProp, isObject, isSameErrorMessage } from '../../utils'
+import { assert, assertWarning, hasProp, isObject, isSameErrorMessage } from '../utils'
 import { getGlobalContext } from '../globalContext'
 
 /** Log errors that don't originate from code transpiled by Vite. I.e. errors that aren't thrown from user code. */

@@ -10,7 +10,7 @@ export { getHtmlString }
 export type { HtmlRender }
 export type { HtmlPart }
 
-import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign } from '../../utils'
+import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign } from '../utils'
 import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
 import { processStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'

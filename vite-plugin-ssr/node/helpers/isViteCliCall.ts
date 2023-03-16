@@ -1,7 +1,7 @@
 export { isViteCliCall }
 export { getViteBuildCliConfig }
 
-import { assert, toPosixPath } from '../utils'
+import { assert, toPosixPath } from '../runtime/utils'
 import { cac } from 'cac'
 
 function isViteCliCall() {

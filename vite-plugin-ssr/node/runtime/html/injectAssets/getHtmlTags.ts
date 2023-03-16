@@ -3,7 +3,7 @@ export type { HtmlTag }
 export type { PreloadFilter }
 export type { InjectFilterEntry }
 
-import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../../utils'
+import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../utils'
 import { serializePageContextClientSide } from '../../helpers'
 import { sanitizeJson } from './sanitizeJson'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags'
