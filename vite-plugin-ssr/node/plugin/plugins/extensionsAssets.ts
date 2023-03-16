@@ -8,7 +8,7 @@ import path from 'path'
 import sirv from 'sirv'
 import { ConfigVpsResolved } from './config/ConfigVps'
 import { getConfigVps } from './config/getConfigVps'
-import { isAsset } from '../../shared/isAsset'
+import { isAsset } from '../shared/isAsset'
 
 const ASSET_DIR = 'assets'
 
