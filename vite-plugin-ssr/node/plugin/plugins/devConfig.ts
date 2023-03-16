@@ -7,7 +7,7 @@ import { determineOptimizeDepsEntries } from './devConfig/determineOptimizeDepsE
 import path from 'path'
 import fs from 'fs'
 import { getConfigVps } from './config/getConfigVps'
-import { ConfigVpsResolved } from './config/ConfigVps'
+import { ConfigVpsResolved } from '../../shared/ConfigVps'
 import { resolveRoot, assertRoot } from '../shared/resolveRoot'
 import { isViteCliCall } from '../shared/isViteCliCall'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware'

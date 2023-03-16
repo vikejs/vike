@@ -3,7 +3,7 @@ export { resolveBaseFromUserConfig }
 
 import { assert, assertUsage, isBaseServer, isBaseAssets } from '../../utils'
 import type { ResolvedConfig, UserConfig } from 'vite'
-import type { ConfigVpsUserProvided } from './ConfigVps'
+import type { ConfigVpsUserProvided } from '../../../shared/ConfigVps'
 import { pickFirst } from './pickFirst'
 
 type BaseServers = {

@@ -1,6 +1,6 @@
 export { findConfigVpsFromStemPackages }
 
-import type { ConfigVpsUserProvided } from './ConfigVps'
+import type { ConfigVpsUserProvided } from '../../../shared/ConfigVps'
 import { assert, createDebugger, isObject } from '../../utils'
 import { getStemPackages } from './stemUtils'
 

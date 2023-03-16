@@ -1,7 +1,7 @@
 export { resolveExtensions }
 
 import type { ResolvedConfig } from 'vite'
-import type { ConfigVpsUserProvided, ExtensionResolved } from './ConfigVps'
+import type { ConfigVpsUserProvided, ExtensionResolved } from '../../../shared/ConfigVps'
 import {
   assert,
   assertUsage,

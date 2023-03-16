@@ -6,7 +6,7 @@ import { getConfigVps } from './config/getConfigVps'
 import fs from 'fs'
 import path from 'path'
 import type { ViteDevServer } from 'vite'
-import { ConfigVpsResolved } from './config/ConfigVps'
+import { ConfigVpsResolved } from '../../shared/ConfigVps'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware'
 type ConnectServer = ViteDevServer['middlewares']
 

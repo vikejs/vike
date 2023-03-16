@@ -5,7 +5,7 @@ import { projectInfo, viteIsSSR, toPosixPath, assertPosixPath, isNotNullish } fr
 import { assertPluginManifest } from './manifest/assertPluginManifest'
 import { isUsingClientRouter } from './extractExportNamesPlugin'
 import { getConfigVps } from './config/getConfigVps'
-import type { ConfigVpsResolved } from './config/ConfigVps'
+import type { ConfigVpsResolved } from '../../shared/ConfigVps'
 import path from 'path'
 import { getRuntimeManifest } from '../../runtime/globalContext'
 
