@@ -46,13 +46,13 @@
   "engines": {
     "node": ">=12.19.0"
   },
-  "main": "./dist/cjs/node/index.js",
+  "main": "./dist/cjs/node/runtime/index.js",
   "exports": {
     ".": {
-      "worker": "./dist/cjs/node/index.js",
-      "node": "./dist/cjs/node/index.js",
+      "worker": "./dist/cjs/node/runtime/index.js",
+      "node": "./dist/cjs/node/runtime/index.js",
       "browser": "./dist/esm/client/node.js",
-      "types": "./dist/cjs/node/index.js"
+      "types": "./dist/cjs/node/runtime/index.js"
     },
     "./client": {
       "browser": "./dist/esm/client/index.js"
