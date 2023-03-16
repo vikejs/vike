@@ -1,10 +1,4 @@
-// Utils needed by vite-plugin-ssr's server-side runtime.
-
-/* Track down log origins
-import '../utils/trackLogs'
-//*/
-
-// Ensure we don't bloat the client-side with server utils
+// Ensure we don't bloat the client-side with node utils
 import { isBrowser } from '../../utils/isBrowser'
 import { assert } from '../../utils/assert'
 assert(!isBrowser())

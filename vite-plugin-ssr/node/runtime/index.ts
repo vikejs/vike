@@ -1,3 +1,7 @@
+/* Track down log origins
+import '../utils/trackLogs'
+//*/
+
 export { renderPage } from './renderPage'
 export { createPageRenderer } from '../createPageRenderer'
 export { escapeInject, dangerouslySkipEscape } from './html/renderHtml'
