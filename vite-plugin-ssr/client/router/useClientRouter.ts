@@ -146,13 +146,15 @@ function useClientRouter() {
     try {
       pageContextAddendum = await getPageContext(pageContext)
     } catch (err: unknown) {
+      // On the server-side, VPS doesn't show any 404 error log because it's expected that a user may go to some random URL, and we don't want to flood error tracking with 404 logs.
+      // On the client-side, however, any error is an actual error: if the user client-side navigates to a 404 then it means that the UI has a broken link. (It's not expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely). Therefore, we never swallow an error on the client-side, even if it's a 404.
+      console.error(err)
+
       if (checkIfAbort(err, pageContext)) return
       if (checkIf404(err)) {
         objectAssign(pageContext, {
           is404: true
         })
-      } else {
-        console.error(err)
       }
 
       try {
