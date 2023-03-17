@@ -2,7 +2,7 @@ export { logErrorWithVite }
 export { logErrorWithoutVite }
 export { isNewError }
 
-import { assertRenderErrorPageExceptionUsage, isRenderErrorPageException } from './RenderErrorPage'
+import { assertRenderErrorPageExceptionUsage, isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { assert, assertWarning, hasProp, isObject, isSameErrorMessage } from '../utils'
 import { getGlobalContext } from '../globalContext'
 import { isTranspileError, logTranspileError } from '../shared/logTranspileError'

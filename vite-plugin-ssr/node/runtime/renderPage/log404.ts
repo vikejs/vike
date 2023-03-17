@@ -5,7 +5,7 @@ import { PageRoutes, loadPageRoutes } from '../../../shared/route'
 import { getGlobalContext } from '../globalContext'
 import { assert, assertUsage, assertInfo, compareString } from '../utils'
 import pc from 'picocolors'
-import { isRenderErrorPageException } from './RenderErrorPage'
+import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
 
 async function log404(pageContext: {
