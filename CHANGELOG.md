@@ -1,3 +1,16 @@
+## [0.4.95](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.94...v0.4.95) (2023-03-17)
+
+
+### Bug Fixes
+
+* [v1] suggest config name upon wrong lowercase ([334c303](https://github.com/brillout/vite-plugin-ssr/commit/334c303c15284ce539b486840895733683787179))
+* [v1] use levenshtein distance for similarity ([4c5cfed](https://github.com/brillout/vite-plugin-ssr/commit/4c5cfed1ad85267d32238d68a0376092722659ae))
+* fix navigate() jsdoc ([146bd65](https://github.com/brillout/vite-plugin-ssr/commit/146bd65cb94fbfec45130cb310f6ccfb5e716459))
+* point `package.json#exports[string].types` to `.d.ts` files ([8541b6c](https://github.com/brillout/vite-plugin-ssr/commit/8541b6cc0150e8534c39e206155e16f96c8bc102))
+* update bug message ([15de976](https://github.com/brillout/vite-plugin-ssr/commit/15de97624d445ac17115ddc33adb25d263ff838a))
+
+
+
 ## [0.4.94](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.93...v0.4.94) (2023-03-14)
 
 
