@@ -149,10 +149,7 @@ function tolerateError({ logSource, logText }) {
   }
 
   function isSourceMapWarning() {
-    return (
-      logSource === 'stderr' &&
-      logText.includes('Sourcemap for "/@react-refresh" points to missing source files')
-    )
+    return logSource === 'stderr' && logText.includes('Sourcemap for "/@react-refresh" points to missing source files')
   }
 
   function isCloudflareFalseError1() {
