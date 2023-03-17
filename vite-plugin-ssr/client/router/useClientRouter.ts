@@ -24,6 +24,7 @@ import { isClientSideRoutable, skipLink } from './skipLink'
 import { isErrorFetchingStaticAssets } from '../loadPageFilesClientSide'
 import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history'
 import { defineNavigate } from './navigate'
+import { isRenderErrorPageException } from '../../shared/route/RenderErrorPage'
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
   clientRoutingIsDisabled?: true
@@ -96,9 +97,24 @@ function useClientRouter() {
       serverSideRouteTo(url)
       return
     }
-    if (checkClientSideRenderable && !(await isClientSideRoutable(url))) {
-      serverSideRouteTo(url)
-      return
+    if (checkClientSideRenderable) {
+      let isClientRoutable: boolean
+      try {
+        isClientRoutable = await isClientSideRoutable(url)
+      } catch (err) {
+        if (!isRenderErrorPageException(err)) {
+          // If a route() hook has a bug
+          throw err
+        } else {
+          // If a route() hook `throw RenderErrorPage()`
+          // RenderErrorPage is handled down below
+          isClientRoutable = true
+        }
+      }
+      if (!isClientRoutable) {
+        serverSideRouteTo(url)
+        return
+      }
     }
 
     const pageContextBase = {
@@ -155,6 +171,10 @@ function useClientRouter() {
         objectAssign(pageContext, {
           is404: true
         })
+      }
+      if (isRenderErrorPageException(err)) {
+        objectAssign(pageContext, { is404: true })
+        objectAssign(pageContext, err.pageContext)
       }
 
       try {

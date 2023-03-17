@@ -147,7 +147,7 @@ Authentication redirection:
 ```js
 // /pages/product/edit.page.route.js
 
-import { RenderErrorPage } from 'vite-plugin-ssr'
+import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
 
 export default (pageContext) => {
   if (!pageContext.user.isAdmin) {
@@ -167,7 +167,7 @@ Render `404` page:
 
 export { onBeforeRender }
 
-import { RenderErrorPage } from 'vite-plugin-ssr'
+import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
 
 async function onBeforeRender(pageContext) {
   const { productId } = pageContext.routeParams
@@ -192,8 +192,6 @@ async function onBeforeRender(pageContext) {
 ```
 
 Note how we don't `throw RenderErrorPage()` in the Route Function but in `onBeforeRender()` instead. We do so in order to keep the Route Function lightweight and fast.
-
-> Currently, `RenderErrorPage()` can only be used on the server-side. If you want to use it on the browser-side, then create a new Feature Request on GitHub.
 
 
 ## Cannot provide `pageContext`

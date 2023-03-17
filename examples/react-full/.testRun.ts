@@ -6,7 +6,6 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
   run(cmd)
 
   const isDev = cmd === 'npm run dev'
-  const isPreview = cmd === 'npm run preview'
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
@@ -116,7 +115,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
   }
 
   // In production, we pre-render all pages and thus `throw RenderErrorPage()` will never be called.
-  if (viewFramework === 'react' && isDev) {
+  if (isDev) {
     test('throw RenderErrorPage', async () => {
       await page.goto(getServerUrl() + '/hello/bob')
       expect(await page.textContent('h1')).toBe('404 Page Not Found')

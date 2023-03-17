@@ -50,7 +50,12 @@ function addLinkPrefetchHandlers(pageContext: {
 
     if (skipLink(linkTag)) return
     assert(url)
-    if (!(await isClientSideRoutable(url))) return
+    try {
+      if (!(await isClientSideRoutable(url))) return
+    } catch {
+      // If a route() hook has a bug or `throw RenderErrorPage()`
+      return
+    }
 
     if (isAlreadyPrefetched(url)) return
 

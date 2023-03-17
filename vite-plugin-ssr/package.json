@@ -82,6 +82,12 @@
       "node": "./dist/cjs/node/plugin/index.js",
       "types": "./dist/cjs/node/plugin/index.d.ts"
     },
+    "./RenderErrorPage": {
+      "worker": "./dist/cjs/shared/RenderErrorPage.js",
+      "node": "./dist/cjs/shared/RenderErrorPage.js",
+      "browser": "./dist/esm/shared/RenderErrorPage.js",
+      "types": "./dist/cjs/shared/RenderErrorPage.d.ts"
+    },
     "./__internal": {
       "node": "./dist/cjs/__internal/index.js",
       "types": "./dist/cjs/__internal/index.d.ts"

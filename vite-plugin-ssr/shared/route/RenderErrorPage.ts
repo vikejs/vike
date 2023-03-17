@@ -3,10 +3,8 @@ export { RenderErrorPage }
 export { assertRenderErrorPageExceptionUsage }
 
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
-import { assert, assertUsage, objectAssign, isBrowser } from './utils'
+import { assertUsage, objectAssign } from './utils'
 const stamp = '__isRenderErrorPageException'
-
-assert(!isBrowser())
 
 function isRenderErrorPageException(thing: unknown): thing is { pageContext?: Record<string, unknown> } {
   assertRenderErrorPageExceptionUsage(thing)

@@ -1,5 +1,5 @@
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
-import { RenderErrorPage } from 'vite-plugin-ssr'
+import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
 
 export { onBeforeRender }
 export { prerender }

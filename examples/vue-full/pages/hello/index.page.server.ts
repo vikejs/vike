@@ -1,9 +1,8 @@
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+import { names } from './names'
 
 export { onBeforeRender }
 export { prerender }
-
-const names = ['evan', 'rom', 'alice', 'jon', 'eli']
 
 async function onBeforeRender(pageContext: PageContextBuiltIn) {
   const { name } = pageContext.routeParams

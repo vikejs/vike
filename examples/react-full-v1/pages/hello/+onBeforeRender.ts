@@ -1,7 +1,7 @@
 export default onBeforeRender
 
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
-import { RenderErrorPage } from 'vite-plugin-ssr'
+import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
 
 import { names } from './names'
 
