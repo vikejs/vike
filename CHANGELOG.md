@@ -1,3 +1,17 @@
+## [0.4.97](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.96...v0.4.97) (2023-03-17)
+
+
+### Bug Fixes
+
+* throw an error upon 404 on the client-side ([6f80f80](https://github.com/brillout/vite-plugin-ssr/commit/6f80f802c2ade2bc20fe5dc62988b4d6e5599628))
+
+
+### Features
+
+* support `RenderErrorPage()` on the client-side (fix [#717](https://github.com/brillout/vite-plugin-ssr/issues/717)) ([a7313b6](https://github.com/brillout/vite-plugin-ssr/commit/a7313b64567325c225a372458aff5a4736f6453a))
+
+
+
 ## [0.4.96](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.95...v0.4.96) (2023-03-17)
 
 
