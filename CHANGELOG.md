@@ -1,3 +1,12 @@
+## [0.4.96](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.95...v0.4.96) (2023-03-17)
+
+
+### Bug Fixes
+
+* add `package.json#exports[string].types` to each entry (fix [#716](https://github.com/brillout/vite-plugin-ssr/issues/716)) ([c88b1c5](https://github.com/brillout/vite-plugin-ssr/commit/c88b1c59754503910c7d84005596a99407515235))
+
+
+
 ## [0.4.95](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.94...v0.4.95) (2023-03-17)
 
 
