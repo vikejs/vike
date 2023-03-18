@@ -34,7 +34,7 @@ async function renderPageContext<
   PageContext extends {
     _pageId: null | string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
-    _isPageContextRequest: boolean
+    isClientSideNavigation: boolean
     _allPageIds: string[]
     is404: null | boolean
     routeParams: Record<string, string>
@@ -76,7 +76,7 @@ async function renderPageContext<
     }
   }
 
-  if (pageContext._isPageContextRequest) {
+  if (pageContext.isClientSideNavigation) {
     if (isError) {
       objectAssign(pageContext, { _isError: true })
     }
@@ -112,7 +112,7 @@ async function prerenderPageContext(
     GlobalRenderingContext
 ) {
   objectAssign(pageContext, {
-    _isPageContextRequest: false,
+    isClientSideNavigation: false,
     _urlHandler: null
   })
 
@@ -125,7 +125,7 @@ async function prerenderPageContext(
     renderHookResult.htmlRender !== null,
     `Cannot pre-render \`${pageContext.urlOriginal}\` because the \`render()\` hook defined by ${renderHookResult.renderSrc} didn't return an HTML string.`
   )
-  assert(pageContext._isPageContextRequest === false)
+  assert(pageContext.isClientSideNavigation === false)
   const documentHtml = await getHtmlString(renderHookResult.htmlRender)
   assert(typeof documentHtml === 'string')
   if (!pageContext._usesClientRouter) {

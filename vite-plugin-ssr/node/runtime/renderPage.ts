@@ -232,7 +232,7 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
 }
 
 function handleUrl(pageContext: { urlOriginal: string; _baseServer: string }): {
-  _isPageContextRequest: boolean
+  isClientSideNavigation: boolean
   _hasBaseServer: boolean
   _urlHandler: (urlOriginal: string) => string
 } {
@@ -241,7 +241,7 @@ function handleUrl(pageContext: { urlOriginal: string; _baseServer: string }): {
   const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
   const { hasBaseServer } = parseUrl(urlWithoutPageContextRequestSuffix, pageContext._baseServer)
   const pageContextAddendum = {
-    _isPageContextRequest: isPageContextRequest,
+    isClientSideNavigation: isPageContextRequest,
     _hasBaseServer: hasBaseServer,
     // The onBeforeRoute() hook may modify pageContext.urlOriginal (e.g. for i18n)
     _urlHandler: (urlOriginal: string) => handlePageContextRequestUrl(urlOriginal).urlWithoutPageContextRequestSuffix

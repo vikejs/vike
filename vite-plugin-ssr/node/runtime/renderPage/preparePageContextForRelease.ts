@@ -22,6 +22,7 @@ type PageContextPublic = {
   _pageId: string
   _pageConfigs: PageConfig[]
   is404: null | boolean
+  isClientSideNavigation: boolean
   pageProps?: Record<string, unknown>
 }
 function preparePageContextForRelease<T extends PageContextPublic>(pageContext: T): void {
@@ -32,6 +33,8 @@ function preparePageContextForRelease<T extends PageContextPublic>(pageContext: 
   assert(isObject(pageContext.pageExports))
   assert(isObject(pageContext.exports))
   assert(isObject(pageContext.exportsAll))
+
+  assert(typeof pageContext.isClientSideNavigation === 'boolean')
 
   sortPageContext(pageContext)
 

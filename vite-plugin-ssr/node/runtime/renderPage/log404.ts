@@ -11,7 +11,7 @@ import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/
 async function log404(pageContext: {
   urlPathname: string
   errorWhileRendering: null | Error
-  _isPageContextRequest: boolean
+  isClientSideNavigation: boolean
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfig[]
   _pageConfigGlobal: PageConfigGlobal
@@ -41,7 +41,7 @@ async function log404(pageContext: {
     'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'
   )
   const globalContext = getGlobalContext()
-  if (!globalContext.isProduction && !isFileRequest(urlPathname) && !pageContext._isPageContextRequest) {
+  if (!globalContext.isProduction && !isFileRequest(urlPathname) && !pageContext.isClientSideNavigation) {
     assertInfo(
       false,
       [

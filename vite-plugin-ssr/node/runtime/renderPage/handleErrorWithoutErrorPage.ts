@@ -12,7 +12,7 @@ import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 
 async function handleErrorWithoutErrorPage<
   PageContext extends {
-    _isPageContextRequest: boolean
+    isClientSideNavigation: boolean
     errorWhileRendering: null | Error
     is404: null | boolean
     _pageId: null
@@ -23,7 +23,7 @@ async function handleErrorWithoutErrorPage<
   assert(pageContext._pageId === null) // User didn't define a `_error.page.js` file
   assert(pageContext.errorWhileRendering || pageContext.is404)
 
-  if (!pageContext._isPageContextRequest) {
+  if (!pageContext.isClientSideNavigation) {
     objectAssign(pageContext, { httpResponse: null })
     return pageContext
   } else {
