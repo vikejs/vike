@@ -5,55 +5,6 @@ import { CSSinJSTool } from '../components'
 
 See example at <Link href="/css-in-js" />.
 
-More in depth:
+View <a href="https://github.com/alexrabin/vite-ssr-styled-components">this example project</a> using styled-components and react with VPS.
 
-Inside of _default.page.server.tsx
-
-```typescript
-
-import ReactDOMServer from 'react-dom/server'
-import React from 'react'
-import {PageShell} from './PageShell'
-import {escapeInject, dangerouslySkipEscape} from 'vite-plugin-ssr'
-import {PageContextServer} from './types'
-import {ServerStyleSheet} from 'styled-components'
-
-
-async function render(pageContext: PageContextServer) {
-  const {Page, pageProps} = pageContext
-  
-  // created stylesheet
-  const sheet = new ServerStyleSheet()
-    const pageHtml = ReactDOMServer.renderToString(
-    sheet.collectStyles(
-      <PageShell pageContext={pageContext}>
-        <Page {...pageProps} />
-      </PageShell>,
-    ),
-  )
-  
-  ...
-  
-  const documentHtml = escapeInject`<!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="${desc}" />
-        <title>${title}</title>
-        // inject styles
-        <style>${dangerouslySkipEscape(sheet.getStyleTags())}</style>
-      </head>
-      <body>
-        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
-      </body>
-    </html>`
-    
-    return {
-      documentHtml,
-      pageContext: {
-        // We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
-      },
-  }
-}
-```
+You can follow along on <a href="https://www.alexrabin.com/blog/vite-ssr-styled-components">this tutorial</a> on how to add styled-components into your VPS app.
