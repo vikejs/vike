@@ -1,3 +1,5 @@
-In order to keep `vite-plugin-ssr` lean, [API Routes](https://nextjs.org/docs/api-routes/introduction) aren't supported.
+Vite-plugin-ssr doesn't implement [API Routes](https://nextjs.org/docs/api-routes/introduction) by design.
 
-Instead, we can use our server (e.g. Express.js endpoints) or RPC (e.g. [Telefunc](https://telefunc.com) and [tRPC](https://trpc.io/).)
+Instead, we can directly use our server (e.g. Express.js endpoints), or use an RPC implementation such as [Telefunc](https://telefunc.com) or [tRPC](https://trpc.io/).
+
+> The vite-plugin-ssr maintainers believe that implementing APIs independently of vite-plugin-ssr is a superior approach.
