@@ -1,3 +1,12 @@
+## [0.4.98](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.97...v0.4.98) (2023-03-18)
+
+
+### Features
+
+* `pageContext.isClientSideNavigation` (closes [#568](https://github.com/brillout/vite-plugin-ssr/issues/568)) ([9943f28](https://github.com/brillout/vite-plugin-ssr/commit/9943f2889359f2199e246d9cfb20654ac35128e7))
+
+
+
 ## [0.4.97](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.96...v0.4.97) (2023-03-17)
 
 
