@@ -1,3 +1,13 @@
+## [0.4.99](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.98...v0.4.99) (2023-03-19)
+
+
+### Bug Fixes
+
+* improve condition for adding VPS middleware to dev server ([ac8eb24](https://github.com/brillout/vite-plugin-ssr/commit/ac8eb2473123886e88d7efe9c3d93e336639a827))
+* re-add `pageContext._prerenderContext` ([#722](https://github.com/brillout/vite-plugin-ssr/issues/722)) ([f2803ec](https://github.com/brillout/vite-plugin-ssr/commit/f2803ece116829f09b7b0c8d3aab86f0c58317a0))
+
+
+
 ## [0.4.98](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.97...v0.4.98) (2023-03-18)
 
 
