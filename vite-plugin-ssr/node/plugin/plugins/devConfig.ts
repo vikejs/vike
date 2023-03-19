@@ -9,10 +9,10 @@ import fs from 'fs'
 import { getConfigVps } from '../../shared/getConfigVps'
 import { ConfigVpsResolved } from '../../shared/ConfigVps'
 import { resolveRoot, assertRoot } from '../shared/resolveRoot'
-import { isViteCliCall } from '../shared/isViteCliCall'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware'
 
 function devConfig(): Plugin[] {
+  let config: ResolvedConfig
   let root: string
   return [
     {
@@ -42,7 +42,8 @@ function devConfig(): Plugin[] {
           }
         }
       },
-      async configResolved(config) {
+      async configResolved(config_) {
+        config = config_
         assertRoot(root, config)
         const configVps = await getConfigVps(config)
         addExtensionsToOptimizeDeps(config, configVps)
@@ -58,7 +59,7 @@ function devConfig(): Plugin[] {
       },
       configureServer(server) {
         markEnvAsDev()
-        if (!isViteCliCall()) return
+        if (config.server.middlewareMode) return
         return () => {
           addSsrMiddleware(server.middlewares, server)
         }
