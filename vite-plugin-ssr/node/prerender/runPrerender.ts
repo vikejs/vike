@@ -485,7 +485,8 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
   }
   objectAssign(pageContext, {
     _urlHandler: null,
-    _noExtraDir: prerenderContext._noExtraDir
+    _noExtraDir: prerenderContext._noExtraDir,
+    _prerenderContext: prerenderContext
   })
   /* We cannot add the computed URL properties because they can be iterated & copied in a `onPrerenderStart()` hook, e.g. `/examples/i18n/'
   addComputedUrlProps(pageContext)
