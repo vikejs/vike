@@ -43,7 +43,6 @@ function devConfig(): Plugin[] {
         }
       },
       async configResolved(config) {
-        config.command
         assertRoot(root, config)
         const configVps = await getConfigVps(config)
         addExtensionsToOptimizeDeps(config, configVps)
