@@ -1,13 +1,13 @@
 export type { PageConfig }
 export type { PageConfigLoaded }
-export type { c_Env }
+export type { ConfigValueEnv }
 export type { PageConfigData }
 export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
 export type { ConfigName }
 export type { ConfigSource }
 
-type c_Env = 'client-only' | 'server-only' | 'server-and-client' | '_routing-env' | 'config-only'
+type ConfigValueEnv = 'client-only' | 'server-only' | 'server-and-client' | '_routing-env' | 'config-only'
 
 type ConfigName =
   | 'onRenderHtml'
@@ -47,7 +47,7 @@ type ConfigSoureFile = {
 )
 
 type ConfigSource = ConfigSoureFile & {
-  valueEnv: c_Env
+  valueEnv: ConfigValueEnv
   configValue?: unknown
 }
 

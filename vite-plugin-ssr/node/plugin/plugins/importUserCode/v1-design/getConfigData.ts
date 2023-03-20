@@ -29,7 +29,7 @@ import path from 'path'
 import type {
   ConfigName,
   ConfigSource,
-  c_Env,
+  ConfigValueEnv,
   PageConfigData,
   PageConfigGlobalData
 } from '../../../../../shared/page-configs/PageConfig'
@@ -617,7 +617,7 @@ function applySideEffects(
           assertUsage(isObject(configTargetModValue), 'TODO')
           assertUsage(Object.keys(configTargetModValue).length === 1, 'TODO')
           assertUsage(hasProp(configTargetModValue, 'valueEnv', 'string'), 'TODO')
-          const valueEnv = configTargetModValue.valueEnv as c_Env // TODO: proper validation
+          const valueEnv = configTargetModValue.valueEnv as ConfigValueEnv // TODO: proper validation
           configSourcesMod[configTargetName]!.valueEnv = valueEnv
         })
       } else {
