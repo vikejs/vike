@@ -9,7 +9,7 @@ export default {
       valueEnv: 'server-and-client'
     },
     onBeforeRenderIsomorphic: {
-      valueEnv: 'c_config',
+      valueEnv: 'config-only',
       sideEffect({ configDefinedBy, configValue }: { configValue: unknown; configDefinedBy: string }) {
         if (typeof configValue !== 'boolean') {
           throw new Error(`${configDefinedBy} should be a boolean`)

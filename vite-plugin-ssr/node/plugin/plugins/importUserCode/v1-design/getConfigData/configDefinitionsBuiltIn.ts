@@ -73,16 +73,16 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     valueEnv: 'client-only'
   },
   clientRouting: {
-    valueEnv: 'server-and-client' // TODO: c_config instead?
+    valueEnv: 'server-and-client' // TODO: config-only instead?
   },
   prerender: {
-    valueEnv: 'c_config'
+    valueEnv: 'config-only'
   },
   hydrationCanBeAborted: {
-    valueEnv: 'client-only' // TODO: c_config instead?
+    valueEnv: 'client-only' // TODO: config-only instead?
   },
   isErrorPage: {
-    valueEnv: 'c_config' // TODO: c_config instead?
+    valueEnv: 'config-only' // TODO: config-only instead?
   }
 }
 

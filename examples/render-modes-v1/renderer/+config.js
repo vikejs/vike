@@ -6,7 +6,7 @@ export default {
   includeAssetsImportedByServer: true,
   defineConfig: {
     renderMode: {
-      valueEnv: 'c_config',
+      valueEnv: 'config-only',
       sideEffect({ configDefinedBy, configValue }) {
         let PageEnv
         if (configValue == 'HTML') PageEnv = 'server-only'

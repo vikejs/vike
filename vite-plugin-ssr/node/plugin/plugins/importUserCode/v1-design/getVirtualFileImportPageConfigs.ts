@@ -62,7 +62,7 @@ function generateSourceCodeOfPageConfigs(
       const { configSources, pageConfigFilePathAll } = pageConfig
       Object.entries(configSources).forEach(([_configName, configSource]) => {
         const { valueEnv, codeFilePath2 } = configSource
-        if (valueEnv === 'c_config' && codeFilePath2) {
+        if (valueEnv === 'config-only' && codeFilePath2) {
           configFiles.add(codeFilePath2)
         }
       })

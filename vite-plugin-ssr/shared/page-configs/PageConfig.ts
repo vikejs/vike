@@ -7,7 +7,7 @@ export type { PageConfigGlobalData }
 export type { ConfigName }
 export type { ConfigSource }
 
-type c_Env = 'client-only' | 'server-only' | 'server-and-client' | 'c_routing' | 'c_config'
+type c_Env = 'client-only' | 'server-only' | 'server-and-client' | 'c_routing' | 'config-only'
 
 type ConfigName =
   | 'onRenderHtml'

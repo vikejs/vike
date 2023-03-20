@@ -68,13 +68,13 @@ const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
     valueEnv: 'c_routing'
   },
   prerender: {
-    valueEnv: 'c_config'
+    valueEnv: 'config-only'
   },
-  extensions: { valueEnv: 'c_config' },
-  disableAutoFullBuild: { valueEnv: 'c_config' },
-  includeAssetsImportedByServer: { valueEnv: 'c_config' },
-  baseAssets: { valueEnv: 'c_config' },
-  baseServer: { valueEnv: 'c_config' }
+  extensions: { valueEnv: 'config-only' },
+  disableAutoFullBuild: { valueEnv: 'config-only' },
+  includeAssetsImportedByServer: { valueEnv: 'config-only' },
+  baseAssets: { valueEnv: 'config-only' },
+  baseServer: { valueEnv: 'config-only' }
 }
 
 function getConfigData(userRootDir: string, isDev: boolean, invalidate: boolean): Promise<ConfigData> {
@@ -591,7 +591,7 @@ function applySideEffects(
 
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef.sideEffect) return
-    assertUsage(configDef.valueEnv === 'c_config', 'TODO')
+    assertUsage(configDef.valueEnv === 'config-only', 'TODO')
     const configSourceSideEffect = configSources[configName]
     /*
     resolveConfigSource(
@@ -676,7 +676,7 @@ async function findAndLoadConfigValueFiles(
           pageId: determinePageId2(filePathRelativeToUserRootDir),
           configValueFilePath: filePathRelativeToUserRootDir
         }
-        if (configDef.valueEnv !== 'c_config') {
+        if (configDef.valueEnv !== 'config-only') {
           return configValueFile
         }
         const result = await transpileAndLoadScriptFile(filePathAbsolute)
