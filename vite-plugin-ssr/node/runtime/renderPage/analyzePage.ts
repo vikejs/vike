@@ -36,7 +36,7 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pa
         const { valueEnv } = configSource
         assert(valueEnv)
         const onlyAssets = valueEnv === 'server-only'
-        const eagerlyImported = valueEnv === 'c_routing'
+        const eagerlyImported = valueEnv === '_routing-env'
         if (onlyAssets || eagerlyImported) {
           clientDependencies.push({
             id: configSource.codeFilePath,

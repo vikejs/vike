@@ -65,7 +65,7 @@ const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
   },
   onBeforeRoute: {
     c_code: true,
-    valueEnv: 'c_routing'
+    valueEnv: '_routing-env'
   },
   prerender: {
     valueEnv: 'config-only'

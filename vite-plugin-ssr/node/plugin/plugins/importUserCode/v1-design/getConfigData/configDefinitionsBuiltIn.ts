@@ -61,7 +61,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     valueEnv: 'server-only'
   },
   route: {
-    valueEnv: 'c_routing',
+    valueEnv: '_routing-env',
     c_validate: getRouteValidator()
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
