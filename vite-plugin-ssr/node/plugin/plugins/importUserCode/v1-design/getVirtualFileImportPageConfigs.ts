@@ -61,8 +61,8 @@ function generateSourceCodeOfPageConfigs(
     pageConfigsData.forEach((pageConfig) => {
       const { configSources, pageConfigFilePathAll } = pageConfig
       Object.entries(configSources).forEach(([_configName, configSource]) => {
-        const { c_env, codeFilePath2 } = configSource
-        if (c_env === 'c_config' && codeFilePath2) {
+        const { valueEnv, codeFilePath2 } = configSource
+        if (valueEnv === 'c_config' && codeFilePath2) {
           configFiles.add(codeFilePath2)
         }
       })
@@ -119,20 +119,20 @@ function serializeConfigSource(
   assert(/^\s+$/.test(whitespace))
   const lines: string[] = []
   lines.push(`${whitespace}['${configName}']: {`)
-  const { configSrc, configDefinedByFile, c_env, codeFilePath2, configFilePath2 } = configSource
+  const { configSrc, configDefinedByFile, valueEnv, codeFilePath2, configFilePath2 } = configSource
   lines.push(`${whitespace}  configSrc: ${JSON.stringify(configSrc)},`)
   lines.push(`${whitespace}  configDefinedByFile: ${JSON.stringify(configDefinedByFile)},`)
   lines.push(`${whitespace}  codeFilePath2: ${JSON.stringify(codeFilePath2)},`)
   lines.push(`${whitespace}  configFilePath2: ${JSON.stringify(configFilePath2)},`)
-  lines.push(`${whitespace}  c_env: '${c_env}',`)
+  lines.push(`${whitespace}  valueEnv: '${valueEnv}',`)
   if ('configValue' in configSource) {
     assert(!eagerImport)
     const { configValue } = configSource
     lines.push(`${whitespace}  configValue: ${JSON.stringify(configValue)}`)
   } else {
     assert(configSource.codeFilePath2)
-    const { codeFilePath2, c_env } = configSource
-    if (c_env === 'c_routing' || eagerImport) {
+    const { codeFilePath2, valueEnv } = configSource
+    if (valueEnv === 'c_routing' || eagerImport) {
       const { importVar, importStatement } = generateEagerImport(codeFilePath2)
       // TODO: expose all exports so that assertDefaultExport() can be applied
       lines.push(`${whitespace}  configValue: ${importVar}.default`)

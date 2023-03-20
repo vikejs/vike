@@ -14,7 +14,7 @@ function analyzeClientSide(
     const isClientRouting = getConfigValue(pageConfig, 'clientRouting', 'boolean') ?? false
     const onRenderClientExists: boolean = !!getCodeFilePath(pageConfig, 'onRenderClient')
     const PageExists: boolean =
-      !!getCodeFilePath(pageConfig, 'Page') && pageConfig.configSources.Page!.c_env !== 'server-only'
+      !!getCodeFilePath(pageConfig, 'Page') && pageConfig.configSources.Page!.valueEnv !== 'server-only'
     const isClientSideRenderable = onRenderClientExists && PageExists
     return { isClientSideRenderable, isClientRouting }
   } else {

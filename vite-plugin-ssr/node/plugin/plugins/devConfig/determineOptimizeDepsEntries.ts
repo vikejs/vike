@@ -13,8 +13,8 @@ async function determineOptimizeDepsEntries(config: ResolvedConfig, isDev: boole
     const { pageConfigsData } = await getConfigData(config.root, true, false)
     pageConfigsData.forEach((data) => {
       Object.values(data.configSources).forEach((configSource) => {
-        const { codeFilePath2, c_env } = configSource
-        if (codeFilePath2 && (c_env === 'client-only' || c_env === 'server-and-client')) {
+        const { codeFilePath2, valueEnv } = configSource
+        if (codeFilePath2 && (valueEnv === 'client-only' || valueEnv === 'server-and-client')) {
           entries.push(makeVitePathAbsolute(codeFilePath2, config))
         }
       })

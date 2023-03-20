@@ -6,10 +6,10 @@ export default {
   // WARNING: the naming below *will* change (and improve)
   configDefinitions: {
     documentProps: {
-      c_env: 'server-and-client'
+      valueEnv: 'server-and-client'
     },
     onBeforeRenderIsomorphic: {
-      c_env: 'c_config',
+      valueEnv: 'c_config',
       sideEffect({ configDefinedBy, configValue }: { configValue: unknown; configDefinedBy: string }) {
         if (typeof configValue !== 'boolean') {
           throw new Error(`${configDefinedBy} should be a boolean`)
@@ -18,7 +18,7 @@ export default {
           return {
             configDefinitions: {
               onBeforeRender: {
-                c_env: 'server-and-client'
+                valueEnv: 'server-and-client'
               }
             }
           }

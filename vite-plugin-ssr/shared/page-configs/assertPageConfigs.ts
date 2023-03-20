@@ -36,7 +36,7 @@ function assertConfigSources(configSources: unknown, isGlobalConfig: boolean) {
     }
     assert(hasProp(configSource, 'configSrc', 'string'))
     assert(hasProp(configSource, 'configFilePath2', 'string') || hasProp(configSource, 'configFilePath2', 'null'))
-    assert(hasProp(configSource, 'c_env', 'string'))
+    assert(hasProp(configSource, 'valueEnv', 'string'))
     assert(hasProp(configSource, 'codeFilePath2', 'string') || hasProp(configSource, 'codeFilePath2', 'null'))
     if (isGlobalConfig) {
       assert(hasProp(configSource, 'configValue'))

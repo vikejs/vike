@@ -7,7 +7,7 @@ import { assertRouteString } from '../../../../../../shared/route/resolveRouteSt
 
 // TODO: remove c_ prefix
 type ConfigDefinition = {
-  c_env: c_Env // TODO: rename to runtime? or runtimeEnv?
+  valueEnv: c_Env // TODO: rename to runtime? or runtimeEnv?
   c_global?: boolean // TODO: implement
   c_required?: boolean // TODO: apply validation
   c_code?: true // TODO: remove? Replace with `type: 'code'` or `type: 'file-path'`? A `type: 'boolean'` would be comfy for custom config 'ssr'`
@@ -27,62 +27,62 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     c_code: true,
     c_required: true,
-    c_env: 'server-only'
+    valueEnv: 'server-only'
   },
   onRenderClient: {
     c_code: true,
-    c_env: 'client-only'
+    valueEnv: 'client-only'
   },
   onHydrationEnd: {
     c_code: true,
-    c_env: 'client-only'
+    valueEnv: 'client-only'
   },
   onPageTransitionStart: {
     c_code: true,
-    c_env: 'client-only'
+    valueEnv: 'client-only'
   },
   onPageTransitionEnd: {
     c_code: true,
-    c_env: 'client-only'
+    valueEnv: 'client-only'
   },
   onBeforeRender: {
     c_code: true,
-    c_env: 'server-only'
+    valueEnv: 'server-only'
   },
   onBeforePrerenderStart: {
     c_code: true,
-    c_env: 'server-only'
+    valueEnv: 'server-only'
   },
   Page: {
     c_code: true,
-    c_env: 'server-and-client'
+    valueEnv: 'server-and-client'
   },
   passToClient: {
-    c_env: 'server-only'
+    valueEnv: 'server-only'
   },
   route: {
-    c_env: 'c_routing',
+    valueEnv: 'c_routing',
     c_validate: getRouteValidator()
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    c_env: 'server-and-client'
+    valueEnv: 'server-and-client'
   },
   // TODO: rename to 'client'? I think so if client is cumulative to onRenderClient (while HTML-only needs to set `onRenderClient: null`)
   clientEntry: {
     c_code: true,
-    c_env: 'client-only'
+    valueEnv: 'client-only'
   },
   clientRouting: {
-    c_env: 'server-and-client' // TODO: c_config instead?
+    valueEnv: 'server-and-client' // TODO: c_config instead?
   },
   prerender: {
-    c_env: 'c_config'
+    valueEnv: 'c_config'
   },
   hydrationCanBeAborted: {
-    c_env: 'client-only' // TODO: c_config instead?
+    valueEnv: 'client-only' // TODO: c_config instead?
   },
   isErrorPage: {
-    c_env: 'c_config' // TODO: c_config instead?
+    valueEnv: 'c_config' // TODO: c_config instead?
   }
 }
 

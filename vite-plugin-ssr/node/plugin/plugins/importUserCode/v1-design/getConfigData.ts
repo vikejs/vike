@@ -61,20 +61,20 @@ type GlobalConfigName =
 const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
   onPrerenderStart: {
     c_code: true,
-    c_env: 'server-only'
+    valueEnv: 'server-only'
   },
   onBeforeRoute: {
     c_code: true,
-    c_env: 'c_routing'
+    valueEnv: 'c_routing'
   },
   prerender: {
-    c_env: 'c_config'
+    valueEnv: 'c_config'
   },
-  extensions: { c_env: 'c_config' },
-  disableAutoFullBuild: { c_env: 'c_config' },
-  includeAssetsImportedByServer: { c_env: 'c_config' },
-  baseAssets: { c_env: 'c_config' },
-  baseServer: { c_env: 'c_config' }
+  extensions: { valueEnv: 'c_config' },
+  disableAutoFullBuild: { valueEnv: 'c_config' },
+  includeAssetsImportedByServer: { valueEnv: 'c_config' },
+  baseAssets: { valueEnv: 'c_config' },
+  baseServer: { valueEnv: 'c_config' }
 }
 
 function getConfigData(userRootDir: string, isDev: boolean, invalidate: boolean): Promise<ConfigData> {
@@ -291,7 +291,7 @@ function resolveConfigSource(
       const configValueFile = configValueFiles[0]!
       const { configValueFilePath } = configValueFile
       const configSource: ConfigSource = {
-        c_env: configDef.c_env,
+        valueEnv: configDef.valueEnv,
         // TODO: rename codeFilePath2 to configValueFilePath?
         codeFilePath2: configValueFilePath,
         configFilePath2: null,
@@ -322,14 +322,14 @@ function resolveConfigSource(
       c_validate({ configValue, ...commonArgs })
     }
   }
-  const { c_env } = configDef
+  const { valueEnv } = configDef
   if (!codeFilePath) {
     return {
       configFilePath2: configFilePath,
       configSrc: `${configFilePath} > ${configName}`,
       configDefinedByFile: configFilePath,
       codeFilePath2: null,
-      c_env,
+      valueEnv,
       configValue
     }
   } else {
@@ -345,7 +345,7 @@ function resolveConfigSource(
       codeFilePath2: codeFilePath,
       configSrc: `${codeFilePath} > \`export default\``,
       configDefinedByFile: codeFilePath,
-      c_env
+      valueEnv
     }
   }
 }
@@ -541,19 +541,19 @@ function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): Config
         /* TODO
         {
           {
-            const prop = 'c_env'
-            const hint = `Make sure to define the 'c_env' value of '${configName}' to 'client-only', 'server-only', or 'server-and-client'.`
+            const prop = 'valueEnv'
+            const hint = `Make sure to define the 'valueEnv' value of '${configName}' to 'client-only', 'server-only', or 'server-and-client'.`
             assertUsage(
               prop in def,
-              `${pageConfigFilePath} doesn't define 'configDefinitions.${configName}.c_env' which is required. ${hint}`
+              `${pageConfigFilePath} doesn't define 'configDefinitions.${configName}.valueEnv' which is required. ${hint}`
             )
             assertUsage(
               hasProp(def, prop, 'string'),
-              `${pageConfigFilePath} sets 'configDefinitions.${configName}.c_env' to a value with an invalid type ${typeof def.c_env}. ${hint}`
+              `${pageConfigFilePath} sets 'configDefinitions.${configName}.valueEnv' to a value with an invalid type ${typeof def.valueEnv}. ${hint}`
             )
             assertUsage(
-              ['client-only', 'server-only', 'server-and-client'].includes(def.c_env),
-              `${pageConfigFilePath} sets 'configDefinitions.${configName}.c_env' to an invalid value '${def.c_env}'. ${hint}`
+              ['client-only', 'server-only', 'server-and-client'].includes(def.valueEnv),
+              `${pageConfigFilePath} sets 'configDefinitions.${configName}.valueEnv' to an invalid value '${def.valueEnv}'. ${hint}`
             )
           }
         }
@@ -591,7 +591,7 @@ function applySideEffects(
 
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef.sideEffect) return
-    assertUsage(configDef.c_env === 'c_config', 'TODO')
+    assertUsage(configDef.valueEnv === 'c_config', 'TODO')
     const configSourceSideEffect = configSources[configName]
     /*
     resolveConfigSource(
@@ -616,9 +616,9 @@ function applySideEffects(
         objectEntries(configModValue).forEach(([configTargetName, configTargetModValue]) => {
           assertUsage(isObject(configTargetModValue), 'TODO')
           assertUsage(Object.keys(configTargetModValue).length === 1, 'TODO')
-          assertUsage(hasProp(configTargetModValue, 'c_env', 'string'), 'TODO')
-          const c_env = configTargetModValue.c_env as c_Env // TODO: proper validation
-          configSourcesMod[configTargetName]!.c_env = c_env
+          assertUsage(hasProp(configTargetModValue, 'valueEnv', 'string'), 'TODO')
+          const valueEnv = configTargetModValue.valueEnv as c_Env // TODO: proper validation
+          configSourcesMod[configTargetName]!.valueEnv = valueEnv
         })
       } else {
         assertConfigName(configName, Object.keys(configDefinitionsRelevant), `sideEffect of TODO`)
@@ -629,7 +629,7 @@ function applySideEffects(
           ...configSourceSideEffect,
           configSrc: `${configSourceSideEffect} (side-effect)`,
           // TODO-end
-          c_env: configSourceTargetOld.c_env,
+          valueEnv: configSourceTargetOld.valueEnv,
           configValue: configModValue
         }
       }
@@ -676,7 +676,7 @@ async function findAndLoadConfigValueFiles(
           pageId: determinePageId2(filePathRelativeToUserRootDir),
           configValueFilePath: filePathRelativeToUserRootDir
         }
-        if (configDef.c_env !== 'c_config') {
+        if (configDef.valueEnv !== 'c_config') {
           return configValueFile
         }
         const result = await transpileAndLoadScriptFile(filePathAbsolute)

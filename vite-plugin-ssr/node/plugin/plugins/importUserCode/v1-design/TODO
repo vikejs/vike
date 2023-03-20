@@ -11,7 +11,7 @@
 
 // TODO: if conf isn't file path then assert that it's serialazable
 // TODO: assertUsage isErrorPage not allowed to be abstract
-// TODO: assertUsage() when configDefinitions sets a invalid c_env value
+// TODO: assertUsage() when configDefinitions sets a invalid valueEnv value
 
 // TODO: Define pageContext.pageId
 // TODO: rename configSrc/configSource to configDefinedBy

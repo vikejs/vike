@@ -6,18 +6,18 @@ export default {
   includeAssetsImportedByServer: true,
   configDefinitions: {
     renderMode: {
-      c_env: 'c_config',
+      valueEnv: 'c_config',
       sideEffect({ configDefinedBy, configValue }) {
-        let c_env
-        if (configValue == 'HTML') c_env = 'server-only'
-        if (configValue == 'SPA') c_env = 'client-only'
-        if (configValue == 'SSR') c_env = 'server-and-client'
+        let valueEnv
+        if (configValue == 'HTML') valueEnv = 'server-only'
+        if (configValue == 'SPA') valueEnv = 'client-only'
+        if (configValue == 'SSR') valueEnv = 'server-and-client'
         // TODO: rename configDefinedBy
-        if (!c_env)
+        if (!valueEnv)
           throw new Error(`${configDefinedBy} has an invalid value, make to set its value to 'SSR', 'SPA', or 'HTML'`)
         return {
           configDefinitions: {
-            Page: { c_env }
+            Page: { valueEnv }
           }
         }
       }
