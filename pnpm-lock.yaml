@@ -714,13 +714,13 @@ importers:
   examples/solid-spa:
     specifiers:
       solid-js: ^1.5.2
-      typescript: ^4.8.2
+      typescript: ^5.0.2
       vite: ^4.0.3
       vite-plugin-solid: ^2.3.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       solid-js: 1.5.2
-      typescript: 4.8.2
+      typescript: 5.0.2
       vite: 4.0.3
       vite-plugin-solid: 2.3.0_solid-js@1.5.2+vite@4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -10107,6 +10107,12 @@ packages:
   /typescript/4.9.4:
     resolution: {integrity: sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==}
     engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: false
+
+  /typescript/5.0.2:
+    resolution: {integrity: sha512-wVORMBGO/FAs/++blGNeAVdbNKtIh1rbBL2EyQ1+J9lClJ93KiiKe8PmFIVdXhHcyv44SL9oglmfeSsndo0jRw==}
+    engines: {node: '>=12.20'}
     hasBin: true
     dev: false
 
