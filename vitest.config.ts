@@ -1,10 +1,10 @@
-import { defineConfig } from 'vitest/config'
+import type { UserConfig } from 'vitest/config'
 
-export default defineConfig({
+export default {
   test: {
     // `.test.ts` => Jest
     // `.spec.ts` => Vitest
     include: ['{.github/**,**}/*.spec.ts'],
     outputTruncateLength: Infinity
   }
-})
+} satisfies UserConfig
