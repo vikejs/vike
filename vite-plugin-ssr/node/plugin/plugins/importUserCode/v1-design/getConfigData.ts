@@ -183,7 +183,7 @@ async function loadConfigData(userRootDir: string, isDev: boolean): Promise<Conf
         // TODO: this applies only against concrete config files, we should also apply to abstract config files
         assertConfigName(
           configName,
-          [...Object.keys(configDefinitionsRelevant), 'configDefinitions'],
+          [...Object.keys(configDefinitionsRelevant), 'defineConfig'],
           pageConfigFile.pageConfigFilePath
         )
       })
@@ -192,7 +192,7 @@ async function loadConfigData(userRootDir: string, isDev: boolean): Promise<Conf
     // TODO: remove this and instead ensure that configs are always defined globally
     configValueFilesRelevant.forEach((configValueFile) => {
       const { configName } = configValueFile
-      assert(configName in configDefinitionsRelevant || configName === 'configDefinitions')
+      assert(configName in configDefinitionsRelevant || configName === 'defineConfig')
     })
 
     let configSources: PageConfigData['configSources'] = {}
@@ -519,16 +519,16 @@ function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): Config
   const configDefinitionsAll: ConfigDefinitionsAll = { ...configDefinitionsBuiltIn }
   pageConfigFilesRelevant.forEach((pageConfigFile) => {
     const { pageConfigFilePath } = pageConfigFile
-    const { configDefinitions } = getPageConfigValues(pageConfigFile)
-    if (configDefinitions) {
+    const { defineConfig } = getPageConfigValues(pageConfigFile)
+    if (defineConfig) {
       assertUsage(
-        isObject(configDefinitions),
-        `${pageConfigFilePath} sets the config 'configDefinitions' to a value with an invalid type \`${typeof configDefinitions}\`: it should be an object instead.`
+        isObject(defineConfig),
+        `${pageConfigFilePath} sets the config 'defineConfig' to a value with an invalid type \`${typeof defineConfig}\`: it should be an object instead.`
       )
-      objectEntries(configDefinitions).forEach(([configName, configDefinition]) => {
+      objectEntries(defineConfig).forEach(([configName, configDefinition]) => {
         assertUsage(
           isObject(configDefinition),
-          `${pageConfigFilePath} sets 'configDefinitions.${configName}' to a value with an invalid type \`${typeof configDefinition}\`: it should be an object instead.`
+          `${pageConfigFilePath} sets 'defineConfig.${configName}' to a value with an invalid type \`${typeof configDefinition}\`: it should be an object instead.`
         )
 
         // User can override an existing config definition
@@ -545,15 +545,15 @@ function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): Config
             const hint = `Make sure to define the 'valueEnv' value of '${configName}' to 'client-only', 'server-only', or 'server-and-client'.`
             assertUsage(
               prop in def,
-              `${pageConfigFilePath} doesn't define 'configDefinitions.${configName}.valueEnv' which is required. ${hint}`
+              `${pageConfigFilePath} doesn't define 'defineConfig.${configName}.valueEnv' which is required. ${hint}`
             )
             assertUsage(
               hasProp(def, prop, 'string'),
-              `${pageConfigFilePath} sets 'configDefinitions.${configName}.valueEnv' to a value with an invalid type ${typeof def.valueEnv}. ${hint}`
+              `${pageConfigFilePath} sets 'defineConfig.${configName}.valueEnv' to a value with an invalid type ${typeof def.valueEnv}. ${hint}`
             )
             assertUsage(
               ['client-only', 'server-only', 'server-and-client'].includes(def.valueEnv),
-              `${pageConfigFilePath} sets 'configDefinitions.${configName}.valueEnv' to an invalid value '${def.valueEnv}'. ${hint}`
+              `${pageConfigFilePath} sets 'defineConfig.${configName}.valueEnv' to an invalid value '${def.valueEnv}'. ${hint}`
             )
           }
         }
@@ -611,7 +611,7 @@ function applySideEffects(
     })
     if (!configMod) return
     objectEntries(configMod).forEach(([configName, configModValue]) => {
-      if (configName === 'configDefinitions') {
+      if (configName === 'defineConfig') {
         assertUsage(isObject(configModValue), 'TODO')
         objectEntries(configModValue).forEach(([configTargetName, configTargetModValue]) => {
           assertUsage(isObject(configTargetModValue), 'TODO')

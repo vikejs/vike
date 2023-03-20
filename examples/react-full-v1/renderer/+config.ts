@@ -4,7 +4,7 @@ export default {
   hydrationCanBeAborted: true,
   prerender: true,
   // WARNING: the naming below *will* change (and improve)
-  configDefinitions: {
+  defineConfig: {
     documentProps: {
       valueEnv: 'server-and-client'
     },
@@ -16,7 +16,7 @@ export default {
         }
         if (configValue) {
           return {
-            configDefinitions: {
+            defineConfig: {
               onBeforeRender: {
                 valueEnv: 'server-and-client'
               }
