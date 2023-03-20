@@ -35,7 +35,10 @@ declare global {
 }
 
 import { isBrowser, addRequireShim } from './utils'
-assertUsage(!isBrowser(), 'The `vite-plugin-ssr` module cannot be imported in the browser.')
+assertUsage(
+  !isBrowser(),
+  "It's forbidden to `import { something } from 'vite-plugin-ssr'` in code loaded in the browser: the module 'vite-plugin-ssr' is a server-only module."
+)
 addRequireShim()
 
 import './page-files/setup'
