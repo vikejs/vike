@@ -1,5 +1,5 @@
 const express = require('express')
-const { renderPage } = require('vite-plugin-ssr')
+const { renderPage } = require('vite-plugin-ssr/server')
 const { ApolloClient, createHttpLink, InMemoryCache } = require('@apollo/client')
 const fetch = require('node-fetch')
 

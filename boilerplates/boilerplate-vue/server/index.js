@@ -2,7 +2,7 @@
 
 const express = require('express')
 const compression = require('compression')
-const { renderPage } = require('vite-plugin-ssr')
+const { renderPage } = require('vite-plugin-ssr/server')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`

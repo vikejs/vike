@@ -1,5 +1,5 @@
 const express = require('express')
-const { renderPage } = require('vite-plugin-ssr')
+const { renderPage } = require('vite-plugin-ssr/server')
 const { telefunc } = require('telefunc')
 
 const isProduction = process.env.NODE_ENV === 'production'

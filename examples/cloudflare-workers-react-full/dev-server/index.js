@@ -1,7 +1,7 @@
 // We use a Express.js server for development
 
 const express = require('express')
-const { renderPage } = require('vite-plugin-ssr')
+const { renderPage } = require('vite-plugin-ssr/server')
 const vite = require('vite')
 const fetch = require('node-fetch')
 const compression = require('compression')
