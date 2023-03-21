@@ -8,7 +8,7 @@ import pc from 'picocolors'
 assertWarning(
   false,
   [
-    'You have such imports which are outdated:',
+    'You have following imports which are outdated:',
     pc.red("  import { something } from 'vite-plugin-ssr'"),
     'Replace them with:',
     pc.green("  import { something } from 'vite-plugin-ssr/server'"),
