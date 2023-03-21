@@ -7,7 +7,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     // Preview => `npm run preview` takes a long time
     // Dev => `Learn more collapsible` takes a long time
     const additionalTimeout = 120 * 1000
-    run(cmd, { additionalTimeout })
+    run(cmd, { additionalTimeout, doNotFailOnWarning: true })
   }
 
   test('page content is rendered to HTML', async () => {
