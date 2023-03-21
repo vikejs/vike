@@ -2,7 +2,7 @@
 import '../utils/trackLogs'
 //*/
 
-export * from '../../public-types'
+export * from '../public-types'
 
 export { renderPage } from './renderPage'
 export { createPageRenderer } from '../createPageRenderer'
