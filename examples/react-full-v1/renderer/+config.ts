@@ -18,8 +18,8 @@ export default {
           return {
             meta: {
               onBeforeRender: {
-                // We override VPS's default behavior of always executing onBeforeRender() on the server-side.
-                // In other words: we can set our custom config onBeforeRenderIsomorphic to `true` in order to fetch data direcly from the browser (without involving our Node.js/Edge server at all).
+                // We override VPS's default behavior of always loading/executing onBeforeRender() on the server-side.
+                // If we set onBeforeRenderIsomorphic to true, then onBeforeRender() is loaded/executed in the browser as well, allowing us to fetch data direcly from the browser upon client-side navigation (without involving our Node.js/Edge server at all).
                 env: 'server-and-client'
               }
             }
