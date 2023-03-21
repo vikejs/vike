@@ -46,12 +46,12 @@
   "engines": {
     "node": ">=12.19.0"
   },
-  "main": "./dist/cjs/node/runtime/index.js",
+  "main": "./dist/cjs/node/runtime/index-deprecated.js",
   "exports": {
     ".": {
       "worker": "./dist/cjs/node/runtime/index-deprecated.js",
       "node": "./dist/cjs/node/runtime/index-deprecated.js",
-      "browser": "./dist/esm/client/node-deprecated.js",
+      "browser": "./dist/esm/client/node.js",
       "types": "./dist/cjs/node/runtime/index-deprecated.d.ts"
     },
     "./server": {
