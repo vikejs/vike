@@ -3,11 +3,13 @@ import '../utils/trackLogs'
 //*/
 
 export { renderPage } from './renderPage'
-export { createPageRenderer } from '../createPageRenderer'
 export { escapeInject, dangerouslySkipEscape } from './html/renderHtml'
 export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './html/stream'
+
 // TODO/v1-release: remove
 export { injectAssets__public as _injectAssets } from './html/injectAssets/injectAssets__public'
+// TODO/v1-release: remove
+export { createPageRenderer } from '../createPageRenderer'
 
 // TODO/v1-release: remove
 import { assertWarning } from './utils'
