@@ -15,7 +15,7 @@ const prettierConfigFile = `${process.env.PROJECT_CWD || process.cwd()}/.prettie
 let prettierConfig = {}
 if (existsSync(prettierConfigFile)) prettierConfig = JSON.parse(readFileSync(prettierConfigFile, 'utf-8'))
 
-const port = (viteConfig as UserConfig).server?.port || (process.env.PORT ? +process.env.PORT : 3001)
+const port = (viteConfig as UserConfig).server?.port || (process.env.PORT ? +process.env.PORT : 3000)
 
 const root = resolve(fileURLToPath(import.meta.url), '../..')
 
