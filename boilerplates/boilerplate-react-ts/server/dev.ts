@@ -6,7 +6,7 @@ import express from 'express'
 import compression from 'compression'
 import { UserConfig, createServer } from 'vite'
 import { renderPage } from 'vite-plugin-ssr'
-import merge from 'lodash/merge'
+import _ from 'lodash'
 import { format } from 'prettier'
 
 import viteConfig from '../vite.config.js'
@@ -23,7 +23,7 @@ async function startServer() {
   const app = express()
   app.use(compression())
 
-  const viteDevServer = await createServer(merge(viteConfig, { root, server: { middlewareMode: true } }))
+  const viteDevServer = await createServer(_.merge(viteConfig, { root, server: { middlewareMode: true } }))
   app.use(viteDevServer.middlewares)
 
   app.get('*', async (req, res, next) => {
