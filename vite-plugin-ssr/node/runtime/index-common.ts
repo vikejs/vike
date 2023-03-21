@@ -29,8 +29,10 @@ export const RenderErrorPage: typeof RenderErrorPage_ = (...args) => {
 
 // Help Telefunc detect the user's stack
 globalThis._isVitePluginSsr = true
+globalThis._isVike = true
 declare global {
   var _isVitePluginSsr: true
+  var _isVike: true
 }
 
 import { addRequireShim } from './utils'
