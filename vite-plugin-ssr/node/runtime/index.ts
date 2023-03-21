@@ -2,6 +2,8 @@
 import '../utils/trackLogs'
 //*/
 
+export * from '../../public-types'
+
 export { renderPage } from './renderPage'
 export { createPageRenderer } from '../createPageRenderer'
 export { escapeInject, dangerouslySkipEscape } from './html/renderHtml'
@@ -24,9 +26,6 @@ export const RenderErrorPage: typeof RenderErrorPage_ = (...args) => {
   )
   return RenderErrorPage_(...args)
 }
-
-export type { PageContextBuiltIn } from '../../shared/types'
-export type { InjectFilterEntry } from './html/injectAssets/getHtmlTags'
 
 // Help Telefunc detect the user's stack
 globalThis._isVitePluginSsr = true
