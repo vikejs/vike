@@ -1,4 +1,4 @@
-import { renderPage } from 'vite-plugin-ssr'
+import { renderPage } from 'vite-plugin-ssr/server'
 
 export { handleSsr }
 

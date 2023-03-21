@@ -1,5 +1,5 @@
 import express from 'express'
-import { renderPage } from 'vite-plugin-ssr'
+import { renderPage } from 'vite-plugin-ssr/server'
 
 const app = express()
 

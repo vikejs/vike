@@ -1,6 +1,6 @@
 import renderToString from 'preact-render-to-string'
 import { PageShell } from './PageShell'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import logoUrl from './logo.svg'
 
 export { render }

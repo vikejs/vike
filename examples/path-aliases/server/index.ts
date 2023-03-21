@@ -5,7 +5,7 @@
 import { msg } from '#root/server/msg'
 
 import express from 'express'
-import { renderPage } from 'vite-plugin-ssr'
+import { renderPage } from 'vite-plugin-ssr/server'
 
 console.log(msg)
 

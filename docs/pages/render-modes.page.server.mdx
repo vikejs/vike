@@ -61,7 +61,7 @@ We also adapt our server-side `render()` hook:
 // /renderer/_default.page.server.js
 // Environment: Node.js
 
-import { escapeInject } from 'vite-plugin-ssr'
+import { escapeInject } from 'vite-plugin-ssr/server'
 
 export function render() {
   // Note that `div#root` is empty
@@ -85,7 +85,7 @@ We can also use our server-side `render()` hook to render `<head>`:
 // /renderer/_default.page.server.js
 // Environment: Node.js
 
-import { escapeInject } from 'vite-plugin-ssr'
+import { escapeInject } from 'vite-plugin-ssr/server'
 
 export function render(pageContext) {
   const { title, description } = pageContext.exports.meta
@@ -126,7 +126,7 @@ If we have both SPA and SSR pages, then we adapt our `render()` hooks like this:
 // /renderer/_default.page.server.js
 // Environment: Node.js
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { renderToHtml } from 'some-ui-framework'
 
 export function render(pageContext) {

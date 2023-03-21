@@ -1,5 +1,5 @@
 import { renderToNodeStream } from '@vue/server-renderer'
-import { escapeInject } from 'vite-plugin-ssr'
+import { escapeInject } from 'vite-plugin-ssr/server'
 import { createApp } from './app'
 import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'

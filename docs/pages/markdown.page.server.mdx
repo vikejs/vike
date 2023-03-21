@@ -44,7 +44,7 @@ This page is written in _Markdown_.
 ```js
 // _default.page.server.js
 
-import { escapeInject } from 'vite-plugin-ssr'
+import { escapeInject } from 'vite-plugin-ssr/server'
 
 export async function render(pageContext) {
   // `pageContext.exports` holds all exports of the page's `.page.js` file
@@ -88,7 +88,7 @@ which we can access at
 ```js
 // _default.page.server.js
 
-import { escapeInject } from 'vite-plugin-ssr'
+import { escapeInject } from 'vite-plugin-ssr/server'
 
 export async function render(pageContext) {
   // Read the documentation of your Vite markdown plugin or of its underlying markdown

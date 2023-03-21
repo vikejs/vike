@@ -9,7 +9,7 @@ are defined by our [server-side `render()` hook](/render).
 // /renderer/_default.page.server.js
 // Environment: Node.js
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { renderToHtml } from 'some-ui-framework'
 
 export { render }
@@ -48,7 +48,7 @@ export const documentProps = {
 // /renderer/_default.page.server.js
 // Environment: Node.js
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { renderToHtml } from 'some-ui-framework'
 
 export { render }
@@ -104,7 +104,7 @@ function getDocumentProps(pageProps) {
 
 export { render }
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { renderToHtml } from 'some-ui-framework'
 
 async function render(pageContext) {
@@ -145,7 +145,7 @@ For example:
 // /renderer/_default.page.server.js
 // Environment: Node.js
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import renderToHtml from 'some-ui-framework'
 
 export async function render(pageContext) {

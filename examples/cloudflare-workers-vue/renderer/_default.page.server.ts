@@ -1,6 +1,6 @@
 import { pipeToWebWritable, pipeToNodeWritable } from '@vue/server-renderer'
 
-import { escapeInject, stampPipe } from 'vite-plugin-ssr'
+import { escapeInject, stampPipe } from 'vite-plugin-ssr/server'
 import { createApp } from './app'
 import type { Writable } from 'stream'
 

@@ -1,7 +1,7 @@
 export default onRenderHtml
 
 import ReactDOMServer from 'react-dom/server'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { PageLayout } from './PageLayout'
 
 function onRenderHtml(pageContext) {

@@ -5,7 +5,7 @@ export { passToClient }
 
 import React from 'react'
 import { renderToString } from 'react-dom/server'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { PageLayout } from './PageLayout'
 
 const passToClient = ['pageProps']

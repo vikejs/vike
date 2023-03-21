@@ -10,7 +10,7 @@ We use `renderPage()` to server-side render a page:
 
 // In this example we use Express.js but we could use any other server framework
 import express from 'express'
-import { renderPage } from 'vite-plugin-ssr'
+import { renderPage } from 'vite-plugin-ssr/server'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`

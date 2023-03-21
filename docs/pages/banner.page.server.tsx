@@ -8,7 +8,7 @@
 export { render }
 export { Design2 as Page }
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { Title } from './index/Header'

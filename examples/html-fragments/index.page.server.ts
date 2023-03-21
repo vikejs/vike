@@ -1,4 +1,4 @@
-import { escapeInject } from 'vite-plugin-ssr'
+import { escapeInject } from 'vite-plugin-ssr/server'
 
 export { render }
 

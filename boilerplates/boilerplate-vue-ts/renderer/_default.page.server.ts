@@ -3,7 +3,7 @@ export { render }
 export const passToClient = ['pageProps', 'urlPathname']
 
 import { renderToString } from '@vue/server-renderer'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { createApp } from './app'
 import logoUrl from './logo.svg'
 import type { PageContextServer } from './types'

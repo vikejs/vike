@@ -85,7 +85,7 @@ export function Page() {
 // Environment: Node.js
 
 import { renderToHtml } from 'some-ui-framework'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 
 export function render(pageContext) {
   const { Page, Layout } = pageContext.exports
@@ -140,7 +140,7 @@ export { render }
 export const passToClient = ['pageProps']
 
 import { renderToHtml } from 'some-ui-framework'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { runQuery } from 'some-sql-engine'
 
 async function onBeforeRender(pageContext) {
@@ -203,7 +203,7 @@ export const getDescription = pageProps => `User: ${pageProps.firstName} ${pageP
 export { render }
 
 import { renderToHtml } from 'some-ui-framework'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 
 function render(pageContext) {
   const { Page, pageProps } = pageContext

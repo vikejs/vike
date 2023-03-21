@@ -14,7 +14,7 @@ To improve preloading performance, we can use [Early Hints](https://developer.mo
 ```js
 // server.js
 
-import { renderPage } from 'vite-plugin-ssr'
+import { renderPage } from 'vite-plugin-ssr/server'
 
 app.get('*', async (req, res) => {
   const pageContext = await renderPage({ urlOriginal: req.originalUrl } )

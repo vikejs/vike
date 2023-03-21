@@ -2,7 +2,7 @@ export default onRenderHtml
 
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { PageShell } from './PageShell'
 
 function onRenderHtml(pageContext) {

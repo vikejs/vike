@@ -1,4 +1,4 @@
-import { renderPage } from 'vite-plugin-ssr'
+import { renderPage } from 'vite-plugin-ssr/server'
 import { createExpressApp } from './createExpressApp.js'
 import { baseServer } from '../base.js'
 

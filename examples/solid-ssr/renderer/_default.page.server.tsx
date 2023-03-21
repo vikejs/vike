@@ -1,6 +1,6 @@
 import { generateHydrationScript, renderToStream } from 'solid-js/web'
 import { PageLayout } from './PageLayout'
-import { escapeInject, dangerouslySkipEscape, stampPipe } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape, stampPipe } from 'vite-plugin-ssr/server'
 import { PageContext } from './types'
 import logoUrl from './logo.svg'
 

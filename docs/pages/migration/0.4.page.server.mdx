@@ -133,7 +133,7 @@ All pre-render options are now defined in `vite.config.js`:
 - import { createPageRenderer } from 'vite-plugin-ssr'
 - const renderPage = createPageRenderer({ base })
 
-+ import { renderPage } from 'vite-plugin-ssr'
++ import { renderPage } from 'vite-plugin-ssr/server'
 + // We don't need to set `base` here anymore.
 
   const pageContext = await renderPage({ url })

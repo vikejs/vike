@@ -1,6 +1,6 @@
 export default onRenderHtml
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { PageLayout } from './PageLayout'
 
 async function onRenderHtml(pageContext) {

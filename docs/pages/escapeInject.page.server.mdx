@@ -12,7 +12,7 @@ It's usually used in the `render()` hook defined in `renderer/_default.page.serv
 
 export { render }
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 
 async function render() {
   const title = 'Hello<script src="https://devil.org/evil-code"></script>'
@@ -49,7 +49,7 @@ For example, if we want some HTML parts to be included only for certain pages:
 // _default.page.server.js
 // Environment: Node.js
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { renderToHtml } from 'some-ui-framework'
 
 export { render }

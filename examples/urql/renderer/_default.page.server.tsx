@@ -3,7 +3,7 @@ import { createClient, ssrExchange, dedupExchange, cacheExchange, fetchExchange,
 import prepass from 'react-ssr-prepass'
 import React from 'react'
 import { PageShell } from './PageShell'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import type { PageContext } from './types'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 import 'isomorphic-fetch'

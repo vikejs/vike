@@ -12,7 +12,7 @@ In practice, this means that we can use VPS with whatever tool we want. In fact,
 // /renderer/_default.page.server.js
 // Environment: Node.js
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 // This can be any UI framework (React, Vue, Svelte, ...)
 import renderToHtml from 'some-ui-framework'
 

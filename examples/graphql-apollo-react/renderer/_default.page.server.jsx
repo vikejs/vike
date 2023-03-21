@@ -1,5 +1,5 @@
 import React from 'react'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { getDataFromTree } from '@apollo/client/react/ssr'
 import App from './App'
 

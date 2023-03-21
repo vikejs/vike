@@ -3,7 +3,7 @@ export { passToClient }
 
 import React from 'react'
 import { renderToString } from 'react-dom/server'
-import { escapeInject, dangerouslySkipEscape, type InjectFilterEntry } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape, type InjectFilterEntry } from 'vite-plugin-ssr/server'
 // @ts-ignore
 import { PageLayout } from './PageLayout'
 
