@@ -1,6 +1,7 @@
 // TODO/v1-release: remove this file and package.json#exports["."], add add propper package.json#exports["."].types and package.json#types
 
 export * from './index-common'
+export * from '../public-types'
 
 import { assertWarning } from './utils'
 import pc from 'picocolors'

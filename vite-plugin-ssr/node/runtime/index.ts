@@ -1,4 +1,3 @@
-export * from '../public-types'
 export * from './index-common'
 
 import { isBrowser, assertUsage } from './utils'
