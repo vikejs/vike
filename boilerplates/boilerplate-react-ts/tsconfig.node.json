@@ -1,0 +1,6 @@
+{
+  "compilerOptions": { "module": "ESNext", "outDir": "dist/serv" },
+  "exclude": ["dist", "server/dev.ts"],
+  "extends": "./tsconfig.json",
+  "include": ["server"]
+}
