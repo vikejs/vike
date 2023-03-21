@@ -46,6 +46,7 @@
   "engines": {
     "node": ">=12.19.0"
   },
+  "main": "./dist/cjs/node/runtime/index.js",
   "exports": {
     ".": {
       "worker": "./dist/cjs/node/runtime/index.js",
