@@ -66,6 +66,14 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
     url: '/migration/0.4'
   },
   {
+    title: (
+      <>
+        Migration from <code>0.4.x</code> to <code>1.0.0</code>
+      </>
+    ),
+    url: '/migration/v1'
+  },
+  {
     title: 'Migrations',
     url: '/migration'
   },

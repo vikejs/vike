@@ -49,6 +49,12 @@
   "main": "./dist/cjs/node/runtime/index.js",
   "exports": {
     ".": {
+      "worker": "./dist/cjs/node/runtime/index-deprecated.js",
+      "node": "./dist/cjs/node/runtime/index-deprecated.js",
+      "browser": "./dist/esm/client/node-deprecated.js",
+      "types": "./dist/cjs/node/runtime/index-deprecated.d.ts"
+    },
+    "./server": {
       "worker": "./dist/cjs/node/runtime/index.js",
       "node": "./dist/cjs/node/runtime/index.js",
       "browser": "./dist/esm/client/node.js",

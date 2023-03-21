@@ -1,17 +1,2 @@
-import type { PageContextBuiltIn } from '../shared/types'
-
-export type PageContextBuiltInClient<Page = any> = Partial<PageContextBuiltIn<Page>> &
-  Pick<PageContextBuiltIn<Page>, 'Page' | 'pageExports' | 'exports'> & {
-    /**
-     * Whether the current page is already rendered to HTML.
-     *
-     * The `isHydration` value is always `true` when using Server Routing.
-     */
-    isHydration: true
-    /**
-     * Whether the user is navigating back in history.
-     *
-     * The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
-     */
-    isBackwardNavigation: null
-  }
+// TODO/v1-release: remove this file
+export type { PageContextBuiltInClientWithServerRouting as PageContextBuiltInClient } from '../shared/types'
