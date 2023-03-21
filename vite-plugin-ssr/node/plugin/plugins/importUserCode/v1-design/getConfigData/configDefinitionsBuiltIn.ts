@@ -7,7 +7,7 @@ import { assertRouteString } from '../../../../../../shared/route/resolveRouteSt
 
 // TODO: remove c_ prefix
 type ConfigDefinition = {
-  valueEnv: ConfigValueEnv // TODO: rename to runtime? or runtimeEnv?
+  env: ConfigValueEnv // TODO: rename to runtime? or runtimeEnv?
   c_global?: boolean // TODO: implement
   c_required?: boolean // TODO: apply validation
   c_code?: true // TODO: remove? Replace with `type: 'code'` or `type: 'file-path'`? A `type: 'boolean'` would be comfy for custom config 'ssr'`
@@ -16,9 +16,9 @@ type ConfigDefinition = {
       configFilePath: string
     }
   ) => void | undefined
-  sideEffect?: (config: {
+  effect?: (config: {
     configValue: unknown
-    configDefinedBy: string
+    configDefinedAt: string
   }) => undefined | Record<string, Partial<ConfigDefinition>>
 }
 
@@ -27,62 +27,62 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     c_code: true,
     c_required: true,
-    valueEnv: 'server-only'
+    env: 'server-only'
   },
   onRenderClient: {
     c_code: true,
-    valueEnv: 'client-only'
+    env: 'client-only'
   },
   onHydrationEnd: {
     c_code: true,
-    valueEnv: 'client-only'
+    env: 'client-only'
   },
   onPageTransitionStart: {
     c_code: true,
-    valueEnv: 'client-only'
+    env: 'client-only'
   },
   onPageTransitionEnd: {
     c_code: true,
-    valueEnv: 'client-only'
+    env: 'client-only'
   },
   onBeforeRender: {
     c_code: true,
-    valueEnv: 'server-only'
+    env: 'server-only'
   },
   onBeforePrerenderStart: {
     c_code: true,
-    valueEnv: 'server-only'
+    env: 'server-only'
   },
   Page: {
     c_code: true,
-    valueEnv: 'server-and-client'
+    env: 'server-and-client'
   },
   passToClient: {
-    valueEnv: 'server-only'
+    env: 'server-only'
   },
   route: {
-    valueEnv: '_routing-env',
+    env: '_routing-env',
     c_validate: getRouteValidator()
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    valueEnv: 'server-and-client'
+    env: 'server-and-client'
   },
   // TODO: rename to 'client'? I think so if client is cumulative to onRenderClient (while HTML-only needs to set `onRenderClient: null`)
   clientEntry: {
     c_code: true,
-    valueEnv: 'client-only'
+    env: 'client-only'
   },
   clientRouting: {
-    valueEnv: 'server-and-client' // TODO: config-only instead?
+    env: 'server-and-client' // TODO: config-only instead?
   },
   prerender: {
-    valueEnv: 'config-only'
+    env: 'config-only'
   },
   hydrationCanBeAborted: {
-    valueEnv: 'client-only' // TODO: config-only instead?
+    env: 'client-only' // TODO: config-only instead?
   },
   isErrorPage: {
-    valueEnv: 'config-only' // TODO: config-only instead?
+    env: 'config-only' // TODO: config-only instead?
   }
 }
 

@@ -3,22 +3,24 @@ export default {
   clientRouting: true,
   hydrationCanBeAborted: true,
   prerender: true,
-  // WARNING: the naming below *will* change (and improve)
-  defineConfig: {
+  meta: {
     documentProps: {
-      valueEnv: 'server-and-client'
+      env: 'server-and-client'
     },
+    // We create a custom config 'onBeforeRenderIsomorphic'
     onBeforeRenderIsomorphic: {
-      valueEnv: 'config-only',
-      sideEffect({ configDefinedBy, configValue }: { configValue: unknown; configDefinedBy: string }) {
+      env: 'config-only',
+      effect({ configDefinedAt, configValue }: { configValue: unknown; configDefinedAt: string }) {
         if (typeof configValue !== 'boolean') {
-          throw new Error(`${configDefinedBy} should be a boolean`)
+          throw new Error(`${configDefinedAt} should be a boolean`)
         }
         if (configValue) {
           return {
-            defineConfig: {
+            meta: {
               onBeforeRender: {
-                valueEnv: 'server-and-client'
+                // We override VPS's default behavior of always executing onBeforeRender() on the server-side.
+                // In other words: we can set our custom config onBeforeRenderIsomorphic to `true` in order to fetch data direcly from the browser (without involving our Node.js/Edge server at all).
+                env: 'server-and-client'
               }
             }
           }

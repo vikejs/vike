@@ -30,7 +30,7 @@ type ConfigName =
 // TODO: rename configFilePath2 => configValueFilePath
 type ConfigSoureFile = {
   configSrc: string
-  configDefinedByFile: string
+  configDefinedAtFile: string
 } & (
   | {
       configFilePath2: string
@@ -47,7 +47,7 @@ type ConfigSoureFile = {
 )
 
 type ConfigSource = ConfigSoureFile & {
-  valueEnv: ConfigValueEnv
+  env: ConfigValueEnv
   configValue?: unknown
 }
 

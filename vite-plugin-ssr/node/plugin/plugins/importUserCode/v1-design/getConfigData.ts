@@ -61,20 +61,20 @@ type GlobalConfigName =
 const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
   onPrerenderStart: {
     c_code: true,
-    valueEnv: 'server-only'
+    env: 'server-only'
   },
   onBeforeRoute: {
     c_code: true,
-    valueEnv: '_routing-env'
+    env: '_routing-env'
   },
   prerender: {
-    valueEnv: 'config-only'
+    env: 'config-only'
   },
-  extensions: { valueEnv: 'config-only' },
-  disableAutoFullBuild: { valueEnv: 'config-only' },
-  includeAssetsImportedByServer: { valueEnv: 'config-only' },
-  baseAssets: { valueEnv: 'config-only' },
-  baseServer: { valueEnv: 'config-only' }
+  extensions: { env: 'config-only' },
+  disableAutoFullBuild: { env: 'config-only' },
+  includeAssetsImportedByServer: { env: 'config-only' },
+  baseAssets: { env: 'config-only' },
+  baseServer: { env: 'config-only' }
 }
 
 function getConfigData(userRootDir: string, isDev: boolean, invalidate: boolean): Promise<ConfigData> {
@@ -183,7 +183,7 @@ async function loadConfigData(userRootDir: string, isDev: boolean): Promise<Conf
         // TODO: this applies only against concrete config files, we should also apply to abstract config files
         assertConfigName(
           configName,
-          [...Object.keys(configDefinitionsRelevant), 'defineConfig'],
+          [...Object.keys(configDefinitionsRelevant), 'meta'],
           pageConfigFile.pageConfigFilePath
         )
       })
@@ -192,7 +192,7 @@ async function loadConfigData(userRootDir: string, isDev: boolean): Promise<Conf
     // TODO: remove this and instead ensure that configs are always defined globally
     configValueFilesRelevant.forEach((configValueFile) => {
       const { configName } = configValueFile
-      assert(configName in configDefinitionsRelevant || configName === 'defineConfig')
+      assert(configName in configDefinitionsRelevant || configName === 'meta')
     })
 
     let configSources: PageConfigData['configSources'] = {}
@@ -291,12 +291,12 @@ function resolveConfigSource(
       const configValueFile = configValueFiles[0]!
       const { configValueFilePath } = configValueFile
       const configSource: ConfigSource = {
-        valueEnv: configDef.valueEnv,
+        env: configDef.env,
         // TODO: rename codeFilePath2 to configValueFilePath?
         codeFilePath2: configValueFilePath,
         configFilePath2: null,
         configSrc: `${configValueFilePath} > \`export default\``,
-        configDefinedByFile: configValueFilePath
+        configDefinedAtFile: configValueFilePath
       }
       if ('configValue' in configValueFile) {
         configSource.configValue = configValueFile.configValue
@@ -322,14 +322,14 @@ function resolveConfigSource(
       c_validate({ configValue, ...commonArgs })
     }
   }
-  const { valueEnv } = configDef
+  const { env } = configDef
   if (!codeFilePath) {
     return {
       configFilePath2: configFilePath,
       configSrc: `${configFilePath} > ${configName}`,
-      configDefinedByFile: configFilePath,
+      configDefinedAtFile: configFilePath,
       codeFilePath2: null,
-      valueEnv,
+      env,
       configValue
     }
   } else {
@@ -344,8 +344,8 @@ function resolveConfigSource(
       configFilePath2: configFilePath,
       codeFilePath2: codeFilePath,
       configSrc: `${codeFilePath} > \`export default\``,
-      configDefinedByFile: codeFilePath,
-      valueEnv
+      configDefinedAtFile: codeFilePath,
+      env
     }
   }
 }
@@ -519,16 +519,16 @@ function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): Config
   const configDefinitionsAll: ConfigDefinitionsAll = { ...configDefinitionsBuiltIn }
   pageConfigFilesRelevant.forEach((pageConfigFile) => {
     const { pageConfigFilePath } = pageConfigFile
-    const { defineConfig } = getPageConfigValues(pageConfigFile)
-    if (defineConfig) {
+    const { meta } = getPageConfigValues(pageConfigFile)
+    if (meta) {
       assertUsage(
-        isObject(defineConfig),
-        `${pageConfigFilePath} sets the config 'defineConfig' to a value with an invalid type \`${typeof defineConfig}\`: it should be an object instead.`
+        isObject(meta),
+        `${pageConfigFilePath} sets the config 'meta' to a value with an invalid type \`${typeof meta}\`: it should be an object instead.`
       )
-      objectEntries(defineConfig).forEach(([configName, configDefinition]) => {
+      objectEntries(meta).forEach(([configName, configDefinition]) => {
         assertUsage(
           isObject(configDefinition),
-          `${pageConfigFilePath} sets 'defineConfig.${configName}' to a value with an invalid type \`${typeof configDefinition}\`: it should be an object instead.`
+          `${pageConfigFilePath} sets 'meta.${configName}' to a value with an invalid type \`${typeof configDefinition}\`: it should be an object instead.`
         )
 
         // User can override an existing config definition
@@ -541,19 +541,19 @@ function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): Config
         /* TODO
         {
           {
-            const prop = 'valueEnv'
-            const hint = `Make sure to define the 'valueEnv' value of '${configName}' to 'client-only', 'server-only', or 'server-and-client'.`
+            const prop = 'env'
+            const hint = `Make sure to define the 'env' value of '${configName}' to 'client-only', 'server-only', or 'server-and-client'.`
             assertUsage(
               prop in def,
-              `${pageConfigFilePath} doesn't define 'defineConfig.${configName}.valueEnv' which is required. ${hint}`
+              `${pageConfigFilePath} doesn't define 'meta.${configName}.env' which is required. ${hint}`
             )
             assertUsage(
               hasProp(def, prop, 'string'),
-              `${pageConfigFilePath} sets 'defineConfig.${configName}.valueEnv' to a value with an invalid type ${typeof def.valueEnv}. ${hint}`
+              `${pageConfigFilePath} sets 'meta.${configName}.env' to a value with an invalid type ${typeof def.env}. ${hint}`
             )
             assertUsage(
-              ['client-only', 'server-only', 'server-and-client'].includes(def.valueEnv),
-              `${pageConfigFilePath} sets 'defineConfig.${configName}.valueEnv' to an invalid value '${def.valueEnv}'. ${hint}`
+              ['client-only', 'server-only', 'server-and-client'].includes(def.env),
+              `${pageConfigFilePath} sets 'meta.${configName}.env' to an invalid value '${def.env}'. ${hint}`
             )
           }
         }
@@ -590,8 +590,8 @@ function applySideEffects(
   const configSourcesMod = { ...configSources }
 
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
-    if (!configDef.sideEffect) return
-    assertUsage(configDef.valueEnv === 'config-only', 'TODO')
+    if (!configDef.effect) return
+    assertUsage(configDef.env === 'config-only', 'TODO')
     const configSourceSideEffect = configSources[configName]
     /*
     resolveConfigSource(
@@ -604,24 +604,24 @@ function applySideEffects(
     */
     if (!configSourceSideEffect) return
     assert('configValue' in configSourceSideEffect)
-    const { configValue, configDefinedByFile } = configSourceSideEffect
-    const configMod = configDef.sideEffect({
+    const { configValue, configDefinedAtFile } = configSourceSideEffect
+    const configMod = configDef.effect({
       configValue,
-      configDefinedBy: configDefinedByFile // TODO: align naming
+      configDefinedAt: configDefinedAtFile // TODO: align naming
     })
     if (!configMod) return
     objectEntries(configMod).forEach(([configName, configModValue]) => {
-      if (configName === 'defineConfig') {
+      if (configName === 'meta') {
         assertUsage(isObject(configModValue), 'TODO')
         objectEntries(configModValue).forEach(([configTargetName, configTargetModValue]) => {
           assertUsage(isObject(configTargetModValue), 'TODO')
           assertUsage(Object.keys(configTargetModValue).length === 1, 'TODO')
-          assertUsage(hasProp(configTargetModValue, 'valueEnv', 'string'), 'TODO')
-          const valueEnv = configTargetModValue.valueEnv as ConfigValueEnv // TODO: proper validation
-          configSourcesMod[configTargetName]!.valueEnv = valueEnv
+          assertUsage(hasProp(configTargetModValue, 'env', 'string'), 'TODO')
+          const env = configTargetModValue.env as ConfigValueEnv // TODO: proper validation
+          configSourcesMod[configTargetName]!.env = env
         })
       } else {
-        assertConfigName(configName, Object.keys(configDefinitionsRelevant), `sideEffect of TODO`)
+        assertConfigName(configName, Object.keys(configDefinitionsRelevant), `effect of TODO`)
         const configSourceTargetOld = configSourcesMod[configName]
         assert(configSourceTargetOld)
         configSourcesMod[configName] = {
@@ -629,7 +629,7 @@ function applySideEffects(
           ...configSourceSideEffect,
           configSrc: `${configSourceSideEffect} (side-effect)`,
           // TODO-end
-          valueEnv: configSourceTargetOld.valueEnv,
+          env: configSourceTargetOld.env,
           configValue: configModValue
         }
       }
@@ -676,7 +676,7 @@ async function findAndLoadConfigValueFiles(
           pageId: determinePageId2(filePathRelativeToUserRootDir),
           configValueFilePath: filePathRelativeToUserRootDir
         }
-        if (configDef.valueEnv !== 'config-only') {
+        if (configDef.env !== 'config-only') {
           return configValueFile
         }
         const result = await transpileAndLoadScriptFile(filePathAbsolute)

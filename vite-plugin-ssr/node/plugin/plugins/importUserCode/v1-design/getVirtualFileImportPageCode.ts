@@ -54,9 +54,9 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   let varCounter = 0
   Object.entries(pageConfigData.configSources).forEach(([configName, configSource]) => {
     if (!configSource.codeFilePath2) return
-    const { valueEnv, codeFilePath2 } = configSource
-    if (valueEnv === '_routing-env' || valueEnv === 'config-only') return
-    if (valueEnv === (isForClientSide ? 'server-only' : 'client-only')) return
+    const { env, codeFilePath2 } = configSource
+    if (env === '_routing-env' || env === 'config-only') return
+    if (env === (isForClientSide ? 'server-only' : 'client-only')) return
     const { importVar, importStatement } = generateEagerImport(codeFilePath2, varCounter++)
     importStatements.push(importStatement)
     lines.push(`  {`)
