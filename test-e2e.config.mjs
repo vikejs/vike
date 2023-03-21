@@ -85,8 +85,7 @@ function tolerateError({ logSource, logText }) {
     isCloudflareFalseError2() ||
     isCloudflareVueWarning() ||
     isTwitterEmbedsError() ||
-    isGithubImageError() ||
-    isOutdatedWarning()
+    isGithubImageError()
   )
 
   // [vite-plugin-ssr@0.4.42][Warning] The onBeforeRender() hook of /pages/star-wars/index/index.page.server.ts is taking more than 4 seconds
@@ -184,8 +183,5 @@ function tolerateError({ logSource, logText }) {
       logText.includes('.png') &&
       logText.includes('the server responded with a status of 429')
     )
-  }
-  function isOutdatedWarning() {
-    return logText.includes('You have such imports which are outdated:')
   }
 }
