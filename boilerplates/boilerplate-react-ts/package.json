@@ -1,10 +1,10 @@
 {
   "scripts": {
-    "dev": "npm run server",
-    "prod": "npm run build && npm run server:prod",
-    "build": "vite build",
-    "server": "ts-node ./server/index.ts",
-    "server:prod": "cross-env NODE_ENV=production ts-node ./server/index.ts"
+    "build": "concurrently \"npm:build:*\"",
+    "build:client": "cross-env NODE_ENV=production vite build",
+    "build:server": "cross-env NODE_ENV=production tsc --project tsconfig.node.json",
+    "dev": "ts-node ./server/dev.ts",
+    "preview": "node ./dist/serv/prod.js"
   },
   "dependencies": {
     "@types/compression": "^1.7.2",
