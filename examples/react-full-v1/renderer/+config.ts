@@ -1,3 +1,5 @@
+import type { Config } from 'vite-plugin-ssr'
+
 export default {
   passToClient: ['pageProps', 'documentProps', 'someAsyncProps'],
   clientRouting: true,
@@ -10,7 +12,7 @@ export default {
     // We create a custom config 'onBeforeRenderIsomorphic'
     onBeforeRenderIsomorphic: {
       env: 'config-only',
-      effect({ configDefinedAt, configValue }: { configValue: unknown; configDefinedAt: string }) {
+      effect({ configDefinedAt, configValue }) {
         if (typeof configValue !== 'boolean') {
           throw new Error(`${configDefinedAt} should be a boolean`)
         }
@@ -28,4 +30,4 @@ export default {
       }
     }
   }
-}
+} satisfies Config
