@@ -112,21 +112,21 @@
     "client.d.ts",
     "client/router.js",
     "client/router.d.ts",
-    "routing.js",
-    "routing.d.ts",
     "plugin.js",
     "plugin.d.ts",
     "prerender.js",
     "prerender.d.ts",
+    "routing.js",
+    "routing.d.ts",
     "RenderErrorPage.js",
     "RenderErrorPage.d.ts",
     "server.js",
     "server.d.ts",
+    "types.d.ts",
     "__internal.js",
     "__internal.d.ts",
     "__internal/setup.js",
-    "__internal/setup.d.ts",
-    "types.d.ts"
+    "__internal/setup.d.ts"
   ],
   "bin": {
     "vite-plugin-ssr": "./node/cli/bin-entry.js"
