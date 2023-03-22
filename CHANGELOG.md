@@ -1,3 +1,14 @@
+## [0.4.100](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.99...v0.4.100) (2023-03-22)
+
+
+### Bug Fixes
+
+* add resolve helpers to npm package ([#717](https://github.com/brillout/vite-plugin-ssr/issues/717)) ([85a2a10](https://github.com/brillout/vite-plugin-ssr/commit/85a2a109d3051ddd48e2f8bb85b2b7e1069f96c8))
+* improve error message when server-only module is loaded in browser (#fix 723) ([37eaf60](https://github.com/brillout/vite-plugin-ssr/commit/37eaf60d52076129e1ecb7a104fa6930538166b8))
+* move server exports to 'vite-plugin-ssr/server' ([fe07744](https://github.com/brillout/vite-plugin-ssr/commit/fe0774493108755ba59b198f9b5924962017d38b))
+
+
+
 ## [0.4.99](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.98...v0.4.99) (2023-03-19)
 
 
