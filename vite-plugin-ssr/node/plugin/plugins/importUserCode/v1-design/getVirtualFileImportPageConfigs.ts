@@ -7,14 +7,16 @@ import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files
 import { getConfigData } from './getConfigData'
 import { getInvalidator } from './invalidation'
 import { debug } from './debug'
+import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 
 async function getVirtualFileImportPageConfigs(
   userRootDir: string,
   isForClientSide: boolean,
   isDev: boolean,
-  id: string
+  id: string,
+  configVps: ConfigVpsResolved
 ): Promise<string> {
-  const { pageConfigsData, pageConfigGlobal } = await getConfigData(userRootDir, isDev, true)
+  const { pageConfigsData, pageConfigGlobal } = await getConfigData(userRootDir, isDev, true, configVps.extensions)
   return generateSourceCodeOfPageConfigs(pageConfigsData, pageConfigGlobal, isForClientSide, isDev, id)
 }
 

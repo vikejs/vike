@@ -16,6 +16,7 @@ import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/vi
 import { getConfigData } from './importUserCode/v1-design/getConfigData'
 import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils'
 import { findPageFiles } from '../shared/findPageFiles'
+import { getConfigVps } from '../../shared/getConfigVps'
 type InputOption = ResolvedConfig['build']['rollupOptions']['input'] // same as `import type { InputOption } from 'rollup'` but safe when Vite updates Rollup version
 
 function buildConfig(): Plugin {
@@ -78,7 +79,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
 }
 
 async function analyzeAppRouting(config: ResolvedConfig) {
-  const { pageConfigsData } = await getConfigData(config.root, false, false)
+  const { pageConfigsData } = await getConfigData(config.root, false, false, (await getConfigVps(config)).extensions)
 
   let hasClientRouting = false
   let hasServerRouting = false

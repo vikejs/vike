@@ -35,6 +35,7 @@ import type {
 } from '../../../../../shared/page-configs/PageConfig'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './getConfigData/configDefinitionsBuiltIn'
 import glob from 'fast-glob'
+import type { ExtensionResolved } from '../../../../shared/ConfigVps'
 
 assertIsVitePluginCode()
 
@@ -77,7 +78,12 @@ const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
   baseServer: { env: 'config-only' }
 }
 
-function getConfigData(userRootDir: string, isDev: boolean, invalidate: boolean): Promise<ConfigData> {
+function getConfigData(
+  userRootDir: string,
+  isDev: boolean,
+  invalidate: boolean,
+  extensions: ExtensionResolved[]
+): Promise<ConfigData> {
   let force = false
   if (invalidate) {
     assert([true, false].includes(isFirstInvalidation))

@@ -10,12 +10,13 @@ import {
 import { getConfigData } from './getConfigData'
 import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery'
 import { debug } from './debug'
+import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 
 async function getVirtualFileImportPageCode(
   id: string,
   userRootDir: string,
   isDev: boolean,
-  includeAssetsImportedByServer: boolean
+  configVps: ConfigVpsResolved
 ): Promise<string> {
   const result = isVirtualFileIdImportPageCode(id)
   assert(result)
@@ -26,7 +27,7 @@ async function getVirtualFileImportPageCode(
   }
   */
   const { pageId, isForClientSide } = result
-  const { pageConfigsData } = await getConfigData(userRootDir, isDev, false)
+  const { pageConfigsData } = await getConfigData(userRootDir, isDev, false, configVps.extensions)
   assert(pageConfigsData)
   const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId2 === pageId)
   assert(pageConfigData)
@@ -34,7 +35,7 @@ async function getVirtualFileImportPageCode(
     pageConfigData,
     isForClientSide,
     pageId,
-    includeAssetsImportedByServer,
+    configVps.includeAssetsImportedByServer,
     isDev
   )
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)

@@ -32,7 +32,8 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
   const { vikeConfig: fromPlusConfigFile, vikeConfigFilePath: fromPlusConfigFilePath } = await getConfigData(
     config.root,
     isDev2(config),
-    false
+    false,
+    extensions
   )
   configs.push(fromPlusConfigFile)
 

@@ -40,7 +40,7 @@ function importUserCode(): Plugin {
       id = getVirtualFileId(id)
 
       if (isVirtualFileIdImportPageCode(id)) {
-        const code = await getVirtualFileImportPageCode(id, config.root, isDev, configVps.includeAssetsImportedByServer)
+        const code = await getVirtualFileImportPageCode(id, config.root, isDev, configVps)
         return code
       }
 

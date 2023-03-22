@@ -4,13 +4,14 @@ import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles'
 import { makeVitePathAbsolute, unique } from '../../utils'
 import { getConfigData } from '../importUserCode/v1-design/getConfigData'
+import { getConfigVps } from '../../../shared/getConfigVps'
 
 async function determineOptimizeDepsEntries(config: ResolvedConfig, isDev: boolean): Promise<string[]> {
   let entries: string[] = []
 
   // V1 design
   {
-    const { pageConfigsData } = await getConfigData(config.root, true, false)
+    const { pageConfigsData } = await getConfigData(config.root, true, false, (await getConfigVps(config)).extensions)
     pageConfigsData.forEach((data) => {
       Object.values(data.configSources).forEach((configSource) => {
         const { codeFilePath2, env } = configSource
