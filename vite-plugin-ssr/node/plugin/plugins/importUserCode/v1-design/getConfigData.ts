@@ -16,7 +16,6 @@ import {
   assertDefaultExport,
   assertDefaultExportObject,
   objectEntries,
-  scriptFileExtensions,
   transpileAndLoadScriptFile,
   objectAssign,
   hasProp,
@@ -94,13 +93,19 @@ function getConfigData(
     }
   }
   if (!configDataPromise || force) {
-    configDataPromise = loadConfigData(userRootDir, isDev)
+    configDataPromise = loadConfigData(userRootDir, isDev, extensions)
   }
   return configDataPromise
 }
 
-async function loadConfigData(userRootDir: string, isDev: boolean): Promise<ConfigData> {
-  const result = await findAndLoadPageConfigFiles(userRootDir, isDev)
+async function loadConfigData(
+  userRootDir: string,
+  isDev: boolean,
+  extensions: ExtensionResolved[]
+): Promise<ConfigData> {
+  const plusFiles = await findPlusFiles(userRootDir, isDev, extensions)
+
+  const result = await findAndLoadPageConfigFiles(plusFiles)
   /* TODO: - remove this if we don't need this for optimizeDeps.entries
    *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead
   if ('err' in result) {
@@ -116,7 +121,7 @@ async function loadConfigData(userRootDir: string, isDev: boolean): Promise<Conf
   let configValueFiles: ConfigValueFile[]
   {
     const configDefinitionsAll = getConfigDefinitions(pageConfigFiles)
-    configValueFiles = await findAndLoadConfigValueFiles(configDefinitionsAll, userRootDir, isDev)
+    configValueFiles = await findAndLoadConfigValueFiles(plusFiles, configDefinitionsAll)
   }
 
   const vikeConfig: Record<string, unknown> = {}
@@ -650,6 +655,24 @@ type PageConfigFile = {
   pageConfigFileExports: Record<string, unknown>
 }
 
+async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]) {
+  const plusFiles = await findUserFiles('**/+*', userRootDir, isDev)
+  extensions.forEach((extension) => {
+    extension.pageConfigsDistFiles?.forEach((pageConfigDistFile) => {
+      // TODO/v1-release: remove
+      if (!pageConfigDistFile.importPath.includes('+')) return
+      assert(pageConfigDistFile.importPath.includes('+'))
+      assert(path.posix.basename(pageConfigDistFile.importPath).startsWith('+'))
+      const { importPath, filePath } = pageConfigDistFile
+      plusFiles.push({
+        filePathRelativeToUserRootDir: importPath,
+        filePathAbsolute: filePath
+      })
+    })
+  })
+  return plusFiles
+}
+
 type ConfigValueFile = {
   // TODO:
   // rename determinePageId2(), and rename pageId to configId or remove pageId (instead use determinePageId2)
@@ -659,13 +682,11 @@ type ConfigValueFile = {
   configValue?: unknown
 }
 async function findAndLoadConfigValueFiles(
-  configDefinitionsAll: ConfigDefinitionsAll,
-  userRootDir: string,
-  isDev: boolean
+  plusFiles: FoundFile[],
+  configDefinitionsAll: ConfigDefinitionsAll
 ): Promise<ConfigValueFile[]> {
-  const found = await findUserFiles('**/+*', userRootDir, isDev)
   const configValueFiles: ConfigValueFile[] = await Promise.all(
-    found
+    plusFiles
       .filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) !== 'config')
       .map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
         const configName = extractConfigName(filePathRelativeToUserRootDir)
@@ -708,21 +729,20 @@ function extractConfigName(filePath: string) {
 }
 
 async function findAndLoadPageConfigFiles(
-  userRootDir: string,
-  isDev: boolean
+  plusFiles: FoundFile[]
 ): Promise<{ err: unknown } | { pageConfigFiles: PageConfigFile[] }> {
-  const pageConfigFilePaths = await findUserFiles(`**/+config.${scriptFileExtensions}`, userRootDir, isDev)
-
   const pageConfigFiles: PageConfigFile[] = []
   // TODO: make esbuild build everyting at once
   const results = await Promise.all(
-    pageConfigFilePaths.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
-      const result = await transpileAndLoadScriptFile(filePathAbsolute)
-      if ('err' in result) {
-        return { err: result.err }
-      }
-      return { pageConfigFilePath: filePathRelativeToUserRootDir, pageConfigFileExports: result.exports }
-    })
+    plusFiles
+      .filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
+      .map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
+        const result = await transpileAndLoadScriptFile(filePathAbsolute)
+        if ('err' in result) {
+          return { err: result.err }
+        }
+        return { pageConfigFilePath: filePathRelativeToUserRootDir, pageConfigFileExports: result.exports }
+      })
   )
   for (const result of results) {
     if ('err' in result) {
@@ -744,7 +764,12 @@ async function findAndLoadPageConfigFiles(
   return { pageConfigFiles }
 }
 
-async function findUserFiles(pattern: string | string[], userRootDir: string, isDev: boolean) {
+type FoundFile = {
+  filePathRelativeToUserRootDir: string
+  filePathAbsolute: string
+}
+
+async function findUserFiles(pattern: string | string[], userRootDir: string, isDev: boolean): Promise<FoundFile[]> {
   assertPosixPath(userRootDir)
   const timeBase = new Date().getTime()
   const result = await glob(pattern, {
