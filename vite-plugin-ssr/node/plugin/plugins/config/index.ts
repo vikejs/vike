@@ -34,7 +34,7 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
     return `${fromPlusConfigFilePath} > config '${prop}' ${errMsg}`
   })
   assertVikeConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vitePluginSsr.${prop} ${errMsg}`)
-  // TODO/v1: deprecate this
+  // TODO/v1-release: deprecate this
   assertVikeConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vite-plugin-ssr option ${prop} ${errMsg}`)
 
   const fromStemPackages = await findConfigVpsFromStemPackages(config.root)
