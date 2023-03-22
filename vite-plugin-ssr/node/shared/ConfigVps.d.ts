@@ -4,20 +4,24 @@ export type { ExtensionResolved }
 
 type ExtensionUserProvided = {
   npmPackageName: string
-  pageFilesDist?: string[]
-  pageFilesSrc?: string
+  pageConfigsDistFiles?: string[]
+  pageConfigsSrcDir?: string
   assetsDir?: string
+  /** @deprecated */
+  pageFilesDist?: string[]
+  /** @deprecated */
+  pageFilesSrc?: string
 }
 type ExtensionResolved = {
   npmPackageName: string
   npmPackageRootDir: string
-  pageFilesDist:
+  pageConfigsDistFiles:
     | null
     | {
         importPath: string
         filePath: string
       }[]
-  pageFilesSrc: null | string
+  pageConfigsSrcDir: null | string
   assetsDir: null | string
 }
 

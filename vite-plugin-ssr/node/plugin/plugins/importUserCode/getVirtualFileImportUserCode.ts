@@ -61,7 +61,7 @@ async function getCode(
   }
   {
     const extensionsImportPaths = configVps.extensions
-      .map(({ pageFilesDist }) => pageFilesDist)
+      .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
       .flat()
       .filter(isNotNullish)
       .map(({ importPath }) => importPath)
@@ -293,10 +293,10 @@ function getGlobs(
 function getGlobRoots(config: ResolvedConfig, configVps: ConfigVpsResolved): string[] {
   const globRoots = ['/']
   configVps.extensions
-    .map(({ pageFilesSrc }) => pageFilesSrc)
+    .map(({ pageConfigsSrcDir }) => pageConfigsSrcDir)
     .filter(isNotNullish)
-    .forEach((pageFilesSrc) => {
-      const globRoot = path.posix.relative(config.root, pageFilesSrc)
+    .forEach((pageConfigsSrcDir) => {
+      const globRoot = path.posix.relative(config.root, pageConfigsSrcDir)
       globRoots.push(globRoot)
     })
   return globRoots
