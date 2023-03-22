@@ -2,14 +2,14 @@ export { devConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { searchForWorkspaceRoot } from 'vite'
-import { assert, isNotNullish, markEnvAsDev } from '../utils'
-import { determineOptimizeDepsEntries } from './devConfig/determineOptimizeDepsEntries'
+import { assert, isNotNullish, markEnvAsDev } from '../../utils'
+import { determineOptimizeDepsEntries } from './determineOptimizeDepsEntries'
 import path from 'path'
 import fs from 'fs'
-import { getConfigVps } from '../../shared/getConfigVps'
-import { ConfigVpsResolved } from '../../shared/ConfigVps'
-import { resolveRoot, assertRoot } from '../shared/resolveRoot'
-import { addSsrMiddleware } from '../shared/addSsrMiddleware'
+import { getConfigVps } from '../../../shared/getConfigVps'
+import { ConfigVpsResolved } from '../../../shared/ConfigVps'
+import { resolveRoot, assertRoot } from '../../shared/resolveRoot'
+import { addSsrMiddleware } from '../../shared/addSsrMiddleware'
 
 function devConfig(): Plugin[] {
   let config: ResolvedConfig
@@ -119,10 +119,10 @@ async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVps
 
   // Add node_modules/vite-plugin-ssr/
   {
-    // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vite-plugin-ssr/dist/cjs/node/plugin/plugins/
-    const vitePluginSsrRoot = path.join(__dirname, '../../../../../')
+    // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vite-plugin-ssr/dist/cjs/node/plugin/plugins/config/
+    const vitePluginSsrRoot = path.join(__dirname, '../../../../../../')
     // Assert that `vitePluginSsrRoot` is indeed pointing to `node_modules/vite-plugin-ssr/`
-    require.resolve(`${vitePluginSsrRoot}/dist/cjs/node/plugin/plugins/devConfig.js`)
+    require.resolve(`${vitePluginSsrRoot}/dist/cjs/node/plugin/plugins/devConfig/index.js`)
     fsAllow.push(vitePluginSsrRoot)
   }
 

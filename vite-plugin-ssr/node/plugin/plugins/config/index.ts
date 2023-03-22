@@ -1,14 +1,14 @@
 export { resolveVpsConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import type { ConfigVpsUserProvided, ConfigVpsResolved } from '../../shared/ConfigVps'
-import { assertVikeConfig } from './config/checkConfigVps'
-import { assert, isDev2 } from '../utils'
-import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
-import { pickFirst } from './config/pickFirst'
-import { resolveExtensions } from './config/resolveExtensions'
-import { resolveBase } from './config/resolveBase'
-import { getConfigData } from './importUserCode/v1-design/getConfigData'
+import type { ConfigVpsUserProvided, ConfigVpsResolved } from '../../../shared/ConfigVps'
+import { assertVikeConfig } from './checkConfigVps'
+import { assert, isDev2 } from '../../utils'
+import { findConfigVpsFromStemPackages } from './findConfigVpsFromStemPackages'
+import { pickFirst } from './pickFirst'
+import { resolveExtensions } from './resolveExtensions'
+import { resolveBase } from './resolveBase'
+import { getConfigData } from '../importUserCode/v1-design/getConfigData'
 
 function resolveVpsConfig(vpsConfig: unknown): Plugin {
   return {
