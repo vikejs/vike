@@ -2,7 +2,7 @@ export { resolveVpsConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVpsUserProvided, ConfigVpsResolved } from '../../../shared/ConfigVps'
-import { assertVikeConfig } from './checkConfigVps'
+import { assertVpsConfig } from './assertVpsConfig'
 import { assert, isDev2 } from '../../utils'
 import { findConfigVpsFromStemPackages } from './findConfigVpsFromStemPackages'
 import { pickFirst } from './pickFirst'
@@ -23,28 +23,32 @@ function resolveVpsConfig(vpsConfig: unknown): Plugin {
 async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promise<ConfigVpsResolved> {
   const fromPluginOptions = (vpsConfig ?? {}) as ConfigVpsUserProvided
   const fromViteConfig = ((config as Record<string, unknown>).vitePluginSsr ?? {}) as ConfigVpsUserProvided
+  const fromStemPackages = await findConfigVpsFromStemPackages(config.root)
+
+  const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig]
+
+  const extensions = resolveExtensions(configs, config)
+
   const { vikeConfig: fromPlusConfigFile, vikeConfigFilePath: fromPlusConfigFilePath } = await getConfigData(
     config.root,
     isDev2(config),
     false
   )
+  configs.push(fromPlusConfigFile)
 
-  assertVikeConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
+  assertVpsConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
     assert(fromPlusConfigFilePath)
     return `${fromPlusConfigFilePath} > config '${prop}' ${errMsg}`
   })
-  assertVikeConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vitePluginSsr.${prop} ${errMsg}`)
+  assertVpsConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vitePluginSsr.${prop} ${errMsg}`)
   // TODO/v1-release: deprecate this
-  assertVikeConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vite-plugin-ssr option ${prop} ${errMsg}`)
-
-  const fromStemPackages = await findConfigVpsFromStemPackages(config.root)
-  const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig, fromPlusConfigFile]
+  assertVpsConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vite-plugin-ssr option ${prop} ${errMsg}`)
 
   const { baseServer, baseAssets } = resolveBase(configs, config)
 
   const configVps: ConfigVpsResolved = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? false,
-    extensions: resolveExtensions(configs, config),
+    extensions,
     prerender: resolvePrerenderOptions(configs),
     includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? false,
     baseServer,

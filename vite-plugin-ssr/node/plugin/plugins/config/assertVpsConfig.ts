@@ -1,11 +1,11 @@
-export { assertVikeConfig }
+export { assertVpsConfig }
 
 import { assert, assertUsage, hasProp, isObject } from '../../utils'
 import type { ConfigVpsUserProvided } from '../../../shared/ConfigVps'
 
 type WrongUsage = { prop: string; errMsg: `should be a${string}` }
 
-function assertVikeConfig(
+function assertVpsConfig(
   vikeConfig: unknown,
   wrongUsageMsg: (wrongUsage: WrongUsage) => string
 ): asserts vikeConfig is ConfigVpsUserProvided {
