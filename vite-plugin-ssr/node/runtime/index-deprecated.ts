@@ -14,7 +14,8 @@ assertWarning(
     pc.green("  import { something } from 'vite-plugin-ssr/server'"),
     'Or if `something` is a type:',
     pc.green("  import type { something } from 'vite-plugin-ssr'"),
-    "(Server exports now live at 'vite-plugin/server' while all types are now exported at 'vite-plugin-ssr'.)"
+    'Inspect the error stack below to find the import causing this warning.',
+    "(Server exports now live at 'vite-plugin/server' while *all* types can now be imported as `import { SomeType } from 'vite-plugin-ssr'`.)"
   ].join('\n'),
   { showStackTrace: true, onlyOnce: true }
 )
