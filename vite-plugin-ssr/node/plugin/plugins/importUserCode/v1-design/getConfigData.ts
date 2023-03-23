@@ -120,8 +120,8 @@ async function loadConfigData(
 
   let configValueFiles: ConfigValueFile[]
   {
-    const configDefinitionsAll = getConfigDefinitions(pageConfigFiles)
-    configValueFiles = await findAndLoadConfigValueFiles(plusFiles, configDefinitionsAll)
+    const configDefinitions = getConfigDefinitions(pageConfigFiles)
+    configValueFiles = await findAndLoadConfigValueFiles(plusFiles, configDefinitions)
   }
 
   const vikeConfig: Record<string, unknown> = {}
@@ -527,7 +527,7 @@ function getPageConfigValues(pageConfigFile: PageConfigFile): Record<string, unk
 }
 
 function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): ConfigDefinitionsExtended {
-  const configDefinitionsAll: ConfigDefinitionsExtended = { ...configDefinitionsBuiltIn }
+  const configDefinitions: ConfigDefinitionsExtended = { ...configDefinitionsBuiltIn }
   pageConfigFilesRelevant.forEach((pageConfigFile) => {
     const { pageConfigFilePath } = pageConfigFile
     const { meta } = getPageConfigValues(pageConfigFile)
@@ -544,7 +544,7 @@ function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): Config
 
         // User can override an existing config definition
         const def = mergeConfigDefinition(
-          configDefinitionsAll[configName] as ConfigDefinition | undefined,
+          configDefinitions[configName] as ConfigDefinition | undefined,
           configDefinition as ConfigDefinition
         )
 
@@ -570,11 +570,11 @@ function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): Config
         }
         */
 
-        configDefinitionsAll[configName] = def /* TODO: validate instead */ as any
+        configDefinitions[configName] = def /* TODO: validate instead */ as any
       })
     }
   })
-  return configDefinitionsAll
+  return configDefinitions
 }
 
 //function mergeConfigDefinition(def: ConfigDefinition, mods: Partial<ConfigDefinition>): ConfigDefinition
@@ -603,19 +603,10 @@ function applyEffects(
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef.effect) return
     assertUsage(configDef.env === 'config-only', 'TODO')
-    const configSourceSideEffect = configSources[configName]
-    /*
-    resolveConfigSource(
-      configName,
-      configDef,
-      pageConfigFilesRelevant,
-      userRootDir,
-      configValueFilesRelevant
-    )
-    */
-    if (!configSourceSideEffect) return
-    assert('configValue' in configSourceSideEffect)
-    const { configValue, configDefinedAtFile } = configSourceSideEffect
+    const configSourceEffect = configSources[configName]
+    if (!configSourceEffect) return
+    assert('configValue' in configSourceEffect)
+    const { configValue, configDefinedAtFile } = configSourceEffect
     const configMod = configDef.effect({
       configValue,
       configDefinedAt: configDefinedAtFile // TODO: align naming
@@ -637,8 +628,8 @@ function applyEffects(
         assert(configSourceTargetOld)
         configSourcesMod[configName] = {
           // TODO-begin
-          ...configSourceSideEffect,
-          configSrc: `${configSourceSideEffect} (side-effect)`,
+          ...configSourceEffect,
+          configSrc: `${configSourceEffect} (side-effect)`,
           // TODO-end
           env: configSourceTargetOld.env,
           configValue: configModValue
@@ -683,26 +674,26 @@ type ConfigValueFile = {
 }
 async function findAndLoadConfigValueFiles(
   plusFiles: FoundFile[],
-  configDefinitionsAll: ConfigDefinitionsExtended
+  configDefinitions: ConfigDefinitionsExtended
 ): Promise<ConfigValueFile[]> {
   const configValueFiles: ConfigValueFile[] = await Promise.all(
     plusFiles
       .filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) !== 'config')
-      .map((f) => loadConfigValueFile(f, configDefinitionsAll))
+      .map((f) => loadConfigValueFile(f, configDefinitions))
   )
   return configValueFiles
 }
 
-async function loadConfigValueFile(plusFile: FoundFile, configDefinitionsAll: ConfigDefinitionsExtended) {
+async function loadConfigValueFile(plusFile: FoundFile, configDefinitions: ConfigDefinitionsExtended) {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = plusFile
   const configName = extractConfigName(filePathRelativeToUserRootDir)
   assertConfigName(
     configName,
-    [...Object.keys(configDefinitionsAll), ...Object.keys(globalConfigsDefinition)],
+    [...Object.keys(configDefinitions), ...Object.keys(globalConfigsDefinition)],
     filePathRelativeToUserRootDir
   )
   const configDef =
-    configDefinitionsAll[configName] ?? (globalConfigsDefinition as Record<string, ConfigDefinition>)[configName]
+    configDefinitions[configName] ?? (globalConfigsDefinition as Record<string, ConfigDefinition>)[configName]
   assert(configDef)
   const configValueFile: ConfigValueFile = {
     configName,
