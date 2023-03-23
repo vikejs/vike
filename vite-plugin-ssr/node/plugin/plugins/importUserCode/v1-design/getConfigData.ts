@@ -219,7 +219,7 @@ async function loadConfigData(
       configSources[configName as ConfigName] = configSource
     })
 
-    configSources = applySideEffects(configSources, configDefinitionsRelevant)
+    configSources = applyEffects(configSources, configDefinitionsRelevant)
 
     const isErrorPage: boolean = !!configSources.isErrorPage?.configValue
 
@@ -594,7 +594,7 @@ function mergeConfigDefinition(
 
 type ConfigSources = Record<string, ConfigSource>
 
-function applySideEffects(
+function applyEffects(
   configSources: ConfigSources,
   configDefinitionsRelevant: ConfigDefinitionsAll
 ): ConfigSources {
