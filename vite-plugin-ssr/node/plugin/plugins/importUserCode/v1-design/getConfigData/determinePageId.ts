@@ -1,12 +1,12 @@
 export { determinePageId }
 
-import { assert } from '../../../../utils'
+import { assert, isNpmPackageModule } from '../../../../utils'
 
 // somePath can be either:
 //  - a file path (releative to the Vite's config.root)
 //  - an import path of a npm package
 function determinePageId(somePath: string): string {
-  assert(!somePath.includes('\\'))
+  assert((!somePath.includes('\\') && somePath.startsWith('/')) || isNpmPackageModule(somePath))
 
   let paths = somePath.split('/')
   assert(paths.length > 1)
@@ -19,6 +19,14 @@ function determinePageId(somePath: string): string {
     }
   }
 
-  const pageId2 = paths.join('/')
-  return pageId2
+  const pageId = paths.join('/')
+
+  assert(pageId.startsWith('/') || isNpmPackageModule(pageId))
+  assert(
+    !pageId.endsWith('/') ||
+      // Unlikely, but may happen
+      pageId === '/'
+  )
+
+  return pageId
 }
