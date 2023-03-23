@@ -1,10 +1,6 @@
 export { getConfigData }
 
 import {
-  determinePageId2,
-  determineRouteFromFilesystemPath
-} from '../../../../../shared/route/deduceRouteStringFromFilesystemPath'
-import {
   assertPosixPath,
   assert,
   isObject,
@@ -35,6 +31,8 @@ import type {
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './getConfigData/configDefinitionsBuiltIn'
 import glob from 'fast-glob'
 import type { ExtensionResolved } from '../../../../shared/ConfigVps'
+import { determineRouteFromFilesystemPath } from './getConfigData/determineRouteFromFilesystemPath'
+import { determinePageId } from './getConfigData/determinePageId'
 
 assertIsVitePluginCode()
 
@@ -247,7 +245,7 @@ function determinePageIds(pageConfigFiles: PageConfigFile[], configValueFiles: C
     .filter((p) => isDefiningPage(p))
     .forEach((pageConfigFile) => {
       const { pageConfigFilePath } = pageConfigFile
-      const pageId2 = determinePageId2(pageConfigFilePath)
+      const pageId2 = determinePageId(pageConfigFilePath)
       const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
       pageIds.push({
         pageId2,
@@ -259,7 +257,7 @@ function determinePageIds(pageConfigFiles: PageConfigFile[], configValueFiles: C
   configValueFiles.map((configValueFile) => {
     if (!isConfigDefiningPage(configValueFile.configName)) return
     const { configValueFilePath } = configValueFile
-    const pageId2 = determinePageId2(configValueFilePath)
+    const pageId2 = determinePageId(configValueFilePath)
     const routeFilesystem = determineRouteFromFilesystemPath(configValueFilePath)
     assertPosixPath(configValueFilePath)
     const routeFilesystemDefinedBy = path.posix.dirname(configValueFilePath) + '/'
@@ -697,7 +695,7 @@ async function loadConfigValueFile(plusFile: FoundFile, configDefinitions: Confi
   assert(configDef)
   const configValueFile: ConfigValueFile = {
     configName,
-    pageId: determinePageId2(filePathRelativeToUserRootDir),
+    pageId: determinePageId(filePathRelativeToUserRootDir),
     configValueFilePath: filePathRelativeToUserRootDir
   }
   if (configDef.env !== 'config-only') {

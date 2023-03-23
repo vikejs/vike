@@ -1,7 +1,7 @@
 export { getPageFileObject }
 export type { PageFile }
 
-import { determinePageId } from '../determinePageId'
+import { determinePageIdOld } from '../determinePageIdOld'
 import { assertPageFilePath } from '../assertPageFilePath'
 import { isErrorPageId } from '../error-page'
 import { assert, slice } from '../utils'
@@ -49,7 +49,7 @@ function getPageFileObject(filePath: string): PageFile {
     isDefaultPageFile: isDefaultFilePath(filePath),
     isRendererPageFile: fileType !== '.css' && isDefaultFilePath(filePath) && isRendererFilePath(filePath),
     isErrorPageFile: isErrorPageId(filePath, false),
-    pageId: determinePageId(filePath)
+    pageId: determinePageIdOld(filePath)
   }
   return pageFile
 }

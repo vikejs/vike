@@ -1,8 +1,6 @@
 import { assert, higherFirst, slice } from './utils'
 
 export { deduceRouteStringFromFilesystemPath }
-export { determineRouteFromFilesystemPath }
-export { determinePageId2 }
 export type { FilesystemRoot }
 
 type FilesystemRoot = {
@@ -61,48 +59,4 @@ function deduceRouteStringFromFilesystemPath(pageId: string, filesystemRoots: Fi
   assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
 
   return filesystemRoute
-}
-
-// TODO make deduceRouteStringFromFilesystemPath() use determineRouteFromFilesystemPath()
-function determineRouteFromFilesystemPath(filesystemPath: string): string {
-  const pageId2 = determinePageId2(filesystemPath)
-
-  let routeString = pageId2
-
-  {
-    let paths = routeString.split('/')
-    // Remove `pages/`, `index/, and `src/`, directories
-    paths = paths.filter((dir) => dir !== 'pages' && dir !== 'src' && dir !== 'index')
-    routeString = paths.join('/')
-  }
-
-  if (routeString === '') {
-    routeString = '/'
-  }
-
-  assert(routeString.startsWith('/'))
-  assert(!routeString.endsWith('/') || routeString === '/')
-
-  return routeString
-}
-
-// somePath can be either:
-//  - a file path (releative to the Vite's config.root)
-//  - an import path of a npm package
-function determinePageId2(somePath: string): string {
-  assert(!somePath.includes('\\'))
-
-  let paths = somePath.split('/')
-  assert(paths.length > 1)
-
-  // Remove filename e.g. `+config.js`
-  {
-    const last = paths[paths.length - 1]!
-    if (last.includes('.')) {
-      paths = paths.slice(0, -1)
-    }
-  }
-
-  const pageId2 = paths.join('/')
-  return pageId2
 }
