@@ -51,11 +51,13 @@ function parseNpmPath(str: string | undefined): null | { npmPackageName: string;
   const name = first
   const importPath = rest.length === 0 ? null : rest.join('/')
   assert(name)
+  assert(importPath === null || !importPath.startsWith('/'))
 
   if (invalidNameRE.test(name) || (scope && invalidNameRE.test(scope.slice(1)))) {
     return null
   }
 
+  assert(!name.startsWith('/'))
   const npmPackageName = scope ? `${scope}/${name}` : name
 
   return {
