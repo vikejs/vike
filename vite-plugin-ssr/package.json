@@ -61,7 +61,6 @@
       "types": "./dist/cjs/node/runtime/index.d.ts"
     },
     "./client": {
-      "browser": "./dist/esm/client/index.js",
       "types": "./dist/esm/client/index.d.ts"
     },
     "./client/router": {
