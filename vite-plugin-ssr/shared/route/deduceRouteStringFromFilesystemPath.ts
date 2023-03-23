@@ -86,10 +86,14 @@ function determineRouteFromFilesystemPath(filesystemPath: string): string {
   return routeString
 }
 
-function determinePageId2(filesystemPath: string): string {
-  assertFilesystemPath(filesystemPath)
+// somePath can be either:
+//  - a file path (releative to the Vite's config.root)
+//  - an import path of a npm package
+function determinePageId2(somePath: string): string {
+  assert(!somePath.includes('\\'))
 
-  let paths = filesystemPath.split('/')
+  let paths = somePath.split('/')
+  assert(paths.length > 1)
 
   // Remove filename e.g. `+config.js`
   {
@@ -100,16 +104,5 @@ function determinePageId2(filesystemPath: string): string {
   }
 
   const pageId2 = paths.join('/')
-  assert(pageId2.startsWith('/'))
-  assert(
-    !pageId2.endsWith('/') ||
-      // Unlikely, but may happen
-      pageId2 === '/'
-  )
   return pageId2
-}
-
-function assertFilesystemPath(filesystemPath: string): void {
-  assert(!filesystemPath.includes('\\'))
-  assert(filesystemPath.startsWith('/'))
 }
