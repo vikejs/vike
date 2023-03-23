@@ -29,7 +29,7 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
 
     const pageConfigsDistFiles = resolvePageFilesDist(
       [
-        ...(extension.pageConfigsSrcDir ?? []),
+        ...(extension.pageConfigsDistFiles ?? []),
         // TODO/v1-release: remove
         ...(extension.pageFilesDist ?? [])
       ],
