@@ -48,8 +48,12 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
       }
     }
     assertUsage(
-      (pageConfigsSrcDirResolved || pageConfigsDistFiles) && (!pageConfigsDistFiles || !pageConfigsSrcDirResolved),
-      `Extension ${npmPackageName} should define either extension[number].pageConfigsDistFiles or extension[number].pageConfigsSrcDir (at least one but not both)`
+      pageConfigsSrcDirResolved || pageConfigsDistFiles,
+      `Extension ${npmPackageName} should define either extension[number].pageConfigsDistFiles or extension[number].pageConfigsSrcDir`
+    )
+    assertUsage(
+      !pageConfigsDistFiles || !pageConfigsSrcDirResolved,
+      `Extension ${npmPackageName} shouldn't define extension[number].pageConfigsDistFiles as well extension[number].pageConfigsSrcDir, it should define only one instead`
     )
 
     const assetsDir = (() => {
