@@ -5,7 +5,15 @@ import { createSignal } from 'solid-js'
 import { hydrate } from 'solid-js/web'
 import { PageLayout } from './PageLayout'
 import type { Route } from './PageLayout'
-import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
+import type {
+  /*
+  // When using Client Routing https://vite-plugin-ssr.com/clientRouting
+  PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
+  /*/
+  // When using Server Routing
+  PageContextBuiltInClientWithServerRouting as PageContextBuiltInClient
+  //*/
+} from 'vite-plugin-ssr'
 import type { PageContext } from './types'
 
 let layoutReady = false

@@ -1,7 +1,15 @@
 import { createApp } from './app'
 import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'
-import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
+import type {
+  //*
+  // When using Client Routing https://vite-plugin-ssr.com/clientRouting
+  PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
+  /*/
+  // When using Server Routing
+  PageContextBuiltInClientWithServerRouting as PageContextBuiltInClient
+  //*/
+} from 'vite-plugin-ssr'
 
 export const clientRouting = true
 export const prefetchStaticAssets = { when: 'VIEWPORT' }

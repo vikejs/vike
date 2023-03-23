@@ -5,7 +5,15 @@ import { hydrateRoot } from 'react-dom/client'
 import { createClient, ssrExchange, dedupExchange, cacheExchange, fetchExchange, Provider } from 'urql'
 import { PageShell } from './PageShell'
 import type { PageContext } from './types'
-import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client'
+import type {
+  /*
+  // When using Client Routing https://vite-plugin-ssr.com/clientRouting
+  PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
+  /*/
+  // When using Server Routing
+  PageContextBuiltInClientWithServerRouting as PageContextBuiltInClient
+  //*/
+} from 'vite-plugin-ssr'
 
 async function render(pageContext: PageContextBuiltInClient & PageContext) {
   const { Page, pageProps, urqlState } = pageContext

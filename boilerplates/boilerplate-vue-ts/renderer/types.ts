@@ -4,9 +4,16 @@ export type { PageContext }
 export type { PageProps }
 export type { Component }
 
-import type { PageContextBuiltIn } from 'vite-plugin-ssr'
-// import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router' // When using Client Routing
-import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client' // When using Server Routing
+import type {
+  PageContextBuiltIn,
+  /*
+  // When using Client Routing https://vite-plugin-ssr.com/clientRouting
+  PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
+  /*/
+  // When using Server Routing
+  PageContextBuiltInClientWithServerRouting as PageContextBuiltInClient
+  //*/
+} from 'vite-plugin-ssr'
 import type { ComponentPublicInstance } from 'vue'
 
 type Component = ComponentPublicInstance // https://stackoverflow.com/questions/63985658/how-to-type-vue-instance-out-of-definecomponent-in-vue-3/63986086#63986086

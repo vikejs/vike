@@ -1,5 +1,5 @@
 import { assertUsage } from './utils'
 assertUsage(
   false,
-  'The module `vite-plugin-ssr` cannot be imported in the browser. Did you mean to import from `vite-plugin-ssr/client` or `vite-plugin-ssr/client/router` instead?'
+  "`import { something } from 'vite-plugin-ssr'` is forbidden on the client-side. Did you mean `import { something } from 'vite-plugin-ssr/client/router'` instead? Or, if `something` is a type, then make sure to use `import type { something }` instead of `import { something }`."
 )
