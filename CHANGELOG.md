@@ -1,3 +1,13 @@
+## [0.4.101](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.100...v0.4.101) (2023-03-23)
+
+
+### Bug Fixes
+
+* improve error message upon importing Client Routing utilities while using Server Routing (fix [#731](https://github.com/brillout/vite-plugin-ssr/issues/731)) ([b14dfda](https://github.com/brillout/vite-plugin-ssr/commit/b14dfdaff3c3662793e10c842d50e7ceceb5f641))
+* improve migration hint ([bc6a8ae](https://github.com/brillout/vite-plugin-ssr/commit/bc6a8aebcd65872a2133b439d31d49a8e1757af7))
+
+
+
 ## [0.4.100](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.99...v0.4.100) (2023-03-22)
 
 

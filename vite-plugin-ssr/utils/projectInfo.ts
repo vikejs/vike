@@ -1,6 +1,6 @@
 import { onProjectInfo } from './assertSingleInstance'
 
-const PROJECT_VERSION = '0.4.100' as const
+const PROJECT_VERSION = '0.4.101' as const
 
 export const projectInfo = {
   projectName: 'vite-plugin-ssr' as const,
