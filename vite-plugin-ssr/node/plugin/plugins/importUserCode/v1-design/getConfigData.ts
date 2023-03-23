@@ -47,7 +47,7 @@ type ConfigData = {
 let configDataPromise: Promise<ConfigData> | null = null
 let isFirstInvalidation = true
 
-type ConfigDefinitionsAll = Record<string, ConfigDefinition>
+type ConfigDefinitionsExtended = Record<string, ConfigDefinition>
 
 type GlobalConfigName =
   | 'onPrerenderStart'
@@ -526,8 +526,8 @@ function getPageConfigValues(pageConfigFile: PageConfigFile): Record<string, unk
   return pageConfigValues
 }
 
-function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): ConfigDefinitionsAll {
-  const configDefinitionsAll: ConfigDefinitionsAll = { ...configDefinitionsBuiltIn }
+function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): ConfigDefinitionsExtended {
+  const configDefinitionsAll: ConfigDefinitionsExtended = { ...configDefinitionsBuiltIn }
   pageConfigFilesRelevant.forEach((pageConfigFile) => {
     const { pageConfigFilePath } = pageConfigFile
     const { meta } = getPageConfigValues(pageConfigFile)
@@ -596,7 +596,7 @@ type ConfigSources = Record<string, ConfigSource>
 
 function applyEffects(
   configSources: ConfigSources,
-  configDefinitionsRelevant: ConfigDefinitionsAll
+  configDefinitionsRelevant: ConfigDefinitionsExtended
 ): ConfigSources {
   const configSourcesMod = { ...configSources }
 
@@ -683,41 +683,44 @@ type ConfigValueFile = {
 }
 async function findAndLoadConfigValueFiles(
   plusFiles: FoundFile[],
-  configDefinitionsAll: ConfigDefinitionsAll
+  configDefinitionsAll: ConfigDefinitionsExtended
 ): Promise<ConfigValueFile[]> {
   const configValueFiles: ConfigValueFile[] = await Promise.all(
     plusFiles
       .filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) !== 'config')
-      .map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
-        const configName = extractConfigName(filePathRelativeToUserRootDir)
-        assertConfigName(
-          configName,
-          [...Object.keys(configDefinitionsAll), ...Object.keys(globalConfigsDefinition)],
-          filePathRelativeToUserRootDir
-        )
-        const configDef =
-          configDefinitionsAll[configName] ?? (globalConfigsDefinition as Record<string, ConfigDefinition>)[configName]
-        assert(configDef)
-        const configValueFile: ConfigValueFile = {
-          configName,
-          pageId: determinePageId2(filePathRelativeToUserRootDir),
-          configValueFilePath: filePathRelativeToUserRootDir
-        }
-        if (configDef.env !== 'config-only') {
-          return configValueFile
-        }
-        const result = await transpileAndLoadScriptFile(filePathAbsolute)
-        if ('err' in result) {
-          throw result.err
-        }
-        const fileExports = result.exports
-        assertDefaultExport(fileExports, filePathRelativeToUserRootDir)
-        const configValue = fileExports.default
-        objectAssign(configValueFile, { configValue })
-        return configValueFile
-      })
+      .map((f) => loadConfigValueFile(f, configDefinitionsAll))
   )
   return configValueFiles
+}
+
+async function loadConfigValueFile(plusFile: FoundFile, configDefinitionsAll: ConfigDefinitionsExtended) {
+  const { filePathAbsolute, filePathRelativeToUserRootDir } = plusFile
+  const configName = extractConfigName(filePathRelativeToUserRootDir)
+  assertConfigName(
+    configName,
+    [...Object.keys(configDefinitionsAll), ...Object.keys(globalConfigsDefinition)],
+    filePathRelativeToUserRootDir
+  )
+  const configDef =
+    configDefinitionsAll[configName] ?? (globalConfigsDefinition as Record<string, ConfigDefinition>)[configName]
+  assert(configDef)
+  const configValueFile: ConfigValueFile = {
+    configName,
+    pageId: determinePageId2(filePathRelativeToUserRootDir),
+    configValueFilePath: filePathRelativeToUserRootDir
+  }
+  if (configDef.env !== 'config-only') {
+    return configValueFile
+  }
+  const result = await transpileAndLoadScriptFile(filePathAbsolute)
+  if ('err' in result) {
+    throw result.err
+  }
+  const fileExports = result.exports
+  assertDefaultExport(fileExports, filePathRelativeToUserRootDir)
+  const configValue = fileExports.default
+  objectAssign(configValueFile, { configValue })
+  return configValueFile
 }
 
 function extractConfigName(filePath: string) {
