@@ -1,18 +1,24 @@
 export { isNpmPackageName }
 export { isNpmPackageModule }
+export { isNpmPackageImportPath }
 export { getNpmPackageName }
 
 import { assert } from './assert'
 const invalidNameRE = /[^a-zA-Z-_]/
 
-function isNpmPackageName(str: string | undefined): boolean {
-  const res = parseNpmPath(str)
-  return res !== null && res.modulePath === null
-}
-
 function isNpmPackageModule(str: string): boolean {
   const res = parseNpmPath(str)
   return res !== null
+}
+
+function isNpmPackageName(str: string | undefined): boolean {
+  const res = parseNpmPath(str)
+  return res !== null && res.importPath === null
+}
+
+function isNpmPackageImportPath(str: string): boolean {
+  const res = parseNpmPath(str)
+  return res !== null && res.importPath !== null
 }
 
 function getNpmPackageName(str: string): null | string {
@@ -21,7 +27,7 @@ function getNpmPackageName(str: string): null | string {
   return res.npmPackageName
 }
 
-function parseNpmPath(str: string | undefined): null | { npmPackageName: string; modulePath: null | string } {
+function parseNpmPath(str: string | undefined): null | { npmPackageName: string; importPath: null | string } {
   if (str === undefined || str.includes('\\') || str.startsWith('/')) {
     return null
   }
@@ -43,7 +49,7 @@ function parseNpmPath(str: string | undefined): null | { npmPackageName: string;
 
   const [first, ...rest] = str.split('/')
   const name = first
-  const path = rest.length === 0 ? null : rest.join('/')
+  const importPath = rest.length === 0 ? null : rest.join('/')
   assert(name)
 
   if (invalidNameRE.test(name) || (scope && invalidNameRE.test(scope.slice(1)))) {
@@ -54,6 +60,6 @@ function parseNpmPath(str: string | undefined): null | { npmPackageName: string;
 
   return {
     npmPackageName,
-    modulePath: path
+    importPath
   }
 }

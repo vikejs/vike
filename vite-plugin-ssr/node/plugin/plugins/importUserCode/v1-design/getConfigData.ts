@@ -18,7 +18,8 @@ import {
   arrayIncludes,
   objectKeys,
   assertIsVitePluginCode,
-  getMostSimilar
+  getMostSimilar,
+  isNpmPackageImportPath
 } from '../../../utils'
 import path from 'path'
 import type {
@@ -829,13 +830,15 @@ function isRelevantConfigPath(
   const isRelevant = removeDir(pageId, ['pages']).startsWith(configFsRoot)
   return isRelevant
 }
-function removeFilename(configPath: string) {
-  assertPosixPath(configPath)
-  assert(configPath.startsWith('/'))
-  const filename = configPath.split('/').slice(-1)[0]!
-  assert(filename.includes('.'))
-  assert(filename.startsWith('+'))
-  return configPath.split('/').slice(0, -1).join('/')
+function removeFilename(thingPath: string) {
+  assertPosixPath(thingPath)
+  assert(thingPath.startsWith('/') || isNpmPackageImportPath(thingPath))
+  {
+    const filename = thingPath.split('/').slice(-1)[0]!
+    assert(filename.includes('.'))
+    assert(filename.startsWith('+'))
+  }
+  return thingPath.split('/').slice(0, -1).join('/')
 }
 function removeDir(fsPath: string, dirs: string[]) {
   assertPosixPath(fsPath)
