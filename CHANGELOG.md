@@ -1,3 +1,13 @@
+## [0.4.103](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.102...v0.4.103) (2023-03-24)
+
+
+### Bug Fixes
+
+* slightly improve error message ([#730](https://github.com/brillout/vite-plugin-ssr/issues/730)) ([4f7e0f8](https://github.com/brillout/vite-plugin-ssr/commit/4f7e0f8033254968d231dc86c8038bcfc4ad9577))
+* workaround Vite not respecting clear option ([c8e28a6](https://github.com/brillout/vite-plugin-ssr/commit/c8e28a65245a7171667fba177d3c4b2982a577a7))
+
+
+
 ## [0.4.102](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.101...v0.4.102) (2023-03-24)
 
 
