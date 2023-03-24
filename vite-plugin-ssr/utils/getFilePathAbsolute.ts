@@ -5,21 +5,32 @@ import { assertPosixPath, toPosixPath } from './filesystemPathHandling'
 import { assert } from './assert'
 import path from 'path'
 import { assertIsVitePluginCode } from './assertIsVitePluginCode'
+import { isNpmPackageModule } from './isNpmPackageName'
 
 assertIsVitePluginCode()
 
 // Vite handles paths such as /pages/index.page.js which are relative to `config.root`.
 // Make them absolute starting from the filesystem root.
-function getFilePathAbsolute(fileVitePath: string, config: ResolvedConfig): string {
-  assertPosixPath(fileVitePath)
-  assert(fileVitePath.startsWith('/'))
-  const { root } = config
-  assertFsAbsolute(root)
-  let filePathAbsolute = path.posix.join(root, fileVitePath)
-  assertFsAbsolute(filePathAbsolute)
+// Also resolve plus files living in npm packages such as restack/renderer/+onRenderHtml.js
+function getFilePathAbsolute(filePath: string, config: ResolvedConfig): string {
+  assertPosixPath(filePath)
+
+  let filePathUnresolved: string
+  if (isNpmPackageModule(filePath)) {
+    filePathUnresolved = filePath
+  } else {
+    assert(filePath.startsWith('/'))
+    const { root } = config
+    assertFsAbsolute(root)
+    filePathUnresolved = path.posix.join(root, filePath)
+    assertFsAbsolute(filePathUnresolved)
+  }
+
+  let filePathAbsolute: string
   try {
-    filePathAbsolute = require.resolve(filePathAbsolute)
-  } catch {
+    filePathAbsolute = require.resolve(filePathUnresolved, { paths: [config.root] })
+  } catch (err) {
+    console.error(err)
     assert(false)
   }
   filePathAbsolute = toPosixPath(filePathAbsolute)
