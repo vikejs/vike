@@ -62,5 +62,17 @@ function onRenderResultCallback(
 // Copied and adapted from https://github.com/vitejs/vite/blob/9adb2a3a29e26302647092d783ea78cff6ca3473/packages/vite/src/node/logger.ts
 function log(msg: string, viteDevServer: ViteDevServer, clear: boolean) {
   const tag = pc.cyan(pc.bold(`[${projectInfo.projectName}]`))
+  // Workaround for Vite not respecting the clear option: https://github.com/vitejs/vite/blob/02a46d7ceab71ebf7ba723372ba37012b7f9ccaf/packages/vite/src/node/logger.ts#L91
+  if (!clear) msg = msg + getStringIsEqualBuster()
   viteDevServer.config.logger.info(`${pc.dim(new Date().toLocaleTimeString())} ${tag} ${msg}`, { clear })
+}
+
+function getStringIsEqualBuster() {
+  if (!process.stdout.isTTY || process.env.CI) {
+    // Workaround isn't needed: https://github.com/vitejs/vite/blob/02a46d7ceab71ebf7ba723372ba37012b7f9ccaf/packages/vite/src/node/logger.ts#L65-L66
+    return ''
+  }
+  const zeroWidthSpace = '\u200b'
+  const stringIsEqualBuster = zeroWidthSpace.repeat(Math.ceil(Math.random() * 1000))
+  return stringIsEqualBuster
 }
