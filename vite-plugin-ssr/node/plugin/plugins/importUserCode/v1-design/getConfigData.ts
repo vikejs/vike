@@ -19,7 +19,8 @@ import {
   objectKeys,
   assertIsVitePluginCode,
   getMostSimilar,
-  isNpmPackageImportPath
+  isNpmPackageImportPath,
+  getNpmPackageImportPath
 } from '../../../utils'
 import path from 'path'
 import type {
@@ -826,24 +827,30 @@ function isRelevantConfigPath(
   configPath: string, // Can be pageConfigFilePath or configValueFilePath
   pageId: string
 ): boolean {
-  const configFsRoot = removeDir(removeFilename(configPath), ['renderer', 'pages'])
-  const isRelevant = removeDir(pageId, ['pages']).startsWith(configFsRoot)
+  const configFsRoot = removeIrrelevantParts(removeFilename(configPath), ['renderer', 'pages'])
+  const isRelevant = removeIrrelevantParts(pageId, ['pages']).startsWith(configFsRoot)
   return isRelevant
 }
-function removeFilename(thingPath: string) {
-  assertPosixPath(thingPath)
-  assert(thingPath.startsWith('/') || isNpmPackageImportPath(thingPath))
+function removeFilename(somePath: string) {
+  assertPosixPath(somePath)
+  assert(somePath.startsWith('/') || isNpmPackageImportPath(somePath))
   {
-    const filename = thingPath.split('/').slice(-1)[0]!
+    const filename = somePath.split('/').slice(-1)[0]!
     assert(filename.includes('.'))
     assert(filename.startsWith('+'))
   }
-  return thingPath.split('/').slice(0, -1).join('/')
+  return somePath.split('/').slice(0, -1).join('/')
 }
-function removeDir(fsPath: string, dirs: string[]) {
-  assertPosixPath(fsPath)
-  assert(fsPath.startsWith('/'))
-  return fsPath
+function removeIrrelevantParts(somePath: string, dirs: string[]) {
+  assertPosixPath(somePath)
+  if (isNpmPackageImportPath(somePath)) {
+    const importPath = getNpmPackageImportPath(somePath)
+    assert(importPath)
+    assert(!importPath.startsWith('/'))
+    somePath = '/' + importPath
+  }
+  assert(somePath.startsWith('/'))
+  return somePath
     .split('/')
     .filter((p) => !dirs.includes(p))
     .join('/')

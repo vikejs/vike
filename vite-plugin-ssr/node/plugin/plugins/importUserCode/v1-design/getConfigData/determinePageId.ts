@@ -2,11 +2,9 @@ export { determinePageId }
 
 import { assert, isNpmPackageImportPath } from '../../../../utils'
 
-// somePath can be either:
-//  - a file path (releative to the Vite's config.root)
-//  - an import path of a npm package
 function determinePageId(somePath: string): string {
-  assert(!somePath.includes('\\') && (somePath.startsWith('/') || isNpmPackageImportPath(somePath)))
+  assert(!somePath.includes('\\'))
+  assert(somePath.startsWith('/') || isNpmPackageImportPath(somePath))
 
   let paths = somePath.split('/')
   assert(paths.length > 1)

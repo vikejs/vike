@@ -2,6 +2,7 @@ export { isNpmPackageName }
 export { isNpmPackageModule }
 export { isNpmPackageImportPath }
 export { getNpmPackageName }
+export { getNpmPackageImportPath }
 
 import { assert } from './assert'
 const invalidNameRE = /[^a-zA-Z-_]/
@@ -25,6 +26,12 @@ function getNpmPackageName(str: string): null | string {
   const res = parseNpmPath(str)
   if (!res) return null
   return res.npmPackageName
+}
+
+function getNpmPackageImportPath(str: string): null | string {
+  const res = parseNpmPath(str)
+  if (!res) return null
+  return res.importPath
 }
 
 function parseNpmPath(str: string | undefined): null | { npmPackageName: string; importPath: null | string } {
