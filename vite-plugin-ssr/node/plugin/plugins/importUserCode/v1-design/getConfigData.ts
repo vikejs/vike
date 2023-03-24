@@ -499,10 +499,10 @@ function dirnameNormalized(filePath: string) {
   return fileDir
 }
 
-function getErrorIntro(pageConfigFilePath: string, configName: string): string {
-  assert(pageConfigFilePath.startsWith('/'))
+function getErrorIntro(filePath: string, configName: string): string {
+  assert(filePath.startsWith('/') || isNpmPackageImportPath(filePath))
   assert(!configName.startsWith('/'))
-  return `${pageConfigFilePath} sets the config ${configName}`
+  return `${filePath} sets the config ${configName}`
 }
 
 function getConfigValue(
