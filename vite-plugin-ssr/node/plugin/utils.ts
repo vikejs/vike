@@ -9,7 +9,7 @@ export * from '../runtime/utils'
 
 // Utils only needed by `plugin/*`
 export * from '../../utils/viteIsSSR'
-export * from '../../utils/makeVitePathAbsolute'
+export * from '../../utils/getFilePathAbsolute'
 export * from '../../utils/getDependencyPackageJson'
 export * from '../../utils/addFileExtensionsToRequireResolve'
 export * from '../../utils/assertDefaultExport'
