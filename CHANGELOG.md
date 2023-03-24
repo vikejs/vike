@@ -1,3 +1,12 @@
+## [0.4.102](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.101...v0.4.102) (2023-03-24)
+
+
+### Bug Fixes
+
+* improve error message upon outdated imports (fix [#730](https://github.com/brillout/vite-plugin-ssr/issues/730)) ([cdc6e95](https://github.com/brillout/vite-plugin-ssr/commit/cdc6e951edd533958198fa90656cb7adffaee3b7))
+
+
+
 ## [0.4.101](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.100...v0.4.101) (2023-03-23)
 
 
