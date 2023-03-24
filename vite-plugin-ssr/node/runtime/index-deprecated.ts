@@ -14,8 +14,8 @@ assertWarning(
     pc.green("  import { something } from 'vite-plugin-ssr/server'"),
     'Or if `something` is a type:',
     pc.green("  import type { something } from 'vite-plugin-ssr'"),
-    "Make sure to import renderPage(), escapeInject, html, dangerouslySkipEscape(), pipeWebStream(), pipeNodeStream(), pipeStream(), stampPipe() from 'vite-plugin-ssr/server' (or inspect the error stack below to find the import causing this warning).",
-    "(All server-side exports now live at 'vite-plugin/server' while all types can now be imported directly from 'vite-plugin-ssr': `import type { SomeType } from 'vite-plugin-ssr'`.)"
+    "Make sure to import renderPage(), escapeInject, html, dangerouslySkipEscape(), pipeWebStream(), pipeNodeStream(), pipeStream(), stampPipe() from 'vite-plugin-ssr/server'. (Or inspect the error stack below to find the import causing this warning.)",
+    "Note that all server-side exports now live at 'vite-plugin/server' while all types can now be imported directly from 'vite-plugin-ssr': `import type { SomeType } from 'vite-plugin-ssr'`."
   ].join('\n'),
   { showStackTrace: true, onlyOnce: true }
 )
