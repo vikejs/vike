@@ -1,5 +1,5 @@
 /* Track down log origins
-import '../utils/trackLogs'
+import '../../utils/trackLogs'
 //*/
 
 export { renderPage } from './renderPage'
