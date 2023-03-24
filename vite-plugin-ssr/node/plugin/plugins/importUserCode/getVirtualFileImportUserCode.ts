@@ -85,25 +85,35 @@ function generateExtensionImports(
   isPrerendering: boolean
 ) {
   let fileContent = '\n\n'
-  extensionsImportPaths.forEach((importPath) => {
-    const fileType = determineFileType(importPath)
-    const { includeImport, includeExportNames } = determineInjection({
-      fileType,
-      isForClientSide,
-      isClientRouting,
-      isPrerendering,
-      isBuild
+  extensionsImportPaths
+    .filter((importPath) => {
+      assert(
+        // V1 design
+        importPath.includes('+') ||
+          // V0.4 design
+          importPath.includes('.page.')
+      )
+      return !importPath.includes('+')
     })
-    if (includeImport) {
-      fileContent += addImport(importPath, fileType, false, isBuild)
-    }
-    if (includeExportNames) {
-      fileContent += addImport(importPath, fileType, true, isBuild)
-    }
-    if (!includeImport && !includeExportNames && !isForClientSide) {
-      fileContent += `pageFilesList.push("${importPath}");` + '\n'
-    }
-  })
+    .forEach((importPath) => {
+      const fileType = determineFileType(importPath)
+      const { includeImport, includeExportNames } = determineInjection({
+        fileType,
+        isForClientSide,
+        isClientRouting,
+        isPrerendering,
+        isBuild
+      })
+      if (includeImport) {
+        fileContent += addImport(importPath, fileType, false, isBuild)
+      }
+      if (includeExportNames) {
+        fileContent += addImport(importPath, fileType, true, isBuild)
+      }
+      if (!includeImport && !includeExportNames && !isForClientSide) {
+        fileContent += `pageFilesList.push("${importPath}");` + '\n'
+      }
+    })
   return fileContent
 }
 

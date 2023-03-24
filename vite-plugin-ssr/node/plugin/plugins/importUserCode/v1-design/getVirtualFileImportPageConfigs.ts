@@ -1,6 +1,6 @@
 export { getVirtualFileImportPageConfigs }
 
-import { assert, objectEntries } from '../../../utils'
+import { assert, isNpmPackageImportPath, objectEntries } from '../../../utils'
 import type { ConfigSource, PageConfigData, PageConfigGlobalData } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
 import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files/virtualFileImportPageCode'
@@ -73,7 +73,7 @@ function generateSourceCodeOfPageConfigs(
       })
     })
     Array.from(configFiles).forEach((configFile) => {
-      assert(configFile.startsWith('/'))
+      assert(configFile.startsWith('/') || isNpmPackageImportPath(configFile))
       const { importStatement } = generateEagerImport(configFile)
       importStatements.push(importStatement)
     })
