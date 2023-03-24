@@ -58,7 +58,7 @@ async function resolveRouteFunction(
 
   assertUsage(
     !('pageContext' in result),
-    'Providing `pageContext` in Route Functions is forbidden, see https://vite-plugin-ssr.com/route-function#cannot-provide-pagecontext'
+    'Providing `pageContext` in Route Functions is prohibited, see https://vite-plugin-ssr.com/route-function#cannot-provide-pagecontext'
   )
 
   assert(isPlainObject(routeParams))

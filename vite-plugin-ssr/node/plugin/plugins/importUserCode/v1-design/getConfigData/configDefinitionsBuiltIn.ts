@@ -99,7 +99,7 @@ function getRouteValidator() {
         // TODO: write https://vite-plugin-ssr.com/v1-design
         assertUsage(
           false,
-          `${configFilePath} sets a Route Function directly \`route: function ${routeFunctionName}() { /* ... */ }\` which is forbidden: instead define a file \`route: './path/to/route-file.js'\` that exports your Route Function \`export default ${routeFunctionName}() { /* ... */ }\`. See https://vite-plugin-ssr.com/v1-design for more information.`
+          `${configFilePath} directly sets a Route Function \`route: function ${routeFunctionName}() { /* ... */ }\` which is prohibited: instead define a file \`route: './path/to/route-file.js'\` that exports your Route Function \`export default ${routeFunctionName}() { /* ... */ }\`. See https://vite-plugin-ssr.com/v1-design for more information.`
         )
       }
       // TODO/v1: point to https://vite-plugin-ssr.com/routing#route-strings-route-functions

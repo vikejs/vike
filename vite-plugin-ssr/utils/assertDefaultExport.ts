@@ -14,10 +14,9 @@ function assertDefaultExport(
   {
     const invalidExports = Object.keys(fileExports).filter((e) => e !== 'default')
     const invalidExportsStr = invalidExports.join(', ')
-    const verb = invalidExports.length === 1 ? 'is' : 'are'
     assertUsage(
       invalidExports.length === 0,
-      `${filePath} has \`export { ${invalidExportsStr} }\` which ${verb} forbidden: ${filePath} should have a single \`export default\` instead`
+      `${filePath} should have a single default export: replace \`export { ${invalidExportsStr} }\` with \`export default { ${invalidExportsStr} }\``
     )
   }
   assertUsage(hasProp(fileExports, 'default'), `${filePath} should have a \`export default\``)
@@ -32,6 +31,6 @@ function assertDefaultExportObject(
   const defaultExport = fileExports.default
   assertUsage(
     isObject(defaultExport),
-    `${filePath} should export an object (it exports a \`${typeof defaultExport}\` instead)`
+    `${filePath} should export an object: its \`export default\` is a \`${typeof defaultExport}\` but it should be an object`
   )
 }
