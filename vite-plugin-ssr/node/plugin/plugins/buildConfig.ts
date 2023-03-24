@@ -7,7 +7,7 @@ import {
   determineOutDir,
   isObject,
   viteIsSSR,
-  makeVitePathAbsolute,
+  getFilePathAbsolute,
   addOnBeforeLogHook,
   removeFileExtention,
   unique
@@ -115,7 +115,7 @@ async function getPageFileEntries(config: ResolvedConfig) {
 function formatEntries(entryList: string[], config: ResolvedConfig): Record<string, string> {
   entryList = unique(entryList)
   const entries: Record<string, string> = {}
-  entryList.forEach((p) => (entries[removeFileExtention(p.slice(1))] = makeVitePathAbsolute(p, config)))
+  entryList.forEach((p) => (entries[removeFileExtention(p.slice(1))] = getFilePathAbsolute(p, config)))
   return entries
 }
 
