@@ -136,7 +136,7 @@ function serializeConfigSource(
     const { codeFilePath2, env } = configSource
     if (env === '_routing-env' || eagerImport) {
       const { importVar, importStatement } = generateEagerImport(codeFilePath2)
-      // TODO: expose all exports so that assertDefaultExport() can be applied
+      // TODO: expose all exports so that assertDefaultExport can be applied
       lines.push(`${whitespace}  configValue: ${importVar}.default`)
       importStatements.push(importStatement)
     }

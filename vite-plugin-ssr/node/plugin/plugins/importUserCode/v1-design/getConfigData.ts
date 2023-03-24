@@ -9,7 +9,7 @@ import {
   toPosixPath,
   assertWarning,
   addFileExtensionsToRequireResolve,
-  assertDefaultExport,
+  assertDefaultExportUnknown,
   assertDefaultExportObject,
   objectEntries,
   transpileAndLoadScriptFile,
@@ -708,7 +708,7 @@ async function loadConfigValueFile(plusFile: FoundFile, configDefinitions: Confi
     throw result.err
   }
   const fileExports = result.exports
-  assertDefaultExport(fileExports, filePathRelativeToUserRootDir)
+  assertDefaultExportUnknown(fileExports, filePathRelativeToUserRootDir)
   const configValue = fileExports.default
   objectAssign(configValueFile, { configValue })
   return configValueFile
