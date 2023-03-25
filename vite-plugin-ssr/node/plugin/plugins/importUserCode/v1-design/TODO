@@ -2,6 +2,7 @@
 // TODO: implement import extractors (configs/hooks as well `.svg` imports)
 
 // Expose configs as `pageContext.config`
+//  - update v1-design.page.server.mdx to a commit hash after `pageContext.config` is implemented
 
 // TODO: ensure that client-side of Server Routing loads less than Client Routing
 
@@ -21,3 +22,5 @@
 // TODO: Define pageContext.pageId
 // TODO: rename configSrc/configSource to configDefinedAt
 // TODO: export type { Config } for users
+
+// TODO: add further examples to v1-design.page.server.mdx
