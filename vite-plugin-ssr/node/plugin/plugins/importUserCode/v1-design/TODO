@@ -1,4 +1,5 @@
 // TODO: make +meta.js work
+// TODO: implement import extractors (configs/hooks as well `.svg` imports)
 
 // Expose configs as `pageContext.config`
 

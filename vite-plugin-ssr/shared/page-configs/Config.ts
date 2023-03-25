@@ -4,59 +4,128 @@ export type { Config }
 
 import type { ConfigValueEnv } from './PageConfig'
 
-/** Page configuration, see https://vite-plugin-ssr.com/config */
+/** Page configuration.
+ *
+ * See https://vite-plugin-ssr.com/config
+ */
 type Config<Page = unknown> = Partial<{
   /** The root UI component of the page */
   Page: Page
+
   /** The page's route */
   route: string | Function
 
-  /** Hook called before the page is rendered, usually used for fetching data, see https://vite-plugin-ssr.com/onbeforeRender */
+  /** Hook called before the page is rendered, usually used for fetching data.
+   *
+   *  See https://vite-plugin-ssr.com/onbeforeRender
+   */
   onBeforeRender: Function
 
-  /** Determine what properties of pageContext are sent to the client-side */
+  /** Determine what properties of pageContext are sent to the client-side.
+   *
+   * See https://vite-plugin-ssr.com/passToClient
+   */
   passToClient: string[]
 
-  /** Whether to pre-render the page, see https://vite-plugin-ssr.com/pre-rendering */
+  /** Whether to pre-render the page.
+   *
+   * See https://vite-plugin-ssr.com/pre-rendering
+   */
   prerender: boolean
 
-  /** Hook called when page is rendered on the client-side, see https://vite-plugin-ssr.com/onRenderClient */
+  /** Hook called when page is rendered on the client-side.
+   *
+   * See https://vite-plugin-ssr.com/onRenderClient
+   */
   onRenderClient: Function
-  /** Hook called when page is rendered to HTML, see https://vite-plugin-ssr.com/onRenderClient */
+  /** Hook called when page is rendered to HTML.
+   *
+   * See https://vite-plugin-ssr.com/onRenderClient
+   */
   onRenderHtml: Function
 
-  /** Enable async Route Functions, see https://vite-plugin-ssr.com/route-function#async */
+  /** Enable async Route Functions.
+   *
+   * See https://vite-plugin-ssr.com/route-function#async
+   */
   iKnowThePerformanceRisksOfAsyncRouteFunctions: boolean
 
+  /** Page Hook called when pre-rendering starts.
+   *
+   * See https://vite-plugin-ssr.com/onPrerenderStart
+   */
   onPrerenderStart: Function
+  /** Global Hook called before the whole pre-rendering process starts.
+   *
+   * See https://vite-plugin-ssr.com/onBeforePrerenderStart
+   */
   onBeforePrerenderStart: Function
 
+  /** Hook called before the URL is route to a page.
+   *
+   * See https://vite-plugin-ssr.com/onBeforeRoute
+   */
   onBeforeRoute: Function
 
+  /** Hook called after the page is hydrated */
   onHydrationEnd: Function
+  /** Hook called before the user navigates to a new page.
+   *
+   * See https://vite-plugin-ssr.com/clientRouting
+   */
   onPageTransitionStart: Function
+  /** Hook called after the user navigates to a new page.
+   *
+   * See https://vite-plugin-ssr.com/clientRouting
+   */
   onPageTransitionEnd: Function
 
+  /** Whether the page is a page that should be rendered when an error occurs */
   isErrorPage: boolean
+  /** Whether your UI framework (React/Vue/Solid/...) allows the page's hydration to be aborted.
+   *
+   * See https://vite-plugin-ssr.com/clientRouting
+   */
   hydrationCanBeAborted: boolean
+  /** Additional client entry */
   clientEntry: string
+  /** Enable Client Routing.
+   *
+   * See https://vite-plugin-ssr.com/clientRouting
+   */
   clientRouting: boolean
 
-  /** Add or modify config definitions, see https://vite-plugin-ssr/meta */
-  meta: Record<
-    string,
-    {
-      /** Where code is loaded and executed, see https://vite-plugin-ssr/meta */
-      env: ConfigValueEnv
-      /**
-       * Define a so-called "Shortcut Config", see https://vite-plugin-ssr/meta#shortcuts
-       */
-      effect?: (args: {
-        /** Place where the resolved config value comes from, see https://vite-plugin-ssr/meta */
-        configDefinedAt: string
-        /** The resolved config value, see https://vite-plugin-ssr/meta */
-        configValue: unknown
-      }) => Config | undefined
-    }
-  >
+  /** Add or modify config definitions.
+   *
+   * See https://vite-plugin-ssr/meta
+   */
+  meta: Meta
 }>
+
+type Meta = Record<
+  string,
+  {
+    /** Where code is loaded and executed.
+     *
+     * See https://vite-plugin-ssr/meta
+     */
+    env: ConfigValueEnv
+    /**
+     * Define a so-called "Shortcut Config".
+     *
+     * See https://vite-plugin-ssr/meta#shortcts
+     */
+    effect?: (args: {
+      /** Place where the resolved config value comes from.
+       *
+       * See https://vite-plugin-ssr/meta
+       */
+      configDefinedAt: string
+      /** The resolved config value.
+       *
+       * See https://vite-plugin-ssr/meta
+       */
+      configValue: unknown
+    }) => Config | undefined
+  }
+>
