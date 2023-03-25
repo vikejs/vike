@@ -63,6 +63,7 @@ function onRenderResultCallback(
 function log(msg: string, viteDevServer: ViteDevServer, clear: boolean) {
   const tag = pc.cyan(pc.bold(`[${projectInfo.projectName}]`))
   // Workaround for Vite not respecting the clear option: https://github.com/vitejs/vite/blob/02a46d7ceab71ebf7ba723372ba37012b7f9ccaf/packages/vite/src/node/logger.ts#L91
+  // We need to avoid clearing so that VPS warnings aren't hidden from users
   if (!clear) msg = msg + getStringIsEqualBuster()
   viteDevServer.config.logger.info(`${pc.dim(new Date().toLocaleTimeString())} ${tag} ${msg}`, { clear })
 }

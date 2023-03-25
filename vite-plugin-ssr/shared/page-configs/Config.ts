@@ -10,10 +10,15 @@ type Config<Page = unknown> = Partial<{
   Page: Page
   /** The page's route */
   route: string | Function
-  /** Whether to pre-render the page, see https://vite-plugin-ssr.com/pre-rendering */
-  prerender: boolean
+
+  /** Hook called before the page is rendered, usually used for fetching data, see https://vite-plugin-ssr.com/onbeforeRender */
+  onBeforeRender: Function
+
   /** Determine what properties of pageContext are sent to the client-side */
   passToClient: string[]
+
+  /** Whether to pre-render the page, see https://vite-plugin-ssr.com/pre-rendering */
+  prerender: boolean
 
   /** Hook called when page is rendered on the client-side, see https://vite-plugin-ssr.com/onRenderClient */
   onRenderClient: Function
