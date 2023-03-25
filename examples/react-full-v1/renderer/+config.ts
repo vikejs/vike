@@ -9,8 +9,8 @@ export default {
     documentProps: {
       env: 'server-and-client'
     },
-    // We create a custom config 'onBeforeRenderIsomorphic'
-    onBeforeRenderIsomorphic: {
+    // We create a custom config 'onBeforeRenderIsomorph'
+    onBeforeRenderIsomorph: {
       env: 'config-only',
       effect({ configDefinedAt, configValue }) {
         if (typeof configValue !== 'boolean') {
@@ -21,7 +21,7 @@ export default {
             meta: {
               onBeforeRender: {
                 // We override VPS's default behavior of always loading/executing onBeforeRender() on the server-side.
-                // If we set onBeforeRenderIsomorphic to true, then onBeforeRender() is loaded/executed in the browser as well, allowing us to fetch data direcly from the browser upon client-side navigation (without involving our Node.js/Edge server at all).
+                // If we set onBeforeRenderIsomorph to true, then onBeforeRender() is loaded/executed in the browser as well, allowing us to fetch data direcly from the browser upon client-side navigation (without involving our Node.js/Edge server at all).
                 env: 'server-and-client'
               }
             }
