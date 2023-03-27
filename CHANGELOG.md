@@ -1,3 +1,13 @@
+## [0.4.104](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.103...v0.4.104) (2023-03-27)
+
+
+### Bug Fixes
+
+* further export V1 types ([df2876c](https://github.com/brillout/vite-plugin-ssr/commit/df2876cc7ebf70314b3eb859d3778c1dddffe7c4))
+* simplify string is equal buster (fix [#742](https://github.com/brillout/vite-plugin-ssr/issues/742)) ([0e62c53](https://github.com/brillout/vite-plugin-ssr/commit/0e62c536c3fcc4a36df5f1d19246903294295c61))
+
+
+
 ## [0.4.103](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.102...v0.4.103) (2023-03-24)
 
 
