@@ -1,11 +1,11 @@
-export default onRenderHtml
+export { render }
 
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { PageLayout } from './PageLayout'
 
-async function onRenderHtml(pageContext) {
+async function render(pageContext) {
   const { Page } = pageContext
   const viewHtml = dangerouslySkipEscape(
     renderToString(
