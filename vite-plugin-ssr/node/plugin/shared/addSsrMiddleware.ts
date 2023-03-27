@@ -8,6 +8,8 @@ import { assert, projectInfo } from '../utils'
 
 type ConnectServer = ViteDevServer['middlewares']
 let isErrorPrevious: undefined | boolean
+let msgPrev: string | undefined
+const zeroWidthSpace = '\u200b'
 
 function addSsrMiddleware(middlewares: ConnectServer, viteDevServer: null | ViteDevServer) {
   middlewares.use(async (req, res, next) => {
@@ -64,16 +66,18 @@ function log(msg: string, viteDevServer: ViteDevServer, clear: boolean) {
   const tag = pc.cyan(pc.bold(`[${projectInfo.projectName}]`))
   // Workaround for Vite not respecting the clear option: https://github.com/vitejs/vite/blob/02a46d7ceab71ebf7ba723372ba37012b7f9ccaf/packages/vite/src/node/logger.ts#L91
   // We need to avoid clearing so that VPS warnings aren't hidden from users
-  if (!clear) msg = msg + getStringIsEqualBuster()
+  if (!clear) msg = addStringIsEqualBuster(msg)
   viteDevServer.config.logger.info(`${pc.dim(new Date().toLocaleTimeString())} ${tag} ${msg}`, { clear })
 }
 
-function getStringIsEqualBuster() {
+function addStringIsEqualBuster(msg: string) {
   if (!process.stdout.isTTY || process.env.CI) {
     // Workaround isn't needed: https://github.com/vitejs/vite/blob/02a46d7ceab71ebf7ba723372ba37012b7f9ccaf/packages/vite/src/node/logger.ts#L65-L66
     return ''
   }
-  const zeroWidthSpace = '\u200b'
-  const stringIsEqualBuster = zeroWidthSpace.repeat(Math.ceil(Math.random() * 1000))
-  return stringIsEqualBuster
+  if (msgPrev === msg) {
+    msg = msg + zeroWidthSpace
+  }
+  msgPrev = msg
+  return msg
 }
