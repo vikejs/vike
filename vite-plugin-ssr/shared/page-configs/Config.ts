@@ -110,7 +110,7 @@ type Meta = Record<
     /**
      * Define a so-called "Shortcut Config".
      *
-     * See https://vite-plugin-ssr/meta#shortcts
+     * See https://vite-plugin-ssr/meta
      */
     effect?: (args: {
       /** Place where the resolved config value comes from.
