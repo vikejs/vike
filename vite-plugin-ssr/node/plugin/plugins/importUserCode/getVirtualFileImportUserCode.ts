@@ -7,7 +7,7 @@ export { getVirtualFileImportUserCode }
 
 import type { ResolvedConfig } from 'vite'
 import { assert, assertPosixPath, viteIsSSR_options, isNotNullish, scriptFileExtensions, debugGlob } from '../../utils'
-import type { ConfigVpsResolved } from '../../../shared/ConfigVps'
+import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode'
 import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes'
 import path from 'path'

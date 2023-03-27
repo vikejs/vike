@@ -10,7 +10,7 @@ import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { loadImportBuild } from './globalContext/loadImportBuild'
 import { setPageFiles } from '../../shared/getPageFiles'
 import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest'
-import type { ConfigVpsResolved } from '../shared/ConfigVps'
+import type { ConfigVpsResolved } from '../../shared/ConfigVps'
 import { getConfigVps } from '../shared/getConfigVps'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest'
 const globalObject = getGlobalObject<{

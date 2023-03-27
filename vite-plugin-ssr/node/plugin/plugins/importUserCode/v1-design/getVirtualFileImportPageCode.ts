@@ -10,7 +10,7 @@ import {
 import { getConfigData } from './getConfigData'
 import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery'
 import { debug } from './debug'
-import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
+import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps'
 
 async function getVirtualFileImportPageCode(
   id: string,

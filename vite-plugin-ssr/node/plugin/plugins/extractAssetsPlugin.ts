@@ -21,7 +21,7 @@ import {
 } from '../utils'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery'
 import { getConfigVps } from '../../shared/getConfigVps'
-import type { ConfigVpsResolved } from '../../shared/ConfigVps'
+import type { ConfigVpsResolved } from '../../../shared/ConfigVps'
 import { isAsset } from '../shared/isAsset'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule'
 import { removeSourceMap } from '../shared/removeSourceMap'

@@ -1,7 +1,7 @@
 export { resolveVpsConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import type { ConfigVpsUserProvided, ConfigVpsResolved } from '../../../shared/ConfigVps'
+import type { ConfigVpsUserProvided, ConfigVpsResolved } from '../../../../shared/ConfigVps'
 import { assertVpsConfig } from './assertVpsConfig'
 import { assert, isDev2 } from '../../utils'
 import { findConfigVpsFromStemPackages } from './findConfigVpsFromStemPackages'

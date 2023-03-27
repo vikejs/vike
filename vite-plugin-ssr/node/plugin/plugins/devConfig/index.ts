@@ -7,7 +7,7 @@ import { determineOptimizeDepsEntries } from './determineOptimizeDepsEntries'
 import path from 'path'
 import fs from 'fs'
 import { getConfigVps } from '../../../shared/getConfigVps'
-import { ConfigVpsResolved } from '../../../shared/ConfigVps'
+import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 import { resolveRoot, assertRoot } from '../../shared/resolveRoot'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware'
 

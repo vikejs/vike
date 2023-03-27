@@ -32,7 +32,7 @@ import type {
 } from '../../../../../shared/page-configs/PageConfig'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './getConfigData/configDefinitionsBuiltIn'
 import glob from 'fast-glob'
-import type { ExtensionResolved } from '../../../../shared/ConfigVps'
+import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import { determineRouteFromFilesystemPath } from './getConfigData/determineRouteFromFilesystemPath'
 import { determinePageId } from './getConfigData/determinePageId'
 

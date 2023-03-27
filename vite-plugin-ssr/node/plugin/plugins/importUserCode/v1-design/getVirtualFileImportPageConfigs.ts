@@ -7,7 +7,7 @@ import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files
 import { getConfigData } from './getConfigData'
 import { getInvalidator } from './invalidation'
 import { debug } from './debug'
-import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
+import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps'
 
 async function getVirtualFileImportPageConfigs(
   userRootDir: string,

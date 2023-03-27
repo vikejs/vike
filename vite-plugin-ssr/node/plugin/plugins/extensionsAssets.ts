@@ -6,7 +6,7 @@ import { assert, isScriptFile, assertUsage, assertPosixPath } from '../utils'
 import fs from 'fs'
 import path from 'path'
 import sirv from 'sirv'
-import { ConfigVpsResolved } from '../../shared/ConfigVps'
+import type { ConfigVpsResolved } from '../../../shared/ConfigVps'
 import { getConfigVps } from '../../shared/getConfigVps'
 import { isAsset } from '../shared/isAsset'
 

@@ -1,7 +1,7 @@
 export { importUserCode }
 
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
-import type { ConfigVpsResolved } from '../../../shared/ConfigVps'
+import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 import { getConfigVps } from '../../../shared/getConfigVps'
 import { getVirtualFileImportPageCode } from './v1-design/getVirtualFileImportPageCode'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode'
