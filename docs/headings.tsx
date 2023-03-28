@@ -741,7 +741,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Node.js & browser'
+    title: 'Server- & client-side'
   },
   {
     level: 2,
@@ -763,7 +763,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Node.js'
+    title: 'Server-side'
   },
   {
     level: 2,
@@ -834,7 +834,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Browser'
+    title: 'Client-side'
   },
   {
     level: 2,
