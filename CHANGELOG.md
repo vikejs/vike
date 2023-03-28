@@ -1,3 +1,12 @@
+## [0.4.106](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.105...v0.4.106) (2023-03-28)
+
+
+### Bug Fixes
+
+* temporary disable error deduping ([#743](https://github.com/brillout/vite-plugin-ssr/issues/743), vitejs/vite[#12631](https://github.com/brillout/vite-plugin-ssr/issues/12631)) ([4fdca3f](https://github.com/brillout/vite-plugin-ssr/commit/4fdca3f55a1ef694d973eb3818aaad5733e007d1))
+
+
+
 ## [0.4.105](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.104...v0.4.105) (2023-03-28)
 
 
