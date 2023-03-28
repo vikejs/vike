@@ -34,7 +34,7 @@ Move your `renderer/` hooks to standalone files:
 + export default render
 ```
 
-> The filename suffixes such as `.page.server.js` and `.page.client.js` are removed. You'll still be able to use `.server.js` and `.client.js` but they'll serve another purpose, see [#744](https://github.com/brillout/vite-plugin-ssr/issues/744).
+> The filename suffixes such as `.page.server.js` and `.page.client.js` are removed. You'll still be able to use `.server.js` and `.client.js`, but they'll serve another purpose, see [#744](https://github.com/brillout/vite-plugin-ssr/issues/744).
 
 Move your global configurations to `/renderer/+config.ts`:
 
@@ -96,21 +96,22 @@ export default {
 - // /pages/some-page/index.page.route.ts
 + // /pages/some-page/+config.ts
 
-export default {
-  // For Route Strings
-  route: '/some/route'
-}
+- export default '/some/route'
++ // Only works for Route Strings
++ export default {
++   route: '/some/route'
++ }
 ```
 
 ```diff
 - // /pages/some-page/index.page.route.ts
 + // /pages/some-page/+route.ts
 
-// For Route Functions and Route Strings
+// Works for both Route Functions and Route Strings
 export default route
 ```
 
-> We explain down below why Route Functions cannot be defined in `+config.js`.
+> We explain down below why Route Functions cannot be defined inside `+config.js`.
 
 Migration examples:
  - Migration of basic app: [`428c1c` - migrate examples/react to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/428c1c6b0fb7c9a5fa2f2fe57ac3e4bb0a57ea54)
@@ -121,15 +122,16 @@ Migration examples:
 
 The `+` files define the *entire* interface between your app and VPS.
 
-You can, if you want, define your entire app only by defining `+config.js` files:
- - One `/pages/+config.js` that defines your global configs.
- - One `/pages/some-page/+config.js` per page.
-   > Your per-page `+config.js` files can completely override your global `/pages/+config.js`. (In essence, your global `+config.js` defines default values for all your pages.)
+You can define your entire app *only* by defining `+config.js` files:
+ - One `/pages/+config.js` (to define your overall global configs).
+ - One `/pages/some-page/+config.js` per page (to define your pages).
 
-But you can also use following conveniences:
- 1. Files such as `+onRenderHtml.js` which is just an alias for `+config.js` > `export default { onRenderHtml }`.
+> Your per-page `+config.js` files (such as `/pages/some-page/+config.js`) can completely override your global `/pages/+config.js`. In essence: your global `+config.js` merely defines default values.
+
+For conveniences, you can also use the following:
+ 1. Files such as `+onRenderHtml.js` which is just an alias for `+config.js > export default { onRenderHtml }`.
  1. `/renderer/+config.js` which is equivalent to `/pages/+config.js`.
-    > `/renderer/+config.js` is only an (optional) convenience for having your renderer logic/files live outside of `/pages/**/*` (instead of cluttering your `/pages/` directory).
+    > `/renderer/+config.js` is an optional convenience for having your renderer logic/files live outside of `/pages/**/*` (instead of cluttering your `/pages/` directory).
 
 Note that the following is forbidden:
 
@@ -160,11 +162,11 @@ import onBeforeRender from './path/to/onBeforeRender'
 export default { Page, onBeforeRender }
 ```
 
-This works because VPS parses the import statements, such as `import Page` and `import onBeforeRender`, and extracts them outside of `+config.js` into separate internal virtual files. In case you're curious, see <Link href="/config-code-splitting" />.
+This works because VPS parses the import statements, such as `import Page` and `import onBeforeRender`, and extracts the imports outside of `+config.js` into separate internal virtual files. In case you're curious, see <Link href="/config-code-splitting" />.
 
-<Note type='warning'>The import-based code splitting isn't implemented yet. In the meantime, use `+Page.js`, `+onBeforeRender.js`, ...</Note>
+<Note type='warning'>The imports code splitting isn't implemented yet. Instead, in the meantime, use `+Page.js`, `+onBeforeRender.js`, ...</Note>
 
-> The `+` convention is [controversial](https://github.com/brillout/vite-plugin-ssr/issues/578#issuecomment-1472005734). While we think that `+` files are "ugly" at first, we ask you to trust us: we believe you'll eventually end up liking the `+` convention as much as we did.
+> The `+` convention is [controversial](https://github.com/brillout/vite-plugin-ssr/issues/578#issuecomment-1472005734). While we agree that `+` files are "ugly" at first, we ask you to trust us: we believe you'll eventually end up liking the `+` convention as much as we do.
 
 
 ## Why the V1 design?
