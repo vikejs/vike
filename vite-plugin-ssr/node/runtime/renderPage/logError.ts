@@ -30,9 +30,11 @@ function logErrorWithVite(err: unknown): void {
 
   const { viteDevServer } = getGlobalContext()
   if (viteDevServer) {
+    /* Temporary disable: https://github.com/vitejs/vite/issues/12631
     if (viteDevServer.config.logger.hasErrorLogged(err as Error)) {
       return
     }
+    */
     if (hasProp(err, 'stack')) {
       // Apply source maps
       viteDevServer.ssrFixStacktrace(err as Error)
