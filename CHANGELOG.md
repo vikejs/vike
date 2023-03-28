@@ -1,3 +1,12 @@
+## [0.4.105](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.104...v0.4.105) (2023-03-28)
+
+
+### Bug Fixes
+
+* improve client/server routing contradiction error ([#745](https://github.com/brillout/vite-plugin-ssr/issues/745)) ([e079ea0](https://github.com/brillout/vite-plugin-ssr/commit/e079ea0e589db0d80d34f16c75f0425c3e80f5bd))
+
+
+
 ## [0.4.104](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.103...v0.4.104) (2023-03-27)
 
 
