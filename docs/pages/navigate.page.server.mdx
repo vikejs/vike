@@ -10,7 +10,7 @@ We can use `navigate('/some/url')` to programmatically switch pages.
 For example, when redirecting a user after a successful form submission.
 
 ```jsx
-import { navigate } from "vite-plugin-ssr/client/router";
+import { navigate } from 'vite-plugin-ssr/client/router'
 
 function Form() {
    return (
@@ -24,7 +24,7 @@ async function onSubmit() {
   const navigationPromise = navigate('/form/success')
   console.log("The URL changed but the new page hasn't rendered yet.")
   await navigationPromise
-  console.log("The new page has finished rendering.")
+  console.log('The new page has finished rendering.')
 }
 ```
 
