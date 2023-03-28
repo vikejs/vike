@@ -162,7 +162,7 @@ import onBeforeRender from './path/to/onBeforeRender'
 export default { Page, onBeforeRender }
 ```
 
-This works because VPS parses the import statements, such as `import Page` and `import onBeforeRender`, and extracts the imports outside of `+config.js` into separate internal virtual files. In case you're curious, see <Link href="/config-code-splitting" />.
+This works because VPS parses import statements such as `import Page` and `import onBeforeRender`: the imports are extracted outside of `+config.js` into separate internal virtual files. In case you're curious, see <Link href="/config-code-splitting" />.
 
 <Note type='warning'>The imports code splitting isn't implemented yet. Instead, in the meantime, use `+Page.js`, `+onBeforeRender.js`, ...</Note>
 
