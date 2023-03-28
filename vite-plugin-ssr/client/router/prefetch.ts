@@ -19,7 +19,7 @@ async function prefetch(url: string): Promise<void> {
   )
   assertUsage(
     !isExternalLink(url),
-    `You are trying to prefetch ${url} which is an external URL. This doesn't make sense since vite-plugin-ssr cannot prefetch URLs of other domains.`
+    `You are trying to prefetch the URL ${url} of another domain which cannot be prefetched`
   )
 
   if (isAlreadyPrefetched(url)) return
