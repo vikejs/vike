@@ -1,6 +1,6 @@
 export { addLinkPrefetchHandlers, prefetch }
 
-import { assert, assertUsage, isExternalLink } from './utils'
+import { assert, assertClientRouting, assertUsage, checkIfClientRouting, isExternalLink } from './utils'
 import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { isClientSideRoutable, skipLink } from './skipLink'
 import { getPageId } from './getPageId'
@@ -8,12 +8,18 @@ import { getPrefetchConfig } from './prefetch/getPrefetchConfig'
 import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched'
 import { disableClientRouting } from './useClientRouter'
 
+assertClientRouting()
+
 const linkPrefetchHandlerAdded = new Map<HTMLElement, true>()
 
 async function prefetch(url: string): Promise<void> {
   assertUsage(
+    checkIfClientRouting(),
+    'prefetch() only works with Client Routing, see https://vite-plugin-ssr.com/prefetch'
+  )
+  assertUsage(
     !isExternalLink(url),
-    `You are trying to prefetch ${url} which is an external URL. This doesn't make sense since vite-plugin-ssr cannot prefetch external links.`
+    `You are trying to prefetch ${url} which is an external URL. This doesn't make sense since vite-plugin-ssr cannot prefetch URLs of other domains.`
   )
 
   if (isAlreadyPrefetched(url)) return

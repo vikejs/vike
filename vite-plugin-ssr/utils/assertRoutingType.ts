@@ -1,25 +1,36 @@
 export { assertClientRouting }
 export { assertServerRouting }
+export { checkIfClientRouting }
 
-import { assertUsage } from './assert'
+import { assertUsage, assertWarning } from './assert'
 import { getGlobalObject } from './getGlobalObject'
 import { isBrowser } from './isBrowser'
 
 const state = getGlobalObject<{ isClientRouting?: boolean }>('utils/assertRouterType.ts', {})
 
-// If an assertion fails because of a wrong usage, then we assume that the user is trying to import from 'vite-plugin-ssr/client/router' while not setting `clientRouting` to `true`. Note that 'vite-plugin-ssr/client' only exports the type `PageContextBuiltInClient` and that the package.json#exports entry 'vite-plugin-ssr/client' will eventually be removed.
-const usageError = "`import { something } from 'vite-plugin-ssr/client/router'` is forbidden" as const
-const err1 = `${usageError} on the server-side` as const
-const err2 = `${usageError} when using Server Routing` as const
-
 function assertClientRouting() {
-  assertUsage(isBrowser(), err1)
-  assertUsage(state.isClientRouting !== false, err2)
+  assertNoContradiction(checkIfClientRouting())
   state.isClientRouting = true
 }
 
+function checkIfClientRouting(): boolean {
+  return state.isClientRouting !== false
+}
+
 function assertServerRouting() {
-  assertUsage(isBrowser(), err1)
-  assertUsage(state.isClientRouting !== true, err2)
+  assertNoContradiction(state.isClientRouting !== true)
   state.isClientRouting = false
+}
+
+function assertNoContradiction(noContradiction: boolean) {
+  // If an assertion fails because of a wrong usage, then we assume that the user is trying to import from 'vite-plugin-ssr/client/router' while not setting `clientRouting` to `true`. Note that 'vite-plugin-ssr/client' only exports the type `PageContextBuiltInClient` and that the package.json#exports entry 'vite-plugin-ssr/client' will eventually be removed.
+  assertUsage(
+    isBrowser(),
+    "`import { something } from 'vite-plugin-ssr/client/router'` is forbidden on the server-side"
+  )
+  assertWarning(
+    noContradiction,
+    "You shouldn't `import { something } from 'vite-plugin-ssr/client/router'` when using Server Routing. The 'vite-plugin-ssr/client/router' utilities work only with Client Routing. In particular, don't `import { navigate }` nor `import { prefetch }` when using Server Routing as these will unnecessarily bloat your client-side bundle.",
+    { showStackTrace: false, onlyOnce: true }
+  )
 }

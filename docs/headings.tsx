@@ -868,6 +868,11 @@ const headings: HeadingDefinition[] = [
     url: '/navigate'
   },
   {
+    level: 2,
+    title: '`prefetch()`',
+    url: '/prefetch'
+  },
+  {
     level: 4,
     title: 'Routing'
   },

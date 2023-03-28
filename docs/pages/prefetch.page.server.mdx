@@ -1,0 +1,33 @@
+import { Link, Note } from '@brillout/docpress'
+
+Environment: `Browser`, `Client Routing`.
+
+We can use `prefetch('/some/url')` to programmatically prefetch pages.
+
+<Note type="warning">`prefetch()` works only with <Link text="Client Routing" href="/client-routing" />. Prefetching isn't possible with <Link text="Server Routing" href="/server-routing" />.</Note>
+
+We usually use `prefetch()` to speed up page navigation when we can predict what the next page will (most likely) be.
+
+For example:
+
+```jsx
+import { prefetch } from "vite-plugin-ssr/client/router";
+
+function Form() {
+   return (
+     <form onSubmit={onSubmit}>
+       {/* ... */}
+     </form>
+   )
+}
+
+async function onSubmit() {
+  // We fetch the next page
+  prefetch('/form/success')
+  // In parallel we make a request to our server
+  await someRequestToServer()
+  // The assets of the next page may already be fetched at
+  // this point, before even calling navigate()
+  await navigate('/form/success')
+}
+```

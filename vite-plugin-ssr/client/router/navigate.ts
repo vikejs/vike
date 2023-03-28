@@ -1,7 +1,9 @@
 export { navigate }
 export { defineNavigate }
 
-import { assertUsage, isBrowser, getGlobalObject } from './utils'
+import { assertUsage, isBrowser, getGlobalObject, assertClientRouting, checkIfClientRouting } from './utils'
+
+assertClientRouting()
 
 const globalObject = getGlobalObject<{
   navigate?: typeof navigate
@@ -20,10 +22,9 @@ async function navigate(
     isBrowser(),
     '[`navigate(url)`] The `navigate(url)` function is only callable in the browser but you are calling it in Node.js.'
   )
-  assertUsage(
-    globalObject.navigate,
-    'navigate() is only available when using Client Routing, see https://vite-plugin-ssr.com/navigate'
-  )
+  const errMsg = 'navigate() only works with Client Routing, see https://vite-plugin-ssr.com/navigate'
+  assertUsage(globalObject.navigate, errMsg)
+  assertUsage(checkIfClientRouting(), errMsg)
   assertUsage(url, '[navigate(url)] Missing argument `url`.')
   assertUsage(
     typeof url === 'string',

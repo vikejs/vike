@@ -4,7 +4,7 @@ Environment: `Browser`, `Client Routing`.
 
 We can use `navigate('/some/url')` to programmatically switch pages.
 
-<Note type="warning">`navigate()` is only available if you use <Link text="Client Routing" href="/client-routing" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.href = '/some/url'` instead.</Note>
+<Note type="warning">`navigate()` works only with <Link text="Client Routing" href="/client-routing" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.href = '/some/url'` instead.</Note>
 
 `navigate()` is useful when the navigation isn't triggered by the user clicking on an anchor tag `<a>`.
 For example, when redirecting a user after a successful form submission.
@@ -12,23 +12,19 @@ For example, when redirecting a user after a successful form submission.
 ```jsx
 import { navigate } from "vite-plugin-ssr/client/router";
 
-// Some deeply nested view component
 function Form() {
    return (
      <form onSubmit={onSubmit}>
        {/* ... */}
      </form>
-   );
+   )
 }
 
 async function onSubmit() {
-  /* ...  */
-
-  const navigationPromise = navigate('/form/success');
-
-  console.log("The URL changed but the new page hasn't rendered yet.");
+  const navigationPromise = navigate('/form/success')
+  console.log("The URL changed but the new page hasn't rendered yet.")
   await navigationPromise
-  console.log("The new page has finished rendering.");
+  console.log("The new page has finished rendering.")
 }
 ```
 

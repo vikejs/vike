@@ -223,11 +223,11 @@ export const prefetchStaticAssets = false
 
 > Viewport prefetching is disabled in development. (Because it would make Vite transpile all preloaded pages and thus siginficantly slow down development.)
 
-We can override the link prefetching behavior for individual links by setting `<a data-prefetch="true" href="/some-url" />`.
+We can override the link prefetching behavior for individual links by setting `<a data-prefetch="true" href="/some-url" />`, and we can programmatically <Link text={<code>prefetch('/some/url')</code>} href="/prefetch"/>.
 
-> Only static assets are prefetched; the pages' `pageContext` is currently not prefetched, see [#246](https://github.com/brillout/vite-plugin-ssr/issues/246).
+> Only static assets are prefetched: the `pageContext` of pages isn't prefetched, see [#246](https://github.com/brillout/vite-plugin-ssr/issues/246).
 
-We can also have viewport prefetching for mobile users while having hover prefetching for desktop users:
+We can also have viewport prefetching for mobile users while only doing hover prefetching for desktop users:
 
 ```js
 // For small screens, such as mobile, viewport prefetching can be a sensible strategy
