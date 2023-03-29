@@ -1,3 +1,14 @@
+## [0.4.107](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.106...v0.4.107) (2023-03-29)
+
+
+### Bug Fixes
+
+* [v1] impl `pageContext.config` and `pageContext.configAll` ([38187a3](https://github.com/brillout/vite-plugin-ssr/commit/38187a34913f36796388060727a6abf96263722c))
+* always add VPS to ssr.external ([472652f](https://github.com/brillout/vite-plugin-ssr/commit/472652fd38357bea8c72318294155901fe0acc09))
+* suppress warning about removing `"use client";` directives (fix [#746](https://github.com/brillout/vite-plugin-ssr/issues/746)) ([e0a1f66](https://github.com/brillout/vite-plugin-ssr/commit/e0a1f6647be3f67687382bac32d06655ed7fcbcf))
+
+
+
 ## [0.4.106](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.105...v0.4.106) (2023-03-28)
 
 

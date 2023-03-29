@@ -1,4 +1,4 @@
-const PROJECT_VERSION = '0.4.106'
+const PROJECT_VERSION = '0.4.107'
 
 import React from 'react'
 
