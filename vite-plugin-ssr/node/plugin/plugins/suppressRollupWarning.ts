@@ -16,6 +16,7 @@ function suppressRollupWarning(): Plugin {
         // Suppress
         if (suppressUnusedImport(warning)) return
         if (suppressEmptyBundle(warning)) return
+        if (suppressUseClientDirective(warning)) return
 
         // Pass through
         if (onWarnOriginal) {
@@ -26,6 +27,11 @@ function suppressRollupWarning(): Plugin {
       }
     }
   }
+}
+
+/** Suppress warning about Rollup removing the React Server Components `"use client";` directives */
+function suppressUseClientDirective(warning: RollupWarning) {
+  return warning.code === 'MODULE_LEVEL_DIRECTIVE' && warning.message.includes('"use client"')
 }
 
 /** Suppress warning about generating emtpy chunks in dist/ */
