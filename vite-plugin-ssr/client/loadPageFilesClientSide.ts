@@ -29,8 +29,10 @@ async function loadPageFilesClientSide(
     }
     throw err
   }
-  const { exports, exportsAll, pageExports } = getExports(pageFilesClientSide, pageConfigLoaded)
+  const { config, configList, exports, exportsAll, pageExports } = getExports(pageFilesClientSide, pageConfigLoaded)
   const pageContextAddendum = {
+    config,
+    configList,
     exports,
     exportsAll,
     pageExports,

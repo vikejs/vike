@@ -2,6 +2,7 @@ export { getExportUnion }
 export { getExports }
 export type { ExportsAll }
 export type { PageContextExports }
+export type { ConfigList }
 
 import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile'
 import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser, objectEntries } from '../utils'
@@ -11,12 +12,12 @@ import type { PageConfigLoaded } from './../page-configs/PageConfig'
 import type { PageFile } from './getPageFileObject'
 import { getSourceFilePath } from '../page-configs/utils'
 
+// TODO/v1-release: remove
 type ExportsAll = Record<
   string,
   {
     exportValue: unknown
     exportSource: string
-    // TODO/v1-release: remove
     /** @deprecated */
     _fileType: FileType | null
     /** @deprecated */
@@ -27,17 +28,29 @@ type ExportsAll = Record<
     _filePath: string
   }[]
 >
+type ConfigList = Record<
+  string,
+  {
+    configValue: unknown
+    configOrigin: string
+  }[]
+>
 type PageContextExports = {
+  config: Record<string, unknown>
+  configList: ConfigList
   exports: Record<string, unknown>
   exportsAll: ExportsAll
-  // TODO/v1-release: remove
   /** @deprecated */
   pageExports: Record<string, unknown>
 }
 
 function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null): PageContextExports {
+  const configList: ConfigList = {}
+  const config: Record<string, unknown> = {}
   const exportsAll: ExportsAll = {}
-  // VPS 0.4
+
+  // V0.4 design
+  // TODO/v1-release: remove
   pageFiles.forEach((pageFile) => {
     const exportValues = getExportValues(pageFile)
     exportValues.forEach(({ exportName, exportValue, isFromDefaultExport }) => {
@@ -55,13 +68,23 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
       })
     })
   })
-  // VPS 1.0
+
+  // V1 design
   if (pageConfig) {
     const { configValues } = pageConfig
     objectEntries(configValues).forEach(([configName, configValue]) => {
-      const exportName = configName
       const configSrc = getSourceFilePath(pageConfig, configName)
       assert(configSrc)
+
+      config[configName] = config[configName] ?? configValue
+      configList[configName] = configList[configName] ?? []
+      configList[configName]!.push({
+        configValue,
+        configOrigin: configSrc
+      })
+
+      // TODO/v1-release: remove
+      const exportName = configName
       exportsAll[exportName] = exportsAll[exportName] ?? []
       exportsAll[exportName]!.push({
         exportValue: configValue,
@@ -93,6 +116,9 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
   assert(!('default' in exportsAll))
 
   return {
+    config,
+    configList,
+    // TODO/v1-release: remove
     exports,
     exportsAll,
     pageExports

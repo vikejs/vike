@@ -43,10 +43,12 @@ function releasePageContext<T extends PageContextRelease>(
     assert(pageContextTyped.isBackwardNavigation === null)
   }
 
+  assert('config' in pageContext)
+  assert('configList' in pageContext)
+  // TODO/v1-release: remove
   assert('exports' in pageContext)
   assert('exportsAll' in pageContext)
   assert('pageExports' in pageContext)
-  // TODO/v1-release: remove pageContext.pageExports
   assert(isObject(pageContext.pageExports))
 
   const Page = pageContext.exports.Page

@@ -1,12 +1,12 @@
 export { preparePageContextForRelease }
 export type { PageContextPublic }
 
-import type { ExportsAll } from '../../../shared/getPageFiles'
 import { assert, isPlainObject, isObject } from '../utils'
 import { sortPageContext } from '../../../shared/sortPageContext'
 import { assertURLs, PageContextUrls } from '../../../shared/addComputedUrlProps'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
+import type { ConfigList, ExportsAll } from '../../../shared/getPageFiles/getExports'
 
 type PageContextPublic = {
   urlOriginal: string
@@ -17,6 +17,8 @@ type PageContextPublic = {
   routeParams: Record<string, string>
   Page: unknown
   pageExports: Record<string, unknown>
+  config: Record<string, unknown>
+  configList: ConfigList
   exports: Record<string, unknown>
   exportsAll: ExportsAll
   _pageId: string

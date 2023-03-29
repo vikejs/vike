@@ -15,8 +15,10 @@ async function loadPageFilesServerSide(
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const pageConfigLoaded = !pageConfig ? null : await loadPageCode(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-  const { exports, exportsAll, pageExports } = getExports(pageFilesServerSide, pageConfigLoaded)
+  const { config, configList, exports, exportsAll, pageExports } = getExports(pageFilesServerSide, pageConfigLoaded)
   return {
+    config,
+    configList,
     exports,
     exportsAll,
     pageExports,

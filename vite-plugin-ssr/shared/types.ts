@@ -3,16 +3,21 @@ export { PageContextBuiltInClientWithClientRouting }
 export { PageContextBuiltInClientWithServerRouting }
 
 import type { PageContextUrls } from './addComputedUrlProps'
+import type { ConfigList, ExportsAll } from './getPageFiles/getExports'
 
 type PageContextBuiltIn<Page = any> = {
   /** The `export { Page }` of your `.page.js` file, see https://vite-plugin-ssr.com/Page */
   Page: Page
   /** Route Parameters, e.g. `pageContext.routeParams.productId` for a Route String `/product/@productId`, see https://vite-plugin-ssr.com/route-string */
   routeParams: Record<string, string>
+  /** The page's config values */
+  config: Record<string, unknown>
+  /** All configs relevant to the page */
+  configList: ConfigList
   /** Custom Exports/Hooks, see https://vite-plugin-ssr.com/exports */
   exports: Record<string, unknown>
   /** Same as `pageContext.exports` but cumulative */
-  exportsAll: Record<string, { exportValue: unknown; filePath: string }[]>
+  exportsAll: ExportsAll
   /** @deprecated */
   url: string
   /** The URL of the current page */
@@ -30,7 +35,16 @@ type PageContextBuiltIn<Page = any> = {
 type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContextBuiltIn<Page>> &
   Pick<
     PageContextBuiltIn<Page>,
-    'Page' | 'pageExports' | 'exports' | 'exportsAll' | 'url' | 'urlOriginal' | 'urlPathname' | 'urlParsed'
+    | 'Page'
+    | 'pageExports'
+    | 'config'
+    | 'configList'
+    | 'exports'
+    | 'exportsAll'
+    | 'url'
+    | 'urlOriginal'
+    | 'urlPathname'
+    | 'urlParsed'
   > & {
     /** Whether the current page is already rendered to HTML */
     isHydration: boolean
