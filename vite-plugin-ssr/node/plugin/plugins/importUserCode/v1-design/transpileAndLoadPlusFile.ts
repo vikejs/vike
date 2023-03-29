@@ -5,7 +5,7 @@ import esbuild, { type BuildResult, type BuildOptions } from 'esbuild'
 import fs from 'fs'
 import path from 'path'
 import { import_ } from '@brillout/import'
-import { assertPosixPath, getRandomId, assertIsVitePluginCode, assert } from '../../../utils'
+import { assertPosixPath, getRandomId, assertIsVitePluginCode } from '../../../utils'
 import { replaceImportStatements } from './replaceImportStatements'
 
 assertIsVitePluginCode()
@@ -22,8 +22,11 @@ async function transpileAndLoadConfigValueFile(filePathAbsolute: string): Promis
 
 async function transpileAndLoadPlusFile(filePathAbsolute: string, isPageConfig: boolean): Promise<Result> {
   assertPosixPath(filePathAbsolute)
+  /* Solide removes the + symbol when building its + files
+   *  - https://github.com/magne4000/solide
   assert(filePathAbsolute.includes('+'))
   assert(isPageConfig === path.posix.basename(filePathAbsolute).includes('+config'))
+  */
   const buildResult = await buildFile(filePathAbsolute, { bundle: !isPageConfig })
   if ('err' in buildResult) {
     return { err: buildResult.err }
