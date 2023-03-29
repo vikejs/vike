@@ -32,7 +32,6 @@ async function transpileAndLoadPlusFile(filePathAbsolute: string, isPageConfig: 
   if (isPageConfig) {
     code = replaceImportStatements(code)
   }
-  console.log(filePathAbsolute, code)
   const filePathTmp = getFilePathTmp(filePathAbsolute)
   fs.writeFileSync(filePathTmp, code)
   const clean = () => fs.unlinkSync(filePathTmp)
