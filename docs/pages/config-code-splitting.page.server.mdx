@@ -1,1 +1,38 @@
-TODO
+All imports in `+config.js` files are extracted and code-splitted.
+
+For example, VPS transforms the following:
+
+```js
+// /pages/some-page/+config.js
+
+import Page from './some-file'
+import { onBeforeRender } from './some-other-file'
+
+export default { Page, onBeforeRender }
+```
+
+Into:
+
+```js
+// /pages/some-page/+config.js
+
+const Page = '__import|./some-file|default'
+const onBeforeRender = '__import|./some-other-file|onBeforeRender'
+
+export default { Page, onBeforeRender }
+```
+
+This transformation is paramount to ensure that files are loaded in the right environment. Consider this example:
+
+```js
+// /renderer/+config.js
+
+// The onRenderClient() hook should only be loaded on the client-side
+import onRenderClient from './some-other-module'
+// The onRenderHtml() hook should only be loaded on the server-side
+import onRenderHtml from './some-module'
+
+export default { onRenderHtml, onRenderClient }
+```
+
+Thanks to the transformation, VPS can load the hooks in the right environment.

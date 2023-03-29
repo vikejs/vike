@@ -1,8 +1,5 @@
 // TODO: assert that two import statements in +config.js shouldn't land in different environments
 
-// Expose configs as `pageContext.config`
-//  - update v1-design.page.server.mdx to a commit hash after `pageContext.config` is implemented
-
 // TODO: make +meta.js work
 // TODO: implement import extractors (configs/hooks as well `.svg` imports)
 
