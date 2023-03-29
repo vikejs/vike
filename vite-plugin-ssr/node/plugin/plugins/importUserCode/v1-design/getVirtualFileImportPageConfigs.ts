@@ -121,10 +121,11 @@ function serializeConfigSource(
   assert(/^\s+$/.test(whitespace))
   const lines: string[] = []
   lines.push(`${whitespace}['${configName}']: {`)
-  const { configSrc, configDefinedAtFile, configEnv, codeFilePath2, configFilePath2 } = configSource
+  const { configSrc, configDefinedAtFile, configEnv, codeFilePath2, configFilePath2, codeFileExport2 } = configSource
   lines.push(`${whitespace}  configSrc: ${JSON.stringify(configSrc)},`)
   lines.push(`${whitespace}  configDefinedAtFile: ${JSON.stringify(configDefinedAtFile)},`)
   lines.push(`${whitespace}  codeFilePath2: ${JSON.stringify(codeFilePath2)},`)
+  lines.push(`${whitespace}  codeFileExport2: ${JSON.stringify(codeFileExport2)},`)
   lines.push(`${whitespace}  configFilePath2: ${JSON.stringify(configFilePath2)},`)
   lines.push(`${whitespace}  configEnv: '${configEnv}',`)
   if ('configValue' in configSource) {
@@ -132,12 +133,11 @@ function serializeConfigSource(
     const { configValue } = configSource
     lines.push(`${whitespace}  configValue: ${JSON.stringify(configValue)}`)
   } else {
-    assert(configSource.codeFilePath2)
-    const { codeFilePath2, configEnv } = configSource
+    assert(codeFilePath2)
     if (configEnv === '_routing-env' || eagerImport) {
       const { importVar, importStatement } = generateEagerImport(codeFilePath2)
       // TODO: expose all exports so that assertDefaultExport can be applied
-      lines.push(`${whitespace}  configValue: ${importVar}.default`)
+      lines.push(`${whitespace}  configValue: ${importVar}[${JSON.stringify(codeFileExport2)}]`)
       importStatements.push(importStatement)
     }
   }

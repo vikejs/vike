@@ -1,4 +1,6 @@
 export { replaceImportStatements }
+export { parseImportMacro }
+export { isImportMacro }
 
 // Playground: https://github.com/brillout/acorn-playground
 
@@ -18,8 +20,8 @@ function replaceImportStatements(code: string): string {
   body.forEach((node) => {
     if (node.type !== 'ImportDeclaration') return
 
-    const file = node.source.value
-    assert(file)
+    const importPath = node.source.value
+    assert(typeof importPath === 'string')
 
     let replacement = ''
     node.specifiers.forEach((specifier) => {
@@ -33,7 +35,8 @@ function replaceImportStatements(code: string): string {
         }
         return importVar
       })()
-      replacement += `const ${importVar} = '__import|${file}|${importName}';`
+      const importMacro = getImportMacro({ importPath, importName })
+      replacement += `const ${importVar} = '${importMacro}';`
     })
     assert(replacement.length > 0)
 
@@ -47,6 +50,21 @@ function replaceImportStatements(code: string): string {
 
   const codeMod = spliceMany(code, spliceOperations)
   return codeMod
+}
+
+function getImportMacro({ importPath, importName }: { importPath: string; importName: string }): string {
+  return `__import|${importPath}|${importName}`
+}
+function isImportMacro(str: string): boolean {
+  return str.startsWith('__import|')
+}
+function parseImportMacro(importMacro: string): { importPath: string; importName: string } {
+  const parts = importMacro.split('|')
+  assert(parts[0] === '__import')
+  assert(parts.length >= 3)
+  const importName = parts[parts.length - 1]!
+  const importPath = parts.slice(1, -1).join('|')
+  return { importPath, importName }
 }
 
 // https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368

@@ -36,14 +36,17 @@ type ConfigSoureFile = {
   | {
       configFilePath2: string
       codeFilePath2: null
+      codeFileExport2: null
     }
   | {
       configFilePath2: null
       codeFilePath2: string
+      codeFileExport2: string
     }
   | {
       configFilePath2: string
       codeFilePath2: string
+      codeFileExport2: string
     }
 )
 

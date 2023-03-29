@@ -35,6 +35,7 @@ import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import { determineRouteFromFilesystemPath } from './getConfigData/determineRouteFromFilesystemPath'
 import { determinePageId } from './getConfigData/determinePageId'
 import { transpileAndLoadPageConfig, transpileAndLoadConfigValueFile } from './transpileAndLoadPlusFile'
+import { isImportMacro, parseImportMacro } from './replaceImportStatements'
 
 assertIsVitePluginCode()
 
@@ -301,12 +302,14 @@ function resolveConfigSource(
       assert(configValueFiles.length === 1)
       const configValueFile = configValueFiles[0]!
       const { configValueFilePath } = configValueFile
+      const codeFileExport2 = 'default'
       const configSource: ConfigSource = {
         configEnv: configDef.env,
         // TODO: rename codeFilePath2 to configValueFilePath?
         codeFilePath2: configValueFilePath,
+        codeFileExport2,
         configFilePath2: null,
-        configSrc: `${configValueFilePath} > \`export default\``,
+        configSrc: `${configValueFilePath} > \`export ${codeFileExport2}\``,
         configDefinedAtFile: configValueFilePath
       }
       if ('configValue' in configValueFile) {
@@ -322,24 +325,26 @@ function resolveConfigSource(
   const configValue = pageConfigValue
   const configFilePath = pageConfigValueFilePath
   const { c_code, c_validate } = configDef
-  const codeFilePath = getCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName, c_code)
-  assert(codeFilePath || !c_code) // TODO: assertUsage() or remove
+  const codeFile = getCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName, c_code)
+  assert(codeFile || !c_code) // TODO: assertUsage() or remove
   if (c_validate) {
     const commonArgs = { configFilePath }
-    if (codeFilePath) {
+    if (codeFile) {
       assert(typeof configValue === 'string')
+      const { codeFilePath } = codeFile
       c_validate({ configValue, codeFilePath, ...commonArgs })
     } else {
       c_validate({ configValue, ...commonArgs })
     }
   }
   const { env } = configDef
-  if (!codeFilePath) {
+  if (!codeFile) {
     return {
       configFilePath2: configFilePath,
       configSrc: `${configFilePath} > ${configName}`,
       configDefinedAtFile: configFilePath,
       codeFilePath2: null,
+      codeFileExport2: null,
       configEnv: env,
       configValue
     }
@@ -351,10 +356,12 @@ function resolveConfigSource(
         configName
       )} to a value with a wrong type \`${typeof configValue}\`: it should be a string instead`
     )
+    const { codeFilePath, codeFileExport2 } = codeFile
     return {
       configFilePath2: configFilePath,
       codeFilePath2: codeFilePath,
-      configSrc: `${codeFilePath} > \`export default\``,
+      codeFileExport2,
+      configSrc: `${codeFilePath} > \`export ${codeFileExport2}\``,
       configDefinedAtFile: codeFilePath,
       configEnv: env
     }
@@ -375,7 +382,7 @@ function getCodeFilePath(
   userRootDir: string,
   configName: string,
   enforce: undefined | boolean
-): null | string {
+): null | { codeFilePath: string; codeFileExport2: string } {
   if (typeof configValue !== 'string') {
     assertUsage(
       !enforce,
@@ -387,10 +394,22 @@ function getCodeFilePath(
     return null
   }
 
-  let codeFilePath = getVitePathFromConfigValue(toPosixPath(configValue), pageConfigFilePath)
+  const isMacro = isImportMacro(configValue)
+
+  let codeFilePath: string
+  let codeFileExport2: string
+  if (isMacro) {
+    const { importPath, importName } = parseImportMacro(configValue)
+    codeFilePath = path.posix.join(userRootDir, path.posix.dirname(pageConfigFilePath), toPosixPath(importPath))
+    codeFileExport2 = importName
+  } else {
+    // TODO: remove
+    const vitePath = getVitePathFromConfigValue(toPosixPath(configValue), pageConfigFilePath)
+    codeFilePath = path.posix.join(userRootDir, vitePath)
+    codeFileExport2 = 'default'
+  }
   assertPosixPath(userRootDir)
   assertPosixPath(codeFilePath)
-  codeFilePath = path.posix.join(userRootDir, codeFilePath)
   const clean = addFileExtensionsToRequireResolve()
   let fileExists: boolean
   try {
@@ -404,7 +423,11 @@ function getCodeFilePath(
   codeFilePath = toPosixPath(codeFilePath)
 
   if (!enforce && !fileExists) return null
-  assertCodeFilePathConfigValue(configValue, pageConfigFilePath, codeFilePath, fileExists, configName)
+
+  // TODO: remove
+  if (!isMacro) {
+    assertCodeFilePathConfigValue(configValue, pageConfigFilePath, codeFilePath, fileExists, configName)
+  }
 
   // Make relative to userRootDir
   codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
@@ -412,7 +435,7 @@ function getCodeFilePath(
   assert(fileExists)
   assertPosixPath(codeFilePath)
   assert(codeFilePath.startsWith('/'))
-  return codeFilePath
+  return { codeFilePath, codeFileExport2 }
 }
 
 function assertCodeFilePathConfigValue(
