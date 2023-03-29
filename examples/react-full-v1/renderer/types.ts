@@ -20,7 +20,7 @@ type PageProps = Record<string, unknown>
 export type PageContextCustom = {
   Page: Page
   pageProps?: PageProps
-  exports: {
+  config: {
     documentProps?: {
       title: string
     }
