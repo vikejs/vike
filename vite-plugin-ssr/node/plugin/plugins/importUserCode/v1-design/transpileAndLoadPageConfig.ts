@@ -1,4 +1,4 @@
-export { transpileAndLoadScriptFile }
+export { transpileAndLoadPageConfig }
 
 import esbuild, { type BuildResult } from 'esbuild'
 import fs from 'fs'
@@ -8,7 +8,7 @@ import { assertPosixPath, getRandomId, assertIsVitePluginCode } from '../../../u
 
 assertIsVitePluginCode()
 
-async function transpileAndLoadScriptFile(
+async function transpileAndLoadPageConfig(
   scriptFile: string
 ): Promise<{ exports: Record<string, unknown> } | { err: unknown }> {
   assertPosixPath(scriptFile)

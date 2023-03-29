@@ -34,7 +34,7 @@ import glob from 'fast-glob'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import { determineRouteFromFilesystemPath } from './getConfigData/determineRouteFromFilesystemPath'
 import { determinePageId } from './getConfigData/determinePageId'
-import { transpileAndLoadScriptFile } from './transpileAndLoadScriptFile'
+import { transpileAndLoadPageConfig } from './transpileAndLoadPageConfig'
 
 assertIsVitePluginCode()
 
@@ -703,7 +703,7 @@ async function loadConfigValueFile(plusFile: FoundFile, configDefinitions: Confi
   if (configDef.env !== 'config-only') {
     return configValueFile
   }
-  const result = await transpileAndLoadScriptFile(filePathAbsolute)
+  const result = await transpileAndLoadPageConfig(filePathAbsolute)
   if ('err' in result) {
     throw result.err
   }
@@ -731,7 +731,7 @@ async function findAndLoadPageConfigFiles(
     plusFiles
       .filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
       .map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
-        const result = await transpileAndLoadScriptFile(filePathAbsolute)
+        const result = await transpileAndLoadPageConfig(filePathAbsolute)
         if ('err' in result) {
           return { err: result.err }
         }
