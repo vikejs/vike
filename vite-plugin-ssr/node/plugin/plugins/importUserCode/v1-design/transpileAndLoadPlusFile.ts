@@ -6,6 +6,7 @@ import fs from 'fs'
 import path from 'path'
 import { import_ } from '@brillout/import'
 import { assertPosixPath, getRandomId, assertIsVitePluginCode, assert } from '../../../utils'
+import { replaceImportStatements } from './replaceImportStatements'
 
 assertIsVitePluginCode()
 
@@ -23,11 +24,15 @@ async function transpileAndLoadPlusFile(filePathAbsolute: string, isPageConfig: 
   assertPosixPath(filePathAbsolute)
   assert(filePathAbsolute.includes('+'))
   assert(isPageConfig === path.posix.basename(filePathAbsolute).includes('+config'))
-  const buildResult = await buildFile(filePathAbsolute, isPageConfig)
+  const buildResult = await buildFile(filePathAbsolute, { bundle: !isPageConfig })
   if ('err' in buildResult) {
     return { err: buildResult.err }
   }
-  const { code } = buildResult
+  let { code } = buildResult
+  if (isPageConfig) {
+    code = replaceImportStatements(code)
+  }
+  console.log(filePathAbsolute, code)
   const filePathTmp = getFilePathTmp(filePathAbsolute)
   fs.writeFileSync(filePathTmp, code)
   const clean = () => fs.unlinkSync(filePathTmp)
@@ -46,7 +51,7 @@ async function transpileAndLoadPlusFile(filePathAbsolute: string, isPageConfig: 
   return { exports }
 }
 
-async function buildFile(filePathAbsolute: string, bundle: boolean) {
+async function buildFile(filePathAbsolute: string, { bundle }: { bundle: boolean }) {
   const options: BuildOptions = {
     platform: 'node',
     entryPoints: [filePathAbsolute],

@@ -28,6 +28,7 @@ type ConfigName =
   | 'clientRouting'
 
 // TODO: rename configFilePath2 => configValueFilePath
+// TODO: remove/consolidate configSrc/configDefinedAtFile
 type ConfigSoureFile = {
   configSrc: string
   configDefinedAtFile: string
