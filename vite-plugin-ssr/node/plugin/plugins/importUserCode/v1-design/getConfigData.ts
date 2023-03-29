@@ -619,8 +619,8 @@ function applyEffects(
           assertUsage(isObject(configTargetModValue), 'TODO')
           assertUsage(Object.keys(configTargetModValue).length === 1, 'TODO')
           assertUsage(hasProp(configTargetModValue, 'env', 'string'), 'TODO')
-          const env = configTargetModValue.env as ConfigValueEnv // TODO: proper validation
-          configSourcesMod[configTargetName]!.configEnv = env
+          const configEnv = configTargetModValue.env as ConfigValueEnv // TODO: proper validation
+          configSourcesMod[configTargetName]!.configEnv = configEnv
         })
       } else {
         assertConfigName(configName, Object.keys(configDefinitionsRelevant), `effect of TODO`)
