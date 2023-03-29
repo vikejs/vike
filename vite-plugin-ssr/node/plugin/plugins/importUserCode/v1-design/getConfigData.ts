@@ -12,7 +12,6 @@ import {
   assertDefaultExportUnknown,
   assertDefaultExportObject,
   objectEntries,
-  transpileAndLoadScriptFile,
   objectAssign,
   hasProp,
   arrayIncludes,
@@ -35,6 +34,7 @@ import glob from 'fast-glob'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import { determineRouteFromFilesystemPath } from './getConfigData/determineRouteFromFilesystemPath'
 import { determinePageId } from './getConfigData/determinePageId'
+import { transpileAndLoadScriptFile } from './transpileAndLoadScriptFile'
 
 assertIsVitePluginCode()
 

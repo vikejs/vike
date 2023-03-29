@@ -4,9 +4,7 @@ import esbuild, { type BuildResult } from 'esbuild'
 import fs from 'fs'
 import path from 'path'
 import { import_ } from '@brillout/import'
-import { assertPosixPath } from './filesystemPathHandling'
-import { getRandomId } from './getRandomId'
-import { assertIsVitePluginCode } from './assertIsVitePluginCode'
+import { assertPosixPath, getRandomId, assertIsVitePluginCode } from '../../../utils'
 
 assertIsVitePluginCode()
 
