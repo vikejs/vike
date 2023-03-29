@@ -1,3 +1,13 @@
+## [0.4.108](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.107...v0.4.108) (2023-03-29)
+
+
+### Bug Fixes
+
+* export type `ConfigList` ([9847a04](https://github.com/brillout/vite-plugin-ssr/commit/9847a046ff37e826cbbac85f7775028698f9bd8d))
+* tolerate VPS frameworks to remove the `+` symbol ([8a9a93e](https://github.com/brillout/vite-plugin-ssr/commit/8a9a93eb2e25df51be39f3d674ab1158e7dd4dd5))
+
+
+
 ## [0.4.107](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.106...v0.4.107) (2023-03-29)
 
 
