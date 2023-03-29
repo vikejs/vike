@@ -302,7 +302,7 @@ function resolveConfigSource(
       const configValueFile = configValueFiles[0]!
       const { configValueFilePath } = configValueFile
       const configSource: ConfigSource = {
-        env: configDef.env,
+        configEnv: configDef.env,
         // TODO: rename codeFilePath2 to configValueFilePath?
         codeFilePath2: configValueFilePath,
         configFilePath2: null,
@@ -340,7 +340,7 @@ function resolveConfigSource(
       configSrc: `${configFilePath} > ${configName}`,
       configDefinedAtFile: configFilePath,
       codeFilePath2: null,
-      env,
+      configEnv: env,
       configValue
     }
   } else {
@@ -356,7 +356,7 @@ function resolveConfigSource(
       codeFilePath2: codeFilePath,
       configSrc: `${codeFilePath} > \`export default\``,
       configDefinedAtFile: codeFilePath,
-      env
+      configEnv: env
     }
   }
 }
@@ -620,7 +620,7 @@ function applyEffects(
           assertUsage(Object.keys(configTargetModValue).length === 1, 'TODO')
           assertUsage(hasProp(configTargetModValue, 'env', 'string'), 'TODO')
           const env = configTargetModValue.env as ConfigValueEnv // TODO: proper validation
-          configSourcesMod[configTargetName]!.env = env
+          configSourcesMod[configTargetName]!.configEnv = env
         })
       } else {
         assertConfigName(configName, Object.keys(configDefinitionsRelevant), `effect of TODO`)
@@ -631,7 +631,7 @@ function applyEffects(
           ...configSourceEffect,
           configSrc: `${configSourceEffect} (side-effect)`,
           // TODO-end
-          env: configSourceTargetOld.env,
+          configEnv: configSourceTargetOld.configEnv,
           configValue: configModValue
         }
       }

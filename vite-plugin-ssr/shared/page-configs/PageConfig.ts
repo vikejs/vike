@@ -47,7 +47,7 @@ type ConfigSoureFile = {
 )
 
 type ConfigSource = ConfigSoureFile & {
-  env: ConfigValueEnv
+  configEnv: ConfigValueEnv
   configValue?: unknown
 }
 
