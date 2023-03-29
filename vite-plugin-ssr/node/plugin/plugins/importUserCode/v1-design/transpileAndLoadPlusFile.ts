@@ -1,7 +1,7 @@
 export { transpileAndLoadPageConfig }
 export { transpileAndLoadConfigValueFile }
 
-import esbuild, { type BuildResult } from 'esbuild'
+import esbuild, { type BuildResult, type BuildOptions } from 'esbuild'
 import fs from 'fs'
 import path from 'path'
 import { import_ } from '@brillout/import'
@@ -23,7 +23,7 @@ async function transpileAndLoadPlusFile(filePathAbsolute: string, isPageConfig: 
   assertPosixPath(filePathAbsolute)
   assert(filePathAbsolute.includes('+'))
   assert(isPageConfig === path.posix.basename(filePathAbsolute).includes('+config'))
-  const buildResult = await buildFile(filePathAbsolute)
+  const buildResult = await buildFile(filePathAbsolute, isPageConfig)
   if ('err' in buildResult) {
     return { err: buildResult.err }
   }
@@ -46,31 +46,34 @@ async function transpileAndLoadPlusFile(filePathAbsolute: string, isPageConfig: 
   return { exports }
 }
 
-async function buildFile(filePathAbsolute: string) {
+async function buildFile(filePathAbsolute: string, bundle: boolean) {
+  const options: BuildOptions = {
+    platform: 'node',
+    entryPoints: [filePathAbsolute],
+    sourcemap: 'inline',
+    write: false,
+    target: ['node14.18', 'node16'],
+    outfile: 'NEVER_EMITTED.js',
+    logLevel: 'silent',
+    format: 'esm',
+    bundle,
+    minify: false
+  }
+  if (bundle) {
+    options.bundle = true
+    options.packages = 'external'
+  }
+
   let result: BuildResult
   try {
-    result = await esbuild.build({
-      platform: 'node',
-      entryPoints: [filePathAbsolute],
-      sourcemap: 'inline',
-      write: false,
-      metafile: true,
-      target: ['node14.18', 'node16'],
-      outfile: 'NEVER_EMITTED.js',
-      logLevel: 'silent',
-      format: 'esm',
-      bundle: true,
-      packages: 'external',
-      minify: false
-    })
+    result = await esbuild.build(options)
   } catch (err) {
     // TODO: let the error throw?
     return { err }
   }
   const { text } = result.outputFiles![0]!
   return {
-    code: text,
-    dependencies: Object.keys(result.metafile!.inputs)
+    code: text
   }
 }
 
