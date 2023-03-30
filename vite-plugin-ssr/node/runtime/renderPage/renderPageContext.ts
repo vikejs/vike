@@ -215,7 +215,7 @@ function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfig[
   if (pageFilesAll.length === 0 || pageConfigs.length === 0) return
   const indent = '- '
   const v1Files: string[] = unique(
-    pageConfigs.map((p) => Object.values(p.configElements).map((c) => indent + c.configDefinedAtFile)).flat()
+    pageConfigs.map((p) => Object.values(p.configElements).map((c) => indent + c.configDefinedByFile)).flat()
   )
   assertUsage(
     false,

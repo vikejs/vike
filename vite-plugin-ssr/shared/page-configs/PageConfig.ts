@@ -27,10 +27,9 @@ type ConfigName =
   | 'clientEntry'
   | 'clientRouting'
 
-// TODO: remove/consolidate configSrc/configDefinedAtFile
 type ConfigElementFile = {
   configSrc: string
-  configDefinedAtFile: string
+  configDefinedByFile: string
 } & (
   | {
       pageConfigFilePath: string

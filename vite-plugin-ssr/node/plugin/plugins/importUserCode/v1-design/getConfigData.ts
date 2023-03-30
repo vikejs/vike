@@ -310,7 +310,7 @@ function resolveConfigElement(
         configValueFileExport,
         pageConfigFilePath: null,
         configSrc: `${configValueFilePath} > \`export ${configValueFileExport}\``,
-        configDefinedAtFile: configValueFilePath
+        configDefinedByFile: configValueFilePath
       }
       if ('configValue' in configValueFile) {
         configElement.configValue = configValueFile.configValue
@@ -342,7 +342,7 @@ function resolveConfigElement(
     return {
       pageConfigFilePath: configFilePath,
       configSrc: `${configFilePath} > ${configName}`,
-      configDefinedAtFile: configFilePath,
+      configDefinedByFile: configFilePath,
       configValueFilePath: null,
       configValueFileExport: null,
       configEnv: env,
@@ -362,7 +362,7 @@ function resolveConfigElement(
       configValueFilePath: codeFilePath,
       configValueFileExport,
       configSrc: `${codeFilePath} > \`export ${configValueFileExport}\``,
-      configDefinedAtFile: codeFilePath,
+      configDefinedByFile: codeFilePath,
       configEnv: env
     }
   }
@@ -629,10 +629,10 @@ function applyEffects(
     const configElementEffect = configElements[configName]
     if (!configElementEffect) return
     assert('configValue' in configElementEffect)
-    const { configValue, configDefinedAtFile } = configElementEffect
+    const { configValue, configDefinedByFile } = configElementEffect
     const configMod = configDef.effect({
       configValue,
-      configDefinedAt: configDefinedAtFile // TODO: align naming
+      configDefinedAt: configDefinedByFile // TODO: align naming
     })
     if (!configMod) return
     objectEntries(configMod).forEach(([configName, configModValue]) => {
