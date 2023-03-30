@@ -31,7 +31,8 @@ type ConfigEntries = Record<
   string,
   {
     configValue: unknown
-    configOrigin: string
+    configDefinedAt: string
+    configDefinedByFile: string
   }[]
 >
 type PageContextExports = {
@@ -74,14 +75,15 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
     objectEntries(configValues).forEach(([configName, configValue]) => {
       const configElement = pageConfig.configElements[configName]
       assert(configElement)
-      const { configDefinedByFile } = configElement
+      const { configDefinedByFile, configDefinedAt } = configElement
       assert(configDefinedByFile)
 
       config[configName] = config[configName] ?? configValue
       configEntries[configName] = configEntries[configName] ?? []
       configEntries[configName]!.push({
         configValue,
-        configOrigin: configDefinedByFile
+        configDefinedAt,
+        configDefinedByFile
       })
 
       // TODO/v1-release: remove
