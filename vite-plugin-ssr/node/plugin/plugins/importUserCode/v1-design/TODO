@@ -1,9 +1,7 @@
+// TODO: rename configSrc/configSource to configDefinedAt
+
 // TODO: assert that two import statements in +config.js shouldn't land in different environments
-
-// TODO: make +meta.js work
-// TODO: implement import extractors (configs/hooks as well `.svg` imports)
-
-// TODO: ensure that client-side of Server Routing loads less than Client Routing
+// TODO: if config isn't a file path then assert that it's serialazable
 
 // TODO: check error handling
 //       - overall
@@ -14,12 +12,13 @@
 //          /pages/+config.ts sets the config onRenderHtml to the value './+config/onRenderHtml.js' but a file wasn't found at /home/rom/code/vite-plugin-ssr/examples/vanilla-v1/pages/+config/onRenderHtml.js
 //         ```
 
-// TODO: if conf isn't file path then assert that it's serialazable
+// TODO: add further examples to v1-design.page.server.mdx
+
 // TODO: assertUsage isErrorPage not allowed to be abstract
 // TODO: assertUsage() when meta sets a invalid env value
 
-// TODO: Define pageContext.pageId
-// TODO: rename configSrc/configSource to configDefinedAt
-// TODO: export type { Config } for users
+// TODO: ensure that client-side of Server Routing loads less than Client Routing
 
-// TODO: add further examples to v1-design.page.server.mdx
+// TODO: make +meta.js work
+
+// TODO: Define pageContext.pageId
