@@ -302,14 +302,14 @@ function resolveConfigElement(
       assert(configValueFiles.length === 1)
       const configValueFile = configValueFiles[0]!
       const { configValueFilePath } = configValueFile
-      const codeFileExport2 = 'default'
+      const configValueFileExport = 'default'
       const configElement: ConfigElement = {
         configEnv: configDef.env,
         // TODO: rename configValueFilePath to configValueFilePath?
         configValueFilePath: configValueFilePath,
-        codeFileExport2,
+        configValueFileExport,
         configFilePath2: null,
-        configSrc: `${configValueFilePath} > \`export ${codeFileExport2}\``,
+        configSrc: `${configValueFilePath} > \`export ${configValueFileExport}\``,
         configDefinedAtFile: configValueFilePath
       }
       if ('configValue' in configValueFile) {
@@ -344,7 +344,7 @@ function resolveConfigElement(
       configSrc: `${configFilePath} > ${configName}`,
       configDefinedAtFile: configFilePath,
       configValueFilePath: null,
-      codeFileExport2: null,
+      configValueFileExport: null,
       configEnv: env,
       configValue
     }
@@ -356,12 +356,12 @@ function resolveConfigElement(
         configName
       )} to a value with a wrong type \`${typeof configValue}\`: it should be a string instead`
     )
-    const { codeFilePath, codeFileExport2 } = codeFile
+    const { codeFilePath, configValueFileExport } = codeFile
     return {
       configFilePath2: configFilePath,
       configValueFilePath: codeFilePath,
-      codeFileExport2,
-      configSrc: `${codeFilePath} > \`export ${codeFileExport2}\``,
+      configValueFileExport,
+      configSrc: `${codeFilePath} > \`export ${configValueFileExport}\``,
       configDefinedAtFile: codeFilePath,
       configEnv: env
     }
@@ -382,7 +382,7 @@ function getCodeFilePath(
   userRootDir: string,
   configName: string,
   enforce: undefined | boolean
-): null | { codeFilePath: string; codeFileExport2: string } {
+): null | { codeFilePath: string; configValueFileExport: string } {
   if (typeof configValue !== 'string') {
     assertUsage(
       !enforce,
@@ -397,16 +397,16 @@ function getCodeFilePath(
   const isMacro = isImportMacro(configValue)
 
   let codeFilePath: string
-  let codeFileExport2: string
+  let configValueFileExport: string
   if (isMacro) {
     const { importPath, importName } = parseImportMacro(configValue)
     codeFilePath = path.posix.join(userRootDir, path.posix.dirname(pageConfigFilePath), toPosixPath(importPath))
-    codeFileExport2 = importName
+    configValueFileExport = importName
   } else {
     // TODO: remove
     const vitePath = getVitePathFromConfigValue(toPosixPath(configValue), pageConfigFilePath)
     codeFilePath = path.posix.join(userRootDir, vitePath)
-    codeFileExport2 = 'default'
+    configValueFileExport = 'default'
   }
   assertPosixPath(userRootDir)
   assertPosixPath(codeFilePath)
@@ -435,7 +435,7 @@ function getCodeFilePath(
   assert(fileExists)
   assertPosixPath(codeFilePath)
   assert(codeFilePath.startsWith('/'))
-  return { codeFilePath, codeFileExport2 }
+  return { codeFilePath, configValueFileExport }
 }
 
 function assertCodeFilePathConfigValue(

@@ -35,17 +35,17 @@ type ConfigElementFile = {
   | {
       configFilePath2: string
       configValueFilePath: null
-      codeFileExport2: null
+      configValueFileExport: null
     }
   | {
       configFilePath2: null
       configValueFilePath: string
-      codeFileExport2: string
+      configValueFileExport: string
     }
   | {
       configFilePath2: string
       configValueFilePath: string
-      codeFileExport2: string
+      configValueFileExport: string
     }
 )
 
