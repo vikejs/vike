@@ -44,7 +44,7 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`    pageConfigFilePathAll: ${JSON.stringify(pageConfigFilePathAll)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
-    lines.push(`    loadCodeFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`)
+    lines.push(`    loadConfigValueFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`)
     lines.push(`    configElements: {`)
     Object.entries(configElements).forEach(([configName, configElement]) => {
       // configNamesAll.add(configName)

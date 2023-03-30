@@ -11,8 +11,8 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     return pageConfig as PageConfigLoaded
   }
 
-  const codeFiles = await pageConfig.loadCodeFiles()
-  codeFiles.forEach(({ configName, codeFilePath3, codeFileExports }) => {
+  const configValueFiles = await pageConfig.loadConfigValueFiles()
+  configValueFiles.forEach(({ configName, codeFilePath3, codeFileExports }) => {
     if (configName !== 'clientEntry') {
       assertDefaultExportUnknown(codeFileExports, codeFilePath3)
     }

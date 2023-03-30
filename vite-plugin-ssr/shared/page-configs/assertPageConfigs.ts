@@ -15,7 +15,7 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
     assert(hasProp(pageConfig, 'pageConfigFilePathAll', 'string[]'))
     assert(hasProp(pageConfig, 'routeFilesystem', 'string') || hasProp(pageConfig, 'routeFilesystem', 'null'))
     assert(hasProp(pageConfig, 'routeFilesystemDefinedBy', 'string'))
-    assert(hasProp(pageConfig, 'loadCodeFiles', 'function'))
+    assert(hasProp(pageConfig, 'loadConfigValueFiles', 'function'))
     assert(hasProp(pageConfig, 'isErrorPage', 'boolean'))
     assert(hasProp(pageConfig, 'configElements', 'object'))
     assertConfigElements(pageConfig.configElements, false)

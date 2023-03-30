@@ -63,7 +63,7 @@ type PageConfigData = {
 }
 
 type PageConfig = PageConfigData & {
-  loadCodeFiles: () => Promise<
+  loadConfigValueFiles: () => Promise<
     {
       configName: string
       codeFilePath3: string
