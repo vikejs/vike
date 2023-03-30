@@ -185,7 +185,7 @@ async function loadConfigData(
       isRelevantConfigPath(pageConfigFilePath, pageId)
     )
     const configValueFilesRelevant = configValueFiles
-      .filter(({ configValueFilePath }) => isRelevantConfigPath(configValueFilePath, pageId))
+      .filter(({ filePath }) => isRelevantConfigPath(filePath, pageId))
       .filter((configValueFile) => !isGlobal(configValueFile.configName))
     let configDefinitionsRelevant = getConfigDefinitions(pageConfigFilesRelevant)
 
@@ -259,11 +259,11 @@ function determinePageIds(pageConfigFiles: PageConfigFile[], configValueFiles: C
     })
   configValueFiles.map((configValueFile) => {
     if (!isConfigDefiningPage(configValueFile.configName)) return
-    const { configValueFilePath } = configValueFile
-    const pageId = determinePageId(configValueFilePath)
-    const routeFilesystem = determineRouteFromFilesystemPath(configValueFilePath)
-    assertPosixPath(configValueFilePath)
-    const routeFilesystemDefinedBy = path.posix.dirname(configValueFilePath) + '/'
+    const { filePath } = configValueFile
+    const pageId = determinePageId(filePath)
+    const routeFilesystem = determineRouteFromFilesystemPath(filePath)
+    assertPosixPath(filePath)
+    const routeFilesystemDefinedBy = path.posix.dirname(filePath) + '/'
     assert(!routeFilesystemDefinedBy.endsWith('//'))
     {
       const alreadyIncluded = pageIds.some((p) => {
@@ -301,16 +301,16 @@ function resolveConfigElement(
     if (configValueFiles.length !== 0) {
       assert(configValueFiles.length === 1)
       const configValueFile = configValueFiles[0]!
-      const { configValueFilePath } = configValueFile
+      const { filePath } = configValueFile
       const codeFileExport2 = 'default'
       const configElement: ConfigElement = {
         configEnv: configDef.env,
-        // TODO: rename codeFilePath2 to configValueFilePath?
-        codeFilePath2: configValueFilePath,
+        // TODO: rename codeFilePath2 to filePath?
+        codeFilePath2: filePath,
         codeFileExport2,
         configFilePath2: null,
-        configSrc: `${configValueFilePath} > \`export ${codeFileExport2}\``,
-        configDefinedAtFile: configValueFilePath
+        configSrc: `${filePath} > \`export ${codeFileExport2}\``,
+        configDefinedAtFile: filePath
       }
       if ('configValue' in configValueFile) {
         configElement.configValue = configValueFile.configValue
@@ -689,8 +689,8 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
 
 type ConfigValueFile = {
   pageId: string
+  filePath: string
   configName: string
-  configValueFilePath: string
   configValue?: unknown
 }
 async function findAndLoadConfigValueFiles(
@@ -719,7 +719,7 @@ async function loadConfigValueFile(plusFile: FoundFile, configDefinitions: Confi
   const configValueFile: ConfigValueFile = {
     configName,
     pageId: determinePageId(filePathRelativeToUserRootDir),
-    configValueFilePath: filePathRelativeToUserRootDir
+    filePath: filePathRelativeToUserRootDir
   }
   if (configDef.env !== 'config-only') {
     return configValueFile
@@ -845,7 +845,7 @@ function handleBuildError(err: unknown, isDev: boolean) {
 }
 
 function isRelevantConfigPath(
-  configPath: string, // Can be pageConfigFilePath or configValueFilePath
+  configPath: string, // Can be pageConfigFilePath or configValueFile.filePath
   pageId: string
 ): boolean {
   const configFsRoot = removeIrrelevantParts(removeFilename(configPath), ['renderer', 'pages'])
