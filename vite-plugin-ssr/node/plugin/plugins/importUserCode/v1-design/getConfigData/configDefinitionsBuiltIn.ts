@@ -2,12 +2,12 @@ export { configDefinitionsBuiltIn }
 export type { ConfigDefinition }
 
 import { assertUsage, isCallable } from '../../../../utils'
-import type { ConfigName, ConfigValueEnv } from '../../../../../../shared/page-configs/PageConfig'
+import type { ConfigName, ConfigEnv } from '../../../../../../shared/page-configs/PageConfig'
 import { assertRouteString } from '../../../../../../shared/route/resolveRouteString'
 
 // TODO: remove c_ prefix
 type ConfigDefinition = {
-  env: ConfigValueEnv // TODO: rename to runtime? or runtimeEnv?
+  env: ConfigEnv // TODO: rename to runtime? or runtimeEnv?
   c_global?: boolean // TODO: implement
   c_required?: boolean // TODO: apply validation
   c_code?: true // TODO: remove? Replace with `type: 'code'` or `type: 'file-path'`? A `type: 'boolean'` would be comfy for custom config 'ssr'`

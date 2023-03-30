@@ -25,7 +25,7 @@ import path from 'path'
 import type {
   ConfigName,
   ConfigElement,
-  ConfigValueEnv,
+  ConfigEnv,
   PageConfigData,
   PageConfigGlobalData
 } from '../../../../../shared/page-configs/PageConfig'
@@ -642,7 +642,7 @@ function applyEffects(
           assertUsage(isObject(configTargetModValue), 'TODO')
           assertUsage(Object.keys(configTargetModValue).length === 1, 'TODO')
           assertUsage(hasProp(configTargetModValue, 'env', 'string'), 'TODO')
-          const configEnv = configTargetModValue.env as ConfigValueEnv // TODO: proper validation
+          const configEnv = configTargetModValue.env as ConfigEnv // TODO: proper validation
           configElementsMod[configTargetName]!.configEnv = configEnv
         })
       } else {

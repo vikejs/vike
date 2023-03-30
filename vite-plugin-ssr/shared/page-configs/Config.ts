@@ -3,7 +3,7 @@ export type { Config }
 import type { ConfigVpsUserProvided } from '../ConfigVps'
 // TODO: write docs of links below
 
-import type { ConfigValueEnv } from './PageConfig'
+import type { ConfigEnv } from './PageConfig'
 
 /** Page configuration.
  *
@@ -106,7 +106,7 @@ type Meta = Record<
      *
      * See https://vite-plugin-ssr/meta
      */
-    env: ConfigValueEnv
+    env: ConfigEnv
     /**
      * Define a so-called "Shortcut Config".
      *
