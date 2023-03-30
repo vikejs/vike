@@ -309,7 +309,7 @@ function resolveConfigElement(
         configValueFilePath: configValueFilePath,
         configValueFileExport,
         pageConfigFilePath: null,
-        configSrc: `${configValueFilePath} > \`export ${configValueFileExport}\``,
+        configDefinedAt: `${configValueFilePath} > \`export ${configValueFileExport}\``,
         configDefinedByFile: configValueFilePath
       }
       if ('configValue' in configValueFile) {
@@ -341,7 +341,7 @@ function resolveConfigElement(
   if (!codeFile) {
     return {
       pageConfigFilePath: configFilePath,
-      configSrc: `${configFilePath} > ${configName}`,
+      configDefinedAt: `${configFilePath} > ${configName}`,
       configDefinedByFile: configFilePath,
       configValueFilePath: null,
       configValueFileExport: null,
@@ -361,7 +361,7 @@ function resolveConfigElement(
       pageConfigFilePath: configFilePath,
       configValueFilePath: codeFilePath,
       configValueFileExport,
-      configSrc: `${codeFilePath} > \`export ${configValueFileExport}\``,
+      configDefinedAt: `${codeFilePath} > \`export ${configValueFileExport}\``,
       configDefinedByFile: codeFilePath,
       configEnv: env
     }
@@ -629,10 +629,10 @@ function applyEffects(
     const configElementEffect = configElements[configName]
     if (!configElementEffect) return
     assert('configValue' in configElementEffect)
-    const { configValue, configSrc } = configElementEffect
+    const { configValue, configDefinedAt } = configElementEffect
     const configMod = configDef.effect({
       configValue,
-      configDefinedAt: configSrc
+      configDefinedAt: configDefinedAt
     })
     if (!configMod) return
     objectEntries(configMod).forEach(([configName, configModValue]) => {
@@ -652,7 +652,7 @@ function applyEffects(
         configElementsMod[configName] = {
           // TODO-begin
           ...configElementEffect,
-          configSrc: `${configElementEffect} (side-effect)`,
+          configDefinedAt: `${configElementEffect} (side-effect)`,
           // TODO-end
           configEnv: configElementTargetOld.configEnv,
           configValue: configModValue

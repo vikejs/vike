@@ -28,7 +28,7 @@ type ConfigName =
   | 'clientRouting'
 
 type ConfigElementFile = {
-  configSrc: string
+  configDefinedAt: string
   configDefinedByFile: string
 } & (
   | {

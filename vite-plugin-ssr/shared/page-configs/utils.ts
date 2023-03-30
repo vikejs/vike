@@ -18,10 +18,10 @@ function getConfigValue(
   if (!configElement || isNullish(pageConfig, configName)) {
     return null
   }
-  const { configValue, configSrc } = configElement
+  const { configValue, configDefinedAt } = configElement
   assertUsage(
     typeof configValue === type,
-    `${configSrc} has an invalid type \`${typeof configValue}\`: is should be a ${type} instead`
+    `${configDefinedAt} has an invalid type \`${typeof configValue}\`: is should be a ${type} instead`
   )
   return configValue
 }
@@ -34,12 +34,12 @@ function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): nu
   if (configElement.configValueFilePath !== null) {
     return configElement.configValueFilePath
   }
-  const { configValue, configSrc } = configElement
+  const { configValue, configDefinedAt } = configElement
   assertUsage(
     typeof configValue === 'string',
-    `${configSrc} has an invalid type \`${typeof configValue}\`: it should be a \`string\` instead`
+    `${configDefinedAt} has an invalid type \`${typeof configValue}\`: it should be a \`string\` instead`
   )
-  assertUsage(false, `${configSrc} has an invalid value \`${configValue}\`: it should be a file path instead`)
+  assertUsage(false, `${configDefinedAt} has an invalid value \`${configValue}\`: it should be a file path instead`)
 }
 
 function getSourceFilePath(pageConfig: PageConfig, configName: ConfigName): null | string {
@@ -47,7 +47,7 @@ function getSourceFilePath(pageConfig: PageConfig, configName: ConfigName): null
   if (!configElement || isNullish(pageConfig, configName)) {
     return null
   }
-  return configElement.configSrc
+  return configElement.configDefinedAt
 }
 
 function isNullish(pageConfig: PageConfigData, configName: ConfigName): boolean {

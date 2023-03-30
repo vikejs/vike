@@ -241,7 +241,7 @@ async function collectDoNoPrerenderList(
         pageId: pageConfig.pageId,
         setByConfigName: 'prerender',
         setByConfigValue: false,
-        setByConfigSrc: configElement.configSrc
+        setByConfigSrc: configElement.configDefinedAt
       })
     }
   })

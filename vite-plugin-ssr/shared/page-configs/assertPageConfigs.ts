@@ -34,7 +34,7 @@ function assertConfigElements(configElements: unknown, isGlobalConfig: boolean) 
       assert(isGlobalConfig)
       return
     }
-    assert(hasProp(configElement, 'configSrc', 'string'))
+    assert(hasProp(configElement, 'configDefinedAt', 'string'))
     assert(hasProp(configElement, 'pageConfigFilePath', 'string') || hasProp(configElement, 'pageConfigFilePath', 'null'))
     assert(hasProp(configElement, 'configEnv', 'string'))
     assert(hasProp(configElement, 'configValueFilePath', 'string') || hasProp(configElement, 'configValueFilePath', 'null'))

@@ -14,7 +14,7 @@ export type { RouteType }
 type PageRoute = {
   pageId: string
   comesFromV1PageConfig: boolean
-} & ( // TODO: rename pageRouteFilePath to routeSrc (since pageRouteFilePath can be configSrc)
+} & ( // TODO: rename pageRouteFilePath to routeSrc (since pageRouteFilePath can be configDefinedAt)
   | { routeString: string; pageRouteFilePath: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
   | { routeString: string; pageRouteFilePath: string; routeType: 'STRING' }
   | { routeFunction: Function; pageRouteFilePath: string; allowAsync: boolean; routeType: 'FUNCTION' }
@@ -60,7 +60,7 @@ function getPageRoutes(
           if (routeConfig) {
             assert('configValue' in routeConfig) // Route files are eagerly loaded
             const route = routeConfig.configValue
-            const pageRouteFilePath = routeConfig.configSrc
+            const pageRouteFilePath = routeConfig.configDefinedAt
             assert(pageRouteFilePath)
             if (typeof route === 'string') {
               pageRoute = { pageId, comesFromV1PageConfig, routeString: route, pageRouteFilePath, routeType: 'STRING' }
