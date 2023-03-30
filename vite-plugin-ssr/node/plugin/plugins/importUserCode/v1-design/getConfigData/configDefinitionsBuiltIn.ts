@@ -5,12 +5,11 @@ import { assertUsage, isCallable } from '../../../../utils'
 import type { ConfigName, ConfigEnv } from '../../../../../../shared/page-configs/PageConfig'
 import { assertRouteString } from '../../../../../../shared/route/resolveRouteString'
 
-// TODO: remove c_ prefix
 type ConfigDefinition = {
-  env: ConfigEnv // TODO: rename to runtime? or runtimeEnv?
-  c_global?: boolean // TODO: implement
-  c_required?: boolean // TODO: apply validation
-  c_code?: true // TODO: remove? Replace with `type: 'code'` or `type: 'file-path'`? A `type: 'boolean'` would be comfy for custom config 'ssr'`
+  env: ConfigEnv
+  c_global?: boolean // TODO: implement or remove
+  c_code?: true // TODO: remove
+  // TODO: remove in favor of manual validation?
   c_validate?: (
     configResolved: ({ configValue: unknown } | { configValue: string; codeFilePath: string }) & {
       configFilePath: string
@@ -26,7 +25,6 @@ type ConfigDefinitionsBuiltIn = Record<ConfigName, ConfigDefinition>
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     c_code: true,
-    c_required: true,
     env: 'server-only'
   },
   onRenderClient: {

@@ -1,27 +1,30 @@
-// TODO: vite-plugin-ssr/types
+TODO: vite-plugin-ssr/types
 
-// TODO: assert that two import statements in +config.js shouldn't land in different environments
-// TODO: if config isn't a file path then assert that it's serialazable
+TODO: assert that two import statements in +config.js shouldn't land in different environments
+TODO: if config isn't a file path then assert that it's serialazable
+  - remove c_code
+TODO: assert global configs cannot be defined
+  - already done? Use/remove c_global?
 
-// TODO: check error handling
-//       - overall
-//       - check error handling when no onRenderHtml defined
-//       - improve Vite dev error handling upon user setting unknown config
-//       - Improve Vite error logging when:
-//         ```
-//          /pages/+config.ts sets the config onRenderHtml to the value './+config/onRenderHtml.js' but a file wasn't found at /home/rom/code/vite-plugin-ssr/examples/vanilla-v1/pages/+config/onRenderHtml.js
-//         ```
+TODO: check error handling
+  - overall
+  - check error handling when no onRenderHtml defined
+  - improve Vite dev error handling upon user setting unknown config
+  - Improve Vite error logging when:
+    ```
+     /pages/+config.ts sets the config onRenderHtml to the value './+config/onRenderHtml.js' but a file wasn't found at /home/rom/code/vite-plugin-ssr/examples/vanilla-v1/pages/+config/onRenderHtml.js
+    ```
 
-// TODO: assertUsage isErrorPage not allowed to be abstract
-// TODO: assertUsage() when meta sets a invalid env value
+TODO: assertUsage isErrorPage not allowed to be abstract
+TODO: assertUsage() when meta sets a invalid env value
 
-// TODO: multiple error pages
+TODO: multiple error pages
 
-// TODO: nested layouts
+TODO: nested layouts
 
-// TODO: add further examples to v1-design.page.server.mdx
-// TODO: ensure that client-side of Server Routing loads less than Client Routing
+TODO: add further examples to v1-design.page.server.mdx
+TODO: ensure that client-side of Server Routing loads less than Client Routing
 
-// TODO: make +meta.js work
+TODO: make +meta.js work
 
-// TODO: Define pageContext.pageId
+TODO: Define pageContext.pageId
