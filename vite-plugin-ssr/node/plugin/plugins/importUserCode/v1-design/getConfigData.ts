@@ -24,7 +24,7 @@ import {
 import path from 'path'
 import type {
   ConfigName,
-  ConfigSource,
+  ConfigElement,
   ConfigValueEnv,
   PageConfigData,
   PageConfigGlobalData
@@ -159,7 +159,7 @@ async function loadConfigData(
       return isGlobal(c.configName)
     })
     objectEntries(globalConfigsDefinition).forEach(([configName, configDef]) => {
-      const configElement = resolveConfigSource(
+      const configElement = resolveConfigElement(
         configName,
         configDef,
         pageConfigFileGlobal ? [pageConfigFileGlobal] : [],
@@ -209,7 +209,7 @@ async function loadConfigData(
 
     let configElements: PageConfigData['configElements'] = {}
     objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
-      const configElement = resolveConfigSource(
+      const configElement = resolveConfigElement(
         configName,
         configDef,
         pageConfigFilesRelevant,
@@ -285,13 +285,13 @@ function determinePageIds(pageConfigFiles: PageConfigFile[], configValueFiles: C
   return pageIds
 }
 
-function resolveConfigSource(
+function resolveConfigElement(
   configName: string,
   configDef: ConfigDefinition,
   pageConfigFilesRelevant: PageConfigFile[],
   userRootDir: string,
   configValueFilesRelevant: ConfigValueFile[]
-): null | ConfigSource {
+): null | ConfigElement {
   // TODO: implement warning if defined in non-abstract +config.js as well as in +{configName}.js
 
   {
@@ -303,7 +303,7 @@ function resolveConfigSource(
       const configValueFile = configValueFiles[0]!
       const { configValueFilePath } = configValueFile
       const codeFileExport2 = 'default'
-      const configElement: ConfigSource = {
+      const configElement: ConfigElement = {
         configEnv: configDef.env,
         // TODO: rename codeFilePath2 to configValueFilePath?
         codeFilePath2: configValueFilePath,
@@ -615,12 +615,12 @@ function mergeConfigDefinition(
   }
 }
 
-type ConfigSources = Record<string, ConfigSource>
+type ConfigElements = Record<string, ConfigElement>
 
 function applyEffects(
-  configElements: ConfigSources,
+  configElements: ConfigElements,
   configDefinitionsRelevant: ConfigDefinitionsExtended
-): ConfigSources {
+): ConfigElements {
   const configElementsMod = { ...configElements }
 
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {

@@ -1,7 +1,7 @@
 export { getVirtualFileImportPageConfigs }
 
 import { assert, isNpmPackageImportPath, objectEntries } from '../../../utils'
-import type { ConfigSource, PageConfigData, PageConfigGlobalData } from '../../../../../shared/page-configs/PageConfig'
+import type { ConfigElement, PageConfigData, PageConfigGlobalData } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
 import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files/virtualFileImportPageCode'
 import { getConfigData } from './getConfigData'
@@ -49,7 +49,7 @@ function generateSourceCodeOfPageConfigs(
     Object.entries(configElements).forEach(([configName, configElement]) => {
       // configNamesAll.add(configName)
       const whitespace = '      '
-      lines.push(serializeConfigSource(configElement, configName, importStatements, whitespace, false))
+      lines.push(serializeConfigElement(configElement, configName, importStatements, whitespace, false))
     })
     lines.push(`    }`)
     lines.push('  };')
@@ -89,7 +89,7 @@ function generateSourceCodeOfPageConfigs(
       assert(false)
     }
     const whitespace = '  '
-    lines.push(serializeConfigSource(configElement, configName, importStatements, whitespace, true))
+    lines.push(serializeConfigElement(configElement, configName, importStatements, whitespace, true))
   })
   lines.push('};')
 
@@ -110,8 +110,8 @@ function generateSourceCodeOfPageConfigs(
   return code
 }
 
-function serializeConfigSource(
-  configElement: ConfigSource | null,
+function serializeConfigElement(
+  configElement: ConfigElement | null,
   configName: string,
   importStatements: string[],
   whitespace: string,

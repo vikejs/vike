@@ -5,7 +5,7 @@ export type { PageConfigData }
 export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
 export type { ConfigName }
-export type { ConfigSource }
+export type { ConfigElement }
 
 type ConfigValueEnv = 'client-only' | 'server-only' | 'server-and-client' | '_routing-env' | 'config-only'
 
@@ -29,7 +29,7 @@ type ConfigName =
 
 // TODO: rename configFilePath2 => configValueFilePath
 // TODO: remove/consolidate configSrc/configDefinedAtFile
-type ConfigSoureFile = {
+type ConfigElementFile = {
   configSrc: string
   configDefinedAtFile: string
 } & (
@@ -50,7 +50,7 @@ type ConfigSoureFile = {
     }
 )
 
-type ConfigSource = ConfigSoureFile & {
+type ConfigElement = ConfigElementFile & {
   configEnv: ConfigValueEnv
   configValue?: unknown
 }
@@ -61,7 +61,7 @@ type PageConfigData = {
   pageConfigFilePathAll: string[]
   routeFilesystem: null | string
   routeFilesystemDefinedBy: string
-  configElements: Partial<Record<ConfigName, ConfigSource>>
+  configElements: Partial<Record<ConfigName, ConfigElement>>
 }
 
 type PageConfig = PageConfigData & {
@@ -79,10 +79,10 @@ type PageConfigLoaded = PageConfig & {
 }
 
 type PageConfigGlobalData = {
-  onPrerenderStart: null | ConfigSource
-  onBeforeRoute: null | ConfigSource
+  onPrerenderStart: null | ConfigElement
+  onBeforeRoute: null | ConfigElement
 }
 type PageConfigGlobal = {
-  onPrerenderStart: null | (ConfigSource & { configValue: unknown })
-  onBeforeRoute: null | (ConfigSource & { configValue: unknown })
+  onPrerenderStart: null | (ConfigElement & { configValue: unknown })
+  onBeforeRoute: null | (ConfigElement & { configValue: unknown })
 }

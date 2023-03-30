@@ -18,15 +18,15 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
     assert(hasProp(pageConfig, 'loadCodeFiles', 'function'))
     assert(hasProp(pageConfig, 'isErrorPage', 'boolean'))
     assert(hasProp(pageConfig, 'configElements', 'object'))
-    assertConfigSources(pageConfig.configElements, false)
+    assertConfigElements(pageConfig.configElements, false)
   })
 }
 
 function assertPageConfigGlobal(pageConfigGlobal: unknown): asserts pageConfigGlobal is PageConfigGlobal {
-  assertConfigSources(pageConfigGlobal, true)
+  assertConfigElements(pageConfigGlobal, true)
 }
 
-function assertConfigSources(configElements: unknown, isGlobalConfig: boolean) {
+function assertConfigElements(configElements: unknown, isGlobalConfig: boolean) {
   assert(isObject(configElements))
   Object.entries(configElements).forEach(([configName, configElement]) => {
     assert(isObject(configElement) || configElement === null)
