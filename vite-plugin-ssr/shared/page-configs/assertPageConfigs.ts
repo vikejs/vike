@@ -37,13 +37,13 @@ function assertConfigElements(configElements: unknown, isGlobalConfig: boolean) 
     assert(hasProp(configElement, 'configSrc', 'string'))
     assert(hasProp(configElement, 'configFilePath2', 'string') || hasProp(configElement, 'configFilePath2', 'null'))
     assert(hasProp(configElement, 'configEnv', 'string'))
-    assert(hasProp(configElement, 'codeFilePath2', 'string') || hasProp(configElement, 'codeFilePath2', 'null'))
+    assert(hasProp(configElement, 'configValueFilePath', 'string') || hasProp(configElement, 'configValueFilePath', 'null'))
     assert(hasProp(configElement, 'codeFileExport2', 'string') || hasProp(configElement, 'codeFileExport2', 'null'))
     if (isGlobalConfig) {
       assert(hasProp(configElement, 'configValue'))
     }
-    if (configElement.codeFilePath2) {
-      const { codeFilePath2 } = configElement
+    if (configElement.configValueFilePath) {
+      const { configValueFilePath } = configElement
       if (configName === 'route') {
         assert(hasProp(configElement, 'configValue')) // route files are eagerly loaded
         const { configValue } = configElement
@@ -51,7 +51,7 @@ function assertConfigElements(configElements: unknown, isGlobalConfig: boolean) 
         // TODO: validate earlier?
         assertUsage(
           configValueType === 'string' || isCallable(configValue),
-          `${codeFilePath2} has a default export with an invalid type '${configValueType}': the default export should be a string or a function`
+          `${configValueFilePath} has a default export with an invalid type '${configValueType}': the default export should be a string or a function`
         )
       }
     }

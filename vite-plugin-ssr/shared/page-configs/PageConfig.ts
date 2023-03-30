@@ -27,7 +27,6 @@ type ConfigName =
   | 'clientEntry'
   | 'clientRouting'
 
-// TODO: rename configFilePath2 => configValueFilePath
 // TODO: remove/consolidate configSrc/configDefinedAtFile
 type ConfigElementFile = {
   configSrc: string
@@ -35,17 +34,17 @@ type ConfigElementFile = {
 } & (
   | {
       configFilePath2: string
-      codeFilePath2: null
+      configValueFilePath: null
       codeFileExport2: null
     }
   | {
       configFilePath2: null
-      codeFilePath2: string
+      configValueFilePath: string
       codeFileExport2: string
     }
   | {
       configFilePath2: string
-      codeFilePath2: string
+      configValueFilePath: string
       codeFileExport2: string
     }
 )

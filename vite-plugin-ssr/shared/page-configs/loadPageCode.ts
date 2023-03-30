@@ -21,7 +21,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
   })
 
   Object.entries(pageConfig.configElements).map(([configName, configElement]) => {
-    if (configElement.codeFilePath2) return
+    if (configElement.configValueFilePath) return
     assert(!(configName in configValues))
     configValues[configName] = configElement.configValue
   })

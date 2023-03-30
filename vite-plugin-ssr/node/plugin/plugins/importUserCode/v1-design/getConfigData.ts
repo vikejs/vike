@@ -305,8 +305,8 @@ function resolveConfigElement(
       const codeFileExport2 = 'default'
       const configElement: ConfigElement = {
         configEnv: configDef.env,
-        // TODO: rename codeFilePath2 to configValueFilePath?
-        codeFilePath2: configValueFilePath,
+        // TODO: rename configValueFilePath to configValueFilePath?
+        configValueFilePath: configValueFilePath,
         codeFileExport2,
         configFilePath2: null,
         configSrc: `${configValueFilePath} > \`export ${codeFileExport2}\``,
@@ -343,7 +343,7 @@ function resolveConfigElement(
       configFilePath2: configFilePath,
       configSrc: `${configFilePath} > ${configName}`,
       configDefinedAtFile: configFilePath,
-      codeFilePath2: null,
+      configValueFilePath: null,
       codeFileExport2: null,
       configEnv: env,
       configValue
@@ -359,7 +359,7 @@ function resolveConfigElement(
     const { codeFilePath, codeFileExport2 } = codeFile
     return {
       configFilePath2: configFilePath,
-      codeFilePath2: codeFilePath,
+      configValueFilePath: codeFilePath,
       codeFileExport2,
       configSrc: `${codeFilePath} > \`export ${codeFileExport2}\``,
       configDefinedAtFile: codeFilePath,

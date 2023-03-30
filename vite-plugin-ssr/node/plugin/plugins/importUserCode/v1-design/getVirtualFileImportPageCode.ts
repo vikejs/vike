@@ -54,15 +54,15 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   lines.push('export default [')
   let varCounter = 0
   Object.entries(pageConfigData.configElements).forEach(([configName, configElement]) => {
-    if (!configElement.codeFilePath2) return
-    const { configEnv, codeFilePath2 } = configElement
+    if (!configElement.configValueFilePath) return
+    const { configEnv, configValueFilePath } = configElement
     if (configEnv === '_routing-env' || configEnv === 'config-only') return
     if (configEnv === (isForClientSide ? 'server-only' : 'client-only')) return
-    const { importVar, importStatement } = generateEagerImport(codeFilePath2, varCounter++)
+    const { importVar, importStatement } = generateEagerImport(configValueFilePath, varCounter++)
     importStatements.push(importStatement)
     lines.push(`  {`)
     lines.push(`    configName: '${configName}',`)
-    lines.push(`    codeFilePath3: '${codeFilePath2}',`)
+    lines.push(`    codeFilePath3: '${configValueFilePath}',`)
     lines.push(`    codeFileExports: ${importVar}`)
     lines.push(`  },`)
   })

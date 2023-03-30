@@ -63,9 +63,9 @@ function generateSourceCodeOfPageConfigs(
     pageConfigsData.forEach((pageConfig) => {
       const { configElements, pageConfigFilePathAll } = pageConfig
       Object.entries(configElements).forEach(([_configName, configElement]) => {
-        const { configEnv, codeFilePath2 } = configElement
-        if (configEnv === 'config-only' && codeFilePath2) {
-          configFiles.add(codeFilePath2)
+        const { configEnv, configValueFilePath } = configElement
+        if (configEnv === 'config-only' && configValueFilePath) {
+          configFiles.add(configValueFilePath)
         }
       })
       pageConfigFilePathAll.forEach((pageConfigFilePath) => {
@@ -121,10 +121,10 @@ function serializeConfigElement(
   assert(/^\s+$/.test(whitespace))
   const lines: string[] = []
   lines.push(`${whitespace}['${configName}']: {`)
-  const { configSrc, configDefinedAtFile, configEnv, codeFilePath2, configFilePath2, codeFileExport2 } = configElement
+  const { configSrc, configDefinedAtFile, configEnv, configValueFilePath, configFilePath2, codeFileExport2 } = configElement
   lines.push(`${whitespace}  configSrc: ${JSON.stringify(configSrc)},`)
   lines.push(`${whitespace}  configDefinedAtFile: ${JSON.stringify(configDefinedAtFile)},`)
-  lines.push(`${whitespace}  codeFilePath2: ${JSON.stringify(codeFilePath2)},`)
+  lines.push(`${whitespace}  configValueFilePath: ${JSON.stringify(configValueFilePath)},`)
   lines.push(`${whitespace}  codeFileExport2: ${JSON.stringify(codeFileExport2)},`)
   lines.push(`${whitespace}  configFilePath2: ${JSON.stringify(configFilePath2)},`)
   lines.push(`${whitespace}  configEnv: '${configEnv}',`)
@@ -133,9 +133,9 @@ function serializeConfigElement(
     const { configValue } = configElement
     lines.push(`${whitespace}  configValue: ${JSON.stringify(configValue)}`)
   } else {
-    assert(codeFilePath2)
+    assert(configValueFilePath)
     if (configEnv === '_routing-env' || eagerImport) {
-      const { importVar, importStatement } = generateEagerImport(codeFilePath2)
+      const { importVar, importStatement } = generateEagerImport(configValueFilePath)
       // TODO: expose all exports so that assertDefaultExport can be applied
       lines.push(`${whitespace}  configValue: ${importVar}[${JSON.stringify(codeFileExport2)}]`)
       importStatements.push(importStatement)
