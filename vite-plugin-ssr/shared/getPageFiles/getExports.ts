@@ -91,7 +91,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
       exportsAll[exportName] = exportsAll[exportName] ?? []
       exportsAll[exportName]!.push({
         exportValue: configValue,
-        exportSource: configDefinedByFile,
+        exportSource: configDefinedAt,
         filePath: configDefinedByFile,
         _filePath: configDefinedByFile,
         _fileType: null,
