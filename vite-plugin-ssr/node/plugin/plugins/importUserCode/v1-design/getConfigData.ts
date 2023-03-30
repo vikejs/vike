@@ -629,10 +629,10 @@ function applyEffects(
     const configElementEffect = configElements[configName]
     if (!configElementEffect) return
     assert('configValue' in configElementEffect)
-    const { configValue, configDefinedByFile } = configElementEffect
+    const { configValue, configSrc } = configElementEffect
     const configMod = configDef.effect({
       configValue,
-      configDefinedAt: configDefinedByFile // TODO: align naming
+      configDefinedAt: configSrc
     })
     if (!configMod) return
     objectEntries(configMod).forEach(([configName, configModValue]) => {
