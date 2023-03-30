@@ -121,8 +121,8 @@ function serializeConfigElement(
   assert(/^\s+$/.test(whitespace))
   const lines: string[] = []
   lines.push(`${whitespace}['${configName}']: {`)
-  const { configSrc, configDefinedAtFile, configEnv, codeFilePath2, configFilePath2, codeFileExport2 } = configElement
-  lines.push(`${whitespace}  configSrc: ${JSON.stringify(configSrc)},`)
+  const { configElem, configDefinedAtFile, configEnv, codeFilePath2, configFilePath2, codeFileExport2 } = configElement
+  lines.push(`${whitespace}  configElem: ${JSON.stringify(configElem)},`)
   lines.push(`${whitespace}  configDefinedAtFile: ${JSON.stringify(configDefinedAtFile)},`)
   lines.push(`${whitespace}  codeFilePath2: ${JSON.stringify(codeFilePath2)},`)
   lines.push(`${whitespace}  codeFileExport2: ${JSON.stringify(codeFileExport2)},`)

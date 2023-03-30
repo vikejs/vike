@@ -1,4 +1,4 @@
-// TODO: rename configSrc/configElement to configDefinedAt
+// TODO: rename configElem/configElement to configDefinedAt
 
 // TODO: assert that two import statements in +config.js shouldn't land in different environments
 // TODO: if config isn't a file path then assert that it's serialazable
