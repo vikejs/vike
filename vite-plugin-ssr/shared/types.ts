@@ -3,7 +3,7 @@ export { PageContextBuiltInClientWithClientRouting }
 export { PageContextBuiltInClientWithServerRouting }
 
 import type { PageContextUrls } from './addComputedUrlProps'
-import type { ConfigList, ExportsAll } from './getPageFiles/getExports'
+import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports'
 
 type PageContextBuiltIn<Page = any> = {
   /** The `export { Page }` of your `.page.js` file, see https://vite-plugin-ssr.com/Page */
@@ -13,7 +13,7 @@ type PageContextBuiltIn<Page = any> = {
   /** The page's config values */
   config: Record<string, unknown>
   /** All configs relevant to the page */
-  configList: ConfigList
+  configEntries: ConfigEntries
   /** Custom Exports/Hooks, see https://vite-plugin-ssr.com/exports */
   exports: Record<string, unknown>
   /** Same as `pageContext.exports` but cumulative */
@@ -38,7 +38,7 @@ type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContext
     | 'Page'
     | 'pageExports'
     | 'config'
-    | 'configList'
+    | 'configEntries'
     | 'exports'
     | 'exportsAll'
     | 'url'

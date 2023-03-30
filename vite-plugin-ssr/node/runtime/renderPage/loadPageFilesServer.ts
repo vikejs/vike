@@ -24,7 +24,7 @@ type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
 async function loadPageFilesServer(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext._pageId) // Make pageConfig globally available as pageContext._pageConfig?
 
-  const [{ config, configList, exports, exportsAll, pageExports, pageFilesLoaded, pageConfigLoaded }] = await Promise.all([
+  const [{ config, configEntries, exports, exportsAll, pageExports, pageFilesLoaded, pageConfigLoaded }] = await Promise.all([
     loadPageFilesServerSide(
       pageContext._pageFilesAll,
       pageConfig,
@@ -38,7 +38,7 @@ async function loadPageFilesServer(pageContext: { _pageId: string } & PageContex
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, {
     config,
-    configList,
+    configEntries,
     exports,
     exportsAll,
     pageExports,

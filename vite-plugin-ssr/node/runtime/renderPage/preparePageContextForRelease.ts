@@ -6,7 +6,7 @@ import { sortPageContext } from '../../../shared/sortPageContext'
 import { assertURLs, PageContextUrls } from '../../../shared/addComputedUrlProps'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
-import type { ConfigList, ExportsAll } from '../../../shared/getPageFiles/getExports'
+import type { ConfigEntries, ExportsAll } from '../../../shared/getPageFiles/getExports'
 
 type PageContextPublic = {
   urlOriginal: string
@@ -18,7 +18,7 @@ type PageContextPublic = {
   Page: unknown
   pageExports: Record<string, unknown>
   config: Record<string, unknown>
-  configList: ConfigList
+  configEntries: ConfigEntries
   exports: Record<string, unknown>
   exportsAll: ExportsAll
   _pageId: string

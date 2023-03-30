@@ -44,7 +44,7 @@ function releasePageContext<T extends PageContextRelease>(
   }
 
   assert('config' in pageContext)
-  assert('configList' in pageContext)
+  assert('configEntries' in pageContext)
   // TODO/v1-release: remove
   assert('exports' in pageContext)
   assert('exportsAll' in pageContext)

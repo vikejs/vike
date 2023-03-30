@@ -2,7 +2,7 @@ export { getExportUnion }
 export { getExports }
 export type { ExportsAll }
 export type { PageContextExports }
-export type { ConfigList }
+export type { ConfigEntries }
 
 import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile'
 import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser, objectEntries } from '../utils'
@@ -28,7 +28,7 @@ type ExportsAll = Record<
     _filePath: string
   }[]
 >
-type ConfigList = Record<
+type ConfigEntries = Record<
   string,
   {
     configValue: unknown
@@ -37,7 +37,7 @@ type ConfigList = Record<
 >
 type PageContextExports = {
   config: Record<string, unknown>
-  configList: ConfigList
+  configEntries: ConfigEntries
   exports: Record<string, unknown>
   exportsAll: ExportsAll
   /** @deprecated */
@@ -45,7 +45,7 @@ type PageContextExports = {
 }
 
 function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null): PageContextExports {
-  const configList: ConfigList = {}
+  const configEntries: ConfigEntries = {}
   const config: Record<string, unknown> = {}
   const exportsAll: ExportsAll = {}
 
@@ -77,8 +77,8 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
       assert(configElem)
 
       config[configName] = config[configName] ?? configValue
-      configList[configName] = configList[configName] ?? []
-      configList[configName]!.push({
+      configEntries[configName] = configEntries[configName] ?? []
+      configEntries[configName]!.push({
         configValue,
         configOrigin: configElem
       })
@@ -117,7 +117,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
 
   return {
     config,
-    configList,
+    configEntries,
     // TODO/v1-release: remove
     exports,
     exportsAll,
