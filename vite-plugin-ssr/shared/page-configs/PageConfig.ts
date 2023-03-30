@@ -66,8 +66,8 @@ type PageConfig = PageConfigData & {
   loadConfigValueFiles: () => Promise<
     {
       configName: string
-      codeFilePath3: string
-      codeFileExports: Record<string, unknown>
+      filePath: string
+      fileExports: Record<string, unknown>
     }[]
   >
 }

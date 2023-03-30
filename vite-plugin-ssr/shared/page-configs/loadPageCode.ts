@@ -12,12 +12,12 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
   }
 
   const configValueFiles = await pageConfig.loadConfigValueFiles()
-  configValueFiles.forEach(({ configName, codeFilePath3, codeFileExports }) => {
+  configValueFiles.forEach(({ configName, filePath, fileExports }) => {
     if (configName !== 'clientEntry') {
-      assertDefaultExportUnknown(codeFileExports, codeFilePath3)
+      assertDefaultExportUnknown(fileExports, filePath)
     }
     assert(!(configName in configValues))
-    configValues[configName] = codeFileExports.default
+    configValues[configName] = fileExports.default
   })
 
   Object.entries(pageConfig.configElements).map(([configName, configElement]) => {
