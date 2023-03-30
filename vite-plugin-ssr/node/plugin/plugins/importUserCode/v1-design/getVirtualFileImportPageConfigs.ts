@@ -33,13 +33,13 @@ function generateSourceCodeOfPageConfigs(
   lines.push('export const pageConfigs = [];')
   // const configNamesAll = new Set<string>()
   pageConfigsData.forEach((pageConfig, i) => {
-    const { pageConfigFilePathAll, pageId2, routeFilesystem, routeFilesystemDefinedBy, configElements, isErrorPage } =
+    const { pageConfigFilePathAll, pageId, routeFilesystem, routeFilesystemDefinedBy, configElements, isErrorPage } =
       pageConfig
-    const virtualFileIdImportPageCode = getVirtualFileIdImportPageCode(pageId2, isForClientSide)
+    const virtualFileIdImportPageCode = getVirtualFileIdImportPageCode(pageId, isForClientSide)
     const pageConfigVar = `pageConfig${i + 1}` // TODO: remove outdated & unncessary variable creation
     lines.push(`{`)
     lines.push(`  const ${pageConfigVar} = {`)
-    lines.push(`    pageId2: ${JSON.stringify(pageId2)},`)
+    lines.push(`    pageId: ${JSON.stringify(pageId)},`)
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    pageConfigFilePathAll: ${JSON.stringify(pageConfigFilePathAll)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)

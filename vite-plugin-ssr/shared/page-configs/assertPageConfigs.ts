@@ -11,7 +11,7 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
   assert(pageConfigs !== null)
   pageConfigs.forEach((pageConfig) => {
     assert(isObject(pageConfig))
-    assert(hasProp(pageConfig, 'pageId2', 'string'))
+    assert(hasProp(pageConfig, 'pageId', 'string'))
     assert(hasProp(pageConfig, 'pageConfigFilePathAll', 'string[]'))
     assert(hasProp(pageConfig, 'routeFilesystem', 'string') || hasProp(pageConfig, 'routeFilesystem', 'null'))
     assert(hasProp(pageConfig, 'routeFilesystemDefinedBy', 'string'))

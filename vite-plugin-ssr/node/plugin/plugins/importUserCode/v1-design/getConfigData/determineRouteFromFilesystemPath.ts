@@ -4,9 +4,9 @@ import { assert } from '../../../../utils'
 import { determinePageId } from './determinePageId'
 
 function determineRouteFromFilesystemPath(filesystemPath: string): string {
-  const pageId2 = determinePageId(filesystemPath)
+  const pageId = determinePageId(filesystemPath)
 
-  let routeString = pageId2
+  let routeString = pageId
 
   {
     let paths = routeString.split('/')

@@ -180,12 +180,12 @@ async function loadConfigData(
   const pageIds = determinePageIds(pageConfigFiles, configValueFiles)
 
   const pageConfigsData: PageConfigData[] = []
-  pageIds.forEach(({ pageId2, routeFilesystem, pageConfigFile, routeFilesystemDefinedBy }) => {
+  pageIds.forEach(({ pageId, routeFilesystem, pageConfigFile, routeFilesystemDefinedBy }) => {
     const pageConfigFilesRelevant = pageConfigFiles.filter(({ pageConfigFilePath }) =>
-      isRelevantConfigPath(pageConfigFilePath, pageId2)
+      isRelevantConfigPath(pageConfigFilePath, pageId)
     )
     const configValueFilesRelevant = configValueFiles
-      .filter(({ configValueFilePath }) => isRelevantConfigPath(configValueFilePath, pageId2))
+      .filter(({ configValueFilePath }) => isRelevantConfigPath(configValueFilePath, pageId))
       .filter((configValueFile) => !isGlobal(configValueFile.configName))
     let configDefinitionsRelevant = getConfigDefinitions(pageConfigFilesRelevant)
 
@@ -225,7 +225,7 @@ async function loadConfigData(
     const isErrorPage: boolean = !!configElements.isErrorPage?.configValue
 
     pageConfigsData.push({
-      pageId2,
+      pageId,
       isErrorPage,
       routeFilesystemDefinedBy,
       pageConfigFilePathAll: pageConfigFilesRelevant.map((p) => p.pageConfigFilePath),
@@ -239,7 +239,7 @@ async function loadConfigData(
 
 function determinePageIds(pageConfigFiles: PageConfigFile[], configValueFiles: ConfigValueFile[]) {
   const pageIds: {
-    pageId2: string
+    pageId: string
     routeFilesystem: string
     pageConfigFile: null | PageConfigFile
     routeFilesystemDefinedBy: string
@@ -248,10 +248,10 @@ function determinePageIds(pageConfigFiles: PageConfigFile[], configValueFiles: C
     .filter((p) => isDefiningPage(p))
     .forEach((pageConfigFile) => {
       const { pageConfigFilePath } = pageConfigFile
-      const pageId2 = determinePageId(pageConfigFilePath)
+      const pageId = determinePageId(pageConfigFilePath)
       const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
       pageIds.push({
-        pageId2,
+        pageId,
         routeFilesystem,
         pageConfigFile,
         routeFilesystemDefinedBy: pageConfigFilePath
@@ -260,14 +260,14 @@ function determinePageIds(pageConfigFiles: PageConfigFile[], configValueFiles: C
   configValueFiles.map((configValueFile) => {
     if (!isConfigDefiningPage(configValueFile.configName)) return
     const { configValueFilePath } = configValueFile
-    const pageId2 = determinePageId(configValueFilePath)
+    const pageId = determinePageId(configValueFilePath)
     const routeFilesystem = determineRouteFromFilesystemPath(configValueFilePath)
     assertPosixPath(configValueFilePath)
     const routeFilesystemDefinedBy = path.posix.dirname(configValueFilePath) + '/'
     assert(!routeFilesystemDefinedBy.endsWith('//'))
     {
       const alreadyIncluded = pageIds.some((p) => {
-        if (p.pageId2 === pageId2) {
+        if (p.pageId === pageId) {
           assert(p.routeFilesystem === routeFilesystem)
           return true
         }
@@ -276,7 +276,7 @@ function determinePageIds(pageConfigFiles: PageConfigFile[], configValueFiles: C
       if (alreadyIncluded) return
     }
     pageIds.push({
-      pageId2,
+      pageId,
       routeFilesystem,
       pageConfigFile: null,
       routeFilesystemDefinedBy
@@ -688,8 +688,6 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
 }
 
 type ConfigValueFile = {
-  // TODO:
-  // rename determinePageId2(), and rename pageId to configId or remove pageId (instead use determinePageId2)
   pageId: string
   configName: string
   configValueFilePath: string

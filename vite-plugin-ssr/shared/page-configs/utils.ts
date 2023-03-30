@@ -59,7 +59,7 @@ function isNullish(pageConfig: PageConfigData, configName: ConfigName): boolean 
 }
 
 function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
-  const pageConfig = pageConfigs.find((p) => p.pageId2 === pageId)
+  const pageConfig = pageConfigs.find((p) => p.pageId === pageId)
   assert(pageConfigs.length > 0)
   assert(pageConfig)
   return pageConfig

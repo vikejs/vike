@@ -56,7 +56,7 @@ type ConfigElement = ConfigElementFile & {
 }
 
 type PageConfigData = {
-  pageId2: string // TODO: rename
+  pageId: string
   isErrorPage: boolean
   pageConfigFilePathAll: string[]
   routeFilesystem: null | string

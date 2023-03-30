@@ -13,7 +13,7 @@ function getErrorPageId(pageFilesAll: PageFile[], pageConfigs: PageConfig[]): st
     const errorPageConfigs = pageConfigs.filter((p) => p.isErrorPage)
     if (errorPageConfigs.length === 0) return null
     assertUsage(errorPageConfigs.length === 1, 'Only one error page can be defined')
-    return errorPageConfigs[0]!.pageId2
+    return errorPageConfigs[0]!.pageId
   }
   // TODO/v1-release: remove
   const errorPageIds = unique(pageFilesAll.map(({ pageId }) => pageId).filter((pageId) => isErrorPageId(pageId, false)))
@@ -37,7 +37,7 @@ function isErrorPageId(pageId: string, _isV1Design: false): boolean {
 
 function isErrorPage(pageId: string, pageConfigs: PageConfig[]): boolean {
   if (pageConfigs.length > 0) {
-    const pageConfig = pageConfigs.find((p) => p.pageId2 === pageId)
+    const pageConfig = pageConfigs.find((p) => p.pageId === pageId)
     assert(pageConfig)
     return pageConfig.isErrorPage
   } else {

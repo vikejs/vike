@@ -17,14 +17,14 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pa
     const clientEntry = !isClientSideRenderable ? clientEntryPageConfig : getVPSClientEntry(isClientRouting)
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
-      id: getVirtualFileIdImportPageCode(pageConfig.pageId2, true),
+      id: getVirtualFileIdImportPageCode(pageConfig.pageId, true),
       onlyAssets: false,
       eagerlyImported: false
     })
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
     if (!getGlobalContext().isProduction) {
       clientDependencies.push({
-        id: getVirtualFileIdImportPageCode(pageConfig.pageId2, false),
+        id: getVirtualFileIdImportPageCode(pageConfig.pageId, false),
         onlyAssets: true,
         eagerlyImported: false
       })

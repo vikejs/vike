@@ -238,7 +238,7 @@ async function collectDoNoPrerenderList(
       assert(configElement)
       assert(configElement.configValue === false)
       doNotPrerenderList.push({
-        pageId: pageConfig.pageId2,
+        pageId: pageConfig.pageId,
         setByConfigName: 'prerender',
         setByConfigValue: false,
         setByConfigElem: configElement.configElem
@@ -730,7 +730,7 @@ async function routeAndPrerender(
         let usesClientRouter: boolean
         {
           if (pageContext._pageConfigs.length > 0) {
-            const pageConfig = pageContext._pageConfigs.find((p) => p.pageId2 === pageId)
+            const pageConfig = pageContext._pageConfigs.find((p) => p.pageId === pageId)
             assert(pageConfig)
             usesClientRouter = getConfigValue(pageConfig, 'clientRouting', 'boolean') ?? false
           } else {

@@ -51,7 +51,7 @@ function getPageRoutes(
     pageConfigs
       .filter((p) => !p.isErrorPage)
       .forEach((pageConfig) => {
-        const pageId = pageConfig.pageId2
+        const pageId = pageConfig.pageId
         pageIds = removePageId(pageIds, pageId)
 
         let pageRoute: null | PageRoute = null

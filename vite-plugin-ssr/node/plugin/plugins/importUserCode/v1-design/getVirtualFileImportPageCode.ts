@@ -29,7 +29,7 @@ async function getVirtualFileImportPageCode(
   const { pageId, isForClientSide } = result
   const { pageConfigsData } = await getConfigData(userRootDir, isDev, false, configVps.extensions)
   assert(pageConfigsData)
-  const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId2 === pageId)
+  const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId === pageId)
   assert(pageConfigData)
   const code = generateSourceCodeOfLoadCodeFileVirtualFile(
     pageConfigData,
