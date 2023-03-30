@@ -27,6 +27,10 @@ type ConfigName =
   | 'clientEntry'
   | 'clientRouting'
 
+type ConfigElement = ConfigElementFile & {
+  configEnv: ConfigEnv
+  configValue?: unknown
+}
 type ConfigElementFile = {
   configDefinedAt: string
   configDefinedByFile: string
@@ -48,20 +52,6 @@ type ConfigElementFile = {
     }
 )
 
-type ConfigElement = ConfigElementFile & {
-  configEnv: ConfigEnv
-  configValue?: unknown
-}
-
-type PageConfigData = {
-  pageId: string
-  isErrorPage: boolean
-  pageConfigFilePathAll: string[]
-  routeFilesystem: null | string
-  routeFilesystemDefinedBy: string
-  configElements: Partial<Record<ConfigName, ConfigElement>>
-}
-
 type PageConfig = PageConfigData & {
   loadConfigValueFiles: () => Promise<
     {
@@ -71,7 +61,14 @@ type PageConfig = PageConfigData & {
     }[]
   >
 }
-
+type PageConfigData = {
+  pageId: string
+  isErrorPage: boolean
+  pageConfigFilePathAll: string[]
+  routeFilesystem: null | string
+  routeFilesystemDefinedBy: string
+  configElements: Partial<Record<ConfigName, ConfigElement>>
+}
 type PageConfigLoaded = PageConfig & {
   configValues: Partial<Record<ConfigName, unknown>>
 }
