@@ -31,15 +31,15 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pa
     }
     //*/
     /* TODO: remove?
-    Object.values(pageConfig.configSources).forEach((configSource) => {
-      if (configSource.codeFilePath) {
-        const { env } = configSource
+    Object.values(pageConfig.configElements).forEach((configElement) => {
+      if (configElement.codeFilePath) {
+        const { env } = configElement
         assert(env)
         const onlyAssets = env === 'server-only'
         const eagerlyImported = env === '_routing-env'
         if (onlyAssets || eagerlyImported) {
           clientDependencies.push({
-            id: configSource.codeFilePath,
+            id: configElement.codeFilePath,
             onlyAssets,
             eagerlyImported
           })

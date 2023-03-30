@@ -17,8 +17,8 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
     assert(hasProp(pageConfig, 'routeFilesystemDefinedBy', 'string'))
     assert(hasProp(pageConfig, 'loadCodeFiles', 'function'))
     assert(hasProp(pageConfig, 'isErrorPage', 'boolean'))
-    assert(hasProp(pageConfig, 'configSources', 'object'))
-    assertConfigSources(pageConfig.configSources, false)
+    assert(hasProp(pageConfig, 'configElements', 'object'))
+    assertConfigSources(pageConfig.configElements, false)
   })
 }
 
@@ -26,27 +26,27 @@ function assertPageConfigGlobal(pageConfigGlobal: unknown): asserts pageConfigGl
   assertConfigSources(pageConfigGlobal, true)
 }
 
-function assertConfigSources(configSources: unknown, isGlobalConfig: boolean) {
-  assert(isObject(configSources))
-  Object.entries(configSources).forEach(([configName, configSource]) => {
-    assert(isObject(configSource) || configSource === null)
-    if (configSource === null) {
+function assertConfigSources(configElements: unknown, isGlobalConfig: boolean) {
+  assert(isObject(configElements))
+  Object.entries(configElements).forEach(([configName, configElement]) => {
+    assert(isObject(configElement) || configElement === null)
+    if (configElement === null) {
       assert(isGlobalConfig)
       return
     }
-    assert(hasProp(configSource, 'configSrc', 'string'))
-    assert(hasProp(configSource, 'configFilePath2', 'string') || hasProp(configSource, 'configFilePath2', 'null'))
-    assert(hasProp(configSource, 'configEnv', 'string'))
-    assert(hasProp(configSource, 'codeFilePath2', 'string') || hasProp(configSource, 'codeFilePath2', 'null'))
-    assert(hasProp(configSource, 'codeFileExport2', 'string') || hasProp(configSource, 'codeFileExport2', 'null'))
+    assert(hasProp(configElement, 'configSrc', 'string'))
+    assert(hasProp(configElement, 'configFilePath2', 'string') || hasProp(configElement, 'configFilePath2', 'null'))
+    assert(hasProp(configElement, 'configEnv', 'string'))
+    assert(hasProp(configElement, 'codeFilePath2', 'string') || hasProp(configElement, 'codeFilePath2', 'null'))
+    assert(hasProp(configElement, 'codeFileExport2', 'string') || hasProp(configElement, 'codeFileExport2', 'null'))
     if (isGlobalConfig) {
-      assert(hasProp(configSource, 'configValue'))
+      assert(hasProp(configElement, 'configValue'))
     }
-    if (configSource.codeFilePath2) {
-      const { codeFilePath2 } = configSource
+    if (configElement.codeFilePath2) {
+      const { codeFilePath2 } = configElement
       if (configName === 'route') {
-        assert(hasProp(configSource, 'configValue')) // route files are eagerly loaded
-        const { configValue } = configSource
+        assert(hasProp(configElement, 'configValue')) // route files are eagerly loaded
+        const { configValue } = configElement
         const configValueType = typeof configValue
         // TODO: validate earlier?
         assertUsage(

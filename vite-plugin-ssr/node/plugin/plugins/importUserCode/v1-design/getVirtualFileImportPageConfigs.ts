@@ -33,7 +33,7 @@ function generateSourceCodeOfPageConfigs(
   lines.push('export const pageConfigs = [];')
   // const configNamesAll = new Set<string>()
   pageConfigsData.forEach((pageConfig, i) => {
-    const { pageConfigFilePathAll, pageId2, routeFilesystem, routeFilesystemDefinedBy, configSources, isErrorPage } =
+    const { pageConfigFilePathAll, pageId2, routeFilesystem, routeFilesystemDefinedBy, configElements, isErrorPage } =
       pageConfig
     const virtualFileIdImportPageCode = getVirtualFileIdImportPageCode(pageId2, isForClientSide)
     const pageConfigVar = `pageConfig${i + 1}` // TODO: remove outdated & unncessary variable creation
@@ -45,11 +45,11 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
     lines.push(`    loadCodeFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`)
-    lines.push(`    configSources: {`)
-    Object.entries(configSources).forEach(([configName, configSource]) => {
+    lines.push(`    configElements: {`)
+    Object.entries(configElements).forEach(([configName, configElement]) => {
       // configNamesAll.add(configName)
       const whitespace = '      '
-      lines.push(serializeConfigSource(configSource, configName, importStatements, whitespace, false))
+      lines.push(serializeConfigSource(configElement, configName, importStatements, whitespace, false))
     })
     lines.push(`    }`)
     lines.push('  };')
@@ -61,9 +61,9 @@ function generateSourceCodeOfPageConfigs(
   if (isDev && !isForClientSide) {
     const configFiles: Set<string> = new Set()
     pageConfigsData.forEach((pageConfig) => {
-      const { configSources, pageConfigFilePathAll } = pageConfig
-      Object.entries(configSources).forEach(([_configName, configSource]) => {
-        const { configEnv, codeFilePath2 } = configSource
+      const { configElements, pageConfigFilePathAll } = pageConfig
+      Object.entries(configElements).forEach(([_configName, configElement]) => {
+        const { configEnv, codeFilePath2 } = configElement
         if (configEnv === 'config-only' && codeFilePath2) {
           configFiles.add(codeFilePath2)
         }
@@ -80,7 +80,7 @@ function generateSourceCodeOfPageConfigs(
   }
 
   lines.push('export const pageConfigGlobal = {')
-  objectEntries(pageConfigGlobal).forEach(([configName, configSource]) => {
+  objectEntries(pageConfigGlobal).forEach(([configName, configElement]) => {
     if (configName === 'onBeforeRoute') {
       // if( isForClientSide && !isClientRouting ) return
     } else if (configName === 'onPrerenderStart') {
@@ -89,7 +89,7 @@ function generateSourceCodeOfPageConfigs(
       assert(false)
     }
     const whitespace = '  '
-    lines.push(serializeConfigSource(configSource, configName, importStatements, whitespace, true))
+    lines.push(serializeConfigSource(configElement, configName, importStatements, whitespace, true))
   })
   lines.push('};')
 
@@ -111,26 +111,26 @@ function generateSourceCodeOfPageConfigs(
 }
 
 function serializeConfigSource(
-  configSource: ConfigSource | null,
+  configElement: ConfigSource | null,
   configName: string,
   importStatements: string[],
   whitespace: string,
   eagerImport: boolean
 ) {
-  if (configSource === null) return `${whitespace}['${configName}']: null,`
+  if (configElement === null) return `${whitespace}['${configName}']: null,`
   assert(/^\s+$/.test(whitespace))
   const lines: string[] = []
   lines.push(`${whitespace}['${configName}']: {`)
-  const { configSrc, configDefinedAtFile, configEnv, codeFilePath2, configFilePath2, codeFileExport2 } = configSource
+  const { configSrc, configDefinedAtFile, configEnv, codeFilePath2, configFilePath2, codeFileExport2 } = configElement
   lines.push(`${whitespace}  configSrc: ${JSON.stringify(configSrc)},`)
   lines.push(`${whitespace}  configDefinedAtFile: ${JSON.stringify(configDefinedAtFile)},`)
   lines.push(`${whitespace}  codeFilePath2: ${JSON.stringify(codeFilePath2)},`)
   lines.push(`${whitespace}  codeFileExport2: ${JSON.stringify(codeFileExport2)},`)
   lines.push(`${whitespace}  configFilePath2: ${JSON.stringify(configFilePath2)},`)
   lines.push(`${whitespace}  configEnv: '${configEnv}',`)
-  if ('configValue' in configSource) {
+  if ('configValue' in configElement) {
     assert(!eagerImport)
-    const { configValue } = configSource
+    const { configValue } = configElement
     lines.push(`${whitespace}  configValue: ${JSON.stringify(configValue)}`)
   } else {
     assert(codeFilePath2)

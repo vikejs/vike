@@ -20,10 +20,10 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     configValues[configName] = codeFileExports.default
   })
 
-  Object.entries(pageConfig.configSources).map(([configName, configSource]) => {
-    if (configSource.codeFilePath2) return
+  Object.entries(pageConfig.configElements).map(([configName, configElement]) => {
+    if (configElement.codeFilePath2) return
     assert(!(configName in configValues))
-    configValues[configName] = configSource.configValue
+    configValues[configName] = configElement.configValue
   })
 
   objectAssign(pageConfig, { configValues })

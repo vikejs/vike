@@ -61,7 +61,7 @@ type PageConfigData = {
   pageConfigFilePathAll: string[]
   routeFilesystem: null | string
   routeFilesystemDefinedBy: string
-  configSources: Partial<Record<ConfigName, ConfigSource>>
+  configElements: Partial<Record<ConfigName, ConfigSource>>
 }
 
 type PageConfig = PageConfigData & {

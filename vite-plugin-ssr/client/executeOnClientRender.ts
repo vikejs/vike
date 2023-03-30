@@ -77,8 +77,8 @@ function getUrl(pageContext: { urlOriginal?: string }): string {
 
 function assertMissingHook(pageId: string, pageConfigs: PageConfig[], url: string) {
   const pageConfig = getPageConfig(pageId, pageConfigs)
-  assert(!pageConfig.configSources.onRenderClient?.configValue)
-  assert(pageConfig.configSources.clientRouting?.configValue === true)
+  assert(!pageConfig.configElements.onRenderClient?.configValue)
+  assert(pageConfig.configElements.clientRouting?.configValue === true)
 
   // We miss abstract page config files (that define onClientRender()) that don't apply to any concrete page config
   //  - A solution is to assertUsage() when an abstract page file doens't apply to any concrete page config
@@ -86,9 +86,9 @@ function assertMissingHook(pageId: string, pageConfigs: PageConfig[], url: strin
   let pageConfigFilesAll: string[] = []
   pageConfigs.forEach((pageConfig) => {
     pageConfigFilesAll.push(...pageConfig.pageConfigFilePathAll)
-    const configSource = pageConfig.configSources.onRenderClient
-    if (configSource && configSource.configValue) {
-      pageConfigFilesDefiningHook.push(configSource.configSrc)
+    const configElement = pageConfig.configElements.onRenderClient
+    if (configElement && configElement.configValue) {
+      pageConfigFilesDefiningHook.push(configElement.configSrc)
     }
   })
   pageConfigFilesAll = unique(pageConfigFilesAll)

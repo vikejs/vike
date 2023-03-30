@@ -56,7 +56,7 @@ function getPageRoutes(
 
         let pageRoute: null | PageRoute = null
         {
-          const routeConfig = pageConfig.configSources.route
+          const routeConfig = pageConfig.configElements.route
           if (routeConfig) {
             assert('configValue' in routeConfig) // Route files are eagerly loaded
             const route = routeConfig.configValue
@@ -67,7 +67,7 @@ function getPageRoutes(
             } else {
               assert(isCallable(route))
               let allowAsync = false
-              const allowSyncConfig = pageConfig.configSources.iKnowThePerformanceRisksOfAsyncRouteFunctions
+              const allowSyncConfig = pageConfig.configElements.iKnowThePerformanceRisksOfAsyncRouteFunctions
               if (allowSyncConfig) {
                 assert(!('codeFilePath' in allowSyncConfig)) // TODO: improve this?
                 const val = allowSyncConfig.configValue

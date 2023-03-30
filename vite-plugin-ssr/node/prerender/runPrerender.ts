@@ -234,14 +234,14 @@ async function collectDoNoPrerenderList(
   renderContext.pageConfigs.forEach((pageConfig) => {
     const prerenderConfigValue = getConfigValue(pageConfig, 'prerender', 'boolean')
     if (prerenderConfigValue === false) {
-      const configSource = pageConfig.configSources.prerender
-      assert(configSource)
-      assert(configSource.configValue === false)
+      const configElement = pageConfig.configElements.prerender
+      assert(configElement)
+      assert(configElement.configValue === false)
       doNotPrerenderList.push({
         pageId: pageConfig.pageId2,
         setByConfigName: 'prerender',
         setByConfigValue: false,
-        setByConfigSrc: configSource.configSrc
+        setByConfigSrc: configElement.configSrc
       })
     }
   })
@@ -317,7 +317,7 @@ async function callOnBeforePrerenderStartHooks(
   await Promise.all(
     renderContext.pageConfigs.map((pageConfig) =>
       concurrencyLimit(async () => {
-        if (!pageConfig.configSources.onBeforePrerenderStart) return
+        if (!pageConfig.configElements.onBeforePrerenderStart) return
         const codeFilePath = getCodeFilePath(pageConfig, 'onBeforePrerenderStart')
         assert(codeFilePath)
         const pageConfigLoaded = await loadPageCode(pageConfig, false)
@@ -515,10 +515,10 @@ async function callOnPrerenderStartHook(
 
   // V1 design
   if (renderContext.pageConfigs.length > 0) {
-    const configSource = renderContext.pageConfigGlobal.onPrerenderStart
-    if (configSource) {
-      const hookFn = configSource.configValue
-      const hookFilePath = configSource.codeFilePath2
+    const configElement = renderContext.pageConfigGlobal.onPrerenderStart
+    if (configElement) {
+      const hookFn = configElement.configValue
+      const hookFilePath = configElement.codeFilePath2
       assert(hookFilePath)
       if (hookFn) {
         onPrerenderStartHook = {

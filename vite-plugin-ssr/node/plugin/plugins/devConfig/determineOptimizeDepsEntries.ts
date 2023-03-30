@@ -13,8 +13,8 @@ async function determineOptimizeDepsEntries(config: ResolvedConfig, isDev: boole
   {
     const { pageConfigsData } = await getConfigData(config.root, true, false, (await getConfigVps(config)).extensions)
     pageConfigsData.forEach((data) => {
-      Object.values(data.configSources).forEach((configSource) => {
-        const { codeFilePath2, configEnv } = configSource
+      Object.values(data.configElements).forEach((configElement) => {
+        const { codeFilePath2, configEnv } = configElement
         if (codeFilePath2 && (configEnv === 'client-only' || configEnv === 'server-and-client')) {
           entries.push(getFilePathAbsolute(codeFilePath2, config))
         }

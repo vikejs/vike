@@ -14,11 +14,11 @@ function getConfigValue(
   configName: ConfigName,
   type: 'string' | 'boolean'
 ): null | unknown {
-  const configSource = pageConfig.configSources[configName]
-  if (!configSource || isNullish(pageConfig, configName)) {
+  const configElement = pageConfig.configElements[configName]
+  if (!configElement || isNullish(pageConfig, configName)) {
     return null
   }
-  const { configValue, configSrc } = configSource
+  const { configValue, configSrc } = configElement
   assertUsage(
     typeof configValue === type,
     `${configSrc} has an invalid type \`${typeof configValue}\`: is should be a ${type} instead`
@@ -27,14 +27,14 @@ function getConfigValue(
 }
 
 function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): null | string {
-  const configSource = pageConfig.configSources[configName]
-  if (!configSource || isNullish(pageConfig, configName)) {
+  const configElement = pageConfig.configElements[configName]
+  if (!configElement || isNullish(pageConfig, configName)) {
     return null
   }
-  if (configSource.codeFilePath2 !== null) {
-    return configSource.codeFilePath2
+  if (configElement.codeFilePath2 !== null) {
+    return configElement.codeFilePath2
   }
-  const { configValue, configSrc } = configSource
+  const { configValue, configSrc } = configElement
   assertUsage(
     typeof configValue === 'string',
     `${configSrc} has an invalid type \`${typeof configValue}\`: it should be a \`string\` instead`
@@ -43,17 +43,17 @@ function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): nu
 }
 
 function getSourceFilePath(pageConfig: PageConfig, configName: ConfigName): null | string {
-  const configSource = pageConfig.configSources[configName]
-  if (!configSource || isNullish(pageConfig, configName)) {
+  const configElement = pageConfig.configElements[configName]
+  if (!configElement || isNullish(pageConfig, configName)) {
     return null
   }
-  return configSource.configSrc
+  return configElement.configSrc
 }
 
 function isNullish(pageConfig: PageConfigData, configName: ConfigName): boolean {
-  const configSource = pageConfig.configSources[configName]
-  if (!configSource) return true
-  const { codeFilePath2, configValue } = configSource
+  const configElement = pageConfig.configElements[configName]
+  if (!configElement) return true
+  const { codeFilePath2, configValue } = configElement
   if (codeFilePath2) return false
   return configValue === null || configValue === undefined
 }

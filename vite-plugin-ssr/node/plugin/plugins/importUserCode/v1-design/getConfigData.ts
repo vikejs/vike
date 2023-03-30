@@ -159,20 +159,20 @@ async function loadConfigData(
       return isGlobal(c.configName)
     })
     objectEntries(globalConfigsDefinition).forEach(([configName, configDef]) => {
-      const configSource = resolveConfigSource(
+      const configElement = resolveConfigSource(
         configName,
         configDef,
         pageConfigFileGlobal ? [pageConfigFileGlobal] : [],
         userRootDir,
         configValueFilesRelevant
       )
-      if (!configSource) return
+      if (!configElement) return
       if (arrayIncludes(objectKeys(pageConfigGlobal), configName)) {
-        assert(!('configValue' in configSource))
-        pageConfigGlobal[configName] = configSource
+        assert(!('configValue' in configElement))
+        pageConfigGlobal[configName] = configElement
       } else {
-        assert('configValue' in configSource)
-        vikeConfig[configName] = configSource.configValue
+        assert('configValue' in configElement)
+        vikeConfig[configName] = configElement.configValue
       }
     })
   }
@@ -207,22 +207,22 @@ async function loadConfigData(
       assert(configName in configDefinitionsRelevant || configName === 'meta')
     })
 
-    let configSources: PageConfigData['configSources'] = {}
+    let configElements: PageConfigData['configElements'] = {}
     objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
-      const configSource = resolveConfigSource(
+      const configElement = resolveConfigSource(
         configName,
         configDef,
         pageConfigFilesRelevant,
         userRootDir,
         configValueFilesRelevant
       )
-      if (!configSource) return
-      configSources[configName as ConfigName] = configSource
+      if (!configElement) return
+      configElements[configName as ConfigName] = configElement
     })
 
-    configSources = applyEffects(configSources, configDefinitionsRelevant)
+    configElements = applyEffects(configElements, configDefinitionsRelevant)
 
-    const isErrorPage: boolean = !!configSources.isErrorPage?.configValue
+    const isErrorPage: boolean = !!configElements.isErrorPage?.configValue
 
     pageConfigsData.push({
       pageId2,
@@ -230,7 +230,7 @@ async function loadConfigData(
       routeFilesystemDefinedBy,
       pageConfigFilePathAll: pageConfigFilesRelevant.map((p) => p.pageConfigFilePath),
       routeFilesystem: isErrorPage ? null : routeFilesystem,
-      configSources
+      configElements
     })
   })
 
@@ -303,7 +303,7 @@ function resolveConfigSource(
       const configValueFile = configValueFiles[0]!
       const { configValueFilePath } = configValueFile
       const codeFileExport2 = 'default'
-      const configSource: ConfigSource = {
+      const configElement: ConfigSource = {
         configEnv: configDef.env,
         // TODO: rename codeFilePath2 to configValueFilePath?
         codeFilePath2: configValueFilePath,
@@ -313,9 +313,9 @@ function resolveConfigSource(
         configDefinedAtFile: configValueFilePath
       }
       if ('configValue' in configValueFile) {
-        configSource.configValue = configValueFile.configValue
+        configElement.configValue = configValueFile.configValue
       }
-      return configSource
+      return configElement
     }
   }
 
@@ -618,18 +618,18 @@ function mergeConfigDefinition(
 type ConfigSources = Record<string, ConfigSource>
 
 function applyEffects(
-  configSources: ConfigSources,
+  configElements: ConfigSources,
   configDefinitionsRelevant: ConfigDefinitionsExtended
 ): ConfigSources {
-  const configSourcesMod = { ...configSources }
+  const configElementsMod = { ...configElements }
 
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef.effect) return
     assertUsage(configDef.env === 'config-only', 'TODO')
-    const configSourceEffect = configSources[configName]
-    if (!configSourceEffect) return
-    assert('configValue' in configSourceEffect)
-    const { configValue, configDefinedAtFile } = configSourceEffect
+    const configElementEffect = configElements[configName]
+    if (!configElementEffect) return
+    assert('configValue' in configElementEffect)
+    const { configValue, configDefinedAtFile } = configElementEffect
     const configMod = configDef.effect({
       configValue,
       configDefinedAt: configDefinedAtFile // TODO: align naming
@@ -643,25 +643,25 @@ function applyEffects(
           assertUsage(Object.keys(configTargetModValue).length === 1, 'TODO')
           assertUsage(hasProp(configTargetModValue, 'env', 'string'), 'TODO')
           const configEnv = configTargetModValue.env as ConfigValueEnv // TODO: proper validation
-          configSourcesMod[configTargetName]!.configEnv = configEnv
+          configElementsMod[configTargetName]!.configEnv = configEnv
         })
       } else {
         assertConfigName(configName, Object.keys(configDefinitionsRelevant), `effect of TODO`)
-        const configSourceTargetOld = configSourcesMod[configName]
-        assert(configSourceTargetOld)
-        configSourcesMod[configName] = {
+        const configElementTargetOld = configElementsMod[configName]
+        assert(configElementTargetOld)
+        configElementsMod[configName] = {
           // TODO-begin
-          ...configSourceEffect,
-          configSrc: `${configSourceEffect} (side-effect)`,
+          ...configElementEffect,
+          configSrc: `${configElementEffect} (side-effect)`,
           // TODO-end
-          configEnv: configSourceTargetOld.configEnv,
+          configEnv: configElementTargetOld.configEnv,
           configValue: configModValue
         }
       }
     })
   })
 
-  return configSourcesMod
+  return configElementsMod
 }
 
 type PageConfigFile = {

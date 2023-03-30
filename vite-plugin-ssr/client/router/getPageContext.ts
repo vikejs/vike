@@ -221,7 +221,7 @@ async function onBeforeRenderServerSideExists(
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
     return (
       !!getCodeFilePath(pageConfig, 'onBeforeRender') &&
-      pageConfig.configSources.onBeforeRender!.configEnv === 'server-only'
+      pageConfig.configElements.onBeforeRender!.configEnv === 'server-only'
     )
   } else {
     const { hasOnBeforeRenderServerSideOnlyHook } = await analyzePageServerSide(
