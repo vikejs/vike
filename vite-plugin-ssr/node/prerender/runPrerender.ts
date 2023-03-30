@@ -55,7 +55,7 @@ type HtmlFile = {
   pageId: string | null
 }
 
-type DoNotPrerenderList = ({ pageId: string; setByConfigSrc: string } & (
+type DoNotPrerenderList = ({ pageId: string; setByConfigDefinedAt: string } & (
   | {
       // TODO/v1-release: remove 0.4 case
       setByConfigName: 'doNotPrerender'
@@ -241,7 +241,7 @@ async function collectDoNoPrerenderList(
         pageId: pageConfig.pageId,
         setByConfigName: 'prerender',
         setByConfigValue: false,
-        setByConfigSrc: configElement.configDefinedAt
+        setByConfigDefinedAt: configElement.configDefinedAt
       })
     }
   })
@@ -283,7 +283,7 @@ async function collectDoNoPrerenderList(
         // Don't pre-render `pageId`
         doNotPrerenderList.push({
           pageId,
-          setByConfigSrc: `${p.filePath} > \`export { doNotPrerender }\``,
+          setByConfigDefinedAt: `${p.filePath} > \`export { doNotPrerender }\``,
           setByConfigName: 'doNotPrerender',
           setByConfigValue: doNotPrerender
         })
@@ -769,10 +769,10 @@ function warnContradictoryNoPrerenderList(
       const isContradictory = !!doNotPrerenderListEntry && providedByHook
       if (!isContradictory) return
     }
-    const { setByConfigName, setByConfigValue, setByConfigSrc } = doNotPrerenderListEntry
+    const { setByConfigName, setByConfigValue, setByConfigDefinedAt } = doNotPrerenderListEntry
     assertUsage(
       false,
-      `The ${providedByHook.hookName}() hook defined by ${providedByHook.hookFilePath} returns the URL '${urlOriginal}', while ${setByConfigSrc} sets \`${setByConfigName}\` to \`${setByConfigValue}\`. This is contradictory: either don't set \`${setByConfigName}\` to \`${setByConfigValue}\` or remove the URL from the list of URLs to be pre-rendered.`
+      `The ${providedByHook.hookName}() hook defined by ${providedByHook.hookFilePath} returns the URL '${urlOriginal}', while ${setByConfigDefinedAt} sets \`${setByConfigName}\` to \`${setByConfigValue}\`. This is contradictory: either don't set \`${setByConfigName}\` to \`${setByConfigValue}\` or remove the URL from the list of URLs to be pre-rendered.`
     )
   })
 }
