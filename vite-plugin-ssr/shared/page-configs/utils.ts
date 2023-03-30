@@ -1,6 +1,5 @@
 export { getConfigValue }
 export { getCodeFilePath }
-export { getSourceFilePath }
 export { getPageConfig }
 
 import { assert, assertUsage } from '../utils'
@@ -40,14 +39,6 @@ function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): nu
     `${configDefinedAt} has an invalid type \`${typeof configValue}\`: it should be a \`string\` instead`
   )
   assertUsage(false, `${configDefinedAt} has an invalid value \`${configValue}\`: it should be a file path instead`)
-}
-
-function getSourceFilePath(pageConfig: PageConfig, configName: ConfigName): null | string {
-  const configElement = pageConfig.configElements[configName]
-  if (!configElement || isNullish(pageConfig, configName)) {
-    return null
-  }
-  return configElement.configDefinedAt
 }
 
 function isNullish(pageConfig: PageConfigData, configName: ConfigName): boolean {

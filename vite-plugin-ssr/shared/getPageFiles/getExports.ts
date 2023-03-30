@@ -10,7 +10,6 @@ import { assertDefaultExports, forbiddenDefaultExports } from './assertExports'
 import type { FileType } from './fileTypes'
 import type { PageConfigLoaded } from './../page-configs/PageConfig'
 import type { PageFile } from './getPageFileObject'
-import { getSourceFilePath } from '../page-configs/utils'
 
 // TODO/v1-release: remove
 type ExportsAll = Record<
@@ -73,7 +72,9 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
   if (pageConfig) {
     const { configValues } = pageConfig
     objectEntries(configValues).forEach(([configName, configValue]) => {
-      const configDefinedAt = getSourceFilePath(pageConfig, configName)
+      const configElement = pageConfig.configElements[configName]
+      assert(configElement)
+      const { configDefinedAt } = configElement
       assert(configDefinedAt)
 
       config[configName] = config[configName] ?? configValue
