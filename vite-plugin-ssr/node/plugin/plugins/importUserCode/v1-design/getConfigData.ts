@@ -309,7 +309,7 @@ function resolveConfigElement(
         codeFilePath2: configValueFilePath,
         codeFileExport2,
         configFilePath2: null,
-        configElem: `${configValueFilePath} > \`export ${codeFileExport2}\``,
+        configSrc: `${configValueFilePath} > \`export ${codeFileExport2}\``,
         configDefinedAtFile: configValueFilePath
       }
       if ('configValue' in configValueFile) {
@@ -341,7 +341,7 @@ function resolveConfigElement(
   if (!codeFile) {
     return {
       configFilePath2: configFilePath,
-      configElem: `${configFilePath} > ${configName}`,
+      configSrc: `${configFilePath} > ${configName}`,
       configDefinedAtFile: configFilePath,
       codeFilePath2: null,
       codeFileExport2: null,
@@ -361,7 +361,7 @@ function resolveConfigElement(
       configFilePath2: configFilePath,
       codeFilePath2: codeFilePath,
       codeFileExport2,
-      configElem: `${codeFilePath} > \`export ${codeFileExport2}\``,
+      configSrc: `${codeFilePath} > \`export ${codeFileExport2}\``,
       configDefinedAtFile: codeFilePath,
       configEnv: env
     }
@@ -652,7 +652,7 @@ function applyEffects(
         configElementsMod[configName] = {
           // TODO-begin
           ...configElementEffect,
-          configElem: `${configElementEffect} (side-effect)`,
+          configSrc: `${configElementEffect} (side-effect)`,
           // TODO-end
           configEnv: configElementTargetOld.configEnv,
           configValue: configModValue

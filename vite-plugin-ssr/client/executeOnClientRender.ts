@@ -88,7 +88,7 @@ function assertMissingHook(pageId: string, pageConfigs: PageConfig[], url: strin
     pageConfigFilesAll.push(...pageConfig.pageConfigFilePathAll)
     const configElement = pageConfig.configElements.onRenderClient
     if (configElement && configElement.configValue) {
-      pageConfigFilesDefiningHook.push(configElement.configElem)
+      pageConfigFilesDefiningHook.push(configElement.configSrc)
     }
   })
   pageConfigFilesAll = unique(pageConfigFilesAll)
