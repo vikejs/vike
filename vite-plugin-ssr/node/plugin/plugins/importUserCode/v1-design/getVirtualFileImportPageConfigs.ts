@@ -121,12 +121,12 @@ function serializeConfigElement(
   assert(/^\s+$/.test(whitespace))
   const lines: string[] = []
   lines.push(`${whitespace}['${configName}']: {`)
-  const { configSrc, configDefinedAtFile, configEnv, configValueFilePath, configFilePath2, configValueFileExport } = configElement
+  const { configSrc, configDefinedAtFile, configEnv, configValueFilePath, pageConfigFilePath, configValueFileExport } = configElement
   lines.push(`${whitespace}  configSrc: ${JSON.stringify(configSrc)},`)
   lines.push(`${whitespace}  configDefinedAtFile: ${JSON.stringify(configDefinedAtFile)},`)
   lines.push(`${whitespace}  configValueFilePath: ${JSON.stringify(configValueFilePath)},`)
   lines.push(`${whitespace}  configValueFileExport: ${JSON.stringify(configValueFileExport)},`)
-  lines.push(`${whitespace}  configFilePath2: ${JSON.stringify(configFilePath2)},`)
+  lines.push(`${whitespace}  pageConfigFilePath: ${JSON.stringify(pageConfigFilePath)},`)
   lines.push(`${whitespace}  configEnv: '${configEnv}',`)
   if ('configValue' in configElement) {
     assert(!eagerImport)

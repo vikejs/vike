@@ -33,17 +33,17 @@ type ConfigElementFile = {
   configDefinedAtFile: string
 } & (
   | {
-      configFilePath2: string
+      pageConfigFilePath: string
       configValueFilePath: null
       configValueFileExport: null
     }
   | {
-      configFilePath2: null
+      pageConfigFilePath: null
       configValueFilePath: string
       configValueFileExport: string
     }
   | {
-      configFilePath2: string
+      pageConfigFilePath: string
       configValueFilePath: string
       configValueFileExport: string
     }
