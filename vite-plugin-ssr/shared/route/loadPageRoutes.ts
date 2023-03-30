@@ -14,10 +14,10 @@ export type { RouteType }
 type PageRoute = {
   pageId: string
   comesFromV1PageConfig: boolean
-} & ( // TODO: rename pageRouteFilePath to routeSrc (since pageRouteFilePath can be configDefinedAt)
-  | { routeString: string; pageRouteFilePath: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
-  | { routeString: string; pageRouteFilePath: string; routeType: 'STRING' }
-  | { routeFunction: Function; pageRouteFilePath: string; allowAsync: boolean; routeType: 'FUNCTION' }
+} & (
+  | { routeString: string; routeDefinedAt: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
+  | { routeString: string; routeDefinedAt: string; routeType: 'STRING' }
+  | { routeFunction: Function; routeDefinedAt: string; allowAsync: boolean; routeType: 'FUNCTION' }
 )
 type PageRoutes = PageRoute[]
 type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
@@ -60,10 +60,10 @@ function getPageRoutes(
           if (routeConfig) {
             assert('configValue' in routeConfig) // Route files are eagerly loaded
             const route = routeConfig.configValue
-            const pageRouteFilePath = routeConfig.configDefinedAt
-            assert(pageRouteFilePath)
+            const routeDefinedAt = routeConfig.configDefinedAt
+            assert(routeDefinedAt)
             if (typeof route === 'string') {
-              pageRoute = { pageId, comesFromV1PageConfig, routeString: route, pageRouteFilePath, routeType: 'STRING' }
+              pageRoute = { pageId, comesFromV1PageConfig, routeString: route, routeDefinedAt, routeType: 'STRING' }
             } else {
               assert(isCallable(route))
               let allowAsync = false
@@ -78,7 +78,7 @@ function getPageRoutes(
                 pageId,
                 comesFromV1PageConfig,
                 routeFunction: route,
-                pageRouteFilePath,
+                routeDefinedAt,
                 routeType: 'FUNCTION',
                 allowAsync
               }
@@ -96,7 +96,7 @@ function getPageRoutes(
             routeFilesystemDefinedBy,
             comesFromV1PageConfig,
             routeString: routeFilesystem,
-            pageRouteFilePath: null,
+            routeDefinedAt: null,
             routeType: 'FILESYSTEM'
           }
         }
@@ -122,7 +122,7 @@ function getPageRoutes(
             pageId,
             comesFromV1PageConfig,
             routeString,
-            pageRouteFilePath: null,
+            routeDefinedAt: null,
             routeFilesystemDefinedBy: `${pageId}.page.*`,
             routeType: 'FILESYSTEM'
           })
@@ -140,7 +140,7 @@ function getPageRoutes(
               pageId,
               comesFromV1PageConfig,
               routeString,
-              pageRouteFilePath: filePath,
+              routeDefinedAt: filePath,
               routeType: 'STRING'
             })
             return
@@ -160,7 +160,7 @@ function getPageRoutes(
               pageId,
               comesFromV1PageConfig,
               routeFunction,
-              pageRouteFilePath: filePath,
+              routeDefinedAt: filePath,
               allowAsync,
               routeType: 'FUNCTION'
             })

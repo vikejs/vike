@@ -61,13 +61,13 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
     .map((pageRoute) => {
       let routeStr: string
       let routeTypeSrc: 'Route String' | 'Route Function' | 'Filesystem Route'
-      let routeDefinedByStr: string
+      let routeDefinedBy: string
       if (pageRoute.routeType === 'FILESYSTEM') {
         assert(pageRoute.routeFilesystemDefinedBy)
-        routeDefinedByStr = pageRoute.routeFilesystemDefinedBy
+        routeDefinedBy = pageRoute.routeFilesystemDefinedBy
       } else {
-        assert(pageRoute.pageRouteFilePath)
-        routeDefinedByStr = pageRoute.pageRouteFilePath
+        assert(pageRoute.routeDefinedAt)
+        routeDefinedBy = pageRoute.routeDefinedAt
       }
       if (pageRoute.routeType === 'STRING') {
         routeStr = pageRoute.routeString
@@ -79,8 +79,8 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
         routeStr = pageRoute.routeString
         routeTypeSrc = 'Filesystem Route'
       }
-      assert(routeStr && routeTypeSrc && routeDefinedByStr)
-      return { routeStr, routeTypeSrc, routeDefinedByStr }
+      assert(routeStr && routeTypeSrc && routeDefinedBy)
+      return { routeStr, routeTypeSrc, routeDefinedBy }
     })
     .sort((e1, e2) => {
       if (e1.routeTypeSrc !== 'Route Function' && e2.routeTypeSrc === 'Route Function') {
@@ -96,21 +96,21 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
     {
       routeStr: 'ROUTE',
       routeTypeSrc: 'ROUTE TYPE',
-      routeDefinedByStr: 'DEFINED BY'
+      routeDefinedBy: 'DEFINED AT'
     },
     ...entries
   ]
 
   const column1Width = 2 + Math.max(...lines.map(({ routeStr }) => routeStr.length))
   const column2Width = 2 + Math.max(...lines.map(({ routeTypeSrc }) => routeTypeSrc.length))
-  const column3Width = 2 + Math.max(...lines.map(({ routeDefinedByStr }) => routeDefinedByStr.length))
+  const column3Width = 2 + Math.max(...lines.map(({ routeDefinedBy }) => routeDefinedBy.length))
 
   return lines
-    .map(({ routeStr, routeTypeSrc, routeDefinedByStr }, i) => {
+    .map(({ routeStr, routeTypeSrc, routeDefinedBy }, i) => {
       let cell1 = routeStr.padEnd(column1Width, ' ')
       if (i !== 0) cell1 = pc.bold(cell1)
       let cell2 = routeTypeSrc.padEnd(column2Width, ' ')
-      let cell3 = routeDefinedByStr.padEnd(column3Width, ' ')
+      let cell3 = routeDefinedBy.padEnd(column3Width, ' ')
       if (i === 0) {
         cell1 = pc.gray(cell1)
         cell2 = pc.gray(cell2)

@@ -8,7 +8,7 @@ async function resolveRouteFunction(
   routeFunction: Function,
   allowAsync: boolean,
   pageContext: PageContextUrls & PageContextUrlSource,
-  pageRouteFilePath: string
+  routeDefinedAt: string
 ): Promise<null | {
   precedence: number | null
   routeParams: Record<string, string>
@@ -17,7 +17,7 @@ async function resolveRouteFunction(
   let result: unknown = routeFunction(pageContext)
   assertUsage(
     !isPromise(result) || allowAsync,
-    `The Route Function ${pageRouteFilePath} returned a promise; async route functions are opt-in, see https://vite-plugin-ssr.com/route-function#async`
+    `The Route Function ${routeDefinedAt} returned a promise; async route functions are opt-in, see https://vite-plugin-ssr.com/route-function#async`
   )
   result = await result
   if (result === false) {
@@ -28,7 +28,7 @@ async function resolveRouteFunction(
   }
   assertUsage(
     isPlainObject(result),
-    `The Route Function ${pageRouteFilePath} should return a boolean or a plain JavaScript object, instead it returns \`${
+    `The Route Function ${routeDefinedAt} should return a boolean or a plain JavaScript object, instead it returns \`${
       hasProp(result, 'constructor') ? result.constructor : result
     }\`.`
   )
@@ -37,7 +37,7 @@ async function resolveRouteFunction(
     const { match } = result
     assertUsage(
       typeof match === 'boolean',
-      `The \`match\` value returned by the Route Function ${pageRouteFilePath} should be a boolean.`
+      `The \`match\` value returned by the Route Function ${routeDefinedAt} should be a boolean.`
     )
     if (!match) {
       return null
@@ -49,11 +49,11 @@ async function resolveRouteFunction(
     precedence = result.precedence
     assertUsage(
       typeof precedence === 'number',
-      `The \`precedence\` value returned by the Route Function ${pageRouteFilePath} should be a number.`
+      `The \`precedence\` value returned by the Route Function ${routeDefinedAt} should be a number.`
     )
   }
 
-  assertRouteParams(result, `The \`routeParams\` object returned by the Route Function ${pageRouteFilePath} should`)
+  assertRouteParams(result, `The \`routeParams\` object returned by the Route Function ${routeDefinedAt} should`)
   const routeParams: Record<string, string> = result.routeParams || {}
 
   assertUsage(
@@ -65,7 +65,7 @@ async function resolveRouteFunction(
   Object.keys(result).forEach((key) => {
     assertUsage(
       key === 'match' || key === 'routeParams' || key === 'precedence',
-      `The Route Function ${pageRouteFilePath} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'routeParams', 'precedence'].`
+      `The Route Function ${routeDefinedAt} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'routeParams', 'precedence'].`
     )
   })
 
