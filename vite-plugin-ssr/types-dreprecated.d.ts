@@ -1,4 +1,4 @@
-// Same as public-types.ts but with deprecation notice.
+// Same as ./types.d.ts but with deprecation notice.
 
 export type {
   PageContextBuiltIn,
@@ -17,7 +17,7 @@ import type {
   Config as Config_,
   Env as Env_,
   ConfigEntries as ConfigEntries_
-} from './public-types'
+} from './types.d'
 
 /** @deprecated All types have been moved to `vite-plugin-ssr/types`.
  * Replace:
