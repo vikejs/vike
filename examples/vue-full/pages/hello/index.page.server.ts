@@ -1,4 +1,4 @@
-import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 import { names } from './names'
 
 export { onBeforeRender }

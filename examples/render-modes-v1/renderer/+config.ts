@@ -1,4 +1,4 @@
-import type { Config, Env } from 'vite-plugin-ssr'
+import type { Config, Env } from 'vite-plugin-ssr/types'
 
 export default {
   clientRouting: true,

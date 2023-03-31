@@ -2,7 +2,7 @@ export default onBeforeRender
 
 import fetch from 'cross-fetch'
 import { filterMovieData } from '../filterMovieData'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 import type { MovieDetails } from '../types'
 
 async function onBeforeRender(pageContext: PageContextBuiltIn) {

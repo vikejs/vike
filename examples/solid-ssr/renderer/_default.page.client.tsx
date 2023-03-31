@@ -13,7 +13,7 @@ import type {
   // When using Server Routing
   PageContextBuiltInClientWithServerRouting as PageContextBuiltInClient
   //*/
-} from 'vite-plugin-ssr'
+} from 'vite-plugin-ssr/types'
 import type { PageContext } from './types'
 
 let layoutReady = false

@@ -65,7 +65,7 @@ Move your global configurations to `/renderer/+config.ts`:
 ```ts
 // /renderer/+config.ts
 
-import type { Config } from 'vite-plugin-ssr'
+import type { Config } from 'vite-plugin-ssr/types'
 
 export default {
   clientRouting: true,
@@ -196,7 +196,7 @@ You define custom configs by using `meta`:
 ```ts
 // /renderer/+config.ts
 
-import type { Config } from 'vite-plugin-ssr'
+import type { Config } from 'vite-plugin-ssr/types'
 
 export default {
   meta: {
@@ -244,7 +244,7 @@ If you have `onBeforeRender()` hooks defined in `.page.js` instead of `.page.ser
 ```ts
 // /renderer/+config.js
 
-import type { Config } from 'vite-plugin-ssr'
+import type { Config } from 'vite-plugin-ssr/types'
 
 export default {
   meta: {

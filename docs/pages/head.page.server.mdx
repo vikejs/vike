@@ -224,7 +224,7 @@ Head libraries already sanitize the HTML `<head>`, this means we can skip `escap
 // /renderer/_default.page.server.js
 // Environment: Node.js
 
-import { dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { renderToHtml } from 'some-ui-framework'
 
 export async function render(pageContext) {

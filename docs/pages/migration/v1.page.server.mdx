@@ -1,11 +1,22 @@
 1. Update to the latest `0.4` version (`0.4.x`), follow the deprecation warnings which include instructions of how to update outdated code. (TODO/v1-release: replace `x` with actual version number.)
-1. All types are now exported at `'vite-plugin-ssr'`, and note that `PageContextBuiltIntClient` has been renamed:
+1. All types have been moved to `'vite-plugin-ssr/types'`:
+   ```diff
+   - import type { SomeType } from 'vite-plugin-ssr/any-path'
+   + import type { SomeType } from 'vite-plugin-ssr/types'
+   ```
+   And `PageContextBuiltIntClient` has been renamed to `PageContextBuiltIntClientWithClientRouting` and `PageContextBuiltIntClientWithServerRouting`:
    ```diff
    - import type { PageContextBuiltIntClient } from 'vite-plugin/client/router'
-   + import type { PageContextBuiltIntClientWithClientRouting as PageContextBuiltIntClient } from 'vite-plugin-ssr'
+   + import type {
+   +   PageContextBuiltIntClientWithClientRouting as
+   +   PageContextBuiltIntClient
+   + } from 'vite-plugin-ssr/types'
 
    - import type { PageContextBuiltIntClient } from 'vite-plugin/client'
-   + import type { PageContextBuiltIntClientWithServerRouting as PageContextBuiltIntClient } from 'vite-plugin-ssr'
+   + import type {
+   +   PageContextBuiltIntClientWithServerRouting as
+   +   PageContextBuiltIntClient
+   + } from 'vite-plugin-ssr/types'
    ```
 
 That's it! Welcome to the `v1` release.
