@@ -7,6 +7,7 @@ export type { PageConfigGlobalData }
 export type { ConfigName }
 export type { ConfigElement }
 
+/** See https://vite-plugin-ssr/meta */
 type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | '_routing-env' | 'config-only'
 
 type ConfigName =

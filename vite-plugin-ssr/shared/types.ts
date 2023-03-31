@@ -5,16 +5,25 @@ export { PageContextBuiltInClientWithServerRouting }
 import type { PageContextUrls } from './addComputedUrlProps'
 import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports'
 
+/** See https://vite-plugin-ssr.com/pageContext */
 type PageContextBuiltIn<Page = any> = {
   /** The `export { Page }` of your `.page.js` file, see https://vite-plugin-ssr.com/Page */
   Page: Page
-  /** Route Parameters, e.g. `pageContext.routeParams.productId` for a Route String `/product/@productId`, see https://vite-plugin-ssr.com/route-string */
+  /** Route Parameters, e.g. `pageContext.routeParams.productId` for a Route String `/product/@productId`.
+   *
+   * See https://vite-plugin-ssr.com/route-string */
   routeParams: Record<string, string>
-  /** The page's config values */
+  /** The page's configuration.
+   *
+   * See https://vite-plugin-ssr.com/config */
   config: Record<string, unknown>
-  /** All configs relevant to the page */
+  /** The page's configuration, including the configs origin and overriden configs.
+   *
+   * See https://vite-plugin-ssr.com/config  */
   configEntries: ConfigEntries
-  /** Custom Exports/Hooks, see https://vite-plugin-ssr.com/exports */
+  /** Custom Exports/Hooks.
+   *
+   * See https://vite-plugin-ssr.com/exports */
   exports: Record<string, unknown>
   /** Same as `pageContext.exports` but cumulative */
   exportsAll: ExportsAll
@@ -32,6 +41,7 @@ type PageContextBuiltIn<Page = any> = {
   pageExports: Record<string, unknown>
 } & PageContextUrls
 
+/** See https://vite-plugin-ssr.com/pageContext */
 type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContextBuiltIn<Page>> &
   Pick<
     PageContextBuiltIn<Page>,
@@ -56,6 +66,7 @@ type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContext
     isBackwardNavigation: boolean | null
   }
 
+/** See https://vite-plugin-ssr.com/pageContext */
 type PageContextBuiltInClientWithServerRouting<Page = any> = Partial<PageContextBuiltIn<Page>> &
   Pick<PageContextBuiltIn<Page>, 'Page' | 'pageExports' | 'exports'> & {
     /**

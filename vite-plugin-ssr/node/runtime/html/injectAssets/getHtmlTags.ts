@@ -17,6 +17,7 @@ import type { PageConfig } from '../../../../shared/page-configs/PageConfig'
 
 type PreloadFilter = null | ((assets: InjectFilterEntry[]) => InjectFilterEntry[])
 type PreloadFilterInject = false | 'HTML_BEGIN' | 'HTML_END'
+/** See https://vite-plugin-ssr.com/injectFilter */
 type InjectFilterEntry = {
   src: string
   assetType: null | PageAsset['assetType']

@@ -27,6 +27,7 @@ type ExportsAll = Record<
     _filePath: string
   }[]
 >
+/** See `pageContext.configEntries` at https://vite-plugin-ssr.com/config */
 type ConfigEntries = Record<
   string,
   {
