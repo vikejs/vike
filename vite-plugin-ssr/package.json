@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-ssr",
-  "version": "0.4.109",
+  "version": "0.4.110",
   "dependencies": {
     "@brillout/import": "^0.2.1",
     "@brillout/json-serializer": "^0.5.3",
@@ -106,7 +106,9 @@
   },
   "typesVersions": {
     "*": {
-      "types": ["./dist/cjs/node/public-types"]
+      "types": [
+        "./dist/cjs/node/public-types"
+      ]
     }
   },
   "files": [

@@ -1,3 +1,13 @@
+## [0.4.110](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.109...v0.4.110) (2023-03-31)
+
+
+### Bug Fixes
+
+* add JSDoc ([be87309](https://github.com/brillout/vite-plugin-ssr/commit/be87309816a80ca8b77a011d193959222257ef9f))
+* workaround TypeScript auto-importing re-export target ([9f39733](https://github.com/brillout/vite-plugin-ssr/commit/9f397335f15a1c6bc3bdeeefc4907afef359d027))
+
+
+
 ## [0.4.109](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.108...v0.4.109) (2023-03-31)
 
 
