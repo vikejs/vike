@@ -2,8 +2,8 @@ export { PageContextBuiltIn }
 export { PageContextBuiltInClientWithClientRouting }
 export { PageContextBuiltInClientWithServerRouting }
 
-import type { PageContextUrls } from '../addComputedUrlProps'
-import type { ConfigEntries, ExportsAll } from '../getPageFiles/getExports'
+import type { PageContextUrls } from './addComputedUrlProps'
+import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports'
 
 type PageContextBuiltIn<Page = any> = {
   /** The `export { Page }` of your `.page.js` file, see https://vite-plugin-ssr.com/Page */

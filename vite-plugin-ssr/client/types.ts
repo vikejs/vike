@@ -1,5 +1,5 @@
 // TODO/v1-release: remove this file
-import type { PageContextBuiltInClientWithServerRouting } from '../shared/types/PageContextBuiltIn'
+import type { PageContextBuiltInClientWithServerRouting } from '../shared/types'
 /** @deprecated
  * Replace:
  *   ```
