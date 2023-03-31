@@ -1,5 +1,3 @@
-TODO: vite-plugin-ssr/types
-
 TODO: assert that two import statements in +config.js shouldn't land in different environments
 TODO: if config isn't a file path then assert that it's serialazable
   - remove c_code

@@ -1,6 +1,5 @@
 export { replaceImportStatements }
 export { parseImportMacro }
-export { isImportMacro }
 
 // Playground: https://github.com/brillout/acorn-playground
 
@@ -8,7 +7,7 @@ import { parse } from 'acorn'
 import type { Program, Identifier } from 'estree'
 import { assert } from '../../../utils'
 
-function replaceImportStatements(code: string): string {
+function replaceImportStatements(code: string): { code: string; importStaments: string[] } {
   const { body } = parse(code, {
     ecmaVersion: 'latest',
     sourceType: 'module'
@@ -49,17 +48,18 @@ function replaceImportStatements(code: string): string {
   })
 
   const codeMod = spliceMany(code, spliceOperations)
-  return codeMod
+  return { code: codeMod, importStaments: [] }
 }
 
-function getImportMacro({ importPath, importName }: { importPath: string; importName: string }): string {
+type ImportMacro = { importPath: string; importName: string }
+function getImportMacro({ importPath, importName }: ImportMacro): string {
   return `__import|${importPath}|${importName}`
 }
-function isImportMacro(str: string): boolean {
-  return str.startsWith('__import|')
-}
-function parseImportMacro(importMacro: string): { importPath: string; importName: string } {
-  const parts = importMacro.split('|')
+function parseImportMacro(str: string): null | ImportMacro {
+  if (str.startsWith('__import|')) {
+    return null
+  }
+  const parts = str.split('|')
   assert(parts[0] === '__import')
   assert(parts.length >= 3)
   const importName = parts[parts.length - 1]!

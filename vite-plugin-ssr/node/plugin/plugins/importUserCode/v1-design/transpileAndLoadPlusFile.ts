@@ -10,7 +10,7 @@ import { replaceImportStatements } from './replaceImportStatements'
 
 assertIsVitePluginCode()
 
-type Result = { exports: Record<string, unknown> } | { err: unknown }
+type Result = { fileExports: Record<string, unknown> } | { err: unknown }
 
 async function transpileAndLoadPageConfig(filePathAbsolute: string): Promise<Result> {
   return transpileAndLoadPlusFile(filePathAbsolute, true)
@@ -33,14 +33,15 @@ async function transpileAndLoadPlusFile(filePathAbsolute: string, isPageConfig: 
   }
   let { code } = buildResult
   if (isPageConfig) {
-    code = replaceImportStatements(code)
+    const res = replaceImportStatements(code)
+    code = res.code
   }
   const filePathTmp = getFilePathTmp(filePathAbsolute)
   fs.writeFileSync(filePathTmp, code)
   const clean = () => fs.unlinkSync(filePathTmp)
-  let exports: Record<string, unknown> = {}
+  let fileExports: Record<string, unknown> = {}
   try {
-    exports = await import_(filePathTmp)
+    fileExports = await import_(filePathTmp)
   } catch (err) {
     return { err }
   } finally {
@@ -49,8 +50,8 @@ async function transpileAndLoadPlusFile(filePathAbsolute: string, isPageConfig: 
   // Return a plain JavaScript object
   //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
   //  - We don't need this special object
-  exports = { ...exports }
-  return { exports }
+  fileExports = { ...fileExports }
+  return { fileExports }
 }
 
 async function buildFile(filePathAbsolute: string, { bundle }: { bundle: boolean }) {

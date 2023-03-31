@@ -35,7 +35,7 @@ import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import { determineRouteFromFilesystemPath } from './getConfigData/determineRouteFromFilesystemPath'
 import { determinePageId } from './getConfigData/determinePageId'
 import { transpileAndLoadPageConfig, transpileAndLoadConfigValueFile } from './transpileAndLoadPlusFile'
-import { isImportMacro, parseImportMacro } from './replaceImportStatements'
+import { parseImportMacro } from './replaceImportStatements'
 
 assertIsVitePluginCode()
 
@@ -394,12 +394,12 @@ function getCodeFilePath(
     return null
   }
 
-  const isMacro = isImportMacro(configValue)
+  const importMacro = parseImportMacro(configValue)
 
   let codeFilePath: string
   let configValueFileExport: string
-  if (isMacro) {
-    const { importPath, importName } = parseImportMacro(configValue)
+  if (importMacro) {
+    const { importPath, importName } = importMacro
     codeFilePath = path.posix.join(userRootDir, path.posix.dirname(pageConfigFilePath), toPosixPath(importPath))
     configValueFileExport = importName
   } else {
@@ -425,7 +425,7 @@ function getCodeFilePath(
   if (!enforce && !fileExists) return null
 
   // TODO: remove
-  if (!isMacro) {
+  if (!importMacro) {
     assertCodeFilePathConfigValue(configValue, pageConfigFilePath, codeFilePath, fileExists, configName)
   }
 
@@ -728,7 +728,7 @@ async function loadConfigValueFile(plusFile: FoundFile, configDefinitions: Confi
   if ('err' in result) {
     throw result.err
   }
-  const fileExports = result.exports
+  const { fileExports } = result
   assertDefaultExportUnknown(fileExports, filePathRelativeToUserRootDir)
   const configValue = fileExports.default
   objectAssign(configValueFile, { configValue })
@@ -756,7 +756,7 @@ async function findAndLoadPageConfigFiles(
         if ('err' in result) {
           return { err: result.err }
         }
-        return { pageConfigFilePath: filePathRelativeToUserRootDir, pageConfigFileExports: result.exports }
+        return { pageConfigFilePath: filePathRelativeToUserRootDir, pageConfigFileExports: result.fileExports }
       })
   )
   for (const result of results) {
