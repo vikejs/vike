@@ -17,13 +17,6 @@ import type { PageConfig } from '../../../../shared/page-configs/PageConfig'
 
 type PreloadFilter = null | ((assets: InjectFilterEntry[]) => InjectFilterEntry[])
 type PreloadFilterInject = false | 'HTML_BEGIN' | 'HTML_END'
-type InjectFilterEntry = {
-  src: string
-  assetType: null | PageAsset['assetType']
-  mediaType: null | PageAsset['mediaType']
-  isEntry: boolean
-  inject: PreloadFilterInject
-}
 
 type HtmlTag = {
   htmlTag: string | (() => string)

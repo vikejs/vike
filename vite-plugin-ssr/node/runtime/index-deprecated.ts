@@ -1,7 +1,8 @@
 // TODO/v1-release: remove this file and package.json#exports["."]
 
 export * from './index-common'
-export * from '../../types-dreprecated.d'
+// @ts-expect-error
+export * from '../../../types-dreprecated.d'
 
 import { assertWarning } from './utils'
 import pc from 'picocolors'

@@ -124,6 +124,7 @@
     "server.js",
     "server.d.ts",
     "types.d.ts",
+    "types-dreprecated.d.ts",
     "__internal.js",
     "__internal.d.ts",
     "__internal/setup.js",
