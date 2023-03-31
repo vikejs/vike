@@ -1,3 +1,14 @@
+## [0.4.109](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.108...v0.4.109) (2023-03-31)
+
+
+### Bug Fixes
+
+* [V1 Design] rename `pageContext.configEntries[number].configOrigin` -> `pageContext.configEntries[number].configDefinedAt` ([b46df9d](https://github.com/brillout/vite-plugin-ssr/commit/b46df9d55208f4bda8d1a14501a9165b0764dd6f))
+* [V1 Design] rename `pageContext.configList` -> `pageContext.configEntries` ([c5e4215](https://github.com/brillout/vite-plugin-ssr/commit/c5e4215a45013547ecf04ca0afe8e3aac22d3e86))
+* move all types to `vite-plugin-ssr/types` ([d36bfcf](https://github.com/brillout/vite-plugin-ssr/commit/d36bfcf7c81496065af3833f8b122d1e8a17e041))
+
+
+
 ## [0.4.108](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.107...v0.4.108) (2023-03-29)
 
 
