@@ -1,5 +1,10 @@
 // Same as public-types.ts but with deprecation notice.
 
+// TODO/v1-release:
+//  - remove this file
+//  - create types/tsconfig.json => dist/types/
+//  - remove all `.d.ts` from dist/cjs/ and dist/esm/
+
 export type {
   PageContextBuiltIn,
   PageContextBuiltInClientWithClientRouting,

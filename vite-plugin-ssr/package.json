@@ -104,6 +104,11 @@
       "types": "./dist/cjs/node/runtime/page-files/setup.d.ts"
     }
   },
+  "typesVersions": {
+    "*": {
+      "types": ["./dist/cjs/node/public-types"]
+    }
+  },
   "files": [
     "dist/cjs/",
     "dist/esm/",
