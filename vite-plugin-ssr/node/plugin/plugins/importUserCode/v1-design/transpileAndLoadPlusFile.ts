@@ -15,7 +15,7 @@ import {
   unique,
   assertWarning
 } from '../../../utils'
-import { isImportMacro, replaceImportStatements, type FileImport } from './replaceImportStatements'
+import { isImportData, replaceImportStatements, type FileImport } from './replaceImportStatements'
 
 assertIsVitePluginCode()
 
@@ -135,9 +135,9 @@ function assertFileImports(
   assertDefaultExportObject(fileExports, filePathRelativeToUserRootDir)
   Object.values(fileExports.default).forEach((exportVal) => {
     if (typeof exportVal !== 'string') return
-    if (!isImportMacro(exportVal)) return
-    const importMacro = exportVal
-    const found = fileImports.filter((fi) => fi.data === importMacro)
+    if (!isImportData(exportVal)) return
+    const importData = exportVal
+    const found = fileImports.filter((fi) => fi.data === importData)
     assert(found.length === 1)
     found[0]!.isReExported = true
   })

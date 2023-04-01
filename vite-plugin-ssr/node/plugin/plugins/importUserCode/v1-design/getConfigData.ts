@@ -35,7 +35,7 @@ import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import { determineRouteFromFilesystemPath } from './getConfigData/determineRouteFromFilesystemPath'
 import { determinePageId } from './getConfigData/determinePageId'
 import { transpileAndLoadPageConfig, transpileAndLoadConfigValueFile } from './transpileAndLoadPlusFile'
-import { parseImportMacro } from './replaceImportStatements'
+import { parseImportData } from './replaceImportStatements'
 
 assertIsVitePluginCode()
 
@@ -394,12 +394,12 @@ function getCodeFilePath(
     return null
   }
 
-  const importMacro = parseImportMacro(configValue)
+  const importData = parseImportData(configValue)
 
   let codeFilePath: string
   let configValueFileExport: string
-  if (importMacro) {
-    const { importPath, importName } = importMacro
+  if (importData) {
+    const { importPath, importName } = importData
     codeFilePath = path.posix.join(userRootDir, path.posix.dirname(pageConfigFilePath), toPosixPath(importPath))
     configValueFileExport = importName
   } else {
@@ -425,7 +425,7 @@ function getCodeFilePath(
   if (!enforce && !fileExists) return null
 
   // TODO: remove
-  if (!importMacro) {
+  if (!importData) {
     assertCodeFilePathConfigValue(configValue, pageConfigFilePath, codeFilePath, fileExists, configName)
   }
 

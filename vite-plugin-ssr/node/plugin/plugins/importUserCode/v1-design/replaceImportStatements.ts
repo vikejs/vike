@@ -1,6 +1,6 @@
 export { replaceImportStatements }
-export { parseImportMacro }
-export { isImportMacro }
+export { parseImportData }
+export { isImportData }
 export type { FileImport }
 
 // Playground: https://github.com/brillout/acorn-playground
@@ -46,11 +46,11 @@ function replaceImportStatements(code: string): { code: string; fileImports: Fil
         }
         return importVarName
       })()
-      const importMacro = getImportMacro({ importPath, importName })
-      replacement += `const ${importVarName} = '${importMacro}';`
+      const importData = serializeImportData({ importPath, importName })
+      replacement += `const ${importVarName} = '${importData}';`
       fileImports.push({
         code: importCode,
-        data: importMacro,
+        data: importData,
         importVarName
       })
     })
@@ -67,15 +67,15 @@ function replaceImportStatements(code: string): { code: string; fileImports: Fil
   return { code: codeMod, fileImports }
 }
 
-type ImportMacro = { importPath: string; importName: string }
-function getImportMacro({ importPath, importName }: ImportMacro): string {
+type ImportData = { importPath: string; importName: string }
+function serializeImportData({ importPath, importName }: ImportData): string {
   return `__import|${importPath}|${importName}`
 }
-function isImportMacro(str: string): boolean {
+function isImportData(str: string): boolean {
   return str.startsWith('__import|')
 }
-function parseImportMacro(str: string): null | ImportMacro {
-  if (!isImportMacro(str)) {
+function parseImportData(str: string): null | ImportData {
+  if (!isImportData(str)) {
     return null
   }
   const parts = str.split('|')
