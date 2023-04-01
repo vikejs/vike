@@ -100,7 +100,8 @@ async function buildFile(filePathAbsolute: string, { bundle }: { bundle: boolean
     options.bundle = true
     options.packages = 'external'
   } else {
-    // Avoid dead-code elimination to ensure unused imports aren't removed
+    // Avoid dead-code elimination to ensure unused imports aren't removed.
+    // Esbuild still sometimes removes unused imports because of TypeScript: https://github.com/evanw/esbuild/issues/3034
     options.treeShaking = false
   }
 
