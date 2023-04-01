@@ -56,7 +56,7 @@ function getImportMacro({ importPath, importName }: ImportMacro): string {
   return `__import|${importPath}|${importName}`
 }
 function parseImportMacro(str: string): null | ImportMacro {
-  if (str.startsWith('__import|')) {
+  if (!str.startsWith('__import|')) {
     return null
   }
   const parts = str.split('|')
