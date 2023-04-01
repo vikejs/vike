@@ -752,7 +752,7 @@ async function findAndLoadPageConfigFiles(
     plusFiles
       .filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
       .map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
-        const result = await transpileAndLoadPageConfig(filePathAbsolute)
+        const result = await transpileAndLoadPageConfig(filePathAbsolute, filePathRelativeToUserRootDir)
         if ('err' in result) {
           return { err: result.err }
         }
