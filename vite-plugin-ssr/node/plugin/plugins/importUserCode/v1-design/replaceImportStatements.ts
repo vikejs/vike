@@ -69,20 +69,20 @@ function replaceImportStatements(code: string): { code: string; fileImports: Fil
 
 type ImportData = { importPath: string; importName: string }
 function serializeImportData({ importPath, importName }: ImportData): string {
-  return `__import|${importPath}|${importName}`
+  return `__file:${importPath}:${importName}`
 }
 function isImportData(str: string): boolean {
-  return str.startsWith('__import|')
+  return str.startsWith('__file:')
 }
 function parseImportData(str: string): null | ImportData {
   if (!isImportData(str)) {
     return null
   }
-  const parts = str.split('|')
-  assert(parts[0] === '__import')
+  const parts = str.split(':')
+  assert(parts[0] === '__file')
   assert(parts.length >= 3)
   const importName = parts[parts.length - 1]!
-  const importPath = parts.slice(1, -1).join('|')
+  const importPath = parts.slice(1, -1).join(':')
   return { importPath, importName }
 }
 
