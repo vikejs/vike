@@ -2,8 +2,8 @@
 
 export { suppressRollupWarning }
 
-import type { Plugin } from 'vite'
-import type { RollupWarning } from 'rollup'
+import type { Plugin, Rollup } from 'vite'
+type RollupWarning = Rollup.RollupWarning
 
 function suppressRollupWarning(): Plugin {
   return {
