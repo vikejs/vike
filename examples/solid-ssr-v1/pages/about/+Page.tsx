@@ -1,7 +1,5 @@
 import { Component } from 'solid-js'
 
-export { Page }
-
 const Page: Component = () => {
   return (
     <>
@@ -10,3 +8,5 @@ const Page: Component = () => {
     </>
   )
 }
+
+export default Page

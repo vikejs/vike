@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noEmit": true,
+    "target": "ES2018",
+    "module": "ESNext",
+    "composite": false,
+    "outDir": "./dist",
+    "useUnknownInCatchVariables": false,
+    "noUnusedLocals": false,
+    "noImplicitAny": false,
+    "declaration": true,
+    "importHelpers": true,
+    "allowJs": true,
+    "alwaysStrict": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    "strict": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "pretty": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "skipLibCheck": true,
+    "removeComments": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "#/*": ["./*"]
+    }
+  }
+}

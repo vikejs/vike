@@ -3,7 +3,12 @@ import ssr from 'vite-plugin-ssr/plugin'
 import { UserConfig } from 'vite'
 
 const config: UserConfig = {
-  plugins: [solid({ ssr: true }), ssr()],
+  plugins: [solid({ ssr: true, solid: { hydratable: true } }), ssr()],
+  resolve: {
+    alias: {
+      '#': __dirname
+    }
+  },
   build: {
     // @ts-ignore
     polyfillDynamicImport: false
