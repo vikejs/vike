@@ -24,15 +24,16 @@ type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
 async function loadPageFilesServer(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext._pageId) // Make pageConfig globally available as pageContext._pageConfig?
 
-  const [{ config, configEntries, exports, exportsAll, pageExports, pageFilesLoaded, pageConfigLoaded }] = await Promise.all([
-    loadPageFilesServerSide(
-      pageContext._pageFilesAll,
-      pageConfig,
-      pageContext._pageId,
-      !getGlobalContext().isProduction
-    ),
-    analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
-  ])
+  const [{ config, configEntries, exports, exportsAll, pageExports, pageFilesLoaded, pageConfigLoaded }] =
+    await Promise.all([
+      loadPageFilesServerSide(
+        pageContext._pageFilesAll,
+        pageConfig,
+        pageContext._pageId,
+        !getGlobalContext().isProduction
+      ),
+      analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
+    ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
     analyzePage(pageContext._pageFilesAll, pageConfig, pageContext._pageId)
   const pageContextAddendum = {}

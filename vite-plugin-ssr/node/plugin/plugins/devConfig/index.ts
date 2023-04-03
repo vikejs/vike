@@ -1,6 +1,6 @@
 export { devConfig }
 
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import { searchForWorkspaceRoot } from 'vite'
 import { assert, isNotNullish, markEnvAsDev } from '../../utils'
 import { determineOptimizeDepsEntries } from './determineOptimizeDepsEntries'
@@ -40,7 +40,7 @@ function devConfig(): Plugin[] {
               '@brillout/json-serializer/stringify'
             ]
           }
-        }
+        } satisfies UserConfig
       },
       async configResolved(config_) {
         config = config_

@@ -5,9 +5,9 @@ export { isTranspileError }
 
 // import strip from 'strip-ansi'
 import colors from 'picocolors'
-import type { ViteDevServer } from 'vite'
-import type { RollupError } from 'rollup'
 import { isObject } from '../utils'
+import type { ViteDevServer, Rollup } from 'vite'
+type RollupError = Rollup.RollupError
 
 function isTranspileError(err: unknown): err is RollupError {
   return isObject(err) && !!err.id && !!err.frame

@@ -25,8 +25,8 @@ import type { ConfigVpsResolved } from '../../../shared/ConfigVps'
 import { isAsset } from '../shared/isAsset'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule'
 import { removeSourceMap } from '../shared/removeSourceMap'
-//type ResolvedId = NonNullable<Awaited<ReturnType<ThisParameterType<NonNullable<Plugin['resolveId']>>['resolve']>>> // same as `import type { ResolvedId } from 'rollup'` but safe when Vite updates Rollup version
-type ResolvedId = any // TODO
+import type { Rollup } from 'vite'
+type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
 const rawRE = /(\?|&)raw(?:&|$)/

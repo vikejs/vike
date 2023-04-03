@@ -44,7 +44,9 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`    pageConfigFilePathAll: ${JSON.stringify(pageConfigFilePathAll)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
-    lines.push(`    loadConfigValueFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`)
+    lines.push(
+      `    loadConfigValueFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`
+    )
     lines.push(`    configElements: {`)
     Object.entries(configElements).forEach(([configName, configElement]) => {
       // configNamesAll.add(configName)
@@ -121,7 +123,14 @@ function serializeConfigElement(
   assert(/^\s+$/.test(whitespace))
   const lines: string[] = []
   lines.push(`${whitespace}['${configName}']: {`)
-  const { configDefinedAt, configDefinedByFile, configEnv, configValueFilePath, pageConfigFilePath, configValueFileExport } = configElement
+  const {
+    configDefinedAt,
+    configDefinedByFile,
+    configEnv,
+    configValueFilePath,
+    pageConfigFilePath,
+    configValueFileExport
+  } = configElement
   lines.push(`${whitespace}  configDefinedAt: ${JSON.stringify(configDefinedAt)},`)
   lines.push(`${whitespace}  configDefinedByFile: ${JSON.stringify(configDefinedByFile)},`)
   lines.push(`${whitespace}  configValueFilePath: ${JSON.stringify(configValueFilePath)},`)
