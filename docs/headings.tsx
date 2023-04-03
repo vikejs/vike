@@ -4,171 +4,6 @@ import type { HeadingDefinition, HeadingWithoutLink } from '@brillout/docpress'
 export { headingsWithoutLink }
 export { headings }
 
-const redirections = [
-  {
-    title: <code>useClientRouter()</code>,
-    url: '/useClientRouter'
-  },
-  {
-    title: (
-      <>
-        Migration <code>0.4</code>
-      </>
-    ),
-    url: '/migration-0.4'
-  },
-  {
-    title: 'HTML Streaming',
-    url: '/html-streaming'
-  },
-  {
-    title: 'SPA vs SSR vs HTML',
-    url: '/SPA-vs-SSR-vs-HTML'
-  },
-  {
-    title: 'NextAuth.js',
-    url: '/nextauth'
-  },
-  {
-    title: 'NextAuth.js',
-    url: '/NextAuth.js'
-  },
-  {
-    title: 'HTML `<head>`',
-    url: '/html-head'
-  },
-  {
-    title: 'Server Routing VS Client Routing',
-    url: '/SR-vs-CR'
-  },
-  {
-    title: 'Render-as-you-Fetch',
-    url: '/render-as-you-fetch'
-  }
-]
-
-const headingsWithoutLink: HeadingWithoutLink[] = [
-  ...redirections,
-  {
-    title: (
-      <>
-        Migration <code>0.4.23</code>
-      </>
-    ),
-    url: '/migration/0.4.23'
-  },
-  {
-    title: (
-      <>
-        Migration <code>0.4</code>
-      </>
-    ),
-    url: '/migration/0.4'
-  },
-  {
-    title: (
-      <>
-        Migration from <code>0.4.x</code> to <code>1.0.0</code>
-      </>
-    ),
-    url: '/migration/v1'
-  },
-  {
-    title: <>V1 design migration</>,
-    url: '/v1-design'
-  },
-  {
-    title: (
-      <>
-        <code>+config.js</code> code splitting
-      </>
-    ),
-    url: '/config-code-splitting'
-  },
-  {
-    title: 'Migrations',
-    url: '/migration'
-  },
-  {
-    title: 'Client Routing',
-    url: '/client-routing'
-  },
-  {
-    title: 'Server Routing',
-    url: '/server-routing'
-  },
-  { title: 'What is Hydration?', url: '/hydration' },
-  { title: <code>dist/server/importBuild.js</code>, url: '/importBuild.js' },
-  { title: <code>importBuild.cjs</code>, url: '/importBuild.cjs' },
-  { title: <code>injectAssets()</code>, url: '/injectAssets' },
-  {
-    title: (
-      <>
-        Multiple <code>onBeforeRender()</code> hooks
-      </>
-    ),
-    url: '/onBeforeRender-multiple'
-  },
-  {
-    title: (
-      <>
-        Manipulating <code>pageContext</code>
-      </>
-    ),
-    url: '/pageContext-manipulation'
-  },
-  { title: 'Server-Side Rendering (SSR)', url: '/ssr' },
-  { title: 'TypeScript', url: '/typescript' },
-  {
-    title: (
-      <>
-        Multiple <code>renderer/</code>
-      </>
-    ),
-    url: '/multiple-renderer'
-  },
-  {
-    title: '`createPageRenderer()`',
-    url: '/createPageRenderer'
-  },
-  {
-    title: 'Command `prerender`',
-    url: '/command-prerender'
-  },
-  {
-    title: 'Vite Plugin',
-    url: '/vite-plugin'
-  },
-  {
-    title: 'Content- VS interactive-centric',
-    url: '/content-vs-interactive'
-  },
-  {
-    title: 'SPA vs SSR (and more)',
-    url: '/SPA-vs-SSR'
-  },
-  {
-    title: 'Hydration Mismatch',
-    url: '/hydration-mismatch'
-  },
-  {
-    title: 'Libraries with invalid ESM',
-    url: '/invalid-esm'
-  },
-  {
-    title: 'Deployment synchronization',
-    url: '/deploy-sync'
-  },
-  {
-    title: 'Languages',
-    url: '/languages'
-  },
-  {
-    title: 'Common Problems',
-    url: '/common-problems'
-  }
-]
-
 const headings: HeadingDefinition[] = [
   {
     level: 1,
@@ -916,3 +751,173 @@ const headings: HeadingDefinition[] = [
     url: '/error-page'
   }
 ]
+
+const redirections = [
+  {
+    title: <code>useClientRouter()</code>,
+    url: '/useClientRouter'
+  },
+  {
+    title: (
+      <>
+        Migration <code>0.4</code>
+      </>
+    ),
+    url: '/migration-0.4'
+  },
+  {
+    title: 'HTML Streaming',
+    url: '/html-streaming'
+  },
+  {
+    title: 'SPA vs SSR vs HTML',
+    url: '/SPA-vs-SSR-vs-HTML'
+  },
+  {
+    title: 'NextAuth.js',
+    url: '/nextauth'
+  },
+  {
+    title: 'NextAuth.js',
+    url: '/NextAuth.js'
+  },
+  {
+    title: 'HTML `<head>`',
+    url: '/html-head'
+  },
+  {
+    title: 'Server Routing VS Client Routing',
+    url: '/SR-vs-CR'
+  },
+  {
+    title: 'Render-as-you-Fetch',
+    url: '/render-as-you-fetch'
+  },
+  {
+    title: 'V1 Design',
+    url: '/v1-design'
+  },
+]
+
+const headingsWithoutLink: HeadingWithoutLink[] = [
+  ...redirections,
+  {
+    title: (
+      <>
+        Migration <code>0.4.23</code>
+      </>
+    ),
+    url: '/migration/0.4.23'
+  },
+  {
+    title: (
+      <>
+        Migration <code>0.4</code>
+      </>
+    ),
+    url: '/migration/0.4'
+  },
+  {
+    title: (
+      <>
+        Migration from <code>0.4.x</code> to <code>1.0.0</code>
+      </>
+    ),
+    url: '/migration/v1'
+  },
+  {
+    title: 'V1 Design Migration',
+    url: '/migration/v1-design'
+  },
+  {
+    title: (
+      <>
+        <code>+config.js</code> code splitting
+      </>
+    ),
+    url: '/config-code-splitting'
+  },
+  {
+    title: 'Migrations',
+    url: '/migration'
+  },
+  {
+    title: 'Client Routing',
+    url: '/client-routing'
+  },
+  {
+    title: 'Server Routing',
+    url: '/server-routing'
+  },
+  { title: 'What is Hydration?', url: '/hydration' },
+  { title: <code>dist/server/importBuild.js</code>, url: '/importBuild.js' },
+  { title: <code>importBuild.cjs</code>, url: '/importBuild.cjs' },
+  { title: <code>injectAssets()</code>, url: '/injectAssets' },
+  {
+    title: (
+      <>
+        Multiple <code>onBeforeRender()</code> hooks
+      </>
+    ),
+    url: '/onBeforeRender-multiple'
+  },
+  {
+    title: (
+      <>
+        Manipulating <code>pageContext</code>
+      </>
+    ),
+    url: '/pageContext-manipulation'
+  },
+  { title: 'Server-Side Rendering (SSR)', url: '/ssr' },
+  { title: 'TypeScript', url: '/typescript' },
+  {
+    title: (
+      <>
+        Multiple <code>renderer/</code>
+      </>
+    ),
+    url: '/multiple-renderer'
+  },
+  {
+    title: '`createPageRenderer()`',
+    url: '/createPageRenderer'
+  },
+  {
+    title: 'Command `prerender`',
+    url: '/command-prerender'
+  },
+  {
+    title: 'Vite Plugin',
+    url: '/vite-plugin'
+  },
+  {
+    title: 'Content- VS interactive-centric',
+    url: '/content-vs-interactive'
+  },
+  {
+    title: 'SPA vs SSR (and more)',
+    url: '/SPA-vs-SSR'
+  },
+  {
+    title: 'Hydration Mismatch',
+    url: '/hydration-mismatch'
+  },
+  {
+    title: 'Libraries with invalid ESM',
+    url: '/invalid-esm'
+  },
+  {
+    title: 'Deployment synchronization',
+    url: '/deploy-sync'
+  },
+  {
+    title: 'Languages',
+    url: '/languages'
+  },
+  {
+    title: 'Common Problems',
+    url: '/common-problems'
+  }
+]
+
