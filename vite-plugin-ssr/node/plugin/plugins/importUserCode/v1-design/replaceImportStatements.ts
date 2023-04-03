@@ -1,6 +1,7 @@
 export { replaceImportStatements }
-export { parseImportMacro }
-export { isImportMacro }
+export { parseImportData }
+export { isImportData }
+export type { FileImport }
 
 // Playground: https://github.com/brillout/acorn-playground
 
@@ -8,7 +9,12 @@ import { parse } from 'acorn'
 import type { Program, Identifier } from 'estree'
 import { assert } from '../../../utils'
 
-function replaceImportStatements(code: string): string {
+type FileImport = {
+  code: string
+  data: string
+  importVarName: string
+}
+function replaceImportStatements(code: string): { code: string; fileImports: FileImport[] } {
   const { body } = parse(code, {
     ecmaVersion: 'latest',
     sourceType: 'module'
@@ -16,6 +22,7 @@ function replaceImportStatements(code: string): string {
   }) as any as Program
 
   const spliceOperations: SpliceOperation[] = []
+  const fileImports: FileImport[] = []
 
   body.forEach((node) => {
     if (node.type !== 'ImportDeclaration') return
@@ -23,24 +30,32 @@ function replaceImportStatements(code: string): string {
     const importPath = node.source.value
     assert(typeof importPath === 'string')
 
+    const { start, end } = node
+
+    const importCode = code.slice(start, end)
+
     let replacement = ''
     node.specifiers.forEach((specifier) => {
       assert(specifier.type === 'ImportSpecifier' || specifier.type === 'ImportDefaultSpecifier')
-      const importVar = specifier.local.name
+      const importVarName = specifier.local.name
       const importName = (() => {
         if (specifier.type === 'ImportDefaultSpecifier') return 'default'
         {
           const imported = (specifier as any).imported as Identifier | undefined
           if (imported) return imported.name
         }
-        return importVar
+        return importVarName
       })()
-      const importMacro = getImportMacro({ importPath, importName })
-      replacement += `const ${importVar} = '${importMacro}';`
+      const importData = serializeImportData({ importPath, importName })
+      replacement += `const ${importVarName} = '${importData}';`
+      fileImports.push({
+        code: importCode,
+        data: importData,
+        importVarName
+      })
     })
     assert(replacement.length > 0)
 
-    const { start, end } = node
     spliceOperations.push({
       start,
       end,
@@ -49,21 +64,25 @@ function replaceImportStatements(code: string): string {
   })
 
   const codeMod = spliceMany(code, spliceOperations)
-  return codeMod
+  return { code: codeMod, fileImports }
 }
 
-function getImportMacro({ importPath, importName }: { importPath: string; importName: string }): string {
-  return `__import|${importPath}|${importName}`
+type ImportData = { importPath: string; importName: string }
+function serializeImportData({ importPath, importName }: ImportData): string {
+  return `__file:${importPath}:${importName}`
 }
-function isImportMacro(str: string): boolean {
-  return str.startsWith('__import|')
+function isImportData(str: string): boolean {
+  return str.startsWith('__file:')
 }
-function parseImportMacro(importMacro: string): { importPath: string; importName: string } {
-  const parts = importMacro.split('|')
-  assert(parts[0] === '__import')
+function parseImportData(str: string): null | ImportData {
+  if (!isImportData(str)) {
+    return null
+  }
+  const parts = str.split(':')
+  assert(parts[0] === '__file')
   assert(parts.length >= 3)
   const importName = parts[parts.length - 1]!
-  const importPath = parts.slice(1, -1).join('|')
+  const importPath = parts.slice(1, -1).join(':')
   return { importPath, importName }
 }
 

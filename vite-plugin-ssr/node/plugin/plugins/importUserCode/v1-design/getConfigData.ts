@@ -35,7 +35,7 @@ import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import { determineRouteFromFilesystemPath } from './getConfigData/determineRouteFromFilesystemPath'
 import { determinePageId } from './getConfigData/determinePageId'
 import { transpileAndLoadPageConfig, transpileAndLoadConfigValueFile } from './transpileAndLoadPlusFile'
-import { isImportMacro, parseImportMacro } from './replaceImportStatements'
+import { parseImportData } from './replaceImportStatements'
 
 assertIsVitePluginCode()
 
@@ -394,12 +394,12 @@ function getCodeFilePath(
     return null
   }
 
-  const isMacro = isImportMacro(configValue)
+  const importData = parseImportData(configValue)
 
   let codeFilePath: string
   let configValueFileExport: string
-  if (isMacro) {
-    const { importPath, importName } = parseImportMacro(configValue)
+  if (importData) {
+    const { importPath, importName } = importData
     codeFilePath = path.posix.join(userRootDir, path.posix.dirname(pageConfigFilePath), toPosixPath(importPath))
     configValueFileExport = importName
   } else {
@@ -425,7 +425,7 @@ function getCodeFilePath(
   if (!enforce && !fileExists) return null
 
   // TODO: remove
-  if (!isMacro) {
+  if (!importData) {
     assertCodeFilePathConfigValue(configValue, pageConfigFilePath, codeFilePath, fileExists, configName)
   }
 
@@ -728,7 +728,7 @@ async function loadConfigValueFile(plusFile: FoundFile, configDefinitions: Confi
   if ('err' in result) {
     throw result.err
   }
-  const fileExports = result.exports
+  const { fileExports } = result
   assertDefaultExportUnknown(fileExports, filePathRelativeToUserRootDir)
   const configValue = fileExports.default
   objectAssign(configValueFile, { configValue })
@@ -752,11 +752,11 @@ async function findAndLoadPageConfigFiles(
     plusFiles
       .filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
       .map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
-        const result = await transpileAndLoadPageConfig(filePathAbsolute)
+        const result = await transpileAndLoadPageConfig(filePathAbsolute, filePathRelativeToUserRootDir)
         if ('err' in result) {
           return { err: result.err }
         }
-        return { pageConfigFilePath: filePathRelativeToUserRootDir, pageConfigFileExports: result.exports }
+        return { pageConfigFilePath: filePathRelativeToUserRootDir, pageConfigFileExports: result.fileExports }
       })
   )
   for (const result of results) {

@@ -2,9 +2,9 @@ import { setPageFilesAsync } from '../../../shared/getPageFiles'
 import { assert, debugGlob, isObject } from '../utils'
 import { getGlobalContext } from '../globalContext'
 import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode'
-import type { RollupError } from 'rollup'
-import type { ViteDevServer } from 'vite'
 import { isTranspileError } from '../shared/logTranspileError'
+import type { ViteDevServer, Rollup } from 'vite'
+type RollupError = Rollup.RollupError
 
 setPageFilesAsync(getPageFilesExports)
 

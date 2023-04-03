@@ -1,7 +1,5 @@
 export { buildConfig }
 
-import type { Plugin } from 'vite'
-import type { ResolvedConfig } from 'vite'
 import {
   assert,
   determineOutDir,
@@ -17,7 +15,8 @@ import { getConfigData } from './importUserCode/v1-design/getConfigData'
 import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils'
 import { findPageFiles } from '../shared/findPageFiles'
 import { getConfigVps } from '../../shared/getConfigVps'
-type InputOption = ResolvedConfig['build']['rollupOptions']['input'] // same as `import type { InputOption } from 'rollup'` but safe when Vite updates Rollup version
+import type { ResolvedConfig, Plugin, Rollup } from 'vite'
+type InputOption = Rollup.InputOption
 
 function buildConfig(): Plugin {
   return {

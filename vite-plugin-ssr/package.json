@@ -34,7 +34,7 @@
     "@types/resolve": "^1.20.2",
     "rimraf": "^3.0.2",
     "typescript": "^5.0.2",
-    "vite": "^4.0.3"
+    "vite": "^4.2.1"
   },
   "peerDependencies": {
     "react-streaming": ">=0.3.5",

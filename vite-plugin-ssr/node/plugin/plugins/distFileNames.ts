@@ -5,15 +5,12 @@ export { distFileNames }
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
 import { assertPosixPath, assert, assertUsage, removeFileExtention } from '../utils'
-import type { Plugin, ResolvedConfig } from 'vite'
 import path from 'path'
 import { extractAssetsRE } from './extractAssetsPlugin'
 import { isVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode'
-
-// Same as `import type { PreRenderedChunk, PreRenderedAsset } from 'rollup'` but safe when Vite updates Rollup version
-type Output = Extract<ResolvedConfig['build']['rollupOptions']['output'], { chunkFileNames?: unknown }>
-type PreRenderedChunk = Parameters<Extract<Output['chunkFileNames'], Function>>[0]
-type PreRenderedAsset = Parameters<Extract<Output['assetFileNames'], Function>>[0]
+import type { Plugin, ResolvedConfig, Rollup } from 'vite'
+type PreRenderedChunk = Rollup.PreRenderedChunk
+type PreRenderedAsset = Rollup.PreRenderedAsset
 
 function distFileNames(): Plugin {
   return {
