@@ -1,3 +1,6 @@
+TODO: impl _error convention
+      - add docs
+
 TODO: if config isn't a file path then assert that it's serialazable
   - remove c_code
 TODO: assert global configs cannot be defined in page-specific config
@@ -26,3 +29,5 @@ TODO: make +meta.js work
 TODO: assert that two import statements in +config.js shouldn't land in different environments
 
 TODO: Define pageContext.pageId
+
+TODO: `filesystemRoutingRoot`

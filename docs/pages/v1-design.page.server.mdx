@@ -2,13 +2,13 @@ import { Link, Note } from '@brillout/docpress'
 
 <Note type='warning'>The V1 design is in beta. While the overall V1 design is settled, some minor breaking changes may occur in any version update.</Note>
 
-> You need to either fully use the current design, or fully use the new V1 design. You cannot mix both.
+> You need to either fully use the V1 design, or fully use the old design. You cannot mix both.
 
 > If you run into any issue, open a new GitHub ticket and/or PM `brillout` on Discord.
 
 ## Update VPS
 
-Update to `$ npm info vite-plugin-ssr version`.
+Update `vite-plugin-ssr` to its latest version.
 
 
 ## Main migration
@@ -103,6 +103,8 @@ export default {
 + }
 ```
 
+> We explain down below why Route Functions cannot be defined inside `+config.js`.
+
 ```diff
 - // /pages/some-page/index.page.route.ts
 + // /pages/some-page/+route.ts
@@ -111,27 +113,78 @@ export default {
 export default route
 ```
 
-> We explain down below why Route Functions cannot be defined inside `+config.js`.
+For further examples, see the [list of migration examples](#examples).
+
+> Each page lives in its own new directory and `+config.js` is optional:
+> ```bash
+> # ✅ V1 Design
+> $ ls pages/**/*
+> /pages/some-page/+config.js
+> /pages/some-page/+Page.js
+> /pages/some-other-page/+Page.js
+> ```
+> ```bash
+> # ❌ This isn't possible anymore: each page now needs to create a new directory
+> # Old design
+> $ ls pages/**/*
+> /pages/some.page.js
+> /pages/some-other.page.js
+> ```
+
+## Renamed hooks
+
+Old name | New name
+-|-
+`render()` in `.page.client.js` | `onRenderClient()`
+`render()` in `.page.server.js` | `onRenderHtml()`
+`prerender()` | `onBeforePrerenderStart()`
+`onBeforePrerender()` | `onPrerenderStart()`
+
+The hooks are equivalent: they just have a new name.
+
+Also note that `doNotPrerender` has been renamed:
+
+Old name | New name
+-|-
+`doNotPrerender: true` | `prerender: false`
+
+```diff
+// /pages/news.page.server.js
+
+- export const doNotPrerender = true
+```
+```diff
+// /pages/news/+config.js
+
+  export default {
++   prerender: false
+  }
+```
+
+
+## Examples
 
 Migration examples:
  - Migration of basic app: [`428c1c` - migrate examples/react to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/428c1c6b0fb7c9a5fa2f2fe57ac3e4bb0a57ea54)
- - Migration of advanced app: TODO
+
+Examples of using the V1 design:
+ - See [`examples/*-v1`](https://github.com/brillout/vite-plugin-ssr/tree/main/examples)
 
 
 ## What are `+` files?
 
-The `+` files define the *entire* interface between your app and VPS.
+The `+` files define the entire interface between your app and VPS.
 
-You can define your entire app *only* by defining `+config.js` files:
- - One `/pages/+config.js` (to define your overall global configs).
+You cann define your entire app only by defining `+config.js` files:
+ - One `/pages/+config.js` (to define your overall global configuration).
  - One `/pages/some-page/+config.js` per page (to define your pages).
 
-> Your per-page `+config.js` files (such as `/pages/some-page/+config.js`) can completely override your global `/pages/+config.js`. In essence: your global `+config.js` merely defines default values.
+> Your `+config.js` of your pages files (such as `/pages/some-page/+config.js`) can completely override your global `/pages/+config.js`. This means that your global `+config.js` merely defines default values.
 
-For conveniences, you can also use the following:
+For conveniences, you can use the following:
  1. Files such as `+onRenderHtml.js` which is just an alias for `+config.js > export default { onRenderHtml }`.
  1. `/renderer/+config.js` which is equivalent to `/pages/+config.js`.
-    > `/renderer/+config.js` is an optional convenience for having your renderer logic/files live outside of `/pages/**/*` (instead of cluttering your `/pages/` directory).
+    > `/renderer/+config.js` is an (optional) convenience for having your renderer logic/files live outside of `/pages/**/*` (instead of cluttering your `/pages/` directory).
 
 Note that the following is forbidden:
 
@@ -151,7 +204,7 @@ function onBeforeRender() {
 }
 ```
 
-VPS throws an error `[Wrong Usage] Hooks cannot be defined inside +config.js`. Do this instead:
+VPS throws an error `[Wrong Usage] Hooks cannot be defined within +config.js`. Do this instead:
 
 ```js
 // /pages/some-page/+config.js
@@ -162,9 +215,9 @@ import onBeforeRender from './some-other-file'
 export default { Page, onBeforeRender }
 ```
 
-VPS removes all imports from `+config.js` and loads them separately, in order to ensure that files are loaded in the right environment. See <Link href="/config-code-splitting" /> for more informaton.
+All imports in `+config.js` are removed and loaded separately, in order to ensure that files are loaded in the right environment. See <Link href="/config-code-splitting" /> for more informaton.
 
-> The `+` convention is [controversial](https://github.com/brillout/vite-plugin-ssr/issues/578#issuecomment-1472005734). While we agree that `+` files are "ugly" at first, we ask you to trust us: we believe you'll eventually end up liking the `+` convention as much as we do.
+> The `+` convention is [controversial](https://github.com/brillout/vite-plugin-ssr/issues/578#issuecomment-1472005734). While we agree that `+` files are ugly at first, we ask you to trust us as we believe that you'll eventually end up liking the `+` convention as much as we do.
 
 
 ## Why the V1 design?
@@ -174,17 +227,54 @@ The V1 design adds new foundational capabilities.
 For example, you'll able to implement a custom config `ssr: boolean` to seamlessly toggle render modes:
 
 ```js
-/pages/some-page/+config.js
+// /pages/admin/+config.js
 
 export default {
-  // Whether the page should be rendered as SPA or with SSR
-  ssr: true
+  // We render the Admin Panel as SPA
+  ssr: false
 }
 ```
 
 > VPS will release official React/Vue/Solid renderers that already implement such flag. (You'll be able to eject these renderers for complete control.)
 
-And this only shows the tip of the iceberg. (The V1 design enables a lot of DX sweetness that isn't apparent at first.)
+You'll even be able to toggle renderers:
+
+```js
+// /pages/admin/+config.js
+
+import graphqlRenderer from 'vike-react-relay'
+
+export default {
+  // We use GraphQL for the Admin Panel
+  renderer: graphqlRenderer
+}
+```
+
+> The `vite-plugin-ssr` project is going to be [renamed to Vike](https://github.com/brillout/vite-plugin-ssr/issues/736).
+
+```js
+// /pages/product/@id/+config.js
+
+import rpcRenderer from 'vike-react-telefunc'
+
+export default {
+  // We use RPC for the product pages
+  renderer: rpcRenderer
+}
+```
+
+```js
+// /pages/live-ticker/+config.js
+
+import solidRenderer from 'vike-solid'
+
+export default {
+  // We use Solid for this page while the rest of our app uses React
+  renderer: solidRenderer
+}
+```
+
+The V1 design also brings new foundational capabilities for buidling frameworks on top of VPS.
 
 
 ## Custom hooks/exports
@@ -200,9 +290,9 @@ import type { Config } from 'vite-plugin-ssr/types'
 
 export default {
   meta: {
-    // We define a new config `title`
+    // We define a new config 'title'
     title: {
-      // The value of `title` should only be loaded on the server
+      // The value of 'title' should only be loaded on the server
       env: 'server-only'
     }
   }
