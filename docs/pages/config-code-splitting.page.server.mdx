@@ -1,6 +1,6 @@
-All imports in `+config.js` files are extracted and code-splitted.
+All imports in `+config.js` are code-splitted.
 
-For example, VPS transforms the following:
+For example, VPS transforms this:
 
 ```js
 // /pages/some-page/+config.js
@@ -16,13 +16,13 @@ Into:
 ```js
 // /pages/some-page/+config.js
 
-const Page = '__import|./some-file|default'
-const onBeforeRender = '__import|./some-other-file|onBeforeRender'
+const Page = '__file:./some-file:default'
+const onBeforeRender = '__file:./some-other-file:onBeforeRender'
 
 export default { Page, onBeforeRender }
 ```
 
-This transformation is paramount to ensure that files are loaded in the right environment. Consider this example:
+This allows VPS to load imports only when needed and only in the right environment. Consider this example:
 
 ```js
 // /renderer/+config.js
@@ -35,4 +35,4 @@ import onRenderHtml from './some-module'
 export default { onRenderHtml, onRenderClient }
 ```
 
-Thanks to the transformation, VPS can load the hooks in the right environment.
+VPS loads `config.js` at server start and then loads `onRenderClient()` and `onRenderHtml()` only when needed and only in the right environment.
