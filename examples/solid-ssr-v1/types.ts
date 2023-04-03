@@ -12,6 +12,10 @@ export type IPageContext = {
     Head?: Component
     Layout?: Component
     Wrapper?: Component
+    documentProps: {
+      title: string
+      description?: string
+    }
     // What-ever you want
   }
 } & PageContextBuiltIn &

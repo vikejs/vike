@@ -11,6 +11,9 @@ export default {
     },
     lang: {
       env: 'server-only'
+    },
+    documentProps: {
+      env: 'server-only'
     }
   }
 }
