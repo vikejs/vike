@@ -3,13 +3,13 @@ import type { PageContextBuiltInClientWithServerRouting } from '../shared/types'
 /** @deprecated
  * Replace:
  *   ```
- *   import type { PageContextBuiltIntClient } from 'vite-plugin/client'
+ *   import type { PageContextBuiltInClient } from 'vite-plugin/client'
  *   ```
  * With:
  *   ```
  *   import type {
- *     PageContextBuiltIntClientWithServerRouting as
- *     PageContextBuiltIntClient
+ *     PageContextBuiltInClientWithServerRouting as
+ *     PageContextBuiltInClient
  *   } from 'vite-plugin-ssr/types'
  *   ```
  */
