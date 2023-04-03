@@ -1,7 +1,7 @@
 import React from 'react'
-import type { HeadingDefinition, HeadingWithoutLink } from '@brillout/docpress'
+import type { HeadingDefinition, HeadingDetachedDefinition } from '@brillout/docpress'
 
-export { headingsWithoutLink }
+export { headingsDetached }
 export { headings }
 
 const headings: HeadingDefinition[] = [
@@ -796,10 +796,10 @@ const redirections = [
   {
     title: 'V1 Design',
     url: '/v1-design'
-  },
+  }
 ]
 
-const headingsWithoutLink: HeadingWithoutLink[] = [
+const headingsDetached: HeadingDetachedDefinition[] = [
   ...redirections,
   {
     title: (
@@ -920,4 +920,3 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
     url: '/common-problems'
   }
 ]
-
