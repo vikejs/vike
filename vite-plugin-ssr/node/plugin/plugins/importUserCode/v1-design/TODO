@@ -2,6 +2,7 @@ TODO: impl _error convention
       - add to V1 migration docs
 
 TODO: check whether flags like prefetchStaticAssets still work https://vite-plugin-ssr.com/clientRouting#link-prefetching
+       - Also includeAssetsImportedByServer
 
 TODO: if config isn't a file path then assert that it's serialazable
   - remove c_code
