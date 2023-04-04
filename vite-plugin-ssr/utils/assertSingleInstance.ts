@@ -2,29 +2,30 @@ export { onClientEntry_ServerRouting }
 export { onClientEntry_ClientRouting }
 export { onProjectInfo }
 
-// Ensures:
-//  - There aren't two different versions of vite-plugin-ssr loaded
-//  - On the client-side, entry for Client Routing and entry for Server Routing aren't loaded at the same time
-//  - On the client-side, vite-plugin-ssr isn't loaded twice
+//  - Throw error if there are two different versions of vite-plugin-ssr loaded
+//  - Show warning if entry of Client Routing and entry of Server Routing are both loaded
+//  - Show warning if vite-plugin-ssr is loaded twice
 
 import { unique } from './unique'
 import { getGlobalObject } from './getGlobalObject'
-import { assertUsage } from './assert'
+import { assertUsage, assertWarning } from './assert'
 const globalObject = getGlobalObject<{ instances: string[]; checkSingleInstance?: true; isClientRouting?: boolean }>(
   'assertPackageInstances.ts',
   { instances: [] }
 )
-const makeSure = "Make sure your client-side code doesn't load"
-const clientEntryClonflict = `Server Routing and Client Routing both loaded. ${makeSure} both at the same time.`
-const clientNotSingleInstance = `vite-plugin-ssr loaded twice. ${makeSure} vite-plugin-ssr twice (in order to reduce client size).`
+const makeSure = "Make sure your client-side code doesn't include(/bundle)" as const
+const clientEntryClonflict =
+  `The client runtime of Server Routing and the client runtime of Client Routing are both being loaded. ${makeSure} both for a given page.` as const
+const clientNotSingleInstance =
+  `Two vite-plugin-ssr client runtime instances are being loaded. ${makeSure} vite-plugin-ssr twice. (In order to reduce the size of your client-side JavaScript bundles.)` as const
 
 function assertSingleInstance() {
   {
     const versions = unique(globalObject.instances)
     if (versions.length > 1) {
-      const errMsg = `Multiple versions \`vite-plugin-ssr@${versions[0]}\` and \`vite-plugin-ssr@${versions[1]}\` loaded. Make sure only one version is loaded.`
-      /*/ Not sure whether circular dependency can cause problems?
-      throw new Error(errMsg)
+      const errMsg = `Both \`vite-plugin-ssr@${versions[0]}\` and \`vite-plugin-ssr@${versions[1]}\` loaded. Only one version should be loaded.`
+      /*/ Not sure whether circular dependency can cause problems? In principle not since client-side code is ESM.
+      console.warn(errMsg)
       /*/
       assertUsage(false, errMsg)
       //*/
@@ -32,24 +33,30 @@ function assertSingleInstance() {
   }
 
   if (globalObject.checkSingleInstance && globalObject.instances.length > 1) {
-    /*/ Not sure whether circular dependency can cause problems?
-    throw new Error(clientNotSingleInstance)
+    /*/ Not sure whether circular dependency can cause problems? In principle not since client-side code is ESM.
+    console.warn(clientNotSingleInstance)
     /*/
-    assertUsage(false, clientNotSingleInstance)
+    assertWarning(false, clientNotSingleInstance, { onlyOnce: true, showStackTrace: true })
     //*/
   }
 }
 
 function onClientEntry_ServerRouting(isProduction: boolean) {
-  assertUsage(globalObject.isClientRouting !== true, clientEntryClonflict)
-  assertUsage(globalObject.isClientRouting === undefined, clientNotSingleInstance)
+  assertWarning(globalObject.isClientRouting !== true, clientEntryClonflict, { onlyOnce: true, showStackTrace: true })
+  assertWarning(globalObject.isClientRouting === undefined, clientNotSingleInstance, {
+    onlyOnce: true,
+    showStackTrace: true
+  })
   globalObject.isClientRouting = false
   if (isProduction) globalObject.checkSingleInstance = true
   assertSingleInstance()
 }
 function onClientEntry_ClientRouting(isProduction: boolean) {
-  assertUsage(globalObject.isClientRouting !== false, clientEntryClonflict)
-  assertUsage(globalObject.isClientRouting === undefined, clientNotSingleInstance)
+  assertWarning(globalObject.isClientRouting !== false, clientEntryClonflict, { onlyOnce: true, showStackTrace: true })
+  assertWarning(globalObject.isClientRouting === undefined, clientNotSingleInstance, {
+    onlyOnce: true,
+    showStackTrace: true
+  })
   globalObject.isClientRouting = true
   if (isProduction) globalObject.checkSingleInstance = true
   assertSingleInstance()
