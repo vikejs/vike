@@ -44,10 +44,16 @@ function disableClientRouting(err: unknown, logError: boolean) {
     // We don't use console.error() to avoid flooding error trackers such as Sentry
     console.log(err)
   }
-
   assertInfo(
     false,
-    `New deployed frontend detected. The next page navigation will use Server Routing instead of Client Routing.`,
+    [
+      'Failed to fetch static asset.',
+      import.meta.env.PROD ? 'This usually happens when a new frontend is deployed.' : null,
+      'Falling back to Server Routing.',
+      '(The next page navigation will use Server Routing instead of Client Routing.)'
+    ]
+      .filter(Boolean)
+      .join(' '),
     { onlyOnce: true }
   )
 }
