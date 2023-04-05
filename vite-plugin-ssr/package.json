@@ -17,55 +17,42 @@
     ".": {
       "worker": "./dist/cjs/node/runtime/index-deprecated.js",
       "node": "./dist/cjs/node/runtime/index-deprecated.js",
-      "browser": "./dist/esm/client/node.js",
-      "types": "./dist/types/node/runtime/index-deprecated.d.ts"
+      "browser": "./dist/esm/client/node.js"
     },
     "./server": {
       "worker": "./dist/cjs/node/runtime/index.js",
       "node": "./dist/cjs/node/runtime/index.js",
-      "browser": "./dist/esm/client/node.js",
-      "types": "./dist/types/node/runtime/index.d.ts"
-    },
-    "./client": {
-      "types": "./dist/types/client/index.d.ts"
+      "browser": "./dist/esm/client/node.js"
     },
     "./client/router": {
       "worker": "./dist/cjs/node/client/router.js",
       "node": "./dist/cjs/node/client/router.js",
-      "browser": "./dist/esm/client/router/index.js",
-      "types": "./dist/types/client/router/index.d.ts"
+      "browser": "./dist/esm/client/router/index.js"
     },
     "./routing": {
       "worker": "./dist/cjs/shared/route/routing.js",
       "node": "./dist/cjs/shared/route/routing.js",
-      "browser": "./dist/esm/shared/route/routing.js",
-      "types": "./dist/types/shared/route/routing.d.ts"
+      "browser": "./dist/esm/shared/route/routing.js"
     },
     "./cli": {
-      "node": "./dist/cjs/node/cli/index.js",
-      "types": "./dist/types/node/cli/index.d.ts"
+      "node": "./dist/cjs/node/cli/index.js"
     },
     "./prerender": {
-      "node": "./dist/cjs/node/prerender/index.js",
-      "types": "./dist/types/node/prerender/index.d.ts"
+      "node": "./dist/cjs/node/prerender/index.js"
     },
     "./plugin": {
-      "node": "./dist/cjs/node/plugin/index.js",
-      "types": "./dist/types/node/plugin/index.d.ts"
+      "node": "./dist/cjs/node/plugin/index.js"
     },
     "./RenderErrorPage": {
       "worker": "./dist/cjs/shared/RenderErrorPage.js",
       "node": "./dist/cjs/shared/RenderErrorPage.js",
-      "browser": "./dist/esm/shared/RenderErrorPage.js",
-      "types": "./dist/types/shared/RenderErrorPage.d.ts"
+      "browser": "./dist/esm/shared/RenderErrorPage.js"
     },
     "./__internal": {
-      "node": "./dist/cjs/__internal/index.js",
-      "types": "./dist/types/__internal/index.d.ts"
+      "node": "./dist/cjs/__internal/index.js"
     },
     "./__internal/setup": {
-      "node": "./dist/cjs/node/runtime/page-files/setup.js",
-      "types": "./dist/types/node/runtime/page-files/setup.d.ts"
+      "node": "./dist/cjs/node/runtime/page-files/setup.js"
     }
   },
   "main": "./dist/cjs/node/runtime/index-deprecated.js",
