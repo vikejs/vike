@@ -1,5 +1,4 @@
-TODO: check whether flags like prefetchStaticAssets still work https://vite-plugin-ssr.com/clientRouting#link-prefetching
-       - Also includeAssetsImportedByServer
+TODO: check whether includeAssetsImportedByServer still works
 
 TODO: if config isn't a file path then assert that it's serialazable
   - remove c_code
@@ -31,3 +30,7 @@ TODO: assert that two import statements in +config.js shouldn't land in differen
 TODO: Define pageContext.pageId
 
 TODO: `filesystemRoutingRoot`
+
+TODO: write
+      https://vite-plugin-ssr.com/config
+      https://vite-plugin-ssr.com/meta
