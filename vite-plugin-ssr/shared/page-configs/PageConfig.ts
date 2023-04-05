@@ -26,6 +26,7 @@ type ConfigName =
   | 'hydrationCanBeAborted'
   | 'clientEntry'
   | 'clientRouting'
+  | 'prefetchStaticAssets'
 
 type ConfigElement = ConfigElementFile & {
   configEnv: ConfigEnv

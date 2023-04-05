@@ -1,5 +1,6 @@
 export type { Config }
 
+import type { PrefetchStaticAssets } from '../../client/router/prefetch/getPrefetchConfig'
 import type { ConfigVpsUserProvided } from '../ConfigVps'
 // TODO: write docs of links below
 
@@ -96,6 +97,12 @@ type Config<Page = unknown> = Partial<
      * See https://vite-plugin-ssr/meta
      */
     meta: Meta
+
+    /** Prefetch links.
+     *
+     * See https://vite-plugin-ssr.com/clientRouting#link-prefetching
+     */
+    prefetchStaticAssets: PrefetchStaticAssets
   }
 >
 

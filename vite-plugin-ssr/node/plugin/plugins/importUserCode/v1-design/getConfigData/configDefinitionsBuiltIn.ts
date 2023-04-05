@@ -78,6 +78,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   hydrationCanBeAborted: {
     env: 'client-only' // TODO: config-only instead?
+  },
+  prefetchStaticAssets: {
+    env: 'client-only' // TODO: config-only instead?
   }
 }
 

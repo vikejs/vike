@@ -1,4 +1,5 @@
 export { getPrefetchConfig }
+export type { PrefetchStaticAssets }
 
 import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '../utils'
 
@@ -8,13 +9,14 @@ type PageContextPrefetch = {
   urlOriginal: string
 }
 
+type PrefetchStaticAssets =
+  | false
+  | {
+      when: 'HOVER' | 'VIEWPORT'
+    }
 type PrefetchConfig = {
   prefetchPageContext: false
-  prefetchStaticAssets:
-    | false
-    | {
-        when: 'HOVER' | 'VIEWPORT'
-      }
+  prefetchStaticAssets: PrefetchStaticAssets
 }
 
 function getPrefetchConfig(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchConfig {
