@@ -54,11 +54,19 @@ type ConfigElementFile = {
 
 type PageConfig = PageConfigData & {
   loadConfigValueFiles: () => Promise<
-    {
+    ({
       configName: string
-      filePath: string
-      fileExports: Record<string, unknown>
-    }[]
+      importFile: string
+    } & (
+      | {
+          isPlusFile: true
+          importFileExports: Record<string, unknown>
+        }
+      | {
+          isPlusFile: false
+          importValue: unknown
+        }
+    ))[]
   >
 }
 type PageConfigData = {

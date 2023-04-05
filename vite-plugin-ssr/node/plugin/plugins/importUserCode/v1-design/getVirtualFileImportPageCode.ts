@@ -1,6 +1,6 @@
 export { getVirtualFileImportPageCode }
 
-import { assert } from '../../../utils'
+import { assert, assertPosixPath } from '../../../utils'
 import type { PageConfigData } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
 import {
@@ -11,6 +11,7 @@ import { getConfigData } from './getConfigData'
 import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery'
 import { debug } from './debug'
 import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps'
+import path from 'path'
 
 async function getVirtualFileImportPageCode(
   id: string,
@@ -55,15 +56,29 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   let varCounter = 0
   Object.entries(pageConfigData.configElements).forEach(([configName, configElement]) => {
     if (!configElement.configValueFilePath) return
-    const { configEnv, configValueFilePath } = configElement
+    const { configEnv, configValueFilePath, configValueFileExport } = configElement
     if (configEnv === '_routing-env' || configEnv === 'config-only') return
     if (configEnv === (isForClientSide ? 'server-only' : 'client-only')) return
-    const { importVar, importStatement } = generateEagerImport(configValueFilePath, varCounter++)
+    assertPosixPath(configValueFilePath)
+    const fileName = path.posix.basename(configValueFilePath)
+    const isPlusFile = fileName.startsWith('+')
+
+    const { importVar, importStatement } = generateEagerImport(
+      configValueFilePath,
+      varCounter++,
+      isPlusFile ? undefined : configValueFileExport
+    )
     importStatements.push(importStatement)
+
     lines.push(`  {`)
     lines.push(`    configName: '${configName}',`)
-    lines.push(`    filePath: '${configValueFilePath}',`)
-    lines.push(`    fileExports: ${importVar}`)
+    lines.push(`    importFile: '${configValueFilePath}',`)
+    lines.push(`    isPlusFile: ${JSON.stringify(isPlusFile)},`)
+    if (isPlusFile) {
+      lines.push(`    importFileExports: ${importVar},`)
+    } else {
+      lines.push(`    importValue: ${importVar}`)
+    }
     lines.push(`  },`)
   })
   lines.push('];')

@@ -305,8 +305,7 @@ function resolveConfigElement(
       const configValueFileExport = 'default'
       const configElement: ConfigElement = {
         configEnv: configDef.env,
-        // TODO: rename configValueFilePath to configValueFilePath?
-        configValueFilePath: configValueFilePath,
+        configValueFilePath,
         configValueFileExport,
         pageConfigFilePath: null,
         configDefinedAt: `${configValueFilePath} > \`export ${configValueFileExport}\``,
