@@ -244,21 +244,8 @@ function determinePageIds(pageConfigFiles: PageConfigFile[], configValueFiles: C
     pageConfigFile: null | PageConfigFile
     routeFilesystemDefinedBy: string
   }[] = []
-  pageConfigFiles
-    .filter((p) => isDefiningPage(p))
-    .forEach((pageConfigFile) => {
-      const { pageConfigFilePath } = pageConfigFile
-      const pageId = determinePageId(pageConfigFilePath)
-      const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
-      pageIds.push({
-        pageId,
-        routeFilesystem,
-        pageConfigFile,
-        routeFilesystemDefinedBy: pageConfigFilePath
-      })
-    })
   configValueFiles.map((configValueFile) => {
-    if (!isConfigDefiningPage(configValueFile.configName)) return
+    if (!isDefiningPageConfig(configValueFile.configName)) return
     const { configValueFilePath } = configValueFile
     const pageId = determinePageId(configValueFilePath)
     const routeFilesystem = determineRouteFromFilesystemPath(configValueFilePath)
@@ -281,6 +268,31 @@ function determinePageIds(pageConfigFiles: PageConfigFile[], configValueFiles: C
       pageConfigFile: null,
       routeFilesystemDefinedBy
     })
+  })
+  pageConfigFiles.forEach((pageConfigFile) => {
+    const { pageConfigFilePath } = pageConfigFile
+    const pageId = determinePageId(pageConfigFilePath)
+    const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
+    {
+      const alreadyIncluded = pageIds.some((p) => {
+        if (p.pageId === pageId) {
+          assert(p.routeFilesystem === routeFilesystem)
+          assert(p.pageConfigFile === null)
+          p.pageConfigFile = pageConfigFile
+          return true
+        }
+        return false
+      })
+      if (alreadyIncluded) return
+    }
+    if (isDefiningPage(pageConfigFile)) {
+      pageIds.push({
+        pageId,
+        routeFilesystem,
+        pageConfigFile,
+        routeFilesystemDefinedBy: pageConfigFilePath
+      })
+    }
   })
   return pageIds
 }
@@ -369,10 +381,10 @@ function resolveConfigElement(
 
 function isDefiningPage(pageConfigFile: PageConfigFile): boolean {
   const pageConfigValues = getPageConfigValues(pageConfigFile)
-  return Object.keys(pageConfigValues).some((configName) => isConfigDefiningPage(configName))
+  return Object.keys(pageConfigValues).some((configName) => isDefiningPageConfig(configName))
 }
-function isConfigDefiningPage(configName: string): boolean {
-  return ['Page', 'route', 'isErrorPage'].includes(configName)
+function isDefiningPageConfig(configName: string): boolean {
+  return ['Page', 'route'].includes(configName)
 }
 
 function getCodeFilePath(
