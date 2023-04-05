@@ -9,7 +9,6 @@
 * [V1 Design] support multiple imports from same file in +config.js ([5ffaae7](https://github.com/brillout/vite-plugin-ssr/commit/5ffaae799f2367c38a256e09c34575ddead69c63))
 * [V1 Design] support prefetchStaticAssets ([7840f60](https://github.com/brillout/vite-plugin-ssr/commit/7840f609b4bdb20aa8e4d6cedffced4c73b69727))
 * [V1 design] warn upon unrespected import rule ([8ea6a40](https://github.com/brillout/vite-plugin-ssr/commit/8ea6a400d459132c9e09c297fe0d62b37b80c7df))
-* **docs:** typo with PageContextBuiltInt* should be PageContextBuiltIn* ([84e7287](https://github.com/brillout/vite-plugin-ssr/commit/84e7287eedb1c77fdee1d2d0d8e0f9f22d592a84))
 * improve client runtime assertions ([#750](https://github.com/brillout/vite-plugin-ssr/issues/750)) ([caab024](https://github.com/brillout/vite-plugin-ssr/commit/caab024f42fb29cd3a4693b71b96f46135672f8e))
 * improve new frontend deployment handling ([1bda80f](https://github.com/brillout/vite-plugin-ssr/commit/1bda80f1b84cb1605014bc9aa24851e8e673d1f4))
 * refactor types building and exporting ([d4cde57](https://github.com/brillout/vite-plugin-ssr/commit/d4cde57a089a74e70dcaf45fc0de92dd29bf70bd))
