@@ -1,12 +1,14 @@
 export { addLinkPrefetchHandlers, prefetch }
 
-import { assert, assertClientRouting, assertUsage, checkIfClientRouting, isExternalLink } from './utils'
+import { assert, assertClientRouting, assertUsage, checkIfClientRouting, isExternalLink, objectAssign } from './utils'
 import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { isClientSideRoutable, skipLink } from './skipLink'
 import { getPageId } from './getPageId'
 import { getPrefetchConfig } from './prefetch/getPrefetchConfig'
 import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched'
 import { disableClientRouting } from './useClientRouter'
+import { getPageContext } from './getPageContext'
+import { createPageContext } from './createPageContext'
 
 assertClientRouting()
 
@@ -26,9 +28,18 @@ async function prefetch(url: string): Promise<void> {
   markAsAlreadyPrefetched(url)
 
   const { pageId, pageFilesAll, pageConfigs } = await getPageId(url)
+  const pageContextBase = {
+    urlOriginal: url,
+    isBackwardNavigation: false
+  }
+  const pageContext = await createPageContext(pageContextBase)
+  objectAssign(pageContext, {
+    _isFirstRenderAttempt: false
+  })
   if (pageId) {
     try {
       await loadPageFilesClientSide(pageFilesAll, pageConfigs, pageId)
+      await getPageContext(pageContext)
     } catch (err) {
       if (isErrorFetchingStaticAssets(err)) {
         disableClientRouting(err, true)
