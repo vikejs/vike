@@ -222,7 +222,7 @@ async function loadConfigData(
 
     configElements = applyEffects(configElements, configDefinitionsRelevant)
 
-    const isErrorPage: boolean = !!configElements.isErrorPage?.configValue
+    const isErrorPage = determineIsErrorPage(routeFilesystem)
 
     pageConfigsData.push({
       pageId,
@@ -911,4 +911,9 @@ function assertConfigName(configName: string, configNames: string[], definedBy: 
     errMsg = `${errMsg}, did you mean to define '${configNameSimilar}' instead?`
   }
   assertUsage(false, errMsg)
+}
+
+function determineIsErrorPage(routeFilesystem: string) {
+  assertPosixPath(routeFilesystem)
+  return routeFilesystem.split('/').includes('_error')
 }

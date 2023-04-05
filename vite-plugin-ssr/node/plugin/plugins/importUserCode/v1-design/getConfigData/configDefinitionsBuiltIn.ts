@@ -78,9 +78,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   hydrationCanBeAborted: {
     env: 'client-only' // TODO: config-only instead?
-  },
-  isErrorPage: {
-    env: 'config-only' // TODO: config-only instead?
   }
 }
 

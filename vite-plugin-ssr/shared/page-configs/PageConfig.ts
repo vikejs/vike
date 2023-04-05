@@ -23,7 +23,6 @@ type ConfigName =
   | 'passToClient'
   | 'route'
   | 'iKnowThePerformanceRisksOfAsyncRouteFunctions'
-  | 'isErrorPage'
   | 'hydrationCanBeAborted'
   | 'clientEntry'
   | 'clientRouting'
