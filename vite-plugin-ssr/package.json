@@ -18,61 +18,92 @@
       "worker": "./dist/cjs/node/runtime/index-deprecated.js",
       "node": "./dist/cjs/node/runtime/index-deprecated.js",
       "browser": "./dist/esm/client/node.js",
-      "types": "./dist/cjs/node/runtime/index-deprecated.d.ts"
+      "types": "./dist/types/node/runtime/index-deprecated.d.ts"
     },
     "./server": {
       "worker": "./dist/cjs/node/runtime/index.js",
       "node": "./dist/cjs/node/runtime/index.js",
       "browser": "./dist/esm/client/node.js",
-      "types": "./dist/cjs/node/runtime/index.d.ts"
+      "types": "./dist/types/node/runtime/index.d.ts"
     },
     "./client": {
-      "types": "./dist/esm/client/index.d.ts"
+      "types": "./dist/types/client/index.d.ts"
     },
     "./client/router": {
       "worker": "./dist/cjs/node/client/router.js",
       "node": "./dist/cjs/node/client/router.js",
       "browser": "./dist/esm/client/router/index.js",
-      "types": "./dist/esm/client/router/index.d.ts"
+      "types": "./dist/types/client/router/index.d.ts"
     },
     "./routing": {
       "worker": "./dist/cjs/shared/route/routing.js",
       "node": "./dist/cjs/shared/route/routing.js",
       "browser": "./dist/esm/shared/route/routing.js",
-      "types": "./dist/cjs/shared/route/routing.d.ts"
+      "types": "./dist/types/shared/route/routing.d.ts"
     },
     "./cli": {
       "node": "./dist/cjs/node/cli/index.js",
-      "types": "./dist/cjs/node/cli/index.d.ts"
+      "types": "./dist/types/node/cli/index.d.ts"
     },
     "./prerender": {
       "node": "./dist/cjs/node/prerender/index.js",
-      "types": "./dist/cjs/node/prerender/index.d.ts"
+      "types": "./dist/types/node/prerender/index.d.ts"
     },
     "./plugin": {
       "node": "./dist/cjs/node/plugin/index.js",
-      "types": "./dist/cjs/node/plugin/index.d.ts"
+      "types": "./dist/types/node/plugin/index.d.ts"
     },
     "./RenderErrorPage": {
       "worker": "./dist/cjs/shared/RenderErrorPage.js",
       "node": "./dist/cjs/shared/RenderErrorPage.js",
       "browser": "./dist/esm/shared/RenderErrorPage.js",
-      "types": "./dist/cjs/shared/RenderErrorPage.d.ts"
+      "types": "./dist/types/shared/RenderErrorPage.d.ts"
     },
     "./__internal": {
       "node": "./dist/cjs/__internal/index.js",
-      "types": "./dist/cjs/__internal/index.d.ts"
+      "types": "./dist/types/__internal/index.d.ts"
     },
     "./__internal/setup": {
       "node": "./dist/cjs/node/runtime/page-files/setup.js",
-      "types": "./dist/cjs/node/runtime/page-files/setup.d.ts"
+      "types": "./dist/types/node/runtime/page-files/setup.d.ts"
     }
   },
   "main": "./dist/cjs/node/runtime/index-deprecated.js",
+  "types": "./dist/types/node/runtime/index-deprecated.d.ts",
   "typesVersions": {
     "*": {
       "types": [
-        "./dist/cjs/node/public-types"
+        "./dist/types/types/index.d.ts"
+      ],
+      "server": [
+        "./dist/types/node/runtime/index.d.ts"
+      ],
+      "client": [
+        "./dist/type/client/index.d.ts"
+      ],
+      "client/router": [
+        "./dist/types/client/router/index.d.ts"
+      ],
+      "routing": [
+        "./dist/types/shared/route/routing.d.ts"
+      ],
+      "cli": [
+        "./dist/types/node/cli/index.d.ts"
+      ],
+      "prerender": [
+        "./dist/types/node/prerender/index.d.ts"
+      ],
+      "plugin": [
+        "./dist/types/node/plugin/index.d.ts"
+      ],
+      "RenderErrorPage": [
+        "./dist/types/shared/RenderErrorPage.d.ts"
+      ],
+      "__internal": [
+        "./dist/types/__internal/index.d.ts"
+      ],
+      "__internal/setup": [
+        "./dist/types/node/runtime/page-files/setup.d.ts"
       ]
     }
   },
@@ -115,29 +146,17 @@
     "node": ">=12.19.0"
   },
   "files": [
-    "dist/cjs/",
-    "dist/esm/",
+    "dist/",
     "cli.js",
-    "cli.d.ts",
     "client.js",
-    "client.d.ts",
     "client/router.js",
-    "client/router.d.ts",
     "plugin.js",
-    "plugin.d.ts",
     "prerender.js",
-    "prerender.d.ts",
     "routing.js",
-    "routing.d.ts",
     "RenderErrorPage.js",
-    "RenderErrorPage.d.ts",
     "server.js",
-    "server.d.ts",
-    "types.d.ts",
     "__internal.js",
-    "__internal.d.ts",
-    "__internal/setup.js",
-    "__internal/setup.d.ts"
+    "__internal/setup.js"
   ],
   "description": "Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.",
   "repository": "https://github.com/brillout/vite-plugin-ssr",

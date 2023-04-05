@@ -1,4 +1,4 @@
-// Same as public-types.ts but with deprecation notice.
+// Same as ./index.ts but with deprecation notice.
 
 // TODO/v1-release:
 //  - remove this file
@@ -22,7 +22,7 @@ import type {
   Config as Config_,
   Env as Env_,
   ConfigEntries as ConfigEntries_
-} from './public-types'
+} from './index'
 
 /** @deprecated All types have been moved to `vite-plugin-ssr/types`.
  * Replace:

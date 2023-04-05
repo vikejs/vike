@@ -5,11 +5,9 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitAny": true,
     // Output
-    "declaration": true,
-    // Composite setttings
-    "composite": true,
-    "rootDir": "./",
+    "declaration": false,
     "noEmitOnError": false,
+    "rootDir": "./",
     // Misc
     "esModuleInterop": true,
     "skipLibCheck": true
