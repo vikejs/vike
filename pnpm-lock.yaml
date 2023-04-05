@@ -12,13 +12,13 @@ importers:
       '@brillout/bump-dependencies': ^0.1.1
       '@brillout/dev-my-dep': ^0.1.5
       '@brillout/test-e2e': ^0.5.5
-      '@brillout/test-types': ^0.1.5
+      '@brillout/test-types': ^0.1.6
       vitest: ^0.29.5
     devDependencies:
       '@brillout/bump-dependencies': 0.1.1
       '@brillout/dev-my-dep': 0.1.5
       '@brillout/test-e2e': 0.5.5
-      '@brillout/test-types': 0.1.5
+      '@brillout/test-types': 0.1.6
       vitest: 0.29.5
 
   boilerplates:
@@ -2263,8 +2263,8 @@ packages:
       - encoding
     dev: true
 
-  /@brillout/test-types/0.1.5:
-    resolution: {integrity: sha512-FBw6XT9RBmGUKMZ4PnpTWBr+xJcejolggh7IME1+fr7eXum5rC/aFsF8d+gBXnC+BLipoe2UGugLnUGyvp3p8g==}
+  /@brillout/test-types/0.1.6:
+    resolution: {integrity: sha512-V4K2ZCSb/gJHVgNwtmiqBuPHFkf4UF3kKbtUqb4Zf/qSg2s/OWC4naITBlvse5RnKR+rtQbNY6jQ+eUDsk21Qw==}
     hasBin: true
     peerDependencies:
       typescript: ^4.0.0
