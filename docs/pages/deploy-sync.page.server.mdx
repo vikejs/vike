@@ -10,7 +10,7 @@ Everything is handled automatically and there is nothing for you to do.
 >
 > The problem is this: when you deploy a new frontend, what should happen to your users that are currently browsing your frontend?
 >
-> If you do nothing, and if your app uses Client Routing, then your users may end up a very long time on your outdated frontend with outdated client-side JavaScript. This may lead to many problems such as out-of-sync data requests and mutations.
+> If you do nothing, and if your app uses <Link text="Client Routing" href="/client-routing" />, then your users may end up staying a very long time on your outdated frontend with outdated client-side JavaScript. This may lead to many problems such as out-of-sync data requests and mutations.
 >
 > Reloading the page of your users as soon as a new frontend deployment is detected is a no-go: it disrupts your user's activity on your website and your user may lose ephemeral client-side state such as the text he entered in a form or in a comment textarea.
 >
@@ -24,6 +24,6 @@ Everything is handled automatically and there is nothing for you to do.
 >
 > With Server Rotuing, when the user natvigates to a new page, the entire client-side is reloaded (i.e. the new frontend is loaded). After the reload, Client Routing is used again.
 >
-> Note that, since the client-side is fully reloaded, all client state is lost if not persisted (to local storage, for instance).
+> Note that, since the client-side is fully reloaded, all client state is lost if not persisted (to `window.localStorage`, for instance).
 >
 > So far, this technique has shown to work out for all users, but if it doesn't work out for you then open a new GitHub issue.
