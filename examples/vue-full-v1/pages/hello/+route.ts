@@ -1,9 +1,11 @@
+export default route
+
 import { resolveRoute } from 'vite-plugin-ssr/routing'
 import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
 import { names } from './names'
 
 // We use a Route Function to implement advanced routing logic
-export default (pageContext: { urlPathname: string }) => {
+function route(pageContext: { urlPathname: string }) {
   if (pageContext.urlPathname === '/hello' || pageContext.urlPathname === '/hello/') {
     const name = 'anonymous'
     return { routeParams: { name } }

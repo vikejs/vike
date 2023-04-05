@@ -1,3 +1,5 @@
+export default onRenderHtml
+
 import { renderToNodeStream } from '@vue/server-renderer'
 import { escapeInject } from 'vite-plugin-ssr/server'
 import { createApp } from './app'
@@ -5,12 +7,7 @@ import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 
-export { passToClient }
-export { render }
-
-const passToClient = ['pageProps', 'documentProps']
-
-async function render(pageContext: PageContextBuiltIn & PageContext) {
+async function onRenderHtml(pageContext: PageContextBuiltIn & PageContext) {
   const app = createApp(pageContext)
   const stream = renderToNodeStream(app)
 

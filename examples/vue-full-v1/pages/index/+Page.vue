@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import Counter from '../components/Counter.vue'
+import Counter from '../../components/Counter.vue'
 import { navigate } from 'vite-plugin-ssr/client/router'
 
 const randomNavigation = () => {

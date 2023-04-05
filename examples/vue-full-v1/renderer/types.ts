@@ -3,7 +3,7 @@ export type Component = any
 export type PageContext = {
   Page: Component
   pageProps: Record<string, unknown>
-  exports: {
+  config: {
     documentProps?: {
       title: string
     }
