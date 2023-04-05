@@ -1,7 +1,7 @@
 export { assertDefaultExportUnknown }
 export { assertDefaultExportObject }
 
-import { assertUsage } from './assert'
+import { assert, assertUsage } from './assert'
 import { hasProp } from './hasProp'
 import { checkType } from './checkType'
 import { isObject } from './isObject'
@@ -31,17 +31,28 @@ function assertSingleDefaultExport(
   filePath: string,
   defaultExportValueIsUnknown: boolean
 ): asserts fileExports is SingleDefaultExport {
-  {
-    const invalidExports = Object.keys(fileExports).filter((e) => e !== 'default')
-    const invalidExportsStr = invalidExports.join(', ')
-    const correctUsage = defaultExportValueIsUnknown
-      ? `\`export default\``
-      : `\`export default { ${invalidExportsStr} }\``
-    assertUsage(
-      invalidExports.length === 0,
-      `${filePath} should have a single default export: replace \`export { ${invalidExportsStr} }\` with ${correctUsage}`
-    )
+  const exportsAll = Object.keys(fileExports)
+  const exportsInvalid = exportsAll.filter((e) => e !== 'default')
+  const exportsHasDefault = exportsAll.includes('default')
+  if (exportsInvalid.length === 0) {
+    if (exportsHasDefault) {
+      return
+    } else {
+      assert(exportsAll.length === 0)
+      assertUsage(false, `${filePath} doesn't export any value, but it should have a \`export default\` instead`)
+    }
+  } else {
+    const exportsInvalidStr = exportsInvalid.join(', ')
+    if (!defaultExportValueIsUnknown) {
+      assertUsage(
+        exportsInvalid.length === 0,
+        `${filePath} replace \`export { ${exportsInvalidStr} }\` with \`export default { ${exportsInvalidStr} }\``
+      )
+    } else {
+      assertUsage(
+        exportsInvalid.length === 0,
+        `${filePath} should only have a default export: remove \`export { ${exportsInvalidStr} }\``
+      )
+    }
   }
-  assertUsage(hasProp(fileExports, 'default'), `${filePath} should have a \`export default\``)
-  checkType<SingleDefaultExport>(fileExports)
 }
