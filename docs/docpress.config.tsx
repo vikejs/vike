@@ -5,7 +5,7 @@ import faviconUrl from './images/icons/vite-plugin-ssr.svg'
 import React from 'react'
 import { NavHeader, NavHeaderMobile } from './NavHeader'
 
-const config: Config = {
+export default {
   projectInfo,
   faviconUrl,
   navHeader: <NavHeader />,
@@ -23,5 +23,4 @@ const config: Config = {
   },
   bannerUrl: 'https://vite-plugin-ssr.com/banner.png',
   i18n: true
-}
-export default config
+} satisfies Config
