@@ -79,7 +79,7 @@ function formatMsg(
 
   str = pad(str, padding)
 
-  if (position !== 'LAST') {
+  if (position !== 'LAST' && position !== 'FIRST') {
     str += '\n'
   }
 

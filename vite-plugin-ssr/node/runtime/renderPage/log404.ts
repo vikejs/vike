@@ -96,7 +96,7 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
     {
       routeStr: 'ROUTE',
       routeTypeSrc: 'ROUTE TYPE',
-      routeDefinedBy: 'DEFINED AT'
+      routeDefinedBy: 'DEFINED BY'
     },
     ...entries
   ]
