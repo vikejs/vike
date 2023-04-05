@@ -9,7 +9,8 @@ const idBaseClient = `${idBase}client:` as const
 const idBaseServer = `${idBase}server:` as const
 
 function getVirtualFileIdImportPageCode(pageId: string, isForClientSide: boolean): string {
-  return (isForClientSide ? idBaseClient : idBaseServer) + pageId
+  const id = (isForClientSide ? idBaseClient : idBaseServer) + pageId
+  return id
 }
 function isVirtualFileIdImportPageCode(
   id: string

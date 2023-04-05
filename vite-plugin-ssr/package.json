@@ -3,8 +3,7 @@
   "version": "0.4.110",
   "scripts": {
     "build": "rimraf dist/ && tsc --build",
-    "dev": "pnpm run dev:slow",
-    "dev:node": "pnpm run dev:tsc:watch:node",
+    "dev": "pnpm run dev:fast",
     "// `dev:fast` and `dev:slow` achieve the same": "",
     "dev:slow": "tsc --build --watch",
     "dev:fast": "pnpm run dev:tsc:watch:node & pnpm run dev:tsc:watch:client",
