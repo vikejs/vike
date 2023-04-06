@@ -1,36 +1,30 @@
-TODO: check whether includeAssetsImportedByServer still works
+Before beta release
+ - Port all features
+   - includeAssetsImportedByServer
+   - filesystemRoutingRoot
+ - Port all examples
+ - if config isn't a file path then assert that it's serialazable
+   - remove c_code
+ - assert global configs cannot be defined in page-specific config
+   - already done? Use/remove c_global?
+ - docs
+   - Add further examples to v1-design.page.server.mdx
+   - https://vite-plugin-ssr.com/config
+   - https://vite-plugin-ssr.com/meta
 
-TODO: if config isn't a file path then assert that it's serialazable
-  - remove c_code
-TODO: assert global configs cannot be defined in page-specific config
-  - already done? Use/remove c_global?
-
-TODO: check error handling
-  - overall
-  - check error handling when no onRenderHtml defined
-  - improve Vite dev error handling upon user setting unknown config
-  - Improve Vite error logging when:
-    ```
-     /pages/+config.ts sets the config onRenderHtml to the value './+config/onRenderHtml.js' but a file wasn't found at /home/rom/code/vite-plugin-ssr/examples/vanilla-v1/pages/+config/onRenderHtml.js
-    ```
-
-TODO: assertUsage isErrorPage not allowed to be abstract
-TODO: assertUsage() when meta sets a invalid env value
-
-TODO: multiple error pages
-
-TODO: nested layouts
-
-TODO: add further examples to v1-design.page.server.mdx
-TODO: ensure that client-side of Server Routing loads less than Client Routing
-
-TODO: make +meta.js work
-TODO: assert that two import statements in +config.js shouldn't land in different environments
-
-TODO: Define pageContext.pageId
-
-TODO: `filesystemRoutingRoot`
-
-TODO: write
-      https://vite-plugin-ssr.com/config
-      https://vite-plugin-ssr.com/meta
+After beta release
+ - assert that two import statements in +config.js shouldn't land in different environments
+ - Implements TODO comments
+ - define pageContext.pageId
+ - make +meta.js work
+ - error handling
+   - Check overall error handling
+   - Check error handling when no onRenderHtml defined
+   - assertUsage isErrorPage not allowed to be abstract
+   - assertUsage when meta sets a invalid env value
+   - Throw errors and show warnings after dev start + errors shoulnd't exit the dev server
+   - Make "unkown config" a warning?
+     - How can we make sure the user doens't miss the warning? Maybe be make the warnings `onlyOnce: fase` and/or setting Vite's `clearScreen: false`
+ - multiple error pages
+ - nested layouts
+ - ensure that client-side of Server Routing loads less than Client Routing
