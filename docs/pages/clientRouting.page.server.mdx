@@ -42,6 +42,13 @@ export const hydrationCanBeAborted = true
 export { onPageTransitionStart }
 export { onPageTransitionEnd }
 
+// The onHydrationEnd() hook is called after the render() hook finishes for the
+// first page the user navigates to (the onHydrationEnd() hook isn't called for
+// subsequent page navigation).
+export { onHydrationEnd }
+
+the user navigates to the render() hook the first page finishes rendering render())
+
 import { renderToDom, hydrateDom } from 'some-ui-framework'
 
 async function render(pageContext) {
@@ -70,6 +77,10 @@ function onPageTransitionEnd(pageContext) {
   console.log('Page transition end')
   // For example:
   document.body.classList.remove('page-transition')
+}
+
+function onHydrationEnd() {
+  console.log('The page is now interactive')
 }
 ```
 
