@@ -20,7 +20,7 @@ type Config<Page = unknown> = Partial<
 
     /** Hook called before the page is rendered, usually used for fetching data.
      *
-     *  See https://vite-plugin-ssr.com/onbeforeRender
+     *  See https://vite-plugin-ssr.com/onBeforeRender
      */
     onBeforeRender: Function
 
@@ -37,7 +37,7 @@ type Config<Page = unknown> = Partial<
     onRenderClient: Function
     /** Hook called when page is rendered to HTML.
      *
-     * See https://vite-plugin-ssr.com/onRenderClient
+     * See https://vite-plugin-ssr.com/onRenderHtml
      */
     onRenderHtml: Function
 
@@ -64,7 +64,10 @@ type Config<Page = unknown> = Partial<
      */
     onBeforeRoute: Function
 
-    /** Hook called after the page is hydrated */
+    /** Hook called after the page is hydrated
+     *
+     * See https://vite-plugin-ssr.com/clientRouting
+     */
     onHydrationEnd: Function
     /** Hook called before the user navigates to a new page.
      *

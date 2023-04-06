@@ -918,5 +918,21 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: 'Common Problems',
     url: '/common-problems'
+  },
+  {
+    title: <code>onBeforePrerenderStart()</code>,
+    url: '/onBeforePrerenderStart'
+  },
+  {
+    title: <code>onPrerenderStart()</code>,
+    url: '/onPrerenderStart'
+  },
+  {
+    title: <code>onRenderHtml()</code>,
+    url: '/onRenderHtml'
+  },
+  {
+    title: <code>onRenderClient()</code>,
+    url: '/onRenderClient'
   }
 ]
