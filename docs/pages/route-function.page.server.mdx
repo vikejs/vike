@@ -172,7 +172,7 @@ import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
 async function onBeforeRender(pageContext) {
   const { productId } = pageContext.routeParams
 
-  const user = await db.fetchProduct(productId)
+  const product = await db.fetchProduct(productId)
 
   if (!product) {
     // Render _error.page.js
