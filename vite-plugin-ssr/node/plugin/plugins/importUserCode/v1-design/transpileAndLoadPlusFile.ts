@@ -155,7 +155,7 @@ function assertFileImports(
       ...importStatements.map((s) => `  ${pc.cyan(s)}`),
       `The import${singular ? '' : 's'} ${importNamesUnused} ${singular ? "isn't" : "aren't"} used for ${pc.cyan(
         'export default { ... }'
-      )} but imports should always be re-exported, see https://vite-plugin-ssr.com/config#import-rules`
+      )} but imports should always be re-exported, see https://vite-plugin-ssr.com/config-code-splitting#hook-rule`
     ].join('\n'),
     { onlyOnce: true, showStackTrace: false }
   )

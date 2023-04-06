@@ -1,3 +1,5 @@
+import { Link } from '@brillout/docpress'
+
 All imports in `+config.js` are code-splitted.
 
 For example, VPS transforms this:
@@ -35,4 +37,60 @@ import onRenderHtml from './some-module'
 export default { onRenderHtml, onRenderClient }
 ```
 
-VPS loads `config.js` at server start and then loads `onRenderClient()` and `onRenderHtml()` only when needed and only in the right environment.
+Vite-plugin-ssr loads `config.js` at server start, and it loads `onRenderClient()` and `onRenderHtml()` later only if needed and only in the right environment.
+
+
+## Hook Rule
+
+Following is forbidden:
+
+```js
+// /pages/some-page/+config.js
+
+export default {
+  Page,
+  onBeforeRender
+}
+
+function Page() {
+  // ...
+}
+function onBeforeRender() {
+  // ...
+}
+```
+
+Vite-plugin-ssr throws:
+```
+[Wrong Usage] The code of hooks cannot live inside +config.js`
+```
+
+Do this instead:
+
+```js
+// /pages/some-page/+config.js
+
+import Page from './some-file'
+import onBeforeRender from './some-other-file'
+
+export default { Page, onBeforeRender }
+```
+
+Also note that this is usually forbidden as well:
+
+```diff
+  // /pages/some-page/+config.js
+
+- import Page from './some-file'
+- import onBeforeRender from './some-other-file'
++ // Can we define Page and onBeforeRender in the same file?
++ import { Page, onBeforeRender } from './same-file'
+
+  export default { Page, onBeforeRender }
+```
+
+This is only allowed if `Page` and `onBeforeRender` live in the same environment which usually isn't the case:
+ - By default `Page` is loaded on the client-side as well as on the server-side.
+ - By default `onBeforeRender` is loaded only on the server-side.
+
+In other words: importing `Page` and `onBeforeRender` from the same file is only allowed if you use the `meta` config to make them live in same environment, see <Link href="/meta#env" />.

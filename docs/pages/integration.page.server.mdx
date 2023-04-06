@@ -1,4 +1,5 @@
 import { Link } from '@brillout/docpress'
+import { JustAMiddleware } from '../components'
 
 From an architectural perspective, VPS is versatile:
  - From a server perspective VPS is just an agnostic middleware, see <Link href="/renderPage" />.
@@ -102,23 +103,9 @@ Integrating a browser tool is only a matter of following its official installati
 
 ## Server tools
 
-From the perspective of our server architecture, `vite-plugin-ssr` is just a middleware:
+<JustAMiddleware />
 
-```js
-// `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
-app.get('*', async (req, res) => {
-  // renderPage() is just a function that, for a given URL, returns the result of
-  // of our render() hook (usually an HTML string). The renderPage() function
-  // can be used within any server environment, including serverless and edge
-  // environments such as AWS Lambda, Cloudflare Workers, Vercel, ...
-  const pageContext = await renderPage({ urlOriginal: req.url })
-  res.send(pageContext.httpResponse.body)
-})
-```
-
-By [pre-rendering](/pre-rendering) our pages we can remove the need for a production server and, instead, deploy to a static host.
-
-We can use:
+You can use:
 - Any server framework (Express, Koa, Fastify, Hapi, ...)
 - Any authentication strategy/tool (email/password, OAuth, Auth.js, Passport.js, Grant, Keycloak, Auth0, ...).
 - Any serverless/edge environment (Cloudflare Workers, Vercel, Firebase, AWS Lambda, Google Cloud Functions, ...)

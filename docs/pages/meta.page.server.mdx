@@ -1,0 +1,106 @@
+import { Link } from '@brillout/docpress'
+
+The `meta` config enables you to:
+ - <Link doNotInferSectionTitle={true} href="#create-a-config" />
+ - <Link doNotInferSectionTitle={true} href="#override-an-existing-config" />
+ - <Link doNotInferSectionTitle={true} href="#create-a-shortcut-config" />
+
+## Create a config
+
+Example:
+
+```ts
+// /renderer/+config.ts
+
+import type { Config } from 'vite-plugin-ssr/types'
+
+export default {
+  meta: {
+    title: {
+      // We make the config value available on both the server and client
+      env: 'server-and-client'
+    },
+    description: {
+      // We make the config value available only on the server
+      env: 'server-only'
+    }
+  }
+} satisfies Config
+```
+
+```js
+// /pages/some-page/+config.js
+
+export default {
+  // Set <title>
+  title: 'My vite-plugin-ssr app',
+  // Set <meta name="description" />
+  title: 'This app showcases using vite-plugin-ssr'
+}
+```
+
+```ts
+// /renderer/+onRenderHtml.js
+
+export default onRenderHtml
+
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+
+async function onRenderHtml(pageContext) {
+  // The page's config is available at pageContext.config
+  const { title, description } = pageContext.config
+  return escapeInject`
+    <html>
+      <head>
+        <title>${title}</title>
+        <meta name="description" content="${description}" />
+      </head>
+      <!-- ... -->
+    </html>`
+}
+```
+
+```ts
+// /renderer/+onRenderClient.js
+
+export default onRenderClient
+
+async function onRenderClient(pageContext) {
+  // Because meta.title.env is 'server-and-client' we can access its value
+  // as well on the client-side.
+  const { title } = pageContext.config
+  // For client-side routing, we need to dynamically change the website's title
+  document.title = title
+}
+```
+
+## Override an existing config
+
+Example:
+
+```ts
+// /pages/some-page/+config.ts
+
+import type { Config } from 'vite-plugin-ssr/types'
+
+export default {
+  meta: {
+    onBeforeRender: {
+      // By default, the onBeforeRender() hook is always executed on the server. By using
+      // the meta config we can make onBeforeRender() isomorphic instead: onBeforeRender()
+      // is as well executed in the browser. This means we fetch data direcly from the
+      // browser upon client-side navigation (without involving our Node.js/Edge server
+      // at all).
+      env: 'server-and-client'
+    }
+  }
+} satisfies Config
+```
+
+For more convenience, we can call a "shortcut config".
+
+## Create a shortcut config
+
+For convenience, you can also define a [custom config `onBeforeRenderIsomorph: boolean`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/renderer/+config.ts#L12-L31) for a [page-per-page toggle](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/pages/star-wars/%40id/%2BonBeforeRenderIsomorph.ts).
+
+We call this a "shortcut config"

@@ -1,0 +1,17 @@
+import { Link } from '@brillout/docpress'
+
+From the perspective of your server architecture, vite-plugin-ssr is just a middleware:
+
+```js
+// `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
+app.get('*', async (req, res) => {
+  // renderPage() is just a function that, for a given URL, returns the result of
+  // of our render() hook (usually an HTML string). The renderPage() function
+  // can be used within any server environment, including serverless and edge
+  // environments such as AWS Lambda, Cloudflare Workers, Vercel, ...
+  const pageContext = await renderPage({ urlOriginal: req.url })
+  res.send(pageContext.httpResponse.body)
+})
+```
+
+By <Link text="pre-rendering" href="/pre-rendering" /> your pages you can remove the need for a production server and, instead, deploy to a static host.

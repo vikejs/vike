@@ -1,0 +1,57 @@
+import { Link } from '@brillout/docpress'
+
+A `+config.js` file can define following configs.
+
+```ts
+// +config.ts
+
+import type { Config } from 'vite-plugin-ssr/types'
+
+export default {
+  Page,
+  route,
+  onBeforeRender,
+  // See full list below
+  // ...
+} satisfies Config
+```
+
+**Always defined at `/pages/some-page/+config.js`**
+
+- `Page: unknown`: the root UI component of the page.
+
+- `route: string | Function`: the page's route. See <Link href="/routing" />.
+
+> The config `Page` and `route` always define a new page.
+
+**Usually defined at `/pages/some-page/+config.js`**
+
+- `onBeforeRender: Function`: hook called before the page is rendered, usually used for fetching data. See <Link href="/onBeforeRender" />.
+
+- `passToClient: string[]`: determine what `pageContext` properties are sent to the client-side. See <Link href="/passToClient" />.
+
+**Usually defined at `/renderer/+config.js`**
+
+> `/renderer/+config.js` is equivalent to `/pages/+config.js`, see explanation at <Link href="/architecture#config-js" />.
+
+- `onRenderClient: Function`: Hook called when page is rendered on the client-side. See <Link href="/onRenderClient" />.
+
+- `onRenderHtml: Function`: Hook called when page is rendered on the client-side. See <Link href="/onRenderHtml" />.
+- `clientRouting: boolean`: Enable Client Routing. See <Link href="/clientRouting" />.
+- `meta: Meta`: Add or modify config definitions. See <Link href="/meta" />.
+- `prefetchStaticAssets: PrefetchStaticAssets`: Prefetch links. See <Link href="/clientRouting#link-prefetching" />.
+
+**Usually defined at `/pages/some-page/+config.js` (more)**
+- `iKnowThePerformanceRisksOfAsyncRouteFunctions: boolean`: Enable async Route Functions. See <Link href="/route-function#async" />.
+
+- `onBeforePrerenderStart: Function`: Global Hook called before the whole pre-rendering process starts. See <Link href="/onBeforePrerenderStart" />.
+
+**Usually defined at `/renderer/+config.js` (more)**
+- `onPageTransitionStart: Function`: Hook called before the user navigates to a new page. See <Link href="/clientRouting" />.
+
+- `onPageTransitionEnd: Function`: Hook called after the user navigates to a new page. See <Link href="/clientRouting" />.
+- `onHydrationEnd: Function`: Hook called after the page is hydrated. See <Link href="/clientRouting" />.
+- `onPrerenderStart: Function`: Page Hook called when pre-rendering starts. See <Link href="/onPrerenderStart" />.
+- `onBeforeRoute: Function`: Hook called before the URL is route to a page. See <Link href="/onBeforeRoute" />.
+- `clientEntry: string`: Additional client entry.
+- `hydrationCanBeAborted: boolean`:  Whether your UI framework (React/Vue/Solid/...) allows the page's hydration to be aborted. See <Link href="/clientRouting" />.

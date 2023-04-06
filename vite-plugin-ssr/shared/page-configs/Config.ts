@@ -15,7 +15,10 @@ type Config<Page = unknown> = Partial<
     /** The root UI component of the page */
     Page: Page
 
-    /** The page's route */
+    /** The page's route
+     *
+     *  See https://vite-plugin-ssr.com/routing
+     */
     route: string | Function
 
     /** Hook called before the page is rendered, usually used for fetching data.
@@ -24,7 +27,7 @@ type Config<Page = unknown> = Partial<
      */
     onBeforeRender: Function
 
-    /** Determine what properties of pageContext are sent to the client-side.
+    /** Determine what pageContext properties are sent to the client-side.
      *
      * See https://vite-plugin-ssr.com/passToClient
      */
@@ -80,8 +83,6 @@ type Config<Page = unknown> = Partial<
      */
     onPageTransitionEnd: Function
 
-    /** Whether the page is a page that should be rendered when an error occurs */
-    isErrorPage: boolean
     /** Whether your UI framework (React/Vue/Solid/...) allows the page's hydration to be aborted.
      *
      * See https://vite-plugin-ssr.com/clientRouting
