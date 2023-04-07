@@ -22,7 +22,6 @@ async function getViteDevScripts(): Promise<string> {
     !fakeHtml.startsWith(fakeHtmlBegin.replace(' ', '')),
     'Vite plugins that minify the HTML are not supported by vite-plugin-ssr, see https://github.com/brillout/vite-plugin-ssr/issues/224'
   )
-  console.log(fakeHtml)
   assertUsage(
     fakeHtml.startsWith(fakeHtmlBegin) && fakeHtml.endsWith(fakeHtmlEnd),
     'You are using a Vite Plugin that transforms the HTML in a way that conflicts with vite-plugin-ssr. Create a new GitHub ticket to discuss a solution.'
