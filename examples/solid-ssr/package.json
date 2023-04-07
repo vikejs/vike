@@ -5,6 +5,7 @@
     "preview": "vite build && vite preview"
   },
   "dependencies": {
+    "solid-devtools": "^0.26.0",
     "solid-js": "^1.5.2",
     "typescript": "^4.8.2",
     "vite": "^4.0.3",
