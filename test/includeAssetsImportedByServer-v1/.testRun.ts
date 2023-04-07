@@ -16,7 +16,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
 
     let logoUrl: string = isDev
       ? '/pages/index/logo-1.svg'
-      : html.match(partRegex`/assets/static/logo-1.${/[a-zA-Z0-9]+/}.svg`)[0]
+      : html.match(partRegex`/assets/static/logo-1.${/[a-zA-Z0-9]+/}.svg`)![0]
     expect(html).toContain(`<img src="${logoUrl}" />`)
 
     const logoSrc: string = await (await fetch(getServerUrl() + logoUrl)).text()

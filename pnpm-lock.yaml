@@ -1035,6 +1035,14 @@ importers:
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  test/includeAssetsImportedByServer-v1:
+    specifiers:
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      vite: 4.2.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   test/pageFlesSrc:
     specifiers:
       '@brillout/docpress': ^0.1.20
@@ -10648,6 +10656,39 @@ packages:
       postcss: 8.4.21
       resolve: 1.22.1
       rollup: 3.15.0
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: false
+
+  /vite/4.2.1:
+    resolution: {integrity: sha512-7MKhqdy0ISo4wnvwtqZkjke6XN4taqQ2TBaTccLIpOKv7Vp2h4Y+NpmWCnGDeSvvn45KxvWgGyb0MkHvY1vgbg==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      esbuild: 0.17.10
+      postcss: 8.4.21
+      resolve: 1.22.1
+      rollup: 3.20.2
     optionalDependencies:
       fsevents: 2.3.2
     dev: false
