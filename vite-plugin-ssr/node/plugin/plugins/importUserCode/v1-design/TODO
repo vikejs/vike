@@ -1,7 +1,7 @@
 Before beta release
  - Port all features
-   - includeAssetsImportedByServer
    - filesystemRoutingRoot
+   - base assets
  - Port all examples
  - if config isn't a file path then assert that it's serialazable
    - remove c_code
@@ -11,6 +11,7 @@ Before beta release
    - Add further examples to v1-design.page.server.mdx
    - https://vite-plugin-ssr.com/config
    - https://vite-plugin-ssr.com/meta
+ - rename config 'clientEntry'?
 
 After beta release
  - assert that two import statements in +config.js shouldn't land in different environments
