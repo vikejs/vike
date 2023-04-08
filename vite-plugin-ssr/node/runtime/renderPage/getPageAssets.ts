@@ -15,7 +15,7 @@ import {
 } from '../utils'
 import { retrieveAssetsDev } from './getPageAssets/retrieveAssetsDev'
 import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd'
-import { isAbsolute, join } from 'pathe'
+import { isAbsolute, join } from '../../../utils/path-shim'
 import { inferMediaType, type MediaType } from './inferMediaType'
 import { getManifestEntry } from './getPageAssets/getManifestEntry'
 import type { ViteDevServer } from 'vite'

@@ -2,7 +2,7 @@ import type { UserConfig, ResolvedConfig } from 'vite'
 import { viteIsSSR } from './viteIsSSR'
 import { assert } from './assert'
 import { assertPosixPath } from './filesystemPathHandling'
-import { join } from 'pathe'
+import { join } from './path-shim'
 
 export { getOutDirs }
 export { getOutDirs_prerender }
