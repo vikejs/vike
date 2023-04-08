@@ -3,7 +3,6 @@ name = "vite-plugin-ssr_worker-example"
 compatibility_flags = ["streams_enable_constructors"]
 compatibility_date = "2021-09-29"
 workers_dev = true
-node_compat = true
 
 [site]
 bucket = "./dist/client"
