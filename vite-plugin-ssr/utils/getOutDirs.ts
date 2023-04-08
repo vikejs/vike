@@ -2,7 +2,7 @@ import type { UserConfig, ResolvedConfig } from 'vite'
 import { viteIsSSR } from './viteIsSSR'
 import { assert } from './assert'
 import { assertPosixPath } from './filesystemPathHandling'
-import path from 'path'
+import { join } from 'pathe'
 
 export { getOutDirs }
 export { getOutDirs_prerender }
@@ -54,7 +54,7 @@ function getAllOutDirs(outDirRoot: string, root: string) {
   if (!outDirIsAbsolutePath(outDirRoot)) {
     assertPosixPath(outDirRoot)
     assertPosixPath(root)
-    outDirRoot = path.posix.join(root, outDirRoot)
+    outDirRoot = join(root, outDirRoot)
   }
 
   let { outDirClient, outDirServer } = declineOutDirs(outDirRoot)
@@ -79,8 +79,8 @@ function assertNormalization(outDirAny: string) {
 function declineOutDirs(outDirRoot: string) {
   assertIsOutDirRoot(outDirRoot)
   assertPosixPath(outDirRoot)
-  const outDirClient = path.posix.join(outDirRoot, 'client')
-  const outDirServer = path.posix.join(outDirRoot, 'server')
+  const outDirClient = join(outDirRoot, 'client')
+  const outDirServer = join(outDirRoot, 'server')
   assertIsNotOutDirRoot(outDirClient)
   assertIsNotOutDirRoot(outDirServer)
   return { outDirClient, outDirServer }
