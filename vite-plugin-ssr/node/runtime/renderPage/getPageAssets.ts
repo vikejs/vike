@@ -15,7 +15,7 @@ import {
 } from '../utils'
 import { retrieveAssetsDev } from './getPageAssets/retrieveAssetsDev'
 import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd'
-import path from 'path'
+import { isAbsolute, join } from 'pathe'
 import { inferMediaType, type MediaType } from './inferMediaType'
 import { getManifestEntry } from './getPageAssets/getManifestEntry'
 import type { ViteDevServer } from 'vite'
@@ -135,9 +135,9 @@ function resolveClientEntriesDev(
 
   assertPosixPath(clientEntry)
   let filePath: string
-  if (path.posix.isAbsolute(clientEntry)) {
+  if (isAbsolute(clientEntry)) {
     // User files
-    filePath = path.posix.join(root, clientEntry)
+    filePath = join(root, clientEntry)
   } else if (clientEntry.startsWith('@@vite-plugin-ssr/')) {
     // VPS client entry
     assert(clientEntry.endsWith('.js'))

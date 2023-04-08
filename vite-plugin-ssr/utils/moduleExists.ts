@@ -1,6 +1,6 @@
 export { moduleExists }
 
-import { isAbsolute, resolve } from 'path'
+import { isAbsolute, resolve } from 'pathe'
 import { assert } from './assert'
 
 function moduleExists(modulePath: string, dirPath?: string): boolean {
