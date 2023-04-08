@@ -47,7 +47,8 @@
   },
   "pnpm": {
     "overrides": {
-      "vite-plugin-ssr": "link:./vite-plugin-ssr/"
+      "vite-plugin-ssr": "link:./vite-plugin-ssr/",
+      "@brillout/import": "0.2.2-draft.12832"
     },
     "packageExtensions": {
       "@apollo/client": {
