@@ -1,3 +1,16 @@
+## [0.4.112](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.111...v0.4.112) (2023-04-09)
+
+
+### Bug Fixes
+
+* normalize chunkInfo.facadeModuleId (fix [#771](https://github.com/brillout/vite-plugin-ssr/issues/771)) ([b8eb4f1](https://github.com/brillout/vite-plugin-ssr/commit/b8eb4f1eca0ad440349a94515e377d77dc0d467f))
+* replace node path with pathe library ([ccc65ce](https://github.com/brillout/vite-plugin-ssr/commit/ccc65ce3e313d99a19f2f0d8214216e653515b84))
+* tolerate PWA manifest workaround (fix [#769](https://github.com/brillout/vite-plugin-ssr/issues/769)) ([4f9992d](https://github.com/brillout/vite-plugin-ssr/commit/4f9992d047e807f3e1dd09f223ed6f4ca318b051))
+* use simple path shim ([f0234ee](https://github.com/brillout/vite-plugin-ssr/commit/f0234eea67e1ce207db157e77e2765cc3858ee8f))
+* use updated dependencies that don't depend on Node.js ([f00a096](https://github.com/brillout/vite-plugin-ssr/commit/f00a0968390e465ace6c7f0f9602d5559ee4748e))
+
+
+
 ## [0.4.111](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.110...v0.4.111) (2023-04-05)
 
 
