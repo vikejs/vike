@@ -11,11 +11,11 @@ import {
   toPosixPath,
   isNpmPackageModule,
   unique,
-  isNotNullish
+  isNotNullish,
+  pathJoin
 } from '../utils'
 import { retrieveAssetsDev } from './getPageAssets/retrieveAssetsDev'
 import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd'
-import { joinSimple } from '../../../utils/path-shim'
 import { inferMediaType, type MediaType } from './inferMediaType'
 import { getManifestEntry } from './getPageAssets/getManifestEntry'
 import type { ViteDevServer } from 'vite'
@@ -137,7 +137,7 @@ function resolveClientEntriesDev(
   let filePath: string
   if (clientEntry.startsWith('/')) {
     // User files
-    filePath = joinSimple(root, clientEntry)
+    filePath = pathJoin(root, clientEntry)
   } else if (clientEntry.startsWith('@@vite-plugin-ssr/')) {
     // VPS client entry
     assert(clientEntry.endsWith('.js'))
