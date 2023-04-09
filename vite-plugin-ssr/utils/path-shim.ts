@@ -1,4 +1,5 @@
-export { isAbsolute, join, joinSimple }
+// export { isAbsolute, join, joinSimple }
+ export { joinSimple }
 
 import {assert} from "./assert";
 
