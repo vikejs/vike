@@ -132,7 +132,14 @@ function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest
     // circumvent esbuild bug: esbuild adds a `default` key to JSON upon `require('./some.json')`.
     .filter(([key]) => key !== 'default')
     .forEach(([_, entry]) => {
+      /* We should include this assert but we don't as a workaround for PWA apps: https://github.com/brillout/vite-plugin-ssr/issues/769
       assert(isPlainObject(entry))
+      /*/
+      if (!isPlainObject(entry)) {
+        // Is PWA manifest entry (see #769)
+        return
+      }
+      ///*/
       assert(typeof entry.file === 'string')
     })
 }
