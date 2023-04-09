@@ -1,4 +1,6 @@
-export { isAbsolute, join }
+export { isAbsolute, join, joinSimple }
+
+import {assert} from "./assert";
 
 function isAbsolute(path: string): boolean {
   return /^[/\\](?![/\\])|^[/\\]{2}(?!\.)|^[A-Za-z]:[/\\]/.test(path)
@@ -28,6 +30,14 @@ export const normalize = function (path: string) {
 
   return isPathAbsolute && !isAbsolute(path) ? `/${path}` : path;
 };
+
+function joinSimple(path1: string, path2: string): string {
+  assert(!path1.includes(('\\')))
+  assert(!path2.includes(('\\')))
+  let pathJoined = [...path1.split('/'), ...path2.split('/')].filter(Boolean).join('/')
+  if (path1.startsWith('/')) pathJoined = '/' + pathJoined
+  return pathJoined
+}
 
 // join
 const join = function (...arguments_: string[]) {
