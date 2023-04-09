@@ -1,5 +1,8 @@
 export { pathJoin }
 
+// Simple shim for `import * from "node:path"` used by the server runtime.
+// Robust alternative: https://github.com/unjs/pathe
+
 import { assert } from './assert'
 
 function pathJoin(path1: string, path2: string): string {
