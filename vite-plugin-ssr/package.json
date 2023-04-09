@@ -110,9 +110,9 @@
     "vite-plugin-ssr": "./node/cli/bin-entry.js"
   },
   "dependencies": {
-    "@brillout/import": "0.2.2-draft.23102",
+    "@brillout/import": "0.2.3",
     "@brillout/json-serializer": "^0.5.3",
-    "@brillout/vite-plugin-import-build": "^0.2.13",
+    "@brillout/vite-plugin-import-build": "^0.2.14",
     "acorn": "^8.0.0",
     "cac": "^6.0.0",
     "es-module-lexer": "^0.10.0",
