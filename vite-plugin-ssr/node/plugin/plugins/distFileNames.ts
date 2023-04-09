@@ -4,7 +4,7 @@ export { distFileNames }
 //  - https://github.com/brillout/vite-plugin-ssr/commit/11a4c49e5403aa7c37c8020c462b499425b41854
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
-import { assertPosixPath, assert, assertUsage, removeFileExtention } from '../utils'
+import { assertPosixPath, assert, assertUsage, removeFileExtention, toPosixPath } from '../utils'
 import path from 'path'
 import { extractAssetsRE } from './extractAssetsPlugin'
 import { isVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode'
@@ -67,8 +67,9 @@ function getScriptFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, 
   const assetsDir = getAssetsDir(config)
 
   assertPosixPath(root)
-  const id = chunkInfo.facadeModuleId
-  if (id) assertPosixPath(id)
+  let id = chunkInfo.facadeModuleId
+  // I don't know why, but chunkInfo.facadeModuleId isn't always a posix path, see https://github.com/brillout/vite-plugin-ssr/issues/771
+  if (id) id = toPosixPath(id)
 
   let name: string
   if (isEntry) {
