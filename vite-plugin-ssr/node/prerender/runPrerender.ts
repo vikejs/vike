@@ -166,10 +166,7 @@ async function runPrerender(options: PrerenderOptions): Promise<void> {
   const { outDirClient } = getOutDirs_prerender(viteConfig)
   const { root } = viteConfig
   const prerenderConfig = configVps.prerender
-  assertWarning(prerenderConfig, 'Set config `prerender` to `true`, see https://vite-plugin-ssr.com/prerender-config', {
-    showStackTrace: false,
-    onlyOnce: true
-  })
+  assertUsage(prerenderConfig, "Set config `prerender' to true, see https://vite-plugin-ssr.com/prerender-config")
   const { partial = false, noExtraDir = false, parallel = true } = prerenderConfig || {}
 
   const concurrencyLimit = pLimit(
