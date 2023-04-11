@@ -1,5 +1,5 @@
-export { prerender }
+export default onBeforePrerenderStart
 
-function prerender() {
+function onBeforePrerenderStart() {
   return [{ url: '/product/starship', url: '/product/mac-studio', url: '/product/แจ็คเก็ตเดนิม' }]
 }
