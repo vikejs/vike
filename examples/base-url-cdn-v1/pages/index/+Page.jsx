@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+export default Page
 
-export { Page }
+import React, { useState } from 'react'
 
 function Page() {
   return (

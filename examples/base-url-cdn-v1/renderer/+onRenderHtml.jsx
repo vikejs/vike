@@ -1,3 +1,5 @@
+export default onRenderHtml
+
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { PageShell } from './PageShell'
@@ -7,12 +9,7 @@ import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 //  - manifest.json
 import logoUrl from './logo.svg'
 
-export { render }
-export { passToClient }
-
-const passToClient = ['pageProps']
-
-function render(pageContext) {
+function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
     <PageShell>
