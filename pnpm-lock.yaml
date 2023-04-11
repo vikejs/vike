@@ -203,6 +203,28 @@ importers:
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  examples/base-url-cdn-v1:
+    specifiers:
+      '@vitejs/plugin-react': ^3.0.0
+      concurrently: ^7.1.0
+      cors: ^2.8.5
+      cross-env: ^7.0.3
+      express: ^4.18.1
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      '@vitejs/plugin-react': 3.1.0_vite@4.2.1
+      concurrently: 7.1.0
+      cors: 2.8.5
+      cross-env: 7.0.3
+      express: 4.18.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      vite: 4.2.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   examples/base-url-server:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
@@ -1505,10 +1527,10 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0
     dependencies:
-      '@babel/compat-data': 7.20.1
+      '@babel/compat-data': 7.20.14
       '@babel/core': 7.18.13
       '@babel/helper-validator-option': 7.18.6
-      browserslist: 4.21.4
+      browserslist: 4.21.5
       semver: 6.3.0
     dev: false
 
