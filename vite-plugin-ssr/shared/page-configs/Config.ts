@@ -1,7 +1,6 @@
 export type { Config }
 
 import type { PrefetchStaticAssets } from '../../client/router/prefetch/getPrefetchConfig'
-import type { ConfigVpsUserProvided } from '../ConfigVps'
 // TODO: write docs of links below
 
 import type { ConfigEnv } from './PageConfig'
@@ -11,7 +10,7 @@ import type { ConfigEnv } from './PageConfig'
  * See https://vite-plugin-ssr.com/config
  */
 type Config<Page = unknown> = Partial<
-  ConfigVpsUserProvided & {
+  {
     /** The root UI component of the page */
     Page: Page
 
@@ -26,12 +25,20 @@ type Config<Page = unknown> = Partial<
      *  See https://vite-plugin-ssr.com/onBeforeRender
      */
     onBeforeRender: Function
-
     /** Determine what pageContext properties are sent to the client-side.
      *
      * See https://vite-plugin-ssr.com/passToClient
      */
     passToClient: string[]
+
+    /**
+     * Whether to pre-render the page(s).
+     *
+     * See https://vite-plugin-ssr.com/pre-rendering
+     *
+     * @default false
+     */
+    prerender?: boolean
 
     /** Hook called when page is rendered on the client-side.
      *
