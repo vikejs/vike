@@ -12,12 +12,17 @@ Before beta release
    - https://vite-plugin-ssr.com/config
    - https://vite-plugin-ssr.com/meta
  - rename config 'clientEntry'?
+ - vike.config.js or everything in /pages/+config.js ?
 
 After beta release
  - assert that two import statements in +config.js shouldn't land in different environments
  - Implements TODO comments
  - define pageContext.pageId
- - make +meta.js work
+ - restructure getConfigData()
+   - make +meta.js work
+   - make it work to import a config-only value, for example:
+     - https://github.com/brillout/vite-plugin-ssr/commit/24a92cf79a0533ab4b0fa124675385f462302e1e
+     - e.g. `import { prerender } from '../some-file'` in `/pages/index/+config.js`
  - error handling
    - Check overall error handling
    - Check error handling when no onRenderHtml defined
