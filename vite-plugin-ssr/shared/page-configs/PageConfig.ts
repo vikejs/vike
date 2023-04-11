@@ -4,30 +4,13 @@ export type { ConfigEnv }
 export type { PageConfigData }
 export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
-export type { ConfigName }
 export type { ConfigElement }
+export type { ConfigName }
+
+import type { ConfigName } from './Config'
 
 /** See https://vite-plugin-ssr/meta */
 type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | '_routing-env' | 'config-only'
-
-type ConfigName =
-  | 'onRenderHtml'
-  | 'onRenderClient'
-  | 'onBeforeRender'
-  | 'onBeforePrerenderStart'
-  | 'onHydrationEnd'
-  | 'onPageTransitionStart'
-  | 'onPageTransitionEnd'
-  | 'prerender'
-  | 'Page'
-  | 'passToClient'
-  | 'route'
-  | 'iKnowThePerformanceRisksOfAsyncRouteFunctions'
-  | 'filesystemRoutingRoot'
-  | 'hydrationCanBeAborted'
-  | 'clientEntry'
-  | 'clientRouting'
-  | 'prefetchStaticAssets'
 
 type ConfigElement = ConfigElementFile & {
   configEnv: ConfigEnv

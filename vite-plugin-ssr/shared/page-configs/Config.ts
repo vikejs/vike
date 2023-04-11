@@ -1,10 +1,15 @@
 export type { Config }
+export type { ConfigName }
 
 import type { PrefetchStaticAssets } from '../../client/router/prefetch/getPrefetchConfig'
 import type { ConfigVpsUserProvided } from '../ConfigVps'
 // TODO: write docs of links below
 
 import type { ConfigEnv } from './PageConfig'
+
+type ConfigName =
+  | Exclude<keyof Config, keyof ConfigVpsUserProvided | 'onBeforeRoute' | 'onPrerenderStart' | 'meta'>
+  | 'prerender'
 
 /** Page configuration.
  *
@@ -49,6 +54,12 @@ type Config<Page = unknown> = Partial<
      * See https://vite-plugin-ssr.com/route-function#async
      */
     iKnowThePerformanceRisksOfAsyncRouteFunctions: boolean
+
+    /** Change the URL root of Filesystem Routing.
+     *
+     * See https://vite-plugin-ssr.com/filesystemRoutingRoot
+     */
+    filesystemRoutingRoot: boolean
 
     /** Page Hook called when pre-rendering starts.
      *
