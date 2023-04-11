@@ -63,7 +63,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     c_validate: getRouteValidator()
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    env: 'server-and-client'
+    env: '_routing-env'
   },
   filesystemRoutingRoot: {
     env: '_routing-env'
