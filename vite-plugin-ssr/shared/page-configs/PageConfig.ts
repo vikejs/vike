@@ -23,6 +23,7 @@ type ConfigName =
   | 'passToClient'
   | 'route'
   | 'iKnowThePerformanceRisksOfAsyncRouteFunctions'
+  | 'filesystemRoutingRoot'
   | 'hydrationCanBeAborted'
   | 'clientEntry'
   | 'clientRouting'

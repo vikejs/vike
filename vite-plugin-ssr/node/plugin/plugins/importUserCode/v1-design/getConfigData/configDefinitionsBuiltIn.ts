@@ -65,6 +65,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
     env: 'server-and-client'
   },
+  filesystemRoutingRoot: {
+    env: '_routing-env'
+  },
   // TODO: rename to 'client'? I think so if client is cumulative to onRenderClient (while HTML-only needs to set `onRenderClient: null`)
   clientEntry: {
     c_code: true,
