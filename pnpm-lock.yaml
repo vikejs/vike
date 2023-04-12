@@ -353,6 +353,24 @@ importers:
       vite-plugin-ssr: link:../../vite-plugin-ssr
       wrangler: 2.9.1
 
+  examples/cloudflare-workers-react-v1:
+    specifiers:
+      '@cloudflare/kv-asset-handler': ^0.2.0
+      '@vitejs/plugin-react': ^3.1.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      vite: ^4.1.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      wrangler: ^2.9.1
+    dependencies:
+      '@cloudflare/kv-asset-handler': 0.2.0
+      '@vitejs/plugin-react': 3.1.0_vite@4.2.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      vite: 4.2.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      wrangler: 2.9.1
+
   examples/cloudflare-workers-vue:
     specifiers:
       '@cloudflare/kv-asset-handler': ^0.2.0
