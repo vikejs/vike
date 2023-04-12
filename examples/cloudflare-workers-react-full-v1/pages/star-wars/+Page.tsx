@@ -1,9 +1,9 @@
-export { Page }
+export default Page
 
 import React, { Suspense } from 'react'
 import { useAsync } from 'react-streaming'
-import { usePageContext } from '../renderer/usePageContext'
-import { Counter } from '../components/Counter'
+import { usePageContext } from '../../renderer/usePageContext'
+import { Counter } from '../../components/Counter'
 
 function Page() {
   return (
