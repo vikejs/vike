@@ -227,7 +227,7 @@ function getGlobalHooks(
         )
         filesystemRoots.push({
           filesystemRoot: dirname(filePath),
-          routeRoot: fileExports.filesystemRoutingRoot
+          urlRoot: fileExports.filesystemRoutingRoot
         })
       }
     })

@@ -5,7 +5,7 @@ export type { FilesystemRoot }
 
 type FilesystemRoot = {
   filesystemRoot: string
-  routeRoot: string
+  urlRoot: string
 }
 
 // TODO/next-major-update: remove this and whole filesystemRoot mechanism
@@ -19,10 +19,10 @@ function deduceRouteStringFromFilesystemPath(pageId: string, filesystemRoots: Fi
   let filesystemRoute: string
   if (fsRoot) {
     // Example values:
-    //  - `{"pageId":"/pages/index","filesystemRoot":"/","routeRoot":"/client_portal"}`
-    const { filesystemRoot, routeRoot } = fsRoot
-    const debugInfo = { pageId, filesystemRoot, routeRoot }
-    assert(routeRoot.startsWith('/') && pageId.startsWith('/') && filesystemRoot.startsWith('/'), debugInfo)
+    //  - `{"pageId":"/pages/index","filesystemRoot":"/","urlRoot":"/client_portal"}`
+    const { filesystemRoot, urlRoot } = fsRoot
+    const debugInfo = { pageId, filesystemRoot, urlRoot }
+    assert(urlRoot.startsWith('/') && pageId.startsWith('/') && filesystemRoot.startsWith('/'), debugInfo)
     assert(pageId.startsWith(filesystemRoot), debugInfo)
     if (filesystemRoot !== '/') {
       assert(!filesystemRoot.endsWith('/'), debugInfo)
@@ -31,7 +31,7 @@ function deduceRouteStringFromFilesystemPath(pageId: string, filesystemRoots: Fi
       filesystemRoute = pageId
     }
     assert(filesystemRoute.startsWith('/'), debugInfo)
-    filesystemRoute = routeRoot + (routeRoot.endsWith('/') ? '' : '/') + slice(filesystemRoute, 1, 0)
+    filesystemRoute = urlRoot + (urlRoot.endsWith('/') ? '' : '/') + slice(filesystemRoute, 1, 0)
   } else {
     filesystemRoute = pageId
   }

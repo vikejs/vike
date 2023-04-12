@@ -36,7 +36,7 @@ describe('deduceRouteStringFromFilesystemPath', () => {
     expect(deduceRouteStringFromFilesystemPath(pS[0], [])).toBe('/admin')
     expect(deduceRouteStringFromFilesystemPath(pS[1], [])).toBe('/admin/login')
     expect(deduceRouteStringFromFilesystemPath(pS[3], [])).toBe('/about')
-    const fsRoot = { filesystemRoot: '/pages/admin', routeRoot: '/_admin' }
+    const fsRoot = { filesystemRoot: '/pages/admin', urlRoot: '/_admin' }
     expect(deduceRouteStringFromFilesystemPath(pS[0], [fsRoot])).toBe('/_admin')
     expect(deduceRouteStringFromFilesystemPath(pS[1], [fsRoot])).toBe('/_admin/login')
     expect(deduceRouteStringFromFilesystemPath(pS[3], [fsRoot])).toBe('/about')
@@ -52,7 +52,7 @@ describe('deduceRouteStringFromFilesystemPath', () => {
       '/marketing/pages/index/index',
       '/marketing/pages/about/index',
     ]
-    const fsRoot = { filesystemRoot: '/marketing/pages', routeRoot: '/' }
+    const fsRoot = { filesystemRoot: '/marketing/pages', urlRoot: '/' }
     expect(deduceRouteStringFromFilesystemPath(pS[0], [fsRoot])).toBe('/product')
     expect(deduceRouteStringFromFilesystemPath(pS[1], [fsRoot])).toBe('/product/@id')
     expect(deduceRouteStringFromFilesystemPath(pS[2], [fsRoot])).toBe('/auth')
