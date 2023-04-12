@@ -145,9 +145,9 @@ async function loadConfigData(
         assertUsage(
           pageConfigFile === pageConfigFileGlobal,
           [
-            `${pageConfigFilePath} defines the config '${configName}' which is global: `,
+            `${pageConfigFilePath} defines the config '${configName}' which is global:`,
             pageConfigFileGlobal
-              ? `define '${configName}' in ${pageConfigFileGlobal.pageConfigFilePath} instead `
+              ? `define '${configName}' in ${pageConfigFileGlobal.pageConfigFilePath} instead`
               : `create a global config (e.g. /pages/+config.js) and define '${configName}' there instead`
           ].join(' ')
         )
@@ -909,6 +909,7 @@ function dir(filePath: string) {
 }
 
 function isGlobal(configName: string): configName is GlobalConfigName {
+  if (configName === 'prerender') return false
   const configNamesGlobal = Object.keys(globalConfigsDefinition)
   return arrayIncludes(configNamesGlobal, configName)
 }
