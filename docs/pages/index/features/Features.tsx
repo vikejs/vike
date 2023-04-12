@@ -142,11 +142,11 @@ function Features() {
           desc: (
             <>
               <p>
-                <b>Deploy anywhere</b> (Netlify Functions, Vercel Serverless/Edge/ISR, Cloudflare Workers, AWS EC2/Lambda, Firebase, Google
+                <b>Deploy anywhere</b> (Vercel Serverless/Edge/ISR, Cloudflare Workers, AWS EC2/Lambda, Netlify Functions/Edge, Firebase, Google
                 Cloud, ...).
               </p>
               <p>
-                Pre-render your app and deploy it to <b>any static host</b> (GitHub Pages, Cloudflare Pages,
+                Pre-render your app and deploy it to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare Pages,
                 ...).
               </p>
               <p>
