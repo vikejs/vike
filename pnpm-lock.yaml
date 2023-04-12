@@ -373,6 +373,26 @@ importers:
       vue: 3.2.47
       wrangler: 2.9.1
 
+  examples/cloudflare-workers-vue-v1:
+    specifiers:
+      '@cloudflare/kv-asset-handler': ^0.2.0
+      '@vitejs/plugin-vue': ^4.0.0
+      '@vue/compiler-sfc': ^3.2.47
+      '@vue/server-renderer': ^3.2.47
+      vite: ^4.1.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vue: ^3.2.47
+      wrangler: ^2.9.1
+    dependencies:
+      '@cloudflare/kv-asset-handler': 0.2.0
+      '@vitejs/plugin-vue': 4.0.0_vite@4.2.1+vue@3.2.47
+      '@vue/compiler-sfc': 3.2.47
+      '@vue/server-renderer': 3.2.47_vue@3.2.47
+      vite: 4.2.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vue: 3.2.47
+      wrangler: 2.9.1
+
   examples/custom-preload:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
@@ -4064,6 +4084,17 @@ packages:
     dependencies:
       vite: 4.2.1_@types+node@17.0.31
       vue: 3.2.33
+    dev: false
+
+  /@vitejs/plugin-vue/4.0.0_vite@4.2.1+vue@3.2.47:
+    resolution: {integrity: sha512-e0X4jErIxAB5oLtDqbHvHpJe/uWNkdpYV83AOG2xo2tEVSzCzewgJMtREZM30wXnM5ls90hxiOtAuVU6H5JgbA==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    peerDependencies:
+      vite: ^4.0.0
+      vue: ^3.2.25
+    dependencies:
+      vite: 4.2.1
+      vue: 3.2.47
     dev: false
 
   /@vitest/expect/0.29.5:
