@@ -1,9 +1,4 @@
-- improve FilesystemRoute data structure
-
 Before beta release
- - Port all features
-   - iKnowThePerformanceRisksOfAsyncRouteFunctions
-   - base assets
  - Port all examples
  - if config isn't a file path then assert that it's serialazable
    - remove c_code
@@ -22,10 +17,10 @@ After beta release
  - define pageContext.pageId
  - restructure getConfigData()
    - Minimize what that client-side loads
-   - make filesystemRoutingRoot work
+   - make filesystemRoutingRoot work (revert commit `6d7ab113aa0dbf2798cddcd2fe15229802102821`)
    - make +meta.js work
    - make it work to import a config-only value, for example:
-     - https://github.com/brillout/vite-plugin-ssr/commit/24a92cf79a0533ab4b0fa124675385f462302e1e
+     - base assets: https://github.com/brillout/vite-plugin-ssr/commit/24a92cf79a0533ab4b0fa124675385f462302e1e
      - e.g. `import { prerender } from '../some-file'` in `/pages/index/+config.js`
    - improve isGlobal() logic (the special handling of the configName 'prerender' is hacky)
  - error handling
