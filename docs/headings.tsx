@@ -325,16 +325,6 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'urql (GraphQL)',
-    url: '/urql'
-  },
-  {
-    level: 2,
-    title: 'Vue Query',
-    url: '/vue-query'
-  },
-  {
-    level: 2,
     titleInNav: 'Telefunc (RPC)',
     title: 'Telefunc',
     url: '/telefunc'
@@ -343,6 +333,21 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: 'tRPC',
     url: '/tRPC'
+  },
+  {
+    level: 2,
+    title: 'React Query',
+    url: '/react-query'
+  },
+  {
+    level: 2,
+    title: 'Vue Query',
+    url: '/vue-query'
+  },
+  {
+    level: 2,
+    title: 'urql (GraphQL)',
+    url: '/urql'
   },
   {
     level: 2,
