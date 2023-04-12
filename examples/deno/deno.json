@@ -1,5 +1,0 @@
-{
-  "tasks": {
-    "dev": "deno run --allow-all --node-modules-dir npm:vite"
-  }
-}

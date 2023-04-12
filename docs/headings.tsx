@@ -507,13 +507,13 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Fastify',
-    url: '/fastify'
+    title: 'Deno',
+    url: '/deno'
   },
   {
     level: 2,
-    title: 'hapi',
-    url: '/hapi'
+    title: 'Fastify',
+    url: '/fastify'
   },
   {
     level: 2,
@@ -524,6 +524,11 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: 'PM2',
     url: '/PM2'
+  },
+  {
+    level: 2,
+    title: 'hapi',
+    url: '/hapi'
   },
   {
     level: 2,
