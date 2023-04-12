@@ -1,6 +1,6 @@
 Before beta release
  - Port all features
-   - filesystemRoutingRoot
+   - iKnowThePerformanceRisksOfAsyncRouteFunctions
    - base assets
  - Port all examples
  - if config isn't a file path then assert that it's serialazable
@@ -19,10 +19,13 @@ After beta release
  - Implements TODO comments
  - define pageContext.pageId
  - restructure getConfigData()
+   - Minimize what that client-side loads
+   - make filesystemRoutingRoot work
    - make +meta.js work
    - make it work to import a config-only value, for example:
      - https://github.com/brillout/vite-plugin-ssr/commit/24a92cf79a0533ab4b0fa124675385f462302e1e
      - e.g. `import { prerender } from '../some-file'` in `/pages/index/+config.js`
+   - improve isGlobal() logic (the special handling of the configName 'prerender' is hacky)
  - error handling
    - Check overall error handling
    - Check error handling when no onRenderHtml defined
@@ -33,4 +36,3 @@ After beta release
      - How can we make sure the user doens't miss the warning? Maybe be make the warnings `onlyOnce: fase` and/or setting Vite's `clearScreen: false`
  - multiple error pages
  - nested layouts
- - ensure that client-side of Server Routing loads less than Client Routing
