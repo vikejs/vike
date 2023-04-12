@@ -3,7 +3,7 @@ export { resolveVpsConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVpsUserProvided, ConfigVpsResolved } from '../../../../shared/ConfigVps'
 import { assertVpsConfig } from './assertVpsConfig'
-import { assert, isDev2 } from '../../utils'
+import { isDev2 } from '../../utils'
 import { findConfigVpsFromStemPackages } from './findConfigVpsFromStemPackages'
 import { pickFirst } from './pickFirst'
 import { resolveExtensions } from './resolveExtensions'
@@ -29,17 +29,12 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
 
   const extensions = resolveExtensions(configs, config)
 
-  const { vikeConfig: fromPlusConfigFile, vikeConfigFilePath: fromPlusConfigFilePath } = await getConfigData(
-    config.root,
-    isDev2(config),
-    false,
-    extensions
-  )
+  const { vikeConfig: fromPlusConfigFile } = await getConfigData(config.root, isDev2(config), false, extensions)
   configs.push(fromPlusConfigFile)
 
   assertVpsConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
-    assert(fromPlusConfigFilePath)
-    return `${fromPlusConfigFilePath} > config '${prop}' ${errMsg}`
+    // TODO: add config file path ?
+    return `config '${prop}' ${errMsg}`
   })
   assertVpsConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vitePluginSsr.${prop} ${errMsg}`)
   // TODO/v1-release: deprecate this

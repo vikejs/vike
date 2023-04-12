@@ -10,8 +10,8 @@ function determineRouteFromFilesystemPath(filesystemPath: string): string {
 
   {
     let paths = routeString.split('/')
-    // Remove `pages/`, `index/, and `src/`, directories
-    paths = paths.filter((dir) => dir !== 'pages' && dir !== 'src' && dir !== 'index')
+    // Ignore directories pages/ renderer/ index/ src/
+    paths = paths.filter((dir) => dir !== 'pages' && dir !== 'src' && dir !== 'index' && dir !== 'renderer')
     routeString = paths.join('/')
   }
 

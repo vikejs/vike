@@ -19,7 +19,8 @@ import {
   assertIsVitePluginCode,
   getMostSimilar,
   isNpmPackageImportPath,
-  getNpmPackageImportPath
+  getNpmPackageImportPath,
+  joinEnglish
 } from '../../../utils'
 import path from 'path'
 import type {
@@ -43,7 +44,6 @@ type ConfigData = {
   pageConfigsData: PageConfigData[]
   pageConfigGlobal: PageConfigGlobalData
   vikeConfig: Record<string, unknown>
-  vikeConfigFilePath: string | null
 }
 let configDataPromise: Promise<ConfigData> | null = null
 let isFirstInvalidation = true
@@ -126,16 +126,12 @@ async function loadConfigData(
   }
 
   const vikeConfig: Record<string, unknown> = {}
-  let vikeConfigFilePath: string | null = null
   const pageConfigGlobal: PageConfigGlobalData = {
     onBeforeRoute: null,
     onPrerenderStart: null
   }
   {
-    const pageConfigFileGlobal = getPageConfigGlobal(pageConfigFiles)
-    if (pageConfigFileGlobal) {
-      vikeConfigFilePath = pageConfigFileGlobal.pageConfigFilePath
-    }
+    const pageConfigFilesGlobal = getPageConfigFilesGlobal(pageConfigFiles)
     pageConfigFiles.forEach((pageConfigFile) => {
       const { pageConfigFileExports, pageConfigFilePath } = pageConfigFile
       assertDefaultExportObject(pageConfigFileExports, pageConfigFilePath)
@@ -143,12 +139,15 @@ async function loadConfigData(
         if (!isGlobal(configName)) return
         // TODO/v1: add links to docs further explaining why
         assertUsage(
-          pageConfigFile === pageConfigFileGlobal,
+          pageConfigFilesGlobal.includes(pageConfigFile),
           [
             `${pageConfigFilePath} defines the config '${configName}' which is global:`,
-            pageConfigFileGlobal
-              ? `define '${configName}' in ${pageConfigFileGlobal.pageConfigFilePath} instead`
-              : `create a global config (e.g. /pages/+config.js) and define '${configName}' there instead`
+            pageConfigFilesGlobal.length
+              ? `define '${configName}' in ${joinEnglish(
+                  pageConfigFilesGlobal.map((p) => p.pageConfigFilePath),
+                  'or'
+                )} instead`
+              : `create a global config (e.g. /pages/+config.js or /renderer/+config.js) and define '${configName}' there instead`
           ].join(' ')
         )
       })
@@ -162,7 +161,7 @@ async function loadConfigData(
       const configElement = resolveConfigElement(
         configName,
         configDef,
-        pageConfigFileGlobal ? [pageConfigFileGlobal] : [],
+        pageConfigFilesGlobal,
         userRootDir,
         configValueFilesRelevant
       )
@@ -234,7 +233,7 @@ async function loadConfigData(
     })
   })
 
-  return { pageConfigsData, pageConfigGlobal, vikeConfig, vikeConfigFilePath }
+  return { pageConfigsData, pageConfigGlobal, vikeConfig }
 }
 
 function determinePageIds(pageConfigFiles: PageConfigFile[], configValueFiles: ConfigValueFile[]) {
@@ -888,24 +887,12 @@ function removeIrrelevantParts(somePath: string, dirs: string[]) {
     .join('/')
 }
 
-function getPageConfigGlobal(pageConfigFiles: PageConfigFile[]): null | PageConfigFile {
-  if (pageConfigFiles.length === 0) return null
-  let candidate: PageConfigFile = pageConfigFiles[0]!
-  pageConfigFiles.forEach((p) => {
-    if (dir(p.pageConfigFilePath).length < dir(candidate.pageConfigFilePath).length) {
-      candidate = p
-    }
+function getPageConfigFilesGlobal(pageConfigFiles: PageConfigFile[]): PageConfigFile[] {
+  return pageConfigFiles.filter((p) => {
+    const filePath = p.pageConfigFilePath
+    const routeFilesystem = determineRouteFromFilesystemPath(filePath)
+    return routeFilesystem === '/'
   })
-  if (pageConfigFiles.some((p) => !dir(p.pageConfigFilePath).startsWith(dir(candidate.pageConfigFilePath)))) {
-    return null
-  } else {
-    const pageConfigGlobal = candidate
-    return pageConfigGlobal
-  }
-}
-function dir(filePath: string) {
-  assertPosixPath(filePath)
-  return path.posix.dirname(filePath)
 }
 
 function isGlobal(configName: string): configName is GlobalConfigName {
