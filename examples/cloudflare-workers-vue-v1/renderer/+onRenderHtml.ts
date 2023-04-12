@@ -1,16 +1,12 @@
+export default onRenderHtml
+
 import { pipeToWebWritable, pipeToNodeWritable } from '@vue/server-renderer'
 
 import { escapeInject, stampPipe } from 'vite-plugin-ssr/server'
 import { createApp } from './app'
 import type { Writable } from 'stream'
 
-export { render }
-export { passToClient }
-
-// See https://vite-plugin-ssr.com/data-fetching
-const passToClient = ['pageProps']
-
-async function render(pageContext: any) {
+async function onRenderHtml(pageContext: any) {
   const app = createApp(pageContext)
 
   // Streaming is optional: we can use renderToString() instead.
