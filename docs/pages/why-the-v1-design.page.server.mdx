@@ -1,0 +1,53 @@
+The V1 design adds new foundational capabilities.
+
+For example, you'll able to implement a custom config `ssr: boolean` to seamlessly toggle render modes:
+
+```js
+// /pages/admin/+config.js
+
+export default {
+  // We render the Admin Panel as SPA
+  ssr: false
+}
+```
+
+> VPS will release official React/Vue/Solid renderers that already implement such flag. (You'll be able to eject these renderers for complete control.)
+
+You'll even be able to toggle renderers:
+
+```js
+// /pages/admin/+config.js
+
+import graphqlRenderer from 'vike-react-relay'
+
+export default {
+  // We use GraphQL for the Admin Panel
+  renderer: graphqlRenderer
+}
+```
+
+> The `vite-plugin-ssr` project is going to be [renamed to Vike](https://github.com/brillout/vite-plugin-ssr/issues/736).
+
+```js
+// /pages/product/@id/+config.js
+
+import rpcRenderer from 'vike-react-telefunc'
+
+export default {
+  // We use RPC for the product pages
+  renderer: rpcRenderer
+}
+```
+
+```js
+// /pages/live-ticker/+config.js
+
+import solidRenderer from 'vike-solid'
+
+export default {
+  // We use Solid for this page while the rest of our app uses React
+  renderer: solidRenderer
+}
+```
+
+The V1 design also brings new foundational capabilities for buidling frameworks on top of VPS.

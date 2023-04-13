@@ -1,19 +1,22 @@
 import { Link, Note } from '@brillout/docpress'
 
-<Note type='warning'>The [V1 design](https://github.com/brillout/vite-plugin-ssr/issues/578) is in beta. While the overall V1 design is settled, some minor breaking changes may occur in any version update.</Note>
+<Note type='warning'>The [V1 design](https://github.com/brillout/vite-plugin-ssr/issues/578) is in beta. While the overall V1 design is settled, some minor breaking changes may occur between versions.</Note>
 
 > You need to either fully use the V1 design, or fully use the old design. You cannot mix both.
 
-> If you run into any issue, open a new GitHub ticket and/or PM `brillout` on Discord.
+Despite what it may seem, the migration is usually fairly straightforward and quick to implement. We encourage to migrate sooner rather than later.
 
+> Don't hesitate to reach out if you run into any issue.
+
+While the V1 design is a fairly simple redesign, it adds new foundational capabilities. If you're curious, see <Link href="/why-the-v1-design" />
 
 ## Main migration
 
-Migrating to the V1 design mostly boils down to the following two steps.
+Most of the migration boils down to the following two steps.
 
 > Make sure to update `vite-plugin-ssr` to its latest version.
 
-**1. Migrate `/renderer/*.page.*` and `vite.config.js`.**
+**1. Migrate `/renderer/*.page.*`**
 
 Move your `renderer/` hooks to standalone files:
 
@@ -34,30 +37,13 @@ Move your `renderer/` hooks to standalone files:
 
 > The suffixes such as `.page.server.js` and `.page.client.js` are removed. You'll still be able to use `.server.js` and `.client.js` suffixes but they'll serve another purpose, see [#744](https://github.com/brillout/vite-plugin-ssr/issues/744).
 
-Move your global configurations to `/renderer/+config.ts`:
+Move your renderer configurations to `/renderer/+config.ts`:
 
 ```diff
 - // /renderer/_default.page.client.ts
 
 - export { clientRouting }
 - export { hydrationCanBeAborted }
-```
-
-```diff
-  // vite.config.ts
-
-  import ssr from 'vite-plugin-ssr/plugin'
-
-  export default {
-    plugins: [
-      react(),
--     ssr({
--       prerender: true,
--       includeAssetsImportedByServer: true
--     })
-+     ssr()
-    ]
-  }
 ```
 
 ```ts
@@ -67,13 +53,22 @@ import type { Config } from 'vite-plugin-ssr/types'
 
 export default {
   clientRouting: true,
-  hydrationCanBeAborted: true,
-  prerender: true,
-  includeAssetsImportedByServer: true
+  hydrationCanBeAborted: true
 } satisfies Config
 ```
 
-**2. Migrate `/pages/**/*.page.*`.**
+Move your error page (if you defined one):
+
+```diff
+- // /renderer/_error.page.js
++ // /pages/_error/+Page.js
+
+- export { Page }
++ export default Page
+```
+
+
+**2. Migrate `/pages/**/*.page.*`**
 
 ```diff
 - // /pages/some-page/index.page.ts
@@ -129,11 +124,11 @@ export default route
 
 For further examples, see the [list of migration examples](#examples).
 
-See the additional migration steps if you define:
- - <Link text="Error page" href="#error-page" />
+Apply following additional steps if you define:
  - <Link text="Renamed hooks" href="#renamed-hooks" />
  - <Link text="Custom hooks/exports" href="#custom-hooks-exports" />
  - [`onBeforeRender` in `.page.js`](#onbeforerender-in-page-js) (instead of `.page.server.js`)
+ - <Link text="Additional client code" href="#additional-client-code" />
 
 
 ## What are `+` files?
@@ -189,20 +184,9 @@ All imports in `+config.js` are removed and loaded separately, in order to ensur
 
 Migration examples:
  - Migration of basic app: [`428c1c` - migrate examples/react to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/428c1c6b0fb7c9a5fa2f2fe57ac3e4bb0a57ea54)
+ - Migration from a custom export to a custom config: [`f28880` - migrate /examples/custom-preload/ to V1 Design](https://github.com/brillout/vite-plugin-ssr/commit/f28880b0b85cde12647aa0613c99dbdeadc467de)
 
-Examples of using the V1 design:
- - See [`examples/*-v1`](https://github.com/brillout/vite-plugin-ssr/tree/main/examples)
-
-
-## Error page
-
-```diff
-- // /renderer/_error.page.js
-+ // /pages/_error/+Page.js
-
-- export { Page }
-+ export default Page
-```
+All official examples have been migrate to the V1 design: see [`examples/*-v1`](https://github.com/brillout/vite-plugin-ssr/tree/main/examples) and compare them with their non-v1 counterpart.
 
 
 ## Renamed hooks
@@ -309,58 +293,20 @@ export default {
 For convenience, you can also define a [custom config `onBeforeRenderIsomorph: boolean`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/renderer/+config.ts#L12-L31) for a [page-per-page toggle](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/pages/star-wars/%40id/%2BonBeforeRenderIsomorph.ts).
 
 
-## Why the V1 design?
+## Additional client code
 
-The V1 design adds new foundational capabilities.
+For adding client-side code, you can continue using the same hooks as before: <Link text={<><code>onHydrationEnd()</code>, <code>onPageTransitionStart()</code>, and <code>onPageTransitionEnd()</code></>} href="/clientRouting#usage-options" doNotInferSectionTitle={true} />.
 
-For example, you'll able to implement a custom config `ssr: boolean` to seamlessly toggle render modes:
-
-```js
-// /pages/admin/+config.js
-
-export default {
-  // We render the Admin Panel as SPA
-  ssr: false
-}
-```
-
-> VPS will release official React/Vue/Solid renderers that already implement such flag. (You'll be able to eject these renderers for complete control.)
-
-You'll even be able to toggle renderers:
+You can now also use the new config `client`:
 
 ```js
-// /pages/admin/+config.js
-
-import graphqlRenderer from 'vike-react-relay'
-
+// +config.js
 export default {
-  // We use GraphQL for the Admin Panel
-  renderer: graphqlRenderer
-}
-```
-
-> The `vite-plugin-ssr` project is going to be [renamed to Vike](https://github.com/brillout/vite-plugin-ssr/issues/736).
-
-```js
-// /pages/product/@id/+config.js
-
-import rpcRenderer from 'vike-react-telefunc'
-
-export default {
-  // We use RPC for the product pages
-  renderer: rpcRenderer
+  client: './some-client-code.js'
 }
 ```
 
 ```js
-// /pages/live-ticker/+config.js
-
-import solidRenderer from 'vike-solid'
-
-export default {
-  // We use Solid for this page while the rest of our app uses React
-  renderer: solidRenderer
-}
+// some-client-code.js
+console.log("I'm run when the client-side JavaScript is loaded.")
 ```
-
-The V1 design also brings new foundational capabilities for buidling frameworks on top of VPS.

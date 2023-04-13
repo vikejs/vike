@@ -838,7 +838,11 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: 'V1 Design Migration',
     url: '/migration/v1-design',
-    sectionTitles: ['Why the V1 design?', 'What are `+` files?']
+    sectionTitles: ['What are `+` files?']
+  },
+  {
+    title: 'Why the V1 design?',
+    url: '/why-the-v1-design'
   },
   {
     title: (
