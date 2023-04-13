@@ -1,18 +1,15 @@
-export { render }
-export { passToClient }
+export default onRenderHtml
 
 import React from 'react'
 import { renderToString } from 'react-dom/server'
-import { escapeInject, dangerouslySkipEscape, type InjectFilterEntry } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import type { InjectFilterEntry } from 'vite-plugin-ssr/types'
 // @ts-ignore
 import { PageLayout } from './PageLayout'
 
-// See https://vite-plugin-ssr.com/data-fetching
-const passToClient = ['pageProps']
-
-async function render(pageContext: any) {
+async function onRenderHtml(pageContext: any) {
   const { Page, pageProps } = pageContext
-  const { preloadStrategy } = pageContext.exports
+  const { preloadStrategy } = pageContext.config
   const pageHtml = renderToString(
     <PageLayout>
       <Page {...pageProps} />
