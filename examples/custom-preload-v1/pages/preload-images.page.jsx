@@ -1,4 +1,5 @@
-export default Page
+export { Page }
+export const preloadStrategy = 'IMAGES'
 
 import React from 'react'
 

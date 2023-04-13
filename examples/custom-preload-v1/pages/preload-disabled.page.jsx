@@ -1,4 +1,5 @@
-export default Page
+export { Page }
+export const preloadStrategy = 'DISABLED'
 
 import React from 'react'
 
