@@ -78,7 +78,7 @@
         "./dist/types/node/runtime/index.d.ts"
       ],
       "client": [
-        "./dist/type/client/index.d.ts"
+        "./dist/types/client/index.d.ts"
       ],
       "client/router": [
         "./dist/types/client/router/index.d.ts"
