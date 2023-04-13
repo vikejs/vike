@@ -1,3 +1,16 @@
+## [0.4.113](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.112...v0.4.113) (2023-04-13)
+
+
+### Bug Fixes
+
+* [V1 design] implement filesystem route for npm package imports ([0b42eba](https://github.com/brillout/vite-plugin-ssr/commit/0b42eba256a8765068b50bc6cc74be628f9f8318))
+* fix type export path (fix [#785](https://github.com/brillout/vite-plugin-ssr/issues/785)) ([34e2e86](https://github.com/brillout/vite-plugin-ssr/commit/34e2e862a93bb98ca9602ca2625aa845160d9079))
+* further tolerate PWA manifest workaround (fix [#769](https://github.com/brillout/vite-plugin-ssr/issues/769)) ([2a50fba](https://github.com/brillout/vite-plugin-ssr/commit/2a50fba4174dd92abfda712a04095fe14f32d48d))
+* improve error message when trying to prerender while prerender isn't enabled ([#773](https://github.com/brillout/vite-plugin-ssr/issues/773)) ([b60420b](https://github.com/brillout/vite-plugin-ssr/commit/b60420b463b781fccd551f7fb5e30fa4ac2047f1))
+* make early hint deduping support CDN deployments (fix [#775](https://github.com/brillout/vite-plugin-ssr/issues/775)) ([b547ca1](https://github.com/brillout/vite-plugin-ssr/commit/b547ca156266373fce21a51348bf475c1fb4b0d9))
+
+
+
 ## [0.4.112](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.111...v0.4.112) (2023-04-09)
 
 
