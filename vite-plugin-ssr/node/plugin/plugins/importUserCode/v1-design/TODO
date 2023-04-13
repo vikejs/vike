@@ -8,8 +8,13 @@ Before beta release
    - Add further examples to v1-design.page.server.mdx
    - https://vite-plugin-ssr.com/config
    - https://vite-plugin-ssr.com/meta
- - rename config 'clientEntry'?
- - vike.config.js or everything in /pages/+config.js ?
+ - rename 'clientEntry' -> 'client'
+ - prepare vike.config.js
+   - Remove moving global configs to /pages/+config.js from migration
+   - Redefine global configs in vite.config.js in examples
+   - Remove global config from `Config`
+ - test all features
+   - `prerender: false`
 
 After beta release
  - assert that two import statements in +config.js shouldn't land in different environments
@@ -33,3 +38,7 @@ After beta release
      - How can we make sure the user doens't miss the warning? Maybe be make the warnings `onlyOnce: fase` and/or setting Vite's `clearScreen: false`
  - multiple error pages
  - nested layouts
+
+After Vike rename:
+ - Impl vike.config.js
+   - Move all globals there and warn users
