@@ -1,5 +1,9 @@
+import { Link, Note } from '@brillout/docpress'
+
 Vite-plugin-ssr doesn't implement [API Routes](https://nextjs.org/docs/api-routes/introduction) by design.
 
-Instead, we can directly use our server (e.g. Express.js endpoints), or use an RPC implementation such as [Telefunc](https://telefunc.com) or [tRPC](https://trpc.io/).
+Instead, directly use your server (e.g. Express.js endpoints), or use an RPC implementation such as [Telefunc](https://telefunc.com) or [tRPC](https://trpc.io/).
+
+<Note type='warning'>Make sure to place <Link text="vite-plugin-ssr's middleware" href="/renderPage" /> last. (Because vite-plugin-ssr is a catch-all middleware; it would supersede your API middleware if you place it before.)</Note>
 
 > The vite-plugin-ssr maintainers believe that implementing APIs independently of vite-plugin-ssr is a superior approach.
