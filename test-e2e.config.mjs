@@ -47,20 +47,16 @@ function getCiJobs() {
       setups: setupsExamples
     },
     {
-      name: 'Base URL',
-      setups: [win18]
-    },
-    {
-      name: 'Cloudflare',
-      setups: [ubuntu16]
-    },
-    {
-      name: 'Custom Preload',
-      setups: [ubuntu18, win18, mac17]
+      name: 'Examples Misc',
+      setups: [ubuntu16, win14, mac17]
     },
     {
       name: 'Unit Tests E2E',
       setups: [win18, ubuntu16]
+    },
+    {
+      name: 'Cloudflare',
+      setups: [ubuntu16]
     },
     {
       name: 'https://vite-plugin-ssr.com',
