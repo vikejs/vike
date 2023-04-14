@@ -1,24 +1,24 @@
 import { Link, Note } from '@brillout/docpress'
 
-<Note type='warning'>The [V1 design](https://github.com/brillout/vite-plugin-ssr/issues/578) is in beta. While the overall V1 design is settled, some minor breaking changes may occur between versions.</Note>
+<Note type='warning'>The [V1 design](https://github.com/brillout/vite-plugin-ssr/issues/578) is in beta. While the overall V1 design is settled, some minor breaking changes may occur between version updates.</Note>
 
-> You need to either fully use the V1 design, or fully use the old design. You cannot mix both.
-
-Despite what it may seem, the migration is usually fairly straightforward and quick to implement. We encourage to migrate sooner rather than later.
-
-> Don't hesitate to reach out if you run into any issue.
+The overall architecture of vite-plugin-ssr stays the same: the redesign is only about the introduction of `+config.js` files.
 
 While the V1 design is a fairly simple redesign, it adds new foundational capabilities. If you're curious, see <Link href="/why-the-v1-design" />
+
+The migration is usually fairly straightforward and quick to implement: we encourage to migrate sooner rather than later.
+
+> Don't hesitate to reach out if you run into any issue.
 
 ## Main migration
 
 Most of the migration boils down to the following two steps.
 
-> Make sure to update `vite-plugin-ssr` to its latest version.
+> Make sure to update `vite-plugin-ssr` to its latest version before migrating.
 
 **1. Migrate `/renderer/*.page.*`**
 
-Move your `renderer/` hooks to standalone files:
+Move your `renderer/` hooks to standalone `+` files:
 
 ```diff
 - // /renderer/_default.page.server.js
@@ -27,6 +27,11 @@ Move your `renderer/` hooks to standalone files:
 - export { render }
 + export default render
 ```
+
+> Files such as `+onRenderHtml.js` are explained at:
+>  - <Link href="/architecture#config-js" />
+>  - <Link href="/config" />
+
 ```diff
 - // /renderer/_default.page.client.js
 + // /renderer/+onRenderClient.js
@@ -87,42 +92,26 @@ Move your error page (if you defined one):
 
 ```diff
 - // /pages/some-page/index.page.route.ts
-+ // /pages/some-page/+config.ts
-
-- export default '/some/route'
-+ // Only works for Route Strings
-+ export default {
-+   route: '/some/route'
-+ }
-```
-
-```diff
-- // /pages/some-page/index.page.route.ts
 + // /pages/some-page/+route.ts
 
-// Works for both Route Functions and Route Strings
 export default route
 ```
 
-> We explain down below why Route Functions cannot be defined inside `+config.js`.
-
-> Each page lives in its own new directory and `+config.js` is optional:
+> Each page now lives in its own new directory
 > ```bash
 > # ✅ V1 Design
 > $ ls pages/**/*
-> /pages/some-page/+config.js
 > /pages/some-page/+Page.js
 > /pages/some-other-page/+Page.js
 > ```
 > ```bash
 > # ❌ This isn't possible anymore: each page now needs to create a new directory
-> # Old design
 > $ ls pages/**/*
 > /pages/some.page.js
 > /pages/some-other.page.js
 > ```
 
-For further examples, see the [list of migration examples](#examples).
+> You need to either fully use the V1 design, or fully use the old design. You cannot mix both.
 
 Apply following additional steps if you define:
  - <Link text="Renamed hooks" href="#renamed-hooks" />
@@ -131,62 +120,12 @@ Apply following additional steps if you define:
  - <Link text="Additional client code" href="#additional-client-code" />
 
 
-## What are `+` files?
-
-The `+` files define the entire interface between your app and VPS.
-
-You can define your entire app only by defining `+config.js` files:
- - One `/pages/+config.js` (to define your overall global configuration).
- - One `/pages/some-page/+config.js` per page (to define your pages).
-
-> Your `+config.js` of your pages files (such as `/pages/some-page/+config.js`) can completely override your global `/pages/+config.js`. This means that your global `+config.js` merely defines default values.
-
-For conveniences, you can use the following:
- 1. Files such as `+onRenderHtml.js` which is just an alias for `+config.js > export default { onRenderHtml }`.
- 1. `/renderer/+config.js` which is equivalent to `/pages/+config.js`.
-    > `/renderer/+config.js` is an (optional) convenience for having your renderer logic/files live outside of `/pages/**/*` (instead of cluttering your `/pages/` directory).
-
-Note that the following is forbidden:
-
-```js
-// /pages/some-page/+config.js
-
-export default {
-  Page,
-  onBeforeRender
-}
-
-function Page() {
-  // ...
-}
-function onBeforeRender() {
-  // ...
-}
-```
-
-VPS throws an error `[Wrong Usage] Hooks cannot be defined within +config.js`. Do this instead:
-
-```js
-// /pages/some-page/+config.js
-
-import Page from './some-file'
-import onBeforeRender from './some-other-file'
-
-export default { Page, onBeforeRender }
-```
-
-All imports in `+config.js` are removed and loaded separately, in order to ensure that files are loaded in the right environment. See <Link href="/config-code-splitting" /> for more informaton.
-
-> The `+` convention has been [comprehensively discussed](https://github.com/brillout/vite-plugin-ssr/issues/578#issuecomment-1472005734). While we agree that `+` files are ugly at first, we believe that you'll eventually end up liking it as much as we do. It brings many subtle yet important advantages.
-
-
 ## Examples
 
-Migration examples:
- - Migration of basic app: [`428c1c` - migrate examples/react to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/428c1c6b0fb7c9a5fa2f2fe57ac3e4bb0a57ea54)
+ - Migration of a basic app: [`428c1c` - migrate examples/react to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/428c1c6b0fb7c9a5fa2f2fe57ac3e4bb0a57ea54)
  - Migration from a custom export to a custom config: [`f28880` - migrate /examples/custom-preload/ to V1 Design](https://github.com/brillout/vite-plugin-ssr/commit/f28880b0b85cde12647aa0613c99dbdeadc467de)
 
-All official examples have been migrate to the V1 design: see [`examples/*-v1`](https://github.com/brillout/vite-plugin-ssr/tree/main/examples) and compare them with their non-v1 counterpart.
+All official examples have been migrate to the V1 design: see [`examples/*-v1`](https://github.com/brillout/vite-plugin-ssr/tree/main/examples) and compare them with their old design counterparts.
 
 
 ## Renamed hooks

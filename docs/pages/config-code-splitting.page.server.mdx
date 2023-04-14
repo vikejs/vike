@@ -1,5 +1,7 @@
 import { Link } from '@brillout/docpress'
 
+> The `+config.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
+
 All imports in `+config.js` are code-splitted.
 
 For example, VPS transforms this:
@@ -93,4 +95,4 @@ This is only allowed if `Page` and `onBeforeRender` live in the same environment
  - By default `Page` is loaded on the client-side as well as on the server-side.
  - By default `onBeforeRender` is loaded only on the server-side.
 
-In other words: importing `Page` and `onBeforeRender` from the same file is only allowed if you use the `meta` config to make them live in same environment, see <Link href="/meta#env" />.
+In other words: importing `Page` and `onBeforeRender` from the same file is only allowed if you use the `meta` config to make them live in same environment, see <Link href="/meta" />.

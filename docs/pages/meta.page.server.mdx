@@ -1,11 +1,13 @@
 import { Link } from '@brillout/docpress'
 
-The `meta` config enables you to:
- - <Link doNotInferSectionTitle={true} href="#create-a-config" />
+> The `meta` config is part of the <Link text="V1 design" href="/migration/v1-design" />.
+
+The `meta` config is a simple yet powerful way to implement custom logic and enables you to:
+ - <Link doNotInferSectionTitle={true} href="#create-a-custom-config" />
  - <Link doNotInferSectionTitle={true} href="#override-an-existing-config" />
  - <Link doNotInferSectionTitle={true} href="#create-a-shortcut-config" />
 
-## Create a config
+## Create a custom config
 
 Example:
 
@@ -103,4 +105,4 @@ For more convenience, we can call a "shortcut config".
 
 For convenience, you can also define a [custom config `onBeforeRenderIsomorph: boolean`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/renderer/+config.ts#L12-L31) for a [page-per-page toggle](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/pages/star-wars/%40id/%2BonBeforeRenderIsomorph.ts).
 
-We call this a "shortcut config"
+We call these "shortcut configs".

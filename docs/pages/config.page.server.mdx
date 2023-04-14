@@ -1,9 +1,50 @@
 import { Link } from '@brillout/docpress'
 
-`+config.js` defines the interface between your app and vite-plugin-ssr.
+> The `+config.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
 
-- How `+config.js` works: <Link href="/architecture#config-js" />
-  - Also explains `/renderer/+config.js`
-  - Also explains files such as `+Page.js`, `+route.js`, `+onBeforeRender.js`, etc.
-- Rules for import statements inside `+config.js`: <Link href="/config-code-splitting#import-rules" />
-- Config list: <Link href="/Config" />
+> See also:
+> - List of built-in configs: <Link href="/Config" />
+> - Custom configs: <Link href="/meta" />
+
+As explained in <Link href="/architecture#config-js" />, the `+config.js` files are at the core of vite-plugin-ssr's architecture.
+
+The `+config.js` files define the interface between your app and vite-plugin-ssr.
+
+```js
+// /pages/about/+config.js
+
+// This file defines a new page with URL '/about'
+
+import Page from './Page'
+
+export default {
+   Page
+}
+```
+
+```js
+// /pages/+config.js
+
+// This file defines default config values for all pages
+
+export default {
+  // <title>
+  title: 'My vite-plugin-ssr app'
+}
+```
+
+> `config.title` is a <Link text="custom config" href="/meta" />.
+
+You can define an *entire* app *only* by defining `+config.js` files:
+ - One `/pages/+config.js` (to define your overall global configuration).
+ - One `/pages/some-page/+config.js` per page (to define your pages).
+   > The `+config.js` of your pages (such as `/pages/some-page/+config.js`) can completely override your global `/pages/+config.js`. This means that your global `+config.js` merely defines default values. See <Link href="/architecture#config-js" />.
+
+In addition to `+config.js` files, we can use following conveniences.
+
+## Conveniences
+
+For conveniences, we can:
+ 1. Define configurations with files such as `+onRenderHtml.js` which is simply an alias for `+config.js > export default { onRenderHtml }`.
+ 1. Define global configurations at `/renderer/+config.js` instead of `/pages/+config.js`.
+    > `/renderer/+config.js` is equivalent to `/pages/+config.js`: the `/renderer/` directory is just an (optional) convenience for having renderer logic/files live outside of `/pages/` (instead of cluttering the `/pages/` directory).

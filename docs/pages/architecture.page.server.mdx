@@ -1,16 +1,30 @@
 import { Link } from '@brillout/docpress'
 import { JustAMiddleware, PageContextIntro } from '../components'
 
-The architecture of vite-plugin-ssr has been meticulously designed to be simple yet powerful.
+Vite-plugin-ssr provides an architecture that is both flexible and robust.
 
-Its core constituents are the following.
+## Do-one-thing-do-it-well
 
+Vite-plugin-ssr has been designed with meticulous care and follows what we call a "do-one-thing-do-it-well architecture": vite-plugin-ssr focuses on being an excellent frontend framework while not interfering with the rest of your stack.
+
+With vite-plugin-ssr, you can choose:
+ - Any UI framework (React/Vue/Solid/...)
+ - Any server (Express.js, Deno, HatTip, ...)
+ - Any deployment (AWS, Cloudflare Workers, Vercel, ...)
+
+In other words: your application's architecture is composed of loosely coupled core constituents with a clear seperation of concerns.
+
+We believe that these core constituents should be mostly independent. Enabling not only freedom but also fostering a vibrant ecosystem with a fair and innovative competition guaranteeing high quality tools for the user.
+
+Vite-plugin-ssr breaks the chains of vendor lock-in.
 
 ## `+config.js`
 
-The `+config.js` file is at the core of vite-plugin-ssr's architecture.
+> The `+config.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
 
-Consider this example:
+The `+config.js` files are at the core of vite-plugin-ssr's architecture.
+
+For example:
 
 ```js
 // /pages/index/+config.js
@@ -45,8 +59,8 @@ export default {
 ```
 
 These three files are enough to define a vite-plugin-ssr app:
- 1. `/pages/about/+config.js` defines a new page with filesystem route (i.e URL) `/about`
-    > Filesystem Routing is explained at <Link href="/filesystem-routing" />
+ 1. `/pages/about/+config.js` defines a new page with URL `/about`
+    > The URL is defined by <Link text="filesystem routing" href="/filesystem-routing" />.
  1. `/pages/index/+config.js` defines a new page with URL `/`
  1. `/pages/+config.js` defines the hooks `onRenderHtml()` and `onRenderClient()` which determine how pages are rendered.
     > The hooks `onRenderHtml()` and `onRenderClient()` are explained down below at <Link href="#onrenderhtml-onrenderclient" doNotInferSectionTitle={true} />
@@ -61,29 +75,28 @@ import { onRenderClient } from './onRenderClient'
 import { onRenderHtml } from './onRenderHtml'
 
 export default {
-  // We define a new page with URL `/admin`
+  // Define a new page with URL `/admin`
   Page,
-  // Our page has a complete custom renderer: we could, for example, use Vue
-  // for our admin page while using React for the rest of our app.
+  // The admin page has a completly custom renderer. For example, the admin
+  // page can use Vue, while the rest of the app uses React
   onRenderClient,
   onRenderHtml
 }
 ```
 
-Essentially: `/pages/+config.js` only defines default values for all pages.
-A `+config.js` file can also define default values only for a group of pages, e.g. `/admin/pages/+config.js` and `/marketing/pages/+config.js` as shown at <Link href="/file-structure#domain-driven" />.
+This means that `/pages/+config.js` simply defines default values for all pages.
 
-For conveniences, we can:
- 1. Define `+onRenderHtml.js` which is just an alias for `+config.js > export default { onRenderHtml }`.
- 1. `/renderer/+config.js` which is equivalent to `/pages/+config.js`.
-    > `/renderer/+config.js` is an (optional) convenience for having your renderer logic/files live outside of `/pages/**/*` (instead of cluttering your `/pages/` directory).
+A `+config.js` file can define default values only for a group of pages as well, e.g. `/admin/pages/+config.js` and `/marketing/pages/+config.js` as shown at <Link href="/file-structure#domain-driven" />. That way, all admin pages can be SPAs with Vue while using SSR and React for the rest of the app.
 
-The `+` files define the *entire* interface between your app and vite-plugin-ssr.
+For convenience, you can define files such as `+Page.js` and `+onRenderHtml.js` instead of `+config.js`, and you can define your renderer in `/renderer/+config.js` instead of `/pages/+config.js`. See <Link href="/config#conveniences" />.
+
+See also:
+ - <Link href="/config" />
 
 
 ## `onRenderHtml()` & `onRenderClient()`
 
-The hooks `onRenderHtml()` and `onRenderClient()` give you *complete* control over how your pages are rendered:
+The hooks `onRenderHtml()` and `onRenderClient()` provide *complete* control over how pages are rendered:
 
 ```js
 // /renderer/+onRenderHtml.js
@@ -123,7 +136,7 @@ async function onRenderClient(pageContext) {
 }
 ```
 
-Allowing you to integrate with any UI framework you want.
+Enabling you to integrate and use any UI framework (React/Vue/Solid/...) you want.
 
 See also:
  - <Link href="/onRenderClient" />
@@ -134,7 +147,7 @@ See also:
 
 <JustAMiddleware />
 
-This means vite-plugin-ssr can be used with and embedded into any server architecture and/or deployment strategy.
+This means vite-plugin-ssr can be embedded into and used with any server architecture and any deployment strategy.
 
 See also:
  - <Link href="/renderPage" />
@@ -144,7 +157,7 @@ See also:
 
 <PageContextIntro />
 
-It can be accessed by most hooks while some hooks such as `onBeforeRender()` can add properties to `pageContext`: this is simple yet powerful architecture allowing you to use vite-plugin-ssr with any data fetching strategy you want.
+It can be accessed by most hooks while some hooks such as `onBeforeRender()` can add properties to `pageContext`: this is simple yet powerful data structure allowing you to use vite-plugin-ssr with any data fetching strategy you want.
 
 See also:
  - <Link href="/data-fetching" />

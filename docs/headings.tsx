@@ -837,8 +837,7 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   },
   {
     title: 'V1 Design Migration',
-    url: '/migration/v1-design',
-    sectionTitles: ['What are `+` files?']
+    url: '/migration/v1-design'
   },
   {
     title: 'Why the V1 design?',
@@ -951,9 +950,9 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/onRenderClient'
   },
   {
-    title: <code>+config.js &gt; meta</code>,
+    title: <code>meta</code>,
     url: '/meta',
-    sectionTitles: ['Create a config', 'Override an existing config', 'Create a shortcut config']
+    sectionTitles: ['Create a custom config', 'Override an existing config', 'Create a shortcut config']
   },
   {
     title: <code>+config.js</code>,
@@ -966,6 +965,6 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: 'Architecture',
     url: '/architecture',
-    sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', '`+config.js`']
+    sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', '`+config.js`', 'Do-one-thing-do-it-well']
   }
 ]

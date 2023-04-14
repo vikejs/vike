@@ -1,17 +1,23 @@
-The V1 design adds new foundational capabilities.
+import { Link } from '@brillout/docpress'
 
-For example, you'll able to implement a custom config `ssr: boolean` to seamlessly toggle render modes:
+The <Link text="V1 design" href="/migration/v1-design" /> adds new foundational capabilities.
+
+You'll be able to implement <Link text="custom configs" href="/meta" />, for example `ssr: boolean` to seamlessly toggle render modes:
 
 ```js
 // /pages/admin/+config.js
 
 export default {
-  // We render the Admin Panel as SPA
+  // Render the Admin Panel as SPA
   ssr: false
 }
 ```
 
-> VPS will release official React/Vue/Solid renderers that already implement such flag. (You'll be able to eject these renderers for complete control.)
+> `+config.js` is explained at:
+>  - <Link href="/architecture#config-js" />
+>  - <Link href="/config" />
+
+> VPS will release official React/Vue/Solid renderers that already implement `config.ssr`. (You'll be able to eject these renderers for complete control.)
 
 You'll even be able to toggle renderers:
 
@@ -21,8 +27,8 @@ You'll even be able to toggle renderers:
 import graphqlRenderer from 'vike-react-relay'
 
 export default {
-  // We use GraphQL for the Admin Panel
-  renderer: graphqlRenderer
+  // Use GraphQL for the Admin Panel
+  ...graphqlRenderer
 }
 ```
 
@@ -34,8 +40,8 @@ export default {
 import rpcRenderer from 'vike-react-telefunc'
 
 export default {
-  // We use RPC for the product pages
-  renderer: rpcRenderer
+  // Use RPC for the product pages
+  ...rpcRenderer
 }
 ```
 
@@ -45,9 +51,9 @@ export default {
 import solidRenderer from 'vike-solid'
 
 export default {
-  // We use Solid for this page while the rest of our app uses React
-  renderer: solidRenderer
+  // Use Solid for this page while the rest of our app uses React
+  ...solidRenderer
 }
 ```
 
-The V1 design also brings new foundational capabilities for buidling frameworks on top of VPS.
+This is only the tip of the iceberg. The V1 design also brings new foundational capabilities for buidling frameworks on top of VPS.
