@@ -112,7 +112,7 @@
   "dependencies": {
     "@brillout/import": "0.2.3",
     "@brillout/json-serializer": "^0.5.3",
-    "@brillout/vite-plugin-import-build": "^0.2.14",
+    "@brillout/vite-plugin-import-build": "^0.2.15",
     "acorn": "^8.0.0",
     "cac": "^6.0.0",
     "es-module-lexer": "^0.10.0",
