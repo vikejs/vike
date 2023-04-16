@@ -5,44 +5,53 @@ Vite-plugin-ssr provides an architecture that is both flexible and robust.
 
 ## Do-one-thing-do-it-well
 
-Vite-plugin-ssr has been designed with meticulous care and follows what we call a "do-one-thing-do-it-well architecture": vite-plugin-ssr focuses on being an excellent frontend framework while not interfering with the rest of your stack.
+Vite-plugin-ssr's architecture has been designed with meticulous care and follows what we call a "do-one-thing-do-it-well architecture": vite-plugin-ssr focuses on being an excellent frontend framework while not interfering with the rest of your stack.
 
 With vite-plugin-ssr, you can choose:
  - Any UI framework (React/Vue/Solid/...)
  - Any server (Express.js, Deno, HatTip, ...)
  - Any deployment (AWS, Cloudflare Workers, Vercel, ...)
 
-In other words: your application's architecture is composed of loosely coupled core constituents with a clear seperation of concerns.
+In other words: with vite-plugin-ssr, your application's architecture is composed of loosely coupled core constituents with a clear seperation of concerns.
 
-We believe that these core constituents should be mostly independent. Enabling not only freedom but also fostering a vibrant ecosystem with a fair and innovative competition guaranteeing high quality tools for the user.
-
-Vite-plugin-ssr breaks the chains of vendor lock-in.
+We believe that these core constituents should be mostly independent. For freedom and, also, for fostering a vibrant ecosystem with innovative competition guaranteeing high quality tools for the user.
 
 ## `+config.js`
 
 > The `+config.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
 
-The `+config.js` files are at the core of vite-plugin-ssr's architecture.
+The `+config.js` files are at the core of vite-plugin-ssr.
 
-For example:
+For example, the following three `+config.js` files are enough to define a vite-plugin-ssr app.
 
 ```js
 // /pages/index/+config.js
 
+// This file defines a new page with URL /
 import { Page } from './Page'
+export default { Page }
+```
+```jsx
+// /pages/index/Page.js
 
-export default {
-  Page
+export default function() {
+  return <>Welcome to vite-plugin-ssr.</>
 }
 ```
+
+> The URL is determined by <Link text="filesystem routing" href="/filesystem-routing" />.
 
 ```js
 // /pages/about/+config.js
 
+// This file defines a new page with URL /about
 import { Page } from './Page'
-
-export default {
-  Page
+export default { Page }
+```
+```jsx
+// /pages/index/About.jsx
+export default function() {
+  return <>Basic demo of using vite-plugin-ssr.</>
 }
 ```
 
@@ -52,18 +61,12 @@ export default {
 import { onRenderClient } from './onRenderClient'
 import { onRenderHtml } from './onRenderHtml'
 
-export default {
-  onRenderClient,
-  onRenderHtml
-}
+// The hooks `onRenderHtml()` and `onRenderClient()` determine how pages are rendered.
+
+export default { onRenderClient, onRenderHtml }
 ```
 
-These three files are enough to define a vite-plugin-ssr app:
- 1. `/pages/about/+config.js` defines a new page with URL `/about`
-    > The URL is defined by <Link text="filesystem routing" href="/filesystem-routing" />.
- 1. `/pages/index/+config.js` defines a new page with URL `/`
- 1. `/pages/+config.js` defines the hooks `onRenderHtml()` and `onRenderClient()` which determine how pages are rendered.
-    > The hooks `onRenderHtml()` and `onRenderClient()` are explained down below at <Link href="#onrenderhtml-onrenderclient" doNotInferSectionTitle={true} />
+> See `onRenderHtml()` and `onRenderClient()` example further down below.
 
 The config values defined by `/pages/+config.js` can be overriden:
 
@@ -147,7 +150,7 @@ See also:
 
 <JustAMiddleware />
 
-This means vite-plugin-ssr can be embedded into and used with any server architecture and any deployment strategy.
+This means that vite-plugin-ssr can easily be embedded into any server architecture and any deployment strategy.
 
 See also:
  - <Link href="/renderPage" />
@@ -157,7 +160,7 @@ See also:
 
 <PageContextIntro />
 
-It can be accessed by most hooks while some hooks such as `onBeforeRender()` can add properties to `pageContext`: this is simple yet powerful data structure allowing you to use vite-plugin-ssr with any data fetching strategy you want.
+It can be accessed by most hooks (e.g. <Link text={<><code>onRenderHtml()</code> and <code>onRenderClient</code></>} href="#onrenderhtml-onrenderclient" doNotInferSectionTitle={true} />) while some hooks (e.g. <Link text={<><code>onBeforeRender()</code></>} href="onBeforeRender" />) can add properties to `pageContext`: this is a simple, flexible, and robust data structure that allows you to easily integrate vite-plugin-ssr with any tool and, in particular, with any data fetching strategy.
 
 See also:
  - <Link href="/data-fetching" />

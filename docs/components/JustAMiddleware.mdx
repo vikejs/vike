@@ -1,16 +1,19 @@
 import { Link } from '@brillout/docpress'
 
-From the perspective of your server architecture, vite-plugin-ssr is just a middleware:
+From the perspective of the server, vite-plugin-ssr is just a middleware:
 
 ```js
-// `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
-app.get('*', async (req, res) => {
-  // renderPage() is just a function that, for a given URL, returns the result of
-  // of our render() hook (usually an HTML string). The renderPage() function
-  // can be used within any server environment, including serverless and edge
-  // environments such as AWS Lambda, Cloudflare Workers, Vercel, ...
-  const pageContext = await renderPage({ urlOriginal: req.url })
-  res.send(pageContext.httpResponse.body)
+// renderPage() doesn't depend on Node.js and can be used anywhere such as
+// Cloudflare Workers, AWS EC2, AWS Lambda, Vercel, Deno Deploy, Lagon, ...
+import { renderPage } from 'vite-plugin-ssr/server'
+
+// someServer can be any server framework (Express.js/Deno/Fastify/HatTip/...)
+someServer.addRoute({ method: 'GET', route: '*' }, async (request) => {
+  const pageContextInit = { urlOriginal: request.url }
+  const pageContext = await renderPage(pageContextInit)
+  const { body, contentType, statusCode } = pageContext.httpResponse
+  const response = { body, contentType, statusCode }
+  return response
 })
 ```
 
