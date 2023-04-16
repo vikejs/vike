@@ -2,7 +2,7 @@ By default `pageContext` is available only on the server-side, but we can use `p
 
 ```js
 // *.page.server.js
-// Environment: Node.js
+// Environment: server
 
 export { passToClient }
 
@@ -18,7 +18,7 @@ const passToClient = [
 
 ```js
 // *.page.client.js
-// Environment: Browser
+// Environment: browser
 
 export { render }
 

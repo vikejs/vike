@@ -11,7 +11,7 @@ In practice, this means that we can use VPS with whatever tool we want. In fact,
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 // This can be any UI framework (React, Vue, Svelte, ...)
@@ -45,7 +45,7 @@ async function render(pageContext) {
 
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 export { render }
 
@@ -68,7 +68,7 @@ And, more importantly, integrating a view tool is simply a matter of following i
 
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 export { render }
 

@@ -7,7 +7,7 @@ we define a new page by creating a new `.page.jsx` file.
 
 ```jsx
 // /pages/index.page.jsx
-// Environment: Browser, Node.js
+// Environment: browser and server
 
 import React, { useState } from "react";
 import { Counter } from "../components/Counter";
@@ -32,7 +32,6 @@ We can also define a page's route with a *Route String* (for parameterized route
 
 ```js
 // /pages/index.page.route.js
-// Environment: Node.js (and Browser if we choose Client Routing)
 
 // Note how the two files share the same base `/pages/index.page.`; this is how `vite-plugin-ssr`
 // knows that `/pages/index.page.route.js` defines the route of `/pages/index.page.jsx`.
@@ -50,7 +49,7 @@ Unlike Next.js, we control how our pages are rendered.
 
 ```jsx
 // /renderer/_default.page.server.jsx
-// Environment: Node.js
+// Environment: server
 
 import ReactDOMServer from "react-dom/server";
 import React from "react";
@@ -79,7 +78,7 @@ async function render(pageContext) {
 ```
 ```jsx
 // /renderer/_default.page.client.jsx
-// Environment: Browser
+// Environment: browser
 
 import ReactDOM from "react-dom";
 import React from "react";
@@ -118,7 +117,7 @@ Let's now have a look at how to fetch data.
 
 ```jsx
 // /pages/star-wars/movie.page.jsx
-// Environment: Browser, Node.js
+// Environment: browser and server
 
 import React from "react";
 
@@ -135,14 +134,14 @@ function Page(pageProps) {
 ```
 ```js
 // /pages/star-wars/movie.page.route.js
-// Environment: Node.js
+// Environment: server
 
 // Route String
 export default "/star-wars/@movieId";
 ```
 ```js
 // /pages/star-wars/movie.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import fetch from "node-fetch";
 

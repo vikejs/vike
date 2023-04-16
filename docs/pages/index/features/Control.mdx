@@ -2,7 +2,7 @@ With `vite-plugin-ssr`, you control how your pages are rendered:
 
 ```jsx
 // /pages/about.page.js
-// Environment: Browser & Node.js
+// Environment: browser and server
 
 // vite-plugin-ssr uses Filesystem Routing: the file `/pages/about.page.js` matches the URL `/about`.
 
@@ -16,7 +16,7 @@ export function Page() {
 ```
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 // This can be any UI framework (React, Vue, Svelte, ...)
@@ -39,7 +39,7 @@ export async function render({ Page }) {
 ```
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 import { hydrateDom } from 'my-favorite-ui-framework'
 

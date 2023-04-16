@@ -7,7 +7,7 @@ are defined by our [server-side `render()` hook](/render).
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { renderToHtml } from 'some-ui-framework'
@@ -46,7 +46,7 @@ export const documentProps = {
 ```
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { renderToHtml } from 'some-ui-framework'
@@ -100,7 +100,7 @@ function getDocumentProps(pageProps) {
 ```
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 export { render }
 
@@ -143,7 +143,7 @@ For example:
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import renderToHtml from 'some-ui-framework'
@@ -190,14 +190,14 @@ If we use Client Routing, we need to make sure to update `document.title` upon p
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 // We make `pageContext.documentProps` available in the browser.
 export const passToClient = ['documentProps', 'pageProps']
 ```
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 export { render }
 
@@ -222,7 +222,7 @@ Head libraries already sanitize the HTML `<head>`, this means we can skip `escap
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import { dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { renderToHtml } from 'some-ui-framework'

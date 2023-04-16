@@ -4,7 +4,7 @@ The `.page.js` files can have a `export { Page }` which represents the page's ro
 
 ```js
 // /pages/hello.page.js
-// Environment: Browser, Node.js
+// Environment: browser and server
 
 export { Page }
 
@@ -17,7 +17,7 @@ function Page() {
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 export { render }
 
@@ -40,7 +40,7 @@ async function render(pageContext) {
 ```
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 export { render }
 

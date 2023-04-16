@@ -1,6 +1,6 @@
 import { Link, RepoLink, ReadingRecommendation } from '@brillout/docpress'
 
-Environment: `Browser`.
+Environment: browser.
 
 By default, `vite-plugin-ssr` does <Link text="Server Routing" href="/server-routing" />.
 
@@ -22,7 +22,7 @@ Vue example:
 
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 export { render }
 
@@ -112,7 +112,7 @@ To initialize once:
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 export { render }
 export { passToClient }
@@ -149,7 +149,7 @@ async function render(pageContext) {
 ```
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 export { render }
 
@@ -173,7 +173,7 @@ To initialize on every page navigation:
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 export { onBeforeRender }
 export { passToClient }
@@ -195,7 +195,7 @@ async function onBeforeRender() {
 ```
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 export { render }
 
@@ -220,7 +220,7 @@ We can prefetch even more eagerly by using viewport prefetching: the links are t
 
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 // Prefetch links as soon as they enter the viewport
 export const prefetchStaticAssets = { when: 'VIEWPORT' }

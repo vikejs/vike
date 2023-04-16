@@ -13,7 +13,7 @@ since `onBeforeRender()` hooks are called in Node.js.
 For mutating data:
 1. We create a new HTTP endpoint. For example, if we use [Express.js](https://github.com/expressjs/express):
    ```js
-   // Environment: Node.js
+   // Environment: server
 
    import express from 'express'
 
@@ -27,7 +27,7 @@ For mutating data:
    ```
 2. We then call our HTTP endpoint from the browser.
    ```jsx
-   // Environment: Browser
+   // Environment: browser
 
    const body = JSON.stringify({ text: 'Some new text' })
    await fetch('/mutations/updateText', { body })

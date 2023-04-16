@@ -39,7 +39,7 @@ Client-side `render()` hook:
 
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 import { renderToDom } from 'some-ui-framework'
 
@@ -59,7 +59,7 @@ We also adapt our server-side `render()` hook:
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import { escapeInject } from 'vite-plugin-ssr/server'
 
@@ -83,7 +83,7 @@ We can also use our server-side `render()` hook to render `<head>`:
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import { escapeInject } from 'vite-plugin-ssr/server'
 
@@ -124,7 +124,7 @@ If we have both SPA and SSR pages, then we adapt our `render()` hooks like this:
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { renderToHtml } from 'some-ui-framework'
@@ -150,7 +150,7 @@ export function render(pageContext) {
 
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 import { renderToDom, hydrateDom } from 'some-ui-framework'
 
@@ -214,7 +214,7 @@ To render a page to HTML-only:
 
 ```js
 // /pages/about.page.server.js
-// Environment: Node.js
+// Environment: server
 
 // Usually `Page` is defined in `*.page.js` but for HTML-only we
 // define `Page` in `*.page.server.js` instead.
@@ -232,7 +232,7 @@ function Page() {
 
 ```js
 // /pages/about.page.client.js
-// Environment: Browser
+// Environment: browser
 
 // This file represents the entire browser-side JavaScript.
 // We can omit defining `.page.client.js` in which case the page has zero browser-side JavaScript.

@@ -1,6 +1,6 @@
 import { RepoLink, Link } from '@brillout/docpress'
 
-Environment: `Node.js`.
+Environment: server.
 
 The `escapeInject` string template tag sanitizes HTML (to prevent so-called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting) security breaches).
 
@@ -8,7 +8,7 @@ It's usually used in the `render()` hook defined in `renderer/_default.page.serv
 
 ```js
 // renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 export { render }
 
@@ -47,7 +47,7 @@ For example, if we want some HTML parts to be included only for certain pages:
 
 ```js
 // _default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { renderToHtml } from 'some-ui-framework'

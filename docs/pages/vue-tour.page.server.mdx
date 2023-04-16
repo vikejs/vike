@@ -7,7 +7,7 @@ we define a new page by creating a new `.page.vue` file.
 
 ```vue
 <!-- /pages/index.page.vue -->
-<!-- Environment: Browser, Node.js -->
+<!-- Environment: browser and server -->
 
 <template>
   This page is rendered to HTML and interactive: <Counter />
@@ -29,7 +29,6 @@ We can also define a page's route with a *Route String* (for parameterized route
 
 ```js
 // /pages/index.page.route.js
-// Environment: Node.js (and Browser if we choose Client Routing)
 
 // Note how the two files share the same base `/pages/index.page.`; this is how `vite-plugin-ssr`
 // knows that `/pages/index.page.route.js` defines the route of `/pages/index.page.vue`.
@@ -47,7 +46,7 @@ Unlike Nuxt, we control how our pages are rendered.
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import { createSSRApp, h } from 'vue'
 import { renderToString } from '@vue/server-renderer'
@@ -78,7 +77,7 @@ async function render(pageContext) {
 ```
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 import { createSSRApp, h } from 'vue'
 
@@ -123,7 +122,7 @@ Let's now have a look at how to fetch data.
 
 ```vue
 <!-- /pages/star-wars/movie.page.vue -->
-<!-- Environment: Browser, Node.js -->
+<!-- Environment: browser and server -->
 
 <template>
   <h1>{{movie.title}}</h1>
@@ -138,14 +137,14 @@ export default { props: pageProps }
 ```
 ```js
 // /pages/star-wars/movie.page.route.js
-// Environment: Node.js
+// Environment: server
 
 // Route String
 export default '/star-wars/@movieId'
 ```
 ```js
 // /pages/star-wars/movie.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import fetch from 'node-fetch'
 

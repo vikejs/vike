@@ -61,7 +61,7 @@ We can perform a URL redirection by using `pageContext`:
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 export function render() {
   if (someCondition) {
@@ -120,7 +120,7 @@ async function onBeforeRender(pageContext) {
 ```
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 export { render }
 
@@ -148,14 +148,14 @@ If we use <Link href="/client-routing" noBreadcrumb={true} />, then we can also 
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 // We make `pageContext.redirectTo` available to the browser for client-side redirection
 export const passToClient = [/*...*/, 'redirectTo']
 ```
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 import { navigate } from 'vite-plugin-ssr/client/router'
 

@@ -8,7 +8,7 @@ A workaround is to make sure that all assets are imported at least once from cli
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 // If we were to import logo.svg only in this file, then `logoUrl` would be
 // `undefined` in production.
@@ -27,7 +27,7 @@ export function render() {
 
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 // Workaround: we import logo.svg here as well, even though we don't use it in this file,
 // to make Vite include logo.svg in the client bundle.
@@ -44,9 +44,9 @@ For example:
 
 ```js
 // /**/*.page.server.js
-// Environment: Node.js
+// Environment: server
 
-// This file is loaded *only* in Node.js
+// This file is loaded *only* on the server
 
 // We need to set `includeAssetsImportedByServer` to `true` if we want
 // `some-style.css` to be included, otherwise it will be ignored.

@@ -9,7 +9,7 @@ The usual way to fetch data is to use a `onBeforeRender()` hook.
 
 ```js
 // /pages/movies.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import fetch from 'node-fetch'
 
@@ -35,7 +35,7 @@ async function onBeforeRender(pageContext) {
 ```
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { renderToHtml, createElement } from 'some-ui-framework'
@@ -64,7 +64,7 @@ async function render(pageContext) {
 ```
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 export { render }
 
@@ -88,7 +88,7 @@ async function render(pageContext) {
 ```
 ```js
 // /pages/movies.page.js
-// Environment: Browser, Node.js
+// Environment: browser and server
 
 export { Page }
 
@@ -119,7 +119,7 @@ export const query = { modelName: 'Product', select: ['name', 'price'] }
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 // We use a single global `onBeforeRender()` hook
 export { onBeforeRender }

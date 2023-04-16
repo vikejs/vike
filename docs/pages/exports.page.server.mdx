@@ -6,19 +6,19 @@ For example:
 
 ```js
 // /pages/countries.page.js
-// Environment: Node.js & Browser
+// Environment: server and browser
 
 export const title = 'Earth Countries'
 ```
 ```js
 // /pages/countries.page.server.js
-// Environment: Node.js
+// Environment: server
 
 export const dataUrl = 'https://restcountries.com/v3.1/all'
 ```
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 export { onBeforeRender }
 
@@ -36,7 +36,7 @@ function render(pageContext) {
 ```
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 export const clientRouting = true
 export { render }
@@ -62,7 +62,7 @@ A common technique is to use a custom export `pageContext.exports.Layout` to def
 
 ```js
 // /pages/product.page.js
-// Environment: Browser & Node.js
+// Environment: browser and server
 
 export { Layout } from '../layouts/Responsive'
 export function Page() {
@@ -72,7 +72,7 @@ export function Page() {
 
 ```js
 // /pages/admin.page.js
-// Environment: Browser & Node.js
+// Environment: browser and server
 
 export { Layout } from '../layouts/Dashboard'
 export function Page() {
@@ -82,7 +82,7 @@ export function Page() {
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 import { renderToHtml } from 'some-ui-framework'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
@@ -100,7 +100,7 @@ export function render(pageContext) {
 ```
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 import { renderDom } from 'some-ui-framework'
 
@@ -133,7 +133,7 @@ export const query = { modelName: 'User', select: ['firstName', 'lastName'] }
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 export { onBeforeRender }
 export { render }
@@ -163,7 +163,7 @@ function render(pageContext) {
 ```
 ```js
 // /renderer/_default.page.client.js
-// Environment: Browser
+// Environment: browser
 
 export { render }
 
@@ -184,21 +184,21 @@ We can also use a custom export `pageContext.export.meta` to define the meta dat
 
 ```js
 // /pages/product.page.js
-// Environment: Node.js
+// Environment: server
 export const title = 'Product'
 export const getDescription = pageProps => `Product: ${pageProps.productName}`
 ```
 
 ```js
 // /pages/user.page.js
-// Environment: Node.js
+// Environment: server
 export const title = 'User'
 export const getDescription = pageProps => `User: ${pageProps.firstName} ${pageProps.lastName}`
 ```
 
 ```js
 // /renderer/_default.page.server.js
-// Environment: Node.js
+// Environment: server
 
 export { render }
 
