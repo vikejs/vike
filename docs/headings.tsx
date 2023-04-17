@@ -70,7 +70,8 @@ const headings: HeadingDefinition[] = [
   {
     level: 2,
     title: 'Data Fetching',
-    url: '/data-fetching'
+    url: '/data-fetching',
+    sectionTitles: ['`onBeforeRender()`']
   },
   {
     level: 2,
