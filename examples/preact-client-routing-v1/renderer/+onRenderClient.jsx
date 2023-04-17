@@ -1,10 +1,9 @@
-export { render }
-export const clientRouting = true
+export default onRenderClient
 
-import { hydrate, render as render_ } from 'preact'
+import { hydrate, render } from 'preact'
 import { PageShell } from './PageShell'
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   const { Page, pageProps } = pageContext
   const page = (
     <PageShell pageContext={pageContext}>
@@ -16,7 +15,7 @@ async function render(pageContext) {
   if (pageContext.isHydration) {
     hydrate(page, container)
   } else {
-    render_(page, container)
+    render(page, container)
   }
   document.title = getPageTitle(pageContext)
 }

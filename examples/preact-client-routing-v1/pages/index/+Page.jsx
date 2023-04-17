@@ -1,6 +1,6 @@
-import { Counter } from './Counter'
+export default Page
 
-export { Page }
+import { Counter } from './Counter'
 
 function Page() {
   return (
