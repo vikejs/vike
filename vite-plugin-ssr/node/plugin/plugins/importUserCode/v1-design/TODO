@@ -1,4 +1,4 @@
-Before beta release
+Before beta release:
  - Port all examples & tests
  - if config isn't a file path then assert that it's serialazable
    - remove c_code
@@ -16,7 +16,7 @@ Before beta release
  - test all features
    - `prerender: false`
 
-After beta release
+After beta release:
  - assert that two import statements in +config.js shouldn't land in different environments
  - Implements TODO comments
  - define pageContext.pageId
@@ -38,6 +38,9 @@ After beta release
      - How can we make sure the user doens't miss the warning? Maybe be make the warnings `onlyOnce: fase` and/or setting Vite's `clearScreen: false`
  - multiple error pages
  - nested layouts
+
+After stable release:
+ - update all links to /examples/*-v1
 
 After Vike rename:
  - Impl vike.config.js
