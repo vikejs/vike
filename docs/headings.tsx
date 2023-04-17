@@ -967,5 +967,9 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     title: 'Architecture',
     url: '/architecture',
     sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', '`+config.js`', 'Do-one-thing-do-it-well']
+  },
+  {
+    title: <code>client</code>,
+    url: '/client'
   }
 ]
