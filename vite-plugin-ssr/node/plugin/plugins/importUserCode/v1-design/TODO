@@ -1,5 +1,5 @@
 Before beta release
- - Port all examples
+ - Port all examples & tests
  - if config isn't a file path then assert that it's serialazable
    - remove c_code
  - assert global configs cannot be defined in page-specific config
