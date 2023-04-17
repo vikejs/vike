@@ -12,6 +12,7 @@ Before beta release
  - prepare vike.config.js
    - Remove moving global configs to /pages/+config.js from migration
    - Redefine global configs in vite.config.js in examples
+   - Add warning when setting global configs in /pages/+config.js
    - Remove global config from `Config`
  - test all features
    - `prerender: false`
