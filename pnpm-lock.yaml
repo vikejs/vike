@@ -793,6 +793,24 @@ importers:
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  examples/preact-server-routing-v1:
+    specifiers:
+      '@babel/core': ^7.17.10
+      '@babel/plugin-transform-react-jsx': ^7.17.3
+      '@preact/preset-vite': ^2.3.0
+      preact: ^10.10.0
+      preact-render-to-string: ^5.2.1
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      '@babel/core': 7.20.12
+      '@babel/plugin-transform-react-jsx': 7.19.0_@babel+core@7.20.12
+      '@preact/preset-vite': 2.3.0_i4qd3xq7dijiwq7mo3o3m6k2xy
+      preact: 10.10.0
+      preact-render-to-string: 5.2.1_preact@10.10.0
+      vite: 4.2.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   examples/react:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
@@ -1739,7 +1757,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0
     dependencies:
-      '@babel/compat-data': 7.20.1
+      '@babel/compat-data': 7.20.14
       '@babel/core': 7.20.5
       '@babel/helper-validator-option': 7.18.6
       browserslist: 4.21.5
@@ -2400,7 +2418,7 @@ packages:
       execa: 5.1.1
       js-yaml: 4.1.0
       picocolors: 1.0.0
-      semver: 7.3.7
+      semver: 7.3.8
     dev: false
 
   /@brillout/release-me/0.1.3:
@@ -9964,6 +9982,7 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
+    dev: true
 
   /semver/7.3.8:
     resolution: {integrity: sha512-NB1ctGL5rlHrPJtFDVIVzTyQylMLu9N9VICA6HSFJo8MCGVTMW6gfpicwKmmK/dAjTOrqu5l63JJOpDSrAis3A==}
@@ -10166,7 +10185,7 @@ packages:
     peerDependencies:
       solid-js: ^1.3
     dependencies:
-      '@babel/generator': 7.20.5
+      '@babel/generator': 7.20.14
       '@babel/helper-module-imports': 7.18.6
       '@babel/types': 7.20.7
       solid-js: 1.5.2
