@@ -1,3 +1,15 @@
+## [0.4.114](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.113...v0.4.114) (2023-04-17)
+
+
+### Bug Fixes
+
+* [V1 design] rename config `clientEntry` to `client` ([fa8d29e](https://github.com/brillout/vite-plugin-ssr/commit/fa8d29e1ecb64aae1fb069cafb0eae87e65401d1))
+* add /types to package.json#exports (fix [#788](https://github.com/brillout/vite-plugin-ssr/issues/788)) ([900326c](https://github.com/brillout/vite-plugin-ssr/commit/900326c923fb5f04b1311dc98fb72312040372ba))
+* update @brillout/vite-plugin-import-build ([42a1dcc](https://github.com/brillout/vite-plugin-ssr/commit/42a1dcc2e4a273e578d1d0a1bdf5aee750169937))
+* update @brillout/vite-plugin-import-build ([f7786e6](https://github.com/brillout/vite-plugin-ssr/commit/f7786e64cdd375fb43697fc984871513455f5ca8))
+
+
+
 ## [0.4.113](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.112...v0.4.113) (2023-04-13)
 
 
