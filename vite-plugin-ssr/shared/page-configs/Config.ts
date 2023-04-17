@@ -110,7 +110,7 @@ type Config<Page = unknown> = Partial<
      */
     clientRouting: boolean
 
-    /** Add or modify config definitions.
+    /** Create or modify configs.
      *
      * See https://vite-plugin-ssr/meta
      */
@@ -127,7 +127,7 @@ type Config<Page = unknown> = Partial<
 type Meta = Record<
   string,
   {
-    /** Where code is loaded and executed.
+    /** In what environment(s) the config value is loaded.
      *
      * See https://vite-plugin-ssr/meta
      */
