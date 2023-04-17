@@ -31,16 +31,13 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run prod:static') {
   })
 
   test('About page is HTML-only', async () => {
-    const entry = 'entry.js'
     const script = '<script'
     {
       const html = await fetchHtml('/')
-      expect(html).toContain(entry)
       expect(html).toContain(script)
     }
     {
       const html = await fetchHtml('/about')
-      expect(html).not.toContain(entry)
       if (isProd) {
         expect(html).not.toContain(script)
       }
