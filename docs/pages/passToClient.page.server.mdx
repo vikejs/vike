@@ -1,4 +1,8 @@
-By default `pageContext` is available only on the server-side, but we can use `passToClient` to make some `pageContext` available in the browser.
+import { Link } from '@brillout/docpress'
+
+Usually, `passToClient` is used with <Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" /> for fetching data, see example at <Link href="/data-fetching#onbeforerender" />.
+
+By default `pageContext` is available only on the server-side. We use `passToClient` to make parts of `pageContext` available in the browser.
 
 ```js
 // *.page.server.js
