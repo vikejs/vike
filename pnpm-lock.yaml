@@ -575,6 +575,16 @@ importers:
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  examples/html-fragments-v1:
+    specifiers:
+      typescript: ^4.6.4
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      typescript: 4.9.4
+      vite: 4.2.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   examples/i18n:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
