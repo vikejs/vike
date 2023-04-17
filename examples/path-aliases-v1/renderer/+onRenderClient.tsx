@@ -1,11 +1,11 @@
-export { render }
+export default onRenderClient
 
 import React from 'react'
 import { hydrateRoot } from 'react-dom/client'
 import { PageLayout } from './PageLayout'
 import type { PageContext } from '#root/types'
 
-async function render(pageContext: PageContext) {
+async function onRenderClient(pageContext: PageContext) {
   const { Page } = pageContext
   hydrateRoot(
     document.getElementById('page-view')!,
