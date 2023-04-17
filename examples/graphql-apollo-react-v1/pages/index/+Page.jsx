@@ -1,7 +1,7 @@
+export default Page
+
 import React, { useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
-
-export { Page }
 
 function Page() {
   const { data } = useQuery(gql`
