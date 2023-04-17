@@ -1,13 +1,11 @@
+export default onRenderHtml
+
 import renderToString from 'preact-render-to-string'
 import { PageShell } from './PageShell'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import logoUrl from './logo.svg'
 
-export { render }
-// See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ['pageProps', 'urlPathname']
-
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext
   const pageHtml = renderToString(
     <PageShell pageContext={pageContext}>

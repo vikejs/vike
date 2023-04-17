@@ -1,4 +1,4 @@
-export { Page }
+export default Page
 
 function Page({ is404 }) {
   if (is404) {
