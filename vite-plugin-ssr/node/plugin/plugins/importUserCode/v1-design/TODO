@@ -41,6 +41,7 @@ After beta release:
 
 After stable release:
  - update all links to /examples/*-v1
+ - Add deprecation warning for pageContext.exports
 
 After Vike rename:
  - Impl vike.config.js
