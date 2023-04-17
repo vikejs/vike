@@ -13,8 +13,8 @@ import { getGlobalContext } from '../globalContext'
 function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string): AnalysisResult {
   if (pageConfig) {
     const { isClientSideRenderable, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
-    const clientEntryPageConfig = getCodeFilePath(pageConfig, 'clientEntry')
-    const clientEntry = !isClientSideRenderable ? clientEntryPageConfig : getVPSClientEntry(isClientRouting)
+    const clientFilePath = getCodeFilePath(pageConfig, 'client')
+    const clientEntry = !isClientSideRenderable ? clientFilePath : getVPSClientEntry(isClientRouting)
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
       id: getVirtualFileIdImportPageCode(pageConfig.pageId, true),

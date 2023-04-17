@@ -68,8 +68,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   filesystemRoutingRoot: {
     env: '_routing-env'
   },
-  // TODO: rename to 'client'? I think so if client is cumulative to onRenderClient (while HTML-only needs to set `onRenderClient: null`)
-  clientEntry: {
+  client: {
     c_code: true,
     env: 'client-only'
   },

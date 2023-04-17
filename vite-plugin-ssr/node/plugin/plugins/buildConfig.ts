@@ -90,9 +90,9 @@ async function analyzeAppRouting(config: ResolvedConfig) {
     } else {
       hasServerRouting = true
     }
-    const clientEntry = getCodeFilePath(pageConfigData, 'clientEntry')
-    if (clientEntry) {
-      clients.push(clientEntry)
+    const clientFilePath = getCodeFilePath(pageConfigData, 'client')
+    if (clientFilePath) {
+      clients.push(clientFilePath)
     }
   })
   const clientEntries = formatEntries(clients, config)

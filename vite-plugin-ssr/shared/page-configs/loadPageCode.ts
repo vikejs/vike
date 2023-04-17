@@ -17,7 +17,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     let configValue: unknown
     if (configValueData.isPlusFile) {
       const { importFileExports } = configValueData
-      if (configName !== 'clientEntry') {
+      if (configName !== 'client') {
         assertDefaultExportUnknown(importFileExports, importFile)
       }
       configValue = importFileExports.default

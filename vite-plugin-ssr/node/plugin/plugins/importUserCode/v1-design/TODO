@@ -8,7 +8,6 @@ Before beta release
    - Add further examples to v1-design.page.server.mdx
    - https://vite-plugin-ssr.com/config
    - https://vite-plugin-ssr.com/meta
- - rename 'clientEntry' -> 'client'
  - prepare vike.config.js
    - Remove moving global configs to /pages/+config.js from migration
    - Redefine global configs in vite.config.js in examples

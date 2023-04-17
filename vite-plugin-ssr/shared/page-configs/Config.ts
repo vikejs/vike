@@ -99,8 +99,11 @@ type Config<Page = unknown> = Partial<
      * See https://vite-plugin-ssr.com/clientRouting
      */
     hydrationCanBeAborted: boolean
-    /** Additional client entry */
-    clientEntry: string
+    /** Additional client code
+     *
+     * See https://vite-plugin-ssr.com/client
+     */
+    client: string
     /** Enable Client Routing.
      *
      * See https://vite-plugin-ssr.com/clientRouting

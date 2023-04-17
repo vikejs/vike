@@ -145,12 +145,12 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
       expect(html).toContain('This page is rendered to HTML and has only few lines of browser-side JavaScript.')
       if (isPreview) {
         const jsImport = isV1Design
-          ? partRegex`<script type="module" src="/assets/pages/html-js/clientEntry.${hash}.js" defer></script>`
+          ? partRegex`<script type="module" src="/assets/pages/html-js/client.${hash}.js" defer></script>`
           : partRegex`<script type="module" src="/assets/pages/html-js/default.page.client.${hash}.js" defer>`
         expect(html).toMatch(jsImport)
       } else {
         const jsImport = isV1Design
-          ? partRegex`import("/@fs/${path}/pages/html-js/+clientEntry.js");`
+          ? partRegex`import("/@fs/${path}/pages/html-js/+client.js");`
           : partRegex`import("/@fs/${path}/pages/html-js/_default.page.client.js");`
         expect(html).toMatch(jsImport)
       }
