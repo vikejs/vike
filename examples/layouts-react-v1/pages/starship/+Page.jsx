@@ -1,4 +1,4 @@
-export { Page }
+export default Page
 
 import { useState } from 'react'
 import { usePageContext } from '../../renderer/usePageContext'

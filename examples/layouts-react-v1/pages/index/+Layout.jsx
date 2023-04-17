@@ -1,4 +1,4 @@
-export { Layout }
+export default Layout
 
 import './Layout.css'
 

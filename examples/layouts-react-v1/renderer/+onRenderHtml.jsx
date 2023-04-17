@@ -1,15 +1,11 @@
-export { render }
-export { passToClient }
+export default onRenderHtml
 
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { PageShell } from './PageShell'
 
-// See https://vite-plugin-ssr.com/data-fetching
-const passToClient = ['pageProps', 'routeParams']
-
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext
 
   const pageHtml = renderToString(

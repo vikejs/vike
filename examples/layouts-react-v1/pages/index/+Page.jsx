@@ -1,5 +1,4 @@
-export { Layout } from './Layout'
-export { Page }
+export default Page
 
 import React from 'react'
 
