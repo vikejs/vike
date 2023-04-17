@@ -1,6 +1,6 @@
-import { escapeInject } from 'vite-plugin-ssr/server'
+export default render
 
-export { render }
+import { escapeInject } from 'vite-plugin-ssr/server'
 
 function render() {
   // Note how `<b>` is (not) escaped
