@@ -28,6 +28,9 @@
     "./client": {
       "types": "./dist/types/client/index.d.ts"
     },
+    "./types": {
+      "types": "./dist/types/types/index.d.ts"
+    },
     "./client/router": {
       "worker": "./dist/cjs/node/client/router.js",
       "node": "./dist/cjs/node/client/router.js",
