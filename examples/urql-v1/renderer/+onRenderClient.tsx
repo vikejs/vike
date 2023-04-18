@@ -1,4 +1,4 @@
-export { render }
+export default onRenderClient
 
 import React from 'react'
 import { hydrateRoot } from 'react-dom/client'
@@ -15,7 +15,7 @@ import type {
   //*/
 } from 'vite-plugin-ssr/types'
 
-async function render(pageContext: PageContextBuiltInClient & PageContext) {
+async function onRenderClient(pageContext: PageContextBuiltInClient & PageContext) {
   const { Page, pageProps, urqlState } = pageContext
   const client = createClient({
     url: 'https://countries.trevorblades.com',
