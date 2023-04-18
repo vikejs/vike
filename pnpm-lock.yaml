@@ -11,13 +11,13 @@ importers:
     specifiers:
       '@brillout/bump-dependencies': ^0.1.1
       '@brillout/dev-my-dep': ^0.1.5
-      '@brillout/test-e2e': ^0.5.5
+      '@brillout/test-e2e': ^0.5.6
       '@brillout/test-types': ^0.1.6
       vitest: ^0.29.5
     devDependencies:
       '@brillout/bump-dependencies': 0.1.1
       '@brillout/dev-my-dep': 0.1.5
-      '@brillout/test-e2e': 0.5.5
+      '@brillout/test-e2e': 0.5.6
       '@brillout/test-types': 0.1.6
       vitest: 0.29.5
 
@@ -2611,12 +2611,12 @@ packages:
       vite-plugin-ssr: link:vite-plugin-ssr
     dev: false
 
-  /@brillout/test-e2e/0.5.5:
-    resolution: {integrity: sha512-dcBgH5e6OvpoO/Kj6BqaoipwfzpVqibbJP16pKkJ1bbXrLVFpeu/IUF4T9LLiVuFXa2kBmMaL0Z9L8XvZ6zWrg==}
+  /@brillout/test-e2e/0.5.6:
+    resolution: {integrity: sha512-3IEp2gsOji0ufDYil6cqWXzaX5o1w6uFLcjtZg9qHMRAMThJtGQwqbE20b5wvOUHzcnEGOjMEZGAWSBc5sTCeQ==}
     hasBin: true
     dependencies:
       '@brillout/part-regex': 0.1.2
-      chai: 4.3.6
+      chai: 4.3.7
       esbuild: 0.16.17
       fast-glob: 3.2.12
       node-fetch: 2.6.9
@@ -5435,19 +5435,6 @@ packages:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
     dev: false
 
-  /chai/4.3.6:
-    resolution: {integrity: sha512-bbcp3YfHCUzMOvKqsztczerVgBKSsEijCySNlHHbX3VG1nskvqjz5Rfso1gGwD6w6oOV3eI60pKuMOV5MV7p3Q==}
-    engines: {node: '>=4'}
-    dependencies:
-      assertion-error: 1.1.0
-      check-error: 1.0.2
-      deep-eql: 3.0.1
-      get-func-name: 2.0.0
-      loupe: 2.3.4
-      pathval: 1.1.1
-      type-detect: 4.0.8
-    dev: true
-
   /chai/4.3.7:
     resolution: {integrity: sha512-HLnAzZ2iupm25PlN0xFreAlBA5zaBSv3og0DdeGA4Ar6h6rJ3A0rolRUKJhSF2V10GZKDgWF/VmAEsNWjCRB+A==}
     engines: {node: '>=4'}
@@ -5456,7 +5443,7 @@ packages:
       check-error: 1.0.2
       deep-eql: 4.1.3
       get-func-name: 2.0.0
-      loupe: 2.3.4
+      loupe: 2.3.6
       pathval: 1.1.1
       type-detect: 4.0.8
     dev: true
@@ -6045,13 +6032,6 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       mimic-response: 1.0.1
-    dev: true
-
-  /deep-eql/3.0.1:
-    resolution: {integrity: sha512-+QeIQyN5ZuO+3Uk5DYh6/1eKO0m0YmJFGNmFHGACpf1ClL1nmlV/p4gNgbl2pJGxgXb4faqo6UE+M5ACEMyVcw==}
-    engines: {node: '>=0.12'}
-    dependencies:
-      type-detect: 4.0.8
     dev: true
 
   /deep-eql/4.1.3:
@@ -7895,12 +7875,6 @@ packages:
     dependencies:
       js-tokens: 4.0.0
     dev: false
-
-  /loupe/2.3.4:
-    resolution: {integrity: sha512-OvKfgCC2Ndby6aSTREl5aCCPTNIzlDfQZvZxNUrBrihDhL3xcrYegTblhmEiCrg2kKQz4XsFIaemE5BF4ybSaQ==}
-    dependencies:
-      get-func-name: 2.0.0
-    dev: true
 
   /loupe/2.3.6:
     resolution: {integrity: sha512-RaPMZKiMy8/JruncMU5Bt6na1eftNoo++R4Y+N2FrxkDVTrGvcyzFTsaGif4QTeKESheMGegbhw6iUAq+5A8zA==}
@@ -11343,7 +11317,7 @@ packages:
       mlly: 1.2.0
       pathe: 1.1.0
       picocolors: 1.0.0
-      vite: 4.2.1_@types+node@18.13.0
+      vite: 4.2.2_@types+node@18.13.0
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -11746,6 +11720,40 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: false
+
+  /vite/4.2.2_@types+node@18.13.0:
+    resolution: {integrity: sha512-PcNtT5HeDxb3QaSqFYkEum8f5sCVe0R3WK20qxgIvNBZPXU/Obxs/+ubBMeE7nLWeCo2LDzv+8hRYSlcaSehig==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      '@types/node': 18.13.0
+      esbuild: 0.17.10
+      postcss: 8.4.21
+      resolve: 1.22.1
+      rollup: 3.20.2
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: true
 
   /vitest/0.29.5:
     resolution: {integrity: sha512-Pe0hT1Ml/23GWyNYu56sEH2PYfu5YKDrv5YREhAJl6ybX5ukuwzuT+WrnRm7enPSVmL44hP9anWiAk68sQAHzg==}
