@@ -1037,6 +1037,24 @@ importers:
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  examples/redux-v1:
+    specifiers:
+      '@vitejs/plugin-react': ^3.0.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      react-redux: ^8.0.1
+      redux: ^4.2.0
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      '@vitejs/plugin-react': 3.1.0_vite@4.2.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-redux: 8.0.1_e42enmjmqb4imi3q3iaq2rrebm
+      redux: 4.2.0
+      vite: 4.2.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   examples/render-modes:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
