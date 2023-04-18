@@ -1,7 +1,7 @@
+export default Page
+
 import React, { useEffect, useState } from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
-
-export { Page }
 
 function Page() {
   return (
