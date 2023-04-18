@@ -943,6 +943,24 @@ importers:
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  examples/react-router-v1:
+    specifiers:
+      '@vitejs/plugin-react': ^3.0.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      react-router: ^6.3.0
+      react-router-dom: ^6.3.0
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      '@vitejs/plugin-react': 3.1.0_vite@4.2.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-router: 6.3.0_react@18.2.0
+      react-router-dom: 6.3.0_biqbaboplfbrettd7655fr4n2y
+      vite: 4.2.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   examples/react-streaming:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0

@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "dev": "vite dev"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^3.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router": "^6.3.0",
+    "react-router-dom": "^6.3.0",
+    "vite": "^4.0.3",
+    "vite-plugin-ssr": "0.4.114"
+  }
+}
