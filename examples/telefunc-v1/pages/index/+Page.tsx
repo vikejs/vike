@@ -1,8 +1,8 @@
+export default Page
+
 import React, { useState } from 'react'
 import { TodoList } from './TodoList'
 import type { TodoItem } from '../../database/todoItems'
-
-export { Page }
 
 function Page({ todoItemsInitial }: { todoItemsInitial: TodoItem[] }) {
   return (

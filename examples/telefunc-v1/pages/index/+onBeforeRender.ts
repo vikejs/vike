@@ -1,5 +1,5 @@
-// See https://vite-plugin-ssr.com/onBeforeRender
-export { onBeforeRender }
+// https://vite-plugin-ssr.com/onBeforeRender
+export default onBeforeRender
 
 import { todoItems } from '../../database/todoItems'
 
