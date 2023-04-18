@@ -2,7 +2,8 @@ export { render }
 // See https://vite-plugin-ssr.com/data-fetching
 export const passToClient = ['pageProps', 'urlPathname']
 
-import { renderToString } from '@vue/server-renderer'
+import { renderToString as renderToString_ } from '@vue/server-renderer'
+import type { App } from 'vue'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { createApp } from './app'
 import logoUrl from './logo.svg'
@@ -41,4 +42,15 @@ async function render(pageContext: PageContextServer) {
       // We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
     }
   }
+}
+
+async function renderToString(app: App) {
+  let err: unknown
+  // Workaround: renderToString_() swallows errors in production, see https://github.com/vuejs/core/issues/7876
+  app.config.errorHandler = (err_) => {
+    err = err_
+  }
+  const appHtml = await renderToString_(app)
+  if (err) throw err
+  return appHtml
 }
