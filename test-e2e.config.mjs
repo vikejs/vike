@@ -81,7 +81,8 @@ function tolerateError({ logSource, logText }) {
     isCloudflareFalseError2() ||
     isCloudflareVueWarning() ||
     isTwitterEmbedsError() ||
-    isGithubImageError()
+    isGithubImageError() ||
+    isSlowCrawlWarning()
   )
 
   // [vite-plugin-ssr@0.4.42][Warning] The onBeforeRender() hook of /pages/star-wars/index/index.page.server.ts is taking more than 4 seconds
@@ -179,5 +180,8 @@ function tolerateError({ logSource, logText }) {
       logText.includes('.png') &&
       logText.includes('the server responded with a status of 429')
     )
+  }
+  function isSlowCrawlWarning() {
+    return logSource === 'stderr' && logText.includes('Crawling your user files took an unexpected long time')
   }
 }

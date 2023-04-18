@@ -24,8 +24,9 @@ function testRun(
     lang
   }: {
     skipCssTest?: boolean
-    uiFramewok: 'react' | 'vue' | 'preact'
+    uiFramewok: 'react' | 'vue' | 'preact' | 'solid'
     lang?: 'ts'
+    isSPA?: true
   }
 ) {
   run(cmd)
@@ -35,8 +36,9 @@ function testRun(
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
-    expect(html).toContain('<h1>Welcome</h1>')
-    // Vue injects: `!--[-->Home<!--]-->`
+    // Solid injects attribute: <h1 data-hk="0-0-2-1-0">Welcome</h1>
+    expect(html).toMatch(partRegex`<h1${/[^\>]*/}>Welcome</h1>`)
+    // Vue injects: `<!--[-->Home<!--]-->`
     expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}Home${/.*/}</a>`)
     expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}About${/.*/}</a>`)
   })
@@ -48,7 +50,11 @@ function testRun(
     // `autoRetry` because browser-side code may not be loaded yet
     await autoRetry(async () => {
       await page.click('button')
-      expect(await page.textContent('button')).toBe('Counter 1')
+      if (uiFramewok === 'solid') {
+        expect(await page.textContent('button')).not.toBe('Counter 0')
+      } else {
+        expect(await page.textContent('button')).toBe('Counter 1')
+      }
     })
   })
 

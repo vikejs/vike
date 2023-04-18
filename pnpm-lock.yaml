@@ -11,13 +11,13 @@ importers:
     specifiers:
       '@brillout/bump-dependencies': ^0.1.1
       '@brillout/dev-my-dep': ^0.1.5
-      '@brillout/test-e2e': ^0.5.6
+      '@brillout/test-e2e': ^0.5.8
       '@brillout/test-types': ^0.1.6
       vitest: ^0.29.5
     devDependencies:
       '@brillout/bump-dependencies': 0.1.1
       '@brillout/dev-my-dep': 0.1.5
-      '@brillout/test-e2e': 0.5.6
+      '@brillout/test-e2e': 0.5.8
       '@brillout/test-types': 0.1.6
       vitest: 0.29.5
 
@@ -1113,16 +1113,16 @@ importers:
 
   examples/solid-ssr:
     specifiers:
-      solid-js: ^1.5.2
+      solid-js: ^1.7.3
       typescript: ^4.8.2
       vite: ^4.0.3
       vite-plugin-solid: ^2.3.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      solid-js: 1.5.2
+      solid-js: 1.7.3
       typescript: 4.8.2
       vite: 4.0.3
-      vite-plugin-solid: 2.3.0_solid-js@1.5.2+vite@4.0.3
+      vite-plugin-solid: 2.3.0_solid-js@1.7.3+vite@4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/solid-ssr-v1:
@@ -2611,8 +2611,8 @@ packages:
       vite-plugin-ssr: link:vite-plugin-ssr
     dev: false
 
-  /@brillout/test-e2e/0.5.6:
-    resolution: {integrity: sha512-3IEp2gsOji0ufDYil6cqWXzaX5o1w6uFLcjtZg9qHMRAMThJtGQwqbE20b5wvOUHzcnEGOjMEZGAWSBc5sTCeQ==}
+  /@brillout/test-e2e/0.5.8:
+    resolution: {integrity: sha512-/wgB9UZfqOeN4H4B/Qg+3Q14ZwOK8Ou2cA1dSPg9y9uN5DDLsuN0kzIs2YjZCWCe/aaXSYObmBwv6VpVyC8Rig==}
     hasBin: true
     dependencies:
       '@brillout/part-regex': 0.1.2
@@ -10183,6 +10183,11 @@ packages:
       randombytes: 2.1.0
     dev: false
 
+  /seroval/0.5.1:
+    resolution: {integrity: sha512-ZfhQVB59hmIauJG5Ydynupy8KHyr5imGNtdDhbZG68Ufh1Ynkv9KOYOAABf71oVbQxJ8VkWnMHAjEHE7fWkH5g==}
+    engines: {node: '>=10'}
+    dev: false
+
   /serve-handler/6.1.3:
     resolution: {integrity: sha512-FosMqFBNrLyeiIDvP1zgO6YoTzFYHxLDEIavhlmQ+knB2Z7l1t+kGLHkZIDN7UVWqQAmKI3D20A6F6jo3nDd4w==}
     dependencies:
@@ -10345,6 +10350,13 @@ packages:
       csstype: 3.1.0
     dev: false
 
+  /solid-js/1.7.3:
+    resolution: {integrity: sha512-4hwaF/zV/xbNeBBIYDyu3dcReOZBECbO//mrra6GqOrKy4Soyo+fnKjpZSa0nODm6j1aL0iQRh/7ofYowH+jzw==}
+    dependencies:
+      csstype: 3.1.0
+      seroval: 0.5.1
+    dev: false
+
   /solid-refresh/0.4.1_solid-js@1.5.2:
     resolution: {integrity: sha512-v3tD/OXQcUyXLrWjPW1dXZyeWwP7/+GQNs8YTL09GBq+5FguA6IejJWUvJDrLIA4M0ho9/5zK2e9n+uy+4488g==}
     peerDependencies:
@@ -10354,6 +10366,17 @@ packages:
       '@babel/helper-module-imports': 7.18.6
       '@babel/types': 7.20.7
       solid-js: 1.5.2
+    dev: false
+
+  /solid-refresh/0.4.1_solid-js@1.7.3:
+    resolution: {integrity: sha512-v3tD/OXQcUyXLrWjPW1dXZyeWwP7/+GQNs8YTL09GBq+5FguA6IejJWUvJDrLIA4M0ho9/5zK2e9n+uy+4488g==}
+    peerDependencies:
+      solid-js: ^1.3
+    dependencies:
+      '@babel/generator': 7.20.14
+      '@babel/helper-module-imports': 7.18.6
+      '@babel/types': 7.20.7
+      solid-js: 1.7.3
     dev: false
 
   /source-map-js/1.0.2:
@@ -11384,6 +11407,23 @@ packages:
       solid-js: 1.5.2
       solid-refresh: 0.4.1_solid-js@1.5.2
       vite: 4.2.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /vite-plugin-solid/2.3.0_solid-js@1.7.3+vite@4.0.3:
+    resolution: {integrity: sha512-N2sa54C3UZC2nN5vpj5o6YP+XdIAZW6n6xv8OasxNAcAJPFeZT7EOVvumL0V4c8hBz1yuYniMWdESY8807fVSg==}
+    peerDependencies:
+      solid-js: ^1.3.17
+      vite: ^3.0.0
+    dependencies:
+      '@babel/core': 7.20.12
+      '@babel/preset-typescript': 7.18.6_@babel+core@7.20.12
+      babel-preset-solid: 1.5.2_@babel+core@7.20.12
+      merge-anything: 5.0.2
+      solid-js: 1.7.3
+      solid-refresh: 0.4.1_solid-js@1.7.3
+      vite: 4.0.3
     transitivePeerDependencies:
       - supports-color
     dev: false

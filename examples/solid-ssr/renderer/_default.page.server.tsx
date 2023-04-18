@@ -11,9 +11,7 @@ export { passToClient }
 const passToClient = ['pageProps', 'documentProps']
 
 function render(pageContext: PageContext) {
-  const { Page, pageProps } = pageContext
-
-  const { pipe } = renderToStream(() => <PageLayout route={() => ({ Page, pageProps })} />)
+  const { pipe } = renderToStream(() => <PageLayout pageContext={pageContext} />)
   stampPipe(pipe, 'node-stream')
 
   // See https://vite-plugin-ssr.com/head

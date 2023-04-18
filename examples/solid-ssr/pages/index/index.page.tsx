@@ -1,5 +1,5 @@
-import { Component } from 'solid-js'
 import { Counter } from './Counter'
+import type { Component } from 'solid-js'
 
 const Page: Component = () => {
   return (

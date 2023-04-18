@@ -1,40 +1,44 @@
-import type { Accessor, JSX, Component } from 'solid-js'
+import type { JSX, Component } from 'solid-js'
+import { Link } from './Link'
 import logo from './logo.svg'
 import './PageLayout.css'
+import { PageContextProvider, usePageContext } from './usePageContext'
+import type { PageContext } from './types'
+import type { Store } from 'solid-js/store'
+import { Dynamic } from 'solid-js/web'
 
 export { PageLayout }
 
-export interface Route {
-  Page: Component
-  pageProps: Record<string, unknown>
-}
-
 interface Props {
-  route: Accessor<Route | null>
+  pageContext: Store<PageContext>
 }
 interface Children {
   children: JSX.Element
 }
 
 const PageLayout: Component<Props> = (props) => {
-  const renderedRoute = () => {
-    const { Page, pageProps } = props.route() ?? {}
-    return Page && <Page {...pageProps} />
-  }
-
   return (
-    <Layout>
-      <Sidebar>
-        <Logo />
-        <a class="navitem" href="/">
-          Home
-        </a>
-        <a class="navitem" href="/about">
-          About
-        </a>
-      </Sidebar>
-      <Content>{renderedRoute()}</Content>
-    </Layout>
+    <PageContextProvider pageContext={props.pageContext}>
+      <Layout>
+        <Sidebar>
+          <Logo />
+          <Link href="/">Home</Link>
+          <Link href="/about">About</Link>
+        </Sidebar>
+        <Content>
+          <Page />
+        </Content>
+      </Layout>
+    </PageContextProvider>
+  )
+}
+
+function Page() {
+  const pageContext = usePageContext()
+  return (
+    <>
+      <Dynamic component={pageContext.Page} {...(pageContext.pageProps ?? {})} />
+    </>
   )
 }
 
