@@ -1125,6 +1125,20 @@ importers:
       vite-plugin-solid: 2.3.0_solid-js@1.5.2+vite@4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  examples/solid-ssr-v1:
+    specifiers:
+      solid-js: ^1.5.2
+      typescript: ^4.8.2
+      vite: ^4.0.3
+      vite-plugin-solid: ^2.3.0
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      solid-js: 1.5.2
+      typescript: 4.9.4
+      vite: 4.2.1
+      vite-plugin-solid: 2.3.0_solid-js@1.5.2+vite@4.2.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   examples/stem-react:
     specifiers:
       '@brillout/stem-react': ^0.1.3
