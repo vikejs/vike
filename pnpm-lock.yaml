@@ -1241,6 +1241,36 @@ importers:
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  examples/urql-v1:
+    specifiers:
+      '@types/react': ^18.0.8
+      '@types/react-dom': ^18.0.3
+      '@vitejs/plugin-react': ^3.0.0
+      graphql: ^16.4.0
+      isomorphic-fetch: ^3.0.0
+      node-fetch: ^3.0.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      react-ssr-prepass: ^1.5.0
+      typescript: ^4.6.4
+      urql: ^2.2.3
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      '@types/react': 18.0.26
+      '@types/react-dom': 18.0.10
+      '@vitejs/plugin-react': 3.1.0_vite@4.2.1
+      graphql: 16.6.0
+      isomorphic-fetch: 3.0.0
+      node-fetch: 3.2.4
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-ssr-prepass: 1.5.0_react@18.2.0
+      typescript: 4.9.4
+      urql: 2.2.3_onqnqwb3ubg5opvemcqf7c2qhy
+      vite: 4.2.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   examples/v1:
     specifiers:
       '@types/node': 17.0.31
@@ -4216,6 +4246,16 @@ packages:
     dependencies:
       '@graphql-typed-document-node/core': 3.1.1_graphql@16.4.0
       graphql: 16.4.0
+      wonka: 4.0.15
+    dev: false
+
+  /@urql/core/2.6.1_graphql@16.6.0:
+    resolution: {integrity: sha512-gYrEHy3tViJhwIhauK6MIf2Qp09QTsgNHZRd0n71rS+hF6gdwjspf1oKljl4m25+272cJF7fPjBUGmjaiEr7Kg==}
+    peerDependencies:
+      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      '@graphql-typed-document-node/core': 3.1.1_graphql@16.6.0
+      graphql: 16.6.0
       wonka: 4.0.15
     dev: false
 
@@ -11150,6 +11190,18 @@ packages:
 
   /urlpattern-polyfill/4.0.3:
     resolution: {integrity: sha512-DOE84vZT2fEcl9gqCUTcnAw5ZY5Id55ikUcziSUntuEFL3pRvavg5kwDmTEUJkeCHInTlV/HexFomgYnzO5kdQ==}
+    dev: false
+
+  /urql/2.2.3_onqnqwb3ubg5opvemcqf7c2qhy:
+    resolution: {integrity: sha512-XMkSYJKW9s4ZlbSuxcUz3fTBIykOn0sGileRXQeyZpaRBXJPVz5saSY05k7jdefNxShZtTI+/nr7PYUWQertfg==}
+    peerDependencies:
+      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+      react: '>= 16.8.0'
+    dependencies:
+      '@urql/core': 2.6.1_graphql@16.6.0
+      graphql: 16.6.0
+      react: 18.2.0
+      wonka: 4.0.15
     dev: false
 
   /urql/2.2.3_vhn3dl52tnao3zbypj777itz4y:
