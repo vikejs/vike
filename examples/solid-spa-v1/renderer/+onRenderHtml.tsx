@@ -1,10 +1,10 @@
-export { render }
+export default onRenderHtml
 
 import { escapeInject } from 'vite-plugin-ssr/server'
 import type { PageContextServer } from './types'
 
 // SPA mode: the HTML is static with an empty <div id="root">, see https://vite-plugin-ssr.com/render-modes#spa
-function render(pageContext: PageContextServer) {
+function onRenderHtml(pageContext: PageContextServer) {
   return escapeInject`<!DOCTYPE html>
     <html lang="en">
       <head>

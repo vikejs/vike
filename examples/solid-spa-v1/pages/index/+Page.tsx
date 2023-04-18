@@ -1,6 +1,7 @@
+import type { Component } from 'solid-js'
 import { Counter } from './Counter'
 
-export function Page() {
+const Page: Component = () => {
   return (
     <>
       <h1>About</h1>
@@ -9,3 +10,4 @@ export function Page() {
     </>
   )
 }
+export default Page

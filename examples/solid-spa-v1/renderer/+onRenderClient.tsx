@@ -1,6 +1,6 @@
-export { render }
+export default onRenderClient
 
-import { render as renderSolid } from 'solid-js/web'
+import { render } from 'solid-js/web'
 import type { PageContextClient } from './types'
 
 /**
@@ -12,7 +12,7 @@ import type { PageContextClient } from './types'
  */
 let disposePreviousPage: () => void
 
-async function render(pageContext: PageContextClient) {
+async function onRenderClient(pageContext: PageContextClient) {
   const { Page } = pageContext
 
   if (disposePreviousPage) {
@@ -20,5 +20,5 @@ async function render(pageContext: PageContextClient) {
   }
 
   // render the page and save the dispose function of that page
-  disposePreviousPage = renderSolid(() => <Page />, document.getElementById('root'))
+  disposePreviousPage = render(() => <Page />, document.getElementById('root'))
 }
