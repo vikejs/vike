@@ -46,3 +46,9 @@ After stable release:
 After Vike rename:
  - Impl vike.config.js
    - Move all globals there and warn users
+
+Sometime:
+ - Contact Shopify
+ - Contact UI frameworks like qwik
+   - See `pnpm create vite@latest` for a list of UI frameworks
+   - Maybe even angular
