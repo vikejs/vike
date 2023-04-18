@@ -1097,6 +1097,20 @@ importers:
       vite-plugin-solid: 2.3.0_solid-js@1.5.2+vite@4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  examples/solid-spa-v1:
+    specifiers:
+      solid-js: ^1.5.2
+      typescript: ^5.0.2
+      vite: ^4.0.3
+      vite-plugin-solid: ^2.3.0
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      solid-js: 1.5.2
+      typescript: 5.0.3
+      vite: 4.2.1
+      vite-plugin-solid: 2.3.0_solid-js@1.5.2+vite@4.2.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   examples/solid-ssr:
     specifiers:
       solid-js: ^1.5.2
@@ -11263,6 +11277,23 @@ packages:
       solid-js: 1.5.2
       solid-refresh: 0.4.1_solid-js@1.5.2
       vite: 4.0.3
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /vite-plugin-solid/2.3.0_solid-js@1.5.2+vite@4.2.1:
+    resolution: {integrity: sha512-N2sa54C3UZC2nN5vpj5o6YP+XdIAZW6n6xv8OasxNAcAJPFeZT7EOVvumL0V4c8hBz1yuYniMWdESY8807fVSg==}
+    peerDependencies:
+      solid-js: ^1.3.17
+      vite: ^3.0.0
+    dependencies:
+      '@babel/core': 7.20.12
+      '@babel/preset-typescript': 7.18.6_@babel+core@7.20.12
+      babel-preset-solid: 1.5.2_@babel+core@7.20.12
+      merge-anything: 5.0.2
+      solid-js: 1.5.2
+      solid-refresh: 0.4.1_solid-js@1.5.2
+      vite: 4.2.1
     transitivePeerDependencies:
       - supports-color
     dev: false
