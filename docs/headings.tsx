@@ -838,7 +838,8 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   },
   {
     title: 'V1 Design Migration',
-    url: '/migration/v1-design'
+    url: '/migration/v1-design',
+    sectionTitles: ['Custom hooks/exports']
   },
   {
     title: 'Why the V1 design?',

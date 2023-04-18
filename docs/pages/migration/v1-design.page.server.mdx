@@ -122,10 +122,19 @@ Apply following additional steps if you define:
 
 ## Examples
 
- - Migration of a basic app: [`428c1c` - migrate examples/react to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/428c1c6b0fb7c9a5fa2f2fe57ac3e4bb0a57ea54)
- - Migration from a custom export to a custom config: [`f28880` - migrate /examples/custom-preload/ to V1 Design](https://github.com/brillout/vite-plugin-ssr/commit/f28880b0b85cde12647aa0613c99dbdeadc467de)
+All official examples have V1 design copy (see [`examples/*-v1`](https://github.com/brillout/vite-plugin-ssr/tree/main/examples)), most notably:
+ - Migration of a basic app: [`428c1c` migrate examples/react to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/428c1c6b0fb7c9a5fa2f2fe57ac3e4bb0a57ea54).
+ - Migration of custom exports to custom configs (see explanation at <Link href="#custom-hooks-exports" doNotInferSectionTitle={true} />):
+   - `pageContext.export.Layout` -> `pageContext.config.Layout`:
+     - [`9b31b7` migrate /examples/layouts-react/ to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/9b31b7497510d4add7c0e4aa4f19675b2f37fa94)
+     - [`6f7b50` migrate /examples/layouts-vue/ to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/6f7b5043dafe88ba113b28ac4be1b0e0d5cb90a0)
+   - `pageContext.exports.preloadStrategy` -> `pageContext.config.preloadStrategy`: [`f28880` - migrate /examples/custom-preload/ to V1 Design](https://github.com/brillout/vite-plugin-ssr/commit/f28880b0b85cde12647aa0613c99dbdeadc467de)
+ - Migration of a `onBeforeRender()` hook:
+   - TODO
+   - aa2055f731f2ed8fc4f8763edcdc1f76ced7d061
+ - Migration of a i18n app (i.e. hooks `onBeforePrerender()`/`prerender()`/`onBeforeRoute()`):
+   - TODO
 
-All official examples have been migrate to the V1 design: see [`examples/*-v1`](https://github.com/brillout/vite-plugin-ssr/tree/main/examples) and compare them with their old design counterparts.
 
 
 ## Renamed hooks
