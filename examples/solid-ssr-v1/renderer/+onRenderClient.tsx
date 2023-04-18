@@ -1,7 +1,6 @@
-export const clientRouting = true
-export { render }
+export default onRenderClient
 
-import { hydrate, render as render_ } from 'solid-js/web'
+import { hydrate, render } from 'solid-js/web'
 import { PageLayout } from './PageLayout'
 import type { PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient } from 'vite-plugin-ssr/types'
 import type { PageContext } from './types'
@@ -14,7 +13,7 @@ let rendered = false
 
 const [pageContextStore, setPageContext] = createStore<PageContextClient>({} as PageContextClient)
 
-async function render(pageContext: PageContextClient) {
+async function onRenderClient(pageContext: PageContextClient) {
   if (!rendered) {
     // Dispose to prevent duplicate pages when navigating.
     if (dispose) dispose()
@@ -25,7 +24,7 @@ async function render(pageContext: PageContextClient) {
     if (pageContext.isHydration) {
       dispose = hydrate(() => <PageLayout pageContext={pageContextStore} />, container)
     } else {
-      dispose = render_(() => <PageLayout pageContext={pageContextStore} />, container)
+      dispose = render(() => <PageLayout pageContext={pageContextStore} />, container)
     }
     rendered = true
   } else {

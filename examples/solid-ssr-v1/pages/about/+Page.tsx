@@ -1,5 +1,3 @@
-export { Page }
-
 import type { Component } from 'solid-js'
 import './code.css'
 
@@ -13,3 +11,4 @@ const Page: Component = () => {
     </>
   )
 }
+export default Page

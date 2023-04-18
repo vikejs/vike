@@ -1,16 +1,12 @@
+export default onRenderHtml
+
 import { generateHydrationScript, renderToStream } from 'solid-js/web'
 import { PageLayout } from './PageLayout'
 import { escapeInject, dangerouslySkipEscape, stampPipe } from 'vite-plugin-ssr/server'
 import { PageContext } from './types'
 import logoUrl from './logo.svg'
 
-export { render }
-export { passToClient }
-
-// See https://vite-plugin-ssr.com/data-fetching
-const passToClient = ['pageProps', 'documentProps']
-
-function render(pageContext: PageContext) {
+function onRenderHtml(pageContext: PageContext) {
   const { pipe } = renderToStream(() => <PageLayout pageContext={pageContext} />)
   stampPipe(pipe, 'node-stream')
 
