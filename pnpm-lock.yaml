@@ -983,6 +983,28 @@ importers:
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  examples/react-streaming-v1:
+    specifiers:
+      '@vitejs/plugin-react': ^3.0.0
+      compression: ^1.7.4
+      cross-env: ^7.0.3
+      express: ^4.18.1
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      sirv: ^2.0.2
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      '@vitejs/plugin-react': 3.1.0_vite@4.2.1
+      compression: 1.7.4
+      cross-env: 7.0.3
+      express: 4.18.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      sirv: 2.0.2
+      vite: 4.2.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   examples/react-v1:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
