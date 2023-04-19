@@ -120,7 +120,9 @@ function assertPassToClient(
     return
   }
   if (pageContextRetrievedFromServer === null) {
-    // We cannot determine `passToClientInferred` if we didn't receive any `pageContext` from the server
+    // If we didn't receive any `pageContext` from the server
+    // - passToClient is irrelevant
+    // - We cannot determine passToClientInferred
     return
   }
   const passToClientInferred = Object.keys(pageContextRetrievedFromServer).filter(
@@ -129,10 +131,12 @@ function assertPassToClient(
   assertUsage(
     false,
     [
-      `pageContext.${prop} isn't available in the browser.`,
-      `Make sure to add '${prop}' to passToClient`,
-      `(passToClient is [${passToClientInferred.map((prop) => `'${prop}'`).join(', ')}]),`,
-      `see https://vite-plugin-ssr.com/passToClient`
+      `pageContext.${prop} isn't available in the browser`,
+      `('${prop}' is missing in the passToClient list [${passToClientInferred
+        .map((prop) => `'${prop}'`)
+        .join(', ')}]).`,
+      `Did you forget to add '${prop}' to the passToClient list?`,
+      `See https://vite-plugin-ssr.com/passToClient`
     ].join(' ')
   )
 }
