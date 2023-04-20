@@ -1,3 +1,18 @@
+## [0.4.115](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.114...v0.4.115) (2023-04-20)
+
+
+### Bug Fixes
+
+* [V1 Design] tolerate vite-plugin-solid transformation on + files ([5cbfcbe](https://github.com/brillout/vite-plugin-ssr/commit/5cbfcbe5812a3d8439ea5eaf25a2dcaa127f2d62))
+* add Vite dev log messages in CI logs ([b5d2a6f](https://github.com/brillout/vite-plugin-ssr/commit/b5d2a6f0219eddcec9b2436597cd3e65b97de795))
+* add warning upon unexpected `process.env.NODE_ENV` value ([#792](https://github.com/brillout/vite-plugin-ssr/issues/792)) ([b0c1588](https://github.com/brillout/vite-plugin-ssr/commit/b0c158844176880884b1107819cd09059d60286b))
+* add warning when renderPage() is called with Vite client request ([#792](https://github.com/brillout/vite-plugin-ssr/issues/792)) ([e5e670b](https://github.com/brillout/vite-plugin-ssr/commit/e5e670bec5320ab24631505272dc6edfaa7b9280))
+* ensure asset name to be file name and not file path (fix [#794](https://github.com/brillout/vite-plugin-ssr/issues/794)) ([b84d67f](https://github.com/brillout/vite-plugin-ssr/commit/b84d67f8d48605be8b378aa927e3f33c1db1dfa5))
+* improve passToClient hint ([5935e81](https://github.com/brillout/vite-plugin-ssr/commit/5935e811d44f5592d1c557ce9f02f705395d26ba))
+* improve wrong import path error ([6e8492a](https://github.com/brillout/vite-plugin-ssr/commit/6e8492aecc6671908a897b061b84e01efe27fbe7))
+
+
+
 ## [0.4.114](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.113...v0.4.114) (2023-04-17)
 
 
