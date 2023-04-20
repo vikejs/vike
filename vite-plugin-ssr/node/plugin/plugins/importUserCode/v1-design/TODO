@@ -36,6 +36,9 @@ After beta release:
    - Throw errors and show warnings after dev start + errors shoulnd't exit the dev server
    - Make "unkown config" a warning?
      - How can we make sure the user doens't miss the warning? Maybe be make the warnings `onlyOnce: fase` and/or setting Vite's `clearScreen: false`
+   - Refactor renderPage() / addSsrMiddleware() error hanlding
+     - Respect natural order of error occurence by never clearing screen except *after* the error is resolved
+     - Change Vite's default clearScreen value to false
  - multiple error pages
  - nested layouts
 
