@@ -19,7 +19,8 @@ import {
   assertPosixPath,
   urlToFile,
   callHookWithTimeout,
-  isPlainObject
+  isPlainObject,
+  setNodeEnvToProduction
 } from './utils'
 import { pLimit, PLimit } from '../../utils/pLimit'
 import {
@@ -37,7 +38,6 @@ import { getGlobalContext, initGlobalContext } from '../runtime/globalContext'
 import { resolveConfig } from 'vite'
 import { getConfigVps } from '../shared/getConfigVps'
 import type { InlineConfig } from 'vite'
-import { setProduction } from '../../shared/setProduction'
 import { getPageFilesServerSide } from '../../shared/getPageFiles'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString'
@@ -155,7 +155,7 @@ async function runPrerender(options: PrerenderOptions): Promise<void> {
     console.log(`${cyan(`vite-plugin-ssr v${projectInfo.projectVersion}`)} ${green('pre-rendering HTML...')}`)
   }
 
-  setProduction()
+  setNodeEnvToProduction()
 
   disableReactStreaming()
 
