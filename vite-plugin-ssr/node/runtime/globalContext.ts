@@ -4,7 +4,7 @@ export { setGlobalContextViteDevServer }
 export { setGlobalContextViteConfig }
 export { getRuntimeManifest }
 
-import { assert, assertUsage, getGlobalObject, isPlainObject } from './utils'
+import { assert, assertUsage, assertWarning, getGlobalObject, getNodeEnv, isPlainObject } from './utils'
 import type { ViteManifest } from '../shared/ViteManifest'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { loadImportBuild } from './globalContext/loadImportBuild'
@@ -64,6 +64,7 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
   if (globalObject.globalContext) return
 
   const { viteDevServer, config } = globalObject
+  assertNodeEnv(!!viteDevServer)
   const isProduction = !viteDevServer
 
   if (isProduction) {
@@ -138,4 +139,17 @@ function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest
       assert(typeof entry.file === 'string')
     })
   */
+}
+
+function assertNodeEnv(hasViteDevServer: boolean) {
+  const nodeEnv = getNodeEnv()
+  if (nodeEnv === null) return
+  const isDevNodeEnv = [undefined, '', 'dev', 'development'].includes(nodeEnv)
+  assertWarning(
+    hasViteDevServer === isDevNodeEnv,
+    `Vite's development middleware is${hasViteDevServer ? '' : "n't"} installed while the environment is set to be a ${
+      isDevNodeEnv ? 'development' : 'production'
+    } environment by process.env.NODE_ENV === ${JSON.stringify(nodeEnv)}`,
+    { showStackTrace: false, onlyOnce: true }
+  )
 }
