@@ -310,7 +310,7 @@ importers:
       node-fetch: ^2.6.9
       react: ^18.2.0
       react-dom: ^18.2.0
-      react-streaming: ^0.3.8
+      react-streaming: ^0.3.9
       vite: ^4.1.1
       vite-plugin-ssr: link:../../vite-plugin-ssr
       wrangler: ^2.9.1
@@ -322,7 +322,7 @@ importers:
       node-fetch: 2.6.9
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-streaming: 0.3.8_biqbaboplfbrettd7655fr4n2y
+      react-streaming: 0.3.9_biqbaboplfbrettd7655fr4n2y
       vite: 4.1.1
       vite-plugin-ssr: link:../../vite-plugin-ssr
       wrangler: 2.9.1
@@ -336,7 +336,7 @@ importers:
       node-fetch: ^2.6.9
       react: ^18.2.0
       react-dom: ^18.2.0
-      react-streaming: ^0.3.8
+      react-streaming: ^0.3.9
       vite: ^4.1.1
       vite-plugin-ssr: link:../../vite-plugin-ssr
       wrangler: ^2.9.1
@@ -348,7 +348,7 @@ importers:
       node-fetch: 2.6.9
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-streaming: 0.3.8_biqbaboplfbrettd7655fr4n2y
+      react-streaming: 0.3.9_biqbaboplfbrettd7655fr4n2y
       vite: 4.2.1
       vite-plugin-ssr: link:../../vite-plugin-ssr
       wrangler: 2.9.1
@@ -416,14 +416,14 @@ importers:
       '@vitejs/plugin-react': ^3.0.0
       react: ^18.2.0
       react-dom: ^18.2.0
-      react-streaming: ^0.3.8
+      react-streaming: ^0.3.9
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-streaming: 0.3.8_biqbaboplfbrettd7655fr4n2y
+      react-streaming: 0.3.9_biqbaboplfbrettd7655fr4n2y
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -432,14 +432,14 @@ importers:
       '@vitejs/plugin-react': ^3.0.0
       react: ^18.2.0
       react-dom: ^18.2.0
-      react-streaming: ^0.3.8
+      react-streaming: ^0.3.9
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 3.1.0_vite@4.2.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-streaming: 0.3.8_biqbaboplfbrettd7655fr4n2y
+      react-streaming: 0.3.9_biqbaboplfbrettd7655fr4n2y
       vite: 4.2.1
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -867,7 +867,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.2.0
       react-dom: ^18.2.0
-      react-streaming: ^0.3.8
+      react-streaming: ^0.3.9
       typescript: ^4.8.4
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -884,7 +884,7 @@ importers:
       node-fetch: 2.6.7
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-streaming: 0.3.8_biqbaboplfbrettd7655fr4n2y
+      react-streaming: 0.3.9_biqbaboplfbrettd7655fr4n2y
       typescript: 4.8.4
       vite: 4.0.3_@types+node@17.0.31
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -903,7 +903,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.2.0
       react-dom: ^18.2.0
-      react-streaming: ^0.3.8
+      react-streaming: ^0.3.9
       typescript: ^4.8.4
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -920,7 +920,7 @@ importers:
       node-fetch: 2.6.7
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-streaming: 0.3.8_biqbaboplfbrettd7655fr4n2y
+      react-streaming: 0.3.9_biqbaboplfbrettd7655fr4n2y
       typescript: 4.9.4
       vite: 4.0.3_@types+node@17.0.31
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -1588,14 +1588,14 @@ importers:
       '@vitejs/plugin-react': ^3.0.0
       react: ^18.2.0
       react-dom: ^18.2.0
-      react-streaming: ^0.3.8
+      react-streaming: ^0.3.9
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-streaming: 0.3.8_biqbaboplfbrettd7655fr4n2y
+      react-streaming: 0.3.9_biqbaboplfbrettd7655fr4n2y
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -9718,8 +9718,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /react-streaming/0.3.8_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-rkdPVTWKXG59uQ8+dtY78AcaCFFIwl21JzYGF7Lpxpo29mKYjALe0/4wd0Ktw5AxXRcDwwF0C23VcDLrbneRMw==}
+  /react-streaming/0.3.9_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-P0sn1dXtJfKkJMZZoPAu3YaNi6008a8sUg58XvYb21nDepysKWC7YzZCQdEhw/dp0r5s3nxDcrUmXFHFiGaf7w==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
