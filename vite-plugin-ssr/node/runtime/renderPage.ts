@@ -3,7 +3,7 @@ export { renderPage }
 import { getRenderContext, initPageContext, RenderContext, renderPageContext } from './renderPage/renderPageContext'
 import { route } from '../../shared/route'
 import { getErrorPageId } from '../../shared/error-page'
-import { assert, hasProp, objectAssign, isParsable, parseUrl, assertServerEnv } from './utils'
+import { assert, hasProp, objectAssign, isParsable, parseUrl, assertServerEnv, assertWarning } from './utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { isRenderErrorPageException } from '../../shared/route/RenderErrorPage'
 import { initGlobalContext } from './globalContext'
@@ -158,7 +158,18 @@ async function renderPageAttempt<PageContextInit extends { urlOriginal: string }
 ) {
   {
     const { urlOriginal } = pageContextInit
-    if (urlOriginal.endsWith('/__vite_ping') || urlOriginal.endsWith('/favicon.ico') || !isParsable(urlOriginal)) {
+    const isViteClientRequest = urlOriginal.endsWith('/@vite/client') || urlOriginal.startsWith('/@fs/')
+    assertWarning(
+      !isViteClientRequest,
+      `The vite-plugin-ssr middleware renderPage() was called with the URL ${urlOriginal} which is unexpected because the HTTP request should have already been handled by Vite's development middleware. Make sure to 1. install Vite's development middleware and 2. add Vite's middleware *before* vite-plugin-ssr's middleware. See https://vite-plugin-ssr.com/renderPage`,
+      { onlyOnce: true, showStackTrace: false }
+    )
+    if (
+      urlOriginal.endsWith('/__vite_ping') ||
+      urlOriginal.endsWith('/favicon.ico') ||
+      !isParsable(urlOriginal) ||
+      isViteClientRequest
+    ) {
       objectAssign(pageContext, pageContextInit)
       objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
       return pageContext
