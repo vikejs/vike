@@ -44,6 +44,9 @@ function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): 
     return `${dir}/[name].[hash][extname]`
   }
 
+  assertPosixPath(name)
+  name = path.posix.basename(name)
+
   // dist/client/assets/index.page.server.jsx_extractAssets_lang.e4e33422.css
   // => dist/client/assets/index.page.server.e4e33422.css
   if (
