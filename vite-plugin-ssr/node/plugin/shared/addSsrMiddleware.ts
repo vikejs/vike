@@ -73,7 +73,7 @@ function log(msg: string, viteDevServer: ViteDevServer, clear: boolean) {
 function addStringIsEqualBuster(msg: string) {
   if (!process.stdout.isTTY || process.env.CI) {
     // Workaround isn't needed: https://github.com/vitejs/vite/blob/02a46d7ceab71ebf7ba723372ba37012b7f9ccaf/packages/vite/src/node/logger.ts#L65-L66
-    return ''
+    return msg
   }
   if (msgPrev === msg) {
     msg = msg + zeroWidthSpace
