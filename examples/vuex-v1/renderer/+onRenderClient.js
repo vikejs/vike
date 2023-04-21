@@ -1,8 +1,9 @@
-export { render }
+// https://vite-plugin-ssr.com/onRenderClient
+export default onRenderClient
 
 import { createApp } from './app'
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   const { Page } = pageContext
   const { app, store } = createApp({ Page })
   store.replaceState(pageContext.INITIAL_STATE)
