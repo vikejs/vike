@@ -920,8 +920,8 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/hydration-mismatch'
   },
   {
-    title: 'Libraries with invalid ESM',
-    url: '/invalid-esm'
+    title: 'Npm packages with invalid code',
+    url: '/invalid-npm'
   },
   {
     title: 'Deployment synchronization',

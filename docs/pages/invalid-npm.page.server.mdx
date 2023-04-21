@@ -1,8 +1,13 @@
 import { Note } from '@brillout/docpress'
 
-Some libraries publish invalid [ESM code](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) making Node.js throw one of the following errors.
+Many npm packages contain invalid code which make Node.js crash.
 
 See [solution](#solution).
+
+The most notable issues are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) and invalid CSS imports, see errors down below.
+
+> We tried to convince Node.js/npm to address the issue but without success: [npm/rfcs#665](https://github.com/npm/rfcs/issues/665).
+
 
 ## Errors
 
@@ -68,21 +73,31 @@ Node.js v18.0.0
 
 > The error is usually thrown when the library's ESM code contains `import './some-file'`. (It should be `import './some-file.js'` instead, as imports in ESM code are required to include the file extension.)
 
+Another common problem is code importing CSS which also makes Node.js crash:
+
+```
+Error: ERR_UNKNOWN_FILE_EXTENSION .css node_modules/some-library/dist/main.css
+    at someFunction (node_modules/some-library/dist/main.js)
+    at nextLoad (node:internal/modules/esm/loader:163:28)
+    at ESMLoader.load (node:internal/modules/esm/loader:605:26)
+```
+
+
 ## Solution
 
-The workaround is to add libraries containing invalid ESM to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
+The workaround is to add npm packages containing invalid code to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
 
 ```js
 // vite.config.js
 
 export default {
   ssr: {
-    // Add libraries containing invalid ESM here
+    // Add npm packages containing invalid code here
     noExternal: ['some-library']
   }
 }
 ```
 
-> The reason why some libraries ship erronous ESM code is because frameworks like Next.js bundle the server-side code of libraries, whereas Vite lets Node.js directly import the libraries (this is what makes Vite so fast as Vite only transpiles what is strictly needed). Where Next.js is permissive and is able to process invalid ESM code, Node.js is strict and throws an error upon invalid ESM code. By adding the libraries to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal) we replicate the behavior of frameworks like Next.js.
+> The reason why many npm packages contain erronous code is because frameworks like Next.js always transpile npm packages. (Whereas Vite lets Node.js directly execute npm packages in order to greatly improve dev performance: Vite transpiles only what is strictly needed). Where Next.js is permissive and is able to process invalid code, Node.js is strict and crashes upon invalid code. By adding npm packages to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal) we replicate the behavior of frameworks like Next.js.
 
-<Note type="warning">While using `vite.config.js > ssr.noExternal` fixes the problem, we recommend to contact the library author, e.g. [GitHub > `aws-amplify/amplify-ui` > `#3155`](https://github.com/aws-amplify/amplify-ui/issues/3155). Vite is fast because it transpiles only what is strictly needed. To preserve Vite's speed, library authors should ship valid ESM code.</Note>
+<Note type="warning">While using `vite.config.js > ssr.noExternal` fixes the problem, we recommend to contact the npm package author. For example: [aws-amplify/amplify-ui#3155](https://github.com/aws-amplify/amplify-ui/issues/3155). Vite is fast because it transpiles only what is strictly needed. To preserve Vite's speed, library authors should ship valid code.</Note>
