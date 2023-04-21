@@ -1411,6 +1411,22 @@ importers:
       vue: 3.2.33
       vue-router: 4.0.14_vue@3.2.33
 
+  examples/vue-v1:
+    specifiers:
+      '@vitejs/plugin-vue': ^4.0.0
+      '@vue/compiler-sfc': ^3.2.47
+      '@vue/server-renderer': ^3.2.47
+      vite: ^4.1.4
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vue: ^3.2.47
+    dependencies:
+      '@vitejs/plugin-vue': 4.0.0_vite@4.2.2+vue@3.2.47
+      '@vue/compiler-sfc': 3.2.47
+      '@vue/server-renderer': 3.2.47_vue@3.2.47
+      vite: 4.2.2
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vue: 3.2.47
+
   examples/vuex:
     specifiers:
       '@vitejs/plugin-vue': ^4.0.0
@@ -4449,6 +4465,17 @@ packages:
       vue: ^3.2.25
     dependencies:
       vite: 4.2.1
+      vue: 3.2.47
+    dev: false
+
+  /@vitejs/plugin-vue/4.0.0_vite@4.2.2+vue@3.2.47:
+    resolution: {integrity: sha512-e0X4jErIxAB5oLtDqbHvHpJe/uWNkdpYV83AOG2xo2tEVSzCzewgJMtREZM30wXnM5ls90hxiOtAuVU6H5JgbA==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    peerDependencies:
+      vite: ^4.0.0
+      vue: ^3.2.25
+    dependencies:
+      vite: 4.2.2
       vue: 3.2.47
     dev: false
 
@@ -11711,40 +11738,6 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
 
-  /vite/4.2.1_@types+node@18.13.0:
-    resolution: {integrity: sha512-7MKhqdy0ISo4wnvwtqZkjke6XN4taqQ2TBaTccLIpOKv7Vp2h4Y+NpmWCnGDeSvvn45KxvWgGyb0MkHvY1vgbg==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': '>= 14'
-      less: '*'
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      '@types/node': 18.13.0
-      esbuild: 0.17.10
-      postcss: 8.4.21
-      resolve: 1.22.1
-      rollup: 3.20.2
-    optionalDependencies:
-      fsevents: 2.3.2
-    dev: true
-
   /vite/4.2.2:
     resolution: {integrity: sha512-PcNtT5HeDxb3QaSqFYkEum8f5sCVe0R3WK20qxgIvNBZPXU/Obxs/+ubBMeE7nLWeCo2LDzv+8hRYSlcaSehig==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -11861,7 +11854,7 @@ packages:
       tinybench: 2.3.1
       tinypool: 0.4.0
       tinyspy: 1.0.2
-      vite: 4.2.1_@types+node@18.13.0
+      vite: 4.2.2_@types+node@18.13.0
       vite-node: 0.29.5_@types+node@18.13.0
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
