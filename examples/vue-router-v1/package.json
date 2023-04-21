@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite build && vite preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vue/compiler-sfc": "^3.2.33",
+    "@vue/server-renderer": "^3.2.33",
+    "vite": "^4.0.3",
+    "vite-plugin-ssr": "0.4.115",
+    "vue": "^3.2.33",
+    "vue-router": "^4.0.14"
+  }
+}
