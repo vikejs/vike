@@ -4,13 +4,47 @@ A recurring problem when doing SSR are so-called *hydration mismatches*.
 
 ## Hydration mismatch
 
-> We recommend having a clear understanding of what hydration is, see <Link href="/hydration" />
+> What hydration means is explained at <Link href="/hydration" />
 
-A hydration mismatch is when the content rendered to HTML in Node.js isn't the same than the content rendered in the browser.
+A hydration mismatch is when the content rendered to HTML on the server isn't the same than the content rendered in the browser.
 
-Hydration mismatches
-can induce performance degradation
-and bugs and should be avoided.
+Hydration mismatches can induce performance degradations and bugs and should therefore be avoided.
+
+**Vue**
+
+Upon a hydration mismatch, Vue throws following errors in the browser:
+
+```js
+[Vue warn]: Hydration text mismatch:
+ - Client: "foo"
+ - Server: "bar"
+   at <SomeComponent>
+   at <App>
+```
+```
+Hydration completed but contains mismatches.
+```
+
+**React**
+
+Upon a hydration mismatch, React throws following errors in the browser:
+
+```
+Warning: Text content did not match. Server: "foo" Client: "bar"
+```
+```
+An error occurred during hydration. The server HTML was replaced with client content in <SomeComponent>.
+```
+```
+Text content does not match server-rendered HTML.
+```
+```
+Hydration failed because the initial UI does not match what was rendered on the server.
+```
+```
+There was an error while hydrating. Because the error happened outside of a Suspense boundary, the entire root will switch to client rendering.
+```
+
 
 ## Example
 
@@ -46,6 +80,7 @@ async function onBeforeRender() {
 
 What happens here is that `pageContext.milliseconds` will be set exactly once, so that the same milliseconds value will be rendered to HTML in Node.js and hydrated on the browser-side. (We use [`export passToClient = ['milliseconds']`](/passToClient) to pass `pageContext.milliseconds` to the browser.)
 
+
 ## Common causes & solutions
 
 Common causes:
@@ -55,6 +90,7 @@ Common causes:
 
 With React:
  - **Old React versions** are buggy around stiching text segments leading to `Warning: Text content did not match.`. Make sure to use the latest React version.
+
 
 ## Suppress Hydration Mismatch
 

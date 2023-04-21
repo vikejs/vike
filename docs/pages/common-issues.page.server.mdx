@@ -11,35 +11,6 @@ But some npm packages contain invalid Node.js code and we need to add them to `v
 
 ## Hydration mismatch
 
-A recurring problem when doing SSR are so-called *hydration mismatches*: a hydration mismatch is when the content rendered to HTML in Node.js isn't the same than the content rendered in the browser.
+A recurring problem when doing SSR are so-called *hydration mismatches*: a hydration mismatch is when the content rendered to HTML on the server isn't the same than the content rendered in the browser.
 
-> See deep dive explanation and solution at <Link href="/hydration-mismatch" />.
-
-Errors thrown by **Vue** (in the browser):
-```js
-[Vue warn]: Hydration text mismatch:
- - Client: "foo"
- - Server: "bar"
-   at <SomeComponent>
-   at <App>
-```
-```
-Hydration completed but contains mismatches.
-```
-
-Errors thrown by **React** (in the browser):
-```
-Warning: Text content did not match. Server: "foo" Client: "bar"
-```
-```
-An error occurred during hydration. The server HTML was replaced with client content in <SomeComponent>.
-```
-```
-Text content does not match server-rendered HTML.
-```
-```
-Hydration failed because the initial UI does not match what was rendered on the server.
-```
-```
-There was an error while hydrating. Because the error happened outside of a Suspense boundary, the entire root will switch to client rendering.
-```
+See deep dive explanation and solution at <Link href="/hydration-mismatch" />.
