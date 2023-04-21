@@ -122,7 +122,8 @@ function getFilePathTmp(filePath: string): string {
   assertPosixPath(filePath)
   const dirname = path.posix.dirname(filePath)
   const filename = path.posix.basename(filePath)
-  const tag = `[build:${getRandomId(12)}]`
+  // Syntax with semicolon `[build:${/*...*/}]` doesn't work on Windows: https://github.com/brillout/vite-plugin-ssr/issues/800#issuecomment-1517329455
+  const tag = `[build-${getRandomId(12)}]`
   const filePathTmp = path.posix.join(dirname, `${tag}${filename}.mjs`)
   return filePathTmp
 }
