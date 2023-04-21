@@ -1481,6 +1481,24 @@ importers:
       vue: 3.2.47
       vuex: 4.1.0_vue@3.2.47
 
+  examples/vuex-v1:
+    specifiers:
+      '@vitejs/plugin-vue': ^4.0.0
+      '@vue/compiler-sfc': ^3.2.47
+      '@vue/server-renderer': ^3.2.47
+      vite: ^4.1.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vue: ^3.2.47
+      vuex: ^4.1.0
+    dependencies:
+      '@vitejs/plugin-vue': 4.0.0_vite@4.2.2+vue@3.2.47
+      '@vue/compiler-sfc': 3.2.47
+      '@vue/server-renderer': 3.2.47_vue@3.2.47
+      vite: 4.2.2
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vue: 3.2.47
+      vuex: 4.1.0_vue@3.2.47
+
   examples/webpack-v1:
     specifiers:
       express: ^4.18.2
