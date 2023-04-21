@@ -1,10 +1,11 @@
+// https://vite-plugin-ssr.com/onRenderHtml
+export default onRenderHtml
+
 import { renderToString } from '@vue/server-renderer'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { createApp } from './app'
 
-export { render }
-
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page } = pageContext
   const { app, router } = createApp({ Page })
 
