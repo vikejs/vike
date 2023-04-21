@@ -44,6 +44,7 @@ function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): 
     return `${dir}/[name].[hash][extname]`
   }
 
+  // https://github.com/brillout/vite-plugin-ssr/issues/794
   assertPosixPath(name)
   name = path.posix.basename(name)
 
