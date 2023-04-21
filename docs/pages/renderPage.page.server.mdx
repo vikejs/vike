@@ -2,7 +2,9 @@ import { RepoLink, Link } from '@brillout/docpress'
 
 Environment: server.
 
-We use `renderPage()` in order to server-side render our pages:
+We use `renderPage()` in order to server-side render our pages.
+
+> If we <Link text="pre-render" href="/pre-rendering" /> all our pages then we can omit using `renderPage()`. (We still need `renderPage()` for development, but we can use Vite's development server as vite-plugin-ssr automatically embeds `renderPage()` into it.)
 
 ```js
 // server.js
@@ -56,10 +58,8 @@ async function startServer() {
    - The URL is skipped: `vite-plugin-ssr` doesn't render certain URLs. (E.g. `pageContext.urlOriginal === '/favicon.ico'` because browsers automatically make favicon requests.)
 
 `renderPage()` doesn't depend on Node.js and we can use `renderPage()` (and therefore embed vite-plugin-ssr) anywhere:
- - Any server environment (Express.js, Deno, Fastify, Vite's development server, Node.js's HTTP server, ...)
+ - Any server environment (Express.js, HatTip, Deno, Fastify, Vite's development server, Node.js's HTTP server, ...)
  - Any deployment provider (AWS, Cloudflare Workers, Vercel, ...).
-
-> If we <Link text="pre-render" href="/pre-rendering" /> all our pages then we can omit using `renderPage()`. (We still need `renderPage()` for development, but we can use Vite's development server as vite-plugin-ssr automatically embeds `renderPage()` into it.)
 
 Examples:
  - <RepoLink text='With JavaScript' path='/boilerplates/boilerplate-vue/server/index.js' />
