@@ -1,8 +1,8 @@
-export { render }
+export default onRenderClient
 
 import { createApp } from './app'
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   const app = createApp(pageContext)
   app.mount('#app')
 }
