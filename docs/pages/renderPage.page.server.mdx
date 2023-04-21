@@ -2,7 +2,7 @@ import { RepoLink, Link } from '@brillout/docpress'
 
 Environment: server.
 
-We use `renderPage()` to server-side render a page:
+We use `renderPage()` in order to server-side render our pages:
 
 ```js
 // server.js
@@ -22,8 +22,11 @@ async function startServer() {
   if (isProduction) {
     app.use(express.static(`${root}/${outDir}/client`))
   } else {
+    // Instantiate Vite's development server and integrate its middleware to our server.
+    // ⚠️ We should instantiate it *only* in development. (It isn't needed in production
+    // and would unnecessarily bloat our server in production.)
     const vite = await import('vite')
-    viteDevMiddleware = (await vite.createServer({
+    const viteDevMiddleware = (await vite.createServer({
       root,
       server: { middlewareMode: true }
     })).middlewares
@@ -50,9 +53,13 @@ async function startServer() {
 - `pageContext.httpResponse` is `null` if:
    - An error occurs while rendering the page and you didn't create an `_error.page.js` file.
    - An error occurs while rendering `_error.page.js`.
-   - The URL is skipped: `vite-plugin-ssr` doesn't render certain URLs. (E.g. `pageContext.urlOriginal === '/favicon.ico'` because browsers automatically make favicon requests).
+   - The URL is skipped: `vite-plugin-ssr` doesn't render certain URLs. (E.g. `pageContext.urlOriginal === '/favicon.ico'` because browsers automatically make favicon requests.)
 
-`renderPage()` is framework agnostic: we can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...) and any deploy environment (AWS, Cloudflare Workers, Vercel, ...).
+`renderPage()` doesn't depend on Node.js and we can use `renderPage()` (and therefore embed vite-plugin-ssr) anywhere:
+ - Any server environment (Express.js, Deno, Fastify, Vite's development server, Node.js's HTTP server, ...)
+ - Any deployment provider (AWS, Cloudflare Workers, Vercel, ...).
+
+> If we <Link text="pre-render" href="/pre-rendering" /> all our pages then we can omit using `renderPage()`. (We still need `renderPage()` for development, but we can use Vite's development server as vite-plugin-ssr automatically embeds `renderPage()` into it.)
 
 Examples:
  - <RepoLink text='With JavaScript' path='/boilerplates/boilerplate-vue/server/index.js' />
