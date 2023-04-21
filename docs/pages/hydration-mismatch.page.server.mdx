@@ -16,8 +16,8 @@ Upon a hydration mismatch, Vue throws following errors in the browser:
 
 ```js
 [Vue warn]: Hydration text mismatch:
- - Client: "foo"
- - Server: "bar"
+ - Client: "some content"
+ - Server: "some other content"
    at <SomeComponent>
    at <App>
 ```
@@ -30,7 +30,7 @@ Hydration completed but contains mismatches.
 Upon a hydration mismatch, React throws following errors in the browser:
 
 ```
-Warning: Text content did not match. Server: "foo" Client: "bar"
+Warning: Text content did not match. Server: "some content" Client: "some other content"
 ```
 ```
 An error occurred during hydration. The server HTML was replaced with client content in <SomeComponent>.
