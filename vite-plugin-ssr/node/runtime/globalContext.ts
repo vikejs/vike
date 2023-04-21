@@ -145,11 +145,14 @@ function assertNodeEnv(hasViteDevServer: boolean) {
   const nodeEnv = getNodeEnv()
   if (nodeEnv === null) return
   const isDevNodeEnv = [undefined, '', 'dev', 'development'].includes(nodeEnv)
+  // calling Vite's createServer() is enough for hasViteDevServer to be true, even without actually adding Vite's development middleware to the server: https://github.com/brillout/vite-plugin-ssr/issues/792#issuecomment-1516830759
   assertWarning(
     hasViteDevServer === isDevNodeEnv,
-    `Vite's development middleware is${hasViteDevServer ? '' : "n't"} installed while the environment is set to be a ${
+    `Vite's development server was${hasViteDevServer ? '' : "n't"} instantiated while the environment is set to be a ${
       isDevNodeEnv ? 'development' : 'production'
-    } environment by process.env.NODE_ENV === ${JSON.stringify(nodeEnv)}`,
+    } environment by \`process.env.NODE_ENV === ${JSON.stringify(
+      nodeEnv
+    )}\` which is contradictory, see https://vite-plugin-ssr.com/renderPage`,
     { showStackTrace: false, onlyOnce: true }
   )
 }
