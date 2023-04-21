@@ -1393,6 +1393,24 @@ importers:
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.37
 
+  examples/vue-pinia-v1:
+    specifiers:
+      '@vitejs/plugin-vue': ^4.0.0
+      '@vue/compiler-sfc': ^3.2.31
+      '@vue/server-renderer': ^3.2.37
+      pinia: ^2.0.14
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vue: ^3.2.37
+    dependencies:
+      '@vitejs/plugin-vue': 4.0.0_vite@4.2.2+vue@3.2.47
+      '@vue/compiler-sfc': 3.2.47
+      '@vue/server-renderer': 3.2.47_vue@3.2.47
+      pinia: 2.0.14_vue@3.2.47
+      vite: 4.2.2
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vue: 3.2.47
+
   examples/vue-router:
     specifiers:
       '@vitejs/plugin-vue': ^4.0.0
@@ -9411,6 +9429,23 @@ packages:
       vue-demi: 0.12.5_vue@3.2.37
     dev: false
 
+  /pinia/2.0.14_vue@3.2.47:
+    resolution: {integrity: sha512-0nPuZR4TetT/WcLN+feMSjWJku3SQU7dBbXC6uw+R6FLQJCsg+/0pzXyD82T1FmAYe0lsx+jnEDQ1BLgkRKlxA==}
+    peerDependencies:
+      '@vue/composition-api': ^1.4.0
+      typescript: '>=4.4.4'
+      vue: ^2.6.14 || ^3.2.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@vue/devtools-api': 6.1.4
+      vue: 3.2.47
+      vue-demi: 0.12.5_vue@3.2.47
+    dev: false
+
   /pixelmatch/5.3.0:
     resolution: {integrity: sha512-o8mkY4E/+LNUf6LzX96ht6k6CEDi65k9G2rjMtBe9Oo+VPKSvl+0GKHuH/AlG+GA5LPG/i5hrekkxUc3s2HU+Q==}
     hasBin: true
@@ -11887,6 +11922,21 @@ packages:
         optional: true
     dependencies:
       vue: 3.2.37
+    dev: false
+
+  /vue-demi/0.12.5_vue@3.2.47:
+    resolution: {integrity: sha512-BREuTgTYlUr0zw0EZn3hnhC3I6gPWv+Kwh4MCih6QcAeaTlaIX0DwOVN0wHej7hSvDPecz4jygy/idsgKfW58Q==}
+    engines: {node: '>=12'}
+    hasBin: true
+    requiresBuild: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      vue: 3.2.47
     dev: false
 
   /vue-demi/0.13.5_vue@3.2.47:
