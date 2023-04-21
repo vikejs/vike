@@ -4,7 +4,7 @@ import { Link } from '@brillout/docpress'
 
 Vite purposely doesn't transpile server-side code but lets your Node.js server directly execute npm packages (in order to greatly improve dev performance).
 
-But some npm packages contain invalid Node.js code and we need to add them to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal), see <Link href="/invalid-npm#solution" />.
+But some npm packages contain invalid Node.js code and we need to add them to `vite.config.js > ssr.noExternal`, see <Link href="/invalid-npm#solution" />.
 
 > The most notable issues are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) and invalid CSS imports, see <Link href="/invalid-npm#errors" />.
 
