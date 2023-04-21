@@ -15,8 +15,8 @@
 <script setup>
 import { onServerPrefetch, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useCounter } from '../stores/useCounter'
-import { useTodos } from '../stores/useTodos'
+import { useCounter } from '../../stores/useCounter'
+import { useTodos } from '../../stores/useTodos'
 
 const counterStore = useCounter()
 const { count } = storeToRefs(counterStore)

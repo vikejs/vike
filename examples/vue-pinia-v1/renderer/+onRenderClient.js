@@ -1,10 +1,10 @@
-export { render }
-export const clientRouting = true
+// https://vite-plugin-ssr.com/onRenderClient
+export default onRenderClient
 
 import { createApp } from './app'
 
 let app
-function render(pageContext) {
+function onRenderClient(pageContext) {
   if (!app) {
     const instance = createApp(pageContext)
     app = instance.app
