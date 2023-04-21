@@ -972,5 +972,9 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: <code>client</code>,
     url: '/client'
+  },
+  {
+    title: <code>route</code>,
+    url: '/route'
   }
 ]

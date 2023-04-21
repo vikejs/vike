@@ -1,0 +1,33 @@
+import { Link } from '@brillout/docpress'
+
+> This page is part of the <Link text="V1 design" href="/migration/v1-design" />.
+
+The `route` config determines the page's <Link text="routing" href="/routing" />.
+
+```js
+// /pages/product/+route.js
+export default '/product/@id'
+```
+
+```js
+// /pages/product/+Page.jsx
+export default Page
+
+/* This page can have URLs such as:
+   /product/12345
+   /product/macbook-pro
+   /product/iPhone42
+   ...
+*/
+function Page() {
+  return <>
+    <h1>Product Information</h1>
+    {/* ... */}
+  </>
+}
+```
+
+See also:
+ - <Link href="/filesystem-routing" />
+ - <Link href="/route-string" />
+ - <Link href="/route-function" />

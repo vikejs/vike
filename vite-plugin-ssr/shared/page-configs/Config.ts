@@ -22,7 +22,7 @@ type Config<Page = unknown> = Partial<
 
     /** The page's route
      *
-     *  See https://vite-plugin-ssr.com/routing
+     *  See https://vite-plugin-ssr.com/route
      */
     route: string | Function
 
