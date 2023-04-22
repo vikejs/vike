@@ -22,8 +22,22 @@ function getManifestEntry(
 
   // Page code importer
   if (isVirtualFileIdImportPageCode(id)) {
-    const manifestKey = id
-    let manifestEntry = clientManifest[manifestKey]
+    {
+      const manifestKey = id
+      const manifestEntry = clientManifest[manifestKey]
+      if (manifestEntry) {
+        return { manifestEntry, manifestKey }
+      }
+    }
+    // Workaround for what seems to be a Vite bug when process.cwd() !== config.root
+    //  - Manifest key is:
+    //       ../../virtual:vite-plugin-ssr:importPageCode:client:/pages/index
+    //    But should be instead:
+    //      virtual:vite-plugin-ssr:importPageCode:client:/pages/index
+    //  - This workaround was implemented to support Vitest runnung /tests/*
+    //    - I don't know whether end users actually need this workaround? (I'm not sure what the bug actually is.)
+    const manifestKeyEnd = id
+    const { manifestKey, manifestEntry } = getEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
     assert(manifestEntry, id)
     return { manifestEntry, manifestKey }
   }
@@ -89,6 +103,22 @@ function findEntryWithKeyEnd(manifestKeyEnd: string, clientManifest: ViteManifes
   const manifestKeysRelative = manifestKeys.filter((k) => k.startsWith('../'))
   assert(manifestKeysRelative.length <= 1, { id })
   const manifestKey = manifestKeysRelative[0] ?? manifestKeys[0] ?? null
+  if (!manifestKey) {
+    return { manifestEntry: null, manifestKey: null }
+  }
+  const manifestEntry = clientManifest[manifestKey]!
+  return { manifestEntry, manifestKey }
+}
+
+function getEntryWithKeyEnd(manifestKeyEnd: string, clientManifest: ViteManifest, id: string) {
+  const manifestKeys: string[] = []
+  for (const manifestKey in clientManifest) {
+    if (manifestKey.endsWith(manifestKeyEnd)) {
+      manifestKeys.push(manifestKey)
+    }
+  }
+  assert(manifestKeys.length <= 1, id)
+  const manifestKey = manifestKeys[0]
   if (!manifestKey) {
     return { manifestEntry: null, manifestKey: null }
   }
