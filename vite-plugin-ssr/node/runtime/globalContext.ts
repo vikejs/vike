@@ -152,7 +152,7 @@ function assertNodeEnv(hasViteDevServer: boolean) {
       isDevNodeEnv ? 'development' : 'production'
     } environment by \`process.env.NODE_ENV === ${JSON.stringify(
       nodeEnv
-    )}\` which is contradictory, see https://vite-plugin-ssr.com/renderPage`,
+    )}\` which is contradictory, see https://vite-plugin-ssr.com/renderPage#node-env`,
     { showStackTrace: false, onlyOnce: true }
   )
 }
