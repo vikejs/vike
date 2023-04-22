@@ -1,5 +1,4 @@
-export { Page }
-export const preloadStrategy = 'EAGER'
+export default Page
 
 import React from 'react'
 
