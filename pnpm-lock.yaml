@@ -1577,12 +1577,12 @@ importers:
     specifiers:
       react: ^18.2.0
       react-dom: ^18.2.0
-      vite: ^4.0.3
+      vite: ^4.3.1
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      vite: 4.2.2
+      vite: 4.3.1
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   test/disableAutoImporter:
@@ -11554,7 +11554,7 @@ packages:
       mlly: 1.2.0
       pathe: 1.1.0
       picocolors: 1.0.0
-      vite: 4.2.2_@types+node@18.13.0
+      vite: 4.3.1_@types+node@18.13.0
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -11958,8 +11958,40 @@ packages:
       fsevents: 2.3.2
     dev: false
 
-  /vite/4.2.2_@types+node@18.13.0:
-    resolution: {integrity: sha512-PcNtT5HeDxb3QaSqFYkEum8f5sCVe0R3WK20qxgIvNBZPXU/Obxs/+ubBMeE7nLWeCo2LDzv+8hRYSlcaSehig==}
+  /vite/4.3.1:
+    resolution: {integrity: sha512-EPmfPLAI79Z/RofuMvkIS0Yr091T2ReUoXQqc5ppBX/sjFRhHKiPPF/R46cTdoci/XgeQpB23diiJxq5w30vdg==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      esbuild: 0.17.10
+      postcss: 8.4.21
+      rollup: 3.20.2
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: false
+
+  /vite/4.3.1_@types+node@18.13.0:
+    resolution: {integrity: sha512-EPmfPLAI79Z/RofuMvkIS0Yr091T2ReUoXQqc5ppBX/sjFRhHKiPPF/R46cTdoci/XgeQpB23diiJxq5w30vdg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
@@ -11986,7 +12018,6 @@ packages:
       '@types/node': 18.13.0
       esbuild: 0.17.10
       postcss: 8.4.21
-      resolve: 1.22.1
       rollup: 3.20.2
     optionalDependencies:
       fsevents: 2.3.2
@@ -12041,7 +12072,7 @@ packages:
       tinybench: 2.3.1
       tinypool: 0.4.0
       tinyspy: 1.0.2
-      vite: 4.2.2_@types+node@18.13.0
+      vite: 4.3.1_@types+node@18.13.0
       vite-node: 0.29.5_@types+node@18.13.0
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
