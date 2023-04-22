@@ -1,11 +1,11 @@
-export { render }
+export default onRenderClient
 
 import React from 'react'
 import { hydrateRoot } from 'react-dom/client'
 import { ApolloClient, InMemoryCache } from '@apollo/client'
 import App from './App'
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   const { Page } = pageContext
   const apolloClient = makeApolloClient(pageContext.apolloIntialState)
   hydrateRoot(
