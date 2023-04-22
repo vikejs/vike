@@ -1,13 +1,12 @@
 Before beta release:
- - Port all examples & tests
- - if config isn't a file path then assert that it's serialazable
-   - remove c_code
- - assert global configs cannot be defined in page-specific config
-   - already done? Use/remove c_global?
  - docs
    - Add further examples to v1-design.page.server.mdx
    - https://vite-plugin-ssr.com/config
    - https://vite-plugin-ssr.com/meta
+ - if config isn't a file path then assert that it's serialazable
+   - remove c_code
+ - assert global configs cannot be defined in page-specific config
+   - already done? Use/remove c_global?
  - prepare vike.config.js
    - Remove moving global configs to /pages/+config.js from migration
    - Redefine global configs in vite.config.js in examples
