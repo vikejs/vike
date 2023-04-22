@@ -175,14 +175,12 @@ function useClientRouter() {
       console.error(err)
 
       if (checkIfAbort(err, pageContext)) return
-      if (checkIf404(err)) {
-        objectAssign(pageContext, {
-          is404: true
-        })
-      }
+
       if (isRenderErrorPageException(err)) {
         objectAssign(pageContext, { is404: true })
         objectAssign(pageContext, err.pageContext)
+      } else {
+        objectAssign(pageContext, { is404: checkIf404(err) })
       }
 
       try {
