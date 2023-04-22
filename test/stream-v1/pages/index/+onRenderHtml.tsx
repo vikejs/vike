@@ -1,4 +1,4 @@
-export { render }
+export default onRenderHtml
 
 import { renderToString, renderToPipeableStream, version } from 'react-dom/server'
 // import { renderToStream } from 'react-streaming/server'
@@ -7,7 +7,7 @@ import { escapeInject, dangerouslySkipEscape, stampPipe } from 'vite-plugin-ssr/
 console.log(`react-dom@${version}`)
 console.log(`node@${process.version}`)
 
-async function render(pageContext: { withStream: boolean }) {
+async function onRenderHtml(pageContext: { withStream: boolean }) {
   const Page = () => <p>Hello</p>
   const page = <Page />
 
