@@ -80,20 +80,22 @@ In production (and staging):
 - Set `process.env.NODE_ENV` to a value different than `['development', 'dev', '', undefined]`, for example `'production'` or `'staging'`.
 - Don't instantiate the Vite dev server: it isn't needed in production and would unnecessarily bloat your server in production.
 
-> `process.env.NODE_ENV` is a convention to tell libraries whether your app is running in production or development. See:
+> `process.env.NODE_ENV` is a convention to tell libraries whether your app is running in production or development:
+>
 > - [Node.js Docs - The difference between development and production](https://nodejs.dev/en/learn/nodejs-the-difference-between-development-and-production/#:~:text=You%20can%20signal%20Node.js%20that%20you%20are%20running%20in%20production%20by%20setting%20the%20NODE_ENV%3Dproduction%20environment%20variable.)
 > - [Stack Overflow - What is NODE_ENV and how to use it in Express?](https://stackoverflow.com/questions/16978256/what-is-node-env-and-how-to-use-it-in-express/16979503#16979503:~:text=NODE_ENV%20specifically%20is%20used%20(by%20convention)%20to%20state%20whether%20a%20particular%20environment%20is%20a%20production%20or%20a%20development%20environment.)
+>
 > While the convention was introduced by Node.js, it's used by libraries regardless whether you use Node.js or not. That's why we recommend to set `process.env.NODE_ENV` in Edge environments as well.
 
 Vite-plugin-ssr shows a warning if you don't respect the recommendation:
 
 ```
-[vite-plugin-ssr][Warning] Vite's development server was instantiated
-while the environment is set to be a production environment
-by `process.env.NODE_ENV === 'production'` which is contradictory.
+[vite-plugin-ssr][Warning] Vite's development server was instantiated while the environment
+is set to be a production environment by `process.env.NODE_ENV === 'production'` which is
+contradictory.
 ```
 ```
-[vite-plugin-ssr][Warning] Vite's development server wasn't instantiated
-while the environment is set to be a production environment
-by `process.env.NODE_ENV === undefined'` which is contradictory.
+[vite-plugin-ssr][Warning] Vite's development server wasn't instantiated while the environment
+is set to be a production environment by `process.env.NODE_ENV === undefined'` which is
+contradictory.
 ```
