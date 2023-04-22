@@ -4,9 +4,9 @@ Many npm packages contain invalid code which make Node.js crash.
 
 See [solution](#solution).
 
-The most notable issues are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) and invalid CSS imports, see errors down below.
+The most notable issues are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) and invalid CSS imports, see errors below.
 
-> We tried to convince Node.js/npm to address the issue but without success: [npm/rfcs#665](https://github.com/npm/rfcs/issues/665).
+> We tried to convince npm to address the issue but without success: [npm/rfcs#665](https://github.com/npm/rfcs/issues/665).
 
 
 ## Errors
@@ -100,4 +100,4 @@ export default {
 
 > The reason why many npm packages contain erronous code is because frameworks like Next.js always transpile npm packages. (Whereas Vite lets Node.js directly execute npm packages in order to greatly improve dev performance: Vite transpiles only what is strictly needed). Where Next.js is permissive and is able to process invalid code, Node.js is strict and crashes upon invalid code. By adding npm packages to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal) we replicate the behavior of frameworks like Next.js.
 
-<Note type="warning">While using `vite.config.js > ssr.noExternal` fixes the problem, we recommend to contact the npm package author. For example: [aws-amplify/amplify-ui#3155](https://github.com/aws-amplify/amplify-ui/issues/3155). Vite is fast because it transpiles only what is strictly needed. To preserve Vite's speed, library authors should ship valid code.</Note>
+<Note type="warning">While using `vite.config.js > ssr.noExternal` fixes the problem, we recommend to contact the npm package author. For example: [aws-amplify/amplify-ui#3155](https://github.com/aws-amplify/amplify-ui/issues/3155). Vite is fast because it transpiles only what is strictly needed. To preserve Vite's speed, library authors should publish valid code.</Note>
