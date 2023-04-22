@@ -1,13 +1,11 @@
-export { render }
-export const clientRouting = true
-export const hydrationCanBeAborted = true
+export default onRenderClient
 
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { PageLayout } from './PageLayout'
 
 let root
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   if (!root) root = createRoot(document.getElementById('react-container'))
   const { Page } = pageContext
   const page = (
