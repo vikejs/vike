@@ -1533,6 +1533,20 @@ importers:
       vite: 4.1.1
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  test/build.outDir-v1:
+    specifiers:
+      '@vitejs/plugin-react': ^3.0.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      '@vitejs/plugin-react': 3.1.0_vite@4.2.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      vite: 4.2.2
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   test/config-file-paths-v1:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
@@ -1559,6 +1573,18 @@ importers:
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  test/contra-v1:
+    specifiers:
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      vite: 4.2.2
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   test/disableAutoImporter:
     specifiers:
       '@vitejs/plugin-react': ^3.0.0
@@ -1571,6 +1597,20 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       vite: 4.1.1
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
+  test/disableAutoImporter-v1:
+    specifiers:
+      '@vitejs/plugin-react': ^3.0.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      '@vitejs/plugin-react': 3.1.0_vite@4.2.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      vite: 4.2.2
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   test/includeAssetsImportedByServer:
@@ -1609,6 +1649,26 @@ importers:
       typescript: 4.9.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  test/pageFlesSrc-v1:
+    specifiers:
+      '@brillout/docpress': ^0.1.20
+      '@types/node': ^15.12.1
+      '@types/react': ^17.0.45
+      '@types/react-dom': ^17.0.6
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      typescript: ^4.9.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      '@brillout/docpress': 0.1.20_6bdbsu2yzpeczxw5qylih75b3i
+      '@types/node': 15.14.9
+      '@types/react': 17.0.45
+      '@types/react-dom': 17.0.16
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      typescript: 4.9.4
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   test/preload:
     specifiers:
       react: ^18.2.0
@@ -1621,6 +1681,18 @@ importers:
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  test/preload-v1:
+    specifiers:
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      vite: 4.2.2
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   test/renderPage:
     specifiers:
       vite: ^4.0.3
@@ -1629,7 +1701,39 @@ importers:
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  test/renderPage-v1:
+    specifiers:
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      vite: 4.2.2
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   test/require-shim:
+    specifiers:
+      '@apollo/client': 3.6.9
+      '@vitejs/plugin-react': 3.0.0
+      cross-env: 7.0.3
+      express: 4.18.1
+      graphql: 16.5.0
+      node-fetch: 2.6.1
+      react: 18.2.0
+      react-dom: 18.2.0
+      vite: 4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      '@apollo/client': 3.6.9_phmus7xcbidy3raesi6r6zwaqe
+      '@vitejs/plugin-react': 3.0.0_vite@4.0.3
+      cross-env: 7.0.3
+      express: 4.18.1
+      graphql: 16.5.0
+      node-fetch: 2.6.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      vite: 4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
+  test/require-shim-v1:
     specifiers:
       '@apollo/client': 3.6.9
       '@vitejs/plugin-react': 3.0.0
@@ -1667,6 +1771,22 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       react-streaming: 0.3.9_biqbaboplfbrettd7655fr4n2y
       vite: 4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
+  test/stream-v1:
+    specifiers:
+      '@vitejs/plugin-react': ^3.0.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      react-streaming: ^0.3.9
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      '@vitejs/plugin-react': 3.1.0_vite@4.2.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-streaming: 0.3.9_biqbaboplfbrettd7655fr4n2y
+      vite: 4.2.2
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   vite-plugin-ssr:
