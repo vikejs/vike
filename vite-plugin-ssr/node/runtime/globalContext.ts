@@ -143,7 +143,7 @@ function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest
 
 function assertNodeEnv(hasViteDevServer: boolean) {
   const nodeEnv = getNodeEnv()
-  if (nodeEnv === null) return
+  if (nodeEnv === null || nodeEnv === 'test') return
   const isDevNodeEnv = [undefined, '', 'dev', 'development'].includes(nodeEnv)
   // calling Vite's createServer() is enough for hasViteDevServer to be true, even without actually adding Vite's development middleware to the server: https://github.com/brillout/vite-plugin-ssr/issues/792#issuecomment-1516830759
   assertWarning(
