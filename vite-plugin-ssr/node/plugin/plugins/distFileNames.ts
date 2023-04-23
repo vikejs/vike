@@ -81,7 +81,7 @@ function getScriptFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, 
   } else {
     const isNodeModules = id?.includes('/node_modules/')
     if (!id || isNodeModules || extractAssetsRE.test(id) || !id.startsWith(config.root)) {
-      return config.build.ssr ? `chunks/[hash].js` : `${assetsDir}/chunks/[hash].js`
+      return config.build.ssr ? `chunks/chunk-[hash].js` : `${assetsDir}/chunks/chunk-[hash].js`
     } else {
       const virtualFile = isVirtualFileIdImportPageCode(id)
       if (virtualFile) {
