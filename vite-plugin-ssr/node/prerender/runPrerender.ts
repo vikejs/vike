@@ -148,6 +148,20 @@ type PrerenderOptions = {
 }
 
 async function runPrerender(options: PrerenderOptions): Promise<void> {
+  await run(options)
+  setImmediate(() => {
+    /* I guess there is no need to tell the user about it? Let's see if a user complains.
+    assertInfo(false, "Pre-rendering was forced exit. (Didn't gracefully exit because the event queue isn't empty. This is usally fine, see ...", { onlyOnce: false })
+    */
+    /* Known situations where pre-rendering is hanging:
+     *  - https://github.com/brillout/vite-plugin-ssr/discussions/774#discussioncomment-5584551
+     *  - https://github.com/brillout/vite-plugin-ssr/issues/807#issuecomment-1519010902
+     */
+    process.exit(0)
+  })
+}
+
+async function run(options: PrerenderOptions): Promise<void> {
   checkOutdatedOptions(options)
 
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
