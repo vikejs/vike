@@ -628,6 +628,7 @@ const headings: HeadingDefinition[] = [
     title: '`onBeforeRender()` hook (`.page.server.js`)',
     titleInNav: '`export { onBeforeRender }`',
     isListTitle: true,
+    sectionTitles: ['Client Routing'],
     url: '/onBeforeRender'
   },
   {
@@ -954,7 +955,7 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: <code>meta</code>,
     url: '/meta',
-    sectionTitles: ['Create a new configuration', 'Modify an existing configuration', 'Create a shortcut configuration']
+    sectionTitles: ['Create a new configuration', 'Modify existing configurations']
   },
   {
     title: <code>+config.js</code>,

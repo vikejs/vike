@@ -4,8 +4,7 @@ import { Link } from '@brillout/docpress'
 
 The `meta` config enables to:
  - <Link doNotInferSectionTitle={true} href="#create-a-new-configuration" />
- - <Link doNotInferSectionTitle={true} href="#modify-an-existing-configuration" />
- - <Link doNotInferSectionTitle={true} href="#create-a-shortcut-configuration" />
+ - <Link doNotInferSectionTitle={true} href="#modify-existing-configurations" />
 
 
 ## Create a new configuration
@@ -78,7 +77,7 @@ async function onRenderClient(pageContext) {
 ```
 
 
-## Modify an existing configuration
+## Modify existing configurations
 
 Example:
 
@@ -90,22 +89,49 @@ import type { Config } from 'vite-plugin-ssr/types'
 export default {
   meta: {
     onBeforeRender: {
-      // By default, the onBeforeRender() hook is always executed on the server. By using
-      // the meta config we can make onBeforeRender() isomorphic instead: onBeforeRender()
-      // is as well executed in the browser. This means we fetch data direcly from the
-      // browser upon client-side navigation (without involving our Node.js/Edge server
-      // at all).
+      // By default, the onBeforeRender() hook is always loaded and executed only on the
+      // server-side. By using the meta config we can make it isomorphic instead:
+      // onBeforeRender() is loaded and executed as well on the cient-side.
       env: 'server-and-client'
     }
   }
 } satisfies Config
 ```
 
-For more convenience, we can call a "shortcut config".
+> Making `onBeforeRender()` isomorphic allows us to fetch data directly between the user's browser and the data source (without involving our SSR server), see <Link href="/onBeforeRender#client-routing" doNotInferSectionTitle={true} />.
 
+For more convenience, we can create a new config `onBeforeRenderIsomorph`:
 
-## Create a shortcut configuration
+```ts
+// /pages/some-page/+config.ts
 
-For convenience, you can also define a [custom config `onBeforeRenderIsomorph: boolean`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/renderer/+config.ts#L12-L31) for a [page-per-page toggle](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/pages/star-wars/%40id/%2BonBeforeRenderIsomorph.ts).
+import type { Config, Effect } from 'vite-plugin-ssr/types'
 
-We call these "shortcut configs".
+const onBeforeRenderIsomorphEffect: Effect = ({ configDefinedAt, configValue }) {
+  if (typeof configValue !== 'boolean') {
+    throw new Error(`${configDefinedAt} should be a boolean`)
+  }
+  if (configValue === true) {
+    return {
+      meta: {
+        onBeforeRender: {
+          env: 'server-and-client'
+        }
+      }
+    }
+  }
+}
+
+export default {
+  meta: {
+    onBeforeRenderIsomorph: {
+      env: 'config-only',
+      effect: onBeforeRenderIsomorphEffect
+    }
+  }
+} satisfies Config
+```
+
+Example:
+ - [/examples/react-full/renderer/+config.ts > meta.onBeforeRenderIsomorph](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/renderer/+config.ts#L12-L31)
+   - Usage: [/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/pages/star-wars/%40id/%2BonBeforeRenderIsomorph.ts).
