@@ -1,3 +1,23 @@
+## [0.4.116](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.115...v0.4.116) (2023-04-23)
+
+
+### Bug Fixes
+
+* [V1 design] expose types Meta and Effect ([6a581a1](https://github.com/brillout/vite-plugin-ssr/commit/6a581a1df4dadc7af4b59f63f68e759ded2401a0))
+* [V1 design] use portable syntax for temp generated files (fix [#800](https://github.com/brillout/vite-plugin-ssr/issues/800)) ([39ec890](https://github.com/brillout/vite-plugin-ssr/commit/39ec890d70e828075aa672a26a5b281ee87b018d))
+* [V1 Design] workaround Vite bug when `process.cwd() !== config.root` ([48e75ec](https://github.com/brillout/vite-plugin-ssr/commit/48e75eca8e4799e2933cc7151ec5688942555d6f))
+* always set `pageContext.is404` when rendering error page on the client-side (fix [#806](https://github.com/brillout/vite-plugin-ssr/issues/806)) ([dbfb0f7](https://github.com/brillout/vite-plugin-ssr/commit/dbfb0f744afaa43a3a651ef5cd4dcd4201f201ae))
+* clean stack traces only for Node.js ([8161b54](https://github.com/brillout/vite-plugin-ssr/commit/8161b54a53efc2691737d77adc29b0846f456aac))
+* force exit pre-rendering (fix [#807](https://github.com/brillout/vite-plugin-ssr/issues/807)) ([8aedcaa](https://github.com/brillout/vite-plugin-ssr/commit/8aedcaa46a69dfdfa94a0c7d700ac38ab6a01535))
+* improve chunk asset name ([fb34270](https://github.com/brillout/vite-plugin-ssr/commit/fb342702c5dbe89dc98a44f1853a56cf5642fb1a))
+* improve contradictory env warning ([#792](https://github.com/brillout/vite-plugin-ssr/issues/792)) ([58ccdcd](https://github.com/brillout/vite-plugin-ssr/commit/58ccdcd8fa0ad1bc7f45f9ab3ba037b72aa90c6e))
+* improve wrong NODE_ENV warning ([472a16d](https://github.com/brillout/vite-plugin-ssr/commit/472a16d55e3cb815fc48de015f6e846d046968bf))
+* skip warning when `process.env.NODE_ENV === "test"` ([3c910c0](https://github.com/brillout/vite-plugin-ssr/commit/3c910c0eb2de84b6315039be7d4e06218b8ee1b3))
+* support tauri:// protocol ([#808](https://github.com/brillout/vite-plugin-ssr/issues/808)) ([f7afe16](https://github.com/brillout/vite-plugin-ssr/commit/f7afe1609560d5b8badd1910315f69e98e37e953))
+* tolerate URL with missing pathname ([#808](https://github.com/brillout/vite-plugin-ssr/issues/808)) ([fc76ffe](https://github.com/brillout/vite-plugin-ssr/commit/fc76ffe239128a0d55e2ffab1e957203e7c0706d))
+
+
+
 ## [0.4.115](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.114...v0.4.115) (2023-04-20)
 
 
