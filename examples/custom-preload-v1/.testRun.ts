@@ -9,7 +9,7 @@ function testRun(cmd: 'npm run preview') {
   const logoRE = partRegex`<link rel="preload" href="/assets/static/logo.${/[a-zA-Z0-9]+/}.svg" as="image" type="image/svg+xml">`
   const styleRE = partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/onRenderClient.${/[a-zA-Z0-9]+/}.css">`
   const script1RE = partRegex`<script type="module" src="/assets/entry-server-routing.${/[a-zA-Z0-9]+/}.js" defer></script>`
-  const script2RE = partRegex`<link rel="modulepreload" href="/assets/chunks/${/[a-zA-Z0-9]+/}.js" as="script" type="text/javascript">`
+  const script2RE = partRegex`<link rel="modulepreload" href="/assets/chunks/chunk-${/[a-zA-Z0-9]+/}.js" as="script" type="text/javascript">`
 
   const testCommon = (html: string) => {
     expect(html).toMatch(script1RE)
