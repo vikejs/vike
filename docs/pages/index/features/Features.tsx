@@ -165,7 +165,7 @@ function Features() {
           desc: (
             <>
               <p>
-                The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b>, every release is assailed
+                The source code of <code>vite-plugin-ssr</code> has <b>no known bugs</b>, every release is assailed
                 against a heavy suite of <b>automated tests</b>, and it's <b>used in production</b> by many
                 comp&shy;anies.
               </p>
