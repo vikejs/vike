@@ -1,4 +1,5 @@
 export { runPrerender }
+export { runPrerenderForceExit }
 export type { PrerenderOptions }
 
 import '../runtime/page-files/setup'
@@ -148,20 +149,6 @@ type PrerenderOptions = {
 }
 
 async function runPrerender(options: PrerenderOptions): Promise<void> {
-  await run(options)
-  setImmediate(() => {
-    /* I guess there is no need to tell the user about it? Let's see if a user complains.
-    assertInfo(false, "Pre-rendering was forced exit. (Didn't gracefully exit because the event queue isn't empty. This is usally fine, see ...", { onlyOnce: false })
-    */
-    /* Known situations where pre-rendering is hanging:
-     *  - https://github.com/brillout/vite-plugin-ssr/discussions/774#discussioncomment-5584551
-     *  - https://github.com/brillout/vite-plugin-ssr/issues/807#issuecomment-1519010902
-     */
-    process.exit(0)
-  })
-}
-
-async function run(options: PrerenderOptions): Promise<void> {
   checkOutdatedOptions(options)
 
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
@@ -1049,4 +1036,16 @@ function isSameUrl(url1: string, url2: string) {
 }
 function normalizeUrl(url: string) {
   return '/' + url.split('/').filter(Boolean).join('/')
+}
+
+function runPrerenderForceExit() {
+  // Force exit; known situations where pre-rendering is hanging:
+  //  - https://github.com/brillout/vite-plugin-ssr/discussions/774#discussioncomment-5584551
+  //  - https://github.com/brillout/vite-plugin-ssr/issues/807#issuecomment-1519010902
+  process.exit(0)
+
+  /* I guess there is no need to tell the user about it? Let's see if a user complains.
+   * I don't known whether there is a way to call process.exit(0) only if needed, thus I'm not sure if there is a way to conditionally show a assertInfo().
+  assertInfo(false, "Pre-rendering was forced exit. (Didn't gracefully exit because the event queue isn't empty. This is usally fine, see ...", { onlyOnce: false })
+  */
 }
