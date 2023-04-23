@@ -1,4 +1,4 @@
-import { assert, parseUrl, isCallable, assertWarning, isPlainObject, hasPropertyGetter } from './utils'
+import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter } from './utils'
 
 export { addComputedUrlProps }
 export { assertURLs }
