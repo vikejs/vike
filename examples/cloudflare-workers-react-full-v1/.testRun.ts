@@ -8,9 +8,6 @@ import { page, test, expect, run, autoRetry, fetchHtml, isCI, getServerUrl, skip
 // urlBaseChange('http://127.0.0.1:3000')
 
 function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { hasStarWarsPage: boolean }) {
-  skip('temporarily skipped')
-  return
-
   const isWrangler = cmd === 'npm run preview'
 
   // - `CLOUDFLARE_ACCOUNT_ID`/`CLOUDFLARE_API_TOKEN` not available for:
