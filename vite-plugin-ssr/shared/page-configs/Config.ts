@@ -1,5 +1,7 @@
 export type { Config }
 export type { ConfigName }
+export type { Meta }
+export type { Effect }
 
 import type { PrefetchStaticAssets } from '../../client/router/prefetch/getPrefetchConfig'
 import type { ConfigVpsUserProvided } from '../ConfigVps'
@@ -124,6 +126,19 @@ type Config<Page = unknown> = Partial<
   }
 >
 
+type Effect = (args: {
+  /** Place where the resolved config value comes from.
+   *
+   * See https://vite-plugin-ssr/meta
+   */
+  configDefinedAt: string
+  /** The resolved config value.
+   *
+   * See https://vite-plugin-ssr/meta
+   */
+  configValue: unknown
+}) => Config | undefined
+
 type Meta = Record<
   string,
   {
@@ -137,17 +152,6 @@ type Meta = Record<
      *
      * See https://vite-plugin-ssr/meta
      */
-    effect?: (args: {
-      /** Place where the resolved config value comes from.
-       *
-       * See https://vite-plugin-ssr/meta
-       */
-      configDefinedAt: string
-      /** The resolved config value.
-       *
-       * See https://vite-plugin-ssr/meta
-       */
-      configValue: unknown
-    }) => Config | undefined
+    effect?: Effect
   }
 >
