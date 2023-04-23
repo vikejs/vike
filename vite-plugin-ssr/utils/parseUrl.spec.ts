@@ -359,4 +359,22 @@ describe('parseUrl', () => {
       hashOriginal: '#%C3%A2ge'
     })
   })
+
+  it('tauri', () => {
+    expect(parseUrl('tauri://localhost/', '/')).toEqual({
+      ...resultBase,
+      origin: 'tauri://localhost'
+    })
+    expect(parseUrl('tauri://localhost', '/')).toEqual({
+      ...resultBase,
+      origin: 'tauri://localhost',
+      pathnameOriginal: ''
+    })
+    expect(parseUrl('tauri://localhost/somePath', '/')).toEqual({
+      ...resultBase,
+      origin: 'tauri://localhost',
+      pathname: '/somePath',
+      pathnameOriginal: '/somePath'
+    })
+  })
 })

@@ -14,6 +14,7 @@ function isParsable(url: string): boolean {
   return (
     url.startsWith('/') ||
     url.startsWith('http') ||
+    url.startsWith('tauri://') ||
     url.startsWith('.') ||
     url.startsWith('?') ||
     url.startsWith('#') ||
@@ -108,6 +109,14 @@ function parseWithNewUrl(urlWithoutSearch: string, baseServer: string) {
     return { origin: null, pathnameResolved: urlWithoutSearch }
   }
 
+  let isTauriProtocol = false
+  const PROTOCOL_TAURI = 'tauri://'
+  const PROTOCOL_FAKE = 'http://'
+  if (urlWithoutSearch.startsWith(PROTOCOL_TAURI)) {
+    isTauriProtocol = true
+    urlWithoutSearch = PROTOCOL_FAKE + urlWithoutSearch.slice(PROTOCOL_TAURI.length)
+  }
+
   let origin: string | null
   let pathnameResolved: string
   try {
@@ -132,6 +141,14 @@ function parseWithNewUrl(urlWithoutSearch: string, baseServer: string) {
     // `base` in `new URL(url, base)` is used for resolving relative paths (`new URL()` doesn't remove `base` from `pathname`)
     const urlParsed = new URL(urlWithoutSearch, base)
     pathnameResolved = urlParsed.pathname
+  }
+
+  if (!pathnameResolved) pathnameResolved = '/'
+
+  if (isTauriProtocol) {
+    assert(origin)
+    assert(origin.startsWith(PROTOCOL_FAKE))
+    origin = PROTOCOL_TAURI + origin.slice(PROTOCOL_FAKE.length)
   }
 
   assert(pathnameResolved.startsWith('/'), { urlWithoutSearch, pathnameResolved })
