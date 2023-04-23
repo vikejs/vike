@@ -261,7 +261,7 @@ function Features() {
               <p>You can preload links for instantaneous page navigation.</p>
               <h3>Fast Cold Starts</h3>
               <p>
-                On the server-side, pages are as well lazy-loaded: adding pages doesn't increase the cold start of your
+                On the server-side, pages are also lazy-loaded: adding pages doesn't increase the cold start of your
                 (serverless) deployment.
               </p>
             </>
@@ -318,7 +318,7 @@ function Features() {
                 Crafted with <b>attention to details</b> and <b>care for simplicity</b>.
               </p>
               <p>
-                <b>Upsteam contributions</b> to Vite and others.
+                <b>Upstream contributions</b> to Vite and others.
               </p>
               <p>
                 GitHub and Discord <b>conversations are welcome</b>.
