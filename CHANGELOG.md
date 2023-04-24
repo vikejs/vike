@@ -1,3 +1,12 @@
+## [0.4.117](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.116...v0.4.117) (2023-04-24)
+
+
+### Bug Fixes
+
+* [V1 design] implement config filesystem overriding (fix [#812](https://github.com/brillout/vite-plugin-ssr/issues/812)) ([f9d826c](https://github.com/brillout/vite-plugin-ssr/commit/f9d826c813f8cf14c9f2ef235662b3bf23cb06c4))
+
+
+
 ## [0.4.116](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.115...v0.4.116) (2023-04-23)
 
 
