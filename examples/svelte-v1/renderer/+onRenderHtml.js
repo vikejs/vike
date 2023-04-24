@@ -4,8 +4,8 @@ const base = import.meta.env.BASE_URL;
 
 import Layout from './Layout.svelte';
 
-export default async function onRenderHtml(pageContent) {
-  const app = Layout.render(pageContent);
+export default async function onRenderHtml(pageContext) {
+  const app = Layout.render(pageContext);
   const { html, head, css} = app;
 
   return escapeInject`<!DOCTYPE html>
