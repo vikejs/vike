@@ -5,7 +5,7 @@ export default {
   plugins: [
     svelte({
       compilerOptions: {
-          hydratable: true
+        hydratable: true
       }
     }),
 
