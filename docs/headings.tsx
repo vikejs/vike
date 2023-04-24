@@ -548,6 +548,11 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Tauri',
+    url: '/tauri'
+  },
+  {
+    level: 2,
     title: 'Other Integrations',
     titleInNav: 'Other',
     url: '/integration'
