@@ -1,4 +1,5 @@
 export { getConfigData }
+export type { ConfigValueFile }
 
 import {
   assertPosixPath,
@@ -35,7 +36,8 @@ import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import {
   determinePageId,
   determineRouteFromFilesystemPath,
-  isRelevantConfig
+  isRelevantConfig,
+  pickMostRelevantConfigValueFile
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadPageConfig, transpileAndLoadConfigValueFile } from './transpileAndLoadPlusFile'
 import { parseImportData } from './replaceImportStatements'
@@ -311,9 +313,8 @@ function resolveConfigElement(
     const configValueFiles = configValueFilesRelevant.filter(
       (configValueFile) => configValueFile.configName === configName
     )
-    if (configValueFiles.length !== 0) {
-      assert(configValueFiles.length === 1)
-      const configValueFile = configValueFiles[0]!
+    const configValueFile = pickMostRelevantConfigValueFile(configValueFiles)
+    if (configValueFile) {
       const { configValueFilePath } = configValueFile
       const configValueFileExport = 'default'
       const configElement: ConfigElement = {
