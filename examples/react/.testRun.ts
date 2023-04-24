@@ -76,7 +76,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
 
 function expectHtmlCommon(html: string) {
   // Vue injects: `!--[-->Home<!--]-->`
-  expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}Home${/.*/}</a>`)
-  expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}About${/.*/}</a>`)
+  expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}Home${/[.\s]*/}</a>`)
+  expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}About${/[.\s]*/}</a>`)
   expect(html).toContain('<link rel="stylesheet" type="text/css"')
 }
