@@ -1,14 +1,14 @@
 import { Link, Note } from '@brillout/docpress'
 
-<Note type='warning'>The [V1 design](https://github.com/brillout/vite-plugin-ssr/issues/578) is in beta. While the overall V1 design is settled, some minor breaking changes may occur between version updates.</Note>
+<Note type='warning'>The [V1 design](https://github.com/brillout/vite-plugin-ssr/issues/578) is in beta: minor breaking changes may occur between version updates.</Note>
 
-The overall architecture of vite-plugin-ssr stays the same: the redesign is only about the introduction of `+config.js` files.
+The overall architecture of vite-plugin-ssr stays the same: the V1 design simply replaces `.page.js` files with `+` files: `+config.js`, `+Page.js`, `+route.js`, ...
 
-While the V1 design is a fairly simple redesign, it adds new foundational capabilities. If you're curious, see <Link href="/why-the-v1-design" />
+The V1 design adds new foundational capabilities. If you're curious see <Link href="/why-the-v1-design" />
 
-The migration is usually fairly straightforward and quick to implement: we encourage to migrate sooner rather than later.
+The migration is straightforward and usually quick to implement. We encourage to migrate sooner rather than later.
 
-> Don't hesitate to reach out if you run into any issue.
+> Don't hesitate to reach out if you run into any issues.
 
 ## Main migration
 
@@ -16,9 +16,11 @@ Most of the migration boils down to the following two steps.
 
 > Make sure to update `vite-plugin-ssr` to its latest version before migrating.
 
+> You need to either fully use the V1 design, or fully use the old design. You cannot mix both.
+
 **1. Migrate `/renderer/*.page.*`**
 
-Move your `renderer/` hooks to standalone `+` files:
+Move your `renderer/` hooks to `+` files:
 
 ```diff
 - // /renderer/_default.page.server.js
@@ -28,7 +30,29 @@ Move your `renderer/` hooks to standalone `+` files:
 + export default render
 ```
 
-> Files such as `+onRenderHtml.js` are explained at:
+If you have defined a global `onBeforeRender()` hook and/or `passToClient`:
+
+```diff
+- // /renderer/_default.page.server.js
++ // /renderer/+onRenderRender.js
+
+- export { onBeforeRender }
+- export const passToClient = ['pageProps']
++ export default onBeforeRender
+```
+
+```diff
++ // /renderer/+config.ts
++ 
++ import type { Config } from 'vite-plugin-ssr/types'
++ 
++ export default {
++   passToClient: ['pageProps']
++ } satisfies Config
+```
+
+
+> Files such as `+onRenderHtml.js` are thoroughly explained at:
 >  - <Link href="/architecture#config-js" />
 >  - <Link href="/config" />
 
@@ -40,9 +64,9 @@ Move your `renderer/` hooks to standalone `+` files:
 + export default render
 ```
 
-> The suffixes such as `.page.server.js` and `.page.client.js` are removed. You'll still be able to use `.server.js` and `.client.js` suffixes but they'll serve another purpose, see [#744](https://github.com/brillout/vite-plugin-ssr/issues/744).
+> The suffixes such as `.page.server.js` and `.page.client.js` don't exist anymore. After the feature request [#744](https://github.com/brillout/vite-plugin-ssr/issues/744) is implemented, you'll be able to use `.server.js` and `.client.js` suffixes again but they'll serve another purpose.
 
-Move your renderer configurations to `/renderer/+config.ts`:
+Move `/renderer/` configurations to `/renderer/+config.ts`:
 
 ```diff
 - // /renderer/_default.page.client.ts
@@ -111,9 +135,7 @@ export default route
 > /pages/some-other.page.js
 > ```
 
-> You need to either fully use the V1 design, or fully use the old design. You cannot mix both.
-
-Apply following additional steps if you define:
+Apply following additional steps if you have defined:
  - <Link text="Renamed hooks" href="#renamed-hooks" />
  - <Link text="Custom hooks/exports" href="#custom-hooks-exports" />
  - [`onBeforeRender` in `.page.js`](#onbeforerender-in-page-js) (instead of `.page.server.js`)
@@ -122,13 +144,16 @@ Apply following additional steps if you define:
 
 ## Examples
 
-All official examples have V1 design copy (see [`examples/*-v1`](https://github.com/brillout/vite-plugin-ssr/tree/main/examples)), most notably:
- - Migration of a basic app: [`428c1c` migrate examples/react to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/428c1c6b0fb7c9a5fa2f2fe57ac3e4bb0a57ea54).
+All official examples have a V1 design copy (see [`examples/*-v1`](https://github.com/brillout/vite-plugin-ssr/tree/main/examples)), most notably:
+ - Migration of very basic apps:
+   - [`428c1c` migrate examples/react to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/428c1c6b0fb7c9a5fa2f2fe57ac3e4bb0a57ea54)
+   - [`b87e6d` migrate examples/vue to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/b87e6dc85462d74f16fdfd0eb4dee1c2c8d29325)
  - Migration of custom exports to custom configs (see explanation at <Link href="#custom-hooks-exports" doNotInferSectionTitle={true} />):
    - `pageContext.export.Layout` -> `pageContext.config.Layout`:
      - [`9b31b7` migrate /examples/layouts-react/ to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/9b31b7497510d4add7c0e4aa4f19675b2f37fa94)
      - [`6f7b50` migrate /examples/layouts-vue/ to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/6f7b5043dafe88ba113b28ac4be1b0e0d5cb90a0)
-   - `pageContext.exports.preloadStrategy` -> `pageContext.config.preloadStrategy`: [`f28880` - migrate /examples/custom-preload/ to V1 Design](https://github.com/brillout/vite-plugin-ssr/commit/f28880b0b85cde12647aa0613c99dbdeadc467de)
+   - `pageContext.exports.preloadStrategy` -> `pageContext.config.preloadStrategy`:
+     - [`f28880` migrate /examples/custom-preload/ to V1 Design](https://github.com/brillout/vite-plugin-ssr/commit/f28880b0b85cde12647aa0613c99dbdeadc467de)
  - Migration of a `onBeforeRender()` hook:
    - TODO
    - aa2055f731f2ed8fc4f8763edcdc1f76ced7d061
