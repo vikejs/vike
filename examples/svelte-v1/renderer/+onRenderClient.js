@@ -1,9 +1,9 @@
-import Layout from './Layout.svelte';
+import Layout from './Layout.svelte'
 
 export default function onRenderClient(pageContext) {
-  const target = document.getElementById('app');
+  const target = document.getElementById('app')
 
-  const { Page, pageProps } = pageContext;
+  const { Page, pageProps } = pageContext
 
   new Layout({
     target,
@@ -12,5 +12,5 @@ export default function onRenderClient(pageContext) {
       pageProps: pageProps,
       Page
     }
-  });
+  })
 }

@@ -1,4 +1,4 @@
 export default {
-    clientRouting: true,
-    passToClient: ['pageProps']
-};
+  clientRouting: true,
+  passToClient: ['pageProps']
+}
