@@ -19,7 +19,6 @@ import {
   assertIsVitePluginCode,
   getMostSimilar,
   isNpmPackageImportPath,
-  getNpmPackageImportPath,
   joinEnglish
 } from '../../../utils'
 import path from 'path'
@@ -33,8 +32,11 @@ import type {
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './getConfigData/configDefinitionsBuiltIn'
 import glob from 'fast-glob'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
-import { determineRouteFromFilesystemPath } from './getConfigData/determineRouteFromFilesystemPath'
-import { determinePageId } from './getConfigData/determinePageId'
+import {
+  determinePageId,
+  determineRouteFromFilesystemPath,
+  isRelevantConfig
+} from './getConfigData/filesystemRouting'
 import { transpileAndLoadPageConfig, transpileAndLoadConfigValueFile } from './transpileAndLoadPlusFile'
 import { parseImportData } from './replaceImportStatements'
 
@@ -181,10 +183,10 @@ async function loadConfigData(
   const pageConfigsData: PageConfigData[] = []
   pageIds.forEach(({ pageId, routeFilesystem, pageConfigFile, routeFilesystemDefinedBy }) => {
     const pageConfigFilesRelevant = pageConfigFiles.filter(({ pageConfigFilePath }) =>
-      isRelevantConfigPath(pageConfigFilePath, pageId)
+      isRelevantConfig(pageConfigFilePath, pageId)
     )
     const configValueFilesRelevant = configValueFiles
-      .filter(({ configValueFilePath }) => isRelevantConfigPath(configValueFilePath, pageId))
+      .filter(({ configValueFilePath }) => isRelevantConfig(configValueFilePath, pageId))
       .filter((configValueFile) => !isGlobal(configValueFile.configName))
     let configDefinitionsRelevant = getConfigDefinitions(pageConfigFilesRelevant)
 
@@ -852,39 +854,6 @@ function handleBuildError(err: unknown, isDev: boolean) {
     console.error(err)
     process.exit(1)
   }
-}
-
-function isRelevantConfigPath(
-  configPath: string, // Can be pageConfigFilePath or configValueFilePath
-  pageId: string
-): boolean {
-  const configFsRoot = removeIrrelevantParts(removeFilename(configPath), ['renderer', 'pages'])
-  const isRelevant = removeIrrelevantParts(pageId, ['pages']).startsWith(configFsRoot)
-  return isRelevant
-}
-function removeFilename(somePath: string) {
-  assertPosixPath(somePath)
-  assert(somePath.startsWith('/') || isNpmPackageImportPath(somePath))
-  {
-    const filename = somePath.split('/').slice(-1)[0]!
-    assert(filename.includes('.'))
-    assert(filename.startsWith('+'))
-  }
-  return somePath.split('/').slice(0, -1).join('/')
-}
-function removeIrrelevantParts(somePath: string, dirs: string[]) {
-  assertPosixPath(somePath)
-  if (isNpmPackageImportPath(somePath)) {
-    const importPath = getNpmPackageImportPath(somePath)
-    assert(importPath)
-    assert(!importPath.startsWith('/'))
-    somePath = '/' + importPath
-  }
-  assert(somePath.startsWith('/'))
-  return somePath
-    .split('/')
-    .filter((p) => !dirs.includes(p))
-    .join('/')
 }
 
 function getPageConfigFilesGlobal(pageConfigFiles: PageConfigFile[]): PageConfigFile[] {
