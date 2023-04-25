@@ -16,6 +16,8 @@ import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/ut
 import { findPageFiles } from '../shared/findPageFiles'
 import { getConfigVps } from '../../shared/getConfigVps'
 import type { ResolvedConfig, Plugin, Rollup } from 'vite'
+import { getVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode'
+import type { PageConfigData } from '../../../shared/page-configs/PageConfig'
 type InputOption = Rollup.InputOption
 
 function buildConfig(): Plugin {
@@ -48,7 +50,7 @@ function buildConfig(): Plugin {
 
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const pageFileEntries = await getPageFileEntries(config) // TODO/v1-release: remove
-  let { hasClientRouting, hasServerRouting, clientEntries } = await analyzeAppRouting(config)
+  let { hasClientRouting, hasServerRouting, clientEntries } = await analyzeClientEntries(config)
   if (Object.entries(pageFileEntries).length > 0) {
     hasClientRouting = true
     hasServerRouting = true
@@ -77,12 +79,13 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
   }
 }
 
-async function analyzeAppRouting(config: ResolvedConfig) {
+async function analyzeClientEntries(config: ResolvedConfig) {
   const { pageConfigsData } = await getConfigData(config.root, false, false, (await getConfigVps(config)).extensions)
 
   let hasClientRouting = false
   let hasServerRouting = false
-  let clients: string[] = []
+  let clientEntries: Record<string, string> = {}
+  let clientFilePaths: string[] = []
   pageConfigsData.forEach((pageConfigData) => {
     const clientRouting = getConfigValue(pageConfigData, 'clientRouting', 'boolean')
     if (clientRouting) {
@@ -90,32 +93,54 @@ async function analyzeAppRouting(config: ResolvedConfig) {
     } else {
       hasServerRouting = true
     }
-    const clientFilePath = getCodeFilePath(pageConfigData, 'client')
-    if (clientFilePath) {
-      clients.push(clientFilePath)
+    {
+      const { entryName, entryTarget } = getEntryFromPageConfigData(pageConfigData)
+      clientEntries[entryName] = entryTarget
+    }
+    {
+      const clientFilePath = getCodeFilePath(pageConfigData, 'client')
+      if (clientFilePath) {
+        clientFilePaths.push(clientFilePath)
+      }
     }
   })
-  const clientEntries = formatEntries(clients, config)
+  clientFilePaths = unique(clientFilePaths)
+  clientFilePaths.forEach((pageFile) => {
+    const { entryName, entryTarget } = getEntryFromFilePath(pageFile, config)
+    clientEntries[entryName] = entryTarget
+  })
+
   return { hasClientRouting, hasServerRouting, clientEntries }
 }
 
 // Ensure Rollup creates entries for each page file, see https://github.com/brillout/vite-plugin-ssr/issues/350
 // (Otherwise the page files may be missing in the client manifest.json)
 async function getPageFileEntries(config: ResolvedConfig) {
-  const pageFiles = await findPageFiles(
+  let pageFiles = await findPageFiles(
     config,
     viteIsSSR(config) ? ['.page', '.page.server'] : ['.page', '.page.client'],
     false
   )
-  const pageFileEntries = formatEntries(pageFiles, config)
+  const pageFileEntries: Record<string, string> = {}
+  pageFiles = unique(pageFiles)
+  pageFiles.forEach((pageFile) => {
+    const { entryName, entryTarget } = getEntryFromFilePath(pageFile, config)
+    pageFileEntries[entryName] = entryTarget
+  })
   return pageFileEntries
 }
 
-function formatEntries(entryList: string[], config: ResolvedConfig): Record<string, string> {
-  entryList = unique(entryList)
-  const entries: Record<string, string> = {}
-  entryList.forEach((p) => (entries[removeFileExtention(p.slice(1))] = getFilePathAbsolute(p, config)))
-  return entries
+function getEntryFromFilePath(filePath: string, config: ResolvedConfig) {
+  const entryName = removeFileExtention(filePath.slice(1))
+  const entryTarget = getFilePathAbsolute(filePath, config)
+  return { entryName, entryTarget }
+}
+function getEntryFromPageConfigData(pageConfigData: PageConfigData) {
+  const { pageId } = pageConfigData
+  const entryTarget = getVirtualFileIdImportPageCode(pageId, true)
+  assert(pageId.startsWith('/'))
+  const entryName = `entries${pageId}`
+  return { entryName, entryTarget }
 }
 
 function resolve(filePath: string) {
