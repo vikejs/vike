@@ -396,7 +396,7 @@ function getCodeFilePath(
   configName: string,
   enforce: undefined | boolean
 ): null | { codeFilePath: string; configValueFileExport: string } {
-  if (typeof configValue !== 'string') {
+  if (typeof configValue !== 'string' || configValue === '') {
     assertUsage(
       !enforce,
       `${getErrorIntro(
