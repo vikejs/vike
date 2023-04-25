@@ -1,6 +1,6 @@
 import { createSSRApp, defineComponent, h, markRaw, reactive } from 'vue'
 import PageShell from './PageShell.vue'
-import type { Component, PageContext } from './types'
+import type { Component, PageContext, PageProps } from './types'
 import { setPageContext } from './usePageContext'
 
 export { createApp }
@@ -8,7 +8,7 @@ export { createApp }
 function createApp(pageContext: PageContext) {
   const { Page } = pageContext
 
-  let rootComponent: Component
+  let rootComponent: Component & { Page: Component; pageProps: PageProps }
   const PageWithWrapper = defineComponent({
     data: () => ({
       Page: markRaw(Page),

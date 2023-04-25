@@ -21,10 +21,8 @@ async function onBeforeRender(pageContext: PageContextBuiltIn) {
       pageProps: {
         movie
       },
-      documentProps: {
-        // The page's <title>
-        title
-      }
+      // The page's <title>
+      title
     }
   }
 }

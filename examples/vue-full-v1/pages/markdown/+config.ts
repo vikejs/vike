@@ -1,5 +1,3 @@
 export default {
-  documentProps: {
-    title: 'Some Markdown Page'
-  }
+  title: 'Some Markdown Page'
 }

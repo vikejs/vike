@@ -2,7 +2,7 @@ import type { Config } from 'vite-plugin-ssr/types'
 import { onHydrationEnd, onPageTransitionStart, onPageTransitionEnd } from './onPageTransitionHooks'
 
 export default {
-  passToClient: ['pageProps', 'documentProps'],
+  passToClient: ['pageProps', 'title'],
   clientRouting: true,
   prefetchStaticAssets: { when: 'VIEWPORT' },
   onHydrationEnd,
@@ -10,7 +10,7 @@ export default {
   onPageTransitionEnd,
   // We create a custom config, see https://vite-plugin-ssr.com/meta
   meta: {
-    documentProps: {
+    title: {
       env: 'server-and-client'
     }
   }
