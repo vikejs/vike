@@ -1,5 +1,6 @@
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
+import type { Configuration } from 'webpack'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 export default {
@@ -27,4 +28,4 @@ export default {
     minimize: false,
     nodeEnv: 'production'
   }
-}
+} satisfies Configuration
