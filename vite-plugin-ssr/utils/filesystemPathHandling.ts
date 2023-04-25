@@ -19,7 +19,12 @@ function toPosixPath(path: string) {
 }
 
 function assertPosixPath(path: string) {
-  assert(path && !path.includes(sepWin32), `Wrongly formatted path: ${path}`)
+  const errMsg = (msg: string) => `Not a posix path: ${msg}`
+  assert(path !== null, errMsg('null'))
+  assert(typeof path === 'string', errMsg(`typeof path === '${typeof path}'`))
+  assert(path !== '', errMsg('(empty string)'))
+  assert(path)
+  assert(!path.includes(sepWin32), errMsg(path))
 }
 
 function toSystemPath(path: string) {
