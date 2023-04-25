@@ -43,10 +43,10 @@ describe('preload tags', () => {
         },
         {
           "assetType": "script",
-          "earlyHintLink": "</assets/chunks/chunk-$HASH.js>; rel=modulepreload; as=script",
+          "earlyHintLink": "</assets/entries/pages/index.$HASH.js>; rel=modulepreload; as=script",
           "isEntry": false,
           "mediaType": "text/javascript",
-          "src": "/assets/chunks/chunk-$HASH.js",
+          "src": "/assets/entries/pages/index.$HASH.js",
         },
         {
           "assetType": "script",
@@ -69,7 +69,7 @@ describe('preload tags', () => {
             <body>
               <div id=\\"page-view\\"><div style=\\"display:flex;max-width:900px;margin:auto\\"><div style=\\"padding:20px;padding-top:20px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;line-height:1.8em\\"><div style=\\"margin-top:20px;margin-bottom:10px\\"><a href=\\"/\\"><img src=\\"/assets/static/logo.$HASH.svg\\" height=\\"64\\" width=\\"64\\"/></a></div><a class=\\"navitem\\" href=\\"/\\">Preload Default</a><a class=\\"navitem\\" href=\\"/preload-disabled\\">Preload Disabled</a><a class=\\"navitem\\" href=\\"/preload-images\\">Preload Images</a></div><div style=\\"padding:20px;padding-bottom:50px;border-left:2px solid #eee;min-height:100vh\\"><h1>Default</h1><p>This page showcases the default preloading strategy: in production, both the image and the font are preloaded.</p></div></div></div>
               <script type=\\"module\\" src=\\"/assets/entry-server-routing.$HASH.js\\" defer></script>
-              <link rel=\\"modulepreload\\" href=\\"/assets/chunks/chunk-$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
+              <link rel=\\"modulepreload\\" href=\\"/assets/entries/pages/index.$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
               <link rel=\\"modulepreload\\" href=\\"/assets/chunks/chunk-$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
               <script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageContext\\":{\\"_pageId\\":\\"/pages/index\\",\\"pageProps\\":\\"!undefined\\"}}</script>
             </body>
@@ -112,10 +112,10 @@ describe('preload tags', () => {
         },
         {
           "assetType": "script",
-          "earlyHintLink": "</assets/chunks/chunk-$HASH.js>; rel=modulepreload; as=script",
+          "earlyHintLink": "</assets/entries/pages/preload-disabled.$HASH.js>; rel=modulepreload; as=script",
           "isEntry": false,
           "mediaType": "text/javascript",
-          "src": "/assets/chunks/chunk-$HASH.js",
+          "src": "/assets/entries/pages/preload-disabled.$HASH.js",
         },
         {
           "assetType": "script",
@@ -178,10 +178,10 @@ describe('preload tags', () => {
         },
         {
           "assetType": "script",
-          "earlyHintLink": "</assets/chunks/chunk-$HASH.js>; rel=modulepreload; as=script",
+          "earlyHintLink": "</assets/entries/pages/preload-images.$HASH.js>; rel=modulepreload; as=script",
           "isEntry": false,
           "mediaType": "text/javascript",
-          "src": "/assets/chunks/chunk-$HASH.js",
+          "src": "/assets/entries/pages/preload-images.$HASH.js",
         },
         {
           "assetType": "script",
@@ -205,7 +205,7 @@ describe('preload tags', () => {
             <body>
               <div id=\\"page-view\\"><div style=\\"display:flex;max-width:900px;margin:auto\\"><div style=\\"padding:20px;padding-top:20px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;line-height:1.8em\\"><div style=\\"margin-top:20px;margin-bottom:10px\\"><a href=\\"/\\"><img src=\\"/assets/static/logo.$HASH.svg\\" height=\\"64\\" width=\\"64\\"/></a></div><a class=\\"navitem\\" href=\\"/\\">Preload Default</a><a class=\\"navitem\\" href=\\"/preload-disabled\\">Preload Disabled</a><a class=\\"navitem\\" href=\\"/preload-images\\">Preload Images</a></div><div style=\\"padding:20px;padding-bottom:50px;border-left:2px solid #eee;min-height:100vh\\"><h1>Preload Images</h1><p>This page showcases a custom strategy of preloading images.</p></div></div></div>
               <script type=\\"module\\" src=\\"/assets/entry-server-routing.$HASH.js\\" defer></script>
-              <link rel=\\"modulepreload\\" href=\\"/assets/chunks/chunk-$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
+              <link rel=\\"modulepreload\\" href=\\"/assets/entries/pages/preload-images.$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
               <link rel=\\"modulepreload\\" href=\\"/assets/chunks/chunk-$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
               <script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageContext\\":{\\"_pageId\\":\\"/pages/preload-images\\",\\"pageProps\\":\\"!undefined\\"}}</script>
             </body>
@@ -248,10 +248,10 @@ describe('preload tags', () => {
         },
         {
           "assetType": "script",
-          "earlyHintLink": "</assets/chunks/chunk-$HASH.js>; rel=modulepreload; as=script",
+          "earlyHintLink": "</assets/entries/pages/preload-eager.$HASH.js>; rel=modulepreload; as=script",
           "isEntry": false,
           "mediaType": "text/javascript",
-          "src": "/assets/chunks/chunk-$HASH.js",
+          "src": "/assets/entries/pages/preload-eager.$HASH.js",
         },
         {
           "assetType": "script",
@@ -271,7 +271,7 @@ describe('preload tags', () => {
               <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/assets/static/onRenderClient.$HASH.css\\">
               <link rel=\\"preload\\" href=\\"/assets/static/Sono-Light.$HASH.ttf\\" as=\\"font\\" type=\\"font/ttf\\" crossorigin>
               <link rel=\\"preload\\" href=\\"/assets/static/logo.$HASH.svg\\" as=\\"image\\" type=\\"image/svg+xml\\">
-              <link rel=\\"modulepreload\\" href=\\"/assets/chunks/chunk-$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
+              <link rel=\\"modulepreload\\" href=\\"/assets/entries/pages/preload-eager.$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
               <link rel=\\"modulepreload\\" href=\\"/assets/chunks/chunk-$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
             </head>
             <body>
