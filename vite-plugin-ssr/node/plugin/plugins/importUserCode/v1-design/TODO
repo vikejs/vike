@@ -16,6 +16,8 @@ Before beta release:
    - `prerender: false`
 
 After beta release:
+ - use `type: "module"` in boilerplates
+ - remove documentProps from examples and boilerplates
  - assert that two import statements in +config.js shouldn't land in different environments
  - Implements TODO comments
  - define pageContext.pageId
