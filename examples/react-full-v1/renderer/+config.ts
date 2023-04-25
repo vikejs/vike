@@ -1,12 +1,12 @@
 import type { Config } from 'vite-plugin-ssr/types'
 
 export default {
-  passToClient: ['pageProps', 'documentProps', 'someAsyncProps'],
+  passToClient: ['pageProps', 'title', 'someAsyncProps'],
   clientRouting: true,
   hydrationCanBeAborted: true,
   prerender: true,
   meta: {
-    documentProps: {
+    title: {
       env: 'server-and-client'
     },
     // We create a custom config 'onBeforeRenderIsomorph'

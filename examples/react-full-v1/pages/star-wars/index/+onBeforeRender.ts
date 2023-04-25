@@ -13,7 +13,7 @@ async function onBeforeRender() {
         movies: filterMoviesData(movies)
       },
       // The page's <title>
-      documentProps: { title: getTitle(movies) }
+      title: getTitle(movies)
     }
   }
 }

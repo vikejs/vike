@@ -14,7 +14,7 @@ export default async function () {
         pageProps: {
           movies: filterMoviesData(movies)
         },
-        documentProps: { title: getTitle(movies) }
+        title: getTitle(movies)
       }
     },
     ...movies.map((movie) => {
@@ -29,7 +29,7 @@ export default async function () {
           pageProps: {
             movie: filterMovieData(movie)
           },
-          documentProps: { title: movie.title }
+          title: movie.title
         }
       }
     })
