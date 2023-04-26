@@ -4,10 +4,8 @@ export { distFileNames }
 //  - https://github.com/brillout/vite-plugin-ssr/commit/11a4c49e5403aa7c37c8020c462b499425b41854
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
-import { assertPosixPath, assert, assertUsage, removeFileExtention, toPosixPath } from '../utils'
+import { assertPosixPath, assert, assertUsage, toPosixPath } from '../utils'
 import path from 'path'
-import { extractAssetsRE } from './extractAssetsPlugin'
-import { isVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 type PreRenderedChunk = Rollup.PreRenderedChunk
 type PreRenderedAsset = Rollup.PreRenderedAsset
@@ -22,10 +20,10 @@ function distFileNames(): Plugin {
       // We need to support multiple outputs: @vite/plugin-legacy adds an ouput, see https://github.com/brillout/vite-plugin-ssr/issues/477#issuecomment-1406434802
       rollupOutputs.forEach((rollupOutput) => {
         if (!rollupOutput.entryFileNames) {
-          rollupOutput.entryFileNames = (chunkInfo) => getScriptFileName(chunkInfo, config, true)
+          rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config, true)
         }
         if (!rollupOutput.chunkFileNames) {
-          rollupOutput.chunkFileNames = (chunkInfo) => getScriptFileName(chunkInfo, config, false)
+          rollupOutput.chunkFileNames = (chunkInfo) => getChunkFileName(chunkInfo, config)
         }
         if (!rollupOutput.assetFileNames) {
           rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
@@ -57,16 +55,26 @@ function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): 
     name?.endsWith('?extractAssets&lang.css')
   ) {
     name = name.split('.').slice(0, -2).join('.')
-    name = removeSpecialCharacters(name)
+    name = clean(name)
     return `${dir}/${name}.[hash][extname]`
   }
 
   name = name.split('.').slice(0, -1).join('.')
-  name = removeSpecialCharacters(name)
+  name = clean(name)
   return `${dir}/${name}.[hash][extname]`
 }
 
-function getScriptFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, isEntry: boolean): string {
+function getChunkFileName(_chunkInfo: PreRenderedChunk, config: ResolvedConfig): string {
+  const isForClientSide = !config.build.ssr
+  let name = 'chunks/chunk-[hash].js'
+  if (isForClientSide) {
+    const assetsDir = getAssetsDir(config)
+    name = `${assetsDir}/${name}`
+  }
+  return name
+}
+
+function getEntryFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, isEntry: boolean): string {
   const { root } = config
   const assetsDir = getAssetsDir(config)
   const isForClientSide = !config.build.ssr
@@ -76,34 +84,13 @@ function getScriptFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, 
   // I don't know why, but chunkInfo.facadeModuleId isn't always a posix path, see https://github.com/brillout/vite-plugin-ssr/issues/771
   if (id) id = toPosixPath(id)
 
-  let name: string
-  if (isEntry) {
-    name = chunkInfo.name
-  } else {
-    const isNodeModules = id?.includes('/node_modules/')
-    if (!id || isNodeModules || extractAssetsRE.test(id) || !id.startsWith(config.root)) {
-      return !isForClientSide ? `chunks/chunk-[hash].js` : `${assetsDir}/chunks/chunk-[hash].js`
-    } else {
-      const virtualFile = isVirtualFileIdImportPageCode(id)
-      if (virtualFile) {
-        const { pageId } = virtualFile
-        assert(pageId.startsWith('/'))
-        name = pageId.slice(1)
-      } else {
-        assert(id.startsWith(config.root) && !isNodeModules)
-        let scriptPath = path.posix.relative(root, id)
-        assert(!scriptPath.startsWith('.'))
-        assert(!scriptPath.startsWith('/'))
-        scriptPath = removeFileExtention(scriptPath)
-        name = scriptPath
-      }
-    }
-  }
+  let { name } = chunkInfo
 
   if (!isForClientSide) {
     name = workaroundGlob(name)
   }
-  name = removeSpecialCharacters(name)
+  name = clean(name)
+  name = removePathSeperators(name)
 
   if (isForClientSide) {
     return `${assetsDir}/${name}.[hash].js`
@@ -112,10 +99,47 @@ function getScriptFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, 
   }
 }
 
+function removePathSeperators(name: string) {
+  assertPosixPath(name)
+  assert(!name.startsWith('/'))
+  const entryDir = 'entries/'
+  let hasEntryDir = name.startsWith(entryDir)
+  if (hasEntryDir) {
+    name = name.slice(entryDir.length)
+  }
+  assert(!name.includes('_'))
+  name = name.split('/').join('_')
+  if (hasEntryDir) {
+    assert(!name.startsWith('/'))
+    name = `${entryDir}${name}`
+  }
+  return name
+}
+
+function clean(name: string): string {
+  name = removeSpecialCharacters(name)
+  name = removeProblematicCharaters(name)
+  return name
+}
 function removeSpecialCharacters(name: string): string {
   name = name.split('+').join('')
-  // GitHub Pages treat URLs with filename starting with `_` differently (removing the need for workaround of creating a .jekyll file)
   name = name.split('_').join('')
+  return name
+}
+// Remove leading `_` from filename
+//  - GitHub Pages treat URLs with filename starting with `_` differently (removing the need for workaround of creating a .jekyll file)
+function removeProblematicCharaters(name: string): string {
+  assertPosixPath(name)
+  const paths = name.split('/')
+  {
+    const last = paths.length - 1
+    let filename = paths[last]!
+    if (filename.startsWith('_')) {
+      filename = filename.slice(1)
+      paths[last] = filename
+      name = paths.join('/')
+    }
+  }
   return name
 }
 

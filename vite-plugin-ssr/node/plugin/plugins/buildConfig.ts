@@ -8,7 +8,8 @@ import {
   getFilePathAbsolute,
   addOnBeforeLogHook,
   removeFileExtention,
-  unique
+  unique,
+  assertPosixPath
 } from '../utils'
 import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode'
 import { getConfigData } from './importUserCode/v1-design/getConfigData'
@@ -50,18 +51,22 @@ function buildConfig(): Plugin {
 
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const pageFileEntries = await getPageFileEntries(config) // TODO/v1-release: remove
-  let { hasClientRouting, hasServerRouting, clientEntries } = await analyzeClientEntries(config)
-  if (Object.entries(pageFileEntries).length > 0) {
-    hasClientRouting = true
-    hasServerRouting = true
-  }
+  const { pageConfigsData } = await getConfigData(config.root, false, false, (await getConfigVps(config)).extensions)
   if (viteIsSSR(config)) {
-    return {
+    const serverEntries = analyzeServerEntries(pageConfigsData)
+    const entries = {
       pageFiles: virtualFileIdImportUserCodeServer, // TODO/next-major-release: rename to pageConfigFiles
       importBuild: resolve('dist/cjs/node/importBuild.js'), // TODO/next-major-release: remove
-      ...pageFileEntries
+      ...pageFileEntries,
+      ...serverEntries
     }
+    return entries
   } else {
+    let { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigsData, config)
+    if (Object.entries(pageFileEntries).length > 0) {
+      hasClientRouting = true
+      hasServerRouting = true
+    }
     const entries: Record<string, string> = {
       ...clientEntries,
       ...pageFileEntries
@@ -69,18 +74,16 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     const clientRoutingEntry = resolve(`dist/esm/client/router/entry.js`)
     const serverRoutingEntry = resolve(`dist/esm/client/entry.js`)
     if (hasClientRouting) {
-      entries['entry-client-routing'] = clientRoutingEntry
+      entries['entries/entry-client-routing'] = clientRoutingEntry
     }
     if (hasServerRouting) {
-      entries['entry-server-routing'] = serverRoutingEntry
+      entries['entries/entry-server-routing'] = serverRoutingEntry
     }
     return entries
   }
 }
 
-async function analyzeClientEntries(config: ResolvedConfig) {
-  const { pageConfigsData } = await getConfigData(config.root, false, false, (await getConfigVps(config)).extensions)
-
+function analyzeClientEntries(pageConfigsData: PageConfigData[], config: ResolvedConfig) {
   let hasClientRouting = false
   let hasServerRouting = false
   let clientEntries: Record<string, string> = {}
@@ -93,7 +96,7 @@ async function analyzeClientEntries(config: ResolvedConfig) {
       hasServerRouting = true
     }
     {
-      const { entryName, entryTarget } = getEntryFromPageConfigData(pageConfigData)
+      const { entryName, entryTarget } = getEntryFromPageConfigData(pageConfigData, true)
       clientEntries[entryName] = entryTarget
     }
     {
@@ -110,6 +113,14 @@ async function analyzeClientEntries(config: ResolvedConfig) {
   })
 
   return { hasClientRouting, hasServerRouting, clientEntries }
+}
+function analyzeServerEntries(pageConfigsData: PageConfigData[]) {
+  const serverEntries: Record<string, string> = {}
+  pageConfigsData.forEach((pageConfigData) => {
+    const { entryName, entryTarget } = getEntryFromPageConfigData(pageConfigData, false)
+    serverEntries[entryName] = entryTarget
+  })
+  return serverEntries
 }
 
 // Ensure Rollup creates entries for each page file, see https://github.com/brillout/vite-plugin-ssr/issues/350
@@ -130,16 +141,28 @@ async function getPageFileEntries(config: ResolvedConfig) {
 }
 
 function getEntryFromFilePath(filePath: string, config: ResolvedConfig) {
-  const entryName = removeFileExtention(filePath.slice(1))
+  assertPosixPath(filePath)
   const entryTarget = getFilePathAbsolute(filePath, config)
+  assert(filePath.startsWith('/'))
+  let entryName = removeFileExtention(filePath)
+  entryName = prependEntriesDir(entryName)
   return { entryName, entryTarget }
 }
-function getEntryFromPageConfigData(pageConfigData: PageConfigData) {
-  const { pageId } = pageConfigData
-  const entryTarget = getVirtualFileIdImportPageCode(pageId, true)
+function getEntryFromPageConfigData(pageConfigData: PageConfigData, isForClientSide: boolean) {
+  let { pageId } = pageConfigData
+  const entryTarget = getVirtualFileIdImportPageCode(pageId, isForClientSide)
   assert(pageId.startsWith('/'))
-  const entryName = `entries${pageId}`
+  let entryName = pageId
+  entryName = prependEntriesDir(entryName)
   return { entryName, entryTarget }
+}
+
+function prependEntriesDir(entryName: string): string {
+  assert(entryName.startsWith('/'))
+  entryName = entryName.slice(1)
+  assert(!entryName.startsWith('/'))
+  entryName = `entries/${entryName}`
+  return entryName
 }
 
 function resolve(filePath: string) {
