@@ -23,8 +23,10 @@ function autoFullBuild(): Plugin[] {
         abortSSRBuild(configVps)
       },
       writeBundle: {
+        /* We can't use this because it breaks Vite's logging. TODO: try again with latest Vite version.
         sequential: true,
         order: 'pre',
+        */
         async handler(_options, bundle) {
           try {
             await triggerFullBuild(config, configVps, bundle)
