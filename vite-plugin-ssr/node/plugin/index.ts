@@ -36,7 +36,7 @@ function plugin(vpsConfig?: ConfigVpsUserProvided): any {
     ...devConfig(),
     buildConfig(),
     previewConfig(),
-    autoFullBuild(),
+    ...autoFullBuild(),
     ...manifest(),
     packageJsonFile(),
     removeRequireHookPlugin(),

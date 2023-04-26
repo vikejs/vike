@@ -7,29 +7,31 @@ import { getConfigVps } from '../../shared/getConfigVps'
 import type { ConfigVpsResolved } from '../../../shared/ConfigVps'
 import { getViteBuildCliConfig, isViteCliCall } from '../shared/isViteCliCall'
 
-function autoFullBuild(): Plugin {
+function autoFullBuild(): Plugin[] {
   let config: ResolvedConfig
   let configVps: ConfigVpsResolved
-  return {
-    name: 'vite-plugin-ssr:autoFullBuild',
-    apply: 'build',
-    enforce: 'pre',
-    async configResolved(config_) {
-      configVps = await getConfigVps(config_)
-      config = config_
-      abortSSRBuild(configVps)
-    },
-    // TODO: use `sequential: true` once available
-    async writeBundle(_options, bundle) {
-      try {
-        await triggerFullBuild(config, configVps, bundle)
-      } catch (err) {
-        // Avoid Rollup prefixing the error with `[vite-plugin-ssr:autoFullBuild]`, for example see https://github.com/brillout/vite-plugin-ssr/issues/472#issuecomment-1276274203
-        console.error(err)
-        process.exit(1)
+  return [
+    {
+      name: 'vite-plugin-ssr:autoFullBuild',
+      apply: 'build',
+      enforce: 'pre',
+      async configResolved(config_) {
+        configVps = await getConfigVps(config_)
+        config = config_
+        abortSSRBuild(configVps)
+      },
+      // TODO: use `sequential: true` once available
+      async writeBundle(_options, bundle) {
+        try {
+          await triggerFullBuild(config, configVps, bundle)
+        } catch (err) {
+          // Avoid Rollup prefixing the error with `[vite-plugin-ssr:autoFullBuild]`, for example see https://github.com/brillout/vite-plugin-ssr/issues/472#issuecomment-1276274203
+          console.error(err)
+          process.exit(1)
+        }
       }
     }
-  }
+  ]
 }
 
 async function triggerFullBuild(config: ResolvedConfig, configVps: ConfigVpsResolved, bundle: Record<string, unknown>) {
