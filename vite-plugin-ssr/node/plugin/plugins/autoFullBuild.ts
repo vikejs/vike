@@ -23,6 +23,7 @@ function autoFullBuild(): Plugin[] {
         abortSSRBuild(configVps)
       },
       writeBundle: {
+        sequential: true,
         order: 'pre',
         async handler(_options, bundle) {
           try {
@@ -40,6 +41,7 @@ function autoFullBuild(): Plugin[] {
       apply: 'build',
       enforce: 'post',
       writeBundle: {
+        sequential: true,
         order: 'post',
         handler() {
           if (forceExit) {
