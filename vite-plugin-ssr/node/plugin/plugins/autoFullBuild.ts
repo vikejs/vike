@@ -7,6 +7,8 @@ import { getConfigVps } from '../../shared/getConfigVps'
 import type { ConfigVpsResolved } from '../../../shared/ConfigVps'
 import { getViteBuildCliConfig, isViteCliCall } from '../shared/isViteCliCall'
 
+let forceExit = false
+
 function autoFullBuild(): Plugin[] {
   let config: ResolvedConfig
   let configVps: ConfigVpsResolved
@@ -20,14 +22,29 @@ function autoFullBuild(): Plugin[] {
         config = config_
         abortSSRBuild(configVps)
       },
-      // TODO: use `sequential: true` once available
-      async writeBundle(_options, bundle) {
-        try {
-          await triggerFullBuild(config, configVps, bundle)
-        } catch (err) {
-          // Avoid Rollup prefixing the error with `[vite-plugin-ssr:autoFullBuild]`, for example see https://github.com/brillout/vite-plugin-ssr/issues/472#issuecomment-1276274203
-          console.error(err)
-          process.exit(1)
+      writeBundle: {
+        order: 'pre',
+        async handler(_options, bundle) {
+          try {
+            await triggerFullBuild(config, configVps, bundle)
+          } catch (err) {
+            // Avoid Rollup prefixing the error with `[vite-plugin-ssr:autoFullBuild]`, for example see https://github.com/brillout/vite-plugin-ssr/issues/472#issuecomment-1276274203
+            console.error(err)
+            process.exit(1)
+          }
+        }
+      }
+    },
+    {
+      name: 'vite-plugin-ssr:autoFullBuild:forceExit',
+      apply: 'build',
+      enforce: 'post',
+      writeBundle: {
+        order: 'post',
+        handler() {
+          if (forceExit) {
+            runPrerenderForceExit()
+          }
         }
       }
     }
@@ -63,7 +80,7 @@ async function triggerFullBuild(config: ResolvedConfig, configVps: ConfigVpsReso
 
   if (configVps.prerender && !configVps.prerender.disableAutoRun) {
     await runPrerender({ viteConfig: configFromCli })
-    runPrerenderForceExit()
+    forceExit = true
   }
 }
 
