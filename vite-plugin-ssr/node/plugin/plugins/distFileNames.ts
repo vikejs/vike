@@ -69,6 +69,7 @@ function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): 
 function getScriptFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, isEntry: boolean): string {
   const { root } = config
   const assetsDir = getAssetsDir(config)
+  const isForClientSide = !config.build.ssr
 
   assertPosixPath(root)
   let id = chunkInfo.facadeModuleId
@@ -81,7 +82,7 @@ function getScriptFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, 
   } else {
     const isNodeModules = id?.includes('/node_modules/')
     if (!id || isNodeModules || extractAssetsRE.test(id) || !id.startsWith(config.root)) {
-      return config.build.ssr ? `chunks/chunk-[hash].js` : `${assetsDir}/chunks/chunk-[hash].js`
+      return !isForClientSide ? `chunks/chunk-[hash].js` : `${assetsDir}/chunks/chunk-[hash].js`
     } else {
       const virtualFile = isVirtualFileIdImportPageCode(id)
       if (virtualFile) {
@@ -99,12 +100,14 @@ function getScriptFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, 
     }
   }
 
-  if (!config.build.ssr) {
-    name = removeSpecialCharacters(name)
+  if (!isForClientSide) {
+    name = workaroundGlob(name)
+  }
+  name = removeSpecialCharacters(name)
+
+  if (isForClientSide) {
     return `${assetsDir}/${name}.[hash].js`
   } else {
-    name = workaroundGlob(name)
-    name = removeSpecialCharacters(name)
     return `${name}.${isEntry ? 'mjs' : 'js'}`
   }
 }
