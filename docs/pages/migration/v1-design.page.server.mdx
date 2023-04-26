@@ -155,10 +155,22 @@ All official examples have a V1 design copy (see [`examples/*-v1`](https://githu
    - `pageContext.exports.preloadStrategy` -> `pageContext.config.preloadStrategy`:
      - [`f28880` migrate /examples/custom-preload/ to V1 Design](https://github.com/brillout/vite-plugin-ssr/commit/f28880b0b85cde12647aa0613c99dbdeadc467de)
  - Migration of a `onBeforeRender()` hook:
-   - TODO
-   - aa2055f731f2ed8fc4f8763edcdc1f76ced7d061
-   - 69c06b03c5ce5199147eb0f2e574c626038d18a7
- - Migration of a i18n app (i.e. hooks `onBeforePrerender()`/`prerender()`/`onBeforeRoute()`):
+   - Defined globally in `renderer/`:
+     - graphql-apollo-vue
+     - vue-pinia
+     - vuex
+     - redux
+   - Defined by page in `pages/`:
+     - telefunc
+     - react-full
+     - vue-full
+     - i18n?
+   - [migrate /examples/graphql-apollo-vue/ to V1 Design] aa2055f731f2ed8fc4f8763edcdc1f76ced7d061
+   - [migrate /examples/redux/ to V1 design] 69c06b03c5ce5199147eb0f2e574c626038d18a7
+ - Pre-rendered app:
+   - react-full
+   - vue-full
+ - Migration of a pre-rendered i18n app (using hooks `onBeforeRoute()`, `onBeforePrerender()`/<Link text={<><code>onBeforePrerenderStart</code></>} href="#renamed-hooks" />, and `prerender()`/<Link text={<><code>onPrerenderStart</code></>} href="#renamed-hooks" />):
    - TODO
 
 
