@@ -43,7 +43,7 @@ type ConfigVpsResolved = {
 
 type ConfigVpsUserProvided = {
   /**
-   * Whether to pre-render pages.
+   * Enable pre-rendering.
    *
    * See https://vite-plugin-ssr.com/pre-rendering
    *

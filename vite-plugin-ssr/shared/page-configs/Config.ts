@@ -18,7 +18,7 @@ type ConfigName =
  * See https://vite-plugin-ssr.com/config
  */
 type Config<Page = unknown> = Partial<
-  ConfigVpsUserProvided & {
+  {
     /** The root UI component of the page */
     Page: Page
 
@@ -27,6 +27,13 @@ type Config<Page = unknown> = Partial<
      *  See https://vite-plugin-ssr.com/route
      */
     route: string | Function
+
+    /**
+     * Whether to pre-render the page(s).
+     *
+     * See https://vite-plugin-ssr.com/pre-rendering
+     */
+    prerender: boolean
 
     /** Hook called before the page is rendered, usually used for fetching data.
      *

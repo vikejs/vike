@@ -7,8 +7,6 @@ Before beta release:
    - remove c_code
  - assert global configs cannot be defined in page-specific config
    - already done? Use/remove c_global?
- - prepare vike.config.js
-   - Remove global config from `Config`
  - test all features
    - `prerender: false`
 
