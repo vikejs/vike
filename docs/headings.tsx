@@ -959,8 +959,7 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   },
   {
     title: <code>meta</code>,
-    url: '/meta',
-    sectionTitles: ['Create a new configuration', 'Modify existing configurations']
+    url: '/meta'
   },
   {
     title: <code>+config.js</code>,

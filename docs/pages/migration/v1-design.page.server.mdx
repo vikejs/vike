@@ -2,19 +2,19 @@ import { Link, Note } from '@brillout/docpress'
 
 <Note type='warning'>The [V1 design](https://github.com/brillout/vite-plugin-ssr/issues/578) is in beta: minor breaking changes may occur between version updates.</Note>
 
-The overall architecture of vite-plugin-ssr stays the same: the V1 design simply replaces `.page.js` files with `+` files: `+config.js`, `+Page.js`, `+route.js`, ...
+The overall architecture of vite-plugin-ssr stays the same: the V1 design is only about replacing `.page.js` files with `+` files (`+config.js`, `+Page.js`, `+route.js`, ...).
 
-The V1 design adds new foundational capabilities. If you're curious see <Link href="/why-the-v1-design" />
+Despite being simple, the change adds new foundational features. If you're curious: <Link href="/why-the-v1-design" />
 
 The migration is straightforward and usually quick to implement. We encourage to migrate sooner rather than later.
 
-> Don't hesitate to reach out if you run into any issues.
+> Don't hesitate to reach out if you run into any issue.
 
 ## Main migration
 
 Most of the migration boils down to the following two steps.
 
-> Make sure to update `vite-plugin-ssr` to its latest version before migrating.
+> Make sure to update `vite-plugin-ssr` to its latest version.
 
 > You need to either fully use the V1 design, or fully use the old design. You cannot mix both.
 
@@ -30,7 +30,7 @@ Move your `renderer/` hooks to `+` files:
 + export default render
 ```
 
-If you have defined a global `onBeforeRender()` hook and/or `passToClient`:
+If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 
 ```diff
 - // /renderer/_default.page.server.js
@@ -135,42 +135,41 @@ export default route
 > /pages/some-other.page.js
 > ```
 
-Apply following additional steps if you have defined:
- - <Link text="Renamed hooks" href="#renamed-hooks" />
+Apply following additional steps if you've defined:
+ - <Link href="#renamed-hooks" titleNormalCase={true} />
  - <Link text="Custom hooks/exports" href="#custom-hooks-exports" />
  - [`onBeforeRender` in `.page.js`](#onbeforerender-in-page-js) (instead of `.page.server.js`)
- - <Link text="Additional client code" href="#additional-client-code" />
+ - <Link href="#client-init-code" titleNormalCase={true} />
 
 
 ## Examples
 
 All official examples have been migrated, see [`examples/*-v1`](https://github.com/brillout/vite-plugin-ssr/tree/main/examples).
 
-Most notably the migration of:
+Notable migrations:
  - Basic apps:
    - [migrate /examples/react](https://github.com/brillout/vite-plugin-ssr/commit/428c1c6b0fb7c9a5fa2f2fe57ac3e4bb0a57ea54)
    - [migrate /examples/vue](https://github.com/brillout/vite-plugin-ssr/commit/b87e6dc85462d74f16fdfd0eb4dee1c2c8d29325)
- - A `onBeforeRender()` hook:
+ - `onBeforeRender()` hook:
    - Defined by page in `pages/`:
      - [migrate /examples/telefunc](https://github.com/brillout/vite-plugin-ssr/commit/bfcd801419acd18c676b49d835c805ef6e89a607#diff-41adf2b043a30483759686ad913c5dba5dc4d0594d45913cf5a504f2205ce8a4)
      - [migrate /examples/i18n](https://github.com/brillout/vite-plugin-ssr/commit/9dd3db3bb6f0c1fc16befa9f504e94ea732339e8#diff-c4d06dd7331553f9855baa90f752a40b51c379631574135f38e50c9da40fa1ee)
+     - [migrate /examples/vue-full](https://github.com/brillout/vite-plugin-ssr/commit/b612023a6b209424a75aacb2fde9b2305c44f3ee#diff-cad2d8171bf407df47ce02bd4110bd010a2beecf7e5f52e43892fba7c4c1123b)
      - [migrate /examples/react-full](https://github.com/brillout/vite-plugin-ssr/commit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-793fcad526e46c52916bab033cd16d35f05e1a6f18e4e43b45b3a28b8ba34f59)
-     - [migrate /examples/vue-full](https://github.com/brillout/vite-plugin-ssr/commit/b612023a6b209424a75aacb2fde9b2305c44f3ee#diff-adc0afea381da59cdf122fc6cbb11a3df777fc6436d4999d6e106ad0f7330160)
    - Defined globally in `renderer/`:
-     - [migrate /examples/redux](https://github.com/brillout/vite-plugin-ssr/commit/69c06b03c5ce5199147eb0f2e574c626038d18a7)
-     - [migrate /examples/graphql-apollo-vue/](https://github.com/brillout/vite-plugin-ssr/commit/aa2055f731f2ed8fc4f8763edcdc1f76ced7d061)
-     - [migrate /examples/vue-pinia](https://github.com/brillout/vite-plugin-ssr/commit/2b830d0db9a9cd2cb9b4402a00887cd840a16eda)
-     - [migrate /examples/vuex](https://github.com/brillout/vite-plugin-ssr/commit/499d01e3f44328e2d74747169ef65236253ac6f6)
+     - [migrate /examples/redux](https://github.com/brillout/vite-plugin-ssr/commit/69c06b03c5ce5199147eb0f2e574c626038d18a7#diff-a7cdea11336cb81f500e3509f6c26587c6cc765cc438e61760f1e89eeea6817a)
+     - [migrate /examples/graphql-apollo-vue/](https://github.com/brillout/vite-plugin-ssr/commit/aa2055f731f2ed8fc4f8763edcdc1f76ced7d061#diff-231c5dd641627a629961695a7502a3ac28cb782e48e6cb386aadd8d84b43c45d)
+     - [migrate /examples/vue-pinia](https://github.com/brillout/vite-plugin-ssr/commit/2b830d0db9a9cd2cb9b4402a00887cd840a16eda#diff-4324476edca4f275a3fcab4e7022e86df396235bdbb5f6632b5332c192e1acec)
  - Pre-rendered app (using `prerender()` hooks):
-   - [migrate /examples/react-full](https://github.com/brillout/vite-plugin-ssr/commit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-793fcad526e46c52916bab033cd16d35f05e1a6f18e4e43b45b3a28b8ba34f59)
-   - [migrate /examples/vue-full](https://github.com/brillout/vite-plugin-ssr/commit/b612023a6b209424a75aacb2fde9b2305c44f3ee)
- - Custom exports to custom configs (see explanation at <Link href="#custom-hooks-exports" doNotInferSectionTitle={true} />):
+   - [migrate /examples/react-full](https://github.com/brillout/vite-plugin-ssr/commit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-4f57f0b913952581bf391a9cde442cb1e9f3e2a8e9b06d213fe1b450d58450f3)
+   - [migrate /examples/vue-full](https://github.com/brillout/vite-plugin-ssr/commit/b612023a6b209424a75aacb2fde9b2305c44f3ee#diff-a2b72a140b77af0c45a8692a277e3b5199a502249a43715af04d3255f23e6e37)
+ - Custom exports to custom configs (see migration explanation at <Link href="#custom-hooks-exports" doNotInferSectionTitle={true} />):
    - `pageContext.exports.documentProps` -> `pageContext.config.title`:
-   - [migrate /examples/vue-full](https://github.com/brillout/vite-plugin-ssr/commit/b612023a6b209424a75aacb2fde9b2305c44f3ee)
-     - [migrate /examples/react-full](https://github.com/brillout/vite-plugin-ssr/commit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-793fcad526e46c52916bab033cd16d35f05e1a6f18e4e43b45b3a28b8ba34f59)
+     - [migrate /examples/vue-full](https://github.com/brillout/vite-plugin-ssr/commit/b612023a6b209424a75aacb2fde9b2305c44f3ee#diff-a6e5f41440d58640eb9657abe90cedf2f41b01e34cd9d4dfc51d5c2757a85050)
+     - [migrate /examples/react-full](https://github.com/brillout/vite-plugin-ssr/commit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-cef88db49c9c381b7c787a9ea464c4b9803253a51e0af23ba3fb78d4f50f970d)
    - `pageContext.exports.Layout` -> `pageContext.config.Layout`:
      - [migrate /examples/layouts-react](https://github.com/brillout/vite-plugin-ssr/commit/9b31b7497510d4add7c0e4aa4f19675b2f37fa94#diff-366cb44a235f430b996e8cfb4a0e2a65388e9ea23caf635363ee87e56666d52eL9-R9)
-     - [migrate /examples/layouts-vue](https://github.com/brillout/vite-plugin-ssr/commit/499ee0184c4a6331e399ded299f413fc1d1a46e3)
+     - [migrate /examples/layouts-vue](https://github.com/brillout/vite-plugin-ssr/commit/499ee0184c4a6331e399ded299f413fc1d1a46e3#diff-056c4a494c1d68ae12d195e6d2f050d6f205b50cfe3efde4703a2755da3e37c6L15-R16)
    - `pageContext.exports.preloadStrategy` -> `pageContext.config.preloadStrategy`:
      - [migrate /examples/custom-preload](https://github.com/brillout/vite-plugin-ssr/commit/f28880b0b85cde12647aa0613c99dbdeadc467de#diff-f1f3a4c9f73f2c7ee1444e278cf4c6115efbee1cc294649e8f5a2a05a593f18dL15-R12)
  - I18n (pre-rendered) app (using hooks `onBeforeRoute()`, `onBeforePrerender()`, and `prerender()`):
@@ -254,14 +253,12 @@ export default {
 }
 ```
 
-Examples:
- - [/examples/react-full-v1/ > `/renderer/config.ts` > `meta`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/renderer/%2Bconfig.ts#L8)
- - [/examples/render-modes-v1/ > `/renderer/config.ts` > `meta`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/render-modes-v1/renderer/%2Bconfig.ts#L9)
+See <Link href="#examples" />. For an advanved example see: [/examples/render-modes-v1/ > `/renderer/config.ts` > `meta`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/render-modes-v1/renderer/%2Bconfig.ts#L9).
 
 
 ## `onBeforeRender` in `.page.js`
 
-If you have `onBeforeRender()` hooks defined in `.page.js` instead of `.page.server.js`:
+If you've defined `onBeforeRender()` hooks in `.page.js` instead of `.page.server.js`:
 
 ```ts
 // /renderer/+config.ts
@@ -271,22 +268,22 @@ import type { Config } from 'vite-plugin-ssr/types'
 export default {
   meta: {
     onBeforeRender: {
-      // Tell VPS to load and execute onBeforeRender() not only on the server but
-      // also in the client.
+      // We tell vite-plugin-ssr to load and execute onBeforeRender()
+      // not only on the server-side but also on the client-side.
       env: 'server-and-client'
     }
   }
 } satisfies Config
 ```
 
-For convenience, you can also define a [custom config `onBeforeRenderIsomorph: boolean`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/renderer/+config.ts#L12-L31) for a [page-per-page toggle](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/pages/star-wars/%40id/%2BonBeforeRenderIsomorph.ts).
+For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> to create a new [config `onBeforeRenderIsomorph: boolean`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/renderer/+config.ts#L12-L31) for a [page-per-page toggle](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/pages/star-wars/%40id/%2BonBeforeRenderIsomorph.ts).
 
 
-## Additional client code
+## Client init code
 
-For adding client-side code, you can continue using the same hooks as before: <Link text={<><code>onHydrationEnd()</code>, <code>onPageTransitionStart()</code>, and <code>onPageTransitionEnd()</code></>} href="/clientRouting#usage-options" doNotInferSectionTitle={true} />.
+The new config <Link text={<code>client</code>} href="/client" /> allows you to define client-side initialization code.
 
-You can now also use the new config `client`:
+> You can also continue using <Link text={<code>onHydrationEnd()</code>} href="/clientRouting#usage-options" />.
 
 ```js
 // +config.js
@@ -299,6 +296,3 @@ export default {
 // some-client-code.js
 console.log("I'm run when the client-side JavaScript is loaded.")
 ```
-
-See also:
- - <Link href="/client" />
