@@ -123,7 +123,7 @@ export default route
 
 > Each page now lives in its own new directory
 > ```bash
-> # ✅ V1 Design
+> # ✅ V1 design
 > $ ls pages/**/*
 > /pages/some-page/+Page.js
 > /pages/some-other-page/+Page.js
@@ -144,34 +144,37 @@ Apply following additional steps if you have defined:
 
 ## Examples
 
-All official examples have a V1 design copy (see [`examples/*-v1`](https://github.com/brillout/vite-plugin-ssr/tree/main/examples)), most notably:
- - Migration of very basic apps:
-   - [`428c1c` migrate examples/react to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/428c1c6b0fb7c9a5fa2f2fe57ac3e4bb0a57ea54)
-   - [`b87e6d` migrate examples/vue to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/b87e6dc85462d74f16fdfd0eb4dee1c2c8d29325)
- - Migration of custom exports to custom configs (see explanation at <Link href="#custom-hooks-exports" doNotInferSectionTitle={true} />):
-   - `pageContext.export.Layout` -> `pageContext.config.Layout`:
-     - [`9b31b7` migrate /examples/layouts-react/ to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/9b31b7497510d4add7c0e4aa4f19675b2f37fa94)
-     - [`6f7b50` migrate /examples/layouts-vue/ to V1 design](https://github.com/brillout/vite-plugin-ssr/commit/6f7b5043dafe88ba113b28ac4be1b0e0d5cb90a0)
-   - `pageContext.exports.preloadStrategy` -> `pageContext.config.preloadStrategy`:
-     - [`f28880` migrate /examples/custom-preload/ to V1 Design](https://github.com/brillout/vite-plugin-ssr/commit/f28880b0b85cde12647aa0613c99dbdeadc467de)
- - Migration of a `onBeforeRender()` hook:
-   - Defined globally in `renderer/`:
-     - graphql-apollo-vue
-     - vue-pinia
-     - vuex
-     - redux
+All official examples have been migrated, see [`examples/*-v1`](https://github.com/brillout/vite-plugin-ssr/tree/main/examples).
+
+Most notably the migration of:
+ - Basic apps:
+   - [migrate /examples/react](https://github.com/brillout/vite-plugin-ssr/commit/428c1c6b0fb7c9a5fa2f2fe57ac3e4bb0a57ea54)
+   - [migrate /examples/vue](https://github.com/brillout/vite-plugin-ssr/commit/b87e6dc85462d74f16fdfd0eb4dee1c2c8d29325)
+ - A `onBeforeRender()` hook:
    - Defined by page in `pages/`:
-     - telefunc
-     - react-full
-     - vue-full
-     - i18n?
-   - [migrate /examples/graphql-apollo-vue/ to V1 Design] aa2055f731f2ed8fc4f8763edcdc1f76ced7d061
-   - [migrate /examples/redux/ to V1 design] 69c06b03c5ce5199147eb0f2e574c626038d18a7
- - Pre-rendered app:
-   - react-full
-   - vue-full
- - Migration of a pre-rendered i18n app (using hooks `onBeforeRoute()`, `onBeforePrerender()`/<Link text={<><code>onBeforePrerenderStart</code></>} href="#renamed-hooks" />, and `prerender()`/<Link text={<><code>onPrerenderStart</code></>} href="#renamed-hooks" />):
-   - TODO
+     - [migrate /examples/telefunc](https://github.com/brillout/vite-plugin-ssr/commit/bfcd801419acd18c676b49d835c805ef6e89a607#diff-41adf2b043a30483759686ad913c5dba5dc4d0594d45913cf5a504f2205ce8a4)
+     - [migrate /examples/i18n](https://github.com/brillout/vite-plugin-ssr/commit/9dd3db3bb6f0c1fc16befa9f504e94ea732339e8#diff-c4d06dd7331553f9855baa90f752a40b51c379631574135f38e50c9da40fa1ee)
+     - [migrate /examples/react-full](https://github.com/brillout/vite-plugin-ssr/commit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-793fcad526e46c52916bab033cd16d35f05e1a6f18e4e43b45b3a28b8ba34f59)
+     - [migrate /examples/vue-full](https://github.com/brillout/vite-plugin-ssr/commit/b612023a6b209424a75aacb2fde9b2305c44f3ee#diff-adc0afea381da59cdf122fc6cbb11a3df777fc6436d4999d6e106ad0f7330160)
+   - Defined globally in `renderer/`:
+     - [migrate /examples/redux](https://github.com/brillout/vite-plugin-ssr/commit/69c06b03c5ce5199147eb0f2e574c626038d18a7)
+     - [migrate /examples/graphql-apollo-vue/](https://github.com/brillout/vite-plugin-ssr/commit/aa2055f731f2ed8fc4f8763edcdc1f76ced7d061)
+     - [migrate /examples/vue-pinia](https://github.com/brillout/vite-plugin-ssr/commit/2b830d0db9a9cd2cb9b4402a00887cd840a16eda)
+     - [migrate /examples/vuex](https://github.com/brillout/vite-plugin-ssr/commit/499d01e3f44328e2d74747169ef65236253ac6f6)
+ - Pre-rendered app (using `prerender()` hooks):
+   - [migrate /examples/react-full](https://github.com/brillout/vite-plugin-ssr/commit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-793fcad526e46c52916bab033cd16d35f05e1a6f18e4e43b45b3a28b8ba34f59)
+   - [migrate /examples/vue-full](https://github.com/brillout/vite-plugin-ssr/commit/b612023a6b209424a75aacb2fde9b2305c44f3ee)
+ - Custom exports to custom configs (see explanation at <Link href="#custom-hooks-exports" doNotInferSectionTitle={true} />):
+   - `pageContext.exports.documentProps` -> `pageContext.config.title`:
+   - [migrate /examples/vue-full](https://github.com/brillout/vite-plugin-ssr/commit/b612023a6b209424a75aacb2fde9b2305c44f3ee)
+     - [migrate /examples/react-full](https://github.com/brillout/vite-plugin-ssr/commit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-793fcad526e46c52916bab033cd16d35f05e1a6f18e4e43b45b3a28b8ba34f59)
+   - `pageContext.exports.Layout` -> `pageContext.config.Layout`:
+     - [migrate /examples/layouts-react](https://github.com/brillout/vite-plugin-ssr/commit/9b31b7497510d4add7c0e4aa4f19675b2f37fa94#diff-366cb44a235f430b996e8cfb4a0e2a65388e9ea23caf635363ee87e56666d52eL9-R9)
+     - [migrate /examples/layouts-vue](https://github.com/brillout/vite-plugin-ssr/commit/499ee0184c4a6331e399ded299f413fc1d1a46e3)
+   - `pageContext.exports.preloadStrategy` -> `pageContext.config.preloadStrategy`:
+     - [migrate /examples/custom-preload](https://github.com/brillout/vite-plugin-ssr/commit/f28880b0b85cde12647aa0613c99dbdeadc467de#diff-f1f3a4c9f73f2c7ee1444e278cf4c6115efbee1cc294649e8f5a2a05a593f18dL15-R12)
+ - I18n (pre-rendered) app (using hooks `onBeforeRoute()`, `onBeforePrerender()`, and `prerender()`):
+   - [migrate /examples/i18n](https://github.com/brillout/vite-plugin-ssr/commit/9dd3db3bb6f0c1fc16befa9f504e94ea732339e8#diff-50a58ddbb03951878eebb954f765ff2406b04dad278c69c9ce03d9bff567ad76)
 
 
 
