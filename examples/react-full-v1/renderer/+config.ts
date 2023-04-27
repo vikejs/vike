@@ -4,7 +4,6 @@ export default {
   passToClient: ['pageProps', 'title', 'someAsyncProps'],
   clientRouting: true,
   hydrationCanBeAborted: true,
-  prerender: true,
   meta: {
     title: {
       env: 'server-and-client'
