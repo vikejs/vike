@@ -1,3 +1,5 @@
+export default onRenderHtml
+
 import { renderToStream } from 'react-streaming/server'
 import React from 'react'
 import { escapeInject } from 'vite-plugin-ssr/server'
@@ -5,12 +7,7 @@ import { PageShell } from './PageShell'
 import { getPageTitle } from './getPageTitle'
 import type { PageContextServer } from './types'
 
-export { render }
-export { passToClient }
-
-const passToClient = ['pageProps', 'documentProps', 'someAsyncProps']
-
-async function render(pageContext: PageContextServer) {
+async function onRenderHtml(pageContext: PageContextServer) {
   const { Page, pageProps } = pageContext
 
   const stream = await renderToStream(

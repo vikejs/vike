@@ -1,7 +1,7 @@
+export default Page
+
 import React from 'react'
 import type { Movie } from '../types'
-
-export { Page }
 
 function Page({ movies }: { movies: Movie[] }) {
   return (

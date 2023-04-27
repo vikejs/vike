@@ -1,9 +1,4 @@
-export { render }
-export { onHydrationEnd }
-export { onPageTransitionStart }
-export { onPageTransitionEnd }
-export const clientRouting = true
-export const hydrationCanBeAborted = true
+export default onRenderClient
 
 import './css/index.css'
 import React from 'react'
@@ -13,7 +8,7 @@ import { getPageTitle } from './getPageTitle'
 import type { PageContextClient } from './types'
 
 let root: ReactDOM.Root
-async function render(pageContext: PageContextClient) {
+async function onRenderClient(pageContext: PageContextClient) {
   const { Page, pageProps } = pageContext
   const page = (
     <PageShell pageContext={pageContext}>
@@ -30,16 +25,4 @@ async function render(pageContext: PageContextClient) {
     root.render(page)
   }
   document.title = getPageTitle(pageContext)
-}
-
-function onHydrationEnd() {
-  console.log('Hydration finished; page is now interactive.')
-}
-function onPageTransitionStart() {
-  console.log('Page transition start')
-  document.querySelector('body')!.classList.add('page-is-transitioning')
-}
-function onPageTransitionEnd() {
-  console.log('Page transition end')
-  document.querySelector('body')!.classList.remove('page-is-transitioning')
 }
