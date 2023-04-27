@@ -1,4 +1,4 @@
-// https://vite-plugin-ssr.com/render
+// https://vite-plugin-ssr.com/onBeforeRender
 export default onBeforeRender
 
 import { renderToString } from '@vue/server-renderer'

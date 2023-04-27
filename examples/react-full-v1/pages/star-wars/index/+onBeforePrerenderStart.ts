@@ -1,7 +1,10 @@
+// https://vite-plugin-ssr.com/onBeforePrerenderStart
+export default onBeforePrerenderStart
+
 import { filterMovieData } from '../filterMovieData'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
 
-export default async function () {
+async function onBeforePrerenderStart() {
   const movies = await getStarWarsMovies()
 
   return [

@@ -1,3 +1,4 @@
+// https://vite-plugin-ssr.com/onBeforeRender
 export default onBeforeRender
 
 import ReactDOMServer from 'react-dom/server'

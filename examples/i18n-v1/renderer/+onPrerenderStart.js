@@ -1,3 +1,4 @@
+// https://vite-plugin-ssr.com/onPrerenderStart
 export default onPrerenderStart
 
 import { locales, localeDefault } from '../locales'

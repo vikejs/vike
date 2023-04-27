@@ -1,3 +1,4 @@
+// https://vite-plugin-ssr.com/onBeforeRender
 export default onBeforeRender
 
 import { fetchStarWarsMovies, filterMoviesData, getTitle } from './data'

@@ -1,3 +1,4 @@
+// https://vite-plugin-ssr.com/onBeforePrerenderStart
 export default onBeforePrerenderStart
 
 import { filterMovieData } from '../filterMovieData'
