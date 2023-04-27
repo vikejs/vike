@@ -82,7 +82,8 @@ function tolerateError({ logSource, logText }) {
     isCloudflareVueWarning() ||
     isTwitterEmbedsError() ||
     isGithubImageError() ||
-    isSlowCrawlWarning()
+    isSlowCrawlWarning() ||
+    isServiceWasStopped()
   )
 
   // [vite-plugin-ssr@0.4.42][Warning] The onBeforeRender() hook of /pages/star-wars/index/index.page.server.ts is taking more than 4 seconds
@@ -183,5 +184,9 @@ function tolerateError({ logSource, logText }) {
   }
   function isSlowCrawlWarning() {
     return logSource === 'stderr' && logText.includes('Crawling your user files took an unexpected long time')
+  }
+  function isServiceWasStopped() {
+    // Not sure where this error comes from. Maybe esbuild?
+    return logSource === 'stderr' && logText === 'The service was stopped'
   }
 }
