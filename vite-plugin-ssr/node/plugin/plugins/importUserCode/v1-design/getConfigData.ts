@@ -175,10 +175,9 @@ async function loadConfigData(
         pageConfigGlobal[configName] = configElement
       } else {
         assert('configValue' in configElement)
-        configElement.configValueFilePath
         assertWarning(
           false,
-          `Being able to define config '${configName}' in +${
+          `${configElement.configDefinedByFile} Being able to define config '${configName}' in +${
             configElement.configValueFilePath ? configName : 'config'
           }.js is experimental and will likely be removed. Define it at vite-plugin-ssr's Vite plugin instead.`,
           { onlyOnce: true, showStackTrace: false }
@@ -668,7 +667,7 @@ function applyEffects(
     const { configValue, configDefinedAt } = configElementEffect
     const configMod = configDef.effect({
       configValue,
-      configDefinedAt: configDefinedAt
+      configDefinedAt
     })
     if (!configMod) return
     objectEntries(configMod).forEach(([configName, configModValue]) => {

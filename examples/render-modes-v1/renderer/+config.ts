@@ -3,9 +3,7 @@ import type { Config, Env } from 'vite-plugin-ssr/types'
 export default {
   clientRouting: true,
   hydrationCanBeAborted: true,
-  // See https://vite-plugin-ssr.com/data-fetching
   passToClient: ['pageProps'],
-  includeAssetsImportedByServer: true,
   meta: {
     renderMode: {
       env: 'config-only',

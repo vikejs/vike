@@ -8,8 +8,6 @@ Before beta release:
  - assert global configs cannot be defined in page-specific config
    - already done? Use/remove c_global?
  - prepare vike.config.js
-   - Remove moving global configs to /pages/+config.js from migration
-   - Redefine global configs in vite.config.js in examples
    - Remove global config from `Config`
  - test all features
    - `prerender: false`
