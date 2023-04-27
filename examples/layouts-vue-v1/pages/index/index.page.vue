@@ -18,3 +18,8 @@
     cursus dui ac porta. Duis tincidunt pretium ullamcorper.
   </p>
 </template>
+
+<script>
+export { default as Layout } from './Layout.vue'
+export default {}
+</script>

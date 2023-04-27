@@ -12,8 +12,7 @@ function createApp(pageContext) {
     data: () => ({
       Page: markRaw(Page),
       pageProps: markRaw(pageContext.pageProps || {}),
-      // The config 'Layout' is a custom config we defined at ./+config.ts
-      Layout: markRaw(pageContext.config.Layout || LayoutDefault)
+      Layout: markRaw(pageContext.exports.Layout || LayoutDefault)
     }),
     created() {
       rootComponent = this
@@ -38,8 +37,7 @@ function createApp(pageContext) {
     Object.assign(pageContextReactive, pageContext)
     rootComponent.Page = markRaw(pageContext.Page)
     rootComponent.pageProps = markRaw(pageContext.pageProps || {})
-    // The config 'Layout' is a custom config we defined at ./+config.ts
-    rootComponent.Layout = markRaw(pageContext.config.Layout || LayoutDefault)
+    rootComponent.Layout = markRaw(pageContext.exports.Layout || LayoutDefault)
   }
 
   // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `_default.page.client.js`).
