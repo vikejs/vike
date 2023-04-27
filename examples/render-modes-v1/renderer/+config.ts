@@ -1,9 +1,11 @@
 import type { Config, Env } from 'vite-plugin-ssr/types'
 
+// https://vite-plugin-ssr.com/config
 export default {
   clientRouting: true,
   hydrationCanBeAborted: true,
   passToClient: ['pageProps'],
+  // https://vite-plugin-ssr.com/meta
   meta: {
     renderMode: {
       env: 'config-only',

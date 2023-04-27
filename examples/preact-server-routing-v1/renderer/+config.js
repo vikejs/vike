@@ -1,4 +1,5 @@
+// https://vite-plugin-ssr.com/config
 export default {
-  // See https://vite-plugin-ssr.com/passToClient
+  // https://vite-plugin-ssr.com/passToClient
   passToClient: ['pageProps', 'urlPathname']
 }
