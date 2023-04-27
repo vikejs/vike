@@ -67,22 +67,25 @@ function replaceImportStatements(code: string): { code: string; fileImports: Fil
   return { code: codeMod, fileImports }
 }
 
+const _import = '_import'
+const separator = ':'
 type ImportData = { importPath: string; importName: string }
 function serializeImportData({ importPath, importName }: ImportData): string {
-  return `_import|${importPath}|${importName}`
+  // `_import:${importPath}:${importPath}`
+  return [_import, separator, importPath, separator, importName].join('')
 }
 function isImportData(str: string): boolean {
-  return str.startsWith('_import|')
+  return str.startsWith(_import + separator)
 }
 function parseImportData(str: string): null | ImportData {
   if (!isImportData(str)) {
     return null
   }
-  const parts = str.split('|')
-  assert(parts[0] === '_import')
+  const parts = str.split(separator)
+  assert(parts[0] === _import)
   assert(parts.length >= 3)
   const importName = parts[parts.length - 1]!
-  const importPath = parts.slice(1, -1).join('|')
+  const importPath = parts.slice(1, -1).join(separator)
   return { importPath, importName }
 }
 
