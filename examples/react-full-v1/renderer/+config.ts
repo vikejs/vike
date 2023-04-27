@@ -4,11 +4,13 @@ export default {
   passToClient: ['pageProps', 'title', 'someAsyncProps'],
   clientRouting: true,
   hydrationCanBeAborted: true,
+  // https://vite-plugin-ssr.com/meta
   meta: {
+    // Create new config 'title'
     title: {
       env: 'server-and-client'
     },
-    // We create a custom config 'onBeforeRenderIsomorph'
+    // Create new config 'onBeforeRenderIsomorph'
     onBeforeRenderIsomorph: {
       env: 'config-only',
       effect({ configDefinedAt, configValue }) {
