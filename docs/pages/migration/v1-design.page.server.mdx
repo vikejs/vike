@@ -172,7 +172,7 @@ Notable migrations:
      - [migrate /examples/layouts-vue](https://github.com/brillout/vite-plugin-ssr/commit/499ee0184c4a6331e399ded299f413fc1d1a46e3#diff-056c4a494c1d68ae12d195e6d2f050d6f205b50cfe3efde4703a2755da3e37c6L15-R16)
    - `pageContext.exports.preloadStrategy` -> `pageContext.config.preloadStrategy`:
      - [migrate /examples/custom-preload](https://github.com/brillout/vite-plugin-ssr/commit/f28880b0b85cde12647aa0613c99dbdeadc467de#diff-f1f3a4c9f73f2c7ee1444e278cf4c6115efbee1cc294649e8f5a2a05a593f18dL15-R12)
- - I18n (pre-rendered) app (using hooks `onBeforeRoute()`, `onBeforePrerender()`, and `prerender()`):
+ - i18n (pre-rendered) app (using hooks `onBeforeRoute()`, `onBeforePrerender()`, and `prerender()`):
    - [migrate /examples/i18n](https://github.com/brillout/vite-plugin-ssr/commit/9dd3db3bb6f0c1fc16befa9f504e94ea732339e8#diff-50a58ddbb03951878eebb954f765ff2406b04dad278c69c9ce03d9bff567ad76)
 
 
@@ -253,7 +253,7 @@ export default {
 }
 ```
 
-See <Link href="#examples" />. For an advanved example see: [/examples/render-modes-v1/ > `/renderer/config.ts` > `meta`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/render-modes-v1/renderer/%2Bconfig.ts#L9).
+See <Link href="#examples" /> and [example of implementing a `config.renderMode`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/render-modes-v1/renderer/%2Bconfig.ts#L9).
 
 
 ## `onBeforeRender` in `.page.js`
