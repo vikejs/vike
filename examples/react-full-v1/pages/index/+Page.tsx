@@ -1,8 +1,8 @@
-export default { Page }
+export default Page
 
 import React from 'react'
 import { navigate } from 'vite-plugin-ssr/client/router'
-import { Counter } from '../components/Counter'
+import { Counter } from '../../components/Counter'
 
 function Page() {
   return (
@@ -21,8 +21,7 @@ function Page() {
         <button
           onClick={() => {
             const randomIndex = Math.floor(Math.random() * 3)
-            const url = ['/markdown', '/star-wars', '/hello/alice'][randomIndex]
-            navigate(url, { keepScrollPosition: true })
+            navigate(['/markdown', '/star-wars', '/hello/alice'][randomIndex])
           }}
         >
           Random Page
