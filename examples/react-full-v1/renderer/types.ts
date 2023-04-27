@@ -20,12 +20,14 @@ type PageProps = Record<string, unknown>
 export type PageContextCustom = {
   Page: Page
   pageProps?: PageProps
-  config: {
-    /** Title defined statically by /pages/some-page/+title.js (or by `export default { title }` in /pages/some-page/+config.js) */
-    title?: string
+  exports: {
+    documentProps?: {
+      title: string
+    }
   }
-  /** Title defined dynamically by onBeforeRender() */
-  title?: string
+  documentProps?: {
+    title: string
+  }
 }
 
 type PageContextServer = PageContextBuiltIn<Page> & PageContextCustom

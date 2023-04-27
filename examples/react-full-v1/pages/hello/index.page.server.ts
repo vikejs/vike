@@ -1,9 +1,10 @@
-export default onBeforeRender
-
 import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
 
-import { names } from './names'
+export { onBeforeRender }
+export { prerender }
+
+const names = ['evan', 'rom', 'alice', 'jon', 'eli']
 
 async function onBeforeRender(pageContext: PageContextBuiltIn) {
   const { name } = pageContext.routeParams
@@ -17,4 +18,8 @@ async function onBeforeRender(pageContext: PageContextBuiltIn) {
       pageProps
     }
   }
+}
+
+function prerender(): string[] {
+  return ['/hello', ...names.map((name) => `/hello/${name}`)]
 }
