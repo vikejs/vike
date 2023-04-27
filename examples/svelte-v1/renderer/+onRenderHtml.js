@@ -1,10 +1,13 @@
+// https://vite-plugin-ssr.com/onRenderHtml
+export default onRenderHtml
+
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 
 const base = import.meta.env.BASE_URL
 
 import Layout from './Layout.svelte'
 
-export default async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext) {
   const app = Layout.render(pageContext)
   const { html, head, css } = app
 

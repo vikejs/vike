@@ -1,3 +1,4 @@
+// https://vite-plugin-ssr.com/onRenderClient
 export default onRenderClient
 
 import { hydrate } from 'preact'

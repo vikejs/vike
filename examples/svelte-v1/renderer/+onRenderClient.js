@@ -1,6 +1,9 @@
+// https://vite-plugin-ssr.com/onRenderClient
+export default onRenderClient
+
 import Layout from './Layout.svelte'
 
-export default function onRenderClient(pageContext) {
+function onRenderClient(pageContext) {
   const target = document.getElementById('app')
 
   const { Page, pageProps } = pageContext

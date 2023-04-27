@@ -1,3 +1,4 @@
+// https://vite-plugin-ssr.com/onRenderHtml
 export default onRenderHtml
 
 import React from 'react'
