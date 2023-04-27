@@ -1,3 +1,18 @@
+## [0.4.118](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.117...v0.4.118) (2023-04-27)
+
+
+### Bug Fixes
+
+* [V1 design] properly handle empty string config values (fix [#817](https://github.com/brillout/vite-plugin-ssr/issues/817)) ([60f7b34](https://github.com/brillout/vite-plugin-ssr/commit/60f7b34bef858d2f0dd6ec7461c23af584cc568a))
+* add page files to server entries on the server-side as well ([cc293e6](https://github.com/brillout/vite-plugin-ssr/commit/cc293e66ba99d7bad75f40a02666677b140814dd))
+* apply pre-render force exit in a last-order Rollup hook ([#807](https://github.com/brillout/vite-plugin-ssr/issues/807)) ([7d50676](https://github.com/brillout/vite-plugin-ssr/commit/7d50676e57c4d3ad743f4cbea86e5028f2b686d6))
+* ensure each client entry gets bundle ([#820](https://github.com/brillout/vite-plugin-ssr/issues/820)) ([a5b47af](https://github.com/brillout/vite-plugin-ssr/commit/a5b47af8706d4bb64de8c1cdabb18ab07d1a9f27))
+* improve dist/ filenames ([cbd38b4](https://github.com/brillout/vite-plugin-ssr/commit/cbd38b404b2dc2bd2a5b40a9d620f4a3e4d64de1))
+* revert autoFullBuild sequential pre order ([4df2571](https://github.com/brillout/vite-plugin-ssr/commit/4df2571275fd50696e33cd44dbd9a974d3ba2748))
+* set autoFullBuild Rollup hooks as sequential ([#807](https://github.com/brillout/vite-plugin-ssr/issues/807)) ([a2bc5fa](https://github.com/brillout/vite-plugin-ssr/commit/a2bc5fa185f07abfce4285fdc9e7b8acc7093bde))
+
+
+
 ## [0.4.117](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.116...v0.4.117) (2023-04-24)
 
 
