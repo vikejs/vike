@@ -42,7 +42,7 @@ function autoFullBuild(): Plugin[] {
       name: 'vite-plugin-ssr:autoFullBuild:forceExit',
       apply: 'build',
       enforce: 'post',
-      writeBundle: {
+      closeBundle: {
         sequential: true,
         order: 'post',
         handler() {
