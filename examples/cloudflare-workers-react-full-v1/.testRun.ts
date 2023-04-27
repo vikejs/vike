@@ -31,7 +31,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
   /*
   // Cloudflare Workers servers aren't reliable lately
   if (isWrangler) {
-    skip('SKIPPED: temporarily skip wrangler tests.)')
+    skip('SKIPPED: temporarily skip wrangler tests.')
     return
   }
   //*/
