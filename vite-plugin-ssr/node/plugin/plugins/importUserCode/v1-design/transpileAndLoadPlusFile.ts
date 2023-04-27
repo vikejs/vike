@@ -139,6 +139,7 @@ function assertFileImports(
     if (!isImportData(exportVal)) return
     const importData = exportVal
     const found = fileImports.filter((fi) => fi.data === importData)
+    if (found.length === 0) return
     assert(found.length === 1)
     found[0]!.isReExported = true
   })
