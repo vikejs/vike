@@ -14,7 +14,7 @@ type FileImport = {
   data: string
   importVarName: string
 }
-function replaceImportStatements(code: string): { code: string; fileImports: FileImport[] } {
+function replaceImportStatements(code: string): string {
   const { body } = parse(code, {
     ecmaVersion: 'latest',
     sourceType: 'module'
@@ -64,7 +64,7 @@ function replaceImportStatements(code: string): { code: string; fileImports: Fil
   })
 
   const codeMod = spliceMany(code, spliceOperations)
-  return { code: codeMod, fileImports }
+  return codeMod
 }
 
 const _import = '_import'
