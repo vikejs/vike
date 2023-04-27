@@ -463,7 +463,7 @@ function getCodeFilePath(
   return { codeFilePath, configValueFileExport }
 }
 
-/*
+/* TODO: remove parts, and move others parts to replaceImportStatements.ts
 function assertCodeFilePathConfigValue(
   configValue: string,
   pageConfigFilePath: string,
