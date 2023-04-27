@@ -175,6 +175,14 @@ async function loadConfigData(
         pageConfigGlobal[configName] = configElement
       } else {
         assert('configValue' in configElement)
+        configElement.configValueFilePath
+        assertWarning(
+          false,
+          `Being able to define config '${configName}' in +${
+            configElement.configValueFilePath ? configName : 'config'
+          }.js is experimental and will likely be removed. Define it at vite-plugin-ssr's Vite plugin instead.`,
+          { onlyOnce: true, showStackTrace: false }
+        )
         vikeConfig[configName] = configElement.configValue
       }
     })
@@ -409,10 +417,7 @@ function getCodeFilePath(
   if (configValue === '') {
     assertUsage(
       !enforce,
-      `${getErrorIntro(
-        pageConfigFilePath,
-        configName
-      )} to a value with an invalid value '' (emtpy string)`
+      `${getErrorIntro(pageConfigFilePath, configName)} to a value with an invalid value '' (emtpy string)`
     )
     return null
   }
