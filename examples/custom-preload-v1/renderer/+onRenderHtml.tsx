@@ -10,6 +10,7 @@ import { PageLayout } from './PageLayout'
 
 async function onRenderHtml(pageContext: any) {
   const { Page, pageProps } = pageContext
+  // The config 'preloadStrategy' is a custom config we defined at ./+config.ts
   const { preloadStrategy } = pageContext.config
   const pageHtml = renderToString(
     <PageLayout>

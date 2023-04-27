@@ -12,6 +12,7 @@ function createApp(pageContext) {
     data: () => ({
       Page: markRaw(Page),
       pageProps: markRaw(pageContext.pageProps || {}),
+      // The config 'Layout' is a custom config we defined at ./+config.ts
       Layout: markRaw(pageContext.exports.Layout || LayoutDefault)
     }),
     created() {
