@@ -6,7 +6,7 @@ import {
   assert,
   isObject,
   assertUsage,
-  isPosixPath,
+  // isPosixPath,
   toPosixPath,
   assertWarning,
   addFileExtensionsToRequireResolve,
@@ -406,7 +406,16 @@ function getCodeFilePath(
     )
     return null
   }
-
+  if (configValue === '') {
+    assertUsage(
+      !enforce,
+      `${getErrorIntro(
+        pageConfigFilePath,
+        configName
+      )} to a value with an invalid value '' (emtpy string)`
+    )
+    return null
+  }
   const importData = parseImportData(configValue)
 
   let codeFilePath: string
@@ -416,10 +425,12 @@ function getCodeFilePath(
     codeFilePath = path.posix.join(userRootDir, path.posix.dirname(pageConfigFilePath), toPosixPath(importPath))
     configValueFileExport = importName
   } else {
-    // TODO: remove
+    /* TODO: remove? Do we need this for vike-* packages?
     const vitePath = getVitePathFromConfigValue(toPosixPath(configValue), pageConfigFilePath)
     codeFilePath = path.posix.join(userRootDir, vitePath)
     configValueFileExport = 'default'
+    */
+    return null
   }
   assertPosixPath(userRootDir)
   assertPosixPath(codeFilePath)
@@ -437,10 +448,11 @@ function getCodeFilePath(
 
   if (!enforce && !fileExists) return null
 
-  // TODO: remove
+  /* TODO: remove
   if (!importData) {
     assertCodeFilePathConfigValue(configValue, pageConfigFilePath, codeFilePath, fileExists, configName)
   }
+  */
 
   // Make relative to userRootDir
   codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
@@ -451,6 +463,7 @@ function getCodeFilePath(
   return { codeFilePath, configValueFileExport }
 }
 
+/*
 function assertCodeFilePathConfigValue(
   configValue: string,
   pageConfigFilePath: string,
@@ -505,7 +518,9 @@ function assertCodeFilePathConfigValue(
     )
   }
 }
+*/
 
+/*
 function getVitePathFromConfigValue(codeFilePath: string, pageConfigFilePath: string): string {
   const pageConfigDir = dirnameNormalized(pageConfigFilePath)
   if (!codeFilePath.startsWith('/')) {
@@ -516,6 +531,7 @@ function getVitePathFromConfigValue(codeFilePath: string, pageConfigFilePath: st
   assert(codeFilePath.startsWith('/'))
   return codeFilePath
 }
+*/
 
 function getVitePathFromAbsolutePath(filePathAbsolute: string, root: string): string {
   assertPosixPath(filePathAbsolute)
@@ -527,6 +543,7 @@ function getVitePathFromAbsolutePath(filePathAbsolute: string, root: string): st
   return vitePath
 }
 
+/*
 function dirnameNormalized(filePath: string) {
   assertPosixPath(filePath)
   let fileDir = path.posix.dirname(filePath)
@@ -534,6 +551,7 @@ function dirnameNormalized(filePath: string) {
   fileDir = fileDir + '/'
   return fileDir
 }
+*/
 
 function getErrorIntro(filePath: string, configName: string): string {
   assert(filePath.startsWith('/') || isNpmPackageImportPath(filePath))

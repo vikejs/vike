@@ -1,3 +1,3 @@
 export default {
-  Page: './Page.jsx'
+  Page: '_import:./Page.jsx:Page'
 }
