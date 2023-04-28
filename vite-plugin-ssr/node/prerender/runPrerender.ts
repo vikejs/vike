@@ -32,7 +32,7 @@ import {
   prerender404Page,
   initPageContext
 } from '../runtime/renderPage/renderPageContext'
-import { blue, green, gray, cyan } from '@brillout/picocolors'
+import { blue, green, gray, cyan } from 'picocolors'
 import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles'
 import { getGlobalContext, initGlobalContext } from '../runtime/globalContext'

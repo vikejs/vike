@@ -4,7 +4,7 @@ import { PageFile } from '../../../shared/getPageFiles'
 import { PageRoutes, loadPageRoutes } from '../../../shared/route'
 import { getGlobalContext } from '../globalContext'
 import { assert, assertUsage, assertInfo, compareString } from '../utils'
-import pc from '@brillout/picocolors'
+import pc from 'picocolors'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
 

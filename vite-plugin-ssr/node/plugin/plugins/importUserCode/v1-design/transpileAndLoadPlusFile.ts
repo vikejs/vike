@@ -4,7 +4,7 @@ export { transpileAndLoadConfigValueFile }
 import esbuild, { type BuildResult, type BuildOptions } from 'esbuild'
 import fs from 'fs'
 import path from 'path'
-import pc from '@brillout/picocolors'
+import pc from 'picocolors'
 import { import_ } from '@brillout/import'
 import {
   assertPosixPath,

@@ -4,7 +4,7 @@ export * from './index-common'
 export * from '../../types/index-dreprecated'
 
 import { assertWarning } from './utils'
-import pc from '@brillout/picocolors'
+import pc from 'picocolors'
 assertWarning(
   false,
   [
