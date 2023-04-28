@@ -3,7 +3,7 @@ export { addSsrMiddleware }
 import { renderPage } from '../../runtime/renderPage'
 import type { OnRenderResult } from '../../runtime/renderPage/onRenderResult'
 import type { ViteDevServer } from 'vite'
-import pc from 'picocolors'
+import pc from '@brillout/picocolors'
 import { assert, projectInfo } from '../utils'
 
 type ConnectServer = ViteDevServer['middlewares']
