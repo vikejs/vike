@@ -4,7 +4,7 @@ export { isTranspileError }
 // Copied & adapted from https://github.com/vitejs/vite/blob/9c114c5c72a6af87e3330d5573362554b4511265/packages/vite/src/node/server/middlewares/error.ts
 
 // import strip from 'strip-ansi'
-import colors from 'picocolors'
+import colors from '@brillout/picocolors'
 import { isObject } from '../utils'
 import type { ViteDevServer, Rollup } from 'vite'
 type RollupError = Rollup.RollupError

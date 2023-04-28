@@ -14,7 +14,7 @@ export { createPageRenderer } from '../createPageRenderer'
 // TODO/v1-release: remove
 import { assertWarning } from './utils'
 import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/RenderErrorPage'
-import pc from 'picocolors'
+import pc from '@brillout/picocolors'
 export const RenderErrorPage: typeof RenderErrorPage_ = (...args) => {
   assertWarning(
     false,

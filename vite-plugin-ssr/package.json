@@ -15,24 +15,26 @@
   "dependencies": {
     "@brillout/import": "0.2.3",
     "@brillout/json-serializer": "^0.5.3",
+    "@brillout/picocolors": "^1.0.4",
     "@brillout/vite-plugin-import-build": "^0.2.16",
     "acorn": "^8.0.0",
     "cac": "^6.0.0",
     "es-module-lexer": "^0.10.0",
     "esbuild": "^0.17.0",
     "fast-glob": "^3.0.0",
-    "picocolors": "^1.0.0",
     "sirv": "^2.0.0"
   },
   "exports": {
     ".": {
       "worker": "./dist/cjs/node/runtime/index-deprecated.js",
+      "edge-light": "./dist/cjs/node/runtime/index-deprecated.js",
       "node": "./dist/cjs/node/runtime/index-deprecated.js",
       "browser": "./dist/esm/client/node.js",
       "types": "./dist/types/node/runtime/index-deprecated.d.ts"
     },
     "./server": {
       "worker": "./dist/cjs/node/runtime/index.js",
+      "edge-light": "./dist/cjs/node/runtime/index.js",
       "node": "./dist/cjs/node/runtime/index.js",
       "browser": "./dist/esm/client/node.js",
       "types": "./dist/types/node/runtime/index.d.ts"
@@ -45,12 +47,14 @@
     },
     "./client/router": {
       "worker": "./dist/cjs/node/client/router.js",
+      "edge-light": "./dist/cjs/node/client/router.js",
       "node": "./dist/cjs/node/client/router.js",
       "browser": "./dist/esm/client/router/index.js",
       "types": "./dist/types/client/router/index.d.ts"
     },
     "./routing": {
       "worker": "./dist/cjs/shared/route/routing.js",
+      "edge-light": "./dist/cjs/shared/route/routing.js",
       "node": "./dist/cjs/shared/route/routing.js",
       "browser": "./dist/esm/shared/route/routing.js",
       "types": "./dist/types/shared/route/routing.d.ts"
@@ -69,6 +73,7 @@
     },
     "./RenderErrorPage": {
       "worker": "./dist/cjs/shared/RenderErrorPage.js",
+      "edge-light": "./dist/cjs/shared/RenderErrorPage.js",
       "node": "./dist/cjs/shared/RenderErrorPage.js",
       "browser": "./dist/esm/shared/RenderErrorPage.js",
       "types": "./dist/types/shared/RenderErrorPage.d.ts"
