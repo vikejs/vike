@@ -19,11 +19,11 @@ import type { Config } from 'vite-plugin-ssr/types'
 export default {
   meta: {
     title: {
-      // We make the config value available on both the server and client
+      // Make `title` value available on both the server and client
       env: 'server-and-client'
     },
     description: {
-      // We make the config value available only on the server
+      // Make `description` value available only on the server-side
       env: 'server-only'
     }
   }
@@ -98,9 +98,9 @@ export default {
 } satisfies Config
 ```
 
-> Making `onBeforeRender()` isomorphic allows us to fetch data directly between the user's browser and the data source (without involving our SSR server), see <Link href="/onBeforeRender#client-routing" doNotInferSectionTitle={true} />.
+> Making `onBeforeRender()` isomorphic allows us to fetch data directly between the user's browser and the data source (without involving our SSR server). See <Link href="/onBeforeRender#client-routing" doNotInferSectionTitle={true} />.
 
-For more convenience, we can create a new config `onBeforeRenderIsomorph`:
+For extra convenience, we can create a `onBeforeRenderIsomorph` toggle:
 
 ```ts
 // /pages/some-page/+config.ts
@@ -134,5 +134,5 @@ export default {
 
 Example:
  - [/examples/react-full-v1/](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/)
-   - Config defintion: [/examples/react-full-v1/renderer/+config.ts](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/renderer/+config.ts#L12-L31)
-   - Config usage: [/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/pages/star-wars/%40id/%2BonBeforeRenderIsomorph.ts).
+   - Config defintion: [/renderer/+config.ts > `meta.onBeforeRenderIsomorph`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/renderer/+config.ts#L12-L31)
+   - Config usage: [/pages/star-wars/@id/+onBeforeRenderIsomorph.ts](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/pages/star-wars/%40id/%2BonBeforeRenderIsomorph.ts)

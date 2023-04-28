@@ -1,5 +1,5 @@
 import { Link } from '@brillout/docpress'
-import { JustAMiddleware, PageContextIntro } from '../components'
+import { JustAMiddleware } from '../components'
 
 Vite-plugin-ssr provides an architecture that is both flexible and robust.
 
@@ -12,94 +12,18 @@ With vite-plugin-ssr, you can choose:
  - Any server (Express.js, Deno, HatTip, ...)
  - Any deployment (AWS, Cloudflare Workers, Vercel, ...)
 
-In other words: with vite-plugin-ssr, your application's architecture is composed of loosely coupled core constituents with a clear seperation of concerns.
+With vite-plugin-ssr, your application's architecture is composed of loosely coupled core constituents with a clear seperation of concerns.
 
-We believe that these core constituents should be mostly independent. For freedom and, also, for fostering a vibrant ecosystem with innovative competition guaranteeing high quality tools for the user.
-
-## `+config.js`
-
-> The `+config.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
-
-The `+config.js` files are at the core of vite-plugin-ssr.
-
-For example, the following three `+config.js` files are enough to define a vite-plugin-ssr app.
-
-```js
-// /pages/index/+config.js
-
-// This file defines a new page with URL /
-import { Page } from './Page'
-export default { Page }
-```
-```jsx
-// /pages/index/Page.js
-
-export default function() {
-  return <>Welcome to vite-plugin-ssr.</>
-}
-```
-
-> The URL is determined by <Link text="filesystem routing" href="/filesystem-routing" />.
-
-```js
-// /pages/about/+config.js
-
-// This file defines a new page with URL /about
-import { Page } from './Page'
-export default { Page }
-```
-```jsx
-// /pages/index/About.jsx
-export default function() {
-  return <>Basic demo of using vite-plugin-ssr.</>
-}
-```
-
-```js
-// /pages/+config.js
-
-import { onRenderClient } from './onRenderClient'
-import { onRenderHtml } from './onRenderHtml'
-
-// The hooks `onRenderHtml()` and `onRenderClient()` determine how pages are rendered.
-
-export default { onRenderClient, onRenderHtml }
-```
-
-> See `onRenderHtml()` and `onRenderClient()` example further down below.
-
-The config values defined by `/pages/+config.js` can be overriden:
-
-```js
-// /pages/admin/+config.js
-
-import { Page } from './Page'
-import { onRenderClient } from './onRenderClient'
-import { onRenderHtml } from './onRenderHtml'
-
-export default {
-  // Define a new page with URL `/admin`
-  Page,
-  // The admin page has a completly custom renderer. For example, the admin
-  // page can use Vue, while the rest of the app uses React
-  onRenderClient,
-  onRenderHtml
-}
-```
-
-This means that `/pages/+config.js` simply defines default values for all pages.
-
-A `+config.js` file can define default values only for a group of pages as well, e.g. `/admin/pages/+config.js` and `/marketing/pages/+config.js` as shown at <Link href="/file-structure#domain-driven" />. That way, all admin pages can be SPAs with Vue while using SSR and React for the rest of the app.
-
-For convenience, you can define files such as `+Page.js` and `+onRenderHtml.js` instead of `+config.js`, and you can define your renderer in `/renderer/+config.js` instead of `/pages/+config.js`. See <Link href="/config#conveniences" />.
-
-See also:
- - <Link href="/config" />
+We believe that these core constituents should be mostly independent. For more freedom for the user and, also, for fostering a vibrant ecosystem with an innovation-driven competition delivering high quality tools for the users.
 
 
 ## `onRenderHtml()` & `onRenderClient()`
 
-The hooks `onRenderHtml()` and `onRenderClient()` provide *complete* control over how pages are rendered:
+Packages such as `vike-react`, `vike-vue` and `vike-solid` integrate UI frameworks so that you don't have to write any integration code.
+
+But, if you want, instead of using a `vike-*` package you can use the hooks `onRenderHtml()` and `onRenderClient()` for complete control over how pages are rendered.
+
+Not only can you manually integrate with any UI framework you want and however you want, you can also deeply integrate with your favorite data fetching tools. For example, you can integrate with Relay in ways that aren't possible with other frameworks.
 
 ```js
 // /renderer/+onRenderHtml.js
@@ -139,29 +63,9 @@ async function onRenderClient(pageContext) {
 }
 ```
 
-Enabling you to integrate and use any UI framework (React/Vue/Solid/...) you want.
-
-See also:
- - <Link href="/onRenderClient" />
- - <Link href="/onRenderHtml" />
-
 
 ## `renderPage()`
 
 <JustAMiddleware />
 
-This means that vite-plugin-ssr can easily be embedded into any server architecture and any deployment strategy.
-
-See also:
- - <Link href="/renderPage" />
-
-
-## `pageContext`
-
-<PageContextIntro />
-
-It can be accessed by most hooks (e.g. <Link text={<><code>onRenderHtml()</code> and <code>onRenderClient</code></>} href="#onrenderhtml-onrenderclient" doNotInferSectionTitle={true} />) while some hooks (e.g. <Link text={<><code>onBeforeRender()</code></>} href="onBeforeRender" />) can add properties to `pageContext`: this is a simple, flexible, and robust data structure that allows you to easily integrate vite-plugin-ssr with any tool and, in particular, with any data fetching strategy.
-
-See also:
- - <Link href="/data-fetching" />
- - <Link href="/pageContext" />
+Vite-plugin-ssr can easily be embedded into any server architecture and any deployment strategy.

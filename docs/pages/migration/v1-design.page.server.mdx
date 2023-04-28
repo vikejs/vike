@@ -2,13 +2,14 @@ import { Link, Note } from '@brillout/docpress'
 
 <Note type='warning'>The [V1 design](https://github.com/brillout/vite-plugin-ssr/issues/578) is in beta: minor breaking changes may occur between version updates.</Note>
 
-The overall architecture of vite-plugin-ssr stays the same: the V1 design is only about replacing `.page.js` files with `+` files (`+config.js`, `+Page.js`, `+route.js`, ...).
+The overall architecture stays the same: the V1 design only replaces `.page.js` files with `+` files: `+config.js`, `+Page.js`, `+route.js`, ...
 
 Despite being simple, the change adds new foundational features. If you're curious: <Link href="/why-the-v1-design" />
 
 The migration is straightforward and usually quick to implement. We encourage to migrate sooner rather than later.
 
 > Don't hesitate to reach out if you run into any issue.
+
 
 ## Main migration
 
@@ -52,7 +53,7 @@ If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 ```
 
 
-> Files such as `+onRenderHtml.js` are thoroughly explained at:
+> For more information about `+` files such as `+config.js` and `+onRenderHtml.js`, see:
 >  - <Link href="/architecture#config-js" />
 >  - <Link href="/config" />
 
@@ -283,7 +284,7 @@ For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> to c
 
 The new config <Link text={<code>client</code>} href="/client" /> allows you to define client-side initialization code.
 
-> You can also continue using <Link text={<code>onHydrationEnd()</code>} href="/clientRouting#usage-options" />.
+> You can also keep using <Link text={<code>onHydrationEnd()</code>} href="/clientRouting#usage-options" />.
 
 ```js
 // +config.js
@@ -296,3 +297,18 @@ export default {
 // some-client-code.js
 console.log("I'm run when the client-side JavaScript is loaded.")
 ```
+
+## See also
+
+ - [#578 [RFC] V1 Design](https://github.com/brillout/vite-plugin-ssr/issues/578)
+ - <Link href="/why-the-v1-design" />
+ - <Link href="/config" />
+ - <Link href="/config-code-splitting" />
+ - <Link href="/Config" />
+ - <Link href="/renderers" />
+ - <Link href="/meta" />
+ - <Link href="/client" />
+ - <Link href="/onRenderHtml" />
+ - <Link href="/onRenderClient" />
+ - <Link href="/onPrerenderStart" />
+ - <Link href="/onBeforePrerenderStart" />

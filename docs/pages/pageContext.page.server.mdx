@@ -1,14 +1,13 @@
 import { Link } from '@brillout/docpress'
-import { PageContextIntro } from '../components'
 
-<PageContextIntro />
+The object `pageContext` holds information about the current page.
 
-> Note that `pageContext` is completely discarded and created anew when a new page is rendered.
+> The `pageContext` object is completely discarded and created anew when a new page is rendered.
 > That's why it's called *page*Context (and not *app*Context).
 
-It has built-in properties, and we can extend it with custom properties.
-
 ## Built-in
+
+Built-in properties:
 
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
@@ -67,13 +66,14 @@ It has built-in properties, and we can extend it with custom properties.
 
 ## Custom
 
-In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we can define custom `pageContext` values at:
+We can define custom `pageContext` properties at:
  - Hooks [`onBeforeRender()`](/onBeforeRender) and [`render()`](/render).
     ```js
     export function onBeforeRender() {
       return {
         pageContext: {
-          // We can define some custom `pageContext` here
+          // Custom `pageContext` properties
+          someCustomProp: 'some-value'
         }
       }
     }
@@ -83,7 +83,8 @@ In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we ca
       return {
         documentHtml: escapeInject`<html><!--...--></html>`,
         pageContext: {
-          // We can define some custom `pageContext` here
+          // Custom `pageContext` properties
+          someCustomProp: 'some-value'
         }
       }
     }
@@ -94,14 +95,21 @@ In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we ca
     app.get('*', async (req, res, next) => {
       const pageContextInit = {
         urlOriginal: req.url,
-        // We can define some custom `pageContext` here
+        // Custom `pageContext` properties
+        someCustomProp: 'some-value'
       }
       const pageContext = await renderPage(pageContextInit)
       /* ... */
     })
     ```
 
-## Browser
+## Anywhere
+
+**Any component**
+
+The `pageContext` object can be accessed from within any UI component, see <Link href="/pageContext-anywhere" />.
+
+**Client-side**
 
 While some `pageContext` values are also available on the client-side, most values are only available in Node.js and we have to use [`passToClient`](/passToClient) to make them available in the browser.
 
@@ -121,8 +129,6 @@ When using <Link href="/client-routing" noBreadcrumb={true} />, the following ar
 
 
 ## TypeScript
-
-TypeScript utility types:
 
 ```ts
 // Server-side pageContext built-in values

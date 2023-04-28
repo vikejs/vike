@@ -1,8 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-The <Link text="V1 design" href="/migration/v1-design" /> adds new foundational capabilities.
-
-You'll be able to implement <Link text="custom configs" href="/meta" />, for example `ssr: boolean` to seamlessly toggle render modes:
+The <Link text="V1 design" href="/migration/v1-design" /> adds new foundational capabilities. For example, you can create a <Link text="new config" href="/meta" /> `ssr: boolean`.
 
 ```js
 // /pages/admin/+config.js
@@ -13,11 +11,7 @@ export default {
 }
 ```
 
-> `+config.js` is explained at:
->  - <Link href="/architecture#config-js" />
->  - <Link href="/config" />
-
-> VPS will release official React/Vue/Solid renderers that already implement `config.ssr`. (You'll be able to eject these renderers for complete control.)
+> Vite-plugin-ssr will soon release <Link text="built-in renderers" href="/renderers" /> for React/Vue/Solid which already implement such toggle.
 
 You'll even be able to toggle renderers:
 
@@ -32,28 +26,28 @@ export default {
 }
 ```
 
-> The `vite-plugin-ssr` project is going to be [renamed to Vike](https://github.com/brillout/vite-plugin-ssr/issues/736).
+> Vite-plugin-ssr is going to be [renamed to Vike](https://github.com/brillout/vite-plugin-ssr/issues/736).
 
 ```js
 // /pages/product/@id/+config.js
 
-import rpcRenderer from 'vike-react-telefunc'
+import rpc from 'vike-react-telefunc'
 
 export default {
-  // Use RPC for the product pages
-  ...rpcRenderer
+  // Use React + RPC for the product pages
+  ...rpc
 }
 ```
 
 ```js
 // /pages/live-ticker/+config.js
 
-import solidRenderer from 'vike-solid'
+import solid from 'vike-solid'
 
 export default {
   // Use Solid for this page while the rest of our app uses React
-  ...solidRenderer
+  ...solid
 }
 ```
 
-This is only the tip of the iceberg. The V1 design also brings new foundational capabilities for buidling frameworks on top of VPS.
+This is only the tip of the iceberg. The V1 design also brings new capabilities for buidling frameworks on top of vite-plugin-ssr.

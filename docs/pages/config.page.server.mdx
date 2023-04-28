@@ -1,50 +1,140 @@
 import { Link } from '@brillout/docpress'
 
+Environment: Build-time
+
 > The `+config.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
 
-> See also:
-> - List of built-in configs: <Link href="/Config" />
-> - Custom configs: <Link href="/meta" />
+> For the list of configurations, see <Link href="/Config" /> instead.
 
-As explained in <Link href="/architecture#config-js" />, the `+config.js` files are at the core of vite-plugin-ssr's architecture.
+
+## `+config.js` files
 
 The `+config.js` files define the interface between your app and vite-plugin-ssr.
 
 ```js
 // /pages/about/+config.js
 
-// This file defines a new page with URL '/about'
+// Define a new page with URL /about
+import { Page } from './Page'
+export default { Page }
+```
+```jsx
+// /pages/about/Page.jsx
+
+export default () => <>Vite-plugin-ssr Demo</>
+```
+
+> The URL `/about` is determined by <Link text="Filesystem Routing" href="/filesystem-routing" />.
+
+```js
+// /pages/product/+config.ts
 
 import Page from './Page'
+import type { Config } from 'vite-plugin-ssr/types'
+
+// Define a new page with URL '/product/@id'
+export default {
+   Page,
+   // Parameterized route matching URLs such as '/product/1337' and `/product/macbook'
+   route: '/product/@id'
+} satisfies Config
+```
+```js
+// /pages/product/Page.jsx
+
+export default pageContext => <>Information about product {pageContext.routeParams.id}</>
+```
+
+## Other `+` files
+
+For convenience, you can define `+Page.js` and `+route.js` instead of `+config.js`:
+
+```js
+// /pages/product/+route.js
+
+export default '/product/@id'
+```
+```js
+// /pages/product/+Page.jsx
+
+export default pageContext => <>Information about product {pageContext.routeParams.id}</>
+```
+
+Which is equivalent to:
+
+
+```js
+// /pages/product/+config.js
+
+import Page from './Page.jsx'
 
 export default {
-   Page
+   Page,
+   route: '/product/@id'
 }
 ```
+```js
+// /pages/product/Page.jsx
+
+export default pageContext => <>Information about product {pageContext.routeParams.id}</>
+```
+
+
+## Overridable defaults
+
+You can use `+config.js` to define default values for all (or only a group of) pages.
 
 ```js
 // /pages/+config.js
 
-// This file defines default config values for all pages
-
+// Defaults for all pages
 export default {
-  // <title>
+  // Default <title> value
   title: 'My vite-plugin-ssr app'
 }
 ```
 
-> `config.title` is a <Link text="custom config" href="/meta" />.
+> `config.title` is a custom config, see <Link href="/meta" />.
 
-You can define an *entire* app *only* by defining `+config.js` files:
- - One `/pages/+config.js` (to define your overall global configuration).
- - One `/pages/some-page/+config.js` per page (to define your pages).
-   > The `+config.js` of your pages (such as `/pages/some-page/+config.js`) can completely override your global `/pages/+config.js`. This means that your global `+config.js` merely defines default values. See <Link href="/architecture#config-js" />.
+The `+config.js` file of pages (`/pages/some-page/+config.js`) can override the default values defined by `/pages/+config.js`.
 
-In addition to `+config.js` files, we can use following conveniences.
+```js
+// /pages/about/+config.js
 
-## Conveniences
+export default {
+  // We override the <title> value
+  title: 'About this app'
+}
+```
 
-For conveniences, we can:
- 1. Define configurations with files such as `+onRenderHtml.js` which is simply an alias for `+config.js > export default { onRenderHtml }`.
- 1. Define global configurations at `/renderer/+config.js` instead of `/pages/+config.js`.
-    > `/renderer/+config.js` is equivalent to `/pages/+config.js`: the `/renderer/` directory is just an (optional) convenience for having renderer logic/files live outside of `/pages/` (instead of cluttering the `/pages/` directory).
+You can also define default values only for a group of pages. As shown, for example, at <Link href="/file-structure#domain-driven" />. You can even use different renderers: some pages can use Vue as SPA, while other pages can use React with SSR.
+
+
+## `renderer/`
+
+`/renderer/+config.js` is equivalent to `/pages/+config.js`: the `renderer/` directory is just an (optional) convenience for having renderer logic/files live outside of `/pages/` (instead of cluttering the `/pages/` directory).
+
+> The `renderer/` directory is usually used by users who don't use any <Link text="built-in renderer" href="/renderers" />.
+
+
+## Build-time
+
+All `+config.js` files are loaded at build-time:
+
+```js
+// /pages/some-page/+config.js
+
+import Page from './Page.js'
+
+// This log will only be shown:
+//  - At development start
+//  - At build start
+console.log("I will never be shown in production")
+
+export default {
+  // However, the code of ./Page.js *is* included in production runtimes
+  Page
+}
+```
+
+While the code of `+config.js` code itself isn't included in the server runtime nor client runtime, most config values set by `+config.js` are included in one or both runtimes. See <Link href="/config-code-splitting" />.

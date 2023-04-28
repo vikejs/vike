@@ -35,7 +35,7 @@ type Config<Page = unknown> = Partial<
      */
     prerender: boolean
 
-    /** Hook called before the page is rendered, usually used for fetching data.
+    /** Hook called before the page is rendered, usually for fetching data.
      *
      *  See https://vite-plugin-ssr.com/onBeforeRender
      */
@@ -119,7 +119,7 @@ type Config<Page = unknown> = Partial<
      */
     clientRouting: boolean
 
-    /** Create or modify configs.
+    /** Create new or modify existing configurations.
      *
      * See https://vite-plugin-ssr/meta
      */

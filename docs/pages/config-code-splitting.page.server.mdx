@@ -4,7 +4,7 @@ import { Link } from '@brillout/docpress'
 
 All imports in `+config.js` are code-splitted.
 
-For example, VPS transforms this:
+For example, vite-plugin-ssr transforms this:
 
 ```js
 // /pages/some-page/+config.js
@@ -26,10 +26,10 @@ const onBeforeRender = '_import:./some-other-file:onBeforeRender'
 export default { Page, onBeforeRender }
 ```
 
-This allows VPS to load imports only when needed and only in the right environment. Consider this example:
+This allows vite-plugin-ssr to load imports only when needed and only in the right environment. Consider this example:
 
 ```js
-// /renderer/+config.js
+// +config.js
 
 // The onRenderClient() hook should only be loaded on the client-side
 import onRenderClient from './some-other-module'
@@ -39,10 +39,8 @@ import onRenderHtml from './some-module'
 export default { onRenderHtml, onRenderClient }
 ```
 
-Vite-plugin-ssr loads `config.js` at server start, and it loads `onRenderClient()` and `onRenderHtml()` later only if needed and only in the right environment.
 
-
-## Hook Rule
+## Rule
 
 Following is forbidden:
 
@@ -85,14 +83,14 @@ Also note that this is usually forbidden as well:
 
 - import Page from './some-file'
 - import onBeforeRender from './some-other-file'
-+ // Can we define Page and onBeforeRender in the same file?
++ // Define Page and onBeforeRender in the same file
 + import { Page, onBeforeRender } from './same-file'
 
   export default { Page, onBeforeRender }
 ```
 
-This is only allowed if `Page` and `onBeforeRender` live in the same environment which usually isn't the case:
+This is only allowed if `Page` and `onBeforeRender` live in the same environment which isn't usually the case:
  - By default `Page` is loaded on the client-side as well as on the server-side.
  - By default `onBeforeRender` is loaded only on the server-side.
 
-In other words: importing `Page` and `onBeforeRender` from the same file is only allowed if you use the `meta` config to make them live in same environment, see <Link href="/meta" />.
+> Importing `Page` and `onBeforeRender` from the same file would be allowed only if you use <Link text={<code>meta</code>} href="/meta" /> to make their `env` value equal.

@@ -966,13 +966,13 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/config'
   },
   {
-    title: 'Config',
+    title: 'Config List',
     url: '/Config'
   },
   {
     title: 'Architecture',
     url: '/architecture',
-    sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', '`+config.js`', 'Do-one-thing-do-it-well']
+    sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', 'Do-one-thing-do-it-well']
   },
   {
     title: <code>client</code>,
@@ -981,5 +981,9 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: <code>route</code>,
     url: '/route'
+  },
+  {
+    title: 'Built-in renderers',
+    url: '/renderers'
   }
 ]
