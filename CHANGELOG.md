@@ -1,3 +1,19 @@
+## [0.4.119](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.118...v0.4.119) (2023-04-29)
+
+
+### Bug Fixes
+
+* [V1 design] add warning when defining global configs in +config.js ([7320170](https://github.com/brillout/vite-plugin-ssr/commit/732017048a5a650b478a9cf606cb525447ccb0b6))
+* [V1 design] improve warning when global hook is defined by + file ([fa39dd8](https://github.com/brillout/vite-plugin-ssr/commit/fa39dd8ccba8882bb0f6ae60e549efb30af7ca62))
+* [V1 design] remove global configs from Config type ([0fcd1c8](https://github.com/brillout/vite-plugin-ssr/commit/0fcd1c8b07ae8768978d1750258f23b2d6bca7e4))
+* [V1 design] remove obsolete path strings ([2140e1f](https://github.com/brillout/vite-plugin-ssr/commit/2140e1f8efed93d3572dad8357c06de01e67dd32))
+* improve handling of pre-rendering toggle contradiction ([121f27d](https://github.com/brillout/vite-plugin-ssr/commit/121f27d761f9db0ccfecb741b5a78fff3635e26d))
+* support Vercel Edge Runtime (fix [#828](https://github.com/brillout/vite-plugin-ssr/issues/828)) ([84f1fde](https://github.com/brillout/vite-plugin-ssr/commit/84f1fdeb728ee3e91f110504f403e2770e71a77f))
+* use closeBundle() to force exit (fix [#807](https://github.com/brillout/vite-plugin-ssr/issues/807)) ([964577d](https://github.com/brillout/vite-plugin-ssr/commit/964577da4bc47b2fb6701b9b9345dc5bfed3f493))
+* warn instead of throw upon wrong html template var type ([05a25d0](https://github.com/brillout/vite-plugin-ssr/commit/05a25d0e1dccd33fbca27ac9f0781a299d0cf055))
+
+
+
 ## [0.4.118](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.117...v0.4.118) (2023-04-27)
 
 
