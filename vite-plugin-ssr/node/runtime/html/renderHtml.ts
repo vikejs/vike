@@ -163,13 +163,20 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   }
   assertUsage(
     !isPromise(arg),
-    `[dangerouslySkipEscape(str)] Argument \`str\` is a promise. It should be a string instead. Make sure to \`await str\`.`
+    `[dangerouslySkipEscape(str)] Argument \`str\` is a promise. It should be a string instead (or a stream). Make sure to \`await str\`.`
   )
-  assertUsage(
-    typeof arg === 'string',
-    `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof arg}"\`.`
+  if (typeof arg === 'string') {
+    return { _escaped: arg }
+  }
+  assertWarning(
+    false,
+    `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof arg}"\`.`,
+    {
+      onlyOnce: false,
+      showStackTrace: false
+    }
   )
-  return { _escaped: arg }
+  return { _escaped: String(arg) }
 }
 
 // Currently, `HtmlPart` is always a `string`. But we may need string-returning-functions for advanced stream integrations such as RSC.
