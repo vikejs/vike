@@ -1,12 +1,8 @@
-Before beta release:
+After beta release:
  - if config isn't a file path then assert that it's serialazable
    - remove c_code
  - assert global configs cannot be defined in page-specific config
    - already done? Use/remove c_global?
- - test all features
-   - `prerender: false`
-
-After beta release:
  - use `type: "module"` in boilerplates
  - remove documentProps from examples and boilerplates
  - assert that two import statements in +config.js shouldn't land in different environments
@@ -45,6 +41,7 @@ After Vike rename:
 
 Sometime:
  - Contact Shopify
+ - Contact Payload CMS
  - Contact UI frameworks like qwik
    - See `pnpm create vite@latest` for a list of UI frameworks
    - Maybe even angular
