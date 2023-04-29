@@ -132,9 +132,9 @@ import Page from './Page.js'
 console.log("I will never be shown in production")
 
 export default {
-  // However, the code of ./Page.js *is* included in production runtimes
+  // However, the code of ./Page.js is included in production runtimes
   Page
 }
 ```
 
-While the code of `+config.js` code itself isn't included in the server runtime nor client runtime, most config values set by `+config.js` are included in one or both runtimes. See <Link href="/config-code-splitting" />.
+The server and client runtimes don't include the code of `+config.js` files but do include the code of config values. To understand why see <Link href="/config-code-splitting" />.
