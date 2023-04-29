@@ -56,7 +56,7 @@ type HtmlFile = {
   pageId: string | null
 }
 
-type DoNotPrerenderList = ({ pageId: string; setByConfigDefinedAt: string } & (
+type DoNotPrerenderList = ({ pageId: string; setByConfigFile: string } & (
   | {
       // TODO/v1-release: remove 0.4 case
       setByConfigName: 'doNotPrerender'
@@ -209,15 +209,7 @@ async function runPrerender(options: PrerenderOptions): Promise<void> {
 
   await Promise.all(
     htmlFiles.map((htmlFile) =>
-      writeHtmlFile(
-        htmlFile,
-        root,
-        outDirClient,
-        doNotPrerenderList,
-        concurrencyLimit,
-        options.onPagePrerender,
-        logLevel
-      )
+      writeHtmlFile(htmlFile, root, outDirClient, concurrencyLimit, options.onPagePrerender, logLevel)
     )
   )
 
@@ -239,7 +231,7 @@ async function collectDoNoPrerenderList(
         pageId: pageConfig.pageId,
         setByConfigName: 'prerender',
         setByConfigValue: false,
-        setByConfigDefinedAt: configElement.configDefinedAt
+        setByConfigFile: configElement.configDefinedByFile
       })
     }
   })
@@ -281,7 +273,7 @@ async function collectDoNoPrerenderList(
         // Don't pre-render `pageId`
         doNotPrerenderList.push({
           pageId,
-          setByConfigDefinedAt: `${p.filePath} > \`export { doNotPrerender }\``,
+          setByConfigFile: p.filePath,
           setByConfigName: 'doNotPrerender',
           setByConfigValue: doNotPrerender
         })
@@ -767,10 +759,11 @@ function warnContradictoryNoPrerenderList(
       const isContradictory = !!doNotPrerenderListEntry && providedByHook
       if (!isContradictory) return
     }
-    const { setByConfigName, setByConfigValue, setByConfigDefinedAt } = doNotPrerenderListEntry
-    assertUsage(
+    const { setByConfigName, setByConfigValue, setByConfigFile } = doNotPrerenderListEntry
+    assertWarning(
       false,
-      `The ${providedByHook.hookName}() hook defined by ${providedByHook.hookFilePath} returns the URL '${urlOriginal}', while ${setByConfigDefinedAt} sets \`${setByConfigName}\` to \`${setByConfigValue}\`. This is contradictory: either don't set \`${setByConfigName}\` to \`${setByConfigValue}\` or remove the URL from the list of URLs to be pre-rendered.`
+      `The ${providedByHook.hookName}() hook defined by ${providedByHook.hookFilePath} returns the URL '${urlOriginal}', while ${setByConfigFile} sets the config '${setByConfigName}' to ${setByConfigValue}. This is contradictory: either don't set the config '${setByConfigName}' to ${setByConfigValue} or remove the URL '${urlOriginal}' from the list of URLs to be pre-rendered.`,
+      { onlyOnce: true, showStackTrace: false }
     )
   })
 }
@@ -814,16 +807,14 @@ async function prerender404(htmlFiles: HtmlFile[], renderContext: RenderContext,
 }
 
 async function writeHtmlFile(
-  { urlOriginal, pageContext, htmlString, pageContextSerialized, doNotCreateExtraDirectory, pageId }: HtmlFile,
+  { urlOriginal, pageContext, htmlString, pageContextSerialized, doNotCreateExtraDirectory }: HtmlFile,
   root: string,
   outDirClient: string,
-  doNotPrerenderList: DoNotPrerenderList,
   concurrencyLimit: PLimit,
   onPagePrerender: Function | undefined,
   logLevel: 'warn' | 'info'
 ) {
   assert(urlOriginal.startsWith('/'))
-  assert(!doNotPrerenderList.find((p) => p.pageId === pageId))
 
   const writeJobs = [
     write(
