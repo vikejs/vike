@@ -35,7 +35,7 @@ import type { Config } from 'vite-plugin-ssr/types'
 // Define a new page with URL '/product/@id'
 export default {
    Page,
-   // Parameterized route matching URLs such as '/product/1337' and `/product/macbook'
+   // Parameterized route for URLs such as /product/1337 and /product/macbook
    route: '/product/@id'
 } satisfies Config
 ```
@@ -96,7 +96,7 @@ export default {
 
 > `config.title` is a custom config, see <Link href="/meta" />.
 
-The `+config.js` file of pages (`/pages/some-page/+config.js`) can override the default values defined by `/pages/+config.js`.
+The `+config.js` file of pages (`/pages/some-page/+config.js`) can override default values defined by `/pages/+config.js`.
 
 ```js
 // /pages/about/+config.js
@@ -112,7 +112,7 @@ You can also define default values only for a group of pages. As shown, for exam
 
 ## `renderer/`
 
-`/renderer/+config.js` is equivalent to `/pages/+config.js`: the `renderer/` directory is just an (optional) convenience for having renderer logic/files live outside of `/pages/` (instead of cluttering the `/pages/` directory).
+`/renderer/+config.js` is equivalent to `/pages/+config.js`: the `renderer/` directory is just an (optional) convenience for having renderer files live outside of `pages/` (instead of cluttering the `pages/` directory).
 
 > The `renderer/` directory is usually used by users who don't use any <Link text="built-in renderer" href="/renderers" />.
 
@@ -127,8 +127,8 @@ All `+config.js` files are loaded at build-time:
 import Page from './Page.js'
 
 // This log will only be shown:
-//  - At development start
-//  - At build start
+//  - At development
+//  - When building your app
 console.log("I will never be shown in production")
 
 export default {
