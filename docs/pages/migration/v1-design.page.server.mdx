@@ -4,7 +4,7 @@ import { Link, Note } from '@brillout/docpress'
 
 The overall architecture stays the same: the V1 design only replaces `.page.js` files with `+` files: `+config.js`, `+Page.js`, `+route.js`, ...
 
-Despite being simple, the change adds new foundational features. If you're curious: <Link href="/why-the-v1-design" />
+Despite being simple, the change adds foundational features. If you're curious: <Link href="/why-the-v1-design" />
 
 The migration is straightforward and usually quick to implement. We encourage to migrate sooner rather than later.
 
@@ -22,6 +22,14 @@ Most of the migration boils down to the following two steps.
 **1. Migrate `/renderer/*.page.*`**
 
 Move your `renderer/` hooks to `+` files:
+
+```diff
+- // /renderer/_default.page.client.js
++ // /renderer/+onRenderClient.js
+
+- export { render }
++ export default render
+```
 
 ```diff
 - // /renderer/_default.page.server.js
@@ -43,29 +51,17 @@ If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 ```
 
 ```diff
-+ // /renderer/+config.ts
-+ 
-+ import type { Config } from 'vite-plugin-ssr/types'
++ // /renderer/+config.js
 + 
 + export default {
 +   passToClient: ['pageProps']
-+ } satisfies Config
++ }
 ```
 
 
-> For more information about `+` files such as `+config.js` and `+onRenderHtml.js`, see:
->  - <Link href="/architecture#config-js" />
->  - <Link href="/config" />
+> See <Link href="/config" /> for more information about `+` files.
 
-```diff
-- // /renderer/_default.page.client.js
-+ // /renderer/+onRenderClient.js
-
-- export { render }
-+ export default render
-```
-
-> The suffixes such as `.page.server.js` and `.page.client.js` don't exist anymore. After the feature request [#744](https://github.com/brillout/vite-plugin-ssr/issues/744) is implemented, you'll be able to use `.server.js` and `.client.js` suffixes again but they'll serve another purpose.
+> The suffixes such as `.page.server.js` and `.page.client.js` don't exist anymore. After the feature request [#744](https://github.com/brillout/vite-plugin-ssr/issues/744) is implemented, you'll be able to use `.server.js` and `.client.js` suffixes again but note that they'll serve another purpose.
 
 Move `/renderer/` configurations to `/renderer/+config.ts`:
 
@@ -122,7 +118,7 @@ Move your error page (if you defined one):
 export default route
 ```
 
-> Each page now lives in its own new directory
+> Each page now lives in its own directory.
 > ```bash
 > # ✅ V1 design
 > $ ls pages/**/*
@@ -161,7 +157,7 @@ Notable migrations:
      - [migrate /examples/redux](https://github.com/brillout/vite-plugin-ssr/commit/69c06b03c5ce5199147eb0f2e574c626038d18a7#diff-a7cdea11336cb81f500e3509f6c26587c6cc765cc438e61760f1e89eeea6817a)
      - [migrate /examples/graphql-apollo-vue/](https://github.com/brillout/vite-plugin-ssr/commit/aa2055f731f2ed8fc4f8763edcdc1f76ced7d061#diff-231c5dd641627a629961695a7502a3ac28cb782e48e6cb386aadd8d84b43c45d)
      - [migrate /examples/vue-pinia](https://github.com/brillout/vite-plugin-ssr/commit/2b830d0db9a9cd2cb9b4402a00887cd840a16eda#diff-4324476edca4f275a3fcab4e7022e86df396235bdbb5f6632b5332c192e1acec)
- - Pre-rendered app (using `prerender()` hooks):
+ - Pre-rendered app (that uses `prerender()` hooks):
    - [migrate /examples/react-full](https://github.com/brillout/vite-plugin-ssr/commit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-4f57f0b913952581bf391a9cde442cb1e9f3e2a8e9b06d213fe1b450d58450f3)
    - [migrate /examples/vue-full](https://github.com/brillout/vite-plugin-ssr/commit/b612023a6b209424a75aacb2fde9b2305c44f3ee#diff-a2b72a140b77af0c45a8692a277e3b5199a502249a43715af04d3255f23e6e37)
  - Custom exports to custom configs (see migration explanation at <Link href="#custom-hooks-exports" doNotInferSectionTitle={true} />):
@@ -173,7 +169,7 @@ Notable migrations:
      - [migrate /examples/layouts-vue](https://github.com/brillout/vite-plugin-ssr/commit/499ee0184c4a6331e399ded299f413fc1d1a46e3#diff-056c4a494c1d68ae12d195e6d2f050d6f205b50cfe3efde4703a2755da3e37c6L15-R16)
    - `pageContext.exports.preloadStrategy` -> `pageContext.config.preloadStrategy`:
      - [migrate /examples/custom-preload](https://github.com/brillout/vite-plugin-ssr/commit/f28880b0b85cde12647aa0613c99dbdeadc467de#diff-f1f3a4c9f73f2c7ee1444e278cf4c6115efbee1cc294649e8f5a2a05a593f18dL15-R12)
- - i18n (pre-rendered) app (using hooks `onBeforeRoute()`, `onBeforePrerender()`, and `prerender()`):
+ - i18n (pre-rendered) app (that uses hooks `onBeforeRoute()`, `onBeforePrerender()`, `prerender()`):
    - [migrate /examples/i18n](https://github.com/brillout/vite-plugin-ssr/commit/9dd3db3bb6f0c1fc16befa9f504e94ea732339e8#diff-50a58ddbb03951878eebb954f765ff2406b04dad278c69c9ce03d9bff567ad76)
 
 
@@ -235,7 +231,7 @@ export default {
 // /renderer/+onRenderHtml.js
 
 export default function(pageContext) {
-  // Configs are available at pageContext.config
+  // Config values are available at pageContext.config
   const { title } = pageContext.config
   return escapeInject`<html>
     <head>
@@ -254,12 +250,14 @@ export default {
 }
 ```
 
-See <Link href="#examples" /> and [example of implementing a `config.renderMode`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/render-modes-v1/renderer/%2Bconfig.ts#L9).
+See:
+ - <Link href="#examples" />
+ - [Advanced example of implementing `config.renderMode`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/render-modes-v1/renderer/%2Bconfig.ts#L9)
 
 
 ## `onBeforeRender` in `.page.js`
 
-If you've defined `onBeforeRender()` hooks in `.page.js` instead of `.page.server.js`:
+If you've defined `onBeforeRender()` hooks in `.page.js` (instead of `.page.server.js`):
 
 ```ts
 // /renderer/+config.ts
@@ -277,7 +275,7 @@ export default {
 } satisfies Config
 ```
 
-For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> to create a new [config `onBeforeRenderIsomorph: boolean`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/renderer/+config.ts#L12-L31) for a [page-per-page toggle](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/pages/star-wars/%40id/%2BonBeforeRenderIsomorph.ts).
+For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> in order to [create a new config `onBeforeRenderIsomorph: boolean`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/renderer/+config.ts#L12-L31) for a [page-per-page toggle](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/pages/star-wars/%40id/%2BonBeforeRenderIsomorph.ts).
 
 
 ## Client init code

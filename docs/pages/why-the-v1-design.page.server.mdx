@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-The <Link text="V1 design" href="/migration/v1-design" /> adds new foundational capabilities. For example, it enables you to create <Link text="custom configs" href="/meta" /> such as a config `ssr: boolean`.
+The <Link text="V1 design" href="/migration/v1-design" /> adds new foundational capabilities. For example, it enables you to create <Link text="custom configs" href="/meta" /> such as `ssr: boolean`.
 
 ```js
 // /pages/admin/+config.js
@@ -11,9 +11,9 @@ export default {
 }
 ```
 
-> Vite-plugin-ssr will soon release <Link text="built-in renderers" href="/renderers" /> for React/Vue/Solid which already implement such toggle.
+> Vite-plugin-ssr will soon release <Link text="built-in renderers" href="/renderers" /> for React/Vue/Solid which already implement such `ssr` toggle. (Except for React since RSC supersedes such `ssr` toggle.)
 
-You'll even be able to toggle renderers:
+You'll even be able to choose and switch renderers on a page-by-page basis:
 
 ```js
 // /pages/admin/+config.js
@@ -50,4 +50,4 @@ export default {
 }
 ```
 
-This is only the tip of the iceberg. The V1 design also brings new capabilities for buidling frameworks on top of vite-plugin-ssr.
+This is only the tip of the iceberg. The V1 design also brings new capabilities for buidling meta frameworks on top of vite-plugin-ssr.
