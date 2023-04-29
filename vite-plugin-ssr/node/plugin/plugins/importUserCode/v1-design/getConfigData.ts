@@ -175,11 +175,10 @@ async function loadConfigData(
         pageConfigGlobal[configName] = configElement
       } else {
         assert('configValue' in configElement)
+        if (configName === 'prerender' && typeof configElement.configValue === 'boolean') return
         assertWarning(
           false,
-          `${configElement.configDefinedByFile} Being able to define config '${configName}' in +${
-            configElement.configValueFilePath ? configName : 'config'
-          }.js is experimental and will likely be removed. Define it at vite-plugin-ssr's Vite plugin instead.`,
+          `Being able to define config '${configName}' in ${configElement.configDefinedByFile} is experimental and will likely be removed. Define the config '${configName}' in vite-plugin-ssr's Vite plugin options instead.`,
           { onlyOnce: true, showStackTrace: false }
         )
         vikeConfig[configName] = configElement.configValue
