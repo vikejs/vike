@@ -1,3 +1,12 @@
+## [0.4.120](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.119...v0.4.120) (2023-04-30)
+
+
+### Bug Fixes
+
+* filesystem routing between page configs and config value files (fix [#831](https://github.com/brillout/vite-plugin-ssr/issues/831)) ([21fac73](https://github.com/brillout/vite-plugin-ssr/commit/21fac7338fe3640680a3619a9bcc576fd99fd624))
+
+
+
 ## [0.4.119](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.118...v0.4.119) (2023-04-29)
 
 
