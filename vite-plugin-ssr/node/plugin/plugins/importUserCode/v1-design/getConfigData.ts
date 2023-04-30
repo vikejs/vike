@@ -42,7 +42,7 @@ import {
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadPageConfig, transpileAndLoadConfigValueFile } from './transpileAndLoadPlusFile'
 import { parseImportData } from './replaceImportStatements'
-import { getPageConfigValues } from './getConfigData/helpers'
+import { getPageConfigValue, getPageConfigValues } from './getConfigData/helpers'
 
 assertIsVitePluginCode()
 
@@ -338,14 +338,14 @@ function resolveConfigElement(
     return configElement
   }
 
-  const { pageConfigValue } = result
-  const { configValue, pageConfigValueFilePath } = pageConfigValue
-  const configFilePath = pageConfigValueFilePath
+  const { pageConfigFile } = result
+  const configValue = getPageConfigValue(configName, pageConfigFile)
+  const { pageConfigFilePath } = pageConfigFile
   const { c_code, c_validate } = configDef
-  const codeFile = getCodeFilePath(configValue, pageConfigValueFilePath, userRootDir, configName, c_code)
+  const codeFile = getCodeFilePath(configValue, pageConfigFilePath, userRootDir, configName, c_code)
   assert(codeFile || !c_code) // TODO: assertUsage() or remove
   if (c_validate) {
-    const commonArgs = { configFilePath }
+    const commonArgs = { configFilePath: pageConfigFilePath }
     if (codeFile) {
       assert(typeof configValue === 'string')
       const { codeFilePath } = codeFile
@@ -357,9 +357,9 @@ function resolveConfigElement(
   const { env } = configDef
   if (!codeFile) {
     return {
-      pageConfigFilePath: configFilePath,
-      configDefinedAt: `${configFilePath} > ${configName}`,
-      configDefinedByFile: configFilePath,
+      pageConfigFilePath,
+      configDefinedAt: `${pageConfigFilePath} > ${configName}`,
+      configDefinedByFile: pageConfigFilePath,
       configValueFilePath: null,
       configValueFileExport: null,
       configEnv: env,
@@ -369,13 +369,13 @@ function resolveConfigElement(
     assertUsage(
       typeof configValue === 'string',
       `${getErrorIntro(
-        configFilePath,
+        pageConfigFilePath,
         configName
       )} to a value with a wrong type \`${typeof configValue}\`: it should be a string instead`
     )
     const { codeFilePath, configValueFileExport } = codeFile
     return {
-      pageConfigFilePath: configFilePath,
+      pageConfigFilePath,
       configValueFilePath: codeFilePath,
       configValueFileExport,
       configDefinedAt: `${codeFilePath} > \`export ${configValueFileExport}\``,
