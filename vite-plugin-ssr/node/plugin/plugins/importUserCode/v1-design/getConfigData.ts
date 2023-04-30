@@ -318,7 +318,9 @@ function resolveConfigElement(
   // TODO: implement warning if defined in non-abstract +config.js as well as in +{configName}.js
 
   const result = pickConfigValue(configName, configValueFilesRelevant, pageConfigFilesRelevant)
-  if (result.configValueFile) {
+  if (!result) return null
+
+  if ('configValueFile' in result) {
     const { configValueFile } = result
     const { configValueFilePath } = configValueFile
     const configValueFileExport = 'default'
@@ -336,7 +338,6 @@ function resolveConfigElement(
     return configElement
   }
 
-  if (!result.pageConfigValue) return null
   const { pageConfigValue } = result
   const { configValue, pageConfigValueFilePath } = pageConfigValue
   const configFilePath = pageConfigValueFilePath

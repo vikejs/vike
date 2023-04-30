@@ -94,11 +94,15 @@ function removeIrrelevantParts(somePath: string, dirs: string[]) {
     .join('/')
 }
 
+type Candidate =
+  | { configValueFile: ConfigValueFile }
+  | { pageConfigValue: { pageConfigValueFilePath: string; configValue: unknown } }
+
 function pickConfigValue(
   configName: string,
   configValueFilesRelevant: ConfigValueFile[],
   pageConfigFilesRelevant: PageConfigFile[]
-): { configValueFile?: ConfigValueFile; pageConfigValue?: { pageConfigValueFilePath: string; configValue: unknown } } {
+): null | Candidate {
   const configValueFiles = configValueFilesRelevant.filter(
     (configValueFile) => configValueFile.configName === configName
   )
@@ -130,5 +134,5 @@ function pickConfigValue(
       return { pageConfigValue: { pageConfigValueFilePath: configFile.pageConfigFilePath, configValue } }
     }
   }
-  return {}
+  return null
 }
