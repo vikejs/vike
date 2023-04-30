@@ -271,7 +271,9 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
   }
   function testClientRouting(html: string) {
     if (isPreview) {
-      expect(html).toMatch(partRegex`<script type="module" src="/assets/entries/entry-client-routing.${hash}.js" defer>`)
+      expect(html).toMatch(
+        partRegex`<script type="module" src="/assets/entries/entry-client-routing.${hash}.js" defer>`
+      )
     } else {
       expect(html).toMatch(
         partRegex`import("/@fs/${path}/vite-plugin-ssr/vite-plugin-ssr/dist/esm/client/router/entry.js");`

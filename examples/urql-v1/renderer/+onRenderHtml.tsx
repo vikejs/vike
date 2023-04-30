@@ -26,4 +26,3 @@ async function onRenderHtml(pageContext: PageContextBuiltIn & PageContext) {
       </body>
     </html>`
 }
-
