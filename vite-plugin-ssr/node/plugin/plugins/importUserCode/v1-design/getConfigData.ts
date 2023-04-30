@@ -1,5 +1,4 @@
 export { getConfigData }
-export { getPageConfigValues }
 export type { ConfigValueFile }
 export type { PageConfigFile }
 
@@ -39,10 +38,11 @@ import {
   determinePageId,
   determineRouteFromFilesystemPath,
   isRelevantConfig,
-  pickConfigValue
+  pickMostRelevantConfigValue
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadPageConfig, transpileAndLoadConfigValueFile } from './transpileAndLoadPlusFile'
 import { parseImportData } from './replaceImportStatements'
+import { getPageConfigValues } from './getConfigData/helpers'
 
 assertIsVitePluginCode()
 
@@ -317,7 +317,7 @@ function resolveConfigElement(
 ): null | ConfigElement {
   // TODO: implement warning if defined in non-abstract +config.js as well as in +{configName}.js
 
-  const result = pickConfigValue(configName, configValueFilesRelevant, pageConfigFilesRelevant)
+  const result = pickMostRelevantConfigValue(configName, configValueFilesRelevant, pageConfigFilesRelevant)
   if (!result) return null
 
   if ('configValueFile' in result) {
@@ -558,13 +558,6 @@ function getErrorIntro(filePath: string, configName: string): string {
   assert(filePath.startsWith('/') || isNpmPackageImportPath(filePath))
   assert(!configName.startsWith('/'))
   return `${filePath} sets the config ${configName}`
-}
-
-function getPageConfigValues(pageConfigFile: PageConfigFile): Record<string, unknown> {
-  const { pageConfigFilePath, pageConfigFileExports } = pageConfigFile
-  assertDefaultExportObject(pageConfigFileExports, pageConfigFilePath)
-  const pageConfigValues = pageConfigFileExports.default
-  return pageConfigValues
 }
 
 function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): ConfigDefinitionsExtended {

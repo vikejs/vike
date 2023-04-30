@@ -1,10 +1,17 @@
 export { determineRouteFromFilesystemPath }
 export { determinePageId }
 export { isRelevantConfig }
-export { pickConfigValue }
+export { pickMostRelevantConfigValue }
 
-import { assert, assertPosixPath, getNpmPackageImportPath, isNpmPackageImportPath } from '../../../../utils'
-import { ConfigValueFile, getPageConfigValues, PageConfigFile } from '../getConfigData'
+import {
+  assert,
+  assertPosixPath,
+  assertWarning,
+  getNpmPackageImportPath,
+  isNpmPackageImportPath
+} from '../../../../utils'
+import type { ConfigValueFile, PageConfigFile } from '../getConfigData'
+import { getPageConfigValues } from './helpers'
 
 function determineRouteFromFilesystemPath(dirOrFilePath: string): string {
   const pageId = determinePageId(dirOrFilePath)
@@ -98,41 +105,76 @@ type Candidate =
   | { configValueFile: ConfigValueFile }
   | { pageConfigValue: { pageConfigValueFilePath: string; configValue: unknown } }
 
-function pickConfigValue(
+function pickMostRelevantConfigValue(
   configName: string,
   configValueFilesRelevant: ConfigValueFile[],
   pageConfigFilesRelevant: PageConfigFile[]
 ): null | Candidate {
-  const configValueFiles = configValueFilesRelevant.filter(
-    (configValueFile) => configValueFile.configName === configName
-  )
-  if (configValueFiles.length !== 0) {
-    let candidate = configValueFiles[0]!
-    configValueFiles.forEach((configValueFile) => {
-      const candidateFsRoute = removeIrrelevantParts(removeFilename(candidate.configValueFilePath), [
-        'renderer',
-        'pages'
-      ])
-      const configValueFileFsRoute = removeIrrelevantParts(removeFilename(configValueFile.configValueFilePath), [
-        'renderer',
-        'pages'
-      ])
-      assert(
-        candidateFsRoute.startsWith(configValueFileFsRoute) || configValueFileFsRoute.startsWith(candidateFsRoute),
-        configValueFiles.map((f) => f.configValueFilePath)
-      )
-      if (configValueFileFsRoute.length > candidateFsRoute.length) {
-        candidate = configValueFile
-      }
-    })
-    return { configValueFile: candidate }
-  }
-  for (const configFile of pageConfigFilesRelevant) {
+  const candidates: Candidate[] = []
+  configValueFilesRelevant.forEach((configValueFile) => {
+    if (configValueFile.configName === configName) {
+      candidates.push({ configValueFile })
+    }
+  })
+  pageConfigFilesRelevant.forEach((configFile) => {
     const pageConfigValues = getPageConfigValues(configFile)
     const configValue = pageConfigValues[configName]
     if (configValue !== undefined) {
-      return { pageConfigValue: { pageConfigValueFilePath: configFile.pageConfigFilePath, configValue } }
+      candidates.push({
+        pageConfigValue: { pageConfigValueFilePath: configFile.pageConfigFilePath, configValue }
+      })
     }
+  })
+
+  if (candidates.length === 0) {
+    return null
   }
-  return null
+  let winnerNow = candidates[0]!
+  candidates.slice(1).forEach((candidate) => {
+    const winnerNowFsRoute = getCandidateFsRoute(winnerNow)
+    const candidateFsRoute = getCandidateFsRoute(candidate)
+    assert(candidateFsRoute.startsWith(winnerNowFsRoute) || winnerNowFsRoute.startsWith(candidateFsRoute))
+    if (candidateFsRoute.length > winnerNowFsRoute.length) {
+      winnerNow = candidate
+    }
+    if (candidateFsRoute.length === winnerNowFsRoute.length) {
+      let ignored: Candidate
+      if ('configValueFile' in candidate) {
+        assert('pageConfigValue' in winnerNow)
+        ignored = winnerNow
+        winnerNow = candidate
+      } else {
+        assert('configValueFile' in winnerNow)
+        ignored = candidate
+      }
+      assertWarning(
+        false,
+        `${getCandidateDefinedAt(ignored, configName)} overriden by ${getCandidateDefinedAt(
+          winnerNow,
+          configName
+        )}, remove one of the two`,
+        { onlyOnce: false, showStackTrace: false }
+      )
+    }
+  })
+  return winnerNow
+}
+function getCandidateFsRoute(candidate: Candidate): string {
+  let filePath: string
+  if ('configValueFile' in candidate) {
+    filePath = candidate.configValueFile.configValueFilePath
+  } else {
+    filePath = candidate.pageConfigValue.pageConfigValueFilePath
+  }
+  const candidateFsRoute = removeIrrelevantParts(removeFilename(filePath), ['renderer', 'pages'])
+  return candidateFsRoute
+}
+function getCandidateDefinedAt(candidate: Candidate, configName: string): string {
+  let configDefinedAt: string
+  if ('configValueFile' in candidate) {
+    configDefinedAt = candidate.configValueFile.configValueFilePath
+  } else {
+    configDefinedAt = `${candidate.pageConfigValue.pageConfigValueFilePath} > ${configName}`
+  }
+  return configDefinedAt
 }
