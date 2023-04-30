@@ -21,17 +21,17 @@ type ConfigElementFile = {
   configDefinedByFile: string
 } & (
   | {
-      pageConfigFilePath: string
+      plusConfigFilePath: string
       configValueFilePath: null
       configValueFileExport: null
     }
   | {
-      pageConfigFilePath: null
+      plusConfigFilePath: null
       configValueFilePath: string
       configValueFileExport: string
     }
   | {
-      pageConfigFilePath: string
+      plusConfigFilePath: string
       configValueFilePath: string
       configValueFileExport: string
     }
@@ -57,7 +57,7 @@ type PageConfig = PageConfigData & {
 type PageConfigData = {
   pageId: string
   isErrorPage: boolean
-  pageConfigFilePathAll: string[]
+  plusConfigFilePathAll: string[]
   routeFilesystem: null | string
   routeFilesystemDefinedBy: string
   configElements: Partial<Record<ConfigName, ConfigElement>>

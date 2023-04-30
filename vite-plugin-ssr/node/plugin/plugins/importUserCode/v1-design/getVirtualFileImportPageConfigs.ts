@@ -33,7 +33,7 @@ function generateSourceCodeOfPageConfigs(
   lines.push('export const pageConfigs = [];')
   // const configNamesAll = new Set<string>()
   pageConfigsData.forEach((pageConfig, i) => {
-    const { pageConfigFilePathAll, pageId, routeFilesystem, routeFilesystemDefinedBy, configElements, isErrorPage } =
+    const { plusConfigFilePathAll, pageId, routeFilesystem, routeFilesystemDefinedBy, configElements, isErrorPage } =
       pageConfig
     const virtualFileIdImportPageCode = getVirtualFileIdImportPageCode(pageId, isForClientSide)
     const pageConfigVar = `pageConfig${i + 1}` // TODO: remove outdated & unncessary variable creation
@@ -41,7 +41,7 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`  const ${pageConfigVar} = {`)
     lines.push(`    pageId: ${JSON.stringify(pageId)},`)
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
-    lines.push(`    pageConfigFilePathAll: ${JSON.stringify(pageConfigFilePathAll)},`)
+    lines.push(`    plusConfigFilePathAll: ${JSON.stringify(plusConfigFilePathAll)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
     lines.push(
@@ -63,15 +63,15 @@ function generateSourceCodeOfPageConfigs(
   if (isDev && !isForClientSide) {
     const configFiles: Set<string> = new Set()
     pageConfigsData.forEach((pageConfig) => {
-      const { configElements, pageConfigFilePathAll } = pageConfig
+      const { configElements, plusConfigFilePathAll } = pageConfig
       Object.entries(configElements).forEach(([_configName, configElement]) => {
         const { configEnv, configValueFilePath } = configElement
         if (configEnv === 'config-only' && configValueFilePath) {
           configFiles.add(configValueFilePath)
         }
       })
-      pageConfigFilePathAll.forEach((pageConfigFilePath) => {
-        configFiles.add(pageConfigFilePath)
+      plusConfigFilePathAll.forEach((plusConfigFilePath) => {
+        configFiles.add(plusConfigFilePath)
       })
     })
     Array.from(configFiles).forEach((configFile) => {
@@ -128,14 +128,14 @@ function serializeConfigElement(
     configDefinedByFile,
     configEnv,
     configValueFilePath,
-    pageConfigFilePath,
+    plusConfigFilePath,
     configValueFileExport
   } = configElement
   lines.push(`${whitespace}  configDefinedAt: ${JSON.stringify(configDefinedAt)},`)
   lines.push(`${whitespace}  configDefinedByFile: ${JSON.stringify(configDefinedByFile)},`)
   lines.push(`${whitespace}  configValueFilePath: ${JSON.stringify(configValueFilePath)},`)
   lines.push(`${whitespace}  configValueFileExport: ${JSON.stringify(configValueFileExport)},`)
-  lines.push(`${whitespace}  pageConfigFilePath: ${JSON.stringify(pageConfigFilePath)},`)
+  lines.push(`${whitespace}  plusConfigFilePath: ${JSON.stringify(plusConfigFilePath)},`)
   lines.push(`${whitespace}  configEnv: '${configEnv}',`)
   if ('configValue' in configElement) {
     assert(!eagerImport)

@@ -82,35 +82,35 @@ function assertMissingHook(pageId: string, pageConfigs: PageConfig[], url: strin
 
   // We miss abstract page config files (that define onClientRender()) that don't apply to any concrete page config
   //  - A solution is to assertUsage() when an abstract page file doens't apply to any concrete page config
-  const pageConfigFilesDefiningHook: string[] = []
-  let pageConfigFilesAll: string[] = []
+  const plusConfigFilesDefiningHook: string[] = []
+  let plusConfigFilesAll: string[] = []
   pageConfigs.forEach((pageConfig) => {
-    pageConfigFilesAll.push(...pageConfig.pageConfigFilePathAll)
+    plusConfigFilesAll.push(...pageConfig.plusConfigFilePathAll)
     const configElement = pageConfig.configElements.onRenderClient
     if (configElement && configElement.configValue) {
-      pageConfigFilesDefiningHook.push(configElement.configDefinedAt)
+      plusConfigFilesDefiningHook.push(configElement.configDefinedAt)
     }
   })
-  pageConfigFilesAll = unique(pageConfigFilesAll)
+  plusConfigFilesAll = unique(plusConfigFilesAll)
 
   const indent = '- '
   const msgIntro = `No onRenderClient() hook found for URL \`${url}\`. (A onRenderClient() hook is required when using Client Routing: the config \`clientRouting\` is \`true\` for the URL \`${url}\`.)`
-  if (pageConfigFilesDefiningHook.length === 0) {
+  if (plusConfigFilesDefiningHook.length === 0) {
     assertUsage(
       false,
       [
         // TODO: update msg
         `${msgIntro} No onRenderClient() hook is defined by any of your page config files. Your page config files (which none of them defines \`onClientRender()\`):`,
-        ...pageConfigFilesAll.map((p) => indent + p)
+        ...plusConfigFilesAll.map((p) => indent + p)
       ].join('\n')
     )
   } else {
-    const plural = pageConfigFilesDefiningHook.length >= 2
+    const plural = plusConfigFilesDefiningHook.length >= 2
     assertUsage(
       false,
       [
         `${msgIntro} Note that onRenderClient() is defined at:`,
-        ...pageConfigFilesDefiningHook.map((p) => `${indent}${p}`),
+        ...plusConfigFilesDefiningHook.map((p) => `${indent}${p}`),
         `but ${plural ? 'none of them' : "it doesn't"} apply to the URL \`${url}\`.`
       ].join('\n')
     )

@@ -7,12 +7,12 @@ import type { PageConfig, PageConfigGlobal } from './PageConfig'
 function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageConfig[] {
   assert(Array.isArray(pageConfigs) || pageConfigs === null)
   // TODO: remove obsolete comment?
-  // if `pageConfigFilesCannotBeLoaded === null` => then `import.meta.glob('/**/+config.${scriptFileExtensions}', { eager: true })` cannot be transpiled/loaded => code of virtual file cannot be generated or run => assertPageConfigs() is never called
+  // if `plusConfigFilesCannotBeLoaded === null` => then `import.meta.glob('/**/+config.${scriptFileExtensions}', { eager: true })` cannot be transpiled/loaded => code of virtual file cannot be generated or run => assertPageConfigs() is never called
   assert(pageConfigs !== null)
   pageConfigs.forEach((pageConfig) => {
     assert(isObject(pageConfig))
     assert(hasProp(pageConfig, 'pageId', 'string'))
-    assert(hasProp(pageConfig, 'pageConfigFilePathAll', 'string[]'))
+    assert(hasProp(pageConfig, 'plusConfigFilePathAll', 'string[]'))
     assert(hasProp(pageConfig, 'routeFilesystem', 'string') || hasProp(pageConfig, 'routeFilesystem', 'null'))
     assert(hasProp(pageConfig, 'routeFilesystemDefinedBy', 'string'))
     assert(hasProp(pageConfig, 'loadConfigValueFiles', 'function'))
@@ -36,7 +36,7 @@ function assertConfigElements(configElements: unknown, isGlobalConfig: boolean) 
     }
     assert(hasProp(configElement, 'configDefinedAt', 'string'))
     assert(
-      hasProp(configElement, 'pageConfigFilePath', 'string') || hasProp(configElement, 'pageConfigFilePath', 'null')
+      hasProp(configElement, 'plusConfigFilePath', 'string') || hasProp(configElement, 'plusConfigFilePath', 'null')
     )
     assert(hasProp(configElement, 'configEnv', 'string'))
     assert(

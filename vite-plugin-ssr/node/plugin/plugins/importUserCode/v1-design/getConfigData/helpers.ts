@@ -4,14 +4,14 @@ export { getPageConfigValue }
 import { assertDefaultExportObject } from '../../../../utils'
 import type { PageConfigFile } from '../getConfigData'
 
-function getPageConfigValues(pageConfigFile: PageConfigFile): Record<string, unknown> {
-  const { pageConfigFilePath, pageConfigFileExports } = pageConfigFile
-  assertDefaultExportObject(pageConfigFileExports, pageConfigFilePath)
-  const pageConfigValues = pageConfigFileExports.default
+function getPageConfigValues(plusConfigFile: PageConfigFile): Record<string, unknown> {
+  const { plusConfigFilePath, plusConfigFileExports } = plusConfigFile
+  assertDefaultExportObject(plusConfigFileExports, plusConfigFilePath)
+  const pageConfigValues = plusConfigFileExports.default
   return pageConfigValues
 }
-function getPageConfigValue(configName: string, pageConfigFile: PageConfigFile): unknown {
-  const pageConfigValues = getPageConfigValues(pageConfigFile)
+function getPageConfigValue(configName: string, plusConfigFile: PageConfigFile): unknown {
+  const pageConfigValues = getPageConfigValues(plusConfigFile)
   const configValue = pageConfigValues[configName]
   return configValue
 }
