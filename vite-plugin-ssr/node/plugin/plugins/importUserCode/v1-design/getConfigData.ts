@@ -1,5 +1,7 @@
 export { getConfigData }
+export { getPageConfigValues }
 export type { ConfigValueFile }
+export type { PageConfigFile }
 
 import {
   assertPosixPath,
@@ -37,7 +39,7 @@ import {
   determinePageId,
   determineRouteFromFilesystemPath,
   isRelevantConfig,
-  pickMostRelevantConfigValueFile
+  pickConfigValue
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadPageConfig, transpileAndLoadConfigValueFile } from './transpileAndLoadPlusFile'
 import { parseImportData } from './replaceImportStatements'
@@ -315,36 +317,31 @@ function resolveConfigElement(
 ): null | ConfigElement {
   // TODO: implement warning if defined in non-abstract +config.js as well as in +{configName}.js
 
-  {
-    const configValueFiles = configValueFilesRelevant.filter(
-      (configValueFile) => configValueFile.configName === configName
-    )
-    const configValueFile = pickMostRelevantConfigValueFile(configValueFiles)
-    if (configValueFile) {
-      const { configValueFilePath } = configValueFile
-      const configValueFileExport = 'default'
-      const configElement: ConfigElement = {
-        configEnv: configDef.env,
-        configValueFilePath,
-        configValueFileExport,
-        pageConfigFilePath: null,
-        configDefinedAt: `${configValueFilePath} > \`export ${configValueFileExport}\``,
-        configDefinedByFile: configValueFilePath
-      }
-      if ('configValue' in configValueFile) {
-        configElement.configValue = configValueFile.configValue
-      }
-      return configElement
+  const result = pickConfigValue(configName, configValueFilesRelevant, pageConfigFilesRelevant)
+  if (result.configValueFile) {
+    const { configValueFile } = result
+    const { configValueFilePath } = configValueFile
+    const configValueFileExport = 'default'
+    const configElement: ConfigElement = {
+      configEnv: configDef.env,
+      configValueFilePath,
+      configValueFileExport,
+      pageConfigFilePath: null,
+      configDefinedAt: `${configValueFilePath} > \`export ${configValueFileExport}\``,
+      configDefinedByFile: configValueFilePath
     }
+    if ('configValue' in configValueFile) {
+      configElement.configValue = configValueFile.configValue
+    }
+    return configElement
   }
 
-  const result = getConfigValue(configName, pageConfigFilesRelevant)
-  if (!result) return null
-  const { pageConfigValue, pageConfigValueFilePath } = result
-  const configValue = pageConfigValue
+  if (!result.pageConfigValue) return null
+  const { pageConfigValue } = result
+  const { configValue, pageConfigValueFilePath } = pageConfigValue
   const configFilePath = pageConfigValueFilePath
   const { c_code, c_validate } = configDef
-  const codeFile = getCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName, c_code)
+  const codeFile = getCodeFilePath(configValue, pageConfigValueFilePath, userRootDir, configName, c_code)
   assert(codeFile || !c_code) // TODO: assertUsage() or remove
   if (c_validate) {
     const commonArgs = { configFilePath }
@@ -560,20 +557,6 @@ function getErrorIntro(filePath: string, configName: string): string {
   assert(filePath.startsWith('/') || isNpmPackageImportPath(filePath))
   assert(!configName.startsWith('/'))
   return `${filePath} sets the config ${configName}`
-}
-
-function getConfigValue(
-  pageConfigName: string,
-  pageConfigFilesRelevant: PageConfigFile[]
-): null | { pageConfigValueFilePath: string; pageConfigValue: unknown } {
-  for (const configFile of pageConfigFilesRelevant) {
-    const pageConfigValues = getPageConfigValues(configFile)
-    const pageConfigValue = pageConfigValues[pageConfigName]
-    if (pageConfigValue !== undefined) {
-      return { pageConfigValueFilePath: configFile.pageConfigFilePath, pageConfigValue }
-    }
-  }
-  return null
 }
 
 function getPageConfigValues(pageConfigFile: PageConfigFile): Record<string, unknown> {
