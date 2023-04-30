@@ -7,7 +7,7 @@ const cli = cac(projectInfo.projectName)
 
 cli
   .command('prerender', 'Pre-render the HTML of your pages', { allowUnknownOptions: true })
-  .option('--configFile <path>', '[string] Path to `vite.config.js`.')
+  .option('--configFile <path>', '[string] Path to vite.config.js')
   .action(async (options) => {
     assertOptions()
     const { partial, noExtraDir, base, parallel, outDir, configFile } = options
