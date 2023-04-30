@@ -13,7 +13,7 @@ const Page: Component<{ is404: boolean }> = ({ is404 }) => {
   } else {
     return (
       <>
-        <h1>500 Internal Server Error</h1>
+        <h1>500 Internal Error</h1>
         <p>Something went wrong.</p>
       </>
     )

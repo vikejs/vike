@@ -31,7 +31,7 @@ type PageContextBuiltIn<Page = any> = {
   url: string
   /** The URL of the current page */
   urlOriginal: string
-  /** If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Server Error`, see https://vite-plugin-ssr.com/error-page */
+  /** If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see https://vite-plugin-ssr.com/error-page */
   is404?: boolean
   /**
    * Whether the page was navigated by the client-side router, see https://vite-plugin-ssr.com/pageContext

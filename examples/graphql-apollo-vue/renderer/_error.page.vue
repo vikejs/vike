@@ -4,7 +4,7 @@
     <p>This page could not be found.</p>
   </div>
   <div v-else>
-    <h1>500 Internal Server Error</h1>
+    <h1>500 Internal Error</h1>
     <p>Something went wrong.</p>
   </div>
 </template>
