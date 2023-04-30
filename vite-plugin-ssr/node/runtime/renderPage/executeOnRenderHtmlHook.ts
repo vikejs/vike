@@ -62,7 +62,7 @@ async function executeOnRenderHtmlHook(
   assertUsage(
     hook,
     [
-      `No ${hookName}() hook found. Make sure to define one.`
+      `No ${hookName}() hook found`
       /*
       'See https://vite-plugin-ssr.com/render-modes for more information.',
       [
