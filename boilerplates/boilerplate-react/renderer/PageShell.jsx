@@ -30,7 +30,7 @@ function PageShell({ pageContext, children }) {
 }
 
 PageShell.propTypes = {
-  pageContext: PropTypes.object,
+  pageContext: PropTypes.any,
   children: childrenPropType
 }
 
