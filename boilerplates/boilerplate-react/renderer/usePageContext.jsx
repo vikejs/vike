@@ -16,7 +16,7 @@ function PageContextProvider({ pageContext, children }) {
 }
 
 PageContextProvider.propTypes = {
-  pageContext: PropTypes.object,
+  pageContext: PropTypes.any,
   children: childrenPropType
 }
 
