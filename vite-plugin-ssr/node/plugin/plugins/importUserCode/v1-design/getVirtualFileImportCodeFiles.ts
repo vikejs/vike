@@ -1,4 +1,4 @@
-export { getVirtualFileImportPageCode }
+export { getVirtualFileImportCodeFiles }
 
 import { assert, assertPosixPath } from '../../../utils'
 import type { PlusConfigData } from '../../../../../shared/page-configs/PlusConfig'
@@ -13,7 +13,7 @@ import { debug } from './debug'
 import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps'
 import path from 'path'
 
-async function getVirtualFileImportPageCode(
+async function getVirtualFileImportCodeFiles(
   id: string,
   userRootDir: string,
   isDev: boolean,

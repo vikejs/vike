@@ -3,7 +3,7 @@ export { importUserCode }
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 import { getConfigVps } from '../../../shared/getConfigVps'
-import { getVirtualFileImportPageCode } from './v1-design/getVirtualFileImportPageCode'
+import { getVirtualFileImportCodeFiles } from './v1-design/getVirtualFileImportCodeFiles'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode'
 import { getVirtualFileId, isDev1, isDev1_onConfigureServer, isVirtualFileId, resolveVirtualFileId } from '../../utils'
 import { invalidateVirtualFilesImportPageCode } from './v1-design/invalidation'
@@ -40,7 +40,7 @@ function importUserCode(): Plugin {
       id = getVirtualFileId(id)
 
       if (isVirtualFileIdImportPageCode(id)) {
-        const code = await getVirtualFileImportPageCode(id, config.root, isDev, configVps)
+        const code = await getVirtualFileImportCodeFiles(id, config.root, isDev, configVps)
         return code
       }
 
