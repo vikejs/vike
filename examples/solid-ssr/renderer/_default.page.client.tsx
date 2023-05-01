@@ -41,6 +41,7 @@ async function render(pageContext: PageContextClient) {
 //   at setProperty (dev.js:135:70)
 //   at applyState (dev.js:320:5)
 // ```
+// TODO/v1-release: remove workaround since _pageFilesAll and _pageFilesLoaded aren't used by the V1 design
 function removeUnmergableInternals<T>(pageContext: T): T {
   // Remove pageContext properties that cannot be reassigned by reconcile()
   const pageContextFixed = { ...pageContext }
