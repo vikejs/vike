@@ -187,7 +187,7 @@ function getGlobalHooks(
     if (pageConfigGlobal.onBeforeRoute) {
       const hookFn = pageConfigGlobal.onBeforeRoute.configValue
       if (hookFn) {
-        const hookFilePath = pageConfigGlobal.onBeforeRoute.configValueFilePath
+        const hookFilePath = pageConfigGlobal.onBeforeRoute.plusValueFilePath
         assert(hookFilePath)
         assertUsage(isCallable(hookFn), `The hook onBeforeRoute() defined by ${hookFilePath} should be a function.`)
         const onBeforeRouteHook: OnBeforeRouteHook = {

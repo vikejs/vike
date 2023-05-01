@@ -15,7 +15,7 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
     assert(hasProp(pageConfig, 'plusConfigFilePathAll', 'string[]'))
     assert(hasProp(pageConfig, 'routeFilesystem', 'string') || hasProp(pageConfig, 'routeFilesystem', 'null'))
     assert(hasProp(pageConfig, 'routeFilesystemDefinedBy', 'string'))
-    assert(hasProp(pageConfig, 'loadConfigValueFiles', 'function'))
+    assert(hasProp(pageConfig, 'loadPlusValueFiles', 'function'))
     assert(hasProp(pageConfig, 'isErrorPage', 'boolean'))
     assert(hasProp(pageConfig, 'configElements', 'object'))
     assertConfigElements(pageConfig.configElements, false)
@@ -40,17 +40,17 @@ function assertConfigElements(configElements: unknown, isGlobalConfig: boolean) 
     )
     assert(hasProp(configElement, 'configEnv', 'string'))
     assert(
-      hasProp(configElement, 'configValueFilePath', 'string') || hasProp(configElement, 'configValueFilePath', 'null')
+      hasProp(configElement, 'plusValueFilePath', 'string') || hasProp(configElement, 'plusValueFilePath', 'null')
     )
     assert(
-      hasProp(configElement, 'configValueFileExport', 'string') ||
-        hasProp(configElement, 'configValueFileExport', 'null')
+      hasProp(configElement, 'plusValueFileExport', 'string') ||
+        hasProp(configElement, 'plusValueFileExport', 'null')
     )
     if (isGlobalConfig) {
       assert(hasProp(configElement, 'configValue'))
     }
-    if (configElement.configValueFilePath) {
-      const { configValueFilePath } = configElement
+    if (configElement.plusValueFilePath) {
+      const { plusValueFilePath } = configElement
       if (configName === 'route') {
         assert(hasProp(configElement, 'configValue')) // route files are eagerly loaded
         const { configValue } = configElement
@@ -58,7 +58,7 @@ function assertConfigElements(configElements: unknown, isGlobalConfig: boolean) 
         // TODO: validate earlier?
         assertUsage(
           configValueType === 'string' || isCallable(configValue),
-          `${configValueFilePath} has a default export with an invalid type '${configValueType}': the default export should be a string or a function`
+          `${plusValueFilePath} has a default export with an invalid type '${configValueType}': the default export should be a string or a function`
         )
       }
     }

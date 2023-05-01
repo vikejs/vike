@@ -11,8 +11,8 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     return pageConfig as PageConfigLoaded
   }
 
-  const configValueFiles = await pageConfig.loadConfigValueFiles()
-  configValueFiles.forEach((configValueData) => {
+  const plusValueFiles = await pageConfig.loadPlusValueFiles()
+  plusValueFiles.forEach((configValueData) => {
     const { configName, importFile } = configValueData
     let configValue: unknown
     if (configValueData.isPlusFile) {
@@ -29,7 +29,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
   })
 
   Object.entries(pageConfig.configElements).map(([configName, configElement]) => {
-    if (configElement.configValueFilePath) return
+    if (configElement.plusValueFilePath) return
     assert(!(configName in configValues))
     configValues[configName] = configElement.configValue
   })

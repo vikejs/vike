@@ -45,7 +45,7 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
     lines.push(
-      `    loadConfigValueFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`
+      `    loadPlusValueFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`
     )
     lines.push(`    configElements: {`)
     Object.entries(configElements).forEach(([configName, configElement]) => {
@@ -65,9 +65,9 @@ function generateSourceCodeOfPageConfigs(
     pageConfigsData.forEach((pageConfig) => {
       const { configElements, plusConfigFilePathAll } = pageConfig
       Object.entries(configElements).forEach(([_configName, configElement]) => {
-        const { configEnv, configValueFilePath } = configElement
-        if (configEnv === 'config-only' && configValueFilePath) {
-          configFiles.add(configValueFilePath)
+        const { configEnv, plusValueFilePath } = configElement
+        if (configEnv === 'config-only' && plusValueFilePath) {
+          configFiles.add(plusValueFilePath)
         }
       })
       plusConfigFilePathAll.forEach((plusConfigFilePath) => {
@@ -127,14 +127,14 @@ function serializeConfigElement(
     configDefinedAt,
     configDefinedByFile,
     configEnv,
-    configValueFilePath,
+    plusValueFilePath,
     plusConfigFilePath,
-    configValueFileExport
+    plusValueFileExport
   } = configElement
   lines.push(`${whitespace}  configDefinedAt: ${JSON.stringify(configDefinedAt)},`)
   lines.push(`${whitespace}  configDefinedByFile: ${JSON.stringify(configDefinedByFile)},`)
-  lines.push(`${whitespace}  configValueFilePath: ${JSON.stringify(configValueFilePath)},`)
-  lines.push(`${whitespace}  configValueFileExport: ${JSON.stringify(configValueFileExport)},`)
+  lines.push(`${whitespace}  plusValueFilePath: ${JSON.stringify(plusValueFilePath)},`)
+  lines.push(`${whitespace}  plusValueFileExport: ${JSON.stringify(plusValueFileExport)},`)
   lines.push(`${whitespace}  plusConfigFilePath: ${JSON.stringify(plusConfigFilePath)},`)
   lines.push(`${whitespace}  configEnv: '${configEnv}',`)
   if ('configValue' in configElement) {
@@ -142,11 +142,11 @@ function serializeConfigElement(
     const { configValue } = configElement
     lines.push(`${whitespace}  configValue: ${JSON.stringify(configValue)}`)
   } else {
-    assert(configValueFilePath)
+    assert(plusValueFilePath)
     if (configEnv === '_routing-env' || eagerImport) {
-      const { importVar, importStatement } = generateEagerImport(configValueFilePath)
+      const { importVar, importStatement } = generateEagerImport(plusValueFilePath)
       // TODO: expose all exports so that assertDefaultExport can be applied
-      lines.push(`${whitespace}  configValue: ${importVar}[${JSON.stringify(configValueFileExport)}]`)
+      lines.push(`${whitespace}  configValue: ${importVar}[${JSON.stringify(plusValueFileExport)}]`)
       importStatements.push(importStatement)
     }
   }

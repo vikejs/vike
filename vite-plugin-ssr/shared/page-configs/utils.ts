@@ -30,8 +30,8 @@ function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): nu
   if (!configElement || isNullish(pageConfig, configName)) {
     return null
   }
-  if (configElement.configValueFilePath !== null) {
-    return configElement.configValueFilePath
+  if (configElement.plusValueFilePath !== null) {
+    return configElement.plusValueFilePath
   }
   const { configValue, configDefinedAt } = configElement
   assertUsage(
@@ -44,8 +44,8 @@ function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): nu
 function isNullish(pageConfig: PageConfigData, configName: ConfigName): boolean {
   const configElement = pageConfig.configElements[configName]
   if (!configElement) return true
-  const { configValueFilePath, configValue } = configElement
-  if (configValueFilePath) return false
+  const { plusValueFilePath, configValue } = configElement
+  if (plusValueFilePath) return false
   return configValue === null || configValue === undefined
 }
 

@@ -1,5 +1,5 @@
 export { transpileAndLoadPageConfig }
-export { transpileAndLoadConfigValueFile }
+export { transpileAndLoadPlusValueFile }
 
 import esbuild, { type BuildResult, type BuildOptions } from 'esbuild'
 import fs from 'fs'
@@ -28,7 +28,7 @@ async function transpileAndLoadPageConfig(
   return transpileAndLoadPlusFile(filePathAbsolute, true, filePathRelativeToUserRootDir)
 }
 
-async function transpileAndLoadConfigValueFile(filePathAbsolute: string): Promise<Result> {
+async function transpileAndLoadPlusValueFile(filePathAbsolute: string): Promise<Result> {
   return transpileAndLoadPlusFile(filePathAbsolute, false)
 }
 

@@ -10,7 +10,7 @@ import {
   getNpmPackageImportPath,
   isNpmPackageImportPath
 } from '../../../../utils'
-import type { ConfigValueFile, PlusConfigFile } from '../getConfigData'
+import type { PlusValueFile, PlusConfigFile } from '../getConfigData'
 import { getPageConfigValue } from './helpers'
 
 function determineRouteFromFilesystemPath(dirOrFilePath: string): string {
@@ -69,7 +69,7 @@ function determinePageId(somePath: string): string {
 }
 
 function isRelevantConfig(
-  configPath: string, // Can be plusConfigFilePath or configValueFilePath
+  configPath: string, // Can be plusConfigFilePath or plusValueFilePath
   pageId: string
 ): boolean {
   const configFsRoot = removeIrrelevantParts(removeFilename(configPath), ['renderer', 'pages'])
@@ -101,17 +101,17 @@ function removeIrrelevantParts(somePath: string, dirs: string[]) {
     .join('/')
 }
 
-type Candidate = { configValueFile: ConfigValueFile } | { plusConfigFile: PlusConfigFile }
+type Candidate = { plusValueFile: PlusValueFile } | { plusConfigFile: PlusConfigFile }
 
 function pickMostRelevantConfigValue(
   configName: string,
-  configValueFilesRelevant: ConfigValueFile[],
+  plusValueFilesRelevant: PlusValueFile[],
   plusConfigFilesRelevant: PlusConfigFile[]
 ): null | Candidate {
   const candidates: Candidate[] = []
-  configValueFilesRelevant.forEach((configValueFile) => {
-    if (configValueFile.configName === configName) {
-      candidates.push({ configValueFile })
+  plusValueFilesRelevant.forEach((plusValueFile) => {
+    if (plusValueFile.configName === configName) {
+      candidates.push({ plusValueFile })
     }
   })
   plusConfigFilesRelevant.forEach((plusConfigFile) => {
@@ -136,12 +136,12 @@ function pickMostRelevantConfigValue(
     }
     if (candidateFsRoute.length === winnerNowFsRoute.length) {
       let ignored: Candidate
-      if ('configValueFile' in candidate) {
+      if ('plusValueFile' in candidate) {
         assert('plusConfigFile' in winnerNow)
         ignored = winnerNow
         winnerNow = candidate
       } else {
-        assert('configValueFile' in winnerNow)
+        assert('plusValueFile' in winnerNow)
         ignored = candidate
       }
       assertWarning(
@@ -158,8 +158,8 @@ function pickMostRelevantConfigValue(
 }
 function getCandidateFsRoute(candidate: Candidate): string {
   let filePath: string
-  if ('configValueFile' in candidate) {
-    filePath = candidate.configValueFile.configValueFilePath
+  if ('plusValueFile' in candidate) {
+    filePath = candidate.plusValueFile.plusValueFilePath
   } else {
     filePath = candidate.plusConfigFile.plusConfigFilePath
   }
@@ -168,8 +168,8 @@ function getCandidateFsRoute(candidate: Candidate): string {
 }
 function getCandidateDefinedAt(candidate: Candidate, configName: string): string {
   let configDefinedAt: string
-  if ('configValueFile' in candidate) {
-    configDefinedAt = candidate.configValueFile.configValueFilePath
+  if ('plusValueFile' in candidate) {
+    configDefinedAt = candidate.plusValueFile.plusValueFilePath
   } else {
     configDefinedAt = `${candidate.plusConfigFile.plusConfigFilePath} > ${configName}`
   }
