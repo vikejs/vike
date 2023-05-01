@@ -3,7 +3,6 @@ export { render }
 export const passToClient = ['pageProps', 'urlPathname']
 
 import ReactDOMServer from 'react-dom/server'
-import React from 'react'
 import { PageShell } from './PageShell'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import logoUrl from './logo.svg'

@@ -4,6 +4,7 @@
     "prod": "npm run build && npm run server:prod",
     "build": "vite build",
     "server": "node ./server",
+    "lint": "eslint pages renderer server --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "server:prod": "cross-env NODE_ENV=production node ./server"
   },
   "dependencies": {
@@ -16,5 +17,12 @@
     "sirv": "^2.0.2",
     "vite": "^4.0.3",
     "vite-plugin-ssr": "^0.4.123"
+  },
+  "devDependencies": {
+    "eslint": "^8.38.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
+    "prop-types": "15.8.1"
   }
 }

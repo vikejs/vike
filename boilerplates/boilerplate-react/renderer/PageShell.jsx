@@ -1,8 +1,10 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import logo from './logo.svg'
 import './PageShell.css'
 import { PageContextProvider } from './usePageContext'
 import { Link } from './Link'
+import { childrenPropType } from './PropTypeValues'
 
 export { PageShell }
 
@@ -27,6 +29,11 @@ function PageShell({ pageContext, children }) {
   )
 }
 
+PageShell.propTypes = {
+  pageContext: PropTypes.object,
+  children: childrenPropType
+}
+
 function Layout({ children }) {
   return (
     <div
@@ -39,6 +46,10 @@ function Layout({ children }) {
       {children}
     </div>
   )
+}
+
+Layout.propTypes = {
+  children: childrenPropType
 }
 
 function Sidebar({ children }) {
@@ -58,6 +69,10 @@ function Sidebar({ children }) {
   )
 }
 
+Sidebar.propTypes = {
+  children: childrenPropType
+}
+
 function Content({ children }) {
   return (
     <div
@@ -71,6 +86,10 @@ function Content({ children }) {
       {children}
     </div>
   )
+}
+
+Content.propTypes = {
+  children: childrenPropType
 }
 
 function Logo() {

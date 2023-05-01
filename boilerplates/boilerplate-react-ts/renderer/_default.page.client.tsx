@@ -1,6 +1,5 @@
 export { render }
 
-import React from 'react'
 import { hydrateRoot } from 'react-dom/client'
 import { PageShell } from './PageShell'
 import type { PageContextClient } from './types'
@@ -9,8 +8,11 @@ import type { PageContextClient } from './types'
 async function render(pageContext: PageContextClient) {
   const { Page, pageProps } = pageContext
   if (!Page) throw new Error('Client-side render() hook expects pageContext.Page to be defined')
+  const pageRoot = document.getElementById('page-view')
+  if(!pageRoot) throw new Error('Page root element not found')
+
   hydrateRoot(
-    document.getElementById('page-view')!,
+    pageRoot,
     <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
     </PageShell>

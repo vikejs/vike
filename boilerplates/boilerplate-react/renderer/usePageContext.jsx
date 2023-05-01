@@ -2,8 +2,11 @@
 // See https://vite-plugin-ssr.com/pageContext-anywhere
 
 import React, { useContext } from 'react'
+import PropTypes from 'prop-types'
+import { childrenPropType } from './PropTypeValues'
 
 export { PageContextProvider }
+// eslint-disable-next-line react-refresh/only-export-components
 export { usePageContext }
 
 const Context = React.createContext(undefined)
@@ -11,6 +14,12 @@ const Context = React.createContext(undefined)
 function PageContextProvider({ pageContext, children }) {
   return <Context.Provider value={pageContext}>{children}</Context.Provider>
 }
+
+PageContextProvider.propTypes = {
+  pageContext: PropTypes.object,
+  children: childrenPropType
+}
+
 
 function usePageContext() {
   const pageContext = useContext(Context)

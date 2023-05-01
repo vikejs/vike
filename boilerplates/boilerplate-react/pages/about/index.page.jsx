@@ -1,4 +1,3 @@
-import React from 'react'
 import './code.css'
 
 export { Page }
