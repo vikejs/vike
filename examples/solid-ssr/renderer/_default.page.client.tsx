@@ -41,12 +41,13 @@ async function render(pageContext: PageContextClient) {
 //   at setProperty (dev.js:135:70)
 //   at applyState (dev.js:320:5)
 // ```
-function removeUnmergableInternals<T>(pageContext: T): T {
-  // Remove pageContext properties that cannot be reassigned by reconcile()
-  const pageContextFixed = { ...pageContext }
+function removeUnmergableInternals<T>({
   // @ts-ignore
-  delete pageContextFixed._pageFilesAll
+  _pageFilesAll,
   // @ts-ignore
-  delete pageContextFixed._pageFilesLoaded
-  return pageContextFixed
+  _pageFilesLoaded,
+  ...pageContext
+}: T): Omit<T, '_pageFilesAll' | '_pageFilesLoaded'> {
+  // These pageContext properties cannot be reassigned
+  return pageContext
 }
