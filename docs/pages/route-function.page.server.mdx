@@ -179,7 +179,9 @@ async function onBeforeRender(pageContext) {
     throw RenderErrorPage({
       pageContext: {
         // We can provide additional pageContext values to use in _error.page.js
-        errorInfo: `Product with ID ${productId} doesn't exist`
+        pageProps: {
+          errorInfo: `Product with ID ${productId} doesn't exist`
+        },
         /* We could also redirect the user, similar to the authentication redirection above
         redirectTo: '/product/new'
         */
