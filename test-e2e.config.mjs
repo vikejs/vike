@@ -18,6 +18,10 @@ function getCiJobs() {
     os: 'ubuntu-latest',
     node_version: '18'
   }
+  const ubuntu20 = {
+    os: 'ubuntu-latest',
+    node_version: '20'
+  }
   const win14 = {
     os: 'windows-latest',
     node_version: '14'
@@ -31,12 +35,12 @@ function getCiJobs() {
     node_version: '17'
   }
 
-  const setupsExamples = [ubuntu16, win14]
+  const setupsExamples = [ubuntu18, ubuntu16, win14]
 
   return [
     {
       name: 'Boilerplates',
-      setups: [ubuntu18]
+      setups: [ubuntu20]
     },
     {
       name: 'Examples React',
