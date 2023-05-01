@@ -1,7 +1,7 @@
 export { getVirtualFileImportPageCode }
 
 import { assert, assertPosixPath } from '../../../utils'
-import type { PageConfigData } from '../../../../../shared/page-configs/PageConfig'
+import type { PlusConfigData } from '../../../../../shared/page-configs/PlusConfig'
 import { generateEagerImport } from '../generateEagerImport'
 import {
   getVirtualFileIdImportPageCode,
@@ -28,12 +28,12 @@ async function getVirtualFileImportPageCode(
   }
   */
   const { pageId, isForClientSide } = result
-  const { pageConfigsData } = await getConfigData(userRootDir, isDev, false, configVps.extensions)
-  assert(pageConfigsData)
-  const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId === pageId)
-  assert(pageConfigData)
+  const { plusConfigsData } = await getConfigData(userRootDir, isDev, false, configVps.extensions)
+  assert(plusConfigsData)
+  const plusConfigData = plusConfigsData.find((plusConfigData) => plusConfigData.pageId === pageId)
+  assert(plusConfigData)
   const code = generateSourceCodeOfLoadCodeFileVirtualFile(
-    pageConfigData,
+    plusConfigData,
     isForClientSide,
     pageId,
     configVps.includeAssetsImportedByServer,
@@ -44,7 +44,7 @@ async function getVirtualFileImportPageCode(
 }
 
 function generateSourceCodeOfLoadCodeFileVirtualFile(
-  pageConfigData: PageConfigData,
+  plusConfigData: PlusConfigData,
   isForClientSide: boolean,
   pageId: string,
   includeAssetsImportedByServer: boolean,
@@ -54,7 +54,7 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   const importStatements: string[] = []
   lines.push('export default [')
   let varCounter = 0
-  Object.entries(pageConfigData.configElements).forEach(([configName, configElement]) => {
+  Object.entries(plusConfigData.configElements).forEach(([configName, configElement]) => {
     if (!configElement.plusValueFilePath) return
     const { configEnv, plusValueFilePath, plusValueFileExport } = configElement
     if (configEnv === '_routing-env' || configEnv === 'config-only') return

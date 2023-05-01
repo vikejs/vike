@@ -12,7 +12,7 @@ async function createPageContext<T extends { urlOriginal: string }>(pageContextB
   if (!globalObject.pageFilesData) {
     globalObject.pageFilesData = await getPageFilesAll(true)
   }
-  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = globalObject.pageFilesData
+  const { pageFilesAll, allPageIds, plusConfigs, plusConfigGlobal } = globalObject.pageFilesData
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))
   const pageContext = {
@@ -22,8 +22,8 @@ async function createPageContext<T extends { urlOriginal: string }>(pageContextB
     _isProduction: import.meta.env.PROD,
     // TODO: use GlobalContext instead
     _pageFilesAll: pageFilesAll,
-    _pageConfigs: pageConfigs,
-    _pageConfigGlobal: pageConfigGlobal,
+    _plusConfigs: plusConfigs,
+    _plusConfigGlobal: plusConfigGlobal,
     _allPageIds: allPageIds
   }
   objectAssign(pageContext, pageContextBase)

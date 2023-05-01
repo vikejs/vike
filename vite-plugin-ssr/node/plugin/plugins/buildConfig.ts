@@ -18,7 +18,7 @@ import { findPageFiles } from '../shared/findPageFiles'
 import { getConfigVps } from '../../shared/getConfigVps'
 import type { ResolvedConfig, Plugin, Rollup } from 'vite'
 import { getVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode'
-import type { PageConfigData } from '../../../shared/page-configs/PageConfig'
+import type { PlusConfigData } from '../../../shared/page-configs/PlusConfig'
 type InputOption = Rollup.InputOption
 
 function buildConfig(): Plugin {
@@ -51,9 +51,9 @@ function buildConfig(): Plugin {
 
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const pageFileEntries = await getPageFileEntries(config) // TODO/v1-release: remove
-  const { pageConfigsData } = await getConfigData(config.root, false, false, (await getConfigVps(config)).extensions)
+  const { plusConfigsData } = await getConfigData(config.root, false, false, (await getConfigVps(config)).extensions)
   if (viteIsSSR(config)) {
-    const serverEntries = analyzeServerEntries(pageConfigsData)
+    const serverEntries = analyzeServerEntries(plusConfigsData)
     const entries = {
       pageFiles: virtualFileIdImportUserCodeServer, // TODO/next-major-release: rename to plusConfigFiles
       importBuild: resolve('dist/cjs/node/importBuild.js'), // TODO/next-major-release: remove
@@ -62,7 +62,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     }
     return entries
   } else {
-    let { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigsData, config)
+    let { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(plusConfigsData, config)
     if (Object.entries(pageFileEntries).length > 0) {
       hasClientRouting = true
       hasServerRouting = true
@@ -83,24 +83,24 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
   }
 }
 
-function analyzeClientEntries(pageConfigsData: PageConfigData[], config: ResolvedConfig) {
+function analyzeClientEntries(plusConfigsData: PlusConfigData[], config: ResolvedConfig) {
   let hasClientRouting = false
   let hasServerRouting = false
   let clientEntries: Record<string, string> = {}
   let clientFilePaths: string[] = []
-  pageConfigsData.forEach((pageConfigData) => {
-    const clientRouting = getConfigValue(pageConfigData, 'clientRouting', 'boolean')
+  plusConfigsData.forEach((plusConfigData) => {
+    const clientRouting = getConfigValue(plusConfigData, 'clientRouting', 'boolean')
     if (clientRouting) {
       hasClientRouting = true
     } else {
       hasServerRouting = true
     }
     {
-      const { entryName, entryTarget } = getEntryFromPageConfigData(pageConfigData, true)
+      const { entryName, entryTarget } = getEntryFromPlusConfigData(plusConfigData, true)
       clientEntries[entryName] = entryTarget
     }
     {
-      const clientFilePath = getCodeFilePath(pageConfigData, 'client')
+      const clientFilePath = getCodeFilePath(plusConfigData, 'client')
       if (clientFilePath) {
         clientFilePaths.push(clientFilePath)
       }
@@ -114,10 +114,10 @@ function analyzeClientEntries(pageConfigsData: PageConfigData[], config: Resolve
 
   return { hasClientRouting, hasServerRouting, clientEntries }
 }
-function analyzeServerEntries(pageConfigsData: PageConfigData[]) {
+function analyzeServerEntries(plusConfigsData: PlusConfigData[]) {
   const serverEntries: Record<string, string> = {}
-  pageConfigsData.forEach((pageConfigData) => {
-    const { entryName, entryTarget } = getEntryFromPageConfigData(pageConfigData, false)
+  plusConfigsData.forEach((plusConfigData) => {
+    const { entryName, entryTarget } = getEntryFromPlusConfigData(plusConfigData, false)
     serverEntries[entryName] = entryTarget
   })
   return serverEntries
@@ -148,8 +148,8 @@ function getEntryFromFilePath(filePath: string, config: ResolvedConfig) {
   entryName = prependEntriesDir(entryName)
   return { entryName, entryTarget }
 }
-function getEntryFromPageConfigData(pageConfigData: PageConfigData, isForClientSide: boolean) {
-  let { pageId } = pageConfigData
+function getEntryFromPlusConfigData(plusConfigData: PlusConfigData, isForClientSide: boolean) {
+  let { pageId } = plusConfigData
   const entryTarget = getVirtualFileIdImportPageCode(pageId, isForClientSide)
   assert(pageId.startsWith('/'))
   let entryName = pageId

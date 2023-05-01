@@ -10,7 +10,7 @@ import { injectHtmlTags, createHtmlHeadIfMissing } from './injectAssets/injectHt
 import type { HtmlPart } from './renderHtml'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags'
 import type { InjectToStream } from './stream/react-streaming'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig'
+import type { PlusConfig } from '../../../shared/page-configs/PlusConfig'
 
 type PageContextInjectAssets = {
   urlPathname: string
@@ -21,7 +21,7 @@ type PageContextInjectAssets = {
   _pageContextPromise: PageContextPromise
   _renderHook: { hookSrc: string; hookName: 'render' }
   _baseServer: string
-  _pageConfigs: PageConfig[]
+  _plusConfigs: PlusConfig[]
   is404: null | boolean
 }
 

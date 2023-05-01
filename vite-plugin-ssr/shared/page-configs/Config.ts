@@ -7,7 +7,7 @@ import type { PrefetchStaticAssets } from '../../client/router/prefetch/getPrefe
 import type { ConfigVpsUserProvided } from '../ConfigVps'
 // TODO: write docs of links below
 
-import type { ConfigEnv } from './PageConfig'
+import type { ConfigEnv } from './PlusConfig'
 
 type ConfigName =
   | Exclude<keyof Config, keyof ConfigVpsUserProvided | 'onBeforeRoute' | 'onPrerenderStart' | 'meta'>

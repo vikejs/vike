@@ -8,8 +8,8 @@ import { assertWarning, objectAssign, PromiseType } from '../utils'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets'
 import { loadPageFilesServerSide } from '../../../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { debugPageFiles, type PageContextDebug } from './debugPageFiles'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig'
-import { findPageConfig } from '../../../shared/page-configs/findPageConfig'
+import type { PlusConfig } from '../../../shared/page-configs/PlusConfig'
+import { findPlusConfig } from '../../../shared/page-configs/findPlusConfig'
 import { analyzePage } from './analyzePage'
 import { getGlobalContext } from '../globalContext'
 import type { MediaType } from './inferMediaType'
@@ -18,24 +18,24 @@ type PageContext_loadPageFilesServer = PageContextGetPageAssets &
   PageContextDebug & {
     urlOriginal: string
     _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfig[]
+    _plusConfigs: PlusConfig[]
   }
 type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
 async function loadPageFilesServer(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {
-  const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext._pageId) // Make pageConfig globally available as pageContext._pageConfig?
+  const plusConfig = findPlusConfig(pageContext._plusConfigs, pageContext._pageId) // Make plusConfig globally available as pageContext._plusConfig?
 
-  const [{ config, configEntries, exports, exportsAll, pageExports, pageFilesLoaded, pageConfigLoaded }] =
+  const [{ config, configEntries, exports, exportsAll, pageExports, pageFilesLoaded, plusConfigLoaded }] =
     await Promise.all([
       loadPageFilesServerSide(
         pageContext._pageFilesAll,
-        pageConfig,
+        plusConfig,
         pageContext._pageId,
         !getGlobalContext().isProduction
       ),
       analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
     ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
-    analyzePage(pageContext._pageFilesAll, pageConfig, pageContext._pageId)
+    analyzePage(pageContext._pageFilesAll, plusConfig, pageContext._pageId)
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, {
     config,

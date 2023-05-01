@@ -1,11 +1,11 @@
-export { findPageConfig }
+export { findPlusConfig }
 
 import { assert } from '../utils'
-import type { PageConfig } from './PageConfig'
+import type { PlusConfig } from './PlusConfig'
 
-function findPageConfig(pageConfigs: PageConfig[], pageId: string): null | PageConfig {
-  const result = pageConfigs.filter((p) => p.pageId === pageId)
+function findPlusConfig(plusConfigs: PlusConfig[], pageId: string): null | PlusConfig {
+  const result = plusConfigs.filter((p) => p.pageId === pageId)
   assert(result.length <= 1)
-  const pageConfig = result[0] ?? null
-  return pageConfig
+  const plusConfig = result[0] ?? null
+  return plusConfig
 }

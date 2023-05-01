@@ -27,8 +27,8 @@ import { releasePageContext } from '../releasePageContext'
 import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
-import type { PageConfig } from '../../shared/page-configs/PageConfig'
-import { getCodeFilePath, getPageConfig } from '../../shared/page-configs/utils'
+import type { PlusConfig } from '../../shared/page-configs/PlusConfig'
+import { getCodeFilePath, getPlusConfig } from '../../shared/page-configs/utils'
 
 type PageContextAddendum = {
   _pageId: string
@@ -59,7 +59,7 @@ async function getPageContext(
 
 async function getPageContextFirstRender(pageContext: {
   _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
+  _plusConfigs: PlusConfig[]
   _isFirstRenderAttempt: true
   urlOriginal: string
 }): Promise<PageContextAddendum> {
@@ -73,7 +73,7 @@ async function getPageContextFirstRender(pageContext: {
 
   objectAssign(
     pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._plusConfigs, pageContextAddendum._pageId)
   )
 
   return pageContextAddendum
@@ -84,9 +84,9 @@ async function getPageContextErrorPage(pageContext: {
   _allPageIds: string[]
   _isFirstRenderAttempt: boolean
   _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
+  _plusConfigs: PlusConfig[]
 }): Promise<PageContextAddendum> {
-  const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
+  const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._plusConfigs)
   if (!errorPageId) {
     throw new Error('No error page')
   }
@@ -99,7 +99,7 @@ async function getPageContextErrorPage(pageContext: {
 
   objectAssign(
     pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._plusConfigs, pageContextAddendum._pageId)
   )
 
   return pageContextAddendum
@@ -116,7 +116,7 @@ async function getPageContextUponNavigation(
 
   objectAssign(
     pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._plusConfigs, pageContextAddendum._pageId)
   )
 
   const pageContextFromHook = await onBeforeRenderExecute({ ...pageContext, ...pageContextAddendum })
@@ -133,7 +133,7 @@ async function getPageContextUponNavigation(
     assert(hasProp(pageContextFromHook.pageProps, 'is404', 'boolean'))
     // When the user hasn't define a `_error.page.js` file: the mechanism with `serverSideError: true` is used instead
     assert(!('serverSideError' in pageContextFromHook))
-    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
+    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._plusConfigs)
     assert(errorPageId)
 
     objectAssign(pageContextAddendum, {
@@ -143,7 +143,7 @@ async function getPageContextUponNavigation(
     objectAssign(pageContextAddendum, pageContextFromHook)
     objectAssign(
       pageContextAddendum,
-      await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
+      await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._plusConfigs, pageContextAddendum._pageId)
     )
     return pageContextAddendum
   }
@@ -155,7 +155,7 @@ async function onBeforeRenderExecute(
     urlOriginal: string
     isHydration: boolean
     _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfig[]
+    _plusConfigs: PlusConfig[]
   } & PageContextExports &
     PageContextPassThrough
 ): Promise<
@@ -213,15 +213,15 @@ async function onBeforeRenderServerSideExists(
     urlOriginal: string
     isHydration: boolean
     _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfig[]
+    _plusConfigs: PlusConfig[]
   } & PageContextExports &
     PageContextPassThrough
 ): Promise<boolean> {
-  if (pageContext._pageConfigs.length > 0) {
-    const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
+  if (pageContext._plusConfigs.length > 0) {
+    const plusConfig = getPlusConfig(pageContext._pageId, pageContext._plusConfigs)
     return (
-      !!getCodeFilePath(pageConfig, 'onBeforeRender') &&
-      pageConfig.configElements.onBeforeRender!.configEnv === 'server-only'
+      !!getCodeFilePath(plusConfig, 'onBeforeRender') &&
+      plusConfig.configElements.onBeforeRender!.configEnv === 'server-only'
     )
   } else {
     const { hasOnBeforeRenderServerSideOnlyHook } = await analyzePageServerSide(

@@ -1,7 +1,7 @@
 import { getPageFilesClientSide, getExports, type PageFile, type PageContextExports } from '../shared/getPageFiles'
-import { findPageConfig } from '../shared/page-configs/findPageConfig'
+import { findPlusConfig } from '../shared/page-configs/findPlusConfig'
 import { loadPageCode } from '../shared/page-configs/loadPageCode'
-import type { PageConfig, PageConfigLoaded } from '../shared/page-configs/PageConfig'
+import type { PlusConfig, PlusConfigLoaded } from '../shared/page-configs/PlusConfig'
 
 export { loadPageFilesClientSide }
 export { isErrorFetchingStaticAssets }
@@ -10,19 +10,19 @@ const stamp = '__whileFetchingAssets'
 
 async function loadPageFilesClientSide(
   pageFilesAll: PageFile[],
-  pageConfigs: PageConfig[],
+  plusConfigs: PlusConfig[],
   pageId: string
 ): Promise<PageContextExports & { _pageFilesLoaded: PageFile[] }> {
   const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
-  const pageConfig = findPageConfig(pageConfigs, pageId)
-  let pageConfigLoaded: null | PageConfigLoaded
+  const plusConfig = findPlusConfig(plusConfigs, pageId)
+  let plusConfigLoaded: null | PlusConfigLoaded
   try {
     // prettier-ignore
     const result = await Promise.all([
-      pageConfig && loadPageCode(pageConfig, import.meta.env.DEV),
+      plusConfig && loadPageCode(plusConfig, import.meta.env.DEV),
       ...pageFilesClientSide.map((p) => p.loadFile?.()),
     ])
-    pageConfigLoaded = result[0]
+    plusConfigLoaded = result[0]
   } catch (err: any) {
     // To trigger this catch: add `throw new Error()` in the global scope of +onRenderClient.js
     if (isFetchError(err)) {
@@ -30,7 +30,7 @@ async function loadPageFilesClientSide(
     }
     throw err
   }
-  const { config, configEntries, exports, exportsAll, pageExports } = getExports(pageFilesClientSide, pageConfigLoaded)
+  const { config, configEntries, exports, exportsAll, pageExports } = getExports(pageFilesClientSide, plusConfigLoaded)
   const pageContextAddendum = {
     config,
     configEntries,

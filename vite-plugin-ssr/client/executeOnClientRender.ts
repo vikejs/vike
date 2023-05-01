@@ -4,15 +4,15 @@ import { assert, assertUsage, callHookWithTimeout, unique } from './utils'
 import { getHook, type Hook } from '../shared/getHook'
 import type { PageFile, PageContextExports } from '../shared/getPageFiles'
 import { type PageContextRelease, releasePageContext } from './releasePageContext'
-import type { PageConfig } from '../shared/page-configs/PageConfig'
-import { getPageConfig } from '../shared/page-configs/utils'
+import type { PlusConfig } from '../shared/page-configs/PlusConfig'
+import { getPlusConfig } from '../shared/page-configs/utils'
 
 async function executeOnClientRender<
   PC extends {
     _pageFilesLoaded: PageFile[]
     urlOriginal?: string
     _pageId: string
-    _pageConfigs: PageConfig[]
+    _plusConfigs: PlusConfig[]
   } & PageContextExports &
     PageContextRelease
 >(pageContext: PC, isClientRouting: boolean): Promise<void> {
@@ -37,8 +37,8 @@ async function executeOnClientRender<
 
   if (!hook) {
     const url = getUrl(pageContext)
-    if (pageContext._pageConfigs.length > 0) {
-      assertMissingHook(pageContext._pageId, pageContext._pageConfigs, url)
+    if (pageContext._plusConfigs.length > 0) {
+      assertMissingHook(pageContext._pageId, pageContext._plusConfigs, url)
     } else {
       const pageClientsFilesLoaded = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
       let errMsg: string
@@ -75,18 +75,18 @@ function getUrl(pageContext: { urlOriginal?: string }): string {
   return url
 }
 
-function assertMissingHook(pageId: string, pageConfigs: PageConfig[], url: string) {
-  const pageConfig = getPageConfig(pageId, pageConfigs)
-  assert(!pageConfig.configElements.onRenderClient?.configValue)
-  assert(pageConfig.configElements.clientRouting?.configValue === true)
+function assertMissingHook(pageId: string, plusConfigs: PlusConfig[], url: string) {
+  const plusConfig = getPlusConfig(pageId, plusConfigs)
+  assert(!plusConfig.configElements.onRenderClient?.configValue)
+  assert(plusConfig.configElements.clientRouting?.configValue === true)
 
   // We miss abstract page config files (that define onClientRender()) that don't apply to any concrete page config
   //  - A solution is to assertUsage() when an abstract page file doens't apply to any concrete page config
   const plusConfigFilesDefiningHook: string[] = []
   let plusConfigFilesAll: string[] = []
-  pageConfigs.forEach((pageConfig) => {
-    plusConfigFilesAll.push(...pageConfig.plusConfigFilePathAll)
-    const configElement = pageConfig.configElements.onRenderClient
+  plusConfigs.forEach((plusConfig) => {
+    plusConfigFilesAll.push(...plusConfig.plusConfigFilePathAll)
+    const configElement = plusConfig.configElements.onRenderClient
     if (configElement && configElement.configValue) {
       plusConfigFilesDefiningHook.push(configElement.configDefinedAt)
     }

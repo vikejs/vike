@@ -1,9 +1,9 @@
-export type { PageConfig }
-export type { PageConfigLoaded }
+export type { PlusConfig }
+export type { PlusConfigLoaded }
 export type { ConfigEnv }
-export type { PageConfigData }
-export type { PageConfigGlobal }
-export type { PageConfigGlobalData }
+export type { PlusConfigData }
+export type { PlusConfigGlobal }
+export type { PlusConfigGlobalData }
 export type { ConfigElement }
 export type { ConfigName }
 
@@ -37,7 +37,7 @@ type ConfigElementFile = {
     }
 )
 
-type PageConfig = PageConfigData & {
+type PlusConfig = PlusConfigData & {
   loadPlusValueFiles: () => Promise<
     ({
       configName: string
@@ -54,7 +54,7 @@ type PageConfig = PageConfigData & {
     ))[]
   >
 }
-type PageConfigData = {
+type PlusConfigData = {
   pageId: string
   isErrorPage: boolean
   plusConfigFilePathAll: string[]
@@ -62,15 +62,15 @@ type PageConfigData = {
   routeFilesystemDefinedBy: string
   configElements: Partial<Record<ConfigName, ConfigElement>>
 }
-type PageConfigLoaded = PageConfig & {
+type PlusConfigLoaded = PlusConfig & {
   configValues: Partial<Record<ConfigName, unknown>>
 }
 
-type PageConfigGlobalData = {
+type PlusConfigGlobalData = {
   onPrerenderStart: null | ConfigElement
   onBeforeRoute: null | ConfigElement
 }
-type PageConfigGlobal = {
+type PlusConfigGlobal = {
   onPrerenderStart: null | (ConfigElement & { configValue: unknown })
   onBeforeRoute: null | (ConfigElement & { configValue: unknown })
 }

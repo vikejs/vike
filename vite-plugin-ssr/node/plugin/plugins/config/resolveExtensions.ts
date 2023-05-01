@@ -27,9 +27,9 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
     const npmPackageRootDir = getDependencyRootDir(npmPackageName, config.root)
     assertPosixPath(npmPackageRootDir)
 
-    const pageConfigsDistFiles = resolvePageFilesDist(
+    const plusConfigsDistFiles = resolvePageFilesDist(
       [
-        ...(extension.pageConfigsDistFiles ?? []),
+        ...(extension.plusConfigsDistFiles ?? []),
         // TODO/v1-release: remove
         ...(extension.pageFilesDist ?? [])
       ],
@@ -38,22 +38,22 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
       npmPackageRootDir
     )
 
-    let pageConfigsSrcDirResolved: null | string = null
+    let plusConfigsSrcDirResolved: null | string = null
     {
-      const pageConfigsSrcDir = extension.pageConfigsSrcDir ?? extension.pageFilesSrc
-      if (pageConfigsSrcDir) {
-        assertPathProvidedByUser('pageConfigsSrcDir', pageConfigsSrcDir, true)
-        assert(pageConfigsSrcDir.endsWith('*'))
-        pageConfigsSrcDirResolved = path.posix.join(npmPackageRootDir, pageConfigsSrcDir.slice(0, -1))
+      const plusConfigsSrcDir = extension.plusConfigsSrcDir ?? extension.pageFilesSrc
+      if (plusConfigsSrcDir) {
+        assertPathProvidedByUser('plusConfigsSrcDir', plusConfigsSrcDir, true)
+        assert(plusConfigsSrcDir.endsWith('*'))
+        plusConfigsSrcDirResolved = path.posix.join(npmPackageRootDir, plusConfigsSrcDir.slice(0, -1))
       }
     }
     assertUsage(
-      pageConfigsSrcDirResolved || pageConfigsDistFiles,
-      `Extension ${npmPackageName} should define either extension[number].pageConfigsDistFiles or extension[number].pageConfigsSrcDir`
+      plusConfigsSrcDirResolved || plusConfigsDistFiles,
+      `Extension ${npmPackageName} should define either extension[number].plusConfigsDistFiles or extension[number].plusConfigsSrcDir`
     )
     assertUsage(
-      !pageConfigsDistFiles || !pageConfigsSrcDirResolved,
-      `Extension ${npmPackageName} shouldn't define extension[number].pageConfigsDistFiles as well extension[number].pageConfigsSrcDir, it should define only one instead`
+      !plusConfigsDistFiles || !plusConfigsSrcDirResolved,
+      `Extension ${npmPackageName} shouldn't define extension[number].plusConfigsDistFiles as well extension[number].plusConfigsSrcDir, it should define only one instead`
     )
 
     const assetsDir = (() => {
@@ -66,22 +66,22 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
       return assetsDir
     })()
     assertUsage(
-      !(assetsDir && pageConfigsSrcDirResolved),
-      `Extension ${npmPackageName} shouldn't define both extension[number].pageConfigsSrcDir and extension[number].assetsDir`
+      !(assetsDir && plusConfigsSrcDirResolved),
+      `Extension ${npmPackageName} shouldn't define both extension[number].plusConfigsSrcDir and extension[number].assetsDir`
     )
 
     const extensionResolved: ExtensionResolved = {
       npmPackageName,
       npmPackageRootDir,
-      pageConfigsDistFiles,
-      pageConfigsSrcDir: pageConfigsSrcDirResolved,
+      plusConfigsDistFiles,
+      plusConfigsSrcDir: plusConfigsSrcDirResolved,
       assetsDir
     }
     return extensionResolved
   })
 }
 
-function assertPathProvidedByUser(pathName: 'assetsDir' | 'pageConfigsSrcDir', pathValue: string, starSuffix?: true) {
+function assertPathProvidedByUser(pathName: 'assetsDir' | 'plusConfigsSrcDir', pathValue: string, starSuffix?: true) {
   const errMsg = `extension[number].${pathName} value '${pathValue}'`
   assertUsage(
     !pathValue.includes('\\'),
@@ -92,16 +92,16 @@ function assertPathProvidedByUser(pathName: 'assetsDir' | 'pageConfigsSrcDir', p
 }
 
 function resolvePageFilesDist(
-  pageConfigsDistFiles: undefined | string[],
+  plusConfigsDistFiles: undefined | string[],
   npmPackageName: string,
   config: ResolvedConfig,
   npmPackageRootDir: string
-): null | NonNullable<ExtensionResolved['pageConfigsDistFiles']>[number][] {
-  if (!pageConfigsDistFiles || pageConfigsDistFiles.length === 0) return null
+): null | NonNullable<ExtensionResolved['plusConfigsDistFiles']>[number][] {
+  if (!plusConfigsDistFiles || plusConfigsDistFiles.length === 0) return null
 
-  const pageConfigsDistFilesResolved: NonNullable<ExtensionResolved['pageConfigsDistFiles']>[number][] = []
+  const plusConfigsDistFilesResolved: NonNullable<ExtensionResolved['plusConfigsDistFiles']>[number][] = []
 
-  pageConfigsDistFiles.forEach((importPath) => {
+  plusConfigsDistFiles.forEach((importPath) => {
     const errPrefix = `The page file '${importPath}' (provided in extensions[number].pageFiles) should`
     assertUsage(
       npmPackageName === getNpmPackageName(importPath),
@@ -110,7 +110,7 @@ function resolvePageFilesDist(
     assertUsage(isValidFileType(importPath), `${errPrefix} end with '.js', '.mjs', '.cjs', or '.css'`)
 
     const filePath = resolveImportPath(importPath, npmPackageName, config, npmPackageRootDir)
-    pageConfigsDistFilesResolved.push({
+    plusConfigsDistFilesResolved.push({
       importPath,
       filePath
     })
@@ -122,14 +122,14 @@ function resolvePageFilesDist(
         filePathCSS === resolveImportPath(importPathCSS, npmPackageName, config, npmPackageRootDir),
         `The entry package.json#exports["${importPathCSS}"] in the package.json of ${npmPackageName} (${npmPackageRootDir}/package.json) has a wrong value: make sure it resolves to ${filePathCSS}`
       )
-      pageConfigsDistFilesResolved.push({
+      plusConfigsDistFilesResolved.push({
         importPath: importPathCSS,
         filePath: filePathCSS
       })
     }
   })
 
-  return pageConfigsDistFilesResolved
+  return plusConfigsDistFilesResolved
 }
 
 function resolveImportPath(

@@ -70,8 +70,8 @@ async function renderPage<
     }
   }
 
-  const isV1 = renderContext.pageConfigs.length > 0
-  const errorPageIsMissing: boolean = !getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
+  const isV1 = renderContext.plusConfigs.length > 0
+  const errorPageIsMissing: boolean = !getErrorPageId(renderContext.pageFilesAll, renderContext.plusConfigs)
 
   if (errOriginal === undefined) {
     assert(pageContextOriginal)

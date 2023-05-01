@@ -1,4 +1,4 @@
-export { transpileAndLoadPageConfig }
+export { transpileAndLoadPlusConfig }
 export { transpileAndLoadPlusValueFile }
 
 import esbuild, { type BuildResult, type BuildOptions } from 'esbuild'
@@ -21,7 +21,7 @@ assertIsVitePluginCode()
 
 type Result = { fileExports: Record<string, unknown> } | { err: unknown }
 
-async function transpileAndLoadPageConfig(
+async function transpileAndLoadPlusConfig(
   filePathAbsolute: string,
   filePathRelativeToUserRootDir: string
 ): Promise<Result> {
@@ -32,30 +32,30 @@ async function transpileAndLoadPlusValueFile(filePathAbsolute: string): Promise<
   return transpileAndLoadPlusFile(filePathAbsolute, false)
 }
 
-async function transpileAndLoadPlusFile(filePathAbsolute: string, isPageConfig: false): Promise<Result>
+async function transpileAndLoadPlusFile(filePathAbsolute: string, isPlusConfig: false): Promise<Result>
 async function transpileAndLoadPlusFile(
   filePathAbsolute: string,
-  isPageConfig: true,
+  isPlusConfig: true,
   filePathRelativeToUserRootDir: string
 ): Promise<Result>
 async function transpileAndLoadPlusFile(
   filePathAbsolute: string,
-  isPageConfig: boolean,
+  isPlusConfig: boolean,
   filePathRelativeToUserRootDir?: string
 ): Promise<Result> {
   assertPosixPath(filePathAbsolute)
   /* Solide removes the + symbol when building its + files
    *  - https://github.com/magne4000/solide
   assert(filePathAbsolute.includes('+'))
-  assert(isPageConfig === path.posix.basename(filePathAbsolute).includes('+config'))
+  assert(isPlusConfig === path.posix.basename(filePathAbsolute).includes('+config'))
   */
-  const buildResult = await buildFile(filePathAbsolute, { bundle: !isPageConfig })
+  const buildResult = await buildFile(filePathAbsolute, { bundle: !isPlusConfig })
   if ('err' in buildResult) {
     return { err: buildResult.err }
   }
   let { code } = buildResult
   let fileImports: FileImport[] | null = null
-  if (isPageConfig) {
+  if (isPlusConfig) {
     const res = replaceImportStatements(code)
     code = res.code
     fileImports = res.fileImports
@@ -75,7 +75,7 @@ async function transpileAndLoadPlusFile(
   //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
   //  - We don't need this special object
   fileExports = { ...fileExports }
-  if (isPageConfig) {
+  if (isPlusConfig) {
     assert(fileImports)
     assert(filePathRelativeToUserRootDir)
     assertFileImports(fileImports, fileExports, filePathRelativeToUserRootDir)

@@ -43,7 +43,7 @@ function manifest(): Plugin[] {
 function getManifestKeyMap(configVps: ConfigVpsResolved, config: ResolvedConfig): Record<string, string> {
   const manifestKeyMap: Record<string, string> = {}
   configVps.extensions
-    .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
+    .map(({ plusConfigsDistFiles }) => plusConfigsDistFiles)
     .flat()
     .filter(isNotNullish)
     .forEach(({ importPath, filePath }) => {

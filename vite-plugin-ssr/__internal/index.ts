@@ -19,14 +19,14 @@ async function getPagesAndRoutes() {
   await initGlobalContext({ isPrerendering: true })
   getGlobalContext()
 
-  const { pageFilesAll, pageConfigs, allPageIds, pageConfigGlobal } = await getPageFilesAll(false, true)
+  const { pageFilesAll, plusConfigs, allPageIds, plusConfigGlobal } = await getPageFilesAll(false, true)
 
-  const { pageRoutes } = await loadPageRoutes(pageFilesAll, pageConfigs, pageConfigGlobal, allPageIds)
+  const { pageRoutes } = await loadPageRoutes(pageFilesAll, plusConfigs, plusConfigGlobal, allPageIds)
 
   return {
     pageRoutes,
     pageFilesAll,
-    pageConfigs,
+    plusConfigs,
     allPageIds
   }
 }

@@ -6,15 +6,15 @@ import { getGlobalContext } from '../globalContext'
 import { assert, assertUsage, assertInfo, compareString } from '../utils'
 import pc from '@brillout/picocolors'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
-import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
+import type { PlusConfig, PlusConfigGlobal } from '../../../shared/page-configs/PlusConfig'
 
 async function log404(pageContext: {
   urlPathname: string
   errorWhileRendering: null | Error
   isClientSideNavigation: boolean
   _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
-  _pageConfigGlobal: PageConfigGlobal
+  _plusConfigs: PlusConfig[]
+  _plusConfigGlobal: PlusConfigGlobal
   _allPageIds: string[]
 }) {
   const { urlPathname } = pageContext
@@ -32,8 +32,8 @@ async function log404(pageContext: {
 
   const { pageRoutes } = await loadPageRoutes(
     pageContext._pageFilesAll,
-    pageContext._pageConfigs,
-    pageContext._pageConfigGlobal,
+    pageContext._plusConfigs,
+    pageContext._plusConfigGlobal,
     pageContext._allPageIds
   )
   assertUsage(

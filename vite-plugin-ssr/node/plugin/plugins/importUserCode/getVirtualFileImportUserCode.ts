@@ -11,7 +11,7 @@ import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode'
 import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes'
 import path from 'path'
-import { getVirtualFileImportPageConfigs } from './v1-design/getVirtualFileImportPageConfigs'
+import { getVirtualFileImportPlusConfigs } from './v1-design/getVirtualFileImportPlusConfigs'
 import { generateEagerImport } from './generateEagerImport'
 
 async function getVirtualFileImportUserCode(
@@ -61,7 +61,7 @@ async function getCode(
   }
   {
     const extensionsImportPaths = configVps.extensions
-      .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
+      .map(({ plusConfigsDistFiles }) => plusConfigsDistFiles)
       .flat()
       .filter(isNotNullish)
       .map(({ importPath }) => importPath)
@@ -210,7 +210,7 @@ export const pageFilesList = [];
 export const neverLoaded = {};
 export const isGeneratedFile = true;
 
-${await getVirtualFileImportPageConfigs(config.root, isForClientSide, isDev, id, configVps)}
+${await getVirtualFileImportPlusConfigs(config.root, isForClientSide, isDev, id, configVps)}
 
 `
 
@@ -303,10 +303,10 @@ function getGlobs(
 function getGlobRoots(config: ResolvedConfig, configVps: ConfigVpsResolved): string[] {
   const globRoots = ['/']
   configVps.extensions
-    .map(({ pageConfigsSrcDir }) => pageConfigsSrcDir)
+    .map(({ plusConfigsSrcDir }) => plusConfigsSrcDir)
     .filter(isNotNullish)
-    .forEach((pageConfigsSrcDir) => {
-      const globRoot = path.posix.relative(config.root, pageConfigsSrcDir)
+    .forEach((plusConfigsSrcDir) => {
+      const globRoot = path.posix.relative(config.root, plusConfigsSrcDir)
       globRoots.push(globRoot)
     })
   return globRoots

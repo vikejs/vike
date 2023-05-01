@@ -158,7 +158,7 @@ function resolveClientEntriesDev(
     }
   } else if (isNpmPackageModule(clientEntry)) {
     const extensionPageFile = configVps.extensions
-      .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
+      .map(({ plusConfigsDistFiles }) => plusConfigsDistFiles)
       .flat()
       .filter(isNotNullish)
       .find((e) => e.importPath === clientEntry)

@@ -1,17 +1,17 @@
 export { loadPageCode }
 
 import { assert, assertDefaultExportUnknown, objectAssign } from '../utils'
-import type { PageConfig, PageConfigLoaded } from './PageConfig'
+import type { PlusConfig, PlusConfigLoaded } from './PlusConfig'
 
-async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<PageConfigLoaded> {
+async function loadPageCode(plusConfig: PlusConfig, isDev: boolean): Promise<PlusConfigLoaded> {
   const configValues: Record<string, unknown> = {}
 
   // In dev, Vite already caches the page's virtual module
-  if (!isDev && 'configValues' in pageConfig) {
-    return pageConfig as PageConfigLoaded
+  if (!isDev && 'configValues' in plusConfig) {
+    return plusConfig as PlusConfigLoaded
   }
 
-  const plusValueFiles = await pageConfig.loadPlusValueFiles()
+  const plusValueFiles = await plusConfig.loadPlusValueFiles()
   plusValueFiles.forEach((configValueData) => {
     const { configName, importFile } = configValueData
     let configValue: unknown
@@ -28,13 +28,13 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     configValues[configName] = configValue
   })
 
-  Object.entries(pageConfig.configElements).map(([configName, configElement]) => {
+  Object.entries(plusConfig.configElements).map(([configName, configElement]) => {
     if (configElement.plusValueFilePath) return
     assert(!(configName in configValues))
     configValues[configName] = configElement.configValue
   })
 
-  objectAssign(pageConfig, { configValues })
+  objectAssign(plusConfig, { configValues })
 
-  return pageConfig
+  return plusConfig
 }

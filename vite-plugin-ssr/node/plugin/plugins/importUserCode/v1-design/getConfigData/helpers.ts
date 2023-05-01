@@ -1,17 +1,17 @@
-export { getPageConfigValues }
-export { getPageConfigValue }
+export { getPlusConfigValues }
+export { getPlusConfigValue }
 
 import { assertDefaultExportObject } from '../../../../utils'
 import type { PlusConfigFile } from '../getConfigData'
 
-function getPageConfigValues(plusConfigFile: PlusConfigFile): Record<string, unknown> {
+function getPlusConfigValues(plusConfigFile: PlusConfigFile): Record<string, unknown> {
   const { plusConfigFilePath, plusConfigFileExports } = plusConfigFile
   assertDefaultExportObject(plusConfigFileExports, plusConfigFilePath)
-  const pageConfigValues = plusConfigFileExports.default
-  return pageConfigValues
+  const plusConfigValues = plusConfigFileExports.default
+  return plusConfigValues
 }
-function getPageConfigValue(configName: string, plusConfigFile: PlusConfigFile): unknown {
-  const pageConfigValues = getPageConfigValues(plusConfigFile)
-  const configValue = pageConfigValues[configName]
+function getPlusConfigValue(configName: string, plusConfigFile: PlusConfigFile): unknown {
+  const plusConfigValues = getPlusConfigValues(plusConfigFile)
+  const configValue = plusConfigValues[configName]
   return configValue
 }

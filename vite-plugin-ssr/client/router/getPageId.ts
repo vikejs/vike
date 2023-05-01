@@ -9,13 +9,13 @@ async function getPageId(url: string) {
   })
   const routeContext = await route(pageContext)
   const pageFilesAll = pageContext._pageFilesAll
-  const pageConfigs = pageContext._pageConfigs
+  const plusConfigs = pageContext._plusConfigs
   if (!('pageContextAddendum' in routeContext)) {
-    return { pageId: null, pageFilesAll, pageConfigs }
+    return { pageId: null, pageFilesAll, plusConfigs }
   }
   const pageId = routeContext.pageContextAddendum._pageId
   if (!pageId) {
-    return { pageId: null, pageFilesAll, pageConfigs }
+    return { pageId: null, pageFilesAll, plusConfigs }
   }
-  return { pageId, pageFilesAll, pageConfigs }
+  return { pageId, pageFilesAll, plusConfigs }
 }

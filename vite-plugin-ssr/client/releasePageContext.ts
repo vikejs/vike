@@ -8,13 +8,13 @@ const globalObject = getGlobalObject<{ disableAssertPassToClient?: string }>('re
 import type { PageContextBuiltInClient as PageContextBuiltInClientServerRouter } from './types'
 import type { PageContextBuiltInClient as PageContextBuiltInClientClientRouter } from './router/types'
 import { addIs404ToPageProps } from '../shared/addIs404ToPageProps'
-import type { PageConfig } from '../shared/page-configs/PageConfig'
+import type { PlusConfig } from '../shared/page-configs/PlusConfig'
 
 type PageContextRelease = PageContextExports & {
   _pageContextRetrievedFromServer: null | Record<string, unknown>
   _comesDirectlyFromServer: boolean
   _pageId: string
-  _pageConfigs: PageConfig[]
+  _plusConfigs: PlusConfig[]
 }
 
 // Release `pageContext` for user consumption.

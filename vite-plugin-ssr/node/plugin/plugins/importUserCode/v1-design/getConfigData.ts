@@ -28,9 +28,9 @@ import type {
   ConfigName,
   ConfigElement,
   ConfigEnv,
-  PageConfigData,
-  PageConfigGlobalData
-} from '../../../../../shared/page-configs/PageConfig'
+  PlusConfigData,
+  PlusConfigGlobalData
+} from '../../../../../shared/page-configs/PlusConfig'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './getConfigData/configDefinitionsBuiltIn'
 import glob from 'fast-glob'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
@@ -40,15 +40,15 @@ import {
   isRelevantConfig,
   pickMostRelevantConfigValue
 } from './getConfigData/filesystemRouting'
-import { transpileAndLoadPageConfig, transpileAndLoadPlusValueFile } from './transpileAndLoadPlusFile'
+import { transpileAndLoadPlusConfig, transpileAndLoadPlusValueFile } from './transpileAndLoadPlusFile'
 import { parseImportData } from './replaceImportStatements'
-import { getPageConfigValue, getPageConfigValues } from './getConfigData/helpers'
+import { getPlusConfigValue, getPlusConfigValues } from './getConfigData/helpers'
 
 assertIsVitePluginCode()
 
 type ConfigData = {
-  pageConfigsData: PageConfigData[]
-  pageConfigGlobal: PageConfigGlobalData
+  plusConfigsData: PlusConfigData[]
+  plusConfigGlobal: PlusConfigGlobalData
   vikeConfig: Record<string, unknown>
 }
 let configDataPromise: Promise<ConfigData> | null = null
@@ -116,7 +116,7 @@ async function loadConfigData(
   /* TODO: - remove this if we don't need this for optimizeDeps.entries
    *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead
   if ('err' in result) {
-    return ['export const pageConfigs = null;', 'export const pageConfigGlobal = null;'].join('\n')
+    return ['export const plusConfigs = null;', 'export const plusConfigGlobal = null;'].join('\n')
   }
   */
   if ('err' in result) {
@@ -132,7 +132,7 @@ async function loadConfigData(
   }
 
   const vikeConfig: Record<string, unknown> = {}
-  const pageConfigGlobal: PageConfigGlobalData = {
+  const plusConfigGlobal: PlusConfigGlobalData = {
     onBeforeRoute: null,
     onPrerenderStart: null
   }
@@ -172,9 +172,9 @@ async function loadConfigData(
         plusValueFilesRelevant
       )
       if (!configElement) return
-      if (arrayIncludes(objectKeys(pageConfigGlobal), configName)) {
+      if (arrayIncludes(objectKeys(plusConfigGlobal), configName)) {
         assert(!('configValue' in configElement))
-        pageConfigGlobal[configName] = configElement
+        plusConfigGlobal[configName] = configElement
       } else {
         assert('configValue' in configElement)
         if (configName === 'prerender' && typeof configElement.configValue === 'boolean') return
@@ -190,7 +190,7 @@ async function loadConfigData(
 
   const pageIds = determinePageIds(plusConfigFiles, plusValueFiles)
 
-  const pageConfigsData: PageConfigData[] = []
+  const plusConfigsData: PlusConfigData[] = []
   pageIds.forEach(({ pageId, routeFilesystem, plusConfigFile, routeFilesystemDefinedBy }) => {
     const plusConfigFilesRelevant = plusConfigFiles.filter(({ plusConfigFilePath }) =>
       isRelevantConfig(plusConfigFilePath, pageId)
@@ -201,8 +201,8 @@ async function loadConfigData(
     let configDefinitionsRelevant = getConfigDefinitions(plusConfigFilesRelevant)
 
     if (plusConfigFile) {
-      const pageConfigValues = getPageConfigValues(plusConfigFile)
-      Object.keys(pageConfigValues).forEach((configName) => {
+      const plusConfigValues = getPlusConfigValues(plusConfigFile)
+      Object.keys(plusConfigValues).forEach((configName) => {
         // TODO: this applies only against concrete config files, we should also apply to abstract config files
         assertConfigName(
           configName,
@@ -218,7 +218,7 @@ async function loadConfigData(
       assert(configName in configDefinitionsRelevant || configName === 'meta')
     })
 
-    let configElements: PageConfigData['configElements'] = {}
+    let configElements: PlusConfigData['configElements'] = {}
     objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
       const configElement = resolveConfigElement(
         configName,
@@ -235,7 +235,7 @@ async function loadConfigData(
 
     const isErrorPage = determineIsErrorPage(routeFilesystem)
 
-    pageConfigsData.push({
+    plusConfigsData.push({
       pageId,
       isErrorPage,
       routeFilesystemDefinedBy,
@@ -245,7 +245,7 @@ async function loadConfigData(
     })
   })
 
-  return { pageConfigsData, pageConfigGlobal, vikeConfig }
+  return { plusConfigsData, plusConfigGlobal, vikeConfig }
 }
 
 function determinePageIds(plusConfigFiles: PlusConfigFile[], plusValueFiles: PlusValueFile[]) {
@@ -256,7 +256,7 @@ function determinePageIds(plusConfigFiles: PlusConfigFile[], plusValueFiles: Plu
     routeFilesystemDefinedBy: string
   }[] = []
   plusValueFiles.map((plusValueFile) => {
-    if (!isDefiningPageConfig(plusValueFile.configName)) return
+    if (!isDefiningPlusConfig(plusValueFile.configName)) return
     const { plusValueFilePath } = plusValueFile
     const pageId = determinePageId(plusValueFilePath)
     const routeFilesystem = determineRouteFromFilesystemPath(plusValueFilePath)
@@ -339,7 +339,7 @@ function resolveConfigElement(
   }
 
   const { plusConfigFile } = result
-  const configValue = getPageConfigValue(configName, plusConfigFile)
+  const configValue = getPlusConfigValue(configName, plusConfigFile)
   const { plusConfigFilePath } = plusConfigFile
   const { c_code, c_validate } = configDef
   const codeFile = getCodeFilePath(configValue, plusConfigFilePath, userRootDir, configName, c_code)
@@ -386,10 +386,10 @@ function resolveConfigElement(
 }
 
 function isDefiningPage(plusConfigFile: PlusConfigFile): boolean {
-  const pageConfigValues = getPageConfigValues(plusConfigFile)
-  return Object.keys(pageConfigValues).some((configName) => isDefiningPageConfig(configName))
+  const plusConfigValues = getPlusConfigValues(plusConfigFile)
+  return Object.keys(plusConfigValues).some((configName) => isDefiningPlusConfig(configName))
 }
-function isDefiningPageConfig(configName: string): boolean {
+function isDefiningPlusConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
 
@@ -493,14 +493,14 @@ function assertCodeFilePathConfigValue(
   }
 
   if (configValueFixed.startsWith('/')) {
-    const pageConfigDir = dirnameNormalized(plusConfigFilePath)
+    const plusConfigDir = dirnameNormalized(plusConfigFilePath)
     assertWarning(
       false,
-      `${errIntro2} a relative path instead (i.e. a path that starts with './' or '../') that is relative to ${pageConfigDir}`,
+      `${errIntro2} a relative path instead (i.e. a path that starts with './' or '../') that is relative to ${plusConfigDir}`,
       warnArgs
     )
   } else if (!['./', '../'].some((prefix) => configValueFixed.startsWith(prefix))) {
-    // It isn't possible to omit '../' so we can assume that the path is relative to pageConfigDir
+    // It isn't possible to omit '../' so we can assume that the path is relative to plusConfigDir
     configValueFixed = './' + configValueFixed
     assertWarning(
       false,
@@ -523,11 +523,11 @@ function assertCodeFilePathConfigValue(
 
 /*
 function getVitePathFromConfigValue(codeFilePath: string, plusConfigFilePath: string): string {
-  const pageConfigDir = dirnameNormalized(plusConfigFilePath)
+  const plusConfigDir = dirnameNormalized(plusConfigFilePath)
   if (!codeFilePath.startsWith('/')) {
     assertPosixPath(codeFilePath)
     assertPosixPath(plusConfigFilePath)
-    codeFilePath = path.posix.join(pageConfigDir, codeFilePath)
+    codeFilePath = path.posix.join(plusConfigDir, codeFilePath)
   }
   assert(codeFilePath.startsWith('/'))
   return codeFilePath
@@ -564,7 +564,7 @@ function getConfigDefinitions(plusConfigFilesRelevant: PlusConfigFile[]): Config
   const configDefinitions: ConfigDefinitionsExtended = { ...configDefinitionsBuiltIn }
   plusConfigFilesRelevant.forEach((plusConfigFile) => {
     const { plusConfigFilePath } = plusConfigFile
-    const { meta } = getPageConfigValues(plusConfigFile)
+    const { meta } = getPlusConfigValues(plusConfigFile)
     if (meta) {
       assertUsage(
         isObject(meta),
@@ -683,12 +683,12 @@ type PlusConfigFile = {
 async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]) {
   const plusFiles = await findUserFiles('**/+*', userRootDir, isDev)
   extensions.forEach((extension) => {
-    extension.pageConfigsDistFiles?.forEach((pageConfigDistFile) => {
+    extension.plusConfigsDistFiles?.forEach((plusConfigDistFile) => {
       // TODO/v1-release: remove
-      if (!pageConfigDistFile.importPath.includes('+')) return
-      assert(pageConfigDistFile.importPath.includes('+'))
-      assert(path.posix.basename(pageConfigDistFile.importPath).startsWith('+'))
-      const { importPath, filePath } = pageConfigDistFile
+      if (!plusConfigDistFile.importPath.includes('+')) return
+      assert(plusConfigDistFile.importPath.includes('+'))
+      assert(path.posix.basename(plusConfigDistFile.importPath).startsWith('+'))
+      const { importPath, filePath } = plusConfigDistFile
       plusFiles.push({
         filePathRelativeToUserRootDir: importPath,
         filePathAbsolute: filePath
@@ -763,7 +763,7 @@ async function findAndLoadPlusConfigFiles(
     plusFiles
       .filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
       .map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
-        const result = await transpileAndLoadPageConfig(filePathAbsolute, filePathRelativeToUserRootDir)
+        const result = await transpileAndLoadPlusConfig(filePathAbsolute, filePathRelativeToUserRootDir)
         if ('err' in result) {
           return { err: result.err }
         }

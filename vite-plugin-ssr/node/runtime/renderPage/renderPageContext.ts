@@ -18,14 +18,14 @@ import { createHttpResponseObject, HttpResponse } from './createHttpResponseObje
 import { isNewError, logErrorWithVite } from './logError'
 import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } from './loadPageFilesServer'
 import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
-import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
+import type { PlusConfig, PlusConfigGlobal } from '../../../shared/page-configs/PlusConfig'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook'
 import { executeOnBeforeRenderHooks } from './executeOnBeforeRenderHook'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
   _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
+  _plusConfigs: PlusConfig[]
 }
 
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
@@ -46,7 +46,7 @@ async function renderPageContext<
 
   if (isError) {
     assert(pageContext._pageId === null)
-    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
+    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._plusConfigs)
     if (errorPageId) {
       objectAssign(pageContext, { _pageId: errorPageId })
     } else {
@@ -137,7 +137,7 @@ async function prerenderPageContext(
 }
 
 async function prerender404Page(renderContext: RenderContext, pageContextInit_: Record<string, unknown> | null) {
-  const errorPageId = getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
+  const errorPageId = getErrorPageId(renderContext.pageFilesAll, renderContext.plusConfigs)
   if (!errorPageId) {
     return null
   }
@@ -179,8 +179,8 @@ function initPageContext(pageContextInit: { urlOriginal: string }, renderContext
     _includeAssetsImportedByServer: globalContext.includeAssetsImportedByServer,
     // TODO: use GloablContext instead
     _pageFilesAll: renderContext.pageFilesAll,
-    _pageConfigs: renderContext.pageConfigs,
-    _pageConfigGlobal: renderContext.pageConfigGlobal,
+    _plusConfigs: renderContext.plusConfigs,
+    _plusConfigGlobal: renderContext.plusConfigGlobal,
     _allPageIds: renderContext.allPageIds
   }
 
@@ -189,33 +189,33 @@ function initPageContext(pageContextInit: { urlOriginal: string }, renderContext
 
 type RenderContext = {
   pageFilesAll: PageFile[]
-  pageConfigs: PageConfig[]
-  pageConfigGlobal: PageConfigGlobal
+  plusConfigs: PlusConfig[]
+  plusConfigGlobal: PlusConfigGlobal
   allPageIds: string[]
 }
 // TODO: remove getRenderContext() in favor of getGlobalObject() + reloadGlobalContext()
 // TODO: impl GlobalNodeContext + GlobalClientContext + GloablContext, and use GlobalContext instead of RenderContext
 async function getRenderContext(): Promise<RenderContext> {
   const globalContext = getGlobalContext()
-  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = await getPageFilesAll(
+  const { pageFilesAll, allPageIds, plusConfigs, plusConfigGlobal } = await getPageFilesAll(
     false,
     globalContext.isProduction
   )
-  assertNonMixedDesign(pageFilesAll, pageConfigs)
+  assertNonMixedDesign(pageFilesAll, plusConfigs)
   const renderContext = {
     pageFilesAll: pageFilesAll,
-    pageConfigs,
-    pageConfigGlobal,
+    plusConfigs,
+    plusConfigGlobal,
     allPageIds: allPageIds
   }
   return renderContext
 }
 
-function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfig[]) {
-  if (pageFilesAll.length === 0 || pageConfigs.length === 0) return
+function assertNonMixedDesign(pageFilesAll: PageFile[], plusConfigs: PlusConfig[]) {
+  if (pageFilesAll.length === 0 || plusConfigs.length === 0) return
   const indent = '- '
   const v1Files: string[] = unique(
-    pageConfigs.map((p) => Object.values(p.configElements).map((c) => indent + c.configDefinedByFile)).flat()
+    plusConfigs.map((p) => Object.values(p.configElements).map((c) => indent + c.configDefinedByFile)).flat()
   )
   assertUsage(
     false,
