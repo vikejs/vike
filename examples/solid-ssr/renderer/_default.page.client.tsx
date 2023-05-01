@@ -15,6 +15,8 @@ let rendered = false
 const [pageContextStore, setPageContext] = createStore<PageContextClient>({} as PageContextClient)
 
 async function render(pageContext: PageContextClient) {
+  pageContext = removeUnmergableInternals(pageContext)
+
   if (!rendered) {
     // Dispose to prevent duplicate pages when navigating.
     if (dispose) dispose()
@@ -29,23 +31,22 @@ async function render(pageContext: PageContextClient) {
     }
     rendered = true
   } else {
-    setPageContext(reconcile(removeUnmergableInternals(pageContext)))
+    setPageContext(reconcile(pageContext))
   }
 }
 
-// Remove pageContext properties that cannot be reassigned
 // Avoid reconcile() to throw:
 // ```
 // dev.js:135 Uncaught (in promise) TypeError: Cannot assign to read only property 'Page' of object '[object Module]'
 //   at setProperty (dev.js:135:70)
 //   at applyState (dev.js:320:5)
 // ```
-function removeUnmergableInternals<T>({
+function removeUnmergableInternals<T>(pageContext: T): T {
+  // Remove pageContext properties that cannot be reassigned by reconcile()
+  const pageContextFixed = { ...pageContext }
   // @ts-ignore
-  _pageFilesAll,
+  delete pageContextFixed._pageFilesAll
   // @ts-ignore
-  _pageFilesLoaded,
-  ...pageContext
-}: T): Omit<T, '_pageFilesAll' | '_pageFilesLoaded'> {
-  return pageContext
+  delete pageContextFixed._pageFilesLoaded
+  return pageContextFixed
 }
