@@ -15,8 +15,6 @@ let rendered = false
 const [pageContextStore, setPageContext] = createStore<PageContextClient>({} as PageContextClient)
 
 async function render(pageContext: PageContextClient) {
-  pageContext = removeUnmergableInternals(pageContext)
-
   if (!rendered) {
     // Dispose to prevent duplicate pages when navigating.
     if (dispose) dispose()
@@ -31,7 +29,7 @@ async function render(pageContext: PageContextClient) {
     }
     rendered = true
   } else {
-    setPageContext(reconcile(pageContext))
+    setPageContext(reconcile(removeUnmergableInternals(pageContext)))
   }
 }
 
