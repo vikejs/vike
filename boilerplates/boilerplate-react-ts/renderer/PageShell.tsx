@@ -5,7 +5,6 @@ import type { PageContext } from './types'
 import './PageShell.css'
 import { Link } from './Link'
 
-
 export { PageShell }
 
 function PageShell({ children, pageContext }: { children: React.ReactNode; pageContext: PageContext }) {
