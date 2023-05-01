@@ -29,7 +29,7 @@ async function onRenderClient(pageContext: PageContextClient) {
     }
     rendered = true
   } else {
-    removeUnmergable(pageContext)
+    removeUnmergableInternals(pageContext)
     setPageContext(reconcile(pageContext))
   }
 }
@@ -40,8 +40,13 @@ async function onRenderClient(pageContext: PageContextClient) {
 //   at setProperty (dev.js:135:70)
 //   at applyState (dev.js:320:5)
 // ```
-function removeUnmergable(pageContext: Record<string, any>) {
+function removeUnmergableInternals<T>({
+  // @ts-ignore
+  _pageFilesAll,
+  // @ts-ignore
+  _pageFilesLoaded,
+  ...pageContext
+}: T): Omit<T, '_pageFilesAll' | '_pageFilesLoaded'> {
   // These pageContext properties cannot be reassigned
-  delete pageContext._pageFilesAll
-  delete pageContext._pageFilesLoaded
+  return pageContext
 }
