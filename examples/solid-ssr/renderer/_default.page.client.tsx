@@ -33,6 +33,7 @@ async function render(pageContext: PageContextClient) {
   }
 }
 
+// Remove pageContext properties that cannot be reassigned
 // Avoid reconcile() to throw:
 // ```
 // dev.js:135 Uncaught (in promise) TypeError: Cannot assign to read only property 'Page' of object '[object Module]'
@@ -46,6 +47,5 @@ function removeUnmergableInternals<T>({
   _pageFilesLoaded,
   ...pageContext
 }: T): Omit<T, '_pageFilesAll' | '_pageFilesLoaded'> {
-  // These pageContext properties cannot be reassigned
   return pageContext
 }
