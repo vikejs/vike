@@ -15,7 +15,8 @@ import type {
 } from 'vite-plugin-ssr/types'
 
 type Page = (pageProps: PageProps) => React.ReactElement
-type PageProps = {}
+// eslint-disable-next-line @typescript-eslint/ban-types
+type PageProps = {};
 
 export type PageContextCustom = {
   Page: Page

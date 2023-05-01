@@ -6,7 +6,7 @@
     "moduleResolution": "Node",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["vite/client"],
-    "jsx": "react",
+    "jsx": "react-jsx",
     "skipLibCheck": true,
     "esModuleInterop": true
   },

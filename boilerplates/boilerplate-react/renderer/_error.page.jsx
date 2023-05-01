@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 
 export { Page }
 
@@ -18,4 +18,8 @@ function Page({ is404 }) {
       </>
     )
   }
+}
+
+Page.propTypes = {
+  is404: PropTypes.bool
 }
