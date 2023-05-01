@@ -10,7 +10,7 @@ import {
   getNpmPackageImportPath,
   isNpmPackageImportPath
 } from '../../../../utils'
-import type { ConfigValueFile, PageConfigFile } from '../getConfigData'
+import type { ConfigValueFile, PlusConfigFile } from '../getConfigData'
 import { getPageConfigValue } from './helpers'
 
 function determineRouteFromFilesystemPath(dirOrFilePath: string): string {
@@ -101,12 +101,12 @@ function removeIrrelevantParts(somePath: string, dirs: string[]) {
     .join('/')
 }
 
-type Candidate = { configValueFile: ConfigValueFile } | { plusConfigFile: PageConfigFile }
+type Candidate = { configValueFile: ConfigValueFile } | { plusConfigFile: PlusConfigFile }
 
 function pickMostRelevantConfigValue(
   configName: string,
   configValueFilesRelevant: ConfigValueFile[],
-  plusConfigFilesRelevant: PageConfigFile[]
+  plusConfigFilesRelevant: PlusConfigFile[]
 ): null | Candidate {
   const candidates: Candidate[] = []
   configValueFilesRelevant.forEach((configValueFile) => {

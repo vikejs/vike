@@ -1,6 +1,6 @@
 export { getConfigData }
 export type { ConfigValueFile }
-export type { PageConfigFile }
+export type { PlusConfigFile }
 
 import {
   assertPosixPath,
@@ -112,7 +112,7 @@ async function loadConfigData(
 ): Promise<ConfigData> {
   const plusFiles = await findPlusFiles(userRootDir, isDev, extensions)
 
-  const result = await findAndLoadPageConfigFiles(plusFiles)
+  const result = await findAndLoadPlusConfigFiles(plusFiles)
   /* TODO: - remove this if we don't need this for optimizeDeps.entries
    *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead
   if ('err' in result) {
@@ -137,7 +137,7 @@ async function loadConfigData(
     onPrerenderStart: null
   }
   {
-    const plusConfigFilesGlobal = getPageConfigFilesGlobal(plusConfigFiles)
+    const plusConfigFilesGlobal = getPlusConfigFilesGlobal(plusConfigFiles)
     plusConfigFiles.forEach((plusConfigFile) => {
       const { plusConfigFileExports, plusConfigFilePath } = plusConfigFile
       assertDefaultExportObject(plusConfigFileExports, plusConfigFilePath)
@@ -248,11 +248,11 @@ async function loadConfigData(
   return { pageConfigsData, pageConfigGlobal, vikeConfig }
 }
 
-function determinePageIds(plusConfigFiles: PageConfigFile[], configValueFiles: ConfigValueFile[]) {
+function determinePageIds(plusConfigFiles: PlusConfigFile[], configValueFiles: ConfigValueFile[]) {
   const pageIds: {
     pageId: string
     routeFilesystem: string
-    plusConfigFile: null | PageConfigFile
+    plusConfigFile: null | PlusConfigFile
     routeFilesystemDefinedBy: string
   }[] = []
   configValueFiles.map((configValueFile) => {
@@ -311,7 +311,7 @@ function determinePageIds(plusConfigFiles: PageConfigFile[], configValueFiles: C
 function resolveConfigElement(
   configName: string,
   configDef: ConfigDefinition,
-  plusConfigFilesRelevant: PageConfigFile[],
+  plusConfigFilesRelevant: PlusConfigFile[],
   userRootDir: string,
   configValueFilesRelevant: ConfigValueFile[]
 ): null | ConfigElement {
@@ -385,7 +385,7 @@ function resolveConfigElement(
   }
 }
 
-function isDefiningPage(plusConfigFile: PageConfigFile): boolean {
+function isDefiningPage(plusConfigFile: PlusConfigFile): boolean {
   const pageConfigValues = getPageConfigValues(plusConfigFile)
   return Object.keys(pageConfigValues).some((configName) => isDefiningPageConfig(configName))
 }
@@ -560,7 +560,7 @@ function getErrorIntro(filePath: string, configName: string): string {
   return `${filePath} sets the config ${configName}`
 }
 
-function getConfigDefinitions(plusConfigFilesRelevant: PageConfigFile[]): ConfigDefinitionsExtended {
+function getConfigDefinitions(plusConfigFilesRelevant: PlusConfigFile[]): ConfigDefinitionsExtended {
   const configDefinitions: ConfigDefinitionsExtended = { ...configDefinitionsBuiltIn }
   plusConfigFilesRelevant.forEach((plusConfigFile) => {
     const { plusConfigFilePath } = plusConfigFile
@@ -675,7 +675,7 @@ function applyEffects(
   return configElementsMod
 }
 
-type PageConfigFile = {
+type PlusConfigFile = {
   plusConfigFilePath: string
   plusConfigFileExports: Record<string, unknown>
 }
@@ -754,10 +754,10 @@ function extractConfigName(filePath: string) {
   return configName
 }
 
-async function findAndLoadPageConfigFiles(
+async function findAndLoadPlusConfigFiles(
   plusFiles: FoundFile[]
-): Promise<{ err: unknown } | { plusConfigFiles: PageConfigFile[] }> {
-  const plusConfigFiles: PageConfigFile[] = []
+): Promise<{ err: unknown } | { plusConfigFiles: PlusConfigFile[] }> {
+  const plusConfigFiles: PlusConfigFile[] = []
   // TODO: make esbuild build everyting at once
   const results = await Promise.all(
     plusFiles
@@ -855,7 +855,7 @@ function handleBuildError(err: unknown, isDev: boolean) {
   }
 }
 
-function getPageConfigFilesGlobal(plusConfigFiles: PageConfigFile[]): PageConfigFile[] {
+function getPlusConfigFilesGlobal(plusConfigFiles: PlusConfigFile[]): PlusConfigFile[] {
   return plusConfigFiles.filter((p) => {
     const filePath = p.plusConfigFilePath
     const routeFilesystem = determineRouteFromFilesystemPath(filePath)
