@@ -15,6 +15,8 @@ let rendered = false
 const [pageContextStore, setPageContext] = createStore<PageContextClient>({} as PageContextClient)
 
 async function render(pageContext: PageContextClient) {
+  pageContext = removeUnmergableInternals(pageContext)
+
   if (!rendered) {
     // Dispose to prevent duplicate pages when navigating.
     if (dispose) dispose()
@@ -29,7 +31,6 @@ async function render(pageContext: PageContextClient) {
     }
     rendered = true
   } else {
-    removeUnmergable(pageContext)
     setPageContext(reconcile(pageContext))
   }
 }
@@ -40,8 +41,12 @@ async function render(pageContext: PageContextClient) {
 //   at setProperty (dev.js:135:70)
 //   at applyState (dev.js:320:5)
 // ```
-function removeUnmergable(pageContext: Record<string, any>) {
-  // These pageContext properties cannot be reassigned
-  delete pageContext._pageFilesAll
-  delete pageContext._pageFilesLoaded
+function removeUnmergableInternals<T>(pageContext: T): T {
+  const pageContextFixed = { ...pageContext }
+  // Following pageContext properties cannot be reassigned
+  // @ts-ignore
+  delete pageContextFixed._pageFilesAll
+  // @ts-ignore
+  delete pageContextFixed._pageFilesLoaded
+  return pageContextFixed
 }
