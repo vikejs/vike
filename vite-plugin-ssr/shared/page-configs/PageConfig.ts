@@ -12,47 +12,8 @@ import type { ConfigName } from './Config'
 /** See https://vite-plugin-ssr/meta */
 type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | '_routing-env' | 'config-only'
 
-type ConfigElement = ConfigElementFile & {
-  configEnv: ConfigEnv
-  configValue?: unknown
-}
-type ConfigElementFile = {
-  configDefinedAt: string
-  configDefinedByFile: string
-} & (
-  | {
-      plusConfigFilePath: string
-      codeFilePath: null
-      codeFileExport: null
-    }
-  | {
-      plusConfigFilePath: null
-      codeFilePath: string
-      codeFileExport: string
-    }
-  | {
-      plusConfigFilePath: string
-      codeFilePath: string
-      codeFileExport: string
-    }
-)
-
 type PageConfig = PageConfigData & {
-  loadCodeFiles: () => Promise<
-    ({
-      configName: string
-      codeFilePath: string
-    } & (
-      | {
-          isPlusFile: true
-          codeFileExports: Record<string, unknown>
-        }
-      | {
-          isPlusFile: false
-          codeFileExportValue: unknown
-        }
-    ))[]
-  >
+  loadCodeFiles: LoadCodeFiles
 }
 type PageConfigData = {
   pageId: string
@@ -74,3 +35,47 @@ type PageConfigGlobal = {
   onPrerenderStart: null | (ConfigElement & { configValue: unknown })
   onBeforeRoute: null | (ConfigElement & { configValue: unknown })
 }
+
+type ConfigElement = {
+  configEnv: ConfigEnv
+  configValue?: unknown
+  configDefinedAt: string
+  configDefinedByFile: string
+} & (
+  | // Defined directly in +config.js
+  {
+      plusConfigFilePath: string
+      codeFilePath: null
+      codeFileExport: null
+    }
+  // Defined by a + value file
+  | {
+      plusConfigFilePath: null
+      codeFilePath: string
+      codeFileExport: string
+    }
+  // Defined by an import in +config.js
+  | {
+      plusConfigFilePath: string
+      codeFilePath: string
+      codeFileExport: string
+    }
+)
+
+type LoadCodeFiles = () => Promise<
+  ({
+    configName: string
+    codeFilePath: string
+  } & (
+    | // Defined by a + value file
+    {
+        isPlusFile: true
+        codeFileExports: Record<string, unknown>
+      }
+    // Defined by an import in +config.js
+    | {
+        isPlusFile: false
+        codeFileExportValue: unknown
+      }
+  ))[]
+>
