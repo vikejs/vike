@@ -417,15 +417,9 @@ function getCodeFilePath(
     )
     return null
   }
-  const importData = parseImportData(configValue)
 
-  let codeFilePath: string
-  let plusValueFileExport: string
-  if (importData) {
-    const { importPath, importName } = importData
-    codeFilePath = path.posix.join(userRootDir, path.posix.dirname(plusConfigFilePath), toPosixPath(importPath))
-    plusValueFileExport = importName
-  } else {
+  const importData = parseImportData(configValue)
+  if (!importData) {
     /* TODO: remove? Do we need this for vike-* packages?
     const vitePath = getVitePathFromConfigValue(toPosixPath(configValue), plusConfigFilePath)
     codeFilePath = path.posix.join(userRootDir, vitePath)
@@ -433,6 +427,9 @@ function getCodeFilePath(
     */
     return null
   }
+  const { importPath, importName } = importData
+  let codeFilePath = path.posix.join(userRootDir, path.posix.dirname(plusConfigFilePath), toPosixPath(importPath))
+  const plusValueFileExport = importName
   assertPosixPath(userRootDir)
   assertPosixPath(codeFilePath)
   const clean = addFileExtensionsToRequireResolve()
