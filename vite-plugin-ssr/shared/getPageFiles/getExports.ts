@@ -8,7 +8,7 @@ import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile'
 import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser, objectEntries } from '../utils'
 import { assertDefaultExports, forbiddenDefaultExports } from './assertExports'
 import type { FileType } from './fileTypes'
-import type { PlusConfigLoaded } from './../page-configs/PlusConfig'
+import type { PageConfigLoaded } from './../page-configs/PageConfig'
 import type { PageFile } from './getPageFileObject'
 
 // TODO/v1-release: remove
@@ -45,7 +45,7 @@ type PageContextExports = {
   pageExports: Record<string, unknown>
 }
 
-function getExports(pageFiles: PageFile[], plusConfig: PlusConfigLoaded | null): PageContextExports {
+function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null): PageContextExports {
   const configEntries: ConfigEntries = {}
   const config: Record<string, unknown> = {}
   const exportsAll: ExportsAll = {}
@@ -71,10 +71,10 @@ function getExports(pageFiles: PageFile[], plusConfig: PlusConfigLoaded | null):
   })
 
   // V1 design
-  if (plusConfig) {
-    const { configValues } = plusConfig
+  if (pageConfig) {
+    const { configValues } = pageConfig
     objectEntries(configValues).forEach(([configName, configValue]) => {
-      const configElement = plusConfig.configElements[configName]
+      const configElement = pageConfig.configElements[configName]
       assert(configElement)
       const { configDefinedByFile, configDefinedAt } = configElement
       assert(configDefinedByFile)

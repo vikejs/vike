@@ -8,7 +8,7 @@ import { createHttpResponseObject } from './createHttpResponseObject'
 import pc from '@brillout/picocolors'
 import type { GetPageAssets } from './getPageAssets'
 import type { PageContextAfterRender } from './renderPageContext'
-import type { PlusConfig } from '../../../shared/page-configs/PlusConfig'
+import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 
 async function handleErrorWithoutErrorPage<
   PageContext extends {
@@ -16,7 +16,7 @@ async function handleErrorWithoutErrorPage<
     errorWhileRendering: null | Error
     is404: null | boolean
     _pageId: null
-    _plusConfigs: PlusConfig[]
+    _pageConfigs: PageConfig[]
     urlOriginal: string
   }
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {

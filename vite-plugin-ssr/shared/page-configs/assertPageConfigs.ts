@@ -1,29 +1,29 @@
-export { assertPlusConfigs }
-export { assertPlusConfigGlobal }
+export { assertPageConfigs }
+export { assertPageConfigGlobal }
 
 import { assert, isObject, hasProp, assertUsage, isCallable } from '../utils'
-import type { PlusConfig, PlusConfigGlobal } from './PlusConfig'
+import type { PageConfig, PageConfigGlobal } from './PageConfig'
 
-function assertPlusConfigs(plusConfigs: unknown): asserts plusConfigs is PlusConfig[] {
-  assert(Array.isArray(plusConfigs) || plusConfigs === null)
+function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageConfig[] {
+  assert(Array.isArray(pageConfigs) || pageConfigs === null)
   // TODO: remove obsolete comment?
-  // if `plusConfigFilesCannotBeLoaded === null` => then `import.meta.glob('/**/+config.${scriptFileExtensions}', { eager: true })` cannot be transpiled/loaded => code of virtual file cannot be generated or run => assertPlusConfigs() is never called
-  assert(plusConfigs !== null)
-  plusConfigs.forEach((plusConfig) => {
-    assert(isObject(plusConfig))
-    assert(hasProp(plusConfig, 'pageId', 'string'))
-    assert(hasProp(plusConfig, 'plusConfigFilePathAll', 'string[]'))
-    assert(hasProp(plusConfig, 'routeFilesystem', 'string') || hasProp(plusConfig, 'routeFilesystem', 'null'))
-    assert(hasProp(plusConfig, 'routeFilesystemDefinedBy', 'string'))
-    assert(hasProp(plusConfig, 'loadPlusValueFiles', 'function'))
-    assert(hasProp(plusConfig, 'isErrorPage', 'boolean'))
-    assert(hasProp(plusConfig, 'configElements', 'object'))
-    assertConfigElements(plusConfig.configElements, false)
+  // if `plusConfigFilesCannotBeLoaded === null` => then `import.meta.glob('/**/+config.${scriptFileExtensions}', { eager: true })` cannot be transpiled/loaded => code of virtual file cannot be generated or run => assertPageConfigs() is never called
+  assert(pageConfigs !== null)
+  pageConfigs.forEach((pageConfig) => {
+    assert(isObject(pageConfig))
+    assert(hasProp(pageConfig, 'pageId', 'string'))
+    assert(hasProp(pageConfig, 'plusConfigFilePathAll', 'string[]'))
+    assert(hasProp(pageConfig, 'routeFilesystem', 'string') || hasProp(pageConfig, 'routeFilesystem', 'null'))
+    assert(hasProp(pageConfig, 'routeFilesystemDefinedBy', 'string'))
+    assert(hasProp(pageConfig, 'loadPlusValueFiles', 'function'))
+    assert(hasProp(pageConfig, 'isErrorPage', 'boolean'))
+    assert(hasProp(pageConfig, 'configElements', 'object'))
+    assertConfigElements(pageConfig.configElements, false)
   })
 }
 
-function assertPlusConfigGlobal(plusConfigGlobal: unknown): asserts plusConfigGlobal is PlusConfigGlobal {
-  assertConfigElements(plusConfigGlobal, true)
+function assertPageConfigGlobal(pageConfigGlobal: unknown): asserts pageConfigGlobal is PageConfigGlobal {
+  assertConfigElements(pageConfigGlobal, true)
 }
 
 function assertConfigElements(configElements: unknown, isGlobalConfig: boolean) {

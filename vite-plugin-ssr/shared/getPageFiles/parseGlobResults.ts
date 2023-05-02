@@ -4,14 +4,14 @@ import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../uti
 import { assertExportValues } from './assertExports'
 import { getPageFileObject, type PageFile } from './getPageFileObject'
 import { fileTypes, type FileType } from './fileTypes'
-import type { PlusConfig, PlusConfigGlobal } from '../page-configs/PlusConfig'
-import { assertPlusConfigGlobal, assertPlusConfigs } from '../page-configs/assertPlusConfigs'
+import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
+import { assertPageConfigGlobal, assertPageConfigs } from '../page-configs/assertPageConfigs'
 
 // TODO: rename to parseVirtualFile
 function parseGlobResults(pageFilesExports: unknown): {
   pageFiles: PageFile[]
-  plusConfigs: PlusConfig[]
-  plusConfigGlobal: PlusConfigGlobal
+  pageConfigs: PageConfig[]
+  pageConfigGlobal: PageConfigGlobal
 } {
   assert(hasProp(pageFilesExports, 'isGeneratedFile'))
   assert(pageFilesExports.isGeneratedFile !== false, `vite-plugin-ssr was re-installed(/re-built). Restart your app.`)
@@ -34,11 +34,11 @@ function parseGlobResults(pageFilesExports: unknown): {
     })
   }
 
-  assert(hasProp(pageFilesExports, 'plusConfigs'))
-  assert(hasProp(pageFilesExports, 'plusConfigGlobal'))
-  const { plusConfigs, plusConfigGlobal } = pageFilesExports
-  assertPlusConfigs(plusConfigs)
-  assertPlusConfigGlobal(plusConfigGlobal)
+  assert(hasProp(pageFilesExports, 'pageConfigs'))
+  assert(hasProp(pageFilesExports, 'pageConfigGlobal'))
+  const { pageConfigs, pageConfigGlobal } = pageFilesExports
+  assertPageConfigs(pageConfigs)
+  assertPageConfigGlobal(pageConfigGlobal)
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(pageFilesExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {
@@ -93,7 +93,7 @@ function parseGlobResults(pageFilesExports: unknown): {
     assert(!filePath.includes('\\'))
   })
 
-  return { pageFiles, plusConfigs, plusConfigGlobal }
+  return { pageFiles, pageConfigs, pageConfigGlobal }
 }
 
 type GlobResult = { filePath: string; pageFile: PageFile; globValue: unknown }[]

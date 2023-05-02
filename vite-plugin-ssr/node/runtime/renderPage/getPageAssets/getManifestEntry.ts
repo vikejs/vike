@@ -50,7 +50,7 @@ function getManifestEntry(
     return { manifestEntry, manifestKey }
   }
 
-  // extensions[number].plusConfigsDistFiles
+  // extensions[number].pageConfigsDistFiles
   if (isNpmPackageModule(id)) {
     const manifestKey = manifestKeyMap[id]
     assert(manifestKey, id)
@@ -59,7 +59,7 @@ function getManifestEntry(
     return { manifestEntry, manifestKey }
   }
 
-  // extensions[number].plusConfigsSrcDir
+  // extensions[number].pageConfigsSrcDir
   if (id.startsWith('/node_modules/') || id.startsWith('/../')) {
     let manifestKeyEnd = id.split('/node_modules/').slice(-1)[0]
     assert(manifestKeyEnd, id)

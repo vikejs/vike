@@ -1,7 +1,7 @@
-export { getVirtualFileImportPlusConfigs }
+export { getVirtualFileImportPageConfigs }
 
 import { assert, isNpmPackageImportPath, objectEntries } from '../../../utils'
-import type { ConfigElement, PlusConfigData, PlusConfigGlobalData } from '../../../../../shared/page-configs/PlusConfig'
+import type { ConfigElement, PageConfigData, PageConfigGlobalData } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
 import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files/virtualFileImportPageCode'
 import { getConfigData } from './getConfigData'
@@ -9,20 +9,20 @@ import { getInvalidator } from './invalidation'
 import { debug } from './debug'
 import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps'
 
-async function getVirtualFileImportPlusConfigs(
+async function getVirtualFileImportPageConfigs(
   userRootDir: string,
   isForClientSide: boolean,
   isDev: boolean,
   id: string,
   configVps: ConfigVpsResolved
 ): Promise<string> {
-  const { plusConfigsData, plusConfigGlobal } = await getConfigData(userRootDir, isDev, true, configVps.extensions)
-  return generateSourceCodeOfPlusConfigs(plusConfigsData, plusConfigGlobal, isForClientSide, isDev, id)
+  const { pageConfigsData, pageConfigGlobal } = await getConfigData(userRootDir, isDev, true, configVps.extensions)
+  return generateSourceCodeOfPageConfigs(pageConfigsData, pageConfigGlobal, isForClientSide, isDev, id)
 }
 
-function generateSourceCodeOfPlusConfigs(
-  plusConfigsData: PlusConfigData[],
-  plusConfigGlobal: PlusConfigGlobalData,
+function generateSourceCodeOfPageConfigs(
+  pageConfigsData: PageConfigData[],
+  pageConfigGlobal: PageConfigGlobalData,
   isForClientSide: boolean,
   isDev: boolean,
   id: string
@@ -30,15 +30,15 @@ function generateSourceCodeOfPlusConfigs(
   const lines: string[] = []
   const importStatements: string[] = []
 
-  lines.push('export const plusConfigs = [];')
+  lines.push('export const pageConfigs = [];')
   // const configNamesAll = new Set<string>()
-  plusConfigsData.forEach((plusConfig, i) => {
+  pageConfigsData.forEach((pageConfig, i) => {
     const { plusConfigFilePathAll, pageId, routeFilesystem, routeFilesystemDefinedBy, configElements, isErrorPage } =
-      plusConfig
+      pageConfig
     const virtualFileIdImportPageCode = getVirtualFileIdImportPageCode(pageId, isForClientSide)
-    const plusConfigVar = `plusConfig${i + 1}` // TODO: remove outdated & unncessary variable creation
+    const pageConfigVar = `pageConfig${i + 1}` // TODO: remove outdated & unncessary variable creation
     lines.push(`{`)
-    lines.push(`  const ${plusConfigVar} = {`)
+    lines.push(`  const ${pageConfigVar} = {`)
     lines.push(`    pageId: ${JSON.stringify(pageId)},`)
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    plusConfigFilePathAll: ${JSON.stringify(plusConfigFilePathAll)},`)
@@ -55,15 +55,15 @@ function generateSourceCodeOfPlusConfigs(
     })
     lines.push(`    }`)
     lines.push('  };')
-    lines.push(`  plusConfigs.push(${plusConfigVar})`)
+    lines.push(`  pageConfigs.push(${pageConfigVar})`)
     lines.push(`}`)
   })
 
   // Inject import statement to ensure that Vite adds config files to its module graph (which is needed in order for Vite to properly invalidate if a module imported by a config file is modified)
   if (isDev && !isForClientSide) {
     const configFiles: Set<string> = new Set()
-    plusConfigsData.forEach((plusConfig) => {
-      const { configElements, plusConfigFilePathAll } = plusConfig
+    pageConfigsData.forEach((pageConfig) => {
+      const { configElements, plusConfigFilePathAll } = pageConfig
       Object.entries(configElements).forEach(([_configName, configElement]) => {
         const { configEnv, plusValueFilePath } = configElement
         if (configEnv === 'config-only' && plusValueFilePath) {
@@ -81,8 +81,8 @@ function generateSourceCodeOfPlusConfigs(
     })
   }
 
-  lines.push('export const plusConfigGlobal = {')
-  objectEntries(plusConfigGlobal).forEach(([configName, configElement]) => {
+  lines.push('export const pageConfigGlobal = {')
+  objectEntries(pageConfigGlobal).forEach(([configName, configElement]) => {
     if (configName === 'onBeforeRoute') {
       // if( isForClientSide && !isClientRouting ) return
     } else if (configName === 'onPrerenderStart') {

@@ -5,15 +5,15 @@ export { isErrorPage }
 // TODO/v1-release: consider loading this file only for Client Routing
 
 import { assert, assertUsage, unique } from './utils'
-import type { PlusConfig } from './page-configs/PlusConfig'
+import type { PageConfig } from './page-configs/PageConfig'
 import type { PageFile } from './getPageFiles'
 
-function getErrorPageId(pageFilesAll: PageFile[], plusConfigs: PlusConfig[]): string | null {
-  if (plusConfigs.length > 0) {
-    const errorPlusConfigs = plusConfigs.filter((p) => p.isErrorPage)
-    if (errorPlusConfigs.length === 0) return null
-    assertUsage(errorPlusConfigs.length === 1, 'Only one error page can be defined')
-    return errorPlusConfigs[0]!.pageId
+function getErrorPageId(pageFilesAll: PageFile[], pageConfigs: PageConfig[]): string | null {
+  if (pageConfigs.length > 0) {
+    const errorPageConfigs = pageConfigs.filter((p) => p.isErrorPage)
+    if (errorPageConfigs.length === 0) return null
+    assertUsage(errorPageConfigs.length === 1, 'Only one error page can be defined')
+    return errorPageConfigs[0]!.pageId
   }
   // TODO/v1-release: remove
   const errorPageIds = unique(pageFilesAll.map(({ pageId }) => pageId).filter((pageId) => isErrorPageId(pageId, false)))
@@ -35,11 +35,11 @@ function isErrorPageId(pageId: string, _isV1Design: false): boolean {
   return pageId.includes('/_error')
 }
 
-function isErrorPage(pageId: string, plusConfigs: PlusConfig[]): boolean {
-  if (plusConfigs.length > 0) {
-    const plusConfig = plusConfigs.find((p) => p.pageId === pageId)
-    assert(plusConfig)
-    return plusConfig.isErrorPage
+function isErrorPage(pageId: string, pageConfigs: PageConfig[]): boolean {
+  if (pageConfigs.length > 0) {
+    const pageConfig = pageConfigs.find((p) => p.pageId === pageId)
+    assert(pageConfig)
+    return pageConfig.isErrorPage
   } else {
     return isErrorPageId(pageId, false)
   }

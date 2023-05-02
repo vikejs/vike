@@ -4,8 +4,8 @@ export type { ExtensionResolved }
 
 type ExtensionUserProvided = {
   npmPackageName: string
-  plusConfigsDistFiles?: string[]
-  plusConfigsSrcDir?: string
+  pageConfigsDistFiles?: string[]
+  pageConfigsSrcDir?: string
   assetsDir?: string
   /** @deprecated */
   pageFilesDist?: string[]
@@ -15,13 +15,13 @@ type ExtensionUserProvided = {
 type ExtensionResolved = {
   npmPackageName: string
   npmPackageRootDir: string
-  plusConfigsDistFiles:
+  pageConfigsDistFiles:
     | null
     | {
         importPath: string
         filePath: string
       }[]
-  plusConfigsSrcDir: null | string
+  pageConfigsSrcDir: null | string
   assetsDir: null | string
 }
 

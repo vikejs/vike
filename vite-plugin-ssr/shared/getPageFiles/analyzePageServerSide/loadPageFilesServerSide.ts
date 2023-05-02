@@ -3,19 +3,19 @@ export { loadPageFilesServerSide }
 import { getPageFilesServerSide } from '../getAllPageIdFiles'
 import { getExports } from '../getExports'
 import type { PageFile } from '../getPageFileObject'
-import type { PlusConfig } from '../../page-configs/PlusConfig'
+import type { PageConfig } from '../../page-configs/PageConfig'
 import { loadPageCode } from '../../page-configs/loadPageCode'
 
 async function loadPageFilesServerSide(
   pageFilesAll: PageFile[],
-  plusConfig: null | PlusConfig,
+  pageConfig: null | PageConfig,
   pageId: string,
   isDev: boolean
 ) {
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
-  const plusConfigLoaded = !plusConfig ? null : await loadPageCode(plusConfig, isDev)
+  const pageConfigLoaded = !pageConfig ? null : await loadPageCode(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-  const { config, configEntries, exports, exportsAll, pageExports } = getExports(pageFilesServerSide, plusConfigLoaded)
+  const { config, configEntries, exports, exportsAll, pageExports } = getExports(pageFilesServerSide, pageConfigLoaded)
   return {
     config,
     configEntries,
@@ -23,6 +23,6 @@ async function loadPageFilesServerSide(
     exportsAll,
     pageExports,
     pageFilesLoaded: pageFilesServerSide,
-    plusConfigLoaded
+    pageConfigLoaded
   }
 }

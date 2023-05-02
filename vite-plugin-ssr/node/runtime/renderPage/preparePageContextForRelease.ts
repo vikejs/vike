@@ -4,7 +4,7 @@ export type { PageContextPublic }
 import { assert, isPlainObject, isObject } from '../utils'
 import { sortPageContext } from '../../../shared/sortPageContext'
 import { assertURLs, PageContextUrls } from '../../../shared/addComputedUrlProps'
-import type { PlusConfig } from '../../../shared/page-configs/PlusConfig'
+import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
 import type { ConfigEntries, ExportsAll } from '../../../shared/getPageFiles/getExports'
 
@@ -22,7 +22,7 @@ type PageContextPublic = {
   exports: Record<string, unknown>
   exportsAll: ExportsAll
   _pageId: string
-  _plusConfigs: PlusConfig[]
+  _pageConfigs: PageConfig[]
   is404: null | boolean
   isClientSideNavigation: boolean
   pageProps?: Record<string, unknown>

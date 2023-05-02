@@ -6,20 +6,20 @@ import { assert, unique } from '../utils'
 import type { PageFile } from './getPageFileObject'
 import { parseGlobResults } from './parseGlobResults'
 import { getGlobalObject } from '../../utils/getGlobalObject'
-import type { PlusConfig, PlusConfigGlobal } from '../page-configs/PlusConfig'
+import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
 
 const globalObject = getGlobalObject<{
   pageFilesAll?: PageFile[] | undefined
-  plusConfigs?: PlusConfig[] | undefined
-  plusConfigGlobal?: PlusConfigGlobal | undefined
+  pageConfigs?: PageConfig[] | undefined
+  pageConfigGlobal?: PageConfigGlobal | undefined
   pageFilesGetter?: () => Promise<void> | undefined
 }>('setPageFiles.ts', {})
 
 function setPageFiles(pageFilesExports: unknown) {
-  const { pageFiles, plusConfigs, plusConfigGlobal } = parseGlobResults(pageFilesExports)
+  const { pageFiles, pageConfigs, pageConfigGlobal } = parseGlobResults(pageFilesExports)
   globalObject.pageFilesAll = pageFiles
-  globalObject.plusConfigs = plusConfigs
-  globalObject.plusConfigGlobal = plusConfigGlobal
+  globalObject.pageConfigs = pageConfigs
+  globalObject.pageConfigGlobal = pageConfigGlobal
 }
 function setPageFilesAsync(getPageFilesExports: () => Promise<unknown>) {
   globalObject.pageFilesGetter = async () => {
@@ -33,8 +33,8 @@ async function getPageFilesAll(
 ): Promise<{
   pageFilesAll: PageFile[]
   allPageIds: string[]
-  plusConfigs: PlusConfig[]
-  plusConfigGlobal: PlusConfigGlobal
+  pageConfigs: PageConfig[]
+  pageConfigGlobal: PageConfigGlobal
 }> {
   if (isClientSide) {
     assert(!globalObject.pageFilesGetter)
@@ -50,17 +50,17 @@ async function getPageFilesAll(
       await globalObject.pageFilesGetter()
     }
   }
-  const { pageFilesAll, plusConfigs, plusConfigGlobal } = globalObject
-  assert(pageFilesAll && plusConfigs && plusConfigGlobal)
-  const allPageIds = getAllPageIds(pageFilesAll, plusConfigs)
-  return { pageFilesAll, allPageIds, plusConfigs, plusConfigGlobal }
+  const { pageFilesAll, pageConfigs, pageConfigGlobal } = globalObject
+  assert(pageFilesAll && pageConfigs && pageConfigGlobal)
+  const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
+  return { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal }
 }
 
-function getAllPageIds(allPageFiles: PageFile[], plusConfigs: PlusConfig[]): string[] {
+function getAllPageIds(allPageFiles: PageFile[], pageConfigs: PageConfig[]): string[] {
   const fileIds = allPageFiles.filter(({ isDefaultPageFile }) => !isDefaultPageFile).map(({ pageId }) => pageId)
   const allPageIds = unique(fileIds)
 
-  const allPageIds2 = plusConfigs.map((p) => p.pageId)
+  const allPageIds2 = pageConfigs.map((p) => p.pageId)
 
   return [...allPageIds, ...allPageIds2]
 }

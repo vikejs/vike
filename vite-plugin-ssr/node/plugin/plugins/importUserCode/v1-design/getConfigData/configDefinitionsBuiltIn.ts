@@ -2,7 +2,7 @@ export { configDefinitionsBuiltIn }
 export type { ConfigDefinition }
 
 import { assertUsage, isCallable } from '../../../../utils'
-import type { ConfigName, ConfigEnv } from '../../../../../../shared/page-configs/PlusConfig'
+import type { ConfigName, ConfigEnv } from '../../../../../../shared/page-configs/PageConfig'
 import { assertRouteString } from '../../../../../../shared/route/resolveRouteString'
 
 type ConfigDefinition = {

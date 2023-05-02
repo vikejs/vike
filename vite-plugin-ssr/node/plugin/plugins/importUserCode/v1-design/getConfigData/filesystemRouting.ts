@@ -11,7 +11,7 @@ import {
   isNpmPackageImportPath
 } from '../../../../utils'
 import type { PlusValueFile, PlusConfigFile } from '../getConfigData'
-import { getPlusConfigValue } from './helpers'
+import { getPageConfigValue } from './helpers'
 
 function determineRouteFromFilesystemPath(dirOrFilePath: string): string {
   const pageId = determinePageId(dirOrFilePath)
@@ -115,7 +115,7 @@ function pickMostRelevantConfigValue(
     }
   })
   plusConfigFilesRelevant.forEach((plusConfigFile) => {
-    const configValue = getPlusConfigValue(configName, plusConfigFile)
+    const configValue = getPageConfigValue(configName, plusConfigFile)
     if (configValue !== undefined) {
       candidates.push({
         plusConfigFile

@@ -1,20 +1,20 @@
 export { analyzeClientSide }
 
 import { getCodeFilePath, getConfigValue } from '../page-configs/utils'
-import type { PlusConfig } from '../page-configs/PlusConfig'
+import type { PageConfig } from '../page-configs/PageConfig'
 import type { PageFile } from './getPageFileObject'
 import { analyzePageClientSide } from './analyzePageClientSide'
 
 function analyzeClientSide(
-  plusConfig: PlusConfig | null,
+  pageConfig: PageConfig | null,
   pageFilesAll: PageFile[],
   pageId: string
 ): { isClientSideRenderable: boolean; isClientRouting: boolean } {
-  if (plusConfig) {
-    const isClientRouting = getConfigValue(plusConfig, 'clientRouting', 'boolean') ?? false
-    const onRenderClientExists: boolean = !!getCodeFilePath(plusConfig, 'onRenderClient')
+  if (pageConfig) {
+    const isClientRouting = getConfigValue(pageConfig, 'clientRouting', 'boolean') ?? false
+    const onRenderClientExists: boolean = !!getCodeFilePath(pageConfig, 'onRenderClient')
     const PageExists: boolean =
-      !!getCodeFilePath(plusConfig, 'Page') && plusConfig.configElements.Page!.configEnv !== 'server-only'
+      !!getCodeFilePath(pageConfig, 'Page') && pageConfig.configElements.Page!.configEnv !== 'server-only'
     const isClientSideRenderable = onRenderClientExists && PageExists
     return { isClientSideRenderable, isClientRouting }
   } else {

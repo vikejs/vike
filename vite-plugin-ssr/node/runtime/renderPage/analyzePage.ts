@@ -3,35 +3,35 @@ export { analyzePage }
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import { getVPSClientEntry } from '../../../shared/getPageFiles/analyzePageClientSide/determineClientEntry'
 import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject'
-import type { PlusConfig } from '../../../shared/page-configs/PlusConfig'
+import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { getCodeFilePath } from '../../../shared/page-configs/utils'
 import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide'
 import { getVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide'
 import { getGlobalContext } from '../globalContext'
 
-function analyzePage(pageFilesAll: PageFile[], plusConfig: null | PlusConfig, pageId: string): AnalysisResult {
-  if (plusConfig) {
-    const { isClientSideRenderable, isClientRouting } = analyzeClientSide(plusConfig, pageFilesAll, pageId)
-    const clientFilePath = getCodeFilePath(plusConfig, 'client')
+function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string): AnalysisResult {
+  if (pageConfig) {
+    const { isClientSideRenderable, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
+    const clientFilePath = getCodeFilePath(pageConfig, 'client')
     const clientEntry = !isClientSideRenderable ? clientFilePath : getVPSClientEntry(isClientRouting)
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
-      id: getVirtualFileIdImportPageCode(plusConfig.pageId, true),
+      id: getVirtualFileIdImportPageCode(pageConfig.pageId, true),
       onlyAssets: false,
       eagerlyImported: false
     })
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
     if (!getGlobalContext().isProduction) {
       clientDependencies.push({
-        id: getVirtualFileIdImportPageCode(plusConfig.pageId, false),
+        id: getVirtualFileIdImportPageCode(pageConfig.pageId, false),
         onlyAssets: true,
         eagerlyImported: false
       })
     }
     //*/
     /* TODO: remove?
-    Object.values(plusConfig.configElements).forEach((configElement) => {
+    Object.values(pageConfig.configElements).forEach((configElement) => {
       if (configElement.codeFilePath) {
         const { env } = configElement
         assert(env)

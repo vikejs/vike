@@ -4,7 +4,7 @@ import { assert, assertUsage, hasProp, slice } from './utils'
 import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath'
 import { isCallable } from '../utils'
-import type { PlusConfig, PlusConfigGlobal } from '../page-configs/PlusConfig'
+import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
 
 export { loadPageRoutes }
 export { findPageRouteFile }
@@ -13,7 +13,7 @@ export type { RouteType }
 
 type PageRoute = {
   pageId: string
-  comesFromV1PlusConfig: boolean
+  comesFromV1PageConfig: boolean
 } & (
   | { routeString: string; routeDefinedAt: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
   | { routeString: string; routeDefinedAt: string; routeType: 'STRING' }
@@ -25,20 +25,20 @@ type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
 async function loadPageRoutes(
   // TODO: remove all arguments and use GlobalContext instead
   pageFilesAll: PageFile[],
-  plusConfigs: PlusConfig[],
-  plusConfigGlobal: PlusConfigGlobal,
+  pageConfigs: PageConfig[],
+  pageConfigGlobal: PageConfigGlobal,
   allPageIds: string[]
 ): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
   await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
-  const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll, plusConfigs, plusConfigGlobal)
-  const pageRoutes = getPageRoutes(filesystemRoots, pageFilesAll, plusConfigs, allPageIds)
+  const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll, pageConfigs, pageConfigGlobal)
+  const pageRoutes = getPageRoutes(filesystemRoots, pageFilesAll, pageConfigs, allPageIds)
   return { pageRoutes, onBeforeRouteHook }
 }
 
 function getPageRoutes(
   filesystemRoots: FilesystemRoot[],
   pageFilesAll: PageFile[],
-  plusConfigs: PlusConfig[],
+  pageConfigs: PageConfig[],
   allPageIds: string[]
 ): PageRoutes {
   const pageRoutes: PageRoutes = []
@@ -46,28 +46,28 @@ function getPageRoutes(
   let pageIds = [...allPageIds]
 
   // V1 Design
-  if (plusConfigs.length > 0) {
-    const comesFromV1PlusConfig = true
-    plusConfigs
+  if (pageConfigs.length > 0) {
+    const comesFromV1PageConfig = true
+    pageConfigs
       .filter((p) => !p.isErrorPage)
-      .forEach((plusConfig) => {
-        const pageId = plusConfig.pageId
+      .forEach((pageConfig) => {
+        const pageId = pageConfig.pageId
         pageIds = removePageId(pageIds, pageId)
 
         let pageRoute: null | PageRoute = null
         {
-          const routeConfig = plusConfig.configElements.route
+          const routeConfig = pageConfig.configElements.route
           if (routeConfig) {
             assert('configValue' in routeConfig) // Route files are eagerly loaded
             const route = routeConfig.configValue
             const routeDefinedAt = routeConfig.configDefinedAt
             assert(routeDefinedAt)
             if (typeof route === 'string') {
-              pageRoute = { pageId, comesFromV1PlusConfig, routeString: route, routeDefinedAt, routeType: 'STRING' }
+              pageRoute = { pageId, comesFromV1PageConfig, routeString: route, routeDefinedAt, routeType: 'STRING' }
             } else {
               assert(isCallable(route))
               let allowAsync = false
-              const allowSyncConfig = plusConfig.configElements.iKnowThePerformanceRisksOfAsyncRouteFunctions
+              const allowSyncConfig = pageConfig.configElements.iKnowThePerformanceRisksOfAsyncRouteFunctions
               if (allowSyncConfig) {
                 assert(!('codeFilePath' in allowSyncConfig)) // TODO: improve this?
                 const val = allowSyncConfig.configValue
@@ -76,7 +76,7 @@ function getPageRoutes(
               }
               pageRoute = {
                 pageId,
-                comesFromV1PlusConfig,
+                comesFromV1PageConfig,
                 routeFunction: route,
                 routeDefinedAt,
                 routeType: 'FUNCTION',
@@ -87,14 +87,14 @@ function getPageRoutes(
         }
 
         if (!pageRoute) {
-          const { routeFilesystem, routeFilesystemDefinedBy } = plusConfig
+          const { routeFilesystem, routeFilesystemDefinedBy } = pageConfig
           assert(routeFilesystem)
           assert(routeFilesystem.startsWith('/'))
           assert(routeFilesystemDefinedBy)
           pageRoute = {
             pageId,
             routeFilesystemDefinedBy,
-            comesFromV1PlusConfig,
+            comesFromV1PageConfig,
             routeString: routeFilesystem,
             routeDefinedAt: null,
             routeType: 'FILESYSTEM'
@@ -108,8 +108,8 @@ function getPageRoutes(
 
   // Old design
   // TODO/v1-release: remove
-  if (plusConfigs.length === 0) {
-    const comesFromV1PlusConfig = false
+  if (pageConfigs.length === 0) {
+    const comesFromV1PageConfig = false
     pageIds
       .filter((pageId) => !isErrorPageId(pageId, false))
       .forEach((pageId) => {
@@ -120,7 +120,7 @@ function getPageRoutes(
           assert(!routeString.endsWith('/') || routeString === '/')
           pageRoutes.push({
             pageId,
-            comesFromV1PlusConfig,
+            comesFromV1PageConfig,
             routeString,
             routeDefinedAt: null,
             routeFilesystemDefinedBy: `${pageId}.page.*`,
@@ -138,7 +138,7 @@ function getPageRoutes(
             )
             pageRoutes.push({
               pageId,
-              comesFromV1PlusConfig,
+              comesFromV1PageConfig,
               routeString,
               routeDefinedAt: filePath,
               routeType: 'STRING'
@@ -158,7 +158,7 @@ function getPageRoutes(
             }
             pageRoutes.push({
               pageId,
-              comesFromV1PlusConfig,
+              comesFromV1PageConfig,
               routeFunction,
               routeDefinedAt: filePath,
               allowAsync,
@@ -176,18 +176,18 @@ function getPageRoutes(
 
 function getGlobalHooks(
   pageFilesAll: PageFile[],
-  plusConfigs: PlusConfig[],
-  plusConfigGlobal: PlusConfigGlobal
+  pageConfigs: PageConfig[],
+  pageConfigGlobal: PageConfigGlobal
 ): {
   onBeforeRouteHook: null | OnBeforeRouteHook
   filesystemRoots: FilesystemRoot[]
 } {
   // V1 Design
-  if (plusConfigs.length > 0) {
-    if (plusConfigGlobal.onBeforeRoute) {
-      const hookFn = plusConfigGlobal.onBeforeRoute.configValue
+  if (pageConfigs.length > 0) {
+    if (pageConfigGlobal.onBeforeRoute) {
+      const hookFn = pageConfigGlobal.onBeforeRoute.configValue
       if (hookFn) {
-        const hookFilePath = plusConfigGlobal.onBeforeRoute.plusValueFilePath
+        const hookFilePath = pageConfigGlobal.onBeforeRoute.plusValueFilePath
         assert(hookFilePath)
         assertUsage(isCallable(hookFn), `The hook onBeforeRoute() defined by ${hookFilePath} should be a function.`)
         const onBeforeRouteHook: OnBeforeRouteHook = {

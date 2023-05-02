@@ -1,7 +1,7 @@
 export { getVirtualFileImportCodeFiles }
 
 import { assert, assertPosixPath } from '../../../utils'
-import type { PlusConfigData } from '../../../../../shared/page-configs/PlusConfig'
+import type { PageConfigData } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
 import {
   getVirtualFileIdImportPageCode,
@@ -28,12 +28,12 @@ async function getVirtualFileImportCodeFiles(
   }
   */
   const { pageId, isForClientSide } = result
-  const { plusConfigsData } = await getConfigData(userRootDir, isDev, false, configVps.extensions)
-  assert(plusConfigsData)
-  const plusConfigData = plusConfigsData.find((plusConfigData) => plusConfigData.pageId === pageId)
-  assert(plusConfigData)
+  const { pageConfigsData } = await getConfigData(userRootDir, isDev, false, configVps.extensions)
+  assert(pageConfigsData)
+  const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId === pageId)
+  assert(pageConfigData)
   const code = generateSourceCodeOfLoadCodeFileVirtualFile(
-    plusConfigData,
+    pageConfigData,
     isForClientSide,
     pageId,
     configVps.includeAssetsImportedByServer,
@@ -44,7 +44,7 @@ async function getVirtualFileImportCodeFiles(
 }
 
 function generateSourceCodeOfLoadCodeFileVirtualFile(
-  plusConfigData: PlusConfigData,
+  pageConfigData: PageConfigData,
   isForClientSide: boolean,
   pageId: string,
   includeAssetsImportedByServer: boolean,
@@ -54,7 +54,7 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   const importStatements: string[] = []
   lines.push('export default [')
   let varCounter = 0
-  Object.entries(plusConfigData.configElements).forEach(([configName, configElement]) => {
+  Object.entries(pageConfigData.configElements).forEach(([configName, configElement]) => {
     if (!configElement.plusValueFilePath) return
     const { configEnv, plusValueFilePath, plusValueFileExport } = configElement
     if (configEnv === '_routing-env' || configEnv === 'config-only') return

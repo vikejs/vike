@@ -72,16 +72,16 @@ function addExtensionsToOptimizeDeps(config: ResolvedConfig, configVps: ConfigVp
   config.optimizeDeps.include = config.optimizeDeps.include ?? []
   config.optimizeDeps.include.push(
     ...configVps.extensions
-      .map(({ plusConfigsDistFiles }) => plusConfigsDistFiles)
+      .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
       .flat()
       .filter(isNotNullish)
       .filter(({ importPath }) => !importPath.endsWith('.css'))
       .map(({ importPath }) => importPath)
   )
-  /* Doesn't work since `plusConfigsSrcDir` is a directory. We could make it work by using find-glob.
+  /* Doesn't work since `pageConfigsSrcDir` is a directory. We could make it work by using find-glob.
   config.optimizeDeps.include.push(
     ...configVps.extensions
-      .map(({ plusConfigsSrcDir }) => plusConfigsSrcDir)
+      .map(({ pageConfigsSrcDir }) => pageConfigsSrcDir)
       .flat()
       .filter(isNotNullish)
   )

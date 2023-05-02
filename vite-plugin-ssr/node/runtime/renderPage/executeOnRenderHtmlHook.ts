@@ -21,14 +21,14 @@ import type { PreloadFilter } from '../html/injectAssets/getHtmlTags'
 import { logErrorWithVite } from './logError'
 import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
 import type { PageContextPromise } from '../html/injectAssets'
-import type { PlusConfig } from '../../../shared/page-configs/PlusConfig'
+import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
 async function executeOnRenderHtmlHook(
   pageContext: PageContextPublic & {
     _pageId: string
-    _plusConfigs: PlusConfig[]
+    _pageConfigs: PageConfig[]
     __getPageAssets: GetPageAssets
     _passToClient: string[]
     _isHtmlOnly: boolean
@@ -56,7 +56,7 @@ async function executeOnRenderHtmlHook(
     }
   }
   if (!hookName) {
-    hookName = pageContext._plusConfigs.length > 0 ? 'onRenderHtml' : 'render'
+    hookName = pageContext._pageConfigs.length > 0 ? 'onRenderHtml' : 'render'
   }
 
   assertUsage(

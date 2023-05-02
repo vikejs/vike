@@ -42,7 +42,7 @@ import type { InlineConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString'
-import type { PlusConfig, PlusConfigGlobal } from '../../shared/page-configs/PlusConfig'
+import type { PageConfig, PageConfigGlobal } from '../../shared/page-configs/PageConfig'
 import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode'
 import { isErrorPage } from '../../shared/error-page'
@@ -96,8 +96,8 @@ type PageContext = {
   // TODO: use GlobalNodeContext instead
   _allPageIds: string[]
   _pageFilesAll: PageFile[]
-  _plusConfigs: PlusConfig[]
-  _plusConfigGlobal: PlusConfigGlobal
+  _pageConfigs: PageConfig[]
+  _pageConfigGlobal: PageConfigGlobal
 }
 
 type PrerenderOptions = {
@@ -221,14 +221,14 @@ async function collectDoNoPrerenderList(
   doNotPrerenderList: DoNotPrerenderList,
   concurrencyLimit: PLimit
 ) {
-  renderContext.plusConfigs.forEach((plusConfig) => {
-    const prerenderConfigValue = getConfigValue(plusConfig, 'prerender', 'boolean')
+  renderContext.pageConfigs.forEach((pageConfig) => {
+    const prerenderConfigValue = getConfigValue(pageConfig, 'prerender', 'boolean')
     if (prerenderConfigValue === false) {
-      const configElement = plusConfig.configElements.prerender
+      const configElement = pageConfig.configElements.prerender
       assert(configElement)
       assert(configElement.configValue === false)
       doNotPrerenderList.push({
-        pageId: plusConfig.pageId,
+        pageId: pageConfig.pageId,
         setByConfigName: 'prerender',
         setByConfigValue: false,
         setByConfigFile: configElement.configDefinedByFile
@@ -305,13 +305,13 @@ async function callOnBeforePrerenderStartHooks(
 
   // V1 design
   await Promise.all(
-    renderContext.plusConfigs.map((plusConfig) =>
+    renderContext.pageConfigs.map((pageConfig) =>
       concurrencyLimit(async () => {
-        if (!plusConfig.configElements.onBeforePrerenderStart) return
-        const codeFilePath = getCodeFilePath(plusConfig, 'onBeforePrerenderStart')
+        if (!pageConfig.configElements.onBeforePrerenderStart) return
+        const codeFilePath = getCodeFilePath(pageConfig, 'onBeforePrerenderStart')
         assert(codeFilePath)
-        const plusConfigLoaded = await loadPageCode(plusConfig, false)
-        const hookFn = plusConfigLoaded.configValues.onBeforePrerenderStart
+        const pageConfigLoaded = await loadPageCode(pageConfig, false)
+        const hookFn = pageConfigLoaded.configValues.onBeforePrerenderStart
         assert(hookFn)
         assertUsage(
           isCallable(hookFn),
@@ -407,8 +407,8 @@ async function handlePagesWithStaticRoutes(
   // Pre-render pages with a static route
   const { pageRoutes } = await loadPageRoutes(
     renderContext.pageFilesAll,
-    renderContext.plusConfigs,
-    renderContext.plusConfigGlobal,
+    renderContext.pageConfigs,
+    renderContext.pageConfigGlobal,
     renderContext.allPageIds
   )
   await Promise.all(
@@ -504,8 +504,8 @@ async function callOnPrerenderStartHook(
       }
 
   // V1 design
-  if (renderContext.plusConfigs.length > 0) {
-    const configElement = renderContext.plusConfigGlobal.onPrerenderStart
+  if (renderContext.pageConfigs.length > 0) {
+    const configElement = renderContext.pageConfigGlobal.onPrerenderStart
     if (configElement) {
       const hookFn = configElement.configValue
       const hookFilePath = configElement.plusValueFilePath
@@ -522,7 +522,7 @@ async function callOnPrerenderStartHook(
 
   // Old design
   // TODO/v1-release: remove
-  if (renderContext.plusConfigs.length === 0) {
+  if (renderContext.pageConfigs.length === 0) {
     const pageFilesWithOnBeforePrerenderHook = renderContext.pageFilesAll.filter((p) => {
       assertExportNames(p)
       if (!p.exportNames?.includes('onBeforePrerender')) return false
@@ -719,10 +719,10 @@ async function routeAndPrerender(
 
         let usesClientRouter: boolean
         {
-          if (pageContext._plusConfigs.length > 0) {
-            const plusConfig = pageContext._plusConfigs.find((p) => p.pageId === pageId)
-            assert(plusConfig)
-            usesClientRouter = getConfigValue(plusConfig, 'clientRouting', 'boolean') ?? false
+          if (pageContext._pageConfigs.length > 0) {
+            const pageConfig = pageContext._pageConfigs.find((p) => p.pageId === pageId)
+            assert(pageConfig)
+            usesClientRouter = getConfigValue(pageConfig, 'clientRouting', 'boolean') ?? false
           } else {
             usesClientRouter = globalContext.pluginManifest.usesClientRouter
           }
@@ -777,7 +777,7 @@ function warnMissingPages(
   renderContext.allPageIds
     .filter((pageId) => !prerenderPageIds[pageId])
     .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
-    .filter((pageId) => !isErrorPage(pageId, renderContext.plusConfigs))
+    .filter((pageId) => !isErrorPage(pageId, renderContext.pageConfigs))
     .forEach((pageId) => {
       // TODO: adapt warning to V1
       assertWarning(

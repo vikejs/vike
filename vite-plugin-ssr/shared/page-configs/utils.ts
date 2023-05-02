@@ -1,20 +1,20 @@
 export { getConfigValue }
 export { getCodeFilePath }
-export { getPlusConfig }
+export { getPageConfig }
 
 import { assert, assertUsage } from '../utils'
-import type { ConfigName, PlusConfig, PlusConfigData } from './PlusConfig'
+import type { ConfigName, PageConfig, PageConfigData } from './PageConfig'
 
-function getConfigValue(plusConfig: PlusConfigData, configName: ConfigName, type: 'string'): null | string
-function getConfigValue(plusConfig: PlusConfigData, configName: ConfigName, type: 'boolean'): null | boolean
-// function getConfigValue(plusConfig: PlusConfigData, configName: ConfigName): unknown
+function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'string'): null | string
+function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'boolean'): null | boolean
+// function getConfigValue(pageConfig: PageConfigData, configName: ConfigName): unknown
 function getConfigValue(
-  plusConfig: PlusConfigData,
+  pageConfig: PageConfigData,
   configName: ConfigName,
   type: 'string' | 'boolean'
 ): null | unknown {
-  const configElement = plusConfig.configElements[configName]
-  if (!configElement || isNullish(plusConfig, configName)) {
+  const configElement = pageConfig.configElements[configName]
+  if (!configElement || isNullish(pageConfig, configName)) {
     return null
   }
   const { configValue, configDefinedAt } = configElement
@@ -25,9 +25,9 @@ function getConfigValue(
   return configValue
 }
 
-function getCodeFilePath(plusConfig: PlusConfigData, configName: ConfigName): null | string {
-  const configElement = plusConfig.configElements[configName]
-  if (!configElement || isNullish(plusConfig, configName)) {
+function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): null | string {
+  const configElement = pageConfig.configElements[configName]
+  if (!configElement || isNullish(pageConfig, configName)) {
     return null
   }
   if (configElement.plusValueFilePath !== null) {
@@ -41,17 +41,17 @@ function getCodeFilePath(plusConfig: PlusConfigData, configName: ConfigName): nu
   assertUsage(false, `${configDefinedAt} has an invalid value \`${configValue}\`: it should be a file path instead`)
 }
 
-function isNullish(plusConfig: PlusConfigData, configName: ConfigName): boolean {
-  const configElement = plusConfig.configElements[configName]
+function isNullish(pageConfig: PageConfigData, configName: ConfigName): boolean {
+  const configElement = pageConfig.configElements[configName]
   if (!configElement) return true
   const { plusValueFilePath, configValue } = configElement
   if (plusValueFilePath) return false
   return configValue === null || configValue === undefined
 }
 
-function getPlusConfig(pageId: string, plusConfigs: PlusConfig[]): PlusConfig {
-  const plusConfig = plusConfigs.find((p) => p.pageId === pageId)
-  assert(plusConfigs.length > 0)
-  assert(plusConfig)
-  return plusConfig
+function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
+  const pageConfig = pageConfigs.find((p) => p.pageId === pageId)
+  assert(pageConfigs.length > 0)
+  assert(pageConfig)
+  return pageConfig
 }
