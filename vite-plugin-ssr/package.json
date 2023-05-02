@@ -17,7 +17,7 @@
     "@brillout/json-serializer": "^0.5.3",
     "@brillout/picocolors": "^1.0.4",
     "@brillout/vite-plugin-import-build": "^0.2.16",
-    "acorn": "^8.0.0",
+    "acorn": "^8.8.2",
     "cac": "^6.7.14",
     "es-module-lexer": "^0.10.0",
     "esbuild": "^0.17.0",

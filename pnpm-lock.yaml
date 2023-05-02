@@ -2368,8 +2368,8 @@ importers:
         specifier: ^0.2.16
         version: 0.2.16
       acorn:
-        specifier: ^8.0.0
-        version: 8.0.0
+        specifier: ^8.8.2
+        version: 8.8.2
       cac:
         specifier: ^6.7.14
         version: 6.7.14
@@ -5476,23 +5476,17 @@ packages:
       acorn: 8.8.2
     dev: false
 
-  /acorn-jsx@5.3.2(acorn@8.0.0):
+  /acorn-jsx@5.3.2(acorn@8.8.2):
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
     dependencies:
-      acorn: 8.0.0
+      acorn: 8.8.2
     dev: false
 
   /acorn-walk@8.2.0:
     resolution: {integrity: sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==}
     engines: {node: '>=0.4.0'}
-
-  /acorn@8.0.0:
-    resolution: {integrity: sha512-wuJmBvKP9pkjPd2m+6skNcgK6S43df5cRbUTWQlns8rukcu5bcSvx9eZjvNXTtFe4+oCslAvIhNCvYBe/69xMw==}
-    engines: {node: '>=0.4.0'}
-    hasBin: true
-    dev: false
 
   /acorn@8.8.2:
     resolution: {integrity: sha512-xjIYgE8HBrkpd/sJqOGNspf8uHG+NOHGOw6a/Urj8taM2EXfdNAH2oFcPeIFfsv3+kz/mJrS5VuMqbNLjCa2vw==}
@@ -8893,8 +8887,8 @@ packages:
   /micromark-extension-mdxjs@1.0.0:
     resolution: {integrity: sha512-TZZRZgeHvtgm+IhtgC2+uDMR7h8eTKF0QUX9YsgoL9+bADBpBY6SiLvWqnBlLbCEevITmTqmEuY3FoxMKVs1rQ==}
     dependencies:
-      acorn: 8.0.0
-      acorn-jsx: 5.3.2(acorn@8.0.0)
+      acorn: 8.8.2
+      acorn-jsx: 5.3.2(acorn@8.8.2)
       micromark-extension-mdx-expression: 1.0.4
       micromark-extension-mdx-jsx: 1.0.3
       micromark-extension-mdx-md: 1.0.0
