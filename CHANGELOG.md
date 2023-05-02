@@ -1,3 +1,15 @@
+## [0.4.121](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.120...v0.4.121) (2023-05-02)
+
+
+### Bug Fixes
+
+* [V1 design] improve error hanlding upon wrong import path (fix [#843](https://github.com/brillout/vite-plugin-ssr/issues/843)) ([676b7e3](https://github.com/brillout/vite-plugin-ssr/commit/676b7e31c1dd5d3e236e9e159788093cec576242))
+* [V1 design] warn instead of fail upon unrespected export rule ([#844](https://github.com/brillout/vite-plugin-ssr/issues/844)) ([06b449e](https://github.com/brillout/vite-plugin-ssr/commit/06b449e447e09380fe83507388b1a1bd4095cc15))
+* ignore `export { _rerender_only }` (fix [#844](https://github.com/brillout/vite-plugin-ssr/issues/844)) ([7144fdb](https://github.com/brillout/vite-plugin-ssr/commit/7144fdb147e2d95e7b4d5a87d0b2f756cd58875d))
+* remove unnecessary error hanlding edge case ([#843](https://github.com/brillout/vite-plugin-ssr/issues/843)) ([92009e5](https://github.com/brillout/vite-plugin-ssr/commit/92009e54db7bd7804b29b4882e8b1aa9b58c7a30))
+
+
+
 ## [0.4.120](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.119...v0.4.120) (2023-04-30)
 
 
