@@ -1,13 +1,11 @@
-After beta release:
- - if config isn't a file path then assert that it's serialazable
-   - remove c_code
- - assert global configs cannot be defined in page-specific config
-   - already done? Use/remove c_global?
- - use `type: "module"` in boilerplates
- - remove documentProps from examples and boilerplates
- - assert that two import statements in +config.js shouldn't land in different environments
- - Implements TODO comments
- - define pageContext.pageId
+- assert that two import statements in +config.js shouldn't land in different environments
+- if config isn't a file path then assert that it's serialazable
+ - remove c_code
+- assert global configs cannot be defined in page-specific config
+ - already done? Use/remove c_global?
+- define pageContext.pageId
+
+Later:
  - restructure getConfigData()
    - Minimize what that client-side loads
    - make filesystemRoutingRoot work (revert commit `6d7ab113aa0dbf2798cddcd2fe15229802102821`)
@@ -17,6 +15,9 @@ After beta release:
      - base assets: https://github.com/brillout/vite-plugin-ssr/commit/24a92cf79a0533ab4b0fa124675385f462302e1e
      - e.g. `import { prerender } from '../some-file'` in `/pages/index/+config.js`
    - improve isGlobal() logic (the special handling of the configName 'prerender' is hacky)
+ - use `type: "module"` in boilerplates
+ - remove documentProps from examples and boilerplates
+ - Implements TODO comments
  - error handling
    - Don't stop dev sever upon error in getConfigData()
      - make handleConfigError() wrap entire getConfigData() call
