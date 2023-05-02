@@ -18,6 +18,10 @@ After beta release:
      - e.g. `import { prerender } from '../some-file'` in `/pages/index/+config.js`
    - improve isGlobal() logic (the special handling of the configName 'prerender' is hacky)
  - error handling
+   - Don't stop dev sever upon error in getConfigData()
+     - make handleConfigError() wrap entire getConfigData() call
+     - `console.err(err)` instead of `throw Error()` in dev as well
+     - Use some kind of flag and make VPS return `pageContext.httpResponse = null`
    - Check overall error handling
    - Check error handling when no onRenderHtml defined
    - assertUsage isErrorPage not allowed to be abstract

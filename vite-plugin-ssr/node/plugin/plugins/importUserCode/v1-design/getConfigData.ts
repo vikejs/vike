@@ -120,7 +120,7 @@ async function loadConfigData(
   }
   */
   if ('err' in result) {
-    handleBuildError(result.err, isDev)
+    handleConfigError(result.err, isDev)
     assert(false)
   }
   const { plusConfigFiles } = result
@@ -824,7 +824,7 @@ async function findUserFiles(pattern: string | string[], userRootDir: string, is
   return userFiles
 }
 
-function handleBuildError(err: unknown, isDev: boolean) {
+function handleConfigError(err: unknown, isDev: boolean) {
   // Properly handle error during transpilation so that we can use assertUsage() during transpilation
   if (isDev) {
     throw err
