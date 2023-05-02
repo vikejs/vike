@@ -2,6 +2,9 @@ import PropTypes from 'prop-types'
 
 export { Page }
 
+Page.propTypes = {
+  is404: PropTypes.bool
+}
 function Page({ is404 }) {
   if (is404) {
     return (
@@ -18,8 +21,4 @@ function Page({ is404 }) {
       </>
     )
   }
-}
-
-Page.propTypes = {
-  is404: PropTypes.bool
 }

@@ -8,6 +8,10 @@ import { childrenPropType } from './PropTypeValues'
 
 export { PageShell }
 
+PageShell.propTypes = {
+  pageContext: PropTypes.any,
+  children: childrenPropType
+}
 function PageShell({ pageContext, children }) {
   return (
     <React.StrictMode>
@@ -29,11 +33,9 @@ function PageShell({ pageContext, children }) {
   )
 }
 
-PageShell.propTypes = {
-  pageContext: PropTypes.any,
+Layout.propTypes = {
   children: childrenPropType
 }
-
 function Layout({ children }) {
   return (
     <div
@@ -48,10 +50,9 @@ function Layout({ children }) {
   )
 }
 
-Layout.propTypes = {
+Sidebar.propTypes = {
   children: childrenPropType
 }
-
 function Sidebar({ children }) {
   return (
     <div
@@ -69,10 +70,9 @@ function Sidebar({ children }) {
   )
 }
 
-Sidebar.propTypes = {
+Content.propTypes = {
   children: childrenPropType
 }
-
 function Content({ children }) {
   return (
     <div
@@ -86,10 +86,6 @@ function Content({ children }) {
       {children}
     </div>
   )
-}
-
-Content.propTypes = {
-  children: childrenPropType
 }
 
 function Logo() {
