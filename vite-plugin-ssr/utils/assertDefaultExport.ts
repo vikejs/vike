@@ -6,7 +6,9 @@ import { isObject } from './isObject'
 
 const IGNORE = [
   // vite-plugin-solid adds `export { $$registrations }`
-  '$$registrations'
+  // vite-plugin-vue adds `export { _rerender_only }`
+  '$$registrations',
+  '_rerender_only'
 ]
 
 type SingleDefaultExport = { default: unknown }
