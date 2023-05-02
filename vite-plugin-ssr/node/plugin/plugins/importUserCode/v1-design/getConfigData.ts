@@ -455,9 +455,9 @@ function getCodeFilePath(
   // Make relative to userRootDir
   codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
 
-  assert(fileExists)
   assertPosixPath(codeFilePath)
   assert(codeFilePath.startsWith('/'))
+  assertUsage(fileExists, `${plusConfigFilePath} imports from '${importPath}' which points to a non-existing file`)
   return { codeFilePath, plusValueFileExport }
 }
 
