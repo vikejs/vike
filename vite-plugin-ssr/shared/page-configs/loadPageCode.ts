@@ -13,16 +13,16 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
 
   const codeFiles = await pageConfig.loadCodeFiles()
   codeFiles.forEach((codeFile) => {
-    const { configName, importFile } = codeFile
+    const { configName, codeFilePath } = codeFile
     let configValue: unknown
     if (codeFile.isPlusFile) {
-      const { importFileExports } = codeFile
+      const { codeFileExports } = codeFile
       if (configName !== 'client') {
-        assertDefaultExportUnknown(importFileExports, importFile)
+        assertDefaultExportUnknown(codeFileExports, codeFilePath)
       }
-      configValue = importFileExports.default
+      configValue = codeFileExports.default
     } else {
-      configValue = codeFile.importValue
+      configValue = codeFile.codeFileExportValue
     }
     assert(!(configName in configValues))
     configValues[configName] = configValue

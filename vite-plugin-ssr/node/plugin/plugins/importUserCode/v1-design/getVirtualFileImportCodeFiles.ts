@@ -72,12 +72,12 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
 
     lines.push(`  {`)
     lines.push(`    configName: '${configName}',`)
-    lines.push(`    importFile: '${codeFilePath}',`)
+    lines.push(`    codeFilePath: '${codeFilePath}',`)
     lines.push(`    isPlusFile: ${JSON.stringify(isPlusFile)},`)
     if (isPlusFile) {
-      lines.push(`    importFileExports: ${importVar},`)
+      lines.push(`    codeFileExports: ${importVar},`)
     } else {
-      lines.push(`    importValue: ${importVar}`)
+      lines.push(`    codeFileExportValue: ${importVar}`)
     }
     lines.push(`  },`)
   })

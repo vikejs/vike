@@ -41,15 +41,15 @@ type PageConfig = PageConfigData & {
   loadCodeFiles: () => Promise<
     ({
       configName: string
-      importFile: string
+      codeFilePath: string
     } & (
       | {
           isPlusFile: true
-          importFileExports: Record<string, unknown>
+          codeFileExports: Record<string, unknown>
         }
       | {
           isPlusFile: false
-          importValue: unknown
+          codeFileExportValue: unknown
         }
     ))[]
   >
