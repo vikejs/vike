@@ -1,7 +1,7 @@
 export { assertDefaultExportUnknown }
 export { assertDefaultExportObject }
 
-import { assert, assertUsage } from './assert'
+import { assert, assertUsage, assertWarning } from './assert'
 import { isObject } from './isObject'
 
 const IGNORE = [
@@ -27,7 +27,7 @@ function assertDefaultExportObject(
   const defaultExport = fileExports.default
   assertUsage(
     isObject(defaultExport),
-    `${filePath} should export an object: its \`export default\` is a \`${typeof defaultExport}\` but it should be an object instead`
+    `${filePath} should default export an object: its \`export default\` is a \`${typeof defaultExport}\` but it should be an object instead`
   )
 }
 
@@ -49,15 +49,17 @@ function assertSingleDefaultExport(
     }
   } else {
     const exportsInvalidStr = exportsInvalid.join(', ')
-    if (!defaultExportValueIsUnknown) {
-      assertUsage(
+    if (defaultExportValueIsUnknown) {
+      assertWarning(
         exportsInvalid.length === 0,
-        `${filePath} replace \`export { ${exportsInvalidStr} }\` with \`export default { ${exportsInvalidStr} }\``
+        `${filePath} should only have a default export: remove \`export { ${exportsInvalidStr} }\``,
+        { onlyOnce: true, showStackTrace: false }
       )
     } else {
-      assertUsage(
+      assertWarning(
         exportsInvalid.length === 0,
-        `${filePath} should only have a default export: remove \`export { ${exportsInvalidStr} }\``
+        `${filePath} replace \`export { ${exportsInvalidStr} }\` with \`export default { ${exportsInvalidStr} }\``,
+        { onlyOnce: true, showStackTrace: false }
       )
     }
   }
