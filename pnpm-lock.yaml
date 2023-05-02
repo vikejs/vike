@@ -2371,8 +2371,8 @@ importers:
         specifier: ^8.0.0
         version: 8.0.0
       cac:
-        specifier: ^6.0.0
-        version: 6.0.0
+        specifier: ^6.7.14
+        version: 6.7.14
       es-module-lexer:
         specifier: ^0.10.0
         version: 0.10.0
@@ -5845,16 +5845,9 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
-  /cac@6.0.0:
-    resolution: {integrity: sha512-p8HnNBWeDs1FB0tMBm+5n3ciqpg7CxjjzqOE4qIbYa3EJavyVqVw7J2Nb1juK0MniAV/9U1adOJxDZfrRuT0vQ==}
-    dependencies:
-      minimost: 1.2.0
-    dev: false
-
   /cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
-    dev: true
 
   /cacache@15.3.0:
     resolution: {integrity: sha512-VVdYzXEn+cnbXpFgWs5hTT7OScegHVmLhJIR8Ufqk3iFD6A6j5iSX1KuBTfNEv4tdJWE2PzA6IVFtcLC7fN9wQ==}
@@ -9227,14 +9220,6 @@ packages:
 
   /minimist@1.2.6:
     resolution: {integrity: sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==}
-
-  /minimost@1.2.0:
-    resolution: {integrity: sha512-/+eWyOtXw41WIUV9rBgrXna11bxbqymebSeW2arsfp/MCGCwe+2czzsOueEtLZgH4xb4QXhje5H9MLCsCPibLA==}
-    engines: {node: '>=4'}
-    dependencies:
-      '@types/minimist': 1.2.2
-      minimist: 1.2.6
-    dev: false
 
   /minipass-collect@1.0.2:
     resolution: {integrity: sha512-6T6lH0H8OG9kITm/Jm6tdooIbogG9e0tLgpY6mphXSm/A9u8Nq1ryBG+Qspiub9LjWlBPsPS3tWQ/Botq4FdxA==}
