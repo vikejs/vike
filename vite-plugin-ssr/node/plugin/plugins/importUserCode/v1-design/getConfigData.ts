@@ -322,15 +322,15 @@ function resolveConfigElement(
 
   if ('plusValueFile' in result) {
     const { plusValueFile } = result
-    const { plusValueFilePath } = plusValueFile
-    const plusValueFileExport = 'default'
+    const codeFilePath = plusValueFile.plusValueFilePath
+    const codeFileExport = 'default'
     const configElement: ConfigElement = {
       configEnv: configDef.env,
-      plusValueFilePath,
-      plusValueFileExport,
+      codeFilePath,
+      codeFileExport,
       plusConfigFilePath: null,
-      configDefinedAt: `${plusValueFilePath} > \`export ${plusValueFileExport}\``,
-      configDefinedByFile: plusValueFilePath
+      configDefinedAt: `${codeFilePath} > \`export ${codeFileExport}\``,
+      configDefinedByFile: codeFilePath
     }
     if ('configValue' in plusValueFile) {
       configElement.configValue = plusValueFile.configValue
@@ -360,8 +360,8 @@ function resolveConfigElement(
       plusConfigFilePath,
       configDefinedAt: `${plusConfigFilePath} > ${configName}`,
       configDefinedByFile: plusConfigFilePath,
-      plusValueFilePath: null,
-      plusValueFileExport: null,
+      codeFilePath: null,
+      codeFileExport: null,
       configEnv: env,
       configValue
     }
@@ -373,12 +373,12 @@ function resolveConfigElement(
         configName
       )} to a value with a wrong type \`${typeof configValue}\`: it should be a string instead`
     )
-    const { codeFilePath, plusValueFileExport } = codeFile
+    const { codeFilePath, codeFileExport } = codeFile
     return {
       plusConfigFilePath,
-      plusValueFilePath: codeFilePath,
-      plusValueFileExport,
-      configDefinedAt: `${codeFilePath} > \`export ${plusValueFileExport}\``,
+      codeFilePath,
+      codeFileExport,
+      configDefinedAt: `${codeFilePath} > \`export ${codeFileExport}\``,
       configDefinedByFile: codeFilePath,
       configEnv: env
     }
@@ -399,7 +399,7 @@ function getCodeFilePath(
   userRootDir: string,
   configName: string,
   enforce: undefined | boolean
-): null | { codeFilePath: string; plusValueFileExport: string } {
+): null | { codeFilePath: string; codeFileExport: string } {
   if (typeof configValue !== 'string' || configValue === '') {
     assertUsage(
       !enforce,
@@ -429,7 +429,7 @@ function getCodeFilePath(
   }
   const { importPath, importName } = importData
   let codeFilePath = path.posix.join(userRootDir, path.posix.dirname(plusConfigFilePath), toPosixPath(importPath))
-  const plusValueFileExport = importName
+  const codeFileExport = importName
   assertPosixPath(userRootDir)
   assertPosixPath(codeFilePath)
   const clean = addFileExtensionsToRequireResolve()
@@ -458,7 +458,7 @@ function getCodeFilePath(
   assertPosixPath(codeFilePath)
   assert(codeFilePath.startsWith('/'))
   assertUsage(fileExists, `${plusConfigFilePath} imports from '${importPath}' which points to a non-existing file`)
-  return { codeFilePath, plusValueFileExport }
+  return { codeFilePath, codeFileExport }
 }
 
 /* TODO: remove parts, and move others parts to replaceImportStatements.ts

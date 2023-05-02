@@ -69,7 +69,6 @@ function getPageRoutes(
               let allowAsync = false
               const allowSyncConfig = pageConfig.configElements.iKnowThePerformanceRisksOfAsyncRouteFunctions
               if (allowSyncConfig) {
-                assert(!('codeFilePath' in allowSyncConfig)) // TODO: improve this?
                 const val = allowSyncConfig.configValue
                 assert(typeof val === 'boolean') // TODO: assertUsage()
                 allowAsync = val
@@ -187,7 +186,7 @@ function getGlobalHooks(
     if (pageConfigGlobal.onBeforeRoute) {
       const hookFn = pageConfigGlobal.onBeforeRoute.configValue
       if (hookFn) {
-        const hookFilePath = pageConfigGlobal.onBeforeRoute.plusValueFilePath
+        const hookFilePath = pageConfigGlobal.onBeforeRoute.codeFilePath
         assert(hookFilePath)
         assertUsage(isCallable(hookFn), `The hook onBeforeRoute() defined by ${hookFilePath} should be a function.`)
         const onBeforeRouteHook: OnBeforeRouteHook = {

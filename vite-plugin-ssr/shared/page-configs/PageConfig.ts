@@ -22,23 +22,23 @@ type ConfigElementFile = {
 } & (
   | {
       plusConfigFilePath: string
-      plusValueFilePath: null
-      plusValueFileExport: null
+      codeFilePath: null
+      codeFileExport: null
     }
   | {
       plusConfigFilePath: null
-      plusValueFilePath: string
-      plusValueFileExport: string
+      codeFilePath: string
+      codeFileExport: string
     }
   | {
       plusConfigFilePath: string
-      plusValueFilePath: string
-      plusValueFileExport: string
+      codeFilePath: string
+      codeFileExport: string
     }
 )
 
 type PageConfig = PageConfigData & {
-  loadPlusValueFiles: () => Promise<
+  loadCodeFiles: () => Promise<
     ({
       configName: string
       importFile: string

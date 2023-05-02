@@ -55,24 +55,24 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   lines.push('export default [')
   let varCounter = 0
   Object.entries(pageConfigData.configElements).forEach(([configName, configElement]) => {
-    if (!configElement.plusValueFilePath) return
-    const { configEnv, plusValueFilePath, plusValueFileExport } = configElement
+    if (!configElement.codeFilePath) return
+    const { configEnv, codeFilePath, codeFileExport } = configElement
     if (configEnv === '_routing-env' || configEnv === 'config-only') return
     if (configEnv === (isForClientSide ? 'server-only' : 'client-only')) return
-    assertPosixPath(plusValueFilePath)
-    const fileName = path.posix.basename(plusValueFilePath)
+    assertPosixPath(codeFilePath)
+    const fileName = path.posix.basename(codeFilePath)
     const isPlusFile = fileName.startsWith('+')
 
     const { importVar, importStatement } = generateEagerImport(
-      plusValueFilePath,
+      codeFilePath,
       varCounter++,
-      isPlusFile ? undefined : plusValueFileExport
+      isPlusFile ? undefined : codeFileExport
     )
     importStatements.push(importStatement)
 
     lines.push(`  {`)
     lines.push(`    configName: '${configName}',`)
-    lines.push(`    importFile: '${plusValueFilePath}',`)
+    lines.push(`    importFile: '${codeFilePath}',`)
     lines.push(`    isPlusFile: ${JSON.stringify(isPlusFile)},`)
     if (isPlusFile) {
       lines.push(`    importFileExports: ${importVar},`)

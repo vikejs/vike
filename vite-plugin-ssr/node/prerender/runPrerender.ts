@@ -508,7 +508,7 @@ async function callOnPrerenderStartHook(
     const configElement = renderContext.pageConfigGlobal.onPrerenderStart
     if (configElement) {
       const hookFn = configElement.configValue
-      const hookFilePath = configElement.plusValueFilePath
+      const hookFilePath = configElement.codeFilePath
       assert(hookFilePath)
       if (hookFn) {
         onPrerenderStartHook = {

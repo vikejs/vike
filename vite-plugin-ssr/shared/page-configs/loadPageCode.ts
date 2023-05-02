@@ -11,25 +11,25 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     return pageConfig as PageConfigLoaded
   }
 
-  const plusValueFiles = await pageConfig.loadPlusValueFiles()
-  plusValueFiles.forEach((configValueData) => {
-    const { configName, importFile } = configValueData
+  const codeFiles = await pageConfig.loadCodeFiles()
+  codeFiles.forEach((codeFile) => {
+    const { configName, importFile } = codeFile
     let configValue: unknown
-    if (configValueData.isPlusFile) {
-      const { importFileExports } = configValueData
+    if (codeFile.isPlusFile) {
+      const { importFileExports } = codeFile
       if (configName !== 'client') {
         assertDefaultExportUnknown(importFileExports, importFile)
       }
       configValue = importFileExports.default
     } else {
-      configValue = configValueData.importValue
+      configValue = codeFile.importValue
     }
     assert(!(configName in configValues))
     configValues[configName] = configValue
   })
 
   Object.entries(pageConfig.configElements).map(([configName, configElement]) => {
-    if (configElement.plusValueFilePath) return
+    if (configElement.codeFilePath) return
     assert(!(configName in configValues))
     configValues[configName] = configElement.configValue
   })
