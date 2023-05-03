@@ -407,41 +407,56 @@ function getCodeFilePath(
   const codeFileExport = importName
   let codeFilePath: string
   if (!importPath.startsWith('.')) {
-    // E.g. for aliases import paths
+    /* Path aliases, e.g.:
+     * ```
+     * // /renderer/+config.js
+     * import onRenderClient from '#root/renderer/onRenderClient'
+     * // ...
+     * ```
+     */
     codeFilePath = importPath
   } else {
-    // Is the code down below really needed? Can't we leave import paths as-is?
+    // Relative paths
+    codeFilePath = resolveRelativeCodeFilePath(importPath, plusConfigFilePath, userRootDir)
+  }
 
-    codeFilePath = path.posix.join(userRootDir, path.posix.dirname(plusConfigFilePath), toPosixPath(importPath))
-    assertPosixPath(userRootDir)
-    assertPosixPath(codeFilePath)
-    const clean = addFileExtensionsToRequireResolve()
-    let fileExists: boolean
-    try {
-      codeFilePath = require.resolve(codeFilePath)
-      fileExists = true
-    } catch {
-      fileExists = false
-    } finally {
-      clean()
-    }
-    codeFilePath = toPosixPath(codeFilePath)
+  return { codeFilePath, codeFileExport }
+}
 
-    /* TODO: remove
+// We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
+// ```
+// [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vite-plugin-ssr:importPageCode:client:/pages/index". Does the file exist?
+// ```
+function resolveRelativeCodeFilePath(importPath: string, plusConfigFilePath: string, userRootDir: string) {
+  let codeFilePath = path.posix.join(userRootDir, path.posix.dirname(plusConfigFilePath), toPosixPath(importPath))
+  assertPosixPath(userRootDir)
+  assertPosixPath(codeFilePath)
+  const clean = addFileExtensionsToRequireResolve()
+  let fileExists: boolean
+  try {
+    codeFilePath = require.resolve(codeFilePath)
+    fileExists = true
+  } catch {
+    fileExists = false
+  } finally {
+    clean()
+  }
+  codeFilePath = toPosixPath(codeFilePath)
+
+  /* TODO: remove
     if (!importData) {
       assertCodeFilePathConfigValue(configValue, plusConfigFilePath, codeFilePath, fileExists, configName)
     }
     */
 
-    // Make relative to userRootDir
-    codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
+  // Make relative to userRootDir
+  codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
 
-    assertPosixPath(codeFilePath)
-    assert(codeFilePath.startsWith('/'))
-    assertUsage(fileExists, `${plusConfigFilePath} imports from '${importPath}' which points to a non-existing file`)
-  }
+  assertPosixPath(codeFilePath)
+  assert(codeFilePath.startsWith('/'))
+  assertUsage(fileExists, `${plusConfigFilePath} imports from '${importPath}' which points to a non-existing file`)
 
-  return { codeFilePath, codeFileExport }
+  return codeFilePath
 }
 
 /* TODO: remove parts, and move others parts to replaceImportStatements.ts
