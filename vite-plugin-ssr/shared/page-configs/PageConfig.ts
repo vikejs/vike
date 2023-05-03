@@ -39,6 +39,7 @@ type PageConfigGlobal = {
 type ConfigElement = {
   configEnv: ConfigEnv
   configValue?: unknown
+  configValueSerialized?: string
   configDefinedAt: string
   configDefinedByFile: string
 } & (

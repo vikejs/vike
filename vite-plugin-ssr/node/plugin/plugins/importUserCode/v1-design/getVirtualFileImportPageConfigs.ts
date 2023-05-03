@@ -1,6 +1,6 @@
 export { getVirtualFileImportPageConfigs }
 
-import { assert, isNpmPackageImportPath, objectEntries } from '../../../utils'
+import { assert, assertUsage, isNpmPackageImportPath, objectEntries } from '../../../utils'
 import type { ConfigElement, PageConfigData, PageConfigGlobalData } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
 import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files/virtualFileImportPageCode'
@@ -8,6 +8,7 @@ import { getConfigData } from './getConfigData'
 import { getInvalidator } from './invalidation'
 import { debug } from './debug'
 import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps'
+import { stringify } from '@brillout/json-serializer/stringify'
 
 async function getVirtualFileImportPageConfigs(
   userRootDir: string,
@@ -44,9 +45,7 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`    plusConfigFilePathAll: ${JSON.stringify(plusConfigFilePathAll)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
-    lines.push(
-      `    loadCodeFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`
-    )
+    lines.push(`    loadCodeFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`)
     lines.push(`    configElements: {`)
     Object.entries(configElements).forEach(([configName, configElement]) => {
       // configNamesAll.add(configName)
@@ -134,7 +133,16 @@ function serializeConfigElement(
   if ('configValue' in configElement) {
     assert(!eagerImport)
     const { configValue } = configElement
-    lines.push(`${whitespace}  configValue: ${JSON.stringify(configValue)}`)
+    let configValueSerialized: string
+    try {
+      configValueSerialized = stringify(configValue)
+    } catch {
+      assertUsage(
+        false,
+        `The code of config '${configName}' cannot live inside ${configDefinedByFile}, see https://vite-plugin-ssr.com/config-code-splitting`
+      )
+    }
+    lines.push(`${whitespace}  configValueSerialized: ${JSON.stringify(configValueSerialized)}`)
   } else {
     assert(codeFilePath)
     if (configEnv === '_routing-env' || eagerImport) {

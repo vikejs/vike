@@ -343,7 +343,6 @@ function resolveConfigElement(
   const { plusConfigFilePath } = plusConfigFile
   const { c_code, c_validate } = configDef
   const codeFile = getCodeFilePath(configValue, plusConfigFilePath, userRootDir, configName, c_code)
-  assert(codeFile || !c_code) // TODO: assertUsage() or remove
   if (c_validate) {
     const commonArgs = { configFilePath: plusConfigFilePath }
     if (codeFile) {
@@ -401,13 +400,6 @@ function getCodeFilePath(
   enforce: undefined | boolean
 ): null | { codeFilePath: string; codeFileExport: string } {
   if (typeof configValue !== 'string' || configValue === '') {
-    assertUsage(
-      !enforce,
-      `${getErrorIntro(
-        plusConfigFilePath,
-        configName
-      )} to a value with an invalid type \`${typeof configValue}\` but it should be a \`string\` instead`
-    )
     return null
   }
   if (configValue === '') {
