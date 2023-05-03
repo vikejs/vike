@@ -67,11 +67,9 @@ type GlobalConfigName =
   | 'baseServer'
 const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
   onPrerenderStart: {
-    c_code: true,
     env: 'server-only'
   },
   onBeforeRoute: {
-    c_code: true,
     env: '_routing-env'
   },
   prerender: {
@@ -341,8 +339,7 @@ function resolveConfigElement(
   const { plusConfigFile } = result
   const configValue = getPageConfigValue(configName, plusConfigFile)
   const { plusConfigFilePath } = plusConfigFile
-  const { c_code } = configDef
-  const codeFile = getCodeFilePath(configValue, plusConfigFilePath, userRootDir, configName, c_code)
+  const codeFile = getCodeFilePath(configValue, plusConfigFilePath, userRootDir)
   const { env } = configDef
   if (!codeFile) {
     return {
@@ -386,17 +383,8 @@ function getCodeFilePath(
   configValue: unknown,
   plusConfigFilePath: string,
   userRootDir: string,
-  configName: string,
-  enforce: undefined | boolean
 ): null | { codeFilePath: string; codeFileExport: string } {
-  if (typeof configValue !== 'string' || configValue === '') {
-    return null
-  }
-  if (configValue === '') {
-    assertUsage(
-      !enforce,
-      `${getErrorIntro(plusConfigFilePath, configName)} to a value with an invalid value '' (emtpy string)`
-    )
+  if (typeof configValue !== 'string') {
     return null
   }
 
@@ -425,8 +413,6 @@ function getCodeFilePath(
     clean()
   }
   codeFilePath = toPosixPath(codeFilePath)
-
-  if (!enforce && !fileExists) return null
 
   /* TODO: remove
   if (!importData) {

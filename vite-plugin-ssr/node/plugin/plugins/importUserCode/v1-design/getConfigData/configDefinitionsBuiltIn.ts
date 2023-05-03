@@ -5,8 +5,6 @@ import type { ConfigName, ConfigEnv } from '../../../../../../shared/page-config
 
 type ConfigDefinition = {
   env: ConfigEnv
-  c_global?: boolean // TODO: implement or remove
-  c_code?: true // TODO: remove
   effect?: (config: {
     configValue: unknown
     configDefinedAt: string
@@ -16,35 +14,27 @@ type ConfigDefinition = {
 type ConfigDefinitionsBuiltIn = Record<ConfigName, ConfigDefinition>
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
-    c_code: true,
     env: 'server-only'
   },
   onRenderClient: {
-    c_code: true,
     env: 'client-only'
   },
   onHydrationEnd: {
-    c_code: true,
     env: 'client-only'
   },
   onPageTransitionStart: {
-    c_code: true,
     env: 'client-only'
   },
   onPageTransitionEnd: {
-    c_code: true,
     env: 'client-only'
   },
   onBeforeRender: {
-    c_code: true,
     env: 'server-only'
   },
   onBeforePrerenderStart: {
-    c_code: true,
     env: 'server-only'
   },
   Page: {
-    c_code: true,
     env: 'server-and-client'
   },
   passToClient: {
@@ -60,7 +50,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: '_routing-env'
   },
   client: {
-    c_code: true,
     env: 'client-only'
   },
   clientRouting: {
