@@ -1,3 +1,5 @@
+// Counterpart: ../../node/plugin/plugins/importUserCode/v1-design/serializePageConfigs.ts
+
 export { parsePageConfigs }
 
 import { parse } from '@brillout/json-serializer/parse'
