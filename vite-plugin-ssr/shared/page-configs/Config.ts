@@ -120,7 +120,7 @@ type Config<Page = unknown> = Partial<{
 
   /** Create new or modify existing configurations.
    *
-   * See https://vite-plugin-ssr/meta
+   * See https://vite-plugin-ssr.com/meta
    */
   meta: Meta
 
@@ -134,12 +134,12 @@ type Config<Page = unknown> = Partial<{
 type Effect = (args: {
   /** Place where the resolved config value comes from.
    *
-   * See https://vite-plugin-ssr/meta
+   * See https://vite-plugin-ssr.com/meta
    */
   configDefinedAt: string
   /** The resolved config value.
    *
-   * See https://vite-plugin-ssr/meta
+   * See https://vite-plugin-ssr.com/meta
    */
   configValue: unknown
 }) => Config | undefined
@@ -149,13 +149,13 @@ type Meta = Record<
   {
     /** In what environment(s) the config value is loaded.
      *
-     * See https://vite-plugin-ssr/meta
+     * See https://vite-plugin-ssr.com/meta
      */
     env: ConfigEnv
     /**
      * Define a so-called "Shortcut Config".
      *
-     * See https://vite-plugin-ssr/meta
+     * See https://vite-plugin-ssr.com/meta
      */
     effect?: Effect
   }
