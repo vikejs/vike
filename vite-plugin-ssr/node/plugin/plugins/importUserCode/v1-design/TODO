@@ -1,7 +1,4 @@
 - assert that two import statements in +config.js shouldn't land in different environments
-- assert global configs cannot be defined in page-specific config
- - already done?
-- define pageContext.pageId
 
 Later:
  - restructure getConfigData()
@@ -13,9 +10,6 @@ Later:
      - base assets: https://github.com/brillout/vite-plugin-ssr/commit/24a92cf79a0533ab4b0fa124675385f462302e1e
      - e.g. `import { prerender } from '../some-file'` in `/pages/index/+config.js`
    - improve isGlobal() logic (the special handling of the configName 'prerender' is hacky)
- - use `type: "module"` in boilerplates
- - remove documentProps from examples and boilerplates
- - Implements TODO comments
  - error handling
    - Don't stop dev sever upon error in getConfigData()
      - make handleConfigError() wrap entire getConfigData() call
@@ -31,20 +25,30 @@ Later:
    - Refactor renderPage() / addSsrMiddleware() error hanlding
      - Respect natural order of error occurence by never clearing screen except *after* the error is resolved
      - Change Vite's default clearScreen value to false
+ - Implements TODO comments
+
+Features:
  - multiple error pages
  - nested layouts
 
+Sometime:
+ - use `type: "module"` in boilerplates
+ - remove documentProps from examples and boilerplates
+
 After stable release:
- - update all links to /examples/*-v1
+ - Remove 0.4 design examples
+   - Update all links to /examples/*-v1
  - Add deprecation warning for pageContext.exports
 
 After Vike rename:
- - Impl vike.config.js
-   - Move all globals there and warn users
+ - Implement vike.config.js
+   - Move all globals there and add migration warnings
 
-Sometime:
- - Contact Shopify
- - Contact Payload CMS
- - Contact UI frameworks like qwik
+Contact:
+ - Payload CMS
+   - Other CMS-related tools like Tina CMS
+ - Shopify
+ - Deno Deploy
+ - Cloudflare Workers
+ - UI frameworks like qwik (maybe even Angular)
    - See `pnpm create vite@latest` for a list of UI frameworks
-   - Maybe even angular
