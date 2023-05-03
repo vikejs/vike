@@ -1,3 +1,14 @@
+## [0.4.122](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.121...v0.4.122) (2023-05-03)
+
+
+### Bug Fixes
+
+* [V1 design] consolidate route validation ([8004aa9](https://github.com/brillout/vite-plugin-ssr/commit/8004aa9c20cbf659f2ca615f1ac99b1ed48f8dd0))
+* [V1 design] support aliased imports in +config.js (fix [#852](https://github.com/brillout/vite-plugin-ssr/issues/852)) ([3a664b0](https://github.com/brillout/vite-plugin-ssr/commit/3a664b02dfd2a6978b1213b6fda7005ff381122c))
+* improve code splitting rule handling (fix [#848](https://github.com/brillout/vite-plugin-ssr/issues/848)) ([ccf11aa](https://github.com/brillout/vite-plugin-ssr/commit/ccf11aa19e55e20761d5f007750d64afb197b0e2))
+
+
+
 ## [0.4.121](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.120...v0.4.121) (2023-05-02)
 
 
