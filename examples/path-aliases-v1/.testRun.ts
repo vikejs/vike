@@ -27,7 +27,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run prod:static') {
 
   test(`About page`, async () => {
     await page.click('a[href="/about"]')
-    expect(await page.textContent('body')).toContain('This liltle app uses path aliases.')
+    expect(await page.textContent('body')).toContain('This app uses path aliases.')
   })
 
   test('About page is HTML-only', async () => {

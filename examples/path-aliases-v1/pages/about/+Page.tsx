@@ -6,5 +6,5 @@ import '#root/styles/magenta-text.css'
 import React from 'react'
 
 function Page() {
-  return <p>This liltle app uses path aliases.</p>
+  return <p>This app uses path aliases.</p>
 }
