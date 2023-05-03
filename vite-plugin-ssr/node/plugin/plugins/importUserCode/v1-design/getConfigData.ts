@@ -129,62 +129,7 @@ async function loadConfigData(
     plusValueFiles = await findAndLoadPlusValueFiles(plusFiles, configDefinitions)
   }
 
-  const vikeConfig: Record<string, unknown> = {}
-  const pageConfigGlobal: PageConfigGlobalData = {
-    onBeforeRoute: null,
-    onPrerenderStart: null
-  }
-  {
-    const plusConfigFilesGlobal = getPlusConfigFilesGlobal(plusConfigFiles)
-    plusConfigFiles.forEach((plusConfigFile) => {
-      const { plusConfigFileExports, plusConfigFilePath } = plusConfigFile
-      assertDefaultExportObject(plusConfigFileExports, plusConfigFilePath)
-      Object.entries(plusConfigFileExports.default).forEach(([configName]) => {
-        if (!isGlobal(configName)) return
-        // TODO/v1: add links to docs further explaining why
-        assertUsage(
-          plusConfigFilesGlobal.includes(plusConfigFile),
-          [
-            `${plusConfigFilePath} defines the config '${configName}' which is global:`,
-            plusConfigFilesGlobal.length
-              ? `define '${configName}' in ${joinEnglish(
-                  plusConfigFilesGlobal.map((p) => p.plusConfigFilePath),
-                  'or'
-                )} instead`
-              : `create a global config (e.g. /pages/+config.js or /renderer/+config.js) and define '${configName}' there instead`
-          ].join(' ')
-        )
-      })
-    })
-    const plusValueFilesRelevant = plusValueFiles.filter((c) => {
-      // TODO: assert that there should be only one
-      // TODO: assert filesystem location
-      return isGlobal(c.configName)
-    })
-    objectEntries(globalConfigsDefinition).forEach(([configName, configDef]) => {
-      const configElement = resolveConfigElement(
-        configName,
-        configDef,
-        plusConfigFilesGlobal,
-        userRootDir,
-        plusValueFilesRelevant
-      )
-      if (!configElement) return
-      if (arrayIncludes(objectKeys(pageConfigGlobal), configName)) {
-        assert(!('configValue' in configElement))
-        pageConfigGlobal[configName] = configElement
-      } else {
-        assert('configValue' in configElement)
-        if (configName === 'prerender' && typeof configElement.configValue === 'boolean') return
-        assertWarning(
-          false,
-          `Being able to define config '${configName}' in ${configElement.configDefinedByFile} is experimental and will likely be removed. Define the config '${configName}' in vite-plugin-ssr's Vite plugin options instead.`,
-          { onlyOnce: true, showStackTrace: false }
-        )
-        vikeConfig[configName] = configElement.configValue
-      }
-    })
-  }
+  const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(plusConfigFiles, plusValueFiles, userRootDir)
 
   const pageIds = determinePageIds(plusConfigFiles, plusValueFiles)
 
@@ -244,6 +189,66 @@ async function loadConfigData(
   })
 
   return { pageConfigsData, pageConfigGlobal, vikeConfig }
+}
+
+function getGlobalConfigs(plusConfigFiles: PlusConfigFile[], plusValueFiles: PlusValueFile[], userRootDir: string) {
+  const vikeConfig: Record<string, unknown> = {}
+  const pageConfigGlobal: PageConfigGlobalData = {
+    onBeforeRoute: null,
+    onPrerenderStart: null
+  }
+
+  const plusConfigFilesGlobal = getPlusConfigFilesGlobal(plusConfigFiles)
+  plusConfigFiles.forEach((plusConfigFile) => {
+    const { plusConfigFileExports, plusConfigFilePath } = plusConfigFile
+    assertDefaultExportObject(plusConfigFileExports, plusConfigFilePath)
+    Object.entries(plusConfigFileExports.default).forEach(([configName]) => {
+      if (!isGlobal(configName)) return
+      // TODO/v1: add links to docs further explaining why
+      assertUsage(
+        plusConfigFilesGlobal.includes(plusConfigFile),
+        [
+          `${plusConfigFilePath} defines the config '${configName}' which is global:`,
+          plusConfigFilesGlobal.length
+            ? `define '${configName}' in ${joinEnglish(
+                plusConfigFilesGlobal.map((p) => p.plusConfigFilePath),
+                'or'
+              )} instead`
+            : `create a global config (e.g. /pages/+config.js or /renderer/+config.js) and define '${configName}' there instead`
+        ].join(' ')
+      )
+    })
+  })
+  const plusValueFilesRelevant = plusValueFiles.filter((c) => {
+    // TODO: assert that there should be only one
+    // TODO: assert filesystem location
+    return isGlobal(c.configName)
+  })
+  objectEntries(globalConfigsDefinition).forEach(([configName, configDef]) => {
+    const configElement = resolveConfigElement(
+      configName,
+      configDef,
+      plusConfigFilesGlobal,
+      userRootDir,
+      plusValueFilesRelevant
+    )
+    if (!configElement) return
+    if (arrayIncludes(objectKeys(pageConfigGlobal), configName)) {
+      assert(!('configValue' in configElement))
+      pageConfigGlobal[configName] = configElement
+    } else {
+      assert('configValue' in configElement)
+      if (configName === 'prerender' && typeof configElement.configValue === 'boolean') return
+      assertWarning(
+        false,
+        `Being able to define config '${configName}' in ${configElement.configDefinedByFile} is experimental and will likely be removed. Define the config '${configName}' in vite-plugin-ssr's Vite plugin options instead.`,
+        { onlyOnce: true, showStackTrace: false }
+      )
+      vikeConfig[configName] = configElement.configValue
+    }
+  })
+
+  return { pageConfigGlobal, vikeConfig }
 }
 
 function determinePageIds(plusConfigFiles: PlusConfigFile[], plusValueFiles: PlusValueFile[]) {
@@ -382,7 +387,7 @@ function isDefiningPageConfig(configName: string): boolean {
 function getCodeFilePath(
   configValue: unknown,
   plusConfigFilePath: string,
-  userRootDir: string,
+  userRootDir: string
 ): null | { codeFilePath: string; codeFileExport: string } {
   if (typeof configValue !== 'string') {
     return null
