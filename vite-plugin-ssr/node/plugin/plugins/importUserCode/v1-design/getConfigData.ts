@@ -341,23 +341,13 @@ function resolveConfigElement(
   const { plusConfigFile } = result
   const configValue = getPageConfigValue(configName, plusConfigFile)
   const { plusConfigFilePath } = plusConfigFile
-  const { c_code, c_validate } = configDef
+  const { c_code } = configDef
   const codeFile = getCodeFilePath(configValue, plusConfigFilePath, userRootDir, configName, c_code)
-  if (c_validate) {
-    const commonArgs = { configFilePath: plusConfigFilePath }
-    if (codeFile) {
-      assert(typeof configValue === 'string')
-      const { codeFilePath } = codeFile
-      c_validate({ configValue, codeFilePath, ...commonArgs })
-    } else {
-      c_validate({ configValue, ...commonArgs })
-    }
-  }
   const { env } = configDef
   if (!codeFile) {
     return {
       plusConfigFilePath,
-      configDefinedAt: `${plusConfigFilePath} > ${configName}`,
+      configDefinedAt: `${plusConfigFilePath} > \`export default { ${configName} }\``,
       configDefinedByFile: plusConfigFilePath,
       codeFilePath: null,
       codeFileExport: null,
@@ -652,7 +642,7 @@ function applyEffects(
         configElementsMod[configName] = {
           // TODO-begin
           ...configElementEffect,
-          configDefinedAt: `${configElementEffect} (side-effect)`,
+          configDefinedAt: `${configElementEffect.configDefinedAt} (side-effect)`,
           // TODO-end
           configEnv: configElementTargetOld.configEnv,
           configValue: configModValue

@@ -1,20 +1,12 @@
 export { configDefinitionsBuiltIn }
 export type { ConfigDefinition }
 
-import { assertUsage, isCallable } from '../../../../utils'
 import type { ConfigName, ConfigEnv } from '../../../../../../shared/page-configs/PageConfig'
-import { assertRouteString } from '../../../../../../shared/route/resolveRouteString'
 
 type ConfigDefinition = {
   env: ConfigEnv
   c_global?: boolean // TODO: implement or remove
   c_code?: true // TODO: remove
-  // TODO: remove in favor of manual validation?
-  c_validate?: (
-    configResolved: ({ configValue: unknown } | { configValue: string; codeFilePath: string }) & {
-      configFilePath: string
-    }
-  ) => void | undefined
   effect?: (config: {
     configValue: unknown
     configDefinedAt: string
@@ -59,8 +51,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: 'server-only'
   },
   route: {
-    env: '_routing-env',
-    c_validate: getRouteValidator()
+    env: '_routing-env'
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
     env: '_routing-env'
@@ -84,31 +75,4 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   prefetchStaticAssets: {
     env: 'client-only' // TODO: config-only instead?
   }
-}
-
-function getRouteValidator() {
-  const validateRoute: ConfigDefinition['c_validate'] = (configResolved) => {
-    const { configFilePath, configValue } = configResolved
-    if ('codeFilePath' in configResolved) return
-    if (typeof configValue === 'string') {
-      assertRouteString(configValue, `${configFilePath} defines an`)
-    } else {
-      if (isCallable(configValue)) {
-        const routeFunctionName = configValue.name || 'myRouteFunction'
-        // TODO/v1: point to https://vite-plugin-ssr.com/route-function
-        // TODO: write https://vite-plugin-ssr.com/v1-design
-        assertUsage(
-          false,
-          `${configFilePath} directly sets a Route Function \`route: function ${routeFunctionName}() { /* ... */ }\` which is prohibited: instead define a file \`route: './path/to/route-file.js'\` that exports your Route Function \`export default ${routeFunctionName}() { /* ... */ }\`. See https://vite-plugin-ssr.com/v1-design for more information.`
-        )
-      }
-      // TODO/v1: point to https://vite-plugin-ssr.com/routing#route-strings-route-functions
-      // TODO: write https://vite-plugin-ssr.com/v1-design
-      assertUsage(
-        false,
-        `${configFilePath} sets the configuration 'route' to a value with an invalid type \`${typeof configValue}\`: the value should be a string (a Route String or the path of a route file exporting a Route Function). See https://vite-plugin-ssr.com/v1-design for more information.`
-      )
-    }
-  }
-  return validateRoute
 }

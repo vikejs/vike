@@ -25,14 +25,18 @@ function parseConfigValue(configElement: ConfigElement) {
 }
 
 function assertRouteConfigValue(configElement: ConfigElement) {
-  const { codeFilePath } = configElement
-  if (!codeFilePath) return
   assert(hasProp(configElement, 'configValue')) // route files are eagerly loaded
   const { configValue } = configElement
   const configValueType = typeof configValue
-  // TODO: validate earlier?
   assertUsage(
     configValueType === 'string' || isCallable(configValue),
-    `${codeFilePath} has a default export with an invalid type '${configValueType}': the default export should be a string or a function`
+    `${configElement.configDefinedAt} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vite-plugin-ssr.com/route`
   )
+  /* We don't do that to avoid unnecessarily bloating the client-side bundle when using Server Routing
+   *  - When using Server Routing, this file is loaded as well
+   *  - When using Server Routing, client-side validation is superfluous as Route Strings only need to be validated on the server-side
+  if (typeof configValue === 'string') {
+    assertRouteString(configValue, `${configElement.configDefinedAt} defines an`)
+  }
+  */
 }

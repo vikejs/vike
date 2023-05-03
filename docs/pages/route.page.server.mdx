@@ -5,12 +5,16 @@ import { Link } from '@brillout/docpress'
 The `route` config determines the page's <Link text="routing" href="/routing" />.
 
 ```js
-// /pages/product/+route.js
-export default '/product/@id'
+// /pages/product/+config.js
+
+export default {
+  route: '/product/@id'
+}
 ```
 
 ```js
 // /pages/product/+Page.jsx
+
 export default Page
 
 /* This page can have URLs such as:
@@ -27,7 +31,27 @@ function Page() {
 }
 ```
 
+Instead of a Route String, you can also define a Route Function:
+
+```js
+// /pages/product/+route.js
+
+export default (pageContext) => {
+  const parts = pageContext.urlPathname.split('/')
+  if (parts[1] !== 'product') {
+    return false
+  } else {
+    return {
+      routeParams: {
+        id: parts[2]
+      }
+    }
+  }
+}
+```
+
 See also:
- - <Link href="/filesystem-routing" />
+ - <Link href="/routing" />
  - <Link href="/route-string" />
  - <Link href="/route-function" />
+ - <Link href="/filesystem-routing" />

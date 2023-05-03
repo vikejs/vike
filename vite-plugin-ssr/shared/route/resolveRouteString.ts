@@ -2,7 +2,7 @@ export { resolveRouteString }
 export { getUrlFromRouteString }
 export { isStaticRouteString }
 export { analyzeRouteString }
-export { assertRouteString }
+// export { assertRouteString }
 
 import { assertWarning } from '../utils'
 import { assert, assertUsage } from './utils'
@@ -11,21 +11,22 @@ const PARAM_TOKEN_NEW = '@'
 const PARAM_TOKEN_OLD = ':'
 
 function assertRouteString(routeString: string, errMsgPrefix?: string) {
-  if (!errMsgPrefix) {
-    errMsgPrefix = 'Invalid'
-  } else {
-    errMsgPrefix = errMsgPrefix + ' invalid'
-  }
   assertUsage(
-    routeString === '*' || routeString.startsWith('/'),
-    `${errMsgPrefix} route string '${routeString}'${
-      routeString === '' ? ' (empty string)' : ''
-    }: route strings should start with a leading slash '/' (or be '*')`
+    routeString.startsWith('/') || routeString === '*',
+    (() => {
+      if (!errMsgPrefix) {
+        errMsgPrefix = 'Invalid'
+      } else {
+        errMsgPrefix = errMsgPrefix + ' invalid'
+      }
+      const routeStr = [`'${routeString}'`, routeString !== '' ? null : '(empty string)'].filter(Boolean).join(' ')
+      const errMsg = `${errMsgPrefix} Route String ${routeStr}: Route Strings should start with a leading slash '/' (or be '*')`
+      return errMsg
+    })()
   )
 }
 
 function resolveRouteString(routeString: string, urlPathname: string): null | { routeParams: Record<string, string> } {
-  // TODO/v1: make this an internal assert
   assertRouteString(routeString)
   assert(urlPathname.startsWith('/'))
 
@@ -49,7 +50,7 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
     } else if (routeSegment && isParam(routeSegment)) {
       assertWarning(
         !routeSegment.startsWith(PARAM_TOKEN_OLD),
-        `Outdated route string \`${routeString}\`, use \`${routeString
+        `Outdated Route String \`${routeString}\`, use \`${routeString
           .split(PARAM_TOKEN_OLD)
           .join(PARAM_TOKEN_NEW)}\` instead.`,
         { showStackTrace: false, onlyOnce: true }
@@ -81,11 +82,11 @@ function assertGlob(routeString: string) {
   const numberOfGlobChars = routeString.split('*').length - 1
   assertUsage(
     numberOfGlobChars <= 1,
-    `Invalid route string \`${routeString}\`: route strings are not allowed to contain more than one glob character \`*\`.`
+    `Invalid Route String \`${routeString}\`: Route Strings are not allowed to contain more than one glob character \`*\`.`
   )
   assertUsage(
     numberOfGlobChars === 0 || (numberOfGlobChars === 1 && routeString.endsWith('*')),
-    `Invalid route string \`${routeString}\`: make sure your route string ends with the glob character \`*\`.`
+    `Invalid Route String \`${routeString}\`: make sure your Route String ends with the glob character \`*\`.`
   )
 }
 function analyzeRouteString(routeString: string) {
