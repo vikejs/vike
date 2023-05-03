@@ -5,7 +5,7 @@ import { assertExportValues } from './assertExports'
 import { getPageFileObject, type PageFile } from './getPageFileObject'
 import { fileTypes, type FileType } from './fileTypes'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
-import { assertPageConfigGlobal, assertPageConfigs } from '../page-configs/assertPageConfigs'
+import { assertPageConfigGlobal, assertPageConfigs } from './assertPageConfigs'
 import { parsePageConfigs } from './parsePageConfigs'
 
 // TODO: rename to parseVirtualFile
