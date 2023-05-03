@@ -1,7 +1,7 @@
 export { assertPageConfigs }
 export { assertPageConfigGlobal }
 
-import { assert, isObject, hasProp, assertUsage, isCallable } from '../utils'
+import { assert, isObject, hasProp } from '../utils'
 import type { PageConfig, PageConfigGlobal } from './PageConfig'
 
 function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageConfig[] {
@@ -39,28 +39,18 @@ function assertConfigElements(configElements: unknown, isGlobalConfig: boolean) 
       hasProp(configElement, 'plusConfigFilePath', 'string') || hasProp(configElement, 'plusConfigFilePath', 'null')
     )
     assert(hasProp(configElement, 'configEnv', 'string'))
+    assert(hasProp(configElement, 'codeFilePath', 'string') || hasProp(configElement, 'codeFilePath', 'null'))
+    assert(hasProp(configElement, 'codeFileExport', 'string') || hasProp(configElement, 'codeFileExport', 'null'))
     assert(
-      hasProp(configElement, 'codeFilePath', 'string') || hasProp(configElement, 'codeFilePath', 'null')
+      hasProp(configElement, 'configValueSerialized', 'string') ||
+        hasProp(configElement, 'configValueSerialized', 'undefined')
     )
-    assert(
-      hasProp(configElement, 'codeFileExport', 'string') ||
-        hasProp(configElement, 'codeFileExport', 'null')
-    )
-    if (isGlobalConfig) {
+    if (
+      isGlobalConfig ||
+      // Route files are eagerly loaded (both code files and config value files)
+      configName === 'route'
+    ) {
       assert(hasProp(configElement, 'configValue'))
-    }
-    if (configElement.codeFilePath) {
-      const { codeFilePath } = configElement
-      if (configName === 'route') {
-        assert(hasProp(configElement, 'configValue')) // route files are eagerly loaded
-        const { configValue } = configElement
-        const configValueType = typeof configValue
-        // TODO: validate earlier?
-        assertUsage(
-          configValueType === 'string' || isCallable(configValue),
-          `${codeFilePath} has a default export with an invalid type '${configValueType}': the default export should be a string or a function`
-        )
-      }
     }
   })
 }

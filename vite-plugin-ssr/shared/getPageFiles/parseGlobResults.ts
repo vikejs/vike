@@ -6,7 +6,7 @@ import { getPageFileObject, type PageFile } from './getPageFileObject'
 import { fileTypes, type FileType } from './fileTypes'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
 import { assertPageConfigGlobal, assertPageConfigs } from '../page-configs/assertPageConfigs'
-import { parse } from '@brillout/json-serializer/parse'
+import { parsePageConfigs } from './parsePageConfigs'
 
 // TODO: rename to parseVirtualFile
 function parseGlobResults(pageFilesExports: unknown): {
@@ -39,14 +39,7 @@ function parseGlobResults(pageFilesExports: unknown): {
   assert(hasProp(pageFilesExports, 'pageConfigGlobal'))
   const { pageConfigs, pageConfigGlobal } = pageFilesExports
   assertPageConfigs(pageConfigs)
-  pageConfigs.forEach((pageConfig) => {
-    Object.values(pageConfig.configElements).forEach((configElement) => {
-      const { configValueSerialized } = configElement
-      if (configValueSerialized !== undefined) {
-        configElement.configValue = parse(configValueSerialized)
-      }
-    })
-  })
+  parsePageConfigs(pageConfigs)
   assertPageConfigGlobal(pageConfigGlobal)
 
   const pageFilesMap: Record<string, PageFile> = {}
