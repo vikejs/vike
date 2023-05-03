@@ -405,8 +405,6 @@ function getCodeFilePath(
   const { importPath, importName } = importData
 
   const codeFileExport = importName
-  const codeFilePath = importPath
-  /* TODO: remove?
   let codeFilePath: string
   if (!importPath.startsWith('.')) {
     // E.g. for aliases import paths
@@ -429,10 +427,11 @@ function getCodeFilePath(
     }
     codeFilePath = toPosixPath(codeFilePath)
 
-    // TODO: remove
-    // if (!importData) {
-    //   assertCodeFilePathConfigValue(configValue, plusConfigFilePath, codeFilePath, fileExists, configName)
-    // }
+    /* TODO: remove
+    if (!importData) {
+      assertCodeFilePathConfigValue(configValue, plusConfigFilePath, codeFilePath, fileExists, configName)
+    }
+    */
 
     // Make relative to userRootDir
     codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
@@ -441,7 +440,6 @@ function getCodeFilePath(
     assert(codeFilePath.startsWith('/'))
     assertUsage(fileExists, `${plusConfigFilePath} imports from '${importPath}' which points to a non-existing file`)
   }
-  */
 
   return { codeFilePath, codeFileExport }
 }
