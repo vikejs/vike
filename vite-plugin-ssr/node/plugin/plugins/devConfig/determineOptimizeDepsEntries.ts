@@ -16,7 +16,22 @@ async function determineOptimizeDepsEntries(config: ResolvedConfig, isDev: boole
       Object.values(data.configElements).forEach((configElement) => {
         const { codeFilePath, configEnv } = configElement
         if (codeFilePath && (configEnv === 'client-only' || configEnv === 'server-and-client')) {
-          entries.push(getFilePathAbsolute(codeFilePath, config))
+          let filePath: string
+          if (!codeFilePath.startsWith('/')) {
+            /* For path aliases, e.g.:
+             * ```
+             * // /renderer/+config.js
+             * import onRenderClient from '#root/renderer/onRenderClient'
+             * // ...
+             * ```
+             * Does Vite resolve the path aliases or getFilePathAbsolute() needed?
+             */
+            filePath = codeFilePath
+          } else {
+            // Is getFilePathAbsolute() really needed?
+            filePath = getFilePathAbsolute(codeFilePath, config)
+          }
+          entries.push(filePath)
         }
       })
     })

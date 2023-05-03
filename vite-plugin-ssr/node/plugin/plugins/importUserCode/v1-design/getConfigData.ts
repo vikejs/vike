@@ -403,34 +403,44 @@ function getCodeFilePath(
     return null
   }
   const { importPath, importName } = importData
-  let codeFilePath = path.posix.join(userRootDir, path.posix.dirname(plusConfigFilePath), toPosixPath(importPath))
+
   const codeFileExport = importName
-  assertPosixPath(userRootDir)
-  assertPosixPath(codeFilePath)
-  const clean = addFileExtensionsToRequireResolve()
-  let fileExists: boolean
-  try {
-    codeFilePath = require.resolve(codeFilePath)
-    fileExists = true
-  } catch {
-    fileExists = false
-  } finally {
-    clean()
+  let codeFilePath: string
+  if (!importPath.startsWith('.')) {
+    // E.g. for aliases import paths
+    codeFilePath = importPath
+  } else {
+    // Is the code down below really needed? Can't we leave import paths as-is?
+
+    codeFilePath = path.posix.join(userRootDir, path.posix.dirname(plusConfigFilePath), toPosixPath(importPath))
+    assertPosixPath(userRootDir)
+    assertPosixPath(codeFilePath)
+    const clean = addFileExtensionsToRequireResolve()
+    let fileExists: boolean
+    try {
+      codeFilePath = require.resolve(codeFilePath)
+      fileExists = true
+    } catch {
+      fileExists = false
+    } finally {
+      clean()
+    }
+    codeFilePath = toPosixPath(codeFilePath)
+
+    /* TODO: remove
+    if (!importData) {
+      assertCodeFilePathConfigValue(configValue, plusConfigFilePath, codeFilePath, fileExists, configName)
+    }
+    */
+
+    // Make relative to userRootDir
+    codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
+
+    assertPosixPath(codeFilePath)
+    assert(codeFilePath.startsWith('/'))
+    assertUsage(fileExists, `${plusConfigFilePath} imports from '${importPath}' which points to a non-existing file`)
   }
-  codeFilePath = toPosixPath(codeFilePath)
 
-  /* TODO: remove
-  if (!importData) {
-    assertCodeFilePathConfigValue(configValue, plusConfigFilePath, codeFilePath, fileExists, configName)
-  }
-  */
-
-  // Make relative to userRootDir
-  codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
-
-  assertPosixPath(codeFilePath)
-  assert(codeFilePath.startsWith('/'))
-  assertUsage(fileExists, `${plusConfigFilePath} imports from '${importPath}' which points to a non-existing file`)
   return { codeFilePath, codeFileExport }
 }
 

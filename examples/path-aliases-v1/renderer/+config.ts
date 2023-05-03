@@ -1,6 +1,6 @@
 import type { Config } from 'vite-plugin-ssr/types'
-import onRenderClient from './onRenderClient'
-import onRenderHtml from './onRenderHtml'
+import onRenderClient from '#root/renderer/onRenderClient'
+import onRenderHtml from '#root/renderer/onRenderHtml'
 
 export default {
   onRenderClient,
