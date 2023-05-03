@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 
 > The `+config.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
 
-All imports in `+config.js` are code-splitted.
+All imports in `+config.js` are extracted to enable code-splitting.
 
 For example, vite-plugin-ssr transforms this:
 
@@ -26,14 +26,14 @@ const onBeforeRender = '_import:./some-other-file:onBeforeRender'
 export default { Page, onBeforeRender }
 ```
 
-This allows vite-plugin-ssr to load imports only when needed and only in the right environment. Consider this example:
+This allows vite-plugin-ssr to load only what is strictly needed and only in the right environment. Consider this example:
 
 ```js
 // +config.js
 
-// The onRenderClient() hook should only be loaded on the client-side
+// onRenderClient() should be loaded only on the client-side
 import onRenderClient from './some-other-module'
-// The onRenderHtml() hook should only be loaded on the server-side
+// onRenderHtml() should be loaded only on the server-side
 import onRenderHtml from './some-module'
 
 export default { onRenderHtml, onRenderClient }
@@ -48,21 +48,18 @@ Following is forbidden:
 // /pages/some-page/+config.js
 
 export default {
-  Page,
-  onBeforeRender
-}
-
-function Page() {
-  // ...
-}
-function onBeforeRender() {
-  // ...
+  Page() {
+    // ...
+  },
+  onBeforeRender() {
+    // ...
+  }
 }
 ```
 
 Vite-plugin-ssr throws:
 ```
-[Wrong Usage] The code of hooks cannot live inside +config.js`
+[Wrong Usage] The code of onBeforeRender() and Page() cannot live inside +config.js
 ```
 
 Do this instead:
@@ -83,7 +80,7 @@ Also note that this is usually forbidden as well:
 
 - import Page from './some-file'
 - import onBeforeRender from './some-other-file'
-+ // Define Page and onBeforeRender in the same file
++ // Import Page and onBeforeRender from the same file
 + import { Page, onBeforeRender } from './same-file'
 
   export default { Page, onBeforeRender }
@@ -93,4 +90,4 @@ This is only allowed if `Page` and `onBeforeRender` live in the same environment
  - By default `Page` is loaded on the client-side as well as on the server-side.
  - By default `onBeforeRender` is loaded only on the server-side.
 
-> Importing `Page` and `onBeforeRender` from the same file would be allowed only if you use <Link text={<code>meta</code>} href="/meta" /> to make their `env` value equal.
+> Importing `Page` and `onBeforeRender` from the same file is allowed if you use <Link text={<code>meta</code>} href="/meta" /> to align their environment.
