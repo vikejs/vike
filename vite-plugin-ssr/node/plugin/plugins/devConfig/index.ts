@@ -11,14 +11,16 @@ import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 import { resolveRoot, assertRoot } from '../../shared/resolveRoot'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware'
 
+// There don't seem to be a straightforward way to descriminate between `$ vite preview` and `$ vite dev`
+const apply = 'serve'
+
 function devConfig(): Plugin[] {
   let config: ResolvedConfig
   let root: string
   return [
     {
       name: 'vite-plugin-ssr:devConfig',
-      // There don't seem to be a straightforward way to descriminate between `$ vite preview` and `$ vite dev`
-      apply: 'serve',
+      apply,
       async config(config) {
         root = resolveRoot(config) // TODO: remove resolveRoot() helper?
         // TODO: remove?
@@ -57,11 +59,21 @@ function devConfig(): Plugin[] {
         )
         await determineFsAllowList(config, configVps)
       },
-      configureServer(server) {
+      configureServer() {
         markEnvAsDev()
-        if (config.server.middlewareMode) return
-        return () => {
-          addSsrMiddleware(server.middlewares, server)
+      }
+    },
+    {
+      name: 'vite-plugin-ssr:devConfig:addSsrMiddleware',
+      apply,
+      enforce: 'post',
+      configureServer: {
+        order: 'post',
+        handler(server) {
+          if (config.server.middlewareMode) return
+          return () => {
+            addSsrMiddleware(server.middlewares, server)
+          }
         }
       }
     }
