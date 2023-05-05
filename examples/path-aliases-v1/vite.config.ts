@@ -14,7 +14,10 @@ const config: UserConfig = {
       includeAssetsImportedByServer: true,
       prerender: true
     })
-  ]
+  ],
+  optimizeDeps: {
+    include: ['react-dom/client']
+  }
 }
 
 export default config
