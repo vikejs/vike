@@ -86,7 +86,7 @@ function assertUsage(condition: unknown, errorMessage: string): asserts conditio
 function assertWarning(
   condition: unknown,
   errorMessage: string,
-  { onlyOnce, showStackTrace }: { onlyOnce: boolean; showStackTrace: boolean }
+  { onlyOnce, showStackTrace }: { onlyOnce: boolean | string; showStackTrace: boolean }
 ): void {
   if (condition) {
     return
