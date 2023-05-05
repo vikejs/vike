@@ -74,6 +74,7 @@ function getFilesystemApplyRoot(someDir: string): string {
 }
 function getFilesystemPath(someDir: string, removeDirs: string[]): string {
   assertPosixPath(someDir)
+  assert(!someDir.endsWith('/') || someDir === '/')
   if (isNpmPackageImportPath(someDir)) {
     const importPath = getNpmPackageImportPath(someDir)
     assert(importPath)
