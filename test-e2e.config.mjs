@@ -18,9 +18,9 @@ function getCiJobs() {
     os: 'ubuntu-latest',
     node_version: '20'
   }
-  const win14 = {
+  const win16 = {
     os: 'windows-latest',
-    node_version: '14'
+    node_version: '16'
   }
   const win18 = {
     os: 'windows-latest',
@@ -31,7 +31,7 @@ function getCiJobs() {
     node_version: '17'
   }
 
-  const setupsExamples = [ubuntu16, win14]
+  const setupsExamples = [ubuntu16, win16]
 
   return [
     {
@@ -48,7 +48,7 @@ function getCiJobs() {
     },
     {
       name: 'Examples Misc',
-      setups: [ubuntu16, mac17, win14]
+      setups: [ubuntu16, mac17, win16]
     },
     {
       name: 'Unit Tests E2E',
