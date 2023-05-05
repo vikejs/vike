@@ -8,11 +8,19 @@ export { onProjectInfo }
 
 import { unique } from './unique'
 import { getGlobalObject } from './getGlobalObject'
+/* Use original assertUsage() & assertWarning() after all CJS is removed from node_modules/vite-plugin-ssr/dist/
 import { assertUsage, assertWarning } from './assert'
-const globalObject = getGlobalObject<{ instances: string[]; checkSingleInstance?: true; isClientRouting?: boolean }>(
-  'assertPackageInstances.ts',
-  { instances: [] }
-)
+*/
+const globalObject = getGlobalObject<{
+  instances: string[]
+  checkSingleInstance?: true
+  isClientRouting?: boolean
+  // For assertWarning() shim
+  alreadyLogged: Set<string>
+}>('assertPackageInstances.ts', {
+  instances: [],
+  alreadyLogged: new Set()
+})
 const makeSure = "Make sure your client-side code doesn't include(/bundle)" as const
 const clientEntryClonflict =
   `The client runtime of Server Routing and the client runtime of Client Routing are both being loaded. ${makeSure} both for a given page.` as const
@@ -66,4 +74,36 @@ function onClientEntry_ClientRouting(isProduction: boolean) {
 function onProjectInfo(projectVersion: string) {
   globalObject.instances.push(projectVersion)
   assertSingleInstance()
+}
+
+function assertUsage(condition: unknown, errorMessage: string): asserts condition {
+  if (condition) {
+    return
+  }
+  const errMsg = `[vite-plugin-ssr][Wrong Usage] ${errorMessage}`
+  throw new Error(errMsg)
+}
+function assertWarning(
+  condition: unknown,
+  errorMessage: string,
+  { onlyOnce, showStackTrace }: { onlyOnce: boolean; showStackTrace: boolean }
+): void {
+  if (condition) {
+    return
+  }
+  const msg = `[vite-plugin-ssr][Warning] ${errorMessage}`
+  if (onlyOnce) {
+    const { alreadyLogged } = globalObject
+    const key = onlyOnce === true ? msg : onlyOnce
+    if (alreadyLogged.has(key)) {
+      return
+    } else {
+      alreadyLogged.add(key)
+    }
+  }
+  if (showStackTrace) {
+    console.warn(new Error(msg))
+  } else {
+    console.warn(msg)
+  }
 }
