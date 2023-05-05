@@ -34,6 +34,7 @@ function determinePageId(somePath: string): string {
   }
 
   let pageId = paths.join('/')
+  if (pageId === '') pageId = '/'
 
   assert(pageId.startsWith('/') || isNpmPackageImportPath(pageId))
   assert(
