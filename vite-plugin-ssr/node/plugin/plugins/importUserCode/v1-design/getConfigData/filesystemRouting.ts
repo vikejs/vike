@@ -50,9 +50,8 @@ function isRelevantConfig(
   configPath: string, // Can be plusConfigFilePath or plusValueFilePath
   pageId: string
 ): boolean {
-  const configFsRoot = getFilesystemApplyRoot(removeFilename(configPath))
-  const pageFsRoot = getFilesystemApplyRoot(pageId)
-  const isRelevant = pageFsRoot.startsWith(configFsRoot)
+  const configApplyRoot = getFilesystemApplyRoot(removeFilename(configPath))
+  const isRelevant = pageId.startsWith(configApplyRoot)
   return isRelevant
 }
 function removeFilename(somePath: string) {
