@@ -54,33 +54,35 @@ function isRelevantConfig(
   const isRelevant = pageId.startsWith(configApplyRoot)
   return isRelevant
 }
-function removeFilename(somePath: string) {
-  assertPosixPath(somePath)
-  assert(somePath.startsWith('/') || isNpmPackageImportPath(somePath))
+function removeFilename(filePath: string) {
+  assertPosixPath(filePath)
+  assert(filePath.startsWith('/') || isNpmPackageImportPath(filePath))
   {
-    const filename = somePath.split('/').slice(-1)[0]!
+    const filename = filePath.split('/').slice(-1)[0]!
     assert(filename.includes('.'))
     assert(filename.startsWith('+'))
   }
-  return somePath.split('/').slice(0, -1).join('/')
+  return filePath.split('/').slice(0, -1).join('/')
 }
-function getFilesysemRoute(somePath: string): string {
-  return getFilesystemPath(somePath, ['renderer', 'pages', 'src', 'index'])
+/** Get URL determined by filesystem path */
+function getFilesysemRoute(someDir: string): string {
+  return getFilesystemPath(someDir, ['renderer', 'pages', 'src', 'index'])
 }
-function getFilesystemApplyRoot(somePath: string): string {
-  return getFilesystemPath(somePath, ['renderer'])
+/** Get root for config inheritance */
+function getFilesystemApplyRoot(someDir: string): string {
+  return getFilesystemPath(someDir, ['renderer'])
 }
-function getFilesystemPath(somePath: string, removeDirs: string[]): string {
-  assertPosixPath(somePath)
-  if (isNpmPackageImportPath(somePath)) {
-    const importPath = getNpmPackageImportPath(somePath)
+function getFilesystemPath(someDir: string, removeDirs: string[]): string {
+  assertPosixPath(someDir)
+  if (isNpmPackageImportPath(someDir)) {
+    const importPath = getNpmPackageImportPath(someDir)
     assert(importPath)
     assert(!importPath.startsWith('/'))
-    somePath = '/' + importPath
+    someDir = '/' + importPath
   }
-  assert(somePath.startsWith('/'))
+  assert(someDir.startsWith('/'))
 
-  let fsPath = somePath
+  let fsPath = someDir
     .split('/')
     .filter((p) => !removeDirs.includes(p))
     .join('/')
@@ -119,13 +121,13 @@ function pickMostRelevantConfigValue(
   }
   let winnerNow = candidates[0]!
   candidates.slice(1).forEach((candidate) => {
-    const winnerNowFsRoute = getCandidateFsRoute(winnerNow)
-    const candidateFsRoute = getCandidateFsRoute(candidate)
-    assert(candidateFsRoute.startsWith(winnerNowFsRoute) || winnerNowFsRoute.startsWith(candidateFsRoute))
-    if (candidateFsRoute.length > winnerNowFsRoute.length) {
+    const winnerNowApplyRoot = getCandidateApplyRoot(winnerNow)
+    const candidateApplyRoot = getCandidateApplyRoot(candidate)
+    assert(candidateApplyRoot.startsWith(winnerNowApplyRoot) || winnerNowApplyRoot.startsWith(candidateApplyRoot))
+    if (candidateApplyRoot.length > winnerNowApplyRoot.length) {
       winnerNow = candidate
     }
-    if (candidateFsRoute.length === winnerNowFsRoute.length) {
+    if (candidateApplyRoot.length === winnerNowApplyRoot.length) {
       let ignored: Candidate
       if ('plusValueFile' in candidate) {
         assert('plusConfigFile' in winnerNow)
@@ -147,15 +149,15 @@ function pickMostRelevantConfigValue(
   })
   return winnerNow
 }
-function getCandidateFsRoute(candidate: Candidate): string {
+function getCandidateApplyRoot(candidate: Candidate): string {
   let filePath: string
   if ('plusValueFile' in candidate) {
     filePath = candidate.plusValueFile.plusValueFilePath
   } else {
     filePath = candidate.plusConfigFile.plusConfigFilePath
   }
-  const candidateFsRoute = getFilesystemApplyRoot(removeFilename(filePath))
-  return candidateFsRoute
+  const candidateApplyRoot = getFilesystemApplyRoot(removeFilename(filePath))
+  return candidateApplyRoot
 }
 function getCandidateDefinedAt(candidate: Candidate, configName: string): string {
   let configDefinedAt: string
