@@ -1,6 +1,6 @@
 import { Note, Link } from '@brillout/docpress'
 
-<Note type="error">Support for multiple `onBeforeRender()` hooks is deprecated. Use <Link href="data-fetching#custom-exports" text="Custom Exports/Hooks"/> instead. Reach out on Discord or GitHub if you cannot replace your multiple `onBeforeRender()` hooks with one `onBeforeRender()` hook + Custom Hooks.</Note>
+<Note type="error">Support for executing more than one `onBeforeRender()` hook is deprecated. Use <Link href="data-fetching#custom-exports" text="Custom Exports/Hooks"/> instead. (You can still define multiple `onBeforeRender()` hooks but only one will be executed.)</Note>
 
 While rendering a page `some.page.js`, up to four different `onBeforeRender()` hooks can be executed:
  - `export { onBeforeRender }` in `_default.page.js`
