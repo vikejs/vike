@@ -88,7 +88,7 @@ function removeFilename(somePath: string) {
   return somePath.split('/').slice(0, -1).join('/')
 }
 function getFilesystemRoute(somePath: string) {
-  const IGNORE_DIRS = ['renderer', 'pages', 'src', 'index']
+  const IGNORE_DIRS = ['renderer', 'pages']
 
   assertPosixPath(somePath)
   if (isNpmPackageImportPath(somePath)) {
