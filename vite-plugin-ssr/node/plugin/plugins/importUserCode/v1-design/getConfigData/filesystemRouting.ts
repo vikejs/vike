@@ -69,7 +69,7 @@ function getFilesysemRoute(somePath: string): string {
   return getFilesystemPath(somePath, ['renderer', 'pages', 'src', 'index'])
 }
 function getFilesystemApplyRoot(somePath: string): string {
-  return getFilesystemPath(somePath, ['renderer', 'pages'])
+  return getFilesystemPath(somePath, ['renderer'])
 }
 function getFilesystemPath(somePath: string, removeDirs: string[]): string {
   assertPosixPath(somePath)
