@@ -116,17 +116,30 @@ function pickMostRelevantConfigValue(
     const winnerNowApplyRoot = getCandidateApplyRoot(winnerNow)
     const candidateApplyRoot = getCandidateApplyRoot(candidate)
     assert(candidateApplyRoot.startsWith(winnerNowApplyRoot) || winnerNowApplyRoot.startsWith(candidateApplyRoot))
+    const candidateFilePath = getFilePath(candidate)
+    const winnerNowFilePath = getFilePath(winnerNow)
+    assert(candidateFilePath !== winnerNowFilePath)
+
+    // Filesystem inheritence
     if (candidateApplyRoot.length > winnerNowApplyRoot.length) {
       winnerNow = candidate
     }
+
+    // Conflict
     if (candidateApplyRoot.length === winnerNowApplyRoot.length) {
       let ignored: Candidate
-      if ('plusValueFile' in candidate) {
-        assert('plusConfigFile' in winnerNow)
+      if (
+        // Make this config value:
+        //   /pages/some-page/+someConfig.js > `export default`
+        // override that config value:
+        //   /pages/some-page/+config > `export default { someConfig }`
+        ('plusValueFile' in candidate && 'plusConfigFile' in winnerNow) ||
+        // Make overriding deterministic
+        candidateFilePath > winnerNowFilePath
+      ) {
         ignored = winnerNow
         winnerNow = candidate
       } else {
-        assert('plusValueFile' in winnerNow)
         ignored = candidate
       }
       assertWarning(
@@ -142,14 +155,18 @@ function pickMostRelevantConfigValue(
   return winnerNow
 }
 function getCandidateApplyRoot(candidate: Candidate): string {
+  const candidateFilePath = getFilePath(candidate)
+  const candidateApplyRoot = getFilesystemApplyRoot(removeFilename(candidateFilePath))
+  return candidateApplyRoot
+}
+function getFilePath(candidate: Candidate) {
   let filePath: string
   if ('plusValueFile' in candidate) {
     filePath = candidate.plusValueFile.plusValueFilePath
   } else {
     filePath = candidate.plusConfigFile.plusConfigFilePath
   }
-  const candidateApplyRoot = getFilesystemApplyRoot(removeFilename(filePath))
-  return candidateApplyRoot
+  return filePath
 }
 function getCandidateDefinedAt(candidate: Candidate, configName: string): string {
   let configDefinedAt: string
