@@ -72,8 +72,9 @@ function isRelevantConfig(
   configPath: string, // Can be plusConfigFilePath or plusValueFilePath
   pageId: string
 ): boolean {
-  const configFsRoot = removeIrrelevantParts(removeFilename(configPath), ['renderer', 'pages'])
-  const isRelevant = removeIrrelevantParts(pageId, ['pages']).startsWith(configFsRoot)
+  const configFsRoot = getFilesystemRoute(removeFilename(configPath), ['renderer', 'pages']).fsRoot
+  const pageFsRoot = getFilesystemRoute(pageId, ['pages']).fsRoot
+  const isRelevant = pageFsRoot.startsWith(configFsRoot)
   return isRelevant
 }
 function removeFilename(somePath: string) {
@@ -86,7 +87,7 @@ function removeFilename(somePath: string) {
   }
   return somePath.split('/').slice(0, -1).join('/')
 }
-function removeIrrelevantParts(somePath: string, dirs: string[]) {
+function getFilesystemRoute(somePath: string, dirs: string[]) {
   assertPosixPath(somePath)
   if (isNpmPackageImportPath(somePath)) {
     const importPath = getNpmPackageImportPath(somePath)
@@ -95,10 +96,11 @@ function removeIrrelevantParts(somePath: string, dirs: string[]) {
     somePath = '/' + importPath
   }
   assert(somePath.startsWith('/'))
-  return somePath
+  const fsRoot = somePath
     .split('/')
     .filter((p) => !dirs.includes(p))
     .join('/')
+  return { fsRoot }
 }
 
 type Candidate = { plusValueFile: PlusValueFile } | { plusConfigFile: PlusConfigFile }
@@ -163,7 +165,7 @@ function getCandidateFsRoute(candidate: Candidate): string {
   } else {
     filePath = candidate.plusConfigFile.plusConfigFilePath
   }
-  const candidateFsRoute = removeIrrelevantParts(removeFilename(filePath), ['renderer', 'pages'])
+  const candidateFsRoute = getFilesystemRoute(removeFilename(filePath), ['renderer', 'pages']).fsRoot
   return candidateFsRoute
 }
 function getCandidateDefinedAt(candidate: Candidate, configName: string): string {
