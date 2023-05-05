@@ -54,21 +54,12 @@ function isRelevantConfig(
   const isRelevant = pageId.startsWith(configApplyRoot)
   return isRelevant
 }
-function removeFilename(filePath: string) {
-  assertPosixPath(filePath)
-  assert(filePath.startsWith('/') || isNpmPackageImportPath(filePath))
-  {
-    const filename = filePath.split('/').slice(-1)[0]!
-    assert(filename.includes('.'))
-    assert(filename.startsWith('+'))
-  }
-  return filePath.split('/').slice(0, -1).join('/')
-}
-/** Get URL determined by filesystem path */
+
+// Get URL determined by filesystem path
 function getFilesysemRoute(someDir: string): string {
   return getFilesystemPath(someDir, ['renderer', 'pages', 'src', 'index'])
 }
-/** Get root for config inheritance */
+// Get filesystem root of config inheritance
 function getFilesystemApplyRoot(someDir: string): string {
   return getFilesystemPath(someDir, ['renderer'])
 }
@@ -168,4 +159,15 @@ function getCandidateDefinedAt(candidate: Candidate, configName: string): string
     configDefinedAt = `${candidate.plusConfigFile.plusConfigFilePath} > ${configName}`
   }
   return configDefinedAt
+}
+
+function removeFilename(filePath: string) {
+  assertPosixPath(filePath)
+  assert(filePath.startsWith('/') || isNpmPackageImportPath(filePath))
+  {
+    const filename = filePath.split('/').slice(-1)[0]!
+    assert(filename.includes('.'))
+    assert(filename.startsWith('+'))
+  }
+  return filePath.split('/').slice(0, -1).join('/')
 }
