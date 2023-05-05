@@ -13,32 +13,9 @@ import {
 import type { PlusValueFile, PlusConfigFile } from '../getConfigData'
 import { getPageConfigValue } from './helpers'
 
-function determineRouteFromFilesystemPath(dirOrFilePath: string): string {
-  const pageId = determinePageId(dirOrFilePath)
-
-  let routeString = pageId
-  if (isNpmPackageImportPath(routeString)) {
-    const importPath = getNpmPackageImportPath(routeString) ?? ''
-    assert(!importPath.startsWith('/'))
-    routeString = '/' + importPath
-  }
-  assert(routeString.startsWith('/'))
-
-  {
-    let paths = routeString.split('/')
-    // Ignore directories pages/ renderer/ index/ src/
-    paths = paths.filter((dir) => dir !== 'pages' && dir !== 'src' && dir !== 'index' && dir !== 'renderer')
-    routeString = paths.join('/')
-  }
-
-  if (routeString === '') {
-    routeString = '/'
-  }
-
-  assert(routeString.startsWith('/') || isNpmPackageImportPath(routeString))
-  assert(!routeString.endsWith('/') || routeString === '/')
-
-  return routeString
+function determineRouteFromFilesystemPath(somePath: string): string {
+  const pageId = determinePageId(somePath)
+  return getFilesysemRoute(pageId)
 }
 
 function determinePageId(somePath: string): string {
@@ -56,7 +33,7 @@ function determinePageId(somePath: string): string {
     }
   }
 
-  const pageId = paths.join('/')
+  let pageId = paths.join('/')
 
   assert(pageId.startsWith('/') || isNpmPackageImportPath(pageId))
   assert(
@@ -72,8 +49,8 @@ function isRelevantConfig(
   configPath: string, // Can be plusConfigFilePath or plusValueFilePath
   pageId: string
 ): boolean {
-  const configFsRoot = getFilesystemRoute(removeFilename(configPath)).fsRoot
-  const pageFsRoot = getFilesystemRoute(pageId).fsRoot
+  const configFsRoot = getFilesystemApplyRoot(removeFilename(configPath))
+  const pageFsRoot = getFilesystemApplyRoot(pageId)
   const isRelevant = pageFsRoot.startsWith(configFsRoot)
   return isRelevant
 }
@@ -87,9 +64,13 @@ function removeFilename(somePath: string) {
   }
   return somePath.split('/').slice(0, -1).join('/')
 }
-function getFilesystemRoute(somePath: string) {
-  const IGNORE_DIRS = ['renderer', 'pages']
-
+function getFilesysemRoute(somePath: string): string {
+  return getFilesystemPath(somePath, ['renderer', 'pages', 'src', 'index'])
+}
+function getFilesystemApplyRoot(somePath: string): string {
+  return getFilesystemPath(somePath, ['renderer', 'pages'])
+}
+function getFilesystemPath(somePath: string, removeDirs: string[]): string {
   assertPosixPath(somePath)
   if (isNpmPackageImportPath(somePath)) {
     const importPath = getNpmPackageImportPath(somePath)
@@ -98,11 +79,17 @@ function getFilesystemRoute(somePath: string) {
     somePath = '/' + importPath
   }
   assert(somePath.startsWith('/'))
-  const fsRoot = somePath
+
+  let fsPath = somePath
     .split('/')
-    .filter((p) => !IGNORE_DIRS.includes(p))
+    .filter((p) => !removeDirs.includes(p))
     .join('/')
-  return { fsRoot }
+  if (fsPath === '') fsPath = '/'
+
+  assert(fsPath.startsWith('/') || isNpmPackageImportPath(fsPath))
+  assert(!fsPath.endsWith('/') || fsPath === '/')
+
+  return fsPath
 }
 
 type Candidate = { plusValueFile: PlusValueFile } | { plusConfigFile: PlusConfigFile }
@@ -167,7 +154,7 @@ function getCandidateFsRoute(candidate: Candidate): string {
   } else {
     filePath = candidate.plusConfigFile.plusConfigFilePath
   }
-  const candidateFsRoute = getFilesystemRoute(removeFilename(filePath)).fsRoot
+  const candidateFsRoute = getFilesystemApplyRoot(removeFilename(filePath))
   return candidateFsRoute
 }
 function getCandidateDefinedAt(candidate: Candidate, configName: string): string {
