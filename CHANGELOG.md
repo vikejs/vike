@@ -1,3 +1,16 @@
+## [0.4.123](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.122...v0.4.123) (2023-05-05)
+
+
+### Bug Fixes
+
+* auto-add VPS's middleware at last ([f0abd07](https://github.com/brillout/vite-plugin-ssr/commit/f0abd07f242a4ac2db55ec1ed0999a375832ffa2))
+* improve filesystem apply root (fix [#858](https://github.com/brillout/vite-plugin-ssr/issues/858)) ([173cca0](https://github.com/brillout/vite-plugin-ssr/commit/173cca062ebd37e051a8cf91263935eace203d1f))
+* make filesystem inheritence conflict resolution more robust (fix [#858](https://github.com/brillout/vite-plugin-ssr/issues/858)) ([a5d0d5d](https://github.com/brillout/vite-plugin-ssr/commit/a5d0d5d266e7f297d31997063c52d3541380cedc))
+* make filesystem root apply clearer ([4eb5f45](https://github.com/brillout/vite-plugin-ssr/commit/4eb5f4541e1518897bc6862481536bf790d3c4e3))
+* remove cyclic dependency (fix [#861](https://github.com/brillout/vite-plugin-ssr/issues/861)) ([80d4856](https://github.com/brillout/vite-plugin-ssr/commit/80d48564fa569670ace4e0a0f4ee6c14f69b218a))
+
+
+
 ## [0.4.122](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.121...v0.4.122) (2023-05-03)
 
 
