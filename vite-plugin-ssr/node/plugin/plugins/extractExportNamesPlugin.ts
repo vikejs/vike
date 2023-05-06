@@ -3,7 +3,15 @@ export { isUsingClientRouter }
 export { extractExportNamesRE }
 
 import type { Plugin } from 'vite'
-import { assert, getFileExtension, viteIsSSR_options, createDebugger, isDebugEnabled, getGlobalObject } from '../utils'
+import {
+  assert,
+  getFileExtension,
+  viteIsSSR_options,
+  createDebugger,
+  isDebugEnabled,
+  getGlobalObject,
+  assertUsage
+} from '../utils'
 import { getExportNames } from '../shared/parseEsModule'
 import { removeSourceMap } from '../shared/removeSourceMap'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
@@ -71,7 +79,7 @@ function addQuery(moduleName: string) {
     moduleName = moduleName.replace('?', '?extractExportNames&')
   } else {
     const fileExtension = getFileExtension(moduleName)
-    assert(fileExtension)
+    assertUsage(fileExtension, 'See https://github.com/brillout/vite-plugin-ssr/issues/864#issuecomment-1537202290')
     moduleName = `${moduleName}?extractExportNames&lang.${fileExtension}`
   }
   return moduleName
