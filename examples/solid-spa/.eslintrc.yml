@@ -1,0 +1,24 @@
+extends:
+  - eslint:recommended
+  - plugin:@typescript-eslint/recommended
+  - plugin:solid/recommended
+  - plugin:unicorn/all
+parser: '@typescript-eslint/parser'
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+  ecmaVersion: latest
+  sourceType: module
+plugins:
+  - '@typescript-eslint'
+  - solid
+rules:
+  # 0 = off
+  # 1 = warn
+  # 2 = error
+
+  #region eslint-plugin-unicorn
+  unicorn/filename-case: 0
+  unicorn/no-keyword-prefix: 0
+  unicorn/prevent-abbreviations: 0
+  #endregion

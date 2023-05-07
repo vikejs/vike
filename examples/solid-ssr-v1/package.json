@@ -2,13 +2,23 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite build && vite preview"
+    "preview": "vite build && vite preview",
+    "lint": "eslint ."
   },
   "dependencies": {
     "solid-js": "^1.7.3",
-    "typescript": "^4.8.2",
     "vite": "^4.0.3",
     "vite-plugin-solid": "^2.3.0",
     "vite-plugin-ssr": "0.4.123"
+  },
+  "devDependencies": {
+    "@types/eslint": "^8",
+    "@types/node": "^20.1.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.2",
+    "@typescript-eslint/parser": "^5.59.2",
+    "eslint": "^8.40.0",
+    "eslint-plugin-solid": "^0.12.1",
+    "eslint-plugin-unicorn": "^47.0.0",
+    "typescript": "^5.0.4"
   }
 }
