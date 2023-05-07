@@ -21,5 +21,5 @@ async function onRenderClient(pageContext: PageContextClient) {
   }
 
   // render the page and save the dispose function of that page
-  disposePreviousPage = render(() => <Page />, document.getElementById('root'))
+  disposePreviousPage = render(() => <Page />, document.querySelector('#root'))
 }

@@ -20,5 +20,5 @@ async function render(pageContext: PageContextClient) {
   }
 
   // render the page and save the dispose function of that page
-  disposePreviousPage = renderSolid(() => <Page />, document.getElementById('root'))
+  disposePreviousPage = renderSolid(() => <Page />, document.querySelector('#root'))
 }

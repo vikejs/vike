@@ -17,18 +17,16 @@ const [pageContextStore, setPageContext] = createStore<PageContextClient>({} as 
 async function onRenderClient(pageContext: PageContextClient) {
   pageContext = removeUnmergableInternals(pageContext)
 
-  if (!rendered) {
+  if (rendered === false) {
     // Dispose to prevent duplicate pages when navigating.
     if (dispose) dispose()
 
     setPageContext(pageContext)
 
-    const container = document.getElementById('page-view')!
-    if (pageContext.isHydration) {
-      dispose = hydrate(() => <PageLayout pageContext={pageContextStore} />, container)
-    } else {
-      dispose = render(() => <PageLayout pageContext={pageContextStore} />, container)
-    }
+    const container = document.querySelector('#page-view')!
+    dispose = pageContext.isHydration
+      ? hydrate(() => <PageLayout pageContext={pageContextStore} />, container)
+      : render(() => <PageLayout pageContext={pageContextStore} />, container)
     rendered = true
   } else {
     setPageContext(reconcile(pageContext))
