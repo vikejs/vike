@@ -31,12 +31,12 @@ function getCiJobs() {
     node_version: '17'
   }
 
-  const setupsExamples = [ubuntu16, win16]
+  const setupsExamples = [ubuntu20, win16]
 
   return [
     {
       name: 'Boilerplates',
-      setups: [ubuntu20]
+      setups: [ubuntu17]
     },
     {
       name: 'Examples React',
