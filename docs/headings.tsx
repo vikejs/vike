@@ -231,11 +231,6 @@ const headings: HeadingDefinition[] = [
     url: '/routing-precedence'
   },
   {
-    level: 2,
-    title: 'Vue Router & React Router',
-    url: '/vue-router-and-react-router'
-  },
-  {
     level: 1,
     title: 'Deploy',
     titleEmoji: 'earth'
@@ -985,5 +980,9 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: 'Built-in renderers',
     url: '/renderers'
+  },
+  {
+    title: 'Vue Router & React Router',
+    url: '/vue-router-and-react-router'
   }
 ]
