@@ -28,7 +28,7 @@ function extractExportNamesPlugin(): Plugin {
     async transform(src, id, options) {
       const isClientSide = !viteIsSSR_options(options)
       if (extractExportNamesRE.test(id)) {
-        const code = await getExtractExportNamesCode(src, isClientSide, !isDev)
+        const code = await getExtractExportNamesCode(src, isClientSide, !isDev, id)
         debug('id ' + id, ['result:\n' + code.code.trim(), 'src:\n' + src.trim()])
         return code
       }
@@ -44,20 +44,26 @@ function extractExportNamesPlugin(): Plugin {
   }
 }
 
-async function getExtractExportNamesCode(src: string, isClientSide: boolean, isProduction: boolean) {
+async function getExtractExportNamesCode(src: string, isClientSide: boolean, isProduction: boolean, id: string) {
   const { exportNames, wildcardReExports } = await getExportNames(src)
   if (isClientSide && exportNames.includes('clientRouting')) {
     globalObject.usesClientRouter = true
   }
-  const code = getCode(exportNames, wildcardReExports, isClientSide, isProduction)
+  const code = getCode(exportNames, wildcardReExports, isClientSide, isProduction, id)
   return removeSourceMap(code)
 }
 
-function getCode(exportNames: string[], wildcardReExports: string[], isClientSide: boolean, isProduction: boolean) {
+function getCode(
+  exportNames: string[],
+  wildcardReExports: string[],
+  isClientSide: boolean,
+  isProduction: boolean,
+  id: string
+) {
   let code = ''
   const reExportVarNames = wildcardReExports.map((reExportedModuleName, i) => {
     const varName = `m${i}`
-    code += `import { exportNames as ${varName} } from '${addQuery(reExportedModuleName)}'`
+    code += `import { exportNames as ${varName} } from '${addQuery(reExportedModuleName, id)}'`
     code += '\n'
     return varName
   })
@@ -73,13 +79,20 @@ function getCode(exportNames: string[], wildcardReExports: string[], isClientSid
   return code
 }
 
-function addQuery(moduleName: string) {
+function addQuery(moduleName: string, id: string) {
   if (moduleName.includes('?')) {
     assert(moduleName.split('?').length === 2)
     moduleName = moduleName.replace('?', '?extractExportNames&')
   } else {
     const fileExtension = getFileExtension(moduleName)
-    assertUsage(fileExtension, 'See https://github.com/brillout/vite-plugin-ssr/issues/864#issuecomment-1537202290')
+    if (!fileExtension) {
+      assert(extractExportNamesRE.test(id))
+      const idReal = id.split('?')[0]!
+      assertUsage(
+        false,
+        `Modify the re-export of ${idReal}, see https://github.com/brillout/vite-plugin-ssr/issues/864#issuecomment-1537202290`
+      )
+    }
     moduleName = `${moduleName}?extractExportNames&lang.${fileExtension}`
   }
   return moduleName
