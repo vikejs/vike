@@ -100,10 +100,10 @@ function pickMostRelevantConfigValue(
     }
   })
   plusConfigFilesRelevant.forEach((plusConfigFile) => {
-    const configValue = getPageConfigValue(configName, plusConfigFile)
-    if (configValue !== undefined) {
+    const result = getPageConfigValue(configName, plusConfigFile)
+    if (result) {
       candidates.push({
-        plusConfigFile
+        plusConfigFile: result.plusConfigFile
       })
     }
   })

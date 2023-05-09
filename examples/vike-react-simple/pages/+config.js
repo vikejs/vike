@@ -3,5 +3,5 @@ import vikeReactSimple from 'vike-react-simple'
 
 export default {
   Layout,
-  extends: vikeReactSimple
+  extends: [vikeReactSimple]
 }

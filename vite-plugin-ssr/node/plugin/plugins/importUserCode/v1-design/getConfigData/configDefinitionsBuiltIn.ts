@@ -63,5 +63,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   prefetchStaticAssets: {
     env: 'client-only' // TODO: config-only instead?
+  },
+  extends: {
+    env: 'config-only'
   }
 }

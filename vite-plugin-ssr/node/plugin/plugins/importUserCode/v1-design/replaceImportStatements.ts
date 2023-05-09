@@ -2,6 +2,7 @@ export { replaceImportStatements }
 export { parseImportData }
 export { isImportData }
 export type { FileImport }
+export type { ImportData }
 
 // Playground: https://github.com/brillout/acorn-playground
 

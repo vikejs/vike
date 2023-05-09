@@ -41,7 +41,7 @@ import {
   pickMostRelevantConfigValue
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadPageConfig, transpileAndLoadPlusValueFile } from './transpileAndLoadPlusFile'
-import { parseImportData } from './replaceImportStatements'
+import { ImportData, parseImportData } from './replaceImportStatements'
 import { getPageConfigValue, getPageConfigValues } from './getConfigData/helpers'
 
 assertIsVitePluginCode()
@@ -338,8 +338,9 @@ function resolveConfigElement(
     return configElement
   }
 
-  const { plusConfigFile } = result
-  const configValue = getPageConfigValue(configName, plusConfigFile)
+  const result2 = getPageConfigValue(configName, result.plusConfigFile)
+  assert(result2)
+  const { configValue, plusConfigFile } = result2
   const { plusConfigFilePath } = plusConfigFile
   const codeFile = getCodeFilePath(configValue, plusConfigFilePath, userRootDir)
   const { env } = configDef
@@ -425,19 +426,24 @@ function getCodeFilePath(
 // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vite-plugin-ssr:importPageCode:client:/pages/index". Does the file exist?
 // ```
 function resolveRelativeCodeFilePath(importPath: string, plusConfigFilePath: string, userRootDir: string) {
-  let codeFilePath = path.posix.join(userRootDir, path.posix.dirname(plusConfigFilePath), toPosixPath(importPath))
   assertPosixPath(userRootDir)
-  assertPosixPath(codeFilePath)
+  assertPosixPath(plusConfigFilePath)
+  let plusConfigFilDirPathAbsolute = path.posix.dirname(plusConfigFilePath)
+  // TODO: remove this if-block by modifying PlusConfigFile type?
+  //if (!plusConfigFilDirPathAbsolute.startsWith(userRootDir)) {
+  if (!plusConfigFilDirPathAbsolute.startsWith('/home/rom/')) {
+    plusConfigFilDirPathAbsolute = path.posix.join(userRootDir, plusConfigFilDirPathAbsolute)
+  }
   const clean = addFileExtensionsToRequireResolve()
-  let fileExists: boolean
+  let codeFilePath: string | null
   try {
-    codeFilePath = require.resolve(codeFilePath)
-    fileExists = true
-  } catch {
-    fileExists = false
+    codeFilePath = require.resolve(importPath, { paths: [plusConfigFilDirPathAbsolute] })
+  } catch (err) {
+    codeFilePath = null
   } finally {
     clean()
   }
+  assertUsage(codeFilePath, `${plusConfigFilePath} imports from '${importPath}' which points to a non-existing file`)
   codeFilePath = toPosixPath(codeFilePath)
 
   /* TODO: remove
@@ -446,13 +452,22 @@ function resolveRelativeCodeFilePath(importPath: string, plusConfigFilePath: str
     }
     */
 
-  // Make relative to userRootDir
-  codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
+  // Make it a Vite path
+  if (codeFilePath.startsWith(userRootDir)) {
+    codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
+  } else {
+    /*
+    assert(codeFilePath.startsWith('/'))
+    codeFilePath = `/@fs${codeFilePath}`
+    /*/
+    codeFilePath = path.posix.relative(userRootDir, codeFilePath)
+    assert(codeFilePath.startsWith('../'))
+    codeFilePath = '/' + codeFilePath
+    //*/
+  }
 
   assertPosixPath(codeFilePath)
   assert(codeFilePath.startsWith('/'))
-  assertUsage(fileExists, `${plusConfigFilePath} imports from '${importPath}' which points to a non-existing file`)
-
   return codeFilePath
 }
 
@@ -547,8 +562,6 @@ function dirnameNormalized(filePath: string) {
 */
 
 function getErrorIntro(filePath: string, configName: string): string {
-  assert(filePath.startsWith('/') || isNpmPackageImportPath(filePath))
-  assert(!configName.startsWith('/'))
   return `${filePath} sets the config ${configName}`
 }
 
@@ -556,13 +569,14 @@ function getConfigDefinitions(plusConfigFilesRelevant: PlusConfigFile[]): Config
   const configDefinitions: ConfigDefinitionsExtended = { ...configDefinitionsBuiltIn }
   plusConfigFilesRelevant.forEach((plusConfigFile) => {
     const { plusConfigFilePath } = plusConfigFile
-    const { meta } = getPageConfigValues(plusConfigFile)
-    if (meta) {
+    const result = getPageConfigValue('meta', plusConfigFile)
+    if (result) {
+      const metaVal = result.configValue
       assertUsage(
-        isObject(meta),
-        `${plusConfigFilePath} sets the config 'meta' to a value with an invalid type \`${typeof meta}\`: it should be an object instead.`
+        isObject(metaVal),
+        `${plusConfigFilePath} sets the config 'meta' to a value with an invalid type \`${typeof metaVal}\`: it should be an object instead.`
       )
-      objectEntries(meta).forEach(([configName, configDefinition]) => {
+      objectEntries(metaVal).forEach(([configName, configDefinition]) => {
         assertUsage(
           isObject(configDefinition),
           `${plusConfigFilePath} sets 'meta.${configName}' to a value with an invalid type \`${typeof configDefinition}\`: it should be an object instead.`
@@ -670,6 +684,7 @@ function applyEffects(
 type PlusConfigFile = {
   plusConfigFilePath: string
   plusConfigFileExports: Record<string, unknown>
+  extendsConfigs: PlusConfigFile[]
 }
 
 async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]) {
@@ -747,19 +762,27 @@ function extractConfigName(filePath: string) {
 }
 
 async function findAndLoadPlusConfigFiles(
-  plusFiles: FoundFile[]
+  plusFiles: FoundFile[],
+  isConfigFile?: true
 ): Promise<{ err: unknown } | { plusConfigFiles: PlusConfigFile[] }> {
   const plusConfigFiles: PlusConfigFile[] = []
   // TODO: make esbuild build everyting at once
   const results = await Promise.all(
     plusFiles
-      .filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
+      .filter((f) => isConfigFile || extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
       .map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
         const result = await transpileAndLoadPageConfig(filePathAbsolute, filePathRelativeToUserRootDir)
         if ('err' in result) {
           return { err: result.err }
         }
-        return { plusConfigFilePath: filePathRelativeToUserRootDir, plusConfigFileExports: result.fileExports }
+        const plusConfigFilePath = filePathRelativeToUserRootDir
+        const plusConfigFileExports = result.fileExports
+        const result2 = await getExtendsConfigs(plusConfigFileExports, plusConfigFilePath, filePathAbsolute)
+        if ('err' in result2) {
+          return { err: result2.err }
+        }
+        const { extendsConfigs } = result2
+        return { plusConfigFilePath, plusConfigFileExports, extendsConfigs }
       })
   )
   for (const result of results) {
@@ -772,14 +795,62 @@ async function findAndLoadPlusConfigFiles(
   }
   results.forEach((result) => {
     assert(!('err' in result))
-    const { plusConfigFilePath, plusConfigFileExports } = result
+    const { plusConfigFilePath, plusConfigFileExports, extendsConfigs } = result
     plusConfigFiles.push({
       plusConfigFilePath,
-      plusConfigFileExports
+      plusConfigFileExports,
+      extendsConfigs
     })
   })
 
   return { plusConfigFiles }
+}
+
+// TODO: avoid infinite loop
+async function getExtendsConfigs(
+  plusConfigFileExports: Record<string, unknown>,
+  plusConfigFilePath: string,
+  plusConfigFilePathAbsolute: string
+) {
+  const extendsList = getExtendsList(plusConfigFileExports, plusConfigFilePath)
+  const foundFiles: FoundFile[] = []
+  extendsList.map((importData) => {
+    // TODO
+    //  - error handling if path doesn't exist
+    //  - validate extends configs
+    let filePath = require.resolve(importData.importPath, { paths: [plusConfigFilePathAbsolute] })
+    filePath = toPosixPath(filePath)
+    foundFiles.push({
+      filePathAbsolute: filePath,
+      // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
+      // - Using importData.importPath would be visually nicer but it's ambigous => we rather pick filePath for more clarity
+      filePathRelativeToUserRootDir: filePath
+    })
+  })
+
+  const result = await findAndLoadPlusConfigFiles(foundFiles, true)
+  if ('err' in result) {
+    return {
+      err: result.err
+    }
+  }
+  const extendsConfigs: PlusConfigFile[] = result.plusConfigFiles
+  return { extendsConfigs }
+}
+
+function getExtendsList(plusConfigFileExports: Record<string, unknown>, plusConfigFilePath: string): ImportData[] {
+  // TODO: refactor getPageConfigValues
+  const plusConfigValues = getPageConfigValues({ plusConfigFilePath, plusConfigFileExports, extendsConfigs: [] })
+  if (!plusConfigValues.extends) {
+    return []
+  }
+  assertUsage(hasProp(plusConfigValues, 'extends', 'string[]'), 'TODO')
+  const extendsList = plusConfigValues.extends.map((importDataSerialized) => {
+    const importData = parseImportData(importDataSerialized)
+    assertUsage(importData, 'TODO')
+    return importData
+  })
+  return extendsList
 }
 
 type FoundFile = {

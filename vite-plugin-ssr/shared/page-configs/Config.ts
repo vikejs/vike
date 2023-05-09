@@ -34,6 +34,13 @@ type Config<Page = unknown> = Partial<{
    */
   prerender: boolean
 
+  /**
+   * Inherit from other configurations.
+   *
+   * See https://vite-plugin-ssr.com/extends
+   */
+  extends: Config[]
+
   /** Hook called before the page is rendered, usually for fetching data.
    *
    *  See https://vite-plugin-ssr.com/onBeforeRender

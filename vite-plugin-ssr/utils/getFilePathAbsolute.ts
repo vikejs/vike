@@ -15,6 +15,10 @@ assertIsVitePluginCode()
 function getFilePathAbsolute(filePath: string, config: ResolvedConfig): string {
   assertPosixPath(filePath)
 
+  if (filePath.startsWith('/@fs/')) {
+    return filePath
+  }
+
   let filePathUnresolved: string
   if (isNpmPackageModule(filePath)) {
     filePathUnresolved = filePath
