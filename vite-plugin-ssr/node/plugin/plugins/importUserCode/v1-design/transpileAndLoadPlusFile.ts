@@ -138,26 +138,27 @@ function assertFileImports(
     if (typeof exportVal !== 'string') return
     if (!isImportData(exportVal)) return
     const importData = exportVal
-    const found = fileImports.filter((fi) => fi.data === importData)
-    if (found.length === 0) return
-    assert(found.length === 1)
-    found[0]!.isReExported = true
+    fileImports.forEach((fileImport) => {
+      if (fileImport.data === importData) {
+        fileImport.isReExported = true
+      }
+    })
   })
 
   const fileImportsUnused = fileImports.filter((fi) => !fi.isReExported)
   if (fileImportsUnused.length === 0) return
 
   const importStatements = unique(fileImportsUnused.map((fi) => fi.code))
-  const importNamesUnused: string = fileImportsUnused.map((fi) => pc.bold(pc.red(fi.importVarName))).join(', ')
+  const importNamesUnused: string = fileImportsUnused.map((fi) => pc.cyan(fi.importVarName)).join(', ')
   const singular = fileImportsUnused.length === 1
   assertWarning(
     fileImportsUnused.length === 0,
     [
-      `${pc.cyan(filePathRelativeToUserRootDir)} imports the following:`,
-      ...importStatements.map((s) => `  ${pc.cyan(s)}`),
-      `The import${singular ? '' : 's'} ${importNamesUnused} ${singular ? "isn't" : "aren't"} used for ${pc.cyan(
+      `${filePathRelativeToUserRootDir} imports the following:`,
+      ...importStatements.map((s) => `  ${s}`),
+      `The import${singular ? '' : 's'} ${importNamesUnused} ${singular ? "isn't" : "aren't"} re-exported at ${pc.cyan(
         'export default { ... }'
-      )} but imports should always be re-exported, see https://vite-plugin-ssr.com/config-code-splitting#rule`
+      )} but imports should always be re-exported, see https://vite-plugin-ssr.com/config-code-splitting`
     ].join('\n'),
     { onlyOnce: true, showStackTrace: false }
   )

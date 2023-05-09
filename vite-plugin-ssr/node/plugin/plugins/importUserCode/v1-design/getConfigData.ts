@@ -132,7 +132,6 @@ async function loadConfigData(
   const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(plusConfigFiles, plusValueFiles, userRootDir)
 
   const pageIds = determinePageIds(plusConfigFiles, plusValueFiles)
-
   const pageConfigsData: PageConfigData[] = []
   pageIds.forEach(({ pageId, routeFilesystem, plusConfigFile, routeFilesystemDefinedBy }) => {
     const plusConfigFilesRelevant = plusConfigFiles.filter(({ plusConfigFilePath }) =>
@@ -318,8 +317,6 @@ function resolveConfigElement(
   userRootDir: string,
   plusValueFilesRelevant: PlusValueFile[]
 ): null | ConfigElement {
-  // TODO: implement warning if defined in non-abstract +config.js as well as in +{configName}.js
-
   const result = pickMostRelevantConfigValue(configName, plusValueFilesRelevant, plusConfigFilesRelevant)
   if (!result) return null
 
