@@ -134,7 +134,8 @@ function assertFileImports(
   filePathRelativeToUserRootDir: string
 ) {
   assertDefaultExportObject(fileExports, filePathRelativeToUserRootDir)
-  Object.values(fileExports.default).forEach((exportVal) => {
+  const exportedStrings = getExportedStrings(fileExports.default)
+  Object.values(exportedStrings).forEach((exportVal) => {
     if (typeof exportVal !== 'string') return
     if (!isImportData(exportVal)) return
     const importData = exportVal
@@ -162,4 +163,20 @@ function assertFileImports(
     ].join('\n'),
     { onlyOnce: true, showStackTrace: false }
   )
+}
+
+function getExportedStrings(obj: Record<string, unknown>): string[] {
+  const exportedStrings: string[] = []
+  Object.values(obj).forEach((val) => {
+    if (typeof val === 'string') {
+      exportedStrings.push(val)
+    } else if (Array.isArray(val)) {
+      val.forEach((v) => {
+        if (typeof v === 'string') {
+          exportedStrings.push(v)
+        }
+      })
+    }
+  })
+  return exportedStrings
 }
