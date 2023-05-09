@@ -2,14 +2,14 @@
 
 Later:
  - restructure getConfigData()
-   - Minimize what that client-side loads
-   - make filesystemRoutingRoot work (revert commit `6d7ab113aa0dbf2798cddcd2fe15229802102821`)
-     - Create /examples/file-structure-domain-driven/
    - make +meta.js work
    - make it work to import a config-only value, for example:
      - base assets: https://github.com/brillout/vite-plugin-ssr/commit/24a92cf79a0533ab4b0fa124675385f462302e1e
      - e.g. `import { prerender } from '../some-file'` in `/pages/index/+config.js`
    - improve isGlobal() logic (the special handling of the configName 'prerender' is hacky)
+   - make filesystemRoutingRoot work
+     - Create /examples/file-structure-domain-driven-v1/ (revert commit `6d7ab113aa0dbf2798cddcd2fe15229802102821`)
+   - Minimize what that client-side loads
  - error handling
    - Don't stop dev sever upon error in getConfigData()
      - make handleConfigError() wrap entire getConfigData() call
