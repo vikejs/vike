@@ -2,9 +2,7 @@ import { Link } from '@brillout/docpress'
 
 > The `+config.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
 
-All imports in `+config.js` are extracted to enable code-splitting.
-
-For example, vite-plugin-ssr transforms this:
+Vite-plugin-ssr extracts all import statements defined in `+config.js` files. For example, vite-plugin-ssr transforms this:
 
 ```js
 // /pages/some-page/+config.js
@@ -26,7 +24,7 @@ const onBeforeRender = '_import:./some-other-file:onBeforeRender'
 export default { Page, onBeforeRender }
 ```
 
-This allows vite-plugin-ssr to load only what is strictly needed and only in the right environment. Consider this example:
+This allows vite-plugin-ssr to load code only when needed and only in the right environment. Consider this example:
 
 ```js
 // +config.js
@@ -86,8 +84,8 @@ Also note that this is usually forbidden as well:
   export default { Page, onBeforeRender }
 ```
 
-This is only allowed if `Page` and `onBeforeRender` live in the same environment which isn't usually the case:
- - By default `Page` is loaded on the client-side as well as on the server-side.
- - By default `onBeforeRender` is loaded only on the server-side.
+This is only allowed if `Page` and `onBeforeRender` live in the same environment which usually isn't the case:
+ - By default, `Page` is loaded on the client-side as well as on the server-side.
+ - By default, `onBeforeRender` is loaded only on the server-side.
 
 > Importing `Page` and `onBeforeRender` from the same file is allowed if you use <Link text={<code>meta</code>} href="/meta" /> to align their environment.
