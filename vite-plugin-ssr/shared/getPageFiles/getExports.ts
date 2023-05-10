@@ -81,6 +81,8 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
 
       config[configName] = config[configName] ?? configValue
       configEntries[configName] = configEntries[configName] ?? []
+      // Currently each configName has only one entry. Adding an entry for each overriden config value isn't implemented yet. (This is an isomorphic file and it isn't clear whether this can/should be implemented on the client-side. We should load a minimum amount of code on the client-side.)
+      assert(configEntries[configName]!.length === 0)
       configEntries[configName]!.push({
         configValue,
         configDefinedAt,
