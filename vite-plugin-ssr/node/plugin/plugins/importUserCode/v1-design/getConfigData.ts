@@ -683,6 +683,7 @@ function applyEffects(
 
 type PlusConfigFile = {
   plusConfigFilePath: string
+  plusConfigFilePathAbsolute: string
   plusConfigFileExports: Record<string, unknown>
   extendsConfigs: PlusConfigFile[]
 }
@@ -776,13 +777,20 @@ async function findAndLoadPlusConfigFiles(
           return { err: result.err }
         }
         const plusConfigFilePath = filePathRelativeToUserRootDir
+        const plusConfigFilePathAbsolute = filePathAbsolute
         const plusConfigFileExports = result.fileExports
         const result2 = await getExtendsConfigs(plusConfigFileExports, plusConfigFilePath, filePathAbsolute)
         if ('err' in result2) {
           return { err: result2.err }
         }
         const { extendsConfigs } = result2
-        return { plusConfigFilePath, plusConfigFileExports, extendsConfigs }
+        const plusConfigFile = {
+          plusConfigFilePath,
+          plusConfigFilePathAbsolute,
+          plusConfigFileExports,
+          extendsConfigs
+        }
+        return plusConfigFile
       })
   )
   for (const result of results) {
@@ -795,9 +803,10 @@ async function findAndLoadPlusConfigFiles(
   }
   results.forEach((result) => {
     assert(!('err' in result))
-    const { plusConfigFilePath, plusConfigFileExports, extendsConfigs } = result
+    const { plusConfigFilePath, plusConfigFilePathAbsolute, plusConfigFileExports, extendsConfigs } = result
     plusConfigFiles.push({
       plusConfigFilePath,
+      plusConfigFilePathAbsolute,
       plusConfigFileExports,
       extendsConfigs
     })
@@ -812,7 +821,7 @@ async function getExtendsConfigs(
   plusConfigFilePath: string,
   plusConfigFilePathAbsolute: string
 ) {
-  const extendsList = getExtendsList(plusConfigFileExports, plusConfigFilePath)
+  const extendsList = getExtendsList(plusConfigFileExports, plusConfigFilePath, plusConfigFilePathAbsolute)
   const foundFiles: FoundFile[] = []
   extendsList.map((importData) => {
     // TODO
@@ -838,9 +847,18 @@ async function getExtendsConfigs(
   return { extendsConfigs }
 }
 
-function getExtendsList(plusConfigFileExports: Record<string, unknown>, plusConfigFilePath: string): ImportData[] {
+function getExtendsList(
+  plusConfigFileExports: Record<string, unknown>,
+  plusConfigFilePath: string,
+  plusConfigFilePathAbsolute: string
+): ImportData[] {
   // TODO: refactor getPageConfigValues
-  const plusConfigValues = getPageConfigValues({ plusConfigFilePath, plusConfigFileExports, extendsConfigs: [] })
+  const plusConfigValues = getPageConfigValues({
+    plusConfigFilePath,
+    plusConfigFilePathAbsolute,
+    plusConfigFileExports,
+    extendsConfigs: []
+  })
   if (!plusConfigValues.extends) {
     return []
   }
