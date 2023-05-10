@@ -451,14 +451,19 @@ function resolveRelativeCodeFilePath(importPath: string, plusConfigFile: PlusCon
   if (codeFilePath.startsWith(userRootDir)) {
     codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
   } else {
-    /*
-    assert(codeFilePath.startsWith('/'))
-    codeFilePath = `/@fs${codeFilePath}`
-    /*/
-    codeFilePath = path.posix.relative(userRootDir, codeFilePath)
-    assert(codeFilePath.startsWith('../'))
-    codeFilePath = '/' + codeFilePath
-    //*/
+    assertUsage(
+      false,
+      `${plusConfigFile} imports from a relative path '${importPath}' which is forbidden: import from a package.json#exports entry instead`
+    )
+    // None of the following works
+    // /*
+    // assert(codeFilePath.startsWith('/'))
+    // codeFilePath = `/@fs${codeFilePath}`
+    // /*/
+    // codeFilePath = path.posix.relative(userRootDir, codeFilePath)
+    // assert(codeFilePath.startsWith('../'))
+    // codeFilePath = '/' + codeFilePath
+    // //*/
   }
 
   assertPosixPath(codeFilePath)
