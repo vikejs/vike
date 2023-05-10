@@ -20,7 +20,8 @@ import {
   objectKeys,
   assertIsVitePluginCode,
   getMostSimilar,
-  joinEnglish
+  joinEnglish,
+  isNpmPackageModule
 } from '../../../utils'
 import path from 'path'
 import type {
@@ -824,15 +825,17 @@ async function getExtendsConfigs(
   const extendsList = getExtendsList(plusConfigFileExports, plusConfigFilePath, plusConfigFilePathAbsolute)
   const foundFiles: FoundFile[] = []
   extendsList.map((importData) => {
+    const { importPath } = importData
     // TODO
     //  - error handling if path doesn't exist
     //  - validate extends configs
-    let filePath = require.resolve(importData.importPath, { paths: [plusConfigFilePathAbsolute] })
+    let filePath = require.resolve(importPath, { paths: [plusConfigFilePathAbsolute] })
     filePath = toPosixPath(filePath)
+    assertExtendsImportPath(importPath, filePath, plusConfigFilePath)
     foundFiles.push({
       filePathAbsolute: filePath,
       // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
-      // - Using importData.importPath would be visually nicer but it's ambigous => we rather pick filePath for more clarity
+      // - Using importPath would be visually nicer but it's ambigous => we rather pick filePath for more clarity
       filePathRelativeToUserRootDir: filePath
     })
   })
@@ -845,6 +848,30 @@ async function getExtendsConfigs(
   }
   const extendsConfigs: PlusConfigFile[] = result.plusConfigFiles
   return { extendsConfigs }
+}
+
+function assertExtendsImportPath(importPath: string, filePath: string, plusConfigFilePath: string) {
+  if (isNpmPackageModule(importPath)) {
+    const fileDir = path.posix.dirname(filePath) + '/'
+    const fileName = path.posix.basename(filePath)
+    const fileNameBaseCorrect = '+config'
+    const [fileNameBase, ...fileNameRest] = fileName.split('.')
+    const fileNameCorrect = [fileNameBaseCorrect, ...fileNameRest].join('.')
+    assertWarning(
+      fileNameBase === fileNameBaseCorrect,
+      `Rename ${fileName} to ${fileNameCorrect} in ${fileDir}`,
+      {
+        onlyOnce: true,
+        showStackTrace: false
+      }
+    )
+  } else {
+    assertWarning(
+      false,
+      `${plusConfigFilePath} uses 'extends' to inherit from '${importPath}' which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this feature.`,
+      { onlyOnce: true, showStackTrace: false }
+    )
+  }
 }
 
 function getExtendsList(
