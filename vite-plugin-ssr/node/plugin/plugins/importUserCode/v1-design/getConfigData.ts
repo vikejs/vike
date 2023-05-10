@@ -426,14 +426,9 @@ function getCodeFilePath(
 // ```
 function resolveRelativeCodeFilePath(importPath: string, plusConfigFile: PlusConfigFile, userRootDir: string) {
   assertPosixPath(userRootDir)
-  const { plusConfigFilePath } = plusConfigFile
-  assertPosixPath(plusConfigFilePath)
-  let plusConfigFilDirPathAbsolute = path.posix.dirname(plusConfigFilePath)
-  // TODO: remove this if-block by modifying PlusConfigFile type?
-  //if (!plusConfigFilDirPathAbsolute.startsWith(userRootDir)) {
-  if (!plusConfigFilDirPathAbsolute.startsWith('/home/rom/')) {
-    plusConfigFilDirPathAbsolute = path.posix.join(userRootDir, plusConfigFilDirPathAbsolute)
-  }
+  const { plusConfigFilePathAbsolute, plusConfigFilePath } = plusConfigFile
+  assertPosixPath(plusConfigFilePathAbsolute)
+  let plusConfigFilDirPathAbsolute = path.posix.dirname(plusConfigFilePathAbsolute)
   const clean = addFileExtensionsToRequireResolve()
   let codeFilePath: string | null
   try {
