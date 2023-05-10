@@ -20,7 +20,6 @@ import {
   objectKeys,
   assertIsVitePluginCode,
   getMostSimilar,
-  isNpmPackageImportPath,
   joinEnglish
 } from '../../../utils'
 import path from 'path'
@@ -342,7 +341,7 @@ function resolveConfigElement(
   assert(result2)
   const { configValue, plusConfigFile } = result2
   const { plusConfigFilePath } = plusConfigFile
-  const codeFile = getCodeFilePath(configValue, plusConfigFilePath, userRootDir)
+  const codeFile = getCodeFilePath(configValue, plusConfigFile, userRootDir)
   const { env } = configDef
   if (!codeFile) {
     return {
@@ -384,7 +383,7 @@ function isDefiningPageConfig(configName: string): boolean {
 
 function getCodeFilePath(
   configValue: unknown,
-  plusConfigFilePath: string,
+  plusConfigFile: PlusConfigFile,
   userRootDir: string
 ): null | { codeFilePath: string; codeFileExport: string } {
   if (typeof configValue !== 'string') {
@@ -415,7 +414,7 @@ function getCodeFilePath(
     codeFilePath = importPath
   } else {
     // Relative paths
-    codeFilePath = resolveRelativeCodeFilePath(importPath, plusConfigFilePath, userRootDir)
+    codeFilePath = resolveRelativeCodeFilePath(importPath, plusConfigFile, userRootDir)
   }
 
   return { codeFilePath, codeFileExport }
@@ -425,8 +424,9 @@ function getCodeFilePath(
 // ```
 // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vite-plugin-ssr:importPageCode:client:/pages/index". Does the file exist?
 // ```
-function resolveRelativeCodeFilePath(importPath: string, plusConfigFilePath: string, userRootDir: string) {
+function resolveRelativeCodeFilePath(importPath: string, plusConfigFile: PlusConfigFile, userRootDir: string) {
   assertPosixPath(userRootDir)
+  const { plusConfigFilePath } = plusConfigFile
   assertPosixPath(plusConfigFilePath)
   let plusConfigFilDirPathAbsolute = path.posix.dirname(plusConfigFilePath)
   // TODO: remove this if-block by modifying PlusConfigFile type?
