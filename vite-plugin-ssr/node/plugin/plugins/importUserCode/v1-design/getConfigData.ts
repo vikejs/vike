@@ -46,6 +46,38 @@ import { getPageConfigValue, getConfigKeys } from './getConfigData/helpers'
 
 assertIsVitePluginCode()
 
+type PlusConfigFile = {
+  plusConfigFilePath: string
+  plusConfigFilePathAbsolute: string
+  plusConfigFileExports: Record<string, unknown>
+  extendsConfigs: PlusConfigFile[]
+}
+type PlusValueFile = {
+  pageId: string
+  configName: string
+  plusValueFilePath: string
+  configValue?: unknown
+}
+type InterfaceFileType = {
+  isConfigFile: true
+  extendsFilePaths: string[]
+} | {
+  isValueFile: true
+} | {
+  isConfigExtend: true
+}
+type InterfaceFile = InterfaceFileType & {
+  filePathAbsolute: string
+  filePathRelativeToUserRootDir: null | string
+  configMap: Record<
+    // configName
+    string,
+    {
+      configValue?: unknown
+    }
+  >
+}
+
 type ConfigData = {
   pageConfigsData: PageConfigData[]
   pageConfigGlobal: PageConfigGlobalData
@@ -697,13 +729,6 @@ function applyEffects(
   return configElementsMod
 }
 
-type PlusConfigFile = {
-  plusConfigFilePath: string
-  plusConfigFilePathAbsolute: string
-  plusConfigFileExports: Record<string, unknown>
-  extendsConfigs: PlusConfigFile[]
-}
-
 async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]) {
   const plusFiles = await findUserFiles('**/+*', userRootDir, isDev)
   extensions.forEach((extension) => {
@@ -722,12 +747,6 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
   return plusFiles
 }
 
-type PlusValueFile = {
-  pageId: string
-  configName: string
-  plusValueFilePath: string
-  configValue?: unknown
-}
 async function findAndLoadPlusValueFiles(
   plusFiles: UserFilePath[],
   configDefinitions: ConfigDefinitionsExtended
