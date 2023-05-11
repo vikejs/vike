@@ -37,6 +37,7 @@ import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import {
   determinePageId,
   determineRouteFromFilesystemPath,
+  getFilesysemPathRoot,
   isRelevantConfig,
   pickMostRelevantConfigValue
 } from './getConfigData/filesystemRouting'
@@ -51,6 +52,7 @@ type PlusConfigFile = {
   plusConfigFilePathAbsolute: string
   plusConfigFileExports: Record<string, unknown>
   extendsConfigs: PlusConfigFile[]
+  extendsFilePaths: string[]
 }
 type PlusValueFile = {
   pageId: string
@@ -62,12 +64,10 @@ type InterfaceFileType =
   | {
       isConfigFile: true
       extendsFilePaths: string[]
+      isConfigExtend: boolean
     }
   | {
       isValueFile: true
-    }
-  | {
-      isConfigExtend: true
     }
 type ConfigName = string
 type InterfaceFile = InterfaceFileType & {
@@ -76,7 +76,7 @@ type InterfaceFile = InterfaceFileType & {
   configMap: Record<ConfigName, { configValue?: unknown }>
 }
 type FilesystemPathRoot = string
-type InterfaceFiles = Record<FilesystemPathRoot, InterfaceFiles[]>
+type InterfaceFiles = Record<FilesystemPathRoot, InterfaceFile[]>
 
 type ConfigData = {
   pageConfigsData: PageConfigData[]
@@ -135,16 +135,37 @@ function getConfigData(
   return configDataPromise
 }
 
-function TODO_convert(configFile: ConfigFile): PlusConfigFile {
+// TODO: remove
+function tmp_convert(configFile: ConfigFile): PlusConfigFile {
   const { fileExports, filePathAbsolute, filePathHumanReadable, extendsFilePaths } = configFile
   const plusConfigFile: PlusConfigFile = {
     plusConfigFilePath: filePathHumanReadable ?? filePathAbsolute,
     plusConfigFilePathAbsolute: filePathAbsolute,
     plusConfigFileExports: fileExports,
-    extendsConfigs: []
+    extendsConfigs: [],
+    extendsFilePaths
   }
   return plusConfigFile
 }
+// TODO: remove
+function tmp_convert_back(plusConfigFile: PlusConfigFile, isConfigExtend: boolean): InterfaceFile {
+  const { plusConfigFilePath, plusConfigFilePathAbsolute, plusConfigFileExports, extendsConfigs, extendsFilePaths } =
+    plusConfigFile
+  const interfaceFile: InterfaceFile = {
+    filePathRelativeToUserRootDir: plusConfigFilePath,
+    filePathAbsolute: plusConfigFilePathAbsolute,
+    configMap: {},
+    isConfigFile: true,
+    isConfigExtend,
+    extendsFilePaths
+  }
+  assertDefaultExportObject(plusConfigFileExports, plusConfigFilePath)
+  Object.entries(plusConfigFileExports.default).forEach(([configName, configValue]) => {
+    interfaceFile.configMap[configName] = { configValue }
+  })
+  return interfaceFile
+}
+
 async function loadConfigData(
   userRootDir: string,
   isDev: boolean,
@@ -162,8 +183,8 @@ async function loadConfigData(
           filePathHumanReadable: configUserFilePath.filePathRelativeToUserRootDir
         }
         const { configFile, extendsConfigs } = await loadConfigFile(configFilePath, userRootDir)
-        const plusConfigFile: PlusConfigFile = TODO_convert(configFile)
-        plusConfigFile.extendsConfigs = extendsConfigs.map(TODO_convert)
+        const plusConfigFile: PlusConfigFile = tmp_convert(configFile)
+        plusConfigFile.extendsConfigs = extendsConfigs.map(tmp_convert)
         return plusConfigFile
       })
     )
@@ -173,6 +194,39 @@ async function loadConfigData(
   {
     const configDefinitions = getConfigDefinitions(plusConfigFiles)
     plusValueFiles = await findAndLoadPlusValueFiles(plusFiles, configDefinitions)
+  }
+
+  let interfaceFiles: InterfaceFiles = {}
+  // TODO: remove
+  {
+    plusValueFiles.forEach((plusValueFile) => {
+      const { pageId, configName, plusValueFilePath } = plusValueFile
+      const interfaceFile: InterfaceFile = {
+        filePathRelativeToUserRootDir: plusValueFilePath,
+        filePathAbsolute: path.posix.join(userRootDir, plusValueFilePath),
+        configMap: {
+          [configName]: {}
+        },
+        isValueFile: true
+      }
+      if ('configValue' in plusValueFile) {
+        interfaceFile.configMap[configName]!.configValue = plusValueFile.configValue
+      }
+      const filesystemPathRoot = getFilesysemPathRoot(plusValueFilePath)
+      interfaceFiles[filesystemPathRoot] = interfaceFiles[filesystemPathRoot] ?? []
+      interfaceFiles[filesystemPathRoot]!.push(interfaceFile)
+    })
+    plusConfigFiles.forEach((plusConfigFile) => {
+      const { plusConfigFilePath, extendsConfigs } = plusConfigFile
+      const interfaceFile = tmp_convert_back(plusConfigFile, false)
+      const filesystemPathRoot = getFilesysemPathRoot(plusConfigFilePath)
+      interfaceFiles[filesystemPathRoot] = interfaceFiles[filesystemPathRoot] ?? []
+      interfaceFiles[filesystemPathRoot]!.push(interfaceFile)
+      extendsConfigs.forEach((extendsConfig) => {
+        const interfaceFile = tmp_convert_back(extendsConfig, true)
+        interfaceFiles[filesystemPathRoot]!.push(interfaceFile)
+      })
+    })
   }
 
   const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(plusConfigFiles, plusValueFiles, userRootDir)

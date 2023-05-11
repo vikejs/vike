@@ -1,4 +1,5 @@
 export { determineRouteFromFilesystemPath }
+export { getFilesysemPathRoot }
 export { determinePageId }
 export { isRelevantConfig }
 export { pickMostRelevantConfigValue }
@@ -14,11 +15,15 @@ import type { PlusValueFile, PlusConfigFile } from '../getConfigData'
 import { getPageConfigValue } from './helpers'
 
 function determineRouteFromFilesystemPath(somePath: string): string {
-  const pageId = determinePageId(somePath)
-  return getFilesysemRoute(pageId)
+  const filesystemPathRoot = getFilesysemPathRoot(somePath)
+  return getFilesysemRoute(filesystemPathRoot)
 }
 
 function determinePageId(somePath: string): string {
+  return getFilesysemPathRoot(somePath)
+}
+
+function getFilesysemPathRoot(somePath: string): string {
   const pageId = removeFilename(somePath, true)
   assert(pageId.startsWith('/') || isNpmPackageImportPath(pageId))
   assert(!pageId.endsWith('/') || pageId === '/')
