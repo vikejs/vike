@@ -815,9 +815,9 @@ async function loadExtendsConfigs(configFileExports: Record<string, unknown>, co
   const extendsConfigs: ConfigFile[] = []
   await Promise.all(
     extendsConfigFiles.map(async (configFileFound) => {
-      const { configFile, extendsConfigs } = await loadConfigFile(configFileFound)
-      extendsConfigs.push(configFile)
-      extendsConfigs.push(...extendsConfigs)
+      const result = await loadConfigFile(configFileFound)
+      extendsConfigs.push(result.configFile)
+      extendsConfigs.push(...result.extendsConfigs)
     })
   )
 
