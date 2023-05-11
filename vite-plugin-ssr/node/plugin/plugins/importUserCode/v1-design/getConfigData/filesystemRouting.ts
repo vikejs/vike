@@ -19,30 +19,9 @@ function determineRouteFromFilesystemPath(somePath: string): string {
 }
 
 function determinePageId(somePath: string): string {
-  assert(!somePath.includes('\\'))
-  assert(somePath.startsWith('/') || isNpmPackageImportPath(somePath))
-
-  let paths = somePath.split('/')
-  assert(paths.length > 1)
-
-  // Remove filename e.g. `+config.js`
-  {
-    const last = paths[paths.length - 1]!
-    if (last.includes('.')) {
-      paths = paths.slice(0, -1)
-    }
-  }
-
-  let pageId = paths.join('/')
-  if (pageId === '') pageId = '/'
-
+  const pageId = removeFilename(somePath, true)
   assert(pageId.startsWith('/') || isNpmPackageImportPath(pageId))
-  assert(
-    !pageId.endsWith('/') ||
-      // Unlikely, but may happen
-      pageId === '/'
-  )
-
+  assert(!pageId.endsWith('/') || pageId === '/')
   return pageId
 }
 
@@ -59,10 +38,11 @@ function isRelevantConfig(
 function getFilesysemRoute(someDir: string): string {
   return getFilesystemPath(someDir, ['renderer', 'pages', 'src', 'index'])
 }
-// Get filesystem root of config inheritance
+// Get filesystem apply root for config inheritance
 function getFilesystemApplyRoot(someDir: string): string {
   return getFilesystemPath(someDir, ['renderer'])
 }
+
 function getFilesystemPath(someDir: string, removeDirs: string[]): string {
   assertPosixPath(someDir)
   assert(!someDir.endsWith('/') || someDir === '/')
@@ -178,13 +158,19 @@ function getCandidateDefinedAt(candidate: Candidate, configName: string): string
   return configDefinedAt
 }
 
-function removeFilename(filePath: string) {
+function removeFilename(filePath: string, optional?: true) {
   assertPosixPath(filePath)
   assert(filePath.startsWith('/') || isNpmPackageImportPath(filePath))
   {
     const filename = filePath.split('/').slice(-1)[0]!
-    assert(filename.includes('.'))
-    assert(filename.startsWith('+'))
+    if (!filename.includes('.')) {
+      assert(optional)
+      return filePath
+    }
   }
-  return filePath.split('/').slice(0, -1).join('/')
+  filePath = filePath.split('/').slice(0, -1).join('/')
+  if (filePath === '') filePath = '/'
+  assert(filePath.startsWith('/') || isNpmPackageImportPath(filePath))
+  assert(!filePath.endsWith('/') || filePath === '/')
+  return filePath
 }

@@ -69,17 +69,14 @@ type InterfaceFileType =
   | {
       isConfigExtend: true
     }
+type ConfigName = string
 type InterfaceFile = InterfaceFileType & {
   filePathAbsolute: string
   filePathRelativeToUserRootDir: null | string
-  configMap: Record<
-    // configName
-    string,
-    {
-      configValue?: unknown
-    }
-  >
+  configMap: Record<ConfigName, { configValue?: unknown }>
 }
+type FilesystemPathRoot = string
+type InterfaceFiles = Record<FilesystemPathRoot, InterfaceFiles[]>
 
 type ConfigData = {
   pageConfigsData: PageConfigData[]
