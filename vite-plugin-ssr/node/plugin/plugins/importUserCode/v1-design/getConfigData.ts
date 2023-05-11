@@ -103,6 +103,16 @@ function getConfigData(
   return configDataPromise
 }
 
+function TODO_convert(configFile: ConfigFile): PlusConfigFile {
+  const { fileExports, filePathAbsolute, filePathHumanReadable, extendsFilePaths } = configFile
+  const plusConfigFile: PlusConfigFile = {
+    plusConfigFilePath: filePathHumanReadable ?? filePathAbsolute,
+    plusConfigFilePathAbsolute: filePathAbsolute,
+    plusConfigFileExports: fileExports,
+    extendsConfigs: []
+  }
+  return plusConfigFile
+}
 async function loadConfigData(
   userRootDir: string,
   isDev: boolean,
@@ -113,17 +123,14 @@ async function loadConfigData(
   let plusConfigFiles: PlusConfigFile[]
   {
     const configFiles = plusFiles.filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
-    const result = await loadConfigFiles(configFiles)
-    /* TODO. Maybe use a golbal catch instead of whole errorUserFile mechanism?
-    if ('errorUserFile' in result) {
-      return ['export const pageConfigs = null;', 'export const pageConfigGlobal = null;'].join('\n')
-    }
-    */
-    if ('errorUserFile' in result) {
-      handleUserFileError(result.errorUserFile, isDev)
-      assert(false)
-    }
-    plusConfigFiles = result.plusConfigFiles
+    plusConfigFiles = await Promise.all(
+      configFiles.map(async (configFileFound) => {
+        const { configFile, configsExtends } = await loadConfigFile(configFileFound)
+        const plusConfigFile: PlusConfigFile = TODO_convert(configFile)
+        plusConfigFile.extendsConfigs = configsExtends.map(TODO_convert)
+        return plusConfigFile
+      })
+    )
   }
 
   let plusValueFiles: PlusValueFile[]
@@ -690,12 +697,6 @@ type PlusConfigFile = {
   plusConfigFilePathAbsolute: string
   plusConfigFileExports: Record<string, unknown>
   extendsConfigs: PlusConfigFile[]
-  allFiles: {
-    fileExports?: Record<string, unknown>
-    filePathAbsolute: string
-    filePathHumanReadable?: string
-    extendsFile?: string
-  }[]
 }
 
 async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]) {
@@ -753,12 +754,7 @@ async function loadPlusValueFile(plusFile: FoundFile, configDefinitions: ConfigD
   if (configDef.env !== 'config-only') {
     return plusValueFile
   }
-  const result = await transpileAndLoadValueFile(filePathAbsolute)
-  // TODO
-  if ('errorUserFile' in result) {
-    throw result.errorUserFile
-  }
-  const { fileExports } = result
+  const { fileExports } = await transpileAndLoadValueFile(filePathAbsolute)
   assertDefaultExportUnknown(fileExports, filePathRelativeToUserRootDir)
   const configValue = fileExports.default
   objectAssign(plusValueFile, { configValue })
@@ -773,59 +769,34 @@ function extractConfigName(filePath: string) {
   return configName
 }
 
-async function loadConfigFiles(
-  configFiles: FoundFile[]
-): Promise<{ errorUserFile: unknown } | { plusConfigFiles: PlusConfigFile[] }> {
-  const plusConfigFiles: PlusConfigFile[] = []
-  // TODO: make esbuild build everyting at once
-  const results = await Promise.all(
-    configFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
-      const result = await transpileAndLoadConfigFile(filePathAbsolute, filePathRelativeToUserRootDir)
-      if ('errorUserFile' in result) {
-        return { errorUserFile: result.errorUserFile }
-      }
-      const plusConfigFilePath = filePathRelativeToUserRootDir
-      const plusConfigFilePathAbsolute = filePathAbsolute
-      const plusConfigFileExports = result.fileExports
-      const result2 = await getExtendsConfigs(plusConfigFileExports, plusConfigFilePath, filePathAbsolute)
-      if ('errorUserFile' in result2) {
-        return { errorUserFile: result2.errorUserFile }
-      }
-      const { extendsConfigs } = result2
-      const plusConfigFile = {
-        plusConfigFilePath,
-        plusConfigFilePathAbsolute,
-        plusConfigFileExports,
-        extendsConfigs
-      }
-      return plusConfigFile
-    })
-  )
-  for (const result of results) {
-    if ('errorUserFile' in result) {
-      assert(result.errorUserFile)
-      return {
-        errorUserFile: result.errorUserFile
-      }
-    }
-  }
-  results.forEach((result) => {
-    assert(!('errorUserFile' in result))
-    const { plusConfigFilePath, plusConfigFilePathAbsolute, plusConfigFileExports, extendsConfigs } = result
-    plusConfigFiles.push({
-      plusConfigFilePath,
-      plusConfigFilePathAbsolute,
-      plusConfigFileExports,
-      extendsConfigs,
-      allFiles: []
-    })
-  })
+type ConfigFile = {
+  fileExports: Record<string, unknown>
+  filePathAbsolute: string
+  filePathHumanReadable: null | string
+  extendsFilePaths: string[]
+}
 
-  return { plusConfigFiles }
+async function loadConfigFile(
+  configFileFound: FoundFile
+): Promise<{ configFile: ConfigFile; configsExtends: ConfigFile[] }> {
+  const { filePathAbsolute, filePathRelativeToUserRootDir } = configFileFound
+  const { fileExports } = await transpileAndLoadConfigFile(filePathAbsolute, filePathRelativeToUserRootDir)
+  const plusConfigFilePath = filePathRelativeToUserRootDir
+  const plusConfigFileExports = fileExports
+  const result2 = await loadExtendsConfigs(plusConfigFileExports, plusConfigFilePath, filePathAbsolute)
+  const { extendsConfigs } = result2
+
+  const configFile: ConfigFile = {
+    fileExports,
+    filePathHumanReadable: filePathRelativeToUserRootDir,
+    filePathAbsolute,
+    extendsFilePaths: []
+  }
+  return { configFile, configsExtends: extendsConfigs }
 }
 
 // TODO: avoid infinite loop
-async function getExtendsConfigs(
+async function loadExtendsConfigs(
   plusConfigFileExports: Record<string, unknown>,
   plusConfigFilePath: string,
   plusConfigFilePathAbsolute: string
@@ -848,13 +819,12 @@ async function getExtendsConfigs(
     })
   })
 
-  const result = await loadConfigFiles(configFiles)
-  if ('errorUserFile' in result) {
-    return {
-      errorUserFile: result.errorUserFile
-    }
-  }
-  const extendsConfigs: PlusConfigFile[] = result.plusConfigFiles
+  const extendsConfigs: ConfigFile[] = await Promise.all(
+    configFiles.map(async (configFileFound) => {
+      const { configFile, configsExtends } = await loadConfigFile(configFileFound)
+      return configFile
+    })
+  )
   return { extendsConfigs }
 }
 
@@ -888,8 +858,7 @@ function getExtendsList(
     plusConfigFilePath,
     plusConfigFilePathAbsolute,
     plusConfigFileExports,
-    extendsConfigs: [],
-    allFiles: []
+    extendsConfigs: []
   })
   if (!plusConfigValues.extends) {
     return []
@@ -937,10 +906,11 @@ async function findUserFiles(pattern: string | string[], userRootDir: string, is
   return userFiles
 }
 
-function handleUserFileError(errorUserFile: unknown, isDev: boolean) {
+// TODO: re-use this
+function handleUserFileError(err: unknown, isDev: boolean) {
   // Properly handle error during transpilation so that we can use assertUsage() during transpilation
   if (isDev) {
-    throw errorUserFile
+    throw err
   } else {
     // Avoid ugly error format:
     // ```
@@ -963,7 +933,7 @@ function handleUserFileError(errorUserFile: unknown, isDev: boolean) {
     //  ELIFECYCLE  Command failed with exit code 1.
     // ```
     console.log('')
-    console.error(errorUserFile)
+    console.error(err)
     process.exit(1)
   }
 }

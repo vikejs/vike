@@ -19,7 +19,7 @@ import { isImportData, replaceImportStatements, type FileImport } from './replac
 
 assertIsVitePluginCode()
 
-type Result = { fileExports: Record<string, unknown> } | { errorUserFile: unknown }
+type Result = { fileExports: Record<string, unknown> }
 
 async function transpileAndLoadConfigFile(
   filePathAbsolute: string,
@@ -50,9 +50,6 @@ async function transpileAndLoadFile(
   assert(isPageConfig === path.posix.basename(filePathAbsolute).includes('+config'))
   */
   const buildResult = await buildFile(filePathAbsolute, { bundle: !isPageConfig })
-  if ('errorUserFile' in buildResult) {
-    return { errorUserFile: buildResult.errorUserFile }
-  }
   let { code } = buildResult
   let fileImports: FileImport[] | null = null
   if (isPageConfig) {
@@ -67,7 +64,8 @@ async function transpileAndLoadFile(
   try {
     fileExports = await import_(filePathTmp)
   } catch (err) {
-    return { errorUserFile: err }
+    markAsUserLandError(err)
+    throw err
   } finally {
     clean()
   }
@@ -109,8 +107,8 @@ async function buildFile(filePathAbsolute: string, { bundle }: { bundle: boolean
   try {
     result = await esbuild.build(options)
   } catch (err) {
-    // TODO: let the error throw?
-    return { errorUserFile: err }
+    markAsUserLandError(err)
+    throw err
   }
   const { text } = result.outputFiles![0]!
   return {
@@ -180,3 +178,7 @@ function getExportedStrings(obj: Record<string, unknown>): string[] {
   })
   return exportedStrings
 }
+
+// TODO: implement. Or remove? Is it really needed?
+function isUserLandError() {}
+function markAsUserLandError(err: unknown) {}
