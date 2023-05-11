@@ -50,7 +50,7 @@ function assertConfigElements(configElements: unknown, isGlobalConfig: boolean) 
       // Route files are eagerly loaded (both code files and config value files)
       configName === 'route'
     ) {
-      assert(hasProp(configElement, 'configValue'))
+      assert(hasProp(configElement, 'configValue') || hasProp(configElement, 'configValueSerialized'))
     }
   })
 }
