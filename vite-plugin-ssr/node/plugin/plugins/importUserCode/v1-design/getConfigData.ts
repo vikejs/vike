@@ -781,13 +781,7 @@ async function loadConfigFile(
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = configFileFound
   const { fileExports } = await transpileAndLoadConfigFile(filePathAbsolute, filePathRelativeToUserRootDir)
-  const plusConfigFilePath = filePathRelativeToUserRootDir
-  const plusConfigFileExports = fileExports
-  const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(
-    plusConfigFileExports,
-    plusConfigFilePath,
-    filePathAbsolute
-  )
+  const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFileFound)
 
   const configFile: ConfigFile = {
     fileExports,
@@ -799,23 +793,17 @@ async function loadConfigFile(
 }
 
 // TODO: avoid infinite loop
-async function loadExtendsConfigs(
-  plusConfigFileExports: Record<string, unknown>,
-  plusConfigFilePath: string,
-  plusConfigFilePathAbsolute: string
-) {
-  const extendsImportData = getExtendsImportData(plusConfigFileExports, plusConfigFilePath, plusConfigFilePathAbsolute)
+async function loadExtendsConfigs(configFileExports: Record<string, unknown>, configFileFound: FoundFile) {
+  const extendsImportData = getExtendsImportData(configFileExports, configFileFound)
   const extendsConfigFiles: FoundFile[] = []
-  const extendsFilePaths: string[] = []
   extendsImportData.map((importData) => {
     const { importPath } = importData
     // TODO
     //  - error handling if path doesn't exist
     //  - validate extends configs
-    let filePath = require.resolve(importPath, { paths: [plusConfigFilePathAbsolute] })
+    let filePath = require.resolve(importPath, { paths: [configFileFound.filePathAbsolute] })
     filePath = toPosixPath(filePath)
-    assertExtendsImportPath(importPath, filePath, plusConfigFilePath)
-    extendsFilePaths.push(filePath)
+    assertExtendsImportPath(importPath, filePath, configFileFound.filePathRelativeToUserRootDir)
     extendsConfigFiles.push({
       filePathAbsolute: filePath,
       // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
@@ -833,10 +821,12 @@ async function loadExtendsConfigs(
     })
   )
 
+  const extendsFilePaths = extendsConfigFiles.map((f) => f.filePathAbsolute)
+
   return { extendsConfigs, extendsFilePaths }
 }
 
-function assertExtendsImportPath(importPath: string, filePath: string, plusConfigFilePath: string) {
+function assertExtendsImportPath(importPath: string, filePath: string, configFilePath: string) {
   if (isNpmPackageModule(importPath)) {
     const fileDir = path.posix.dirname(filePath) + '/'
     const fileName = path.posix.basename(filePath)
@@ -850,22 +840,18 @@ function assertExtendsImportPath(importPath: string, filePath: string, plusConfi
   } else {
     assertWarning(
       false,
-      `${plusConfigFilePath} uses 'extends' to inherit from '${importPath}' which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this feature.`,
+      `${configFilePath} uses 'extends' to inherit from '${importPath}' which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this feature.`,
       { onlyOnce: true, showStackTrace: false }
     )
   }
 }
 
-function getExtendsImportData(
-  plusConfigFileExports: Record<string, unknown>,
-  plusConfigFilePath: string,
-  plusConfigFilePathAbsolute: string
-): ImportData[] {
+function getExtendsImportData(configFileExports: Record<string, unknown>, configFileFound: FoundFile): ImportData[] {
   // TODO: refactor getPageConfigValues + config value of extends shouldn't be inherited
   const plusConfigValues = getPageConfigValues({
-    plusConfigFilePath,
-    plusConfigFilePathAbsolute,
-    plusConfigFileExports,
+    plusConfigFilePath: configFileFound.filePathRelativeToUserRootDir,
+    plusConfigFilePathAbsolute: configFileFound.filePathAbsolute,
+    plusConfigFileExports: configFileExports,
     extendsConfigs: []
   })
   if (!plusConfigValues.extends) {
