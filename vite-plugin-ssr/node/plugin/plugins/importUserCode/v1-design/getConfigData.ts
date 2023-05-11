@@ -42,7 +42,7 @@ import {
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadConfigFile, transpileAndLoadValueFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
-import { getPageConfigValue, getPageConfigValues } from './getConfigData/helpers'
+import { getPageConfigValue, getConfigKeys } from './getConfigData/helpers'
 
 assertIsVitePluginCode()
 
@@ -157,9 +157,10 @@ async function loadConfigData(
     let configDefinitionsRelevant = getConfigDefinitions(plusConfigFilesRelevant)
 
     if (plusConfigFile) {
-      const pageConfigValues = getPageConfigValues(plusConfigFile)
-      Object.keys(pageConfigValues).forEach((configName) => {
+      const configKeys = getConfigKeys(plusConfigFile)
+      configKeys.forEach((configName) => {
         // TODO: this applies only against concrete config files, we should also apply to abstract config files
+        // TODO: apply this as well against extendsConfigs
         assertConfigName(
           configName,
           [...Object.keys(configDefinitionsRelevant), 'meta'],
@@ -389,8 +390,8 @@ function resolveConfigElement(
 }
 
 function isDefiningPage(plusConfigFile: PlusConfigFile): boolean {
-  const pageConfigValues = getPageConfigValues(plusConfigFile)
-  return Object.keys(pageConfigValues).some((configName) => isDefiningPageConfig(configName))
+  const configKeys = getConfigKeys(plusConfigFile)
+  return configKeys.some((configName) => isDefiningPageConfig(configName))
 }
 function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
@@ -874,20 +875,15 @@ function getFilePathToPrint(filePath: FilePath) {
   return filePathToPrint
 }
 
-function getExtendsImportData(configFileExports: Record<string, unknown>, configFileFound: FilePath): ImportData[] {
-  // TODO: refactor getPageConfigValues + config value of extends shouldn't be inherited
-  const plusConfigValues = getPageConfigValues({
-    // TODO
-    plusConfigFilePath: configFileFound.filePathHumanReadable ?? configFileFound.filePathAbsolute,
-    plusConfigFilePathAbsolute: configFileFound.filePathAbsolute,
-    plusConfigFileExports: configFileExports,
-    extendsConfigs: []
-  })
-  if (!plusConfigValues.extends) {
+function getExtendsImportData(configFileExports: Record<string, unknown>, configFilePath: FilePath): ImportData[] {
+  const configFilePathToPrint = getFilePathToPrint(configFilePath)
+  assertDefaultExportObject(configFileExports, configFilePathToPrint)
+  const configValues = configFileExports.default
+  if (!configValues.extends) {
     return []
   }
-  assertUsage(hasProp(plusConfigValues, 'extends', 'string[]'), 'TODO')
-  const extendsImportData = plusConfigValues.extends.map((importDataSerialized) => {
+  assertUsage(hasProp(configValues, 'extends', 'string[]'), 'TODO')
+  const extendsImportData = configValues.extends.map((importDataSerialized) => {
     const importData = parseImportData(importDataSerialized)
     assertUsage(importData, 'TODO')
     return importData
