@@ -1,5 +1,5 @@
-export { transpileAndLoadPageConfig }
-export { transpileAndLoadPlusValueFile }
+export { transpileAndLoadConfigFile }
+export { transpileAndLoadValueFile }
 
 import esbuild, { type BuildResult, type BuildOptions } from 'esbuild'
 import fs from 'fs'
@@ -21,24 +21,24 @@ assertIsVitePluginCode()
 
 type Result = { fileExports: Record<string, unknown> } | { err: unknown }
 
-async function transpileAndLoadPageConfig(
+async function transpileAndLoadConfigFile(
   filePathAbsolute: string,
   filePathRelativeToUserRootDir: string
 ): Promise<Result> {
-  return transpileAndLoadPlusFile(filePathAbsolute, true, filePathRelativeToUserRootDir)
+  return transpileAndLoadFile(filePathAbsolute, true, filePathRelativeToUserRootDir)
 }
 
-async function transpileAndLoadPlusValueFile(filePathAbsolute: string): Promise<Result> {
-  return transpileAndLoadPlusFile(filePathAbsolute, false)
+async function transpileAndLoadValueFile(filePathAbsolute: string): Promise<Result> {
+  return transpileAndLoadFile(filePathAbsolute, false)
 }
 
-async function transpileAndLoadPlusFile(filePathAbsolute: string, isPageConfig: false): Promise<Result>
-async function transpileAndLoadPlusFile(
+async function transpileAndLoadFile(filePathAbsolute: string, isPageConfig: false): Promise<Result>
+async function transpileAndLoadFile(
   filePathAbsolute: string,
   isPageConfig: true,
   filePathRelativeToUserRootDir: string
 ): Promise<Result>
-async function transpileAndLoadPlusFile(
+async function transpileAndLoadFile(
   filePathAbsolute: string,
   isPageConfig: boolean,
   filePathRelativeToUserRootDir?: string

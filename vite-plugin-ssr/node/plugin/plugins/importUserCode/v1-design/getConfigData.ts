@@ -40,7 +40,7 @@ import {
   isRelevantConfig,
   pickMostRelevantConfigValue
 } from './getConfigData/filesystemRouting'
-import { transpileAndLoadPageConfig, transpileAndLoadPlusValueFile } from './transpileAndLoadPlusFile'
+import { transpileAndLoadConfigFile, transpileAndLoadValueFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
 import { getPageConfigValue, getPageConfigValues } from './getConfigData/helpers'
 
@@ -112,8 +112,8 @@ async function loadConfigData(
 
   let plusConfigFiles: PlusConfigFile[]
   {
-    const foundFiles = plusFiles.filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
-    const result = await findAndLoadPlusConfigFiles(foundFiles)
+    const configFiles = plusFiles.filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
+    const result = await loadConfigFiles(configFiles)
     /* TODO: - remove this if we don't need this for optimizeDeps.entries
      *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead
     if ('err' in result) {
@@ -754,7 +754,7 @@ async function loadPlusValueFile(plusFile: FoundFile, configDefinitions: ConfigD
   if (configDef.env !== 'config-only') {
     return plusValueFile
   }
-  const result = await transpileAndLoadPlusValueFile(filePathAbsolute)
+  const result = await transpileAndLoadValueFile(filePathAbsolute)
   if ('err' in result) {
     throw result.err
   }
@@ -773,14 +773,14 @@ function extractConfigName(filePath: string) {
   return configName
 }
 
-async function findAndLoadPlusConfigFiles(
-  foundFiles: FoundFile[]
+async function loadConfigFiles(
+  configFiles: FoundFile[]
 ): Promise<{ err: unknown } | { plusConfigFiles: PlusConfigFile[] }> {
   const plusConfigFiles: PlusConfigFile[] = []
   // TODO: make esbuild build everyting at once
   const results = await Promise.all(
-    foundFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
-      const result = await transpileAndLoadPageConfig(filePathAbsolute, filePathRelativeToUserRootDir)
+    configFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
+      const result = await transpileAndLoadConfigFile(filePathAbsolute, filePathRelativeToUserRootDir)
       if ('err' in result) {
         return { err: result.err }
       }
@@ -831,7 +831,7 @@ async function getExtendsConfigs(
   plusConfigFilePathAbsolute: string
 ) {
   const extendsList = getExtendsList(plusConfigFileExports, plusConfigFilePath, plusConfigFilePathAbsolute)
-  const foundFiles: FoundFile[] = []
+  const configFiles: FoundFile[] = []
   extendsList.map((importData) => {
     const { importPath } = importData
     // TODO
@@ -840,7 +840,7 @@ async function getExtendsConfigs(
     let filePath = require.resolve(importPath, { paths: [plusConfigFilePathAbsolute] })
     filePath = toPosixPath(filePath)
     assertExtendsImportPath(importPath, filePath, plusConfigFilePath)
-    foundFiles.push({
+    configFiles.push({
       filePathAbsolute: filePath,
       // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
       // - Using importPath would be visually nicer but it's ambigous => we rather pick filePath for more clarity
@@ -848,7 +848,7 @@ async function getExtendsConfigs(
     })
   })
 
-  const result = await findAndLoadPlusConfigFiles(foundFiles)
+  const result = await loadConfigFiles(configFiles)
   if ('err' in result) {
     return {
       err: result.err
