@@ -125,9 +125,9 @@ async function loadConfigData(
     const configFiles = plusFiles.filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
     plusConfigFiles = await Promise.all(
       configFiles.map(async (configFileFound) => {
-        const { configFile, configsExtends } = await loadConfigFile(configFileFound)
+        const { configFile, extendsConfigs } = await loadConfigFile(configFileFound)
         const plusConfigFile: PlusConfigFile = TODO_convert(configFile)
-        plusConfigFile.extendsConfigs = configsExtends.map(TODO_convert)
+        plusConfigFile.extendsConfigs = extendsConfigs.map(TODO_convert)
         return plusConfigFile
       })
     )
@@ -778,21 +778,24 @@ type ConfigFile = {
 
 async function loadConfigFile(
   configFileFound: FoundFile
-): Promise<{ configFile: ConfigFile; configsExtends: ConfigFile[] }> {
+): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = configFileFound
   const { fileExports } = await transpileAndLoadConfigFile(filePathAbsolute, filePathRelativeToUserRootDir)
   const plusConfigFilePath = filePathRelativeToUserRootDir
   const plusConfigFileExports = fileExports
-  const result2 = await loadExtendsConfigs(plusConfigFileExports, plusConfigFilePath, filePathAbsolute)
-  const { extendsConfigs } = result2
+  const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(
+    plusConfigFileExports,
+    plusConfigFilePath,
+    filePathAbsolute
+  )
 
   const configFile: ConfigFile = {
     fileExports,
     filePathHumanReadable: filePathRelativeToUserRootDir,
     filePathAbsolute,
-    extendsFilePaths: []
+    extendsFilePaths
   }
-  return { configFile, configsExtends: extendsConfigs }
+  return { configFile, extendsConfigs }
 }
 
 // TODO: avoid infinite loop
@@ -801,9 +804,10 @@ async function loadExtendsConfigs(
   plusConfigFilePath: string,
   plusConfigFilePathAbsolute: string
 ) {
-  const extendsList = getExtendsList(plusConfigFileExports, plusConfigFilePath, plusConfigFilePathAbsolute)
-  const configFiles: FoundFile[] = []
-  extendsList.map((importData) => {
+  const extendsImportData = getExtendsImportData(plusConfigFileExports, plusConfigFilePath, plusConfigFilePathAbsolute)
+  const extendsConfigFiles: FoundFile[] = []
+  const extendsFilePaths: string[] = []
+  extendsImportData.map((importData) => {
     const { importPath } = importData
     // TODO
     //  - error handling if path doesn't exist
@@ -811,7 +815,8 @@ async function loadExtendsConfigs(
     let filePath = require.resolve(importPath, { paths: [plusConfigFilePathAbsolute] })
     filePath = toPosixPath(filePath)
     assertExtendsImportPath(importPath, filePath, plusConfigFilePath)
-    configFiles.push({
+    extendsFilePaths.push(filePath)
+    extendsConfigFiles.push({
       filePathAbsolute: filePath,
       // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
       // - Using importPath would be visually nicer but it's ambigous => we rather pick filePath for more clarity
@@ -819,13 +824,16 @@ async function loadExtendsConfigs(
     })
   })
 
-  const extendsConfigs: ConfigFile[] = await Promise.all(
-    configFiles.map(async (configFileFound) => {
-      const { configFile, configsExtends } = await loadConfigFile(configFileFound)
-      return configFile
+  const extendsConfigs: ConfigFile[] = []
+  await Promise.all(
+    extendsConfigFiles.map(async (configFileFound) => {
+      const { configFile, extendsConfigs } = await loadConfigFile(configFileFound)
+      extendsConfigs.push(configFile)
+      extendsConfigs.push(...extendsConfigs)
     })
   )
-  return { extendsConfigs }
+
+  return { extendsConfigs, extendsFilePaths }
 }
 
 function assertExtendsImportPath(importPath: string, filePath: string, plusConfigFilePath: string) {
@@ -848,7 +856,7 @@ function assertExtendsImportPath(importPath: string, filePath: string, plusConfi
   }
 }
 
-function getExtendsList(
+function getExtendsImportData(
   plusConfigFileExports: Record<string, unknown>,
   plusConfigFilePath: string,
   plusConfigFilePathAbsolute: string
@@ -864,12 +872,12 @@ function getExtendsList(
     return []
   }
   assertUsage(hasProp(plusConfigValues, 'extends', 'string[]'), 'TODO')
-  const extendsList = plusConfigValues.extends.map((importDataSerialized) => {
+  const extendsImportData = plusConfigValues.extends.map((importDataSerialized) => {
     const importData = parseImportData(importDataSerialized)
     assertUsage(importData, 'TODO')
     return importData
   })
-  return extendsList
+  return extendsImportData
 }
 
 type FoundFile = {
