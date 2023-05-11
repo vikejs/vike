@@ -1,5 +1,5 @@
 export type { Config }
-export type { ConfigName }
+export type { ConfigNameBuiltIn }
 export type { Meta }
 export type { Effect }
 
@@ -9,7 +9,7 @@ import type { ConfigVpsUserProvided } from '../ConfigVps'
 
 import type { ConfigEnv } from './PageConfig'
 
-type ConfigName =
+type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVpsUserProvided | 'onBeforeRoute' | 'onPrerenderStart' | 'meta'>
   | 'prerender'
 

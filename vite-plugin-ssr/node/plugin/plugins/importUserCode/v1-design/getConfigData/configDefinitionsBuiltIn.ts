@@ -1,7 +1,7 @@
 export { configDefinitionsBuiltIn }
 export type { ConfigDefinition }
 
-import type { ConfigName, ConfigEnv } from '../../../../../../shared/page-configs/PageConfig'
+import type { ConfigNameBuiltIn, ConfigEnv } from '../../../../../../shared/page-configs/PageConfig'
 
 type ConfigDefinition = {
   env: ConfigEnv
@@ -11,7 +11,7 @@ type ConfigDefinition = {
   }) => undefined | Record<string, Partial<ConfigDefinition>>
 }
 
-type ConfigDefinitionsBuiltIn = Record<ConfigName, ConfigDefinition>
+type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn, ConfigDefinition>
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: 'server-only'

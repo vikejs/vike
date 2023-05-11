@@ -5,9 +5,9 @@ export type { PageConfigData }
 export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
 export type { ConfigElement }
-export type { ConfigName }
+export type { ConfigNameBuiltIn }
 
-import type { ConfigName } from './Config'
+import type { ConfigNameBuiltIn } from './Config'
 
 /** See https://vite-plugin-ssr/meta */
 type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | '_routing-env' | 'config-only'
@@ -21,10 +21,10 @@ type PageConfigData = {
   plusConfigFilePathAll: string[]
   routeFilesystem: null | string
   routeFilesystemDefinedBy: string
-  configElements: Partial<Record<ConfigName, ConfigElement>>
+  configElements: Partial<Record<ConfigNameBuiltIn, ConfigElement>>
 }
 type PageConfigLoaded = PageConfig & {
-  configValues: Partial<Record<ConfigName, unknown>>
+  configValues: Partial<Record<ConfigNameBuiltIn, unknown>>
 }
 
 type PageConfigGlobalData = {

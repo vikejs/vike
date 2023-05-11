@@ -25,7 +25,7 @@ import {
 } from '../../../utils'
 import path from 'path'
 import type {
-  ConfigName,
+  ConfigNameBuiltIn,
   ConfigElement,
   ConfigEnv,
   PageConfigData,
@@ -58,14 +58,17 @@ type PlusValueFile = {
   plusValueFilePath: string
   configValue?: unknown
 }
-type InterfaceFileType = {
-  isConfigFile: true
-  extendsFilePaths: string[]
-} | {
-  isValueFile: true
-} | {
-  isConfigExtend: true
-}
+type InterfaceFileType =
+  | {
+      isConfigFile: true
+      extendsFilePaths: string[]
+    }
+  | {
+      isValueFile: true
+    }
+  | {
+      isConfigExtend: true
+    }
 type InterfaceFile = InterfaceFileType & {
   filePathAbsolute: string
   filePathRelativeToUserRootDir: null | string
@@ -217,7 +220,7 @@ async function loadConfigData(
         plusValueFilesRelevant
       )
       if (!configElement) return
-      configElements[configName as ConfigName] = configElement
+      configElements[configName as ConfigNameBuiltIn] = configElement
     })
 
     configElements = applyEffects(configElements, configDefinitionsRelevant)
