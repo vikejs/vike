@@ -110,18 +110,22 @@ async function loadConfigData(
 ): Promise<ConfigData> {
   const plusFiles = await findPlusFiles(userRootDir, isDev, extensions)
 
-  const result = await findAndLoadPlusConfigFiles(plusFiles)
-  /* TODO: - remove this if we don't need this for optimizeDeps.entries
-   *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead
-  if ('err' in result) {
-    return ['export const pageConfigs = null;', 'export const pageConfigGlobal = null;'].join('\n')
+  let plusConfigFiles: PlusConfigFile[]
+  {
+    const foundFiles = plusFiles.filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
+    const result = await findAndLoadPlusConfigFiles(foundFiles)
+    /* TODO: - remove this if we don't need this for optimizeDeps.entries
+     *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead
+    if ('err' in result) {
+      return ['export const pageConfigs = null;', 'export const pageConfigGlobal = null;'].join('\n')
+    }
+    */
+    if ('err' in result) {
+      handleConfigError(result.err, isDev)
+      assert(false)
+    }
+    plusConfigFiles = result.plusConfigFiles
   }
-  */
-  if ('err' in result) {
-    handleConfigError(result.err, isDev)
-    assert(false)
-  }
-  const { plusConfigFiles } = result
 
   let plusValueFiles: PlusValueFile[]
   {
@@ -687,6 +691,12 @@ type PlusConfigFile = {
   plusConfigFilePathAbsolute: string
   plusConfigFileExports: Record<string, unknown>
   extendsConfigs: PlusConfigFile[]
+  allFiles: {
+    fileExports?: Record<string, unknown>
+    filePathAbsolute: string
+    filePathHumanReadable?: string
+    extendsFile?: string
+  }[]
 }
 
 async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]) {
@@ -764,35 +774,32 @@ function extractConfigName(filePath: string) {
 }
 
 async function findAndLoadPlusConfigFiles(
-  plusFiles: FoundFile[],
-  isConfigFile?: true
+  foundFiles: FoundFile[]
 ): Promise<{ err: unknown } | { plusConfigFiles: PlusConfigFile[] }> {
   const plusConfigFiles: PlusConfigFile[] = []
   // TODO: make esbuild build everyting at once
   const results = await Promise.all(
-    plusFiles
-      .filter((f) => isConfigFile || extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
-      .map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
-        const result = await transpileAndLoadPageConfig(filePathAbsolute, filePathRelativeToUserRootDir)
-        if ('err' in result) {
-          return { err: result.err }
-        }
-        const plusConfigFilePath = filePathRelativeToUserRootDir
-        const plusConfigFilePathAbsolute = filePathAbsolute
-        const plusConfigFileExports = result.fileExports
-        const result2 = await getExtendsConfigs(plusConfigFileExports, plusConfigFilePath, filePathAbsolute)
-        if ('err' in result2) {
-          return { err: result2.err }
-        }
-        const { extendsConfigs } = result2
-        const plusConfigFile = {
-          plusConfigFilePath,
-          plusConfigFilePathAbsolute,
-          plusConfigFileExports,
-          extendsConfigs
-        }
-        return plusConfigFile
-      })
+    foundFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
+      const result = await transpileAndLoadPageConfig(filePathAbsolute, filePathRelativeToUserRootDir)
+      if ('err' in result) {
+        return { err: result.err }
+      }
+      const plusConfigFilePath = filePathRelativeToUserRootDir
+      const plusConfigFilePathAbsolute = filePathAbsolute
+      const plusConfigFileExports = result.fileExports
+      const result2 = await getExtendsConfigs(plusConfigFileExports, plusConfigFilePath, filePathAbsolute)
+      if ('err' in result2) {
+        return { err: result2.err }
+      }
+      const { extendsConfigs } = result2
+      const plusConfigFile = {
+        plusConfigFilePath,
+        plusConfigFilePathAbsolute,
+        plusConfigFileExports,
+        extendsConfigs
+      }
+      return plusConfigFile
+    })
   )
   for (const result of results) {
     if ('err' in result) {
@@ -809,7 +816,8 @@ async function findAndLoadPlusConfigFiles(
       plusConfigFilePath,
       plusConfigFilePathAbsolute,
       plusConfigFileExports,
-      extendsConfigs
+      extendsConfigs,
+      allFiles: []
     })
   })
 
@@ -840,7 +848,7 @@ async function getExtendsConfigs(
     })
   })
 
-  const result = await findAndLoadPlusConfigFiles(foundFiles, true)
+  const result = await findAndLoadPlusConfigFiles(foundFiles)
   if ('err' in result) {
     return {
       err: result.err
@@ -857,14 +865,10 @@ function assertExtendsImportPath(importPath: string, filePath: string, plusConfi
     const fileNameBaseCorrect = '+config'
     const [fileNameBase, ...fileNameRest] = fileName.split('.')
     const fileNameCorrect = [fileNameBaseCorrect, ...fileNameRest].join('.')
-    assertWarning(
-      fileNameBase === fileNameBaseCorrect,
-      `Rename ${fileName} to ${fileNameCorrect} in ${fileDir}`,
-      {
-        onlyOnce: true,
-        showStackTrace: false
-      }
-    )
+    assertWarning(fileNameBase === fileNameBaseCorrect, `Rename ${fileName} to ${fileNameCorrect} in ${fileDir}`, {
+      onlyOnce: true,
+      showStackTrace: false
+    })
   } else {
     assertWarning(
       false,
@@ -879,12 +883,13 @@ function getExtendsList(
   plusConfigFilePath: string,
   plusConfigFilePathAbsolute: string
 ): ImportData[] {
-  // TODO: refactor getPageConfigValues
+  // TODO: refactor getPageConfigValues + config value of extends shouldn't be inherited
   const plusConfigValues = getPageConfigValues({
     plusConfigFilePath,
     plusConfigFilePathAbsolute,
     plusConfigFileExports,
-    extendsConfigs: []
+    extendsConfigs: [],
+    allFiles: []
   })
   if (!plusConfigValues.extends) {
     return []
