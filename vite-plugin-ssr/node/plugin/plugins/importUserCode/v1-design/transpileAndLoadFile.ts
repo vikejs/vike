@@ -19,7 +19,7 @@ import { isImportData, replaceImportStatements, type FileImport } from './replac
 
 assertIsVitePluginCode()
 
-type Result = { fileExports: Record<string, unknown> } | { err: unknown }
+type Result = { fileExports: Record<string, unknown> } | { errorUserFile: unknown }
 
 async function transpileAndLoadConfigFile(
   filePathAbsolute: string,
@@ -50,8 +50,8 @@ async function transpileAndLoadFile(
   assert(isPageConfig === path.posix.basename(filePathAbsolute).includes('+config'))
   */
   const buildResult = await buildFile(filePathAbsolute, { bundle: !isPageConfig })
-  if ('err' in buildResult) {
-    return { err: buildResult.err }
+  if ('errorUserFile' in buildResult) {
+    return { errorUserFile: buildResult.errorUserFile }
   }
   let { code } = buildResult
   let fileImports: FileImport[] | null = null
@@ -67,7 +67,7 @@ async function transpileAndLoadFile(
   try {
     fileExports = await import_(filePathTmp)
   } catch (err) {
-    return { err }
+    return { errorUserFile: err }
   } finally {
     clean()
   }
@@ -110,7 +110,7 @@ async function buildFile(filePathAbsolute: string, { bundle }: { bundle: boolean
     result = await esbuild.build(options)
   } catch (err) {
     // TODO: let the error throw?
-    return { err }
+    return { errorUserFile: err }
   }
   const { text } = result.outputFiles![0]!
   return {

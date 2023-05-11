@@ -114,14 +114,13 @@ async function loadConfigData(
   {
     const configFiles = plusFiles.filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
     const result = await loadConfigFiles(configFiles)
-    /* TODO: - remove this if we don't need this for optimizeDeps.entries
-     *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead
-    if ('err' in result) {
+    /* TODO. Maybe use a golbal catch instead of whole errorUserFile mechanism?
+    if ('errorUserFile' in result) {
       return ['export const pageConfigs = null;', 'export const pageConfigGlobal = null;'].join('\n')
     }
     */
-    if ('err' in result) {
-      handleConfigError(result.err, isDev)
+    if ('errorUserFile' in result) {
+      handleUserFileError(result.errorUserFile, isDev)
       assert(false)
     }
     plusConfigFiles = result.plusConfigFiles
@@ -438,7 +437,7 @@ function resolveRelativeCodeFilePath(importPath: string, plusConfigFile: PlusCon
   let codeFilePath: string | null
   try {
     codeFilePath = require.resolve(importPath, { paths: [plusConfigFilDirPathAbsolute] })
-  } catch (err) {
+  } catch {
     codeFilePath = null
   } finally {
     clean()
@@ -755,8 +754,9 @@ async function loadPlusValueFile(plusFile: FoundFile, configDefinitions: ConfigD
     return plusValueFile
   }
   const result = await transpileAndLoadValueFile(filePathAbsolute)
-  if ('err' in result) {
-    throw result.err
+  // TODO
+  if ('errorUserFile' in result) {
+    throw result.errorUserFile
   }
   const { fileExports } = result
   assertDefaultExportUnknown(fileExports, filePathRelativeToUserRootDir)
@@ -775,21 +775,21 @@ function extractConfigName(filePath: string) {
 
 async function loadConfigFiles(
   configFiles: FoundFile[]
-): Promise<{ err: unknown } | { plusConfigFiles: PlusConfigFile[] }> {
+): Promise<{ errorUserFile: unknown } | { plusConfigFiles: PlusConfigFile[] }> {
   const plusConfigFiles: PlusConfigFile[] = []
   // TODO: make esbuild build everyting at once
   const results = await Promise.all(
     configFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
       const result = await transpileAndLoadConfigFile(filePathAbsolute, filePathRelativeToUserRootDir)
-      if ('err' in result) {
-        return { err: result.err }
+      if ('errorUserFile' in result) {
+        return { errorUserFile: result.errorUserFile }
       }
       const plusConfigFilePath = filePathRelativeToUserRootDir
       const plusConfigFilePathAbsolute = filePathAbsolute
       const plusConfigFileExports = result.fileExports
       const result2 = await getExtendsConfigs(plusConfigFileExports, plusConfigFilePath, filePathAbsolute)
-      if ('err' in result2) {
-        return { err: result2.err }
+      if ('errorUserFile' in result2) {
+        return { errorUserFile: result2.errorUserFile }
       }
       const { extendsConfigs } = result2
       const plusConfigFile = {
@@ -802,15 +802,15 @@ async function loadConfigFiles(
     })
   )
   for (const result of results) {
-    if ('err' in result) {
-      assert(result.err)
+    if ('errorUserFile' in result) {
+      assert(result.errorUserFile)
       return {
-        err: result.err
+        errorUserFile: result.errorUserFile
       }
     }
   }
   results.forEach((result) => {
-    assert(!('err' in result))
+    assert(!('errorUserFile' in result))
     const { plusConfigFilePath, plusConfigFilePathAbsolute, plusConfigFileExports, extendsConfigs } = result
     plusConfigFiles.push({
       plusConfigFilePath,
@@ -849,9 +849,9 @@ async function getExtendsConfigs(
   })
 
   const result = await loadConfigFiles(configFiles)
-  if ('err' in result) {
+  if ('errorUserFile' in result) {
     return {
-      err: result.err
+      errorUserFile: result.errorUserFile
     }
   }
   const extendsConfigs: PlusConfigFile[] = result.plusConfigFiles
@@ -937,10 +937,10 @@ async function findUserFiles(pattern: string | string[], userRootDir: string, is
   return userFiles
 }
 
-function handleConfigError(err: unknown, isDev: boolean) {
+function handleUserFileError(errorUserFile: unknown, isDev: boolean) {
   // Properly handle error during transpilation so that we can use assertUsage() during transpilation
   if (isDev) {
-    throw err
+    throw errorUserFile
   } else {
     // Avoid ugly error format:
     // ```
@@ -963,7 +963,7 @@ function handleConfigError(err: unknown, isDev: boolean) {
     //  ELIFECYCLE  Command failed with exit code 1.
     // ```
     console.log('')
-    console.error(err)
+    console.error(errorUserFile)
     process.exit(1)
   }
 }
