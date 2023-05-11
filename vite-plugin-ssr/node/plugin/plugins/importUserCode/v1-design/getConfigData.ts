@@ -124,8 +124,12 @@ async function loadConfigData(
   {
     const configFiles = plusFiles.filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
     plusConfigFiles = await Promise.all(
-      configFiles.map(async (configFileFound) => {
-        const { configFile, extendsConfigs } = await loadConfigFile(configFileFound)
+      configFiles.map(async (configUserFilePath) => {
+        const configFilePath = {
+          filePathAbsolute: configUserFilePath.filePathAbsolute,
+          filePathHumanReadable: configUserFilePath.filePathRelativeToUserRootDir
+        }
+        const { configFile, extendsConfigs } = await loadConfigFile(configFilePath, userRootDir)
         const plusConfigFile: PlusConfigFile = TODO_convert(configFile)
         plusConfigFile.extendsConfigs = extendsConfigs.map(TODO_convert)
         return plusConfigFile
@@ -724,7 +728,7 @@ type PlusValueFile = {
   configValue?: unknown
 }
 async function findAndLoadPlusValueFiles(
-  plusFiles: FoundFile[],
+  plusFiles: UserFilePath[],
   configDefinitions: ConfigDefinitionsExtended
 ): Promise<PlusValueFile[]> {
   const plusValueFiles: PlusValueFile[] = await Promise.all(
@@ -735,7 +739,7 @@ async function findAndLoadPlusValueFiles(
   return plusValueFiles
 }
 
-async function loadPlusValueFile(plusFile: FoundFile, configDefinitions: ConfigDefinitionsExtended) {
+async function loadPlusValueFile(plusFile: UserFilePath, configDefinitions: ConfigDefinitionsExtended) {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = plusFile
   const configName = extractConfigName(filePathRelativeToUserRootDir)
   assertConfigName(
@@ -777,15 +781,16 @@ type ConfigFile = {
 }
 
 async function loadConfigFile(
-  configFileFound: FoundFile
+  configFilePath: FilePath,
+  userRootDir: string
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
-  const { filePathAbsolute, filePathRelativeToUserRootDir } = configFileFound
-  const { fileExports } = await transpileAndLoadConfigFile(filePathAbsolute, filePathRelativeToUserRootDir)
-  const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFileFound)
+  const { filePathAbsolute, filePathHumanReadable } = configFilePath
+  const { fileExports } = await transpileAndLoadConfigFile(filePathAbsolute, filePathHumanReadable)
+  const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir)
 
   const configFile: ConfigFile = {
     fileExports,
-    filePathHumanReadable: filePathRelativeToUserRootDir,
+    filePathHumanReadable,
     filePathAbsolute,
     extendsFilePaths
   }
@@ -793,29 +798,33 @@ async function loadConfigFile(
 }
 
 // TODO: avoid infinite loop
-async function loadExtendsConfigs(configFileExports: Record<string, unknown>, configFileFound: FoundFile) {
-  const extendsImportData = getExtendsImportData(configFileExports, configFileFound)
-  const extendsConfigFiles: FoundFile[] = []
+async function loadExtendsConfigs(
+  configFileExports: Record<string, unknown>,
+  configFilePath: FilePath,
+  userRootDir: string
+) {
+  const extendsImportData = getExtendsImportData(configFileExports, configFilePath)
+  const extendsConfigFiles: FilePath[] = []
   extendsImportData.map((importData) => {
     const { importPath } = importData
     // TODO
     //  - error handling if path doesn't exist
     //  - validate extends configs
-    let filePath = require.resolve(importPath, { paths: [configFileFound.filePathAbsolute] })
-    filePath = toPosixPath(filePath)
-    assertExtendsImportPath(importPath, filePath, configFileFound.filePathRelativeToUserRootDir)
+    let filePathAbsolute = require.resolve(importPath, { paths: [configFilePath.filePathAbsolute] })
+    filePathAbsolute = toPosixPath(filePathAbsolute)
+    assertExtendsImportPath(importPath, filePathAbsolute, configFilePath)
     extendsConfigFiles.push({
-      filePathAbsolute: filePath,
+      filePathAbsolute,
       // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
-      // - Using importPath would be visually nicer but it's ambigous => we rather pick filePath for more clarity
-      filePathRelativeToUserRootDir: filePath
+      // - Using importPath would be visually nicer but it's ambigous => we rather pick filePathAbsolute for added clarity
+      filePathHumanReadable: determineFilePathHumanReadable(filePathAbsolute, userRootDir)
     })
   })
 
   const extendsConfigs: ConfigFile[] = []
   await Promise.all(
-    extendsConfigFiles.map(async (configFileFound) => {
-      const result = await loadConfigFile(configFileFound)
+    extendsConfigFiles.map(async (configFilePath) => {
+      const result = await loadConfigFile(configFilePath, userRootDir)
       extendsConfigs.push(result.configFile)
       extendsConfigs.push(...result.extendsConfigs)
     })
@@ -826,7 +835,18 @@ async function loadExtendsConfigs(configFileExports: Record<string, unknown>, co
   return { extendsConfigs, extendsFilePaths }
 }
 
-function assertExtendsImportPath(importPath: string, filePath: string, configFilePath: string) {
+function determineFilePathHumanReadable(filePathAbsolute: string, userRootDir: string): null | string {
+  assertPosixPath(filePathAbsolute)
+  assertPosixPath(userRootDir)
+  if (!filePathAbsolute.startsWith(userRootDir)) {
+    return null
+  }
+  let filePathHumanReadable = filePathAbsolute.slice(userRootDir.length)
+  if (!filePathHumanReadable.startsWith('/')) filePathHumanReadable = '/' + filePathHumanReadable
+  return filePathHumanReadable
+}
+
+function assertExtendsImportPath(importPath: string, filePath: string, configFilePath: FilePath) {
   if (isNpmPackageModule(importPath)) {
     const fileDir = path.posix.dirname(filePath) + '/'
     const fileName = path.posix.basename(filePath)
@@ -840,16 +860,25 @@ function assertExtendsImportPath(importPath: string, filePath: string, configFil
   } else {
     assertWarning(
       false,
-      `${configFilePath} uses 'extends' to inherit from '${importPath}' which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this feature.`,
+      `${getFilePathToPrint(
+        configFilePath
+      )} uses 'extends' to inherit from '${importPath}' which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this feature.`,
       { onlyOnce: true, showStackTrace: false }
     )
   }
 }
 
-function getExtendsImportData(configFileExports: Record<string, unknown>, configFileFound: FoundFile): ImportData[] {
+function getFilePathToPrint(filePath: FilePath) {
+  const filePathToPrint = filePath.filePathHumanReadable ?? filePath.filePathAbsolute
+  assert(filePathToPrint)
+  return filePathToPrint
+}
+
+function getExtendsImportData(configFileExports: Record<string, unknown>, configFileFound: FilePath): ImportData[] {
   // TODO: refactor getPageConfigValues + config value of extends shouldn't be inherited
   const plusConfigValues = getPageConfigValues({
-    plusConfigFilePath: configFileFound.filePathRelativeToUserRootDir,
+    // TODO
+    plusConfigFilePath: configFileFound.filePathHumanReadable ?? configFileFound.filePathAbsolute,
     plusConfigFilePathAbsolute: configFileFound.filePathAbsolute,
     plusConfigFileExports: configFileExports,
     extendsConfigs: []
@@ -866,12 +895,16 @@ function getExtendsImportData(configFileExports: Record<string, unknown>, config
   return extendsImportData
 }
 
-type FoundFile = {
-  filePathRelativeToUserRootDir: string
+type UserFilePath = {
   filePathAbsolute: string
+  filePathRelativeToUserRootDir: string
+}
+type FilePath = {
+  filePathAbsolute: string
+  filePathHumanReadable: null | string
 }
 
-async function findUserFiles(pattern: string | string[], userRootDir: string, isDev: boolean): Promise<FoundFile[]> {
+async function findUserFiles(pattern: string | string[], userRootDir: string, isDev: boolean): Promise<UserFilePath[]> {
   assertPosixPath(userRootDir)
   const timeBase = new Date().getTime()
   const result = await glob(pattern, {

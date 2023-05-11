@@ -23,9 +23,9 @@ type Result = { fileExports: Record<string, unknown> }
 
 async function transpileAndLoadConfigFile(
   filePathAbsolute: string,
-  filePathRelativeToUserRootDir: string
+  filePathHumanReadable: string | null
 ): Promise<Result> {
-  return transpileAndLoadFile(filePathAbsolute, true, filePathRelativeToUserRootDir)
+  return transpileAndLoadFile(filePathAbsolute, true, filePathHumanReadable)
 }
 
 async function transpileAndLoadValueFile(filePathAbsolute: string): Promise<Result> {
@@ -36,12 +36,12 @@ async function transpileAndLoadFile(filePathAbsolute: string, isPageConfig: fals
 async function transpileAndLoadFile(
   filePathAbsolute: string,
   isPageConfig: true,
-  filePathRelativeToUserRootDir: string
+  filePathHumanReadable: string | null
 ): Promise<Result>
 async function transpileAndLoadFile(
   filePathAbsolute: string,
   isPageConfig: boolean,
-  filePathRelativeToUserRootDir?: string
+  filePathHumanReadable?: string | null
 ): Promise<Result> {
   assertPosixPath(filePathAbsolute)
   /* Solide removes the + symbol when building its + files
@@ -75,8 +75,9 @@ async function transpileAndLoadFile(
   fileExports = { ...fileExports }
   if (isPageConfig) {
     assert(fileImports)
-    assert(filePathRelativeToUserRootDir)
-    assertFileImports(fileImports, fileExports, filePathRelativeToUserRootDir)
+    assert(filePathHumanReadable !== undefined)
+    const filePath = filePathHumanReadable ?? filePathAbsolute
+    assertFileImports(fileImports, fileExports, filePath)
   }
   return { fileExports }
 }
@@ -129,9 +130,9 @@ function getFilePathTmp(filePath: string): string {
 function assertFileImports(
   fileImports: (FileImport & { isReExported?: true })[],
   fileExports: Record<string, unknown>,
-  filePathRelativeToUserRootDir: string
+  filePath: string
 ) {
-  assertDefaultExportObject(fileExports, filePathRelativeToUserRootDir)
+  assertDefaultExportObject(fileExports, filePath)
   const exportedStrings = getExportedStrings(fileExports.default)
   Object.values(exportedStrings).forEach((exportVal) => {
     if (typeof exportVal !== 'string') return
@@ -153,7 +154,7 @@ function assertFileImports(
   assertWarning(
     fileImportsUnused.length === 0,
     [
-      `${filePathRelativeToUserRootDir} imports the following:`,
+      `${filePath} imports the following:`,
       ...importStatements.map((s) => `  ${s}`),
       `The import${singular ? '' : 's'} ${importNamesUnused} ${singular ? "isn't" : "aren't"} re-exported at ${pc.cyan(
         'export default { ... }'
