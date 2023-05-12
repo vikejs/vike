@@ -229,11 +229,26 @@ async function loadConfigData(
     })
   }
 
+  /* TODO
+  if (plusConfigFile) {
+    const configKeys = getConfigKeys(plusConfigFile)
+    configKeys.forEach((configName) => {
+      // TODO: this applies only against concrete config files, we should also apply to abstract config files
+      // TODO: apply this as well against extendsConfigs
+      assertConfigName(
+        configName,
+        [...Object.keys(configDefinitionsRelevant), 'meta'],
+        plusConfigFile.plusConfigFilePath
+      )
+    })
+  }
+  */
+
   const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(plusConfigFiles, plusValueFiles, userRootDir)
 
   const pageIds = determinePageIds(plusConfigFiles, plusValueFiles)
   const pageConfigsData: PageConfigData[] = []
-  pageIds.forEach(({ pageId, routeFilesystem, plusConfigFile, routeFilesystemDefinedBy }) => {
+  pageIds.forEach(({ pageId, routeFilesystem, routeFilesystemDefinedBy }) => {
     const plusConfigFilesRelevant = plusConfigFiles.filter(({ plusConfigFilePath }) =>
       isRelevantConfig(plusConfigFilePath, pageId)
     )
@@ -241,19 +256,6 @@ async function loadConfigData(
       .filter(({ plusValueFilePath }) => isRelevantConfig(plusValueFilePath, pageId))
       .filter((plusValueFile) => !isGlobal(plusValueFile.configName))
     let configDefinitionsRelevant = getConfigDefinitions(plusConfigFilesRelevant)
-
-    if (plusConfigFile) {
-      const configKeys = getConfigKeys(plusConfigFile)
-      configKeys.forEach((configName) => {
-        // TODO: this applies only against concrete config files, we should also apply to abstract config files
-        // TODO: apply this as well against extendsConfigs
-        assertConfigName(
-          configName,
-          [...Object.keys(configDefinitionsRelevant), 'meta'],
-          plusConfigFile.plusConfigFilePath
-        )
-      })
-    }
 
     // TODO: remove this and instead ensure that configs are always defined globally
     plusValueFilesRelevant.forEach((plusValueFile) => {
@@ -355,7 +357,6 @@ function determinePageIds(plusConfigFiles: PlusConfigFile[], plusValueFiles: Plu
   const pageIds: {
     pageId: string
     routeFilesystem: string
-    plusConfigFile: null | PlusConfigFile
     routeFilesystemDefinedBy: string
   }[] = []
   plusValueFiles.map((plusValueFile) => {
@@ -379,7 +380,6 @@ function determinePageIds(plusConfigFiles: PlusConfigFile[], plusValueFiles: Plu
     pageIds.push({
       pageId,
       routeFilesystem,
-      plusConfigFile: null,
       routeFilesystemDefinedBy
     })
   })
@@ -391,8 +391,6 @@ function determinePageIds(plusConfigFiles: PlusConfigFile[], plusValueFiles: Plu
       const alreadyIncluded = pageIds.some((p) => {
         if (p.pageId === pageId) {
           assert(p.routeFilesystem === routeFilesystem)
-          assert(p.plusConfigFile === null)
-          p.plusConfigFile = plusConfigFile
           return true
         }
         return false
@@ -403,7 +401,6 @@ function determinePageIds(plusConfigFiles: PlusConfigFile[], plusValueFiles: Plu
       pageIds.push({
         pageId,
         routeFilesystem,
-        plusConfigFile,
         routeFilesystemDefinedBy: plusConfigFilePath
       })
     }
