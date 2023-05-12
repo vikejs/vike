@@ -1,5 +1,5 @@
-export { determineRouteFromFilesystemPath }
-export { getFilesystemRoute }
+export { getRouteFilesystem }
+export { getRouteFilesystemDefinedBy }
 export { isRelevantConfig }
 export { pickMostRelevantConfigValue }
 export { isInherited }
@@ -28,28 +28,23 @@ function getLocationId(somePath: string): string {
   return locationId
 }
 /** Get URL determined by filesystem path */
-function getFilesystemRoute(locationId: string): string {
-  return getFilesystemPath(locationId, ['renderer', 'pages', 'src', 'index'])
+function getRouteFilesystem(locationId: string): string {
+  return getLogialPath(locationId, ['renderer', 'pages', 'src', 'index'])
 }
 /** Get apply root for config inheritance **/
 function getInheritanceRoot(someDir: string): string {
-  return getFilesystemPath(someDir, ['renderer'])
+  return getLogialPath(someDir, ['renderer'])
 }
 /**
- * getFilesystemPath('/pages/some-page', ['pages']) => '/some-page'
- * getFilesystemPath('someNpmPackage/renderer', ['renderer']) => '/'
+ * getLogialPath('/pages/some-page', ['pages']) => '/some-page'
+ * getLogialPath('someNpmPackage/renderer', ['renderer']) => '/'
  */
-function getFilesystemPath(someDir: string, removeDirs: string[]): string {
+function getLogialPath(someDir: string, removeDirs: string[]): string {
   someDir = removeNpmPackageName(someDir)
   someDir = removeDirectories(someDir, removeDirs)
   assert(someDir.startsWith('/'))
   assert(!someDir.endsWith('/') || someDir === '/')
   return someDir
-}
-
-function determineRouteFromFilesystemPath(somePath: string): string {
-  const locationId = getLocationId(somePath)
-  return getFilesystemRoute(locationId)
 }
 
 function isRelevantConfig(
@@ -198,4 +193,11 @@ function removeFilename(filePath: string, optional?: true) {
   assert(filePath.startsWith('/') || isNpmPackageImportPath(filePath))
   assert(!filePath.endsWith('/') || filePath === '/')
   return filePath
+}
+
+function getRouteFilesystemDefinedBy(locationId: string) {
+  if( locationId === '/' ) return locationId
+  assert(!locationId.endsWith('/'))
+  const routeFilesystemDefinedBy = locationId + '/'
+  return routeFilesystemDefinedBy
 }

@@ -35,12 +35,12 @@ import { configDefinitionsBuiltIn, type ConfigDefinition } from './getConfigData
 import glob from 'fast-glob'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import {
-  determineRouteFromFilesystemPath,
-  getFilesystemRoute,
+  getRouteFilesystem,
   getLocationId,
   isInherited,
   isRelevantConfig,
-  pickMostRelevantConfigValue
+  pickMostRelevantConfigValue,
+  getRouteFilesystemDefinedBy
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadConfigFile, transpileAndLoadValueFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
@@ -253,9 +253,8 @@ async function loadConfigData(
   const pageConfigsData: PageConfigData[] = Object.entries(interfaceFilesMap)
     .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
     .map(([locationId, interfaceFiles]) => {
-      const routeFilesystem = getFilesystemRoute(locationId)
-      // TODO: improve?
-      const routeFilesystemDefinedBy = locationId
+      const routeFilesystem = getRouteFilesystem(locationId)
+      const routeFilesystemDefinedBy = getRouteFilesystemDefinedBy(locationId)
 
       const interfaceFilesMapRelevant = getInterfaceFilesMapRelevant(interfaceFilesMap, locationId)
 
@@ -1004,8 +1003,8 @@ function handleUserFileError(err: unknown, isDev: boolean) {
 function getPlusConfigFilesGlobal(plusConfigFiles: PlusConfigFile[]): PlusConfigFile[] {
   return plusConfigFiles.filter((p) => {
     const filePath = p.plusConfigFilePath
-    // TODO: remove
-    const routeFilesystem = determineRouteFromFilesystemPath(filePath)
+    const locationId = getLocationId(filePath)
+    const routeFilesystem = getRouteFilesystem(locationId)
     return routeFilesystem === '/'
   })
 }
