@@ -37,12 +37,13 @@ import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import {
   determinePageId,
   determineRouteFromFilesystemPath,
+  determineRouteFromPageId,
   isRelevantConfig,
   pickMostRelevantConfigValue
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadConfigFile, transpileAndLoadValueFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
-import { getPageConfigValue, getConfigKeys } from './getConfigData/helpers'
+import { getPageConfigValue } from './getConfigData/helpers'
 
 assertIsVitePluginCode()
 
@@ -75,7 +76,7 @@ type InterfaceFile = InterfaceFileType & {
   configMap: Record<ConfigName, { configValue?: unknown }>
 }
 type PageId = string
-type InterfaceFiles = Record<PageId, InterfaceFile[]>
+type InterfaceFilesMap = Record<PageId, InterfaceFile[]>
 
 type ConfigData = {
   pageConfigsData: PageConfigData[]
@@ -195,7 +196,7 @@ async function loadConfigData(
     plusValueFiles = await findAndLoadPlusValueFiles(plusFiles, configDefinitions)
   }
 
-  let interfaceFiles: InterfaceFiles = {}
+  let interfaceFilesMap: InterfaceFilesMap = {}
   // TODO: remove
   {
     plusValueFiles.forEach((plusValueFile) => {
@@ -213,18 +214,18 @@ async function loadConfigData(
       }
       const pageId = determinePageId(plusValueFilePath)
       assert(pageId === pageId_)
-      interfaceFiles[pageId] = interfaceFiles[pageId] ?? []
-      interfaceFiles[pageId]!.push(interfaceFile)
+      interfaceFilesMap[pageId] = interfaceFilesMap[pageId] ?? []
+      interfaceFilesMap[pageId]!.push(interfaceFile)
     })
     plusConfigFiles.forEach((plusConfigFile) => {
       const { plusConfigFilePath, extendsConfigs } = plusConfigFile
       const interfaceFile = tmp_convert_back(plusConfigFile, false)
       const pageId = determinePageId(plusConfigFilePath)
-      interfaceFiles[pageId] = interfaceFiles[pageId] ?? []
-      interfaceFiles[pageId]!.push(interfaceFile)
+      interfaceFilesMap[pageId] = interfaceFilesMap[pageId] ?? []
+      interfaceFilesMap[pageId]!.push(interfaceFile)
       extendsConfigs.forEach((extendsConfig) => {
         const interfaceFile = tmp_convert_back(extendsConfig, true)
-        interfaceFiles[pageId]!.push(interfaceFile)
+        interfaceFilesMap[pageId]!.push(interfaceFile)
       })
     })
   }
@@ -246,9 +247,13 @@ async function loadConfigData(
 
   const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(plusConfigFiles, plusValueFiles, userRootDir)
 
-  const pageIds = determinePageIds(plusConfigFiles, plusValueFiles)
-  const pageConfigsData: PageConfigData[] = []
-  pageIds.forEach(({ pageId, routeFilesystem, routeFilesystemDefinedBy }) => {
+  const pageConfigsData: PageConfigData[] = Object.entries(interfaceFilesMap)
+  .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
+  .map(([pageId, interfaceFiles]) => {
+    const routeFilesystem = determineRouteFromPageId(pageId)
+    // TODO: improve?
+    const routeFilesystemDefinedBy = pageId + '/'
+
     const plusConfigFilesRelevant = plusConfigFiles.filter(({ plusConfigFilePath }) =>
       isRelevantConfig(plusConfigFilePath, pageId)
     )
@@ -280,14 +285,15 @@ async function loadConfigData(
 
     const isErrorPage = determineIsErrorPage(routeFilesystem)
 
-    pageConfigsData.push({
+    const entry: PageConfigData = {
       pageId,
       isErrorPage,
       routeFilesystemDefinedBy,
       plusConfigFilePathAll: plusConfigFilesRelevant.map((p) => p.plusConfigFilePath),
       routeFilesystem: isErrorPage ? null : routeFilesystem,
       configElements
-    })
+    }
+    return entry
   })
 
   return { pageConfigsData, pageConfigGlobal, vikeConfig }
@@ -351,61 +357,6 @@ function getGlobalConfigs(plusConfigFiles: PlusConfigFile[], plusValueFiles: Plu
   })
 
   return { pageConfigGlobal, vikeConfig }
-}
-
-function determinePageIds(plusConfigFiles: PlusConfigFile[], plusValueFiles: PlusValueFile[]) {
-  const pageIds: {
-    pageId: string
-    routeFilesystem: string
-    routeFilesystemDefinedBy: string
-  }[] = []
-  plusValueFiles.map((plusValueFile) => {
-    if (!isDefiningPageConfig(plusValueFile.configName)) return
-    const { plusValueFilePath } = plusValueFile
-    const pageId = determinePageId(plusValueFilePath)
-    const routeFilesystem = determineRouteFromFilesystemPath(plusValueFilePath)
-    assertPosixPath(plusValueFilePath)
-    const routeFilesystemDefinedBy = path.posix.dirname(plusValueFilePath) + '/'
-    assert(!routeFilesystemDefinedBy.endsWith('//'))
-    {
-      const alreadyIncluded = pageIds.some((p) => {
-        if (p.pageId === pageId) {
-          assert(p.routeFilesystem === routeFilesystem)
-          return true
-        }
-        return false
-      })
-      if (alreadyIncluded) return
-    }
-    pageIds.push({
-      pageId,
-      routeFilesystem,
-      routeFilesystemDefinedBy
-    })
-  })
-  plusConfigFiles.forEach((plusConfigFile) => {
-    const { plusConfigFilePath } = plusConfigFile
-    const pageId = determinePageId(plusConfigFilePath)
-    const routeFilesystem = determineRouteFromFilesystemPath(plusConfigFilePath)
-    {
-      const alreadyIncluded = pageIds.some((p) => {
-        if (p.pageId === pageId) {
-          assert(p.routeFilesystem === routeFilesystem)
-          return true
-        }
-        return false
-      })
-      if (alreadyIncluded) return
-    }
-    if (isDefiningPage(plusConfigFile)) {
-      pageIds.push({
-        pageId,
-        routeFilesystem,
-        routeFilesystemDefinedBy: plusConfigFilePath
-      })
-    }
-  })
-  return pageIds
 }
 
 function resolveConfigElement(
@@ -472,9 +423,14 @@ function resolveConfigElement(
   }
 }
 
-function isDefiningPage(plusConfigFile: PlusConfigFile): boolean {
-  const configKeys = getConfigKeys(plusConfigFile)
-  return configKeys.some((configName) => isDefiningPageConfig(configName))
+function isDefiningPage(interfaceFiles: InterfaceFile[]): boolean {
+  for (const interfaceFile of interfaceFiles) {
+    const configNames = Object.keys(interfaceFile.configMap)
+    if (configNames.some((configName) => isDefiningPageConfig(configName))) {
+      return true
+    }
+  }
+  return false
 }
 function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)

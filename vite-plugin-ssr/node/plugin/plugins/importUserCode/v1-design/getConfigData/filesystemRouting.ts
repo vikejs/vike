@@ -1,4 +1,5 @@
 export { determineRouteFromFilesystemPath }
+export { determineRouteFromPageId }
 export { determinePageId }
 export { isRelevantConfig }
 export { pickMostRelevantConfigValue }
@@ -18,8 +19,14 @@ function determineRouteFromFilesystemPath(somePath: string): string {
   return getFilesysemRoute(filesystemPathRoot)
 }
 
+function determineRouteFromPageId(pageId: string): string {
+  return getFilesysemRoute(pageId)
+}
+
 function determinePageId(somePath: string): string {
-  return getFilesysemPathRoot(somePath)
+  const filesystemPathRoot = getFilesysemPathRoot(somePath)
+  const pageId = filesystemPathRoot
+  return pageId
 }
 
 function getFilesysemPathRoot(somePath: string): string {

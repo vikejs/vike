@@ -1,14 +1,8 @@
-export { getConfigKeys }
 // TODO: rename
 export { getPageConfigValue }
 
 import { assertDefaultExportObject } from '../../../../utils'
 import type { PlusConfigFile } from '../getConfigData'
-
-function getConfigKeys(plusConfigFile: PlusConfigFile) {
-  const configValues = getPageConfigValues(plusConfigFile)
-  return Object.keys(configValues)
-}
 
 function getPageConfigValue(
   configName: string,
