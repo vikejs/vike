@@ -32,7 +32,7 @@ function getManifestEntry(
     // Workaround for what seems to be a Vite bug when process.cwd() !== config.root
     //  - Manifest key is:
     //       ../../virtual:vite-plugin-ssr:importPageCode:client:/pages/index
-    //    But should be instead:
+    //    But it should be this instead:
     //      virtual:vite-plugin-ssr:importPageCode:client:/pages/index
     //  - This workaround was implemented to support Vitest runnung /tests/*
     //    - I don't know whether end users actually need this workaround? (I'm not sure what the bug actually is.)

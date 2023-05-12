@@ -2,13 +2,14 @@ export { getInvalidator }
 export { invalidateVirtualFilesImportPageCode }
 
 import type { ViteDevServer } from 'vite'
+import { isVirtualFileIdImportPageCode } from '../../../../shared/virtual-files/virtualFileImportPageCode'
 import { assert } from '../../../utils'
 
 // We cannot use the getInvalidator() trick for the code importers.
 // Instead we manually invalidate all code importers whenever the main virtual files is invalidated (which happens for every relevant change as per the glob `import.meta.glob('/**/+*')` below)
 function invalidateVirtualFilesImportPageCode(server: ViteDevServer) {
   Array.from(server.moduleGraph.urlToModuleMap.keys())
-    .filter((modUrl) => modUrl.includes('virtual:vite-plugin-ssr:importPageCode:'))
+    .filter((modUrl) => isVirtualFileIdImportPageCode(modUrl))
     .forEach((modUrl) => {
       server.moduleGraph.onFileChange(modUrl)
     })
