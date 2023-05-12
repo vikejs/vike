@@ -14,13 +14,13 @@ function deduceRouteStringFromFilesystemPath(pageId: string, filesystemRoots: Fi
   const filesystemRootsMatch = filesystemRoots
     .filter(({ filesystemRoot }) => pageId.startsWith(filesystemRoot))
     .sort(higherFirst(({ filesystemRoot }) => filesystemRoot.length))
-  const fsRoot = filesystemRootsMatch[0]
+  const fsBase = filesystemRootsMatch[0]
 
   let filesystemRoute: string
-  if (fsRoot) {
+  if (fsBase) {
     // Example values:
     //  - `{"pageId":"/pages/index","filesystemRoot":"/","urlRoot":"/client_portal"}`
-    const { filesystemRoot, urlRoot } = fsRoot
+    const { filesystemRoot, urlRoot } = fsBase
     const debugInfo = { pageId, filesystemRoot, urlRoot }
     assert(urlRoot.startsWith('/') && pageId.startsWith('/') && filesystemRoot.startsWith('/'), debugInfo)
     assert(pageId.startsWith(filesystemRoot), debugInfo)
