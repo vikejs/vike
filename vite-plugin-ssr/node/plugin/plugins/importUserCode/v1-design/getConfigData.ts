@@ -35,9 +35,10 @@ import { configDefinitionsBuiltIn, type ConfigDefinition } from './getConfigData
 import glob from 'fast-glob'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import {
-  determinePageId,
   determineRouteFromFilesystemPath,
   determineRouteFromPageId,
+  getLocationId,
+  isInherited,
   isRelevantConfig,
   pickMostRelevantConfigValue
 } from './getConfigData/filesystemRouting'
@@ -47,19 +48,6 @@ import { getPageConfigValue } from './getConfigData/helpers'
 
 assertIsVitePluginCode()
 
-type PlusConfigFile = {
-  plusConfigFilePath: string
-  plusConfigFilePathAbsolute: string
-  plusConfigFileExports: Record<string, unknown>
-  extendsConfigs: PlusConfigFile[]
-  extendsFilePaths: string[]
-}
-type PlusValueFile = {
-  pageId: string
-  configName: string
-  plusValueFilePath: string
-  configValue?: unknown
-}
 type InterfaceFileType =
   | {
       isConfigFile: true
@@ -75,8 +63,23 @@ type InterfaceFile = InterfaceFileType & {
   filePathRelativeToUserRootDir: null | string
   configMap: Record<ConfigName, { configValue?: unknown }>
 }
-type PageId = string
-type InterfaceFilesMap = Record<PageId, InterfaceFile[]>
+type LocationId = string
+type InterfaceFilesMap = Record<LocationId, InterfaceFile[]>
+// TODO: remove
+type PlusConfigFile = {
+  plusConfigFilePath: string
+  plusConfigFilePathAbsolute: string
+  plusConfigFileExports: Record<string, unknown>
+  extendsConfigs: PlusConfigFile[]
+  extendsFilePaths: string[]
+}
+// TODO: remove
+type PlusValueFile = {
+  pageId: string
+  configName: string
+  plusValueFilePath: string
+  configValue?: unknown
+}
 
 type ConfigData = {
   pageConfigsData: PageConfigData[]
@@ -200,7 +203,7 @@ async function loadConfigData(
   // TODO: remove
   {
     plusValueFiles.forEach((plusValueFile) => {
-      const { pageId: pageId_, configName, plusValueFilePath } = plusValueFile
+      const { pageId, configName, plusValueFilePath } = plusValueFile
       const interfaceFile: InterfaceFile = {
         filePathRelativeToUserRootDir: plusValueFilePath,
         filePathAbsolute: path.posix.join(userRootDir, plusValueFilePath),
@@ -212,20 +215,20 @@ async function loadConfigData(
       if ('configValue' in plusValueFile) {
         interfaceFile.configMap[configName]!.configValue = plusValueFile.configValue
       }
-      const pageId = determinePageId(plusValueFilePath)
-      assert(pageId === pageId_)
-      interfaceFilesMap[pageId] = interfaceFilesMap[pageId] ?? []
-      interfaceFilesMap[pageId]!.push(interfaceFile)
+      const locationId = getLocationId(plusValueFilePath)
+      assert(locationId === pageId)
+      interfaceFilesMap[locationId] = interfaceFilesMap[locationId] ?? []
+      interfaceFilesMap[locationId]!.push(interfaceFile)
     })
     plusConfigFiles.forEach((plusConfigFile) => {
       const { plusConfigFilePath, extendsConfigs } = plusConfigFile
       const interfaceFile = tmp_convert_back(plusConfigFile, false)
-      const pageId = determinePageId(plusConfigFilePath)
-      interfaceFilesMap[pageId] = interfaceFilesMap[pageId] ?? []
-      interfaceFilesMap[pageId]!.push(interfaceFile)
+      const locationId = getLocationId(plusConfigFilePath)
+      interfaceFilesMap[locationId] = interfaceFilesMap[locationId] ?? []
+      interfaceFilesMap[locationId]!.push(interfaceFile)
       extendsConfigs.forEach((extendsConfig) => {
         const interfaceFile = tmp_convert_back(extendsConfig, true)
-        interfaceFilesMap[pageId]!.push(interfaceFile)
+        interfaceFilesMap[locationId]!.push(interfaceFile)
       })
     })
   }
@@ -248,55 +251,66 @@ async function loadConfigData(
   const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(plusConfigFiles, plusValueFiles, userRootDir)
 
   const pageConfigsData: PageConfigData[] = Object.entries(interfaceFilesMap)
-  .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
-  .map(([pageId, interfaceFiles]) => {
-    const routeFilesystem = determineRouteFromPageId(pageId)
-    // TODO: improve?
-    const routeFilesystemDefinedBy = pageId + '/'
+    .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
+    .map(([locationId, interfaceFiles]) => {
+      const routeFilesystem = determineRouteFromPageId(locationId)
+      // TODO: improve?
+      const routeFilesystemDefinedBy = locationId
 
-    const plusConfigFilesRelevant = plusConfigFiles.filter(({ plusConfigFilePath }) =>
-      isRelevantConfig(plusConfigFilePath, pageId)
-    )
-    const plusValueFilesRelevant = plusValueFiles
-      .filter(({ plusValueFilePath }) => isRelevantConfig(plusValueFilePath, pageId))
-      .filter((plusValueFile) => !isGlobal(plusValueFile.configName))
-    let configDefinitionsRelevant = getConfigDefinitions(plusConfigFilesRelevant)
+      const interfaceFilesMapRelevant = getInterfaceFilesMapRelevant(interfaceFilesMap, locationId)
 
-    // TODO: remove this and instead ensure that configs are always defined globally
-    plusValueFilesRelevant.forEach((plusValueFile) => {
-      const { configName } = plusValueFile
-      assert(configName in configDefinitionsRelevant || configName === 'meta')
-    })
-
-    let configElements: PageConfigData['configElements'] = {}
-    objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
-      const configElement = resolveConfigElement(
-        configName,
-        configDef,
-        plusConfigFilesRelevant,
-        userRootDir,
-        plusValueFilesRelevant
+      const plusConfigFilesRelevant = plusConfigFiles.filter(({ plusConfigFilePath }) =>
+        isRelevantConfig(plusConfigFilePath, locationId)
       )
-      if (!configElement) return
-      configElements[configName as ConfigNameBuiltIn] = configElement
+      const plusValueFilesRelevant = plusValueFiles
+        .filter(({ plusValueFilePath }) => isRelevantConfig(plusValueFilePath, locationId))
+        .filter((plusValueFile) => !isGlobal(plusValueFile.configName))
+      let configDefinitionsRelevant = getConfigDefinitions(plusConfigFilesRelevant)
+
+      // TODO: remove this and instead ensure that configs are always defined globally
+      plusValueFilesRelevant.forEach((plusValueFile) => {
+        const { configName } = plusValueFile
+        assert(configName in configDefinitionsRelevant || configName === 'meta')
+      })
+
+      let configElements: PageConfigData['configElements'] = {}
+      objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
+        const configElement = resolveConfigElement(
+          configName,
+          configDef,
+          plusConfigFilesRelevant,
+          userRootDir,
+          plusValueFilesRelevant
+        )
+        if (!configElement) return
+        configElements[configName as ConfigNameBuiltIn] = configElement
+      })
+
+      configElements = applyEffects(configElements, configDefinitionsRelevant)
+
+      const isErrorPage = determineIsErrorPage(routeFilesystem)
+
+      const entry: PageConfigData = {
+        pageId: locationId,
+        isErrorPage,
+        routeFilesystemDefinedBy,
+        plusConfigFilePathAll: plusConfigFilesRelevant.map((p) => p.plusConfigFilePath),
+        routeFilesystem: isErrorPage ? null : routeFilesystem,
+        configElements
+      }
+      return entry
     })
-
-    configElements = applyEffects(configElements, configDefinitionsRelevant)
-
-    const isErrorPage = determineIsErrorPage(routeFilesystem)
-
-    const entry: PageConfigData = {
-      pageId,
-      isErrorPage,
-      routeFilesystemDefinedBy,
-      plusConfigFilePathAll: plusConfigFilesRelevant.map((p) => p.plusConfigFilePath),
-      routeFilesystem: isErrorPage ? null : routeFilesystem,
-      configElements
-    }
-    return entry
-  })
 
   return { pageConfigsData, pageConfigGlobal, vikeConfig }
+}
+
+function getInterfaceFilesMapRelevant(interfaceFilesMap: InterfaceFilesMap, locationIdPage: string): InterfaceFilesMap {
+  const interfaceFilesMapRelevant = Object.fromEntries(
+    Object.entries(interfaceFilesMap).filter(([locationId]) => {
+      return isInherited(locationId, locationIdPage)
+    })
+  )
+  return interfaceFilesMapRelevant
 }
 
 function getGlobalConfigs(plusConfigFiles: PlusConfigFile[], plusValueFiles: PlusValueFile[], userRootDir: string) {
@@ -779,7 +793,7 @@ async function loadPlusValueFile(plusFile: UserFilePath, configDefinitions: Conf
   assert(configDef)
   const plusValueFile: PlusValueFile = {
     configName,
-    pageId: determinePageId(filePathRelativeToUserRootDir),
+    pageId: getLocationId(filePathRelativeToUserRootDir),
     plusValueFilePath: filePathRelativeToUserRootDir
   }
   if (configDef.env !== 'config-only') {

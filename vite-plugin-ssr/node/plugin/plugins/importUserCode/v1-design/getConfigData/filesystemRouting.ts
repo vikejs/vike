@@ -1,8 +1,9 @@
 export { determineRouteFromFilesystemPath }
 export { determineRouteFromPageId }
-export { determinePageId }
 export { isRelevantConfig }
 export { pickMostRelevantConfigValue }
+export { isInherited }
+export { getLocationId }
 
 import {
   assert,
@@ -14,67 +15,81 @@ import {
 import type { PlusValueFile, PlusConfigFile } from '../getConfigData'
 import { getPageConfigValue } from './helpers'
 
+/**
+ * getLocationId('/pages/some-page/+Page.js') => '/pages/some-page'
+ * getLocationId('/pages/some-page') => '/pages/some-page'
+ * getLocationId('/renderer/+config.js') => '/renderer'
+ * getLocationId('someNpmPackage/renderer/+config.js') => 'someNpmPackage/renderer'
+ */
+function getLocationId(somePath: string): string {
+  const locationId = removeFilename(somePath, true)
+  assert(locationId.startsWith('/') || isNpmPackageImportPath(locationId))
+  assert(!locationId.endsWith('/') || locationId === '/')
+  return locationId
+}
+/** Get URL determined by filesystem path */
+function getFilesysemRoute(someDir: string): string {
+  return getFilesystemPath(someDir, ['renderer', 'pages', 'src', 'index'])
+}
+/** Get apply root for config inheritance **/
+function getInheritanceRoot(someDir: string): string {
+  return getFilesystemPath(someDir, ['renderer'])
+}
+/**
+ * getFilesystemPath('/pages/some-page', ['pages']) => '/some-page'
+ * getFilesystemPath('someNpmPackage/renderer', ['renderer']) => '/'
+ */
+function getFilesystemPath(someDir: string, removeDirs: string[]): string {
+  someDir = removeNpmPackageName(someDir)
+  someDir = removeDirectories(someDir, removeDirs)
+  assert(someDir.startsWith('/'))
+  assert(!someDir.endsWith('/') || someDir === '/')
+  return someDir
+}
+
 function determineRouteFromFilesystemPath(somePath: string): string {
-  const filesystemPathRoot = getFilesysemPathRoot(somePath)
-  return getFilesysemRoute(filesystemPathRoot)
+  const locationId = getLocationId(somePath)
+  return getFilesysemRoute(locationId)
 }
 
-function determineRouteFromPageId(pageId: string): string {
-  return getFilesysemRoute(pageId)
-}
-
-function determinePageId(somePath: string): string {
-  const filesystemPathRoot = getFilesysemPathRoot(somePath)
-  const pageId = filesystemPathRoot
-  return pageId
-}
-
-function getFilesysemPathRoot(somePath: string): string {
-  const pageId = removeFilename(somePath, true)
-  assert(pageId.startsWith('/') || isNpmPackageImportPath(pageId))
-  assert(!pageId.endsWith('/') || pageId === '/')
-  return pageId
+function determineRouteFromPageId(locationId: string): string {
+  return getFilesysemRoute(locationId)
 }
 
 function isRelevantConfig(
   configPath: string, // Can be plusConfigFilePath or plusValueFilePath
-  pageId: string
+  locationId: string
 ): boolean {
-  const configApplyRoot = getFilesystemApplyRoot(removeFilename(configPath))
-  const isRelevant = pageId.startsWith(configApplyRoot)
+  const inheritanceRoot = getInheritanceRoot(removeFilename(configPath))
+  const isRelevant = locationId.startsWith(inheritanceRoot)
   return isRelevant
 }
 
-// Get URL determined by filesystem path
-function getFilesysemRoute(someDir: string): string {
-  return getFilesystemPath(someDir, ['renderer', 'pages', 'src', 'index'])
-}
-// Get filesystem apply root for config inheritance
-function getFilesystemApplyRoot(someDir: string): string {
-  return getFilesystemPath(someDir, ['renderer'])
+function isInherited(locationId: string, locationIdPage: string): boolean {
+  const inheritanceRoot = getInheritanceRoot(locationId)
+  const inheritanceRootPage = getInheritanceRoot(locationIdPage)
+  return inheritanceRootPage.startsWith(inheritanceRoot)
 }
 
-function getFilesystemPath(someDir: string, removeDirs: string[]): string {
-  assertPosixPath(someDir)
-  assert(!someDir.endsWith('/') || someDir === '/')
-  if (isNpmPackageImportPath(someDir)) {
-    const importPath = getNpmPackageImportPath(someDir)
-    assert(importPath)
-    assert(!importPath.startsWith('/'))
-    someDir = '/' + importPath
+function removeNpmPackageName(somePath: string): string {
+  if (!isNpmPackageImportPath(somePath)) {
+    return somePath
   }
-  assert(someDir.startsWith('/'))
-
-  let fsPath = someDir
+  const importPath = getNpmPackageImportPath(somePath)
+  assert(importPath)
+  assertPosixPath(importPath)
+  assert(!importPath.startsWith('/'))
+  somePath = '/' + importPath
+  return somePath
+}
+function removeDirectories(somePath: string, removeDirs: string[]): string {
+  assertPosixPath(somePath)
+  somePath = somePath
     .split('/')
     .filter((p) => !removeDirs.includes(p))
     .join('/')
-  if (fsPath === '') fsPath = '/'
-
-  assert(fsPath.startsWith('/') || isNpmPackageImportPath(fsPath))
-  assert(!fsPath.endsWith('/') || fsPath === '/')
-
-  return fsPath
+  if (somePath === '') somePath = '/'
+  return somePath
 }
 
 type Candidate = { plusValueFile: PlusValueFile } | { plusConfigFile: PlusConfigFile }
@@ -104,20 +119,23 @@ function pickMostRelevantConfigValue(
   }
   let winnerNow = candidates[0]!
   candidates.slice(1).forEach((candidate) => {
-    const winnerNowApplyRoot = getCandidateApplyRoot(winnerNow)
-    const candidateApplyRoot = getCandidateApplyRoot(candidate)
-    assert(candidateApplyRoot.startsWith(winnerNowApplyRoot) || winnerNowApplyRoot.startsWith(candidateApplyRoot))
+    const winnerNowInheritanceRoot = getCandidateInheritanceRoot(winnerNow)
+    const candidateInheritanceRoot = getCandidateInheritanceRoot(candidate)
+    assert(
+      candidateInheritanceRoot.startsWith(winnerNowInheritanceRoot) ||
+        winnerNowInheritanceRoot.startsWith(candidateInheritanceRoot)
+    )
     const candidateFilePath = getFilePath(candidate)
     const winnerNowFilePath = getFilePath(winnerNow)
     assert(candidateFilePath !== winnerNowFilePath)
 
-    // Filesystem inheritence
-    if (candidateApplyRoot.length > winnerNowApplyRoot.length) {
+    // Filesystem inheritance
+    if (candidateInheritanceRoot.length > winnerNowInheritanceRoot.length) {
       winnerNow = candidate
     }
 
     // Conflict
-    if (candidateApplyRoot.length === winnerNowApplyRoot.length) {
+    if (candidateInheritanceRoot.length === winnerNowInheritanceRoot.length) {
       let ignored: Candidate
       if (
         // Make this config value:
@@ -145,10 +163,10 @@ function pickMostRelevantConfigValue(
   })
   return winnerNow
 }
-function getCandidateApplyRoot(candidate: Candidate): string {
+function getCandidateInheritanceRoot(candidate: Candidate): string {
   const candidateFilePath = getFilePath(candidate)
-  const candidateApplyRoot = getFilesystemApplyRoot(removeFilename(candidateFilePath))
-  return candidateApplyRoot
+  const candidateInheritanceRoot = getInheritanceRoot(removeFilename(candidateFilePath))
+  return candidateInheritanceRoot
 }
 function getFilePath(candidate: Candidate) {
   let filePath: string
