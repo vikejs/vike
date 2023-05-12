@@ -36,7 +36,7 @@ import glob from 'fast-glob'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import {
   determineRouteFromFilesystemPath,
-  determineRouteFromPageId,
+  getFilesystemRoute,
   getLocationId,
   isInherited,
   isRelevantConfig,
@@ -89,7 +89,7 @@ type ConfigData = {
 let configDataPromise: Promise<ConfigData> | null = null
 let isFirstInvalidation = true
 
-type ConfigDefinitionsExtended = Record<string, ConfigDefinition>
+type ConfigDefinitionsIncludingCustom = Record<string, ConfigDefinition>
 
 type GlobalConfigName =
   | 'onPrerenderStart'
@@ -253,7 +253,7 @@ async function loadConfigData(
   const pageConfigsData: PageConfigData[] = Object.entries(interfaceFilesMap)
     .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
     .map(([locationId, interfaceFiles]) => {
-      const routeFilesystem = determineRouteFromPageId(locationId)
+      const routeFilesystem = getFilesystemRoute(locationId)
       // TODO: improve?
       const routeFilesystemDefinedBy = locationId
 
@@ -634,8 +634,8 @@ function getErrorIntro(filePath: string, configName: string): string {
   return `${filePath} sets the config ${configName}`
 }
 
-function getConfigDefinitions(plusConfigFilesRelevant: PlusConfigFile[]): ConfigDefinitionsExtended {
-  const configDefinitions: ConfigDefinitionsExtended = { ...configDefinitionsBuiltIn }
+function getConfigDefinitions(plusConfigFilesRelevant: PlusConfigFile[]): ConfigDefinitionsIncludingCustom {
+  const configDefinitions: ConfigDefinitionsIncludingCustom = { ...configDefinitionsBuiltIn }
   plusConfigFilesRelevant.forEach((plusConfigFile) => {
     const { plusConfigFilePath } = plusConfigFile
     const result = getPageConfigValue('meta', plusConfigFile)
@@ -705,7 +705,7 @@ type ConfigElements = Record<string, ConfigElement>
 
 function applyEffects(
   configElements: ConfigElements,
-  configDefinitionsRelevant: ConfigDefinitionsExtended
+  configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
 ): ConfigElements {
   const configElementsMod = { ...configElements }
 
@@ -770,7 +770,7 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
 
 async function findAndLoadPlusValueFiles(
   plusFiles: UserFilePath[],
-  configDefinitions: ConfigDefinitionsExtended
+  configDefinitions: ConfigDefinitionsIncludingCustom
 ): Promise<PlusValueFile[]> {
   const plusValueFiles: PlusValueFile[] = await Promise.all(
     plusFiles
@@ -780,7 +780,7 @@ async function findAndLoadPlusValueFiles(
   return plusValueFiles
 }
 
-async function loadPlusValueFile(plusFile: UserFilePath, configDefinitions: ConfigDefinitionsExtended) {
+async function loadPlusValueFile(plusFile: UserFilePath, configDefinitions: ConfigDefinitionsIncludingCustom) {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = plusFile
   const configName = extractConfigName(filePathRelativeToUserRootDir)
   assertConfigName(
@@ -1004,6 +1004,7 @@ function handleUserFileError(err: unknown, isDev: boolean) {
 function getPlusConfigFilesGlobal(plusConfigFiles: PlusConfigFile[]): PlusConfigFile[] {
   return plusConfigFiles.filter((p) => {
     const filePath = p.plusConfigFilePath
+    // TODO: remove
     const routeFilesystem = determineRouteFromFilesystemPath(filePath)
     return routeFilesystem === '/'
   })

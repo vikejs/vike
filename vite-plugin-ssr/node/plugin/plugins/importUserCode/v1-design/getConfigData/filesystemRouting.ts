@@ -1,5 +1,5 @@
 export { determineRouteFromFilesystemPath }
-export { determineRouteFromPageId }
+export { getFilesystemRoute }
 export { isRelevantConfig }
 export { pickMostRelevantConfigValue }
 export { isInherited }
@@ -28,8 +28,8 @@ function getLocationId(somePath: string): string {
   return locationId
 }
 /** Get URL determined by filesystem path */
-function getFilesysemRoute(someDir: string): string {
-  return getFilesystemPath(someDir, ['renderer', 'pages', 'src', 'index'])
+function getFilesystemRoute(locationId: string): string {
+  return getFilesystemPath(locationId, ['renderer', 'pages', 'src', 'index'])
 }
 /** Get apply root for config inheritance **/
 function getInheritanceRoot(someDir: string): string {
@@ -49,11 +49,7 @@ function getFilesystemPath(someDir: string, removeDirs: string[]): string {
 
 function determineRouteFromFilesystemPath(somePath: string): string {
   const locationId = getLocationId(somePath)
-  return getFilesysemRoute(locationId)
-}
-
-function determineRouteFromPageId(locationId: string): string {
-  return getFilesysemRoute(locationId)
+  return getFilesystemRoute(locationId)
 }
 
 function isRelevantConfig(
