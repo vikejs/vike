@@ -37,7 +37,6 @@ import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import {
   determinePageId,
   determineRouteFromFilesystemPath,
-  getFilesysemPathRoot,
   isRelevantConfig,
   pickMostRelevantConfigValue
 } from './getConfigData/filesystemRouting'
@@ -75,8 +74,8 @@ type InterfaceFile = InterfaceFileType & {
   filePathRelativeToUserRootDir: null | string
   configMap: Record<ConfigName, { configValue?: unknown }>
 }
-type FilesystemPathRoot = string
-type InterfaceFiles = Record<FilesystemPathRoot, InterfaceFile[]>
+type PageId = string
+type InterfaceFiles = Record<PageId, InterfaceFile[]>
 
 type ConfigData = {
   pageConfigsData: PageConfigData[]
@@ -200,7 +199,7 @@ async function loadConfigData(
   // TODO: remove
   {
     plusValueFiles.forEach((plusValueFile) => {
-      const { pageId, configName, plusValueFilePath } = plusValueFile
+      const { pageId: pageId_, configName, plusValueFilePath } = plusValueFile
       const interfaceFile: InterfaceFile = {
         filePathRelativeToUserRootDir: plusValueFilePath,
         filePathAbsolute: path.posix.join(userRootDir, plusValueFilePath),
@@ -212,19 +211,20 @@ async function loadConfigData(
       if ('configValue' in plusValueFile) {
         interfaceFile.configMap[configName]!.configValue = plusValueFile.configValue
       }
-      const filesystemPathRoot = getFilesysemPathRoot(plusValueFilePath)
-      interfaceFiles[filesystemPathRoot] = interfaceFiles[filesystemPathRoot] ?? []
-      interfaceFiles[filesystemPathRoot]!.push(interfaceFile)
+      const pageId = determinePageId(plusValueFilePath)
+      assert(pageId === pageId_)
+      interfaceFiles[pageId] = interfaceFiles[pageId] ?? []
+      interfaceFiles[pageId]!.push(interfaceFile)
     })
     plusConfigFiles.forEach((plusConfigFile) => {
       const { plusConfigFilePath, extendsConfigs } = plusConfigFile
       const interfaceFile = tmp_convert_back(plusConfigFile, false)
-      const filesystemPathRoot = getFilesysemPathRoot(plusConfigFilePath)
-      interfaceFiles[filesystemPathRoot] = interfaceFiles[filesystemPathRoot] ?? []
-      interfaceFiles[filesystemPathRoot]!.push(interfaceFile)
+      const pageId = determinePageId(plusConfigFilePath)
+      interfaceFiles[pageId] = interfaceFiles[pageId] ?? []
+      interfaceFiles[pageId]!.push(interfaceFile)
       extendsConfigs.forEach((extendsConfig) => {
         const interfaceFile = tmp_convert_back(extendsConfig, true)
-        interfaceFiles[filesystemPathRoot]!.push(interfaceFile)
+        interfaceFiles[pageId]!.push(interfaceFile)
       })
     })
   }

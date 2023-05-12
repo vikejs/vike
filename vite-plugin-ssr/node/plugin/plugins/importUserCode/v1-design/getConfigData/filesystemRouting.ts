@@ -1,5 +1,4 @@
 export { determineRouteFromFilesystemPath }
-export { getFilesysemPathRoot }
 export { determinePageId }
 export { isRelevantConfig }
 export { pickMostRelevantConfigValue }
