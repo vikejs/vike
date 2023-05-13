@@ -257,7 +257,7 @@ async function loadConfigData(
       const routeFilesystem = getRouteFilesystem(locationId)
       const routeFilesystemDefinedBy = getRouteFilesystemDefinedBy(locationId)
 
-      const interfaceFilesMapRelevant = getInterfaceFilesMapRelevant(interfaceFilesByLocationId, locationId)
+      const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
 
       const plusConfigFilesRelevant = plusConfigFiles.filter(({ plusConfigFilePath }) =>
         isRelevantConfig(plusConfigFilePath, locationId)
@@ -304,18 +304,18 @@ async function loadConfigData(
   return { pageConfigsData, pageConfigGlobal, vikeConfig }
 }
 
-function getInterfaceFilesMapRelevant(
+function getInterfaceFilesRelevant(
   interfaceFilesByLocationId: InterfaceFilesByLocationId,
   locationIdPage: string
 ): InterfaceFilesByLocationId {
-  const interfaceFilesMapRelevant = Object.fromEntries(
+  const interfaceFilesRelevant = Object.fromEntries(
     Object.entries(interfaceFilesByLocationId)
       .filter(([locationId]) => {
         return isInherited(locationId, locationIdPage)
       })
       .sort(([locationId1], [locationId2]) => sortAfterInheritanceOrder(locationId1, locationId2, locationIdPage))
   )
-  return interfaceFilesMapRelevant
+  return interfaceFilesRelevant
 }
 
 function getGlobalConfigs(plusConfigFiles: PlusConfigFile[], plusValueFiles: PlusValueFile[], userRootDir: string) {
@@ -639,9 +639,7 @@ function getErrorIntro(filePath: string, configName: string): string {
   return `${filePath} sets the config ${configName}`
 }
 
-function getConfigDefinitions2(
-  interfaceFilesByLocationId: InterfaceFilesByLocationId
-): ConfigDefinitionsIncludingCustom {
+function getConfigDefinitions2(interfaceFilesRelevant: InterfaceFilesByLocationId): ConfigDefinitionsIncludingCustom {
   const configDefinitions: ConfigDefinitionsIncludingCustom = { ...configDefinitionsBuiltIn }
   return configDefinitions
 }
