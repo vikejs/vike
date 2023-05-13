@@ -1,6 +1,6 @@
 export { executeOnClientRender }
 
-import { assert, assertUsage, callHookWithTimeout, unique } from './utils'
+import { assert, assertUsage, callHookWithTimeout } from './utils'
 import { getHook, type Hook } from '../shared/getHook'
 import type { PageFile, PageContextExports } from '../shared/getPageFiles'
 import { type PageContextRelease, releasePageContext } from './releasePageContext'
@@ -80,39 +80,19 @@ function assertMissingHook(pageId: string, pageConfigs: PageConfig[], url: strin
   assert(!pageConfig.configElements.onRenderClient?.configValue)
   assert(pageConfig.configElements.clientRouting?.configValue === true)
 
-  // We miss abstract page config files (that define onClientRender()) that don't apply to any concrete page config
-  //  - A solution is to assertUsage() when an abstract page file doens't apply to any concrete page config
-  const plusConfigFilesDefiningHook: string[] = []
-  let plusConfigFilesAll: string[] = []
+  // We miss abstract page config files that define onClientRender() but don't apply to any concrete page config
+  let onRenderClientExists = false
   pageConfigs.forEach((pageConfig) => {
-    plusConfigFilesAll.push(...pageConfig.plusConfigFilePathAll)
     const configElement = pageConfig.configElements.onRenderClient
     if (configElement && configElement.configValue) {
-      plusConfigFilesDefiningHook.push(configElement.configDefinedAt)
+      onRenderClientExists = true
     }
   })
-  plusConfigFilesAll = unique(plusConfigFilesAll)
 
-  const indent = '- '
-  const msgIntro = `No onRenderClient() hook found for URL \`${url}\`. (A onRenderClient() hook is required when using Client Routing: the config \`clientRouting\` is \`true\` for the URL \`${url}\`.)`
-  if (plusConfigFilesDefiningHook.length === 0) {
-    assertUsage(
-      false,
-      [
-        // TODO: update msg
-        `${msgIntro} No onRenderClient() hook is defined by any of your page config files. Your page config files (which none of them defines \`onClientRender()\`):`,
-        ...plusConfigFilesAll.map((p) => indent + p)
-      ].join('\n')
-    )
-  } else {
-    const plural = plusConfigFilesDefiningHook.length >= 2
-    assertUsage(
-      false,
-      [
-        `${msgIntro} Note that onRenderClient() is defined at:`,
-        ...plusConfigFilesDefiningHook.map((p) => `${indent}${p}`),
-        `but ${plural ? 'none of them' : "it doesn't"} apply to the URL \`${url}\`.`
-      ].join('\n')
-    )
-  }
+  assertUsage(
+    false,
+    `No onRenderClient() hook defined${
+      !onRenderClientExists ? '' : ` for URL \`${url}\``
+    }, but it's needed, see https://vite-plugin-ssr.com/onRenderClient`
+  )
 }

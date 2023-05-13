@@ -248,6 +248,13 @@ async function loadConfigData(
     })
   }
   */
+  /*
+  // TODO: remove this and instead ensure that configs are always defined globally
+  plusValueFilesRelevant.forEach((plusValueFile) => {
+    const { configName } = plusValueFile
+    assert(configName in configDefinitionsRelevant || configName === 'meta')
+  })
+  */
 
   const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(plusConfigFiles, plusValueFiles, userRootDir)
 
@@ -266,12 +273,6 @@ async function loadConfigData(
         .filter(({ plusValueFilePath }) => isRelevantConfig(plusValueFilePath, locationId))
         .filter((plusValueFile) => !isGlobal(plusValueFile.configName))
       let configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
-
-      // TODO: remove this and instead ensure that configs are always defined globally
-      plusValueFilesRelevant.forEach((plusValueFile) => {
-        const { configName } = plusValueFile
-        assert(configName in configDefinitionsRelevant || configName === 'meta')
-      })
 
       let configElements: PageConfigData['configElements'] = {}
       objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
