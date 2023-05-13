@@ -265,7 +265,7 @@ async function loadConfigData(
       const plusValueFilesRelevant = plusValueFiles
         .filter(({ plusValueFilePath }) => isRelevantConfig(plusValueFilePath, locationId))
         .filter((plusValueFile) => !isGlobal(plusValueFile.configName))
-      let configDefinitionsRelevant = getConfigDefinitionsOld(plusConfigFilesRelevant)
+      let configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
 
       // TODO: remove this and instead ensure that configs are always defined globally
       plusValueFilesRelevant.forEach((plusValueFile) => {
