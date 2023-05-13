@@ -47,6 +47,10 @@ function addRequireShim() {
           const caller = stack[1]
           assert(caller)
           const fileName = caller.getFileName()
+          // fileName can be undefined when Vite evaluates code (the code then doesn't belong to a file on the filesystem):
+          //  - For example when the user tries to use require(): https//github.com/brillout/vite-plugin-ssr/issues/879
+          //  - I guess this can also happen when ssr.noExternal?
+          if (fileName === undefined) return undefined
           assert(fileName)
           callerFile = fileName
         }
