@@ -196,7 +196,7 @@ async function loadConfigData(
 
   let plusValueFiles: PlusValueFile[]
   {
-    const configDefinitions = getConfigDefinitions(plusConfigFiles)
+    const configDefinitions = getConfigDefinitionsOld(plusConfigFiles)
     plusValueFiles = await findAndLoadPlusValueFiles(plusFiles, configDefinitions)
   }
 
@@ -265,7 +265,7 @@ async function loadConfigData(
       const plusValueFilesRelevant = plusValueFiles
         .filter(({ plusValueFilePath }) => isRelevantConfig(plusValueFilePath, locationId))
         .filter((plusValueFile) => !isGlobal(plusValueFile.configName))
-      let configDefinitionsRelevant = getConfigDefinitions(plusConfigFilesRelevant)
+      let configDefinitionsRelevant = getConfigDefinitionsOld(plusConfigFilesRelevant)
 
       // TODO: remove this and instead ensure that configs are always defined globally
       plusValueFilesRelevant.forEach((plusValueFile) => {
@@ -639,60 +639,94 @@ function getErrorIntro(filePath: string, configName: string): string {
   return `${filePath} sets the config ${configName}`
 }
 
-function getConfigDefinitions2(interfaceFilesRelevant: InterfaceFilesByLocationId): ConfigDefinitionsIncludingCustom {
+function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId): ConfigDefinitionsIncludingCustom {
   const configDefinitions: ConfigDefinitionsIncludingCustom = { ...configDefinitionsBuiltIn }
+  Object.values(interfaceFilesRelevant).forEach((interfaceFiles) => {
+    const configEntry = getConfigEntry('meta', interfaceFiles)
+    if (!configEntry.configIsDefined) return
+    assert('configValue' in configEntry)
+    const metaVal = configEntry.configValue
+    const { interfaceFile } = configEntry
+    const definedByFile = interfaceFile.filePathRelativeToUserRootDir ?? interfaceFile.filePathAbsolute
+    assertMetaValue(metaVal, definedByFile)
+    objectEntries(metaVal).forEach(([configName, configDefinition]) => {
+      // User can override an existing config definition
+      const def = mergeConfigDefinition(
+        configDefinitions[configName] as ConfigDefinition | undefined,
+        configDefinition as ConfigDefinition
+      )
+
+      configDefinitions[configName] = def /* TODO: validate instead */ as any
+    })
+  })
   return configDefinitions
 }
-function getConfigDefinitions(plusConfigFilesRelevant: PlusConfigFile[]): ConfigDefinitionsIncludingCustom {
+function getConfigDefinitionsOld(plusConfigFilesRelevant: PlusConfigFile[]): ConfigDefinitionsIncludingCustom {
   const configDefinitions: ConfigDefinitionsIncludingCustom = { ...configDefinitionsBuiltIn }
   plusConfigFilesRelevant.forEach((plusConfigFile) => {
     const { plusConfigFilePath } = plusConfigFile
     const result = getPageConfigValue('meta', plusConfigFile)
     if (result) {
       const metaVal = result.configValue
-      assertUsage(
-        isObject(metaVal),
-        `${plusConfigFilePath} sets the config 'meta' to a value with an invalid type \`${typeof metaVal}\`: it should be an object instead.`
-      )
+      assertMetaValue(metaVal, plusConfigFilePath)
       objectEntries(metaVal).forEach(([configName, configDefinition]) => {
-        assertUsage(
-          isObject(configDefinition),
-          `${plusConfigFilePath} sets 'meta.${configName}' to a value with an invalid type \`${typeof configDefinition}\`: it should be an object instead.`
-        )
-
         // User can override an existing config definition
         const def = mergeConfigDefinition(
           configDefinitions[configName] as ConfigDefinition | undefined,
           configDefinition as ConfigDefinition
         )
 
-        // Validation
-        /* TODO
-        {
-          {
-            const prop = 'env'
-            const hint = `Make sure to define the 'env' value of '${configName}' to 'client-only', 'server-only', or 'server-and-client'.`
-            assertUsage(
-              prop in def,
-              `${plusConfigFilePath} doesn't define 'meta.${configName}.env' which is required. ${hint}`
-            )
-            assertUsage(
-              hasProp(def, prop, 'string'),
-              `${plusConfigFilePath} sets 'meta.${configName}.env' to a value with an invalid type ${typeof def.env}. ${hint}`
-            )
-            assertUsage(
-              ['client-only', 'server-only', 'server-and-client'].includes(def.env),
-              `${plusConfigFilePath} sets 'meta.${configName}.env' to an invalid value '${def.env}'. ${hint}`
-            )
-          }
-        }
-        */
-
         configDefinitions[configName] = def /* TODO: validate instead */ as any
       })
     }
   })
   return configDefinitions
+}
+
+function getConfigEntry(
+  configName: string,
+  interfaceFiles: InterfaceFile[]
+): { configIsDefined: true; configValue?: unknown; interfaceFile: InterfaceFile } | { configIsDefined: false } {
+  const interfaceFilesForConfig = interfaceFiles.filter((interfaceFile) => configName in interfaceFile.configMap)
+  if (interfaceFilesForConfig.length === 0) return { configIsDefined: false }
+  const interfaceFile = interfaceFilesForConfig[0]!
+  const val = interfaceFile.configMap[configName]
+  assert(val)
+  return { configIsDefined: true, interfaceFile, ...val }
+}
+
+function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaVal is Record<string, ConfigDefinition> {
+  assertUsage(
+    isObject(metaVal),
+    `${definedByFile} sets the config 'meta' to a value with an invalid type \`${typeof metaVal}\`: it should be an object instead.`
+  )
+  objectEntries(metaVal).forEach(([configName, configDefinition]) => {
+    assertUsage(
+      isObject(configDefinition),
+      `${definedByFile} sets 'meta.${configName}' to a value with an invalid type \`${typeof configDefinition}\`: it should be an object instead.`
+    )
+    // Validation
+    /* TODO
+    {
+      {
+        const prop = 'env'
+        const hint = `Make sure to define the 'env' value of '${configName}' to 'client-only', 'server-only', or 'server-and-client'.`
+        assertUsage(
+          prop in def,
+          `${plusConfigFilePath} doesn't define 'meta.${configName}.env' which is required. ${hint}`
+        )
+        assertUsage(
+          hasProp(def, prop, 'string'),
+          `${plusConfigFilePath} sets 'meta.${configName}.env' to a value with an invalid type ${typeof def.env}. ${hint}`
+        )
+        assertUsage(
+          ['client-only', 'server-only', 'server-and-client'].includes(def.env),
+          `${plusConfigFilePath} sets 'meta.${configName}.env' to an invalid value '${def.env}'. ${hint}`
+        )
+      }
+    }
+    */
+  })
 }
 
 //function mergeConfigDefinition(def: ConfigDefinition, mods: Partial<ConfigDefinition>): ConfigDefinition
