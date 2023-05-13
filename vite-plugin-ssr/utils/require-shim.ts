@@ -56,7 +56,7 @@ function addRequireShim() {
         }
         const req = mod.createRequire(callerFile)
         // @ts-ignore
-        req.isShimAddedByVitePluginSsr = true
+        req._isShimAddedByVitePluginSsr = true
         return req
       }
     })
@@ -69,6 +69,6 @@ function assertRequireShim() {
   // Seems like Vitest does some unusual thing
   if (isVitest()) return
   assert(require !== globalThis.require)
-  assert(!('isShimAddedByVitePluginSsr' in require))
+  assert(!('_isShimAddedByVitePluginSsr' in require))
   import('./require-shim-test')
 }
