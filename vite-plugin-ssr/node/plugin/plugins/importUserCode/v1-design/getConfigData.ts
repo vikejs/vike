@@ -40,7 +40,8 @@ import {
   isInherited,
   isRelevantConfig,
   pickMostRelevantConfigValue,
-  getRouteFilesystemDefinedBy
+  getRouteFilesystemDefinedBy,
+  sortAfterInheritanceOrder
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadConfigFile, transpileAndLoadValueFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
@@ -64,7 +65,7 @@ type InterfaceFile = InterfaceFileType & {
   configMap: Record<ConfigName, { configValue?: unknown }>
 }
 type LocationId = string
-type InterfaceFilesMap = Record<LocationId, InterfaceFile[]>
+type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 // TODO: remove
 type PlusConfigFile = {
   plusConfigFilePath: string
@@ -199,7 +200,7 @@ async function loadConfigData(
     plusValueFiles = await findAndLoadPlusValueFiles(plusFiles, configDefinitions)
   }
 
-  let interfaceFilesMap: InterfaceFilesMap = {}
+  let interfaceFilesByLocationId: InterfaceFilesByLocationId = {}
   // TODO: remove
   {
     plusValueFiles.forEach((plusValueFile) => {
@@ -217,18 +218,18 @@ async function loadConfigData(
       }
       const locationId = getLocationId(plusValueFilePath)
       assert(locationId === pageId)
-      interfaceFilesMap[locationId] = interfaceFilesMap[locationId] ?? []
-      interfaceFilesMap[locationId]!.push(interfaceFile)
+      interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
+      interfaceFilesByLocationId[locationId]!.push(interfaceFile)
     })
     plusConfigFiles.forEach((plusConfigFile) => {
       const { plusConfigFilePath, extendsConfigs } = plusConfigFile
       const interfaceFile = tmp_convert_back(plusConfigFile, false)
       const locationId = getLocationId(plusConfigFilePath)
-      interfaceFilesMap[locationId] = interfaceFilesMap[locationId] ?? []
-      interfaceFilesMap[locationId]!.push(interfaceFile)
+      interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
+      interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       extendsConfigs.forEach((extendsConfig) => {
         const interfaceFile = tmp_convert_back(extendsConfig, true)
-        interfaceFilesMap[locationId]!.push(interfaceFile)
+        interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       })
     })
   }
@@ -250,13 +251,13 @@ async function loadConfigData(
 
   const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(plusConfigFiles, plusValueFiles, userRootDir)
 
-  const pageConfigsData: PageConfigData[] = Object.entries(interfaceFilesMap)
+  const pageConfigsData: PageConfigData[] = Object.entries(interfaceFilesByLocationId)
     .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
     .map(([locationId, interfaceFiles]) => {
       const routeFilesystem = getRouteFilesystem(locationId)
       const routeFilesystemDefinedBy = getRouteFilesystemDefinedBy(locationId)
 
-      const interfaceFilesMapRelevant = getInterfaceFilesMapRelevant(interfaceFilesMap, locationId)
+      const interfaceFilesMapRelevant = getInterfaceFilesMapRelevant(interfaceFilesByLocationId, locationId)
 
       const plusConfigFilesRelevant = plusConfigFiles.filter(({ plusConfigFilePath }) =>
         isRelevantConfig(plusConfigFilePath, locationId)
@@ -303,11 +304,16 @@ async function loadConfigData(
   return { pageConfigsData, pageConfigGlobal, vikeConfig }
 }
 
-function getInterfaceFilesMapRelevant(interfaceFilesMap: InterfaceFilesMap, locationIdPage: string): InterfaceFilesMap {
+function getInterfaceFilesMapRelevant(
+  interfaceFilesByLocationId: InterfaceFilesByLocationId,
+  locationIdPage: string
+): InterfaceFilesByLocationId {
   const interfaceFilesMapRelevant = Object.fromEntries(
-    Object.entries(interfaceFilesMap).filter(([locationId]) => {
-      return isInherited(locationId, locationIdPage)
-    })
+    Object.entries(interfaceFilesByLocationId)
+      .filter(([locationId]) => {
+        return isInherited(locationId, locationIdPage)
+      })
+      .sort(([locationId1], [locationId2]) => sortAfterInheritanceOrder(locationId1, locationId2, locationIdPage))
   )
   return interfaceFilesMapRelevant
 }
@@ -633,6 +639,12 @@ function getErrorIntro(filePath: string, configName: string): string {
   return `${filePath} sets the config ${configName}`
 }
 
+function getConfigDefinitions2(
+  interfaceFilesByLocationId: InterfaceFilesByLocationId
+): ConfigDefinitionsIncludingCustom {
+  const configDefinitions: ConfigDefinitionsIncludingCustom = { ...configDefinitionsBuiltIn }
+  return configDefinitions
+}
 function getConfigDefinitions(plusConfigFilesRelevant: PlusConfigFile[]): ConfigDefinitionsIncludingCustom {
   const configDefinitions: ConfigDefinitionsIncludingCustom = { ...configDefinitionsBuiltIn }
   plusConfigFilesRelevant.forEach((plusConfigFile) => {

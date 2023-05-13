@@ -4,13 +4,15 @@ export { isRelevantConfig }
 export { pickMostRelevantConfigValue }
 export { isInherited }
 export { getLocationId }
+export { sortAfterInheritanceOrder }
 
 import {
   assert,
   assertPosixPath,
   assertWarning,
   getNpmPackageImportPath,
-  isNpmPackageImportPath
+  isNpmPackageImportPath,
+  higherFirst
 } from '../../../../utils'
 import type { PlusValueFile, PlusConfigFile } from '../getConfigData'
 import { getPageConfigValue } from './helpers'
@@ -54,6 +56,26 @@ function isRelevantConfig(
   const inheritanceRoot = getInheritanceRoot(removeFilename(configPath))
   const isRelevant = locationId.startsWith(inheritanceRoot)
   return isRelevant
+}
+function sortAfterInheritanceOrder(locationId1: string, locationId2: string, locationIdPage: string): -1 | 1 | 0 {
+  const inheritanceRoot1 = getInheritanceRoot(locationId1)
+  const inheritanceRoot2 = getInheritanceRoot(locationId2)
+  const inheritanceRootPage = getInheritanceRoot(locationIdPage)
+
+  // sortAfterInheritanceOrder() only works if both locationId1 and locationId2 are inherited by the same page
+  assert(isInherited(locationId1, locationIdPage))
+  assert(isInherited(locationId2, locationIdPage))
+  // Equivalent assertion (see isInherited() implementation)
+  assert(inheritanceRootPage.startsWith(inheritanceRoot1))
+  assert(inheritanceRootPage.startsWith(inheritanceRoot2))
+
+  // Should be true since locationId1 and locationId2 are both inherited by the same page
+  assert(inheritanceRoot1.startsWith(inheritanceRoot2) || inheritanceRoot2.startsWith(inheritanceRoot1))
+  // Should be true since we aggregate interface files by locationId
+  assert(inheritanceRoot1 !== inheritanceRoot2)
+  assert(inheritanceRoot1.length !== inheritanceRoot2.length)
+
+  return higherFirst<string>((inheritanceRoot) => inheritanceRoot.length)(inheritanceRoot1, inheritanceRoot2)
 }
 
 function isInherited(locationId: string, locationIdPage: string): boolean {
@@ -196,7 +218,7 @@ function removeFilename(filePath: string, optional?: true) {
 }
 
 function getRouteFilesystemDefinedBy(locationId: string) {
-  if( locationId === '/' ) return locationId
+  if (locationId === '/') return locationId
   assert(!locationId.endsWith('/'))
   const routeFilesystemDefinedBy = locationId + '/'
   return routeFilesystemDefinedBy
