@@ -5,6 +5,7 @@ export { pickMostRelevantConfigValue }
 export { isInherited }
 export { getLocationId }
 export { sortAfterInheritanceOrder }
+export { isGlobalLocation }
 
 import {
   assert,
@@ -25,8 +26,7 @@ import { getPageConfigValue } from './helpers'
  */
 function getLocationId(somePath: string): string {
   const locationId = removeFilename(somePath, true)
-  assert(locationId.startsWith('/') || isNpmPackageImportPath(locationId))
-  assert(!locationId.endsWith('/') || locationId === '/')
+  assertLocationId(locationId)
   return locationId
 }
 /** Get URL determined by filesystem path */
@@ -56,6 +56,11 @@ function isRelevantConfig(
   const inheritanceRoot = getInheritanceRoot(removeFilename(configPath))
   const isRelevant = locationId.startsWith(inheritanceRoot)
   return isRelevant
+}
+function isGlobalLocation(locationId: string): boolean {
+  const inheritanceRoot = getInheritanceRoot(locationId)
+  assert(inheritanceRoot.startsWith('/'))
+  return inheritanceRoot === '/'
 }
 function sortAfterInheritanceOrder(locationId1: string, locationId2: string, locationIdPage: string): -1 | 1 | 0 {
   const inheritanceRoot1 = getInheritanceRoot(locationId1)
@@ -222,4 +227,9 @@ function getRouteFilesystemDefinedBy(locationId: string) {
   assert(!locationId.endsWith('/'))
   const routeFilesystemDefinedBy = locationId + '/'
   return routeFilesystemDefinedBy
+}
+
+function assertLocationId(locationId: string) {
+  assert(locationId.startsWith('/') || isNpmPackageImportPath(locationId))
+  assert(!locationId.endsWith('/') || locationId === '/')
 }

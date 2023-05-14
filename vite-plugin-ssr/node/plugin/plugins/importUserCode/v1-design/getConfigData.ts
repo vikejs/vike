@@ -41,7 +41,8 @@ import {
   isRelevantConfig,
   pickMostRelevantConfigValue,
   getRouteFilesystemDefinedBy,
-  sortAfterInheritanceOrder
+  sortAfterInheritanceOrder,
+  isGlobalLocation
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadConfigFile, transpileAndLoadValueFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
@@ -257,7 +258,12 @@ async function loadConfigData(
   })
   */
 
-  const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(plusConfigFiles, plusValueFiles, userRootDir)
+  const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(
+    interfaceFilesByLocationId,
+    plusConfigFiles,
+    plusValueFiles,
+    userRootDir
+  )
 
   const configFilesAll: Set<string> = new Set()
   const pageConfigsData: PageConfigData[] = Object.entries(interfaceFilesByLocationId)
@@ -283,6 +289,7 @@ async function loadConfigData(
           const configElement = resolveConfigElement(
             configName,
             configDef,
+            interfaceFilesRelevant,
             plusConfigFilesRelevant,
             userRootDir,
             plusValueFilesRelevant
@@ -340,12 +347,28 @@ function getInterfaceFilesRelevant(
   return interfaceFilesRelevant
 }
 
-function getGlobalConfigs(plusConfigFiles: PlusConfigFile[], plusValueFiles: PlusValueFile[], userRootDir: string) {
+function getInterfaceFilesGloabl(interfaceFilesByLocationId: InterfaceFilesByLocationId): InterfaceFilesByLocationId {
+  const interfaceFilesRelevant = Object.fromEntries(
+    Object.entries(interfaceFilesByLocationId).filter(([locationId]) => {
+      return isGlobalLocation(locationId)
+    })
+  )
+  return interfaceFilesRelevant
+}
+
+function getGlobalConfigs(
+  interfaceFilesByLocationId: InterfaceFilesByLocationId,
+  plusConfigFiles: PlusConfigFile[],
+  plusValueFiles: PlusValueFile[],
+  userRootDir: string
+) {
   const vikeConfig: Record<string, unknown> = {}
   const pageConfigGlobal: PageConfigGlobalData = {
     onBeforeRoute: null,
     onPrerenderStart: null
   }
+
+  const interfaceFilesGloabl = getInterfaceFilesGloabl(interfaceFilesByLocationId)
 
   const plusConfigFilesGlobal = getPlusConfigFilesGlobal(plusConfigFiles)
   plusConfigFiles.forEach((plusConfigFile) => {
@@ -377,6 +400,7 @@ function getGlobalConfigs(plusConfigFiles: PlusConfigFile[], plusValueFiles: Plu
     const configElement = resolveConfigElement(
       configName,
       configDef,
+      interfaceFilesGloabl,
       plusConfigFilesGlobal,
       userRootDir,
       plusValueFilesRelevant
@@ -403,6 +427,7 @@ function getGlobalConfigs(plusConfigFiles: PlusConfigFile[], plusValueFiles: Plu
 function resolveConfigElement(
   configName: string,
   configDef: ConfigDefinition,
+  interfaceFilesRelevant: InterfaceFilesByLocationId,
   plusConfigFilesRelevant: PlusConfigFile[],
   userRootDir: string,
   plusValueFilesRelevant: PlusValueFile[]
