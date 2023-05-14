@@ -49,7 +49,7 @@ function serializePageConfigs(
   // Inject import statement to ensure that Vite adds config files to its module graph (which is needed in order for Vite to properly invalidate if a module imported by a config file is modified)
   if (isDev && !isForClientSide) {
     Array.from(configFilesAll).forEach((configFile) => {
-      assert(configFile.startsWith('/') || isNpmPackageImportPath(configFile))
+      assert(configFile.startsWith('/') || isNpmPackageImportPath(configFile), configFile)
       const { importStatement } = generateEagerImport(configFile)
       importStatements.push(importStatement)
     })
