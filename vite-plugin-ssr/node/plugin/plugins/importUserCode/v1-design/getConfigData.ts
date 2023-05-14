@@ -86,6 +86,7 @@ type ConfigData = {
   pageConfigsData: PageConfigData[]
   pageConfigGlobal: PageConfigGlobalData
   vikeConfig: Record<string, unknown>
+  configFilesAll: Set<string>
 }
 let configDataPromise: Promise<ConfigData> | null = null
 let isFirstInvalidation = true
@@ -258,6 +259,7 @@ async function loadConfigData(
 
   const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(plusConfigFiles, plusValueFiles, userRootDir)
 
+  const configFilesAll: Set<string> = new Set()
   const pageConfigsData: PageConfigData[] = Object.entries(interfaceFilesByLocationId)
     .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
     .map(([locationId, interfaceFiles]) => {
@@ -291,6 +293,17 @@ async function loadConfigData(
 
       const isErrorPage = determineIsErrorPage(routeFilesystem)
 
+      plusConfigFilesRelevant.forEach((p) => {
+        configFilesAll.add(p.plusConfigFilePath)
+      })
+
+      Object.entries(configElements).forEach(([_configName, configElement]) => {
+        const { configEnv, codeFilePath } = configElement
+        if (configEnv === 'config-only' && codeFilePath) {
+          configFilesAll.add(codeFilePath)
+        }
+      })
+
       const entry: PageConfigData = {
         pageId: locationId,
         isErrorPage,
@@ -302,7 +315,7 @@ async function loadConfigData(
       return entry
     })
 
-  return { pageConfigsData, pageConfigGlobal, vikeConfig }
+  return { pageConfigsData, pageConfigGlobal, vikeConfig, configFilesAll }
 }
 
 function getInterfaceFilesRelevant(

@@ -15,7 +15,8 @@ function serializePageConfigs(
   pageConfigGlobal: PageConfigGlobalData,
   isForClientSide: boolean,
   isDev: boolean,
-  id: string
+  id: string,
+  configFilesAll: Set<string>
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
@@ -47,20 +48,7 @@ function serializePageConfigs(
 
   // Inject import statement to ensure that Vite adds config files to its module graph (which is needed in order for Vite to properly invalidate if a module imported by a config file is modified)
   if (isDev && !isForClientSide) {
-    const configFiles: Set<string> = new Set()
-    pageConfigsData.forEach((pageConfig) => {
-      const { configElements, plusConfigFilePathAll } = pageConfig
-      Object.entries(configElements).forEach(([_configName, configElement]) => {
-        const { configEnv, codeFilePath } = configElement
-        if (configEnv === 'config-only' && codeFilePath) {
-          configFiles.add(codeFilePath)
-        }
-      })
-      plusConfigFilePathAll.forEach((plusConfigFilePath) => {
-        configFiles.add(plusConfigFilePath)
-      })
-    })
-    Array.from(configFiles).forEach((configFile) => {
+    Array.from(configFilesAll).forEach((configFile) => {
       assert(configFile.startsWith('/') || isNpmPackageImportPath(configFile))
       const { importStatement } = generateEagerImport(configFile)
       importStatements.push(importStatement)
