@@ -496,59 +496,7 @@ function resolveConfigElement(
     }
   }
 
-  const result = pickMostRelevantConfigValue(configName, plusValueFilesRelevant, plusConfigFilesRelevant)
-  if (!result) return null
-
-  if ('plusValueFile' in result) {
-    const { plusValueFile } = result
-    const codeFilePath = plusValueFile.plusValueFilePath
-    const codeFileExport = 'default'
-    const configElement: ConfigElement = {
-      configEnv: configDef.env,
-      codeFilePath,
-      codeFileExport,
-      plusConfigFilePath: null,
-      configDefinedAt: `${codeFilePath} > \`export ${codeFileExport}\``,
-      configDefinedByFile: codeFilePath
-    }
-    if ('configValue' in plusValueFile) {
-      configElement.configValue = plusValueFile.configValue
-    }
-    return configElement
-  }
-
-  const result2 = getPageConfigValue(configName, result.plusConfigFile)
-  assert(result2)
-  const { configValue, plusConfigFile } = result2
-  const { plusConfigFilePath } = plusConfigFile
-  const codeFile = getCodeFilePath(
-    configValue,
-    plusConfigFile.plusConfigFilePathAbsolute,
-    plusConfigFile.plusConfigFilePath,
-    userRootDir
-  )
-  const { env } = configDef
-  if (!codeFile) {
-    return {
-      plusConfigFilePath,
-      configDefinedAt: `${plusConfigFilePath} > \`export default { ${configName} }\``,
-      configDefinedByFile: plusConfigFilePath,
-      codeFilePath: null,
-      codeFileExport: null,
-      configEnv: env,
-      configValue
-    }
-  } else {
-    const { codeFilePath, codeFileExport } = codeFile
-    return {
-      plusConfigFilePath,
-      codeFilePath,
-      codeFileExport,
-      configDefinedAt: `${codeFilePath} > \`export ${codeFileExport}\``,
-      configDefinedByFile: codeFilePath,
-      configEnv: env
-    }
-  }
+  return null
 }
 
 function isDefiningPage(interfaceFiles: InterfaceFile[]): boolean {
