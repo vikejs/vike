@@ -453,7 +453,7 @@ function resolveConfigElement(
           )
           if (codeFile) {
             const { codeFilePath, codeFileExport } = codeFile
-            return {
+            const configElement = {
               plusConfigFilePath: configFilePath,
               codeFilePath,
               codeFileExport,
@@ -461,6 +461,7 @@ function resolveConfigElement(
               configDefinedByFile: codeFilePath,
               configEnv
             }
+            return configElement
           } else {
             const configElement: ConfigElement = {
               plusConfigFilePath: configFilePath,
@@ -487,6 +488,7 @@ function resolveConfigElement(
           if ('configValue' in conf) {
             configElement.configValue = conf.configValue
           }
+          return configElement
         } else {
           assert(false)
         }
