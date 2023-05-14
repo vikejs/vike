@@ -53,10 +53,12 @@ assertIsVitePluginCode()
 type InterfaceFileType =
   | {
       isConfigFile: true
+      isValueFile: false
       extendsFilePaths: string[]
       isConfigExtend: boolean
     }
   | {
+      isConfigFile: false
       isValueFile: true
     }
 type ConfigName = string
@@ -162,6 +164,7 @@ function tmp_convert_back(plusConfigFile: PlusConfigFile, isConfigExtend: boolea
     filePathAbsolute: plusConfigFilePathAbsolute,
     configMap: {},
     isConfigFile: true,
+    isValueFile: false,
     isConfigExtend,
     extendsFilePaths
   }
@@ -213,6 +216,7 @@ async function loadConfigData(
         configMap: {
           [configName]: {}
         },
+        isConfigFile: false,
         isValueFile: true
       }
       if ('configValue' in plusValueFile) {
@@ -321,7 +325,7 @@ async function loadConfigData(
 
   Object.values(interfaceFilesByLocationId).forEach((interfaceFiles) => {
     interfaceFiles.forEach((interfaceFile) => {
-      if ('isConfigFile' in interfaceFile) {
+      if (interfaceFile.isConfigFile) {
         const { filePathRelativeToUserRootDir } = interfaceFile
         if (filePathRelativeToUserRootDir) {
           configFilesAll.add(filePathRelativeToUserRootDir)
@@ -432,6 +436,64 @@ function resolveConfigElement(
   userRootDir: string,
   plusValueFilesRelevant: PlusValueFile[]
 ): null | ConfigElement {
+  for (const interfaceFiles of Object.values(interfaceFilesRelevant)) {
+    for (const interfaceFile of interfaceFiles) {
+      const configFilePath = interfaceFile.filePathRelativeToUserRootDir ?? interfaceFile.filePathAbsolute
+      const conf = interfaceFile.configMap[configName]
+      if (conf) {
+        const configEnv = configDef.env
+        if (interfaceFile.isConfigFile) {
+          assert('configValue' in conf)
+          const { configValue } = conf
+          const codeFile = getCodeFilePath(
+            configValue,
+            interfaceFile.filePathAbsolute,
+            interfaceFile.filePathRelativeToUserRootDir,
+            userRootDir
+          )
+          if (codeFile) {
+            const { codeFilePath, codeFileExport } = codeFile
+            return {
+              plusConfigFilePath: configFilePath,
+              codeFilePath,
+              codeFileExport,
+              configDefinedAt: `${codeFilePath} > \`export ${codeFileExport}\``,
+              configDefinedByFile: codeFilePath,
+              configEnv
+            }
+          } else {
+            const configElement: ConfigElement = {
+              plusConfigFilePath: configFilePath,
+              configDefinedAt: `${configFilePath} > \`export default { ${configName} }\``,
+              configDefinedByFile: configFilePath,
+              codeFilePath: null,
+              codeFileExport: null,
+              configEnv,
+              configValue
+            }
+            return configElement
+          }
+        } else if (interfaceFile.isValueFile) {
+          const codeFilePath = interfaceFile.filePathRelativeToUserRootDir ?? interfaceFile.filePathAbsolute
+          const codeFileExport = 'default'
+          const configElement: ConfigElement = {
+            configEnv,
+            codeFilePath,
+            codeFileExport,
+            plusConfigFilePath: null,
+            configDefinedAt: `${codeFilePath} > \`export ${codeFileExport}\``,
+            configDefinedByFile: codeFilePath
+          }
+          if ('configValue' in conf) {
+            configElement.configValue = conf.configValue
+          }
+        } else {
+          assert(false)
+        }
+      }
+    }
+  }
+
   const result = pickMostRelevantConfigValue(configName, plusValueFilesRelevant, plusConfigFilesRelevant)
   if (!result) return null
 
@@ -457,7 +519,12 @@ function resolveConfigElement(
   assert(result2)
   const { configValue, plusConfigFile } = result2
   const { plusConfigFilePath } = plusConfigFile
-  const codeFile = getCodeFilePath(configValue, plusConfigFile, userRootDir)
+  const codeFile = getCodeFilePath(
+    configValue,
+    plusConfigFile.plusConfigFilePathAbsolute,
+    plusConfigFile.plusConfigFilePath,
+    userRootDir
+  )
   const { env } = configDef
   if (!codeFile) {
     return {
@@ -470,13 +537,6 @@ function resolveConfigElement(
       configValue
     }
   } else {
-    assertUsage(
-      typeof configValue === 'string',
-      `${getErrorIntro(
-        plusConfigFilePath,
-        configName
-      )} to a value with a wrong type \`${typeof configValue}\`: it should be a string instead`
-    )
     const { codeFilePath, codeFileExport } = codeFile
     return {
       plusConfigFilePath,
@@ -504,7 +564,8 @@ function isDefiningPageConfig(configName: string): boolean {
 
 function getCodeFilePath(
   configValue: unknown,
-  plusConfigFile: PlusConfigFile,
+  configFilePathAbsolute: string,
+  configFilePathRelativeToUserRootDir: string | null,
   userRootDir: string
 ): null | { codeFilePath: string; codeFileExport: string } {
   if (typeof configValue !== 'string') {
@@ -535,7 +596,12 @@ function getCodeFilePath(
     codeFilePath = importPath
   } else {
     // Relative paths
-    codeFilePath = resolveRelativeCodeFilePath(importPath, plusConfigFile, userRootDir)
+    codeFilePath = resolveRelativeCodeFilePath(
+      importPath,
+      configFilePathAbsolute,
+      configFilePathRelativeToUserRootDir,
+      userRootDir
+    )
   }
 
   return { codeFilePath, codeFileExport }
@@ -545,11 +611,15 @@ function getCodeFilePath(
 // ```
 // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vite-plugin-ssr:importPageCode:client:/pages/index". Does the file exist?
 // ```
-function resolveRelativeCodeFilePath(importPath: string, plusConfigFile: PlusConfigFile, userRootDir: string) {
+function resolveRelativeCodeFilePath(
+  importPath: string,
+  configFilePathAbsolute: string,
+  configFilePathRelativeToUserRootDir: string | null,
+  userRootDir: string
+) {
   assertPosixPath(userRootDir)
-  const { plusConfigFilePathAbsolute, plusConfigFilePath } = plusConfigFile
-  assertPosixPath(plusConfigFilePathAbsolute)
-  let plusConfigFilDirPathAbsolute = path.posix.dirname(plusConfigFilePathAbsolute)
+  assertPosixPath(configFilePathAbsolute)
+  let plusConfigFilDirPathAbsolute = path.posix.dirname(configFilePathAbsolute)
   const clean = addFileExtensionsToRequireResolve()
   let codeFilePath: string | null
   try {
@@ -559,7 +629,12 @@ function resolveRelativeCodeFilePath(importPath: string, plusConfigFile: PlusCon
   } finally {
     clean()
   }
-  assertUsage(codeFilePath, `${plusConfigFilePath} imports from '${importPath}' which points to a non-existing file`)
+  const configFilePathHumanReadable = configFilePathRelativeToUserRootDir ?? configFilePathAbsolute
+  assert(configFilePathHumanReadable)
+  assertUsage(
+    codeFilePath,
+    `${configFilePathHumanReadable} imports from '${importPath}' which points to a non-existing file`
+  )
   codeFilePath = toPosixPath(codeFilePath)
 
   /* TODO: remove
@@ -574,7 +649,7 @@ function resolveRelativeCodeFilePath(importPath: string, plusConfigFile: PlusCon
   } else {
     assertUsage(
       false,
-      `${plusConfigFile} imports from a relative path '${importPath}' which is forbidden: import from a package.json#exports entry instead`
+      `${configFilePathHumanReadable} imports from a relative path '${importPath}' which is forbidden: import from a package.json#exports entry instead`
     )
     // None of the following works
     // /*
