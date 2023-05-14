@@ -489,9 +489,8 @@ function resolveConfigElement(
             configElement.configValue = conf.configValue
           }
           return configElement
-        } else {
-          assert(false)
         }
+        assert(false)
       }
     }
   }
