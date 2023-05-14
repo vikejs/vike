@@ -293,10 +293,6 @@ async function loadConfigData(
 
       const isErrorPage = determineIsErrorPage(routeFilesystem)
 
-      plusConfigFilesRelevant.forEach((p) => {
-        configFilesAll.add(p.plusConfigFilePath)
-      })
-
       Object.entries(configElements).forEach(([_configName, configElement]) => {
         const { configEnv, codeFilePath } = configElement
         if (configEnv === 'config-only' && codeFilePath) {
@@ -308,12 +304,22 @@ async function loadConfigData(
         pageId: locationId,
         isErrorPage,
         routeFilesystemDefinedBy,
-        plusConfigFilePathAll: plusConfigFilesRelevant.map((p) => p.plusConfigFilePath),
         routeFilesystem: isErrorPage ? null : routeFilesystem,
         configElements
       }
       return entry
     })
+
+  Object.values(interfaceFilesByLocationId).forEach((interfaceFiles) => {
+    interfaceFiles.forEach((interfaceFile) => {
+      if ('isConfigFile' in interfaceFile) {
+        const { filePathRelativeToUserRootDir } = interfaceFile
+        if (filePathRelativeToUserRootDir) {
+          configFilesAll.add(filePathRelativeToUserRootDir)
+        }
+      }
+    })
+  })
 
   return { pageConfigsData, pageConfigGlobal, vikeConfig, configFilesAll }
 }
