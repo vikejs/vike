@@ -271,23 +271,25 @@ async function loadConfigData(
       const plusConfigFilesRelevant = plusConfigFiles.filter(({ plusConfigFilePath }) =>
         isRelevantConfig(plusConfigFilePath, locationId)
       )
-      const plusValueFilesRelevant = plusValueFiles
-        .filter(({ plusValueFilePath }) => isRelevantConfig(plusValueFilePath, locationId))
-        .filter((plusValueFile) => !isGlobal(plusValueFile.configName))
+      const plusValueFilesRelevant = plusValueFiles.filter(({ plusValueFilePath }) =>
+        isRelevantConfig(plusValueFilePath, locationId)
+      )
       let configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
 
       let configElements: PageConfigData['configElements'] = {}
-      objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
-        const configElement = resolveConfigElement(
-          configName,
-          configDef,
-          plusConfigFilesRelevant,
-          userRootDir,
-          plusValueFilesRelevant
-        )
-        if (!configElement) return
-        configElements[configName as ConfigNameBuiltIn] = configElement
-      })
+      objectEntries(configDefinitionsRelevant)
+        .filter(([configName]) => !isGlobal(configName))
+        .forEach(([configName, configDef]) => {
+          const configElement = resolveConfigElement(
+            configName,
+            configDef,
+            plusConfigFilesRelevant,
+            userRootDir,
+            plusValueFilesRelevant
+          )
+          if (!configElement) return
+          configElements[configName as ConfigNameBuiltIn] = configElement
+        })
 
       configElements = applyEffects(configElements, configDefinitionsRelevant)
 
