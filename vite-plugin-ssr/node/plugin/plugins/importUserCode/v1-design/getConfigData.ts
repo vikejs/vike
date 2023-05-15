@@ -140,33 +140,85 @@ function getConfigData(
   return configDataPromise
 }
 
-// TODO: remove
-function tmp_convert(configFile: ConfigFile): PlusConfigFile {
-  const { fileExports, filePathAbsolute, filePathHumanReadable, extendsFilePaths } = configFile
-  const plusConfigFile: PlusConfigFile = {
-    plusConfigFilePath: filePathHumanReadable ?? filePathAbsolute,
-    plusConfigFilePathAbsolute: filePathAbsolute,
-    plusConfigFileExports: fileExports,
-    extendsConfigs: [],
-    extendsFilePaths
-  }
-  return plusConfigFile
+async function loadInterfaceFiles(
+  userRootDir: string,
+  isDev: boolean,
+  extensions: ExtensionResolved[]
+): Promise<InterfaceFilesByLocationId> {
+  const plusFiles = await findPlusFiles(userRootDir, isDev, extensions)
+  const configFiles: UserFilePath[] = []
+  const valueFiles: UserFilePath[] = []
+  plusFiles.forEach((f) => {
+    if (extractConfigName(f.filePathRelativeToUserRootDir) === 'config') {
+      configFiles.push(f)
+    } else {
+      valueFiles.push(f)
+    }
+  })
+
+  let interfaceFilesByLocationId: InterfaceFilesByLocationId = {}
+
+  // Config files
+  await Promise.all(
+    configFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
+      const configFilePath = {
+        filePathAbsolute: filePathAbsolute,
+        filePathHumanReadable: filePathRelativeToUserRootDir
+      }
+      const { configFile, extendsConfigs } = await loadConfigFile(configFilePath, userRootDir)
+      const interfaceFile = getInterfaceFileFromConfigFile(configFile, false)
+
+      const locationId = getLocationId(filePathRelativeToUserRootDir)
+      interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
+      interfaceFilesByLocationId[locationId]!.push(interfaceFile)
+      extendsConfigs.forEach((extendsConfig) => {
+        const interfaceFile = getInterfaceFileFromConfigFile(extendsConfig, true)
+        interfaceFilesByLocationId[locationId]!.push(interfaceFile)
+      })
+    })
+  )
+
+  // Value files
+  await Promise.all(
+    valueFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
+      const configName = extractConfigName(filePathRelativeToUserRootDir)
+      /* TODO
+  assertConfigName(
+    configName,
+    [...Object.keys(configDefinitions), ...Object.keys(globalConfigsDefinition)],
+    */
+      const interfaceFile: InterfaceFile = {
+        filePathRelativeToUserRootDir,
+        filePathAbsolute,
+        configMap: {
+          [configName]: {}
+        },
+        isConfigFile: false,
+        isValueFile: true
+      }
+      const locationId = getLocationId(filePathRelativeToUserRootDir)
+      interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
+      interfaceFilesByLocationId[locationId]!.push(interfaceFile)
+    })
+  )
+
+  return interfaceFilesByLocationId
 }
-// TODO: remove
-function tmp_convert_back(plusConfigFile: PlusConfigFile, isConfigExtend: boolean): InterfaceFile {
-  const { plusConfigFilePath, plusConfigFilePathAbsolute, plusConfigFileExports, extendsConfigs, extendsFilePaths } =
-    plusConfigFile
+function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: boolean): InterfaceFile {
+  const { fileExports, filePathAbsolute, filePathHumanReadable, extendsFilePaths } = configFile
+  const filePathRelativeToUserRootDir = filePathHumanReadable
   const interfaceFile: InterfaceFile = {
-    filePathRelativeToUserRootDir: plusConfigFilePath,
-    filePathAbsolute: plusConfigFilePathAbsolute,
+    filePathRelativeToUserRootDir,
+    filePathAbsolute,
     configMap: {},
     isConfigFile: true,
     isValueFile: false,
     isConfigExtend,
     extendsFilePaths
   }
-  assertDefaultExportObject(plusConfigFileExports, plusConfigFilePath)
-  Object.entries(plusConfigFileExports.default).forEach(([configName, configValue]) => {
+  const filePathToShowToUser = filePathRelativeToUserRootDir ?? filePathAbsolute
+  assertDefaultExportObject(fileExports, filePathToShowToUser)
+  Object.entries(fileExports.default).forEach(([configName, configValue]) => {
     interfaceFile.configMap[configName] = { configValue }
   })
   return interfaceFile
@@ -177,65 +229,7 @@ async function loadConfigData(
   isDev: boolean,
   extensions: ExtensionResolved[]
 ): Promise<ConfigData> {
-  const plusFiles = await findPlusFiles(userRootDir, isDev, extensions)
-
-  let plusConfigFiles: PlusConfigFile[]
-  {
-    const configFiles = plusFiles.filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) === 'config')
-    plusConfigFiles = await Promise.all(
-      configFiles.map(async (configUserFilePath) => {
-        const configFilePath = {
-          filePathAbsolute: configUserFilePath.filePathAbsolute,
-          filePathHumanReadable: configUserFilePath.filePathRelativeToUserRootDir
-        }
-        const { configFile, extendsConfigs } = await loadConfigFile(configFilePath, userRootDir)
-        const plusConfigFile: PlusConfigFile = tmp_convert(configFile)
-        plusConfigFile.extendsConfigs = extendsConfigs.map(tmp_convert)
-        return plusConfigFile
-      })
-    )
-  }
-
-  let plusValueFiles: PlusValueFile[]
-  {
-    const configDefinitions = getConfigDefinitionsOld(plusConfigFiles)
-    plusValueFiles = await findAndLoadPlusValueFiles(plusFiles, configDefinitions)
-  }
-
-  let interfaceFilesByLocationId: InterfaceFilesByLocationId = {}
-  // TODO: remove
-  {
-    plusValueFiles.forEach((plusValueFile) => {
-      const { pageId, configName, plusValueFilePath } = plusValueFile
-      const interfaceFile: InterfaceFile = {
-        filePathRelativeToUserRootDir: plusValueFilePath,
-        filePathAbsolute: path.posix.join(userRootDir, plusValueFilePath),
-        configMap: {
-          [configName]: {}
-        },
-        isConfigFile: false,
-        isValueFile: true
-      }
-      if ('configValue' in plusValueFile) {
-        interfaceFile.configMap[configName]!.configValue = plusValueFile.configValue
-      }
-      const locationId = getLocationId(plusValueFilePath)
-      assert(locationId === pageId)
-      interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
-      interfaceFilesByLocationId[locationId]!.push(interfaceFile)
-    })
-    plusConfigFiles.forEach((plusConfigFile) => {
-      const { plusConfigFilePath, extendsConfigs } = plusConfigFile
-      const interfaceFile = tmp_convert_back(plusConfigFile, false)
-      const locationId = getLocationId(plusConfigFilePath)
-      interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
-      interfaceFilesByLocationId[locationId]!.push(interfaceFile)
-      extendsConfigs.forEach((extendsConfig) => {
-        const interfaceFile = tmp_convert_back(extendsConfig, true)
-        interfaceFilesByLocationId[locationId]!.push(interfaceFile)
-      })
-    })
-  }
+  const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, isDev, extensions)
 
   /* TODO
   if (plusConfigFile) {
