@@ -57,6 +57,7 @@ type InterfaceFileType =
   | {
       isConfigFile: false
       isValueFile: true
+      configNameDefault: string
     }
 type ConfigName = string
 type InterfaceFile = InterfaceFileType & {
@@ -181,28 +182,59 @@ async function loadInterfaceFiles(
   // Value files
   await Promise.all(
     valueFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
-      const configName = extractConfigName(filePathRelativeToUserRootDir)
+      const configNameDefault = extractConfigName(filePathRelativeToUserRootDir)
       /* TODO
-  assertConfigName(
-    configName,
-    [...Object.keys(configDefinitions), ...Object.keys(globalConfigsDefinition)],
-    */
+      assertConfigName(
+        configNameDefault,
+        [...Object.keys(configDefinitions), ...Object.keys(globalConfigsDefinition)],
+      )
+      */
       const interfaceFile: InterfaceFile = {
         filePathRelativeToUserRootDir,
         filePathAbsolute,
         configMap: {
-          [configName]: {}
+          [configNameDefault]: {}
         },
         isConfigFile: false,
-        isValueFile: true
+        isValueFile: true,
+        configNameDefault
       }
-      const locationId = getLocationId(filePathRelativeToUserRootDir)
-      interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
-      interfaceFilesByLocationId[locationId]!.push(interfaceFile)
+      {
+        const configDef = getConfigDef(configDefinitionsBuiltIn, configNameDefault)
+        if (configDef?.env === 'config-only') {
+          await loadValueFile(interfaceFile, configNameDefault, filePathRelativeToUserRootDir)
+        }
+      }
+      {
+        const locationId = getLocationId(filePathRelativeToUserRootDir)
+        interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
+        interfaceFilesByLocationId[locationId]!.push(interfaceFile)
+      }
     })
   )
 
   return interfaceFilesByLocationId
+}
+function getConfigDef(
+  configDefinitions: Record<string, ConfigDefinition>,
+  configName: string
+): null | ConfigDefinition {
+  return configDefinitions[configName] ?? null
+}
+async function loadValueFile(
+  interfaceFile: InterfaceFile,
+  configNameDefault: string,
+  filePathRelativeToUserRootDir: string
+) {
+  const { filePathAbsolute } = interfaceFile
+  const { fileExports } = await transpileAndLoadValueFile(filePathAbsolute)
+  assertDefaultExportObject(fileExports, filePathRelativeToUserRootDir)
+  Object.entries(fileExports).forEach(([configName, configValue]) => {
+    if (configName === 'default') {
+      configName = configNameDefault
+    }
+    interfaceFile.configMap[configName] = { configValue }
+  })
 }
 function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: boolean): InterfaceFile {
   const { fileExports, filePathAbsolute, filePathHumanReadable, extendsFilePaths } = configFile
@@ -279,45 +311,67 @@ async function loadConfigData(
   const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(interfaceFilesByLocationId, userRootDir)
 
   const configFilesAll: Set<string> = new Set()
-  const pageConfigsData: PageConfigData[] = Object.entries(interfaceFilesByLocationId)
-    .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
-    .map(([locationId, interfaceFiles]) => {
-      const routeFilesystem = getRouteFilesystem(locationId)
-      const routeFilesystemDefinedBy = getRouteFilesystemDefinedBy(locationId)
+  const pageConfigsData: PageConfigData[] = await Promise.all(
+    Object.entries(interfaceFilesByLocationId)
+      .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
+      .map(async ([locationId, interfaceFiles]) => {
+        const routeFilesystem = getRouteFilesystem(locationId)
+        const routeFilesystemDefinedBy = getRouteFilesystemDefinedBy(locationId)
 
-      const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
+        const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
 
-      let configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
+        const configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
 
-      let configElements: PageConfigData['configElements'] = {}
-      objectEntries(configDefinitionsRelevant)
-        .filter(([configName]) => !isGlobal(configName))
-        .forEach(([configName, configDef]) => {
-          const configElement = resolveConfigElement(configName, configDef, interfaceFilesRelevant, userRootDir)
-          if (!configElement) return
-          configElements[configName as ConfigNameBuiltIn] = configElement
+        // Load value files of custom config-only configs
+        await Promise.all(
+          getInterfaceFileList(interfaceFilesRelevant).map(async (interfaceFile) => {
+            if (!interfaceFile.isValueFile) return
+            const { configNameDefault } = interfaceFile
+            const configDef = getConfigDef(configDefinitionsRelevant, configNameDefault)
+            assert(configDef)
+            if (configDef.env !== 'config-only') return
+            const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
+            if (isAlreadyLoaded) {
+              return
+            }
+            // Value files for built-in confg-only configs should have already been loaded at loadInterfaceFiles()
+            assert(!(configNameDefault in configDefinitionsBuiltIn))
+            const { filePathRelativeToUserRootDir } = interfaceFile
+            assert(filePathRelativeToUserRootDir)
+            await loadValueFile(interfaceFile, configNameDefault, filePathRelativeToUserRootDir)
+          })
+        )
+
+        let configElements: PageConfigData['configElements'] = {}
+        objectEntries(configDefinitionsRelevant)
+          .filter(([configName]) => !isGlobal(configName))
+          .forEach(([configName, configDef]) => {
+            const configElement = resolveConfigElement(configName, configDef, interfaceFilesRelevant, userRootDir)
+            if (!configElement) return
+            configElements[configName as ConfigNameBuiltIn] = configElement
+          })
+
+        configElements = applyEffects(configElements, configDefinitionsRelevant)
+
+        const isErrorPage = determineIsErrorPage(routeFilesystem)
+
+        Object.entries(configElements).forEach(([_configName, configElement]) => {
+          const { configEnv, codeFilePath } = configElement
+          if (configEnv === 'config-only' && codeFilePath) {
+            configFilesAll.add(codeFilePath)
+          }
         })
 
-      configElements = applyEffects(configElements, configDefinitionsRelevant)
-
-      const isErrorPage = determineIsErrorPage(routeFilesystem)
-
-      Object.entries(configElements).forEach(([_configName, configElement]) => {
-        const { configEnv, codeFilePath } = configElement
-        if (configEnv === 'config-only' && codeFilePath) {
-          configFilesAll.add(codeFilePath)
+        const entry: PageConfigData = {
+          pageId: locationId,
+          isErrorPage,
+          routeFilesystemDefinedBy,
+          routeFilesystem: isErrorPage ? null : routeFilesystem,
+          configElements
         }
+        return entry
       })
-
-      const entry: PageConfigData = {
-        pageId: locationId,
-        isErrorPage,
-        routeFilesystemDefinedBy,
-        routeFilesystem: isErrorPage ? null : routeFilesystem,
-        configElements
-      }
-      return entry
-    })
+  )
 
   Object.values(interfaceFilesByLocationId).forEach((interfaceFiles) => {
     interfaceFiles.forEach((interfaceFile) => {
@@ -333,6 +387,15 @@ async function loadConfigData(
   return { pageConfigsData, pageConfigGlobal, vikeConfig, configFilesAll }
 }
 
+function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
+  const configMapValues = Object.values(interfaceFile.configMap)
+  const isAlreadyLoaded = configMapValues.some((conf) => 'configValue' in conf)
+  if (isAlreadyLoaded) {
+    assert(configMapValues.every((conf) => 'configValue' in conf))
+  }
+  return isAlreadyLoaded
+}
+
 function getInterfaceFilesRelevant(
   interfaceFilesByLocationId: InterfaceFilesByLocationId,
   locationIdPage: string
@@ -345,6 +408,14 @@ function getInterfaceFilesRelevant(
       .sort(([locationId1], [locationId2]) => sortAfterInheritanceOrder(locationId1, locationId2, locationIdPage))
   )
   return interfaceFilesRelevant
+}
+
+function getInterfaceFileList(interfaceFilesByLocationId: InterfaceFilesByLocationId): InterfaceFile[] {
+  const interfaceFiles: InterfaceFile[] = []
+  Object.values(interfaceFilesByLocationId).forEach((interfaceFiles_) => {
+    interfaceFiles.push(...interfaceFiles_)
+  })
+  return interfaceFiles
 }
 
 function getInterfaceFilesGloabl(interfaceFilesByLocationId: InterfaceFilesByLocationId): InterfaceFilesByLocationId {
@@ -443,6 +514,8 @@ function resolveConfigElement(
           }
           if ('configValue' in conf) {
             configElement.configValue = conf.configValue
+          } else {
+            assert(configEnv !== 'config-only')
           }
           return configElement
         }
