@@ -117,6 +117,9 @@ importers:
       eslint:
         specifier: ^8.38.0
         version: 8.40.0
+      eslint-plugin-react:
+        specifier: ^7.32.2
+        version: 7.32.2(eslint@8.40.0)
       eslint-plugin-react-hooks:
         specifier: ^4.6.0
         version: 4.6.0(eslint@8.40.0)
