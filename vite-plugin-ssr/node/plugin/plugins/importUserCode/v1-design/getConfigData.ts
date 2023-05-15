@@ -282,10 +282,7 @@ async function loadConfigData(
   })
   */
 
-  const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(
-    interfaceFilesByLocationId,
-    userRootDir
-  )
+  const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(interfaceFilesByLocationId, userRootDir)
 
   const configFilesAll: Set<string> = new Set()
   const pageConfigsData: PageConfigData[] = Object.entries(interfaceFilesByLocationId)
@@ -302,12 +299,7 @@ async function loadConfigData(
       objectEntries(configDefinitionsRelevant)
         .filter(([configName]) => !isGlobal(configName))
         .forEach(([configName, configDef]) => {
-          const configElement = resolveConfigElement(
-            configName,
-            configDef,
-            interfaceFilesRelevant,
-            userRootDir,
-          )
+          const configElement = resolveConfigElement(configName, configDef, interfaceFilesRelevant, userRootDir)
           if (!configElement) return
           configElements[configName as ConfigNameBuiltIn] = configElement
         })
@@ -370,10 +362,7 @@ function getInterfaceFilesGloabl(interfaceFilesByLocationId: InterfaceFilesByLoc
   return interfaceFilesRelevant
 }
 
-function getGlobalConfigs(
-  interfaceFilesByLocationId: InterfaceFilesByLocationId,
-  userRootDir: string
-) {
+function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId, userRootDir: string) {
   const vikeConfig: Record<string, unknown> = {}
   const pageConfigGlobal: PageConfigGlobalData = {
     onBeforeRoute: null,
@@ -383,12 +372,7 @@ function getGlobalConfigs(
   const interfaceFilesGloabl = getInterfaceFilesGloabl(interfaceFilesByLocationId)
 
   objectEntries(globalConfigsDefinition).forEach(([configName, configDef]) => {
-    const configElement = resolveConfigElement(
-      configName,
-      configDef,
-      interfaceFilesGloabl,
-      userRootDir,
-    )
+    const configElement = resolveConfigElement(configName, configDef, interfaceFilesGloabl, userRootDir)
     if (!configElement) return
     if (arrayIncludes(objectKeys(pageConfigGlobal), configName)) {
       assert(!('configValue' in configElement))
@@ -412,7 +396,7 @@ function resolveConfigElement(
   configName: string,
   configDef: ConfigDefinition,
   interfaceFilesRelevant: InterfaceFilesByLocationId,
-  userRootDir: string,
+  userRootDir: string
 ): null | ConfigElement {
   for (const interfaceFiles of Object.values(interfaceFilesRelevant)) {
     for (const interfaceFile of interfaceFiles) {
@@ -472,7 +456,7 @@ function resolveConfigElement(
       }
     }
   }
-      /* TODO
+  /* TODO
         // Make this config value:
         //   /pages/some-page/+someConfig.js > `export default`
         // override that config value:
@@ -922,6 +906,7 @@ function extractConfigName(filePath: string) {
 type ConfigFile = {
   fileExports: Record<string, unknown>
   filePathAbsolute: string
+  // TODO: rename to filePathRelativeToUserRootDir?
   filePathHumanReadable: null | string
   extendsFilePaths: string[]
 }
