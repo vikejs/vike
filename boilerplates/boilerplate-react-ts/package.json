@@ -5,7 +5,7 @@
     "build": "vite build",
     "server": "ts-node ./server/index.ts",
     "server:prod": "cross-env NODE_ENV=production ts-node ./server/index.ts",
-    "lint": "eslint pages renderer server --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
     "@types/compression": "^1.7.2",

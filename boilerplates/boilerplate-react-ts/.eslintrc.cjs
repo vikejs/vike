@@ -5,6 +5,8 @@ module.exports = {
   rules: {
     'react-refresh/only-export-components': 'warn'
   },
+  reportUnusedDisableDirectives: true,
+  ignorePatterns: ['dist/*'],
   plugins: ['react-refresh'],
   extends: [
     'eslint:recommended',
