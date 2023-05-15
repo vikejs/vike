@@ -47,24 +47,26 @@ import { getPageConfigValue } from './getConfigData/helpers'
 
 assertIsVitePluginCode()
 
-type InterfaceFileType =
-  | {
-      isConfigFile: true
-      isValueFile: false
-      extendsFilePaths: string[]
-      isConfigExtend: boolean
-    }
-  | {
-      isConfigFile: false
-      isValueFile: true
-      configNameDefault: string
-    }
-type ConfigName = string
-type InterfaceFile = InterfaceFileType & {
+type InterfaceFile = InterfaceConfigFile | InterfaceValueFile
+type InterfaceFileCommons = {
   filePathAbsolute: string
   filePathRelativeToUserRootDir: null | string
   configMap: Record<ConfigName, { configValue?: unknown }>
 }
+type InterfaceConfigFile = InterfaceFileCommons & {
+  isConfigFile: true
+  isValueFile: false
+  extendsFilePaths: string[]
+  isConfigExtend: boolean
+}
+type InterfaceValueFile = InterfaceFileCommons & {
+  isConfigFile: false
+  isValueFile: true
+  configNameDefault: string
+  // All value files are +someConfig.js file living in user-land => filePathRelativeToUserRootDir is always defined
+  filePathRelativeToUserRootDir: string
+}
+type ConfigName = string
 type LocationId = string
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 // TODO: remove
@@ -202,7 +204,7 @@ async function loadInterfaceFiles(
       {
         const configDef = getConfigDef(configDefinitionsBuiltIn, configNameDefault)
         if (configDef?.env === 'config-only') {
-          await loadValueFile(interfaceFile, configNameDefault, filePathRelativeToUserRootDir)
+          await loadValueFile(interfaceFile, configNameDefault)
         }
       }
       {
@@ -221,19 +223,15 @@ function getConfigDef(
 ): null | ConfigDefinition {
   return configDefinitions[configName] ?? null
 }
-async function loadValueFile(
-  interfaceFile: InterfaceFile,
-  configNameDefault: string,
-  filePathRelativeToUserRootDir: string
-) {
-  const { filePathAbsolute } = interfaceFile
+async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string) {
+  const { filePathAbsolute, filePathRelativeToUserRootDir } = interfaceValueFile
   const { fileExports } = await transpileAndLoadValueFile(filePathAbsolute)
   assertDefaultExportObject(fileExports, filePathRelativeToUserRootDir)
   Object.entries(fileExports).forEach(([configName, configValue]) => {
     if (configName === 'default') {
       configName = configNameDefault
     }
-    interfaceFile.configMap[configName] = { configValue }
+    interfaceValueFile.configMap[configName] = { configValue }
   })
 }
 function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: boolean): InterfaceFile {
@@ -331,14 +329,10 @@ async function loadConfigData(
             assert(configDef)
             if (configDef.env !== 'config-only') return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
-            if (isAlreadyLoaded) {
-              return
-            }
+            if (isAlreadyLoaded) return
             // Value files for built-in confg-only configs should have already been loaded at loadInterfaceFiles()
             assert(!(configNameDefault in configDefinitionsBuiltIn))
-            const { filePathRelativeToUserRootDir } = interfaceFile
-            assert(filePathRelativeToUserRootDir)
-            await loadValueFile(interfaceFile, configNameDefault, filePathRelativeToUserRootDir)
+            await loadValueFile(interfaceFile, configNameDefault)
           })
         )
 
