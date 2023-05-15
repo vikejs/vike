@@ -1,6 +1,4 @@
 export { getConfigData }
-export type { PlusValueFile }
-export type { PlusConfigFile }
 
 import {
   assertPosixPath,
@@ -14,7 +12,6 @@ import {
   assertDefaultExportUnknown,
   assertDefaultExportObject,
   objectEntries,
-  objectAssign,
   hasProp,
   arrayIncludes,
   objectKeys,
@@ -43,7 +40,6 @@ import {
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadConfigFile, transpileAndLoadValueFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
-import { getPageConfigValue } from './getConfigData/helpers'
 
 assertIsVitePluginCode()
 
@@ -69,21 +65,6 @@ type InterfaceValueFile = InterfaceFileCommons & {
 type ConfigName = string
 type LocationId = string
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
-// TODO: remove
-type PlusConfigFile = {
-  plusConfigFilePath: string
-  plusConfigFilePathAbsolute: string
-  plusConfigFileExports: Record<string, unknown>
-  extendsConfigs: PlusConfigFile[]
-  extendsFilePaths: string[]
-}
-// TODO: remove
-type PlusValueFile = {
-  pageId: string
-  configName: string
-  plusValueFilePath: string
-  configValue?: unknown
-}
 
 type ConfigData = {
   pageConfigsData: PageConfigData[]
@@ -769,27 +750,6 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
   })
   return configDefinitions
 }
-function getConfigDefinitionsOld(plusConfigFilesRelevant: PlusConfigFile[]): ConfigDefinitionsIncludingCustom {
-  const configDefinitions: ConfigDefinitionsIncludingCustom = { ...configDefinitionsBuiltIn }
-  plusConfigFilesRelevant.forEach((plusConfigFile) => {
-    const { plusConfigFilePath } = plusConfigFile
-    const result = getPageConfigValue('meta', plusConfigFile)
-    if (result) {
-      const metaVal = result.configValue
-      assertMetaValue(metaVal, plusConfigFilePath)
-      objectEntries(metaVal).forEach(([configName, configDefinition]) => {
-        // User can override an existing config definition
-        const def = mergeConfigDefinition(
-          configDefinitions[configName] as ConfigDefinition | undefined,
-          configDefinition as ConfigDefinition
-        )
-
-        configDefinitions[configName] = def /* TODO: validate instead */ as any
-      })
-    }
-  })
-  return configDefinitions
-}
 
 function getConfigEntry(
   configName: string,
@@ -917,44 +877,6 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
     })
   })
   return plusFiles
-}
-
-async function findAndLoadPlusValueFiles(
-  plusFiles: UserFilePath[],
-  configDefinitions: ConfigDefinitionsIncludingCustom
-): Promise<PlusValueFile[]> {
-  const plusValueFiles: PlusValueFile[] = await Promise.all(
-    plusFiles
-      .filter((f) => extractConfigName(f.filePathRelativeToUserRootDir) !== 'config')
-      .map((f) => loadPlusValueFile(f, configDefinitions))
-  )
-  return plusValueFiles
-}
-
-async function loadPlusValueFile(plusFile: UserFilePath, configDefinitions: ConfigDefinitionsIncludingCustom) {
-  const { filePathAbsolute, filePathRelativeToUserRootDir } = plusFile
-  const configName = extractConfigName(filePathRelativeToUserRootDir)
-  assertConfigName(
-    configName,
-    [...Object.keys(configDefinitions), ...Object.keys(globalConfigsDefinition)],
-    filePathRelativeToUserRootDir
-  )
-  const configDef =
-    configDefinitions[configName] ?? (globalConfigsDefinition as Record<string, ConfigDefinition>)[configName]
-  assert(configDef)
-  const plusValueFile: PlusValueFile = {
-    configName,
-    pageId: getLocationId(filePathRelativeToUserRootDir),
-    plusValueFilePath: filePathRelativeToUserRootDir
-  }
-  if (configDef.env !== 'config-only') {
-    return plusValueFile
-  }
-  const { fileExports } = await transpileAndLoadValueFile(filePathAbsolute)
-  assertDefaultExportUnknown(fileExports, filePathRelativeToUserRootDir)
-  const configValue = fileExports.default
-  objectAssign(plusValueFile, { configValue })
-  return plusValueFile
 }
 
 function extractConfigName(filePath: string) {
