@@ -325,8 +325,9 @@ async function loadConfigData(
           getInterfaceFileList(interfaceFilesRelevant).map(async (interfaceFile) => {
             if (!interfaceFile.isValueFile) return
             const { configNameDefault } = interfaceFile
+            if (getConfigDef(globalConfigsDefinition, configNameDefault)) return
             const configDef = getConfigDef(configDefinitionsRelevant, configNameDefault)
-            assert(configDef)
+            assert(configDef, configNameDefault)
             if (configDef.env !== 'config-only') return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
