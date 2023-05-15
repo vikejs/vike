@@ -1,13 +1,14 @@
 import { Link } from '@brillout/docpress'
 import { JustAMiddleware } from '../components'
 
-From an architectural perspective, VPS is versatile:
- - From a server perspective VPS is just an agnostic middleware, see <Link href="/renderPage" />.
+From an architectural perspective, vite-plugin-ssr is highly versatile:
+ - From a server perspective, vite-plugin-ssr is <Link text="just a server-agnostic middleware" href="#server-side-tools" />.
  - We control how pages are rendered.
 
-In practice, this means that we can use VPS with whatever tool we want. In fact, VPS is being used with all kinds of tools within all kinds of environments.
+This means we can use vite-plugin-ssr with whatever tool we want.
 
-## View tools
+
+## UI tools
 
 ```js
 // /renderer/_default.page.server.js
@@ -60,11 +61,12 @@ async render(pageContex) {
 
 Since we control how our pages are render to HTML and hydrated, we can use:
 - Any UI framework (React 16, React 17, Vue 2, Vue 3, `petite-vue`, Svelte, Solid, Preact, ...)
-- Any view library (Vuex, Redux, Relay, Apollo GraphQL, PullState, Recoil, Vue Router, React Router, ...)
+- Any UI library (Vuex, Redux, Pinia, Relay, Apollo GraphQL, Recoil, ...)
 
-And, more importantly, integrating a view tool is simply a matter of following its official installation guide.
+And, more importantly, integrating a UI tool is simply a matter of following its official installation guide.
 
-## Browser tools
+
+## Browser-side tools
 
 ```js
 // /renderer/_default.page.client.js
@@ -101,7 +103,8 @@ We can use:
 
 Integrating a browser tool is only a matter of following its official installation guide.
 
-## Server tools
+
+## Server-side tools
 
 <JustAMiddleware />
 
@@ -113,10 +116,12 @@ You can use:
 - Any static host (Cloudflare Pages, GitHub Pages, Netlify, ...)
 
 See also:
+- <Link href="/renderPage" />
 - <Link href="/express" />
 - <Link href="/deno" />
 - <Link href="/fastify" />
 - <Link href="/hapi" />
+
 
 ## Examples
 
@@ -124,4 +129,4 @@ Official examples: [GitHub > `brillout/vite-plugin-ssr` > `examples/`](https://g
 
 Beyond the offical examples, many tools have community examples of being used with `vite-plugin-ssr` &ndash; search this website (`CTRL+K`) for the tool you want an example of.
 
-If an example is missing/outdated, PR welcome to add one.
+If an example is missing/outdated, contributions are welcome to create/improve one.
