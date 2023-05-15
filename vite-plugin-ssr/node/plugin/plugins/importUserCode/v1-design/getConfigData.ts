@@ -226,7 +226,7 @@ function getConfigDef(
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string) {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = interfaceValueFile
   const { fileExports } = await transpileAndLoadValueFile(filePathAbsolute)
-  assertDefaultExportObject(fileExports, filePathRelativeToUserRootDir)
+  assertDefaultExportUnknown(fileExports, filePathRelativeToUserRootDir)
   Object.entries(fileExports).forEach(([configName, configValue]) => {
     if (configName === 'default') {
       configName = configNameDefault
