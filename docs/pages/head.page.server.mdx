@@ -91,6 +91,7 @@ export const '/rocket/@rocketSlug'
 // Custom Export
 export { getDocumentProps }
 
+// getDocumentProps() can use fetched data to provide <title> and <meta name="description">
 function getDocumentProps(pageProps) {
   return {
     title: pageProps.product.name,
@@ -111,11 +112,21 @@ async function render(pageContext) {
   // `pageProps` is provided by our data fetching mechanism, see the "Data Fetching" Guide.
   const { Page, pageProps } = pageContext
 
-  // Our custom export is available as `pageContext.exports.getDocumentProps`
+  // Custom exports are available at pageContext.exports
   const { getDocumentProps } = pageContext.exports
 
-  // `getDocumentProps()` can use the fetched data to provide the page's meta data
-  const { title, description } = getDocumentProps(pageProps)
+  const title = (
+    // Conditional call in case a page doesn't define getDocumentProps()
+    getDocumentProps?.(pageProps).title ||
+    // Default for pages that don't define getDocumentProps()
+    'SpaceX'
+  )
+  const description = (
+    // Conditional call in case a page doesn't define getDocumentProps()
+    getDocumentProps?.(pageProps).description ||
+    // Default for pages that don't define getDocumentProps()
+    'We deliver payload to space.'
+  )
 
   return escapeInject`<html>
     <head>
