@@ -24,7 +24,7 @@ async function callOnBeforeRouteHook(
 }> {
   const hookReturn: unknown = await onBeforeRouteHook.onBeforeRoute(pageContext)
 
-  const errPrefix = `The \`onBeforeRoute()\` hook defined by ${onBeforeRouteHook.hookSrc}`
+  const errPrefix = `The onBeforeRoute() hook defined by ${onBeforeRouteHook.hookSrc}`
 
   assertUsage(
     hookReturn === null ||
@@ -39,12 +39,12 @@ async function callOnBeforeRouteHook(
 
   assertUsage(
     hasProp(hookReturn, 'pageContext', 'object'),
-    `${errPrefix} returned \`{ pageContext }\` but \`pageContext\` should be a plain JavaScript object.`
+    `${errPrefix} returned \`{ pageContext }\` but pageContext should be a plain JavaScript object.`
   )
 
   if (hasProp(hookReturn.pageContext, '_pageId') && !hasProp(hookReturn.pageContext, '_pageId', 'null')) {
-    const errPrefix2 = `${errPrefix} returned \`{ pageContext: { _pageId } }\` but \`_pageId\` should be`
-    assertUsage(hasProp(hookReturn.pageContext, '_pageId', 'string'), `${errPrefix2} a string or \`null\``)
+    const errPrefix2 = `${errPrefix} returned \`{ pageContext: { _pageId } }\` but _pageId should be`
+    assertUsage(hasProp(hookReturn.pageContext, '_pageId', 'string'), `${errPrefix2} a string or null`)
     assertUsage(
       pageContext._allPageIds.includes(hookReturn.pageContext._pageId),
       `${errPrefix2} one of following values: \`[${pageContext._allPageIds.map((s) => `'${s}'`).join(', ')}]\`.`
@@ -53,7 +53,7 @@ async function callOnBeforeRouteHook(
   if (hasProp(hookReturn.pageContext, 'routeParams')) {
     assertRouteParams(
       hookReturn.pageContext,
-      `${errPrefix} returned \`{ pageContext: { routeParams } }\` but \`routeParams\` should`
+      `${errPrefix} returned \`{ pageContext: { routeParams } }\` but routeParams should`
     )
   }
 
@@ -71,7 +71,7 @@ async function callOnBeforeRouteHook(
   if (hasProp(hookReturn.pageContext, 'urlOriginal')) {
     assertUsageUrl(
       hookReturn.pageContext.urlOriginal,
-      `${errPrefix} returned \`{ pageContext: { urlOriginal } }\` but \`urlOriginal\``
+      `${errPrefix} returned \`{ pageContext: { urlOriginal } }\` but urlOriginal`
     )
     objectAssign(pageContextAddendumHook, { _urlPristine: pageContext.urlOriginal })
   }
