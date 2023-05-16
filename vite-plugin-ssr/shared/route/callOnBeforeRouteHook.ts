@@ -1,5 +1,5 @@
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
-import { assertUsage, hasProp, isObjectWithKeys, objectAssign, assertWarning } from './utils'
+import { assertUsage, hasProp, isObjectWithKeys, objectAssign, assertWarning, assertUsageUrl } from './utils'
 import { assertRouteParams } from './resolveRouteFunction'
 
 export { callOnBeforeRouteHook }
@@ -69,9 +69,9 @@ async function callOnBeforeRouteHook(
     delete hookReturn.pageContext.url
   }
   if (hasProp(hookReturn.pageContext, 'urlOriginal')) {
-    assertUsage(
-      hasProp(hookReturn.pageContext, 'urlOriginal', 'string'),
-      `${errPrefix} returned \`{ pageContext: { urlOriginal } }\` but \`urlOriginal\` should be a string`
+    assertUsageUrl(
+      hookReturn.pageContext.urlOriginal,
+      `${errPrefix} returned \`{ pageContext: { urlOriginal } }\` but \`urlOriginal\``
     )
     objectAssign(pageContextAddendumHook, { _urlPristine: pageContext.urlOriginal })
   }

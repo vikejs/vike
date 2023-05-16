@@ -2,6 +2,7 @@ export { parseUrl }
 export { isParsable }
 export { prependBase }
 export { assertUsageBaseServer }
+export { assertUsageUrl }
 export { normalizeBaseServer }
 export { isBaseServer }
 export { isBaseAssets }
@@ -20,6 +21,19 @@ function isParsable(url: string): boolean {
     url.startsWith('#') ||
     url === ''
   )
+}
+function assertUsageUrl(url: unknown, errPrefix: string): asserts url is string {
+  assert(errPrefix.includes(' but '))
+  assertUsage(typeof url === 'string', `${errPrefix} should be a string`)
+  if (isParsable(url)) return
+  if (!url.startsWith('/') && !url.includes(':')) {
+    assertUsage(
+      false,
+      `${errPrefix} is '${url}' and it should be '/${url}' instead (URL pathnames should start with a leading slash)`
+    )
+  } else {
+    assertUsage(false, `${errPrefix} isn't a valid URL`)
+  }
 }
 
 function parseUrl(
