@@ -26,16 +26,11 @@ function getPrefetchConfig(pageContext: PageContextPrefetch, linkTag: HTMLElemen
     prefetchStaticAssets
   }
 }
-function getStaticAssetsConfig(pageContext: PageContextPrefetch, linkTag: HTMLElement) {
-  let prefetchAttribute = getPrefetchAttribute(linkTag)
+function getStaticAssetsConfig(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchStaticAssets {
   let prefetchStaticAssets = ((): false | { when: 'HOVER' | 'VIEWPORT' } => {
-    if (prefetchAttribute !== null) {
-      if (prefetchAttribute === true) {
-        return { when: 'VIEWPORT' }
-      } else {
-        return { when: 'HOVER' }
-      }
-    }
+    let prefetchAttribute = getPrefetchAttribute(linkTag)
+    if (prefetchAttribute !== null) return prefetchAttribute
+
     if ('prefetchLinks' in pageContext.exports) {
       assertUsage(
         false,
@@ -71,22 +66,47 @@ function getStaticAssetsConfig(pageContext: PageContextPrefetch, linkTag: HTMLEl
   return prefetchStaticAssets
 }
 
-function getPrefetchAttribute(linkTag: HTMLElement): boolean | null {
-  let prefetchAttribute = linkTag.getAttribute('data-prefetch')
-  assertWarning(prefetchAttribute === null, 'The `data-prefetch` attribute is outdated.', {
-    showStackTrace: false,
-    onlyOnce: true
-  })
+function getPrefetchAttribute(linkTag: HTMLElement): PrefetchStaticAssets | null {
+  const attr = linkTag.getAttribute('data-prefetch-static-assets')
+  const attrOld = linkTag.getAttribute('data-prefetch')
 
-  if (prefetchAttribute === null) return null
-  assert(typeof prefetchAttribute === 'string')
-
-  if (prefetchAttribute === 'true') {
-    return true
-  }
-  if (prefetchAttribute === 'false') {
-    return false
+  if (attr === null && attrOld === null) {
+    return null
   }
 
-  assertUsage(false, `Wrong data-prefetch value: \`"${prefetchAttribute}"\`; it should be \`"true"\` or \`"false"\`.`)
+  const deprecationNotice = 'The attribute data-prefetch is outdated, use data-prefetch-static-assets instead.'
+
+  if (attr) {
+    assertUsage(attrOld === null, deprecationNotice)
+    if (attr === 'hover') {
+      return { when: 'HOVER' }
+    }
+    if (attr === 'viewport') {
+      return { when: 'VIEWPORT' }
+    }
+    if (attr === 'false') {
+      return false
+    }
+    assertUsage(
+      false,
+      `data-prefetch-static-assets has value "${attr}" but it should instead be "false", "hover", or "viewport"`
+    )
+  }
+
+  if (attrOld) {
+    assert(!attr)
+    assertWarning(false, deprecationNotice, {
+      showStackTrace: false,
+      onlyOnce: true
+    })
+    if (attrOld === 'true') {
+      return { when: 'VIEWPORT' }
+    }
+    if (attrOld === 'false') {
+      return { when: 'HOVER' }
+    }
+    assertUsage(false, `data-prefetch has value "${attrOld}" but it should instead be "true" or "false"`)
+  }
+
+  assert(false)
 }
