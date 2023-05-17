@@ -984,5 +984,9 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: 'Vue Router & React Router',
     url: '/vue-router-and-react-router'
+  },
+  {
+    title: <><code>vike-*</code> packages</>,
+    url: '/vike-packages'
   }
 ]

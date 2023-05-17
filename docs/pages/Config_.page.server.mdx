@@ -3,7 +3,7 @@ import { TextGray } from '../components'
 
 > The `+config.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
 
-List of configurations defined by <Link text={<code>+config.js</code>} href="/config" />.
+Configurations defined by <Link text={<code>+config.js</code>} href="/config" />.
 
 ```ts
 // +config.ts
@@ -18,27 +18,35 @@ export default {
 
 ## Configs
 
-- [**`Page`**](https://vite-plugin-ssr.com/Page) (`unknown`): The root UI component of the page.
-- [**`route`**](https://vite-plugin-ssr.com/routing) (`string | Function`): The page's route.
-- [**`passToClient`**](https://vite-plugin-ssr.com/passToClient) (`string[]`): Determines what `pageContext` properties are sent to the client-side.
-- [**`clientRouting`**](https://vite-plugin-ssr.com/clientRouting) (`boolean`): Enable Client Routing.
-- [**`meta`**](https://vite-plugin-ssr.com/meta) (`Meta`): Create new or modify existing configurations.
-- [**`prefetchStaticAssets`**](https://vite-plugin-ssr.com/clientRouting#link-prefetching) (`PrefetchStaticAssets`): Prefetch links.
-- [**`client`**](https://vite-plugin-ssr.com/client) (`string`): Additional client entry.
-- [**`hydrationCanBeAborted`**](https://vite-plugin-ssr.com/clientRouting) (`boolean`):  Whether the <Link text="UI framework" href="/ui-framework" /> allows hydrations to be aborted.
-- [**`iKnowThePerformanceRisksOfAsyncRouteFunctions`**](https://vite-plugin-ssr.com/route-function#async) (`boolean`): Enable async Route Functions.
+**Basics**
+
+- [**`Page`**](/Page) (`unknown`): The root UI component of the page.
+- [**`route`**](/routing) (`string | Function`): The page's route.
+- [**`prerender`**](/prerender): Whether to <Link text="pre-render" href="/preredering" /> the page.
+- [**`client`**](/client) (`string`): Additional client entry.
+- [**`prefetchStaticAssets`**](/clientRouting#link-prefetching) (`PrefetchStaticAssets`): Prefetch links.
+- [**`iKnowThePerformanceRisksOfAsyncRouteFunctions`**](/route-function#async) (`boolean`): Enable async Route Functions.
+
+**Advanced**
+
+> The following configurations are usually only used by <Link href="/vike-packages" noBreadcrumb />. The vast majority of users don't need to know about these.
+
+- [**`meta`**](/meta) (`Meta`): Create new or modify existing configurations.
+- [**`passToClient`**](/passToClient) (`string[]`): Determines what `pageContext` properties are sent to the client-side.
+- [**`clientRouting`**](/clientRouting) (`boolean`): Enable Client Routing.
+- [**`hydrationCanBeAborted`**](/clientRouting#usage-options) (`boolean`):  Whether the <Link text="UI framework" href="/ui-framework" /> allows hydrations to be aborted.
 
 ## Hooks
 
-- [**`onRenderHtml`**](https://vite-plugin-ssr.com/onRenderHtml): <TextGray>[server-side]</TextGray> Called when page is rendered to HTML on the server-side.
-- [**`onRenderClient`**](https://vite-plugin-ssr.com/onRenderClient): <TextGray>[client-side]</TextGray> Called when page is rendered on the client-side.
-- [**`onBeforeRender`**](https://vite-plugin-ssr.com/onBeforeRender): <TextGray>[server-side]</TextGray> Called before the page is rendered, usually for fetching data.
-- [**`onHydrationEnd`**](https://vite-plugin-ssr.com/clientRouting): <TextGray>[client-side]</TextGray> Called after the page is hydrated.
-- [**`onPageTransitionStart`**](https://vite-plugin-ssr.com/clientRouting): <TextGray>[client-side]</TextGray> Called before the user navigates to a new page.
-- [**`onPageTransitionEnd`**](https://vite-plugin-ssr.com/clientRouting): <TextGray>[client-side]</TextGray> Called after the user navigates to a new page.
-- [**`onPrerenderStart`**](https://vite-plugin-ssr.com/onPrerenderStart): <TextGray>[server-side]</TextGray> Page-specific hook called when pre-rendering starts.
-- [**`onBeforePrerenderStart`**](https://vite-plugin-ssr.com/onBeforePrerenderStart): <TextGray>[server-side]</TextGray> Global hook called before the whole pre-rendering process starts.
-- [**`onBeforeRoute`**](https://vite-plugin-ssr.com/onBeforeRoute): <TextGray>[server (and client-side)]</TextGray> Called before the URL is routed to a page.
+- [**`onRenderHtml`**](/onRenderHtml): <TextGray>[server-side]</TextGray> Called when page is rendered to HTML on the server-side.
+- [**`onRenderClient`**](/onRenderClient): <TextGray>[client-side]</TextGray> Called when page is rendered on the client-side.
+- [**`onBeforeRender`**](/onBeforeRender): <TextGray>[server-side]</TextGray> Called before the page is rendered, usually for fetching data.
+- [**`onHydrationEnd`**](/clientRouting#usage-options): <TextGray>[client-side]</TextGray> Called after the page is hydrated.
+- [**`onPageTransitionStart`**](/clientRouting#usage-options): <TextGray>[client-side]</TextGray> Called before the user navigates to a new page.
+- [**`onPageTransitionEnd`**](/clientRouting#usage-options): <TextGray>[client-side]</TextGray> Called after the user navigates to a new page.
+- [**`onPrerenderStart`**](/onPrerenderStart): <TextGray>[server-side]</TextGray> Page-specific hook called when pre-rendering starts.
+- [**`onBeforePrerenderStart`**](/onBeforePrerenderStart): <TextGray>[server-side]</TextGray> Global hook called before the whole pre-rendering process starts.
+- [**`onBeforeRoute`**](/onBeforeRoute): <TextGray>[server (and client-side)]</TextGray> Called before the URL is routed to a page.
 
 ## Custom
 
