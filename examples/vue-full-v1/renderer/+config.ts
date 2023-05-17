@@ -5,7 +5,7 @@ import { onHydrationEnd, onPageTransitionStart, onPageTransitionEnd } from './on
 export default {
   passToClient: ['pageProps', 'title'],
   clientRouting: true,
-  prefetchStaticAssets: { when: 'VIEWPORT' },
+  prefetchStaticAssets: 'viewport',
   onHydrationEnd,
   onPageTransitionStart,
   onPageTransitionEnd,

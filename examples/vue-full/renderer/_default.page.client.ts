@@ -12,7 +12,7 @@ import type {
 } from 'vite-plugin-ssr/types'
 
 export const clientRouting = true
-export const prefetchStaticAssets = { when: 'VIEWPORT' }
+export const prefetchStaticAssets = 'viewport'
 export { render }
 export { onHydrationEnd }
 export { onPageTransitionStart }
