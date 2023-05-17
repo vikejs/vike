@@ -1,6 +1,6 @@
 export { loadPageCode }
 
-import { assert, assertDefaultExportUnknown, objectAssign } from '../utils'
+import { assertDefaultExportUnknown, objectAssign } from '../utils'
 import type { PageConfig, PageConfigLoaded } from './PageConfig'
 
 async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<PageConfigLoaded> {
@@ -23,19 +23,16 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
       Object.entries(codeFileExports).forEach(([exportName, exportValue]) => {
         const configName = exportName !== 'default' ? exportName : codeFile.configName
         const configValue = exportValue
-        assert(!(configName in configValues))
         configValues[configName] = configValue
       })
     } else {
       configValue = codeFile.codeFileExportValue
-      assert(!(configName in configValues))
       configValues[configName] = configValue
     }
   })
 
   Object.entries(pageConfig.configElements).map(([configName, configElement]) => {
     if (configElement.codeFilePath) return
-    assert(!(configName in configValues))
     configValues[configName] = configElement.configValue
   })
 
