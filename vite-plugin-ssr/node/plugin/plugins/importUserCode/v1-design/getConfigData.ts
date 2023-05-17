@@ -1099,7 +1099,7 @@ function isGlobal(configName: string): configName is ConfigNameGlobal {
 }
 
 function assertConfigName(configName: string, configNames: string[], definedBy: string) {
-  configNames = [...configNames, ...Object.keys(configDefinitionsBuiltInGlobal)]
+  configNames = [...configNames, ...Object.keys(configDefinitionsBuiltInGlobal), 'meta']
   if (configNames.includes(configName)) return
   let errMsg = `${definedBy} defines an unknown config '${configName}'`
   const configNameSimilar = getMostSimilar(configName, configNames)
