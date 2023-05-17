@@ -31,16 +31,16 @@ function buildConfig(): Plugin {
     configResolved: {
       order: 'post',
       async handler(config) {
-      assertRollupInput(config)
-      const userInputs = normalizeRollupInput(config.build.rollupOptions.input)
-      const entries = await getEntries(config)
-      assert(Object.keys(entries).length > 0)
-      const input = {
-        ...entries,
-        ...userInputs
-      }
-      config.build.rollupOptions.input = input
-      addLogHook()
+        assertRollupInput(config)
+        const userInputs = normalizeRollupInput(config.build.rollupOptions.input)
+        const entries = await getEntries(config)
+        assert(Object.keys(entries).length > 0)
+        const input = {
+          ...entries,
+          ...userInputs
+        }
+        config.build.rollupOptions.input = input
+        addLogHook()
       }
     },
     config(config) {
