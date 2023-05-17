@@ -59,7 +59,7 @@ Minor features that can be life changing for some users:
 - vite-plugin-ssr can be loaded twice (or more) on the server-side, (some deployement architectures need this)
 
 And lots of details:
-- [Automatic frontend deployment syncronisation](https://vite-plugin-ssr.com/deploy-sync)
+- [Automatic frontend deployment synchronization](https://vite-plugin-ssr.com/deploy-sync)
 - `93` warning messages that help the user. For example:
   - Warning is shown when a hook takes more than 4 seconds to resolve (avoiding the user to ask himself "why is my vite-plugin-ssr app hanging?")
   - Warning is shown when client runtime is included twice in the bundle
