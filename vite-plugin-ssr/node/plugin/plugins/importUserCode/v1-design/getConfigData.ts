@@ -208,7 +208,6 @@ function getConfigDef(
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string) {
   const { filePathAbsolute } = interfaceValueFile.filePath
   const { fileExports } = await transpileAndLoadValueFile(filePathAbsolute)
-  // TODO: skip warning for .mdx files
   assertDefaultExportUnknown(fileExports, getFilePathToShowToUser(interfaceValueFile.filePath))
   Object.entries(fileExports).forEach(([configName, configValue]) => {
     if (configName === 'default') {

@@ -20,12 +20,17 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
       if (configName !== 'client') {
         assertDefaultExportUnknown(codeFileExports, codeFilePath)
       }
-      configValue = codeFileExports.default
+      Object.entries(codeFileExports).forEach(([exportName, exportValue]) => {
+        const configName = exportName !== 'default' ? exportName : codeFile.configName
+        const configValue = exportValue
+        assert(!(configName in configValues))
+        configValues[configName] = configValue
+      })
     } else {
       configValue = codeFile.codeFileExportValue
+      assert(!(configName in configValues))
+      configValues[configName] = configValue
     }
-    assert(!(configName in configValues))
-    configValues[configName] = configValue
   })
 
   Object.entries(pageConfig.configElements).map(([configName, configElement]) => {

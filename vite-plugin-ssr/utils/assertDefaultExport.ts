@@ -11,11 +11,13 @@ const IGNORE = [
   '_rerender_only'
 ]
 
-type SingleDefaultExport = { default: unknown }
+// support `export { frontmatter }` in .mdx files
+const FILES_WITH_SIDE_EXPORTS = ['.md', '.mdx']
+
 function assertDefaultExportUnknown(
   fileExports: Record<string, unknown>,
   filePath: string
-): asserts fileExports is SingleDefaultExport {
+): asserts fileExports is Record<string, unknown> & { default: unknown } {
   assertSingleDefaultExport(fileExports, filePath, true)
 }
 
@@ -35,7 +37,7 @@ function assertSingleDefaultExport(
   fileExports: Record<string, unknown>,
   filePath: string,
   defaultExportValueIsUnknown: boolean
-): asserts fileExports is SingleDefaultExport {
+) {
   const exportsAll = Object.keys(fileExports)
   const exportsRelevant = exportsAll.filter((exportName) => !IGNORE.includes(exportName))
   const exportsInvalid = exportsRelevant.filter((e) => e !== 'default')
@@ -47,7 +49,7 @@ function assertSingleDefaultExport(
       assert(exportsRelevant.length === 0)
       assertUsage(false, `${filePath} doesn't export any value, but it should have a \`export default\` instead`)
     }
-  } else {
+  } else if (!FILES_WITH_SIDE_EXPORTS.some((ext) => filePath.endsWith(ext))) {
     const exportsInvalidStr = exportsInvalid.join(', ')
     if (defaultExportValueIsUnknown) {
       assertWarning(
