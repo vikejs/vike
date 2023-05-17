@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 
 > The `+config.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
 
-List of configurations definable by <Link text={<code>+config.js</code>} href="/config" />.
+List of configurations defined by <Link text={<code>+config.js</code>} href="/config" />.
 
 ```ts
 // +config.ts
@@ -15,9 +15,7 @@ export default {
 } satisfies Config
 ```
 
-## Built-in
-
-Configs:
+## Configs
 
 - **`Page`** (`unknown`): the root UI component of the page.
 - **`route`** (`string | Function`): the page's route. See <Link href="/routing" />.
@@ -29,17 +27,17 @@ Configs:
 - **`hydrationCanBeAborted`** (`boolean`):  Whether your UI framework (React/Vue/Solid/...) allows the page's hydration to be aborted. See <Link href="/clientRouting" />.
 - **`iKnowThePerformanceRisksOfAsyncRouteFunctions`** (`boolean`): Enable async Route Functions. See <Link href="/route-function#async" />.
 
-Hooks:
+## Hooks
 
-- **`onRenderHtml`** (server): Hook called when page is rendered on the client-side. See <Link href="/onRenderHtml" />.
-- **`onRenderClient`** (client): Hook called when page is rendered on the client-side. See <Link href="/onRenderClient" />.
-- **`onBeforeRender`** (server(/client)): hook called before the page is rendered, usually for fetching data. See <Link href="/onBeforeRender" />.
-- **`onHydrationEnd`** (client): Hook called after the page is hydrated. See <Link href="/clientRouting" />.
-- **`onPageTransitionStart`** (client): Hook called before the user navigates to a new page. See <Link href="/clientRouting" />.
-- **`onPageTransitionEnd`** (client): Hook called after the user navigates to a new page. See <Link href="/clientRouting" />.
-- **`onPrerenderStart`** (server): Page Hook called when pre-rendering starts. See <Link href="/onPrerenderStart" />.
-- **`onBeforePrerenderStart`** (server): Global Hook called before the whole pre-rendering process starts. See <Link href="/onBeforePrerenderStart" />.
-- **`onBeforeRoute`** (server): Hook called before the URL is route to a page. See <Link href="/onBeforeRoute" />.
+- **`onRenderHtml`** [server-side]: Hook called when page is rendered to HTML on the server-side. See <Link href="/onRenderHtml" />.
+- **`onRenderClient`** [client-side]: Hook called when page is rendered on the client-side. See <Link href="/onRenderClient" />.
+- **`onBeforeRender`** [server-side]: Hook called before the page is rendered, usually for fetching data. See <Link href="/onBeforeRender" />.
+- **`onHydrationEnd`** [client-side]: Hook called after the page is hydrated. See <Link href="/clientRouting" />.
+- **`onPageTransitionStart`** [client-side]: Hook called before the user navigates to a new page. See <Link href="/clientRouting" />.
+- **`onPageTransitionEnd`** [client-side]: Hook called after the user navigates to a new page. See <Link href="/clientRouting" />.
+- **`onPrerenderStart`** [server-side]: Page Hook called when pre-rendering starts. See <Link href="/onPrerenderStart" />.
+- **`onBeforePrerenderStart`** [server-side]: Global Hook called before the whole pre-rendering process starts. See <Link href="/onBeforePrerenderStart" />.
+- **`onBeforeRoute`** [server (and client-side)]: Hook called before the URL is route to a page. See <Link href="/onBeforeRoute" />.
 
 ## Custom
 

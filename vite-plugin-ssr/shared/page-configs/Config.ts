@@ -58,7 +58,7 @@ type Config<Page = unknown> = Partial<{
    * See https://vite-plugin-ssr.com/onRenderClient
    */
   onRenderClient: Function
-  /** Hook called when page is rendered to HTML.
+  /** Hook called when page is rendered to HTML on the server-side.
    *
    * See https://vite-plugin-ssr.com/onRenderHtml
    */

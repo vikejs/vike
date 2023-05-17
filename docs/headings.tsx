@@ -961,7 +961,7 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/config'
   },
   {
-    title: 'Config List',
+    title: 'Config',
     url: '/Config'
   },
   {
