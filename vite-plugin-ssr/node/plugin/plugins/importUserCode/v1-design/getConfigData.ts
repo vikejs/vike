@@ -359,7 +359,6 @@ async function loadConfigData(
     })
   })
 
-  /*
   Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
     const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
     const configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
@@ -373,7 +372,6 @@ async function loadConfigData(
       })
     })
   })
-  */
 
   return { pageConfigsData, pageConfigGlobal, vikeConfig, configFilesAll }
 }
@@ -1101,6 +1099,7 @@ function isGlobal(configName: string): configName is GlobalConfigName {
 }
 
 function assertConfigName(configName: string, configNames: string[], definedBy: string) {
+  configNames = [...configNames, ...Object.keys(globalConfigsDefinition)]
   if (configNames.includes(configName)) return
   let errMsg = `${definedBy} defines an unknown config '${configName}'`
   const configNameSimilar = getMostSimilar(configName, configNames)
