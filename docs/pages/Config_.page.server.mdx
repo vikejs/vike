@@ -41,20 +41,20 @@ export default {
 
 ### Basics
 
-- [**`onHydrationEnd`**](/clientRouting#usage-options): <TextEnv>[client-side]</TextEnv> Called after the page is hydrated.
-- [**`onPageTransitionStart`**](/clientRouting#usage-options): <TextEnv>[client-side]</TextEnv> Called before the user navigates to a new page.
-- [**`onPageTransitionEnd`**](/clientRouting#usage-options): <TextEnv>[client-side]</TextEnv> Called after the user navigates to a new page.
-- [**`onPrerenderStart`**](/onPrerenderStart): <TextEnv>[server-side]</TextEnv> Page-specific hook called when pre-rendering starts.
-- [**`onBeforePrerenderStart`**](/onBeforePrerenderStart): <TextEnv>[server-side]</TextEnv> Global hook called before the whole pre-rendering process starts.
+- [**`onHydrationEnd`**](/clientRouting#usage-options): <TextEnv>client-side</TextEnv> Called after the page is hydrated.
+- [**`onPageTransitionStart`**](/clientRouting#usage-options): <TextEnv>client-side</TextEnv> Called before the user navigates to a new page.
+- [**`onPageTransitionEnd`**](/clientRouting#usage-options): <TextEnv>client-side</TextEnv> Called after the user navigates to a new page.
+- [**`onPrerenderStart`**](/onPrerenderStart): <TextEnv>server-side</TextEnv> Page-specific hook called when pre-rendering starts.
+- [**`onBeforePrerenderStart`**](/onBeforePrerenderStart): <TextEnv>server-side</TextEnv> Global hook called before the whole pre-rendering process starts.
 
 ### Advanced
 
 > Usually only used by <Link href="/vike-packages" noBreadcrumb />. Most users don't need to know about these.
 
-- [**`onBeforeRender`**](/onBeforeRender): <TextEnv>[server-side]</TextEnv> Called before the page is rendered, usually for fetching data.
-- [**`onRenderHtml`**](/onRenderHtml): <TextEnv>[server-side]</TextEnv> Called when page is rendered to HTML on the server-side.
-- [**`onRenderClient`**](/onRenderClient): <TextEnv>[client-side]</TextEnv> Called when page is rendered on the client-side.
-- [**`onBeforeRoute`**](/onBeforeRoute): <TextEnv>[server (and client-side)]</TextEnv> Called before the URL is routed to a page.
+- [**`onBeforeRender`**](/onBeforeRender): <TextEnv>server-side (and optionally client-side)</TextEnv> Called before the page is rendered, usually for fetching data.
+- [**`onRenderHtml`**](/onRenderHtml): <TextEnv>server-side</TextEnv> Called when page is rendered to HTML on the server-side.
+- [**`onRenderClient`**](/onRenderClient): <TextEnv>client-side</TextEnv> Called when page is rendered on the client-side.
+- [**`onBeforeRoute`**](/onBeforeRoute): <TextEnv>server (and optionally client-side)</TextEnv> Called before the URL is routed to a page.
 
 ## Custom
 
