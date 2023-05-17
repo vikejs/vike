@@ -4,7 +4,7 @@ import { assert, assertClientRouting, assertUsage, checkIfClientRouting, isExter
 import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { isClientSideRoutable, skipLink } from './skipLink'
 import { getPageId } from './getPageId'
-import { getPrefetchConfig } from './prefetch/getPrefetchConfig'
+import { getPrefetchSettings } from './prefetch/getPrefetchSettings'
 import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched'
 import { disableClientRouting } from './useClientRouter'
 
@@ -65,14 +65,14 @@ function addLinkPrefetchHandlers(pageContext: {
 
     if (isAlreadyPrefetched(url)) return
 
-    const prefetchConfig = getPrefetchConfig(pageContext, linkTag)
+    const { prefetchStaticAssets } = getPrefetchSettings(pageContext, linkTag)
 
-    if (!prefetchConfig.prefetchStaticAssets) {
+    if (!prefetchStaticAssets) {
       return
-    } else if (prefetchConfig.prefetchStaticAssets.when === 'HOVER') {
+    } else if (prefetchStaticAssets.when === 'HOVER') {
       linkTag.addEventListener('mouseover', () => prefetch(url))
       linkTag.addEventListener('touchstart', () => prefetch(url), { passive: true })
-    } else if (prefetchConfig.prefetchStaticAssets.when === 'VIEWPORT') {
+    } else if (prefetchStaticAssets.when === 'VIEWPORT') {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {

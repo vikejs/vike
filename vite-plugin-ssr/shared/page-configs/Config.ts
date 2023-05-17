@@ -3,7 +3,7 @@ export type { ConfigNameBuiltIn }
 export type { Meta }
 export type { Effect }
 
-import type { PrefetchStaticAssets } from '../../client/router/prefetch/getPrefetchConfig'
+import type { PrefetchStaticAssets } from '../../client/router/prefetch/getPrefetchSettings'
 import type { ConfigVpsUserProvided } from '../ConfigVps'
 // TODO: write docs of links below
 
