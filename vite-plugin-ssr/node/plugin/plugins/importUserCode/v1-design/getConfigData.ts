@@ -82,7 +82,7 @@ let isFirstInvalidation = true
 
 type ConfigDefinitionsIncludingCustom = Record<string, ConfigDefinition>
 
-type GlobalConfigName =
+type ConfigNameGlobal =
   | 'onPrerenderStart'
   | 'onBeforeRoute'
   | 'prerender'
@@ -91,7 +91,7 @@ type GlobalConfigName =
   | 'includeAssetsImportedByServer'
   | 'baseAssets'
   | 'baseServer'
-const globalConfigsDefinition: Record<GlobalConfigName, ConfigDefinition> = {
+const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition> = {
   onPrerenderStart: {
     env: 'server-only'
   },
@@ -305,7 +305,7 @@ async function loadConfigData(
           getInterfaceFileList(interfaceFilesRelevant).map(async (interfaceFile) => {
             if (!interfaceFile.isValueFile) return
             const { configNameDefault } = interfaceFile
-            if (getConfigDef(globalConfigsDefinition, configNameDefault)) return
+            if (getConfigDef(configDefinitionsBuiltInGlobal, configNameDefault)) return
             const configDef = getConfigDef(configDefinitionsRelevant, configNameDefault)
             assert(configDef, configNameDefault)
             if (configDef.env !== 'config-only') return
@@ -425,7 +425,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
 
   const interfaceFilesGloabl = getInterfaceFilesGloabl(interfaceFilesByLocationId)
 
-  objectEntries(globalConfigsDefinition).forEach(([configName, configDef]) => {
+  objectEntries(configDefinitionsBuiltInGlobal).forEach(([configName, configDef]) => {
     const configElement = resolveConfigElement(configName, configDef, interfaceFilesGloabl, userRootDir)
     if (!configElement) return
     if (arrayIncludes(objectKeys(pageConfigGlobal), configName)) {
@@ -1092,14 +1092,14 @@ function handleUserFileError(err: unknown, isDev: boolean) {
   }
 }
 
-function isGlobal(configName: string): configName is GlobalConfigName {
+function isGlobal(configName: string): configName is ConfigNameGlobal {
   if (configName === 'prerender') return false
-  const configNamesGlobal = Object.keys(globalConfigsDefinition)
+  const configNamesGlobal = Object.keys(configDefinitionsBuiltInGlobal)
   return arrayIncludes(configNamesGlobal, configName)
 }
 
 function assertConfigName(configName: string, configNames: string[], definedBy: string) {
-  configNames = [...configNames, ...Object.keys(globalConfigsDefinition)]
+  configNames = [...configNames, ...Object.keys(configDefinitionsBuiltInGlobal)]
   if (configNames.includes(configName)) return
   let errMsg = `${definedBy} defines an unknown config '${configName}'`
   const configNameSimilar = getMostSimilar(configName, configNames)
