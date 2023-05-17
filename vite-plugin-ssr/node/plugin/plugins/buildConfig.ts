@@ -1,4 +1,5 @@
 export { buildConfig }
+export { assertRollupInput }
 
 import {
   assert,
@@ -28,11 +29,13 @@ function buildConfig(): Plugin {
     apply: 'build',
     enforce: 'post',
     async configResolved(config) {
+      assertRollupInput(config)
+      const userInputs = normalizeRollupInput(config.build.rollupOptions.input)
       const entries = await getEntries(config)
       assert(Object.keys(entries).length > 0)
       const input = {
         ...entries,
-        ...normalizeRollupInput(config.build.rollupOptions.input)
+        ...userInputs
       }
       config.build.rollupOptions.input = input
       addLogHook()
@@ -217,4 +220,14 @@ function addLogHook() {
       process.stdout.cursorTo(0)
     }
   })
+}
+
+function assertRollupInput(config: ResolvedConfig): void {
+  const userInputs = normalizeRollupInput(config.build.rollupOptions.input)
+  const htmlInputs = Object.values(userInputs).filter((entry) => entry.endsWith('.html') || entry.endsWith('.htm'))
+  const htmlInput = htmlInputs[0]
+  assertUsage(
+    htmlInput === undefined,
+    `The entry ${htmlInput} of config build.rollupOptions.input is an HTML entry which is forbidden when using vite-plugin-ssr, instead follow https://vite-plugin-ssr.com/add`
+  )
 }

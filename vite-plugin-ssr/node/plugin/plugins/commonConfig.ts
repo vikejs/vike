@@ -1,6 +1,7 @@
 export { commonConfig }
 
 import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
+import { assertRollupInput } from './buildConfig'
 
 function commonConfig(): Plugin {
   return {
@@ -17,6 +18,7 @@ function commonConfig(): Plugin {
     configResolved(config) {
       setDefaultPort(config)
       workaroundCI(config)
+      assertRollupInput(config)
     }
   }
 }
