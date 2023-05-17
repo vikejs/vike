@@ -1,5 +1,6 @@
 import { Link } from '@brillout/docpress'
-import { TextGray } from '../components'
+import { TextType } from './Config/TextType'
+import { TextEnv } from './Config/TextEnv'
 
 > The `+config.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
 
@@ -18,35 +19,42 @@ export default {
 
 ## Configs
 
-**Basics**
+### Basics
 
-- [**`Page`**](/Page) (`unknown`): The root UI component of the page.
-- [**`route`**](/routing) (`string | Function`): The page's route.
-- [**`prerender`**](/prerender): Whether to <Link text="pre-render" href="/preredering" /> the page.
-- [**`client`**](/client) (`string`): Additional client entry.
-- [**`prefetchStaticAssets`**](/clientRouting#link-prefetching) (`PrefetchStaticAssets`): Prefetch links.
-- [**`iKnowThePerformanceRisksOfAsyncRouteFunctions`**](/route-function#async) (`boolean`): Enable async Route Functions.
+- [**`Page`**](/Page): <TextType>unknown</TextType> The root UI component of the page.
+- [**`route`**](/routing): <TextType>string | Function</TextType> The page's route.
+- [**`prerender`**](/prerender-config): Whether to <Link text="pre-render" href="/preredering" /> the page, and pre-rendering settings.
+- [**`client`**](/client): <TextType>string</TextType> Additional client entry.
+- [**`prefetchStaticAssets`**](/clientRouting#link-prefetching): Link prefetching settings.
+- [**`iKnowThePerformanceRisksOfAsyncRouteFunctions`**](/route-function#async): <TextType>boolean</TextType> Enable async Route Functions.
 
-**Advanced**
+### Advanced
 
-> The following configurations are usually only used by <Link href="/vike-packages" noBreadcrumb />. The vast majority of users don't need to know about these.
+> Usually only used by <Link href="/vike-packages" noBreadcrumb />. Most users don't need to know about these.
 
-- [**`meta`**](/meta) (`Meta`): Create new or modify existing configurations.
-- [**`passToClient`**](/passToClient) (`string[]`): Determines what `pageContext` properties are sent to the client-side.
-- [**`clientRouting`**](/clientRouting) (`boolean`): Enable Client Routing.
-- [**`hydrationCanBeAborted`**](/clientRouting#usage-options) (`boolean`):  Whether the <Link text="UI framework" href="/ui-framework" /> allows hydrations to be aborted.
+- [**`meta`**](/meta): Create new or modify existing configurations.
+- [**`passToClient`**](/passToClient): <TextType>string[]</TextType> Determines what `pageContext` properties are sent to the client-side.
+- [**`clientRouting`**](/clientRouting): <TextType>boolean</TextType> Enable Client Routing.
+- [**`hydrationCanBeAborted`**](/clientRouting#usage-options): <TextType>boolean</TextType>  Whether the <Link text="UI framework" href="/ui-framework" /> allows hydrations to be aborted.
 
 ## Hooks
 
-- [**`onRenderHtml`**](/onRenderHtml): <TextGray>[server-side]</TextGray> Called when page is rendered to HTML on the server-side.
-- [**`onRenderClient`**](/onRenderClient): <TextGray>[client-side]</TextGray> Called when page is rendered on the client-side.
-- [**`onBeforeRender`**](/onBeforeRender): <TextGray>[server-side]</TextGray> Called before the page is rendered, usually for fetching data.
-- [**`onHydrationEnd`**](/clientRouting#usage-options): <TextGray>[client-side]</TextGray> Called after the page is hydrated.
-- [**`onPageTransitionStart`**](/clientRouting#usage-options): <TextGray>[client-side]</TextGray> Called before the user navigates to a new page.
-- [**`onPageTransitionEnd`**](/clientRouting#usage-options): <TextGray>[client-side]</TextGray> Called after the user navigates to a new page.
-- [**`onPrerenderStart`**](/onPrerenderStart): <TextGray>[server-side]</TextGray> Page-specific hook called when pre-rendering starts.
-- [**`onBeforePrerenderStart`**](/onBeforePrerenderStart): <TextGray>[server-side]</TextGray> Global hook called before the whole pre-rendering process starts.
-- [**`onBeforeRoute`**](/onBeforeRoute): <TextGray>[server (and client-side)]</TextGray> Called before the URL is routed to a page.
+### Basics
+
+- [**`onHydrationEnd`**](/clientRouting#usage-options): <TextEnv>[client-side]</TextEnv> Called after the page is hydrated.
+- [**`onPageTransitionStart`**](/clientRouting#usage-options): <TextEnv>[client-side]</TextEnv> Called before the user navigates to a new page.
+- [**`onPageTransitionEnd`**](/clientRouting#usage-options): <TextEnv>[client-side]</TextEnv> Called after the user navigates to a new page.
+- [**`onPrerenderStart`**](/onPrerenderStart): <TextEnv>[server-side]</TextEnv> Page-specific hook called when pre-rendering starts.
+- [**`onBeforePrerenderStart`**](/onBeforePrerenderStart): <TextEnv>[server-side]</TextEnv> Global hook called before the whole pre-rendering process starts.
+
+### Advanced
+
+> Usually only used by <Link href="/vike-packages" noBreadcrumb />. Most users don't need to know about these.
+
+- [**`onBeforeRender`**](/onBeforeRender): <TextEnv>[server-side]</TextEnv> Called before the page is rendered, usually for fetching data.
+- [**`onRenderHtml`**](/onRenderHtml): <TextEnv>[server-side]</TextEnv> Called when page is rendered to HTML on the server-side.
+- [**`onRenderClient`**](/onRenderClient): <TextEnv>[client-side]</TextEnv> Called when page is rendered on the client-side.
+- [**`onBeforeRoute`**](/onBeforeRoute): <TextEnv>[server (and client-side)]</TextEnv> Called before the URL is routed to a page.
 
 ## Custom
 
