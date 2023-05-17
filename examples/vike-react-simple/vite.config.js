@@ -3,6 +3,6 @@ import ssr from 'vite-plugin-ssr/plugin'
 
 export default {
   plugins: [react(), ssr()],
-  // TODO: why is this needed?
+  // TODO: remove need for this
   optimizeDeps: { include: ['vike-react-simple/onRenderClient'] }
 }

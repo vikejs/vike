@@ -1,5 +1,11 @@
 export { getConfigData }
 
+// TODO
+//  - refactor virtual module HMR invalidation
+//  - gracefullly handle errors in getConfigData()
+//    - Remove markAsUserLandError()?
+//  - Remove need for `optimizeDeps: { include: ['vike-react-simple/onRenderClient'] }` in /examples/vike-react-simple/
+
 import {
   assertPosixPath,
   assert,
