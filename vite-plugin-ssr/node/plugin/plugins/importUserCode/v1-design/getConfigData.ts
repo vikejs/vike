@@ -24,7 +24,8 @@ import {
   assertIsVitePluginCode,
   getMostSimilar,
   isNpmPackageModule,
-  joinEnglish
+  joinEnglish,
+  lowerFirst
 } from '../../../utils'
 import path from 'path'
 import type {
@@ -432,90 +433,152 @@ function resolveConfigElement(
   interfaceFilesRelevant: InterfaceFilesByLocationId,
   userRootDir: string
 ): null | ConfigElement {
+  // interfaceFilesRelevant is sorted by sortAfterInheritanceOrder()
   for (const interfaceFiles of Object.values(interfaceFilesRelevant)) {
-    for (const interfaceFile of interfaceFiles) {
-      // TODO: rethink file paths of ConfigElement
-      const configFilePath =
-        interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
-      const conf = interfaceFile.configMap[configName]
-      if (conf) {
-        const configEnv = configDef.env
-        if (interfaceFile.isConfigFile) {
-          assert('configValue' in conf)
-          const { configValue } = conf
-          const codeFile = getCodeFilePath(
-            configValue,
-            interfaceFile.filePath.filePathAbsolute,
-            interfaceFile.filePath.filePathRelativeToUserRootDir,
-            userRootDir
-          )
-          if (codeFile) {
-            const { codeFilePath, codeFileExport } = codeFile
-            const configElement = {
-              plusConfigFilePath: configFilePath,
-              codeFilePath,
-              codeFileExport,
-              configDefinedAt: `${codeFilePath} > \`export ${codeFileExport}\``,
-              configDefinedByFile: codeFilePath,
-              configEnv
-            }
-            return configElement
-          } else {
-            const configElement: ConfigElement = {
-              plusConfigFilePath: configFilePath,
-              configDefinedAt: `${configFilePath} > \`export default { ${configName} }\``,
-              configDefinedByFile: configFilePath,
-              codeFilePath: null,
-              codeFileExport: null,
-              configEnv,
-              configValue
-            }
-            return configElement
-          }
-        } else if (interfaceFile.isValueFile) {
-          // TODO: rethink file paths of ConfigElement
-          const codeFilePath =
-            interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
-          const codeFileExport = 'default'
-          const configElement: ConfigElement = {
-            configEnv,
-            codeFilePath,
-            codeFileExport,
-            plusConfigFilePath: null,
-            configDefinedAt: `${codeFilePath} > \`export ${codeFileExport}\``,
-            configDefinedByFile: codeFilePath
-          }
-          if ('configValue' in conf) {
-            configElement.configValue = conf.configValue
-          } else {
-            assert(configEnv !== 'config-only')
-          }
-          return configElement
-        }
-        assert(false)
+    const interfaceFilesDefiningConfig = interfaceFiles.filter((interfaceFile) => interfaceFile.configMap[configName])
+    if (interfaceFilesDefiningConfig.length === 0) continue
+
+    // Main resolution logic
+    {
+      const interfaceValueFiles = interfaceFilesDefiningConfig
+        .filter((interfaceFile) => interfaceFile.isValueFile && interfaceFile.configNameDefault === configName)
+        .sort(makeOrderDeterministic)
+      const interfaceValueFile = interfaceValueFiles[0]
+      const interfaceConfigFiles = interfaceFilesDefiningConfig
+        .filter((interfaceFile) => interfaceFile.isConfigFile && !interfaceFile.isConfigExtend)
+        .sort(makeOrderDeterministic)
+      const interfaceConfigFile = interfaceConfigFiles[0]
+      // Make this value:
+      //   /pages/some-page/+someConfig.js > `export default`
+      // override that value:
+      //   /pages/some-page/+config > `export default { someConfig }`
+      const interfaceFileWinner = interfaceValueFile ?? interfaceConfigFile
+      if (interfaceFileWinner) {
+        const interfaceFilesOverriden = [...interfaceValueFiles, ...interfaceConfigFiles].filter(
+          (f) => f !== interfaceFileWinner
+        )
+        warnOverridenConfigValues(interfaceFileWinner, interfaceFilesOverriden, configName, configDef, userRootDir)
+        return getConfigElement(configName, interfaceFileWinner, configDef, userRootDir)
       }
     }
+
+    // Side-effect configs such as `export { frontmatter }` in .mdx files
+    {
+      const interfaceValueFiles = interfaceFilesDefiningConfig.filter((interfaceFile) => interfaceFile.isValueFile)
+      const interfaceValueFileSideEffect = interfaceValueFiles[0]
+      if (interfaceValueFileSideEffect) {
+        return getConfigElement(configName, interfaceValueFileSideEffect, configDef, userRootDir)
+      }
+    }
+
+    // extends
+    assert(
+      interfaceFilesDefiningConfig.every((interfaceFile) => interfaceFile.isConfigFile && interfaceFile.isConfigExtend)
+    )
+    // extended config files are already sorted by inheritance order
+    const interfaceFile = interfaceFilesDefiningConfig[0]
+    assert(interfaceFile)
+    return getConfigElement(configName, interfaceFile, configDef, userRootDir)
   }
-  /* TODO
-        // Make this config value:
-        //   /pages/some-page/+someConfig.js > `export default`
-        // override that config value:
-        //   /pages/some-page/+config > `export default { someConfig }`
-
-        // Make overriding deterministic
-
-      assertWarning(
-        false,
-        `${getCandidateDefinedAt(ignored, configName)} overriden by ${getCandidateDefinedAt(
-          winnerNow,
-          configName
-        )}, remove one of the two`,
-        { onlyOnce: false, showStackTrace: false }
-      )
-      */
 
   return null
 }
+function makeOrderDeterministic(interfaceFile1: InterfaceFile, interfaceFile2: InterfaceFile): 0 | -1 | 1 {
+  return lowerFirst<InterfaceFile>((interfaceFile) => {
+    const { filePathRelativeToUserRootDir } = interfaceFile.filePath
+    assert(isInterfaceFileUserLand(interfaceFile))
+    assert(filePathRelativeToUserRootDir)
+    return filePathRelativeToUserRootDir.length
+  })(interfaceFile1, interfaceFile2)
+}
+function warnOverridenConfigValues(
+  interfaceFileWinner: InterfaceFile,
+  interfaceFilesOverriden: InterfaceFile[],
+  configName: string,
+  configDef: ConfigDefinition,
+  userRootDir: string
+) {
+  interfaceFilesOverriden.forEach((interfaceFileLoser) => {
+    const configElementWinner = getConfigElement(configName, interfaceFileWinner, configDef, userRootDir)
+    const configElementLoser = getConfigElement(configName, interfaceFileLoser, configDef, userRootDir)
+    assertWarning(
+      false,
+      `${configElementLoser.configDefinedAt} overriden by ${configElementWinner.configDefinedAt}, remove one of the two`,
+      { onlyOnce: false, showStackTrace: false }
+    )
+  })
+}
+
+function isInterfaceFileUserLand(interfaceFile: InterfaceFile) {
+  return (interfaceFile.isConfigFile && !interfaceFile.isConfigExtend) || interfaceFile.isValueFile
+}
+
+function getConfigElement(
+  configName: string,
+  interfaceFile: InterfaceFile,
+  configDef: ConfigDefinition,
+  userRootDir: string
+): ConfigElement {
+  // TODO: rethink file paths of ConfigElement
+  const configFilePath = interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
+  const conf = interfaceFile.configMap[configName]
+  assert(conf)
+  const configEnv = configDef.env
+  if (interfaceFile.isConfigFile) {
+    assert('configValue' in conf)
+    const { configValue } = conf
+    const codeFile = getCodeFilePath(
+      configValue,
+      interfaceFile.filePath.filePathAbsolute,
+      interfaceFile.filePath.filePathRelativeToUserRootDir,
+      userRootDir
+    )
+    if (codeFile) {
+      const { codeFilePath, codeFileExport } = codeFile
+      const configElement = {
+        plusConfigFilePath: configFilePath,
+        codeFilePath,
+        codeFileExport,
+        configDefinedAt: `${codeFilePath} > \`export ${codeFileExport}\``,
+        configDefinedByFile: codeFilePath,
+        configEnv
+      }
+      return configElement
+    } else {
+      const configElement: ConfigElement = {
+        plusConfigFilePath: configFilePath,
+        configDefinedAt: `${configFilePath} > \`export default { ${configName} }\``,
+        configDefinedByFile: configFilePath,
+        codeFilePath: null,
+        codeFileExport: null,
+        configEnv,
+        configValue
+      }
+      return configElement
+    }
+  } else if (interfaceFile.isValueFile) {
+    // TODO: rethink file paths of ConfigElement
+    const codeFilePath = interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
+    const codeFileExport = 'default'
+    const configElement: ConfigElement = {
+      configEnv,
+      codeFilePath,
+      codeFileExport,
+      plusConfigFilePath: null,
+      configDefinedAt: `${codeFilePath} > \`export ${codeFileExport}\``,
+      configDefinedByFile: codeFilePath
+    }
+    if ('configValue' in conf) {
+      configElement.configValue = conf.configValue
+    } else {
+      assert(configEnv !== 'config-only')
+    }
+    return configElement
+  }
+  assert(false)
+}
+
+function sortAfterFileKind(interfaceFiles: InterfaceFile[]) {}
 
 function isDefiningPage(interfaceFiles: InterfaceFile[]): boolean {
   for (const interfaceFile of interfaceFiles) {
