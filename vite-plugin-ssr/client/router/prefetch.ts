@@ -69,10 +69,10 @@ function addLinkPrefetchHandlers(pageContext: {
 
     if (!prefetchStaticAssets) {
       return
-    } else if (prefetchStaticAssets.when === 'HOVER') {
+    } else if (prefetchStaticAssets === 'hover') {
       linkTag.addEventListener('mouseover', () => prefetch(url))
       linkTag.addEventListener('touchstart', () => prefetch(url), { passive: true })
-    } else if (prefetchStaticAssets.when === 'VIEWPORT') {
+    } else if (prefetchStaticAssets === 'viewport') {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {

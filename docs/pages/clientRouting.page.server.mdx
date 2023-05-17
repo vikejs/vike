@@ -29,8 +29,8 @@ export { render }
 // Enable Client Routing
 export const clientRouting = true
 
-// See `Link prefetching` section below. Default value: `{ when: 'HOVER' }`.
-export const prefetchStaticAssets = { when: 'VIEWPORT' }
+// See "Link prefetching" section below. Default value: 'hover'.
+export const prefetchStaticAssets = 'viewport'
 
 // Whether your UI framework allows the hydration to be aborted. (Allowing vite-plugin-ssr
 // to abort the hydration if the user clicks on a link before the hydration finished.)
@@ -223,10 +223,10 @@ We can prefetch even more eagerly by using viewport prefetching: the links are t
 // Environment: browser
 
 // Prefetch links as soon as they enter the viewport
-export const prefetchStaticAssets = { when: 'VIEWPORT' }
+export const prefetchStaticAssets = 'viewport'
 
 // Prefetch links when the user's mouse hovers a link
-export const prefetchStaticAssets = { when: 'HOVER' }
+export const prefetchStaticAssets = 'hover'
 
 // Disable prefetching
 export const prefetchStaticAssets = false
@@ -245,15 +245,13 @@ We can viewport prefetch for mobile users while only hover prefetch for desktop 
 ```js
 // For small screens, such as mobile, viewport prefetching can be a sensible strategy
 export const prefetchStaticAssets = window.matchMedia('(max-width: 600px)').matches
-  ? { when: "VIEWPORT" }
-  : { when: "HOVER" };
+  ? 'viewport' : 'hover'
 ```
 ```js
 // Or we enable viewport prefetching for any device without a mouse: mobile and tablets (but
 // not laptops that have a touch display).
 export const prefetchStaticAssets = window.matchMedia('(any-hover: none)').matches
-  ? { when: "VIEWPORT" }
-  : { when: "HOVER" };
+  ? 'viewport' : 'hover'
 ```
 
 See also:

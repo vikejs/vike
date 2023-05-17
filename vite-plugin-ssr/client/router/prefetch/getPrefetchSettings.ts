@@ -9,20 +9,16 @@ type PageContextPrefetch = {
   urlOriginal: string
 }
 
-type PrefetchStaticAssets =
-  | false
-  | {
-      when: 'HOVER' | 'VIEWPORT'
-    }
+type PrefetchStaticAssets = false | 'hover' | 'viewport'
 type PrefetchSettings = {
   prefetchStaticAssets: PrefetchStaticAssets
 }
 
 function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchSettings {
   let prefetchStaticAssets = getPrefetchSaticAssets(pageContext, linkTag)
-  if (prefetchStaticAssets && prefetchStaticAssets.when === 'VIEWPORT' && !pageContext._isProduction) {
+  if (prefetchStaticAssets === 'viewport' && !pageContext._isProduction) {
     assertInfo(false, 'Viewport prefetching is disabled in development', { onlyOnce: true })
-    prefetchStaticAssets = { when: 'HOVER' }
+    prefetchStaticAssets = 'hover'
   }
   return {
     prefetchStaticAssets
@@ -43,19 +39,34 @@ function getPrefetchSaticAssets(pageContext: PageContextPrefetch, linkTag: HTMLE
     if (prefetchStaticAssets === false) {
       return false
     }
-    const wrongUsageMsg =
-      "prefetchStaticAssets should be either `false`, `{ when: 'VIEWPORT' }`, or `{ when: 'HOVER' }`"
+    if (prefetchStaticAssets === 'hover') {
+      return 'hover'
+    }
+    if (prefetchStaticAssets === 'viewport') {
+      return 'viewport'
+    }
+
+    const wrongUsageMsg = "prefetchStaticAssets value should be false, 'hover', or 'viewport'"
+
+    // TODO/v1-release: remove
     assertUsage(isPlainObject(prefetchStaticAssets), wrongUsageMsg)
     const keys = Object.keys(prefetchStaticAssets)
     assertUsage(keys.length === 1 && keys[0] === 'when', wrongUsageMsg)
     const { when } = prefetchStaticAssets
     if (when === 'HOVER' || when === 'VIEWPORT') {
-      return { when }
+      const correctValue: 'hover' | 'viewport' = when.toLowerCase() as any
+      assertWarning(
+        false,
+        `prefetchStaticAssets value \`{ when: '${when}' }\` is outdated: set prefetchStaticAssets to '${correctValue}' instead`,
+        { onlyOnce: true, showStackTrace: false }
+      )
+      return correctValue
     }
+
     assertUsage(false, wrongUsageMsg)
   }
 
-  return { when: 'HOVER' }
+  return 'hover'
 }
 
 function getPrefetchAttribute(linkTag: HTMLElement): PrefetchStaticAssets | null {
@@ -70,11 +81,8 @@ function getPrefetchAttribute(linkTag: HTMLElement): PrefetchStaticAssets | null
 
   if (attr) {
     assertUsage(attrOld === null, deprecationNotice)
-    if (attr === 'hover') {
-      return { when: 'HOVER' }
-    }
-    if (attr === 'viewport') {
-      return { when: 'VIEWPORT' }
+    if (attr === 'hover' || attr === 'viewport') {
+      return attr
     }
     if (attr === 'false') {
       return false
@@ -93,10 +101,10 @@ function getPrefetchAttribute(linkTag: HTMLElement): PrefetchStaticAssets | null
       onlyOnce: true
     })
     if (attrOld === 'true') {
-      return { when: 'VIEWPORT' }
+      return 'viewport'
     }
     if (attrOld === 'false') {
-      return { when: 'HOVER' }
+      return 'hover'
     }
     assertUsage(false, `data-prefetch has value "${attrOld}" but it should instead be "true" or "false"`)
   }
