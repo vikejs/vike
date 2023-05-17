@@ -15,7 +15,7 @@ type PrefetchSettings = {
 }
 
 function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchSettings {
-  let prefetchStaticAssets = getPrefetchSaticAssets(pageContext, linkTag)
+  let prefetchStaticAssets = getPrefetchStaticAssets(pageContext, linkTag)
   if (prefetchStaticAssets === 'viewport' && !pageContext._isProduction) {
     assertInfo(false, 'Viewport prefetching is disabled in development', { onlyOnce: true })
     prefetchStaticAssets = 'hover'
@@ -24,7 +24,7 @@ function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag: HTMLElem
     prefetchStaticAssets
   }
 }
-function getPrefetchSaticAssets(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchStaticAssets {
+function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchStaticAssets {
   {
     const prefetchAttribute = getPrefetchAttribute(linkTag)
     if (prefetchAttribute !== null) return prefetchAttribute
