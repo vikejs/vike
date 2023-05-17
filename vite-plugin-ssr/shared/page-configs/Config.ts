@@ -87,7 +87,7 @@ type Config<Page = unknown> = Partial<{
    */
   onBeforePrerenderStart: Function
 
-  /** Hook called before the URL is route to a page.
+  /** Hook called before the URL is routed to a page.
    *
    * See https://vite-plugin-ssr.com/onBeforeRoute
    */
