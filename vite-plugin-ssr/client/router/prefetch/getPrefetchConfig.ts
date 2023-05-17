@@ -38,7 +38,7 @@ function getStaticAssetsConfig(pageContext: PageContextPrefetch, linkTag: HTMLEl
     }
     if ('prefetchLinks' in pageContext.exports) {
       assertUsage(
-        prefetchAttribute === null,
+        false,
         '`export { prefetchLinks }` is deprecated, use `export { prefetchStaticAssets }` instead.'
       )
     }
