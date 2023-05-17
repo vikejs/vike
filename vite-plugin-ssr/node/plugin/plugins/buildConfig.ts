@@ -28,7 +28,9 @@ function buildConfig(): Plugin {
     name: 'vite-plugin-ssr:buildConfig',
     apply: 'build',
     enforce: 'post',
-    async configResolved(config) {
+    configResolved: {
+      order: 'post',
+      async handler(config) {
       assertRollupInput(config)
       const userInputs = normalizeRollupInput(config.build.rollupOptions.input)
       const entries = await getEntries(config)
@@ -39,6 +41,7 @@ function buildConfig(): Plugin {
       }
       config.build.rollupOptions.input = input
       addLogHook()
+      }
     },
     config(config) {
       return {

@@ -31,7 +31,7 @@ markEnvAsPlugin()
 function plugin(vpsConfig?: ConfigVpsUserProvided): any {
   const plugins: Plugin[] = [
     resolveVpsConfig(vpsConfig), // `resolveVpsConfig()`'s hook `configResolved()` should be the first called
-    commonConfig(),
+    ...commonConfig(),
     importUserCode(),
     ...devConfig(),
     buildConfig(),

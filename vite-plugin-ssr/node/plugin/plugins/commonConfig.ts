@@ -3,9 +3,9 @@ export { commonConfig }
 import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import { assertRollupInput } from './buildConfig'
 
-function commonConfig(): Plugin {
-  return {
-    name: 'vite-plugin-ssr:commonConfig',
+function commonConfig(): Plugin[] {
+  return [{
+    name: 'vite-plugin-ssr:commonConfig-1',
     config: () => {
       const config: UserConfig = {
         appType: 'custom',
@@ -15,12 +15,18 @@ function commonConfig(): Plugin {
       }
       return config
     },
-    configResolved(config) {
+  }, {
+    name: 'vite-plugin-ssr:commonConfig-2',
+    enforce: 'post',
+    configResolved: {
+      order: 'post',
+      handler(config) {
       setDefaultPort(config)
       workaroundCI(config)
       assertRollupInput(config)
     }
-  }
+    }
+  }]
 }
 
 function setDefaultPort(config: ResolvedConfig) {
