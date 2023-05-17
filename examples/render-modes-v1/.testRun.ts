@@ -107,8 +107,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     await page.goto(getServerUrl() + '/spa')
     await clickCounter()
 
+    expect(await page.textContent('button')).toContain('Counter 1')
     if (!isPreview) {
-      expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SPA')
         await sleep(HMR_SLEEP)
@@ -161,6 +161,9 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
   })
   if (!isPreview) {
     test('HTML + JS - HMR', async () => {
+      // Page has finished loading and is interactive
+      expect(await page.textContent('button')).toContain('Counter 1')
+      // JS auto-reload
       {
         expect(await page.textContent('h1')).toBe('HTML + JS')
         {
@@ -169,7 +172,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
           const file = isV1Design ? './pages/html-js/+Page.jsx' : './pages/html-js/index.page.server.jsx'
           editFile(file, (s) => s.replace('<h1>HTML + JS</h1>', '<h1>HTML + JS !</h1>'))
           await navPromise
-          // But auto reload works
+          // But auto-reload works
           expect(await page.textContent('h1')).toBe('HTML + JS !')
         }
         {
@@ -179,6 +182,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
           expect(await page.textContent('h1')).toBe('HTML + JS')
         }
       }
+      // CSS HMR
       {
         await testColor('red')
         editFile('./pages/html-js/index.css', (s) => s.replace('color: red', 'color: gray'))
