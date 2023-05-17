@@ -1,4 +1,5 @@
 import { Link } from '@brillout/docpress'
+import { TextGray } from '../components'
 
 > The `+config.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
 
@@ -29,15 +30,15 @@ export default {
 
 ## Hooks
 
-- [**`onRenderHtml`** [server-side]](https://vite-plugin-ssr.com/onRenderHtml): Hook called when page is rendered to HTML on the server-side.
-- [**`onRenderClient`** [client-side]](https://vite-plugin-ssr.com/onRenderClient): Hook called when page is rendered on the client-side.
-- [**`onBeforeRender`** [server-side]](https://vite-plugin-ssr.com/onBeforeRender): Hook called before the page is rendered, usually for fetching data.
-- [**`onHydrationEnd`** [client-side]](https://vite-plugin-ssr.com/clientRouting): Hook called after the page is hydrated.
-- [**`onPageTransitionStart`** [client-side]](https://vite-plugin-ssr.com/clientRouting): Hook called before the user navigates to a new page.
-- [**`onPageTransitionEnd`** [client-side]](https://vite-plugin-ssr.com/clientRouting): Hook called after the user navigates to a new page.
-- [**`onPrerenderStart`** [server-side]](https://vite-plugin-ssr.com/onPrerenderStart): Page Hook called when pre-rendering starts.
-- [**`onBeforePrerenderStart`** [server-side]](https://vite-plugin-ssr.com/onBeforePrerenderStart): Global Hook called before the whole pre-rendering process starts.
-- [**`onBeforeRoute`** [server (and client-side)]](https://vite-plugin-ssr.com/onBeforeRoute): Hook called before the URL is route to a page.
+- [**`onRenderHtml`**](https://vite-plugin-ssr.com/onRenderHtml): <TextGray>[server-side]</TextGray> Hook called when page is rendered to HTML on the server-side.
+- [**`onRenderClient`**](https://vite-plugin-ssr.com/onRenderClient): <TextGray>[client-side]</TextGray> Hook called when page is rendered on the client-side.
+- [**`onBeforeRender`**](https://vite-plugin-ssr.com/onBeforeRender): <TextGray>[server-side]</TextGray> Hook called before the page is rendered, usually for fetching data.
+- [**`onHydrationEnd`**](https://vite-plugin-ssr.com/clientRouting): <TextGray>[client-side]</TextGray> Hook called after the page is hydrated.
+- [**`onPageTransitionStart`**](https://vite-plugin-ssr.com/clientRouting): <TextGray>[client-side]</TextGray> Hook called before the user navigates to a new page.
+- [**`onPageTransitionEnd`**](https://vite-plugin-ssr.com/clientRouting): <TextGray>[client-side]</TextGray> Hook called after the user navigates to a new page.
+- [**`onPrerenderStart`**](https://vite-plugin-ssr.com/onPrerenderStart): <TextGray>[server-side]</TextGray> Page Hook called when pre-rendering starts.
+- [**`onBeforePrerenderStart`**](https://vite-plugin-ssr.com/onBeforePrerenderStart): <TextGray>[server-side]</TextGray> Global Hook called before the whole pre-rendering process starts.
+- [**`onBeforeRoute`**](https://vite-plugin-ssr.com/onBeforeRoute): <TextGray>[server (and client-side)]</TextGray> Hook called before the URL is route to a page.
 
 ## Custom
 
