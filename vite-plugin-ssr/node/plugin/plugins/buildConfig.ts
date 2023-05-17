@@ -9,7 +9,8 @@ import {
   addOnBeforeLogHook,
   removeFileExtention,
   unique,
-  assertPosixPath
+  assertPosixPath,
+  assertUsage
 } from '../utils'
 import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode'
 import { getConfigData } from './importUserCode/v1-design/getConfigData'
@@ -27,8 +28,10 @@ function buildConfig(): Plugin {
     apply: 'build',
     enforce: 'post',
     async configResolved(config) {
+      const entries = await getEntries(config)
+      assert(Object.keys(entries).length > 0)
       const input = {
-        ...(await getEntries(config)),
+        ...entries,
         ...normalizeRollupInput(config.build.rollupOptions.input)
       }
       config.build.rollupOptions.input = input
@@ -51,6 +54,10 @@ function buildConfig(): Plugin {
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const pageFileEntries = await getPageFileEntries(config) // TODO/v1-release: remove
   const { pageConfigsData } = await getConfigData(config.root, false, false, (await getConfigVps(config)).extensions)
+  assertUsage(
+    Object.keys(pageFileEntries).length !== 0 || pageConfigsData.length !== 0,
+    'At least one page should be defined, see https://vite-plugin-ssr.com/add'
+  )
   if (viteIsSSR(config)) {
     const serverEntries = analyzeServerEntries(pageConfigsData)
     const entries = {
