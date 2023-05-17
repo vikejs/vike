@@ -23,9 +23,9 @@ type Result = { fileExports: Record<string, unknown> }
 
 async function transpileAndLoadConfigFile(
   filePathAbsolute: string,
-  filePathHumanReadable: string | null
+  filePathRelativeToUserRootDir: string | null
 ): Promise<Result> {
-  return transpileAndLoadFile(filePathAbsolute, true, filePathHumanReadable)
+  return transpileAndLoadFile(filePathAbsolute, true, filePathRelativeToUserRootDir)
 }
 
 async function transpileAndLoadValueFile(filePathAbsolute: string): Promise<Result> {
@@ -36,12 +36,12 @@ async function transpileAndLoadFile(filePathAbsolute: string, isPageConfig: fals
 async function transpileAndLoadFile(
   filePathAbsolute: string,
   isPageConfig: true,
-  filePathHumanReadable: string | null
+  filePathRelativeToUserRootDir: string | null
 ): Promise<Result>
 async function transpileAndLoadFile(
   filePathAbsolute: string,
   isPageConfig: boolean,
-  filePathHumanReadable?: string | null
+  filePathRelativeToUserRootDir?: string | null
 ): Promise<Result> {
   assertPosixPath(filePathAbsolute)
   /* Solide removes the + symbol when building its + files
@@ -75,8 +75,8 @@ async function transpileAndLoadFile(
   fileExports = { ...fileExports }
   if (isPageConfig) {
     assert(fileImports)
-    assert(filePathHumanReadable !== undefined)
-    const filePath = filePathHumanReadable ?? filePathAbsolute
+    assert(filePathRelativeToUserRootDir !== undefined)
+    const filePath = filePathRelativeToUserRootDir ?? filePathAbsolute
     assertFileImports(fileImports, fileExports, filePath)
   }
   return { fileExports }

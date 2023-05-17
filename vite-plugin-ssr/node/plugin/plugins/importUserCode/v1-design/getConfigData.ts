@@ -51,8 +51,7 @@ assertIsVitePluginCode()
 
 type InterfaceFile = InterfaceConfigFile | InterfaceValueFile
 type InterfaceFileCommons = {
-  filePathAbsolute: string
-  filePathRelativeToUserRootDir: null | string
+  filePath: FilePath
   configMap: Record<ConfigName, { configValue?: unknown }>
 }
 type InterfaceConfigFile = InterfaceFileCommons & {
@@ -66,7 +65,7 @@ type InterfaceValueFile = InterfaceFileCommons & {
   isValueFile: true
   configNameDefault: string
   // All value files are +someConfig.js file living in user-land => filePathRelativeToUserRootDir is always defined
-  filePathRelativeToUserRootDir: string
+  filePath: UserFilePath
 }
 type ConfigName = string
 type LocationId = string
@@ -153,7 +152,7 @@ async function loadInterfaceFiles(
     configFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
       const configFilePath = {
         filePathAbsolute: filePathAbsolute,
-        filePathHumanReadable: filePathRelativeToUserRootDir
+        filePathRelativeToUserRootDir: filePathRelativeToUserRootDir
       }
       const { configFile, extendsConfigs } = await loadConfigFile(configFilePath, userRootDir)
       const interfaceFile = getInterfaceFileFromConfigFile(configFile, false)
@@ -172,15 +171,11 @@ async function loadInterfaceFiles(
   await Promise.all(
     valueFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
       const configNameDefault = extractConfigName(filePathRelativeToUserRootDir)
-      /* TODO
-      assertConfigName(
-        configNameDefault,
-        [...Object.keys(configDefinitions), ...Object.keys(globalConfigsDefinition)],
-      )
-      */
       const interfaceFile: InterfaceFile = {
-        filePathRelativeToUserRootDir,
-        filePathAbsolute,
+        filePath: {
+          filePathRelativeToUserRootDir,
+          filePathAbsolute
+        },
         configMap: {
           [configNameDefault]: {}
         },
@@ -211,10 +206,10 @@ function getConfigDef(
   return configDefinitions[configName] ?? null
 }
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string) {
-  const { filePathAbsolute, filePathRelativeToUserRootDir } = interfaceValueFile
+  const { filePathAbsolute } = interfaceValueFile.filePath
   const { fileExports } = await transpileAndLoadValueFile(filePathAbsolute)
   // TODO: skip warning for .mdx files
-  assertDefaultExportUnknown(fileExports, filePathRelativeToUserRootDir)
+  assertDefaultExportUnknown(fileExports, getFilePathToShowToUser(interfaceValueFile.filePath))
   Object.entries(fileExports).forEach(([configName, configValue]) => {
     if (configName === 'default') {
       configName = configNameDefault
@@ -223,19 +218,16 @@ async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameD
   })
 }
 function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: boolean): InterfaceFile {
-  const { fileExports, filePathAbsolute, filePathHumanReadable, extendsFilePaths } = configFile
-  const filePathRelativeToUserRootDir = filePathHumanReadable
+  const { fileExports, filePath, extendsFilePaths } = configFile
   const interfaceFile: InterfaceFile = {
-    filePathRelativeToUserRootDir,
-    filePathAbsolute,
+    filePath,
     configMap: {},
     isConfigFile: true,
     isValueFile: false,
     isConfigExtend,
     extendsFilePaths
   }
-  const filePathToShowToUser = filePathRelativeToUserRootDir ?? filePathAbsolute
-  assertDefaultExportObject(fileExports, filePathToShowToUser)
+  assertDefaultExportObject(fileExports, getFilePathToShowToUser(filePath))
   Object.entries(fileExports.default).forEach(([configName, configValue]) => {
     interfaceFile.configMap[configName] = { configValue }
   })
@@ -359,13 +351,29 @@ async function loadConfigData(
   Object.values(interfaceFilesByLocationId).forEach((interfaceFiles) => {
     interfaceFiles.forEach((interfaceFile) => {
       if (interfaceFile.isConfigFile) {
-        const { filePathRelativeToUserRootDir } = interfaceFile
+        const { filePathRelativeToUserRootDir } = interfaceFile.filePath
         if (filePathRelativeToUserRootDir) {
           configFilesAll.add(filePathRelativeToUserRootDir)
         }
       }
     })
   })
+
+  /*
+  Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
+    const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
+    const configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
+    interfaceFiles.forEach((interfaceFile) => {
+      Object.keys(interfaceFile.configMap).forEach((configName) => {
+        assertConfigName(
+          configName,
+          Object.keys(configDefinitionsRelevant),
+          getFilePathToShowToUser(interfaceFile.filePath)
+        )
+      })
+    })
+  })
+  */
 
   return { pageConfigsData, pageConfigGlobal, vikeConfig, configFilesAll }
 }
@@ -448,7 +456,9 @@ function resolveConfigElement(
 ): null | ConfigElement {
   for (const interfaceFiles of Object.values(interfaceFilesRelevant)) {
     for (const interfaceFile of interfaceFiles) {
-      const configFilePath = interfaceFile.filePathRelativeToUserRootDir ?? interfaceFile.filePathAbsolute
+      // TODO: rethink file paths of ConfigElement
+      const configFilePath =
+        interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
       const conf = interfaceFile.configMap[configName]
       if (conf) {
         const configEnv = configDef.env
@@ -457,8 +467,8 @@ function resolveConfigElement(
           const { configValue } = conf
           const codeFile = getCodeFilePath(
             configValue,
-            interfaceFile.filePathAbsolute,
-            interfaceFile.filePathRelativeToUserRootDir,
+            interfaceFile.filePath.filePathAbsolute,
+            interfaceFile.filePath.filePathRelativeToUserRootDir,
             userRootDir
           )
           if (codeFile) {
@@ -485,7 +495,9 @@ function resolveConfigElement(
             return configElement
           }
         } else if (interfaceFile.isValueFile) {
-          const codeFilePath = interfaceFile.filePathRelativeToUserRootDir ?? interfaceFile.filePathAbsolute
+          // TODO: rethink file paths of ConfigElement
+          const codeFilePath =
+            interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
           const codeFileExport = 'default'
           const configElement: ConfigElement = {
             configEnv,
@@ -743,8 +755,7 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
     assert('configValue' in configEntry)
     const metaVal = configEntry.configValue
     const { interfaceFile } = configEntry
-    const definedByFile = interfaceFile.filePathRelativeToUserRootDir ?? interfaceFile.filePathAbsolute
-    assertMetaValue(metaVal, definedByFile)
+    assertMetaValue(metaVal, getFilePathToShowToUser(interfaceFile.filePath))
     objectEntries(metaVal).forEach(([configName, configDefinition]) => {
       // User can override an existing config definition
       const def = mergeConfigDefinition(
@@ -896,9 +907,7 @@ function extractConfigName(filePath: string) {
 
 type ConfigFile = {
   fileExports: Record<string, unknown>
-  filePathAbsolute: string
-  // TODO: rename to filePathRelativeToUserRootDir?
-  filePathHumanReadable: null | string
+  filePath: FilePath
   extendsFilePaths: string[]
 }
 
@@ -906,14 +915,16 @@ async function loadConfigFile(
   configFilePath: FilePath,
   userRootDir: string
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
-  const { filePathAbsolute, filePathHumanReadable } = configFilePath
-  const { fileExports } = await transpileAndLoadConfigFile(filePathAbsolute, filePathHumanReadable)
+  const { filePathAbsolute, filePathRelativeToUserRootDir } = configFilePath
+  const { fileExports } = await transpileAndLoadConfigFile(filePathAbsolute, filePathRelativeToUserRootDir)
   const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir)
 
   const configFile: ConfigFile = {
     fileExports,
-    filePathHumanReadable,
-    filePathAbsolute,
+    filePath: {
+      filePathRelativeToUserRootDir,
+      filePathAbsolute
+    },
     extendsFilePaths
   }
   return { configFile, extendsConfigs }
@@ -939,7 +950,7 @@ async function loadExtendsConfigs(
       filePathAbsolute,
       // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
       // - Using importPath would be visually nicer but it's ambigous => we rather pick filePathAbsolute for added clarity
-      filePathHumanReadable: determineFilePathHumanReadable(filePathAbsolute, userRootDir)
+      filePathRelativeToUserRootDir: determineFilePathRelativeToUserDir(filePathAbsolute, userRootDir)
     })
   })
 
@@ -957,15 +968,16 @@ async function loadExtendsConfigs(
   return { extendsConfigs, extendsFilePaths }
 }
 
-function determineFilePathHumanReadable(filePathAbsolute: string, userRootDir: string): null | string {
+function determineFilePathRelativeToUserDir(filePathAbsolute: string, userRootDir: string): null | string {
   assertPosixPath(filePathAbsolute)
   assertPosixPath(userRootDir)
   if (!filePathAbsolute.startsWith(userRootDir)) {
     return null
   }
-  let filePathHumanReadable = filePathAbsolute.slice(userRootDir.length)
-  if (!filePathHumanReadable.startsWith('/')) filePathHumanReadable = '/' + filePathHumanReadable
-  return filePathHumanReadable
+  let filePathRelativeToUserRootDir = filePathAbsolute.slice(userRootDir.length)
+  if (!filePathRelativeToUserRootDir.startsWith('/'))
+    filePathRelativeToUserRootDir = '/' + filePathRelativeToUserRootDir
+  return filePathRelativeToUserRootDir
 }
 
 function assertExtendsImportPath(importPath: string, filePath: string, configFilePath: FilePath) {
@@ -982,7 +994,7 @@ function assertExtendsImportPath(importPath: string, filePath: string, configFil
   } else {
     assertWarning(
       false,
-      `${getFilePathToPrint(
+      `${getFilePathToShowToUser(
         configFilePath
       )} uses 'extends' to inherit from '${importPath}' which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this feature.`,
       { onlyOnce: true, showStackTrace: false }
@@ -990,14 +1002,14 @@ function assertExtendsImportPath(importPath: string, filePath: string, configFil
   }
 }
 
-function getFilePathToPrint(filePath: FilePath) {
-  const filePathToPrint = filePath.filePathHumanReadable ?? filePath.filePathAbsolute
+function getFilePathToShowToUser(filePath: FilePath) {
+  const filePathToPrint = filePath.filePathRelativeToUserRootDir ?? filePath.filePathAbsolute
   assert(filePathToPrint)
   return filePathToPrint
 }
 
 function getExtendsImportData(configFileExports: Record<string, unknown>, configFilePath: FilePath): ImportData[] {
-  const configFilePathToPrint = getFilePathToPrint(configFilePath)
+  const configFilePathToPrint = getFilePathToShowToUser(configFilePath)
   assertDefaultExportObject(configFileExports, configFilePathToPrint)
   const configValues = configFileExports.default
   if (!configValues.extends) {
@@ -1018,7 +1030,7 @@ type UserFilePath = {
 }
 type FilePath = {
   filePathAbsolute: string
-  filePathHumanReadable: null | string
+  filePathRelativeToUserRootDir: null | string
 }
 
 async function findUserFiles(pattern: string | string[], userRootDir: string, isDev: boolean): Promise<UserFilePath[]> {
