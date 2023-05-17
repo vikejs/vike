@@ -23,7 +23,8 @@ import {
   objectKeys,
   assertIsVitePluginCode,
   getMostSimilar,
-  isNpmPackageModule
+  isNpmPackageModule,
+  joinEnglish
 } from '../../../utils'
 import path from 'path'
 import type {
@@ -240,58 +241,13 @@ async function loadConfigData(
 ): Promise<ConfigData> {
   const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, isDev, extensions)
 
-  /* TODO
-  if (plusConfigFile) {
-    const configKeys = getConfigKeys(plusConfigFile)
-    configKeys.forEach((configName) => {
-      // TODO: this applies only against concrete config files, we should also apply to abstract config files
-      // TODO: apply this as well against extendsConfigs
-      assertConfigName(
-        configName,
-        [...Object.keys(configDefinitionsRelevant), 'meta'],
-        plusConfigFile.plusConfigFilePath
-      )
-    })
-  }
-  */
-  /*
-  // TODO: remove this and instead ensure that configs are always defined globally
-  plusValueFilesRelevant.forEach((plusValueFile) => {
-    const { configName } = plusValueFile
-    assert(configName in configDefinitionsRelevant || configName === 'meta')
-  })
-  */
-  /* TODO
-  const plusConfigFilesGlobal = getPlusConfigFilesGlobal(plusConfigFiles)
-  plusConfigFiles.forEach((plusConfigFile) => {
-    const { plusConfigFileExports, plusConfigFilePath } = plusConfigFile
-    assertDefaultExportObject(plusConfigFileExports, plusConfigFilePath)
-    Object.entries(plusConfigFileExports.default).forEach(([configName]) => {
-      if (!isGlobal(configName)) return
-      // TODO/v1: add links to docs further explaining why
-      assertUsage(
-        plusConfigFilesGlobal.includes(plusConfigFile),
-        [
-          `${plusConfigFilePath} defines the config '${configName}' which is global:`,
-          plusConfigFilesGlobal.length
-            ? `define '${configName}' in ${joinEnglish(
-                plusConfigFilesGlobal.map((p) => p.plusConfigFilePath),
-                'or'
-              )} instead`
-            : `create a global config (e.g. /pages/+config.js or /renderer/+config.js) and define '${configName}' there instead`
-        ].join(' ')
-      )
-    })
-  })
-  */
-
   const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(interfaceFilesByLocationId, userRootDir)
 
   const configFilesAll: Set<string> = new Set()
   const pageConfigsData: PageConfigData[] = await Promise.all(
     Object.entries(interfaceFilesByLocationId)
       .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
-      .map(async ([locationId, interfaceFiles]) => {
+      .map(async ([locationId]) => {
         const routeFilesystem = getRouteFilesystem(locationId)
         const routeFilesystemDefinedBy = getRouteFilesystemDefinedBy(locationId)
 
@@ -368,6 +324,18 @@ async function loadConfigData(
           Object.keys(configDefinitionsRelevant),
           getFilePathToShowToUser(interfaceFile.filePath)
         )
+        if (!isGlobalLocation(locationId) && configName in configDefinitionsBuiltInGlobal) {
+          const globalConfigUserPaths = getGlobalConfigUserPaths(interfaceFilesByLocationId)
+          assertUsage(
+            false,
+            [
+              `${getFilePathToShowToUser(interfaceFile.filePath)} defines the config '${configName}' which is global:`,
+              globalConfigUserPaths.length
+                ? `define '${configName}' in ${joinEnglish(globalConfigUserPaths, 'or')} instead`
+                : `create a global config (e.g. /pages/+config.js) and define '${configName}' there instead`
+            ].join(' ')
+          )
+        }
       })
     })
   })
@@ -406,13 +374,26 @@ function getInterfaceFileList(interfaceFilesByLocationId: InterfaceFilesByLocati
   return interfaceFiles
 }
 
-function getInterfaceFilesGloabl(interfaceFilesByLocationId: InterfaceFilesByLocationId): InterfaceFilesByLocationId {
+function getInterfaceFilesGlobal(interfaceFilesByLocationId: InterfaceFilesByLocationId): InterfaceFilesByLocationId {
   const interfaceFilesRelevant = Object.fromEntries(
     Object.entries(interfaceFilesByLocationId).filter(([locationId]) => {
       return isGlobalLocation(locationId)
     })
   )
   return interfaceFilesRelevant
+}
+function getGlobalConfigUserPaths(interfaceFilesByLocationId: InterfaceFilesByLocationId): string[] {
+  const interfaceFilesGlobal = getInterfaceFilesGlobal(interfaceFilesByLocationId)
+  const existingGlobalPaths: string[] = []
+  Object.entries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
+    assert(isGlobalLocation(locationId))
+    interfaceFiles.forEach(({ filePath: { filePathRelativeToUserRootDir } }) => {
+      if (filePathRelativeToUserRootDir) {
+        existingGlobalPaths.push(filePathRelativeToUserRootDir)
+      }
+    })
+  })
+  return existingGlobalPaths
 }
 
 function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId, userRootDir: string) {
@@ -422,10 +403,10 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
     onPrerenderStart: null
   }
 
-  const interfaceFilesGloabl = getInterfaceFilesGloabl(interfaceFilesByLocationId)
+  const interfaceFilesGlobal = getInterfaceFilesGlobal(interfaceFilesByLocationId)
 
   objectEntries(configDefinitionsBuiltInGlobal).forEach(([configName, configDef]) => {
-    const configElement = resolveConfigElement(configName, configDef, interfaceFilesGloabl, userRootDir)
+    const configElement = resolveConfigElement(configName, configDef, interfaceFilesGlobal, userRootDir)
     if (!configElement) return
     if (arrayIncludes(objectKeys(pageConfigGlobal), configName)) {
       assert(!('configValue' in configElement))
