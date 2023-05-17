@@ -47,7 +47,7 @@ type Config<Page = unknown> = Partial<{
    */
   onBeforeRender: Function
 
-  /** Determine what pageContext properties are sent to the client-side.
+  /** Determines what pageContext properties are sent to the client-side.
    *
    * See https://vite-plugin-ssr.com/passToClient
    */
@@ -109,7 +109,7 @@ type Config<Page = unknown> = Partial<{
    */
   onPageTransitionEnd: Function
 
-  /** Whether your UI framework (React/Vue/Solid/...) allows the page's hydration to be aborted.
+  /** Whether the UI framework (React/Vue/Solid/...) allows the page's hydration to be aborted.
    *
    * See https://vite-plugin-ssr.com/clientRouting
    */

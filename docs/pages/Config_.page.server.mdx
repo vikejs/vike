@@ -18,15 +18,15 @@ export default {
 
 ## Configs
 
-- **`Page`** (`unknown`): the root UI component of the page.
-- **`route`** (`string | Function`): the page's route. See <Link href="/routing" />.
-- **`passToClient`** (`string[]`): determine what `pageContext` properties are sent to the client-side. See <Link href="/passToClient" />.
-- **`clientRouting`** (`boolean`): Enable Client Routing. See <Link href="/clientRouting" />.
-- **`meta`** (`Meta`): Create new or modify existing configurations. See <Link href="/meta" />.
-- **`prefetchStaticAssets`** (`PrefetchStaticAssets`): Prefetch links. See <Link href="/clientRouting#link-prefetching" />.
-- **`client`** (`string`): Additional client entry.
-- **`hydrationCanBeAborted`** (`boolean`):  Whether your UI framework (React/Vue/Solid/...) allows the page's hydration to be aborted. See <Link href="/clientRouting" />.
-- **`iKnowThePerformanceRisksOfAsyncRouteFunctions`** (`boolean`): Enable async Route Functions. See <Link href="/route-function#async" />.
+- [**`Page`**](https://vite-plugin-ssr.com/Page) (`unknown`): The root UI component of the page.
+- [**`route`**](https://vite-plugin-ssr.com/routing) (`string | Function`): The page's route.
+- [**`passToClient`**](https://vite-plugin-ssr.com/passToClient) (`string[]`): Determines what `pageContext` properties are sent to the client-side.
+- [**`clientRouting`**](https://vite-plugin-ssr.com/clientRouting) (`boolean`): Enable Client Routing.
+- [**`meta`**](https://vite-plugin-ssr.com/meta) (`Meta`): Create new or modify existing configurations.
+- [**`prefetchStaticAssets`**](https://vite-plugin-ssr.com/clientRouting#link-prefetching) (`PrefetchStaticAssets`): Prefetch links.
+- [**`client`**](https://vite-plugin-ssr.com/client) (`string`): Additional client entry.
+- [**`hydrationCanBeAborted`**](https://vite-plugin-ssr.com/clientRouting) (`boolean`):  Whether the <Link text="UI framework" href="/ui-framework" /> allows hydrations to be aborted.
+- [**`iKnowThePerformanceRisksOfAsyncRouteFunctions`**](https://vite-plugin-ssr.com/route-function#async) (`boolean`): Enable async Route Functions.
 
 ## Hooks
 
