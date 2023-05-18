@@ -1,3 +1,17 @@
+## [0.4.125](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.124...v0.4.125) (2023-05-18)
+
+
+### Bug Fixes
+
+* [V1 design] implement partial pre-rendering warning for V1 design ([2bd69f0](https://github.com/brillout/vite-plugin-ssr/commit/2bd69f0e6fa1422018845116a4758c44bb9beb29))
+* [V1 design] print real hook name ([189974c](https://github.com/brillout/vite-plugin-ssr/commit/189974c285a55434d5dc6eba54c961cde03aea04))
+* [V1 design] print real hook name ([dca30fd](https://github.com/brillout/vite-plugin-ssr/commit/dca30fd243bd7574c376e2d39146268caaf968b0))
+* expect pageId to be an npm package ([532ceaa](https://github.com/brillout/vite-plugin-ssr/commit/532ceaa648ab174f0ab581c883cebb642acfe1cc))
+* improve handling of undefined and null HTML variables ([648ed9a](https://github.com/brillout/vite-plugin-ssr/commit/648ed9ad2ae2f82094aa8b3f0862eb435e383e9d))
+* in dev, warn when escaping HTML (fix [#865](https://github.com/brillout/vite-plugin-ssr/issues/865)) ([038f544](https://github.com/brillout/vite-plugin-ssr/commit/038f5447607d6fbf02fd7309c493f381c803e76b))
+
+
+
 ## [0.4.124](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.123...v0.4.124) (2023-05-18)
 
 
