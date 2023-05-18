@@ -25,6 +25,11 @@ import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
+type HookName =
+  | 'onRenderHtml'
+  // TODO/v1-release: remove
+  | 'render'
+
 async function executeOnRenderHtmlHook(
   pageContext: PageContextPublic & {
     _pageId: string
@@ -38,38 +43,47 @@ async function executeOnRenderHtmlHook(
 ): Promise<{
   renderHook: {
     hookSrc: string
-    hookName:
-      | 'onRenderHtml'
-      // TODO/v1-release: remove
-      | 'render'
+    hookName: HookName
   }
   htmlRender: null | HtmlRender
 }> {
-  let hook: null | Hook = null
-  let hookName: 'render' | 'onRenderHtml' | undefined
+  let hookFound:
+    | undefined
+    | {
+        renderHook: {
+          hookSrc: string
+          hookName: HookName
+        }
+        hookFn: Function
+      }
   {
-    const renderHook = getHook(pageContext, 'render')
-    if (renderHook) {
-      hook = renderHook
-      hookName = 'render'
-    }
-  }
-  {
-    const renderHook = getHook(pageContext, 'onRenderHtml')
-    if (renderHook) {
-      hook = renderHook
+    let hook: null | Hook
+    let hookName: undefined | HookName = undefined
+    hook = getHook(pageContext, 'onRenderHtml')
+    if (hook) {
       hookName = 'onRenderHtml'
+    } else {
+      hook = getHook(pageContext, 'render')
+      if (hook) {
+        hookName = 'render'
+      }
+    }
+    if (hook) {
+      assert(hookName)
+      const { hookSrc, hook: hookFn } = hook
+      hookFound = {
+        hookFn,
+        renderHook: { hookSrc, hookName }
+      }
     }
   }
-  if (!hookName) {
-    hookName = pageContext._pageConfigs.length > 0 ? 'onRenderHtml' : 'render'
-  }
-
-  assertUsage(
-    hook,
-    [
-      `No ${hookName}() hook found`
-      /*
+  if (!hookFound) {
+    const hookName = pageContext._pageConfigs.length > 0 ? 'onRenderHtml' : 'render'
+    assertUsage(
+      false,
+      [
+        `No ${hookName}() hook found`
+        /*
       'See https://vite-plugin-ssr.com/render-modes for more information.',
       [
         // 'Loaded config files (none of them define the onRenderHtml() hook):',
@@ -77,20 +91,24 @@ async function executeOnRenderHtmlHook(
         ...pageContext._pageFilePathsLoaded.map((f, i) => ` (${i + 1}): ${f}`)
       ].join('\n')
       */
-    ].join(' ')
-  )
-  const render = hook.hook
-  const renderSrc = hook.hookSrc
-
-  preparePageContextForRelease(pageContext)
-  const result = await callHookWithTimeout(() => render(pageContext), 'render', renderSrc)
-  if (isObject(result) && !isDocumentHtml(result)) {
-    assertHookResult(result, 'render', ['documentHtml', 'pageContext', 'injectFilter'] as const, renderSrc, true)
+      ].join(' ')
+    )
   }
-  const renderHook = { hookSrc: renderSrc, hookName }
+  const { renderHook, hookFn } = hookFound
+  preparePageContextForRelease(pageContext)
+  const result = await callHookWithTimeout(() => hookFn(pageContext), 'render', renderHook.hookSrc)
+  if (isObject(result) && !isDocumentHtml(result)) {
+    assertHookResult(
+      result,
+      'render',
+      ['documentHtml', 'pageContext', 'injectFilter'] as const,
+      renderHook.hookSrc,
+      true
+    )
+  }
   objectAssign(pageContext, { _renderHook: renderHook })
 
-  const errPrefix = 'The render() hook defined by ' + renderSrc
+  const errPrefix = `The render() hook defined by ` + renderHook.hookSrc
 
   let pageContextPromise: PageContextPromise = null
   if (hasProp(result, 'pageContext')) {
