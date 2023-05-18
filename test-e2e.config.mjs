@@ -82,7 +82,8 @@ function tolerateError({ logSource, logText }) {
     isCloudflareVueWarning() ||
     isTwitterEmbedsError() ||
     isGithubImageError() ||
-    isSlowCrawlWarning()
+    isSlowCrawlWarning() ||
+    isHtmlEscapingTest()
   )
 
   // [vite-plugin-ssr@0.4.42][Warning] The onBeforeRender() hook of /pages/star-wars/index/index.page.server.ts is taking more than 4 seconds
@@ -183,5 +184,15 @@ function tolerateError({ logSource, logText }) {
   }
   function isSlowCrawlWarning() {
     return logSource === 'stderr' && logText.includes('Crawling your user files took an unexpected long time')
+  }
+
+  function isHtmlEscapingTest() {
+    return (
+      logSource === 'stderr' &&
+      logText.includes(
+        'The 2nd HTML variable is `<b>I was defined without an HTML Fragment</b>` which seems to be HTML code'
+      ) &&
+      logText.includes('Did you forget to wrap the value with dangerouslySkipEscape')
+    )
   }
 }
