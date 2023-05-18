@@ -7,7 +7,10 @@ import { assert, assertUsage, isCallable } from './utils'
 
 type Hook = { hookFn: (arg: unknown) => unknown; hookFilePath: string }
 
-function getHook(pageContext: PageContextExports, hookName: 'render' | 'onBeforeRender' | 'onRenderHtml'): null | Hook {
+function getHook(
+  pageContext: PageContextExports,
+  hookName: 'render' | 'onBeforeRender' | 'onRenderHtml' | 'onRenderClient'
+): null | Hook {
   if (!(hookName in pageContext.exports)) {
     return null
   }

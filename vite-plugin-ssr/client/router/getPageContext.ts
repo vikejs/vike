@@ -167,7 +167,7 @@ async function onBeforeRenderExecute(
   // `export { onBeforeRender }` defined in `.page.client.js` or `.page.js`
   const hook = getHook(pageContext, 'onBeforeRender')
   if (hook) {
-    const onBeforeRender = hook.hook
+    const onBeforeRender = hook.hookFn
     const pageContextAddendum = {
       _comesDirectlyFromServer: false,
       _pageContextRetrievedFromServer: null

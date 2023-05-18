@@ -55,7 +55,7 @@ async function executeOnClientRender<
   }
 
   assert(hook)
-  const renderHook = hook.hook
+  const renderHook = hook.hookFn
   assert(hookName)
 
   // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
