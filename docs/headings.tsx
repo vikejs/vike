@@ -988,5 +988,9 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: <><code>vike-*</code> packages</>,
     url: '/vike-packages'
+  },
+  {
+    title: <><code>vike-*</code> packages</>,
+    url: '/extends'
   }
 ]
