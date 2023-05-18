@@ -478,7 +478,9 @@ function resolveConfigElement(
       const interfaceValueFiles = interfaceFilesDefiningConfig.filter((interfaceFile) => interfaceFile.isValueFile)
       const interfaceValueFileSideEffect = interfaceValueFiles[0]
       if (interfaceValueFileSideEffect) {
-        assert(interfaceValueFileSideEffect.isValueFile && interfaceValueFileSideEffect.configNameDefault !== configName)
+        assert(
+          interfaceValueFileSideEffect.isValueFile && interfaceValueFileSideEffect.configNameDefault !== configName
+        )
         return getConfigElement(configName, interfaceValueFileSideEffect, configDef, userRootDir)
       }
     }
@@ -571,7 +573,7 @@ function getConfigElement(
   } else if (interfaceFile.isValueFile) {
     // TODO: rethink file paths of ConfigElement
     const codeFilePath = interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
-    const codeFileExport = 'default'
+    const codeFileExport = configName === interfaceFile.configNameDefault ? 'default' : configName
     const configElement: ConfigElement = {
       configEnv,
       codeFilePath,
@@ -589,8 +591,6 @@ function getConfigElement(
   }
   assert(false)
 }
-
-function sortAfterFileKind(interfaceFiles: InterfaceFile[]) {}
 
 function isDefiningPage(interfaceFiles: InterfaceFile[]): boolean {
   for (const interfaceFile of interfaceFiles) {
