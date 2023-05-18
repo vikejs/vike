@@ -1,3 +1,27 @@
+## [0.4.124](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.123...v0.4.124) (2023-05-18)
+
+
+### Bug Fixes
+
+* [V1 design] support `export { frontmatter }` in `.mdx` files (fix [#869](https://github.com/brillout/vite-plugin-ssr/issues/869)) ([9833afa](https://github.com/brillout/vite-plugin-ssr/commit/9833afa27dc3a39a908538f7ce69cb350888d5b8))
+* fix internal assertion about eager loading of configValue (fix [#874](https://github.com/brillout/vite-plugin-ssr/issues/874)) ([51f1c80](https://github.com/brillout/vite-plugin-ssr/commit/51f1c8092b3621723c064f95768e684a5dd8640d))
+* fix prefetchLinks deprecation notice ([a4b2694](https://github.com/brillout/vite-plugin-ssr/commit/a4b26943d01168e59cff81d8859eb5e45b584492))
+* further improve error message upon incorrect setup ([#886](https://github.com/brillout/vite-plugin-ssr/issues/886)) ([2eb6511](https://github.com/brillout/vite-plugin-ssr/commit/2eb65117a153b6d05a55fee2c07da54ba454bd26))
+* handle edge case when user wrongfully tries to use `require()` in Vite land (fix [#879](https://github.com/brillout/vite-plugin-ssr/issues/879)) ([896b22e](https://github.com/brillout/vite-plugin-ssr/commit/896b22e7177bc27e85805647966d4ad089d604ce))
+* improve error message upon incorrect setup ([#886](https://github.com/brillout/vite-plugin-ssr/issues/886)) ([0096e93](https://github.com/brillout/vite-plugin-ssr/commit/0096e9308d7cbe46808db77d4455cbde95b14658))
+* improve error message upon invalid URL provided by `onBeforeRoute()` (fix [#887](https://github.com/brillout/vite-plugin-ssr/issues/887)) ([7def153](https://github.com/brillout/vite-plugin-ssr/commit/7def153efb2dbe590f1d9d89667f3a8b87584577))
+* improve prefetchStaticAssets setting values ([#889](https://github.com/brillout/vite-plugin-ssr/issues/889)) ([74225a8](https://github.com/brillout/vite-plugin-ssr/commit/74225a8cf3a14c554e57709479af6606a01381fb))
+* improve wrong re-export error message ([#864](https://github.com/brillout/vite-plugin-ssr/issues/864)) ([6ca3639](https://github.com/brillout/vite-plugin-ssr/commit/6ca3639f8f4eb76cde9c910047d1b9d000823b1c))
+* link to `?extractExportNames` bug workaround (closes [#864](https://github.com/brillout/vite-plugin-ssr/issues/864)) ([a2a4880](https://github.com/brillout/vite-plugin-ssr/commit/a2a48804c8d6cd9b3ec954d52a561ee4c2ac7594))
+
+
+### Features
+
+* data-prefetch-static-assets (closes [#889](https://github.com/brillout/vite-plugin-ssr/issues/889)) ([df8dd7e](https://github.com/brillout/vite-plugin-ssr/commit/df8dd7ee9b6a1d27affd19def3560cd9cbda3894))
+* new config `extends` ([85a29e9](https://github.com/brillout/vite-plugin-ssr/commit/85a29e97911823252c94dec1008a93c79da89ff4))
+
+
+
 ## [0.4.123](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.122...v0.4.123) (2023-05-05)
 
 
