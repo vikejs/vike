@@ -1,3 +1,5 @@
+// Unit tests at ./parseUrl.spec.ts
+
 export { parseUrl }
 export { isParsable }
 export { prependBase }

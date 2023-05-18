@@ -1,3 +1,5 @@
+// Unit tests at ./resolveRouteString.spec.ts
+
 export { resolveRouteString }
 export { getUrlFromRouteString }
 export { isStaticRouteString }

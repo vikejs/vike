@@ -1,3 +1,5 @@
+// Unit tests at ./freezePartial.spec.ts
+
 export function freezePartial(obj: Record<string, unknown>, allowList: Record<string, (val: unknown) => boolean>) {
   Object.entries(obj).forEach(([key, val]) => {
     Object.defineProperty(obj, key, {

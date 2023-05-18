@@ -18,6 +18,7 @@ describe('freezePartial', () => {
     expect(obj.question).toBe(42)
 
     expect(() => {
+      // @ts-ignore
       delete obj.question
     }).toThrowError("Cannot delete property 'question' of #<Object>")
     expect(() => {

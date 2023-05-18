@@ -1,3 +1,5 @@
+// Unit tests at ./deduceRouteStringFromFilesystemPath.spec.ts
+
 import { assert, higherFirst, slice } from './utils'
 
 export { deduceRouteStringFromFilesystemPath }

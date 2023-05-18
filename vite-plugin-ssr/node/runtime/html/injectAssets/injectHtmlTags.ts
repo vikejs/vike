@@ -1,7 +1,9 @@
+// Unit tests at ./injectHtmlTags.spec.ts
+
 export { injectHtmlTags }
 export { createHtmlHeadIfMissing }
 
-// Export for unit testing
+// Only needed for unit tests
 export { injectAtOpeningTag }
 export { injectAtClosingTag }
 
