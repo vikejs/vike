@@ -163,15 +163,15 @@ function getEntryFromFilePath(filePath: string, config: ResolvedConfig) {
 function getEntryFromPageConfigData(pageConfigData: PageConfigData, isForClientSide: boolean) {
   let { pageId } = pageConfigData
   const entryTarget = getVirtualFileIdImportPageCode(pageId, isForClientSide)
-  assert(pageId.startsWith('/'))
   let entryName = pageId
   entryName = prependEntriesDir(entryName)
   return { entryName, entryTarget }
 }
 
 function prependEntriesDir(entryName: string): string {
-  assert(entryName.startsWith('/'))
-  entryName = entryName.slice(1)
+  if (entryName.startsWith('/')) {
+    entryName = entryName.slice(1)
+  }
   assert(!entryName.startsWith('/'))
   entryName = `entries/${entryName}`
   return entryName
