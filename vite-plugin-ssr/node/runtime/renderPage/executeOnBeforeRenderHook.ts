@@ -20,7 +20,7 @@ async function executeOnBeforeRenderHooks(
   if (!hook) {
     return
   }
-  const onBeforeRender = hook.hook
+  const onBeforeRender = hook.hookFn
   preparePageContextForRelease(pageContext)
   const hookResult = await callHookWithTimeout(() => onBeforeRender(pageContext), 'onBeforeRender', hook.hookSrc)
 

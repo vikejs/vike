@@ -69,7 +69,7 @@ async function executeOnRenderHtmlHook(
     }
     if (hook) {
       assert(hookName)
-      const { hookSrc, hook: hookFn } = hook
+      const { hookSrc, hookFn } = hook
       hookFound = {
         hookFn,
         renderHook: { hookSrc, hookName }
