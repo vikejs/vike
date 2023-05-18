@@ -39,7 +39,7 @@ type Config<Page = unknown> = Partial<{
    *
    * See https://vite-plugin-ssr.com/extends
    */
-  extends: Config[]
+  extends: Config | Config[]
 
   /** Hook called before the page is rendered, usually for fetching data.
    *

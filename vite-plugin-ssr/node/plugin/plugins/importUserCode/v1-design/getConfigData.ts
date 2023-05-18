@@ -1069,22 +1069,29 @@ function assertExtendsImportPath(importPath: string, filePath: string, configFil
 }
 
 function getFilePathToShowToUser(filePath: FilePath) {
-  const filePathToPrint = filePath.filePathRelativeToUserRootDir ?? filePath.filePathAbsolute
-  assert(filePathToPrint)
-  return filePathToPrint
+  const filePathToShowToUser = filePath.filePathRelativeToUserRootDir ?? filePath.filePathAbsolute
+  assert(filePathToShowToUser)
+  return filePathToShowToUser
 }
 
 function getExtendsImportData(configFileExports: Record<string, unknown>, configFilePath: FilePath): ImportData[] {
-  const configFilePathToPrint = getFilePathToShowToUser(configFilePath)
-  assertDefaultExportObject(configFileExports, configFilePathToPrint)
+  const filePathToShowToUser = getFilePathToShowToUser(configFilePath)
+  assertDefaultExportObject(configFileExports, filePathToShowToUser)
   const configValues = configFileExports.default
-  if (!configValues.extends) {
+  const wrongUsage = `${filePathToShowToUser} set the config 'extends' to an invalid value, see https://vite-plugin-ssr.com/extends`
+  let extendList: string[]
+  if (!('extends' in configValues)) {
     return []
+  } else if (hasProp(configValues, 'extends', 'string')) {
+    extendList = [configValues.extends]
+  } else if (hasProp(configValues, 'extends', 'string[]')) {
+    extendList = configValues.extends
+  } else {
+    assertUsage(false, wrongUsage)
   }
-  assertUsage(hasProp(configValues, 'extends', 'string[]'), 'TODO')
-  const extendsImportData = configValues.extends.map((importDataSerialized) => {
+  const extendsImportData = extendList.map((importDataSerialized) => {
     const importData = parseImportData(importDataSerialized)
-    assertUsage(importData, 'TODO')
+    assertUsage(importData, wrongUsage)
     return importData
   })
   return extendsImportData
