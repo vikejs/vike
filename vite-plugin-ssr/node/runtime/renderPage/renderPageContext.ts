@@ -92,8 +92,8 @@ async function renderPageContext<
     objectAssign(pageContext, { httpResponse: null })
     return pageContext
   } else {
-    const { htmlRender, renderSrc } = renderHookResult
-    const httpResponse = await createHttpResponseObject(htmlRender, renderSrc, pageContext)
+    const { htmlRender, renderHook } = renderHookResult
+    const httpResponse = await createHttpResponseObject(htmlRender, renderHook.hookSrc, pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -120,13 +120,13 @@ async function prerenderPageContext(
 
   await executeOnBeforeRenderHooks(pageContext)
 
-  const renderHookResult = await executeOnRenderHtmlHook(pageContext)
+  const { htmlRender, renderHook } = await executeOnRenderHtmlHook(pageContext)
   assertUsage(
-    renderHookResult.htmlRender !== null,
-    `Cannot pre-render \`${pageContext.urlOriginal}\` because the \`render()\` hook defined by ${renderHookResult.renderSrc} didn't return an HTML string.`
+    htmlRender !== null,
+    `Cannot pre-render '${pageContext.urlOriginal}' because the ${renderHook.hookName}() hook defined by ${renderHook.hookSrc} didn't return an HTML string.`
   )
   assert(pageContext.isClientSideNavigation === false)
-  const documentHtml = await getHtmlString(renderHookResult.htmlRender)
+  const documentHtml = await getHtmlString(htmlRender)
   assert(typeof documentHtml === 'string')
   if (!pageContext._usesClientRouter) {
     return { documentHtml, pageContextSerialized: null, pageContext }

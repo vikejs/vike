@@ -9,7 +9,15 @@ function assertPageContextProvidedByUser(
     errorMessagePrefix,
     canBePromise
   }: {
-    hook?: { hookSrc: string; hookName: 'onBeforeRender' | 'render' | 'onBeforeRoute' }
+    hook?: {
+      hookSrc: string
+      hookName:
+        | 'onBeforeRender'
+        | 'onRenderHtml'
+        // TODO/v1-release: remove
+        | 'render'
+        | 'onBeforeRoute'
+    }
     errorMessagePrefix?: string
     canBePromise?: boolean
   }

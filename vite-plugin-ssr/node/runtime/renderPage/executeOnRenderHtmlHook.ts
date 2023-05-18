@@ -36,7 +36,13 @@ async function executeOnRenderHtmlHook(
     _pageFilePathsLoaded: string[]
   }
 ): Promise<{
-  renderSrc: string
+  renderHook: {
+    hookSrc: string
+    hookName:
+      | 'onRenderHtml'
+      // TODO/v1-release: remove
+      | 'render'
+  }
   htmlRender: null | HtmlRender
 }> {
   let hook: null | Hook = null
@@ -81,7 +87,8 @@ async function executeOnRenderHtmlHook(
   if (isObject(result) && !isDocumentHtml(result)) {
     assertHookResult(result, 'render', ['documentHtml', 'pageContext', 'injectFilter'] as const, renderSrc, true)
   }
-  objectAssign(pageContext, { _renderHook: { hookSrc: renderSrc, hookName: 'render' as const } })
+  const renderHook = { hookSrc: renderSrc, hookName }
+  objectAssign(pageContext, { _renderHook: renderHook })
 
   const errPrefix = 'The render() hook defined by ' + renderSrc
 
@@ -151,7 +158,7 @@ async function executeOnRenderHtmlHook(
   assert(documentHtml === undefined || documentHtml === null || isDocumentHtml(documentHtml))
 
   if (documentHtml === null || documentHtml === undefined) {
-    return { htmlRender: null, renderSrc }
+    return { htmlRender: null, renderHook }
   }
 
   const onErrorWhileStreaming = (err: unknown) => {
@@ -170,7 +177,7 @@ async function executeOnRenderHtmlHook(
     injectFilter = result.injectFilter
   }
 
-  const htmlRender = await renderDocumentHtml(documentHtml, pageContext, renderSrc, onErrorWhileStreaming, injectFilter)
+  const htmlRender = await renderDocumentHtml(documentHtml, pageContext, onErrorWhileStreaming, injectFilter)
   assert(typeof htmlRender === 'string' || isStream(htmlRender))
-  return { htmlRender, renderSrc }
+  return { htmlRender, renderHook }
 }
