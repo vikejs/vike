@@ -4,6 +4,8 @@ import { logPrefix, getProjectError } from './assert'
 import { humanizeTime } from './humanizeTime'
 
 type HookName =
+  | 'onRenderHtml'
+  | 'onRenderClient'
   | 'render'
   | 'onBeforeRender'
   | 'onPrerenderStart'

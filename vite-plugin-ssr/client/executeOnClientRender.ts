@@ -19,11 +19,10 @@ async function executeOnClientRender<
   const pageContextReadyForRelease = releasePageContext(pageContext, isClientRouting)
 
   let hook: null | Hook = null
-  let hookName: 'render' | 'onClientRender'
+  let hookName: 'render' | 'onRenderClient'
 
   {
     const renderHook = getHook(pageContext, 'render')
-    // assertWarning(!renderHook, 'Hook render() has been renamed to onRenderHtml() and onRenderClient()', { onlyOnce: true, showStackTrace: false }) // TODO/v1: replace this warning with waning that user should migrate to v1
     hook = renderHook
     hookName = 'render'
   }
@@ -31,14 +30,16 @@ async function executeOnClientRender<
     const renderHook = getHook(pageContext, 'onRenderClient')
     if (renderHook) {
       hook = renderHook
-      hookName = 'onClientRender'
+      hookName = 'onRenderClient'
     }
   }
 
   if (!hook) {
     const url = getUrl(pageContext)
+    // V1 design
     if (pageContext._pageConfigs.length > 0) {
       assertMissingHook(pageContext._pageId, pageContext._pageConfigs, url)
+      // V0.4 design
     } else {
       const pageClientsFilesLoaded = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
       let errMsg: string
@@ -58,7 +59,7 @@ async function executeOnClientRender<
   assert(hookName)
 
   // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
-  const hookResult = await callHookWithTimeout(() => renderHook(pageContextReadyForRelease), 'render', hook.hookSrc)
+  const hookResult = await callHookWithTimeout(() => renderHook(pageContextReadyForRelease), hookName, hook.hookSrc)
   assertUsage(
     hookResult === undefined,
     `The ${hookName}() hook defined by ${hook.hookSrc} isn't allowed to return a value`
@@ -80,7 +81,7 @@ function assertMissingHook(pageId: string, pageConfigs: PageConfig[], url: strin
   assert(!pageConfig.configElements.onRenderClient?.configValue)
   assert(pageConfig.configElements.clientRouting?.configValue === true)
 
-  // We miss abstract page config files that define onClientRender() but don't apply to any concrete page config
+  // We miss abstract page config files that define onRenderClient() but don't apply to any concrete page config
   let onRenderClientExists = false
   pageConfigs.forEach((pageConfig) => {
     const configElement = pageConfig.configElements.onRenderClient

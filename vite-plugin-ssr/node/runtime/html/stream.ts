@@ -415,13 +415,13 @@ async function createStreamWrapper<StreamType extends Stream>({
   streamWrapperOperations: { writeChunk: (chunk: unknown) => void; flushStream: null | (() => void) }
 }> {
   if (isStreamReactStreaming(streamOriginal)) {
-    debug('render() hook returned `react-streaming` result')
+    debug('onRenderHtml() hook returned `react-streaming` result')
     const stream = getStreamFromReactStreaming(streamOriginal)
     ;(streamOriginal as Stream) = stream
   }
 
   if (isStreamPipeNode(streamOriginal)) {
-    debug('render() hook returned Node.js Stream Pipe')
+    debug('onRenderHtml() hook returned Node.js Stream Pipe')
 
     let writableOriginal: null | (StreamWritableNode & { flush?: () => void }) = null
     const pipeProxy = (writable_: StreamWritableNode) => {
@@ -492,7 +492,7 @@ async function createStreamWrapper<StreamType extends Stream>({
   }
 
   if (isStreamPipeWeb(streamOriginal)) {
-    debug('render() hook returned Web Stream Pipe')
+    debug('onRenderHtml() hook returned Web Stream Pipe')
 
     let writerOriginal: null | WritableStreamDefaultWriter<unknown> = null
     const pipeProxy = (writableOriginal: StreamWritableWeb) => {
@@ -570,7 +570,7 @@ async function createStreamWrapper<StreamType extends Stream>({
   }
 
   if (isStreamReadableWeb(streamOriginal)) {
-    debug('render() hook returned Web Readable')
+    debug('onRenderHtml() hook returned Web Readable')
 
     const readableOriginal: StreamReadableWeb = streamOriginal
 
@@ -610,7 +610,7 @@ async function createStreamWrapper<StreamType extends Stream>({
   }
 
   if (isStreamReadableNode(streamOriginal)) {
-    debug('render() hook returned Node.js Readable')
+    debug('onRenderHtml() hook returned Node.js Readable')
 
     const readableOriginal: StreamReadableNode = streamOriginal
 

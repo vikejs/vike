@@ -93,7 +93,7 @@ async function renderPageContext<
     return pageContext
   } else {
     const { htmlRender, renderHook } = renderHookResult
-    const httpResponse = await createHttpResponseObject(htmlRender, renderHook.hookSrc, pageContext)
+    const httpResponse = await createHttpResponseObject(htmlRender, renderHook, pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }

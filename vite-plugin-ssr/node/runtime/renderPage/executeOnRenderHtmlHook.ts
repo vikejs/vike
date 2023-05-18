@@ -1,4 +1,5 @@
 export { executeOnRenderHtmlHook }
+export type { RenderHook }
 
 import { type HtmlRender, isDocumentHtml, renderDocumentHtml } from '../html/renderHtml'
 import { getHook, type Hook } from '../../../shared/getHook'
@@ -25,9 +26,13 @@ import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
+type RenderHook = {
+  hookSrc: string
+  hookName: HookName
+}
 type HookName =
   | 'onRenderHtml'
-  // TODO/v1-release: remove
+  // TODO/v1-release: remove this line + remove all occurences of string literal 'render' in source code
   | 'render'
 
 async function executeOnRenderHtmlHook(
@@ -41,19 +46,13 @@ async function executeOnRenderHtmlHook(
     _pageFilePathsLoaded: string[]
   }
 ): Promise<{
-  renderHook: {
-    hookSrc: string
-    hookName: HookName
-  }
+  renderHook: RenderHook
   htmlRender: null | HtmlRender
 }> {
   let hookFound:
     | undefined
     | {
-        renderHook: {
-          hookSrc: string
-          hookName: HookName
-        }
+        renderHook: RenderHook
         hookFn: Function
       }
   {
@@ -96,11 +95,11 @@ async function executeOnRenderHtmlHook(
   }
   const { renderHook, hookFn } = hookFound
   preparePageContextForRelease(pageContext)
-  const result = await callHookWithTimeout(() => hookFn(pageContext), 'render', renderHook.hookSrc)
+  const result = await callHookWithTimeout(() => hookFn(pageContext), renderHook.hookName, renderHook.hookSrc)
   if (isObject(result) && !isDocumentHtml(result)) {
     assertHookResult(
       result,
-      'render',
+      renderHook.hookName,
       ['documentHtml', 'pageContext', 'injectFilter'] as const,
       renderHook.hookSrc,
       true
@@ -108,7 +107,7 @@ async function executeOnRenderHtmlHook(
   }
   objectAssign(pageContext, { _renderHook: renderHook })
 
-  const errPrefix = `The render() hook defined by ` + renderHook.hookSrc
+  const errPrefix = `The ${renderHook.hookName}() hook defined by ` + renderHook.hookSrc
 
   let pageContextPromise: PageContextPromise = null
   if (hasProp(result, 'pageContext')) {

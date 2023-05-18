@@ -21,10 +21,7 @@ type PageContextInjectAssets = {
   _pageContextPromise: PageContextPromise
   _renderHook: {
     hookSrc: string
-    hookName:
-      | 'onRenderHtml'
-      // TODO/v1-release: remove
-      | 'render'
+    hookName: 'onRenderHtml' | 'render'
   }
   _baseServer: string
   _pageConfigs: PageConfig[]
@@ -99,10 +96,7 @@ async function resolvePageContextPromise(pageContext: {
   _pageContextPromise: PageContextPromise
   _renderHook: {
     hookSrc: string
-    hookName:
-      | 'onRenderHtml'
-      // TODO/v1-release: remove
-      | 'render'
+    hookName: 'onRenderHtml' | 'render'
   }
 }) {
   const pageContextPromise = pageContext._pageContextPromise

@@ -4,7 +4,7 @@ export { assertObjectKeys }
 import { assert, assertUsage, isPlainObject, stringifyStringArray } from './utils'
 import { assertPageContextProvidedByUser } from './assertPageContextProvidedByUser'
 
-type HookName = 'render' | 'onBeforeRender'
+type HookName = 'onRenderHtml' | 'render' | 'onBeforeRender'
 
 function assertHookResult<Keys extends readonly string[]>(
   hookResult: unknown,

@@ -24,6 +24,7 @@ import { assert, assertUsage, assertWarning } from '../utils'
 import { getHtmlString, type HtmlRender } from '../html/renderHtml'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { isErrorPage } from '../../../shared/error-page'
+import type { RenderHook } from './executeOnRenderHtmlHook'
 
 type StatusCode = 200 | 404 | 500
 type ContentType = 'application/json' | 'text/html;charset=utf-8'
@@ -49,7 +50,7 @@ type HttpResponse = {
 }
 async function createHttpResponseObject(
   htmlRender: null | HtmlRender,
-  renderSrc: null | string,
+  renderHook: null | RenderHook,
   pageContext: {
     isClientSideNavigation: boolean
     _pageId: null | string
@@ -62,7 +63,7 @@ async function createHttpResponseObject(
   if (htmlRender === null) {
     return null
   }
-  assert(renderSrc || typeof htmlRender === 'string')
+  assert(renderHook || typeof htmlRender === 'string')
 
   let statusCode: StatusCode
   {
@@ -208,9 +209,10 @@ async function createHttpResponseObject(
     }
     assert(['a ', 'an ', 'the '].some((s) => htmlRenderName.startsWith(s)))
     assert(!fixMsg || !fixMsg.endsWith('.'))
-    assert(renderSrc)
+    assert(renderHook)
+    const { hookSrc, hookName } = renderHook
     return [
-      `\`pageContext.httpResponse.${method}\` can't be used because your \`render()\` hook defined by ${renderSrc} provides ${htmlRenderName}`, // TODO
+      `pageContext.httpResponse.${method} can't be used because your ${hookName}()\ hook defined by ${hookSrc} provides ${htmlRenderName}`, // TODO
       fixMsg,
       streamDocs
     ]
@@ -220,7 +222,9 @@ async function createHttpResponseObject(
   function fixMsg(type: 'pipe' | 'readable', standard: 'web' | 'node') {
     const streamName = getStreamName(type, standard)
     assert(['a ', 'an ', 'the '].some((s) => streamName.startsWith(s)))
-    return `Make sure your \`render()\` hook provides ${streamName} instead`
+    assert(renderHook)
+    const { hookSrc, hookName } = renderHook
+    return `Make sure your ${hookName}() defined by ${hookSrc} hook provides ${streamName} instead`
   }
 }
 
