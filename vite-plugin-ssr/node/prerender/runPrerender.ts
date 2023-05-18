@@ -774,15 +774,19 @@ function warnMissingPages(
   renderContext: RenderContext,
   partial: boolean
 ) {
+  const isV1 = renderContext.pageConfigs.length > 0
+  const hookName = isV1 ? 'prerender' : 'onBeforePrerenderStart'
+  const getPageAt = isV1 ? (pageId: string) => `defined at ${pageId}` : (pageId: string) => `\`${pageId}.page.*\``
+
   renderContext.allPageIds
     .filter((pageId) => !prerenderPageIds[pageId])
     .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
     .filter((pageId) => !isErrorPage(pageId, renderContext.pageConfigs))
     .forEach((pageId) => {
-      // TODO: adapt warning to V1
+      const pageAt = getPageAt(pageId)
       assertWarning(
         partial,
-        `Could not pre-render page \`${pageId}.page.*\` because it has a non-static route, and no \`prerender()\` hook returned (an) URL(s) matching the page's route. Either use a \`prerender()\` hook to pre-render the page, or use the \`--partial\` option to suppress this warning.`,
+        `Couldn't pre-render page ${pageAt} because it has a non-static route, and no ${hookName}() hook returned (an) URL(s) matching the page's route. Either use a ${hookName}() hook to pre-render the page, or use the \`--partial\` option to suppress this warning.`,
         { showStackTrace: false, onlyOnce: true }
       )
     })
