@@ -844,6 +844,8 @@ function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaV
       isObject(def),
       `${definedByFile} sets meta.${configName} to a value with an invalid type \`${typeof def}\`: it should be an object instead.`
     )
+
+    // env
     {
       const envValues = ['client-only', 'server-only', 'server-and-client', 'config-only']
       const hint = [
@@ -857,11 +859,23 @@ function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaV
       assertUsage('env' in def, `${definedByFile} doesn't set meta.${configName}.env but it's required. ${hint}`)
       assertUsage(
         hasProp(def, 'env', 'string'),
-        `${definedByFile} sets meta.${configName}.env to a value with an invalid type ${typeof def.env}. ${hint}`
+        `${definedByFile} > meta.${configName}.env has an invalid type \`${typeof def.env}\`. ${hint}`
       )
       assertUsage(
         envValues.includes(def.env),
-        `${definedByFile} sets meta.${configName}.env to an invalid value '${def.env}'. ${hint}`
+        `${definedByFile} > meta.${configName}.env has an invalid value '${def.env}'. ${hint}`
+      )
+    }
+
+    // effect
+    if ('effect' in def) {
+      assertUsage(
+        hasProp(def, 'effect', 'function'),
+        `${definedByFile} > meta.${configName}.effect has an invalid type \`${typeof def.effect}\`: it should be a function instead`
+      )
+      assertUsage(
+        def.env === 'config-only',
+        `${definedByFile} > meta.${configName}.effect is only supported if meta.${configName}.env is 'config-only' (but it's '${def.env}')`
       )
     }
   })
@@ -892,7 +906,7 @@ function applyEffects(
 
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef.effect) return
-    assertUsage(configDef.env === 'config-only', 'TODO')
+    assert(configDef.env === 'config-only')
     const configElementEffect = configElements[configName]
     if (!configElementEffect) return
     assert('configValue' in configElementEffect)
