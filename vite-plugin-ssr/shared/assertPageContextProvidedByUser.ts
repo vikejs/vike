@@ -10,7 +10,7 @@ function assertPageContextProvidedByUser(
     canBePromise
   }: {
     hook?: {
-      hookSrc: string
+      hookFilePath: string
       hookName: 'onBeforeRender' | 'onRenderHtml' | 'render' | 'onBeforeRoute'
     }
     errorMessagePrefix?: string
@@ -19,9 +19,9 @@ function assertPageContextProvidedByUser(
 ): asserts pageContextProvidedByUser is Record<string, unknown> {
   if (!errorMessagePrefix) {
     assert(hook)
-    const { hookName, hookSrc } = hook
+    const { hookName, hookFilePath } = hook
     assert(!hookName.endsWith(')'))
-    errorMessagePrefix = `The \`pageContext\` provided by the ${hookName}() hook defined by ${hookSrc}`
+    errorMessagePrefix = `The \`pageContext\` provided by the ${hookName}() hook defined by ${hookFilePath}`
   }
 
   if (canBePromise && !isObject(pageContextProvidedByUser)) {

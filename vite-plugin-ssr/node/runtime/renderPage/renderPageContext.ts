@@ -123,7 +123,7 @@ async function prerenderPageContext(
   const { htmlRender, renderHook } = await executeOnRenderHtmlHook(pageContext)
   assertUsage(
     htmlRender !== null,
-    `Cannot pre-render '${pageContext.urlOriginal}' because the ${renderHook.hookName}() hook defined by ${renderHook.hookSrc} didn't return an HTML string.`
+    `Cannot pre-render '${pageContext.urlOriginal}' because the ${renderHook.hookName}() hook defined by ${renderHook.hookFilePath} didn't return an HTML string.`
   )
   assert(pageContext.isClientSideNavigation === false)
   const documentHtml = await getHtmlString(htmlRender)

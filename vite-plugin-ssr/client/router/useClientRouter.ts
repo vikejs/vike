@@ -246,9 +246,9 @@ function useClientRouter() {
       assertHook(pageContext, 'onHydrationEnd')
       const { onHydrationEnd } = pageContext.exports
       if (onHydrationEnd) {
-        const hookSrc = pageContext.exportsAll.onHydrationEnd![0]!.exportSource
-        assert(hookSrc)
-        await callHookWithTimeout(() => onHydrationEnd(pageContext), 'onHydrationEnd', hookSrc)
+        const hookFilePath = pageContext.exportsAll.onHydrationEnd![0]!.exportSource
+        assert(hookFilePath)
+        await callHookWithTimeout(() => onHydrationEnd(pageContext), 'onHydrationEnd', hookFilePath)
       }
     } else if (renderingNumber === renderingCounter) {
       if (pageContext.exports.onPageTransitionEnd) {

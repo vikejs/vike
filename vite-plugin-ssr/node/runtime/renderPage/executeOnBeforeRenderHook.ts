@@ -22,9 +22,9 @@ async function executeOnBeforeRenderHooks(
   }
   const onBeforeRender = hook.hookFn
   preparePageContextForRelease(pageContext)
-  const hookResult = await callHookWithTimeout(() => onBeforeRender(pageContext), 'onBeforeRender', hook.hookSrc)
+  const hookResult = await callHookWithTimeout(() => onBeforeRender(pageContext), 'onBeforeRender', hook.hookFilePath)
 
-  assertHookResult(hookResult, 'onBeforeRender', ['pageContext'], hook.hookSrc)
+  assertHookResult(hookResult, 'onBeforeRender', ['pageContext'], hook.hookFilePath)
   const pageContextFromHook = hookResult?.pageContext
   Object.assign(pageContext, pageContextFromHook)
 }

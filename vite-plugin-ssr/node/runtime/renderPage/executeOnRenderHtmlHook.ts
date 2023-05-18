@@ -27,7 +27,7 @@ import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 type GetPageAssets = () => Promise<PageAsset[]>
 
 type RenderHook = {
-  hookSrc: string
+  hookFilePath: string
   hookName: HookName
 }
 type HookName =
@@ -69,10 +69,10 @@ async function executeOnRenderHtmlHook(
     }
     if (hook) {
       assert(hookName)
-      const { hookSrc, hookFn } = hook
+      const { hookFilePath, hookFn } = hook
       hookFound = {
         hookFn,
-        renderHook: { hookSrc, hookName }
+        renderHook: { hookFilePath, hookName }
       }
     }
   }
@@ -95,19 +95,19 @@ async function executeOnRenderHtmlHook(
   }
   const { renderHook, hookFn } = hookFound
   preparePageContextForRelease(pageContext)
-  const result = await callHookWithTimeout(() => hookFn(pageContext), renderHook.hookName, renderHook.hookSrc)
+  const result = await callHookWithTimeout(() => hookFn(pageContext), renderHook.hookName, renderHook.hookFilePath)
   if (isObject(result) && !isDocumentHtml(result)) {
     assertHookResult(
       result,
       renderHook.hookName,
       ['documentHtml', 'pageContext', 'injectFilter'] as const,
-      renderHook.hookSrc,
+      renderHook.hookFilePath,
       true
     )
   }
   objectAssign(pageContext, { _renderHook: renderHook })
 
-  const errPrefix = `The ${renderHook.hookName}() hook defined by ` + renderHook.hookSrc
+  const errPrefix = `The ${renderHook.hookName}() hook defined by ` + renderHook.hookFilePath
 
   let pageContextPromise: PageContextPromise = null
   if (hasProp(result, 'pageContext')) {

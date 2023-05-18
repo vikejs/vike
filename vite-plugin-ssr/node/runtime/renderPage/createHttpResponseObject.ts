@@ -210,9 +210,9 @@ async function createHttpResponseObject(
     assert(['a ', 'an ', 'the '].some((s) => htmlRenderName.startsWith(s)))
     assert(!fixMsg || !fixMsg.endsWith('.'))
     assert(renderHook)
-    const { hookSrc, hookName } = renderHook
+    const { hookFilePath, hookName } = renderHook
     return [
-      `pageContext.httpResponse.${method} can't be used because the ${hookName}()\ hook defined by ${hookSrc} provides ${htmlRenderName}`,
+      `pageContext.httpResponse.${method} can't be used because the ${hookName}()\ hook defined by ${hookFilePath} provides ${htmlRenderName}`,
       fixMsg,
       streamDocs
     ]
@@ -223,8 +223,8 @@ async function createHttpResponseObject(
     const streamName = getStreamName(type, standard)
     assert(['a ', 'an ', 'the '].some((s) => streamName.startsWith(s)))
     assert(renderHook)
-    const { hookSrc, hookName } = renderHook
-    return `Make sure the ${hookName}() defined by ${hookSrc} hook provides ${streamName} instead`
+    const { hookFilePath, hookName } = renderHook
+    return `Make sure the ${hookName}() defined by ${hookFilePath} hook provides ${streamName} instead`
   }
 }
 

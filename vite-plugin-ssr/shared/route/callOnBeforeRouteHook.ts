@@ -6,7 +6,7 @@ export { callOnBeforeRouteHook }
 export type { OnBeforeRouteHook }
 
 type OnBeforeRouteHook = {
-  hookSrc: string
+  hookFilePath: string
   onBeforeRoute: (pageContext: { urlOriginal: string } & Record<string, unknown>) => unknown
 }
 
@@ -24,7 +24,7 @@ async function callOnBeforeRouteHook(
 }> {
   const hookReturn: unknown = await onBeforeRouteHook.onBeforeRoute(pageContext)
 
-  const errPrefix = `The onBeforeRoute() hook defined by ${onBeforeRouteHook.hookSrc}`
+  const errPrefix = `The onBeforeRoute() hook defined by ${onBeforeRouteHook.hookFilePath}`
 
   assertUsage(
     hookReturn === null ||
@@ -77,7 +77,7 @@ async function callOnBeforeRouteHook(
   }
 
   assertPageContextProvidedByUser(hookReturn.pageContext, {
-    hook: { hookSrc: onBeforeRouteHook.hookSrc, hookName: 'onBeforeRoute' }
+    hook: { hookFilePath: onBeforeRouteHook.hookFilePath, hookName: 'onBeforeRoute' }
   })
 
   objectAssign(pageContextAddendumHook, hookReturn.pageContext)

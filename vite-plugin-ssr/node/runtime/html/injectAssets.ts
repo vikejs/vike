@@ -20,7 +20,7 @@ type PageContextInjectAssets = {
   _isHtmlOnly: boolean
   _pageContextPromise: PageContextPromise
   _renderHook: {
-    hookSrc: string
+    hookFilePath: string
     hookName: 'onRenderHtml' | 'render'
   }
   _baseServer: string
@@ -95,7 +95,7 @@ type PageContextPromise = null | Promise<unknown> | (() => void | Promise<unknow
 async function resolvePageContextPromise(pageContext: {
   _pageContextPromise: PageContextPromise
   _renderHook: {
-    hookSrc: string
+    hookFilePath: string
     hookName: 'onRenderHtml' | 'render'
   }
 }) {
