@@ -986,11 +986,15 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/vue-router-and-react-router'
   },
   {
-    title: <><code>vike-*</code> packages</>,
+    title: (
+      <>
+        <code>vike-*</code> packages
+      </>
+    ),
     url: '/vike-packages'
   },
   {
-    title: <><code>vike-*</code> packages</>,
+    title: <code>extends</code>,
     url: '/extends'
   }
 ]
