@@ -441,12 +441,22 @@ function resolveConfigElement(
     // Main resolution logic
     {
       const interfaceValueFiles = interfaceFilesDefiningConfig
-        .filter((interfaceFile) => interfaceFile.isValueFile && interfaceFile.configNameDefault === configName)
+        .filter(
+          (interfaceFile) =>
+            interfaceFile.isValueFile &&
+            // We consider side-effect exports (e.g. `export { frontmatter }` of .mdx files) later (i.e. with less priority)
+            interfaceFile.configNameDefault === configName
+        )
+        .sort(makeOrderDeterministic)
+      const interfaceConfigFiles = interfaceFilesDefiningConfig
+        .filter(
+          (interfaceFile) =>
+            interfaceFile.isConfigFile &&
+            // We consider value from extended configs (e.g. vike-react) later (i.e. with less priority)
+            !interfaceFile.isConfigExtend
+        )
         .sort(makeOrderDeterministic)
       const interfaceValueFile = interfaceValueFiles[0]
-      const interfaceConfigFiles = interfaceFilesDefiningConfig
-        .filter((interfaceFile) => interfaceFile.isConfigFile && !interfaceFile.isConfigExtend)
-        .sort(makeOrderDeterministic)
       const interfaceConfigFile = interfaceConfigFiles[0]
       // Make this value:
       //   /pages/some-page/+someConfig.js > `export default`
@@ -457,6 +467,7 @@ function resolveConfigElement(
         const interfaceFilesOverriden = [...interfaceValueFiles, ...interfaceConfigFiles].filter(
           (f) => f !== interfaceFileWinner
         )
+        // A user-land conflict of interfaceFiles with the same locationId means that the user has superfluously defined the config twice; the user should remove such redundancy making things unnecessarily ambiguous
         warnOverridenConfigValues(interfaceFileWinner, interfaceFilesOverriden, configName, configDef, userRootDir)
         return getConfigElement(configName, interfaceFileWinner, configDef, userRootDir)
       }
@@ -467,6 +478,7 @@ function resolveConfigElement(
       const interfaceValueFiles = interfaceFilesDefiningConfig.filter((interfaceFile) => interfaceFile.isValueFile)
       const interfaceValueFileSideEffect = interfaceValueFiles[0]
       if (interfaceValueFileSideEffect) {
+        assert(interfaceValueFileSideEffect.isValueFile && interfaceValueFileSideEffect.configNameDefault !== configName)
         return getConfigElement(configName, interfaceValueFileSideEffect, configDef, userRootDir)
       }
     }
