@@ -839,32 +839,31 @@ function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaV
     isObject(metaVal),
     `${definedByFile} sets the config 'meta' to a value with an invalid type \`${typeof metaVal}\`: it should be an object instead.`
   )
-  objectEntries(metaVal).forEach(([configName, configDefinition]) => {
+  objectEntries(metaVal).forEach(([configName, def]) => {
     assertUsage(
-      isObject(configDefinition),
-      `${definedByFile} sets 'meta.${configName}' to a value with an invalid type \`${typeof configDefinition}\`: it should be an object instead.`
+      isObject(def),
+      `${definedByFile} sets meta.${configName} to a value with an invalid type \`${typeof def}\`: it should be an object instead.`
     )
-    // Validation
-    /* TODO
     {
-      {
-        const prop = 'env'
-        const hint = `Make sure to define the 'env' value of '${configName}' to 'client-only', 'server-only', or 'server-and-client'.`
-        assertUsage(
-          prop in def,
-          `${plusConfigFilePath} doesn't define 'meta.${configName}.env' which is required. ${hint}`
-        )
-        assertUsage(
-          hasProp(def, prop, 'string'),
-          `${plusConfigFilePath} sets 'meta.${configName}.env' to a value with an invalid type ${typeof def.env}. ${hint}`
-        )
-        assertUsage(
-          ['client-only', 'server-only', 'server-and-client'].includes(def.env),
-          `${plusConfigFilePath} sets 'meta.${configName}.env' to an invalid value '${def.env}'. ${hint}`
-        )
-      }
+      const envValues = ['client-only', 'server-only', 'server-and-client', 'config-only']
+      const hint = [
+        'Set the value of `env` to ',
+        joinEnglish(
+          envValues.map((s) => `'${s}'`),
+          'or'
+        ),
+        '.'
+      ].join('')
+      assertUsage('env' in def, `${definedByFile} doesn't set meta.${configName}.env but it's required. ${hint}`)
+      assertUsage(
+        hasProp(def, 'env', 'string'),
+        `${definedByFile} sets meta.${configName}.env to a value with an invalid type ${typeof def.env}. ${hint}`
+      )
+      assertUsage(
+        envValues.includes(def.env),
+        `${definedByFile} sets meta.${configName}.env to an invalid value '${def.env}'. ${hint}`
+      )
     }
-    */
   })
 }
 
