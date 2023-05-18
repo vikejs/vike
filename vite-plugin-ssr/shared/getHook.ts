@@ -9,7 +9,7 @@ type Hook = { hook: (arg: unknown) => unknown; hookSrc: string }
 
 function getHook(
   pageContext: PageContextExports,
-  hookName: 'render' | 'onBeforeRender' | 'onBeforePrerender' | 'onBeforeRoute' | 'onRenderHtml' | 'onRenderClient'
+  hookName: 'render' | 'onBeforeRender' | 'onRenderHtml'
 ): null | Hook {
   if (!(hookName in pageContext.exports)) {
     return null
