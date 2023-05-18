@@ -213,7 +213,7 @@ async function renderTemplate(
   const { templateStrings, templateVariables } = templateContent
   for (let i = 0; i < templateVariables.length; i++) {
     addHtmlPart(templateStrings[i]!)
-    const templateVar = templateVariables[i]
+    let templateVar = templateVariables[i]
 
     // Process `dangerouslySkipEscape()`
     if (isEscapedString(templateVar)) {
@@ -251,13 +251,16 @@ async function renderTemplate(
 
     assertUsage(!isPromise(templateVar), getErrMsg('a promise', 'Did you forget to `await` the promise?'))
 
-    if (templateVar === null) {
-      continue
-    }
-
-    if (templateVar === undefined) {
-      assertWarning(false, getErrMsg(`\`${templateVar}\``, ''), { showStackTrace: false, onlyOnce: false })
-      continue
+    if (templateVar === undefined || templateVar === null) {
+      assertWarning(
+        false,
+        getErrMsg(
+          `\`${templateVar}\` which will be converted to an empty string`,
+          `Pass an empty string instead of \`${templateVar}\` to remove this warning.`
+        ),
+        { showStackTrace: false, onlyOnce: false }
+      )
+      templateVar = ''
     }
 
     {
