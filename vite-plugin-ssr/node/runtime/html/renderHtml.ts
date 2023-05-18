@@ -10,7 +10,7 @@ export { getHtmlString }
 export type { HtmlRender }
 export type { HtmlPart }
 
-import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign } from '../utils'
+import { assert, assertUsage, assertWarning, checkType, hasProp, isHtml, isPromise, objectAssign } from '../utils'
 import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
 import { processStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
@@ -18,6 +18,7 @@ import { isStreamReactStreaming } from './stream/react-streaming'
 import type { InjectToStream } from './stream/react-streaming'
 import type { PageAsset } from '../renderPage/getPageAssets'
 import type { PreloadFilter } from './injectAssets/getHtmlTags'
+import { getGlobalContext } from '../globalContext'
 
 type DocumentHtml = TemplateWrapped | EscapedString | Stream
 type HtmlRender = string | Stream
@@ -265,6 +266,21 @@ async function renderTemplate(
         ? null
         : '(See https://vite-plugin-ssr.com/stream for HTML streaming.)'
       assertUsage(varType === 'string', getErrMsg(`\`typeof htmlVar === "${varType}"\``, streamNote))
+    }
+
+    {
+      const globalContext = getGlobalContext()
+      const { isProduction } = globalContext
+      if (isHtml(templateVar) && !isProduction) {
+        assertWarning(
+          false,
+          getErrMsg(
+            `\`${templateVar}\` which seems to be HTML code`,
+            "Did you forget to wrap the value with dangerouslySkipEscape()? (This warning isn't shown in production.)"
+          ),
+          { showStackTrace: false, onlyOnce: false }
+        )
+      }
     }
 
     // Escape untrusted template variable
