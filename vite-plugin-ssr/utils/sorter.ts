@@ -5,8 +5,10 @@ export { lowerFirst }
 export { makeFirst }
 export { makeLast }
 
-// -1 => element1 first
-// +1 => element2 first
+// -1 => element1 first (i.e. `indexOf(element1) < indexOf(element2)`)
+// +1 => element2 first (i.e. `indexOf(element2) < indexOf(element1)`)
+// 0 => keep original order of element1 and element2
+
 function higherFirst<T>(getValue: (element: T) => number): (element1: T, element2: T) => 0 | 1 | -1 {
   return (element1: T, element2: T) => {
     const val1 = getValue(element1)
@@ -39,10 +41,10 @@ function makeFirst<T>(getValue: (element: T) => boolean | null): (element1: T, e
       return 0
     }
     if (val1 === true || val2 === false) {
-      return -1 // element1 first
+      return -1
     }
     if (val2 === true || val1 === false) {
-      return 1 // element2 first
+      return 1
     }
     assert(false)
   }
