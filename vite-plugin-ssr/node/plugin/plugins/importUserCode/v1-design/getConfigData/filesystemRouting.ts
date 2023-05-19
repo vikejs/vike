@@ -61,13 +61,40 @@ function sortAfterInheritanceOrder(locationId1: string, locationId2: string, loc
   assert(inheritanceRootPage.startsWith(inheritanceRoot1))
   assert(inheritanceRootPage.startsWith(inheritanceRoot2))
 
-  // Should be true since locationId1 and locationId2 are both inherited by the same page
-  assert(inheritanceRoot1.startsWith(inheritanceRoot2) || inheritanceRoot2.startsWith(inheritanceRoot1))
-  // Should be true since we aggregate interface files by locationId
-  assert(inheritanceRoot1 !== inheritanceRoot2)
-  assert(inheritanceRoot1.length !== inheritanceRoot2.length)
+  if (inheritanceRoot1 !== inheritanceRoot2) {
+    // Should be true since locationId1 and locationId2 are both inherited by the same page
+    assert(inheritanceRoot1.startsWith(inheritanceRoot2) || inheritanceRoot2.startsWith(inheritanceRoot1))
+    assert(inheritanceRoot1.length !== inheritanceRoot2.length)
+    return higherFirst<string>((inheritanceRoot) => inheritanceRoot.length)(inheritanceRoot1, inheritanceRoot2)
+  }
 
-  return higherFirst<string>((inheritanceRoot) => inheritanceRoot.length)(inheritanceRoot1, inheritanceRoot2)
+  // Should be true since we aggregate interface files by locationId
+  assert(locationId1 !== locationId2)
+
+  // locationId1 first, i.e. `indexOf(locationId1) < indexOf(locationId2)`
+  const locationId1First = -1
+  // locationId2 first, i.e. `indexOf(locationId2) < indexOf(locationId1)`
+  const locationId2First = 1
+
+  if (locationIsNpmPackage(locationId1) !== locationIsNpmPackage(locationId2)) {
+    return locationIsNpmPackage(locationId1) ? locationId2First : locationId1First
+  }
+  if (locationIsRendererDir(locationId1) !== locationIsRendererDir(locationId2)) {
+    return locationIsRendererDir(locationId1) ? locationId2First : locationId1First
+  }
+
+  // Doesn't have any function beyond making the order deterministic
+  //  - Although we make /src/renderer/+config.js override /renderer/+config.js which potentially can make somewhat sense (e.g. when ejecting a renderer)
+  if (locationId1.length !== locationId2.length) {
+    return higherFirst<string>((locationId) => locationId.length)(locationId1, locationId2)
+  }
+  return locationId1 > locationId2 ? locationId1First : locationId2First
+}
+function locationIsNpmPackage(locationId: string) {
+  return !locationId.startsWith('/')
+}
+function locationIsRendererDir(locationId: string) {
+  return locationId.split('/').includes('renderer')
 }
 
 function isInherited(locationId: string, locationIdPage: string): boolean {
