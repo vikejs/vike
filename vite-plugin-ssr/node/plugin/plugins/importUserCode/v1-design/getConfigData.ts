@@ -261,7 +261,7 @@ async function loadConfigData(
           getInterfaceFileList(interfaceFilesRelevant).map(async (interfaceFile) => {
             if (!interfaceFile.isValueFile) return
             const { configNameDefault } = interfaceFile
-            if (getConfigDef(configDefinitionsBuiltInGlobal, configNameDefault)) return
+            if (isGlobalConfig(configNameDefault)) return
             const configDef = getConfigDef(configDefinitionsRelevant, configNameDefault)
             assert(configDef, configNameDefault)
             if (configDef.env !== 'config-only') return
@@ -275,7 +275,7 @@ async function loadConfigData(
 
         let configElements: PageConfigData['configElements'] = {}
         objectEntries(configDefinitionsRelevant)
-          .filter(([configName]) => !isGlobal(configName))
+          .filter(([configName]) => !isGlobalConfig(configName))
           .forEach(([configName, configDef]) => {
             const configElement = resolveConfigElement(configName, configDef, interfaceFilesRelevant, userRootDir)
             if (!configElement) return
@@ -320,7 +320,7 @@ async function loadConfigData(
     const configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
     interfaceFiles.forEach((interfaceFile) => {
       Object.keys(interfaceFile.configMap).forEach((configName) => {
-        assertConfigName(
+        assertConfigExists(
           configName,
           Object.keys(configDefinitionsRelevant),
           getFilePathToShowToUser(interfaceFile.filePath)
@@ -384,7 +384,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
     Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
       interfaceFiles.forEach((interfaceFile) => {
         Object.keys(interfaceFile.configMap).forEach((configName) => {
-          if (!isGlobalLocation(locationId) && configName in configDefinitionsBuiltInGlobal) {
+          if (!isGlobalLocation(locationId) && isGlobalConfig(configName)) {
             assertUsage(
               false,
               [
@@ -928,7 +928,7 @@ function applyEffects(
           configElementsMod[configTargetName]!.configEnv = configEnv
         })
       } else {
-        assertConfigName(configName, Object.keys(configDefinitionsRelevant), `effect of TODO`)
+        assertConfigExists(configName, Object.keys(configDefinitionsRelevant), `effect of TODO`)
         const configElementTargetOld = configElementsMod[configName]
         assert(configElementTargetOld)
         configElementsMod[configName] = {
@@ -1168,17 +1168,18 @@ function handleUserFileError(err: unknown, isDev: boolean) {
   }
 }
 
-function isGlobal(configName: string): configName is ConfigNameGlobal {
+function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
   if (configName === 'prerender') return false
   const configNamesGlobal = Object.keys(configDefinitionsBuiltInGlobal)
   return arrayIncludes(configNamesGlobal, configName)
 }
 
-function assertConfigName(configName: string, configNames: string[], definedBy: string) {
-  configNames = [...configNames, ...Object.keys(configDefinitionsBuiltInGlobal), 'meta']
-  if (configNames.includes(configName)) return
+function assertConfigExists(configName: string, configsDefined: string[], definedBy: string) {
+  if (isGlobalConfig(configName)) return
+  if (configName === 'meta') return
+  if (configsDefined.includes(configName)) return
   let errMsg = `${definedBy} defines an unknown config '${configName}'`
-  const configNameSimilar = getMostSimilar(configName, configNames)
+  const configNameSimilar = getMostSimilar(configName, configsDefined)
   if (configNameSimilar) {
     assert(configNameSimilar !== configName)
     errMsg = `${errMsg}, did you mean to define '${configNameSimilar}' instead?`
