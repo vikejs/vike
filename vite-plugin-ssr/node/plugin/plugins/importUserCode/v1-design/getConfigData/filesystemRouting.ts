@@ -44,10 +44,9 @@ function getLogialPath(someDir: string, removeDirs: string[]): string {
   return someDir
 }
 
-function isGlobalLocation(locationId: string): boolean {
-  const inheritanceRoot = getInheritanceRoot(locationId)
-  assert(inheritanceRoot.startsWith('/'))
-  return inheritanceRoot === '/'
+/** Whether configs defined in `locationId` apply in every `locationIds` */
+function isGlobalLocation(locationId: string, locationIds: string[]): boolean {
+  return locationIds.every((locId) => isInherited(locationId, locId))
 }
 function sortAfterInheritanceOrder(locationId1: string, locationId2: string, locationIdPage: string): -1 | 1 | 0 {
   const inheritanceRoot1 = getInheritanceRoot(locationId1)
@@ -97,10 +96,11 @@ function locationIsRendererDir(locationId: string) {
   return locationId.split('/').includes('renderer')
 }
 
-function isInherited(locationId: string, locationIdPage: string): boolean {
-  const inheritanceRoot = getInheritanceRoot(locationId)
-  const inheritanceRootPage = getInheritanceRoot(locationIdPage)
-  return inheritanceRootPage.startsWith(inheritanceRoot)
+/** Whether configs defined at `locationId1` also apply at `locationId2` */
+function isInherited(locationId1: string, locationId2: string): boolean {
+  const inheritanceRoot1 = getInheritanceRoot(locationId1)
+  const inheritanceRoot2 = getInheritanceRoot(locationId2)
+  return inheritanceRoot2.startsWith(inheritanceRoot1)
 }
 
 function removeNpmPackageName(somePath: string): string {

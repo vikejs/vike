@@ -364,9 +364,10 @@ function getInterfaceFileList(interfaceFilesByLocationId: InterfaceFilesByLocati
 }
 
 function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId, userRootDir: string) {
+  const locationIds = Object.keys(interfaceFilesByLocationId)
   const interfaceFilesGlobal = Object.fromEntries(
     Object.entries(interfaceFilesByLocationId).filter(([locationId]) => {
-      return isGlobalLocation(locationId)
+      return isGlobalLocation(locationId, locationIds)
     })
   )
 
@@ -374,7 +375,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
   {
     const interfaceFilesGlobalUserPaths: string[] = []
     Object.entries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
-      assert(isGlobalLocation(locationId))
+      assert(isGlobalLocation(locationId, locationIds))
       interfaceFiles.forEach(({ filePath: { filePathRelativeToUserRootDir } }) => {
         if (filePathRelativeToUserRootDir) {
           interfaceFilesGlobalUserPaths.push(filePathRelativeToUserRootDir)
@@ -384,7 +385,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
     Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
       interfaceFiles.forEach((interfaceFile) => {
         Object.keys(interfaceFile.configMap).forEach((configName) => {
-          if (!isGlobalLocation(locationId) && isGlobalConfig(configName)) {
+          if (!isGlobalLocation(locationId, locationIds) && isGlobalConfig(configName)) {
             assertUsage(
               false,
               [
