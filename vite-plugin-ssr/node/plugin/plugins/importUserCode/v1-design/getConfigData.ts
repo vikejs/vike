@@ -1189,26 +1189,18 @@ function assertConfigExists(configName: string, configsDefined: string[], define
   assertUsage(false, errMsg)
 }
 
-function determineIsErrorPage(routeFilesystem: string) {
-  assertPosixPath(routeFilesystem)
-  return routeFilesystem.split('/').includes('_error')
-}
-
-function determineRouteFilesystem(locationId: string, configFilesystemRoutingEffect: undefined | ConfigElement) {
+function determineRouteFilesystem(locationId: string, configFilesystemRoutingRoot: undefined | ConfigElement) {
   let routeFilesystem = getRouteFilesystem(locationId)
   if (determineIsErrorPage(routeFilesystem)) {
     return { isErrorPage: true, routeFilesystem: null, routeFilesystemDefinedBy: null }
   }
   let routeFilesystemDefinedBy = getRouteFilesystemDefinedBy(locationId) // for log404()
-  {
-    const fsRoutingRoot = getFilesystemRoutingRootEffect(configFilesystemRoutingEffect)
-    if (fsRoutingRoot) {
-      const { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt } = fsRoutingRoot
-      assert(routeFilesystem.startsWith(filesystemRoutingRootEffect.before), {
-        locationId,
-        routeFilesystem,
-        configFilesystemRoutingEffect
-      })
+  if (configFilesystemRoutingRoot) {
+    const routingRoot = getFilesystemRoutingRootEffect(configFilesystemRoutingRoot)
+    if (routingRoot) {
+      const { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt } = routingRoot
+      const debugInfo = { locationId, routeFilesystem, configFilesystemRoutingRoot }
+      assert(routeFilesystem.startsWith(filesystemRoutingRootEffect.before), debugInfo)
       routeFilesystem = applyFilesystemRoutingRootEffect(routeFilesystem, filesystemRoutingRootEffect)
       assert(filesystemRoutingRootDefinedAt.includes('export'))
       routeFilesystemDefinedBy = `${routeFilesystemDefinedBy} + ${filesystemRoutingRootDefinedAt}`
@@ -1217,21 +1209,24 @@ function determineRouteFilesystem(locationId: string, configFilesystemRoutingEff
   assert(routeFilesystem.startsWith('/'))
   return { routeFilesystem, routeFilesystemDefinedBy, isErrorPage: false }
 }
-function getFilesystemRoutingRootEffect(configFilesystemRoutingEffect: undefined | ConfigElement) {
-  if (!configFilesystemRoutingEffect) return null
-  assert(configFilesystemRoutingEffect.configEnv === 'config-only')
+function getFilesystemRoutingRootEffect(configFilesystemRoutingRoot: ConfigElement) {
+  assert(configFilesystemRoutingRoot.configEnv === 'config-only')
   // Eagerly loaded since it's config-only
-  assert('configValue' in configFilesystemRoutingEffect)
-  const { configValue } = configFilesystemRoutingEffect
-  assertUsage(typeof configValue === 'string', `${configFilesystemRoutingEffect.configDefinedAt} should be a string`)
-  const { configDefinedAt } = configFilesystemRoutingEffect
+  assert('configValue' in configFilesystemRoutingRoot)
+  const { configValue } = configFilesystemRoutingRoot
+  assertUsage(typeof configValue === 'string', `${configFilesystemRoutingRoot.configDefinedAt} should be a string`)
+  const { configDefinedAt } = configFilesystemRoutingRoot
   assertUsage(
     configValue.startsWith('/'),
     `${configDefinedAt} is '${configValue}' but it should start with a leading slash '/'`
   )
-  const { configDefinedByFile } = configFilesystemRoutingEffect
+  const { configDefinedByFile } = configFilesystemRoutingRoot
   const before = getRouteFilesystem(getLocationId(configDefinedByFile))
   const after = configValue
   const filesystemRoutingRootEffect = { before, after }
   return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt: configDefinedAt }
+}
+function determineIsErrorPage(routeFilesystem: string) {
+  assertPosixPath(routeFilesystem)
+  return routeFilesystem.split('/').includes('_error')
 }

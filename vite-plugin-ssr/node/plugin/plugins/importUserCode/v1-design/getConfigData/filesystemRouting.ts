@@ -157,7 +157,7 @@ function assertLocationId(locationId: string) {
 function applyFilesystemRoutingRootEffect(
   routeFilesystem: string,
   filesystemRoutingRootEffect: { before: string; after: string }
-) {
+): string {
   const { before, after } = filesystemRoutingRootEffect
   assert(after.startsWith('/'))
   assert(routeFilesystem.startsWith(before))
