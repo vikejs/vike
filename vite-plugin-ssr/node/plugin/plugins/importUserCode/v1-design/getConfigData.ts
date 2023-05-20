@@ -943,13 +943,13 @@ function applyEffect(
   objectEntries(configFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
       assertMetaValue(configValue, configDefinedAtWithEffect)
-      objectEntries(configValue).forEach(([configTargetName, configTargetModValue]) => {
-        const keys = Object.keys(configTargetModValue)
+      objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
+        const keys = Object.keys(configTargetDef)
         assert(keys.includes('env'))
         assert(keys.length === 1)
         const configTargetElement = configElements[configTargetName]
         if (configTargetElement) {
-          configTargetElement.configEnv = configTargetModValue.env
+          configTargetElement.configEnv = configTargetDef.env
         }
       })
     } else {
