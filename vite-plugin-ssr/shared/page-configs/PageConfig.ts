@@ -5,6 +5,7 @@ export type { PageConfigData }
 export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
 export type { ConfigElement }
+export type { ConfigElementSource }
 export type { ConfigNameBuiltIn }
 
 import type { ConfigNameBuiltIn } from './Config'
@@ -35,13 +36,7 @@ type PageConfigGlobal = {
   onBeforeRoute: null | (ConfigElement & { configValue: unknown })
 }
 
-type ConfigElement = {
-  configEnv: ConfigEnv
-  configValue?: unknown
-  configValueSerialized?: string
-  configDefinedAt: string
-  configDefinedByFile: string
-} & (
+type ConfigElementSource =
   | // Defined directly in +config.js
   {
       plusConfigFilePath: string
@@ -60,7 +55,13 @@ type ConfigElement = {
       codeFilePath: string
       codeFileExport: string
     }
-)
+type ConfigElement = {
+  configEnv: ConfigEnv
+  configValue?: unknown
+  configValueSerialized?: string
+  configDefinedAt: string
+  configDefinedByFile: string
+} & ConfigElementSource
 
 type LoadCodeFiles = () => Promise<
   ({

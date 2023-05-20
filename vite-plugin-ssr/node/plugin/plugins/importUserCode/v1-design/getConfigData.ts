@@ -31,9 +31,9 @@ import path from 'path'
 import type {
   ConfigNameBuiltIn,
   ConfigElement,
-  ConfigEnv,
   PageConfigData,
-  PageConfigGlobalData
+  PageConfigGlobalData,
+  ConfigElementSource
 } from '../../../../../shared/page-configs/PageConfig'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './getConfigData/configDefinitionsBuiltIn'
 import glob from 'fast-glob'
@@ -921,49 +921,56 @@ function applyEffects(
   configElements: ConfigElements,
   configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
 ): ConfigElements {
-  const configElementsMod = { ...configElements }
+  const configElementsModified = { ...configElements }
 
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef.effect) return
     assert(configDef.env === 'config-only')
-    const configElementEffect = configElements[configName]
-    if (!configElementEffect) return
-    assert('configValue' in configElementEffect)
-    const { configValue, configDefinedAt } = configElementEffect
-    const configMod = configDef.effect({
+    const configElement = configElements[configName]
+    if (!configElement) return
+    assert('configValue' in configElement)
+    const { configValue, configDefinedAt } = configElement
+    const configFromEffect = configDef.effect({
       configValue,
       configDefinedAt
     })
-    if (!configMod) return
-    objectEntries(configMod).forEach(([configName, configValue]) => {
+    if (!configFromEffect) return
+    const configDefinedAtWithEffect = `${configDefinedAt} > effect()`
+    objectEntries(configFromEffect).forEach(([configName, configValue]) => {
       if (configName === 'meta') {
-        // assert(configDefinedAt.endsWith('{ export meta`'))
-        // assertMetaValue(configValue, `${configDefinedAt} > effect()`)
-        assertUsage(isObject(configValue), 'TODO')
+        assertMetaValue(configValue, configDefinedAtWithEffect)
         objectEntries(configValue).forEach(([configTargetName, configTargetModValue]) => {
-          assertUsage(isObject(configTargetModValue), 'TODO')
-          assertUsage(Object.keys(configTargetModValue).length === 1, 'TODO')
-          assertUsage(hasProp(configTargetModValue, 'env', 'string'), 'TODO')
-          const configEnv = configTargetModValue.env as ConfigEnv // TODO: proper validation
-          configElementsMod[configTargetName]!.configEnv = configEnv
+          configElementsModified[configTargetName]!.configEnv = configTargetModValue.env
         })
       } else {
-        assertConfigExists(configName, Object.keys(configDefinitionsRelevant), `effect of TODO`)
-        const configElementTargetOld = configElementsMod[configName]
-        assert(configElementTargetOld)
-        configElementsMod[configName] = {
-          // TODO-begin
-          ...configElementEffect,
-          configDefinedAt: `${configElementEffect.configDefinedAt} (side-effect)`,
-          // TODO-end
-          configEnv: configElementTargetOld.configEnv,
-          configValue
+        assertWarning(
+          false,
+          `${configDefinedAtWithEffect} is modifying a config value; this is an experimental functionality; reach out to a maintainer if you want to use this in production`,
+          { onlyOnce: true, showStackTrace: false }
+        )
+        assertConfigExists(configName, Object.keys(configDefinitionsRelevant), configDefinedAtWithEffect)
+        /* We're completely overriding any previous configElement
+        const configElementTargetOriginal = configElementsModified[configName]
+        */
+        const configDef = configDefinitionsRelevant[configName]
+        assert(configDef)
+        configElementsModified[configName] = {
+          configValue,
+          configEnv: configDef.env,
+          ...getConfigElementSource(configElement),
+          configDefinedAt: configDefinedAtWithEffect,
+          configDefinedByFile: configElement.configDefinedByFile
         }
       }
     })
   })
 
-  return configElementsMod
+  return configElementsModified
+}
+function getConfigElementSource(configElement: ConfigElement): ConfigElementSource {
+  const { plusConfigFilePath, codeFilePath, codeFileExport }: ConfigElementSource = configElement
+  const configElementSource = { plusConfigFilePath, codeFilePath, codeFileExport } as ConfigElementSource
+  return configElementSource
 }
 
 async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]) {
