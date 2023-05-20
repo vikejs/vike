@@ -1203,7 +1203,7 @@ function determineRouteFilesystem(locationId: string, configFilesystemRoutingRoo
       assert(routeFilesystem.startsWith(filesystemRoutingRootEffect.before), debugInfo)
       routeFilesystem = applyFilesystemRoutingRootEffect(routeFilesystem, filesystemRoutingRootEffect)
       assert(filesystemRoutingRootDefinedAt.includes('export'))
-      routeFilesystemDefinedBy = `${routeFilesystemDefinedBy} + ${filesystemRoutingRootDefinedAt}`
+      routeFilesystemDefinedBy = `${routeFilesystemDefinedBy} (with ${filesystemRoutingRootDefinedAt})`
     }
   }
   assert(routeFilesystem.startsWith('/'))
