@@ -556,7 +556,7 @@ function getConfigElement(
         plusConfigFilePath: configFilePath,
         codeFilePath,
         codeFileExport,
-        configDefinedAt: `${codeFilePath} > \`export ${codeFileExport}\``,
+        configDefinedAt: getConfigDefinedAt(codeFilePath, codeFileExport),
         configDefinedByFile: codeFilePath,
         configEnv
       }
@@ -564,7 +564,7 @@ function getConfigElement(
     } else {
       const configElement: ConfigElement = {
         plusConfigFilePath: configFilePath,
-        configDefinedAt: `${configFilePath} > \`export default { ${configName} }\``,
+        configDefinedAt: getConfigDefinedAt(configFilePath, configName, true),
         configDefinedByFile: configFilePath,
         codeFilePath: null,
         codeFileExport: null,
@@ -582,7 +582,7 @@ function getConfigElement(
       codeFilePath,
       codeFileExport,
       plusConfigFilePath: null,
-      configDefinedAt: `${codeFilePath} > \`export ${codeFileExport}\``,
+      configDefinedAt: getConfigDefinedAt(codeFilePath, codeFileExport),
       configDefinedByFile: codeFilePath
     }
     if ('configValue' in conf) {
@@ -593,6 +593,22 @@ function getConfigElement(
     return configElement
   }
   assert(false)
+}
+
+/* Use the type once we moved all dist/ to ESM
+type ConfigDefinedAt = ReturnType<typeof getConfigDefinedAt>
+*/
+function getConfigDefinedAt(filePath: string, exportName: string, isDefaultExportObject?: true) {
+  if (isDefaultExportObject) {
+    assert(exportName !== 'default')
+    return `${filePath} > \`export default { ${exportName} }` as const
+  } else {
+    if (exportName === 'default') {
+      return `${filePath} > \`export default\`` as const
+    } else {
+      return `${filePath} > \`export { ${exportName} }\`` as const
+    }
+  }
 }
 
 function isDefiningPage(interfaceFiles: InterfaceFile[]): boolean {
@@ -919,10 +935,12 @@ function applyEffects(
       configDefinedAt
     })
     if (!configMod) return
-    objectEntries(configMod).forEach(([configName, configModValue]) => {
+    objectEntries(configMod).forEach(([configName, configValue]) => {
       if (configName === 'meta') {
-        assertUsage(isObject(configModValue), 'TODO')
-        objectEntries(configModValue).forEach(([configTargetName, configTargetModValue]) => {
+        // assert(configDefinedAt.endsWith('{ export meta`'))
+        // assertMetaValue(configValue, `${configDefinedAt} > effect()`)
+        assertUsage(isObject(configValue), 'TODO')
+        objectEntries(configValue).forEach(([configTargetName, configTargetModValue]) => {
           assertUsage(isObject(configTargetModValue), 'TODO')
           assertUsage(Object.keys(configTargetModValue).length === 1, 'TODO')
           assertUsage(hasProp(configTargetModValue, 'env', 'string'), 'TODO')
@@ -939,7 +957,7 @@ function applyEffects(
           configDefinedAt: `${configElementEffect.configDefinedAt} (side-effect)`,
           // TODO-end
           configEnv: configElementTargetOld.configEnv,
-          configValue: configModValue
+          configValue
         }
       }
     })
