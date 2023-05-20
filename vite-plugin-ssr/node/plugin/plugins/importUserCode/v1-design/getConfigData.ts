@@ -947,7 +947,10 @@ function applyEffect(
         const keys = Object.keys(configTargetModValue)
         assert(keys.includes('env'))
         assert(keys.length === 1)
-        configElements[configTargetName]!.configEnv = configTargetModValue.env
+        const configTargetElement = configElements[configTargetName]
+        if (configTargetElement) {
+          configTargetElement.configEnv = configTargetModValue.env
+        }
       })
     } else {
       // AFAIK we don't use this, nor do we need it?
