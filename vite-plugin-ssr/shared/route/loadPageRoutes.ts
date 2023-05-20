@@ -36,7 +36,7 @@ async function loadPageRoutes(
 }
 
 function getPageRoutes(
-  filesystemRoots: FilesystemRoot[],
+  filesystemRoots: null | FilesystemRoot[],
   pageFilesAll: PageFile[],
   pageConfigs: PageConfig[],
   allPageIds: string[]
@@ -47,6 +47,7 @@ function getPageRoutes(
 
   // V1 Design
   if (pageConfigs.length > 0) {
+    assert(filesystemRoots === null)
     const comesFromV1PageConfig = true
     pageConfigs
       .filter((p) => !p.isErrorPage)
@@ -108,6 +109,7 @@ function getPageRoutes(
   // Old design
   // TODO/v1-release: remove
   if (pageConfigs.length === 0) {
+    assert(filesystemRoots)
     const comesFromV1PageConfig = false
     pageIds
       .filter((pageId) => !isErrorPageId(pageId, false))
@@ -179,7 +181,7 @@ function getGlobalHooks(
   pageConfigGlobal: PageConfigGlobal
 ): {
   onBeforeRouteHook: null | OnBeforeRouteHook
-  filesystemRoots: FilesystemRoot[]
+  filesystemRoots: null | FilesystemRoot[]
 } {
   // V1 Design
   if (pageConfigs.length > 0) {
@@ -193,10 +195,10 @@ function getGlobalHooks(
           hookFilePath: hookFilePath,
           onBeforeRoute: hookFn
         }
-        return { onBeforeRouteHook, filesystemRoots: [] }
+        return { onBeforeRouteHook, filesystemRoots: null }
       }
     }
-    return { onBeforeRouteHook: null, filesystemRoots: [] }
+    return { onBeforeRouteHook: null, filesystemRoots: null }
   }
 
   // Old design

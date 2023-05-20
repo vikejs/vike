@@ -4,6 +4,7 @@ export { isInherited }
 export { getLocationId }
 export { sortAfterInheritanceOrder }
 export { isGlobalLocation }
+export { applyFilesystemRoutingRootEffect }
 
 import {
   assert,
@@ -151,4 +152,16 @@ function getRouteFilesystemDefinedBy(locationId: string) {
 function assertLocationId(locationId: string) {
   assert(locationId.startsWith('/') || isNpmPackageImportPath(locationId))
   assert(!locationId.endsWith('/') || locationId === '/')
+}
+
+function applyFilesystemRoutingRootEffect(
+  routeFilesystem: string,
+  filesystemRoutingRootEffect: { before: string; after: string }
+) {
+  const { before, after } = filesystemRoutingRootEffect
+  assert(after.startsWith('/'))
+  assert(routeFilesystem.startsWith(before))
+  routeFilesystem = after + '/' + routeFilesystem.slice(before.length)
+  routeFilesystem = '/' + routeFilesystem.split('/').filter(Boolean).join('/')
+  return routeFilesystem
 }

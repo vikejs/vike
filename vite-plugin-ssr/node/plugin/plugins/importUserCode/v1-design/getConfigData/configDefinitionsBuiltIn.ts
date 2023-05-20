@@ -47,7 +47,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: '_routing-env'
   },
   filesystemRoutingRoot: {
-    env: '_routing-env'
+    env: 'config-only'
   },
   client: {
     env: 'client-only'

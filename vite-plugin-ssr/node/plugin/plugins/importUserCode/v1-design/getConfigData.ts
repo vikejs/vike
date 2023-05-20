@@ -39,12 +39,13 @@ import { configDefinitionsBuiltIn, type ConfigDefinition } from './getConfigData
 import glob from 'fast-glob'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import {
-  getRouteFilesystem,
   getLocationId,
-  isInherited,
+  getRouteFilesystem,
   getRouteFilesystemDefinedBy,
+  isInherited,
   sortAfterInheritanceOrder,
-  isGlobalLocation
+  isGlobalLocation,
+  applyFilesystemRoutingRootEffect
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadConfigFile, transpileAndLoadValueFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
@@ -249,9 +250,6 @@ async function loadConfigData(
     Object.entries(interfaceFilesByLocationId)
       .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
       .map(async ([locationId]) => {
-        const routeFilesystem = getRouteFilesystem(locationId)
-        const routeFilesystemDefinedBy = getRouteFilesystemDefinedBy(locationId)
-
         const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
 
         const configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
@@ -284,14 +282,17 @@ async function loadConfigData(
 
         configElements = applyEffects(configElements, configDefinitionsRelevant)
 
-        const isErrorPage = determineIsErrorPage(routeFilesystem)
-
         Object.entries(configElements).forEach(([_configName, configElement]) => {
           const { configEnv, codeFilePath } = configElement
           if (configEnv === 'config-only' && codeFilePath) {
             configFilesAll.add(codeFilePath)
           }
         })
+
+        const { routeFilesystem, routeFilesystemDefinedBy, isErrorPage } = determineRouteFilesystem(
+          locationId,
+          configElements.filesystemRoutingRoot
+        )
 
         const entry: PageConfigData = {
           pageId: locationId,
@@ -1191,4 +1192,46 @@ function assertConfigExists(configName: string, configsDefined: string[], define
 function determineIsErrorPage(routeFilesystem: string) {
   assertPosixPath(routeFilesystem)
   return routeFilesystem.split('/').includes('_error')
+}
+
+function determineRouteFilesystem(locationId: string, configFilesystemRoutingEffect: undefined | ConfigElement) {
+  let routeFilesystem = getRouteFilesystem(locationId)
+  if (determineIsErrorPage(routeFilesystem)) {
+    return { isErrorPage: true, routeFilesystem: null, routeFilesystemDefinedBy: null }
+  }
+  let routeFilesystemDefinedBy = getRouteFilesystemDefinedBy(locationId) // for log404()
+  {
+    const fsRoutingRoot = getFilesystemRoutingRootEffect(configFilesystemRoutingEffect)
+    if (fsRoutingRoot) {
+      const { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt } = fsRoutingRoot
+      assert(routeFilesystem.startsWith(filesystemRoutingRootEffect.before), {
+        locationId,
+        routeFilesystem,
+        configFilesystemRoutingEffect
+      })
+      routeFilesystem = applyFilesystemRoutingRootEffect(routeFilesystem, filesystemRoutingRootEffect)
+      assert(filesystemRoutingRootDefinedAt.includes('export'))
+      routeFilesystemDefinedBy = `${routeFilesystemDefinedBy} + ${filesystemRoutingRootDefinedAt}`
+    }
+  }
+  assert(routeFilesystem.startsWith('/'))
+  return { routeFilesystem, routeFilesystemDefinedBy, isErrorPage: false }
+}
+function getFilesystemRoutingRootEffect(configFilesystemRoutingEffect: undefined | ConfigElement) {
+  if (!configFilesystemRoutingEffect) return null
+  assert(configFilesystemRoutingEffect.configEnv === 'config-only')
+  // Eagerly loaded since it's config-only
+  assert('configValue' in configFilesystemRoutingEffect)
+  const { configValue } = configFilesystemRoutingEffect
+  assertUsage(typeof configValue === 'string', `${configFilesystemRoutingEffect.configDefinedAt} should be a string`)
+  const { configDefinedAt } = configFilesystemRoutingEffect
+  assertUsage(
+    configValue.startsWith('/'),
+    `${configDefinedAt} is '${configValue}' but it should start with a leading slash '/'`
+  )
+  const { configDefinedByFile } = configFilesystemRoutingEffect
+  const before = getRouteFilesystem(getLocationId(configDefinedByFile))
+  const after = configValue
+  const filesystemRoutingRootEffect = { before, after }
+  return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt: configDefinedAt }
 }
