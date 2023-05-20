@@ -1,11 +1,13 @@
-export default onRenderClient
+export { render }
+export const clientRouting = true
+export const hydrationCanBeAborted = true
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { PageLayout } from './PageLayout'
 
 let root
-async function onRenderClient(pageContext) {
+async function render(pageContext) {
   const { Page, routeParams } = pageContext
 
   const page = (

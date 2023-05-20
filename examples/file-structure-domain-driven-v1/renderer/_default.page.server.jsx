@@ -1,11 +1,14 @@
-export default onRenderHtml
-
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { PageLayout } from './PageLayout'
 
-function onRenderHtml(pageContext) {
+export { render }
+export { passToClient }
+
+const passToClient = ['routeParams']
+
+function render(pageContext) {
   const { Page, routeParams } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>

@@ -1,7 +1,7 @@
-export default Page
-
 import React from 'react'
 
+export { Page }
+
 function Page() {
-  return <>About page</>
+  return <>Welcome</>
 }
