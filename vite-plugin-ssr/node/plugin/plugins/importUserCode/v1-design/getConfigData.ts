@@ -830,12 +830,10 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
     assertMetaValue(metaVal, getFilePathToShowToUser(interfaceFile.filePath))
     objectEntries(metaVal).forEach(([configName, configDefinition]) => {
       // User can override an existing config definition
-      const def = mergeConfigDefinition(
-        configDefinitions[configName] as ConfigDefinition | undefined,
-        configDefinition as ConfigDefinition
-      )
-
-      configDefinitions[configName] = def /* TODO: validate instead */ as any
+      configDefinitions[configName] = {
+        ...configDefinitions[configName],
+        ...configDefinition
+      }
     })
   })
   return configDefinitions
@@ -900,23 +898,7 @@ function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaV
   })
 }
 
-//function mergeConfigDefinition(def: ConfigDefinition, mods: Partial<ConfigDefinition>): ConfigDefinition
-function mergeConfigDefinition(
-  def: ConfigDefinition | undefined,
-  mods: Partial<ConfigDefinition>
-): Partial<ConfigDefinition>
-function mergeConfigDefinition(
-  def: ConfigDefinition | undefined,
-  mods: Partial<ConfigDefinition>
-): Partial<ConfigDefinition> {
-  return {
-    ...def,
-    ...mods
-  }
-}
-
 type ConfigElements = Record<string, ConfigElement>
-
 function applyEffects(configElements: ConfigElements, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef.effect) return
