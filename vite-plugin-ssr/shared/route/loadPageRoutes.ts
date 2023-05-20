@@ -70,7 +70,7 @@ function getPageRoutes(
               const allowSyncConfig = pageConfig.configElements.iKnowThePerformanceRisksOfAsyncRouteFunctions
               if (allowSyncConfig) {
                 const val = allowSyncConfig.configValue
-                assert(typeof val === 'boolean') // TODO: assertUsage()
+                assert(typeof val === 'boolean', `${allowSyncConfig.configDefinedAt} should be a boolean`)
                 allowAsync = val
               }
               pageRoute = {
