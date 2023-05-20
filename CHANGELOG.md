@@ -1,3 +1,20 @@
+## [0.4.126](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.125...v0.4.126) (2023-05-20)
+
+
+### Bug Fixes
+
+* [V1 design] catch extends infinite loop ([bf6a22a](https://github.com/brillout/vite-plugin-ssr/commit/bf6a22ac8018de9fd5a4c3277276ed22e27e226c))
+* [V1 design] don't assume meta effect() to target an existing config element ([cec8abb](https://github.com/brillout/vite-plugin-ssr/commit/cec8abb24eace0d98aa6fd05d5008314572cbd98))
+* [V1 design] fix configDefinedAt ([5f00714](https://github.com/brillout/vite-plugin-ssr/commit/5f00714028f278a4f06eee0cb2a7a5d406e908f3))
+* [V1 design] fix prerender config handling ([ee7ad7a](https://github.com/brillout/vite-plugin-ssr/commit/ee7ad7a519a25d4cc32471878f00fb6f24ecd4d8))
+* [V1 design] implement filesystemRoutingRoot ([d15142a](https://github.com/brillout/vite-plugin-ssr/commit/d15142a88903755dcb52d76e3c88ff7759b7b45c))
+* [V1 design] improve effect() implementation ([3363e1f](https://github.com/brillout/vite-plugin-ssr/commit/3363e1f6df017aa9e7ff825345073e0b6120ef52))
+* [V1 design] improve error message upon wrong config value type ([4d1be16](https://github.com/brillout/vite-plugin-ssr/commit/4d1be16c5ea6bf055666e9b52ceff3a5ae13b6a1))
+* be more loose in what interface files are considered global (fix [#897](https://github.com/brillout/vite-plugin-ssr/issues/897)) ([de7014f](https://github.com/brillout/vite-plugin-ssr/commit/de7014f1f94192251f3c5721805d8bbd159f2f8f))
+* make config inheritance more robust (fix [#897](https://github.com/brillout/vite-plugin-ssr/issues/897)) ([9fccc6f](https://github.com/brillout/vite-plugin-ssr/commit/9fccc6fd3716e31670406bc15ebf12ce42e33ecd))
+
+
+
 ## [0.4.125](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.124...v0.4.125) (2023-05-18)
 
 
