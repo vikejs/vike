@@ -280,7 +280,7 @@ async function loadConfigData(
             configElements[configName as ConfigNameBuiltIn] = configElement
           })
 
-        configElements = applyEffects(configElements, configDefinitionsRelevant)
+        applyEffects(configElements, configDefinitionsRelevant)
 
         Object.entries(configElements).forEach(([_configName, configElement]) => {
           const { configEnv, codeFilePath } = configElement
@@ -917,12 +917,7 @@ function mergeConfigDefinition(
 
 type ConfigElements = Record<string, ConfigElement>
 
-function applyEffects(
-  configElements: ConfigElements,
-  configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
-): ConfigElements {
-  const configElementsModified = { ...configElements }
-
+function applyEffects(configElements: ConfigElements, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef.effect) return
     assert(configDef.env === 'config-only')
@@ -935,37 +930,47 @@ function applyEffects(
       configDefinedAt
     })
     if (!configFromEffect) return
-    const configDefinedAtWithEffect = `${configDefinedAt} > effect()`
-    objectEntries(configFromEffect).forEach(([configName, configValue]) => {
-      if (configName === 'meta') {
-        assertMetaValue(configValue, configDefinedAtWithEffect)
-        objectEntries(configValue).forEach(([configTargetName, configTargetModValue]) => {
-          configElementsModified[configTargetName]!.configEnv = configTargetModValue.env
-        })
-      } else {
-        assertWarning(
-          false,
-          `${configDefinedAtWithEffect} is modifying a config value; this is an experimental functionality; reach out to a maintainer if you want to use this in production`,
-          { onlyOnce: true, showStackTrace: false }
-        )
-        assertConfigExists(configName, Object.keys(configDefinitionsRelevant), configDefinedAtWithEffect)
-        /* We're completely overriding any previous configElement
-        const configElementTargetOriginal = configElementsModified[configName]
-        */
-        const configDef = configDefinitionsRelevant[configName]
-        assert(configDef)
-        configElementsModified[configName] = {
-          configValue,
-          configEnv: configDef.env,
-          ...getConfigElementSource(configElement),
-          configDefinedAt: configDefinedAtWithEffect,
-          configDefinedByFile: configElement.configDefinedByFile
-        }
-      }
-    })
+    applyEffect(configFromEffect, configElement, configElements, configDefinitionsRelevant)
   })
-
-  return configElementsModified
+}
+function applyEffect(
+  configFromEffect: Record<string, Partial<ConfigDefinition>>,
+  configElement: ConfigElement,
+  configElements: ConfigElements,
+  configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
+) {
+  const configDefinedAtWithEffect = `${configElement.configDefinedAt} > effect()`
+  objectEntries(configFromEffect).forEach(([configName, configValue]) => {
+    if (configName === 'meta') {
+      assertMetaValue(configValue, configDefinedAtWithEffect)
+      objectEntries(configValue).forEach(([configTargetName, configTargetModValue]) => {
+        const keys = Object.keys(configTargetModValue)
+        assert(keys.includes('env'))
+        assert(keys.length === 1)
+        configElements[configTargetName]!.configEnv = configTargetModValue.env
+      })
+    } else {
+      // AFAIK we don't use this, nor do we need it?
+      assertWarning(
+        false,
+        `${configDefinedAtWithEffect} is modifying a config value; this is an experimental functionality; reach out to a maintainer if you want to use this in production`,
+        { onlyOnce: true, showStackTrace: false }
+      )
+      assertConfigExists(configName, Object.keys(configDefinitionsRelevant), configDefinedAtWithEffect)
+      /* We're completely overriding any previous configElement
+      const configElementTargetOriginal = configElements[configName]
+      */
+      const configDef = configDefinitionsRelevant[configName]
+      assert(configDef)
+      configElements[configName] = {
+        configValue,
+        configEnv: configDef.env,
+        ...getConfigElementSource(configElement),
+        configDefinedAt: configDefinedAtWithEffect,
+        configDefinedByFile: configElement.configDefinedByFile
+      }
+    }
+  })
 }
 function getConfigElementSource(configElement: ConfigElement): ConfigElementSource {
   const { plusConfigFilePath, codeFilePath, codeFileExport }: ConfigElementSource = configElement
