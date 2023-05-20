@@ -157,7 +157,7 @@ async function loadInterfaceFiles(
         filePathAbsolute: filePathAbsolute,
         filePathRelativeToUserRootDir: filePathRelativeToUserRootDir
       }
-      const { configFile, extendsConfigs } = await loadConfigFile(configFilePath, userRootDir)
+      const { configFile, extendsConfigs } = await loadConfigFile(configFilePath, userRootDir, [])
       const interfaceFile = getInterfaceFileFromConfigFile(configFile, false)
 
       const locationId = getLocationId(filePathRelativeToUserRootDir)
@@ -997,11 +997,16 @@ type ConfigFile = {
 
 async function loadConfigFile(
   configFilePath: FilePath,
-  userRootDir: string
+  userRootDir: string,
+  visited: string[]
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = configFilePath
+  assertNoInfiniteLoop(visited, filePathAbsolute)
   const { fileExports } = await transpileAndLoadConfigFile(filePathAbsolute, filePathRelativeToUserRootDir)
-  const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir)
+  const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir, [
+    ...visited,
+    filePathAbsolute
+  ])
 
   const configFile: ConfigFile = {
     fileExports,
@@ -1013,12 +1018,19 @@ async function loadConfigFile(
   }
   return { configFile, extendsConfigs }
 }
+function assertNoInfiniteLoop(visited: string[], filePathAbsolute: string) {
+  const idx = visited.indexOf(filePathAbsolute)
+  if (idx === -1) return
+  const loop = visited.slice(idx)
+  assert(loop[0] === filePathAbsolute)
+  assertUsage(idx === -1, `Infinite extends loop ${[...loop, filePathAbsolute].join('>')}`)
+}
 
-// TODO: avoid infinite loop
 async function loadExtendsConfigs(
   configFileExports: Record<string, unknown>,
   configFilePath: FilePath,
-  userRootDir: string
+  userRootDir: string,
+  visited: string[]
 ) {
   const extendsImportData = getExtendsImportData(configFileExports, configFilePath)
   const extendsConfigFiles: FilePath[] = []
@@ -1041,7 +1053,7 @@ async function loadExtendsConfigs(
   const extendsConfigs: ConfigFile[] = []
   await Promise.all(
     extendsConfigFiles.map(async (configFilePath) => {
-      const result = await loadConfigFile(configFilePath, userRootDir)
+      const result = await loadConfigFile(configFilePath, userRootDir, visited)
       extendsConfigs.push(result.configFile)
       extendsConfigs.push(...result.extendsConfigs)
     })
