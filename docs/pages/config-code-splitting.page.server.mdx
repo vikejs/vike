@@ -5,7 +5,7 @@ import { Link } from '@brillout/docpress'
 Vite-plugin-ssr extracts all import statements defined in `+config.js` files. For example, vite-plugin-ssr transforms this:
 
 ```js
-// /pages/some-page/+config.js
+// +config.js
 
 import Page from './some-file'
 import { onBeforeRender } from './some-other-file'
@@ -16,7 +16,7 @@ export default { Page, onBeforeRender }
 Into:
 
 ```js
-// /pages/some-page/+config.js
+// +config.js
 
 const Page = '_import:./some-file:default'
 const onBeforeRender = '_import:./some-other-file:onBeforeRender'
@@ -24,7 +24,7 @@ const onBeforeRender = '_import:./some-other-file:onBeforeRender'
 export default { Page, onBeforeRender }
 ```
 
-This allows vite-plugin-ssr to load code only when needed and only in the right environment. Consider this example:
+Allowing vite-plugin-ssr to load code in the right environment:
 
 ```js
 // +config.js
@@ -38,12 +38,12 @@ export default { onRenderHtml, onRenderClient }
 ```
 
 
-## Rule
+## Hooks code in `+config.js`
 
 Following is forbidden:
 
 ```js
-// /pages/some-page/+config.js
+// +config.js
 
 export default {
   Page() {
@@ -57,13 +57,13 @@ export default {
 
 Vite-plugin-ssr throws:
 ```
-[Wrong Usage] The code of config 'Page' cannot live inside /pages/some-page/+config.js
+[Wrong Usage] The code of config 'Page' cannot live inside +config.js
 ```
 
 Do this instead:
 
 ```js
-// /pages/some-page/+config.js
+// +config.js
 
 import Page from './some-file'
 import onBeforeRender from './some-other-file'
@@ -71,21 +71,43 @@ import onBeforeRender from './some-other-file'
 export default { Page, onBeforeRender }
 ```
 
-Also note that this is usually forbidden as well:
 
-```diff
-  // /pages/some-page/+config.js
+## Imports from same file
 
-- import Page from './some-file'
-- import onBeforeRender from './some-other-file'
-+ // Import Page and onBeforeRender from the same file
-+ import { Page, onBeforeRender } from './same-file'
+This is usually forbidden:
 
-  export default { Page, onBeforeRender }
+```js
+// +config.js
+
+// Importing from the same file
+import { Page, onBeforeRender } from './same-file'
+
+export default { Page, onBeforeRender }
 ```
 
-This is only allowed if `Page` and `onBeforeRender` live in the same environment which usually isn't the case:
- - By default, `Page` is loaded on the client-side as well as on the server-side.
- - By default, `onBeforeRender` is loaded only on the server-side.
+This is only allowed if `Page` and `onBeforeRender` live in the same environment (which usually isn't the case).
 
-> Importing `Page` and `onBeforeRender` from the same file is allowed if you use <Link text={<code>meta</code>} href="/meta" /> to align their environment.
+> By default, `Page` is loaded on the client- and server-side while `onBeforeRender` is loaded only on the server-side.
+> This means that importing `Page` and `onBeforeRender` from the same file is allowed only if <Link text={<code>meta</code>} href="/meta" /> is used in order to modify and align their environment.
+
+
+## Not re-exported imports
+
+If an imported value isn't exposed over `export default { ... }` then it isn't included in any runtime.
+
+```js
+// +config.js
+
+// These imports aren't included in runtimes.
+import { something } from './some-file'
+// This import has no effect. (CSS should be imported in runtime code such as +Page.js instead.)
+import './some.css'
+
+// This log is printed only when vite-plugin-ssr loads the +config.js file.
+// This log isn't included in neither the client runtime nor the server runtime.
+console.log(something) // Prints: '_import:./some-file:something'
+
+export default {
+  // `something` isn't re-exported here
+}
+```

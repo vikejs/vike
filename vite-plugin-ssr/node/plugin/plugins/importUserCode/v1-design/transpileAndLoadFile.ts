@@ -53,7 +53,7 @@ async function transpileAndLoadFile(
   let { code } = buildResult
   let fileImports: FileImport[] | null = null
   if (isPageConfig) {
-    const res = replaceImportStatements(code)
+    const res = replaceImportStatements(code, filePathRelativeToUserRootDir ?? filePathAbsolute)
     code = res.code
     fileImports = res.fileImports
   }
@@ -139,7 +139,7 @@ function assertFileImports(
     if (!isImportData(exportVal)) return
     const importData = exportVal
     fileImports.forEach((fileImport) => {
-      if (fileImport.data === importData) {
+      if (fileImport.importData === importData) {
         fileImport.isReExported = true
       }
     })
@@ -148,17 +148,19 @@ function assertFileImports(
   const fileImportsUnused = fileImports.filter((fi) => !fi.isReExported)
   if (fileImportsUnused.length === 0) return
 
-  const importStatements = unique(fileImportsUnused.map((fi) => fi.code))
+  const importStatements = unique(fileImportsUnused.map((fi) => fi.importCode))
   const importNamesUnused: string = fileImportsUnused.map((fi) => pc.cyan(fi.importVarName)).join(', ')
   const singular = fileImportsUnused.length === 1
   assertWarning(
     fileImportsUnused.length === 0,
     [
       `${filePath} imports the following:`,
-      ...importStatements.map((s) => `  ${s}`),
-      `The import${singular ? '' : 's'} ${importNamesUnused} ${singular ? "isn't" : "aren't"} re-exported at ${pc.cyan(
-        'export default { ... }'
-      )} but imports should always be re-exported, see https://vite-plugin-ssr.com/config-code-splitting`
+      ...importStatements.map((s) => pc.cyan(`  ${s}`)),
+      `But the import${singular ? '' : 's'} ${importNamesUnused} ${
+        singular ? "isn't" : "aren't"
+      } re-exported at ${pc.cyan('export default { ... }')} and therefore ${
+        singular ? 'has' : 'have'
+      } no effect, see explanation at https://vite-plugin-ssr.com/config-code-splitting`
     ].join('\n'),
     { onlyOnce: true, showStackTrace: false }
   )

@@ -8,14 +8,15 @@ export type { ImportData }
 
 import { parse } from 'acorn'
 import type { Program, Identifier } from 'estree'
-import { assert } from '../../../utils'
+import { assert, assertUsage, assertWarning, styleFileRE } from '../../../utils'
+import pc from '@brillout/picocolors'
 
 type FileImport = {
-  code: string
-  data: string
+  importCode: string
+  importData: string
   importVarName: string
 }
-function replaceImportStatements(code: string): { code: string; fileImports: FileImport[] } {
+function replaceImportStatements(code: string, filePath: string): { code: string; fileImports: FileImport[] } {
   const { body } = parse(code, {
     ecmaVersion: 'latest',
     sourceType: 'module'
@@ -35,6 +36,25 @@ function replaceImportStatements(code: string): { code: string; fileImports: Fil
 
     const importCode = code.slice(start, end)
 
+    // No variable imported
+    if (node.specifiers.length === 0) {
+      const isWarning = !styleFileRE.test(importPath)
+      let quote = indent(importCode)
+      if (isWarning) {
+        quote = pc.cyan(quote)
+      } else {
+        quote = pc.bold(pc.red(quote))
+      }
+      const errMsg = [
+        `As explained in https://vite-plugin-ssr.com/config-code-splitting the following import in ${filePath} has no effect:`,
+        quote
+      ].join('\n')
+      if (!isWarning) {
+        assertUsage(false, errMsg)
+      }
+      assertWarning(false, errMsg, { onlyOnce: true, showStackTrace: false })
+    }
+
     let replacement = ''
     node.specifiers.forEach((specifier) => {
       assert(specifier.type === 'ImportSpecifier' || specifier.type === 'ImportDefaultSpecifier')
@@ -50,12 +70,11 @@ function replaceImportStatements(code: string): { code: string; fileImports: Fil
       const importData = serializeImportData({ importPath, importName })
       replacement += `const ${importVarName} = '${importData}';`
       fileImports.push({
-        code: importCode,
-        data: importData,
+        importCode,
+        importData,
         importVarName
       })
     })
-    assert(replacement.length > 0)
 
     spliceOperations.push({
       start,
@@ -117,4 +136,13 @@ function spliceMany(str: string, operations: SpliceOperation[]): string {
   })
   strMod += str.slice(endPrev, str.length - 1)
   return strMod
+}
+
+function warn(importPath: string, filePath: string) {}
+
+function indent(str: string) {
+  return str
+    .split('\n')
+    .map((s) => `  ${s}`)
+    .join('\n')
 }
