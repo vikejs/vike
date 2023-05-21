@@ -1368,6 +1368,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      react-streaming:
+        specifier: ^0.3.11
+        version: 0.3.11(react-dom@18.2.0)(react@18.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.3
@@ -1398,6 +1401,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      react-streaming:
+        specifier: ^0.3.11
+        version: 0.3.11(react-dom@18.2.0)(react@18.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.3
@@ -10572,6 +10578,18 @@ packages:
 
   /react-streaming@0.3.10(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-Cf/aritzKGDUEBo+jpsNKlzkNBTmBM5gYM9jArPuoBqmckBikALYu7YvQbTHSG4kbpSitnoBIUH2005LAxknBQ==}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+    dependencies:
+      '@brillout/json-serializer': 0.5.3
+      isbot-fast: 1.2.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /react-streaming@0.3.11(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-WcSYY4vaw+Pi14sYZTjwT6eKO4kvIA7WKoPXEJ9SENDg70DOKAaBLaBxyRJFbqRv0p/NfOKcQkigOWDmvjN8yA==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
