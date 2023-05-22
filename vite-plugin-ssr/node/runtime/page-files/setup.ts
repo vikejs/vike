@@ -13,7 +13,7 @@ async function getPageFilesExports(): Promise<Record<string, unknown>> {
   assert(!globalContext.isProduction)
   const { viteDevServer } = globalContext
   assert(viteDevServer)
-  const result = await transpileaAndLoadModule(virtualFileIdImportUserCodeServer, viteDevServer)
+  const result = await transpileAndLoadModule(virtualFileIdImportUserCodeServer, viteDevServer)
   if ('transpileError' in result) {
     const { transpileError } = result
     debugGlob(`Glob error: ${virtualFileIdImportUserCodeServer} transpile error: `, transpileError.message)
@@ -24,7 +24,7 @@ async function getPageFilesExports(): Promise<Record<string, unknown>> {
   return result.moduleExports
 }
 
-async function transpileaAndLoadModule(
+async function transpileAndLoadModule(
   moduleId: string,
   viteDevServer: ViteDevServer
 ): Promise<{ moduleExports: Record<string, unknown> } | { transpileError: RollupError }> {
