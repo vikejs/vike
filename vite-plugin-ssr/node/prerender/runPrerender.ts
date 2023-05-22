@@ -32,7 +32,7 @@ import {
   prerender404Page,
   initPageContext
 } from '../runtime/renderPage/renderPageContext'
-import { blue, green, gray, cyan } from '@brillout/picocolors'
+import pc from '@brillout/picocolors'
 import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles'
 import { getGlobalContext, initGlobalContext } from '../runtime/globalContext'
@@ -153,7 +153,7 @@ async function runPrerender(options: PrerenderOptions): Promise<void> {
 
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
   if (logLevel === 'info') {
-    console.log(`${cyan(`vite-plugin-ssr v${projectInfo.projectVersion}`)} ${green('pre-rendering HTML...')}`)
+    console.log(`${pc.cyan(`vite-plugin-ssr v${projectInfo.projectVersion}`)} ${pc.green('pre-rendering HTML...')}`)
   }
 
   setNodeEnvToProduction()
@@ -204,7 +204,7 @@ async function runPrerender(options: PrerenderOptions): Promise<void> {
   await prerender404(htmlFiles, renderContext, prerenderContext)
 
   if (logLevel === 'info') {
-    console.log(`${green(`✓`)} ${htmlFiles.length} HTML documents pre-rendered.`)
+    console.log(`${pc.green(`✓`)} ${htmlFiles.length} HTML documents pre-rendered.`)
   }
 
   await Promise.all(
@@ -902,7 +902,7 @@ function write(
         if (!outDirClientRelative.endsWith('/')) {
           outDirClientRelative = outDirClientRelative + '/'
         }
-        console.log(`${gray(outDirClientRelative)}${blue(filePathRelative)}`)
+        console.log(`${pc.gray(outDirClientRelative)}${pc.blue(filePathRelative)}`)
       }
     }
   })

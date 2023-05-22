@@ -4,7 +4,7 @@ export { isTranspileError }
 // Copied & adapted from https://github.com/vitejs/vite/blob/9c114c5c72a6af87e3330d5573362554b4511265/packages/vite/src/node/server/middlewares/error.ts
 
 // import strip from 'strip-ansi'
-import colors from '@brillout/picocolors'
+import pc from '@brillout/picocolors'
 import { isObject } from '../utils'
 import type { ViteDevServer, Rollup } from 'vite'
 type RollupError = Rollup.RollupError
@@ -14,16 +14,16 @@ function isTranspileError(err: unknown): err is RollupError {
 }
 
 function buildErrorMessage(err: RollupError, args: string[] = [], includeStack = true): string {
-  if (err.plugin) args.push(`  Plugin: ${colors.magenta(err.plugin)}`)
+  if (err.plugin) args.push(`  Plugin: ${pc.magenta(err.plugin)}`)
   const loc = err.loc ? `:${err.loc.line}:${err.loc.column}` : ''
-  if (err.id) args.push(`  File: ${colors.cyan(err.id)}${loc}`)
-  if (err.frame) args.push(colors.yellow(pad(err.frame)))
+  if (err.id) args.push(`  File: ${pc.cyan(err.id)}${loc}`)
+  if (err.frame) args.push(pc.yellow(pad(err.frame)))
   if (includeStack && err.stack) args.push(pad(cleanStack(err.stack)))
   return args.join('\n')
 }
 
 function logTranspileError(server: ViteDevServer, err: RollupError): void {
-  const msg = buildErrorMessage(err, [colors.red(`Transpilation Error. ${err.message}`)])
+  const msg = buildErrorMessage(err, [pc.red(`Transpilation Error. ${err.message}`)])
 
   server.config.logger.error(msg, {
     clear: true,
