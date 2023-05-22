@@ -37,6 +37,7 @@ function serializePageConfigs(
     lines.push(`    configElements: {`)
     Object.entries(configElements).forEach(([configName, configElement]) => {
       // configNamesAll.add(configName)
+      if (configElement.configEnv === 'config-only') return
       const whitespace = '      '
       lines.push(serializeConfigElement(configElement, configName, importStatements, whitespace, false))
     })
@@ -97,7 +98,7 @@ function serializeConfigElement(
   eagerImport: boolean
 ) {
   if (configElement === null) return `${whitespace}['${configName}']: null,`
-  assert(/^\s+$/.test(whitespace))
+  assert(configElement.configEnv !== 'config-only')
   const lines: string[] = []
   lines.push(`${whitespace}['${configName}']: {`)
   const { configDefinedAt, configDefinedByFile, configEnv, codeFilePath, codeFileExport, plusConfigFilePath } =
