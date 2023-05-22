@@ -2489,8 +2489,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       '@brillout/release-me':
-        specifier: ^0.1.3
-        version: 0.1.3
+        specifier: ^0.1.6
+        version: 0.1.6
       '@types/estree':
         specifier: ^1.0.0
         version: 1.0.1
@@ -3107,8 +3107,8 @@ packages:
       semver: 7.5.0
     dev: false
 
-  /@brillout/release-me@0.1.3:
-    resolution: {integrity: sha512-W1nu8MhRhJ90mUjBXLEoZ+U1sx9xa/FpYodWjlv7rGbuNNqZKBT0nR9S19QQw8pa25zEGfkW62LTrrltL/+0JQ==}
+  /@brillout/release-me@0.1.6:
+    resolution: {integrity: sha512-EHwDLwd+Eseo0W7LmyLFdBJ5zsj69mJo/b54nkmkm13yd8rJ3b0IJI9yXBfr618PY71XjMmSjJH6FZ9zpsZb0Q==}
     hasBin: true
     dependencies:
       conventional-changelog: 3.1.25

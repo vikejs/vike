@@ -10,7 +10,7 @@
     "dev:node": "tsc --incremental --watch --project ./node/tsconfig.json",
     "dev:client": "tsc --incremental --watch --project ./client/tsconfig.json",
     "release": "release-me patch",
-    "release:draft": "release-me draft"
+    "release:commit": "release-me commit"
   },
   "dependencies": {
     "@brillout/import": "0.2.3",
@@ -140,7 +140,7 @@
   },
   "devDependencies": {
     "@brillout/part-regex": "^0.1.2",
-    "@brillout/release-me": "^0.1.3",
+    "@brillout/release-me": "^0.1.6",
     "@types/estree": "^1.0.0",
     "@types/jest": "^27.4.1",
     "@types/node": "^20.1.0",

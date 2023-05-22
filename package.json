@@ -30,7 +30,7 @@
     "bump": "bump-dependencies",
     "========= Release": "",
     "release": "cd vite-plugin-ssr/ && pnpm run release",
-    "release:draft": "cd vite-plugin-ssr/ && pnpm run release:draft",
+    "release:commit": "cd vite-plugin-ssr/ && pnpm run release:commit",
     "========= Clean": "",
     "// Remove all generated files": "",
     "clean": "git clean -Xdf",
