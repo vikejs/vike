@@ -21,7 +21,7 @@ type PageConfigData = {
   isErrorPage: boolean
   routeFilesystem: null | string
   routeFilesystemDefinedBy: null | string
-  configElements: Partial<Record<ConfigNameBuiltIn, ConfigElement>>
+  configElements: Record<string, ConfigElement>
 }
 type PageConfigLoaded = PageConfig & {
   configValues: Partial<Record<ConfigNameBuiltIn, unknown>>
