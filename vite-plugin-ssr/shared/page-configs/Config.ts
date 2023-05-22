@@ -10,7 +10,7 @@ import type { ConfigVpsUserProvided } from '../ConfigVps'
 import type { ConfigEnv } from './PageConfig'
 
 type ConfigNameBuiltIn =
-  | Exclude<keyof Config, keyof ConfigVpsUserProvided | 'onBeforeRoute' | 'onPrerenderStart' | 'meta'>
+  | Exclude<keyof Config, keyof ConfigVpsUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
   | 'prerender'
 
 /** Page configuration.

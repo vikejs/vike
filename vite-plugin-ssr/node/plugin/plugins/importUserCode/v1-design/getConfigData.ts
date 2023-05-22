@@ -1205,7 +1205,6 @@ function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
 
 function assertConfigExists(configName: string, configsDefined: string[], definedBy: string) {
   if (isGlobalConfig(configName)) return
-  if (configName === 'meta') return
   if (configsDefined.includes(configName)) return
   let errMsg = `${definedBy} defines an unknown config '${configName}'`
   const configNameSimilar = getMostSimilar(configName, configsDefined)

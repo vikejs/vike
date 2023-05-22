@@ -66,5 +66,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   extends: {
     env: 'config-only'
+  },
+  meta: {
+    env: 'config-only'
   }
 }
