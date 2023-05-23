@@ -352,6 +352,11 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Socket.IO',
+    url: '/socket-io'
+  },
+  {
+    level: 2,
     titleInNav: 'Other',
     title: 'Data Fetching Tools',
     url: '/data-fetching-tools'
