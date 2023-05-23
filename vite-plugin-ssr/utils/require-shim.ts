@@ -1,9 +1,14 @@
 export { addRequireShim }
+export { addRequireShim_setUserRootDir }
 
 import { assert } from './assert'
 import { isBrowser } from './isBrowser'
 import type moduleType from 'module'
 import { isVitest } from './isVitest'
+import { getGlobalObject } from './getGlobalObject'
+import { toPosixPath } from './filesystemPathHandling'
+import { pathJoin } from './path-shim'
+const globalObject = getGlobalObject<{ userRootDir?: string }>('utils/require-shim.ts', {})
 
 assert(!isBrowser())
 
@@ -46,10 +51,14 @@ function addRequireShim() {
           Error.prepareStackTrace = prepareStackTraceOrg
           const caller = stack[1]
           assert(caller)
-          const fileName = caller.getFileName()
+          let fileName = caller.getFileName()
           // fileName can be undefined when Vite evaluates code (the code then doesn't belong to a file on the filesystem):
-          //  - For example when the user tries to use require(): https//github.com/brillout/vite-plugin-ssr/issues/879
-          //  - I guess this can also happen when ssr.noExternal?
+          //  - When the user tries to use require(): https//github.com/brillout/vite-plugin-ssr/issues/879
+          //  - When ssr.noExternal: https://github.com/brillout/vps-mui/tree/reprod-2 (from https://github.com/brillout/vite-plugin-ssr/discussions/901#discussioncomment-5975978)
+          assert(fileName || fileName === undefined)
+          if (fileName === undefined) {
+            fileName = deriveFileName(caller)
+          }
           if (fileName === undefined) return undefined
           assert(fileName)
           callerFile = fileName
@@ -71,4 +80,17 @@ function assertRequireShim() {
   assert(require !== globalThis.require)
   assert(!('_isShimAddedByVitePluginSsr' in require))
   import('./require-shim-test')
+}
+
+function deriveFileName(caller: NodeJS.CallSite): string | undefined {
+  const { userRootDir } = globalObject
+  if (!userRootDir) return undefined
+  // evalOrigin is set by `# sourceURL=...` at https://github.com/vitejs/vite/blob/e3db7712657232fbb9ea2499a2c6f277d2bb96a3/packages/vite/src/node/ssr/ssrModuleLoader.ts#L225
+  let evalOrigin = caller.getEvalOrigin()
+  if (!evalOrigin) return undefined
+  evalOrigin = toPosixPath(evalOrigin)
+  return pathJoin(userRootDir, evalOrigin)
+}
+function addRequireShim_setUserRootDir(userRootDir: string) {
+  globalObject.userRootDir = userRootDir
 }

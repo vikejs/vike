@@ -1,6 +1,7 @@
 export { commonConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
+import { addRequireShim_setUserRootDir } from '../utils'
 import { assertRollupInput } from './buildConfig'
 
 function commonConfig(): Plugin[] {
@@ -12,7 +13,10 @@ function commonConfig(): Plugin[] {
         ssr: {
           external: ['vite-plugin-ssr', 'vite-plugin-ssr/server']
         }
-      })
+      }),
+      configResolved(config) {
+        addRequireShim_setUserRootDir(config.root)
+      }
     },
     {
       name: 'vite-plugin-ssr:commonConfig-2',
