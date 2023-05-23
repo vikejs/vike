@@ -433,7 +433,12 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Boostrap (Vanilla JS)',
+    title: 'MUI',
+    url: '/mui'
+  },
+  {
+    level: 2,
+    title: 'Boostrap',
     url: '/bootstrap'
   },
   {
