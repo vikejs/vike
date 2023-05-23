@@ -1,3 +1,6 @@
+// Alternative: use `ssrEmitAssets: true`
+//  - See https://github.com/vitejs/vite/pull/11430
+
 // This plugin makes client-side bundles include the CSS imports living in server-side-only code.
 //  - This is needed for HTML-only pages, and React Server Components.
 //  - We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=vps:extractAssets pnpm exec vite build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
