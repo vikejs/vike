@@ -21,14 +21,11 @@ function serializePageConfigs(
   const lines: string[] = []
   const importStatements: string[] = []
 
-  lines.push('export const pageConfigs = [];')
-  // const configNamesAll = new Set<string>()
-  pageConfigsData.forEach((pageConfig, i) => {
+  lines.push('export const pageConfigs = [')
+  pageConfigsData.forEach((pageConfig) => {
     const { pageId, routeFilesystem, routeFilesystemDefinedBy, configElements, isErrorPage } = pageConfig
     const virtualFileIdImportPageCode = getVirtualFileIdImportPageCode(pageId, isForClientSide)
-    const pageConfigVar = `pageConfig${i + 1}` // TODO: remove outdated & unncessary variable creation
-    lines.push(`{`)
-    lines.push(`  const ${pageConfigVar} = {`)
+    lines.push(`  {`)
     lines.push(`    pageId: ${JSON.stringify(pageId)},`)
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
@@ -36,16 +33,14 @@ function serializePageConfigs(
     lines.push(`    loadCodeFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`)
     lines.push(`    configElements: {`)
     Object.entries(configElements).forEach(([configName, configElement]) => {
-      // configNamesAll.add(configName)
       if (configElement.configEnv === 'config-only') return
       const whitespace = '      '
       lines.push(serializeConfigElement(configElement, configName, importStatements, whitespace, false))
     })
     lines.push(`    }`)
-    lines.push('  };')
-    lines.push(`  pageConfigs.push(${pageConfigVar})`)
-    lines.push(`}`)
+    lines.push(`  },`)
   })
+  lines.push('];')
 
   // Inject import statement to ensure that Vite adds config files to its module graph (which is needed in order for Vite to properly invalidate if a module imported by a config file is modified)
   if (isDev && !isForClientSide) {
@@ -78,12 +73,6 @@ function serializePageConfigs(
   } else {
     lines.push('export const invalidator = null;')
   }
-  // TODO: remove
-  // lines.push('import.meta.glob([')
-  // ;['config', ...configNamesAll].forEach((configName) => {
-  //   lines.push(`'/**/+${configName}.${scriptFileExtensions}',`)
-  // })
-  // lines.push(']);')
 
   const code = [...importStatements, ...lines].join('\n')
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
