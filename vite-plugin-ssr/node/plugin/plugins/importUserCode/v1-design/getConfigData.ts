@@ -187,12 +187,11 @@ async function loadInterfaceFiles(
         configNameDefault
       }
       {
-        const configDef = getConfigDefinition(
-          configDefinitionsBuiltIn,
-          configNameDefault,
-          interfaceFile.filePath.filePathRelativeToUserRootDir
-        )
-        if (configDef.env === 'config-only') {
+        // We don't have access to custom config definitions yet
+        //  - We load +someCustomConifg.js later
+        //  - But we do need to eagerly load +meta.js (to get all the custom config definitions)
+        const configDef = getConfigDefinitionOptional(configDefinitionsBuiltIn, configNameDefault)
+        if (configDef?.env === 'config-only') {
           await loadValueFile(interfaceFile, configNameDefault)
         }
       }
@@ -215,6 +214,12 @@ function getConfigDefinition(
   assertConfigExists(configName, Object.keys(configDefinitionsRelevant), definedByFile)
   assert(configDef)
   return configDef
+}
+function getConfigDefinitionOptional(
+  configDefinitions: Record<string, ConfigDefinition>,
+  configName: string
+): null | ConfigDefinition {
+  return configDefinitions[configName] ?? null
 }
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string) {
   const { filePathAbsolute } = interfaceValueFile.filePath
