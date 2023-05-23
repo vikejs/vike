@@ -187,8 +187,12 @@ async function loadInterfaceFiles(
         configNameDefault
       }
       {
-        const configDef = getConfigDef(configDefinitionsBuiltIn, configNameDefault)
-        if (configDef?.env === 'config-only') {
+        const configDef = getConfigDefinition(
+          configDefinitionsBuiltIn,
+          configNameDefault,
+          interfaceFile.filePath.filePathRelativeToUserRootDir
+        )
+        if (configDef.env === 'config-only') {
           await loadValueFile(interfaceFile, configNameDefault)
         }
       }
@@ -202,11 +206,15 @@ async function loadInterfaceFiles(
 
   return interfaceFilesByLocationId
 }
-function getConfigDef(
-  configDefinitions: Record<string, ConfigDefinition>,
-  configName: string
-): null | ConfigDefinition {
-  return configDefinitions[configName] ?? null
+function getConfigDefinition(
+  configDefinitionsRelevant: Record<string, ConfigDefinition>,
+  configName: string,
+  definedByFile: string
+): ConfigDefinition {
+  const configDef = configDefinitionsRelevant[configName]
+  assertConfigExists(configName, Object.keys(configDefinitionsRelevant), definedByFile)
+  assert(configDef)
+  return configDef
 }
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string) {
   const { filePathAbsolute } = interfaceValueFile.filePath
@@ -260,8 +268,11 @@ async function loadConfigData(
             if (!interfaceFile.isValueFile) return
             const { configNameDefault } = interfaceFile
             if (isGlobalConfig(configNameDefault)) return
-            const configDef = getConfigDef(configDefinitionsRelevant, configNameDefault)
-            assert(configDef, configNameDefault)
+            const configDef = getConfigDefinition(
+              configDefinitionsRelevant,
+              configNameDefault,
+              getFilePathToShowToUser(interfaceFile.filePath)
+            )
             if (configDef.env !== 'config-only') return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
@@ -305,6 +316,7 @@ async function loadConfigData(
       })
   )
 
+  // Populate configFilesAll
   Object.values(interfaceFilesByLocationId).forEach((interfaceFiles) => {
     interfaceFiles.forEach((interfaceFile) => {
       if (interfaceFile.isConfigFile) {
@@ -316,6 +328,7 @@ async function loadConfigData(
     })
   })
 
+  // Show error message upon unknown config
   Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
     const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
     const configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
@@ -941,12 +954,10 @@ function applyEffect(
         `${configDefinedAtWithEffect} is modifying a config value; this is an experimental functionality; reach out to a maintainer if you want to use this in production`,
         { onlyOnce: true, showStackTrace: false }
       )
-      assertConfigExists(configName, Object.keys(configDefinitionsRelevant), configDefinedAtWithEffect)
       /* We're completely overriding any previous configElement
       const configElementTargetOriginal = configElements[configName]
       */
-      const configDef = configDefinitionsRelevant[configName]
-      assert(configDef)
+      const configDef = getConfigDefinition(configDefinitionsRelevant, configName, configDefinedAtWithEffect)
       configElements[configName] = {
         configValue,
         configEnv: configDef.env,
@@ -1203,10 +1214,10 @@ function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
   return arrayIncludes(configNamesGlobal, configName)
 }
 
-function assertConfigExists(configName: string, configsDefined: string[], definedBy: string) {
+function assertConfigExists(configName: string, configsDefined: string[], definedByFile: string) {
   if (isGlobalConfig(configName)) return
   if (configsDefined.includes(configName)) return
-  let errMsg = `${definedBy} defines an unknown config '${configName}'`
+  let errMsg = `${definedByFile} defines an unknown config '${configName}'`
   const configNameSimilar = getMostSimilar(configName, configsDefined)
   if (configNameSimilar) {
     assert(configNameSimilar !== configName)
