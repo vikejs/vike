@@ -54,7 +54,7 @@ function addRequireShim() {
           let fileName = caller.getFileName()
           // fileName can be undefined when Vite evaluates code (the code then doesn't belong to a file on the filesystem):
           //  - When the user tries to use require(): https//github.com/brillout/vite-plugin-ssr/issues/879
-          //  - When ssr.noExternal: https://github.com/brillout/vps-mui/tree/reprod-2 (see https://github.com/brillout/vite-plugin-ssr/discussions/901#discussioncomment-5975978 for more context)
+          //  - When using ssr.noExternal: https://github.com/brillout/vps-mui/tree/reprod-2 - see https://github.com/brillout/vite-plugin-ssr/discussions/901#discussioncomment-5975978
           assert(fileName || fileName === undefined)
           if (fileName === undefined) {
             fileName = deriveFileName(caller)
@@ -86,7 +86,7 @@ function deriveFileName(caller: NodeJS.CallSite): string | undefined {
   const { userRootDir } = globalObject
   if (!userRootDir) return undefined
   // evalOrigin is set by `# sourceURL=...` at https://github.com/vitejs/vite/blob/e3db7712657232fbb9ea2499a2c6f277d2bb96a3/packages/vite/src/node/ssr/ssrModuleLoader.ts#L225
-  //  - We (wrongfully?) assume that the eval is done by Vite. If that assumption is wrong then check whether the caller's filename matches /node_modules/vite/dist/node/chunks/dep-0bae2027.js
+  //  - We (wrongfully?) assume that the eval is done by Vite. If that assumption is wrong then check whether the parent caller's filename matches /node_modules/vite/dist/node/chunks/dep-0bae2027.js
   let evalOrigin = caller.getEvalOrigin()
   if (!evalOrigin) return undefined
   evalOrigin = toPosixPath(evalOrigin)
