@@ -6,7 +6,7 @@ import { isBrowser } from './isBrowser'
 import type moduleType from 'module'
 import { isVitest } from './isVitest'
 import { getGlobalObject } from './getGlobalObject'
-import { toPosixPath } from './filesystemPathHandling'
+import { assertPosixPath, toPosixPath } from './filesystemPathHandling'
 import { pathJoin } from './path-shim'
 const globalObject = getGlobalObject<{ userRootDir?: string }>('utils/require-shim.ts', {})
 
@@ -86,9 +86,11 @@ function deriveFileName(caller: NodeJS.CallSite): string | undefined {
   const { userRootDir } = globalObject
   if (!userRootDir) return undefined
   // evalOrigin is set by `# sourceURL=...` at https://github.com/vitejs/vite/blob/e3db7712657232fbb9ea2499a2c6f277d2bb96a3/packages/vite/src/node/ssr/ssrModuleLoader.ts#L225
+  //  - We (wrongfully?) assume that the eval is done by Vite. If that assumption is wrong then check whether the caller's filename matches /node_modules/vite/dist/node/chunks/dep-0bae2027.js
   let evalOrigin = caller.getEvalOrigin()
   if (!evalOrigin) return undefined
   evalOrigin = toPosixPath(evalOrigin)
+  assertPosixPath(userRootDir)
   return pathJoin(userRootDir, evalOrigin)
 }
 function addRequireShim_setUserRootDir(userRootDir: string) {
