@@ -1,0 +1,93 @@
+import { Link } from '@brillout/docpress'
+import HeaderFileIntro from '../components/HeaderFileIntro.mdx'
+
+> `+config.h.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
+
+<HeaderFileIntro />
+
+This allows vite-plugin-ssr to load code in the right environment:
+
+```js
+// +config.h.js
+
+// onRenderClient() should be loaded only on the client-side
+import onRenderClient from './some-other-module'
+// onRenderHtml() should be loaded only on the server-side
+import onRenderHtml from './some-module'
+
+export default { onRenderHtml, onRenderClient }
+```
+
+## Inline hooks code
+
+Following is forbidden:
+
+```js
+// /pages/some-page/+config.h.js
+
+export default {
+  Page() {
+    // ...
+  },
+  onBeforeRender() {
+    // ...
+  }
+}
+```
+
+Vite-plugin-ssr throws:
+```
+[Wrong Usage] The code of config 'Page' cannot live inside /pages/some-page/+config.h.js
+```
+
+Do this instead:
+
+```js
+// /pages/some-page/+config.h.js
+
+import Page from './some-file'
+import onBeforeRender from './some-other-file'
+
+export default { Page, onBeforeRender }
+```
+
+
+## Imports from same file
+
+This is usually forbidden:
+
+```js
+// /pages/some-page/+config.h.js
+
+// Importing from the same file
+import { Page, onBeforeRender } from './same-file'
+
+export default { Page, onBeforeRender }
+```
+
+This is only allowed if `Page` and `onBeforeRender` live in the same environment (which usually isn't the case).
+
+> By default, `Page` is loaded on the client- and server-side while `onBeforeRender` is loaded only on the server-side.
+> This means that importing `Page` and `onBeforeRender` from the same file is allowed only if <Link text={<code>meta</code>} href="/meta" /> is used in order to modify and align their environment.
+
+
+## Not re-exported imports
+
+If an imported value isn't exposed over `export default { ... }` then it isn't included in any runtime.
+
+```js
+// +config.h.js
+
+// These imports aren't included in runtimes.
+import { something } from './some-file'
+// This import has no effect. (CSS should be imported in runtime code such as +Page.js instead.)
+import './some.css'
+
+// This log is printed only when vite-plugin-ssr loads the +config.h.js file.
+// This log isn't included in neither the client runtime nor the server runtime.
+console.log(something) // Prints: '_path:./some-file:something'
+
+export default {
+  // `something` isn't re-exported here
+}
+```

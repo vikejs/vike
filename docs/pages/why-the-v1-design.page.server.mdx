@@ -3,7 +3,7 @@ import { Link } from '@brillout/docpress'
 The <Link text="V1 design" href="/migration/v1-design" /> adds new foundational capabilities. For example, it enables you to create <Link text="custom configs" href="/meta" /> such as `ssr: boolean`.
 
 ```js
-// /pages/admin/+config.js
+// /pages/admin/+config.h.js
 
 export default {
   // Render the Admin Panel as SPA
@@ -16,7 +16,7 @@ export default {
 You'll even be able to choose and switch renderers on a page-by-page basis:
 
 ```js
-// /pages/admin/+config.js
+// /pages/admin/+config.h.js
 
 import graphqlRenderer from 'vike-react-relay'
 
@@ -29,7 +29,7 @@ export default {
 > Vite-plugin-ssr is going to be [renamed to Vike](https://github.com/brillout/vite-plugin-ssr/issues/736).
 
 ```js
-// /pages/product/@id/+config.js
+// /pages/product/@id/+config.h.js
 
 import rpc from 'vike-react-telefunc'
 
@@ -40,7 +40,7 @@ export default {
 ```
 
 ```js
-// /pages/live-ticker/+config.js
+// /pages/live-ticker/+config.h.js
 
 import solid from 'vike-solid'
 

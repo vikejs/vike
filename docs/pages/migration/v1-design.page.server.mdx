@@ -2,7 +2,7 @@ import { Link, Note } from '@brillout/docpress'
 
 <Note type='warning'>The V1 design is in beta.</Note>
 
-The overall architecture stays the same: the V1 design only replaces `.page.js` files with `+` files: `+config.js`, `+Page.js`, `+route.js`, ...
+The overall architecture stays the same: the V1 design only replaces `.page.js` files with `+` files: `+config.h.js`, `+Page.js`, `+route.js`, ...
 
 Despite being simple, the change adds foundational features. If you're curious: <Link href="/why-the-v1-design" />
 
@@ -51,7 +51,7 @@ If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 ```
 
 ```diff
-+ // /renderer/+config.js
++ // /renderer/+config.h.js
 + 
 + export default {
 +   passToClient: ['pageProps']
@@ -59,11 +59,11 @@ If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 ```
 
 
-> See <Link href="/config" /> for more information about `+` files.
+> See <Link href="/config" /> for more information about what `+` and `.h.js` means.
 
 > The suffixes such as `.page.server.js` and `.page.client.js` don't exist anymore. After the feature request [#744](https://github.com/brillout/vite-plugin-ssr/issues/744) is implemented, you'll be able to use `.server.js` and `.client.js` suffixes again but note that they'll serve another purpose.
 
-Move `/renderer/` configurations to `/renderer/+config.ts`:
+Move `/renderer/` configurations to `/renderer/+config.h.ts`:
 
 ```diff
 - // /renderer/_default.page.client.ts
@@ -73,7 +73,7 @@ Move `/renderer/` configurations to `/renderer/+config.ts`:
 ```
 
 ```ts
-// /renderer/+config.ts
+// /renderer/+config.h.ts
 
 import type { Config } from 'vite-plugin-ssr/types'
 
@@ -199,7 +199,7 @@ Old name | New name
 - export const doNotPrerender = true
 ```
 ```diff
-// /pages/news/+config.js
+// /pages/news/+config.h.js
 
   export default {
 +   prerender: false
@@ -214,7 +214,7 @@ If you use <Link text="custom hooks/exports" href="/exports" />, then replace th
 You define custom configs by using `meta`:
 
 ```ts
-// /renderer/+config.ts
+// /renderer/+config.h.ts
 
 import type { Config } from 'vite-plugin-ssr/types'
 
@@ -245,7 +245,7 @@ export default function(pageContext) {
 ```
 
 ```js
-// /pages/about/+config.js
+// /pages/about/+config.h.js
 
 export default {
   title: 'Demo showcasing the V1 design'
@@ -254,7 +254,7 @@ export default {
 
 See:
  - <Link href="#examples" />
- - [Advanced example of implementing `config.renderMode`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/render-modes-v1/renderer/%2Bconfig.ts#L9)
+ - [Advanced example of implementing `config.renderMode`](https://github.com/brillout/vite-plugin-ssr/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/render-modes-v1/renderer/+config.h.ts#L10-L24)
 
 
 ## `onBeforeRender` in `.page.js`
@@ -262,7 +262,7 @@ See:
 If you've defined `onBeforeRender()` hooks in `.page.js` (instead of `.page.server.js`):
 
 ```ts
-// /renderer/+config.ts
+// /renderer/+config.h.ts
 
 import type { Config } from 'vite-plugin-ssr/types'
 
@@ -277,7 +277,7 @@ export default {
 } satisfies Config
 ```
 
-For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> in order to [create a new config `onBeforeRenderIsomorph: boolean`](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/renderer/+config.ts#L12-L31) for a [page-per-page toggle](https://github.com/brillout/vite-plugin-ssr/blob/79c2d9d614240160fa9f60f08dfd2b33cc5b3a27/examples/react-full-v1/pages/star-wars/%40id/%2BonBeforeRenderIsomorph.ts).
+For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> in order to [create a new config `onBeforeRenderIsomorph: boolean`](https://github.com/brillout/vite-plugin-ssr/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/renderer/+config.h.ts#L14-L33) for a [page-per-page toggle](https://github.com/brillout/vite-plugin-ssr/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts).
 
 
 ## Client init code
@@ -287,7 +287,7 @@ The new config <Link text={<code>client</code>} href="/client" /> allows you to 
 > You can also keep using <Link text={<code>onHydrationEnd()</code>} href="/clientRouting#usage-options" />.
 
 ```js
-// +config.js
+// +config.h.js
 export default {
   client: './some-client-code.js'
 }
@@ -303,7 +303,7 @@ console.log("I'm run when the client-side JavaScript is loaded.")
  - [#578 [RFC] V1 Design](https://github.com/brillout/vite-plugin-ssr/issues/578)
  - <Link href="/why-the-v1-design" />
  - <Link href="/config" />
- - <Link href="/config-code-splitting" />
+ - <Link href="/header-file" />
  - <Link href="/Config" />
  - <Link href="/renderers" />
  - <Link href="/architecture" />

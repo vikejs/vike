@@ -859,7 +859,7 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: (
       <>
-        <code>+config.js</code> code splitting
+        <code>+config.h.js</code> code splitting
       </>
     ),
     url: '/config-code-splitting'
@@ -967,7 +967,7 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/meta'
   },
   {
-    title: <code>+config.js</code>,
+    title: <code>+config.h.js</code>,
     url: '/config'
   },
   {
@@ -1006,5 +1006,9 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: <code>extends</code>,
     url: '/extends'
+  },
+  {
+    title: <>JavaScript header file (<code>.h.js</code>)</>,
+    url: '/header-file'
   }
 ]

@@ -1,0 +1,26 @@
+Vite-plugin-ssr transforms this:
+
+```js
+// /pages/some-page/+config.h.js
+
+import Page from './some-file'
+import onBeforeRender from './some-other-file'
+
+export default {
+  Page,
+  onBeforeRender
+}
+```
+
+To a file equivalent to:
+
+```js
+// /pages/some-page/+config.js
+
+export default {
+  PagePath: './some-file.js',
+  onBeforeRenderPath: './some-other-file.js',
+}
+```
+
+> `.h.js` is optional syntatic sugar for improved IntelliSense (go-to-definition, auto-import, type-safety, ...). It's only meant for config files (i.e. any `.h.js` file should be a `+config.h.js` file).

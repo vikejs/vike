@@ -1,18 +1,19 @@
 import { Link } from '@brillout/docpress'
+import HeaderFileIntro from '../components/HeaderFileIntro.mdx'
 
 Environment: Build-time
 
-> The `+config.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
+> `+config.h.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
 
-> For the list of configurations, see <Link href="/Config" /> instead.
+> For the exhaustive list of configurations, see <Link href="/Config" /> instead.
 
 
-## `+config.js` files
+## `+config.h.js` files
 
-The `+config.js` files define the interface between your app and vite-plugin-ssr.
+The `+config.h.js` files define the interface between your app and vite-plugin-ssr.
 
 ```js
-// /pages/about/+config.js
+// /pages/about/+config.h.js
 
 // Define a new page with URL /about
 import { Page } from './Page'
@@ -27,7 +28,7 @@ export default () => <>Vite-plugin-ssr Demo</>
 > The URL `/about` is determined by <Link text="Filesystem Routing" href="/filesystem-routing" />.
 
 ```js
-// /pages/product/+config.ts
+// /pages/product/+config.h.ts
 
 import Page from './Page'
 import type { Config } from 'vite-plugin-ssr/types'
@@ -45,9 +46,16 @@ export default {
 export default pageContext => <>Information about product {pageContext.routeParams.id}</>
 ```
 
+## `+config.h.js` VS `+config.js`
+
+<HeaderFileIntro />
+
+See also:
+ - <Link href="/header-file" />
+
 ## Other `+` files
 
-For convenience, you can define `+Page.js` and `+route.js` instead of `+config.js`:
+For convenience, you can define `+Page.js` and `+route.js` instead of `+config.h.js`:
 
 ```js
 // /pages/product/+route.js
@@ -64,7 +72,7 @@ Which is equivalent to:
 
 
 ```js
-// /pages/product/+config.js
+// /pages/product/+config.h.js
 
 import Page from './Page.jsx'
 
@@ -82,10 +90,10 @@ export default pageContext => <>Information about product {pageContext.routePara
 
 ## Overridable defaults
 
-You can use `+config.js` to define default values for all (or only a group of) pages.
+You can use `+config.h.js` to define default values for all (or only a group of) pages.
 
 ```js
-// /pages/+config.js
+// /pages/+config.h.js
 
 // Defaults for all pages
 export default {
@@ -96,10 +104,10 @@ export default {
 
 > `config.title` is a custom config, see <Link href="/meta" />.
 
-The `+config.js` file of pages (`/pages/some-page/+config.js`) can override default values defined by `/pages/+config.js`.
+The `+config.h.js` file of pages (`/pages/some-page/+config.h.js`) can override default values defined by `/pages/+config.h.js`.
 
 ```js
-// /pages/about/+config.js
+// /pages/about/+config.h.js
 
 export default {
   // We override the <title> value
@@ -112,17 +120,17 @@ You can also define default values only for a group of pages. As shown, for exam
 
 ## `renderer/`
 
-`/renderer/+config.js` is equivalent to `/pages/+config.js`: the `renderer/` directory is just an (optional) convenience for having renderer files live outside of `pages/` (instead of cluttering the `pages/` directory).
+`/renderer/+config.h.js` is equivalent to `/pages/+config.h.js`: the `renderer/` directory is just an (optional) convenience for having renderer files live outside of `pages/` (instead of cluttering the `pages/` directory).
 
 > The `renderer/` directory is usually used by users who don't use any <Link text="built-in renderer" href="/renderers" />.
 
 
 ## Build-time
 
-All `+config.js` files are loaded at build-time:
+All `+config.h.js` files are loaded at build-time:
 
 ```js
-// /pages/some-page/+config.js
+// /pages/some-page/+config.h.js
 
 import Page from './Page.js'
 
@@ -137,4 +145,4 @@ export default {
 }
 ```
 
-The server and client runtimes don't include the code of `+config.js` files but do include the code of config values. To understand why see <Link href="/config-code-splitting" />.
+The server and client runtimes don't include the code of `+config.h.js` files but do include the imported code. To understand why see <Link href="/header-file" />.
