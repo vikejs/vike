@@ -7,13 +7,11 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
-    expect(html).toContain('<h1>Vite-plugin-ssr + Stem React</h1>')
+    expect(html).toContain('<li>Rendered to HTML.</li>')
   })
 
   test('page is rendered to the DOM and interactive', async () => {
     await page.goto(getServerUrl() + '/')
-    expect(await page.textContent('h1')).toBe('Vite-plugin-ssr + Stem React')
-
     // Interactive button
     expect(await page.textContent('button')).toBe('Counter 0')
     // `autoRetry` because browser-side code may not be loaded yet
@@ -36,7 +34,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     expect(html.split('_pageId').length).toBe(2)
     expect(html).toContain('"_pageId":"/pages/')
     expect(html).not.toContain('"_pageId":"/pages/star-wars')
-    expect(html).toContain('"_pageId":"/pages/index/index"')
+    expect(html).toContain('"_pageId":"/pages/index')
   })
 
   test('data fetching page, HTML', async () => {
