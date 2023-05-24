@@ -2,11 +2,10 @@
 
 export { serializePageConfigs }
 
-import { assert, assertUsage, isNpmPackageImportPath, objectEntries } from '../../../utils'
+import { assert, assertUsage, objectEntries } from '../../../utils'
 import type { ConfigElement, PageConfigData, PageConfigGlobalData } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
 import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files/virtualFileImportPageCode'
-import { getInvalidator } from './invalidation'
 import { debug } from './debug'
 import { stringify } from '@brillout/json-serializer/stringify'
 
@@ -16,7 +15,6 @@ function serializePageConfigs(
   isForClientSide: boolean,
   isDev: boolean,
   id: string,
-  configFilesAll: Set<string>
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
@@ -42,18 +40,6 @@ function serializePageConfigs(
   })
   lines.push('];')
 
-  // Inject import statement to ensure that Vite adds config files to its module graph (which is needed in order for Vite to properly invalidate if a module imported by a config file is modified)
-  if (isDev && !isForClientSide) {
-    Array.from(configFilesAll).forEach((configFile) => {
-      // TODO: remove
-      if (!configFile.startsWith('/')) return
-
-      assert(configFile.startsWith('/') || isNpmPackageImportPath(configFile), configFile)
-      const { importStatement } = generateEagerImport(configFile)
-      importStatements.push(importStatement)
-    })
-  }
-
   lines.push('export const pageConfigGlobal = {')
   objectEntries(pageConfigGlobal).forEach(([configName, configElement]) => {
     if (configName === 'onBeforeRoute') {
@@ -67,12 +53,6 @@ function serializePageConfigs(
     lines.push(serializeConfigElement(configElement, configName, importStatements, whitespace, true))
   })
   lines.push('};')
-
-  if (isDev) {
-    lines.push(getInvalidator(isDev))
-  } else {
-    lines.push('export const invalidator = null;')
-  }
 
   const code = [...importStatements, ...lines].join('\n')
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)

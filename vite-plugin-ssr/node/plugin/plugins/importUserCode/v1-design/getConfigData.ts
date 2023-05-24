@@ -1,4 +1,7 @@
 export { getConfigData }
+export { getConfigData_invalidate }
+export { getConfigData_dependenciesInvisibleToVite }
+export type { FilePath }
 
 // TODO
 //  - refactor virtual module HMR invalidation
@@ -47,7 +50,7 @@ import {
   isGlobalLocation,
   applyFilesystemRoutingRootEffect
 } from './getConfigData/filesystemRouting'
-import { transpileAndLoadConfigFile, transpileAndLoadValueFile } from './transpileAndLoadFile'
+import { transpileAndLoadFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
 
 assertIsVitePluginCode()
@@ -78,10 +81,9 @@ type ConfigData = {
   pageConfigsData: PageConfigData[]
   pageConfigGlobal: PageConfigGlobalData
   vikeConfig: Record<string, unknown>
-  configFilesAll: Set<string>
 }
 let configDataPromise: Promise<ConfigData> | null = null
-let isFirstInvalidation = true
+let getConfigData_dependenciesInvisibleToVite: Set<string> = new Set()
 
 type ConfigDefinitionsIncludingCustom = Record<string, ConfigDefinition>
 
@@ -111,22 +113,12 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition>
   baseServer: { env: 'config-only' }
 }
 
-function getConfigData(
-  userRootDir: string,
-  isDev: boolean,
-  invalidate: boolean,
-  extensions: ExtensionResolved[]
-): Promise<ConfigData> {
-  let force = false
-  if (invalidate) {
-    assert([true, false].includes(isFirstInvalidation))
-    if (isFirstInvalidation) {
-      isFirstInvalidation = false
-    } else {
-      force = true
-    }
-  }
-  if (!configDataPromise || force) {
+function getConfigData_invalidate() {
+  configDataPromise = null
+  getConfigData_dependenciesInvisibleToVite = new Set()
+}
+function getConfigData(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]): Promise<ConfigData> {
+  if (!configDataPromise) {
     configDataPromise = loadConfigData(userRootDir, isDev, extensions)
   }
   return configDataPromise
@@ -222,8 +214,7 @@ function getConfigDefinitionOptional(
   return configDefinitions[configName] ?? null
 }
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string) {
-  const { filePathAbsolute } = interfaceValueFile.filePath
-  const { fileExports } = await transpileAndLoadValueFile(filePathAbsolute)
+  const { fileExports } = await transpileAndLoadFile(interfaceValueFile.filePath, false)
   assertDefaultExportUnknown(fileExports, getFilePathToShowToUser(interfaceValueFile.filePath))
   Object.entries(fileExports).forEach(([configName, configValue]) => {
     if (configName === 'default') {
@@ -258,7 +249,6 @@ async function loadConfigData(
 
   const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(interfaceFilesByLocationId, userRootDir)
 
-  const configFilesAll: Set<string> = new Set()
   const pageConfigsData: PageConfigData[] = await Promise.all(
     Object.entries(interfaceFilesByLocationId)
       .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
@@ -298,13 +288,6 @@ async function loadConfigData(
 
         applyEffects(configElements, configDefinitionsRelevant)
 
-        Object.entries(configElements).forEach(([_configName, configElement]) => {
-          const { configEnv, codeFilePath } = configElement
-          if (configEnv === 'config-only' && codeFilePath) {
-            configFilesAll.add(codeFilePath)
-          }
-        })
-
         const { routeFilesystem, routeFilesystemDefinedBy, isErrorPage } = determineRouteFilesystem(
           locationId,
           configElements.filesystemRoutingRoot
@@ -321,18 +304,6 @@ async function loadConfigData(
       })
   )
 
-  // Populate configFilesAll
-  Object.values(interfaceFilesByLocationId).forEach((interfaceFiles) => {
-    interfaceFiles.forEach((interfaceFile) => {
-      if (interfaceFile.isConfigFile) {
-        const { filePathRelativeToUserRootDir } = interfaceFile.filePath
-        if (filePathRelativeToUserRootDir) {
-          configFilesAll.add(filePathRelativeToUserRootDir)
-        }
-      }
-    })
-  })
-
   // Show error message upon unknown config
   Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
     const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
@@ -347,8 +318,7 @@ async function loadConfigData(
       })
     })
   })
-
-  return { pageConfigsData, pageConfigGlobal, vikeConfig, configFilesAll }
+  return { pageConfigsData, pageConfigGlobal, vikeConfig }
 }
 
 function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
@@ -1018,7 +988,7 @@ async function loadConfigFile(
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = configFilePath
   assertNoInfiniteLoop(visited, filePathAbsolute)
-  const { fileExports } = await transpileAndLoadConfigFile(filePathAbsolute, filePathRelativeToUserRootDir)
+  const { fileExports } = await transpileAndLoadFile(configFilePath, true)
   const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir, [
     ...visited,
     filePathAbsolute

@@ -11,7 +11,7 @@ async function determineOptimizeDepsEntries(config: ResolvedConfig, isDev: boole
 
   // V1 design
   {
-    const { pageConfigsData } = await getConfigData(config.root, true, false, (await getConfigVps(config)).extensions)
+    const { pageConfigsData } = await getConfigData(config.root, true, (await getConfigVps(config)).extensions)
     pageConfigsData.forEach((data) => {
       Object.values(data.configElements).forEach((configElement) => {
         const { codeFilePath, configEnv } = configElement

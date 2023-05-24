@@ -59,7 +59,7 @@ function buildConfig(): Plugin {
 
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const pageFileEntries = await getPageFileEntries(config) // TODO/v1-release: remove
-  const { pageConfigsData } = await getConfigData(config.root, false, false, (await getConfigVps(config)).extensions)
+  const { pageConfigsData } = await getConfigData(config.root, false, (await getConfigVps(config)).extensions)
   assertUsage(
     Object.keys(pageFileEntries).length !== 0 || pageConfigsData.length !== 0,
     'At least one page should be defined, see https://vite-plugin-ssr.com/add'

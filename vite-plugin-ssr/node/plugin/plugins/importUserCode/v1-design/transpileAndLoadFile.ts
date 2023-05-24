@@ -1,5 +1,4 @@
-export { transpileAndLoadConfigFile }
-export { transpileAndLoadValueFile }
+export { transpileAndLoadFile }
 
 import esbuild, { type BuildResult, type BuildOptions } from 'esbuild'
 import fs from 'fs'
@@ -16,39 +15,16 @@ import {
   assertWarning
 } from '../../../utils'
 import { isImportData, replaceImportStatements, type FileImport } from './replaceImportStatements'
+import { getConfigData_dependenciesInvisibleToVite, type FilePath } from './getConfigData'
 
 assertIsVitePluginCode()
 
 type Result = { fileExports: Record<string, unknown> }
 
-async function transpileAndLoadConfigFile(
-  filePathAbsolute: string,
-  filePathRelativeToUserRootDir: string | null
-): Promise<Result> {
-  return transpileAndLoadFile(filePathAbsolute, true, filePathRelativeToUserRootDir)
-}
-
-async function transpileAndLoadValueFile(filePathAbsolute: string): Promise<Result> {
-  return transpileAndLoadFile(filePathAbsolute, false)
-}
-
-async function transpileAndLoadFile(filePathAbsolute: string, isPageConfig: false): Promise<Result>
-async function transpileAndLoadFile(
-  filePathAbsolute: string,
-  isPageConfig: true,
-  filePathRelativeToUserRootDir: string | null
-): Promise<Result>
-async function transpileAndLoadFile(
-  filePathAbsolute: string,
-  isPageConfig: boolean,
-  filePathRelativeToUserRootDir?: string | null
-): Promise<Result> {
+async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): Promise<Result> {
+  const { filePathAbsolute, filePathRelativeToUserRootDir } = filePath
   assertPosixPath(filePathAbsolute)
-  /* Solide removes the + symbol when building its + files
-   *  - https://github.com/magne4000/solide
-  assert(filePathAbsolute.includes('+'))
-  assert(isPageConfig === path.posix.basename(filePathAbsolute).includes('+config'))
-  */
+  getConfigData_dependenciesInvisibleToVite.add(filePathAbsolute)
   const buildResult = await buildFile(filePathAbsolute, { bundle: !isPageConfig })
   let { code } = buildResult
   let fileImports: FileImport[] | null = null

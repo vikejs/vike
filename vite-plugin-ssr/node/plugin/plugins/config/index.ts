@@ -31,7 +31,7 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
 
   const extensions = resolveExtensions(configs, config)
 
-  const { vikeConfig: fromPlusConfigFile } = await getConfigData(config.root, isDev2(config), false, extensions)
+  const { vikeConfig: fromPlusConfigFile } = await getConfigData(config.root, isDev2(config), extensions)
   configs.push(fromPlusConfigFile)
 
   assertVpsConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
