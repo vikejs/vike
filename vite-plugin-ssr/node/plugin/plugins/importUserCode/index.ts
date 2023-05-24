@@ -7,6 +7,7 @@ import { getVirtualFileImportCodeFiles } from './v1-design/getVirtualFileImportC
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode'
 import {
   assert,
+  assertPosixPath,
   getVirtualFileId,
   isDev1,
   isDev1_onConfigureServer,
@@ -40,14 +41,17 @@ function importUserCode(): Plugin {
       }
     },
     handleHotUpdate(ctx) {
-      if (!getConfigData_dependenciesInvisibleToVite.has(ctx.file)) {
+      const { file, server } = ctx
+      assertPosixPath(file)
+      getConfigData_dependenciesInvisibleToVite.forEach((f) => assertPosixPath(f))
+      if (!getConfigData_dependenciesInvisibleToVite.has(file)) {
         return
       }
       getConfigData_invalidate()
-      const mods = Array.from(ctx.server.moduleGraph.urlToModuleMap.keys())
+      const mods = Array.from(server.moduleGraph.urlToModuleMap.keys())
         .filter((url) => isVirtualFileIdImportPageCode(url) || isVirtualFileIdImportUserCode(url))
         .map((url) => {
-          const mod = ctx.server.moduleGraph.urlToModuleMap.get(url)
+          const mod = server.moduleGraph.urlToModuleMap.get(url)
           assert(mod)
           return mod
         })
