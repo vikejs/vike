@@ -50,22 +50,23 @@ import {
   applyFilesystemRoutingRootEffect
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadFile } from './transpileAndLoadFile'
-import { ImportData, parseImportData } from './replaceImportStatements'
+import { configValueToImportData, ImportData, parseImportData } from './replaceImportStatements'
 
 assertIsVitePluginCode()
 
 type InterfaceFile = InterfaceConfigFile | InterfaceValueFile
 type InterfaceFileCommons = {
   filePath: FilePath
-  configMap: Record<ConfigName, { configValue?: unknown }>
 }
 type InterfaceConfigFile = InterfaceFileCommons & {
+  configMap: Record<ConfigName, { configValue?: unknown; configValueIsPath: boolean }>
   isConfigFile: true
   isValueFile: false
   extendsFilePaths: string[]
   isConfigExtend: boolean
 }
 type InterfaceValueFile = InterfaceFileCommons & {
+  configMap: Record<ConfigName, { configValue?: unknown; configValueIsPath?: undefined }>
   isConfigFile: false
   isValueFile: true
   configNameDefault: string
@@ -165,7 +166,7 @@ async function loadInterfaceFiles(
   await Promise.all(
     valueFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
       const configNameDefault = extractConfigName(filePathRelativeToUserRootDir)
-      const interfaceFile: InterfaceFile = {
+      const interfaceFile: InterfaceValueFile = {
         filePath: {
           filePathRelativeToUserRootDir,
           filePathAbsolute
@@ -224,7 +225,7 @@ async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameD
 }
 function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: boolean): InterfaceFile {
   const { fileExports, filePath, extendsFilePaths } = configFile
-  const interfaceFile: InterfaceFile = {
+  const interfaceFile: InterfaceConfigFile = {
     filePath,
     configMap: {},
     isConfigFile: true,
@@ -232,9 +233,17 @@ function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: 
     isConfigExtend,
     extendsFilePaths
   }
-  assertDefaultExportObject(fileExports, getFilePathToShowToUser(filePath))
+  const interfaceFilePathToShowToUser = getFilePathToShowToUser(filePath)
+  assertDefaultExportObject(fileExports, interfaceFilePathToShowToUser)
   Object.entries(fileExports.default).forEach(([configName, configValue]) => {
-    interfaceFile.configMap[configName] = { configValue }
+    let configValueIsPath = false
+    if (configName.endsWith('Path')) {
+      configValueIsPath = true
+      // TODO: add validation to configValueToImportData()
+      configValue = configValueToImportData(configValue, configName, interfaceFilePathToShowToUser)
+      configName = configName.slice(0, -1 * 'Path'.length)
+    }
+    interfaceFile.configMap[configName] = { configValue, configValueIsPath }
   })
   return interfaceFile
 }

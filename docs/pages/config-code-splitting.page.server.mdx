@@ -18,8 +18,8 @@ Into:
 ```js
 // +config.js
 
-const Page = '_import:./some-file:default'
-const onBeforeRender = '_import:./some-other-file:onBeforeRender'
+const Page = '_path:./some-file:default'
+const onBeforeRender = '_path:./some-other-file:onBeforeRender'
 
 export default { Page, onBeforeRender }
 ```
@@ -105,7 +105,7 @@ import './some.css'
 
 // This log is printed only when vite-plugin-ssr loads the +config.js file.
 // This log isn't included in neither the client runtime nor the server runtime.
-console.log(something) // Prints: '_import:./some-file:something'
+console.log(something) // Prints: '_path:./some-file:something'
 
 export default {
   // `something` isn't re-exported here

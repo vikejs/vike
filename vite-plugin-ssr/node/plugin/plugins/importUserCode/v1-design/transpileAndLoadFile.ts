@@ -23,15 +23,32 @@ type Result = { fileExports: Record<string, unknown> }
 
 async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): Promise<Result> {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = filePath
+  const filePathToShowToUser = filePathRelativeToUserRootDir ?? filePathAbsolute
   assertPosixPath(filePathAbsolute)
   getConfigData_dependenciesInvisibleToVite.add(filePathAbsolute)
   const buildResult = await buildFile(filePathAbsolute, { bundle: !isPageConfig })
   let { code } = buildResult
   let fileImports: FileImport[] | null = null
-  if (isPageConfig) {
-    const res = replaceImportStatements(code, filePathRelativeToUserRootDir ?? filePathAbsolute)
-    code = res.code
-    fileImports = res.fileImports
+  const isHeader = isHeaderFile(filePathAbsolute)
+  if (isPageConfig || isHeader) {
+    assertWarning(
+      isPageConfig,
+      `${filePathToShowToUser} is a JavaScript header file (.h.js), but JavaScript header files should only be used for +config.h.js, see https://vite-plugin-ssr.com/header-file`,
+      { onlyOnce: true, showStackTrace: false }
+    )
+    const res = replaceImportStatements(code, filePathToShowToUser)
+    if (!res.noImportStatement) {
+      if (!isHeader) {
+        const filePathCorrect = appendHeaderFileExtension(filePathToShowToUser)
+        assertWarning(
+          false,
+          `Rename ${filePathToShowToUser} to ${filePathCorrect}, see https://vite-plugin-ssr.com/header-file`,
+          { onlyOnce: true, showStackTrace: false }
+        )
+      }
+      code = res.code
+      fileImports = res.fileImports
+    }
   }
   const filePathTmp = getFilePathTmp(filePathAbsolute)
   fs.writeFileSync(filePathTmp, code)
@@ -49,8 +66,7 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
   //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
   //  - We don't need this special object
   fileExports = { ...fileExports }
-  if (isPageConfig) {
-    assert(fileImports)
+  if (fileImports) {
     assert(filePathRelativeToUserRootDir !== undefined)
     const filePath = filePathRelativeToUserRootDir ?? filePathAbsolute
     assertFileImports(fileImports, fileExports, filePath)
@@ -156,6 +172,17 @@ function getExportedStrings(obj: Record<string, unknown>): string[] {
     }
   })
   return exportedStrings
+}
+
+function isHeaderFile(filePath: string) {
+  const basenameParts = path.posix.basename(filePath).split('.')
+  return basenameParts.includes('h')
+}
+function appendHeaderFileExtension(filePath: string) {
+  const basenameParts = path.posix.basename(filePath).split('.')
+  basenameParts.splice(-1, 0, 'h')
+  const basenameCorrect = basenameParts.join('.')
+  return path.posix.join(path.posix.dirname(filePath), basenameCorrect)
 }
 
 // TODO: implement. Or remove? Is it really needed?
