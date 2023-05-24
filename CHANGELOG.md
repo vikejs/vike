@@ -1,3 +1,20 @@
+## [0.4.127](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.126...v0.4.127) (2023-05-24)
+
+
+### Bug Fixes
+
+* [V1 design] add configElement for side exports (fix [#904](https://github.com/brillout/vite-plugin-ssr/issues/904)) ([2c83f7b](https://github.com/brillout/vite-plugin-ssr/commit/2c83f7bacc06569671b6250c03a46fe77e0c6afb))
+* [V1 design] don't serialize config-only configs ([943accb](https://github.com/brillout/vite-plugin-ssr/commit/943accb4b8f45b5a724f7fb6cbbe22f67640e969))
+* [V1 design] implement JavaScript header files `.h.js`, and `Path` ([5ced26a](https://github.com/brillout/vite-plugin-ssr/commit/5ced26a2a2875e13a5e4dc8a89ca6e8a3bf82c9e))
+* [V1 design] improve warning upon invalid +config.js ([8fa9aa5](https://github.com/brillout/vite-plugin-ssr/commit/8fa9aa50f0ced387841c2a4e8f7e5bff920c2475))
+* [V1 design] make +meta.js work ([81f07c4](https://github.com/brillout/vite-plugin-ssr/commit/81f07c4d51821ab6258cea7d9ce64e437d91cd47))
+* [V1 design] make eager loading of value files optional ([cdfd079](https://github.com/brillout/vite-plugin-ssr/commit/cdfd0797b9937680e99304072b590f89366de6db))
+* [V1 design] refactor invalidation logic ([3fed5d2](https://github.com/brillout/vite-plugin-ssr/commit/3fed5d2e5b728d2dd7ed1a2b95318b137b1f3577))
+* fix error message upon unkown config (fix [#909](https://github.com/brillout/vite-plugin-ssr/issues/909)) ([4b02857](https://github.com/brillout/vite-plugin-ssr/commit/4b02857116408c3f2eaf7f1dcb9b9bff13e09919))
+* improve require() shim ([f095b02](https://github.com/brillout/vite-plugin-ssr/commit/f095b02433f0af677a604a5646ae2b3d2fb2c557))
+
+
+
 ## [0.4.126](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.125...v0.4.126) (2023-05-20)
 
 
