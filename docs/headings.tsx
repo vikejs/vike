@@ -1008,7 +1008,7 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/extends'
   },
   {
-    title: <>JavaScript header file (<code>.h.js</code>)</>,
+    title: <>Header file (<code>.h.js</code>)</>,
     url: '/header-file'
   }
 ]
