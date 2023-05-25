@@ -1014,5 +1014,9 @@ const headingsDetached: HeadingDetachedDefinition[] = [
       </>
     ),
     url: '/header-file'
+  },
+  {
+    title: <code>throw RenderErrorPage()</code>,
+    url: '/RenderErrorPage'
   }
 ]

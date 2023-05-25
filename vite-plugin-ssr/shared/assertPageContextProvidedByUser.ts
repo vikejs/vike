@@ -6,17 +6,20 @@ function assertPageContextProvidedByUser(
   pageContextProvidedByUser: unknown,
   {
     hook,
-    errorMessagePrefix
+    errorMessagePrefix,
+    isRenderErrorPage
   }:
     | {
         hook?: undefined
-        errorMessagePrefix: `The \`pageContext\` value provided by \`RenderErrorPage({ pageContext })\``
+        isRenderErrorPage: true
+        errorMessagePrefix: `The \`pageContext\` object provided by \`throw RenderErrorPage({ pageContext })\``
       }
     | {
         hook: {
           hookFilePath: string
           hookName: 'onBeforeRender' | 'onRenderHtml' | 'render' | 'onBeforeRoute'
         }
+        isRenderErrorPage?: undefined
         errorMessagePrefix?: undefined
       }
 ): asserts pageContextProvidedByUser is Record<string, unknown> {
@@ -27,18 +30,22 @@ function assertPageContextProvidedByUser(
       assert(hook)
       const { hookName, hookFilePath } = hook
       assert(!hookName.endsWith(')'))
-      return `The \`pageContext\` value provided by the ${
+      return `The \`pageContext\` object provided by the ${
         hookName as string
       }() hook defined by ${hookFilePath}` as const
     }
   })()
 
-  assertUsage(isObject(pageContextProvidedByUser), `${errPrefix} should be an object.`)
+  assertUsage(
+    isObject(pageContextProvidedByUser),
+    `${errPrefix} should be an object instead of \`${typeof pageContextProvidedByUser}\``
+  )
 
   assertUsage(
     !('_objectCreatedByVitePluginSsr' in pageContextProvidedByUser),
     `${errPrefix} shouldn't be the whole \`pageContext\` object, see https://vite-plugin-ssr.com/pageContext-manipulation#do-not-return-entire-pagecontext`
   )
+
   // In principle, it's possible to use `onBeforeRoute()` to override and define the whole routing.
   // Is that a good idea to allow users to do this? Beyond deep integration with Vue Router or React Router, is there a use case for this?
   assertWarning(
