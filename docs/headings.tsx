@@ -818,6 +818,14 @@ const redirections = [
   {
     title: 'V1 Design',
     url: '/v1-design'
+  },
+  {
+    title: (
+      <>
+        <code>+config.h.js</code> code splitting
+      </>
+    ),
+    url: '/config-code-splitting'
   }
 ]
 
@@ -855,14 +863,6 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: 'Why the V1 design?',
     url: '/why-the-v1-design'
-  },
-  {
-    title: (
-      <>
-        <code>+config.h.js</code> code splitting
-      </>
-    ),
-    url: '/config-code-splitting'
   },
   {
     title: 'Migrations',
@@ -1008,7 +1008,11 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/extends'
   },
   {
-    title: <>Header file (<code>.h.js</code>)</>,
+    title: (
+      <>
+        Header file (<code>.h.js</code>)
+      </>
+    ),
     url: '/header-file'
   }
 ]
