@@ -12,8 +12,7 @@ import {
   objectAssign,
   isPromise,
   callHookWithTimeout,
-  isCallable,
-  isPlainObject
+  isCallable
 } from '../utils'
 import type { PageAsset } from './getPageAssets'
 import { isStream } from '../html/stream'
@@ -136,88 +135,71 @@ function getRenderHook(pageContext: PageContextPublic) {
 }
 
 function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook) {
-  const errPrefix = `The ${renderHook.hookName}() hook defined at ${renderHook.hookFilePath}` as const
+  let documentHtml: null | DocumentHtml = null
+  let pageContextPromise: PageContextPromise = null
+  let pageContextProvidedByRenderHook: null | Record<string, unknown> = null
+  let injectFilter: PreloadFilter = null
+  const ret = () => ({ documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter })
+
+  if (hookReturnValue === null) return ret()
+
+  if (isDocumentHtml(hookReturnValue)) {
+    documentHtml = hookReturnValue
+    return ret()
+  }
+
+  const errPrefix = `The ${renderHook.hookName as string}() hook defined at ${renderHook.hookFilePath}` as const
   const errSuffix =
     'a string generated with the escapeInject`<html>...</html>` template tag or a string returned by dangerouslySkipEscape(), see https://vite-plugin-ssr.com/escapeInject' as const
-
   assertUsage(
     typeof hookReturnValue !== 'string',
     [errPrefix, 'returned a plain JavaScript string which is forbidden: it should instead return', errSuffix].join(' ')
   )
   assertUsage(
-    isObject(hookReturnValue) || hookReturnValue === null || isDocumentHtml(hookReturnValue),
+    isObject(hookReturnValue),
     [
       errPrefix,
-      'should return `null`, a value `documentHtml`, or an object `{ documentHtml, pageContext }` where pageContext is `undefined` or an object holding additional pageContext values, and where documentHtml is',
+      'should return `null`, a value `documentHtml`, or an object `{ documentHtml, pageContext }` where `pageContext` is `undefined` or an object holding additional pageContext values, and where `documentHtml` is',
       errSuffix
     ].join(' ')
   )
+  assertObjectKeys(hookReturnValue, ['documentHtml', 'pageContext', 'injectFilter'] as const, errPrefix)
 
-  let documentHtml: null | DocumentHtml = null
-  if (isDocumentHtml(hookReturnValue)) {
-    documentHtml = hookReturnValue
-  } else if (isObject(hookReturnValue)) {
-    if ('documentHtml' in hookReturnValue) {
-      const val = hookReturnValue.documentHtml
-      assertUsage(
-        typeof val !== 'string',
-        [
-          errPrefix,
-          'returned `{ documentHtml }`, but documentHtml is a plain JavaScript string which is forbidden: documentHtml should be',
-          errSuffix
-        ].join(' ')
-      )
-      if (val !== null && val !== undefined) {
-        assertUsage(
-          isDocumentHtml(val),
-          [errPrefix, 'returned `{ documentHtml }`, but documentHtml should be', errSuffix].join(' ')
-        )
-        documentHtml = val
-      }
-    }
-  }
-
-  if (isObject(hookReturnValue) && !isDocumentHtml(hookReturnValue)) {
-    assertUsage(isPlainObject(hookReturnValue), `${errPrefix} should return a plain JavaScript object.`)
-    assertObjectKeys(hookReturnValue, ['documentHtml', 'pageContext', 'injectFilter'] as const, errPrefix)
-    if ('pageContext' in hookReturnValue) {
-      const resultPageContext = hookReturnValue['pageContext']
-      if (!isPromise(resultPageContext) && !isCallable(resultPageContext)) {
-        assertPageContextProvidedByUser(resultPageContext, { hook: renderHook })
-      }
-    }
-  }
-  /* TODO
-  if (canBePromise && !isObject(pageContextProvidedByUser)) {
-    assertUsage(
-      isCallable(pageContextProvidedByUser) || isPromise(pageContextProvidedByUser),
-      `${errPrefix} should be an object, or an async function https://vite-plugin-ssr.com/stream#initial-data-after-stream-end`
-    )
-    return
-  }
-  */
-
-  let pageContextPromise: PageContextPromise = null
-  let pageContextProvidedByRenderHook: null | Record<string, unknown> = null
-  if (hasProp(hookReturnValue, 'pageContext')) {
-    const resultPageContext = hookReturnValue.pageContext
-    if (isPromise(resultPageContext) || isCallable(resultPageContext)) {
-      assertWarning(
-        !isPromise(resultPageContext),
-        `${errPrefix} returns a pageContext promise which is deprecated in favor of returning a pageContext async function, see https://vite-plugin-ssr.com/stream#initial-data-after-stream-end`,
-        { onlyOnce: true, showStackTrace: false }
-      )
-      pageContextPromise = resultPageContext
-    } else {
-      assertPageContextProvidedByUser(resultPageContext, { hook: renderHook })
-      pageContextProvidedByRenderHook = resultPageContext
-    }
-  }
-
-  let injectFilter: PreloadFilter = null
-  if (hasProp(hookReturnValue, 'injectFilter')) {
+  if (hookReturnValue.injectFilter) {
     assertUsage(isCallable(hookReturnValue.injectFilter), 'injectFilter should be a function')
     injectFilter = hookReturnValue.injectFilter
   }
-  return { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter }
+
+  if (hookReturnValue.documentHtml) {
+    const val = hookReturnValue.documentHtml
+    const errBegin = `${errPrefix} returned \`{ documentHtml }\`, but documentHtml`
+    assertUsage(
+      typeof val !== 'string',
+      [errBegin, 'is a plain JavaScript string which is forbidden: documentHtml should be', errSuffix].join(' ')
+    )
+    assertUsage(isDocumentHtml(val), [errBegin, 'should be', errSuffix].join(' '))
+    documentHtml = val
+  }
+
+  if (hookReturnValue.pageContext) {
+    const val = hookReturnValue.pageContext
+    const errBegin = `${errPrefix} returned \`{ pageContext }\`, but pageContext`
+    if (isPromise(val) || isCallable(val)) {
+      assertWarning(
+        !isPromise(val),
+        `${errBegin} is a promise which is deprecated in favor of async functions, see https://vite-plugin-ssr.com/stream#initial-data-after-stream-end`,
+        { onlyOnce: true, showStackTrace: false }
+      )
+      pageContextPromise = val
+    } else {
+      assertUsage(
+        isObject(val),
+        `${errBegin} should be an object or an async function, see https://vite-plugin-ssr.com/stream#initial-data-after-stream-end`
+      )
+      assertPageContextProvidedByUser(val, { hook: renderHook })
+      pageContextProvidedByRenderHook = val
+    }
+  }
+
+  return ret()
 }
