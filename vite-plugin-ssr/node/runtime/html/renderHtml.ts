@@ -9,6 +9,7 @@ export { isDocumentHtml }
 export { getHtmlString }
 export type { HtmlRender }
 export type { HtmlPart }
+export type { DocumentHtml }
 
 import { assert, assertUsage, assertWarning, checkType, hasProp, isHtml, isPromise, objectAssign } from '../utils'
 import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets'
