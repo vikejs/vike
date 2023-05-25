@@ -53,4 +53,11 @@ function assertPageContextProvidedByUser(
     `${errPrefix} sets \`pageContext._pageId\` which means that vite-plugin-ssr's routing is overriden. This is an experimental feature: make sure to contact a vite-plugin-ssr maintainer before using this.`,
     { showStackTrace: false, onlyOnce: true }
   )
+
+  if (!isRenderErrorPage) {
+    assertUsage(
+      !('is404' in pageContextProvidedByUser),
+      `${errPrefix} sets \`pageContext.is404\` which is forbidden, use \`throw RenderErrorPage()\` instead, see https://vite-plugin-ssr.com/RenderErrorPage`
+    )
+  }
 }
