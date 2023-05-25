@@ -1,3 +1,17 @@
+## [0.4.129](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.128...v0.4.129) (2023-05-25)
+
+
+### Bug Fixes
+
+* add computed URL props as non-enumerable when pre-rendering (fix [#914](https://github.com/brillout/vite-plugin-ssr/issues/914)) ([2784ac9](https://github.com/brillout/vite-plugin-ssr/commit/2784ac938e4840a7ffc679c077cf4ecd7cf5a3f7))
+* improve debug infos upon manifest miss ([#911](https://github.com/brillout/vite-plugin-ssr/issues/911)) ([c3975e3](https://github.com/brillout/vite-plugin-ssr/commit/c3975e39371942cb47879d3cf56d2fe0b1b387c2))
+* improve error message upon malformed HTML (fix [#913](https://github.com/brillout/vite-plugin-ssr/issues/913)) ([a6799d1](https://github.com/brillout/vite-plugin-ssr/commit/a6799d1cd9f9c372cfb9625e982cd30ac8b76f13))
+* improve error message upon setting pageContext.is404 (fix [#912](https://github.com/brillout/vite-plugin-ssr/issues/912)) ([7b0d31d](https://github.com/brillout/vite-plugin-ssr/commit/7b0d31df4688b86e9508ec07eaa4d50800d9e20e))
+* refactor and fix render hook validation ([20ae8ad](https://github.com/brillout/vite-plugin-ssr/commit/20ae8ad24b082b6bc7ab9017a39332d9fae50f4b))
+* update links to docs ([bf38acc](https://github.com/brillout/vite-plugin-ssr/commit/bf38accef2d578a6a12ae68af125c5206817a89e))
+
+
+
 ## [0.4.128](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.127...v0.4.128) (2023-05-25)
 
 
