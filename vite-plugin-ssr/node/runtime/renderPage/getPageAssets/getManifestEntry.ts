@@ -11,12 +11,13 @@ function getManifestEntry(
   manifestKeyMap: Record<string, string>
 ): { manifestKey: string; manifestEntry: ViteManifestEntry } {
   assertClientEntryId(id)
+  const debugInfo = getDebugInfo(id, clientManifest)
 
   // VPS client entry
   if (id.startsWith('@@vite-plugin-ssr/')) {
     const manifestKeyEnd = slice(id, '@@vite-plugin-ssr'.length, 0)
     const { manifestKey, manifestEntry } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
-    assert(manifestEntry && manifestKey, id)
+    assert(manifestEntry && manifestKey, debugInfo)
     return { manifestEntry, manifestKey }
   }
 
@@ -38,7 +39,7 @@ function getManifestEntry(
     //    - I don't know whether end users actually need this workaround? (I'm not sure what the bug actually is.)
     const manifestKeyEnd = id
     const { manifestKey, manifestEntry } = getEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
-    assert(manifestEntry, id)
+    assert(manifestEntry, debugInfo)
     return { manifestEntry, manifestKey }
   }
 
@@ -46,54 +47,56 @@ function getManifestEntry(
   if (id.startsWith('/')) {
     const manifestKey = id.slice(1)
     let manifestEntry = clientManifest[manifestKey]
-    assert(manifestEntry, id)
+    assert(manifestEntry, debugInfo)
     return { manifestEntry, manifestKey }
   }
 
   // extensions[number].pageConfigsDistFiles
   if (isNpmPackageModule(id)) {
     const manifestKey = manifestKeyMap[id]
-    assert(manifestKey, id)
+    const debugInfo2 = { ...debugInfo, manifestKey }
+    assert(manifestKey, debugInfo2)
     const manifestEntry = clientManifest[manifestKey]
-    assert(manifestEntry, { id, manifestKey })
+    assert(manifestEntry, debugInfo2)
     return { manifestEntry, manifestKey }
   }
 
   // extensions[number].pageConfigsSrcDir
   if (id.startsWith('/node_modules/') || id.startsWith('/../')) {
     let manifestKeyEnd = id.split('/node_modules/').slice(-1)[0]
-    assert(manifestKeyEnd, id)
-    assert(!manifestKeyEnd.startsWith('/'))
+    assert(manifestKeyEnd, debugInfo)
+    assert(!manifestKeyEnd.startsWith('/'), debugInfo)
     manifestKeyEnd = '/' + manifestKeyEnd
     {
       const { manifestEntry, manifestKey } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
       if (manifestEntry) {
-        assert(manifestKey)
+        assert(manifestKey, debugInfo)
         return { manifestEntry, manifestKey }
       }
     }
     {
-      assert(manifestKeyEnd.startsWith('/'))
+      assert(manifestKeyEnd.startsWith('/'), debugInfo)
       const dirS = manifestKeyEnd.split('/')
-      assert(dirS[0] === '')
+      assert(dirS[0] === '', debugInfo)
       manifestKeyEnd = '/' + dirS.slice(2).join('/')
-      assert(manifestKeyEnd.startsWith('/'), id)
+      assert(manifestKeyEnd.startsWith('/'), debugInfo)
     }
     {
       const { manifestEntry, manifestKey } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
       if (manifestEntry) {
-        assert(manifestKey)
+        assert(manifestKey, debugInfo)
         return { manifestEntry, manifestKey }
       }
     }
-    assert(false, id)
+    assert(false, debugInfo)
   }
 
-  assert(false, id)
+  assert(false, debugInfo)
 }
 
 function findEntryWithKeyEnd(manifestKeyEnd: string, clientManifest: ViteManifest, id: string) {
-  assert(manifestKeyEnd.startsWith('/'))
+  const debugInfo = getDebugInfo(id, clientManifest, manifestKeyEnd)
+  assert(manifestKeyEnd.startsWith('/'), debugInfo)
   const manifestKeys: string[] = []
   for (const manifestKey in clientManifest) {
     if (manifestKey.endsWith(manifestKeyEnd)) {
@@ -101,7 +104,7 @@ function findEntryWithKeyEnd(manifestKeyEnd: string, clientManifest: ViteManifes
     }
   }
   const manifestKeysRelative = manifestKeys.filter((k) => k.startsWith('../'))
-  assert(manifestKeysRelative.length <= 1, { id })
+  assert(manifestKeysRelative.length <= 1, debugInfo)
   const manifestKey = manifestKeysRelative[0] ?? manifestKeys[0] ?? null
   if (!manifestKey) {
     return { manifestEntry: null, manifestKey: null }
@@ -111,17 +114,27 @@ function findEntryWithKeyEnd(manifestKeyEnd: string, clientManifest: ViteManifes
 }
 
 function getEntryWithKeyEnd(manifestKeyEnd: string, clientManifest: ViteManifest, id: string) {
+  const debugInfo = getDebugInfo(id, clientManifest, manifestKeyEnd)
   const manifestKeys: string[] = []
   for (const manifestKey in clientManifest) {
     if (manifestKey.endsWith(manifestKeyEnd)) {
       manifestKeys.push(manifestKey)
     }
   }
-  assert(manifestKeys.length <= 1, id)
+  assert(manifestKeys.length <= 1, debugInfo)
   const manifestKey = manifestKeys[0]
   if (!manifestKey) {
     return { manifestEntry: null, manifestKey: null }
   }
   const manifestEntry = clientManifest[manifestKey]!
   return { manifestEntry, manifestKey }
+}
+
+function getDebugInfo(id: string, clientManifest: ViteManifest, manifestKeyEnd?: string) {
+  const manifestKeys = Object.keys(clientManifest)
+  if (manifestKeyEnd === undefined) {
+    return { manifestKeys, id }
+  } else {
+    return { manifestKeys, manifestKeyEnd, id }
+  }
 }
