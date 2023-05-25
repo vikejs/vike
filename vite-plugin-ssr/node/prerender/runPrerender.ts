@@ -46,6 +46,7 @@ import type { PageConfig, PageConfigGlobal } from '../../shared/page-configs/Pag
 import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode'
 import { isErrorPage } from '../../shared/error-page'
+import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 
 type HtmlFile = {
   urlOriginal: string
@@ -478,9 +479,11 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
     _noExtraDir: prerenderContext._noExtraDir,
     _prerenderContext: prerenderContext
   })
-  /* We cannot add the computed URL properties because they can be iterated & copied in a `onPrerenderStart()` hook, e.g. `/examples/i18n/'
-  addComputedUrlProps(pageContext)
-  */
+  addComputedUrlProps(
+    pageContext,
+    // We set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in a onPrerenderStart() hook, e.g. /examples/i18n/
+    false
+  )
   return pageContext
 }
 

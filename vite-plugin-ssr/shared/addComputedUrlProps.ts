@@ -40,37 +40,36 @@ type PageContextUrls = {
 }
 
 function addComputedUrlProps<PageContext extends Record<string, unknown> & PageContextUrlSource>(
-  pageContext: PageContext
+  pageContext: PageContext,
+  enumerable = true
 ): asserts pageContext is PageContext & PageContextUrls {
   assert(pageContext.urlOriginal)
+
   if ('urlPathname' in pageContext) {
     assert(hasPropertyGetter(pageContext, 'urlPathname'))
-  } else {
-    Object.defineProperty(pageContext, 'urlPathname', {
-      get: urlPathnameGetter,
-      enumerable: true,
-      configurable: true
-    })
   }
+  Object.defineProperty(pageContext, 'urlPathname', {
+    get: urlPathnameGetter,
+    enumerable,
+    configurable: true
+  })
+
   // TODO/v1-release: move pageContext.urlParsed to pageContext.url
-  if ('url' in pageContext) {
-    assert(hasPropertyGetter(pageContext, 'url'))
-  } else {
-    Object.defineProperty(pageContext, 'url', {
-      get: urlGetter,
-      enumerable: false,
-      configurable: true
-    })
-  }
+  if ('url' in pageContext) assert(hasPropertyGetter(pageContext, 'url'))
+  Object.defineProperty(pageContext, 'url', {
+    get: urlGetter,
+    enumerable: false,
+    configurable: true
+  })
+
   if ('urlParsed' in pageContext) {
     assert(hasPropertyGetter(pageContext, 'urlParsed'))
-  } else {
-    Object.defineProperty(pageContext, 'urlParsed', {
-      get: urlParsedGetter,
-      enumerable: true,
-      configurable: true
-    })
   }
+  Object.defineProperty(pageContext, 'urlParsed', {
+    get: urlParsedGetter,
+    enumerable,
+    configurable: true
+  })
 }
 
 type PageContextUrlSource = {
