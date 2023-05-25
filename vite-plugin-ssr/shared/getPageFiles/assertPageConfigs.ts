@@ -13,7 +13,10 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
     assert(isObject(pageConfig))
     assert(hasProp(pageConfig, 'pageId', 'string'))
     assert(hasProp(pageConfig, 'routeFilesystem', 'string') || hasProp(pageConfig, 'routeFilesystem', 'null'))
-    assert(hasProp(pageConfig, 'routeFilesystemDefinedBy', 'string') || hasProp(pageConfig, 'routeFilesystemDefinedBy', 'null'))
+    assert(
+      hasProp(pageConfig, 'routeFilesystemDefinedBy', 'string') ||
+        hasProp(pageConfig, 'routeFilesystemDefinedBy', 'null')
+    )
     assert(hasProp(pageConfig, 'loadCodeFiles', 'function'))
     assert(hasProp(pageConfig, 'isErrorPage', 'boolean'))
     assert(hasProp(pageConfig, 'configElements', 'object'))

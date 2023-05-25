@@ -14,7 +14,7 @@ function serializePageConfigs(
   pageConfigGlobal: PageConfigGlobalData,
   isForClientSide: boolean,
   isDev: boolean,
-  id: string,
+  id: string
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
