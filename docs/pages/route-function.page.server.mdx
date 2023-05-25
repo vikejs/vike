@@ -135,65 +135,12 @@ Async route functions may significantly slow down our app: as we have seen in [L
 
 Async route functions are therefore discouraged and should be considered as last resort.
 
-The motivation for async route functions are often redirections, but using `RenderErrorPage()` is usually a better approach, see [Redirection & `404`](#redirection-404).
+The motivation for async route functions are often redirections, but using <Link href="/RenderErrorPage" text={<code>throw RenderErrorPage()</code>}></Link> is usually a better approach.
 
 
 ## Redirection & `404`
 
-We can use `throw RenderErrorPage()` to implement redirections (e.g. redirect unauthenticated users to `/login`), and render `404` pages (e.g. show a `404` page for `/product/42` if a product with ID `42` doesn't exist).
-
-Authentication redirection:
-
-```js
-// /pages/product/edit.page.route.js
-
-import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
-
-export default (pageContext) => {
-  if (!pageContext.user.isAdmin) {
-    throw RenderErrorPage({
-      redirectTo: '/log-in'
-    })
-  }
-}
-```
-
-We can then use `pageContext.redirectTo` as usual, see <Link href="/page-redirection" />.
-
-Render `404` page:
-
-```js
-// /pages/product.page.server.js
-
-export { onBeforeRender }
-
-import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
-
-async function onBeforeRender(pageContext) {
-  const { productId } = pageContext.routeParams
-
-  const product = await db.fetchProduct(productId)
-
-  if (!product) {
-    // Render _error.page.js
-    throw RenderErrorPage({
-      pageContext: {
-        // We can provide additional pageContext values to use in _error.page.js
-        pageProps: {
-          errorInfo: `Product with ID ${productId} doesn't exist`
-        },
-        /* We could also redirect the user, similar to the authentication redirection above
-        redirectTo: '/product/new'
-        */
-      }
-    })
-  }
-
-  // ...
-}
-```
-
-Note how we don't `throw RenderErrorPage()` in the Route Function but in `onBeforeRender()` instead. We do so in order to keep the Route Function lightweight and fast.
+See <Link href="/RenderErrorPage" />.
 
 
 ## Cannot provide `pageContext`
