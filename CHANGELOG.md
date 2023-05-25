@@ -1,3 +1,12 @@
+## [0.4.128](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.127...v0.4.128) (2023-05-25)
+
+
+### Bug Fixes
+
+* temporarily disable non-header file warning ([bdc07e3](https://github.com/brillout/vite-plugin-ssr/commit/bdc07e32822331e4656334fefd7989268055ef7b))
+
+
+
 ## [0.4.127](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.126...v0.4.127) (2023-05-24)
 
 
