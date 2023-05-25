@@ -21,7 +21,7 @@ function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown
     )
   }
   assertPageContextProvidedByUser(pageContext, {
-    errorMessagePrefix: 'The `pageContext` provided in `RenderErrorPage({ pageContext })`'
+    errorMessagePrefix: 'The `pageContext` value provided by `RenderErrorPage({ pageContext })`'
   })
 
   const err = new Error('RenderErrorPage')

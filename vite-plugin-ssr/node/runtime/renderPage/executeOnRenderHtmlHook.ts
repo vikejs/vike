@@ -12,10 +12,10 @@ import {
   objectAssign,
   isPromise,
   callHookWithTimeout,
-  isCallable
+  isCallable,
+  isPlainObject
 } from '../utils'
 import type { PageAsset } from './getPageAssets'
-import { assertHookResult } from '../../../shared/assertHookResult'
 import { isStream } from '../html/stream'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser'
 import type { PreloadFilter } from '../html/injectAssets/getHtmlTags'
@@ -23,6 +23,7 @@ import { logErrorWithVite } from './logError'
 import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
 import type { PageContextPromise } from '../html/injectAssets'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
+import { assertObjectKeys } from '../../../shared/assertObjectKeys'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
@@ -97,14 +98,27 @@ async function executeOnRenderHtmlHook(
   preparePageContextForRelease(pageContext)
   const result = await callHookWithTimeout(() => hookFn(pageContext), renderHook.hookName, renderHook.hookFilePath)
   if (isObject(result) && !isDocumentHtml(result)) {
-    assertHookResult(
-      result,
-      renderHook.hookName,
-      ['documentHtml', 'pageContext', 'injectFilter'] as const,
-      renderHook.hookFilePath,
-      true
-    )
+    const { hookName, hookFilePath } = renderHook
+    const errPrefix = `The ${hookName}() hook defined by ${hookFilePath}`
+    assertUsage(isPlainObject(result), `${errPrefix} should return a plain JavaScript object.`)
+    assertObjectKeys(result, ['documentHtml', 'pageContext', 'injectFilter'] as const, errPrefix)
+    if ('pageContext' in result) {
+      const resultPageContext = result['pageContext']
+      if (!isPromise(resultPageContext) && !isCallable(resultPageContext)) {
+        assertPageContextProvidedByUser(resultPageContext, { hook: renderHook })
+      }
+    }
   }
+  /* TODO
+  if (canBePromise && !isObject(pageContextProvidedByUser)) {
+    assertUsage(
+      isCallable(pageContextProvidedByUser) || isPromise(pageContextProvidedByUser),
+      `${errPrefix} should be an object, or an async function https://vite-plugin-ssr.com/stream#initial-data-after-stream-end`
+    )
+    return
+  }
+  */
+
   objectAssign(pageContext, { _renderHook: renderHook })
 
   const errPrefix = `The ${renderHook.hookName}() hook defined by ` + renderHook.hookFilePath

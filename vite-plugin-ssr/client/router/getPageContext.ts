@@ -19,7 +19,6 @@ import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtm
 import type { PageContextExports, PageFile } from '../../shared/getPageFiles'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide'
 import type { PageContextUrls } from '../../shared/addComputedUrlProps'
-import { assertHookResult } from '../../shared/assertHookResult'
 import { PageContextForRoute, route } from '../../shared/route'
 import { getErrorPageId } from '../../shared/error-page'
 import { getHook } from '../../shared/getHook'
@@ -29,6 +28,7 @@ import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
 import type { PageConfig } from '../../shared/page-configs/PageConfig'
 import { getCodeFilePath, getPageConfig } from '../../shared/page-configs/utils'
+import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn'
 
 type PageContextAddendum = {
   _pageId: string
@@ -184,7 +184,7 @@ async function onBeforeRenderExecute(
       'onBeforeRender',
       hook.hookFilePath
     )
-    assertHookResult(hookResult, 'onBeforeRender', ['pageContext'], hook.hookFilePath)
+    assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
     const pageContextFromHook = hookResult?.pageContext
     objectAssign(pageContextAddendum, pageContextFromHook)
     return pageContextAddendum
