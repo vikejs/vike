@@ -7,7 +7,6 @@ import {
   assert,
   assertUsage,
   assertWarning,
-  hasProp,
   isObject,
   objectAssign,
   isPromise,
