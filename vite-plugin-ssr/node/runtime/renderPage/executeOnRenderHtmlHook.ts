@@ -50,6 +50,45 @@ async function executeOnRenderHtmlHook(
   renderHook: RenderHook
   htmlRender: null | HtmlRender
 }> {
+  const hookFound = getRenderHook(pageContext)
+  const { renderHook, hookFn } = hookFound
+  objectAssign(pageContext, { _renderHook: renderHook })
+
+  preparePageContextForRelease(pageContext)
+  const hookReturnValue = await callHookWithTimeout(
+    () => hookFn(pageContext),
+    renderHook.hookName,
+    renderHook.hookFilePath
+  )
+  const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
+    hookReturnValue,
+    renderHook
+  )
+
+  assert(documentHtml === undefined || documentHtml === null || isDocumentHtml(documentHtml))
+  Object.assign(pageContext, pageContextProvidedByRenderHook)
+  objectAssign(pageContext, { _pageContextPromise: pageContextPromise })
+
+  if (documentHtml === null || documentHtml === undefined) {
+    return { htmlRender: null, renderHook }
+  }
+
+  const onErrorWhileStreaming = (err: unknown) => {
+    logErrorWithVite(err)
+    /*
+    objectAssign(pageContext, {
+      errorWhileRendering: err,
+      _serverSideErrorWhileStreaming: true
+    })
+    */
+  }
+
+  const htmlRender = await renderDocumentHtml(documentHtml, pageContext, onErrorWhileStreaming, injectFilter)
+  assert(typeof htmlRender === 'string' || isStream(htmlRender))
+  return { htmlRender, renderHook }
+}
+
+function getRenderHook(pageContext: PageContextPublic) {
   let hookFound:
     | undefined
     | {
@@ -94,49 +133,17 @@ async function executeOnRenderHtmlHook(
       ].join(' ')
     )
   }
-  const { renderHook, hookFn } = hookFound
-  objectAssign(pageContext, { _renderHook: renderHook })
-  preparePageContextForRelease(pageContext)
-  const result = await callHookWithTimeout(() => hookFn(pageContext), renderHook.hookName, renderHook.hookFilePath)
-
-  const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise } = processReturnValue(result, renderHook)
-  assert(documentHtml === undefined || documentHtml === null || isDocumentHtml(documentHtml))
-  Object.assign(pageContext, pageContextProvidedByRenderHook)
-  objectAssign(pageContext, { _pageContextPromise: pageContextPromise })
-
-  if (documentHtml === null || documentHtml === undefined) {
-    return { htmlRender: null, renderHook }
-  }
-
-  const onErrorWhileStreaming = (err: unknown) => {
-    logErrorWithVite(err)
-    /*
-    objectAssign(pageContext, {
-      errorWhileRendering: err,
-      _serverSideErrorWhileStreaming: true
-    })
-    */
-  }
-
-  let injectFilter: PreloadFilter = null
-  if (hasProp(result, 'injectFilter')) {
-    assertUsage(isCallable(result.injectFilter), 'injectFilter should be a function')
-    injectFilter = result.injectFilter
-  }
-
-  const htmlRender = await renderDocumentHtml(documentHtml, pageContext, onErrorWhileStreaming, injectFilter)
-  assert(typeof htmlRender === 'string' || isStream(htmlRender))
-  return { htmlRender, renderHook }
+  return hookFound
 }
 
-function processReturnValue(result: unknown, renderHook: RenderHook) {
-  if (isObject(result) && !isDocumentHtml(result)) {
+function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook) {
+  if (isObject(hookReturnValue) && !isDocumentHtml(hookReturnValue)) {
     const { hookName, hookFilePath } = renderHook
     const errPrefix = `The ${hookName}() hook defined by ${hookFilePath}`
-    assertUsage(isPlainObject(result), `${errPrefix} should return a plain JavaScript object.`)
-    assertObjectKeys(result, ['documentHtml', 'pageContext', 'injectFilter'] as const, errPrefix)
-    if ('pageContext' in result) {
-      const resultPageContext = result['pageContext']
+    assertUsage(isPlainObject(hookReturnValue), `${errPrefix} should return a plain JavaScript object.`)
+    assertObjectKeys(hookReturnValue, ['documentHtml', 'pageContext', 'injectFilter'] as const, errPrefix)
+    if ('pageContext' in hookReturnValue) {
+      const resultPageContext = hookReturnValue['pageContext']
       if (!isPromise(resultPageContext) && !isCallable(resultPageContext)) {
         assertPageContextProvidedByUser(resultPageContext, { hook: renderHook })
       }
@@ -156,8 +163,8 @@ function processReturnValue(result: unknown, renderHook: RenderHook) {
 
   let pageContextPromise: PageContextPromise = null
   let pageContextProvidedByRenderHook: null | Record<string, unknown> = null
-  if (hasProp(result, 'pageContext')) {
-    const resultPageContext = result.pageContext
+  if (hasProp(hookReturnValue, 'pageContext')) {
+    const resultPageContext = hookReturnValue.pageContext
     if (isPromise(resultPageContext) || isCallable(resultPageContext)) {
       assertWarning(
         !isPromise(resultPageContext),
@@ -177,9 +184,9 @@ function processReturnValue(result: unknown, renderHook: RenderHook) {
   ].join(' ')
 
   let documentHtml: unknown
-  if (!isObject(result) || isDocumentHtml(result)) {
+  if (!isObject(hookReturnValue) || isDocumentHtml(hookReturnValue)) {
     assertUsage(
-      typeof result !== 'string',
+      typeof hookReturnValue !== 'string',
       [
         errPrefix,
         'returned a plain JavaScript string which is forbidden;',
@@ -188,7 +195,7 @@ function processReturnValue(result: unknown, renderHook: RenderHook) {
       ].join(' ')
     )
     assertUsage(
-      result === null || isDocumentHtml(result),
+      hookReturnValue === null || isDocumentHtml(hookReturnValue),
       [
         errPrefix,
         'should return `null`, a string `documentHtml`, or an object `{ documentHtml, pageContext }`',
@@ -197,10 +204,10 @@ function processReturnValue(result: unknown, renderHook: RenderHook) {
         errSuffix
       ].join(' ')
     )
-    documentHtml = result
+    documentHtml = hookReturnValue
   } else {
-    if ('documentHtml' in result) {
-      documentHtml = result.documentHtml
+    if ('documentHtml' in hookReturnValue) {
+      documentHtml = hookReturnValue.documentHtml
       assertUsage(
         typeof documentHtml !== 'string',
         [
@@ -216,5 +223,11 @@ function processReturnValue(result: unknown, renderHook: RenderHook) {
       )
     }
   }
-  return { documentHtml, pageContextProvidedByRenderHook, pageContextPromise }
+
+  let injectFilter: PreloadFilter = null
+  if (hasProp(hookReturnValue, 'injectFilter')) {
+    assertUsage(isCallable(hookReturnValue.injectFilter), 'injectFilter should be a function')
+    injectFilter = hookReturnValue.injectFilter
+  }
+  return { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter }
 }
