@@ -18,7 +18,7 @@ import { checkIf404, getPageContext, getPageContextErrorPage } from './getPageCo
 import { createPageContext } from './createPageContext'
 import { addLinkPrefetchHandlers } from './prefetch'
 import { assertInfo, assertWarning, isReact, PromiseType } from './utils'
-import { executeOnClientRender } from '../executeOnClientRender'
+import { executeOnRenderClientHook } from '../executeOnRenderClientHook'
 import { assertHook } from '../../shared/getHook'
 import { isClientSideRoutable, skipLink } from './skipLink'
 import { isErrorFetchingStaticAssets } from '../loadPageFilesClientSide'
@@ -236,7 +236,7 @@ function useClientRouter() {
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
-      await executeOnClientRender(pageContext, true)
+      await executeOnRenderClientHook(pageContext, true)
       addLinkPrefetchHandlers(pageContext)
     })()
     await renderPromise

@@ -1,4 +1,4 @@
-export { executeOnClientRender }
+export { executeOnRenderClientHook }
 
 import { assert, assertUsage, callHookWithTimeout } from './utils'
 import { getHook, type Hook } from '../shared/getHook'
@@ -7,7 +7,7 @@ import { type PageContextRelease, releasePageContext } from './releasePageContex
 import type { PageConfig } from '../shared/page-configs/PageConfig'
 import { getPageConfig } from '../shared/page-configs/utils'
 
-async function executeOnClientRender<
+async function executeOnRenderClientHook<
   PC extends {
     _pageFilesLoaded: PageFile[]
     urlOriginal?: string
