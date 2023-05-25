@@ -52,6 +52,7 @@ function addComputedUrlProps<PageContext extends Record<string, unknown> & PageC
       configurable: true
     })
   }
+  // TODO/v1-release: move pageContext.urlParsed to pageContext.url
   if ('url' in pageContext) {
     assert(hasPropertyGetter(pageContext, 'url'))
   } else {
