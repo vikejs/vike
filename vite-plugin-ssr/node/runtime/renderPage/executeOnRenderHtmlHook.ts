@@ -95,8 +95,41 @@ async function executeOnRenderHtmlHook(
     )
   }
   const { renderHook, hookFn } = hookFound
+  objectAssign(pageContext, { _renderHook: renderHook })
   preparePageContextForRelease(pageContext)
   const result = await callHookWithTimeout(() => hookFn(pageContext), renderHook.hookName, renderHook.hookFilePath)
+
+  const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise } = processReturnValue(result, renderHook)
+  assert(documentHtml === undefined || documentHtml === null || isDocumentHtml(documentHtml))
+  Object.assign(pageContext, pageContextProvidedByRenderHook)
+  objectAssign(pageContext, { _pageContextPromise: pageContextPromise })
+
+  if (documentHtml === null || documentHtml === undefined) {
+    return { htmlRender: null, renderHook }
+  }
+
+  const onErrorWhileStreaming = (err: unknown) => {
+    logErrorWithVite(err)
+    /*
+    objectAssign(pageContext, {
+      errorWhileRendering: err,
+      _serverSideErrorWhileStreaming: true
+    })
+    */
+  }
+
+  let injectFilter: PreloadFilter = null
+  if (hasProp(result, 'injectFilter')) {
+    assertUsage(isCallable(result.injectFilter), 'injectFilter should be a function')
+    injectFilter = result.injectFilter
+  }
+
+  const htmlRender = await renderDocumentHtml(documentHtml, pageContext, onErrorWhileStreaming, injectFilter)
+  assert(typeof htmlRender === 'string' || isStream(htmlRender))
+  return { htmlRender, renderHook }
+}
+
+function processReturnValue(result: unknown, renderHook: RenderHook) {
   if (isObject(result) && !isDocumentHtml(result)) {
     const { hookName, hookFilePath } = renderHook
     const errPrefix = `The ${hookName}() hook defined by ${hookFilePath}`
@@ -119,26 +152,24 @@ async function executeOnRenderHtmlHook(
   }
   */
 
-  objectAssign(pageContext, { _renderHook: renderHook })
-
   const errPrefix = `The ${renderHook.hookName}() hook defined by ` + renderHook.hookFilePath
 
   let pageContextPromise: PageContextPromise = null
+  let pageContextProvidedByRenderHook: null | Record<string, unknown> = null
   if (hasProp(result, 'pageContext')) {
-    const pageContextProvidedByRenderHook = result.pageContext
-    if (isPromise(pageContextProvidedByRenderHook) || isCallable(pageContextProvidedByRenderHook)) {
+    const resultPageContext = result.pageContext
+    if (isPromise(resultPageContext) || isCallable(resultPageContext)) {
       assertWarning(
-        !isPromise(pageContextProvidedByRenderHook),
+        !isPromise(resultPageContext),
         `${errPrefix} returns a pageContext promise which is deprecated in favor of returning a pageContext async function, see https://vite-plugin-ssr.com/stream#initial-data-after-stream-end`,
         { onlyOnce: true, showStackTrace: false }
       )
-      pageContextPromise = pageContextProvidedByRenderHook
+      pageContextPromise = resultPageContext
     } else {
-      assertPageContextProvidedByUser(pageContextProvidedByRenderHook, { hook: pageContext._renderHook })
-      Object.assign(pageContext, pageContextProvidedByRenderHook)
+      assertPageContextProvidedByUser(resultPageContext, { hook: renderHook })
+      pageContextProvidedByRenderHook = resultPageContext
     }
   }
-  objectAssign(pageContext, { _pageContextPromise: pageContextPromise })
 
   const errSuffix = [
     'a string generated with the `escapeInject` template tag or a string returned by `dangerouslySkipEscape()`,',
@@ -185,30 +216,5 @@ async function executeOnRenderHtmlHook(
       )
     }
   }
-
-  assert(documentHtml === undefined || documentHtml === null || isDocumentHtml(documentHtml))
-
-  if (documentHtml === null || documentHtml === undefined) {
-    return { htmlRender: null, renderHook }
-  }
-
-  const onErrorWhileStreaming = (err: unknown) => {
-    logErrorWithVite(err)
-    /*
-    objectAssign(pageContext, {
-      errorWhileRendering: err,
-      _serverSideErrorWhileStreaming: true
-    })
-    */
-  }
-
-  let injectFilter: PreloadFilter = null
-  if (hasProp(result, 'injectFilter')) {
-    assertUsage(isCallable(result.injectFilter), 'injectFilter should be a function')
-    injectFilter = result.injectFilter
-  }
-
-  const htmlRender = await renderDocumentHtml(documentHtml, pageContext, onErrorWhileStreaming, injectFilter)
-  assert(typeof htmlRender === 'string' || isStream(htmlRender))
-  return { htmlRender, renderHook }
+  return { documentHtml, pageContextProvidedByRenderHook, pageContextPromise }
 }
