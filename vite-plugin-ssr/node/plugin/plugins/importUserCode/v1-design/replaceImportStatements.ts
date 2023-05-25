@@ -47,7 +47,7 @@ function replaceImportStatements(
         quote = pc.bold(pc.red(quote))
       }
       const errMsg = [
-        `As explained in https://vite-plugin-ssr.com/config-code-splitting the following import in ${filePathToShowToUser} has no effect:`,
+        `As explained in https://vite-plugin-ssr.com/header-file the following import in ${filePathToShowToUser} has no effect:`,
         quote
       ].join('\n')
       if (!isWarning) {

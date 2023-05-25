@@ -87,7 +87,7 @@ function serializeConfigElement(
     } catch {
       assertUsage(
         false,
-        `The code of config '${configName}' cannot live inside ${configDefinedByFile}, see https://vite-plugin-ssr.com/config-code-splitting`
+        `The code of config '${configName}' cannot live inside ${configDefinedByFile}, see https://vite-plugin-ssr.com/header-file`
       )
     }
     lines.push(`${whitespace}  configValueSerialized: ${JSON.stringify(configValueSerialized)}`)

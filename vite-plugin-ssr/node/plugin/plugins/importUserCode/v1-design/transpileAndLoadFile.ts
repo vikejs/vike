@@ -154,7 +154,7 @@ function assertFileImports(
         singular ? "isn't" : "aren't"
       } re-exported at ${pc.cyan('export default { ... }')} and therefore ${
         singular ? 'has' : 'have'
-      } no effect, see explanation at https://vite-plugin-ssr.com/config-code-splitting`
+      } no effect, see explanation at https://vite-plugin-ssr.com/header-file`
     ].join('\n'),
     { onlyOnce: true, showStackTrace: false }
   )
