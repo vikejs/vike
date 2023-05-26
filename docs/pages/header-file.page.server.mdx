@@ -3,20 +3,74 @@ import HeaderFileIntro from '../components/HeaderFileIntro.mdx'
 
 > `+config.h.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
 
+
+## Transformation
+
 <HeaderFileIntro />
 
-This allows vite-plugin-ssr to load code in the right environment:
+
+## Why
+
+The `.h.js` files improves IntelliSense (auto-import, refactoring, type-safety, go-to-definition, ...).
+
+Instead of defining `+config.h.js` we could define `+config.js`:
 
 ```js
-// +config.h.js
+// /pages/some-page/+config.js
 
-// onRenderClient() should be loaded only on the client-side
-import onRenderClient from './some-other-module'
-// onRenderHtml() should be loaded only on the server-side
-import onRenderHtml from './some-module'
-
-export default { onRenderHtml, onRenderClient }
+export default {
+  Page: 'import:./some-file',
+  onBeforeRender: 'import:./some-other-file'
+}
 ```
+
+But then we loose all the IntelliSense niceties. That's why we recommend to use `+config.h.js` instead of `+config.js`.
+
+> Note that real imports cannot be used. Consider this example:
+>
+> ```js
+> // +config.h.js
+>
+> // onRenderClient() should be loaded only on the client-side
+> import onRenderClient from './some-file'
+> // onRenderHtml() should be loaded only on the server-side
+> import onRenderHtml from './some-other-file'
+>
+> export default { onRenderHtml, onRenderClient }
+> ```
+>
+> Using `'import:./some-file'` instead of a real import `import onRenderClient from './some-file'` enables vite-plugin-ssr to load the `onRenderClient()` hook only when needed and only in the right environment.
+
+
+## Optional
+
+As explained in the previous section `.h.js` files are optional.
+
+Instead of defining a `+config.h.ts` file like this:
+
+```ts
+// /pages/some-page/+config.h.ts
+
+import type { Config } from 'vite-plugin-ssr/types'
+import Page from './some-file'
+import { onBeforeRender } from './some-other-file'
+
+export default { Page, onBeforeRender } satisfies Config
+```
+
+We can define a `+config.ts` file (without `.h`) like this:
+
+```ts
+// /pages/some-page/+config.ts
+
+import { ConfigNonHeaderFile } from 'vite-plugin-ssr/types'
+
+export default {
+  Page: 'import:./some-file',
+  onBeforeRender: 'import:./some-other-file:onBeforeRender'
+} satisfies ConfigNonHeaderFile
+```
+
 
 ## Inline hooks code
 
