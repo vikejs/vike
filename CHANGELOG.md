@@ -1,3 +1,12 @@
+## [0.4.130](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.129...v0.4.130) (2023-05-26)
+
+
+### Bug Fixes
+
+* [V1 design] refactor DX of non-header configs ([26342dd](https://github.com/brillout/vite-plugin-ssr/commit/26342ddd608ee4baee2a07a408edae6e800bca11))
+
+
+
 ## [0.4.129](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.128...v0.4.129) (2023-05-25)
 
 
