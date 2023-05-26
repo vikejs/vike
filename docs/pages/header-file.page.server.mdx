@@ -13,7 +13,7 @@ import HeaderFileIntro from '../components/HeaderFileIntro.mdx'
 
 The `.h.js` files improves IntelliSense (auto-import, refactoring, type-safety, go-to-definition, ...).
 
-Instead of defining `+config.h.js` we could define `+config.js`:
+Instead of defining `+config.h.js` we can define `+config.js`:
 
 ```js
 // /pages/some-page/+config.js
@@ -24,7 +24,7 @@ export default {
 }
 ```
 
-But then we loose all the IntelliSense niceties. That's why we recommend to use `+config.h.js` instead of `+config.js`.
+But then we loose IntelliSense niceties. That's why we recommend to use `+config.h.js` instead of `+config.js`.
 
 > Note that real imports cannot be used. Consider this example:
 >
@@ -127,18 +127,18 @@ This is only allowed if `Page` and `onBeforeRender` live in the same environment
 
 ## Not re-exported imports
 
-If an imported value isn't exposed over `export default { ... }` then it isn't included in any runtime.
+If an imported value isn't exposed over `export default { ... }` then it won't be included in any runtime.
 
 ```js
 // +config.h.js
 
-// These imports aren't included in runtimes.
+// These imports aren't included in any runtime.
 import { something } from './some-file'
 // This import has no effect. (CSS should be imported in runtime code such as +Page.js instead.)
 import './some.css'
 
-// This log is printed only when vite-plugin-ssr loads the +config.h.js file.
-// This log isn't included in neither the client runtime nor the server runtime.
+// This log is printed when vite-plugin-ssr loads +config.h.js files.
+// This log isn't included in the client runtime nor in the server runtime.
 console.log(something) // Prints: 'import:./some-file:something'
 
 export default {
