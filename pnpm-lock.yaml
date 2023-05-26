@@ -1825,8 +1825,8 @@ importers:
         specifier: ^5.0.2
         version: 5.0.4
       vike-react:
-        specifier: ^0.1.4
-        version: 0.1.4(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.8)
+        specifier: ^0.1.5
+        version: 0.1.5(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.8)
       vite:
         specifier: ^4.3.8
         version: 4.3.8(@types/node@20.1.0)
@@ -1846,8 +1846,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       vike-react-simple:
-        specifier: ^0.0.6
-        version: 0.0.6(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)
+        specifier: ^0.0.7
+        version: 0.0.7(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)
       vite:
         specifier: ^4.0.3
         version: 4.3.5(@types/node@20.1.0)
@@ -12268,25 +12268,25 @@ packages:
       vfile-message: 3.1.4
     dev: false
 
-  /vike-react-simple@0.0.6(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr):
-    resolution: {integrity: sha512-FzUj8h2mizJ3Z1opNfpdduhCSGFj/Uo9mtXgeYqOnxQnYsulLQZc0lh7LaBi81suikUt4nhA2Kup1AeO/Rh9JA==}
+  /vike-react-simple@0.0.7(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr):
+    resolution: {integrity: sha512-DlxzbRG30IyIgW6njy0Oddi3a4MTv6SGTer2JyCZcSv+PgNEaL6c4Wd9rpyrMHvlR8aH4QbRCgMoLK62toAsXA==}
     peerDependencies:
       react: 18.x.x
       react-dom: 18.x.x
-      vite-plugin-ssr: ^0.4.123
+      vite-plugin-ssr: ^0.4.130
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       vite-plugin-ssr: link:vite-plugin-ssr
     dev: false
 
-  /vike-react@0.1.4(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.8):
-    resolution: {integrity: sha512-eWlmVUISWxBQgw8RqYLFeid2cA+szFZi/l6VobI7ngS/YQDRutWqSxcuyR5k7AA6y4NPJ+2hyGYDLvcMPnxWwA==}
+  /vike-react@0.1.5(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.8):
+    resolution: {integrity: sha512-PF3uJqBHUxhODz9Gv07cjCrJBPqNdJUmLFRk8KYejVk+wY8VUuCdYNWDDRUvhIHI5qDNqf1f6l4+ucVD8nvYaw==}
     peerDependencies:
       react: 18.x.x
       react-dom: 18.x.x
       vite: ^4.3.8
-      vite-plugin-ssr: 0.4.129-commit-44c6cc2e5
+      vite-plugin-ssr: ^0.4.130
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
