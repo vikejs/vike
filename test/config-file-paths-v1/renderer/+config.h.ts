@@ -1,6 +1,6 @@
 import type { ConfigNonHeaderFile } from 'vite-plugin-ssr/types'
 
 export default {
-  onRenderClientPath: './onRenderClient.jsx',
-  onRenderHtmlPath: './onRenderHtml.jsx'
+  onRenderClient: 'import:./onRenderClient.jsx',
+  onRenderHtml: 'import:./onRenderHtml.jsx'
 } satisfies ConfigNonHeaderFile

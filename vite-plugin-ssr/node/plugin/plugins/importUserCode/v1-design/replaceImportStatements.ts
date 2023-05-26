@@ -1,6 +1,5 @@
 export { replaceImportStatements }
 export { parseImportData }
-export { configValueToImportData }
 export { isImportData }
 export type { FileImport }
 export type { ImportData }
@@ -68,7 +67,7 @@ function replaceImportStatements(
         }
         return importVarName
       })()
-      const importData = serializeImportData({ importPath, importName })
+      const importData = serializeImportData({ importPath, importName, importWasGenerated: true })
       replacement += `const ${importVarName} = '${importData}';`
       fileImports.push({
         importCode,
@@ -100,39 +99,44 @@ function getImports(code: string): ImportDeclaration[] {
   return imports
 }
 
-const _path = '_path'
+const import_ = 'import'
 const SEP = ':'
-type ImportData = { importPath: string; importName: string }
-function serializeImportData({ importPath, importName }: ImportData): string {
-  // `_path:${importPath}:${importPath}`
-  return `${_path}${SEP}${importPath}${SEP}${importName}`
+const zeroWidthSpace = '\u200b'
+type ImportData = {
+  importPath: string
+  importName: string
+  importWasGenerated: boolean
+}
+function serializeImportData({ importPath, importName, importWasGenerated }: ImportData): string {
+  const tag = importWasGenerated ? zeroWidthSpace : ''
+  // `import:${importPath}:${importPath}`
+  return `${tag}${import_}${SEP}${importPath}${SEP}${importName}`
 }
 function isImportData(str: string): boolean {
-  return str.startsWith(_path + SEP)
+  return str.startsWith(import_ + SEP) || str.startsWith(zeroWidthSpace + import_ + SEP)
 }
 function parseImportData(str: string): null | ImportData {
   if (!isImportData(str)) {
     return null
   }
-  const parts = str.split(SEP)
-  assert(parts[0] === _path)
-  assert(parts.length >= 3)
+
+  let importWasGenerated = false
+  if (str.startsWith(zeroWidthSpace)) {
+    importWasGenerated = true
+    assert(zeroWidthSpace.length === 1)
+    str = str.slice(1)
+  }
+
+  const parts = str.split(SEP).slice(1)
+  if (!importWasGenerated && parts.length === 1) {
+    const importName = 'default'
+    const importPath = parts[0]!
+    return { importPath, importName, importWasGenerated }
+  }
+  assert(parts.length >= 2)
   const importName = parts[parts.length - 1]!
-  const importPath = parts.slice(1, -1).join(SEP)
-  return { importPath, importName }
-}
-function configValueToImportData(
-  configValue: unknown,
-  configNameOriginal: string,
-  interfaceFilePathToShowToUser: string
-): string {
-  assert(configNameOriginal.endsWith('Path'))
-  assertUsage(
-    typeof configValue === 'string',
-    `${interfaceFilePathToShowToUser} sets '${configNameOriginal}' to a value with an invalid type \`${typeof configValue}\`, it should be a string instead`
-  )
-  const importDataStr = serializeImportData({ importPath: configValue, importName: 'default' })
-  return importDataStr
+  const importPath = parts.slice(0, -1).join(SEP)
+  return { importPath, importName, importWasGenerated }
 }
 
 // https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368

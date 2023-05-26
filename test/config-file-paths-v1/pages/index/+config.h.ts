@@ -1,5 +1,5 @@
 import type { ConfigNonHeaderFile } from 'vite-plugin-ssr/types'
 
 export default {
-  PagePath: './Page.jsx'
+  Page: 'import:./Page.jsx'
 } satisfies ConfigNonHeaderFile

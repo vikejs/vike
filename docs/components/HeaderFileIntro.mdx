@@ -1,4 +1,4 @@
-Vite-plugin-ssr transforms `.h.js` files, for example this:
+Vite-plugin-ssr transforms `.h.js` files such as this:
 
 ```js
 // /pages/some-page/+config.h.js
@@ -12,15 +12,18 @@ export default {
 }
 ```
 
-Into a file equivalent to:
+Into:
 
 ```js
-// /pages/some-page/+config.js
+// /pages/some-page/+config.h.js
+
+const Page = 'import:./some-file';
+const onBeforeRender = 'import:./some-other-file';
 
 export default {
-  PagePath: './some-file.js',
-  onBeforeRenderPath: './some-other-file.js',
+  Page,
+  onBeforeRender
 }
 ```
 
-> `.h.js` is optional syntatic sugar for improved IntelliSense (go-to-definition, auto-import, type-safety, ...). It's only meant for config files (i.e. any `.h.js` file should be a `+config.h.js` file).
+> `.h.js` is optional syntatic sugar for improved IntelliSense (go-to-definition, auto-import, type-safety, refactoring, ...). It's only meant for config files (any `.h.js` file should be a `+config.h.js` file).

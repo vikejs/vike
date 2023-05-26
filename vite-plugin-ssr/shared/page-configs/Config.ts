@@ -169,8 +169,8 @@ type Meta = Record<
   }
 >
 
-type ConfigNonHeaderFile = Partial<ConfigPaths & ConfigWithoutHooks>
-type ConfigPaths = { [K in string & keyof Config as `${K}Path`]: string }
+type ConfigNonHeaderFile = Partial<ConfigImports & ConfigWithoutHooks>
+type ConfigImports = { [K in keyof Config]: `import:${string}` }
 // https://stackoverflow.com/questions/57044386/how-to-omit-property-in-type-by-property-type/57044690#57044690
 type WithoutHooks = {
   [K in keyof Config]-?: Required<Config>[K] extends Function ? never : K

@@ -50,23 +50,22 @@ import {
   applyFilesystemRoutingRootEffect
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadFile } from './transpileAndLoadFile'
-import { configValueToImportData, ImportData, parseImportData } from './replaceImportStatements'
+import { ImportData, parseImportData } from './replaceImportStatements'
 
 assertIsVitePluginCode()
 
 type InterfaceFile = InterfaceConfigFile | InterfaceValueFile
 type InterfaceFileCommons = {
   filePath: FilePath
+  configMap: Record<ConfigName, { configValue?: unknown }>
 }
 type InterfaceConfigFile = InterfaceFileCommons & {
-  configMap: Record<ConfigName, { configValue?: unknown; configValueIsPath: boolean }>
   isConfigFile: true
   isValueFile: false
   extendsFilePaths: string[]
   isConfigExtend: boolean
 }
 type InterfaceValueFile = InterfaceFileCommons & {
-  configMap: Record<ConfigName, { configValue?: unknown; configValueIsPath?: undefined }>
   isConfigFile: false
   isValueFile: true
   configNameDefault: string
@@ -236,14 +235,7 @@ function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: 
   const interfaceFilePathToShowToUser = getFilePathToShowToUser(filePath)
   assertDefaultExportObject(fileExports, interfaceFilePathToShowToUser)
   Object.entries(fileExports.default).forEach(([configName, configValue]) => {
-    let configValueIsPath = false
-    if (configName.endsWith('Path')) {
-      configValueIsPath = true
-      // TODO: add validation to configValueToImportData()
-      configValue = configValueToImportData(configValue, configName, interfaceFilePathToShowToUser)
-      configName = configName.slice(0, -1 * 'Path'.length)
-    }
-    interfaceFile.configMap[configName] = { configValue, configValueIsPath }
+    interfaceFile.configMap[configName] = { configValue }
   })
   return interfaceFile
 }
