@@ -1,13 +1,9 @@
 import { Link } from '@brillout/docpress'
 
-The object `pageContext` holds information about the current page.
+The `pageContext` object holds information about the current page.
 
-> The `pageContext` object is completely discarded and created anew when a new page is rendered.
-> That's why it's called *page*Context (and not *app*Context).
+> `pageContext` should be treated as read-only after the rendering of the page is finished, see <Link href="#correct-usage" />.
 
-> `pageContext` is meant for rendering. When using pre-rendering you render at build-time.
-> Parts of the contenxt, like query parameters, don't exist at build-time. 
-> For example, `pageContext.urlParsed.searchAll` will always be null when pre-rendering.
 
 ## Built-in
 
@@ -17,7 +13,7 @@ Built-in properties:
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
  - **`pageContext.urlOriginal`**: the current URL.
 
-   On the server-side, `pageContext.urlOriginal` is the value we passed at the server middleware:
+   On the server-side, `pageContext.urlOriginal` is the value you passed at the server middleware:
     ```js
     // Server middleware
     app.get('*', async (req, res, next) => {
@@ -29,7 +25,7 @@ Built-in properties:
     })
     ```
 
-    On the client-side, when using <Link text="Server Routing" href="/server-routing-vs-client-routing" />, the `pageContext.urlOriginal` value is `undefined` (unless we use [`passToClient`](/passToClient)).
+    On the client-side, when using <Link text="Server Routing" href="/server-routing-vs-client-routing" />, the `pageContext.urlOriginal` value is `undefined` (unless you use [`passToClient`](/passToClient)).
 
     On the client-side, when using <Link href="/client-routing" noBreadcrumb={true} />, the value of `pageContext.urlOriginal` is the browser's current URL (`window.location.href`).
  - **`pageContext.urlPathname`**: alias of `pageContext.urlParsed.pathname`.
@@ -70,7 +66,7 @@ Built-in properties:
 
 ## Custom
 
-We can define custom `pageContext` properties at:
+You can define custom `pageContext` properties at:
  - Hooks [`onBeforeRender()`](/onBeforeRender) and [`render()`](/render).
     ```js
     export function onBeforeRender() {
@@ -115,7 +111,7 @@ The `pageContext` object can be accessed from within any UI component, see <Link
 
 **Client-side**
 
-While some `pageContext` values are also available on the client-side, most values are only available in Node.js and we have to use [`passToClient`](/passToClient) to make them available in the browser.
+While some `pageContext` values are also available on the client-side, most values are only available in Node.js and you have to use [`passToClient`](/passToClient) to make them available in the browser.
 
 When using <Link href="/server-routing" noBreadcrumb={true} />, the following are also available in the browser by default:
  - `pageContext.Page`
@@ -148,3 +144,15 @@ import type {
   PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
 } from 'vite-plugin-ssr/types'
 ```
+
+
+## Correct Usage
+
+Vite-plugin-ssr adds information to `pageContext` only while rendering the page.
+In other words: you can think of `pageContext` as read-only after the rendering of the page is finished.
+
+Upon page navigation, the `pageContext` object of the previous page is removed and a new `pageContext` object is created.
+
+Consequently:
+ - We recommend against using `pageContext` to store UI state. (Use a proper <Link text="state management tool" href="/store" /> instead.)
+ - If you use <Link text="pre-rendering" href="/pre-rendering" />, then the `pageContext` object of each of your pre-rendered page is set in stone already at build-time.
