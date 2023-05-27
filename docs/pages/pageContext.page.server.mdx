@@ -5,6 +5,10 @@ The object `pageContext` holds information about the current page.
 > The `pageContext` object is completely discarded and created anew when a new page is rendered.
 > That's why it's called *page*Context (and not *app*Context).
 
+> `pageContext` is meant for rendering. When using pre-rendering you render at build-time.
+> Parts of the contenxt, like query parameters, don't exist at build-time. 
+> For example, `pageContext.urlParsed.searchAll` will always be null when pre-rendering.
+
 ## Built-in
 
 Built-in properties:
