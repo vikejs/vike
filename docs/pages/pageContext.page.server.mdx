@@ -150,9 +150,9 @@ import type {
 
 The main purpose of `pageContext` is to hold information needed to render the page.
 
-Upon server-side rendering, the `pageContext` object lives only during the creation of the HTTP response. (You shouldn't retain the `pageContext` object.)
+On the server-side, upon server-side rendering, a new `pageContext` object is created and used only for/during the creation of the HTTP response. (You shouldn't use the `pageContext` object once the HTTP response is sent.)
 
-Upon client-side page navigation, the `pageContext` object of the previous page is discarded and a new `pageContext` object is created.
+On the client-side, upon client-side page navigation, the `pageContext` object of the previous page is discarded and a new `pageContext` object is created.
 
 Vite-plugin-ssr adds information to `pageContext` only while rendering the page, and we recommend to treat `pageContext` as read-only after the rendering of the page is finished. Consequently:
  - We recommend against using `pageContext` to store UI state. (Use a proper <Link text="state management tool" href="/store" /> instead.)
