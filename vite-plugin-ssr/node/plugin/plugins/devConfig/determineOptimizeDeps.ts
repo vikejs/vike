@@ -66,6 +66,7 @@ async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved,
   }
 
   entries = unique(entries)
+  include = unique(include)
   return { entries, include }
 }
 
