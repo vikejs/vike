@@ -152,7 +152,7 @@ The main purpose of `pageContext` is to hold information needed to render the pa
 
 On the server-side, upon rendering a URL to HTML, a new `pageContext` object is created and used only for/during the creation of the HTTP response.
 
-On the client-side, upon <Link "client-side page navigation" href="/client-routing" />, the `pageContext` object of the previous page is discarded and a new `pageContext` object is created.
+On the client-side, upon <Link text="client-side page navigation" href="/client-routing" />, the `pageContext` object of the previous page is discarded and a new `pageContext` object is created.
 
 At build-time, upon <Link text="pre-rendering" href="/pre-rendering" /> URLs to HTML, the `pageContext` object of each pre-rendered URL is generated and saved at `dist/client/${URL}/index.pageContext.json`.
 
