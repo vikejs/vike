@@ -4,13 +4,12 @@ import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles'
 import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageModule, unique } from '../../utils'
 import { getConfigData } from '../importUserCode/v1-design/getConfigData'
-import { getConfigVps } from '../../../shared/getConfigVps'
 import { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 
 async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved, isDev: true) {
-  const { entries, include } = await determineEntries(config, isDev)
+  const { entries, include } = await getPageDeps(config, configVps, isDev)
 
-  include.push(...getExtensionsInclude(configVps))
+  include.push(...getExtensionsDeps(configVps))
 
   /* Other Vite plugins may populate optimizeDeps, e.g. Cypress: https://github.com/brillout/vite-plugin-ssr/issues/386
   assert(config.optimizeDeps.entries === undefined)
@@ -19,42 +18,13 @@ async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVp
   config.optimizeDeps.entries = [...entries, ...normalizeEntries(config.optimizeDeps.entries)]
 }
 
-function getExtensionsInclude(configVps: ConfigVpsResolved): string[] {
-  return [
-    /* Doesn't work since `pageConfigsSrcDir` is a directory. We could make it work by using find-glob.
-    ...configVps.extensions
-      .map(({ pageConfigsSrcDir }) => pageConfigsSrcDir)
-      .flat()
-      .filter(isNotNullish),
-    //*/
-    ...configVps.extensions
-      .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
-      .flat()
-      .filter(isNotNullish)
-      .filter(({ importPath }) => !importPath.endsWith('.css'))
-      .map(({ importPath }) => importPath)
-  ]
-}
-
-function normalizeEntries(entries: string | string[] | undefined) {
-  if (Array.isArray(entries)) return entries
-  if (typeof entries === 'string') return [entries]
-  if (entries === undefined) return []
-  assert(false)
-}
-function normalizeInclude(include: string[] | undefined) {
-  if (Array.isArray(include)) return include
-  if (include === undefined) return []
-  assert(false)
-}
-
-async function determineEntries(config: ResolvedConfig, isDev: true) {
+async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved, isDev: true) {
   let entries: string[] = []
   let include: string[] = []
 
   // V1 design
   {
-    const { pageConfigsData } = await getConfigData(config.root, true, (await getConfigVps(config)).extensions)
+    const { pageConfigsData } = await getConfigData(config.root, isDev, configVps.extensions)
     pageConfigsData.forEach((data) => {
       Object.entries(data.configElements).forEach(([_configName, configElement]) => {
         const { codeFilePath, configEnv } = configElement
@@ -68,7 +38,7 @@ async function determineEntries(config: ResolvedConfig, isDev: true) {
         }
 
         if (isNpmPackageModule(codeFilePath)) {
-          // isNpmPackageModule() returns false for a path alias like `$root/...`.
+          // isNpmPackageModule() returns false for a path alias like `#root/...`.
           // Are there path aliases that cannot be distinguished from npm package names?
           assert(!codeFilePath.includes('#'))
           include.push(codeFilePath)
@@ -97,4 +67,33 @@ async function determineEntries(config: ResolvedConfig, isDev: true) {
 
   entries = unique(entries)
   return { entries, include }
+}
+
+function getExtensionsDeps(configVps: ConfigVpsResolved): string[] {
+  return [
+    /* Doesn't work since `pageConfigsSrcDir` is a directory. We could make it work by using find-glob.
+    ...configVps.extensions
+      .map(({ pageConfigsSrcDir }) => pageConfigsSrcDir)
+      .flat()
+      .filter(isNotNullish),
+    //*/
+    ...configVps.extensions
+      .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
+      .flat()
+      .filter(isNotNullish)
+      .filter(({ importPath }) => !importPath.endsWith('.css'))
+      .map(({ importPath }) => importPath)
+  ]
+}
+
+function normalizeEntries(entries: string | string[] | undefined) {
+  if (Array.isArray(entries)) return entries
+  if (typeof entries === 'string') return [entries]
+  if (entries === undefined) return []
+  assert(false)
+}
+function normalizeInclude(include: string[] | undefined) {
+  if (Array.isArray(include)) return include
+  if (include === undefined) return []
+  assert(false)
 }
