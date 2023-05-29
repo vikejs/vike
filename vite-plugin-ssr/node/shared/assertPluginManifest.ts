@@ -25,7 +25,7 @@ function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest i
   assert(isPlainObject(pluginManifest))
   assertUsage(
     pluginManifest.version === projectInfo.projectVersion,
-    `You need to re-build your app (\`$ vite build\`). (Because you are using \`vite-plugin-ssr@${projectInfo.projectVersion}\` while your build has been generated with a different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`
+    `Re-build your app (you're using vite-plugin-ssr@${projectInfo.projectVersion} but your app was built with vite-plugin-ssr@${pluginManifest.version})`
   )
   assertRuntimeManifest(pluginManifest)
   assert(hasProp(pluginManifest, 'usesClientRouter', 'boolean'))

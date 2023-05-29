@@ -175,7 +175,7 @@ async function runPrerender(
     assert(manuallyTriggeredBy)
     assertWarning(
       prerenderConfig,
-      `You are executing \`${manuallyTriggeredBy}\` but the config \`prerender\` isn't set to true`,
+      `You're executing \`${manuallyTriggeredBy}\` but the config \`prerender\` isn't set to true`,
       {
         onlyOnce: true,
         showStackTrace: false
@@ -802,7 +802,7 @@ function warnMissingPages(
       const pageAt = getPageAt(pageId)
       assertWarning(
         partial,
-        `Couldn't pre-render page ${pageAt} because it has a non-static route, and no ${hookName}() hook returned (an) URL(s) matching the page's route. Either use a ${hookName}() hook to pre-render the page, or use the \`--partial\` option to suppress this warning.`,
+        `Cannot pre-render page ${pageAt} because it has a non-static route, and no ${hookName}() hook returned (an) URL(s) matching the page's route. Either use a ${hookName}() hook to pre-render the page, or use the option \`prerender.partial\` to suppress this warning, see https://vite-plugin-ssr.com/prerender-config`,
         { showStackTrace: false, onlyOnce: true }
       )
     })
