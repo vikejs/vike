@@ -680,76 +680,6 @@ function resolveRelativeCodeFilePath(importData: ImportData, configFilePath: Fil
   return codeFilePath
 }
 
-/* TODO: remove parts, and move others parts to replaceImportStatements.ts
-function assertCodeFilePathConfigValue(
-  configValue: string,
-  plusConfigFilePath: string,
-  codeFilePath: string,
-  fileExists: boolean,
-  configName: string
-) {
-  const errIntro = getErrorIntro(plusConfigFilePath, configName)
-  const errIntro1 = `${errIntro} to the value '${configValue}'` as const
-  const errIntro2 = `${errIntro1} but the value should be` as const
-  const warnArgs = { onlyOnce: true, showStackTrace: false } as const
-
-  assertUsage(fileExists, `${errIntro1} but a file wasn't found at ${codeFilePath}`)
-
-  let configValueFixed = configValue
-
-  if (!isPosixPath(configValueFixed)) {
-    assert(configValueFixed.includes('\\'))
-    configValueFixed = toPosixPath(configValueFixed)
-    assert(!configValueFixed.includes('\\'))
-    assertWarning(
-      false,
-      `${errIntro2} '${configValueFixed}' instead (replace backslashes '\\' with forward slahes '/')`,
-      warnArgs
-    )
-  }
-
-  if (configValueFixed.startsWith('/')) {
-    const pageConfigDir = dirnameNormalized(plusConfigFilePath)
-    assertWarning(
-      false,
-      `${errIntro2} a relative path instead (i.e. a path that starts with './' or '../') that is relative to ${pageConfigDir}`,
-      warnArgs
-    )
-  } else if (!['./', '../'].some((prefix) => configValueFixed.startsWith(prefix))) {
-    // It isn't possible to omit '../' so we can assume that the path is relative to pageConfigDir
-    configValueFixed = './' + configValueFixed
-    assertWarning(
-      false,
-      `${errIntro2} '${configValueFixed}' instead: make sure to prefix paths with './' (or '../')`,
-      warnArgs
-    )
-  }
-  {
-    const filename = path.posix.basename(codeFilePath)
-    configValueFixed = dirnameNormalized(configValueFixed) + filename
-    const fileExt = path.posix.extname(filename)
-    assertWarning(
-      configValue.endsWith(filename),
-      `${errIntro2} '${configValueFixed}' instead (don't omit the file extension '${fileExt}')`,
-      warnArgs
-    )
-  }
-}
-*/
-
-/*
-function getVitePathFromConfigValue(codeFilePath: string, plusConfigFilePath: string): string {
-  const pageConfigDir = dirnameNormalized(plusConfigFilePath)
-  if (!codeFilePath.startsWith('/')) {
-    assertPosixPath(codeFilePath)
-    assertPosixPath(plusConfigFilePath)
-    codeFilePath = path.posix.join(pageConfigDir, codeFilePath)
-  }
-  assert(codeFilePath.startsWith('/'))
-  return codeFilePath
-}
-*/
-
 function getVitePathFromAbsolutePath(filePathAbsolute: string, root: string): string {
   assertPosixPath(filePathAbsolute)
   assertPosixPath(root)
@@ -759,16 +689,6 @@ function getVitePathFromAbsolutePath(filePathAbsolute: string, root: string): st
   vitePath = '/' + vitePath
   return vitePath
 }
-
-/*
-function dirnameNormalized(filePath: string) {
-  assertPosixPath(filePath)
-  let fileDir = path.posix.dirname(filePath)
-  assert(!fileDir.endsWith('/'))
-  fileDir = fileDir + '/'
-  return fileDir
-}
-*/
 
 function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId): ConfigDefinitionsIncludingCustom {
   const configDefinitions: ConfigDefinitionsIncludingCustom = { ...configDefinitionsBuiltIn }
@@ -1209,15 +1129,31 @@ function resolveImport(importData: ImportData, importerFilePath: FilePath): stri
   assertPosixPath(filePathAbsolute)
   let plusConfigFilDirPathAbsolute = path.posix.dirname(filePathAbsolute)
   const clean = addFileExtensionsToRequireResolve()
-  const { importPath } = importData
   let importedFile: string | null
   try {
-    importedFile = require.resolve(importPath, { paths: [plusConfigFilDirPathAbsolute] })
+    importedFile = require.resolve(importData.importPath, { paths: [plusConfigFilDirPathAbsolute] })
   } catch {
     importedFile = null
   } finally {
     clean()
   }
+  assertImport(importedFile, importData, importerFilePath)
+  importedFile = toPosixPath(importedFile)
+
+  /* TODO: remove
+  if (!importData) {
+    assertCodeFilePathConfigValue(configValue, plusConfigFilePath, importedFile, fileExists, configName)
+  }
+  */
+
+  return importedFile
+}
+function assertImport(
+  importedFile: string | null,
+  importData: ImportData,
+  importerFilePath: FilePath
+): asserts importedFile is string {
+  const { importPath } = importData
   if (!importedFile) {
     const filePathToShowToUser = getFilePathToShowToUser(importerFilePath)
     if (importPath.startsWith('.')) {
@@ -1232,13 +1168,82 @@ function resolveImport(importData: ImportData, importerFilePath: FilePath): stri
       )
     }
   }
-  importedFile = toPosixPath(importedFile)
-
-  /* TODO: remove
-    if (!importData) {
-      assertCodeFilePathConfigValue(configValue, plusConfigFilePath, importedFile, fileExists, configName)
-    }
-    */
-
-  return importedFile
 }
+
+/* TODO: remove parts, and move others parts to replaceImportStatements.ts
+function assertCodeFilePathConfigValue(
+  configValue: string,
+  plusConfigFilePath: string,
+  codeFilePath: string,
+  fileExists: boolean,
+  configName: string
+) {
+  const errIntro = getErrorIntro(plusConfigFilePath, configName)
+  const errIntro1 = `${errIntro} to the value '${configValue}'` as const
+  const errIntro2 = `${errIntro1} but the value should be` as const
+  const warnArgs = { onlyOnce: true, showStackTrace: false } as const
+
+  assertUsage(fileExists, `${errIntro1} but a file wasn't found at ${codeFilePath}`)
+
+  let configValueFixed = configValue
+
+  if (!isPosixPath(configValueFixed)) {
+    assert(configValueFixed.includes('\\'))
+    configValueFixed = toPosixPath(configValueFixed)
+    assert(!configValueFixed.includes('\\'))
+    assertWarning(
+      false,
+      `${errIntro2} '${configValueFixed}' instead (replace backslashes '\\' with forward slahes '/')`,
+      warnArgs
+    )
+  }
+
+  if (configValueFixed.startsWith('/')) {
+    const pageConfigDir = dirnameNormalized(plusConfigFilePath)
+    assertWarning(
+      false,
+      `${errIntro2} a relative path instead (i.e. a path that starts with './' or '../') that is relative to ${pageConfigDir}`,
+      warnArgs
+    )
+  } else if (!['./', '../'].some((prefix) => configValueFixed.startsWith(prefix))) {
+    // It isn't possible to omit '../' so we can assume that the path is relative to pageConfigDir
+    configValueFixed = './' + configValueFixed
+    assertWarning(
+      false,
+      `${errIntro2} '${configValueFixed}' instead: make sure to prefix paths with './' (or '../')`,
+      warnArgs
+    )
+  }
+  {
+    const filename = path.posix.basename(codeFilePath)
+    configValueFixed = dirnameNormalized(configValueFixed) + filename
+    const fileExt = path.posix.extname(filename)
+    assertWarning(
+      configValue.endsWith(filename),
+      `${errIntro2} '${configValueFixed}' instead (don't omit the file extension '${fileExt}')`,
+      warnArgs
+    )
+  }
+}
+*/
+/*
+function getVitePathFromConfigValue(codeFilePath: string, plusConfigFilePath: string): string {
+  const pageConfigDir = dirnameNormalized(plusConfigFilePath)
+  if (!codeFilePath.startsWith('/')) {
+    assertPosixPath(codeFilePath)
+    assertPosixPath(plusConfigFilePath)
+    codeFilePath = path.posix.join(pageConfigDir, codeFilePath)
+  }
+  assert(codeFilePath.startsWith('/'))
+  return codeFilePath
+}
+*/
+/*
+function dirnameNormalized(filePath: string) {
+  assertPosixPath(filePath)
+  let fileDir = path.posix.dirname(filePath)
+  assert(!fileDir.endsWith('/'))
+  fileDir = fileDir + '/'
+  return fileDir
+}
+*/
