@@ -2,7 +2,7 @@ export { determineOptimizeDeps }
 
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles'
-import { assert, getFilePathAbsolute, isNotNullish, unique } from '../../utils'
+import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageName, unique } from '../../utils'
 import { getConfigData } from '../importUserCode/v1-design/getConfigData'
 import { getConfigVps } from '../../../shared/getConfigVps'
 import { ConfigVpsResolved } from '../../../../shared/ConfigVps'
@@ -49,6 +49,7 @@ function normalizeInclude(include: string[] | undefined) {
 
 async function determineEntries(config: ResolvedConfig, isDev: true) {
   let entries: string[] = []
+  let include: string[] = []
 
   // V1 design
   {
@@ -56,23 +57,30 @@ async function determineEntries(config: ResolvedConfig, isDev: true) {
     pageConfigsData.forEach((data) => {
       Object.entries(data.configElements).forEach(([_configName, configElement]) => {
         const { codeFilePath, configEnv } = configElement
-        if (codeFilePath && (configEnv === 'client-only' || configEnv === 'server-and-client')) {
-          let filePath: string
-          if (!codeFilePath.startsWith('/')) {
-            /* For path aliases, e.g.:
-             * ```
-             * // /renderer/+config.js
-             * import onRenderClient from '#root/renderer/onRenderClient'
-             * // ...
-             * ```
-             * Does Vite resolve the path aliases or getFilePathAbsolute() needed?
-             */
-            filePath = codeFilePath
-          } else {
-            // Is getFilePathAbsolute() really needed?
-            filePath = getFilePathAbsolute(codeFilePath, config)
-          }
-          entries.push(filePath)
+        if (!codeFilePath) return
+        if (!(configEnv === 'client-only' || configEnv === 'server-and-client')) return
+
+        let filePath: string
+        if (codeFilePath.startsWith('/')) {
+          // Is getFilePathAbsolute() really needed?
+          entries.push(getFilePathAbsolute(codeFilePath, config))
+          return
+        }
+
+        if (isNpmPackageName(codeFilePath)) {
+          // isNpmPackageName() returns false for a path aliase like `$root/...`.
+          // Are there path alises that cannot be distinguished from npm package names?
+          assert(!codeFilePath.includes('#'))
+          entries.push(codeFilePath)
+        } else {
+          /* For path aliases, e.g.:
+           * ```js
+           * // /renderer/+config.js
+           * import onRenderClient from '#root/renderer/onRenderClient'
+           * ```
+           * Does Vite resolve the path aliases or is getFilePathAbsolute() needed?
+           */
+          entries.push(codeFilePath)
         }
       })
     })
@@ -88,5 +96,5 @@ async function determineEntries(config: ResolvedConfig, isDev: true) {
   }
 
   entries = unique(entries)
-  return { entries }
+  return { entries, include }
 }
