@@ -62,14 +62,14 @@ async function determineEntries(config: ResolvedConfig, isDev: true) {
         if (!(configEnv === 'client-only' || configEnv === 'server-and-client')) return
 
         if (codeFilePath.startsWith('/')) {
-          // Is getFilePathAbsolute() really needed?
+          // Is getFilePathAbsolute() really needed? This contradicts the code below that doesn't need getFilePathAbsolute().
           entries.push(getFilePathAbsolute(codeFilePath, config))
           return
         }
 
         if (isNpmPackageModule(codeFilePath)) {
           // isNpmPackageModule() returns false for a path alias like `$root/...`.
-          // Are there path alises that cannot be distinguished from npm package names?
+          // Are there path aliases that cannot be distinguished from npm package names?
           assert(!codeFilePath.includes('#'))
           include.push(codeFilePath)
         } else {

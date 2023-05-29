@@ -7,7 +7,7 @@ import { getConfigVps } from '../../../shared/getConfigVps'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware'
 import { markEnvAsDev } from '../../utils'
 
-// There don't seem to be a straightforward way to descriminate between `$ vite preview` and `$ vite dev`
+// There doesn't seem to be a straightforward way to discriminate between `$ vite preview` and `$ vite dev`
 const apply = 'serve'
 const isDev = true
 
