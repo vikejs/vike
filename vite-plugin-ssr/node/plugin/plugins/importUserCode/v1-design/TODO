@@ -21,7 +21,6 @@ Features:
  - nested layouts
 
 Sometime:
- - use `type: "module"` in boilerplates
  - remove documentProps from examples and boilerplates
 
 After stable release:
