@@ -1210,27 +1210,35 @@ function resolveImport(importData: ImportData, importerFilePath: FilePath): stri
   let plusConfigFilDirPathAbsolute = path.posix.dirname(filePathAbsolute)
   const clean = addFileExtensionsToRequireResolve()
   const { importPath } = importData
-  let importFilePath: string | null
+  let importedFile: string | null
   try {
-    importFilePath = require.resolve(importPath, { paths: [plusConfigFilDirPathAbsolute] })
+    importedFile = require.resolve(importPath, { paths: [plusConfigFilDirPathAbsolute] })
   } catch {
-    importFilePath = null
+    importedFile = null
   } finally {
     clean()
   }
-  assertUsage(
-    importFilePath,
-    `The import '${importPath}' in ${getFilePathToShowToUser(
-      importerFilePath
-    )} couldn't be resolved. Does '${importPath}' exist?`
-  )
-  importFilePath = toPosixPath(importFilePath)
+  if (!importedFile) {
+    const filePathToShowToUser = getFilePathToShowToUser(importerFilePath)
+    if (importPath.startsWith('.')) {
+      assertUsage(
+        false,
+        `${filePathToShowToUser} imports from '${importPath}' but it doesn't point to an existing file`
+      )
+    } else {
+      assertUsage(
+        false,
+        `The import '${importPath}' in ${filePathToShowToUser} couldn't be resolved. Does '${importPath}' exist?`
+      )
+    }
+  }
+  importedFile = toPosixPath(importedFile)
 
   /* TODO: remove
     if (!importData) {
-      assertCodeFilePathConfigValue(configValue, plusConfigFilePath, importFilePath, fileExists, configName)
+      assertCodeFilePathConfigValue(configValue, plusConfigFilePath, importedFile, fileExists, configName)
     }
     */
 
-  return importFilePath
+  return importedFile
 }
