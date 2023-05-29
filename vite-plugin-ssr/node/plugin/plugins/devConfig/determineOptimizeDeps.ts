@@ -2,20 +2,21 @@ export { determineOptimizeDeps }
 
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles'
-import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageName, unique } from '../../utils'
+import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageModule, unique } from '../../utils'
 import { getConfigData } from '../importUserCode/v1-design/getConfigData'
 import { getConfigVps } from '../../../shared/getConfigVps'
 import { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 
 async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved, isDev: true) {
-  const { entries } = await determineEntries(config, isDev)
-  const includes = getExtensionsInclude(configVps)
+  const { entries, include } = await determineEntries(config, isDev)
+
+  include.push(...getExtensionsInclude(configVps))
 
   /* Other Vite plugins may populate optimizeDeps, e.g. Cypress: https://github.com/brillout/vite-plugin-ssr/issues/386
   assert(config.optimizeDeps.entries === undefined)
   */
-  config.optimizeDeps.include = [...includes, ...normalizeInclude(config.optimizeDeps.include)]
-  config.optimizeDeps.entries = [...entries, ...normalizEntries(config.optimizeDeps.entries)]
+  config.optimizeDeps.include = [...include, ...normalizeInclude(config.optimizeDeps.include)]
+  config.optimizeDeps.entries = [...entries, ...normalizeEntries(config.optimizeDeps.entries)]
 }
 
 function getExtensionsInclude(configVps: ConfigVpsResolved): string[] {
@@ -35,7 +36,7 @@ function getExtensionsInclude(configVps: ConfigVpsResolved): string[] {
   ]
 }
 
-function normalizEntries(entries: string | string[] | undefined) {
+function normalizeEntries(entries: string | string[] | undefined) {
   if (Array.isArray(entries)) return entries
   if (typeof entries === 'string') return [entries]
   if (entries === undefined) return []
@@ -60,18 +61,17 @@ async function determineEntries(config: ResolvedConfig, isDev: true) {
         if (!codeFilePath) return
         if (!(configEnv === 'client-only' || configEnv === 'server-and-client')) return
 
-        let filePath: string
         if (codeFilePath.startsWith('/')) {
           // Is getFilePathAbsolute() really needed?
           entries.push(getFilePathAbsolute(codeFilePath, config))
           return
         }
 
-        if (isNpmPackageName(codeFilePath)) {
-          // isNpmPackageName() returns false for a path aliase like `$root/...`.
+        if (isNpmPackageModule(codeFilePath)) {
+          // isNpmPackageModule() returns false for a path alias like `$root/...`.
           // Are there path alises that cannot be distinguished from npm package names?
           assert(!codeFilePath.includes('#'))
-          entries.push(codeFilePath)
+          include.push(codeFilePath)
         } else {
           /* For path aliases, e.g.:
            * ```js
