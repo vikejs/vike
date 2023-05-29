@@ -531,12 +531,7 @@ function getConfigElement(
   if (interfaceFile.isConfigFile) {
     assert('configValue' in conf)
     const { configValue } = conf
-    const codeFile = getCodeFilePath(
-      configValue,
-      interfaceFile.filePath.filePathAbsolute,
-      interfaceFile.filePath.filePathRelativeToUserRootDir,
-      userRootDir
-    )
+    const codeFile = getCodeFilePath(configValue, interfaceFile.filePath, userRootDir)
     if (codeFile) {
       const { codeFilePath, codeFileExport } = codeFile
       const configElement = {
@@ -613,8 +608,7 @@ function isDefiningPageConfig(configName: string): boolean {
 
 function getCodeFilePath(
   configValue: unknown,
-  configFilePathAbsolute: string,
-  configFilePathRelativeToUserRootDir: string | null,
+  configFilePath: FilePath,
   userRootDir: string
 ): null | { codeFilePath: string; codeFileExport: string } {
   if (typeof configValue !== 'string') {
@@ -645,12 +639,7 @@ function getCodeFilePath(
     codeFilePath = importPath
   } else {
     // Relative paths
-    codeFilePath = resolveRelativeCodeFilePath(
-      importPath,
-      configFilePathAbsolute,
-      configFilePathRelativeToUserRootDir,
-      userRootDir
-    )
+    codeFilePath = resolveRelativeCodeFilePath(importData, configFilePath, userRootDir)
   }
 
   return { codeFilePath, codeFileExport }
@@ -660,47 +649,22 @@ function getCodeFilePath(
 // ```
 // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vite-plugin-ssr:importPageCode:client:/pages/index". Does the file exist?
 // ```
-function resolveRelativeCodeFilePath(
-  importPath: string,
-  configFilePathAbsolute: string,
-  configFilePathRelativeToUserRootDir: string | null,
-  userRootDir: string
-) {
-  assertPosixPath(userRootDir)
-  assertPosixPath(configFilePathAbsolute)
-  let plusConfigFilDirPathAbsolute = path.posix.dirname(configFilePathAbsolute)
-  const clean = addFileExtensionsToRequireResolve()
-  let codeFilePath: string | null
-  try {
-    codeFilePath = require.resolve(importPath, { paths: [plusConfigFilDirPathAbsolute] })
-  } catch {
-    codeFilePath = null
-  } finally {
-    clean()
-  }
-  const configFilePathHumanReadable = configFilePathRelativeToUserRootDir ?? configFilePathAbsolute
-  assert(configFilePathHumanReadable)
-  assertUsage(
-    codeFilePath,
-    `${configFilePathHumanReadable} imports from '${importPath}' which points to a non-existing file`
-  )
-  codeFilePath = toPosixPath(codeFilePath)
-
-  /* TODO: remove
-    if (!importData) {
-      assertCodeFilePathConfigValue(configValue, plusConfigFilePath, codeFilePath, fileExists, configName)
-    }
-    */
+function resolveRelativeCodeFilePath(importData: ImportData, configFilePath: FilePath, userRootDir: string) {
+  let codeFilePath = resolveImport(importData, configFilePath)
 
   // Make it a Vite path
+  assertPosixPath(userRootDir)
+  assertPosixPath(codeFilePath)
   if (codeFilePath.startsWith(userRootDir)) {
     codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
   } else {
     assertUsage(
       false,
-      `${configFilePathHumanReadable} imports from a relative path '${importPath}' which is forbidden: import from a package.json#exports entry instead`
+      `${getFilePathToShowToUser(configFilePath)} imports from a relative path '${
+        importData.importPath
+      }' outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir} or import from a dependency's package.json#exports entry instead`
     )
-    // None of the following works
+    // None of the following works. Seems to be a Vite bug?
     // /*
     // assert(codeFilePath.startsWith('/'))
     // codeFilePath = `/@fs${codeFilePath}`
@@ -1022,10 +986,8 @@ async function loadExtendsConfigs(
   extendsImportData.map((importData) => {
     const { importPath } = importData
     // TODO
-    //  - error handling if path doesn't exist
     //  - validate extends configs
-    let filePathAbsolute = require.resolve(importPath, { paths: [configFilePath.filePathAbsolute] })
-    filePathAbsolute = toPosixPath(filePathAbsolute)
+    const filePathAbsolute = resolveImport(importData, configFilePath)
     assertExtendsImportPath(importPath, filePathAbsolute, configFilePath)
     extendsConfigFiles.push({
       filePathAbsolute,
@@ -1240,4 +1202,35 @@ function getFilesystemRoutingRootEffect(configFilesystemRoutingRoot: ConfigEleme
 function determineIsErrorPage(routeFilesystem: string) {
   assertPosixPath(routeFilesystem)
   return routeFilesystem.split('/').includes('_error')
+}
+
+function resolveImport(importData: ImportData, importerFilePath: FilePath): string {
+  const { filePathAbsolute } = importerFilePath
+  assertPosixPath(filePathAbsolute)
+  let plusConfigFilDirPathAbsolute = path.posix.dirname(filePathAbsolute)
+  const clean = addFileExtensionsToRequireResolve()
+  const { importPath } = importData
+  let importFilePath: string | null
+  try {
+    importFilePath = require.resolve(importPath, { paths: [plusConfigFilDirPathAbsolute] })
+  } catch {
+    importFilePath = null
+  } finally {
+    clean()
+  }
+  assertUsage(
+    importFilePath,
+    `The import '${importPath}' in ${getFilePathToShowToUser(
+      importerFilePath
+    )} couldn't be resolved. Does '${importPath}' exist?`
+  )
+  importFilePath = toPosixPath(importFilePath)
+
+  /* TODO: remove
+    if (!importData) {
+      assertCodeFilePathConfigValue(configValue, plusConfigFilePath, importFilePath, fileExists, configName)
+    }
+    */
+
+  return importFilePath
 }
