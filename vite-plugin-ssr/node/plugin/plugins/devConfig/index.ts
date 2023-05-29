@@ -9,6 +9,7 @@ import { markEnvAsDev } from '../../utils'
 
 // There don't seem to be a straightforward way to descriminate between `$ vite preview` and `$ vite dev`
 const apply = 'serve'
+const isDev = true
 
 function devConfig(): Plugin[] {
   let config: ResolvedConfig
@@ -39,7 +40,7 @@ function devConfig(): Plugin[] {
       async configResolved(config_) {
         config = config_
         const configVps = await getConfigVps(config)
-        await determineOptimizeDeps(config, configVps)
+        await determineOptimizeDeps(config, configVps, isDev)
         await determineFsAllowList(config, configVps)
       },
       configureServer() {

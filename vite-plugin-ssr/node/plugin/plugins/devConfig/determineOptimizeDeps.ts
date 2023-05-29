@@ -7,56 +7,47 @@ import { getConfigData } from '../importUserCode/v1-design/getConfigData'
 import { getConfigVps } from '../../../shared/getConfigVps'
 import { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 
-async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved) {
-  addExtensionsToOptimizeDeps(config, configVps)
-  addOptimizeDeps(
-    config,
-    await determineEntries(
-      config,
-      // This function is also called when running `$ vite preview` but that's okay
-      true
-    )
-  )
+async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved, isDev: true) {
+  const { entries } = await determineEntries(config, isDev)
+  const includes = getExtensionsInclude(configVps)
+
+  /* Other Vite plugins may populate optimizeDeps, e.g. Cypress: https://github.com/brillout/vite-plugin-ssr/issues/386
+  assert(config.optimizeDeps.entries === undefined)
+  */
+  config.optimizeDeps.include = [...includes, ...normalizeInclude(config.optimizeDeps.include)]
+  config.optimizeDeps.entries = [...entries, ...normalizEntries(config.optimizeDeps.entries)]
 }
 
-function addExtensionsToOptimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved) {
-  config.optimizeDeps.include = config.optimizeDeps.include ?? []
-  config.optimizeDeps.include.push(
+function getExtensionsInclude(configVps: ConfigVpsResolved): string[] {
+  return [
+    /* Doesn't work since `pageConfigsSrcDir` is a directory. We could make it work by using find-glob.
+    ...configVps.extensions
+      .map(({ pageConfigsSrcDir }) => pageConfigsSrcDir)
+      .flat()
+      .filter(isNotNullish),
+    //*/
     ...configVps.extensions
       .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
       .flat()
       .filter(isNotNullish)
       .filter(({ importPath }) => !importPath.endsWith('.css'))
       .map(({ importPath }) => importPath)
-  )
-  /* Doesn't work since `pageConfigsSrcDir` is a directory. We could make it work by using find-glob.
-  config.optimizeDeps.include.push(
-    ...configVps.extensions
-      .map(({ pageConfigsSrcDir }) => pageConfigsSrcDir)
-      .flat()
-      .filter(isNotNullish)
-  )
-  */
+  ]
 }
 
-function addOptimizeDeps(config: ResolvedConfig, entries: string[]) {
-  const total = []
-
-  const val = config.optimizeDeps.entries
-  if (typeof val === 'string') {
-    total.push(val)
-  } else if (Array.isArray(val)) {
-    total.push(...val)
-  } else {
-    assert(val === undefined)
-  }
-
-  total.push(...entries)
-
-  config.optimizeDeps.entries = total
+function normalizEntries(entries: string | string[] | undefined) {
+  if (Array.isArray(entries)) return entries
+  if (typeof entries === 'string') return [entries]
+  if (entries === undefined) return []
+  assert(false)
+}
+function normalizeInclude(include: string[] | undefined) {
+  if (Array.isArray(include)) return include
+  if (include === undefined) return []
+  assert(false)
 }
 
-async function determineEntries(config: ResolvedConfig, isDev: true): Promise<string[]> {
+async function determineEntries(config: ResolvedConfig, isDev: true) {
   let entries: string[] = []
 
   // V1 design
@@ -97,5 +88,5 @@ async function determineEntries(config: ResolvedConfig, isDev: true): Promise<st
   }
 
   entries = unique(entries)
-  return entries
+  return { entries }
 }
