@@ -1,30 +1,22 @@
 export { devConfig }
 
 import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
-import { searchForWorkspaceRoot } from 'vite'
-import { assert, isNotNullish, markEnvAsDev } from '../../utils'
-import { determineOptimizeDepsEntries } from './determineOptimizeDepsEntries'
-import path from 'path'
-import fs from 'fs'
+import { determineOptimizeDeps } from './determineOptimizeDeps'
+import { determineFsAllowList } from './determineFsAllowList'
 import { getConfigVps } from '../../../shared/getConfigVps'
-import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
-import { resolveRoot, assertRoot } from '../../shared/resolveRoot'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware'
+import { markEnvAsDev } from '../../utils'
 
 // There don't seem to be a straightforward way to descriminate between `$ vite preview` and `$ vite dev`
 const apply = 'serve'
 
 function devConfig(): Plugin[] {
   let config: ResolvedConfig
-  let root: string
   return [
     {
       name: 'vite-plugin-ssr:devConfig',
       apply,
-      async config(config) {
-        root = resolveRoot(config) // TODO: remove resolveRoot() helper?
-        // TODO: remove?
-        // await loadPagesConfig(root)
+      async config() {
         return {
           optimizeDeps: {
             exclude: [
@@ -46,17 +38,8 @@ function devConfig(): Plugin[] {
       },
       async configResolved(config_) {
         config = config_
-        assertRoot(root, config)
         const configVps = await getConfigVps(config)
-        addExtensionsToOptimizeDeps(config, configVps)
-        addOptimizeDepsEntries(
-          config,
-          await determineOptimizeDepsEntries(
-            config,
-            // This function is also called when running `$ vite preview` but that's okay
-            true
-          )
-        )
+        await determineOptimizeDeps(config, configVps)
         await determineFsAllowList(config, configVps)
       },
       configureServer() {
@@ -66,6 +49,7 @@ function devConfig(): Plugin[] {
     {
       name: 'vite-plugin-ssr:devConfig:addSsrMiddleware',
       apply,
+      // The SSR middleware should be last middleware
       enforce: 'post',
       configureServer: {
         order: 'post',
@@ -78,70 +62,4 @@ function devConfig(): Plugin[] {
       }
     }
   ]
-}
-
-function addExtensionsToOptimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved) {
-  config.optimizeDeps.include = config.optimizeDeps.include ?? []
-  config.optimizeDeps.include.push(
-    ...configVps.extensions
-      .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
-      .flat()
-      .filter(isNotNullish)
-      .filter(({ importPath }) => !importPath.endsWith('.css'))
-      .map(({ importPath }) => importPath)
-  )
-  /* Doesn't work since `pageConfigsSrcDir` is a directory. We could make it work by using find-glob.
-  config.optimizeDeps.include.push(
-    ...configVps.extensions
-      .map(({ pageConfigsSrcDir }) => pageConfigsSrcDir)
-      .flat()
-      .filter(isNotNullish)
-  )
-  */
-}
-
-function addOptimizeDepsEntries(config: ResolvedConfig, entries: string[]) {
-  const total = []
-
-  const val = config.optimizeDeps.entries
-  if (typeof val === 'string') {
-    total.push(val)
-  } else if (Array.isArray(val)) {
-    total.push(...val)
-  } else {
-    assert(val === undefined)
-  }
-
-  total.push(...entries)
-
-  config.optimizeDeps.entries = total
-}
-
-async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVpsResolved) {
-  const fsAllow = config.server.fs.allow
-
-  // fsAllow should already contain searchForWorkspaceRoot()
-  assert(fsAllow.length >= 1)
-
-  fsAllow.push(process.cwd())
-  // searchForWorkspaceRoot() is buggy: https://github.com/brillout/vite-plugin-ssr/issues/555.
-  // BUt that's not a problem since Vite automatically inserts searchForWorkspaceRoot().
-  // We add it again just to be sure.
-  fsAllow.push(searchForWorkspaceRoot(process.cwd()))
-
-  // Add node_modules/vite-plugin-ssr/
-  {
-    // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vite-plugin-ssr/dist/cjs/node/plugin/plugins/config/
-    const vitePluginSsrRoot = path.join(__dirname, '../../../../../../')
-    // Assert that `vitePluginSsrRoot` is indeed pointing to `node_modules/vite-plugin-ssr/`
-    require.resolve(`${vitePluginSsrRoot}/dist/cjs/node/plugin/plugins/devConfig/index.js`)
-    fsAllow.push(vitePluginSsrRoot)
-  }
-
-  // Add VPS extensions, e.g. node_modules/stem-react/
-  configVps.extensions.forEach(({ npmPackageRootDir }) => {
-    const npmPackageRootDirReal = fs.realpathSync(npmPackageRootDir)
-    fsAllow.push(npmPackageRootDir)
-    fsAllow.push(npmPackageRootDirReal)
-  })
 }
