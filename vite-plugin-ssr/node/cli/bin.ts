@@ -12,7 +12,7 @@ cli
     assertOptions()
     const { partial, noExtraDir, base, parallel, outDir, configFile } = options
     const root = options.root && resolve(options.root)
-    await runPrerender({ partial, noExtraDir, base, root, parallel, outDir, configFile })
+    await runPrerender({ partial, noExtraDir, base, root, parallel, outDir, configFile }, '$ vite-plugin-ssr prerender')
     runPrerenderForceExit()
   })
 

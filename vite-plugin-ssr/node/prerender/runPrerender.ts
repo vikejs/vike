@@ -149,7 +149,10 @@ type PrerenderOptions = {
   base?: string
 }
 
-async function runPrerender(options: PrerenderOptions): Promise<void> {
+async function runPrerender(
+  options: PrerenderOptions,
+  manuallyTriggeredBy: null | '$ vite-plugin-ssr prerender' | 'prerender()'
+): Promise<void> {
   checkOutdatedOptions(options)
 
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
@@ -168,7 +171,17 @@ async function runPrerender(options: PrerenderOptions): Promise<void> {
   const { outDirClient } = getOutDirs_prerender(viteConfig)
   const { root } = viteConfig
   const prerenderConfig = configVps.prerender
-  assertUsage(prerenderConfig, "Set config `prerender' to true, see https://vite-plugin-ssr.com/prerender-config")
+  if (!prerenderConfig) {
+    assert(manuallyTriggeredBy)
+    assertWarning(
+      prerenderConfig,
+      `You are executing \`${manuallyTriggeredBy}\` but the config \`prerender\` isn't set to true`,
+      {
+        onlyOnce: true,
+        showStackTrace: false
+      }
+    )
+  }
   const { partial = false, noExtraDir = false, parallel = true } = prerenderConfig || {}
 
   const concurrencyLimit = pLimit(

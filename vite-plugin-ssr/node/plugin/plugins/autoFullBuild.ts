@@ -83,7 +83,7 @@ async function triggerFullBuild(config: ResolvedConfig, configVps: ConfigVpsReso
   })
 
   if (configVps.prerender && !configVps.prerender.disableAutoRun) {
-    await runPrerender({ viteConfig: configFromCli })
+    await runPrerender({ viteConfig: configFromCli }, null)
     forceExit = true
   }
 }
