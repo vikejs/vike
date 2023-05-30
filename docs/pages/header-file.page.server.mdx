@@ -11,9 +11,7 @@ import HeaderFileIntro from '../components/HeaderFileIntro.mdx'
 
 ## Why
 
-The `.h.js` files improves IntelliSense (auto-import, refactoring, type-safety, go-to-definition, ...).
-
-Instead of defining `+config.h.js` we can define `+config.js`:
+Instead of `+config.h.js` we can define `+config.js`:
 
 ```js
 // /pages/some-page/+config.js
@@ -24,9 +22,9 @@ export default {
 }
 ```
 
-But then we loose IntelliSense niceties. That's why we recommend to use `+config.h.js` instead of `+config.js`.
+But then we loose IntelliSense such as auto-import, refactoring, type safety, and go-to-definition. That's why we recommend to define `+config.h.js` instead of `+config.js`.
 
-> Note that real imports cannot be used. Consider this example:
+> Real imports cannot be used. Consider this example:
 >
 > ```js
 > // +config.h.js
@@ -39,14 +37,14 @@ But then we loose IntelliSense niceties. That's why we recommend to use `+config
 > export default { onRenderHtml, onRenderClient }
 > ```
 >
-> Using `'import:./some-file'` instead of a real import `import onRenderClient from './some-file'` enables vite-plugin-ssr to load the `onRenderClient()` hook only when needed and only in the right environment.
+> Using `'import:./some-file'` instead of a real import `import onRenderClient from './some-file'` enables vite-plugin-ssr to load the `onRenderClient()` hook only when needed and in the right environment.
 
 
 ## Optional
 
-As explained in the previous section `.h.js` files are optional.
+As mentioned in the previous section, `.h.js` files are optional.
 
-Instead of defining a `+config.h.ts` file like this:
+Instead of defining a `+config.h.ts` file:
 
 ```ts
 // /pages/some-page/+config.h.ts
@@ -55,15 +53,18 @@ import type { Config } from 'vite-plugin-ssr/types'
 import Page from './some-file'
 import { onBeforeRender } from './some-other-file'
 
-export default { Page, onBeforeRender } satisfies Config
+export default {
+  Page,
+  onBeforeRender
+} satisfies Config
 ```
 
-We can define a `+config.ts` file (without `.h`) like this:
+We can define a `+config.ts` file (without `.h`):
 
 ```ts
 // /pages/some-page/+config.ts
 
-import { ConfigNonHeaderFile } from 'vite-plugin-ssr/types'
+import type { ConfigNonHeaderFile } from 'vite-plugin-ssr/types'
 
 export default {
   Page: 'import:./some-file',
@@ -127,7 +128,7 @@ This is only allowed if `Page` and `onBeforeRender` live in the same environment
 
 ## Not re-exported imports
 
-If an imported value isn't exposed over `export default { ... }` then it won't be included in any runtime.
+Note that if an imported value isn't included in `export default { ... }`, then it won't be included in any runtime.
 
 ```js
 // +config.h.js
