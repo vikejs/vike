@@ -74,7 +74,7 @@ function getProjectError(errorMessage: string) {
 function assertWarning(
   condition: unknown,
   errorMessage: string,
-  { onlyOnce, showStackTrace }: { onlyOnce: boolean | string; showStackTrace: boolean }
+  { onlyOnce = true, showStackTrace = false }: { onlyOnce?: boolean | string; showStackTrace?: boolean } = {}
 ): void {
   if (condition) {
     return
