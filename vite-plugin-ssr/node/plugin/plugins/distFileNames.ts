@@ -106,11 +106,10 @@ function removePathSeperators(name: string) {
   const hasEntryDir = name.startsWith(entryDir)
   if (hasEntryDir) {
     name = name.slice(entryDir.length)
+    assert(!name.startsWith('/'))
   }
-  assert(!name.includes('_'))
   name = name.split('/').join('_')
   if (hasEntryDir) {
-    assert(!name.startsWith('/'))
     name = `${entryDir}${name}`
   }
   return name
