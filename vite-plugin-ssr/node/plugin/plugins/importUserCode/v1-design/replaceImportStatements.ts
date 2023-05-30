@@ -106,9 +106,13 @@ type ImportData = {
   importPath: string
   importName: string
   importWasGenerated: boolean
-  importString: string
+  importDataString: string
 }
-function serializeImportData({ importPath, importName, importWasGenerated }: Omit<ImportData, 'importString'>): string {
+function serializeImportData({
+  importPath,
+  importName,
+  importWasGenerated
+}: Omit<ImportData, 'importDataString'>): string {
   const tag = importWasGenerated ? zeroWidthSpace : ''
   // `import:${importPath}:${importPath}`
   return `${tag}${import_}${SEP}${importPath}${SEP}${importName}`
@@ -116,28 +120,28 @@ function serializeImportData({ importPath, importName, importWasGenerated }: Omi
 function isImportData(str: string): boolean {
   return str.startsWith(import_ + SEP) || str.startsWith(zeroWidthSpace + import_ + SEP)
 }
-function parseImportData(importString: string): null | ImportData {
-  if (!isImportData(importString)) {
+function parseImportData(importDataString: string): null | ImportData {
+  if (!isImportData(importDataString)) {
     return null
   }
 
   let importWasGenerated = false
-  if (importString.startsWith(zeroWidthSpace)) {
+  if (importDataString.startsWith(zeroWidthSpace)) {
     importWasGenerated = true
     assert(zeroWidthSpace.length === 1)
-    importString = importString.slice(1)
+    importDataString = importDataString.slice(1)
   }
 
-  const parts = importString.split(SEP).slice(1)
+  const parts = importDataString.split(SEP).slice(1)
   if (!importWasGenerated && parts.length === 1) {
     const importName = 'default'
     const importPath = parts[0]!
-    return { importPath, importName, importWasGenerated, importString }
+    return { importPath, importName, importWasGenerated, importDataString }
   }
   assert(parts.length >= 2)
   const importName = parts[parts.length - 1]!
   const importPath = parts.slice(0, -1).join(SEP)
-  return { importPath, importName, importWasGenerated, importString }
+  return { importPath, importName, importWasGenerated, importDataString }
 }
 
 // https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368

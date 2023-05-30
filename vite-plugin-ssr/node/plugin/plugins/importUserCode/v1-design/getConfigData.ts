@@ -1137,13 +1137,13 @@ function assertImport(
   importData: ImportData,
   importerFilePath: FilePath
 ): asserts importedFile is string {
-  const { importPath, importWasGenerated, importString } = importData
+  const { importPath, importWasGenerated, importDataString } = importData
   const filePathToShowToUser = getFilePathToShowToUser(importerFilePath)
 
   if (!importedFile) {
     const errIntro = importWasGenerated
       ? (`The import '${importPath}' in ${filePathToShowToUser}` as const)
-      : (`'${importString}' defined in ${filePathToShowToUser}` as const)
+      : (`'${importDataString}' defined in ${filePathToShowToUser}` as const)
     const errIntro2 = `${errIntro} couldn't be resolved: does '${importPath}'` as const
     if (importPath.startsWith('.')) {
       assertUsage(false, `${errIntro2} point to an existing file?`)
