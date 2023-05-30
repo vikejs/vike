@@ -63,17 +63,17 @@ function assertResolveAlias(config: ResolvedConfig) {
     )
     if (typeof find !== 'string') {
       assert(find instanceof RegExp)
-      if (find.toString().includes('@vite')) {
-        // Skip aliases set by Vite:
-        //   /^\/?@vite\/env/
-        //   /^\/?@vite\/client/
-        return
-      }
+      // Skip aliases set by Vite:
+      //   /^\/?@vite\/env/
+      //   /^\/?@vite\/client/
+      if (find.toString().includes('@vite')) return
       assertWarning(
         false,
         `${errPrefix} defines resolve.alias with a RegExp ${find} which we recommend against, use a string instead and ${errSuffix}`
       )
     } else {
+      // Skip alias set by @preact/preset-vite
+      if (find === 'react-dom/test-utils') return
       assertWarning(find.startsWith('#'), `${errPrefix} defines an alias '${find}' that doesn't ${errSuffix}`)
     }
   })
