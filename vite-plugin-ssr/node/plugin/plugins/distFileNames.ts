@@ -112,7 +112,6 @@ function removePathSeperators(name: string) {
 
 function clean(name: string, removePathSep?: boolean, fixGlob?: boolean): string {
   name = fixExtractAssetsQuery(name)
-  name = fixUnderscoreConvention(name)
   if (fixGlob) {
     name = workaroundGlob(name)
   }
@@ -121,19 +120,15 @@ function clean(name: string, removePathSep?: boolean, fixGlob?: boolean): string
     name = removePathSeperators(name)
   }
   name = removeLeadingUnderscoreInFilename(name)
+  name = removeUnderscoreDoublets(name)
   return name
 }
 function fixExtractAssetsQuery(name: string): string {
   name = name.replace(/\.[^\.]*_extractAssets_lang$/, '.extractAssets')
   return name
 }
-function fixUnderscoreConvention(name: string): string {
-  // TODO/v1-release: remove
-  // V0.4 design
-  name = name.split('_default.page.').join('default.page.')
-  name = name.split('_error.page.').join('error.page.')
-  // V1 design
-  name = name.split('/_error/').join('/error/')
+function removeUnderscoreDoublets(name: string): string {
+  name = name.split(/__+/).join('_')
   return name
 }
 function replaceNonLatinCharaters(name: string): string {
