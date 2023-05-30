@@ -72,7 +72,7 @@ function assertResolveAlias(config: ResolvedConfig) {
         `${errPrefix} defines resolve.alias with a RegExp ${find} which we recommend against, use a string instead and ${errSuffix}`
       )
     } else {
-      // Skip alias set by @preact/preset-vite
+      // Skip aliases set by @preact/preset-vite
       if (find.startsWith('react')) return
       assertWarning(find.startsWith('#'), `${errPrefix} defines an alias '${find}' that doesn't ${errSuffix}`)
     }
