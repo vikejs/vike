@@ -1,6 +1,5 @@
 export { replaceImportStatements }
 export { parseImportData }
-export { serializeImportData }
 export { isImportData }
 export type { FileImport }
 export type { ImportData }
