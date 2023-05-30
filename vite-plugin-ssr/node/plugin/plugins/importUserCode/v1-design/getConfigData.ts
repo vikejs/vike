@@ -617,7 +617,7 @@ function getCodeFilePath(
   if (!importData) {
     return null
   }
-  const { importPath, importName } = importData
+  const { importPath, importExportName } = importData
 
   let codeFilePath = importPath
 
@@ -636,7 +636,7 @@ function getCodeFilePath(
   return {
     // TODO: rename?
     codeFilePath,
-    codeFileExport: importName
+    codeFileExport: importExportName
   }
 }
 

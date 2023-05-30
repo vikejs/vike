@@ -131,9 +131,9 @@ function assertFileImports(
   Object.values(exportedStrings).forEach((exportVal) => {
     if (typeof exportVal !== 'string') return
     if (!isImportData(exportVal)) return
-    const importData = exportVal
+    const importDataString = exportVal
     fileImports.forEach((fileImport) => {
-      if (fileImport.importData === importData) {
+      if (fileImport.importDataString === importDataString) {
         fileImport.isReExported = true
       }
     })
@@ -142,8 +142,8 @@ function assertFileImports(
   const fileImportsUnused = fileImports.filter((fi) => !fi.isReExported)
   if (fileImportsUnused.length === 0) return
 
-  const importStatements = unique(fileImportsUnused.map((fi) => fi.importCode))
-  const importNamesUnused: string = fileImportsUnused.map((fi) => pc.cyan(fi.importVarName)).join(', ')
+  const importStatements = unique(fileImportsUnused.map((fi) => fi.importStatementCode))
+  const importNamesUnused: string = fileImportsUnused.map((fi) => pc.cyan(fi.importLocalName)).join(', ')
   const singular = fileImportsUnused.length === 1
   assertWarning(
     fileImportsUnused.length === 0,

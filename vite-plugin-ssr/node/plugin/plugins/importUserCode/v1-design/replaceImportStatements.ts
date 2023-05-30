@@ -12,9 +12,9 @@ import { assert, assertUsage, assertWarning, styleFileRE } from '../../../utils'
 import pc from '@brillout/picocolors'
 
 type FileImport = {
-  importCode: string
-  importData: string
-  importVarName: string
+  importStatementCode: string
+  importDataString: string
+  importLocalName: string
 }
 function replaceImportStatements(
   code: string,
@@ -34,12 +34,12 @@ function replaceImportStatements(
 
     const { start, end } = node
 
-    const importCode = code.slice(start, end)
+    const importStatementCode = code.slice(start, end)
 
     // No variable imported
     if (node.specifiers.length === 0) {
       const isWarning = !styleFileRE.test(importPath)
-      let quote = indent(importCode)
+      let quote = indent(importStatementCode)
       if (isWarning) {
         quote = pc.cyan(quote)
       } else {
@@ -58,21 +58,21 @@ function replaceImportStatements(
     let replacement = ''
     node.specifiers.forEach((specifier) => {
       assert(specifier.type === 'ImportSpecifier' || specifier.type === 'ImportDefaultSpecifier')
-      const importVarName = specifier.local.name
-      const importName = (() => {
+      const importLocalName = specifier.local.name
+      const importExportName = (() => {
         if (specifier.type === 'ImportDefaultSpecifier') return 'default'
         {
           const imported = (specifier as any).imported as Identifier | undefined
           if (imported) return imported.name
         }
-        return importVarName
+        return importLocalName
       })()
-      const importData = serializeImportData({ importPath, importName, importWasGenerated: true })
-      replacement += `const ${importVarName} = '${importData}';`
+      const importDataString = serializeImportData({ importPath, importExportName, importWasGenerated: true })
+      replacement += `const ${importLocalName} = '${importDataString}';`
       fileImports.push({
-        importCode,
-        importData,
-        importVarName
+        importStatementCode,
+        importDataString,
+        importLocalName
       })
     })
 
@@ -104,18 +104,18 @@ const SEP = ':'
 const zeroWidthSpace = '\u200b'
 type ImportData = {
   importPath: string
-  importName: string
+  importExportName: string
   importWasGenerated: boolean
   importDataString: string
 }
 function serializeImportData({
   importPath,
-  importName,
+  importExportName,
   importWasGenerated
 }: Omit<ImportData, 'importDataString'>): string {
   const tag = importWasGenerated ? zeroWidthSpace : ''
   // `import:${importPath}:${importPath}`
-  return `${tag}${import_}${SEP}${importPath}${SEP}${importName}`
+  return `${tag}${import_}${SEP}${importPath}${SEP}${importExportName}`
 }
 function isImportData(str: string): boolean {
   return str.startsWith(import_ + SEP) || str.startsWith(zeroWidthSpace + import_ + SEP)
@@ -134,14 +134,14 @@ function parseImportData(importDataString: string): null | ImportData {
 
   const parts = importDataString.split(SEP).slice(1)
   if (!importWasGenerated && parts.length === 1) {
-    const importName = 'default'
+    const importExportName = 'default'
     const importPath = parts[0]!
-    return { importPath, importName, importWasGenerated, importDataString }
+    return { importPath, importExportName, importWasGenerated, importDataString }
   }
   assert(parts.length >= 2)
-  const importName = parts[parts.length - 1]!
+  const importExportName = parts[parts.length - 1]!
   const importPath = parts.slice(0, -1).join(SEP)
-  return { importPath, importName, importWasGenerated, importDataString }
+  return { importPath, importExportName, importWasGenerated, importDataString }
 }
 
 // https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368
