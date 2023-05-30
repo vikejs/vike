@@ -21,6 +21,8 @@ import { getConfigVps } from '../../shared/getConfigVps'
 import type { ResolvedConfig, Plugin, Rollup } from 'vite'
 import { getVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode'
 import type { PageConfigData } from '../../../shared/page-configs/PageConfig'
+import type { FileType } from '../../../shared/getPageFiles/fileTypes'
+import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery'
 type InputOption = Rollup.InputOption
 
 function buildConfig(): Plugin {
@@ -58,8 +60,9 @@ function buildConfig(): Plugin {
 }
 
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
-  const pageFileEntries = await getPageFileEntries(config) // TODO/v1-release: remove
-  const { pageConfigsData } = await getConfigData(config.root, false, (await getConfigVps(config)).extensions)
+  const configVps = await getConfigVps(config)
+  const pageFileEntries = await getPageFileEntries(config, configVps.includeAssetsImportedByServer) // TODO/v1-release: remove
+  const { pageConfigsData } = await getConfigData(config.root, false, configVps.extensions)
   assertUsage(
     Object.keys(pageFileEntries).length !== 0 || pageConfigsData.length !== 0,
     'At least one page should be defined, see https://vite-plugin-ssr.com/add'
@@ -137,27 +140,39 @@ function analyzeServerEntries(pageConfigsData: PageConfigData[]) {
 
 // Ensure Rollup creates entries for each page file, see https://github.com/brillout/vite-plugin-ssr/issues/350
 // (Otherwise the page files may be missing in the client manifest.json)
-async function getPageFileEntries(config: ResolvedConfig) {
-  let pageFiles = await findPageFiles(
-    config,
-    viteIsSSR(config) ? ['.page', '.page.server'] : ['.page', '.page.client'],
-    false
-  )
+async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedByServer: boolean) {
+  const isForClientSide = !viteIsSSR(config)
+  const fileTypes: FileType[] = isForClientSide ? ['.page', '.page.client'] : ['.page', '.page.server']
+  if (isForClientSide && includeAssetsImportedByServer) {
+    fileTypes.push('.page.server')
+  }
+  let pageFiles = await findPageFiles(config, fileTypes, false)
   const pageFileEntries: Record<string, string> = {}
   pageFiles = unique(pageFiles)
   pageFiles.forEach((pageFile) => {
-    const { entryName, entryTarget } = getEntryFromFilePath(pageFile, config)
+    let addExtractAssetsQuery = false
+    if (isForClientSide && pageFile.includes('.page.server.')) {
+      assert(includeAssetsImportedByServer)
+      addExtractAssetsQuery = true
+    }
+    const { entryName, entryTarget } = getEntryFromFilePath(pageFile, config, addExtractAssetsQuery)
     pageFileEntries[entryName] = entryTarget
   })
   return pageFileEntries
 }
 
-function getEntryFromFilePath(filePath: string, config: ResolvedConfig) {
+function getEntryFromFilePath(filePath: string, config: ResolvedConfig, addExtractAssetsQuery?: boolean) {
   assertPosixPath(filePath)
-  const entryTarget = getFilePathAbsolute(filePath, config)
   assert(filePath.startsWith('/'))
-  let entryName = removeFileExtention(filePath)
+
+  let entryTarget = getFilePathAbsolute(filePath, config)
+  if (addExtractAssetsQuery) entryTarget = extractAssetsAddQuery(entryTarget)
+
+  let entryName = filePath
+  if (addExtractAssetsQuery) entryName = extractAssetsAddQuery(entryName)
+  entryName = removeFileExtention(entryName)
   entryName = prependEntriesDir(entryName)
+
   return { entryName, entryTarget }
 }
 function getEntryFromPageConfigData(pageConfigData: PageConfigData, isForClientSide: boolean) {
