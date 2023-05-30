@@ -67,6 +67,8 @@ function assertResolveAlias(config: ResolvedConfig) {
       //   /^\/?@vite\/env/
       //   /^\/?@vite\/client/
       if (find.toString().includes('@vite')) return
+      // Skip alias /^solid-refresh$/ set by vite-plugin-solid
+      if (find.toString().includes('solid-refresh')) return
       assertWarning(
         false,
         `${errPrefix} defines resolve.alias with a RegExp ${find} which we recommend against, use a string instead and ${errSuffix}`
