@@ -25,7 +25,8 @@ import {
   getMostSimilar,
   isNpmPackageImport,
   joinEnglish,
-  lowerFirst
+  lowerFirst,
+  scriptFileExtensions
 } from '../../../utils'
 import path from 'path'
 import type {
@@ -824,7 +825,7 @@ function getConfigElementSource(configElement: ConfigElement): ConfigElementSour
 }
 
 async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]) {
-  const plusFiles = await findUserFiles('**/+*', userRootDir, isDev)
+  const plusFiles = await findUserFiles(`**/+*.${scriptFileExtensions}`, userRootDir, isDev)
   extensions.forEach((extension) => {
     extension.pageConfigsDistFiles?.forEach((pageConfigDistFile) => {
       // TODO/v1-release: remove
