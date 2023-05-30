@@ -67,7 +67,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
   if (viteIsSSR(config)) {
     const serverEntries = analyzeServerEntries(pageConfigsData)
     const entries = {
-      pageFiles: virtualFileIdImportUserCodeServer, // TODO/next-major-release: rename to plusConfigFiles
+      pageFiles: virtualFileIdImportUserCodeServer, // TODO/next-major-release: rename to configFiles
       importBuild: resolve('dist/cjs/node/importBuild.js'), // TODO/next-major-release: remove
       ...pageFileEntries,
       ...serverEntries
