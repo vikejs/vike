@@ -103,7 +103,7 @@ function removeNpmPackageName(somePath: string): string {
     return somePath
   }
   const importPath = getNpmPackageImportPath(somePath)
-  if (!importPath) return somePath
+  if (!importPath) return '/'
   assertPosixPath(importPath)
   assert(!importPath.startsWith('/'))
   somePath = '/' + importPath
