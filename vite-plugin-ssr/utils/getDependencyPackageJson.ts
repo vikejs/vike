@@ -9,7 +9,7 @@ export { getDependencyRootDir }
 //  - https://stackoverflow.com/questions/10111163/how-can-i-get-the-path-of-a-module-i-have-loaded-via-require-that-is-not-mine/63441056#63441056
 
 import { assert, assertUsage } from './assert'
-import { isNpmPackageName } from './isNpmPackageName'
+import { isNpmPackageName } from './isNpmPackage'
 import { toPosixPath } from './filesystemPathHandling'
 import { isObject } from './isObject'
 import path from 'path'

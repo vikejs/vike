@@ -5,7 +5,7 @@ import { assertPosixPath, toPosixPath } from './filesystemPathHandling'
 import { assert } from './assert'
 import path from 'path'
 import { assertIsVitePluginCode } from './assertIsVitePluginCode'
-import { isNpmPackageModule } from './isNpmPackageName'
+import { isNpmPackageModule } from './isNpmPackage'
 
 assertIsVitePluginCode()
 
