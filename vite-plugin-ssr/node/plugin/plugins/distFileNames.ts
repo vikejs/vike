@@ -75,14 +75,8 @@ function getChunkFileName(_chunkInfo: PreRenderedChunk, config: ResolvedConfig):
 }
 
 function getEntryFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, isEntry: boolean): string {
-  const { root } = config
   const assetsDir = getAssetsDir(config)
   const isForClientSide = !config.build.ssr
-
-  assertPosixPath(root)
-  let id = chunkInfo.facadeModuleId
-  // I don't know why, but chunkInfo.facadeModuleId isn't always a posix path, see https://github.com/brillout/vite-plugin-ssr/issues/771
-  if (id) id = toPosixPath(id)
 
   let { name } = chunkInfo
 
