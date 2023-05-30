@@ -141,6 +141,7 @@ function workaroundGlob(name: string) {
   // V1 design
   name = name.split('+').join('')
 
+  // TODO/v1-release: remove
   // V0.4 design
   ;['client', 'server', 'route'].forEach((env) => {
     name = name.split(`.page.${env}`).join(`-page-${env}`)
