@@ -4,7 +4,7 @@ export { distFileNames }
 //  - https://github.com/brillout/vite-plugin-ssr/commit/11a4c49e5403aa7c37c8020c462b499425b41854
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
-import { assertPosixPath, assert, assertUsage, toPosixPath } from '../utils'
+import { assertPosixPath, assert, assertUsage } from '../utils'
 import path from 'path'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 type PreRenderedChunk = Rollup.PreRenderedChunk
@@ -79,12 +79,13 @@ function getEntryFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, i
   const isForClientSide = !config.build.ssr
 
   let { name } = chunkInfo
-
-  if (!isForClientSide) {
-    name = workaroundGlob(name)
-  }
-  name = clean(name)
-  name = removePathSeperators(name)
+  assertPosixPath(name)
+  name = clean(
+    name,
+    true,
+    // Not needed for client-side because dist/ filenames contain `.[hash].js`
+    !isForClientSide
+  )
 
   if (isForClientSide) {
     return `${assetsDir}/${name}.[hash].js`
@@ -109,19 +110,40 @@ function removePathSeperators(name: string) {
   return name
 }
 
-function clean(name: string): string {
-  name = removeSpecialCharacters(name)
-  name = removeProblematicCharaters(name)
+function clean(name: string, removePathSep?: boolean, fixGlob?: boolean): string {
+  name = fixExtractAssetsQuery(name)
+  name = fixUnderscoreConvention(name)
+  if (fixGlob) {
+    name = workaroundGlob(name)
+  }
+  name = replaceNonLatinCharaters(name)
+  if (removePathSep) {
+    name = removePathSeperators(name)
+  }
+  name = removeLeadingUnderscoreInFilename(name)
   return name
 }
-function removeSpecialCharacters(name: string): string {
+function fixExtractAssetsQuery(name: string): string {
+  name = name.replace(/\.[^\.]*_extractAssets_lang$/, '.extractAssets')
+  return name
+}
+function fixUnderscoreConvention(name: string): string {
+  // TODO/v1-release: remove
+  // V0.4 design
+  name = name.split('_default.page.').join('default.page.')
+  name = name.split('_error.page.').join('error.page.')
+  // V1 design
+  name = name.split('/_error/').join('/error/')
+  return name
+}
+function replaceNonLatinCharaters(name: string): string {
   name = name.split('+').join('')
-  name = name.split('_').join('')
+  name = name.replace(/[^a-zA-Z0-9\/\._]/g, '-')
   return name
 }
 // Remove leading `_` from filename
 //  - GitHub Pages treat URLs with filename starting with `_` differently (removing the need for workaround of creating a .jekyll file)
-function removeProblematicCharaters(name: string): string {
+function removeLeadingUnderscoreInFilename(name: string): string {
   assertPosixPath(name)
   const paths = name.split('/')
   {
