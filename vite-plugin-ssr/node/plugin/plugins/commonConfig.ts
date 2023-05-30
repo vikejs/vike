@@ -73,7 +73,7 @@ function assertResolveAlias(config: ResolvedConfig) {
       )
     } else {
       // Skip alias set by @preact/preset-vite
-      if (find === 'react-dom/test-utils') return
+      if (find.startsWith('react')) return
       assertWarning(find.startsWith('#'), `${errPrefix} defines an alias '${find}' that doesn't ${errSuffix}`)
     }
   })
