@@ -23,7 +23,7 @@ import {
   objectKeys,
   assertIsVitePluginCode,
   getMostSimilar,
-  isNpmPackageModule,
+  isNpmPackageImport,
   joinEnglish,
   lowerFirst
 } from '../../../utils'
@@ -938,7 +938,7 @@ function determineFilePathRelativeToUserDir(filePathAbsolute: string, userRootDi
 }
 
 function assertExtendsImportPath(importPath: string, filePath: string, configFilePath: FilePath) {
-  if (isNpmPackageModule(importPath)) {
+  if (isNpmPackageImport(importPath)) {
     const fileDir = path.posix.dirname(filePath) + '/'
     const fileName = path.posix.basename(filePath)
     const fileNameBaseCorrect = '+config'

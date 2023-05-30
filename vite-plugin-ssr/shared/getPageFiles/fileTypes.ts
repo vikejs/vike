@@ -3,7 +3,7 @@ export { fileTypes }
 export { isValidFileType }
 export { determineFileType }
 
-import { assert, assertPosixPath, isNpmPackageModule } from '../utils'
+import { assert, assertPosixPath, isNpmPackageImport } from '../utils'
 import { isScriptFile } from '../../utils/isScriptFile'
 
 const fileTypes = [
@@ -28,7 +28,7 @@ function determineFileType(filePath: string): FileType {
   {
     const isCSS = filePath.endsWith('.css')
     if (isCSS) {
-      assert(isNpmPackageModule(filePath), filePath) // `.css` page files are only supported for npm packages
+      assert(isNpmPackageImport(filePath), filePath) // `.css` page files are only supported for npm packages
       return '.css'
     }
   }

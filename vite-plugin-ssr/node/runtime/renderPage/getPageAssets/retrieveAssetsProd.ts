@@ -1,6 +1,6 @@
 export { retrieveAssetsProd }
 
-import { assert, isNpmPackageModule } from '../../utils'
+import { assert, isNpmPackageImport } from '../../utils'
 import type { ViteManifest } from '../../../shared/ViteManifest'
 import { getManifestEntry } from './getManifestEntry'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery'
@@ -21,7 +21,7 @@ function retrieveAssetsProd(
       if (!includeAssetsImportedByServer) return
       // We assume that all npm packages have already built their VPS page files.
       //  - Bundlers (Rollup, esbuild, tsup, ...) extract the CSS out of JavaScript => we can assume JavaScript to not import any CSS/assets
-      if (isNpmPackageModule(id)) return
+      if (isNpmPackageImport(id)) return
       if (id.includes('.page.server.')) {
         id = extractAssetsAddQuery(id)
       }

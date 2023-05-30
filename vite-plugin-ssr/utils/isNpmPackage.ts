@@ -1,12 +1,12 @@
+export { isNpmPackageImport }
 export { isNpmPackageName }
-export { isNpmPackageModule }
 export { getNpmPackageName }
 export { getNpmPackageImportPath }
 
 import { assert } from './assert'
 const invalidNameRE = /[^a-zA-Z-_]/
 
-function isNpmPackageModule(str: string): boolean {
+function isNpmPackageImport(str: string): boolean {
   const res = parseNpmPath(str)
   return res !== null
 }

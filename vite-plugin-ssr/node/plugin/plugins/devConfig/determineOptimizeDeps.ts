@@ -2,7 +2,7 @@ export { determineOptimizeDeps }
 
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles'
-import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageModule, unique } from '../../utils'
+import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageImport, unique } from '../../utils'
 import { getConfigData } from '../importUserCode/v1-design/getConfigData'
 import { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 
@@ -37,7 +37,7 @@ async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved,
           return
         }
 
-        if (isNpmPackageModule(codeFilePath)) {
+        if (isNpmPackageImport(codeFilePath)) {
           // isNpmPackageModule() returns false for a path alias like `#root/...`.
           // Are there path aliases that cannot be distinguished from npm package names?
           assert(!codeFilePath.includes('#'))

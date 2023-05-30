@@ -1,7 +1,7 @@
 export { getManifestEntry }
 
 import type { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest'
-import { assert, slice, isNpmPackageModule } from '../../utils'
+import { assert, slice, isNpmPackageImport } from '../../utils'
 import { assertClientEntryId } from './assertClientEntryId'
 import { isVirtualFileIdImportPageCode } from '../../../shared/virtual-files/virtualFileImportPageCode'
 
@@ -52,7 +52,7 @@ function getManifestEntry(
   }
 
   // extensions[number].pageConfigsDistFiles
-  if (isNpmPackageModule(id)) {
+  if (isNpmPackageImport(id)) {
     const manifestKey = manifestKeyMap[id]
     const debugInfo2 = { ...debugInfo, manifestKey }
     assert(manifestKey, debugInfo2)

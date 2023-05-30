@@ -9,7 +9,7 @@ import {
   prependBase,
   assertPosixPath,
   toPosixPath,
-  isNpmPackageModule,
+  isNpmPackageImport,
   unique,
   isNotNullish,
   pathJoin
@@ -156,7 +156,7 @@ function resolveClientEntriesDev(
         res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../../../../dist/esm/client/'))
       )
     }
-  } else if (isNpmPackageModule(clientEntry)) {
+  } else if (isNpmPackageImport(clientEntry)) {
     const extensionPageFile = configVps.extensions
       .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
       .flat()

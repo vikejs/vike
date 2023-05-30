@@ -5,7 +5,7 @@ import { assertPosixPath, toPosixPath } from './filesystemPathHandling'
 import { assert } from './assert'
 import path from 'path'
 import { assertIsVitePluginCode } from './assertIsVitePluginCode'
-import { isNpmPackageModule } from './isNpmPackage'
+import { isNpmPackageImport } from './isNpmPackage'
 
 assertIsVitePluginCode()
 
@@ -20,7 +20,7 @@ function getFilePathAbsolute(filePath: string, config: ResolvedConfig): string {
   }
 
   let filePathUnresolved: string
-  if (isNpmPackageModule(filePath)) {
+  if (isNpmPackageImport(filePath)) {
     filePathUnresolved = filePath
   } else {
     assert(filePath.startsWith('/'))
