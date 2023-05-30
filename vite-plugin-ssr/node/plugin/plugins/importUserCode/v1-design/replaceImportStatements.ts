@@ -1,5 +1,6 @@
 export { replaceImportStatements }
 export { parseImportData }
+export { serializeImportData }
 export { isImportData }
 export type { FileImport }
 export type { ImportData }
@@ -106,8 +107,9 @@ type ImportData = {
   importPath: string
   importName: string
   importWasGenerated: boolean
+  importString: string
 }
-function serializeImportData({ importPath, importName, importWasGenerated }: ImportData): string {
+function serializeImportData({ importPath, importName, importWasGenerated }: Omit<ImportData, 'importString'>): string {
   const tag = importWasGenerated ? zeroWidthSpace : ''
   // `import:${importPath}:${importPath}`
   return `${tag}${import_}${SEP}${importPath}${SEP}${importName}`
@@ -115,28 +117,28 @@ function serializeImportData({ importPath, importName, importWasGenerated }: Imp
 function isImportData(str: string): boolean {
   return str.startsWith(import_ + SEP) || str.startsWith(zeroWidthSpace + import_ + SEP)
 }
-function parseImportData(str: string): null | ImportData {
-  if (!isImportData(str)) {
+function parseImportData(importString: string): null | ImportData {
+  if (!isImportData(importString)) {
     return null
   }
 
   let importWasGenerated = false
-  if (str.startsWith(zeroWidthSpace)) {
+  if (importString.startsWith(zeroWidthSpace)) {
     importWasGenerated = true
     assert(zeroWidthSpace.length === 1)
-    str = str.slice(1)
+    importString = importString.slice(1)
   }
 
-  const parts = str.split(SEP).slice(1)
+  const parts = importString.split(SEP).slice(1)
   if (!importWasGenerated && parts.length === 1) {
     const importName = 'default'
     const importPath = parts[0]!
-    return { importPath, importName, importWasGenerated }
+    return { importPath, importName, importWasGenerated, importString }
   }
   assert(parts.length >= 2)
   const importName = parts[parts.length - 1]!
   const importPath = parts.slice(0, -1).join(SEP)
-  return { importPath, importName, importWasGenerated }
+  return { importPath, importName, importWasGenerated, importString }
 }
 
 // https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368

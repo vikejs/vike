@@ -26,7 +26,8 @@ import {
   getMostSimilar,
   isNpmPackageModule,
   joinEnglish,
-  lowerFirst
+  lowerFirst,
+  isPosixPath
 } from '../../../utils'
 import path from 'path'
 import type {
@@ -49,7 +50,7 @@ import {
   applyFilesystemRoutingRootEffect
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadFile } from './transpileAndLoadFile'
-import { ImportData, parseImportData } from './replaceImportStatements'
+import { ImportData, parseImportData, serializeImportData } from './replaceImportStatements'
 
 assertIsVitePluginCode()
 
@@ -1153,20 +1154,53 @@ function assertImport(
   importData: ImportData,
   importerFilePath: FilePath
 ): asserts importedFile is string {
-  const { importPath } = importData
+  const { importPath, importWasGenerated, importString } = importData
+  const filePathToShowToUser = getFilePathToShowToUser(importerFilePath)
+
   if (!importedFile) {
-    const filePathToShowToUser = getFilePathToShowToUser(importerFilePath)
+    const errIntro = importWasGenerated
+      ? (`The import '${importPath}' in ${filePathToShowToUser}` as const)
+      : (`'${importString}' defined in ${filePathToShowToUser}` as const)
+    const errIntro2 = `${errIntro} couldn't be resolved: does '${importPath}'` as const
     if (importPath.startsWith('.')) {
-      assertUsage(
-        false,
-        `${filePathToShowToUser} imports from '${importPath}' but it doesn't point to an existing file`
-      )
+      assertUsage(false, `${errIntro2} point to an existing file?`)
     } else {
-      assertUsage(
-        false,
-        `The import '${importPath}' in ${filePathToShowToUser} couldn't be resolved. Does '${importPath}' exist?`
-      )
+      assertUsage(false, `${errIntro2} exist?`)
     }
+  }
+
+  if (importWasGenerated) {
+    return
+  }
+
+  const errIntro = `'${importString}' defined in ${filePathToShowToUser}` as const
+  const warnArgs = { onlyOnce: true, showStackTrace: false } as const
+  const getImportStringFixed = (importPathFixed: string) =>
+    serializeImportData({ ...importData, importPath: importPathFixed })
+
+  if (!isPosixPath(importPath)) {
+    assert(importPath.includes('\\'))
+    const importPathFixed = toPosixPath(importPath)
+    assert(!importPathFixed.includes('\\'))
+    const importStringFixed = getImportStringFixed(importPathFixed)
+    assertWarning(
+      false,
+      `${errIntro} should be '${importStringFixed}' instead (replace backslashes '\\' with forward slahes '/')`,
+      warnArgs
+    )
+    return
+  }
+  {
+    const filename = path.posix.basename(importedFile)
+    const importPathFixed = dirnameNormalized(importPath) + filename
+    const fileExt = path.posix.extname(filename)
+    const importStringFixed = getImportStringFixed(importPathFixed)
+    assertWarning(
+      importPath.endsWith(filename),
+      `${errIntro} should be '${importStringFixed}' instead (don't omit the file extension '${fileExt}')`,
+      warnArgs
+    )
+    return
   }
 }
 
@@ -1187,17 +1221,6 @@ function assertCodeFilePathConfigValue(
 
   let configValueFixed = configValue
 
-  if (!isPosixPath(configValueFixed)) {
-    assert(configValueFixed.includes('\\'))
-    configValueFixed = toPosixPath(configValueFixed)
-    assert(!configValueFixed.includes('\\'))
-    assertWarning(
-      false,
-      `${errIntro2} '${configValueFixed}' instead (replace backslashes '\\' with forward slahes '/')`,
-      warnArgs
-    )
-  }
-
   if (configValueFixed.startsWith('/')) {
     const pageConfigDir = dirnameNormalized(plusConfigFilePath)
     assertWarning(
@@ -1206,21 +1229,10 @@ function assertCodeFilePathConfigValue(
       warnArgs
     )
   } else if (!['./', '../'].some((prefix) => configValueFixed.startsWith(prefix))) {
-    // It isn't possible to omit '../' so we can assume that the path is relative to pageConfigDir
     configValueFixed = './' + configValueFixed
     assertWarning(
       false,
       `${errIntro2} '${configValueFixed}' instead: make sure to prefix paths with './' (or '../')`,
-      warnArgs
-    )
-  }
-  {
-    const filename = path.posix.basename(codeFilePath)
-    configValueFixed = dirnameNormalized(configValueFixed) + filename
-    const fileExt = path.posix.extname(filename)
-    assertWarning(
-      configValue.endsWith(filename),
-      `${errIntro2} '${configValueFixed}' instead (don't omit the file extension '${fileExt}')`,
       warnArgs
     )
   }
@@ -1239,6 +1251,7 @@ function getVitePathFromConfigValue(codeFilePath: string, plusConfigFilePath: st
 }
 */
 /*
+ */
 function dirnameNormalized(filePath: string) {
   assertPosixPath(filePath)
   let fileDir = path.posix.dirname(filePath)
@@ -1246,4 +1259,3 @@ function dirnameNormalized(filePath: string) {
   fileDir = fileDir + '/'
   return fileDir
 }
-*/
