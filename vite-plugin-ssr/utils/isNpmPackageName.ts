@@ -1,6 +1,5 @@
 export { isNpmPackageName }
 export { isNpmPackageModule }
-export { isNpmPackageImportPath }
 export { getNpmPackageName }
 export { getNpmPackageImportPath }
 
@@ -15,11 +14,6 @@ function isNpmPackageModule(str: string): boolean {
 function isNpmPackageName(str: string | undefined): boolean {
   const res = parseNpmPath(str)
   return res !== null && res.importPath === null
-}
-
-function isNpmPackageImportPath(str: string): boolean {
-  const res = parseNpmPath(str)
-  return res !== null && res.importPath !== null
 }
 
 function getNpmPackageName(str: string): null | string {

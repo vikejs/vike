@@ -6,13 +6,7 @@ export { sortAfterInheritanceOrder }
 export { isGlobalLocation }
 export { applyFilesystemRoutingRootEffect }
 
-import {
-  assert,
-  assertPosixPath,
-  getNpmPackageImportPath,
-  isNpmPackageImportPath,
-  higherFirst
-} from '../../../../utils'
+import { assert, assertPosixPath, getNpmPackageImportPath, isNpmPackageModule, higherFirst } from '../../../../utils'
 
 /**
  * getLocationId('/pages/some-page/+Page.js') => '/pages/some-page'
@@ -105,11 +99,11 @@ function isInherited(locationId1: string, locationId2: string): boolean {
 }
 
 function removeNpmPackageName(somePath: string): string {
-  if (!isNpmPackageImportPath(somePath)) {
+  if (!isNpmPackageModule(somePath)) {
     return somePath
   }
   const importPath = getNpmPackageImportPath(somePath)
-  assert(importPath)
+  if (!importPath) return somePath
   assertPosixPath(importPath)
   assert(!importPath.startsWith('/'))
   somePath = '/' + importPath
@@ -127,7 +121,7 @@ function removeDirectories(somePath: string, removeDirs: string[]): string {
 
 function removeFilename(filePath: string, optional?: true) {
   assertPosixPath(filePath)
-  assert(filePath.startsWith('/') || isNpmPackageImportPath(filePath))
+  assert(filePath.startsWith('/') || isNpmPackageModule(filePath))
   {
     const filename = filePath.split('/').slice(-1)[0]!
     if (!filename.includes('.')) {
@@ -137,7 +131,7 @@ function removeFilename(filePath: string, optional?: true) {
   }
   filePath = filePath.split('/').slice(0, -1).join('/')
   if (filePath === '') filePath = '/'
-  assert(filePath.startsWith('/') || isNpmPackageImportPath(filePath))
+  assert(filePath.startsWith('/') || isNpmPackageModule(filePath))
   assert(!filePath.endsWith('/') || filePath === '/')
   return filePath
 }
@@ -150,7 +144,7 @@ function getRouteFilesystemDefinedBy(locationId: string) {
 }
 
 function assertLocationId(locationId: string) {
-  assert(locationId.startsWith('/') || isNpmPackageImportPath(locationId))
+  assert(locationId.startsWith('/') || isNpmPackageModule(locationId))
   assert(!locationId.endsWith('/') || locationId === '/')
 }
 
