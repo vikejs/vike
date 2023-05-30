@@ -1,6 +1,7 @@
 export type { Config }
 export type { ConfigNameBuiltIn }
 export type { ConfigNonHeaderFile }
+export type { ConvertConfigNonHeaderFileToConfig }
 export type { Meta }
 export type { Effect }
 
@@ -169,9 +170,18 @@ type Meta = Record<
   }
 >
 
-type ConfigNonHeaderFile = Omit<
+type ImportString = `import:${string}`
+type ConfigNonHeaderFile = Partial<
   {
-    [K in keyof Config]: `import:${string}` | Exclude<Config[K], Function>
-  },
-  'extends'
+    [K in Exclude<keyof Config, 'extends'>]: ImportString | Exclude<Config[K], Function>
+  } & {
+    extends: ImportString | ImportString[]
+  }
 >
+type ConvertConfigNonHeaderFileToConfig<ConfigInstance extends ConfigNonHeaderFile> = {
+  [K in keyof ConfigInstance]: ConfigInstance[K] extends ImportString | ImportString[]
+    ? K extends keyof Config
+      ? Exclude<Config[K], undefined>
+      : never
+    : ConfigInstance[K]
+}
