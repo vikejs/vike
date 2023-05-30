@@ -1,3 +1,20 @@
+## [0.4.131](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.130...v0.4.131) (2023-05-30)
+
+
+### Bug Fixes
+
+* [V1 design] add config npm dependencies to optimizeDeps.include ([2b4a84a](https://github.com/brillout/vite-plugin-ssr/commit/2b4a84a0342011f06e604671ec9ebdbe68ee1da9))
+* [V1 design] ignore backup files ([062b064](https://github.com/brillout/vite-plugin-ssr/commit/062b0644613e8445f544fd16ace08e796d9a34a9))
+* [V1 design] implement filesystem routinng for npm package root imports ([ce04fdb](https://github.com/brillout/vite-plugin-ssr/commit/ce04fdb919ac63dc219a835568676b1620909706))
+* [V1 design] improve error handling when extends import cannot be ([e70b362](https://github.com/brillout/vite-plugin-ssr/commit/e70b3621fb8a38ff1385c3dd435a9c1842cae738))
+* [V1 design] improve type handling of non-header config files ([fa18331](https://github.com/brillout/vite-plugin-ssr/commit/fa1833156fef669f50bade0459771236f5d389bd))
+* add .page.server.js?extractAssets to Rollup entries (fix [#911](https://github.com/brillout/vite-plugin-ssr/issues/911)) ([078a2c7](https://github.com/brillout/vite-plugin-ssr/commit/078a2c70dd27bae4e03768ad0c5db40f4b552b1a))
+* improve dist/ file names ([d042d69](https://github.com/brillout/vite-plugin-ssr/commit/d042d696ac1844f5a5037c4ffd0a379c0609445e))
+* improve handling of manually triggering pre-rendering while config prerender is false ([f4a7f55](https://github.com/brillout/vite-plugin-ssr/commit/f4a7f55cde9c0eeac7319ae9e514edffc14ef736))
+* recommend path aliases to follow `#` prefix convention ([2fc2193](https://github.com/brillout/vite-plugin-ssr/commit/2fc2193084924c28d31cdf89acd8560c7d482d01))
+
+
+
 ## [0.4.130](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.129...v0.4.130) (2023-05-26)
 
 

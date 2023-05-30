@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "vite": "^4.0.3",
-    "vite-plugin-ssr": "0.4.130"
+    "vite-plugin-ssr": "0.4.131"
   },
   "type": "module"
 }
