@@ -103,7 +103,7 @@ function removePathSeperators(name: string) {
   assertPosixPath(name)
   assert(!name.startsWith('/'))
   const entryDir = 'entries/'
-  let hasEntryDir = name.startsWith(entryDir)
+  const hasEntryDir = name.startsWith(entryDir)
   if (hasEntryDir) {
     name = name.slice(entryDir.length)
   }
