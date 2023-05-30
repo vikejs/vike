@@ -613,36 +613,33 @@ function getCodeFilePath(
   if (typeof configValue !== 'string') {
     return null
   }
-
   const importData = parseImportData(configValue)
   if (!importData) {
     return null
   }
   const { importPath, importName } = importData
 
-  const codeFileExport = importName
-  let codeFilePath: string
-  if (!importPath.startsWith('.')) {
-    /* Path aliases, e.g.:
-     * ```
-     * // /renderer/+config.js
-     * import onRenderClient from '#root/renderer/onRenderClient'
-     * // ...
-     * ```
-     */
-    codeFilePath = importPath
-  } else {
-    // Relative paths
+  let codeFilePath = importPath
+
+  if (codeFilePath.startsWith('.')) {
+    // We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
+    // ```
+    // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vite-plugin-ssr:importPageCode:client:/pages/index". Does the file exist?
+    // ```
     codeFilePath = resolveRelativeCodeFilePath(importData, configFilePath, userRootDir)
+  } else {
+    // codeFilePath can be:
+    //  - an npm package import
+    //  - a path alias
   }
 
-  return { codeFilePath, codeFileExport }
+  return {
+    // TODO: rename?
+    codeFilePath,
+    codeFileExport: importName
+  }
 }
 
-// We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
-// ```
-// [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vite-plugin-ssr:importPageCode:client:/pages/index". Does the file exist?
-// ```
 function resolveRelativeCodeFilePath(importData: ImportData, configFilePath: FilePath, userRootDir: string) {
   let codeFilePath = resolveImport(importData, configFilePath)
 
@@ -656,7 +653,7 @@ function resolveRelativeCodeFilePath(importData: ImportData, configFilePath: Fil
       false,
       `${getFilePathToShowToUser(configFilePath)} imports from a relative path '${
         importData.importPath
-      }' outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir} or import from a dependency's package.json#exports entry instead`
+      }' outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir}, or import from a dependency's package.json#exports entry instead`
     )
     // None of the following works. Seems to be a Vite bug?
     // /*

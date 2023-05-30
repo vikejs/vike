@@ -37,13 +37,17 @@ async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved,
           return
         }
 
+        // getConfigData() resolves relative import paths
+        assert(!codeFilePath.startsWith('.'))
+
+        // We need to differentiate between npm package imports and path aliases.
+        // Unfortunately, there are path aliases that cannot be distinguished from npm package names.
         if (isNpmPackageImport(codeFilePath)) {
-          // isNpmPackageModule() returns false for a path alias like `#root/...`.
-          // Are there path aliases that cannot be distinguished from npm package names?
+          // isNpmPackageImport() returns false for a path alias like #root/renderer/onRenderClient
           assert(!codeFilePath.includes('#'))
           include.push(codeFilePath)
         } else {
-          /* For path aliases, e.g.:
+          /* Path aliases, e.g.:
            * ```js
            * // /renderer/+config.js
            * import onRenderClient from '#root/renderer/onRenderClient'
