@@ -1,9 +1,9 @@
 import { Link } from '@brillout/docpress'
 
-By defining `renderer/_error.page.tsx` we can render a dedicated page when an error occurs.
+When an error occurs, the page `/renderer/_error.page.tsx` is rendered (if one is defined).
 
 ```js
-// renderer/_error.page.js
+// /renderer/_error.page.js
 
 export { Page }
 
@@ -16,27 +16,15 @@ function Page(pageProps) {
 }
 ```
 
-> We can define hooks just like any other page, such as a <Link text="custom layout" href="/layouts#custom-export" />.
-
-
-## Pre-rendering
-
-If we enable <Link text="pre-rendering" href="/pre-rendering" />, then vite-plugin-ssr uses `_error.page.js` to generate `dist/client/404.html`.
-
-> Most Static Hosts automatically pick up `404.html` and use it to render a 404 page.
-
-
-## Details
-
 The page `_error.page.js` is rendered when:
  1. None of our pages matches the URL (`404 Page Not Found`).
  2. One of our hooks (in `.page.js` / `.page.server.js` / `.page.route.js`) throws an error (`500 Internal Error`).
- 3. We execute <Link href="/RenderErrorPage" text={<code>throw RenderErrorPage()</code>}></Link>.
+ 3. You call <Link href="/RenderErrorPage" text={<code>throw RenderErrorPage()</code>}></Link>.
 
 For `1.` and `3.`, `vite-plugin-ssr` automatically sets the following:
  - `pageContext.is404 === true`
  - `pageContext.pageProps.is404 === true`
-    > We can `throw RenderErrorPage({ pageContext: { is404: false }})` to set `pageContext.is404 === false` and `pageContext.pageProps.is404 === false` instead.
+    > You can `throw RenderErrorPage({ pageContext: { is404: false }})` to set `pageContext.is404 === false` and `pageContext.pageProps.is404 === false` instead.
 
 For `2.`:
  - `pageContext.is404 === false`
@@ -44,4 +32,9 @@ For `2.`:
 
 > Normally, the `vite-plugin-ssr` source code doesn't know anything about `pageContext.pageProps` but this is the only exception.
 
-That way, we can use `pageContext.pageProps.is404` to decide what error message to show the user.
+
+## Pre-rendering
+
+If you use <Link text="pre-rendering" href="/pre-rendering" />, then vite-plugin-ssr uses `_error.page.js` to generate `/dist/client/404.html`.
+
+> Most Static Hosts follow the convention that the file `404.html` is used for rendering 404 pages.
