@@ -24,19 +24,20 @@ The page `_error.page.js` is rendered when:
 For `1.` and `3.`, vite-plugin-ssr automatically sets the following:
  - `pageContext.is404 === true`
  - `pageContext.pageProps.is404 === true`
-    > You can `throw RenderErrorPage({ pageContext: { is404: false }})` to set `pageContext.is404 === false` and `pageContext.pageProps.is404 === false` instead.
 
 For `2.`:
  - `pageContext.is404 === false`
  - `pageContext.pageProps.is404 === false`
 
+> You can `throw RenderErrorPage({ pageContext: { is404: false }})` to set `pageContext.is404 === false` and `pageContext.pageProps.is404 === false` instead.
+
 > Normally, the vite-plugin-ssr source code doesn't know anything about `pageContext.pageProps` but this is the only exception.
 
-> The error page is also rendered when vite-plugin-ssr throws an unexpected error (i.e. vite-plugin-ssr has a bug), but note that vite-plugin-ssr has no known bug and this is therefore very rare.
+> The error page is also rendered when vite-plugin-ssr throws an unexpected error (i.e. vite-plugin-ssr has a bug), but since vite-plugin-ssr has no known bug this is very rare.
 
 
 ## Pre-rendering
 
 If you use <Link text="pre-rendering" href="/pre-rendering" />, then vite-plugin-ssr uses `_error.page.js` to generate `/dist/client/404.html`.
 
-> Most Static Hosts follow the convention that the file `404.html` is used for rendering 404 pages.
+> Most Static Hosts follow the convention that the file `404.html` is used as 404 page.
