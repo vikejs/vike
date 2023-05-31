@@ -17,11 +17,11 @@ function Page(pageProps) {
 ```
 
 The page `_error.page.js` is rendered when:
- 1. None of our pages matches the URL (`404 Page Not Found`).
- 2. One of our hooks (in `.page.js` / `.page.server.js` / `.page.route.js`) throws an error (`500 Internal Error`).
+ 1. The URL doesn't match the route of any of your pages (`404 Page Not Found`).
+ 2. One of your hooks (in `.page.js` / `.page.server.js` / `.page.route.js`) throws an error (`500 Internal Error`).
  3. You call <Link href="/RenderErrorPage" text={<code>throw RenderErrorPage()</code>}></Link>.
 
-For `1.` and `3.`, `vite-plugin-ssr` automatically sets the following:
+For `1.` and `3.`, vite-plugin-ssr automatically sets the following:
  - `pageContext.is404 === true`
  - `pageContext.pageProps.is404 === true`
     > You can `throw RenderErrorPage({ pageContext: { is404: false }})` to set `pageContext.is404 === false` and `pageContext.pageProps.is404 === false` instead.
@@ -30,7 +30,9 @@ For `2.`:
  - `pageContext.is404 === false`
  - `pageContext.pageProps.is404 === false`
 
-> Normally, the `vite-plugin-ssr` source code doesn't know anything about `pageContext.pageProps` but this is the only exception.
+> Normally, the vite-plugin-ssr source code doesn't know anything about `pageContext.pageProps` but this is the only exception.
+
+> The error page is also rendered when vite-plugin-ssr throws an unexpected error (i.e. vite-plugin-ssr has a bug), but note that vite-plugin-ssr has no known bug and this is therefore very rare.
 
 
 ## Pre-rendering
