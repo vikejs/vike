@@ -13,5 +13,5 @@ import type { PageContextBuiltInClientWithClientRouting } from '../../shared/typ
  *   } from 'vite-plugin-ssr/types'
  *   ```
  */
-type PageContextBuiltInClient = PageContextBuiltInClientWithClientRouting
+type PageContextBuiltInClient<Page = any> = PageContextBuiltInClientWithClientRouting<Page>
 export type { PageContextBuiltInClient }
