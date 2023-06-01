@@ -832,8 +832,8 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
       '**/node_modules/**',
       // Allow:
       // ```
-      // +Page.tsx
-      // +Page.telefunc.ts
+      // +Page.js
+      // +Page.telefunc.js
       // ```
       '**/*.telefunc.*'
     ],
