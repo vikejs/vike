@@ -825,7 +825,33 @@ function getConfigElementSource(configElement: ConfigElement): ConfigElementSour
 }
 
 async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]) {
-  const plusFiles = await findUserFiles(`**/+*.${scriptFileExtensions}`, userRootDir, isDev)
+  const timeBase = new Date().getTime()
+  assertPosixPath(userRootDir)
+  const result = await glob(`**/+*.${scriptFileExtensions}`, {
+    ignore: ['**/node_modules/**'],
+    cwd: userRootDir,
+    dot: false
+  })
+  const time = new Date().getTime() - timeBase
+  if (isDev) {
+    // We only warn in dev, because while building it's expected to take a long time as fast-glob is competing for resources with other tasks
+    assertWarning(
+      time < 2 * 1000,
+      `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on vite-plugin-ssr's GitHub.`,
+      {
+        showStackTrace: false,
+        onlyOnce: 'slow-page-files-search'
+      }
+    )
+  }
+
+  const plusFiles = result.map((p) => {
+    p = toPosixPath(p)
+    const filePathRelativeToUserRootDir = path.posix.join('/', p)
+    const filePathAbsolute = path.posix.join(userRootDir, p)
+    return { filePathRelativeToUserRootDir, filePathAbsolute }
+  })
+
   extensions.forEach((extension) => {
     extension.pageConfigsDistFiles?.forEach((pageConfigDistFile) => {
       // TODO/v1-release: remove
@@ -839,6 +865,7 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
       })
     })
   })
+
   return plusFiles
 }
 
@@ -993,35 +1020,6 @@ type UserFilePath = {
 type FilePath = {
   filePathAbsolute: string
   filePathRelativeToUserRootDir: null | string
-}
-
-async function findUserFiles(pattern: string | string[], userRootDir: string, isDev: boolean): Promise<UserFilePath[]> {
-  assertPosixPath(userRootDir)
-  const timeBase = new Date().getTime()
-  const result = await glob(pattern, {
-    ignore: ['**/node_modules/**'],
-    cwd: userRootDir,
-    dot: false
-  })
-  const time = new Date().getTime() - timeBase
-  if (isDev) {
-    // We only warn in dev, because while building it's expected to take a long time as fast-glob is competing for resources with other tasks
-    assertWarning(
-      time < 2 * 1000,
-      `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on vite-plugin-ssr's GitHub.`,
-      {
-        showStackTrace: false,
-        onlyOnce: 'slow-page-files-search'
-      }
-    )
-  }
-  const userFiles = result.map((p) => {
-    p = toPosixPath(p)
-    const filePathRelativeToUserRootDir = path.posix.join('/', p)
-    const filePathAbsolute = path.posix.join(userRootDir, p)
-    return { filePathRelativeToUserRootDir, filePathAbsolute }
-  })
-  return userFiles
 }
 
 // TODO: re-use this
