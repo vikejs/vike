@@ -828,7 +828,15 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
   const timeBase = new Date().getTime()
   assertPosixPath(userRootDir)
   const result = await glob(`**/+*.${scriptFileExtensions}`, {
-    ignore: ['**/node_modules/**'],
+    ignore: [
+      '**/node_modules/**',
+      // Allow:
+      // ```
+      // +Page.tsx
+      // +Page.telefunc.ts
+      // ```
+      '**/*.telefunc.*'
+    ],
     cwd: userRootDir,
     dot: false
   })
