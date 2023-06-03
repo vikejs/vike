@@ -16,7 +16,11 @@ import {
   getStreamName,
   inferStreamName,
   isStreamWritableWeb,
-  isStreamWritableNode
+  isStreamWritableNode,
+  isStreamReadableWeb,
+  isStreamReadableNode,
+  isStreamPipeWeb,
+  isStreamPipeNode
 } from '../html/stream'
 import { inferEarlyHintLink } from '../html/injectAssets/inferHtmlTags'
 import type { PageAsset, GetPageAssets } from './getPageAssets'
@@ -106,7 +110,7 @@ async function createHttpResponseObject(
       if (typeof htmlRender !== 'string') {
         assertUsage(
           false,
-          errMsg('body', 'Use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getBody()` instead')
+          getErrMsg('body', 'Use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getBody()` instead')
         )
       }
       const body = htmlRender
@@ -125,7 +129,7 @@ async function createHttpResponseObject(
       )
       const nodeStream = await getStreamReadableNode(htmlRender)
       if (nodeStream === null) {
-        assertUsage(false, errMsg('getNodeStream()', fixMsg('readable', 'node')))
+        assertUsage(false, getErrMsg('getNodeStream()', getFixMsg('readable', 'node')))
       }
       return nodeStream
     },
@@ -138,14 +142,14 @@ async function createHttpResponseObject(
       )
       const webStream = getStreamReadableWeb(htmlRender)
       if (webStream === null) {
-        assertUsage(false, errMsg('getWebStream()', fixMsg('readable', 'web')))
+        assertUsage(false, getErrMsg('getWebStream()', getFixMsg('readable', 'web')))
       }
       return webStream
     },
     getReadableWebStream() {
       const webStream = getStreamReadableWeb(htmlRender)
       if (webStream === null) {
-        assertUsage(false, errMsg('getReadableWebStream()', fixMsg('readable', 'web')))
+        assertUsage(false, getErrMsg('getReadableWebStream()', getFixMsg('readable', 'web')))
       }
       return webStream
     },
@@ -158,7 +162,7 @@ async function createHttpResponseObject(
       )
       const success = pipeToStreamWritableWeb(htmlRender, writable)
       if (!success) {
-        assertUsage(false, errMsg('pipeToWebWritable()'))
+        assertUsage(false, getErrMsg('pipeToWebWritable()'))
       }
     },
     pipeToNodeWritable(writable: StreamWritableNode) {
@@ -170,23 +174,31 @@ async function createHttpResponseObject(
       )
       const success = pipeToStreamWritableNode(htmlRender, writable)
       if (!success) {
-        assertUsage(false, errMsg('pipeToNodeWritable()'))
+        assertUsage(false, getErrMsg('pipeToNodeWritable()'))
       }
     },
     pipe(writable: StreamWritableNode | StreamWritableWeb) {
+      const getErrMsgMixingStreamTypes = (writableType: 'Web Writable' | 'Node.js Writable') =>
+        `The ${getErrMsgBody()} while a ${
+          writableType as string
+        } was passed to pageContext.httpResponse.pipe() which is contradictory. You cannot mix a Web Stream with a Node.js Stream.` as const
       if (isStreamWritableWeb(writable)) {
         const success = pipeToStreamWritableWeb(htmlRender, writable)
-        if (!success) {
-          assertUsage(false, errMsg('pipe()'))
+        if (success) {
+          return
+        } else {
+          assert(isStreamReadableWeb(htmlRender) || isStreamPipeWeb(htmlRender))
+          assertUsage(false, getErrMsgMixingStreamTypes('Web Writable'))
         }
-        return
       }
       if (isStreamWritableNode(writable)) {
         const success = pipeToStreamWritableNode(htmlRender, writable)
-        if (!success) {
-          assertUsage(false, errMsg('pipe()'))
+        if (success) {
+          return
+        } else {
+          assert(isStreamReadableNode(htmlRender) || isStreamPipeNode(htmlRender))
+          assertUsage(false, getErrMsgMixingStreamTypes('Node.js Writable'))
         }
-        return
       }
       assertUsage(
         false,
@@ -198,29 +210,34 @@ async function createHttpResponseObject(
     }
   }
 
-  function errMsg(method: string, msgAddendum?: string) {
-    const htmlRenderName = (() => {
-      if (typeof htmlRender === 'string') {
-        return 'an HTML string'
-      } else if (isStream(htmlRender)) {
-        return inferStreamName(htmlRender)
-      } else {
-        assert(false)
-      }
-    })()
-    assert(['a ', 'an ', 'the '].some((s) => htmlRenderName.startsWith(s)))
+  function getErrMsg(method: string, msgAddendum?: string) {
     assert(!msgAddendum || !msgAddendum.endsWith('.'))
-    assert(renderHook)
-    const { hookFilePath, hookName } = renderHook
-    return [
-      `pageContext.httpResponse.${method} can't be used because the ${hookName}()\ hook defined by ${hookFilePath} provides ${htmlRenderName}`,
-      msgAddendum,
-      streamDocs
-    ]
+    const errMsgBody = getErrMsgBody()
+    return [`pageContext.httpResponse.${method} can't be used because the ${errMsgBody}`, msgAddendum, streamDocs]
       .filter(Boolean)
       .join('. ')
   }
-  function fixMsg(type: 'pipe' | 'readable', standard: 'web' | 'node') {
+  function getErrMsgBody() {
+    assert(renderHook)
+    const { hookFilePath, hookName } = renderHook
+    const hookReturnType = getHookReturnType()
+    assert(['a ', 'an ', 'the '].some((s) => hookReturnType.startsWith(s)))
+    const errMsgBody = `${hookName as string}()\ hook defined by ${hookFilePath} provides ${
+      hookReturnType as string
+    }` as const
+    assert(!errMsgBody.endsWith(' '))
+    return errMsgBody
+  }
+  function getHookReturnType() {
+    if (typeof htmlRender === 'string') {
+      return 'an HTML string'
+    } else if (isStream(htmlRender)) {
+      return inferStreamName(htmlRender)
+    } else {
+      assert(false)
+    }
+  }
+  function getFixMsg(type: 'pipe' | 'readable', standard: 'web' | 'node') {
     const streamName = getStreamName(type, standard)
     assert(['a ', 'an ', 'the '].some((s) => streamName.startsWith(s)))
     assert(renderHook)

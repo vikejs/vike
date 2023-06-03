@@ -6,6 +6,10 @@ export { getStreamReadableWeb }
 export { pipeToStreamWritableNode }
 export { pipeToStreamWritableWeb }
 export { isStream }
+export { isStreamPipeWeb }
+export { isStreamPipeNode }
+export { isStreamReadableWeb }
+export { isStreamReadableNode }
 export { getStreamName }
 export { inferStreamName }
 
@@ -883,7 +887,7 @@ function getStreamName(
   assert(false)
 }
 
-function inferStreamName(stream: StreamProviderAny) {
+function inferStreamName(stream: StreamProviderNormalized) {
   if (isStreamReadableWeb(stream)) {
     return getStreamName('readable', 'web')
   }
@@ -895,9 +899,6 @@ function inferStreamName(stream: StreamProviderAny) {
   }
   if (isStreamPipeWeb(stream)) {
     return getStreamName('pipe', 'web')
-  }
-  if (isStreamReactStreaming(stream)) {
-    return 'the stream object provided by `react-streaming`'
   }
   assert(false)
 }
