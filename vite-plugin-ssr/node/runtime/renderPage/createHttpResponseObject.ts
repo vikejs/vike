@@ -198,22 +198,23 @@ async function createHttpResponseObject(
     }
   }
 
-  function errMsg(method: string, fixMsg?: string) {
-    let htmlRenderName: string
-    if (typeof htmlRender === 'string') {
-      htmlRenderName = 'an HTML string'
-    } else if (isStream(htmlRender)) {
-      htmlRenderName = inferStreamName(htmlRender)
-    } else {
-      assert(false)
-    }
+  function errMsg(method: string, msgAddendum?: string) {
+    const htmlRenderName = (() => {
+      if (typeof htmlRender === 'string') {
+        return 'an HTML string'
+      } else if (isStream(htmlRender)) {
+        return inferStreamName(htmlRender)
+      } else {
+        assert(false)
+      }
+    })()
     assert(['a ', 'an ', 'the '].some((s) => htmlRenderName.startsWith(s)))
-    assert(!fixMsg || !fixMsg.endsWith('.'))
+    assert(!msgAddendum || !msgAddendum.endsWith('.'))
     assert(renderHook)
     const { hookFilePath, hookName } = renderHook
     return [
       `pageContext.httpResponse.${method} can't be used because the ${hookName}()\ hook defined by ${hookFilePath} provides ${htmlRenderName}`,
-      fixMsg,
+      msgAddendum,
       streamDocs
     ]
       .filter(Boolean)

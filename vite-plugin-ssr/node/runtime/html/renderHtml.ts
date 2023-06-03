@@ -14,18 +14,25 @@ export type { DocumentHtml }
 import { assert, assertUsage, assertWarning, checkType, hasProp, isHtml, isPromise, objectAssign } from '../utils'
 import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
-import { processStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
+import {
+  processStream,
+  isStream,
+  StreamProviderAny,
+  streamToString,
+  StreamTypePatch,
+  StreamProviderNormalized
+} from './stream'
 import { isStreamReactStreaming } from './stream/react-streaming'
 import type { InjectToStream } from './stream/react-streaming'
 import type { PageAsset } from '../renderPage/getPageAssets'
 import type { PreloadFilter } from './injectAssets/getHtmlTags'
 import { getGlobalContext } from '../globalContext'
 
-type DocumentHtml = TemplateWrapped | EscapedString | Stream
-type HtmlRender = string | Stream
+type DocumentHtml = TemplateWrapped | EscapedString | StreamProviderAny
+type HtmlRender = string | StreamProviderNormalized
 
 type TemplateStrings = TemplateStringsArray
-type TemplateVariable = string | EscapedString | Stream | TemplateWrapped
+type TemplateVariable = string | EscapedString | StreamProviderAny | TemplateWrapped
 type TemplateWrapped = {
   _template: TemplateContent
 }
@@ -89,7 +96,7 @@ async function renderDocumentHtml(
 }
 
 async function renderHtmlStream(
-  streamOriginal: Stream & { injectionBuffer?: string[] },
+  streamOriginal: StreamProviderAny & { injectionBuffer?: string[] },
   injectString: null | { htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] },
   pageContext: PageContextInjectAssets & { enableEagerStreaming?: boolean; _isStream: true },
   onErrorWhileStreaming: (err: unknown) => void,
@@ -187,11 +194,11 @@ async function renderTemplate(
   templateContent: TemplateContent,
   pageContext: PageContextInjectAssets
 ): Promise<
-  { htmlPartsAll: HtmlPart[] } | { htmlStream: Stream; htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] }
+  { htmlPartsAll: HtmlPart[] } | { htmlStream: StreamProviderAny; htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] }
 > {
   const htmlPartsBegin: HtmlPart[] = []
   const htmlPartsEnd: HtmlPart[] = []
-  let htmlStream: null | Stream = null
+  let htmlStream: null | StreamProviderAny = null
 
   const addHtmlPart = (htmlPart: HtmlPart) => {
     if (htmlStream === null) {
@@ -201,7 +208,7 @@ async function renderTemplate(
     }
   }
 
-  const setStream = (stream: Stream) => {
+  const setStream = (stream: StreamProviderAny) => {
     const { hookName, hookFilePath } = pageContext._renderHook
     assertUsage(
       !htmlStream,

@@ -14,7 +14,8 @@ export { streamPipeNodeToString }
 export { isStreamWritableWeb }
 export { isStreamWritableNode }
 
-export type { Stream }
+export type { StreamProviderAny }
+export type { StreamProviderNormalized }
 export type { StreamTypePatch }
 export type { StreamReadableWeb }
 export type { StreamReadableNode }
@@ -42,34 +43,41 @@ import {
   createDebugger
 } from '../utils'
 import { HtmlRender } from './renderHtml'
-// In order to support Cloudflare Workers, we cannot statically import the `stream` module.
-// Instead we only import the types and dynamically import `stream` in `loadStreamNodeModule()`.
-import type { Readable as StreamReadableNode, Writable as StreamWritableNode } from 'stream'
 import {
   getStreamFromReactStreaming,
   isStreamReactStreaming,
   StreamReactStreaming,
   streamReactStreamingToString
 } from './stream/react-streaming'
-//import { streamNodeModuleGet as loadStreamNodeModule } from './stream/streamNodeModule'
+import type { Readable as Readable_, Writable as Writable_ } from 'node:stream'
 
 const debug = createDebugger('vps:stream')
 
 type StreamReadableWeb = ReadableStream
+type StreamReadableNode = Readable_
 type StreamWritableWeb = WritableStream
-//type StreamReadableNode = typeof import('stream').Readable
-//type StreamWritableNode = typeof import('stream').Writable
+type StreamWritableNode = Writable_
 type StreamPipeWeb = (writable: StreamWritableWeb) => void
 type StreamPipeNode = (writable: StreamWritableNode) => void
-type StreamPipe = (writable: StreamWritableNode | StreamWritableWeb) => void
-type Stream =
+
+type StreamProviderNormalized =
   | StreamReadableWeb
   | StreamReadableNode
-  | StreamPipeWebWrapped // pipeWebStream()
-  | StreamPipeWeb // stampPipe()
-  | StreamPipeNodeWrapped // pipeNodeStream()
-  | StreamPipeNode // stampPipe()
+  // stampPipe()
+  | StreamPipeWeb
+  // stampPipe()
+  | StreamPipeNode
+type StreamProviderAny =
+  | StreamProviderNormalized
   | StreamReactStreaming
+  // pipeWebStream()
+  | StreamPipeWebWrapped
+  // pipeNodeStream()
+  | StreamPipeNodeWrapped
+
+// Not needed but just to clarify StreamProvider vs StreamConsumer
+type StreamConsumer = StreamWritableWeb | StreamWritableNode
+
 // `ReactDOMServer.renderToNodeStream()` returns a `NodeJS.ReadableStream` which differs from `Stream.Readable`
 type StreamTypePatch = NodeJS.ReadableStream
 
@@ -222,12 +230,17 @@ function pipeToStreamWritableWeb(htmlRender: HtmlRender, writable: StreamWritabl
     htmlRender.pipeTo(writable)
     return true
   }
-  const streamPipeWeb = getStreamPipeWeb(htmlRender)
-  if (streamPipeWeb) {
+  if (isStreamPipeWeb(htmlRender)) {
+    const streamPipeWeb = getStreamPipeWeb(htmlRender)
+    assert(streamPipeWeb)
     streamPipeWeb(writable)
     return true
   }
-  return false
+  if (isStreamReadableNode(htmlRender) || isStreamPipeNode(htmlRender)) {
+    return false
+  }
+  checkType<never>(htmlRender)
+  assert(false)
 }
 function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritableNode): boolean {
   if (typeof htmlRender === 'string') {
@@ -239,16 +252,21 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritab
     htmlRender.pipe(writable)
     return true
   }
-  const streamPipeNode = getStreamPipeNode(htmlRender)
-  if (streamPipeNode) {
+  if (isStreamPipeNode(htmlRender)) {
+    const streamPipeNode = getStreamPipeNode(htmlRender)
+    assert(streamPipeNode)
     streamPipeNode(writable)
     return true
   }
-  return false
+  if (isStreamReadableWeb(htmlRender) || isStreamPipeWeb(htmlRender)) {
+    return false
+  }
+  checkType<never>(htmlRender)
+  assert(false)
 }
 
-async function processStream<StreamType extends Stream>(
-  streamOriginal: StreamType,
+async function processStream(
+  streamOriginal: StreamProviderAny,
   {
     injectStringAtBegin,
     injectStringAtEnd,
@@ -260,17 +278,17 @@ async function processStream<StreamType extends Stream>(
     onErrorWhileStreaming: (err: unknown) => void
     enableEagerStreaming?: boolean
   }
-): Promise<StreamType> {
+): Promise<StreamProviderNormalized> {
   const buffer: unknown[] = []
   let streamOriginalHasStartedEmitting = false
   let streamEnded = false
   let isReadyToWrite = false
   let wrapperCreated = false
   let shouldFlushStream = false
-  let resolve: (result: StreamType) => void
+  let resolve: (result: StreamProviderNormalized) => void
   let reject: (err: unknown) => void
   let promiseHasResolved = false
-  const streamWrapperPromise = new Promise<StreamType>((resolve_, reject_) => {
+  const streamWrapperPromise = new Promise<StreamProviderNormalized>((resolve_, reject_) => {
     resolve = (streamWrapper) => {
       promiseHasResolved = true
       resolve_(streamWrapper)
@@ -396,7 +414,7 @@ async function processStream<StreamType extends Stream>(
   }
 }
 
-async function createStreamWrapper<StreamType extends Stream>({
+async function createStreamWrapper({
   streamOriginal,
   onError,
   onData,
@@ -404,27 +422,27 @@ async function createStreamWrapper<StreamType extends Stream>({
   onFlush,
   onReadyToWrite
 }: {
-  streamOriginal: StreamType
+  streamOriginal: StreamProviderAny
   onError: (err: unknown) => void
   onData: (chunk: unknown) => void
   onEnd: () => Promise<void>
   onFlush: () => void
   onReadyToWrite: () => void
 }): Promise<{
-  streamWrapper: StreamType
+  streamWrapper: StreamProviderNormalized
   streamWrapperOperations: { writeChunk: (chunk: unknown) => void; flushStream: null | (() => void) }
 }> {
   if (isStreamReactStreaming(streamOriginal)) {
     debug('onRenderHtml() hook returned `react-streaming` result')
     const stream = getStreamFromReactStreaming(streamOriginal)
-    ;(streamOriginal as Stream) = stream
+    ;(streamOriginal as StreamProviderAny) = stream
   }
 
   if (isStreamPipeNode(streamOriginal)) {
     debug('onRenderHtml() hook returned Node.js Stream Pipe')
 
     let writableOriginal: null | (StreamWritableNode & { flush?: () => void }) = null
-    const pipeProxy = (writable_: StreamWritableNode) => {
+    const pipeProxy: StreamPipeNode = (writable_: StreamWritableNode) => {
       writableOriginal = writable_
       debug('original Node.js Writable received')
       onReadyToWrite()
@@ -488,14 +506,14 @@ async function createStreamWrapper<StreamType extends Stream>({
     const pipeOriginal = getStreamPipeNode(streamOriginal)
     pipeOriginal(writableProxy)
 
-    return { streamWrapper: pipeProxy as typeof streamOriginal, streamWrapperOperations: { writeChunk, flushStream } }
+    return { streamWrapper: pipeProxy, streamWrapperOperations: { writeChunk, flushStream } }
   }
 
   if (isStreamPipeWeb(streamOriginal)) {
     debug('onRenderHtml() hook returned Web Stream Pipe')
 
     let writerOriginal: null | WritableStreamDefaultWriter<unknown> = null
-    const pipeProxy = (writableOriginal: StreamWritableWeb) => {
+    const pipeProxy: StreamPipeWeb = (writableOriginal: StreamWritableWeb) => {
       writerOriginal = writableOriginal.getWriter()
       debug('original Web Writable received')
       ;(async () => {
@@ -566,7 +584,7 @@ async function createStreamWrapper<StreamType extends Stream>({
     const pipeOriginal = getStreamPipeWeb(streamOriginal)
     pipeOriginal(writableProxy)
 
-    return { streamWrapper: pipeProxy as typeof streamOriginal, streamWrapperOperations: { writeChunk, flushStream } }
+    return { streamWrapper: pipeProxy, streamWrapperOperations: { writeChunk, flushStream } }
   }
 
   if (isStreamReadableWeb(streamOriginal)) {
@@ -682,7 +700,7 @@ async function handleReadableWeb(
   await onEnd()
 }
 
-function isStream(something: unknown): something is Stream {
+function isStream(something: unknown): something is StreamProviderAny {
   if (
     isStreamReadableWeb(something) ||
     isStreamReadableNode(something) ||
@@ -690,7 +708,7 @@ function isStream(something: unknown): something is Stream {
     isStreamPipeWeb(something) ||
     isStreamReactStreaming(something)
   ) {
-    checkType<Stream>(something)
+    checkType<StreamProviderAny>(something)
     return true
   }
   return false
@@ -706,26 +724,28 @@ function pipeWebStream(pipe: StreamPipeWeb): StreamPipeWebWrapped {
   })
   return { [__streamPipeWeb]: pipe }
 }
-function getStreamPipeWeb(thing: StreamPipeWebWrapped): StreamPipeWeb
+function getStreamPipeWeb(thing: StreamPipeWebWrapped | StreamPipeWeb): StreamPipeWeb
 function getStreamPipeWeb(thing: unknown): null | StreamPipeWeb
 function getStreamPipeWeb(thing: unknown): null | StreamPipeWeb {
   if (!isStreamPipeWeb(thing)) {
     return null
   }
-  if (isCallable(thing) && 'isWebStreamPipe' in thing) {
-    // `stampPipe()`
-    return thing as unknown as StreamPipeWeb
-  } else {
-    // `pipeWebStream()`
+  if (isObject(thing)) {
+    // pipeWebStream()
+    assert(__streamPipeWeb && thing)
     return thing[__streamPipeWeb]
+  } else {
+    // stampPipe()
+    assert(isCallable(thing) && 'isWebStreamPipe' in thing)
+    return thing
   }
 }
-function isStreamPipeWeb(thing: unknown): thing is StreamPipeWebWrapped {
-  // `pipeWebStream()`
+function isStreamPipeWeb(thing: unknown): thing is StreamPipeWebWrapped | StreamPipeWeb {
+  // pipeWebStream()
   if (isObject(thing) && __streamPipeWeb in thing) {
     return true
   }
-  // `stampPipe()`
+  // stampPipe()
   if (isCallable(thing) && 'isWebStreamPipe' in thing) {
     return true
   }
@@ -743,26 +763,28 @@ function pipeNodeStream(pipe: StreamPipeNode): StreamPipeNodeWrapped {
   )
   return { [__streamPipeNode]: pipe }
 }
-function getStreamPipeNode(thing: StreamPipeNodeWrapped): StreamPipeNode
+function getStreamPipeNode(thing: StreamPipeNodeWrapped | StreamPipeNode): StreamPipeNode
 function getStreamPipeNode(thing: unknown): null | StreamPipeNode
 function getStreamPipeNode(thing: unknown): null | StreamPipeNode {
   if (!isStreamPipeNode(thing)) {
     return null
   }
-  if (isCallable(thing) && 'isNodeStreamPipe' in thing) {
-    // `stampPipe()`
-    return thing as unknown as StreamPipeNode
-  } else {
-    // `pipeNodeStream()`
+  if (isObject(thing)) {
+    // pipeNodeStream()
+    assert(__streamPipeNode in thing)
     return thing[__streamPipeNode]
+  } else {
+    // stampPipe()
+    assert(isCallable(thing) && 'isNodeStreamPipe' in thing)
+    return thing
   }
 }
-function isStreamPipeNode(thing: unknown): thing is StreamPipeNodeWrapped {
-  // `pipeNodeStream()`
+function isStreamPipeNode(thing: unknown): thing is StreamPipeNodeWrapped | StreamPipeNode {
+  // pipeNodeStream()
   if (isObject(thing) && __streamPipeNode in thing) {
     return true
   }
-  // `stampPipe()`
+  // stampPipe()
   if (isCallable(thing) && 'isNodeStreamPipe' in thing) {
     return true
   }
@@ -782,13 +804,14 @@ function stampPipe(pipe: StreamPipeNode | StreamPipeWeb, pipeType: 'web-stream' 
   }
 }
 
+type StreamPipe = (writable: StreamWritableNode | StreamWritableWeb) => void
 const __streamPipe = '__streamPipe'
 type StreamPipeWrapped = { [__streamPipe]: StreamPipe }
 function pipeStream(pipe: StreamPipe): StreamPipeWrapped {
   return { [__streamPipe]: pipe }
 }
 
-async function streamToString(stream: Stream): Promise<string> {
+async function streamToString(stream: StreamProviderAny): Promise<string> {
   if (isStreamReadableWeb(stream)) {
     return await streamReadableWebToString(stream)
   }
@@ -828,9 +851,10 @@ function encodeForWebStream(thing: unknown) {
   return thing
 }
 
+// Because of Cloudflare Workers, we cannot statically import the `stream` module, instead we dynamically import it.
 async function loadStreamNodeModule(): Promise<{
-  Readable: typeof StreamReadableNode
-  Writable: typeof StreamWritableNode
+  Readable: typeof Readable_
+  Writable: typeof Writable_
 }> {
   const streamModule = await dynamicImport('stream')
   const { Readable, Writable } = streamModule as any
@@ -841,7 +865,10 @@ function dynamicImport(modulePath: string): Promise<Record<string, unknown>> {
   return new Function('modulePath', 'return import(modulePath)')(modulePath)
 }
 
-function getStreamName(type: 'pipe' | 'readable' | 'writable', standard: 'web' | 'node') {
+function getStreamName(
+  type: 'pipe' | 'readable' | 'writable',
+  standard: 'web' | 'node'
+): `a ${string} Stream` | `a ${string} Stream Pipe` {
   let standardName = capitalizeFirstLetter(standard)
   if (standardName === 'Node') {
     standardName = 'Node.js'
@@ -856,7 +883,7 @@ function getStreamName(type: 'pipe' | 'readable' | 'writable', standard: 'web' |
   assert(false)
 }
 
-function inferStreamName(stream: Stream) {
+function inferStreamName(stream: StreamProviderAny) {
   if (isStreamReadableWeb(stream)) {
     return getStreamName('readable', 'web')
   }
