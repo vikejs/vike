@@ -42,6 +42,7 @@ function importUserCode(): Plugin {
     },
     handleHotUpdate(ctx) {
       const { file, server } = ctx
+      console.log(file)
       assertPosixPath(file)
       getConfigData_dependenciesInvisibleToVite.forEach((f) => assertPosixPath(f))
       if (!getConfigData_dependenciesInvisibleToVite.has(file)) {

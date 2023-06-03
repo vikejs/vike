@@ -2520,6 +2520,9 @@ importers:
       sirv:
         specifier: ^2.0.2
         version: 2.0.3
+      source-map-support:
+        specifier: ^0.5.21
+        version: 0.5.21
     devDependencies:
       '@brillout/part-regex':
         specifier: ^0.1.2
@@ -2539,6 +2542,9 @@ importers:
       '@types/resolve':
         specifier: ^1.20.2
         version: 1.20.2
+      '@types/source-map-support':
+        specifier: ^0.5.6
+        version: 0.5.6
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -4857,6 +4863,12 @@ packages:
       '@types/mime': 3.0.1
       '@types/node': 20.2.5
     dev: false
+
+  /@types/source-map-support@0.5.6:
+    resolution: {integrity: sha512-b2nJ9YyXmkhGaa2b8VLM0kJ04xxwNyijcq12/kDoomCt43qbHBeK2SLNJ9iJmETaAj+bKUT05PQUu3Q66GvLhQ==}
+    dependencies:
+      source-map: 0.6.1
+    dev: true
 
   /@types/stack-trace@0.0.29:
     resolution: {integrity: sha512-TgfOX+mGY/NyNxJLIbDWrO9DjGoVSW9+aB8H2yy1fy32jsvxijhmyJI9fDFgvz3YP4lvJaq9DzdR/M1bOgVc9g==}

@@ -166,7 +166,14 @@ function spliceMany(str: string, operations: SpliceOperation[]): string {
     } else {
       endPrev = 0
     }
-    strMod += str.slice(endPrev, start) + replacement
+    const replaced = str.slice(start, end)
+    strMod +=
+      str.slice(endPrev, start) +
+      replacement +
+      // Preserve number of lines for source map
+      Array(replaced.split('\n').length - replacement.split('\n').length)
+        .fill('\n')
+        .join('')
     endPrev = end
   })
   strMod += str.slice(endPrev, str.length - 1)

@@ -1,11 +1,13 @@
 export { getConfigData }
 export { getConfigData_invalidate }
 export { getConfigData_dependenciesInvisibleToVite }
+export { getFilePathToShowToUser }
 export type { FilePath }
 
-// TODO
-//  - gracefullly handle errors in getConfigData()
-//    - Remove markAsUserLandError()?
+// - When esbuild bundle: true => track dependencies
+// - Upon config changes, eagerly reload config files instead of invalidating cache
+// - Rename assertIsVitePluginCode() => assertIsNotProductionRuntime()
+//   - Add it to transpileAndLoadFile.ts
 
 import {
   assertPosixPath,
@@ -50,6 +52,7 @@ import {
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
+import { userFilesHaveError } from './handleUserFileError'
 
 assertIsVitePluginCode()
 
@@ -117,7 +120,7 @@ function getConfigData_invalidate() {
 }
 function getConfigData(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]): Promise<ConfigData> {
   if (!configDataPromise) {
-    configDataPromise = loadConfigData(userRootDir, isDev, extensions)
+    configDataPromise = loadConfigData_withErrorHandling(userRootDir, isDev, extensions)
   }
   return configDataPromise
 }
@@ -239,6 +242,25 @@ function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: 
   return interfaceFile
 }
 
+async function loadConfigData_withErrorHandling(...args: Parameters<typeof loadConfigData>): Promise<ConfigData> {
+  try {
+    return await loadConfigData(...args)
+  } catch (err) {
+    if (!userFilesHaveError()) {
+      // usageError() (or vite-plugin-ssr bug)
+      throw err
+    }
+    const CONFIG_DATA_EMPTY: ConfigData = {
+      pageConfigsData: [],
+      pageConfigGlobal: {
+        onPrerenderStart: null,
+        onBeforeRoute: null
+      },
+      vikeConfig: {}
+    }
+    return CONFIG_DATA_EMPTY
+  }
+}
 async function loadConfigData(
   userRootDir: string,
   isDev: boolean,

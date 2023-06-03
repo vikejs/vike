@@ -5,13 +5,16 @@ export { assertInfo }
 export { getProjectError }
 export { logPrefix }
 export { addOnBeforeLogHook }
+export { hasLogged }
 
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace'
 import { getGlobalObject } from './getGlobalObject'
 import { projectInfo } from './projectInfo'
-const globalObject = getGlobalObject<{ alreadyLogged: Set<string>; onBeforeLog?: () => void }>('assert.ts', {
-  alreadyLogged: new Set()
-})
+const globalObject = getGlobalObject<{
+  alreadyLogged: Set<string>
+  onBeforeLog?: () => void
+  hasLogged?: true
+}>('utils/assert.ts', { alreadyLogged: new Set() })
 
 const logPrefix = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]` as const
 const internalErrorPrefix = `${logPrefix}[Bug]` as const
@@ -22,9 +25,8 @@ const infoPrefix = `${logPrefix}[Info]` as const
 const numberOfStackTraceLinesToRemove = 2
 
 function assert(condition: unknown, debugInfo?: unknown): asserts condition {
-  if (condition) {
-    return
-  }
+  if (condition) return
+  globalObject.hasLogged = true
 
   const debugStr = (() => {
     if (!debugInfo) {
@@ -52,9 +54,8 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
 }
 
 function assertUsage(condition: unknown, errorMessage: string): asserts condition {
-  if (condition) {
-    return
-  }
+  if (condition) return
+  globalObject.hasLogged = true
   const whiteSpace = errorMessage.startsWith('[') ? '' : ' '
   const errMsg = `${usageErrorPrefix}${whiteSpace}${errorMessage}`
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
@@ -76,9 +77,8 @@ function assertWarning(
   errorMessage: string,
   { onlyOnce = true, showStackTrace = false }: { onlyOnce?: boolean | string; showStackTrace?: boolean } = {}
 ): void {
-  if (condition) {
-    return
-  }
+  if (condition) return
+  globalObject.hasLogged = true
   const msg = `${warningPrefix} ${errorMessage}`
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
@@ -117,4 +117,8 @@ function assertInfo(condition: unknown, errorMessage: string, { onlyOnce }: { on
 
 function addOnBeforeLogHook(onBeforeLog: () => void) {
   globalObject.onBeforeLog = onBeforeLog
+}
+
+function hasLogged(): boolean {
+  return !!globalObject.hasLogged
 }

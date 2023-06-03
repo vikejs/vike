@@ -1,6 +1,6 @@
 export { transpileAndLoadFile }
 
-import esbuild, { type BuildResult, type BuildOptions } from 'esbuild'
+import { build, formatMessages, type BuildResult, type BuildOptions } from 'esbuild'
 import fs from 'fs'
 import path from 'path'
 import pc from '@brillout/picocolors'
@@ -12,10 +12,13 @@ import {
   assert,
   assertDefaultExportObject,
   unique,
-  assertWarning
+  assertWarning,
+  isObject
 } from '../../../utils'
 import { isImportData, replaceImportStatements, type FileImport } from './replaceImportStatements'
-import { getConfigData_dependenciesInvisibleToVite, type FilePath } from './getConfigData'
+import { getConfigData_dependenciesInvisibleToVite, getFilePathToShowToUser, type FilePath } from './getConfigData'
+import 'source-map-support/register'
+import { handleUserFileError, handleUserFileSuccess } from './handleUserFileError'
 
 assertIsVitePluginCode()
 
@@ -23,11 +26,10 @@ type Result = { fileExports: Record<string, unknown> }
 
 async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): Promise<Result> {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = filePath
-  const filePathToShowToUser = filePathRelativeToUserRootDir ?? filePathAbsolute
+  const filePathToShowToUser = getFilePathToShowToUser(filePath)
   assertPosixPath(filePathAbsolute)
   getConfigData_dependenciesInvisibleToVite.add(filePathAbsolute)
-  const buildResult = await buildFile(filePathAbsolute, { bundle: !isPageConfig })
-  let { code } = buildResult
+  let { code } = await buildFile(filePath, { bundle: !isPageConfig })
   let fileImports: FileImport[] | null = null
   const isHeader = isHeaderFile(filePathAbsolute)
   if (isPageConfig || isHeader) {
@@ -57,11 +59,14 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
   try {
     fileExports = await import_(filePathTmp)
   } catch (err) {
-    markAsUserLandError(err)
+    triggerPrepareStackTrace(err)
     throw err
+    handleUserFileError(err, 'Failed to execute', filePath)
+    return { fileExports: { default: { I_SHOULD_NEVER_BE_READ: true } } }
   } finally {
     clean()
   }
+  handleUserFileSuccess(filePath)
   // Return a plain JavaScript object
   //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
   //  - We don't need this special object
@@ -74,14 +79,21 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
   return { fileExports }
 }
 
-async function buildFile(filePathAbsolute: string, { bundle }: { bundle: boolean }) {
+async function buildFile(filePath: FilePath, { bundle }: { bundle: boolean }) {
+  const entryFilePath = filePath.filePathAbsolute
+  const entryFileDir = path.posix.dirname(entryFilePath)
   const options: BuildOptions = {
     platform: 'node',
-    entryPoints: [filePathAbsolute],
+    entryPoints: [entryFilePath],
     sourcemap: 'inline',
     write: false,
     target: ['node14.18', 'node16'],
-    outfile: 'NEVER_EMITTED.js',
+    outfile: path.posix.join(
+      // Needed for correct inline source map
+      entryFileDir,
+      // `write: false` => no file is actually be emitted
+      'NEVER_EMITTED.js'
+    ),
     logLevel: 'silent',
     format: 'esm',
     bundle,
@@ -98,10 +110,12 @@ async function buildFile(filePathAbsolute: string, { bundle }: { bundle: boolean
 
   let result: BuildResult
   try {
-    result = await esbuild.build(options)
+    result = await build(options)
   } catch (err) {
-    markAsUserLandError(err)
+    await formatEsbuildError(err)
     throw err
+    handleUserFileError(err, 'Failed to transpile', filePath)
+    return { code: '' }
   }
   const { text } = result.outputFiles![0]!
   return {
@@ -185,6 +199,23 @@ function appendHeaderFileExtension(filePath: string) {
   return path.posix.join(path.posix.dirname(filePath), basenameCorrect)
 }
 
-// TODO: implement. Or remove? Is it really needed?
-function isUserLandError() {}
-function markAsUserLandError(err: unknown) {}
+// Copied and adapted from https://github.com/vitejs/vite/blob/bf0cd25adb3b8bb5d53433ba9323d0a95e9f756a/packages/vite/src/node/optimizer/scan.ts#L131-L135
+async function formatEsbuildError(err: any) {
+  if (err.errors) {
+    const msgs = await formatMessages(err.errors, {
+      kind: 'error',
+      color: true
+    })
+    err.message = msgs.join('\n')
+  }
+}
+
+// The Error.prepareStackTrace() hook of source-map-support needs to be called before clean() is called (i.e. before the file containing the inline source map is removed from disk)
+function triggerPrepareStackTrace(err: unknown) {
+  if (isObject(err)) {
+    // Accessing err.stack triggers prepareStackTrace()
+    const { stack } = err
+    // Ensure no compiler removes the line above
+    if (1 + 1 === 3) console.log('I_AM_NEVER_SHOWN' + stack)
+  }
+}
