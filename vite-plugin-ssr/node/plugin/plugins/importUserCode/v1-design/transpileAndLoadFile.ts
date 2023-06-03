@@ -40,13 +40,11 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
     if (!res.noImportStatement) {
       if (!isHeader) {
         const filePathCorrect = appendHeaderFileExtension(filePathToShowToUser)
-        /* TODO: decide what to do
         assertWarning(
           false,
           `Rename ${filePathToShowToUser} to ${filePathCorrect}, see https://vite-plugin-ssr.com/header-file`,
           { onlyOnce: true, showStackTrace: false }
         )
-        */
       }
       code = res.code
       fileImports = res.fileImports
