@@ -45,8 +45,8 @@ async function renderPage<
     // Errors are expected since assertUsage() is used in both initGlobalContext() and getRenderContext().
     // initGlobalContext() and getRenderContext() don't call any user hooks => err isn't thrown from user code => we use logErrorWithoutVite() instead of logErrorWithVite().
     logErrorWithoutVite(err)
-    const pageContextErr = getPageContextErr(err, pageContextInit)
-    return pageContextErr
+    const pageContextHttpReponseNull = getPageContextHttpResponseNull(err, pageContextInit)
+    return pageContextHttpReponseNull
   }
 
   let pageContextOriginal: undefined | Awaited<ReturnType<typeof renderPageAttempt>>
@@ -134,21 +134,21 @@ async function renderPage<
       if (isNewError(errErrorPage, errOriginal)) {
         logErrorWithVite(errErrorPage)
       }
-      const pageContextErr = getPageContextErr(errOriginal, pageContextInit)
-      assert(pageContextErr.httpResponse === null)
-      return pageContextErr
+      const pageContextHttpReponseNull = getPageContextHttpResponseNull(errOriginal, pageContextInit)
+      assert(pageContextHttpReponseNull.httpResponse === null)
+      return pageContextHttpReponseNull
     }
   }
 }
 
-function getPageContextErr(err: unknown, pageContextInit: Record<string, unknown>) {
-  const pageContextErr = {}
-  objectAssign(pageContextErr, pageContextInit)
-  objectAssign(pageContextErr, {
+function getPageContextHttpResponseNull(err: unknown, pageContextInit: Record<string, unknown>) {
+  const pageContextHttpReponseNull = {}
+  objectAssign(pageContextHttpReponseNull, pageContextInit)
+  objectAssign(pageContextHttpReponseNull, {
     httpResponse: null,
     errorWhileRendering: err
   })
-  return pageContextErr
+  return pageContextHttpReponseNull
 }
 
 async function renderPageAttempt<PageContextInit extends { urlOriginal: string }>(
