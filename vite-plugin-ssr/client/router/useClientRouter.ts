@@ -1,5 +1,6 @@
 export { useClientRouter }
 export { disableClientRouting }
+export { isDisableAutomaticLinkInterception }
 
 import {
   assert,
@@ -501,4 +502,12 @@ function handleErrorFetchingStaticAssets(
   serverSideRouteTo(pageContext.urlOriginal)
 
   return true
+}
+
+function isDisableAutomaticLinkInterception(): boolean {
+  // @ts-ignore
+  return !!window._disableAutomaticLinkInterception
+  /* globalObject should be used if we want to make disableAutomaticLinkInterception a page-by-page setting
+  return globalObject.disableAutomaticLinkInterception ?? false
+  */
 }

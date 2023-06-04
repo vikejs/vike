@@ -4,6 +4,7 @@ export { isClientSideRoutable } from './skipLink/isClientSideRoutable'
 import { getBaseServer } from '../getBaseServer'
 import { isExternalLink } from './isExternalLink'
 import { assert, parseUrl, isBaseServer, isParsable } from './utils'
+import { isDisableAutomaticLinkInterception } from './useClientRouter'
 
 function skipLink(linkTag: HTMLElement): boolean {
   const url = linkTag.getAttribute('href')
@@ -19,7 +20,20 @@ function skipLink(linkTag: HTMLElement): boolean {
   if (!isParsable(url)) {
     return true
   }
+  // Purposely last because disableAutomaticLinkInterception will be removed in the major release
+  if (!isVikeLink(linkTag)) return true
   return false
+}
+
+// TODO/v1-release: remove this in favor of synchronously checking whether URL matches the route of a page (possible since Async Route Functions are now deprecated)
+function isVikeLink(linkTag: HTMLElement) {
+  const disableAutomaticLinkInterception = isDisableAutomaticLinkInterception()
+  if (!disableAutomaticLinkInterception) {
+    return true
+  } else {
+    const target = linkTag.getAttribute('data-vike-link')
+    return target !== null && target !== 'false'
+  }
 }
 
 function isNewTabLink(linkTag: HTMLElement) {
