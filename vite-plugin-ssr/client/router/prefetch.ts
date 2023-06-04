@@ -1,12 +1,13 @@
 export { addLinkPrefetchHandlers, prefetch }
 
-import { assert, assertClientRouting, assertUsage, checkIfClientRouting, isExternalLink } from './utils'
+import { assert, assertClientRouting, assertUsage, checkIfClientRouting } from './utils'
 import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { isClientSideRoutable, skipLink } from './skipLink'
 import { getPageId } from './getPageId'
 import { getPrefetchSettings } from './prefetch/getPrefetchSettings'
 import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched'
 import { disableClientRouting } from './useClientRouter'
+import { isExternalLink } from './isExternalLink'
 
 assertClientRouting()
 
