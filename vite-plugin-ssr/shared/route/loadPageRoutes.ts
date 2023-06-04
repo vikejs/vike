@@ -17,7 +17,7 @@ type PageRoute = {
 } & (
   | { routeString: string; routeDefinedAt: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
   | { routeString: string; routeDefinedAt: string; routeType: 'STRING' }
-  | { routeFunction: Function; routeDefinedAt: string; allowAsync: boolean; routeType: 'FUNCTION' }
+  | { routeFunction: Function; routeDefinedAt: string; routeType: 'FUNCTION' }
 )
 type PageRoutes = PageRoute[]
 type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
@@ -67,20 +67,20 @@ function getPageRoutes(
               pageRoute = { pageId, comesFromV1PageConfig, routeString: route, routeDefinedAt, routeType: 'STRING' }
             } else {
               assert(isCallable(route))
-              let allowAsync = false
-              const allowSyncConfig = pageConfig.configElements.iKnowThePerformanceRisksOfAsyncRouteFunctions
-              if (allowSyncConfig) {
-                const val = allowSyncConfig.configValue
-                assert(typeof val === 'boolean', `${allowSyncConfig.configDefinedAt} should be a boolean`)
-                allowAsync = val
+              {
+                // TODO/v1-release: remove
+                const allowAsyncConfig = pageConfig.configElements.iKnowThePerformanceRisksOfAsyncRouteFunctions
+                if (allowAsyncConfig) {
+                  const val = allowAsyncConfig.configValue
+                  assert(typeof val === 'boolean', `${allowAsyncConfig.configDefinedAt} should be a boolean`)
+                }
               }
               pageRoute = {
                 pageId,
                 comesFromV1PageConfig,
                 routeFunction: route,
                 routeDefinedAt,
-                routeType: 'FUNCTION',
-                allowAsync
+                routeType: 'FUNCTION'
               }
             }
           }
@@ -148,21 +148,21 @@ function getPageRoutes(
           }
           if (hasProp(fileExports, 'default', 'function')) {
             const routeFunction = fileExports.default
-            let allowAsync = false
-            const allowKey = 'iKnowThePerformanceRisksOfAsyncRouteFunctions'
-            if (allowKey in fileExports) {
-              assertUsage(
-                hasProp(fileExports, allowKey, 'boolean'),
-                `The export \`${allowKey}\` of ${filePath} should be a boolean.`
-              )
-              allowAsync = fileExports[allowKey]
+            {
+              // TODO/v1-release: remove
+              const allowKey = 'iKnowThePerformanceRisksOfAsyncRouteFunctions'
+              if (allowKey in fileExports) {
+                assertUsage(
+                  hasProp(fileExports, allowKey, 'boolean'),
+                  `The export \`${allowKey}\` of ${filePath} should be a boolean.`
+                )
+              }
             }
             pageRoutes.push({
               pageId,
               comesFromV1PageConfig,
               routeFunction,
               routeDefinedAt: filePath,
-              allowAsync,
               routeType: 'FUNCTION'
             })
             return

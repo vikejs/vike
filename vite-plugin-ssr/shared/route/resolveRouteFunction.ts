@@ -2,11 +2,10 @@ export { resolveRouteFunction }
 export { assertRouteParams }
 
 import { assertURLs, PageContextUrls, PageContextUrlSource } from '../addComputedUrlProps'
-import { assert, assertUsage, hasProp, isPlainObject, isPromise, isStringRecord } from './utils'
+import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise, isStringRecord } from './utils'
 
 async function resolveRouteFunction(
   routeFunction: Function,
-  allowAsync: boolean,
   pageContext: PageContextUrls & PageContextUrlSource,
   routeDefinedAt: string
 ): Promise<null | {
@@ -15,9 +14,10 @@ async function resolveRouteFunction(
 }> {
   assertURLs(pageContext)
   let result: unknown = routeFunction(pageContext)
-  assertUsage(
-    !isPromise(result) || allowAsync,
-    `The Route Function ${routeDefinedAt} returned a promise; async route functions are opt-in, see https://vite-plugin-ssr.com/route-function#async`
+  assertWarning(
+    !isPromise(result),
+    `The Route Function ${routeDefinedAt} returned a promise, but async Route Functions are deprecated and will be removed in the next major release, see https://vite-plugin-ssr.com/route-function#async`,
+    { showStackTrace: false, onlyOnce: true }
   )
   result = await result
   if (result === false) {

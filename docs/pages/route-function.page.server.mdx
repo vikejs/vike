@@ -119,23 +119,18 @@ Thus, we should keep Route Functions both fast and lightweight.
 
 ## Async
 
-Route Functions should be fast and that's why, by default, vite-plugin-ssr forbids Route Functions to be an async function. However, we can enable async route functions:
+Async Route Functions are forbidden.
 
 ```js
 // *.page.route.js
 
-// We need to opt-in to be able to use async route functions
-export const iKnowThePerformanceRisksOfAsyncRouteFunctions = true
-
-// We can now use an async route function
+// ❌ This is forbidden
 export default async () => { /* ... */ }
 ```
 
-Async route functions may significantly slow down our app: as we have seen in [Lightweight & fast](#lightweight-fast), every time the user navigates to a new page *all* Route Functions are called and awaited for. This means that a slow Route Function will slow down all our pages.
+The motivation for asynchronous Route Functions is often redirections, but using <Link href="/RenderErrorPage" text={<code>throw RenderErrorPage()</code>}></Link> is usually a better approach.
 
-Async route functions are therefore discouraged and should be considered as last resort.
-
-The motivation for async route functions are often redirections, but using <Link href="/RenderErrorPage" text={<code>throw RenderErrorPage()</code>}></Link> is usually a better approach.
+> An async Route Function would slow down our entire app: as we have seen in [Lightweight & fast](#lightweight-fast), every time the user navigates to a new page *all* Route Functions are called. This means that a slow Route Function would slow down *all* our pages.
 
 
 ## Redirection & `404`
