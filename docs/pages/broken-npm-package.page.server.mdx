@@ -2,14 +2,14 @@ import { Note } from '@brillout/docpress'
 
 Many npm packages contain invalid code which make Node.js crash.
 
-See [solution](#solution).
+The most notable issues are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) and invalid CSS imports, see [errors](#errors) and [solution](#solution).
 
-The most notable issues are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) and invalid CSS imports, see errors below.
-
-> We tried to convince npm to address the issue but without success: [npm/rfcs#665](https://github.com/npm/rfcs/issues/665).
+> We're trying to convince Node.js/npm to address the issue: [npm/rfcs#665](https://github.com/npm/rfcs/issues/665).
 
 
 ## Errors
+
+### Cannot use import statement outside a module
 
 ```
 SyntaxError: Cannot use import statement outside a module
@@ -33,6 +33,9 @@ Node.js v18.0.0
 ```
 > Node.js's message `set "type": "module" in package.json or use the .mjs extension` is misleading because it means the library's `node_modules/some-library/package.json`, not our `package.json`. It's not really actionable (unless we patch the library, e.g. with [pnpm.packageExtensions](https://pnpm.io/package_json#pnpmpackageextensions) or [pnpm patch](https://pnpm.io/cli/patch)).
 
+
+### Named export not found
+
 ```
 import { SomeImport } from "some-library";
          ^^^^^^^^^^
@@ -49,6 +52,9 @@ Node.js v18.0.0
 ```
 
 > The workaround proposed by Node.js often doesn't work. (Because, while the server-side imports CJS which always includes a default export, the browser-side imports ESM which usually doesn't have a default export.)
+
+
+### ERR_MODULE_NOT_FOUND
 
 ```
 node:internal/process/esm_loader:91
@@ -73,7 +79,21 @@ Node.js v18.0.0
 
 > The error is usually thrown when the library's ESM code contains `import './some-file'`. (It should be `import './some-file.js'` instead, as imports in ESM code are required to include the file extension.)
 
-Another common problem is code importing CSS which also makes Node.js crash:
+
+### ERR_UNSUPPORTED_DIR_IMPORT
+
+```
+Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import 'node_modules/some-library/dist/some-dir/' is not supported resolving ES modules imported from node_modules/some-library/dist/index.js
+Did you mean to import ./some-dir/index.js?
+    at finalizeResolution (node:internal/modules/esm/resolve:412:17)
+```
+
+> ESM doesn't allow directory imports: all import paths need to point to a filename instead.
+
+
+### ERR_UNKNOWN_FILE_EXTENSION .css
+
+Another common problem is code importing CSS which makes Node.js crash:
 
 ```
 Error: ERR_UNKNOWN_FILE_EXTENSION .css node_modules/some-library/dist/main.css

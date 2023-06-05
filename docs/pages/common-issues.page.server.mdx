@@ -6,7 +6,7 @@ Vite purposely doesn't transpile server-side code but lets your Node.js server d
 
 But some npm packages contain invalid Node.js code and we need to add them to `vite.config.js > ssr.noExternal`, see <Link href="/broken-npm-package#solution" />.
 
-> The most notable issues are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) and invalid CSS imports, see <Link href="/broken-npm-package#errors" />.
+> The most notable issues are invalid ESM and invalid CSS imports, see <Link href="/broken-npm-package#errors" />.
 
 
 ## Hydration mismatch
