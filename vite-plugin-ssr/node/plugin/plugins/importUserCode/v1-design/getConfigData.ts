@@ -52,7 +52,8 @@ import {
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
-import { userFilesHaveError } from './handleUserFileError'
+import { logDevError } from '../../../shared/devLogger'
+import { isInvalidConfig_set } from '../../../../runtime/renderPage/isInvalidConfig'
 
 assertIsVitePluginCode()
 
@@ -243,14 +244,19 @@ function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: 
 }
 
 async function loadConfigData_withErrorHandling(...args: Parameters<typeof loadConfigData>): Promise<ConfigData> {
+  const isDev: boolean = args[1]
   try {
-    return await loadConfigData(...args)
+    const ret = await loadConfigData(...args)
+    isInvalidConfig_set(false)
+    return ret
   } catch (err) {
-    if (!userFilesHaveError()) {
-      // usageError() (or vite-plugin-ssr bug)
+    if (!isDev) {
       throw err
     }
-    const CONFIG_DATA_EMPTY: ConfigData = {
+    logDevError(err)
+    // @ts-expect-error
+    isInvalidConfig_set(err)
+    const dummyData: ConfigData = {
       pageConfigsData: [],
       pageConfigGlobal: {
         onPrerenderStart: null,
@@ -258,7 +264,7 @@ async function loadConfigData_withErrorHandling(...args: Parameters<typeof loadC
       },
       vikeConfig: {}
     }
-    return CONFIG_DATA_EMPTY
+    return dummyData
   }
 }
 async function loadConfigData(

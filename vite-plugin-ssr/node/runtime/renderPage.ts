@@ -15,6 +15,8 @@ import type { PageContextDebug } from './renderPage/debugPageFiles'
 import { warnMissingErrorPage } from './renderPage/handleErrorWithoutErrorPage'
 import { log404 } from './renderPage/log404'
 import { executeOnRenderResult } from './renderPage/onRenderResult'
+import { logRuntimeMsg } from './renderPage/runtimeLogger'
+import { isInvalidConfig } from './renderPage/isInvalidConfig'
 
 // `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
@@ -36,6 +38,17 @@ async function renderPage<
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string'))
   assertServerEnv()
+
+  const requestId = new Date()
+  logInfo(
+    `HTTP request '${pageContextInit.urlOriginal}' received at ${dateToHumanReadableString(requestId)}`,
+    requestId
+  )
+  if (isInvalidConfig) {
+    logInfo('Invalid config, see error above', requestId)
+    const pageContextHttpReponseNull = getPageContextHttpResponseNull(isInvalidConfig, pageContextInit)
+    return pageContextHttpReponseNull
+  }
 
   let renderContext: RenderContext
   try {
@@ -258,4 +271,11 @@ function handleUrl(pageContext: { urlOriginal: string; _baseServer: string }): {
     _urlHandler: (urlOriginal: string) => handlePageContextRequestUrl(urlOriginal).urlWithoutPageContextRequestSuffix
   }
   return pageContextAddendum
+}
+
+function logInfo(msg: string, requestId: Date) {
+  logRuntimeMsg?.(`[vps][${dateToHumanReadableString(requestId)}] ${msg}`)
+}
+function dateToHumanReadableString(date: Date) {
+  return date.toLocaleTimeString('de-DE')
 }

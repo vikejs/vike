@@ -6,6 +6,7 @@ import { determineFsAllowList } from './determineFsAllowList'
 import { getConfigVps } from '../../../shared/getConfigVps'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware'
 import { hasLogged, markEnvAsDev } from '../../utils'
+import { logRuntimeMsg_set } from '../../../runtime/renderPage/runtimeLogger'
 
 // There doesn't seem to be a straightforward way to discriminate between `$ vite preview` and `$ vite dev`
 const apply = 'serve'
@@ -58,6 +59,7 @@ function devConfig(): Plugin[] {
         handler(server) {
           if (config.server.middlewareMode) return
           return () => {
+            logRuntimeMsg_set((msg) => console.log(msg))
             addSsrMiddleware(server.middlewares, server)
           }
         }

@@ -18,7 +18,7 @@ import {
 import { isImportData, replaceImportStatements, type FileImport } from './replaceImportStatements'
 import { getConfigData_dependenciesInvisibleToVite, getFilePathToShowToUser, type FilePath } from './getConfigData'
 import 'source-map-support/register'
-import { handleUserFileError, handleUserFileSuccess } from './handleUserFileError'
+import { addErrorIntroMsg } from '../../../shared/devLogger'
 
 assertIsVitePluginCode()
 
@@ -60,13 +60,11 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
     fileExports = await import_(filePathTmp)
   } catch (err) {
     triggerPrepareStackTrace(err)
+    addErrorIntroMsg(err, `Failed to execute ${filePathToShowToUser}`)
     throw err
-    handleUserFileError(err, 'Failed to execute', filePath)
-    return { fileExports: { default: { I_SHOULD_NEVER_BE_READ: true } } }
   } finally {
     clean()
   }
-  handleUserFileSuccess(filePath)
   // Return a plain JavaScript object
   //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
   //  - We don't need this special object
@@ -113,9 +111,8 @@ async function buildFile(filePath: FilePath, { bundle }: { bundle: boolean }) {
     result = await build(options)
   } catch (err) {
     await formatEsbuildError(err)
+    addErrorIntroMsg(err, `Failed to transpile ${getFilePathToShowToUser(filePath)}`)
     throw err
-    handleUserFileError(err, 'Failed to transpile', filePath)
-    return { code: '' }
   }
   const { text } = result.outputFiles![0]!
   return {
