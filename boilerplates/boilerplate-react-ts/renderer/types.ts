@@ -26,6 +26,10 @@ export type PageContextCustom = {
       title?: string
       description?: string
     }
+    getDocumentProps?: (pageProps?: PageProps) => Promise<{
+			title?: string;
+			description?: string;
+		}>
   }
 }
 
