@@ -235,8 +235,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.4.16
-        version: 0.4.16(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.21.5)
+        specifier: ^0.4.17
+        version: 0.4.17(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.21.5)
       '@types/node':
         specifier: ^15.12.1
         version: 15.14.9
@@ -3068,8 +3068,8 @@ packages:
       - terser
     dev: false
 
-  /@brillout/docpress@0.4.16(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.21.5):
-    resolution: {integrity: sha512-6Y6Cw1ecHZ3SaepdJjIq+pm7Qc3f0CQyNMHZws+e4OcglTuM8uI7lV2Ufgvh6rvyeKX/gK6paR1wOvyhrNpBog==}
+  /@brillout/docpress@0.4.17(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.21.5):
+    resolution: {integrity: sha512-VxTt4lD6y5x80Dhx74TLfd6IkH28cTb48EibJlGqSAnZX3HYU3i7gbZFDBfz2pOM/QoQ2S22tbpjXL6VctgAug==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -3078,7 +3078,7 @@ packages:
       '@mdx-js/mdx': 2.3.0
       '@mdx-js/react': 2.3.0(react@18.2.0)
       '@mdx-js/rollup': 2.3.0(rollup@3.21.5)
-      '@vitejs/plugin-react-swc': 3.3.2(@brillout/vite@4.0.1-fix)
+      '@vitejs/plugin-react-swc': 3.3.2(vite@4.3.9)
       balloon-css: 1.2.0
       express: 4.18.2
       react: 18.2.0
@@ -3087,7 +3087,7 @@ packages:
       remark-gfm: 3.0.1
       shiki: 0.10.1
       twemoji: 13.1.1
-      vite: /@brillout/vite@4.0.1-fix(@types/node@15.14.9)
+      vite: 4.3.9(@types/node@15.14.9)
       vite-plugin-ssr: link:vite-plugin-ssr
     transitivePeerDependencies:
       - '@swc/helpers'
@@ -5004,13 +5004,13 @@ packages:
       wonka: 4.0.15
     dev: false
 
-  /@vitejs/plugin-react-swc@3.3.2(@brillout/vite@4.0.1-fix):
+  /@vitejs/plugin-react-swc@3.3.2(vite@4.3.9):
     resolution: {integrity: sha512-VJFWY5sfoZerQRvJrh518h3AcQt6f/yTuWn4/TRB+dqmYU0NX1qz7qM5Wfd+gOQqUzQW4gxKqKN3KpE/P3+zrA==}
     peerDependencies:
       vite: ^4
     dependencies:
       '@swc/core': 1.3.62
-      vite: /@brillout/vite@4.0.1-fix(@types/node@15.14.9)
+      vite: 4.3.9(@types/node@15.14.9)
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: false
@@ -12574,6 +12574,39 @@ packages:
       terser:
         optional: true
     dependencies:
+      esbuild: 0.17.18
+      postcss: 8.4.23
+      rollup: 3.21.5
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: false
+
+  /vite@4.3.9(@types/node@15.14.9):
+    resolution: {integrity: sha512-qsTNZjO9NoJNW7KnOrgYwczm0WctJ8m/yqYAMAK9Lxt4SoySUfS5S8ia9K7JHpa3KEeMfyF8LoJ3c5NeBJy6pg==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      '@types/node': 15.14.9
       esbuild: 0.17.18
       postcss: 8.4.23
       rollup: 3.21.5
