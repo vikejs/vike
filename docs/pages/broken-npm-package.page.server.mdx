@@ -1,4 +1,4 @@
-import { Note } from '@brillout/docpress'
+import { Note, CodeBlockTransformer } from '@brillout/docpress'
 
 Many npm packages contain invalid code which make Node.js crash.
 
@@ -14,6 +14,8 @@ The most notable issues are invalid [ESM](https://hacks.mozilla.org/2018/03/es-m
 ```
 SyntaxError: Cannot use import statement outside a module
 ```
+
+<CodeBlockTransformer lineBreak="white-space">
 ```
 (node:30335) Warning: To load an ES module, set "type": "module" in the package.json or use the .mjs extension.
 node_modules/some-library/dist/esm/index.js:1
@@ -31,11 +33,14 @@ SyntaxError: Cannot use import statement outside a module
 
 Node.js v18.0.0
 ```
+</CodeBlockTransformer>
+
 > Node.js's message `set "type": "module" in package.json or use the .mjs extension` is misleading because it means the library's `node_modules/some-library/package.json`, not our `package.json`. It's not really actionable (unless we patch the library, e.g. with [pnpm.packageExtensions](https://pnpm.io/package_json#pnpmpackageextensions) or [pnpm patch](https://pnpm.io/cli/patch)).
 
 
 ### Named export not found
 
+<CodeBlockTransformer lineBreak="white-space">
 ```
 import { SomeImport } from "some-library";
          ^^^^^^^^^^
@@ -50,6 +55,7 @@ const { SomeImport } = pkg;
 
 Node.js v18.0.0
 ```
+</CodeBlockTransformer>
 
 The workaround proposed by Node.js often doesn't work for default exports. If it doesn't, try this instead:
 
@@ -66,6 +72,7 @@ Alternatives:
 
 ### ERR_MODULE_NOT_FOUND
 
+<CodeBlockTransformer lineBreak="white-space">
 ```
 node:internal/process/esm_loader:91
     internalBinding('errors').triggerUncaughtException(
@@ -86,17 +93,20 @@ Did you mean to import some-file.js?
 
 Node.js v18.0.0
 ```
+</CodeBlockTransformer>
 
 > The error is usually thrown when the library's ESM code contains `import './some-file'`. (It should be `import './some-file.js'` instead, as imports in ESM code are required to include the file extension.)
 
 
 ### ERR_UNSUPPORTED_DIR_IMPORT
 
+<CodeBlockTransformer lineBreak="white-space">
 ```
 Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import 'node_modules/some-library/dist/some-dir/' is not supported resolving ES modules imported from node_modules/some-library/dist/index.js
 Did you mean to import ./some-dir/index.js?
     at finalizeResolution (node:internal/modules/esm/resolve:412:17)
 ```
+</CodeBlockTransformer>
 
 > ESM doesn't allow directory imports: all import paths need to point to a filename instead.
 
@@ -105,12 +115,14 @@ Did you mean to import ./some-dir/index.js?
 
 Another common problem is code importing CSS which makes Node.js crash:
 
+<CodeBlockTransformer lineBreak="white-space">
 ```
 Error: ERR_UNKNOWN_FILE_EXTENSION .css node_modules/some-library/dist/main.css
     at someFunction (node_modules/some-library/dist/main.js)
     at nextLoad (node:internal/modules/esm/loader:163:28)
     at ESMLoader.load (node:internal/modules/esm/loader:605:26)
 ```
+</CodeBlockTransformer>
 
 
 ## Solution
