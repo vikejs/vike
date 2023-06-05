@@ -51,7 +51,17 @@ const { SomeImport } = pkg;
 Node.js v18.0.0
 ```
 
-> The workaround proposed by Node.js often doesn't work. (Because, while the server-side imports CJS which always includes a default export, the browser-side imports ESM which usually doesn't have a default export.)
+The workaround proposed by Node.js often doesn't work for default exports. If it doesn't, try this instead:
+
+```diff
+- import theDefaultExport from 'some-library'
++ import lib from 'some-library';
++ const theDefaultExport = lib.default ?? lib
+```
+
+Alternatives:
+ - [vite-plugin-cjs-interop](https://github.com/cyco130/vite-plugin-cjs-interop)
+ - The [`ssr.noExternal` solution](#solution). (Although, for increased development speed, we recommend trying the other workarounds first.)
 
 
 ### ERR_MODULE_NOT_FOUND
