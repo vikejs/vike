@@ -1,12 +1,13 @@
 export { devConfig }
 
-import type { LogType, Plugin, ResolvedConfig, UserConfig } from 'vite'
+import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import { determineOptimizeDeps } from './determineOptimizeDeps'
 import { determineFsAllowList } from './determineFsAllowList'
 import { getConfigVps } from '../../../shared/getConfigVps'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware'
-import { hasLogged, markEnvAsDev } from '../../utils'
+import { markEnvAsDev } from '../../utils'
 import { logRuntimeMsg_set } from '../../../runtime/renderPage/runtimeLogger'
+import { customClearScreen } from './customClearScreen'
 
 // There doesn't seem to be a straightforward way to discriminate between `$ vite preview` and `$ vite dev`
 const apply = 'serve'
@@ -66,32 +67,4 @@ function devConfig(): Plugin[] {
       }
     }
   ]
-}
-
-function customClearScreen(config: ResolvedConfig) {
-  if (config.clearScreen === false) {
-    return
-  }
-  intercetLogger(
-    'info',
-    config,
-    // Allow initial clear if no assertWarning() was shown
-    (msg) => msg.includes('VITE') && msg.includes('ready in') && !hasLogged()
-  )
-  intercetLogger('warn', config)
-  intercetLogger('error', config)
-}
-
-type Logger = (...args: [string, { clear?: boolean } | undefined]) => void
-
-function intercetLogger(logType: LogType, config: ResolvedConfig, tolerateClear?: (msg: string) => boolean) {
-  const loggerOld = config.logger[logType].bind(config.logger)
-  const loggerNew: Logger = (...args) => {
-    const [msg, options] = args
-    if (options?.clear && !tolerateClear?.(msg)) {
-      options.clear = false
-    }
-    loggerOld(...args)
-  }
-  config.logger[logType] = loggerNew
 }

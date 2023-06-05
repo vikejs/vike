@@ -16,7 +16,7 @@ function logErrorWithIntroMessage(err_: unknown) {
   const err = err_ as ErrorWithIntroMsg
   const introMsg = err._introMsg
   if (introMsg) {
-    console.error(pc.red(introMsg))
+    console.error(pc.red(pc.bold(introMsg)))
   }
   console.error(err_)
 }

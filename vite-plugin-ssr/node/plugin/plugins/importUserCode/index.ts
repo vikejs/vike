@@ -16,7 +16,7 @@ import {
 } from '../../utils'
 import { isVirtualFileIdImportPageCode } from '../../../shared/virtual-files/virtualFileImportPageCode'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode'
-import { getConfigData_dependenciesInvisibleToVite, getConfigData_invalidate } from './v1-design/getConfigData'
+import { getConfigData_dependenciesInvisibleToVite, reloadConfigData } from './v1-design/getConfigData'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -48,7 +48,7 @@ function importUserCode(): Plugin {
       if (!getConfigData_dependenciesInvisibleToVite.has(file)) {
         return
       }
-      getConfigData_invalidate()
+      reloadConfigData(config.root, configVps.extensions)
       const mods = Array.from(server.moduleGraph.urlToModuleMap.keys())
         .filter((url) => isVirtualFileIdImportPageCode(url) || isVirtualFileIdImportUserCode(url))
         .map((url) => {

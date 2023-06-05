@@ -1,5 +1,5 @@
 export { getConfigData }
-export { getConfigData_invalidate }
+export { reloadConfigData }
 export { getConfigData_dependenciesInvisibleToVite }
 export { getFilePathToShowToUser }
 export type { FilePath }
@@ -115,9 +115,9 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition>
   baseServer: { env: 'config-only' }
 }
 
-function getConfigData_invalidate() {
-  configDataPromise = null
+function reloadConfigData(userRootDir: string, extensions: ExtensionResolved[]) {
   getConfigData_dependenciesInvisibleToVite = new Set()
+  configDataPromise = loadConfigData_withErrorHandling(userRootDir, true, extensions)
 }
 function getConfigData(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]): Promise<ConfigData> {
   if (!configDataPromise) {
