@@ -19,9 +19,10 @@ async function render(pageContext: PageContextServer) {
   )
 
   // See https://vite-plugin-ssr.com/head
-  const { documentProps } = pageContext.exports
-  const title = (documentProps && documentProps.title) || 'Vite SSR app'
-  const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
+  const { getDocumentProps, documentProps } = pageContext.exports
+	const dynamicProps = await getDocumentProps?.(pageProps)
+  const title = (dynamicProps && dynamicProps.title) || (documentProps && documentProps.title) || 'Vite SSR app'
+  const desc = (dynamicProps && dynamicProps.description) || (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html lang="en">
