@@ -53,7 +53,7 @@ import {
 import { transpileAndLoadFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
 import { logDevError } from '../../../shared/devLogger'
-import { isInvalidConfig_set } from '../../../../runtime/renderPage/isInvalidConfig'
+import { isInvalidConfig, isInvalidConfig_set } from '../../../../runtime/renderPage/isInvalidConfig'
 
 assertIsVitePluginCode()
 
@@ -115,9 +115,16 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition>
   baseServer: { env: 'config-only' }
 }
 
-function reloadConfigData(userRootDir: string, extensions: ExtensionResolved[]) {
+async function reloadConfigData(userRootDir: string, extensions: ExtensionResolved[]) {
   getConfigData_dependenciesInvisibleToVite = new Set()
+  const wasConfigInvalid = isInvalidConfig
   configDataPromise = loadConfigData_withErrorHandling(userRootDir, true, extensions)
+  ;(async () => {
+    await configDataPromise
+    if( wasConfigInvalid && !isInvalidConfig) {
+      console.log('[vps][config] Config succesfull loaded')
+    }
+  })()
 }
 function getConfigData(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]): Promise<ConfigData> {
   if (!configDataPromise) {

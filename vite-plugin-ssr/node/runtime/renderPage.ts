@@ -45,7 +45,7 @@ async function renderPage<
     requestId
   )
   if (isInvalidConfig) {
-    logInfo('Invalid config, see error above', requestId)
+    logInfo('Invalid configuration, see error above', requestId)
     const pageContextHttpReponseNull = getPageContextHttpResponseNull(isInvalidConfig, pageContextInit)
     return pageContextHttpReponseNull
   }
