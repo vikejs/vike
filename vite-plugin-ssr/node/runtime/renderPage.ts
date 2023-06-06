@@ -145,7 +145,7 @@ async function renderPage<
 
   // Log
   {
-    const type = isFailure ? 'failure' : 'success'
+    const type = isFailure ? 'failure' : 'info'
     const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
     assert(isFailure === (statusCode !== 200))
     const color = (s: number | string) => pc.bold(isFailure ? pc.red(s) : pc.green(s))
