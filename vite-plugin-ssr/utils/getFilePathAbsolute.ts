@@ -25,9 +25,9 @@ function getFilePathAbsolute(filePath: string, config: ResolvedConfig): string {
   } else {
     assert(filePath.startsWith('/'))
     const { root } = config
-    assertFsAbsolute(root)
+    assertPathIsAbsolute(root)
     filePathUnresolved = path.posix.join(root, filePath)
-    assertFsAbsolute(filePathUnresolved)
+    assertPathIsAbsolute(filePathUnresolved)
   }
 
   let filePathAbsolute: string
@@ -38,12 +38,12 @@ function getFilePathAbsolute(filePath: string, config: ResolvedConfig): string {
     assert(false)
   }
   filePathAbsolute = toPosixPath(filePathAbsolute)
-  assertFsAbsolute(filePathAbsolute)
+  assertPathIsAbsolute(filePathAbsolute)
   return filePathAbsolute
 }
 
 /** Assert path is filesystem absolute */
-function assertFsAbsolute(p: string) {
+function assertPathIsAbsolute(p: string) {
   assertPosixPath(p)
   if (process.platform === 'win32') {
     assert(path.win32.isAbsolute(p))
