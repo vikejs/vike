@@ -76,7 +76,7 @@ type Config<Page = unknown> = Partial<{
    *
    * See https://vite-plugin-ssr.com/filesystemRoutingRoot
    */
-  filesystemRoutingRoot: boolean
+  filesystemRoutingRoot: string
 
   /** Page Hook called when pre-rendering starts.
    *
