@@ -145,11 +145,14 @@ async function renderPage<
 
   // Log
   {
-    const type = isFailure ? 'failure' : 'info'
     const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
     assert(isFailure === (statusCode !== 200))
     const color = (s: number | string) => pc.bold(isFailure ? pc.red(s) : pc.green(s))
-    logRequestInfo(`HTTP Response ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`, requestId, type)
+    logRequestInfo(
+      `HTTP Response ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`,
+      requestId,
+      statusCode === 200 || statusCode === 404 ? 'info' : 'failure'
+    )
   }
 
   // Finished
