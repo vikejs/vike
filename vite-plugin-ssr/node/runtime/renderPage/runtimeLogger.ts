@@ -1,6 +1,9 @@
 export let logRuntimeMsg: RuntimeLogger | null = null
 export { logRuntimeMsg_set }
-type RuntimeLogger = (msg: string) => void
+
+import type { LogArgs } from '../../plugin/shared/devLogger'
+
+type RuntimeLogger = (...args: LogArgs) => void
 
 function logRuntimeMsg_set(logger: RuntimeLogger) {
   logRuntimeMsg = logger

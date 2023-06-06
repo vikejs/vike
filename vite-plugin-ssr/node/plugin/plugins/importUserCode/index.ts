@@ -17,6 +17,8 @@ import {
 import { isVirtualFileIdImportPageCode } from '../../../shared/virtual-files/virtualFileImportPageCode'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode'
 import { getConfigData_dependenciesInvisibleToVite, reloadConfigData } from './v1-design/getConfigData'
+import path from 'path'
+import { logDevInfo } from '../../shared/devLogger'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -47,6 +49,7 @@ function importUserCode(): Plugin {
       if (!getConfigData_dependenciesInvisibleToVite.has(file)) {
         return
       }
+      logDevInfo(`change ${makeRelativeToUserRootDir(file, config.root)}`, 'config', 'info')
       reloadConfigData(config.root, configVps.extensions)
       const mods = Array.from(server.moduleGraph.urlToModuleMap.keys())
         .filter((url) => isVirtualFileIdImportPageCode(url) || isVirtualFileIdImportUserCode(url))
@@ -77,4 +80,11 @@ function importUserCode(): Plugin {
       isDev1_onConfigureServer()
     }
   }
+}
+
+function makeRelativeToUserRootDir(filePathAbsolute: string, userRootDir: string): string {
+  assertPosixPath(filePathAbsolute)
+  assertPosixPath(userRootDir)
+  const filePathRelativeToUserRootDir = path.posix.relative(userRootDir, filePathAbsolute)
+  return filePathRelativeToUserRootDir
 }

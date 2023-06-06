@@ -55,9 +55,9 @@ function consoleError(err: unknown) {
   console.error(errStr)
 }
 
-function isNewError(err: unknown, errOriginal: unknown): boolean {
-  assertError(err)
-  return !isSameErrorMessage(errOriginal, err) || !hasAlreadyLogged(errOriginal)
+function isNewError(errErrorPage: unknown, errFirstAttempt: unknown): boolean {
+  assertError(errErrorPage)
+  return !isSameErrorMessage(errFirstAttempt, errErrorPage) || !hasAlreadyLogged(errFirstAttempt)
 }
 
 function hasAlreadyLogged(err: unknown) {

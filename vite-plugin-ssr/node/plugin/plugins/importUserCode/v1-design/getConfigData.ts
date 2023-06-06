@@ -52,7 +52,7 @@ import {
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
-import { logDevError } from '../../../shared/devLogger'
+import { logDevError, logDevInfo } from '../../../shared/devLogger'
 import { isInvalidConfig, isInvalidConfig_set } from '../../../../runtime/renderPage/isInvalidConfig'
 
 assertIsVitePluginCode()
@@ -121,8 +121,8 @@ async function reloadConfigData(userRootDir: string, extensions: ExtensionResolv
   configDataPromise = loadConfigData_withErrorHandling(userRootDir, true, extensions)
   ;(async () => {
     await configDataPromise
-    if( wasConfigInvalid && !isInvalidConfig) {
-      console.log('[vps][config] Config succesfull loaded')
+    if (wasConfigInvalid && !isInvalidConfig) {
+      logDevInfo('Config succesfull loaded', 'config', 'success')
     }
   })()
 }

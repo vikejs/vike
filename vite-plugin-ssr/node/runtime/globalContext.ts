@@ -1,5 +1,6 @@
 export { initGlobalContext }
 export { getGlobalContext }
+export { getViteDevServer }
 export { setGlobalContextViteDevServer }
 export { setGlobalContextViteConfig }
 export { getRuntimeManifest }
@@ -53,6 +54,9 @@ function setGlobalContextViteDevServer(viteDevServer: ViteDevServer) {
   if (globalObject.viteDevServer) return
   assert(!globalObject.globalContext)
   globalObject.viteDevServer = viteDevServer
+}
+function getViteDevServer(): ViteDevServer | null {
+  return globalObject.viteDevServer ?? null
 }
 function setGlobalContextViteConfig(config: ResolvedConfig): void {
   if (globalObject.config) return

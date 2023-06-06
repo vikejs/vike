@@ -17,6 +17,7 @@ import { log404 } from './renderPage/log404'
 import { executeOnRenderResult } from './renderPage/onRenderResult'
 import { logRuntimeMsg } from './renderPage/runtimeLogger'
 import { isInvalidConfig } from './renderPage/isInvalidConfig'
+import pc from '@brillout/picocolors'
 
 // `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
@@ -39,17 +40,25 @@ async function renderPage<
   assert(hasProp(pageContextInit, 'urlOriginal', 'string'))
   assertServerEnv()
 
-  const requestId = new Date()
-  logInfo(
-    `HTTP request '${pageContextInit.urlOriginal}' received at ${dateToHumanReadableString(requestId)}`,
-    requestId
-  )
-  if (isInvalidConfig) {
-    logInfo('Invalid configuration, see error above', requestId)
-    const pageContextHttpReponseNull = getPageContextHttpResponseNull(isInvalidConfig, pageContextInit)
+  if (skipRequest(pageContextInit.urlOriginal)) {
+    const pageContextHttpReponseNull = getPageContextHttpResponseNull(pageContextInit)
     return pageContextHttpReponseNull
   }
 
+  const requestId = new Date()
+  const urlToShowToUser = pc.bold(pageContextInit.urlOriginal)
+  logRequestInfo(
+    `HTTP Request ${urlToShowToUser} received at ${dateToHumanReadableString(requestId)}`,
+    requestId,
+    'info'
+  )
+  if (isInvalidConfig) {
+    logRequestInfo('Invalid configuration, see error above', requestId, 'failure')
+    const pageContextHttpReponseNull = getPageContextHttpResponseNull(pageContextInit)
+    return pageContextHttpReponseNull
+  }
+
+  // Prepare context
   let renderContext: RenderContext
   try {
     await initGlobalContext()
@@ -58,108 +67,111 @@ async function renderPage<
     // Errors are expected since assertUsage() is used in both initGlobalContext() and getRenderContext().
     // initGlobalContext() and getRenderContext() don't call any user hooks => err isn't thrown from user code => we use logErrorWithoutVite() instead of logErrorWithVite().
     logErrorWithoutVite(err)
-    const pageContextHttpReponseNull = getPageContextHttpResponseNull(err, pageContextInit)
+    const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(err, pageContextInit)
     return pageContextHttpReponseNull
   }
 
-  let pageContextOriginal: undefined | Awaited<ReturnType<typeof renderPageAttempt>>
-  let pageContextOriginalPartial: undefined | Record<string, unknown>
-  let errOriginal: unknown
+  // Render page
+  let pageContextFirstAttempt: undefined | Awaited<ReturnType<typeof renderPageAttempt>>
+  let pageContextFirstAttemptPartial: undefined | Record<string, unknown>
+  let errFirstAttempt: unknown
   {
     const pageContext = {}
     let errored: boolean
     try {
-      pageContextOriginal = await renderPageAttempt(pageContextInit, pageContext, renderContext)
+      pageContextFirstAttempt = await renderPageAttempt(pageContextInit, pageContext, renderContext)
       errored = false
-    } catch (errOriginal_) {
+    } catch (err) {
+      errFirstAttempt = err
+      logErrorWithVite(errFirstAttempt)
       errored = true
-      errOriginal = errOriginal_
-      pageContextOriginalPartial = pageContext
+      pageContextFirstAttemptPartial = pageContext
     }
     if (errored) {
-      assert(errOriginal)
+      assert(errFirstAttempt)
     } else {
-      assert(pageContextOriginal === pageContext)
+      assert(pageContextFirstAttempt === pageContext)
     }
   }
 
-  const isV1 = renderContext.pageConfigs.length > 0
-  const errorPageIsMissing: boolean = !getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
-
-  if (errOriginal === undefined) {
-    assert(pageContextOriginal)
-    const statusCode = pageContextOriginal.httpResponse?.statusCode ?? null
-    if (!!pageContextOriginal && 'is404' in pageContextOriginal && pageContextOriginal.is404 === true) {
-      assert(
-        statusCode === 404 ||
-          // No HTTP response if user didn't define an error page
-          statusCode === null
-      )
-      // We call onRenderResult() before any log/warning
-      executeOnRenderResult(pageContextInit, true, statusCode)
-      if (errorPageIsMissing) {
-        assert(pageContextOriginal.httpResponse === null)
-        warnMissingErrorPage(isV1)
-      }
-      log404(pageContextOriginal)
-    } else {
-      if (pageContextOriginal.httpResponse) {
-        assert(statusCode === 200)
-        executeOnRenderResult(pageContextInit, false, statusCode)
-      } else {
-        // Don't call onRenderResult() hook if rendering was skipped (e.g. /favicon.ico HTTP requests, or HTTP requests that don't match the Base URL)
-      }
-    }
-    return pageContextOriginal
-  } else {
-    assert(errOriginal)
-    assert(pageContextOriginal === undefined)
-    assert(pageContextOriginalPartial)
-    // We call onRenderResult() before any log/warning
-    executeOnRenderResult(
-      pageContextInit,
-      true,
-      // We can't determine the status code before actually trying to render the error page (it can be either `null` or `500`)
-      null
-    )
-    if (errorPageIsMissing) {
+  // Log 404 info / missing error page warning
+  const isFailure = !pageContextFirstAttempt || pageContextFirstAttempt.httpResponse?.statusCode !== 200
+  {
+    const noErrorPageDefined: boolean = !getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
+    if (noErrorPageDefined && isFailure) {
+      const isV1 = renderContext.pageConfigs.length > 0
+      assert(!pageContextFirstAttempt?.httpResponse)
       warnMissingErrorPage(isV1)
     }
-    logErrorWithVite(errOriginal)
+    if (!!pageContextFirstAttempt && 'is404' in pageContextFirstAttempt && pageContextFirstAttempt.is404 === true) {
+      log404(pageContextFirstAttempt)
+      const statusCode = pageContextFirstAttempt.httpResponse?.statusCode ?? null
+      assert(statusCode === 404 || (noErrorPageDefined && statusCode === null))
+    }
+  }
+
+  // Render error page
+  let pageContextReturn: Awaited<ReturnType<typeof renderPage>>
+  if (errFirstAttempt === undefined) {
+    assert(pageContextFirstAttempt)
+    pageContextReturn = pageContextFirstAttempt
+  } else {
+    assert(errFirstAttempt)
+    assert(pageContextFirstAttempt === undefined)
+    assert(pageContextFirstAttemptPartial)
     let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderErrorPage>>
     let errErrorPage: unknown
     try {
       pageContextErrorPage = await renderErrorPage(
         pageContextInit,
-        errOriginal,
-        pageContextOriginalPartial,
+        errFirstAttempt,
+        pageContextFirstAttemptPartial,
         renderContext
       )
-    } catch (errErrorPage_) {
-      errErrorPage = errErrorPage_
+    } catch (err) {
+      errErrorPage = err
+      if (isNewError(errErrorPage, errFirstAttempt)) {
+        logErrorWithVite(errErrorPage)
+      }
     }
     if (errErrorPage === undefined) {
       assert(pageContextErrorPage)
-      return pageContextErrorPage
+      pageContextReturn = pageContextErrorPage
     } else {
       assert(errErrorPage)
       assert(pageContextErrorPage === undefined)
-      if (isNewError(errErrorPage, errOriginal)) {
-        logErrorWithVite(errErrorPage)
-      }
-      const pageContextHttpReponseNull = getPageContextHttpResponseNull(errOriginal, pageContextInit)
-      assert(pageContextHttpReponseNull.httpResponse === null)
-      return pageContextHttpReponseNull
+      pageContextReturn = getPageContextHttpResponseNullWithError(errFirstAttempt, pageContextInit)
     }
   }
+
+  // Log
+  {
+    const type = isFailure ? 'failure' : 'success'
+    const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
+    assert(isFailure === (statusCode !== 200))
+    const color = (s: number | string) => pc.bold(isFailure ? pc.red(s) : pc.green(s))
+    logRequestInfo(`HTTP Response ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`, requestId, type)
+  }
+
+  // Finished
+  return pageContextReturn
 }
 
-function getPageContextHttpResponseNull(err: unknown, pageContextInit: Record<string, unknown>) {
+function getPageContextHttpResponseNullWithError(err: unknown, pageContextInit: Record<string, unknown>) {
   const pageContextHttpReponseNull = {}
   objectAssign(pageContextHttpReponseNull, pageContextInit)
   objectAssign(pageContextHttpReponseNull, {
     httpResponse: null,
     errorWhileRendering: err
+  })
+  return pageContextHttpReponseNull
+}
+function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>) {
+  const pageContextHttpReponseNull = {}
+  objectAssign(pageContextHttpReponseNull, pageContextInit)
+  objectAssign(pageContextHttpReponseNull, {
+    httpResponse: null,
+    errorWhileRendering: null
   })
   return pageContextHttpReponseNull
 }
@@ -169,26 +181,6 @@ async function renderPageAttempt<PageContextInit extends { urlOriginal: string }
   pageContext: {},
   renderContext: RenderContext
 ) {
-  {
-    const { urlOriginal } = pageContextInit
-    const isViteClientRequest = urlOriginal.endsWith('/@vite/client') || urlOriginal.startsWith('/@fs/')
-    assertWarning(
-      !isViteClientRequest,
-      `The vite-plugin-ssr middleware renderPage() was called with the URL ${urlOriginal} which is unexpected because the HTTP request should have already been handled by Vite's development middleware. Make sure to 1. install Vite's development middleware and 2. add Vite's middleware *before* vite-plugin-ssr's middleware, see https://vite-plugin-ssr.com/renderPage`,
-      { onlyOnce: true, showStackTrace: false }
-    )
-    if (
-      urlOriginal.endsWith('/__vite_ping') ||
-      urlOriginal.endsWith('/favicon.ico') ||
-      !isParsable(urlOriginal) ||
-      isViteClientRequest
-    ) {
-      objectAssign(pageContext, pageContextInit)
-      objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
-      return pageContext
-    }
-  }
-
   {
     const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitAddendum)
@@ -218,8 +210,8 @@ async function renderPageAttempt<PageContextInit extends { urlOriginal: string }
 
 async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
   pageContextInit: PageContextInit,
-  errOriginal: unknown,
-  pageContextOriginal: Record<string, unknown>,
+  errFirstAttempt: unknown,
+  pageContextFirstAttempt: Record<string, unknown>,
   renderContext: RenderContext
 ) {
   const pageContext = {}
@@ -232,11 +224,11 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
     objectAssign(pageContext, pageContextAddendum)
   }
 
-  assert(errOriginal)
+  assert(errFirstAttempt)
   objectAssign(pageContext, {
     is404: false,
     _pageId: null,
-    errorWhileRendering: errOriginal as Error,
+    errorWhileRendering: errFirstAttempt as Error,
     routeParams: {} as Record<string, string>
   })
 
@@ -248,7 +240,7 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
   }
 
   objectAssign(pageContext, {
-    _routeMatches: (pageContextOriginal as PageContextDebug)._routeMatches || 'ROUTE_ERROR'
+    _routeMatches: (pageContextFirstAttempt as PageContextDebug)._routeMatches || 'ROUTE_ERROR'
   })
 
   assert(pageContext.errorWhileRendering)
@@ -273,9 +265,25 @@ function handleUrl(pageContext: { urlOriginal: string; _baseServer: string }): {
   return pageContextAddendum
 }
 
-function logInfo(msg: string, requestId: Date) {
-  logRuntimeMsg?.(`[vps][${dateToHumanReadableString(requestId)}] ${msg}`)
+function logRequestInfo(msg: string, requestId: Date, type: 'success' | 'failure' | 'info') {
+  //const tag = dateToHumanReadableString(requestId)
+  logRuntimeMsg?.(msg, 'request', type)
 }
 function dateToHumanReadableString(date: Date) {
   return date.toLocaleTimeString('de-DE')
+}
+
+function skipRequest(urlOriginal: string): boolean {
+  const isViteClientRequest = urlOriginal.endsWith('/@vite/client') || urlOriginal.startsWith('/@fs/')
+  assertWarning(
+    !isViteClientRequest,
+    `The vite-plugin-ssr middleware renderPage() was called with the URL ${urlOriginal} which is unexpected because the HTTP request should have already been handled by Vite's development middleware. Make sure to 1. install Vite's development middleware and 2. add Vite's middleware *before* vite-plugin-ssr's middleware, see https://vite-plugin-ssr.com/renderPage`,
+    { onlyOnce: true, showStackTrace: false }
+  )
+  return (
+    urlOriginal.endsWith('/__vite_ping') ||
+    urlOriginal.endsWith('/favicon.ico') ||
+    !isParsable(urlOriginal) ||
+    isViteClientRequest
+  )
 }
