@@ -60,7 +60,7 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
     fileExports = await import_(filePathTmp)
   } catch (err) {
     triggerPrepareStackTrace(err)
-    addErrorIntroMsg(err, `Failed to execute ${filePathToShowToUser}`)
+    addErrorIntroMsg(err, `Failed to execute ${pc.dim(filePathToShowToUser)}`, 'config', 'failure')
     throw err
   } finally {
     clean()
@@ -111,7 +111,7 @@ async function buildFile(filePath: FilePath, { bundle }: { bundle: boolean }) {
     result = await build(options)
   } catch (err) {
     await formatEsbuildError(err)
-    addErrorIntroMsg(err, `Failed to transpile ${getFilePathToShowToUser(filePath)}`)
+    addErrorIntroMsg(err, `Failed to transpile ${pc.dim(getFilePathToShowToUser(filePath))}:`, 'config', 'failure')
     throw err
   }
   const { text } = result.outputFiles![0]!
@@ -196,14 +196,13 @@ function appendHeaderFileExtension(filePath: string) {
   return path.posix.join(path.posix.dirname(filePath), basenameCorrect)
 }
 
-// Copied and adapted from https://github.com/vitejs/vite/blob/bf0cd25adb3b8bb5d53433ba9323d0a95e9f756a/packages/vite/src/node/optimizer/scan.ts#L131-L135
 async function formatEsbuildError(err: any) {
   if (err.errors) {
     const msgs = await formatMessages(err.errors, {
       kind: 'error',
       color: true
     })
-    err.message = msgs.join('\n')
+    err._esbuildMessageFormatted = msgs.map((m) => m.trim()).join('\n')
   }
 }
 

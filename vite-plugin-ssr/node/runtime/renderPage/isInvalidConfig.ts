@@ -1,6 +1,9 @@
-// TODO: Error => unknonw
-export let isInvalidConfig: false | Error = false
-//export let invalidConfigErr: unknown
-export const isInvalidConfig_set = (v: false | Error) => {
-  isInvalidConfig = v
+export let isConfigInvalid = false
+export let wasConfigEverValid: null | boolean = null
+export const isConfigInvalid_set = (val: boolean) => {
+  isConfigInvalid = val
+  if (val) wasConfigEverValid = true
+  if (wasConfigEverValid === null) {
+    wasConfigEverValid = val
+  }
 }

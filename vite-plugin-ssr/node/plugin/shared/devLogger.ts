@@ -4,45 +4,78 @@ export { addErrorIntroMsg }
 export type { LogArgs }
 
 import pc from '@brillout/picocolors'
-import { getViteDevServer } from '../../runtime/globalContext'
+import { LogType } from 'vite'
+import { getViteDevServer, isGlobalContextSet } from '../../runtime/globalContext'
 import { logRuntimeMsg_set } from '../../runtime/renderPage/runtimeLogger'
-import { projectInfo } from '../utils'
+import { assert, isObject, projectInfo } from '../utils'
 
 logRuntimeMsg_set(logDevInfo)
 
 type LogArgs = [msg: string, category: 'config' | 'request', type: 'success' | 'failure' | 'info']
 
 function logDevError(err: unknown) {
-  logErrorWithIntroMessage(err)
+  if (isObject(err)) {
+    if ('_introMsg' in err) {
+      const errorWithIntroMsg = err as ErrorWithIntroMsg
+      const [msg, category, type] = errorWithIntroMsg._introMsg
+      logDevInfo(msg, category, type)
+    }
+    if ('_esbuildMessageFormatted' in err) {
+      console.error(err._esbuildMessageFormatted)
+      return
+    }
+  }
+  console.error(err)
 }
 
 function logDevInfo(...[msgInfo, category, type]: LogArgs) {
   const viteDevServer = getViteDevServer()
-  if (!viteDevServer) return
+  if (!viteDevServer && isGlobalContextSet()) return
   let tagCategory = pc.bold(`[${category}]`)
-  if (type === 'success') {
-    tagCategory = pc.green(tagCategory)
-  }
-  if (type === 'failure') {
-    tagCategory = pc.red(tagCategory)
-  }
+  let logType: LogType
   if (type === 'info') {
     tagCategory = pc.magenta(tagCategory)
+    logType = 'info'
+  } else if (type === 'success') {
+    tagCategory = pc.green(tagCategory)
+    logType = 'error'
+  } else if (type === 'failure') {
+    tagCategory = pc.red(tagCategory)
+    logType = 'error'
+  } else {
+    assert(false)
   }
   const tag = pc.cyan(pc.bold(`[${projectInfo.projectName}]`)) + tagCategory
-  viteDevServer.config.logger.info(`${pc.dim(new Date().toLocaleTimeString())} ${tag} ${msgInfo}`, { clear: false })
+  const msg = `${pc.dim(new Date().toLocaleTimeString())} ${tag} ${msgInfo}`
+  if (viteDevServer) {
+    viteDevServer.config.logger[logType](msg)
+  } else {
+    if (type === 'failure') {
+      console.error(msg)
+    } else {
+      console.log(msg)
+    }
+  }
 }
 
-type ErrorWithIntroMsg = Error & { _introMsg?: string }
-function addErrorIntroMsg(err_: unknown, introMsg: string) {
+type ErrorWithIntroMsg = { _introMsg: LogArgs }
+function addErrorIntroMsg(err_: unknown, ...[msg, category, type]: LogArgs) {
   const err = err_ as ErrorWithIntroMsg
-  err._introMsg = introMsg
+  err._introMsg = [msg, category, type]
 }
-function logErrorWithIntroMessage(err_: unknown) {
-  const err = err_ as ErrorWithIntroMsg
-  const introMsg = err._introMsg
-  if (introMsg) {
-    console.error(pc.red(pc.bold(introMsg)))
+
+/* TODO: remove?
+let msgPrev: string | undefined
+const zeroWidthSpace = '\u200b'
+function addStringIsEqualBuster(msg: string) {
+  if (!process.stdout.isTTY || process.env.CI) {
+    // Workaround isn't needed: https://github.com/vitejs/vite/blob/02a46d7ceab71ebf7ba723372ba37012b7f9ccaf/packages/vite/src/node/logger.ts#L65-L66
+    return msg
   }
-  console.error(err_)
+  if (msgPrev === msg) {
+    msg = msg + zeroWidthSpace
+  }
+  msgPrev = msg
+  return msg
 }
+*/

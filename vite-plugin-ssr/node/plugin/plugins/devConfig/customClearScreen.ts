@@ -2,7 +2,7 @@ export { customClearScreen }
 
 import { hasLogged } from '../../utils'
 import type { LogType, ResolvedConfig } from 'vite'
-import { isInvalidConfig } from '../../../runtime/renderPage/isInvalidConfig'
+import { isConfigInvalid } from '../../../runtime/renderPage/isInvalidConfig'
 
 function customClearScreen(config: ResolvedConfig) {
   if (config.clearScreen === false) {
@@ -12,7 +12,7 @@ function customClearScreen(config: ResolvedConfig) {
     'info',
     config,
     // Allow initial clear if no assertWarning() was shown
-    (msg) => msg.includes('VITE') && msg.includes('ready in') && !hasLogged() && !isInvalidConfig
+    (msg) => msg.includes('VITE') && msg.includes('ready in') && !hasLogged() && !isConfigInvalid
   )
   interceptLogger('warn', config)
   interceptLogger('error', config)

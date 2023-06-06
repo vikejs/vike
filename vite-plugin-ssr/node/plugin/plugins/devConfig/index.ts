@@ -59,7 +59,7 @@ function devConfig(): Plugin[] {
         handler(server) {
           if (config.server.middlewareMode) return
           return () => {
-            addSsrMiddleware(server.middlewares, server)
+            addSsrMiddleware(server.middlewares)
           }
         }
       }

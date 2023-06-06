@@ -1,5 +1,6 @@
 export { initGlobalContext }
 export { getGlobalContext }
+export { isGlobalContextSet }
 export { getViteDevServer }
 export { setGlobalContextViteDevServer }
 export { setGlobalContextViteConfig }
@@ -48,6 +49,9 @@ type GlobalContext = (
 function getGlobalContext(): GlobalContext {
   assert(globalObject.globalContext)
   return globalObject.globalContext
+}
+function isGlobalContextSet(): boolean {
+  return !!globalObject.globalContext
 }
 
 function setGlobalContextViteDevServer(viteDevServer: ViteDevServer) {

@@ -32,7 +32,7 @@ function previewConfig(): Plugin {
       return () => {
         assertDist()
         if (!configVps.prerender) {
-          addSsrMiddleware(server.middlewares, null)
+          addSsrMiddleware(server.middlewares)
         }
         addStatic404Middleware(server.middlewares)
       }

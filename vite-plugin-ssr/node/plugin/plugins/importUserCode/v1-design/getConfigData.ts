@@ -53,7 +53,12 @@ import {
 import { transpileAndLoadFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
 import { logDevError, logDevInfo } from '../../../shared/devLogger'
-import { isInvalidConfig, isInvalidConfig_set } from '../../../../runtime/renderPage/isInvalidConfig'
+import {
+  isConfigInvalid,
+  isConfigInvalid_set,
+  wasConfigEverValid
+} from '../../../../runtime/renderPage/isInvalidConfig'
+import { getViteDevServer } from '../../../../runtime/globalContext'
 
 assertIsVitePluginCode()
 
@@ -115,14 +120,28 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition>
   baseServer: { env: 'config-only' }
 }
 
+let wasConfigInvalid: boolean | null = null
 async function reloadConfigData(userRootDir: string, extensions: ExtensionResolved[]) {
   getConfigData_dependenciesInvisibleToVite = new Set()
-  const wasConfigInvalid = isInvalidConfig
   configDataPromise = loadConfigData_withErrorHandling(userRootDir, true, extensions)
   ;(async () => {
-    await configDataPromise
-    if (wasConfigInvalid && !isInvalidConfig) {
-      logDevInfo('Config succesfull loaded', 'config', 'success')
+    wasConfigInvalid = isConfigInvalid
+    try {
+      await configDataPromise
+    } catch {
+      // error will be handled by the getConfigData() caller
+    }
+    if (!isConfigInvalid) {
+      if (wasConfigInvalid) {
+        wasConfigInvalid = false
+        logDevInfo('Config succesfull loaded', 'config', 'success')
+      }
+      assert(wasConfigEverValid !== null)
+      if (!wasConfigEverValid) {
+        const viteDevServer = getViteDevServer()
+        assert(viteDevServer)
+        viteDevServer.restart(true)
+      }
     }
   })()
 }
@@ -250,19 +269,21 @@ function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: 
   return interfaceFile
 }
 
-async function loadConfigData_withErrorHandling(...args: Parameters<typeof loadConfigData>): Promise<ConfigData> {
-  const isDev: boolean = args[1]
+async function loadConfigData_withErrorHandling(
+  userRootDir: string,
+  isDev: boolean,
+  extensions: ExtensionResolved[]
+): Promise<ConfigData> {
   try {
-    const ret = await loadConfigData(...args)
-    isInvalidConfig_set(false)
+    const ret = await loadConfigData(userRootDir, isDev, extensions)
+    isConfigInvalid_set(false)
     return ret
   } catch (err) {
     if (!isDev) {
       throw err
     }
     logDevError(err)
-    // @ts-expect-error
-    isInvalidConfig_set(err)
+    isConfigInvalid_set(true)
     const dummyData: ConfigData = {
       pageConfigsData: [],
       pageConfigGlobal: {

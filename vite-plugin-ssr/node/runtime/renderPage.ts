@@ -14,9 +14,8 @@ import { assertArguments } from './renderPage/assertArguments'
 import type { PageContextDebug } from './renderPage/debugPageFiles'
 import { warnMissingErrorPage } from './renderPage/handleErrorWithoutErrorPage'
 import { log404 } from './renderPage/log404'
-import { executeOnRenderResult } from './renderPage/onRenderResult'
 import { logRuntimeMsg } from './renderPage/runtimeLogger'
-import { isInvalidConfig } from './renderPage/isInvalidConfig'
+import { isConfigInvalid } from './renderPage/isInvalidConfig'
 import pc from '@brillout/picocolors'
 
 // `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
@@ -46,14 +45,14 @@ async function renderPage<
   }
 
   const requestId = new Date()
-  const urlToShowToUser = pc.bold(pageContextInit.urlOriginal)
+  const urlToShowToUser = pc.dim(pageContextInit.urlOriginal)
   logRequestInfo(
     `HTTP Request ${urlToShowToUser} received at ${dateToHumanReadableString(requestId)}`,
     requestId,
     'info'
   )
-  if (isInvalidConfig) {
-    logRequestInfo('Invalid configuration, see error above', requestId, 'failure')
+  if (isConfigInvalid) {
+    logRequestInfo('Invalid config, see error above', requestId, 'failure')
     const pageContextHttpReponseNull = getPageContextHttpResponseNull(pageContextInit)
     return pageContextHttpReponseNull
   }
