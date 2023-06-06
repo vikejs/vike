@@ -60,7 +60,7 @@ function setGlobalContextViteConfig(config: ResolvedConfig): void {
   globalObject.config = config
 }
 
-async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } = {}): Promise<void> {
+async function initGlobalContext(isPrerendering = false, outDir?: string): Promise<void> {
   if (globalObject.globalContext) return
 
   const { viteDevServer, config } = globalObject
@@ -68,7 +68,7 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
   const isProduction = !viteDevServer
 
   if (isProduction) {
-    const buildEntries = await loadImportBuild()
+    const buildEntries = await loadImportBuild(outDir)
     assertBuildEntries(buildEntries, isPrerendering ?? false)
     const { pageFiles, clientManifest, pluginManifest } = buildEntries
     setPageFiles(pageFiles)

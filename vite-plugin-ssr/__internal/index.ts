@@ -16,7 +16,7 @@ export type { PageRoutes, PageFile }
  */
 async function getPagesAndRoutes() {
   setNodeEnvToProduction()
-  await initGlobalContext({ isPrerendering: true })
+  await initGlobalContext(true)
   getGlobalContext()
 
   const { pageFilesAll, pageConfigs, allPageIds, pageConfigGlobal } = await getPageFilesAll(false, true)

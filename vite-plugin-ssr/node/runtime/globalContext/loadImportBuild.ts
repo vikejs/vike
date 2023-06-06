@@ -18,9 +18,9 @@ function setImportBuildGetters(getters: BuildGetters) {
   buildGetters.getters = getters
 }
 
-async function loadImportBuild() {
+async function loadImportBuild(outDir?: string) {
   if (!buildGetters.getters) {
-    await loadServerBuild()
+    await loadServerBuild(outDir)
     assert(buildGetters.getters)
   }
 

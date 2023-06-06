@@ -47,6 +47,7 @@ import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils
 import { loadPageCode } from '../../shared/page-configs/loadPageCode'
 import { isErrorPage } from '../../shared/error-page'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
+import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute'
 
 type HtmlFile = {
   urlOriginal: string
@@ -168,7 +169,7 @@ async function runPrerender(
   assertLoadedConfig(viteConfig, options)
   const configVps = await getConfigVps(viteConfig)
 
-  const { outDirClient } = getOutDirs_prerender(viteConfig)
+  const { outDirClient, outDirRoot } = getOutDirs_prerender(viteConfig)
   const { root } = viteConfig
   const prerenderConfig = configVps.prerender
   if (!prerenderConfig) {
@@ -188,7 +189,8 @@ async function runPrerender(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel
   )
 
-  await initGlobalContext({ isPrerendering: true })
+  assertPathIsFilesystemAbsolute(outDirRoot) // Needed for loadServerBuild(outDir) of @brillout/vite-plugin-import-build
+  await initGlobalContext(true, outDirRoot)
   const renderContext = await getRenderContext()
   renderContext.pageFilesAll.forEach(assertExportNames)
 
