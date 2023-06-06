@@ -6,6 +6,7 @@ import { assert } from './assert'
 import path from 'path'
 import { assertIsVitePluginCode } from './assertIsVitePluginCode'
 import { isNpmPackageImport } from './isNpmPackage'
+import { assertPathIsFilesystemAbsolute } from './assertPathIsFilesystemAbsolute'
 
 assertIsVitePluginCode()
 
@@ -25,9 +26,9 @@ function getFilePathAbsolute(filePath: string, config: ResolvedConfig): string {
   } else {
     assert(filePath.startsWith('/'))
     const { root } = config
-    assertPathIsAbsolute(root)
+    assertPathIsFilesystemAbsolute(root)
     filePathUnresolved = path.posix.join(root, filePath)
-    assertPathIsAbsolute(filePathUnresolved)
+    assertPathIsFilesystemAbsolute(filePathUnresolved)
   }
 
   let filePathAbsolute: string
@@ -38,16 +39,6 @@ function getFilePathAbsolute(filePath: string, config: ResolvedConfig): string {
     assert(false)
   }
   filePathAbsolute = toPosixPath(filePathAbsolute)
-  assertPathIsAbsolute(filePathAbsolute)
+  assertPathIsFilesystemAbsolute(filePathAbsolute)
   return filePathAbsolute
-}
-
-/** Assert path is filesystem absolute */
-function assertPathIsAbsolute(p: string) {
-  assertPosixPath(p)
-  if (process.platform === 'win32') {
-    assert(path.win32.isAbsolute(p))
-  } else {
-    assert(p.startsWith('/'))
-  }
 }
