@@ -1,11 +1,11 @@
 export let logError = prodLogError
 export { isNewError }
+export let logInfo: null | LoggerInfo = null
 
 export { prodLogError }
-
-export let logRuntimeMsg: Logger | null = null
-export { logRuntimeMsg_set }
-export type { LogErrArgs }
+export type { LogErrorArgs }
+export { logError_set }
+export { logInfo_set }
 
 import type { LogArgs } from '../../plugin/shared/devLogger'
 import { assertRenderErrorPageExceptionUsage, isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
@@ -18,14 +18,18 @@ const globalObject = getGlobalObject('runtime/renderPage/logger.ts', {
   wasAlreadyLogged: new WeakSet<object>()
 })
 
-type Logger = (...args: LogArgs) => void
-type LogErrArgs = [unknown, { httpRequestId: number | null; canBeViteUserLand: boolean }]
+type LoggerError = (...args: LogErrorArgs) => void
+type LoggerInfo = (...args: LogArgs) => void
+type LogErrorArgs = [unknown, { httpRequestId: number | null; canBeViteUserLand: boolean }]
 
-function logRuntimeMsg_set(logger: Logger) {
-  logRuntimeMsg = logger
+function logError_set(logger: LoggerError) {
+  logError = logger
+}
+function logInfo_set(logger: LoggerInfo) {
+  logInfo = logger
 }
 
-function prodLogError(...[err, { httpRequestId, canBeViteUserLand }]: LogErrArgs) {
+function prodLogError(...[err, { httpRequestId, canBeViteUserLand }]: LogErrorArgs) {
   warnIfObjectIsNotObject(err)
   setAlreadyLogged(err)
 

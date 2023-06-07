@@ -19,7 +19,7 @@ import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/vir
 import { getConfigData_dependenciesInvisibleToVite, reloadConfigData } from './v1-design/getConfigData'
 import path from 'path'
 import pc from '@brillout/picocolors'
-import { logDevInfo } from '../../shared/devLogger'
+import { logInfoDev } from '../../shared/devLogger'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -50,7 +50,7 @@ function importUserCode(): Plugin {
       if (!getConfigData_dependenciesInvisibleToVite.has(file)) {
         return
       }
-      logDevInfo(`${pc.green('File change')} ${pc.dim(makeRelativeToUserRootDir(file, config.root))}`, 'config', 'info')
+      logInfoDev(`${pc.green('File change')} ${pc.dim(makeRelativeToUserRootDir(file, config.root))}`, 'config', 'info')
       reloadConfigData(config.root, configVps.extensions)
       const mods = Array.from(server.moduleGraph.urlToModuleMap.keys())
         .filter((url) => isVirtualFileIdImportPageCode(url) || isVirtualFileIdImportUserCode(url))

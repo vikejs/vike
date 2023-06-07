@@ -4,15 +4,6 @@
     - e.g. `import { prerender } from '../some-file'` in `/pages/index/+config.js`
   - Minimize what that client-side loads
 - assert that two import statements in +config.js shouldn't land in different environments
-- error handling
-  - Don't stop dev sever upon error in getConfigData()
-    - make handleConfigError() wrap entire getConfigData() call
-    - `console.err(err)` instead of `throw Error()` in dev as well
-    - Use some kind of flag and make VPS return `pageContext.httpResponse = null`
-  - Refactor renderPage() / addSsrMiddleware() error hanlding
-    - How can we make sure the user doens't miss warnings? Maybe be make the warnings `onlyOnce: fase` and/or setting Vite's `clearScreen: false`
-    - Respect natural order of error occurence by never clearing screen except *after* the error is resolved
-    - Change Vite's default clearScreen value to false
 - Implements TODO comments
 - Update migration examples
 

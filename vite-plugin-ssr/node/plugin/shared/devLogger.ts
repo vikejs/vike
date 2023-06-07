@@ -1,15 +1,16 @@
-export { devLogError }
-export { logDevInfo }
+export { logInfoDev }
 export { addErrorIntroMsg }
 export type { LogArgs }
 
 import pc from '@brillout/picocolors'
 import { LogType } from 'vite'
 import { getViteDevServer, isGlobalContextSet } from '../../runtime/globalContext'
-import { LogErrArgs, logRuntimeMsg_set, prodLogError } from '../../runtime/renderPage/logger'
-import { assert, isObject, projectInfo } from '../utils'
+import { LogErrorArgs, logError_set, logInfo_set, prodLogError } from '../../runtime/renderPage/logger'
+import { assert, assertIsVitePluginCode, isObject, projectInfo } from '../utils'
 
-logRuntimeMsg_set(logDevInfo)
+assertIsVitePluginCode()
+logInfo_set(logInfoDev)
+logError_set(logErrorDev)
 
 const introMsgs = new WeakMap<object, LogArgs>()
 
@@ -19,11 +20,11 @@ type LogArgs = [
   type: 'error-recover' | 'error' | 'info'
 ]
 
-function devLogError(...[err, { httpRequestId, canBeViteUserLand }]: LogErrArgs) {
+function logErrorDev(...[err, { httpRequestId, canBeViteUserLand }]: LogErrorArgs) {
   if (isObject(err)) {
     if (introMsgs.has(err)) {
       const logArg = introMsgs.get(err)!
-      logDevInfo(...logArg)
+      logInfoDev(...logArg)
     }
     if ('_esbuildMessageFormatted' in err) {
       console.error(err._esbuildMessageFormatted)
@@ -33,7 +34,7 @@ function devLogError(...[err, { httpRequestId, canBeViteUserLand }]: LogErrArgs)
   prodLogError(err, { httpRequestId, canBeViteUserLand })
 }
 
-function logDevInfo(...[msgInfo, category, type]: LogArgs) {
+function logInfoDev(...[msgInfo, category, type]: LogArgs) {
   let tagCategory = pc.dim(`[${category}]`)
   let logType: LogType
   if (type === 'info') {

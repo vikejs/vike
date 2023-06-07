@@ -23,7 +23,7 @@ import { assertArguments } from './renderPage/assertArguments'
 import type { PageContextDebug } from './renderPage/debugPageFiles'
 import { warnMissingErrorPage } from './renderPage/handleErrorWithoutErrorPage'
 import { log404 } from './renderPage/log404'
-import { logRuntimeMsg } from './renderPage/logger'
+import { logInfo } from './renderPage/logger'
 import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
@@ -302,7 +302,7 @@ function handleUrl(pageContext: { urlOriginal: string; _baseServer: string }): {
 
 function logRequestInfo(msg: string, httpRequestId: number, type: 'error' | 'info') {
   const category = httpRequestId === 1 ? 'request' : (`request-${httpRequestId}` as const)
-  logRuntimeMsg?.(msg, category, type)
+  logInfo?.(msg, category, type)
 }
 function getRequestId(): number {
   ++globalObject.numberOfPendingRequests

@@ -6,7 +6,6 @@ export type { FilePath }
 
 // - When esbuild bundle: true => track dependencies
 // - Rename assertIsVitePluginCode() => assertIsNotProductionRuntime() ?
-//   - Add it to transpileAndLoadFile.ts
 
 import {
   assertPosixPath,
@@ -51,7 +50,7 @@ import {
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
-import { logDevInfo } from '../../../shared/devLogger'
+import { logInfoDev } from '../../../shared/devLogger'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
 import { getViteDevServer } from '../../../../runtime/globalContext'
 import {
@@ -145,7 +144,7 @@ async function handleReloadSideEffects() {
   if (!isConfigInvalid) {
     if (wasConfigInvalid) {
       wasConfigInvalid = false
-      logDevInfo(pc.green(pc.bold('Configuration successfully loaded.')), 'config', 'error-recover')
+      logInfoDev(pc.green(pc.bold('Configuration successfully loaded.')), 'config', 'error-recover')
     }
     if (devServerIsCorrupt) {
       devServerIsCorrupt = false
