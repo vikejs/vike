@@ -33,6 +33,7 @@ function logErrorDevOrPrerender(...[err, { httpRequestId, canBeViteUserLand }]: 
 
 function logInfoDev(...args: LogInfoArgs) {
   assert(getViteDevServer())
+  assert(getGlobalContext().isProduction === false)
   logInfo(...args, false)
 }
 function logInfoDevOrPrerender(...args: LogInfoArgs) {
