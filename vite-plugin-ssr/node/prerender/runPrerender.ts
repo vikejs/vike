@@ -920,7 +920,7 @@ function write(
         if (!outDirClientRelative.endsWith('/')) {
           outDirClientRelative = outDirClientRelative + '/'
         }
-        console.log(`${pc.gray(outDirClientRelative)}${pc.blue(filePathRelative)}`)
+        console.log(`${pc.dim(outDirClientRelative)}${pc.blue(filePathRelative)}`)
       }
     }
   })

@@ -13,7 +13,11 @@ logRuntimeMsg_set(logDevInfo)
 
 const introMsgs = new WeakMap<object, LogArgs>()
 
-type LogArgs = [msg: string, category: 'config' | 'request' | `request-${number}`, type: 'success' | 'failure' | 'info']
+type LogArgs = [
+  msg: string,
+  category: 'config' | 'request' | `request-${number}`,
+  type: 'error-recover' | 'error' | 'info'
+]
 
 function logDevError(err: unknown) {
   if (isObject(err)) {
@@ -26,32 +30,30 @@ function logDevError(err: unknown) {
       return
     }
   }
-  console.error(err)
+  const errStr = isObject(err) && 'stack' in err ? String(err.stack) : String(err)
+  console.error(pc.red(errStr))
 }
 
 function logDevInfo(...[msgInfo, category, type]: LogArgs) {
   const viteDevServer = getViteDevServer()
   if (!viteDevServer && isGlobalContextSet()) return
-  let tagCategory = pc.bold(`[${category}]`)
+  let tagCategory = pc.dim(`[${category}]`)
   let logType: LogType
   if (type === 'info') {
-    tagCategory = pc.gray(tagCategory)
     logType = 'info'
-  } else if (type === 'success') {
-    tagCategory = pc.gray(tagCategory)
+  } else if (type === 'error-recover') {
     logType = 'error'
-  } else if (type === 'failure') {
-    tagCategory = pc.gray(tagCategory)
+  } else if (type === 'error') {
     logType = 'error'
   } else {
     assert(false)
   }
-  const tag = pc.cyan(pc.bold(`[${projectInfo.projectName}]`)) + tagCategory
+  const tag = pc.yellow(pc.bold(`[${projectInfo.projectName}]`)) + tagCategory
   const msg = `${pc.dim(new Date().toLocaleTimeString())} ${tag} ${msgInfo}`
   if (viteDevServer) {
     viteDevServer.config.logger[logType](msg)
   } else {
-    if (type === 'failure') {
+    if (type === 'error') {
       console.error(msg)
     } else {
       console.log(msg)

@@ -60,7 +60,7 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
     fileExports = await import_(filePathTmp)
   } catch (err) {
     triggerPrepareStackTrace(err)
-    addErrorIntroMsg(err, `Failed to load ${pc.dim(filePathToShowToUser)}`, 'config', 'failure')
+    addErrorIntroMsg(err, getErrIntroMsg('thrown error while executing', filePath), 'config', 'error')
     throw err
   } finally {
     clean()
@@ -111,7 +111,7 @@ async function buildFile(filePath: FilePath, { bundle }: { bundle: boolean }) {
     result = await build(options)
   } catch (err) {
     await formatEsbuildError(err)
-    addErrorIntroMsg(err, `Failed to load ${pc.dim(getFilePathToShowToUser(filePath))}:`, 'config', 'failure')
+    addErrorIntroMsg(err, getErrIntroMsg('transpilation error', filePath), 'config', 'error')
     throw err
   }
   const { text } = result.outputFiles![0]!
@@ -214,4 +214,12 @@ function triggerPrepareStackTrace(err: unknown) {
     // Ensure no compiler removes the line above
     if (1 + 1 === 3) console.log('I_AM_NEVER_SHOWN' + stack)
   }
+}
+
+function getErrIntroMsg(reason: 'transpilation error' | 'thrown error while executing', filePath: FilePath) {
+  return [
+    pc.red(('Failed to load')),
+    pc.red(pc.bold(getFilePathToShowToUser(filePath))),
+    pc.red((`because of ${reason}:`))
+  ].join(' ')
 }

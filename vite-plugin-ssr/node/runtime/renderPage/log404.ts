@@ -112,9 +112,9 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
       let cell2 = routeTypeSrc.padEnd(column2Width, ' ')
       let cell3 = routeDefinedBy.padEnd(column3Width, ' ')
       if (i === 0) {
-        cell1 = pc.gray(cell1)
-        cell2 = pc.gray(cell2)
-        cell3 = pc.gray(cell3)
+        cell1 = pc.dim(cell1)
+        cell2 = pc.dim(cell2)
+        cell3 = pc.dim(cell3)
       }
       const line = [cell1, cell2, cell3].join(' ')
       return line

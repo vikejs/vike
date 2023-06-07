@@ -58,10 +58,25 @@ async function renderPage<
   }
 
   const requestId = getRequestId()
-  const urlToShowToUser = pc.dim(pageContextInit.urlOriginal)
-  logRequestInfo(`HTTP request  ${urlToShowToUser}`, requestId, 'info')
+  const urlToShowToUser = pc.bold(pageContextInit.urlOriginal)
+  logRequestInfo(`HTTP request: ${urlToShowToUser}`, requestId, 'info')
+
+  const pageContextReturn = await renderPage_(pageContextInit, requestId)
+
+  logHttpResponse(urlToShowToUser, requestId, pageContextReturn)
+
+  return pageContextReturn
+}
+
+type PageContextReturn = Awaited<ReturnType<typeof renderPage>>
+
+async function renderPage_(
+  pageContextInit: { urlOriginal: string } & Record<string, unknown>,
+  requestId: number
+): Promise<PageContextReturn> {
+  // Invalid config
   if (isConfigInvalid) {
-    logRequestInfo('Invalid config, see error above', requestId, 'failure')
+    logRequestInfo(pc.red("Couldn't load configuration: see error above."), requestId, 'error')
     const pageContextHttpReponseNull = getPageContextHttpResponseNull(pageContextInit)
     return pageContextHttpReponseNull
   }
@@ -118,12 +133,13 @@ async function renderPage<
     }
   }
 
-  // Render error page
-  let pageContextReturn: Awaited<ReturnType<typeof renderPage>>
   if (errFirstAttempt === undefined) {
     assert(pageContextFirstAttempt)
-    pageContextReturn = pageContextFirstAttempt
-  } else {
+    return pageContextFirstAttempt
+  }
+
+  // Render error page
+  if (errFirstAttempt !== undefined) {
     assert(errFirstAttempt)
     assert(pageContextFirstAttempt === undefined)
     assert(pageContextFirstAttemptPartial)
@@ -144,28 +160,27 @@ async function renderPage<
     }
     if (errErrorPage === undefined) {
       assert(pageContextErrorPage)
-      pageContextReturn = pageContextErrorPage
+      return pageContextErrorPage
     } else {
       assert(errErrorPage)
       assert(pageContextErrorPage === undefined)
-      pageContextReturn = getPageContextHttpResponseNullWithError(errFirstAttempt, pageContextInit)
+      const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(errFirstAttempt, pageContextInit)
+      return pageContextHttpReponseNull
     }
   }
 
-  // Log response status
-  {
-    const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
-    assert(isFailure === (statusCode !== 200))
-    const color = (s: number | string) => pc.bold(isFailure ? pc.red(s) : pc.green(s))
-    logRequestInfo(
-      `HTTP response ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`,
-      requestId,
-      statusCode === 200 || statusCode === 404 ? 'info' : 'failure'
-    )
-  }
+  assert(false)
+}
 
+function logHttpResponse(urlToShowToUser: string, requestId: number, pageContextReturn: PageContextReturn) {
+  const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
+  const color = (s: number | string) => pc.bold(statusCode !== 200 ? pc.red(s) : pc.green(s))
+  logRequestInfo(
+    `HTTP response ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`,
+    requestId,
+    statusCode === 200 || statusCode === 404 ? 'info' : 'error'
+  )
   getRequestId_release()
-  return pageContextReturn
 }
 
 function getPageContextHttpResponseNullWithError(err: unknown, pageContextInit: Record<string, unknown>) {
@@ -276,7 +291,7 @@ function handleUrl(pageContext: { urlOriginal: string; _baseServer: string }): {
   return pageContextAddendum
 }
 
-function logRequestInfo(msg: string, requestId: number, type: 'success' | 'failure' | 'info') {
+function logRequestInfo(msg: string, requestId: number, type: 'error' | 'info') {
   const category = requestId === 1 ? 'request' : (`request-${requestId}` as const)
   logRuntimeMsg?.(msg, category, type)
 }

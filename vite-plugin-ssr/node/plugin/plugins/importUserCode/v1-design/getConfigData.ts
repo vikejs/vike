@@ -58,6 +58,7 @@ import {
   fixVite_removeDevOptimizationLog_disable,
   fixVite_removeDevOptimizationLog_enable
 } from '../../devConfig/customClearScreen'
+import pc from '@brillout/picocolors'
 
 assertIsVitePluginCode()
 
@@ -143,7 +144,7 @@ async function handleReloadSideEffects() {
   if (!isConfigInvalid) {
     if (wasConfigInvalid) {
       wasConfigInvalid = false
-      logDevInfo('Succesfully loaded', 'config', 'success')
+      logDevInfo(pc.green(pc.bold('Configuration successfully loaded.')), 'config', 'error-recover')
     }
     if (devServerIsCorrupt) {
       devServerIsCorrupt = false
@@ -309,6 +310,7 @@ async function loadConfigData_withErrorHandling(
     assert(err)
     isConfigInvalid_set(true)
     if (!isDev) {
+      assert(getViteDevServer() === null)
       throw err
     } else {
       logDevError(err)
