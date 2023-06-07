@@ -19,7 +19,7 @@ type LogArgs = [
   type: 'error-recover' | 'error' | 'info'
 ]
 
-function devLogError(...[err, { requestId, canBeViteUserLand }]: LogErrArgs) {
+function devLogError(...[err, { httpRequestId, canBeViteUserLand }]: LogErrArgs) {
   if (isObject(err)) {
     if (introMsgs.has(err)) {
       const logArg = introMsgs.get(err)!
@@ -30,7 +30,7 @@ function devLogError(...[err, { requestId, canBeViteUserLand }]: LogErrArgs) {
       return
     }
   }
-  prodLogError(err, { requestId, canBeViteUserLand })
+  prodLogError(err, { httpRequestId, canBeViteUserLand })
 }
 
 function logDevInfo(...[msgInfo, category, type]: LogArgs) {

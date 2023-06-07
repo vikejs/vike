@@ -314,7 +314,7 @@ async function loadConfigData_withErrorHandling(
       assert(getViteDevServer() === null)
       throw err
     } else {
-      logError(err, { requestId: null, canBeViteUserLand: false })
+      logError(err, { httpRequestId: null, canBeViteUserLand: false })
       if (!tolerateInvalidConfig) {
         devServerIsCorrupt = true
       }

@@ -28,7 +28,7 @@ import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   numberOfPendingRequests: 0,
-  requestIdHighest: 0
+  httpRequestIdHighest: 0
 })
 
 // `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
@@ -57,13 +57,13 @@ async function renderPage<
     return pageContextHttpReponseNull
   }
 
-  const requestId = getRequestId()
+  const httpRequestId = getRequestId()
   const urlToShowToUser = pc.bold(pageContextInit.urlOriginal)
-  logRequestInfo(`HTTP request: ${urlToShowToUser}`, requestId, 'info')
+  logRequestInfo(`HTTP request: ${urlToShowToUser}`, httpRequestId, 'info')
 
-  const pageContextReturn = await renderPage_(pageContextInit, requestId)
+  const pageContextReturn = await renderPage_(pageContextInit, httpRequestId)
 
-  logHttpResponse(urlToShowToUser, requestId, pageContextReturn)
+  logHttpResponse(urlToShowToUser, httpRequestId, pageContextReturn)
 
   return pageContextReturn
 }
@@ -72,11 +72,11 @@ type PageContextReturn = Awaited<ReturnType<typeof renderPage>>
 
 async function renderPage_(
   pageContextInit: { urlOriginal: string } & Record<string, unknown>,
-  requestId: number
+  httpRequestId: number
 ): Promise<PageContextReturn> {
   // Invalid config
   if (isConfigInvalid) {
-    logRequestInfo(pc.red("Couldn't load configuration: see error above."), requestId, 'error')
+    logRequestInfo(pc.red("Couldn't load configuration: see error above."), httpRequestId, 'error')
     const pageContextHttpReponseNull = getPageContextHttpResponseNull(pageContextInit)
     return pageContextHttpReponseNull
   }
@@ -90,7 +90,7 @@ async function renderPage_(
     // Errors are expected since assertUsage() is used in both initGlobalContext() and getRenderContext().
     // initGlobalContext() and getRenderContext() don't call any user hooks => err isn't thrown from user code => `canBeViteUserLand: false`
     assert(!isRenderErrorPageException(err))
-    logError(err, { requestId, canBeViteUserLand: false })
+    logError(err, { httpRequestId, canBeViteUserLand: false })
     const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(err, pageContextInit)
     return pageContextHttpReponseNull
   }
@@ -103,11 +103,11 @@ async function renderPage_(
     const pageContext = {}
     let errored: boolean
     try {
-      pageContextFirstAttempt = await renderPageAttempt(pageContextInit, pageContext, renderContext, requestId)
+      pageContextFirstAttempt = await renderPageAttempt(pageContextInit, pageContext, renderContext, httpRequestId)
       errored = false
     } catch (err) {
       errFirstAttempt = err
-      logError(errFirstAttempt, { requestId, canBeViteUserLand: true })
+      logError(errFirstAttempt, { httpRequestId, canBeViteUserLand: true })
       errored = true
       pageContextFirstAttemptPartial = pageContext
     }
@@ -152,12 +152,12 @@ async function renderPage_(
         errFirstAttempt,
         pageContextFirstAttemptPartial,
         renderContext,
-        requestId
+        httpRequestId
       )
     } catch (err) {
       errErrorPage = err
       if (isNewError(errErrorPage, errFirstAttempt)) {
-        logError(errErrorPage, { requestId, canBeViteUserLand: true })
+        logError(errErrorPage, { httpRequestId, canBeViteUserLand: true })
       }
     }
     if (errErrorPage === undefined) {
@@ -174,12 +174,12 @@ async function renderPage_(
   assert(false)
 }
 
-function logHttpResponse(urlToShowToUser: string, requestId: number, pageContextReturn: PageContextReturn) {
+function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageContextReturn: PageContextReturn) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
   const color = (s: number | string) => pc.bold(statusCode !== 200 ? pc.red(s) : pc.green(s))
   logRequestInfo(
     `HTTP response ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`,
-    requestId,
+    httpRequestId,
     statusCode === 200 || statusCode === 404 ? 'info' : 'error'
   )
   getRequestId_release()
@@ -208,10 +208,10 @@ async function renderPageAttempt<PageContextInit extends { urlOriginal: string }
   pageContextInit: PageContextInit,
   pageContext: {},
   renderContext: RenderContext,
-  requestId: number
+  httpRequestId: number
 ) {
   {
-    objectAssign(pageContext, { _requestId: requestId })
+    objectAssign(pageContext, { _httpRequestId: httpRequestId })
   }
   {
     const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
@@ -245,10 +245,10 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
   errFirstAttempt: unknown,
   pageContextFirstAttempt: Record<string, unknown>,
   renderContext: RenderContext,
-  requestId: number
+  httpRequestId: number
 ) {
   const pageContext = {
-    _requestId: requestId
+    _httpRequestId: httpRequestId
   }
   {
     const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
@@ -300,22 +300,22 @@ function handleUrl(pageContext: { urlOriginal: string; _baseServer: string }): {
   return pageContextAddendum
 }
 
-function logRequestInfo(msg: string, requestId: number, type: 'error' | 'info') {
-  const category = requestId === 1 ? 'request' : (`request-${requestId}` as const)
+function logRequestInfo(msg: string, httpRequestId: number, type: 'error' | 'info') {
+  const category = httpRequestId === 1 ? 'request' : (`request-${httpRequestId}` as const)
   logRuntimeMsg?.(msg, category, type)
 }
 function getRequestId(): number {
   ++globalObject.numberOfPendingRequests
-  const requestId = ++globalObject.requestIdHighest
-  assert(requestId >= 1)
-  return requestId
+  const httpRequestId = ++globalObject.httpRequestIdHighest
+  assert(httpRequestId >= 1)
+  return httpRequestId
 }
 function getRequestId_release(): void {
   --globalObject.numberOfPendingRequests
   const { numberOfPendingRequests } = globalObject
   assert(globalObject.numberOfPendingRequests >= 0)
   if (numberOfPendingRequests === 0) {
-    globalObject.requestIdHighest = 0
+    globalObject.httpRequestIdHighest = 0
   }
 }
 

@@ -19,13 +19,13 @@ const globalObject = getGlobalObject('runtime/renderPage/logger.ts', {
 })
 
 type Logger = (...args: LogArgs) => void
-type LogErrArgs = [unknown, { requestId: number | null; canBeViteUserLand: boolean }]
+type LogErrArgs = [unknown, { httpRequestId: number | null; canBeViteUserLand: boolean }]
 
 function logRuntimeMsg_set(logger: Logger) {
   logRuntimeMsg = logger
 }
 
-function prodLogError(...[err, { requestId, canBeViteUserLand }]: LogErrArgs) {
+function prodLogError(...[err, { httpRequestId, canBeViteUserLand }]: LogErrArgs) {
   warnIfObjectIsNotObject(err)
   setAlreadyLogged(err)
 

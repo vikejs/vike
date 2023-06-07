@@ -43,7 +43,7 @@ async function executeOnRenderHtmlHook(
     _isHtmlOnly: boolean
     _baseServer: string
     _pageFilePathsLoaded: string[]
-    _requestId: number | null
+    _httpRequestId: number | null
   }
 ): Promise<{
   renderHook: RenderHook
@@ -73,7 +73,7 @@ async function executeOnRenderHtmlHook(
 
   const onErrorWhileStreaming = (err: unknown) => {
     logError(err, {
-      requestId: pageContext._requestId,
+      httpRequestId: pageContext._httpRequestId,
       canBeViteUserLand: true
     })
     /*
