@@ -54,6 +54,10 @@ import { ImportData, parseImportData } from './replaceImportStatements'
 import { logDevError, logDevInfo } from '../../../shared/devLogger'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
 import { getViteDevServer } from '../../../../runtime/globalContext'
+import {
+  fixVite_removeDevOptimizationLog_disable,
+  fixVite_removeDevOptimizationLog_enable
+} from '../../devConfig/customClearScreen'
 
 assertIsVitePluginCode()
 
@@ -127,14 +131,13 @@ async function handleReloadSideEffects() {
   const configDataPromisePrevious = configDataPromise
   try {
     await configDataPromise
-  } catch {
+  } catch (err) {
     // handleReloadSideEffects() is only called in dev.
     // In dev, if loadConfigData_withErrorHandling() throws an error, then it's a vite-plugin-ssr bug.
-    // We swallow the error in favor of showing a strack trace with a getConfigData() call.
-    return
+    throw err
   }
   if (configDataPromise !== configDataPromisePrevious) {
-    // Let the next handleReloadSideEffects() call handle the side effects
+    // Let the next handleReloadSideEffects() call handle side effects
     return
   }
   if (!isConfigInvalid) {
@@ -143,9 +146,12 @@ async function handleReloadSideEffects() {
       logDevInfo('Succesfully loaded', 'config', 'success')
     }
     if (devServerIsCorrupt) {
+      devServerIsCorrupt = false
       const viteDevServer = getViteDevServer()
       assert(viteDevServer)
-      viteDevServer.restart(true)
+      fixVite_removeDevOptimizationLog_enable()
+      await viteDevServer.restart(true)
+      fixVite_removeDevOptimizationLog_disable()
     }
   }
 }

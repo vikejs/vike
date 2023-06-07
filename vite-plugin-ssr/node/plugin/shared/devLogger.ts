@@ -11,14 +11,15 @@ import { assert, isObject, projectInfo } from '../utils'
 
 logRuntimeMsg_set(logDevInfo)
 
+const introMsgs = new WeakMap<object, LogArgs>()
+
 type LogArgs = [msg: string, category: 'config' | 'request', type: 'success' | 'failure' | 'info']
 
 function logDevError(err: unknown) {
   if (isObject(err)) {
-    if ('_introMsg' in err) {
-      const errorWithIntroMsg = err as ErrorWithIntroMsg
-      const [msg, category, type] = errorWithIntroMsg._introMsg
-      logDevInfo(msg, category, type)
+    if (introMsgs.has(err)) {
+      const logArg = introMsgs.get(err)!
+      logDevInfo(...logArg)
     }
     if ('_esbuildMessageFormatted' in err) {
       console.error(err._esbuildMessageFormatted)
@@ -58,10 +59,9 @@ function logDevInfo(...[msgInfo, category, type]: LogArgs) {
   }
 }
 
-type ErrorWithIntroMsg = { _introMsg: LogArgs }
-function addErrorIntroMsg(err_: unknown, ...[msg, category, type]: LogArgs) {
-  const err = err_ as ErrorWithIntroMsg
-  err._introMsg = [msg, category, type]
+function addErrorIntroMsg(err: unknown, ...logArg: LogArgs) {
+  assert(isObject(err))
+  introMsgs.set(err, logArg)
 }
 
 /* TODO: remove?

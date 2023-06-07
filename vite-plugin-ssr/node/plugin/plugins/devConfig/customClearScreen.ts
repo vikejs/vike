@@ -1,6 +1,8 @@
 export { customClearScreen }
+export { fixVite_removeDevOptimizationLog_enable }
+export { fixVite_removeDevOptimizationLog_disable }
 
-import { hasLogged } from '../../utils'
+import { assert, hasLogged } from '../../utils'
 import type { LogType, ResolvedConfig } from 'vite'
 import { isConfigInvalid } from '../../../runtime/renderPage/isConfigInvalid'
 
@@ -24,10 +26,25 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
   const loggerOld = config.logger[logType].bind(config.logger)
   const loggerNew: Logger = (...args) => {
     const [msg, options] = args
-    if (options?.clear && !tolerateClear?.(msg)) {
-      options.clear = false
-    }
+    if (removeDevOptimizationLog && fixVite_removeDevOptimizationLog_isMatch(msg)) return
+    if (options?.clear && !tolerateClear?.(msg)) options.clear = false
     loggerOld(...args)
   }
   config.logger[logType] = loggerNew
+}
+
+let removeDevOptimizationLog = false
+function fixVite_removeDevOptimizationLog_enable() {
+  removeDevOptimizationLog = true
+}
+function fixVite_removeDevOptimizationLog_disable() {
+  removeDevOptimizationLog = false
+}
+function fixVite_removeDevOptimizationLog_isMatch(msg: string) {
+  const msgL = msg.toLowerCase()
+  if (msgL.includes('forced') && msgL.includes('optimization')) {
+    assert(msg === 'Forced re-optimization of dependencies', msg) // assertion fails => Vite changed its message => update this function
+    return true
+  }
+  return false
 }

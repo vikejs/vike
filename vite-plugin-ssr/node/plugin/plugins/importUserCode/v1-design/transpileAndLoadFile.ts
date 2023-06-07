@@ -60,7 +60,7 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
     fileExports = await import_(filePathTmp)
   } catch (err) {
     triggerPrepareStackTrace(err)
-    addErrorIntroMsg(err, `Failed to execute ${pc.dim(filePathToShowToUser)}`, 'config', 'failure')
+    addErrorIntroMsg(err, `Failed to load ${pc.dim(filePathToShowToUser)}`, 'config', 'failure')
     throw err
   } finally {
     clean()
@@ -111,7 +111,7 @@ async function buildFile(filePath: FilePath, { bundle }: { bundle: boolean }) {
     result = await build(options)
   } catch (err) {
     await formatEsbuildError(err)
-    addErrorIntroMsg(err, `Failed to transpile ${pc.dim(getFilePathToShowToUser(filePath))}:`, 'config', 'failure')
+    addErrorIntroMsg(err, `Failed to load ${pc.dim(getFilePathToShowToUser(filePath))}:`, 'config', 'failure')
     throw err
   }
   const { text } = result.outputFiles![0]!
