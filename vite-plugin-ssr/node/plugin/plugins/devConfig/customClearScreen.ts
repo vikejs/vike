@@ -2,10 +2,11 @@ export { customClearScreen }
 export { fixVite_removeDevOptimizationLog_enable }
 export { fixVite_removeDevOptimizationLog_disable }
 
-import { assert, hasLogged } from '../../utils'
+import { assert, assertHasLogged } from '../../utils'
 import type { LogType, ResolvedConfig } from 'vite'
 import { isConfigInvalid } from '../../../runtime/renderPage/isConfigInvalid'
 
+let isInitialClear = true
 function customClearScreen(config: ResolvedConfig) {
   if (config.clearScreen === false) {
     return
@@ -13,8 +14,13 @@ function customClearScreen(config: ResolvedConfig) {
   interceptLogger(
     'info',
     config,
-    // Allow initial clear if no assertWarning() was shown
-    (msg) => msg.includes('VITE') && msg.includes('ready in') && !hasLogged() && !isConfigInvalid
+    // Allow initial clear only if no assertWarning() was shown and if config is valid
+    (msg) => {
+      if (!msg.includes('VITE')) return false
+      if (!isInitialClear) return false
+      isInitialClear = false
+      return !assertHasLogged() && !isConfigInvalid
+    }
   )
   interceptLogger('warn', config)
   interceptLogger('error', config)

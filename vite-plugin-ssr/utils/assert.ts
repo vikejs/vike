@@ -5,7 +5,7 @@ export { assertInfo }
 export { getProjectError }
 export { logPrefix }
 export { addOnBeforeLogHook }
-export { hasLogged }
+export { assertHasLogged }
 
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace'
 import { getGlobalObject } from './getGlobalObject'
@@ -119,6 +119,6 @@ function addOnBeforeLogHook(onBeforeLog: () => void) {
   globalObject.onBeforeLog = onBeforeLog
 }
 
-function hasLogged(): boolean {
+function assertHasLogged(): boolean {
   return !!globalObject.hasLogged
 }
