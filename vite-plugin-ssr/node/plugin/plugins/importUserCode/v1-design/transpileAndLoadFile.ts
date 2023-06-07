@@ -218,8 +218,8 @@ function triggerPrepareStackTrace(err: unknown) {
 
 function getErrIntroMsg(reason: 'transpilation error' | 'thrown error while executing', filePath: FilePath) {
   return [
-    pc.red(('Failed to load')),
+    pc.red('Failed to load'),
     pc.red(pc.bold(getFilePathToShowToUser(filePath))),
-    pc.red((`because of ${reason}:`))
+    pc.red(`because of ${reason}:`)
   ].join(' ')
 }
