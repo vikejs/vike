@@ -3,7 +3,7 @@ export { executeOnBeforeRenderHooks }
 import { type PageContextExports } from '../../../shared/getPageFiles'
 import { getHook } from '../../../shared/getHook'
 import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
-import { callHookWithTimeout } from '../utils'
+import { executeUserHook } from '../utils'
 import { assertOnBeforeRenderHookReturn } from '../../../shared/assertOnBeforeRenderHookReturn'
 
 async function executeOnBeforeRenderHooks(
@@ -22,7 +22,7 @@ async function executeOnBeforeRenderHooks(
   }
   const onBeforeRender = hook.hookFn
   preparePageContextForRelease(pageContext)
-  const hookResult = await callHookWithTimeout(() => onBeforeRender(pageContext), 'onBeforeRender', hook.hookFilePath)
+  const hookResult = await executeUserHook(() => onBeforeRender(pageContext), 'onBeforeRender', hook.hookFilePath)
 
   assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
   const pageContextFromHook = hookResult?.pageContext

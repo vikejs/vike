@@ -1,6 +1,6 @@
 export { executeOnRenderClientHook }
 
-import { assert, assertUsage, callHookWithTimeout } from './utils'
+import { assert, assertUsage, executeUserHook } from './utils'
 import { getHook, type Hook } from '../shared/getHook'
 import type { PageFile, PageContextExports } from '../shared/getPageFiles'
 import { type PageContextRelease, releasePageContext } from './releasePageContext'
@@ -59,11 +59,7 @@ async function executeOnRenderClientHook<
   assert(hookName)
 
   // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
-  const hookResult = await callHookWithTimeout(
-    () => renderHook(pageContextReadyForRelease),
-    hookName,
-    hook.hookFilePath
-  )
+  const hookResult = await executeUserHook(() => renderHook(pageContextReadyForRelease), hookName, hook.hookFilePath)
   assertUsage(
     hookResult === undefined,
     `The ${hookName}() hook defined by ${hook.hookFilePath} isn't allowed to return a value`

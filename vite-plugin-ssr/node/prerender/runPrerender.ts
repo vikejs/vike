@@ -19,7 +19,7 @@ import {
   hasPropertyGetter,
   assertPosixPath,
   urlToFile,
-  callHookWithTimeout,
+  executeUserHook,
   isPlainObject,
   setNodeEnvToProduction
 } from './utils'
@@ -610,7 +610,7 @@ async function callOnPrerenderStartHook(
 
   const docLink = 'https://vite-plugin-ssr.com/i18n#pre-rendering'
 
-  let result: unknown = await callHookWithTimeout(
+  let result: unknown = await executeUserHook(
     () =>
       hookFn({
         pageContexts: prerenderContext.pageContexts,

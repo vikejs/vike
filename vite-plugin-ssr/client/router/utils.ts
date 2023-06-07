@@ -14,7 +14,7 @@ export * from '../../client/utils'
 
 export * from '../../utils/assert'
 export * from '../../utils/assertSingleInstance'
-export * from '../../utils/callHookWithTimeout'
+export * from '../../utils/executeUserHook'
 export * from '../../utils/getCurrentUrl'
 export * from '../../utils/getGlobalObject'
 export * from '../../utils/getUrlPathname'

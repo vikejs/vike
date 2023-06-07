@@ -1,4 +1,4 @@
-export { callHookWithTimeout }
+export { executeUserHook }
 
 import { logPrefix, getProjectError } from './assert'
 import { humanizeTime } from './humanizeTime'
@@ -13,7 +13,7 @@ type HookName =
   | 'onBeforeRoute'
   | 'onHydrationEnd'
 
-function callHookWithTimeout<T = unknown>(hookFn: () => T, hookName: HookName, hookFilePath: string): Promise<T> {
+function executeUserHook<T = unknown>(hookFn: () => T, hookName: HookName, hookFilePath: string): Promise<T> {
   const { timeoutErr, timeoutWarn } = getTimeouts(hookName)
 
   let resolve!: (ret: T) => void

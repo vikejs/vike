@@ -10,7 +10,7 @@ import {
   isObject,
   objectAssign,
   isPromise,
-  callHookWithTimeout,
+  executeUserHook,
   isCallable
 } from '../utils'
 import type { PageAsset } from './getPageAssets'
@@ -54,11 +54,7 @@ async function executeOnRenderHtmlHook(
   objectAssign(pageContext, { _renderHook: renderHook })
 
   preparePageContextForRelease(pageContext)
-  const hookReturnValue = await callHookWithTimeout(
-    () => hookFn(pageContext),
-    renderHook.hookName,
-    renderHook.hookFilePath
-  )
+  const hookReturnValue = await executeUserHook(() => hookFn(pageContext), renderHook.hookName, renderHook.hookFilePath)
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
     hookReturnValue,
     renderHook

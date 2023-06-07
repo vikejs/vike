@@ -11,7 +11,7 @@ import {
   objectAssign,
   getProjectError,
   serverSideRouteTo,
-  callHookWithTimeout,
+  executeUserHook,
   isObject
 } from './utils'
 import { parse } from '@brillout/json-serializer/parse'
@@ -179,7 +179,7 @@ async function onBeforeRenderExecute(
       },
       true
     )
-    const hookResult = await callHookWithTimeout(
+    const hookResult = await executeUserHook(
       () => onBeforeRender(pageContextReadyForRelease),
       'onBeforeRender',
       hook.hookFilePath
