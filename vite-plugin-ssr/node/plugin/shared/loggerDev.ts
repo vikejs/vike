@@ -16,7 +16,7 @@ const introMsgs = new WeakMap<object, LogArgs>()
 
 type LogArgs = [
   msg: string,
-  category: 'config' | 'request' | `request-${number}`,
+  category: 'config' | `request(${number})`,
   type: 'error-recover' | 'error' | 'info'
 ]
 

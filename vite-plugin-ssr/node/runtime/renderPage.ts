@@ -27,8 +27,7 @@ import { logInfo } from './renderPage/logger'
 import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
-  numberOfPendingRequests: 0,
-  httpRequestIdHighest: 0
+  httpRequestsCount: 0
 })
 
 // `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
@@ -182,7 +181,6 @@ function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageCon
     httpRequestId,
     statusCode === 200 || statusCode === 404 ? 'info' : 'error'
   )
-  getRequestId_release()
 }
 
 function getPageContextHttpResponseNullWithError(err: unknown, pageContextInit: Record<string, unknown>) {
@@ -301,22 +299,12 @@ function handleUrl(pageContext: { urlOriginal: string; _baseServer: string }): {
 }
 
 function logRequestInfo(msg: string, httpRequestId: number, type: 'error' | 'info') {
-  const category = httpRequestId === 1 ? 'request' : (`request-${httpRequestId}` as const)
-  logInfo?.(msg, category, type)
+  logInfo?.(msg, `request(${httpRequestId})`, type)
 }
 function getRequestId(): number {
-  ++globalObject.numberOfPendingRequests
-  const httpRequestId = ++globalObject.httpRequestIdHighest
+  const httpRequestId = ++globalObject.httpRequestsCount
   assert(httpRequestId >= 1)
   return httpRequestId
-}
-function getRequestId_release(): void {
-  --globalObject.numberOfPendingRequests
-  const { numberOfPendingRequests } = globalObject
-  assert(globalObject.numberOfPendingRequests >= 0)
-  if (numberOfPendingRequests === 0) {
-    globalObject.httpRequestIdHighest = 0
-  }
 }
 
 function skipRequest(urlOriginal: string): boolean {
