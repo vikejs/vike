@@ -7,7 +7,7 @@ export type { LogErrorArgs }
 export { logError_set }
 export { logInfo_set }
 
-import type { LogArgs } from '../../plugin/shared/loggerDev'
+import type { LogInfoArgs } from '../../plugin/shared/loggerDev'
 import { assertRenderErrorPageExceptionUsage, isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { assert, assertWarning, getGlobalObject, hasProp, isObject, isSameErrorMessage } from '../utils'
 import { getGlobalContext } from '../globalContext'
@@ -19,7 +19,7 @@ const globalObject = getGlobalObject('runtime/renderPage/logger.ts', {
 })
 
 type LoggerError = (...args: LogErrorArgs) => void
-type LoggerInfo = (...args: LogArgs) => void
+type LoggerInfo = (...args: LogInfoArgs) => void
 type LogErrorArgs = [unknown, { httpRequestId: number | null; canBeViteUserLand: boolean }]
 
 function logError_set(logger: LoggerError) {

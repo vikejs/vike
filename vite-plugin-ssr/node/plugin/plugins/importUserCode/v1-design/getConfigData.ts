@@ -50,7 +50,6 @@ import {
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
-import { logInfoDev } from '../../../shared/loggerDev'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
 import { getViteDevServer } from '../../../../runtime/globalContext'
 import {
@@ -59,6 +58,7 @@ import {
 } from '../../devConfig/customClearScreen'
 import pc from '@brillout/picocolors'
 import { logError } from '../../../../runtime/renderPage/logger'
+import { logInfoDev } from '../../../shared/loggerDev'
 
 assertIsVitePluginCode()
 

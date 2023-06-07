@@ -1,30 +1,27 @@
 export { logInfoDev }
 export { addErrorIntroMsg }
-export type { LogArgs }
+export type { LogInfoArgs }
 
 import pc from '@brillout/picocolors'
-import { LogType } from 'vite'
-import { getViteDevServer, isGlobalContextSet } from '../../runtime/globalContext'
+import { getGlobalContext, getViteDevServer, isGlobalContextSet } from '../../runtime/globalContext'
 import { LogErrorArgs, logError_set, logInfo_set, prodLogError } from '../../runtime/renderPage/logger'
 import { assert, assertIsVitePluginCode, isObject, projectInfo } from '../utils'
 
 assertIsVitePluginCode()
-logInfo_set(logInfoDev)
-logError_set(logErrorDev)
+logInfo_set(logInfoDevOrPrerender)
+logError_set(logErrorDevOrPrerender)
 
-const introMsgs = new WeakMap<object, LogArgs>()
+const introMsgs = new WeakMap<object, LogInfoArgs>()
 
-type LogArgs = [
-  msg: string,
-  category: 'config' | `request(${number})`,
-  type: 'error-recover' | 'error' | 'info'
-]
+type LogInfoArgs = [msg: string, category: 'config' | `request(${number})`, type: 'error-recover' | 'error' | 'info']
 
-function logErrorDev(...[err, { httpRequestId, canBeViteUserLand }]: LogErrorArgs) {
+function logErrorDevOrPrerender(...[err, { httpRequestId, canBeViteUserLand }]: LogErrorArgs) {
   if (isObject(err)) {
     if (introMsgs.has(err)) {
       const logArg = introMsgs.get(err)!
-      logInfoDev(...logArg)
+      logInfoDevOrPrerender(...logArg)
+    } else if (httpRequestId !== null) {
+      logInfoDevOrPrerender(pc.red('Error:'), `request(${httpRequestId})`, 'error')
     }
     if ('_esbuildMessageFormatted' in err) {
       console.error(err._esbuildMessageFormatted)
@@ -34,22 +31,29 @@ function logErrorDev(...[err, { httpRequestId, canBeViteUserLand }]: LogErrorArg
   prodLogError(err, { httpRequestId, canBeViteUserLand })
 }
 
-function logInfoDev(...[msgInfo, category, type]: LogArgs) {
-  let tagCategory = pc.dim(`[${category}]`)
-  let logType: LogType
-  if (type === 'info') {
-    logType = 'info'
-  } else if (type === 'error-recover') {
-    logType = 'error'
-  } else if (type === 'error') {
-    logType = 'error'
-  } else {
-    assert(false)
+function logInfoDev(...args: LogInfoArgs) {
+  assert(getViteDevServer())
+  logInfo(...args, false)
+}
+function logInfoDevOrPrerender(...args: LogInfoArgs) {
+  logInfo(...args, true)
+}
+
+function logInfo(...[msg, category, type, canBePrerender]: [...LogInfoArgs, boolean]) {
+  {
+    const tagCategory = pc.dim(`[${category}]`)
+    const tag = pc.yellow(pc.bold(`[${projectInfo.projectName}]`)) + tagCategory
+    msg = `${tag} ${msg}`
   }
-  const tag = pc.yellow(pc.bold(`[${projectInfo.projectName}]`)) + tagCategory
-  const msg = `${pc.dim(new Date().toLocaleTimeString())} ${tag} ${msgInfo}`
+  {
+    const showTimestamp = !canBePrerender || (isGlobalContextSet() && getGlobalContext().isPrerendering)
+    if (showTimestamp) {
+      msg = `${pc.dim(new Date().toLocaleTimeString())} ${msg}`
+    }
+  }
   const viteDevServer = getViteDevServer()
   if (viteDevServer) {
+    const logType = type === 'info' ? 'info' : 'error'
     viteDevServer.config.logger[logType](msg)
   } else {
     assert(!isGlobalContextSet())
@@ -61,7 +65,7 @@ function logInfoDev(...[msgInfo, category, type]: LogArgs) {
   }
 }
 
-function addErrorIntroMsg(err: unknown, ...logArg: LogArgs) {
+function addErrorIntroMsg(err: unknown, ...logArg: LogInfoArgs) {
   assert(isObject(err))
   introMsgs.set(err, logArg)
 }
