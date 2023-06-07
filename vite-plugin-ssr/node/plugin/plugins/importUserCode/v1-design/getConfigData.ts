@@ -51,7 +51,7 @@ import {
 } from './getConfigData/filesystemRouting'
 import { transpileAndLoadFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
-import { logDevError, logDevInfo } from '../../../shared/devLogger'
+import { logDevInfo } from '../../../shared/devLogger'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
 import { getViteDevServer } from '../../../../runtime/globalContext'
 import {
@@ -59,6 +59,7 @@ import {
   fixVite_removeDevOptimizationLog_enable
 } from '../../devConfig/customClearScreen'
 import pc from '@brillout/picocolors'
+import { logError } from '../../../../runtime/renderPage/logger'
 
 assertIsVitePluginCode()
 
@@ -313,7 +314,7 @@ async function loadConfigData_withErrorHandling(
       assert(getViteDevServer() === null)
       throw err
     } else {
-      logDevError(err)
+      logError(err, { requestId: null, canBeViteUserLand: false })
       if (!tolerateInvalidConfig) {
         devServerIsCorrupt = true
       }

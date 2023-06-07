@@ -17,11 +17,11 @@ import type { PageAsset } from './getPageAssets'
 import { isStream } from '../html/stream'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser'
 import type { PreloadFilter } from '../html/injectAssets/getHtmlTags'
-import { logErrorWithVite } from './logError'
 import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
 import type { PageContextPromise } from '../html/injectAssets'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { assertObjectKeys } from '../../../shared/assertObjectKeys'
+import { logError } from './logger'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
@@ -43,6 +43,7 @@ async function executeOnRenderHtmlHook(
     _isHtmlOnly: boolean
     _baseServer: string
     _pageFilePathsLoaded: string[]
+    _requestId: number | null
   }
 ): Promise<{
   renderHook: RenderHook
@@ -71,7 +72,10 @@ async function executeOnRenderHtmlHook(
   }
 
   const onErrorWhileStreaming = (err: unknown) => {
-    logErrorWithVite(err)
+    logError(err, {
+      requestId: pageContext._requestId,
+      canBeViteUserLand: true
+    })
     /*
     objectAssign(pageContext, {
       errorWhileRendering: err,

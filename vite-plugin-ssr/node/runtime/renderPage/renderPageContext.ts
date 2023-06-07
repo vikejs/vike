@@ -15,12 +15,12 @@ import { serializePageContextClientSide } from '../html/serializePageContextClie
 import { addComputedUrlProps, type PageContextUrls } from '../../../shared/addComputedUrlProps'
 import { getGlobalContext } from '../globalContext'
 import { createHttpResponseObject, HttpResponse } from './createHttpResponseObject'
-import { isNewError, logErrorWithVite } from './logError'
 import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } from './loadPageFilesServer'
 import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
 import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook'
 import { executeOnBeforeRenderHooks } from './executeOnBeforeRenderHook'
+import { isNewError, logError } from './logger'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
@@ -33,6 +33,7 @@ type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRen
 async function renderPageContext<
   PageContext extends {
     _pageId: null | string
+    _requestId: number
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
     isClientSideNavigation: boolean
     _allPageIds: string[]
@@ -71,7 +72,10 @@ async function renderPageContext<
       await executeOnBeforeRenderHooks(pageContext)
     } catch (err) {
       if (isNewError(err, pageContext.errorWhileRendering)) {
-        logErrorWithVite(err)
+        logError(err, {
+          requestId: pageContext._requestId,
+          canBeViteUserLand: true
+        })
       }
     }
   }
@@ -104,6 +108,7 @@ async function prerenderPageContext(
     urlOriginal: string
     routeParams: Record<string, string>
     _pageId: string
+    _requestId: number | null
     _usesClientRouter: boolean
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
     is404: null | boolean
@@ -153,6 +158,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
   }
   objectAssign(pageContext, {
     _pageId: errorPageId,
+    _requestId: null,
     is404: true,
     routeParams: {},
     // `prerender404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.

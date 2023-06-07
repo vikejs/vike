@@ -1,4 +1,4 @@
-export { logDevError }
+export { devLogError }
 export { logDevInfo }
 export { addErrorIntroMsg }
 export type { LogArgs }
@@ -6,7 +6,7 @@ export type { LogArgs }
 import pc from '@brillout/picocolors'
 import { LogType } from 'vite'
 import { getViteDevServer, isGlobalContextSet } from '../../runtime/globalContext'
-import { logRuntimeMsg_set } from '../../runtime/renderPage/runtimeLogger'
+import { LogErrArgs, logRuntimeMsg_set, prodLogError } from '../../runtime/renderPage/logger'
 import { assert, isObject, projectInfo } from '../utils'
 
 logRuntimeMsg_set(logDevInfo)
@@ -19,7 +19,7 @@ type LogArgs = [
   type: 'error-recover' | 'error' | 'info'
 ]
 
-function logDevError(err: unknown) {
+function devLogError(...[err, { requestId, canBeViteUserLand }]: LogErrArgs) {
   if (isObject(err)) {
     if (introMsgs.has(err)) {
       const logArg = introMsgs.get(err)!
@@ -30,13 +30,10 @@ function logDevError(err: unknown) {
       return
     }
   }
-  const errStr = isObject(err) && 'stack' in err ? String(err.stack) : String(err)
-  console.error(pc.red(errStr))
+  prodLogError(err, { requestId, canBeViteUserLand })
 }
 
 function logDevInfo(...[msgInfo, category, type]: LogArgs) {
-  const viteDevServer = getViteDevServer()
-  if (!viteDevServer && isGlobalContextSet()) return
   let tagCategory = pc.dim(`[${category}]`)
   let logType: LogType
   if (type === 'info') {
@@ -50,9 +47,11 @@ function logDevInfo(...[msgInfo, category, type]: LogArgs) {
   }
   const tag = pc.yellow(pc.bold(`[${projectInfo.projectName}]`)) + tagCategory
   const msg = `${pc.dim(new Date().toLocaleTimeString())} ${tag} ${msgInfo}`
+  const viteDevServer = getViteDevServer()
   if (viteDevServer) {
     viteDevServer.config.logger[logType](msg)
   } else {
+    assert(!isGlobalContextSet())
     if (type === 'error') {
       console.error(msg)
     } else {

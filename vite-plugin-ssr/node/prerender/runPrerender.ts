@@ -748,6 +748,7 @@ async function routeAndPrerender(
 
         objectAssign(pageContext, {
           is404: null,
+          _requestId: null,
           _usesClientRouter: usesClientRouter
         })
 

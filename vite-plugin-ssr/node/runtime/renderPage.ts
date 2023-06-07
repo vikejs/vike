@@ -18,12 +18,12 @@ import { isRenderErrorPageException } from '../../shared/route/RenderErrorPage'
 import { initGlobalContext } from './globalContext'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import { HttpResponse } from './renderPage/createHttpResponseObject'
-import { logErrorWithVite, isNewError, logErrorWithoutVite } from './renderPage/logError'
+import { logError, isNewError } from './renderPage/logger'
 import { assertArguments } from './renderPage/assertArguments'
 import type { PageContextDebug } from './renderPage/debugPageFiles'
 import { warnMissingErrorPage } from './renderPage/handleErrorWithoutErrorPage'
 import { log404 } from './renderPage/log404'
-import { logRuntimeMsg } from './renderPage/runtimeLogger'
+import { logRuntimeMsg } from './renderPage/logger'
 import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
@@ -88,8 +88,9 @@ async function renderPage_(
     renderContext = await getRenderContext()
   } catch (err) {
     // Errors are expected since assertUsage() is used in both initGlobalContext() and getRenderContext().
-    // initGlobalContext() and getRenderContext() don't call any user hooks => err isn't thrown from user code => we use logErrorWithoutVite() instead of logErrorWithVite().
-    logErrorWithoutVite(err)
+    // initGlobalContext() and getRenderContext() don't call any user hooks => err isn't thrown from user code => `canBeViteUserLand: false`
+    assert(!isRenderErrorPageException(err))
+    logError(err, { requestId, canBeViteUserLand: false })
     const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(err, pageContextInit)
     return pageContextHttpReponseNull
   }
@@ -102,11 +103,11 @@ async function renderPage_(
     const pageContext = {}
     let errored: boolean
     try {
-      pageContextFirstAttempt = await renderPageAttempt(pageContextInit, pageContext, renderContext)
+      pageContextFirstAttempt = await renderPageAttempt(pageContextInit, pageContext, renderContext, requestId)
       errored = false
     } catch (err) {
       errFirstAttempt = err
-      logErrorWithVite(errFirstAttempt)
+      logError(errFirstAttempt, { requestId, canBeViteUserLand: true })
       errored = true
       pageContextFirstAttemptPartial = pageContext
     }
@@ -150,12 +151,13 @@ async function renderPage_(
         pageContextInit,
         errFirstAttempt,
         pageContextFirstAttemptPartial,
-        renderContext
+        renderContext,
+        requestId
       )
     } catch (err) {
       errErrorPage = err
       if (isNewError(errErrorPage, errFirstAttempt)) {
-        logErrorWithVite(errErrorPage)
+        logError(errErrorPage, { requestId, canBeViteUserLand: true })
       }
     }
     if (errErrorPage === undefined) {
@@ -205,8 +207,12 @@ function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>
 async function renderPageAttempt<PageContextInit extends { urlOriginal: string }>(
   pageContextInit: PageContextInit,
   pageContext: {},
-  renderContext: RenderContext
+  renderContext: RenderContext,
+  requestId: number
 ) {
+  {
+    objectAssign(pageContext, { _requestId: requestId })
+  }
   {
     const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitAddendum)
@@ -238,9 +244,12 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
   pageContextInit: PageContextInit,
   errFirstAttempt: unknown,
   pageContextFirstAttempt: Record<string, unknown>,
-  renderContext: RenderContext
+  renderContext: RenderContext,
+  requestId: number
 ) {
-  const pageContext = {}
+  const pageContext = {
+    _requestId: requestId
+  }
   {
     const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitAddendum)
