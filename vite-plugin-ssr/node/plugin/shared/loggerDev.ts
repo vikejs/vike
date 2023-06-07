@@ -52,7 +52,7 @@ function logErrorIntro(err: unknown, httpRequestId: number | null) {
 
 function logInfoDev(...args: LogInfoArgs) {
   assert(getViteDevServer())
-  assert(getGlobalContext().isProduction === false)
+  assert(!isGlobalContextSet() || getGlobalContext().isProduction === false)
   logInfo(...args, false)
 }
 function logInfoDevOrPrerender(...args: LogInfoArgs) {
@@ -68,7 +68,7 @@ function logInfo(...[msg, category, type, canBePrerender]: [...LogInfoArgs, bool
     msg = `${tag} ${msg}`
   }
   {
-    const showTimestamp = !canBePrerender || (isGlobalContextSet() && getGlobalContext().isPrerendering)
+    const showTimestamp = !canBePrerender || !isGlobalContextSet() || !getGlobalContext().isPrerendering
     if (showTimestamp) {
       msg = `${pc.dim(new Date().toLocaleTimeString())} ${msg}`
     }
