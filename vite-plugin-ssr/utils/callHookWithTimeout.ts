@@ -58,16 +58,21 @@ function callHookWithTimeout<T = unknown>(hookFn: () => T, hookName: HookName, h
   return promise
 }
 
-function getTimeouts(hookName: HookName) {
-  let timeoutErr = 40 * 1000
-  let timeoutWarn = 4 * 1000
+function getTimeouts(hookName: HookName): { timeoutErr: number; timeoutWarn: number } {
   if (hookName === 'onBeforeRoute') {
-    timeoutErr = 5 * 1000
-    timeoutWarn = 1 * 1000
+    return {
+      timeoutErr: 5 * 1000,
+      timeoutWarn: 1 * 1000
+    }
   }
   if (hookName === 'onBeforePrerender') {
-    timeoutErr = 10 * 60 * 1000
-    timeoutWarn = 30 * 1000
+    return {
+      timeoutErr: 10 * 60 * 1000,
+      timeoutWarn: 30 * 1000
+    }
   }
-  return { timeoutErr, timeoutWarn }
+  return {
+    timeoutErr: 40 * 1000,
+    timeoutWarn: 4 * 1000
+  }
 }
