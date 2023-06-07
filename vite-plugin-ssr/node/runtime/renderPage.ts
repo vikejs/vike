@@ -58,7 +58,7 @@ async function renderPage<
 
   const httpRequestId = getRequestId()
   const urlToShowToUser = pc.bold(pageContextInit.urlOriginal)
-  logRequestInfo(`HTTP request: ${urlToShowToUser}`, httpRequestId, 'info')
+  logInfo?.(`HTTP request: ${urlToShowToUser}`, getLogCategory(httpRequestId), 'info')
 
   const pageContextReturn = await renderPage_(pageContextInit, httpRequestId)
 
@@ -75,7 +75,7 @@ async function renderPage_(
 ): Promise<PageContextReturn> {
   // Invalid config
   if (isConfigInvalid) {
-    logRequestInfo(pc.red("Couldn't load configuration: see error above."), httpRequestId, 'error')
+    logInfo?.(pc.red("Couldn't load configuration: see error above."), getLogCategory(httpRequestId), 'error')
     const pageContextHttpReponseNull = getPageContextHttpResponseNull(pageContextInit)
     return pageContextHttpReponseNull
   }
@@ -176,9 +176,9 @@ async function renderPage_(
 function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageContextReturn: PageContextReturn) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
   const color = (s: number | string) => pc.bold(statusCode !== 200 ? pc.red(s) : pc.green(s))
-  logRequestInfo(
+  logInfo?.(
     `HTTP response ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`,
-    httpRequestId,
+    getLogCategory(httpRequestId),
     statusCode === 200 || statusCode === 404 ? 'info' : 'error'
   )
 }
@@ -298,8 +298,8 @@ function handleUrl(pageContext: { urlOriginal: string; _baseServer: string }): {
   return pageContextAddendum
 }
 
-function logRequestInfo(msg: string, httpRequestId: number, type: 'error' | 'info') {
-  logInfo?.(msg, `request(${httpRequestId})`, type)
+function getLogCategory(httpRequestId: number) {
+  return `request(${httpRequestId})` as const
 }
 function getRequestId(): number {
   const httpRequestId = ++globalObject.httpRequestsCount
