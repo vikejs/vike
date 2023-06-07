@@ -1,7 +1,16 @@
 export { executeUserHook }
+export { isUserHookError }
 
 import { logPrefix, getProjectError } from './assert'
+import { getGlobalObject } from './getGlobalObject'
 import { humanizeTime } from './humanizeTime'
+import { isObject } from './isObject'
+
+type Hook = { hookName: HookName; hookFilePath: string }
+
+const globalObject = getGlobalObject('utils/executeUserHook.ts', {
+  userHookErrors: new Map<object, Hook>()
+})
 
 type HookName =
   | 'onRenderHtml'
@@ -12,6 +21,11 @@ type HookName =
   | 'onBeforePrerender'
   | 'onBeforeRoute'
   | 'onHydrationEnd'
+
+function isUserHookError(err: unknown): false | Hook {
+  if (!isObject(err)) return false
+  return globalObject.userHookErrors.get(err) ?? false
+}
 
 function executeUserHook<T = unknown>(hookFn: () => T, hookName: HookName, hookFilePath: string): Promise<T> {
   const { timeoutErr, timeoutWarn } = getTimeouts(hookName)
@@ -51,6 +65,9 @@ function executeUserHook<T = unknown>(hookFn: () => T, hookName: HookName, hookF
       const ret = await hookFn()
       resolve(ret)
     } catch (err) {
+      if (isObject(err)) {
+        globalObject.userHookErrors.set(err, { hookName, hookFilePath })
+      }
       reject(err)
     }
   })()

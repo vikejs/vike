@@ -5,7 +5,7 @@ export type { LogInfoArgs }
 import pc from '@brillout/picocolors'
 import { getGlobalContext, getViteDevServer, isGlobalContextSet } from '../../runtime/globalContext'
 import { LogErrorArgs, logError_set, logInfo_set, prodLogError } from '../../runtime/renderPage/logger'
-import { assert, assertIsVitePluginCode, isObject, projectInfo } from '../utils'
+import { assert, assertIsVitePluginCode, isObject, isUserHookError, projectInfo } from '../utils'
 
 assertIsVitePluginCode()
 logInfo_set(logInfoDevOrPrerender)
@@ -13,22 +13,41 @@ logError_set(logErrorDevOrPrerender)
 
 const introMsgs = new WeakMap<object, LogInfoArgs>()
 
-type LogInfoArgs = [msg: string, category: 'config' | `request(${number})`, type: 'error-recover' | 'error' | 'info']
+type LogInfoArgs = [
+  msg: string,
+  category: 'config' | `request(${number})` | null,
+  type: 'error-recover' | 'error' | 'info'
+]
 
 function logErrorDevOrPrerender(...[err, { httpRequestId, canBeViteUserLand }]: LogErrorArgs) {
+  logErrorIntro(err, httpRequestId)
   if (isObject(err)) {
-    if (introMsgs.has(err)) {
-      const logArg = introMsgs.get(err)!
-      logInfoDevOrPrerender(...logArg)
-    } else if (httpRequestId !== null) {
-      logInfoDevOrPrerender(pc.red('Error:'), `request(${httpRequestId})`, 'error')
-    }
     if ('_esbuildMessageFormatted' in err) {
       console.error(err._esbuildMessageFormatted)
       return
     }
   }
   prodLogError(err, { httpRequestId, canBeViteUserLand })
+}
+
+function logErrorIntro(err: unknown, httpRequestId: number | null) {
+  if (!isObject(err)) return
+  if (introMsgs.has(err)) {
+    const logArg = introMsgs.get(err)!
+    logInfoDevOrPrerender(...logArg)
+    return
+  }
+  const category = httpRequestId ? (`request(${httpRequestId})` as const) : null
+  const hook = isUserHookError(err)
+  if (hook) {
+    const { hookName, hookFilePath } = hook
+    logInfoDevOrPrerender(pc.red(`Hook ${hookName}() (${hookFilePath}) threw error:`), category, 'error')
+    return
+  }
+  if (httpRequestId !== null) {
+    logInfoDevOrPrerender(pc.red('Error:'), category, 'error')
+    return
+  }
 }
 
 function logInfoDev(...args: LogInfoArgs) {
@@ -42,8 +61,10 @@ function logInfoDevOrPrerender(...args: LogInfoArgs) {
 
 function logInfo(...[msg, category, type, canBePrerender]: [...LogInfoArgs, boolean]) {
   {
-    const tagCategory = pc.dim(`[${category}]`)
-    const tag = pc.yellow(pc.bold(`[${projectInfo.projectName}]`)) + tagCategory
+    let tag = pc.yellow(pc.bold(`[${projectInfo.projectName}]`))
+    if (category) {
+      tag = tag + pc.dim(`[${category}]`)
+    }
     msg = `${tag} ${msg}`
   }
   {
