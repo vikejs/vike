@@ -5,8 +5,7 @@ export { getFilePathToShowToUser }
 export type { FilePath }
 
 // - When esbuild bundle: true => track dependencies
-// - Upon config changes, eagerly reload config files instead of invalidating cache
-// - Rename assertIsVitePluginCode() => assertIsNotProductionRuntime()
+// - Rename assertIsVitePluginCode() => assertIsNotProductionRuntime() ?
 //   - Add it to transpileAndLoadFile.ts
 
 import {
@@ -118,28 +117,37 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition>
 
 let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
-async function reloadConfigData(userRootDir: string, extensions: ExtensionResolved[]) {
+function reloadConfigData(userRootDir: string, extensions: ExtensionResolved[]) {
   getConfigData_dependenciesInvisibleToVite = new Set()
   configDataPromise = loadConfigData_withErrorHandling(userRootDir, true, extensions, true)
-  ;(async () => {
-    wasConfigInvalid = isConfigInvalid
-    try {
-      await configDataPromise
-    } catch {
-      // error will be handled by the getConfigData() caller
+  handleReloadSideEffects()
+}
+async function handleReloadSideEffects() {
+  wasConfigInvalid = isConfigInvalid
+  const configDataPromisePrevious = configDataPromise
+  try {
+    await configDataPromise
+  } catch {
+    // handleReloadSideEffects() is only called in dev.
+    // In dev, if loadConfigData_withErrorHandling() throws an error, then it's a vite-plugin-ssr bug.
+    // We swallow the error in favor of showing a strack trace with a getConfigData() call.
+    return
+  }
+  if (configDataPromise !== configDataPromisePrevious) {
+    // Let the next handleReloadSideEffects() call handle the side effects
+    return
+  }
+  if (!isConfigInvalid) {
+    if (wasConfigInvalid) {
+      wasConfigInvalid = false
+      logDevInfo('Succesfully loaded', 'config', 'success')
     }
-    if (!isConfigInvalid) {
-      if (wasConfigInvalid) {
-        wasConfigInvalid = false
-        logDevInfo('Config succesfull loaded', 'config', 'success')
-      }
-      if (devServerIsCorrupt) {
-        const viteDevServer = getViteDevServer()
-        assert(viteDevServer)
-        viteDevServer.restart(true)
-      }
+    if (devServerIsCorrupt) {
+      const viteDevServer = getViteDevServer()
+      assert(viteDevServer)
+      viteDevServer.restart(true)
     }
-  })()
+  }
 }
 function getConfigData(
   userRootDir: string,
