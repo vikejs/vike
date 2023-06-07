@@ -2,7 +2,7 @@ export { customClearScreen }
 
 import { hasLogged } from '../../utils'
 import type { LogType, ResolvedConfig } from 'vite'
-import { isConfigInvalid } from '../../../runtime/renderPage/isInvalidConfig'
+import { isConfigInvalid } from '../../../runtime/renderPage/isConfigInvalid'
 
 function customClearScreen(config: ResolvedConfig) {
   if (config.clearScreen === false) {

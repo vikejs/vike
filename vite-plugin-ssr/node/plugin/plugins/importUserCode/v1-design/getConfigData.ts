@@ -53,11 +53,7 @@ import {
 import { transpileAndLoadFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
 import { logDevError, logDevInfo } from '../../../shared/devLogger'
-import {
-  isConfigInvalid,
-  isConfigInvalid_set,
-  wasConfigEverValid
-} from '../../../../runtime/renderPage/isInvalidConfig'
+import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
 import { getViteDevServer } from '../../../../runtime/globalContext'
 
 assertIsVitePluginCode()
@@ -120,10 +116,11 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition>
   baseServer: { env: 'config-only' }
 }
 
+let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
 async function reloadConfigData(userRootDir: string, extensions: ExtensionResolved[]) {
   getConfigData_dependenciesInvisibleToVite = new Set()
-  configDataPromise = loadConfigData_withErrorHandling(userRootDir, true, extensions)
+  configDataPromise = loadConfigData_withErrorHandling(userRootDir, true, extensions, true)
   ;(async () => {
     wasConfigInvalid = isConfigInvalid
     try {
@@ -136,8 +133,7 @@ async function reloadConfigData(userRootDir: string, extensions: ExtensionResolv
         wasConfigInvalid = false
         logDevInfo('Config succesfull loaded', 'config', 'success')
       }
-      assert(wasConfigEverValid !== null)
-      if (!wasConfigEverValid) {
+      if (devServerIsCorrupt) {
         const viteDevServer = getViteDevServer()
         assert(viteDevServer)
         viteDevServer.restart(true)
@@ -145,9 +141,14 @@ async function reloadConfigData(userRootDir: string, extensions: ExtensionResolv
     }
   })()
 }
-function getConfigData(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]): Promise<ConfigData> {
+function getConfigData(
+  userRootDir: string,
+  isDev: boolean,
+  extensions: ExtensionResolved[],
+  tolerateInvalidConfig = false
+): Promise<ConfigData> {
   if (!configDataPromise) {
-    configDataPromise = loadConfigData_withErrorHandling(userRootDir, isDev, extensions)
+    configDataPromise = loadConfigData_withErrorHandling(userRootDir, isDev, extensions, tolerateInvalidConfig)
   }
   return configDataPromise
 }
@@ -272,27 +273,44 @@ function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: 
 async function loadConfigData_withErrorHandling(
   userRootDir: string,
   isDev: boolean,
-  extensions: ExtensionResolved[]
+  extensions: ExtensionResolved[],
+  tolerateInvalidConfig: boolean
 ): Promise<ConfigData> {
+  let hasError = false
+  let ret: ConfigData | undefined
+  let err: unknown
   try {
-    const ret = await loadConfigData(userRootDir, isDev, extensions)
+    ret = await loadConfigData(userRootDir, isDev, extensions)
+  } catch (err_) {
+    hasError = true
+    err = err_
+  }
+  if (!hasError) {
+    assert(ret)
+    assert(err === undefined)
     isConfigInvalid_set(false)
     return ret
-  } catch (err) {
+  } else {
+    assert(ret === undefined)
+    assert(err)
+    isConfigInvalid_set(true)
     if (!isDev) {
       throw err
+    } else {
+      logDevError(err)
+      if (!tolerateInvalidConfig) {
+        devServerIsCorrupt = true
+      }
+      const dummyData: ConfigData = {
+        pageConfigsData: [],
+        pageConfigGlobal: {
+          onPrerenderStart: null,
+          onBeforeRoute: null
+        },
+        vikeConfig: {}
+      }
+      return dummyData
     }
-    logDevError(err)
-    isConfigInvalid_set(true)
-    const dummyData: ConfigData = {
-      pageConfigsData: [],
-      pageConfigGlobal: {
-        onPrerenderStart: null,
-        onBeforeRoute: null
-      },
-      vikeConfig: {}
-    }
-    return dummyData
   }
 }
 async function loadConfigData(

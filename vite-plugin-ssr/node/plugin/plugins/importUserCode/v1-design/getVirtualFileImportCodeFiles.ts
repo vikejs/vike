@@ -28,7 +28,7 @@ async function getVirtualFileImportCodeFiles(
   }
   */
   const { pageId, isForClientSide } = result
-  const { pageConfigsData } = await getConfigData(userRootDir, isDev, configVps.extensions)
+  const { pageConfigsData } = await getConfigData(userRootDir, isDev, configVps.extensions, true)
   assert(pageConfigsData)
   const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId === pageId)
   assert(pageConfigData)

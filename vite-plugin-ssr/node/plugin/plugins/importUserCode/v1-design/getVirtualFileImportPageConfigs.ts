@@ -11,6 +11,6 @@ async function getVirtualFileImportPageConfigs(
   id: string,
   configVps: ConfigVpsResolved
 ): Promise<string> {
-  const { pageConfigsData, pageConfigGlobal } = await getConfigData(userRootDir, isDev, configVps.extensions)
+  const { pageConfigsData, pageConfigGlobal } = await getConfigData(userRootDir, isDev, configVps.extensions, true)
   return serializePageConfigs(pageConfigsData, pageConfigGlobal, isForClientSide, isDev, id)
 }

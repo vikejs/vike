@@ -15,7 +15,7 @@ import type { PageContextDebug } from './renderPage/debugPageFiles'
 import { warnMissingErrorPage } from './renderPage/handleErrorWithoutErrorPage'
 import { log404 } from './renderPage/log404'
 import { logRuntimeMsg } from './renderPage/runtimeLogger'
-import { isConfigInvalid } from './renderPage/isInvalidConfig'
+import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
 
 // `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
@@ -143,7 +143,7 @@ async function renderPage<
     }
   }
 
-  // Log
+  // Log response status
   {
     const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
     assert(isFailure === (statusCode !== 200))
@@ -155,7 +155,6 @@ async function renderPage<
     )
   }
 
-  // Finished
   return pageContextReturn
 }
 
