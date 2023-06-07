@@ -3,7 +3,16 @@ export { renderPage }
 import { getRenderContext, initPageContext, RenderContext, renderPageContext } from './renderPage/renderPageContext'
 import { route } from '../../shared/route'
 import { getErrorPageId } from '../../shared/error-page'
-import { assert, hasProp, objectAssign, isParsable, parseUrl, assertServerEnv, assertWarning } from './utils'
+import {
+  assert,
+  hasProp,
+  objectAssign,
+  isParsable,
+  parseUrl,
+  assertServerEnv,
+  assertWarning,
+  getGlobalObject
+} from './utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { isRenderErrorPageException } from '../../shared/route/RenderErrorPage'
 import { initGlobalContext } from './globalContext'
@@ -17,6 +26,10 @@ import { log404 } from './renderPage/log404'
 import { logRuntimeMsg } from './renderPage/runtimeLogger'
 import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
+const globalObject = getGlobalObject('runtime/renderPage.ts', {
+  numberOfPendingRequests: 0,
+  requestIdHighest: 0
+})
 
 // `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
@@ -44,13 +57,9 @@ async function renderPage<
     return pageContextHttpReponseNull
   }
 
-  const requestId = new Date()
+  const requestId = getRequestId()
   const urlToShowToUser = pc.dim(pageContextInit.urlOriginal)
-  logRequestInfo(
-    `HTTP Request ${urlToShowToUser} received at ${dateToHumanReadableString(requestId)}`,
-    requestId,
-    'info'
-  )
+  logRequestInfo(`HTTP request  ${urlToShowToUser}`, requestId, 'info')
   if (isConfigInvalid) {
     logRequestInfo('Invalid config, see error above', requestId, 'failure')
     const pageContextHttpReponseNull = getPageContextHttpResponseNull(pageContextInit)
@@ -149,12 +158,13 @@ async function renderPage<
     assert(isFailure === (statusCode !== 200))
     const color = (s: number | string) => pc.bold(isFailure ? pc.red(s) : pc.green(s))
     logRequestInfo(
-      `HTTP Response ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`,
+      `HTTP response ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`,
       requestId,
       statusCode === 200 || statusCode === 404 ? 'info' : 'failure'
     )
   }
 
+  getRequestId_release()
   return pageContextReturn
 }
 
@@ -266,12 +276,23 @@ function handleUrl(pageContext: { urlOriginal: string; _baseServer: string }): {
   return pageContextAddendum
 }
 
-function logRequestInfo(msg: string, requestId: Date, type: 'success' | 'failure' | 'info') {
-  //const tag = dateToHumanReadableString(requestId)
-  logRuntimeMsg?.(msg, 'request', type)
+function logRequestInfo(msg: string, requestId: number, type: 'success' | 'failure' | 'info') {
+  const category = requestId === 1 ? 'request' : (`request-${requestId}` as const)
+  logRuntimeMsg?.(msg, category, type)
 }
-function dateToHumanReadableString(date: Date) {
-  return date.toLocaleTimeString('de-DE')
+function getRequestId(): number {
+  ++globalObject.numberOfPendingRequests
+  const requestId = ++globalObject.requestIdHighest
+  assert(requestId >= 1)
+  return requestId
+}
+function getRequestId_release(): void {
+  --globalObject.numberOfPendingRequests
+  const { numberOfPendingRequests } = globalObject
+  assert(globalObject.numberOfPendingRequests >= 0)
+  if (numberOfPendingRequests === 0) {
+    globalObject.requestIdHighest = 0
+  }
 }
 
 function skipRequest(urlOriginal: string): boolean {

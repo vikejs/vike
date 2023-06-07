@@ -13,7 +13,7 @@ logRuntimeMsg_set(logDevInfo)
 
 const introMsgs = new WeakMap<object, LogArgs>()
 
-type LogArgs = [msg: string, category: 'config' | 'request', type: 'success' | 'failure' | 'info']
+type LogArgs = [msg: string, category: 'config' | 'request' | `request-${number}`, type: 'success' | 'failure' | 'info']
 
 function logDevError(err: unknown) {
   if (isObject(err)) {
@@ -35,13 +35,13 @@ function logDevInfo(...[msgInfo, category, type]: LogArgs) {
   let tagCategory = pc.bold(`[${category}]`)
   let logType: LogType
   if (type === 'info') {
-    tagCategory = pc.magenta(tagCategory)
+    tagCategory = pc.gray(tagCategory)
     logType = 'info'
   } else if (type === 'success') {
-    tagCategory = pc.green(tagCategory)
+    tagCategory = pc.gray(tagCategory)
     logType = 'error'
   } else if (type === 'failure') {
-    tagCategory = pc.red(tagCategory)
+    tagCategory = pc.gray(tagCategory)
     logType = 'error'
   } else {
     assert(false)
