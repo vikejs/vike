@@ -96,7 +96,26 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
   assertNodeEnv(!!viteDevServer)
   const isProduction = !viteDevServer
 
-  if (isProduction) {
+  if (!isProduction) {
+    assert(viteConfig)
+    assert(!isPrerendering)
+    assert(!vitePreviewServer)
+    const configVps = await getConfigVps(viteConfig)
+    const pluginManifest = getRuntimeManifest(configVps)
+    globalObject.globalContext = {
+      isProduction: false,
+      isPrerendering: false,
+      clientManifest: null,
+      pluginManifest: null,
+      viteDevServer,
+      vitePreviewServer: null,
+      viteConfig,
+      configVps,
+      baseServer: pluginManifest.baseServer,
+      baseAssets: pluginManifest.baseAssets,
+      includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer
+    }
+  } else {
     const buildEntries = await loadImportBuild(outDir)
     assertBuildEntries(buildEntries, isPrerendering ?? false)
     const { pageFiles, clientManifest, pluginManifest } = buildEntries
@@ -131,25 +150,6 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
         configVps: null
       })
       globalObject.globalContext = globalContext
-    }
-  } else {
-    assert(viteConfig)
-    assert(!isPrerendering)
-    assert(!vitePreviewServer)
-    const configVps = await getConfigVps(viteConfig)
-    const pluginManifest = getRuntimeManifest(configVps)
-    globalObject.globalContext = {
-      isProduction: false,
-      isPrerendering: false,
-      clientManifest: null,
-      pluginManifest: null,
-      viteDevServer,
-      vitePreviewServer: null,
-      viteConfig,
-      configVps,
-      baseServer: pluginManifest.baseServer,
-      baseAssets: pluginManifest.baseAssets,
-      includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer
     }
   }
 }
