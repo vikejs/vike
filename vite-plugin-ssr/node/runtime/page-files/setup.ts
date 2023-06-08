@@ -28,6 +28,7 @@ async function transpileAndLoadModule(
   moduleId: string,
   viteDevServer: ViteDevServer
 ): Promise<{ moduleExports: Record<string, unknown> } | { transpileError: RollupError }> {
+  /* TODO
   // Avoid redudant error logging, e.g. get rid of this:
   // ```
   // Transform failed with 1 error:
@@ -36,6 +37,7 @@ async function transpileAndLoadModule(
   // VPS already handles `transpileError`, no need for Vite to log `err.message`
   const onErrorOriginal = viteDevServer.config.logger.error
   viteDevServer.config.logger.error = () => {}
+  */
 
   let result: Record<string, unknown>
   try {
@@ -46,7 +48,7 @@ async function transpileAndLoadModule(
     }
     throw err
   } finally {
-    viteDevServer.config.logger.error = onErrorOriginal
+    // viteDevServer.config.logger.error = onErrorOriginal
   }
 
   const moduleExports: unknown = (result as any).default || (result as any)

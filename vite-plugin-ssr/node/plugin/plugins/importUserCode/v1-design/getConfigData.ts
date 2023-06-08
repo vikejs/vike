@@ -135,7 +135,8 @@ async function handleReloadSideEffects() {
   } catch (err) {
     // handleReloadSideEffects() is only called in dev.
     // In dev, if loadConfigData_withErrorHandling() throws an error, then it's a vite-plugin-ssr bug.
-    throw err
+    console.error(err)
+    assert(false)
   }
   if (configDataPromise !== configDataPromisePrevious) {
     // Let the next handleReloadSideEffects() call handle side effects
@@ -156,7 +157,7 @@ async function handleReloadSideEffects() {
     }
   }
 }
-function getConfigData(
+async function getConfigData(
   userRootDir: string,
   isDev: boolean,
   extensions: ExtensionResolved[],
@@ -165,7 +166,7 @@ function getConfigData(
   if (!configDataPromise) {
     configDataPromise = loadConfigData_withErrorHandling(userRootDir, isDev, extensions, tolerateInvalidConfig)
   }
-  return configDataPromise
+  return await configDataPromise
 }
 
 async function loadInterfaceFiles(

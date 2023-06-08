@@ -14,7 +14,7 @@ function trackLogs() {
       // @ts-ignore
       methodOriginal.apply(process[stdName], args)
       // @ts-ignore
-      log(new Error().stack.replace(/^Error/, 'LOGGED FROM:'))
+      log(new Error().stack.replace(/^Error/, 'LOGGED FROM'))
     }
   })
 
