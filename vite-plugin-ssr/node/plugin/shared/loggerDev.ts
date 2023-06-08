@@ -92,6 +92,7 @@ function logInfo(...[msg, category, type, options, canBePrerender]: [...LogInfoA
       viteServer.config.logger[logType](msg)
     }
   } else {
+    assert(!isGlobalContextSet())
     if (type === 'error') {
       console.error(msg)
     } else {
