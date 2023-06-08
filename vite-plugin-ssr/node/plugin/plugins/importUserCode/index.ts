@@ -50,7 +50,9 @@ function importUserCode(): Plugin {
       if (!getConfigData_dependenciesInvisibleToVite.has(file)) {
         return
       }
-      logWithVite(`Config file change: ${pc.dim(makeRelativeToUserRootDir(file, config.root))}`, 'config', 'info')
+      logWithVite(`Config file change: ${pc.dim(makeRelativeToUserRootDir(file, config.root))}`, 'config', 'info', {
+        clearErrors: true
+      })
       reloadConfigData(config.root, configVps.extensions)
       const mods = Array.from(server.moduleGraph.urlToModuleMap.keys())
         .filter((url) => isVirtualFileIdImportPageCode(url) || isVirtualFileIdImportUserCode(url))

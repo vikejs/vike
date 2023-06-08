@@ -1,4 +1,5 @@
 export { customClearScreen }
+export { isFirstViteLog }
 export { fixVite_removeDevOptimizationLog_enable }
 export { fixVite_removeDevOptimizationLog_disable }
 
@@ -6,18 +7,13 @@ import { assert, assertHasLogged } from '../../utils'
 import type { LogType, ResolvedConfig } from 'vite'
 import { isConfigInvalid } from '../../../runtime/renderPage/isConfigInvalid'
 
-let isInitialClear = true
+let isFirstViteLog = true
 function customClearScreen(config: ResolvedConfig) {
   interceptLogger(
     'info',
     config,
     // Allow initial clear only if no assertWarning() was shown and if config is valid
-    (msg) => {
-      if (!msg.includes('VITE')) return false
-      if (!isInitialClear) return false
-      isInitialClear = false
-      return !assertHasLogged() && !isConfigInvalid
-    }
+    () => isFirstViteLog && !assertHasLogged() && !isConfigInvalid
   )
   interceptLogger('warn', config)
   interceptLogger('error', config)
@@ -25,12 +21,13 @@ function customClearScreen(config: ResolvedConfig) {
 
 type Logger = (...args: [string, { clear?: boolean } | undefined]) => void
 
-function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear?: (msg: string) => boolean) {
+function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear?: () => boolean) {
   const loggerOld = config.logger[logType].bind(config.logger)
   const loggerNew: Logger = (...args) => {
     const [msg, options] = args
     if (removeDevOptimizationLog && fixVite_removeDevOptimizationLog_isMatch(msg)) return
-    if (options?.clear && !tolerateClear?.(msg)) options.clear = false
+    if (options?.clear && !tolerateClear?.()) options.clear = false
+    isFirstViteLog = false
     loggerOld(...args)
   }
   config.logger[logType] = loggerNew

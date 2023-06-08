@@ -6,6 +6,7 @@ import pc from '@brillout/picocolors'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { getViteConfig } from '../../runtime/globalContext'
 import { LogErrorArgs, logError_set, logInfo_set, prodLogError } from '../../runtime/renderPage/logger'
+import { isFirstViteLog } from '../plugins/devConfig/customClearScreen'
 import { assert, assertIsVitePluginCode, isObject, isUserHookError, projectInfo } from '../utils'
 
 assertIsVitePluginCode()
@@ -20,7 +21,7 @@ function logWithVite(
   msg: string,
   category: 'config' | `request(${number})` | null,
   type: 'error-recover' | 'error' | 'info',
-  options: { clearErrors?: boolean } = {}
+  options: { clearErrors?: boolean; clearIfFirstLog?: boolean } = {}
 ) {
   {
     let tag = pc.yellow(pc.bold(`[${projectInfo.projectName}]`))
@@ -33,9 +34,7 @@ function logWithVite(
   const viteConfig = getViteConfig()
   assert(viteConfig)
   const logType = type === 'info' ? 'info' : 'error'
-  const clear =
-    (category === 'config' && (type === 'error' || type === 'error-recover')) ||
-    (options.clearErrors && screenHasErrors)
+  const clear = (options.clearErrors && screenHasErrors) || (options.clearIfFirstLog && isFirstViteLog)
   if (clear) {
     screenHasErrors = false
     viteConfig.logger.clearScreen('error')
