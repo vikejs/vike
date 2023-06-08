@@ -2,13 +2,15 @@ export { initGlobalContext }
 export { getGlobalContext }
 export { isGlobalContextSet }
 export { getViteDevServer }
-export { setGlobalContextViteDevServer }
-export { setGlobalContextViteConfig }
+export { getViteServer }
+export { setGlobalContext_viteDevServer }
+export { setGlobalContext_vitePreviewServer }
+export { setGlobalContext_viteConfig }
 export { getRuntimeManifest }
 
 import { assert, assertUsage, assertWarning, getGlobalObject, getNodeEnv, isPlainObject } from './utils'
 import type { ViteManifest } from '../shared/ViteManifest'
-import type { ResolvedConfig, ViteDevServer } from 'vite'
+import type { ResolvedConfig, ViteDevServer, PreviewServerForHook as VitePreviewServer } from 'vite'
 import { loadImportBuild } from './globalContext/loadImportBuild'
 import { setPageFiles } from '../../shared/getPageFiles'
 import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest'
@@ -18,6 +20,7 @@ import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRun
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   viteDevServer?: ViteDevServer
+  vitePreviewServer?: VitePreviewServer
   config?: ResolvedConfig
 }>('globalContext.ts', {})
 
@@ -26,6 +29,7 @@ type GlobalContext = (
       isProduction: false
       isPrerendering: false
       viteDevServer: ViteDevServer
+      vitePreviewServer: null
       config: ResolvedConfig
       configVps: ConfigVpsResolved
       clientManifest: null
@@ -39,6 +43,7 @@ type GlobalContext = (
       config: null
       configVps: null
       viteDevServer: null
+      vitePreviewServer: null | VitePreviewServer
     }
 ) & {
   baseServer: string
@@ -54,15 +59,23 @@ function isGlobalContextSet(): boolean {
   return !!globalObject.globalContext
 }
 
-function setGlobalContextViteDevServer(viteDevServer: ViteDevServer) {
+function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   if (globalObject.viteDevServer) return
   assert(!globalObject.globalContext)
   globalObject.viteDevServer = viteDevServer
 }
+function setGlobalContext_vitePreviewServer(vitePreviewServer: VitePreviewServer) {
+  if (globalObject.vitePreviewServer) return
+  assert(!globalObject.globalContext)
+  globalObject.vitePreviewServer = vitePreviewServer
+}
 function getViteDevServer(): ViteDevServer | null {
   return globalObject.viteDevServer ?? null
 }
-function setGlobalContextViteConfig(config: ResolvedConfig): void {
+function getViteServer(): ViteDevServer | VitePreviewServer | null {
+  return globalObject.viteDevServer ?? globalObject.vitePreviewServer ?? null
+}
+function setGlobalContext_viteConfig(config: ResolvedConfig): void {
   if (globalObject.config) return
   assert(!globalObject.globalContext)
   globalObject.config = config
@@ -71,7 +84,7 @@ function setGlobalContextViteConfig(config: ResolvedConfig): void {
 async function initGlobalContext(isPrerendering = false, outDir?: string): Promise<void> {
   if (globalObject.globalContext) return
 
-  const { viteDevServer, config } = globalObject
+  const { viteDevServer, vitePreviewServer, config } = globalObject
   assertNodeEnv(!!viteDevServer)
   const isProduction = !viteDevServer
 
@@ -83,11 +96,12 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
     assertViteManifest(clientManifest)
     assertPluginManifest(pluginManifest)
     globalObject.globalContext = {
-      isProduction,
+      isProduction: true,
       isPrerendering: isPrerendering ?? false,
       clientManifest,
       pluginManifest,
       viteDevServer: null,
+      vitePreviewServer: vitePreviewServer ?? null,
       config: null,
       configVps: null,
       baseServer: pluginManifest.baseServer,
@@ -97,14 +111,16 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
   } else {
     assert(config)
     assert(!isPrerendering)
+    assert(!vitePreviewServer)
     const configVps = await getConfigVps(config)
     const pluginManifest = getRuntimeManifest(configVps)
     globalObject.globalContext = {
-      isProduction,
+      isProduction: false,
       isPrerendering: false,
       clientManifest: null,
       pluginManifest: null,
       viteDevServer,
+      vitePreviewServer: null,
       config,
       configVps,
       baseServer: pluginManifest.baseServer,

@@ -1,16 +1,23 @@
 export { setGlobalContext }
 
 import type { Plugin } from 'vite'
-import { setGlobalContextViteDevServer, setGlobalContextViteConfig } from '../../runtime/globalContext'
+import {
+  setGlobalContext_viteDevServer,
+  setGlobalContext_vitePreviewServer,
+  setGlobalContext_viteConfig
+} from '../../runtime/globalContext'
 
 function setGlobalContext(): Plugin {
   return {
     name: 'vite-plugin-ssr:setGlobalContext',
     configureServer(viteDevServer) {
-      setGlobalContextViteDevServer(viteDevServer)
+      setGlobalContext_viteDevServer(viteDevServer)
+    },
+    configurePreviewServer(vitePreviewServer) {
+      setGlobalContext_vitePreviewServer(vitePreviewServer)
     },
     async configResolved(config) {
-      setGlobalContextViteConfig(config)
+      setGlobalContext_viteConfig(config)
     }
   }
 }
