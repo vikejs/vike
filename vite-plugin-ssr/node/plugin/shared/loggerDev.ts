@@ -44,7 +44,7 @@ function logErrorIntro(err: unknown, httpRequestId: number | null) {
   const hook = isUserHookError(err)
   if (hook) {
     const { hookName, hookFilePath } = hook
-    logInfoDevOrPrerender(pc.red(`Hook ${hookName}() (${hookFilePath}) threw error:`), category, 'error')
+    logInfoDevOrPrerender(pc.red(`Error thrown by hook ${hookName}() (${hookFilePath}):`), category, 'error')
     return
   }
   if (httpRequestId !== null) {
