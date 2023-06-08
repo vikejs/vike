@@ -138,7 +138,7 @@ async function renderPage_(
       warnMissingErrorPage(isV1)
     }
     if (!!pageContextFirstAttempt && 'is404' in pageContextFirstAttempt && pageContextFirstAttempt.is404 === true) {
-      log404(pageContextFirstAttempt)
+      await log404(pageContextFirstAttempt)
       const statusCode = pageContextFirstAttempt.httpResponse?.statusCode ?? null
       assert(statusCode === 404 || (noErrorPageDefined && statusCode === null))
     }
