@@ -1,10 +1,10 @@
-export { logInfoDev }
+export { logWithVite }
 export { addErrorIntroMsg }
 export type { LogInfoArgs }
 
 import pc from '@brillout/picocolors'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
-import { getGlobalContext, getViteDevServer, getViteConfig, isGlobalContextSet } from '../../runtime/globalContext'
+import { getGlobalContext, getViteConfig, isGlobalContextSet } from '../../runtime/globalContext'
 import { LogErrorArgs, logError_set, logInfo_set, prodLogError } from '../../runtime/renderPage/logger'
 import { assert, assertIsVitePluginCode, isObject, isUserHookError, projectInfo } from '../utils'
 
@@ -58,11 +58,6 @@ function logErrorIntro(err: unknown, httpRequestId: number | null) {
   }
 }
 
-function logInfoDev(...args: LogInfoArgs) {
-  assert(getViteDevServer())
-  assert(!isGlobalContextSet() || getGlobalContext().isProduction === false)
-  logInfo(...args, false)
-}
 function logWithVite(...args: LogInfoArgs) {
   logInfo(...args, true)
 }

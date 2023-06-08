@@ -58,7 +58,7 @@ import {
 } from '../../devConfig/customClearScreen'
 import pc from '@brillout/picocolors'
 import { logError } from '../../../../runtime/renderPage/logger'
-import { logInfoDev } from '../../../shared/logWithVite'
+import { logWithVite } from '../../../shared/logWithVite'
 
 assertIsVitePluginCode()
 
@@ -145,7 +145,7 @@ async function handleReloadSideEffects() {
   if (!isConfigInvalid) {
     if (wasConfigInvalid) {
       wasConfigInvalid = false
-      logInfoDev(pc.green(pc.bold('Configuration successfully loaded.')), 'config', 'error-recover')
+      logWithVite(pc.green(pc.bold('Configuration successfully loaded.')), 'config', 'error-recover')
     }
     if (devServerIsCorrupt) {
       devServerIsCorrupt = false
