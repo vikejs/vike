@@ -8,7 +8,7 @@ export { setGlobalContext_vitePreviewServer }
 export { setGlobalContext_viteConfig }
 export { getRuntimeManifest }
 
-import { assert, assertUsage, assertWarning, getGlobalObject, getNodeEnv, isPlainObject } from './utils'
+import { assert, assertUsage, assertWarning, getGlobalObject, getNodeEnv, isPlainObject, objectAssign } from './utils'
 import type { ViteManifest } from '../shared/ViteManifest'
 import type { ResolvedConfig, ViteDevServer, PreviewServerForHook as VitePreviewServer } from 'vite'
 import { loadImportBuild } from './globalContext/loadImportBuild'
@@ -28,23 +28,31 @@ type GlobalContext = (
   | {
       isProduction: false
       isPrerendering: false
-      viteDevServer: ViteDevServer
-      vitePreviewServer: null
       config: ResolvedConfig
       configVps: ConfigVpsResolved
+      viteDevServer: ViteDevServer
+      vitePreviewServer: null
       clientManifest: null
       pluginManifest: null
     }
-  | {
+  | ({
       isProduction: true
-      isPrerendering: boolean
       clientManifest: ViteManifest
       pluginManifest: PluginManifest
-      config: null
-      configVps: null
       viteDevServer: null
       vitePreviewServer: null | VitePreviewServer
-    }
+    } & (
+      | {
+          isPrerendering: false
+          config: null
+          configVps: null
+        }
+      | {
+          isPrerendering: true
+          config: ResolvedConfig
+          configVps: ConfigVpsResolved
+        }
+    ))
 ) & {
   baseServer: string
   baseAssets: null | string
@@ -95,18 +103,34 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
     setPageFiles(pageFiles)
     assertViteManifest(clientManifest)
     assertPluginManifest(pluginManifest)
-    globalObject.globalContext = {
-      isProduction: true,
-      isPrerendering: isPrerendering ?? false,
+    const globalContext = {
+      isProduction: true as const,
       clientManifest,
       pluginManifest,
       viteDevServer: null,
       vitePreviewServer: vitePreviewServer ?? null,
-      config: null,
-      configVps: null,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer
+    }
+    if (isPrerendering) {
+      assert(config)
+      const configVps = await getConfigVps(config)
+      assert(configVps)
+      objectAssign(globalContext, {
+        isPrerendering: true as const,
+        config,
+        configVps
+      })
+      globalObject.globalContext = globalContext
+    } else {
+      assert(!config)
+      objectAssign(globalContext, {
+        isPrerendering: false as const,
+        config: null,
+        configVps: null
+      })
+      globalObject.globalContext = globalContext
     }
   } else {
     assert(config)
