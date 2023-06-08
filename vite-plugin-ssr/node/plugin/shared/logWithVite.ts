@@ -4,7 +4,7 @@ export type { LogInfoArgs }
 
 import pc from '@brillout/picocolors'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
-import { getGlobalContext, getViteConfig, isGlobalContextSet } from '../../runtime/globalContext'
+import { getViteConfig, isGlobalContextSet } from '../../runtime/globalContext'
 import { LogErrorArgs, logError_set, logInfo_set, prodLogError } from '../../runtime/renderPage/logger'
 import { assert, assertIsVitePluginCode, isObject, isUserHookError, projectInfo } from '../utils'
 
@@ -58,23 +58,14 @@ function logErrorIntro(err: unknown, httpRequestId: number | null) {
   }
 }
 
-function logWithVite(...args: LogInfoArgs) {
-  logInfo(...args, true)
-}
-
-function logInfo(...[msg, category, type, options, canBePrerender]: [...LogInfoArgs, boolean]) {
+function logWithVite(...[msg, category, type, options]: [...LogInfoArgs]) {
   {
     let tag = pc.yellow(pc.bold(`[${projectInfo.projectName}]`))
     if (category) {
       tag = tag + pc.dim(`[${category}]`)
     }
     msg = `${tag} ${msg}`
-  }
-  {
-    const showTimestamp = !canBePrerender || !isGlobalContextSet() || !getGlobalContext().isPrerendering
-    if (showTimestamp) {
-      msg = `${pc.dim(new Date().toLocaleTimeString())} ${msg}`
-    }
+    msg = `${pc.dim(new Date().toLocaleTimeString())} ${msg}`
   }
   const viteConfig = getViteConfig()
   if (viteConfig) {
