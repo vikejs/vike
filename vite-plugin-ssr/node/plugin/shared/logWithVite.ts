@@ -4,7 +4,7 @@ export type { LogInfoArgs }
 
 import pc from '@brillout/picocolors'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
-import { getViteConfig, isGlobalContextSet } from '../../runtime/globalContext'
+import { getViteConfig } from '../../runtime/globalContext'
 import { LogErrorArgs, logError_set, logInfo_set, prodLogError } from '../../runtime/renderPage/logger'
 import { assert, assertIsVitePluginCode, isObject, isUserHookError, projectInfo } from '../utils'
 
@@ -12,15 +12,36 @@ assertIsVitePluginCode()
 logInfo_set(logWithVite)
 logError_set(logErrorWithVite)
 
+type LogInfoArgs = Parameters<typeof logWithVite>
 const introMsgs = new WeakMap<object, LogInfoArgs>()
 let screenHasErrors = false
 
-type LogInfoArgs = [
+function logWithVite(
   msg: string,
   category: 'config' | `request(${number})` | null,
   type: 'error-recover' | 'error' | 'info',
-  options?: undefined | { clearErrors: boolean }
-]
+  options: { clearErrors?: boolean } = {}
+) {
+  {
+    let tag = pc.yellow(pc.bold(`[${projectInfo.projectName}]`))
+    if (category) {
+      tag = tag + pc.dim(`[${category}]`)
+    }
+    msg = `${tag} ${msg}`
+    msg = `${pc.dim(new Date().toLocaleTimeString())} ${msg}`
+  }
+  const viteConfig = getViteConfig()
+  assert(viteConfig)
+  const logType = type === 'info' ? 'info' : 'error'
+  const clear =
+    (category === 'config' && (type === 'error' || type === 'error-recover')) ||
+    (options.clearErrors && screenHasErrors)
+  if (clear) {
+    screenHasErrors = false
+    viteConfig.logger.clearScreen('error')
+  }
+  viteConfig.logger[logType](msg)
+}
 
 function logErrorWithVite(...[err, { httpRequestId, canBeViteUserLand }]: LogErrorArgs) {
   if (isRenderErrorPageException(err)) {
@@ -37,12 +58,11 @@ function logErrorWithVite(...[err, { httpRequestId, canBeViteUserLand }]: LogErr
   }
   prodLogError(err, { httpRequestId, canBeViteUserLand })
 }
-
 function logErrorIntro(err: unknown, httpRequestId: number | null) {
   if (!isObject(err)) return
   if (introMsgs.has(err)) {
-    const logArg = introMsgs.get(err)!
-    logWithVite(...logArg)
+    const logInfoArgs = introMsgs.get(err)!
+    logWithVite(...logInfoArgs)
     return
   }
   const category = httpRequestId ? (`request(${httpRequestId})` as const) : null
@@ -58,45 +78,7 @@ function logErrorIntro(err: unknown, httpRequestId: number | null) {
   }
 }
 
-function logWithVite(...[msg, category, type, options]: [...LogInfoArgs]) {
-  {
-    let tag = pc.yellow(pc.bold(`[${projectInfo.projectName}]`))
-    if (category) {
-      tag = tag + pc.dim(`[${category}]`)
-    }
-    msg = `${tag} ${msg}`
-    msg = `${pc.dim(new Date().toLocaleTimeString())} ${msg}`
-  }
-  const viteConfig = getViteConfig()
-  assert(viteConfig)
-  const logType = type === 'info' ? 'info' : 'error'
-  const clear =
-    (category === 'config' && (type === 'error' || type === 'error-recover')) ||
-    (options?.clearErrors && screenHasErrors)
-  if (clear) {
-    screenHasErrors = false
-    viteConfig.logger.clearScreen('error')
-  }
-  viteConfig.logger[logType](msg)
-}
-
-function addErrorIntroMsg(err: unknown, ...logArg: LogInfoArgs) {
+function addErrorIntroMsg(err: unknown, ...logInfoArgs: LogInfoArgs) {
   assert(isObject(err))
-  introMsgs.set(err, logArg)
+  introMsgs.set(err, logInfoArgs)
 }
-
-/* TODO: remove?
-let msgPrev: string | undefined
-const zeroWidthSpace = '\u200b'
-function addStringIsEqualBuster(msg: string) {
-  if (!process.stdout.isTTY || process.env.CI) {
-    // Workaround isn't needed: https://github.com/vitejs/vite/blob/02a46d7ceab71ebf7ba723372ba37012b7f9ccaf/packages/vite/src/node/logger.ts#L65-L66
-    return msg
-  }
-  if (msgPrev === msg) {
-    msg = msg + zeroWidthSpace
-  }
-  msgPrev = msg
-  return msg
-}
-*/
