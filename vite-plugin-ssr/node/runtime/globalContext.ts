@@ -143,7 +143,6 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       })
       globalObject.globalContext = globalContext
     } else {
-      assert(!viteConfig)
       objectAssign(globalContext, {
         isPrerendering: false as const,
         viteConfig: null,
