@@ -4,7 +4,7 @@ export type { LogInfoArgs }
 
 import pc from '@brillout/picocolors'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
-import { getGlobalContext, getViteDevServer, getViteServer, isGlobalContextSet } from '../../runtime/globalContext'
+import { getGlobalContext, getViteDevServer, getViteConfig, isGlobalContextSet } from '../../runtime/globalContext'
 import { LogErrorArgs, logError_set, logInfo_set, prodLogError } from '../../runtime/renderPage/logger'
 import { assert, assertIsVitePluginCode, isObject, isUserHookError, projectInfo } from '../utils'
 
@@ -81,20 +81,20 @@ function logInfo(...[msg, category, type, options, canBePrerender]: [...LogInfoA
       msg = `${pc.dim(new Date().toLocaleTimeString())} ${msg}`
     }
   }
-  const viteServer = getViteServer()
-  if (viteServer) {
+  const viteConfig = getViteConfig()
+  if (viteConfig) {
     {
       const clear =
         (category === 'config' && (type === 'error' || type === 'error-recover')) ||
         (options?.clearErrors && screenHasErrors)
       if (clear) {
-        viteServer.config.logger.clearScreen('error')
+        viteConfig.logger.clearScreen('error')
         screenHasErrors = false
       }
     }
     {
       const logType = type === 'info' ? 'info' : 'error'
-      viteServer.config.logger[logType](msg)
+      viteConfig.logger[logType](msg)
     }
   } else {
     assert(!isGlobalContextSet())

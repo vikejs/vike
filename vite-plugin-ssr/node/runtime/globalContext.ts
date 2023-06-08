@@ -2,7 +2,7 @@ export { initGlobalContext }
 export { getGlobalContext }
 export { isGlobalContextSet }
 export { getViteDevServer }
-export { getViteServer }
+export { getViteConfig }
 export { setGlobalContext_viteDevServer }
 export { setGlobalContext_vitePreviewServer }
 export { setGlobalContext_viteConfig }
@@ -80,13 +80,13 @@ function setGlobalContext_vitePreviewServer(vitePreviewServer: VitePreviewServer
 function getViteDevServer(): ViteDevServer | null {
   return globalObject.viteDevServer ?? null
 }
-function getViteServer(): ViteDevServer | VitePreviewServer | null {
-  return globalObject.viteDevServer ?? globalObject.vitePreviewServer ?? null
-}
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig): void {
   if (globalObject.viteConfig) return
   assert(!globalObject.globalContext)
   globalObject.viteConfig = viteConfig
+}
+function getViteConfig(): ResolvedConfig | null {
+  return globalObject.viteConfig ?? null
 }
 
 async function initGlobalContext(isPrerendering = false, outDir?: string): Promise<void> {
