@@ -1,8 +1,10 @@
 export { logWithVite }
+export { clearScreenWithVite }
 export { addErrorIntroMsg }
 export type { LogInfoArgs }
 
 import pc from '@brillout/picocolors'
+import type { ResolvedConfig } from 'vite'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { getViteConfig } from '../../runtime/globalContext'
 import { LogErrorArgs, logError_set, logInfo_set, prodLogError } from '../../runtime/renderPage/logger'
@@ -36,10 +38,13 @@ function logWithVite(
   const logType = type === 'info' ? 'info' : 'error'
   const clear = (options.clearErrors && screenHasErrors) || (options.clearIfFirstLog && isFirstViteLog)
   if (clear) {
-    screenHasErrors = false
-    viteConfig.logger.clearScreen('error')
+    clearScreenWithVite(viteConfig)
   }
   viteConfig.logger[logType](msg)
+}
+function clearScreenWithVite(viteConfig: ResolvedConfig) {
+  screenHasErrors = false
+  viteConfig.logger.clearScreen('error')
 }
 
 function logErrorWithVite(...[err, { httpRequestId, canBeViteUserLand }]: LogErrorArgs) {
