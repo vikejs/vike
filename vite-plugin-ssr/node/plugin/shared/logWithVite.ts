@@ -68,28 +68,16 @@ function logWithVite(...[msg, category, type, options]: [...LogInfoArgs]) {
     msg = `${pc.dim(new Date().toLocaleTimeString())} ${msg}`
   }
   const viteConfig = getViteConfig()
-  if (viteConfig) {
-    {
-      const clear =
-        (category === 'config' && (type === 'error' || type === 'error-recover')) ||
-        (options?.clearErrors && screenHasErrors)
-      if (clear) {
-        viteConfig.logger.clearScreen('error')
-        screenHasErrors = false
-      }
-    }
-    {
-      const logType = type === 'info' ? 'info' : 'error'
-      viteConfig.logger[logType](msg)
-    }
-  } else {
-    assert(!isGlobalContextSet())
-    if (type === 'error') {
-      console.error(msg)
-    } else {
-      console.log(msg)
-    }
+  assert(viteConfig)
+  const logType = type === 'info' ? 'info' : 'error'
+  const clear =
+    (category === 'config' && (type === 'error' || type === 'error-recover')) ||
+    (options?.clearErrors && screenHasErrors)
+  if (clear) {
+    screenHasErrors = false
+    viteConfig.logger.clearScreen('error')
   }
+  viteConfig.logger[logType](msg)
 }
 
 function addErrorIntroMsg(err: unknown, ...logArg: LogInfoArgs) {
