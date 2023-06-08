@@ -21,14 +21,14 @@ const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   viteDevServer?: ViteDevServer
   vitePreviewServer?: VitePreviewServer
-  config?: ResolvedConfig
+  viteConfig?: ResolvedConfig
 }>('globalContext.ts', {})
 
 type GlobalContext = (
   | {
       isProduction: false
       isPrerendering: false
-      config: ResolvedConfig
+      viteConfig: ResolvedConfig
       configVps: ConfigVpsResolved
       viteDevServer: ViteDevServer
       vitePreviewServer: null
@@ -44,12 +44,12 @@ type GlobalContext = (
     } & (
       | {
           isPrerendering: false
-          config: null
+          viteConfig: null
           configVps: null
         }
       | {
           isPrerendering: true
-          config: ResolvedConfig
+          viteConfig: ResolvedConfig
           configVps: ConfigVpsResolved
         }
     ))
@@ -83,16 +83,16 @@ function getViteDevServer(): ViteDevServer | null {
 function getViteServer(): ViteDevServer | VitePreviewServer | null {
   return globalObject.viteDevServer ?? globalObject.vitePreviewServer ?? null
 }
-function setGlobalContext_viteConfig(config: ResolvedConfig): void {
-  if (globalObject.config) return
+function setGlobalContext_viteConfig(viteConfig: ResolvedConfig): void {
+  if (globalObject.viteConfig) return
   assert(!globalObject.globalContext)
-  globalObject.config = config
+  globalObject.viteConfig = viteConfig
 }
 
 async function initGlobalContext(isPrerendering = false, outDir?: string): Promise<void> {
   if (globalObject.globalContext) return
 
-  const { viteDevServer, vitePreviewServer, config } = globalObject
+  const { viteDevServer, vitePreviewServer, viteConfig } = globalObject
   assertNodeEnv(!!viteDevServer)
   const isProduction = !viteDevServer
 
@@ -114,29 +114,29 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer
     }
     if (isPrerendering) {
-      assert(config)
-      const configVps = await getConfigVps(config)
+      assert(viteConfig)
+      const configVps = await getConfigVps(viteConfig)
       assert(configVps)
       objectAssign(globalContext, {
         isPrerendering: true as const,
-        config,
+        viteConfig,
         configVps
       })
       globalObject.globalContext = globalContext
     } else {
-      assert(!config)
+      assert(!viteConfig)
       objectAssign(globalContext, {
         isPrerendering: false as const,
-        config: null,
+        viteConfig: null,
         configVps: null
       })
       globalObject.globalContext = globalContext
     }
   } else {
-    assert(config)
+    assert(viteConfig)
     assert(!isPrerendering)
     assert(!vitePreviewServer)
-    const configVps = await getConfigVps(config)
+    const configVps = await getConfigVps(viteConfig)
     const pluginManifest = getRuntimeManifest(configVps)
     globalObject.globalContext = {
       isProduction: false,
@@ -145,7 +145,7 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       pluginManifest: null,
       viteDevServer,
       vitePreviewServer: null,
-      config,
+      viteConfig,
       configVps,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
