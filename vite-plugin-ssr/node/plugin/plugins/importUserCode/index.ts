@@ -44,11 +44,17 @@ function importUserCode(): Plugin {
       }
     },
     handleHotUpdate(ctx) {
-      clearScreenWithVite(config)
       const { file, server } = ctx
       assertPosixPath(file)
       getConfigData_dependenciesInvisibleToVite.forEach((f) => assertPosixPath(f))
-      if (!getConfigData_dependenciesInvisibleToVite.has(file)) {
+      const isVikeConfig = getConfigData_dependenciesInvisibleToVite.has(file)
+
+      const isViteModule = ctx.modules.length > 0
+      if (isVikeConfig || isViteModule) {
+        clearScreenWithVite(config)
+      }
+
+      if (!isVikeConfig) {
         return
       }
       logWithVite(`Config file change: ${pc.dim(makeRelativeToUserRootDir(file, config.root))}`, 'config', 'info')
