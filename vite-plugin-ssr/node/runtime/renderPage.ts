@@ -27,7 +27,8 @@ import { logInfo } from './renderPage/logger'
 import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
-  httpRequestsCount: 0
+  httpRequestsCount: 0,
+  pendingRequestsCount: 0
 })
 
 // `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
@@ -58,11 +59,15 @@ async function renderPage<
 
   const httpRequestId = getRequestId()
   const urlToShowToUser = pc.bold(pageContextInit.urlOriginal)
-  logInfo?.(`HTTP request: ${urlToShowToUser}`, getLogCategory(httpRequestId), 'info')
+  logInfo?.(`HTTP request: ${urlToShowToUser}`, getLogCategory(httpRequestId), 'info', {
+    clearErrors: globalObject.pendingRequestsCount === 0 && !isConfigInvalid
+  })
+  globalObject.pendingRequestsCount++
 
   const pageContextReturn = await renderPage_(pageContextInit, httpRequestId)
 
   logHttpResponse(urlToShowToUser, httpRequestId, pageContextReturn)
+  globalObject.pendingRequestsCount--
 
   return pageContextReturn
 }

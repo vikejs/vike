@@ -12,14 +12,17 @@ logInfo_set(logInfoDevOrPrerender)
 logError_set(logErrorDevOrPrerender)
 
 const introMsgs = new WeakMap<object, LogInfoArgs>()
+let screenHasErrors = false
 
 type LogInfoArgs = [
   msg: string,
   category: 'config' | `request(${number})` | null,
-  type: 'error-recover' | 'error' | 'info'
+  type: 'error-recover' | 'error' | 'info',
+  options?: undefined | { clearErrors: boolean }
 ]
 
 function logErrorDevOrPrerender(...[err, { httpRequestId, canBeViteUserLand }]: LogErrorArgs) {
+  screenHasErrors = true
   logErrorIntro(err, httpRequestId)
   if (isObject(err)) {
     if ('_esbuildMessageFormatted' in err) {
@@ -59,7 +62,7 @@ function logInfoDevOrPrerender(...args: LogInfoArgs) {
   logInfo(...args, true)
 }
 
-function logInfo(...[msg, category, type, canBePrerender]: [...LogInfoArgs, boolean]) {
+function logInfo(...[msg, category, type, options, canBePrerender]: [...LogInfoArgs, boolean]) {
   {
     let tag = pc.yellow(pc.bold(`[${projectInfo.projectName}]`))
     if (category) {
@@ -75,8 +78,19 @@ function logInfo(...[msg, category, type, canBePrerender]: [...LogInfoArgs, bool
   }
   const viteDevServer = getViteDevServer()
   if (viteDevServer) {
-    const logType = type === 'info' ? 'info' : 'error'
-    viteDevServer.config.logger[logType](msg)
+    {
+      const clear =
+        (category === 'config' && (type === 'error' || type === 'error-recover')) ||
+        (options?.clearErrors && screenHasErrors)
+      if (clear) {
+        viteDevServer.config.logger.clearScreen('error')
+        screenHasErrors = false
+      }
+    }
+    {
+      const logType = type === 'info' ? 'info' : 'error'
+      viteDevServer.config.logger[logType](msg)
+    }
   } else {
     assert(!isGlobalContextSet())
     if (type === 'error') {

@@ -29,7 +29,7 @@ function logInfo_set(logger: LoggerInfo) {
   logInfo = logger
 }
 
-function prodLogError(...[err, { httpRequestId, canBeViteUserLand }]: LogErrorArgs) {
+function prodLogError(...[err, { canBeViteUserLand }]: LogErrorArgs) {
   warnIfObjectIsNotObject(err)
   setAlreadyLogged(err)
 
