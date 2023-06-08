@@ -1,6 +1,5 @@
 export { isRenderErrorPageException }
 export { RenderErrorPage }
-export { assertRenderErrorPageExceptionUsage }
 
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
 import { assertUsage, objectAssign } from './utils'

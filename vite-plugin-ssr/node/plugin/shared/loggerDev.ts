@@ -3,6 +3,7 @@ export { addErrorIntroMsg }
 export type { LogInfoArgs }
 
 import pc from '@brillout/picocolors'
+import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { getGlobalContext, getViteDevServer, getViteServer, isGlobalContextSet } from '../../runtime/globalContext'
 import { LogErrorArgs, logError_set, logInfo_set, prodLogError } from '../../runtime/renderPage/logger'
 import { assert, assertIsVitePluginCode, isObject, isUserHookError, projectInfo } from '../utils'
@@ -22,6 +23,10 @@ type LogInfoArgs = [
 ]
 
 function logErrorDevOrPrerender(...[err, { httpRequestId, canBeViteUserLand }]: LogErrorArgs) {
+  if (isRenderErrorPageException(err)) {
+    assert(canBeViteUserLand)
+    return
+  }
   screenHasErrors = true
   logErrorIntro(err, httpRequestId)
   if (isObject(err)) {

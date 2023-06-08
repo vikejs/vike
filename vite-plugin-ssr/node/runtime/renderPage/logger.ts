@@ -8,7 +8,7 @@ export { logError_set }
 export { logInfo_set }
 
 import type { LogInfoArgs } from '../../plugin/shared/loggerDev'
-import { assertRenderErrorPageExceptionUsage, isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
+import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { assert, assertWarning, getGlobalObject, hasProp, isObject, isSameErrorMessage } from '../utils'
 import { getGlobalContext } from '../globalContext'
 import { isTranspileError, logTranspileError } from '../shared/logTranspileError'
@@ -33,15 +33,12 @@ function prodLogError(...[err, { canBeViteUserLand }]: LogErrorArgs) {
   warnIfObjectIsNotObject(err)
   setAlreadyLogged(err)
 
-  if (!canBeViteUserLand) {
-    assert(!isRenderErrorPageException(err))
-  } else {
-    assertRenderErrorPageExceptionUsage(err)
+  if (isRenderErrorPageException(err)) {
+    assert(canBeViteUserLand)
+    return
+  }
 
-    if (isRenderErrorPageException(err)) {
-      return
-    }
-
+  if (canBeViteUserLand) {
     /* Not needed anymore?
     // Avoid logging error twice (not sure if this actually ever happens?)
     if (hasAlreadyLogged(err)) {
@@ -51,11 +48,11 @@ function prodLogError(...[err, { canBeViteUserLand }]: LogErrorArgs) {
 
     const { viteDevServer } = getGlobalContext()
     if (viteDevServer) {
-      /* Temporary disable: https://github.com/vitejs/vite/issues/12631
-    if (viteDevServer.config.logger.hasErrorLogged(err as Error)) {
-      return
-    }
-    */
+      /* Temporary disabled because of https://github.com/vitejs/vite/issues/12631
+      if (viteDevServer.config.logger.hasErrorLogged(err as Error)) {
+        return
+      }
+      */
       if (hasProp(err, 'stack')) {
         // Apply source maps
         viteDevServer.ssrFixStacktrace(err as Error)
