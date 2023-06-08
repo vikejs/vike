@@ -8,9 +8,6 @@ import { isConfigInvalid } from '../../../runtime/renderPage/isConfigInvalid'
 
 let isInitialClear = true
 function customClearScreen(config: ResolvedConfig) {
-  if (config.clearScreen === false) {
-    return
-  }
   interceptLogger(
     'info',
     config,
