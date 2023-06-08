@@ -9,8 +9,8 @@ import { LogErrorArgs, logError_set, logInfo_set, prodLogError } from '../../run
 import { assert, assertIsVitePluginCode, isObject, isUserHookError, projectInfo } from '../utils'
 
 assertIsVitePluginCode()
-logInfo_set(logInfoDevOrPrerender)
-logError_set(logErrorDevOrPrerender)
+logInfo_set(logWithVite)
+logError_set(logErrorWithVite)
 
 const introMsgs = new WeakMap<object, LogInfoArgs>()
 let screenHasErrors = false
@@ -22,7 +22,7 @@ type LogInfoArgs = [
   options?: undefined | { clearErrors: boolean }
 ]
 
-function logErrorDevOrPrerender(...[err, { httpRequestId, canBeViteUserLand }]: LogErrorArgs) {
+function logErrorWithVite(...[err, { httpRequestId, canBeViteUserLand }]: LogErrorArgs) {
   if (isRenderErrorPageException(err)) {
     assert(canBeViteUserLand)
     return
@@ -42,18 +42,18 @@ function logErrorIntro(err: unknown, httpRequestId: number | null) {
   if (!isObject(err)) return
   if (introMsgs.has(err)) {
     const logArg = introMsgs.get(err)!
-    logInfoDevOrPrerender(...logArg)
+    logWithVite(...logArg)
     return
   }
   const category = httpRequestId ? (`request(${httpRequestId})` as const) : null
   const hook = isUserHookError(err)
   if (hook) {
     const { hookName, hookFilePath } = hook
-    logInfoDevOrPrerender(pc.red(`Error thrown by hook ${hookName}() (${hookFilePath}):`), category, 'error')
+    logWithVite(pc.red(`Error thrown by hook ${hookName}() (${hookFilePath}):`), category, 'error')
     return
   }
   if (httpRequestId !== null) {
-    logInfoDevOrPrerender(pc.red('Error:'), category, 'error')
+    logWithVite(pc.red('Error:'), category, 'error')
     return
   }
 }
@@ -63,7 +63,7 @@ function logInfoDev(...args: LogInfoArgs) {
   assert(!isGlobalContextSet() || getGlobalContext().isProduction === false)
   logInfo(...args, false)
 }
-function logInfoDevOrPrerender(...args: LogInfoArgs) {
+function logWithVite(...args: LogInfoArgs) {
   logInfo(...args, true)
 }
 

@@ -58,7 +58,7 @@ import {
 } from '../../devConfig/customClearScreen'
 import pc from '@brillout/picocolors'
 import { logError } from '../../../../runtime/renderPage/logger'
-import { logInfoDev } from '../../../shared/loggerDev'
+import { logInfoDev } from '../../../shared/logWithVite'
 
 assertIsVitePluginCode()
 

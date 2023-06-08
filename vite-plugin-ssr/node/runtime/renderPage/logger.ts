@@ -7,7 +7,7 @@ export type { LogErrorArgs }
 export { logError_set }
 export { logInfo_set }
 
-import type { LogInfoArgs } from '../../plugin/shared/loggerDev'
+import type { LogInfoArgs } from '../../plugin/shared/logWithVite'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { assert, assertWarning, getGlobalObject, hasProp, isObject, isSameErrorMessage } from '../utils'
 import { getGlobalContext } from '../globalContext'
