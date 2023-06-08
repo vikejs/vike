@@ -60,7 +60,7 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
     fileExports = await import_(filePathTmp)
   } catch (err) {
     triggerPrepareStackTrace(err)
-    addErrorIntroMsg(err, getErrIntroMsg('thrown error while executing', filePath), 'config', 'error')
+    addErrorIntroMsg(err, getErrIntroMsg('error thrown while executing', filePath), 'config', 'error')
     throw err
   } finally {
     clean()
@@ -216,7 +216,7 @@ function triggerPrepareStackTrace(err: unknown) {
   }
 }
 
-function getErrIntroMsg(reason: 'transpilation error' | 'thrown error while executing', filePath: FilePath) {
+function getErrIntroMsg(reason: 'transpilation error' | 'error thrown while executing', filePath: FilePath) {
   return [
     pc.red('Failed to load'),
     pc.red(pc.bold(getFilePathToShowToUser(filePath))),

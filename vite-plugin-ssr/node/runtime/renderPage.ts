@@ -59,9 +59,7 @@ async function renderPage<
 
   const httpRequestId = getRequestId()
   const urlToShowToUser = pc.bold(pageContextInit.urlOriginal)
-  logInfo?.(`HTTP request: ${urlToShowToUser}`, getLogCategory(httpRequestId), 'info', {
-    clearErrors: globalObject.pendingRequestsCount === 0 && !isConfigInvalid
-  })
+  logHttpRequest(urlToShowToUser, httpRequestId)
   globalObject.pendingRequestsCount++
 
   const pageContextReturn = await renderPage_(pageContextInit, httpRequestId)
@@ -79,10 +77,13 @@ async function renderPage_(
   httpRequestId: number
 ): Promise<PageContextReturn> {
   // Invalid config
-  if (isConfigInvalid) {
+  const handleInvalidConfig = () => {
     logInfo?.(pc.red("Couldn't load configuration: see error above."), getLogCategory(httpRequestId), 'error')
     const pageContextHttpReponseNull = getPageContextHttpResponseNull(pageContextInit)
     return pageContextHttpReponseNull
+  }
+  if (isConfigInvalid) {
+    return handleInvalidConfig()
   }
 
   // Prepare context
@@ -97,6 +98,11 @@ async function renderPage_(
     logError(err, { httpRequestId, canBeViteUserLand: false })
     const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(err, pageContextInit)
     return pageContextHttpReponseNull
+  }
+  if (isConfigInvalid) {
+    return handleInvalidConfig()
+  } else {
+    // From now on, renderContext.pageConfigs contains all the configuration data; getConfigData() isn't called anymore for this request
   }
 
   // Render page
@@ -178,6 +184,11 @@ async function renderPage_(
   assert(false)
 }
 
+function logHttpRequest(urlToShowToUser: string, httpRequestId: number) {
+  logInfo?.(`HTTP request: ${urlToShowToUser}`, getLogCategory(httpRequestId), 'info', {
+    clearErrors: globalObject.pendingRequestsCount === 0 && !isConfigInvalid
+  })
+}
 function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageContextReturn: PageContextReturn) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
   const color = (s: number | string) => pc.bold(statusCode !== 200 ? pc.red(s) : pc.green(s))
