@@ -10,14 +10,24 @@ import {
 function setGlobalContext(): Plugin {
   return {
     name: 'vite-plugin-ssr:setGlobalContext',
-    configureServer(viteDevServer) {
-      setGlobalContext_viteDevServer(viteDevServer)
+    enforce: 'pre',
+    configureServer: {
+      order: 'pre',
+      handler(viteDevServer) {
+        setGlobalContext_viteDevServer(viteDevServer)
+      }
     },
-    configurePreviewServer(vitePreviewServer) {
-      setGlobalContext_vitePreviewServer(vitePreviewServer)
+    configurePreviewServer: {
+      order: 'pre',
+      handler(vitePreviewServer) {
+        setGlobalContext_vitePreviewServer(vitePreviewServer)
+      }
     },
-    async configResolved(config) {
-      setGlobalContext_viteConfig(config)
+    configResolved: {
+      order: 'pre',
+      handler(config) {
+        setGlobalContext_viteConfig(config)
+      }
     }
   }
 }
