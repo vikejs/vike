@@ -1,6 +1,9 @@
 import { RepoLink, Link } from '@brillout/docpress'
 
-> See <Link href="/pre-rendering" /> for an overview of how to pre-render your app.
+The `prerender()` hook is exectued during <Link text="pre-rendering" href="/pre-rendering" /> (and only during pre-rendering) and has two purposes:
+ - For providing a list of URLs for parameterized routes (e.g. `/movie/1` and `/movie/2` for a route `/movie/@id`).
+ - For fetching data in bulk in order to make pre-rendering faster.
+
 
 ## For providing URLs
 
@@ -32,7 +35,7 @@ async function prerender() {
 > (The `prerender()` hooks are never called in development.)
 
 
-## For providing `pageContext`
+## For bulk data fetching
 
 If we have a high number of pages that are to be pre-rendered, then running the command <code>$ vite build</code> may become slow.
 
