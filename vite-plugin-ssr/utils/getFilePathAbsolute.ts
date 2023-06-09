@@ -1,4 +1,5 @@
 export { getFilePathAbsolute }
+export { getFilePathVite }
 
 import type { ResolvedConfig } from 'vite'
 import { assertPosixPath, toPosixPath } from './filesystemPathHandling'
@@ -41,4 +42,14 @@ function getFilePathAbsolute(filePath: string, config: ResolvedConfig): string {
   filePathAbsolute = toPosixPath(filePathAbsolute)
   assertPathIsFilesystemAbsolute(filePathAbsolute)
   return filePathAbsolute
+}
+
+function getFilePathVite(filePath: string, userRootDir: string): string {
+  assertPosixPath(filePath)
+  assertPosixPath(userRootDir)
+  if (!filePath.startsWith(userRootDir)) return filePath
+  let filePathVite = path.posix.relative(userRootDir, filePath)
+  assert(!filePathVite.startsWith('.') && !filePathVite.startsWith('/'))
+  filePathVite = `/${filePathVite}`
+  return filePathVite
 }

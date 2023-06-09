@@ -2,6 +2,9 @@ export let logError = prodLogError
 export { isNewError }
 export let logInfo: null | LoggerInfo = null
 
+export let onAllRequestDone: null | ((loggedErrors: unknown[]) => void)
+export const onAllRequestDone_set = (cb: typeof onAllRequestDone) => (onAllRequestDone = cb)
+
 export { prodLogError }
 export type { LogErrorArgs }
 export { logError_set }
@@ -11,16 +14,22 @@ import type { LogInfoArgs } from '../../plugin/shared/logWithVite'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { assert, assertWarning, getGlobalObject, hasProp, isObject, isSameErrorMessage } from '../utils'
 import { getGlobalContext } from '../globalContext'
-import { isTranspileError, logTranspileError } from '../shared/logTranspileError'
 import pc from '@brillout/picocolors'
 
 const globalObject = getGlobalObject('runtime/renderPage/logger.ts', {
   wasAlreadyLogged: new WeakSet<object>()
 })
 
-type LoggerError = (...args: LogErrorArgs) => void
+type LoggerError = (...args: LogErrorArgs) => boolean
 type LoggerInfo = (...args: LogInfoArgs) => void
-type LogErrorArgs = [unknown, { httpRequestId: number | null; canBeViteUserLand: boolean }]
+type LogErrorArgs = [
+  unknown,
+  {
+    // httpRequestId is null upon pre-rendering
+    httpRequestId: number | null
+    canBeViteUserLand: boolean
+  }
+]
 
 function logError_set(logger: LoggerError) {
   logError = logger
@@ -29,13 +38,13 @@ function logInfo_set(logger: LoggerInfo) {
   logInfo = logger
 }
 
-function prodLogError(...[err, { canBeViteUserLand }]: LogErrorArgs) {
+function prodLogError(...[err, { canBeViteUserLand }]: LogErrorArgs): boolean {
   warnIfObjectIsNotObject(err)
   setAlreadyLogged(err)
 
   if (isRenderErrorPageException(err)) {
     assert(canBeViteUserLand)
-    return
+    return false
   }
 
   if (canBeViteUserLand) {
@@ -45,10 +54,12 @@ function prodLogError(...[err, { canBeViteUserLand }]: LogErrorArgs) {
       return
     }
     */
-
     const { viteDevServer } = getGlobalContext()
     if (viteDevServer) {
-      /* Temporary disabled because of https://github.com/vitejs/vite/issues/12631
+      /* We purposely don't use hasErrorLogged():
+         - We don't trust Vite with such details
+           - Previously, Vite bug lead to swallowing of errors: https://github.com/vitejs/vite/issues/12631
+         - We do the inverse: we swallow superfluous Vite errors logs instead
       if (viteDevServer.config.logger.hasErrorLogged(err as Error)) {
         return
       }
@@ -57,17 +68,13 @@ function prodLogError(...[err, { canBeViteUserLand }]: LogErrorArgs) {
         // Apply source maps
         viteDevServer.ssrFixStacktrace(err as Error)
       }
-      if (isTranspileError(err)) {
-        // We handle transpile errors globally in logError() because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
-        logTranspileError(viteDevServer, err)
-        return
-      }
     }
   }
 
   // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
   const errStr = isObject(err) && 'stack' in err ? String(err.stack) : String(err)
   console.error(pc.red(errStr))
+  return true
 }
 
 function isNewError(errErrorPage: unknown, errFirstAttempt: unknown): boolean {

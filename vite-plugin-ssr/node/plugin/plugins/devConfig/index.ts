@@ -7,6 +7,11 @@ import { getConfigVps } from '../../../shared/getConfigVps'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware'
 import { markEnvAsDev } from '../../utils'
 import { customClearScreen } from './customClearScreen'
+import { isErrorDebug } from '../../shared/isErrorDebug'
+
+if (isErrorDebug()) {
+  Error.stackTraceLimit = Infinity
+}
 
 // There doesn't seem to be a straightforward way to discriminate between `$ vite preview` and `$ vite dev`
 const apply = 'serve'
@@ -18,7 +23,7 @@ function devConfig(): Plugin[] {
     {
       name: 'vite-plugin-ssr:devConfig',
       apply,
-      async config() {
+      config() {
         return {
           optimizeDeps: {
             exclude: [
@@ -35,7 +40,8 @@ function devConfig(): Plugin[] {
               '@brillout/json-serializer/parse',
               '@brillout/json-serializer/stringify'
             ]
-          }
+          },
+          clearScreen: false
         } satisfies UserConfig
       },
       async configResolved(config_) {
@@ -43,7 +49,9 @@ function devConfig(): Plugin[] {
         const configVps = await getConfigVps(config)
         await determineOptimizeDeps(config, configVps, isDev)
         await determineFsAllowList(config, configVps)
-        customClearScreen(config)
+        if (!isErrorDebug()) {
+          customClearScreen(config)
+        }
       },
       configureServer() {
         markEnvAsDev()
@@ -60,6 +68,15 @@ function devConfig(): Plugin[] {
           if (config.server.middlewareMode) return
           return () => {
             addSsrMiddleware(server.middlewares)
+          }
+        }
+      },
+      // Setting `configResolved.clearScreen = false` doesn't work
+      config: {
+        order: 'post',
+        handler() {
+          if (isErrorDebug()) {
+            return { clearScreen: false }
           }
         }
       }
