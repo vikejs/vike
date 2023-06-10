@@ -7,6 +7,7 @@ import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
 import { logErrorTranspile } from './loggerTranspile'
 import { getAsyncHookStore } from './asyncHook'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
+import { isFrameError } from './loggerTranspile/formatFrameError'
 
 let isFirstViteLog = true
 
@@ -30,6 +31,14 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
     const [msg, options] = args
 
     if (removeSuperfluousViteLog(msg)) return
+
+    if (options?.error && isFrameError(options?.error)) {
+      logErrorTranspile(options.error, {
+        // httpRequestId will be determined by async hook store in logErrorTranspile()
+        httpRequestId: null
+      })
+      return
+    }
 
     // Dedupe Vite error messages
     {
