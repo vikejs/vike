@@ -34,8 +34,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
     // Dedupe Vite error messages
     {
       const store = getAsyncHookStore()
-      assert(store !== null)
-      if (store !== undefined) {
+      if (store) {
         if (options?.error) {
           const { loggedErrors, httpRequestId } = store
           const { error } = options

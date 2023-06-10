@@ -1,9 +1,8 @@
 export let logError: LogError = logErrorProd
-export let logInfo: null | LogInfo = null
-export { isNewError }
-
 export { logError_set }
+export let logInfo: null | LogInfo = null
 export { logInfo_set }
+export { isNewError }
 export type { LogErrorArgs }
 
 import type { LogInfoArgs } from '../../plugin/shared/loggerTranspile'

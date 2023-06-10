@@ -51,10 +51,8 @@ function devConfig(): Plugin[] {
         await determineOptimizeDeps(config, configVps, isDev)
         await determineFsAllowList(config, configVps)
         if (!isErrorDebug()) {
-          const asyncHookInstalled = await installAsyncHook()
-          if (asyncHookInstalled) {
-            customizeViteLogger(config)
-          }
+          await installAsyncHook()
+          customizeViteLogger(config)
         }
       },
       configureServer() {

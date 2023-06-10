@@ -11,12 +11,12 @@ import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hook
 type AsyncHookStore = { httpRequestId: number; loggedErrors: unknown[]; swallowedErrorMessages: string[] }
 let asyncLocalStorage: null | AsyncLocalStorageType<AsyncHookStore> = null
 
-async function installAsyncHook(): Promise<boolean> {
+async function installAsyncHook(): Promise<void> {
   let mod: typeof import('node:async_hooks')
   try {
     mod = await import('node:async_hooks')
   } catch {
-    return false
+    return
   }
   asyncLocalStorage = new mod.AsyncLocalStorage()
   renderPage_setWrapper(async (httpRequestId, renderPage) => {
@@ -38,7 +38,7 @@ async function installAsyncHook(): Promise<boolean> {
     )
     return { pageContextReturn, onRequestDone }
   })
-  return true
+  return
 }
 
 function getAsyncHookStore(): null | undefined | AsyncHookStore {
