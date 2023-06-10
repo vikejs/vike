@@ -27,7 +27,21 @@ function buildErrorMessage(err: RollupError, args: string[] = []): string {
 function formatFrameError(err: RollupError, userRootDir: string): string {
   assert(isFrameError(err))
   let msg = err.message
-  if (/^Transform failed with \d error(|s):/.test(msg)) {
+  if (
+    // Replace:
+    //   9:24:18 PM [vite][request(1)] Transform failed with 1 error:
+    //   /home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx:1:8: ERROR: Expected ";" but found "React"
+    //   Expected ";" but found "React"
+    // With:
+    //   9:26:49 PM [vite][request(1)] Failed to load /components/Counter.tsx because of transpilation error:
+    /^Transform failed with \d error(|s):/.test(msg) ||
+    // Replace:
+    //   9:19:55 PM [vite] /home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx: Missing semicolon. (1:7)
+    // With:
+    //   9:19:55 PM [vite] /home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx: Missing semicolon. (1:7)
+    //   9:26:49 PM [vite] Failed to load /components/Counter.tsx because of transpilation error:
+    /^\/[^\s]+:\s/.test(msg)
+  ) {
     msg = [
       pc.red('Failed to load'),
       pc.red(pc.bold(getFilePathVite(err.id, userRootDir))),
