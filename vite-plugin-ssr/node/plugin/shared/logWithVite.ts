@@ -7,10 +7,18 @@ export type { LogInfoArgs }
 import pc from '@brillout/picocolors'
 import type { ResolvedConfig } from 'vite'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
-import { getViteConfig } from '../../runtime/globalContext'
-import { LogErrorArgs, logError_set, logInfo_set, prodLogError } from '../../runtime/renderPage/logger'
+import { getGlobalContext, getViteConfig } from '../../runtime/globalContext'
+import { LogErrorArgs, logError_set, logInfo_set } from '../../runtime/renderPage/logger'
 import { isFirstViteLog } from '../plugins/devConfig/customClearScreen'
-import { assert, assertIsVitePluginCode, isObject, isUserHookError, projectInfo } from '../utils'
+import {
+  assert,
+  assertIsVitePluginCode,
+  hasProp,
+  isObject,
+  isUserHookError,
+  projectInfo,
+  warnIfObjectIsNotObject
+} from '../utils'
 import { getAsyncHookStore } from './asyncHook'
 import { isRollupError, formatRollupError } from './formatRollupError'
 import { isErrorDebug } from './isErrorDebug'
@@ -41,14 +49,17 @@ function logWithVite(
     clearScreenWithVite(viteConfig)
   }
 
-  const type = logType === 'info' ? 'info' : 'error'
-  viteConfig.logger[type](msg, {
-    // @ts-expect-error
-    _isFromVike: true
-  })
+  if (logType === 'info') {
+    console.log(msg)
+  } else if (logType === 'error' || logType === 'error-recover') {
+    console.error(msg)
+  } else {
+    assert(false)
+  }
 }
 function clearScreenWithVite(viteConfig: ResolvedConfig) {
   screenHasErrors = false
+  // We use Vite's logger in order to respect the user's `clearScreen: false` setting
   viteConfig.logger.clearScreen('error')
 }
 
@@ -59,6 +70,7 @@ function logErrorWithVite(
     assert(canBeViteUserLand)
     return false
   }
+
   const store = getAsyncHookStore()
   if (store?.loggedErrors.includes(err)) {
     return false
@@ -72,6 +84,26 @@ function logErrorWithVite(
 function logErr(
   ...[err, { httpRequestId, canBeViteUserLand }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]
 ): void {
+  warnIfObjectIsNotObject(err)
+
+  if (canBeViteUserLand) {
+    const { viteDevServer } = getGlobalContext()
+    if (viteDevServer) {
+      /* We purposely don't use hasErrorLogged():
+         - We don't trust Vite with such details
+           - Previously, Vite bug lead to swallowing of errors: https://github.com/vitejs/vite/issues/12631
+         - We do the inverse: we swallow superfluous Vite errors logs instead
+      if (viteDevServer.config.logger.hasErrorLogged(err as Error)) {
+        return
+      }
+      */
+      if (hasProp(err, 'stack')) {
+        // Apply source maps
+        viteDevServer.ssrFixStacktrace(err as Error)
+      }
+    }
+  }
+
   if (isRollupError(err)) {
     // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
     if (isErrorDebug()) {
@@ -98,8 +130,7 @@ function logErr(
   }
 
   logErrorIntro(err, httpRequestId, category)
-  const logged = prodLogError(err, { httpRequestId, canBeViteUserLand })
-  assert(logged === true) // otherwise breaks logErrorIntro() and screenHasErrors logic
+  console.error(err)
 }
 function logErrorIntro(err: unknown, httpRequestId: number | null, category: null | LogCategory) {
   if (!isObject(err)) return

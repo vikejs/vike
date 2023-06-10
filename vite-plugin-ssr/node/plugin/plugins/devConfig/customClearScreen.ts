@@ -23,7 +23,7 @@ function customClearScreen(config: ResolvedConfig) {
 }
 
 type Err = LogErrorOptions['error'] & { plugin?: string }
-type Logger = (...args: [string, { clear?: boolean; error?: Err; _isFromVike?: true } | undefined]) => void
+type Logger = (...args: [string, { clear?: boolean; error?: Err } | undefined]) => void
 
 function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear?: () => boolean) {
   const loggerOld = config.logger[logType].bind(config.logger)
@@ -44,7 +44,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
           }
           return
         }
-        if (logType === 'error' && !options?._isFromVike && msg.startsWith('Transform failed with ')) {
+        if (logType === 'error' && msg.startsWith('Transform failed with ')) {
           store.swallowedErrorMessages.push(msg)
           return
         }
