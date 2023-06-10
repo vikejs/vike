@@ -5,7 +5,7 @@ import { renderPage_setWrapper } from '../../runtime/renderPage'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { assert, isObject } from '../utils'
 
-type AsyncHookStore = { httpRequestId: number; loggedErrors2: unknown[] }
+type AsyncHookStore = { httpRequestId: number; loggedErrors: unknown[]; swallowedErrorMessages: string[] }
 let asyncLocalStorage: null | AsyncLocalStorageType<AsyncHookStore> = null
 
 async function installAsyncHook(): Promise<boolean> {
@@ -16,9 +16,24 @@ async function installAsyncHook(): Promise<boolean> {
     return false
   }
   asyncLocalStorage = new mod.AsyncLocalStorage()
-  renderPage_setWrapper((httpRequestId, renderPage) => {
+  renderPage_setWrapper(async (httpRequestId, renderPage) => {
+    const loggedErrors: unknown[] = []
+    const swallowedErrorMessages: string[] = []
+    const onRequestDone = () => {
+      swallowedErrorMessages.forEach((errMsg) => {
+        if (!loggedErrors.some((err) => String(err).includes(errMsg))) {
+          console.error('loggedErrors', loggedErrors)
+          console.error('swallowedErrorMessages', swallowedErrorMessages)
+          assert(false)
+        }
+      })
+    }
     assert(asyncLocalStorage)
-    return asyncLocalStorage.run({ httpRequestId, loggedErrors2: [] }, renderPage)
+    const pageContextReturn = await asyncLocalStorage.run(
+      { httpRequestId, loggedErrors, swallowedErrorMessages },
+      renderPage
+    )
+    return { pageContextReturn, onRequestDone }
   })
   return true
 }

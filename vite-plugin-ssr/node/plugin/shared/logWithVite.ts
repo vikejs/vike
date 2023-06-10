@@ -60,15 +60,13 @@ function logErrorWithVite(
     return false
   }
   const store = getAsyncHookStore()
-  if (store?.loggedErrors2.includes(err)) {
+  if (store?.loggedErrors.includes(err)) {
     return false
   }
 
   screenHasErrors = true
   logErr(err, { httpRequestId, canBeViteUserLand }, category)
-  if (store) {
-    store.loggedErrors2.push(err)
-  }
+  store?.loggedErrors.push(err)
   return true
 }
 function logErr(
@@ -79,6 +77,7 @@ function logErr(
     if (isErrorDebug()) {
       logErrorIntro(err, httpRequestId, category)
       console.error(err)
+      return
     } else {
       const viteConfig = getViteConfig()
       assert(viteConfig)
@@ -86,6 +85,7 @@ function logErr(
       const category = getCategoryRequest(httpRequestId)
       errMsg = addPrefix(errMsg, 'vite', category, 'error')
       console.error(errMsg)
+      return
     }
   }
 
@@ -93,6 +93,7 @@ function logErr(
     if ('_esbuildMessageFormatted' in err) {
       logErrorIntro(err, httpRequestId, category)
       console.error(err._esbuildMessageFormatted)
+      return
     }
   }
 

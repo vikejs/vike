@@ -19,7 +19,7 @@ import { isRenderErrorPageException } from '../../shared/route/RenderErrorPage'
 import { initGlobalContext } from './globalContext'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import { HttpResponse } from './renderPage/createHttpResponseObject'
-import { logError, isNewError, onAllRequestDone } from './renderPage/logger'
+import { logError, isNewError } from './renderPage/logger'
 import { assertArguments } from './renderPage/assertArguments'
 import type { PageContextDebug } from './renderPage/debugPageFiles'
 import { warnMissingErrorPage } from './renderPage/handleErrorWithoutErrorPage'
@@ -29,11 +29,15 @@ import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
-  pendingRequestsCount: 0,
-  loggedErrors: [] as unknown[]
+  pendingRequestsCount: 0
 })
-let renderPage_wrapper = <T>(httpRequestId: number, ret: () => T) => ret()
-const renderPage_setWrapper = (wrapper: typeof renderPage_wrapper) => { renderPage_wrapper = wrapper}
+let renderPage_wrapper = async <PageContextReturn>(_httpRequestId: number, ret: () => Promise<PageContextReturn>) => ({
+  pageContextReturn: await ret(),
+  onRequestDone: () => {}
+})
+const renderPage_setWrapper = (wrapper: typeof renderPage_wrapper) => {
+  renderPage_wrapper = wrapper
+}
 
 // `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
@@ -66,14 +70,13 @@ async function renderPage<
   logHttpRequest(urlToShowToUser, httpRequestId)
   globalObject.pendingRequestsCount++
 
-  const loggedErrors2: unknown[] = []
-  const pageContextReturn = await renderPage_wrapper(httpRequestId, () =>
-    renderPage_(pageContextInit, httpRequestId, loggedErrors2)
+  const { pageContextReturn, onRequestDone } = await renderPage_wrapper(httpRequestId, () =>
+    renderPage_(pageContextInit, httpRequestId)
   )
 
   logHttpResponse(urlToShowToUser, httpRequestId, pageContextReturn)
   globalObject.pendingRequestsCount--
-  if (globalObject.pendingRequestsCount === 0) onAllRequestDone?.(globalObject.loggedErrors)
+  onRequestDone()
 
   return pageContextReturn
 }
@@ -82,8 +85,7 @@ type PageContextReturn = Awaited<ReturnType<typeof renderPage>>
 
 async function renderPage_(
   pageContextInit: { urlOriginal: string } & Record<string, unknown>,
-  httpRequestId: number,
-  loggedErrors2: unknown[]
+  httpRequestId: number
 ): Promise<PageContextReturn> {
   // Invalid config
   const handleInvalidConfig = () => {
@@ -104,10 +106,7 @@ async function renderPage_(
     // Errors are expected since assertUsage() is used in both initGlobalContext() and getRenderContext().
     // initGlobalContext() and getRenderContext() don't call any user hooks => err isn't thrown from user code => `canBeViteUserLand: false`
     assert(!isRenderErrorPageException(err))
-    if (!loggedErrors2.includes(err)) {
-      const logged = logError(err, { httpRequestId, canBeViteUserLand: false })
-      if (logged) globalObject.loggedErrors.push(err)
-    }
+    logError(err, { httpRequestId, canBeViteUserLand: false })
     const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(err, pageContextInit)
     return pageContextHttpReponseNull
   }
@@ -129,10 +128,7 @@ async function renderPage_(
       errored = false
     } catch (err) {
       errFirstAttempt = err
-      if (!loggedErrors2.includes(err)) {
-        const logged = logError(errFirstAttempt, { httpRequestId, canBeViteUserLand: true })
-        if (logged) globalObject.loggedErrors.push(errFirstAttempt)
-      }
+      logError(errFirstAttempt, { httpRequestId, canBeViteUserLand: true })
       errored = true
       pageContextFirstAttemptPartial = pageContext
     }
@@ -182,10 +178,7 @@ async function renderPage_(
     } catch (err) {
       errErrorPage = err
       if (isNewError(errErrorPage, errFirstAttempt)) {
-        if (!loggedErrors2.includes(err)) {
-          const logged = logError(errErrorPage, { httpRequestId, canBeViteUserLand: true })
-          if (logged) globalObject.loggedErrors.push(errErrorPage)
-        }
+        logError(errErrorPage, { httpRequestId, canBeViteUserLand: true })
       }
     }
     if (errErrorPage === undefined) {

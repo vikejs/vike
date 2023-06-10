@@ -2,9 +2,6 @@ export let logError = prodLogError
 export { isNewError }
 export let logInfo: null | LoggerInfo = null
 
-export let onAllRequestDone: null | ((loggedErrors: unknown[]) => void)
-export const onAllRequestDone_set = (cb: typeof onAllRequestDone) => (onAllRequestDone = cb)
-
 export { prodLogError }
 export type { LogErrorArgs }
 export { logError_set }
