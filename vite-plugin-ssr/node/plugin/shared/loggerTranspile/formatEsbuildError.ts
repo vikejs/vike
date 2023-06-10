@@ -21,7 +21,7 @@ async function formatEsbuildError(err: unknown) {
 
 function getEsbuildFormattedError(err: unknown): null | string {
   if (!isObject(err)) return null
-  if (key in err) return null
+  if (!(key in err)) return null
   const esbuildFromattedError = err[key]
   assert(typeof esbuildFromattedError === 'string')
   return esbuildFromattedError
