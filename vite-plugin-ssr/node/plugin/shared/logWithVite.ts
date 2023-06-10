@@ -11,6 +11,7 @@ import { getViteConfig } from '../../runtime/globalContext'
 import { LogErrorArgs, logError_set, logInfo_set, prodLogError } from '../../runtime/renderPage/logger'
 import { isFirstViteLog } from '../plugins/devConfig/customClearScreen'
 import { assert, assertIsVitePluginCode, isObject, isUserHookError, projectInfo } from '../utils'
+import { getAsyncHookStore } from './asyncHook'
 import { isRollupError, formatRollupError } from './formatRollupError'
 import { isErrorDebug } from './isErrorDebug'
 
@@ -58,9 +59,21 @@ function logErrorWithVite(
     assert(canBeViteUserLand)
     return false
   }
+  const store = getAsyncHookStore()
+  if (store?.loggedErrors2.includes(err)) {
+    return false
+  }
 
   screenHasErrors = true
-
+  logErr(err, { httpRequestId, canBeViteUserLand }, category)
+  if (store) {
+    store.loggedErrors2.push(err)
+  }
+  return true
+}
+function logErr(
+  ...[err, { httpRequestId, canBeViteUserLand }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]
+): void {
   if (isRollupError(err)) {
     // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
     if (isErrorDebug()) {
@@ -74,21 +87,18 @@ function logErrorWithVite(
       errMsg = addPrefix(errMsg, 'vite', category, 'error')
       console.error(errMsg)
     }
-    return true
   }
 
   if (isObject(err)) {
     if ('_esbuildMessageFormatted' in err) {
       logErrorIntro(err, httpRequestId, category)
       console.error(err._esbuildMessageFormatted)
-      return true
     }
   }
 
   logErrorIntro(err, httpRequestId, category)
   const logged = prodLogError(err, { httpRequestId, canBeViteUserLand })
   assert(logged === true) // otherwise breaks logErrorIntro() and screenHasErrors logic
-  return logged
 }
 function logErrorIntro(err: unknown, httpRequestId: number | null, category: null | LogCategory) {
   if (!isObject(err)) return

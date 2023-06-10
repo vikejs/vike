@@ -1,4 +1,5 @@
 export { renderPage }
+export { renderPage_setWrapper }
 
 import { getRenderContext, initPageContext, RenderContext, renderPageContext } from './renderPage/renderPageContext'
 import { route } from '../../shared/route'
@@ -31,9 +32,8 @@ const globalObject = getGlobalObject('runtime/renderPage.ts', {
   pendingRequestsCount: 0,
   loggedErrors: [] as unknown[]
 })
-
-import { AsyncLocalStorage } from 'node:async_hooks'
-export const asyncLocalStorage = new AsyncLocalStorage<{ httpRequestId: number; loggedErrors2: unknown[] }>()
+let renderPage_wrapper = <T>(httpRequestId: number, ret: () => T) => ret()
+const renderPage_setWrapper = (wrapper: typeof renderPage_wrapper) => { renderPage_wrapper = wrapper}
 
 // `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
@@ -67,7 +67,7 @@ async function renderPage<
   globalObject.pendingRequestsCount++
 
   const loggedErrors2: unknown[] = []
-  const pageContextReturn = await asyncLocalStorage.run({ httpRequestId, loggedErrors2 }, () =>
+  const pageContextReturn = await renderPage_wrapper(httpRequestId, () =>
     renderPage_(pageContextInit, httpRequestId, loggedErrors2)
   )
 

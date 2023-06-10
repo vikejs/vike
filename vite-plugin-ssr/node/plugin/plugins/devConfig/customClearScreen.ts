@@ -7,8 +7,8 @@ import { assert, assertHasLogged } from '../../utils'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
 import { isConfigInvalid } from '../../../runtime/renderPage/isConfigInvalid'
 import { onAllRequestDone_set } from '../../../runtime/renderPage/logger'
-import { asyncLocalStorage } from '../../../runtime/renderPage'
 import { logErrorWithVite } from '../../shared/logWithVite'
+import { getAsyncHookStore } from '../../shared/asyncHook'
 
 let isFirstViteLog = true
 const swallowedErrors = new Set<Err>()
@@ -51,7 +51,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
   const loggerOld = config.logger[logType].bind(config.logger)
   const loggerNew: Logger = (...args) => {
     const [msg, options] = args
-    const store = asyncLocalStorage.getStore()
+    const store = getAsyncHookStore()
     if (store && options?.error) {
       const { loggedErrors2, httpRequestId } = store
       const { error } = options

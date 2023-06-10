@@ -8,6 +8,7 @@ import { addSsrMiddleware } from '../../shared/addSsrMiddleware'
 import { markEnvAsDev } from '../../utils'
 import { customClearScreen } from './customClearScreen'
 import { isErrorDebug } from '../../shared/isErrorDebug'
+import { installAsyncHook } from '../../shared/asyncHook'
 
 if (isErrorDebug()) {
   Error.stackTraceLimit = Infinity
@@ -50,7 +51,10 @@ function devConfig(): Plugin[] {
         await determineOptimizeDeps(config, configVps, isDev)
         await determineFsAllowList(config, configVps)
         if (!isErrorDebug()) {
-          customClearScreen(config)
+          const asyncHookInstalled = await installAsyncHook()
+          if (asyncHookInstalled) {
+            customClearScreen(config)
+          }
         }
       },
       configureServer() {
