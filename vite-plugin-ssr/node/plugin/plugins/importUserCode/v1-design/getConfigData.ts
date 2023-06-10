@@ -53,9 +53,9 @@ import { ImportData, parseImportData } from './replaceImportStatements'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
 import { getViteDevServer } from '../../../../runtime/globalContext'
 import {
-  fixVite_removeDevOptimizationLog_disable,
-  fixVite_removeDevOptimizationLog_enable
-} from '../../devConfig/customClearScreen'
+  fixViteLog_forceOptimization_enable,
+  fixViteLog_forceOptimization_disable
+} from '../../devConfig/loggerVite'
 import pc from '@brillout/picocolors'
 import { logErrorWithVite, logWithVite } from '../../../shared/logWithVite'
 
@@ -150,9 +150,9 @@ async function handleReloadSideEffects() {
       devServerIsCorrupt = false
       const viteDevServer = getViteDevServer()
       assert(viteDevServer)
-      fixVite_removeDevOptimizationLog_enable()
+      fixViteLog_forceOptimization_enable()
       await viteDevServer.restart(true)
-      fixVite_removeDevOptimizationLog_disable()
+      fixViteLog_forceOptimization_disable()
     }
   }
 }

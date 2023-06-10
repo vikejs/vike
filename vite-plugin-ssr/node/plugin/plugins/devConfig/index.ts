@@ -6,7 +6,7 @@ import { determineFsAllowList } from './determineFsAllowList'
 import { getConfigVps } from '../../../shared/getConfigVps'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware'
 import { markEnvAsDev } from '../../utils'
-import { customClearScreen } from './customClearScreen'
+import { customizeViteLogger } from './loggerVite'
 import { isErrorDebug } from '../../shared/isErrorDebug'
 import { installAsyncHook } from '../../shared/asyncHook'
 
@@ -53,7 +53,7 @@ function devConfig(): Plugin[] {
         if (!isErrorDebug()) {
           const asyncHookInstalled = await installAsyncHook()
           if (asyncHookInstalled) {
-            customClearScreen(config)
+            customizeViteLogger(config)
           }
         }
       },

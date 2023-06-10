@@ -1,7 +1,7 @@
-export { customClearScreen }
+export { customizeViteLogger }
 export { isFirstViteLog }
-export { fixVite_removeDevOptimizationLog_enable }
-export { fixVite_removeDevOptimizationLog_disable }
+export { fixViteLog_forceOptimization_enable }
+export { fixViteLog_forceOptimization_disable }
 
 import { assert, assertHasLogged } from '../../utils'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
@@ -11,7 +11,7 @@ import { getAsyncHookStore } from '../../shared/asyncHook'
 
 let isFirstViteLog = true
 
-function customClearScreen(config: ResolvedConfig) {
+function customizeViteLogger(config: ResolvedConfig) {
   interceptLogger(
     'info',
     config,
@@ -51,7 +51,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
       }
     }
 
-    if (removeDevOptimizationLog && fixVite_removeDevOptimizationLog_isMatch(msg)) return
+    if (removeForceOptimizationLog && fixViteLog_forceOptimization_isMatch(msg)) return
 
     if (options?.clear && !tolerateClear?.()) options.clear = false
     isFirstViteLog = false
@@ -61,14 +61,14 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
   config.logger[logType] = loggerNew
 }
 
-let removeDevOptimizationLog = false
-function fixVite_removeDevOptimizationLog_enable() {
-  removeDevOptimizationLog = true
+let removeForceOptimizationLog = false
+function fixViteLog_forceOptimization_enable() {
+  removeForceOptimizationLog = true
 }
-function fixVite_removeDevOptimizationLog_disable() {
-  removeDevOptimizationLog = false
+function fixViteLog_forceOptimization_disable() {
+  removeForceOptimizationLog = false
 }
-function fixVite_removeDevOptimizationLog_isMatch(msg: string) {
+function fixViteLog_forceOptimization_isMatch(msg: string) {
   const msgL = msg.toLowerCase()
   if (msgL.includes('forced') && msgL.includes('optimization')) {
     assert(msg === 'Forced re-optimization of dependencies', msg) // assertion fails => Vite changed its message => update this function
