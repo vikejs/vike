@@ -102,21 +102,21 @@ function logErr(...[err, { httpRequestId }, category = null]: LogErrorArgs | [..
     }
   }
 
+  if (isErrorDebug()) {
+    logErrorIntro(err, httpRequestId, category)
+    console.error(err)
+    return
+  }
+
   if (ifFrameError(err)) {
     // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
-    if (isErrorDebug()) {
-      logErrorIntro(err, httpRequestId, category)
-      console.error(err)
-      return
-    } else {
-      const viteConfig = getViteConfig()
-      assert(viteConfig)
-      let errFormatted = formatFrameError(err, viteConfig.root)
-      const category = getCategoryRequest(httpRequestId)
-      errFormatted = addPrefix(errFormatted, 'vite', category, 'error')
-      console.error(errFormatted)
-      return
-    }
+    const viteConfig = getViteConfig()
+    assert(viteConfig)
+    let errFormatted = formatFrameError(err, viteConfig.root)
+    const category = getCategoryRequest(httpRequestId)
+    errFormatted = addPrefix(errFormatted, 'vite', category, 'error')
+    console.error(errFormatted)
+    return
   }
 
   {
