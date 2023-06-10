@@ -21,7 +21,7 @@ import {
 } from '../utils'
 import { getAsyncHookStore } from './asyncHook'
 import { isErrorDebug } from './isErrorDebug'
-import { ifFrameError, formatFrameError } from './loggerTranspile/formatFrameError'
+import { isFrameError, formatFrameError } from './loggerTranspile/formatFrameError'
 import { getEsbuildFormattedError } from './loggerTranspile/formatEsbuildError'
 
 assertIsVitePluginCode()
@@ -148,7 +148,7 @@ function logErrorIntro(err: unknown, httpRequestId: number | null, category: nul
 }
 
 function getFormattedError(err: unknown, httpRequestId: number | null, category: null | LogCategory): string | null {
-  if (ifFrameError(err)) {
+  if (isFrameError(err)) {
     // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
     const viteConfig = getViteConfig()
     assert(viteConfig)

@@ -1,5 +1,5 @@
 export { formatFrameError }
-export { ifFrameError }
+export { isFrameError }
 
 // Copied & adapted from https://github.com/vitejs/vite/blob/9c114c5c72a6af87e3330d5573362554b4511265/packages/vite/src/node/server/middlewares/error.ts
 
@@ -12,7 +12,7 @@ import { assert, getFilePathVite, isObject } from '../../utils'
 // ```
 type RollupError = { id: string; frame: string; message: string }
 
-function ifFrameError(err: unknown): err is RollupError {
+function isFrameError(err: unknown): err is RollupError {
   if (!isObject(err)) return false
   const { id, frame, message } = err
   return typeof frame === 'string' && typeof id === 'string' && typeof message === 'string'
@@ -25,7 +25,7 @@ function buildErrorMessage(err: RollupError, args: string[] = []): string {
 }
 
 function formatFrameError(err: RollupError, userRootDir: string): string {
-  assert(ifFrameError(err))
+  assert(isFrameError(err))
   let msg = err.message
   if (/^Transform failed with \d error(|s):/.test(msg)) {
     msg = [
