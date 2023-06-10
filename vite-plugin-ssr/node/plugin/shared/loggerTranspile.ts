@@ -72,6 +72,13 @@ function logErrorTranspile(
   }
 
   const store = getAsyncHookStore()
+  if (store?.httpRequestId) {
+    if (httpRequestId === null) {
+      httpRequestId = store?.httpRequestId
+    } else {
+      assert(httpRequestId === store.httpRequestId)
+    }
+  }
   if (store?.loggedErrors.includes(err)) {
     return false
   }
