@@ -52,12 +52,12 @@ import { transpileAndLoadFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
 import { getViteDevServer } from '../../../../runtime/globalContext'
-import {
-  fixViteLog_forceOptimization_enable,
-  fixViteLog_forceOptimization_disable
-} from '../../devConfig/loggerVite'
 import pc from '@brillout/picocolors'
 import { logErrorWithVite, logWithVite } from '../../../shared/logWithVite'
+import {
+  removeSuperfluousViteLog_enable,
+  removeSuperfluousViteLog_disable
+} from '../../devConfig/loggerVite/removeSuperfluousViteLog'
 
 assertIsVitePluginCode()
 
@@ -150,9 +150,9 @@ async function handleReloadSideEffects() {
       devServerIsCorrupt = false
       const viteDevServer = getViteDevServer()
       assert(viteDevServer)
-      fixViteLog_forceOptimization_enable()
+      removeSuperfluousViteLog_enable()
       await viteDevServer.restart(true)
-      fixViteLog_forceOptimization_disable()
+      removeSuperfluousViteLog_disable()
     }
   }
 }

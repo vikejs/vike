@@ -1,13 +1,12 @@
 export { customizeViteLogger }
 export { isFirstViteLog }
-export { fixViteLog_forceOptimization_enable }
-export { fixViteLog_forceOptimization_disable }
 
 import { assert, assertHasLogged } from '../../utils'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
 import { isConfigInvalid } from '../../../runtime/renderPage/isConfigInvalid'
 import { logErrorWithVite } from '../../shared/logWithVite'
 import { getAsyncHookStore } from '../../shared/asyncHook'
+import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
 
 let isFirstViteLog = true
 
@@ -30,6 +29,8 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
   const loggerNew: Logger = (...args) => {
     const [msg, options] = args
 
+    if (removeSuperfluousViteLog(msg)) return
+
     // Dedupe Vite error messages
     {
       const store = getAsyncHookStore()
@@ -51,28 +52,11 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
       }
     }
 
-    if (removeForceOptimizationLog && fixViteLog_forceOptimization_isMatch(msg)) return
-
+    // Customize clear behavior
     if (options?.clear && !tolerateClear?.()) options.clear = false
     isFirstViteLog = false
 
     loggerOld(...args)
   }
   config.logger[logType] = loggerNew
-}
-
-let removeForceOptimizationLog = false
-function fixViteLog_forceOptimization_enable() {
-  removeForceOptimizationLog = true
-}
-function fixViteLog_forceOptimization_disable() {
-  removeForceOptimizationLog = false
-}
-function fixViteLog_forceOptimization_isMatch(msg: string) {
-  const msgL = msg.toLowerCase()
-  if (msgL.includes('forced') && msgL.includes('optimization')) {
-    assert(msg === 'Forced re-optimization of dependencies', msg) // assertion fails => Vite changed its message => update this function
-    return true
-  }
-  return false
 }
