@@ -108,24 +108,11 @@ function logErr(...[err, { httpRequestId }, category = null]: LogErrorArgs | [..
     return
   }
 
-  if (ifFrameError(err)) {
-    // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
-    const viteConfig = getViteConfig()
-    assert(viteConfig)
-    let errFormatted = formatFrameError(err, viteConfig.root)
-    const category = getCategoryRequest(httpRequestId)
-    errFormatted = addPrefix(errFormatted, 'vite', category, 'error')
+  const errFormatted = getFormattedError(err, httpRequestId, category)
+  if (errFormatted) {
+    // logErrorWithVite()/addPrefix() already called
     console.error(errFormatted)
     return
-  }
-
-  {
-    const errFormatted = getEsbuildFormattedError(err)
-    if (errFormatted) {
-      logErrorIntro(err, httpRequestId, category)
-      console.error(errFormatted)
-      return
-    }
   }
 
   logErrorIntro(err, httpRequestId, category)
@@ -151,6 +138,26 @@ function logErrorIntro(err: unknown, httpRequestId: number | null, category: nul
     logWithVite(pc.red('Error:'), category, 'error')
     return
   }
+}
+
+function getFormattedError(err: unknown, httpRequestId: number | null, category: null | LogCategory): string | null {
+  if (ifFrameError(err)) {
+    // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
+    const viteConfig = getViteConfig()
+    assert(viteConfig)
+    let errFormatted = formatFrameError(err, viteConfig.root)
+    const category = getCategoryRequest(httpRequestId)
+    errFormatted = addPrefix(errFormatted, 'vite', category, 'error')
+    return errFormatted
+  }
+
+  const errFormatted = getEsbuildFormattedError(err)
+  if (errFormatted) {
+    logErrorIntro(err, httpRequestId, category)
+    return errFormatted
+  }
+
+  return null
 }
 
 function getCategoryRequest(httpRequestId: number | null) {
