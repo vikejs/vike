@@ -1,4 +1,5 @@
 export { logWithVite }
+export { logErrorWithVite }
 export { clearScreenWithVite }
 export { addErrorIntroMsg }
 export type { LogInfoArgs }
@@ -50,7 +51,9 @@ function clearScreenWithVite(viteConfig: ResolvedConfig) {
   viteConfig.logger.clearScreen('error')
 }
 
-function logErrorWithVite(...[err, { httpRequestId, canBeViteUserLand }]: LogErrorArgs): boolean {
+function logErrorWithVite(
+  ...[err, { httpRequestId, canBeViteUserLand }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]
+): boolean {
   if (isRenderErrorPageException(err)) {
     assert(canBeViteUserLand)
     return false
@@ -61,7 +64,7 @@ function logErrorWithVite(...[err, { httpRequestId, canBeViteUserLand }]: LogErr
   if (isRollupError(err)) {
     // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
     if (isErrorDebug()) {
-      logErrorIntro(err, httpRequestId)
+      logErrorIntro(err, httpRequestId, category)
       console.error(err)
     } else {
       const viteConfig = getViteConfig()
@@ -76,25 +79,27 @@ function logErrorWithVite(...[err, { httpRequestId, canBeViteUserLand }]: LogErr
 
   if (isObject(err)) {
     if ('_esbuildMessageFormatted' in err) {
-      logErrorIntro(err, httpRequestId)
+      logErrorIntro(err, httpRequestId, category)
       console.error(err._esbuildMessageFormatted)
       return true
     }
   }
 
-  logErrorIntro(err, httpRequestId)
+  logErrorIntro(err, httpRequestId, category)
   const logged = prodLogError(err, { httpRequestId, canBeViteUserLand })
   assert(logged === true) // otherwise breaks logErrorIntro() and screenHasErrors logic
   return logged
 }
-function logErrorIntro(err: unknown, httpRequestId: number | null) {
+function logErrorIntro(err: unknown, httpRequestId: number | null, category: null | LogCategory) {
   if (!isObject(err)) return
   if (introMsgs.has(err)) {
     const logInfoArgs = introMsgs.get(err)!
     logWithVite(...logInfoArgs)
     return
   }
-  const category = getCategoryRequest(httpRequestId)
+  if (!category) {
+    category = getCategoryRequest(httpRequestId)
+  }
   const hook = isUserHookError(err)
   if (hook) {
     const { hookName, hookFilePath } = hook

@@ -57,8 +57,7 @@ import {
   fixVite_removeDevOptimizationLog_enable
 } from '../../devConfig/customClearScreen'
 import pc from '@brillout/picocolors'
-import { logError } from '../../../../runtime/renderPage/logger'
-import { logWithVite } from '../../../shared/logWithVite'
+import { logErrorWithVite, logWithVite } from '../../../shared/logWithVite'
 
 assertIsVitePluginCode()
 
@@ -314,7 +313,7 @@ async function loadConfigData_withErrorHandling(
       assert(getViteDevServer() === null)
       throw err
     } else {
-      logError(err, { httpRequestId: null, canBeViteUserLand: false })
+      logErrorWithVite(err, { httpRequestId: null, canBeViteUserLand: false })
       if (!tolerateInvalidConfig) {
         devServerIsCorrupt = true
       }
