@@ -19,7 +19,7 @@ import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/vir
 import { getConfigData_dependenciesInvisibleToVite, reloadConfigData } from './v1-design/getConfigData'
 import path from 'path'
 import pc from '@brillout/picocolors'
-import { logWithVite, clearScreenWithVite } from '../../shared/logWithVite'
+import { logWithVite, clearScreenWithVite } from '../../shared/loggerTranspile'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig

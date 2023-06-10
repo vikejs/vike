@@ -53,11 +53,11 @@ import { ImportData, parseImportData } from './replaceImportStatements'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
 import { getViteDevServer } from '../../../../runtime/globalContext'
 import pc from '@brillout/picocolors'
-import { logErrorWithVite, logWithVite } from '../../../shared/logWithVite'
+import { logErrorWithVite, logWithVite } from '../../../shared/loggerTranspile'
 import {
   removeSuperfluousViteLog_enable,
   removeSuperfluousViteLog_disable
-} from '../../devConfig/loggerVite/removeSuperfluousViteLog'
+} from '../../../shared/loggerVite/removeSuperfluousViteLog'
 
 assertIsVitePluginCode()
 

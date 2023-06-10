@@ -8,8 +8,8 @@ import pc from '@brillout/picocolors'
 import type { ResolvedConfig } from 'vite'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { getGlobalContext, getViteConfig } from '../../runtime/globalContext'
-import { LogErrorArgs, logError_set, logInfo_set } from '../../runtime/renderPage/logger'
-import { isFirstViteLog } from '../plugins/devConfig/loggerVite'
+import { LogErrorArgs, logError_set, logInfo_set } from '../../runtime/renderPage/loggerRuntime'
+import { isFirstViteLog } from './loggerVite'
 import {
   assert,
   assertIsVitePluginCode,

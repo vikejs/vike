@@ -1,12 +1,12 @@
 export let logError = logErrorProd
-export { isNewError }
 export let logInfo: null | LoggerInfo = null
+export { isNewError }
 
 export type { LogErrorArgs }
 export { logError_set }
 export { logInfo_set }
 
-import type { LogInfoArgs } from '../../plugin/shared/logWithVite'
+import type { LogInfoArgs } from '../../plugin/shared/loggerTranspile'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { assert, getGlobalObject, isObject, isSameErrorMessage, warnIfObjectIsNotObject } from '../utils'
 import pc from '@brillout/picocolors'

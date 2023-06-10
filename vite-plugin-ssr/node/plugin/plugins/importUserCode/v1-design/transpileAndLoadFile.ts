@@ -18,7 +18,7 @@ import {
 import { isImportData, replaceImportStatements, type FileImport } from './replaceImportStatements'
 import { getConfigData_dependenciesInvisibleToVite, getFilePathToShowToUser, type FilePath } from './getConfigData'
 import 'source-map-support/register'
-import { addErrorIntroMsg } from '../../../shared/logWithVite'
+import { addErrorIntroMsg } from '../../../shared/loggerTranspile'
 
 assertIsVitePluginCode()
 

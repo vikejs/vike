@@ -21,7 +21,7 @@ import { preparePageContextForRelease, type PageContextPublic } from './prepareP
 import type { PageContextPromise } from '../html/injectAssets'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { assertObjectKeys } from '../../../shared/assertObjectKeys'
-import { logError } from './logger'
+import { logError } from './loggerRuntime'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 

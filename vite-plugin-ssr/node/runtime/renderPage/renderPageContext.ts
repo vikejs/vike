@@ -20,7 +20,7 @@ import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
 import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook'
 import { executeOnBeforeRenderHooks } from './executeOnBeforeRenderHook'
-import { isNewError, logError } from './logger'
+import { isNewError, logError } from './loggerRuntime'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]

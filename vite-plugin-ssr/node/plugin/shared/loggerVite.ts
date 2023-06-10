@@ -1,11 +1,11 @@
 export { customizeViteLogger }
 export { isFirstViteLog }
 
-import { assert, assertHasLogged } from '../../utils'
+import { assert, assertHasLogged } from '../utils'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
-import { isConfigInvalid } from '../../../runtime/renderPage/isConfigInvalid'
-import { logErrorWithVite } from '../../shared/logWithVite'
-import { getAsyncHookStore } from '../../shared/asyncHook'
+import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
+import { logErrorWithVite } from './loggerTranspile'
+import { getAsyncHookStore } from './asyncHook'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
 
 let isFirstViteLog = true

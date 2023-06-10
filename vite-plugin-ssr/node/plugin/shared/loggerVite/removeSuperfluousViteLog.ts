@@ -2,7 +2,7 @@ export { removeSuperfluousViteLog }
 export { removeSuperfluousViteLog_enable }
 export { removeSuperfluousViteLog_disable }
 
-import { assert } from '../../../utils'
+import { assert } from '../../utils'
 
 const superfluousLog = 'Forced re-optimization of dependencies'
 let enabled = false

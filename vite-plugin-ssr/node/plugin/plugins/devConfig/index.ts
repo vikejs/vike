@@ -6,7 +6,7 @@ import { determineFsAllowList } from './determineFsAllowList'
 import { getConfigVps } from '../../../shared/getConfigVps'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware'
 import { markEnvAsDev } from '../../utils'
-import { customizeViteLogger } from './loggerVite'
+import { customizeViteLogger } from '../../shared/loggerVite'
 import { isErrorDebug } from '../../shared/isErrorDebug'
 import { installAsyncHook } from '../../shared/asyncHook'
 
