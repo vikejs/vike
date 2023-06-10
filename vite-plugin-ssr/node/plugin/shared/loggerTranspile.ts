@@ -135,7 +135,7 @@ function logErrorIntro(err: unknown, httpRequestId: number | null, category: nul
     return
   }
   if (httpRequestId !== null) {
-    logWithVite(pc.red('Error:'), category, 'error')
+    logWithVite(pc.red('Error thrown:'), category, 'error')
     return
   }
 }
