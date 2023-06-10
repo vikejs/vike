@@ -1,5 +1,5 @@
-export { logWithVite }
-export { logErrorWithVite }
+export { logInfoTranspile }
+export { logErrorTranspile }
 export { clearScreenWithVite }
 export { addErrorIntroMsg }
 export type { LogInfoArgs }
@@ -25,16 +25,16 @@ import { ifFrameError, formatFrameError } from './loggerTranspile/formatFrameErr
 import { getEsbuildFormattedError } from './loggerTranspile/formatEsbuildError'
 
 assertIsVitePluginCode()
-logInfo_set(logWithVite)
-logError_set(logErrorWithVite)
+logInfo_set(logInfoTranspile)
+logError_set(logErrorTranspile)
 
 type LogCategory = 'config' | `request(${number})` | null
 type LogType = 'error-recover' | 'error' | 'info'
-type LogInfoArgs = Parameters<typeof logWithVite>
+type LogInfoArgs = Parameters<typeof logInfoTranspile>
 const introMsgs = new WeakMap<object, LogInfoArgs>()
 let screenHasErrors = false
 
-function logWithVite(
+function logInfoTranspile(
   msg: string,
   category: LogCategory,
   logType: LogType,
@@ -64,7 +64,7 @@ function clearScreenWithVite(viteConfig: ResolvedConfig) {
   viteConfig.logger.clearScreen('error')
 }
 
-function logErrorWithVite(
+function logErrorTranspile(
   ...[err, { httpRequestId }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]
 ): boolean {
   if (isRenderErrorPageException(err)) {
@@ -110,7 +110,7 @@ function logErr(...[err, { httpRequestId }, category = null]: LogErrorArgs | [..
 
   const errFormatted = getFormattedError(err, httpRequestId, category)
   if (errFormatted) {
-    // logErrorWithVite()/addPrefix() already called
+    // logErrorTranspile()/addPrefix() already called
     console.error(errFormatted)
     return
   }
@@ -122,7 +122,7 @@ function logErrorIntro(err: unknown, httpRequestId: number | null, category: nul
   if (!isObject(err)) return
   if (introMsgs.has(err)) {
     const logInfoArgs = introMsgs.get(err)!
-    logWithVite(...logInfoArgs)
+    logInfoTranspile(...logInfoArgs)
     return
   }
   if (!category) {
@@ -131,11 +131,11 @@ function logErrorIntro(err: unknown, httpRequestId: number | null, category: nul
   const hook = isUserHookError(err)
   if (hook) {
     const { hookName, hookFilePath } = hook
-    logWithVite(pc.red(`Error thrown by hook ${hookName}() (${hookFilePath}):`), category, 'error')
+    logInfoTranspile(pc.red(`Error thrown by hook ${hookName}() (${hookFilePath}):`), category, 'error')
     return
   }
   if (httpRequestId !== null) {
-    logWithVite(pc.red('Error thrown:'), category, 'error')
+    logInfoTranspile(pc.red('Error thrown:'), category, 'error')
     return
   }
 }

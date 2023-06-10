@@ -4,7 +4,7 @@ export { isFirstViteLog }
 import { assert, assertHasLogged } from '../utils'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
-import { logErrorWithVite } from './loggerTranspile'
+import { logErrorTranspile } from './loggerTranspile'
 import { getAsyncHookStore } from './asyncHook'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
 
@@ -39,7 +39,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
           const { loggedErrors, httpRequestId } = store
           const { error } = options
           if (!loggedErrors.includes(error)) {
-            logErrorWithVite(error, { httpRequestId })
+            logErrorTranspile(error, { httpRequestId })
             assert(loggedErrors.includes(error))
           }
           return
