@@ -41,8 +41,7 @@ function devConfig(): Plugin[] {
               '@brillout/json-serializer/parse',
               '@brillout/json-serializer/stringify'
             ]
-          },
-          clearScreen: false
+          }
         } satisfies UserConfig
       },
       async configResolved(config_) {
