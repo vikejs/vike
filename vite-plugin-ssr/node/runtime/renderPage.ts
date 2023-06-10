@@ -32,6 +32,9 @@ const globalObject = getGlobalObject('runtime/renderPage.ts', {
   loggedErrors: [] as unknown[]
 })
 
+import { AsyncLocalStorage } from 'node:async_hooks'
+export const asyncLocalStorage = new AsyncLocalStorage<{ httpRequestId: number; loggedErrors2: unknown[] }>()
+
 // `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
   PageContextAdded extends {},
@@ -63,7 +66,10 @@ async function renderPage<
   logHttpRequest(urlToShowToUser, httpRequestId)
   globalObject.pendingRequestsCount++
 
-  const pageContextReturn = await renderPage_(pageContextInit, httpRequestId)
+  const loggedErrors2: unknown[] = []
+  const pageContextReturn = await asyncLocalStorage.run({ httpRequestId, loggedErrors2 }, () =>
+    renderPage_(pageContextInit, httpRequestId, loggedErrors2)
+  )
 
   logHttpResponse(urlToShowToUser, httpRequestId, pageContextReturn)
   globalObject.pendingRequestsCount--
@@ -76,7 +82,8 @@ type PageContextReturn = Awaited<ReturnType<typeof renderPage>>
 
 async function renderPage_(
   pageContextInit: { urlOriginal: string } & Record<string, unknown>,
-  httpRequestId: number
+  httpRequestId: number,
+  loggedErrors2: unknown[]
 ): Promise<PageContextReturn> {
   // Invalid config
   const handleInvalidConfig = () => {
@@ -97,8 +104,10 @@ async function renderPage_(
     // Errors are expected since assertUsage() is used in both initGlobalContext() and getRenderContext().
     // initGlobalContext() and getRenderContext() don't call any user hooks => err isn't thrown from user code => `canBeViteUserLand: false`
     assert(!isRenderErrorPageException(err))
-    const logged = logError(err, { httpRequestId, canBeViteUserLand: false })
-    if (logged) globalObject.loggedErrors.push(err)
+    if (!loggedErrors2.includes(err)) {
+      const logged = logError(err, { httpRequestId, canBeViteUserLand: false })
+      if (logged) globalObject.loggedErrors.push(err)
+    }
     const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(err, pageContextInit)
     return pageContextHttpReponseNull
   }
@@ -120,8 +129,10 @@ async function renderPage_(
       errored = false
     } catch (err) {
       errFirstAttempt = err
-      const logged = logError(errFirstAttempt, { httpRequestId, canBeViteUserLand: true })
-      if (logged) globalObject.loggedErrors.push(errFirstAttempt)
+      if (!loggedErrors2.includes(err)) {
+        const logged = logError(errFirstAttempt, { httpRequestId, canBeViteUserLand: true })
+        if (logged) globalObject.loggedErrors.push(errFirstAttempt)
+      }
       errored = true
       pageContextFirstAttemptPartial = pageContext
     }
@@ -171,8 +182,10 @@ async function renderPage_(
     } catch (err) {
       errErrorPage = err
       if (isNewError(errErrorPage, errFirstAttempt)) {
-        const logged = logError(errErrorPage, { httpRequestId, canBeViteUserLand: true })
-        if (logged) globalObject.loggedErrors.push(errErrorPage)
+        if (!loggedErrors2.includes(err)) {
+          const logged = logError(errErrorPage, { httpRequestId, canBeViteUserLand: true })
+          if (logged) globalObject.loggedErrors.push(errErrorPage)
+        }
       }
     }
     if (errErrorPage === undefined) {

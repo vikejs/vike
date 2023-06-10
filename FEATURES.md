@@ -67,3 +67,4 @@ And lots of details:
   - Upon a 404 in dev, the complete list of routes is shown
   - Helpful error when different versions of vite-plugin-ssr are loaded
   - Typo in an option name (with "Did you mean xxx instead?")
+- Proper development error hanlding (hard to achieve, especially since Vite is bogus about it)

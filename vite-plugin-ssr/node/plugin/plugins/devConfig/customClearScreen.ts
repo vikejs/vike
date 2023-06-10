@@ -7,6 +7,8 @@ import { assert, assertHasLogged } from '../../utils'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
 import { isConfigInvalid } from '../../../runtime/renderPage/isConfigInvalid'
 import { onAllRequestDone_set } from '../../../runtime/renderPage/logger'
+import { asyncLocalStorage } from '../../../runtime/renderPage'
+import { logErrorWithVite } from '../../shared/logWithVite'
 
 let isFirstViteLog = true
 const swallowedErrors = new Set<Err>()
@@ -49,7 +51,21 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
   const loggerOld = config.logger[logType].bind(config.logger)
   const loggerNew: Logger = (...args) => {
     const [msg, options] = args
+    const store = asyncLocalStorage.getStore()
+    if (store && options?.error) {
+      const { loggedErrors2, httpRequestId } = store
+      const { error } = options
+      if (!loggedErrors2.includes(error)) {
+        logErrorWithVite(error, { httpRequestId, canBeViteUserLand: true })
+        loggedErrors2.push(error)
+      }
+      return
+    }
 
+    if (logType === 'error' && !options?._isFromVike && msg.startsWith('Transform failed with ')) {
+      swallowedErrorMessages.add(msg)
+    }
+    /*
     if (logType === 'error' && !options?._isFromVike) {
       if (options?.error) {
         const { plugin } = options.error
@@ -64,6 +80,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
         }
       }
     }
+    */
 
     if (removeDevOptimizationLog && fixVite_removeDevOptimizationLog_isMatch(msg)) return
 
