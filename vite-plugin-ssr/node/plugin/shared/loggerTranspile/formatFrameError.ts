@@ -1,11 +1,10 @@
-export { formatRollupError }
-export { isRollupError }
+export { formatFrameError }
+export { ifFrameError }
 
 // Copied & adapted from https://github.com/vitejs/vite/blob/9c114c5c72a6af87e3330d5573362554b4511265/packages/vite/src/node/server/middlewares/error.ts
 
 import pc from '@brillout/picocolors'
-import { assert, getFilePathVite, isObject } from '../utils'
-import { isErrorDebug } from './isErrorDebug'
+import { assert, getFilePathVite, isObject } from '../../utils'
 
 // Subset of:
 // ```
@@ -13,7 +12,7 @@ import { isErrorDebug } from './isErrorDebug'
 // ```
 type RollupError = { id: string; frame: string; message: string }
 
-function isRollupError(err: unknown): err is RollupError {
+function ifFrameError(err: unknown): err is RollupError {
   if (!isObject(err)) return false
   const { id, frame, message } = err
   return typeof frame === 'string' && typeof id === 'string' && typeof message === 'string'
@@ -25,11 +24,8 @@ function buildErrorMessage(err: RollupError, args: string[] = []): string {
   return args.join('\n')
 }
 
-function formatRollupError(err: RollupError, userRootDir: string): string {
-  if (isErrorDebug()) {
-    return err.message
-  }
-  assert(isRollupError(err))
+function formatFrameError(err: RollupError, userRootDir: string): string {
+  assert(ifFrameError(err))
   let msg = err.message
   if (/^Transform failed with \d error(|s):/.test(msg)) {
     msg = [

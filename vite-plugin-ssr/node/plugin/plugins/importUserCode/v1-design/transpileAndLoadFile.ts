@@ -1,6 +1,6 @@
 export { transpileAndLoadFile }
 
-import { build, formatMessages, type BuildResult, type BuildOptions } from 'esbuild'
+import { build, type BuildResult, type BuildOptions } from 'esbuild'
 import fs from 'fs'
 import path from 'path'
 import pc from '@brillout/picocolors'
@@ -19,6 +19,7 @@ import { isImportData, replaceImportStatements, type FileImport } from './replac
 import { getConfigData_dependenciesInvisibleToVite, getFilePathToShowToUser, type FilePath } from './getConfigData'
 import 'source-map-support/register'
 import { addErrorIntroMsg } from '../../../shared/loggerTranspile'
+import { formatEsbuildError } from '../../../shared/loggerTranspile/formatEsbuildError'
 
 assertIsVitePluginCode()
 
@@ -194,16 +195,6 @@ function appendHeaderFileExtension(filePath: string) {
   basenameParts.splice(-1, 0, 'h')
   const basenameCorrect = basenameParts.join('.')
   return path.posix.join(path.posix.dirname(filePath), basenameCorrect)
-}
-
-async function formatEsbuildError(err: any) {
-  if (err.errors) {
-    const msgs = await formatMessages(err.errors, {
-      kind: 'error',
-      color: true
-    })
-    err._esbuildMessageFormatted = msgs.map((m) => m.trim()).join('\n')
-  }
 }
 
 // The Error.prepareStackTrace() hook of source-map-support needs to be called before clean() is called (i.e. before the file containing the inline source map is removed from disk)

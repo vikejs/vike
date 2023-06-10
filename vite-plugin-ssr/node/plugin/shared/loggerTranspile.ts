@@ -20,8 +20,9 @@ import {
   warnIfObjectIsNotObject
 } from '../utils'
 import { getAsyncHookStore } from './asyncHook'
-import { isRollupError, formatRollupError } from './formatRollupError'
 import { isErrorDebug } from './isErrorDebug'
+import { ifFrameError, formatFrameError } from './loggerTranspile/formatFrameError'
+import { getEsbuildFormattedError } from './loggerTranspile/formatEsbuildError'
 
 assertIsVitePluginCode()
 logInfo_set(logWithVite)
@@ -80,9 +81,7 @@ function logErrorWithVite(
   store?.loggedErrors.push(err)
   return true
 }
-function logErr(
-  ...[err, { httpRequestId }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]
-): void {
+function logErr(...[err, { httpRequestId }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]): void {
   warnIfObjectIsNotObject(err)
 
   {
@@ -103,7 +102,7 @@ function logErr(
     }
   }
 
-  if (isRollupError(err)) {
+  if (ifFrameError(err)) {
     // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
     if (isErrorDebug()) {
       logErrorIntro(err, httpRequestId, category)
@@ -112,18 +111,19 @@ function logErr(
     } else {
       const viteConfig = getViteConfig()
       assert(viteConfig)
-      let errMsg = formatRollupError(err, viteConfig.root)
+      let errFormatted = formatFrameError(err, viteConfig.root)
       const category = getCategoryRequest(httpRequestId)
-      errMsg = addPrefix(errMsg, 'vite', category, 'error')
-      console.error(errMsg)
+      errFormatted = addPrefix(errFormatted, 'vite', category, 'error')
+      console.error(errFormatted)
       return
     }
   }
 
-  if (isObject(err)) {
-    if ('_esbuildMessageFormatted' in err) {
+  {
+    const errFormatted = getEsbuildFormattedError(err)
+    if (errFormatted) {
       logErrorIntro(err, httpRequestId, category)
-      console.error(err._esbuildMessageFormatted)
+      console.error(errFormatted)
       return
     }
   }
