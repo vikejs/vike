@@ -6,25 +6,22 @@ export { isFrameError }
 import pc from '@brillout/picocolors'
 import { assert, getFilePathVite, isObject } from '../../utils'
 
-// Subset of:
-// ```
-// type RollupError = Rollup.RollupError
-// ```
-type RollupError = { id: string; frame: string; message: string }
+// Subset of RollupError
+type FrameError = { id: string; frame: string; message: string }
 
-function isFrameError(err: unknown): err is RollupError {
+function isFrameError(err: unknown): err is FrameError {
   if (!isObject(err)) return false
   const { id, frame, message } = err
   return typeof frame === 'string' && typeof id === 'string' && typeof message === 'string'
 }
 
-function buildErrorMessage(err: RollupError, args: string[] = []): string {
+function buildErrorMessage(err: FrameError, args: string[] = []): string {
   assert(err.frame)
   args.push(pc.yellow(err.frame.trim()))
   return args.join('\n')
 }
 
-function formatFrameError(err: RollupError, userRootDir: string): string {
+function formatFrameError(err: FrameError, userRootDir: string): string {
   assert(isFrameError(err))
   let msg = [
     pc.red('Failed to load'),
