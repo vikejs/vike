@@ -40,7 +40,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
           const { loggedErrors, httpRequestId } = store
           const { error } = options
           if (!loggedErrors.includes(error)) {
-            logErrorWithVite(error, { httpRequestId, canBeViteUserLand: true })
+            logErrorWithVite(error, { httpRequestId })
             assert(loggedErrors.includes(error))
           }
           return

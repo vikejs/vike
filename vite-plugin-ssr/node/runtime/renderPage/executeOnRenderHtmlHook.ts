@@ -68,10 +68,7 @@ async function executeOnRenderHtmlHook(
   }
 
   const onErrorWhileStreaming = (err: unknown) => {
-    logError(err, {
-      httpRequestId: pageContext._httpRequestId,
-      canBeViteUserLand: true
-    })
+    logError(err, { httpRequestId: pageContext._httpRequestId })
     /*
     objectAssign(pageContext, {
       errorWhileRendering: err,

@@ -1,9 +1,12 @@
+// Bun doesn't support Async Hooks: https://github.com/oven-sh/bun/issues/1832
+// Do we foresee other JavaScript server runtimes that won't support Async Hooks?
+
 export { installAsyncHook }
 export { getAsyncHookStore }
 
 import { renderPage_setWrapper } from '../../runtime/renderPage'
-import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { assert, isObject } from '../utils'
+import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 
 type AsyncHookStore = { httpRequestId: number; loggedErrors: unknown[]; swallowedErrorMessages: string[] }
 let asyncLocalStorage: null | AsyncLocalStorageType<AsyncHookStore> = null

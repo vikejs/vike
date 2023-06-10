@@ -64,10 +64,9 @@ function clearScreenWithVite(viteConfig: ResolvedConfig) {
 }
 
 function logErrorWithVite(
-  ...[err, { httpRequestId, canBeViteUserLand }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]
+  ...[err, { httpRequestId }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]
 ): boolean {
   if (isRenderErrorPageException(err)) {
-    assert(canBeViteUserLand)
     return false
   }
 
@@ -77,30 +76,30 @@ function logErrorWithVite(
   }
 
   screenHasErrors = true
-  logErr(err, { httpRequestId, canBeViteUserLand }, category)
+  logErr(err, { httpRequestId }, category)
   store?.loggedErrors.push(err)
   return true
 }
 function logErr(
-  ...[err, { httpRequestId, canBeViteUserLand }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]
+  ...[err, { httpRequestId }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]
 ): void {
   warnIfObjectIsNotObject(err)
 
-  if (canBeViteUserLand) {
+  {
     const { viteDevServer } = getGlobalContext()
     if (viteDevServer) {
-      /* We purposely don't use hasErrorLogged():
-         - We don't trust Vite with such details
-           - Previously, Vite bug lead to swallowing of errors: https://github.com/vitejs/vite/issues/12631
-         - We do the inverse: we swallow superfluous Vite errors logs instead
-      if (viteDevServer.config.logger.hasErrorLogged(err as Error)) {
-        return
-      }
-      */
       if (hasProp(err, 'stack')) {
         // Apply source maps
         viteDevServer.ssrFixStacktrace(err as Error)
       }
+      /* We purposely don't use hasErrorLogged():
+         - We don't trust Vite with such details
+           - Previously, Vite bug lead to swallowing of errors: https://github.com/vitejs/vite/issues/12631
+         - We dedupe Vite logs ourself instead
+      if (viteDevServer.config.logger.hasErrorLogged(err as Error)) {
+        return
+      }
+      */
     }
   }
 

@@ -1,44 +1,42 @@
-export let logError = logErrorProd
-export let logInfo: null | LoggerInfo = null
+export let logError: LogError = logErrorProd
+export let logInfo: null | LogInfo = null
 export { isNewError }
 
-export type { LogErrorArgs }
 export { logError_set }
 export { logInfo_set }
+export type { LogErrorArgs }
 
 import type { LogInfoArgs } from '../../plugin/shared/loggerTranspile'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
-import { assert, getGlobalObject, isObject, isSameErrorMessage, warnIfObjectIsNotObject } from '../utils'
+import { getGlobalObject, isObject, isSameErrorMessage, warnIfObjectIsNotObject } from '../utils'
 import pc from '@brillout/picocolors'
 
 const globalObject = getGlobalObject('runtime/renderPage/logger.ts', {
   wasAlreadyLogged: new WeakSet<object>()
 })
 
-type LoggerError = (...args: LogErrorArgs) => boolean
-type LoggerInfo = (...args: LogInfoArgs) => void
+type LogError = (...args: LogErrorArgs) => boolean
+type LogInfo = (...args: LogInfoArgs) => void
 type LogErrorArgs = [
   unknown,
   {
     // httpRequestId is null upon pre-rendering
     httpRequestId: number | null
-    canBeViteUserLand: boolean
   }
 ]
 
-function logError_set(logger: LoggerError) {
-  logError = logger
+function logError_set(logError_: LogError) {
+  logError = logError_
 }
-function logInfo_set(logger: LoggerInfo) {
-  logInfo = logger
+function logInfo_set(logInfo_: LogInfo) {
+  logInfo = logInfo_
 }
 
-function logErrorProd(...[err, { canBeViteUserLand }]: LogErrorArgs): boolean {
+function logErrorProd(err: unknown): boolean {
   warnIfObjectIsNotObject(err)
   setAlreadyLogged(err)
 
   if (isRenderErrorPageException(err)) {
-    assert(canBeViteUserLand)
     return false
   }
 

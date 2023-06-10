@@ -73,8 +73,7 @@ async function renderPageContext<
     } catch (err) {
       if (isNewError(err, pageContext.errorWhileRendering)) {
         logError(err, {
-          httpRequestId: pageContext._httpRequestId,
-          canBeViteUserLand: true
+          httpRequestId: pageContext._httpRequestId
         })
       }
     }
