@@ -19,7 +19,7 @@ import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/vir
 import { getConfigData_dependenciesInvisibleToVite, reloadConfigData } from './v1-design/getConfigData'
 import path from 'path'
 import pc from '@brillout/picocolors'
-import { logInfoTranspile, clearScreenWithVite } from '../../shared/loggerTranspile'
+import { logInfoTranspile, clearWithVite } from '../../shared/loggerTranspile'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -51,7 +51,7 @@ function importUserCode(): Plugin {
 
       const isViteModule = ctx.modules.length > 0
       if (isVikeConfig || isViteModule) {
-        clearScreenWithVite(config)
+        clearWithVite(config)
       }
 
       if (!isVikeConfig) {

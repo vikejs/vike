@@ -1,7 +1,7 @@
 export { logInfoTranspile }
 export { logErrorTranspile }
 export { logVite }
-export { clearScreenWithVite }
+export { clearWithVite }
 export { addErrorIntroMsg }
 export { isErrorWithCodeSnippet }
 export type { LogInfoArgs }
@@ -44,12 +44,11 @@ function logInfoTranspile(
 ) {
   msg = addPrefix(msg, projectInfo.projectName, category, logType)
 
-  const viteConfig = getViteConfig()
-  assert(viteConfig)
-
   const clear = (options.clearErrors && screenHasErrors) || (options.clearIfFirstLog && isFirstViteLog)
   if (clear) {
-    clearScreenWithVite(viteConfig)
+    const viteConfig = getViteConfig()
+    assert(viteConfig)
+    clearWithVite(viteConfig)
   }
 
   logMsg(msg, logType)
@@ -65,7 +64,7 @@ function logMsg(msg: string, logType: LogType) {
     assert(false)
   }
 }
-function clearScreenWithVite(viteConfig: ResolvedConfig) {
+function clearWithVite(viteConfig: ResolvedConfig) {
   screenHasErrors = false
   // We use Vite's logger in order to respect the user's `clearScreen: false` setting
   viteConfig.logger.clearScreen('error')
@@ -192,7 +191,15 @@ function addErrorIntroMsg(err: unknown, ...logInfoArgs: LogInfoArgs) {
   introMsgs.set(err, logInfoArgs)
 }
 
-function logVite(msg: string, logType: LogType, httpRequestId: number | null, withTag: boolean) {
+function logVite(
+  msg: string,
+  logType: LogType,
+  httpRequestId: number | null,
+  withTag: boolean,
+  clear: boolean,
+  viteConfig: ResolvedConfig
+) {
+  if (clear) clearWithVite(viteConfig)
   const category = httpRequestId ? getCategoryRequest(httpRequestId) : null
   if (withTag) {
     msg = addPrefix(msg, 'vite', category, logType)

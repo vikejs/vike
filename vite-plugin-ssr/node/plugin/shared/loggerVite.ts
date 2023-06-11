@@ -61,6 +61,6 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
     isFirstViteLog = false
 
     if (options?.error) store?.loggedErrors.add(options.error)
-    logVite(msg, logType, store?.httpRequestId ?? null, withTag)
+    logVite(msg, logType, store?.httpRequestId ?? null, withTag, options.clear ?? false, config)
   }
 }
