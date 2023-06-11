@@ -7,7 +7,7 @@ import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
 import { isErrorWithCodeSnippet, logErrorTranspile } from './loggerTranspile'
 import { getAsyncHookStore } from './asyncHook'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
-import { trimWithAnsi } from './trimWithAnsi'
+import { trimWithAnsi, trimWithAnsiTrail } from './trimWithAnsi'
 
 let isFirstViteLog = true
 
@@ -23,12 +23,17 @@ function customizeViteLogger(config: ResolvedConfig) {
 }
 
 type Err = LogErrorOptions['error'] & { plugin?: string }
-type Logger = (...args: [string, { clear?: boolean; error?: Err } | undefined]) => void
+type Logger = (...args: [string, { clear?: boolean; error?: Err; timestamp?: boolean } | undefined]) => void
 
 function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear?: () => boolean) {
   const loggerOld = config.logger[logType].bind(config.logger)
   const loggerNew: Logger = (msg, options, ...rest) => {
-    msg = trimWithAnsi(msg)
+    if (options?.timestamp) {
+      // timestamp => tag "[vite]" is prepended
+      msg = trimWithAnsi(msg)
+    } else {
+      msg = trimWithAnsiTrail(msg)
+    }
 
     if (removeSuperfluousViteLog(msg)) return
 

@@ -1,4 +1,5 @@
 export { trimWithAnsi }
+export { trimWithAnsiTrail }
 
 import { assert } from '../utils'
 
@@ -7,27 +8,36 @@ const whitespaceRegex = /(\s+)/ // Capturing parathesis so that split preserves 
 
 /* Same as trim() but works with ANSI escape codes */
 function trimWithAnsi(str: string): string {
-  str = removeLeadingWhitespace(str)
-  str = reverseWithAnsi(removeLeadingWhitespace(reverseWithAnsi(str)))
+  str = trimWithAnsiHead(str)
+  str = trimWithAnsiTrail(str)
   return str
 }
 
-function removeLeadingWhitespace(str: string) {
+function trimWithAnsiHead(str: string) {
+  return trim(str, false)
+}
+function trimWithAnsiTrail(str: string): string {
+  return trim(str, true)
+}
+
+function trim(str: string, trail?: boolean) {
+  let parts = str.split(whitespaceRegex)
+  if (trail) parts.reverse()
   let visible = false
-  assert(str.split(whitespaceRegex).join('') === str)
-  return str
-    .split(whitespaceRegex)
-    .filter((l): boolean => {
-      if (visible) return true
-      if (l.trim() === '') return false
-      if (stripAnsi(l) !== '') visible = true
-      return true
-    })
-    .join('')
-}
+  parts = parts.map((line): string => {
+    if (visible) return line
+    const lineTrimmed = line.trim()
+    const lineTrimmedAndStripped = stripAnsi(lineTrimmed)
+    assert(lineTrimmedAndStripped.trim() === lineTrimmedAndStripped)
+    if (lineTrimmedAndStripped !== '') visible = true
+    return lineTrimmed
+  })
+  if (trail) parts.reverse()
 
-function reverseWithAnsi(str: string) {
-  return str.split(whitespaceRegex).reverse().join('')
+  assert(str.split(whitespaceRegex).join('') === str)
+  const strTrimmed = parts.join('')
+
+  return strTrimmed
 }
 
 // Copied from https://github.com/chalk/strip-ansi/blob/1fdc531d4046cbaa830460f5c74452bf1f0a0884/index.js
