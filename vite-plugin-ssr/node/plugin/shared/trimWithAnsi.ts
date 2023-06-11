@@ -1,5 +1,6 @@
 export { trimWithAnsi }
 export { trimWithAnsiTrail }
+export { stripAnsi }
 
 import { assert } from '../utils'
 

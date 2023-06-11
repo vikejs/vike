@@ -61,7 +61,7 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
     fileExports = await import_(filePathTmp)
   } catch (err) {
     triggerPrepareStackTrace(err)
-    addErrorIntro(err, 'thrown error', filePath)
+    addErrorIntro(err, 'execute', filePath)
     throw err
   } finally {
     clean()
@@ -112,7 +112,7 @@ async function buildFile(filePath: FilePath, { bundle }: { bundle: boolean }) {
     result = await build(options)
   } catch (err) {
     await formatEsbuildError(err)
-    addErrorIntro(err, 'transpilation error', filePath)
+    addErrorIntro(err, 'transpile', filePath)
     throw err
   }
   const { text } = result.outputFiles![0]!
@@ -207,11 +207,11 @@ function triggerPrepareStackTrace(err: unknown) {
   }
 }
 
-function addErrorIntro(err: unknown, reason: 'transpilation error' | 'thrown error', filePath: FilePath) {
+function addErrorIntro(err: unknown, operation: 'transpile' | 'execute', filePath: FilePath) {
   const msg = [
-    pc.red('Failed to load'),
+    pc.red(`Failed to ${operation}`),
     pc.red(pc.bold(getFilePathToShowToUser(filePath))),
-    pc.red(`because of ${reason}:`)
+    pc.red(`because:`)
   ].join(' ')
   addErrorIntroMsg(err, msg, 'config', 'error', { clearIfFirstLog: true })
 }
