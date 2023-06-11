@@ -4,10 +4,9 @@ export { isFirstViteLog }
 import { assert, assertHasLogged } from '../utils'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
-import { logErrorTranspile } from './loggerTranspile'
+import { isErrorWithCodeSnippet, logErrorTranspile } from './loggerTranspile'
 import { getAsyncHookStore } from './asyncHook'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
-import { isFrameError } from './loggerTranspile/formatFrameError'
 
 let isFirstViteLog = true
 
@@ -32,31 +31,24 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
 
     if (removeSuperfluousViteLog(msg)) return
 
-    if (options?.error && isFrameError(options?.error)) {
-      logErrorTranspile(options.error, {
-        // httpRequestId will be determined by async hook store in logErrorTranspile()
-        httpRequestId: null
-      })
+    // Dedupe Vite error messages
+    const store = getAsyncHookStore()
+    if (options?.error && store?.loggedErrors.has(options.error)) {
+      return
+    }
+    if (msg.startsWith('Transform failed with ') && store && logType === 'error') {
+      store.swallowedErrorMessages.add(msg)
       return
     }
 
-    // Dedupe Vite error messages
-    {
-      const store = getAsyncHookStore()
-      if (store) {
-        if (options?.error) {
-          const { loggedErrors, httpRequestId } = store
-          const { error } = options
-          if (!loggedErrors.includes(error)) {
-            logErrorTranspile(error, { httpRequestId })
-            assert(loggedErrors.includes(error))
-          }
-          return
-        }
-        if (logType === 'error' && msg.startsWith('Transform failed with ')) {
-          store.swallowedErrorMessages.push(msg)
-          return
-        }
+    if (options?.error) {
+      const { error } = options
+      if (isErrorWithCodeSnippet(error)) {
+        logErrorTranspile(error, {
+          httpRequestId: store?.httpRequestId ?? null
+        })
+        assert(!store || store.loggedErrors.has(error))
+        return
       }
     }
 
@@ -64,6 +56,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
     if (options?.clear && !tolerateClear?.()) options.clear = false
     isFirstViteLog = false
 
+    if (options?.error) store?.loggedErrors.add(options.error)
     loggerOld(...args)
   }
   config.logger[logType] = loggerNew

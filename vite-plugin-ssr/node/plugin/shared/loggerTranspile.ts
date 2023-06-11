@@ -2,6 +2,7 @@ export { logInfoTranspile }
 export { logErrorTranspile }
 export { clearScreenWithVite }
 export { addErrorIntroMsg }
+export { isErrorWithCodeSnippet }
 export type { LogInfoArgs }
 
 import pc from '@brillout/picocolors'
@@ -22,7 +23,7 @@ import {
 import { getAsyncHookStore } from './asyncHook'
 import { isErrorDebug } from './isErrorDebug'
 import { isFrameError, formatFrameError } from './loggerTranspile/formatFrameError'
-import { getEsbuildFormattedError } from './loggerTranspile/formatEsbuildError'
+import { getEsbuildFormattedError, isEsbuildFormattedError } from './loggerTranspile/formatEsbuildError'
 
 assertIsVitePluginCode()
 logInfo_set(logInfoTranspile)
@@ -70,8 +71,11 @@ function logErrorTranspile(
   if (isRenderErrorPageException(err)) {
     return false
   }
-
   const store = getAsyncHookStore()
+  if (store?.loggedErrors.has(err)) {
+    return false
+  }
+
   if (store?.httpRequestId) {
     if (httpRequestId === null) {
       httpRequestId = store?.httpRequestId
@@ -79,13 +83,10 @@ function logErrorTranspile(
       assert(httpRequestId === store.httpRequestId)
     }
   }
-  if (store?.loggedErrors.includes(err)) {
-    return false
-  }
 
   screenHasErrors = true
   logErr(err, { httpRequestId }, category)
-  store?.loggedErrors.push(err)
+  store?.loggedErrors.add(err)
   return true
 }
 function logErr(...[err, { httpRequestId }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]): void {
@@ -115,10 +116,10 @@ function logErr(...[err, { httpRequestId }, category = null]: LogErrorArgs | [..
     return
   }
 
-  const errFormatted = getFormattedError(err, httpRequestId, category)
-  if (errFormatted) {
-    // logErrorTranspile()/addPrefix() already called
-    console.error(errFormatted)
+  const errWithCodeSnippet = getErrorWithCodeSnippet(err, httpRequestId, category)
+  if (errWithCodeSnippet) {
+    // logErrorIntro()/addPrefix() already called
+    console.error(errWithCodeSnippet)
     return
   }
 
@@ -147,24 +148,27 @@ function logErrorIntro(err: unknown, httpRequestId: number | null, category: nul
   }
 }
 
-function getFormattedError(err: unknown, httpRequestId: number | null, category: null | LogCategory): string | null {
+function getErrorWithCodeSnippet(err: unknown, httpRequestId: number | null, category: null | LogCategory): string | null {
   if (isFrameError(err)) {
     // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
     const viteConfig = getViteConfig()
     assert(viteConfig)
-    let errFormatted = formatFrameError(err, viteConfig.root)
+    let errStr = formatFrameError(err, viteConfig.root)
     const category = getCategoryRequest(httpRequestId)
-    errFormatted = addPrefix(errFormatted, 'vite', category, 'error')
-    return errFormatted
+    errStr = addPrefix(errStr, 'vite', category, 'error')
+    return errStr
   }
 
-  const errFormatted = getEsbuildFormattedError(err)
-  if (errFormatted) {
+  const errStr = getEsbuildFormattedError(err)
+  if (errStr) {
     logErrorIntro(err, httpRequestId, category)
-    return errFormatted
+    return errStr
   }
 
   return null
+}
+function isErrorWithCodeSnippet(err: unknown): boolean {
+  return isFrameError(err) || isEsbuildFormattedError(err)
 }
 
 function getCategoryRequest(httpRequestId: number | null) {
@@ -178,10 +182,10 @@ function addErrorIntroMsg(err: unknown, ...logInfoArgs: LogInfoArgs) {
 
 function addPrefix(msg: string, project: 'vite' | 'vite-plugin-ssr', category: LogCategory, logType: LogType) {
   const color = (s: string) => {
+    if (logType === 'error' && !hasRed(msg)) return pc.red(s)
+    if (logType === 'error-recover' && !hasGreen(msg)) return pc.green(s)
     if (project === 'vite-plugin-ssr') return pc.yellow(s)
-    if (logType === 'info') return pc.cyan(s)
-    if (logType === 'error') return pc.red(s)
-    if (logType === 'error-recover') return pc.green(s)
+    if (project === 'vite') return pc.cyan(s)
     assert(false)
   }
   let tag = color(pc.bold(`[${project}]`))
@@ -192,4 +196,12 @@ function addPrefix(msg: string, project: 'vite' | 'vite-plugin-ssr', category: L
   const timestamp = pc.dim(new Date().toLocaleTimeString())
 
   return `${timestamp} ${tag} ${msg}`
+}
+function hasRed(str: string): boolean {
+  // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L57
+  return str.includes('\x1b[31m')
+}
+function hasGreen(str: string): boolean {
+  // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L58
+  return str.includes('\x1b[32m')
 }

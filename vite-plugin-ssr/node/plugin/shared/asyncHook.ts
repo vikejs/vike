@@ -8,7 +8,7 @@ import { renderPage_setWrapper } from '../../runtime/renderPage'
 import { assert, isObject } from '../utils'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 
-type AsyncHookStore = { httpRequestId: number; loggedErrors: unknown[]; swallowedErrorMessages: string[] }
+type AsyncHookStore = { httpRequestId: number; loggedErrors: Set<unknown>; swallowedErrorMessages: Set<string> }
 let asyncLocalStorage: null | AsyncLocalStorageType<AsyncHookStore> = null
 
 async function installAsyncHook(): Promise<void> {
@@ -20,11 +20,11 @@ async function installAsyncHook(): Promise<void> {
   }
   asyncLocalStorage = new mod.AsyncLocalStorage()
   renderPage_setWrapper(async (httpRequestId, renderPage) => {
-    const loggedErrors: unknown[] = []
-    const swallowedErrorMessages: string[] = []
+    const loggedErrors = new Set<unknown>()
+    const swallowedErrorMessages = new Set<string>()
     const onRequestDone = () => {
       swallowedErrorMessages.forEach((errMsg) => {
-        if (!loggedErrors.some((err) => String(err).includes(errMsg))) {
+        if (!Array.from(loggedErrors).some((err) => String(err).includes(errMsg))) {
           console.error('loggedErrors', loggedErrors)
           console.error('swallowedErrorMessages', swallowedErrorMessages)
           assert(false)
