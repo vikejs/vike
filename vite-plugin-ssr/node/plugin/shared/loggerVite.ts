@@ -23,9 +23,9 @@ function customizeViteLogger(config: ResolvedConfig) {
 }
 
 function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear?: () => boolean) {
-  config.logger[logType] = (msg, options: LogErrorOptions) => {
+  config.logger[logType] = (msg, options: LogErrorOptions = {}) => {
     // timestamp => tag "[vite]" is prepended
-    const withTag = !!options?.timestamp
+    const withTag = !!options.timestamp
 
     if (withTag) {
       msg = trimWithAnsi(msg)
@@ -37,7 +37,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
 
     // Dedupe Vite error messages
     const store = getAsyncHookStore()
-    if (options?.error && store?.loggedErrors.has(options.error)) {
+    if (options.error && store?.loggedErrors.has(options.error)) {
       return
     }
     if (msg.startsWith('Transform failed with ') && store && logType === 'error') {
@@ -45,7 +45,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
       return
     }
 
-    if (options?.error) {
+    if (options.error) {
       const { error } = options
       if (isErrorWithCodeSnippet(error)) {
         logErrorTranspile(error, {
@@ -57,10 +57,10 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
     }
 
     // Customize clear behavior
-    if (options?.clear && !tolerateClear?.()) options.clear = false
+    if (options.clear && !tolerateClear?.()) options.clear = false
     isFirstViteLog = false
 
-    if (options?.error) store?.loggedErrors.add(options.error)
+    if (options.error) store?.loggedErrors.add(options.error)
     logVite(msg, logType, store?.httpRequestId ?? null, withTag, options.clear ?? false, config)
   }
 }
