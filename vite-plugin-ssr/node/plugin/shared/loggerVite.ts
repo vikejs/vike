@@ -7,6 +7,7 @@ import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
 import { isErrorWithCodeSnippet, logErrorTranspile } from './loggerTranspile'
 import { getAsyncHookStore } from './asyncHook'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
+import { trimWithAnsi } from './trimWithAnsi'
 
 let isFirstViteLog = true
 
@@ -26,8 +27,8 @@ type Logger = (...args: [string, { clear?: boolean; error?: Err } | undefined]) 
 
 function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear?: () => boolean) {
   const loggerOld = config.logger[logType].bind(config.logger)
-  const loggerNew: Logger = (...args) => {
-    const [msg, options] = args
+  const loggerNew: Logger = (msg, options, ...rest) => {
+    msg = trimWithAnsi(msg)
 
     if (removeSuperfluousViteLog(msg)) return
 
@@ -57,7 +58,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
     isFirstViteLog = false
 
     if (options?.error) store?.loggedErrors.add(options.error)
-    loggerOld(...args)
+    loggerOld(msg, options, ...rest)
   }
   config.logger[logType] = loggerNew
 }
