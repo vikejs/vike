@@ -7,8 +7,7 @@ import { isErrorWithCodeSnippet, logErrorTranspile, logVite } from './loggerTran
 import { getAsyncHookStore } from './asyncHook'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
 import { trimWithAnsi, trimWithAnsiTrail } from './trimWithAnsi'
-import type { LogType, ResolvedConfig, Logger as LoggerAll } from 'vite'
-type Logger = LoggerAll['error']
+import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
 
 let isFirstViteLog = true
 
@@ -24,7 +23,7 @@ function customizeViteLogger(config: ResolvedConfig) {
 }
 
 function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear?: () => boolean) {
-  const loggerNew: Logger = (msg, options, ...rest) => {
+  config.logger[logType] = (msg, options: LogErrorOptions) => {
     // timestamp => tag "[vite]" is prepended
     const withTag = !!options?.timestamp
 
@@ -64,5 +63,4 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
     if (options?.error) store?.loggedErrors.add(options.error)
     logVite(msg, logType, store?.httpRequestId ?? null, withTag)
   }
-  config.logger[logType] = loggerNew
 }
