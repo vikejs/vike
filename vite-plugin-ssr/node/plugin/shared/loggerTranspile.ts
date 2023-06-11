@@ -1,5 +1,6 @@
 export { logInfoTranspile }
 export { logErrorTranspile }
+export { logVite }
 export { clearScreenWithVite }
 export { addErrorIntroMsg }
 export { isErrorWithCodeSnippet }
@@ -30,7 +31,7 @@ logInfo_set(logInfoTranspile)
 logError_set(logErrorTranspile)
 
 type LogCategory = 'config' | `request(${number})` | null
-type LogType = 'error-recover' | 'error' | 'info'
+type LogType = 'info' | 'warn' | 'error' | 'error-recover'
 type LogInfoArgs = Parameters<typeof logInfoTranspile>
 const introMsgs = new WeakMap<object, LogInfoArgs>()
 let screenHasErrors = false
@@ -51,8 +52,13 @@ function logInfoTranspile(
     clearScreenWithVite(viteConfig)
   }
 
+  logMsg(msg, logType)
+}
+function logMsg(msg: string, logType: LogType) {
   if (logType === 'info') {
     console.log(msg)
+  } else if (logType === 'warn') {
+    console.warn(msg)
   } else if (logType === 'error' || logType === 'error-recover') {
     console.error(msg)
   } else {
@@ -133,7 +139,7 @@ function logErrorIntro(err: unknown, httpRequestId: number | null, category: nul
     logInfoTranspile(...logInfoArgs)
     return
   }
-  if (!category) {
+  if (!category && httpRequestId) {
     category = getCategoryRequest(httpRequestId)
   }
   const hook = isUserHookError(err)
@@ -148,13 +154,19 @@ function logErrorIntro(err: unknown, httpRequestId: number | null, category: nul
   }
 }
 
-function getErrorWithCodeSnippet(err: unknown, httpRequestId: number | null, category: null | LogCategory): string | null {
+function getErrorWithCodeSnippet(
+  err: unknown,
+  httpRequestId: number | null,
+  category: null | LogCategory
+): string | null {
   if (isFrameError(err)) {
     // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
     const viteConfig = getViteConfig()
     assert(viteConfig)
     let errStr = formatFrameError(err, viteConfig.root)
-    const category = getCategoryRequest(httpRequestId)
+    if (!category && httpRequestId) {
+      category = getCategoryRequest(httpRequestId)
+    }
     errStr = addPrefix(errStr, 'vite', category, 'error')
     return errStr
   }
@@ -171,8 +183,8 @@ function isErrorWithCodeSnippet(err: unknown): boolean {
   return isFrameError(err) || isEsbuildFormattedError(err)
 }
 
-function getCategoryRequest(httpRequestId: number | null) {
-  return httpRequestId ? (`request(${httpRequestId})` as const) : null
+function getCategoryRequest(httpRequestId: number) {
+  return `request(${httpRequestId})` as const
 }
 
 function addErrorIntroMsg(err: unknown, ...logInfoArgs: LogInfoArgs) {
@@ -180,10 +192,19 @@ function addErrorIntroMsg(err: unknown, ...logInfoArgs: LogInfoArgs) {
   introMsgs.set(err, logInfoArgs)
 }
 
+function logVite(msg: string, logType: LogType, httpRequestId: number | null, withTag: boolean) {
+  const category = httpRequestId ? getCategoryRequest(httpRequestId) : null
+  if (withTag) {
+    msg = addPrefix(msg, 'vite', category, logType)
+  }
+  logMsg(msg, logType)
+}
+
 function addPrefix(msg: string, project: 'vite' | 'vite-plugin-ssr', category: LogCategory, logType: LogType) {
   const color = (s: string) => {
     if (logType === 'error' && !hasRed(msg)) return pc.red(s)
     if (logType === 'error-recover' && !hasGreen(msg)) return pc.green(s)
+    if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(s)
     if (project === 'vite-plugin-ssr') return pc.yellow(s)
     if (project === 'vite') return pc.cyan(s)
     assert(false)
@@ -204,4 +225,8 @@ function hasRed(str: string): boolean {
 function hasGreen(str: string): boolean {
   // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L58
   return str.includes('\x1b[32m')
+}
+function hasYellow(str: string): boolean {
+  // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L59
+  return str.includes('\x1b[31m')
 }

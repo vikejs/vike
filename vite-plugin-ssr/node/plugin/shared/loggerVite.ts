@@ -2,12 +2,13 @@ export { customizeViteLogger }
 export { isFirstViteLog }
 
 import { assert, assertHasLogged } from '../utils'
-import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
-import { isErrorWithCodeSnippet, logErrorTranspile } from './loggerTranspile'
+import { isErrorWithCodeSnippet, logErrorTranspile, logVite } from './loggerTranspile'
 import { getAsyncHookStore } from './asyncHook'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
 import { trimWithAnsi, trimWithAnsiTrail } from './trimWithAnsi'
+import type { LogType, ResolvedConfig, Logger as LoggerAll } from 'vite'
+type Logger = LoggerAll['error']
 
 let isFirstViteLog = true
 
@@ -22,14 +23,12 @@ function customizeViteLogger(config: ResolvedConfig) {
   interceptLogger('error', config)
 }
 
-type Err = LogErrorOptions['error'] & { plugin?: string }
-type Logger = (...args: [string, { clear?: boolean; error?: Err; timestamp?: boolean } | undefined]) => void
-
 function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear?: () => boolean) {
-  const loggerOld = config.logger[logType].bind(config.logger)
   const loggerNew: Logger = (msg, options, ...rest) => {
-    if (options?.timestamp) {
-      // timestamp => tag "[vite]" is prepended
+    // timestamp => tag "[vite]" is prepended
+    const withTag = !!options?.timestamp
+
+    if (withTag) {
       msg = trimWithAnsi(msg)
     } else {
       msg = trimWithAnsiTrail(msg)
@@ -63,7 +62,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
     isFirstViteLog = false
 
     if (options?.error) store?.loggedErrors.add(options.error)
-    loggerOld(msg, options, ...rest)
+    logVite(msg, logType, store?.httpRequestId ?? null, withTag)
   }
   config.logger[logType] = loggerNew
 }
