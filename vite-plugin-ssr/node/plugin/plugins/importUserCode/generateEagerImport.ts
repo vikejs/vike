@@ -10,7 +10,7 @@ function generateEagerImport(
   if (varCounter === undefined) varCounter = varCounterGlobal++
   const importVar = `__import_${varCounter}` as const
   const importLiteral = (() => {
-    if (!importName) {
+    if (!importName || importName === '*') {
       return `* as ${importVar}` as const
     }
     if (importName === 'default') {

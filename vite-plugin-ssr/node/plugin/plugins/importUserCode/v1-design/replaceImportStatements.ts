@@ -57,10 +57,15 @@ function replaceImportStatements(
 
     let replacement = ''
     node.specifiers.forEach((specifier) => {
-      assert(specifier.type === 'ImportSpecifier' || specifier.type === 'ImportDefaultSpecifier')
+      assert(
+        specifier.type === 'ImportSpecifier' ||
+          specifier.type === 'ImportDefaultSpecifier' ||
+          specifier.type === 'ImportNamespaceSpecifier'
+      )
       const importLocalName = specifier.local.name
       const importExportName = (() => {
         if (specifier.type === 'ImportDefaultSpecifier') return 'default'
+        if (specifier.type === 'ImportNamespaceSpecifier') return '*'
         {
           const imported = (specifier as any).imported as Identifier | undefined
           if (imported) return imported.name

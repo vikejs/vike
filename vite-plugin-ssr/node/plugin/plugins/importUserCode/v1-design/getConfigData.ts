@@ -675,7 +675,9 @@ function getConfigDefinedAt(filePath: string, exportName: string, isDefaultExpor
     assert(exportName !== 'default')
     return `${filePath} > \`export default { ${exportName} }` as const
   } else {
-    if (exportName === 'default') {
+    if (exportName === '*') {
+      return `${filePath} > \`export *\`` as const
+    } else if (exportName === 'default') {
       return `${filePath} > \`export default\`` as const
     } else {
       return `${filePath} > \`export { ${exportName} }\`` as const
