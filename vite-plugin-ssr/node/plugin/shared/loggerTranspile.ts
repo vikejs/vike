@@ -1,6 +1,6 @@
 export { logInfoTranspile }
 export { logErrorTranspile }
-export { logVite }
+export { logAsVite }
 export { clearWithVite }
 export { addErrorIntroMsg }
 export { isErrorWithCodeSnippet }
@@ -51,14 +51,18 @@ function logInfoTranspile(
     clearWithVite(viteConfig)
   }
 
-  logMsg(msg, logType)
+  log(msg, logType)
 }
-function logMsg(msg: string, logType: LogType) {
+function log(msg: unknown, logType: LogType) {
   if (logType === 'info') {
     console.log(msg)
   } else if (logType === 'warn') {
     console.warn(msg)
-  } else if (logType === 'error' || logType === 'error-recover') {
+  } else if (logType === 'error') {
+    screenHasErrors = true
+    console.error(msg)
+  } else if (logType === 'error-recover') {
+    // stderr because user will most likely want to know about error recovering
     console.error(msg)
   } else {
     assert(false)
@@ -90,13 +94,13 @@ function logErrorTranspile(
     }
   }
 
-  screenHasErrors = true
-  logErr(err, { httpRequestId }, category)
-  store?.addLoggedError(err)
+  logErr(err, httpRequestId, category)
   return true
 }
-function logErr(...[err, { httpRequestId }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]): void {
+function logErr(err: unknown, httpRequestId: number | null, category: LogCategory): void {
   warnIfObjectIsNotObject(err)
+  const store = getAsyncHookStore()
+  store?.addLoggedError(err)
 
   {
     const { viteDevServer } = getGlobalContext()
@@ -118,19 +122,19 @@ function logErr(...[err, { httpRequestId }, category = null]: LogErrorArgs | [..
 
   if (isErrorDebug()) {
     logErrorIntro(err, httpRequestId, category)
-    console.error(err)
+    log(err, 'error')
     return
   }
 
   const errWithCodeSnippet = getErrorWithCodeSnippet(err, httpRequestId, category)
   if (errWithCodeSnippet) {
     // logErrorIntro()/addPrefix() already called
-    console.error(errWithCodeSnippet)
+    log(errWithCodeSnippet, 'error')
     return
   }
 
   logErrorIntro(err, httpRequestId, category)
-  console.error(err)
+  log(err, 'error')
 }
 function logErrorIntro(err: unknown, httpRequestId: number | null, category: null | LogCategory) {
   if (!isObject(err)) return
@@ -192,7 +196,8 @@ function addErrorIntroMsg(err: unknown, ...logInfoArgs: LogInfoArgs) {
   introMsgs.set(err, logInfoArgs)
 }
 
-function logVite(
+/** Used by Vite logger interceptor, e.g. to log a message with the "[vite]" tag */
+function logAsVite(
   msg: string,
   logType: LogType,
   httpRequestId: number | null,
@@ -205,7 +210,7 @@ function logVite(
   if (withTag) {
     msg = addPrefix(msg, 'vite', category, logType)
   }
-  logMsg(msg, logType)
+  log(msg, logType)
 }
 
 function addPrefix(msg: string, project: 'vite' | 'vite-plugin-ssr', category: LogCategory, logType: LogType) {
