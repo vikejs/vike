@@ -1,12 +1,12 @@
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react-swc'
 import mdx from '@mdx-js/rollup'
 import ssr from 'vite-plugin-ssr/plugin'
 import { UserConfig } from 'vite'
 
 export default {
   plugins: [
-    react(),
     mdx(),
+    react(),
     ssr({
       prerender: true
     })

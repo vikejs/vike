@@ -12,7 +12,7 @@
     "@types/node-fetch": "^2.6.4",
     "@types/react": "^18.2.8",
     "@types/react-dom": "^18.2.4",
-    "@vitejs/plugin-react": "^4.0.0",
+    "@vitejs/plugin-react-swc": "^3.3.2",
     "cross-fetch": "^3.1.6",
     "node-fetch": "^3.3.1",
     "react": "^18.2.0",
