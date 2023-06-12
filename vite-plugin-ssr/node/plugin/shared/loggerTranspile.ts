@@ -158,6 +158,12 @@ function getErrorWithCodeSnippet(
   httpRequestId: number | null,
   category: null | LogCategory
 ): string | null {
+  const errStr = getEsbuildFormattedError(err)
+  if (errStr) {
+    logErrorIntro(err, httpRequestId, category)
+    return errStr
+  }
+
   if (isFrameError(err)) {
     // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
     const viteConfig = getViteConfig()
@@ -167,12 +173,6 @@ function getErrorWithCodeSnippet(
       category = getCategoryRequest(httpRequestId)
     }
     errStr = addPrefix(errStr, 'vite', category, 'error')
-    return errStr
-  }
-
-  const errStr = getEsbuildFormattedError(err)
-  if (errStr) {
-    logErrorIntro(err, httpRequestId, category)
     return errStr
   }
 
