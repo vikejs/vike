@@ -197,7 +197,7 @@ function appendHeaderFileExtension(filePath: string) {
   return path.posix.join(path.posix.dirname(filePath), basenameCorrect)
 }
 
-// The Error.prepareStackTrace() hook of source-map-support needs to be called before clean() is called (i.e. before the file containing the inline source map is removed from disk)
+// Needed for the npm package 'source-map-support'. The Error.prepareStackTrace() hook of 'source-map-support' needs to be called before the file containing the source map is removed. The clean() call above removes the transpiled file from disk but it contains the inline source map.
 function triggerPrepareStackTrace(err: unknown) {
   if (isObject(err)) {
     // Accessing err.stack triggers prepareStackTrace()
