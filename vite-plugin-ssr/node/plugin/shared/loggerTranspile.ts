@@ -73,11 +73,12 @@ function clearWithVite(viteConfig: ResolvedConfig) {
 function logErrorTranspile(
   ...[err, { httpRequestId }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]
 ): boolean {
+  const store = getAsyncHookStore()
+
   if (isRenderErrorPageException(err)) {
     return false
   }
-  const store = getAsyncHookStore()
-  if (store?.loggedErrors.has(err)) {
+  if (store?.hasErrorLogged(err)) {
     return false
   }
 
@@ -91,7 +92,7 @@ function logErrorTranspile(
 
   screenHasErrors = true
   logErr(err, { httpRequestId }, category)
-  store?.loggedErrors.add(err)
+  store?.addLoggedError(err)
   return true
 }
 function logErr(...[err, { httpRequestId }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]): void {

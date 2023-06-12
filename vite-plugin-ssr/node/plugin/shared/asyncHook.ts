@@ -8,7 +8,12 @@ import { renderPage_setWrapper } from '../../runtime/renderPage'
 import { assert, isObject } from '../utils'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 
-type AsyncHookStore = { httpRequestId: number; loggedErrors: Set<unknown>; swallowedErrorMessages: Set<string> }
+type AsyncHookStore = {
+  httpRequestId: number
+  addLoggedError: (err: unknown) => void
+  hasErrorLogged: (err: unknown) => boolean
+  swallowedErrorMessages: Set<string>
+}
 let asyncLocalStorage: null | AsyncLocalStorageType<AsyncHookStore> = null
 
 async function installAsyncHook(): Promise<void> {
@@ -31,9 +36,13 @@ async function installAsyncHook(): Promise<void> {
         }
       })
     }
+    const addLoggedError = (err: unknown) => {
+      loggedErrors.add(err)
+    }
+    const hasErrorLogged = (err: unknown) => loggedErrors.has(err)
     assert(asyncLocalStorage)
     const pageContextReturn = await asyncLocalStorage.run(
-      { httpRequestId, loggedErrors, swallowedErrorMessages },
+      { httpRequestId, addLoggedError, hasErrorLogged, swallowedErrorMessages },
       renderPage
     )
     return { pageContextReturn, onRequestDone }
