@@ -32,7 +32,7 @@ async function installAsyncHook(): Promise<void> {
     }
     const hasErrorLogged = (err: unknown) => {
       if (loggedErrors.has(err)) return true
-      if (Array.from(loggedErrors).some((err2) => isEquivalentTranspilationError(err, err2))) return true
+      if (Array.from(loggedErrors).some((errAlreadyLogged) => isEquivalentOrSubset(err, errAlreadyLogged))) return true
       return false
     }
     assert(asyncLocalStorage)
@@ -67,16 +67,32 @@ function getAsyncHookStore(): null | undefined | AsyncHookStore {
   return store
 }
 
-function isEquivalentTranspilationError(err1: unknown, err2: unknown) {
+function isEquivalentOrSubset(err: unknown, errAlreadyLogged: unknown) {
+  const err1 = err
+  const err2 = errAlreadyLogged
+
   if (err1 === err2) return true
-  return (
-    isObject(err1) &&
-    isObject(err2) &&
+  if (!isObject(err1) || !isObject(err2)) return false
+
+  if (
     isDefinedAndSame(err1.message, err2.message) &&
     isDefinedAndSame(err1.frame, err2.frame) &&
     isDefinedAndSame(err1.id, err2.id) &&
     isUndefinedOrSame(err1[esbuildFormattedMessageKey], err2[esbuildFormattedMessageKey])
-  )
+  ) {
+    return true
+  }
+
+  if (
+    err1.constructor === (Error as any) &&
+    Object.keys(err1).length === 0 &&
+    isDefinedAndSame(err1.message, err2.message) &&
+    isDefinedAndSame(err1.stack, err2.stack)
+  ) {
+    return true
+  }
+
+  return false
 }
 function isDefinedAndSame(val1: unknown, val2: unknown) {
   return val1 && val1 === val2
