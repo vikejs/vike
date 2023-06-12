@@ -12,7 +12,7 @@ type AsyncHookStore = {
   httpRequestId: number
   addLoggedError: (err: unknown) => void
   hasErrorLogged: (err: unknown) => boolean
-  swallowedErrorMessages: Set<string>
+  addSwallowedErrorMessage: (errMsg: string) => void
 }
 let asyncLocalStorage: null | AsyncLocalStorageType<AsyncHookStore> = null
 
@@ -26,6 +26,12 @@ async function installAsyncHook(): Promise<void> {
   asyncLocalStorage = new mod.AsyncLocalStorage()
   renderPage_setWrapper(async (httpRequestId, renderPage) => {
     const loggedErrors = new Set<unknown>()
+    const addLoggedError = (err: unknown) => {
+      loggedErrors.add(err)
+    }
+    const hasErrorLogged = (err: unknown) => loggedErrors.has(err)
+    assert(asyncLocalStorage)
+
     const swallowedErrorMessages = new Set<string>()
     const onRequestDone = () => {
       swallowedErrorMessages.forEach((errMsg) => {
@@ -36,13 +42,12 @@ async function installAsyncHook(): Promise<void> {
         }
       })
     }
-    const addLoggedError = (err: unknown) => {
-      loggedErrors.add(err)
+    const addSwallowedErrorMessage = (errMsg: string) => {
+      swallowedErrorMessages.add(errMsg)
     }
-    const hasErrorLogged = (err: unknown) => loggedErrors.has(err)
-    assert(asyncLocalStorage)
+
     const pageContextReturn = await asyncLocalStorage.run(
-      { httpRequestId, addLoggedError, hasErrorLogged, swallowedErrorMessages },
+      { httpRequestId, addLoggedError, hasErrorLogged, addSwallowedErrorMessage },
       renderPage
     )
     return { pageContextReturn, onRequestDone }

@@ -42,7 +42,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
       return
     }
     if (msg.startsWith('Transform failed with ') && store && logType === 'error') {
-      store.swallowedErrorMessages.add(msg)
+      store.addSwallowedErrorMessage(msg)
       return
     }
 
