@@ -3,7 +3,6 @@ export { isFrameError }
 
 // For ./formatFrameError.spec.ts
 export { getErrMsg }
-export { containsCodeSnippet }
 
 // Copied & adapted from https://github.com/vitejs/vite/blob/9c114c5c72a6af87e3330d5573362554b4511265/packages/vite/src/node/server/middlewares/error.ts
 
@@ -70,6 +69,20 @@ function getErrMsg(err: FrameError): string {
   // Remove "Internal server error:" (useless)
   errMsg = errMsg.split(reg(['Internal server error', trail])).join('')
 
+  if (containsCodeSnippet(errMsg)) {
+    // Remove weird standalone code position " (2:7) "
+    errMsg = errMsg
+      .split('\n')
+      .map((line) => {
+        assert(/\(\d+:\d+\)/.test('(1:2)'))
+        if (!isCodeSnippetLine(line)) {
+          line = line.split(/\(\d+:\d+\)/).join('')
+        }
+        return line
+      })
+      .join('\n')
+  }
+
   errMsg = errMsg.trim()
   if (frame.includes(errMsg)) errMsg = ''
 
@@ -80,7 +93,7 @@ function containsCodeSnippet(str: string) {
   str = stripAnsi(str)
   let codeBlockSize = 0
   for (const line of str.split('\n')) {
-    if (!/[\s\d>]*|/.test(line)) {
+    if (!isCodeSnippetLine(line)) {
       codeBlockSize = 0
     } else {
       codeBlockSize++
@@ -90,6 +103,10 @@ function containsCodeSnippet(str: string) {
     }
   }
   return false
+}
+
+function isCodeSnippetLine(line: string): boolean {
+  return /[\s\d>]*\|/.test(line)
 }
 
 function reg(parts: (RegExp | string)[], flags: string = '') {

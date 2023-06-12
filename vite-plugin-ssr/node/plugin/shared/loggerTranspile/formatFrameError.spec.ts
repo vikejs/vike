@@ -1,6 +1,11 @@
 import { expect, describe, it } from 'vitest'
 import { getErrMsg } from './formatFrameError'
 
+// To generate new test cases:
+// ```bash
+// DEBUG=vps:error pnpm exec vite
+// ```
+
 const id = '/home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx'
 const frame = `Expected ";" but found "React"
 1  |  iemport React, { useState } from 'react'
@@ -30,19 +35,61 @@ describe('getErrMsg()', () => {
       const err = { message, id, frame }
       expect(getErrMsg(err)).toBe('abc')
     }
+    {
+      const codeSnippet = [
+        // prettier-ignore
+        '  | some',
+        '> | fake',
+        '  | code'
+      ].join('\n')
+      const message = `(1:2)\n${codeSnippet}`
+      const err = { message, id, frame }
+      expect(getErrMsg(err)).toBe(codeSnippet.trim())
+    }
+    {
+      const message = '(1:2)'
+      const err = { message, id, frame }
+      expect(getErrMsg(err)).toBe('(1:2)')
+    }
   })
-  it('real use case 1', () => {
+
+  it('real use case - @vitejs/plugin-react (1)', () => {
     const message = `Transform failed with 1 error:
 /home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx:1:8: ERROR: Expected ";" but found "React"`
     const err = { message, id, frame }
     expect(getErrMsg(err)).toBe('')
   })
-  it('real use case 2', () => {
+
+  it('real use case - @vitejs/plugin-react (2)', () => {
     const message =
       '/home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx:1:8: Expected ";" but found "React"'
     const err = { message, id, frame }
     expect(getErrMsg(err)).toBe('')
   })
+
+  it('real use case - @vitejs/plugin-vue', () => {
+    const id = '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1/pages/index/+Page.vue'
+    const message = `SyntaxError: [@vue/compiler-sfc] Missing semicolon. (2:7)
+
+/home/rom/code/vite-plugin-ssr/examples/vue-full-v1/pages/index/+Page.vue
+12 |  
+13 |  <script lang="ts" setup>
+14 |  iemport Counter from '../../components/Counter.vue'
+   |         ^
+15 |  import { navigate } from 'vite-plugin-ssr/client/router'
+16 |  `
+    const result = `SyntaxError: [@vue/compiler-sfc] Missing semicolon. 
+
+12 |  
+13 |  <script lang="ts" setup>
+14 |  iemport Counter from '../../components/Counter.vue'
+   |         ^
+15 |  import { navigate } from 'vite-plugin-ssr/client/router'
+16 |`
+    const err = { message, id, frame }
+    expect(getErrMsg(err)).toBe(result)
+  })
+
   /* Doesn't work. Should we make it work?
   it('real use case 3', () => {
     const message =
