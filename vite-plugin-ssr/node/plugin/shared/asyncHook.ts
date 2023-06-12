@@ -7,6 +7,7 @@ export { getAsyncHookStore }
 import { renderPage_setWrapper } from '../../runtime/renderPage'
 import { assert, isObject } from '../utils'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
+import { esbuildFormattedMessageKey } from './loggerTranspile/formatEsbuildError'
 
 type AsyncHookStore = {
   httpRequestId: number
@@ -29,7 +30,11 @@ async function installAsyncHook(): Promise<void> {
     const addLoggedError = (err: unknown) => {
       loggedErrors.add(err)
     }
-    const hasErrorLogged = (err: unknown) => loggedErrors.has(err)
+    const hasErrorLogged = (err: unknown) => {
+      if (loggedErrors.has(err)) return true
+      if (Array.from(loggedErrors).some((err2) => isEquivalentTranspilationError(err, err2))) return true
+      return false
+    }
     assert(asyncLocalStorage)
 
     const swallowedErrorMessages = new Set<string>()
@@ -60,4 +65,22 @@ function getAsyncHookStore(): null | undefined | AsyncHookStore {
   const store = asyncLocalStorage.getStore()
   assert(store === undefined || isObject(store))
   return store
+}
+
+function isEquivalentTranspilationError(err1: unknown, err2: unknown) {
+  if (err1 === err2) return true
+  return (
+    isObject(err1) &&
+    isObject(err2) &&
+    isDefinedAndSame(err1.message, err2.message) &&
+    isDefinedAndSame(err1.frame, err2.frame) &&
+    isDefinedAndSame(err1.id, err2.id) &&
+    isUndefinedOrSame(err1[esbuildFormattedMessageKey], err2[esbuildFormattedMessageKey])
+  )
+}
+function isDefinedAndSame(val1: unknown, val2: unknown) {
+  return val1 && val1 === val2
+}
+function isUndefinedOrSame(val1: unknown, val2: unknown) {
+  return (val1 === undefined && val2 === undefined) || val1 === val2
 }

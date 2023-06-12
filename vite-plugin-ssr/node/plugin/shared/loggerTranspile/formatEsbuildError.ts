@@ -1,8 +1,9 @@
 export { formatEsbuildError }
 export { isEsbuildFormattedError }
 export { getEsbuildFormattedError }
+export { key as esbuildFormattedMessageKey }
 
-import { formatMessages, PartialMessage } from 'esbuild'
+import { formatMessages } from 'esbuild'
 import { assert, assertIsVitePluginCode, isObject } from '../../utils'
 
 assertIsVitePluginCode()
