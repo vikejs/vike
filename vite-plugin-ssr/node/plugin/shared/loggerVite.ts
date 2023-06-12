@@ -26,10 +26,8 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
   config.logger[logType] = (msg, options: LogErrorOptions = {}) => {
     const store = getAsyncHookStore()
 
-    // timestamp => tag "[vite]" is prepended
-    const withTag = !!options.timestamp
-
-    if (withTag) {
+    if (!!options.timestamp) {
+      // timestamp => tag "[vite]" is prepended
       msg = trimWithAnsi(msg)
     } else {
       msg = trimWithAnsiTrail(msg)
@@ -62,6 +60,14 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
     isFirstViteLog = false
 
     if (options.error) store?.addLoggedError(options.error)
-    logAsVite(msg, logType, store?.httpRequestId ?? null, withTag, options.clear ?? false, config)
+    logAsVite(
+      msg,
+      logType,
+      store?.httpRequestId ?? null,
+      // Vite's default logger prints the "[vite]" tag when options.timestamp is true
+      options.timestamp || !!store?.httpRequestId,
+      options.clear ?? false,
+      config
+    )
   }
 }
