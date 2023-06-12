@@ -1,7 +1,3 @@
-/* Track down log origins
-import '../../utils/trackLogs'
-//*/
-
 export { renderPage } from './renderPage'
 export { escapeInject, dangerouslySkipEscape } from './html/renderHtml'
 export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './html/stream'

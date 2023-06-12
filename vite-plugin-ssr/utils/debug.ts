@@ -6,12 +6,24 @@ import { isBrowser } from './isBrowser'
 import { isCallable } from './isCallable'
 import { objectAssign } from './objectAssign'
 import { assert } from './assert'
+import { checkType } from './checkType'
 
 // Ensure that this is never loaded in the browser. (In order to avoid this file to be included in the client-side bundle.)
 // For isomorphic code: instead of `import { createDebugger } from './utils'`, use `globalThis.createDebugger()`.
 assert(!isBrowser())
 ;(globalThis as any).__brillout_debug_createDebugger = createDebugger
 
+type Namespace =
+  | 'vps:error'
+  | 'vps:extractAssets'
+  | 'vps:extractExportNames'
+  | 'vps:glob'
+  | 'vps:pageFiles'
+  | 'vps:log'
+  | 'vps:routing'
+  | 'vps:virtual-files'
+  | 'vps:stem'
+  | 'vps:stream'
 type Debug = ReturnType<typeof createDebugger>
 
 type Options = {
@@ -20,7 +32,9 @@ type Options = {
   }
 }
 
-function createDebugger(namespace: `vps:${string}`, optionsGlobal?: Options) {
+function createDebugger(namespace: Namespace, optionsGlobal?: Options) {
+  checkType<`vps:${string}`>(namespace)
+
   const debugWithOptions = (options: Options) => {
     return (...msgs: unknown[]) => {
       if (!isDebugEnabled(namespace)) return
@@ -43,7 +57,9 @@ function createDebugger(namespace: `vps:${string}`, optionsGlobal?: Options) {
   return debug
 }
 
-function isDebugEnabled(namespace: string): boolean {
+function isDebugEnabled(namespace: Namespace): boolean {
+  checkType<`vps:${string}`>(namespace)
+
   let DEBUG: undefined | string
   // - `process` can be undefined in edge workers
   // - We want bundlers to be able to statically replace `process.env.*`

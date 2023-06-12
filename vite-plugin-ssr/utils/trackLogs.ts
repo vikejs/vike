@@ -1,4 +1,8 @@
-trackLogs()
+import { isDebugEnabled } from './debug'
+
+if (isDebugEnabled('vps:log')) {
+  trackLogs()
+}
 
 // https://stackoverflow.com/questions/45395369/how-to-get-console-log-line-numbers-shown-in-nodejs/75109905#75109905
 function trackLogs() {

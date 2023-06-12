@@ -3,6 +3,8 @@ import { isBrowser } from '../../utils/isBrowser'
 import { assert } from '../../utils/assert'
 assert(!isBrowser())
 
+import '../../utils/trackLogs'
+
 export * from '../../utils/assert'
 export * from '../../utils/cast'
 export * from '../../utils/checkType'
