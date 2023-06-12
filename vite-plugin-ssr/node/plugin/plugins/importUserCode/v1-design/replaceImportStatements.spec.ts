@@ -31,5 +31,18 @@ describe('getErrMsg()', () => {
         "noImportStatement": false,
       }
     `)
+    expect(replaceImportStatements("import { bla as blu } from './bla'", file)).toMatchInlineSnapshot(`
+      {
+        "code": "const blu = '​import:./bla:bla';",
+        "fileImports": [
+          {
+            "importDataString": "​import:./bla:bla",
+            "importLocalName": "blu",
+            "importStatementCode": "import { bla as blu } from './bla'",
+          },
+        ],
+        "noImportStatement": false,
+      }
+    `)
   })
 })
