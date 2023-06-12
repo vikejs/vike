@@ -1,11 +1,14 @@
 export { formatFrameError }
 export { isFrameError }
+
 // For ./formatFrameError.spec.ts
 export { getErrMsg }
+export { containsCodeSnippet }
 
 // Copied & adapted from https://github.com/vitejs/vite/blob/9c114c5c72a6af87e3330d5573362554b4511265/packages/vite/src/node/server/middlewares/error.ts
 
 import pc from '@brillout/picocolors'
+import stripAnsi from 'strip-ansi'
 import { assert, escapeRegex, getFilePathVite, isObject } from '../../utils'
 
 // Subset of RollupError
@@ -31,7 +34,17 @@ function formatFrameError(err: FrameError, userRootDir: string): string {
 
   const errMsg = getErrMsg(err)
 
-  const msg = [msgFirstLine, errMsg, pc.yellow(frame)].filter(Boolean).join('\n')
+  const msg = [
+    msgFirstLine,
+    errMsg,
+    // Many tools set 'error.frame' to something rubbish, for example:
+    //  - @vitejs/plugin-vue
+    //  - @vitejs/plugin-react-swc
+    // Conditionally swallowing frame is a risky move but seems to work.
+    containsCodeSnippet(errMsg) ? null : pc.yellow(frame)
+  ]
+    .filter(Boolean)
+    .join('\n')
   return msg
 
   /* Showing the error layover didn't properly work last time we tried. But we don't really need it, do we?
@@ -45,10 +58,6 @@ function formatFrameError(err: FrameError, userRootDir: string): string {
 function getErrMsg(err: FrameError): string {
   const { id, frame } = err
   let errMsg = err.message
-
-  // errMsg = removeRedundantFrame(errMsg, err)
-  // errMsg = stripAnsi(errMsg)
-  // errMsg = errMsg.split(stripAnsi(frame)).join('')
 
   const trail = /(?:\:|)(?:\s|$)/
   // Remove redundant message: "Transform failed with 1 error:" (redundant since we already print an intro message)
@@ -67,9 +76,20 @@ function getErrMsg(err: FrameError): string {
   return errMsg
 }
 
-function removeRedundantFrame(errMsg: string, err: FrameError) {
-  //if( !err.plugin?.includes('babel')) return errMsg
-  //return errMsg
+function containsCodeSnippet(str: string) {
+  str = stripAnsi(str)
+  let codeBlockSize = 0
+  for (const line of str.split('\n')) {
+    if (!/[\s\d>]*|/.test(line)) {
+      codeBlockSize = 0
+    } else {
+      codeBlockSize++
+    }
+    if (codeBlockSize >= 3) {
+      return true
+    }
+  }
+  return false
 }
 
 function reg(parts: (RegExp | string)[], flags: string = '') {
