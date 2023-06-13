@@ -5,7 +5,7 @@ export { isDisableAutomaticLinkInterception }
 import {
   assert,
   getCurrentUrl,
-  isSameErrorMessage,
+  isEquivalentError,
   objectAssign,
   serverSideRouteTo,
   throttle,
@@ -199,7 +199,7 @@ function useClientRouter() {
           }, 0)
         }
 
-        if (!isSameErrorMessage(err, err2)) {
+        if (!isEquivalentError(err, err2)) {
           throw err2
         } else {
           // Abort

@@ -1,3 +1,5 @@
+// Logger used by the the server runtime. (Which is also used when pre-rendering.)
+
 export let logError: LogError = logErrorProd
 export let logInfo: null | LogInfo = null
 export { setRuntimeLogger }
