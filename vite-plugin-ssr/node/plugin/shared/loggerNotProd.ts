@@ -52,16 +52,6 @@ type LogErrorArgs = Parameters<typeof logRuntimeError>
 type LogError = (...args: LogErrorArgs) => void
 type HttpRequestId = number | null
 
-let isFirstLog = true
-onLog(() => {
-  isFirstLog = false
-})
-
-let screenHasErrors = false
-onErrorLog(() => {
-  screenHasErrors = true
-})
-
 function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType, clearConditions?: ClearConditions) {
   clearWithCondition(clearConditions)
   const category = getCategoryRequest(httpRequestId)
@@ -203,6 +193,14 @@ function getConfigLogCategory(): LogCategory {
   return category
 }
 
+let isFirstLog = true
+onLog(() => {
+  isFirstLog = false
+})
+let screenHasErrors = false
+onErrorLog(() => {
+  screenHasErrors = true
+})
 type ClearConditions = { clearErrors?: boolean; clearIfFirstLog?: boolean }
 function clearWithCondition(conditions: ClearConditions = {}) {
   const { clearErrors, clearIfFirstLog } = conditions
