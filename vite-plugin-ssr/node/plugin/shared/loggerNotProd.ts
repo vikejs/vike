@@ -1,7 +1,8 @@
 // Non-production logger used for:
 //  - Development
-//  - During build & pre-rendering
 //  - Preview
+//  - Build
+//  - Pre-rendering
 
 export { logInfoNotProd }
 export { logErrorNotProd }
@@ -10,12 +11,13 @@ export { clearWithVite }
 export { addErrorIntroMsg }
 export { isErrorWithCodeSnippet }
 export type { LogInfoArgs }
+export type { LogInfo }
 
 import pc from '@brillout/picocolors'
 import type { ResolvedConfig } from 'vite'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { getGlobalContext, getViteConfig } from '../../runtime/globalContext'
-import { LogErrorArgs, logError_set, logInfo_set } from '../../runtime/renderPage/loggerRuntime'
+import { setRuntimeLogger } from '../../runtime/renderPage/loggerRuntime'
 import { isFirstViteLog } from './loggerVite'
 import {
   assert,
@@ -30,14 +32,15 @@ import { getAsyncHookStore } from './asyncHook'
 import { isErrorDebug } from './isErrorDebug'
 import { isFrameError, formatFrameError } from './loggerTranspile/formatFrameError'
 import { getEsbuildFormattedError, isEsbuildFormattedError } from './loggerTranspile/formatEsbuildError'
+import type { LogErrorArgs } from '../../runtime/renderPage/loggerProd'
 
 assertIsVitePluginCode()
-logInfo_set(logInfoNotProd)
-logError_set(logErrorNotProd)
+setRuntimeLogger(logErrorNotProd, logInfoNotProd)
 
 type LogCategory = 'config' | `request(${number})` | null
 type LogType = 'info' | 'warn' | 'error' | 'error-recover'
 type LogInfoArgs = Parameters<typeof logInfoNotProd>
+type LogInfo = (...args: LogInfoArgs) => void
 const introMsgs = new WeakMap<object, LogInfoArgs>()
 let screenHasErrors = false
 
