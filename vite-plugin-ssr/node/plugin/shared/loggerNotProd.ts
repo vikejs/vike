@@ -204,7 +204,7 @@ onErrorLog(() => {
 type ClearConditions = { clearErrors?: boolean; clearIfFirstLog?: boolean }
 function clearWithCondition(conditions: ClearConditions = {}) {
   const { clearErrors, clearIfFirstLog } = conditions
-  const clear = (clearErrors && screenHasErrors) || (clearIfFirstLog && isFirstLog && assertHasLogged())
+  const clear = (clearErrors && screenHasErrors) || (clearIfFirstLog && isFirstLog && !assertHasLogged())
   if (clear) {
     const viteConfig = getViteConfig()
     assert(viteConfig)
