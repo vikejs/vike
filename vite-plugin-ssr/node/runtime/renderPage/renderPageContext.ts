@@ -73,9 +73,7 @@ async function renderPageContext<
       await executeOnBeforeRenderHooks(pageContext)
     } catch (err) {
       if (isNewError(err, pageContext.errorWhileRendering)) {
-        logError(err, {
-          httpRequestId: pageContext._httpRequestId
-        })
+        logError(err, pageContext._httpRequestId)
       }
     }
   }

@@ -6,12 +6,16 @@
 
 export { logInfoNotProd }
 export { logErrorNotProd }
+export { logConfigError }
 export { logAsVite }
 export { clearWithVite }
-export { addErrorIntroMsg }
-export { isErrorWithCodeSnippet }
-export type { LogInfoArgs }
 export type { LogInfo }
+export type { LogInfoArgs }
+export type { LogError }
+export type { LogErrorArgs }
+export type { LogType }
+export type { LogCategory }
+export type { HttpRequestId }
 
 import pc from '@brillout/picocolors'
 import type { ResolvedConfig } from 'vite'
@@ -19,82 +23,54 @@ import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPag
 import { getGlobalContext, getViteConfig } from '../../runtime/globalContext'
 import { setRuntimeLogger } from '../../runtime/renderPage/loggerRuntime'
 import { isFirstViteLog } from './loggerVite'
-import {
-  assert,
-  assertIsVitePluginCode,
-  hasProp,
-  isObject,
-  isUserHookError,
-  projectInfo,
-  warnIfObjectIsNotObject
-} from '../utils'
+import { assert, assertIsVitePluginCode, hasProp, isUserHookError, stripAnsi, warnIfObjectIsNotObject } from '../utils'
 import { getAsyncHookStore } from './asyncHook'
 import { isErrorDebug } from './isErrorDebug'
 import { isFrameError, formatFrameError } from './loggerNotProd/formatFrameError'
-import type { LogErrorArgs } from '../../runtime/renderPage/loggerProd'
-import { getEsbuildErrMsg } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
+import {
+  getConfigExecErrIntroMsg,
+  getConfigEsbuildErrFormattedMsg
+} from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
+import { logWithVikePrefix, logWithVitePrefix, logWithoutPrefix, onErrorLog } from './loggerNotProd/log'
 
 assertIsVitePluginCode()
 setRuntimeLogger(logErrorNotProd, logInfoNotProd)
 
-type LogCategory = 'config' | `request(${number})` | null
+type LogCategory = 'config' | `request(${number})`
 type LogType = 'info' | 'warn' | 'error' | 'error-recover'
 type LogInfoArgs = Parameters<typeof logInfoNotProd>
 type LogInfo = (...args: LogInfoArgs) => void
-const introMsgs = new WeakMap<object, LogInfoArgs>()
+type LogErrorArgs = [err: unknown, httpRequestId: number | null]
+type LogError = (...args: LogErrorArgs) => boolean
+/** `httpRequestId` is `null` when pre-rendering */
+type HttpRequestId = number | null
+
 let screenHasErrors = false
+onErrorLog(() => {
+  screenHasErrors = true
+})
 
-function logInfoNotProd(
-  msg: string,
-  category: LogCategory,
-  logType: LogType,
-  options: { clearErrors?: boolean; clearIfFirstLog?: boolean } = {}
-) {
-  const clear = (options.clearErrors && screenHasErrors) || (options.clearIfFirstLog && isFirstViteLog)
-  if (clear) {
-    const viteConfig = getViteConfig()
-    assert(viteConfig)
-    clearWithVite(viteConfig)
-  }
-  logWithPrefix(msg, logType, category)
-}
-function logWithPrefix(msg: string, logType: LogType, category: LogCategory) {
-  msg = addPrefix(msg, projectInfo.projectName, category, logType)
-  log(msg, logType)
-}
-function log(msg: unknown, logType: LogType) {
-  if (logType === 'info') {
-    console.log(msg)
-  } else if (logType === 'warn') {
-    console.warn(msg)
-  } else if (logType === 'error') {
-    screenHasErrors = true
-    console.error(msg)
-  } else if (logType === 'error-recover') {
-    // stderr because user will most likely want to know about error recovering
-    console.error(msg)
-  } else {
-    assert(false)
-  }
+function logInfoNotProd(msg: string, category: LogCategory, logType: LogType, clearConditions?: ClearConditions) {
+  clearWithConditions(clearConditions)
+  assert(category)
+  logWithVikePrefix(msg, logType, category)
 }
 
-function clearWithVite(viteConfig: ResolvedConfig) {
-  screenHasErrors = false
-  // We use Vite's logger in order to respect the user's `clearScreen: false` setting
-  viteConfig.logger.clearScreen('error')
-}
-
-function logErrorNotProd(
-  ...[err, { httpRequestId }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]
-): boolean {
-  const store = getAsyncHookStore()
-
+function logErrorNotProd(err: unknown, httpRequestId: HttpRequestId): boolean {
   if (isRenderErrorPageException(err)) {
     return false
   }
-  if (store?.hasErrorLogged(err)) {
+  if (getAsyncHookStore()?.hasErrorLogged(err)) {
     return false
   }
+  logErr(err, httpRequestId, null)
+  return true
+}
+function logErr(err: unknown, httpRequestId: number | null, category: LogCategory | null): void {
+  warnIfObjectIsNotObject(err)
+
+  const store = getAsyncHookStore()
+  store?.addLoggedError(err)
 
   if (store?.httpRequestId) {
     if (httpRequestId === null) {
@@ -103,14 +79,9 @@ function logErrorNotProd(
       assert(httpRequestId === store.httpRequestId)
     }
   }
-
-  logErr(err, httpRequestId, category)
-  return true
-}
-function logErr(err: unknown, httpRequestId: number | null, category: LogCategory): void {
-  warnIfObjectIsNotObject(err)
-  const store = getAsyncHookStore()
-  store?.addLoggedError(err)
+  if (!category && httpRequestId) {
+    category = getCategoryRequest(httpRequestId)
+  }
 
   {
     const { viteDevServer } = getGlobalContext()
@@ -130,48 +101,32 @@ function logErr(err: unknown, httpRequestId: number | null, category: LogCategor
     }
   }
 
-  if (isErrorDebug()) {
-    logErrorIntro(err, httpRequestId, category)
-    log(err, 'error')
-    return
+  {
+    const hook = isUserHookError(err)
+    if (hook) {
+      const { hookName, hookFilePath } = hook
+      logWithVikePrefix(pc.red(`Error thrown by hook ${hookName}() (${hookFilePath}):`), 'error', category)
+      logWithoutPrefix(err, 'error')
+      return
+    }
   }
 
-  const errWithCodeSnippet = getErrorWithCodeSnippet(err, httpRequestId, category)
-  if (errWithCodeSnippet) {
-    // logErrorIntro()/addPrefix() already called
-    log(errWithCodeSnippet, 'error')
+  if (isFrameError(err) && !isErrorDebug()) {
+    // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
+    const viteConfig = getViteConfig()
+    assert(viteConfig)
+    let errMsg = formatFrameError(err, viteConfig.root)
+    assert(stripAnsi(errMsg).startsWith('Failed to transpile'))
+    logWithVitePrefix(errMsg, 'error', category)
     logErrorDebugNote()
     return
   }
 
-  logErrorIntro(err, httpRequestId, category)
-  log(err, 'error')
-  logErrorDebugNote()
-}
-function logErrorIntro(err: unknown, httpRequestId: number | null, category: null | LogCategory) {
-  if (!isObject(err)) return
-  if (introMsgs.has(err)) {
-    const logInfoArgs = introMsgs.get(err)!
-    logInfoNotProd(...logInfoArgs)
-    return
-  }
-  if (!category && httpRequestId) {
-    category = getCategoryRequest(httpRequestId)
-  }
-  const hook = isUserHookError(err)
-  if (hook) {
-    const { hookName, hookFilePath } = hook
-    logWithPrefix(pc.red(`Error thrown by hook ${hookName}() (${hookFilePath}):`), 'error', category)
-    return
-  }
-  if (category) {
-    logWithPrefix(pc.red('Error thrown:'), 'error', category)
-    return
-  }
+  logErrFallback(err, category)
 }
 
 function logErrorDebugNote() {
-  assert(!isErrorDebug())
+  if (isErrorDebug()) return
   const msg = pc.dim(
     [
       '=======================================================================',
@@ -179,45 +134,11 @@ function logErrorDebugNote() {
       '======================================================================='
     ].join('\n')
   )
-  log(msg, 'error')
-}
-
-function getErrorWithCodeSnippet(
-  err: unknown,
-  httpRequestId: number | null,
-  category: null | LogCategory
-): string | null {
-  const errStr = getEsbuildErrMsg(err)
-  if (errStr) {
-    logErrorIntro(err, httpRequestId, category)
-    return errStr
-  }
-
-  if (isFrameError(err)) {
-    // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
-    const viteConfig = getViteConfig()
-    assert(viteConfig)
-    let errStr = formatFrameError(err, viteConfig.root)
-    if (!category && httpRequestId) {
-      category = getCategoryRequest(httpRequestId)
-    }
-    errStr = addPrefix(errStr, 'vite', category, 'error')
-    return errStr
-  }
-
-  return null
-}
-function isErrorWithCodeSnippet(err: unknown): boolean {
-  return isFrameError(err) || !!getEsbuildErrMsg(err)
+  logWithoutPrefix(msg, 'error')
 }
 
 function getCategoryRequest(httpRequestId: number) {
   return `request(${httpRequestId})` as const
-}
-
-function addErrorIntroMsg(err: unknown, ...logInfoArgs: LogInfoArgs) {
-  assert(isObject(err))
-  introMsgs.set(err, logInfoArgs)
 }
 
 /** Used by Vite logger interceptor, e.g. to log a message with the "[vite]" tag */
@@ -225,48 +146,63 @@ function logAsVite(
   msg: string,
   logType: LogType,
   httpRequestId: number | null,
-  withTag: boolean,
+  withPrefix: boolean,
   clear: boolean,
   viteConfig: ResolvedConfig
 ) {
   if (clear) clearWithVite(viteConfig)
   const category = httpRequestId ? getCategoryRequest(httpRequestId) : null
-  if (withTag) {
-    msg = addPrefix(msg, 'vite', category, logType)
-  }
-  log(msg, logType)
-  if (logType === 'error') {
-    logErrorDebugNote()
+  if (withPrefix) {
+    logWithVitePrefix(msg, logType, category)
+  } else {
+    logWithoutPrefix(msg, logType)
   }
 }
 
-function addPrefix(msg: string, project: 'vite' | 'vite-plugin-ssr', category: LogCategory, logType: LogType) {
-  const color = (s: string) => {
-    if (logType === 'error' && !hasRed(msg)) return pc.red(s)
-    if (logType === 'error-recover' && !hasGreen(msg)) return pc.green(s)
-    if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(s)
-    if (project === 'vite-plugin-ssr') return pc.yellow(s)
-    if (project === 'vite') return pc.cyan(s)
-    assert(false)
+function logConfigError(err: unknown) {
+  const store = getAsyncHookStore()
+  const category = store?.httpRequestId ? getCategoryRequest(store?.httpRequestId) : 'config'
+  {
+    const errIntroMsg = getConfigExecErrIntroMsg(err)
+    if (errIntroMsg) {
+      clearWithConditions({ clearIfFirstLog: true })
+      assert(stripAnsi(errIntroMsg).startsWith('Failed to execute'))
+      logWithVikePrefix(errIntroMsg, 'error', category)
+      logWithoutPrefix(err, 'error')
+      return
+    }
   }
-  let tag = color(pc.bold(`[${project}]`))
+  {
+    let errMsg = getConfigEsbuildErrFormattedMsg(err)
+    if (errMsg) {
+      clearWithConditions({ clearIfFirstLog: true })
+      assert(stripAnsi(errMsg).startsWith('Failed to transpile'))
+      logWithVikePrefix(errMsg, 'error', category)
+      return
+    }
+  }
+
+  logErrFallback(err, category)
+}
+function logErrFallback(err: unknown, category: LogCategory | null) {
   if (category) {
-    tag = tag + pc.dim(`[${category}]`)
+    logWithVikePrefix(pc.red('Error thrown:'), 'error', category)
   }
+  logWithoutPrefix(err, 'error')
+}
 
-  const timestamp = pc.dim(new Date().toLocaleTimeString())
-
-  return `${timestamp} ${tag} ${msg}`
+type ClearConditions = { clearErrors?: boolean; clearIfFirstLog?: boolean }
+function clearWithConditions(conditions: ClearConditions = {}) {
+  const { clearErrors, clearIfFirstLog } = conditions
+  const clear = (clearErrors && screenHasErrors) || (clearIfFirstLog && isFirstViteLog)
+  if (clear) {
+    const viteConfig = getViteConfig()
+    assert(viteConfig)
+    clearWithVite(viteConfig)
+  }
 }
-function hasRed(str: string): boolean {
-  // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L57
-  return str.includes('\x1b[31m')
-}
-function hasGreen(str: string): boolean {
-  // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L58
-  return str.includes('\x1b[32m')
-}
-function hasYellow(str: string): boolean {
-  // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L59
-  return str.includes('\x1b[31m')
+function clearWithVite(viteConfig: ResolvedConfig) {
+  screenHasErrors = false
+  // We use Vite's logger in order to respect the user's `clearScreen: false` setting
+  viteConfig.logger.clearScreen('error')
 }

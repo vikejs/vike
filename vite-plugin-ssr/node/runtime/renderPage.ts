@@ -106,7 +106,7 @@ async function renderPage_(
     // Errors are expected since assertUsage() is used in both initGlobalContext() and getRenderContext().
     // initGlobalContext() and getRenderContext() don't call any user hooks => err isn't thrown from user code
     assert(!isRenderErrorPageException(err))
-    logError(err, { httpRequestId })
+    logError(err, httpRequestId)
     const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(err, pageContextInit)
     return pageContextHttpReponseNull
   }
@@ -128,7 +128,7 @@ async function renderPage_(
       errored = false
     } catch (err) {
       errFirstAttempt = err
-      logError(errFirstAttempt, { httpRequestId })
+      logError(errFirstAttempt, httpRequestId)
       errored = true
       pageContextFirstAttemptPartial = pageContext
     }
@@ -178,7 +178,7 @@ async function renderPage_(
     } catch (err) {
       errErrorPage = err
       if (isNewError(errErrorPage, errFirstAttempt)) {
-        logError(errErrorPage, { httpRequestId })
+        logError(errErrorPage, httpRequestId)
       }
     }
     if (errErrorPage === undefined) {

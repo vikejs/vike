@@ -5,11 +5,10 @@ export let logInfo: null | LogInfo = null
 export { setRuntimeLogger }
 
 import { logErrorProd } from './loggerProd'
-import type { LogError } from './loggerProd'
-import type { LogInfo } from '../../plugin/shared/loggerNotProd'
+import type { LogError, LogInfo } from '../../plugin/shared/loggerNotProd'
 
 logError =
-  // @ts-ignore
+  // @ts-expect-error
   logError ??
   // Default
   logErrorProd

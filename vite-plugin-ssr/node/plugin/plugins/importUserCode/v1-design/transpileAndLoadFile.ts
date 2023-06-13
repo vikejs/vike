@@ -1,5 +1,6 @@
 export { transpileAndLoadFile }
-export { getEsbuildErrMsg }
+export { getConfigEsbuildErrFormattedMsg }
+export { getConfigExecErrIntroMsg }
 
 import { build, type BuildResult, type BuildOptions, formatMessages } from 'esbuild'
 import fs from 'fs'
@@ -19,9 +20,8 @@ import {
 import { isImportData, replaceImportStatements, type FileImport } from './replaceImportStatements'
 import { getConfigData_dependenciesInvisibleToVite, getFilePathToShowToUser, type FilePath } from './getConfigData'
 import 'source-map-support/register'
-import { addErrorIntroMsg } from '../../../shared/loggerNotProd'
-
 assertIsVitePluginCode()
+const execErrIntroMsg = new WeakMap<object, string>()
 
 type Result = { fileExports: Record<string, unknown> }
 
@@ -61,7 +61,9 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
     fileExports = await import_(filePathTmp)
   } catch (err) {
     triggerPrepareStackTrace(err)
-    addErrorIntro(err, 'execute', filePath)
+    const errIntroMsg = getErrIntroMsg('execute', filePath)
+    assert(isObject(err))
+    execErrIntroMsg.set(err, errIntroMsg)
     throw err
   } finally {
     clean()
@@ -111,8 +113,7 @@ async function buildFile(filePath: FilePath, { bundle }: { bundle: boolean }) {
   try {
     result = await build(options)
   } catch (err) {
-    await formatEsbuildError(err)
-    addErrorIntro(err, 'transpile', filePath)
+    await formatEsbuildError(err, filePath)
     throw err
   }
   const { text } = result.outputFiles![0]!
@@ -207,29 +208,38 @@ function triggerPrepareStackTrace(err: unknown) {
   }
 }
 
-function addErrorIntro(err: unknown, operation: 'transpile' | 'execute', filePath: FilePath) {
+function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePath) {
   const msg = [
     pc.red(`Failed to ${operation}`),
     pc.red(pc.bold(getFilePathToShowToUser(filePath))),
     pc.red(`because:`)
   ].join(' ')
-  addErrorIntroMsg(err, msg, 'config', 'error', { clearIfFirstLog: true })
+  return msg
 }
 
-const esbuildErrMsgKey = '_esbuildFormatted'
-async function formatEsbuildError(err: unknown): Promise<void> {
-  assert(isObject(err))
-  if (err.errors) {
-    const msgs = await formatMessages(err.errors as any, {
+const formattedMsg = '_formattedMsg'
+async function formatEsbuildError(err: unknown, filePath: FilePath): Promise<void> {
+  if (!isObject(err) || !err.errors) return
+  const msgEsbuild = (
+    await formatMessages(err.errors as any, {
       kind: 'error',
       color: true
     })
-    err[esbuildErrMsgKey] = msgs.map((m) => m.trim()).join('\n')
-  }
+  )
+    .map((m) => m.trim())
+    .join('\n')
+  const msgIntro = getErrIntroMsg('transpile', filePath)
+  err[formattedMsg] = `${msgIntro}\n${msgEsbuild}`
 }
-function getEsbuildErrMsg(err: unknown): null | string {
+function getConfigEsbuildErrFormattedMsg(err: unknown): null | string {
   if (!isObject(err)) return null
-  if (!(esbuildErrMsgKey in err)) return null
-  assert(typeof err[esbuildErrMsgKey] === 'string')
-  return err[esbuildErrMsgKey]
+  if (!(formattedMsg in err)) return null
+  assert(typeof err[formattedMsg] === 'string')
+  return err[formattedMsg]
+}
+
+function getConfigExecErrIntroMsg(err: unknown): string | null {
+  if (!isObject(err)) return null
+  const errIntroMsg = execErrIntroMsg.get(err)
+  return errIntroMsg ?? null
 }

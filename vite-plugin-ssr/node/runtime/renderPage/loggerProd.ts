@@ -2,24 +2,14 @@
 // Any other environement (dev, preview, build, and pre-rendering) uses loggerNotProd.ts instead.
 
 export { logErrorProd }
-export type { LogErrorArgs }
-export type { LogError }
 
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { isObject, warnIfObjectIsNotObject } from '../utils'
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from './isNewError'
+import type { HttpRequestId } from '../../plugin/shared/loggerNotProd'
 
-type LogError = (...args: LogErrorArgs) => boolean
-type LogErrorArgs = [
-  unknown,
-  {
-    /** `httpRequestId` is `null` when pre-rendering */
-    httpRequestId: number | null
-  }
-]
-
-function logErrorProd(err: unknown): boolean {
+function logErrorProd(err: unknown, _httpRquestId: HttpRequestId): boolean {
   warnIfObjectIsNotObject(err)
   setAlreadyLogged(err)
 

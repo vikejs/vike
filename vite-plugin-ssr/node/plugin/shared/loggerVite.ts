@@ -3,7 +3,8 @@ export { isFirstViteLog }
 
 import { assert, assertHasLogged, trimWithAnsi, trimWithAnsiTrail } from '../utils'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
-import { isErrorWithCodeSnippet, logErrorNotProd, logAsVite } from './loggerNotProd'
+import { logErrorNotProd, logAsVite } from './loggerNotProd'
+import { isFrameError } from './loggerNotProd/formatFrameError'
 import { getAsyncHookStore } from './asyncHook'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
@@ -45,10 +46,8 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
 
     if (options.error) {
       const { error } = options
-      if (isErrorWithCodeSnippet(error)) {
-        logErrorNotProd(error, {
-          httpRequestId: store?.httpRequestId ?? null
-        })
+      if (isFrameError(error)) {
+        logErrorNotProd(error, store?.httpRequestId ?? null)
         assert(!store || store.hasErrorLogged(error))
         return
       }
