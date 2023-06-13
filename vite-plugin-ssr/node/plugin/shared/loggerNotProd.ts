@@ -162,7 +162,7 @@ function logErrorIntro(err: unknown, httpRequestId: number | null, category: nul
     logInfoNotProd(pc.red(`Error thrown by hook ${hookName}() (${hookFilePath}):`), category, 'error')
     return
   }
-  if (httpRequestId !== null) {
+  if (category) {
     logInfoNotProd(pc.red('Error thrown:'), category, 'error')
     return
   }
