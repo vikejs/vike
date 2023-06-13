@@ -2,9 +2,16 @@ import { RepoLink, Link } from '@brillout/docpress'
 
 Environment: server.
 
-We use `renderPage()` in order to server-side render our pages.
+The `renderPage()` function renders your pages.
 
-> If we <Link text="pre-render" href="/pre-rendering" /> all our pages then we can omit using `renderPage()`. (We still need `renderPage()` for development, but we can use Vite's development server as vite-plugin-ssr automatically embeds `renderPage()` into it.)
+If you want to use server-side rendering (SSR), then you need to manually integrate `renderPage()` to your server (see <Link href="#usage" />).
+
+If you <Link text="pre-render" href="/pre-rendering" /> all your pages, then you don't need to call `renderPage()` manually yourself, because:
+ - Vite-plugin-ssr automatically integrates `renderPage()` into Vite's development server (`$ vite`/`$ vite dev`) and Vite's preview server (`$ vite preview`).
+ - During pre-rendering (`$ vite build`/`$ vite-plugin-ssr prerender`) vite-plugin-ssr automatically renders your pages.
+
+
+## Usage
 
 ```js
 // server.js
@@ -19,22 +26,26 @@ const root = `${__dirname}/..`
 startServer()
 
 async function startServer() {
+  // Create an Express.js server
   const app = express()
 
-  if (isProduction) {
-    app.use(express.static(`${root}/${outDir}/client`))
-  } else {
-    // Instantiate Vite's development server and integrate its middleware to our server.
-    // ⚠️ We should instantiate it *only* in development. (It isn't needed in production
-    // and would unnecessarily bloat our server in production.)
+  // Integrate Vite
+  if (!isProduction) {
+    // We instantiate Vite's development server and integrate its middleware to our server.
+    // ⚠️ We instantiate it *only* in development. (It isn't needed in production and it
+    // would unnecessarily bloat our server in production.)
     const vite = await import('vite')
     const viteDevMiddleware = (await vite.createServer({
       root,
       server: { middlewareMode: true }
     })).middlewares
     app.use(viteDevMiddleware)
+  } else {
+    // In production, we need to serve our static assets ourselves.
+    app.use(express.static(`${root}/${outDir}/client`))
   }
 
+  // Integrate vite-plugin-ssr
   app.get('*', async (req, res, next) => {
     const pageContextInit = { urlOriginal: req.originalUrl }
     const pageContext = await renderPage(pageContextInit)
