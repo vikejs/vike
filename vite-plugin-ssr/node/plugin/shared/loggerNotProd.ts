@@ -153,6 +153,8 @@ function logErr(err: unknown, httpRequestId: HttpRequestId = null): void {
   logErrFallback(err, category)
 }
 function logConfigError(err: unknown): void {
+  warnIfObjectIsNotObject(err)
+
   const category = getConfigLogCategory()
 
   {
