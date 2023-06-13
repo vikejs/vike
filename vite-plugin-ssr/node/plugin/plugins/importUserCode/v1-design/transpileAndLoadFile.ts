@@ -1,5 +1,4 @@
 export { transpileAndLoadFile }
-export { hasEsbuildErrMsg }
 export { getEsbuildErrMsg }
 
 import { build, type BuildResult, type BuildOptions, formatMessages } from 'esbuild'
@@ -23,8 +22,6 @@ import 'source-map-support/register'
 import { addErrorIntroMsg } from '../../../shared/loggerNotProd'
 
 assertIsVitePluginCode()
-
-const esbuildErrMsgKey = '_esbuildFormatted'
 
 type Result = { fileExports: Record<string, unknown> }
 
@@ -219,6 +216,7 @@ function addErrorIntro(err: unknown, operation: 'transpile' | 'execute', filePat
   addErrorIntroMsg(err, msg, 'config', 'error', { clearIfFirstLog: true })
 }
 
+const esbuildErrMsgKey = '_esbuildFormatted'
 async function formatEsbuildError(err: unknown): Promise<void> {
   assert(isObject(err))
   if (err.errors) {
@@ -229,14 +227,9 @@ async function formatEsbuildError(err: unknown): Promise<void> {
     err[esbuildErrMsgKey] = msgs.map((m) => m.trim()).join('\n')
   }
 }
-
-function hasEsbuildErrMsg(err: unknown): err is { [esbuildErrMsgKey]: string } {
-  if (!isObject(err)) return false
-  if (!(esbuildErrMsgKey in err)) return false
-  assert(typeof err[esbuildErrMsgKey] === 'string')
-  return true
-}
 function getEsbuildErrMsg(err: unknown): null | string {
-  if (!hasEsbuildErrMsg(err)) return null
+  if (!isObject(err)) return null
+  if (!(esbuildErrMsgKey in err)) return null
+  assert(typeof err[esbuildErrMsgKey] === 'string')
   return err[esbuildErrMsgKey]
 }

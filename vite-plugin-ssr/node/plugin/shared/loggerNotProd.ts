@@ -32,7 +32,7 @@ import { getAsyncHookStore } from './asyncHook'
 import { isErrorDebug } from './isErrorDebug'
 import { isFrameError, formatFrameError } from './loggerNotProd/formatFrameError'
 import type { LogErrorArgs } from '../../runtime/renderPage/loggerProd'
-import { getEsbuildErrMsg, hasEsbuildErrMsg } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
+import { getEsbuildErrMsg } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
 
 assertIsVitePluginCode()
 setRuntimeLogger(logErrorNotProd, logInfoNotProd)
@@ -208,7 +208,7 @@ function getErrorWithCodeSnippet(
   return null
 }
 function isErrorWithCodeSnippet(err: unknown): boolean {
-  return isFrameError(err) || hasEsbuildErrMsg(err)
+  return isFrameError(err) || !!getEsbuildErrMsg(err)
 }
 
 function getCategoryRequest(httpRequestId: number) {
