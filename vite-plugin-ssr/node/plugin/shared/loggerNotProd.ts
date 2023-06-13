@@ -30,7 +30,7 @@ import {
 } from '../utils'
 import { getAsyncHookStore } from './asyncHook'
 import { isErrorDebug } from './isErrorDebug'
-import { isFrameError, formatFrameError } from './loggerTranspile/formatFrameError'
+import { isFrameError, formatFrameError } from './loggerNotProd/formatFrameError'
 import type { LogErrorArgs } from '../../runtime/renderPage/loggerProd'
 import { getEsbuildErrMsg, hasEsbuildErrMsg } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
 
