@@ -1018,5 +1018,9 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: <code>throw RenderErrorPage()</code>,
     url: '/RenderErrorPage'
+  },
+  {
+    title: <code>process.env.NODE_ENV</code>,
+    url: '/NODE_ENV'
   }
 ]

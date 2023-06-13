@@ -63,6 +63,7 @@ And lots of details:
 - `93` warning messages that help the user. For example:
   - Warning is shown when a hook takes more than 4 seconds to resolve (avoiding the user to ask himself "why is my vite-plugin-ssr app hanging?")
   - Warning is shown when client runtime is included twice in the bundle
+  - Warning wrongly using `process.env.NODE_ENV`, including docs: https://vite-plugin-ssr.com/NODE_ENV
 - `294` helpul error messages. For example:
   - Upon a 404 in dev, the complete list of routes is shown
   - Helpful error when different versions of vite-plugin-ssr are loaded
