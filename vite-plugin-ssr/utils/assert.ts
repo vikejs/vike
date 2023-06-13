@@ -5,9 +5,11 @@ export { assertInfo }
 export { getProjectError }
 export { addOnBeforeLogHook }
 export { assertHasLogged }
+export { getAssertMsg }
 
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace'
 import { getGlobalObject } from './getGlobalObject'
+import { isObject } from './isObject'
 import { projectInfo } from './projectInfo'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
@@ -123,4 +125,26 @@ function assertHasLogged(): boolean {
 function addPrefix(prefix: `[vite-plugin-ssr][${string}]`, msg: string) {
   const whitespace = msg.startsWith('[') ? '' : ' '
   return `${prefix}${whitespace}${msg}`
+}
+
+function getAssertMsg(err: unknown): { assertMsg: string; logType: 'error' | 'warn' | 'info' } | null {
+  if (!isObject(err) || typeof err.message !== 'string') return null
+  const errMsg = err.message
+  if (errMsg.startsWith(internalErrorPrefix)) {
+    let assertMsg = errMsg.slice(logPrefix.length)
+    assertMsg = `${assertMsg}\n${err.stack}`
+    return { assertMsg, logType: 'error' }
+  }
+  if (errMsg.startsWith(logPrefix)) {
+    let assertMsg = errMsg.slice(logPrefix.length)
+    const logType = (() => {
+      if (errMsg.startsWith(infoPrefix)) return 'info' as const
+      if (errMsg.startsWith(warningPrefix)) return 'warn' as const
+      if (errMsg.startsWith(errorPrefix)) return 'error' as const
+      if (errMsg.startsWith(usageErrorPrefix)) return 'error' as const
+      return 'info' as const
+    })()
+    return { assertMsg, logType }
+  }
+  return null
 }

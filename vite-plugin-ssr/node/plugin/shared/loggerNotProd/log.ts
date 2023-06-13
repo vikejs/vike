@@ -4,7 +4,7 @@ export { log as logWithoutPrefix }
 export { onErrorLog }
 export { onLog }
 
-import { assert, projectInfo } from '../../utils'
+import { assert, projectInfo, stripAnsi } from '../../utils'
 import pc from '@brillout/picocolors'
 import type { LogCategory, LogType } from '../loggerNotProd'
 
@@ -59,7 +59,9 @@ function addPrefix(msg: string, project: 'vite' | 'vite-plugin-ssr', category: L
 
   const timestamp = pc.dim(new Date().toLocaleTimeString())
 
-  return `${timestamp} ${tag} ${msg}`
+  const whitespace = stripAnsi(msg).startsWith('[') ? '' : ' '
+
+  return `${timestamp} ${tag}${whitespace}${msg}`
 }
 function hasRed(str: string): boolean {
   // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L57
