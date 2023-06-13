@@ -3,7 +3,6 @@ export { assertUsage }
 export { assertWarning }
 export { assertInfo }
 export { getProjectError }
-export { logPrefix }
 export { addOnBeforeLogHook }
 export { assertHasLogged }
 
@@ -16,9 +15,11 @@ const globalObject = getGlobalObject<{
   hasLogged?: true
 }>('utils/assert.ts', { alreadyLogged: new Set() })
 
-const logPrefix = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]` as const
-const internalErrorPrefix = `${logPrefix}[Bug]` as const
+const logPrefix = `[${projectInfo.npmPackageName}]` as const
+const logPrefixBug = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]` as const
+const internalErrorPrefix = `${logPrefixBug}[Bug]` as const
 const usageErrorPrefix = `${logPrefix}[Wrong Usage]` as const
+const errorPrefix = `${logPrefix}[Error]` as const
 const warningPrefix = `${logPrefix}[Warning]` as const
 const infoPrefix = `${logPrefix}[Info]` as const
 
@@ -53,36 +54,32 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   throw internalError
 }
 
-function assertUsage(condition: unknown, errorMessage: string): asserts condition {
+function assertUsage(condition: unknown, errMsg: string): asserts condition {
   if (condition) return
   globalObject.hasLogged = true
-  const whiteSpace = errorMessage.startsWith('[') ? '' : ' '
-  const errMsg = `${usageErrorPrefix}${whiteSpace}${errorMessage}`
+  errMsg = addPrefix(usageErrorPrefix, errMsg)
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   globalObject.onBeforeLog?.()
   throw usageError
 }
 
-function getProjectError(errorMessage: string) {
-  const sep = errorMessage.startsWith('[') ? '' : ' '
-  const pluginError = createErrorWithCleanStackTrace(
-    `${logPrefix}${sep}${errorMessage}`,
-    numberOfStackTraceLinesToRemove
-  )
-  return pluginError
+function getProjectError(errMsg: string) {
+  errMsg = addPrefix(errorPrefix, errMsg)
+  const projectError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
+  return projectError
 }
 
 function assertWarning(
   condition: unknown,
-  errorMessage: string,
+  warnMsg: string,
   { onlyOnce = true, showStackTrace = false }: { onlyOnce?: boolean | string; showStackTrace?: boolean } = {}
 ): void {
   if (condition) return
   globalObject.hasLogged = true
-  const msg = `${warningPrefix} ${errorMessage}`
+  warnMsg = addPrefix(warningPrefix, warnMsg)
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
-    const key = onlyOnce === true ? msg : onlyOnce
+    const key = onlyOnce === true ? warnMsg : onlyOnce
     if (alreadyLogged.has(key)) {
       return
     } else {
@@ -91,17 +88,17 @@ function assertWarning(
   }
   globalObject.onBeforeLog?.()
   if (showStackTrace) {
-    console.warn(new Error(msg))
+    console.warn(new Error(warnMsg))
   } else {
-    console.warn(msg)
+    console.warn(warnMsg)
   }
 }
 
-function assertInfo(condition: unknown, errorMessage: string, { onlyOnce }: { onlyOnce: boolean }): void {
+function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: boolean }): void {
   if (condition) {
     return
   }
-  const msg = `${infoPrefix} ${errorMessage}`
+  msg = addPrefix(infoPrefix, msg)
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = msg
@@ -121,4 +118,9 @@ function addOnBeforeLogHook(onBeforeLog: () => void) {
 
 function assertHasLogged(): boolean {
   return !!globalObject.hasLogged
+}
+
+function addPrefix(prefix: `[vite-plugin-ssr][${string}]`, msg: string) {
+  const whitespace = msg.startsWith('[') ? '' : ' '
+  return `${prefix}${whitespace}${msg}`
 }

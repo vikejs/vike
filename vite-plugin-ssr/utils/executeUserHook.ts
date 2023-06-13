@@ -1,7 +1,7 @@
 export { executeUserHook }
 export { isUserHookError }
 
-import { logPrefix, getProjectError } from './assert'
+import { getProjectError, assertWarning } from './assert'
 import { getGlobalObject } from './getGlobalObject'
 import { humanizeTime } from './humanizeTime'
 import { isObject } from './isObject'
@@ -48,10 +48,10 @@ function executeUserHook<T = unknown>(hookFn: () => T, hookName: HookName, hookF
     clearTimeout(t2)
   }
   const t1 = setTimeout(() => {
-    const msg = `${logPrefix}[Warning] The ${hookName}() hook defined by ${hookFilePath} is taking more than ${humanizeTime(
-      timeoutWarn
-    )}`
-    console.warn(msg)
+    assertWarning(
+      false,
+      `The ${hookName}() hook defined by ${hookFilePath} is taking more than ${humanizeTime(timeoutWarn)}`
+    )
   }, timeoutWarn)
   const t2 = setTimeout(() => {
     const err = getProjectError(
