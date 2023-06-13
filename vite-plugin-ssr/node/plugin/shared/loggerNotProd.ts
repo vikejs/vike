@@ -41,6 +41,7 @@ import {
 import { logWithVikePrefix, logWithVitePrefix, logWithoutPrefix, onErrorLog, onLog } from './loggerNotProd/log'
 import type { ResolvedConfig } from 'vite'
 import pc from '@brillout/picocolors'
+import { setAlreadyLogged } from '../../runtime/renderPage/isNewError'
 
 assertIsVitePluginCode()
 setRuntimeLogger(logRuntimeError, logRuntimeInfo)
@@ -85,6 +86,7 @@ function logRuntimeError(
   /** `httpRequestId` is `null` when pre-rendering */
   httpRequestId: number | null
 ): void {
+  setAlreadyLogged(err)
   logErr(err, httpRequestId)
 }
 function logViteFrameError(err: FrameError): void {
