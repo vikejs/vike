@@ -19,7 +19,7 @@ import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/vir
 import { getConfigData_dependenciesInvisibleToVite, reloadConfigData } from './v1-design/getConfigData'
 import path from 'path'
 import pc from '@brillout/picocolors'
-import { logInfoTranspile, clearWithVite } from '../../shared/loggerTranspile'
+import { logInfoNotProd, clearWithVite } from '../../shared/loggerNotProd'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -57,7 +57,7 @@ function importUserCode(): Plugin {
       if (!isVikeConfig) {
         return
       }
-      logInfoTranspile(`Config file change: ${pc.dim(makeRelativeToUserRootDir(file, config.root))}`, 'config', 'info')
+      logInfoNotProd(`Config file change: ${pc.dim(makeRelativeToUserRootDir(file, config.root))}`, 'config', 'info')
       reloadConfigData(config.root, configVps.extensions)
       const mods = Array.from(server.moduleGraph.urlToModuleMap.keys())
         .filter((url) => isVirtualFileIdImportPageCode(url) || isVirtualFileIdImportUserCode(url))

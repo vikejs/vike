@@ -1,5 +1,10 @@
-export { logInfoTranspile }
-export { logErrorTranspile }
+// Non-production logger used for:
+//  - Development
+//  - During build & pre-rendering
+//  - Preview
+
+export { logInfoNotProd }
+export { logErrorNotProd }
 export { logAsVite }
 export { clearWithVite }
 export { addErrorIntroMsg }
@@ -27,16 +32,16 @@ import { isFrameError, formatFrameError } from './loggerTranspile/formatFrameErr
 import { getEsbuildFormattedError, isEsbuildFormattedError } from './loggerTranspile/formatEsbuildError'
 
 assertIsVitePluginCode()
-logInfo_set(logInfoTranspile)
-logError_set(logErrorTranspile)
+logInfo_set(logInfoNotProd)
+logError_set(logErrorNotProd)
 
 type LogCategory = 'config' | `request(${number})` | null
 type LogType = 'info' | 'warn' | 'error' | 'error-recover'
-type LogInfoArgs = Parameters<typeof logInfoTranspile>
+type LogInfoArgs = Parameters<typeof logInfoNotProd>
 const introMsgs = new WeakMap<object, LogInfoArgs>()
 let screenHasErrors = false
 
-function logInfoTranspile(
+function logInfoNotProd(
   msg: string,
   category: LogCategory,
   logType: LogType,
@@ -74,7 +79,7 @@ function clearWithVite(viteConfig: ResolvedConfig) {
   viteConfig.logger.clearScreen('error')
 }
 
-function logErrorTranspile(
+function logErrorNotProd(
   ...[err, { httpRequestId }, category = null]: LogErrorArgs | [...LogErrorArgs, LogCategory]
 ): boolean {
   const store = getAsyncHookStore()
@@ -140,7 +145,7 @@ function logErrorIntro(err: unknown, httpRequestId: number | null, category: nul
   if (!isObject(err)) return
   if (introMsgs.has(err)) {
     const logInfoArgs = introMsgs.get(err)!
-    logInfoTranspile(...logInfoArgs)
+    logInfoNotProd(...logInfoArgs)
     return
   }
   if (!category && httpRequestId) {
@@ -149,11 +154,11 @@ function logErrorIntro(err: unknown, httpRequestId: number | null, category: nul
   const hook = isUserHookError(err)
   if (hook) {
     const { hookName, hookFilePath } = hook
-    logInfoTranspile(pc.red(`Error thrown by hook ${hookName}() (${hookFilePath}):`), category, 'error')
+    logInfoNotProd(pc.red(`Error thrown by hook ${hookName}() (${hookFilePath}):`), category, 'error')
     return
   }
   if (httpRequestId !== null) {
-    logInfoTranspile(pc.red('Error thrown:'), category, 'error')
+    logInfoNotProd(pc.red('Error thrown:'), category, 'error')
     return
   }
 }

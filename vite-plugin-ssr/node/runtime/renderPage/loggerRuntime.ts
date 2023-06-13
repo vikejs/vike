@@ -5,7 +5,7 @@ export { logInfo_set }
 export { isNewError }
 export type { LogErrorArgs }
 
-import type { LogInfoArgs } from '../../plugin/shared/loggerTranspile'
+import type { LogInfoArgs } from '../../plugin/shared/loggerNotProd'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { getGlobalObject, isObject, isSameErrorMessage, warnIfObjectIsNotObject } from '../utils'
 import pc from '@brillout/picocolors'
