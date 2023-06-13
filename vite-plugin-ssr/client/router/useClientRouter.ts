@@ -36,12 +36,12 @@ const globalObject = getGlobalObject<{
 setupNativeScrollRestoration()
 initHistoryState()
 
-function disableClientRouting(err: unknown, logError: boolean) {
+function disableClientRouting(err: unknown, log: boolean) {
   assert(isErrorFetchingStaticAssets(err))
 
   globalObject.clientRoutingIsDisabled = true
 
-  if (logError) {
+  if (log) {
     // We don't use console.error() to avoid flooding error trackers such as Sentry
     console.log(err)
   }

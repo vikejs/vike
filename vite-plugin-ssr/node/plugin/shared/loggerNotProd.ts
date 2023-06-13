@@ -41,7 +41,7 @@ type LogType = 'info' | 'warn' | 'error' | 'error-recover'
 type LogInfoArgs = Parameters<typeof logInfoNotProd>
 type LogInfo = (...args: LogInfoArgs) => void
 type LogErrorArgs = [err: unknown, httpRequestId: number | null]
-type LogError = (...args: LogErrorArgs) => boolean
+type LogError = (...args: LogErrorArgs) => void
 /** `httpRequestId` is `null` when pre-rendering */
 type HttpRequestId = number | null
 
@@ -56,32 +56,27 @@ function logInfoNotProd(msg: string, category: LogCategory, logType: LogType, cl
   logWithVikePrefix(msg, logType, category)
 }
 
-function logErrorNotProd(err: unknown, httpRequestId: HttpRequestId): boolean {
+function logErrorNotProd(err: unknown, httpRequestId: HttpRequestId): void {
+  warnIfObjectIsNotObject(err)
+
   if (isRenderErrorPageException(err)) {
-    return false
+    return
   }
   if (getAsyncHookStore()?.hasErrorLogged(err)) {
-    return false
+    return
   }
-  logErr(err, httpRequestId, null)
-  return true
-}
-function logErr(err: unknown, httpRequestId: number | null, category: LogCategory | null): void {
-  warnIfObjectIsNotObject(err)
 
   const store = getAsyncHookStore()
   store?.addLoggedError(err)
 
-  if (store?.httpRequestId) {
+  if (store?.httpRequestId !== undefined) {
     if (httpRequestId === null) {
-      httpRequestId = store?.httpRequestId
+      httpRequestId = store.httpRequestId
     } else {
       assert(httpRequestId === store.httpRequestId)
     }
   }
-  if (!category && httpRequestId) {
-    category = getCategoryRequest(httpRequestId)
-  }
+  const category = httpRequestId !== null ? getCategoryRequest(httpRequestId) : null
 
   {
     const { viteDevServer } = getGlobalContext()
@@ -151,7 +146,7 @@ function logAsVite(
   viteConfig: ResolvedConfig
 ) {
   if (clear) clearWithVite(viteConfig)
-  const category = httpRequestId ? getCategoryRequest(httpRequestId) : null
+  const category = httpRequestId !== null ? getCategoryRequest(httpRequestId) : null
   if (withPrefix) {
     logWithVitePrefix(msg, logType, category)
   } else {
@@ -161,7 +156,7 @@ function logAsVite(
 
 function logConfigError(err: unknown) {
   const store = getAsyncHookStore()
-  const category = store?.httpRequestId ? getCategoryRequest(store?.httpRequestId) : 'config'
+  const category = store?.httpRequestId !== undefined ? getCategoryRequest(store.httpRequestId) : 'config'
 
   {
     const errIntroMsg = getConfigExecErrIntroMsg(err)
