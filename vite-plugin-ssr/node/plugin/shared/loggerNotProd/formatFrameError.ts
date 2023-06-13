@@ -1,5 +1,6 @@
 export { formatFrameError }
 export { isFrameError }
+export type { FrameError }
 
 // For ./formatFrameError.spec.ts
 export { getErrMsg }

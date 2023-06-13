@@ -53,7 +53,7 @@ import { ImportData, parseImportData } from './replaceImportStatements'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
 import { getViteDevServer } from '../../../../runtime/globalContext'
 import pc from '@brillout/picocolors'
-import { logConfigError, logInfoNotProd } from '../../../shared/loggerNotProd'
+import { logConfigError, logConfigInfo } from '../../../shared/loggerNotProd'
 import {
   removeSuperfluousViteLog_enable,
   removeSuperfluousViteLog_disable
@@ -144,7 +144,7 @@ async function handleReloadSideEffects() {
   if (!isConfigInvalid) {
     if (wasConfigInvalid) {
       wasConfigInvalid = false
-      logInfoNotProd(pc.green(pc.bold('Configuration successfully loaded.')), 'config', 'error-recover')
+      logConfigInfo(pc.green(pc.bold('Configuration successfully loaded.')), 'error-recover')
     }
     if (devServerIsCorrupt) {
       devServerIsCorrupt = false

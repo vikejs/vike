@@ -4,10 +4,10 @@
 //  - Build
 //  - Pre-rendering
 
-export { logInfoNotProd }
-export { logErrorNotProd }
+export { logConfigInfo }
 export { logConfigError }
-export { logAsVite }
+export { logViteFrameError }
+export { logViteAny }
 export { clearWithVite }
 export type { LogInfo }
 export type { LogInfoArgs }
@@ -24,7 +24,7 @@ import { isFirstViteLog } from './loggerVite'
 import { assert, assertIsVitePluginCode, hasProp, isUserHookError, stripAnsi, warnIfObjectIsNotObject } from '../utils'
 import { getAsyncHookStore } from './asyncHook'
 import { isErrorDebug } from './isErrorDebug'
-import { isFrameError, formatFrameError } from './loggerNotProd/formatFrameError'
+import { isFrameError, formatFrameError, type FrameError } from './loggerNotProd/formatFrameError'
 import {
   getConfigExecErrIntroMsg,
   getConfigBuildErrFormatted
@@ -34,15 +34,14 @@ import type { ResolvedConfig } from 'vite'
 import pc from '@brillout/picocolors'
 
 assertIsVitePluginCode()
-setRuntimeLogger(logErrorNotProd, logInfoNotProd)
+setRuntimeLogger(logRuntimeError, logRuntimeInfo)
 
 type LogCategory = 'config' | `request(${number})`
 type LogType = 'info' | 'warn' | 'error' | 'error-recover'
-type LogInfoArgs = Parameters<typeof logInfoNotProd>
+type LogInfoArgs = Parameters<typeof logRuntimeInfo>
 type LogInfo = (...args: LogInfoArgs) => void
-type LogErrorArgs = [err: unknown, httpRequestId: number | null]
+type LogErrorArgs = Parameters<typeof logRuntimeError>
 type LogError = (...args: LogErrorArgs) => void
-/** `httpRequestId` is `null` when pre-rendering */
 type HttpRequestId = number | null
 
 let screenHasErrors = false
@@ -50,13 +49,44 @@ onErrorLog(() => {
   screenHasErrors = true
 })
 
-function logInfoNotProd(msg: string, category: LogCategory, logType: LogType, clearConditions?: ClearConditions) {
+function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType, clearConditions?: ClearConditions) {
   clearWithConditions(clearConditions)
+  const category = getCategoryRequest(httpRequestId)
   assert(category)
   logWithVikePrefix(msg, logType, category)
 }
+function logViteAny(
+  msg: string,
+  logType: LogType,
+  httpRequestId: number | null,
+  withPrefix: boolean,
+  clear: boolean,
+  viteConfig: ResolvedConfig
+): void {
+  if (clear) clearWithVite(viteConfig)
+  const category = httpRequestId !== null ? getCategoryRequest(httpRequestId) : null
+  if (withPrefix) {
+    logWithVitePrefix(msg, logType, category)
+  } else {
+    logWithoutPrefix(msg, logType)
+  }
+}
+function logConfigInfo(msg: string, logType: LogType): void {
+  const category = getConfigLogCategory()
+  logWithVikePrefix(msg, logType, category)
+}
 
-function logErrorNotProd(err: unknown, httpRequestId: HttpRequestId): void {
+function logRuntimeError(
+  err: unknown,
+  /** `httpRequestId` is `null` when pre-rendering */
+  httpRequestId: number | null
+): void {
+  logErr(err, httpRequestId)
+}
+function logViteFrameError(err: FrameError): void {
+  logErr(err)
+}
+function logErr(err: unknown, httpRequestId: HttpRequestId = null): void {
   warnIfObjectIsNotObject(err)
 
   if (isRenderErrorPageException(err)) {
@@ -88,7 +118,7 @@ function logErrorNotProd(err: unknown, httpRequestId: HttpRequestId): void {
       /* We purposely don't use hasErrorLogged():
          - We don't trust Vite with such details
            - Previously, Vite bug lead to swallowing of errors: https://github.com/vitejs/vite/issues/12631
-         - We dedupe Vite logs ourself instead
+         - We dedupe Vite logs ourself instead with getAsyncHookStore().hasErrorLogged
       if (viteDevServer.config.logger.hasErrorLogged(err as Error)) {
         return
       }
@@ -119,44 +149,8 @@ function logErrorNotProd(err: unknown, httpRequestId: HttpRequestId): void {
 
   logErrFallback(err, category)
 }
-
-function logErrorDebugNote() {
-  if (isErrorDebug()) return
-  const msg = pc.dim(
-    [
-      '=======================================================================',
-      "| Error isn't helpful? See https://vite-plugin-ssr.com/errors#verbose |",
-      '======================================================================='
-    ].join('\n')
-  )
-  logWithoutPrefix(msg, 'error')
-}
-
-function getCategoryRequest(httpRequestId: number) {
-  return `request(${httpRequestId})` as const
-}
-
-/** Used by Vite logger interceptor, e.g. to log a message with the "[vite]" tag */
-function logAsVite(
-  msg: string,
-  logType: LogType,
-  httpRequestId: number | null,
-  withPrefix: boolean,
-  clear: boolean,
-  viteConfig: ResolvedConfig
-) {
-  if (clear) clearWithVite(viteConfig)
-  const category = httpRequestId !== null ? getCategoryRequest(httpRequestId) : null
-  if (withPrefix) {
-    logWithVitePrefix(msg, logType, category)
-  } else {
-    logWithoutPrefix(msg, logType)
-  }
-}
-
-function logConfigError(err: unknown) {
-  const store = getAsyncHookStore()
-  const category = store?.httpRequestId !== undefined ? getCategoryRequest(store.httpRequestId) : 'config'
+function logConfigError(err: unknown): void {
+  const category = getConfigLogCategory()
 
   {
     const errIntroMsg = getConfigExecErrIntroMsg(err)
@@ -187,6 +181,15 @@ function logErrFallback(err: unknown, category: LogCategory | null) {
   logWithoutPrefix(err, 'error')
 }
 
+function getCategoryRequest(httpRequestId: number) {
+  return `request(${httpRequestId})` as const
+}
+function getConfigLogCategory(): LogCategory {
+  const store = getAsyncHookStore()
+  const category = store?.httpRequestId !== undefined ? getCategoryRequest(store.httpRequestId) : 'config'
+  return category
+}
+
 type ClearConditions = { clearErrors?: boolean; clearIfFirstLog?: boolean }
 function clearWithConditions(conditions: ClearConditions = {}) {
   const { clearErrors, clearIfFirstLog } = conditions
@@ -197,8 +200,20 @@ function clearWithConditions(conditions: ClearConditions = {}) {
     clearWithVite(viteConfig)
   }
 }
-function clearWithVite(viteConfig: ResolvedConfig) {
+function clearWithVite(viteConfig: ResolvedConfig): void {
   screenHasErrors = false
   // We use Vite's logger in order to respect the user's `clearScreen: false` setting
   viteConfig.logger.clearScreen('error')
+}
+
+function logErrorDebugNote() {
+  if (isErrorDebug()) return
+  const msg = pc.dim(
+    [
+      '=======================================================================',
+      "| Error isn't helpful? See https://vite-plugin-ssr.com/errors#verbose |",
+      '======================================================================='
+    ].join('\n')
+  )
+  logWithoutPrefix(msg, 'error')
 }
