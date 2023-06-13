@@ -9,6 +9,7 @@ export { logConfigError }
 export { logViteFrameError }
 export { logViteAny }
 export { clearWithVite }
+export { clearWithCondition }
 export type { LogInfo }
 export type { LogInfoArgs }
 export type { LogError }
@@ -20,8 +21,15 @@ export type { HttpRequestId }
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { getGlobalContext, getViteConfig } from '../../runtime/globalContext'
 import { setRuntimeLogger } from '../../runtime/renderPage/loggerRuntime'
-import { isFirstViteLog } from './loggerVite'
-import { assert, assertIsVitePluginCode, hasProp, isUserHookError, stripAnsi, warnIfObjectIsNotObject } from '../utils'
+import {
+  assert,
+  assertHasLogged,
+  assertIsVitePluginCode,
+  hasProp,
+  isUserHookError,
+  stripAnsi,
+  warnIfObjectIsNotObject
+} from '../utils'
 import { getAsyncHookStore } from './asyncHook'
 import { isErrorDebug } from './isErrorDebug'
 import { isFrameError, formatFrameError, type FrameError } from './loggerNotProd/formatFrameError'
@@ -29,7 +37,7 @@ import {
   getConfigExecErrIntroMsg,
   getConfigBuildErrFormatted
 } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
-import { logWithVikePrefix, logWithVitePrefix, logWithoutPrefix, onErrorLog } from './loggerNotProd/log'
+import { logWithVikePrefix, logWithVitePrefix, logWithoutPrefix, onErrorLog, onLog } from './loggerNotProd/log'
 import type { ResolvedConfig } from 'vite'
 import pc from '@brillout/picocolors'
 
@@ -44,13 +52,18 @@ type LogErrorArgs = Parameters<typeof logRuntimeError>
 type LogError = (...args: LogErrorArgs) => void
 type HttpRequestId = number | null
 
+let isFirstLog = true
+onLog(() => {
+  isFirstLog = false
+})
+
 let screenHasErrors = false
 onErrorLog(() => {
   screenHasErrors = true
 })
 
 function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType, clearConditions?: ClearConditions) {
-  clearWithConditions(clearConditions)
+  clearWithCondition(clearConditions)
   const category = getCategoryRequest(httpRequestId)
   assert(category)
   logWithVikePrefix(msg, logType, category)
@@ -155,7 +168,7 @@ function logConfigError(err: unknown): void {
   {
     const errIntroMsg = getConfigExecErrIntroMsg(err)
     if (errIntroMsg) {
-      clearWithConditions({ clearIfFirstLog: true })
+      clearWithCondition({ clearIfFirstLog: true })
       assert(stripAnsi(errIntroMsg).startsWith('Failed to execute'))
       logWithVikePrefix(errIntroMsg, 'error', category)
       logWithoutPrefix(err, 'error')
@@ -165,7 +178,7 @@ function logConfigError(err: unknown): void {
   {
     let errMsg = getConfigBuildErrFormatted(err)
     if (errMsg) {
-      clearWithConditions({ clearIfFirstLog: true })
+      clearWithCondition({ clearIfFirstLog: true })
       assert(stripAnsi(errMsg).startsWith('Failed to transpile'))
       logWithVikePrefix(errMsg, 'error', category)
       return
@@ -191,9 +204,9 @@ function getConfigLogCategory(): LogCategory {
 }
 
 type ClearConditions = { clearErrors?: boolean; clearIfFirstLog?: boolean }
-function clearWithConditions(conditions: ClearConditions = {}) {
+function clearWithCondition(conditions: ClearConditions = {}) {
   const { clearErrors, clearIfFirstLog } = conditions
-  const clear = (clearErrors && screenHasErrors) || (clearIfFirstLog && isFirstViteLog)
+  const clear = (clearErrors && screenHasErrors) || (clearIfFirstLog && isFirstLog && assertHasLogged())
   if (clear) {
     const viteConfig = getViteConfig()
     assert(viteConfig)

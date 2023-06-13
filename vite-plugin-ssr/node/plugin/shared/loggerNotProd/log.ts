@@ -1,7 +1,8 @@
 export { logWithVitePrefix }
 export { logWithVikePrefix }
-export { logWithoutPrefix }
+export { log as logWithoutPrefix }
 export { onErrorLog }
+export { onLog }
 
 import { assert, projectInfo } from '../../utils'
 import pc from '@brillout/picocolors'
@@ -9,13 +10,15 @@ import type { LogCategory, LogType } from '../loggerNotProd'
 
 function logWithVikePrefix(msg: string, logType: LogType, category: LogCategory | null) {
   msg = addPrefix(msg, projectInfo.projectName, category, logType)
-  logWithoutPrefix(msg, logType)
+  log(msg, logType)
 }
 function logWithVitePrefix(msg: string, logType: LogType, category: LogCategory | null) {
   msg = addPrefix(msg, 'vite', category, logType)
-  logWithoutPrefix(msg, logType)
+  log(msg, logType)
 }
-function logWithoutPrefix(msg: unknown, logType: LogType) {
+function log(msg: unknown, logType: LogType) {
+  assert(onLogCallback)
+  onLogCallback()
   if (logType === 'info') {
     console.log(msg)
   } else if (logType === 'warn') {
@@ -36,7 +39,10 @@ let onErrorLogCallback: (() => void) | undefined
 function onErrorLog(cb: () => void) {
   onErrorLogCallback = cb
 }
-
+let onLogCallback: (() => void) | undefined
+function onLog(cb: () => void) {
+  onLogCallback = cb
+}
 function addPrefix(msg: string, project: 'vite' | 'vite-plugin-ssr', category: LogCategory | null, logType: LogType) {
   const color = (s: string) => {
     if (logType === 'error' && !hasRed(msg)) return pc.red(s)

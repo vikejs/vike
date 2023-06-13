@@ -1,28 +1,20 @@
 export { customizeViteLogger }
-export { isFirstViteLog }
 
-import { assert, assertHasLogged, trimWithAnsi, trimWithAnsiTrail } from '../utils'
+import { assert, trimWithAnsi, trimWithAnsiTrail } from '../utils'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
-import { logViteFrameError, logViteAny } from './loggerNotProd'
+import { logViteFrameError, logViteAny, clearWithCondition } from './loggerNotProd'
 import { isFrameError } from './loggerNotProd/formatFrameError'
 import { getAsyncHookStore } from './asyncHook'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
 
-let isFirstViteLog = true
-
 function customizeViteLogger(config: ResolvedConfig) {
-  interceptLogger(
-    'info',
-    config,
-    // Allow initial clear only if no assertWarning() was shown and if config is valid
-    () => isFirstViteLog && !assertHasLogged() && !isConfigInvalid
-  )
+  interceptLogger('info', config)
   interceptLogger('warn', config)
   interceptLogger('error', config)
 }
 
-function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear?: () => boolean) {
+function interceptLogger(logType: LogType, config: ResolvedConfig) {
   config.logger[logType] = (msg, options: LogErrorOptions = {}) => {
     const store = getAsyncHookStore()
 
@@ -53,9 +45,9 @@ function interceptLogger(logType: LogType, config: ResolvedConfig, tolerateClear
       }
     }
 
-    // Customize clear behavior
-    if (options.clear && !tolerateClear?.()) options.clear = false
-    isFirstViteLog = false
+    if (options.clear && !isConfigInvalid) {
+      clearWithCondition({ clearIfFirstLog: true })
+    }
 
     if (options.error) store?.addLoggedError(options.error)
     logViteAny(
