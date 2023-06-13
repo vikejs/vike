@@ -1,6 +1,8 @@
 export { transpileAndLoadFile }
+export { isEsbuildFormattedError }
+export { getEsbuildFormattedError }
 
-import { build, type BuildResult, type BuildOptions } from 'esbuild'
+import { build, type BuildResult, type BuildOptions, formatMessages } from 'esbuild'
 import fs from 'fs'
 import path from 'path'
 import pc from '@brillout/picocolors'
@@ -19,9 +21,10 @@ import { isImportData, replaceImportStatements, type FileImport } from './replac
 import { getConfigData_dependenciesInvisibleToVite, getFilePathToShowToUser, type FilePath } from './getConfigData'
 import 'source-map-support/register'
 import { addErrorIntroMsg } from '../../../shared/loggerNotProd'
-import { formatEsbuildError } from '../../../shared/loggerTranspile/formatEsbuildError'
 
 assertIsVitePluginCode()
+
+const esbuildErrMsgKey = '_esbuildFormatted'
 
 type Result = { fileExports: Record<string, unknown> }
 
@@ -214,4 +217,27 @@ function addErrorIntro(err: unknown, operation: 'transpile' | 'execute', filePat
     pc.red(`because:`)
   ].join(' ')
   addErrorIntroMsg(err, msg, 'config', 'error', { clearIfFirstLog: true })
+}
+
+async function formatEsbuildError(err: unknown): Promise<void> {
+  assert(isObject(err))
+  if (err.errors) {
+    const msgs = await formatMessages(err.errors as any, {
+      kind: 'error',
+      color: true
+    })
+    err[esbuildErrMsgKey] = msgs.map((m) => m.trim()).join('\n')
+  }
+}
+
+function isEsbuildFormattedError(err: unknown): err is { [esbuildErrMsgKey]: string } {
+  if (!isObject(err)) return false
+  if (!(esbuildErrMsgKey in err)) return false
+  assert(typeof err[esbuildErrMsgKey] === 'string')
+  return true
+}
+
+function getEsbuildFormattedError(err: unknown): null | string {
+  if (!isEsbuildFormattedError(err)) return null
+  return err[esbuildErrMsgKey]
 }

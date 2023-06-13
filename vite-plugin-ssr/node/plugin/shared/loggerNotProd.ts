@@ -31,8 +31,11 @@ import {
 import { getAsyncHookStore } from './asyncHook'
 import { isErrorDebug } from './isErrorDebug'
 import { isFrameError, formatFrameError } from './loggerTranspile/formatFrameError'
-import { getEsbuildFormattedError, isEsbuildFormattedError } from './loggerTranspile/formatEsbuildError'
 import type { LogErrorArgs } from '../../runtime/renderPage/loggerProd'
+import {
+  getEsbuildFormattedError,
+  isEsbuildFormattedError
+} from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
 
 assertIsVitePluginCode()
 setRuntimeLogger(logErrorNotProd, logInfoNotProd)
@@ -50,15 +53,16 @@ function logInfoNotProd(
   logType: LogType,
   options: { clearErrors?: boolean; clearIfFirstLog?: boolean } = {}
 ) {
-  msg = addPrefix(msg, projectInfo.projectName, category, logType)
-
   const clear = (options.clearErrors && screenHasErrors) || (options.clearIfFirstLog && isFirstViteLog)
   if (clear) {
     const viteConfig = getViteConfig()
     assert(viteConfig)
     clearWithVite(viteConfig)
   }
-
+  logWithPrefix(msg, logType, category)
+}
+function logWithPrefix(msg: string, logType: LogType, category: LogCategory) {
+  msg = addPrefix(msg, projectInfo.projectName, category, logType)
   log(msg, logType)
 }
 function log(msg: unknown, logType: LogType) {
@@ -76,6 +80,7 @@ function log(msg: unknown, logType: LogType) {
     assert(false)
   }
 }
+
 function clearWithVite(viteConfig: ResolvedConfig) {
   screenHasErrors = false
   // We use Vite's logger in order to respect the user's `clearScreen: false` setting
@@ -159,11 +164,11 @@ function logErrorIntro(err: unknown, httpRequestId: number | null, category: nul
   const hook = isUserHookError(err)
   if (hook) {
     const { hookName, hookFilePath } = hook
-    logInfoNotProd(pc.red(`Error thrown by hook ${hookName}() (${hookFilePath}):`), category, 'error')
+    logWithPrefix(pc.red(`Error thrown by hook ${hookName}() (${hookFilePath}):`), 'error', category)
     return
   }
   if (category) {
-    logInfoNotProd(pc.red('Error thrown:'), category, 'error')
+    logWithPrefix(pc.red('Error thrown:'), 'error', category)
     return
   }
 }

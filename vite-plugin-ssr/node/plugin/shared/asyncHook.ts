@@ -7,7 +7,7 @@ export { getAsyncHookStore }
 import { renderPage_setWrapper } from '../../runtime/renderPage'
 import { assert, isObject } from '../utils'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
-import { esbuildFormattedMessageKey } from './loggerTranspile/formatEsbuildError'
+import { getEsbuildFormattedError } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
 
 type AsyncHookStore = {
   httpRequestId: number
@@ -74,11 +74,16 @@ function isEquivalentOrSubset(err: unknown, errAlreadyLogged: unknown) {
   if (err1 === err2) return true
   if (!isObject(err1) || !isObject(err2)) return false
 
+  {
+    const esbuildErrMsg1 = getEsbuildFormattedError(err1)
+    const esbuildErrMsg2 = getEsbuildFormattedError(err2)
+    if (esbuildErrMsg1 && esbuildErrMsg1 === esbuildErrMsg2) return true
+  }
+
   if (
     isDefinedAndSame(err1.message, err2.message) &&
     isDefinedAndSame(err1.frame, err2.frame) &&
-    isDefinedAndSame(err1.id, err2.id) &&
-    isUndefinedOrSame(err1[esbuildFormattedMessageKey], err2[esbuildFormattedMessageKey])
+    isDefinedAndSame(err1.id, err2.id)
   ) {
     return true
   }
@@ -96,7 +101,4 @@ function isEquivalentOrSubset(err: unknown, errAlreadyLogged: unknown) {
 }
 function isDefinedAndSame(val1: unknown, val2: unknown) {
   return val1 && val1 === val2
-}
-function isUndefinedOrSame(val1: unknown, val2: unknown) {
-  return (val1 === undefined && val2 === undefined) || val1 === val2
 }
