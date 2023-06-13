@@ -1,5 +1,5 @@
 export { transpileAndLoadFile }
-export { getConfigEsbuildErrFormattedMsg }
+export { getConfigBuildErrFormatted }
 export { getConfigExecErrIntroMsg }
 
 import { build, type BuildResult, type BuildOptions, formatMessages } from 'esbuild'
@@ -113,7 +113,7 @@ async function buildFile(filePath: FilePath, { bundle }: { bundle: boolean }) {
   try {
     result = await build(options)
   } catch (err) {
-    await formatEsbuildError(err, filePath)
+    await formatBuildErr(err, filePath)
     throw err
   }
   const { text } = result.outputFiles![0]!
@@ -218,8 +218,8 @@ function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePath) 
 }
 
 const formattedMsg = '_formattedMsg'
-async function formatEsbuildError(err: unknown, filePath: FilePath): Promise<void> {
-  if (!isObject(err) || !err.errors) return
+async function formatBuildErr(err: unknown, filePath: FilePath): Promise<void> {
+  assert(isObject(err) && err.errors)
   const msgEsbuild = (
     await formatMessages(err.errors as any, {
       kind: 'error',
@@ -231,7 +231,7 @@ async function formatEsbuildError(err: unknown, filePath: FilePath): Promise<voi
   const msgIntro = getErrIntroMsg('transpile', filePath)
   err[formattedMsg] = `${msgIntro}\n${msgEsbuild}`
 }
-function getConfigEsbuildErrFormattedMsg(err: unknown): null | string {
+function getConfigBuildErrFormatted(err: unknown): null | string {
   if (!isObject(err)) return null
   if (!(formattedMsg in err)) return null
   assert(typeof err[formattedMsg] === 'string')

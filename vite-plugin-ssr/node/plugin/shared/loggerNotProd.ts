@@ -17,8 +17,6 @@ export type { LogType }
 export type { LogCategory }
 export type { HttpRequestId }
 
-import pc from '@brillout/picocolors'
-import type { ResolvedConfig } from 'vite'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { getGlobalContext, getViteConfig } from '../../runtime/globalContext'
 import { setRuntimeLogger } from '../../runtime/renderPage/loggerRuntime'
@@ -29,9 +27,11 @@ import { isErrorDebug } from './isErrorDebug'
 import { isFrameError, formatFrameError } from './loggerNotProd/formatFrameError'
 import {
   getConfigExecErrIntroMsg,
-  getConfigEsbuildErrFormattedMsg
+  getConfigBuildErrFormatted
 } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
 import { logWithVikePrefix, logWithVitePrefix, logWithoutPrefix, onErrorLog } from './loggerNotProd/log'
+import type { ResolvedConfig } from 'vite'
+import pc from '@brillout/picocolors'
 
 assertIsVitePluginCode()
 setRuntimeLogger(logErrorNotProd, logInfoNotProd)
@@ -162,6 +162,7 @@ function logAsVite(
 function logConfigError(err: unknown) {
   const store = getAsyncHookStore()
   const category = store?.httpRequestId ? getCategoryRequest(store?.httpRequestId) : 'config'
+
   {
     const errIntroMsg = getConfigExecErrIntroMsg(err)
     if (errIntroMsg) {
@@ -173,7 +174,7 @@ function logConfigError(err: unknown) {
     }
   }
   {
-    let errMsg = getConfigEsbuildErrFormattedMsg(err)
+    let errMsg = getConfigBuildErrFormatted(err)
     if (errMsg) {
       clearWithConditions({ clearIfFirstLog: true })
       assert(stripAnsi(errMsg).startsWith('Failed to transpile'))
