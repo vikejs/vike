@@ -1,6 +1,6 @@
 export { transpileAndLoadFile }
-export { isEsbuildFormattedError }
-export { getEsbuildFormattedError }
+export { hasEsbuildErrMsg }
+export { getEsbuildErrMsg }
 
 import { build, type BuildResult, type BuildOptions, formatMessages } from 'esbuild'
 import fs from 'fs'
@@ -230,14 +230,13 @@ async function formatEsbuildError(err: unknown): Promise<void> {
   }
 }
 
-function isEsbuildFormattedError(err: unknown): err is { [esbuildErrMsgKey]: string } {
+function hasEsbuildErrMsg(err: unknown): err is { [esbuildErrMsgKey]: string } {
   if (!isObject(err)) return false
   if (!(esbuildErrMsgKey in err)) return false
   assert(typeof err[esbuildErrMsgKey] === 'string')
   return true
 }
-
-function getEsbuildFormattedError(err: unknown): null | string {
-  if (!isEsbuildFormattedError(err)) return null
+function getEsbuildErrMsg(err: unknown): null | string {
+  if (!hasEsbuildErrMsg(err)) return null
   return err[esbuildErrMsgKey]
 }

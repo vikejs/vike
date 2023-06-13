@@ -7,7 +7,7 @@ export { getAsyncHookStore }
 import { renderPage_setWrapper } from '../../runtime/renderPage'
 import { assert, isObject } from '../utils'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
-import { getEsbuildFormattedError } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
+import { getEsbuildErrMsg } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
 
 type AsyncHookStore = {
   httpRequestId: number
@@ -75,8 +75,8 @@ function isEquivalentOrSubset(err: unknown, errAlreadyLogged: unknown) {
   if (!isObject(err1) || !isObject(err2)) return false
 
   {
-    const esbuildErrMsg1 = getEsbuildFormattedError(err1)
-    const esbuildErrMsg2 = getEsbuildFormattedError(err2)
+    const esbuildErrMsg1 = getEsbuildErrMsg(err1)
+    const esbuildErrMsg2 = getEsbuildErrMsg(err2)
     if (esbuildErrMsg1 && esbuildErrMsg1 === esbuildErrMsg2) return true
   }
 
