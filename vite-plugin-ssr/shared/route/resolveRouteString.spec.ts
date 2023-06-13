@@ -1,6 +1,5 @@
 import { resolveRouteString } from './resolveRouteString'
 import { expect, describe, it } from 'vitest'
-import partRegex from '@brillout/part-regex'
 
 describe('resolveRouteString', () => {
   it('basics', () => {
@@ -10,11 +9,11 @@ describe('resolveRouteString', () => {
 
     expectError(
       () => resolveRouteString('', '/a/b/c'),
-      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid Route String '' (empty string): Route Strings should start with a leading slash '/' (or be '*')`
+      `[vite-plugin-ssr][Wrong Usage] Invalid Route String '' (empty string): Route Strings should start with a leading slash '/' (or be '*')`
     )
     expectError(
       () => resolveRouteString('a', '/a/b/c'),
-      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid Route String 'a': Route Strings should start with a leading slash '/' (or be '*')`
+      `[vite-plugin-ssr][Wrong Usage] Invalid Route String 'a': Route Strings should start with a leading slash '/' (or be '*')`
     )
   })
 
@@ -63,11 +62,11 @@ describe('resolveRouteString', () => {
 
     expectError(
       () => resolveRouteString('/a/*/c/*', '/a/b/c'),
-      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid Route String \`/a/*/c/*\`: Route Strings are not allowed to contain more than one glob character \`*\`.`
+      `[vite-plugin-ssr][Wrong Usage] Invalid Route String \`/a/*/c/*\`: Route Strings are not allowed to contain more than one glob character \`*\`.`
     )
     expectError(
       () => resolveRouteString('/a/*/c', '/a/b/c'),
-      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid Route String \`/a/*/c\`: make sure your Route String ends with the glob character \`*\`.`
+      `[vite-plugin-ssr][Wrong Usage] Invalid Route String \`/a/*/c\`: make sure your Route String ends with the glob character \`*\`.`
     )
   })
 
@@ -84,7 +83,7 @@ describe('resolveRouteString', () => {
   })
 })
 
-function expectError(fn: Function, errRegex: RegExp) {
+function expectError(fn: Function, errMsg: string) {
   {
     let err: Error | undefined
     try {
@@ -92,6 +91,6 @@ function expectError(fn: Function, errRegex: RegExp) {
     } catch (err_) {
       err = err_
     }
-    expect(err?.message).toMatch(errRegex)
+    expect(err?.message).toBe(errMsg)
   }
 }
