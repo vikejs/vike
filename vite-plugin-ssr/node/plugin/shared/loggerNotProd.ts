@@ -138,11 +138,13 @@ function logErr(err: unknown, httpRequestId: number | null, category: LogCategor
   if (errWithCodeSnippet) {
     // logErrorIntro()/addPrefix() already called
     log(errWithCodeSnippet, 'error')
+    logErrorDebugNote()
     return
   }
 
   logErrorIntro(err, httpRequestId, category)
   log(err, 'error')
+  logErrorDebugNote()
 }
 function logErrorIntro(err: unknown, httpRequestId: number | null, category: null | LogCategory) {
   if (!isObject(err)) return
@@ -164,6 +166,18 @@ function logErrorIntro(err: unknown, httpRequestId: number | null, category: nul
     logInfoNotProd(pc.red('Error thrown:'), category, 'error')
     return
   }
+}
+
+function logErrorDebugNote() {
+  assert(!isErrorDebug())
+  const msg = pc.dim(
+    [
+      '=======================================================================',
+      "| Error isn't helpful? See https://vite-plugin-ssr.com/errors#verbose |",
+      '======================================================================='
+    ].join('\n')
+  )
+  log(msg, 'error')
 }
 
 function getErrorWithCodeSnippet(
@@ -219,6 +233,9 @@ function logAsVite(
     msg = addPrefix(msg, 'vite', category, logType)
   }
   log(msg, logType)
+  if (logType === 'error') {
+    logErrorDebugNote()
+  }
 }
 
 function addPrefix(msg: string, project: 'vite' | 'vite-plugin-ssr', category: LogCategory, logType: LogType) {

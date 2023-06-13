@@ -9,11 +9,17 @@ DEBUG=vps:routing npm run dev
 DEBUG=vps:pageFiles npm run dev
 # Inspect HTTP Streaming
 DEBUG=vps:stream npm run dev
+# Inspect errors
+DEBUG=vps:error npm run dev
+# Inspect logs
+DEBUG=vps:log npm run dev
+# Combination
+DEBUG=vps:log,vps:error,vps:stream npm run dev
 ```
 
 > These debug logs allow you to understand how `vite-plugin-ssr` thinks of your app. For example, to figure out why your app returns a `404`, use `vps:routing` and `vps:pageFiles`.
 
-There are more debug logs (`vps:glob`, `vps:extractAssets`, ...) but these aren't user friendly as they are meant for the vite-plugin-ssr maintainers.
+There are more debug logs (`vps:glob`, `vps:extractAssets`, ...) but these aren't user friendly as they are meant for vite-plugin-ssr maintainers.
 
 > If you want more debug logs, add a comment at [#249](https://github.com/brillout/vite-plugin-ssr/issues/249).
 
@@ -28,18 +34,18 @@ $ DEBUG=vite:* npm run dev
 If you have a problem with Vite, we recommend to consider injecting a bunch of `console.log()` inside `node_modules/vite/dist/**/*.js` in order to inspect what's going on.
 
 > It may sound scary to dig into Vite's source code, but it's sometimes quicker to find the root cause of your problem than treating Vite as a black box. Also:
-> - It's more interesting and more fun. (Vite's source code is well written and pleasurable to read.)
-> - You may end up being able to do a Vite PR solving your problem (and helping the whole community!). (If you open a Vite PR, feel free to reach out to the `vite-plugin-ssr` maintainers to get your PR merged quicker.)
+> - It's more interesting. (Vite's source code is well written and pleasurable to read.)
+> - You may end up being able to do a Vite PR solving your problem (while helping the whole community!). (If you open a Vite PR, feel free to reach out to `vite-plugin-ssr` maintainers to get your PR merged quicker.)
 
 > Instead of:
 > ```bash
 > $ git clone git@github.com:vitejs/vite
-> $ cd vite/
+> $ cd vite/pacakges/vite/
 > $ pnpm install
-> $ pnpm run build
-> $ cd ../my-app/
+> $ pnpm run dev
+> $ cd ../../../my-app/
 > $ npm link ../vite/packages/vite/
 > ```
 > We recommend to:
 > - Browse the source code of `$ git clone git@github.com:vitejs/vite`.
-> - But, for an increased feedback loop, instead of building Vite consider injecting `console.log()` directly inside `my-app/node_modules/vite/dist/**/*.js`.
+> - But, for an increased feedback loop, inject `console.log()` directly inside `my-app/node_modules/vite/dist/**/*.js`.

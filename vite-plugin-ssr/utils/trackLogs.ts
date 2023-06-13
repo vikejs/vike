@@ -1,4 +1,5 @@
 import { isDebugEnabled } from './debug'
+import pc from '@brillout/picocolors'
 
 if (isDebugEnabled('vps:log')) {
   trackLogs()
@@ -14,11 +15,11 @@ function trackLogs() {
     var methodOriginal = process[stdName].write
     // @ts-ignore
     process[stdName].write = function (...args) {
-      log('LOG:')
+      log(pc.blue(pc.bold('*** LOG ***')))
       // @ts-ignore
       methodOriginal.apply(process[stdName], args)
       // @ts-ignore
-      log(new Error().stack.replace(/^Error/, 'LOGGED FROM'))
+      log(new Error().stack.replace(/^Error(\:|)/, pc.cyan(pc.magenta('*** LOG ORIGIN ***'))))
     }
   })
 

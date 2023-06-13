@@ -166,8 +166,8 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Error Tracking',
-    url: '/error-tracking'
+    title: 'Error Handling',
+    url: '/errors'
   },
   {
     level: 2,
@@ -826,6 +826,10 @@ const redirections = [
       </>
     ),
     url: '/config-code-splitting'
+  },
+  {
+    title: 'Error Tracking',
+    url: '/error-tracking'
   }
 ]
 
