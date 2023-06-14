@@ -24,12 +24,9 @@ const globalObject = getGlobalObject<{
   logger(msg, logType) {
     if (logType === 'info') {
       console.log(msg)
-    }
-    if (logType === 'warn') {
+    } else {
       console.warn(msg)
-      return
     }
-    assert(false)
   },
   colorer: (str) => str
 })
@@ -141,7 +138,6 @@ function addPrefix(tag: Tag, msg: string) {
   const color = tag === 'Info' ? 'blue' : tag === 'Warning' ? 'yellow' : 'red'
   prefix = globalObject.colorer(prefix, color)
   prefix = `${tag === 'Bug' ? projectTagWithVersion : projectTag}${prefix}`
-  assert(!/\s/.test(msg[0]!))
   const whitespace = msg.startsWith('[') ? '' : ' '
   return `${prefix}${whitespace}${msg}`
 }
