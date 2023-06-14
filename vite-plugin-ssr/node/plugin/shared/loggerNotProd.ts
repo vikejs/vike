@@ -58,7 +58,7 @@ type LogError = (...args: LogErrorArgs) => void
 
 function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType, clearConditions?: ClearConditions) {
   clearWithCondition(clearConditions)
-  const category = getCategoryRequest(httpRequestId)
+  const category = getCategory(httpRequestId)
   assert(category)
   logWithVikePrefix(msg, logType, category)
 }
@@ -71,7 +71,7 @@ function logViteAny(
   viteConfig: ResolvedConfig
 ): void {
   if (clear) clearWithVite(viteConfig)
-  const category = httpRequestId !== null ? getCategoryRequest(httpRequestId) : null
+  const category = getCategory(httpRequestId)
   if (withPrefix) {
     logWithVitePrefix(msg, logType, category)
   } else {
@@ -79,7 +79,7 @@ function logViteAny(
   }
 }
 function logConfigInfo(msg: string, logType: LogType): void {
-  const category = getConfigLogCategory()
+  const category = getConfigCategory()
   logWithVikePrefix(msg, logType, category)
 }
 
@@ -161,7 +161,7 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
 function logConfigError(err: unknown): void {
   warnIfObjectIsNotObject(err)
 
-  const category = getConfigLogCategory()
+  const category = getConfigCategory()
 
   {
     const errIntroMsg = getConfigExecErrIntroMsg(err)
@@ -213,12 +213,8 @@ function handleAssertMsg(
   logWithVikePrefix(assertMsg, logType, category)
 }
 
-function getCategoryRequest(httpRequestId: number) {
-  return `request(${httpRequestId})` as const
-}
-function getConfigLogCategory(): LogCategory {
-  const store = getAsyncHookStore()
-  const category = store?.httpRequestId !== undefined ? getCategoryRequest(store.httpRequestId) : 'config'
+function getConfigCategory(): LogCategory {
+  const category = getCategory() ?? 'config'
   return category
 }
 
@@ -269,4 +265,7 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
   }
   const category = httpRequestId !== null ? getCategoryRequest(httpRequestId) : null
   return category
+}
+function getCategoryRequest(httpRequestId: number) {
+  return `request(${httpRequestId})` as const
 }
