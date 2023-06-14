@@ -149,17 +149,17 @@ function getAssertErrMsg(err: unknown): { assertMsg: string; showVikeVersion: bo
   }
   if (assertMsg.startsWith(projectTagWithVersion)) {
     assertMsg = assertMsg.slice(projectTagWithVersion.length)
-    assertMsg = `${assertMsg}\n${removeMessage(err.stack)}`
+    assertMsg = `${assertMsg}\n${removeErrMsg(err.stack)}`
     return { assertMsg, showVikeVersion: true }
   }
   return null
 }
 
-function removeMessage(stack: unknown): string {
+function removeErrMsg(stack: unknown): string {
   if (typeof stack !== 'string') return String(stack)
   const [firstLine, ...stackLines] = stack.split('\n')
-  if (firstLine!.startsWith('Error: ')) return stackLines.join('\n')
-  return stack
+  if (!firstLine!.startsWith('Error: ')) return stack
+  return stackLines.join('\n')
 }
 
 function setAssertLogger(logger: Logger): void {

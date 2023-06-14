@@ -201,8 +201,8 @@ function getConfigCategory(): LogCategory {
 function handleAssertMsg(err: unknown, category: LogCategory | null): boolean {
   const res = getAssertErrMsg(err)
   if (!res) return false
-  const { assertMsg, showVikeVersion: showVersion } = res
-  logWithVikePrefix(assertMsg, 'error', category, showVersion)
+  const { assertMsg, showVikeVersion } = res
+  logWithVikePrefix(assertMsg, 'error', category, showVikeVersion)
   return true
 }
 
