@@ -43,7 +43,7 @@
     "@brillout/dev-my-dep": "^0.1.5",
     "@brillout/test-e2e": "^0.5.8",
     "@brillout/test-types": "^0.1.6",
-    "vitest": "^0.29.5"
+    "vitest": "^0.32.0"
   },
   "pnpm": {
     "overrides": {
