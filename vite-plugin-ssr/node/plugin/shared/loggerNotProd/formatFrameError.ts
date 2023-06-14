@@ -8,8 +8,7 @@ export { getErrMsg }
 // Copied & adapted from https://github.com/vitejs/vite/blob/9c114c5c72a6af87e3330d5573362554b4511265/packages/vite/src/node/server/middlewares/error.ts
 
 import pc from '@brillout/picocolors'
-import stripAnsi from 'strip-ansi'
-import { assert, escapeRegex, getFilePathVite, isObject } from '../../utils'
+import { assert, escapeRegex, getFilePathVite, isObject, stripAnsi } from '../../utils'
 
 // Subset of RollupError
 type FrameError = { id: string; frame: string; message: string; plugin?: string }
