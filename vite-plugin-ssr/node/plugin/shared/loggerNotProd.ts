@@ -88,13 +88,13 @@ function logRuntimeError(
   /** `httpRequestId` is `null` when pre-rendering */
   httpRequestId: number | null
 ): void {
-  setAlreadyLogged(err)
   logErr(err, httpRequestId)
 }
 function logViteFrameError(err: FrameError): void {
   logErr(err)
 }
 function logErr(err: unknown, httpRequestId: number | null = null): void {
+  setAlreadyLogged(err)
   warnIfObjectIsNotObject(err)
 
   if (isRenderErrorPageException(err)) {
