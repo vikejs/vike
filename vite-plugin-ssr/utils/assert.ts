@@ -67,7 +67,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
 function assertUsage(condition: unknown, errMsg: string): asserts condition {
   if (condition) return
   globalObject.hasLogged = true
-  errMsg = addPrefix('Wrong usage', errMsg)
+  errMsg = addPrefix('Wrong Usage', errMsg)
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   globalObject.onBeforeLog?.()
   throw usageError
@@ -130,7 +130,7 @@ function assertHasLogged(): boolean {
   return !!globalObject.hasLogged
 }
 
-type Tag = 'Bug' | 'Wrong usage' | 'Error' | 'Warning' | 'Info'
+type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning' | 'Info'
 function addPrefix(tag: Tag, msg: string) {
   let prefix = `[${tag}]`
   const color = tag === 'Info' ? 'blue' : tag === 'Warning' ? 'yellow' : 'red'
