@@ -59,7 +59,7 @@ function addPrefix(msg: string, projectTag: '[vite]' | ProjectTag, category: Log
     if (logType === 'error-recover' && !hasGreen(msg)) return pc.green(pc.bold(s))
     if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(s)
     if (projectTag === '[vite]') return pc.cyan(pc.bold(s))
-    if (projectTag.startsWith(`[${projectInfo.projectName}`)) return pc.yellow(pc.bold(s))
+    if (projectTag.startsWith(`[${projectInfo.projectName}`)) return pc.magenta(pc.bold(s))
     assert(false)
   }
   let tag = color(pc.bold(`${projectTag}`))
