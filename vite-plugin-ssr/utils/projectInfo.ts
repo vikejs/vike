@@ -1,8 +1,14 @@
+export { projectInfo }
+export type { ProjectTag }
+
 import { onProjectInfo } from './assertSingleInstance'
 
 const PROJECT_VERSION = '0.4.131' as const
 
-export const projectInfo = {
+type ProjectName = typeof projectInfo.npmPackageName
+type ProjectTag = `[${ProjectName}]` | `[${ProjectName}@${string}]`
+
+const projectInfo = {
   projectName: 'vite-plugin-ssr' as const,
   projectVersion: PROJECT_VERSION,
   npmPackageName: 'vite-plugin-ssr' as const,

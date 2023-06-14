@@ -4,16 +4,26 @@ export { log as logWithoutPrefix }
 export { onErrorLog }
 export { onLog }
 
-import { assert, projectInfo, stripAnsi } from '../../utils'
+import { assert, projectInfo, type ProjectTag, stripAnsi } from '../../utils'
 import pc from '@brillout/picocolors'
 import type { LogCategory, LogType } from '../loggerNotProd'
 
-function logWithVikePrefix(msg: string, logType: LogType, category: LogCategory | null) {
-  msg = addPrefix(msg, projectInfo.projectName, category, logType)
+function logWithVikePrefix(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion = false) {
+  const projectTag = getProjectTag(showVikeVersion)
+  msg = addPrefix(msg, projectTag, category, logType)
   log(msg, logType)
 }
+function getProjectTag(showVikeVersion: boolean) {
+  let projectTag: ProjectTag
+  if (showVikeVersion) {
+    projectTag = `[${projectInfo.projectName}@${projectInfo.projectVersion}]`
+  } else {
+    projectTag = `[${projectInfo.projectName}]`
+  }
+  return projectTag
+}
 function logWithVitePrefix(msg: string, logType: LogType, category: LogCategory | null) {
-  msg = addPrefix(msg, 'vite', category, logType)
+  msg = addPrefix(msg, '[vite]', category, logType)
   log(msg, logType)
 }
 function log(msg: unknown, logType: LogType) {
@@ -43,16 +53,16 @@ let onLogCallback: (() => void) | undefined
 function onLog(cb: () => void) {
   onLogCallback = cb
 }
-function addPrefix(msg: string, project: 'vite' | 'vite-plugin-ssr', category: LogCategory | null, logType: LogType) {
+function addPrefix(msg: string, projectTag: '[vite]' | ProjectTag, category: LogCategory | null, logType: LogType) {
   const color = (s: string) => {
     if (logType === 'error' && !hasRed(msg)) return pc.red(s)
     if (logType === 'error-recover' && !hasGreen(msg)) return pc.green(s)
     if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(s)
-    if (project === 'vite-plugin-ssr') return pc.yellow(s)
-    if (project === 'vite') return pc.cyan(s)
+    if (projectTag === '[vite]') return pc.cyan(s)
+    if (projectTag.startsWith('[vite-plugin-ssr')) return pc.yellow(s)
     assert(false)
   }
-  let tag = color(pc.bold(`[${project}]`))
+  let tag = color(pc.bold(`${projectTag}`))
   if (category) {
     tag = tag + pc.dim(`[${category}]`)
   }

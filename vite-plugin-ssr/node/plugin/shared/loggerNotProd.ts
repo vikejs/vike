@@ -149,11 +149,8 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
   }
 
   if (!isErrorDebug()) {
-    const assertMsg = getAssertErrMsg(err)
-    if (assertMsg) {
-      logWithVikePrefix(assertMsg, 'error', category)
-      return
-    }
+    const logged = handleAssertMsg(err, category)
+    if (logged) return
   }
 
   logErrFallback(err, category)
@@ -183,11 +180,8 @@ function logConfigError(err: unknown): void {
     }
   }
   {
-    const assertMsg = getAssertErrMsg(err)
-    if (assertMsg) {
-      logWithVikePrefix(assertMsg, 'error', category)
-      return
-    }
+    const logged = handleAssertMsg(err, category)
+    if (logged) return
   }
 
   logErrFallback(err, category)
@@ -202,6 +196,14 @@ function logErrFallback(err: unknown, category: LogCategory | null) {
 function getConfigCategory(): LogCategory {
   const category = getCategory() ?? 'config'
   return category
+}
+
+function handleAssertMsg(err: unknown, category: LogCategory | null): boolean {
+  const res = getAssertErrMsg(err)
+  if (!res) return false
+  const { assertMsg, showVikeVersion: showVersion } = res
+  logWithVikePrefix(assertMsg, 'error', category, showVersion)
+  return true
 }
 
 let isFirstLog = true

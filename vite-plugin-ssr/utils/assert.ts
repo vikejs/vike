@@ -142,19 +142,26 @@ function addPrefix(tag: Tag, msg: string) {
   return `${prefix}${whitespace}${msg}`
 }
 
-function getAssertErrMsg(err: unknown): string | null {
+function getAssertErrMsg(err: unknown): { assertMsg: string; showVikeVersion: boolean } | null {
   if (!isObject(err) || typeof err.message !== 'string') return null
   let assertMsg = err.message
   if (assertMsg.startsWith(projectTag)) {
     assertMsg = assertMsg.slice(projectTag.length)
-    return assertMsg
+    return { assertMsg, showVikeVersion: false }
   }
   if (assertMsg.startsWith(projectTagWithVersion)) {
     assertMsg = assertMsg.slice(projectTagWithVersion.length)
-    assertMsg = `${assertMsg}\n${err.stack}`
-    return assertMsg
+    assertMsg = `${assertMsg}\n${removeMessage(err.stack)}`
+    return { assertMsg, showVikeVersion: true }
   }
   return null
+}
+
+function removeMessage(stack: unknown): string {
+  if (typeof stack !== 'string') return String(stack)
+  const [firstLine, ...stackLines] = stack.split('\n')
+  if (firstLine!.startsWith('Error: ')) return stackLines.join('\n')
+  return stack
 }
 
 function setAssertLogger(logger: Logger): void {
