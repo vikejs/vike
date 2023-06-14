@@ -6,7 +6,10 @@ export { setRuntimeLogger }
 
 import { logErrorProd } from './loggerProd'
 import type { LogError, LogInfo } from '../../plugin/shared/loggerNotProd'
+import { setAssertColorer } from '../utils'
+import pc from '@brillout/picocolors'
 
+setAssertColorer((str, color) => pc[color](pc.bold(str)))
 logError =
   // @ts-expect-error
   logError ??

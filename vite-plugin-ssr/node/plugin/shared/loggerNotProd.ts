@@ -24,7 +24,7 @@ import {
   assert,
   assertHasLogged,
   assertIsVitePluginCode,
-  getAssertMsg,
+  getAssertErrMsg,
   hasProp,
   isUserHookError,
   setAssertLogger,
@@ -149,9 +149,9 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
   }
 
   if (!isErrorDebug()) {
-    const res = getAssertMsg(err)
-    if (res) {
-      handleAssertMsg(res, category)
+    const assertMsg = getAssertErrMsg(err)
+    if (assertMsg) {
+      logWithVikePrefix(assertMsg, 'error', category)
       return
     }
   }
@@ -183,9 +183,9 @@ function logConfigError(err: unknown): void {
     }
   }
   {
-    const res = getAssertMsg(err)
-    if (res) {
-      handleAssertMsg(res, category)
+    const assertMsg = getAssertErrMsg(err)
+    if (assertMsg) {
+      logWithVikePrefix(assertMsg, 'error', category)
       return
     }
   }
@@ -197,20 +197,6 @@ function logErrFallback(err: unknown, category: LogCategory | null) {
     logWithVikePrefix(pc.red(pc.bold('Error thrown:')), 'error', category)
   }
   logWithoutPrefix(err, 'error')
-}
-
-function handleAssertMsg(
-  { assertMsg, logType }: { assertMsg: string; logType: LogType },
-  category: LogCategory | null
-) {
-  if (logType === 'error') {
-    const [first, ...rest] = assertMsg.split(/(?<=])/)
-    assert(first)
-    if (first.startsWith('[') && first.split(' ').length <= 2) {
-      assertMsg = [pc.red(pc.bold(first)), ...rest].join('')
-    }
-  }
-  logWithVikePrefix(assertMsg, logType, category)
 }
 
 function getConfigCategory(): LogCategory {

@@ -5,8 +5,9 @@ export { assertInfo }
 export { getProjectError }
 export { addOnBeforeLogHook }
 export { assertHasLogged }
-export { getAssertMsg }
+export { getAssertErrMsg }
 export { setAssertLogger }
+export { setAssertColorer }
 
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace'
 import { getGlobalObject } from './getGlobalObject'
@@ -17,6 +18,7 @@ const globalObject = getGlobalObject<{
   onBeforeLog?: () => void
   hasLogged?: true
   logger: Logger
+  colorer: Colorer
 }>('utils/assert.ts', {
   alreadyLogged: new Set(),
   logger(msg, logType) {
@@ -28,17 +30,14 @@ const globalObject = getGlobalObject<{
       return
     }
     assert(false)
-  }
+  },
+  colorer: (str) => str
 })
 type Logger = (msg: string | Error, logType: 'warn' | 'info') => void
+type Colorer = (str: string, color: 'red' | 'blue' | 'yellow') => string
 
-const logPrefix = `[${projectInfo.npmPackageName}]` as const
-const logPrefixBug = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]` as const
-const internalErrorPrefix = `${logPrefixBug}[Bug]` as const
-const usageErrorPrefix = `${logPrefix}[Wrong Usage]` as const
-const errorPrefix = `${logPrefix}[Error]` as const
-const warningPrefix = `${logPrefix}[Warning]` as const
-const infoPrefix = `${logPrefix}[Info]` as const
+const projectTag = `[${projectInfo.npmPackageName}]` as const
+const projectTagWithVersion = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]` as const
 
 const numberOfStackTraceLinesToRemove = 2
 
@@ -54,18 +53,17 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
     return `Debug info (this is for the ${projectInfo.projectName} maintainers; you can ignore this): ${debugInfoSerialized}`
   })()
 
-  const internalError = createErrorWithCleanStackTrace(
-    [
-      `${internalErrorPrefix} You stumbled upon a bug in ${projectInfo.projectName}'s source code.`,
-      `Go to ${projectInfo.githubRepository}/issues/new and copy-paste this error. (The error's stack trace is usually enough to fix the problem).`,
-      'A maintainer will fix the bug (usually under 24 hours).',
-      `Don't hesitate to reach out as it makes ${projectInfo.projectName} more robust.`,
-      debugStr
-    ]
-      .filter(Boolean)
-      .join(' '),
-    numberOfStackTraceLinesToRemove
-  )
+  let errMsg = [
+    `You stumbled upon a bug in ${projectInfo.projectName}'s source code.`,
+    `Go to ${projectInfo.githubRepository}/issues/new and copy-paste this error. (The error's stack trace is usually enough to fix the problem).`,
+    'A maintainer will fix the bug (usually under 24 hours).',
+    `Don't hesitate to reach out as it makes ${projectInfo.projectName} more robust.`,
+    debugStr
+  ]
+    .filter(Boolean)
+    .join(' ')
+  errMsg = addPrefix('Bug', errMsg)
+  const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
 
   globalObject.onBeforeLog?.()
   throw internalError
@@ -74,14 +72,14 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
 function assertUsage(condition: unknown, errMsg: string): asserts condition {
   if (condition) return
   globalObject.hasLogged = true
-  errMsg = addPrefix(usageErrorPrefix, errMsg)
+  errMsg = addPrefix('Wrong usage', errMsg)
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   globalObject.onBeforeLog?.()
   throw usageError
 }
 
 function getProjectError(errMsg: string) {
-  errMsg = addPrefix(errorPrefix, errMsg)
+  errMsg = addPrefix('Error', errMsg)
   const projectError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   return projectError
 }
@@ -93,7 +91,7 @@ function assertWarning(
 ): void {
   if (condition) return
   globalObject.hasLogged = true
-  warnMsg = addPrefix(warningPrefix, warnMsg)
+  warnMsg = addPrefix('Warning', warnMsg)
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = onlyOnce === true ? warnMsg : onlyOnce
@@ -115,7 +113,7 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
   if (condition) {
     return
   }
-  msg = addPrefix(infoPrefix, msg)
+  msg = addPrefix('Info', msg)
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = msg
@@ -137,34 +135,35 @@ function assertHasLogged(): boolean {
   return !!globalObject.hasLogged
 }
 
-function addPrefix(prefix: `[vite-plugin-ssr][${string}]`, msg: string) {
+type Tag = 'Bug' | 'Wrong usage' | 'Error' | 'Warning' | 'Info'
+function addPrefix(tag: Tag, msg: string) {
+  let prefix = `[${tag}]`
+  const color = tag === 'Info' ? 'blue' : tag === 'Warning' ? 'yellow' : 'red'
+  prefix = globalObject.colorer(prefix, color)
+  prefix = `${tag === 'Bug' ? projectTagWithVersion : projectTag}${prefix}`
   assert(!/\s/.test(msg[0]!))
   const whitespace = msg.startsWith('[') ? '' : ' '
   return `${prefix}${whitespace}${msg}`
 }
 
-function getAssertMsg(err: unknown): { assertMsg: string; logType: 'error' | 'warn' | 'info' } | null {
+function getAssertErrMsg(err: unknown): string | null {
   if (!isObject(err) || typeof err.message !== 'string') return null
-  const errMsg = err.message
-  if (errMsg.startsWith(internalErrorPrefix)) {
-    let assertMsg = errMsg.slice(logPrefixBug.length)
-    assertMsg = `${assertMsg}\n${err.stack}`
-    return { assertMsg, logType: 'error' }
+  let assertMsg = err.message
+  if (assertMsg.startsWith(projectTag)) {
+    assertMsg = assertMsg.slice(projectTag.length)
+    return assertMsg
   }
-  if (errMsg.startsWith(logPrefix)) {
-    const assertMsg = errMsg.slice(logPrefix.length)
-    const logType = (() => {
-      if (errMsg.startsWith(infoPrefix)) return 'info' as const
-      if (errMsg.startsWith(warningPrefix)) return 'warn' as const
-      if (errMsg.startsWith(errorPrefix)) return 'error' as const
-      if (errMsg.startsWith(usageErrorPrefix)) return 'error' as const
-      return 'info' as const
-    })()
-    return { assertMsg, logType }
+  if (assertMsg.startsWith(projectTagWithVersion)) {
+    assertMsg = assertMsg.slice(projectTagWithVersion.length)
+    assertMsg = `${assertMsg}\n${err.stack}`
+    return assertMsg
   }
   return null
 }
 
 function setAssertLogger(logger: Logger): void {
   globalObject.logger = logger
+}
+function setAssertColorer(colorer: Colorer): void {
+  globalObject.colorer = colorer
 }
