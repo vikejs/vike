@@ -59,7 +59,7 @@ function addPrefix(msg: string, project: 'vite' | 'vite-plugin-ssr', category: L
 
   const timestamp = pc.dim(new Date().toLocaleTimeString())
 
-  const whitespace = stripAnsi(msg).startsWith('[') ? '' : ' '
+  const whitespace = /\s|\[/.test(stripAnsi(msg)[0]!) ? '' : ' '
 
   return `${timestamp} ${tag}${whitespace}${msg}`
 }

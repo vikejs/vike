@@ -114,7 +114,7 @@ function logErr(err: unknown, httpRequestId: HttpRequestId = null): void {
   }
   const category = httpRequestId !== null ? getCategoryRequest(httpRequestId) : null
 
-  {
+  if (!isErrorDebug()) {
     const { viteDevServer } = getGlobalContext()
     if (viteDevServer) {
       if (hasProp(err, 'stack')) {
@@ -153,7 +153,7 @@ function logErr(err: unknown, httpRequestId: HttpRequestId = null): void {
     return
   }
 
-  {
+  if (!isErrorDebug()) {
     const res = getAssertMsg(err)
     if (res) {
       handleAssertMsg(res, category)

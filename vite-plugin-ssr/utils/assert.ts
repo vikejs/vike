@@ -123,6 +123,7 @@ function assertHasLogged(): boolean {
 }
 
 function addPrefix(prefix: `[vite-plugin-ssr][${string}]`, msg: string) {
+  assert(!/\s/.test(msg[0]!))
   const whitespace = msg.startsWith('[') ? '' : ' '
   return `${prefix}${whitespace}${msg}`
 }
@@ -131,12 +132,12 @@ function getAssertMsg(err: unknown): { assertMsg: string; logType: 'error' | 'wa
   if (!isObject(err) || typeof err.message !== 'string') return null
   const errMsg = err.message
   if (errMsg.startsWith(internalErrorPrefix)) {
-    let assertMsg = errMsg.slice(logPrefix.length)
+    let assertMsg = errMsg.slice(logPrefixBug.length)
     assertMsg = `${assertMsg}\n${err.stack}`
     return { assertMsg, logType: 'error' }
   }
   if (errMsg.startsWith(logPrefix)) {
-    let assertMsg = errMsg.slice(logPrefix.length)
+    const assertMsg = errMsg.slice(logPrefix.length)
     const logType = (() => {
       if (errMsg.startsWith(infoPrefix)) return 'info' as const
       if (errMsg.startsWith(warningPrefix)) return 'warn' as const
