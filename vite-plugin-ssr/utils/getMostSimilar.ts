@@ -1,11 +1,9 @@
 export { getMostSimilar }
 
-import { assert } from './assert'
-import { isBrowser } from './isBrowser'
-import { higherFirst } from './sorter'
+import './assertIsNotBrowser'
 
-// Ensure we don't bloat client-side bundles with this
-assert(!isBrowser())
+import { assert } from './assert'
+import { higherFirst } from './sorter'
 
 function getMostSimilar(word: string, words: string[]): null | string {
   if (words.length === 0) return null

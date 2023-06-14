@@ -1,7 +1,6 @@
 export { stripAnsi }
 
-import { assertIsVitePluginCode } from './assertIsVitePluginCode'
-assertIsVitePluginCode() // Ensure we don't include this file on the client-side
+import './assertIsNotBrowser'
 
 const ansiRegex = getAnsiRegex()
 

@@ -8,8 +8,7 @@ import { objectAssign } from './objectAssign'
 import { assert } from './assert'
 import { checkType } from './checkType'
 
-// Ensure that this is never loaded in the browser. (In order to avoid this file to be included in the client-side bundle.)
-// For isomorphic code: instead of `import { createDebugger } from './utils'`, use `globalThis.createDebugger()`.
+// Avoid this to be loaded in the browser. For isomorphic code: instead of `import { createDebugger } from './utils'`, use `globalThis.createDebugger()`.
 assert(!isBrowser())
 ;(globalThis as any).__brillout_debug_createDebugger = createDebugger
 
