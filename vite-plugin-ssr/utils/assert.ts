@@ -6,6 +6,7 @@ export { getProjectError }
 export { addOnBeforeLogHook }
 export { assertHasLogged }
 export { getAssertMsg }
+export { setAssertLogger }
 
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace'
 import { getGlobalObject } from './getGlobalObject'
@@ -15,7 +16,21 @@ const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
   onBeforeLog?: () => void
   hasLogged?: true
-}>('utils/assert.ts', { alreadyLogged: new Set() })
+  logger: Logger
+}>('utils/assert.ts', {
+  alreadyLogged: new Set(),
+  logger(msg, logType) {
+    if (logType === 'info') {
+      console.log(msg)
+    }
+    if (logType === 'warn') {
+      console.warn(msg)
+      return
+    }
+    assert(false)
+  }
+})
+type Logger = (msg: string | Error, logType: 'warn' | 'info') => void
 
 const logPrefix = `[${projectInfo.npmPackageName}]` as const
 const logPrefixBug = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]` as const
@@ -90,9 +105,9 @@ function assertWarning(
   }
   globalObject.onBeforeLog?.()
   if (showStackTrace) {
-    console.warn(new Error(warnMsg))
+    globalObject.logger(new Error(warnMsg), 'warn')
   } else {
-    console.warn(warnMsg)
+    globalObject.logger(warnMsg, 'warn')
   }
 }
 
@@ -111,7 +126,7 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
     }
   }
   globalObject.onBeforeLog?.()
-  console.log(msg)
+  globalObject.logger(msg, 'info')
 }
 
 function addOnBeforeLogHook(onBeforeLog: () => void) {
@@ -148,4 +163,8 @@ function getAssertMsg(err: unknown): { assertMsg: string; logType: 'error' | 'wa
     return { assertMsg, logType }
   }
   return null
+}
+
+function setAssertLogger(logger: Logger): void {
+  globalObject.logger = logger
 }

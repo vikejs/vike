@@ -16,7 +16,6 @@ export type { LogError }
 export type { LogErrorArgs }
 export type { LogType }
 export type { LogCategory }
-export type { HttpRequestId }
 
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { getGlobalContext, getViteConfig } from '../../runtime/globalContext'
@@ -28,6 +27,7 @@ import {
   getAssertMsg,
   hasProp,
   isUserHookError,
+  setAssertLogger,
   stripAnsi,
   warnIfObjectIsNotObject
 } from '../utils'
@@ -45,6 +45,9 @@ import { setAlreadyLogged } from '../../runtime/renderPage/isNewError'
 
 assertIsVitePluginCode()
 setRuntimeLogger(logRuntimeError, logRuntimeInfo)
+setAssertLogger((msg, logType) =>
+  logWithVikePrefix(typeof msg === 'string' ? msg : msg.message, logType, getCategory())
+)
 
 type LogCategory = 'config' | `request(${number})`
 type LogType = 'info' | 'warn' | 'error' | 'error-recover'
@@ -52,7 +55,6 @@ type LogInfoArgs = Parameters<typeof logRuntimeInfo>
 type LogInfo = (...args: LogInfoArgs) => void
 type LogErrorArgs = Parameters<typeof logRuntimeError>
 type LogError = (...args: LogErrorArgs) => void
-type HttpRequestId = number | null
 
 function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType, clearConditions?: ClearConditions) {
   clearWithCondition(clearConditions)
@@ -92,7 +94,7 @@ function logRuntimeError(
 function logViteFrameError(err: FrameError): void {
   logErr(err)
 }
-function logErr(err: unknown, httpRequestId: HttpRequestId = null): void {
+function logErr(err: unknown, httpRequestId: number | null = null): void {
   warnIfObjectIsNotObject(err)
 
   if (isRenderErrorPageException(err)) {
@@ -104,15 +106,6 @@ function logErr(err: unknown, httpRequestId: HttpRequestId = null): void {
 
   const store = getAsyncHookStore()
   store?.addLoggedError(err)
-
-  if (store?.httpRequestId !== undefined) {
-    if (httpRequestId === null) {
-      httpRequestId = store.httpRequestId
-    } else {
-      assert(httpRequestId === store.httpRequestId)
-    }
-  }
-  const category = httpRequestId !== null ? getCategoryRequest(httpRequestId) : null
 
   if (!isErrorDebug()) {
     const { viteDevServer } = getGlobalContext()
@@ -131,6 +124,8 @@ function logErr(err: unknown, httpRequestId: HttpRequestId = null): void {
       */
     }
   }
+
+  const category = getCategory(httpRequestId)
 
   {
     const hook = isUserHookError(err)
@@ -261,4 +256,17 @@ function logErrorDebugNote() {
     ].join('\n')
   )
   logWithoutPrefix(msg, 'error')
+}
+
+function getCategory(httpRequestId: number | null = null): LogCategory | null {
+  const store = getAsyncHookStore()
+  if (store?.httpRequestId !== undefined) {
+    if (httpRequestId === null) {
+      httpRequestId = store.httpRequestId
+    } else {
+      assert(httpRequestId === store.httpRequestId)
+    }
+  }
+  const category = httpRequestId !== null ? getCategoryRequest(httpRequestId) : null
+  return category
 }

@@ -7,9 +7,8 @@ import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPag
 import { isObject, warnIfObjectIsNotObject } from '../utils'
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from './isNewError'
-import type { HttpRequestId } from '../../plugin/shared/loggerNotProd'
 
-function logErrorProd(err: unknown, _httpRquestId: HttpRequestId): boolean {
+function logErrorProd(err: unknown, _httpRquestId: null | number): boolean {
   warnIfObjectIsNotObject(err)
   setAlreadyLogged(err)
 
