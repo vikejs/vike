@@ -26,7 +26,7 @@ function resolveBaseFromUserConfig(config: UserConfig, configVps: undefined | Co
 
 function resolve(base: string | null, baseServer_: string | null, baseAssets_: string | null): BaseServers {
   {
-    const wrongBase = (val: string) => `should start with '/', 'http://', or 'https://' (it is ${val} instead)`
+    const wrongBase = (val: string) => `should start with '/', 'http://', or 'https://' (it is '${val}' instead)`
     assertUsage(base === null || isBaseAssets(base), `vite.config.js#base ${wrongBase(base!)}`)
     assertUsage(baseAssets_ === null || isBaseAssets(baseAssets_), `Config \`baseAssets\` ${wrongBase(baseAssets_!)}`)
     assertUsage(
