@@ -93,7 +93,7 @@ function serializeConfigElement(
     lines.push(`${whitespace}  configValueSerialized: ${JSON.stringify(configValueSerialized)}`)
   } else {
     assert(codeFilePath)
-    if (configEnv === '_routing-env' || eagerImport) {
+    if (configEnv === '_routing-env-eager' || eagerImport) {
       const { importVar, importStatement } = generateEagerImport(codeFilePath)
       // TODO: expose all exports so that assertDefaultExport can be applied
       lines.push(`${whitespace}  configValue: ${importVar}[${JSON.stringify(codeFileExport)}]`)

@@ -9,7 +9,7 @@ import type { PrefetchStaticAssets } from '../../client/router/prefetch/getPrefe
 import type { ConfigVpsUserProvided } from '../ConfigVps'
 // TODO: write docs of links below
 
-import type { ConfigEnv } from './PageConfig'
+import type { ConfigEnvPublic } from './PageConfig'
 
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVpsUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
@@ -23,12 +23,17 @@ type Config<Page = unknown> = Partial<{
   /** The root UI component of the page */
   Page: Page
 
-  /** The page's route
+  /** The page's URL(s).
    *
    *  See https://vite-plugin-ssr.com/route
    */
   route: string | Function
 
+  /** Protect page(s), e.g. forbid unauthorized access.
+   *
+   *  See https://vite-plugin-ssr.com/guard
+   */
+  guard: Function
   /**
    * Whether to pre-render the page(s).
    *
@@ -160,7 +165,7 @@ type Meta = Record<
      *
      * See https://vite-plugin-ssr.com/meta
      */
-    env: ConfigEnv
+    env: ConfigEnvPublic
     /**
      * Define a so-called "Shortcut Config".
      *

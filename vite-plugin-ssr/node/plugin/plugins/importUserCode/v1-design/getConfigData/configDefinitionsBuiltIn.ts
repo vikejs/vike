@@ -1,10 +1,10 @@
 export { configDefinitionsBuiltIn }
 export type { ConfigDefinition }
 
-import type { ConfigNameBuiltIn, ConfigEnv } from '../../../../../../shared/page-configs/PageConfig'
+import type { ConfigNameBuiltIn, ConfigEnvPrivate } from '../../../../../../shared/page-configs/PageConfig'
 
 type ConfigDefinition = {
-  env: ConfigEnv
+  env: ConfigEnvPrivate
   effect?: (config: {
     configValue: unknown
     configDefinedAt: string
@@ -41,10 +41,13 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: 'server-only'
   },
   route: {
-    env: '_routing-env'
+    env: '_routing-env-eager'
+  },
+  guard: {
+    env: '_routing-env-lazy'
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    env: '_routing-env'
+    env: '_routing-env-eager'
   },
   filesystemRoutingRoot: {
     env: 'config-only'

@@ -9,7 +9,7 @@ export type {
   ConfigNonHeaderFile,
   ConvertConfigNonHeaderFileToConfig
 } from '../shared/page-configs/Config'
-export type { ConfigEnv as Env } from '../shared/page-configs/PageConfig'
+export type { ConfigEnvPublic as Env } from '../shared/page-configs/PageConfig'
 export type { ConfigEntries } from '../shared/getPageFiles/getExports'
 
 // TODO/v1-release: remove

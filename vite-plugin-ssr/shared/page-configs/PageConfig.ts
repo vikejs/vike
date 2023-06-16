@@ -1,6 +1,7 @@
 export type { PageConfig }
 export type { PageConfigLoaded }
-export type { ConfigEnv }
+export type { ConfigEnvPrivate }
+export type { ConfigEnvPublic }
 export type { PageConfigData }
 export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
@@ -10,8 +11,15 @@ export type { ConfigNameBuiltIn }
 
 import type { ConfigNameBuiltIn } from './Config'
 
+type ConfigEnvPrivate =
+  | 'client-only'
+  | 'server-only'
+  | 'server-and-client'
+  | 'config-only'
+  | '_routing-env-eager'
+  | '_routing-env-lazy'
 /** See https://vite-plugin-ssr/meta */
-type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | '_routing-env' | 'config-only'
+type ConfigEnvPublic = Exclude<ConfigEnvPrivate, '_routing-env-eager'>
 
 type PageConfig = PageConfigData & {
   loadCodeFiles: LoadCodeFiles
@@ -56,7 +64,7 @@ type ConfigElementSource =
       codeFileExport: string
     }
 type ConfigElement = {
-  configEnv: ConfigEnv
+  configEnv: ConfigEnvPrivate
   configValue?: unknown
   configValueSerialized?: string
   configDefinedAt: string
