@@ -49,8 +49,13 @@ function importUserCode(): Plugin {
       getConfigData_dependenciesInvisibleToVite.forEach((f) => assertPosixPath(f))
       const isVikeConfig = getConfigData_dependenciesInvisibleToVite.has(file)
 
+      /*
       const isViteModule = ctx.modules.length > 0
       if (isVikeConfig || isViteModule) {
+        clearWithVite(config)
+      }
+      */
+      if (isVikeConfig) {
         clearWithVite(config)
       }
 
