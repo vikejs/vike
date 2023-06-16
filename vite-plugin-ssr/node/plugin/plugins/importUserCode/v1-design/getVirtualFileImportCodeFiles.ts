@@ -12,6 +12,7 @@ import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery'
 import { debug } from './debug'
 import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps'
 import path from 'path'
+import { getConfigValue } from '../../../../../shared/page-configs/utils'
 
 async function getVirtualFileImportCodeFiles(
   id: string,
@@ -50,6 +51,7 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   includeAssetsImportedByServer: boolean,
   isDev: boolean
 ): string {
+  const isClientRouting = getConfigValue(pageConfigData, 'clientRouting', 'boolean') ?? false
   const lines: string[] = []
   const importStatements: string[] = []
   lines.push('export default [')
@@ -57,8 +59,11 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   Object.entries(pageConfigData.configElements).forEach(([configName, configElement]) => {
     if (!configElement.codeFilePath) return
     const { configEnv, codeFilePath, codeFileExport } = configElement
+
     if (configEnv === '_routing-env-eager' || configEnv === 'config-only') return
     if (configEnv === (isForClientSide ? 'server-only' : 'client-only')) return
+    if (configEnv === '_routing-env-lazy' && isForClientSide && !isClientRouting) return
+
     assertPosixPath(codeFilePath)
     const fileName = path.posix.basename(codeFilePath)
     const isPlusFile = fileName.startsWith('+')
