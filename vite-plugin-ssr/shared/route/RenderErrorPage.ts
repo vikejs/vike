@@ -19,10 +19,12 @@ function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown
       "Don't use the `new` operator: use `throw RenderErrorPage()` instead of `throw new RenderErrorPage()`."
     )
   }
-  assertPageContextProvidedByUser(pageContext, {
-    errorMessagePrefix: 'The `pageContext` object provided by `throw RenderErrorPage({ pageContext })`',
-    isRenderErrorPage: true
-  })
+  if (pageContext !== undefined) {
+    assertPageContextProvidedByUser(pageContext, {
+      errorMessagePrefix: 'The `pageContext` object provided by `throw RenderErrorPage({ pageContext })`',
+      isRenderErrorPage: true
+    })
+  }
 
   const err = new Error('RenderErrorPage')
   objectAssign(err, { pageContext, [stamp]: true })
