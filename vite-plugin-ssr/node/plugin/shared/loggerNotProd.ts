@@ -131,7 +131,11 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
     const hook = isUserHookError(err)
     if (hook) {
       const { hookName, hookFilePath } = hook
-      logWithVikePrefix(pc.red(`Error thrown by hook ${hookName}() (${hookFilePath}):`), 'error', category)
+      logWithVikePrefix(
+        pc.red(`Following error was thrown by ${hookName}() hook defined at ${hookFilePath}`),
+        'error',
+        category
+      )
       logWithoutPrefix(err, 'error')
       return
     }
