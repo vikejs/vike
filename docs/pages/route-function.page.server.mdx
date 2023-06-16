@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-Route Functions give us full programmatic flexibility to implement advanced routing logic.
+Route Functions enable full programmatic flexibility to implement advanced routing logic.
 
 ```js
 // /pages/product/edit.page.route.js
@@ -26,14 +26,14 @@ export default (pageContext) => {
 }
 ```
 
-We can use any routing tool we want, such as:
+You can use any routing tool you want, such as:
  - Vite-plugin-ssr's <Link text="Route String" href="/route-string" /> resolver [`resolveRoute()`](#resolveroute)
  - [partRegex](https://github.com/brillout/part-regex)
 
 
 ## Precedence
 
-We can return a `precedence` number to resolve route conflicts, see <Link href="/routing-precedence" />.
+The `precedence` number can be used to resolve route conflicts, see <Link href="/routing-precedence" />.
 
 ```js
 // /pages/product/edit.page.route.js
@@ -48,7 +48,7 @@ export default (pageContext) => {
 
 ## `resolveRoute()`
 
-We can use `resolveRoute()` to resolve <Link text="Route Strings" href="/route-string" /> in Route Functions:
+You can use <Link text="Route Strings" href="/route-string" /> inside Route Functions:
 
 ```js
 // /pages/product/edit.page.route.js
@@ -90,7 +90,7 @@ export default (pageContext) => {
 
 Route Functions should be lightweight and fast.
 
-Because vite-plugin-ssr executes *all* Route Functions every time the user navigates to a new page. This means that a slow Route Function will slow down all our pages.
+Vite-plugin-ssr executes *all* Route Functions every time the user navigates to a new page. This means that a slow Route Function slows down all pages.
 
 Vite-plugin-ssr always has to run all Route Functions because it cannot magically predict the outcome of Route Functions. Consider following example:
 
@@ -112,9 +112,9 @@ export default pageContext => {
 
 Vite-plugin-ssr cannot know whether another Route Function will return a higher precedence number, therefore vite-plugin-ssr has to execute all Route Functions.
 
-If we use <Link text="Client Routing" href="/client-routing" />, then *all* our Route Functions are loaded in the browser. This means that if a Route Function imports a lot of code, then all the code is loaded in the browser and therefore slows down the page load of each page.
+If you use <Link text="Client Routing" href="/client-routing" />, then *all* your Route Functions are loaded in the browser. This means that if a Route Function imports a lot of code, then all that code is loaded on the client-side and on every pages. A heavy Route Function slows down the loading of each page.
 
-Thus, we should keep Route Functions both fast and lightweight.
+You should keep Route Functions both lightweight and fast.
 
 
 ## Async
@@ -128,9 +128,9 @@ Async Route Functions are forbidden.
 export default async () => { /* ... */ }
 ```
 
-The motivation for asynchronous Route Functions is often redirections, but using <Link href="/RenderErrorPage" text={<code>throw RenderErrorPage()</code>}></Link> is usually a better approach.
+The motivation for an async Route Function is often redirection and/or protecting a private page; instead use <Link href="/RenderErrorPage" text={<code>throw RenderErrorPage()</code>}></Link> with an async <Link text={<code>guard()</code>} href="/guard" /> or <Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" /> hook.
 
-> An async Route Function would slow down our entire app: as we have seen in [Lightweight & fast](#lightweight-fast), every time the user navigates to a new page *all* Route Functions are called. This means that a slow Route Function would slow down *all* our pages.
+> An asynchronous Route Function would slow down your entire app: as we have seen in [Lightweight & fast](#lightweight-fast), every time the user navigates to a new page *all* Route Functions are called. This means that a slow Route Function slows down *all* pages.
 
 
 ## Redirection & `404`
@@ -157,9 +157,9 @@ export default () => {
 
 In principle, vite-plugin-ssr could support providing `pageContext` values but it deliberately doesn't support it in order to foster lightweight Route Functions.
 
-As explained in [Lightweight & fast](#lightweight-fast), we should keep Route Functions simple, i.e. we shouldn't implement complex logic in `.page.route.js` files.
+> As explained in [Lightweight & fast](#lightweight-fast), you should keep Route Functions simple and you shouldn't implement complex logic in `.page.route.js` files.
 
-That said, we can work around the limitation by providing values to `pageContext.routeParams` instead:
+That said, you can workaround it by misusing `pageContext.routeParams` to provide data.
 
 ```js
 // *.page.route.js
@@ -167,10 +167,10 @@ That said, we can work around the limitation by providing values to `pageContext
 export default () => {
   return {
     routeParams: {
-      // We can add any data here
+      // Any data can be added here
     }
   }
 }
 ```
 
-But this isn't recommended: `pageContext.routeParams` is supposed to hold only a minimal amount of information. Instead, we should prefer implementing complex logic in <Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" /> and/or <Link text="custom exports/hooks" href="/exports" />.
+But this isn't recommended: `pageContext.routeParams` is supposed to hold only a minimal amount of information. Instead, we recommend to implement complex logic in <Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" />, <Link text={<code>guard()</code>} href="/guard" />, or in a <Link text="custom hook" href="/exports" />.
