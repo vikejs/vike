@@ -21,6 +21,7 @@ type HookName =
   | 'onBeforePrerender'
   | 'onBeforeRoute'
   | 'onHydrationEnd'
+  | 'guard'
 
 function isUserHookError(err: unknown): false | Hook {
   if (!isObject(err)) return false

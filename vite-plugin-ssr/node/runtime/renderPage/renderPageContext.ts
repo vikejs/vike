@@ -10,7 +10,7 @@ export type { PageContextAfterRender }
 import { getErrorPageId } from '../../../shared/error-page'
 import { getHtmlString } from '../html/renderHtml'
 import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles'
-import { assert, assertUsage, hasProp, objectAssign, unique } from '../utils'
+import { assert, assertUsage, executeUserHook, hasProp, objectAssign, unique } from '../utils'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide'
 import { addComputedUrlProps, type PageContextUrls } from '../../../shared/addComputedUrlProps'
 import { getGlobalContext } from '../globalContext'
@@ -22,6 +22,8 @@ import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook'
 import { executeOnBeforeRenderHooks } from './executeOnBeforeRenderHook'
 import { logError } from './loggerRuntime'
 import { isNewError } from './isNewError'
+import { getHook } from '../../../shared/getHook'
+import { type PageContextPublic, preparePageContextForRelease } from './preparePageContextForRelease'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
@@ -65,6 +67,8 @@ async function renderPageContext<
 
   const pageFiles = await loadPageFilesServer(pageContext)
   objectAssign(pageContext, pageFiles)
+
+  await executeGuardHook(pageContext)
 
   if (!isError) {
     await executeOnBeforeRenderHooks(pageContext)
@@ -213,6 +217,18 @@ async function getRenderContext(): Promise<RenderContext> {
     allPageIds: allPageIds
   }
   return renderContext
+}
+
+async function executeGuardHook(pageContext: PageContextPublic) {
+  const hook = getHook(pageContext, 'guard')
+  if (!hook) return
+  const guard = hook.hookFn
+  preparePageContextForRelease(pageContext)
+  const hookResult = await executeUserHook(() => guard(pageContext), 'guard', hook.hookFilePath)
+  assertUsage(
+    hookResult === undefined,
+    `The guard() hook of ${hook.hookFilePath} returns a value, but guard() doesn't accept any return value`
+  )
 }
 
 function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfig[]) {

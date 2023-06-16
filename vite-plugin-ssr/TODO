@@ -1,0 +1,8 @@
+executeUserHook => executeHook
+onBeforeRenderExecute => executeOnBeforeRenderHook
+releasePageContext => preparePageContextForUserConsumption
+preparePageContextForRelease => preparePageContextForUserConsumption
+pageContextReadyForRelease => pageContextForUserConsumption
+ForRelease => ForUserConsumption
+PageContextRelease => PageContextForUserConsumption
+PageContextPublic => PageContextForUserConsumption

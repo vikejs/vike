@@ -22,7 +22,7 @@ import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { PageContextForRoute, route } from '../../shared/route'
 import { getErrorPageId } from '../../shared/error-page'
 import { getHook } from '../../shared/getHook'
-import { releasePageContext } from '../releasePageContext'
+import { PageContextRelease, releasePageContext } from '../releasePageContext'
 import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
@@ -119,6 +119,13 @@ async function getPageContextUponNavigation(
     await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
   )
 
+  await executeGuardHook({
+    _comesDirectlyFromServer: false,
+    _pageContextRetrievedFromServer: null,
+    ...pageContext,
+    ...pageContextAddendum
+  })
+
   const pageContextFromHook = await onBeforeRenderExecute({ ...pageContext, ...pageContextAddendum })
   assert([true, false].includes(pageContextFromHook._comesDirectlyFromServer))
   if (!pageContextFromHook['_isError']) {
@@ -147,6 +154,18 @@ async function getPageContextUponNavigation(
     )
     return pageContextAddendum
   }
+}
+
+async function executeGuardHook(pageContext: PageContextRelease) {
+  const hook = getHook(pageContext, 'guard')
+  if (!hook) return
+  const guard = hook.hookFn
+  const pageContextReadyForRelease = releasePageContext(pageContext, true)
+  const hookResult = await executeUserHook(() => guard(pageContextReadyForRelease), 'guard', hook.hookFilePath)
+  assertUsage(
+    hookResult === undefined,
+    `The guard() hook of ${hook.hookFilePath} returns a value, but guard() doesn't accept any return value`
+  )
 }
 
 async function onBeforeRenderExecute(
