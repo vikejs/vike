@@ -169,11 +169,14 @@ function useClientRouter() {
     try {
       pageContextAddendum = await getPageContext(pageContext)
     } catch (err: unknown) {
-      // We never swallow errors on the client-side, even if it's a 404, because:
-      //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link.
-      //    - It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.
-      //    - In contrast, on the server-side, VPS swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL, and we don't want to flood the app's error tracking with 404 logs.
-      console.error(err)
+      if (!isRenderErrorPageException(err)) {
+        // We don't swallow 404 errors:
+        //  - On the server-side, VPS swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
+        //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
+        console.error(err)
+      } else {
+        // We swallow `throw RenderErrorPage()` thrown by client-side hooks onBforeRender() and guard()
+      }
 
       if (checkIfAbort(err, pageContext)) return
 
