@@ -1,6 +1,6 @@
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
 import { assertUsage, hasProp, isObjectWithKeys, objectAssign, assertWarning, assertUsageUrl } from './utils'
-import { assertRouteParams } from './resolveRouteFunction'
+import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction'
 
 export { callOnBeforeRouteHook }
 export type { OnBeforeRouteHook }
@@ -22,7 +22,9 @@ async function callOnBeforeRouteHook(
   _pageId?: string | null
   routeParams?: Record<string, string>
 }> {
-  const hookReturn: unknown = await onBeforeRouteHook.onBeforeRoute(pageContext)
+  let hookReturn: unknown = onBeforeRouteHook.onBeforeRoute(pageContext)
+  assertSyncRouting(hookReturn, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
+  hookReturn = await hookReturn
 
   const errPrefix = `The onBeforeRoute() hook defined by ${onBeforeRouteHook.hookFilePath}`
 
