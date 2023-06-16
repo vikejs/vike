@@ -19,7 +19,7 @@ type ConfigEnvPrivate =
   | '_routing-env-eager'
   | '_routing-env-lazy'
 /** See https://vite-plugin-ssr/meta */
-type ConfigEnvPublic = Exclude<ConfigEnvPrivate, '_routing-env-eager'>
+type ConfigEnvPublic = Exclude<ConfigEnvPrivate, '_routing-env-eager' | '_routing-env-lazy'>
 
 type PageConfig = PageConfigData & {
   loadCodeFiles: LoadCodeFiles

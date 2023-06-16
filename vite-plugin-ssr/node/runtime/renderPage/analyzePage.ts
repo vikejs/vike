@@ -29,8 +29,7 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pa
         eagerlyImported: false
       })
     }
-    //*/
-    /* TODO: remove?
+    /* Remove?
     Object.values(pageConfig.configElements).forEach((configElement) => {
       if (configElement.codeFilePath) {
         const { env } = configElement

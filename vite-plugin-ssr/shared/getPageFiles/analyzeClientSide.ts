@@ -10,6 +10,7 @@ function analyzeClientSide(
   pageFilesAll: PageFile[],
   pageId: string
 ): { isClientSideRenderable: boolean; isClientRouting: boolean } {
+  // V1 design
   if (pageConfig) {
     const isClientRouting = getConfigValue(pageConfig, 'clientRouting', 'boolean') ?? false
     const onRenderClientExists: boolean = !!getCodeFilePath(pageConfig, 'onRenderClient')
@@ -18,7 +19,10 @@ function analyzeClientSide(
     const isClientSideRenderable = onRenderClientExists && PageExists
     return { isClientSideRenderable, isClientRouting }
   } else {
-    // TOOD: globally rename isHtmlOnly to !isClientSideRenderable
+    // TODO/v1-release:
+    //  - remove V0.4 implementation
+    //  - globally rename isHtmlOnly to !isClientSideRenderable
+    // V0.4 design
     const { isHtmlOnly, isClientRouting } = analyzePageClientSide(pageFilesAll, pageId)
     return { isClientSideRenderable: !isHtmlOnly, isClientRouting }
   }
