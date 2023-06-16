@@ -1,9 +1,9 @@
 export { executeOnRenderClientHook }
 
-import { assert, assertUsage, executeUserHook } from './utils'
+import { assert, assertUsage, executeHook } from './utils'
 import { getHook, type Hook } from '../shared/getHook'
 import type { PageFile, PageContextExports } from '../shared/getPageFiles'
-import { type PageContextRelease, releasePageContext } from './releasePageContext'
+import { type PageContextForUserConsumptionClientSide, preparePageContextForUserConsumptionClientSide } from './preparePageContextForUserConsumptionClientSidet'
 import type { PageConfig } from '../shared/page-configs/PageConfig'
 import { getPageConfig } from '../shared/page-configs/utils'
 
@@ -14,9 +14,9 @@ async function executeOnRenderClientHook<
     _pageId: string
     _pageConfigs: PageConfig[]
   } & PageContextExports &
-    PageContextRelease
+    PageContextForUserConsumptionClientSide
 >(pageContext: PC, isClientRouting: boolean): Promise<void> {
-  const pageContextReadyForRelease = releasePageContext(pageContext, isClientRouting)
+  const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext, isClientRouting)
 
   let hook: null | Hook = null
   let hookName: 'render' | 'onRenderClient'
@@ -59,7 +59,7 @@ async function executeOnRenderClientHook<
   assert(hookName)
 
   // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
-  const hookResult = await executeUserHook(() => renderHook(pageContextReadyForRelease), hookName, hook.hookFilePath)
+  const hookResult = await executeHook(() => renderHook(pageContextForUserConsumption), hookName, hook.hookFilePath)
   assertUsage(
     hookResult === undefined,
     `The ${hookName}() hook defined by ${hook.hookFilePath} isn't allowed to return a value`
@@ -68,7 +68,7 @@ async function executeOnRenderClientHook<
 
 function getUrl(pageContext: { urlOriginal?: string }): string {
   let url: string | undefined
-  // try/catch to avoid passToClient assertUsage(), although I'd expect this to not be needed since we're accessing pageContext and not pageContextReadyForRelease
+  // try/catch to avoid passToClient assertUsage(), although I'd expect this to not be needed since we're accessing pageContext and not pageContextForUserConsumption
   try {
     url = pageContext.urlOriginal
   } catch {}

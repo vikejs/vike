@@ -1,16 +1,16 @@
-export { releasePageContext }
-export type { PageContextRelease }
+export { preparePageContextForUserConsumptionClientSide }
+export type { PageContextForUserConsumptionClientSide }
 
 import { assert, assertUsage, isObject, objectAssign, getGlobalObject } from './utils'
 import { sortPageContext } from '../shared/sortPageContext'
 import type { PageContextExports } from '../shared/getPageFiles'
-const globalObject = getGlobalObject<{ disableAssertPassToClient?: string }>('releasePageContext.ts', {})
+const globalObject = getGlobalObject<{ disableAssertPassToClient?: string }>('preparePageContextForUserConsumptionClientSide.ts', {})
 import type { PageContextBuiltInClient as PageContextBuiltInClientServerRouter } from './types'
 import type { PageContextBuiltInClient as PageContextBuiltInClientClientRouter } from './router/types'
 import { addIs404ToPageProps } from '../shared/addIs404ToPageProps'
 import type { PageConfig } from '../shared/page-configs/PageConfig'
 
-type PageContextRelease = PageContextExports & {
+type PageContextForUserConsumptionClientSide = PageContextExports & {
   _pageContextRetrievedFromServer: null | Record<string, unknown>
   _comesDirectlyFromServer: boolean
   _pageId: string
@@ -29,7 +29,7 @@ type PageContextRelease = PageContextExports & {
 // // See entire example at `/examples/vue-full/`
 // const pageContextReactive = reactive(pageContext)
 // ```
-function releasePageContext<T extends PageContextRelease>(
+function preparePageContextForUserConsumptionClientSide<T extends PageContextForUserConsumptionClientSide>(
   pageContext: T,
   isClientRouting: boolean
 ): T & { Page: unknown } {
@@ -61,14 +61,14 @@ function releasePageContext<T extends PageContextRelease>(
   sortPageContext(pageContext)
 
   assert([true, false].includes(pageContext._comesDirectlyFromServer))
-  const pageContextReadyForRelease = !pageContext._comesDirectlyFromServer
+  const pageContextForUserConsumption = !pageContext._comesDirectlyFromServer
     ? // Not possible to achieve `getAssertPassToClientProxy()` if some `onBeforeRender()` hook defined in `.page.js` was called. (We cannot infer what `pageContext` properties came from the server-side or from the client-side. Which is fine because the user will likely dig into why the property is missing in `const pageContext = await runOnBeforeRenderServerHooks()` anyways, which does support throwing the helpul `assertPassToClient()` error message.)
       pageContext
     : getProxy(pageContext)
 
   addIs404ToPageProps(pageContext)
 
-  return pageContextReadyForRelease
+  return pageContextForUserConsumption
 }
 
 const JAVASCRIPT_BUILT_INS = [

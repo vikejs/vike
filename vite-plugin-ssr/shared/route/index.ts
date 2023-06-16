@@ -15,7 +15,7 @@ import { addComputedUrlProps, PageContextUrlSource } from '../addComputedUrlProp
 import { resolvePrecendence } from './resolvePrecedence'
 import { resolveRouteString } from './resolveRouteString'
 import { resolveRouteFunction } from './resolveRouteFunction'
-import { callOnBeforeRouteHook } from './callOnBeforeRouteHook'
+import { executeOnBeforeRouteHook } from './executeOnBeforeRouteHook'
 import { PageRoutes, loadPageRoutes, RouteType } from './loadPageRoutes'
 import { debug } from './debug'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
@@ -55,7 +55,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
 
   const pageContextAddendum = {}
   if (onBeforeRouteHook) {
-    const pageContextAddendumHook = await callOnBeforeRouteHook(onBeforeRouteHook, pageContext)
+    const pageContextAddendumHook = await executeOnBeforeRouteHook(onBeforeRouteHook, pageContext)
     if (pageContextAddendumHook) {
       objectAssign(pageContextAddendum, pageContextAddendumHook)
       if (hasProp(pageContextAddendum, '_pageId', 'string') || hasProp(pageContextAddendum, '_pageId', 'null')) {

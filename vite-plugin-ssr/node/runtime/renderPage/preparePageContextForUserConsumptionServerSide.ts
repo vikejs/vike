@@ -1,5 +1,5 @@
-export { preparePageContextForRelease }
-export type { PageContextPublic }
+export { preparePageContextForUserConsumptionServerSide }
+export type { PageContextForUserConsumptionServerSide }
 
 import { assert, isPlainObject, isObject } from '../utils'
 import { sortPageContext } from '../../../shared/sortPageContext'
@@ -8,7 +8,7 @@ import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
 import type { ConfigEntries, ExportsAll } from '../../../shared/getPageFiles/getExports'
 
-type PageContextPublic = {
+type PageContextForUserConsumptionServerSide = {
   urlOriginal: string
   /** @deprecated */
   url: string
@@ -27,7 +27,7 @@ type PageContextPublic = {
   isClientSideNavigation: boolean
   pageProps?: Record<string, unknown>
 }
-function preparePageContextForRelease<T extends PageContextPublic>(pageContext: T): void {
+function preparePageContextForUserConsumptionServerSide<T extends PageContextForUserConsumptionServerSide>(pageContext: T): void {
   assertURLs(pageContext)
 
   assert(isPlainObject(pageContext.routeParams))

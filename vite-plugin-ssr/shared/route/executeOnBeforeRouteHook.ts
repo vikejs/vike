@@ -2,7 +2,7 @@ import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByU
 import { assertUsage, hasProp, isObjectWithKeys, objectAssign, assertWarning, assertUsageUrl } from './utils'
 import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction'
 
-export { callOnBeforeRouteHook }
+export { executeOnBeforeRouteHook }
 export type { OnBeforeRouteHook }
 
 type OnBeforeRouteHook = {
@@ -10,7 +10,7 @@ type OnBeforeRouteHook = {
   onBeforeRoute: (pageContext: { urlOriginal: string } & Record<string, unknown>) => unknown
 }
 
-async function callOnBeforeRouteHook(
+async function executeOnBeforeRouteHook(
   onBeforeRouteHook: OnBeforeRouteHook,
   pageContext: {
     urlOriginal: string

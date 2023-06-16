@@ -11,7 +11,7 @@ import {
   throttle,
   sleep,
   getGlobalObject,
-  executeUserHook,
+  executeHook,
   isObject
 } from './utils'
 import { navigationState } from '../navigationState'
@@ -252,7 +252,7 @@ function useClientRouter() {
       if (onHydrationEnd) {
         const hookFilePath = pageContext.exportsAll.onHydrationEnd![0]!.exportSource
         assert(hookFilePath)
-        await executeUserHook(() => onHydrationEnd(pageContext), 'onHydrationEnd', hookFilePath)
+        await executeHook(() => onHydrationEnd(pageContext), 'onHydrationEnd', hookFilePath)
       }
     } else if (renderingNumber === renderingCounter) {
       if (pageContext.exports.onPageTransitionEnd) {

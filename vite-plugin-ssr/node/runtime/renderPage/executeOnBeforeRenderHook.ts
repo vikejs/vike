@@ -2,8 +2,8 @@ export { executeOnBeforeRenderHooks }
 
 import { type PageContextExports } from '../../../shared/getPageFiles'
 import { getHook } from '../../../shared/getHook'
-import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
-import { executeUserHook } from '../utils'
+import { preparePageContextForUserConsumptionServerSide, type PageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide'
+import { executeHook } from '../utils'
 import { assertOnBeforeRenderHookReturn } from '../../../shared/assertOnBeforeRenderHookReturn'
 
 async function executeOnBeforeRenderHooks(
@@ -11,7 +11,7 @@ async function executeOnBeforeRenderHooks(
     _pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
   } & PageContextExports &
-    PageContextPublic
+    PageContextForUserConsumptionServerSide
 ): Promise<void> {
   if (pageContext._pageContextAlreadyProvidedByOnPrerenderHook) {
     return
@@ -21,8 +21,8 @@ async function executeOnBeforeRenderHooks(
     return
   }
   const onBeforeRender = hook.hookFn
-  preparePageContextForRelease(pageContext)
-  const hookResult = await executeUserHook(() => onBeforeRender(pageContext), 'onBeforeRender', hook.hookFilePath)
+  preparePageContextForUserConsumptionServerSide(pageContext)
+  const hookResult = await executeHook(() => onBeforeRender(pageContext), 'onBeforeRender', hook.hookFilePath)
 
   assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
   const pageContextFromHook = hookResult?.pageContext

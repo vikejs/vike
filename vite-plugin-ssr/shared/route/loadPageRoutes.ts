@@ -1,7 +1,7 @@
 import type { PageFile } from '../getPageFiles'
 import { isErrorPageId } from '../error-page'
 import { assert, assertUsage, hasProp, slice } from './utils'
-import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
+import type { OnBeforeRouteHook } from './executeOnBeforeRouteHook'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath'
 import { isCallable } from '../utils'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'

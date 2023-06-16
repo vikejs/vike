@@ -11,7 +11,7 @@ import {
   objectAssign,
   getProjectError,
   serverSideRouteTo,
-  executeUserHook,
+  executeHook,
   isObject
 } from './utils'
 import { parse } from '@brillout/json-serializer/parse'
@@ -22,7 +22,7 @@ import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { PageContextForRoute, route } from '../../shared/route'
 import { getErrorPageId } from '../../shared/error-page'
 import { getHook } from '../../shared/getHook'
-import { PageContextRelease, releasePageContext } from '../releasePageContext'
+import { PageContextForUserConsumptionClientSide, preparePageContextForUserConsumptionClientSide } from '../preparePageContextForUserConsumptionClientSidet'
 import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
@@ -126,7 +126,7 @@ async function getPageContextUponNavigation(
     ...pageContextAddendum
   })
 
-  const pageContextFromHook = await onBeforeRenderExecute({ ...pageContext, ...pageContextAddendum })
+  const pageContextFromHook = await executeOnBeforeRenderHook({ ...pageContext, ...pageContextAddendum })
   assert([true, false].includes(pageContextFromHook._comesDirectlyFromServer))
   if (!pageContextFromHook['_isError']) {
     objectAssign(pageContextAddendum, pageContextFromHook)
@@ -156,19 +156,19 @@ async function getPageContextUponNavigation(
   }
 }
 
-async function executeGuardHook(pageContext: PageContextRelease) {
+async function executeGuardHook(pageContext: PageContextForUserConsumptionClientSide) {
   const hook = getHook(pageContext, 'guard')
   if (!hook) return
   const guard = hook.hookFn
-  const pageContextReadyForRelease = releasePageContext(pageContext, true)
-  const hookResult = await executeUserHook(() => guard(pageContextReadyForRelease), 'guard', hook.hookFilePath)
+  const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext, true)
+  const hookResult = await executeHook(() => guard(pageContextForUserConsumption), 'guard', hook.hookFilePath)
   assertUsage(
     hookResult === undefined,
     `The guard() hook of ${hook.hookFilePath} returns a value, but guard() doesn't accept any return value`
   )
 }
 
-async function onBeforeRenderExecute(
+async function executeOnBeforeRenderHook(
   pageContext: {
     _pageId: string
     urlOriginal: string
@@ -191,15 +191,15 @@ async function onBeforeRenderExecute(
       _comesDirectlyFromServer: false,
       _pageContextRetrievedFromServer: null
     }
-    const pageContextReadyForRelease = releasePageContext(
+    const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(
       {
         ...pageContext,
         ...pageContextAddendum
       },
       true
     )
-    const hookResult = await executeUserHook(
-      () => onBeforeRender(pageContextReadyForRelease),
+    const hookResult = await executeHook(
+      () => onBeforeRender(pageContextForUserConsumption),
       'onBeforeRender',
       hook.hookFilePath
     )

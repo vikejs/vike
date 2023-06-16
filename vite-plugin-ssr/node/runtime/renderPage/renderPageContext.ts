@@ -10,7 +10,7 @@ export type { PageContextAfterRender }
 import { getErrorPageId } from '../../../shared/error-page'
 import { getHtmlString } from '../html/renderHtml'
 import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles'
-import { assert, assertUsage, executeUserHook, hasProp, objectAssign, unique } from '../utils'
+import { assert, assertUsage, executeHook, hasProp, objectAssign, unique } from '../utils'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide'
 import { addComputedUrlProps, type PageContextUrls } from '../../../shared/addComputedUrlProps'
 import { getGlobalContext } from '../globalContext'
@@ -23,7 +23,7 @@ import { executeOnBeforeRenderHooks } from './executeOnBeforeRenderHook'
 import { logError } from './loggerRuntime'
 import { isNewError } from './isNewError'
 import { getHook } from '../../../shared/getHook'
-import { type PageContextPublic, preparePageContextForRelease } from './preparePageContextForRelease'
+import { type PageContextForUserConsumptionServerSide, preparePageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
@@ -219,12 +219,12 @@ async function getRenderContext(): Promise<RenderContext> {
   return renderContext
 }
 
-async function executeGuardHook(pageContext: PageContextPublic) {
+async function executeGuardHook(pageContext: PageContextForUserConsumptionServerSide) {
   const hook = getHook(pageContext, 'guard')
   if (!hook) return
   const guard = hook.hookFn
-  preparePageContextForRelease(pageContext)
-  const hookResult = await executeUserHook(() => guard(pageContext), 'guard', hook.hookFilePath)
+  preparePageContextForUserConsumptionServerSide(pageContext)
+  const hookResult = await executeHook(() => guard(pageContext), 'guard', hook.hookFilePath)
   assertUsage(
     hookResult === undefined,
     `The guard() hook of ${hook.hookFilePath} returns a value, but guard() doesn't accept any return value`

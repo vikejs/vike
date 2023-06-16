@@ -10,14 +10,14 @@ import {
   isObject,
   objectAssign,
   isPromise,
-  executeUserHook,
+  executeHook,
   isCallable
 } from '../utils'
 import type { PageAsset } from './getPageAssets'
 import { isStream } from '../html/stream'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser'
 import type { PreloadFilter } from '../html/injectAssets/getHtmlTags'
-import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
+import { preparePageContextForUserConsumptionServerSide, type PageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide'
 import type { PageContextPromise } from '../html/injectAssets'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { assertObjectKeys } from '../../../shared/assertObjectKeys'
@@ -35,7 +35,7 @@ type HookName =
   | 'render'
 
 async function executeOnRenderHtmlHook(
-  pageContext: PageContextPublic & {
+  pageContext: PageContextForUserConsumptionServerSide & {
     _pageId: string
     _pageConfigs: PageConfig[]
     __getPageAssets: GetPageAssets
@@ -53,8 +53,8 @@ async function executeOnRenderHtmlHook(
   const { renderHook, hookFn } = hookFound
   objectAssign(pageContext, { _renderHook: renderHook })
 
-  preparePageContextForRelease(pageContext)
-  const hookReturnValue = await executeUserHook(() => hookFn(pageContext), renderHook.hookName, renderHook.hookFilePath)
+  preparePageContextForUserConsumptionServerSide(pageContext)
+  const hookReturnValue = await executeHook(() => hookFn(pageContext), renderHook.hookName, renderHook.hookFilePath)
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
     hookReturnValue,
     renderHook
@@ -82,7 +82,7 @@ async function executeOnRenderHtmlHook(
   return { htmlRender, renderHook }
 }
 
-function getRenderHook(pageContext: PageContextPublic) {
+function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
   let hookFound:
     | undefined
     | {

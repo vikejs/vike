@@ -1,4 +1,4 @@
-export { executeUserHook }
+export { executeHook }
 export { isUserHookError }
 
 import { getProjectError, assertWarning } from './assert'
@@ -8,7 +8,7 @@ import { isObject } from './isObject'
 
 type Hook = { hookName: HookName; hookFilePath: string }
 
-const globalObject = getGlobalObject('utils/executeUserHook.ts', {
+const globalObject = getGlobalObject('utils/executeHook.ts', {
   userHookErrors: new Map<object, Hook>()
 })
 
@@ -28,7 +28,7 @@ function isUserHookError(err: unknown): false | Hook {
   return globalObject.userHookErrors.get(err) ?? false
 }
 
-function executeUserHook<T = unknown>(hookFn: () => T, hookName: HookName, hookFilePath: string): Promise<T> {
+function executeHook<T = unknown>(hookFn: () => T, hookName: HookName, hookFilePath: string): Promise<T> {
   const { timeoutErr, timeoutWarn } = getTimeouts(hookName)
 
   let resolve!: (ret: T) => void
