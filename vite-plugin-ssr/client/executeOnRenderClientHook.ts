@@ -3,7 +3,10 @@ export { executeOnRenderClientHook }
 import { assert, assertUsage, executeHook } from './utils'
 import { getHook, type Hook } from '../shared/getHook'
 import type { PageFile, PageContextExports } from '../shared/getPageFiles'
-import { type PageContextForUserConsumptionClientSide, preparePageContextForUserConsumptionClientSide } from './preparePageContextForUserConsumptionClientSidet'
+import {
+  type PageContextForUserConsumptionClientSide,
+  preparePageContextForUserConsumptionClientSide
+} from './preparePageContextForUserConsumptionClientSide'
 import type { PageConfig } from '../shared/page-configs/PageConfig'
 import { getPageConfig } from '../shared/page-configs/utils'
 

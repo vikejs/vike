@@ -22,9 +22,7 @@ import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { PageContextForRoute, route } from '../../shared/route'
 import { getErrorPageId } from '../../shared/error-page'
 import { getHook } from '../../shared/getHook'
-import {
-  preparePageContextForUserConsumptionClientSide
-} from '../preparePageContextForUserConsumptionClientSidet'
+import { preparePageContextForUserConsumptionClientSide } from '../preparePageContextForUserConsumptionClientSide'
 import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
