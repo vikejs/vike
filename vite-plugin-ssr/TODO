@@ -1,3 +1,4 @@
+If some Vite error swallowed => show DEBUG=vps:error hint
 Check creation of +guard.js after dev start
 Removing =>
   ```
