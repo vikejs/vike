@@ -1,3 +1,9 @@
+export { loadPageRoutes }
+export { findPageRouteFile }
+export { findPageGuard }
+export type { PageRoutes }
+export type { RouteType }
+
 import type { PageFile } from '../getPageFiles'
 import { isErrorPageId } from '../error-page'
 import { assert, assertUsage, hasProp, slice } from './utils'
@@ -5,11 +11,7 @@ import type { OnBeforeRouteHook } from './executeOnBeforeRouteHook'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath'
 import { isCallable } from '../utils'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
-
-export { loadPageRoutes }
-export { findPageRouteFile }
-export type { PageRoutes }
-export type { RouteType }
+import type { Hook } from '../getHook'
 
 type PageRoute = {
   pageId: string
@@ -115,7 +117,7 @@ function getPageRoutes(
       .filter((pageId) => !isErrorPageId(pageId, false))
       .forEach((pageId) => {
         const pageRouteFile = findPageRouteFile(pageId, pageFilesAll)
-        if (!pageRouteFile) {
+        if (!pageRouteFile || !('default' in pageRouteFile.fileExports!)) {
           const routeString = deduceRouteStringFromFilesystemPath(pageId, filesystemRoots)
           assert(routeString.startsWith('/'))
           assert(!routeString.endsWith('/') || routeString === '/')
@@ -129,8 +131,7 @@ function getPageRoutes(
           })
         } else {
           const { filePath, fileExports } = pageRouteFile
-          assert(fileExports)
-          assertUsage('default' in fileExports, `${filePath} should have a default export.`)
+          assert(fileExports.default)
           if (hasProp(fileExports, 'default', 'string')) {
             const routeString = fileExports.default
             assertUsage(
@@ -238,6 +239,20 @@ function getGlobalHooks(
 
 function findPageRouteFile(pageId: string, pageFilesAll: PageFile[]) {
   return pageFilesAll.find((p) => p.pageId === pageId && p.fileType === '.page.route')
+}
+
+// TODO/v1-release: remove
+type PageGuard = Hook
+function findPageGuard(pageId: string, pageFilesAll: PageFile[]): null | PageGuard {
+  const pageRouteFile = findPageRouteFile(pageId, pageFilesAll)
+  if (!pageRouteFile) return null
+  const { filePath, fileExports } = pageRouteFile
+  assert(fileExports) // loadPageRoutes() should already have been called
+  const hookFn = fileExports.guard
+  if (!hookFn) return null
+  const hookFilePath = filePath
+  assertUsage(isCallable(hookFn), `guard() defined by ${hookFilePath} should be a function`)
+  return { hookFn, hookFilePath }
 }
 
 function dirname(filePath: string): string {
