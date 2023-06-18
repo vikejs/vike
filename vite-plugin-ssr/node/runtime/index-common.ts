@@ -11,13 +11,23 @@ export { createPageRenderer } from '../createPageRenderer'
 import { assertWarning } from './utils'
 import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/RenderErrorPage'
 import pc from '@brillout/picocolors'
-export const RenderErrorPage: typeof RenderErrorPage_ = (...args) => {
+/** @deprecated
+ * Replace:
+ *   ```
+ *   import { RenderErrorPage } from 'vite-plugin'
+ *   ```
+ * With:
+ *   ```
+ *   import { RenderErrorPage } from 'vite-plugin/RenderErrorPage'
+ *   ```
+ */
+export const RenderErrorPage = (...args: Parameters<typeof RenderErrorPage_>): Error => {
   assertWarning(
     false,
     [
-      'This import is deprecated:',
+      'Replace:',
       pc.red("  import { RenderErrorPage } from 'vite-plugin-ssr'"),
-      'Replace it with:',
+      'With:',
       pc.green("  import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'")
     ].join('\n'),
     { onlyOnce: true, showStackTrace: true }
