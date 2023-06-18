@@ -8,8 +8,8 @@ import { names } from './names'
 async function onBeforeRender(pageContext: PageContextBuiltIn) {
   const { name } = pageContext.routeParams
   if (name !== 'anonymous' && !names.includes(name)) {
-    const errorInfo = `Unknown name: ${name}.`
-    throw RenderErrorPage({ pageContext: { pageProps: { errorInfo } } })
+    const errorDescription = `Unknown name: ${name}.`
+    throw RenderErrorPage({ pageContext: { pageProps: { errorDescription } } })
   }
   const pageProps = { name }
   return {
