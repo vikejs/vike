@@ -10,7 +10,7 @@ function isRenderErrorPageException(thing: unknown): thing is { pageContext?: Re
   return typeof thing === 'object' && thing !== null && stamp in thing
 }
 
-/** Interrupt the rendering of the current page and render something else instead.
+/** Interrupt the rendering of the current page, and render something else instead.
  *
  * https://vite-plugin-ssr.com/RenderErrorPage
  */
