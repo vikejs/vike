@@ -2,21 +2,26 @@ import React from 'react'
 
 export { Page }
 
-function Page({ is404, errorInfo }: { is404: boolean; errorInfo?: string }) {
+function Page({
+  is404,
+  errorTitle,
+  errorDescription
+}: {
+  is404: boolean
+  errorTitle?: string
+  errorDescription?: string
+}) {
   if (is404) {
-    return (
-      <>
-        <h1>404 Page Not Found</h1>
-        <p>This page could not be found.</p>
-        <p>{errorInfo}</p>
-      </>
-    )
+    errorTitle ??= '404 Page Not Found'
+    errorDescription ??= 'This page could not be found.'
   } else {
-    return (
-      <>
-        <h1>500 Internal Error</h1>
-        <p>Something went wrong.</p>
-      </>
-    )
+    errorTitle ??= '500 Internal Error'
+    errorDescription ??= 'Something went wrong.'
   }
+  return (
+    <>
+      <h1>{errorTitle}</h1>
+      <p>{errorDescription}</p>
+    </>
+  )
 }
