@@ -1,10 +1,37 @@
-// TODO/v1-release: remove this file and package.json#exports["."]
+// TODO/v1-release: replace this with:
+// assertUsage(false, "`import { something } from 'vite-plugin-ssr'` doesn't exist: instead import from 'vite-plugin-ssr/server', 'vite-plugin-ssr/client', 'vite-plugin-ssr/plugin', ...")
 
 export * from './index-common'
 export * from '../../types/index-dreprecated'
 
 import { assertWarning } from './utils'
 import pc from '@brillout/picocolors'
+
+import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/RenderErrorPage'
+/** @deprecated
+ * Replace:
+ *   ```
+ *   import { RenderErrorPage } from 'vite-plugin'
+ *   ```
+ * With:
+ *   ```
+ *   import { RenderErrorPage } from 'vite-plugin/RenderErrorPage'
+ *   ```
+ */
+export const RenderErrorPage = (...args: Parameters<typeof RenderErrorPage_>): Error => {
+  assertWarning(
+    false,
+    [
+      'Replace:',
+      pc.red("  import { RenderErrorPage } from 'vite-plugin-ssr'"),
+      'With:',
+      pc.green("  import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'")
+    ].join('\n'),
+    { onlyOnce: true, showStackTrace: true }
+  )
+  return RenderErrorPage_(...args)
+}
+
 assertWarning(
   false,
   [
