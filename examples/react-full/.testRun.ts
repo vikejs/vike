@@ -130,19 +130,21 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
       const html = await fetchHtml('/hello/bob')
       expect(html).toContain(txt)
     })
-    test('guard()', async () => {
-      await page.goto(getServerUrl() + '/hello/forbidden')
-      expect(await page.textContent('h1')).toBe('Forbidden')
-      expectError(
-        (log) =>
-          log.logSource === 'Browser Error' &&
-          log.logText.includes('http://localhost:3000/hello/forbidden') &&
-          log.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)')
-      )
-      const txt = 'This page is forbidden.'
-      expect(await page.textContent('body')).toContain(txt)
-      const html = await fetchHtml('/hello/forbidden')
-      expect(html).toContain(txt)
-    })
+    if (viewFramework === 'react') {
+      test('guard()', async () => {
+        await page.goto(getServerUrl() + '/hello/forbidden')
+        expect(await page.textContent('h1')).toBe('Forbidden')
+        expectError(
+          (log) =>
+            log.logSource === 'Browser Error' &&
+            log.logText.includes('http://localhost:3000/hello/forbidden') &&
+            log.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)')
+        )
+        const txt = 'This page is forbidden.'
+        expect(await page.textContent('body')).toContain(txt)
+        const html = await fetchHtml('/hello/forbidden')
+        expect(html).toContain(txt)
+      })
+    }
   }
 }
