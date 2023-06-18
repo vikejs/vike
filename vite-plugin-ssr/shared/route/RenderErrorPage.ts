@@ -10,7 +10,11 @@ function isRenderErrorPageException(thing: unknown): thing is { pageContext?: Re
   return typeof thing === 'object' && thing !== null && stamp in thing
 }
 
-function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown> } = {}) {
+/** Interrupt the rendering of the current page and render something else instead.
+ *
+ * https://vite-plugin-ssr.com/RenderErrorPage
+ */
+function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown> } = {}): Error {
   {
     // @ts-ignore
     const that: unknown = this
@@ -31,7 +35,7 @@ function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown
   return err
 }
 
-function assertRenderErrorPageExceptionUsage(err: unknown) {
+function assertRenderErrorPageExceptionUsage(err: unknown): void {
   assertUsage(
     err !== RenderErrorPage,
     'Missing parentheses `()` in `throw RenderErrorPage`: it should be `throw RenderErrorPage()`.'
