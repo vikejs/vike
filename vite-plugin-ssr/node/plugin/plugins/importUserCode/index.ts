@@ -19,7 +19,7 @@ import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/vir
 import { getConfigData_dependenciesInvisibleToVite, reloadConfigData } from './v1-design/getConfigData'
 import path from 'path'
 import pc from '@brillout/picocolors'
-import { logConfigInfo, clearWithVite, logViteAny } from '../../shared/loggerNotProd'
+import { logConfigInfo, clearWithVite } from '../../shared/loggerNotProd'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -51,7 +51,8 @@ function importUserCode(): Plugin {
 
       const isViteModule = ctx.modules.length > 0
 
-      const msg = `File change: ${pc.dim(makeRelativeToUserRootDir(file, config.root))}`
+      const filePathToShowToUser = pc.dim(makeRelativeToUserRootDir(file, config.root))
+      const msg = `File change: ${filePathToShowToUser}`
 
       if (!isVikeConfig) {
         /*/
@@ -60,7 +61,16 @@ function importUserCode(): Plugin {
         const clear = false
         //*/
         if (!isViteModule) {
-          logViteAny(`${msg} (no-effect)`, 'info', null, true, clear, config)
+          /* Should we show this?
+          logViteAny(
+            `${msg} — ${pc.bold('no HMR')}, see https://vite-plugin-ssr.com/on-demand-compiler`,
+            'info',
+            null,
+            true,
+            clear,
+            config
+          )
+          */
         } else {
           if (clear) {
             clearWithVite(config)
