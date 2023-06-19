@@ -78,6 +78,10 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig, conf
     file = normalizePath(file)
     const configName = getConfigName(file)
     if (configName) {
+      const virtualModules = getVirtualModules(server)
+      virtualModules.forEach((mod) => {
+        server.moduleGraph.invalidateModule(mod)
+      })
       reload(file, config, configVps, isRemove ? 'removed' : 'added')
     }
   }
