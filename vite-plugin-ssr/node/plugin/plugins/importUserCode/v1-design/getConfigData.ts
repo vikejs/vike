@@ -971,10 +971,26 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
 
 function extractConfigName(filePath: string) {
   assertPosixPath(filePath)
-  const basename = path.posix.basename(filePath).split('.')[0]!
+  const fileName = path.posix.basename(filePath)
+  assertNoUnexpectedPlusSign(filePath, fileName)
+  const basename = fileName.split('.')[0]!
   assert(basename.startsWith('+'))
   const configName = basename.slice(1)
   return configName
+}
+function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
+  const dirs = path.posix.dirname(filePath).split('/')
+  dirs.forEach((dir, i) => {
+    const dirPath = dirs.slice(0, i + 1).join('/')
+    assertUsage(
+      !dir.includes('+'),
+      `Character '+' is a reserved character: remove '+' from the directory name ${dirPath}/`
+    )
+  })
+  assertUsage(
+    !fileName.slice(1).includes('+'),
+    `Character '+' is only allowed at the beginning of filenames: make sure ${filePath} doesn't contain any '+' in its filename other than its first letter`
+  )
 }
 
 type ConfigFile = {
