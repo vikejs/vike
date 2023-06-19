@@ -177,7 +177,7 @@ async function loadInterfaceFiles(
   const configFiles: UserFilePath[] = []
   const valueFiles: UserFilePath[] = []
   plusFiles.forEach((f) => {
-    if (extractConfigName(f.filePathRelativeToUserRootDir) === 'config') {
+    if (getConfigName(f.filePathRelativeToUserRootDir) === 'config') {
       configFiles.push(f)
     } else {
       valueFiles.push(f)
@@ -209,7 +209,8 @@ async function loadInterfaceFiles(
   // Value files
   await Promise.all(
     valueFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
-      const configNameDefault = extractConfigName(filePathRelativeToUserRootDir)
+      const configNameDefault = getConfigName(filePathRelativeToUserRootDir)
+      assert(configNameDefault)
       const interfaceFile: InterfaceValueFile = {
         filePath: {
           filePathRelativeToUserRootDir,
@@ -969,14 +970,17 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
   return plusFiles
 }
 
-function extractConfigName(filePath: string) {
+function getConfigName(filePath: string): string | null {
   assertPosixPath(filePath)
   const fileName = path.posix.basename(filePath)
   assertNoUnexpectedPlusSign(filePath, fileName)
   const basename = fileName.split('.')[0]!
-  assert(basename.startsWith('+'))
-  const configName = basename.slice(1)
-  return configName
+  if (!basename.startsWith('+')) {
+    return null
+  } else {
+    const configName = basename.slice(1)
+    return configName
+  }
 }
 function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
   const dirs = path.posix.dirname(filePath).split('/')
