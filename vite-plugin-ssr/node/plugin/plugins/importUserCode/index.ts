@@ -19,7 +19,7 @@ import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/vir
 import { getConfigData_dependenciesInvisibleToVite, reloadConfigData } from './v1-design/getConfigData'
 import path from 'path'
 import pc from '@brillout/picocolors'
-import { logConfigInfo, clearWithVite } from '../../shared/loggerNotProd'
+import { logConfigInfo, clearWithVite, logViteAny } from '../../shared/loggerNotProd'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -49,29 +49,38 @@ function importUserCode(): Plugin {
       getConfigData_dependenciesInvisibleToVite.forEach((f) => assertPosixPath(f))
       const isVikeConfig = getConfigData_dependenciesInvisibleToVite.has(file)
 
-      /*
       const isViteModule = ctx.modules.length > 0
-      if (isVikeConfig || isViteModule) {
-        clearWithVite(config)
-      }
-      */
-      if (isVikeConfig) {
-        clearWithVite(config)
-      }
+
+      const msg = `File change: ${pc.dim(makeRelativeToUserRootDir(file, config.root))}`
 
       if (!isVikeConfig) {
+        /*/
+        const clear = true
+        /*/
+        const clear = false
+        //*/
+        if (!isViteModule) {
+          logViteAny(`${msg} (no-effect)`, 'info', null, true, clear, config)
+        } else {
+          if (clear) {
+            clearWithVite(config)
+          }
+        }
         return
+      } else {
+        assert(!isViteModule)
+        clearWithVite(config)
+        logConfigInfo(msg, 'info')
+        reloadConfigData(config.root, configVps.extensions)
+        const mods = Array.from(server.moduleGraph.urlToModuleMap.keys())
+          .filter((url) => isVirtualFileIdImportPageCode(url) || isVirtualFileIdImportUserCode(url))
+          .map((url) => {
+            const mod = server.moduleGraph.urlToModuleMap.get(url)
+            assert(mod)
+            return mod
+          })
+        return mods
       }
-      logConfigInfo(`Config file change: ${pc.dim(makeRelativeToUserRootDir(file, config.root))}`, 'info')
-      reloadConfigData(config.root, configVps.extensions)
-      const mods = Array.from(server.moduleGraph.urlToModuleMap.keys())
-        .filter((url) => isVirtualFileIdImportPageCode(url) || isVirtualFileIdImportUserCode(url))
-        .map((url) => {
-          const mod = server.moduleGraph.urlToModuleMap.get(url)
-          assert(mod)
-          return mod
-        })
-      return mods
     },
     async load(id, options) {
       const isDev = isDev1()
