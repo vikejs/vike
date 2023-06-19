@@ -1,4 +1,5 @@
 // This file isn't processed by Vite, see https://github.com/brillout/vite-plugin-ssr/issues/562
+//  - Consequently, the server needs be manually restarted when changing this file
 
 const express = require('express')
 const compression = require('compression')
