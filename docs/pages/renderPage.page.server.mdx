@@ -2,13 +2,29 @@ import { RepoLink, Link } from '@brillout/docpress'
 
 Environment: server.
 
-The `renderPage()` function renders your pages.
+You use `renderPage()` to integrate vite-plugin-ssr into your server:
 
-If you want to use server-side rendering (SSR), then you need to manually integrate `renderPage()` to your server (see <Link href="#usage" />).
+```js
+import { renderPage } from 'vite-plugin-ssr/server'
 
-If you <Link text="pre-render" href="/pre-rendering" /> all your pages, then you don't need to call `renderPage()` manually yourself, because:
- - Vite-plugin-ssr automatically integrates `renderPage()` into Vite's development server (`$ vite`/`$ vite dev`) and Vite's preview server (`$ vite preview`).
- - During pre-rendering (`$ vite build`/`$ vite-plugin-ssr prerender`) vite-plugin-ssr automatically renders your pages.
+myServer.createMiddleware({
+  method: 'GET',
+  route: '*', // catch-all route
+  async handler(request, response) {
+    const pageContextInit = { urlOriginal: req.url }
+    const pageContext = await renderPage(pageContextInit)
+    if (pageContext.httpResponse === null) return
+    const { body, statusCode, contentType } = pageContext.httpResponse
+    response.status(statusCode).type(contentType).send(body)
+  }
+})
+```
+
+
+## Examples
+
+ - <RepoLink text='With JavaScript' path='/boilerplates/boilerplate-vue/server/index.js' />
+ - <RepoLink text='With TypeScript' path='/boilerplates/boilerplate-vue-ts/server/index.ts' />
 
 
 ## Usage
@@ -42,6 +58,7 @@ async function startServer() {
     app.use(viteDevMiddleware)
   } else {
     // In production, we need to serve our static assets ourselves.
+    // (In dev, Vite's middleware serves our static assets.)
     app.use(express.static(`${root}/${outDir}/client`))
   }
 
@@ -80,7 +97,10 @@ See also:
  - <Link href="/NODE_ENV" />.
 
 
-## Examples
+## When to use
 
- - <RepoLink text='With JavaScript' path='/boilerplates/boilerplate-vue/server/index.js' />
- - <RepoLink text='With TypeScript' path='/boilerplates/boilerplate-vue-ts/server/index.ts' />
+If you use server-side rendering (SSR), then you need to use `renderPage()` and manually integrate vite-plugin-ssr into your server yourself (see <Link href="#usage" />).
+
+If you <Link text="pre-render" href="/pre-rendering" /> all your pages, then you don't need to call `renderPage()`, because:
+ - Vite-plugin-ssr automatically integrates `renderPage()` into Vite's development server (`$ vite`/`$ vite dev`).
+ - During pre-rendering (`$ vite build`/`$ vite-plugin-ssr prerender`) vite-plugin-ssr automatically renders your pages for you.
