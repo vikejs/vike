@@ -2,6 +2,7 @@ export { getConfigData }
 export { reloadConfigData }
 export { getConfigData_dependenciesInvisibleToVite }
 export { getFilePathToShowToUser }
+export { getConfigName }
 export type { FilePath }
 
 // - When esbuild bundle: true => track dependencies
@@ -48,7 +49,7 @@ import {
   isGlobalLocation,
   applyFilesystemRoutingRootEffect
 } from './getConfigData/filesystemRouting'
-import { transpileAndLoadFile } from './transpileAndLoadFile'
+import { isTmpFile, transpileAndLoadFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
 import { getViteDevServer } from '../../../../runtime/globalContext'
@@ -972,6 +973,7 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
 
 function getConfigName(filePath: string): string | null {
   assertPosixPath(filePath)
+  if (isTmpFile(filePath)) return null
   const fileName = path.posix.basename(filePath)
   assertNoUnexpectedPlusSign(filePath, fileName)
   const basename = fileName.split('.')[0]!

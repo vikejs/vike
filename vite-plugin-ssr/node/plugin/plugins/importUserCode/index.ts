@@ -1,6 +1,7 @@
 export { importUserCode }
 
-import type { Plugin, ResolvedConfig, HmrContext } from 'vite'
+import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer } from 'vite'
+import { normalizePath } from 'vite'
 import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 import { getConfigVps } from '../../../shared/getConfigVps'
 import { getVirtualFileImportCodeFiles } from './v1-design/getVirtualFileImportCodeFiles'
@@ -16,7 +17,7 @@ import {
 } from '../../utils'
 import { isVirtualFileIdImportPageCode } from '../../../shared/virtual-files/virtualFileImportPageCode'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode'
-import { getConfigData_dependenciesInvisibleToVite, reloadConfigData } from './v1-design/getConfigData'
+import { getConfigData_dependenciesInvisibleToVite, getConfigName, reloadConfigData } from './v1-design/getConfigData'
 import path from 'path'
 import pc from '@brillout/picocolors'
 import { logConfigInfo, clearWithVite } from '../../shared/loggerNotProd'
@@ -62,8 +63,22 @@ function importUserCode(): Plugin {
         return code
       }
     },
-    configureServer() {
+    configureServer(server) {
       isDev1_onConfigureServer()
+      handleFileAddRemove(server, config, configVps)
+    }
+  }
+}
+
+function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig, configVps: ConfigVpsResolved) {
+  server.watcher.prependListener('add', (f) => listener(f, false))
+  server.watcher.prependListener('unlink', (f) => listener(f, true))
+  return
+  function listener(file: string, isRemove: boolean) {
+    file = normalizePath(file)
+    const configName = getConfigName(file)
+    if (configName) {
+      reload(file, config, configVps, isRemove ? 'removed' : 'added')
     }
   }
 }
@@ -75,9 +90,6 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
   const isVikeConfig = getConfigData_dependenciesInvisibleToVite.has(file)
 
   const isViteModule = ctx.modules.length > 0
-
-  const filePathToShowToUser = pc.dim(makeRelativeToUserRootDir(file, config.root))
-  const msg = `File change: ${filePathToShowToUser}`
 
   if (!isVikeConfig) {
     /*/
@@ -105,8 +117,7 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
   } else {
     assert(!isViteModule)
     clearWithVite(config)
-    logConfigInfo(msg, 'info')
-    reloadConfigData(config.root, configVps.extensions)
+    reload(file, config, configVps, 'change')
     const mods = Array.from(server.moduleGraph.urlToModuleMap.keys())
       .filter((url) => isVirtualFileIdImportPageCode(url) || isVirtualFileIdImportUserCode(url))
       .map((url) => {
@@ -116,6 +127,20 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
       })
     return mods
   }
+}
+
+function reload(
+  filePath: string,
+  config: ResolvedConfig,
+  configVps: ConfigVpsResolved,
+  op: 'change' | 'added' | 'removed'
+) {
+  {
+    const filePathToShowToUser = pc.dim(makeRelativeToUserRootDir(filePath, config.root))
+    const msg = `File ${op}: ${filePathToShowToUser}`
+    logConfigInfo(msg, 'info')
+  }
+  reloadConfigData(config.root, configVps.extensions)
 }
 
 function makeRelativeToUserRootDir(filePathAbsolute: string, userRootDir: string): string {
