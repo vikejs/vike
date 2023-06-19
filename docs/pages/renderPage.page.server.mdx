@@ -45,7 +45,11 @@ async function startServer() {
     app.use(express.static(`${root}/${outDir}/client`))
   }
 
-  // Integrate vite-plugin-ssr
+  // ...
+  // Other middlewares (e.g. some RPC middleware such as Telefunc)
+  // ...
+
+  // Vite-plugin-ssr middleware. It should always be our last middleware.
   app.get('*', async (req, res, next) => {
     const pageContextInit = { urlOriginal: req.originalUrl }
     const pageContext = await renderPage(pageContextInit)
