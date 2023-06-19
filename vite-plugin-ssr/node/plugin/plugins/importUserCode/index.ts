@@ -1,6 +1,6 @@
 export { importUserCode }
 
-import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer } from 'vite'
+import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode } from 'vite'
 import { normalizePath } from 'vite'
 import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 import { getConfigVps } from '../../../shared/getConfigVps'
@@ -118,14 +118,8 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
     assert(!isViteModule)
     clearWithVite(config)
     reload(file, config, configVps, 'change')
-    const mods = Array.from(server.moduleGraph.urlToModuleMap.keys())
-      .filter((url) => isVirtualFileIdImportPageCode(url) || isVirtualFileIdImportUserCode(url))
-      .map((url) => {
-        const mod = server.moduleGraph.urlToModuleMap.get(url)
-        assert(mod)
-        return mod
-      })
-    return mods
+    const virtualModules = getVirtualModules(server)
+    return virtualModules
   }
 }
 
@@ -141,6 +135,17 @@ function reload(
     logConfigInfo(msg, 'info')
   }
   reloadConfigData(config.root, configVps.extensions)
+}
+
+function getVirtualModules(server: ViteDevServer): ModuleNode[] {
+  const virtualModules = Array.from(server.moduleGraph.urlToModuleMap.keys())
+    .filter((url) => isVirtualFileIdImportPageCode(url) || isVirtualFileIdImportUserCode(url))
+    .map((url) => {
+      const mod = server.moduleGraph.urlToModuleMap.get(url)
+      assert(mod)
+      return mod
+    })
+  return virtualModules
 }
 
 function makeRelativeToUserRootDir(filePathAbsolute: string, userRootDir: string): string {
