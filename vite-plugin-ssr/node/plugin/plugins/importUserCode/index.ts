@@ -1,6 +1,6 @@
 export { importUserCode }
 
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig, HmrContext } from 'vite'
 import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 import { getConfigVps } from '../../../shared/getConfigVps'
 import { getVirtualFileImportCodeFiles } from './v1-design/getVirtualFileImportCodeFiles'
@@ -44,53 +44,7 @@ function importUserCode(): Plugin {
       }
     },
     handleHotUpdate(ctx) {
-      const { file, server } = ctx
-      assertPosixPath(file)
-      getConfigData_dependenciesInvisibleToVite.forEach((f) => assertPosixPath(f))
-      const isVikeConfig = getConfigData_dependenciesInvisibleToVite.has(file)
-
-      const isViteModule = ctx.modules.length > 0
-
-      const filePathToShowToUser = pc.dim(makeRelativeToUserRootDir(file, config.root))
-      const msg = `File change: ${filePathToShowToUser}`
-
-      if (!isVikeConfig) {
-        /*/
-        const clear = true
-        /*/
-        const clear = false
-        //*/
-        if (!isViteModule) {
-          /* Should we show this?
-          logViteAny(
-            `${msg} — ${pc.bold('no HMR')}, see https://vite-plugin-ssr.com/on-demand-compiler`,
-            'info',
-            null,
-            true,
-            clear,
-            config
-          )
-          */
-        } else {
-          if (clear) {
-            clearWithVite(config)
-          }
-        }
-        return
-      } else {
-        assert(!isViteModule)
-        clearWithVite(config)
-        logConfigInfo(msg, 'info')
-        reloadConfigData(config.root, configVps.extensions)
-        const mods = Array.from(server.moduleGraph.urlToModuleMap.keys())
-          .filter((url) => isVirtualFileIdImportPageCode(url) || isVirtualFileIdImportUserCode(url))
-          .map((url) => {
-            const mod = server.moduleGraph.urlToModuleMap.get(url)
-            assert(mod)
-            return mod
-          })
-        return mods
-      }
+      return handleHotUpdate(ctx, config, configVps)
     },
     async load(id, options) {
       const isDev = isDev1()
@@ -111,6 +65,56 @@ function importUserCode(): Plugin {
     configureServer() {
       isDev1_onConfigureServer()
     }
+  }
+}
+
+function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: ConfigVpsResolved) {
+  const { file, server } = ctx
+  assertPosixPath(file)
+  getConfigData_dependenciesInvisibleToVite.forEach((f) => assertPosixPath(f))
+  const isVikeConfig = getConfigData_dependenciesInvisibleToVite.has(file)
+
+  const isViteModule = ctx.modules.length > 0
+
+  const filePathToShowToUser = pc.dim(makeRelativeToUserRootDir(file, config.root))
+  const msg = `File change: ${filePathToShowToUser}`
+
+  if (!isVikeConfig) {
+    /*/
+    const clear = true
+    /*/
+    const clear = false
+    //*/
+    if (!isViteModule) {
+      /* Should we show this?
+      logViteAny(
+        `${msg} — ${pc.bold('no HMR')}, see https://vite-plugin-ssr.com/on-demand-compiler`,
+        'info',
+        null,
+        true,
+        clear,
+        config
+      )
+      */
+    } else {
+      if (clear) {
+        clearWithVite(config)
+      }
+    }
+    return
+  } else {
+    assert(!isViteModule)
+    clearWithVite(config)
+    logConfigInfo(msg, 'info')
+    reloadConfigData(config.root, configVps.extensions)
+    const mods = Array.from(server.moduleGraph.urlToModuleMap.keys())
+      .filter((url) => isVirtualFileIdImportPageCode(url) || isVirtualFileIdImportUserCode(url))
+      .map((url) => {
+        const mod = server.moduleGraph.urlToModuleMap.get(url)
+        assert(mod)
+        return mod
+      })
+    return mods
   }
 }
 
