@@ -1,6 +1,8 @@
-If some Vite error swallowed => show DEBUG=vps:error hint
-Check creation of +guard.js after dev start
-Removing =>
+- Check creation of +guard.js after dev start
+- Removing =>
   ```
   Failed to load url /pages/index/+guard.ts (resolved id: /home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+guard.ts) in virtual:vite-plugin-ssr:importPageCode:server:/pages/index. Does the file exist?
   ```
+- Optimize error
+- If some Vite error swallowed => show DEBUG=vps:error hint
+- Track config files imports
