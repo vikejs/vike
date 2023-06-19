@@ -29,10 +29,10 @@ async function startServer() {
   // Create an Express.js server
   const app = express()
 
-  // Integrate Vite
+  // Vite integration
   if (!isProduction) {
     // We instantiate Vite's development server and integrate its middleware to our server.
-    // ⚠️ We instantiate it *only* in development. (It isn't needed in production and it
+    // ⚠️ We instantiate it only in development. (It isn't needed in production and it
     // would unnecessarily bloat our server in production.)
     const vite = await import('vite')
     const viteDevMiddleware = (await vite.createServer({
