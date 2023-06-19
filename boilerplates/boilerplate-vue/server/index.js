@@ -1,4 +1,4 @@
-// Note that this file isn't processed by Vite, see https://github.com/brillout/vite-plugin-ssr/issues/562
+// This file isn't processed by Vite, see https://github.com/brillout/vite-plugin-ssr/issues/562
 
 const express = require('express')
 const compression = require('compression')
@@ -14,10 +14,16 @@ async function startServer() {
 
   app.use(compression())
 
+  // Vite integration
   if (isProduction) {
+    // In production, we need to serve our static assets ourselves.
+    // (In dev, Vite's middleware serves our static assets.)
     const sirv = require('sirv')
     app.use(sirv(`${root}/dist/client`))
   } else {
+    // We instantiate Vite's development server and integrate its middleware to our server.
+    // ⚠️ We instantiate it only in development. (It isn't needed in production and it
+    // would unnecessarily bloat our server in production.)
     const vite = require('vite')
     const viteDevMiddleware = (
       await vite.createServer({
@@ -28,6 +34,11 @@ async function startServer() {
     app.use(viteDevMiddleware)
   }
 
+  // ...
+  // Other middlewares (e.g. some RPC middleware such as Telefunc)
+  // ...
+
+  // Vite-plugin-ssr middleware. It should always be our last middleware.
   app.get('*', async (req, res, next) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl
