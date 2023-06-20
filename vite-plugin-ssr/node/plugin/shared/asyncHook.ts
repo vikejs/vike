@@ -8,12 +8,15 @@ import { renderPage_setWrapper } from '../../runtime/renderPage'
 import { assert, isObject } from '../utils'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { getConfigBuildErrFormatted } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
+import { logErrorDebugNote } from './loggerNotProd'
 
 type AsyncHookStore = {
   httpRequestId: number
+  // Error swallowing mechanism
   addLoggedError: (err: unknown) => void
-  hasErrorLogged: (err: unknown) => boolean
   addSwallowedErrorMessage: (errMsg: string) => void
+  shouldErrorBeSwallowed: (err: unknown) => boolean
+  errorDebugNoteAlreadyShown: boolean
 }
 let asyncLocalStorage: null | AsyncLocalStorageType<AsyncHookStore> = null
 
@@ -30,10 +33,18 @@ async function installAsyncHook(): Promise<void> {
     const addLoggedError = (err: unknown) => {
       loggedErrors.add(err)
     }
-    const hasErrorLogged = (err: unknown) => {
-      if (loggedErrors.has(err)) return true
-      if (Array.from(loggedErrors).some((errAlreadyLogged) => isEquivalentOrSubset(err, errAlreadyLogged))) return true
-      return false
+    const shouldErrorBeSwallowed = (err: unknown) => {
+      if (
+        loggedErrors.has(err) ||
+        Array.from(loggedErrors).some((errAlreadyLogged) => isEquivalentOrSubset(err, errAlreadyLogged))
+      ) {
+        // In principle, some random message can be shown between the non-swallowed error and logErrorDebugNote()
+        // We take leap of faith that it doesn't happen often and that it's worth the risk
+        logErrorDebugNote()
+        return true
+      } else {
+        return false
+      }
     }
     assert(asyncLocalStorage)
 
@@ -51,10 +62,15 @@ async function installAsyncHook(): Promise<void> {
       swallowedErrorMessages.add(errMsg)
     }
 
-    const pageContextReturn = await asyncLocalStorage.run(
-      { httpRequestId, addLoggedError, hasErrorLogged, addSwallowedErrorMessage },
-      renderPage
-    )
+    const store = {
+      httpRequestId,
+      addLoggedError,
+      addSwallowedErrorMessage,
+      shouldErrorBeSwallowed,
+      errorDebugNoteAlreadyShown: false
+    }
+
+    const pageContextReturn = await asyncLocalStorage.run(store, renderPage)
     return { pageContextReturn, onRequestDone }
   })
   return

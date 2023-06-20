@@ -1,6 +1,6 @@
 export { customizeViteLogger }
 
-import { assert, trimWithAnsi, trimWithAnsiTrail } from '../utils'
+import { trimWithAnsi, trimWithAnsiTrail } from '../utils'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
 import { logViteFrameError, logViteAny, clearWithCondition } from './loggerNotProd'
 import { isFrameError } from './loggerNotProd/formatFrameError'
@@ -28,7 +28,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig) {
     if (removeSuperfluousViteLog(msg)) return
 
     // Dedupe Vite error messages
-    if (options.error && store?.hasErrorLogged(options.error)) {
+    if (options.error && store?.shouldErrorBeSwallowed(options.error)) {
       return
     }
     if (msg.startsWith('Transform failed with ') && store && logType === 'error') {
@@ -40,7 +40,6 @@ function interceptLogger(logType: LogType, config: ResolvedConfig) {
       const { error } = options
       if (isFrameError(error)) {
         logViteFrameError(error)
-        assert(!store || store.hasErrorLogged(error))
         return
       }
     }

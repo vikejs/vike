@@ -100,7 +100,7 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
   if (isRenderErrorPageException(err)) {
     return
   }
-  if (getAsyncHookStore()?.hasErrorLogged(err)) {
+  if (getAsyncHookStore()?.shouldErrorBeSwallowed(err)) {
     return
   }
 
@@ -234,8 +234,13 @@ function clearWithVite(viteConfig: ResolvedConfig): void {
   viteConfig.logger.clearScreen('error')
 }
 
-function logErrorDebugNote() {
+export function logErrorDebugNote() {
   if (isErrorDebug()) return
+  const store = getAsyncHookStore()
+  if (store) {
+    if (store.errorDebugNoteAlreadyShown) return
+    store.errorDebugNoteAlreadyShown = true
+  }
   const msg = pc.dim(
     [
       '=======================================================================',

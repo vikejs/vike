@@ -1,4 +1,3 @@
 - Prettify swc errors
 - Optimize error
-- If some Vite error swallowed => show DEBUG=vps:error hint
 - Track config files imports
