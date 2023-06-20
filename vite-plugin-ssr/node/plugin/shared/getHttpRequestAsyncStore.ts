@@ -1,4 +1,6 @@
-// Only purpose of this file: swallow redundant error messages (Vite is buggy and emits the same error multiple times).
+// Purpose of this file:
+//  - Prepend '[request(n)]' message tag to Vite log messages
+//  - Swallow redundant error messages (Vite is buggy and emits the same error multiple times)
 
 // The mechanism is skipped if the runtime doesn't support Async Hooks:
 //  - Bun doesn't support Async Hooks: https://github.com/oven-sh/bun/issues/1832
@@ -15,6 +17,7 @@ import { logErrorDebugNote } from './loggerNotProd'
 
 type HttpRequestAsyncStore = {
   httpRequestId: number
+  // Error swallowing mechanism
   shouldErrorBeSwallowed: (err: unknown) => boolean
   markErrorAsLogged: (err: unknown) => void
   markErrorMessageAsLogged: (errMsg: string) => void
