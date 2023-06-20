@@ -1,3 +1,6 @@
+// Prettify transpilation errors
+//  - Doesn't work for optimize errors: https://gist.github.com/brillout/9b7bb78ae866558b292ea1b516a986ec
+
 export { formatFrameError }
 export { isFrameError }
 export type { FrameError }
