@@ -23,29 +23,29 @@ UI framework support for lazy-loading components using `import()`:
 ## React Example
 
 ```jsx
-// pages/location/pick.page.jsx
+// /pages/location/select.page.jsx
 
 import React from 'react'
 
 export function Page() {
-  // Users can see and interact with the button "Please pick a location"
+  // Users can see and interact with the button "Please select a location"
   // before the browser starts loading the code for <Map>.
   return <>
-    <button>Please pick a location</button>
+    <button>Please select a location</button>
     <Map />
   </>
 }
 
 // <Map> is:
 //  - Lazy-loaded
-//  - Loaded and rendered only in the browser
+//  - Loaded & rendered only in the browser
 function Map() {
   const [Component, setComponent] = React.useState(() => Loading)
 
   // useEffect() callbacks are only run in the browser, consequently the map component
   // is loaded and rendererd only in the browser.
   React.useEffect(() => {
-    // @ts-ignore React.lazy's type is wrong
+    // @ts-expect-error The type provided by @types/react is wrong
     setComponent(() => React.lazy(() => import('some-heavy-map-component')))
   }, [])
 
@@ -64,35 +64,45 @@ function Loading() {
 We can extract the logic into a generic `<ClientOnly>` component:
 
 ```jsx
+// ClientOnly.jsx
+
+export { ClientOnly }
+
 import React from 'react'
 
-function Map() {
-  return (
-    <ClientOnly
-      load={() => import('some-heavy-map-component')}
-      fallback={<Loading />}
-    />
-  )
-}
-
-function ClientOnly({ load, fallback }) {
-  const [Component, setComponent] = React.useState(() => fallback)
+function ClientOnly(props) {
+  const [Component, setComponent] = React.useState(() => props.fallback)
 
   React.useEffect(() => {
-    setComponent(() => React.lazy(load))
+    setComponent(() => React.lazy(props.component))
   }, [])
 
   return (
-    <React.Suspense fallback={fallback}>
+    <React.Suspense fallback={props.fallback}>
       <Component />
     </React.Suspense>
   )
 }
 ```
+```jsx
+import { ClientOnly } from './ClientOnly'
+
+function Map() {
+  return (
+    <ClientOnly
+      component={() => import('some-heavy-map-component')}
+      fallback={<Loading />}
+    />
+  )
+}
+function Loading() {
+  return <div>Loading map...</div>
+}
+```
 
 See also:
- - [Github > `arthurgailes/vite-plugin-ssr_dynamic-import-example`](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example)
- - [Github > `arthurgailes/vite-plugin-ssr_dynamic-import-example` > `/pages/index/index.page.jsx`](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example/blob/ecf7cda9beac5cae7b0eb642bd77d25f71e0f2e5/pages/index/index.page.jsx#L20-L35)
+ - [github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example)
+   - See [/pages/index/index.page.jsx](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example/blob/ecf7cda9beac5cae7b0eb642bd77d25f71e0f2e5/pages/index/index.page.jsx#L20-L35)
 
 
 ## Vue Example
