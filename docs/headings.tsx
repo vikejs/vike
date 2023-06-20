@@ -161,11 +161,6 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Dynamic `import()`',
-    url: '/dynamic-import'
-  },
-  {
-    level: 2,
     title: 'Error Handling',
     url: '/errors'
   },
@@ -835,6 +830,10 @@ const redirections = [
   {
     title: 'Error Tracking',
     url: '/error-tracking'
+  },
+  {
+    title: 'Dynamic `import()`',
+    url: '/dynamic-import'
   }
 ]
 

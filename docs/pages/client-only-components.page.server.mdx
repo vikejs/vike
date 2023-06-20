@@ -1,14 +1,126 @@
 import { Link } from '@brillout/docpress'
 
-To avoid loading/rendering a client-only component on the server-side, we can:
- - Render our page as SPA, see <Link href="/render-modes" />.
- - Render our page with SSR, while loading and rendering the component only on the browser-side, see <Link href="/dynamic-import" />.
+Some components, such as interactive maps, are meant to be rendered only on the client-side.
 
-> **Client-only components**
->
-> Some component libraries are meant to work only in the browser,
-> such as [react-leaflet](https://github.com/PaulLeCam/react-leaflet) or [vue-leaflet](https://github.com/vue-leaflet/vue-leaflet).
->
-> Many such client-side only components support being server-side rendered. (Rendering an empty shell on the server-side while replacing that empty shell with the actual component on the browser-side.)
->
-> But some client-only components don't support being server-side rendered, and some even crash when they are merely loaded on the server-side.
+To render a component only on the client-side, you can wrap the component with `<ClientOnly>`:
+
+```jsx
+<ClientOnly>
+  <Map />
+</ClientOnly>
+```
+
+> Alternatively, you can opt-out of SSR and render your whole page as SPA, see <Link href="/render-modes" />.
+
+Common use cases:
+
+ - **Components that don't support SSR**. Some library components don't support SSR: a solution is to render/load the problematic component only on the client-side.
+   > Most component libraries nowadays support SSR, but some don't. Some even crash when they're merely loaded on the server-side (for example, some libraries have hard references to browser-only APIs/objects such as `window`).
+ - **Performance**. You can use `<ClientOnly>` with a [dynamic `import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import) in order to defer loading heavy components such as a complex interactive map. So that users can already interact with your page before the browser even starts loading that heavy component.
+   > Vite automatically code-splits `const { SomeComponent } = await import('some-library')`. In other words: the code of `<SomeComponent />` isn't included in the initial JavaScript client-side bundle and
+   > is loaded only if/when `import()` is executed.
+
+
+## React
+
+Rendering and lazy-loading a compoment only on the client-side:
+
+```jsx
+// /pages/location/select.page.jsx
+
+import React from 'react'
+
+export function Page() {
+  // Users can see and interact with the button "Please select a location"
+  // before the browser starts loading the code for <Map>.
+  return <>
+    <button>Please select a location</button>
+    <Map />
+  </>
+}
+
+// <Map> is:
+//  - Lazy-loaded
+//  - Loaded & rendered only in the browser
+function Map() {
+  const [Component, setComponent] = React.useState(() => Loading)
+
+  // useEffect() callbacks are only run in the browser, consequently the map component
+  // is loaded and rendererd only in the browser.
+  React.useEffect(() => {
+    // @ts-expect-error The type provided by @types/react is wrong
+    setComponent(() => React.lazy(() => import('some-heavy-map-component')))
+  }, [])
+
+  return (
+    <React.Suspense fallback={<Loading />}>
+      <Component />
+    </React.Suspense>
+  )
+}
+
+function Loading() {
+  return <div>Loading map...</div>
+}
+```
+
+We can extract the logic into a generic `<ClientOnly>` component:
+
+```jsx
+// ClientOnly.jsx
+
+export { ClientOnly }
+
+import React from 'react'
+
+function ClientOnly(props) {
+  const [Component, setComponent] = React.useState(() => props.fallback)
+
+  React.useEffect(() => {
+    setComponent(() => React.lazy(props.component))
+  }, [])
+
+  return (
+    <React.Suspense fallback={props.fallback}>
+      <Component />
+    </React.Suspense>
+  )
+}
+```
+```jsx
+import { ClientOnly } from './ClientOnly'
+
+function Map() {
+  return (
+    <ClientOnly
+      component={() => import('some-heavy-map-component')}
+      fallback={<Loading />}
+    />
+  )
+}
+function Loading() {
+  return <div>Loading map...</div>
+}
+```
+
+See also:
+ - [github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example)
+   - See [/pages/index/index.page.jsx](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example/blob/ecf7cda9beac5cae7b0eb642bd77d25f71e0f2e5/pages/index/index.page.jsx#L20-L35)
+ - [React Docs > Code-Splitting > `React.lazy`](https://reactjs.org/docs/code-splitting.html#reactlazy)
+
+
+## Vue
+
+See [#278](https://github.com/brillout/vite-plugin-ssr/issues/278) and in particular:
+ - [#278 - comment by `DoubleJ-G`](https://github.com/brillout/vite-plugin-ssr/issues/278#issuecomment-1072952681)
+
+Contribution welcome to create an example repository.
+
+See also:
+ - [Vue 3 Docs > Async Components](https://v3.vuejs.org/guide/component-dynamic-async.html#async-components)
+ - [Vue 2 Docs > Async Components](https://vuejs.org/v2/guide/components-dynamic-async.html)
+
+
+## Solid
+
+Contribution welcome to create an example.
