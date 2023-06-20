@@ -1,5 +1,8 @@
-// Bun doesn't support Async Hooks: https://github.com/oven-sh/bun/issues/1832
-// Do we foresee other JavaScript server runtimes that won't support Async Hooks?
+// Only purpose of this file: swallow redundant error messages (Vite is buggy and emits the same error multiple times).
+
+// The mechanism is skipped if the runtime doesn't support Async Hooks:
+//  - Bun doesn't support Async Hooks: https://github.com/oven-sh/bun/issues/1832
+//  - Node.js and Deno support Async Hooks
 
 export { installAsyncHook }
 export { getAsyncHookStore }
@@ -12,7 +15,6 @@ import { logErrorDebugNote } from './loggerNotProd'
 
 type AsyncHookStore = {
   httpRequestId: number
-  // Error swallowing mechanism
   addLoggedError: (err: unknown) => void
   addSwallowedErrorMessage: (errMsg: string) => void
   shouldErrorBeSwallowed: (err: unknown) => boolean
@@ -38,8 +40,8 @@ async function installAsyncHook(): Promise<void> {
         loggedErrors.has(err) ||
         Array.from(loggedErrors).some((errAlreadyLogged) => isEquivalentOrSubset(err, errAlreadyLogged))
       ) {
-        // In principle, some random message can be shown between the non-swallowed error and logErrorDebugNote()
-        // We take leap of faith that it doesn't happen often and that it's worth the risk
+        // In principle, some random message can be shown between the non-swallowed error and this logErrorDebugNote() call.
+        // We take a leap of faith that it happens only seldomly and that it's worth the risk.
         logErrorDebugNote()
         return true
       } else {
@@ -69,7 +71,6 @@ async function installAsyncHook(): Promise<void> {
       shouldErrorBeSwallowed,
       errorDebugNoteAlreadyShown: false
     }
-
     const pageContextReturn = await asyncLocalStorage.run(store, renderPage)
     return { pageContextReturn, onRequestDone }
   })
