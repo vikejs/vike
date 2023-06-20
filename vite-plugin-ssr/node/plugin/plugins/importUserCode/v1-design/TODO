@@ -1,10 +1,11 @@
+- Track config files imports and invalidate accordingly
+- assert that two import statements in +config.js shouldn't land in different environments
+- Implements TODO comments
 - restructure getConfigData()
   - make it work to import a config-only value, for example:
     - base assets: https://github.com/brillout/vite-plugin-ssr/commit/24a92cf79a0533ab4b0fa124675385f462302e1e
     - e.g. `import { prerender } from '../some-file'` in `/pages/index/+config.js`
   - Minimize what that client-side loads
-- assert that two import statements in +config.js shouldn't land in different environments
-- Implements TODO comments
 - Update migration examples
 
 Features:
