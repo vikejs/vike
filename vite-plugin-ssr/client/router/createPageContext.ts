@@ -2,6 +2,7 @@ export { createPageContext }
 
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { getPageFilesAll } from '../../shared/getPageFiles'
+import { loadPageRoutes } from '../../shared/route/loadPageRoutes'
 import { getBaseServer } from '../getBaseServer'
 import { assert, isBaseServer, PromiseType, objectAssign, getGlobalObject } from './utils'
 const globalObject = getGlobalObject<{
@@ -13,6 +14,12 @@ async function createPageContext<T extends { urlOriginal: string }>(pageContextB
     globalObject.pageFilesData = await getPageFilesAll(true)
   }
   const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = globalObject.pageFilesData
+  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
+    pageFilesAll,
+    pageConfigs,
+    pageConfigGlobal,
+    allPageIds
+  )
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))
   const pageContext = {
@@ -24,7 +31,9 @@ async function createPageContext<T extends { urlOriginal: string }>(pageContextB
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
-    _allPageIds: allPageIds
+    _allPageIds: allPageIds,
+    _pageRoutes: pageRoutes,
+    _onBeforeRouteHook: onBeforeRouteHook
   }
   objectAssign(pageContext, pageContextBase)
   addComputedUrlProps(pageContext)

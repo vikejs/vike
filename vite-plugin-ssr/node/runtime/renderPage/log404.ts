@@ -1,21 +1,16 @@
 export { log404 }
 
-import { PageFile } from '../../../shared/getPageFiles'
-import { PageRoutes, loadPageRoutes } from '../../../shared/route'
+import type { PageRoutes } from '../../../shared/route'
 import { getGlobalContext } from '../globalContext'
 import { assert, assertUsage, assertInfo, compareString } from '../utils'
 import pc from '@brillout/picocolors'
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
-import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
 
 async function log404(pageContext: {
   urlPathname: string
   errorWhileRendering: null | Error
   isClientSideNavigation: boolean
-  _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
-  _pageConfigGlobal: PageConfigGlobal
-  _allPageIds: string[]
+  _pageRoutes: PageRoutes
 }) {
   const { urlPathname } = pageContext
 
@@ -30,12 +25,7 @@ async function log404(pageContext: {
     return
   }
 
-  const { pageRoutes } = await loadPageRoutes(
-    pageContext._pageFilesAll,
-    pageContext._pageConfigs,
-    pageContext._pageConfigGlobal,
-    pageContext._allPageIds
-  )
+  const pageRoutes = pageContext._pageRoutes
   assertUsage(
     pageRoutes.length > 0,
     'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'

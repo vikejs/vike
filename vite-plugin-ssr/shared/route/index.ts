@@ -1,5 +1,4 @@
 export { route }
-export { loadPageRoutes } from './loadPageRoutes'
 export type { PageRoutes, PageContextForRoute, RouteMatches }
 
 // Ensure we don't bloat runtime of Server Routing
@@ -15,8 +14,8 @@ import { addComputedUrlProps, PageContextUrlSource } from '../addComputedUrlProp
 import { resolvePrecendence } from './resolvePrecedence'
 import { resolveRouteString } from './resolveRouteString'
 import { resolveRouteFunction } from './resolveRouteFunction'
-import { executeOnBeforeRouteHook } from './executeOnBeforeRouteHook'
-import { PageRoutes, loadPageRoutes, RouteType } from './loadPageRoutes'
+import { executeOnBeforeRouteHook, type OnBeforeRouteHook } from './executeOnBeforeRouteHook'
+import type { PageRoutes, RouteType } from './loadPageRoutes'
 import { debug } from './debug'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
 
@@ -25,6 +24,8 @@ type PageContextForRoute = PageContextUrlSource & {
   _pageConfigs: PageConfig[]
   _allPageIds: string[]
   _pageConfigGlobal: PageConfigGlobal
+  _pageRoutes: PageRoutes
+  _onBeforeRouteHook: OnBeforeRouteHook | null
 }
 type RouteMatch = {
   pageId: string
@@ -45,17 +46,11 @@ async function route(pageContext: PageContextForRoute): Promise<{
 }> {
   addComputedUrlProps(pageContext)
 
-  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
-    pageContext._pageFilesAll,
-    pageContext._pageConfigs,
-    pageContext._pageConfigGlobal,
-    pageContext._allPageIds
-  )
-  debug('Pages routes:', pageRoutes)
+  debug('Pages routes:', pageContext._pageRoutes)
 
   const pageContextAddendum = {}
-  if (onBeforeRouteHook) {
-    const pageContextAddendumHook = await executeOnBeforeRouteHook(onBeforeRouteHook, pageContext)
+  if (pageContext._onBeforeRouteHook) {
+    const pageContextAddendumHook = await executeOnBeforeRouteHook(pageContext._onBeforeRouteHook, pageContext)
     if (pageContextAddendumHook) {
       objectAssign(pageContextAddendum, pageContextAddendumHook)
       if (hasProp(pageContextAddendum, '_pageId', 'string') || hasProp(pageContextAddendum, '_pageId', 'null')) {
@@ -92,7 +87,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
 
   const routeMatches: RouteMatch[] = []
   await Promise.all(
-    pageRoutes.map(async (pageRoute): Promise<void> => {
+    pageContext._pageRoutes.map(async (pageRoute): Promise<void> => {
       const { pageId, routeType } = pageRoute
 
       // Filesytem Routing

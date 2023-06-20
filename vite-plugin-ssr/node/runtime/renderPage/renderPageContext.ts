@@ -24,6 +24,8 @@ import { logError } from './loggerRuntime'
 import { isNewError } from './isNewError'
 import { preparePageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide'
 import { executeGuardHook } from '../../../shared/route/executeGuardHook'
+import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageRoutes'
+import type { OnBeforeRouteHook } from '../../../shared/route/executeOnBeforeRouteHook'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
@@ -189,7 +191,9 @@ function initPageContext(pageContextInit: { urlOriginal: string }, renderContext
     _pageFilesAll: renderContext.pageFilesAll,
     _pageConfigs: renderContext.pageConfigs,
     _pageConfigGlobal: renderContext.pageConfigGlobal,
-    _allPageIds: renderContext.allPageIds
+    _allPageIds: renderContext.allPageIds,
+    _pageRoutes: renderContext.pageRoutes,
+    _onBeforeRouteHook: renderContext.onBeforeRouteHook
   }
 
   return pageContextAddendum
@@ -200,6 +204,8 @@ type RenderContext = {
   pageConfigs: PageConfig[]
   pageConfigGlobal: PageConfigGlobal
   allPageIds: string[]
+  pageRoutes: PageRoutes
+  onBeforeRouteHook: OnBeforeRouteHook | null
 }
 // TODO: remove getRenderContext() in favor of getGlobalObject() + reloadGlobalContext()
 // TODO: impl GlobalNodeContext + GlobalClientContext + GloablContext, and use GlobalContext instead of RenderContext
@@ -209,12 +215,20 @@ async function getRenderContext(): Promise<RenderContext> {
     false,
     globalContext.isProduction
   )
+  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
+    pageFilesAll,
+    pageConfigs,
+    pageConfigGlobal,
+    allPageIds
+  )
   assertNonMixedDesign(pageFilesAll, pageConfigs)
   const renderContext = {
     pageFilesAll: pageFilesAll,
     pageConfigs,
     pageConfigGlobal,
-    allPageIds: allPageIds
+    allPageIds: allPageIds,
+    pageRoutes,
+    onBeforeRouteHook
   }
   return renderContext
 }

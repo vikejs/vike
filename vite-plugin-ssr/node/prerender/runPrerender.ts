@@ -4,7 +4,7 @@ export type { PrerenderOptions }
 
 import '../runtime/page-files/setup'
 import path from 'path'
-import { loadPageRoutes, route } from '../../shared/route'
+import { route, type PageRoutes } from '../../shared/route'
 import {
   assert,
   assertUsage,
@@ -48,6 +48,7 @@ import { loadPageCode } from '../../shared/page-configs/loadPageCode'
 import { isErrorPage } from '../../shared/error-page'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute'
+import type { OnBeforeRouteHook } from '../../shared/route/executeOnBeforeRouteHook'
 
 type HtmlFile = {
   urlOriginal: string
@@ -100,6 +101,8 @@ type PageContext = {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfig[]
   _pageConfigGlobal: PageConfigGlobal
+  _pageRoutes: PageRoutes
+  _onBeforeRouteHook: OnBeforeRouteHook | null
 }
 
 type PrerenderOptions = {
@@ -421,14 +424,8 @@ async function handlePagesWithStaticRoutes(
   concurrencyLimit: PLimit
 ) {
   // Pre-render pages with a static route
-  const { pageRoutes } = await loadPageRoutes(
-    renderContext.pageFilesAll,
-    renderContext.pageConfigs,
-    renderContext.pageConfigGlobal,
-    renderContext.allPageIds
-  )
   await Promise.all(
-    pageRoutes.map((pageRoute) =>
+    renderContext.pageRoutes.map((pageRoute) =>
       concurrencyLimit(async () => {
         const { pageId } = pageRoute
 

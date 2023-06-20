@@ -1,9 +1,11 @@
 // Internal functions of vps needed by other plugins are exported via this file
 
-import { loadPageRoutes, PageRoutes, route } from '../shared/route'
-import { getPageFilesAll, type PageFile } from '../shared/getPageFiles'
+import { route, type PageRoutes } from '../shared/route'
+import { type PageFile } from '../shared/getPageFiles'
 import { getGlobalContext, initGlobalContext } from '../node/runtime/globalContext'
 import { setNodeEnvToProduction } from '../utils/nodeEnv'
+import { assert } from '../utils/assert'
+import { getRenderContext } from '../node/runtime/renderPage/renderPageContext'
 
 export { route, getPagesAndRoutes }
 export type { PageRoutes, PageFile }
@@ -16,12 +18,13 @@ export type { PageRoutes, PageFile }
  */
 async function getPagesAndRoutes() {
   setNodeEnvToProduction()
+
   await initGlobalContext(true)
-  getGlobalContext()
+  const globalContext = getGlobalContext()
+  assert(globalContext.isProduction === true)
 
-  const { pageFilesAll, pageConfigs, allPageIds, pageConfigGlobal } = await getPageFilesAll(false, true)
-
-  const { pageRoutes } = await loadPageRoutes(pageFilesAll, pageConfigs, pageConfigGlobal, allPageIds)
+  const renderContext = await getRenderContext()
+  const { pageFilesAll, pageConfigs, allPageIds, pageRoutes } = renderContext
 
   return {
     pageRoutes,
