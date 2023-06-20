@@ -29,7 +29,7 @@ async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved,
       Object.entries(data.configElements).forEach(([_configName, configElement]) => {
         const { codeFilePath, configEnv } = configElement
         if (!codeFilePath) return
-        if (!(configEnv === 'client-only' || configEnv === 'server-and-client')) return
+        if (configEnv !== 'client-only' && configEnv !== 'server-and-client') return
 
         if (codeFilePath.startsWith('/')) {
           // Is getFilePathAbsolute() really needed? This contradicts the code below that doesn't need getFilePathAbsolute().
