@@ -20,6 +20,22 @@ function isFrameError(err: unknown): err is FrameError {
 }
 
 function formatFrameError(err: FrameError, userRootDir: string): string {
+  /* Uncomment to inspect and/or create fixtures for ./formatFrameError.spec.ts
+  console.log('err.message', err.message)
+  console.log('err.stack', (err as any as Error).stack)
+  console.log('Object.keys(err)', Object.keys(err))
+  console.log('err', err)
+  // For copy-pasting errors while preserve terminal ANSI colors
+  console.log(
+    'JSON.stringify(err)',
+    JSON.stringify({
+      ...err,
+      message: err.message,
+      stack: (err as any as Error).stack
+    })
+  )
+  //*/
+
   assert(isFrameError(err))
   let { id, frame } = err
   frame = frame.trim()
@@ -33,7 +49,7 @@ function formatFrameError(err: FrameError, userRootDir: string): string {
 
   const errMsg = getErrMsg(err)
 
-  const msg = [
+  let msg = [
     msgFirstLine,
     errMsg,
     // Many tools set 'error.frame' to something rubbish, for example:
@@ -44,6 +60,7 @@ function formatFrameError(err: FrameError, userRootDir: string): string {
   ]
     .filter(Boolean)
     .join('\n')
+  msg = removeEmptyLines(msg)
   return msg
 
   /* Showing the error layover didn't properly work last time we tried. But we don't really need it, do we?
@@ -96,7 +113,11 @@ function containsCodeSnippet(str: string) {
 }
 
 function isCodeSnippetLine(line: string): boolean {
-  return /[\s\d>]*\|/.test(line)
+  // Babel
+  if (/[\s\d>]*\|/.test(line)) return true
+  // SWC
+  if (/[\s\d>]*(╭─|│|·)/.test(line)) return true
+  return false
 }
 
 function reg(parts: (RegExp | string)[], flags: string = '') {
@@ -117,4 +138,11 @@ function removeStandaloneCodePosition(errMsg: string) {
     })
     .join('\n')
   return errMsg
+}
+
+function removeEmptyLines(msg: string): string {
+  return msg
+    .split('\n')
+    .filter((line) => line.trim() !== '')
+    .join('\n')
 }

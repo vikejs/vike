@@ -1,19 +1,42 @@
 import { expect, describe, it } from 'vitest'
-import { getErrMsg } from './formatFrameError'
+import { getErrMsg, formatFrameError } from './formatFrameError'
 
 // To generate new test cases:
 // ```bash
-// DEBUG=vps:error pnpm exec vite
+// DEBUG=vps:error pnpm run dev
 // ```
 
-const id = '/home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx'
-const frame = `Expected ";" but found "React"
-1  |  iemport React, { useState } from 'react'
-   |          ^
-2  |  
-3  |  export { Counter }`
+describe('formatFrameError()', () => {
+  it('real use case - @vitejs/plugin-react-swc', () => {
+    const err = {"stack":"Error: \n  \u001b[38;2;255;30;30m×\u001b[0m Expected ';', '}' or <eof>\n   ╭─[\u001b[38;2;92;157;255;1;4m/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/hello/+Page.tsx\u001b[0m:1:1]\n \u001b[2m1\u001b[0m │ export default Page\n \u001b[2m2\u001b[0m │ \n \u001b[2m3\u001b[0m │ impeort React from 'react'\n   · \u001b[38;2;246;87;248m───┬───\u001b[0m\u001b[38;2;30;201;212m ─────\u001b[0m\n   ·    \u001b[38;2;246;87;248m╰── \u001b[38;2;246;87;248mThis is the expression part of an expression statement\u001b[0m\u001b[0m\n \u001b[2m4\u001b[0m │ \n \u001b[2m5\u001b[0m │ function Page({ name }: { name: string }) {\n \u001b[2m6\u001b[0m │   return (\n   ╰────\n\n\nCaused by:\n    Syntax Error","code":"GenericFailure","line":"1","column":"1","plugin":"vite:react-swc","id":"/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/hello/+Page.tsx","pluginCode":"export default Page\n\nimpeort React from 'react'\n\nfunction Page({ name }: { name: string }) {\n  return (\n    <>\n      <h1>Hello</h1>\n      <p>\n        Hi <b>{name}</b>.\n      </p>\n      <ul>\n        <li>\n          <a href=\"/hello/eli\">/hello/eli</a>\n        </li>\n        <li>\n          <a href=\"/hello/jon\">/hello/jon</a>\n        </li>\n      </ul>\n      <p>\n        Parameterized routes can be defined by exporting a route string in <code>*.page.route.js</code>.\n      </p>\n    </>\n  )\n}\n","loc":{"file":"/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/hello/+Page.tsx","line":"1","column":"1"},"frame":"1  |  /home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/hello/+Page.tsx\n   |   ^","message":"\n  \u001b[38;2;255;30;30m×\u001b[0m Expected ';', '}' or <eof>\n   ╭─[\u001b[38;2;92;157;255;1;4m/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/hello/+Page.tsx\u001b[0m:1:1]\n \u001b[2m1\u001b[0m │ export default Page\n \u001b[2m2\u001b[0m │ \n \u001b[2m3\u001b[0m │ impeort React from 'react'\n   · \u001b[38;2;246;87;248m───┬───\u001b[0m\u001b[38;2;30;201;212m ─────\u001b[0m\n   ·    \u001b[38;2;246;87;248m╰── \u001b[38;2;246;87;248mThis is the expression part of an expression statement\u001b[0m\u001b[0m\n \u001b[2m4\u001b[0m │ \n \u001b[2m5\u001b[0m │ function Page({ name }: { name: string }) {\n \u001b[2m6\u001b[0m │   return (\n   ╰────\n\n\nCaused by:\n    Syntax Error"}
+    const formatted = formatFrameError(err, '/home/rom/code/vite-plugin-ssr/examples/react-full-v1/')
+    expect(formatted).toMatchInlineSnapshot(`
+      "[31mFailed to transpile[39m [31m[1m/pages/hello/+Page.tsx[22m[39m [31mbecause:[39m
+      [38;2;255;30;30m×[0m Expected ';', '}' or <eof>
+         ╭─[[38;2;92;157;255;1;4m/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/hello/+Page.tsx[0m:1:1]
+       [2m1[0m │ export default Page
+       [2m2[0m │ 
+       [2m3[0m │ impeort React from 'react'
+         · [38;2;246;87;248m───┬───[0m[38;2;30;201;212m ─────[0m
+         ·    [38;2;246;87;248m╰── [38;2;246;87;248mThis is the expression part of an expression statement[0m[0m
+       [2m4[0m │ 
+       [2m5[0m │ function Page({ name }: { name: string }) {
+       [2m6[0m │   return (
+         ╰────
+      Caused by:
+          Syntax Error"
+    `)
+  })
+})
 
 describe('getErrMsg()', () => {
+  const id = '/home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx'
+  const frame = `Expected ";" but found "React"
+  1  |  iemport React, { useState } from 'react'
+     |          ^
+  2  |  
+  3  |  export { Counter }`
+
   it('operations', () => {
     {
       const message = '/home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx'
