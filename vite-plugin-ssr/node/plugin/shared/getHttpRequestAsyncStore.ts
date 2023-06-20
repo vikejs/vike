@@ -4,8 +4,8 @@
 //  - Bun doesn't support Async Hooks: https://github.com/oven-sh/bun/issues/1832
 //  - Node.js and Deno support Async Hooks
 
-export { installAsyncHook }
-export { getAsyncHookStore }
+export { getHttpRequestAsyncStore }
+export { installHttpRequestAsyncStore }
 
 import { renderPage_setWrapper } from '../../runtime/renderPage'
 import { assert, isObject } from '../utils'
@@ -13,16 +13,16 @@ import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hook
 import { getConfigBuildErrFormatted } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
 import { logErrorDebugNote } from './loggerNotProd'
 
-type AsyncHookStore = {
+type HttpRequestAsyncStore = {
   httpRequestId: number
-  addLoggedError: (err: unknown) => void
-  addSwallowedErrorMessage: (errMsg: string) => void
   shouldErrorBeSwallowed: (err: unknown) => boolean
+  markErrorAsLogged: (err: unknown) => void
+  markErrorMessageAsLogged: (errMsg: string) => void
   errorDebugNoteAlreadyShown: boolean
 }
-let asyncLocalStorage: null | AsyncLocalStorageType<AsyncHookStore> = null
+let asyncLocalStorage: null | AsyncLocalStorageType<HttpRequestAsyncStore> = null
 
-async function installAsyncHook(): Promise<void> {
+async function installHttpRequestAsyncStore(): Promise<void> {
   let mod: typeof import('node:async_hooks')
   try {
     mod = await import('node:async_hooks')
@@ -32,7 +32,7 @@ async function installAsyncHook(): Promise<void> {
   asyncLocalStorage = new mod.AsyncLocalStorage()
   renderPage_setWrapper(async (httpRequestId, renderPage) => {
     const loggedErrors = new Set<unknown>()
-    const addLoggedError = (err: unknown) => {
+    const markErrorAsLogged = (err: unknown) => {
       loggedErrors.add(err)
     }
     const shouldErrorBeSwallowed = (err: unknown) => {
@@ -60,14 +60,14 @@ async function installAsyncHook(): Promise<void> {
         }
       })
     }
-    const addSwallowedErrorMessage = (errMsg: string) => {
+    const markErrorMessageAsLogged = (errMsg: string) => {
       swallowedErrorMessages.add(errMsg)
     }
 
     const store = {
       httpRequestId,
-      addLoggedError,
-      addSwallowedErrorMessage,
+      markErrorAsLogged,
+      markErrorMessageAsLogged,
       shouldErrorBeSwallowed,
       errorDebugNoteAlreadyShown: false
     }
@@ -77,7 +77,7 @@ async function installAsyncHook(): Promise<void> {
   return
 }
 
-function getAsyncHookStore(): null | undefined | AsyncHookStore {
+function getHttpRequestAsyncStore(): null | undefined | HttpRequestAsyncStore {
   if (asyncLocalStorage === null) return null
   const store = asyncLocalStorage.getStore()
   assert(store === undefined || isObject(store))

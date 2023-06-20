@@ -8,7 +8,7 @@ import { addSsrMiddleware } from '../../shared/addSsrMiddleware'
 import { markEnvAsDev } from '../../utils'
 import { customizeViteLogger } from '../../shared/loggerVite'
 import { isErrorDebug } from '../../shared/isErrorDebug'
-import { installAsyncHook } from '../../shared/asyncHook'
+import { installHttpRequestAsyncStore } from '../../shared/getHttpRequestAsyncStore'
 
 if (isErrorDebug()) {
   Error.stackTraceLimit = Infinity
@@ -50,7 +50,7 @@ function devConfig(): Plugin[] {
         await determineOptimizeDeps(config, configVps, isDev)
         await determineFsAllowList(config, configVps)
         if (!isErrorDebug()) {
-          await installAsyncHook()
+          await installHttpRequestAsyncStore()
           customizeViteLogger(config)
         }
       },

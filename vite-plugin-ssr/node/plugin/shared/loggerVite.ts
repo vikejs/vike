@@ -4,7 +4,7 @@ import { trimWithAnsi, trimWithAnsiTrail } from '../utils'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
 import { logViteFrameError, logViteAny, clearWithCondition } from './loggerNotProd'
 import { isFrameError } from './loggerNotProd/formatFrameError'
-import { getAsyncHookStore } from './asyncHook'
+import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
 
@@ -16,7 +16,7 @@ function customizeViteLogger(config: ResolvedConfig) {
 
 function interceptLogger(logType: LogType, config: ResolvedConfig) {
   config.logger[logType] = (msg, options: LogErrorOptions = {}) => {
-    const store = getAsyncHookStore()
+    const store = getHttpRequestAsyncStore()
 
     if (!!options.timestamp) {
       // timestamp => tag "[vite]" is prepended
@@ -32,7 +32,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig) {
       return
     }
     if (msg.startsWith('Transform failed with ') && store && logType === 'error') {
-      store.addSwallowedErrorMessage(msg)
+      store.markErrorMessageAsLogged(msg)
       return
     }
 
@@ -48,7 +48,7 @@ function interceptLogger(logType: LogType, config: ResolvedConfig) {
       clearWithCondition({ clearIfFirstLog: true })
     }
 
-    if (options.error) store?.addLoggedError(options.error)
+    if (options.error) store?.markErrorAsLogged(options.error)
     logViteAny(
       msg,
       logType,

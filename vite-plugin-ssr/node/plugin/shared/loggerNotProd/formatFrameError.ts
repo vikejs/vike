@@ -39,7 +39,7 @@ function formatFrameError(err: FrameError, userRootDir: string): string {
     // Many tools set 'error.frame' to something rubbish, for example:
     //  - @vitejs/plugin-vue
     //  - @vitejs/plugin-react-swc
-    // Conditionally swallowing frame is a risky move but seems to work.
+    // Conditionally swallowing frame is a risky move but worth it thanks to logErrorDebugNote()
     containsCodeSnippet(errMsg) ? null : pc.yellow(frame)
   ]
     .filter(Boolean)
@@ -70,17 +70,7 @@ function getErrMsg(err: FrameError): string {
   errMsg = errMsg.split(reg(['Internal server error', trail])).join('')
 
   if (containsCodeSnippet(errMsg)) {
-    // Remove weird standalone code position " (2:7) "
-    errMsg = errMsg
-      .split('\n')
-      .map((line) => {
-        assert(/\(\d+:\d+\)/.test('(1:2)'))
-        if (!isCodeSnippetLine(line)) {
-          line = line.split(/\(\d+:\d+\)/).join('')
-        }
-        return line
-      })
-      .join('\n')
+    errMsg = removeStandaloneCodePosition(errMsg)
   }
 
   errMsg = errMsg.trim()
@@ -111,4 +101,20 @@ function isCodeSnippetLine(line: string): boolean {
 
 function reg(parts: (RegExp | string)[], flags: string = '') {
   return new RegExp(parts.map((part) => (typeof part === 'string' ? escapeRegex(part) : part.source)).join(''), flags)
+}
+
+function removeStandaloneCodePosition(errMsg: string) {
+  // Remove weird standalone code position " (2:7) "
+  errMsg = errMsg
+    .split('\n')
+    .map((line) => {
+      const posRE = /\(\d+:\d+\)/
+      assert(posRE.test('(1:2)'))
+      if (!isCodeSnippetLine(line)) {
+        line = line.split(posRE).join('')
+      }
+      return line
+    })
+    .join('\n')
+  return errMsg
 }

@@ -31,7 +31,7 @@ import {
   stripAnsi,
   warnIfObjectIsNotObject
 } from '../utils'
-import { getAsyncHookStore } from './asyncHook'
+import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore'
 import { isErrorDebug } from './isErrorDebug'
 import { isFrameError, formatFrameError, type FrameError } from './loggerNotProd/formatFrameError'
 import {
@@ -100,12 +100,12 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
   if (isRenderErrorPageException(err)) {
     return
   }
-  if (getAsyncHookStore()?.shouldErrorBeSwallowed(err)) {
+  if (getHttpRequestAsyncStore()?.shouldErrorBeSwallowed(err)) {
     return
   }
 
-  const store = getAsyncHookStore()
-  store?.addLoggedError(err)
+  const store = getHttpRequestAsyncStore()
+  store?.markErrorAsLogged(err)
 
   if (!isErrorDebug()) {
     const { viteDevServer } = getGlobalContext()
@@ -117,7 +117,7 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
       /* We purposely don't use hasErrorLogged():
          - We don't trust Vite with such details
            - Previously, Vite bug lead to swallowing of errors: https://github.com/vitejs/vite/issues/12631
-         - We dedupe Vite logs ourself instead with getAsyncHookStore().hasErrorLogged
+         - We dedupe Vite logs ourself instead with getHttpRequestAsyncStore().shouldErrorBeSwallowed()
       if (viteDevServer.config.logger.hasErrorLogged(err as Error)) {
         return
       }
@@ -236,7 +236,7 @@ function clearWithVite(viteConfig: ResolvedConfig): void {
 
 export function logErrorDebugNote() {
   if (isErrorDebug()) return
-  const store = getAsyncHookStore()
+  const store = getHttpRequestAsyncStore()
   if (store) {
     if (store.errorDebugNoteAlreadyShown) return
     store.errorDebugNoteAlreadyShown = true
@@ -252,7 +252,7 @@ export function logErrorDebugNote() {
 }
 
 function getCategory(httpRequestId: number | null = null): LogCategory | null {
-  const store = getAsyncHookStore()
+  const store = getHttpRequestAsyncStore()
   if (store?.httpRequestId !== undefined) {
     if (httpRequestId === null) {
       httpRequestId = store.httpRequestId
