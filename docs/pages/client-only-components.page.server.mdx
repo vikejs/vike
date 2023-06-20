@@ -1,29 +1,26 @@
 import { Link } from '@brillout/docpress'
 
-Some components, such as interactive maps, are meant to be rendered only on the client-side.
-
-To render a component only on the client-side, you can wrap the component with `<ClientOnly>`:
+To render a component only on the client-side, wrap it with `<ClientOnly>`:
 
 ```jsx
 <ClientOnly>
-  <Map />
+  <SomeComponent />
 </ClientOnly>
 ```
 
-> Alternatively, you can opt-out of SSR and render your whole page as SPA, see <Link href="/render-modes" />.
+> Alternatively, opt-out of SSR for the whole page and render it as SPA instead, see <Link href="/render-modes" />.
 
 Common use cases:
 
- - **Components that don't support SSR**. Some library components don't support SSR: a solution is to render/load the problematic component only on the client-side.
+ - **Components that don't support SSR**. For library components that don't support SSR, a solution is to render/load the problematic component only on the client-side.
    > Most component libraries nowadays support SSR, but some don't. Some even crash when they're merely loaded on the server-side (for example, some libraries have hard references to browser-only APIs/objects such as `window`).
- - **Performance**. You can use `<ClientOnly>` with a [dynamic `import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import) in order to defer loading heavy components such as a complex interactive map. So that users can already interact with your page before the browser even starts loading that heavy component.
-   > Vite automatically code-splits `const { SomeComponent } = await import('some-library')`. In other words: the code of `<SomeComponent />` isn't included in the initial JavaScript client-side bundle and
-   > is loaded only if/when `import()` is executed.
+ - **Performance**. By using `<ClientOnly>` with a [dynamic `import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import), you can defer loading heavy components such as a complex interactive map. So that users can already interact with your page before even the browser starts loading the heavy component.
+   > Vite automatically code-splits `const { SomeComponent } = await import('some-library')`. In other words, the code of `<SomeComponent />` isn't included in the initial JavaScript client-side bundle: it's loaded only when/if `import()` is executed.
 
 
 ## React
 
-Rendering and lazy-loading a compoment only on the client-side:
+Rendering & lazy-loading a compoment only on the client-side:
 
 ```jsx
 // /pages/location/select.page.jsx
@@ -32,7 +29,7 @@ import React from 'react'
 
 export function Page() {
   // Users can see and interact with the button "Please select a location"
-  // before the browser starts loading the code for <Map>.
+  // before the browser starts loading the code of the lazy-loaded component.
   return <>
     <button>Please select a location</button>
     <Map />
@@ -64,7 +61,7 @@ function Loading() {
 }
 ```
 
-We can extract the logic into a generic `<ClientOnly>` component:
+The logic can be extracted into a generic `<ClientOnly>` component:
 
 ```jsx
 // ClientOnly.jsx
@@ -104,15 +101,15 @@ function Loading() {
 ```
 
 See also:
- - [github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example)
-   - See [/pages/index/index.page.jsx](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example/blob/ecf7cda9beac5cae7b0eb642bd77d25f71e0f2e5/pages/index/index.page.jsx#L20-L35)
  - [React Docs > Code-Splitting > `React.lazy`](https://reactjs.org/docs/code-splitting.html#reactlazy)
+ - [GitHub > arthurgailes/vite-plugin-ssr_dynamic-import-example](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example)
+   - `<ClientOnly>` implementation: [/pages/index/index.page.jsx](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example/blob/ecf7cda9beac5cae7b0eb642bd77d25f71e0f2e5/pages/index/index.page.jsx#L20-L35)
 
 
 ## Vue
 
 See [#278](https://github.com/brillout/vite-plugin-ssr/issues/278) and in particular:
- - [#278 - comment by `DoubleJ-G`](https://github.com/brillout/vite-plugin-ssr/issues/278#issuecomment-1072952681)
+ - [#278 - comment by @DoubleJ-G](https://github.com/brillout/vite-plugin-ssr/issues/278#issuecomment-1072952681)
 
 Contribution welcome to create an example repository.
 
