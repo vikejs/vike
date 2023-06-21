@@ -6,4 +6,6 @@ Instead, directly use your server (e.g. Express.js endpoints), or use an RPC imp
 
 <Note type='warning'>Make sure to place <Link text="vite-plugin-ssr's middleware" href="/renderPage" /> last. (Because vite-plugin-ssr is a catch-all middleware; it would supersede your API middleware if you place it before.)</Note>
 
+<Note type='warning'>Currently modifying server files will required to restart the server manually, see the top comment at `/server/index.(js/ts)`</Note>
+
 > The vite-plugin-ssr maintainers believe that implementing APIs independently of vite-plugin-ssr is a superior approach.
