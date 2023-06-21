@@ -1,10 +1,10 @@
-import { Link, Note } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 
 Environment: browser.
 
 We can use `prefetch('/some/url')` to programmatically prefetch pages.
 
-<Note type="warning">`prefetch()` works only with <Link text="Client Routing" href="/client-routing" />. Prefetching isn't possible with <Link text="Server Routing" href="/server-routing" />.</Note>
+<Warning>`prefetch()` works only with <Link text="Client Routing" href="/client-routing" />. Prefetching isn't possible with <Link text="Server Routing" href="/server-routing" />.</Warning>
 
 We usually use `prefetch()` to speed up page navigation when we can predict what the next page will (most likely) be.
 

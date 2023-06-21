@@ -1,4 +1,4 @@
-import { Link, Note } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 
 [Auth.js](https://authjs.dev/) (previously known as NextAuth.js) can be used with `vite-plugin-ssr`.
 
@@ -14,7 +14,7 @@ To access environment variables on the client-side, such as `process.env.NEXTAUT
 or
 [`vite.config.js#envPrefix`](https://vitejs.dev/config/#envprefix).
 
-<Note type='warning'>Don't add `NEXTAUTH_` to `envPrefix` as it would leak `NEXTAUTH_SECRET`.</Note>
+<Warning>Don't add `NEXTAUTH_` to `envPrefix` as it would leak `NEXTAUTH_SECRET`.</Warning>
 
 See also:
 - [Vite > Config > Environment Variables](https://vitejs.dev/config/#environment-variables)

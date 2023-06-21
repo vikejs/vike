@@ -1,4 +1,4 @@
-import { Link, Note } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 
 We can deploy `vite-plugin-ssr` to [Vercel](https://vercel.com) simply by using a Vercel API Route, or we can use `vite-plugin-vercel` if we want advanced Vercel features such as ISR and Edge Middleware.
 
@@ -9,7 +9,7 @@ We can deploy our `vite-plugin-ssr` app to Vercel simply by creating a Vercel AP
 
 Example: [github.com/brillout/vite-plugin-ssr_vercel](https://github.com/brillout/vite-plugin-ssr_vercel).
 
-<Note type="warning">Make sure to properly set `OUTPUT DIRECTORY` in your Vercel dashboard, see the example's `readme.md` instructions.</Note>
+<Warning>Make sure to properly set `OUTPUT DIRECTORY` in your Vercel dashboard, see the example's `readme.md` instructions.</Warning>
 
 > Using a Vercel API Route is a sturdy way to deploy to Vercel as API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's Build Output API is a moving target with occasional breaking changes.) Once we setup our server-side rendering API Route, we can expect it to work for the foreseeable future.
 

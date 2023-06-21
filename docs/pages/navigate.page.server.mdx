@@ -1,10 +1,10 @@
-import { RepoLink, Link, Note } from '@brillout/docpress'
+import { RepoLink, Link, Warning } from '@brillout/docpress'
 
 Environment: browser.
 
 We can use `navigate('/some/url')` to programmatically switch pages.
 
-<Note type="warning">`navigate()` works only with <Link text="Client Routing" href="/client-routing" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.href = '/some/url'` instead.</Note>
+<Warning>`navigate()` works only with <Link text="Client Routing" href="/client-routing" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.href = '/some/url'` instead.</Warning>
 
 `navigate()` is useful when the navigation isn't triggered by the user clicking on an anchor tag `<a>`.
 For example, when redirecting a user after a successful form submission.

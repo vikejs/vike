@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   vite-plugin-ssr: link:./vite-plugin-ssr/
 
@@ -235,8 +239,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.4.17
-        version: 0.4.17(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.21.5)
+        specifier: ^0.5.1
+        version: 0.5.1(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.21.5)
       '@types/node':
         specifier: ^15.12.1
         version: 15.14.9
@@ -3074,8 +3078,8 @@ packages:
       - terser
     dev: false
 
-  /@brillout/docpress@0.4.17(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.21.5):
-    resolution: {integrity: sha512-VxTt4lD6y5x80Dhx74TLfd6IkH28cTb48EibJlGqSAnZX3HYU3i7gbZFDBfz2pOM/QoQ2S22tbpjXL6VctgAug==}
+  /@brillout/docpress@0.5.1(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.21.5):
+    resolution: {integrity: sha512-Rh6yL1/JcsJJcPfQ0326h6tbwWYt5W9hfJ7NLzxyWvpGg/EMsKYMcLLBVpG2mrsKr6uB70GwiunvQ/75wbNClw==}
     hasBin: true
     peerDependencies:
       react: '18'
