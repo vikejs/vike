@@ -83,5 +83,5 @@ function hasGreen(str: string): boolean {
 }
 function hasYellow(str: string): boolean {
   // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L59
-  return str.includes('\x1b[31m')
+  return str.includes('\x1b[33m')
 }
