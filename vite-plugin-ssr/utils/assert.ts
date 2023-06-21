@@ -57,7 +57,8 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   ]
     .filter(Boolean)
     .join(' ')
-  errMsg = addPrefix('Bug', errMsg)
+  errMsg = addPrefixAssertType(errMsg, 'Bug')
+  errMsg = addPrefixProjctName(errMsg, true)
   const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
 
   globalObject.onBeforeLog?.()
@@ -67,29 +68,32 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
 function assertUsage(condition: unknown, errMsg: string): asserts condition {
   if (condition) return
   globalObject.hasLogged = true
-  errMsg = addPrefix('Wrong Usage', errMsg)
+  errMsg = addPrefixAssertType(errMsg, 'Wrong Usage')
+  errMsg = addPrefixProjctName(errMsg)
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   globalObject.onBeforeLog?.()
   throw usageError
 }
 
 function getProjectError(errMsg: string) {
-  errMsg = addPrefix('Error', errMsg)
+  errMsg = addPrefixAssertType(errMsg, 'Error')
+  errMsg = addPrefixProjctName(errMsg)
   const projectError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   return projectError
 }
 
 function assertWarning(
   condition: unknown,
-  warnMsg: string,
+  msg: string,
   { onlyOnce = true, showStackTrace = false }: { onlyOnce?: boolean | string; showStackTrace?: boolean } = {}
 ): void {
   if (condition) return
   globalObject.hasLogged = true
-  warnMsg = addPrefix('Warning', warnMsg)
+  msg = addPrefixAssertType(msg, 'Warning')
+  msg = addPrefixProjctName(msg)
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
-    const key = onlyOnce === true ? warnMsg : onlyOnce
+    const key = onlyOnce === true ? msg : onlyOnce
     if (alreadyLogged.has(key)) {
       return
     } else {
@@ -98,9 +102,9 @@ function assertWarning(
   }
   globalObject.onBeforeLog?.()
   if (showStackTrace) {
-    globalObject.logger(new Error(warnMsg), 'warn')
+    globalObject.logger(new Error(msg), 'warn')
   } else {
-    globalObject.logger(warnMsg, 'warn')
+    globalObject.logger(msg, 'warn')
   }
 }
 
@@ -108,7 +112,8 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
   if (condition) {
     return
   }
-  msg = addPrefix('Info', msg)
+  msg = addPrefixAssertType(msg, 'Info')
+  msg = addPrefixProjctName(msg)
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = msg
@@ -131,25 +136,40 @@ function assertHasLogged(): boolean {
 }
 
 type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning' | 'Info'
-function addPrefix(tag: Tag, msg: string) {
+function addPrefixAssertType(msg: string, tag: Tag): string {
   let prefix = `[${tag}]`
   const color = tag === 'Info' ? 'blue' : tag === 'Warning' ? 'yellow' : 'red'
   prefix = globalObject.colorer(prefix, color)
-  prefix = `${tag === 'Bug' ? projectTagWithVersion : projectTag}${prefix}`
   const whitespace = msg.startsWith('[') ? '' : ' '
   return `${prefix}${whitespace}${msg}`
 }
+function addPrefixProjctName(msg: string, showProjectVersion = false): string {
+  const prefix = showProjectVersion ? projectTagWithVersion : projectTag
+  return `${prefix}${msg}`
+}
 
-function getAssertErrMsg(err: unknown): { assertMsg: string; showVikeVersion: boolean } | null {
-  if (!isObject(err) || typeof err.message !== 'string') return null
-  let assertMsg = err.message
+function getAssertErrMsg(thing: unknown): { assertMsg: string; showVikeVersion: boolean } | null {
+  let errMsg: string
+  let errStack: null | string = null
+  if (typeof thing === 'string') {
+    errMsg = thing
+  } else if (isObject(thing) && typeof thing.message === 'string' && typeof thing.stack === 'string') {
+    errMsg = thing.message
+    errStack = thing.stack
+  } else {
+    return null
+  }
+  let assertMsg = errMsg
   if (assertMsg.startsWith(projectTag)) {
     assertMsg = assertMsg.slice(projectTag.length)
     return { assertMsg, showVikeVersion: false }
   }
   if (assertMsg.startsWith(projectTagWithVersion)) {
     assertMsg = assertMsg.slice(projectTagWithVersion.length)
-    assertMsg = `${assertMsg}\n${removeErrMsg(err.stack)}`
+    // Apppend stack trace for [Bug]
+    if (errStack) {
+      assertMsg = `${assertMsg}\n${removeErrMsg(errStack)}`
+    }
     return { assertMsg, showVikeVersion: true }
   }
   return null
