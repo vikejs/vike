@@ -45,9 +45,7 @@ import { setAlreadyLogged } from '../../runtime/renderPage/isNewError'
 
 assertIsVitePluginCode()
 setRuntimeLogger(logRuntimeError, logRuntimeInfo)
-setAssertLogger((msg, logType) =>
-  logWithVikePrefix(typeof msg === 'string' ? msg : msg.message, logType, getCategory())
-)
+setAssertLogger(assertLogger)
 
 type LogCategory = 'config' | `request(${number})`
 type LogType = 'info' | 'warn' | 'error' | 'error-recover'
@@ -208,6 +206,16 @@ function handleAssertMsg(err: unknown, category: LogCategory | null): boolean {
   const { assertMsg, showVikeVersion } = res
   logWithVikePrefix(assertMsg, 'error', category, showVikeVersion)
   return true
+}
+function assertLogger(thing: string | Error, logType: LogType): void {
+  const category = getCategory()
+  const res = getAssertErrMsg(thing)
+  /* Risk of infinite loop
+  assert(res)
+  */
+  if (!res) throw new Error('Internal error, reach out to a maintainer')
+  const { assertMsg, showVikeVersion } = res
+  logWithVikePrefix(assertMsg, logType, category, showVikeVersion)
 }
 
 let isFirstLog = true
