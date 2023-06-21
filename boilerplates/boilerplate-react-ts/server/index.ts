@@ -38,7 +38,8 @@ async function startServer() {
   // Other middlewares (e.g. some RPC middleware such as Telefunc)
   // ...
 
-  // Vite-plugin-ssr middleware. It should always be our last middleware.
+  // Vite-plugin-ssr middleware. It should always be our last middleware (because it's a
+  // catch-all middleware superseding any middleware placed after it).
   app.get('*', async (req, res, next) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl
