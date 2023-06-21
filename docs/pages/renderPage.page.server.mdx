@@ -1,13 +1,14 @@
-import { RepoLink, Link } from '@brillout/docpress'
+import { RepoLink, Link, Warning } from '@brillout/docpress'
 
 Environment: server.
 
-You use `renderPage()` to integrate vite-plugin-ssr into your server:
+The `renderPage()` function enables you to integrate vite-plugin-ssr into any server:
 
 ```js
 import { renderPage } from 'vite-plugin-ssr/server'
 
-myServer.createMiddleware({
+// myServer can be Express.js, Fastify, Cloudflare Workers, Vercel Edge, Deno, ...
+myServer.addMiddleware({
   method: 'GET',
   route: '*', // catch-all route
   async handler(request, response) {
@@ -30,7 +31,7 @@ myServer.createMiddleware({
 ## Usage
 
 ```js
-// server.js
+// server/index.js
 
 // In this example we use Express.js but we could use any other server framework
 import express from 'express'
@@ -66,7 +67,8 @@ async function startServer() {
   // Other middlewares (e.g. some RPC middleware such as Telefunc)
   // ...
 
-  // Vite-plugin-ssr middleware. It should always be our last middleware.
+  // Vite-plugin-ssr middleware. It should always be our last middleware (because it's a
+  // catch-all middleware superseding any middleware placed after it).
   app.get('*', async (req, res, next) => {
     const pageContextInit = { urlOriginal: req.originalUrl }
     const pageContext = await renderPage(pageContextInit)
@@ -93,6 +95,8 @@ async function startServer() {
  - Any server environment (Express.js, HatTip, Deno, Fastify, Vite's development server, Node.js's HTTP server, ...)
  - Any deployment provider (AWS, Cloudflare Workers, Vercel, ...)
 
+> When modifying your server, you may need to manually restart your server for your changes to take effect. See [#562](https://github.com/brillout/vite-plugin-ssr/issues/562).
+
 See also:
  - <Link href="/NODE_ENV" />
  - <Link href="/render" />
@@ -100,8 +104,8 @@ See also:
 
 ## When to use
 
-If you use server-side rendering (SSR), then you need to use `renderPage()` and manually integrate vite-plugin-ssr into your server yourself (see <Link href="#usage" />).
+If you use server-side rendering (SSR), then you need to use `renderPage()` in order to manually integrate vite-plugin-ssr into your server yourself.
 
-If you <Link text="pre-render" href="/pre-rendering" /> all your pages, then you don't need to call `renderPage()`, because:
- - Vite-plugin-ssr automatically integrates `renderPage()` into Vite's development server (`$ vite`/`$ vite dev`).
- - During pre-rendering (`$ vite build`/`$ vite-plugin-ssr prerender`) vite-plugin-ssr automatically renders your pages for you.
+If you <Link text="pre-render" href="/pre-rendering" /> all your pages, then you don't need to use `renderPage()`, because:
+ - Vite-plugin-ssr automatically integrates `renderPage()` into Vite's development server (`$ vite`/`$ vite dev`) and Vite's preview server (`$ vite preview`).
+ - During pre-rendering (`$ vite build`/`$ vite-plugin-ssr prerender`) vite-plugin-ssr automatically renders your pages.

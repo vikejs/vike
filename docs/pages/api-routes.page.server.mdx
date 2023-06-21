@@ -1,11 +1,25 @@
-import { Link, Note } from '@brillout/docpress'
+import { Link, Note, Warning } from '@brillout/docpress'
 
-Vite-plugin-ssr doesn't implement [API Routes](https://nextjs.org/docs/api-routes/introduction) by design.
+Vite-plugin-ssr doesn't implement [API routes](https://nextjs.org/docs/api-routes/introduction) by design.
 
-Instead, directly use your server (e.g. Express.js endpoints), or use an RPC implementation such as [Telefunc](https://telefunc.com) or [tRPC](https://trpc.io/).
+> We believe decoupling the API from vite-plugin-ssr is a more robust approach.
 
-<Note type='warning'>Make sure to place <Link text="vite-plugin-ssr's middleware" href="/renderPage" /> last. (Because vite-plugin-ssr is a catch-all middleware; it would supersede your API middleware if you place it before.)</Note>
+Instead, use:
 
-<Note type='warning'>Currently modifying server files will required to restart the server manually, see the top comment at `/server/index.(js/ts)`</Note>
+- [Telefunc](https://telefunc.com)
+  > We recommend Telefunc: it's a simple solution providing a much improved DX over API routes.
+- [tRPC](https://trpc.io/)
+  > Similar to Telefunc.
+  >  - Con: Telefunc is simpler.
+  >  - Pro: supports real-time endpoints with websockets.
+- Directly use your server to create new HTTP endpoints (e.g. Express.js routes), giving you DX similar to API routes of frameworks like Next.js.
+  > As explained in <Link href="/renderPage" />:
+  >   - Make sure vite-plugin-ssr's middleware is your last middleware.
+  >   - When modifying your server, you may need to manually restart your server for your changes to take effect.
+- GraphQL
+  <Warning>
+    If you aren't a *very* large team, then GraphQL is most likely over-engineering. Using RPC (Telefunc or tRPC) is simpler, and
+    it's actually more flexible than GraphQL (as long as you aren't a very large team).
 
-> The vite-plugin-ssr maintainers believe that implementing APIs independently of vite-plugin-ssr is a superior approach.
+    We recommend to get started with RPC and to later switch to GraphQL only if/when the need arises.
+  </Warning>
