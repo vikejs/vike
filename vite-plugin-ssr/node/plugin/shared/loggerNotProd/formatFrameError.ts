@@ -14,18 +14,31 @@ import pc from '@brillout/picocolors'
 import { assert, escapeRegex, getFilePathVite, isObject, stripAnsi } from '../../utils'
 
 // Subset of RollupError
-type FrameError = { id: string; frame: string; message: string; plugin?: string }
+type FrameError = { id: string; frame?: string; message?: string; plugin?: string }
 
 function isFrameError(err: unknown): err is FrameError {
-  if (!isObject(err)) return false
+  if (!isObject(err)) {
+    return false
+  }
   const { id, frame, message } = err
-  return typeof frame === 'string' && typeof id === 'string' && typeof message === 'string'
+  if (typeof id !== 'string' || !id.trim()) {
+    return false
+  }
+  if (typeof frame === 'string' && frame.trim()) {
+    return true
+  }
+  if (typeof message === 'string' && containsCodeSnippet(message)) {
+    return true
+  }
+  return false
 }
 
 function formatFrameError(err: FrameError, userRootDir: string): string {
   /* Uncomment to inspect and/or create fixtures for ./formatFrameError.spec.ts
+  console.log('userRootDir', userRootDir)
   console.log('err.message', err.message)
-  console.log('err.stack', (err as any as Error).stack)
+  console.log('err.stack', (err as any).stack)
+  console.log('err.pluginCode', (err as any).pluginCode)
   console.log('Object.keys(err)', Object.keys(err))
   console.log('err', err)
   // For copy-pasting errors while preserve terminal ANSI colors
@@ -34,15 +47,13 @@ function formatFrameError(err: FrameError, userRootDir: string): string {
     JSON.stringify({
       ...err,
       message: err.message,
-      stack: (err as any as Error).stack
+      stack: (err as any).stack
     })
   )
   //*/
 
   assert(isFrameError(err))
   let { id, frame } = err
-  frame = frame.trim()
-  assert(frame)
 
   const msgFirstLine = [
     pc.red('Failed to transpile'),
@@ -52,17 +63,21 @@ function formatFrameError(err: FrameError, userRootDir: string): string {
 
   const errMsg = getErrMsg(err)
 
-  let msg = [
-    msgFirstLine,
-    errMsg,
-    // Many tools set 'error.frame' to something rubbish, for example:
+  if (errMsg && containsCodeSnippet(errMsg)) {
+    // Conditionally swallowing frame is a risky move but worth it thanks to logErrorDebugNote()
+    // We swallow frame because many tools set 'error.frame' to something rubbish, for example:
     //  - @vitejs/plugin-vue
     //  - @vitejs/plugin-react-swc
-    // Conditionally swallowing frame is a risky move but worth it thanks to logErrorDebugNote()
-    containsCodeSnippet(errMsg) ? null : pc.yellow(frame)
-  ]
-    .filter(Boolean)
-    .join('\n')
+    //  - @mdx-js/rollup
+    frame = undefined
+  } else {
+    assert(frame)
+    frame = frame.trim()
+    assert(frame)
+    frame = pc.yellow(frame)
+  }
+
+  let msg = [msgFirstLine, errMsg, frame].filter(Boolean).join('\n')
   msg = removeEmptyLines(msg)
   return msg
 
@@ -74,9 +89,11 @@ function formatFrameError(err: FrameError, userRootDir: string): string {
   */
 }
 
-function getErrMsg(err: FrameError): string {
+function getErrMsg(err: FrameError): string | null {
   const { id, frame } = err
   let errMsg = err.message
+
+  if (!errMsg || !errMsg.trim()) return null
 
   const trail = /(?:\:|)(?:\s|$)/
   // Remove redundant message: "Transform failed with 1 error:" (redundant since we already print an intro message)
@@ -94,7 +111,7 @@ function getErrMsg(err: FrameError): string {
   }
 
   errMsg = errMsg.trim()
-  if (frame.includes(errMsg)) errMsg = ''
+  if (frame && frame.includes(errMsg)) errMsg = ''
 
   return errMsg
 }
