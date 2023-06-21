@@ -38,12 +38,11 @@ async function handleErrorWithoutErrorPage<
 function warnMissingErrorPage(isV1: boolean): void {
   const globalContext = getGlobalContext()
   if (!globalContext.isProduction) {
-    const msg = isV1
-      ? // TODO/v1: improve error message
-        "No error page found. It's recommended to create one."
-      : `No ${pc.cyan('_error.page.js')} found. We recommend creating a ${pc.cyan(
-          '_error.page.js'
-        )} file. See https://vite-plugin-ssr.com/error-page for more information. (This warning isn't shown in production.)`
+    const msg = [
+      `No ${isV1 ? 'error page' : pc.cyan('_error.page.js')} found,`,
+      'we recommend defining an error page,',
+      "see https://vite-plugin-ssr.com/error-page (this warning isn't shown in production)"
+    ].join(' ')
     assertWarning(false, msg, { showStackTrace: false, onlyOnce: false })
   }
 }
