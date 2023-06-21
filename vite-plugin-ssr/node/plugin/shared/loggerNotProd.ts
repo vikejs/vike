@@ -192,7 +192,7 @@ function logConfigError(err: unknown): void {
 }
 function logErrFallback(err: unknown, category: LogCategory | null) {
   if (category) {
-    logWithVikePrefix(pc.red(pc.bold('Error thrown:')), 'error', category)
+    logWithVikePrefix(pc.red(pc.bold('[Error] An error was thrown:')), 'error', category)
   }
   logWithoutPrefix(err, 'error')
 }
