@@ -27,7 +27,9 @@ type PageContextForUserConsumptionServerSide = {
   isClientSideNavigation: boolean
   pageProps?: Record<string, unknown>
 }
-function preparePageContextForUserConsumptionServerSide<T extends PageContextForUserConsumptionServerSide>(pageContext: T): void {
+function preparePageContextForUserConsumptionServerSide<T extends PageContextForUserConsumptionServerSide>(
+  pageContext: T
+): void {
   assertURLs(pageContext)
 
   assert(isPlainObject(pageContext.routeParams))

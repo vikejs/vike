@@ -4,7 +4,10 @@ export type { PageContextForUserConsumptionClientSide }
 import { assert, assertUsage, isObject, objectAssign, getGlobalObject } from './utils'
 import { sortPageContext } from '../shared/sortPageContext'
 import type { PageContextExports } from '../shared/getPageFiles'
-const globalObject = getGlobalObject<{ disableAssertPassToClient?: string }>('preparePageContextForUserConsumptionClientSide.ts', {})
+const globalObject = getGlobalObject<{ disableAssertPassToClient?: string }>(
+  'preparePageContextForUserConsumptionClientSide.ts',
+  {}
+)
 import type { PageContextBuiltInClient as PageContextBuiltInClientServerRouter } from './types'
 import type { PageContextBuiltInClient as PageContextBuiltInClientClientRouter } from './router/types'
 import { addIs404ToPageProps } from '../shared/addIs404ToPageProps'

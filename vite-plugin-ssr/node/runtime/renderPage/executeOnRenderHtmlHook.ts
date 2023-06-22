@@ -17,7 +17,10 @@ import type { PageAsset } from './getPageAssets'
 import { isStream } from '../html/stream'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser'
 import type { PreloadFilter } from '../html/injectAssets/getHtmlTags'
-import { preparePageContextForUserConsumptionServerSide, type PageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide'
+import {
+  preparePageContextForUserConsumptionServerSide,
+  type PageContextForUserConsumptionServerSide
+} from './preparePageContextForUserConsumptionServerSide'
 import type { PageContextPromise } from '../html/injectAssets'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { assertObjectKeys } from '../../../shared/assertObjectKeys'

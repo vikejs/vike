@@ -2,7 +2,10 @@ export { executeOnBeforeRenderHooks }
 
 import { type PageContextExports } from '../../../shared/getPageFiles'
 import { getHook } from '../../../shared/getHook'
-import { preparePageContextForUserConsumptionServerSide, type PageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide'
+import {
+  preparePageContextForUserConsumptionServerSide,
+  type PageContextForUserConsumptionServerSide
+} from './preparePageContextForUserConsumptionServerSide'
 import { executeHook } from '../utils'
 import { assertOnBeforeRenderHookReturn } from '../../../shared/assertOnBeforeRenderHookReturn'
 
