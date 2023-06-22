@@ -149,8 +149,9 @@ function removeStandaloneCodePosition(errMsg: string) {
   errMsg = errMsg
     .split('\n')
     .map((line) => {
-      const posRE = /\(\d+:\d+\)/
-      assert(posRE.test('(1:2)'))
+      const posRE = /(\s|^)\(\d+:\d+\)(\s|$)/
+      assert(posRE.test(' (1:2)'))
+      assert(posRE.test('(13:42) '))
       if (!isCodeSnippetLine(line)) {
         line = line.split(posRE).join('')
       }
