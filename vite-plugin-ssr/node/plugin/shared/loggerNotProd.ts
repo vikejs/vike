@@ -6,8 +6,8 @@
 
 export { logConfigInfo }
 export { logConfigError }
-export { logViteFrameError }
 export { logViteAny }
+export { logViteErrorWithCodeSnippet }
 export { clearWithVite }
 export { clearWithCondition }
 export type { LogInfo }
@@ -92,7 +92,7 @@ function logRuntimeError(
 ): void {
   logErr(err, httpRequestId)
 }
-function logViteFrameError(err: ErrorWithCodeSnippet): void {
+function logViteErrorWithCodeSnippet(err: ErrorWithCodeSnippet): void {
   logErr(err)
 }
 function logErr(err: unknown, httpRequestId: number | null = null): void {
