@@ -6,6 +6,11 @@
 //  - Bun doesn't support Async Hooks: https://github.com/oven-sh/bun/issues/1832
 //  - Node.js and Deno support Async Hooks
 
+// We purposely don't use config.logger.hasErrorLogged(err) because:
+// - We don't trust Vite with such details
+//   - Example of Vite bug leading to swallowing of errors: https://github.com/vitejs/vite/issues/12631
+// - We dedupe errors ourself with getHttpRequestAsyncStore().shouldErrorBeSwallowed()
+
 export { getHttpRequestAsyncStore }
 export { installHttpRequestAsyncStore }
 

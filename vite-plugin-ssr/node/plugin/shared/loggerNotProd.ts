@@ -17,14 +17,13 @@ export type { LogType }
 export type { LogCategory }
 
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
-import { getGlobalContext, getViteConfig } from '../../runtime/globalContext'
+import { getViteConfig } from '../../runtime/globalContext'
 import { setRuntimeLogger } from '../../runtime/renderPage/loggerRuntime'
 import {
   assert,
   assertHasLogged,
   assertIsVitePluginCode,
   getAssertErrMsg,
-  hasProp,
   isUserHookError,
   setAssertLogger,
   stripAnsi,
@@ -105,24 +104,6 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
 
   const store = getHttpRequestAsyncStore()
   store?.markErrorAsLogged(err)
-
-  if (!isErrorDebug()) {
-    const { viteDevServer } = getGlobalContext()
-    if (viteDevServer) {
-      if (hasProp(err, 'stack')) {
-        // Apply source maps
-        viteDevServer.ssrFixStacktrace(err as Error)
-      }
-      /* We purposely don't use hasErrorLogged():
-         - We don't trust Vite with such details
-           - Previously, Vite bug lead to swallowing of errors: https://github.com/vitejs/vite/issues/12631
-         - We dedupe Vite logs ourself instead with getHttpRequestAsyncStore().shouldErrorBeSwallowed()
-      if (viteDevServer.config.logger.hasErrorLogged(err as Error)) {
-        return
-      }
-      */
-    }
-  }
 
   const category = getCategory(httpRequestId)
 

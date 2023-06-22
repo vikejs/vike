@@ -4,9 +4,11 @@ export { logDirectly }
 export { onErrorLog }
 export { onLog }
 
-import { assert, projectInfo, type ProjectTag, stripAnsi } from '../../utils'
+import { assert, projectInfo, type ProjectTag, stripAnsi, hasProp } from '../../utils'
 import pc from '@brillout/picocolors'
 import type { LogCategory, LogType } from '../loggerNotProd'
+import { isErrorDebug } from '../isErrorDebug'
+import { getGlobalContext } from '../../../runtime/globalContext'
 
 function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion = false) {
   const projectTag = getProjectTag(showVikeVersion)
@@ -26,9 +28,14 @@ function logWithViteTag(msg: string, logType: LogType, category: LogCategory | n
   msg = prependTags(msg, '[vite]', category, logType)
   logDirectly(msg, logType)
 }
+
+// Every log is triggered by logDirectly(), except for logs in production since they aren't managed by loggerNotProd.ts
 function logDirectly(msg: unknown, logType: LogType) {
+  applyViteSourceMap(msg)
+
   assert(onLogCallback)
   onLogCallback()
+
   if (logType === 'info') {
     console.log(msg)
   } else if (logType === 'warn') {
@@ -43,6 +50,15 @@ function logDirectly(msg: unknown, logType: LogType) {
   } else {
     assert(false)
   }
+}
+
+function applyViteSourceMap(thing: unknown) {
+  if (isErrorDebug()) return
+  if (!hasProp(thing, 'stack')) return
+  const { viteDevServer } = getGlobalContext()
+  if (!viteDevServer) return
+  // Apply Vite's source maps
+  viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
 let onErrorLogCallback: (() => void) | undefined
