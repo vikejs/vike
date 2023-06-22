@@ -1,4 +1,4 @@
-import { trimWithAnsi, trimWithAnsiTrail } from './trimWithAnsi'
+import { trimWithAnsi, trimWithAnsiTrailOnly } from './trimWithAnsi'
 import { expect, describe, it } from 'vitest'
 import pc from '@brillout/picocolors'
 
@@ -25,9 +25,9 @@ describe('trimWithAnsi', () => {
     expect(trimWithAnsi(pc.red('a\n'))).toEqual(pc.red('a'))
     expect(trimWithAnsi(pc.red('  \n a \n   b \n c  \n\n'))).toEqual(pc.red('a \n   b \n c'))
   })
-  it('trimWithAnsiTrail()', () => {
-    expect(trimWithAnsiTrail(pc.red('\na'))).toEqual(pc.red('\na'))
-    expect(trimWithAnsiTrail(pc.red('a\n'))).toEqual(pc.red('a'))
-    expect(trimWithAnsiTrail(pc.red(' \n a \n b \n '))).toEqual(pc.red(' \n a \n b'))
+  it('trimWithAnsiTrailOnly()', () => {
+    expect(trimWithAnsiTrailOnly(pc.red('\na'))).toEqual(pc.red('\na'))
+    expect(trimWithAnsiTrailOnly(pc.red('a\n'))).toEqual(pc.red('a'))
+    expect(trimWithAnsiTrailOnly(pc.red(' \n a \n b \n '))).toEqual(pc.red(' \n a \n b'))
   })
 })
