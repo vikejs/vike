@@ -64,12 +64,12 @@ We can define a `+config.ts` file (without `.h`):
 ```ts
 // /pages/some-page/+config.ts
 
-import type { ConfigNonHeaderFile } from 'vite-plugin-ssr/types'
+import type { Config } from 'vite-plugin-ssr/types'
 
 export default {
   Page: 'import:./some-file',
   onBeforeRender: 'import:./some-other-file:onBeforeRender'
-} satisfies ConfigNonHeaderFile
+} satisfies Config
 ```
 
 
