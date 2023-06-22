@@ -20,7 +20,7 @@ import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/vir
 import { getConfigData_dependenciesInvisibleToVite, getConfigName, reloadConfigData } from './v1-design/getConfigData'
 import path from 'path'
 import pc from '@brillout/picocolors'
-import { logConfigInfo, clearWithVite } from '../../shared/loggerNotProd'
+import { logConfigInfo, clearTheScreen } from '../../shared/loggerNotProd'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -113,14 +113,12 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
       )
       */
     } else {
-      if (clear) {
-        clearWithVite(config)
-      }
+      if (clear) clearTheScreen()
     }
     return
   } else {
     assert(!isViteModule)
-    clearWithVite(config)
+    clearTheScreen()
     reload(file, config, configVps, 'change')
     const virtualModules = getVirtualModules(server)
     return virtualModules

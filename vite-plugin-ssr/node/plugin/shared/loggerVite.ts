@@ -2,7 +2,7 @@ export { improveViteLogs }
 
 import { trimWithAnsi, trimWithAnsiTrailOnly } from '../utils'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
-import { logViteFrameError, logViteAny, clearWithCondition } from './loggerNotProd'
+import { logViteErrorWithCodeSnippet, logViteAny, clearTheScreen } from './loggerNotProd'
 import { isErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
@@ -38,12 +38,12 @@ function intercept(logType: LogType, config: ResolvedConfig) {
     }
 
     if (options.error && isErrorWithCodeSnippet(options.error)) {
-      logViteFrameError(options.error)
+      logViteErrorWithCodeSnippet(options.error)
       return
     }
 
     if (options.clear && !isConfigInvalid) {
-      clearWithCondition({ clearIfFirstLog: true })
+      clearTheScreen({ clearIfFirstLog: true })
     }
 
     if (options.error) store?.markErrorAsLogged(options.error)
@@ -53,8 +53,7 @@ function intercept(logType: LogType, config: ResolvedConfig) {
       store?.httpRequestId ?? null,
       // Vite's default logger prints the "[vite]" tag when options.timestamp is true
       options.timestamp || !!store?.httpRequestId,
-      options.clear ?? false,
-      config
+      options.clear ?? false
     )
   }
 }
