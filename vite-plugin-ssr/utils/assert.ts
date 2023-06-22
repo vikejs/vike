@@ -6,8 +6,8 @@ export { getProjectError }
 export { addOnBeforeLogHook }
 export { assertHasLogged }
 export { getAssertErrMsg }
-export { setAssertLogger }
-export { setAssertColorer }
+export { addAssertColorer }
+export { overwriteAssertProductionLogger }
 
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace'
 import { getGlobalObject } from './getGlobalObject'
@@ -21,6 +21,7 @@ const globalObject = getGlobalObject<{
   colorer: Colorer
 }>('utils/assert.ts', {
   alreadyLogged: new Set(),
+  // Production logger
   logger(msg, logType) {
     if (logType === 'info') {
       console.log(msg)
@@ -28,6 +29,7 @@ const globalObject = getGlobalObject<{
       console.warn(msg)
     }
   },
+  // No colors in production
   colorer: (str) => str
 })
 type Logger = (msg: string | Error, logType: 'warn' | 'info') => void
@@ -182,9 +184,9 @@ function removeErrMsg(stack: unknown): string {
   return stackLines.join('\n')
 }
 
-function setAssertLogger(logger: Logger): void {
+function overwriteAssertProductionLogger(logger: Logger): void {
   globalObject.logger = logger
 }
-function setAssertColorer(colorer: Colorer): void {
+function addAssertColorer(colorer: Colorer): void {
   globalObject.colorer = colorer
 }

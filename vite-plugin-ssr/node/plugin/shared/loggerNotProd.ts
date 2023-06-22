@@ -20,14 +20,14 @@ export type { LogCategory }
 
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
 import { getViteConfig } from '../../runtime/globalContext'
-import { setRuntimeLogger } from '../../runtime/renderPage/loggerRuntime'
+import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/loggerRuntime'
 import {
   assert,
   assertHasLogged,
   assertIsVitePluginCode,
   getAssertErrMsg,
   isUserHookError,
-  setAssertLogger,
+  overwriteAssertProductionLogger,
   stripAnsi,
   warnIfObjectIsNotObject
 } from '../utils'
@@ -47,8 +47,8 @@ import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError'
 
 assertIsVitePluginCode()
-setRuntimeLogger(logRuntimeError, logRuntimeInfo)
-setAssertLogger(assertLogger)
+overwriteRuntimeProductionLogger(logRuntimeError, logRuntimeInfo)
+overwriteAssertProductionLogger(assertLogger)
 
 type LogType = 'info' | 'warn' | 'error' | 'error-recover'
 type LogCategory = 'config' | `request(${number})`
@@ -227,6 +227,10 @@ function clearTheScreen(conditions?: ClearConditions): void {
   }
 }
 
+/** Note shown to user when vite-plugin-ssr does something risky:
+ *  - When vite-plugin-ssr dedupes (i.e. swallows) an error with getHttpRequestAsyncStore().shouldErrorBeSwallowed(err)
+ *  - When vite-plugin-ssr modifies the error with getPrettyErrorWithCodeSnippet(err)
+ */
 function logErrorDebugNote() {
   if (isErrorDebug()) return
   const store = getHttpRequestAsyncStore()
