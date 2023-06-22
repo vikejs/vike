@@ -1,12 +1,12 @@
 import { expect, describe, it } from 'vitest'
-import { getErrMsg, formatFrameError, isFrameError } from './formatFrameError'
+import { getPrettyErrMessage, getPrettyErrorWithCodeSnippet, isErrorWithCodeSnippet } from './errorWithCodeSnippet'
 
 // To generate new test cases:
 // ```bash
 // DEBUG=vps:error pnpm run dev
 // ```
 
-describe('formatFrameError()', () => {
+describe('getPrettyErrorWithCodeSnippet()', () => {
   it('real use case - @vitejs/plugin-react-swc', () => {
     const err = {
       stack:
@@ -27,7 +27,7 @@ describe('formatFrameError()', () => {
       message:
         "\n  \u001b[38;2;255;30;30m×\u001b[0m Expected ';', '}' or <eof>\n   ╭─[\u001b[38;2;92;157;255;1;4m/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/hello/+Page.tsx\u001b[0m:1:1]\n \u001b[2m1\u001b[0m │ export default Page\n \u001b[2m2\u001b[0m │ \n \u001b[2m3\u001b[0m │ impeort React from 'react'\n   · \u001b[38;2;246;87;248m───┬───\u001b[0m\u001b[38;2;30;201;212m ─────\u001b[0m\n   ·    \u001b[38;2;246;87;248m╰── \u001b[38;2;246;87;248mThis is the expression part of an expression statement\u001b[0m\u001b[0m\n \u001b[2m4\u001b[0m │ \n \u001b[2m5\u001b[0m │ function Page({ name }: { name: string }) {\n \u001b[2m6\u001b[0m │   return (\n   ╰────\n\n\nCaused by:\n    Syntax Error"
     }
-    const formatted = formatFrameError(err, '/home/rom/code/vite-plugin-ssr/examples/react-full-v1/')
+    const formatted = getPrettyErrorWithCodeSnippet(err, '/home/rom/code/vite-plugin-ssr/examples/react-full-v1/')
     expect(formatted).toMatchInlineSnapshot(`
       "[31mFailed to transpile[39m [31m[1m/pages/hello/+Page.tsx[22m[39m [31mbecause:[39m
       [38;2;255;30;30m×[0m Expected ';', '}' or <eof>
@@ -72,11 +72,11 @@ describe('formatFrameError()', () => {
     }
     // We can't prettify this error because there isn't any code snippet (err.pluginCode contains the whole file without any code position)
     // That said, we could generate the code snippet ourselves since we have err.position and err.pluginCode
-    expect(isFrameError(err)).toBe(false)
+    expect(isErrorWithCodeSnippet(err)).toBe(false)
   })
 })
 
-describe('getErrMsg()', () => {
+describe('getPrettyErrMessage()', () => {
   const id = '/home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx'
   const frame = `Expected ";" but found "React"
   1  |  iemport React, { useState } from 'react'
@@ -88,22 +88,22 @@ describe('getErrMsg()', () => {
     {
       const message = '/home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx'
       const err = { message, id, frame }
-      expect(getErrMsg(err)).toBe('')
+      expect(getPrettyErrMessage(err)).toBe('')
     }
     {
       const message = '/home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx:1:2: abc'
       const err = { message, id, frame }
-      expect(getErrMsg(err)).toBe('abc')
+      expect(getPrettyErrMessage(err)).toBe('abc')
     }
     {
       const message = 'Transform failed with 1 error'
       const err = { message, id, frame }
-      expect(getErrMsg(err)).toBe('')
+      expect(getPrettyErrMessage(err)).toBe('')
     }
     {
       const message = 'Transform failed with 42 errors: abc'
       const err = { message, id, frame }
-      expect(getErrMsg(err)).toBe('abc')
+      expect(getPrettyErrMessage(err)).toBe('abc')
     }
     {
       const codeSnippet = [
@@ -114,12 +114,12 @@ describe('getErrMsg()', () => {
       ].join('\n')
       const message = `(1:2)\n${codeSnippet}`
       const err = { message, id, frame }
-      expect(getErrMsg(err)).toBe(codeSnippet.trim())
+      expect(getPrettyErrMessage(err)).toBe(codeSnippet.trim())
     }
     {
       const message = '(1:2)'
       const err = { message, id, frame }
-      expect(getErrMsg(err)).toBe('(1:2)')
+      expect(getPrettyErrMessage(err)).toBe('(1:2)')
     }
   })
 
@@ -127,14 +127,14 @@ describe('getErrMsg()', () => {
     const message = `Transform failed with 1 error:
 /home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx:1:8: ERROR: Expected ";" but found "React"`
     const err = { message, id, frame }
-    expect(getErrMsg(err)).toBe('')
+    expect(getPrettyErrMessage(err)).toBe('')
   })
 
   it('real use case - @vitejs/plugin-react (2)', () => {
     const message =
       '/home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx:1:8: Expected ";" but found "React"'
     const err = { message, id, frame }
-    expect(getErrMsg(err)).toBe('')
+    expect(getPrettyErrMessage(err)).toBe('')
   })
 
   it('real use case - @vitejs/plugin-vue', () => {
@@ -157,7 +157,7 @@ describe('getErrMsg()', () => {
 15 |  import { navigate } from 'vite-plugin-ssr/client/router'
 16 |`
     const err = { message, id, frame }
-    expect(getErrMsg(err)).toBe(result)
+    expect(getPrettyErrMessage(err)).toBe(result)
   })
 
   it('real use case - @vitejs/plugin-react (3)', () => {
@@ -167,6 +167,6 @@ describe('getErrMsg()', () => {
       "> 1  |  iemport React, { useState } from 'react'\n   |         ^\n  2  |  \n  3  |  export { Counter }  4 |"
     const err = { message, id, frame }
     const codeSnippet = message.split('semicolon. (1:7)')[1]
-    expect(getErrMsg(err)).toBe(`Missing semicolon. ${codeSnippet}`)
+    expect(getPrettyErrMessage(err)).toBe(`Missing semicolon. ${codeSnippet}`)
   })
 })

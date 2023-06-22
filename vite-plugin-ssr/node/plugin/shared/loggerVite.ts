@@ -3,7 +3,7 @@ export { improveViteLogs }
 import { trimWithAnsi, trimWithAnsiTrailOnly } from '../utils'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
 import { logViteFrameError, logViteAny, clearWithCondition } from './loggerNotProd'
-import { isFrameError } from './loggerNotProd/formatFrameError'
+import { isErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
@@ -37,7 +37,7 @@ function intercept(logType: LogType, config: ResolvedConfig) {
       return
     }
 
-    if (options.error && isFrameError(options.error)) {
+    if (options.error && isErrorWithCodeSnippet(options.error)) {
       logViteFrameError(options.error)
       return
     }

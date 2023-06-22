@@ -1,12 +1,12 @@
 // Prettify transpilation errors
 //  - Doesn't work for optimize errors: https://gist.github.com/brillout/9b7bb78ae866558b292ea1b516a986ec
 
-export { formatFrameError }
-export { isFrameError }
-export type { FrameError }
+export { getPrettyErrorWithCodeSnippet }
+export { isErrorWithCodeSnippet }
+export type { ErrorWithCodeSnippet }
 
-// For ./formatFrameError.spec.ts
-export { getErrMsg }
+// For ./errorWithCodeSnippet.spec.ts
+export { getPrettyErrMessage }
 
 // Copied & adapted from https://github.com/vitejs/vite/blob/9c114c5c72a6af87e3330d5573362554b4511265/packages/vite/src/node/server/middlewares/error.ts
 
@@ -14,9 +14,9 @@ import pc from '@brillout/picocolors'
 import { assert, escapeRegex, getFilePathVite, isObject, stripAnsi } from '../../utils'
 
 // Subset of RollupError
-type FrameError = { id: string; frame?: string; message?: string; plugin?: string }
+type ErrorWithCodeSnippet = { id: string; frame?: string; message?: string; plugin?: string }
 
-function isFrameError(err: unknown): err is FrameError {
+function isErrorWithCodeSnippet(err: unknown): err is ErrorWithCodeSnippet {
   if (!isObject(err)) {
     return false
   }
@@ -33,8 +33,8 @@ function isFrameError(err: unknown): err is FrameError {
   return false
 }
 
-function formatFrameError(err: FrameError, userRootDir: string): string {
-  /* Uncomment to inspect and/or create fixtures for ./formatFrameError.spec.ts
+function getPrettyErrorWithCodeSnippet(err: ErrorWithCodeSnippet, userRootDir: string): string {
+  /* Uncomment to inspect and/or create fixtures for ./errorWithCodeSnippet.spec.ts
   console.log('userRootDir', userRootDir)
   console.log('err.message', err.message)
   console.log('err.stack', (err as any).stack)
@@ -52,7 +52,7 @@ function formatFrameError(err: FrameError, userRootDir: string): string {
   )
   //*/
 
-  assert(isFrameError(err))
+  assert(isErrorWithCodeSnippet(err))
   let { id, frame } = err
 
   const msgFirstLine = [
@@ -61,7 +61,7 @@ function formatFrameError(err: FrameError, userRootDir: string): string {
     pc.red('because:')
   ].join(' ')
 
-  const errMsg = getErrMsg(err)
+  const errMsg = getPrettyErrMessage(err)
 
   if (errMsg && containsCodeSnippet(errMsg)) {
     // Conditionally swallowing frame is a risky move but worth it thanks to logErrorDebugNote()
@@ -89,7 +89,7 @@ function formatFrameError(err: FrameError, userRootDir: string): string {
   */
 }
 
-function getErrMsg(err: FrameError): string | null {
+function getPrettyErrMessage(err: ErrorWithCodeSnippet): string | null {
   const { id, frame } = err
   let errMsg = err.message
 

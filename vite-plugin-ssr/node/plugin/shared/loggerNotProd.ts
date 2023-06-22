@@ -33,7 +33,11 @@ import {
 } from '../utils'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore'
 import { isErrorDebug } from './isErrorDebug'
-import { isFrameError, formatFrameError, type FrameError } from './loggerNotProd/formatFrameError'
+import {
+  isErrorWithCodeSnippet,
+  getPrettyErrorWithCodeSnippet,
+  type ErrorWithCodeSnippet
+} from './loggerNotProd/errorWithCodeSnippet'
 import {
   getConfigExececutionErrorIntroMsg,
   getConfigBuildErrorFormatted
@@ -88,7 +92,7 @@ function logRuntimeError(
 ): void {
   logErr(err, httpRequestId)
 }
-function logViteFrameError(err: FrameError): void {
+function logViteFrameError(err: ErrorWithCodeSnippet): void {
   logErr(err)
 }
 function logErr(err: unknown, httpRequestId: number | null = null): void {
@@ -139,11 +143,11 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
     }
   }
 
-  if (isFrameError(err) && !isErrorDebug()) {
+  if (isErrorWithCodeSnippet(err) && !isErrorDebug()) {
     // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
     const viteConfig = getViteConfig()
     assert(viteConfig)
-    let errMsg = formatFrameError(err, viteConfig.root)
+    let errMsg = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
     assert(stripAnsi(errMsg).startsWith('Failed to transpile'))
     logWithVitePrefix(errMsg, 'error', category)
     logErrorDebugNote()
