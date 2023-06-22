@@ -1,6 +1,6 @@
 export { logWithVitePrefix }
 export { logWithVikePrefix }
-export { log as logWithoutPrefix }
+export { logDirectly }
 export { onErrorLog }
 export { onLog }
 
@@ -11,7 +11,7 @@ import type { LogCategory, LogType } from '../loggerNotProd'
 function logWithVikePrefix(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion = false) {
   const projectTag = getProjectTag(showVikeVersion)
   msg = addPrefix(msg, projectTag, category, logType)
-  log(msg, logType)
+  logDirectly(msg, logType)
 }
 function getProjectTag(showVikeVersion: boolean) {
   let projectTag: ProjectTag
@@ -24,9 +24,9 @@ function getProjectTag(showVikeVersion: boolean) {
 }
 function logWithVitePrefix(msg: string, logType: LogType, category: LogCategory | null) {
   msg = addPrefix(msg, '[vite]', category, logType)
-  log(msg, logType)
+  logDirectly(msg, logType)
 }
-function log(msg: unknown, logType: LogType) {
+function logDirectly(msg: unknown, logType: LogType) {
   assert(onLogCallback)
   onLogCallback()
   if (logType === 'info') {

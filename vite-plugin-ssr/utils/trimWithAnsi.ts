@@ -1,5 +1,5 @@
 export { trimWithAnsi }
-export { trimWithAnsiTrail }
+export { trimWithAnsiTrailOnly }
 
 import { assert } from './assert'
 import { stripAnsi } from './stripAnsi'
@@ -9,14 +9,14 @@ const whitespaceRegex = /(\s+)/ // Capturing parathesis so that split preserves 
 /* Same as trim() but works with ANSI escape codes */
 function trimWithAnsi(str: string): string {
   str = trimWithAnsiHead(str)
-  str = trimWithAnsiTrail(str)
+  str = trimWithAnsiTrailOnly(str)
   return str
 }
 
 function trimWithAnsiHead(str: string) {
   return trim(str, false)
 }
-function trimWithAnsiTrail(str: string): string {
+function trimWithAnsiTrailOnly(str: string): string {
   return trim(str, true)
 }
 

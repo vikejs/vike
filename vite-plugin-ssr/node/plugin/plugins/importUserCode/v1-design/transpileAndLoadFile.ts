@@ -1,6 +1,6 @@
 export { transpileAndLoadFile }
-export { getConfigBuildErrFormatted }
-export { getConfigExecErrIntroMsg }
+export { getConfigBuildErrorFormatted }
+export { getConfigExececutionErrorIntroMsg }
 export { isTmpFile }
 
 import { build, type BuildResult, type BuildOptions, formatMessages } from 'esbuild'
@@ -22,7 +22,6 @@ import { isImportData, replaceImportStatements, type FileImport } from './replac
 import { getConfigData_dependenciesInvisibleToVite, getFilePathToShowToUser, type FilePath } from './getConfigData'
 import 'source-map-support/register'
 assertIsVitePluginCode()
-const execErrIntroMsg = new WeakMap<object, string>()
 
 type Result = { fileExports: Record<string, unknown> }
 
@@ -79,6 +78,34 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
     assertFileImports(fileImports, fileExports, filePath)
   }
   return { fileExports }
+}
+
+const formattedMsg = '_formattedMsg'
+function getConfigBuildErrorFormatted(err: unknown): null | string {
+  if (!isObject(err)) return null
+  if (!(formattedMsg in err)) return null
+  assert(typeof err[formattedMsg] === 'string')
+  return err[formattedMsg]
+}
+async function formatBuildErr(err: unknown, filePath: FilePath): Promise<void> {
+  assert(isObject(err) && err.errors)
+  const msgEsbuild = (
+    await formatMessages(err.errors as any, {
+      kind: 'error',
+      color: true
+    })
+  )
+    .map((m) => m.trim())
+    .join('\n')
+  const msgIntro = getErrIntroMsg('transpile', filePath)
+  err[formattedMsg] = `${msgIntro}\n${msgEsbuild}`
+}
+
+const execErrIntroMsg = new WeakMap<object, string>()
+function getConfigExececutionErrorIntroMsg(err: unknown): string | null {
+  if (!isObject(err)) return null
+  const errIntroMsg = execErrIntroMsg.get(err)
+  return errIntroMsg ?? null
 }
 
 async function buildFile(filePath: FilePath, { bundle }: { bundle: boolean }) {
@@ -224,29 +251,3 @@ function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePath) 
   return msg
 }
 
-const formattedMsg = '_formattedMsg'
-async function formatBuildErr(err: unknown, filePath: FilePath): Promise<void> {
-  assert(isObject(err) && err.errors)
-  const msgEsbuild = (
-    await formatMessages(err.errors as any, {
-      kind: 'error',
-      color: true
-    })
-  )
-    .map((m) => m.trim())
-    .join('\n')
-  const msgIntro = getErrIntroMsg('transpile', filePath)
-  err[formattedMsg] = `${msgIntro}\n${msgEsbuild}`
-}
-function getConfigBuildErrFormatted(err: unknown): null | string {
-  if (!isObject(err)) return null
-  if (!(formattedMsg in err)) return null
-  assert(typeof err[formattedMsg] === 'string')
-  return err[formattedMsg]
-}
-
-function getConfigExecErrIntroMsg(err: unknown): string | null {
-  if (!isObject(err)) return null
-  const errIntroMsg = execErrIntroMsg.get(err)
-  return errIntroMsg ?? null
-}

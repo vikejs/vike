@@ -1,6 +1,6 @@
-export { customizeViteLogger }
+export { improveViteLogs }
 
-import { trimWithAnsi, trimWithAnsiTrail } from '../utils'
+import { trimWithAnsi, trimWithAnsiTrailOnly } from '../utils'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
 import { logViteFrameError, logViteAny, clearWithCondition } from './loggerNotProd'
 import { isFrameError } from './loggerNotProd/formatFrameError'
@@ -8,21 +8,21 @@ import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
 
-function customizeViteLogger(config: ResolvedConfig) {
-  interceptLogger('info', config)
-  interceptLogger('warn', config)
-  interceptLogger('error', config)
+function improveViteLogs(config: ResolvedConfig) {
+  intercept('info', config)
+  intercept('warn', config)
+  intercept('error', config)
 }
 
-function interceptLogger(logType: LogType, config: ResolvedConfig) {
+function intercept(logType: LogType, config: ResolvedConfig) {
   config.logger[logType] = (msg, options: LogErrorOptions = {}) => {
     const store = getHttpRequestAsyncStore()
 
     if (!!options.timestamp) {
-      // timestamp => tag "[vite]" is prepended
       msg = trimWithAnsi(msg)
     } else {
-      msg = trimWithAnsiTrail(msg)
+      // !!timestamp => no tag "[vite]" is prepended => we don't trim the beginning of the message
+      msg = trimWithAnsiTrailOnly(msg)
     }
 
     if (removeSuperfluousViteLog(msg)) return
@@ -31,17 +31,15 @@ function interceptLogger(logType: LogType, config: ResolvedConfig) {
     if (options.error && store?.shouldErrorBeSwallowed(options.error)) {
       return
     }
+    // Remove this once https://github.com/vitejs/vite/pull/13495 is released
     if (msg.startsWith('Transform failed with ') && store && logType === 'error') {
       store.markErrorMessageAsLogged(msg)
       return
     }
 
-    if (options.error) {
-      const { error } = options
-      if (isFrameError(error)) {
-        logViteFrameError(error)
-        return
-      }
+    if (options.error && isFrameError(options.error)) {
+      logViteFrameError(options.error)
+      return
     }
 
     if (options.clear && !isConfigInvalid) {

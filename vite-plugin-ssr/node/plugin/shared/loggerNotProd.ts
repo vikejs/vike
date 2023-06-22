@@ -35,10 +35,10 @@ import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore'
 import { isErrorDebug } from './isErrorDebug'
 import { isFrameError, formatFrameError, type FrameError } from './loggerNotProd/formatFrameError'
 import {
-  getConfigExecErrIntroMsg,
-  getConfigBuildErrFormatted
+  getConfigExececutionErrorIntroMsg,
+  getConfigBuildErrorFormatted
 } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
-import { logWithVikePrefix, logWithVitePrefix, logWithoutPrefix, onErrorLog, onLog } from './loggerNotProd/log'
+import { logWithVikePrefix, logWithVitePrefix, logDirectly, onErrorLog, onLog } from './loggerNotProd/log'
 import type { ResolvedConfig } from 'vite'
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError'
@@ -73,7 +73,7 @@ function logViteAny(
   if (withPrefix) {
     logWithVitePrefix(msg, logType, category)
   } else {
-    logWithoutPrefix(msg, logType)
+    logDirectly(msg, logType)
   }
 }
 function logConfigInfo(msg: string, logType: LogType): void {
@@ -134,7 +134,7 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
         'error',
         category
       )
-      logWithoutPrefix(err, 'error')
+      logDirectly(err, 'error')
       return
     }
   }
@@ -163,17 +163,17 @@ function logConfigError(err: unknown): void {
   const category = getConfigCategory()
 
   {
-    const errIntroMsg = getConfigExecErrIntroMsg(err)
+    const errIntroMsg = getConfigExececutionErrorIntroMsg(err)
     if (errIntroMsg) {
       clearWithCondition({ clearIfFirstLog: true })
       assert(stripAnsi(errIntroMsg).startsWith('Failed to execute'))
       logWithVikePrefix(errIntroMsg, 'error', category)
-      logWithoutPrefix(err, 'error')
+      logDirectly(err, 'error')
       return
     }
   }
   {
-    let errMsg = getConfigBuildErrFormatted(err)
+    let errMsg = getConfigBuildErrorFormatted(err)
     if (errMsg) {
       clearWithCondition({ clearIfFirstLog: true })
       assert(stripAnsi(errMsg).startsWith('Failed to transpile'))
@@ -192,7 +192,7 @@ function logErrFallback(err: unknown, category: LogCategory | null) {
   if (category) {
     logWithVikePrefix(pc.red(pc.bold('[Error] An error was thrown:')), 'error', category)
   }
-  logWithoutPrefix(err, 'error')
+  logDirectly(err, 'error')
 }
 
 function getConfigCategory(): LogCategory {
@@ -256,7 +256,7 @@ export function logErrorDebugNote() {
       '======================================================================='
     ].join('\n')
   )
-  logWithoutPrefix(msg, 'error')
+  logDirectly(msg, 'error')
 }
 
 function getCategory(httpRequestId: number | null = null): LogCategory | null {

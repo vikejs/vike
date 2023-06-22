@@ -6,7 +6,7 @@ import { determineFsAllowList } from './determineFsAllowList'
 import { getConfigVps } from '../../../shared/getConfigVps'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware'
 import { markEnvAsDev } from '../../utils'
-import { customizeViteLogger } from '../../shared/loggerVite'
+import { improveViteLogs } from '../../shared/loggerVite'
 import { isErrorDebug } from '../../shared/isErrorDebug'
 import { installHttpRequestAsyncStore } from '../../shared/getHttpRequestAsyncStore'
 
@@ -51,7 +51,7 @@ function devConfig(): Plugin[] {
         await determineFsAllowList(config, configVps)
         if (!isErrorDebug()) {
           await installHttpRequestAsyncStore()
-          customizeViteLogger(config)
+          improveViteLogs(config)
         }
       },
       configureServer() {

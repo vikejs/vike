@@ -12,7 +12,7 @@ export { installHttpRequestAsyncStore }
 import { renderPage_setWrapper } from '../../runtime/renderPage'
 import { assert, isObject } from '../utils'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
-import { getConfigBuildErrFormatted } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
+import { getConfigBuildErrorFormatted } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
 import { logErrorDebugNote } from './loggerNotProd'
 
 type HttpRequestAsyncStore = {
@@ -53,6 +53,7 @@ async function installHttpRequestAsyncStore(): Promise<void> {
     }
     assert(asyncLocalStorage)
 
+    // Remove this once https://github.com/vitejs/vite/pull/13495 is released
     const swallowedErrorMessages = new Set<string>()
     const onRequestDone = () => {
       swallowedErrorMessages.forEach((errMsg) => {
@@ -95,8 +96,8 @@ function isEquivalentOrSubset(err: unknown, errAlreadyLogged: unknown) {
   if (!isObject(err1) || !isObject(err2)) return false
 
   {
-    const esbuildErrMsg1 = getConfigBuildErrFormatted(err1)
-    const esbuildErrMsg2 = getConfigBuildErrFormatted(err2)
+    const esbuildErrMsg1 = getConfigBuildErrorFormatted(err1)
+    const esbuildErrMsg2 = getConfigBuildErrorFormatted(err2)
     if (esbuildErrMsg1 && esbuildErrMsg1 === esbuildErrMsg2) return true
   }
 
