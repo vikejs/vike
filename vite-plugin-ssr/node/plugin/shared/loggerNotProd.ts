@@ -7,7 +7,7 @@
 export { logConfigInfo }
 export { logConfigError }
 export { logViteAny }
-export { logViteErrorWithCodeSnippet }
+export { logViteErrorContainingCodeSnippet }
 export { clearTheScreen }
 export type { LogInfo }
 export type { LogInfoArgs }
@@ -41,7 +41,7 @@ import {
   getConfigExececutionErrorIntroMsg,
   getConfigBuildErrorFormatted
 } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
-import { logWithVikePrefix, logWithVitePrefix, logDirectly, onErrorLog, onLog } from './loggerNotProd/log'
+import { logWithVikeTag, logWithViteTag, logDirectly, onErrorLog, onLog } from './loggerNotProd/log'
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError'
 
@@ -60,26 +60,26 @@ function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType, cl
   clearTheScreen(clearConditions)
   const category = getCategory(httpRequestId)
   assert(category)
-  logWithVikePrefix(msg, logType, category)
+  logWithVikeTag(msg, logType, category)
 }
 function logViteAny(
   msg: string,
   logType: LogType,
   httpRequestId: number | null,
-  withPrefix: boolean,
+  prependViteTag: boolean,
   clear: boolean
 ): void {
   if (clear) clearTheScreen()
-  const category = getCategory(httpRequestId)
-  if (withPrefix) {
-    logWithVitePrefix(msg, logType, category)
+  if (prependViteTag) {
+    const category = getCategory(httpRequestId)
+    logWithViteTag(msg, logType, category)
   } else {
     logDirectly(msg, logType)
   }
 }
 function logConfigInfo(msg: string, logType: LogType): void {
   const category = getConfigCategory()
-  logWithVikePrefix(msg, logType, category)
+  logWithVikeTag(msg, logType, category)
 }
 
 function logRuntimeError(
@@ -89,7 +89,7 @@ function logRuntimeError(
 ): void {
   logErr(err, httpRequestId)
 }
-function logViteErrorWithCodeSnippet(err: ErrorWithCodeSnippet): void {
+function logViteErrorContainingCodeSnippet(err: ErrorWithCodeSnippet): void {
   logErr(err)
 }
 function logErr(err: unknown, httpRequestId: number | null = null): void {
@@ -130,7 +130,7 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
     const hook = isUserHookError(err)
     if (hook) {
       const { hookName, hookFilePath } = hook
-      logWithVikePrefix(
+      logWithVikeTag(
         pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`),
         'error',
         category
@@ -146,7 +146,7 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
     assert(viteConfig)
     let errMsg = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
     assert(stripAnsi(errMsg).startsWith('Failed to transpile'))
-    logWithVitePrefix(errMsg, 'error', category)
+    logWithViteTag(errMsg, 'error', category)
     logErrorDebugNote()
     return
   }
@@ -168,7 +168,7 @@ function logConfigError(err: unknown): void {
     if (errIntroMsg) {
       clearTheScreen({ clearIfFirstLog: true })
       assert(stripAnsi(errIntroMsg).startsWith('Failed to execute'))
-      logWithVikePrefix(errIntroMsg, 'error', category)
+      logWithVikeTag(errIntroMsg, 'error', category)
       logDirectly(err, 'error')
       return
     }
@@ -178,7 +178,7 @@ function logConfigError(err: unknown): void {
     if (errMsg) {
       clearTheScreen({ clearIfFirstLog: true })
       assert(stripAnsi(errMsg).startsWith('Failed to transpile'))
-      logWithVikePrefix(errMsg, 'error', category)
+      logWithVikeTag(errMsg, 'error', category)
       return
     }
   }
@@ -191,7 +191,7 @@ function logConfigError(err: unknown): void {
 }
 function logErrFallback(err: unknown, category: LogCategory | null) {
   if (category) {
-    logWithVikePrefix(pc.red(pc.bold('[Error] An error was thrown:')), 'error', category)
+    logWithVikeTag(pc.red(pc.bold('[Error] An error was thrown:')), 'error', category)
   }
   logDirectly(err, 'error')
 }
@@ -205,7 +205,7 @@ function handleAssertMsg(err: unknown, category: LogCategory | null): boolean {
   const res = getAssertErrMsg(err)
   if (!res) return false
   const { assertMsg, showVikeVersion } = res
-  logWithVikePrefix(assertMsg, 'error', category, showVikeVersion)
+  logWithVikeTag(assertMsg, 'error', category, showVikeVersion)
   return true
 }
 function assertLogger(thing: string | Error, logType: LogType): void {
@@ -216,7 +216,7 @@ function assertLogger(thing: string | Error, logType: LogType): void {
   */
   if (!res) throw new Error('Internal error, reach out to a maintainer')
   const { assertMsg, showVikeVersion } = res
-  logWithVikePrefix(assertMsg, logType, category, showVikeVersion)
+  logWithVikeTag(assertMsg, logType, category, showVikeVersion)
 }
 
 let isFirstLog = true

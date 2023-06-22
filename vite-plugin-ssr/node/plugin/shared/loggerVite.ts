@@ -2,7 +2,7 @@ export { improveViteLogs }
 
 import { trimWithAnsi, trimWithAnsiTrailOnly } from '../utils'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
-import { logViteErrorWithCodeSnippet, logViteAny, clearTheScreen } from './loggerNotProd'
+import { logViteErrorContainingCodeSnippet, logViteAny, clearTheScreen } from './loggerNotProd'
 import { isErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
@@ -16,16 +16,16 @@ function improveViteLogs(config: ResolvedConfig) {
 
 function intercept(logType: LogType, config: ResolvedConfig) {
   config.logger[logType] = (msg, options: LogErrorOptions = {}) => {
-    const store = getHttpRequestAsyncStore()
+    if (removeSuperfluousViteLog(msg)) return
 
     if (!!options.timestamp) {
       msg = trimWithAnsi(msg)
     } else {
-      // !!timestamp => no tag "[vite]" is prepended => we don't trim the beginning of the message
+      // No timestamp => no "[vite]" tag prepended => we don't trim the beginning of the message
       msg = trimWithAnsiTrailOnly(msg)
     }
 
-    if (removeSuperfluousViteLog(msg)) return
+    const store = getHttpRequestAsyncStore()
 
     // Dedupe Vite error messages
     if (options.error && store?.shouldErrorBeSwallowed(options.error)) {
@@ -38,22 +38,14 @@ function intercept(logType: LogType, config: ResolvedConfig) {
     }
 
     if (options.error && isErrorWithCodeSnippet(options.error)) {
-      logViteErrorWithCodeSnippet(options.error)
+      logViteErrorContainingCodeSnippet(options.error)
       return
     }
 
-    if (options.clear && !isConfigInvalid) {
-      clearTheScreen({ clearIfFirstLog: true })
-    }
-
+    if (options.clear && !isConfigInvalid) clearTheScreen({ clearIfFirstLog: true })
     if (options.error) store?.markErrorAsLogged(options.error)
-    logViteAny(
-      msg,
-      logType,
-      store?.httpRequestId ?? null,
-      // Vite's default logger prints the "[vite]" tag when options.timestamp is true
-      options.timestamp || !!store?.httpRequestId,
-      options.clear ?? false
-    )
+    // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true
+    const prependViteTag = options.timestamp || !!store?.httpRequestId
+    logViteAny(msg, logType, store?.httpRequestId ?? null, prependViteTag, options.clear ?? false)
   }
 }

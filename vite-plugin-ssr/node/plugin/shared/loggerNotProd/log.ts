@@ -1,5 +1,5 @@
-export { logWithVitePrefix }
-export { logWithVikePrefix }
+export { logWithViteTag }
+export { logWithVikeTag }
 export { logDirectly }
 export { onErrorLog }
 export { onLog }
@@ -8,9 +8,9 @@ import { assert, projectInfo, type ProjectTag, stripAnsi } from '../../utils'
 import pc from '@brillout/picocolors'
 import type { LogCategory, LogType } from '../loggerNotProd'
 
-function logWithVikePrefix(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion = false) {
+function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion = false) {
   const projectTag = getProjectTag(showVikeVersion)
-  msg = addPrefix(msg, projectTag, category, logType)
+  msg = prependTags(msg, projectTag, category, logType)
   logDirectly(msg, logType)
 }
 function getProjectTag(showVikeVersion: boolean) {
@@ -22,8 +22,8 @@ function getProjectTag(showVikeVersion: boolean) {
   }
   return projectTag
 }
-function logWithVitePrefix(msg: string, logType: LogType, category: LogCategory | null) {
-  msg = addPrefix(msg, '[vite]', category, logType)
+function logWithViteTag(msg: string, logType: LogType, category: LogCategory | null) {
+  msg = prependTags(msg, '[vite]', category, logType)
   logDirectly(msg, logType)
 }
 function logDirectly(msg: unknown, logType: LogType) {
@@ -53,7 +53,7 @@ let onLogCallback: (() => void) | undefined
 function onLog(cb: () => void) {
   onLogCallback = cb
 }
-function addPrefix(msg: string, projectTag: '[vite]' | ProjectTag, category: LogCategory | null, logType: LogType) {
+function prependTags(msg: string, projectTag: '[vite]' | ProjectTag, category: LogCategory | null, logType: LogType) {
   const color = (s: string) => {
     if (logType === 'error' && !hasRed(msg)) return pc.red(pc.bold(s))
     if (logType === 'error-recover' && !hasGreen(msg)) return pc.green(pc.bold(s))
