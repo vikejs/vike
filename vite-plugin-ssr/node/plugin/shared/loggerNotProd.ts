@@ -97,10 +97,10 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
   setAlreadyLogged(err)
   warnIfObjectIsNotObject(err)
 
-  if (isRenderErrorPageException(err)) {
+  if (isRenderErrorPageException(err) && !isErrorDebug()) {
     return
   }
-  if (getHttpRequestAsyncStore()?.shouldErrorBeSwallowed(err)) {
+  if (getHttpRequestAsyncStore()?.shouldErrorBeSwallowed(err) && !isErrorDebug()) {
     return
   }
 
@@ -110,7 +110,7 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
   const category = getCategory(httpRequestId)
 
   if (isErrorWithCodeSnippet(err) && !isErrorDebug()) {
-    // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
+    // We handle transpile errors globally because wrapping viteDevServer.ssrLoadModule() wouldn't be enough: transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when loading user code with import() (since Vite lazy-transpiles import() calls)
     const viteConfig = getViteConfig()
     assert(viteConfig)
     let prettyErr = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
@@ -125,6 +125,7 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
     if (logged) return
   }
 
+  // Needs to be after assertion messages handling, because user hooks may throw an assertion error
   {
     const hook = isUserHookError(err)
     if (hook) {

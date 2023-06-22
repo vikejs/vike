@@ -1,12 +1,13 @@
 export { improveViteLogs }
 
-import { trimWithAnsi, trimWithAnsiTrailOnly } from '../utils'
+import { assert, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
 import { logViteErrorContainingCodeSnippet, logViteAny, clearTheScreen } from './loggerNotProd'
 import { isErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
+import { isErrorDebug } from './isErrorDebug'
 
 function improveViteLogs(config: ResolvedConfig) {
   intercept('info', config)
@@ -16,6 +17,8 @@ function improveViteLogs(config: ResolvedConfig) {
 
 function intercept(logType: LogType, config: ResolvedConfig) {
   config.logger[logType] = (msg, options: LogErrorOptions = {}) => {
+    assert(!isErrorDebug())
+
     if (removeSuperfluousViteLog(msg)) return
 
     if (!!options.timestamp) {
