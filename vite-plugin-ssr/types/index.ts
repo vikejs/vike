@@ -2,13 +2,7 @@ export type { PageContextBuiltIn } from '../shared/types'
 export type { PageContextBuiltInClientWithClientRouting } from '../shared/types'
 export type { PageContextBuiltInClientWithServerRouting } from '../shared/types'
 export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtmlTags'
-export type {
-  Config,
-  Meta,
-  Effect,
-  ConfigNonHeaderFile,
-  ConvertConfigNonHeaderFileToConfig
-} from '../shared/page-configs/Config'
+export type { Config, Meta, Effect } from '../shared/page-configs/Config'
 export type { ConfigEnvPublic as Env } from '../shared/page-configs/PageConfig'
 export type { ConfigEntries } from '../shared/getPageFiles/getExports'
 
