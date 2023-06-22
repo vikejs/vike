@@ -109,20 +109,6 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
 
   const category = getCategory(httpRequestId)
 
-  {
-    const hook = isUserHookError(err)
-    if (hook) {
-      const { hookName, hookFilePath } = hook
-      logWithVikeTag(
-        pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`),
-        'error',
-        category
-      )
-      logDirectly(err, 'error')
-      return
-    }
-  }
-
   if (isErrorWithCodeSnippet(err) && !isErrorDebug()) {
     // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
     const viteConfig = getViteConfig()
@@ -137,6 +123,20 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
   if (!isErrorDebug()) {
     const logged = handleAssertMsg(err, category)
     if (logged) return
+  }
+
+  {
+    const hook = isUserHookError(err)
+    if (hook) {
+      const { hookName, hookFilePath } = hook
+      logWithVikeTag(
+        pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`),
+        'error',
+        category
+      )
+      logDirectly(err, 'error')
+      return
+    }
   }
 
   logErrFallback(err, category)
