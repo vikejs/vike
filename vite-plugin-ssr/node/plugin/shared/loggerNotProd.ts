@@ -94,54 +94,56 @@ function logViteErrorContainingCodeSnippet(err: ErrorWithCodeSnippet): void {
   logErr(err)
 }
 function logErr(err: unknown, httpRequestId: number | null = null): void {
-  setAlreadyLogged(err)
   warnIfObjectIsNotObject(err)
 
   if (isRenderErrorPageException(err) && !isErrorDebug()) {
     return
   }
-  if (getHttpRequestAsyncStore()?.shouldErrorBeSwallowed(err) && !isErrorDebug()) {
-    return
-  }
 
   const store = getHttpRequestAsyncStore()
-  store?.markErrorAsLogged(err)
+
+  setAlreadyLogged(err)
+  if (getHttpRequestAsyncStore()?.shouldErrorBeSwallowed(err)) {
+    if (!isErrorDebug()) return
+  } else {
+    store?.markErrorAsLogged(err)
+  }
 
   const category = getCategory(httpRequestId)
 
-  if (isErrorWithCodeSnippet(err) && !isErrorDebug()) {
-    // We handle transpile errors globally because wrapping viteDevServer.ssrLoadModule() wouldn't be enough: transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when loading user code with import() (since Vite lazy-transpiles import() calls)
-    const viteConfig = getViteConfig()
-    assert(viteConfig)
-    let prettyErr = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
-    assert(stripAnsi(prettyErr).startsWith('Failed to transpile'))
-    logWithViteTag(prettyErr, 'error', category)
-    logErrorDebugNote()
-    return
-  }
-
   if (!isErrorDebug()) {
-    const logged = handleAssertMsg(err, category)
-    if (logged) return
-  }
-
-  // Needs to be after assertion messages handling, because user hooks may throw an assertion error
-  {
-    const hook = isUserHookError(err)
-    if (hook) {
-      const { hookName, hookFilePath } = hook
-      logWithVikeTag(
-        pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`),
-        'error',
-        category
-      )
-      logDirectly(err, 'error')
+    if (isErrorWithCodeSnippet(err)) {
+      // We handle transpile errors globally because wrapping viteDevServer.ssrLoadModule() wouldn't be enough: transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when loading user code with import() (since Vite lazy-transpiles import() calls)
+      const viteConfig = getViteConfig()
+      assert(viteConfig)
+      let prettyErr = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
+      assert(stripAnsi(prettyErr).startsWith('Failed to transpile'))
+      logWithViteTag(prettyErr, 'error', category)
+      logErrorDebugNote()
       return
+    }
+
+    {
+      const logged = handleAssertMsg(err, category)
+      if (logged) return
     }
   }
 
-  logErrFallback(err, category)
+  // Needs to be after assertion messages handling, because user hooks may throw an assertion error
+  const hook = isUserHookError(err)
+  if (hook) {
+    const { hookName, hookFilePath } = hook
+    logWithVikeTag(
+      pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`),
+      'error',
+      category
+    )
+  } else if (category) {
+    logFallbackErrIntro(category)
+  }
+  logDirectly(err, 'error')
 }
+
 function logConfigError(err: unknown): void {
   warnIfObjectIsNotObject(err)
 
@@ -158,11 +160,11 @@ function logConfigError(err: unknown): void {
     }
   }
   {
-    let errMsg = getConfigBuildErrorFormatted(err)
-    if (errMsg) {
+    const errMsgFormatted = getConfigBuildErrorFormatted(err)
+    if (errMsgFormatted) {
       clearTheScreen({ clearIfFirstLog: true })
-      assert(stripAnsi(errMsg).startsWith('Failed to transpile'))
-      logWithVikeTag(errMsg, 'error', category)
+      assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
+      logWithVikeTag(errMsgFormatted, 'error', category)
       return
     }
   }
@@ -171,13 +173,12 @@ function logConfigError(err: unknown): void {
     if (logged) return
   }
 
-  logErrFallback(err, category)
-}
-function logErrFallback(err: unknown, category: LogCategory | null) {
-  if (category) {
-    logWithVikeTag(pc.red(pc.bold('[Error] An error was thrown:')), 'error', category)
-  }
+  if (category) logFallbackErrIntro(category)
   logDirectly(err, 'error')
+}
+
+function logFallbackErrIntro(category: LogCategory) {
+  logWithVikeTag(pc.red(pc.bold('[Error] An error was thrown:')), 'error', category)
 }
 
 function getConfigCategory(): LogCategory {

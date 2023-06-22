@@ -80,12 +80,12 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
   return { fileExports }
 }
 
-const formattedMsg = '_formattedMsg'
+const formatted = '_formatted'
 function getConfigBuildErrorFormatted(err: unknown): null | string {
   if (!isObject(err)) return null
-  if (!(formattedMsg in err)) return null
-  assert(typeof err[formattedMsg] === 'string')
-  return err[formattedMsg]
+  if (!(formatted in err)) return null
+  assert(typeof err[formatted] === 'string')
+  return err[formatted]
 }
 async function formatBuildErr(err: unknown, filePath: FilePath): Promise<void> {
   assert(isObject(err) && err.errors)
@@ -98,7 +98,7 @@ async function formatBuildErr(err: unknown, filePath: FilePath): Promise<void> {
     .map((m) => m.trim())
     .join('\n')
   const msgIntro = getErrIntroMsg('transpile', filePath)
-  err[formattedMsg] = `${msgIntro}\n${msgEsbuild}`
+  err[formatted] = `${msgIntro}\n${msgEsbuild}`
 }
 
 const execErrIntroMsg = new WeakMap<object, string>()
