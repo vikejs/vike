@@ -30,23 +30,23 @@ function logWithViteTag(msg: string, logType: LogType, category: LogCategory | n
 }
 
 // Every log is triggered by logDirectly(), except for logs in production since they aren't managed by loggerNotProd.ts
-function logDirectly(msg: unknown, logType: LogType) {
-  applyViteSourceMap(msg)
+function logDirectly(thing: unknown, logType: LogType) {
+  applyViteSourceMap(thing)
 
   assert(onLogCallback)
   onLogCallback()
 
   if (logType === 'info') {
-    console.log(msg)
+    console.log(thing)
   } else if (logType === 'warn') {
-    console.warn(msg)
+    console.warn(thing)
   } else if (logType === 'error') {
     assert(onErrorLogCallback)
     onErrorLogCallback()
-    console.error(msg)
+    console.error(thing)
   } else if (logType === 'error-recover') {
     // stderr because user will most likely want to know about error recovering
-    console.error(msg)
+    console.error(thing)
   } else {
     assert(false)
   }

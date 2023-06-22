@@ -3,12 +3,14 @@
 //  - Preview
 //  - Build
 //  - Pre-rendering
+// In other words: everywhere except in production
 
 export { logConfigInfo }
 export { logConfigError }
 export { logViteAny }
 export { logViteErrorContainingCodeSnippet }
 export { clearTheScreen }
+export { logErrorDebugNote }
 export type { LogInfo }
 export type { LogInfoArgs }
 export type { LogError }
@@ -48,12 +50,12 @@ assertIsVitePluginCode()
 setRuntimeLogger(logRuntimeError, logRuntimeInfo)
 setAssertLogger(assertLogger)
 
-type LogCategory = 'config' | `request(${number})`
 type LogType = 'info' | 'warn' | 'error' | 'error-recover'
-type LogInfoArgs = Parameters<typeof logRuntimeInfo>
+type LogCategory = 'config' | `request(${number})`
 type LogInfo = (...args: LogInfoArgs) => void
-type LogErrorArgs = Parameters<typeof logRuntimeError>
+type LogInfoArgs = Parameters<typeof logRuntimeInfo>
 type LogError = (...args: LogErrorArgs) => void
+type LogErrorArgs = Parameters<typeof logRuntimeError>
 
 function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType, clearConditions?: ClearConditions) {
   clearTheScreen(clearConditions)
@@ -125,9 +127,9 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
     // We handle transpile errors globally because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
     const viteConfig = getViteConfig()
     assert(viteConfig)
-    let errMsg = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
-    assert(stripAnsi(errMsg).startsWith('Failed to transpile'))
-    logWithViteTag(errMsg, 'error', category)
+    let prettyErr = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
+    assert(stripAnsi(prettyErr).startsWith('Failed to transpile'))
+    logWithViteTag(prettyErr, 'error', category)
     logErrorDebugNote()
     return
   }
@@ -223,7 +225,7 @@ function clearTheScreen(conditions?: ClearConditions): void {
   }
 }
 
-export function logErrorDebugNote() {
+function logErrorDebugNote() {
   if (isErrorDebug()) return
   const store = getHttpRequestAsyncStore()
   if (store) {
@@ -249,9 +251,6 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
       assert(httpRequestId === store.httpRequestId)
     }
   }
-  const category = httpRequestId !== null ? getCategoryRequest(httpRequestId) : null
+  const category = httpRequestId !== null ? (`request(${httpRequestId})` as const) : null
   return category
-}
-function getCategoryRequest(httpRequestId: number) {
-  return `request(${httpRequestId})` as const
 }
