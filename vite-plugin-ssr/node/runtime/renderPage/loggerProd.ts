@@ -4,20 +4,19 @@
 export { logErrorProd }
 
 import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
+import { setAlreadyLogged } from './isNewError'
 import { isObject, warnIfObjectIsNotObject } from '../utils'
 import pc from '@brillout/picocolors'
-import { setAlreadyLogged } from './isNewError'
 
-function logErrorProd(err: unknown, _httpRquestId: null | number): boolean {
+function logErrorProd(err: unknown, _httpRquestId: null | number): void {
   warnIfObjectIsNotObject(err)
   setAlreadyLogged(err)
 
   if (isRenderErrorPageException(err)) {
-    return false
+    return
   }
 
   // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
   const errStr = isObject(err) && 'stack' in err ? String(err.stack) : String(err)
   console.error(pc.red(errStr))
-  return true
 }

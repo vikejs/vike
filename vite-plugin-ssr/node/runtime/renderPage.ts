@@ -19,7 +19,7 @@ import { isRenderErrorPageException } from '../../shared/route/RenderErrorPage'
 import { initGlobalContext } from './globalContext'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import { HttpResponse } from './renderPage/createHttpResponseObject'
-import { logError, logInfo } from './renderPage/loggerRuntime'
+import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime'
 import { isNewError } from './renderPage/isNewError'
 import { assertArguments } from './renderPage/assertArguments'
 import type { PageContextDebug } from './renderPage/debugPageFiles'
@@ -89,7 +89,7 @@ async function renderPage_(
 ): Promise<PageContextReturn> {
   // Invalid config
   const handleInvalidConfig = () => {
-    logInfo?.(pc.red("Couldn't load configuration: see error above."), httpRequestId, 'error')
+    logRuntimeInfo?.(pc.red(pc.bold("Couldn't load configuration: see error above.")), httpRequestId, 'error')
     const pageContextHttpReponseNull = getPageContextHttpResponseNull(pageContextInit)
     return pageContextHttpReponseNull
   }
@@ -106,7 +106,7 @@ async function renderPage_(
     // Errors are expected since assertUsage() is used in both initGlobalContext() and getRenderContext().
     // initGlobalContext() and getRenderContext() don't call any user hooks => err isn't thrown from user code
     assert(!isRenderErrorPageException(err))
-    logError(err, httpRequestId)
+    logRuntimeError(err, httpRequestId)
     const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(err, pageContextInit)
     return pageContextHttpReponseNull
   }
@@ -128,7 +128,7 @@ async function renderPage_(
       errored = false
     } catch (err) {
       errFirstAttempt = err
-      logError(errFirstAttempt, httpRequestId)
+      logRuntimeError(errFirstAttempt, httpRequestId)
       errored = true
       pageContextFirstAttemptPartial = pageContext
     }
@@ -178,7 +178,7 @@ async function renderPage_(
     } catch (err) {
       errErrorPage = err
       if (isNewError(errErrorPage, errFirstAttempt)) {
-        logError(errErrorPage, httpRequestId)
+        logRuntimeError(errErrorPage, httpRequestId)
       }
     }
     if (errErrorPage === undefined) {
@@ -196,14 +196,14 @@ async function renderPage_(
 }
 
 function logHttpRequest(urlToShowToUser: string, httpRequestId: number) {
-  logInfo?.(`HTTP request: ${urlToShowToUser}`, httpRequestId, 'info', {
+  logRuntimeInfo?.(`HTTP request: ${urlToShowToUser}`, httpRequestId, 'info', {
     clearErrors: globalObject.pendingRequestsCount === 0 && !isConfigInvalid
   })
 }
 function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageContextReturn: PageContextReturn) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
   const color = (s: number | string) => pc.bold(statusCode !== 200 ? pc.red(s) : pc.green(s))
-  logInfo?.(
+  logRuntimeInfo?.(
     `HTTP response ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`,
     httpRequestId,
     statusCode === 200 || statusCode === 404 ? 'info' : 'error'

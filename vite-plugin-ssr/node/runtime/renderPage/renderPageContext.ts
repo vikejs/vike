@@ -20,7 +20,7 @@ import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
 import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook'
 import { executeOnBeforeRenderHooks } from './executeOnBeforeRenderHook'
-import { logError } from './loggerRuntime'
+import { logRuntimeError } from './loggerRuntime'
 import { isNewError } from './isNewError'
 import { preparePageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide'
 import { executeGuardHook } from '../../../shared/route/executeGuardHook'
@@ -79,7 +79,7 @@ async function renderPageContext<
       await executeOnBeforeRenderHooks(pageContext)
     } catch (err) {
       if (isNewError(err, pageContext.errorWhileRendering)) {
-        logError(err, pageContext._httpRequestId)
+        logRuntimeError(err, pageContext._httpRequestId)
       }
     }
   }

@@ -34,14 +34,14 @@ function isErrorWithCodeSnippet(err: unknown): err is ErrorWithCodeSnippet {
 }
 
 function getPrettyErrorWithCodeSnippet(err: ErrorWithCodeSnippet, userRootDir: string): string {
-  /* Uncomment to inspect and/or create fixtures for ./errorWithCodeSnippet.spec.ts
+  /* Uncomment to inspect and/or create fixture for ./errorWithCodeSnippet.spec.ts
   console.log('userRootDir', userRootDir)
   console.log('err.message', err.message)
   console.log('err.stack', (err as any).stack)
   console.log('err.pluginCode', (err as any).pluginCode)
   console.log('Object.keys(err)', Object.keys(err))
   console.log('err', err)
-  // For copy-pasting errors while preserve terminal ANSI colors
+  // For copy-pasting errors while preserving terminal ANSI colors
   console.log(
     'JSON.stringify(err)',
     JSON.stringify({
@@ -96,7 +96,7 @@ function getPrettyErrMessage(err: ErrorWithCodeSnippet): string | null {
   if (!errMsg || !errMsg.trim()) return null
 
   const trail = /(?:\:|)(?:\s|$)/
-  // Remove redundant message: "Transform failed with 1 error:" (redundant since we already print an intro message)
+  // Remove "Transform failed with 1 error:" (redundant since we already print an intro message)
   errMsg = errMsg.split(reg([/Transform failed with \d* error(?:s|)/, trail], 'gi')).join('')
   // Remove "/home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx:1:8:" (redundant since we already print the filename)
   const pos = /(?:\:\d+|)/

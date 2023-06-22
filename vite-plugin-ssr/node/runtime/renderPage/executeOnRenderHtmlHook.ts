@@ -24,7 +24,7 @@ import {
 import type { PageContextPromise } from '../html/injectAssets'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { assertObjectKeys } from '../../../shared/assertObjectKeys'
-import { logError } from './loggerRuntime'
+import { logRuntimeError } from './loggerRuntime'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
@@ -71,7 +71,7 @@ async function executeOnRenderHtmlHook(
   }
 
   const onErrorWhileStreaming = (err: unknown) => {
-    logError(err, pageContext._httpRequestId)
+    logRuntimeError(err, pageContext._httpRequestId)
     /*
     objectAssign(pageContext, {
       errorWhileRendering: err,
