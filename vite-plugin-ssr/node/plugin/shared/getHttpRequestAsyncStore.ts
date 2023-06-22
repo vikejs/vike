@@ -1,6 +1,6 @@
 // Purpose of this file:
-//  - Prepend '[request(n)]' message tag to Vite log messages
 //  - Swallow redundant error messages (Vite is buggy and emits the same error multiple times)
+//  - Prepend "[request(n)]" tag to Vite logs
 
 // The mechanism is skipped if the runtime doesn't support Async Hooks:
 //  - Bun doesn't support Async Hooks: https://github.com/oven-sh/bun/issues/1832
@@ -15,10 +15,13 @@ export { getHttpRequestAsyncStore }
 export { installHttpRequestAsyncStore }
 
 import { renderPage_setWrapper } from '../../runtime/renderPage'
-import { assert, isObject } from '../utils'
+import { assert, assertIsVitePluginCode, isObject } from '../utils'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { getConfigBuildErrorFormatted } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
 import { logErrorDebugNote } from './loggerNotProd'
+import { isEquivalentErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet'
+
+assertIsVitePluginCode()
 
 type HttpRequestAsyncStore = {
   httpRequestId: number
@@ -39,14 +42,17 @@ async function installHttpRequestAsyncStore(): Promise<void> {
   }
   asyncLocalStorage = new mod.AsyncLocalStorage()
   renderPage_setWrapper(async (httpRequestId, renderPage) => {
+    assert(asyncLocalStorage)
+
     const loggedErrors = new Set<unknown>()
     const markErrorAsLogged = (err: unknown) => {
       loggedErrors.add(err)
     }
+
     const shouldErrorBeSwallowed = (err: unknown) => {
       if (
         loggedErrors.has(err) ||
-        Array.from(loggedErrors).some((errAlreadyLogged) => isEquivalentOrSubset(err, errAlreadyLogged))
+        Array.from(loggedErrors).some((errAlreadyLogged) => isEquivalent(err, errAlreadyLogged))
       ) {
         // In principle, some random message can be shown between the non-swallowed error and this logErrorDebugNote() call.
         // We take a leap of faith that it happens only seldomly and that it's worth the risk.
@@ -56,10 +62,12 @@ async function installHttpRequestAsyncStore(): Promise<void> {
         return false
       }
     }
-    assert(asyncLocalStorage)
 
-    // Remove this once https://github.com/vitejs/vite/pull/13495 is released
+    // Remove once https://github.com/vitejs/vite/pull/13495 is released
     const swallowedErrorMessages = new Set<string>()
+    const markErrorMessageAsLogged = (errMsg: string) => {
+      swallowedErrorMessages.add(errMsg)
+    }
     const onRequestDone = () => {
       swallowedErrorMessages.forEach((errMsg) => {
         if (!Array.from(loggedErrors).some((err) => String(err).includes(errMsg))) {
@@ -68,9 +76,6 @@ async function installHttpRequestAsyncStore(): Promise<void> {
           assert(false)
         }
       })
-    }
-    const markErrorMessageAsLogged = (errMsg: string) => {
-      swallowedErrorMessages.add(errMsg)
     }
 
     const store = {
@@ -93,26 +98,17 @@ function getHttpRequestAsyncStore(): null | undefined | HttpRequestAsyncStore {
   return store
 }
 
-function isEquivalentOrSubset(err: unknown, errAlreadyLogged: unknown) {
-  const err1 = err
-  const err2 = errAlreadyLogged
-
+function isEquivalent(err1: unknown, err2: unknown) {
   if (err1 === err2) return true
   if (!isObject(err1) || !isObject(err2)) return false
 
   {
-    const esbuildErrMsg1 = getConfigBuildErrorFormatted(err1)
-    const esbuildErrMsg2 = getConfigBuildErrorFormatted(err2)
-    if (esbuildErrMsg1 && esbuildErrMsg1 === esbuildErrMsg2) return true
+    const errMsgFormatted1 = getConfigBuildErrorFormatted(err1)
+    const errMsgFormatted2 = getConfigBuildErrorFormatted(err2)
+    if (errMsgFormatted1 && errMsgFormatted1 === errMsgFormatted2) return true
   }
 
-  if (
-    isDefinedAndSame(err1.message, err2.message) &&
-    isDefinedAndSame(err1.frame, err2.frame) &&
-    isDefinedAndSame(err1.id, err2.id)
-  ) {
-    return true
-  }
+  if (isEquivalentErrorWithCodeSnippet(err1, err2)) return true
 
   if (
     err1.constructor === (Error as any) &&

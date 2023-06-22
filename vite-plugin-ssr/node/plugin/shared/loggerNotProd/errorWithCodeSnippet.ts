@@ -3,6 +3,7 @@
 
 export { getPrettyErrorWithCodeSnippet }
 export { isErrorWithCodeSnippet }
+export { isEquivalentErrorWithCodeSnippet }
 export type { ErrorWithCodeSnippet }
 
 // For ./errorWithCodeSnippet.spec.ts
@@ -166,4 +167,19 @@ function removeEmptyLines(msg: string): string {
     .split('\n')
     .filter((line) => line.trim() !== '')
     .join('\n')
+}
+
+function isEquivalentErrorWithCodeSnippet(err1: unknown, err2: unknown): boolean {
+  if (!isObject(err1) || !isObject(err2)) return false
+  if (
+    isDefinedAndSame(err1.message, err2.message) &&
+    isDefinedAndSame(err1.frame, err2.frame) &&
+    isDefinedAndSame(err1.id, err2.id)
+  ) {
+    return true
+  }
+  return false
+}
+function isDefinedAndSame(val1: unknown, val2: unknown) {
+  return val1 && val1 === val2
 }
