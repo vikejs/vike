@@ -8,6 +8,10 @@
   - Minimize what that client-side loads
 - Update migration examples
 
+Docs:
+ - pageContext.config
+ - pageContext.configEntries
+
 Features:
  - multiple error pages
  - nested layouts

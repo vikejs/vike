@@ -45,7 +45,7 @@ type ConfigVpsUserProvided = {
   /**
    * Enable pre-rendering.
    *
-   * See https://vite-plugin-ssr.com/pre-rendering
+   * https://vite-plugin-ssr.com/pre-rendering
    *
    * @default false
    */
@@ -81,7 +81,7 @@ type ConfigVpsUserProvided = {
          *
          * Use this if you want to programmatically initiate the pre-rendering process instead.
          *
-         * See https://vite-plugin-ssr.com/prerender-programmatic
+         * https://vite-plugin-ssr.com/prerender-programmatic
          *
          * @default false
          */
@@ -95,7 +95,7 @@ type ConfigVpsUserProvided = {
   /**
    * Set to `true` to disable the automatic chaining of all the build steps.
    *
-   * See https://vite-plugin-ssr.com/disableAutoFullBuild
+   * https://vite-plugin-ssr.com/disableAutoFullBuild
    *
    * @default false
    */
@@ -103,13 +103,19 @@ type ConfigVpsUserProvided = {
   /**
    * Support importing assets (CSS, images, etc.) from server code.
    *
-   * See https://vite-plugin-ssr.com/includeAssetsImportedByServer
+   * https://vite-plugin-ssr.com/includeAssetsImportedByServer
    *
    * @experimental
    */
   includeAssetsImportedByServer?: boolean
-  /** The Base URL of your server, see https://vite-plugin-ssr.com/base-url */
+  /** The Base URL of your server.
+   *
+   * https://vite-plugin-ssr.com/base-url
+   */
   baseServer?: string
-  /** The Base URL of your static assets, see https://vite-plugin-ssr.com/base-url */
+  /** The Base URL of your static assets.
+   *
+   * https://vite-plugin-ssr.com/base-url
+   */
   baseAssets?: string
 }

@@ -18,7 +18,10 @@ type ConfigEnvPrivate =
   | 'config-only'
   | '_routing-env-eager'
   | '_routing-env-lazy'
-/** See https://vite-plugin-ssr/meta */
+/** The environments in which the configuration value is loaded.
+ *
+ * https://vite-plugin-ssr/meta
+ */
 type ConfigEnvPublic = Exclude<ConfigEnvPrivate, '_routing-env-eager' | '_routing-env-lazy'>
 
 type PageConfig = PageConfigData & {
