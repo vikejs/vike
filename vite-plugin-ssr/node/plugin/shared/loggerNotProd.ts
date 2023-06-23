@@ -157,7 +157,11 @@ function logConfigError(err: unknown): void {
     if (errMsgFormatted) {
       clearTheScreen({ clearIfFirstLog: true })
       assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
-      logWithVikeTag(errMsgFormatted, 'error', category)
+      if (!isErrorDebug()) {
+        logWithVikeTag(errMsgFormatted, 'error', category)
+      } else {
+        logDirectly(err, 'error')
+      }
       return
     }
   }
