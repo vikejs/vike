@@ -12,14 +12,14 @@ Instead, use:
   > Similar to Telefunc.
   >  - Con: Telefunc is simpler.
   >  - Pro: supports real-time endpoints with websockets.
-- Directly use your server to create new HTTP endpoints (e.g. Express.js routes), giving you DX similar to API routes of frameworks like Next.js.
+- Directly use your server to create new HTTP endpoints (e.g. Express.js routes), for a DX similar to API routes of frameworks like Next.js.
   > As explained in <Link href="/renderPage" />:
   >   - Make sure vite-plugin-ssr's middleware is your last middleware.
   >   - When modifying your server, you may need to manually restart your server for your changes to take effect.
 - GraphQL
   <Warning>
-    If you aren't a *very* large team, then GraphQL is most likely over-engineering. Using RPC (Telefunc or tRPC) is simpler, and
-    it's actually more flexible than GraphQL (as long as you aren't a very large team).
+    If you aren't a *very* large team, then GraphQL is most likely over-engineering. RPC (Telefunc or tRPC) is simpler, and
+    it's actually more flexible than GraphQL as long as you aren't a very large team.
 
     We recommend to get started with RPC and to later switch to GraphQL only if/when the need arises.
   </Warning>
