@@ -1,3 +1,40 @@
+## [0.4.132](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.131...v0.4.132) (2023-06-23)
+
+
+### Bug Fixes
+
+* [error-handling] ensure debug note is shown whenever an error is swallowed ([4d2e482](https://github.com/brillout/vite-plugin-ssr/commit/4d2e4821d19938130720a6351d3755c22021b338))
+* [V1 design] handle removed/added + files ([6bd930c](https://github.com/brillout/vite-plugin-ssr/commit/6bd930c5fed5fc51198819b425498dddbdbc6be2))
+* [V1 design] impose `.h.js` ([744247a](https://github.com/brillout/vite-plugin-ssr/commit/744247ab63168b0b51ae9d44c2346008c5c2d614))
+* [V1 design] invalidate virtual modules upon removed/added + file ([8e510da](https://github.com/brillout/vite-plugin-ssr/commit/8e510da6e96409e40247fa5c3d793b7b783ceac3))
+* [V1 design] make Config['filesystemRoutingRoot'] a string ([42b972f](https://github.com/brillout/vite-plugin-ssr/commit/42b972f18aaf83e0f5034d58649eeaa1f3b8fab8))
+* [V1 design] simplify Config type for non-header files ([e13542b](https://github.com/brillout/vite-plugin-ssr/commit/e13542b2a32e3e7722e82870f5a6874b1afc3189))
+* [V1 design] skip +*.telefunc.js files ([fc97459](https://github.com/brillout/vite-plugin-ssr/commit/fc974593c6756847e5700426a05d3283bb6e94e1))
+* add deprecation notice to wrong RenderErrorPage import ([b82c51e](https://github.com/brillout/vite-plugin-ssr/commit/b82c51ee47bd6a2e60c3b34ef61f07c210ca1458))
+* add fixtures ([75c42e9](https://github.com/brillout/vite-plugin-ssr/commit/75c42e9c463f7828163a77328c09cb37920af012))
+* add JSDoc comment to RenderErrorPage() ([47d43c2](https://github.com/brillout/vite-plugin-ssr/commit/47d43c2d90633998f761c83d416735cdd02250b1))
+* further swallow RenderErrorPage() error on the client-side ([ef0e07c](https://github.com/brillout/vite-plugin-ssr/commit/ef0e07c6e12bf5e556caf199251644a19a7d4792))
+* improve backwards compatibility of PageContextBuiltIn types ([f1d0cf2](https://github.com/brillout/vite-plugin-ssr/commit/f1d0cf2c9492b30dd21dfda0421233d2dcd48870))
+* improve error equivalence check ([fddc417](https://github.com/brillout/vite-plugin-ssr/commit/fddc4174743cb4e52f2e17228792035c8e859c8f))
+* improve error message upon mixing a Web Stream with a Node.js Stream ([#933](https://github.com/brillout/vite-plugin-ssr/issues/933)) ([7ffb373](https://github.com/brillout/vite-plugin-ssr/commit/7ffb37300f8075d13145fa12b3b5255090dcea3b))
+* lift need for importBuild.cjs when pre-rendering (fix [#935](https://github.com/brillout/vite-plugin-ssr/issues/935)) ([ec8b2f3](https://github.com/brillout/vite-plugin-ssr/commit/ec8b2f39b2bf26f6e3dce1e18597aa42ac640d39))
+* prettify SWC errors ([29b257d](https://github.com/brillout/vite-plugin-ssr/commit/29b257d8f1a4090333c7c06894d0acfa2234bd72))
+* refactor error handling ([4678f9f](https://github.com/brillout/vite-plugin-ssr/commit/4678f9f60f6242ead98ea0a1eb144f5f271347ac))
+* RenderErrorPage() without any options ([880e65c](https://github.com/brillout/vite-plugin-ssr/commit/880e65ce7b9187ade52e4e30cc01a980629d61d8))
+* soft-deprecate async onBeforeRoute() ([7dd7428](https://github.com/brillout/vite-plugin-ssr/commit/7dd7428a0ecafa5483533fae5e557ee84522d117))
+* soft-deprecate Async Route Functions ([a101a9c](https://github.com/brillout/vite-plugin-ssr/commit/a101a9c9d3bf15c5eac46699fd7a492ca794dfc6))
+* support ESM namespace imports in header files (fix [#945](https://github.com/brillout/vite-plugin-ssr/issues/945)) ([8be32b0](https://github.com/brillout/vite-plugin-ssr/commit/8be32b03d1f522f7aef756d7f9dffc861df6f465))
+* update @brillout/vite-plugin-import-build ([b1ed09a](https://github.com/brillout/vite-plugin-ssr/commit/b1ed09a317178c554060120c9d073f6837c1a422))
+
+
+### Features
+
+* expose pageContext._pageRoutes ([#49](https://github.com/brillout/vite-plugin-ssr/issues/49)) ([2a2c223](https://github.com/brillout/vite-plugin-ssr/commit/2a2c223595ee52b7c667652887bbac331dff17e8))
+* implement guard() hook ([91a11a0](https://github.com/brillout/vite-plugin-ssr/commit/91a11a0bcdd06853402e04c53adb779aababede0))
+* temporary config `_disableAutomaticLinkInterception` (fix [#918](https://github.com/brillout/vite-plugin-ssr/issues/918)) ([35ca471](https://github.com/brillout/vite-plugin-ssr/commit/35ca471f7763be25ad445d22edbe3417c70ab0c6))
+
+
+
 ## [0.4.131](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.130...v0.4.131) (2023-05-30)
 
 
