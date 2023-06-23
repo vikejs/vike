@@ -7,7 +7,7 @@ import { getPrettyErrMessage, getPrettyErrorWithCodeSnippet, isErrorWithCodeSnip
 // DEBUG=vps:error pnpm run dev
 // ```
 
-describe('getPrettyErrorWithCodeSnippet()', () => {
+describe('getPrettyErrorWithCodeSnippet() - success', () => {
   it('real use case - @vitejs/plugin-react-swc', () => {
     const err = {
       stack:
@@ -101,36 +101,6 @@ describe('getPrettyErrorWithCodeSnippet()', () => {
       Caused by:
           Syntax Error"
     `)
-  })
-
-  it('real use case - @mdx-js/rollup', () => {
-    const err = {
-      name: '5:5-5:6',
-      message: 'Unexpected closing slash `/` in tag, expected an open tag first',
-      reason: 'Unexpected closing slash `/` in tag, expected an open tag first',
-      line: 5,
-      column: 5,
-      position: {
-        start: { line: 5, column: 5, offset: 109, _index: 6, _bufferIndex: 4 },
-        end: { line: 5, column: 6, offset: 110, _index: 6, _bufferIndex: 5 }
-      },
-      source: 'mdast-util-mdx-jsx',
-      ruleId: 'unexpected-closing-slash',
-      plugin: '@mdx-js/rollup',
-      id: '/home/rom/code/vite-plugin-ssr/docs/pages/dynamic-import.page.server.mdx',
-      pluginCode:
-        'import { Link, Note } from \'@brillout/docpress\'\n\nPage moved to <Link href="/client-only-components" />.\n\n   </Note>\n\n\nexport const headings = [];\n',
-      loc: {
-        file: '/home/rom/code/vite-plugin-ssr/docs/pages/dynamic-import.page.server.mdx',
-        start: { line: 5, column: 5, offset: 109, _index: 6, _bufferIndex: 4 },
-        end: { line: 5, column: 6, offset: 110, _index: 6, _bufferIndex: 5 }
-      },
-      frame: '',
-      stack: ''
-    }
-    // We can't prettify this error because there isn't any code snippet (err.pluginCode contains the whole file without any code position)
-    // That said, we could generate the code snippet ourselves since we have err.position and err.pluginCode
-    expect(isErrorWithCodeSnippet(err)).toBe(false)
   })
 
   it('real use case - @vitejs/plugin-vue - template', () => {
@@ -318,6 +288,38 @@ describe('getPrettyErrorWithCodeSnippet()', () => {
          9 | function PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {
         10 |   return ("
     `)
+  })
+})
+
+describe('getPrettyErrorWithCodeSnippet() - failure', () => {
+  it('real use case - @mdx-js/rollup', () => {
+    const err = {
+      name: '5:5-5:6',
+      message: 'Unexpected closing slash `/` in tag, expected an open tag first',
+      reason: 'Unexpected closing slash `/` in tag, expected an open tag first',
+      line: 5,
+      column: 5,
+      position: {
+        start: { line: 5, column: 5, offset: 109, _index: 6, _bufferIndex: 4 },
+        end: { line: 5, column: 6, offset: 110, _index: 6, _bufferIndex: 5 }
+      },
+      source: 'mdast-util-mdx-jsx',
+      ruleId: 'unexpected-closing-slash',
+      plugin: '@mdx-js/rollup',
+      id: '/home/rom/code/vite-plugin-ssr/docs/pages/dynamic-import.page.server.mdx',
+      pluginCode:
+        'import { Link, Note } from \'@brillout/docpress\'\n\nPage moved to <Link href="/client-only-components" />.\n\n   </Note>\n\n\nexport const headings = [];\n',
+      loc: {
+        file: '/home/rom/code/vite-plugin-ssr/docs/pages/dynamic-import.page.server.mdx',
+        start: { line: 5, column: 5, offset: 109, _index: 6, _bufferIndex: 4 },
+        end: { line: 5, column: 6, offset: 110, _index: 6, _bufferIndex: 5 }
+      },
+      frame: '',
+      stack: ''
+    }
+    // We can't prettify this error because there isn't any code snippet (err.pluginCode contains the whole file without any code position)
+    // That said, we could generate the code snippet ourselves since we have err.position and err.pluginCode
+    expect(isErrorWithCodeSnippet(err)).toBe(false)
   })
 
   it('real use case - @vitejs/plugin-react - CSS with PostCSS', () => {
