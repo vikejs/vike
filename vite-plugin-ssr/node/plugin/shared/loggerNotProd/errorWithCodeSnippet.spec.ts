@@ -188,6 +188,197 @@ describe('getPrettyErrorWithCodeSnippet()', () => {
       16 |"
     `)
   })
+
+  it('real use case - @vitejs/plugin-vue - SFC CSS', () => {
+    const err = {
+      name: 'CssSyntaxError',
+      reason: 'Unexpected }',
+      file: '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1/renderer/PageShell.vue',
+      source:
+        '\n.layout {\n  display: flex;\n  max-width: 900px;\n  margin: auto;\n}}\n.content {\n  padding: 20px;\n  padding-bottom: 50px;\n  min-height: 100vh;\n}\n.navigation {\n  padding: 20px;\n  flex-shrink: 0;\n  display: flex;\n  flex-direction: column;\n  line-height: 1.8em;\n  border-right: 2px solid #eee;\n}\n.logo {\n  margin-top: 20px;\n  margin-bottom: 10px;\n}\n.content {\n  transition: opacity 0.1s ease-in;\n}\n.content.page-transition {\n  opacity: 0;\n}\n',
+      line: 6,
+      column: 2,
+      endLine: 6,
+      endColumn: 3,
+      input: {
+        line: 6,
+        column: 2,
+        endLine: 6,
+        endColumn: 3,
+        source:
+          '\n.layout {\n  display: flex;\n  max-width: 900px;\n  margin: auto;\n}}\n.content {\n  padding: 20px;\n  padding-bottom: 50px;\n  min-height: 100vh;\n}\n.navigation {\n  padding: 20px;\n  flex-shrink: 0;\n  display: flex;\n  flex-direction: column;\n  line-height: 1.8em;\n  border-right: 2px solid #eee;\n}\n.logo {\n  margin-top: 20px;\n  margin-bottom: 10px;\n}\n.content {\n  transition: opacity 0.1s ease-in;\n}\n.content.page-transition {\n  opacity: 0;\n}\n',
+        url: 'file:///home/rom/code/vite-plugin-ssr/examples/vue-full-v1/renderer/PageShell.vue',
+        file: '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1/renderer/PageShell.vue'
+      },
+      loc: { file: '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1/renderer/PageShell.vue', line: 45, column: 2 },
+      id: '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1/renderer/PageShell.vue',
+      plugin: 'vite:vue',
+      pluginCode:
+        '\n.layout {\n  display: flex;\n  max-width: 900px;\n  margin: auto;\n}}\n.content {\n  padding: 20px;\n  padding-bottom: 50px;\n  min-height: 100vh;\n}\n.navigation {\n  padding: 20px;\n  flex-shrink: 0;\n  display: flex;\n  flex-direction: column;\n  line-height: 1.8em;\n  border-right: 2px solid #eee;\n}\n.logo {\n  margin-top: 20px;\n  margin-bottom: 10px;\n}\n.content {\n  transition: opacity 0.1s ease-in;\n}\n.content.page-transition {\n  opacity: 0;\n}\n',
+      frame:
+        '43 |    margin: auto;\n44 |  }}\n45 |  .content {\n   |    ^\n46 |    padding: 20px;\n47 |    padding-bottom: 50px;',
+      message: '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1/renderer/PageShell.vue:6:2: Unexpected }',
+      stack:
+        'CssSyntaxError: /home/rom/code/vite-plugin-ssr/examples/vue-full-v1/renderer/PageShell.vue:6:2: Unexpected }\n    at Input.error (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/input.js:148:16)\n    at Parser.unexpectedClose (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/parser.js:548:22)\n    at Parser.end (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/parser.js:379:12)\n    at Parser.parse (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/parser.js:56:16)\n    at parse (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/parse.js:11:12)\n    at new LazyResult (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/lazy-result.js:133:16)\n    at Processor.process (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/processor.js:28:14)\n    at doCompileStyle (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@vue+compiler-sfc@3.2.33/node_modules/@vue/compiler-sfc/dist/compiler-sfc.cjs.js:17246:45)\n    at Object.compileStyleAsync (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@vue+compiler-sfc@3.2.33/node_modules/@vue/compiler-sfc/dist/compiler-sfc.cjs.js:17188:12)\n    at transformStyle (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@vitejs+plugin-vue@4.2.1_vite@4.3.5_vue@3.2.33/node_modules/@vitejs/plugin-vue/dist/index.cjs:2622:41)'
+    }
+    const formatted = getPrettyErrorWithCodeSnippet(err, '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1')
+    expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
+      "Failed to transpile /renderer/PageShell.vue because:
+      Unexpected }
+      43 |    margin: auto;
+      44 |  }}
+      45 |  .content {
+         |    ^
+      46 |    padding: 20px;
+      47 |    padding-bottom: 50px;"
+    `)
+  })
+
+  it('real use case - @vitejs/plugin-react - JavaScript esuild', () => {
+    const err = {
+      errors: [
+        {
+          id: '',
+          location: {
+            column: 20,
+            file: '/home/rom/code/vite-plugin-ssr/examples/react-full/renderer/PageShell.tsx',
+            length: 1,
+            line: 7,
+            lineText: 'export { PageShell }}',
+            namespace: '',
+            suggestion: ''
+          },
+          notes: [],
+          pluginName: '',
+          text: 'Unexpected "}"'
+        }
+      ],
+      warnings: [],
+      frame:
+        '\n\u001b[33mUnexpected "}"\u001b[39m\n5  |  import type { PageContext } from \'./types\'\n6  |  \n7  |  export { PageShell }}\n   |                      ^\n8  |  \n9  |  function PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {\n',
+      loc: {
+        column: 20,
+        file: '/home/rom/code/vite-plugin-ssr/examples/react-full/renderer/PageShell.tsx',
+        length: 1,
+        line: 7,
+        lineText: 'export { PageShell }}',
+        namespace: '',
+        suggestion: ''
+      },
+      plugin: 'vite:esbuild',
+      id: '/home/rom/code/vite-plugin-ssr/examples/react-full/renderer/PageShell.tsx',
+      pluginCode:
+        "import React from 'react'\nimport logoUrl from './logo.svg'\nimport { PageContextProvider } from './usePageContext'\nimport { Link } from './Link'\nimport type { PageContext } from './types'\n\nexport { PageShell }}\n\nfunction PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {\n  return (\n    <React.StrictMode>\n      <PageContextProvider pageContext={pageContext}>\n        <Layout>\n          <Sidebar>\n            <Logo />\n            <Link href=\"/\">Welcome</Link>\n            <Link href=\"/markdown\">Markdown</Link>\n            <Link href=\"/star-wars\">Data Fetching</Link>\n            <Link href=\"/hello\">Routing</Link>\n          </Sidebar>\n          <Content>{children}</Content>\n        </Layout>\n      </PageContextProvider>\n    </React.StrictMode>\n  )\n}\n\nfunction Layout({ children }: { children: React.ReactNode }) {\n  return (\n    <div\n      style={{\n        display: 'flex',\n        maxWidth: 900,\n        margin: 'auto'\n      }}\n    >\n      {children}\n    </div>\n  )\n}\n\nfunction Sidebar({ children }: { children: React.ReactNode }) {\n  return (\n    <div\n      id=\"sidebar\"\n      style={{\n        padding: 20,\n        flexShrink: 0,\n        display: 'flex',\n        flexDirection: 'column',\n        lineHeight: '1.8em',\n        borderRight: '2px solid #eee'\n      }}\n    >\n      {children}\n    </div>\n  )\n}\n\nfunction Content({ children }: { children: React.ReactNode }) {\n  return (\n    <div id=\"page-container\">\n      <div\n        id=\"page-content\"\n        style={{\n          padding: 20,\n          paddingBottom: 50,\n          minHeight: '100vh'\n        }}\n      >\n        {children}\n      </div>\n    </div>\n  )\n}\n\nfunction Logo() {\n  return (\n    <div\n      style={{\n        marginTop: 20,\n        marginBottom: 10\n      }}\n    >\n      <a href=\"/\">\n        <img src={logoUrl} height={64} width={64} />\n      </a>\n    </div>\n  )\n}\n",
+      message:
+        'Transform failed with 1 error:\n/home/rom/code/vite-plugin-ssr/examples/react-full/renderer/PageShell.tsx:7:20: ERROR: Unexpected "}"',
+      stack:
+        'Error: Transform failed with 1 error:\n/home/rom/code/vite-plugin-ssr/examples/react-full/renderer/PageShell.tsx:7:20: ERROR: Unexpected "}"\n    at failureErrorWithLog (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:1636:15)\n    at /home/rom/code/vite-plugin-ssr/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:837:29\n    at responseCallbacks.<computed> (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:697:9)\n    at handleIncomingPacket (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:752:9)\n    at Socket.readFromStdout (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:673:7)\n    at Socket.emit (node:events:513:28)\n    at addChunk (node:internal/streams/readable:324:12)\n    at readableAddChunk (node:internal/streams/readable:297:9)\n    at Socket.Readable.push (node:internal/streams/readable:234:10)\n    at Pipe.onStreamRead (node:internal/stream_base_commons:190:23)'
+    }
+    const formatted = getPrettyErrorWithCodeSnippet(err, '/home/rom/code/vite-plugin-ssr/examples/react-full')
+    expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
+      "Failed to transpile /renderer/PageShell.tsx because:
+      Unexpected \\"}\\"
+      5  |  import type { PageContext } from './types'
+      6  |  
+      7  |  export { PageShell }}
+         |                      ^
+      8  |  
+      9  |  function PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {"
+    `)
+  })
+
+  it('real use case - @vitejs/plugin-react - JavaScript Babel', () => {
+    const err = {
+      code: 'BABEL_PARSE_ERROR',
+      reasonCode: 'UnexpectedToken',
+      loc: { line: 7, column: 20, index: 208 },
+      pos: 208,
+      plugin: 'vite:react-babel',
+      id: '/home/rom/code/vite-plugin-ssr/examples/react-full/renderer/PageShell.tsx',
+      pluginCode:
+        "import React from 'react'\nimport logoUrl from './logo.svg'\nimport { PageContextProvider } from './usePageContext'\nimport { Link } from './Link'\nimport type { PageContext } from './types'\n\nexport { PageShell }}\n\nfunction PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {\n  return (\n    <React.StrictMode>\n      <PageContextProvider pageContext={pageContext}>\n        <Layout>\n          <Sidebar>\n            <Logo />\n            <Link href=\"/\">Welcome</Link>\n            <Link href=\"/markdown\">Markdown</Link>\n            <Link href=\"/star-wars\">Data Fetching</Link>\n            <Link href=\"/hello\">Routing</Link>\n          </Sidebar>\n          <Content>{children}</Content>\n        </Layout>\n      </PageContextProvider>\n    </React.StrictMode>\n  )\n}\n\nfunction Layout({ children }: { children: React.ReactNode }) {\n  return (\n    <div\n      style={{\n        display: 'flex',\n        maxWidth: 900,\n        margin: 'auto'\n      }}\n    >\n      {children}\n    </div>\n  )\n}\n\nfunction Sidebar({ children }: { children: React.ReactNode }) {\n  return (\n    <div\n      id=\"sidebar\"\n      style={{\n        padding: 20,\n        flexShrink: 0,\n        display: 'flex',\n        flexDirection: 'column',\n        lineHeight: '1.8em',\n        borderRight: '2px solid #eee'\n      }}\n    >\n      {children}\n    </div>\n  )\n}\n\nfunction Content({ children }: { children: React.ReactNode }) {\n  return (\n    <div id=\"page-container\">\n      <div\n        id=\"page-content\"\n        style={{\n          padding: 20,\n          paddingBottom: 50,\n          minHeight: '100vh'\n        }}\n      >\n        {children}\n      </div>\n    </div>\n  )\n}\n\nfunction Logo() {\n  return (\n    <div\n      style={{\n        marginTop: 20,\n        marginBottom: 10\n      }}\n    >\n      <a href=\"/\">\n        <img src={logoUrl} height={64} width={64} />\n      </a>\n    </div>\n  )\n}\n",
+      frame:
+        "5  |  import type { PageContext } from './types'\n6  |  \n7  |  export { PageShell }}\n   |                      ^\n8  |  \n9  |  function PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {",
+      message:
+        "/home/rom/code/vite-plugin-ssr/examples/react-full/renderer/PageShell.tsx: Unexpected token (7:20)\n\n\u001b[0m \u001b[90m  5 |\u001b[39m \u001b[36mimport\u001b[39m type { \u001b[33mPageContext\u001b[39m } \u001b[36mfrom\u001b[39m \u001b[32m'./types'\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m  6 |\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  7 |\u001b[39m \u001b[36mexport\u001b[39m { \u001b[33mPageShell\u001b[39m }}\u001b[0m\n\u001b[0m \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m  8 |\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m  9 |\u001b[39m \u001b[36mfunction\u001b[39m \u001b[33mPageShell\u001b[39m({ pageContext\u001b[33m,\u001b[39m children }\u001b[33m:\u001b[39m { pageContext\u001b[33m:\u001b[39m \u001b[33mPageContext\u001b[39m\u001b[33m;\u001b[39m children\u001b[33m:\u001b[39m \u001b[33mReact\u001b[39m\u001b[33m.\u001b[39m\u001b[33mReactNode\u001b[39m }) {\u001b[0m\n\u001b[0m \u001b[90m 10 |\u001b[39m   \u001b[36mreturn\u001b[39m (\u001b[0m",
+      stack:
+        "SyntaxError: /home/rom/code/vite-plugin-ssr/examples/react-full/renderer/PageShell.tsx: Unexpected token (7:20)\n\n\u001b[0m \u001b[90m  5 |\u001b[39m \u001b[36mimport\u001b[39m type { \u001b[33mPageContext\u001b[39m } \u001b[36mfrom\u001b[39m \u001b[32m'./types'\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m  6 |\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  7 |\u001b[39m \u001b[36mexport\u001b[39m { \u001b[33mPageShell\u001b[39m }}\u001b[0m\n\u001b[0m \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m  8 |\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m  9 |\u001b[39m \u001b[36mfunction\u001b[39m \u001b[33mPageShell\u001b[39m({ pageContext\u001b[33m,\u001b[39m children }\u001b[33m:\u001b[39m { pageContext\u001b[33m:\u001b[39m \u001b[33mPageContext\u001b[39m\u001b[33m;\u001b[39m children\u001b[33m:\u001b[39m \u001b[33mReact\u001b[39m\u001b[33m.\u001b[39m\u001b[33mReactNode\u001b[39m }) {\u001b[0m\n\u001b[0m \u001b[90m 10 |\u001b[39m   \u001b[36mreturn\u001b[39m (\u001b[0m\n    at instantiate (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parse-error/credentials.ts:62:21)\n    at toParseError (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parse-error.ts:60:12)\n    at TypeScriptParserMixin.raise (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/tokenizer/index.ts:1490:19)\n    at TypeScriptParserMixin.unexpected (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/tokenizer/index.ts:1531:16)\n    at TypeScriptParserMixin.parseExprAtom (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/expression.ts:1347:16)\n    at TypeScriptParserMixin.parseExprAtom (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/plugins/jsx/index.ts:574:22)\n    at TypeScriptParserMixin.parseExprSubscripts (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/expression.ts:718:23)\n    at TypeScriptParserMixin.parseUpdate (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/expression.ts:695:21)\n    at TypeScriptParserMixin.parseMaybeUnary (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/expression.ts:657:23)\n    at TypeScriptParserMixin.parseMaybeUnary (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/plugins/typescript/index.ts:3552:20)\n    at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/expression.ts:395:14)\n    at TypeScriptParserMixin.parseExprOps (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/expression.ts:407:23)\n    at TypeScriptParserMixin.parseMaybeConditional (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/expression.ts:362:23)\n    at TypeScriptParserMixin.parseMaybeAssign (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/expression.ts:302:21)\n    at TypeScriptParserMixin.parseMaybeAssign (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/plugins/typescript/index.ts:3429:22)\n    at TypeScriptParserMixin.parseExpressionBase (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/expression.ts:225:23)\n    at callback (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/expression.ts:216:39)\n    at TypeScriptParserMixin.allowInAnd (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/expression.ts:3072:16)\n    at TypeScriptParserMixin.parseExpression (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/expression.ts:216:17)\n    at TypeScriptParserMixin.parseStatementContent (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/statement.ts:628:23)\n    at TypeScriptParserMixin.parseStatementContent (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/plugins/typescript/index.ts:2887:20)\n    at TypeScriptParserMixin.parseStatementLike (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/statement.ts:417:17)\n    at TypeScriptParserMixin.parseModuleItem (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/statement.ts:354:17)\n    at TypeScriptParserMixin.parseBlockOrModuleBlockBody (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/statement.ts:1359:16)\n    at TypeScriptParserMixin.parseBlockBody (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/statement.ts:1333:10)\n    at TypeScriptParserMixin.parseProgram (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/statement.ts:226:10)\n    at TypeScriptParserMixin.parseTopLevel (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/statement.ts:208:25)\n    at TypeScriptParserMixin.parse (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/index.ts:45:10)\n    at TypeScriptParserMixin.parse (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/plugins/typescript/index.ts:3997:20)\n    at parse (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/index.ts:67:38)\n    at parser (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+core@7.21.8/node_modules/@babel/core/src/parser/index.ts:28:19)\n    at parser.next (<anonymous>)\n    at normalizeFile (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+core@7.21.8/node_modules/@babel/core/src/transformation/normalize-file.ts:51:24)\n    at normalizeFile.next (<anonymous>)\n    at run (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+core@7.21.8/node_modules/@babel/core/src/transformation/index.ts:38:36)\n    at run.next (<anonymous>)\n    at transform (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+core@7.21.8/node_modules/@babel/core/src/transform.ts:29:20)\n    at transform.next (<anonymous>)\n    at step (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/gensync@1.0.0-beta.2/node_modules/gensync/index.js:261:32)\n    at /home/rom/code/vite-plugin-ssr/node_modules/.pnpm/gensync@1.0.0-beta.2/node_modules/gensync/index.js:273:13\n    at async.call.result.err.err (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/gensync@1.0.0-beta.2/node_modules/gensync/index.js:223:11)\n    at cb (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/gensync@1.0.0-beta.2/node_modules/gensync/index.js:189:28)\n    at /home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+core@7.21.8/node_modules/@babel/core/src/gensync-utils/async.ts:90:7\n    at /home/rom/code/vite-plugin-ssr/node_modules/.pnpm/gensync@1.0.0-beta.2/node_modules/gensync/index.js:113:33\n    at step (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/gensync@1.0.0-beta.2/node_modules/gensync/index.js:287:14)\n    at /home/rom/code/vite-plugin-ssr/node_modules/.pnpm/gensync@1.0.0-beta.2/node_modules/gensync/index.js:273:13\n    at async.call.result.err.err (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/gensync@1.0.0-beta.2/node_modules/gensync/index.js:223:11)"
+    }
+    /* } */
+    /* } */
+    const formatted = getPrettyErrorWithCodeSnippet(err, '/home/rom/code/vite-plugin-ssr/examples/react-full')
+    expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
+      "Failed to transpile /renderer/PageShell.tsx because:
+      Unexpected token 
+         5 | import type { PageContext } from './types'
+         6 |
+      >  7 | export { PageShell }}
+           |                     ^
+         8 |
+         9 | function PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {
+        10 |   return ("
+    `)
+  })
+
+  it('real use case - @vitejs/plugin-react - CSS with PostCSS', () => {
+    const err = {
+      name: 'CssSyntaxError',
+      reason: 'Unexpected }',
+      file: '/home/rom/code/vite-plugin-ssr/examples/react-full/renderer/css/links.css',
+      source:
+        'a {\n  text-decoration: none;\n}}\n#sidebar a {\n  padding: 2px 10px;\n  margin-left: -10px;\n}\n#sidebar a.is-active {\n  background-color: #eee;\n}\n',
+      line: 3,
+      column: 2,
+      endLine: 3,
+      endColumn: 3,
+      input: {
+        line: 3,
+        column: 2,
+        endLine: 3,
+        endColumn: 3,
+        source:
+          'a {\n  text-decoration: none;\n}}\n#sidebar a {\n  padding: 2px 10px;\n  margin-left: -10px;\n}\n#sidebar a.is-active {\n  background-color: #eee;\n}\n',
+        url: 'file:///home/rom/code/vite-plugin-ssr/examples/react-full/renderer/css/links.css',
+        file: '/home/rom/code/vite-plugin-ssr/examples/react-full/renderer/css/links.css'
+      },
+      plugin: 'vite:css',
+      code: "@import './reset.css';\n@import './links.css';\n@import './code.css';\n@import './page-transition-loading-animation.css';\n",
+      loc: { column: 2, line: 3 },
+      id: '/home/rom/code/vite-plugin-ssr/examples/react-full/renderer/css/links.css',
+      pluginCode:
+        "@import './reset.css';\n@import './links.css';\n@import './code.css';\n@import './page-transition-loading-animation.css';\n",
+      frame:
+        "1  |  @import './reset.css';\n2  |  @import './links.css';\n3  |  @import './code.css';\n   |    ^\n4  |  @import './page-transition-loading-animation.css';\n5  |  ",
+      message:
+        '[postcss] postcss-import: /home/rom/code/vite-plugin-ssr/examples/react-full/renderer/css/links.css:3:2: Unexpected }',
+      stack:
+        'CssSyntaxError: [postcss] postcss-import: /home/rom/code/vite-plugin-ssr/examples/react-full/renderer/css/links.css:3:2: Unexpected }\n    at Input.error (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/input.js:148:16)\n    at Parser.unexpectedClose (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/parser.js:548:22)\n    at Parser.end (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/parser.js:379:12)\n    at Parser.parse (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/parser.js:56:16)\n    at parse (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/parse.js:11:12)\n    at new LazyResult (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/lazy-result.js:133:16)\n    at Processor.process (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/processor.js:28:14)\n    at runPostcss (file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/vite@4.3.5_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-5673ffe5.js:287:6)\n    at processContent (file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/vite@4.3.5_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-5673ffe5.js:281:10)\n    at file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/vite@4.3.5_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-5673ffe5.js:867:20\n    at async Promise.all (index 0)\n    at LazyResult.runAsync (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/postcss@8.4.23/node_modules/postcss/lib/lazy-result.js:396:11)\n    at compileCSS (file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/vite@4.3.5_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-934dbc7c.js:38483:25)\n    at TransformContext.transform (file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/vite@4.3.5_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-934dbc7c.js:37919:56)\n    at Object.transform (file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/vite@4.3.5_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-934dbc7c.js:42884:30)\n    at loadAndTransform (file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/vite@4.3.5_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-934dbc7c.js:53350:29)'
+    }
+    const formatted = getPrettyErrorWithCodeSnippet(err, '/home/rom/code/vite-plugin-ssr/examples/react-full')
+    // This is wrong, the code snippet should be (note the erroneous double }} at line 3):
+    // ```css
+    // a {
+    //  text-decoration: none;
+    // }}
+    // #sidebar a {
+    //   padding: 2px 10px;
+    //   margin-left: -10px;
+    // }
+    // #sidebar a.is-active {
+    //   background-color: #eee;
+    // }
+    // ```
+    expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
+      "Failed to transpile /renderer/css/links.css because:
+      [postcss] postcss-import: Unexpected }
+      1  |  @import './reset.css';
+      2  |  @import './links.css';
+      3  |  @import './code.css';
+         |    ^
+      4  |  @import './page-transition-loading-animation.css';
+      5  |"
+    `)
+  })
 })
 
 describe('getPrettyErrMessage()', () => {
