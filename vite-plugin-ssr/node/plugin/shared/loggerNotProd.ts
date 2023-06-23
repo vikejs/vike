@@ -10,8 +10,8 @@ export { logViteErrorContainingCodeSnippet }
 export { logConfigInfo }
 export { logConfigError }
 export { logConfigErrorRecover }
-export { clearLogs }
 export { logErrorDebugNote }
+export { clearLogs }
 export type { LogInfo }
 export type { LogInfoArgs }
 export type { LogError }
