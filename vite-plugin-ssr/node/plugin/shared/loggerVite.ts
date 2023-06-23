@@ -1,6 +1,6 @@
 export { improveViteLogs }
 
-import { assert, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils'
+import { assert, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
 import { logViteErrorContainingCodeSnippet, logViteAny, clearTheScreen } from './loggerNotProd'
 import { isErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet'
@@ -27,6 +27,7 @@ function intercept(logType: LogType, config: ResolvedConfig) {
       // No timestamp => no "[vite]" tag prepended => we don't trim the beginning of the message
       msg = trimWithAnsiTrailOnly(msg)
     }
+    msg = cleanFirstViteLog(msg)
 
     const store = getHttpRequestAsyncStore()
 
@@ -50,5 +51,14 @@ function intercept(logType: LogType, config: ResolvedConfig) {
     // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true
     const prependViteTag = options.timestamp || !!store?.httpRequestId
     logViteAny(msg, logType, store?.httpRequestId ?? null, prependViteTag)
+  }
+}
+
+function cleanFirstViteLog(msg: string): string {
+  const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
+  if (isFirstVitLog) {
+    return removeEmptyLines(msg)
+  } else {
+    return msg
   }
 }
