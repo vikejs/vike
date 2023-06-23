@@ -1,14 +1,21 @@
 export { logWithViteTag }
 export { logWithVikeTag }
 export { logDirectly }
-export { onErrorLog }
-export { onLog }
+export { isFirstLog }
+export { clearLogs }
+export { screenHasErrors }
 
-import { assert, projectInfo, type ProjectTag, stripAnsi, hasProp } from '../../utils'
+import { assert, projectInfo, type ProjectTag, stripAnsi, hasProp, assertIsVitePluginCode } from '../../utils'
 import pc from '@brillout/picocolors'
-import type { LogCategory, LogType } from '../loggerNotProd'
 import { isErrorDebug } from '../isErrorDebug'
 import { getGlobalContext } from '../../../runtime/globalContext'
+import type { LogCategory, LogType } from '../loggerNotProd'
+import type { ResolvedConfig } from 'vite'
+
+assertIsVitePluginCode()
+
+let isFirstLog = true
+let screenHasErrors = false
 
 function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion = false) {
   const projectTag = getProjectTag(showVikeVersion)
@@ -29,12 +36,13 @@ function logWithViteTag(msg: string, logType: LogType, category: LogCategory | n
   logDirectly(msg, logType)
 }
 
-// Every log is triggered by logDirectly(), except for logs in production since they aren't managed by loggerNotProd.ts
+// Not production => every log is triggered by logDirectly()
+//  - Even all Vite logs also go through logDirectly() (see interceptors of loggerVite.ts)
+//  - Production => logs aren't managed by loggerNotProd.ts => logDirectly() is never called (not even loaded as asserted by assertIsVitePluginCode())
 function logDirectly(thing: unknown, logType: LogType) {
   applyViteSourceMapToStackTrace(thing)
 
-  assert(onLogCallback)
-  onLogCallback()
+  isFirstLog = false
 
   if (logType === 'info') {
     console.log(thing)
@@ -45,8 +53,7 @@ function logDirectly(thing: unknown, logType: LogType) {
     return
   }
   if (logType === 'error') {
-    assert(onErrorLogCallback)
-    onErrorLogCallback()
+    screenHasErrors = true
     console.error(thing)
     return
   }
@@ -59,6 +66,12 @@ function logDirectly(thing: unknown, logType: LogType) {
   assert(false)
 }
 
+function clearLogs(viteConfig: ResolvedConfig) {
+  // We use Vite's logger in order to respect the user's `clearScreen: false` setting
+  viteConfig.logger.clearScreen('error')
+  screenHasErrors = false
+}
+
 function applyViteSourceMapToStackTrace(thing: unknown) {
   if (isErrorDebug()) return
   if (!hasProp(thing, 'stack')) return
@@ -68,14 +81,6 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-let onErrorLogCallback: (() => void) | undefined
-function onErrorLog(cb: () => void) {
-  onErrorLogCallback = cb
-}
-let onLogCallback: (() => void) | undefined
-function onLog(cb: () => void) {
-  onLogCallback = cb
-}
 function prependTags(msg: string, projectTag: '[vite]' | ProjectTag, category: LogCategory | null, logType: LogType) {
   const color = (s: string) => {
     if (logType === 'error' && !hasRed(msg)) return pc.red(pc.bold(s))

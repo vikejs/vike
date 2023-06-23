@@ -4,7 +4,6 @@ export { assertWarning }
 export { assertInfo }
 export { getProjectError }
 export { addOnBeforeLogHook }
-export { assertHasLogged }
 export { getAssertErrMsg }
 export { addAssertColorer }
 export { overwriteAssertProductionLogger }
@@ -16,12 +15,11 @@ import { projectInfo } from './projectInfo'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
   onBeforeLog?: () => void
-  hasLogged?: true
   logger: Logger
   colorer: Colorer
 }>('utils/assert.ts', {
   alreadyLogged: new Set(),
-  // Production logger
+  // Production logger. Overwritten by loggerNotProd.ts in non-production environments.
   logger(msg, logType) {
     if (logType === 'info') {
       console.log(msg)
@@ -42,7 +40,6 @@ const numberOfStackTraceLinesToRemove = 2
 
 function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   if (condition) return
-  globalObject.hasLogged = true
 
   const debugStr = (() => {
     if (!debugInfo) {
@@ -69,7 +66,6 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
 
 function assertUsage(condition: unknown, errMsg: string): asserts condition {
   if (condition) return
-  globalObject.hasLogged = true
   errMsg = addPrefixAssertType(errMsg, 'Wrong Usage')
   errMsg = addPrefixProjctName(errMsg)
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
@@ -90,7 +86,6 @@ function assertWarning(
   { onlyOnce = true, showStackTrace = false }: { onlyOnce?: boolean | string; showStackTrace?: boolean } = {}
 ): void {
   if (condition) return
-  globalObject.hasLogged = true
   msg = addPrefixAssertType(msg, 'Warning')
   msg = addPrefixProjctName(msg)
   if (onlyOnce) {
@@ -131,10 +126,6 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
 
 function addOnBeforeLogHook(onBeforeLog: () => void) {
   globalObject.onBeforeLog = onBeforeLog
-}
-
-function assertHasLogged(): boolean {
-  return !!globalObject.hasLogged
 }
 
 type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning' | 'Info'

@@ -24,7 +24,6 @@ import { getViteConfig } from '../../runtime/globalContext'
 import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/loggerRuntime'
 import {
   assert,
-  assertHasLogged,
   assertIsVitePluginCode,
   getAssertErrMsg,
   isUserHookError,
@@ -43,7 +42,14 @@ import {
   getConfigExececutionErrorIntroMsg,
   getConfigBuildErrorFormatted
 } from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
-import { logWithVikeTag, logWithViteTag, logDirectly, onErrorLog, onLog } from './loggerNotProd/log'
+import {
+  logWithVikeTag,
+  logWithViteTag,
+  logDirectly,
+  isFirstLog,
+  screenHasErrors,
+  clearLogs
+} from './loggerNotProd/log'
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
@@ -209,14 +215,6 @@ function assertLogger(thing: string | Error, logType: LogType): void {
   logWithVikeTag(assertMsg, logType, category, showVikeVersion)
 }
 
-let isFirstLog = true
-onLog(() => {
-  isFirstLog = false
-})
-let screenHasErrors = false
-onErrorLog(() => {
-  screenHasErrors = true
-})
 type ClearConditions = { clearErrors?: boolean; clearIfFirstLog?: boolean; clearAlsoIfConfigIsInvalid?: boolean }
 function clearTheScreen(conditions: ClearConditions = {}): void {
   if (!conditions.clearAlsoIfConfigIsInvalid && isConfigInvalid) {
@@ -226,14 +224,12 @@ function clearTheScreen(conditions: ClearConditions = {}): void {
   if (conditions.clearErrors && !screenHasErrors) {
     return
   }
-  if (conditions.clearIfFirstLog && (!isFirstLog || !assertHasLogged())) {
+  if (conditions.clearIfFirstLog && !isFirstLog) {
     return
   }
   const viteConfig = getViteConfig()
   if (viteConfig) {
-    // We use Vite's logger in order to respect the user's `clearScreen: false` setting
-    viteConfig.logger.clearScreen('error')
-    screenHasErrors = false
+    clearLogs(viteConfig)
   }
 }
 
