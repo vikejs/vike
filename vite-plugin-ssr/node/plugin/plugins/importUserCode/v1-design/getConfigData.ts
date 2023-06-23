@@ -53,8 +53,7 @@ import { isTmpFile, transpileAndLoadFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
 import { getViteDevServer } from '../../../../runtime/globalContext'
-import pc from '@brillout/picocolors'
-import { logConfigError, logConfigInfo } from '../../../shared/loggerNotProd'
+import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd'
 import {
   removeSuperfluousViteLog_enable,
   removeSuperfluousViteLog_disable
@@ -145,7 +144,7 @@ async function handleReloadSideEffects() {
   if (!isConfigInvalid) {
     if (wasConfigInvalid) {
       wasConfigInvalid = false
-      logConfigInfo(pc.green(pc.bold('Configuration successfully loaded.')), 'error-recover')
+      logConfigErrorRecover()
     }
     if (devServerIsCorrupt) {
       devServerIsCorrupt = false

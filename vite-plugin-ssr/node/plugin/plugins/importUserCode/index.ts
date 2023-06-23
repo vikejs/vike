@@ -82,7 +82,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig, conf
       virtualModules.forEach((mod) => {
         server.moduleGraph.invalidateModule(mod)
       })
-      reload(file, config, configVps, isRemove ? 'removed' : 'added')
+      reloadConfig(file, config, configVps, isRemove ? 'removed' : 'added')
     }
   }
 }
@@ -95,43 +95,46 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
 
   const isViteModule = ctx.modules.length > 0
 
-  if (!isVikeConfig) {
-    /* Should we show this?
-    if (!isViteModule) {
-      logViteAny(
-        `${msg} — ${pc.bold('no HMR')}, see https://vite-plugin-ssr.com/on-demand-compiler`,
-        'info',
-        null,
-        true,
-        clear,
-        config
-      )
-    }
-    //*/
-    /*
-    if (isViteModule) {
-      clearTheScreen()
-    }
-    //*/
+  /* Should we show this?
+  // - Can be useful for server files that aren't processed by Vite.
+  // - Can be annoying for files that obviously aren't processed by Vite.
+  if (!isVikeConfig && !isViteModule) {
+    logViteAny(
+      `${msg} — ${pc.bold('no HMR')}, see https://vite-plugin-ssr.com/on-demand-compiler`,
+      'info',
+      null,
+      true,
+      clear,
+      config
+    )
     return
-  } else {
+  }
+  //*/
+
+  // HMR can resolve errors => we clear previously shown errors.
+  // It can hide an error it shouldn't hide (because the error isn't shown again), but it's ok since users can reload the page and the error will be shown again (Vite transpilation errors are shown again upon a page reload).
+  if (!isVikeConfig && isViteModule) {
+    clearTheScreen({ clearErrors: true })
+    return
+  }
+
+  if (isVikeConfig) {
     assert(!isViteModule)
-    clearTheScreen()
-    reload(file, config, configVps, 'change')
+    reloadConfig(file, config, configVps, 'modified')
     const virtualModules = getVirtualModules(server)
     return virtualModules
   }
 }
 
-function reload(
+function reloadConfig(
   filePath: string,
   config: ResolvedConfig,
   configVps: ConfigVpsResolved,
-  op: 'change' | 'added' | 'removed'
+  op: 'modified' | 'added' | 'removed'
 ) {
   {
     const filePathToShowToUser = pc.dim(makeRelativeToUserRootDir(filePath, config.root))
-    const msg = `File ${op}: ${filePathToShowToUser}`
+    const msg = `Config file ${op} ${filePathToShowToUser}`
     logConfigInfo(msg, 'info')
   }
   reloadConfigData(config.root, configVps.extensions)

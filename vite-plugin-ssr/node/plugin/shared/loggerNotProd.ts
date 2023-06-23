@@ -5,10 +5,11 @@
 //  - Pre-rendering
 // In other words: everywhere except in production
 
-export { logConfigInfo }
-export { logConfigError }
 export { logViteAny }
 export { logViteErrorContainingCodeSnippet }
+export { logConfigInfo }
+export { logConfigError }
+export { logConfigErrorRecover }
 export { clearTheScreen }
 export { logErrorDebugNote }
 export type { LogInfo }
@@ -45,6 +46,7 @@ import {
 import { logWithVikeTag, logWithViteTag, logDirectly, onErrorLog, onLog } from './loggerNotProd/log'
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError'
+import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
 
 assertIsVitePluginCode()
 overwriteRuntimeProductionLogger(logRuntimeError, logRuntimeInfo)
@@ -74,6 +76,12 @@ function logViteAny(msg: string, logType: LogType, httpRequestId: number | null,
 function logConfigInfo(msg: string, logType: LogType): void {
   const category = getConfigCategory()
   logWithVikeTag(msg, logType, category)
+}
+function logConfigErrorRecover(): void {
+  const msg = pc.green(pc.bold('Configuration successfully loaded.'))
+  clearTheScreen({ clearAlsoIfConfigIsInvalid: true })
+  const category = getConfigCategory()
+  logWithVikeTag(msg, 'error-recover', category)
 }
 
 function logRuntimeError(
@@ -138,6 +146,8 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
 }
 
 function logConfigError(err: unknown): void {
+  clearTheScreen({ clearAlsoIfConfigIsInvalid: true })
+
   warnIfObjectIsNotObject(err)
 
   const category = getConfigCategory()
@@ -145,7 +155,6 @@ function logConfigError(err: unknown): void {
   {
     const errIntroMsg = getConfigExececutionErrorIntroMsg(err)
     if (errIntroMsg) {
-      clearTheScreen({ clearIfFirstLog: true })
       assert(stripAnsi(errIntroMsg).startsWith('Failed to execute'))
       logWithVikeTag(errIntroMsg, 'error', category)
       logDirectly(err, 'error')
@@ -155,7 +164,6 @@ function logConfigError(err: unknown): void {
   {
     const errMsgFormatted = getConfigBuildErrorFormatted(err)
     if (errMsgFormatted) {
-      clearTheScreen({ clearIfFirstLog: true })
       assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
       if (!isErrorDebug()) {
         logWithVikeTag(errMsgFormatted, 'error', category)
@@ -209,12 +217,17 @@ let screenHasErrors = false
 onErrorLog(() => {
   screenHasErrors = true
 })
-type ClearConditions = { clearErrors?: boolean; clearIfFirstLog?: boolean }
-function clearTheScreen(conditions?: ClearConditions): void {
-  if (conditions) {
-    const { clearErrors, clearIfFirstLog } = conditions
-    const clear = (clearErrors && screenHasErrors) || (clearIfFirstLog && isFirstLog && !assertHasLogged())
-    if (!clear) return
+type ClearConditions = { clearErrors?: boolean; clearIfFirstLog?: boolean; clearAlsoIfConfigIsInvalid?: boolean }
+function clearTheScreen(conditions: ClearConditions = {}): void {
+  if (!conditions.clearAlsoIfConfigIsInvalid && isConfigInvalid) {
+    // Avoid hiding the config error: the config error is printed only once
+    return
+  }
+  if (conditions.clearErrors && !screenHasErrors) {
+    return
+  }
+  if (conditions.clearIfFirstLog && (!isFirstLog || !assertHasLogged())) {
+    return
   }
   const viteConfig = getViteConfig()
   if (viteConfig) {
