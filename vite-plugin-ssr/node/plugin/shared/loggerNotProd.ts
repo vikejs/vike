@@ -63,14 +63,7 @@ function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType, cl
   assert(category)
   logWithVikeTag(msg, logType, category)
 }
-function logViteAny(
-  msg: string,
-  logType: LogType,
-  httpRequestId: number | null,
-  prependViteTag: boolean,
-  clear: boolean
-): void {
-  if (clear) clearTheScreen()
+function logViteAny(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
   if (prependViteTag) {
     const category = getCategory(httpRequestId)
     logWithViteTag(msg, logType, category)

@@ -49,6 +49,6 @@ function intercept(logType: LogType, config: ResolvedConfig) {
     if (options.error) store?.markErrorAsLogged(options.error)
     // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true
     const prependViteTag = options.timestamp || !!store?.httpRequestId
-    logViteAny(msg, logType, store?.httpRequestId ?? null, prependViteTag, options.clear ?? false)
+    logViteAny(msg, logType, store?.httpRequestId ?? null, prependViteTag)
   }
 }
