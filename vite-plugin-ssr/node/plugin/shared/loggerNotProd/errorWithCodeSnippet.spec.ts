@@ -1,11 +1,10 @@
 import { expect, describe, it } from 'vitest'
 import { stripAnsi } from '../../utils'
 import { getPrettyErrMessage, getPrettyErrorWithCodeSnippet, isErrorWithCodeSnippet } from './errorWithCodeSnippet'
+import { errBabelSolid } from './errorWithCodeSnippet-fixture-errors/errBabelSolid'
 
 // To generate new test cases:
-// ```bash
-// DEBUG=vps:error pnpm run dev
-// ```
+// Uncomment the console.log() statements in ./errorWithCodeSnippet.ts
 
 describe('getPrettyErrorWithCodeSnippet() - success', () => {
   it('real use case - @vitejs/plugin-react-swc', () => {
@@ -287,6 +286,21 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
          8 |
          9 | function PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {
         10 |   return ("
+    `)
+  })
+
+  it('real use case - vite-plugin-solid - JavaScript with Babel', () => {
+    const formatted = getPrettyErrorWithCodeSnippet(errBabelSolid, '/home/rom/code/vite-plugin-ssr/examples/solid-spa')
+    expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
+      "Failed to transpile /renderer/_default.page.client.tsx?extractExportNames&lang.tsx because:
+      /home/rom/code/vite-plugin-ssr/examples/solid-spa/renderer/_default.page.client.tsx: Invalid left-hand side in assignment expression. 
+        15 | async function render(pageContext: PageContextClient) {
+        16 |   const { Page } = pageContext
+      > 17 |   if (1 = 1) {}
+           |       ^
+        18 |   if (disposePreviousPage) {
+        19 |     disposePreviousPage()
+        20 |   }"
     `)
   })
 })
