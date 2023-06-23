@@ -96,13 +96,8 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
   const isViteModule = ctx.modules.length > 0
 
   if (!isVikeConfig) {
-    /*/
-    const clear = true
-    /*/
-    const clear = false
-    //*/
+    /* Should we show this?
     if (!isViteModule) {
-      /* Should we show this?
       logViteAny(
         `${msg} — ${pc.bold('no HMR')}, see https://vite-plugin-ssr.com/on-demand-compiler`,
         'info',
@@ -111,10 +106,13 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
         clear,
         config
       )
-      */
-    } else {
-      if (clear) clearTheScreen()
     }
+    //*/
+    /*
+    if (isViteModule) {
+      clearTheScreen()
+    }
+    //*/
     return
   } else {
     assert(!isViteModule)
