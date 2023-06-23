@@ -196,8 +196,8 @@ async function renderPage_(
 }
 
 function logHttpRequest(urlToShowToUser: string, httpRequestId: number) {
-  const clear = globalObject.pendingRequestsCount === 0 ? { clearErrors: true } : undefined
-  logRuntimeInfo?.(`HTTP request: ${urlToShowToUser}`, httpRequestId, 'info', clear)
+  const clearErrors = globalObject.pendingRequestsCount === 0
+  logRuntimeInfo?.(`HTTP request: ${urlToShowToUser}`, httpRequestId, 'info', clearErrors)
 }
 function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageContextReturn: PageContextReturn) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null

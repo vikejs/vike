@@ -65,8 +65,8 @@ type LogInfoArgs = Parameters<typeof logRuntimeInfo>
 type LogError = (...args: LogErrorArgs) => void
 type LogErrorArgs = Parameters<typeof logRuntimeError>
 
-function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType, clear?: ClearConditions) {
-  if (clear) clearLogs(clear)
+function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType, clearErrors?: boolean) {
+  if (clearErrors) clearLogs({ clearErrors: true })
   const category = getCategory(httpRequestId)
   assert(category)
   logWithVikeTag(msg, logType, category)
@@ -215,8 +215,9 @@ function assertLogger(thing: string | Error, logType: LogType): void {
   logWithVikeTag(assertMsg, logType, category, showVikeVersion)
 }
 
-type ClearConditions = { clearErrors?: boolean; clearIfFirstLog?: boolean; clearAlsoIfConfigIsInvalid?: boolean }
-function clearLogs(conditions: ClearConditions = {}): void {
+function clearLogs(
+  conditions: { clearErrors?: boolean; clearIfFirstLog?: boolean; clearAlsoIfConfigIsInvalid?: boolean } = {}
+): void {
   if (!conditions.clearAlsoIfConfigIsInvalid && isConfigInvalid) {
     // Avoid hiding the config error: the config error is printed only once
     return
