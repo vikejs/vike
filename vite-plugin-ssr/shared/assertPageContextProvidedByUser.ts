@@ -51,7 +51,7 @@ function assertPageContextProvidedByUser(
   assertWarning(
     !('_pageId' in pageContextProvidedByUser),
     `${errPrefix} sets \`pageContext._pageId\` which means that vite-plugin-ssr's routing is overriden. This is an experimental feature: make sure to contact a vite-plugin-ssr maintainer before using this.`,
-    { showStackTrace: false, onlyOnce: true }
+    { onlyOnce: true }
   )
 
   if (!isRenderErrorPage) {

@@ -104,14 +104,12 @@ async function getHtmlTags(
         //  - https://github.com/vitejs/vite/issues/2282
         //  - https://github.com/brillout/vite-plugin-ssr/issues/261
         assertWarning(a.inject, `[injectFilter()] We recommend against not injecting ${a.src}`, {
-          onlyOnce: true,
-          showStackTrace: false
+          onlyOnce: true
         })
       }
       if (!isHtmlOnly && a.assetType === 'script') {
         assertWarning(a.inject, `[injectFilter()] We recommend against not preloading JavaScript (${a.src})`, {
-          onlyOnce: true,
-          showStackTrace: false
+          onlyOnce: true
         })
       }
     })

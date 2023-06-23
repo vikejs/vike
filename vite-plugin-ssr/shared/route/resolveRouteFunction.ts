@@ -76,7 +76,7 @@ function assertSyncRouting(res: unknown, errPrefix: string) {
   assertWarning(
     !isPromise(res),
     `${errPrefix} returned a promise, but asynchronous routing is deprecated and will be removed in the next major release, see https://vite-plugin-ssr.com/route-function#async`,
-    { showStackTrace: false, onlyOnce: true }
+    { onlyOnce: true }
   )
 }
 

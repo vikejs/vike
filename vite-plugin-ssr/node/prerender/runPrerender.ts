@@ -181,8 +181,7 @@ async function runPrerender(
       prerenderConfig,
       `You're executing \`${manuallyTriggeredBy}\` but the config \`prerender\` isn't set to true`,
       {
-        onlyOnce: true,
-        showStackTrace: false
+        onlyOnce: true
       }
     )
   }
@@ -641,7 +640,7 @@ async function callOnPrerenderStartHook(
     assertWarning(
       false,
       `${errPrefix} returns \`{ globalContext: { prerenderPageContexts } }\` but the return value has been renamed to \`{ prerenderContext: { pageContexts } }\`, see ${docLink}`,
-      { onlyOnce: true, showStackTrace: false }
+      { onlyOnce: true }
     )
     result = {
       prerenderContext: {
@@ -664,7 +663,7 @@ async function callOnPrerenderStartHook(
         false,
         msgPrefix +
           ' provided pageContext.url but it should provide pageContext.urlOriginal instead, see https://vite-plugin-ssr.com/migration/0.4.23',
-        { showStackTrace: false, onlyOnce: true }
+        { onlyOnce: true }
       )
       pageContext.urlOriginal = pageContext.url
     }
@@ -779,7 +778,7 @@ function warnContradictoryNoPrerenderList(
     assertWarning(
       false,
       `The ${providedByHook.hookName}() hook defined by ${providedByHook.hookFilePath} returns the URL '${urlOriginal}', while ${setByConfigFile} sets the config '${setByConfigName}' to ${setByConfigValue}. This is contradictory: either don't set the config '${setByConfigName}' to ${setByConfigValue} or remove the URL '${urlOriginal}' from the list of URLs to be pre-rendered.`,
-      { onlyOnce: true, showStackTrace: false }
+      { onlyOnce: true }
     )
   })
 }
@@ -803,7 +802,7 @@ function warnMissingPages(
       assertWarning(
         partial,
         `Cannot pre-render page ${pageAt} because it has a non-static route, and no ${hookName}() hook returned (an) URL(s) matching the page's route. Either use a ${hookName}() hook to pre-render the page, or use the option \`prerender.partial\` to suppress this warning, see https://vite-plugin-ssr.com/prerender-config`,
-        { showStackTrace: false, onlyOnce: true }
+        { onlyOnce: true }
       )
     })
 }

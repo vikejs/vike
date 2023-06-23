@@ -268,7 +268,7 @@ async function renderTemplate(
           `\`${templateVar}\` which will be converted to an empty string`,
           `Pass an empty string instead of \`${templateVar}\` to remove this warning.`
         ),
-        { showStackTrace: false, onlyOnce: false }
+        { onlyOnce: false }
       )
       templateVar = ''
     }
@@ -290,7 +290,7 @@ async function renderTemplate(
             `\`${templateVar}\` which seems to be HTML code`,
             "Did you forget to wrap the value with dangerouslySkipEscape()? (This warning isn't shown in production.)"
           ),
-          { showStackTrace: false, onlyOnce: false }
+          { onlyOnce: false }
         )
       }
     }

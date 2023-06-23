@@ -85,7 +85,7 @@ function getStemPkgNames(userPkgJson: UserPkgJson): string[] {
       assertWarning(
         false,
         `${depName} should be renamed to @someNpmOrgOrUser/${depName} (to follow the convention that all Stem packages belond to an npm organization)`,
-        { showStackTrace: false, onlyOnce: true }
+        { onlyOnce: true }
       )
       return true
     }

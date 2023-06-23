@@ -37,7 +37,7 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
     assertWarning(
       isPageConfig,
       `${filePathToShowToUser} is a JavaScript header file (.h.js), but JavaScript header files should only be used for +config.h.js, see https://vite-plugin-ssr.com/header-file`,
-      { onlyOnce: true, showStackTrace: false }
+      { onlyOnce: true }
     )
     const res = replaceImportStatements(code, filePathToShowToUser)
     if (!res.noImportStatement) {
@@ -46,7 +46,7 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
         assertWarning(
           false,
           `Rename ${filePathToShowToUser} to ${filePathCorrect}, see https://vite-plugin-ssr.com/header-file`,
-          { onlyOnce: true, showStackTrace: false }
+          { onlyOnce: true }
         )
       }
       code = res.code
@@ -201,7 +201,7 @@ function assertFileImports(
         singular ? 'has' : 'have'
       } no effect, see explanation at https://vite-plugin-ssr.com/header-file`
     ].join('\n'),
-    { onlyOnce: true, showStackTrace: false }
+    { onlyOnce: true }
   )
 }
 

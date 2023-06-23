@@ -187,7 +187,7 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
       assertWarning(
         !isPromise(val),
         `${errBegin} is a promise which is deprecated in favor of async functions, see https://vite-plugin-ssr.com/stream#initial-data-after-stream-end`,
-        { onlyOnce: true, showStackTrace: false }
+        { onlyOnce: true }
       )
       pageContextPromise = val
     } else {

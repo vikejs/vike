@@ -39,7 +39,7 @@ async function loadPageFilesClient(pageId: string) {
       assertWarning(
         !p.fileExports?.onBeforeRender,
         `\`export { onBeforeRender }\` of ${p.filePath} is loaded in the browser but never executed (because you are using Server-side Routing). In order to reduce the size of you browser-side JavaScript, define \`onBeforeRender()\` in \`.page.server.js\` instead. See https://vite-plugin-ssr.com/onBeforeRender-isomorphic#server-routing`,
-        { showStackTrace: false, onlyOnce: true }
+        { onlyOnce: true }
       )
     })
 

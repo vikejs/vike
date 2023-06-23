@@ -55,13 +55,13 @@ function assertSingleDefaultExport(
       assertWarning(
         exportsInvalid.length === 0,
         `${filePath} should only have a default export: remove \`export { ${exportsInvalidStr} }\``,
-        { onlyOnce: true, showStackTrace: false }
+        { onlyOnce: true }
       )
     } else {
       assertWarning(
         exportsInvalid.length === 0,
         `${filePath} replace \`export { ${exportsInvalidStr} }\` with \`export default { ${exportsInvalidStr} }\``,
-        { onlyOnce: true, showStackTrace: false }
+        { onlyOnce: true }
       )
     }
   }

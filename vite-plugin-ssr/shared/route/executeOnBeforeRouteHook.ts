@@ -65,7 +65,7 @@ async function executeOnBeforeRouteHook(
     assertWarning(
       false,
       `${errPrefix} returned \`{ pageContext: { url } }\` but \`pageContext.url\` has been renamed to \`pageContext.urlOriginal\`. Return \`{ pageContext: { urlOriginal } }\` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)`,
-      { showStackTrace: false, onlyOnce: true }
+      { onlyOnce: true }
     )
     hookReturn.pageContext.urlOriginal = hookReturn.pageContext.url
     delete hookReturn.pageContext.url

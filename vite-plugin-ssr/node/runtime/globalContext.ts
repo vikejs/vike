@@ -196,6 +196,6 @@ function assertNodeEnv(hasViteDevServer: boolean) {
     } environment by \`process.env.NODE_ENV === ${JSON.stringify(
       nodeEnv
     )}\` which is contradictory, see https://vite-plugin-ssr.com/NODE_ENV`,
-    { showStackTrace: false, onlyOnce: true }
+    { onlyOnce: true }
   )
 }

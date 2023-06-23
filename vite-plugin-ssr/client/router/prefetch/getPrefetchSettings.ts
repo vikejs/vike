@@ -58,7 +58,7 @@ function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag: HTML
       assertWarning(
         false,
         `prefetchStaticAssets value \`{ when: '${when}' }\` is outdated: set prefetchStaticAssets to '${correctValue}' instead`,
-        { onlyOnce: true, showStackTrace: false }
+        { onlyOnce: true }
       )
       return correctValue
     }
@@ -97,7 +97,6 @@ function getPrefetchAttribute(linkTag: HTMLElement): PrefetchStaticAssets | null
   if (attrOld) {
     assert(!attr)
     assertWarning(false, deprecationNotice, {
-      showStackTrace: false,
       onlyOnce: true
     })
     if (attrOld === 'true') {

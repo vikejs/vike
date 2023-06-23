@@ -52,7 +52,7 @@ function replaceImportStatements(
       if (!isWarning) {
         assertUsage(false, errMsg)
       }
-      assertWarning(false, errMsg, { onlyOnce: true, showStackTrace: false })
+      assertWarning(false, errMsg, { onlyOnce: true })
     }
 
     let replacement = ''

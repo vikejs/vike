@@ -499,7 +499,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
       assertWarning(
         false,
         `Being able to define config '${configName}' in ${configElement.configDefinedByFile} is experimental and will likely be removed. Define the config '${configName}' in vite-plugin-ssr's Vite plugin options instead.`,
-        { onlyOnce: true, showStackTrace: false }
+        { onlyOnce: true }
       )
       vikeConfig[configName] = configElement.configValue
     }
@@ -599,7 +599,7 @@ function warnOverridenConfigValues(
     assertWarning(
       false,
       `${configElementLoser.configDefinedAt} overriden by ${configElementWinner.configDefinedAt}, remove one of the two`,
-      { onlyOnce: false, showStackTrace: false }
+      { onlyOnce: false }
     )
   })
 }
@@ -895,7 +895,7 @@ function applyEffect(
       assertWarning(
         false,
         `${configDefinedAtWithEffect} is modifying a config value; this is an experimental functionality; reach out to a maintainer if you want to use this in production`,
-        { onlyOnce: true, showStackTrace: false }
+        { onlyOnce: true }
       )
       /* We're completely overriding any previous configElement
       const configElementTargetOriginal = configElements[configName]
@@ -940,7 +940,6 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
       time < 2 * 1000,
       `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on vite-plugin-ssr's GitHub.`,
       {
-        showStackTrace: false,
         onlyOnce: 'slow-page-files-search'
       }
     )
@@ -1091,8 +1090,7 @@ function assertExtendsImportPath(importPath: string, filePath: string, configFil
     const [fileNameBase, ...fileNameRest] = fileName.split('.')
     const fileNameCorrect = [fileNameBaseCorrect, ...fileNameRest].join('.')
     assertWarning(fileNameBase === fileNameBaseCorrect, `Rename ${fileName} to ${fileNameCorrect} in ${fileDir}`, {
-      onlyOnce: true,
-      showStackTrace: false
+      onlyOnce: true
     })
   } else {
     assertWarning(
@@ -1100,7 +1098,7 @@ function assertExtendsImportPath(importPath: string, filePath: string, configFil
       `${getFilePathToShowToUser(
         configFilePath
       )} uses 'extends' to inherit from '${importPath}' which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this feature.`,
-      { onlyOnce: true, showStackTrace: false }
+      { onlyOnce: true }
     )
   }
 }

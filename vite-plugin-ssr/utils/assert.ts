@@ -69,7 +69,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
 function assertUsage(
   condition: unknown,
   errMsg: string,
-  { showStackTrace = false }: { showStackTrace?: boolean } = {}
+  { showStackTrace }: { showStackTrace?: true } = {}
 ): asserts condition {
   if (condition) return
   errMsg = addPrefixAssertType(errMsg, 'Wrong Usage')
@@ -92,7 +92,7 @@ function getProjectError(errMsg: string) {
 function assertWarning(
   condition: unknown,
   msg: string,
-  { onlyOnce = true, showStackTrace = false }: { onlyOnce?: boolean | string; showStackTrace?: boolean } = {}
+  { onlyOnce = true, showStackTrace }: { onlyOnce?: boolean | string; showStackTrace?: true } = {}
 ): void {
   if (condition) return
   msg = addPrefixAssertType(msg, 'Warning')
