@@ -176,7 +176,7 @@ describe('getPrettyErrorWithCodeSnippet() - failure', () => {
 
   it('real use case - @vitejs/plugin-react - CSS with PostCSS', () => {
     const formatted = getPrettyErrorWithCodeSnippet(errPostcss, '/home/rom/code/vite-plugin-ssr/examples/react-full')
-    // This is wrong, the code snippet should be (note the erroneous double }} at line 3):
+    // The code snippet should be (note the erroneous double }} at line 3 column 2):
     // ```css
     // a {
     //  text-decoration: none;
@@ -189,6 +189,7 @@ describe('getPrettyErrorWithCodeSnippet() - failure', () => {
     //   background-color: #eee;
     // }
     // ```
+    // But the frame shows the importer instead. Seems like an upstream bug? The line and column number is correct => someone upstream is using the source code of the wrong file.
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /renderer/css/links.css because:
       [postcss] postcss-import: Unexpected }
