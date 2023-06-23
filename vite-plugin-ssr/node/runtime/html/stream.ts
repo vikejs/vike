@@ -796,10 +796,11 @@ function isStreamPipeNode(thing: unknown): thing is StreamPipeNodeWrapped | Stre
 }
 
 function stampPipe(pipe: StreamPipeNode | StreamPipeWeb, pipeType: 'web-stream' | 'node-stream') {
-  assertUsage(pipeType, 'stampPipe(pipe, pipeType): argument `pipeType` is missing.)')
+  assertUsage(pipeType, 'stampPipe(pipe, pipeType): argument `pipeType` is missing.)', { showStackTrace: true })
   assertUsage(
     ['web-stream', 'node-stream'].includes(pipeType),
-    "stampPipe(pipe, pipeType): argument `pipeType` should be either 'web-stream' or 'node-stream'."
+    "stampPipe(pipe, pipeType): argument `pipeType` should be either 'web-stream' or 'node-stream'.",
+    { showStackTrace: true }
   )
   if (pipeType === 'node-stream') {
     Object.assign(pipe, { isNodeStreamPipe: true })

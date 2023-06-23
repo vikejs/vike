@@ -151,7 +151,8 @@ function escapeInject(
 ): TemplateWrapped {
   assertUsage(
     templateStrings.length === templateVariables.length + 1 && templateStrings.every((str) => typeof str === 'string'),
-    'You seem to use `escapeInject` as a function, but `escapeInject` is a string template tag, see https://vite-plugin-ssr.com/escapeInject'
+    'You seem to use `escapeInject` as a function, but `escapeInject` is a string template tag, see https://vite-plugin-ssr.com/escapeInject',
+    { showStackTrace: true }
   )
   return {
     _template: {
@@ -171,7 +172,8 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   }
   assertUsage(
     !isPromise(arg),
-    `[dangerouslySkipEscape(str)] Argument \`str\` is a promise. It should be a string instead (or a stream). Make sure to \`await str\`.`
+    `[dangerouslySkipEscape(str)] Argument \`str\` is a promise. It should be a string instead (or a stream). Make sure to \`await str\`.`,
+    { showStackTrace: true }
   )
   if (typeof arg === 'string') {
     return { _escaped: arg }
@@ -181,7 +183,7 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
     `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof arg}"\`.`,
     {
       onlyOnce: false,
-      showStackTrace: false
+      showStackTrace: true
     }
   )
   return { _escaped: String(arg) }

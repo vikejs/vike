@@ -8,5 +8,6 @@ assertUsage(
     "  import { something } from 'vite-plugin-ssr'",
     'Did you mean the following instead?',
     "  import { something } from 'vite-plugin-ssr/client/router'"
-  ].join('\n')
+  ].join('\n'),
+  { showStackTrace: true }
 )

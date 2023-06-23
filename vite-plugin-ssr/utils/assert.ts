@@ -17,6 +17,7 @@ const globalObject = getGlobalObject<{
   onBeforeLog?: () => void
   logger: Logger
   colorer: Colorer
+  showStackTraceList: WeakSet<Error>
 }>('utils/assert.ts', {
   alreadyLogged: new Set(),
   // Production logger. Overwritten by loggerNotProd.ts in non-production environments.
@@ -28,7 +29,8 @@ const globalObject = getGlobalObject<{
     }
   },
   // No colors in production
-  colorer: (str) => str
+  colorer: (str) => str,
+  showStackTraceList: new WeakSet()
 })
 type Logger = (msg: string | Error, logType: 'warn' | 'info') => void
 type Colorer = (str: string, color: 'red' | 'blue' | 'yellow') => string
@@ -64,11 +66,18 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   throw internalError
 }
 
-function assertUsage(condition: unknown, errMsg: string): asserts condition {
+function assertUsage(
+  condition: unknown,
+  errMsg: string,
+  { showStackTrace = false }: { showStackTrace?: boolean } = {}
+): asserts condition {
   if (condition) return
   errMsg = addPrefixAssertType(errMsg, 'Wrong Usage')
   errMsg = addPrefixProjctName(errMsg)
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
+  if (showStackTrace) {
+    globalObject.showStackTraceList.add(usageError)
+  }
   globalObject.onBeforeLog?.()
   throw usageError
 }
@@ -99,7 +108,9 @@ function assertWarning(
   }
   globalObject.onBeforeLog?.()
   if (showStackTrace) {
-    globalObject.logger(new Error(msg), 'warn')
+    const err = new Error(msg)
+    globalObject.showStackTraceList.add(err)
+    globalObject.logger(err, 'warn')
   } else {
     globalObject.logger(msg, 'warn')
   }
@@ -152,20 +163,26 @@ function getAssertErrMsg(thing: unknown): { assertMsg: string; showVikeVersion: 
   } else {
     return null
   }
-  let assertMsg = errMsg
-  if (assertMsg.startsWith(projectTag)) {
-    assertMsg = assertMsg.slice(projectTag.length)
-    return { assertMsg, showVikeVersion: false }
+
+  let assertMsg: string
+  let isBug: boolean
+  if (errMsg.startsWith(projectTag)) {
+    assertMsg = errMsg.slice(projectTag.length)
+    isBug = false
+  } else if (errMsg.startsWith(projectTagWithVersion)) {
+    assertMsg = errMsg.slice(projectTagWithVersion.length)
+    isBug = true
+  } else {
+    return null
   }
-  if (assertMsg.startsWith(projectTagWithVersion)) {
-    assertMsg = assertMsg.slice(projectTagWithVersion.length)
-    // Apppend stack trace for [Bug]
-    if (errStack) {
-      assertMsg = `${assertMsg}\n${removeErrMsg(errStack)}`
-    }
-    return { assertMsg, showVikeVersion: true }
+
+  // Append stack trace
+  if (errStack && (isBug || globalObject.showStackTraceList.has(thing as any))) {
+    assertMsg = `${assertMsg}\n${removeErrMsg(errStack)}`
   }
-  return null
+
+  const showVikeVersion = isBug
+  return { assertMsg, showVikeVersion }
 }
 
 function removeErrMsg(stack: unknown): string {

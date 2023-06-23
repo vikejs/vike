@@ -62,7 +62,8 @@ Object.defineProperty(plugin, 'apply', {
   get: () => {
     assertUsage(
       false,
-      'Make sure to instantiate the `ssr` plugin (`import ssr from "vite-plugin-ssr"`): include `ssr()` instead of `ssr` in the `plugins` list of your `vite.config.js`.'
+      'Add `ssr()` instead of `ssr` to vite.config.js#plugins (i.e. call the function and add the return value instead of adding the function itself)',
+      { showStackTrace: true }
     )
   }
 })

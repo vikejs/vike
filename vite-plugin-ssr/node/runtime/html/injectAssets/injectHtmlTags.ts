@@ -184,6 +184,6 @@ function injectAtPaceholder(htmlFragment: string, htmlString: string, isFirst: b
   const placeholder = isFirst ? '__VITE_PLUGIN_SSR__ASSETS_FIRST__' : '__VITE_PLUGIN__SSR_ASSETS_LAST__'
   const parts = htmlString.split(placeholder)
   if (parts.length === 1) return null
-  assertUsage(parts.length === 2, "You're inserting assets twice into your HTML")
+  assertUsage(parts.length === 2, "You're inserting assets twice into your HTML", { showStackTrace: true })
   return [parts[0], htmlFragment, parts[1]].join('')
 }

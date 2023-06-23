@@ -20,7 +20,8 @@ function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown
     const that: unknown = this
     assertUsage(
       !(typeof that === 'object' && that?.constructor === RenderErrorPage),
-      "Don't use the `new` operator: use `throw RenderErrorPage()` instead of `throw new RenderErrorPage()`."
+      "Don't use the `new` operator: use `throw RenderErrorPage()` instead of `throw new RenderErrorPage()`.",
+      { showStackTrace: true }
     )
   }
   if (pageContext !== undefined) {
@@ -38,6 +39,7 @@ function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown
 function assertRenderErrorPageExceptionUsage(err: unknown): void {
   assertUsage(
     err !== RenderErrorPage,
-    'Missing parentheses `()` in `throw RenderErrorPage`: it should be `throw RenderErrorPage()`.'
+    'Missing parentheses `()` in `throw RenderErrorPage`: it should be `throw RenderErrorPage()`.',
+    { showStackTrace: true }
   )
 }

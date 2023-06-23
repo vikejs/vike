@@ -16,11 +16,13 @@ const linkPrefetchHandlerAdded = new Map<HTMLElement, true>()
 async function prefetch(url: string): Promise<void> {
   assertUsage(
     checkIfClientRouting(),
-    'prefetch() only works with Client Routing, see https://vite-plugin-ssr.com/prefetch'
+    'prefetch() only works with Client Routing, see https://vite-plugin-ssr.com/prefetch',
+    { showStackTrace: true }
   )
   assertUsage(
     !isExternalLink(url),
-    `You are trying to prefetch the URL ${url} of another domain which cannot be prefetched`
+    `You are trying to prefetch the URL ${url} of another domain which cannot be prefetched`,
+    { showStackTrace: true }
   )
 
   if (isAlreadyPrefetched(url)) return

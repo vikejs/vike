@@ -985,16 +985,19 @@ function checkOutdatedOptions(options: {
 }) {
   assertUsage(
     options.root === undefined,
-    'Option `prerender({ root })` deprecated: set `prerender({ viteConfig: { root }})` instead.'
+    'Option `prerender({ root })` deprecated: set `prerender({ viteConfig: { root }})` instead.',
+    { showStackTrace: true }
   )
   assertUsage(
     options.configFile === undefined,
-    'Option `prerender({ configFile })` deprecated: set `prerender({ viteConfig: { configFile }})` instead.'
+    'Option `prerender({ configFile })` deprecated: set `prerender({ viteConfig: { configFile }})` instead.',
+    { showStackTrace: true }
   )
   ;(['noExtraDir', 'partial', 'parallel'] as const).forEach((prop) => {
     assertUsage(
       options[prop] === undefined,
-      `[prerender()] Option \`${prop}\` is deprecated. Define \`${prop}\` in \`vite.config.js\` instead. See https://vite-plugin-ssr.com/prerender-config`
+      `[prerender()] Option \`${prop}\` is deprecated. Define \`${prop}\` in \`vite.config.js\` instead. See https://vite-plugin-ssr.com/prerender-config`,
+      { showStackTrace: true }
     )
   })
   ;(['base', 'outDir'] as const).forEach((prop) => {
@@ -1002,7 +1005,7 @@ function checkOutdatedOptions(options: {
       options[prop] === undefined,
       `[prerender()] Option \`${prop}\` is outdated and has no effect (vite-plugin-ssr now automatically determines \`${prop}\`)`,
       {
-        showStackTrace: false,
+        showStackTrace: true,
         onlyOnce: true
       }
     )
@@ -1034,10 +1037,13 @@ function assertLoadedConfig(
     if (!options.viteConfig) {
       assertUsage(
         false,
-        `[prerender()] No \`vite.config.js\` file found at \`${process.cwd()}\`. Use the option \`prerender({ viteConfig })\`.`
+        `[prerender()] No \`vite.config.js\` file found at \`${process.cwd()}\`. Use the option \`prerender({ viteConfig })\`.`,
+        { showStackTrace: true }
       )
     } else {
-      assertUsage(false, '[prerender()] The Vite config `prerender({ viteConfig })` is missing vite-plugin-ssr.')
+      assertUsage(false, '[prerender()] The Vite config `prerender({ viteConfig })` is missing vite-plugin-ssr.', {
+        showStackTrace: true
+      })
     }
   }
 }

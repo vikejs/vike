@@ -136,7 +136,7 @@ function getPageRoutes(
             const routeString = fileExports.default
             assertUsage(
               routeString.startsWith('/'),
-              `A Route String should start with a leading \`/\` but \`${filePath}\` has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
+              `A Route String should start with a leading slash '/' but ${filePath} has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
             )
             pageRoutes.push({
               pageId,

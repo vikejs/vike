@@ -3,7 +3,6 @@
 export { parseUrl }
 export { isParsable }
 export { prependBase }
-export { assertUsageBaseServer }
 export { assertUsageUrl }
 export { normalizeBaseServer }
 export { isBaseServer }
@@ -175,6 +174,7 @@ function parseWithNewUrl(urlWithoutSearch: string, baseServer: string) {
   return { origin, pathnameResolved }
 }
 
+/* Not needed anymore?
 function assertUsageBaseServer(baseServer: string, usageErrorMessagePrefix: string = '') {
   assertUsage(
     !baseServer.startsWith('http'),
@@ -187,6 +187,7 @@ function assertUsageBaseServer(baseServer: string, usageErrorMessagePrefix: stri
   )
   assert(isBaseServer(baseServer))
 }
+*/
 
 function assertPathname(urlPathname: string) {
   assert(urlPathname.startsWith('/'))

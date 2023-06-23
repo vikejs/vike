@@ -9,9 +9,9 @@ function resolveRoute(
 ): { match: boolean; routeParams: Record<string, string> } {
   const errMsg = (propName: 'routeString' | 'urlPathname', msg = 'a non-empty string') =>
     `[resolveRoute(routeString, urlPathname)] \`${propName}\` should be ` + msg
-  assertUsage(routeString, errMsg('routeString'))
-  assertUsage(urlPathname, errMsg('urlPathname'))
-  assertUsage(urlPathname.startsWith('/'), errMsg('urlPathname', '`pageContext.urlPathname`'))
+  assertUsage(routeString, errMsg('routeString'), { showStackTrace: true })
+  assertUsage(urlPathname, errMsg('urlPathname'), { showStackTrace: true })
+  assertUsage(urlPathname.startsWith('/'), errMsg('urlPathname', '`pageContext.urlPathname`'), { showStackTrace: true })
   const result = resolveRouteString(routeString, urlPathname)
   return {
     match: !!result,
