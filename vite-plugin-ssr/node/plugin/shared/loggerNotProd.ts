@@ -10,7 +10,7 @@ export { logViteErrorContainingCodeSnippet }
 export { logConfigInfo }
 export { logConfigError }
 export { logConfigErrorRecover }
-export { clearTheScreen }
+export { clearLogs }
 export { logErrorDebugNote }
 export type { LogInfo }
 export type { LogInfoArgs }
@@ -48,7 +48,7 @@ import {
   logDirectly,
   isFirstLog,
   screenHasErrors,
-  clearLogs
+  clearScreen
 } from './loggerNotProd/log'
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError'
@@ -66,7 +66,7 @@ type LogError = (...args: LogErrorArgs) => void
 type LogErrorArgs = Parameters<typeof logRuntimeError>
 
 function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType, clear?: ClearConditions) {
-  if (clear) clearTheScreen(clear)
+  if (clear) clearLogs(clear)
   const category = getCategory(httpRequestId)
   assert(category)
   logWithVikeTag(msg, logType, category)
@@ -85,7 +85,7 @@ function logConfigInfo(msg: string, logType: LogType): void {
 }
 function logConfigErrorRecover(): void {
   const msg = pc.green(pc.bold('Configuration successfully loaded.'))
-  clearTheScreen({ clearAlsoIfConfigIsInvalid: true })
+  clearLogs({ clearAlsoIfConfigIsInvalid: true })
   const category = getConfigCategory()
   logWithVikeTag(msg, 'error-recover', category)
 }
@@ -152,7 +152,7 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
 }
 
 function logConfigError(err: unknown): void {
-  clearTheScreen({ clearAlsoIfConfigIsInvalid: true })
+  clearLogs({ clearAlsoIfConfigIsInvalid: true })
 
   warnIfObjectIsNotObject(err)
 
@@ -216,7 +216,7 @@ function assertLogger(thing: string | Error, logType: LogType): void {
 }
 
 type ClearConditions = { clearErrors?: boolean; clearIfFirstLog?: boolean; clearAlsoIfConfigIsInvalid?: boolean }
-function clearTheScreen(conditions: ClearConditions = {}): void {
+function clearLogs(conditions: ClearConditions = {}): void {
   if (!conditions.clearAlsoIfConfigIsInvalid && isConfigInvalid) {
     // Avoid hiding the config error: the config error is printed only once
     return
@@ -229,7 +229,7 @@ function clearTheScreen(conditions: ClearConditions = {}): void {
   }
   const viteConfig = getViteConfig()
   if (viteConfig) {
-    clearLogs(viteConfig)
+    clearScreen(viteConfig)
   }
 }
 

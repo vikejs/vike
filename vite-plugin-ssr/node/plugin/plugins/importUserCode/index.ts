@@ -20,7 +20,7 @@ import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/vir
 import { getConfigData_dependenciesInvisibleToVite, getConfigName, reloadConfigData } from './v1-design/getConfigData'
 import path from 'path'
 import pc from '@brillout/picocolors'
-import { logConfigInfo, clearTheScreen } from '../../shared/loggerNotProd'
+import { logConfigInfo, clearLogs } from '../../shared/loggerNotProd'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -114,7 +114,7 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
   // HMR can resolve errors => we clear previously shown errors.
   // It can hide an error it shouldn't hide (because the error isn't shown again), but it's ok since users can reload the page and the error will be shown again (Vite transpilation errors are shown again upon a page reload).
   if (!isVikeConfig && isViteModule) {
-    clearTheScreen({ clearErrors: true })
+    clearLogs({ clearErrors: true })
     return
   }
 

@@ -2,7 +2,7 @@ export { logWithViteTag }
 export { logWithVikeTag }
 export { logDirectly }
 export { isFirstLog }
-export { clearLogs }
+export { clearScreen }
 export { screenHasErrors }
 
 import { assert, projectInfo, type ProjectTag, stripAnsi, hasProp, assertIsVitePluginCode } from '../../utils'
@@ -66,7 +66,7 @@ function logDirectly(thing: unknown, logType: LogType) {
   assert(false)
 }
 
-function clearLogs(viteConfig: ResolvedConfig) {
+function clearScreen(viteConfig: ResolvedConfig) {
   // We use Vite's logger in order to respect the user's `clearScreen: false` setting
   viteConfig.logger.clearScreen('error')
   screenHasErrors = false
