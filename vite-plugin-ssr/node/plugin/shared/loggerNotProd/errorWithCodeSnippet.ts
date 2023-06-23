@@ -58,7 +58,7 @@ function getPrettyErrorWithCodeSnippet(err: ErrorWithCodeSnippet, userRootDir: s
 
   const msgFirstLine = [
     pc.red('Failed to transpile'),
-    pc.red(pc.bold(getFilePathVite(id, userRootDir))),
+    pc.red(pc.bold(getFilePathVite(removeQuery(id), userRootDir))),
     pc.red('because:')
   ].join(' ')
 
@@ -103,6 +103,7 @@ function getPrettyErrMessage(err: ErrorWithCodeSnippet): string | null {
   // Remove "/home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx:1:8:" (redundant since we already print the filename)
   const pos = /(?:\:\d+|)/
   errMsg = errMsg.split(reg([id, pos, pos, trail], 'gi')).join('')
+  errMsg = errMsg.split(reg([removeQuery(id), pos, pos, trail], 'gi')).join('')
   // Remove "ERROR:" (useless)
   errMsg = errMsg.split(reg(['ERROR:', trail])).join('')
   // Remove "Internal server error:" (useless)
@@ -176,4 +177,8 @@ function isEquivalentErrorWithCodeSnippet(err1: unknown, err2: unknown): boolean
 }
 function isDefinedAndSame(val1: unknown, val2: unknown) {
   return val1 && val1 === val2
+}
+
+function removeQuery(id: string): string {
+  return id.split('?')[0]!
 }

@@ -154,8 +154,8 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   it('real use case - vite-plugin-solid - JavaScript with Babel', () => {
     const formatted = getPrettyErrorWithCodeSnippet(errBabelSolid, '/home/rom/code/vite-plugin-ssr/examples/solid-spa')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
-      "Failed to transpile /renderer/_default.page.client.tsx?extractExportNames&lang.tsx because:
-      /home/rom/code/vite-plugin-ssr/examples/solid-spa/renderer/_default.page.client.tsx: Invalid left-hand side in assignment expression. 
+      "Failed to transpile /renderer/_default.page.client.tsx because:
+      Invalid left-hand side in assignment expression. 
         15 | async function render(pageContext: PageContextClient) {
         16 |   const { Page } = pageContext
       > 17 |   if (1 = 1) {}
@@ -201,4 +201,3 @@ describe('getPrettyErrorWithCodeSnippet() - failure', () => {
     `)
   })
 })
-
