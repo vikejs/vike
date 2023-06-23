@@ -23,7 +23,7 @@ import {
 } from './preparePageContextForUserConsumptionServerSide'
 import type { PageContextPromise } from '../html/injectAssets'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
-import { assertObjectKeys } from '../../../shared/assertObjectKeys'
+import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject'
 import { logRuntimeError } from './loggerRuntime'
 
 type GetPageAssets = () => Promise<PageAsset[]>
@@ -162,7 +162,7 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
       errSuffix
     ].join(' ')
   )
-  assertObjectKeys(hookReturnValue, ['documentHtml', 'pageContext', 'injectFilter'] as const, errPrefix)
+  assertHookReturnedObject(hookReturnValue, ['documentHtml', 'pageContext', 'injectFilter'] as const, errPrefix)
 
   if (hookReturnValue.injectFilter) {
     assertUsage(isCallable(hookReturnValue.injectFilter), 'injectFilter should be a function')

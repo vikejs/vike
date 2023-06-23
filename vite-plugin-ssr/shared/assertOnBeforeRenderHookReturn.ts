@@ -2,7 +2,7 @@ export { assertOnBeforeRenderHookReturn }
 
 import { assertUsage, isPlainObject } from './utils'
 import { assertPageContextProvidedByUser } from './assertPageContextProvidedByUser'
-import { assertObjectKeys } from './assertObjectKeys'
+import { assertHookReturnedObject } from './assertHookReturnedObject'
 
 function assertOnBeforeRenderHookReturn<Keys extends readonly string[]>(
   hookReturnValue: unknown,
@@ -11,12 +11,12 @@ function assertOnBeforeRenderHookReturn<Keys extends readonly string[]>(
   if (hookReturnValue === undefined || hookReturnValue === null) {
     return
   }
-  const errPrefix = `The onBeforeRender() hook defined by ${hookFilePath}`
+  const errPrefix = `The onBeforeRender() hook defined by ${hookFilePath}` as const
   assertUsage(
     isPlainObject(hookReturnValue),
     `${errPrefix} should return a plain JavaScript object or \`undefined\`/\`null\``
   )
-  assertObjectKeys(hookReturnValue, ['pageContext'] as const, errPrefix)
+  assertHookReturnedObject(hookReturnValue, ['pageContext'] as const, errPrefix)
   if (hookReturnValue.pageContext) {
     assertPageContextProvidedByUser(hookReturnValue['pageContext'], {
       hook: { hookName: 'onBeforeRender', hookFilePath }

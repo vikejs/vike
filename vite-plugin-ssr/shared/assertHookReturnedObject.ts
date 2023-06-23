@@ -1,8 +1,8 @@
-export { assertObjectKeys }
+export { assertHookReturnedObject }
 
 import { assert, assertUsage, stringifyStringArray } from './utils'
 
-function assertObjectKeys<Keys extends readonly string[]>(
+function assertHookReturnedObject<Keys extends readonly string[]>(
   obj: Record<string, unknown>,
   keysExpected: Keys,
   errPrefix: string
