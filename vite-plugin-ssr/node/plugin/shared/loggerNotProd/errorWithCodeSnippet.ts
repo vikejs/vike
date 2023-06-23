@@ -80,14 +80,15 @@ function getPrettyErrorWithCodeSnippet(err: ErrorWithCodeSnippet, userRootDir: s
 
   let msg = [msgFirstLine, errMsg, frame].filter(Boolean).join('\n')
   msg = removeEmptyLines(msg)
-  return msg
 
-  /* Showing the error layover didn't properly work last time we tried. But we don't really need it, do we?
+  /* Vite already does a fairly good job at showing a concise error in the layover
   server.ws.send({
     type: 'error',
-    err: prepareError(err)
+    err: msg
   })
   */
+
+  return msg
 }
 
 function getPrettyErrMessage(err: ErrorWithCodeSnippet): string | null {
