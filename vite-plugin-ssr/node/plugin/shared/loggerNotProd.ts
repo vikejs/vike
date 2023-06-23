@@ -57,8 +57,8 @@ type LogInfoArgs = Parameters<typeof logRuntimeInfo>
 type LogError = (...args: LogErrorArgs) => void
 type LogErrorArgs = Parameters<typeof logRuntimeError>
 
-function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType, clearConditions?: ClearConditions) {
-  clearTheScreen(clearConditions)
+function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType, clear?: ClearConditions) {
+  if (clear) clearTheScreen(clear)
   const category = getCategory(httpRequestId)
   assert(category)
   logWithVikeTag(msg, logType, category)
