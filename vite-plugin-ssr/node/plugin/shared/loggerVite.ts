@@ -1,7 +1,6 @@
 export { improveViteLogs }
 
 import { assert, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils'
-import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
 import { logViteErrorContainingCodeSnippet, logViteAny, clearLogs } from './loggerNotProd'
 import { isErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore'

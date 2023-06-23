@@ -197,7 +197,7 @@ async function renderPage_(
 
 function logHttpRequest(urlToShowToUser: string, httpRequestId: number) {
   logRuntimeInfo?.(`HTTP request: ${urlToShowToUser}`, httpRequestId, 'info', {
-    clearErrors: globalObject.pendingRequestsCount === 0 && !isConfigInvalid
+    clearErrors: globalObject.pendingRequestsCount === 0
   })
 }
 function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageContextReturn: PageContextReturn) {
