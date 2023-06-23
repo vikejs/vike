@@ -1,4 +1,4 @@
-export const errVueTemplate = {
+export const errVueHtml = {
   id: '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1/pages/index/+Page.vue',
   plugin: 'vite:vue',
   message: 'Element is missing end tag.',

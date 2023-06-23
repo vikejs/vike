@@ -8,7 +8,7 @@ import { errBabelReact } from './fixture-errors/errBabelReact'
 import { errEsbuild } from './fixture-errors/errEsbuild'
 import { errVueCss } from './fixture-errors/errVueCss'
 import { errVueJavascript } from './fixture-errors/errVueJavascript'
-import { errVueTemplate } from './fixture-errors/errVueTemplate'
+import { errVueHtml } from './fixture-errors/errVueHtml'
 import { errSwc } from './fixture-errors/errSwc'
 import { errSwcBig } from './fixture-errors/errSwcBig'
 import { errMdx } from './fixture-errors/errMdx'
@@ -75,9 +75,9 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
     `)
   })
 
-  it('real use case - @vitejs/plugin-vue - template', () => {
+  it('real use case - @vitejs/plugin-vue - SFC HTML', () => {
     const formatted = getPrettyErrorWithCodeSnippet(
-      errVueTemplate,
+      errVueHtml,
       '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1'
     )
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
@@ -91,7 +91,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
     `)
   })
 
-  it('real use case - @vitejs/plugin-vue - SFC javascript', () => {
+  it('real use case - @vitejs/plugin-vue - SFC JavaScript', () => {
     const formatted = getPrettyErrorWithCodeSnippet(
       errVueJavascript,
       '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1'
@@ -122,7 +122,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
     `)
   })
 
-  it('real use case - @vitejs/plugin-react - JavaScript esuild', () => {
+  it('real use case - @vitejs/plugin-react - JavaScript esbuild', () => {
     const formatted = getPrettyErrorWithCodeSnippet(errEsbuild, '/home/rom/code/vite-plugin-ssr/examples/react-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /renderer/PageShell.tsx because:
