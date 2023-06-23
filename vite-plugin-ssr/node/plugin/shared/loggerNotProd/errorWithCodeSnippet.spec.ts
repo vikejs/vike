@@ -1,4 +1,5 @@
 import { expect, describe, it } from 'vitest'
+import { stripAnsi } from '../../utils'
 import { getPrettyErrMessage, getPrettyErrorWithCodeSnippet, isErrorWithCodeSnippet } from './errorWithCodeSnippet'
 
 // To generate new test cases:
@@ -28,18 +29,18 @@ describe('getPrettyErrorWithCodeSnippet()', () => {
         "\n  \u001b[38;2;255;30;30m×\u001b[0m Expected ';', '}' or <eof>\n   ╭─[\u001b[38;2;92;157;255;1;4m/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/hello/+Page.tsx\u001b[0m:1:1]\n \u001b[2m1\u001b[0m │ export default Page\n \u001b[2m2\u001b[0m │ \n \u001b[2m3\u001b[0m │ impeort React from 'react'\n   · \u001b[38;2;246;87;248m───┬───\u001b[0m\u001b[38;2;30;201;212m ─────\u001b[0m\n   ·    \u001b[38;2;246;87;248m╰── \u001b[38;2;246;87;248mThis is the expression part of an expression statement\u001b[0m\u001b[0m\n \u001b[2m4\u001b[0m │ \n \u001b[2m5\u001b[0m │ function Page({ name }: { name: string }) {\n \u001b[2m6\u001b[0m │   return (\n   ╰────\n\n\nCaused by:\n    Syntax Error"
     }
     const formatted = getPrettyErrorWithCodeSnippet(err, '/home/rom/code/vite-plugin-ssr/examples/react-full-v1')
-    expect(formatted).toMatchInlineSnapshot(`
-      "[31mFailed to transpile[39m [31m[1m/pages/hello/+Page.tsx[22m[39m [31mbecause:[39m
-      [38;2;255;30;30m×[0m Expected ';', '}' or <eof>
-         ╭─[[38;2;92;157;255;1;4m/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/hello/+Page.tsx[0m:1:1]
-       [2m1[0m │ export default Page
-       [2m2[0m │ 
-       [2m3[0m │ impeort React from 'react'
-         · [38;2;246;87;248m───┬───[0m[38;2;30;201;212m ─────[0m
-         ·    [38;2;246;87;248m╰── [38;2;246;87;248mThis is the expression part of an expression statement[0m[0m
-       [2m4[0m │ 
-       [2m5[0m │ function Page({ name }: { name: string }) {
-       [2m6[0m │   return (
+    expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
+      "Failed to transpile /pages/hello/+Page.tsx because:
+      × Expected ';', '}' or <eof>
+         ╭─[/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/hello/+Page.tsx:1:1]
+       1 │ export default Page
+       2 │ 
+       3 │ impeort React from 'react'
+         · ───┬─── ─────
+         ·    ╰── This is the expression part of an expression statement
+       4 │ 
+       5 │ function Page({ name }: { name: string }) {
+       6 │   return (
          ╰────
       Caused by:
           Syntax Error"
@@ -67,35 +68,35 @@ describe('getPrettyErrorWithCodeSnippet()', () => {
         "Error: \n  \u001b[38;2;255;30;30m×\u001b[0m Expression expected\n    ╭─[\u001b[38;2;92;157;255;1;4m/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+Page.tsx\u001b[0m:6:1]\n \u001b[2m 6\u001b[0m │ \n \u001b[2m 7\u001b[0m │ function Page() {\n \u001b[2m 8\u001b[0m │   return (\n \u001b[2m 9\u001b[0m │     <>\n    · \u001b[38;2;246;87;248m     ─\u001b[0m\n \u001b[2m10\u001b[0m │       <h1>\n \u001b[2m11\u001b[0m │         Welcome to <code>vite-plugin-ssr</code>\n \u001b[2m12\u001b[0m │       <h1>\n    ╰────\n\n  \u001b[38;2;255;30;30m×\u001b[0m Unexpected token. Did you mean `{'}'}` or `&rbrace;`?\n    ╭─[\u001b[38;2;92;157;255;1;4m/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+Page.tsx\u001b[0m:29:1]\n \u001b[2m29\u001b[0m │       </p>\n \u001b[2m30\u001b[0m │     </>\n \u001b[2m31\u001b[0m │   )\n \u001b[2m32\u001b[0m │ }\n    · \u001b[38;2;246;87;248m▲\u001b[0m\n    ╰────\n\n  \u001b[38;2;255;30;30m×\u001b[0m Unterminated JSX contents\n    ╭─[\u001b[38;2;92;157;255;1;4m/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+Page.tsx\u001b[0m:27:1]\n \u001b[2m27\u001b[0m │               Random Page\n \u001b[2m28\u001b[0m │             </button>\n \u001b[2m29\u001b[0m │           </p>\n \u001b[2m30\u001b[0m │ \u001b[38;2;246;87;248m╭\u001b[0m\u001b[38;2;246;87;248m─\u001b[0m\u001b[38;2;246;87;248m▶\u001b[0m     </>\n \u001b[2m31\u001b[0m │ \u001b[38;2;246;87;248m│\u001b[0m     )\n \u001b[2m32\u001b[0m │ \u001b[38;2;246;87;248m╰\u001b[0m\u001b[38;2;246;87;248m─\u001b[0m\u001b[38;2;246;87;248m▶\u001b[0m }\n    ╰────\n\n\nCaused by:\n    Syntax Error"
     }
     const formatted = getPrettyErrorWithCodeSnippet(err, '/home/rom/code/vite-plugin-ssr/examples/react-full-v1')
-    expect(formatted).toMatchInlineSnapshot(`
-      "[31mFailed to transpile[39m [31m[1m/pages/index/+Page.tsx[22m[39m [31mbecause:[39m
-      [38;2;255;30;30m×[0m Expression expected
-          ╭─[[38;2;92;157;255;1;4m/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+Page.tsx[0m:6:1]
-       [2m 6[0m │ 
-       [2m 7[0m │ function Page() {
-       [2m 8[0m │   return (
-       [2m 9[0m │     <>
-          · [38;2;246;87;248m     ─[0m
-       [2m10[0m │       <h1>
-       [2m11[0m │         Welcome to <code>vite-plugin-ssr</code>
-       [2m12[0m │       <h1>
+    expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
+      "Failed to transpile /pages/index/+Page.tsx because:
+      × Expression expected
+          ╭─[/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+Page.tsx:6:1]
+        6 │ 
+        7 │ function Page() {
+        8 │   return (
+        9 │     <>
+          ·      ─
+       10 │       <h1>
+       11 │         Welcome to <code>vite-plugin-ssr</code>
+       12 │       <h1>
           ╰────
-        [38;2;255;30;30m×[0m Unexpected token. Did you mean \`{'}'}\` or \`&rbrace;\`?
-          ╭─[[38;2;92;157;255;1;4m/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+Page.tsx[0m:29:1]
-       [2m29[0m │       </p>
-       [2m30[0m │     </>
-       [2m31[0m │   )
-       [2m32[0m │ }
-          · [38;2;246;87;248m▲[0m
+        × Unexpected token. Did you mean \`{'}'}\` or \`&rbrace;\`?
+          ╭─[/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+Page.tsx:29:1]
+       29 │       </p>
+       30 │     </>
+       31 │   )
+       32 │ }
+          · ▲
           ╰────
-        [38;2;255;30;30m×[0m Unterminated JSX contents
-          ╭─[[38;2;92;157;255;1;4m/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+Page.tsx[0m:27:1]
-       [2m27[0m │               Random Page
-       [2m28[0m │             </button>
-       [2m29[0m │           </p>
-       [2m30[0m │ [38;2;246;87;248m╭[0m[38;2;246;87;248m─[0m[38;2;246;87;248m▶[0m     </>
-       [2m31[0m │ [38;2;246;87;248m│[0m     )
-       [2m32[0m │ [38;2;246;87;248m╰[0m[38;2;246;87;248m─[0m[38;2;246;87;248m▶[0m }
+        × Unterminated JSX contents
+          ╭─[/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+Page.tsx:27:1]
+       27 │               Random Page
+       28 │             </button>
+       29 │           </p>
+       30 │ ╭─▶     </>
+       31 │ │     )
+       32 │ ╰─▶ }
           ╰────
       Caused by:
           Syntax Error"
@@ -147,14 +148,14 @@ describe('getPrettyErrorWithCodeSnippet()', () => {
         '1  |  <template>\n2  |    <h1>Welcome to <code>vite-plugin-ssr</code><h1>\n   |                                                ^\n3  |    This page is:\n4  |    <ul>'
     }
     const formatted = getPrettyErrorWithCodeSnippet(err, '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1')
-    expect(formatted).toMatchInlineSnapshot(`
-      "[31mFailed to transpile[39m [31m[1m/pages/index/+Page.vue[22m[39m [31mbecause:[39m
+    expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
+      "Failed to transpile /pages/index/+Page.vue because:
       Element is missing end tag.
-      [33m1  |  <template>
+      1  |  <template>
       2  |    <h1>Welcome to <code>vite-plugin-ssr</code><h1>
          |                                                ^
       3  |    This page is:
-      4  |    <ul>[39m"
+      4  |    <ul>"
     `)
   })
 
@@ -176,8 +177,8 @@ describe('getPrettyErrorWithCodeSnippet()', () => {
         "SyntaxError: [@vue/compiler-sfc] Missing semicolon. (2:7)\n\n/home/rom/code/vite-plugin-ssr/examples/vue-full-v1/pages/index/+Page.vue\n12 |  \n13 |  <script lang=\"ts\" setup>\n14 |  imeport Counter from '../../components/Counter.vue'\n   |         ^\n15 |  import { navigate } from 'vite-plugin-ssr/client/router'\n16 |  \n    at instantiate (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parse-error/credentials.ts:62:21)\n    at toParseError (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parse-error.ts:60:12)\n    at TypeScriptParserMixin.raise (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/tokenizer/index.ts:1490:19)\n    at TypeScriptParserMixin.semicolon (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/util.ts:138:10)\n    at TypeScriptParserMixin.parseExpressionStatement (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/statement.ts:1279:10)\n    at TypeScriptParserMixin.parseExpressionStatement (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/plugins/typescript/index.ts:3044:28)\n    at TypeScriptParserMixin.parseStatementContent (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/statement.ts:643:19)\n    at TypeScriptParserMixin.parseStatementContent (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/plugins/typescript/index.ts:2887:20)\n    at TypeScriptParserMixin.parseStatementLike (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/statement.ts:417:17)\n    at TypeScriptParserMixin.parseModuleItem (/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/@babel+parser@7.21.8/node_modules/@babel/parser/src/parser/statement.ts:354:17)"
     }
     const formatted = getPrettyErrorWithCodeSnippet(err, '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1')
-    expect(formatted).toMatchInlineSnapshot(`
-      "[31mFailed to transpile[39m [31m[1m/pages/index/+Page.vue[22m[39m [31mbecause:[39m
+    expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
+      "Failed to transpile /pages/index/+Page.vue because:
       [@vue/compiler-sfc] Missing semicolon. 
       12 |  
       13 |  <script lang=\\"ts\\" setup>
