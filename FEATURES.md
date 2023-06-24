@@ -69,3 +69,6 @@ And lots of details:
   - Helpful error when different versions of vite-plugin-ssr are loaded
   - Typo in an option name (with "Did you mean xxx instead?")
 - Proper development error hanlding (hard to achieve, especially since Vite is bogus about it)
+
+Misc:
+- `throw Render()`
