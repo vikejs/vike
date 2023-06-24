@@ -1829,8 +1829,8 @@ importers:
         specifier: ^5.0.2
         version: 5.0.4
       vike-react:
-        specifier: ^0.1.5
-        version: 0.1.5(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.8)
+        specifier: ^0.1.6
+        version: 0.1.6(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.8)
       vite:
         specifier: ^4.3.8
         version: 4.3.8
@@ -12395,13 +12395,13 @@ packages:
       vite-plugin-ssr: link:vite-plugin-ssr
     dev: false
 
-  /vike-react@0.1.5(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.8):
-    resolution: {integrity: sha512-PF3uJqBHUxhODz9Gv07cjCrJBPqNdJUmLFRk8KYejVk+wY8VUuCdYNWDDRUvhIHI5qDNqf1f6l4+ucVD8nvYaw==}
+  /vike-react@0.1.6(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.8):
+    resolution: {integrity: sha512-nGh9/RTKTNx1yVCgBcYszDo8wdRuXcdMuEunu56IIKQc/mAmvNHjStQ7a+eFcN1UTCvxtJVeb2aUVb6wpih2iA==}
     peerDependencies:
       react: 18.x.x
       react-dom: 18.x.x
       vite: ^4.3.8
-      vite-plugin-ssr: ^0.4.130
+      vite-plugin-ssr: ^0.4.132
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
