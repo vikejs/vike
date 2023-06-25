@@ -38,9 +38,18 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
           : partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/html-only.${hash}.css">`
         expect(html).toMatch(cssImport)
       } else {
-        expect(html).toMatch(
-          partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/PageLayout.${hash}.css">`
-        )
+        // Different test depending on Rollup version, see https://github.com/vitejs/vite/pull/13608#issuecomment-1606133506
+        try {
+          // rollup@3.21.0
+          expect(html).toMatch(
+            partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/PageLayout.${hash}.css">`
+          )
+        } catch {
+          // rollup@3.25.2
+          expect(html).toMatch(
+            partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/default.page.server.${hash}.css">`
+          )
+        }
         expect(html).toMatch(
           partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/index.page.server.${hash}.css">`
         )
