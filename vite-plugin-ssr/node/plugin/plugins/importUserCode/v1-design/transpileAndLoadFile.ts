@@ -145,6 +145,8 @@ async function buildFile(filePath: FilePath, bundle: boolean, userRootDir: strin
         name: 'vite-plugin-ssr:import-hook',
         setup(b) {
           b.onLoad({ filter: /./ }, (args) => {
+            let { path } = args
+            path = toPosixPath(path)
             // We collect the dependency args.path in case it fails to build (upon build error => error is thrown => no metafile)
             dependencies.add(args.path)
             return undefined
