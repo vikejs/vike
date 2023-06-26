@@ -8,7 +8,7 @@ export { screenHasErrors }
 import { assert, projectInfo, type ProjectTag, stripAnsi, hasProp, assertIsVitePluginCode } from '../../utils'
 import pc from '@brillout/picocolors'
 import { isErrorDebug } from '../isErrorDebug'
-import { getGlobalContext } from '../../../runtime/globalContext'
+import { getViteDevServer } from '../../../runtime/globalContext'
 import type { LogCategory, LogType } from '../loggerNotProd'
 import type { ResolvedConfig } from 'vite'
 
@@ -75,7 +75,7 @@ function clearScreen(viteConfig: ResolvedConfig) {
 function applyViteSourceMapToStackTrace(thing: unknown) {
   if (isErrorDebug()) return
   if (!hasProp(thing, 'stack')) return
-  const { viteDevServer } = getGlobalContext()
+  const viteDevServer = getViteDevServer()
   if (!viteDevServer) return
   // Apply Vite's source maps
   viteDevServer.ssrFixStacktrace(thing as Error)
