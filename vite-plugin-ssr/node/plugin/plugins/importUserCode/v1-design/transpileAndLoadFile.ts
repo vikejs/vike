@@ -150,7 +150,7 @@ async function buildFile(filePath: FilePath, bundle: boolean, userRootDir: strin
             let { path } = args
             path = toPosixPath(path)
             // We collect the dependency args.path in case it fails to build (upon build error => error is thrown => no metafile)
-            dependencies.add(args.path)
+            dependencies.add(path)
             return undefined
           })
           /* To exhaustively collect all dependencies upon build failure, we would also need to use onResolve().
