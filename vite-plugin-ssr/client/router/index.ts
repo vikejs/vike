@@ -3,6 +3,24 @@
 // to:
 //   import { navigate, prefetch } from 'vite-plugin-ssr'
 // Use dependency injection to make the imports isomorphic.
+
 export { navigate } from './navigate'
 export { prefetch } from './prefetch'
-export type { PageContextBuiltInClient } from './types'
+
+// TODO/v1-release: remove this
+import type { PageContextBuiltInClientWithClientRouting } from '../../shared/types'
+/** @deprecated
+ * Replace:
+ *   ```
+ *   import type { PageContextBuiltInClient } from 'vite-plugin/client/router'
+ *   ```
+ * With:
+ *   ```
+ *   import type {
+ *     PageContextBuiltInClientWithClientRouting as
+ *     PageContextBuiltInClient
+ *   } from 'vite-plugin-ssr/types'
+ *   ```
+ */
+type PageContextBuiltInClient<Page = any> = PageContextBuiltInClientWithClientRouting<Page>
+export type { PageContextBuiltInClient }

@@ -8,8 +8,10 @@ const globalObject = getGlobalObject<{ disableAssertPassToClient?: string }>(
   'preparePageContextForUserConsumptionClientSide.ts',
   {}
 )
-import type { PageContextBuiltInClient as PageContextBuiltInClientServerRouter } from './types'
-import type { PageContextBuiltInClient as PageContextBuiltInClientClientRouter } from './router/types'
+import type {
+  PageContextBuiltInClientWithServerRouting,
+  PageContextBuiltInClientWithClientRouting
+} from '../shared/types'
 import { addIs404ToPageProps } from '../shared/addIs404ToPageProps'
 import type { PageConfig } from '../shared/page-configs/PageConfig'
 
@@ -37,11 +39,11 @@ function preparePageContextForUserConsumptionClientSide<T extends PageContextFor
   isClientRouting: boolean
 ): T & { Page: unknown } {
   if (isClientRouting) {
-    const pageContextTyped = pageContext as any as PageContextBuiltInClientClientRouter
+    const pageContextTyped = pageContext as any as PageContextBuiltInClientWithClientRouting
     assert([true, false].includes(pageContextTyped.isHydration))
     assert([true, false, null].includes(pageContextTyped.isBackwardNavigation))
   } else {
-    const pageContextTyped = pageContext as any as PageContextBuiltInClientServerRouter
+    const pageContextTyped = pageContext as any as PageContextBuiltInClientWithServerRouting
     assert(pageContextTyped.isHydration === true)
     assert(pageContextTyped.isBackwardNavigation === null)
   }
