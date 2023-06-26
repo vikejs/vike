@@ -16,7 +16,8 @@ import {
   assertDefaultExportObject,
   unique,
   assertWarning,
-  isObject
+  isObject,
+  toPosixPath
 } from '../../../utils'
 import { isImportData, replaceImportStatements, type FileImport } from './replaceImportStatements'
 import { getConfigData_dependenciesInvisibleToVite, getFilePathToShowToUser, type FilePath } from './getConfigData'
@@ -25,12 +26,20 @@ assertIsVitePluginCode()
 
 type Result = { fileExports: Record<string, unknown> }
 
-async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): Promise<Result> {
+async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean, userRootDir: string): Promise<Result> {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = filePath
   const filePathToShowToUser = getFilePathToShowToUser(filePath)
   assertPosixPath(filePathAbsolute)
-  getConfigData_dependenciesInvisibleToVite.add(filePathAbsolute)
-  let { code } = await buildFile(filePath, { bundle: !isPageConfig })
+  const dependencies = new Set<string>()
+  dependencies.add(filePath.filePathAbsolute)
+  let code: string
+  try {
+    code = await buildFile(filePath, !isPageConfig, userRootDir, dependencies)
+  } finally {
+    dependencies.forEach((depFilePathAbsolute) => {
+      getConfigData_dependenciesInvisibleToVite.add(depFilePathAbsolute)
+    })
+  }
   let fileImports: FileImport[] | null = null
   const isHeader = isHeaderFile(filePathAbsolute)
   if (isPageConfig || isHeader) {
@@ -110,7 +119,7 @@ function getConfigExececutionErrorIntroMsg(err: unknown): string | null {
   return errIntroMsg ?? null
 }
 
-async function buildFile(filePath: FilePath, { bundle }: { bundle: boolean }) {
+async function buildFile(filePath: FilePath, bundle: boolean, userRootDir: string, dependencies: Set<string>) {
   const entryFilePath = filePath.filePathAbsolute
   const entryFileDir = path.posix.dirname(entryFilePath)
   const options: BuildOptions = {
@@ -128,7 +137,21 @@ async function buildFile(filePath: FilePath, { bundle }: { bundle: boolean }) {
     logLevel: 'silent',
     format: 'esm',
     bundle,
-    minify: false
+    minify: false,
+    metafile: true,
+    absWorkingDir: userRootDir,
+    plugins: [
+      {
+        name: 'vite-plugin-ssr:import-hook',
+        setup(b) {
+          b.onLoad({ filter: /./ }, (args) => {
+            // We collect the file path in case args.path fails to build
+            dependencies.add(args.path)
+            return undefined
+          })
+        }
+      }
+    ]
   }
   if (bundle) {
     options.bundle = true
@@ -146,10 +169,16 @@ async function buildFile(filePath: FilePath, { bundle }: { bundle: boolean }) {
     await formatBuildErr(err, filePath)
     throw err
   }
-  const { text } = result.outputFiles![0]!
-  return {
-    code: text
-  }
+  Object.keys(result.metafile!.inputs).forEach((filePathRelative) => {
+    filePathRelative = toPosixPath(filePathRelative)
+    assertPosixPath(userRootDir)
+    const filePathAbsolute = path.posix.join(userRootDir, filePathRelative)
+    dependencies.add(filePathAbsolute)
+    return filePathAbsolute
+  })
+  const code = result.outputFiles![0]!.text
+  assert(typeof code === 'string')
+  return code
 }
 
 const tmpPrefix = `[build-`

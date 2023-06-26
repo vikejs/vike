@@ -229,7 +229,7 @@ async function loadInterfaceFiles(
         //  - But we do need to eagerly load +meta.js (to get all the custom config definitions)
         const configDef = getConfigDefinitionOptional(configDefinitionsBuiltIn, configNameDefault)
         if (configDef?.env === 'config-only') {
-          await loadValueFile(interfaceFile, configNameDefault)
+          await loadValueFile(interfaceFile, configNameDefault, userRootDir)
         }
       }
       {
@@ -258,8 +258,8 @@ function getConfigDefinitionOptional(
 ): null | ConfigDefinition {
   return configDefinitions[configName] ?? null
 }
-async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string) {
-  const { fileExports } = await transpileAndLoadFile(interfaceValueFile.filePath, false)
+async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string, userRootDir: string) {
+  const { fileExports } = await transpileAndLoadFile(interfaceValueFile.filePath, false, userRootDir)
   assertDefaultExportUnknown(fileExports, getFilePathToShowToUser(interfaceValueFile.filePath))
   Object.entries(fileExports).forEach(([configName, configValue]) => {
     if (configName === 'default') {
@@ -363,7 +363,7 @@ async function loadConfigData(
             if (isAlreadyLoaded) return
             // Value files for built-in confg-only configs should have already been loaded at loadInterfaceFiles()
             assert(!(configNameDefault in configDefinitionsBuiltIn))
-            await loadValueFile(interfaceFile, configNameDefault)
+            await loadValueFile(interfaceFile, configNameDefault, userRootDir)
           })
         )
 
@@ -1010,7 +1010,7 @@ async function loadConfigFile(
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = configFilePath
   assertNoInfiniteLoop(visited, filePathAbsolute)
-  const { fileExports } = await transpileAndLoadFile(configFilePath, true)
+  const { fileExports } = await transpileAndLoadFile(configFilePath, true, userRootDir)
   const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir, [
     ...visited,
     filePathAbsolute
