@@ -45,7 +45,13 @@ function importUserCode(): Plugin {
       }
     },
     handleHotUpdate(ctx) {
-      return handleHotUpdate(ctx, config, configVps)
+      try {
+        return handleHotUpdate(ctx, config, configVps)
+      } catch (err) {
+        // Vite swallows errors thrown by handleHotUpdate()
+        console.log(err)
+        throw err
+      }
     },
     async load(id, options) {
       const isDev = isDev1()
