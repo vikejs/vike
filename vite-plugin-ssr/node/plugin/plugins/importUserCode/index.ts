@@ -49,7 +49,7 @@ function importUserCode(): Plugin {
         return handleHotUpdate(ctx, config, configVps)
       } catch (err) {
         // Vite swallows errors thrown by handleHotUpdate()
-        console.log(err)
+        console.error(err)
         throw err
       }
     },
