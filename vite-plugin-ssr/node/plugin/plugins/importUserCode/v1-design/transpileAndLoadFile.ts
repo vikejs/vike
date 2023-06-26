@@ -53,6 +53,8 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean): 
       fileImports = res.fileImports
     }
   }
+  // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
+  //  - But seems to break source maps?
   const filePathTmp = getFilePathTmp(filePathAbsolute)
   fs.writeFileSync(filePathTmp, code)
   const clean = () => fs.unlinkSync(filePathTmp)
