@@ -2,7 +2,6 @@ export { getConfigData }
 export { reloadConfigData }
 export { getConfigData_dependenciesInvisibleToVite }
 export { getFilePathToShowToUser }
-export { getConfigName }
 export type { FilePath }
 
 // - When esbuild bundle: true => track dependencies

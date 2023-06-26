@@ -17,7 +17,7 @@ import {
 } from '../../utils'
 import { isVirtualFileIdImportPageCode } from '../../../shared/virtual-files/virtualFileImportPageCode'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode'
-import { getConfigData_dependenciesInvisibleToVite, getConfigName, reloadConfigData } from './v1-design/getConfigData'
+import { getConfigData_dependenciesInvisibleToVite, reloadConfigData } from './v1-design/getConfigData'
 import path from 'path'
 import pc from '@brillout/picocolors'
 import { logConfigInfo, clearLogs } from '../../shared/loggerNotProd'
@@ -133,11 +133,7 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
 }
 
 function isVikeConfigModule(filePathAbsolute: string): boolean {
-  return (
-    getConfigData_dependenciesInvisibleToVite.has(filePathAbsolute) ||
-    // Not really needed, but maybe it makes processing Vike config files more eagerly?
-    !!getConfigName(filePathAbsolute)
-  )
+  return getConfigData_dependenciesInvisibleToVite.has(filePathAbsolute)
 }
 
 function reloadConfig(
