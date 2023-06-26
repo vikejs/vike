@@ -3,7 +3,7 @@ export { determineOptimizeDeps }
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles'
 import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageImport, unique } from '../../utils'
-import { getConfigData } from '../importUserCode/v1-design/getConfigData'
+import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig'
 import { ConfigVpsResolved } from '../../../../shared/ConfigVps'
 
 async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved, isDev: true) {
@@ -24,7 +24,7 @@ async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved,
 
   // V1 design
   {
-    const { pageConfigsData } = await getConfigData(config.root, isDev, configVps.extensions)
+    const { pageConfigsData } = await getVikeConfig(config.root, isDev, configVps.extensions)
     pageConfigsData.forEach((data) => {
       Object.entries(data.configElements).forEach(([_configName, configElement]) => {
         const { codeFilePath, configEnv } = configElement
@@ -37,7 +37,7 @@ async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved,
           return
         }
 
-        // getConfigData() resolves relative import paths
+        // getVikeConfig() resolves relative import paths
         assert(!codeFilePath.startsWith('.'))
 
         // We need to differentiate between npm package imports and path aliases.

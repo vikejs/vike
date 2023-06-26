@@ -20,8 +20,10 @@ import {
   toPosixPath
 } from '../../../utils'
 import { isImportData, replaceImportStatements, type FileImport } from './replaceImportStatements'
-import { getConfigData_dependenciesInvisibleToVite, getFilePathToShowToUser, type FilePath } from './getConfigData'
+import { vikeConfigDependencies } from './getVikeConfig'
 import 'source-map-support/register'
+import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser'
+
 assertIsVitePluginCode()
 
 type Result = { fileExports: Record<string, unknown> }
@@ -37,7 +39,7 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean, u
     code = await buildFile(filePath, !isPageConfig, userRootDir, dependencies)
   } finally {
     dependencies.forEach((depFilePathAbsolute) => {
-      getConfigData_dependenciesInvisibleToVite.add(depFilePathAbsolute)
+      vikeConfigDependencies.add(depFilePathAbsolute)
     })
   }
   let fileImports: FileImport[] | null = null

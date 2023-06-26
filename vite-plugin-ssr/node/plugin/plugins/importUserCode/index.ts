@@ -17,7 +17,7 @@ import {
 } from '../../utils'
 import { isVirtualFileIdImportPageCode } from '../../../shared/virtual-files/virtualFileImportPageCode'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode'
-import { getConfigData_dependenciesInvisibleToVite, reloadConfigData } from './v1-design/getConfigData'
+import { vikeConfigDependencies, reloadVikeConfig } from './v1-design/getVikeConfig'
 import path from 'path'
 import pc from '@brillout/picocolors'
 import { logConfigInfo, clearLogs } from '../../shared/loggerNotProd'
@@ -82,8 +82,8 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig, conf
   return
   function listener(file: string, isRemove: boolean) {
     file = normalizePath(file)
-    const isVikeConfig = isVikeConfigModule(file)
-    if (isVikeConfig) {
+    const isVikeConfigModule = isVikeConfigFile(file)
+    if (isVikeConfigModule) {
       const virtualModules = getVirtualModules(server)
       virtualModules.forEach((mod) => {
         server.moduleGraph.invalidateModule(mod)
@@ -96,15 +96,15 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig, conf
 function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: ConfigVpsResolved) {
   const { file, server } = ctx
   assertPosixPath(file)
-  getConfigData_dependenciesInvisibleToVite.forEach((f) => assertPosixPath(f))
-  const isVikeConfig = isVikeConfigModule(file)
+  vikeConfigDependencies.forEach((f) => assertPosixPath(f))
+  const isVikeConfigModule = isVikeConfigFile(file)
 
-  const isViteModule = ctx.modules.length > 0
+  const isViteConfigModule = ctx.modules.length > 0
 
   /* Should we show this?
   // - Can be useful for server files that aren't processed by Vite.
   // - Can be annoying for files that obviously aren't processed by Vite.
-  if (!isVikeConfig && !isViteModule) {
+  if (!isVikeConfigModule && !isViteConfigModule) {
     logViteAny(
       `${msg} — ${pc.bold('no HMR')}, see https://vite-plugin-ssr.com/on-demand-compiler`,
       'info',
@@ -119,21 +119,21 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
 
   // HMR can resolve errors => we clear previously shown errors.
   // It can hide an error it shouldn't hide (because the error isn't shown again), but it's ok since users can reload the page and the error will be shown again (Vite transpilation errors are shown again upon a page reload).
-  if (!isVikeConfig && isViteModule) {
+  if (!isVikeConfigModule && isViteConfigModule) {
     clearLogs({ clearErrors: true })
     return
   }
 
-  if (isVikeConfig) {
-    assert(!isViteModule)
+  if (isVikeConfigModule) {
+    assert(!isViteConfigModule)
     reloadConfig(file, config, configVps, 'modified')
     const virtualModules = getVirtualModules(server)
     return virtualModules
   }
 }
 
-function isVikeConfigModule(filePathAbsolute: string): boolean {
-  return getConfigData_dependenciesInvisibleToVite.has(filePathAbsolute)
+function isVikeConfigFile(filePathAbsolute: string): boolean {
+  return vikeConfigDependencies.has(filePathAbsolute)
 }
 
 function reloadConfig(
@@ -147,7 +147,7 @@ function reloadConfig(
     const msg = `Config file ${op} ${filePathToShowToUser}`
     logConfigInfo(msg, 'info')
   }
-  reloadConfigData(config.root, configVps.extensions)
+  reloadVikeConfig(config.root, configVps.extensions)
 }
 
 function getVirtualModules(server: ViteDevServer): ModuleNode[] {

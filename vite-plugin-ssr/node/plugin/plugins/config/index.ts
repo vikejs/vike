@@ -8,7 +8,7 @@ import { findConfigVpsFromStemPackages } from './findConfigVpsFromStemPackages'
 import { pickFirst } from './pickFirst'
 import { resolveExtensions } from './resolveExtensions'
 import { resolveBase } from './resolveBase'
-import { getConfigData } from '../importUserCode/v1-design/getConfigData'
+import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig'
 
 function resolveVpsConfig(vpsConfig: unknown): Plugin {
   return {
@@ -31,7 +31,7 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
 
   const extensions = resolveExtensions(configs, config)
 
-  const { vikeConfig: fromPlusConfigFile } = await getConfigData(config.root, isDev2(config), extensions)
+  const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config.root, isDev2(config), extensions)
   configs.push(fromPlusConfigFile)
 
   assertVpsConfig(fromPlusConfigFile, ({ prop, errMsg }) => {

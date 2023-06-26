@@ -7,7 +7,7 @@ import {
   getVirtualFileIdImportPageCode,
   isVirtualFileIdImportPageCode
 } from '../../../../shared/virtual-files/virtualFileImportPageCode'
-import { getConfigData } from './getConfigData'
+import { getVikeConfig } from './getVikeConfig'
 import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery'
 import { debug } from './debug'
 import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps'
@@ -29,7 +29,7 @@ async function getVirtualFileImportCodeFiles(
   }
   */
   const { pageId, isForClientSide } = result
-  const { pageConfigsData } = await getConfigData(userRootDir, isDev, configVps.extensions, true)
+  const { pageConfigsData } = await getVikeConfig(userRootDir, isDev, configVps.extensions, true)
   assert(pageConfigsData)
   const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId === pageId)
   assert(pageConfigData)

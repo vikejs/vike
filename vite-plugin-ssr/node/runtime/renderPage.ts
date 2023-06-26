@@ -113,7 +113,7 @@ async function renderPage_(
   if (isConfigInvalid) {
     return handleInvalidConfig()
   } else {
-    // From now on, renderContext.pageConfigs contains all the configuration data; getConfigData() isn't called anymore for this request
+    // From now on, renderContext.pageConfigs contains all the configuration data; getVikeConfig() isn't called anymore for this request
   }
 
   // Render page

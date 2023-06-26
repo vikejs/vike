@@ -1,8 +1,6 @@
-export { getConfigData }
-export { reloadConfigData }
-export { getConfigData_dependenciesInvisibleToVite }
-export { getFilePathToShowToUser }
-export type { FilePath }
+export { getVikeConfig }
+export { reloadVikeConfig }
+export { vikeConfigDependencies }
 
 // - When esbuild bundle: true => track dependencies
 // - Rename assertIsVitePluginCode() => assertIsNotProductionRuntime() ?
@@ -36,7 +34,7 @@ import type {
   PageConfigGlobalData,
   ConfigElementSource
 } from '../../../../../shared/page-configs/PageConfig'
-import { configDefinitionsBuiltIn, type ConfigDefinition } from './getConfigData/configDefinitionsBuiltIn'
+import { configDefinitionsBuiltIn, type ConfigDefinition } from './getVikeConfig/configDefinitionsBuiltIn'
 import glob from 'fast-glob'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
 import {
@@ -47,7 +45,7 @@ import {
   sortAfterInheritanceOrder,
   isGlobalLocation,
   applyFilesystemRoutingRootEffect
-} from './getConfigData/filesystemRouting'
+} from './getVikeConfig/filesystemRouting'
 import { isTmpFile, transpileAndLoadFile } from './transpileAndLoadFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
@@ -57,6 +55,7 @@ import {
   removeSuperfluousViteLog_enable,
   removeSuperfluousViteLog_disable
 } from '../../../shared/loggerVite/removeSuperfluousViteLog'
+import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser'
 
 assertIsVitePluginCode()
 
@@ -82,13 +81,13 @@ type ConfigName = string
 type LocationId = string
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 
-type ConfigData = {
+type VikeConfig = {
   pageConfigsData: PageConfigData[]
   pageConfigGlobal: PageConfigGlobalData
-  vikeConfig: Record<string, unknown>
+  globalVikeConfig: Record<string, unknown>
 }
-let configDataPromise: Promise<ConfigData> | null = null
-let getConfigData_dependenciesInvisibleToVite: Set<string> = new Set()
+let vikeConfigPromise: Promise<VikeConfig> | null = null
+let vikeConfigDependencies: Set<string> = new Set()
 
 type ConfigDefinitionsIncludingCustom = Record<string, ConfigDefinition>
 
@@ -120,23 +119,23 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition>
 
 let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
-function reloadConfigData(userRootDir: string, extensions: ExtensionResolved[]) {
-  getConfigData_dependenciesInvisibleToVite = new Set()
-  configDataPromise = loadConfigData_withErrorHandling(userRootDir, true, extensions, true)
+function reloadVikeConfig(userRootDir: string, extensions: ExtensionResolved[]) {
+  vikeConfigDependencies = new Set()
+  vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, extensions, true)
   handleReloadSideEffects()
 }
 async function handleReloadSideEffects() {
   wasConfigInvalid = isConfigInvalid
-  const configDataPromisePrevious = configDataPromise
+  const vikeConfigPromisePrevious = vikeConfigPromise
   try {
-    await configDataPromise
+    await vikeConfigPromise
   } catch (err) {
     // handleReloadSideEffects() is only called in dev.
-    // In dev, if loadConfigData_withErrorHandling() throws an error, then it's a vite-plugin-ssr bug.
+    // In dev, if loadVikeConfig_withErrorHandling() throws an error, then it's a vite-plugin-ssr bug.
     console.error(err)
     assert(false)
   }
-  if (configDataPromise !== configDataPromisePrevious) {
+  if (vikeConfigPromise !== vikeConfigPromisePrevious) {
     // Let the next handleReloadSideEffects() call handle side effects
     return
   }
@@ -155,16 +154,16 @@ async function handleReloadSideEffects() {
     }
   }
 }
-async function getConfigData(
+async function getVikeConfig(
   userRootDir: string,
   isDev: boolean,
   extensions: ExtensionResolved[],
   tolerateInvalidConfig = false
-): Promise<ConfigData> {
-  if (!configDataPromise) {
-    configDataPromise = loadConfigData_withErrorHandling(userRootDir, isDev, extensions, tolerateInvalidConfig)
+): Promise<VikeConfig> {
+  if (!vikeConfigPromise) {
+    vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, isDev, extensions, tolerateInvalidConfig)
   }
-  return await configDataPromise
+  return await vikeConfigPromise
 }
 
 async function loadInterfaceFiles(
@@ -285,17 +284,17 @@ function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: 
   return interfaceFile
 }
 
-async function loadConfigData_withErrorHandling(
+async function loadVikeConfig_withErrorHandling(
   userRootDir: string,
   isDev: boolean,
   extensions: ExtensionResolved[],
   tolerateInvalidConfig: boolean
-): Promise<ConfigData> {
+): Promise<VikeConfig> {
   let hasError = false
-  let ret: ConfigData | undefined
+  let ret: VikeConfig | undefined
   let err: unknown
   try {
-    ret = await loadConfigData(userRootDir, isDev, extensions)
+    ret = await loadVikeConfig(userRootDir, isDev, extensions)
   } catch (err_) {
     hasError = true
     err = err_
@@ -317,26 +316,26 @@ async function loadConfigData_withErrorHandling(
       if (!tolerateInvalidConfig) {
         devServerIsCorrupt = true
       }
-      const dummyData: ConfigData = {
+      const dummyData: VikeConfig = {
         pageConfigsData: [],
         pageConfigGlobal: {
           onPrerenderStart: null,
           onBeforeRoute: null
         },
-        vikeConfig: {}
+        globalVikeConfig: {}
       }
       return dummyData
     }
   }
 }
-async function loadConfigData(
+async function loadVikeConfig(
   userRootDir: string,
   isDev: boolean,
   extensions: ExtensionResolved[]
-): Promise<ConfigData> {
+): Promise<VikeConfig> {
   const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, isDev, extensions)
 
-  const { vikeConfig, pageConfigGlobal } = getGlobalConfigs(interfaceFilesByLocationId, userRootDir)
+  const { globalVikeConfig, pageConfigGlobal } = getGlobalConfigs(interfaceFilesByLocationId, userRootDir)
 
   const pageConfigsData: PageConfigData[] = await Promise.all(
     Object.entries(interfaceFilesByLocationId)
@@ -407,7 +406,7 @@ async function loadConfigData(
       })
     })
   })
-  return { pageConfigsData, pageConfigGlobal, vikeConfig }
+  return { pageConfigsData, pageConfigGlobal, globalVikeConfig }
 }
 
 function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
@@ -481,7 +480,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
     })
   }
 
-  const vikeConfig: Record<string, unknown> = {}
+  const globalVikeConfig: Record<string, unknown> = {}
   const pageConfigGlobal: PageConfigGlobalData = {
     onBeforeRoute: null,
     onPrerenderStart: null
@@ -500,11 +499,11 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
         `Being able to define config '${configName}' in ${configElement.configDefinedByFile} is experimental and will likely be removed. Define the config '${configName}' in vite-plugin-ssr's Vite plugin options instead.`,
         { onlyOnce: true }
       )
-      vikeConfig[configName] = configElement.configValue
+      globalVikeConfig[configName] = configElement.configValue
     }
   })
 
-  return { pageConfigGlobal, vikeConfig }
+  return { pageConfigGlobal, globalVikeConfig }
 }
 
 function resolveConfigElement(
@@ -1102,12 +1101,6 @@ function assertExtendsImportPath(importPath: string, filePath: string, configFil
   }
 }
 
-function getFilePathToShowToUser(filePath: FilePath) {
-  const filePathToShowToUser = filePath.filePathRelativeToUserRootDir ?? filePath.filePathAbsolute
-  assert(filePathToShowToUser)
-  return filePathToShowToUser
-}
-
 function getExtendsImportData(configFileExports: Record<string, unknown>, configFilePath: FilePath): ImportData[] {
   const filePathToShowToUser = getFilePathToShowToUser(configFilePath)
   assertDefaultExportObject(configFileExports, filePathToShowToUser)
@@ -1134,10 +1127,6 @@ function getExtendsImportData(configFileExports: Record<string, unknown>, config
 type UserFilePath = {
   filePathAbsolute: string
   filePathRelativeToUserRootDir: string
-}
-type FilePath = {
-  filePathAbsolute: string
-  filePathRelativeToUserRootDir: null | string
 }
 
 // TODO: re-use this

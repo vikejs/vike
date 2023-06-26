@@ -14,7 +14,7 @@ import {
   assertUsage
 } from '../utils'
 import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode'
-import { getConfigData } from './importUserCode/v1-design/getConfigData'
+import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig'
 import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils'
 import { findPageFiles } from '../shared/findPageFiles'
 import { getConfigVps } from '../../shared/getConfigVps'
@@ -62,7 +62,7 @@ function buildConfig(): Plugin {
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const configVps = await getConfigVps(config)
   const pageFileEntries = await getPageFileEntries(config, configVps.includeAssetsImportedByServer) // TODO/v1-release: remove
-  const { pageConfigsData } = await getConfigData(config.root, false, configVps.extensions)
+  const { pageConfigsData } = await getVikeConfig(config.root, false, configVps.extensions)
   assertUsage(
     Object.keys(pageFileEntries).length !== 0 || pageConfigsData.length !== 0,
     'At least one page should be defined, see https://vite-plugin-ssr.com/add'
