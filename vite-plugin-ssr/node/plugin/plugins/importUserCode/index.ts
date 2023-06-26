@@ -76,8 +76,8 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig, conf
   return
   function listener(file: string, isRemove: boolean) {
     file = normalizePath(file)
-    const configName = getConfigName(file)
-    if (configName) {
+    const isVikeConfig = isVikeConfigModule(file)
+    if (isVikeConfig) {
       const virtualModules = getVirtualModules(server)
       virtualModules.forEach((mod) => {
         server.moduleGraph.invalidateModule(mod)
@@ -91,7 +91,7 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
   const { file, server } = ctx
   assertPosixPath(file)
   getConfigData_dependenciesInvisibleToVite.forEach((f) => assertPosixPath(f))
-  const isVikeConfig = getConfigData_dependenciesInvisibleToVite.has(file)
+  const isVikeConfig = isVikeConfigModule(file)
 
   const isViteModule = ctx.modules.length > 0
 
@@ -124,6 +124,14 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
     const virtualModules = getVirtualModules(server)
     return virtualModules
   }
+}
+
+function isVikeConfigModule(filePathAbsolute: string): boolean {
+  return (
+    getConfigData_dependenciesInvisibleToVite.has(filePathAbsolute) ||
+    // Not really needed, but maybe it makes processing Vike config files more eagerly?
+    !!getConfigName(filePathAbsolute)
+  )
 }
 
 function reloadConfig(

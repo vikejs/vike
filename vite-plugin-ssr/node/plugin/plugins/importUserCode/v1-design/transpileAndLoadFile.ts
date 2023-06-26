@@ -145,10 +145,19 @@ async function buildFile(filePath: FilePath, bundle: boolean, userRootDir: strin
         name: 'vite-plugin-ssr:import-hook',
         setup(b) {
           b.onLoad({ filter: /./ }, (args) => {
-            // We collect args.path in case it fails to build (upon build error => error is thrown => no metafile)
+            // We collect the dependency args.path in case it fails to build (upon build error => error is thrown => no metafile)
             dependencies.add(args.path)
             return undefined
           })
+          /* To exhaustively collect all dependencies upon build failure, we would also need to use onResolve().
+           *  - Because onLoad() isn't call if the config dependency can't be resolved.
+           *  - For example, the following breaks auto-reload (the config is stuck in its error state and the user needs to touch the importer for the config to reload):
+           *    ```bash
+           *    mv ./some-config-dependency.js /tmp/ && mv /tmp/some-config-dependency.js .
+           *    ```
+           *  - But implementing a fix is complex and isn't worth it.
+          b.onResolve(...)
+          */
         }
       }
     ]
