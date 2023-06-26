@@ -1,1 +1,1 @@
-export default true
+export { val as default } from './val'
