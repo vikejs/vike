@@ -155,7 +155,7 @@ type PrerenderOptions = {
 
 async function runPrerender(
   options: PrerenderOptions,
-  manuallyTriggeredBy: null | '$ vite-plugin-ssr prerender' | 'prerender()'
+  manuallyTriggered: null | '$ vite-plugin-ssr prerender' | 'prerender()'
 ): Promise<void> {
   checkOutdatedOptions(options)
 
@@ -176,10 +176,10 @@ async function runPrerender(
   const { root } = viteConfig
   const prerenderConfig = configVps.prerender
   if (!prerenderConfig) {
-    assert(manuallyTriggeredBy)
+    assert(manuallyTriggered)
     assertWarning(
       prerenderConfig,
-      `You're executing \`${manuallyTriggeredBy}\` but the config \`prerender\` isn't set to true`,
+      `You're executing \`${manuallyTriggered}\` but the config \`prerender\` isn't set to true`,
       {
         onlyOnce: true
       }

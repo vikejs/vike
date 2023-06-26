@@ -1,3 +1,5 @@
+// TODO/v1-release: remove this file
+
 import { prerender as prerenderOriginal } from '../prerender'
 import { assertWarning } from './utils'
 export const prerender: typeof prerenderOriginal = (options) => {
