@@ -117,7 +117,7 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition>
 let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
 function reloadVikeConfig(userRootDir: string, extensions: ExtensionResolved[]) {
-  vikeConfigDependencies = new Set()
+  vikeConfigDependencies.clear()
   vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, extensions, true)
   handleReloadSideEffects()
 }
