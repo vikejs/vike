@@ -28,25 +28,18 @@ assertIsVitePluginCode()
 
 type Result = { fileExports: Record<string, unknown> }
 
-async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean, userRootDir: string): Promise<Result> {
+async function transpileAndLoadFile(filePath: FilePath, isValueFile: boolean, userRootDir: string): Promise<Result> {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = filePath
   const filePathToShowToUser = getFilePathToShowToUser(filePath)
   assertPosixPath(filePathAbsolute)
-  const dependencies = new Set<string>()
-  dependencies.add(filePath.filePathAbsolute)
-  let code: string
-  try {
-    code = await buildFile(filePath, !isPageConfig, userRootDir, dependencies)
-  } finally {
-    dependencies.forEach((depFilePathAbsolute) => {
-      vikeConfigDependencies.add(depFilePathAbsolute)
-    })
-  }
+  vikeConfigDependencies.add(filePath.filePathAbsolute)
+  let code = await buildFile(filePath, isValueFile, userRootDir)
   let fileImports: FileImport[] | null = null
   const isHeader = isHeaderFile(filePathAbsolute)
-  if (isPageConfig || isHeader) {
+  const isPageConfigFile = !isValueFile
+  if (isHeader || isPageConfigFile) {
     assertWarning(
-      isPageConfig,
+      isPageConfigFile,
       `${filePathToShowToUser} is a JavaScript header file (.h.js), but JavaScript header files should only be used for +config.h.js, see https://vite-plugin-ssr.com/header-file`,
       { onlyOnce: true }
     )
@@ -64,6 +57,7 @@ async function transpileAndLoadFile(filePath: FilePath, isPageConfig: boolean, u
       fileImports = res.fileImports
     }
   }
+
   // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
   //  - But seems to break source maps?
   const filePathTmp = getFilePathTmp(filePathAbsolute)
@@ -121,7 +115,7 @@ function getConfigExececutionErrorIntroMsg(err: unknown): string | null {
   return errIntroMsg ?? null
 }
 
-async function buildFile(filePath: FilePath, bundle: boolean, userRootDir: string, dependencies: Set<string>) {
+async function buildFile(filePath: FilePath, bundle: boolean, userRootDir: string) {
   const entryFilePath = filePath.filePathAbsolute
   const entryFileDir = path.posix.dirname(entryFilePath)
   const options: BuildOptions = {
@@ -140,9 +134,13 @@ async function buildFile(filePath: FilePath, bundle: boolean, userRootDir: strin
     format: 'esm',
     bundle,
     minify: false,
-    metafile: true,
-    absWorkingDir: userRootDir,
-    plugins: [
+    metafile: bundle,
+    absWorkingDir: userRootDir
+  }
+  if (bundle) {
+    options.bundle = true
+    options.packages = 'external'
+    options.plugins = [
       {
         name: 'vite-plugin-ssr:import-hook',
         setup(b) {
@@ -150,7 +148,7 @@ async function buildFile(filePath: FilePath, bundle: boolean, userRootDir: strin
             let { path } = args
             path = toPosixPath(path)
             // We collect the dependency args.path in case it fails to build (upon build error => error is thrown => no metafile)
-            dependencies.add(path)
+            vikeConfigDependencies.add(path)
             return undefined
           })
           /* To exhaustively collect all dependencies upon build failure, we would also need to use onResolve().
@@ -165,10 +163,6 @@ async function buildFile(filePath: FilePath, bundle: boolean, userRootDir: strin
         }
       }
     ]
-  }
-  if (bundle) {
-    options.bundle = true
-    options.packages = 'external'
   } else {
     // Avoid dead-code elimination to ensure unused imports aren't removed.
     // Esbuild still sometimes removes unused imports because of TypeScript: https://github.com/evanw/esbuild/issues/3034
@@ -182,13 +176,15 @@ async function buildFile(filePath: FilePath, bundle: boolean, userRootDir: strin
     await formatBuildErr(err, filePath)
     throw err
   }
-  Object.keys(result.metafile!.inputs).forEach((filePathRelative) => {
-    filePathRelative = toPosixPath(filePathRelative)
-    assertPosixPath(userRootDir)
-    const filePathAbsolute = path.posix.join(userRootDir, filePathRelative)
-    dependencies.add(filePathAbsolute)
-    return filePathAbsolute
-  })
+  if (bundle) {
+    assert(result.metafile)
+    Object.keys(result.metafile.inputs).forEach((filePathRelative) => {
+      filePathRelative = toPosixPath(filePathRelative)
+      assertPosixPath(userRootDir)
+      const filePathAbsolute = path.posix.join(userRootDir, filePathRelative)
+      vikeConfigDependencies.add(filePathAbsolute)
+    })
+  }
   const code = result.outputFiles![0]!.text
   assert(typeof code === 'string')
   return code
