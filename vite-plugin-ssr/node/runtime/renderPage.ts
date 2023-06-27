@@ -4,16 +4,7 @@ export { renderPage_setWrapper }
 import { getRenderContext, initPageContext, RenderContext, renderPageContext } from './renderPage/renderPageContext'
 import { route } from '../../shared/route'
 import { getErrorPageId } from '../../shared/error-page'
-import {
-  assert,
-  hasProp,
-  objectAssign,
-  isParsable,
-  parseUrl,
-  assertServerEnv,
-  assertWarning,
-  getGlobalObject
-} from './utils'
+import { assert, hasProp, objectAssign, isParsable, parseUrl, assertEnv, assertWarning, getGlobalObject } from './utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { isRenderErrorPageException } from '../../shared/route/RenderErrorPage'
 import { initGlobalContext } from './globalContext'
@@ -58,7 +49,7 @@ async function renderPage<
 > {
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string'))
-  assertServerEnv()
+  assertEnv()
 
   if (skipRequest(pageContextInit.urlOriginal)) {
     const pageContextHttpReponseNull = getPageContextHttpResponseNull(pageContextInit)

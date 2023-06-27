@@ -5,14 +5,14 @@ export { isFirstLog }
 export { clearScreen }
 export { screenHasErrors }
 
-import { assert, projectInfo, type ProjectTag, stripAnsi, hasProp, assertIsVitePluginCode } from '../../utils'
+import { assert, projectInfo, type ProjectTag, stripAnsi, hasProp, assertIsNotProduction } from '../../utils'
 import pc from '@brillout/picocolors'
 import { isErrorDebug } from '../isErrorDebug'
 import { getViteDevServer } from '../../../runtime/globalContext'
 import type { LogCategory, LogType } from '../loggerNotProd'
 import type { ResolvedConfig } from 'vite'
 
-assertIsVitePluginCode()
+assertIsNotProduction()
 
 let isFirstLog = true
 let screenHasErrors = false

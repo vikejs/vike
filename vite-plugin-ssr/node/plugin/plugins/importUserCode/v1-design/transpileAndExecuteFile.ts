@@ -11,7 +11,7 @@ import { import_ } from '@brillout/import'
 import {
   assertPosixPath,
   getRandomId,
-  assertIsVitePluginCode,
+  assertIsNotProduction,
   assert,
   assertDefaultExportObject,
   unique,
@@ -24,7 +24,7 @@ import { vikeConfigDependencies } from './getVikeConfig'
 import 'source-map-support/register'
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser'
 
-assertIsVitePluginCode()
+assertIsNotProduction()
 
 async function transpileAndExecuteFile(
   filePath: FilePath,

@@ -15,13 +15,13 @@ export { getHttpRequestAsyncStore }
 export { installHttpRequestAsyncStore }
 
 import { renderPage_setWrapper } from '../../runtime/renderPage'
-import { assert, assertIsVitePluginCode, isObject } from '../utils'
+import { assert, assertIsNotProduction, isObject } from '../utils'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { getConfigBuildErrorFormatted } from '../plugins/importUserCode/v1-design/transpileAndExecuteFile'
 import { logErrorDebugNote } from './loggerNotProd'
 import { isEquivalentErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet'
 
-assertIsVitePluginCode()
+assertIsNotProduction()
 
 type HttpRequestAsyncStore = {
   httpRequestId: number

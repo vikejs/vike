@@ -16,7 +16,7 @@ import {
   hasProp,
   arrayIncludes,
   objectKeys,
-  assertIsVitePluginCode,
+  assertIsNotProduction,
   getMostSimilar,
   isNpmPackageImport,
   joinEnglish,
@@ -54,7 +54,7 @@ import {
 } from '../../../shared/loggerVite/removeSuperfluousViteLog'
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser'
 
-assertIsVitePluginCode()
+assertIsNotProduction()
 
 type InterfaceFile = InterfaceConfigFile | InterfaceValueFile
 type InterfaceFileCommons = {
