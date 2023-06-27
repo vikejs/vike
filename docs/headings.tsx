@@ -1030,5 +1030,13 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: <code>process.env.NODE_ENV</code>,
     url: '/NODE_ENV'
+  },
+  {
+    title: (
+      <>
+        Header file (<code>.h.js</code>), import from same file
+      </>
+    ),
+    url: '/header-file/import-from-same-file'
   }
 ]

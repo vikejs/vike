@@ -1,0 +1,53 @@
+import { Link } from '@brillout/docpress'
+
+> `+config.h.js` files are explained at <Link href="/config" />
+
+Importing from the same file is usually forbidden:
+
+```js
+// /pages/some-page/+config.h.js
+
+// ❌ Usually forbidden
+import { Page, onBeforeRender } from './same-file'
+
+export default { Page, onBeforeRender }
+```
+
+This is only allowed if `Page` and `onBeforeRender` live in the same environment (which isn't the case by default).
+
+> By default, `Page` is loaded on both the client-side and server-side, while `onBeforeRender` is loaded only on the server-side.
+
+To share code between `Page` and `onBeforeRender`, do this instead:
+
+```js
+// /pages/some-page/+config.h.js
+
+// ✅ Importing from two different files
+import { Page } from './Page'
+import { onBeforeRender } from './onBeforeRender'
+
+export default { Page, onBeforeRender }
+```
+
+```js
+// /pages/some-page/Page.js
+
+import { sharedCode } from './shared'
+
+// ...
+```
+```js
+// /pages/some-page/onBeforeRender.js
+
+import { sharedCode } from './shared'
+
+// ...
+```
+```js
+// /pages/some-page/shared.js
+
+// Code used by both Page and onBeforeRender
+export { sharedCode }
+
+// ...
+```

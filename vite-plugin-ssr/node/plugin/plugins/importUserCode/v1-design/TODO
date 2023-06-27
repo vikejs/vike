@@ -1,5 +1,4 @@
 V1 design stable release:
- - assert that two import statements in +config.js shouldn't land in different environments
  - Implements TODO comments
  - Minimize what client-side loads
  - docs

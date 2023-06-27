@@ -29,7 +29,8 @@ import type {
   ConfigElement,
   PageConfigData,
   PageConfigGlobalData,
-  ConfigElementSource
+  ConfigElementSource,
+  ConfigEnvPrivate
 } from '../../../../../shared/page-configs/PageConfig'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './getVikeConfig/configDefinitionsBuiltIn'
 import glob from 'fast-glob'
@@ -116,8 +117,10 @@ let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfig> | null = null
 const vikeConfigDependencies: Set<string> = new Set()
+const codeFilesEnv: Map<string, { configEnv: ConfigEnvPrivate; configName: string }[]> = new Map()
 function reloadVikeConfig(userRootDir: string, extensions: ExtensionResolved[]) {
   vikeConfigDependencies.clear()
+  codeFilesEnv.clear()
   vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, extensions, true)
   handleReloadSideEffects()
 }
@@ -620,6 +623,7 @@ function getConfigElement(
     const codeFile = getCodeFilePath(configValue, interfaceFile.filePath, userRootDir)
     if (codeFile) {
       const { codeFilePath, codeFileExport } = codeFile
+      assertCodeFileEnv(codeFilePath, configEnv, configName)
       const configElement = {
         plusConfigFilePath: configFilePath,
         codeFilePath,
@@ -661,6 +665,27 @@ function getConfigElement(
     return configElement
   }
   assert(false)
+}
+
+function assertCodeFileEnv(codeFilePath: string, configEnv: ConfigEnvPrivate, configName: string) {
+  if (!codeFilesEnv.has(codeFilePath)) {
+    codeFilesEnv.set(codeFilePath, [])
+  }
+  const codeFileEnv = codeFilesEnv.get(codeFilePath)!
+  codeFileEnv.push({ configEnv, configName })
+  const configDifferentEnv = codeFileEnv.filter((c) => c.configEnv !== configEnv)[0]
+  if (configDifferentEnv) {
+    assertUsage(
+      false,
+      [
+        `${codeFilePath} defines the value of configs living in different environments:`,
+        ...[configDifferentEnv, { configName, configEnv }].map(
+          (c) => `  - config '${c.configName}' which value lives in environment '${c.configEnv}'`
+        ),
+        'Defining config values in the same file is allowed only if they live in the same environment, see https://vite-plugin-ssr.com/header-file/import-from-same-file'
+      ].join('\n')
+    )
+  }
 }
 
 /* Use the type once we moved all dist/ to ESM
