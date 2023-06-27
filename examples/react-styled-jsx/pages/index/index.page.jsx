@@ -18,7 +18,6 @@ function Page() {
         span {
           color: firebrick; 
         }
-    
       `}</style>
     </>
   )

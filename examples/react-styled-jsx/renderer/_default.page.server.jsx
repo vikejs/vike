@@ -13,6 +13,7 @@ async function render(pageContext) {
   registry.flush()
 
   const { Page } = pageContext
+  // include the styleregistry in the app render to inject the styles
   const viewHtml = dangerouslySkipEscape(
     renderToString(
       <StyleRegistry registry={registry}>
@@ -23,6 +24,7 @@ async function render(pageContext) {
     )
   )
 
+  // extract the styles to add as head tags to the server markup
   const headTags = renderToStaticMarkup(<>{registry.styles()}</>)
 
   return escapeInject`<!DOCTYPE html>
