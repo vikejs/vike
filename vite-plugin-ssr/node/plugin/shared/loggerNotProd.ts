@@ -41,7 +41,7 @@ import {
 import {
   getConfigExececutionErrorIntroMsg,
   getConfigBuildErrorFormatted
-} from '../plugins/importUserCode/v1-design/transpileAndLoadFile'
+} from '../plugins/importUserCode/v1-design/transpileAndExecuteFile'
 import {
   logWithVikeTag,
   logWithViteTag,

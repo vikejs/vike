@@ -43,7 +43,7 @@ import {
   isGlobalLocation,
   applyFilesystemRoutingRootEffect
 } from './getVikeConfig/filesystemRouting'
-import { isTmpFile, transpileAndLoadFile } from './transpileAndLoadFile'
+import { isTmpFile, transpileAndExecuteFile } from './transpileAndExecuteFile'
 import { ImportData, parseImportData } from './replaceImportStatements'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
 import { getViteDevServer } from '../../../../runtime/globalContext'
@@ -254,7 +254,7 @@ function getConfigDefinitionOptional(
   return configDefinitions[configName] ?? null
 }
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string, userRootDir: string) {
-  const { fileExports } = await transpileAndLoadFile(interfaceValueFile.filePath, true, userRootDir)
+  const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, true, userRootDir)
   assertDefaultExportUnknown(fileExports, getFilePathToShowToUser(interfaceValueFile.filePath))
   Object.entries(fileExports).forEach(([configName, configValue]) => {
     if (configName === 'default') {
@@ -1005,7 +1005,7 @@ async function loadConfigFile(
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = configFilePath
   assertNoInfiniteLoop(visited, filePathAbsolute)
-  const { fileExports } = await transpileAndLoadFile(configFilePath, false, userRootDir)
+  const { fileExports } = await transpileAndExecuteFile(configFilePath, false, userRootDir)
   const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir, [
     ...visited,
     filePathAbsolute

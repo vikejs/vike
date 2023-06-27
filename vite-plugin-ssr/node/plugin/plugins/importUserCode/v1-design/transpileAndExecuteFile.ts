@@ -1,4 +1,4 @@
-export { transpileAndLoadFile }
+export { transpileAndExecuteFile }
 export { getConfigBuildErrorFormatted }
 export { getConfigExececutionErrorIntroMsg }
 export { isTmpFile }
@@ -26,96 +26,67 @@ import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUse
 
 assertIsVitePluginCode()
 
-type Result = { fileExports: Record<string, unknown> }
+async function transpileAndExecuteFile(
+  filePath: FilePath,
+  isValueFile: boolean,
+  userRootDir: string
+): Promise<{ fileExports: Record<string, unknown> }> {
+  const { code, fileImports } = await transpileFile(filePath, isValueFile, userRootDir)
+  const { fileExports } = await executeFile(filePath, code, fileImports)
+  return { fileExports }
+}
 
-async function transpileAndLoadFile(filePath: FilePath, isValueFile: boolean, userRootDir: string): Promise<Result> {
-  const { filePathAbsolute, filePathRelativeToUserRootDir } = filePath
-  const filePathToShowToUser = getFilePathToShowToUser(filePath)
+async function transpileFile(filePath: FilePath, isValueFile: boolean, userRootDir: string) {
+  const { filePathAbsolute } = filePath
   assertPosixPath(filePathAbsolute)
-  vikeConfigDependencies.add(filePath.filePathAbsolute)
-  let code = await buildFile(filePath, isValueFile, userRootDir)
+  vikeConfigDependencies.add(filePathAbsolute)
+  let code = await transpileWithEsbuild(filePath, isValueFile, userRootDir)
+
   let fileImports: FileImport[] | null = null
-  const isHeader = isHeaderFile(filePathAbsolute)
-  const isPageConfigFile = !isValueFile
-  if (isHeader || isPageConfigFile) {
-    assertWarning(
-      isPageConfigFile,
-      `${filePathToShowToUser} is a JavaScript header file (.h.js), but JavaScript header files should only be used for +config.h.js, see https://vite-plugin-ssr.com/header-file`,
-      { onlyOnce: true }
-    )
-    const res = replaceImportStatements(code, filePathToShowToUser)
-    if (!res.noImportStatement) {
-      if (!isHeader) {
-        const filePathCorrect = appendHeaderFileExtension(filePathToShowToUser)
-        assertWarning(
-          false,
-          `Rename ${filePathToShowToUser} to ${filePathCorrect}, see https://vite-plugin-ssr.com/header-file`,
-          { onlyOnce: true }
-        )
-      }
+  {
+    const res = transpileImports(code, filePath, isValueFile)
+    if (res) {
       code = res.code
       fileImports = res.fileImports
     }
   }
-
-  // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
-  //  - But seems to break source maps?
-  const filePathTmp = getFilePathTmp(filePathAbsolute)
-  fs.writeFileSync(filePathTmp, code)
-  const clean = () => fs.unlinkSync(filePathTmp)
-  let fileExports: Record<string, unknown> = {}
-  try {
-    fileExports = await import_(filePathTmp)
-  } catch (err) {
-    triggerPrepareStackTrace(err)
-    const errIntroMsg = getErrIntroMsg('execute', filePath)
-    assert(isObject(err))
-    execErrIntroMsg.set(err, errIntroMsg)
-    throw err
-  } finally {
-    clean()
-  }
-  // Return a plain JavaScript object
-  //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
-  //  - We don't need this special object
-  fileExports = { ...fileExports }
-  if (fileImports) {
-    assert(filePathRelativeToUserRootDir !== undefined)
-    const filePath = filePathRelativeToUserRootDir ?? filePathAbsolute
-    assertFileImports(fileImports, fileExports, filePath)
-  }
-  return { fileExports }
+  return { code, fileImports }
 }
 
-const formatted = '_formatted'
-function getConfigBuildErrorFormatted(err: unknown): null | string {
-  if (!isObject(err)) return null
-  if (!(formatted in err)) return null
-  assert(typeof err[formatted] === 'string')
-  return err[formatted]
-}
-async function formatBuildErr(err: unknown, filePath: FilePath): Promise<void> {
-  assert(isObject(err) && err.errors)
-  const msgEsbuild = (
-    await formatMessages(err.errors as any, {
-      kind: 'error',
-      color: true
-    })
+function transpileImports(codeOriginal: string, filePath: FilePath, isValueFile: boolean) {
+  // Do we need to remove the imports?
+  const { filePathAbsolute } = filePath
+  assertPosixPath(filePathAbsolute)
+  const isHeader = isHeaderFile(filePathAbsolute)
+  const isPageConfigFile = !isValueFile
+  if (!isHeader && !isPageConfigFile) {
+    return null
+  }
+  const filePathToShowToUser = getFilePathToShowToUser(filePath)
+  assertWarning(
+    isPageConfigFile,
+    `${filePathToShowToUser} is a JavaScript header file (.h.js), but JavaScript header files should only be used for +config.h.js, see https://vite-plugin-ssr.com/header-file`,
+    { onlyOnce: true }
   )
-    .map((m) => m.trim())
-    .join('\n')
-  const msgIntro = getErrIntroMsg('transpile', filePath)
-  err[formatted] = `${msgIntro}\n${msgEsbuild}`
+
+  // Remove the imports
+  const res = replaceImportStatements(codeOriginal, filePathToShowToUser)
+  if (res.noImportStatement) {
+    return null
+  }
+  const { code, fileImports } = res
+  if (!isHeader) {
+    const filePathCorrect = appendHeaderFileExtension(filePathToShowToUser)
+    assertWarning(
+      false,
+      `Rename ${filePathToShowToUser} to ${filePathCorrect}, see https://vite-plugin-ssr.com/header-file`,
+      { onlyOnce: true }
+    )
+  }
+  return { code, fileImports }
 }
 
-const execErrIntroMsg = new WeakMap<object, string>()
-function getConfigExececutionErrorIntroMsg(err: unknown): string | null {
-  if (!isObject(err)) return null
-  const errIntroMsg = execErrIntroMsg.get(err)
-  return errIntroMsg ?? null
-}
-
-async function buildFile(filePath: FilePath, bundle: boolean, userRootDir: string) {
+async function transpileWithEsbuild(filePath: FilePath, bundle: boolean, userRootDir: string) {
   const entryFilePath = filePath.filePathAbsolute
   const entryFileDir = path.posix.dirname(entryFilePath)
   const options: BuildOptions = {
@@ -188,6 +159,65 @@ async function buildFile(filePath: FilePath, bundle: boolean, userRootDir: strin
   const code = result.outputFiles![0]!.text
   assert(typeof code === 'string')
   return code
+}
+
+async function executeFile(filePath: FilePath, code: string, fileImports: FileImport[] | null) {
+  const { filePathAbsolute, filePathRelativeToUserRootDir } = filePath
+  // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
+  //  - But seems to break source maps, so I don't think it's worth it
+  const filePathTmp = getFilePathTmp(filePathAbsolute)
+  fs.writeFileSync(filePathTmp, code)
+  const clean = () => fs.unlinkSync(filePathTmp)
+  let fileExports: Record<string, unknown> = {}
+  try {
+    fileExports = await import_(filePathTmp)
+  } catch (err) {
+    triggerPrepareStackTrace(err)
+    const errIntroMsg = getErrIntroMsg('execute', filePath)
+    assert(isObject(err))
+    execErrIntroMsg.set(err, errIntroMsg)
+    throw err
+  } finally {
+    clean()
+  }
+  // Return a plain JavaScript object
+  //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
+  //  - We don't need this special object
+  fileExports = { ...fileExports }
+  if (fileImports) {
+    assert(filePathRelativeToUserRootDir !== undefined)
+    const filePath = filePathRelativeToUserRootDir ?? filePathAbsolute
+    assertFileImports(fileImports, fileExports, filePath)
+  }
+  return { fileExports }
+}
+
+const formatted = '_formatted'
+function getConfigBuildErrorFormatted(err: unknown): null | string {
+  if (!isObject(err)) return null
+  if (!(formatted in err)) return null
+  assert(typeof err[formatted] === 'string')
+  return err[formatted]
+}
+async function formatBuildErr(err: unknown, filePath: FilePath): Promise<void> {
+  assert(isObject(err) && err.errors)
+  const msgEsbuild = (
+    await formatMessages(err.errors as any, {
+      kind: 'error',
+      color: true
+    })
+  )
+    .map((m) => m.trim())
+    .join('\n')
+  const msgIntro = getErrIntroMsg('transpile', filePath)
+  err[formatted] = `${msgIntro}\n${msgEsbuild}`
+}
+
+const execErrIntroMsg = new WeakMap<object, string>()
+function getConfigExececutionErrorIntroMsg(err: unknown): string | null {
+  if (!isObject(err)) return null
+  const errIntroMsg = execErrIntroMsg.get(err)
+  return errIntroMsg ?? null
 }
 
 const tmpPrefix = `[build-`
