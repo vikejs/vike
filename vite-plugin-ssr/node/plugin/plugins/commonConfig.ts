@@ -1,7 +1,7 @@
 export { commonConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { addRequireShim_setUserRootDir, assert, assertWarning } from '../utils'
+import { addRequireShim_setUserRootDir, assert, assertWarning, isValidPathAlias } from '../utils'
 import { assertRollupInput } from './buildConfig'
 
 function commonConfig(): Plugin[] {
@@ -51,15 +51,18 @@ function workaroundCI(config: ResolvedConfig) {
   }
 }
 
+// TODO/v1-release: replace assertWarning() with assertUsage()
 function assertResolveAlias(config: ResolvedConfig) {
   const aliases = getAliases(config)
   const errPrefix = config.configFile || 'Your Vite configuration'
-  const errSuffix = "follow the '#' prefix convention, see https://vite-plugin-ssr.com/path-aliases#vite"
+  const errSuffix1 = 'see https://vite-plugin-ssr.com/path-aliases#vite'
+  const errSuffix2 =
+    `which will be deprecated in the next major release, use a string insead and ${errSuffix1}` as const
   aliases.forEach((alias) => {
     const { customResolver, find } = alias
     assertWarning(
       customResolver === undefined,
-      `${errPrefix} defines resolve.alias with customResolver() which we recommend against, use a string instead and ${errSuffix}`
+      `${errPrefix} defines resolve.alias with customResolver() ${errSuffix2}`
     )
     if (typeof find !== 'string') {
       assert(find instanceof RegExp)
@@ -69,14 +72,14 @@ function assertResolveAlias(config: ResolvedConfig) {
       if (find.toString().includes('@vite')) return
       // Skip alias /^solid-refresh$/ set by vite-plugin-solid
       if (find.toString().includes('solid-refresh')) return
-      assertWarning(
-        false,
-        `${errPrefix} defines resolve.alias with a RegExp ${find} which we recommend against, use a string instead and ${errSuffix}`
-      )
+      assertWarning(false, `${errPrefix} defines resolve.alias with a regular expression ${errSuffix2}`)
     } else {
       // Skip aliases set by @preact/preset-vite
       if (find.startsWith('react')) return
-      assertWarning(find.startsWith('#'), `${errPrefix} defines an alias '${find}' that doesn't ${errSuffix}`)
+      assertWarning(
+        isValidPathAlias(find),
+        `${errPrefix} defines an alias '${find}' that cannot be distinguished from npm package imports, ${errSuffix1}`
+      )
     }
   })
 }

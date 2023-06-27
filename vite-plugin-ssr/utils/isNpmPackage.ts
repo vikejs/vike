@@ -2,6 +2,7 @@ export { isNpmPackageImport }
 export { isNpmPackageName }
 export { getNpmPackageName }
 export { getNpmPackageImportPath }
+export { isValidPathAlias }
 
 // For ./isNpmPackage.spec.ts
 export { parse }
@@ -26,6 +27,17 @@ function getNpmPackageImportPath(str: string): null | string {
   const res = parse(str)
   if (!res) return null
   return res.importPath
+}
+
+function isValidPathAlias(alias: string): boolean {
+  return (
+    parse(alias) === null &&
+    parse(`${alias}fake-path`) === null &&
+    parse(`${alias}/fake-path`) === null &&
+    parse(`${alias}fake/deep/path`) === null &&
+    parse(`${alias}/fake/deep/path`) === null &&
+    !alias.startsWith('-')
+  )
 }
 
 // The logic down below is wrong, for example:

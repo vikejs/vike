@@ -1,5 +1,5 @@
 import { expect, describe, it } from 'vitest'
-import { parse } from './isNpmPackage'
+import { isValidPathAlias, parse } from './isNpmPackage'
 
 describe('parse()', () => {
   it('basics', () => {
@@ -21,7 +21,7 @@ describe('parse()', () => {
     expect(parse('')).toBe(null)
     expect(parse('a')).toStrictEqual({ pkgName: 'a', importPath: null })
     expect(parse('0')).toStrictEqual({ pkgName: '0', importPath: null }) // https://www.npmjs.com/package/0
-    expect(parse('-')).toBe(null) // Actually wrong: https://www.npmjs.com/package/-
+    expect(parse('-')).toBe(null) // actually wrong: https://www.npmjs.com/package/-
     expect(parse('_')).toBe(null)
     expect(parse('.')).toBe(null)
     expect(parse('.a')).toBe(null)
@@ -37,5 +37,28 @@ describe('parse()', () => {
     expect(parse('@a/b')).toStrictEqual({ pkgName: '@a/b', importPath: null })
     expect(parse('@a!b/c')).toBe(null)
     expect(parse('@a/b/c!')).toStrictEqual({ pkgName: '@a/b', importPath: 'c!' })
+  })
+})
+
+describe('isValidPathAlias()', () => {
+  it('basics', () => {
+    expect(isValidPathAlias('#')).toBe(true)
+    expect(isValidPathAlias('#a')).toBe(true)
+    expect(isValidPathAlias('!')).toBe(true)
+    expect(isValidPathAlias('!a')).toBe(true)
+    expect(isValidPathAlias('/')).toBe(true)
+    expect(isValidPathAlias('/a')).toBe(true)
+
+    expect(isValidPathAlias('a')).toBe(false)
+    expect(isValidPathAlias('a/b')).toBe(false)
+    expect(isValidPathAlias('a/b/c')).toBe(false)
+    expect(isValidPathAlias('a/b/c/d')).toBe(false)
+
+    expect(isValidPathAlias('@')).toBe(false)
+    expect(isValidPathAlias('@a')).toBe(false)
+    expect(isValidPathAlias('@/a')).toBe(true) // needed by contra.com
+    expect(isValidPathAlias('@a/b')).toBe(false)
+    expect(isValidPathAlias('@a/b/c')).toBe(false)
+    expect(isValidPathAlias('@a/b/c/d')).toBe(false)
   })
 })

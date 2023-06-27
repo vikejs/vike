@@ -1,4 +1,4 @@
-import { RepoLink, Warning } from '@brillout/docpress'
+import { RepoLink } from '@brillout/docpress'
 
 Instead of using relative import paths,
 which can be cumbersome,
@@ -28,22 +28,19 @@ Example:
 export default {
   resolve: {
     alias: {
-     // Prefix path aliases with '#'
+     // Prefix your path aliases with a special character, most commonly #
      "#root": __dirname,
     }
   }
 }
 ```
 
+Your path aliases need to start with a special character, so that your aliased imports can be distinguished from npm package imports.
+We recommend following the [`#` prefix convention](https://nodejs.org/api/packages.html#subpath-imports:~:text=must%20always%20start%20with%20%23%20to%20ensure%20they%20are%20disambiguated%20from%20external%20package%20specifiers).
+
 > It only applies for files that are processed by Vite.
 > Some of your Node.js files may not be processed by Vite,
 > see the [Node.js section below](#node-js).
-
-<Warning>
-  We strongly recommend to follow the [`#` prefix convention](https://nodejs.org/api/packages.html#subpath-imports:~:text=must%20always%20start%20with%20%23%20to%20ensure%20they%20are%20disambiguated%20from%20external%20package%20specifiers) to disambiguate path aliases from npm package imports:
-   - It helps the ecosystem better handle path aliases.
-   - It makes your code more readable.
-</Warning>
 
 See also:
  - [Vite > `vite.config.js#resolve.alias`](https://vitejs.dev/config/shared-options.html#resolve-alias)
