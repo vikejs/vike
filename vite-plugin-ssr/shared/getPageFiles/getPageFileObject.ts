@@ -1,3 +1,5 @@
+// TODO/v1-release: remove
+
 export { getPageFileObject }
 export type { PageFile }
 

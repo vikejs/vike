@@ -1,9 +1,11 @@
+// TODO/v1-release: remove
+
 export type { FileType }
 export { fileTypes }
 export { isValidFileType }
 export { determineFileType }
 
-import { assert, assertPosixPath, isNpmPackageImport } from '../utils'
+import { assert, assertPosixPath } from '../utils'
 import { isScriptFile } from '../../utils/isScriptFile'
 
 const fileTypes = [
@@ -28,7 +30,9 @@ function determineFileType(filePath: string): FileType {
   {
     const isCSS = filePath.endsWith('.css')
     if (isCSS) {
+      /* This assert() is skipped to reduce client-side bundle size
       assert(isNpmPackageImport(filePath), filePath) // `.css` page files are only supported for npm packages
+      */
       return '.css'
     }
   }
