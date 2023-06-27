@@ -2,7 +2,7 @@
 //   import { navigate, prefetch } from 'vite-plugin-ssr/client/router'
 // to:
 //   import { navigate, prefetch } from 'vite-plugin-ssr'
-// Use dependency injection to make the imports isomorphic.
+// Use package.json#exports to make the imports isomorphic.
 
 export { navigate } from './navigate'
 export { prefetch } from './prefetch'
