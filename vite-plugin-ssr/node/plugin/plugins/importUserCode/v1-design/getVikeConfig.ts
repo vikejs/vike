@@ -83,8 +83,6 @@ type VikeConfig = {
   pageConfigGlobal: PageConfigGlobalData
   globalVikeConfig: Record<string, unknown>
 }
-let vikeConfigPromise: Promise<VikeConfig> | null = null
-let vikeConfigDependencies: Set<string> = new Set()
 
 type ConfigDefinitionsIncludingCustom = Record<string, ConfigDefinition>
 
@@ -116,6 +114,8 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition>
 
 let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
+let vikeConfigPromise: Promise<VikeConfig> | null = null
+const vikeConfigDependencies: Set<string> = new Set()
 function reloadVikeConfig(userRootDir: string, extensions: ExtensionResolved[]) {
   vikeConfigDependencies.clear()
   vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, extensions, true)
