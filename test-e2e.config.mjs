@@ -10,10 +10,6 @@ function getCiJobs() {
     os: 'ubuntu-latest',
     node_version: '16'
   }
-  const ubuntu17 = {
-    os: 'ubuntu-latest',
-    node_version: '17'
-  }
   const ubuntu20 = {
     os: 'ubuntu-latest',
     node_version: '20'
@@ -28,7 +24,7 @@ function getCiJobs() {
   }
   const mac17 = {
     os: 'macos-latest',
-    node_version: '17'
+    node_version: '16'
   }
 
   const setupsExamples = [ubuntu20, win16]
@@ -36,7 +32,7 @@ function getCiJobs() {
   return [
     {
       name: 'Boilerplates',
-      setups: [ubuntu17]
+      setups: [ubuntu16]
     },
     {
       name: 'Examples React',
@@ -60,11 +56,11 @@ function getCiJobs() {
     },
     {
       name: 'https://vite-plugin-ssr.com',
-      setups: [ubuntu17]
+      setups: [ubuntu20]
     },
     {
       name: 'pageFilesSrc',
-      setups: [ubuntu17]
+      setups: [ubuntu16]
     }
   ]
 }
