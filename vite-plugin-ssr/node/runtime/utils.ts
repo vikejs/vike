@@ -1,5 +1,6 @@
 import '../../utils/trackLogs'
-import '../../utils/assertIsNotBrowser'
+import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser'
+assertIsNotBrowser()
 
 export * from '../../utils/assert'
 export * from '../../utils/cast'

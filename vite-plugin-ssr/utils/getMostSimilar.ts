@@ -1,9 +1,10 @@
 export { getMostSimilar }
 
-import './assertIsNotBrowser'
-
 import { assert } from './assert'
 import { higherFirst } from './sorter'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
+
+assertIsNotBrowser()
 
 function getMostSimilar(word: string, words: string[]): null | string {
   if (words.length === 0) return null

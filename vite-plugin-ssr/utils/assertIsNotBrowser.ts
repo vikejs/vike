@@ -1,4 +1,9 @@
-// Ensure we don't bloat the client-side
+export { assertIsNotBrowser }
+
 import { isBrowser } from './isBrowser'
 import { assert } from './assert'
-assert(!isBrowser())
+
+/** Ensure we don't bloat the client-side */
+function assertIsNotBrowser() {
+  assert(!isBrowser())
+}

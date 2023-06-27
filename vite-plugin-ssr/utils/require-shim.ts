@@ -1,15 +1,16 @@
 export { addRequireShim }
 export { addRequireShim_setUserRootDir }
 
-import './assertIsNotBrowser'
-
 import { assert } from './assert'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
 import type moduleType from 'module'
 import { isVitest } from './isVitest'
 import { getGlobalObject } from './getGlobalObject'
 import { assertPosixPath, toPosixPath } from './filesystemPathHandling'
 import { pathJoin } from './path-shim'
+
 const globalObject = getGlobalObject<{ userRootDir?: string }>('utils/require-shim.ts', {})
+assertIsNotBrowser()
 
 // Add require() to ESM modules, in order to workaround https://github.com/brillout/vite-plugin-ssr/issues/701
 //  - esbuild doesn't always transpile require() to import(), https://github.com/evanw/esbuild/issues/566#issuecomment-735551834

@@ -6,11 +6,12 @@ export { markEnvAsPreview }
 export { markEnvAsPlugin }
 export { assertServerEnv }
 
-import './assertIsNotBrowser'
-
 import { assert } from './assert'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
 import { getGlobalObject } from './getGlobalObject'
 import { isVitest } from './isVitest'
+
+assertIsNotBrowser()
 
 const state = getGlobalObject<{
   shouldBePlugin?: true

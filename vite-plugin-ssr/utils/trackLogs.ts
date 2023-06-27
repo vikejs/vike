@@ -1,7 +1,8 @@
-import './assertIsNotBrowser'
-
 import { isDebugEnabled } from './debug'
 import pc from '@brillout/picocolors'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
+
+assertIsNotBrowser()
 
 if (isDebugEnabled('vps:log')) {
   trackLogs()

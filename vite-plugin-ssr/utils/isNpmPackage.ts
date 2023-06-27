@@ -7,7 +7,8 @@ export { isValidPathAlias }
 // For ./isNpmPackage.spec.ts
 export { parse }
 
-import './assertIsNotBrowser'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
+assertIsNotBrowser()
 
 function isNpmPackageImport(str: string): boolean {
   const res = parse(str)
