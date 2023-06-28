@@ -374,8 +374,6 @@ async function loadVikeConfig(
             configElements[configName as ConfigNameBuiltIn] = configElement
           })
 
-        applyEffects(configElements, configDefinitionsRelevant)
-
         const { routeFilesystem, routeFilesystemDefinedBy, isErrorPage } = determineRouteFilesystem(
           locationId,
           configElements.filesystemRoutingRoot
@@ -388,6 +386,9 @@ async function loadVikeConfig(
           routeFilesystem: isErrorPage ? null : routeFilesystem,
           configElements
         }
+
+        applyEffects(configElements, configDefinitionsRelevant)
+
         return entry
       })
   )
