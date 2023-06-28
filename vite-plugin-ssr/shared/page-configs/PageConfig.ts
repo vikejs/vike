@@ -7,7 +7,6 @@ export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
 export type { ConfigElement }
 export type { ConfigElementSource }
-export type { ConfigNameBuiltIn }
 
 import type { ConfigNameBuiltIn } from './Config'
 

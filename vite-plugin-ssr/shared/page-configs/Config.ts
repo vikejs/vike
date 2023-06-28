@@ -1,5 +1,6 @@
 export type { Config }
 export type { ConfigNameBuiltIn }
+export type { ConfigNamePrivate }
 export type { Meta }
 export type { Effect }
 
@@ -12,6 +13,8 @@ import type { ConfigEnvPublic } from './PageConfig'
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVpsUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
   | 'prerender'
+
+type ConfigNamePrivate = 'isClientSideRenderable' | 'hasServerOnBeforeRender'
 
 /** Page configuration.
  *

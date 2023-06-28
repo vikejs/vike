@@ -3,14 +3,17 @@ export { getCodeFilePath }
 export { getPageConfig }
 
 import { assert, assertUsage } from '../utils'
-import type { ConfigNameBuiltIn, PageConfig, PageConfigData } from './PageConfig'
+import type { PageConfig, PageConfigData } from './PageConfig'
+import type { ConfigNameBuiltIn, ConfigNamePrivate } from './Config'
 
-function getConfigValue(pageConfig: PageConfigData, configName: ConfigNameBuiltIn, type: 'string'): null | string
-function getConfigValue(pageConfig: PageConfigData, configName: ConfigNameBuiltIn, type: 'boolean'): null | boolean
-// function getConfigValue(pageConfig: PageConfigData, configName: ConfigNameBuiltIn): unknown
+type ConfigName = ConfigNameBuiltIn | ConfigNamePrivate
+
+function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'string'): null | string
+function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'boolean'): null | boolean
+// function getConfigValue(pageConfig: PageConfigData, configName: ConfigName): unknown
 function getConfigValue(
   pageConfig: PageConfigData,
-  configName: ConfigNameBuiltIn,
+  configName: ConfigName,
   type: 'string' | 'boolean'
 ): null | unknown {
   const configElement = pageConfig.configElements[configName]
@@ -25,7 +28,7 @@ function getConfigValue(
   return configValue
 }
 
-function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigNameBuiltIn): null | string {
+function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): null | string {
   const configElement = pageConfig.configElements[configName]
   if (!configElement || isNullish(pageConfig, configName)) {
     return null
@@ -41,7 +44,7 @@ function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigNameBuilt
   assertUsage(false, `${configDefinedAt} has an invalid value \`${configValue}\`: it should be a file path instead`)
 }
 
-function isNullish(pageConfig: PageConfigData, configName: ConfigNameBuiltIn): boolean {
+function isNullish(pageConfig: PageConfigData, configName: ConfigName): boolean {
   const configElement = pageConfig.configElements[configName]
   if (!configElement) return true
   const { codeFilePath, configValue } = configElement

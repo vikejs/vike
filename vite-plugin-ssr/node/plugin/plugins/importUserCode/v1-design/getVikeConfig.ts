@@ -25,7 +25,6 @@ import {
 } from '../../../utils'
 import path from 'path'
 import type {
-  ConfigNameBuiltIn,
   ConfigElement,
   PageConfigData,
   PageConfigGlobalData,
@@ -54,6 +53,7 @@ import {
   removeSuperfluousViteLog_disable
 } from '../../../shared/loggerVite/removeSuperfluousViteLog'
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser'
+import type { ConfigNameBuiltIn } from '../../../../../shared/page-configs/Config'
 
 assertIsNotProduction()
 
@@ -379,7 +379,7 @@ async function loadVikeConfig(
           configElements.filesystemRoutingRoot
         )
 
-        const entry: PageConfigData = {
+        const pageConfigData: PageConfigData = {
           pageId: locationId,
           isErrorPage,
           routeFilesystemDefinedBy,
@@ -388,8 +388,9 @@ async function loadVikeConfig(
         }
 
         applyEffects(configElements, configDefinitionsRelevant)
+        applyComputed(pageConfigData, configDefinitionsRelevant)
 
-        return entry
+        return pageConfigData
       })
   )
 
@@ -932,6 +933,25 @@ function applyEffect(
     }
   })
 }
+
+function applyComputed(pageConfigData: PageConfigData, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
+  objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
+    const computed = configDef._computed
+    if (!computed) return
+    const configValue = computed(pageConfigData)
+    if (configValue === undefined) return
+    pageConfigData.configElements[configName] = {
+      configValue,
+      configEnv: configDef.env,
+      configDefinedAt: 'TODO',
+      configDefinedByFile: 'TODO',
+      plusConfigFilePath: 'TODO',
+      codeFilePath: null,
+      codeFileExport: null
+    }
+  })
+}
+
 function getConfigElementSource(configElement: ConfigElement): ConfigElementSource {
   const { plusConfigFilePath, codeFilePath, codeFileExport }: ConfigElementSource = configElement
   const configElementSource = { plusConfigFilePath, codeFilePath, codeFileExport } as ConfigElementSource

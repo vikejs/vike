@@ -27,7 +27,7 @@ import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
 import type { PageConfig } from '../../shared/page-configs/PageConfig'
-import { getCodeFilePath, getPageConfig } from '../../shared/page-configs/utils'
+import { getCodeFilePath, getConfigValue, getPageConfig } from '../../shared/page-configs/utils'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn'
 import { executeGuardHook } from '../../shared/route/executeGuardHook'
 
@@ -229,12 +229,12 @@ async function onBeforeRenderServerSideExists(
     PageContextPassThrough
 ): Promise<boolean> {
   if (pageContext._pageConfigs.length > 0) {
+    // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
-    return (
-      !!getCodeFilePath(pageConfig, 'onBeforeRender') &&
-      pageConfig.configElements.onBeforeRender!.configEnv === 'server-only'
-    )
+    return getConfigValue(pageConfig, 'hasServerOnBeforeRender', 'boolean') ?? false
   } else {
+    // TODO/v1-release: remove
+    // V0.4
     const { hasOnBeforeRenderServerSideOnlyHook } = await analyzePageServerSide(
       pageContext._pageFilesAll,
       pageContext._pageId
