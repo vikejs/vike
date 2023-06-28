@@ -8,7 +8,7 @@ function generateEagerImport(
   importName?: string
 ): { importVar: string; importStatement: string } {
   if (varCounter === undefined) varCounter = varCounterGlobal++
-  const importVar = `__import_${varCounter}` as const
+  const importVar = `import_${varCounter}` as const
   const importLiteral = (() => {
     if (!importName || importName === '*') {
       return `* as ${importVar}` as const
