@@ -60,9 +60,9 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
     if (!configElement.codeFilePath) return
     const { configEnv, codeFilePath, codeFileExport } = configElement
 
-    if (configEnv === '_routing-env-eager' || configEnv === 'config-only') return
+    if (configEnv === '_routing-eager' || configEnv === 'config-only') return
     if (configEnv === (isForClientSide ? 'server-only' : 'client-only')) return
-    if (configEnv === '_routing-env-lazy' && isForClientSide && !isClientRouting) return
+    if (configEnv === '_routing-lazy' && isForClientSide && !isClientRouting) return
 
     assertPosixPath(codeFilePath)
     const fileName = path.posix.basename(codeFilePath)

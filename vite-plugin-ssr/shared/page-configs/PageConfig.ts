@@ -16,13 +16,13 @@ type ConfigEnvPrivate =
   | 'server-only'
   | 'server-and-client'
   | 'config-only'
-  | '_routing-env-eager'
-  | '_routing-env-lazy'
+  | '_routing-eager'
+  | '_routing-lazy'
 /** The environments in which the configuration value is loaded.
  *
  * https://vite-plugin-ssr/meta
  */
-type ConfigEnvPublic = Exclude<ConfigEnvPrivate, '_routing-env-eager' | '_routing-env-lazy'>
+type ConfigEnvPublic = Exclude<ConfigEnvPrivate, '_routing-eager' | '_routing-lazy'>
 
 type PageConfig = PageConfigData & {
   loadCodeFiles: LoadCodeFiles

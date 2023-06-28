@@ -41,13 +41,13 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: 'server-only'
   },
   route: {
-    env: '_routing-env-eager'
+    env: '_routing-eager'
   },
   guard: {
-    env: '_routing-env-lazy'
+    env: '_routing-lazy'
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    env: '_routing-env-eager'
+    env: '_routing-eager'
   },
   filesystemRoutingRoot: {
     env: 'config-only'

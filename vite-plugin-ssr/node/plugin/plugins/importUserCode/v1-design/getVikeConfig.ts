@@ -101,7 +101,7 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition>
     env: 'server-only'
   },
   onBeforeRoute: {
-    env: '_routing-env-eager'
+    env: '_routing-eager'
   },
   prerender: {
     env: 'config-only'
