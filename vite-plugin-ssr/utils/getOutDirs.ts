@@ -2,7 +2,7 @@ import type { UserConfig, ResolvedConfig } from 'vite'
 import { viteIsSSR } from './viteIsSSR'
 import { assert } from './assert'
 import { pathJoin } from './path-shim'
-import { assertPosixPath } from './filesystemPathHandling'
+import { assertPosixPath, toPosixPath } from './filesystemPathHandling'
 
 export { getOutDirs }
 export { getOutDirs_prerender }
@@ -21,7 +21,7 @@ function getOutDirs(config: ResolvedConfig): OutDirs {
   const outDir = config.build.outDir
   assertPosixPath(outDir)
   assertIsNotOutDirRoot(outDir)
-  assertConfig(config)
+  assertOutDir(outDir, config)
   assert('/client'.length === '/server'.length)
   let outDirRoot = outDir.slice(0, -1 * '/client'.length)
   return getAllOutDirs(outDirRoot, config.root)
@@ -35,11 +35,11 @@ function getOutDirs_prerender(config: ResolvedConfig): OutDirs {
 
 /** Appends `client/` or `server/` to `config.build.outDir` */
 function determineOutDir(config: UserConfig): string {
-  let outDirRoot = config.build?.outDir || 'dist'
+  const outDirRoot = getOutDirFromUserConfig(config) || 'dist'
   assertPosixPath(outDirRoot)
   // If using Telefunc + vite-plugin-ssr then `config.build.outDir` may already be set
   if (!isOutDirRoot(outDirRoot)) {
-    assertConfig(config)
+    assertOutDir(outDirRoot, config)
     return outDirRoot
   }
   const { outDirClient, outDirServer } = declineOutDirs(outDirRoot)
@@ -98,15 +98,21 @@ function assertIsNotOutDirRoot(outDir: string) {
   assert(outDir.endsWith('/client') || outDir.endsWith('/server'))
 }
 
-function assertConfig(config: UserConfig | ResolvedConfig) {
-  const outDir = config.build?.outDir
-  assert(outDir)
+function assertOutDir(outDir: string, config: UserConfig | ResolvedConfig) {
+  assertPosixPath(outDir)
   assertIsNotOutDirRoot(outDir)
   if (viteIsSSR(config)) {
     assert(outDir.endsWith('/server'))
   } else {
     assert(outDir.endsWith('/client'))
   }
+}
+
+function getOutDirFromUserConfig(userConfig: UserConfig): string | undefined {
+  const outDir = userConfig.build?.outDir
+  if (outDir === undefined) return undefined
+  // I believe Vite normalizes config.build.outDir only if config is ResolvedConfig
+  return toPosixPath(outDir)
 }
 
 function outDirIsAbsolutePath(outDir: string) {
