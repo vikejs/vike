@@ -41,7 +41,10 @@ async function executeOnRenderClientHook<
     const url = getUrl(pageContext)
     if (pageContext._pageConfigs.length > 0) {
       // V1 design
-      assertMissingHook(pageContext._pageId, pageContext._pageConfigs, url)
+      assertUsage(
+        false,
+        `No onRenderClient() hook defined for URL '${url}', but it's needed, see https://vite-plugin-ssr.com/onRenderClient`
+      )
     } else {
       // TODO/v1-release: remove
       // V0.4 design
@@ -78,26 +81,4 @@ function getUrl(pageContext: { urlOriginal?: string }): string {
   } catch {}
   url = url ?? window.location.href
   return url
-}
-
-function assertMissingHook(pageId: string, pageConfigs: PageConfig[], url: string) {
-  const pageConfig = getPageConfig(pageId, pageConfigs)
-  assert(!pageConfig.configElements.onRenderClient?.configValue)
-  assert(pageConfig.configElements.clientRouting?.configValue === true)
-
-  // We miss abstract page config files that define onRenderClient() but don't apply to any concrete page config
-  let onRenderClientExists = false
-  pageConfigs.forEach((pageConfig) => {
-    const configElement = pageConfig.configElements.onRenderClient
-    if (configElement && configElement.configValue) {
-      onRenderClientExists = true
-    }
-  })
-
-  assertUsage(
-    false,
-    `No onRenderClient() hook defined${
-      !onRenderClientExists ? '' : ` for URL \`${url}\``
-    }, but it's needed, see https://vite-plugin-ssr.com/onRenderClient`
-  )
 }
