@@ -3,7 +3,12 @@ import mdx from '@mdx-js/rollup'
 import ssr from 'vite-plugin-ssr/plugin'
 import { UserConfig } from 'vite'
 
+const root = __dirname;
+
 export default {
+  build: {
+    outDir: `${root}/../../examples/react-full-v1/dist/bla`
+  },
   plugins: [
     mdx(),
     react(),
