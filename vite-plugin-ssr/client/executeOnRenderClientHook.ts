@@ -39,11 +39,12 @@ async function executeOnRenderClientHook<
 
   if (!hook) {
     const url = getUrl(pageContext)
-    // V1 design
     if (pageContext._pageConfigs.length > 0) {
+      // V1 design
       assertMissingHook(pageContext._pageId, pageContext._pageConfigs, url)
-      // V0.4 design
     } else {
+      // TODO/v1-release: remove
+      // V0.4 design
       const pageClientsFilesLoaded = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
       let errMsg: string
       if (pageClientsFilesLoaded.length === 0) {
