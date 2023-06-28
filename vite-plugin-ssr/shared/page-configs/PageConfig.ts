@@ -8,8 +8,6 @@ export type { PageConfigGlobalData }
 export type { ConfigElement }
 export type { ConfigElementSource }
 
-import type { ConfigNameBuiltIn } from './Config'
-
 type ConfigEnvPrivate =
   | 'client-only'
   | 'server-only'
@@ -23,6 +21,8 @@ type ConfigEnvPrivate =
  */
 type ConfigEnvPublic = Exclude<ConfigEnvPrivate, '_routing-eager' | '_routing-lazy'>
 
+type ConfigName = string
+
 type PageConfig = PageConfigData & {
   loadCodeFiles: LoadCodeFiles
 }
@@ -31,10 +31,10 @@ type PageConfigData = {
   isErrorPage: boolean
   routeFilesystem: null | string
   routeFilesystemDefinedBy: null | string
-  configElements: Record<string, ConfigElement>
+  configElements: Record<ConfigName, ConfigElement>
 }
 type PageConfigLoaded = PageConfig & {
-  configValues: Partial<Record<ConfigNameBuiltIn, unknown>>
+  configValues: Partial<Record<ConfigName, unknown>>
 }
 
 type PageConfigGlobalData = {
