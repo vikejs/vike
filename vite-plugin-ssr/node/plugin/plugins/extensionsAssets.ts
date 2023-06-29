@@ -2,7 +2,7 @@ export { extensionsAssets }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ViteDevServer } from 'vite'
-import { assert, isScriptFile, assertUsage, assertPosixPath } from '../utils'
+import { assert, isScriptFile, assertUsage, assertPosixPath, getOutDirs } from '../utils'
 import fs from 'fs'
 import path from 'path'
 import sirv from 'sirv'
@@ -79,8 +79,8 @@ function getAsssetsDirConfig(config: ResolvedConfig) {
 
 function copyExtensionsAssetsDir(config: ResolvedConfig, extensionsAssetsDirs: string[]) {
   assert(ASSET_DIR === getAsssetsDirConfig(config))
-  const outDirClient = path.posix.join(config.root, config.build.outDir)
-  assert(outDirClient.endsWith('/client'), outDirClient)
+  const { outDirClient } = getOutDirs(config)
+  assertPosixPath(outDirClient)
   const outDirAssets = path.posix.join(outDirClient, ASSET_DIR)
   extensionsAssetsDirs.forEach((assetsDir) => {
     copyAssetFiles(assetsDir, outDirAssets)

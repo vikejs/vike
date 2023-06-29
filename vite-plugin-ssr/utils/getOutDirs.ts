@@ -18,14 +18,14 @@ type OutDirs = {
 }
 
 function getOutDirs(config: ResolvedConfig): OutDirs {
-  const outDir = config.build.outDir
+  const outDir = getOutDirFromResolvedConfig(config)
   assertOutDirResolved(outDir, config)
   assert('/client'.length === '/server'.length)
   const outDirRoot = outDir.slice(0, -1 * '/client'.length)
   return getAllOutDirs(outDirRoot, config.root)
 }
 function getOutDirs_prerender(config: ResolvedConfig): OutDirs {
-  const outDirRoot = config.build.outDir
+  const outDirRoot = getOutDirFromResolvedConfig(config)
   assertPosixPath(outDirRoot)
   assertIsOutDirRoot(outDirRoot)
   return getAllOutDirs(outDirRoot, config.root)
@@ -112,6 +112,12 @@ function getOutDirFromUserConfig(config: UserConfig): string | undefined {
   let outDir = config.build?.outDir
   if (outDir === undefined) return undefined
   // I believe Vite normalizes config.build.outDir only if config is ResolvedConfig
+  outDir = toPosixPath(outDir)
+  return outDir
+}
+function getOutDirFromResolvedConfig(config: ResolvedConfig): string {
+  let outDir = config.build.outDir
+  // Vite seems to be buggy and doesn't always normalize config.build.outDir
   outDir = toPosixPath(outDir)
   return outDir
 }
