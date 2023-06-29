@@ -20,21 +20,20 @@ type OutDirs = {
 function getOutDirs(config: ResolvedConfig): OutDirs {
   const outDir = getOutDirFromResolvedConfig(config)
   assertOutDirResolved(outDir, config)
+  assert(outDir.endsWith('/server') || outDir.endsWith('/client'))
   assert('/client'.length === '/server'.length)
   const outDirRoot = outDir.slice(0, -1 * '/client'.length)
-  return getAllOutDirs(outDirRoot, config.root)
+  return getOutDirsAll(outDirRoot, config.root)
 }
 function getOutDirs_prerender(config: ResolvedConfig): OutDirs {
   const outDirRoot = getOutDirFromResolvedConfig(config)
-  assertPosixPath(outDirRoot)
   assertIsOutDirRoot(outDirRoot)
-  return getAllOutDirs(outDirRoot, config.root)
+  return getOutDirsAll(outDirRoot, config.root)
 }
 
 /** Appends `client/` or `server/` to `config.build.outDir` */
 function resolveOutDir(config: UserConfig): string {
   const outDir = getOutDirFromUserConfig(config) || 'dist'
-  assertPosixPath(outDir)
   if (!isOutDirRoot(outDir)) {
     // If using Telefunc + vite-plugin-ssr then config.build.outDir may already have been resolved (because both Telefunc and vite-plugin-ssr use this logic)
     assertOutDirResolved(outDir, config)
@@ -49,7 +48,17 @@ function resolveOutDir(config: UserConfig): string {
   }
 }
 
-function getAllOutDirs(outDirRoot: string, root: string) {
+function determineOutDirs(outDirRoot: string) {
+  assertPosixPath(outDirRoot)
+  assertIsOutDirRoot(outDirRoot)
+  const outDirClient = pathJoin(outDirRoot, 'client')
+  const outDirServer = pathJoin(outDirRoot, 'server')
+  assertIsNotOutDirRoot(outDirClient)
+  assertIsNotOutDirRoot(outDirServer)
+  return { outDirClient, outDirServer }
+}
+
+function getOutDirsAll(outDirRoot: string, root: string) {
   if (!outDirIsAbsolutePath(outDirRoot)) {
     assertPosixPath(outDirRoot)
     assertPosixPath(root)
@@ -67,22 +76,11 @@ function getAllOutDirs(outDirRoot: string, root: string) {
 
   return { outDirRoot, outDirClient, outDirServer }
 }
-
 function assertNormalization(outDirAny: string) {
   assertPosixPath(outDirAny)
   assert(outDirIsAbsolutePath(outDirAny))
   assert(outDirAny.endsWith('/'))
   assert(!outDirAny.endsWith('//'))
-}
-
-function determineOutDirs(outDirRoot: string) {
-  assertIsOutDirRoot(outDirRoot)
-  assertPosixPath(outDirRoot)
-  const outDirClient = pathJoin(outDirRoot, 'client')
-  const outDirServer = pathJoin(outDirRoot, 'server')
-  assertIsNotOutDirRoot(outDirClient)
-  assertIsNotOutDirRoot(outDirServer)
-  return { outDirClient, outDirServer }
 }
 
 function assertIsOutDirRoot(outDir: string) {
@@ -125,6 +123,7 @@ function getOutDirFromResolvedConfig(config: ResolvedConfig): string {
 function outDirIsAbsolutePath(outDir: string) {
   // There doesn't seem to be a better alternative to determine whether `outDir` is an aboslute path
   //  - Very unlikely that `outDir`'s first dir macthes the filesystem's first dir
+  //    - Although more likely to happen with Docker
   return getFirstDir(outDir) === getFirstDir(process.cwd())
 }
 function getFirstDir(p: string) {
