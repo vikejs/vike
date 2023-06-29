@@ -3,7 +3,7 @@ export { assertRollupInput }
 
 import {
   assert,
-  determineOutDir,
+  resolveOutDir,
   isObject,
   viteIsSSR,
   getFilePathAbsolute,
@@ -48,7 +48,7 @@ function buildConfig(): Plugin {
     config(config) {
       return {
         build: {
-          outDir: determineOutDir(config),
+          outDir: resolveOutDir(config),
           manifest: !viteIsSSR(config)
         }
         /* We cannot do this because of https://github.com/brillout/vite-plugin-ssr/issues/447
