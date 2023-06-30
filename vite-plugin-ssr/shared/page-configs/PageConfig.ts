@@ -7,7 +7,6 @@ export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
 export type { ConfigElement }
 export type { ConfigElementSource }
-export type { ConfigValues }
 export type { ConfigSource }
 export type { ConfigValue }
 
@@ -32,14 +31,13 @@ type PageConfigData = {
   routeFilesystem: null | string
   routeFilesystemDefinedBy: null | string
   configElements: Record<ConfigName, ConfigElement>
-  configValues: ConfigValues
+  configValues: ConfigValue[]
 }
 type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileExportName: string; configSourceFileDefaultExportKey?: undefined }
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
 )
-type ConfigValues = Record<ConfigName, ConfigValue>
-type ConfigValue = { configValue: unknown } & ConfigSource
+type ConfigValue = { configName: string, configValue: unknown } & ConfigSource
 type PageConfig = PageConfigData & {
   loadCodeFiles: LoadCodeFiles
   isLoaded?: true

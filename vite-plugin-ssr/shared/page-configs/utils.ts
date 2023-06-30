@@ -33,12 +33,13 @@ function getConfigValue(
 }
 
 function getV(pageConfig: PageConfigData, configName: ConfigName): null | ConfigValue {
-  const v = pageConfig.configValues[configName]
-  if (!v) {
-    assert(!pageConfig.configElements[configName])
-    return null
+  const vs = pageConfig.configValues.filter((v) => v.configName === configName)
+  assert(vs.length <= 1) // Conflicts are already handled upstream
+  const v = vs[0]
+  if (pageConfig.configElements) {
+    assert(!!v === !!pageConfig.configElements[configName])
   }
-  return v
+  return v ?? null
 }
 
 function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): null | string {

@@ -31,7 +31,7 @@ import type {
   PageConfigGlobalData,
   ConfigElementSource,
   ConfigEnvPrivate,
-  ConfigValues
+  ConfigValue
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import glob from 'fast-glob'
@@ -392,7 +392,7 @@ async function loadVikeConfig(
           configElements.filesystemRoutingRoot
         )
 
-        const configValues: ConfigValues = {}
+        const configValues: ConfigValue[] = []
         const pageConfigData: PageConfigData = {
           pageId: locationId,
           isErrorPage,
@@ -408,11 +408,14 @@ async function loadVikeConfig(
         // TODO: remove redundancy between configElements[string].configValue and configValues
         objectEntries(configElements).map(([configName, configElement]) => {
           if ('configValue' in configElement) {
-            configValues[configName] = {
+            const alreadyDefined = !!configValues.find((v) => v.configName === configName)
+            assert(!alreadyDefined) // Conflicts are already resolved in resolveConfigElement()
+            configValues.push({
+              configName,
               configSourceFile: configElement.configDefinedByFile,
               configSourceFileExportName: 'TODO',
               configValue: configElement.configValue
-            }
+            })
           }
         })
 
