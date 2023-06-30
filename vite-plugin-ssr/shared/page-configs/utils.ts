@@ -2,6 +2,7 @@ export { getConfigValue }
 export { getCodeFilePath }
 export { getPageConfig }
 export { getConfigSource }
+export { isConfigDefined }
 
 import { assert, assertUsage } from '../utils.js'
 import type { ConfigSource, ConfigValue, PageConfig, PageConfigData } from './PageConfig.js'
@@ -36,22 +37,32 @@ function getV(pageConfig: PageConfigData, configName: ConfigName): null | Config
   const vs = pageConfig.configValues.filter((v) => v.configName === configName)
   assert(vs.length <= 1) // Conflicts are already handled upstream
   const v = vs[0]
-  if (pageConfig.configElements) {
-    assert(!!v === !!pageConfig.configElements[configName])
+  if (pageConfig.configElements && v) {
+    assert(!!pageConfig.configElements[configName])
   }
   return v ?? null
 }
 
-function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): null | string {
+function isConfigDefined(pageConfig: PageConfigData, configName: ConfigName): boolean {
+  assert(pageConfig.configElements)
+  const configElement = pageConfig.configElements[configName]
+  if (!configElement) return false
   const v = getV(pageConfig, configName)
-  if (v === null) return null
-  const { configValue } = v
-  const configSource = getConfigSource(v)
+  if (v && isNullish(v)) return false
+  return true
+}
+
+function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): null | string {
+  assert(pageConfig.configElements)
   const configElement = pageConfig.configElements[configName]
   if (!configElement) return null
+  const v = getV(pageConfig, configName)
+  if (v && isNullish(v)) return null
   const { codeFilePath } = configElement
   if (codeFilePath !== null) return codeFilePath
-  if (isNullish(configValue)) return null
+  if (!v) return null
+  const { configValue } = v
+  const configSource = getConfigSource(v)
   assertUsage(
     typeof configValue === 'string',
     `${configSource} has an invalid type \`${typeof configValue}\`: it should be a string instead`

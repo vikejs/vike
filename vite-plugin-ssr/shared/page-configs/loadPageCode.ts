@@ -5,8 +5,6 @@ import type { ConfigValue, PageConfig, PageConfigLoaded } from './PageConfig.js'
 import pc from '@brillout/picocolors'
 
 async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<PageConfigLoaded> {
-  const configValues: ConfigValue[] = []
-
   if (
     pageConfig.isLoaded &&
     // We don't need to cache in dev, since Vite already caches the virtual module
@@ -17,6 +15,14 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
 
   const codeFiles = await pageConfig.loadCodeFiles()
 
+  const isAlreadyDefined = (configName: string) => !!pageConfig.configValues.find((v) => v.configName === configName)
+
+  pageConfig.configValues = pageConfig.configValues.filter((v) => !v.definedByCodeFile)
+  const addConfigValue = (v: ConfigValue) => {
+    assert(!isAlreadyDefined(v.configName), v.configName) // Conflicts are resolved upstream
+    pageConfig.configValues.push(v)
+  }
+
   codeFiles.forEach((codeFile) => {
     if (codeFile.isPlusFile) {
       const { codeFileExports, codeFilePath } = codeFile
@@ -26,32 +32,30 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
       Object.entries(codeFileExports).forEach(([exportName, exportValue]) => {
         const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
         const configName = isSideExport ? exportName : codeFile.configName
-        const alreadyDefined = !!configValues.find((v) => v.configName === configName)
-        if (isSideExport && alreadyDefined) {
+        if (isSideExport && isAlreadyDefined(configName)) {
           // We don't (can't?) avoid side-export conflicts upstream.
           // We override the side-export.
           return
         }
-        assert(!alreadyDefined) // Conflicts are resolved upstream
         const configValue = exportValue
-        configValues.push({
+        addConfigValue({
           configName,
           configSourceFile: codeFilePath,
           configSourceFileExportName: exportName,
-          configValue
+          configValue,
+          definedByCodeFile: true
         })
         assertIsNotNull(configValue, configName, codeFilePath)
       })
     } else {
       const { configName, codeFilePath } = codeFile
-      const alreadyDefined = !!configValues.find((v) => v.configName === configName)
-      assert(!alreadyDefined) // Conflicts are resolved upstream
       const configValue = codeFile.codeFileExportValue
-      configValues.push({
+      addConfigValue({
         configName,
         configSourceFile: codeFilePath,
         configSourceFileExportName: 'default',
-        configValue
+        configValue,
+        definedByCodeFile: true
       })
       assertIsNotNull(configValue, configName, codeFilePath)
     }

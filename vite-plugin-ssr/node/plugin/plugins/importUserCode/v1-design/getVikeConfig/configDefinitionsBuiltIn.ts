@@ -3,7 +3,7 @@ export type { ConfigDefinition }
 
 import type { ConfigEnvPrivate, PageConfigData } from '../../../../../../shared/page-configs/PageConfig.js'
 import type { ConfigNameBuiltIn, ConfigNamePrivate } from '../../../../../../shared/page-configs/Config.js'
-import { getCodeFilePath } from '../../../../../../shared/page-configs/utils.js'
+import { isConfigDefined } from '../../../../../../shared/page-configs/utils.js'
 
 type ConfigDefinition = {
   env: ConfigEnvPrivate
@@ -79,15 +79,15 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   isClientSideRenderable: {
     env: 'server-and-client',
     _computed(pageConfig) {
-      const onRenderClientExists: boolean = !!getCodeFilePath(pageConfig, 'onRenderClient')
+      const onRenderClientExists: boolean = isConfigDefined(pageConfig, 'onRenderClient')
       const PageExists: boolean =
-        !!getCodeFilePath(pageConfig, 'Page') && pageConfig.configElements.Page!.configEnv !== 'server-only'
+        isConfigDefined(pageConfig, 'Page') && pageConfig.configElements.Page!.configEnv !== 'server-only'
       return onRenderClientExists && PageExists
     }
   },
   onBeforeRenderEnv: {
     env: 'client-only',
     _computed: (pageConfig) =>
-      !getCodeFilePath(pageConfig, 'onBeforeRender') ? null : pageConfig.configElements.onBeforeRender!.configEnv
+      !isConfigDefined(pageConfig, 'onBeforeRender') ? null : pageConfig.configElements.onBeforeRender!.configEnv
   }
 }

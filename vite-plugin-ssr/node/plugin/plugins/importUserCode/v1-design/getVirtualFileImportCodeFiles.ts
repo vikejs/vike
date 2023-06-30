@@ -1,7 +1,8 @@
 export { getVirtualFileImportCodeFiles }
+export { skipConfigValue }
 
 import { assert, assertPosixPath } from '../../../utils.js'
-import type { PageConfigData } from '../../../../../shared/page-configs/PageConfig.js'
+import type { ConfigEnvPrivate, PageConfigData } from '../../../../../shared/page-configs/PageConfig.js'
 import { generateEagerImport } from '../generateEagerImport.js'
 import {
   getVirtualFileIdImportPageCode,
@@ -60,9 +61,7 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
     if (!configElement.codeFilePath) return
     const { configEnv, codeFilePath, codeFileExport } = configElement
 
-    if (configEnv === '_routing-eager' || configEnv === 'config-only') return
-    if (configEnv === (isForClientSide ? 'server-only' : 'client-only')) return
-    if (configEnv === '_routing-lazy' && isForClientSide && !isClientRouting) return
+    if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
 
     assertPosixPath(codeFilePath)
     const fileName = path.posix.basename(codeFilePath)
@@ -92,4 +91,11 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   }
   const code = [...importStatements, ...lines].join('\n')
   return code
+}
+
+function skipConfigValue(configEnv: ConfigEnvPrivate, isForClientSide: boolean, isClientRouting: boolean) {
+  if (configEnv === '_routing-eager' || configEnv === 'config-only') return true
+  if (configEnv === (isForClientSide ? 'server-only' : 'client-only')) return true
+  if (configEnv === '_routing-lazy' && isForClientSide && !isClientRouting) return true
+  return false
 }

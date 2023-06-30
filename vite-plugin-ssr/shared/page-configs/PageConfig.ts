@@ -37,7 +37,7 @@ type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileExportName: string; configSourceFileDefaultExportKey?: undefined }
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
 )
-type ConfigValue = { configName: string, configValue: unknown } & ConfigSource
+type ConfigValue = { configName: string; configValue: unknown; definedByCodeFile: boolean } & ConfigSource
 type PageConfig = PageConfigData & {
   loadCodeFiles: LoadCodeFiles
   isLoaded?: true

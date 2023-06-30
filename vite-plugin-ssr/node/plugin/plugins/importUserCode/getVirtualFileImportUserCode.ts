@@ -217,7 +217,7 @@ export const pageFilesList = [];
 export const neverLoaded = {};
 export const isGeneratedFile = true;
 
-${await getVirtualFileImportPageConfigs(config.root, isForClientSide, isDev, id, configVps)}
+${await getVirtualFileImportPageConfigs(config.root, isForClientSide, isDev, id, configVps, isClientRouting)}
 
 `
 

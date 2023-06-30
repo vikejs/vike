@@ -9,8 +9,9 @@ async function getVirtualFileImportPageConfigs(
   isForClientSide: boolean,
   isDev: boolean,
   id: string,
-  configVps: ConfigVpsResolved
+  configVps: ConfigVpsResolved,
+  isClientRouting: boolean
 ): Promise<string> {
   const { pageConfigsData, pageConfigGlobal } = await getVikeConfig(userRootDir, isDev, configVps.extensions, true)
-  return serializePageConfigs(pageConfigsData, pageConfigGlobal, isForClientSide, isDev, id)
+  return serializePageConfigs(pageConfigsData, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
 }

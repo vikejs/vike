@@ -5,6 +5,7 @@ export { serializePageConfigs }
 import { assert, assertUsage, objectEntries } from '../../../utils.js'
 import type {
   ConfigElement,
+  ConfigValue,
   PageConfigData,
   PageConfigGlobalData
 } from '../../../../../shared/page-configs/PageConfig.js'
@@ -12,13 +13,15 @@ import { generateEagerImport } from '../generateEagerImport.js'
 import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files/virtualFileImportPageCode.js'
 import { debug } from './debug.js'
 import { stringify } from '@brillout/json-serializer/stringify'
+import { skipConfigValue } from './getVirtualFileImportCodeFiles.js'
 
 function serializePageConfigs(
   pageConfigsData: PageConfigData[],
   pageConfigGlobal: PageConfigGlobalData,
   isForClientSide: boolean,
   isDev: boolean,
-  id: string
+  id: string,
+  isClientRouting: boolean
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
@@ -39,7 +42,17 @@ function serializePageConfigs(
       const whitespace = '      '
       lines.push(serializeConfigElement(configElement, configName, importStatements, whitespace, false))
     })
-    lines.push(`    }`)
+    lines.push(`    },`)
+    lines.push(`    configValues: [`)
+    Object.values(pageConfig.configValues).forEach((configVal) => {
+      const { configName } = configVal
+      const configElement = pageConfig.configElements[configName]
+      assert(configElement)
+      if (skipConfigValue(configElement.configEnv, isForClientSide, isClientRouting)) return
+      const whitespace = '      '
+      lines.push(serializeObject(configVal, whitespace))
+    })
+    lines.push(`    ],`)
     lines.push(`  },`)
   })
   lines.push('];')
@@ -104,6 +117,17 @@ function serializeConfigElement(
       importStatements.push(importStatement)
     }
   }
+  lines.push(`${whitespace}},`)
+  return lines.join('\n')
+}
+
+function serializeObject(obj: Record<string, unknown>, whitespace: string) {
+  const lines: string[] = []
+  lines.push(`${whitespace}{`)
+  objectEntries(obj).forEach(([key, val]) => {
+    // if (val === undefined) return
+    lines.push(`${whitespace}  ${key}: ${JSON.stringify(val)},`)
+  })
   lines.push(`${whitespace}},`)
   return lines.join('\n')
 }
