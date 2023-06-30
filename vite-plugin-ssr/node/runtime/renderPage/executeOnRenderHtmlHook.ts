@@ -118,7 +118,7 @@ function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
     assertUsage(
       false,
       [
-        `No ${hookName}() hook found`
+        `No ${hookName}() hook found, see https://vite-plugin-ssr.com/${hookName}`
         /*
       'See https://vite-plugin-ssr.com/render-modes for more information.',
       [
