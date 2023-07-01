@@ -116,8 +116,8 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: '`.env` Files',
-    url: '/.env-files'
+    title: 'Environment Variables',
+    url: '/env'
   },
   {
     level: 2,
@@ -834,6 +834,10 @@ const redirections = [
   {
     title: 'Dynamic `import()`',
     url: '/dynamic-import'
+  },
+  {
+    title: '`.env` Files',
+    url: '/.env-files'
   }
 ]
 

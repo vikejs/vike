@@ -1,5 +1,8 @@
 // This file isn't processed by Vite, see https://github.com/brillout/vite-plugin-ssr/issues/562
-//  - Consequently, the server needs be manually restarted when changing this file
+// Consequently:
+//  - When changing this file, you needed to manually restart your server for your changes to take effect.
+//  - To use your environment variables defined in your .env files, you need to install dotenv, see https://vite-plugin-ssr.com/env
+//  - To use your path aliases defined in your vite.config.js, you need to tell Node.js about them, see https://vite-plugin-ssr.com/path-aliases
 
 const express = require('express')
 const compression = require('compression')
