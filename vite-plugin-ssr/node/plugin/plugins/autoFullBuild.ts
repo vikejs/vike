@@ -56,9 +56,10 @@ function autoFullBuild(): Plugin[] {
 }
 
 async function triggerFullBuild(config: ResolvedConfig, configVps: ConfigVpsResolved, bundle: Record<string, unknown>) {
-  if (abortChaining(config, configVps, bundle)) {
-    return
-  }
+  if (config.build.ssr) return // already triggered
+  if (configVps.disableAutoFullBuild || !isViteCliCall()) return
+  // `vite-plugin-ssr.json` missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's `build()`) => skip
+  if (!bundle['vite-plugin-ssr.json']) return
 
   const configFromCli = getViteBuildCliConfig()
   if (!configFromCli.configFile) {
@@ -80,16 +81,6 @@ async function triggerFullBuild(config: ResolvedConfig, configVps: ConfigVpsReso
     await runPrerender({ viteConfig: configFromCli }, null)
     forceExit = true
   }
-}
-
-function abortChaining(config: ResolvedConfig, configVps: ConfigVpsResolved, bundle: Record<string, unknown>): boolean {
-  return (
-    !!config.build.ssr ||
-    configVps.disableAutoFullBuild ||
-    !isViteCliCall() ||
-    // `vite-plugin-ssr.json` missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's `build()`) => skip
-    !bundle['vite-plugin-ssr.json']
-  )
 }
 
 function abortViteBuildSsr(configVps: ConfigVpsResolved) {
