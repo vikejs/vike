@@ -1,6 +1,6 @@
 import { cac } from 'cac'
 import { resolve } from 'path'
-import { runPrerender, runPrerenderForceExit } from '../prerender/runPrerender'
+import { prerenderFromCLI, prerenderForceExit } from '../prerender/runPrerender'
 import { projectInfo, assertUsage } from './utils'
 
 const cli = cac(projectInfo.projectName)
@@ -12,8 +12,8 @@ cli
     assertOptions()
     const { partial, noExtraDir, base, parallel, outDir, configFile } = options
     const root = options.root && resolve(options.root)
-    await runPrerender({ partial, noExtraDir, base, root, parallel, outDir, configFile }, '$ vite-plugin-ssr prerender')
-    runPrerenderForceExit()
+    await prerenderFromCLI({ partial, noExtraDir, base, root, parallel, outDir, configFile })
+    prerenderForceExit()
   })
 
 function assertOptions() {

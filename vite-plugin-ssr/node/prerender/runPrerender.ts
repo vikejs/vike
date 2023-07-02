@@ -1,5 +1,7 @@
-export { runPrerender }
-export { runPrerenderForceExit }
+export { prerenderFromAPI }
+export { prerenderFromCLI }
+export { prerenderFromAutoFullBuild }
+export { prerenderForceExit }
 export type { PrerenderOptions }
 
 import '../runtime/page-files/setup'
@@ -133,7 +135,7 @@ type PrerenderOptions = {
    */
   onPagePrerender?: Function
 
-  // TODO: remove upon next major release
+  // TODO/v1-release: remove
   // =====================
   // ==== Deprecated  ====
   // =====================
@@ -153,6 +155,15 @@ type PrerenderOptions = {
   base?: string
 }
 
+async function prerenderFromAPI(options: PrerenderOptions = {}): Promise<void> {
+  await runPrerender(options, 'prerender()')
+}
+async function prerenderFromCLI(options: PrerenderOptions): Promise<void> {
+  await runPrerender(options, '$ vite-plugin-ssr prerender')
+}
+async function prerenderFromAutoFullBuild(options: PrerenderOptions): Promise<void> {
+  await runPrerender(options, null)
+}
 async function runPrerender(
   options: PrerenderOptions,
   manuallyTriggered: null | '$ vite-plugin-ssr prerender' | 'prerender()'
@@ -1054,7 +1065,7 @@ function normalizeUrl(url: string) {
   return '/' + url.split('/').filter(Boolean).join('/')
 }
 
-function runPrerenderForceExit() {
+function prerenderForceExit() {
   // Force exit; known situations where pre-rendering is hanging:
   //  - https://github.com/brillout/vite-plugin-ssr/discussions/774#discussioncomment-5584551
   //  - https://github.com/brillout/vite-plugin-ssr/issues/807#issuecomment-1519010902

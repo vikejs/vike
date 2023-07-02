@@ -2,7 +2,7 @@ export { autoFullBuild }
 
 import { build, Plugin, ResolvedConfig } from 'vite'
 import { assertWarning } from '../utils'
-import { runPrerender, runPrerenderForceExit } from '../../prerender/runPrerender'
+import { prerenderFromAutoFullBuild, prerenderForceExit } from '../../prerender/runPrerender'
 import { getConfigVps } from '../../shared/getConfigVps'
 import type { ConfigVpsResolved } from '../../../shared/ConfigVps'
 import { getViteBuildCliConfig, isViteCliCall } from '../shared/isViteCliCall'
@@ -47,7 +47,7 @@ function autoFullBuild(): Plugin[] {
         order: 'post',
         handler() {
           if (forceExit) {
-            runPrerenderForceExit()
+            prerenderForceExit()
           }
         }
       }
@@ -78,7 +78,7 @@ async function triggerFullBuild(config: ResolvedConfig, configVps: ConfigVpsReso
   })
 
   if (configVps.prerender && !configVps.prerender.disableAutoRun) {
-    await runPrerender({ viteConfig: configFromCli }, null)
+    await prerenderFromAutoFullBuild({ viteConfig: configFromCli })
     forceExit = true
   }
 }
