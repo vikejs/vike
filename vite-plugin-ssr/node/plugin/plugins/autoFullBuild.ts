@@ -20,7 +20,7 @@ function autoFullBuild(): Plugin[] {
       async configResolved(config_) {
         configVps = await getConfigVps(config_)
         config = config_
-        abortSSRBuild(configVps)
+        abortViteBuildSsr(configVps)
       },
       writeBundle: {
         /* We can't use this because it breaks Vite's logging. TODO: try again with latest Vite version.
@@ -56,13 +56,7 @@ function autoFullBuild(): Plugin[] {
 }
 
 async function triggerFullBuild(config: ResolvedConfig, configVps: ConfigVpsResolved, bundle: Record<string, unknown>) {
-  if (
-    config.build.ssr ||
-    configVps.disableAutoFullBuild ||
-    !isViteCliCall() ||
-    // `vite-plugin-ssr.json` missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's `build()`) => skip
-    !bundle['vite-plugin-ssr.json']
-  ) {
+  if (abortChaining(config, configVps, bundle)) {
     return
   }
 
@@ -88,7 +82,17 @@ async function triggerFullBuild(config: ResolvedConfig, configVps: ConfigVpsReso
   }
 }
 
-function abortSSRBuild(configVps: ConfigVpsResolved) {
+function abortChaining(config: ResolvedConfig, configVps: ConfigVpsResolved, bundle: Record<string, unknown>): boolean {
+  return (
+    !!config.build.ssr ||
+    configVps.disableAutoFullBuild ||
+    !isViteCliCall() ||
+    // `vite-plugin-ssr.json` missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's `build()`) => skip
+    !bundle['vite-plugin-ssr.json']
+  )
+}
+
+function abortViteBuildSsr(configVps: ConfigVpsResolved) {
   if (!configVps.disableAutoFullBuild && isViteCliCall() && getViteBuildCliConfig().build.ssr) {
     assertWarning(
       false,
