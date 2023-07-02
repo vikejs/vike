@@ -10,11 +10,13 @@
 
 ## System requirements
 
-- Unix (e.g. macOS or Linux). (Windows may work but there are no guarantees.)
-- Node.js `>= v15.0.0`.
-- [pnpm](https://pnpm.io/). (Install it with `$ npm install -g pnpm`.)
+> These requirements are only needed for developing the source code of vite-plugin-ssr. The npm package `vite-plugin-ssr` can be used with Windows and with any package manager.
 
-> These requirements are for developing; vite-plugin-ssr can be used with any package manager, Windows, and Node.js `>= v12.19.0`.
+- Node.js `>= v16.0.0`.
+- [pnpm](https://pnpm.io/).
+  > Install it with `$ npm install -g pnpm`.
+- Unix (e.g. Linux or macOS).
+  > Windows may work but there are no guarantees.
 
 <br/>
 

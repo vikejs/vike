@@ -24,6 +24,7 @@ import { importBuild } from './plugins/importBuild'
 import { commonConfig } from './plugins/commonConfig'
 import { extensionsAssets } from './plugins/extensionsAssets'
 import { baseUrls } from './plugins/baseUrls'
+import { envPlugin } from './plugins/env'
 
 markEnvAsVite()
 
@@ -47,7 +48,8 @@ function plugin(vpsConfig?: ConfigVpsUserProvided): any {
     setGlobalContext(),
     ...importBuild(),
     extensionsAssets(),
-    baseUrls(vpsConfig)
+    baseUrls(vpsConfig),
+    envPlugin()
   ]
   return plugins
 }

@@ -10,7 +10,8 @@
     "rootDir": "./",
     // Misc
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "lib": ["ES2021", "DOM", "DOM.Iterable"]
   },
   "exclude": ["**/*.d.ts", "**/*.spec.ts", "**/node_modules", "**/.*/"]
 }
