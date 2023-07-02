@@ -35,7 +35,7 @@ type ConfigVpsResolved = {
         disableAutoRun: boolean
       }
   extensions: ExtensionResolved[]
-  disableAutoFullBuild: boolean
+  disableAutoFullBuild: boolean | null
   includeAssetsImportedByServer: boolean
   baseAssets: string
   baseServer: string

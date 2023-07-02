@@ -45,7 +45,7 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
   const { baseServer, baseAssets } = resolveBase(configs, config)
 
   const configVps: ConfigVpsResolved = {
-    disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? false,
+    disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? null,
     extensions,
     prerender: resolvePrerenderOptions(configs),
     includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? false,

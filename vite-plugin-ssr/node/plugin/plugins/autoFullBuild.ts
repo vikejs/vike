@@ -57,7 +57,7 @@ function autoFullBuild(): Plugin[] {
 
 async function triggerFullBuild(config: ResolvedConfig, configVps: ConfigVpsResolved, bundle: Record<string, unknown>) {
   if (config.build.ssr) return // already triggered
-  if (configVps.disableAutoFullBuild || !isViteCliCall()) return
+  if (isDisabled(configVps)) return
   // `vite-plugin-ssr.json` missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's `build()`) => skip
   if (!bundle['vite-plugin-ssr.json']) return
 
@@ -91,5 +91,14 @@ function abortViteBuildSsr(configVps: ConfigVpsResolved) {
       { onlyOnce: true }
     )
     process.exit(0)
+  }
+}
+
+function isDisabled(configVps: ConfigVpsResolved): boolean {
+  if (configVps.disableAutoFullBuild === null) {
+    // TODO/v1-release: also enable autoFullBuild when running Vite's build() API
+    return !isViteCliCall()
+  } else {
+    return configVps.disableAutoFullBuild
   }
 }
