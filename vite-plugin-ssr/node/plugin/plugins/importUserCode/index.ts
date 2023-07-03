@@ -9,6 +9,7 @@ import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode'
 import {
   assert,
   assertPosixPath,
+  getFilePathVite,
   getVirtualFileId,
   isDev1,
   isDev1_onConfigureServer,
@@ -18,7 +19,6 @@ import {
 import { isVirtualFileIdImportPageCode } from '../../../shared/virtual-files/virtualFileImportPageCode'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode'
 import { vikeConfigDependencies, reloadVikeConfig } from './v1-design/getVikeConfig'
-import path from 'path'
 import pc from '@brillout/picocolors'
 import { logConfigInfo, clearLogs } from '../../shared/loggerNotProd'
 
@@ -143,7 +143,7 @@ function reloadConfig(
   op: 'modified' | 'added' | 'removed'
 ) {
   {
-    const filePathToShowToUser = pc.dim(makeRelativeToUserRootDir(filePath, config.root))
+    const filePathToShowToUser = pc.dim(getFilePathVite(filePath, config.root, true))
     const msg = `Config file ${op} ${filePathToShowToUser}`
     logConfigInfo(msg, 'info')
   }
@@ -159,11 +159,4 @@ function getVirtualModules(server: ViteDevServer): ModuleNode[] {
       return mod
     })
   return virtualModules
-}
-
-function makeRelativeToUserRootDir(filePathAbsolute: string, userRootDir: string): string {
-  assertPosixPath(filePathAbsolute)
-  assertPosixPath(userRootDir)
-  const filePathRelativeToUserRootDir = path.posix.relative(userRootDir, filePathAbsolute)
-  return filePathRelativeToUserRootDir
 }

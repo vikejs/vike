@@ -44,12 +44,18 @@ function getFilePathAbsolute(filePath: string, config: ResolvedConfig): string {
   return filePathAbsolute
 }
 
-function getFilePathVite(filePath: string, userRootDir: string): string {
+function getFilePathVite(filePath: string, userRootDir: string, alwaysRelativeToRoot = false): string {
   assertPosixPath(filePath)
   assertPosixPath(userRootDir)
-  if (!filePath.startsWith(userRootDir)) return filePath
-  let filePathVite = path.posix.relative(userRootDir, filePath)
-  assert(!filePathVite.startsWith('.') && !filePathVite.startsWith('/'))
-  filePathVite = `/${filePathVite}`
+  const filePathRelativeToRoot = path.posix.relative(userRootDir, filePath)
+  if (!filePath.startsWith(userRootDir)) {
+    if (alwaysRelativeToRoot) {
+      return filePathRelativeToRoot
+    } else {
+      return filePath
+    }
+  }
+  assert(!filePathRelativeToRoot.startsWith('.') && !filePathRelativeToRoot.startsWith('/'))
+  const filePathVite = `/${filePathRelativeToRoot}`
   return filePathVite
 }
