@@ -16,7 +16,7 @@ import {
   hasProp,
   arrayIncludes,
   objectKeys,
-  assertIsNotProduction,
+  assertIsNotProductionRuntime,
   getMostSimilar,
   isNpmPackageImport,
   joinEnglish,
@@ -55,7 +55,7 @@ import {
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser'
 import type { ConfigNameBuiltIn } from '../../../../../shared/page-configs/Config'
 
-assertIsNotProduction()
+assertIsNotProductionRuntime()
 
 type InterfaceFile = InterfaceConfigFile | InterfaceValueFile
 type InterfaceFileCommons = {

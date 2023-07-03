@@ -24,7 +24,7 @@ import { getViteConfig } from '../../runtime/globalContext'
 import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/loggerRuntime'
 import {
   assert,
-  assertIsNotProduction,
+  assertIsNotProductionRuntime,
   getAssertErrMsg,
   isUserHookError,
   overwriteAssertProductionLogger,
@@ -54,7 +54,7 @@ import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
 
-assertIsNotProduction()
+assertIsNotProductionRuntime()
 overwriteRuntimeProductionLogger(logRuntimeError, logRuntimeInfo)
 overwriteAssertProductionLogger(assertLogger)
 

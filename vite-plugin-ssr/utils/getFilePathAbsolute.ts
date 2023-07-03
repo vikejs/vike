@@ -5,11 +5,11 @@ import type { ResolvedConfig } from 'vite'
 import { assertPosixPath, toPosixPath } from './filesystemPathHandling'
 import { assert } from './assert'
 import path from 'path'
-import { assertIsNotProduction } from './assertIsNotProduction'
+import { assertIsNotProductionRuntime } from './assertIsNotProductionRuntime'
 import { isNpmPackageImport } from './isNpmPackage'
 import { assertPathIsFilesystemAbsolute } from './assertPathIsFilesystemAbsolute'
 
-assertIsNotProduction()
+assertIsNotProductionRuntime()
 
 // Vite handles paths such as /pages/index.page.js which are relative to `config.root`.
 // Make them absolute starting from the filesystem root.

@@ -1,6 +1,6 @@
 // Mechanism to ensure code isn't loaded by production runtime
 
-export { assertIsNotProduction }
+export { assertIsNotProductionRuntime }
 export { markEnvAsDev }
 export { markEnvAsPreview }
 export { markEnvAsVite }
@@ -18,10 +18,10 @@ const env = getGlobalObject<{
   isDev?: true
   isPreview?: true
   isVite?: true
-}>('utils/assertIsNotProduction.ts', {})
+}>('utils/assertIsNotProductionRuntime.ts', {})
 
 // Called by *.ts that want to ensure that they aren't loaded by the server runtime in production
-function assertIsNotProduction(): void | undefined {
+function assertIsNotProductionRuntime(): void | undefined {
   env.shouldBeVite = true
 }
 
