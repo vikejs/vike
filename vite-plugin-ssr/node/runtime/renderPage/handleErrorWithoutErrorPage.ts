@@ -43,6 +43,6 @@ function warnMissingErrorPage(isV1: boolean): void {
       'we recommend defining an error page,',
       "see https://vite-plugin-ssr.com/error-page (this warning isn't shown in production)"
     ].join(' ')
-    assertWarning(false, msg, { onlyOnce: false })
+    assertWarning(false, msg, { onlyOnce: true })
   }
 }
