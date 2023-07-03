@@ -76,10 +76,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   })
 
   it('real use case - @vitejs/plugin-vue - SFC HTML', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(
-      errVueHtml,
-      '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1'
-    )
+    const formatted = getPrettyErrorWithCodeSnippet(errVueHtml, '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /pages/index/+Page.vue because:
       Element is missing end tag.
