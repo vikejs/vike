@@ -16,8 +16,8 @@
 <br/>
 **Get help** :arrow_right: [GitHub Discussions](https://github.com/brillout/vite-plugin-ssr/discussions).
 <br/>
-**Chit-chat** :arrow_right: [Discord](https://discord.com/invite/dSDMGGJZQy). :warning: **DON'T use Discord to get help**: we use Discord for casual conversations about vite-plugin-ssr and broader topics.
+**Chit-chat** :arrow_right: [Discord](https://discord.com/invite/hfHhnJyVg8). :warning: **DON'T use Discord to get help**: we use Discord for casual conversations about vite-plugin-ssr and broader topics.
 
-**Feel free to PM `brillout`** :arrow_right: On [Twitter](https://twitter.com/brillout), or on [Discord](https://discord.com/invite/dSDMGGJZQy) right-click on the username `brillout` => `Message`.
+**Feel free to PM `brillout`** :arrow_right: On [Twitter](https://twitter.com/brillout), or on [Discord](https://discord.com/invite/hfHhnJyVg8) right-click on the username `brillout` => `Message`.
 <br/>
 **Sponsor `brillout`** :arrow_right: [Rom Brillout Sponsors](https://github.com/sponsors/brillout). You'll get a private Discord channel and get live support from `brillout` directly.

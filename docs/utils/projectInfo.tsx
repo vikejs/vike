@@ -9,6 +9,6 @@ export const projectInfo = {
   githubRepository: 'https://github.com/brillout/vite-plugin-ssr' as const,
   githubIssues: 'https://github.com/brillout/vite-plugin-ssr/issues/new' as const,
   githubDiscussions: 'https://github.com/brillout/vite-plugin-ssr/discussions' as const,
-  discordInvite: 'https://discord.com/invite/dSDMGGJZQy' as const,
+  discordInvite: 'https://discord.com/invite/hfHhnJyVg8' as const,
   twitterProfile: 'https://twitter.com/brillout' as const
 }

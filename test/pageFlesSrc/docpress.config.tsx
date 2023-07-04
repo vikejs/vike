@@ -9,7 +9,7 @@ export default {
     projectVersion: '0.0.0',
     githubRepository: 'https://github.com/brillout/docpress' as const,
     githubIssues: 'https://github.com/brillout/docpress/issues/new' as const,
-    discordInvite: 'https://discord.com/invite/dSDMGGJZQy' as const,
+    discordInvite: 'https://discord.com/invite/hfHhnJyVg8' as const,
     twitterProfile: 'https://twitter.com/brillout' as const
   },
   faviconUrl: logoUrl,
