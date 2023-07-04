@@ -4,7 +4,7 @@ import type { HeadingDefinition, HeadingDetachedDefinition } from '@brillout/doc
 export { headingsDetached }
 export { headings }
 
-const headings: HeadingDefinition[] = [
+const headings = [
   {
     level: 1,
     title: 'Overview',
@@ -597,11 +597,6 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: '`includeAssetsImportedByServer`',
-    url: '/includeAssetsImportedByServer'
-  },
-  {
-    level: 2,
     title: '`disableAutoFullBuild`',
     url: '/disableAutoFullBuild'
   },
@@ -782,7 +777,7 @@ const headings: HeadingDefinition[] = [
     title: '`_error.page.js`',
     url: '/error-page'
   }
-]
+] satisfies HeadingDefinition[]
 
 const redirections = [
   {
@@ -849,9 +844,9 @@ const redirections = [
     title: '`.env` Files',
     url: '/.env-files'
   }
-]
+] satisfies HeadingDetachedDefinition[]
 
-const headingsDetached: HeadingDetachedDefinition[] = [
+const headingsDetached = [
   ...redirections,
   {
     title: (
@@ -1056,5 +1051,9 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: 'Client runtimes conflict',
     url: '/client-runtimes-conflict'
+  },
+  {
+    title: '`includeAssetsImportedByServer`',
+    url: '/includeAssetsImportedByServer'
   }
-]
+] satisfies HeadingDetachedDefinition[]

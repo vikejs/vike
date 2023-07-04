@@ -48,7 +48,7 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? null,
     extensions,
     prerender: resolvePrerenderOptions(configs),
-    includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? false,
+    includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? true,
     baseServer,
     baseAssets
   }

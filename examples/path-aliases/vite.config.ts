@@ -12,7 +12,6 @@ const config: UserConfig = {
   plugins: [
     react(),
     ssr({
-      includeAssetsImportedByServer: true,
       prerender: true
     })
   ]

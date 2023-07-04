@@ -209,7 +209,6 @@ To render a page to HTML-only:
 
  1. We define `.page.server.js` instead of `.page.js`.
  1. (Optional) We define `.page.client.js` (e.g. to add minimal amount of JavaScript surgically injecting bits of interactivity).
- 1. We set <Link text={<code>includeAssetsImportedByServer</code>} href="/includeAssetsImportedByServer" /> to `true`.
 
 
 ```js
@@ -238,20 +237,6 @@ function Page() {
 // We can omit defining `.page.client.js` in which case the page has zero browser-side JavaScript.
 
 console.log("I'm the page's only browser-side JavaScript line.")
-```
-
-```js
-// vite.config.js
-
-import { ssr } from 'vite-plugin-ssr/plugin'
-
-export default {
-  plugins: [
-    ssr({
-      includeAssetsImportedByServer: true
-    })
-  ]
-}
 ```
 
 Examples:

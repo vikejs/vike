@@ -100,14 +100,6 @@ type ConfigVpsUserProvided = {
    * @default false
    */
   disableAutoFullBuild?: boolean
-  /**
-   * Support importing assets (CSS, images, etc.) from server code.
-   *
-   * https://vite-plugin-ssr.com/includeAssetsImportedByServer
-   *
-   * @experimental
-   */
-  includeAssetsImportedByServer?: boolean
   /** The Base URL of your server.
    *
    * https://vite-plugin-ssr.com/base-url
@@ -118,4 +110,7 @@ type ConfigVpsUserProvided = {
    * https://vite-plugin-ssr.com/base-url
    */
   baseAssets?: string
+  // We don't remove this option in case there is a bug with includeAssetsImportedByServer and the user needs to disable it.
+  /** @deprecated It's now `true` by default. You can remove this option. */
+  includeAssetsImportedByServer?: boolean
 }
