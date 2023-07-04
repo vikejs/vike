@@ -1,10 +1,10 @@
-export { envPlugin }
+export { envVarsPlugin }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
 import { assert, assertPosixPath, assertUsage, assertWarning, getFilePathVite, lowerFirst } from '../utils'
 
-function envPlugin(): Plugin {
+function envVarsPlugin(): Plugin {
   let envsAll: Record<string, string>
   let config: ResolvedConfig
   return {
