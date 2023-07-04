@@ -44,7 +44,8 @@ import {
   capitalizeFirstLetter,
   assertWarning,
   isCallable,
-  createDebugger
+  createDebugger,
+  dynamicImport
 } from '../utils'
 import { HtmlRender } from './renderHtml'
 import {
@@ -861,13 +862,9 @@ async function loadStreamNodeModule(): Promise<{
   Readable: typeof Readable_
   Writable: typeof Writable_
 }> {
-  const streamModule = await dynamicImport('stream')
-  const { Readable, Writable } = streamModule as any
+  const streamModule = await dynamicImport<typeof import('stream')>('stream')
+  const { Readable, Writable } = streamModule
   return { Readable, Writable }
-}
-
-function dynamicImport(modulePath: string): Promise<Record<string, unknown>> {
-  return new Function('modulePath', 'return import(modulePath)')(modulePath)
 }
 
 function getStreamName(
