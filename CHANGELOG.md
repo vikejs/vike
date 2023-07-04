@@ -1,3 +1,27 @@
+## [0.4.133](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.132...v0.4.133) (2023-07-04)
+
+
+### Bug Fixes
+
+* also convert resolved config.build.outDir to POSIX path ([#935](https://github.com/brillout/vite-plugin-ssr/issues/935)) ([9ae9aa2](https://github.com/brillout/vite-plugin-ssr/commit/9ae9aa21616527e1c72802adff0983780eaf3a38))
+* don't assume UserConfig.build.outDir to be a POSIX path ([#935](https://github.com/brillout/vite-plugin-ssr/issues/935)) ([3f235bc](https://github.com/brillout/vite-plugin-ssr/commit/3f235bc84becf2f6940a622bce633eb87c94dd07))
+* forbid config value files to live in different environements ([80ab2e2](https://github.com/brillout/vite-plugin-ssr/commit/80ab2e252d5280affd0459124075c3c39aa9e180))
+* handle HMR for config dependency file removal/creation ([1880172](https://github.com/brillout/vite-plugin-ssr/commit/1880172a59d24e77ff286ec243842d031be3857e))
+* make CLI parsing more robust (fix [#990](https://github.com/brillout/vite-plugin-ssr/issues/990)) ([36ffa2b](https://github.com/brillout/vite-plugin-ssr/commit/36ffa2b3533864a2df6abbd3f415ae6426eef593))
+* remove isNpmPackage() assertions from client-side bundle ([2f35023](https://github.com/brillout/vite-plugin-ssr/commit/2f350236b0e3e809c2f5f292cdba6daa60d7ad9a))
+* respect `disableAutoFullBuild: false` (fix [#990](https://github.com/brillout/vite-plugin-ssr/issues/990)) ([36814e9](https://github.com/brillout/vite-plugin-ssr/commit/36814e995d4a7075b363af239e329200fa6373dd))
+* support HMR for config file imports ([53616d0](https://github.com/brillout/vite-plugin-ssr/commit/53616d0b496d83ddcd1854c95c2b9b05f084e428))
+* tolerate missing global context ([150f3ea](https://github.com/brillout/vite-plugin-ssr/commit/150f3ea5f0a1f397b1a7e3c64820387a09612bb3))
+* tolerate non-conventional path aliases ([461ea84](https://github.com/brillout/vite-plugin-ssr/commit/461ea840e3a553c1907dd764f1151a952dab2315))
+* workaround Vite swallowing hanldeHotUpdate() errors ([81d2582](https://github.com/brillout/vite-plugin-ssr/commit/81d25820120e50d5664c1ed157b4025077edb8b2))
+
+
+### Features
+
+* improve environment variables support ([30d0027](https://github.com/brillout/vite-plugin-ssr/commit/30d0027ee9c181109e424b69d8e49c3ff472dd18))
+
+
+
 ## [0.4.132](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.131...v0.4.132) (2023-06-23)
 
 
