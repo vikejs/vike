@@ -3,18 +3,18 @@ import mdx from '@mdx-js/rollup'
 import ssr from 'vite-plugin-ssr/plugin'
 import { UserConfig } from 'vite'
 
-const root = __dirname;
+const root = __dirname
 
 export default {
   build: {
     outDir: `${root}/../../examples/react-full-v1/dist/bla`
   },
   plugins: [
-    mdx(),
-    react(),
     ssr({
       prerender: true
-    })
+    }),
+    mdx(),
+    react()
   ],
   // We manually add a list of dependencies to be pre-bundled, in order to avoid a page reload at dev start which breaks vite-plugin-ssr's CI
   // (The 'react/jsx-runtime' entry is not needed in Vite 3 anymore.)
