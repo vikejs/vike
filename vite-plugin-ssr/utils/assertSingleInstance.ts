@@ -21,11 +21,11 @@ const globalObject = getGlobalObject<{
   instances: [],
   alreadyLogged: new Set()
 })
-const makeSure = "Make sure your client-side code doesn't include(/bundle)" as const
+
 const clientEntryClonflict =
-  `The client runtime of Server Routing and the client runtime of Client Routing are both being loaded. ${makeSure} both for a given page.` as const
+  "The client runtime of Server Routing as well as the client runtime of Client Routing are both being loaded. Make sure they aren't loaded both at the same time for a given page. Did you configure Rollup to include both in a same bundle?"
 const clientNotSingleInstance =
-  `Two vite-plugin-ssr client runtime instances are being loaded. ${makeSure} vite-plugin-ssr twice. (In order to reduce the size of your client-side JavaScript bundles.)` as const
+  "Two vite-plugin-ssr client runtime instances are being loaded. Make sure your client-side bundles don't include vite-plugin-ssr twice. (In order to reduce the size of your client-side JavaScript bundles.)"
 
 function assertSingleInstance() {
   {
