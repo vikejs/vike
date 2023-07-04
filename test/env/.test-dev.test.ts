@@ -8,7 +8,7 @@ function testRun() {
   test('Both envs are set', async () => {
     const html = await fetchHtml('/')
     expect(html).toContain('<h1>Welcome</h1>')
-    expect(html).toContain('<li>PUBLIC_ENV: <!-- -->123</li><li>SOME_ENV: <!-- -->456</li>')
+    expect(html).toContain('<li>PUBLIC_ENV__SOME_ENV: <!-- -->123</li><li>SOME_OTHER_ENV: <!-- -->456</li>')
   })
 
   test('Warning is shown while client-side works', async () => {
@@ -22,7 +22,7 @@ function testRun() {
       expect(await page.textContent('button')).toBe('Counter 1')
     })
     expectLog(
-      'import.meta.env.SOME_ENV used in /pages/index/+Page.jsx and therefore included in client-side bundle which can be be a security leak (vite-plugin-ssr will prevent your app from building for production), remove import.meta.env.SOME_ENV or rename SOME_ENV to PUBLIC_SOME_ENV, see https://vite-plugin-ssr.com/env',
+      'import.meta.env.SOME_OTHER_ENV used in /pages/index/+Page.jsx and therefore included in client-side bundle which can be be a security leak (vite-plugin-ssr will prevent your app from building for production), remove import.meta.env.SOME_OTHER_ENV or rename SOME_OTHER_ENV to PUBLIC_ENV__SOME_OTHER_ENV, see https://vite-plugin-ssr.com/env',
       (log) => log.logSource === 'stderr'
     )
   })

@@ -39,8 +39,9 @@ function envPlugin(): Plugin {
         })
         .forEach(([key, val]) => {
           const varName = `import.meta.env.${key}` as const
-          const keyPublic = `PUBLIC_${key}` as const
-          const isPrivate = !key.startsWith('PUBLIC_') && !key.startsWith('VITE_')
+          const publicPrefix = 'PUBLIC_ENV__'
+          const keyPublic = `${publicPrefix}${key}` as const
+          const isPrivate = !key.startsWith(publicPrefix)
           if (isPrivate && isClientSide) {
             if (!code.includes(varName)) return
             const filePathVite = getFilePathVite(id, config.root)
