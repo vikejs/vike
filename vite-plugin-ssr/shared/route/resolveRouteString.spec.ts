@@ -7,11 +7,11 @@ describe('resolveRouteString', () => {
     expect(resolveRouteString('/a', '/a')).toEqual({ routeParams: {} })
     expect(resolveRouteString('/', '/')).toEqual({ routeParams: {} })
 
-    expectError(
+    expectErr(
       () => resolveRouteString('', '/a/b/c'),
       `[vite-plugin-ssr][Wrong Usage] Invalid Route String '' (empty string): Route Strings should start with a leading slash '/' (or be '*')`
     )
-    expectError(
+    expectErr(
       () => resolveRouteString('a', '/a/b/c'),
       `[vite-plugin-ssr][Wrong Usage] Invalid Route String 'a': Route Strings should start with a leading slash '/' (or be '*')`
     )
@@ -60,11 +60,11 @@ describe('resolveRouteString', () => {
     expect(resolveRouteString('/a/*', '/a/b/c/d')).toEqual({ routeParams: { '*': 'b/c/d' } })
     expect(resolveRouteString('/a/*', '/b/c')).toEqual(null)
 
-    expectError(
+    expectErr(
       () => resolveRouteString('/a/*/c/*', '/a/b/c'),
       `[vite-plugin-ssr][Wrong Usage] Invalid Route String '/a/*/c/*': Route Strings are not allowed to contain more than one glob character '*'`
     )
-    expectError(
+    expectErr(
       () => resolveRouteString('/a/*/c', '/a/b/c'),
       `[vite-plugin-ssr][Wrong Usage] Invalid Route String '/a/*/c': make sure your Route String ends with the glob character '*'`
     )
@@ -83,7 +83,7 @@ describe('resolveRouteString', () => {
   })
 })
 
-function expectError(fn: Function, errMsg: string) {
+function expectErr(fn: Function, errMsg: string) {
   {
     let err: Error | undefined
     try {

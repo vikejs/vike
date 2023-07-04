@@ -1,4 +1,4 @@
-import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectError, sleep } from '@brillout/test-e2e'
+import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, sleep } from '@brillout/test-e2e'
 
 export { testRun }
 
@@ -119,11 +119,9 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
     test('throw RenderErrorPage', async () => {
       await page.goto(getServerUrl() + '/hello/bob')
       expect(await page.textContent('h1')).toBe('404 Page Not Found')
-      expectError(
-        (log) =>
-          log.logSource === 'Browser Error' &&
-          log.logText.includes('http://localhost:3000/hello/bob') &&
-          log.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)')
+      expectLog(
+        'Failed to load resource: the server responded with a status of 404 (Not Found)',
+        (log) => log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/bob')
       )
       const txt = 'Unknown name: bob.'
       expect(await page.textContent('body')).toContain(txt)
@@ -134,11 +132,9 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
       test('guard()', async () => {
         await page.goto(getServerUrl() + '/hello/forbidden')
         expect(await page.textContent('h1')).toBe('Forbidden')
-        expectError(
-          (log) =>
-            log.logSource === 'Browser Error' &&
-            log.logText.includes('http://localhost:3000/hello/forbidden') &&
-            log.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)')
+        expectLog(
+          'Failed to load resource: the server responded with a status of 404 (Not Found)',
+          (log) => log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/forbidden')
         )
         const txt = 'This page is forbidden.'
         expect(await page.textContent('body')).toContain(txt)

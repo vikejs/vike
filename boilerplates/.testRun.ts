@@ -7,7 +7,7 @@ import {
   autoRetry,
   fetchHtml,
   getServerUrl,
-  expectError,
+  expectLog,
   editFile,
   editFileRevert,
   sleep,
@@ -119,11 +119,9 @@ function testRun(
     await page.goto(getServerUrl() + '/does-not-exist')
     expect(await page.textContent('h1')).toBe('404 Page Not Found')
     expect(await page.textContent('p')).toBe('This page could not be found.')
-    expectError(
-      (log) =>
-        log.logSource === 'Browser Error' &&
-        partRegex`http://${/[^\/]+/}:3000/does-not-exist`.test(log.logText) &&
-        log.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)')
+    expectLog(
+      'Failed to load resource: the server responded with a status of 404 (Not Found)',
+      (log) => log.logSource === 'Browser Error' && partRegex`http://${/[^\/]+/}:3000/does-not-exist`.test(log.logText)
     )
   })
 }
