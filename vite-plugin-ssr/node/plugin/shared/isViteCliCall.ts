@@ -1,7 +1,7 @@
 export { isViteCliCall }
-export { getViteBuildCliConfig }
+export { getViteConfigFromCli }
 
-import { assert, toPosixPath } from '../utils'
+import { assert, isObject, toPosixPath } from '../utils'
 import { cac } from 'cac'
 
 function isViteCliCall() {
@@ -18,12 +18,15 @@ function isViteCliCall() {
   )
 }
 
-// Copied and adapted from https://github.com/vitejs/vite/blob/8d0a9c1ab8ddd26973509ca230b29604e872e2cd/packages/vite/src/node/cli.ts#L137-L197
-type BuildArgs = Record<string, unknown> & { build: Record<string, unknown> }
-function getViteBuildCliConfig(): BuildArgs {
+type ConfigFromCli = { root: undefined | string; configFile: undefined | string } & Record<string, unknown> & {
+    build: Record<string, unknown>
+  }
+function getViteConfigFromCli(): null | ConfigFromCli {
+  if (!isViteCliCall()) return null
+
+  // Copied and adapted from https://github.com/vitejs/vite/blob/8d0a9c1ab8ddd26973509ca230b29604e872e2cd/packages/vite/src/node/cli.ts#L137-L197
   const cli = cac('vite-plugin-ssr:vite-simulation')
   const desc = 'FAKE_CLI'
-
   cli
     .option('-c, --config <file>', desc)
     .option('--base <path>', desc)
@@ -32,8 +35,6 @@ function getViteBuildCliConfig(): BuildArgs {
     .option('-d, --debug [feat]', desc)
     .option('-f, --filter <filter>', desc)
     .option('-m, --mode <mode>', desc)
-
-  // build
   cli
     .command('build [root]', desc)
     .option('--target <target>', desc)
@@ -48,9 +49,12 @@ function getViteBuildCliConfig(): BuildArgs {
     .option('--force', desc)
     .option('--emptyOutDir', desc)
     .option('-w, --watch', desc)
-    .action((root: string, options: Record<string, unknown>) => {
+    .action((root: unknown, options: unknown) => {
+      assert(isObject(options))
       const buildOptions = cleanOptions(options)
-      config = {
+      assert(root === undefined || typeof root === 'string')
+      assert(options.config === undefined || typeof options.config === 'string')
+      configFromCli = {
         root,
         base: options.base,
         mode: options.mode,
@@ -62,10 +66,10 @@ function getViteBuildCliConfig(): BuildArgs {
       }
     })
 
-  let config!: BuildArgs
+  let configFromCli: ConfigFromCli | null = null
   cli.parse()
-  assert(config)
-  return config
+
+  return configFromCli
 
   function cleanOptions(options: Record<string, unknown>) {
     const ret = { ...options }
