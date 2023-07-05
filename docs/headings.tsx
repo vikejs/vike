@@ -277,17 +277,22 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Netlify Functions',
-    url: '/netlify-functions'
-  },
-  {
-    level: 2,
     title: 'AWS Lambda',
     url: '/aws-lambda'
   },
   {
+    level: 2,
+    title: 'Netlify Functions',
+    url: '/netlify-functions'
+  },
+  {
     level: 4,
-    title: 'Other'
+    title: 'Full-stack'
+  },
+  {
+    level: 2,
+    title: 'AWS',
+    url: '/aws'
   },
   {
     level: 2,
@@ -1051,5 +1056,5 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: 'Client runtimes conflict',
     url: '/client-runtimes-conflict'
-  },
+  }
 ]
