@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "strict": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "esModuleInterop": true,
-    "jsx": "react"
-  }
-}
