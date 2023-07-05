@@ -1,7 +1,13 @@
 export { executeOnRenderHtmlHook }
 export type { RenderHook }
 
-import { type HtmlRender, isDocumentHtml, renderDocumentHtml, DocumentHtml } from '../html/renderHtml'
+import {
+  type HtmlRender,
+  isDocumentHtml,
+  renderDocumentHtml,
+  DocumentHtml,
+  dangerouslySkipEscape
+} from '../html/renderHtml'
 import { getHook, type Hook } from '../../../shared/getHook'
 import {
   assert,
@@ -150,10 +156,16 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
   const errPrefix = `The ${renderHook.hookName as string}() hook defined at ${renderHook.hookFilePath}` as const
   const errSuffix =
     'a string generated with the escapeInject`<html>...</html>` template tag or a string returned by dangerouslySkipEscape(), see https://vite-plugin-ssr.com/escapeInject' as const
-  assertUsage(
-    typeof hookReturnValue !== 'string',
-    [errPrefix, 'returned a plain JavaScript string which is forbidden: it should instead return', errSuffix].join(' ')
-  )
+  if (typeof hookReturnValue === 'string') {
+    assertWarning(
+      false,
+      [errPrefix, 'returned a plain JavaScript string which is dangerous: it should instead return', errSuffix].join(
+        ' '
+      ),
+      { onlyOnce: true }
+    )
+    hookReturnValue = dangerouslySkipEscape(hookReturnValue)
+  }
   assertUsage(
     isObject(hookReturnValue),
     [
@@ -170,12 +182,16 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
   }
 
   if (hookReturnValue.documentHtml) {
-    const val = hookReturnValue.documentHtml
+    let val = hookReturnValue.documentHtml
     const errBegin = `${errPrefix} returned \`{ documentHtml }\`, but documentHtml`
-    assertUsage(
-      typeof val !== 'string',
-      [errBegin, 'is a plain JavaScript string which is forbidden: documentHtml should be', errSuffix].join(' ')
-    )
+    if (typeof val === 'string') {
+      assertWarning(
+        false,
+        [errBegin, 'is a plain JavaScript string which is dangerous: documentHtml should be', errSuffix].join(' '),
+        { onlyOnce: true }
+      )
+      val = dangerouslySkipEscape(val)
+    }
     assertUsage(isDocumentHtml(val), [errBegin, 'should be', errSuffix].join(' '))
     documentHtml = val
   }
