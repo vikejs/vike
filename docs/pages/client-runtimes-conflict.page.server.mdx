@@ -1,0 +1,44 @@
+import { Link } from '@brillout/docpress'
+
+If you get the following warning:
+
+```
+The client runtime of Server Routing as well as the client runtime of Client Routing are both
+being loaded. Make sure they aren't loaded both at the same time for a given page.
+```
+
+Then the common causes are:
+ - You configured [Rollup's code splitting](https://vitejs.dev/guide/build.html#chunking-strategy) in a way that makes both runtimes being included in a same bundle.
+   ```js
+   // vite.config.js
+
+   // This will lead to the warning above. We recommend against this practice: not only because
+   // of the above warning but also because, in general, a given page should only load what is
+   // striclty needed for that page. (Initial page load speed is usually more important than
+   // subsequent page load speed.)
+   const rollupOptions = {
+     output: {
+       manualChunks(id) {
+         if (id.includes('node_modules')) {
+           return 'vendor'
+         }
+       }
+     }
+   }
+
+   export default { build: { rollupOptions } }
+   ```
+ - You're importing a utility, such as `prefetch()` or `navigate()`, that is only available to <Link text="Client Routing" href="/client-routing" />.
+   ```js
+   // ❌ Don't import these for pages that use Server Routing
+   import { prefetch } from 'vite-plugin-ssr/client/router'
+   import { navigate } from 'vite-plugin-ssr/client/router'
+   ```
+   > You'll get a warning:
+   > ```
+   > You shouldn't `import { something } from 'vite-plugin-ssr/client/router'` when using
+   > Server Routing. The 'vite-plugin-ssr/client/router' utilities work only with
+   > Client Routing. In particular, don't `import { navigate }` nor `import { prefetch }`
+   > as they unnecessarily bloat your client-side bundle.
+   > ```
+   > If you don't get this warning, then the issue is most likely related to your Rollup configuration.

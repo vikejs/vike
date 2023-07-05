@@ -1047,5 +1047,9 @@ const headingsDetached: HeadingDetachedDefinition[] = [
       </>
     ),
     url: '/header-file/import-from-same-file'
-  }
+  },
+  {
+    title: 'Client runtimes conflict',
+    url: '/client-runtimes-conflict'
+  },
 ]

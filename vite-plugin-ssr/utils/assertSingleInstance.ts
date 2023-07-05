@@ -22,8 +22,8 @@ const globalObject = getGlobalObject<{
   alreadyLogged: new Set()
 })
 
-const clientEntryClonflict =
-  "The client runtime of Server Routing as well as the client runtime of Client Routing are both being loaded. Make sure they aren't loaded both at the same time for a given page. Did you configure Rollup to include both in a same bundle?"
+const clientRuntimesClonflict =
+  "The client runtime of Server Routing as well as the client runtime of Client Routing are both being loaded. Make sure they aren't loaded both at the same time for a given page. See https://vite-plugin-ssr.com/client-runtimes-conflict"
 const clientNotSingleInstance =
   "Two vite-plugin-ssr client runtime instances are being loaded. Make sure your client-side bundles don't include vite-plugin-ssr twice. (In order to reduce the size of your client-side JavaScript bundles.)"
 
@@ -50,7 +50,7 @@ function assertSingleInstance() {
 }
 
 function onClientEntry_ServerRouting(isProduction: boolean) {
-  assertWarning(globalObject.isClientRouting !== true, clientEntryClonflict, { onlyOnce: true, showStackTrace: true })
+  assertWarning(globalObject.isClientRouting !== true, clientRuntimesClonflict, { onlyOnce: true, showStackTrace: true })
   assertWarning(globalObject.isClientRouting === undefined, clientNotSingleInstance, {
     onlyOnce: true,
     showStackTrace: true
@@ -60,7 +60,7 @@ function onClientEntry_ServerRouting(isProduction: boolean) {
   assertSingleInstance()
 }
 function onClientEntry_ClientRouting(isProduction: boolean) {
-  assertWarning(globalObject.isClientRouting !== false, clientEntryClonflict, { onlyOnce: true, showStackTrace: true })
+  assertWarning(globalObject.isClientRouting !== false, clientRuntimesClonflict, { onlyOnce: true, showStackTrace: true })
   assertWarning(globalObject.isClientRouting === undefined, clientNotSingleInstance, {
     onlyOnce: true,
     showStackTrace: true
