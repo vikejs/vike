@@ -4,7 +4,7 @@ import { stripAnsi } from '../../utils'
 import type { PageRoutes } from '../../../../shared/route'
 
 describe('getPagesAndRoutesInfo()', () => {
-  it('table layout', () => {
+  it('table layout - basic', () => {
     const table = getPagesAndRoutesInfo(pageRoutes1)
     /*/
     console.log(table)
@@ -12,12 +12,12 @@ describe('getPagesAndRoutesInfo()', () => {
     expect(stripAnsi(table)).toMatchFileSnapshot('./index.spec.snapshot-1')
     //*/
   })
-  it('table layout', () => {
+  it('table layout - with Route Function', () => {
     const table = getPagesAndRoutesInfo(pageRoutes2)
     /*/
     console.log(table)
     /*/
-    expect(stripAnsi(table)).toMatchFileSnapshot('./index.spec.snapshot')
+    expect(stripAnsi(table)).toMatchFileSnapshot('./index.spec.snapshot-2')
     //*/
   })
 })
