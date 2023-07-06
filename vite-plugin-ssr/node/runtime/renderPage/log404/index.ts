@@ -116,6 +116,7 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
   width2 = width2 + 1
   width3 = width3 + 1
 
+  // https://en.wikipedia.org/wiki/Box-drawing_character
   lines = [
     pc.dim(`┌${'─'.repeat(width1)}┬${'─'.repeat(width2)}┬${'─'.repeat(width3)}┐`),
     lines[0]!,
