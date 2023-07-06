@@ -1,5 +1,6 @@
 import type { Config } from '@brillout/docpress'
-import { headings, headingsDetached } from './headings'
+import { headings } from './headings'
+import { headingsDetached } from './headingsDetached'
 import { projectInfo } from './utils'
 import faviconUrl from './images/icons/vite-plugin-ssr.svg'
 import React from 'react'
