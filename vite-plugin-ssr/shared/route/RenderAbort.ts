@@ -1,11 +1,11 @@
-export { isRenderErrorPageException }
+export { isRenderAbort }
 export { RenderErrorPage }
 
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
 import { assertUsage, objectAssign } from './utils'
 const stamp = '__isRenderErrorPageException'
 
-function isRenderErrorPageException(thing: unknown): thing is { pageContext?: Record<string, unknown> } {
+function isRenderAbort(thing: unknown): thing is { pageContext?: Record<string, unknown> } {
   assertRenderErrorPageExceptionUsage(thing)
   return typeof thing === 'object' && thing !== null && stamp in thing
 }
