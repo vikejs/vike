@@ -1,0 +1,73 @@
+import { Link } from '@brillout/docpress'
+
+<a href="https://github.com/vercel/styled-jsx">`styled-jsx`</a> is a CSS in JS tool that is supported by default in Next.js.
+Next.js manages server side hydration of styles as well as transpilation, so to work with Vite we'll need to do this manually
+
+View <a href="https://github.com/jeremypress/vite-ssr-styled-jsx">this example project</a> using styled-components and react with VPS.
+
+To use vite-plugin-ssr with `styled-jsx`:
+
+1. Install:
+
+```shell
+npm install styled-jsx
+```
+
+2. Add `styled-jsx` to `vite.config.js`:
+
+```js
+// vite.config.js
+
+import react from '@vitejs/plugin-react'
+import ssr from 'vite-plugin-ssr/plugin'
+
+export default {
+  plugins: [react({ babel: { plugins: ['styled-jsx/babel'] } }), ssr()]
+}
+```
+
+3. Collect the styles during server-side rendering and attach to the DOM as `<head>` tags.
+
+```js
+// renderer/server.page.server.js
+
+export { render }
+
+import React from 'react'
+import { renderToString, renderToStaticMarkup } from 'react-dom/server'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { PageLayout } from './PageLayout'
+import { createStyleRegistry, StyleRegistry } from 'styled-jsx'
+
+const registry = createStyleRegistry()
+
+async function render(pageContext) {
+  // flush styles to support the possibility of concurrent rendering
+  registry.flush()
+
+  const { Page } = pageContext
+  // include the styleregistry in the app render to inject the styles
+  const viewHtml = dangerouslySkipEscape(
+    renderToString(
+      <StyleRegistry registry={registry}>
+        <PageLayout>
+          <Page />
+        </PageLayout>
+      </StyleRegistry>
+    )
+  )
+
+  // extract the styles to add as head tags to the server markup
+  const headTags = renderToStaticMarkup(<>{registry.styles()}</>)
+
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        ${dangerouslySkipEscape(headTags)}
+      </head>
+      <body>
+        <div id="page-view">${viewHtml}</div>
+      </body>
+    </html>`
+}
+```
