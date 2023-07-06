@@ -239,8 +239,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.5.3
-        version: 0.5.3(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.21.5)
+        specifier: ^0.5.4
+        version: 0.5.4(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.21.5)
       '@types/node':
         specifier: ^15.12.1
         version: 15.14.9
@@ -3057,8 +3057,8 @@ packages:
       - terser
     dev: false
 
-  /@brillout/docpress@0.5.3(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.21.5):
-    resolution: {integrity: sha512-4ELrB+hNGA7iJJOHMJjtedRQ7NCvkKsTAuIGZ7J9pBn6w4KDb5QvKZq3Fq+wIe3Uj/cBizSzVRttIN6FlE0jgg==}
+  /@brillout/docpress@0.5.4(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.21.5):
+    resolution: {integrity: sha512-BbqFttPIYsJO0EQi+/nu0PWL/JyJB+FJ++DFWsrnrqhdzjsj9mEYDO5i0laHHNvIryGMVmxTs5knpqigA2ZgXQ==}
     hasBin: true
     peerDependencies:
       react: '18'
