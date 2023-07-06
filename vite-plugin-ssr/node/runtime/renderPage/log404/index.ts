@@ -130,6 +130,7 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
 
 function truncateRouteFunction(routeFunction: Function) {
   let routeStr = String(routeFunction)
+  routeStr = stripAnsi(routeStr)
   routeStr = removeNonAscii(routeStr)
   routeStr = routeStr.split(/\s/).filter(Boolean).join(' ')
   routeStr = truncateString(routeStr, 64)
