@@ -11,6 +11,7 @@ Features:
  - nested layouts
 
 Sometime:
+ - Replace "isomorphic"/"isomorph" to "universal"
  - remove documentProps from examples and boilerplates
 
 After stable release:
