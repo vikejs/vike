@@ -93,9 +93,9 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
     ...entries
   ]
 
-  let width1 = 2 + Math.max(...linesContent.map(({ routeStr }) => stripAnsi(routeStr).length))
-  let width2 = 2 + Math.max(...linesContent.map(({ routeTypeSrc }) => routeTypeSrc.length))
-  let width3 = 2 + Math.max(...linesContent.map(({ routeDefinedBy }) => routeDefinedBy.length))
+  let width1 = Math.max(...linesContent.map(({ routeStr }) => stripAnsi(routeStr).length))
+  let width2 = Math.max(...linesContent.map(({ routeTypeSrc }) => routeTypeSrc.length))
+  let width3 = Math.max(...linesContent.map(({ routeDefinedBy }) => routeDefinedBy.length))
 
   let lines = linesContent.map(({ routeStr, routeTypeSrc, routeDefinedBy }, i) => {
     let cell1 = routeStr.padEnd(width1 + (routeStr.length - stripAnsi(routeStr).length), ' ')
@@ -107,14 +107,14 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
       cell2 = pc.dim(cell2)
       cell3 = pc.dim(cell3)
     }
-    let line = [cell1, cell2, cell3].join(pc.dim('│ '))
-    line = pc.dim('│ ') + line + pc.dim('│')
+    let line = [cell1, cell2, cell3].join(pc.dim(' │ '))
+    line = pc.dim('│ ') + line + pc.dim(' │')
     return line
   })
 
-  width1 = width1 + 1
-  width2 = width2 + 1
-  width3 = width3 + 1
+  width1 = width1 + 2
+  width2 = width2 + 2
+  width3 = width3 + 2
 
   // https://en.wikipedia.org/wiki/Box-drawing_character
   lines = [
