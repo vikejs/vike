@@ -1,8 +1,9 @@
 export { log404 }
+export { getPagesAndRoutesInfo }
 
 import type { PageRoutes } from '../../../shared/route'
 import { getGlobalContext } from '../globalContext'
-import { assert, assertUsage, assertInfo, compareString } from '../utils'
+import { assert, assertUsage, assertInfo, compareString, stripAnsi } from '../utils'
 import pc from '@brillout/picocolors'
 import { isRenderAbort } from '../../../shared/route/RenderAbort'
 
@@ -35,12 +36,13 @@ async function log404(pageContext: {
     assertInfo(
       false,
       [
-        `URL ${pc.bold(
-          urlPathname
-        )} isn't matching any of your page routes. See https://vite-plugin-ssr.com/routing for more information about routing. Set the environment variable ${pc.cyan(
-          'DEBUG=vps:routing'
-        )} to inspect your app's routing. (This log isn't shown in production.) Your page routes:`,
-        getPagesAndRoutesInfo(pageRoutes)
+        `URL ${pc.bold(urlPathname)} doesn't match the route of any of your pages:`,
+        getPagesAndRoutesInfo(pageRoutes),
+        [
+          'See https://vite-plugin-ssr.com/routing for more information about routing.',
+          `Set the environment variable ${pc.cyan('DEBUG=vps:routing')} to inspect your app's routing.`,
+          "(This log isn't shown in production.)"
+        ].join(' ')
       ].join('\n'),
       { onlyOnce: false }
     )
@@ -63,7 +65,7 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
         routeStr = pageRoute.routeString
         routeTypeSrc = 'Route String'
       } else if (pageRoute.routeType === 'FUNCTION') {
-        routeStr = truncateString(String(pageRoute.routeFunction).split(/\s/).filter(Boolean).join(' '), 64)
+        routeStr = truncateRouteFunction(pageRoute.routeFunction)
         routeTypeSrc = 'Route Function'
       } else {
         routeStr = pageRoute.routeString
@@ -82,43 +84,69 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
       return compareString(e1.routeStr, e2.routeStr)
     })
 
-  const lines = [
+  const linesContent = [
     {
       routeStr: 'ROUTE',
-      routeTypeSrc: 'ROUTE TYPE',
+      routeTypeSrc: 'TYPE',
       routeDefinedBy: 'DEFINED BY'
     },
     ...entries
   ]
 
-  const column1Width = 2 + Math.max(...lines.map(({ routeStr }) => routeStr.length))
-  const column2Width = 2 + Math.max(...lines.map(({ routeTypeSrc }) => routeTypeSrc.length))
-  const column3Width = 2 + Math.max(...lines.map(({ routeDefinedBy }) => routeDefinedBy.length))
+  let width1 = 2 + Math.max(...linesContent.map(({ routeStr }) => stripAnsi(routeStr).length))
+  let width2 = 2 + Math.max(...linesContent.map(({ routeTypeSrc }) => routeTypeSrc.length))
+  let width3 = 2 + Math.max(...linesContent.map(({ routeDefinedBy }) => routeDefinedBy.length))
 
-  return lines
-    .map(({ routeStr, routeTypeSrc, routeDefinedBy }, i) => {
-      let cell1 = routeStr.padEnd(column1Width, ' ')
-      if (i !== 0) cell1 = pc.bold(cell1)
-      let cell2 = routeTypeSrc.padEnd(column2Width, ' ')
-      let cell3 = routeDefinedBy.padEnd(column3Width, ' ')
-      if (i === 0) {
-        cell1 = pc.dim(cell1)
-        cell2 = pc.dim(cell2)
-        cell3 = pc.dim(cell3)
-      }
-      const line = [cell1, cell2, cell3].join(' ')
-      return line
-    })
-    .join('\n')
+  let lines = linesContent.map(({ routeStr, routeTypeSrc, routeDefinedBy }, i) => {
+    let cell1 = routeStr.padEnd(width1 + (routeStr.length - stripAnsi(routeStr).length), ' ')
+    let cell2 = routeTypeSrc.padEnd(width2, ' ')
+    let cell3 = routeDefinedBy.padEnd(width3, ' ')
+    const isHeader = i === 0
+    if (isHeader) {
+      cell1 = pc.dim(cell1)
+      cell2 = pc.dim(cell2)
+      cell3 = pc.dim(cell3)
+    }
+    let line = [cell1, cell2, cell3].join(pc.dim('│ '))
+    line = pc.dim('│ ') + line + pc.dim('│')
+    return line
+  })
+
+  width1 = width1 + 1
+  width2 = width2 + 1
+  width3 = width3 + 1
+
+  lines = [
+    pc.dim(`┌${'─'.repeat(width1)}┬${'─'.repeat(width2)}┬${'─'.repeat(width3)}┐`),
+    lines[0]!,
+    pc.dim(`├${'─'.repeat(width1)}┼${'─'.repeat(width2)}┼${'─'.repeat(width3)}┤`),
+    ...lines.slice(1),
+    pc.dim(`└${'─'.repeat(width1)}┴${'─'.repeat(width2)}┴${'─'.repeat(width3)}┘`)
+  ]
+
+  return lines.join('\n')
 }
 
-function truncateString(str: string, len: number) {
-  if (len > str.length) {
+function truncateRouteFunction(routeFunction: Function) {
+  let routeStr = String(routeFunction)
+  routeStr = removeNonAscii(routeStr)
+  routeStr = routeStr.split(/\s/).filter(Boolean).join(' ')
+  routeStr = truncateString(routeStr, 64)
+  return routeStr
+}
+function truncateString(str: string, lenMax: number) {
+  if (str.length < lenMax) {
     return str
   } else {
-    str = str.substring(0, len)
-    return str + '...'
+    str = str.substring(0, lenMax)
+    str = str + pc.dim('...')
+    return str
   }
+}
+
+function removeNonAscii(str: string) {
+  // https://stackoverflow.com/questions/20856197/remove-non-ascii-character-in-string/20856346#20856346
+  return str.replace(/[^\x00-\x7F]/g, '')
 }
 
 function isFileRequest(urlPathname: string) {
