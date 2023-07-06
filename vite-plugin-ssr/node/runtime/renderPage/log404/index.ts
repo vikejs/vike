@@ -1,11 +1,11 @@
 export { log404 }
 export { getPagesAndRoutesInfo }
 
-import type { PageRoutes } from '../../../shared/route'
-import { getGlobalContext } from '../globalContext'
-import { assert, assertUsage, assertInfo, compareString, stripAnsi } from '../utils'
+import type { PageRoutes } from '../../../../shared/route'
+import { getGlobalContext } from '../../globalContext'
+import { assert, assertUsage, assertInfo, compareString, stripAnsi } from '../../utils'
 import pc from '@brillout/picocolors'
-import { isRenderAbort } from '../../../shared/route/RenderAbort'
+import { isRenderAbort } from '../../../../shared/route/RenderAbort'
 
 async function log404(pageContext: {
   urlPathname: string
