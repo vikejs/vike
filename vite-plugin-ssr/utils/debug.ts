@@ -7,6 +7,7 @@ import { isCallable } from './isCallable'
 import { objectAssign } from './objectAssign'
 import { assert } from './assert'
 import { checkType } from './checkType'
+import { getTerminalWidth } from './getTerminWidth'
 
 // Avoid this to be loaded in the browser. For isomorphic code: instead of `import { createDebugger } from './utils'`, use `globalThis.createDebugger()`.
 assert(!isBrowser())
@@ -102,13 +103,13 @@ function formatMsg(
 }
 
 function pad(str: string, padding: string): string {
-  const WIDTH = process.stdout.columns as number | undefined
+  const terminalWidth = getTerminalWidth()
   const lines: string[] = []
   str.split('\n').forEach((line) => {
-    if (!WIDTH) {
+    if (!terminalWidth) {
       lines.push(line)
     } else {
-      chunk(line, WIDTH - padding.length).forEach((chunk) => {
+      chunk(line, terminalWidth - padding.length).forEach((chunk) => {
         lines.push(chunk)
       })
     }
