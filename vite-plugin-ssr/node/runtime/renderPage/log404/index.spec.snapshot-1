@@ -1,0 +1,8 @@
+┌────────────────┬──────────────────┬─────────────────────────┐
+│ ROUTE          │ TYPE             │ DEFINED BY              │
+├────────────────┼──────────────────┼─────────────────────────┤
+│ /              │ Filesystem Route │ /pages/index/           │
+│ /markdown      │ Filesystem Route │ /pages/markdown/        │
+│ /star-wars     │ Filesystem Route │ /pages/star-wars/index/ │
+│ /star-wars/@id │ Filesystem Route │ /pages/star-wars/@id/   │
+└────────────────┴──────────────────┴─────────────────────────┘

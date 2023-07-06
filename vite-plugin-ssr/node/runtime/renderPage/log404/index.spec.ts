@@ -5,7 +5,15 @@ import type { PageRoutes } from '../../../../shared/route'
 
 describe('getPagesAndRoutesInfo()', () => {
   it('table layout', () => {
-    const table = getPagesAndRoutesInfo(pageRoutes)
+    const table = getPagesAndRoutesInfo(pageRoutes1)
+    /*/
+    console.log(table)
+    /*/
+    expect(stripAnsi(table)).toMatchFileSnapshot('./index.spec.snapshot-1')
+    //*/
+  })
+  it('table layout', () => {
+    const table = getPagesAndRoutesInfo(pageRoutes2)
     /*/
     console.log(table)
     /*/
@@ -14,20 +22,20 @@ describe('getPagesAndRoutesInfo()', () => {
   })
 })
 
-const pageRoutes = [
-  {
-    pageId: '/pages/hello',
-    comesFromV1PageConfig: true,
-    routeDefinedAt: '/pages/hello/+route.ts > `export default`',
-    routeType: 'FUNCTION',
-    routeFunction: function route(pageContext: { urlPathname: string }) {
-      if (pageContext.urlPathname === '/hello' || pageContext.urlPathname === '/hello/') {
-        const name = 'anonymous'
-        return { routeParams: { name } }
-      }
-      // ...
+const routeFunction = {
+  pageId: '/pages/hello',
+  comesFromV1PageConfig: true,
+  routeDefinedAt: '/pages/hello/+route.ts > `export default`',
+  routeType: 'FUNCTION',
+  routeFunction: function route(pageContext: { urlPathname: string }) {
+    if (pageContext.urlPathname === '/hello' || pageContext.urlPathname === '/hello/') {
+      const name = 'anonymous'
+      return { routeParams: { name } }
     }
-  },
+    // ...
+  }
+} as const
+const pageRoutes1 = [
   {
     pageId: '/pages/index',
     routeFilesystemDefinedBy: '/pages/index/',
@@ -61,3 +69,4 @@ const pageRoutes = [
     routeType: 'FILESYSTEM'
   }
 ] satisfies PageRoutes
+const pageRoutes2 = [routeFunction, ...pageRoutes1] satisfies PageRoutes

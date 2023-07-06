@@ -3,7 +3,7 @@ export { getPagesAndRoutesInfo }
 
 import type { PageRoutes } from '../../../../shared/route'
 import { getGlobalContext } from '../../globalContext'
-import { assert, assertUsage, assertInfo, compareString, stripAnsi } from '../../utils'
+import { assert, assertUsage, assertInfo, compareString, stripAnsi, getTerminalWidth } from '../../utils'
 import pc from '@brillout/picocolors'
 import { isRenderAbort } from '../../../../shared/route/RenderAbort'
 
@@ -65,7 +65,7 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
         routeStr = pageRoute.routeString
         routeTypeSrc = 'Route String'
       } else if (pageRoute.routeType === 'FUNCTION') {
-        routeStr = truncateRouteFunction(pageRoute.routeFunction)
+        routeStr = String(pageRoute.routeFunction)
         routeTypeSrc = 'Route Function'
       } else {
         routeStr = pageRoute.routeString
@@ -87,15 +87,29 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
   const linesContent = [
     {
       routeStr: 'ROUTE',
-      routeTypeSrc: 'TYPE',
+      routeTypeSrc: 'TYPE' as const,
       routeDefinedBy: 'DEFINED BY'
     },
     ...entries
   ]
 
-  let width1 = Math.max(...linesContent.map(({ routeStr }) => stripAnsi(routeStr).length))
+  const terminalWidth = getTerminalWidth() || 134
+
   let width2 = Math.max(...linesContent.map(({ routeTypeSrc }) => routeTypeSrc.length))
   let width3 = Math.max(...linesContent.map(({ routeDefinedBy }) => routeDefinedBy.length))
+
+  let width1 = terminalWidth - width3 - width2 - 10
+  linesContent.forEach((lineContent) => {
+    let { routeStr } = lineContent
+    if (lineContent.routeTypeSrc !== 'Route Function') {
+      routeStr = truncateString(routeStr, width1)
+    } else {
+      routeStr = truncateRouteFunction(routeStr, width1)
+    }
+    assert(stripAnsi(routeStr).length <= width1)
+    lineContent.routeStr = routeStr
+  })
+  width1 = Math.max(...linesContent.map(({ routeStr }) => stripAnsi(routeStr).length))
 
   let lines = linesContent.map(({ routeStr, routeTypeSrc, routeDefinedBy }, i) => {
     let cell1 = routeStr.padEnd(width1 + (routeStr.length - stripAnsi(routeStr).length), ' ')
@@ -125,23 +139,27 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
     pc.dim(`└${'─'.repeat(width1)}┴${'─'.repeat(width2)}┴${'─'.repeat(width3)}┘`)
   ]
 
+  lines.forEach((line) => {
+    assert(stripAnsi(line).length <= terminalWidth)
+  })
+
   return lines.join('\n')
 }
 
-function truncateRouteFunction(routeFunction: Function) {
-  let routeStr = String(routeFunction)
+function truncateRouteFunction(routeStr: string, lenMax: number) {
   routeStr = stripAnsi(routeStr)
   routeStr = removeNonAscii(routeStr)
   routeStr = routeStr.split(/\s/).filter(Boolean).join(' ')
-  routeStr = truncateString(routeStr, 64)
+  routeStr = truncateString(routeStr, lenMax)
   return routeStr
 }
 function truncateString(str: string, lenMax: number) {
   if (str.length < lenMax) {
     return str
   } else {
-    str = str.substring(0, lenMax)
+    str = str.substring(0, lenMax - 3)
     str = str + pc.dim('...')
+    assert(stripAnsi(str).length === lenMax)
     return str
   }
 }
