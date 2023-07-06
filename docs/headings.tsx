@@ -441,6 +441,12 @@ const headings = [
   },
   {
     level: 2,
+    title: '`styled-jsx`',
+    titleInNav: 'styled-jsx',
+    url: '/styled-jsx'
+  },
+  {
+    level: 2,
     title: 'MUI',
     url: '/mui'
   },
