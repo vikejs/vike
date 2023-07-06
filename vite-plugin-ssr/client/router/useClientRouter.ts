@@ -25,7 +25,7 @@ import { isClientSideRoutable, skipLink } from './skipLink'
 import { isErrorFetchingStaticAssets } from '../loadPageFilesClientSide'
 import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history'
 import { defineNavigate } from './navigate'
-import { isRenderErrorPageException } from '../../shared/route/RenderErrorPage'
+import { isRenderErrorPageException } from '../../shared/route/RenderAbort'
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
   clientRoutingIsDisabled?: true

@@ -4,7 +4,7 @@ import type { PageRoutes } from '../../../shared/route'
 import { getGlobalContext } from '../globalContext'
 import { assert, assertUsage, assertInfo, compareString } from '../utils'
 import pc from '@brillout/picocolors'
-import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
+import { isRenderErrorPageException } from '../../../shared/route/RenderAbort'
 
 async function log404(pageContext: {
   urlPathname: string

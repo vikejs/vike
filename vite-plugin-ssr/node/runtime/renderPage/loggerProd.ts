@@ -3,7 +3,7 @@
 
 export { logErrorProd }
 
-import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
+import { isRenderErrorPageException } from '../../../shared/route/RenderAbort'
 import { setAlreadyLogged } from './isNewError'
 import { isObject, warnIfObjectIsNotObject } from '../utils'
 import pc from '@brillout/picocolors'

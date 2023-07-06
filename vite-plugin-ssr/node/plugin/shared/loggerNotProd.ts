@@ -19,7 +19,7 @@ export type { LogErrorArgs }
 export type { LogType }
 export type { LogCategory }
 
-import { isRenderErrorPageException } from '../../../shared/route/RenderErrorPage'
+import { isRenderErrorPageException } from '../../../shared/route/RenderAbort'
 import { getViteConfig } from '../../runtime/globalContext'
 import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/loggerRuntime'
 import {
