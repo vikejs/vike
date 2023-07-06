@@ -79,6 +79,13 @@
       "browser": "./dist/esm/shared/RenderErrorPage.js",
       "types": "./dist/types/shared/RenderErrorPage.d.ts"
     },
+    "./abort": {
+      "worker": "./dist/cjs/shared/abort.js",
+      "edge-light": "./dist/cjs/shared/abort.js",
+      "node": "./dist/cjs/shared/abort.js",
+      "browser": "./dist/esm/shared/abort.js",
+      "types": "./dist/types/shared/abort.d.ts"
+    },
     "./__internal": {
       "node": "./dist/cjs/__internal/index.js",
       "types": "./dist/types/__internal/index.d.ts"
@@ -128,6 +135,9 @@
       "RenderErrorPage": [
         "./dist/types/shared/RenderErrorPage.d.ts"
       ],
+      "abort": [
+        "./dist/types/shared/abort.d.ts"
+      ],
       "__internal": [
         "./dist/types/__internal/index.d.ts"
       ],
@@ -164,6 +174,7 @@
     "plugin.js",
     "prerender.js",
     "routing.js",
+    "abort.js",
     "RenderErrorPage.js",
     "server.js",
     "__internal.js",

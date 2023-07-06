@@ -1,45 +1,91 @@
+export { redirect }
+export { renderUrl }
+export { renderErrorPage }
 export { isRenderAbort }
 export { RenderErrorPage }
 
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
-import { assertUsage, objectAssign } from './utils'
-const stamp = '__isRenderErrorPageException'
+import { assertWarning, objectAssign } from './utils'
 
-function isRenderAbort(thing: unknown): thing is { pageContext?: Record<string, unknown> } {
-  assertRenderErrorPageExceptionUsage(thing)
-  return typeof thing === 'object' && thing !== null && stamp in thing
+/**
+ * Abort the current page rendering, and redirect the user to another URL.
+ *
+ * https://vite-plugin-ssr.com/abort
+ */
+function redirect(statusCode: '307' | '301', url: string, pageContext?: Record<string, unknown>): Error {
+  assertPageContextProvidedByUser(pageContext, { abort: 'redirect' })
+  const pageContextAddendum = pageContext ?? {}
+  objectAssign(pageContextAddendum, {
+    _redirect: { statusCode, url }
+  })
+  return RenderAbort(pageContextAddendum)
 }
 
-/** Interrupt the rendering of the current page, and render something else instead.
+/**
+ * Abort the current page rendering, and render another page instead (while preserivng the current URL unlike redirect() which changes the URL).
  *
- * https://vite-plugin-ssr.com/RenderErrorPage
+ * https://vite-plugin-ssr.com/abort
  */
-function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown> } = {}): Error {
-  {
-    // @ts-ignore
-    const that: unknown = this
-    assertUsage(
-      !(typeof that === 'object' && that?.constructor === RenderErrorPage),
-      "Don't use the `new` operator: use `throw RenderErrorPage()` instead of `throw new RenderErrorPage()`.",
-      { showStackTrace: true }
-    )
-  }
-  if (pageContext !== undefined) {
-    assertPageContextProvidedByUser(pageContext, {
-      errorMessagePrefix: 'The `pageContext` object provided by `throw RenderErrorPage({ pageContext })`',
-      isRenderErrorPage: true
-    })
-  }
+function renderUrl(url: string, pageContext?: Record<string, unknown>): Error {
+  assertPageContextProvidedByUser(pageContext, { abort: 'renderUrl' })
+  const pageContextAddendum = pageContext ?? {}
+  objectAssign(pageContextAddendum, {
+    _renderUrl: { url }
+  })
+  return RenderAbort(pageContextAddendum)
+}
 
-  const err = new Error('RenderErrorPage')
+/**
+ * Abort the current page rendering, and render the error page instead (for example a 404 or 401 page).
+ *
+ * https://vite-plugin-ssr.com/abort
+ */
+function renderErrorPage(
+  statusCode: '404' | '400' | '401',
+  reason: string,
+  pageContext?: Record<string, unknown>
+): Error {
+  assertPageContextProvidedByUser(pageContext, { abort: 'renderErrorPage' })
+  const pageContextAddendum = pageContext ?? {}
+  objectAssign(pageContextAddendum, {
+    _renderErrorPage: { statusCode, reason }
+  })
+  return RenderAbort(pageContextAddendum)
+}
+
+type PageContextRenderAbort =
+  | {
+      _redirect: { statusCode: string; url: string }
+    }
+  | {
+      _renderUrl: { url: string }
+    }
+  | {
+      _renderErrorPage: { statusCode: string; reason: string }
+    }
+function RenderAbort(pageContext: PageContextRenderAbort): Error {
+  const err = new Error('RenderAbort')
   objectAssign(err, { pageContext, [stamp]: true })
   return err
 }
 
-function assertRenderErrorPageExceptionUsage(err: unknown): void {
-  assertUsage(
-    err !== RenderErrorPage,
-    'Missing parentheses `()` in `throw RenderErrorPage`: it should be `throw RenderErrorPage()`.',
-    { showStackTrace: true }
+/**
+ * @deprecated Use `throw renderErrorPage()`, `throw renderUrl()` or `throw redirect()` instead.
+ *
+ *  See https://vite-plugin-ssr.com/abort'
+ */
+function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown> } = {}): Error {
+  /*
+  assertWarning(
+    false,
+    '`throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw renderErrorPage()`, `throw renderUrl()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/abort'
   )
+  */
+  assertPageContextProvidedByUser(pageContext, { abort: 'RenderErrorPage' })
+  return renderErrorPage('404', 'Page Not Found', pageContext)
+}
+
+const stamp = '__isRenderAbort'
+function isRenderAbort(thing: unknown): thing is { pageContext: Record<string, unknown> & PageContextRenderAbort } {
+  return typeof thing === 'object' && thing !== null && stamp in thing
 }

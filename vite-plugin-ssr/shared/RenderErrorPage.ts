@@ -1,2 +1,2 @@
-// Public export for VPS user: `import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'`
+// TODO/v1-release: remove
 export { RenderErrorPage } from './route/RenderAbort'
