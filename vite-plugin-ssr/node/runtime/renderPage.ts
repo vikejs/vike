@@ -286,7 +286,7 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
 
   if (isRenderAbort(pageContext.errorWhileRendering)) {
     objectAssign(pageContext, { is404: true })
-    objectAssign(pageContext, pageContext.errorWhileRendering.pageContext)
+    objectAssign(pageContext, pageContext.errorWhileRendering._pageContextAddition)
   }
 
   objectAssign(pageContext, {

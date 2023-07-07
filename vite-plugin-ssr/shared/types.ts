@@ -41,11 +41,9 @@ type PageContextBuiltIn<Page = any> = {
    * https://vite-plugin-ssr.com/exports
    */
   exportsAll: ExportsAll
-  /** @deprecated */
-  url: string
   /** The URL of the current page */
   urlOriginal: string
-  /** If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`.
+  /** If an error occurs, whether the error is a `404 Page Not Found`.
    *
    * https://vite-plugin-ssr.com/error-page
    */
@@ -56,6 +54,18 @@ type PageContextBuiltIn<Page = any> = {
    * https://vite-plugin-ssr.com/pageContext
    */
   isClientSideNavigation: boolean
+
+  /**
+   * Message shown to the user on the error page.
+   *
+   * https://vite-plugin-ssr.com/abort
+   */
+  errorReason: string
+
+  // TODO/v1-release: move pageContext.urlParsed to pageContext.url
+  /** @deprecated */
+  url: string
+
   /** @deprecated */
   pageExports: Record<string, unknown>
 } & PageContextUrls
@@ -77,6 +87,7 @@ type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContext
     | 'urlOriginal'
     | 'urlPathname'
     | 'urlParsed'
+    | 'errorReason'
   > & {
     /** Whether the current page is already rendered to HTML */
     isHydration: boolean
@@ -93,7 +104,7 @@ type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContext
  * https://vite-plugin-ssr.com/pageContext
  */
 type PageContextBuiltInClientWithServerRouting<Page = any> = Partial<PageContextBuiltIn<Page>> &
-  Pick<PageContextBuiltIn<Page>, 'Page' | 'pageExports' | 'exports'> & {
+  Pick<PageContextBuiltIn<Page>, 'Page' | 'pageExports' | 'exports' | 'errorReason'> & {
     /**
      * Whether the current page is already rendered to HTML.
      *

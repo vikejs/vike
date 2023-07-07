@@ -9,6 +9,9 @@ import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
 type PageContextUser = Record<string, unknown>
 type PageContextClient = { _pageId: string } & Record<string, unknown>
 
+const passToClientBuiltIn: string[] = ['errorReason']
+const passToClientBuiltInError = ['pageProps', 'is404', '_isError']
+
 function serializePageContextClientSide(pageContext: {
   _pageId: string
   _passToClient: string[]
@@ -19,17 +22,18 @@ function serializePageContextClientSide(pageContext: {
 }) {
   const pageContextClient: PageContextClient = { _pageId: pageContext._pageId }
 
-  let passToClient = [...pageContext._passToClient]
+  let passToClient = [...pageContext._passToClient, ...passToClientBuiltIn]
 
   if (isErrorPage(pageContext._pageId, pageContext._pageConfigs)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
     addIs404ToPageProps(pageContext)
-    passToClient.push(...['pageProps', 'is404', '_isError'])
+    passToClient.push(...passToClientBuiltInError)
   }
 
   passToClient = unique(passToClient)
 
   passToClient.forEach((prop) => {
+    // We set non-existing props to `undefined`, in order to pass the list of passToClient values to the client-side
     pageContextClient[prop] = (pageContext as PageContextUser)[prop]
   })
   /*

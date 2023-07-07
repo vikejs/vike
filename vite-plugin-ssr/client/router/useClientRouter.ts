@@ -181,8 +181,7 @@ function useClientRouter() {
       if (checkIfAbort(err, pageContext)) return
 
       if (isRenderAbort(err)) {
-        objectAssign(pageContext, { is404: true })
-        objectAssign(pageContext, err.pageContext)
+        objectAssign(pageContext, err._pageContextAddition)
       } else {
         objectAssign(pageContext, { is404: checkIf404(err) })
       }

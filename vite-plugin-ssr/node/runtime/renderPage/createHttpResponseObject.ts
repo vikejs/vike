@@ -29,8 +29,9 @@ import { getHtmlString, type HtmlRender } from '../html/renderHtml'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { isErrorPage } from '../../../shared/error-page'
 import type { RenderHook } from './executeOnRenderHtmlHook'
+import type { StatusCodeAbort } from '../../../shared/route/RenderAbort'
 
-type StatusCode = 200 | 404 | 500
+type StatusCode = 200 | 404 | 500 | StatusCodeAbort
 type ContentType = 'application/json' | 'text/html;charset=utf-8'
 type EarlyHint = PageAsset & {
   earlyHintLink: string
@@ -62,6 +63,7 @@ async function createHttpResponseObject(
     errorWhileRendering: null | Error
     __getPageAssets: GetPageAssets
     _pageConfigs: PageConfig[]
+    _statusCode?: StatusCodeAbort
   }
 ): Promise<HttpResponse | null> {
   if (htmlRender === null) {
@@ -69,8 +71,8 @@ async function createHttpResponseObject(
   }
   assert(renderHook || typeof htmlRender === 'string')
 
-  let statusCode: StatusCode
-  {
+  let statusCode: StatusCode | undefined = pageContext._statusCode
+  if (!statusCode) {
     const isError = !pageContext._pageId || isErrorPage(pageContext._pageId, pageContext._pageConfigs)
     if (pageContext.errorWhileRendering) {
       assert(isError)

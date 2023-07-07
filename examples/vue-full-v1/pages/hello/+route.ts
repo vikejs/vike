@@ -1,7 +1,7 @@
 export default route
 
 import { resolveRoute } from 'vite-plugin-ssr/routing'
-import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
+import { renderErrorPage } from 'vite-plugin-ssr/abort'
 import { names } from './names'
 
 // We use a Route Function to implement advanced routing logic
@@ -14,8 +14,7 @@ function route(pageContext: { urlPathname: string }) {
   if (!result.match) return false
   const { name } = result.routeParams
   if (!names.includes(name)) {
-    const errorInfo = `Unknown name: ${name}.`
-    throw RenderErrorPage({ pageContext: { pageProps: { errorInfo } } })
+    throw renderErrorPage(404, `Unknown name: ${name}.`)
   }
   return { routeParams: { name } }
 }

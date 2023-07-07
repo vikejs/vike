@@ -5,7 +5,7 @@ import fetch from 'cross-fetch'
 import { filterMovieData } from '../filterMovieData'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 import type { MovieDetails } from '../types'
-import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
+import { renderErrorPage } from 'vite-plugin-ssr/abort'
 
 async function onBeforeRender(pageContext: PageContextBuiltIn) {
   const dataUrl = `https://star-wars.brillout.com/api/films/${pageContext.routeParams.id}.json`
@@ -13,7 +13,7 @@ async function onBeforeRender(pageContext: PageContextBuiltIn) {
   try {
     response = await fetch(dataUrl)
   } catch (err) {
-    throw RenderErrorPage({ pageContext: { pageProps: { errorDescription: `Couldn't fetch data ${dataUrl}` } } })
+    throw renderErrorPage(503, `Couldn't fetch data ${dataUrl}`)
   }
   let movie = (await response.json()) as MovieDetails
 

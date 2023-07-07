@@ -1,27 +1,32 @@
 export default Page
 
 import React from 'react'
+import { usePageContext } from '../../renderer/usePageContext'
 
-function Page({
-  is404,
-  errorTitle,
-  errorDescription
-}: {
-  is404: boolean
-  errorTitle?: string
-  errorDescription?: string
-}) {
-  if (is404) {
-    errorTitle ??= '404 Page Not Found'
-    errorDescription ??= 'This page could not be found.'
-  } else {
-    errorTitle ??= '500 Internal Error'
-    errorDescription ??= 'Something went wrong.'
+function Page() {
+  const ctx = usePageContext()
+  let { is404, errorReason } = ctx
+  if (!errorReason) {
+    errorReason = is404 ? 'Page not found.' : 'Something went wrong.'
   }
   return (
-    <>
-      <h1>{errorTitle}</h1>
-      <p>{errorDescription}</p>
-    </>
+    <Center>
+      <p style={{ fontSize: '1.3em' }}>{errorReason}</p>
+    </Center>
+  )
+}
+
+function Center({ style, ...props }: any) {
+  return (
+    <div
+      style={{
+        height: 'calc(100vh - 100px)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        ...style
+      }}
+      {...props}
+    ></div>
   )
 }

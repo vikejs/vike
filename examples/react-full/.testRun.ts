@@ -2,7 +2,7 @@ import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog,
 
 export { testRun }
 
-function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run preview') {
+function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
   run(cmd)
 
   const isDev = cmd === 'npm run dev'
@@ -103,8 +103,12 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
 
   test('test 404 page', async () => {
     const html = await fetchHtml('/doesNotExist')
-    expect(html).toContain('<h1>404 Page Not Found</h1>')
-    expect(html).toContain('This page could not be found.')
+    if (isV1Design) {
+      expect(html).toContain('Page not found.')
+    } else {
+      expect(html).toContain('<h1>404 Page Not Found</h1>')
+      expect(html).toContain('This page could not be found.')
+    }
   })
 
   if (viewFramework === 'react') {
@@ -116,13 +120,21 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
 
   // In production, we pre-render all pages and thus `throw RenderErrorPage()` will never be called.
   if (isDev) {
-    test('throw RenderErrorPage', async () => {
+    test('throw renderErrorPage()', async () => {
       await page.goto(getServerUrl() + '/hello/bob')
-      expect(await page.textContent('h1')).toBe('404 Page Not Found')
+      if (!isV1Design) {
+        expect(await page.textContent('h1')).toBe('404 Page Not Found')
+      }
       expectLog(
         'Failed to load resource: the server responded with a status of 404 (Not Found)',
         (log) => log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/bob')
       )
+      if (!isV1Design) {
+        expectLog(
+          '[Warning] `throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw renderErrorPage()`, `throw renderUrl()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/abort',
+          (log) => log.logSource === 'stderr'
+        )
+      }
       const txt = 'Unknown name: bob.'
       expect(await page.textContent('body')).toContain(txt)
       const html = await fetchHtml('/hello/bob')
@@ -131,15 +143,26 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
     if (viewFramework === 'react') {
       test('guard()', async () => {
         await page.goto(getServerUrl() + '/hello/forbidden')
-        expect(await page.textContent('h1')).toBe('Forbidden')
-        expectLog(
-          'Failed to load resource: the server responded with a status of 404 (Not Found)',
-          (log) => log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/forbidden')
-        )
+        if (!isV1Design) {
+          expect(await page.textContent('h1')).toBe('Forbidden')
+          expectLog(
+            'Failed to load resource: the server responded with a status of 404 (Not Found)',
+            (log) => log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/forbidden')
+          )
+        } else {
+          expectLog('HTTP response /hello/forbidden 401', (log) => log.logSource === 'stderr')
+          expectLog(
+            'Failed to load resource: the server responded with a status of 401 (Unauthorized)',
+            (log) => log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/forbidden')
+          )
+        }
         const txt = 'This page is forbidden.'
         expect(await page.textContent('body')).toContain(txt)
         const html = await fetchHtml('/hello/forbidden')
         expect(html).toContain(txt)
+        if (isV1Design) {
+          expectLog('HTTP response /hello/forbidden 401', (log) => log.logSource === 'stderr')
+        }
       })
     }
   }

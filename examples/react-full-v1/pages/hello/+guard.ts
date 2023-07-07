@@ -1,14 +1,12 @@
 export default guard
 
-import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
+import { renderErrorPage } from 'vite-plugin-ssr/abort'
 
 // The guard() hook enables to protect pages
 async function guard(pageContext: { urlPathname: string }) {
   if (pageContext.urlPathname === '/hello/forbidden') {
-    await sleep(2 * 1000) // Unline Route Functions, guard() can be async
-    throw RenderErrorPage({
-      pageContext: { pageProps: { errorTitle: 'Forbidden', errorDescription: 'This page is forbidden.' } }
-    })
+    await sleep(2 * 1000) // Unlike Route Functions, guard() can be async
+    throw renderErrorPage(401, 'This page is forbidden.')
   }
 }
 function sleep(milliseconds: number): Promise<void> {
