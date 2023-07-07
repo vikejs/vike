@@ -11,9 +11,7 @@ function test() {
         const pageContext: any = await renderPage({ urlOriginal: '/' })
         expect(pageContext.httpResponse).not.toBe(null)
         expect(pageContext._pageId).toBe('/pages/index')
-        expect(pageContext._pageContextHtmlTag).toBe(
-          '<script id="vite-plugin-ssr_pageContext" type="application/json">{"pageContext":{"_pageId":"/pages/index"}}</script>'
-        )
+        expect(pageContext._pageContextHtmlTag).toMatchSnapshot()
       },
       { timeout: 20 * 1000 }
     )
