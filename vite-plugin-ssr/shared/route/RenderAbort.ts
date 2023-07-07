@@ -50,7 +50,7 @@ function renderUrl(url: string, pageContextAddition?: Record<string, unknown>): 
 }
 
 /**
- * Abort the current page rendering, and render the error page instead (for example a 404 or 401 page).
+ * Abort the current page rendering, and render the error page instead (for example a 401 or 404 page).
  *
  * https://vite-plugin-ssr.com/abort
  *
