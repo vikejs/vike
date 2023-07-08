@@ -287,7 +287,6 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
   if (isAbortError(pageContext.errorWhileRendering)) {
     const { isProduction } = getGlobalContext()
     logAbortErrorHandled(pageContext.errorWhileRendering, isProduction, pageContext)
-    objectAssign(pageContext, { is404: true })
     objectAssign(pageContext, pageContext.errorWhileRendering._pageContextAddition)
   }
 
