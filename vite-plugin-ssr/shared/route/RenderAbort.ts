@@ -1,7 +1,7 @@
 export { redirect }
 export { renderUrl }
 export { renderErrorPage }
-export { isRenderAbort }
+export { isAbortError }
 export { logAbortErrorHandled }
 export { RenderErrorPage }
 export type { StatusCodeAbort }
@@ -105,7 +105,7 @@ type PageContextRenderAbort = Record<string, unknown> & {
 function RenderAbort(pageContextAddition: PageContextRenderAbort): Error {
   const err = new Error('RenderAbort')
   objectAssign(err, { _pageContextAddition: pageContextAddition, [stamp]: true })
-  checkType<RenderAbortError>(err)
+  checkType<AbortError>(err)
   return err
 }
 
@@ -129,13 +129,13 @@ function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown
   return renderErrorPage(statusCode, errorReason, pageContext)
 }
 
-const stamp = '__isRenderAbort'
-type RenderAbortError = { _pageContextAddition: Record<string, unknown> & PageContextRenderAbort }
-function isRenderAbort(thing: unknown): thing is RenderAbortError {
+const stamp = '_isAbortError'
+type AbortError = { _pageContextAddition: Record<string, unknown> & PageContextRenderAbort }
+function isAbortError(thing: unknown): thing is AbortError {
   return typeof thing === 'object' && thing !== null && stamp in thing
 }
 
-function logAbortErrorHandled(err: RenderAbortError, isProduction: boolean, pageContext: { urlOriginal: string }) {
+function logAbortErrorHandled(err: AbortError, isProduction: boolean, pageContext: { urlOriginal: string }) {
   if (isProduction) return
   const abortCaller = err._pageContextAddition._abortCaller
   const { urlOriginal } = pageContext

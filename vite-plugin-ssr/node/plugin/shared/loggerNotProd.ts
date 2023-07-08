@@ -19,7 +19,7 @@ export type { LogErrorArgs }
 export type { LogType }
 export type { LogCategory }
 
-import { isRenderAbort } from '../../../shared/route/RenderAbort'
+import { isAbortError } from '../../../shared/route/RenderAbort'
 import { getViteConfig } from '../../runtime/globalContext'
 import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/loggerRuntime'
 import {
@@ -103,7 +103,7 @@ function logViteErrorContainingCodeSnippet(err: ErrorWithCodeSnippet): void {
 function logErr(err: unknown, httpRequestId: number | null = null): void {
   warnIfObjectIsNotObject(err)
 
-  if (isRenderAbort(err) && !isErrorDebug()) {
+  if (isAbortError(err) && !isErrorDebug()) {
     return
   }
 

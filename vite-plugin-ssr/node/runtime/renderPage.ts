@@ -6,7 +6,7 @@ import { route } from '../../shared/route'
 import { getErrorPageId } from '../../shared/error-page'
 import { assert, hasProp, objectAssign, isParsable, parseUrl, assertEnv, assertWarning, getGlobalObject } from './utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
-import { isRenderAbort, logAbortErrorHandled } from '../../shared/route/RenderAbort'
+import { isAbortError, logAbortErrorHandled } from '../../shared/route/RenderAbort'
 import { getGlobalContext, initGlobalContext } from './globalContext'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import { HttpResponse } from './renderPage/createHttpResponseObject'
@@ -96,7 +96,7 @@ async function renderPage_(
   } catch (err) {
     // Errors are expected since assertUsage() is used in both initGlobalContext() and getRenderContext().
     // initGlobalContext() and getRenderContext() don't call any user hooks => err isn't thrown from user code
-    assert(!isRenderAbort(err))
+    assert(!isAbortError(err))
     logRuntimeError(err, httpRequestId)
     const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(err, pageContextInit)
     return pageContextHttpReponseNull
@@ -284,7 +284,7 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
 
   addComputedUrlProps(pageContext)
 
-  if (isRenderAbort(pageContext.errorWhileRendering)) {
+  if (isAbortError(pageContext.errorWhileRendering)) {
     const { isProduction } = getGlobalContext()
     logAbortErrorHandled(pageContext.errorWhileRendering, isProduction, pageContext)
     objectAssign(pageContext, { is404: true })

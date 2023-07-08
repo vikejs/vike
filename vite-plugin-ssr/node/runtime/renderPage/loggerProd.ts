@@ -3,7 +3,7 @@
 
 export { logErrorProd }
 
-import { isRenderAbort } from '../../../shared/route/RenderAbort'
+import { isAbortError } from '../../../shared/route/RenderAbort'
 import { setAlreadyLogged } from './isNewError'
 import { isObject, warnIfObjectIsNotObject } from '../utils'
 import pc from '@brillout/picocolors'
@@ -12,7 +12,7 @@ function logErrorProd(err: unknown, _httpRquestId: null | number): void {
   warnIfObjectIsNotObject(err)
   setAlreadyLogged(err)
 
-  if (isRenderAbort(err)) {
+  if (isAbortError(err)) {
     return
   }
 

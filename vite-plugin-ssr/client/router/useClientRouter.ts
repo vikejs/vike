@@ -25,7 +25,7 @@ import { isClientSideRoutable, skipLink } from './skipLink'
 import { isErrorFetchingStaticAssets } from '../loadPageFilesClientSide'
 import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history'
 import { defineNavigate } from './navigate'
-import { isRenderAbort, logAbortErrorHandled } from '../../shared/route/RenderAbort'
+import { isAbortError, logAbortErrorHandled } from '../../shared/route/RenderAbort'
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
   clientRoutingIsDisabled?: true
@@ -109,7 +109,7 @@ function useClientRouter() {
       try {
         isClientRoutable = await isClientSideRoutable(url)
       } catch (err) {
-        if (!isRenderAbort(err)) {
+        if (!isAbortError(err)) {
           // If a route() hook has a bug
           throw err
         } else {
@@ -169,7 +169,7 @@ function useClientRouter() {
     try {
       pageContextAddendum = await getPageContext(pageContext)
     } catch (err: unknown) {
-      if (!isRenderAbort(err)) {
+      if (!isAbortError(err)) {
         // We don't swallow 404 errors:
         //  - On the server-side, VPS swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
         //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
@@ -181,7 +181,7 @@ function useClientRouter() {
 
       if (checkIfAbort(err, pageContext)) return
 
-      if (isRenderAbort(err)) {
+      if (isAbortError(err)) {
         logAbortErrorHandled(err, pageContext._isProduction, pageContext)
         objectAssign(pageContext, err._pageContextAddition)
       } else {
