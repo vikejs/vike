@@ -1,13 +1,52 @@
 import { Warning, CodeBlockTransformer } from '@brillout/docpress'
 
-Many npm packages contain invalid code which make Node.js crash.
+Some npm packages contain code that isn't valid JavaScript, which makes Node.js crash.
 
-The most notable issues are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) and invalid CSS imports, see [errors](#errors) and [solution](#solution).
 
-> We're trying to convince Node.js/npm to address the issue: [npm/rfcs#665](https://github.com/npm/rfcs/issues/665).
+## Solution
+
+The workaround is to add npm packages containing invalid code to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
+
+```js
+// vite.config.js
+
+export default {
+  ssr: {
+    // Add npm packages containing invalid code here
+    noExternal: ['some-library']
+  }
+}
+```
+
+> The reason why many npm packages contain erronous code is because frameworks like Next.js transpile the server-side code of npm packages. (Whereas Vite lets Node.js directly execute npm packages in order to improve DX speed: Vite transpiles only what is strictly needed). Where Next.js is permissive and is able to process invalid code, Node.js is strict and crashes upon invalid code. By adding npm packages to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal) we replicate the behavior of frameworks like Next.js.
+
+
+## React
+
+For React users we recommend to set `ssr.noExternal` to `true`.
+
+```js
+// vite.config.js
+
+export default {
+  ssr: {
+    // It's recommended to set ssr.noExternal to true for React users. (Because the server-side
+    // code of React libraries often need to be transpiled and cannot run directly on Node.js).
+    noExternal: true // Always transpile the server-side code of libraries.
+  }
+}
+```
+
+Since Next.js always transpiles the server-side of libraries, many library authors publish server-side code that is invalid JavaScript and always require to be transpiled. They cannot run directly on Node.js.
+
+> You may be tempted to only add your React libraries to `ssr.noExternal` but that often isn't enough: when you add a React library to `ssr.noExternal` you may need to also add some of its dependencies (`ssr.noExternal` is shallow). That's why the easiest is to set `ssr.noExternal` to `true`.
 
 
 ## Errors
+
+List of known errors that Node.js throws when it tries to execute the invalid code of some library.
+
+The most notable issues are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) and invalid CSS imports, see [errors](#errors) and [solution](#solution).
 
 ### Cannot use import statement outside a module
 
@@ -67,7 +106,7 @@ The workaround proposed by Node.js often doesn't work for default exports. If it
 
 Alternatives:
  - [vite-plugin-cjs-interop](https://github.com/cyco130/vite-plugin-cjs-interop)
- - The [`ssr.noExternal` solution](#solution). (Although, for increased development speed, we recommend trying the other workarounds first.)
+ - The [`ssr.noExternal` solution](#solution).
 
 
 ### ERR_MODULE_NOT_FOUND
@@ -123,23 +162,3 @@ Error: ERR_UNKNOWN_FILE_EXTENSION .css node_modules/some-library/dist/main.css
     at ESMLoader.load (node:internal/modules/esm/loader:605:26)
 ```
 </CodeBlockTransformer>
-
-
-## Solution
-
-The workaround is to add npm packages containing invalid code to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
-
-```js
-// vite.config.js
-
-export default {
-  ssr: {
-    // Add npm packages containing invalid code here
-    noExternal: ['some-library']
-  }
-}
-```
-
-> The reason why many npm packages contain erronous code is because frameworks like Next.js always transpile npm packages. (Whereas Vite lets Node.js directly execute npm packages in order to greatly improve dev performance: Vite transpiles only what is strictly needed). Where Next.js is permissive and is able to process invalid code, Node.js is strict and crashes upon invalid code. By adding npm packages to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal) we replicate the behavior of frameworks like Next.js.
-
-<Warning>While using `vite.config.js > ssr.noExternal` fixes the problem, we recommend to contact the npm package author. For example: [aws-amplify/amplify-ui#3155](https://github.com/aws-amplify/amplify-ui/issues/3155). Vite is fast because it transpiles only what is strictly needed. To preserve Vite's speed, library authors should publish valid code.</Warning>

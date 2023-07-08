@@ -85,7 +85,7 @@ function onBeforeRender(pageContext) {
     pageContext.skipOnBeforeRenderPageHook()
   }
 
-  // Same than above: we can also invoke the server hooks here
+  // Same as above: we can also invoke the server hooks here
   if (Math.random() > 0.5) {
     const { pageContext: pageContextAddendum } = await pageContext.runOnBeforeRenderServerHooks()
   } else {
