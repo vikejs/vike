@@ -24,12 +24,12 @@ type StatusCodeError = 401 | 403 | 404 | 429 | 500 | 503
 function redirect(statusCode: StatusCodeRedirect, url: string, pageContextAddition?: Record<string, unknown>): Error {
   assertPageContextProvidedByUser(pageContextAddition, { abort: 'redirect' })
   assertStatusCode(statusCode, [301, 302], 'redirect')
-  const pageContextAddendum = pageContextAddition ?? {}
-  objectAssign(pageContextAddendum, {
+  pageContextAddition = pageContextAddition ?? {}
+  objectAssign(pageContextAddition, {
     _redirect: url,
     _statusCode: statusCode
   })
-  return RenderAbort(pageContextAddendum)
+  return RenderAbort(pageContextAddition)
 }
 
 /**
@@ -42,11 +42,11 @@ function redirect(statusCode: StatusCodeRedirect, url: string, pageContextAdditi
  */
 function renderUrl(url: string, pageContextAddition?: Record<string, unknown>): Error {
   assertPageContextProvidedByUser(pageContextAddition, { abort: 'renderUrl' })
-  const pageContextAddendum = pageContextAddition ?? {}
-  objectAssign(pageContextAddendum, {
+  pageContextAddition = pageContextAddition ?? {}
+  objectAssign(pageContextAddition, {
     _renderUrl: url
   })
-  return RenderAbort(pageContextAddendum)
+  return RenderAbort(pageContextAddition)
 }
 
 /**
@@ -73,13 +73,13 @@ function renderErrorPage(
 ): Error {
   assertPageContextProvidedByUser(pageContextAddition, { abort: 'renderErrorPage' })
   assertStatusCode(statusCode, [401, 403, 404, 429, 500, 503], 'renderErrorPage')
-  const pageContextAddendum = pageContextAddition ?? {}
-  objectAssign(pageContextAddendum, {
+  pageContextAddition = pageContextAddition ?? {}
+  objectAssign(pageContextAddition, {
     _statusCode: statusCode,
     errorReason,
     is404: statusCode === 404
   })
-  return RenderAbort(pageContextAddendum)
+  return RenderAbort(pageContextAddition)
 }
 
 type PageContextRenderAbort = Record<string, unknown>
