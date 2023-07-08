@@ -6,8 +6,8 @@ import { route } from '../../shared/route'
 import { getErrorPageId } from '../../shared/error-page'
 import { assert, hasProp, objectAssign, isParsable, parseUrl, assertEnv, assertWarning, getGlobalObject } from './utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
-import { isRenderAbort } from '../../shared/route/RenderAbort'
-import { initGlobalContext } from './globalContext'
+import { isRenderAbort, logAbortErrorHandled } from '../../shared/route/RenderAbort'
+import { getGlobalContext, initGlobalContext } from './globalContext'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import { HttpResponse } from './renderPage/createHttpResponseObject'
 import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime'
@@ -285,6 +285,8 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
   addComputedUrlProps(pageContext)
 
   if (isRenderAbort(pageContext.errorWhileRendering)) {
+    const { isProduction } = getGlobalContext()
+    logAbortErrorHandled(pageContext.errorWhileRendering, isProduction, pageContext)
     objectAssign(pageContext, { is404: true })
     objectAssign(pageContext, pageContext.errorWhileRendering._pageContextAddition)
   }

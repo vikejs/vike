@@ -5,7 +5,6 @@ import type { PageRoutes } from '../../../../shared/route'
 import { getGlobalContext } from '../../globalContext'
 import { assert, assertUsage, assertInfo, compareString, stripAnsi, getTerminalWidth } from '../../utils'
 import pc from '@brillout/picocolors'
-import { isRenderAbort } from '../../../../shared/route/RenderAbort'
 
 async function log404(pageContext: {
   urlPathname: string
@@ -14,17 +13,6 @@ async function log404(pageContext: {
   _pageRoutes: PageRoutes
 }) {
   const { urlPathname } = pageContext
-
-  if (isRenderAbort(pageContext.errorWhileRendering)) {
-    assertInfo(
-      false,
-      `${pc.cyan('throw RenderErrorPage()')} was thrown while rendering URL ${pc.bold(
-        urlPathname
-      )} (this log isn't shown in production)`,
-      { onlyOnce: false }
-    )
-    return
-  }
 
   const pageRoutes = pageContext._pageRoutes
   assertUsage(

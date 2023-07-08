@@ -6,25 +6,25 @@ function assertPageContextProvidedByUser(
   pageContextProvidedByUser: unknown,
   {
     hook,
-    abort
+    abortCaller
   }:
     | {
         hook?: undefined
-        abort: 'redirect' | 'renderUrl' | 'renderErrorPage' | 'RenderErrorPage'
+        abortCaller: 'redirect' | 'renderUrl' | 'renderErrorPage' | 'RenderErrorPage'
       }
     | {
         hook: {
           hookFilePath: string
           hookName: 'onBeforeRender' | 'onRenderHtml' | 'render' | 'onBeforeRoute'
         }
-        abort?: undefined
+        abortCaller?: undefined
       }
 ): asserts pageContextProvidedByUser is Record<string, unknown> {
   if (pageContextProvidedByUser === undefined || pageContextProvidedByUser === null) return
 
   const errPrefix = (() => {
-    if (abort) {
-      return `The \`pageContext\` object provided by \`throw ${abort}()\``
+    if (abortCaller) {
+      return `The \`pageContext\` object provided by \`throw ${abortCaller}()\``
     } else {
       assert(hook)
       const { hookName, hookFilePath } = hook
@@ -53,7 +53,7 @@ function assertPageContextProvidedByUser(
     { onlyOnce: true }
   )
 
-  if (!abort) {
+  if (!abortCaller) {
     assertUsage(
       !('is404' in pageContextProvidedByUser),
       `${errPrefix} sets \`pageContext.is404\` which is forbidden, use \`throw renderErrorPage()\` instead, see https://vite-plugin-ssr.com/abort`

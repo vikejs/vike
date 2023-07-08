@@ -25,7 +25,7 @@ import { isClientSideRoutable, skipLink } from './skipLink'
 import { isErrorFetchingStaticAssets } from '../loadPageFilesClientSide'
 import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history'
 import { defineNavigate } from './navigate'
-import { isRenderAbort } from '../../shared/route/RenderAbort'
+import { isRenderAbort, logAbortErrorHandled } from '../../shared/route/RenderAbort'
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
   clientRoutingIsDisabled?: true
@@ -113,8 +113,8 @@ function useClientRouter() {
           // If a route() hook has a bug
           throw err
         } else {
-          // If a route() hook `throw RenderErrorPage()`
-          // RenderErrorPage is handled down below
+          // If a route() hook throw redirect()/renderErrorPage()/renderUrl()
+          // We handle the abort error down below.
           isClientRoutable = true
         }
       }
@@ -175,12 +175,14 @@ function useClientRouter() {
         //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
         console.error(err)
       } else {
-        // We swallow `throw RenderErrorPage()` thrown by client-side hooks onBforeRender() and guard()
+        // We swallow throw redirect()/renderErrorPage()/renderUrl() called by client-side hooks onBeforeRender() and guard()
+        // We handle the abort error down below.
       }
 
       if (checkIfAbort(err, pageContext)) return
 
       if (isRenderAbort(err)) {
+        logAbortErrorHandled(err, pageContext._isProduction, pageContext)
         objectAssign(pageContext, err._pageContextAddition)
       } else {
         objectAssign(pageContext, { is404: checkIf404(err) })

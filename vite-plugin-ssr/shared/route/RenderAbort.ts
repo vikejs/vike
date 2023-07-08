@@ -2,11 +2,14 @@ export { redirect }
 export { renderUrl }
 export { renderErrorPage }
 export { isRenderAbort }
+export { logAbortErrorHandled }
 export { RenderErrorPage }
 export type { StatusCodeAbort }
 
+// TODO: catch infinte loop
+
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
-import { assertWarning, checkType, joinEnglish, objectAssign, projectInfo } from './utils'
+import { assert, assertInfo, assertWarning, checkType, joinEnglish, objectAssign, projectInfo } from './utils'
 
 type StatusCodeAbort = StatusCodeRedirect | StatusCodeError
 type StatusCodeRedirect = 301 | 302
@@ -22,12 +25,14 @@ type StatusCodeError = 401 | 403 | 404 | 429 | 500 | 503
  * @param pageContextAddition [Optional] Add pageContext values.
  */
 function redirect(statusCode: StatusCodeRedirect, url: string, pageContextAddition?: Record<string, unknown>): Error {
-  assertPageContextProvidedByUser(pageContextAddition, { abort: 'redirect' })
+  const abortCaller = 'redirect' as const
+  assertPageContextProvidedByUser(pageContextAddition, { abortCaller })
   assertStatusCode(statusCode, [301, 302], 'redirect')
   pageContextAddition = pageContextAddition ?? {}
   objectAssign(pageContextAddition, {
     _redirect: url,
-    _statusCode: statusCode
+    _statusCode: statusCode,
+    _abortCaller: abortCaller
   })
   return RenderAbort(pageContextAddition)
 }
@@ -41,10 +46,12 @@ function redirect(statusCode: StatusCodeRedirect, url: string, pageContextAdditi
  * @param pageContextAddition [Optional] Add pageContext values.
  */
 function renderUrl(url: string, pageContextAddition?: Record<string, unknown>): Error {
-  assertPageContextProvidedByUser(pageContextAddition, { abort: 'renderUrl' })
+  const abortCaller = 'renderUrl' as const
+  assertPageContextProvidedByUser(pageContextAddition, { abortCaller })
   pageContextAddition = pageContextAddition ?? {}
   objectAssign(pageContextAddition, {
-    _renderUrl: url
+    _renderUrl: url,
+    _abortCaller: abortCaller
   })
   return RenderAbort(pageContextAddition)
 }
@@ -71,18 +78,22 @@ function renderErrorPage(
   errorReason: string,
   pageContextAddition?: Record<string, unknown>
 ): Error {
-  assertPageContextProvidedByUser(pageContextAddition, { abort: 'renderErrorPage' })
-  assertStatusCode(statusCode, [401, 403, 404, 429, 500, 503], 'renderErrorPage')
+  const abortCaller = 'renderErrorPage' as const
+  assertPageContextProvidedByUser(pageContextAddition, { abortCaller })
+  assertStatusCode(statusCode, [401, 403, 404, 429, 500, 503], abortCaller)
   pageContextAddition = pageContextAddition ?? {}
   objectAssign(pageContextAddition, {
     _statusCode: statusCode,
     errorReason,
-    is404: statusCode === 404
+    is404: statusCode === 404,
+    _abortCaller: abortCaller
   })
   return RenderAbort(pageContextAddition)
 }
 
-type PageContextRenderAbort = Record<string, unknown>
+type PageContextRenderAbort = Record<string, unknown> & {
+  _abortCaller: 'renderErrorPage' | 'redirect' | 'renderUrl'
+}
 /* Is this needed?
   | {
       _redirect:  string
@@ -108,7 +119,7 @@ function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown
     false,
     '`throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw renderErrorPage()`, `throw renderUrl()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/abort'
   )
-  assertPageContextProvidedByUser(pageContext, { abort: 'RenderErrorPage' })
+  assertPageContextProvidedByUser(pageContext, { abortCaller: 'RenderErrorPage' })
   let statusCode: 404 | 500 = 404
   let errorReason = 'Page Not Found'
   if (pageContext.is404 === false || (pageContext.pageProps as any)?.is404 === false) {
@@ -122,6 +133,19 @@ const stamp = '__isRenderAbort'
 type RenderAbortError = { _pageContextAddition: Record<string, unknown> & PageContextRenderAbort }
 function isRenderAbort(thing: unknown): thing is RenderAbortError {
   return typeof thing === 'object' && thing !== null && stamp in thing
+}
+
+function logAbortErrorHandled(err: RenderAbortError, isProduction: boolean, pageContext: { urlOriginal: string }) {
+  if (isProduction) return
+  const abortCaller = err._pageContextAddition._abortCaller
+  const { urlOriginal } = pageContext
+  assert(urlOriginal)
+  // TODO: Replace assertInfo() with proper logger implementation
+  assertInfo(
+    false,
+    `\`throw ${abortCaller}()\` successfully handled while rendering URL '${urlOriginal}' (this log isn't shown in production)`,
+    { onlyOnce: false }
+  )
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'renderErrorPage' | 'redirect') {
