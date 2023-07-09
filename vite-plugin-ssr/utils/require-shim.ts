@@ -41,6 +41,13 @@ function addRequireShim() {
 
   // We cannot use `typeof require === 'undefined'` since it's always true as this file is CJS (it lives in node_modules/vite-plugin-ssr/dist/cjs/)
   if (globalThis.require === undefined) {
+    install()
+  }
+  assertRequireShim()
+
+  return
+
+  function install() {
     // In ESM modules, any `require()` occurence will fallback and use globalThis.require() (since require() isn't defined in ESM modules)
     Object.defineProperty(globalThis, 'require', {
       get() {
@@ -74,7 +81,18 @@ function addRequireShim() {
       }
     })
   }
-  assertRequireShim()
+
+  function deriveFileName(caller: NodeJS.CallSite): string | undefined {
+    const { userRootDir } = globalObject
+    if (!userRootDir) return undefined
+    // evalOrigin is set by `# sourceURL=...` at https://github.com/vitejs/vite/blob/e3db7712657232fbb9ea2499a2c6f277d2bb96a3/packages/vite/src/node/ssr/ssrModuleLoader.ts#L225
+    //  - We (wrongfully?) assume that the eval is done by Vite. If that assumption is wrong then check whether the parent caller's filename matches /node_modules/vite/dist/node/chunks/dep-0bae2027.js
+    let evalOrigin = caller.getEvalOrigin()
+    if (!evalOrigin) return undefined
+    evalOrigin = toPosixPath(evalOrigin)
+    assertPosixPath(userRootDir)
+    return pathJoin(userRootDir, evalOrigin)
+  }
 }
 
 // Ensure that our globalThis.require doesn't overwrite the native require() implementation
@@ -86,17 +104,6 @@ function assertRequireShim() {
   import('./require-shim-test')
 }
 
-function deriveFileName(caller: NodeJS.CallSite): string | undefined {
-  const { userRootDir } = globalObject
-  if (!userRootDir) return undefined
-  // evalOrigin is set by `# sourceURL=...` at https://github.com/vitejs/vite/blob/e3db7712657232fbb9ea2499a2c6f277d2bb96a3/packages/vite/src/node/ssr/ssrModuleLoader.ts#L225
-  //  - We (wrongfully?) assume that the eval is done by Vite. If that assumption is wrong then check whether the parent caller's filename matches /node_modules/vite/dist/node/chunks/dep-0bae2027.js
-  let evalOrigin = caller.getEvalOrigin()
-  if (!evalOrigin) return undefined
-  evalOrigin = toPosixPath(evalOrigin)
-  assertPosixPath(userRootDir)
-  return pathJoin(userRootDir, evalOrigin)
-}
-function addRequireShim_setUserRootDir(userRootDir: string) {
+function addRequireShim_setUserRootDir(userRootDir: string): void {
   globalObject.userRootDir = userRootDir
 }
