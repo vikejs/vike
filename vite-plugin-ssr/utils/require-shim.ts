@@ -76,23 +76,24 @@ function addRequireShim() {
     const caller = callsites[1]
     assert(caller)
 
-    let fileName = caller.getFileName()
-    // fileName can be undefined when Vite evaluates code (the code then doesn't belong to a file on the filesystem):
-    //  - When the user tries to use require(): https//github.com/brillout/vite-plugin-ssr/issues/879
-    //  - When using ssr.noExternal: https://github.com/brillout/vps-mui/tree/reprod-2 - see https://github.com/brillout/vite-plugin-ssr/discussions/901#discussioncomment-5975978
-    assert(fileName || fileName === undefined)
-    if (fileName === undefined) {
-      const filePath = deriveFileName(caller)
-      // If the assertion isn't true => the shim cannot work => the user's app will crash with certainty => we should try to resolve the situation with the user
-      assert(filePath)
-      fileName = filePath
+    {
+      const filePath = caller.getFileName()
+      // caller.getFileName() can be undefined when Vite evaluates code (the code then doesn't belong to a file on the filesystem):
+      //  - When the user tries to use require(): https//github.com/brillout/vite-plugin-ssr/issues/879
+      //  - When using ssr.noExternal: https://github.com/brillout/vps-mui/tree/reprod-2 - see https://github.com/brillout/vite-plugin-ssr/discussions/901#discussioncomment-5975978
+      assert((typeof filePath === 'string' && filePath) || filePath === undefined)
+      if (filePath) return filePath
     }
-    assert(fileName)
-    const callerFile = fileName
-    return callerFile
+
+    {
+      const filePath = deriveFilePath(caller)
+      // If the assertion isn't true => the shim cannot work => the user's app will crash with certainty upon require('./some/relative/path') => we should try to resolve the situation with the user
+      assert(filePath)
+      return filePath
+    }
   }
 
-  function deriveFileName(caller: NodeJS.CallSite): string | null {
+  function deriveFilePath(caller: NodeJS.CallSite): string | null {
     // caller.getEvalOrigin() value is set by `# sourceURL=...`, for example at https://github.com/vitejs/vite/blob/e3db7712657232fbb9ea2499a2c6f277d2bb96a3/packages/vite/src/node/ssr/ssrModuleLoader.ts#L225
     let filePath = caller.getEvalOrigin()
     if (!filePath) return null
