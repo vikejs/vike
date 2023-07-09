@@ -30,10 +30,10 @@ function addRequireShim() {
   //   - No require() syncrhonous alternerative for ESM: https://stackoverflow.com/questions/51069002/convert-import-to-synchronous
   if (!req) return
 
-  let mod: typeof moduleType
+  let module: typeof moduleType
   try {
     // Make dependency optional for Edge environments
-    mod = req('module')
+    module = req('module')
   } catch {
     // Edge environments
     return
@@ -67,7 +67,7 @@ function addRequireShim() {
           assert(fileName)
           callerFile = fileName
         }
-        const req = mod.createRequire(callerFile)
+        const req = module.createRequire(callerFile)
         // @ts-ignore
         req._isShimAddedByVitePluginSsr = true
         return req
