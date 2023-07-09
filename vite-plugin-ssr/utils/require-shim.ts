@@ -70,7 +70,6 @@ function addRequireShim() {
           if (fileName === undefined) {
             fileName = deriveFileName(caller)
           }
-          if (fileName === undefined) return undefined
           assert(fileName)
           callerFile = fileName
         }
@@ -82,13 +81,15 @@ function addRequireShim() {
     })
   }
 
-  function deriveFileName(caller: NodeJS.CallSite): string | undefined {
+  function deriveFileName(caller: NodeJS.CallSite): string {
     const { userRootDir } = globalObject
-    if (!userRootDir) return undefined
+    // If the assertion isn't true => the shim cannot work => the user's app will crash with certainty => we should try to resolve the situation with the user
+    assert(userRootDir)
     // evalOrigin is set by `# sourceURL=...` at https://github.com/vitejs/vite/blob/e3db7712657232fbb9ea2499a2c6f277d2bb96a3/packages/vite/src/node/ssr/ssrModuleLoader.ts#L225
     // We assume that the eval is done by Vite. Is that assumption always true? If not then check whether the parent caller's filename matches /node_modules/vite/dist/node/chunks/dep-0bae2027.js
     let evalOrigin = caller.getEvalOrigin()
-    if (!evalOrigin) return undefined
+    // If the assertion isn't true => the shim cannot work => the user's app will crash with certainty => we should try to resolve the situation with the user
+    assert(evalOrigin)
     evalOrigin = toPosixPath(evalOrigin)
     assertPosixPath(userRootDir)
     return pathJoin(userRootDir, evalOrigin)
