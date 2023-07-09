@@ -82,25 +82,45 @@ function addRequireShim() {
     //  - When using ssr.noExternal: https://github.com/brillout/vps-mui/tree/reprod-2 - see https://github.com/brillout/vite-plugin-ssr/discussions/901#discussioncomment-5975978
     assert(fileName || fileName === undefined)
     if (fileName === undefined) {
-      fileName = deriveFileName(caller)
+      const filePath = deriveFileName(caller)
+      // If the assertion isn't true => the shim cannot work => the user's app will crash with certainty => we should try to resolve the situation with the user
+      assert(filePath)
+      fileName = filePath
     }
     assert(fileName)
     const callerFile = fileName
     return callerFile
   }
 
-  function deriveFileName(caller: NodeJS.CallSite): string {
+  function deriveFileName(caller: NodeJS.CallSite): string | null {
+    // caller.getEvalOrigin() value is set by `# sourceURL=...`, for example at https://github.com/vitejs/vite/blob/e3db7712657232fbb9ea2499a2c6f277d2bb96a3/packages/vite/src/node/ssr/ssrModuleLoader.ts#L225
+    let filePath = caller.getEvalOrigin()
+    if (!filePath) return null
+    if (doesPathExist(filePath)) {
+      return filePath
+    }
+
+    // /test/require-shim/ => sourceUrl is relative to the user's root dir. (It seems like older Vite versions set sourceUrl to the path relative to the user's root dir, while newer Vite versions set sourceURL to the absolute path?)
     const { userRootDir } = globalObject
-    // If the assertion isn't true => the shim cannot work => the user's app will crash with certainty => we should try to resolve the situation with the user
-    assert(userRootDir)
-    // evalOrigin is set by `# sourceURL=...` at https://github.com/vitejs/vite/blob/e3db7712657232fbb9ea2499a2c6f277d2bb96a3/packages/vite/src/node/ssr/ssrModuleLoader.ts#L225
-    // We assume that the eval is done by Vite. Is that assumption always true? If not then check whether the parent caller's filename matches /node_modules/vite/dist/node/chunks/dep-0bae2027.js
-    let evalOrigin = caller.getEvalOrigin()
-    // If the assertion isn't true => the shim cannot work => the user's app will crash with certainty => we should try to resolve the situation with the user
-    assert(evalOrigin)
-    evalOrigin = toPosixPath(evalOrigin)
+    if (!userRootDir) return null
+    let filePathAbsolute = toPosixPath(filePath)
     assertPosixPath(userRootDir)
-    return pathJoin(userRootDir, evalOrigin)
+    filePathAbsolute = pathJoin(userRootDir, filePathAbsolute)
+    if (doesPathExist(filePathAbsolute)) {
+      return filePathAbsolute
+    }
+
+    return null
+  }
+
+  function doesPathExist(filePath: string) {
+    assert(requireLocal)
+    try {
+      requireLocal.resolve(filePath)
+      return true
+    } catch {
+      return false
+    }
   }
 }
 
