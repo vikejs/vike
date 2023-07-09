@@ -22,18 +22,18 @@ function addRequireShim() {
   if (globalObject.alreadyCalled) return
   globalObject.alreadyCalled = true
 
-  let req: NodeRequire | undefined
+  let requireLocal: NodeRequire | undefined
   try {
-    req = require
+    requireLocal = require
   } catch {}
-  // If node_modules/vite-plugin-ssr is bundled into user code, then this file can be ESM. We have to abort because there doesn't seem to be a way to add the shim in a syncrhonous way. Adding it asynchronously leads to race conditions which is worse than not adding the shim at all.
-  //   - No require() syncrhonous alternerative for ESM: https://stackoverflow.com/questions/51069002/convert-import-to-synchronous
-  if (!req) return
+  // If node_modules/vite-plugin-ssr/ is bundled into user code, then this file can be ESM. We have to abort because there doesn't seem to be a way to add the shim in a syncrhonous way. Adding it asynchronously leads to race conditions which is worse than not adding the shim at all.
+  //   - There doesn't seem to be require() syncrhonous alternerative for ESM: https://stackoverflow.com/questions/51069002/convert-import-to-synchronous
+  if (!requireLocal) return
 
   let module: typeof moduleType
   try {
     // Make dependency optional for Edge environments
-    module = req('module')
+    module = requireLocal('module')
   } catch {
     // Edge environments
     return
@@ -51,34 +51,42 @@ function addRequireShim() {
     // In ESM modules, any `require()` occurence will fallback and use globalThis.require() (since require() isn't defined in ESM modules)
     Object.defineProperty(globalThis, 'require', {
       get() {
-        let callerFile: string
-        // We don't move this code block into its own function in order to support bundlers that inline functions. (Otherwise stack[number] will be shifted and point to the wrong callsite.)
+        // We cannot move this code block into its own function because of bundlers that inline functions. (Otherwise stack[number] can be shifted and can point to the wrong callsite.)
+        let callsites: NodeJS.CallSite[]
         {
-          // https://stackoverflow.com/questions/16697791/nodejs-get-filename-of-caller-function/66842927#66842927
           const prepareStackTraceOrg = Error.prepareStackTrace
+          // https://stackoverflow.com/questions/16697791/nodejs-get-filename-of-caller-function/66842927#66842927
           Error.prepareStackTrace = (_, stack) => stack
           const err = new Error()
-          const stack = err.stack as any as NodeJS.CallSite[]
+          callsites = err.stack as any as NodeJS.CallSite[]
           Error.prepareStackTrace = prepareStackTraceOrg
-          const caller = stack[1]
-          assert(caller)
-          let fileName = caller.getFileName()
-          // fileName can be undefined when Vite evaluates code (the code then doesn't belong to a file on the filesystem):
-          //  - When the user tries to use require(): https//github.com/brillout/vite-plugin-ssr/issues/879
-          //  - When using ssr.noExternal: https://github.com/brillout/vps-mui/tree/reprod-2 - see https://github.com/brillout/vite-plugin-ssr/discussions/901#discussioncomment-5975978
-          assert(fileName || fileName === undefined)
-          if (fileName === undefined) {
-            fileName = deriveFileName(caller)
-          }
-          assert(fileName)
-          callerFile = fileName
         }
-        const req = module.createRequire(callerFile)
-        // @ts-ignore
-        req._isShimAddedByVitePluginSsr = true
-        return req
+
+        const callerFile = getCallerFile(callsites)
+
+        const requireUserLand = module.createRequire(callerFile)
+        // @ts-expect-error
+        requireUserLand._isShimInstalledByVike = true
+        return requireUserLand
       }
     })
+  }
+
+  function getCallerFile(callsites: NodeJS.CallSite[]): string {
+    const caller = callsites[1]
+    assert(caller)
+
+    let fileName = caller.getFileName()
+    // fileName can be undefined when Vite evaluates code (the code then doesn't belong to a file on the filesystem):
+    //  - When the user tries to use require(): https//github.com/brillout/vite-plugin-ssr/issues/879
+    //  - When using ssr.noExternal: https://github.com/brillout/vps-mui/tree/reprod-2 - see https://github.com/brillout/vite-plugin-ssr/discussions/901#discussioncomment-5975978
+    assert(fileName || fileName === undefined)
+    if (fileName === undefined) {
+      fileName = deriveFileName(caller)
+    }
+    assert(fileName)
+    const callerFile = fileName
+    return callerFile
   }
 
   function deriveFileName(caller: NodeJS.CallSite): string {
@@ -101,7 +109,7 @@ function assertRequireShim() {
   // Seems like Vitest does some unusual thing
   if (isVitest()) return
   assert(require !== globalThis.require)
-  assert(!('_isShimAddedByVitePluginSsr' in require))
+  assert(!('_isShimInstalledByVike' in require))
   import('./require-shim-test')
 }
 
