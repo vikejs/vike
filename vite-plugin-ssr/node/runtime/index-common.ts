@@ -15,7 +15,4 @@ declare global {
   var _isVike: true
 }
 
-import { addRequireShim } from './utils'
-addRequireShim()
-
 import './page-files/setup'

@@ -9,8 +9,9 @@ import { getGlobalObject } from './getGlobalObject'
 import { assertPosixPath, toPosixPath } from './filesystemPathHandling'
 import { pathJoin } from './path-shim'
 
-const globalObject = getGlobalObject<{ userRootDir?: string }>('utils/require-shim.ts', {})
+const globalObject = getGlobalObject<{ userRootDir?: string; alreadyCalled?: true }>('utils/require-shim.ts', {})
 assertIsNotBrowser()
+addRequireShim()
 
 // Add require() to ESM modules, in order to workaround https://github.com/brillout/vite-plugin-ssr/issues/701
 //  - esbuild doesn't always transpile require() to import(), https://github.com/evanw/esbuild/issues/566#issuecomment-735551834
@@ -18,6 +19,9 @@ assertIsNotBrowser()
 //  - Test: [/test/require-shim/](https://github.com/brillout/vite-plugin-ssr/tree/88a05ef4888d0df28a370d0ca0460bf8036aadf0/test/require-shim)
 //  - Playground: https://github.com/brillout/require-shim
 function addRequireShim() {
+  if (globalObject.alreadyCalled) return
+  globalObject.alreadyCalled = true
+
   let req: NodeRequire | undefined
   try {
     req = require

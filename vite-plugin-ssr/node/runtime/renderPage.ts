@@ -18,6 +18,8 @@ import { warnMissingErrorPage } from './renderPage/handleErrorWithoutErrorPage'
 import { log404 } from './renderPage/log404'
 import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
+import '../../utils/require-shim' // Ensure require shim for production
+
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
   pendingRequestsCount: 0
