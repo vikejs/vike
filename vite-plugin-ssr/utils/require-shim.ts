@@ -62,9 +62,14 @@ function addRequireShim() {
           Error.prepareStackTrace = prepareStackTraceOrg
         }
 
+        // If callerFile is null => upon require('./some/relative/path') the shim cannot work and the user's app will crash with certainty => ideally we should assert(false) this situation (we currenlty don't) and try to resolve the situation together with the user. We didn't implement the assert(false) catch because it would require wrapping requireUserLand which isn't trivial.
         const callerFile = getCallerFile(callsites)
+        // callerFileFallback creates an erroneous requireUserLand but it'll work for non-relative require paths such as require('some-library')
+        const callerFileFallback = __filename
+        const requireContextFile = callerFile || callerFileFallback
+        assert(requireContextFile)
 
-        const requireUserLand = module.createRequire(callerFile)
+        const requireUserLand = module.createRequire(requireContextFile)
         // @ts-expect-error
         requireUserLand._isShimInstalledByVike = true
         return requireUserLand
@@ -72,7 +77,7 @@ function addRequireShim() {
     })
   }
 
-  function getCallerFile(callsites: NodeJS.CallSite[]): string {
+  function getCallerFile(callsites: NodeJS.CallSite[]): string | null {
     const caller = callsites[1]
     assert(caller)
 
@@ -87,10 +92,12 @@ function addRequireShim() {
 
     {
       const filePath = deriveFilePath(caller)
-      // If the assertion isn't true => the shim cannot work => the user's app will crash with certainty upon require('./some/relative/path') => we should try to resolve the situation with the user
-      assert(filePath)
-      return filePath
+      if (filePath) {
+        return filePath
+      }
     }
+
+    return null
   }
 
   function deriveFilePath(caller: NodeJS.CallSite): string | null {
