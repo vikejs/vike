@@ -247,9 +247,9 @@ function logErrorDebugNote() {
   }
   const msg = pc.dim(
     [
-      '=======================================================================',
-      "| Error isn't helpful? See https://vite-plugin-ssr.com/errors#verbose |",
-      '======================================================================='
+      '┌─────────────────────────────────────────────────────────────────────┐',
+      "│ Error isn't helpful? See https://vite-plugin-ssr.com/errors#verbose │",
+      '└─────────────────────────────────────────────────────────────────────┘'
     ].join('\n')
   )
   logDirectly(msg, 'error')
