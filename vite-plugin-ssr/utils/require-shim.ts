@@ -86,7 +86,7 @@ function addRequireShim() {
     const { userRootDir } = globalObject
     if (!userRootDir) return undefined
     // evalOrigin is set by `# sourceURL=...` at https://github.com/vitejs/vite/blob/e3db7712657232fbb9ea2499a2c6f277d2bb96a3/packages/vite/src/node/ssr/ssrModuleLoader.ts#L225
-    //  - We (wrongfully?) assume that the eval is done by Vite. If that assumption is wrong then check whether the parent caller's filename matches /node_modules/vite/dist/node/chunks/dep-0bae2027.js
+    // We assume that the eval is done by Vite. Is that assumption always true? If not then check whether the parent caller's filename matches /node_modules/vite/dist/node/chunks/dep-0bae2027.js
     let evalOrigin = caller.getEvalOrigin()
     if (!evalOrigin) return undefined
     evalOrigin = toPosixPath(evalOrigin)
