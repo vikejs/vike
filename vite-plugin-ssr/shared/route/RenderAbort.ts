@@ -143,7 +143,7 @@ function logAbortErrorHandled(err: AbortError, isProduction: boolean, pageContex
   // TODO: Replace assertInfo() with proper logger implementation
   assertInfo(
     false,
-    `\`throw ${abortCaller}()\` successfully handled while rendering URL '${urlOriginal}' (this log isn't shown in production)`,
+    `throw ${abortCaller}() successfully handled while rendering URL '${urlOriginal}' (this log isn't shown in production)`,
     { onlyOnce: false }
   )
 }
