@@ -38,7 +38,7 @@ function redirect(statusCode: StatusCodeRedirect, url: string, pageContextAdditi
 }
 
 /**
- * Abort the current page rendering, and render another page instead (while preserivng the current URL unlike redirect() which changes the URL).
+ * Abort the current page rendering, and render another page instead (while preserivng the current URL, unlike redirect() which changes the URL).
  *
  * https://vite-plugin-ssr.com/abort
  *

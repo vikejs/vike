@@ -151,15 +151,11 @@ async function renderPage_(
   if (errFirstAttempt === undefined) {
     assert(pageContextFirstAttempt)
     return pageContextFirstAttempt
-  }
-
-  // Render error page
-  if (errFirstAttempt !== undefined) {
+  } else {
     assert(errFirstAttempt)
     assert(pageContextFirstAttempt === undefined)
     assert(pageContextFirstAttemptPartial)
     let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderErrorPage>>
-    let errErrorPage: unknown
     try {
       pageContextErrorPage = await renderErrorPage(
         pageContextInit,
@@ -168,24 +164,15 @@ async function renderPage_(
         renderContext,
         httpRequestId
       )
-    } catch (err) {
-      errErrorPage = err
+    } catch (errErrorPage) {
       if (isNewError(errErrorPage, errFirstAttempt)) {
         logRuntimeError(errErrorPage, httpRequestId)
       }
-    }
-    if (errErrorPage === undefined) {
-      assert(pageContextErrorPage)
-      return pageContextErrorPage
-    } else {
-      assert(errErrorPage)
-      assert(pageContextErrorPage === undefined)
       const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(errFirstAttempt, pageContextInit)
       return pageContextHttpReponseNull
     }
+    return pageContextErrorPage
   }
-
-  assert(false)
 }
 
 function logHttpRequest(urlToShowToUser: string, httpRequestId: number) {
