@@ -305,7 +305,7 @@ function handleUrl(pageContext: { urlOriginal: string; _baseServer: string }): {
     isClientSideNavigation: isPageContextRequest,
     _hasBaseServer: hasBaseServer,
     // The onBeforeRoute() hook may modify pageContext.urlOriginal (e.g. for i18n)
-    _urlHandler: (urlOriginal: string) => handlePageContextRequestUrl(urlOriginal).urlWithoutPageContextRequestSuffix
+    _urlHandler: (url: string) => handlePageContextRequestUrl(url).urlWithoutPageContextRequestSuffix
   }
   return pageContextAddendum
 }

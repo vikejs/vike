@@ -1,6 +1,6 @@
 export { handlePageContextRequestUrl }
 
-import { fileExtension, doNotCreateExtraDirectory } from '../../../shared/getPageContextRequestUrl'
+import { pageContextJsonFileExtension, doNotCreateExtraDirectory } from '../../../shared/getPageContextRequestUrl'
 import { baseServer, parseUrl, assert, slice } from '../utils'
 
 // See shared/getPageContextRequestUrl.ts
@@ -16,8 +16,10 @@ function handlePageContextRequestUrl(url: string): {
 
 function hasSuffix(url: string) {
   const { pathnameOriginal, pathname } = parseUrl(url, baseServer)
-  assert(pathnameOriginal.endsWith(fileExtension) === pathname.endsWith(fileExtension), { url })
-  return pathnameOriginal.endsWith(fileExtension)
+  assert(pathnameOriginal.endsWith(pageContextJsonFileExtension) === pathname.endsWith(pageContextJsonFileExtension), {
+    url
+  })
+  return pathnameOriginal.endsWith(pageContextJsonFileExtension)
 }
 
 function removePageContextUrlSuffix(url: string): string {
@@ -25,7 +27,7 @@ function removePageContextUrlSuffix(url: string): string {
   // We cannot use `urlParsed.pathname` because it would break the `urlParsed.pathnameOriginal` value of subsequent `parseUrl()` calls.
   const { origin, pathnameOriginal, searchOriginal, hashOriginal } = urlParsed
   assert(doNotCreateExtraDirectory === false)
-  const urlSuffix = `/index${fileExtension}`
+  const urlSuffix = `/index${pageContextJsonFileExtension}`
   assert(pathnameOriginal.endsWith(urlSuffix), { url })
   let pathnameModified = slice(pathnameOriginal, 0, -1 * urlSuffix.length)
   if (pathnameModified === '') pathnameModified = '/'

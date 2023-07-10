@@ -80,7 +80,7 @@ type PageContextUrlSource = {
 function getUrlParsed(pageContext: PageContextUrlSource) {
   let urlHandler = pageContext._urlHandler
   if (!urlHandler) {
-    urlHandler = (urlOriginal: string) => urlOriginal
+    urlHandler = (url: string) => url
   }
   const url = urlHandler(pageContext.urlOriginal)
   const baseServer = pageContext._baseServer
