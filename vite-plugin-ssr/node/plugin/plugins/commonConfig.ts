@@ -11,6 +11,8 @@ function commonConfig(): Plugin[] {
       config: () => ({
         appType: 'custom',
         ssr: {
+          // Needed as long as VPS is published as CJS.
+          // TODO: can we remove this once VPS is published as ESM?
           external: ['vite-plugin-ssr', 'vite-plugin-ssr/server']
         }
       }),
