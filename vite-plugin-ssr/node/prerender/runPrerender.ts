@@ -33,7 +33,7 @@ import {
   type RenderContext,
   prerender404Page,
   initPageContext
-} from '../runtime/renderPage/renderPageContext'
+} from '../runtime/renderPage/renderPageAlreadyRouted'
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles'

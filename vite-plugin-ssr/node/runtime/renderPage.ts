@@ -1,7 +1,12 @@
 export { renderPage }
 export { renderPage_addWrapper }
 
-import { getRenderContext, initPageContext, RenderContext, renderPageContext } from './renderPage/renderPageContext'
+import {
+  getRenderContext,
+  initPageContext,
+  RenderContext,
+  renderPageAlreadyRouted
+} from './renderPage/renderPageAlreadyRouted'
 import { route } from '../../shared/route'
 import { getErrorPageId } from '../../shared/error-page'
 import { assert, hasProp, objectAssign, isParsable, parseUrl, assertEnv, assertWarning, getGlobalObject } from './utils'
@@ -239,7 +244,7 @@ async function renderPageAttempt<PageContextInit extends { urlOriginal: string }
   objectAssign(pageContext, { is404 })
 
   objectAssign(pageContext, { errorWhileRendering: null })
-  const pageContextAfterRender = await renderPageContext(pageContext)
+  const pageContextAfterRender = await renderPageAlreadyRouted(pageContext)
   assert(pageContext === pageContextAfterRender)
   return pageContextAfterRender
 }
@@ -284,7 +289,7 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
   })
 
   assert(pageContext.errorWhileRendering)
-  return renderPageContext(pageContext)
+  return renderPageAlreadyRouted(pageContext)
 }
 
 function handleUrl(pageContext: { urlOriginal: string; _baseServer: string }): {

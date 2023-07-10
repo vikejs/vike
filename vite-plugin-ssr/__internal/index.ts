@@ -5,7 +5,7 @@ import { type PageFile } from '../shared/getPageFiles'
 import { getGlobalContext, initGlobalContext } from '../node/runtime/globalContext'
 import { setNodeEnvToProduction } from '../utils/nodeEnv'
 import { assert } from '../utils/assert'
-import { getRenderContext } from '../node/runtime/renderPage/renderPageContext'
+import { getRenderContext } from '../node/runtime/renderPage/renderPageAlreadyRouted'
 
 export { route, getPagesAndRoutes }
 export type { PageRoutes, PageFile }

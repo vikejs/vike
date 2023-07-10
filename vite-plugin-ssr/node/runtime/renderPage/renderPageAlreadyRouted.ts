@@ -1,4 +1,4 @@
-export { renderPageContext }
+export { renderPageAlreadyRouted }
 export { prerenderPageContext }
 export { prerender404Page }
 export { loadPageFilesServer }
@@ -35,7 +35,7 @@ type GlobalRenderingContext = {
 
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 
-async function renderPageContext<
+async function renderPageAlreadyRouted<
   PageContext extends {
     _pageId: null | string
     _httpRequestId: number

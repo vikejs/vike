@@ -7,7 +7,7 @@ import { assert, assertWarning, objectAssign } from '../utils'
 import { createHttpResponseObject } from './createHttpResponseObject'
 import pc from '@brillout/picocolors'
 import type { GetPageAssets } from './getPageAssets'
-import type { PageContextAfterRender } from './renderPageContext'
+import type { PageContextAfterRender } from './renderPageAlreadyRouted'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 
 async function handleErrorWithoutErrorPage<
