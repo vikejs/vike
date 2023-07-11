@@ -33,6 +33,10 @@ type PageContextUrls = {
   url: string
   /** The URL of the HTTP request */
   urlOriginal: string
+  /** The URL set by `throw renderUrl(urlRewrite)` */
+  urlRewrite: string | null
+  /** The URL set by `throw redirect(statusCode, urlRedirect)` */
+  urlRedirect: string | null
   /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */
   urlPathname: string
   /** Parsed information about the current URL */
@@ -74,17 +78,25 @@ function addComputedUrlProps<PageContext extends Record<string, unknown> & PageC
 
 type PageContextUrlSource = {
   urlOriginal: string
+  urlRewrite?: string | null
   _baseServer: string
   _urlHandler: null | ((url: string) => string)
 }
 function getUrlParsed(pageContext: PageContextUrlSource) {
+  // We use a url handler function because the onBeforeRoute() hook may modify pageContext.urlOriginal (e.g. for i18n)
   let urlHandler = pageContext._urlHandler
   if (!urlHandler) {
     urlHandler = (url: string) => url
   }
-  const url = urlHandler(pageContext.urlOriginal)
+
+  const urlSource = pageContext.urlRewrite ?? pageContext.urlOriginal
+  assert(urlSource)
+  assert(typeof urlSource === 'string')
+  const url = urlHandler(urlSource)
+
   const baseServer = pageContext._baseServer
   assert(baseServer.startsWith('/'))
+
   return parseUrl(url, baseServer)
 }
 function urlPathnameGetter(this: PageContextUrlSource) {

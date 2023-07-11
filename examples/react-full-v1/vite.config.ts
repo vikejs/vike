@@ -7,7 +7,7 @@ const root = __dirname
 
 export default {
   build: {
-    outDir: `${root}/../../examples/react-full-v1/dist/bla`
+    outDir: `${root}/../../examples/react-full-v1/dist/nested`
   },
   plugins: [
     ssr({

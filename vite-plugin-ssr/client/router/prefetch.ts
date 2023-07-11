@@ -1,4 +1,5 @@
-export { addLinkPrefetchHandlers, prefetch }
+export { prefetch }
+export { addLinkPrefetchHandlers }
 
 import { assert, assertClientRouting, assertUsage, checkIfClientRouting } from './utils'
 import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../loadPageFilesClientSide'
@@ -13,6 +14,13 @@ assertClientRouting()
 
 const linkPrefetchHandlerAdded = new Map<HTMLElement, true>()
 
+/**
+ * Programmatically prefetch client assets.
+ *
+ * https://vite-plugin-ssr.com/prefetch
+ *
+ * @param url - The URL of the page you want to prefetch.
+ */
 async function prefetch(url: string): Promise<void> {
   assertUsage(
     checkIfClientRouting(),
@@ -45,10 +53,10 @@ async function prefetch(url: string): Promise<void> {
 function addLinkPrefetchHandlers(pageContext: {
   exports: Record<string, unknown>
   _isProduction: boolean
-  urlOriginal: string
+  urlPathname: string
 }) {
   // Current URL is already prefetched
-  markAsAlreadyPrefetched(pageContext.urlOriginal)
+  markAsAlreadyPrefetched(pageContext.urlPathname)
 
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
   linkTags.forEach(async (linkTag) => {

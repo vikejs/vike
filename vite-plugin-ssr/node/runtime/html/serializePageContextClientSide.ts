@@ -9,7 +9,7 @@ import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
 type PageContextUser = Record<string, unknown>
 type PageContextClient = { _pageId: string } & Record<string, unknown>
 
-const passToClientBuiltIn: string[] = ['errorReason']
+const passToClientBuiltIn: string[] = ['errorReason', 'urlRewrite']
 const passToClientBuiltInError = ['pageProps', 'is404', '_isError']
 
 function serializePageContextClientSide(pageContext: {

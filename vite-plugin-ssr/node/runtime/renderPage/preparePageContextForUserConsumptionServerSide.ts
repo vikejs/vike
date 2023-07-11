@@ -7,12 +7,15 @@ import { assertURLs, PageContextUrls } from '../../../shared/addComputedUrlProps
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
 import type { ConfigEntries, ExportsAll } from '../../../shared/getPageFiles/getExports'
+import type { PageContextBuiltIn } from '../../../types'
 
 type PageContextForUserConsumptionServerSide = {
   urlOriginal: string
   /** @deprecated */
   url: string
   urlPathname: string
+  urlRewrite: null | string
+  urlRedirect: null | string
   urlParsed: PageContextUrls['urlParsed']
   routeParams: Record<string, string>
   Page: unknown
@@ -26,7 +29,7 @@ type PageContextForUserConsumptionServerSide = {
   is404: null | boolean
   isClientSideNavigation: boolean
   pageProps?: Record<string, unknown>
-}
+} & PageContextBuiltIn
 function preparePageContextForUserConsumptionServerSide<T extends PageContextForUserConsumptionServerSide>(
   pageContext: T
 ): void {

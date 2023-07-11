@@ -27,9 +27,10 @@ import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
 import type { PageConfig } from '../../shared/page-configs/PageConfig'
-import { getCodeFilePath, getConfigValue, getPageConfig } from '../../shared/page-configs/utils'
+import { getConfigValue, getPageConfig } from '../../shared/page-configs/utils'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn'
 import { executeGuardHook } from '../../shared/route/executeGuardHook'
+import { renderUrl } from '../../shared/abort'
 
 type PageContextAddendum = {
   _pageId: string
@@ -204,6 +205,13 @@ async function executeOnBeforeRenderHook(
   // `export { onBeforeRender }` defined in `.page.server.js`
   if (await onBeforeRenderServerSideExists(pageContext)) {
     const pageContextFromServer = await retrievePageContextFromServer(pageContext)
+    {
+      const { urlRewrite } = pageContextFromServer
+      if (urlRewrite) {
+        assert(typeof urlRewrite === 'string')
+        throw renderUrl(urlRewrite, pageContextFromServer)
+      }
+    }
     const pageContextAddendum = {}
     Object.assign(pageContextAddendum, pageContextFromServer)
     objectAssign(pageContextAddendum, {
@@ -266,9 +274,11 @@ function checkIf404(err: unknown): boolean {
 
 async function retrievePageContextFromServer(pageContext: {
   urlOriginal: string
-  _urlPristine?: string
+  urlRewrite: string | null
+  _urlOriginalPristine?: string
 }): Promise<Record<string, unknown>> {
-  const pageContextUrl = getPageContextRequestUrl(pageContext._urlPristine ?? pageContext.urlOriginal)
+  const urlLogical = pageContext.urlRewrite ?? pageContext._urlOriginalPristine ?? pageContext.urlOriginal
+  const pageContextUrl = getPageContextRequestUrl(urlLogical)
   const response = await fetch(pageContextUrl)
 
   {

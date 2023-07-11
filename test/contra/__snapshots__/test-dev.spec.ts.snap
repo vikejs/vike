@@ -1,3 +1,3 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Contra Simulation > private properties 1`] = `"<script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageContext\\":{\\"_pageId\\":\\"/pages/index\\",\\"errorReason\\":\\"!undefined\\"}}</script>"`;
+exports[`Contra Simulation > private properties 1`] = `"<script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageContext\\":{\\"_pageId\\":\\"/pages/index\\",\\"errorReason\\":\\"!undefined\\",\\"urlRewrite\\":null}}</script>"`;

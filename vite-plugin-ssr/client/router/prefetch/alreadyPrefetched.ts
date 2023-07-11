@@ -1,18 +1,20 @@
 export { isAlreadyPrefetched }
 export { markAsAlreadyPrefetched }
 
-import { getUrlPathname } from '../utils'
+import { parseUrl } from '../utils'
 
 const linkAlreadyPrefetched = new Map<string, true>()
 
 function isAlreadyPrefetched(url: string): boolean {
-  const prefetchUrl = getPrefetchUrl(url)
-  return linkAlreadyPrefetched.has(prefetchUrl)
+  const urlPathname = getUrlPathname(url)
+  return linkAlreadyPrefetched.has(urlPathname)
 }
 function markAsAlreadyPrefetched(url: string): void {
-  const prefetchUrl = getPrefetchUrl(url)
-  linkAlreadyPrefetched.set(prefetchUrl, true)
+  const urlPathname = getUrlPathname(url)
+  linkAlreadyPrefetched.set(urlPathname, true)
 }
-function getPrefetchUrl(url: string) {
-  return getUrlPathname(url)
+
+function getUrlPathname(url: string): string {
+  const urlPathname = parseUrl(url, '/').pathname
+  return urlPathname
 }

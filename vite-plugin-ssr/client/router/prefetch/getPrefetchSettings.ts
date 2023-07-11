@@ -6,7 +6,6 @@ import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '.
 type PageContextPrefetch = {
   exports: Record<string, unknown>
   _isProduction: boolean
-  urlOriginal: string
 }
 
 type PrefetchStaticAssets = false | 'hover' | 'viewport'

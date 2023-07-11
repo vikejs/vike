@@ -25,7 +25,7 @@ import { isClientSideRoutable, skipLink } from './skipLink'
 import { isErrorFetchingStaticAssets } from '../loadPageFilesClientSide'
 import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history'
 import { defineNavigate } from './navigate'
-import { isAbortError, logAbortErrorHandled } from '../../shared/route/RenderAbort'
+import { getPageContextFromRewrite, isAbortError, logAbortErrorHandled, PageContextFromRewrite } from '../../shared/route/RenderAbort'
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
   clientRoutingIsDisabled?: true
@@ -64,69 +64,81 @@ function useClientRouter() {
 
   onLinkClick((url: string, { keepScrollPosition }) => {
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
-    fetchAndRender({ scrollTarget, url, isBackwardNavigation: false, checkClientSideRenderable: true })
+    fetchAndRender({
+      scrollTarget,
+      urlOriginal: url,
+      isBackwardNavigation: false,
+      checkClientSideRenderable: true,
+      pageContextsFromRewrite: []
+    })
   })
   onBrowserHistoryNavigation((scrollTarget, isBackwardNavigation) => {
-    fetchAndRender({ scrollTarget, isBackwardNavigation })
+    fetchAndRender({ scrollTarget, isBackwardNavigation, pageContextsFromRewrite: [] })
   })
   defineNavigate(async (url: string, { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {}) => {
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
     await fetchAndRender({
       scrollTarget,
-      url,
+      urlOriginal: url,
       overwriteLastHistoryEntry,
       isBackwardNavigation: false,
-      checkClientSideRenderable: true
+      checkClientSideRenderable: true,
+      pageContextsFromRewrite: []
     })
   })
 
   let renderingCounter = 0
   let renderPromise: Promise<void> | undefined
   let isTransitioning: boolean = false
-  fetchAndRender({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
+  fetchAndRender({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null, pageContextsFromRewrite: [] })
 
   return
 
   async function fetchAndRender({
     scrollTarget,
-    url = getCurrentUrl(),
+    urlOriginal = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
     isBackwardNavigation,
-    checkClientSideRenderable
+    checkClientSideRenderable,
+    pageContextsFromRewrite
   }: {
     scrollTarget: ScrollTarget
-    url?: string
+    urlOriginal?: string
     overwriteLastHistoryEntry?: boolean
     isBackwardNavigation: boolean | null
-    checkClientSideRenderable?: true
+    checkClientSideRenderable?: boolean
+    pageContextsFromRewrite: PageContextFromRewrite[]
   }): Promise<void> {
     if (globalObject.clientRoutingIsDisabled) {
-      serverSideRouteTo(url)
+      serverSideRouteTo(urlOriginal)
       return
     }
+    const pageContextFromAllRewrites = getPageContextFromRewrite(pageContextsFromRewrite)
     if (checkClientSideRenderable) {
+      const urlLogical = pageContextFromAllRewrites.urlRewrite ?? urlOriginal
       let isClientRoutable: boolean
       try {
-        isClientRoutable = await isClientSideRoutable(url)
+        isClientRoutable = await isClientSideRoutable(urlLogical)
       } catch (err) {
         if (!isAbortError(err)) {
           // If a route() hook has a bug
           throw err
         } else {
-          // If a route() hook throw redirect()/renderErrorPage()/renderUrl()
-          // We handle the abort error down below.
+          // If the user's route() hook throw redirect() / throw renderErrorPage() / throw renderUrl()
+          // We handle the abort error down below: the user's route() hook is called again in getPageContext()
           isClientRoutable = true
         }
       }
       if (!isClientRoutable) {
-        serverSideRouteTo(url)
+        serverSideRouteTo(urlOriginal)
         return
       }
     }
 
     const pageContextBase = {
-      urlOriginal: url,
-      isBackwardNavigation
+      urlOriginal,
+      isBackwardNavigation,
+      ...pageContextFromAllRewrites
     }
 
     const renderingNumber = ++renderingCounter
@@ -182,8 +194,32 @@ function useClientRouter() {
       if (checkIfAbort(err, pageContext)) return
 
       if (isAbortError(err)) {
+        const errAbort = err
         logAbortErrorHandled(err, pageContext._isProduction, pageContext)
-        objectAssign(pageContext, err._pageContextAddition)
+        const pageContextAddition = errAbort._pageContextAddition
+        if (pageContextAddition._abortCaller === 'renderUrl') {
+          await fetchAndRender({
+            scrollTarget,
+            urlOriginal,
+            overwriteLastHistoryEntry,
+            isBackwardNavigation,
+            pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAddition]
+          })
+          return;
+        }
+        if (pageContextAddition._abortCaller === 'redirect') {
+          await fetchAndRender({
+            scrollTarget: 'scroll-to-top-or-hash',
+            urlOriginal: pageContextAddition.urlRedirect,
+            overwriteLastHistoryEntry: false,
+            isBackwardNavigation: false,
+            checkClientSideRenderable: true,
+            pageContextsFromRewrite: []
+          })
+          return;
+        }
+        assert(pageContextAddition._abortCaller === 'renderErrorPage')
+        objectAssign(pageContext, pageContextAddition)
       } else {
         objectAssign(pageContext, { is404: checkIf404(err) })
       }
@@ -199,7 +235,7 @@ function useClientRouter() {
         if (!isFirstRenderAttempt) {
           setTimeout(() => {
             // We let the server show the 404 page
-            window.location.pathname = url
+            window.location.pathname = urlOriginal
           }, 0)
         }
 
@@ -237,7 +273,7 @@ function useClientRouter() {
       return
     }
 
-    changeUrl(url, overwriteLastHistoryEntry)
+    changeUrl(urlOriginal, overwriteLastHistoryEntry)
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {

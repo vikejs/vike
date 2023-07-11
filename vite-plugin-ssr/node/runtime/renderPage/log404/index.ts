@@ -28,7 +28,7 @@ async function log404(pageContext: {
         getPagesAndRoutesInfo(pageRoutes),
         [
           'See https://vite-plugin-ssr.com/routing for more information about routing.',
-          "This log isn't shown in production."
+          "(This log isn't shown in production.)"
         ].join(' ')
       ].join('\n'),
       { onlyOnce: false }

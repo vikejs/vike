@@ -8,12 +8,12 @@ import {
   preparePageContextForUserConsumptionClientSide
 } from './preparePageContextForUserConsumptionClientSide'
 import type { PageConfig } from '../shared/page-configs/PageConfig'
-import { getPageConfig } from '../shared/page-configs/utils'
 
 async function executeOnRenderClientHook<
   PC extends {
     _pageFilesLoaded: PageFile[]
     urlOriginal?: string
+    urlPathname?: string
     _pageId: string
     _pageConfigs: PageConfig[]
   } & PageContextExports &
@@ -38,12 +38,12 @@ async function executeOnRenderClientHook<
   }
 
   if (!hook) {
-    const url = getUrl(pageContext)
+    const urlLogical = getUrlLogical(pageContext)
     if (pageContext._pageConfigs.length > 0) {
       // V1 design
       assertUsage(
         false,
-        `No onRenderClient() hook defined for URL '${url}', but it's needed, see https://vite-plugin-ssr.com/onRenderClient`
+        `No onRenderClient() hook defined for URL '${urlLogical}', but it's needed, see https://vite-plugin-ssr.com/onRenderClient`
       )
     } else {
       // TODO/v1-release: remove
@@ -51,7 +51,7 @@ async function executeOnRenderClientHook<
       const pageClientsFilesLoaded = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
       let errMsg: string
       if (pageClientsFilesLoaded.length === 0) {
-        errMsg = 'No file `*.page.client.*` found for URL ' + url
+        errMsg = 'No file `*.page.client.*` found for URL ' + urlLogical
       } else {
         errMsg =
           'One of the following files should export a `render()` hook: ' +
@@ -73,11 +73,15 @@ async function executeOnRenderClientHook<
   )
 }
 
-function getUrl(pageContext: { urlOriginal?: string }): string {
+function getUrlLogical(pageContext: { urlOriginal?: string; urlPathname?: string }): string {
   let url: string | undefined
-  // try/catch to avoid passToClient assertUsage(), although I'd expect this to not be needed since we're accessing pageContext and not pageContextForUserConsumption
+  // try/catch to avoid passToClient assertUsage() (although: this may not be needed anymore, since we're now accessing pageContext and not pageContextForUserConsumption)
   try {
-    url = pageContext.urlOriginal
+    url =
+      // Client Routing
+      pageContext.urlPathname ??
+      // Server Routing
+      pageContext.urlOriginal
   } catch {}
   url = url ?? window.location.href
   return url

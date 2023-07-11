@@ -1,3 +1,14 @@
+- Catch infinite redirect/rewrite
+
+- Remove assertInfo()
+- Isomorphic colors
+- Remove all "this log isn't shown in production"
+- improve ignoring of dist/
+- client/shared/
+  client/runtime-server-routing/
+  client/runtime-client-routing/
+  client/router.js
+
 V1 design stable release:
  - Implements TODO comments
  - Minimize what client-side loads

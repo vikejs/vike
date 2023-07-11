@@ -18,7 +18,7 @@ async function executeOnBeforeRouteHook(
   }
 ): Promise<null | {
   urlOriginal?: string
-  _urlPristine?: string
+  _urlOriginalPristine?: string
   _pageId?: string | null
   routeParams?: Record<string, string>
 }> {
@@ -75,7 +75,15 @@ async function executeOnBeforeRouteHook(
       hookReturn.pageContext.urlOriginal,
       `${errPrefix} returned \`{ pageContext: { urlOriginal } }\` but urlOriginal`
     )
-    objectAssign(pageContextAddendumHook, { _urlPristine: pageContext.urlOriginal })
+    // Ugly workaround: ideally urlOriginal should be immutable.
+    //  - Instead of using pageContext._urlOriginalPristine, maybe we can keep pageContext.urlOriginal immutable while re-using `pageContext.urlRewrite`.
+    //  - Or better yet we rename pageContext.urlRewrite to pageContext.urlLogical and we allow the user to override pageContext.urlLogical, and we rename pageContext.urlOriginal => `pageContext.urlReal`.
+    //    - pageContext.urlReal / pageContext.urlLogical
+    //                         VS
+    //      pageContext.urlReal / pageContext.urlModified
+    //                         VS
+    //      pageContext.urlOriginal / pageContext.urlModified
+    objectAssign(pageContextAddendumHook, { _urlOriginalPristine: pageContext.urlOriginal })
   }
 
   assertPageContextProvidedByUser(hookReturn.pageContext, {

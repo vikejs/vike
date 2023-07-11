@@ -4,12 +4,22 @@ export { renderErrorPage }
 export { isAbortError }
 export { logAbortErrorHandled }
 export { RenderErrorPage }
+export { getPageContextFromRewrite }
 export type { StatusCodeAbort }
-
-// TODO: catch infinte loop
+export type { AbortError }
+export type { PageContextFromRewrite }
 
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
-import { assert, assertInfo, assertWarning, checkType, joinEnglish, objectAssign, projectInfo } from './utils'
+import {
+  assert,
+  assertInfo,
+  assertUsage,
+  assertWarning,
+  checkType,
+  joinEnglish,
+  objectAssign,
+  projectInfo
+} from './utils'
 
 type StatusCodeAbort = StatusCodeRedirect | StatusCodeError
 type StatusCodeRedirect = 301 | 302
@@ -30,9 +40,10 @@ function redirect(statusCode: StatusCodeRedirect, url: string, pageContextAdditi
   assertStatusCode(statusCode, [301, 302], 'redirect')
   pageContextAddition = pageContextAddition ?? {}
   objectAssign(pageContextAddition, {
-    _redirect: url,
     _statusCode: statusCode,
-    _abortCaller: abortCaller
+    _abortCaller: abortCaller,
+    _abortCallerArgs: [String(statusCode)],
+    urlRedirect: url
   })
   return RenderAbort(pageContextAddition)
 }
@@ -42,16 +53,18 @@ function redirect(statusCode: StatusCodeRedirect, url: string, pageContextAdditi
  *
  * https://vite-plugin-ssr.com/abort
  *
- * @param url The URL to render.
+ * @param urlRewrite The URL to render.
  * @param pageContextAddition [Optional] Add pageContext values.
  */
-function renderUrl(url: string, pageContextAddition?: Record<string, unknown>): Error {
+function renderUrl(urlRewrite: string, pageContextAddition?: Record<string, unknown>): Error {
   const abortCaller = 'renderUrl' as const
   assertPageContextProvidedByUser(pageContextAddition, { abortCaller })
   pageContextAddition = pageContextAddition ?? {}
   objectAssign(pageContextAddition, {
-    _renderUrl: url,
-    _abortCaller: abortCaller
+    _renderUrl: urlRewrite,
+    _abortCaller: abortCaller,
+    _abortCallerArgs: [`'${urlRewrite}'`],
+    urlRewrite
   })
   return RenderAbort(pageContextAddition)
 }
@@ -86,22 +99,37 @@ function renderErrorPage(
     _statusCode: statusCode,
     errorReason,
     is404: statusCode === 404,
-    _abortCaller: abortCaller
+    _abortCaller: abortCaller,
+    _abortCallerArgs: [String(statusCode), `'${errorReason}'`]
   })
   return RenderAbort(pageContextAddition)
 }
 
+// /** Num */
+// function a(i1: number): any;
+// /** Str */
+// function a(i2: string): any;
+// function a(i: any) {
+// }
+// a
+// a('a')
+// a(1)
+
 type PageContextRenderAbort = Record<string, unknown> & {
-  _abortCaller: 'renderErrorPage' | 'redirect' | 'renderUrl'
-}
-/* Is this needed?
-  | {
-      _redirect:  string
-    }
-  | {
-      _renderUrl: string
-    }
-    */
+  _abortCallerArgs: string[]
+} & (
+    | {
+        _abortCaller: 'redirect'
+        urlRedirect: string
+      }
+    | {
+        _abortCaller: 'renderUrl'
+        urlRewrite: string
+      }
+    | {
+        _abortCaller: 'renderErrorPage'
+      }
+  )
 function RenderAbort(pageContextAddition: PageContextRenderAbort): Error {
   const err = new Error('RenderAbort')
   objectAssign(err, { _pageContextAddition: pageContextAddition, [stamp]: true })
@@ -135,17 +163,20 @@ function isAbortError(thing: unknown): thing is AbortError {
   return typeof thing === 'object' && thing !== null && stamp in thing
 }
 
-function logAbortErrorHandled(err: AbortError, isProduction: boolean, pageContext: { urlOriginal: string }) {
+function logAbortErrorHandled(
+  err: AbortError,
+  isProduction: boolean,
+  pageContext: { urlOriginal: string; urlRewrite?: null | string }
+) {
   if (isProduction) return
-  const abortCaller = err._pageContextAddition._abortCaller
-  const { urlOriginal } = pageContext
-  assert(urlOriginal)
-  // TODO: Replace assertInfo() with proper logger implementation
-  assertInfo(
-    false,
-    `throw ${abortCaller}() successfully handled while rendering URL '${urlOriginal}' (this log isn't shown in production)`,
-    { onlyOnce: false }
-  )
+  const { _abortCaller: abortCaller, _abortCallerArgs: abortCallerArgs } = err._pageContextAddition
+  const urlCurrent = pageContext.urlRewrite ?? pageContext.urlOriginal
+  assert(urlCurrent)
+  // TODO: add color for server-side
+  const msgIntro = `throw ${abortCaller}(${abortCallerArgs.join(', ')})`
+  assertInfo(false, `${msgIntro} while rendering URL '${urlCurrent}' (this log isn't shown in production)`, {
+    onlyOnce: false
+  })
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'renderErrorPage' | 'redirect') {
@@ -158,4 +189,31 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
     `Unepexected status code ${statusCode} passed to ${caller}(), we recommend ${expectedEnglish} instead. (Or reach out at ${projectInfo.githubRepository}/issues/1008 if you believe ${statusCode} should be added.)`,
     { onlyOnce: true }
   )
+}
+
+type PageContextFromRewrite = { urlRewrite: string } & Record<string, unknown>
+function getPageContextFromRewrite(
+  pageContextsFromRewrite: PageContextFromRewrite[]
+): { urlRewrite: null | string } & Record<string, unknown> {
+  assertNotInfiniteLoop(pageContextsFromRewrite)
+  const pageContextFromRewriteFirst = pageContextsFromRewrite[0]
+  if (!pageContextFromRewriteFirst) return { urlRewrite: null }
+  const pageContextFromAllRewrites = pageContextFromRewriteFirst
+  pageContextsFromRewrite.forEach((pageContextFromRewrite) => {
+    Object.assign(pageContextFromAllRewrites, pageContextFromRewrite)
+  })
+  return pageContextFromAllRewrites
+}
+function assertNotInfiniteLoop(pageContextsFromRewrite: PageContextFromRewrite[]) {
+  const urlRewriteList: string[] = []
+  pageContextsFromRewrite.forEach(({ urlRewrite }) => {
+    {
+      const idx = urlRewriteList.indexOf(urlRewrite)
+      if (idx !== -1) {
+        const loop: string = [...urlRewriteList.slice(idx), urlRewrite].map((url) => `renderUrl(${url})`).join(' => ')
+        assertUsage(false, `Infinite loop of renderUrl() calls: ${loop}`)
+      }
+    }
+    urlRewriteList.push(urlRewrite)
+  })
 }
