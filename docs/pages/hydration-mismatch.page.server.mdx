@@ -48,19 +48,14 @@ There was an error while hydrating. Because the error happened outside of a Susp
 
 ## Example
 
-Let's imagine we render the current date's milliseconds:
+This component causes a hydration mismatch because the milliseconds rendered to HTML (e.g. `<span>123</span>`) won't match the milliseconds rendered in the browser (e.g. `<span>167</span>`).
+
 ```jsx
 <span>{ new Date().getMilliseconds() }</span>
 ```
-This induces a hydration mismatch
-because the milliseconds rendered to HTML
-(e.g. `<span>123</span>`)
-won't match the milliseconds rendered on the browser-side
-(e.g. `<span>167</span>`).
 
 
-To prevent the hydration mismatch, we should ensure that the same milliseconds value is rendered.
-We can do that by using the [`onBeforeRender()` hook](/onBeforeRender).
+Instead, to prevent the hydration mismatch:
 
 ```js
 export { onBeforeRender }
@@ -78,15 +73,18 @@ async function onBeforeRender() {
 <span>{ pageContext.milliseconds }</span>
 ```
 
-What happens here is that `pageContext.milliseconds` will be set exactly once, so that the same milliseconds value will be rendered to HTML in Node.js and hydrated on the browser-side. (We use [`export passToClient = ['milliseconds']`](/passToClient) to pass `pageContext.milliseconds` to the browser.)
+The `pageContext.milliseconds` value is set exactly once, which means that the milliseconds value is the same when rendered to HTML on the server-side and when hydrated in the browser.
 
 
 ## Common causes & solutions
 
 Common causes:
- - **Rendered content is actually different**. Make sure that your components render the same content in Node.js as well as in the browser.
- - **Browser cache**: While developing, make sure to disable your browser's cache to ensure that your browser doesn't load cached & outdated JavaScript.
- - **Proxies**: If you use a proxy, make sure it doesn't apply problematic HTML transfomers. For example, if you use Cloudflare, you have to disable Cloudflare's automatic HTML minifier.
+ - **Rendered content is actually different**. Make sure your components render the same content when rendered to HTML on the server-side and when rendered/hydrated on the client-side.
+   > See example above.
+ - **Proxies**: Make sure your proxies don't apply problematic HTML transformations. For example, most HTML minifiers cause hydration mismatches and have to be disabled.
+   > If you use Cloudflare, you have to disable Cloudflare's automatic HTML minifier.
+ - **Browser cache**: Your browser's cache may load cached & outdated JavaScript. This may cause hydration mismatches if a component is outdated on the client-side and renders something else than the up-to-date component on the server-side. Clear your browser cache and try again.
+    > In principle, this shouldn't happen because Vite always busts the cache whenever a file is changed. If you get issues with hydration mismatches related to browser caching, then let us know and we'll look into it.
 
 With React:
  - **Old React versions** are buggy around stiching text segments leading to `Warning: Text content did not match.`. Make sure to use the latest React version.
