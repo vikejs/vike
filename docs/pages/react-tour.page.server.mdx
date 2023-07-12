@@ -53,7 +53,7 @@ Unlike Next.js, we control how our pages are rendered.
 
 import ReactDOMServer from "react-dom/server";
 import React from "react";
-import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
+import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr/server";
 
 export { render };
 
@@ -75,19 +75,21 @@ async function render(pageContext) {
       </body>
     </html>`;
 }
+ 
+export const passToClient = ["pageProps"]
 ```
 ```jsx
 // /renderer/_default.page.client.jsx
 // Environment: browser
 
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import React from "react";
 
 export { render };
 
 async function render(pageContext) {
   const { Page, pageProps } = pageContext
-  ReactDOM.hydrate(
+  ReactDOM.hydrateRoot(
     <Page {...pageProps} />,
     document.getElementById("page-view")
   );
