@@ -80,7 +80,7 @@ The `pageContext.milliseconds` value is set exactly once, which means that the m
 
 Common causes:
  - **Rendered content is actually different**. Make sure your components render the same content when rendered to HTML on the server-side and when rendered/hydrated on the client-side.
-   > See example above.
+   > See [example](#example) above.
  - **Proxies**: Make sure your proxies don't apply problematic HTML transformations. For example, most HTML minifiers cause hydration mismatches and have to be disabled.
    > If you use Cloudflare, you have to disable Cloudflare's automatic HTML minifier.
  - **Browser cache**: Your browser's cache may load cached & outdated JavaScript. This may cause hydration mismatches if a component is outdated on the client-side and renders something else than the up-to-date component on the server-side. Clear your browser cache and try again.
