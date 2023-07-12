@@ -83,11 +83,11 @@ Common causes:
    > See [example](#example) above.
  - **Proxies**: Make sure your proxies don't apply problematic HTML transformations. For example, most HTML minifiers cause hydration mismatches and have to be disabled.
    > If you use Cloudflare, you have to disable Cloudflare's automatic HTML minifier.
- - **Browser cache**: Your browser's cache may load cached & outdated JavaScript. This may cause hydration mismatches if a component is outdated on the client-side and renders something else than the up-to-date component on the server-side. Clear your browser cache and try again.
-    > In principle, this shouldn't happen because Vite always busts the cache whenever a file is changed. If you get issues with hydration mismatches related to browser caching, then let us know and we'll look into it.
+ - **Browser cache**: Your browser's cache may load cached & outdated JavaScript, which may cause hydration mismatches if a component is outdated on the client-side and renders something else than the up-to-date component on the server-side. Clear your browser cache and try again.
+    > In principle, this shouldn't happen since Vite always busts the browser cache whenever a file is changed. If you get issues with hydration mismatches related to browser caching, then let us know and we'll look into it.
 
 With React:
- - **Old React versions** are buggy around stiching text segments leading to `Warning: Text content did not match.`. Make sure to use the latest React version.
+ - **Old React versions** are buggy around stiching text segments leading to `Warning: Text content did not match`. Update to `react@18.2.0` or above.
 
 
 ## Suppress Hydration Mismatch
