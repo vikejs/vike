@@ -90,8 +90,8 @@ export { render };
 async function render(pageContext) {
   const { Page, pageProps } = pageContext
   ReactDOM.hydrateRoot(
-    <Page {...pageProps} />,
-    document.getElementById("page-view")
+    document.getElementById("page-view"),
+    <Page {...pageProps} />
   );
 }
 ```
