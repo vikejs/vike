@@ -127,6 +127,11 @@ async function prerenderPageContext(
 
   addComputedUrlProps(pageContext)
 
+  /* Should we execute the guard() hook upon pre-rendering? Is there a use case for this?
+   *  - It isn't trivial to implement, as it requires to duplicate / factor out the isAbortError() handling
+  await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionServerSide(pageContext))
+  */
+
   await executeOnBeforeRenderHooks(pageContext)
 
   const { htmlRender, renderHook } = await executeOnRenderHtmlHook(pageContext)
