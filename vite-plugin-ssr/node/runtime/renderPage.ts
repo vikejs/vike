@@ -1,5 +1,5 @@
 export { renderPage }
-export { renderPage_setWrapper }
+export { renderPage_addWrapper }
 
 import { getRenderContext, initPageContext, RenderContext, renderPageContext } from './renderPage/renderPageContext'
 import { route } from '../../shared/route'
@@ -28,7 +28,7 @@ let renderPage_wrapper = async <PageContextReturn>(_httpRequestId: number, ret: 
   pageContextReturn: await ret(),
   onRequestDone: () => {}
 })
-const renderPage_setWrapper = (wrapper: typeof renderPage_wrapper) => {
+const renderPage_addWrapper = (wrapper: typeof renderPage_wrapper) => {
   renderPage_wrapper = wrapper
 }
 

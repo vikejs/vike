@@ -14,7 +14,7 @@
 export { getHttpRequestAsyncStore }
 export { installHttpRequestAsyncStore }
 
-import { renderPage_setWrapper } from '../../runtime/renderPage'
+import { renderPage_addWrapper } from '../../runtime/renderPage'
 import { assert, assertIsNotProductionRuntime, isObject } from '../utils'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { getConfigBuildErrorFormatted } from '../plugins/importUserCode/v1-design/transpileAndExecuteFile'
@@ -41,7 +41,7 @@ async function installHttpRequestAsyncStore(): Promise<void> {
     return
   }
   asyncLocalStorage = new mod.AsyncLocalStorage()
-  renderPage_setWrapper(async (httpRequestId, renderPage) => {
+  renderPage_addWrapper(async (httpRequestId, renderPage) => {
     assert(asyncLocalStorage)
 
     const loggedErrors = new Set<unknown>()
