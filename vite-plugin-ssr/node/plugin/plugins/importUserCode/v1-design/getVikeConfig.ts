@@ -1,6 +1,7 @@
 export { getVikeConfig }
 export { reloadVikeConfig }
 export { vikeConfigDependencies }
+export { isVikeConfigFile }
 
 import {
   assertPosixPath,
@@ -1300,4 +1301,8 @@ function assertImport(
       assertUsage(false, `${errIntro2} exist?`)
     }
   }
+}
+
+function isVikeConfigFile(filePath: string): boolean {
+  return !!getConfigName(filePath)
 }
