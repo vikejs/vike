@@ -452,7 +452,7 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Boostrap',
+    title: 'Bootstrap',
     url: '/bootstrap'
   },
   {
