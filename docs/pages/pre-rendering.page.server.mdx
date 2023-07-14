@@ -67,10 +67,10 @@ The only difference between SSG and SSR is when the pages' HTML is rendered:
 
 In a nutshell: we should use pre-rendering whenever we can.
 
-Because pre-rendering removes the need for a production server and therefore makes deployment easy. It's also significantly more performant as HTML isn't re-generated on every HTTP request.
+Because pre-rendering removes the need for a production server and therefore makes deployment easy. It's also significantly more performant as the HTML isn't re-generated on every HTTP request.
 
 But pre-rendering cannot be used for every kind of website.
 
-Pre-rendering cannot be used for websites that have highly dynamic content. For example a social site such as [Hacker News](https://news.ycombinator.com/) or [Reddit](https://www.reddit.com/): new content is created every time a user shares a link or writes a comment. We cannot pre-render all our pages again and again every other (milli)second every time there is new content. (In theory, it's possible to pre-render only the subset of pages that are affected by new content, but it isn't practical and we recommend against this practice.)
+Pre-rendering cannot be used for websites with content that changes very frequently. For example, a social site such as [Hacker News](https://news.ycombinator.com/) or [Reddit](https://www.reddit.com/): new content is created every time a user shares a link or writes a comment. We cannot pre-render *all* pages again and again every other (milli)second whenever there is new content. (In theory, it's possible to re-render only the subset of pages that are affected by new content, but it isn't practical and we recommend against this practice.)
 
-Pre-rendering can be used for websites with content that changes only occasionally (e.g. a few times a day). For example, the content of `https://vite-plugin-ssr.com` changes only when the maintainers updates the documentation, and all the pages of `https://vite-plugin-ssr.com` can be pre-rendered again when it's re-deployed. Thanks to pre-rendering, `https://vite-plugin-ssr.com` is deployed to the static host <Link href="/github-pages" text="GitHub Pages" />, which is a lot easier (and more performant) than using a production server.
+Pre-rendering can be used for websites with content that changes only occasionally. For example, the content of `https://vite-plugin-ssr.com` changes only when a maintainer updates the documentation: all pages of `https://vite-plugin-ssr.com` can then be pre-rendered again. Thanks to pre-rendering, `https://vite-plugin-ssr.com` is deployed to the static host <Link href="/github-pages" text="GitHub Pages" />, which is a lot easier (and more performant) than using a production server.
