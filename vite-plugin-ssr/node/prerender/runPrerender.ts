@@ -90,6 +90,7 @@ type PrerenderContext = {
 
 type PageContext = {
   urlOriginal: string
+  _urlRewrite: null
   _urlOriginalBeforeHook?: string
   _urlOriginalModifiedByHook?: TransformerHook
   _providedByHook: ProvidedByHook
@@ -487,7 +488,12 @@ async function handlePagesWithStaticRoutes(
 }
 
 function createPageContext(urlOriginal: string, renderContext: RenderContext, prerenderContext: PrerenderContext) {
-  const pageContext = {}
+  const pageContext = {
+    _urlHandler: null,
+    _urlRewrite: null,
+    _noExtraDir: prerenderContext._noExtraDir,
+    _prerenderContext: prerenderContext
+  }
   const pageContextInit = {
     urlOriginal,
     ...prerenderContext.pageContextInit
@@ -496,11 +502,6 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
     const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitAddendum)
   }
-  objectAssign(pageContext, {
-    _urlHandler: null,
-    _noExtraDir: prerenderContext._noExtraDir,
-    _prerenderContext: prerenderContext
-  })
   addComputedUrlProps(
     pageContext,
     // We set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in a onPrerenderStart() hook, e.g. /examples/i18n/

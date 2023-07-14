@@ -112,6 +112,7 @@ async function prerenderPageContext(
     urlOriginal: string
     routeParams: Record<string, string>
     _pageId: string
+    _urlRewrite: null | string
     _httpRequestId: number | null
     _usesClientRouter: boolean
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
@@ -156,7 +157,17 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
     return null
   }
 
-  const pageContext = {}
+  const pageContext = {
+    _pageId: errorPageId,
+    _httpRequestId: null,
+    _urlRewrite: null,
+    is404: true,
+    routeParams: {},
+    // `prerender404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
+    _usesClientRouter: false,
+    _routeMatches: []
+  }
+
   const pageContextInit = {
     urlOriginal: '/fake-404-url', // A URL is needed for `applyViteHtmlTransform`
     ...pageContextInit_
@@ -165,15 +176,6 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
     const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitAddendum)
   }
-  objectAssign(pageContext, {
-    _pageId: errorPageId,
-    _httpRequestId: null,
-    is404: true,
-    routeParams: {},
-    // `prerender404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
-    _usesClientRouter: false,
-    _routeMatches: []
-  })
 
   const pageFiles = await loadPageFilesServer(pageContext)
   objectAssign(pageContext, pageFiles)

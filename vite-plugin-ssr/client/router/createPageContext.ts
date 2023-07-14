@@ -25,6 +25,7 @@ async function createPageContext<T extends { urlOriginal: string }>(pageContextB
   const pageContext = {
     _objectCreatedByVitePluginSsr: true,
     _urlHandler: null,
+    _urlRewrite: null,
     _baseServer: baseServer,
     _isProduction: import.meta.env.PROD,
     // TODO: use GlobalContext instead

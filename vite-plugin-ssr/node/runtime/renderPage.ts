@@ -342,8 +342,14 @@ async function renderPageErrorPage(
   httpRequestId: number,
   pageContextFromRenderAbort: null | Record<string, unknown>
 ): Promise<PageContextAfterRender> {
+  assert(errNominalPage)
   const pageContext = {
-    _httpRequestId: httpRequestId
+    _httpRequestId: httpRequestId,
+    is404: false,
+    _pageId: null,
+    _urlRewrite: null,
+    errorWhileRendering: errNominalPage as Error,
+    routeParams: {} as Record<string, string>
   }
   {
     const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
@@ -353,14 +359,6 @@ async function renderPageErrorPage(
     const pageContextAddendum = handleUrl(pageContext.urlOriginal, null)
     objectAssign(pageContext, pageContextAddendum)
   }
-
-  assert(errNominalPage)
-  objectAssign(pageContext, {
-    is404: false,
-    _pageId: null,
-    errorWhileRendering: errNominalPage as Error,
-    routeParams: {} as Record<string, string>
-  })
 
   addComputedUrlProps(pageContext)
 

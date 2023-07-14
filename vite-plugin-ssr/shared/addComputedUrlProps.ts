@@ -80,7 +80,7 @@ function addComputedUrlProps<PageContext extends Record<string, unknown> & PageC
 
 type PageContextUrlSource = {
   urlOriginal: string
-  _urlRewrite?: string | null
+  _urlRewrite: string | null
   _baseServer: string
   _urlHandler: null | ((url: string) => string)
 }
