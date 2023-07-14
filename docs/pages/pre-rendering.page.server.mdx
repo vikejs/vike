@@ -1,5 +1,6 @@
 import { RepoLink, Link } from '@brillout/docpress'
 
+
 ## What is pre-rendering?
 
 Pre-rendering means to render the HTML of pages at build-time (when running `$ vite build`).
@@ -12,6 +13,20 @@ that you can deploy to so-called "static hosts" such as <Link href="/github-page
 If you don't pre-render, then you need a production server in order to be able to dynamically render the HTML of your pages at request-time. (A Node.js production server, or a Node.js-like production environment such as <Link href="/cloudflare-workers" text="Cloudflare Workers" /> or <Link href="/vercel" text="Vercel" />.)
 
 > Tools that pre-render pages are also known as "SSG" (Static-Site Generators).
+
+
+## Should I pre-render?
+
+In a nutshell: pre-render your pages whenever you can.
+
+Because pre-rendering removes the need for a production server and therefore makes deployment easy. It's also significantly more performant as the HTML isn't re-generated on every HTTP request.
+
+But pre-rendering cannot be used for every kind of website.
+
+Pre-rendering cannot be used for websites with content that changes very frequently. For example, a social site such as [Hacker News](https://news.ycombinator.com/) or [Reddit](https://www.reddit.com/): new content is created every time a user shares a link or writes a comment. Pre-rendering cannot be run again and again every other (milli)second whenever there is new content (Reddit has millions of pages which obviously cannot all be re-rendered every other millisecond). (In theory, it's possible to re-render only the subset of pages that are affected by new content, but it isn't practical and we recommend against this practice.)
+
+Pre-rendering can be used for websites with content that changes only occasionally. For example, the content of `https://vite-plugin-ssr.com` changes only when a maintainer updates the documentation: all pages of `https://vite-plugin-ssr.com` can then be pre-rendered again. Thanks to pre-rendering, `https://vite-plugin-ssr.com` is deployed to the static host <Link href="/github-pages" text="GitHub Pages" />, which is a lot easier (and more performant) than using a production server.
+
 
 ## How to pre-render
 
@@ -61,16 +76,3 @@ The only difference between SSG and SSR is *when* the HTML is rendered:
 - SSR: the HTML of pages is rendered at request-time (when the user goes to that page)
 
 > The client-side code of pages is loaded and executed in the user's browser and is therefore always executed at request-time.
-
-
-## Should I pre-render?
-
-In a nutshell: pre-render your pages whenever you can.
-
-Because pre-rendering removes the need for a production server and therefore makes deployment easy. It's also significantly more performant as the HTML isn't re-generated on every HTTP request.
-
-But pre-rendering cannot be used for every kind of website.
-
-Pre-rendering cannot be used for websites with content that changes very frequently. For example, a social site such as [Hacker News](https://news.ycombinator.com/) or [Reddit](https://www.reddit.com/): new content is created every time a user shares a link or writes a comment. Pre-rendering cannot be run again and again every other (milli)second whenever there is new content (Reddit has millions of pages which obviously cannot all be re-rendered every other millisecond). (In theory, it's possible to re-render only the subset of pages that are affected by new content, but it isn't practical and we recommend against this practice.)
-
-Pre-rendering can be used for websites with content that changes only occasionally. For example, the content of `https://vite-plugin-ssr.com` changes only when a maintainer updates the documentation: all pages of `https://vite-plugin-ssr.com` can then be pre-rendered again. Thanks to pre-rendering, `https://vite-plugin-ssr.com` is deployed to the static host <Link href="/github-pages" text="GitHub Pages" />, which is a lot easier (and more performant) than using a production server.
