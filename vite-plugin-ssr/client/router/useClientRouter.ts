@@ -25,7 +25,12 @@ import { isClientSideRoutable, skipLink } from './skipLink'
 import { isErrorFetchingStaticAssets } from '../loadPageFilesClientSide'
 import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history'
 import { defineNavigate } from './navigate'
-import { getPageContextFromRewrite, isAbortError, logAbortErrorHandled, PageContextFromRewrite } from '../../shared/route/RenderAbort'
+import {
+  getPageContextFromAllRewrites,
+  isAbortError,
+  logAbortErrorHandled,
+  PageContextFromRewrite
+} from '../../shared/route/RenderAbort'
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
   clientRoutingIsDisabled?: true
@@ -113,7 +118,7 @@ function useClientRouter() {
       serverSideRouteTo(urlOriginal)
       return
     }
-    const pageContextFromAllRewrites = getPageContextFromRewrite(pageContextsFromRewrite)
+    const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
     if (checkClientSideRenderable) {
       const urlLogical = pageContextFromAllRewrites.urlRewrite ?? urlOriginal
       let isClientRoutable: boolean
@@ -205,7 +210,7 @@ function useClientRouter() {
             isBackwardNavigation,
             pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAddition]
           })
-          return;
+          return
         }
         if (pageContextAddition._abortCaller === 'redirect') {
           await fetchAndRender({
@@ -216,7 +221,7 @@ function useClientRouter() {
             checkClientSideRenderable: true,
             pageContextsFromRewrite: []
           })
-          return;
+          return
         }
         assert(pageContextAddition._abortCaller === 'renderErrorPage')
         objectAssign(pageContext, pageContextAddition)

@@ -23,7 +23,7 @@ import {
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import {
   AbortError,
-  getPageContextFromRewrite,
+  getPageContextFromAllRewrites,
   isAbortError,
   logAbortErrorHandled,
   PageContextFromRewrite
@@ -143,7 +143,7 @@ async function renderPageAlreadyPrepared(
   let pageContextFirstAttemptSuccess: undefined | Awaited<ReturnType<typeof renderPageAttempt>>
   let pageContextFirstAttemptInit = {}
   {
-    const pageContextFromAllRewrites = getPageContextFromRewrite(pageContextsFromRewrite)
+    const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
     objectAssign(pageContextFirstAttemptInit, pageContextFromAllRewrites)
   }
   let errFirstAttempt: unknown

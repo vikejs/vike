@@ -4,7 +4,7 @@ export { renderErrorPage }
 export { isAbortError }
 export { logAbortErrorHandled }
 export { RenderErrorPage }
-export { getPageContextFromRewrite }
+export { getPageContextFromAllRewrites }
 export type { StatusCodeAbort }
 export type { AbortError }
 export type { PageContextFromRewrite }
@@ -166,7 +166,7 @@ function isAbortError(thing: unknown): thing is AbortError {
 function logAbortErrorHandled(
   err: AbortError,
   isProduction: boolean,
-  pageContext: { urlOriginal: string; urlRewrite?: null | string }
+  pageContext: { urlOriginal: string; urlRewrite: null | string }
 ) {
   if (isProduction) return
   const { _abortCaller: abortCaller, _abortCallerArgs: abortCallerArgs } = err._pageContextAddition
@@ -192,19 +192,16 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
 }
 
 type PageContextFromRewrite = { urlRewrite: string } & Record<string, unknown>
-function getPageContextFromRewrite(
-  pageContextsFromRewrite: PageContextFromRewrite[]
-): { urlRewrite: null | string } & Record<string, unknown> {
-  assertNotInfiniteLoop(pageContextsFromRewrite)
-  const pageContextFromRewriteFirst = pageContextsFromRewrite[0]
-  if (!pageContextFromRewriteFirst) return { urlRewrite: null }
-  const pageContextFromAllRewrites = pageContextFromRewriteFirst
+type PageContextFromAllRewrites = { urlRewrite: null | string } & Record<string, unknown>
+function getPageContextFromAllRewrites(pageContextsFromRewrite: PageContextFromRewrite[]): PageContextFromAllRewrites {
+  assertNoInfiniteLoop(pageContextsFromRewrite)
+  const pageContextFromAllRewrites: PageContextFromAllRewrites = { urlRewrite: null }
   pageContextsFromRewrite.forEach((pageContextFromRewrite) => {
     Object.assign(pageContextFromAllRewrites, pageContextFromRewrite)
   })
   return pageContextFromAllRewrites
 }
-function assertNotInfiniteLoop(pageContextsFromRewrite: PageContextFromRewrite[]) {
+function assertNoInfiniteLoop(pageContextsFromRewrite: PageContextFromRewrite[]) {
   const urlRewrites: string[] = []
   pageContextsFromRewrite.forEach(({ urlRewrite }) => {
     {
