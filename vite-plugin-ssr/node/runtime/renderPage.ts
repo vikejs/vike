@@ -313,12 +313,17 @@ async function renderPageAttempt(
     objectAssign(pageContext, pageContextInitAddendum)
   }
   {
-    const pageContextAddendum = handleUrl(pageContext.urlOriginal, pageContext._baseServer, pageContext.urlRewrite)
+    const pageContextAddendum = handleUrl(pageContext.urlOriginal, pageContext.urlRewrite)
     objectAssign(pageContext, pageContextAddendum)
   }
-  if (!pageContext._hasBaseServer) {
-    objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
-    return pageContext
+  {
+    const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(pageContext.urlOriginal)
+    const hasBaseServer =
+      parseUrl(urlWithoutPageContextRequestSuffix, pageContext._baseServer).hasBaseServer || !!pageContext.urlRewrite
+    if (!hasBaseServer) {
+      objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
+      return pageContext
+    }
   }
 
   addComputedUrlProps(pageContext)
@@ -351,7 +356,7 @@ async function renderPageErrorPage(
     objectAssign(pageContext, pageContextInitAddendum)
   }
   {
-    const pageContextAddendum = handleUrl(pageContext.urlOriginal, pageContext._baseServer, null)
+    const pageContextAddendum = handleUrl(pageContext.urlOriginal, null)
     objectAssign(pageContext, pageContextAddendum)
   }
 
@@ -379,20 +384,16 @@ async function renderPageErrorPage(
 
 function handleUrl(
   urlOriginal: string,
-  baseServer: string,
   urlRewrite: string | null
 ): {
   isClientSideNavigation: boolean
-  _hasBaseServer: boolean
   _urlHandler: (urlOriginal: string) => string
 } {
   assert(isUrlValid(urlOriginal))
   assert(urlRewrite === null || isUrlValid(urlRewrite))
-  const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
-  const hasBaseServer = parseUrl(urlWithoutPageContextRequestSuffix, baseServer).hasBaseServer || !!urlRewrite
+  const { isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
   const pageContextAddendum = {
     isClientSideNavigation: isPageContextRequest,
-    _hasBaseServer: hasBaseServer,
     _urlHandler: (url: string) => handlePageContextRequestUrl(url).urlWithoutPageContextRequestSuffix
   }
   return pageContextAddendum
