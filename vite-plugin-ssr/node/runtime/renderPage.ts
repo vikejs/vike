@@ -139,29 +139,28 @@ async function renderPageAlreadyPrepared(
   renderContext: RenderContext,
   pageContextsFromRewrite: PageContextFromRewrite[]
 ): Promise<PageContextAfterRender> {
-  // TODO: Rename FirstAttempt => NominalPage
-  let pageContextFirstAttemptSuccess: undefined | Awaited<ReturnType<typeof renderPageAttempt>>
-  let pageContextFirstAttemptInit = {}
+  let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageAttempt>>
+  let pageContextNominalPageInit = {}
   {
     const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
-    objectAssign(pageContextFirstAttemptInit, pageContextFromAllRewrites)
+    objectAssign(pageContextNominalPageInit, pageContextFromAllRewrites)
   }
-  let errFirstAttempt: unknown
+  let errNominalPage: unknown
   {
     try {
-      pageContextFirstAttemptSuccess = await renderPageAttempt(
+      pageContextNominalPageSuccess = await renderPageAttempt(
         pageContextInit,
-        pageContextFirstAttemptInit,
+        pageContextNominalPageInit,
         renderContext,
         httpRequestId
       )
     } catch (err) {
-      errFirstAttempt = err
-      assert(errFirstAttempt)
-      logRuntimeError(errFirstAttempt, httpRequestId)
+      errNominalPage = err
+      assert(errNominalPage)
+      logRuntimeError(errNominalPage, httpRequestId)
     }
-    if (!errFirstAttempt) {
-      assert(pageContextFirstAttemptSuccess === pageContextFirstAttemptInit)
+    if (!errNominalPage) {
+      assert(pageContextNominalPageSuccess === pageContextNominalPageInit)
     }
   }
 
@@ -170,37 +169,37 @@ async function renderPageAlreadyPrepared(
     // No error page
     !getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs) &&
     // Is failure
-    ((errFirstAttempt && !isAbortError(errFirstAttempt)) ||
-      (pageContextFirstAttemptSuccess && pageContextFirstAttemptSuccess.httpResponse?.statusCode !== 200))
+    ((errNominalPage && !isAbortError(errNominalPage)) ||
+      (pageContextNominalPageSuccess && pageContextNominalPageSuccess.httpResponse?.statusCode !== 200))
   ) {
     const isV1 = renderContext.pageConfigs.length > 0
     warnMissingErrorPage(isV1)
   }
   // Log upon 404
   if (
-    !!pageContextFirstAttemptSuccess &&
-    'is404' in pageContextFirstAttemptSuccess &&
-    pageContextFirstAttemptSuccess.is404 === true
+    !!pageContextNominalPageSuccess &&
+    'is404' in pageContextNominalPageSuccess &&
+    pageContextNominalPageSuccess.is404 === true
   ) {
-    await log404(pageContextFirstAttemptSuccess)
+    await log404(pageContextNominalPageSuccess)
   }
 
-  if (errFirstAttempt === undefined) {
-    assert(pageContextFirstAttemptSuccess)
-    return pageContextFirstAttemptSuccess
+  if (errNominalPage === undefined) {
+    assert(pageContextNominalPageSuccess)
+    return pageContextNominalPageSuccess
   } else {
-    assert(errFirstAttempt)
-    assert(pageContextFirstAttemptSuccess === undefined)
-    assert(pageContextFirstAttemptInit)
-    assert(hasProp(pageContextFirstAttemptInit, 'urlOriginal', 'string'))
+    assert(errNominalPage)
+    assert(pageContextNominalPageSuccess === undefined)
+    assert(pageContextNominalPageInit)
+    assert(hasProp(pageContextNominalPageInit, 'urlOriginal', 'string'))
 
     let pageContextFromRenderAbort: null | Record<string, unknown> = null
-    if (isAbortError(errFirstAttempt)) {
+    if (isAbortError(errNominalPage)) {
       const handled = await handleAbortError(
-        errFirstAttempt,
+        errNominalPage,
         pageContextsFromRewrite,
         pageContextInit,
-        pageContextFirstAttemptInit,
+        pageContextNominalPageInit,
         httpRequestId,
         renderContext
       )
@@ -216,8 +215,8 @@ async function renderPageAlreadyPrepared(
     try {
       pageContextErrorPage = await renderPageErrorPage(
         pageContextInit,
-        errFirstAttempt,
-        pageContextFirstAttemptInit,
+        errNominalPage,
+        pageContextNominalPageInit,
         renderContext,
         httpRequestId,
         pageContextFromRenderAbort
@@ -228,7 +227,7 @@ async function renderPageAlreadyPrepared(
           errErrorPage,
           pageContextsFromRewrite,
           pageContextInit,
-          pageContextFirstAttemptInit,
+          pageContextNominalPageInit,
           httpRequestId,
           renderContext
         )
@@ -241,16 +240,16 @@ async function renderPageAlreadyPrepared(
             `Failed to render error page because ${abortCall} was called: make sure ${abortCaller} doesn't occur while the error page is being rendered.`,
             { onlyOnce: false }
           )
-          const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(errFirstAttempt, pageContextInit)
+          const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(errNominalPage, pageContextInit)
           return pageContextHttpReponseNull
         }
         // `throw redirect()` and `throw renderUrl()`
         return handled.pageContextReturn
       }
-      if (isNewError(errErrorPage, errFirstAttempt)) {
+      if (isNewError(errErrorPage, errNominalPage)) {
         logRuntimeError(errErrorPage, httpRequestId)
       }
-      const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(errFirstAttempt, pageContextInit)
+      const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(errNominalPage, pageContextInit)
       return pageContextHttpReponseNull
     }
     return pageContextErrorPage
@@ -337,8 +336,8 @@ async function renderPageAttempt(
 
 async function renderPageErrorPage(
   pageContextInit: { urlOriginal: string },
-  errFirstAttempt: unknown,
-  pageContextFirstAttemptPartial: Record<string, unknown>,
+  errNominalPage: unknown,
+  pageContextNominalPagePartial: Record<string, unknown>,
   renderContext: RenderContext,
   httpRequestId: number,
   pageContextFromRenderAbort: null | Record<string, unknown>
@@ -355,11 +354,11 @@ async function renderPageErrorPage(
     objectAssign(pageContext, pageContextAddendum)
   }
 
-  assert(errFirstAttempt)
+  assert(errNominalPage)
   objectAssign(pageContext, {
     is404: false,
     _pageId: null,
-    errorWhileRendering: errFirstAttempt as Error,
+    errorWhileRendering: errNominalPage as Error,
     routeParams: {} as Record<string, string>
   })
 
@@ -370,7 +369,7 @@ async function renderPageErrorPage(
   }
 
   objectAssign(pageContext, {
-    _routeMatches: (pageContextFirstAttemptPartial as PageContextDebug)._routeMatches || 'ROUTE_ERROR'
+    _routeMatches: (pageContextNominalPagePartial as PageContextDebug)._routeMatches || 'ROUTE_ERROR'
   })
 
   assert(pageContext.errorWhileRendering)
@@ -423,14 +422,14 @@ async function handleAbortError(
   errAbort: AbortError,
   pageContextsFromRewrite: PageContextFromRewrite[],
   pageContextInit: { urlOriginal: string },
-  pageContextFirstAttemptInit: { urlOriginal: string; urlRewrite: null | string } & Record<string, unknown>,
+  pageContextNominalPageInit: { urlOriginal: string; urlRewrite: null | string } & Record<string, unknown>,
   httpRequestId: number,
   renderContext: RenderContext
 ): Promise<
   | { pageContextReturn: PageContextAfterRender; pageContextAddition?: never }
   | { pageContextReturn?: never; pageContextAddition: Record<string, unknown> }
 > {
-  logAbortErrorHandled(errAbort, getGlobalContext().isProduction, pageContextFirstAttemptInit)
+  logAbortErrorHandled(errAbort, getGlobalContext().isProduction, pageContextNominalPageInit)
 
   const pageContextAddition = errAbort._pageContextAddition
 

@@ -7,9 +7,9 @@ const globalObject = getGlobalObject('runtime/renderPage/isNewError.ts', {
   wasAlreadyLogged: new WeakSet<object>()
 })
 
-function isNewError(errErrorPage: unknown, errFirstAttempt: unknown): boolean {
+function isNewError(errErrorPage: unknown, errNominalPage: unknown): boolean {
   warnIfObjectIsNotObject(errErrorPage)
-  return !isEquivalentError(errFirstAttempt, errErrorPage) || !hasAlreadyLogged(errFirstAttempt)
+  return !isEquivalentError(errNominalPage, errErrorPage) || !hasAlreadyLogged(errNominalPage)
 }
 function hasAlreadyLogged(err: unknown): boolean {
   if (!isObject(err)) return false
