@@ -1,5 +1,4 @@
 - Rename errorReason => abortReason
-- Rename urlRewrite and _renderUrl => _urlRewrite
 - Catch infinite redirect/rewrite
 
 - Remove assertInfo()

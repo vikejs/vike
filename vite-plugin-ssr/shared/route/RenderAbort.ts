@@ -43,7 +43,7 @@ function redirect(statusCode: StatusCodeRedirect, url: string, pageContextAdditi
     _statusCode: statusCode,
     _abortCaller: abortCaller,
     _abortCall: `throw redirect(${statusCode})` as const,
-    urlRedirect: url
+    _urlRedirect: url
   })
   return RenderAbort(pageContextAddition)
 }
@@ -61,7 +61,6 @@ function renderUrl(url: string, pageContextAddition?: Record<string, unknown>): 
   assertPageContextProvidedByUser(pageContextAddition, { abortCaller })
   pageContextAddition = pageContextAddition ?? {}
   objectAssign(pageContextAddition, {
-    _renderUrl: url,
     _abortCaller: abortCaller,
     _abortCall: `throw renderUrl('${url}')` as const,
     _urlRewrite: url
@@ -110,7 +109,7 @@ type PageContextRenderAbort = Record<string, unknown> & {
 } & (
     | {
         _abortCaller: 'redirect'
-        urlRedirect: string
+        _urlRedirect: string
       }
     | {
         _abortCaller: 'renderUrl'

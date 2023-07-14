@@ -14,7 +14,6 @@ type PageContextForUserConsumptionServerSide = {
   /** @deprecated */
   url: string
   urlPathname: string
-  urlRedirect: null | string
   urlParsed: PageContextUrlsPublic['urlParsed']
   routeParams: Record<string, string>
   Page: unknown

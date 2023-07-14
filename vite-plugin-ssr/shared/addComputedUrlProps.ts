@@ -41,8 +41,6 @@ type PageContextUrlsPublic = {
 }
 type PageContextUrlsPrivate = PageContextUrlsPublic & {
   _urlRewrite: string | null
-  /** The URL set by `throw redirect(statusCode, urlRedirect)` */
-  urlRedirect: string | null
 }
 
 function addComputedUrlProps<PageContext extends Record<string, unknown> & PageContextUrlSource>(
