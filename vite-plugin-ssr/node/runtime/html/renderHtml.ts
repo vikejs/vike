@@ -288,7 +288,7 @@ async function renderTemplate(
           false,
           getErrMsg(
             `\`${templateVar}\` which seems to be HTML code`,
-            "Did you forget to wrap the value with dangerouslySkipEscape()? (This warning isn't shown in production.)"
+            'Did you forget to wrap the value with dangerouslySkipEscape()?'
           ),
           { onlyOnce: false }
         )

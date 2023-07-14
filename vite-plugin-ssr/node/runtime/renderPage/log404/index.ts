@@ -26,10 +26,7 @@ async function log404(pageContext: {
       [
         `URL ${pc.bold(urlPathname)} doesn't match the route of any of your pages:`,
         getPagesAndRoutesInfo(pageRoutes),
-        [
-          'See https://vite-plugin-ssr.com/routing for more information about routing.',
-          "(This log isn't shown in production.)"
-        ].join(' ')
+        'See https://vite-plugin-ssr.com/routing for more information about routing.'
       ].join('\n'),
       { onlyOnce: false }
     )

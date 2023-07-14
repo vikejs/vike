@@ -2,7 +2,6 @@
 
 - Remove assertInfo()
 - Isomorphic colors
-- Remove all "this log isn't shown in production"
 - improve ignoring of dist/
 - client/shared/
   client/runtime-server-routing/

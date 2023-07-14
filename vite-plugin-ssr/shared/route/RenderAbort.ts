@@ -174,7 +174,7 @@ function logAbortErrorHandled(
   assert(urlCurrent)
   // TODO: add color for server-side
   const msgIntro = `throw ${abortCaller}(${abortCallerArgs.join(', ')})`
-  assertInfo(false, `${msgIntro} intercepted while rendering URL '${urlCurrent}' (this log isn't shown in production)`, {
+  assertInfo(false, `${msgIntro} intercepted while rendering URL '${urlCurrent}'`, {
     onlyOnce: false
   })
 }
