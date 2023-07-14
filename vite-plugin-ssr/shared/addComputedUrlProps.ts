@@ -89,15 +89,14 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
     urlHandler = (url: string) => url
   }
 
-  const urlSource = pageContext.urlRewrite ?? pageContext.urlOriginal
-  assert(urlSource)
-  assert(typeof urlSource === 'string')
-  const url = urlHandler(urlSource)
+  const url = pageContext.urlRewrite ?? pageContext.urlOriginal
+  assert(url && typeof url === 'string')
+  const urlLogical = urlHandler(url)
 
   const baseServer = pageContext._baseServer
   assert(baseServer.startsWith('/'))
 
-  return parseUrl(url, baseServer)
+  return parseUrl(urlLogical, baseServer)
 }
 function urlPathnameGetter(this: PageContextUrlSource) {
   const { pathname } = getUrlParsed(this)

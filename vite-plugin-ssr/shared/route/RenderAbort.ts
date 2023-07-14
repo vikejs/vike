@@ -53,18 +53,18 @@ function redirect(statusCode: StatusCodeRedirect, url: string, pageContextAdditi
  *
  * https://vite-plugin-ssr.com/abort
  *
- * @param urlRewrite The URL to render.
+ * @param url The URL to render.
  * @param pageContextAddition [Optional] Add pageContext values.
  */
-function renderUrl(urlRewrite: string, pageContextAddition?: Record<string, unknown>): Error {
+function renderUrl(url: string, pageContextAddition?: Record<string, unknown>): Error {
   const abortCaller = 'renderUrl' as const
   assertPageContextProvidedByUser(pageContextAddition, { abortCaller })
   pageContextAddition = pageContextAddition ?? {}
   objectAssign(pageContextAddition, {
-    _renderUrl: urlRewrite,
+    _renderUrl: url,
     _abortCaller: abortCaller,
-    _abortCallerArgs: [`'${urlRewrite}'`],
-    urlRewrite
+    _abortCallerArgs: [`'${url}'`],
+    urlRewrite: url
   })
   return RenderAbort(pageContextAddition)
 }
@@ -104,16 +104,6 @@ function renderErrorPage(
   })
   return RenderAbort(pageContextAddition)
 }
-
-// /** Num */
-// function a(i1: number): any;
-// /** Str */
-// function a(i2: string): any;
-// function a(i: any) {
-// }
-// a
-// a('a')
-// a(1)
 
 type PageContextRenderAbort = Record<string, unknown> & {
   _abortCallerArgs: string[]
