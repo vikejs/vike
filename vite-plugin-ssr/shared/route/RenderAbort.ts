@@ -205,15 +205,15 @@ function getPageContextFromRewrite(
   return pageContextFromAllRewrites
 }
 function assertNotInfiniteLoop(pageContextsFromRewrite: PageContextFromRewrite[]) {
-  const urlRewriteList: string[] = []
+  const urlRewrites: string[] = []
   pageContextsFromRewrite.forEach(({ urlRewrite }) => {
     {
-      const idx = urlRewriteList.indexOf(urlRewrite)
+      const idx = urlRewrites.indexOf(urlRewrite)
       if (idx !== -1) {
-        const loop: string = [...urlRewriteList.slice(idx), urlRewrite].map((url) => `renderUrl(${url})`).join(' => ')
+        const loop: string = [...urlRewrites.slice(idx), urlRewrite].map((url) => `renderUrl(${url})`).join(' => ')
         assertUsage(false, `Infinite loop of renderUrl() calls: ${loop}`)
       }
     }
-    urlRewriteList.push(urlRewrite)
+    urlRewrites.push(urlRewrite)
   })
 }
