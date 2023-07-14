@@ -313,7 +313,7 @@ async function renderPageAttempt(
     objectAssign(pageContext, pageContextInitAddendum)
   }
   {
-    const pageContextAddendum = handleUrl(pageContext)
+    const pageContextAddendum = handleUrl(pageContext.urlOriginal, pageContext._baseServer, pageContext.urlRewrite)
     objectAssign(pageContext, pageContextAddendum)
   }
   if (!pageContext._hasBaseServer) {
@@ -351,7 +351,7 @@ async function renderPageErrorPage(
     objectAssign(pageContext, pageContextInitAddendum)
   }
   {
-    const pageContextAddendum = handleUrl(pageContext)
+    const pageContextAddendum = handleUrl(pageContext.urlOriginal, pageContext._baseServer, null)
     objectAssign(pageContext, pageContextAddendum)
   }
 
@@ -377,17 +377,19 @@ async function renderPageErrorPage(
   return renderPageAlreadyRouted(pageContext)
 }
 
-function handleUrl(pageContext: { urlOriginal: string; _baseServer: string; urlRewrite?: string | null }): {
+function handleUrl(
+  urlOriginal: string,
+  baseServer: string,
+  urlRewrite: string | null
+): {
   isClientSideNavigation: boolean
   _hasBaseServer: boolean
   _urlHandler: (urlOriginal: string) => string
 } {
-  const { urlOriginal, urlRewrite } = pageContext
   assert(isUrlValid(urlOriginal))
-  assert(urlRewrite === undefined || urlRewrite === null || isUrlValid(urlRewrite))
+  assert(urlRewrite === null || isUrlValid(urlRewrite))
   const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
-  const hasBaseServer =
-    parseUrl(urlWithoutPageContextRequestSuffix, pageContext._baseServer).hasBaseServer || !!urlRewrite
+  const hasBaseServer = parseUrl(urlWithoutPageContextRequestSuffix, baseServer).hasBaseServer || !!urlRewrite
   const pageContextAddendum = {
     isClientSideNavigation: isPageContextRequest,
     _hasBaseServer: hasBaseServer,
