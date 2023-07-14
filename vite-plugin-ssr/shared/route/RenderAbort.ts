@@ -42,7 +42,7 @@ function redirect(statusCode: StatusCodeRedirect, url: string, pageContextAdditi
   objectAssign(pageContextAddition, {
     _statusCode: statusCode,
     _abortCaller: abortCaller,
-    _abortCallerArgs: [String(statusCode)],
+    _abortCall: `throw redirect(${statusCode})` as const,
     urlRedirect: url
   })
   return RenderAbort(pageContextAddition)
@@ -63,7 +63,7 @@ function renderUrl(url: string, pageContextAddition?: Record<string, unknown>): 
   objectAssign(pageContextAddition, {
     _renderUrl: url,
     _abortCaller: abortCaller,
-    _abortCallerArgs: [`'${url}'`],
+    _abortCall: `throw renderUrl('${url}')` as const,
     urlRewrite: url
   })
   return RenderAbort(pageContextAddition)
@@ -100,13 +100,13 @@ function renderErrorPage(
     errorReason,
     is404: statusCode === 404,
     _abortCaller: abortCaller,
-    _abortCallerArgs: [String(statusCode), `'${errorReason}'`]
+    _abortCall: `throw renderErrorPage(${statusCode}, '${errorReason}')` as const
   })
   return RenderAbort(pageContextAddition)
 }
 
 type PageContextRenderAbort = Record<string, unknown> & {
-  _abortCallerArgs: string[]
+  _abortCall: `throw redirect(${string})` | `throw renderUrl(${string})` | `throw renderErrorPage(${string})`
 } & (
     | {
         _abortCaller: 'redirect'
@@ -159,14 +159,11 @@ function logAbortErrorHandled(
   pageContext: { urlOriginal: string; urlRewrite: null | string }
 ) {
   if (isProduction) return
-  const { _abortCaller: abortCaller, _abortCallerArgs: abortCallerArgs } = err._pageContextAddition
   const urlCurrent = pageContext.urlRewrite ?? pageContext.urlOriginal
   assert(urlCurrent)
   // TODO: add color for server-side
-  const msgIntro = `throw ${abortCaller}(${abortCallerArgs.join(', ')})`
-  assertInfo(false, `${msgIntro} intercepted while rendering URL '${urlCurrent}'`, {
-    onlyOnce: false
-  })
+  const abortCall = err._pageContextAddition._abortCall
+  assertInfo(false, `${abortCall} intercepted while rendering URL '${urlCurrent}'`, { onlyOnce: false })
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'renderErrorPage' | 'redirect') {
