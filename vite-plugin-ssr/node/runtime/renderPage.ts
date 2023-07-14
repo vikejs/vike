@@ -295,7 +295,7 @@ function getPageContextHttpResponseRedirect(pageContextInit: Record<string, unkn
 
 async function renderPageAttempt(
   pageContextInit: { urlOriginal: string },
-  pageContext: { urlRewrite: null | string },
+  pageContext: { _urlRewrite: null | string },
   renderContext: RenderContext,
   httpRequestId: number
 ) {
@@ -307,13 +307,13 @@ async function renderPageAttempt(
     objectAssign(pageContext, pageContextInitAddendum)
   }
   {
-    const pageContextAddendum = handleUrl(pageContext.urlOriginal, pageContext.urlRewrite)
+    const pageContextAddendum = handleUrl(pageContext.urlOriginal, pageContext._urlRewrite)
     objectAssign(pageContext, pageContextAddendum)
   }
   {
     const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(pageContext.urlOriginal)
     const hasBaseServer =
-      parseUrl(urlWithoutPageContextRequestSuffix, pageContext._baseServer).hasBaseServer || !!pageContext.urlRewrite
+      parseUrl(urlWithoutPageContextRequestSuffix, pageContext._baseServer).hasBaseServer || !!pageContext._urlRewrite
     if (!hasBaseServer) {
       objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
       return pageContext
@@ -422,7 +422,7 @@ async function handleAbortError(
   errAbort: AbortError,
   pageContextsFromRewrite: PageContextFromRewrite[],
   pageContextInit: { urlOriginal: string },
-  pageContextNominalPageInit: { urlOriginal: string; urlRewrite: null | string } & Record<string, unknown>,
+  pageContextNominalPageInit: { urlOriginal: string; _urlRewrite: null | string } & Record<string, unknown>,
   httpRequestId: number,
   renderContext: RenderContext
 ): Promise<

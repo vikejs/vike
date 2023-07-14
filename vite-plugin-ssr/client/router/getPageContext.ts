@@ -206,7 +206,7 @@ async function executeOnBeforeRenderHook(
   if (await onBeforeRenderServerSideExists(pageContext)) {
     const pageContextFromServer = await retrievePageContextFromServer(pageContext)
     {
-      const { urlRewrite } = pageContextFromServer
+      const urlRewrite = pageContextFromServer._urlRewrite
       if (urlRewrite) {
         assert(typeof urlRewrite === 'string')
         throw renderUrl(urlRewrite, pageContextFromServer)
@@ -274,10 +274,10 @@ function checkIf404(err: unknown): boolean {
 
 async function retrievePageContextFromServer(pageContext: {
   urlOriginal: string
-  urlRewrite: string | null
+  _urlRewrite: string | null
   _urlOriginalPristine?: string
 }): Promise<Record<string, unknown>> {
-  const urlLogical = pageContext.urlRewrite ?? pageContext._urlOriginalPristine ?? pageContext.urlOriginal
+  const urlLogical = pageContext._urlRewrite ?? pageContext._urlOriginalPristine ?? pageContext.urlOriginal
   const pageContextUrl = getPageContextRequestUrl(urlLogical)
   const response = await fetch(pageContextUrl)
 

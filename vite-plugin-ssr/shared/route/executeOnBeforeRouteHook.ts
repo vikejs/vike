@@ -76,8 +76,8 @@ async function executeOnBeforeRouteHook(
       `${errPrefix} returned \`{ pageContext: { urlOriginal } }\` but urlOriginal`
     )
     // Ugly workaround: ideally urlOriginal should be immutable.
-    //  - Instead of using pageContext._urlOriginalPristine, maybe we can keep pageContext.urlOriginal immutable while re-using `pageContext.urlRewrite`.
-    //  - Or better yet we rename pageContext.urlRewrite to pageContext.urlLogical and we allow the user to override pageContext.urlLogical, and we rename pageContext.urlOriginal => `pageContext.urlReal`.
+    //  - Instead of using pageContext._urlOriginalPristine, maybe we can keep pageContext.urlOriginal immutable while re-using `pageContext._urlRewrite`.
+    //  - Or better yet we rename pageContext._urlRewrite to pageContext.urlLogical and we allow the user to override pageContext.urlLogical, and we rename pageContext.urlOriginal => `pageContext.urlReal`.
     //    - pageContext.urlReal / pageContext.urlLogical
     //                         VS
     //      pageContext.urlReal / pageContext.urlModified

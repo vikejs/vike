@@ -118,7 +118,7 @@ function useClientRouter() {
     }
     const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
     if (checkClientSideRenderable) {
-      const urlLogical = pageContextFromAllRewrites.urlRewrite ?? urlOriginal
+      const urlLogical = pageContextFromAllRewrites._urlRewrite ?? urlOriginal
       let isClientRoutable: boolean
       try {
         isClientRoutable = await isClientSideRoutable(urlLogical)

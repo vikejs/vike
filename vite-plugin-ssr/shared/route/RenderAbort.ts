@@ -64,7 +64,7 @@ function renderUrl(url: string, pageContextAddition?: Record<string, unknown>): 
     _renderUrl: url,
     _abortCaller: abortCaller,
     _abortCall: `throw renderUrl('${url}')` as const,
-    urlRewrite: url
+    _urlRewrite: url
   })
   return RenderAbort(pageContextAddition)
 }
@@ -114,7 +114,7 @@ type PageContextRenderAbort = Record<string, unknown> & {
       }
     | {
         _abortCaller: 'renderUrl'
-        urlRewrite: string
+        _urlRewrite: string
       }
     | {
         _abortCaller: 'renderErrorPage'
@@ -156,10 +156,10 @@ function isAbortError(thing: unknown): thing is AbortError {
 function logAbortErrorHandled(
   err: AbortError,
   isProduction: boolean,
-  pageContext: { urlOriginal: string; urlRewrite: null | string }
+  pageContext: { urlOriginal: string; _urlRewrite: null | string }
 ) {
   if (isProduction) return
-  const urlCurrent = pageContext.urlRewrite ?? pageContext.urlOriginal
+  const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal
   assert(urlCurrent)
   // TODO: add color for server-side
   const abortCall = err._pageContextAddition._abortCall
@@ -178,11 +178,11 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
   )
 }
 
-type PageContextFromRewrite = { urlRewrite: string } & Record<string, unknown>
-type PageContextFromAllRewrites = { urlRewrite: null | string } & Record<string, unknown>
+type PageContextFromRewrite = { _urlRewrite: string } & Record<string, unknown>
+type PageContextFromAllRewrites = { _urlRewrite: null | string } & Record<string, unknown>
 function getPageContextFromAllRewrites(pageContextsFromRewrite: PageContextFromRewrite[]): PageContextFromAllRewrites {
   assertNoInfiniteLoop(pageContextsFromRewrite)
-  const pageContextFromAllRewrites: PageContextFromAllRewrites = { urlRewrite: null }
+  const pageContextFromAllRewrites: PageContextFromAllRewrites = { _urlRewrite: null }
   pageContextsFromRewrite.forEach((pageContextFromRewrite) => {
     Object.assign(pageContextFromAllRewrites, pageContextFromRewrite)
   })
@@ -190,7 +190,8 @@ function getPageContextFromAllRewrites(pageContextsFromRewrite: PageContextFromR
 }
 function assertNoInfiniteLoop(pageContextsFromRewrite: PageContextFromRewrite[]) {
   const urlRewrites: string[] = []
-  pageContextsFromRewrite.forEach(({ urlRewrite }) => {
+  pageContextsFromRewrite.forEach((pageContext) => {
+    const urlRewrite = pageContext._urlRewrite
     {
       const idx = urlRewrites.indexOf(urlRewrite)
       if (idx !== -1) {

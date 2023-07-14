@@ -40,8 +40,7 @@ type PageContextUrlsPublic = {
   urlParsed: UrlParsed
 }
 type PageContextUrlsPrivate = PageContextUrlsPublic & {
-  /** The URL set by `throw renderUrl(urlRewrite)` */
-  urlRewrite: string | null
+  _urlRewrite: string | null
   /** The URL set by `throw redirect(statusCode, urlRedirect)` */
   urlRedirect: string | null
 }
@@ -81,7 +80,7 @@ function addComputedUrlProps<PageContext extends Record<string, unknown> & PageC
 
 type PageContextUrlSource = {
   urlOriginal: string
-  urlRewrite?: string | null
+  _urlRewrite?: string | null
   _baseServer: string
   _urlHandler: null | ((url: string) => string)
 }
@@ -92,7 +91,7 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
     urlHandler = (url: string) => url
   }
 
-  const url = pageContext.urlRewrite ?? pageContext.urlOriginal
+  const url = pageContext._urlRewrite ?? pageContext.urlOriginal
   assert(url && typeof url === 'string')
   const urlLogical = urlHandler(url)
 
@@ -155,7 +154,7 @@ function makeNonEnumerable(obj: Object, prop: string) {
   Object.defineProperty(obj, prop, { ...descriptor, enumerable: false })
 }
 
-function assertURLs(pageContext: { urlOriginal: string } & PageContextUrlsPrivate) {
+function assertURLs(pageContext: { urlOriginal: string } & PageContextUrlsPublic) {
   assert(typeof pageContext.urlOriginal === 'string')
   assert(typeof pageContext.urlPathname === 'string')
   assert(isPlainObject(pageContext.urlParsed))
