@@ -165,29 +165,24 @@ async function renderPageAlreadyPrepared(
     }
   }
 
-  {
-    const isFailure =
-      (!pageContextFirstAttemptSuccess && !isAbortError(errFirstAttempt)) ||
-      (pageContextFirstAttemptSuccess && pageContextFirstAttemptSuccess.httpResponse?.statusCode !== 200)
-    const noErrorPageDefined: boolean = !getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
-
-    // Warn no error page defined
-    if (noErrorPageDefined && isFailure) {
-      const isV1 = renderContext.pageConfigs.length > 0
-      assert(!pageContextFirstAttemptSuccess?.httpResponse)
-      warnMissingErrorPage(isV1)
-    }
-
-    // Log upon 404
-    if (
-      !!pageContextFirstAttemptSuccess &&
-      'is404' in pageContextFirstAttemptSuccess &&
-      pageContextFirstAttemptSuccess.is404 === true
-    ) {
-      await log404(pageContextFirstAttemptSuccess)
-      const statusCode = pageContextFirstAttemptSuccess.httpResponse?.statusCode ?? null
-      assert(statusCode === 404 || (noErrorPageDefined && statusCode === null))
-    }
+  // Warn if no error page defined
+  if (
+    // No error page
+    !getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs) &&
+    // Is failure
+    ((errFirstAttempt && !isAbortError(errFirstAttempt)) ||
+      (pageContextFirstAttemptSuccess && pageContextFirstAttemptSuccess.httpResponse?.statusCode !== 200))
+  ) {
+    const isV1 = renderContext.pageConfigs.length > 0
+    warnMissingErrorPage(isV1)
+  }
+  // Log upon 404
+  if (
+    !!pageContextFirstAttemptSuccess &&
+    'is404' in pageContextFirstAttemptSuccess &&
+    pageContextFirstAttemptSuccess.is404 === true
+  ) {
+    await log404(pageContextFirstAttemptSuccess)
   }
 
   if (errFirstAttempt === undefined) {
@@ -276,7 +271,7 @@ function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageCon
   )
 }
 
-function getPageContextHttpResponseNullWithError(err: unknown, pageContextInit: { urlOriginal: string }) {
+function getPageContextHttpResponseNullWithError(err: unknown, pageContextInit: Record<string, unknown>) {
   const pageContextHttpReponseNull = {}
   objectAssign(pageContextHttpReponseNull, pageContextInit)
   objectAssign(pageContextHttpReponseNull, {
@@ -294,7 +289,7 @@ function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>
   })
   return pageContextHttpReponseNull
 }
-function getPageContextHttpResponseRedirect(pageContextInit: { urlOriginal: string }) {
+function getPageContextHttpResponseRedirect(pageContextInit: Record<string, unknown>) {
   // TODO
   return getPageContextHttpResponseNull(pageContextInit)
 }
