@@ -210,7 +210,7 @@ function assertNotInfiniteLoop(pageContextsFromRewrite: PageContextFromRewrite[]
     {
       const idx = urlRewrites.indexOf(urlRewrite)
       if (idx !== -1) {
-        const loop: string = [...urlRewrites.slice(idx), urlRewrite].map((url) => `renderUrl(${url})`).join(' => ')
+        const loop: string = [...urlRewrites.slice(idx), urlRewrite].map((url) => `renderUrl('${url}')`).join(' => ')
         assertUsage(false, `Infinite loop of renderUrl() calls: ${loop}`)
       }
     }
