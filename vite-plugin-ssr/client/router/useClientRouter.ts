@@ -73,12 +73,11 @@ function useClientRouter() {
       scrollTarget,
       urlOriginal: url,
       isBackwardNavigation: false,
-      checkClientSideRenderable: true,
-      pageContextsFromRewrite: []
+      checkClientSideRenderable: true
     })
   })
   onBrowserHistoryNavigation((scrollTarget, isBackwardNavigation) => {
-    fetchAndRender({ scrollTarget, isBackwardNavigation, pageContextsFromRewrite: [] })
+    fetchAndRender({ scrollTarget, isBackwardNavigation })
   })
   defineNavigate(async (url: string, { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {}) => {
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
@@ -87,15 +86,14 @@ function useClientRouter() {
       urlOriginal: url,
       overwriteLastHistoryEntry,
       isBackwardNavigation: false,
-      checkClientSideRenderable: true,
-      pageContextsFromRewrite: []
+      checkClientSideRenderable: true
     })
   })
 
   let renderingCounter = 0
   let renderPromise: Promise<void> | undefined
   let isTransitioning: boolean = false
-  fetchAndRender({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null, pageContextsFromRewrite: [] })
+  fetchAndRender({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
 
   return
 
@@ -105,14 +103,14 @@ function useClientRouter() {
     overwriteLastHistoryEntry = false,
     isBackwardNavigation,
     checkClientSideRenderable,
-    pageContextsFromRewrite
+    pageContextsFromRewrite = []
   }: {
     scrollTarget: ScrollTarget
     urlOriginal?: string
     overwriteLastHistoryEntry?: boolean
     isBackwardNavigation: boolean | null
     checkClientSideRenderable?: boolean
-    pageContextsFromRewrite: PageContextFromRewrite[]
+    pageContextsFromRewrite?: PageContextFromRewrite[]
   }): Promise<void> {
     if (globalObject.clientRoutingIsDisabled) {
       serverSideRouteTo(urlOriginal)
@@ -218,8 +216,7 @@ function useClientRouter() {
             urlOriginal: pageContextAddition.urlRedirect,
             overwriteLastHistoryEntry: false,
             isBackwardNavigation: false,
-            checkClientSideRenderable: true,
-            pageContextsFromRewrite: []
+            checkClientSideRenderable: true
           })
           return
         }
