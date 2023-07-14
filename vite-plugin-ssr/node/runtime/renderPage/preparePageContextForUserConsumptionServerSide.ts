@@ -3,7 +3,7 @@ export type { PageContextForUserConsumptionServerSide }
 
 import { assert, isPlainObject, isObject } from '../utils'
 import { sortPageContext } from '../../../shared/sortPageContext'
-import { assertURLs, PageContextUrls } from '../../../shared/addComputedUrlProps'
+import { assertURLs, PageContextUrlsPublic } from '../../../shared/addComputedUrlProps'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
 import type { ConfigEntries, ExportsAll } from '../../../shared/getPageFiles/getExports'
@@ -16,7 +16,7 @@ type PageContextForUserConsumptionServerSide = {
   urlPathname: string
   urlRewrite: null | string
   urlRedirect: null | string
-  urlParsed: PageContextUrls['urlParsed']
+  urlParsed: PageContextUrlsPublic['urlParsed']
   routeParams: Record<string, string>
   Page: unknown
   pageExports: Record<string, unknown>

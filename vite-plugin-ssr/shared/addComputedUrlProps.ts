@@ -2,7 +2,8 @@ import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter } fro
 
 export { addComputedUrlProps }
 export { assertURLs }
-export type { PageContextUrls }
+export type { PageContextUrlsPrivate }
+export type { PageContextUrlsPublic }
 export type { PageContextUrlSource }
 
 // Copy paste from https://vite-plugin-ssr.com/pageContext
@@ -28,25 +29,27 @@ type UrlParsed = {
   /** @deprecated */
   hashString: null | string
 }
-type PageContextUrls = {
+type PageContextUrlsPublic = {
   /** @deprecated */
   url: string
   /** The URL of the HTTP request */
   urlOriginal: string
-  /** The URL set by `throw renderUrl(urlRewrite)` */
-  urlRewrite: string | null
-  /** The URL set by `throw redirect(statusCode, urlRedirect)` */
-  urlRedirect: string | null
   /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */
   urlPathname: string
   /** Parsed information about the current URL */
   urlParsed: UrlParsed
 }
+type PageContextUrlsPrivate = PageContextUrlsPublic & {
+  /** The URL set by `throw renderUrl(urlRewrite)` */
+  urlRewrite: string | null
+  /** The URL set by `throw redirect(statusCode, urlRedirect)` */
+  urlRedirect: string | null
+}
 
 function addComputedUrlProps<PageContext extends Record<string, unknown> & PageContextUrlSource>(
   pageContext: PageContext,
   enumerable = true
-): asserts pageContext is PageContext & PageContextUrls {
+): asserts pageContext is PageContext & PageContextUrlsPrivate {
   assert(pageContext.urlOriginal)
 
   if ('urlPathname' in pageContext) {
@@ -152,7 +155,7 @@ function makeNonEnumerable(obj: Object, prop: string) {
   Object.defineProperty(obj, prop, { ...descriptor, enumerable: false })
 }
 
-function assertURLs(pageContext: { urlOriginal: string } & PageContextUrls) {
+function assertURLs(pageContext: { urlOriginal: string } & PageContextUrlsPrivate) {
   assert(typeof pageContext.urlOriginal === 'string')
   assert(typeof pageContext.urlPathname === 'string')
   assert(isPlainObject(pageContext.urlParsed))

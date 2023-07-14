@@ -12,7 +12,7 @@ import { getHtmlString } from '../html/renderHtml'
 import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles'
 import { assert, assertUsage, hasProp, objectAssign, unique } from '../utils'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide'
-import { addComputedUrlProps, type PageContextUrls } from '../../../shared/addComputedUrlProps'
+import { addComputedUrlProps, type PageContextUrlsPrivate } from '../../../shared/addComputedUrlProps'
 import { getGlobalContext } from '../globalContext'
 import { createHttpResponseObject, HttpResponse } from './createHttpResponseObject'
 import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } from './loadPageFilesServer'
@@ -45,7 +45,7 @@ async function renderPageAlreadyRouted<
     is404: null | boolean
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
-  } & PageContextUrls &
+  } & PageContextUrlsPrivate &
     PageContext_loadPageFilesServer
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   const isError = pageContext.is404 || pageContext.errorWhileRendering

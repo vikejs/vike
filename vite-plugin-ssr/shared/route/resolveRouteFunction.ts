@@ -2,12 +2,12 @@ export { resolveRouteFunction }
 export { assertRouteParams }
 export { assertSyncRouting }
 
-import { assertURLs, PageContextUrls, PageContextUrlSource } from '../addComputedUrlProps'
+import { assertURLs, PageContextUrlsPrivate, PageContextUrlSource } from '../addComputedUrlProps'
 import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise, isStringRecord } from './utils'
 
 async function resolveRouteFunction(
   routeFunction: Function,
-  pageContext: PageContextUrls & PageContextUrlSource,
+  pageContext: PageContextUrlsPrivate & PageContextUrlSource,
   routeDefinedAt: string
 ): Promise<null | {
   precedence: number | null
