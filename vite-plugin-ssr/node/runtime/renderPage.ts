@@ -432,11 +432,10 @@ async function handleAbortError(
   | { pageContextReturn: PageContextAfterRender; pageContextAddition?: never }
   | { pageContextReturn?: never; pageContextAddition: Record<string, unknown> }
 > {
-  {
-    const { isProduction } = getGlobalContext()
-    logAbortErrorHandled(errAbort, isProduction, pageContextFirstAttemptInit)
-  }
+  logAbortErrorHandled(errAbort, getGlobalContext().isProduction, pageContextFirstAttemptInit)
+
   const pageContextAddition = errAbort._pageContextAddition
+
   if (pageContextAddition._abortCaller === 'renderUrl') {
     const pageContextReturn = await renderPageAlreadyPrepared(pageContextInit, httpRequestId, renderContext, [
       ...pageContextsFromRewrite,
@@ -453,5 +452,6 @@ async function handleAbortError(
   if (pageContextAddition._abortCaller === 'renderErrorPage') {
     return { pageContextAddition }
   }
+
   assert(false)
 }
