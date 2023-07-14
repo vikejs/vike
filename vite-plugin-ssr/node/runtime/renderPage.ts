@@ -201,7 +201,7 @@ async function renderPageAlreadyPrepared(
 
     let pageContextFromRenderAbort: null | Record<string, unknown> = null
     if (isAbortError(errFirstAttempt)) {
-      const { pageContextReturn, pageContextAddition } = await handleAbortError(
+      const handled = await handleAbortError(
         errFirstAttempt,
         pageContextsFromRewrite,
         pageContextInit,
@@ -210,11 +210,11 @@ async function renderPageAlreadyPrepared(
         renderContext
       )
       // `throw redirect()` and `throw renderUrl()`
-      if (pageContextReturn) {
-        return pageContextReturn
+      if (handled.pageContextReturn) {
+        return handled.pageContextReturn
       }
       // throw renderErrorPage()
-      pageContextFromRenderAbort = pageContextAddition
+      pageContextFromRenderAbort = handled.pageContextAddition
     }
 
     let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageErrorPage>>
@@ -229,7 +229,7 @@ async function renderPageAlreadyPrepared(
       )
     } catch (errErrorPage) {
       if (isAbortError(errErrorPage)) {
-        const { pageContextReturn, pageContextAddition } = await handleAbortError(
+        const handled = await handleAbortError(
           errErrorPage,
           pageContextsFromRewrite,
           pageContextInit,
@@ -238,7 +238,7 @@ async function renderPageAlreadyPrepared(
           renderContext
         )
         // throw renderErrorPage()
-        if (!pageContextReturn) {
+        if (!handled.pageContextReturn) {
           const abortCall = pc.cyan(errErrorPage._pageContextAddition._abortCall)
           const abortCaller = pc.cyan(`throw ${errErrorPage._pageContextAddition._abortCaller}()`)
           assertWarning(
@@ -250,8 +250,7 @@ async function renderPageAlreadyPrepared(
           return pageContextHttpReponseNull
         }
         // `throw redirect()` and `throw renderUrl()`
-        Object.assign(pageContextReturn, pageContextAddition)
-        return pageContextReturn
+        return handled.pageContextReturn
       }
       if (isNewError(errErrorPage, errFirstAttempt)) {
         logRuntimeError(errErrorPage, httpRequestId)
@@ -429,7 +428,10 @@ async function handleAbortError(
   pageContextFirstAttemptInit: { urlOriginal: string; urlRewrite: null | string } & Record<string, unknown>,
   httpRequestId: number,
   renderContext: RenderContext
-): Promise<{ pageContextReturn: PageContextAfterRender | null; pageContextAddition: Record<string, unknown> }> {
+): Promise<
+  | { pageContextReturn: PageContextAfterRender; pageContextAddition?: never }
+  | { pageContextReturn?: never; pageContextAddition: Record<string, unknown> }
+> {
   {
     const { isProduction } = getGlobalContext()
     logAbortErrorHandled(errAbort, isProduction, pageContextFirstAttemptInit)
@@ -440,14 +442,16 @@ async function handleAbortError(
       ...pageContextsFromRewrite,
       pageContextAddition
     ])
-    return { pageContextReturn, pageContextAddition }
+    Object.assign(pageContextReturn, pageContextAddition)
+    return { pageContextReturn }
   }
   if (pageContextAddition._abortCaller === 'redirect') {
     const pageContextReturn = getPageContextHttpResponseRedirect(pageContextInit)
-    return { pageContextReturn, pageContextAddition }
+    Object.assign(pageContextReturn, pageContextAddition)
+    return { pageContextReturn }
   }
   if (pageContextAddition._abortCaller === 'renderErrorPage') {
-    return { pageContextReturn: null, pageContextAddition }
+    return { pageContextAddition }
   }
   assert(false)
 }
