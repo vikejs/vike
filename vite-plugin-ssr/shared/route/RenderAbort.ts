@@ -75,19 +75,18 @@ function renderUrl(url: string, pageContextAddition?: Record<string, unknown>): 
  *
  * @param statusCode
  * One of the following:
- *   `401` Unauthorized (no permission: user isn't logged in)
- *   `403` Forbidden (no permission: user is logged in but isn't allowed)
+ *   `401` Unauthorized (user isn't logged in)
+ *   `403` Forbidden (user is logged in but isn't allowed)
  *   `404` Not Found
  *   `429` Too Many Requests (rate limiting)
- *   `500` Internal Server Error (the app has a bug)
- *   `503` Service Unavailable (examples: server is overloaded or a third-party API isn't responding)
- * You can pass another status code e.g. `renderErrorPage(503 as any)` but we recommend against it because other status codes are irrelevant in the context of rendering a page (most status codes are about APIs).
- * @param errorReason Message shown to the user.
+ *   `500` Internal Server Error (app has a bug)
+ *   `503` Service Unavailable (server is overloaded, a third-party API isn't responding)
+ * @param errorReason The reason why the original page was aborted. Usually used for showing a custom message on the error page.
  * @param pageContextAddition [Optional] Add pageContext values.
  */
 function renderErrorPage(
   statusCode: StatusCodeError,
-  errorReason: string,
+  errorReason?: string | JSX.Element | null,
   pageContextAddition?: Record<string, unknown>
 ): Error {
   const abortCaller = 'renderErrorPage' as const
@@ -200,4 +199,11 @@ function assertNoInfiniteLoop(pageContextsFromRewrite: PageContextFromRewrite[])
     }
     urlRewrites.push(urlRewrite)
   })
+}
+
+declare global {
+  namespace JSX {
+  // Overriden by the user's UI framework. (Technically, TypeScript doesn't do overriding but interface merging, but it has same effect here.)
+    interface Element {}
+  }
 }
