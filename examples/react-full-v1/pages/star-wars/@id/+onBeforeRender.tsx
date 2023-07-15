@@ -6,16 +6,27 @@ import { filterMovieData } from '../filterMovieData'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 import type { MovieDetails } from '../types'
 import { renderErrorPage } from 'vite-plugin-ssr/abort'
+import React from 'react'
 
 async function onBeforeRender(pageContext: PageContextBuiltIn) {
   const dataUrl = `https://star-wars.brillout.com/api/films/${pageContext.routeParams.id}.json`
-  let response: Response
+  let movie: MovieDetails
   try {
-    response = await fetch(dataUrl)
+    const response = await fetch(dataUrl)
+    movie = (await response.json()) as MovieDetails
   } catch (err) {
-    throw renderErrorPage(503, `Couldn't fetch data ${dataUrl}`)
+    console.error(err)
+    //*/
+    throw renderErrorPage(503, `Couldn't fetch data, because failed HTTP GET request to ${dataUrl}`)
+    /*/
+    throw renderErrorPage(
+      503,
+      <>
+        Couldn't fetch data, because failed HTTP GET request to <code>{dataUrl}</code>.
+      </>
+    )
+    //*/
   }
-  let movie = (await response.json()) as MovieDetails
 
   // We remove data we don't need because we pass `pageContext.movie` to
   // the client; we want to minimize what is sent over the network.
