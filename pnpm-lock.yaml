@@ -2492,8 +2492,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       '@brillout/json-serializer':
-        specifier: ^0.5.3
-        version: 0.5.3
+        specifier: ^0.5.4
+        version: 0.5.4
       '@brillout/picocolors':
         specifier: ^1.0.4
         version: 1.0.4
@@ -3129,6 +3129,10 @@ packages:
 
   /@brillout/json-serializer@0.5.3:
     resolution: {integrity: sha512-IxlOMD5gOM0WfFGdeR98jHKiC82Ad1tUnSjvLS5jnRkfMEKBI+YzHA32Umw8W3Ccp5N4fNEX229BW6RaRpxRWQ==}
+    dev: false
+
+  /@brillout/json-serializer@0.5.4:
+    resolution: {integrity: sha512-Lz/gQXKSoykR4g0PmBHpa+ILNJU7K0mZpWfBpDg5NnmPyHiDVnipwoH90Zv613FAwgUaV5HMCgYns6Lh78M+Yw==}
     dev: false
 
   /@brillout/part-regex@0.1.2:

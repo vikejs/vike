@@ -5,6 +5,7 @@ import { assert, assertUsage, hasProp, isPlainObject, unique } from '../utils'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { isErrorPage } from '../../../shared/error-page'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
+import pc from '@brillout/picocolors'
 
 type PageContextUser = Record<string, unknown>
 type PageContextClient = { _pageId: string } & Record<string, unknown>
@@ -51,17 +52,20 @@ function serializePageContextClientSide(pageContext: {
   try {
     pageContextSerialized = stringify(pageContextClientWrapper, { forbidReactElements: true })
   } catch (err) {
+    const h = (s: string) => pc.cyan(s)
     passToClient.forEach((prop) => {
-      const valueName = `pageContext['${prop}']`
+      const valueName = h(`pageContext['${prop}']`)
       try {
         stringify((pageContext as Record<string, unknown>)[prop], { forbidReactElements: true, valueName })
       } catch (err) {
         assert(hasProp(err, 'message', 'string'))
         assertUsage(
           false,
-          `\`${valueName}\` cannot be serialized and, therefore, cannot be passed to the client. Make sure that \`${valueName}\` is serializable or remove \`'${prop}'\` from \`passToClient\`. Serialization error: ${lowercaseFirstLetter(
-            err.message
-          )}`
+          [
+            `${valueName} cannot be serialized and, therefore, cannot be passed to the client.`,
+            `Make sure that ${valueName} is serializable, or remove ${h(`'${prop}'`)} from ${h('passToClient')}.`,
+            `Serialization error: ${lowercaseFirstLetter(err.message)}`
+          ].join(' ')
         )
       }
     })
