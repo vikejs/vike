@@ -3,7 +3,7 @@ export { getPagesAndRoutesInfo }
 
 import type { PageRoutes } from '../../../../shared/route'
 import { getGlobalContext } from '../../globalContext'
-import { assert, assertUsage, assertInfo, compareString, stripAnsi, getTerminalWidth } from '../../utils'
+import { assert, assertUsage, assertInfo, compareString, stripAnsi, getTerminalWidth, truncateString } from '../../utils'
 import pc from '@brillout/picocolors'
 
 async function log404(pageContext: {
@@ -86,7 +86,7 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
   linesContent.forEach((lineContent) => {
     let { routeStr } = lineContent
     if (lineContent.routeTypeSrc !== 'Route Function') {
-      routeStr = truncateString(routeStr, width1)
+      routeStr = truncateString(routeStr, width1, (s) => pc.gray(s))
     } else {
       routeStr = truncateRouteFunction(routeStr, width1)
     }
@@ -134,18 +134,8 @@ function truncateRouteFunction(routeStr: string, lenMax: number) {
   routeStr = stripAnsi(routeStr)
   routeStr = removeNonAscii(routeStr)
   routeStr = routeStr.split(/\s/).filter(Boolean).join(' ')
-  routeStr = truncateString(routeStr, lenMax)
+  routeStr = truncateString(routeStr, lenMax, (s) => pc.gray(s))
   return routeStr
-}
-function truncateString(str: string, lenMax: number) {
-  if (str.length < lenMax) {
-    return str
-  } else {
-    str = str.substring(0, lenMax - 3)
-    str = str + pc.dim('...')
-    assert(stripAnsi(str).length === lenMax)
-    return str
-  }
 }
 
 function removeNonAscii(str: string) {

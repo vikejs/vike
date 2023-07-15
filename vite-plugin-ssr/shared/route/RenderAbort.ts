@@ -19,7 +19,8 @@ import {
   checkType,
   joinEnglish,
   objectAssign,
-  projectInfo
+  projectInfo,
+  truncateString
 } from './utils'
 
 type StatusCodeAbort = StatusCodeRedirect | StatusCodeError
@@ -94,12 +95,14 @@ function renderErrorPage(
   assertPageContextProvidedByUser(pageContextAddition, { abortCaller })
   assertStatusCode(statusCode, [401, 403, 404, 429, 500, 503], abortCaller)
   pageContextAddition = pageContextAddition ?? {}
+  const args = [String(statusCode)]
+  if (typeof abortReason === 'string') args.push(JSON.stringify(truncateString(abortReason, 30, null)))
   objectAssign(pageContextAddition, {
     _statusCode: statusCode,
     abortReason,
     is404: statusCode === 404,
     _abortCaller: abortCaller,
-    _abortCall: `throw renderErrorPage(${statusCode}, '${abortReason}')` as const
+    _abortCall: `throw renderErrorPage(${args.join(', ')})` as const
   })
   return RenderAbort(pageContextAddition)
 }
