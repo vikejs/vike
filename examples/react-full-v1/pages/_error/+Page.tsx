@@ -5,13 +5,13 @@ import { usePageContext } from '../../renderer/usePageContext'
 
 function Page() {
   const ctx = usePageContext()
-  let { is404, errorReason } = ctx
-  if (!errorReason) {
-    errorReason = is404 ? 'Page not found.' : 'Something went wrong.'
+  let { is404, abortReason } = ctx
+  if (!abortReason) {
+    abortReason = is404 ? 'Page not found.' : 'Something went wrong.'
   }
   return (
     <Center>
-      <p style={{ fontSize: '1.3em' }}>{errorReason}</p>
+      <p style={{ fontSize: '1.3em' }}>{abortReason}</p>
     </Center>
   )
 }

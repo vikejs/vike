@@ -4,6 +4,7 @@ export { PageContextBuiltInClientWithServerRouting }
 
 import type { PageContextUrlsPublic } from './addComputedUrlProps'
 import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports'
+import type { AbortReason } from './route/RenderAbort'
 
 /** Built-in `pageContext` properties set by vite-plugin-ssr.
  *
@@ -56,11 +57,11 @@ type PageContextBuiltIn<Page = any> = {
   isClientSideNavigation: boolean
 
   /**
-   * Message shown to the user on the error page.
+   * The reason why the original page was aborted. Usually used for showing a custom message on the error page.
    *
    * https://vite-plugin-ssr.com/abort
    */
-  errorReason?: string
+  abortReason?: AbortReason
 
   /**
    * Error that occured while rendering.
@@ -94,7 +95,7 @@ type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContext
     | 'urlOriginal'
     | 'urlPathname'
     | 'urlParsed'
-    | 'errorReason'
+    | 'abortReason'
   > & {
     /** Whether the current page is already rendered to HTML */
     isHydration: boolean
@@ -111,7 +112,7 @@ type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContext
  * https://vite-plugin-ssr.com/pageContext
  */
 type PageContextBuiltInClientWithServerRouting<Page = any> = Partial<PageContextBuiltIn<Page>> &
-  Pick<PageContextBuiltIn<Page>, 'Page' | 'pageExports' | 'exports' | 'errorReason'> & {
+  Pick<PageContextBuiltIn<Page>, 'Page' | 'pageExports' | 'exports' | 'abortReason'> & {
     /**
      * Whether the current page is already rendered to HTML.
      *

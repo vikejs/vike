@@ -1,4 +1,3 @@
-- Rename errorReason => abortReason
 - Catch infinite redirect/rewrite
 
 - Remove assertInfo()

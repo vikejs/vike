@@ -8,6 +8,7 @@ export { getPageContextFromAllRewrites }
 export type { StatusCodeAbort }
 export type { AbortError }
 export type { PageContextFromRewrite }
+export type { AbortReason }
 
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
 import {
@@ -81,12 +82,12 @@ function renderUrl(url: string, pageContextAddition?: Record<string, unknown>): 
  *   `429` Too Many Requests (rate limiting)
  *   `500` Internal Server Error (app has a bug)
  *   `503` Service Unavailable (server is overloaded, a third-party API isn't responding)
- * @param errorReason The reason why the original page was aborted. Usually used for showing a custom message on the error page.
+ * @param abortReason The reason why the original page was aborted. Usually used for showing a custom message on the error page.
  * @param pageContextAddition [Optional] Add pageContext values.
  */
 function renderErrorPage(
   statusCode: StatusCodeError,
-  errorReason?: string | JSX.Element | null,
+  abortReason?: AbortReason,
   pageContextAddition?: Record<string, unknown>
 ): Error {
   const abortCaller = 'renderErrorPage' as const
@@ -95,13 +96,15 @@ function renderErrorPage(
   pageContextAddition = pageContextAddition ?? {}
   objectAssign(pageContextAddition, {
     _statusCode: statusCode,
-    errorReason,
+    abortReason,
     is404: statusCode === 404,
     _abortCaller: abortCaller,
-    _abortCall: `throw renderErrorPage(${statusCode}, '${errorReason}')` as const
+    _abortCall: `throw renderErrorPage(${statusCode}, '${abortReason}')` as const
   })
   return RenderAbort(pageContextAddition)
 }
+
+type AbortReason = string | JSX.Element | null
 
 type PageContextRenderAbort = Record<string, unknown> & {
   _abortCall: `throw redirect(${string})` | `throw renderUrl(${string})` | `throw renderErrorPage(${string})`
@@ -137,12 +140,12 @@ function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown
   )
   assertPageContextProvidedByUser(pageContext, { abortCaller: 'RenderErrorPage' })
   let statusCode: 404 | 500 = 404
-  let errorReason = 'Page Not Found'
+  let abortReason = 'Page Not Found'
   if (pageContext.is404 === false || (pageContext.pageProps as any)?.is404 === false) {
     statusCode = 500
-    errorReason = 'Something went wrong'
+    abortReason = 'Something went wrong'
   }
-  return renderErrorPage(statusCode, errorReason, pageContext)
+  return renderErrorPage(statusCode, abortReason, pageContext)
 }
 
 const stamp = '_isAbortError'
@@ -203,7 +206,7 @@ function assertNoInfiniteLoop(pageContextsFromRewrite: PageContextFromRewrite[])
 
 declare global {
   namespace JSX {
-  // Overriden by the user's UI framework. (Technically, TypeScript doesn't do overriding but interface merging, but it has same effect here.)
+    // Overriden by the user's UI framework. (Technically, TypeScript doesn't do overriding but interface merging, but it has same effect here.)
     interface Element {}
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="center">
-    <p>{{ errorReason }}</p>
+    <p>{{ abortReason }}</p>
   </div>
 </template>
 
@@ -9,9 +9,9 @@ import { useAttrs, computed } from 'vue'
 import { usePageContext } from '../../renderer/usePageContext'
 
 const ctx = usePageContext()
-let { is404, errorReason } = ctx
-if (!errorReason) {
-  errorReason = is404 ? 'Page not found.' : 'Something went wrong.'
+let { is404, abortReason } = ctx
+if (!abortReason) {
+  abortReason = is404 ? 'Page not found.' : 'Something went wrong.'
 }
 </script>
 
