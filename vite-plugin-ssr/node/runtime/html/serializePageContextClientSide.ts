@@ -44,7 +44,7 @@ function serializePageContextClientSide(pageContext: {
 
   const pageContextClientWrapper = { pageContext: pageContextClient }
 
-  const serialize = (v: unknown, valueName?: string) => stringify(v, { forbidReactElements: true, valueName })
+  const serialize = (v: unknown, varName?: string) => stringify(v, { forbidReactElements: true, valueName: varName })
 
   try {
     pageContextSerialized = serialize(pageContextClientWrapper)
@@ -53,9 +53,10 @@ function serializePageContextClientSide(pageContext: {
     let hasWarned = false
     const propsNonSerializable: string[] = []
     passToClient.forEach((prop) => {
-      const valueName = h(`pageContext['${prop}']`)
+      const propName = JSON.stringify(prop)
+      const varName = h(`pageContext[${propName}]`)
       try {
-        serialize((pageContext as Record<string, unknown>)[prop], valueName)
+        serialize((pageContext as Record<string, unknown>)[prop], varName)
       } catch (err) {
         hasWarned = true
         propsNonSerializable.push(prop)
@@ -63,8 +64,8 @@ function serializePageContextClientSide(pageContext: {
         assertWarning(
           false,
           [
-            `${valueName} cannot be serialized and, therefore, cannot be passed to the client.`,
-            `Make sure that ${valueName} is serializable, or remove ${h(`'${prop}'`)} from ${h('passToClient')}.`,
+            `${varName} cannot be serialized and, therefore, cannot be passed to the client.`,
+            `Make sure that ${varName} is serializable, or remove ${h(propName)} from ${h('passToClient')}.`,
             `Serialization error: ${lowercaseFirstLetter(err.message)}`
           ].join(' ')
         )

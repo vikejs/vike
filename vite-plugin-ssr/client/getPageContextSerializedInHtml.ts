@@ -25,6 +25,11 @@ function getPageContextSerializedInHtml(): {
 
   Object.entries(pageContext).forEach(([prop, val]) => {
     if (val === notSerializable) {
+      const propName = JSON.stringify(prop)
+      const varName = `pageContext[${propName}]`
+      console.warn(
+        `${varName} couldn't be serialized and, therefore, is missing on the client-side. Check the server logs for more information.`
+      )
       delete pageContext[prop]
     }
   })
