@@ -312,6 +312,14 @@ async function processStream(
     flushStream() // Sets shouldFlushStream to `true`
   }
 
+  const onError = (err: unknown) => {
+    if (!promiseHasResolved) {
+      reject(err)
+    } else {
+      onErrorWhileStreaming(err)
+    }
+  }
+
   const { streamWrapper, streamWrapperOperations } = await createStreamWrapper({
     streamOriginal,
     onReadyToWrite() {
@@ -320,13 +328,7 @@ async function processStream(
       flushBuffer()
       resolveReadyToWrite()
     },
-    onError(err) {
-      if (!promiseHasResolved) {
-        reject(err)
-      } else {
-        onErrorWhileStreaming(err)
-      }
-    },
+    onError,
     onData(chunk: unknown) {
       assert(streamEnded === false)
       streamOriginalHasStartedEmitting = true
@@ -339,8 +341,18 @@ async function processStream(
       streamOriginalHasStartedEmitting = true // In case original stream (stream provided by user) emits no data
       if (wrapperCreated) resolvePromise() //    In case original stream (stream provided by user) emits no data
       if (injectStringAtEnd) {
-        const injectEnd = await injectStringAtEnd()
-        writeStream(injectEnd)
+        let injectEnd: string | null = null
+        let hasErrored = false
+        try {
+          injectEnd = await injectStringAtEnd()
+        } catch (err) {
+          hasErrored = true
+          onError(err)
+        }
+        if (!hasErrored) {
+          assert(injectEnd)
+          writeStream(injectEnd)
+        }
       }
       await promiseReadyToWrite // E.g. if the user calls the pipe wrapper after the original writable has ended
       assert(isReady())
