@@ -34,6 +34,11 @@ type PageContextInfo = {
   _comesDirectlyFromServer: boolean
 }
 function assertPassToClient(pageContext: PageContextInfo, prop: string, errMsg: string) {
+  // We disable assertPassToClient() for the next attempt to read `prop`, because of how Vue's reactivity work.
+  //  - (When changing a reactive object, Vue tries to read it's old value first. This triggers a `assertPassToClient()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.)
+  if (globalObject.disableAssertPassToClient === prop) return
+  ignoreNextRead(prop)
+
   if (!isMissing(pageContext, prop)) {
     return
   }
@@ -48,11 +53,6 @@ function assertPassToClient(pageContext: PageContextInfo, prop: string, errMsg: 
   if (pageContext._pageContextRetrievedFromServer === null) {
     return
   }
-
-  // We disable assertPassToClient() for the next attempt to read `prop`, because of how Vue's reactivity work.
-  //  - (When changing a reactive object, Vue tries to read it's old value first. This triggers a `assertPassToClient()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.)
-  if (globalObject.disableAssertPassToClient === prop) return
-  ignoreNextRead(prop)
 
   assertUsage(false, errMsg)
 }
