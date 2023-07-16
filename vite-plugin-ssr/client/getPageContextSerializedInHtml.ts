@@ -1,5 +1,4 @@
 import { parse } from '@brillout/json-serializer/parse'
-import { notSerializable } from '../shared/notSerializable'
 import { hasProp, objectAssign, assert, assertUsage } from './utils'
 
 export { getPageContextSerializedInHtml }
@@ -22,17 +21,6 @@ function getPageContextSerializedInHtml(): {
   assert(hasProp(parseResult, 'pageContext', 'object'))
   const { pageContext } = parseResult
   assert(hasProp(pageContext, '_pageId', 'string'))
-
-  Object.entries(pageContext).forEach(([prop, val]) => {
-    if (val === notSerializable) {
-      const propName = JSON.stringify(prop)
-      const varName = `pageContext[${propName}]`
-      console.warn(
-        `${varName} couldn't be serialized and, therefore, is missing on the client-side. Check the server logs for more information.`
-      )
-      delete pageContext[prop]
-    }
-  })
 
   objectAssign(pageContext, {
     _pageContextRetrievedFromServer: pageContext,

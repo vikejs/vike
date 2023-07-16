@@ -14,6 +14,7 @@ import type {
 } from '../shared/types'
 import { addIs404ToPageProps } from '../shared/addIs404ToPageProps'
 import type { PageConfig } from '../shared/page-configs/PageConfig'
+import { notSerializable } from '../shared/notSerializable'
 
 type PageContextForUserConsumptionClientSide = PageContextExports & {
   _pageContextRetrievedFromServer: null | Record<string, unknown>
@@ -80,7 +81,6 @@ const JAVASCRIPT_BUILT_INS = [
   'then',
   'toJSON' // Vue tries to access `toJSON`
 ]
-const PASS_TO_CLIENT_BUILT_INS = ['_pageId'] as const
 
 // Hint the user to use `paassToClient` when accessing undefined `pageContext` props
 function getProxy<
@@ -98,10 +98,18 @@ function getProxy<
   }
 
   function get(_: never, prop: string) {
+    const val = pageContext[prop]
+
+    assertUsage(
+      val !== notSerializable,
+      `pageContext[${JSON.stringify(
+        prop
+      )}] couldn't be serialized and, therefore, is missing on the client-side. Check the server logs for more information.`
+    )
+
     if (globalObject.disableAssertPassToClient !== prop) {
       assertPassToClient(pageContext._pageContextRetrievedFromServer, prop, isMissing(prop))
     }
-
     // We disable `assertPassToClient` for the next attempt to read `prop`, because of how Vue's reactivity work.
     // (When changing a reactive object, Vue tries to read it's old value first. This triggers a `assertPassToClient()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.)
     globalObject.disableAssertPassToClient = prop
@@ -109,7 +117,7 @@ function getProxy<
       globalObject.disableAssertPassToClient = undefined
     }, 0)
 
-    return pageContext[prop]
+    return val
   }
 }
 
@@ -127,19 +135,10 @@ function assertPassToClient(
     // - We cannot determine passToClientInferred
     return
   }
-  const passToClientInferred = Object.keys(pageContextRetrievedFromServer).filter(
-    (prop) => !(PASS_TO_CLIENT_BUILT_INS as any as string[]).includes(prop)
-  )
+  const propName = JSON.stringify(prop)
   assertUsage(
     false,
-    [
-      `pageContext.${prop} isn't available in the browser`,
-      `('${prop}' is missing in the passToClient list [${passToClientInferred
-        .map((prop) => `'${prop}'`)
-        .join(', ')}]).`,
-      `Did you forget to add '${prop}' to the passToClient list?`,
-      `See https://vite-plugin-ssr.com/passToClient`
-    ].join(' ')
+    `pageContext[${propName}] isn't available on the client-side because ${propName} is missing in passToClient, see https://vite-plugin-ssr.com/passToClient`
   )
 }
 
