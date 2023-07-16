@@ -300,15 +300,14 @@ async function retrievePageContextFromServer(pageContext: {
   }
 
   const responseText = await response.text()
-  const responseObject = parse(responseText) as { pageContext: Record<string, unknown> } | { serverSideError: true }
-  if ('serverSideError' in responseObject) {
+  const pageContextFromServer = parse(responseText) as
+    | { pageContext: Record<string, unknown> }
+    | { serverSideError: true }
+  if ('serverSideError' in pageContextFromServer) {
     throw getProjectError(
       '`pageContext` could not be fetched from the server as an error occurred on the server; check your server logs.'
     )
   }
-
-  assert(hasProp(responseObject, 'pageContext'))
-  const pageContextFromServer = responseObject.pageContext
   assert(isPlainObject(pageContextFromServer))
   assert(hasProp(pageContextFromServer, '_pageId', 'string'))
 

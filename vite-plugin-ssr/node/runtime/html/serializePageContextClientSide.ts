@@ -42,12 +42,10 @@ function serializePageContextClientSide(pageContext: {
   assert(isPlainObject(pageContextClient))
   let pageContextSerialized: string
 
-  const pageContextClientWrapper = { pageContext: pageContextClient }
-
   const serialize = (v: unknown, varName?: string) => stringify(v, { forbidReactElements: true, valueName: varName })
 
   try {
-    pageContextSerialized = serialize(pageContextClientWrapper)
+    pageContextSerialized = serialize(pageContextClient)
   } catch (err) {
     const h = (s: string) => pc.cyan(s)
     let hasWarned = false
@@ -75,7 +73,7 @@ function serializePageContextClientSide(pageContext: {
     propsNonSerializable.forEach((prop) => {
       pageContextClient[prop] = notSerializable
     })
-    pageContextSerialized = serialize({ pageContext: pageContextClient })
+    pageContextSerialized = serialize(pageContextClient)
   }
 
   return pageContextSerialized

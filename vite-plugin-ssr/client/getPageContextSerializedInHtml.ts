@@ -17,9 +17,7 @@ function getPageContextSerializedInHtml(): {
   const pageContextJson = elem.textContent
   assert(pageContextJson)
 
-  const parseResult = parse(pageContextJson)
-  assert(hasProp(parseResult, 'pageContext', 'object'))
-  const { pageContext } = parseResult
+  const pageContext = parse(pageContextJson)
   assert(hasProp(pageContext, '_pageId', 'string'))
 
   objectAssign(pageContext, {
