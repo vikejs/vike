@@ -29,35 +29,38 @@ function getPageContextProxyForUser<PageContext extends Record<string, unknown> 
   })
 }
 
-const IGNORE_LIST = [
-  'then',
-  'toJSON' // Vue tries to get `toJSON`
-]
 type PageContextInfo = {
   _pageContextRetrievedFromServer: null | Record<string, unknown>
   _comesDirectlyFromServer: boolean
 }
 function assertPassToClient(pageContext: PageContextInfo, prop: string, errMsg: string) {
-  if (globalObject.disableAssertPassToClient === prop) return
-  // We disable assertPassToClient() for the next attempt to read `prop`, because of how Vue's reactivity work.
-  //  - (When changing a reactive object, Vue tries to read it's old value first. This triggers a `assertPassToClient()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.)
-  ignoreNextRead(prop)
-
   if (!isMissing(pageContext, prop)) {
     return
   }
+
+  // assertPassToClient() doesn't make sense if a onBeforeRender() hook was called on the client-side
+  //  - (Because we don't know whether the user expects the pageContext value to be defined directly on the client-side.)
   if (!pageContext._comesDirectlyFromServer) {
-    // assertPassToClient() doesn't make sense if a onBeforeRender() hook was called on the client-side
-    //  - (Because we don't know whether the user expects the pageContext value to be defined directly on the client-side.)
     return
   }
 
+  // If we didn't receive any pageContext value from the server, then passToClient is irrelevant
   if (pageContext._pageContextRetrievedFromServer === null) {
-    // If we didn't receive any pageContext value from the server, then passToClient is irrelevant
     return
   }
+
+  // We disable assertPassToClient() for the next attempt to read `prop`, because of how Vue's reactivity work.
+  //  - (When changing a reactive object, Vue tries to read it's old value first. This triggers a `assertPassToClient()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.)
+  if (globalObject.disableAssertPassToClient === prop) return
+  ignoreNextRead(prop)
+
   assertUsage(false, errMsg)
 }
+
+const IGNORE_LIST = [
+  'then',
+  'toJSON' // Vue tries to get `toJSON`
+]
 function isMissing(pageContext: Record<string, unknown>, prop: string) {
   if (prop in pageContext) return false
   if (IGNORE_LIST.includes(prop)) return false
@@ -66,6 +69,7 @@ function isMissing(pageContext: Record<string, unknown>, prop: string) {
   if (prop.startsWith('__v_')) return false // Vue internals upon `reactive(pageContext)`
   return true
 }
+
 function ignoreNextRead(prop: string) {
   globalObject.disableAssertPassToClient = prop
   window.setTimeout(() => {
