@@ -63,10 +63,7 @@ function preparePageContextForUserConsumptionClientSide<T extends PageContextFor
   sortPageContext(pageContext)
 
   assert([true, false].includes(pageContext._comesDirectlyFromServer))
-  const pageContextForUserConsumption = !pageContext._comesDirectlyFromServer
-    ? // Not possible to achieve `getAssertPassToClientProxy()` if some `onBeforeRender()` hook defined in `.page.js` was called. (We cannot infer what `pageContext` properties came from the server-side or from the client-side. Which is fine because the user will likely dig into why the property is missing in `const pageContext = await runOnBeforeRenderServerHooks()` anyways, which does support throwing the helpul `assertPassToClient()` error message.)
-      pageContext
-    : getPageContextProxyForUser(pageContext)
+  const pageContextForUserConsumption = getPageContextProxyForUser(pageContext)
 
   addIs404ToPageProps(pageContext)
 

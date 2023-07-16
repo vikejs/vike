@@ -11,9 +11,9 @@ const globalObject = getGlobalObject<{ disableAssertPassToClient?: string }>(
  * - Throw error when pageContext value isn't serializable
  * - Throw error when pageContext prop is missing in passToClient
  */
-function getPageContextProxyForUser<
-  T extends Record<string, unknown> & { _pageContextRetrievedFromServer: null | Record<string, unknown> }
->(pageContext: T): T {
+function getPageContextProxyForUser<PageContext extends Record<string, unknown> & PageContextInfo>(
+  pageContext: PageContext
+): PageContext {
   return new Proxy(pageContext, {
     get(_: never, prop: string) {
       const val = pageContext[prop]
@@ -26,7 +26,7 @@ function getPageContextProxyForUser<
       )
 
       if (globalObject.disableAssertPassToClient !== prop) {
-        assertPassToClient(pageContext._pageContextRetrievedFromServer, prop, isMissing(pageContext, prop))
+        assertPassToClient(pageContext, prop, isMissing(pageContext, prop))
       }
       // We disable `assertPassToClient` for the next attempt to read `prop`, because of how Vue's reactivity work.
       // (When changing a reactive object, Vue tries to read it's old value first. This triggers a `assertPassToClient()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.)
@@ -44,18 +44,21 @@ const IGNORE_LIST = [
   'then',
   'toJSON' // Vue tries to get `toJSON`
 ]
-function assertPassToClient(
-  pageContextRetrievedFromServer: null | Record<string, unknown>,
-  prop: string,
-  isMissing: boolean
-) {
+type PageContextInfo = {
+  _pageContextRetrievedFromServer: null | Record<string, unknown>
+  _comesDirectlyFromServer: boolean
+}
+function assertPassToClient(pageContext: PageContextInfo, prop: string, isMissing: boolean) {
   if (!isMissing) {
     return
   }
-  if (pageContextRetrievedFromServer === null) {
-    // If we didn't receive any `pageContext` from the server
-    // - passToClient is irrelevant
-    // - We cannot determine passToClientInferred
+  if (!pageContext._comesDirectlyFromServer) {
+    // Not possible to achieve assertPassToClient() if some onBeforeRender() hook defined in `.page.js` was called. (We cannot infer which pageContext values came from the server-side or from the client-side. Which is fine because the user will likely dig into why the property is missing in `const pageContext = await runOnBeforeRenderServerHooks()` anyways, which does support throwing the helpul `assertPassToClient()` error message.)
+    return
+  }
+
+  if (pageContext._pageContextRetrievedFromServer === null) {
+    // If we didn't receive any pageContext value from the server, then passToClient is irrelevant
     return
   }
   const propName = JSON.stringify(prop)
@@ -64,7 +67,6 @@ function assertPassToClient(
     `pageContext[${propName}] isn't available on the client-side because ${propName} is missing in passToClient, see https://vite-plugin-ssr.com/passToClient`
   )
 }
-
 function isMissing(pageContext: Record<string, unknown>, prop: string) {
   if (prop in pageContext) return false
   if (IGNORE_LIST.includes(prop)) return false
