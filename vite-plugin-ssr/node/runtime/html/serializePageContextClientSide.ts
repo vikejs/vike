@@ -1,11 +1,12 @@
 export { serializePageContextClientSide }
 
 import { stringify } from '@brillout/json-serializer/stringify'
-import { assert, assertUsage, hasProp, isPlainObject, unique } from '../utils'
+import { assert, assertWarning, hasProp, isPlainObject, unique } from '../utils'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { isErrorPage } from '../../../shared/error-page'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
 import pc from '@brillout/picocolors'
+import { notSerializable } from '../../../shared/notSerializable'
 
 type PageContextUser = Record<string, unknown>
 type PageContextClient = { _pageId: string } & Record<string, unknown>
@@ -37,29 +38,29 @@ function serializePageContextClientSide(pageContext: {
     // We set non-existing props to `undefined`, in order to pass the list of passToClient values to the client-side
     pageContextClient[prop] = (pageContext as PageContextUser)[prop]
   })
-  /*
-  if (hasProp(pageContext, '_serverSideErrorWhileStreaming')) {
-    assert(pageContext._serverSideErrorWhileStreaming === true)
-    pageContextClient['_serverSideErrorWhileStreaming'] = true
-  }
-  */
 
   assert(isPlainObject(pageContextClient))
   let pageContextSerialized: string
 
   const pageContextClientWrapper = { pageContext: pageContextClient }
 
+  const serialize = (v: unknown, valueName?: string) => stringify(v, { forbidReactElements: true, valueName })
+
   try {
-    pageContextSerialized = stringify(pageContextClientWrapper, { forbidReactElements: true })
+    pageContextSerialized = serialize(pageContextClientWrapper)
   } catch (err) {
     const h = (s: string) => pc.cyan(s)
+    let hasWarned = false
+    const propsNonSerializable: string[] = []
     passToClient.forEach((prop) => {
       const valueName = h(`pageContext['${prop}']`)
       try {
-        stringify((pageContext as Record<string, unknown>)[prop], { forbidReactElements: true, valueName })
+        serialize((pageContext as Record<string, unknown>)[prop], valueName)
       } catch (err) {
+        hasWarned = true
+        propsNonSerializable.push(prop)
         assert(hasProp(err, 'message', 'string'))
-        assertUsage(
+        assertWarning(
           false,
           [
             `${valueName} cannot be serialized and, therefore, cannot be passed to the client.`,
@@ -69,8 +70,11 @@ function serializePageContextClientSide(pageContext: {
         )
       }
     })
-    console.error(err)
-    assert(false)
+    assert(hasWarned)
+    propsNonSerializable.forEach((prop) => {
+      pageContextClient[prop] = notSerializable
+    })
+    pageContextSerialized = serialize({ pageContext: pageContextClient })
   }
 
   return pageContextSerialized

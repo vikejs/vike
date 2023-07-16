@@ -77,13 +77,14 @@ async function executeOnRenderHtmlHook(
   }
 
   const onErrorWhileStreaming = (err: unknown) => {
+    // Should the stream inject the following?
+    // ```
+    // <script>console.error("An error occurred on the server while streaming the app to HTML. Check the server logs for more information.")</script>
+    // ```
     logRuntimeError(err, pageContext._httpRequestId)
-    /*
-    objectAssign(pageContext, {
-      errorWhileRendering: err,
-      _serverSideErrorWhileStreaming: true
-    })
-    */
+    if (!pageContext.errorWhileRendering) {
+      pageContext.errorWhileRendering = err
+    }
   }
 
   const htmlRender = await renderDocumentHtml(documentHtml, pageContext, onErrorWhileStreaming, injectFilter)

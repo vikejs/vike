@@ -1,4 +1,5 @@
 import { parse } from '@brillout/json-serializer/parse'
+import { notSerializable } from '../shared/notSerializable'
 import { hasProp, objectAssign, assert, assertUsage } from './utils'
 
 export { getPageContextSerializedInHtml }
@@ -21,17 +22,15 @@ function getPageContextSerializedInHtml(): {
   assert(hasProp(parseResult, 'pageContext', 'object'))
   const { pageContext } = parseResult
   assert(hasProp(pageContext, '_pageId', 'string'))
-  /*
-  if ('_serverSideErrorWhileStreaming' in pageContext) {
-    const err = getProjectError(
-      `An error occurred on the server while rendering/streaming to HTML. Check your server logs.`
-    )
-    throw err
-  }
-  */
+
+  Object.entries(pageContext).forEach(([prop, val]) => {
+    if (val === notSerializable) {
+      delete pageContext[prop]
+    }
+  })
 
   objectAssign(pageContext, {
-    _pageContextRetrievedFromServer: { ...pageContext },
+    _pageContextRetrievedFromServer: pageContext,
     _comesDirectlyFromServer: true as const
   })
 

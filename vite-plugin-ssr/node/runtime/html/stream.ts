@@ -45,7 +45,8 @@ import {
   assertWarning,
   isCallable,
   createDebugger,
-  dynamicImport
+  dynamicImport,
+  isBug
 } from '../utils'
 import { HtmlRender } from './renderHtml'
 import {
@@ -334,18 +335,27 @@ async function processStream(
       if (wrapperCreated) resolvePromise()
     },
     async onEnd() {
-      debug('stream end')
-      streamEnded = true
-      streamOriginalHasStartedEmitting = true // In case original stream (stream provided by user) emits no data
-      if (wrapperCreated) resolvePromise() //    In case original stream (stream provided by user) emits no data
-      if (injectStringAtEnd) {
-        const injectEnd = await injectStringAtEnd()
-        writeStream(injectEnd)
+      try {
+        debug('stream end')
+        streamEnded = true
+        streamOriginalHasStartedEmitting = true // In case original stream (stream provided by user) emits no data
+        if (wrapperCreated) resolvePromise() //    In case original stream (stream provided by user) emits no data
+        if (injectStringAtEnd) {
+          const injectEnd = await injectStringAtEnd()
+          writeStream(injectEnd)
+        }
+        await promiseReadyToWrite // E.g. if the user calls the pipe wrapper after the original writable has ended
+        assert(isReady())
+        flushBuffer()
+        debug('stream ended')
+      } catch (err) {
+        // We should catch and gracefully handle user land errors, as any error thrown here kills the server
+        if (!isBug(err)) {
+          console.error(err)
+          assert(false)
+        }
+        throw err
       }
-      await promiseReadyToWrite // E.g. if the user calls the pipe wrapper after the original writable has ended
-      assert(isReady())
-      flushBuffer()
-      debug('stream ended')
     },
     onFlush() {
       flushStream()

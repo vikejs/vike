@@ -7,6 +7,7 @@ export { addOnBeforeLogHook }
 export { getAssertErrMsg }
 export { addAssertColorer }
 export { overwriteAssertProductionLogger }
+export { isBug }
 
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace'
 import { getGlobalObject } from './getGlobalObject'
@@ -197,4 +198,8 @@ function overwriteAssertProductionLogger(logger: Logger): void {
 }
 function addAssertColorer(colorer: Colorer): void {
   globalObject.colorer = colorer
+}
+
+function isBug(err: unknown): boolean {
+  return !String(err).includes('[Bug]')
 }
