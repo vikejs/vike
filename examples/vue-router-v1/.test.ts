@@ -11,11 +11,11 @@ test('page content is rendered to HTML', async () => {
 
 test('page content is rendered to DOM', async () => {
   page.goto(`${getServerUrl()}/`)
-  expect(await page.textContent('button')).toContain('count is: 0')
+  expect(await page.textContent('button')).toContain('Counter 0')
   // `autoRetry` because browser-side code may not be loaded yet
   await autoRetry(async () => {
     await page.click('button')
-    expect(await page.textContent('button')).toContain('count is: 1')
+    expect(await page.textContent('button')).toContain('Counter 1')
   })
 
   // Count state is preserved when navigating to `/about`
@@ -24,5 +24,5 @@ test('page content is rendered to DOM', async () => {
   await autoRetry(async () => {
     expect(await page.textContent('h1')).toContain('About')
   })
-  expect(await page.textContent('button')).toContain('count is: 1')
+  expect(await page.textContent('button')).toContain('Counter 1')
 })

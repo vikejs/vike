@@ -21,7 +21,6 @@ function testRun() {
 
     // Interactive button
     expect(await page.textContent('button')).toBe('Counter 0')
-    // `autoRetry` for waiting on hydration
     await autoRetry(async () => {
       await page.click('button')
       expect(await page.textContent('button')).toContain('Counter 1')

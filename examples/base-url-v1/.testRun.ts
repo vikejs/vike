@@ -1,7 +1,7 @@
-import { page, test, expect, run, autoRetry, fetchHtml, partRegex, getServerUrl } from '@brillout/test-e2e'
-import { ensureWasClientSideRouted } from '../../test/utils'
-
 export { testRun }
+
+import { page, test, expect, run, autoRetry, fetchHtml, partRegex, getServerUrl } from '@brillout/test-e2e'
+import { ensureWasClientSideRouted, testCounter } from '../../test/utils'
 
 function testRun(
   cmd: 'npm run dev' | 'npm run preview' | 'npm run start',
@@ -35,11 +35,7 @@ function testRun(
   test('page is rendered to the DOM and interactive', async () => {
     await page.goto(getServerUrl() + addBaseServer('/'))
     expect(await page.textContent('h1')).toBe('Welcome')
-    expect(await page.textContent('button')).toBe('Counter 0')
-    await autoRetry(async () => {
-      await page.click('button')
-      expect(await page.textContent('button')).toContain('Counter 1')
-    })
+    await testCounter()
   })
 
   test('Client Routing', async () => {

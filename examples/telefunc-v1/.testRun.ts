@@ -1,17 +1,6 @@
-import {
-  page,
-  test,
-  expect,
-  run,
-  getServerUrl,
-  autoRetry,
-  fetchHtml,
-  isWindows,
-  isMac,
-  sleep
-} from '@brillout/test-e2e'
-
 export { testRun }
+
+import { page, test, expect, run, getServerUrl, autoRetry, fetchHtml } from '@brillout/test-e2e'
 
 function testRun(cmd: 'npm run dev' | 'npm run prod') {
   run(cmd)

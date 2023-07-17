@@ -9,7 +9,7 @@
     </router-view>
   </div>
   <div>
-    <button @click="state.count++">count is: {{ state.count }}</button>
+    <button @click="state.count++">Counter {{ state.count }}</button>
   </div>
 </template>
 
