@@ -4,8 +4,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { PageLayout } from './PageLayout'
 
-let root
-async function onRenderClient(pageContext) {
+let root: ReactDOM.Root
+async function onRenderClient(pageContext: any) {
   const { Page } = pageContext
 
   const page = (
@@ -14,7 +14,7 @@ async function onRenderClient(pageContext) {
     </PageLayout>
   )
 
-  const container = document.getElementById('page-view')
+  const container = document.getElementById('page-view')!
   if (pageContext.isHydration) {
     root = ReactDOM.hydrateRoot(container, page)
   } else {

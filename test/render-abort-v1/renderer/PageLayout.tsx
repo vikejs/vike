@@ -3,7 +3,7 @@ import './PageLayout.css'
 
 export { PageLayout }
 
-function PageLayout({ children }) {
+function PageLayout({ children }: { children: React.ReactNode }) {
   return (
     <React.StrictMode>
       <Layout>
@@ -21,7 +21,7 @@ function PageLayout({ children }) {
   )
 }
 
-function Nav({ href }) {
+function Nav({ href }: { href: string }) {
   return (
     <a href={href} style={{ padding: 3, textDecoration: 'none' }}>
       {href}
@@ -29,7 +29,7 @@ function Nav({ href }) {
   )
 }
 
-function Layout({ children }) {
+function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -43,7 +43,7 @@ function Layout({ children }) {
   )
 }
 
-function Sidebar({ children }) {
+function Sidebar({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -60,7 +60,7 @@ function Sidebar({ children }) {
   )
 }
 
-function Content({ children }) {
+function Content({ children }: { children: React.ReactNode }) {
   return (
     <div
       id="page-content"

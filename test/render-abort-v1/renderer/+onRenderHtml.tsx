@@ -5,7 +5,7 @@ import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { PageLayout } from './PageLayout'
 
-function onRenderHtml(pageContext) {
+function onRenderHtml(pageContext: any) {
   const { Page } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
