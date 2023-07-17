@@ -2126,6 +2126,33 @@ importers:
         specifier: ^5.0.1
         version: 5.1.0(webpack@5.82.0)
 
+  test/abort-v1:
+    dependencies:
+      '@types/react':
+        specifier: ^18.2.15
+        version: 18.2.15
+      '@types/react-dom':
+        specifier: ^18.2.7
+        version: 18.2.7
+      '@vitejs/plugin-react':
+        specifier: ^3.0.0
+        version: 3.1.0(vite@4.3.9)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      typescript:
+        specifier: ^5.1.3
+        version: 5.1.3
+      vite:
+        specifier: ^4.0.3
+        version: 4.3.9(@types/node@20.2.5)
+      vite-plugin-ssr:
+        specifier: link:../../vite-plugin-ssr
+        version: link:../../vite-plugin-ssr
+
   test/build.outDir:
     dependencies:
       '@vitejs/plugin-react':
@@ -2277,7 +2304,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.9(@types/node@15.14.9)
+        version: 4.3.9(@types/node@20.2.5)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2338,33 +2365,6 @@ importers:
       vite:
         specifier: ^4.0.3
         version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
-
-  test/render-abort-v1:
-    dependencies:
-      '@types/react':
-        specifier: ^18.2.15
-        version: 18.2.15
-      '@types/react-dom':
-        specifier: ^18.2.7
-        version: 18.2.7
-      '@vitejs/plugin-react':
-        specifier: ^3.0.0
-        version: 3.1.0(vite@4.3.9)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      typescript:
-        specifier: ^5.1.3
-        version: 5.1.3
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.9(@types/node@15.14.9)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -5148,7 +5148,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.19.6(@babel/core@7.21.8)
       magic-string: 0.27.0
       react-refresh: 0.14.0
-      vite: 4.3.9(@types/node@15.14.9)
+      vite: 4.3.9(@types/node@20.2.5)
     transitivePeerDependencies:
       - supports-color
     dev: false
