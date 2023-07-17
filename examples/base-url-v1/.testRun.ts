@@ -1,4 +1,5 @@
 import { page, test, expect, run, autoRetry, fetchHtml, partRegex, getServerUrl } from '@brillout/test-e2e'
+import { ensureWasClientSideRouted } from '../../test/utils'
 
 export { testRun }
 
@@ -46,12 +47,6 @@ function testRun(
     await autoRetry(async () => {
       expect(await page.textContent('h1')).toBe('About')
     })
-
-    // Page was Client-side Routed; we check whether the HTML is from the first page before Client-side Routing
-    const html = await page.content()
-    // `page.content()` doesn't return the original HTML (it dumps the DOM to HTML).
-    // Therefore only the serialized `pageContext` tell us the original HTML.
-    expect(html.split('_pageId').length).toBe(2)
-    expect(html).toContain('"_pageId":"/pages/index"')
+    ensureWasClientSideRouted('/pages/index')
   })
 }

@@ -1,6 +1,7 @@
-import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, sleep } from '@brillout/test-e2e'
-
 export { testRun }
+
+import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, sleep } from '@brillout/test-e2e'
+import { ensureWasClientSideRouted } from '../../test/utils'
 
 function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
   run(cmd)
@@ -30,13 +31,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
       expect(await page.textContent('h1')).toBe('Star Wars Movies')
     })
     expect(await page.textContent('body')).toContain('The Phantom Menace')
-
-    // Page was Client-side Routed; we check whether the HTML is from the first page before Client-side Routing
-    const html = await page.content()
-    // `page.content()` doesn't return the original HTML (it dumps the DOM to HTML).
-    // Therefore only the serialized `pageContext` tell us the original HTML.
-    expect(html.split('_pageId').length).toBe(2)
-    expect(html).toContain('"_pageId":"/pages/index"')
+    ensureWasClientSideRouted('/pages/index')
   })
 
   test('supports route functions', async () => {

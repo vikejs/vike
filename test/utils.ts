@@ -23,6 +23,9 @@ function expectUrl(pathname: string) {
 
 /** Ensure page wasn't server-side routed */
 async function ensureWasClientSideRouted(pageIdFirst: string) {
+  // Check whether the HTML is from the first page before Client-side Routing.
+  // page.content() doesn't return the original HTML (it dumps the DOM to HTML).
+  // Therefore only the serialized pageContext tell us the original HTML.
   const html = await page.content()
   const pageId = findFirstPageId(html)
   expect(pageId).toBe(pageIdFirst)
