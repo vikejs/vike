@@ -30,7 +30,7 @@ import type { PageConfig } from '../../shared/page-configs/PageConfig'
 import { getConfigValue, getPageConfig } from '../../shared/page-configs/utils'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn'
 import { executeGuardHook } from '../../shared/route/executeGuardHook'
-import { renderUrl } from '../../shared/abort'
+import { render } from '../../shared/abort'
 
 type PageContextAddendum = {
   _pageId: string
@@ -209,7 +209,8 @@ async function executeOnBeforeRenderHook(
       const urlRewrite = pageContextFromServer._urlRewrite
       if (urlRewrite) {
         assert(typeof urlRewrite === 'string')
-        throw renderUrl(urlRewrite, pageContextFromServer)
+        assert(urlRewrite.startsWith('/'))
+        throw render(urlRewrite as `/${string}`, pageContextFromServer)
       }
     }
     const pageContextAddendum = {}

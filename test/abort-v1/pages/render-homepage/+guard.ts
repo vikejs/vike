@@ -1,7 +1,7 @@
 export default guard
 
-import { renderUrl } from 'vite-plugin-ssr/abort'
+import { render } from 'vite-plugin-ssr/abort'
 
 async function guard() {
-  throw renderUrl('/')
+  throw render('/')
 }

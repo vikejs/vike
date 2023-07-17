@@ -203,11 +203,11 @@ async function renderPageAlreadyPrepared(
         httpRequestId,
         renderContext
       )
-      // `throw redirect()` and `throw renderUrl()`
+      // `throw redirect()` / `throw render(url)`
       if (handled.pageContextReturn) {
         return handled.pageContextReturn
       }
-      // throw renderErrorPage()
+      // throw render(statusCode)
       pageContextFromRenderAbort = handled.pageContextAddition
     }
 
@@ -231,7 +231,7 @@ async function renderPageAlreadyPrepared(
           httpRequestId,
           renderContext
         )
-        // throw renderErrorPage()
+        // throw render(statusCode)
         if (!handled.pageContextReturn) {
           const abortCall = pc.cyan(errErrorPage._pageContextAddition._abortCall)
           const abortCaller = pc.cyan(`throw ${errErrorPage._pageContextAddition._abortCaller}()`)
@@ -243,7 +243,7 @@ async function renderPageAlreadyPrepared(
           const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(errNominalPage, pageContextInit)
           return pageContextHttpReponseNull
         }
-        // `throw redirect()` and `throw renderUrl()`
+        // `throw redirect()` / `throw render(url)`
         return handled.pageContextReturn
       }
       if (isNewError(errErrorPage, errNominalPage)) {
@@ -429,7 +429,7 @@ async function handleAbortError(
 
   const pageContextAddition = errAbort._pageContextAddition
 
-  if (pageContextAddition._abortCaller === 'renderUrl') {
+  if ('_urlRewrite' in pageContextAddition) {
     const pageContextReturn = await renderPageAlreadyPrepared(pageContextInit, httpRequestId, renderContext, [
       ...pageContextsFromRewrite,
       pageContextAddition
@@ -437,7 +437,7 @@ async function handleAbortError(
     Object.assign(pageContextReturn, pageContextAddition)
     return { pageContextReturn }
   }
-  if (pageContextAddition._abortCaller === 'redirect') {
+  if ('_urlRedirect' in pageContextAddition) {
     const pageContextReturn = {
       ...pageContextInit,
       ...pageContextAddition
@@ -446,9 +446,6 @@ async function handleAbortError(
     objectAssign(pageContextReturn, { httpResponse })
     return { pageContextReturn }
   }
-  if (pageContextAddition._abortCaller === 'renderErrorPage') {
-    return { pageContextAddition }
-  }
-
-  assert(false)
+  assert(pageContextAddition._statusCode)
+  return { pageContextAddition }
 }

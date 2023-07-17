@@ -10,7 +10,7 @@ function assertPageContextProvidedByUser(
   }:
     | {
         hook?: undefined
-        abortCaller: 'redirect' | 'renderUrl' | 'renderErrorPage' | 'RenderErrorPage'
+        abortCaller: 'redirect' | 'render' | 'RenderErrorPage'
       }
     | {
         hook: {
@@ -56,7 +56,7 @@ function assertPageContextProvidedByUser(
   if (!abortCaller) {
     assertUsage(
       !('is404' in pageContextProvidedByUser),
-      `${errPrefix} sets \`pageContext.is404\` which is forbidden, use \`throw renderErrorPage()\` instead, see https://vite-plugin-ssr.com/abort`
+      `${errPrefix} sets \`pageContext.is404\` which is forbidden, use \`throw render()\` instead, see https://vite-plugin-ssr.com/abort`
     )
   }
 }

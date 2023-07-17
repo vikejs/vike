@@ -5,7 +5,7 @@ import fetch from 'cross-fetch'
 import { filterMovieData } from '../filterMovieData'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 import type { MovieDetails } from '../types'
-import { renderErrorPage } from 'vite-plugin-ssr/abort'
+import { render } from 'vite-plugin-ssr/abort'
 import React from 'react'
 
 async function onBeforeRender(pageContext: PageContextBuiltIn) {
@@ -17,9 +17,9 @@ async function onBeforeRender(pageContext: PageContextBuiltIn) {
   } catch (err) {
     console.error(err)
     //*/
-    throw renderErrorPage(503, `Couldn't fetch data, because failed HTTP GET request to ${dataUrl}`)
+    throw render(503, `Couldn't fetch data, because failed HTTP GET request to ${dataUrl}`)
     /*/
-    throw renderErrorPage(
+    throw render(
       503,
       <>
         Couldn't fetch data, because failed HTTP GET request to <code>{dataUrl}</code>.

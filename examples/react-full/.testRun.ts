@@ -113,9 +113,9 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
     })
   }
 
-  // In production, we pre-render all pages and thus `throw RenderErrorPage()` will never be called.
+  // In production, we pre-render all pages and thus `throw render()` will never be called.
   if (isDev) {
-    test('throw renderErrorPage()', async () => {
+    test('throw render()', async () => {
       await page.goto(getServerUrl() + '/hello/bob')
       if (!isV1Design) {
         expect(await page.textContent('h1')).toBe('404 Page Not Found')
@@ -126,7 +126,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
       )
       if (!isV1Design) {
         expectLog(
-          '[Warning] `throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw renderErrorPage()`, `throw renderUrl()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/abort',
+          '[Warning] `throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/abort',
           (log) => log.logSource === 'stderr'
         )
       }

@@ -127,7 +127,7 @@ function useClientRouter() {
           // If a route() hook has a bug
           throw err
         } else {
-          // If the user's route() hook throw redirect() / throw renderErrorPage() / throw renderUrl()
+          // If the user's route() hook throw redirect() / throw render()
           // We handle the abort error down below: the user's route() hook is called again in getPageContext()
           isClientRoutable = true
         }
@@ -190,7 +190,7 @@ function useClientRouter() {
         //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
         console.error(err)
       } else {
-        // We swallow throw redirect()/renderErrorPage()/renderUrl() called by client-side hooks onBeforeRender() and guard()
+        // We swallow throw redirect()/render() called by client-side hooks onBeforeRender() and guard()
         // We handle the abort error down below.
       }
 
@@ -200,7 +200,7 @@ function useClientRouter() {
         const errAbort = err
         logAbortErrorHandled(err, pageContext._isProduction, pageContext)
         const pageContextAddition = errAbort._pageContextAddition
-        if (pageContextAddition._abortCaller === 'renderUrl') {
+        if ('_urlRewrite' in pageContextAddition) {
           await fetchAndRender({
             scrollTarget,
             urlOriginal,
@@ -210,7 +210,7 @@ function useClientRouter() {
           })
           return
         }
-        if (pageContextAddition._abortCaller === 'redirect') {
+        if ('_urlRedirect' in pageContextAddition) {
           await fetchAndRender({
             scrollTarget: 'scroll-to-top-or-hash',
             urlOriginal: pageContextAddition._urlRedirect.url,
@@ -220,7 +220,7 @@ function useClientRouter() {
           })
           return
         }
-        assert(pageContextAddition._abortCaller === 'renderErrorPage')
+        assert(pageContextAddition._statusCode)
         objectAssign(pageContext, pageContextAddition)
       } else {
         objectAssign(pageContext, { is404: checkIf404(err) })
