@@ -33,19 +33,17 @@ type UrlRedirect = {
 }
 
 /**
- * Abort the rendering of the current page: redirect the user to another URL.
+ * Abort the rendering of the current page, and redirect the user to another URL instead.
  *
  * https://vite-plugin-ssr.com/abort
  *
  * @param statusCode `301` (permanent) or `302` (temporary) redirection.
  * @param url The URL to redirect to.
- * @param pageContextAddition [Optional] Add pageContext values.
  */
-function redirect(statusCode: StatusCodeRedirect, url: string, pageContextAddition?: Record<string, unknown>): Error {
+function redirect(statusCode: StatusCodeRedirect, url: string): Error {
   const abortCaller = 'redirect' as const
-  assertPageContextProvidedByUser(pageContextAddition, { abortCaller })
   assertStatusCode(statusCode, [301, 302], 'redirect')
-  pageContextAddition = pageContextAddition ?? {}
+  const pageContextAddition = {}
   objectAssign(pageContextAddition, {
     _abortCaller: abortCaller,
     _abortCall: `throw redirect(${statusCode})` as const,
@@ -122,19 +120,19 @@ type PageContextRenderAbort = {
   _abortCall: `throw redirect(${string})` | `throw render(${string})`
   abortReason?: string
 } & (
-    | {
-        _abortCaller: 'redirect'
-        _urlRedirect: UrlRedirect
-      }
-    | {
-        _abortCaller: 'render'
-        _urlRewrite: string
-      }
-    | {
-        _abortCaller: 'render'
-        _statusCode: StatusCodeError
-      }
-  )
+  | {
+      _abortCaller: 'redirect'
+      _urlRedirect: UrlRedirect
+    }
+  | {
+      _abortCaller: 'render'
+      _urlRewrite: string
+    }
+  | {
+      _abortCaller: 'render'
+      _statusCode: StatusCodeError
+    }
+)
 function RenderAbort(pageContextAddition: PageContextRenderAbort): Error {
   const err = new Error('RenderAbort')
   objectAssign(err, { _pageContextAddition: pageContextAddition, [stamp]: true })
