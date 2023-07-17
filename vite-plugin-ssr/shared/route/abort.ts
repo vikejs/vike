@@ -5,6 +5,7 @@ export { isAbortError }
 export { logAbortErrorHandled }
 export { getPageContextFromAllRewrites }
 export type { StatusCodeAbort }
+export type { StatusCodeError }
 export type { AbortError }
 export type { PageContextFromRewrite }
 export type { AbortReason }
@@ -107,7 +108,7 @@ function render(value: string | StatusCodeError, info?: string | Record<string, 
     const statusCode = value
     assertStatusCode(value, [401, 403, 404, 429, 500, 503], 'render')
     objectAssign(pageContextAddition, {
-      _statusCode: statusCode,
+      _abortStatusCode: statusCode,
       is404: statusCode === 404
     })
     return RenderAbort(pageContextAddition)
@@ -130,7 +131,7 @@ type PageContextRenderAbort = {
     }
   | {
       _abortCaller: 'render'
-      _statusCode: StatusCodeError
+      _abortStatusCode: StatusCodeError
     }
 )
 function RenderAbort(pageContextAddition: PageContextRenderAbort): Error {

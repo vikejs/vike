@@ -446,6 +446,6 @@ async function handleAbortError(
     objectAssign(pageContextReturn, { httpResponse })
     return { pageContextReturn }
   }
-  assert(pageContextAddition._statusCode)
+  assert(pageContextAddition._abortStatusCode)
   return { pageContextAddition }
 }

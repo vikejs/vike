@@ -220,7 +220,7 @@ function useClientRouter() {
           })
           return
         }
-        assert(pageContextAddition._statusCode)
+        assert(pageContextAddition._abortStatusCode)
         objectAssign(pageContext, pageContextAddition)
       } else {
         objectAssign(pageContext, { is404: checkIf404(err) })

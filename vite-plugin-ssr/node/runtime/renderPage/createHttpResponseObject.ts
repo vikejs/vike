@@ -9,7 +9,7 @@ import type { HtmlRender } from '../html/renderHtml'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { isErrorPage } from '../../../shared/error-page'
 import type { RenderHook } from './executeOnRenderHtmlHook'
-import type { StatusCodeAbort, UrlRedirect } from '../../../shared/route/abort'
+import type { StatusCodeAbort, StatusCodeError, UrlRedirect } from '../../../shared/route/abort'
 import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody'
 
 type StatusCode = 200 | 404 | 500 | StatusCodeAbort
@@ -37,7 +37,7 @@ async function createHttpResponseObject(
     errorWhileRendering: null | Error
     __getPageAssets: GetPageAssets
     _pageConfigs: PageConfig[]
-    _statusCode?: StatusCodeAbort
+    _abortStatusCode?: StatusCodeError
   }
 ): Promise<HttpResponse | null> {
   if (htmlRender === null) {
@@ -45,7 +45,7 @@ async function createHttpResponseObject(
   }
   assert(renderHook || typeof htmlRender === 'string')
 
-  let statusCode: StatusCode | undefined = pageContext._statusCode
+  let statusCode: StatusCode | undefined = pageContext._abortStatusCode
   if (!statusCode) {
     const isError = !pageContext._pageId || isErrorPage(pageContext._pageId, pageContext._pageConfigs)
     if (pageContext.errorWhileRendering) {
