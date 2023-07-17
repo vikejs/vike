@@ -1,2 +1,2 @@
 import { testRun } from '../vike-react/.testRun'
-testRun('npm run dev')
+testRun('npm run dev', true)

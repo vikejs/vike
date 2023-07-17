@@ -3,7 +3,7 @@ import { ensureWasClientSideRouted, testCounter } from '../../test/utils'
 
 export { testRun }
 
-function testRun(cmd: 'npm run dev' | 'npm run preview') {
+function testRun(cmd: 'npm run dev' | 'npm run preview', isStem?: true) {
   run(cmd, { doNotFailOnWarning: true })
 
   test('page content is rendered to HTML', async () => {
@@ -21,7 +21,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('h1')).toBe('Star Wars Movies')
     })
     expect(await page.textContent('body')).toContain('The Phantom Menace')
-    await ensureWasClientSideRouted('/pages/index')
+    await ensureWasClientSideRouted(isStem ? '/pages/index/index' : '/pages/index')
   })
 
   test('data fetching page, HTML', async () => {
