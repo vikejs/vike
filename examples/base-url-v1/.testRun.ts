@@ -47,6 +47,6 @@ function testRun(
     await autoRetry(async () => {
       expect(await page.textContent('h1')).toBe('About')
     })
-    ensureWasClientSideRouted('/pages/index')
+    await ensureWasClientSideRouted('/pages/index')
   })
 }

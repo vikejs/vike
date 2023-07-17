@@ -36,7 +36,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('h1')).toBe('Welcome')
     })
     await testCounter()
-    ensureWasClientSideRouted('/pages/about')
+    await ensureWasClientSideRouted('/pages/about')
   })
 
   test('redirect - server-side', async () => {

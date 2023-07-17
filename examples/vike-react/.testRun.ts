@@ -27,7 +27,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('h1')).toBe('Star Wars Movies')
     })
     expect(await page.textContent('body')).toContain('The Phantom Menace')
-    ensureWasClientSideRouted('/pages/index')
+    await ensureWasClientSideRouted('/pages/index')
   })
 
   test('data fetching page, HTML', async () => {
