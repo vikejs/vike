@@ -30,7 +30,7 @@ import {
   isAbortError,
   logAbortErrorHandled,
   PageContextFromRewrite
-} from '../../shared/route/RenderAbort'
+} from '../../shared/route/abort'
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
   clientRoutingIsDisabled?: true

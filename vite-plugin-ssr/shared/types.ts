@@ -4,7 +4,7 @@ export { PageContextBuiltInClientWithServerRouting }
 
 import type { PageContextUrlsPublic } from './addComputedUrlProps'
 import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports'
-import type { AbortReason } from './route/RenderAbort'
+import type { AbortReason } from './route/abort'
 
 /** Built-in `pageContext` properties set by vite-plugin-ssr.
  *

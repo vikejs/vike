@@ -29,7 +29,7 @@ import { getHtmlString, type HtmlRender } from '../html/renderHtml'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { isErrorPage } from '../../../shared/error-page'
 import type { RenderHook } from './executeOnRenderHtmlHook'
-import type { StatusCodeAbort } from '../../../shared/route/RenderAbort'
+import type { StatusCodeAbort } from '../../../shared/route/abort'
 
 type StatusCode = 200 | 404 | 500 | StatusCodeAbort
 type ContentType = 'application/json' | 'text/html;charset=utf-8'

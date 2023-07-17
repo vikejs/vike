@@ -27,7 +27,7 @@ import {
   isAbortError,
   logAbortErrorHandled,
   PageContextFromRewrite
-} from '../../shared/route/RenderAbort'
+} from '../../shared/route/abort'
 import { getGlobalContext, initGlobalContext } from './globalContext'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import type { HttpResponse } from './renderPage/createHttpResponseObject'

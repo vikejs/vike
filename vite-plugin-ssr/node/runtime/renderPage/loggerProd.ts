@@ -3,7 +3,7 @@
 
 export { logErrorProd }
 
-import { isAbortError } from '../../../shared/route/RenderAbort'
+import { isAbortError } from '../../../shared/route/abort'
 import { setAlreadyLogged } from './isNewError'
 import { isObject, warnIfObjectIsNotObject } from '../utils'
 import pc from '@brillout/picocolors'

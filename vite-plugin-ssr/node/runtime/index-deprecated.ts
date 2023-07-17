@@ -7,7 +7,7 @@ export * from '../../types/index-dreprecated'
 import { assertWarning } from './utils'
 import pc from '@brillout/picocolors'
 
-import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/RenderAbort'
+import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/abort'
 /** @deprecated
  * Replace:
  *   ```

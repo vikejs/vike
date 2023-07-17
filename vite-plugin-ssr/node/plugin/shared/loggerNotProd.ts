@@ -19,7 +19,7 @@ export type { LogErrorArgs }
 export type { LogType }
 export type { LogCategory }
 
-import { isAbortError } from '../../../shared/route/RenderAbort'
+import { isAbortError } from '../../../shared/route/abort'
 import { getViteConfig } from '../../runtime/globalContext'
 import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/loggerRuntime'
 import {
