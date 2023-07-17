@@ -9,6 +9,7 @@ export type { StatusCodeAbort }
 export type { AbortError }
 export type { PageContextFromRewrite }
 export type { AbortReason }
+export type { UrlRedirect }
 
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
 import {
@@ -27,6 +28,11 @@ type StatusCodeAbort = StatusCodeRedirect | StatusCodeError
 type StatusCodeRedirect = 301 | 302
 type StatusCodeError = 401 | 403 | 404 | 429 | 500 | 503
 
+type UrlRedirect = {
+  url: string
+  statusCode: StatusCodeRedirect
+}
+
 /**
  * Abort the rendering of the current page: redirect the user to another URL.
  *
@@ -42,10 +48,12 @@ function redirect(statusCode: StatusCodeRedirect, url: string, pageContextAdditi
   assertStatusCode(statusCode, [301, 302], 'redirect')
   pageContextAddition = pageContextAddition ?? {}
   objectAssign(pageContextAddition, {
-    _statusCode: statusCode,
     _abortCaller: abortCaller,
     _abortCall: `throw redirect(${statusCode})` as const,
-    _urlRedirect: url
+    _urlRedirect: {
+      url,
+      statusCode
+    }
   })
   return RenderAbort(pageContextAddition)
 }
@@ -114,7 +122,7 @@ type PageContextRenderAbort = Record<string, unknown> & {
 } & (
     | {
         _abortCaller: 'redirect'
-        _urlRedirect: string
+        _urlRedirect: UrlRedirect
       }
     | {
         _abortCaller: 'renderUrl'

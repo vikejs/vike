@@ -10,9 +10,7 @@ function PageLayout({ children }: { children: React.ReactNode }) {
         <Sidebar>
           <Nav href="/" />
           <Nav href="/about" />
-          {/*
           <Nav href="/redirect" />
-          */}
           <Nav href="/render-homepage" />
         </Sidebar>
         <Content>{children}</Content>

@@ -30,7 +30,7 @@ import {
 } from '../../shared/route/abort'
 import { getGlobalContext, initGlobalContext } from './globalContext'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
-import type { HttpResponse } from './renderPage/createHttpResponseObject'
+import { createHttpResponseObjectRedirect, HttpResponse } from './renderPage/createHttpResponseObject'
 import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime'
 import { isNewError } from './renderPage/isNewError'
 import { assertArguments } from './renderPage/assertArguments'
@@ -262,11 +262,13 @@ function logHttpRequest(urlToShowToUser: string, httpRequestId: number) {
 }
 function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageContextReturn: PageContextAfterRender) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
-  const color = (s: number | string) => pc.bold(statusCode !== 200 ? pc.red(s) : pc.green(s))
+  const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
+  const isNominal = isSuccess || statusCode === 404
+  const color = (s: number | string) => pc.bold(isSuccess ? pc.green(s) : pc.red(s))
   logRuntimeInfo?.(
     `HTTP response ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`,
     httpRequestId,
-    statusCode === 200 || statusCode === 404 ? 'info' : 'error'
+    isNominal ? 'info' : 'error'
   )
 }
 
@@ -287,10 +289,6 @@ function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>
     errorWhileRendering: null
   })
   return pageContextHttpReponseNull
-}
-function getPageContextHttpResponseRedirect(pageContextInit: Record<string, unknown>) {
-  // TODO
-  return getPageContextHttpResponseNull(pageContextInit)
 }
 
 async function renderPageAttempt(
@@ -440,8 +438,12 @@ async function handleAbortError(
     return { pageContextReturn }
   }
   if (pageContextAddition._abortCaller === 'redirect') {
-    const pageContextReturn = getPageContextHttpResponseRedirect(pageContextInit)
-    Object.assign(pageContextReturn, pageContextAddition)
+    const pageContextReturn = {
+      ...pageContextInit,
+      ...pageContextAddition
+    }
+    const httpResponse = createHttpResponseObjectRedirect(pageContextReturn)
+    objectAssign(pageContextReturn, { httpResponse })
     return { pageContextReturn }
   }
   if (pageContextAddition._abortCaller === 'renderErrorPage') {

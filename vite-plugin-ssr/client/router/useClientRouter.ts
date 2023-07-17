@@ -213,7 +213,7 @@ function useClientRouter() {
         if (pageContextAddition._abortCaller === 'redirect') {
           await fetchAndRender({
             scrollTarget: 'scroll-to-top-or-hash',
-            urlOriginal: pageContextAddition._urlRedirect,
+            urlOriginal: pageContextAddition._urlRedirect.url,
             overwriteLastHistoryEntry: false,
             isBackwardNavigation: false,
             checkClientSideRenderable: true

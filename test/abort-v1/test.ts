@@ -12,6 +12,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     }
     await t('/')
     await t('/render-homepage')
+    await t('/redirect')
   })
 
   test('DOM', async () => {
@@ -22,9 +23,10 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     }
     await t('/')
     await t('/render-homepage')
+    await t('/redirect')
   })
 
-  test('Client Routing', async () => {
+  test('Rewrite - Client Routing', async () => {
     await page.goto(getServerUrl() + '/about')
     expect(await page.textContent('h1')).toBe('About')
     await hydrationDone()
@@ -42,6 +44,34 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(pageId).toBe('/pages/about')
     }
   })
+
+  test('redirect - server-side', async () => {
+    // Server-side redirection
+    await page.goto(getServerUrl() + '/redirect')
+    expectUrl('/')
+  })
+
+  test('redirect - client-side (with Client Routing)', async () => {
+    await page.goto(getServerUrl() + '/about')
+    expectUrl('/about')
+    await hydrationDone()
+
+    await page.click('a[href="/redirect"]')
+    await autoRetry(async () => {
+      expectUrl('/')
+    })
+
+    // Ensure page wasn't server-side routed
+    {
+      const html = await page.content()
+      const pageId = findFirstPageId(html)
+      expect(pageId).toBe('/pages/about')
+    }
+  })
+}
+
+function expectUrl(pathname: string) {
+  expect(page.url()).toBe(getServerUrl() + pathname)
 }
 
 async function hydrationDone() {

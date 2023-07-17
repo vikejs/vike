@@ -1,4 +1,5 @@
 export { createHttpResponseObject }
+export { createHttpResponseObjectRedirect }
 export type { HttpResponse }
 
 import { inferEarlyHintLink } from '../html/injectAssets/inferHtmlTags'
@@ -8,7 +9,7 @@ import type { HtmlRender } from '../html/renderHtml'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { isErrorPage } from '../../../shared/error-page'
 import type { RenderHook } from './executeOnRenderHtmlHook'
-import type { StatusCodeAbort } from '../../../shared/route/abort'
+import type { StatusCodeAbort, UrlRedirect } from '../../../shared/route/abort'
 import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody'
 
 type StatusCode = 200 | 404 | 500 | StatusCodeAbort
@@ -16,9 +17,14 @@ type ContentType = 'application/json' | 'text/html;charset=utf-8'
 type EarlyHint = PageAsset & {
   earlyHintLink: string
 }
+type ResponseHeaders = [string, string][]
 type HttpResponse = {
   statusCode: StatusCode
+  headers: ResponseHeaders
+  // We don't use @deprecated to avoid TypeScript to remove the JSDoc
+  /** **Deprecated**: use `headers` instead, see TODO */
   contentType: ContentType
+  /** **Deprecated**: use `headers` instead, see TODO */
   earlyHints: EarlyHint[]
 } & HttpResponseBody
 async function createHttpResponseObject(
@@ -70,10 +76,39 @@ async function createHttpResponseObject(
     })
   }
 
+  const contentType = pageContext.isClientSideNavigation ? 'application/json' : 'text/html;charset=utf-8'
+  return getHttpResponse(statusCode, contentType, [], htmlRender, earlyHints, renderHook)
+}
+
+function createHttpResponseObjectRedirect(pageContext: { _urlRedirect: UrlRedirect }): HttpResponse {
+  const { url, statusCode } = pageContext._urlRedirect
+  assert(url)
+  assert(statusCode)
+  assert(300 <= statusCode && statusCode <= 399)
+  const headers: ResponseHeaders = [['Location', url]]
+  return getHttpResponse(
+    statusCode,
+    'text/html;charset=utf-8',
+    headers,
+    `<p style="display: none">Redirecting to ${url}</p>`
+  )
+}
+
+function getHttpResponse(
+  statusCode: StatusCode,
+  contentType: ContentType,
+  headers: ResponseHeaders,
+  htmlRender: HtmlRender,
+  earlyHints: EarlyHint[] = [],
+  renderHook: null | RenderHook = null
+): HttpResponse {
+  headers.push(['Content-Type', contentType])
+
   return {
     statusCode,
-    contentType: pageContext.isClientSideNavigation ? 'application/json' : 'text/html;charset=utf-8',
-    earlyHints,
+    headers,
+    contentType, // TODO/v1-release: remove
+    earlyHints, // TODO/v1-release: remove
     get body() {
       return getHttpResponseBody(htmlRender, renderHook)
     },
