@@ -275,5 +275,13 @@ const headingsDetached = [
   {
     title: '`includeAssetsImportedByServer`',
     url: '/includeAssetsImportedByServer'
+  },
+  {
+    title: (
+      <>
+        Migration <code>0.4.134</code>
+      </>
+    ),
+    url: '/migration/0.4.134'
   }
 ] satisfies HeadingDetachedDefinition[]
