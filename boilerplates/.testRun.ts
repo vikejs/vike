@@ -47,7 +47,7 @@ function testRun(
     await page.goto(getServerUrl() + '/')
     expect(await page.textContent('h1')).toBe('Welcome')
     expect(await page.textContent('button')).toBe('Counter 0')
-    // `autoRetry` because browser-side code may not be loaded yet
+    // autoRetry() because browser-side code may not be loaded yet
     await autoRetry(async () => {
       await page.click('button')
       if (uiFramewok === 'solid') {

@@ -6,8 +6,11 @@ export { expectUrl }
 import { page, expect, getServerUrl, autoRetry, partRegex } from '@brillout/test-e2e'
 
 async function testCounter() {
-  expect(await page.textContent('button')).toBe('Counter 0')
-  // autoRetry() because browser-side code may not be loaded yet
+  // autoRetry() in case page just got client-side navigated
+  await autoRetry(async () => {
+    expect(await page.textContent('button')).toBe('Counter 0')
+  })
+  // autoRetry() in case page isn't hydrated yet
   await autoRetry(async () => {
     await page.click('button')
     expect(await page.textContent('button')).toContain('Counter 1')

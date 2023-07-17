@@ -1,4 +1,5 @@
-import { page, test, expect, run, autoRetry, fetchHtml, getServerUrl, expectLog } from '@brillout/test-e2e'
+import { page, test, expect, run, fetchHtml, getServerUrl, expectLog } from '@brillout/test-e2e'
+import { testCounter } from '../utils'
 
 testRun()
 
@@ -17,12 +18,7 @@ function testRun() {
     await page.goto(getServerUrl() + '/')
     await page.click('a[href="/"]')
     expect(await page.textContent('h1')).toBe('Welcome')
-    expect(await page.textContent('button')).toBe('Counter 0')
-    // `autoRetry` because browser-side code may not be loaded yet
-    await autoRetry(async () => {
-      await page.click('button')
-      expect(await page.textContent('button')).toBe('Counter 1')
-    })
+    await testCounter()
     expectLog(
       'import.meta.env.SOME_OTHER_ENV used in /pages/index/+Page.jsx and therefore included in client-side bundle which can be be a security leak (vite-plugin-ssr will prevent your app from building for production), remove import.meta.env.SOME_OTHER_ENV or rename SOME_OTHER_ENV to PUBLIC_ENV__SOME_OTHER_ENV, see https://vite-plugin-ssr.com/env',
       (log) => log.logSource === 'stderr'

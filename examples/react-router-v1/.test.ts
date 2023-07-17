@@ -1,4 +1,5 @@
 import { autoRetry, fetchHtml, page, test, expect, run, getServerUrl } from '@brillout/test-e2e'
+import { testCounter } from '../../test/utils'
 
 run('npm run dev')
 
@@ -11,12 +12,7 @@ test('page content is rendered to HTML', async () => {
 
 test('page content is rendered to DOM', async () => {
   page.goto(`${getServerUrl()}/`)
-  expect(await page.textContent('button')).toContain('Count: 0')
-  // `autoRetry` because browser-side code may not be loaded yet
-  await autoRetry(async () => {
-    await page.click('button')
-    expect(await page.textContent('button')).toContain('Count: 1')
-  })
+  await testCounter()
 
   // Count state is preserved when navigating to `/about`
   expect(await page.textContent('h2')).toContain('Home')
@@ -24,5 +20,5 @@ test('page content is rendered to DOM', async () => {
   await autoRetry(async () => {
     expect(await page.textContent('h2')).toContain('About')
   })
-  expect(await page.textContent('button')).toContain('Count: 1')
+  expect(await page.textContent('button')).toContain('Counter 1')
 })

@@ -1,5 +1,5 @@
 import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry } from '@brillout/test-e2e'
-import { ensureWasClientSideRouted } from '../../test/utils'
+import { ensureWasClientSideRouted, testCounter } from '../../test/utils'
 
 export { testRun }
 
@@ -13,13 +13,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
 
   test('page is rendered to the DOM and interactive', async () => {
     await page.goto(getServerUrl() + '/')
-    // Interactive button
-    expect(await page.textContent('button')).toBe('Counter 0')
-    // `autoRetry` because browser-side code may not be loaded yet
-    await autoRetry(async () => {
-      await page.click('button')
-      expect(await page.textContent('button')).toContain('Counter 1')
-    })
+    await testCounter()
 
     // Client-side routing
     await page.click('a[href="/star-wars"]')
