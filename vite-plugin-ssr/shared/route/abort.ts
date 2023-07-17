@@ -88,7 +88,8 @@ function render(value: string | StatusCodeError, info?: string | Record<string, 
       abortReason: info
     })
   } else if (info) {
-    assertPageContextProvidedByUser(pageContextAddition, { abortCaller: 'render' })
+    assertPageContextProvidedByUser(info, { abortCaller: 'render' })
+    objectAssign(pageContextAddition, info)
   }
   {
     const args = [String(value)]
