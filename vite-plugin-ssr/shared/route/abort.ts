@@ -28,7 +28,7 @@ type StatusCodeRedirect = 301 | 302
 type StatusCodeError = 401 | 403 | 404 | 429 | 500 | 503
 
 /**
- * Abort the current page rendering, and redirect the user to another URL.
+ * Abort the rendering of the current page: redirect the user to another URL.
  *
  * https://vite-plugin-ssr.com/abort
  *
@@ -51,7 +51,7 @@ function redirect(statusCode: StatusCodeRedirect, url: string, pageContextAdditi
 }
 
 /**
- * Abort the current page rendering, and render another page instead (while preserivng the current URL, unlike redirect() which changes the URL).
+ * Abort the rendering of the current page: render another page instead (while preserivng the current URL, unlike redirect() which changes the URL).
  *
  * https://vite-plugin-ssr.com/abort
  *
@@ -71,7 +71,7 @@ function renderUrl(url: string, pageContextAddition?: Record<string, unknown>): 
 }
 
 /**
- * Abort the current page rendering, and render the error page instead (for example a 401 or 404 page).
+ * Abort the rendering of the current page: render the error page instead (for example a 401 or 404 page).
  *
  * https://vite-plugin-ssr.com/abort
  *
