@@ -16,7 +16,7 @@
 <br/>
 **Get help** :arrow_right: [GitHub Discussions](https://github.com/brillout/vite-plugin-ssr/discussions).
 <br/>
-**Chit-chat** :arrow_right: [Discord](https://discord.com/invite/hfHhnJyVg8). :warning: **DON'T use Discord to get help**: we use Discord for casual conversations about vite-plugin-ssr and broader topics.
+**Chit-chat** :arrow_right: [Discord](https://discord.com/invite/hfHhnJyVg8).
 
 **Feel free to PM `brillout`** :arrow_right: On [Twitter](https://twitter.com/brillout), or on [Discord](https://discord.com/invite/hfHhnJyVg8) right-click on the username `brillout` => `Message`.
 <br/>
