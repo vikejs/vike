@@ -25,8 +25,8 @@ import {
 } from './utils'
 
 type StatusCodeAbort = StatusCodeRedirect | StatusCodeError
-type StatusCodeRedirect = 301 | 302
-type StatusCodeError = 401 | 403 | 404 | 429 | 500 | 503
+type StatusCodeRedirect = Parameters<typeof redirect>[0]
+type StatusCodeError = number & Parameters<typeof render>[0]
 
 type UrlRedirect = {
   url: string
@@ -41,7 +41,7 @@ type UrlRedirect = {
  * @param statusCode `301` (permanent) or `302` (temporary) redirection.
  * @param url The URL to redirect to.
  */
-function redirect(statusCode: StatusCodeRedirect, url: string): Error {
+function redirect(statusCode: 301 | 302, url: `/${string}` | `https://${string}` | `http://${string}`): Error {
   const abortCaller = 'redirect' as const
   assertStatusCode(statusCode, [301, 302], 'redirect')
   const pageContextAddition = {}
@@ -80,7 +80,7 @@ function render(url: `/${string}`, info?: string | Record<string, unknown>): Err
  *   `503` Service Unavailable (server is overloaded, a third-party API isn't responding)
  * @param info `pageContext.abortReason` (the reason why the page was aborted, usually used for showing a custom message on the error page), or `pageContext` values.
  */
-function render(statusCode: StatusCodeError, info?: string | Record<string, unknown>): Error
+function render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, info?: string | Record<string, unknown>): Error
 function render(value: string | StatusCodeError, info?: string | Record<string, unknown>): Error {
   const pageContextAddition = {}
   if (typeof info === 'string') {
