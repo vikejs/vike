@@ -13,7 +13,6 @@ function addSsrMiddleware(middlewares: ConnectServer) {
     const userAgent = headers['user-agent']
     const pageContextInit = {
       urlOriginal: url,
-      headersOriginal: headers,
       userAgent
     }
     let pageContext: Awaited<ReturnType<typeof renderPage>>
