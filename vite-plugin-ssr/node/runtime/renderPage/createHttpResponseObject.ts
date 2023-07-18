@@ -3,7 +3,7 @@ export { createHttpResponseObjectRedirect }
 export type { HttpResponse }
 
 import type { GetPageAssets } from './getPageAssets'
-import { assert } from '../utils'
+import { assert, assertWarning } from '../utils'
 import type { HtmlRender } from '../html/renderHtml'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { isErrorPage } from '../../../shared/error-page'
@@ -92,7 +92,14 @@ function getHttpResponse(
   return {
     statusCode,
     headers,
-    contentType, // TODO/v1-release: remove
+    // TODO/v1-release: remove
+    get contentType() {
+      assertWarning(
+        false,
+        'pageContext.httpResponse.contentType is deprecated in favor of pageContext.httpResponse.headers, see https://vite-plugin-ssr.com/migration/0.4.23'
+      )
+      return contentType
+    },
     earlyHints,
     get body() {
       return getHttpResponseBody(htmlRender, renderHook)
