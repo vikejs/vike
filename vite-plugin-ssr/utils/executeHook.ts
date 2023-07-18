@@ -51,7 +51,8 @@ function executeHook<T = unknown>(hookFn: () => T, hookName: HookName, hookFileP
   const t1 = setTimeout(() => {
     assertWarning(
       false,
-      `The ${hookName}() hook defined by ${hookFilePath} is taking more than ${humanizeTime(timeoutWarn)}`
+      `The ${hookName}() hook defined by ${hookFilePath} is taking more than ${humanizeTime(timeoutWarn)}`,
+      { onlyOnce: false }
     )
   }, timeoutWarn)
   const t2 = setTimeout(() => {

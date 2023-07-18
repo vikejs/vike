@@ -64,7 +64,8 @@ function assertResolveAlias(config: ResolvedConfig) {
     const { customResolver, find } = alias
     assertWarning(
       customResolver === undefined,
-      `${errPrefix} defines resolve.alias with customResolver() ${errSuffix2}`
+      `${errPrefix} defines resolve.alias with customResolver() ${errSuffix2}`,
+      { onlyOnce: true }
     )
     if (typeof find !== 'string') {
       assert(find instanceof RegExp)
@@ -74,13 +75,16 @@ function assertResolveAlias(config: ResolvedConfig) {
       if (find.toString().includes('@vite')) return
       // Skip alias /^solid-refresh$/ set by vite-plugin-solid
       if (find.toString().includes('solid-refresh')) return
-      assertWarning(false, `${errPrefix} defines resolve.alias with a regular expression ${errSuffix2}`)
+      assertWarning(false, `${errPrefix} defines resolve.alias with a regular expression ${errSuffix2}`, {
+        onlyOnce: true
+      })
     } else {
       // Skip aliases set by @preact/preset-vite
       if (find.startsWith('react')) return
       assertWarning(
         isValidPathAlias(find),
-        `${errPrefix} defines an alias '${find}' that cannot be distinguished from npm package imports, ${errSuffix1}`
+        `${errPrefix} defines an alias '${find}' that cannot be distinguished from npm package imports, ${errSuffix1}`,
+        { onlyOnce: true }
       )
     }
   })

@@ -96,7 +96,8 @@ function getHttpResponse(
     get contentType() {
       assertWarning(
         false,
-        'pageContext.httpResponse.contentType is deprecated in favor of pageContext.httpResponse.headers, see https://vite-plugin-ssr.com/migration/0.4.23'
+        'pageContext.httpResponse.contentType is deprecated in favor of pageContext.httpResponse.headers, see https://vite-plugin-ssr.com/migration/0.4.23',
+        { onlyOnce: true }
       )
       return contentType
     },

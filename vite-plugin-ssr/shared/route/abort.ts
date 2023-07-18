@@ -148,7 +148,8 @@ function RenderAbort(pageContextAddition: PageContextRenderAbort): Error {
 function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown> } = {}): Error {
   assertWarning(
     false,
-    '`throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/abort'
+    '`throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/abort',
+    { onlyOnce: true }
   )
   assertPageContextProvidedByUser(pageContext, { abortCaller: 'RenderErrorPage' })
   let statusCode: 404 | 500 = 404

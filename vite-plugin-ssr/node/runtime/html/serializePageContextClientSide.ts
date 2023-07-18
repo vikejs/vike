@@ -65,7 +65,8 @@ function serializePageContextClientSide(pageContext: {
             `${varName} cannot be serialized and, therefore, cannot be passed to the client.`,
             `Make sure that ${varName} is serializable, or remove ${h(propName)} from ${h('passToClient')}.`,
             `Serialization error: ${lowercaseFirstLetter(err.message)}`
-          ].join(' ')
+          ].join(' '),
+          { onlyOnce: false }
         )
       }
     })

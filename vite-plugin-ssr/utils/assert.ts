@@ -93,7 +93,7 @@ function getProjectError(errMsg: string) {
 function assertWarning(
   condition: unknown,
   msg: string,
-  { onlyOnce = true, showStackTrace }: { onlyOnce?: boolean | string; showStackTrace?: true } = {}
+  { onlyOnce, showStackTrace }: { onlyOnce: boolean | string; showStackTrace?: true }
 ): void {
   if (condition) return
   msg = addPrefixAssertType(msg, 'Warning')

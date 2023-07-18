@@ -48,12 +48,13 @@ function envVarsPlugin(): Plugin {
             const errMsgAddendum = isBuild
               ? ''
               : ' (vite-plugin-ssr will prevent your app from building for production)'
-            const errMsg = `${varName} used in ${filePathVite} and therefore included in client-side bundle which can be be a security leak${errMsgAddendum}, remove ${varName} or rename ${key} to ${keyPublic}, see https://vite-plugin-ssr.com/env`
+            const errMsg =
+              `${varName} used in ${filePathVite} and therefore included in client-side bundle which can be be a security leak${errMsgAddendum}, remove ${varName} or rename ${key} to ${keyPublic}, see https://vite-plugin-ssr.com/env` as const
             if (isBuild) {
               assertUsage(false, errMsg)
             } else {
               // Only a warning for faster development DX (e.g. when use toggles `ssr: boolean` or `onBeforeRenderIsomorph: boolean`)
-              assertWarning(false, errMsg)
+              assertWarning(false, errMsg, { onlyOnce: true })
             }
           }
           assert(!(isPrivate && isClientSide) || !isBuild)
