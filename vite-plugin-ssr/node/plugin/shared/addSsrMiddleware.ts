@@ -31,9 +31,7 @@ function addSsrMiddleware(middlewares: ConnectServer) {
       return next()
     } else {
       const { statusCode, headers } = pageContext.httpResponse
-      headers.forEach(([name, value]) => {
-        res.setHeader(name, value)
-      })
+      headers.forEach(([name, value]) => res.setHeader(name, value))
       res.statusCode = statusCode
       pageContext.httpResponse.pipe(res)
     }
