@@ -58,7 +58,9 @@ async function startServer() {
       headers.forEach(([name, value]) => {
         res.setHeader(name, value)
       })
-      res.status(statusCode).send(body)
+      res.status(statusCode)
+      // For HTTP streams use httpResponse.pipe() instead, see https://vite-plugin-ssr.com/stream
+      res.send(body)
     }
   })
 
