@@ -8,10 +8,13 @@ app.use(express.static(`${process.cwd()}/dist/client/`))
 app.get('*', async (req, res, next) => {
   const pageContext = await renderPage({ urlOriginal: req.originalUrl })
   const { httpResponse } = pageContext
-  if (!httpResponse) return next()
-  const { body, statusCode, contentType } = httpResponse
-  res.status(statusCode).type(contentType)
-  res.send(body)
+  if (!httpResponse) {
+    return next()
+  } else {
+    const { body, statusCode, headers } = httpResponse
+    headers.forEach(([name, value]) => res.setHeader(name, value))
+    res.status(statusCode).send(body)
+  }
 })
 
 app.listen(3000, () => {

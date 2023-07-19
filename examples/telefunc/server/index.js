@@ -37,10 +37,14 @@ async function startServer() {
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
-    if (!httpResponse) return next()
-    const { statusCode, contentType } = httpResponse
-    res.status(statusCode).type(contentType)
-    httpResponse.pipe(res)
+    if (!httpResponse) {
+      return next()
+    } else {
+      const { statusCode, headers } = httpResponse
+      headers.forEach(([name, value]) => res.setHeader(name, value))
+      res.status(statusCode)
+      httpResponse.pipe(res)
+    }
   })
 
   const port = process.env.PORT || 3000
