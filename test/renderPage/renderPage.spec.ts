@@ -10,9 +10,10 @@ describe('renderPage()', () => {
   it('basics', async () => {
     {
       const pageContext = await renderPage({ urlOriginal: '/' })
-      const { body, statusCode, contentType } = pageContext.httpResponse
+      expect(pageContext.httpResponse).toBeTruthy()
+      const { body, statusCode, headers } = pageContext.httpResponse!
       expect(statusCode).toBe(200)
-      expect(contentType).toBe('text/html;charset=utf-8')
+      expect(headers).toStrictEqual([['Content-Type', 'text/html;charset=utf-8']])
       expect(body).toMatchInlineSnapshot(
         '"<html><head><script type=\\"module\\" src=\\"/@vite/client\\"></script></head><body><p>hello</p></body></html>"'
       )
