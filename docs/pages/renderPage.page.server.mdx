@@ -21,6 +21,7 @@ myServer.addMiddleware({
 })
 ```
 
+It's [optional](#optional) depending on how you use vite-plugin-ssr.
 
 ## Examples
 
@@ -102,10 +103,10 @@ See also:
  - <Link href="/render" />
 
 
-## When to use
+## Optional
 
-If you use server-side rendering (SSR), then you need to use `renderPage()` in order to manually integrate vite-plugin-ssr into your server yourself.
-
-If you <Link text="pre-render" href="/pre-rendering" /> all your pages, then you don't need to use `renderPage()`, because:
- - Vite-plugin-ssr automatically integrates `renderPage()` into Vite's development server (`$ vite`/`$ vite dev`) and Vite's preview server (`$ vite preview`).
+If you <Link text="pre-render" href="/pre-rendering" /> all your pages then you don't need to use `renderPage()`. Because:
+ - Vite-plugin-ssr automatically integrates and embeds `renderPage()` into Vite's development server (`$ vite`/`$ vite dev`) and Vite's preview server (`$ vite preview`).
  - During pre-rendering (`$ vite build`/`$ vite-plugin-ssr prerender`) vite-plugin-ssr automatically renders your pages.
+
+If you use server-side rendering (SSR) and you don't pre-rendering all your pages, then you do need to use `renderPage()` in order to integrate and embed vite-plugin-ssr into your server.
