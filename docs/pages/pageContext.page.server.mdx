@@ -64,44 +64,66 @@ Built-in properties:
  - **`pageContext.is404`**: If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see <Link href="/error-page" />.
  - **`pageContext.isClientSideNavigation`**: Whether the page was navigated by the the client-side router. In other words, when using <Link href="/client-routing" noBreadcrumb={true} />, the value is `false` for the first page the user visits, and `true` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `false`.)
 
+
 ## Custom
 
-You can define custom `pageContext` properties at:
- - Hooks [`onBeforeRender()`](/onBeforeRender) and [`render()`](/render).
+You can define custom `pageContext` properties.
+ - Using the [`onBeforeRender()`](/onBeforeRender) hook:
     ```js
-    export function onBeforeRender() {
+    export async function onBeforeRender() {
       return {
         pageContext: {
-          // Custom `pageContext` properties
+          // ***************************************
+          // **** Custom pageContext properties ****
+          // ***************************************
+          // Common use case: make fetched data available over pageContext
+          someData: { product: { id: 123, name: 'MacBook' } }
+          // Or any other custom property you want
           someCustomProp: 'some-value'
         }
       }
     }
     ```
+    > A common use case for `onBeforeRender()` is to fetch data: <Link href="/data-fetching" />.
+ - At your <Link text="vite-pugin-ssr server middleware" href="/renderPage" />:
     ```js
-    export function render() {
-      return {
-        documentHtml: escapeInject`<html><!--...--></html>`,
-        pageContext: {
-          // Custom `pageContext` properties
-          someCustomProp: 'some-value'
-        }
-      }
-    }
-    ```
- - Server middleware.
-    ```js
-    // Server middleware
     app.get('*', async (req, res, next) => {
       const pageContextInit = {
         urlOriginal: req.url,
-        // Custom `pageContext` properties
-        someCustomProp: 'some-value'
+        // ***************************************
+        // **** Custom pageContext properties ****
+        // ***************************************
+        // Common use case: make information about logged-in user available over pageContext
+        user: req.user,
+        // Common use case: make the cookies available over pageContext.headers.cookies
+        headers: req.headers,
+        // Or any other custom property you want
+        someCustomProp: 'some-value',
       }
       const pageContext = await renderPage(pageContextInit)
       /* ... */
     })
     ```
+    > A common use case is to integrate authentication tools: <Link href="/auth" />.
+ - Using the [`render()`](/render) hook:
+    ```js
+    export function render() {
+      return {
+        documentHtml: escapeInject`<html><!--...--></html>`,
+        pageContext: {
+          // ***************************************
+          // **** Custom pageContext properties ****
+          // ***************************************
+          // Common use case: make the state management's initial store state available
+          initialStoreState: pageRendered.store.state,
+          // Or any other custom property you want
+          someCustomProp: 'some-value'
+        }
+      }
+    }
+    ```
+    > A common use case is to integrate state management tools: <Link href="/store" />.
+
 
 ## Anywhere
 
