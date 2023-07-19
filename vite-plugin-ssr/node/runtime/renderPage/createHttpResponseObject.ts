@@ -12,17 +12,18 @@ import type { StatusCodeAbort, StatusCodeError, UrlRedirect } from '../../../sha
 import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody'
 import { getEarlyHints, type EarlyHint } from './getEarlyHints'
 
-type StatusCode = 200 | 404 | 500 | StatusCodeAbort
-type ContentType = 'application/json' | 'text/html;charset=utf-8'
-type ResponseHeaders = [string, string][]
 type HttpResponse = {
-  statusCode: StatusCode
-  headers: ResponseHeaders
+  statusCode: 200 | 404 | 500 | StatusCodeAbort
+  headers: [string, string][]
   earlyHints: EarlyHint[]
   // We don't use @deprecated to avoid TypeScript to remove the JSDoc
   /** **Deprecated**: use `headers` instead, see https://vite-plugin-ssr.com/migration/0.4.23 */
-  contentType: ContentType
+  contentType: 'application/json' | 'text/html;charset=utf-8'
 } & HttpResponseBody
+type StatusCode = HttpResponse['statusCode']
+type ContentType = HttpResponse['contentType']
+type ResponseHeaders = HttpResponse['headers']
+
 async function createHttpResponseObject(
   htmlRender: null | HtmlRender,
   renderHook: null | RenderHook,
