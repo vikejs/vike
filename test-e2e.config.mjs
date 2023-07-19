@@ -67,7 +67,6 @@ function getCiJobs() {
 
 function tolerateError({ logSource, logText }) {
   return (
-    TMP() ||
     isSlowHookWarning() ||
     isNoErrorPageWarning() ||
     isServiceExit() ||
@@ -190,12 +189,6 @@ function tolerateError({ logSource, logText }) {
         'The 2nd HTML variable is `<b>I was defined without an HTML Fragment</b>` which seems to be HTML code'
       ) &&
       logText.includes('Did you forget to wrap the value with dangerouslySkipEscape')
-    )
-  }
-
-  function TMP() {
-    return logText.includes(
-      'pageContext.httpResponse.contentType is deprecated'
     )
   }
 }
