@@ -1,0 +1,70 @@
+import { Link } from '@brillout/docpress'
+
+Since <Link text={<code>0.4.123</code>} href="/migrations/0.4.123" />, vite-plugin-ssr provides `pageContext.httpResponse.headers` to automatically perform HTTP redirections.
+
+It also contains the `Content-Type` header and therefore `pageContext.httpResponse.contentType` is now deprecated.
+
+Make sure to properly integrate `pageContext.httpResponse.headers`.
+
+## Express.js
+
+```js
+// Vite-plugin-ssr middleware
+app.get('*', async (req, res, next) => {
+  const pageContextInit = {
+    urlOriginal: req.originalUrl
+  }
+  const pageContext = await renderPage(pageContextInit)
+  const { httpResponse } = pageContext
+  if (!httpResponse) return next()
+  const { body, statusCode, headers, earlyHints } = httpResponse
+  if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
+  headers.forEach(([name, value]) => res.setHeader(name, value))
+  res.status(statusCode).send(body)
+})
+```
+
+## Cloudflare Workers
+
+```js
+// Vite-plugin-ssr middleware
+async function handleSsr(url) {
+  const pageContextInit = {
+    urlOriginal: url
+  }
+  const pageContext = await renderPage(pageContextInit)
+  const { httpResponse } = pageContext
+  if (!httpResponse) {
+    return null
+  } else {
+    const { body, statusCode, headers } = httpResponse
+    return new Response(body, {
+      headers,
+      status: statusCode
+    })
+  }
+}
+```
+
+## Vercel
+
+```js
+// /api/ssr.js
+
+export default async function handler(req, res) {
+  const pageContextInit = { urlOriginal: req.url }
+  const pageContext = await renderPage(pageContextInit)
+  const { httpResponse } = pageContext
+
+  if (!httpResponse) {
+    res.statusCode = 200
+    res.end()
+    return
+  }
+
+  const { body, statusCode, headers } = httpResponse
+  res.statusCode = statusCode
+  headers.forEach(([name, value]) => res.setHeader(name, value))
+  res.end(body)
+}
+```
