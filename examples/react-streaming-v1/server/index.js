@@ -35,9 +35,12 @@ async function startServer() {
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
     if (!httpResponse) return next()
-    const { statusCode, contentType, earlyHints } = httpResponse
+    const { statusCode, headers, earlyHints } = httpResponse
     if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
-    res.status(statusCode).type(contentType)
+    headers.forEach(([name, value]) => {
+      res.setHeader(name, value)
+    })
+    res.status(statusCode)
     httpResponse.pipe(res)
   })
 
