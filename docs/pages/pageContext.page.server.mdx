@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 
 The `pageContext` object holds information about the current page.
 
-> `pageContext` should be treated as read-only after the rendering of the page is finished, see <Link href="#lifecycle" />.
+> Once the page is rendered we recommend treating `pageContext` as immutable, see <Link href="#lifecycle" />.
 
 
 ## Built-in
@@ -170,14 +170,14 @@ import type {
 
 ## Lifecycle
 
-The main purpose of `pageContext` is to hold information needed to render the page.
+The main purpose of `pageContext` is to hold the information that is needed for rendering the page.
 
-On the server-side, upon rendering a URL to HTML, a new `pageContext` object is created and used only for/during the creation of the HTTP response.
+On the server-side, upon a new incoming HTTP request, a new `pageContext` object is created and used for rendering the HTML that is included in the HTTP response. The `pageContext` object is discarded after the HTML response is sent.
 
 On the client-side, upon <Link text="client-side page navigation" href="/client-routing" />, the `pageContext` object of the previous page is discarded and a new `pageContext` object is created.
 
-At build-time, upon <Link text="pre-rendering" href="/pre-rendering" /> URLs to HTML, the `pageContext` object of each pre-rendered URL is generated and saved at `dist/client/${URL}/index.pageContext.json`.
+At build-time, upon <Link text="pre-rendering" href="/pre-rendering" />, a `pageContext` object is created for each URL and saved at `dist/client/${url}/index.pageContext.json`.
 
-Vite-plugin-ssr adds information to `pageContext` only while rendering the page, and we recommend to treat `pageContext` as read-only after the rendering of the page is finished. Consequently:
+Vite-plugin-ssr adds information to `pageContext` only while rendering the page, and we recommend to treat `pageContext` as immutable after the rendering of the page has finished. Consequently:
  - We recommend against using `pageContext` to store UI state. (Use a proper <Link text="state management tool" href="/store" /> instead.)
- - If you use pre-rendering, then the `pageContext` object of each of your pre-rendered URL is set in stone already at build-time.
+ - If you use <Link text="pre-rendering" href="/pre-rendering" />, then the `pageContext` object of each URL is set in stone already at build-time.
