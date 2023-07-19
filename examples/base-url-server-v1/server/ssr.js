@@ -10,9 +10,13 @@ app.get('*', async (req, res, next) => {
   }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
-  if (!httpResponse) return next()
-  const { body, statusCode, contentType } = httpResponse
-  res.status(statusCode).type(contentType).send(body)
+  if (!httpResponse) {
+    return next()
+  } else {
+    const { body, statusCode, headers } = httpResponse
+    headers.forEach(([name, value]) => res.setHeader(name, value))
+    res.status(statusCode).send(body)
+  }
 })
 
 startApp()
