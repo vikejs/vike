@@ -283,9 +283,5 @@ const headingsDetached = [
       </>
     ),
     url: '/migration/0.4.134'
-  },
-  {
-    title: <code>pageContext.httpResponse.headers</code>,
-    url: '/headers'
   }
 ] satisfies HeadingDetachedDefinition[]
