@@ -50,13 +50,16 @@ async function startServer() {
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
-    if (!httpResponse) return next()
-    const { body, statusCode, headers, earlyHints } = httpResponse
-    if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
-    headers.forEach(([name, value]) => {
-      res.setHeader(name, value)
-    })
-    res.status(statusCode).send(body)
+    if (!httpResponse) {
+      return next()
+    } else {
+      const { body, statusCode, headers, earlyHints } = httpResponse
+      if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
+      headers.forEach(([name, value]) => {
+        res.setHeader(name, value)
+      })
+      res.status(statusCode).send(body)
+    }
   })
 
   const port = process.env.PORT || 3000

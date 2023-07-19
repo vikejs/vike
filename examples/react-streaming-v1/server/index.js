@@ -34,14 +34,17 @@ async function startServer() {
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
-    if (!httpResponse) return next()
-    const { statusCode, headers, earlyHints } = httpResponse
-    if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
-    headers.forEach(([name, value]) => {
-      res.setHeader(name, value)
-    })
-    res.status(statusCode)
-    httpResponse.pipe(res)
+    if (!httpResponse) {
+      return next()
+    } else {
+      const { statusCode, headers, earlyHints } = httpResponse
+      if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
+      headers.forEach(([name, value]) => {
+        res.setHeader(name, value)
+      })
+      res.status(statusCode)
+      httpResponse.pipe(res)
+    }
   })
 
   const port = process.env.PORT || 3000
