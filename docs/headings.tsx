@@ -452,6 +452,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'PrimeReact',
+    url: '/primereact'
+  },
+  {
+    level: 2,
     title: 'Bootstrap',
     url: '/bootstrap'
   },
