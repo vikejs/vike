@@ -71,8 +71,6 @@ export { render }
 import { hydrateDom, createElement } from 'some-ui-framework'
 
 async function render(pageContext) {
-  // `Page` is also available in the browser
-  const { Page } = pageContext
   // Thanks to `passToClient = ['pageProps']` our `pageContext.pageProps` is
   // available here in the browser.
   const { Page, pageProps } = pageContext
