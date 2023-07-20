@@ -7,13 +7,15 @@ From the perspective of the server, vite-plugin-ssr is just a server-agnostic mi
 // Cloudflare Workers, AWS EC2, AWS Lambda, Vercel, Deno Deploy, Lagon, ...
 import { renderPage } from 'vite-plugin-ssr/server'
 
-// someServer can be any server framework (Express.js/Deno/Fastify/HatTip/...)
-someServer.addRoute({ method: 'GET', route: '*' }, async (request) => {
-  const pageContextInit = { urlOriginal: request.url }
-  const pageContext = await renderPage(pageContextInit)
-  const { body, contentType, statusCode } = pageContext.httpResponse
-  const response = { body, contentType, statusCode }
-  return response
+// Can be any server framework (Express.js/Deno/Fastify/Hono/HatTip/...)
+server.addMiddleware({
+  method: 'GET',
+  route: '*', // Catch-all
+  async handler(request) {
+    const pageContextInit = { urlOriginal: request.url }
+    const pageContext = await renderPage(pageContextInit)
+    return pageContext.httpResponse
+  }
 })
 ```
 

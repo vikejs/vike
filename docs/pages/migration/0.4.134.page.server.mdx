@@ -1,3 +1,87 @@
 import { Link } from '@brillout/docpress'
 
-TODO
+The `0.4.134` release soft-deprecates `pageContext.httpResponse.contentType` in favor of `pageContext.httpResponse.headers`.
+
+See the sections below for how to migrate.
+
+ > The `0.4.134` release adds built-in support for <Link text="URL redirections" href="/redirect" /> and that's why the new property `pageContext.httpResponse.headers` is needed.
+
+## Express.js
+
+```diff
+ // /server/index.js
+
+ import { renderPage } from 'vite-plugin-ssr/server'
+
+ // Vite-plugin-ssr middleware
+ app.get('*', async (req, res, next) => {
+   const pageContextInit = {
+     urlOriginal: req.originalUrl
+   }
+   const pageContext = await renderPage(pageContextInit)
+   const { httpResponse } = pageContext
+   if (!httpResponse) return next()
+-  const { body, statusCode, contentType, earlyHints } = httpResponse
++  const { body, statusCode, headers, earlyHints } = httpResponse
+   if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
+   res.status(statusCode)
+-  res.type(contentType)
++  headers.forEach(([name, value]) => res.setHeader(name, value))
+   res.send(body)
+ })
+```
+
+## Cloudflare Workers
+
+```diff
+ // /worker/ssr.js
+
+ import { renderPage } from 'vite-plugin-ssr/server'
+
+ // Vite-plugin-ssr middleware
+ async function handleSsr(url) {
+   const pageContextInit = {
+     urlOriginal: url
+   }
+   const pageContext = await renderPage(pageContextInit)
+   const { httpResponse } = pageContext
+   if (!httpResponse) {
+     return null
+   } else {
+-    const { body, statusCode, contentType } = httpResponse
++    const { body, statusCode, headers } = httpResponse
+     return new Response(body, {
+-      headers: { 'content-type': contentType },
++      headers,
+       status: statusCode
+     })
+   }
+ }
+```
+
+## Vercel
+
+```diff
+ // /api/ssr.js
+
+ import { renderPage } from 'vite-plugin-ssr/server'
+
+ export default async function handler(req, res) {
+   const pageContextInit = { urlOriginal: req.url }
+   const pageContext = await renderPage(pageContextInit)
+   const { httpResponse } = pageContext
+
+   if (!httpResponse) {
+     res.statusCode = 200
+     res.end()
+     return
+   }
+
+-  const { body, statusCode, contentType } = httpResponse
++  const { body, statusCode, headers } = httpResponse
+   res.statusCode = statusCode
+-  res.setHeader('content-type', contentType)
++  headers.forEach(([name, value]) => res.setHeader(name, value))
+   res.end(body)
+ }
+```

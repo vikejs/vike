@@ -32,16 +32,18 @@ type UrlRedirect = {
   url: string
   statusCode: StatusCodeRedirect
 }
+type AbortRedirect = Error
+type AbortRender = Error
 
 /**
  * Abort the rendering of the current page, and redirect the user to another URL instead.
  *
- * https://vite-plugin-ssr.com/abort
+ * https://vite-plugin-ssr.com/redirect
  *
  * @param statusCode `301` (permanent) or `302` (temporary) redirection.
  * @param url The URL to redirect to.
  */
-function redirect(statusCode: 301 | 302, url: `/${string}` | `https://${string}` | `http://${string}`): Error {
+function redirect(statusCode: 301 | 302, url: `/${string}` | `https://${string}` | `http://${string}`): AbortRedirect {
   const abortCaller = 'redirect' as const
   assertStatusCode(statusCode, [301, 302], 'redirect')
   const pageContextAddition = {}
@@ -59,16 +61,16 @@ function redirect(statusCode: 301 | 302, url: `/${string}` | `https://${string}`
 /**
  * Abort the rendering of the current page, and render another page instead.
  *
- * https://vite-plugin-ssr.com/abort
+ * https://vite-plugin-ssr.com/render
  *
  * @param url The URL to render.
  * @param info `abortReason` (the reason why the page was aborted), or `pageContext` values.
  */
-function render(url: `/${string}`, info?: string | Record<string, unknown>): Error
+function render(url: `/${string}`, info?: string | Record<string, unknown>): AbortRender
 /**
  * Abort the rendering of the current page, and render the error page instead.
  *
- * https://vite-plugin-ssr.com/abort
+ * https://vite-plugin-ssr.com/render
  *
  * @param statusCode
  * One of the following:
@@ -80,8 +82,8 @@ function render(url: `/${string}`, info?: string | Record<string, unknown>): Err
  *   `503` Service Unavailable (server is overloaded, a third-party API isn't responding)
  * @param info `pageContext.abortReason` (the reason why the page was aborted, usually used for showing a custom message on the error page), or `pageContext` values.
  */
-function render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, info?: string | Record<string, unknown>): Error
-function render(value: string | StatusCodeError, info?: string | Record<string, unknown>): Error {
+function render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, info?: string | Record<string, unknown>): AbortRender
+function render(value: string | StatusCodeError, info?: string | Record<string, unknown>): AbortRender {
   const pageContextAddition = {}
   if (typeof info === 'string') {
     objectAssign(pageContextAddition, {
@@ -143,12 +145,12 @@ function RenderAbort(pageContextAddition: PageContextRenderAbort): Error {
 }
 
 /**
- * @deprecated Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/abort'
+ * @deprecated Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/render'
  */
 function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown> } = {}): Error {
   assertWarning(
     false,
-    '`throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/abort',
+    '`throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/render',
     { onlyOnce: true }
   )
   assertPageContextProvidedByUser(pageContext, { abortCaller: 'RenderErrorPage' })

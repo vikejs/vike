@@ -11,9 +11,9 @@ The usual way to fetch data is to use a `onBeforeRender()` hook.
 // /pages/movies.page.server.js
 // Environment: server
 
-import fetch from 'node-fetch'
-
 export { onBeforeRender }
+
+import fetch from 'node-fetch'
 
 async function onBeforeRender(pageContext) {
   // `.page.server.js` files always run in Node.js; we could use SQL/ORM queries here.
@@ -22,7 +22,7 @@ async function onBeforeRender(pageContext) {
 
   // `movies` will be serialized and passed to the browser; we select only the data we
   // need in order to minimize what is sent to the browser.
-  movies = movies.map(({ title, release_date }) => ({title, release_date}))
+  movies = movies.map(({ title, release_date }) => ({ title, release_date }))
 
   // We make `movies` available as `pageContext.pageProps.movies`
   const pageProps = { movies }
@@ -33,17 +33,17 @@ async function onBeforeRender(pageContext) {
   }
 }
 ```
+
 ```js
 // /renderer/_default.page.server.js
 // Environment: server
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
-import { renderToHtml, createElement } from 'some-ui-framework'
-
-// We tell `vite-plugin-ssr` to make `pageContext.pageProps` available in the browser.
+export { render }
+// Make pageContext.pageProps available in the browser
 export const passToClient = ['pageProps']
 
-export { render }
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { renderToHtml, createElement } from 'some-ui-framework'
 
 async function render(pageContext) {
   const { Page, pageProps } = pageContext
@@ -62,6 +62,7 @@ async function render(pageContext) {
   </html>`
 }
 ```
+
 ```js
 // /renderer/_default.page.client.js
 // Environment: browser
@@ -84,6 +85,7 @@ async function render(pageContext) {
   */
 }
 ```
+
 ```js
 // /pages/movies.page.js
 // Environment: browser and server
@@ -98,6 +100,43 @@ function Page(pageProps) {
 ```
 
 > Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's just an object we create in order to conveniently pass all the page's props at once.
+
+
+## Error Handling
+
+To gracefully handle errors, use <Link href="/render" text={<code>throw render()</code>}></Link> or <Link href="/redirect" text={<code>throw redirect()</code>}></Link>.
+
+```js
+// /pages/movie/@id.page.server.js
+// Environment: server
+
+export { onBeforeRender }
+
+import { render, redirect } from 'vite-plugin-ssr/abort'
+import fetch from 'node-fetch'
+
+async function onBeforeRender(pageContext) {
+  // The @id in /pages/movie/@id.page.server.js denotes a route parameter
+  const movieId = pageContext.routeParams.id
+  const url = `https://movies.example.org/api/movie/${movieId}`
+  const response = await fetch(url)
+  if (response.status === 404) {
+    // Render the error page and show a message to the user
+    throw render(404, `Movie with ID ${movieId} doesn't exist.`)
+    /* Or redirect the user:
+    throw redirect(302, '/movie/add')
+    // Or render the movie submission form while preserving the URL:
+    throw render('/movie/add')
+    */
+  }
+  // ...
+}
+```
+
+Upon `throw render(404)`, the <Link text="error page" href="/error-page" /> is rendered.
+
+Using `throw render('/movie/add')` instead of `throw redirect(302, '/movie/add')` is a novel technique which we explain at <Link href="/auth#login-flow" />.
+
 
 ## Custom Exports
 
@@ -133,7 +172,6 @@ async function onBeforeRender(pageContext) {
 }
 ```
 
-
 ## Client Routing
 
 The `.page.server.js` files are loaded only in Node.js;
@@ -147,17 +185,15 @@ In general, [we recommend defining `onBeforeRender()` in `.page.server.js`](/onB
 if we want to minimize requests made to our Node.js server,
 then we can define `onBeforeRender()` in `.page.js` instead.
 
-
 ## GraphQL
 
 When using GraphQL, we define GraphQL queries/fragments on a component-level, while we fetch the GraphQL data in a single global `onBeforeRender()` hook.
 
 In general, with `vite-plugin-ssr`, we have full control over rendering which means that integrating GraphQL is mostly only a matter of following the official SSR guide of the tool we want to use.
 
- - <Link href="/apollo-graphql" />
- - <Link href="/urql" />
- - <Link href="/relay" />
-
+- <Link href="/apollo-graphql" />
+- <Link href="/urql" />
+- <Link href="/relay" />
 
 ## Store (Vuex/Redux...)
 
@@ -165,8 +201,7 @@ When using a global store ([Vuex](https://vuex.vuejs.org/), [Redux](https://redu
 
 In general, with `vite-plugin-ssr`, we have full control over rendering which means that integrating a global store is mostly only a matter of following the official SSR guide of the tool we want to use.
 
- - <Link href="/redux" />
- - <Link href="/vuex" />
- - <Link href="/pinia" />
- - <Link href="/pullstate" />
-
+- <Link href="/redux" />
+- <Link href="/vuex" />
+- <Link href="/pinia" />
+- <Link href="/pullstate" />

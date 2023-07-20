@@ -11,12 +11,14 @@ import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/abort'
 /** @deprecated
  * Replace:
  *   ```
- *   import { RenderErrorPage } from 'vite-plugin'
+ *   import { RenderErrorPage } from 'vite-plugin-ssr'
  *   ```
  * With:
  *   ```
- *   import { RenderErrorPage } from 'vite-plugin/RenderErrorPage'
+ *   import { render } from 'vite-plugin-ssr/abort'
  *   ```
+ *
+ * See https://vite-plugin-ssr.com/render
  */
 export const RenderErrorPage = (...args: Parameters<typeof RenderErrorPage_>): Error => {
   assertWarning(
@@ -25,7 +27,8 @@ export const RenderErrorPage = (...args: Parameters<typeof RenderErrorPage_>): E
       'Replace:',
       pc.red("  import { RenderErrorPage } from 'vite-plugin-ssr'"),
       'With:',
-      pc.green("  import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'")
+      pc.green("  import { render } from 'vite-plugin-ssr/abort'"),
+      "See https://vite-plugin-ssr.com/render"
     ].join('\n'),
     { onlyOnce: true, showStackTrace: true }
   )

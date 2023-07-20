@@ -79,11 +79,8 @@ async function handleFetchEvent(event) {
   } else {
     // `httpResponse.getReadableWebStream()` only works for Web Streams
     const readable = httpResponse.getReadableWebStream()
-    const { statusCode, contentType } = httpResponse
-    return new Response(readable, {
-      headers: { 'content-type': contentType },
-      status: statusCode,
-    })
+    const { statusCode: status, headers } = httpResponse
+    return new Response(readable, { headers, status })
   }
 }
 ```

@@ -69,7 +69,7 @@ const headings = [
     level: 2,
     title: 'Data Fetching',
     url: '/data-fetching',
-    sectionTitles: ['`onBeforeRender()`']
+    sectionTitles: ['`onBeforeRender()`', 'Error Handling']
   },
   {
     level: 2,
@@ -92,18 +92,24 @@ const headings = [
   },
   {
     level: 2,
-    title: '`<head>`',
+    title: '`<head>` meta tags',
     url: '/head'
   },
   {
     level: 2,
-    title: 'Static Directory (`public/`)',
-    url: '/static-directory'
+    title: 'Authentication',
+    url: '/auth',
+    sectionTitles: ['Login flow']
   },
   {
     level: 2,
     title: 'Layouts',
     url: '/layouts'
+  },
+  {
+    level: 2,
+    title: 'Static Directory (`public/`)',
+    url: '/static-directory'
   },
   {
     level: 2,
@@ -206,12 +212,6 @@ const headings = [
     level: 2,
     title: 'Active Links',
     url: '/active-links'
-  },
-  {
-    level: 2,
-    title: 'Page Redirection',
-    url: '/page-redirection',
-    sectionTitles: ['Client-side', 'Server-side']
   },
   {
     level: 2,
@@ -402,12 +402,6 @@ const headings = [
     level: 2,
     title: 'Auth.js',
     url: '/Auth.js'
-  },
-  {
-    level: 2,
-    title: 'Authentication',
-    titleInNav: 'Other',
-    url: '/auth'
   },
   {
     level: 4,
@@ -632,6 +626,16 @@ const headings = [
     url: '/onBeforeRender-isomorphic'
   },
   {
+    level: 2,
+    title: '`throw redirect()`',
+    url: '/redirect'
+  },
+  {
+    level: 2,
+    title: '`throw render()`',
+    url: '/render'
+  },
+  {
     level: 4,
     title: 'Server-side'
   },
@@ -667,7 +671,7 @@ const headings = [
     title: '`render()` hook',
     titleInNav: '`export { render }`',
     isListTitle: true,
-    url: '/render'
+    url: '/render-hook'
   },
   {
     level: 2,
@@ -737,6 +741,11 @@ const headings = [
     level: 2,
     title: '`navigate()`',
     url: '/navigate'
+  },
+  {
+    level: 2,
+    title: '`reload()`',
+    url: '/reload'
   },
   {
     level: 2,

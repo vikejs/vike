@@ -1,3 +1,6 @@
+- remove statusCode option from redirect()
+- reload()
+  - /examples/auth (and double check login flow links)
 - Catch infinite redirect/rewrite
 
 - Remove assertInfo()

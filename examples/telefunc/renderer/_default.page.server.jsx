@@ -1,4 +1,4 @@
-// See https://vite-plugin-ssr.com/render
+// See https://vite-plugin-ssr.com/render-hook
 export { render }
 // See https://vite-plugin-ssr.com/data-fetching
 export { passToClient }

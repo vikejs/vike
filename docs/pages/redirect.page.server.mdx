@@ -1,0 +1,17 @@
+import { Link } from '@brillout/docpress'
+
+See also: <Link href="/render" noBreadcrumb={true} /> and <Link href="/abort#throw-redirect-vs-throw-render" doNotInferSectionTitle={true} noBreadcrumb={true} />.
+
+```ts
+// Redirect the user to another URL
+redirect(statusCode: 301 | 302, url: `/${string}` | `https://${string}` | `http://${string}`)
+```
+
+While it's most commonly used with [`guard()`](/guard) or [`onBeforeRender()`](/onBeforeRender), you can use it with any hook.
+
+Common use cases:
+
+- Authentication and authorization, see <Link href="/auth#login-flow" doNotInferSectionTitle={true} />.
+- Data fetching error handling, see <Link href="/data-fetching#error-handling" doNotInferSectionTitle={true} />.
+
+If `throw redirect()` doesn't work, then see <Link href="/abort#how-to-debug" doNotInferSectionTitle={true} noBreadcrumb={true} />.

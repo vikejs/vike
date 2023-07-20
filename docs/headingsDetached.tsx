@@ -283,5 +283,18 @@ const headingsDetached = [
       </>
     ),
     url: '/migration/0.4.134'
+  },
+  {
+    title: <code>usePageContext()</code>,
+    url: '/usePageContext'
+  },
+  {
+    title: 'Abort',
+    url: '/abort',
+    sectionTitles: ['`throw redirect()` VS `throw render()`', 'How to debug']
+  },
+  {
+    title: 'Page Redirection',
+    url: '/page-redirection'
   }
 ] satisfies HeadingDetachedDefinition[]

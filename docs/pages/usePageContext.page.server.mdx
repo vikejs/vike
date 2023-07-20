@@ -1,0 +1,18 @@
+import { Link } from '@brillout/docpress'
+
+The `usePageContext()` UI component hook allows you to access <Link href="/pageContext" noBreadcrumb /> from any UI component.
+
+```js
+// AnyComponent.{jsx,vue}
+
+import { usePageContext } from 'vike-react'
+/* Or:
+import { usePageContext } from 'vike-vue'
+import { usePageContext } from 'vike-solid'
+*/
+
+// At any UI component:
+const pageContext = usePageContext()
+```
+
+If you don't use <Link text={<><code>vike-react</code>/<code>vike-vue</code>/<code>vike-solid</code></>} href="/vike-packages" />, you can implement `usePageContext()` yourself as shown at <Link href="/pageContext-anywhere" />.

@@ -284,10 +284,11 @@ async function retrievePageContextFromServer(pageContext: {
 
   {
     const contentType = response.headers.get('content-type')
-    const isRightContentType = contentType && contentType.includes('application/json')
+    const contentTypeCorrect = 'application/json'
+    const isCorrect = contentType && contentType.includes(contentTypeCorrect)
 
     // Static hosts + page doesn't exist
-    if (!isRightContentType && response.status === 404) {
+    if (!isCorrect && response.status === 404) {
       serverSideRouteTo(pageContext.urlOriginal)
       const err = new Error("Page doesn't exist")
       Object.assign(err, { _abortRendering: true })
@@ -295,8 +296,8 @@ async function retrievePageContextFromServer(pageContext: {
     }
 
     assertUsage(
-      isRightContentType,
-      `Wrong HTTP Response Header \`content-type\` value for URL ${pageContextUrl} (it should be \`application/json\` but we got \`${contentType}\`). Make sure to use \`pageContext.httpResponse.contentType\`, see https://github.com/brillout/vite-plugin-ssr/issues/191`
+      isCorrect,
+      `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vite-plugin-ssr.com/renderPage`
     )
   }
 

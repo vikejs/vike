@@ -1,69 +1,11 @@
 import { Link, Warning, RepoLink } from '@brillout/docpress'
 
-The `guard()` hook together with <Link href="/RenderErrorPage" text={<code>throw RenderErrorPage()</code>}></Link> enables you to protect pages.
+The `guard()` hook enables you to protect pages.
 
-```js
-// /pages/some-page/index.page.route.js
-
-import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
-
-export const guard = (pageContext) => {
-  if (someCondition) {
-    throw RenderErrorPage()
-  }
-}
-```
-
-Example: <RepoLink path="/examples/react-full/pages/hello/index.page.route.ts" />
+The most common use cases being authentication and authorization, see <Link href="/auth#login-flow" />.
 
 Note that:
 
-- It's always used together with `RenderErrorPage()` (a `guard()` doesn't accept any return value).
-- It can be asynchronous.
-- A single `guard()` can apply to multiple pages (see example below).
-
-Redirect non-logged users:
-
-```js
-// /pages/index.page.route.js
-
-// We define a guard() that applies to all our pages. (It's defined at /pages/ and therefore applies
-// to all pages /pages/**/* unless it's overriden by another guard.)
-
-export const guard = (pageContext) => {
-  // Redirect if user isn't logged in
-  if (pageContext.user === null && pageContext.url !== '/login') {
-    throw RenderErrorPage({
-      pageContext: {
-        redirectTo: '/login'
-      }
-    })
-  }
-}
-```
-
-<Warning>
-  You have to implement `pageContext.redirectTo` as described in <Link href="/page-redirection" />.
-</Warning>
-
-> Alternative that saves/preserves the URL: <Link href="/page-redirection#authentication" />.
-
-Protect a private page from unauthorized access:
-
-```js
-// /pages/admin/index.page.route.js
-
-// We can use an async function
-export const guard = async (pageContext) => {
-  if (!(await isUserAdmin(pageContext.user))) {
-    throw RenderErrorPage({
-      pageContext: {
-        pageProps: {
-          // Provide an error message for our error page to show to the user
-          accessDenied: 'You need to be an administrator to access this page.'
-        }
-      }
-    })
-  }
-}
-```
+- It's always used together with <Link href="/render" text={<code>throw render()</code>} /> or <Link href="/redirect" text={<code>throw redirect()</code>} />. (The `guard()` hook doesn't accept any return value.)
+- It can be asynchronous. (Unlike Route Functions which are always synchronous.)
+- A single `guard()` hook can apply to multiple pages. (By using the usual inheritance rules.)
