@@ -4,7 +4,7 @@ import { Link, Warning } from '@brillout/docpress'
 
 The overall architecture stays the same: the V1 design only replaces `.page.js` files with `+` files: `+config.h.js`, `+Page.js`, `+route.js`, ...
 
-Despite being simple, the change adds foundational features. If you're curious: <Link href="/why-the-v1-design" />
+Despite being simple, it introduces new foundational capabilities. If you're curious: <Link href="/why-the-v1-design" />
 
 The migration is straightforward and usually quick to implement. We encourage to migrate sooner rather than later.
 
@@ -13,11 +13,11 @@ The migration is straightforward and usually quick to implement. We encourage to
 
 ## Main migration
 
-Most of the migration boils down to the following two steps.
-
 > Make sure to update `vite-plugin-ssr` to its latest version.
 
 > You need to either fully use the V1 design, or fully use the old design. You cannot mix both.
+
+Most of the migration boils down to the following two steps.
 
 **1. Migrate `/renderer/*.page.*`**
 
