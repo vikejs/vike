@@ -7,7 +7,7 @@ The client runtime of Server Routing as well as the client runtime of Client Rou
 being loaded. Make sure they aren't loaded both at the same time for a given page.
 ```
 
-Then the problem is likley due to one the following.
+Then the problem is likely due to one the following.
  - You configured [Rollup's code splitting](https://vitejs.dev/guide/build.html#chunking-strategy) in a way that includes both runtimes inside a same bundle. For example:
    ```js
    // vite.config.js
@@ -41,4 +41,4 @@ Then the problem is likley due to one the following.
    > Client Routing. In particular, don't `import { navigate }` nor `import { prefetch }`
    > as they unnecessarily bloat your client-side bundle.
    > ```
-   > If you don't get this warning, then the issue is somehwere else.
+   > If you don't get this warning, then the issue is somewhere else.

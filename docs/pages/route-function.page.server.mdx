@@ -147,7 +147,7 @@ Using Route Functions to provide `pageContext` values is forbidden.
 
 export default () => {
   return {
-    // This is forbiden and vite-plugin-ssr will throw an error
+    // This is forbidden and vite-plugin-ssr will throw an error
     pageContext: {
       some: 'value'
     }
@@ -159,7 +159,7 @@ In principle, vite-plugin-ssr could support providing `pageContext` values but i
 
 > As explained in [Lightweight & fast](#lightweight-fast), you should keep Route Functions simple and you shouldn't implement complex logic in `.page.route.js` files.
 
-That said, you can workaround it by misusing `pageContext.routeParams` to provide data.
+That said, you can work around it by misusing `pageContext.routeParams` to provide data.
 
 ```js
 // *.page.route.js
