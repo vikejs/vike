@@ -16,7 +16,7 @@ Upon conflicts between Filesystem Routing, Route Strings and Route Functions, `v
 1. Filesystem Routing
 1. Route String, static (i.e. without `@param` segment, e.g. `/about/company`)
 1. Route Function, returned no `precedence` number (or `0`)
-1. Route String, parameterized (i.e. with `@param` segement, e.g. `/product/@productId` or `/product/*`)
+1. Route String, parameterized (i.e. with `@param` segment, e.g. `/product/@productId` or `/product/*`)
 1. Route Function, returned low negative `precedence` number (e.g. `-1`)
 1. Route Function, returned high negative `precedence` number (e.g. `-99`)
 
@@ -63,7 +63,7 @@ URL                           MATCHES                                    WINNER
 ```
 
 4: Route String, static (without `@param` segment, e.g. `/about/company`)  
-6: Route String, parameterized (with `@param` segements, e.g. `/product/@productId` or `/product/*`)  
+6: Route String, parameterized (with `@param` segments, e.g. `/product/@productId` or `/product/*`)  
 7: Route Function, returned low negative `precedence` number (e.g. `-1`)  
 
 **Example (1) + (4)**:

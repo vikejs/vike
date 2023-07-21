@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-> **What is preloading?** Preloading denotes the practice of loadings assets (JavaScript, CSS, images, etc.) before the browser discovers them in HTML/CSS/JavaScript code. That way we reduce the network round trips required before the browser starts discovering and loading all dependencies.
+> **What is preloading?** Preloading denotes the practice of loading assets (JavaScript, CSS, images, etc.) before the browser discovers them in HTML/CSS/JavaScript code. That way we reduce the network round trips required before the browser starts discovering and loading all dependencies.
 
 By default, vite-plugin-ssr automatically inject tags to our HTML, such as `<script type="module" stc="script.js">`, `<link rel="stylesheet" type="text/css" href="style.css">`, and `<link rel="preload" href="font.ttf" as="font" type="font/ttf">`. It does so using a preload strategy that works for most users, but we can use `injectFilter()` to implement a custom preload strategy.
 

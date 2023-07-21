@@ -20,7 +20,7 @@ Common use cases:
 
 ## React
 
-Rendering & loading a compoment only on the client-side:
+Rendering & loading a component only on the client-side:
 
 ```jsx
 // /pages/location/select.page.jsx
@@ -43,7 +43,7 @@ function Map() {
   const [Component, setComponent] = React.useState(() => Loading)
 
   // useEffect() callbacks are only run in the browser, consequently the map component
-  // is loaded and rendererd only in the browser.
+  // is loaded and rendered only in the browser.
   React.useEffect(() => {
     // @ts-expect-error The type provided by @types/react is wrong
     setComponent(() => React.lazy(() => import('some-heavy-map-component')))

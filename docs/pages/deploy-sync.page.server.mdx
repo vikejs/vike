@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-When you deploy a new version, then any user currently browsering your (now outdated) frontend will automatically transition to the new frontend as soon as the user navigates to a new page.
+When you deploy a new version, then any user currently browsing your (now outdated) frontend will automatically transition to the new frontend as soon as the user navigates to a new page.
 
 This works for both <Link text="Server Routing" href="/server-routing" /> and <Link text="Client Routing" href="/client-routing" />.
 
@@ -20,9 +20,9 @@ Everything is handled automatically and there is nothing for you to do.
 
 > **How does vite-plugin-ssr's solution work?**
 >
-> Vite-plugin-ssr temporarily falls back to <Link text="Server Routing" href="/server-routing" /> whenever retrieving a static asset returns a `404`: the URL of all static assets contain a unique hash and, consequently, when the user natvigates to a new page then the old frontend requests static asset URLs that don't exist anymore.
+> Vite-plugin-ssr temporarily falls back to <Link text="Server Routing" href="/server-routing" /> whenever retrieving a static asset returns a `404`: the URL of all static assets contain a unique hash and, consequently, when the user navigates to a new page then the old frontend requests static asset URLs that don't exist anymore.
 >
-> With Server Rotuing, when the user natvigates to a new page, the entire client-side is reloaded (i.e. the new frontend is loaded). After the reload, Client Routing is resumed.
+> With Server Routing, when the user navigates to a new page, the entire client-side is reloaded (i.e. the new frontend is loaded). After the reload, Client Routing is resumed.
 >
 > Note that, since the client-side is fully reloaded, all client state is lost if not persisted (to `window.localStorage`, for instance).
 >

@@ -57,7 +57,7 @@ We can pre-render pages conditionally:
 export const doNotPrerender = isCmsPreview() ? true : false
 ```
 
-> This is particularly usefull for previewing CMS pages (we don't want to pre-renderer a CMS preview deploy).
+> This is particularly useful for previewing CMS pages (we don't want to pre-renderer a CMS preview deploy).
 
 Note that <Link text={<><code>prerender()</code> hooks</>} href="prerender" /> are always called, regardless of `doNotPrerender`. If we want to call `prerender()` hooks conditionally as well:
 
