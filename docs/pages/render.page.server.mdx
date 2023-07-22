@@ -9,6 +9,19 @@ render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, info?: string | Record<str
 render(url: `/${string}`, info?: string | Record<string, unknown>)
 ```
 
+```js
+import { render } from 'vite-plugin-ssr/abort'
+
+function onSomeHook() {
+  if (someCondition) {
+    throw render('/login')
+  }
+  if (someOtherCondition) {
+    throw render(401, "You don't have the permission to access this page.")
+  }
+}
+```
+
 - If the first argument is a URL, then that URL is rendered.
 - If the first argument is a status code, then the <Link text="error page" href="/error-page" /> is rendered.
   - [`401` Unauthorized](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401) - Access denied, the user isn't logged in.

@@ -4,8 +4,20 @@ See also: <Link href="/render" noBreadcrumb={true} /> and <Link href="/abort#thr
 
 ```ts
 // Redirect the user to another URL
-redirect(statusCode: 301 | 302, url: `/${string}` | `https://${string}` | `http://${string}`)
+redirect(url: `/${string}` | `https://${string}` | `http://${string}`)
 ```
+
+```js
+import { redirect } from 'vite-plugin-ssr/abort'
+
+function onSomeHook() {
+  if (someCondition) {
+    throw redirect('/some-url')
+  }
+}
+```
+
+> By default, `throw redirect()` makes a temporary redirection (using the HTTP status code `302`). We expect that permanent redirections aren't need for programmatically defined redirections. However, if you do, let us know (there is a hidden option to change the status code).
 
 While it's most commonly used with [`guard()`](/guard) or [`onBeforeRender()`](/onBeforeRender), you can use it with any hook.
 

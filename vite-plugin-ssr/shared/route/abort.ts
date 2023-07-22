@@ -25,8 +25,10 @@ import {
 } from './utils'
 
 type StatusCodeAbort = StatusCodeRedirect | StatusCodeError
-type StatusCodeRedirect = Parameters<typeof redirect>[0]
-type StatusCodeError = number & Parameters<typeof render>[0]
+type StatusCodeRedirect = 301 | 302
+type StatusCodeError = number &
+  // For improved IntelliSense, we define the list of status code directly on render()'s argument type
+  Parameters<typeof render>[0]
 
 type UrlRedirect = {
   url: string
@@ -43,9 +45,19 @@ type AbortRender = Error
  * @param statusCode `301` (permanent) or `302` (temporary) redirection.
  * @param url The URL to redirect to.
  */
-function redirect(statusCode: 301 | 302, url: `/${string}` | `https://${string}` | `http://${string}`): AbortRedirect {
+function redirect(url: `/${string}` | `https://${string}` | `http://${string}`): AbortRedirect
+function redirect(
+  url: `/${string}` | `https://${string}` | `http://${string}`,
+  statusCode?: StatusCodeRedirect
+): AbortRedirect {
   const abortCaller = 'redirect' as const
+  statusCode ??= 302
   assertStatusCode(statusCode, [301, 302], 'redirect')
+  assertWarning(
+    statusCode !== 301,
+    "Status code 301 for `throw redirect()' is experimental and may be removed at any point",
+    { onlyOnce: true }
+  )
   const pageContextAddition = {}
   objectAssign(pageContextAddition, {
     _abortCaller: abortCaller,
