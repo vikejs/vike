@@ -27,11 +27,11 @@ import {
 } from './utils'
 import { pLimit, PLimit } from '../../utils/pLimit'
 import {
+  prerenderPage,
+  prerender404Page,
   getRenderContext,
   loadPageFilesServer,
-  prerenderPageContext,
   type RenderContext,
-  prerender404Page,
   initPageContext
 } from '../runtime/renderPage/renderPageAlreadyRouted'
 import pc from '@brillout/picocolors'
@@ -51,6 +51,7 @@ import { isErrorPage } from '../../shared/error-page'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute'
 import type { OnBeforeRouteHook } from '../../shared/route/executeOnBeforeRouteHook'
+import { isAbortError } from '../../shared/route/abort'
 
 type HtmlFile = {
   urlOriginal: string
@@ -760,7 +761,14 @@ async function routeAndPrerender(
           _usesClientRouter: usesClientRouter
         })
 
-        const { documentHtml, pageContextSerialized } = await prerenderPageContext(pageContext)
+        let res: Awaited<ReturnType<typeof prerenderPage>>
+        try {
+          res = await prerenderPage(pageContext)
+        } catch (err) {
+          assertIsNotAbort(err, pc.bold(pageContext.urlOriginal))
+          throw err
+        }
+        const { documentHtml, pageContextSerialized } = res
         htmlFiles.push({
           urlOriginal,
           pageContext,
@@ -821,7 +829,13 @@ function warnMissingPages(
 
 async function prerender404(htmlFiles: HtmlFile[], renderContext: RenderContext, prerenderContext: PrerenderContext) {
   if (!htmlFiles.find(({ urlOriginal }) => urlOriginal === '/404')) {
-    const result = await prerender404Page(renderContext, prerenderContext.pageContextInit)
+    let result: Awaited<ReturnType<typeof prerender404Page>>
+    try {
+      result = await prerender404Page(renderContext, prerenderContext.pageContextInit)
+    } catch (err) {
+      assertIsNotAbort(err, 'the error page')
+      throw err
+    }
     if (result) {
       const urlOriginal = '/404'
       const { documentHtml, pageContext } = result
@@ -1076,4 +1090,15 @@ function prerenderForceExit() {
    * I don't known whether there is a way to call process.exit(0) only if needed, thus I'm not sure if there is a way to conditionally show a assertInfo().
   assertInfo(false, "Pre-rendering was forced exit. (Didn't gracefully exit because the event queue isn't empty. This is usally fine, see ...", { onlyOnce: false })
   */
+}
+
+function assertIsNotAbort(err: unknown, urlOr404: string) {
+  if (!isAbortError(err)) return
+  const { _abortCall: abortCall, _abortCaller: abortCaller } = err._pageContextAddition
+  assertUsage(
+    false,
+    `${pc.cyan(abortCall)} intercepted while pre-rendering ${urlOr404} but ${pc.cyan(
+      `throw ${abortCaller}()`
+    )} isn't support for pre-rendered pages. Create a GitHub ticket if you need this.`
+  )
 }

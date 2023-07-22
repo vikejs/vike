@@ -1,5 +1,5 @@
 export { renderPageAlreadyRouted }
-export { prerenderPageContext }
+export { prerenderPage }
 export { prerender404Page }
 export { loadPageFilesServer }
 export { initPageContext }
@@ -107,7 +107,7 @@ async function renderPageAlreadyRouted<
   }
 }
 
-async function prerenderPageContext(
+async function prerenderPage(
   pageContext: {
     urlOriginal: string
     routeParams: Record<string, string>
@@ -180,7 +180,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
   const pageFiles = await loadPageFilesServer(pageContext)
   objectAssign(pageContext, pageFiles)
 
-  return prerenderPageContext(pageContext)
+  return prerenderPage(pageContext)
 }
 
 function initPageContext(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
