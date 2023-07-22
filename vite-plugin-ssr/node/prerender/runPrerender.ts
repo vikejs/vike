@@ -833,7 +833,7 @@ async function prerender404(htmlFiles: HtmlFile[], renderContext: RenderContext,
     try {
       result = await prerender404Page(renderContext, prerenderContext.pageContextInit)
     } catch (err) {
-      assertIsNotAbort(err, 'the error page')
+      assertIsNotAbort(err, 'the 404 page')
       throw err
     }
     if (result) {
