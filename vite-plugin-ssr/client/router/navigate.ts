@@ -1,7 +1,15 @@
 export { navigate }
+export { reload }
 export { defineNavigate }
 
-import { assertUsage, isBrowser, getGlobalObject, assertClientRouting, checkIfClientRouting } from './utils'
+import {
+  assertUsage,
+  isBrowser,
+  getGlobalObject,
+  assertClientRouting,
+  checkIfClientRouting,
+  getCurrentUrl
+} from './utils'
 
 assertClientRouting()
 
@@ -57,4 +65,8 @@ async function navigate(
 
 function defineNavigate(navigate_: typeof navigate) {
   globalObject.navigate = navigate_
+}
+
+async function reload(): Promise<void> {
+  await navigate(getCurrentUrl())
 }
