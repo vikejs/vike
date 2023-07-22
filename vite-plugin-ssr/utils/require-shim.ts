@@ -81,6 +81,12 @@ function addRequireShim() {
     const caller = callsites[1]
     assert(caller)
 
+    // Bun 0.7.0 throws:
+    //  ```
+    //  TypeError: caller.getFileName is not a function. (In 'caller.getFileName()', 'caller.getFileName' is undefined)
+    //  ```
+    if (!caller.getFileName) return null
+
     {
       const filePath = caller.getFileName()
       // caller.getFileName() can be undefined when Vite evaluates code (the code then doesn't belong to a file on the filesystem):
