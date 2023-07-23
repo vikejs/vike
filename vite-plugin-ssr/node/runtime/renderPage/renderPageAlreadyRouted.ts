@@ -202,6 +202,11 @@ function initPageContext(pageContextInit: { urlOriginal: string }, renderContext
     _pageRoutes: renderContext.pageRoutes,
     _onBeforeRouteHook: renderContext.onBeforeRouteHook
   }
+  if (Object.keys(pageContextInit).length > 1) {
+    Object.assign(pageContextAddendum, {
+      _hasAdditionalPageContextInit: true
+    })
+  }
 
   return pageContextAddendum
 }

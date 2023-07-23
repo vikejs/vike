@@ -11,8 +11,8 @@ import { notSerializable } from '../../../shared/notSerializable'
 type PageContextUser = Record<string, unknown>
 type PageContextClient = { _pageId: string } & Record<string, unknown>
 
-const passToClientBuiltIn: string[] = ['abortReason', '_urlRewrite']
-const passToClientBuiltInError = ['pageProps', 'is404', '_isError']
+const PASS_TO_CLIENT: string[] = ['abortReason', '_urlRewrite', '_hasAdditionalPageContextInit']
+const PASS_TO_CLIENT_ERROR_PAGE = ['pageProps', 'is404', '_isError']
 
 function serializePageContextClientSide(pageContext: {
   _pageId: string
@@ -24,12 +24,12 @@ function serializePageContextClientSide(pageContext: {
 }) {
   const pageContextClient: PageContextClient = { _pageId: pageContext._pageId }
 
-  let passToClient = [...pageContext._passToClient, ...passToClientBuiltIn]
+  let passToClient = [...pageContext._passToClient, ...PASS_TO_CLIENT]
 
   if (isErrorPage(pageContext._pageId, pageContext._pageConfigs)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
     addIs404ToPageProps(pageContext)
-    passToClient.push(...passToClientBuiltInError)
+    passToClient.push(...PASS_TO_CLIENT_ERROR_PAGE)
   }
 
   passToClient = unique(passToClient)

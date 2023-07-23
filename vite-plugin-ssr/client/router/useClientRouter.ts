@@ -93,6 +93,7 @@ function useClientRouter() {
   let renderingCounter = 0
   let renderPromise: Promise<void> | undefined
   let isTransitioning: boolean = false
+  let pageContextPrevious: Record<string, unknown> | null = null
   fetchAndRender({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
 
   return
@@ -180,10 +181,17 @@ function useClientRouter() {
       _isFirstRenderAttempt: isFirstRenderAttempt
     })
 
-    let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>>
+    let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>> | undefined
+    let err: unknown
+    let hasError = false
     try {
-      pageContextAddendum = await getPageContext(pageContext)
-    } catch (err: unknown) {
+      pageContextAddendum = await getPageContext(pageContext, pageContextPrevious)
+    } catch (err_: unknown) {
+      hasError = true
+      err = err_
+    }
+    pageContextPrevious = pageContext
+    if (hasError) {
       if (!isAbortError(err)) {
         // We don't swallow 404 errors:
         //  - On the server-side, VPS swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
@@ -248,7 +256,9 @@ function useClientRouter() {
           return
         }
       }
+      assert(false)
     }
+    assert(pageContextAddendum)
     objectAssign(pageContext, pageContextAddendum)
     assertHook(pageContext, 'onPageTransitionStart')
     globalObject.onPageTransitionStart = pageContext.exports.onPageTransitionStart

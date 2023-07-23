@@ -40,6 +40,8 @@ type PageContextAddendum = {
   _pageFilesLoaded: PageFile[]
 } & PageContextExports
 
+type PageContextPrevious = null | { _hasAdditionalPageContextInit?: true }
+
 type PageContextPassThrough = PageContextUrlsPrivate &
   PageContextForRoute & {
     isBackwardNavigation: boolean | null
@@ -48,14 +50,15 @@ type PageContextPassThrough = PageContextUrlsPrivate &
 async function getPageContext(
   pageContext: {
     _isFirstRenderAttempt: boolean
-  } & PageContextPassThrough
+  } & PageContextPassThrough,
+  pageContextPrevious: PageContextPrevious
 ): Promise<PageContextAddendum> {
   if (pageContext._isFirstRenderAttempt && navigationState.isFirstUrl(pageContext.urlOriginal)) {
     assert(hasProp(pageContext, '_isFirstRenderAttempt', 'true'))
     return getPageContextFirstRender(pageContext)
   } else {
     assert(hasProp(pageContext, '_isFirstRenderAttempt', 'false'))
-    return getPageContextUponNavigation(pageContext)
+    return getPageContextUponNavigation(pageContext, pageContextPrevious)
   }
 }
 
@@ -108,7 +111,8 @@ async function getPageContextErrorPage(pageContext: {
 }
 
 async function getPageContextUponNavigation(
-  pageContext: { _isFirstRenderAttempt: false } & PageContextPassThrough
+  pageContext: { _isFirstRenderAttempt: false } & PageContextPassThrough,
+  pageContextPrevious: PageContextPrevious
 ): Promise<PageContextAddendum> {
   let pageContextAddendum = {}
   objectAssign(pageContextAddendum, {
@@ -131,7 +135,10 @@ async function getPageContextUponNavigation(
     (pageContext) => preparePageContextForUserConsumptionClientSide(pageContext, true)
   )
 
-  const pageContextFromHook = await executeOnBeforeRenderHook({ ...pageContext, ...pageContextAddendum })
+  const pageContextFromHook = await executeOnBeforeRenderHook(
+    { ...pageContext, ...pageContextAddendum },
+    pageContextPrevious
+  )
   assert([true, false].includes(pageContextFromHook._comesDirectlyFromServer))
   if (!pageContextFromHook['_isError']) {
     objectAssign(pageContextAddendum, pageContextFromHook)
@@ -169,7 +176,8 @@ async function executeOnBeforeRenderHook(
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfig[]
   } & PageContextExports &
-    PageContextPassThrough
+    PageContextPassThrough,
+  pageContextPrevious: PageContextPrevious
 ): Promise<
   { _comesDirectlyFromServer: boolean; _pageContextRetrievedFromServer: null | Record<string, unknown> } & Record<
     string,
@@ -203,7 +211,7 @@ async function executeOnBeforeRenderHook(
   }
 
   // `export { onBeforeRender }` defined in `.page.server.js`
-  if (await onBeforeRenderServerSideExists(pageContext)) {
+  if (await hasPageContextServerOnly(pageContext, pageContextPrevious)) {
     const pageContextFromServer = await retrievePageContextFromServer(pageContext)
     {
       const urlRewrite = pageContextFromServer._urlRewrite
@@ -225,6 +233,19 @@ async function executeOnBeforeRenderHook(
   // No `export { onBeforeRender }` defined
   const pageContextAddendum = { _comesDirectlyFromServer: false, _pageContextRetrievedFromServer: null }
   return pageContextAddendum
+}
+
+async function hasPageContextServerOnly(
+  pageContext: Parameters<typeof onBeforeRenderServerSideExists>[0],
+  pageContextPrevious: PageContextPrevious
+): Promise<boolean> {
+  if (pageContextPrevious?._hasAdditionalPageContextInit) {
+    return true
+  }
+  if (await onBeforeRenderServerSideExists(pageContext)) {
+    return true
+  }
+  return false
 }
 
 async function onBeforeRenderServerSideExists(
