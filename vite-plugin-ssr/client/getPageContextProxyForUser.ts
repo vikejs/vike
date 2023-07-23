@@ -30,7 +30,7 @@ function getPageContextProxyForUser<PageContext extends Record<string, unknown> 
 }
 
 type PageContextInfo = {
-  _comesDirectlyFromServer: boolean
+  _hasPageContextFromServer: boolean
 }
 function assertPassToClient(pageContext: PageContextInfo, prop: string, errMsg: string) {
   // We disable assertPassToClient() for the next attempt to read `prop`, because of how Vue's reactivity work.
@@ -44,7 +44,7 @@ function assertPassToClient(pageContext: PageContextInfo, prop: string, errMsg: 
 
   // assertPassToClient() doesn't make sense if a onBeforeRender() hook was called on the client-side
   //  - (Because we don't know whether the user expects the pageContext value to be defined directly on the client-side.)
-  if (!pageContext._comesDirectlyFromServer) {
+  if (!pageContext._hasPageContextFromServer) {
     return
   }
 

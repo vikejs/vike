@@ -13,7 +13,7 @@ import type { PageConfig } from '../shared/page-configs/PageConfig'
 import { getPageContextProxyForUser } from './getPageContextProxyForUser'
 
 type PageContextForUserConsumptionClientSide = PageContextExports & {
-  _comesDirectlyFromServer: boolean
+  _hasPageContextFromServer: boolean
   _pageId: string
   _pageConfigs: PageConfig[]
 }
@@ -61,7 +61,7 @@ function preparePageContextForUserConsumptionClientSide<T extends PageContextFor
   // For prettier `console.log(pageContext)`
   sortPageContext(pageContext)
 
-  assert([true, false].includes(pageContext._comesDirectlyFromServer))
+  assert([true, false].includes(pageContext._hasPageContextFromServer))
   const pageContextForUserConsumption = getPageContextProxyForUser(pageContext)
 
   addIs404ToPageProps(pageContext)

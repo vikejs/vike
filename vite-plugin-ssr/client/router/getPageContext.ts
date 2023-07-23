@@ -35,7 +35,7 @@ import { render } from '../../shared/abort'
 type PageContextAddendum = {
   _pageId: string
   isHydration: boolean
-  _comesDirectlyFromServer: boolean
+  _hasPageContextFromServer: boolean
   _pageFilesLoaded: PageFile[]
 } & PageContextExports
 
@@ -72,7 +72,7 @@ async function getPageContextFirstRender(pageContext: {
 
   objectAssign(pageContextAddendum, {
     isHydration: true,
-    _comesDirectlyFromServer: true
+    _hasPageContextFromServer: true
   })
 
   objectAssign(
@@ -97,7 +97,7 @@ async function getPageContextErrorPage(pageContext: {
   const pageContextAddendum = {
     isHydration: false,
     _pageId: errorPageId,
-    _comesDirectlyFromServer: false
+    _hasPageContextFromServer: false
   }
 
   objectAssign(
@@ -125,7 +125,7 @@ async function getPageContextUponNavigation(
 
   await executeGuardHook(
     {
-      _comesDirectlyFromServer: false,
+      _hasPageContextFromServer: false,
       ...pageContext,
       ...pageContextAddendum
     },
@@ -136,14 +136,14 @@ async function getPageContextUponNavigation(
     { ...pageContext, ...pageContextAddendum },
     pageContextPrevious
   )
-  assert([true, false].includes(pageContextFromHook._comesDirectlyFromServer))
+  assert([true, false].includes(pageContextFromHook._hasPageContextFromServer))
   if (!pageContextFromHook['_isError']) {
     objectAssign(pageContextAddendum, pageContextFromHook)
     return pageContextAddendum
   } else {
     pageContextAddendum = {}
 
-    assert(pageContextFromHook._comesDirectlyFromServer === true)
+    assert(pageContextFromHook._hasPageContextFromServer === true)
     assert(hasProp(pageContextFromHook, 'is404', 'boolean'))
     assert(hasProp(pageContextFromHook, 'pageProps', 'object'))
     assert(hasProp(pageContextFromHook.pageProps, 'is404', 'boolean'))
@@ -175,13 +175,13 @@ async function executeOnBeforeRenderHook(
   } & PageContextExports &
     PageContextPassThrough,
   pageContextPrevious: PageContextPrevious
-): Promise<{ _comesDirectlyFromServer: boolean } & Record<string, unknown>> {
+): Promise<{ _hasPageContextFromServer: boolean } & Record<string, unknown>> {
   // `export { onBeforeRender }` defined in `.page.client.js` or `.page.js`
   const hook = getHook(pageContext, 'onBeforeRender')
   if (hook) {
     const onBeforeRender = hook.hookFn
     const pageContextAddendum = {
-      _comesDirectlyFromServer: false
+      _hasPageContextFromServer: false
     }
     const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(
       {
@@ -215,13 +215,13 @@ async function executeOnBeforeRenderHook(
     const pageContextAddendum = {}
     Object.assign(pageContextAddendum, pageContextFromServer)
     objectAssign(pageContextAddendum, {
-      _comesDirectlyFromServer: true
+      _hasPageContextFromServer: true
     })
     return pageContextAddendum
   }
 
   // No `export { onBeforeRender }` defined
-  const pageContextAddendum = { _comesDirectlyFromServer: false }
+  const pageContextAddendum = { _hasPageContextFromServer: false }
   return pageContextAddendum
 }
 
