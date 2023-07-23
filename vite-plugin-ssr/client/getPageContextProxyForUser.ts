@@ -30,7 +30,6 @@ function getPageContextProxyForUser<PageContext extends Record<string, unknown> 
 }
 
 type PageContextInfo = {
-  _pageContextRetrievedFromServer: null | Record<string, unknown>
   _comesDirectlyFromServer: boolean
 }
 function assertPassToClient(pageContext: PageContextInfo, prop: string, errMsg: string) {
@@ -46,11 +45,6 @@ function assertPassToClient(pageContext: PageContextInfo, prop: string, errMsg: 
   // assertPassToClient() doesn't make sense if a onBeforeRender() hook was called on the client-side
   //  - (Because we don't know whether the user expects the pageContext value to be defined directly on the client-side.)
   if (!pageContext._comesDirectlyFromServer) {
-    return
-  }
-
-  // If we didn't receive any pageContext value from the server, then passToClient is irrelevant
-  if (pageContext._pageContextRetrievedFromServer === null) {
     return
   }
 

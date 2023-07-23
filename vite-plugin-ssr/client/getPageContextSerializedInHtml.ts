@@ -5,7 +5,6 @@ export { getPageContextSerializedInHtml }
 
 function getPageContextSerializedInHtml(): {
   _pageId: string
-  _pageContextRetrievedFromServer: Record<string, unknown>
   _comesDirectlyFromServer: true
 } {
   const id = 'vite-plugin-ssr_pageContext'
@@ -21,7 +20,6 @@ function getPageContextSerializedInHtml(): {
   assert(hasProp(pageContext, '_pageId', 'string'))
 
   objectAssign(pageContext, {
-    _pageContextRetrievedFromServer: pageContext,
     _comesDirectlyFromServer: true as const
   })
 

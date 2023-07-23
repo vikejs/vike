@@ -13,7 +13,6 @@ import type { PageConfig } from '../shared/page-configs/PageConfig'
 import { getPageContextProxyForUser } from './getPageContextProxyForUser'
 
 type PageContextForUserConsumptionClientSide = PageContextExports & {
-  _pageContextRetrievedFromServer: null | Record<string, unknown>
   _comesDirectlyFromServer: boolean
   _pageId: string
   _pageConfigs: PageConfig[]

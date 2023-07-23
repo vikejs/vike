@@ -34,7 +34,6 @@ import { render } from '../../shared/abort'
 
 type PageContextAddendum = {
   _pageId: string
-  _pageContextRetrievedFromServer: null | Record<string, unknown>
   isHydration: boolean
   _comesDirectlyFromServer: boolean
   _pageFilesLoaded: PageFile[]
@@ -98,7 +97,6 @@ async function getPageContextErrorPage(pageContext: {
   const pageContextAddendum = {
     isHydration: false,
     _pageId: errorPageId,
-    _pageContextRetrievedFromServer: null,
     _comesDirectlyFromServer: false
   }
 
@@ -128,7 +126,6 @@ async function getPageContextUponNavigation(
   await executeGuardHook(
     {
       _comesDirectlyFromServer: false,
-      _pageContextRetrievedFromServer: null,
       ...pageContext,
       ...pageContextAddendum
     },
@@ -178,19 +175,13 @@ async function executeOnBeforeRenderHook(
   } & PageContextExports &
     PageContextPassThrough,
   pageContextPrevious: PageContextPrevious
-): Promise<
-  { _comesDirectlyFromServer: boolean; _pageContextRetrievedFromServer: null | Record<string, unknown> } & Record<
-    string,
-    unknown
-  >
-> {
+): Promise<{ _comesDirectlyFromServer: boolean } & Record<string, unknown>> {
   // `export { onBeforeRender }` defined in `.page.client.js` or `.page.js`
   const hook = getHook(pageContext, 'onBeforeRender')
   if (hook) {
     const onBeforeRender = hook.hookFn
     const pageContextAddendum = {
-      _comesDirectlyFromServer: false,
-      _pageContextRetrievedFromServer: null
+      _comesDirectlyFromServer: false
     }
     const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(
       {
@@ -224,31 +215,30 @@ async function executeOnBeforeRenderHook(
     const pageContextAddendum = {}
     Object.assign(pageContextAddendum, pageContextFromServer)
     objectAssign(pageContextAddendum, {
-      _comesDirectlyFromServer: true,
-      _pageContextRetrievedFromServer: pageContextFromServer
+      _comesDirectlyFromServer: true
     })
     return pageContextAddendum
   }
 
   // No `export { onBeforeRender }` defined
-  const pageContextAddendum = { _comesDirectlyFromServer: false, _pageContextRetrievedFromServer: null }
+  const pageContextAddendum = { _comesDirectlyFromServer: false }
   return pageContextAddendum
 }
 
 async function hasPageContextServerOnly(
-  pageContext: Parameters<typeof onBeforeRenderServerSideExists>[0],
+  pageContext: Parameters<typeof onBeforeRenderServerOnlyExists>[0],
   pageContextPrevious: PageContextPrevious
 ): Promise<boolean> {
   if (pageContextPrevious?._hasAdditionalPageContextInit) {
     return true
   }
-  if (await onBeforeRenderServerSideExists(pageContext)) {
+  if (await onBeforeRenderServerOnlyExists(pageContext)) {
     return true
   }
   return false
 }
 
-async function onBeforeRenderServerSideExists(
+async function onBeforeRenderServerOnlyExists(
   pageContext: {
     _pageId: string
     urlOriginal: string
