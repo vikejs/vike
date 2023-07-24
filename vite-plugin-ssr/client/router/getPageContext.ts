@@ -125,16 +125,6 @@ async function getPageContextUponNavigation(
     await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
   )
 
-  await executeGuardHook(
-    {
-      _hasPageContextFromServer: false,
-      _hasPageContextFromClient: false,
-      ...pageContext,
-      ...pageContextAddendum
-    },
-    (pageContext) => preparePageContextForUserConsumptionClientSide(pageContext, true)
-  )
-
   // Needs to be called before any client-side hook, because it may contain pageContextInit.user which is needed for guard() and onBeforeRender()
   if (await hasPageContextServer({ ...pageContext, ...pageContextAddendum }, pageContextPrevious)) {
     const pageContextFromServer = await retreievePageContextFromServer(pageContext)
@@ -163,6 +153,16 @@ async function getPageContextUponNavigation(
     }
   } else {
     objectAssign(pageContextAddendum, { _hasPageContextFromServer: false })
+    // We don't need to call guard() on the client-side if we fetch pageContext from the server side. (Because the `${url}.pageContext.json` HTTP request will already trigger the routing and guard() hook on the serve-side.)
+    // We cannot call guard() before retrieving pageContext from server, since the server-side may define pageContextInit.user which is paramount for guard() hooks
+    await executeGuardHook(
+      {
+        _hasPageContextFromClient: false,
+        ...pageContext,
+        ...pageContextAddendum
+      },
+      (pageContext) => preparePageContextForUserConsumptionClientSide(pageContext, true)
+    )
   }
 
   {

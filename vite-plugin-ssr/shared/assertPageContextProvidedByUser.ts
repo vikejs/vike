@@ -45,10 +45,12 @@ function assertPageContextProvidedByUser(
     `${errPrefix} shouldn't be the whole \`pageContext\` object, see https://vite-plugin-ssr.com/pageContext-manipulation#do-not-return-entire-pagecontext`
   )
 
-  // In principle, it's possible to use `onBeforeRoute()` to override and define the whole routing.
+  // In principle, it's possible to use onBeforeRoute()` to override and define the whole routing.
   // Is that a good idea to allow users to do this? Beyond deep integration with Vue Router or React Router, is there a use case for this?
   assertWarning(
-    !('_pageId' in pageContextProvidedByUser),
+    !('_pageId' in pageContextProvidedByUser) ||
+      // The client runtime internally calls throw render() which is expected to contain pageContext fetched from the server which already sets pageContext._pageId
+      abortCaller === 'render',
     `${errPrefix} sets \`pageContext._pageId\` which means that vite-plugin-ssr's routing is overriden. This is an experimental feature: make sure to contact a vite-plugin-ssr maintainer before using this.`,
     { onlyOnce: true }
   )
