@@ -297,17 +297,8 @@ async function renderPageNominal(
   renderContext: RenderContext,
   httpRequestId: number
 ) {
-  {
-    objectAssign(pageContext, { _httpRequestId: httpRequestId })
-  }
-  {
-    const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
-    objectAssign(pageContext, pageContextInitAddendum)
-  }
-  {
-    const pageContextAddendum = handleUrl(pageContext.urlOriginal, pageContext._urlRewrite)
-    objectAssign(pageContext, pageContextAddendum)
-  }
+  const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext, pageContext._urlRewrite, httpRequestId)
+  objectAssign(pageContext, pageContextInitEnhanced)
   addComputedUrlProps(pageContext)
 
   // Check Base URL
@@ -342,22 +333,16 @@ async function renderPageErrorPage(
   httpRequestId: number,
   pageContextFromRenderAbort: null | Record<string, unknown>
 ): Promise<PageContextAfterRender> {
+  const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext, null, httpRequestId)
+
   assert(errNominalPage)
   const pageContext = {
-    _httpRequestId: httpRequestId,
+    ...pageContextInitEnhanced,
     is404: false,
     _pageId: null,
     _urlRewrite: null,
     errorWhileRendering: errNominalPage as Error,
-    routeParams: {} as Record<string, string>
-  }
-  {
-    const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
-    objectAssign(pageContext, pageContextInitAddendum)
-  }
-  {
-    const pageContextAddendum = handleUrl(pageContext.urlOriginal, null)
-    objectAssign(pageContext, pageContextAddendum)
+    routeParams: {} as Record<string, string>,
   }
   addComputedUrlProps(pageContext)
 
@@ -371,6 +356,27 @@ async function renderPageErrorPage(
 
   assert(pageContext.errorWhileRendering)
   return renderPageAlreadyRouted(pageContext)
+}
+
+function getPageContextInitEnhanced(
+  pageContextInit: { urlOriginal: string },
+  renderContext: RenderContext,
+  urlRewrite: null | string,
+  httpRequestId: number
+) {
+  const pageContextInitEnhanced = {
+    ...pageContextInit,
+    _httpRequestId: httpRequestId
+  }
+  {
+    const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
+    objectAssign(pageContextInitEnhanced, pageContextInitAddendum)
+  }
+  {
+    const pageContextAddendum = handleUrl(pageContextInit.urlOriginal, urlRewrite)
+    objectAssign(pageContextInitEnhanced, pageContextAddendum)
+  }
+  return pageContextInitEnhanced
 }
 
 function handleUrl(
