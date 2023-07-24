@@ -132,11 +132,6 @@ async function getPageContextUponNavigation(
     (pageContext) => preparePageContextForUserConsumptionClientSide(pageContext, true)
   )
 
-  {
-    const pageContextFromHook = await executeOnBeforeRenderHookClientSide({ ...pageContext, ...pageContextAddendum })
-    Object.assign(pageContextAddendum, pageContextFromHook)
-  }
-
   if (await hasPageContextServerOnly({ ...pageContext, ...pageContextAddendum }, pageContextPrevious)) {
     objectAssign(pageContextAddendum, { _hasPageContextFromServer: true })
     const pageContextFromServer = await retreievePageContextFromServer(pageContext)
@@ -167,6 +162,11 @@ async function getPageContextUponNavigation(
     }
   } else {
     objectAssign(pageContextAddendum, { _hasPageContextFromServer: false })
+  }
+
+  {
+    const pageContextFromHook = await executeOnBeforeRenderHookClientSide({ ...pageContext, ...pageContextAddendum })
+    Object.assign(pageContextAddendum, pageContextFromHook)
   }
 
   return pageContextAddendum
