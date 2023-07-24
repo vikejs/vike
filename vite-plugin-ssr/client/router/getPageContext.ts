@@ -132,40 +132,49 @@ async function getPageContextUponNavigation(
     (pageContext) => preparePageContextForUserConsumptionClientSide(pageContext, true)
   )
 
-  const pageContextFromHook = await executeOnBeforeRenderHook(
+  const pageContextFromHook = await executeOnBeforeRenderHookClientSide(
     { ...pageContext, ...pageContextAddendum },
     pageContextPrevious
   )
-  assert([true, false].includes(pageContextFromHook._hasPageContextFromServer))
-  if (!pageContextFromHook['_isError']) {
-    objectAssign(pageContextAddendum, pageContextFromHook)
-    return pageContextAddendum
+  Object.assign(pageContextAddendum, pageContextFromHook)
+
+  if (await hasPageContextServerOnly({ ...pageContext, ...pageContextAddendum }, pageContextPrevious)) {
+    objectAssign(pageContextAddendum, { _hasPageContextFromServer: true })
+    const pageContextFromServer = await retreievePageContextFromServer(pageContext)
+    if (!pageContextFromServer['_isError']) {
+      objectAssign(pageContextAddendum, pageContextFromServer)
+      return pageContextAddendum
+    } else {
+      pageContextAddendum = {}
+
+      assert(pageContextFromServer._hasPageContextFromServer === true)
+      assert(hasProp(pageContextFromServer, 'is404', 'boolean'))
+      assert(hasProp(pageContextFromServer, 'pageProps', 'object'))
+      assert(hasProp(pageContextFromServer.pageProps, 'is404', 'boolean'))
+      // When the user hasn't define a `_error.page.js` file: the mechanism with `serverSideError: true` is used instead
+      assert(!('serverSideError' in pageContextFromServer))
+      const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
+      assert(errorPageId)
+
+      objectAssign(pageContextAddendum, {
+        isHydration: false,
+        _pageId: errorPageId
+      })
+      objectAssign(pageContextAddendum, pageContextFromServer)
+      objectAssign(
+        pageContextAddendum,
+        await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
+      )
+      return pageContextAddendum
+    }
   } else {
-    pageContextAddendum = {}
-
-    assert(pageContextFromHook._hasPageContextFromServer === true)
-    assert(hasProp(pageContextFromHook, 'is404', 'boolean'))
-    assert(hasProp(pageContextFromHook, 'pageProps', 'object'))
-    assert(hasProp(pageContextFromHook.pageProps, 'is404', 'boolean'))
-    // When the user hasn't define a `_error.page.js` file: the mechanism with `serverSideError: true` is used instead
-    assert(!('serverSideError' in pageContextFromHook))
-    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
-    assert(errorPageId)
-
-    objectAssign(pageContextAddendum, {
-      isHydration: false,
-      _pageId: errorPageId
-    })
-    objectAssign(pageContextAddendum, pageContextFromHook)
-    objectAssign(
-      pageContextAddendum,
-      await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
-    )
-    return pageContextAddendum
+    objectAssign(pageContextAddendum, { _hasPageContextFromServer: false })
   }
+
+  return pageContextAddendum
 }
 
-async function executeOnBeforeRenderHook(
+async function executeOnBeforeRenderHookClientSide(
   pageContext: {
     _pageId: string
     urlOriginal: string
@@ -175,53 +184,28 @@ async function executeOnBeforeRenderHook(
   } & PageContextExports &
     PageContextPassThrough,
   pageContextPrevious: PageContextPrevious
-): Promise<{ _hasPageContextFromServer: boolean } & Record<string, unknown>> {
-  // `export { onBeforeRender }` defined in `.page.client.js` or `.page.js`
+): Promise<null | Record<string, unknown>> {
   const hook = getHook(pageContext, 'onBeforeRender')
-  if (hook) {
-    const onBeforeRender = hook.hookFn
-    const pageContextAddendum = {
-      _hasPageContextFromServer: false
-    }
-    const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(
-      {
-        ...pageContext,
-        ...pageContextAddendum
-      },
-      true
-    )
-    const hookResult = await executeHook(
-      () => onBeforeRender(pageContextForUserConsumption),
-      'onBeforeRender',
-      hook.hookFilePath
-    )
-    assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
-    const pageContextFromHook = hookResult?.pageContext
-    objectAssign(pageContextAddendum, pageContextFromHook)
-    return pageContextAddendum
+  if (!hook) return null
+  const onBeforeRender = hook.hookFn
+  const pageContextAddendum = {
+    _hasPageContextFromServer: false
   }
-
-  // `export { onBeforeRender }` defined in `.page.server.js`
-  if (await hasPageContextServerOnly(pageContext, pageContextPrevious)) {
-    const pageContextFromServer = await retrievePageContextFromServer(pageContext)
+  const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(
     {
-      const urlRewrite = pageContextFromServer._urlRewrite
-      if (urlRewrite) {
-        assert(typeof urlRewrite === 'string')
-        assert(urlRewrite.startsWith('/'))
-        throw render(urlRewrite as `/${string}`, pageContextFromServer)
-      }
-    }
-    const pageContextAddendum = {}
-    Object.assign(pageContextAddendum, pageContextFromServer)
-    objectAssign(pageContextAddendum, {
-      _hasPageContextFromServer: true
-    })
-    return pageContextAddendum
-  }
-
-  // No `export { onBeforeRender }` defined
-  const pageContextAddendum = { _hasPageContextFromServer: false }
+      ...pageContext,
+      ...pageContextAddendum
+    },
+    true
+  )
+  const hookResult = await executeHook(
+    () => onBeforeRender(pageContextForUserConsumption),
+    'onBeforeRender',
+    hook.hookFilePath
+  )
+  assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
+  const pageContextFromHook = hookResult?.pageContext
+  objectAssign(pageContextAddendum, pageContextFromHook)
   return pageContextAddendum
 }
 
@@ -284,7 +268,24 @@ function checkIf404(err: unknown): boolean {
   return isObject(err) && err._is404 === true
 }
 
-async function retrievePageContextFromServer(pageContext: {
+async function retreievePageContextFromServer(pageContext: Parameters<typeof fetchPageContextFromServer>[0]) {
+  const pageContextFromServer = await fetchPageContextFromServer(pageContext)
+  {
+    const urlRewrite = pageContextFromServer._urlRewrite
+    if (urlRewrite) {
+      assert(typeof urlRewrite === 'string')
+      assert(urlRewrite.startsWith('/'))
+      throw render(urlRewrite as `/${string}`, pageContextFromServer)
+    }
+  }
+  const pageContextAddendum: Record<string, unknown> = {}
+  Object.assign(pageContextAddendum, pageContextFromServer)
+  objectAssign(pageContextAddendum, {
+    _hasPageContextFromServer: true
+  })
+  return pageContextAddendum
+}
+async function fetchPageContextFromServer(pageContext: {
   urlOriginal: string
   _urlRewrite: string | null
   _urlOriginalPristine?: string
