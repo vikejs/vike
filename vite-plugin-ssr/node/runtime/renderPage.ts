@@ -145,15 +145,19 @@ async function renderPageAlreadyPrepared(
     const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
     objectAssign(pageContextNominalPageInit, pageContextFromAllRewrites)
   }
+  {
+    const pageContextInitEnhanced = getPageContextInitEnhanced(
+      pageContextInit,
+      renderContext,
+      pageContextNominalPageInit._urlRewrite,
+      httpRequestId
+    )
+    objectAssign(pageContextNominalPageInit, pageContextInitEnhanced)
+  }
   let errNominalPage: unknown
   {
     try {
-      pageContextNominalPageSuccess = await renderPageNominal(
-        pageContextInit,
-        pageContextNominalPageInit,
-        renderContext,
-        httpRequestId
-      )
+      pageContextNominalPageSuccess = await renderPageNominal(pageContextNominalPageInit)
     } catch (err) {
       errNominalPage = err
       assert(errNominalPage)
@@ -211,9 +215,9 @@ async function renderPageAlreadyPrepared(
       pageContextFromRenderAbort = handled.pageContextAddition
     }
 
-    let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageErrorPage>>
+    let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageError>>
     try {
-      pageContextErrorPage = await renderPageErrorPage(
+      pageContextErrorPage = await renderPageError(
         pageContextInit,
         errNominalPage,
         pageContextNominalPageInit,
@@ -292,13 +296,8 @@ function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>
 }
 
 async function renderPageNominal(
-  pageContextInit: { urlOriginal: string },
-  pageContext: { _urlRewrite: null | string },
-  renderContext: RenderContext,
-  httpRequestId: number
+  pageContext: { _urlRewrite: null | string } & ReturnType<typeof getPageContextInitEnhanced>
 ) {
-  const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext, pageContext._urlRewrite, httpRequestId)
-  objectAssign(pageContext, pageContextInitEnhanced)
   addComputedUrlProps(pageContext)
 
   // Check Base URL
@@ -325,7 +324,7 @@ async function renderPageNominal(
   return pageContextAfterRender
 }
 
-async function renderPageErrorPage(
+async function renderPageError(
   pageContextInit: { urlOriginal: string },
   errNominalPage: unknown,
   pageContextNominalPagePartial: Record<string, unknown>,
@@ -342,7 +341,7 @@ async function renderPageErrorPage(
     _pageId: null,
     _urlRewrite: null,
     errorWhileRendering: errNominalPage as Error,
-    routeParams: {} as Record<string, string>,
+    routeParams: {} as Record<string, string>
   }
   addComputedUrlProps(pageContext)
 
