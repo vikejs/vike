@@ -9,7 +9,11 @@ const urlFirst = getCurrentUrl({ withoutHash: true })
 
 async function getPageContext() {
   const pageContext = getPageContextSerializedInHtml()
-  objectAssign(pageContext, { isHydration: true as const, isBackwardNavigation: null })
+  objectAssign(pageContext, {
+    isHydration: true as const,
+    isBackwardNavigation: null,
+    _hasPageContextFromClient: false
+  })
   objectAssign(pageContext, await loadPageFilesClient(pageContext._pageId))
   assertPristineUrl()
   return pageContext

@@ -31,13 +31,14 @@ import { getConfigValue, getPageConfig } from '../../shared/page-configs/utils'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn'
 import { executeGuardHook } from '../../shared/route/executeGuardHook'
 import { render } from '../../shared/abort'
+import type { PageContextForPassToClientWarning } from '../getPageContextProxyForUser'
 
 type PageContextAddendum = {
   _pageId: string
   isHydration: boolean
-  _hasPageContextFromServer: boolean
   _pageFilesLoaded: PageFile[]
-} & PageContextExports
+} & PageContextExports &
+  PageContextForPassToClientWarning
 
 type PageContextPrevious = null | { _hasAdditionalPageContextInit?: true }
 
@@ -72,7 +73,7 @@ async function getPageContextFirstRender(pageContext: {
 
   objectAssign(pageContextAddendum, {
     isHydration: true,
-    _hasPageContextFromServer: true
+    _hasPageContextFromClient: false
   })
 
   objectAssign(
@@ -97,7 +98,8 @@ async function getPageContextErrorPage(pageContext: {
   const pageContextAddendum = {
     isHydration: false,
     _pageId: errorPageId,
-    _hasPageContextFromServer: false
+    _hasPageContextFromServer: false,
+    _hasPageContextFromClient: false
   }
 
   objectAssign(
@@ -126,14 +128,15 @@ async function getPageContextUponNavigation(
   await executeGuardHook(
     {
       _hasPageContextFromServer: false,
+      _hasPageContextFromClient: false,
       ...pageContext,
       ...pageContextAddendum
     },
     (pageContext) => preparePageContextForUserConsumptionClientSide(pageContext, true)
   )
 
+  // Needs to be called before any client-side hook, because it may contain pageContextInit.user which is needed for guard() and onBeforeRender()
   if (await hasPageContextServerOnly({ ...pageContext, ...pageContextAddendum }, pageContextPrevious)) {
-    objectAssign(pageContextAddendum, { _hasPageContextFromServer: true })
     const pageContextFromServer = await retreievePageContextFromServer(pageContext)
     if (!pageContextFromServer['_isError']) {
       objectAssign(pageContextAddendum, pageContextFromServer)
@@ -143,8 +146,7 @@ async function getPageContextUponNavigation(
       pageContextAddendum = {}
       objectAssign(pageContextAddendum, {
         isHydration: false,
-        _pageId: errorPageId,
-        _hasPageContextFromServer: true
+        _pageId: errorPageId
       })
 
       objectAssign(
@@ -152,7 +154,6 @@ async function getPageContextUponNavigation(
         await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
       )
 
-      assert(pageContextFromServer._hasPageContextFromServer === true)
       assert(hasProp(pageContextFromServer, 'is404', 'boolean'))
       assert(hasProp(pageContextFromServer, 'pageProps', 'object'))
       assert(hasProp(pageContextFromServer.pageProps, 'is404', 'boolean'))
@@ -166,7 +167,11 @@ async function getPageContextUponNavigation(
 
   {
     const pageContextFromHook = await executeOnBeforeRenderHookClientSide({ ...pageContext, ...pageContextAddendum })
-    Object.assign(pageContextAddendum, pageContextFromHook)
+    if (pageContextFromHook) {
+      objectAssign(pageContextAddendum, pageContextFromHook)
+    } else {
+      objectAssign(pageContextAddendum, { _hasPageContextFromClient: false })
+    }
   }
 
   return pageContextAddendum
@@ -179,14 +184,15 @@ async function executeOnBeforeRenderHookClientSide(
     isHydration: boolean
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfig[]
+    _hasPageContextFromServer: boolean
   } & PageContextExports &
     PageContextPassThrough
-): Promise<null | Record<string, unknown>> {
+) {
   const hook = getHook(pageContext, 'onBeforeRender')
   if (!hook) return null
   const onBeforeRender = hook.hookFn
   const pageContextAddendum = {
-    _hasPageContextFromServer: false
+    _hasPageContextFromClient: true
   }
   const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(
     {
@@ -275,6 +281,7 @@ async function retreievePageContextFromServer(pageContext: Parameters<typeof fet
       throw render(urlRewrite as `/${string}`, pageContextFromServer)
     }
   }
+  objectAssign(pageContextFromServer, { _hasPageContextFromServer: true })
   return pageContextFromServer
 }
 async function fetchPageContextFromServer(pageContext: {

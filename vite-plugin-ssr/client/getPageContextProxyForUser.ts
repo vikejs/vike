@@ -1,16 +1,24 @@
 export { getPageContextProxyForUser }
+export { PageContextForPassToClientWarning }
 
-import { assertUsage, getGlobalObject } from './utils'
+import { assert, assertUsage, assertWarning, getGlobalObject } from './utils'
 import { notSerializable } from '../shared/notSerializable'
-const globalObject = getGlobalObject<{ disableAssertPassToClient?: string }>('getPageContextProxyForUser.ts', {})
+const globalObject = getGlobalObject<{ disable?: string }>('getPageContextProxyForUser.ts', {})
+
+type PageContextForPassToClientWarning = {
+  _hasPageContextFromServer: boolean
+  _hasPageContextFromClient: boolean
+}
 
 /**
  * - Throw error when pageContext value isn't serializable
  * - Throw error when pageContext prop is missing in passToClient
  */
-function getPageContextProxyForUser<PageContext extends Record<string, unknown> & PageContextInfo>(
+function getPageContextProxyForUser<PageContext extends Record<string, unknown> & PageContextForPassToClientWarning>(
   pageContext: PageContext
 ): PageContext {
+  assert([true, false].includes(pageContext._hasPageContextFromServer))
+  assert([true, false].includes(pageContext._hasPageContextFromClient))
   return new Proxy(pageContext, {
     get(_: never, prop: string) {
       const val = pageContext[prop]
@@ -29,44 +37,42 @@ function getPageContextProxyForUser<PageContext extends Record<string, unknown> 
   })
 }
 
-type PageContextInfo = {
-  _hasPageContextFromServer: boolean
-}
-function assertPassToClient(pageContext: PageContextInfo, prop: string, errMsg: string) {
+function assertPassToClient(pageContext: PageContextForPassToClientWarning, prop: string, errMsg: string) {
   // We disable assertPassToClient() for the next attempt to read `prop`, because of how Vue's reactivity work.
   //  - (When changing a reactive object, Vue tries to read it's old value first. This triggers a `assertPassToClient()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.)
-  if (globalObject.disableAssertPassToClient === prop) return
+  if (globalObject.disable === prop) return
   ignoreNextRead(prop)
+  if (prop in pageContext) return
+  if (isExpected(prop)) return
 
-  if (!isMissing(pageContext, prop)) {
-    return
+  if (pageContext._hasPageContextFromServer && !pageContext._hasPageContextFromClient) {
+    // We can safely assume that the property is missing in passToClient, because the server-side defines all passToClient properties even if they have an undefined value:
+    // ```
+    // <script id="vite-plugin-ssr_pageContext" type="application/json">{"_pageId":"/pages/admin","user":"!undefined","pageProps":"!undefined","title":"!undefined","abortReason":"!undefined","_urlRewrite":null,"_hasAdditionalPageContextInit":true}</script>
+    // ```
+    // Note how properties have "!undefined" values => we can tell whether an undefined pageContext value exists in passToClient.
+    assertUsage(false, errMsg)
+  } else {
+    // Do nothing, not even a warning.
+    // Because we don't know whether the user expects the pageContext value to be undefined. (E.g. a client-side onBeforeRender() hook conditionally setting a pageContext value.)
   }
-
-  // assertPassToClient() doesn't make sense if a onBeforeRender() hook was called on the client-side
-  //  - (Because we don't know whether the user expects the pageContext value to be defined directly on the client-side.)
-  if (!pageContext._hasPageContextFromServer) {
-    return
-  }
-
-  assertUsage(false, errMsg)
 }
 
 const IGNORE_LIST = [
   'then',
   'toJSON' // Vue tries to get `toJSON`
 ]
-function isMissing(pageContext: Record<string, unknown>, prop: string) {
-  if (prop in pageContext) return false
-  if (IGNORE_LIST.includes(prop)) return false
-  if (typeof prop === 'symbol') return false // Vue tries to access some symbols
-  if (typeof prop !== 'string') return false
-  if (prop.startsWith('__v_')) return false // Vue internals upon `reactive(pageContext)`
-  return true
+function isExpected(prop: string): boolean {
+  if (IGNORE_LIST.includes(prop)) return true
+  if (typeof prop === 'symbol') return true // Vue tries to access some symbols
+  if (typeof prop !== 'string') return true
+  if (prop.startsWith('__v_')) return true // Vue internals upon `reactive(pageContext)`
+  return false
 }
 
 function ignoreNextRead(prop: string) {
-  globalObject.disableAssertPassToClient = prop
+  globalObject.disable = prop
   window.setTimeout(() => {
-    globalObject.disableAssertPassToClient = undefined
+    globalObject.disable = undefined
   }, 0)
 }
