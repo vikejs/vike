@@ -136,7 +136,7 @@ async function getPageContextUponNavigation(
   )
 
   // Needs to be called before any client-side hook, because it may contain pageContextInit.user which is needed for guard() and onBeforeRender()
-  if (await hasPageContextServerOnly({ ...pageContext, ...pageContextAddendum }, pageContextPrevious)) {
+  if (await hasPageContextServer({ ...pageContext, ...pageContextAddendum }, pageContextPrevious)) {
     const pageContextFromServer = await retreievePageContextFromServer(pageContext)
     if (!pageContextFromServer['_isError']) {
       objectAssign(pageContextAddendum, pageContextFromServer)
@@ -212,7 +212,7 @@ async function executeOnBeforeRenderHookClientSide(
   return pageContextAddendum
 }
 
-async function hasPageContextServerOnly(
+async function hasPageContextServer(
   pageContext: Parameters<typeof onBeforeRenderServerOnlyExists>[0],
   pageContextPrevious: PageContextPrevious
 ): Promise<boolean> {
