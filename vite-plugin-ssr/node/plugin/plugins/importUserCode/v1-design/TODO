@@ -1,3 +1,9 @@
+- refine _hasAdditionalPageContextInit
+- release 0.5.0
+  - `import * from 'vite-plugin-ssr'`
+  - pageContext.url
+  - rename hooks for 0.4 designA?
+
 - remove statusCode option from redirect()
 - reload()
   - /examples/auth (and double check login flow links)
