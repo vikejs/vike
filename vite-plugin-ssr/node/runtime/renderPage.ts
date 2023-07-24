@@ -56,7 +56,7 @@ const renderPage_addWrapper = (wrapper: typeof renderPage_wrapper) => {
 
 type PageContextAfterRender = { httpResponse: HttpResponse | null } & Partial<PageContextBuiltIn>
 
-// `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
+// `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
   PageContextUserAdded extends {},
   PageContextInit extends {
@@ -139,7 +139,7 @@ async function renderPageAlreadyPrepared(
   renderContext: RenderContext,
   pageContextsFromRewrite: PageContextFromRewrite[]
 ): Promise<PageContextAfterRender> {
-  let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageAttempt>>
+  let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
   let pageContextNominalPageInit = {}
   {
     const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
@@ -148,7 +148,7 @@ async function renderPageAlreadyPrepared(
   let errNominalPage: unknown
   {
     try {
-      pageContextNominalPageSuccess = await renderPageAttempt(
+      pageContextNominalPageSuccess = await renderPageNominal(
         pageContextInit,
         pageContextNominalPageInit,
         renderContext,
@@ -291,7 +291,7 @@ function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>
   return pageContextHttpReponseNull
 }
 
-async function renderPageAttempt(
+async function renderPageNominal(
   pageContextInit: { urlOriginal: string },
   pageContext: { _urlRewrite: null | string },
   renderContext: RenderContext,
@@ -308,6 +308,8 @@ async function renderPageAttempt(
     const pageContextAddendum = handleUrl(pageContext.urlOriginal, pageContext._urlRewrite)
     objectAssign(pageContext, pageContextAddendum)
   }
+
+  // Check Base URL
   {
     const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(pageContext.urlOriginal)
     const hasBaseServer =
@@ -320,12 +322,13 @@ async function renderPageAttempt(
 
   addComputedUrlProps(pageContext)
 
-  // *** Route ***
+  // Route
   const routeResult = await route(pageContext)
   objectAssign(pageContext, routeResult.pageContextAddendum)
   const is404 = hasProp(pageContext, '_pageId', 'string') ? null : true
   objectAssign(pageContext, { is404 })
 
+  // Render
   objectAssign(pageContext, { errorWhileRendering: null })
   const pageContextAfterRender = await renderPageAlreadyRouted(pageContext)
   assert(pageContext === pageContextAfterRender)
