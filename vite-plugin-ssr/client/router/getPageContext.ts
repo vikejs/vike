@@ -7,7 +7,6 @@ import {
   assert,
   assertUsage,
   hasProp,
-  isPlainObject,
   objectAssign,
   getProjectError,
   serverSideRouteTo,
@@ -30,8 +29,9 @@ import type { PageConfig } from '../../shared/page-configs/PageConfig'
 import { getConfigValue, getPageConfig } from '../../shared/page-configs/utils'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn'
 import { executeGuardHook } from '../../shared/route/executeGuardHook'
-import { render } from '../../shared/abort'
+import { redirect, render } from '../../shared/abort'
 import type { PageContextForPassToClientWarning } from '../getPageContextProxyForUser'
+import type { StatusCodeError } from '../../shared/route/abort'
 
 type PageContextAddendum = {
   _pageId: string
@@ -127,7 +127,7 @@ async function getPageContextUponNavigation(
 
   // Needs to be called before any client-side hook, because it may contain pageContextInit.user which is needed for guard() and onBeforeRender()
   if (await hasPageContextServer({ ...pageContext, ...pageContextAddendum }, pageContextPrevious)) {
-    const pageContextFromServer = await retreievePageContextFromServer(pageContext)
+    const pageContextFromServer = await fetchPageContextFromServer(pageContext)
     if (!pageContextFromServer['_isError']) {
       objectAssign(pageContextAddendum, pageContextFromServer)
     } else {
@@ -271,24 +271,11 @@ function checkIf404(err: unknown): boolean {
   return isObject(err) && err._is404 === true
 }
 
-async function retreievePageContextFromServer(pageContext: Parameters<typeof fetchPageContextFromServer>[0]) {
-  const pageContextFromServer = await fetchPageContextFromServer(pageContext)
-  {
-    const urlRewrite = pageContextFromServer._urlRewrite
-    if (urlRewrite) {
-      assert(typeof urlRewrite === 'string')
-      assert(urlRewrite.startsWith('/'))
-      throw render(urlRewrite as `/${string}`, pageContextFromServer)
-    }
-  }
-  objectAssign(pageContextFromServer, { _hasPageContextFromServer: true })
-  return pageContextFromServer
-}
 async function fetchPageContextFromServer(pageContext: {
   urlOriginal: string
   _urlRewrite: string | null
   _urlOriginalPristine?: string
-}): Promise<Record<string, unknown>> {
+}) {
   const urlLogical = pageContext._urlRewrite ?? pageContext._urlOriginalPristine ?? pageContext.urlOriginal
   const pageContextUrl = getPageContextRequestUrl(urlLogical)
   const response = await fetch(pageContextUrl)
@@ -313,18 +300,56 @@ async function fetchPageContextFromServer(pageContext: {
   }
 
   const responseText = await response.text()
-  const pageContextFromServer = parse(responseText) as
-    | { pageContext: Record<string, unknown> }
-    | { serverSideError: true }
+  const pageContextFromServer: unknown = parse(responseText)
+  assert(isObject(pageContextFromServer))
+
   if ('serverSideError' in pageContextFromServer) {
     throw getProjectError(
       '`pageContext` could not be fetched from the server as an error occurred on the server; check your server logs.'
     )
   }
-  assert(isPlainObject(pageContextFromServer))
-  assert(hasProp(pageContextFromServer, '_pageId', 'string'))
 
+  handlePageContextAbort(pageContextFromServer)
+
+  assert(hasProp(pageContextFromServer, '_pageId', 'string'))
   removeBuiltInOverrides(pageContextFromServer)
+  objectAssign(pageContextFromServer, { _hasPageContextFromServer: true })
 
   return pageContextFromServer
+}
+
+function handlePageContextAbort(pageContextFromServer: Record<string, unknown>) {
+  {
+    const urlRewrite = pageContextFromServer._urlRewrite
+    if (urlRewrite) {
+      assert(typeof urlRewrite === 'string')
+      assert(urlRewrite.startsWith('/'))
+      const { abortReason } = pageContextFromServer
+      assert(abortReason === undefined || typeof abortReason === 'string')
+      throw render(urlRewrite as `/${string}`, abortReason)
+    }
+  }
+  {
+    const abortStatusCode = pageContextFromServer._abortStatusCode
+    if (abortStatusCode) {
+      assert(typeof abortStatusCode === 'number')
+      const { abortReason } = pageContextFromServer
+      assert(abortReason === undefined || typeof abortReason === 'string')
+      throw render(abortStatusCode as StatusCodeError, abortReason)
+    }
+  }
+  {
+    const urlRedirect = pageContextFromServer._urlRedirect
+    if (urlRedirect) {
+      assert(hasProp(urlRedirect, 'url', 'string'))
+      assert(hasProp(urlRedirect, 'statusCode', 'number'))
+      const { url, statusCode } = urlRedirect
+      assert(url.startsWith('/') || url.startsWith('http'))
+      throw redirect(
+        url as `/${string}`,
+        // @ts-expect-error
+        statusCode
+      )
+    }
+  }
 }

@@ -11,7 +11,6 @@ export type { PageContextFromRewrite }
 export type { AbortReason }
 export type { UrlRedirect }
 
-import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
 import {
   assert,
   assertInfo,
@@ -76,9 +75,9 @@ function redirect(
  * https://vite-plugin-ssr.com/render
  *
  * @param url The URL to render.
- * @param info `abortReason` (the reason why the page was aborted), or `pageContext` values.
+ * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
  */
-function render(url: `/${string}`, info?: string | Record<string, unknown>): AbortRender
+function render(url: `/${string}`, abortReason?: string): AbortRender
 /**
  * Abort the rendering of the current page, and render the error page instead.
  *
@@ -92,22 +91,29 @@ function render(url: `/${string}`, info?: string | Record<string, unknown>): Abo
  *   `429` Too Many Requests (rate limiting)
  *   `500` Internal Server Error (app has a bug)
  *   `503` Service Unavailable (server is overloaded, a third-party API isn't responding)
- * @param info `pageContext.abortReason` (the reason why the page was aborted, usually used for showing a custom message on the error page), or `pageContext` values.
+ * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
  */
-function render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, info?: string | Record<string, unknown>): AbortRender
-function render(value: string | StatusCodeError, info?: string | Record<string, unknown>): AbortRender {
-  const pageContextAddition = {}
-  if (typeof info === 'string') {
-    objectAssign(pageContextAddition, {
-      abortReason: info
-    })
-  } else if (info) {
-    assertPageContextProvidedByUser(info, { abortCaller: 'render' })
-    objectAssign(pageContextAddition, info)
+function render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: string): AbortRender
+function render(value: string | StatusCodeError, abortReason?: string): AbortRender {
+  return render_(value, abortReason)
+}
+
+function render_(
+  value: string | number,
+  // The user cannot set pageContext beyond pageContext.abortReason because:
+  //  - Upon client-side routing, the additional pageContext would need to be serialized and passed to the client-side.
+  //    - For that, pageContext.passToClient is required but how do make sure pageContext.passToClient is set before `throw render()`?
+  abortReason: string | undefined,
+  pageContextAddendum?: { _isLegacyRenderErrorPage: true } & Record<string, unknown>
+): AbortRender {
+  const pageContextAddition = { abortReason }
+  if (pageContextAddendum) {
+    assert(pageContextAddendum._isLegacyRenderErrorPage === true)
+    objectAssign(pageContextAddition, pageContextAddendum)
   }
   {
-    const args = [String(value)]
-    if (typeof info === 'string') args.push(JSON.stringify(truncateString(info, 30, null)))
+    const args = [typeof value === 'number' ? String(value) : JSON.stringify(value)]
+    if (abortReason !== undefined) args.push(JSON.stringify(truncateString(abortReason, 30, null)))
     objectAssign(pageContextAddition, {
       _abortCaller: 'render' as const,
       _abortCall: `throw render(${args.join(', ')})` as const
@@ -146,7 +152,7 @@ type PageContextRenderAbort = {
     }
   | {
       _abortCaller: 'render'
-      _abortStatusCode: StatusCodeError
+      _abortStatusCode: number
     }
 )
 function RenderAbort(pageContextAddition: PageContextRenderAbort): Error {
@@ -159,21 +165,20 @@ function RenderAbort(pageContextAddition: PageContextRenderAbort): Error {
 /**
  * @deprecated Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/render'
  */
-function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown> } = {}): Error {
+function RenderErrorPage({ pageContext = {} }: { pageContext?: Record<string, unknown> } = {}): Error {
   assertWarning(
     false,
     '`throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/render',
     { onlyOnce: true }
   )
-  assertPageContextProvidedByUser(pageContext, { abortCaller: 'RenderErrorPage' })
   let statusCode: 404 | 500 = 404
   let abortReason = 'Page Not Found'
   if (pageContext.is404 === false || (pageContext.pageProps as any)?.is404 === false) {
     statusCode = 500
     abortReason = 'Something went wrong'
   }
-  objectAssign(pageContext, { abortReason })
-  return render(statusCode, pageContext)
+  objectAssign(pageContext, { _isLegacyRenderErrorPage: true as const })
+  return render_(statusCode, abortReason, pageContext)
 }
 
 const stamp = '_isAbortError'

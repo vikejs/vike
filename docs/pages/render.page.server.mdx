@@ -4,9 +4,9 @@ See also: <Link href="/redirect" noBreadcrumb={true} /> and <Link href="/abort#t
 
 ```ts
 // Render the error page
-render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, info?: string | Record<string, unknown>)
+render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: string)
 // Render another page
-render(url: `/${string}`, info?: string | Record<string, unknown>)
+render(url: `/${string}`, abortReason?: string)
 ```
 
 ```js
@@ -30,14 +30,7 @@ function onSomeHook() {
   - [`429` Too Many Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) - Purposefully not serving the request, because of rate limiting or to protect from [DDoS attacks](https://en.wikipedia.org/wiki/Denial-of-service_attack).
   - [`500` Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) - App has a bug.
   - [`503` Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) - Server is overloaded and/or a third-party API isn't responding.
-- If `info` is a string, then it sets `pageContext.abortReason` which is used by the error page to show a message to the user, see <Link href="/error-page" />.
-- If `info` is an object, then it sets `pageContext` values. For example:
-  ```js
-  const abortReason = `Movie with ID ${id} doesn't exist.`
-  render(404, abortReason)
-  // Is equivalent to:
-  render(404, { abortReason })
-  ```
+- The `abortReason` argument sets `pageContext.abortReason` which is used by the error page to show a message to the user, see <Link href="/error-page" />.
 
 While it's most commonly used with [`guard()`](/guard) or [`onBeforeRender()`](/onBeforeRender), you can use it with any hook.
 

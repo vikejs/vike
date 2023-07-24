@@ -30,7 +30,11 @@ import {
 } from '../../shared/route/abort'
 import { getGlobalContext, initGlobalContext } from './globalContext'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
-import { createHttpResponseObjectRedirect, HttpResponse } from './renderPage/createHttpResponseObject'
+import {
+  createHttpResponseObjectRedirect,
+  createHttpResponsePageContextJson,
+  HttpResponse
+} from './renderPage/createHttpResponseObject'
 import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime'
 import { isNewError } from './renderPage/isNewError'
 import { assertArguments } from './renderPage/assertArguments'
@@ -41,6 +45,7 @@ import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
 import '../../utils/require-shim' // Ensure require shim for production
 import type { PageContextBuiltIn } from '../../types'
+import { serializePageContextAbort } from './html/serializePageContextClientSide'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
@@ -207,11 +212,13 @@ async function renderPageAlreadyPrepared(
         httpRequestId,
         renderContext
       )
-      // `throw redirect()` / `throw render(url)`
+      // - throw redirect()
+      // - throw render(url)
+      // - throw render(statusCode) if .pageContext.json request
       if (handled.pageContextReturn) {
         return handled.pageContextReturn
       }
-      // throw render(statusCode)
+      // - throw render(statusCode) if not .pageContext.json request
       pageContextFromRenderAbort = handled.pageContextAddition
     }
 
@@ -424,7 +431,11 @@ async function handleAbortError(
   errAbort: AbortError,
   pageContextsFromRewrite: PageContextFromRewrite[],
   pageContextInit: { urlOriginal: string },
-  pageContextNominalPageInit: { urlOriginal: string; _urlRewrite: null | string } & Record<string, unknown>,
+  pageContextNominalPageInit: {
+    urlOriginal: string
+    _urlRewrite: null | string
+    isClientSideNavigation: boolean
+  },
   httpRequestId: number,
   renderContext: RenderContext
 ): Promise<
@@ -434,6 +445,12 @@ async function handleAbortError(
   logAbortErrorHandled(errAbort, getGlobalContext().isProduction, pageContextNominalPageInit)
 
   const pageContextAddition = errAbort._pageContextAddition
+  if (pageContextNominalPageInit.isClientSideNavigation) {
+    const pageContextSerialized: string = serializePageContextAbort(pageContextAddition)
+    const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
+    const pageContextReturn = { httpResponse }
+    return { pageContextReturn }
+  }
 
   if ('_urlRewrite' in pageContextAddition) {
     const pageContextReturn = await renderPageAlreadyPrepared(pageContextInit, httpRequestId, renderContext, [

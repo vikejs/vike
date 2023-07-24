@@ -1,4 +1,5 @@
 export { serializePageContextClientSide }
+export { serializePageContextAbort }
 
 import { stringify } from '@brillout/json-serializer/stringify'
 import { assert, assertWarning, hasProp, isPlainObject, unique } from '../utils'
@@ -7,11 +8,15 @@ import { isErrorPage } from '../../../shared/error-page'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
 import pc from '@brillout/picocolors'
 import { notSerializable } from '../../../shared/notSerializable'
+import type { UrlRedirect } from '../../../shared/route/abort'
 
-type PageContextUser = Record<string, unknown>
-type PageContextClient = { _pageId: string } & Record<string, unknown>
-
-const PASS_TO_CLIENT: string[] = ['abortReason', '_urlRewrite', '_hasAdditionalPageContextInit']
+const PASS_TO_CLIENT: string[] = [
+  'abortReason',
+  '_urlRewrite',
+  '_urlRedirect',
+  '_hasAdditionalPageContextInit',
+  '_pageId'
+]
 const PASS_TO_CLIENT_ERROR_PAGE = ['pageProps', 'is404', '_isError']
 
 function serializePageContextClientSide(pageContext: {
@@ -22,28 +27,22 @@ function serializePageContextClientSide(pageContext: {
   pageProps?: Record<string, unknown>
   _isError?: true
 }) {
-  const pageContextClient: PageContextClient = { _pageId: pageContext._pageId }
-
   let passToClient = [...pageContext._passToClient, ...PASS_TO_CLIENT]
-
   if (isErrorPage(pageContext._pageId, pageContext._pageConfigs)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
     addIs404ToPageProps(pageContext)
     passToClient.push(...PASS_TO_CLIENT_ERROR_PAGE)
   }
-
   passToClient = unique(passToClient)
 
+  const pageContextClient: Record<string, unknown> = {}
   passToClient.forEach((prop) => {
     // We set non-existing props to `undefined`, in order to pass the list of passToClient values to the client-side
-    pageContextClient[prop] = (pageContext as PageContextUser)[prop]
+    pageContextClient[prop] = (pageContext as Record<string, unknown>)[prop]
   })
 
   assert(isPlainObject(pageContextClient))
   let pageContextSerialized: string
-
-  const serialize = (v: unknown, varName?: string) => stringify(v, { forbidReactElements: true, valueName: varName })
-
   try {
     pageContextSerialized = serialize(pageContextClient)
   } catch (err) {
@@ -78,6 +77,40 @@ function serializePageContextClientSide(pageContext: {
   }
 
   return pageContextSerialized
+}
+function serialize(value: unknown, varName?: string): string {
+  return stringify(value, { forbidReactElements: true, valueName: varName })
+}
+
+function serializePageContextAbort(
+  pageContext: Record<string, unknown> &
+    ({ _urlRedirect: UrlRedirect } | { _urlRewrite: string } | { _abortStatusCode: number })
+): string {
+  assert(pageContext._urlRedirect || pageContext._urlRewrite || pageContext._abortStatusCode)
+  ;['_abortCall', '_abortCaller'].forEach((p) => {
+    assert(pageContext[p])
+    delete pageContext[p]
+  })
+  const unknownProps = Object.keys(pageContext).filter(
+    (prop) => !['_urlRedirect', '_urlRewrite', '_abortStatusCode', 'abortReason'].includes(prop)
+  )
+  if (!pageContext._isLegacyRenderErrorPage) {
+    assert(unknownProps.length === 0)
+  } else {
+    // TODO/v1-release: remove
+    assertWarning(
+      unknownProps.length === 0,
+      [
+        "The following pageContext values won't be available on the client-side:",
+        unknownProps.map((p) => `  pageContext[${JSON.stringify(p)}]`),
+        'Use `throw render()` instead of `throw RenderErrorPage()`'
+      ].join('\n'),
+      {
+        onlyOnce: false
+      }
+    )
+  }
+  return serialize(pageContext)
 }
 
 function lowercaseFirstLetter(str: string) {

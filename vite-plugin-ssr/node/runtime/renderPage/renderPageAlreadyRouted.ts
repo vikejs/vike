@@ -14,7 +14,7 @@ import { assert, assertUsage, hasProp, objectAssign, unique } from '../utils'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide'
 import { addComputedUrlProps, type PageContextUrlsPrivate } from '../../../shared/addComputedUrlProps'
 import { getGlobalContext } from '../globalContext'
-import { createHttpResponseObject, HttpResponse } from './createHttpResponseObject'
+import { createHttpResponseObject, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponseObject'
 import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } from './loadPageFilesServer'
 import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
 import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
@@ -88,8 +88,8 @@ async function renderPageAlreadyRouted<
     if (isError) {
       objectAssign(pageContext, { _isError: true })
     }
-    const body: string = serializePageContextClientSide(pageContext)
-    const httpResponse = await createHttpResponseObject(body, null, pageContext)
+    const pageContextSerialized: string = serializePageContextClientSide(pageContext)
+    const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
