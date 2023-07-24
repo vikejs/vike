@@ -308,6 +308,7 @@ async function renderPageNominal(
     const pageContextAddendum = handleUrl(pageContext.urlOriginal, pageContext._urlRewrite)
     objectAssign(pageContext, pageContextAddendum)
   }
+  addComputedUrlProps(pageContext)
 
   // Check Base URL
   {
@@ -319,8 +320,6 @@ async function renderPageNominal(
       return pageContext
     }
   }
-
-  addComputedUrlProps(pageContext)
 
   // Route
   const routeResult = await route(pageContext)
@@ -360,7 +359,6 @@ async function renderPageErrorPage(
     const pageContextAddendum = handleUrl(pageContext.urlOriginal, null)
     objectAssign(pageContext, pageContextAddendum)
   }
-
   addComputedUrlProps(pageContext)
 
   if (pageContextFromRenderAbort) {
