@@ -1,6 +1,6 @@
 import { Link, Warning } from '@brillout/docpress'
 
-Vite-plugin-ssr doesn't implement [API routes](https://nextjs.org/docs/api-routes/introduction) by design, as we believe decoupling the API is a more robust approach.
+Vite-plugin-ssr doesn't implement [API routes](https://nextjs.org/docs/api-routes/introduction) by design. We believe decoupling the API is a more robust approach.
 
 Instead use:
 
@@ -10,10 +10,11 @@ Instead use:
   > Similar to Telefunc.
   >  - Con: Telefunc is simpler.
   >  - Pro: supports real-time endpoints with websockets.
-- Use your server to create new HTTP endpoints (such as Express.js routes). That way you can get a DX similar to API routes.
+- Use your server to create new HTTP endpoints (such as Express.js routes). That way you'll get a DX similar to API routes.
   > If you use this technique then:
   >   - Make sure vite-plugin-ssr's middleware is your last middleware.
   >   - When modifying your server, you may need to manually restart your server for your changes to take effect.
+  >
   > See explanation at <Link href="/renderPage" />.
 - GraphQL
   <Warning>
