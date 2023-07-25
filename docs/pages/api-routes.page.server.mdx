@@ -1,25 +1,24 @@
 import { Link, Warning } from '@brillout/docpress'
 
-Vite-plugin-ssr doesn't implement [API routes](https://nextjs.org/docs/api-routes/introduction) by design.
+Vite-plugin-ssr doesn't implement [API routes](https://nextjs.org/docs/api-routes/introduction) by design, as we believe decoupling the API is a more robust approach.
 
-> We believe decoupling the API from vite-plugin-ssr is a more robust approach.
-
-Instead, use:
+Instead use:
 
 - [Telefunc](https://telefunc.com)
-  > We recommend Telefunc: it's a simple solution providing a much improved DX over API routes.
+  > Telefunc is a simple solution providing a much better DX than API routes. Out of all options, we recommend Telefunc most.
 - [tRPC](https://trpc.io/)
   > Similar to Telefunc.
   >  - Con: Telefunc is simpler.
   >  - Pro: supports real-time endpoints with websockets.
-- Directly use your server to create new HTTP endpoints (e.g. Express.js routes), for a DX similar to API routes of frameworks like Next.js.
-  > As explained in <Link href="/renderPage" />:
+- Use your server to create new HTTP endpoints (such as Express.js routes). That way you can get a DX similar to API routes.
+  > If you use this technique then:
   >   - Make sure vite-plugin-ssr's middleware is your last middleware.
   >   - When modifying your server, you may need to manually restart your server for your changes to take effect.
+  > See explanation at <Link href="/renderPage" />.
 - GraphQL
   <Warning>
-    If you aren't a *very* large team, then GraphQL is most likely over-engineering. RPC (Telefunc or tRPC) is simpler, and
-    it's actually more flexible as long as you aren't a very large team.
+    If you aren't a *very* large team, then GraphQL is most likely over-engineering. RPC (such as Telefunc and tRPC) is simpler, and
+    actually more flexible as long as you aren't a very large team.
 
-    We recommend to get started with RPC and to later switch to GraphQL only if/when the need arises.
+    We recommend getting started with RPC and use GraphQL only later if/when the need arises.
   </Warning>
