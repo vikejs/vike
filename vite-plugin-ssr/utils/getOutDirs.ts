@@ -27,15 +27,15 @@ function getOutDirs(config: ResolvedConfig): OutDirs {
 }
 function getOutDirs_prerender(config: ResolvedConfig): OutDirs {
   const outDirRoot = getOutDirFromResolvedConfig(config)
-  assertIsOutDirRoot(outDirRoot)
+  assert(isOutDirRoot(outDirRoot))
   return getOutDirsAll(outDirRoot, config.root)
 }
 
 /** Appends `client/` or `server/` to `config.build.outDir` */
 function resolveOutDir(config: UserConfig): string {
   const outDir = getOutDirFromUserConfig(config) || 'dist'
+  // outDir may already be resolved when using Telefunc + vite-plugin-ssr (because both Telefunc and vite-plugin-ssr use this logic)
   if (!isOutDirRoot(outDir)) {
-    // If using Telefunc + vite-plugin-ssr then config.build.outDir may already have been resolved (because both Telefunc and vite-plugin-ssr use this logic)
     assertOutDirResolved(outDir, config)
     return outDir
   } else {
@@ -50,7 +50,7 @@ function resolveOutDir(config: UserConfig): string {
 
 function determineOutDirs(outDirRoot: string) {
   assertPosixPath(outDirRoot)
-  assertIsOutDirRoot(outDirRoot)
+  assert(isOutDirRoot(outDirRoot))
   const outDirClient = pathJoin(outDirRoot, 'client')
   const outDirServer = pathJoin(outDirRoot, 'server')
   assertIsNotOutDirRoot(outDirClient)
@@ -83,11 +83,8 @@ function assertNormalization(outDirAny: string) {
   assert(!outDirAny.endsWith('//'))
 }
 
-function assertIsOutDirRoot(outDir: string) {
-  assert(isOutDirRoot(outDir))
-}
-function isOutDirRoot(outDir: string) {
-  const p = outDir.split('/').filter(Boolean)
+function isOutDirRoot(outDirRot: string) {
+  const p = outDirRot.split('/').filter(Boolean)
   const lastDir = p[p.length - 1]
   return lastDir !== 'client' && lastDir !== 'server'
 }
