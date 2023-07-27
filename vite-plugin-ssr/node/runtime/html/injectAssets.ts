@@ -111,9 +111,7 @@ async function resolvePageContextPromise(pageContext: {
   } else {
     assert(false)
   }
-  assertPageContextProvidedByUser(pageContextProvidedByUser, {
-    hook: pageContext._renderHook
-  })
+  assertPageContextProvidedByUser(pageContextProvidedByUser, pageContext._renderHook)
   Object.assign(pageContext, pageContextProvidedByUser)
 }
 

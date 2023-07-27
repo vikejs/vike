@@ -5,12 +5,11 @@ export { assertPageContextProvidedByUser }
 function assertPageContextProvidedByUser(
   pageContextProvidedByUser: unknown,
   {
-    hook: { hookName, hookFilePath }
+    hookName,
+    hookFilePath
   }: {
-    hook: {
-      hookFilePath: string
-      hookName: 'onBeforeRender' | 'onRenderHtml' | 'render' | 'onBeforeRoute'
-    }
+    hookFilePath: string
+    hookName: 'onBeforeRender' | 'onRenderHtml' | 'render' | 'onBeforeRoute'
   }
 ): asserts pageContextProvidedByUser is Record<string, unknown> {
   if (pageContextProvidedByUser === undefined || pageContextProvidedByUser === null) return

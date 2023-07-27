@@ -212,7 +212,7 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
         isObject(val),
         `${errBegin} should be an object or an async function, see https://vite-plugin-ssr.com/stream#initial-data-after-stream-end`
       )
-      assertPageContextProvidedByUser(val, { hook: renderHook })
+      assertPageContextProvidedByUser(val, renderHook)
       pageContextProvidedByRenderHook = val
     }
   }
