@@ -201,7 +201,7 @@ function useClientRouter() {
         // We handle the abort error down below.
       }
 
-      if (shouldSwallowAndInterupt(err, pageContext)) return
+      if (shouldSwallowAndInterrupt(err, pageContext)) return
 
       if (isAbortError(err)) {
         const errAbort = err
@@ -239,7 +239,7 @@ function useClientRouter() {
         // - When user hasn't defined a `_error.page.js` file
         // - Some unpexected vite-plugin-ssr internal error
 
-        if (shouldSwallowAndInterupt(err2, pageContext)) return
+        if (shouldSwallowAndInterrupt(err2, pageContext)) return
 
         if (!isFirstRenderAttempt) {
           setTimeout(() => {
@@ -523,7 +523,7 @@ function onPageShow(listener: () => void) {
   })
 }
 
-function shouldSwallowAndInterupt(
+function shouldSwallowAndInterrupt(
   err: unknown,
   pageContext: { urlOriginal: string; _isFirstRenderAttempt: boolean }
 ): boolean {
