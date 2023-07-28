@@ -70,15 +70,6 @@ function redirect(
 }
 
 /**
- * Abort the rendering of the current page, and render another page instead.
- *
- * https://vite-plugin-ssr.com/render
- *
- * @param url The URL to render.
- * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
- */
-function render(url: `/${string}`, abortReason?: string): AbortRender
-/**
  * Abort the rendering of the current page, and render the error page instead.
  *
  * https://vite-plugin-ssr.com/render
@@ -94,7 +85,16 @@ function render(url: `/${string}`, abortReason?: string): AbortRender
  * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
  */
 function render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: string): AbortRender
-function render(value: string | StatusCodeError, abortReason?: string): AbortRender {
+/**
+ * Abort the rendering of the current page, and render another page instead.
+ *
+ * https://vite-plugin-ssr.com/render
+ *
+ * @param url The URL to render.
+ * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
+ */
+function render(url: `/${string}`, abortReason?: string): AbortRender
+function render(value: string | number, abortReason?: string): AbortRender {
   return render_(value, abortReason)
 }
 
