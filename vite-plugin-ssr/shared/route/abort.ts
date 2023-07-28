@@ -197,7 +197,7 @@ function logAbortErrorHandled(
   assert(urlCurrent)
   // TODO: add color for server-side
   const abortCall = err._pageContextAddition._abortCall
-  assertInfo(false, `${abortCall} intercepted while rendering URL '${urlCurrent}'`, { onlyOnce: false })
+  assertInfo(false, `${abortCall} intercepted while rendering URL ${urlCurrent}`, { onlyOnce: false })
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {

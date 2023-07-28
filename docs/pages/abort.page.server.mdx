@@ -17,7 +17,7 @@ If `throw redirect()` or `throw render()` doesn't work:
    In developement, check your server logs for the following log. If the log is missing then this means that vite-plugin-ssr didn't receive the `throw redirect()` / `throw render()` exception: some other code is catching and swallowing it.
    ```
    10:00:00 AM [vite-plugin-ssr][request(42)] throw redirect('/some-url') intercepted while
-   rendering URL '/some-other-url'
+   rendering URL /some-other-url
    ```
 If `throw redirect()` doesn't work:
  - **Make sure to add `pageContext.httpResponse.headers` to the HTTP response.**  
