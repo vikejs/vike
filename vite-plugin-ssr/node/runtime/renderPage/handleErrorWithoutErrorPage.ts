@@ -1,5 +1,4 @@
 export { handleErrorWithoutErrorPage }
-export { warnMissingErrorPage }
 
 import { stringify } from '@brillout/json-serializer/stringify'
 import { getGlobalContext } from '../globalContext'
@@ -22,6 +21,11 @@ async function handleErrorWithoutErrorPage<
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   assert(pageContext._pageId === null) // User didn't define a `_error.page.js` file
   assert(pageContext.errorWhileRendering || pageContext.is404)
+
+  {
+    const isV1 = pageContext._pageConfigs.length > 0
+    warnMissingErrorPage(isV1)
+  }
 
   if (!pageContext.isClientSideNavigation) {
     objectAssign(pageContext, { httpResponse: null })

@@ -8,7 +8,6 @@ import {
   renderPageAlreadyRouted
 } from './renderPage/renderPageAlreadyRouted'
 import { route } from '../../shared/route'
-import { getErrorPageId } from '../../shared/error-page'
 import {
   assert,
   hasProp,
@@ -39,7 +38,6 @@ import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime'
 import { isNewError } from './renderPage/isNewError'
 import { assertArguments } from './renderPage/assertArguments'
 import type { PageContextDebug } from './renderPage/debugPageFiles'
-import { warnMissingErrorPage } from './renderPage/handleErrorWithoutErrorPage'
 import { log404 } from './renderPage/log404'
 import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
@@ -173,17 +171,6 @@ async function renderPageAlreadyPrepared(
     }
   }
 
-  // Warn if no error page defined
-  if (
-    // No error page
-    !getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs) &&
-    // Is failure
-    ((errNominalPage && !isAbortError(errNominalPage)) ||
-      (pageContextNominalPageSuccess && pageContextNominalPageSuccess.httpResponse?.statusCode !== 200))
-  ) {
-    const isV1 = renderContext.pageConfigs.length > 0
-    warnMissingErrorPage(isV1)
-  }
   // Log upon 404
   if (
     pageContextNominalPageSuccess &&
