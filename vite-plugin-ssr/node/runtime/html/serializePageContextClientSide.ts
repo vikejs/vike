@@ -92,7 +92,7 @@ function serializePageContextAbort(
     delete pageContext[p]
   })
   const unknownProps = Object.keys(pageContext).filter(
-    (prop) => !['_urlRedirect', '_urlRewrite', '_abortStatusCode', 'abortReason'].includes(prop)
+    (prop) => !['_urlRedirect', '_urlRewrite', '_abortStatusCode', 'abortReason', 'is404', 'pageProps'].includes(prop)
   )
   if (!pageContext._isLegacyRenderErrorPage) {
     assert(unknownProps.length === 0)
