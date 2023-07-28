@@ -255,7 +255,6 @@ function useClientRouter() {
           return
         }
       }
-      assert(false)
     }
     assert(pageContextAddendum)
     objectAssign(pageContext, pageContextAddendum)
