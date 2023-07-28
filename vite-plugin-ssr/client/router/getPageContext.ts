@@ -93,7 +93,7 @@ async function getPageContextErrorPage(pageContext: {
 }): Promise<PageContextAddendum> {
   const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
   if (!errorPageId) {
-    throw new Error('No error page')
+    throw new Error('No error page defined.')
   }
   const pageContextAddendum = {
     isHydration: false,
