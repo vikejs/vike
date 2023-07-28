@@ -11,11 +11,10 @@ import {
   throttle,
   sleep,
   getGlobalObject,
-  executeHook,
-  isObject
+  executeHook
 } from './utils'
 import { navigationState } from '../navigationState'
-import { checkIf404, getPageContext, getPageContextErrorPage } from './getPageContext'
+import { checkIf404, getPageContext, getPageContextErrorPage, isAlreadyServerSideRouted } from './getPageContext'
 import { createPageContext } from './createPageContext'
 import { addLinkPrefetchHandlers } from './prefetch'
 import { assertInfo, assertWarning, isReact, PromiseType } from './utils'
@@ -202,7 +201,7 @@ function useClientRouter() {
         // We handle the abort error down below.
       }
 
-      if (checkIfAbort(err, pageContext)) return
+      if (shouldSwallowAndInterupt(err, pageContext)) return
 
       if (isAbortError(err)) {
         const errAbort = err
@@ -240,7 +239,7 @@ function useClientRouter() {
         // - When user hasn't defined a `_error.page.js` file
         // - Some unpexected vite-plugin-ssr internal error
 
-        if (checkIfAbort(err2, pageContext)) return
+        if (shouldSwallowAndInterupt(err2, pageContext)) return
 
         if (!isFirstRenderAttempt) {
           setTimeout(() => {
@@ -524,13 +523,12 @@ function onPageShow(listener: () => void) {
   })
 }
 
-function checkIfAbort(err: unknown, pageContext: { urlOriginal: string; _isFirstRenderAttempt: boolean }): boolean {
-  if (isObject(err) && err._abortRendering) return true
-
-  if (handleErrorFetchingStaticAssets(err, pageContext)) {
-    return true
-  }
-
+function shouldSwallowAndInterupt(
+  err: unknown,
+  pageContext: { urlOriginal: string; _isFirstRenderAttempt: boolean }
+): boolean {
+  if (isAlreadyServerSideRouted(err)) return true
+  if (handleErrorFetchingStaticAssets(err, pageContext)) return true
   return false
 }
 

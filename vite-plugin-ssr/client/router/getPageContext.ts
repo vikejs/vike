@@ -1,6 +1,7 @@
 export { getPageContext }
 export { getPageContextErrorPage }
 export { checkIf404 }
+export { isAlreadyServerSideRouted }
 
 import { navigationState } from '../navigationState'
 import {
@@ -288,9 +289,7 @@ async function fetchPageContextFromServer(pageContext: {
     // Static hosts + page doesn't exist
     if (!isCorrect && response.status === 404) {
       serverSideRouteTo(pageContext.urlOriginal)
-      const err = new Error("Page doesn't exist")
-      Object.assign(err, { _abortRendering: true })
-      throw err
+      throw AlreadyServerSideRouted()
     }
 
     assertUsage(
@@ -352,4 +351,13 @@ function handlePageContextAbort(pageContextFromServer: Record<string, unknown>) 
       )
     }
   }
+}
+
+function isAlreadyServerSideRouted(err: unknown): boolean {
+  return isObject(err) && !!err._alreadyServerSideRouted
+}
+function AlreadyServerSideRouted() {
+  const err = new Error("Page doesn't exist")
+  Object.assign(err, { _alreadyServerSideRouted: true })
+  return err
 }
