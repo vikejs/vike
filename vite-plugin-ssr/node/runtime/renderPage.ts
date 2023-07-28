@@ -186,7 +186,7 @@ async function renderPageAlreadyPrepared(
   }
   // Log upon 404
   if (
-    !!pageContextNominalPageSuccess &&
+    pageContextNominalPageSuccess &&
     'is404' in pageContextNominalPageSuccess &&
     pageContextNominalPageSuccess.is404 === true
   ) {
