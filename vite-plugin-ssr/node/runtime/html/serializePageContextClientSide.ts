@@ -2,7 +2,7 @@ export { serializePageContextClientSide }
 export { serializePageContextAbort }
 
 import { stringify } from '@brillout/json-serializer/stringify'
-import { assert, assertWarning, hasProp, isPlainObject, unique } from '../utils'
+import { assert, assertWarning, hasProp, unique } from '../utils'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { isErrorPage } from '../../../shared/error-page'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
@@ -27,21 +27,13 @@ function serializePageContextClientSide(pageContext: {
   pageProps?: Record<string, unknown>
   _isError?: true
 }) {
-  let passToClient = [...pageContext._passToClient, ...PASS_TO_CLIENT]
-  if (isErrorPage(pageContext._pageId, pageContext._pageConfigs)) {
-    assert(hasProp(pageContext, 'is404', 'boolean'))
-    addIs404ToPageProps(pageContext)
-    passToClient.push(...PASS_TO_CLIENT_ERROR_PAGE)
-  }
-  passToClient = unique(passToClient)
-
+  const passToClient = getPassToClient(pageContext)
   const pageContextClient: Record<string, unknown> = {}
   passToClient.forEach((prop) => {
     // We set non-existing props to `undefined`, in order to pass the list of passToClient values to the client-side
     pageContextClient[prop] = (pageContext as Record<string, unknown>)[prop]
   })
 
-  assert(isPlainObject(pageContextClient))
   let pageContextSerialized: string
   try {
     pageContextSerialized = serialize(pageContextClient)
@@ -80,6 +72,21 @@ function serializePageContextClientSide(pageContext: {
 }
 function serialize(value: unknown, varName?: string): string {
   return stringify(value, { forbidReactElements: true, valueName: varName })
+}
+function getPassToClient(pageContext: {
+  _pageId: string
+  _passToClient: string[]
+  _pageConfigs: PageConfig[]
+  is404: null | boolean
+}): string[] {
+  let passToClient = [...pageContext._passToClient, ...PASS_TO_CLIENT]
+  if (isErrorPage(pageContext._pageId, pageContext._pageConfigs)) {
+    assert(hasProp(pageContext, 'is404', 'boolean'))
+    addIs404ToPageProps(pageContext)
+    passToClient.push(...PASS_TO_CLIENT_ERROR_PAGE)
+  }
+  passToClient = unique(passToClient)
+  return passToClient
 }
 
 function serializePageContextAbort(
