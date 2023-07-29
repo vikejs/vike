@@ -2,7 +2,7 @@ export { renderPageAlreadyRouted }
 export { prerenderPage }
 export { prerender404Page }
 export { loadPageFilesServer }
-export { initPageContext }
+export { getPageContextInitEnhanced1 }
 export { getRenderContext }
 export type { RenderContext }
 export type { PageContextAfterRender }
@@ -175,8 +175,8 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
     ...pageContextInit_
   }
   {
-    const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
-    objectAssign(pageContext, pageContextInitAddendum)
+    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext)
+    objectAssign(pageContext, pageContextInitEnhanced1)
   }
 
   const pageFiles = await loadPageFilesServer(pageContext)
@@ -185,11 +185,11 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
   return prerenderPage(pageContext)
 }
 
-function initPageContext(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
+function getPageContextInitEnhanced1(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
   assert(pageContextInit.urlOriginal)
 
   const globalContext = getGlobalContext()
-  const pageContextAddendum = {
+  const pageContextInitEnhanced1 = {
     ...pageContextInit,
     _objectCreatedByVitePluginSsr: true,
     // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
@@ -206,7 +206,7 @@ function initPageContext(pageContextInit: { urlOriginal: string }, renderContext
     _pageContextInitKeys: Object.keys(pageContextInit)
   }
 
-  return pageContextAddendum
+  return pageContextInitEnhanced1
 }
 
 type RenderContext = {

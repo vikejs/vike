@@ -3,7 +3,7 @@ export { renderPage_addWrapper }
 
 import {
   getRenderContext,
-  initPageContext,
+  getPageContextInitEnhanced1,
   RenderContext,
   renderPageAlreadyRouted
 } from './renderPage/renderPageAlreadyRouted'
@@ -149,13 +149,13 @@ async function renderPageAlreadyPrepared(
     objectAssign(pageContextNominalPageInit, pageContextFromAllRewrites)
   }
   {
-    const pageContextInitEnhanced = getPageContextInitEnhanced(
+    const pageContextInitEnhanced2 = getPageContextInitEnhanced2(
       pageContextInit,
       renderContext,
       pageContextNominalPageInit._urlRewrite,
       httpRequestId
     )
-    objectAssign(pageContextNominalPageInit, pageContextInitEnhanced)
+    objectAssign(pageContextNominalPageInit, pageContextInitEnhanced2)
   }
   let errNominalPage: unknown
   {
@@ -290,7 +290,7 @@ function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>
 }
 
 async function renderPageNominal(
-  pageContext: { _urlRewrite: null | string } & ReturnType<typeof getPageContextInitEnhanced>
+  pageContext: { _urlRewrite: null | string } & ReturnType<typeof getPageContextInitEnhanced2>
 ) {
   addComputedUrlProps(pageContext)
 
@@ -326,11 +326,11 @@ async function renderPageError(
   httpRequestId: number,
   pageContextFromRenderAbort: null | Record<string, unknown>
 ): Promise<PageContextAfterRender> {
-  const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext, null, httpRequestId)
+  const pageContextInitEnhanced2 = getPageContextInitEnhanced2(pageContextInit, renderContext, null, httpRequestId)
 
   assert(errNominalPage)
   const pageContext = {
-    ...pageContextInitEnhanced,
+    ...pageContextInitEnhanced2,
     is404: false,
     _pageId: null,
     _urlRewrite: null,
@@ -351,25 +351,25 @@ async function renderPageError(
   return renderPageAlreadyRouted(pageContext)
 }
 
-function getPageContextInitEnhanced(
+function getPageContextInitEnhanced2(
   pageContextInit: { urlOriginal: string },
   renderContext: RenderContext,
   urlRewrite: null | string,
   httpRequestId: number
 ) {
-  const pageContextInitEnhanced = {
+  const pageContextInitEnhanced2 = {
     ...pageContextInit,
     _httpRequestId: httpRequestId
   }
   {
-    const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
-    objectAssign(pageContextInitEnhanced, pageContextInitAddendum)
+    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext)
+    objectAssign(pageContextInitEnhanced2, pageContextInitEnhanced1)
   }
   {
     const pageContextAddendum = handleUrl(pageContextInit.urlOriginal, urlRewrite)
-    objectAssign(pageContextInitEnhanced, pageContextAddendum)
+    objectAssign(pageContextInitEnhanced2, pageContextAddendum)
   }
-  return pageContextInitEnhanced
+  return pageContextInitEnhanced2
 }
 
 function handleUrl(

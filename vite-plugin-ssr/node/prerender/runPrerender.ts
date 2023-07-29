@@ -32,7 +32,7 @@ import {
   getRenderContext,
   loadPageFilesServer,
   type RenderContext,
-  initPageContext
+  getPageContextInitEnhanced1
 } from '../runtime/renderPage/renderPageAlreadyRouted'
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
@@ -501,8 +501,8 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
     ...prerenderContext.pageContextInit
   }
   {
-    const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
-    objectAssign(pageContext, pageContextInitAddendum)
+    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext)
+    objectAssign(pageContext, pageContextInitEnhanced1)
   }
   addComputedUrlProps(
     pageContext,
