@@ -6,6 +6,7 @@ export { getPageContextInitEnhanced1 }
 export { getRenderContext }
 export type { RenderContext }
 export type { PageContextAfterRender }
+export type { PageContextInitEnhanced1 }
 
 import { getErrorPageId } from '../../../shared/error-page'
 import { getHtmlString } from '../html/renderHtml'
@@ -26,6 +27,7 @@ import { preparePageContextForUserConsumptionServerSide } from './preparePageCon
 import { executeGuardHook } from '../../../shared/route/executeGuardHook'
 import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageRoutes'
 import type { OnBeforeRouteHook } from '../../../shared/route/executeOnBeforeRouteHook'
+import type { PageContextInitEnhanced2 } from '../renderPage'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
@@ -38,15 +40,12 @@ type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRen
 async function renderPageAlreadyRouted<
   PageContext extends {
     _pageId: null | string
-    _httpRequestId: number
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
-    _pageContextInitKeys: string[]
-    isClientSideNavigation: boolean
-    _allPageIds: string[]
     is404: null | boolean
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
-  } & PageContextUrlsPrivate &
+  } & PageContextInitEnhanced2 &
+    PageContextUrlsPrivate &
     PageContext_loadPageFilesServer
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   const isError = pageContext.is404 || pageContext.errorWhileRendering
@@ -185,6 +184,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
   return prerenderPage(pageContext)
 }
 
+type PageContextInitEnhanced1 = ReturnType<typeof getPageContextInitEnhanced1>
 function getPageContextInitEnhanced1(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
   assert(pageContextInit.urlOriginal)
 

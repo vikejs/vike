@@ -1,5 +1,6 @@
 export { renderPage }
 export { renderPage_addWrapper }
+export type { PageContextInitEnhanced2 }
 
 import {
   getRenderContext,
@@ -351,6 +352,7 @@ async function renderPageError(
   return renderPageAlreadyRouted(pageContext)
 }
 
+type PageContextInitEnhanced2 = ReturnType<typeof getPageContextInitEnhanced2>
 function getPageContextInitEnhanced2(
   pageContextInit: { urlOriginal: string },
   renderContext: RenderContext,
