@@ -6,7 +6,7 @@ export type { PrerenderOptions }
 
 import '../runtime/page-files/setup'
 import path from 'path'
-import { route, type PageRoutes } from '../../shared/route'
+import { route } from '../../shared/route'
 import {
   assert,
   assertUsage,
@@ -32,7 +32,8 @@ import {
   getRenderContext,
   loadPageFilesServer,
   type RenderContext,
-  getPageContextInitEnhanced1
+  getPageContextInitEnhanced1,
+  PageContextInitEnhanced1
 } from '../runtime/renderPage/renderPageAlreadyRouted'
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
@@ -44,13 +45,11 @@ import type { InlineConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString'
-import type { PageConfig, PageConfigGlobal } from '../../shared/page-configs/PageConfig'
 import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode'
 import { isErrorPage } from '../../shared/error-page'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute'
-import type { OnBeforeRouteHook } from '../../shared/route/executeOnBeforeRouteHook'
 import { isAbortError } from '../../shared/route/abort'
 
 type HtmlFile = {
@@ -89,25 +88,13 @@ type PrerenderContext = {
   _noExtraDir: boolean
 }
 
-type PageContext = {
-  urlOriginal: string
+type PageContext = PageContextInitEnhanced1 & {
   _urlRewrite: null
+  _urlHandler: null
   _urlOriginalBeforeHook?: string
   _urlOriginalModifiedByHook?: TransformerHook
   _providedByHook: ProvidedByHook
-  _baseServer: string
-  _urlHandler: null
-  _baseAssets: null | string
-  _includeAssetsImportedByServer: boolean
   _pageContextAlreadyProvidedByOnPrerenderHook?: true
-  // TODO: use GlobalNodeContext instead
-  _allPageIds: string[]
-  _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
-  _pageConfigGlobal: PageConfigGlobal
-  _pageRoutes: PageRoutes
-  _onBeforeRouteHook: OnBeforeRouteHook | null
-  _pageContextInitKeys: string[]
 }
 
 type PrerenderOptions = {

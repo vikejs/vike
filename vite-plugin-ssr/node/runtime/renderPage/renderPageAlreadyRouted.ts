@@ -108,19 +108,15 @@ async function renderPageAlreadyRouted<
 }
 
 async function prerenderPage(
-  pageContext: {
-    urlOriginal: string
-    routeParams: Record<string, string>
-    _pageId: string
-    _urlRewrite: null | string
-    _httpRequestId: number | null
-    _pageContextInitKeys: string[]
-    _usesClientRouter: boolean
-    _pageContextAlreadyProvidedByOnPrerenderHook?: true
-    is404: null | boolean
-    _baseServer: string
-  } & PageFiles &
-    GlobalRenderingContext
+  pageContext: PageContextInitEnhanced1 & PageFiles & {
+      routeParams: Record<string, string>
+      _pageId: string
+      _urlRewrite: null
+      _httpRequestId: number | null
+      _usesClientRouter: boolean
+      _pageContextAlreadyProvidedByOnPrerenderHook?: true
+      is404: null | boolean
+    }
 ) {
   objectAssign(pageContext, {
     isClientSideNavigation: false,
