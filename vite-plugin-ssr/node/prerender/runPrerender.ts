@@ -107,6 +107,7 @@ type PageContext = {
   _pageConfigGlobal: PageConfigGlobal
   _pageRoutes: PageRoutes
   _onBeforeRouteHook: OnBeforeRouteHook | null
+  _pageContextInitKeys: string[]
 }
 
 type PrerenderOptions = {

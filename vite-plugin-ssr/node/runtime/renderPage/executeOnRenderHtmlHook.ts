@@ -31,6 +31,7 @@ import type { PageContextPromise } from '../html/injectAssets'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject'
 import { logRuntimeError } from './loggerRuntime'
+import type { PageContextSerialization } from '../html/serializePageContextClientSide'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
@@ -44,16 +45,16 @@ type HookName =
   | 'render'
 
 async function executeOnRenderHtmlHook(
-  pageContext: PageContextForUserConsumptionServerSide & {
-    _pageId: string
-    _pageConfigs: PageConfig[]
-    __getPageAssets: GetPageAssets
-    _passToClient: string[]
-    _isHtmlOnly: boolean
-    _baseServer: string
-    _pageFilePathsLoaded: string[]
-    _httpRequestId: number | null
-  }
+  pageContext: PageContextForUserConsumptionServerSide &
+    PageContextSerialization & {
+      _pageId: string
+      _pageConfigs: PageConfig[]
+      __getPageAssets: GetPageAssets
+      _isHtmlOnly: boolean
+      _baseServer: string
+      _pageFilePathsLoaded: string[]
+      _httpRequestId: number | null
+    }
 ): Promise<{
   renderHook: RenderHook
   htmlRender: null | HtmlRender

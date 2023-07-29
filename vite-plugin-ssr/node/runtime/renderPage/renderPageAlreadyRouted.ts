@@ -40,6 +40,7 @@ async function renderPageAlreadyRouted<
     _pageId: null | string
     _httpRequestId: number
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
+    _pageContextInitKeys: string[]
     isClientSideNavigation: boolean
     _allPageIds: string[]
     is404: null | boolean
@@ -114,6 +115,7 @@ async function prerenderPage(
     _pageId: string
     _urlRewrite: null | string
     _httpRequestId: number | null
+    _pageContextInitKeys: string[]
     _usesClientRouter: boolean
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
     is404: null | boolean
@@ -200,12 +202,8 @@ function initPageContext(pageContextInit: { urlOriginal: string }, renderContext
     _pageConfigGlobal: renderContext.pageConfigGlobal,
     _allPageIds: renderContext.allPageIds,
     _pageRoutes: renderContext.pageRoutes,
-    _onBeforeRouteHook: renderContext.onBeforeRouteHook
-  }
-  if (Object.keys(pageContextInit).length > 1) {
-    Object.assign(pageContextAddendum, {
-      _hasAdditionalPageContextInit: true
-    })
+    _onBeforeRouteHook: renderContext.onBeforeRouteHook,
+    _pageContextInitKeys: Object.keys(pageContextInit)
   }
 
   return pageContextAddendum

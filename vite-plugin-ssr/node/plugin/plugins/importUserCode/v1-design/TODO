@@ -1,4 +1,4 @@
-- refine _hasAdditionalPageContextInit
+- abortReason doesn't need to be a string
 - release 0.5.0
   - `import * from 'vite-plugin-ssr'`
   - pageContext.url

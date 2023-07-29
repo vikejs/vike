@@ -1,5 +1,6 @@
 export { serializePageContextClientSide }
 export { serializePageContextAbort }
+export type { PageContextSerialization }
 
 import { stringify } from '@brillout/json-serializer/stringify'
 import { assert, assertWarning, hasProp, unique } from '../utils'
@@ -14,25 +15,30 @@ const PASS_TO_CLIENT: string[] = [
   'abortReason',
   '_urlRewrite',
   '_urlRedirect',
-  '_hasAdditionalPageContextInit',
+  '_pageContextInitHasClientData',
   '_pageId'
 ]
 const PASS_TO_CLIENT_ERROR_PAGE = ['pageProps', 'is404', '_isError']
 
-function serializePageContextClientSide(pageContext: {
+type PageContextSerialization = {
   _pageId: string
   _passToClient: string[]
   _pageConfigs: PageConfig[]
   is404: null | boolean
   pageProps?: Record<string, unknown>
   _isError?: true
-}) {
+  _pageContextInitKeys: string[]
+}
+function serializePageContextClientSide(pageContext: PageContextSerialization) {
   const passToClient = getPassToClient(pageContext)
   const pageContextClient: Record<string, unknown> = {}
   passToClient.forEach((prop) => {
     // We set non-existing props to `undefined`, in order to pass the list of passToClient values to the client-side
     pageContextClient[prop] = (pageContext as Record<string, unknown>)[prop]
   })
+  if (pageContext._pageContextInitKeys.some((p) => passToClient.includes(p))) {
+    pageContextClient._pageContextInitHasClientData = true
+  }
 
   let pageContextSerialized: string
   try {

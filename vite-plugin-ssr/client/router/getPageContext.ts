@@ -41,7 +41,7 @@ type PageContextAddendum = {
 } & PageContextExports &
   PageContextForPassToClientWarning
 
-type PageContextPrevious = null | { _hasAdditionalPageContextInit?: true }
+type PageContextPrevious = null | { _pageContextInitHasClientData?: true }
 
 type PageContextPassThrough = PageContextUrlsPrivate &
   PageContextForRoute & {
@@ -217,7 +217,7 @@ async function hasPageContextServer(
   pageContext: Parameters<typeof onBeforeRenderServerOnlyExists>[0],
   pageContextPrevious: PageContextPrevious
 ): Promise<boolean> {
-  if (pageContextPrevious?._hasAdditionalPageContextInit) {
+  if (pageContextPrevious?._pageContextInitHasClientData) {
     return true
   }
   if (await onBeforeRenderServerOnlyExists(pageContext)) {

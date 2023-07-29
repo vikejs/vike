@@ -11,12 +11,12 @@ import type { HtmlPart } from './renderHtml'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags'
 import type { InjectToStream } from './stream/react-streaming'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
+import type { PageContextSerialization } from './serializePageContextClientSide'
 
 type PageContextInjectAssets = {
   urlPathname: string
   __getPageAssets: () => Promise<PageAsset[]>
   _pageId: string
-  _passToClient: string[]
   _isHtmlOnly: boolean
   _pageContextPromise: PageContextPromise
   _renderHook: {
@@ -26,7 +26,7 @@ type PageContextInjectAssets = {
   _baseServer: string
   _pageConfigs: PageConfig[]
   is404: null | boolean
-}
+} & PageContextSerialization
 
 async function injectHtmlTagsToString(
   htmlParts: HtmlPart[],
