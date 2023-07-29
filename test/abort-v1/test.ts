@@ -1,6 +1,6 @@
 export { testRun as test }
 
-import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry } from '@brillout/test-e2e'
+import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, partRegex } from '@brillout/test-e2e'
 import { ensureWasClientSideRouted, expectUrl, hydrationDone, testCounter } from '../utils'
 
 function testRun(cmd: 'npm run dev' | 'npm run preview') {
@@ -54,4 +54,43 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     })
     await ensureWasClientSideRouted('/pages/about')
   })
+
+  {
+    const url = getServerUrl() + '/show-error-page'
+    const expectErrServer = () => expectLog('HTTP response /show-error-page 503', (log) => log.logSource === 'stderr')
+    const expectErrClient = () =>
+      expectLog(
+        'Failed to load resource: the server responded with a status of 503 (Service Unavailable)',
+        (log) =>
+          log.logSource === 'Browser Error' && partRegex`http://${/[^\/]+/}:3000/show-error-page`.test(log.logText)
+      )
+    test('render error page - HTML', async () => {
+      const response = await fetch(url)
+      expectErrServer()
+      expect(response.status).toBe(503)
+      const html = await response.text()
+      expect(html).toContain('Testing throw render error page.')
+      expect(html).toContain('<p style="font-size:1.3em">Testing throw render error page.</p>')
+      expect(html).toContain('"abortReason":"Testing throw render error page."')
+    })
+
+    test('render error page - server-side routing', async () => {
+      await page.goto(url)
+      expectErrServer()
+      expectErrClient()
+      await testCounter()
+      expectUrl('/show-error-page')
+    })
+
+    test('render error page - client-side routing', async () => {
+      await page.goto(getServerUrl() + '/about')
+      expectUrl('/about')
+      await hydrationDone()
+      await page.click('a[href="/show-error-page"]')
+      await testCounter()
+      expect(await page.textContent('p')).toBe('Testing throw render error page.')
+      expectUrl('/show-error-page')
+      await ensureWasClientSideRouted('/pages/about')
+    })
+  }
 }

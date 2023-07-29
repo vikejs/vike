@@ -1,20 +1,25 @@
 import React from 'react'
 import './PageLayout.css'
+import { PageContextProvider } from './usePageContext'
+import type { PageContext } from './types'
 
 export { PageLayout }
 
-function PageLayout({ children }: { children: React.ReactNode }) {
+function PageLayout({ children, pageContext }: { children: React.ReactNode; pageContext: PageContext }) {
   return (
     <React.StrictMode>
-      <Layout>
-        <Sidebar>
-          <Nav href="/" />
-          <Nav href="/about" />
-          <Nav href="/redirect" />
-          <Nav href="/render-homepage" />
-        </Sidebar>
-        <Content>{children}</Content>
-      </Layout>
+      <PageContextProvider pageContext={pageContext}>
+        <Layout>
+          <Sidebar>
+            <Nav href="/" />
+            <Nav href="/about" />
+            <Nav href="/redirect" />
+            <Nav href="/render-homepage" />
+            <Nav href="/show-error-page" />
+          </Sidebar>
+          <Content>{children}</Content>
+        </Layout>
+      </PageContextProvider>
     </React.StrictMode>
   )
 }
