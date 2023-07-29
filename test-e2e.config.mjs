@@ -48,7 +48,7 @@ function getCiJobs() {
     },
     {
       name: 'Unit Tests E2E',
-      setups: [ubuntu16, win18]
+      setups: [ubuntu20, win18]
     },
     {
       name: 'Cloudflare',
