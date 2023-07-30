@@ -92,7 +92,6 @@ function useClientRouter() {
   let renderingCounter = 0
   let renderPromise: Promise<void> | undefined
   let isTransitioning: boolean = false
-  let pageContextPrevious: Record<string, unknown> | null = null
   fetchAndRender({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
 
   return
@@ -184,12 +183,11 @@ function useClientRouter() {
     let err: unknown
     let hasError = false
     try {
-      pageContextAddendum = await getPageContext(pageContext, pageContextPrevious)
+      pageContextAddendum = await getPageContext(pageContext)
     } catch (err_: unknown) {
       hasError = true
       err = err_
     }
-    pageContextPrevious = pageContext
     if (hasError) {
       if (!isAbortError(err)) {
         // We don't swallow 404 errors:

@@ -12,7 +12,8 @@ import {
   getProjectError,
   serverSideRouteTo,
   executeHook,
-  isObject
+  isObject,
+  getGlobalObject
 } from './utils'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
@@ -33,6 +34,7 @@ import { executeGuardHook } from '../../shared/route/executeGuardHook'
 import { redirect, render } from '../../shared/abort'
 import type { PageContextForPassToClientWarning } from '../getPageContextProxyForUser'
 import type { StatusCodeError } from '../../shared/route/abort'
+const globalObject = getGlobalObject<{ pageContextInitHasClientData?: true }>('router/getPageContext.ts', {})
 
 type PageContextAddendum = {
   _pageId: string
@@ -40,8 +42,6 @@ type PageContextAddendum = {
   _pageFilesLoaded: PageFile[]
 } & PageContextExports &
   PageContextForPassToClientWarning
-
-type PageContextPrevious = null | { _pageContextInitHasClientData?: true }
 
 type PageContextPassThrough = PageContextUrlsPrivate &
   PageContextForRoute & {
@@ -51,15 +51,18 @@ type PageContextPassThrough = PageContextUrlsPrivate &
 async function getPageContext(
   pageContext: {
     _isFirstRenderAttempt: boolean
-  } & PageContextPassThrough,
-  pageContextPrevious: PageContextPrevious
+  } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
   if (pageContext._isFirstRenderAttempt && navigationState.isFirstUrl(pageContext.urlOriginal)) {
     assert(hasProp(pageContext, '_isFirstRenderAttempt', 'true'))
-    return getPageContextFirstRender(pageContext)
+    const pageContextAddendum = await getPageContextFirstRender(pageContext)
+    setPageContextInitHasClientData(pageContextAddendum)
+    return pageContextAddendum
   } else {
     assert(hasProp(pageContext, '_isFirstRenderAttempt', 'false'))
-    return getPageContextUponNavigation(pageContext, pageContextPrevious)
+    const pageContextAddendum = await getPageContextUponNavigation(pageContext)
+    setPageContextInitHasClientData(pageContextAddendum)
+    return pageContextAddendum
   }
 }
 
@@ -112,8 +115,7 @@ async function getPageContextErrorPage(pageContext: {
 }
 
 async function getPageContextUponNavigation(
-  pageContext: { _isFirstRenderAttempt: false } & PageContextPassThrough,
-  pageContextPrevious: PageContextPrevious
+  pageContext: { _isFirstRenderAttempt: false } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
   let pageContextAddendum = {}
   objectAssign(pageContextAddendum, {
@@ -127,7 +129,7 @@ async function getPageContextUponNavigation(
   )
 
   // Needs to be called before any client-side hook, because it may contain pageContextInit.user which is needed for guard() and onBeforeRender()
-  if (await hasPageContextServer({ ...pageContext, ...pageContextAddendum }, pageContextPrevious)) {
+  if (await hasPageContextServer({ ...pageContext, ...pageContextAddendum })) {
     const pageContextFromServer = await fetchPageContextFromServer(pageContext)
     if (!pageContextFromServer['_isError']) {
       objectAssign(pageContextAddendum, pageContextFromServer)
@@ -214,16 +216,26 @@ async function executeOnBeforeRenderHookClientSide(
 }
 
 async function hasPageContextServer(
-  pageContext: Parameters<typeof onBeforeRenderServerOnlyExists>[0],
-  pageContextPrevious: PageContextPrevious
+  pageContext: Parameters<typeof onBeforeRenderServerOnlyExists>[0]
 ): Promise<boolean> {
-  if (pageContextPrevious?._pageContextInitHasClientData) {
-    return true
+  return !!globalObject.pageContextInitHasClientData || (await onBeforeRenderServerOnlyExists(pageContext))
+}
+// Workaround for the fact that the client-side cannot known whether a pageContext JSON request is needed in order to fetch pageContextInit data passed to the client.
+//  - The workaround is reliable as long as the user sets additional pageContextInit to undefined instead of not defining the property:
+//    ```diff
+//    - // Breaks the workaround:
+//    - const pageContextInit = { urlOriginal: req.url }
+//    - if (user) pageContextInit.user = user
+//    + // Makes the workaround reliable:
+//    + const pageContextInit = { urlOriginal: req.url, user }
+//    ```
+// - We can show a warning to users when the pageContextInit keys aren't always the same. (We didn't implement the waning yet because it would require a new doc page https://vite-plugin-ssr.com/pageContextInit#avoid-conditional-properties
+// - Workaround cannot be made completely reliable because the workaround assumes that passToClient is always the same, but the user may set a different passToClient value for another page
+// - Alternatively, we could define a new config `alwaysFetchPageContextFromServer: boolean`
+function setPageContextInitHasClientData(pageContext: Record<string, unknown>) {
+  if (pageContext._pageContextInitHasClientData) {
+    globalObject.pageContextInitHasClientData = true
   }
-  if (await onBeforeRenderServerOnlyExists(pageContext)) {
-    return true
-  }
-  return false
 }
 
 async function onBeforeRenderServerOnlyExists(
