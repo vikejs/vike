@@ -22,6 +22,7 @@
 V1 design stable release:
  - Implements TODO comments
  - Minimize what client-side loads
+   - Fix bug that 'server-only' config is included in the client-side (e.g. Aure's ssr flag PR)
  - docs
    - update migration examples
    - pageContext.config
