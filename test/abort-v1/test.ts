@@ -3,7 +3,7 @@ export { testRun as test }
 import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, partRegex } from '@brillout/test-e2e'
 import { ensureWasClientSideRouted, expectUrl, hydrationDone, testCounter } from '../utils'
 
-function testRun(cmd: 'npm run dev' | 'npm run preview') {
+function testRun(cmd: 'npm run dev' | 'npm run preview', expressServer?: true) {
   run(cmd)
 
   test('HTML', async () => {
