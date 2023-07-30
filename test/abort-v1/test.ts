@@ -31,11 +31,13 @@ function testRun(cmd: string, expressServer?: true) {
     await page.goto(getServerUrl() + '/about')
     expect(await page.textContent('h1')).toBe('About')
     await hydrationDone()
+    const done = expectPageContextJsonRequest()
     await page.click('a[href="/render-homepage"]')
     await autoRetry(async () => {
       expect(await page.textContent('h1')).toBe('Welcome')
     })
     await testCounter()
+    done()
     await ensureWasClientSideRouted('/pages/about')
   })
 
@@ -48,10 +50,13 @@ function testRun(cmd: string, expressServer?: true) {
     await page.goto(getServerUrl() + '/about')
     expectUrl('/about')
     await hydrationDone()
+    const done = expectPageContextJsonRequest()
     await page.click('a[href="/redirect"]')
     await autoRetry(async () => {
       expectUrl('/')
     })
+    await testCounter()
+    done()
     await ensureWasClientSideRouted('/pages/about')
   })
 
@@ -86,11 +91,31 @@ function testRun(cmd: string, expressServer?: true) {
       await page.goto(getServerUrl() + '/about')
       expectUrl('/about')
       await hydrationDone()
+      const done = expectPageContextJsonRequest()
       await page.click('a[href="/show-error-page"]')
       await testCounter()
+      done()
       expect(await page.textContent('p')).toBe('Testing throw render error page.')
       expectUrl('/show-error-page')
       await ensureWasClientSideRouted('/pages/about')
     })
+  }
+
+  return
+
+  function expectPageContextJsonRequest() {
+    const reqs: string[] = []
+    const listener = (request: any) => reqs.push(request.url())
+    page.on('request', listener)
+    return () => {
+      page.removeListener('request', listener)
+      const count = reqs.filter((url) => url.endsWith('.pageContext.json')).length
+      const b = count > 0
+      if (expressServer) {
+        expect(b).toBe(true)
+      } else {
+        expect(b).toBe(false)
+      }
+    }
   }
 }
