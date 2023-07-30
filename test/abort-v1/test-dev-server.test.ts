@@ -1,2 +1,2 @@
 import { test } from './test'
-test('npm run dev', true)
+test('npm run dev:server', true)

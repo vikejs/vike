@@ -1,2 +1,2 @@
 import { test } from './test'
-test('npm run preview', true)
+test('npm run preview:server', true)

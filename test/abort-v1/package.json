@@ -4,7 +4,7 @@
     "dev:server": "node server/",
     "build": "vite build",
     "preview": "vite build && vite preview",
-    "preview:serer": "vite build && node server/"
+    "preview:server": "vite build && node server/"
   },
   "dependencies": {
     "@types/react": "^18.2.15",
