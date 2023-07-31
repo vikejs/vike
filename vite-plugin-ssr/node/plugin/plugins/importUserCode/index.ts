@@ -88,7 +88,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig, conf
       virtualModules.forEach((mod) => {
         server.moduleGraph.invalidateModule(mod)
       })
-      reloadConfig(file, config, configVps, isRemove ? 'removed' : 'added')
+      reloadConfig(file, config, configVps, isRemove ? 'removed' : 'created')
     }
   }
 }
@@ -140,11 +140,11 @@ function reloadConfig(
   filePath: string,
   config: ResolvedConfig,
   configVps: ConfigVpsResolved,
-  op: 'modified' | 'added' | 'removed'
+  op: 'modified' | 'created' | 'removed'
 ) {
   {
     const filePathToShowToUser = pc.dim(getFilePathVite(filePath, config.root, true))
-    const msg = `Config file ${op} ${filePathToShowToUser}`
+    const msg = `${op} ${filePathToShowToUser}`
     logConfigInfo(msg, 'info')
   }
   reloadVikeConfig(config.root, configVps.extensions)
