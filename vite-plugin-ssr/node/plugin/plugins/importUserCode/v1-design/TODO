@@ -1,18 +1,19 @@
-- abortReason doesn't need to be a string
+- /examples/auth (and double check login flow links)
+
+- Remove assertInfo()
+- Isomorphic colors
+
+- Seems like passToClient is already cumulative for 0.4 design, should be as well for v1 design
+  - https://github.com/vikejs/vike-react/issues/4
+
+- improve TypeScript DX for abortReason
 - release 0.5.0
   - `import * from 'vite-plugin-ssr'`
   - pageContext.url
   - rename hooks for 0.4 designA?
-- Seems like passToClient is already cumulative for 0.4 design, should be as well for v1 design
-  - https://github.com/vikejs/vike-react/issues/4
-
-- remove statusCode option from redirect()
-- reload()
-  - /examples/auth (and double check login flow links)
 - Catch infinite redirect/rewrite
+- Automatically remove trailing slash and redirect /some-url/ -> /some-url
 
-- Remove assertInfo()
-- Isomorphic colors
 - improve ignoring of dist/
 - client/shared/
   client/runtime-server-routing/
