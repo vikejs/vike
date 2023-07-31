@@ -3,7 +3,7 @@ export { testRun as test }
 import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, partRegex } from '@brillout/test-e2e'
 import { ensureWasClientSideRouted, expectUrl, hydrationDone, testCounter } from '../utils'
 
-function testRun(cmd: string, expressServer?: true) {
+function testRun(cmd: string, pageContextInitHasClientData?: true) {
   run(cmd)
 
   test('HTML', async () => {
@@ -110,11 +110,11 @@ function testRun(cmd: string, expressServer?: true) {
     return () => {
       page.removeListener('request', listener)
       const count = reqs.filter((url) => url.endsWith('.pageContext.json')).length
-      const b = count > 0
-      if (expressServer) {
-        expect(b).toBe(true)
+      const exists = count > 0
+      if (pageContextInitHasClientData) {
+        expect(exists).toBe(true)
       } else {
-        expect(b).toBe(false)
+        expect(exists).toBe(false)
       }
     }
   }
