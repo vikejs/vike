@@ -199,7 +199,7 @@ function getPageContextInitEnhanced1(pageContextInit: { urlOriginal: string }, r
     _allPageIds: renderContext.allPageIds,
     _pageRoutes: renderContext.pageRoutes,
     _onBeforeRouteHook: renderContext.onBeforeRouteHook,
-    _pageContextInitKeys: Object.keys(pageContextInit)
+    _pageContextInit: pageContextInit
   }
 
   return pageContextInitEnhanced1

@@ -27,7 +27,7 @@ type PageContextSerialization = {
   is404: null | boolean
   pageProps?: Record<string, unknown>
   _isError?: true
-  _pageContextInitKeys: string[]
+  _pageContextInit: Record<string, unknown>
 }
 function serializePageContextClientSide(pageContext: PageContextSerialization) {
   const passToClient = getPassToClient(pageContext)
@@ -36,7 +36,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     // We set non-existing props to `undefined`, in order to pass the list of passToClient values to the client-side
     pageContextClient[prop] = (pageContext as Record<string, unknown>)[prop]
   })
-  if (pageContext._pageContextInitKeys.some((p) => passToClient.includes(p))) {
+  if (Object.keys(pageContext._pageContextInit).some((p) => passToClient.includes(p))) {
     pageContextClient._pageContextInitHasClientData = true
   }
 
