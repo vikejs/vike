@@ -335,18 +335,14 @@ function handlePageContextAbort(pageContextFromServer: Record<string, unknown>) 
     if (urlRewrite) {
       assert(typeof urlRewrite === 'string')
       assert(urlRewrite.startsWith('/'))
-      const { abortReason } = pageContextFromServer
-      assert(abortReason === undefined || typeof abortReason === 'string')
-      throw render(urlRewrite as `/${string}`, abortReason)
+      throw render(urlRewrite as `/${string}`, pageContextFromServer.abortReason)
     }
   }
   {
     const abortStatusCode = pageContextFromServer._abortStatusCode
     if (abortStatusCode) {
       assert(typeof abortStatusCode === 'number')
-      const { abortReason } = pageContextFromServer
-      assert(abortReason === undefined || typeof abortReason === 'string')
-      throw render(abortStatusCode as StatusCodeError, abortReason)
+      throw render(abortStatusCode as StatusCodeError, pageContextFromServer.abortReason)
     }
   }
   {

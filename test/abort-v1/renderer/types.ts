@@ -26,6 +26,7 @@ export type PageContextCustom = {
   }
   /** Title defined dynamically by onBeforeRender() */
   title?: string
+  abortReason?: string
 }
 
 type PageContextServer = PageContextBuiltIn<Page> & PageContextCustom

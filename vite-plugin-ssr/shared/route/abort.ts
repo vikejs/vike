@@ -8,7 +8,6 @@ export type { StatusCodeAbort }
 export type { StatusCodeError }
 export type { AbortError }
 export type { PageContextFromRewrite }
-export type { AbortReason }
 export type { UrlRedirect }
 
 import {
@@ -84,7 +83,7 @@ function redirect(
  *   `503` Service Unavailable (server is overloaded, a third-party API isn't responding)
  * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
  */
-function render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: string): AbortRender
+function render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: unknown): AbortRender
 /**
  * Abort the rendering of the current page, and render another page instead.
  *
@@ -93,8 +92,8 @@ function render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: str
  * @param url The URL to render.
  * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
  */
-function render(url: `/${string}`, abortReason?: string): AbortRender
-function render(value: string | number, abortReason?: string): AbortRender {
+function render(url: `/${string}`, abortReason?: unknown): AbortRender
+function render(value: string | number, abortReason?: unknown): AbortRender {
   return render_(value, abortReason)
 }
 
@@ -103,7 +102,7 @@ function render_(
   // The user cannot set pageContext beyond pageContext.abortReason because:
   //  - Upon client-side routing, the additional pageContext would need to be serialized and passed to the client-side.
   //    - For that, pageContext.passToClient is required but how do make sure pageContext.passToClient is set before `throw render()`?
-  abortReason: string | undefined,
+  abortReason: unknown | undefined,
   pageContextAddendum?: { _isLegacyRenderErrorPage: true } & Record<string, unknown>
 ): AbortRender {
   const pageContextAddition = { abortReason }
@@ -113,7 +112,7 @@ function render_(
   }
   {
     const args = [typeof value === 'number' ? String(value) : JSON.stringify(value)]
-    if (abortReason !== undefined) args.push(JSON.stringify(truncateString(abortReason, 30, null)))
+    if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30, null))
     objectAssign(pageContextAddition, {
       _abortCaller: 'render' as const,
       _abortCall: `throw render(${args.join(', ')})` as const
@@ -136,11 +135,8 @@ function render_(
   }
 }
 
-type AbortReason = string | JSX.Element | null
-
 type PageContextRenderAbort = {
   _abortCall: `throw redirect(${string})` | `throw render(${string})`
-  abortReason?: string
 } & (
   | {
       _abortCaller: 'redirect'
@@ -149,10 +145,12 @@ type PageContextRenderAbort = {
   | {
       _abortCaller: 'render'
       _urlRewrite: string
+      abortReason: unknown
     }
   | {
       _abortCaller: 'render'
       _abortStatusCode: number
+      abortReason: unknown
     }
 )
 function RenderAbort(pageContextAddition: PageContextRenderAbort): Error {

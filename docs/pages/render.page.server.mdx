@@ -4,9 +4,9 @@ See also: <Link href="/redirect" noBreadcrumb={true} /> and <Link href="/abort#t
 
 ```ts
 // Render the error page
-render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: string)
+render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: unknown)
 // Render another page
-render(url: `/${string}`, abortReason?: string)
+render(url: `/${string}`, abortReason?: unknown)
 ```
 
 ```js
