@@ -1,4 +1,5 @@
 - /examples/auth (and double check login flow links)
+- By default, only call guard() hooks on the server-side?
 
 - Remove assertInfo()
 - Isomorphic colors
