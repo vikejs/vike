@@ -122,10 +122,18 @@ async function getPageContextUponNavigation(
     isHydration: false
   })
   objectAssign(pageContextAddendum, await getPageContextFromRoute(pageContext))
+  const pageContextAddendum2 = await getPageContextAlreadyRouted({ ...pageContext, ...pageContextAddendum })
+  objectAssign(pageContextAddendum, pageContextAddendum2)
+  return pageContextAddendum
+}
 
+async function getPageContextAlreadyRouted(
+  pageContext: { _pageId: string; isHydration: boolean } & PageContextPassThrough
+): Promise<Omit<PageContextAddendum, '_pageId' | 'isHydration'>> {
+  let pageContextAddendum = {}
   objectAssign(
     pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContext._pageId)
   )
 
   // Needs to be called before any client-side hook, because it may contain pageContextInit.user which is needed for guard() and onBeforeRender()
