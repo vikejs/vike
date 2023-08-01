@@ -31,9 +31,8 @@ import type { PageConfig } from '../../shared/page-configs/PageConfig'
 import { getConfigValue, getPageConfig } from '../../shared/page-configs/utils'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn'
 import { executeGuardHook } from '../../shared/route/executeGuardHook'
-import { redirect, render } from '../../shared/abort'
 import type { PageContextForPassToClientWarning } from '../getPageContextProxyForUser'
-import type { StatusCodeError } from '../../shared/route/abort'
+import { AbortRender, isAbortPageContext } from '../../shared/route/abort'
 const globalObject = getGlobalObject<{ pageContextInitHasClientData?: true }>('router/getPageContext.ts', {})
 
 type PageContextAddendum = {
@@ -330,45 +329,15 @@ async function fetchPageContextFromServer(pageContext: {
     )
   }
 
-  handlePageContextAbort(pageContextFromServer)
+  if( isAbortPageContext(pageContextFromServer) ) {
+    throw AbortRender(pageContextFromServer)
+  }
 
   assert(hasProp(pageContextFromServer, '_pageId', 'string'))
   removeBuiltInOverrides(pageContextFromServer)
   objectAssign(pageContextFromServer, { _hasPageContextFromServer: true })
 
   return pageContextFromServer
-}
-
-function handlePageContextAbort(pageContextFromServer: Record<string, unknown>) {
-  {
-    const urlRewrite = pageContextFromServer._urlRewrite
-    if (urlRewrite) {
-      assert(typeof urlRewrite === 'string')
-      assert(urlRewrite.startsWith('/'))
-      throw render(urlRewrite as `/${string}`, pageContextFromServer.abortReason)
-    }
-  }
-  {
-    const abortStatusCode = pageContextFromServer._abortStatusCode
-    if (abortStatusCode) {
-      assert(typeof abortStatusCode === 'number')
-      throw render(abortStatusCode as StatusCodeError, pageContextFromServer.abortReason)
-    }
-  }
-  {
-    const urlRedirect = pageContextFromServer._urlRedirect
-    if (urlRedirect) {
-      assert(hasProp(urlRedirect, 'url', 'string'))
-      assert(hasProp(urlRedirect, 'statusCode', 'number'))
-      const { url, statusCode } = urlRedirect
-      assert(url.startsWith('/') || url.startsWith('http'))
-      throw redirect(
-        url as `/${string}`,
-        // @ts-expect-error
-        statusCode
-      )
-    }
-  }
 }
 
 function isAlreadyServerSideRouted(err: unknown): boolean {

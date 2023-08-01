@@ -46,7 +46,7 @@ import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
 import '../../utils/require-shim' // Ensure require shim for production
 import type { PageContextBuiltIn } from '../../types'
-import { serializePageContextAbort } from './html/serializePageContextClientSide'
+import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide'
 import { getErrorPageId } from '../../shared/error-page'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage'
 
@@ -209,7 +209,8 @@ async function renderPageAlreadyPrepared(
         pageContextInit,
         pageContextNominalPageInit,
         httpRequestId,
-        renderContext
+        renderContext,
+        pageContextErrorPageInit
       )
       if (handled.pageContextReturn) {
         // - throw redirect()
@@ -243,7 +244,8 @@ async function renderPageAlreadyPrepared(
           pageContextInit,
           pageContextNominalPageInit,
           httpRequestId,
-          renderContext
+          renderContext,
+          pageContextErrorPageInit
         )
         // throw render(statusCode)
         if (!handled.pageContextReturn) {
@@ -343,6 +345,7 @@ async function renderPageNominal(pageContext: { _urlRewrite: null | string } & P
   return pageContextAfterRender
 }
 
+type PageContextErrorPageInit = Awaited<ReturnType<typeof getPageContextErrorPageInit>>
 async function getPageContextErrorPageInit(
   pageContextInit: { urlOriginal: string },
   errNominalPage: unknown,
@@ -444,7 +447,8 @@ async function handleAbortError(
     isClientSideNavigation: boolean
   },
   httpRequestId: number,
-  renderContext: RenderContext
+  renderContext: RenderContext,
+  pageContextErrorPageInit: PageContextErrorPageInit
 ): Promise<
   | { pageContextReturn: PageContextAfterRender; pageContextAddition?: never }
   | { pageContextReturn?: never; pageContextAddition: Record<string, unknown> }
@@ -452,14 +456,32 @@ async function handleAbortError(
   logAbortErrorHandled(errAbort, getGlobalContext().isProduction, pageContextNominalPageInit)
 
   const pageContextAddition = errAbort._pageContextAddition
+  let pageContextSerialized: string
   if (pageContextNominalPageInit.isClientSideNavigation) {
-    const pageContextSerialized: string = serializePageContextAbort(pageContextAddition)
+    if (pageContextAddition._abortStatusCode) {
+      const errorPageId = getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
+      const abortCall = pageContextAddition._abortCall
+      assert(abortCall)
+      assertUsage(errorPageId, `You called ${pc.cyan(abortCall)} but you didn't define an error page, make sure to define one https://vite-plugin-ssr.com/error-page`)
+      const pageContext = {
+        _pageId: errorPageId,
+        ...pageContextAddition,
+        ...pageContextErrorPageInit,
+        ...renderContext
+      }
+      const pageContextPageFiles = await loadPageFilesServer(pageContext)
+      objectAssign(pageContext, pageContextPageFiles)
+      // We include pageContextInit: we don't only serialize pageContextAddition because the error page may need to access pageContextInit
+      pageContextSerialized = serializePageContextClientSide(pageContext)
+    } else {
+      pageContextSerialized = serializePageContextAbort(pageContextAddition)
+    }
     const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
     const pageContextReturn = { httpResponse }
     return { pageContextReturn }
   }
 
-  if ('_urlRewrite' in pageContextAddition) {
+  if (pageContextAddition._urlRewrite) {
     const pageContextReturn = await renderPageAlreadyPrepared(pageContextInit, httpRequestId, renderContext, [
       ...pageContextsFromRewrite,
       pageContextAddition
@@ -467,7 +489,7 @@ async function handleAbortError(
     Object.assign(pageContextReturn, pageContextAddition)
     return { pageContextReturn }
   }
-  if ('_urlRedirect' in pageContextAddition) {
+  if (pageContextAddition._urlRedirect) {
     const pageContextReturn = {
       ...pageContextInit,
       ...pageContextAddition

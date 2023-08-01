@@ -15,6 +15,9 @@ const PASS_TO_CLIENT: string[] = [
   'abortReason',
   '_urlRewrite',
   '_urlRedirect',
+  '_abortStatusCode',
+  '_abortCall',
+  '_abortCaller',
   '_pageContextInitHasClientData',
   '_pageId'
 ]
@@ -102,10 +105,19 @@ function serializePageContextAbort(
   assert(pageContext._urlRedirect || pageContext._urlRewrite || pageContext._abortStatusCode)
   ;['_abortCall', '_abortCaller'].forEach((p) => {
     assert(pageContext[p])
-    delete pageContext[p]
   })
   const unknownProps = Object.keys(pageContext).filter(
-    (prop) => !['_urlRedirect', '_urlRewrite', '_abortStatusCode', 'abortReason', 'is404', 'pageProps'].includes(prop)
+    (prop) =>
+      ![
+        '_abortCall',
+        '_abortCaller',
+        '_urlRedirect',
+        '_urlRewrite',
+        '_abortStatusCode',
+        'abortReason',
+        'is404',
+        'pageProps'
+      ].includes(prop)
   )
   if (!pageContext._isLegacyRenderErrorPage) {
     assert(unknownProps.length === 0)

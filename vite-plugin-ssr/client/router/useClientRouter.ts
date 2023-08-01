@@ -205,7 +205,7 @@ function useClientRouter() {
         const errAbort = err
         logAbortErrorHandled(err, pageContext._isProduction, pageContext)
         const pageContextAddition = errAbort._pageContextAddition
-        if ('_urlRewrite' in pageContextAddition) {
+        if (pageContextAddition._urlRewrite) {
           await fetchAndRender({
             scrollTarget,
             urlOriginal,
@@ -215,7 +215,7 @@ function useClientRouter() {
           })
           return
         }
-        if ('_urlRedirect' in pageContextAddition) {
+        if (pageContextAddition._urlRedirect) {
           await fetchAndRender({
             scrollTarget: 'scroll-to-top-or-hash',
             urlOriginal: pageContextAddition._urlRedirect.url,

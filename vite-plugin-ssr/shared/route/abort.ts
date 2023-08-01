@@ -2,8 +2,10 @@ export { redirect }
 export { render }
 export { RenderErrorPage }
 export { isAbortError }
+export { isAbortPageContext }
 export { logAbortErrorHandled }
 export { getPageContextFromAllRewrites }
+export { AbortRender }
 export type { StatusCodeAbort }
 export type { StatusCodeError }
 export type { AbortError }
@@ -16,6 +18,7 @@ import {
   assertUsage,
   assertWarning,
   checkType,
+  hasProp,
   joinEnglish,
   objectAssign,
   projectInfo,
@@ -65,7 +68,7 @@ function redirect(
       statusCode
     }
   })
-  return RenderAbort(pageContextAddition)
+  return AbortRender(pageContextAddition)
 }
 
 /**
@@ -123,7 +126,7 @@ function render_(
     objectAssign(pageContextAddition, {
       _urlRewrite: url
     })
-    return RenderAbort(pageContextAddition)
+    return AbortRender(pageContextAddition)
   } else {
     const statusCode = value
     assertStatusCode(value, [401, 403, 404, 429, 500, 503], 'render')
@@ -131,30 +134,36 @@ function render_(
       _abortStatusCode: statusCode,
       is404: statusCode === 404
     })
-    return RenderAbort(pageContextAddition)
+    return AbortRender(pageContextAddition)
   }
 }
 
 type PageContextRenderAbort = {
   _abortCall: `throw redirect(${string})` | `throw render(${string})`
 } & (
-  | {
+  | ({
       _abortCaller: 'redirect'
       _urlRedirect: UrlRedirect
-    }
-  | {
+    } & Omit<AbortUndefined, '_urlRedirect'>)
+  | ({
       _abortCaller: 'render'
+      abortReason: undefined | unknown
       _urlRewrite: string
-      abortReason: undefined | unknown
-    }
-  | {
+    } & Omit<AbortUndefined, '_urlRewrite'>)
+  | ({
       _abortCaller: 'render'
-      _abortStatusCode: number
       abortReason: undefined | unknown
-    }
+      _abortStatusCode: number
+    } & Omit<AbortUndefined, '_abortStatusCode'>)
 )
-function RenderAbort(pageContextAddition: PageContextRenderAbort): Error {
-  const err = new Error('RenderAbort')
+type AbortUndefined = {
+  _urlRedirect?: undefined
+  _urlRewrite?: undefined
+  _abortStatusCode?: undefined
+}
+
+function AbortRender(pageContextAddition: PageContextRenderAbort): Error {
+  const err = new Error('AbortRender')
   objectAssign(err, { _pageContextAddition: pageContextAddition, [stamp]: true })
   checkType<AbortError>(err)
   return err
@@ -184,6 +193,17 @@ type AbortError = { _pageContextAddition: PageContextRenderAbort }
 function isAbortError(thing: unknown): thing is AbortError {
   return typeof thing === 'object' && thing !== null && stamp in thing
 }
+function isAbortPageContext(pageContext: Record<string, unknown>): pageContext is PageContextRenderAbort {
+  if (!(pageContext._urlRewrite || pageContext._urlRedirect || pageContext._abortStatusCode)) {
+    return false
+  }
+  assert(hasProp(pageContext, '_abortCall', 'string'))
+  assert(hasProp(pageContext, '_abortCaller', 'string'))
+  checkType<Omit<PageContextRenderAbort, '_abortCall' | '_abortCaller'> & { _abortCall: string; _abortCaller: string }>(
+    pageContext
+  )
+  return true
+}
 
 function logAbortErrorHandled(
   err: AbortError,
@@ -193,7 +213,6 @@ function logAbortErrorHandled(
   if (isProduction) return
   const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal
   assert(urlCurrent)
-  // TODO: add color for server-side
   const abortCall = err._pageContextAddition._abortCall
   assertInfo(false, `${abortCall} intercepted while rendering URL ${urlCurrent}`, { onlyOnce: false })
 }
