@@ -17,7 +17,6 @@ import { addComputedUrlProps, type PageContextUrlsPrivate } from '../../../share
 import { getGlobalContext } from '../globalContext'
 import { createHttpResponseObject, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponseObject'
 import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } from './loadPageFilesServer'
-import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
 import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook'
 import { executeOnBeforeRenderHooks } from './executeOnBeforeRenderHook'
@@ -33,7 +32,7 @@ type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRen
 
 async function renderPageAlreadyRouted<
   PageContext extends {
-    _pageId: null | string
+    _pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
     is404: null | boolean
     routeParams: Record<string, string>
@@ -42,24 +41,12 @@ async function renderPageAlreadyRouted<
     PageContextUrlsPrivate &
     PageContext_loadPageFilesServer
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
-  const isError = pageContext.is404 || pageContext.errorWhileRendering
-
-  if (isError) {
-    assert(pageContext._pageId === null)
-    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
-    if (errorPageId) {
-      objectAssign(pageContext, { _pageId: errorPageId })
-    } else {
-      // The user hasn't define a `_error.page.js`
-      objectAssign(pageContext, { _pageId: null })
-      return handleErrorWithoutErrorPage(pageContext)
-    }
-  }
-
-  // We now resolved `pageContext._pageId`. It can either be the:
+  // pageContext._pageId can either be the:
   //  - ID of the page matching the routing, or the
   //  - ID of the error page `_error.page.js`.
   assert(hasProp(pageContext, '_pageId', 'string'))
+
+  const isError = pageContext.is404 || pageContext.errorWhileRendering
 
   const pageFiles = await loadPageFilesServer(pageContext)
   objectAssign(pageContext, pageFiles)

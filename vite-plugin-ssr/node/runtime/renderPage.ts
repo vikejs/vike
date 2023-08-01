@@ -48,6 +48,7 @@ import '../../utils/require-shim' // Ensure require shim for production
 import type { PageContextBuiltIn } from '../../types'
 import { serializePageContextAbort } from './html/serializePageContextClientSide'
 import { getErrorPageId } from '../../shared/error-page'
+import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
@@ -221,6 +222,16 @@ async function renderPageAlreadyPrepared(
       Object.assign(pageContextErrorPageInit, handled.pageContextAddition)
     }
 
+    {
+      const errorPageId = getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
+      if (!errorPageId) {
+        objectAssign(pageContextErrorPageInit, { _pageId: null })
+        return handleErrorWithoutErrorPage(pageContextErrorPageInit)
+      } else {
+        objectAssign(pageContextErrorPageInit, { _pageId: errorPageId })
+      }
+    }
+
     let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageAlreadyRouted>>
     try {
       pageContextErrorPage = await renderPageAlreadyRouted(pageContextErrorPageInit)
@@ -297,25 +308,36 @@ function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>
 async function renderPageNominal(pageContext: { _urlRewrite: null | string } & PageContextInitEnhanced2) {
   addComputedUrlProps(pageContext)
 
+  objectAssign(pageContext, { errorWhileRendering: null })
+
   // Check Base URL
   {
     const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(pageContext.urlOriginal)
     const hasBaseServer =
       parseUrl(urlWithoutPageContextRequestSuffix, pageContext._baseServer).hasBaseServer || !!pageContext._urlRewrite
     if (!hasBaseServer) {
-      objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
+      objectAssign(pageContext, { httpResponse: null })
       return pageContext
     }
   }
 
   // Route
-  const routeResult = await route(pageContext)
-  objectAssign(pageContext, routeResult.pageContextAddendum)
-  const is404 = hasProp(pageContext, '_pageId', 'string') ? null : true
-  objectAssign(pageContext, { is404 })
+  {
+    const routeResult = await route(pageContext)
+    objectAssign(pageContext, routeResult.pageContextAddendum)
+    objectAssign(pageContext, { is404: pageContext._pageId ? null : true })
+    if (pageContext._pageId === null) {
+      const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
+      if (!errorPageId) {
+        assert(hasProp(pageContext, '_pageId', 'null'))
+        return handleErrorWithoutErrorPage(pageContext)
+      }
+      objectAssign(pageContext, { _pageId: errorPageId })
+    }
+  }
+  assert(hasProp(pageContext, '_pageId', 'string'))
 
   // Render
-  objectAssign(pageContext, { errorWhileRendering: null })
   const pageContextAfterRender = await renderPageAlreadyRouted(pageContext)
   assert(pageContext === pageContextAfterRender)
   return pageContextAfterRender
@@ -334,7 +356,6 @@ async function getPageContextErrorPageInit(
   const pageContext = {
     ...pageContextInitEnhanced2,
     is404: false,
-    _pageId: null,
     _urlRewrite: null,
     errorWhileRendering: errNominalPage as Error,
     routeParams: {} as Record<string, string>

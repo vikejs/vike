@@ -9,6 +9,7 @@ import type { GetPageAssets } from './getPageAssets'
 import type { PageContextAfterRender } from './renderPageAlreadyRouted'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 
+// When the user hasn't defined _error.page.js
 async function handleErrorWithoutErrorPage<
   PageContext extends {
     isClientSideNavigation: boolean
@@ -19,7 +20,7 @@ async function handleErrorWithoutErrorPage<
     urlOriginal: string
   }
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
-  assert(pageContext._pageId === null) // User didn't define a `_error.page.js` file
+  assert(pageContext._pageId === null)
   assert(pageContext.errorWhileRendering || pageContext.is404)
 
   {
