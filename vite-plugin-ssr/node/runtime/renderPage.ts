@@ -6,7 +6,8 @@ import {
   getRenderContext,
   getPageContextInitEnhanced1,
   RenderContext,
-  renderPageAlreadyRouted
+  renderPageAlreadyRouted,
+  loadPageFilesServer
 } from './renderPage/renderPageAlreadyRouted'
 import { route } from '../../shared/route'
 import {
@@ -18,7 +19,8 @@ import {
   assertEnv,
   assertWarning,
   getGlobalObject,
-  checkType
+  checkType,
+  assertUsage
 } from './utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import {
@@ -45,6 +47,7 @@ import pc from '@brillout/picocolors'
 import '../../utils/require-shim' // Ensure require shim for production
 import type { PageContextBuiltIn } from '../../types'
 import { serializePageContextAbort } from './html/serializePageContextClientSide'
+import { getErrorPageId } from '../../shared/error-page'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
@@ -190,7 +193,14 @@ async function renderPageAlreadyPrepared(
     assert(pageContextNominalPageInit)
     assert(hasProp(pageContextNominalPageInit, 'urlOriginal', 'string'))
 
-    let pageContextFromRenderAbort: null | Record<string, unknown> = null
+    const pageContextErrorPageInit = await getPageContextErrorPageInit(
+      pageContextInit,
+      errNominalPage,
+      pageContextNominalPageInit,
+      renderContext,
+      httpRequestId
+    )
+
     if (isAbortError(errNominalPage)) {
       const handled = await handleAbortError(
         errNominalPage,
@@ -200,26 +210,20 @@ async function renderPageAlreadyPrepared(
         httpRequestId,
         renderContext
       )
-      // - throw redirect()
-      // - throw render(url)
-      // - throw render(statusCode) if .pageContext.json request
       if (handled.pageContextReturn) {
+        // - throw redirect()
+        // - throw render(url)
+        // - throw render(statusCode) if .pageContext.json request
         return handled.pageContextReturn
+      } else {
+        // - throw render(statusCode) if not .pageContext.json request
       }
-      // - throw render(statusCode) if not .pageContext.json request
-      pageContextFromRenderAbort = handled.pageContextAddition
+      Object.assign(pageContextErrorPageInit, handled.pageContextAddition)
     }
 
-    let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageError>>
+    let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageAlreadyRouted>>
     try {
-      pageContextErrorPage = await renderPageError(
-        pageContextInit,
-        errNominalPage,
-        pageContextNominalPageInit,
-        renderContext,
-        httpRequestId,
-        pageContextFromRenderAbort
-      )
+      pageContextErrorPage = await renderPageAlreadyRouted(pageContextErrorPageInit)
     } catch (errErrorPage) {
       if (isAbortError(errErrorPage)) {
         const handled = await handleAbortError(
@@ -290,9 +294,7 @@ function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>
   return pageContextHttpReponseNull
 }
 
-async function renderPageNominal(
-  pageContext: { _urlRewrite: null | string } & ReturnType<typeof getPageContextInitEnhanced2>
-) {
+async function renderPageNominal(pageContext: { _urlRewrite: null | string } & PageContextInitEnhanced2) {
   addComputedUrlProps(pageContext)
 
   // Check Base URL
@@ -319,14 +321,13 @@ async function renderPageNominal(
   return pageContextAfterRender
 }
 
-async function renderPageError(
+async function getPageContextErrorPageInit(
   pageContextInit: { urlOriginal: string },
   errNominalPage: unknown,
   pageContextNominalPagePartial: Record<string, unknown>,
   renderContext: RenderContext,
-  httpRequestId: number,
-  pageContextFromRenderAbort: null | Record<string, unknown>
-): Promise<PageContextAfterRender> {
+  httpRequestId: number
+) {
   const pageContextInitEnhanced2 = getPageContextInitEnhanced2(pageContextInit, renderContext, null, httpRequestId)
 
   assert(errNominalPage)
@@ -340,16 +341,12 @@ async function renderPageError(
   }
   addComputedUrlProps(pageContext)
 
-  if (pageContextFromRenderAbort) {
-    Object.assign(pageContext, pageContextFromRenderAbort)
-  }
-
   objectAssign(pageContext, {
     _routeMatches: (pageContextNominalPagePartial as PageContextDebug)._routeMatches || 'ROUTE_ERROR'
   })
 
   assert(pageContext.errorWhileRendering)
-  return renderPageAlreadyRouted(pageContext)
+  return pageContext
 }
 
 type PageContextInitEnhanced2 = ReturnType<typeof getPageContextInitEnhanced2>

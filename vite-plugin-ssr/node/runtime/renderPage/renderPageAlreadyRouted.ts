@@ -29,12 +29,6 @@ import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageR
 import type { OnBeforeRouteHook } from '../../../shared/route/executeOnBeforeRouteHook'
 import type { PageContextInitEnhanced2 } from '../renderPage'
 
-type GlobalRenderingContext = {
-  _allPageIds: string[]
-  _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
-}
-
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 
 async function renderPageAlreadyRouted<

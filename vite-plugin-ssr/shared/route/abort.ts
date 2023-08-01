@@ -145,12 +145,12 @@ type PageContextRenderAbort = {
   | {
       _abortCaller: 'render'
       _urlRewrite: string
-      abortReason: unknown
+      abortReason: undefined | unknown
     }
   | {
       _abortCaller: 'render'
       _abortStatusCode: number
-      abortReason: unknown
+      abortReason: undefined | unknown
     }
 )
 function RenderAbort(pageContextAddition: PageContextRenderAbort): Error {
