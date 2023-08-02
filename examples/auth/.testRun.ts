@@ -19,7 +19,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     await autoRetry(async () => {
       expect(await page.textContent('h1')).not.toBe('Welcome')
     })
-    ensureWasClientSideRouted('/pages/index')
+    await ensureWasClientSideRouted('/pages/index')
     expect(await page.textContent('h1')).toBe('Log in')
     const btn = page.locator('button', { hasText: 'Neumann' })
     await btn.click()
@@ -31,7 +31,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     expect(await page.textContent('body')).toContain('Logged as John von Neumann')
     expect(await page.textContent('body')).toContain("You're able to access this page because you're logged in.")
     await testCounter()
-    ensureWasClientSideRouted('/pages/index')
+    await ensureWasClientSideRouted('/pages/index')
   })
 
   test('Admin page -> unauthorized', async () => {
@@ -41,7 +41,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     })
     expect(await page.textContent('body')).toContain("You cannot access this page because you aren't an administrator.")
     await testCounter()
-    ensureWasClientSideRouted('/pages/index')
+    await ensureWasClientSideRouted('/pages/index')
   })
 
   test('Login as Alan Turing', async () => {
@@ -60,6 +60,6 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       "You're able to access this page because you're logged in as Alan Turing."
     )
     await testCounter()
-    ensureWasClientSideRouted('/pages/index')
+    await ensureWasClientSideRouted('/pages/index')
   })
 }
