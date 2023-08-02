@@ -58,8 +58,8 @@ function redirect(
     "Status code 301 for `throw redirect()' is experimental and may be removed at any point",
     { onlyOnce: true }
   )
-  const pageContextAddition = {}
-  objectAssign(pageContextAddition, {
+  const pageContextAbort = {}
+  objectAssign(pageContextAbort, {
     _abortCaller: abortCaller,
     _abortCall: `throw redirect(${statusCode})` as const,
     _urlRedirect: {
@@ -67,7 +67,7 @@ function redirect(
       statusCode
     }
   })
-  return AbortRender(pageContextAddition)
+  return AbortRender(pageContextAbort)
 }
 
 /**
@@ -104,33 +104,33 @@ function render_(
   abortReason: unknown | undefined,
   pageContextAddendum?: { _isLegacyRenderErrorPage: true } & Record<string, unknown>
 ): Error {
-  const pageContextAddition = { abortReason }
+  const pageContextAbort = { abortReason }
   if (pageContextAddendum) {
     assert(pageContextAddendum._isLegacyRenderErrorPage === true)
-    objectAssign(pageContextAddition, pageContextAddendum)
+    objectAssign(pageContextAbort, pageContextAddendum)
   }
   {
     const args = [typeof value === 'number' ? String(value) : JSON.stringify(value)]
     if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30, null))
-    objectAssign(pageContextAddition, {
+    objectAssign(pageContextAbort, {
       _abortCaller: 'render' as const,
       _abortCall: `throw render(${args.join(', ')})` as const
     })
   }
   if (typeof value === 'string') {
     const url = value
-    objectAssign(pageContextAddition, {
+    objectAssign(pageContextAbort, {
       _urlRewrite: url
     })
-    return AbortRender(pageContextAddition)
+    return AbortRender(pageContextAbort)
   } else {
     const statusCode = value
     assertStatusCode(value, [401, 403, 404, 429, 500, 503], 'render')
-    objectAssign(pageContextAddition, {
+    objectAssign(pageContextAbort, {
       _abortStatusCode: statusCode,
       is404: statusCode === 404
     })
-    return AbortRender(pageContextAddition)
+    return AbortRender(pageContextAbort)
   }
 }
 

@@ -204,29 +204,29 @@ function useClientRouter() {
       if (isAbortError(err)) {
         const errAbort = err
         logAbortErrorHandled(err, pageContext._isProduction, pageContext)
-        const pageContextAddition = errAbort._pageContextAbort
-        if (pageContextAddition._urlRewrite) {
+        const pageContextAbort = errAbort._pageContextAbort
+        if (pageContextAbort._urlRewrite) {
           await fetchAndRender({
             scrollTarget,
             urlOriginal,
             overwriteLastHistoryEntry,
             isBackwardNavigation,
-            pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAddition]
+            pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort]
           })
           return
         }
-        if (pageContextAddition._urlRedirect) {
+        if (pageContextAbort._urlRedirect) {
           await fetchAndRender({
             scrollTarget: 'scroll-to-top-or-hash',
-            urlOriginal: pageContextAddition._urlRedirect.url,
+            urlOriginal: pageContextAbort._urlRedirect.url,
             overwriteLastHistoryEntry: false,
             isBackwardNavigation: false,
             checkClientSideRenderable: true
           })
           return
         }
-        assert(pageContextAddition._abortStatusCode)
-        objectAssign(pageContext, pageContextAddition)
+        assert(pageContextAbort._abortStatusCode)
+        objectAssign(pageContext, pageContextAbort)
       } else {
         objectAssign(pageContext, { is404: checkIf404(err) })
       }

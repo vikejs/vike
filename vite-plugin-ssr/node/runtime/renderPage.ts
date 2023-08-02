@@ -220,7 +220,7 @@ async function renderPageAlreadyPrepared(
       } else {
         // - throw render(statusCode) if not .pageContext.json request
       }
-      Object.assign(pageContextErrorPageInit, handled.pageContextAddition)
+      Object.assign(pageContextErrorPageInit, handled.pageContextAbort)
     }
 
     {
@@ -450,17 +450,17 @@ async function handleAbortError(
   renderContext: RenderContext,
   pageContextErrorPageInit: PageContextErrorPageInit
 ): Promise<
-  | { pageContextReturn: PageContextAfterRender; pageContextAddition?: never }
-  | { pageContextReturn?: never; pageContextAddition: Record<string, unknown> }
+  | { pageContextReturn: PageContextAfterRender; pageContextAbort?: never }
+  | { pageContextReturn?: never; pageContextAbort: Record<string, unknown> }
 > {
   logAbortErrorHandled(errAbort, getGlobalContext().isProduction, pageContextNominalPageInit)
 
-  const pageContextAddition = errAbort._pageContextAbort
+  const pageContextAbort = errAbort._pageContextAbort
   let pageContextSerialized: string
   if (pageContextNominalPageInit.isClientSideNavigation) {
-    if (pageContextAddition._abortStatusCode) {
+    if (pageContextAbort._abortStatusCode) {
       const errorPageId = getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
-      const abortCall = pageContextAddition._abortCall
+      const abortCall = pageContextAbort._abortCall
       assert(abortCall)
       assertUsage(
         errorPageId,
@@ -470,38 +470,38 @@ async function handleAbortError(
       )
       const pageContext = {
         _pageId: errorPageId,
-        ...pageContextAddition,
+        ...pageContextAbort,
         ...pageContextErrorPageInit,
         ...renderContext
       }
       objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
-      // We include pageContextInit: we don't only serialize pageContextAddition because the error page may need to access pageContextInit
+      // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
       pageContextSerialized = serializePageContextClientSide(pageContext)
     } else {
-      pageContextSerialized = serializePageContextAbort(pageContextAddition)
+      pageContextSerialized = serializePageContextAbort(pageContextAbort)
     }
     const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
     const pageContextReturn = { httpResponse }
     return { pageContextReturn }
   }
 
-  if (pageContextAddition._urlRewrite) {
+  if (pageContextAbort._urlRewrite) {
     const pageContextReturn = await renderPageAlreadyPrepared(pageContextInit, httpRequestId, renderContext, [
       ...pageContextsFromRewrite,
-      pageContextAddition
+      pageContextAbort
     ])
-    Object.assign(pageContextReturn, pageContextAddition)
+    Object.assign(pageContextReturn, pageContextAbort)
     return { pageContextReturn }
   }
-  if (pageContextAddition._urlRedirect) {
+  if (pageContextAbort._urlRedirect) {
     const pageContextReturn = {
       ...pageContextInit,
-      ...pageContextAddition
+      ...pageContextAbort
     }
     const httpResponse = createHttpResponseObjectRedirect(pageContextReturn)
     objectAssign(pageContextReturn, { httpResponse })
     return { pageContextReturn }
   }
-  assert(pageContextAddition._abortStatusCode)
-  return { pageContextAddition }
+  assert(pageContextAbort._abortStatusCode)
+  return { pageContextAbort }
 }
