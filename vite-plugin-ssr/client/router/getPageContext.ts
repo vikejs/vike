@@ -329,7 +329,7 @@ async function fetchPageContextFromServer(pageContext: {
     )
   }
 
-  if( isAbortPageContext(pageContextFromServer) ) {
+  if (isAbortPageContext(pageContextFromServer)) {
     throw AbortRender(pageContextFromServer)
   }
 

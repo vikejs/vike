@@ -24,7 +24,8 @@ function Page() {
 function PresetButtons() {
   return (
     <>
-      Fill in as: <Button onClick={() => fill('turing', "I'm the creator of the Turing Machine")}>Alan Turing (admin)</Button>{' '}
+      Fill in as:{' '}
+      <Button onClick={() => fill('turing', "I'm the creator of the Turing Machine")}>Alan Turing (admin)</Button>{' '}
       <Button onClick={() => fill('neumann', "I'm the creator of the Von Neumann Architecture")}>
         John von Neumann (not admin)
       </Button>
@@ -49,7 +50,7 @@ async function onSubmit(ev) {
   if (success) {
     await reload()
   } else {
-    document.querySelector('#validation').style.display = "block"
+    document.querySelector('#validation').style.display = 'block'
   }
 }
 

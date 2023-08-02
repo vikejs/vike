@@ -3,7 +3,15 @@ export { getPagesAndRoutesInfo }
 
 import type { PageRoutes } from '../../../../shared/route'
 import { getGlobalContext } from '../../globalContext'
-import { assert, assertUsage, assertInfo, compareString, stripAnsi, getTerminalWidth, truncateString } from '../../utils'
+import {
+  assert,
+  assertUsage,
+  assertInfo,
+  compareString,
+  stripAnsi,
+  getTerminalWidth,
+  truncateString
+} from '../../utils'
 import pc from '@brillout/picocolors'
 
 async function log404(pageContext: {

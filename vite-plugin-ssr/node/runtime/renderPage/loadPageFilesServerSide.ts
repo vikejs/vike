@@ -12,7 +12,7 @@ import { findPageConfig } from '../../../shared/page-configs/findPageConfig'
 import { analyzePage } from './analyzePage'
 import { getGlobalContext } from '../globalContext'
 import type { MediaType } from './inferMediaType'
-import {loadPageCode} from '../../../shared/page-configs/loadPageCode'
+import { loadPageCode } from '../../../shared/page-configs/loadPageCode'
 
 type PageContext_loadPageFilesServerSide = PageContextGetPageAssets &
   PageContextDebug & {
@@ -26,12 +26,7 @@ async function loadPageFilesServerSide(pageContext: { _pageId: string } & PageCo
 
   const [{ config, configEntries, exports, exportsAll, pageExports, pageFilesLoaded, pageConfigLoaded }] =
     await Promise.all([
-      loadPageFiles(
-        pageContext._pageFilesAll,
-        pageConfig,
-        pageContext._pageId,
-        !getGlobalContext().isProduction
-      ),
+      loadPageFiles(pageContext._pageFilesAll, pageConfig, pageContext._pageId, !getGlobalContext().isProduction),
       analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
     ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
@@ -111,12 +106,7 @@ async function loadPageFilesServerSide(pageContext: { _pageId: string } & PageCo
   return pageContextAddendum
 }
 
-async function loadPageFiles(
-  pageFilesAll: PageFile[],
-  pageConfig: null | PageConfig,
-  pageId: string,
-  isDev: boolean
-) {
+async function loadPageFiles(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string, isDev: boolean) {
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const pageConfigLoaded = !pageConfig ? null : await loadPageCode(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))

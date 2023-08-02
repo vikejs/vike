@@ -46,7 +46,7 @@ function warnMissingErrorPage(isV1: boolean): void {
     const msg = [
       `No ${isV1 ? 'error page' : pc.cyan('_error.page.js')} found,`,
       'we recommend defining an error page,',
-      "see https://vite-plugin-ssr.com/error-page"
+      'see https://vite-plugin-ssr.com/error-page'
     ].join(' ')
     assertWarning(false, msg, { onlyOnce: true })
   }

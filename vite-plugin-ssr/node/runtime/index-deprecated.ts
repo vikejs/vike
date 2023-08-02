@@ -28,7 +28,7 @@ export const RenderErrorPage = (...args: Parameters<typeof RenderErrorPage_>): E
       pc.red("  import { RenderErrorPage } from 'vite-plugin-ssr'"),
       'With:',
       pc.green("  import { render } from 'vite-plugin-ssr/abort'"),
-      "See https://vite-plugin-ssr.com/render"
+      'See https://vite-plugin-ssr.com/render'
     ].join('\n'),
     { onlyOnce: true, showStackTrace: true }
   )
