@@ -102,9 +102,6 @@ function render(value: string | number, abortReason?: unknown): AbortRender {
 
 function render_(
   value: string | number,
-  // The user cannot set pageContext beyond pageContext.abortReason because:
-  //  - Upon client-side routing, the additional pageContext would need to be serialized and passed to the client-side.
-  //    - For that, pageContext.passToClient is required but how do make sure pageContext.passToClient is set before `throw render()`?
   abortReason: unknown | undefined,
   pageContextAddendum?: { _isLegacyRenderErrorPage: true } & Record<string, unknown>
 ): AbortRender {
