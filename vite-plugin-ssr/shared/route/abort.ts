@@ -8,7 +8,7 @@ export { getPageContextFromAllRewrites }
 export { AbortRender }
 export type { StatusCodeAbort }
 export type { StatusCodeError }
-export type { AbortError }
+export type { ErrorAbort }
 export type { PageContextFromRewrite }
 export type { UrlRedirect }
 
@@ -36,7 +36,6 @@ type UrlRedirect = {
   statusCode: StatusCodeRedirect
 }
 type AbortRedirect = Error
-type AbortRender = Error
 
 /**
  * Abort the rendering of the current page, and redirect the user to another URL instead.
@@ -86,7 +85,7 @@ function redirect(
  *   `503` Service Unavailable (server is overloaded, a third-party API isn't responding)
  * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
  */
-function render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: unknown): AbortRender
+function render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: unknown): Error
 /**
  * Abort the rendering of the current page, and render another page instead.
  *
@@ -95,8 +94,8 @@ function render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: unk
  * @param url The URL to render.
  * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
  */
-function render(url: `/${string}`, abortReason?: unknown): AbortRender
-function render(value: string | number, abortReason?: unknown): AbortRender {
+function render(url: `/${string}`, abortReason?: unknown): Error
+function render(value: string | number, abortReason?: unknown): Error {
   return render_(value, abortReason)
 }
 
@@ -104,7 +103,7 @@ function render_(
   value: string | number,
   abortReason: unknown | undefined,
   pageContextAddendum?: { _isLegacyRenderErrorPage: true } & Record<string, unknown>
-): AbortRender {
+): Error {
   const pageContextAddition = { abortReason }
   if (pageContextAddendum) {
     assert(pageContextAddendum._isLegacyRenderErrorPage === true)
@@ -162,7 +161,7 @@ type AbortUndefined = {
 function AbortRender(pageContextAbort: PageContextAbort): Error {
   const err = new Error('AbortRender')
   objectAssign(err, { _pageContextAbort: pageContextAbort, [stamp]: true })
-  checkType<AbortError>(err)
+  checkType<ErrorAbort>(err)
   return err
 }
 
@@ -186,8 +185,8 @@ function RenderErrorPage({ pageContext = {} }: { pageContext?: Record<string, un
 }
 
 const stamp = '_isAbortError'
-type AbortError = { _pageContextAbort: PageContextAbort }
-function isAbortError(thing: unknown): thing is AbortError {
+type ErrorAbort = { _pageContextAbort: PageContextAbort }
+function isAbortError(thing: unknown): thing is ErrorAbort {
   return typeof thing === 'object' && thing !== null && stamp in thing
 }
 function isAbortPageContext(pageContext: Record<string, unknown>): pageContext is PageContextAbort {
@@ -203,7 +202,7 @@ function isAbortPageContext(pageContext: Record<string, unknown>): pageContext i
 }
 
 function logAbortErrorHandled(
-  err: AbortError,
+  err: ErrorAbort,
   isProduction: boolean,
   pageContext: { urlOriginal: string; _urlRewrite: null | string }
 ) {

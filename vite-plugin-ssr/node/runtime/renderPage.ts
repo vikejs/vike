@@ -23,7 +23,7 @@ import {
 } from './utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import {
-  AbortError,
+  ErrorAbort,
   getPageContextFromAllRewrites,
   isAbortError,
   logAbortErrorHandled,
@@ -438,7 +438,7 @@ function skipRequest(urlOriginal: string): boolean {
 }
 
 async function handleAbortError(
-  errAbort: AbortError,
+  errAbort: ErrorAbort,
   pageContextsFromRewrite: PageContextFromRewrite[],
   pageContextInit: { urlOriginal: string },
   pageContextNominalPageInit: {
