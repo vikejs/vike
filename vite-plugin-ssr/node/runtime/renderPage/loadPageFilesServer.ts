@@ -2,17 +2,17 @@ export { loadPageFilesServer }
 export type { PageFiles }
 export type { PageContext_loadPageFilesServer }
 
-import { type PageFile, getExportUnion } from '../../../shared/getPageFiles'
+import { type PageFile, getExportUnion, getPageFilesServerSide, getExports } from '../../../shared/getPageFiles'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide'
 import { assertWarning, objectAssign, PromiseType } from '../utils'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets'
-import { loadPageFilesServerSide } from '../../../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { debugPageFiles, type PageContextDebug } from './debugPageFiles'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig'
 import { analyzePage } from './analyzePage'
 import { getGlobalContext } from '../globalContext'
 import type { MediaType } from './inferMediaType'
+import {loadPageCode} from '../../../shared/page-configs/loadPageCode'
 
 type PageContext_loadPageFilesServer = PageContextGetPageAssets &
   PageContextDebug & {
@@ -26,7 +26,7 @@ async function loadPageFilesServer(pageContext: { _pageId: string } & PageContex
 
   const [{ config, configEntries, exports, exportsAll, pageExports, pageFilesLoaded, pageConfigLoaded }] =
     await Promise.all([
-      loadPageFilesServerSide(
+      loadPageFiles(
         pageContext._pageFilesAll,
         pageConfig,
         pageContext._pageId,
@@ -109,4 +109,25 @@ async function loadPageFilesServer(pageContext: { _pageId: string } & PageContex
   }
 
   return pageContextAddendum
+}
+
+async function loadPageFiles(
+  pageFilesAll: PageFile[],
+  pageConfig: null | PageConfig,
+  pageId: string,
+  isDev: boolean
+) {
+  const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
+  const pageConfigLoaded = !pageConfig ? null : await loadPageCode(pageConfig, isDev)
+  await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
+  const { config, configEntries, exports, exportsAll, pageExports } = getExports(pageFilesServerSide, pageConfigLoaded)
+  return {
+    config,
+    configEntries,
+    exports,
+    exportsAll,
+    pageExports,
+    pageFilesLoaded: pageFilesServerSide,
+    pageConfigLoaded
+  }
 }
