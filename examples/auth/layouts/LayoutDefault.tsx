@@ -6,7 +6,7 @@ import { reload } from 'vite-plugin-ssr/client/router'
 import { usePageContext } from 'vike-react/usePageContext'
 import { Button } from '../components/Button'
 
-function LayoutDefault({ children }) {
+function LayoutDefault({ children }: { children: React.ReactNode }) {
   return (
     <Layout>
       <Sidebar>
@@ -35,7 +35,7 @@ function Links() {
 }
 
 function UserInfo() {
-  const pageContext = usePageContext()
+  const pageContext: any = usePageContext()
   const { userFullName } = pageContext
   let content
   if (!userFullName) {
@@ -70,7 +70,7 @@ async function logout() {
   await reload()
 }
 
-function Layout({ children }) {
+function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -84,7 +84,7 @@ function Layout({ children }) {
   )
 }
 
-function Sidebar({ children }) {
+function Sidebar({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -103,7 +103,7 @@ function Sidebar({ children }) {
   )
 }
 
-function Content({ children }) {
+function Content({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{

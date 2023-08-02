@@ -2,6 +2,7 @@
   "compilerOptions": {
     "strict": true,
     "skipLibCheck": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "esModuleInterop": true
   }
 }

@@ -2,7 +2,7 @@ export { Button }
 
 import React, { useEffect, useState } from 'react'
 
-function Button(props) {
+function Button(props: any) {
   let [disabled, setDisabled] = useState(true)
   useEffect(() => {
     setDisabled(false)
