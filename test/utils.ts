@@ -8,12 +8,14 @@ import { page, expect, getServerUrl, autoRetry, partRegex } from '@brillout/test
 async function testCounter() {
   // autoRetry() in case page just got client-side navigated
   await autoRetry(async () => {
-    expect(await page.textContent('button')).toBe('Counter 0')
+    const btn = page.locator('button', { hasText: 'Counter' })
+    expect(await btn.textContent()).toBe('Counter 0')
   })
   // autoRetry() in case page isn't hydrated yet
   await autoRetry(async () => {
-    await page.click('button')
-    expect(await page.textContent('button')).toContain('Counter 1')
+    const btn = page.locator('button', { hasText: 'Counter' })
+    await btn.click()
+    expect(await btn.textContent()).toBe('Counter 1')
   })
 }
 async function hydrationDone() {
