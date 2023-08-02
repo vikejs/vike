@@ -8,7 +8,7 @@ import pc from '@brillout/picocolors'
 // + expect(JSON.stringify(trimWithAnsi(pc.red('a ')))).toEqual(JSON.stringify(pc.red('a')))
 // ```
 
-describe('trimWithAnsi', () => {
+describe('trimWithAnsi()', () => {
   it('same as trim() without ANSI codes', () => {
     expect(trimWithAnsi('a')).toEqual('a')
     expect(trimWithAnsi(' a')).toEqual('a')
