@@ -1,4 +1,4 @@
-export { loadPageFilesServer }
+export { loadPageFilesServerSide }
 export type { PageFiles }
 export type { PageContext_loadPageFilesServer }
 
@@ -20,8 +20,8 @@ type PageContext_loadPageFilesServer = PageContextGetPageAssets &
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfig[]
   }
-type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
-async function loadPageFilesServer(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {
+type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServerSide>>
+async function loadPageFilesServerSide(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext._pageId) // Make pageConfig globally available as pageContext._pageConfig?
 
   const [{ config, configEntries, exports, exportsAll, pageExports, pageFilesLoaded, pageConfigLoaded }] =

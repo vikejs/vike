@@ -1,7 +1,6 @@
 export { renderPageAlreadyRouted }
 export { prerenderPage }
 export { prerender404Page }
-export { loadPageFilesServer }
 export { getPageContextInitEnhanced1 }
 export { getRenderContext }
 export type { RenderContext }
@@ -16,7 +15,7 @@ import { serializePageContextClientSide } from '../html/serializePageContextClie
 import { addComputedUrlProps, type PageContextUrlsPrivate } from '../../../shared/addComputedUrlProps'
 import { getGlobalContext } from '../globalContext'
 import { createHttpResponseObject, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponseObject'
-import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } from './loadPageFilesServer'
+import { loadPageFilesServerSide, PageContext_loadPageFilesServer, type PageFiles } from './loadPageFilesServer'
 import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook'
 import { executeOnBeforeRenderHooks } from './executeOnBeforeRenderHook'
@@ -48,7 +47,7 @@ async function renderPageAlreadyRouted<
 
   const isError = pageContext.is404 || pageContext.errorWhileRendering
 
-  const pageFiles = await loadPageFilesServer(pageContext)
+  const pageFiles = await loadPageFilesServerSide(pageContext)
   objectAssign(pageContext, pageFiles)
 
   await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionServerSide(pageContext))
@@ -89,7 +88,8 @@ async function renderPageAlreadyRouted<
 }
 
 async function prerenderPage(
-  pageContext: PageContextInitEnhanced1 & PageFiles & {
+  pageContext: PageContextInitEnhanced1 &
+    PageFiles & {
       routeParams: Record<string, string>
       _pageId: string
       _urlRewrite: null
@@ -155,7 +155,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
     objectAssign(pageContext, pageContextInitEnhanced1)
   }
 
-  const pageFiles = await loadPageFilesServer(pageContext)
+  const pageFiles = await loadPageFilesServerSide(pageContext)
   objectAssign(pageContext, pageFiles)
 
   return prerenderPage(pageContext)

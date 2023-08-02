@@ -6,8 +6,7 @@ import {
   getRenderContext,
   getPageContextInitEnhanced1,
   RenderContext,
-  renderPageAlreadyRouted,
-  loadPageFilesServer
+  renderPageAlreadyRouted
 } from './renderPage/renderPageAlreadyRouted'
 import { route } from '../../shared/route'
 import {
@@ -49,6 +48,7 @@ import type { PageContextBuiltIn } from '../../types'
 import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide'
 import { getErrorPageId } from '../../shared/error-page'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage'
+import { loadPageFilesServerSide } from './renderPage/loadPageFilesServer'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
@@ -462,14 +462,19 @@ async function handleAbortError(
       const errorPageId = getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
       const abortCall = pageContextAddition._abortCall
       assert(abortCall)
-      assertUsage(errorPageId, `You called ${pc.cyan(abortCall)} but you didn't define an error page, make sure to define one https://vite-plugin-ssr.com/error-page`)
+      assertUsage(
+        errorPageId,
+        `You called ${pc.cyan(
+          abortCall
+        )} but you didn't define an error page, make sure to define one https://vite-plugin-ssr.com/error-page`
+      )
       const pageContext = {
         _pageId: errorPageId,
         ...pageContextAddition,
         ...pageContextErrorPageInit,
         ...renderContext
       }
-      const pageContextPageFiles = await loadPageFilesServer(pageContext)
+      const pageContextPageFiles = await loadPageFilesServerSide(pageContext)
       objectAssign(pageContext, pageContextPageFiles)
       // We include pageContextInit: we don't only serialize pageContextAddition because the error page may need to access pageContextInit
       pageContextSerialized = serializePageContextClientSide(pageContext)

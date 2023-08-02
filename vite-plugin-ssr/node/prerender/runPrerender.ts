@@ -30,7 +30,6 @@ import {
   prerenderPage,
   prerender404Page,
   getRenderContext,
-  loadPageFilesServer,
   type RenderContext,
   getPageContextInitEnhanced1,
   PageContextInitEnhanced1
@@ -51,6 +50,7 @@ import { isErrorPage } from '../../shared/error-page'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute'
 import { isAbortError } from '../../shared/route/abort'
+import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServer'
 
 type HtmlFile = {
   urlOriginal: string
@@ -468,7 +468,7 @@ async function handlePagesWithStaticRoutes(
             }
           ]
         })
-        objectAssign(pageContext, await loadPageFilesServer(pageContext))
+        objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
 
         prerenderContext.pageContexts.push(pageContext)
       })
@@ -729,7 +729,7 @@ async function routeAndPrerender(
         objectAssign(pageContext, routeResult.pageContextAddendum)
         const { _pageId: pageId } = pageContext
 
-        const pageFilesData = await loadPageFilesServer(pageContext)
+        const pageFilesData = await loadPageFilesServerSide(pageContext)
         objectAssign(pageContext, pageFilesData)
 
         let usesClientRouter: boolean
