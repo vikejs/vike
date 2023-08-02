@@ -1,9 +1,9 @@
 {
   "scripts": {
-    "dev": "npm run server",
+    "dev": "npm run server:dev",
     "prod": "npm run lint && npm run build && npm run server:prod",
     "build": "vite build",
-    "server": "ts-node ./server/index.ts",
+    "server:dev": "ts-node ./server/index.ts",
     "server:prod": "cross-env NODE_ENV=production ts-node ./server/index.ts",
     "lint": "eslint . --max-warnings 0"
   },
