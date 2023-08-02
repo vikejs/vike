@@ -49,6 +49,7 @@ import { serializePageContextAbort, serializePageContextClientSide } from './htm
 import { getErrorPageId } from '../../shared/error-page'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage'
 import { loadPageFilesServerSide } from './renderPage/loadPageFilesServerSide'
+import { normalizeUrlPathname } from './renderPage/normalizeUrlPathname'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
@@ -117,6 +118,11 @@ async function renderPageAndPrepare(
   }
   if (isConfigInvalid) {
     return handleInvalidConfig()
+  }
+
+  {
+    const pageContextHttpReponse = normalizePathname(pageContextInit, httpRequestId)
+    if (pageContextHttpReponse) return pageContextHttpReponse
   }
 
   // Prepare context
@@ -435,6 +441,15 @@ function skipRequest(urlOriginal: string): boolean {
     !isParsable(urlOriginal) ||
     isViteClientRequest
   )
+}
+function normalizePathname(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+  const { urlOriginal } = pageContextInit
+  const urlNormalized = normalizeUrlPathname(urlOriginal)
+  if (!urlNormalized) return null
+  logRuntimeInfo?.(`HTTP redirect ${pc.bold(urlOriginal)} -> ${pc.bold(urlNormalized)}`, httpRequestId, 'info')
+  const httpResponse = createHttpResponseObjectRedirect({ url: urlNormalized, statusCode: 301 })
+  const pageContextHttpResponse = { ...pageContextInit, httpResponse }
+  return pageContextHttpResponse
 }
 
 async function handleAbortError(
