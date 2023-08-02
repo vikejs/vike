@@ -66,8 +66,8 @@ async function createHttpResponsePageContextJson(pageContextSerialized: string) 
   return httpResponse
 }
 
-function createHttpResponseObjectRedirect(pageContext: { _urlRedirect: UrlRedirect }): HttpResponse {
-  const { url, statusCode } = pageContext._urlRedirect
+function createHttpResponseObjectRedirect(urlRedirect: UrlRedirect): HttpResponse {
+  const { url, statusCode } = urlRedirect
   assert(url)
   assert(statusCode)
   assert(300 <= statusCode && statusCode <= 399)

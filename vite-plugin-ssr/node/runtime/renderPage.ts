@@ -498,7 +498,7 @@ async function handleAbortError(
       ...pageContextInit,
       ...pageContextAbort
     }
-    const httpResponse = createHttpResponseObjectRedirect(pageContextReturn)
+    const httpResponse = createHttpResponseObjectRedirect(pageContextAbort._urlRedirect)
     objectAssign(pageContextReturn, { httpResponse })
     return { pageContextReturn }
   }

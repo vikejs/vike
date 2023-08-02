@@ -2,6 +2,7 @@
 - Remove assertInfo()
 - Isomorphic colors
 
+- Implement config.redirects
 - By default, only call guard() hooks on the server-side?
 - Seems like passToClient is already cumulative for 0.4 design, should be as well for v1 design
   - https://github.com/vikejs/vike-react/issues/4
