@@ -1,6 +1,6 @@
 export { loadPageFilesServerSide }
 export type { PageFiles }
-export type { PageContext_loadPageFilesServer }
+export type { PageContext_loadPageFilesServerSide }
 
 import { type PageFile, getExportUnion, getPageFilesServerSide, getExports } from '../../../shared/getPageFiles'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide'
@@ -14,14 +14,14 @@ import { getGlobalContext } from '../globalContext'
 import type { MediaType } from './inferMediaType'
 import {loadPageCode} from '../../../shared/page-configs/loadPageCode'
 
-type PageContext_loadPageFilesServer = PageContextGetPageAssets &
+type PageContext_loadPageFilesServerSide = PageContextGetPageAssets &
   PageContextDebug & {
     urlOriginal: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfig[]
   }
 type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServerSide>>
-async function loadPageFilesServerSide(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {
+async function loadPageFilesServerSide(pageContext: { _pageId: string } & PageContext_loadPageFilesServerSide) {
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext._pageId) // Make pageConfig globally available as pageContext._pageConfig?
 
   const [{ config, configEntries, exports, exportsAll, pageExports, pageFilesLoaded, pageConfigLoaded }] =

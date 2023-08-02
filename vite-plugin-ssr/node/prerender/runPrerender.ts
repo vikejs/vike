@@ -50,7 +50,7 @@ import { isErrorPage } from '../../shared/error-page'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute'
 import { isAbortError } from '../../shared/route/abort'
-import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServer'
+import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide'
 
 type HtmlFile = {
   urlOriginal: string
@@ -729,8 +729,7 @@ async function routeAndPrerender(
         objectAssign(pageContext, routeResult.pageContextAddendum)
         const { _pageId: pageId } = pageContext
 
-        const pageFilesData = await loadPageFilesServerSide(pageContext)
-        objectAssign(pageContext, pageFilesData)
+        objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
 
         let usesClientRouter: boolean
         {

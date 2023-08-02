@@ -48,7 +48,7 @@ import type { PageContextBuiltIn } from '../../types'
 import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide'
 import { getErrorPageId } from '../../shared/error-page'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage'
-import { loadPageFilesServerSide } from './renderPage/loadPageFilesServer'
+import { loadPageFilesServerSide } from './renderPage/loadPageFilesServerSide'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
@@ -474,8 +474,7 @@ async function handleAbortError(
         ...pageContextErrorPageInit,
         ...renderContext
       }
-      const pageContextPageFiles = await loadPageFilesServerSide(pageContext)
-      objectAssign(pageContext, pageContextPageFiles)
+      objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAddition because the error page may need to access pageContextInit
       pageContextSerialized = serializePageContextClientSide(pageContext)
     } else {

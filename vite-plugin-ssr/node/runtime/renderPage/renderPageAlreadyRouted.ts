@@ -15,7 +15,7 @@ import { serializePageContextClientSide } from '../html/serializePageContextClie
 import { addComputedUrlProps, type PageContextUrlsPrivate } from '../../../shared/addComputedUrlProps'
 import { getGlobalContext } from '../globalContext'
 import { createHttpResponseObject, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponseObject'
-import { loadPageFilesServerSide, PageContext_loadPageFilesServer, type PageFiles } from './loadPageFilesServer'
+import { loadPageFilesServerSide, PageContext_loadPageFilesServerSide, type PageFiles } from './loadPageFilesServerSide'
 import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook'
 import { executeOnBeforeRenderHooks } from './executeOnBeforeRenderHook'
@@ -38,7 +38,7 @@ async function renderPageAlreadyRouted<
     errorWhileRendering: null | Error
   } & PageContextInitEnhanced2 &
     PageContextUrlsPrivate &
-    PageContext_loadPageFilesServer
+    PageContext_loadPageFilesServerSide
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   // pageContext._pageId can either be the:
   //  - ID of the page matching the routing, or the
@@ -47,8 +47,7 @@ async function renderPageAlreadyRouted<
 
   const isError = pageContext.is404 || pageContext.errorWhileRendering
 
-  const pageFiles = await loadPageFilesServerSide(pageContext)
-  objectAssign(pageContext, pageFiles)
+  objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
 
   await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionServerSide(pageContext))
 
@@ -155,8 +154,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
     objectAssign(pageContext, pageContextInitEnhanced1)
   }
 
-  const pageFiles = await loadPageFilesServerSide(pageContext)
-  objectAssign(pageContext, pageFiles)
+  objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
 
   return prerenderPage(pageContext)
 }
