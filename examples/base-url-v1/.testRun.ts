@@ -2,16 +2,20 @@ export { testRun }
 
 import { page, test, expect, run, autoRetry, fetchHtml, partRegex, getServerUrl } from '@brillout/test-e2e'
 import { ensureWasClientSideRouted, testCounter } from '../../test/utils'
+import assert from 'node:assert'
 
 function testRun(
   cmd: 'npm run dev' | 'npm run preview' | 'npm run start',
   {
     baseServer,
     baseAssets
-  }: { baseServer: '/' | '/some/base-url/'; baseAssets: '/' | '/some/base-url/' | 'http://localhost:8080/cdn/' }
+  }: {
+    baseServer: '/' | '/some/base-url/' | '/some/base-url'
+    baseAssets: '/' | '/some/base-url/' | '/some/base-url' | 'http://localhost:8080/cdn/'
+  }
 ) {
-  const addBaseServer = (url: string) => baseServer.slice(0, -1) + url
-  const addBaseAssets = (url: string) => baseAssets.slice(0, -1) + url
+  const addBaseServer = (url: string) => join(baseServer, url)
+  const addBaseAssets = (url: string) => join(baseAssets, url)
   const isDev = cmd === 'npm run dev'
 
   run(cmd)
@@ -45,4 +49,11 @@ function testRun(
     })
     await ensureWasClientSideRouted('/pages/index')
   })
+}
+
+function join(base: string, url: string) {
+  if (url === '/') return base
+  if (base.endsWith('/')) base = base.slice(0, -1)
+  assert(url.startsWith('/'))
+  return base + url
 }

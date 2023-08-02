@@ -17,7 +17,7 @@ function onRenderHtml(pageContext) {
   )
 
   // For assets living `public/`, we need to manually inject the Base URL:
-  const manifestUrl = import.meta.env.BASE_URL + 'manifest.json'
+  const manifestUrl = normalize(import.meta.env.BASE_URL + '/manifest.json')
 
   return escapeInject`<!DOCTYPE html>
     <html lang="en">
@@ -32,4 +32,8 @@ function onRenderHtml(pageContext) {
         <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
+}
+
+function normalize(url) {
+  return '/' + url.split('/').filter(Boolean).join('/')
 }
