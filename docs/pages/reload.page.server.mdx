@@ -1,1 +1,26 @@
-TODO
+import { Link } from '@brillout/docpress'
+
+The `reload()` function enables you to reload the page. The difference with [`window.location.reload`](https://developer.mozilla.org/en-US/docs/Web/API/Location/reload) is that `reload()` is much faster as it uses vite-plugin-ssr's <Link text="Client Router" href="/client-routing" />.
+
+> `navigate()` works only with <Link text="Client Routing" href="/client-routing" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.reload()` instead.
+
+The most common use case for `reload()` is to refresh the page when an authentication cookie is updated, see <Link href="/auth" />.
+
+```jsx
+// /components/Logout.jsx
+
+import { reload } from 'vite-plugin-ssr/client/router'
+
+function Logout() {
+   return <button onClick={logout}>Logout</button>
+}
+async function logout() {
+  // Removes the authentication cookie
+  await fetch('/logout', { method: 'POST' })
+  // Re-render the page to take into account the removed cookie
+  await reload()
+  // Reload is finished
+}
+```
+
+It's the same as [`navigate(window.location.href)`](/navigate) but it handles some edge cases.

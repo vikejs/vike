@@ -1,5 +1,3 @@
-- /examples/auth (and double check login flow links)
-
 - Automatically remove trailing slash and redirect /some-url/ -> /some-url
 - Remove assertInfo()
 - Isomorphic colors
