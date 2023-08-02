@@ -135,7 +135,7 @@ function render_(
   }
 }
 
-type PageContextRenderAbort = {
+type PageContextAbort = {
   _abortCall: `throw redirect(${string})` | `throw render(${string})`
 } & (
   | ({
@@ -159,9 +159,9 @@ type AbortUndefined = {
   _abortStatusCode?: undefined
 }
 
-function AbortRender(pageContextAddition: PageContextRenderAbort): Error {
+function AbortRender(pageContextAbort: PageContextAbort): Error {
   const err = new Error('AbortRender')
-  objectAssign(err, { _pageContextAbort: pageContextAddition, [stamp]: true })
+  objectAssign(err, { _pageContextAbort: pageContextAbort, [stamp]: true })
   checkType<AbortError>(err)
   return err
 }
@@ -186,17 +186,17 @@ function RenderErrorPage({ pageContext = {} }: { pageContext?: Record<string, un
 }
 
 const stamp = '_isAbortError'
-type AbortError = { _pageContextAbort: PageContextRenderAbort }
+type AbortError = { _pageContextAbort: PageContextAbort }
 function isAbortError(thing: unknown): thing is AbortError {
   return typeof thing === 'object' && thing !== null && stamp in thing
 }
-function isAbortPageContext(pageContext: Record<string, unknown>): pageContext is PageContextRenderAbort {
+function isAbortPageContext(pageContext: Record<string, unknown>): pageContext is PageContextAbort {
   if (!(pageContext._urlRewrite || pageContext._urlRedirect || pageContext._abortStatusCode)) {
     return false
   }
   assert(hasProp(pageContext, '_abortCall', 'string'))
   assert(hasProp(pageContext, '_abortCaller', 'string'))
-  checkType<Omit<PageContextRenderAbort, '_abortCall' | '_abortCaller'> & { _abortCall: string; _abortCaller: string }>(
+  checkType<Omit<PageContextAbort, '_abortCall' | '_abortCaller'> & { _abortCall: string; _abortCaller: string }>(
     pageContext
   )
   return true
