@@ -26,8 +26,8 @@ importers:
         specifier: ^0.1.6
         version: 0.1.6(typescript@4.9.5)
       vitest:
-        specifier: ^0.32.4
-        version: 0.32.4
+        specifier: ^0.34.1
+        version: 0.34.1
 
   boilerplates:
     dependencies:
@@ -81,7 +81,7 @@ importers:
         version: 2.0.3
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -180,7 +180,7 @@ importers:
         version: 2.0.3
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -297,7 +297,7 @@ importers:
         version: 0.1.6(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.9)
       vite:
         specifier: ^4.0.3
-        version: 4.3.9(@types/node@15.14.9)
+        version: 4.3.9(@types/node@20.2.5)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -315,7 +315,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -345,7 +345,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -375,7 +375,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -405,7 +405,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -435,7 +435,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -453,7 +453,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -474,7 +474,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -510,7 +510,7 @@ importers:
         version: 0.3.10(react-dom@18.2.0)(react@18.2.0)
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -546,7 +546,7 @@ importers:
         version: 0.3.10(react-dom@18.2.0)(react@18.2.0)
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -570,7 +570,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -594,7 +594,7 @@ importers:
         version: 3.2.47(vue@3.2.47)
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -621,7 +621,7 @@ importers:
         version: 3.2.47(vue@3.2.47)
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -645,7 +645,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -663,7 +663,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -681,7 +681,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -714,7 +714,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.1.4
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -747,7 +747,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.1.4
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -762,7 +762,7 @@ importers:
         version: 4.2.1(vite@4.3.5)(vue@3.2.47)
       '@vue/apollo-composable':
         specifier: ^4.0.0-beta.4
-        version: 4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@4.9.5)(vue@3.2.47)
+        version: 4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@5.1.6)(vue@3.2.47)
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.2.47
@@ -786,7 +786,7 @@ importers:
         version: 16.6.0
       vite:
         specifier: ^4.1.4
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -804,7 +804,7 @@ importers:
         version: 4.2.1(vite@4.3.5)(vue@3.2.47)
       '@vue/apollo-composable':
         specifier: ^4.0.0-beta.4
-        version: 4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@4.9.5)(vue@3.2.47)
+        version: 4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@5.1.6)(vue@3.2.47)
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.2.47
@@ -828,7 +828,7 @@ importers:
         version: 16.6.0
       vite:
         specifier: ^4.1.4
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -843,7 +843,7 @@ importers:
         version: 4.9.5
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -855,7 +855,7 @@ importers:
         version: 4.9.5
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -876,7 +876,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -894,7 +894,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -912,7 +912,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -930,7 +930,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -948,7 +948,7 @@ importers:
         version: 3.2.47(vue@3.2.47)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -969,7 +969,7 @@ importers:
         version: 3.2.47(vue@3.2.47)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1086,7 +1086,7 @@ importers:
         version: 5.2.6(preact@10.13.2)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1110,7 +1110,7 @@ importers:
         version: 5.2.6(preact@10.13.2)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1134,7 +1134,7 @@ importers:
         version: 5.2.6(preact@10.13.2)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1158,7 +1158,7 @@ importers:
         version: 5.2.6(preact@10.13.2)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1176,7 +1176,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1194,7 +1194,7 @@ importers:
         version: 17.0.2(react@17.0.2)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1212,7 +1212,7 @@ importers:
         version: 17.0.2(react@17.0.2)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1338,7 +1338,7 @@ importers:
         version: 6.11.1(react-dom@18.2.0)(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1362,7 +1362,7 @@ importers:
         version: 6.11.1(react-dom@18.2.0)(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1395,7 +1395,7 @@ importers:
         version: 2.0.3
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1428,7 +1428,7 @@ importers:
         version: 2.0.3
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1446,7 +1446,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1470,7 +1470,7 @@ importers:
         version: 4.2.1
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1494,7 +1494,7 @@ importers:
         version: 4.2.1
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1512,7 +1512,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1530,7 +1530,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1545,7 +1545,7 @@ importers:
         version: 5.0.4
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-solid:
         specifier: ^2.3.0
         version: 2.7.0(solid-js@1.7.5)(vite@4.3.5)
@@ -1563,7 +1563,7 @@ importers:
         version: 5.0.4
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-solid:
         specifier: ^2.3.0
         version: 2.7.0(solid-js@1.7.5)(vite@4.3.5)
@@ -1581,7 +1581,7 @@ importers:
         version: 4.9.5
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-solid:
         specifier: ^2.3.0
         version: 2.7.0(solid-js@1.7.5)(vite@4.3.5)
@@ -1599,7 +1599,7 @@ importers:
         version: 4.9.5
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-solid:
         specifier: ^2.3.0
         version: 2.7.0(solid-js@1.7.5)(vite@4.3.5)
@@ -1629,7 +1629,7 @@ importers:
         version: 4.9.5
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1644,7 +1644,7 @@ importers:
         version: 3.59.0
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1680,7 +1680,7 @@ importers:
         version: 5.0.4
       vite:
         specifier: ^4.2.2
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1716,7 +1716,7 @@ importers:
         version: 5.0.4
       vite:
         specifier: ^4.2.2
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1758,7 +1758,7 @@ importers:
         version: 2.2.3(graphql@16.6.0)(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1800,7 +1800,7 @@ importers:
         version: 2.2.3(graphql@16.6.0)(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1812,7 +1812,7 @@ importers:
         version: 4.8.4
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1869,7 +1869,7 @@ importers:
         version: 0.0.7(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1887,7 +1887,7 @@ importers:
         version: 3.2.47(vue@3.2.47)
       vite:
         specifier: ^4.1.4
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1989,7 +1989,7 @@ importers:
         version: 2.0.35(typescript@4.9.5)(vue@3.2.47)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2013,7 +2013,7 @@ importers:
         version: 2.0.35(typescript@4.9.5)(vue@3.2.47)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2034,7 +2034,7 @@ importers:
         version: 3.2.47(vue@3.2.47)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2058,7 +2058,7 @@ importers:
         version: 3.2.47(vue@3.2.47)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2082,7 +2082,7 @@ importers:
         version: 3.2.47(vue@3.2.47)
       vite:
         specifier: ^4.1.4
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2103,7 +2103,7 @@ importers:
         version: 3.2.47(vue@3.2.47)
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2127,7 +2127,7 @@ importers:
         version: 3.2.47(vue@3.2.47)
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2154,7 +2154,7 @@ importers:
         version: 5.0.0
       vite:
         specifier: ^4.2.1
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2187,7 +2187,7 @@ importers:
         version: 5.1.3
       vite:
         specifier: ^4.0.3
-        version: 4.3.9(@types/node@15.14.9)
+        version: 4.3.9(@types/node@20.2.5)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2205,7 +2205,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2223,7 +2223,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2241,7 +2241,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2259,7 +2259,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2274,7 +2274,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2289,7 +2289,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.3.1
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2307,7 +2307,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2325,7 +2325,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2343,7 +2343,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.9(@types/node@15.14.9)
+        version: 4.3.9(@types/node@20.2.5)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2352,7 +2352,7 @@ importers:
     dependencies:
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2361,7 +2361,7 @@ importers:
     dependencies:
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2403,7 +2403,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2412,7 +2412,7 @@ importers:
     dependencies:
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2421,7 +2421,7 @@ importers:
     dependencies:
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2508,7 +2508,7 @@ importers:
         version: 0.3.10(react-dom@18.2.0)(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2529,7 +2529,7 @@ importers:
         version: 0.3.10(react-dom@18.2.0)(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
+        version: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -3231,7 +3231,7 @@ packages:
       '@brillout/eject': 0.1.2
       '@brillout/release-me': 0.0.8
       react: 18.2.0
-      vite: 4.3.5(@types/node@17.0.45)
+      vite: 4.3.5(@types/node@20.1.0)
       vite-plugin-ssr: link:vite-plugin-ssr
     dev: false
 
@@ -4375,7 +4375,7 @@ packages:
       debug: 4.3.4
       kolorist: 1.8.0
       resolve: 1.22.2
-      vite: 4.3.5(@types/node@17.0.45)
+      vite: 4.3.5(@types/node@20.1.0)
     transitivePeerDependencies:
       - preact
       - supports-color
@@ -4409,7 +4409,7 @@ packages:
       '@prefresh/utils': 1.1.3
       '@rollup/pluginutils': 4.2.1
       preact: 10.13.2
-      vite: 4.3.5(@types/node@17.0.45)
+      vite: 4.3.5(@types/node@20.1.0)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -4464,7 +4464,7 @@ packages:
       magic-string: 0.30.0
       svelte: 3.59.0
       svelte-hmr: 0.15.1(svelte@3.59.0)
-      vite: 4.3.5(@types/node@17.0.45)
+      vite: 4.3.5(@types/node@20.1.0)
       vitefu: 0.2.4(vite@4.3.5)
     transitivePeerDependencies:
       - supports-color
@@ -4840,7 +4840,6 @@ packages:
 
   /@types/node@20.1.0:
     resolution: {integrity: sha512-O+z53uwx64xY7D6roOi4+jApDGFg0qn6WHcxe5QeqjMaTezBO/mxdfFXIVAVVyNWKx84OmPB3L8kbVYOTeN34A==}
-    dev: true
 
   /@types/node@20.2.5:
     resolution: {integrity: sha512-JJulVEQXmiY9Px5axXHeYGLSjhkZEnD+MDPDGbCbIAbMslkKwmygtZFy1X6s/075Yo94sf8GuSlFfPzysQrWZQ==}
@@ -5124,7 +5123,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.19.6(@babel/core@7.21.8)
       magic-string: 0.26.7
       react-refresh: 0.14.0
-      vite: 4.3.5(@types/node@17.0.45)
+      vite: 4.3.5(@types/node@20.1.0)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -5172,7 +5171,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.19.6(@babel/core@7.21.8)
       magic-string: 0.27.0
       react-refresh: 0.14.0
-      vite: 4.3.5(@types/node@17.0.45)
+      vite: 4.3.5(@types/node@20.1.0)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -5188,7 +5187,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.19.6(@babel/core@7.21.8)
       magic-string: 0.27.0
       react-refresh: 0.14.0
-      vite: 4.3.9(@types/node@15.14.9)
+      vite: 4.3.9(@types/node@20.2.5)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -5226,49 +5225,49 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.3.5(@types/node@17.0.45)
+      vite: 4.3.5(@types/node@20.1.0)
       vue: 3.2.47
     dev: false
 
-  /@vitest/expect@0.32.4:
-    resolution: {integrity: sha512-m7EPUqmGIwIeoU763N+ivkFjTzbaBn0n9evsTOcde03ugy2avPs3kZbYmw3DkcH1j5mxhMhdamJkLQ6dM1bk/A==}
+  /@vitest/expect@0.34.1:
+    resolution: {integrity: sha512-q2CD8+XIsQ+tHwypnoCk8Mnv5e6afLFvinVGCq3/BOT4kQdVQmY6rRfyKkwcg635lbliLPqbunXZr+L1ssUWiQ==}
     dependencies:
-      '@vitest/spy': 0.32.4
-      '@vitest/utils': 0.32.4
+      '@vitest/spy': 0.34.1
+      '@vitest/utils': 0.34.1
       chai: 4.3.7
     dev: true
 
-  /@vitest/runner@0.32.4:
-    resolution: {integrity: sha512-cHOVCkiRazobgdKLnczmz2oaKK9GJOw6ZyRcaPdssO1ej+wzHVIkWiCiNacb3TTYPdzMddYkCgMjZ4r8C0JFCw==}
+  /@vitest/runner@0.34.1:
+    resolution: {integrity: sha512-YfQMpYzDsYB7yqgmlxZ06NI4LurHWfrH7Wy3Pvf/z/vwUSgq1zLAb1lWcItCzQG+NVox+VvzlKQrYEXb47645g==}
     dependencies:
-      '@vitest/utils': 0.32.4
+      '@vitest/utils': 0.34.1
       p-limit: 4.0.0
       pathe: 1.1.1
     dev: true
 
-  /@vitest/snapshot@0.32.4:
-    resolution: {integrity: sha512-IRpyqn9t14uqsFlVI2d7DFMImGMs1Q9218of40bdQQgMePwVdmix33yMNnebXcTzDU5eiV3eUsoxxH5v0x/IQA==}
+  /@vitest/snapshot@0.34.1:
+    resolution: {integrity: sha512-0O9LfLU0114OqdF8lENlrLsnn024Tb1CsS9UwG0YMWY2oGTQfPtkW+B/7ieyv0X9R2Oijhi3caB1xgGgEgclSQ==}
     dependencies:
-      magic-string: 0.30.0
+      magic-string: 0.30.2
       pathe: 1.1.1
       pretty-format: 29.6.0
     dev: true
 
-  /@vitest/spy@0.32.4:
-    resolution: {integrity: sha512-oA7rCOqVOOpE6rEoXuCOADX7Lla1LIa4hljI2MSccbpec54q+oifhziZIJXxlE/CvI2E+ElhBHzVu0VEvJGQKQ==}
+  /@vitest/spy@0.34.1:
+    resolution: {integrity: sha512-UT4WcI3EAPUNO8n6y9QoEqynGGEPmmRxC+cLzneFFXpmacivjHZsNbiKD88KUScv5DCHVDgdBsLD7O7s1enFcQ==}
     dependencies:
       tinyspy: 2.1.1
     dev: true
 
-  /@vitest/utils@0.32.4:
-    resolution: {integrity: sha512-Gwnl8dhd1uJ+HXrYyV0eRqfmk9ek1ASE/LWfTCuWMw+d07ogHqp4hEAV28NiecimK6UY9DpSEPh+pXBA5gtTBg==}
+  /@vitest/utils@0.34.1:
+    resolution: {integrity: sha512-/ql9dsFi4iuEbiNcjNHQWXBum7aL8pyhxvfnD9gNtbjR9fUKAjxhj4AA3yfLXg6gJpMGGecvtF8Au2G9y3q47Q==}
     dependencies:
       diff-sequences: 29.4.3
       loupe: 2.3.6
       pretty-format: 29.6.0
     dev: true
 
-  /@vue/apollo-composable@4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@4.9.5)(vue@3.2.47):
+  /@vue/apollo-composable@4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@5.1.6)(vue@3.2.47):
     resolution: {integrity: sha512-lErWL+9LGfWfdfrSYY3DQB/A8Asqs46MiKwmgKeKSj7fe01tx0UpH43aiwMGj+VgEzBZ9AfqEa/Bxf0Nff/NNw==}
     peerDependencies:
       '@apollo/client': ^3.4.13
@@ -5282,7 +5281,7 @@ packages:
       '@apollo/client': 3.7.14(graphql@16.6.0)(react-dom@18.2.0)(react@18.2.0)
       graphql: 16.6.0
       throttle-debounce: 3.0.1
-      ts-essentials: 9.3.2(typescript@4.9.5)
+      ts-essentials: 9.3.2(typescript@5.1.6)
       vue: 3.2.47
       vue-demi: 0.13.11(vue@3.2.47)
     transitivePeerDependencies:
@@ -8922,6 +8921,14 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
+    dev: false
+
+  /magic-string@0.30.2:
+    resolution: {integrity: sha512-lNZdu7pewtq/ZvWUp9Wpf/x7WzMTsR26TWV03BRZrXFsv+BI6dy8RAiKgm1uM/kyR0rCfUcqvOlXKG66KhIGug==}
+    engines: {node: '>=12'}
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.4.15
+    dev: true
 
   /make-dir@3.1.0:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
@@ -11909,8 +11916,8 @@ packages:
     resolution: {integrity: sha512-kRwSG8Zx4tjF9ZiyH4bhaebu+EDz1BOx9hOigYHlUW4xxI/wKIUQUqo018UlU4ar6ATPBsaMrdbKZ+tmPdohFA==}
     dev: true
 
-  /tinypool@0.5.0:
-    resolution: {integrity: sha512-paHQtnrlS1QZYKF/GnLoOM/DN9fqaGOFbCbxzAhwniySnzl9Ebk8w73/dd34DAhe/obUbPAOldTyYXQZxnPBPQ==}
+  /tinypool@0.7.0:
+    resolution: {integrity: sha512-zSYNUlYSMhJ6Zdou4cJwo/p7w5nmAH17GRfU/ui3ctvjXFErXXkruT4MWW6poDeXgCaIBlGLrfU6TbTXxyGMww==}
     engines: {node: '>=14.0.0'}
     dev: true
 
@@ -11973,12 +11980,12 @@ packages:
     resolution: {integrity: sha512-AqTiAOLcj85xS7vQ8QkAV41hPDIJ71XJB4RCUrzo/1GM2CQwhkJGaf9Hgr7BOugMRpgGUrqRg/DrBDl4H40+8g==}
     dev: false
 
-  /ts-essentials@9.3.2(typescript@4.9.5):
+  /ts-essentials@9.3.2(typescript@5.1.6):
     resolution: {integrity: sha512-JxKJzuWqH1MmH4ZFHtJzGEhkfN3QvVR3C3w+4BIoWeoY68UVVoA2Np/Bca9z0IPSErVCWhv439aT0We4Dks8kQ==}
     peerDependencies:
       typescript: '>=4.1.0'
     dependencies:
-      typescript: 4.9.5
+      typescript: 5.1.6
     dev: false
 
   /ts-invariant@0.10.3:
@@ -12175,7 +12182,6 @@ packages:
     resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
     engines: {node: '>=14.17'}
     hasBin: true
-    dev: true
 
   /uc.micro@1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
@@ -12503,12 +12509,12 @@ packages:
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      vite: 4.3.9(@types/node@15.14.9)
+      vite: 4.3.9(@types/node@20.2.5)
       vite-plugin-ssr: link:vite-plugin-ssr
     dev: false
 
-  /vite-node@0.32.4(@types/node@20.2.5):
-    resolution: {integrity: sha512-L2gIw+dCxO0LK14QnUMoqSYpa9XRGnTTTDjW2h19Mr+GR0EFj4vx52W41gFXfMLqpA00eK4ZjOVYo1Xk//LFEw==}
+  /vite-node@0.34.1(@types/node@20.2.5):
+    resolution: {integrity: sha512-odAZAL9xFMuAg8aWd7nSPT+hU8u2r9gU3LRm9QKjxBEF2rRdWpMuqkrkjvyVQEdNFiBctqr2Gg4uJYizm5Le6w==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
     dependencies:
@@ -12554,7 +12560,7 @@ packages:
       merge-anything: 5.1.6
       solid-js: 1.7.5
       solid-refresh: 0.5.2(solid-js@1.7.5)
-      vite: 4.3.5(@types/node@17.0.45)
+      vite: 4.3.5(@types/node@20.1.0)
       vitefu: 0.2.4(vite@4.3.5)
     transitivePeerDependencies:
       - supports-color
@@ -12690,7 +12696,6 @@ packages:
       rollup: 3.21.5
     optionalDependencies:
       fsevents: 2.3.2
-    dev: true
 
   /vite@4.3.8:
     resolution: {integrity: sha512-uYB8PwN7hbMrf4j1xzGDk/lqjsZvCDbt/JC5dyfxc19Pg8kRm14LinK/uq+HSLNswZEoKmweGdtpbnxRtrAXiQ==}
@@ -12797,11 +12802,11 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: 4.3.5(@types/node@17.0.45)
+      vite: 4.3.5(@types/node@20.1.0)
     dev: false
 
-  /vitest@0.32.4:
-    resolution: {integrity: sha512-3czFm8RnrsWwIzVDu/Ca48Y/M+qh3vOnF16czJm98Q/AN1y3B6PBsyV8Re91Ty5s7txKNjEhpgtGPcfdbh2MZg==}
+  /vitest@0.34.1:
+    resolution: {integrity: sha512-G1PzuBEq9A75XSU88yO5G4vPT20UovbC/2osB2KEuV/FisSIIsw7m5y2xMdB7RsAGHAfg2lPmp2qKr3KWliVlQ==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
     peerDependencies:
@@ -12834,26 +12839,26 @@ packages:
       '@types/chai': 4.3.5
       '@types/chai-subset': 1.3.3
       '@types/node': 20.2.5
-      '@vitest/expect': 0.32.4
-      '@vitest/runner': 0.32.4
-      '@vitest/snapshot': 0.32.4
-      '@vitest/spy': 0.32.4
-      '@vitest/utils': 0.32.4
+      '@vitest/expect': 0.34.1
+      '@vitest/runner': 0.34.1
+      '@vitest/snapshot': 0.34.1
+      '@vitest/spy': 0.34.1
+      '@vitest/utils': 0.34.1
       acorn: 8.9.0
       acorn-walk: 8.2.0
       cac: 6.7.14
       chai: 4.3.7
       debug: 4.3.4
       local-pkg: 0.4.3
-      magic-string: 0.30.0
+      magic-string: 0.30.2
       pathe: 1.1.1
       picocolors: 1.0.0
       std-env: 3.3.3
       strip-literal: 1.0.1
       tinybench: 2.5.0
-      tinypool: 0.5.0
+      tinypool: 0.7.0
       vite: 4.3.9(@types/node@20.2.5)
-      vite-node: 0.32.4(@types/node@20.2.5)
+      vite-node: 0.34.1(@types/node@20.2.5)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
