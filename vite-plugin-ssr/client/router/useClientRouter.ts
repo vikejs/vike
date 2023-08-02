@@ -204,7 +204,7 @@ function useClientRouter() {
       if (isAbortError(err)) {
         const errAbort = err
         logAbortErrorHandled(err, pageContext._isProduction, pageContext)
-        const pageContextAddition = errAbort._pageContextAddition
+        const pageContextAddition = errAbort._pageContextAbort
         if (pageContextAddition._urlRewrite) {
           await fetchAndRender({
             scrollTarget,

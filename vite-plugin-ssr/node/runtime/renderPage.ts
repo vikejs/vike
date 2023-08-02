@@ -249,8 +249,8 @@ async function renderPageAlreadyPrepared(
         )
         // throw render(statusCode)
         if (!handled.pageContextReturn) {
-          const abortCall = pc.cyan(errErrorPage._pageContextAddition._abortCall)
-          const abortCaller = pc.cyan(`throw ${errErrorPage._pageContextAddition._abortCaller}()`)
+          const abortCall = pc.cyan(errErrorPage._pageContextAbort._abortCall)
+          const abortCaller = pc.cyan(`throw ${errErrorPage._pageContextAbort._abortCaller}()`)
           assertWarning(
             false,
             `Failed to render error page because ${abortCall} was called: make sure ${abortCaller} doesn't occur while the error page is being rendered.`,
@@ -455,7 +455,7 @@ async function handleAbortError(
 > {
   logAbortErrorHandled(errAbort, getGlobalContext().isProduction, pageContextNominalPageInit)
 
-  const pageContextAddition = errAbort._pageContextAddition
+  const pageContextAddition = errAbort._pageContextAbort
   let pageContextSerialized: string
   if (pageContextNominalPageInit.isClientSideNavigation) {
     if (pageContextAddition._abortStatusCode) {

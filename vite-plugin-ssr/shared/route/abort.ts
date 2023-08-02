@@ -161,7 +161,7 @@ type AbortUndefined = {
 
 function AbortRender(pageContextAddition: PageContextRenderAbort): Error {
   const err = new Error('AbortRender')
-  objectAssign(err, { _pageContextAddition: pageContextAddition, [stamp]: true })
+  objectAssign(err, { _pageContextAbort: pageContextAddition, [stamp]: true })
   checkType<AbortError>(err)
   return err
 }
@@ -186,7 +186,7 @@ function RenderErrorPage({ pageContext = {} }: { pageContext?: Record<string, un
 }
 
 const stamp = '_isAbortError'
-type AbortError = { _pageContextAddition: PageContextRenderAbort }
+type AbortError = { _pageContextAbort: PageContextRenderAbort }
 function isAbortError(thing: unknown): thing is AbortError {
   return typeof thing === 'object' && thing !== null && stamp in thing
 }
@@ -210,7 +210,7 @@ function logAbortErrorHandled(
   if (isProduction) return
   const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal
   assert(urlCurrent)
-  const abortCall = err._pageContextAddition._abortCall
+  const abortCall = err._pageContextAbort._abortCall
   assertInfo(false, `${abortCall} intercepted while rendering URL ${urlCurrent}`, { onlyOnce: false })
 }
 

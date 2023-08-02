@@ -1081,7 +1081,7 @@ function prerenderForceExit() {
 
 function assertIsNotAbort(err: unknown, urlOr404: string) {
   if (!isAbortError(err)) return
-  const { _abortCall: abortCall, _abortCaller: abortCaller } = err._pageContextAddition
+  const { _abortCall: abortCall, _abortCaller: abortCaller } = err._pageContextAbort
   assertUsage(
     false,
     `${pc.cyan(abortCall)} intercepted while pre-rendering ${urlOr404} but ${pc.cyan(
