@@ -1,10 +1,12 @@
-import { StaticHostDocIntro, StaticHostDocOutro } from '../components/static-host'
+import { StaticHostDocIntro, StaticHostDocOutro, StaticHostDocStrategies } from '../components/static-host'
 import { Link } from '@brillout/docpress'
-
-> For deploying SSR to Netlify, see <Link href="/netlify-functions" />.
 
 <StaticHostDocIntro
   staticHostLink={<>, such as <a href="https://www.netlify.com/">Netlify</a></>}
 />
+
+> For deploying SSR, see <Link href="/netlify-functions" />.
+
+<StaticHostDocStrategies />
 
 <StaticHostDocOutro />

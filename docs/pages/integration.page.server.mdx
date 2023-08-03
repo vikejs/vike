@@ -1,11 +1,16 @@
 import { Link } from '@brillout/docpress'
 import { JustAMiddleware } from '../components'
 
-From an architectural perspective, vite-plugin-ssr is highly versatile:
- - From a server perspective, vite-plugin-ssr is <Link text="just a server-agnostic middleware" href="#server-side-tools" />.
- - We control how pages are rendered.
+If the tool you want to use isn't in the list of integration guides, you'll still most likely be able to use it.
 
-This means we can use vite-plugin-ssr with whatever tool we want.
+Vite-plugin-ssr is versatile:
+ - From an architectural perspective, <Link text="vite-plugin-ssr only takes care of the frontend" href="/architecture" />: you keep control over the rest of your stack and architecture.
+ - From a server perspective, vite-plugin-ssr is <Link text="just a middleware" href="#server-side-tools" />: you can embed vite-plugin-ssr into any server.
+ - You have full control over how pages are rendered, which means that you can use any <Link text="UI tool" href="#ui-tool" /> and any <Link text="client-side tool" href="#client-side-tools" />.
+
+In principle, you should be able to use vite-plugin-ssr with any tool you want.
+
+> If you struggle integrating a tool, don't hesitate to [create a new GitHub Discussion](https://github.com/brillout/vite-plugin-ssr/discussions/new) &mdash; we are responsive and looking forward to assist you.
 
 
 ## UI tools
@@ -15,7 +20,7 @@ This means we can use vite-plugin-ssr with whatever tool we want.
 // Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
-// This can be any UI framework (React, Vue, Svelte, ...)
+// This can be any UI framework (React, Vue, Solid, Svelte, ...)
 import renderToHtml from 'some-ui-framework'
 
 export { render }
@@ -26,10 +31,10 @@ async function render(pageContext) {
   // `pageContex.Page`; we can export any `Page` value we want and do whatever we want with it.
   const { Page } = pageContext
 
-  // We have control over how we use our UI framework to render our pages to HTML
+  // We control how we use our UI framework to render our pages to HTML
   const pageHtml = await renderToHtml(Page)
 
-  // We have control over the entire HTML
+  // We control the entire HTML
   return escapeInject`<html>
     <body>
       <head>
@@ -54,19 +59,19 @@ import { hydrateDom } from 'some-ui-framework'
 
 async render(pageContex) {
   const { Page } = pageContext
-  // We have control over how our pages are hydrated
+  // We control how our pages are hydrated
   await hydrateDom(Page)
 }
 ```
 
-Since we control how our pages are rendered to HTML and hydrated, we can use:
+Since you control how your pages are rendered, you can use:
 - Any UI framework (React 16, React 17, Vue 2, Vue 3, `petite-vue`, Svelte, Solid, Preact, ...)
 - Any UI library (Vuex, Redux, Pinia, Relay, Apollo GraphQL, Recoil, ...)
 
-And, more importantly, integrating a UI tool is simply a matter of following its official installation guide.
+Integrating a UI tool is usually only a matter of following its official installation guide.
 
 
-## Browser-side tools
+## Client-side tools
 
 ```js
 // /renderer/_default.page.client.js
@@ -96,12 +101,12 @@ function init() {
 }
 ```
 
-We can use:
+You can use:
  - Any CSS framework (Tailwind CSS, Bulma, Bootstrap, Material Design, ...)
- - Any browser library (Vanilla JS component libraries, Bugsnag, Sentry, jQuery, Google Analytics, ...)
+ - Any client-side library (Vanilla JS component libraries, Bugsnag, Sentry, jQuery, Google Analytics, ...)
  - Any browser technology (Service Workers, PWA, ...)
 
-Integrating a browser tool is only a matter of following its official installation guide.
+Integrating a client-side tool is usually only a matter of following its official installation guide.
 
 
 ## Server-side tools
@@ -129,4 +134,4 @@ Official examples: [GitHub > `brillout/vite-plugin-ssr` > `examples/`](https://g
 
 Beyond the official examples, many tools have community examples of being used with `vite-plugin-ssr` &ndash; search this website (`CTRL+K`) for the tool you want an example of.
 
-If an example is missing/outdated, contributions are welcome to create/improve one.
+If an example is missing/outdated, contribution welcome to create/improve one.

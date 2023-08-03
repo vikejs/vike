@@ -11,10 +11,10 @@ import { renderPage } from 'vite-plugin-ssr/server'
 someServer.addRoute({ method: 'GET', route: '*' }, async (request) => {
   const pageContextInit = { urlOriginal: request.url }
   const pageContext = await renderPage(pageContextInit)
-  const { body, contentType, statusCode } = pageContext.httpResponse
-  const response = { body, contentType, statusCode }
+  const { body, statusCode, headers } = pageContext.httpResponse
+  const response = { body, statusCode, headers }
   return response
 })
 ```
 
-Instead of using a server, you can <Link text="pre-render" href="/pre-rendering" /> your pages to remove the need for a production server and deploy to a static host instead.
+Alternatively, you can <Link text="pre-render" href="/pre-rendering" /> your pages to remove the need for a production server and deploy to a <Link text="static host" href="/static-hosts" /> instead.
