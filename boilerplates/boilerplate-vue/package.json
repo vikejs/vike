@@ -15,7 +15,7 @@
     "express": "^4.18.1",
     "sirv": "^2.0.2",
     "vite": "^4.0.3",
-    "vite-plugin-ssr": "^0.4.133",
+    "vite-plugin-ssr": "^0.4.134",
     "vue": "^3.2.33"
   }
 }

@@ -9,6 +9,6 @@
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
     "vite": "^4.0.3",
-    "vite-plugin-ssr": "0.4.133"
+    "vite-plugin-ssr": "0.4.134"
   }
 }

@@ -17,6 +17,6 @@
     "telefunc": "^0.1.49",
     "typescript": "^5.0.4",
     "vite": "^4.2.2",
-    "vite-plugin-ssr": "0.4.133"
+    "vite-plugin-ssr": "0.4.134"
   }
 }

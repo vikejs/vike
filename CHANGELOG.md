@@ -1,3 +1,41 @@
+## [0.4.134](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.133...v0.4.134) (2023-08-03)
+
+
+### Bug Fixes
+
+* align vite(-plugin-ssr) tag colors ([b71d927](https://github.com/brillout/vite-plugin-ssr/commit/b71d9276be0a17724fef73e556d808d63fbb0263))
+* also install require shim in dev ([40b6836](https://github.com/brillout/vite-plugin-ssr/commit/40b6836f4651d7619973b74a1db59c826111202b))
+* also retrieve pageContext JSON when pageContextInit adds custom props ([bbc6d12](https://github.com/brillout/vite-plugin-ssr/commit/bbc6d122e27b9c3de96731784836e77f48366e71))
+* call client-side guard() hook after retrieving pageContext from server ([fee58b2](https://github.com/brillout/vite-plugin-ssr/commit/fee58b2613ab4735ca198bab620d2f0460109957))
+* consolidate `throw renderErrorPage()` and `throw renderUrl()` into a single utility `throw render()` ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([3c2be02](https://github.com/brillout/vite-plugin-ssr/commit/3c2be027841d4b38cc5abfde6db9ea34f817b641))
+* fetch server-side pageContext before calling client-side onBeforeRender hook ([c7d574c](https://github.com/brillout/vite-plugin-ssr/commit/c7d574c8f6331e8146bda3d3ec00ef62f6736349))
+* fix error page client-side rendering ([cb82f14](https://github.com/brillout/vite-plugin-ssr/commit/cb82f14196959461a5b2012cfeb024663facea9f))
+* gracefully handle non-serilizable pageContext values ([9bedf61](https://github.com/brillout/vite-plugin-ssr/commit/9bedf61e7f0c00ee7ef7426faa30e5cb7fa75598))
+* hide redirect() statusCode option ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([5ae9243](https://github.com/brillout/vite-plugin-ssr/commit/5ae924312657ce60286806acdb0d2fdd7889c2f3))
+* improve 404 hint ([f9bd674](https://github.com/brillout/vite-plugin-ssr/commit/f9bd6746b603380c74077e0c9ac6e50c34295368))
+* improve client-side handling of non-serialiable/missing pageContext value ([ed5335f](https://github.com/brillout/vite-plugin-ssr/commit/ed5335f98ee26fd880f28bc22516f369f1e4f946))
+* improve error message upon client runtime conflict ([#750](https://github.com/brillout/vite-plugin-ssr/issues/750)) ([62a4bf8](https://github.com/brillout/vite-plugin-ssr/commit/62a4bf848a20101e14392207f3599040fecbc463))
+* improve error upon aborting pre-rendering ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([3226c3e](https://github.com/brillout/vite-plugin-ssr/commit/3226c3eb2ba8cb0cbf0df6823346a134f7e79ac0))
+* improve error upon invalid config.build.outDir (fix [#1046](https://github.com/brillout/vite-plugin-ssr/issues/1046)) ([d958a41](https://github.com/brillout/vite-plugin-ssr/commit/d958a41497477c3edb2f4d929f5caa015be47df6))
+* improve logging of abort errors ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([61d3f71](https://github.com/brillout/vite-plugin-ssr/commit/61d3f7119d7e6cb38242e1f27cc816fb2ec21d46))
+* improve require shim ([56fc5b3](https://github.com/brillout/vite-plugin-ssr/commit/56fc5b3e945a1086dab5259a2c2e341768e44e86))
+* improve routes table ([40818a6](https://github.com/brillout/vite-plugin-ssr/commit/40818a6fc26f38c32128244fdc9a092ca0f70767))
+* improve serialization error ([b720277](https://github.com/brillout/vite-plugin-ssr/commit/b72027751e869c03d301d9bc33a1969517d0cb7c))
+* set `includeAssetsImportedByServer` to `true` by default ([67aa8d4](https://github.com/brillout/vite-plugin-ssr/commit/67aa8d4cf3edd474c52b45066ffa1affeb62338f))
+* show warning instead of error upon dangerous HTML strings ([#999](https://github.com/brillout/vite-plugin-ssr/issues/999)) ([846a92e](https://github.com/brillout/vite-plugin-ssr/commit/846a92ee74ad2f006ebd60fae60a3625fbc12e6a))
+* simplify and improve warning about error page missing ([668e971](https://github.com/brillout/vite-plugin-ssr/commit/668e971faba2e3d4dc3755b71cf8832e7f3ae4cb))
+* use more nominal hook lifecycle for client-side error page rendering ([145e9ba](https://github.com/brillout/vite-plugin-ssr/commit/145e9ba0225efc7e302aa18bcd613e39dd7536f7))
+* V1 design config HMR minor fix ([ad15d8c](https://github.com/brillout/vite-plugin-ssr/commit/ad15d8ca42815215272d0ac5a992d264302d5bd8))
+
+
+### Features
+
+* `throw reload()` ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([6d86708](https://github.com/brillout/vite-plugin-ssr/commit/6d8670895498ab834a5c33fceb0cd75aa2329255))
+* automatically normalize and redirect URLs ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926), fix [#949](https://github.com/brillout/vite-plugin-ssr/issues/949)) ([4b774bc](https://github.com/brillout/vite-plugin-ssr/commit/4b774bc1762201b93ddb0373369016bc7f82f4d6))
+* `trhow redirect()` ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([199e6a7](https://github.com/brillout/vite-plugin-ssr/commit/199e6a7ec8d52ea65924aa2f00f4ea6ea50aba76))
+
+
+
 ## [0.4.133](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.132...v0.4.133) (2023-07-04)
 
 

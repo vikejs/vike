@@ -21,6 +21,6 @@
     "react-dom": "^18.2.0",
     "sirv": "^2.0.2",
     "vite": "^4.0.3",
-    "vite-plugin-ssr": "^0.4.133"
+    "vite-plugin-ssr": "^0.4.134"
   }
 }
