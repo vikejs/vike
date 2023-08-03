@@ -1,3 +1,5 @@
+- Remove contentType with headers everywhere in docs
+
 - Implement config.redirects
 - By default, only call guard() hooks on the server-side?
 - Seems like passToClient is already cumulative for 0.4 design, should be as well for v1 design
