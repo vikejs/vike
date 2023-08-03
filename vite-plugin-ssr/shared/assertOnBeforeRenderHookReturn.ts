@@ -18,8 +18,6 @@ function assertOnBeforeRenderHookReturn<Keys extends readonly string[]>(
   )
   assertHookReturnedObject(hookReturnValue, ['pageContext'] as const, errPrefix)
   if (hookReturnValue.pageContext) {
-    assertPageContextProvidedByUser(hookReturnValue['pageContext'], {
-      hook: { hookName: 'onBeforeRender', hookFilePath }
-    })
+    assertPageContextProvidedByUser(hookReturnValue['pageContext'], { hookName: 'onBeforeRender', hookFilePath })
   }
 }

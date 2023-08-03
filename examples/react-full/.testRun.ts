@@ -126,7 +126,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
       )
       if (!isV1Design) {
         expectLog(
-          '[Warning] `throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/abort',
+          '[Warning] `throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/render',
           (log) => log.logSource === 'stderr'
         )
       }

@@ -5,7 +5,6 @@ export { assertInfo }
 export { getProjectError }
 export { addOnBeforeLogHook }
 export { getAssertErrMsg }
-export { addAssertColorer }
 export { overwriteAssertProductionLogger }
 export { isBug }
 
@@ -13,11 +12,11 @@ import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace
 import { getGlobalObject } from './getGlobalObject'
 import { isObject } from './isObject'
 import { projectInfo } from './projectInfo'
+import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
   onBeforeLog?: () => void
   logger: Logger
-  colorer: Colorer
   showStackTraceList: WeakSet<Error>
 }>('utils/assert.ts', {
   alreadyLogged: new Set(),
@@ -29,12 +28,9 @@ const globalObject = getGlobalObject<{
       console.warn(msg)
     }
   },
-  // No colors in production
-  colorer: (str) => str,
   showStackTraceList: new WeakSet()
 })
 type Logger = (msg: string | Error, logType: 'warn' | 'info') => void
-type Colorer = (str: string, color: 'red' | 'blue' | 'yellow') => string
 
 const projectTag = `[${projectInfo.npmPackageName}]` as const
 const projectTagWithVersion = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]` as const
@@ -59,6 +55,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   ]
     .filter(Boolean)
     .join(' ')
+  errMsg = addWhitespace(errMsg)
   errMsg = addPrefixAssertType(errMsg, 'Bug')
   errMsg = addPrefixProjctName(errMsg, true)
   const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
@@ -73,6 +70,7 @@ function assertUsage(
   { showStackTrace }: { showStackTrace?: true } = {}
 ): asserts condition {
   if (condition) return
+  errMsg = addWhitespace(errMsg)
   errMsg = addPrefixAssertType(errMsg, 'Wrong Usage')
   errMsg = addPrefixProjctName(errMsg)
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
@@ -84,6 +82,7 @@ function assertUsage(
 }
 
 function getProjectError(errMsg: string) {
+  errMsg = addWhitespace(errMsg)
   errMsg = addPrefixAssertType(errMsg, 'Error')
   errMsg = addPrefixProjctName(errMsg)
   const projectError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
@@ -96,6 +95,7 @@ function assertWarning(
   { onlyOnce, showStackTrace }: { onlyOnce: boolean | string; showStackTrace?: true }
 ): void {
   if (condition) return
+  msg = addWhitespace(msg)
   msg = addPrefixAssertType(msg, 'Warning')
   msg = addPrefixProjctName(msg)
   if (onlyOnce) {
@@ -121,7 +121,7 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
   if (condition) {
     return
   }
-  msg = addPrefixAssertType(msg, 'Info')
+  msg = addWhitespace(msg)
   msg = addPrefixProjctName(msg)
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
@@ -140,13 +140,19 @@ function addOnBeforeLogHook(onBeforeLog: () => void) {
   globalObject.onBeforeLog = onBeforeLog
 }
 
-type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning' | 'Info'
+type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
 function addPrefixAssertType(msg: string, tag: Tag): string {
   let prefix = `[${tag}]`
-  const color = tag === 'Info' ? 'blue' : tag === 'Warning' ? 'yellow' : 'red'
-  prefix = globalObject.colorer(prefix, color)
-  const whitespace = msg.startsWith('[') ? '' : ' '
-  return `${prefix}${whitespace}${msg}`
+  const color = tag === 'Warning' ? 'yellow' : 'red'
+  prefix = pc[color](prefix)
+  return `${prefix}${msg}`
+}
+function addWhitespace(msg: string) {
+  if (msg.startsWith('[')) {
+    return msg
+  } else {
+    return ` ${msg}`
+  }
 }
 function addPrefixProjctName(msg: string, showProjectVersion = false): string {
   const prefix = showProjectVersion ? projectTagWithVersion : projectTag
@@ -195,9 +201,6 @@ function removeErrMsg(stack: unknown): string {
 
 function overwriteAssertProductionLogger(logger: Logger): void {
   globalObject.logger = logger
-}
-function addAssertColorer(colorer: Colorer): void {
-  globalObject.colorer = colorer
 }
 
 function isBug(err: unknown): boolean {

@@ -4,7 +4,7 @@ export type { PreloadFilter }
 export type { InjectFilterEntry }
 
 import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../utils'
-import { serializePageContextClientSide } from '../serializePageContextClientSide'
+import { type PageContextSerialization, serializePageContextClientSide } from '../serializePageContextClientSide'
 import { sanitizeJson } from './sanitizeJson'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags'
 import { getViteDevScripts } from './getViteDevScripts'
@@ -13,7 +13,6 @@ import type { PageContextInjectAssets } from '../injectAssets'
 import type { InjectToStream } from '../stream/react-streaming'
 import type { PageAsset } from '../../renderPage/getPageAssets'
 import { getGlobalContext } from '../../globalContext'
-import type { PageConfig } from '../../../../shared/page-configs/PageConfig'
 
 type PreloadFilter = null | ((assets: InjectFilterEntry[]) => InjectFilterEntry[])
 type PreloadFilterInject = false | 'HTML_BEGIN' | 'HTML_END'
@@ -34,7 +33,7 @@ type HtmlTag = {
   position: 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 }
 async function getHtmlTags(
-  pageContext: PageContextInjectAssets & { _isStream: boolean },
+  pageContext: { _isStream: boolean } & PageContextInjectAssets,
   injectToStream: null | InjectToStream,
   injectFilter: PreloadFilter
 ) {
@@ -169,12 +168,7 @@ async function getMergedScriptTag(pageAssets: PageAsset[], isProduction: boolean
   return scriptTag
 }
 
-function getPageContextTag(pageContext: {
-  _pageId: string
-  _passToClient: string[]
-  is404: null | boolean
-  _pageConfigs: PageConfig[]
-}): string {
+function getPageContextTag(pageContext: PageContextSerialization): string {
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
   const htmlTag = `<script id="vite-plugin-ssr_pageContext" type="application/json">${pageContextSerialized}</script>`
   // @ts-expect-error

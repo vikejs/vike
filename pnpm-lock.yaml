@@ -26,8 +26,8 @@ importers:
         specifier: ^0.1.6
         version: 0.1.6(typescript@4.9.5)
       vitest:
-        specifier: ^0.32.4
-        version: 0.32.4
+        specifier: ^0.34.1
+        version: 0.34.1
 
   boilerplates:
     dependencies:
@@ -262,6 +262,45 @@ importers:
       vite-plugin-ssr:
         specifier: link:../vite-plugin-ssr
         version: link:../vite-plugin-ssr
+
+  examples/auth:
+    dependencies:
+      '@types/express':
+        specifier: ^4.17.17
+        version: 4.17.17
+      '@types/react':
+        specifier: ^18.0.8
+        version: 18.2.15
+      '@types/react-dom':
+        specifier: ^18.0.3
+        version: 18.2.7
+      '@vitejs/plugin-react':
+        specifier: ^3.0.0
+        version: 3.1.0(vite@4.3.9)
+      cookie-parser:
+        specifier: ^1.4.6
+        version: 1.4.6
+      express:
+        specifier: ^4.18.2
+        version: 4.18.2
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      typescript:
+        specifier: ^5.0.2
+        version: 5.1.3
+      vike-react:
+        specifier: ^0.1.6
+        version: 0.1.6(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.9)
+      vite:
+        specifier: ^4.0.3
+        version: 4.3.9(@types/node@20.2.5)
+      vite-plugin-ssr:
+        specifier: link:../../vite-plugin-ssr
+        version: link:../../vite-plugin-ssr
 
   examples/base-url:
     dependencies:
@@ -723,7 +762,7 @@ importers:
         version: 4.2.1(vite@4.3.5)(vue@3.2.47)
       '@vue/apollo-composable':
         specifier: ^4.0.0-beta.4
-        version: 4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@4.9.5)(vue@3.2.47)
+        version: 4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@5.1.6)(vue@3.2.47)
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.2.47
@@ -765,7 +804,7 @@ importers:
         version: 4.2.1(vite@4.3.5)(vue@3.2.47)
       '@vue/apollo-composable':
         specifier: ^4.0.0-beta.4
-        version: 4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@4.9.5)(vue@3.2.47)
+        version: 4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@5.1.6)(vue@3.2.47)
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.2.47
@@ -2504,8 +2543,8 @@ importers:
         specifier: ^0.5.4
         version: 0.5.4
       '@brillout/picocolors':
-        specifier: ^1.0.4
-        version: 1.0.4
+        specifier: ^1.0.6
+        version: 1.0.6
       '@brillout/vite-plugin-import-build':
         specifier: ^0.2.18
         version: 0.2.18
@@ -2559,8 +2598,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       typescript:
-        specifier: ^5.0.2
-        version: 5.0.4
+        specifier: ^5.1.6
+        version: 5.1.6
       vite:
         specifier: ^4.2.1
         version: 4.3.5(@types/node@20.1.0)
@@ -3148,8 +3187,8 @@ packages:
     resolution: {integrity: sha512-3b/5PLhJ4xMF/cyY1aJXIMQT0TONFFgUX3tH2wfdrHe78OYe8igl0iaHkJ3kzgN0V+x562Of2AoMwThtLaAj5Q==}
     dev: true
 
-  /@brillout/picocolors@1.0.4:
-    resolution: {integrity: sha512-rhZBVyrRCb53T9xIGoEjZQ6O4Um3XQWcQ1z2VL2eBQBtJYCsABUUNE/isqbnts3XD1sAkisDF2L3OjJeIgrznQ==}
+  /@brillout/picocolors@1.0.6:
+    resolution: {integrity: sha512-Ln5rMxhWyGaQxZu6LTbA7izEI7xytbvK9QFwuH3Rj61rAPArLeKYMUmNa3f8COHl3++iBs98gTu9Slmyvnst2Q==}
     dev: false
 
   /@brillout/release-me@0.0.8:
@@ -5190,45 +5229,45 @@ packages:
       vue: 3.2.47
     dev: false
 
-  /@vitest/expect@0.32.4:
-    resolution: {integrity: sha512-m7EPUqmGIwIeoU763N+ivkFjTzbaBn0n9evsTOcde03ugy2avPs3kZbYmw3DkcH1j5mxhMhdamJkLQ6dM1bk/A==}
+  /@vitest/expect@0.34.1:
+    resolution: {integrity: sha512-q2CD8+XIsQ+tHwypnoCk8Mnv5e6afLFvinVGCq3/BOT4kQdVQmY6rRfyKkwcg635lbliLPqbunXZr+L1ssUWiQ==}
     dependencies:
-      '@vitest/spy': 0.32.4
-      '@vitest/utils': 0.32.4
+      '@vitest/spy': 0.34.1
+      '@vitest/utils': 0.34.1
       chai: 4.3.7
     dev: true
 
-  /@vitest/runner@0.32.4:
-    resolution: {integrity: sha512-cHOVCkiRazobgdKLnczmz2oaKK9GJOw6ZyRcaPdssO1ej+wzHVIkWiCiNacb3TTYPdzMddYkCgMjZ4r8C0JFCw==}
+  /@vitest/runner@0.34.1:
+    resolution: {integrity: sha512-YfQMpYzDsYB7yqgmlxZ06NI4LurHWfrH7Wy3Pvf/z/vwUSgq1zLAb1lWcItCzQG+NVox+VvzlKQrYEXb47645g==}
     dependencies:
-      '@vitest/utils': 0.32.4
+      '@vitest/utils': 0.34.1
       p-limit: 4.0.0
       pathe: 1.1.1
     dev: true
 
-  /@vitest/snapshot@0.32.4:
-    resolution: {integrity: sha512-IRpyqn9t14uqsFlVI2d7DFMImGMs1Q9218of40bdQQgMePwVdmix33yMNnebXcTzDU5eiV3eUsoxxH5v0x/IQA==}
+  /@vitest/snapshot@0.34.1:
+    resolution: {integrity: sha512-0O9LfLU0114OqdF8lENlrLsnn024Tb1CsS9UwG0YMWY2oGTQfPtkW+B/7ieyv0X9R2Oijhi3caB1xgGgEgclSQ==}
     dependencies:
-      magic-string: 0.30.0
+      magic-string: 0.30.2
       pathe: 1.1.1
       pretty-format: 29.6.0
     dev: true
 
-  /@vitest/spy@0.32.4:
-    resolution: {integrity: sha512-oA7rCOqVOOpE6rEoXuCOADX7Lla1LIa4hljI2MSccbpec54q+oifhziZIJXxlE/CvI2E+ElhBHzVu0VEvJGQKQ==}
+  /@vitest/spy@0.34.1:
+    resolution: {integrity: sha512-UT4WcI3EAPUNO8n6y9QoEqynGGEPmmRxC+cLzneFFXpmacivjHZsNbiKD88KUScv5DCHVDgdBsLD7O7s1enFcQ==}
     dependencies:
       tinyspy: 2.1.1
     dev: true
 
-  /@vitest/utils@0.32.4:
-    resolution: {integrity: sha512-Gwnl8dhd1uJ+HXrYyV0eRqfmk9ek1ASE/LWfTCuWMw+d07ogHqp4hEAV28NiecimK6UY9DpSEPh+pXBA5gtTBg==}
+  /@vitest/utils@0.34.1:
+    resolution: {integrity: sha512-/ql9dsFi4iuEbiNcjNHQWXBum7aL8pyhxvfnD9gNtbjR9fUKAjxhj4AA3yfLXg6gJpMGGecvtF8Au2G9y3q47Q==}
     dependencies:
       diff-sequences: 29.4.3
       loupe: 2.3.6
       pretty-format: 29.6.0
     dev: true
 
-  /@vue/apollo-composable@4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@4.9.5)(vue@3.2.47):
+  /@vue/apollo-composable@4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@5.1.6)(vue@3.2.47):
     resolution: {integrity: sha512-lErWL+9LGfWfdfrSYY3DQB/A8Asqs46MiKwmgKeKSj7fe01tx0UpH43aiwMGj+VgEzBZ9AfqEa/Bxf0Nff/NNw==}
     peerDependencies:
       '@apollo/client': ^3.4.13
@@ -5242,7 +5281,7 @@ packages:
       '@apollo/client': 3.7.14(graphql@16.6.0)(react-dom@18.2.0)(react@18.2.0)
       graphql: 16.6.0
       throttle-debounce: 3.0.1
-      ts-essentials: 9.3.2(typescript@4.9.5)
+      ts-essentials: 9.3.2(typescript@5.1.6)
       vue: 3.2.47
       vue-demi: 0.13.11(vue@3.2.47)
     transitivePeerDependencies:
@@ -6560,8 +6599,21 @@ packages:
     resolution: {integrity: sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A==}
     dev: false
 
+  /cookie-parser@1.4.6:
+    resolution: {integrity: sha512-z3IzaNjdwUC2olLIB5/ITd0/setiaFMLYiZJle7xg5Fe9KWAceil7xszYfHHBtDFYLSgJduS2Ty0P1uJdPDJeA==}
+    engines: {node: '>= 0.8.0'}
+    dependencies:
+      cookie: 0.4.1
+      cookie-signature: 1.0.6
+    dev: false
+
   /cookie-signature@1.0.6:
     resolution: {integrity: sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ==}
+    dev: false
+
+  /cookie@0.4.1:
+    resolution: {integrity: sha512-ZwrFkGJxUR3EIoXtO+yVE69Eb7KlixbaeAWfBQB9vVsNn/o+Yw69gBWSSDK825hQNdN+wF8zELf3dFNl/kxkUA==}
+    engines: {node: '>= 0.6'}
     dev: false
 
   /cookie@0.4.2:
@@ -8869,6 +8921,14 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
+    dev: false
+
+  /magic-string@0.30.2:
+    resolution: {integrity: sha512-lNZdu7pewtq/ZvWUp9Wpf/x7WzMTsR26TWV03BRZrXFsv+BI6dy8RAiKgm1uM/kyR0rCfUcqvOlXKG66KhIGug==}
+    engines: {node: '>=12'}
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.4.15
+    dev: true
 
   /make-dir@3.1.0:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
@@ -11856,8 +11916,8 @@ packages:
     resolution: {integrity: sha512-kRwSG8Zx4tjF9ZiyH4bhaebu+EDz1BOx9hOigYHlUW4xxI/wKIUQUqo018UlU4ar6ATPBsaMrdbKZ+tmPdohFA==}
     dev: true
 
-  /tinypool@0.5.0:
-    resolution: {integrity: sha512-paHQtnrlS1QZYKF/GnLoOM/DN9fqaGOFbCbxzAhwniySnzl9Ebk8w73/dd34DAhe/obUbPAOldTyYXQZxnPBPQ==}
+  /tinypool@0.7.0:
+    resolution: {integrity: sha512-zSYNUlYSMhJ6Zdou4cJwo/p7w5nmAH17GRfU/ui3ctvjXFErXXkruT4MWW6poDeXgCaIBlGLrfU6TbTXxyGMww==}
     engines: {node: '>=14.0.0'}
     dev: true
 
@@ -11920,12 +11980,12 @@ packages:
     resolution: {integrity: sha512-AqTiAOLcj85xS7vQ8QkAV41hPDIJ71XJB4RCUrzo/1GM2CQwhkJGaf9Hgr7BOugMRpgGUrqRg/DrBDl4H40+8g==}
     dev: false
 
-  /ts-essentials@9.3.2(typescript@4.9.5):
+  /ts-essentials@9.3.2(typescript@5.1.6):
     resolution: {integrity: sha512-JxKJzuWqH1MmH4ZFHtJzGEhkfN3QvVR3C3w+4BIoWeoY68UVVoA2Np/Bca9z0IPSErVCWhv439aT0We4Dks8kQ==}
     peerDependencies:
       typescript: '>=4.1.0'
     dependencies:
-      typescript: 4.9.5
+      typescript: 5.1.6
     dev: false
 
   /ts-invariant@0.10.3:
@@ -12110,12 +12170,18 @@ packages:
     resolution: {integrity: sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==}
     engines: {node: '>=12.20'}
     hasBin: true
+    dev: false
 
   /typescript@5.1.3:
     resolution: {integrity: sha512-XH627E9vkeqhlZFQuL+UsyAXEnibT0kWR2FWONlr4sTjvxyJYnyefgrkyECLzM5NenmKzRAy2rR/OlYLA1HkZw==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
+
+  /typescript@5.1.6:
+    resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
+    engines: {node: '>=14.17'}
+    hasBin: true
 
   /uc.micro@1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
@@ -12433,8 +12499,22 @@ packages:
       vite-plugin-ssr: link:vite-plugin-ssr
     dev: false
 
-  /vite-node@0.32.4(@types/node@20.2.5):
-    resolution: {integrity: sha512-L2gIw+dCxO0LK14QnUMoqSYpa9XRGnTTTDjW2h19Mr+GR0EFj4vx52W41gFXfMLqpA00eK4ZjOVYo1Xk//LFEw==}
+  /vike-react@0.1.6(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.9):
+    resolution: {integrity: sha512-nGh9/RTKTNx1yVCgBcYszDo8wdRuXcdMuEunu56IIKQc/mAmvNHjStQ7a+eFcN1UTCvxtJVeb2aUVb6wpih2iA==}
+    peerDependencies:
+      react: 18.x.x
+      react-dom: 18.x.x
+      vite: ^4.3.8
+      vite-plugin-ssr: ^0.4.132
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      vite: 4.3.9(@types/node@20.2.5)
+      vite-plugin-ssr: link:vite-plugin-ssr
+    dev: false
+
+  /vite-node@0.34.1(@types/node@20.2.5):
+    resolution: {integrity: sha512-odAZAL9xFMuAg8aWd7nSPT+hU8u2r9gU3LRm9QKjxBEF2rRdWpMuqkrkjvyVQEdNFiBctqr2Gg4uJYizm5Le6w==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
     dependencies:
@@ -12725,8 +12805,8 @@ packages:
       vite: 4.3.5(@types/node@20.1.0)
     dev: false
 
-  /vitest@0.32.4:
-    resolution: {integrity: sha512-3czFm8RnrsWwIzVDu/Ca48Y/M+qh3vOnF16czJm98Q/AN1y3B6PBsyV8Re91Ty5s7txKNjEhpgtGPcfdbh2MZg==}
+  /vitest@0.34.1:
+    resolution: {integrity: sha512-G1PzuBEq9A75XSU88yO5G4vPT20UovbC/2osB2KEuV/FisSIIsw7m5y2xMdB7RsAGHAfg2lPmp2qKr3KWliVlQ==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
     peerDependencies:
@@ -12759,26 +12839,26 @@ packages:
       '@types/chai': 4.3.5
       '@types/chai-subset': 1.3.3
       '@types/node': 20.2.5
-      '@vitest/expect': 0.32.4
-      '@vitest/runner': 0.32.4
-      '@vitest/snapshot': 0.32.4
-      '@vitest/spy': 0.32.4
-      '@vitest/utils': 0.32.4
+      '@vitest/expect': 0.34.1
+      '@vitest/runner': 0.34.1
+      '@vitest/snapshot': 0.34.1
+      '@vitest/spy': 0.34.1
+      '@vitest/utils': 0.34.1
       acorn: 8.9.0
       acorn-walk: 8.2.0
       cac: 6.7.14
       chai: 4.3.7
       debug: 4.3.4
       local-pkg: 0.4.3
-      magic-string: 0.30.0
+      magic-string: 0.30.2
       pathe: 1.1.1
       picocolors: 1.0.0
       std-env: 3.3.3
       strip-literal: 1.0.1
       tinybench: 2.5.0
-      tinypool: 0.5.0
+      tinypool: 0.7.0
       vite: 4.3.9(@types/node@20.2.5)
-      vite-node: 0.32.4(@types/node@20.2.5)
+      vite-node: 0.34.1(@types/node@20.2.5)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less

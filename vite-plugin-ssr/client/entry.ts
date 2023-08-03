@@ -13,6 +13,6 @@ hydrate()
 async function hydrate() {
   const pageContext = await getPageContext()
   await executeOnRenderClientHook(pageContext, false)
-  assertHook(pageContext, 'onHydrationEnd') // TODO
+  assertHook(pageContext, 'onHydrationEnd')
   await pageContext.exports.onHydrationEnd?.(pageContext)
 }

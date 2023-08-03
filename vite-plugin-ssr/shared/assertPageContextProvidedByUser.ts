@@ -5,35 +5,19 @@ export { assertPageContextProvidedByUser }
 function assertPageContextProvidedByUser(
   pageContextProvidedByUser: unknown,
   {
-    hook,
-    abortCaller
-  }:
-    | {
-        hook?: undefined
-        abortCaller: 'redirect' | 'render' | 'RenderErrorPage'
-      }
-    | {
-        hook: {
-          hookFilePath: string
-          hookName: 'onBeforeRender' | 'onRenderHtml' | 'render' | 'onBeforeRoute'
-        }
-        abortCaller?: undefined
-      }
+    hookName,
+    hookFilePath
+  }: {
+    hookFilePath: string
+    hookName: 'onBeforeRender' | 'onRenderHtml' | 'render' | 'onBeforeRoute'
+  }
 ): asserts pageContextProvidedByUser is Record<string, unknown> {
   if (pageContextProvidedByUser === undefined || pageContextProvidedByUser === null) return
 
-  const errPrefix = (() => {
-    if (abortCaller) {
-      return `The \`pageContext\` object provided by \`throw ${abortCaller}()\``
-    } else {
-      assert(hook)
-      const { hookName, hookFilePath } = hook
-      assert(!hookName.endsWith(')'))
-      return `The \`pageContext\` object provided by the ${
-        hookName as string
-      }() hook defined by ${hookFilePath}` as const
-    }
-  })()
+  assert(!hookName.endsWith(')'))
+  const errPrefix = `The \`pageContext\` object provided by the ${
+    hookName as string
+  }() hook defined by ${hookFilePath}` as const
 
   assertUsage(
     isObject(pageContextProvidedByUser),
@@ -45,7 +29,7 @@ function assertPageContextProvidedByUser(
     `${errPrefix} shouldn't be the whole \`pageContext\` object, see https://vite-plugin-ssr.com/pageContext-manipulation#do-not-return-entire-pagecontext`
   )
 
-  // In principle, it's possible to use `onBeforeRoute()` to override and define the whole routing.
+  // In principle, it's possible to use onBeforeRoute()` to override and define the whole routing.
   // Is that a good idea to allow users to do this? Beyond deep integration with Vue Router or React Router, is there a use case for this?
   assertWarning(
     !('_pageId' in pageContextProvidedByUser),
@@ -53,10 +37,8 @@ function assertPageContextProvidedByUser(
     { onlyOnce: true }
   )
 
-  if (!abortCaller) {
-    assertUsage(
-      !('is404' in pageContextProvidedByUser),
-      `${errPrefix} sets \`pageContext.is404\` which is forbidden, use \`throw render()\` instead, see https://vite-plugin-ssr.com/abort`
-    )
-  }
+  assertUsage(
+    !('is404' in pageContextProvidedByUser),
+    `${errPrefix} sets \`pageContext.is404\` which is forbidden, use \`throw render()\` instead, see https://vite-plugin-ssr.com/render`
+  )
 }

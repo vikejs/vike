@@ -10,14 +10,13 @@ import type {
 } from '../shared/types'
 import { addIs404ToPageProps } from '../shared/addIs404ToPageProps'
 import type { PageConfig } from '../shared/page-configs/PageConfig'
-import { getPageContextProxyForUser } from './getPageContextProxyForUser'
+import { getPageContextProxyForUser, PageContextForPassToClientWarning } from './getPageContextProxyForUser'
 
-type PageContextForUserConsumptionClientSide = PageContextExports & {
-  _pageContextRetrievedFromServer: null | Record<string, unknown>
-  _comesDirectlyFromServer: boolean
-  _pageId: string
-  _pageConfigs: PageConfig[]
-}
+type PageContextForUserConsumptionClientSide = PageContextExports &
+  PageContextForPassToClientWarning & {
+    _pageId: string
+    _pageConfigs: PageConfig[]
+  }
 
 // Release `pageContext` for user consumption.
 //
@@ -62,7 +61,6 @@ function preparePageContextForUserConsumptionClientSide<T extends PageContextFor
   // For prettier `console.log(pageContext)`
   sortPageContext(pageContext)
 
-  assert([true, false].includes(pageContext._comesDirectlyFromServer))
   const pageContextForUserConsumption = getPageContextProxyForUser(pageContext)
 
   addIs404ToPageProps(pageContext)

@@ -50,7 +50,10 @@ function assertSingleInstance() {
 }
 
 function onClientEntry_ServerRouting(isProduction: boolean) {
-  assertWarning(globalObject.isClientRouting !== true, clientRuntimesClonflict, { onlyOnce: true, showStackTrace: true })
+  assertWarning(globalObject.isClientRouting !== true, clientRuntimesClonflict, {
+    onlyOnce: true,
+    showStackTrace: true
+  })
   assertWarning(globalObject.isClientRouting === undefined, clientNotSingleInstance, {
     onlyOnce: true,
     showStackTrace: true
@@ -60,7 +63,10 @@ function onClientEntry_ServerRouting(isProduction: boolean) {
   assertSingleInstance()
 }
 function onClientEntry_ClientRouting(isProduction: boolean) {
-  assertWarning(globalObject.isClientRouting !== false, clientRuntimesClonflict, { onlyOnce: true, showStackTrace: true })
+  assertWarning(globalObject.isClientRouting !== false, clientRuntimesClonflict, {
+    onlyOnce: true,
+    showStackTrace: true
+  })
   assertWarning(globalObject.isClientRouting === undefined, clientNotSingleInstance, {
     onlyOnce: true,
     showStackTrace: true

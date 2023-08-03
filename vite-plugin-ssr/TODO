@@ -1,7 +1,18 @@
+- Remove contentType with headers everywhere in docs
+
+- Implement config.redirects
+- By default, only call guard() hooks on the server-side?
+- Seems like passToClient is already cumulative for 0.4 design, should be as well for v1 design
+  - https://github.com/vikejs/vike-react/issues/4
 - Catch infinite redirect/rewrite
 
-- Remove assertInfo()
-- Isomorphic colors
+- improve TypeScript DX for abortReason
+- improve TypeScript DX for usePageContext
+- release 0.5.0
+  - `import * from 'vite-plugin-ssr'`
+  - pageContext.url
+  - rename hooks for 0.4 designA?
+
 - improve ignoring of dist/
 - client/shared/
   client/runtime-server-routing/
@@ -11,6 +22,7 @@
 V1 design stable release:
  - Implements TODO comments
  - Minimize what client-side loads
+   - Fix bug that 'server-only' config is included in the client-side (e.g. Aure's ssr flag PR)
  - docs
    - update migration examples
    - pageContext.config

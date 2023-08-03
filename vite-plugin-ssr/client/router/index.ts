@@ -4,7 +4,7 @@
 //   import { navigate, prefetch } from 'vite-plugin-ssr'
 // Use package.json#exports to make the imports isomorphic.
 
-export { navigate } from './navigate'
+export { navigate, reload } from './navigate'
 export { prefetch } from './prefetch'
 
 // TODO/v1-release: remove this

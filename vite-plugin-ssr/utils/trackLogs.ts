@@ -22,7 +22,7 @@ function trackLogs() {
       // @ts-ignore
       methodOriginal.apply(process[stdName], args)
       // @ts-ignore
-      log(new Error().stack.replace(/^Error(\:|)/, pc.cyan(pc.magenta('*** LOG ORIGIN ***'))))
+      log(new Error().stack.replace(/^Error(\:|)/, pc.magenta('*** LOG ORIGIN ***')))
     }
   })
 

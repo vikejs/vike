@@ -1,14 +1,14 @@
 export { renderPage }
 export { renderPage_addWrapper }
+export type { PageContextInitEnhanced2 }
 
 import {
   getRenderContext,
-  initPageContext,
+  getPageContextInitEnhanced1,
   RenderContext,
   renderPageAlreadyRouted
 } from './renderPage/renderPageAlreadyRouted'
 import { route } from '../../shared/route'
-import { getErrorPageId } from '../../shared/error-page'
 import {
   assert,
   hasProp,
@@ -18,11 +18,12 @@ import {
   assertEnv,
   assertWarning,
   getGlobalObject,
-  checkType
+  checkType,
+  assertUsage
 } from './utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import {
-  AbortError,
+  ErrorAbort,
   getPageContextFromAllRewrites,
   isAbortError,
   logAbortErrorHandled,
@@ -30,17 +31,25 @@ import {
 } from '../../shared/route/abort'
 import { getGlobalContext, initGlobalContext } from './globalContext'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
-import { createHttpResponseObjectRedirect, HttpResponse } from './renderPage/createHttpResponseObject'
+import {
+  createHttpResponseObjectRedirect,
+  createHttpResponsePageContextJson,
+  HttpResponse
+} from './renderPage/createHttpResponseObject'
 import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime'
 import { isNewError } from './renderPage/isNewError'
 import { assertArguments } from './renderPage/assertArguments'
 import type { PageContextDebug } from './renderPage/debugPageFiles'
-import { warnMissingErrorPage } from './renderPage/handleErrorWithoutErrorPage'
 import { log404 } from './renderPage/log404'
 import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
 import '../../utils/require-shim' // Ensure require shim for production
 import type { PageContextBuiltIn } from '../../types'
+import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide'
+import { getErrorPageId } from '../../shared/error-page'
+import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage'
+import { loadPageFilesServerSide } from './renderPage/loadPageFilesServerSide'
+import { normalizeUrlPathname } from './renderPage/normalizeUrlPathname'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
@@ -56,7 +65,7 @@ const renderPage_addWrapper = (wrapper: typeof renderPage_wrapper) => {
 
 type PageContextAfterRender = { httpResponse: HttpResponse | null } & Partial<PageContextBuiltIn>
 
-// `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
+// `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
   PageContextUserAdded extends {},
   PageContextInit extends {
@@ -111,6 +120,11 @@ async function renderPageAndPrepare(
     return handleInvalidConfig()
   }
 
+  {
+    const pageContextHttpReponse = normalizePathname(pageContextInit, httpRequestId)
+    if (pageContextHttpReponse) return pageContextHttpReponse
+  }
+
   // Prepare context
   let renderContext: RenderContext
   try {
@@ -139,21 +153,25 @@ async function renderPageAlreadyPrepared(
   renderContext: RenderContext,
   pageContextsFromRewrite: PageContextFromRewrite[]
 ): Promise<PageContextAfterRender> {
-  let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageAttempt>>
+  let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
   let pageContextNominalPageInit = {}
   {
     const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
     objectAssign(pageContextNominalPageInit, pageContextFromAllRewrites)
   }
+  {
+    const pageContextInitEnhanced2 = getPageContextInitEnhanced2(
+      pageContextInit,
+      renderContext,
+      pageContextNominalPageInit._urlRewrite,
+      httpRequestId
+    )
+    objectAssign(pageContextNominalPageInit, pageContextInitEnhanced2)
+  }
   let errNominalPage: unknown
   {
     try {
-      pageContextNominalPageSuccess = await renderPageAttempt(
-        pageContextInit,
-        pageContextNominalPageInit,
-        renderContext,
-        httpRequestId
-      )
+      pageContextNominalPageSuccess = await renderPageNominal(pageContextNominalPageInit)
     } catch (err) {
       errNominalPage = err
       assert(errNominalPage)
@@ -164,20 +182,9 @@ async function renderPageAlreadyPrepared(
     }
   }
 
-  // Warn if no error page defined
-  if (
-    // No error page
-    !getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs) &&
-    // Is failure
-    ((errNominalPage && !isAbortError(errNominalPage)) ||
-      (pageContextNominalPageSuccess && pageContextNominalPageSuccess.httpResponse?.statusCode !== 200))
-  ) {
-    const isV1 = renderContext.pageConfigs.length > 0
-    warnMissingErrorPage(isV1)
-  }
   // Log upon 404
   if (
-    !!pageContextNominalPageSuccess &&
+    pageContextNominalPageSuccess &&
     'is404' in pageContextNominalPageSuccess &&
     pageContextNominalPageSuccess.is404 === true
   ) {
@@ -193,7 +200,14 @@ async function renderPageAlreadyPrepared(
     assert(pageContextNominalPageInit)
     assert(hasProp(pageContextNominalPageInit, 'urlOriginal', 'string'))
 
-    let pageContextFromRenderAbort: null | Record<string, unknown> = null
+    const pageContextErrorPageInit = await getPageContextErrorPageInit(
+      pageContextInit,
+      errNominalPage,
+      pageContextNominalPageInit,
+      renderContext,
+      httpRequestId
+    )
+
     if (isAbortError(errNominalPage)) {
       const handled = await handleAbortError(
         errNominalPage,
@@ -201,26 +215,33 @@ async function renderPageAlreadyPrepared(
         pageContextInit,
         pageContextNominalPageInit,
         httpRequestId,
-        renderContext
+        renderContext,
+        pageContextErrorPageInit
       )
-      // `throw redirect()` / `throw render(url)`
       if (handled.pageContextReturn) {
+        // - throw redirect()
+        // - throw render(url)
+        // - throw render(statusCode) if .pageContext.json request
         return handled.pageContextReturn
+      } else {
+        // - throw render(statusCode) if not .pageContext.json request
       }
-      // throw render(statusCode)
-      pageContextFromRenderAbort = handled.pageContextAddition
+      Object.assign(pageContextErrorPageInit, handled.pageContextAbort)
     }
 
-    let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageErrorPage>>
+    {
+      const errorPageId = getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
+      if (!errorPageId) {
+        objectAssign(pageContextErrorPageInit, { _pageId: null })
+        return handleErrorWithoutErrorPage(pageContextErrorPageInit)
+      } else {
+        objectAssign(pageContextErrorPageInit, { _pageId: errorPageId })
+      }
+    }
+
+    let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageAlreadyRouted>>
     try {
-      pageContextErrorPage = await renderPageErrorPage(
-        pageContextInit,
-        errNominalPage,
-        pageContextNominalPageInit,
-        renderContext,
-        httpRequestId,
-        pageContextFromRenderAbort
-      )
+      pageContextErrorPage = await renderPageAlreadyRouted(pageContextErrorPageInit)
     } catch (errErrorPage) {
       if (isAbortError(errErrorPage)) {
         const handled = await handleAbortError(
@@ -229,12 +250,13 @@ async function renderPageAlreadyPrepared(
           pageContextInit,
           pageContextNominalPageInit,
           httpRequestId,
-          renderContext
+          renderContext,
+          pageContextErrorPageInit
         )
         // throw render(statusCode)
         if (!handled.pageContextReturn) {
-          const abortCall = pc.cyan(errErrorPage._pageContextAddition._abortCall)
-          const abortCaller = pc.cyan(`throw ${errErrorPage._pageContextAddition._abortCaller}()`)
+          const abortCall = pc.cyan(errErrorPage._pageContextAbort._abortCall)
+          const abortCaller = pc.cyan(`throw ${errErrorPage._pageContextAbort._abortCaller}()`)
           assertWarning(
             false,
             `Failed to render error page because ${abortCall} was called: make sure ${abortCaller} doesn't occur while the error page is being rendered.`,
@@ -291,85 +313,92 @@ function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>
   return pageContextHttpReponseNull
 }
 
-async function renderPageAttempt(
-  pageContextInit: { urlOriginal: string },
-  pageContext: { _urlRewrite: null | string },
-  renderContext: RenderContext,
-  httpRequestId: number
-) {
-  {
-    objectAssign(pageContext, { _httpRequestId: httpRequestId })
-  }
-  {
-    const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
-    objectAssign(pageContext, pageContextInitAddendum)
-  }
-  {
-    const pageContextAddendum = handleUrl(pageContext.urlOriginal, pageContext._urlRewrite)
-    objectAssign(pageContext, pageContextAddendum)
-  }
+async function renderPageNominal(pageContext: { _urlRewrite: null | string } & PageContextInitEnhanced2) {
+  addComputedUrlProps(pageContext)
+
+  objectAssign(pageContext, { errorWhileRendering: null })
+
+  // Check Base URL
   {
     const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(pageContext.urlOriginal)
     const hasBaseServer =
       parseUrl(urlWithoutPageContextRequestSuffix, pageContext._baseServer).hasBaseServer || !!pageContext._urlRewrite
     if (!hasBaseServer) {
-      objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
+      objectAssign(pageContext, { httpResponse: null })
       return pageContext
     }
   }
 
-  addComputedUrlProps(pageContext)
+  // Route
+  {
+    const routeResult = await route(pageContext)
+    objectAssign(pageContext, routeResult.pageContextAddendum)
+    objectAssign(pageContext, { is404: pageContext._pageId ? null : true })
+    if (pageContext._pageId === null) {
+      const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
+      if (!errorPageId) {
+        assert(hasProp(pageContext, '_pageId', 'null'))
+        return handleErrorWithoutErrorPage(pageContext)
+      }
+      objectAssign(pageContext, { _pageId: errorPageId })
+    }
+  }
+  assert(hasProp(pageContext, '_pageId', 'string'))
 
-  // *** Route ***
-  const routeResult = await route(pageContext)
-  objectAssign(pageContext, routeResult.pageContextAddendum)
-  const is404 = hasProp(pageContext, '_pageId', 'string') ? null : true
-  objectAssign(pageContext, { is404 })
-
-  objectAssign(pageContext, { errorWhileRendering: null })
+  // Render
   const pageContextAfterRender = await renderPageAlreadyRouted(pageContext)
   assert(pageContext === pageContextAfterRender)
   return pageContextAfterRender
 }
 
-async function renderPageErrorPage(
+type PageContextErrorPageInit = Awaited<ReturnType<typeof getPageContextErrorPageInit>>
+async function getPageContextErrorPageInit(
   pageContextInit: { urlOriginal: string },
   errNominalPage: unknown,
   pageContextNominalPagePartial: Record<string, unknown>,
   renderContext: RenderContext,
-  httpRequestId: number,
-  pageContextFromRenderAbort: null | Record<string, unknown>
-): Promise<PageContextAfterRender> {
+  httpRequestId: number
+) {
+  const pageContextInitEnhanced2 = getPageContextInitEnhanced2(pageContextInit, renderContext, null, httpRequestId)
+
   assert(errNominalPage)
   const pageContext = {
-    _httpRequestId: httpRequestId,
+    ...pageContextInitEnhanced2,
     is404: false,
-    _pageId: null,
     _urlRewrite: null,
     errorWhileRendering: errNominalPage as Error,
     routeParams: {} as Record<string, string>
   }
-  {
-    const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
-    objectAssign(pageContext, pageContextInitAddendum)
-  }
-  {
-    const pageContextAddendum = handleUrl(pageContext.urlOriginal, null)
-    objectAssign(pageContext, pageContextAddendum)
-  }
-
   addComputedUrlProps(pageContext)
-
-  if (pageContextFromRenderAbort) {
-    Object.assign(pageContext, pageContextFromRenderAbort)
-  }
 
   objectAssign(pageContext, {
     _routeMatches: (pageContextNominalPagePartial as PageContextDebug)._routeMatches || 'ROUTE_ERROR'
   })
 
   assert(pageContext.errorWhileRendering)
-  return renderPageAlreadyRouted(pageContext)
+  return pageContext
+}
+
+type PageContextInitEnhanced2 = ReturnType<typeof getPageContextInitEnhanced2>
+function getPageContextInitEnhanced2(
+  pageContextInit: { urlOriginal: string },
+  renderContext: RenderContext,
+  urlRewrite: null | string,
+  httpRequestId: number
+) {
+  const pageContextInitEnhanced2 = {
+    ...pageContextInit,
+    _httpRequestId: httpRequestId
+  }
+  {
+    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext)
+    objectAssign(pageContextInitEnhanced2, pageContextInitEnhanced1)
+  }
+  {
+    const pageContextAddendum = handleUrl(pageContextInit.urlOriginal, urlRewrite)
+    objectAssign(pageContextInitEnhanced2, pageContextAddendum)
+  }
+  return pageContextInitEnhanced2
 }
 
 function handleUrl(
@@ -413,39 +442,81 @@ function skipRequest(urlOriginal: string): boolean {
     isViteClientRequest
   )
 }
+function normalizePathname(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+  const { urlOriginal } = pageContextInit
+  const urlNormalized = normalizeUrlPathname(urlOriginal)
+  if (!urlNormalized) return null
+  logRuntimeInfo?.(`HTTP redirect ${pc.bold(urlOriginal)} -> ${pc.bold(urlNormalized)}`, httpRequestId, 'info')
+  const httpResponse = createHttpResponseObjectRedirect({ url: urlNormalized, statusCode: 301 })
+  const pageContextHttpResponse = { ...pageContextInit, httpResponse }
+  return pageContextHttpResponse
+}
 
 async function handleAbortError(
-  errAbort: AbortError,
+  errAbort: ErrorAbort,
   pageContextsFromRewrite: PageContextFromRewrite[],
   pageContextInit: { urlOriginal: string },
-  pageContextNominalPageInit: { urlOriginal: string; _urlRewrite: null | string } & Record<string, unknown>,
+  pageContextNominalPageInit: {
+    urlOriginal: string
+    _urlRewrite: null | string
+    isClientSideNavigation: boolean
+  },
   httpRequestId: number,
-  renderContext: RenderContext
+  renderContext: RenderContext,
+  pageContextErrorPageInit: PageContextErrorPageInit
 ): Promise<
-  | { pageContextReturn: PageContextAfterRender; pageContextAddition?: never }
-  | { pageContextReturn?: never; pageContextAddition: Record<string, unknown> }
+  | { pageContextReturn: PageContextAfterRender; pageContextAbort?: never }
+  | { pageContextReturn?: never; pageContextAbort: Record<string, unknown> }
 > {
   logAbortErrorHandled(errAbort, getGlobalContext().isProduction, pageContextNominalPageInit)
 
-  const pageContextAddition = errAbort._pageContextAddition
-
-  if ('_urlRewrite' in pageContextAddition) {
-    const pageContextReturn = await renderPageAlreadyPrepared(pageContextInit, httpRequestId, renderContext, [
-      ...pageContextsFromRewrite,
-      pageContextAddition
-    ])
-    Object.assign(pageContextReturn, pageContextAddition)
+  const pageContextAbort = errAbort._pageContextAbort
+  let pageContextSerialized: string
+  if (pageContextNominalPageInit.isClientSideNavigation) {
+    if (pageContextAbort._abortStatusCode) {
+      const errorPageId = getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
+      const abortCall = pageContextAbort._abortCall
+      assert(abortCall)
+      assertUsage(
+        errorPageId,
+        `You called ${pc.cyan(
+          abortCall
+        )} but you didn't define an error page, make sure to define one https://vite-plugin-ssr.com/error-page`
+      )
+      const pageContext = {
+        _pageId: errorPageId,
+        ...pageContextAbort,
+        ...pageContextErrorPageInit,
+        ...renderContext
+      }
+      objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
+      // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
+      pageContextSerialized = serializePageContextClientSide(pageContext)
+    } else {
+      pageContextSerialized = serializePageContextAbort(pageContextAbort)
+    }
+    const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
+    const pageContextReturn = { httpResponse }
     return { pageContextReturn }
   }
-  if ('_urlRedirect' in pageContextAddition) {
+
+  if (pageContextAbort._urlRewrite) {
+    const pageContextReturn = await renderPageAlreadyPrepared(pageContextInit, httpRequestId, renderContext, [
+      ...pageContextsFromRewrite,
+      pageContextAbort
+    ])
+    Object.assign(pageContextReturn, pageContextAbort)
+    return { pageContextReturn }
+  }
+  if (pageContextAbort._urlRedirect) {
     const pageContextReturn = {
       ...pageContextInit,
-      ...pageContextAddition
+      ...pageContextAbort
     }
-    const httpResponse = createHttpResponseObjectRedirect(pageContextReturn)
+    const httpResponse = createHttpResponseObjectRedirect(pageContextAbort._urlRedirect)
     objectAssign(pageContextReturn, { httpResponse })
     return { pageContextReturn }
   }
-  assert(pageContextAddition._abortStatusCode)
-  return { pageContextAddition }
+  assert(pageContextAbort._abortStatusCode)
+  return { pageContextAbort }
 }

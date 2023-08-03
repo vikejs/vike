@@ -1,12 +1,15 @@
 import { Integration } from '../components/Integration'
+import { Link, RepoLink } from '@brillout/docpress'
 
-We can add information about the authenticated user to `pageContext` at the server middleware:
+## Integration
+
+To make information about the authenticated user available to your pages and UI components, you usually define `pageContext.user` at [`renderPage()`](/renderPage):
 
 ```js
 // `vite-plugin-ssr` server middleware
 app.get('*', async (req, res) => {
-  // Authentication middlewares (e.g. Passport.js or Grant) provide information
-  // about the logged-in user on the `req` object.
+  // Authentication middlewares (e.g. Passport.js and Grant) provide information about the
+  // logged-in user at req.user
   const user = req.user
 
   /* Or when using a third-party authentication provider (e.g. Auth0):
@@ -15,7 +18,7 @@ app.get('*', async (req, res) => {
 
   const pageContextInit = {
     urlOriginal: req.url,
-    // We make logged-in user information available to pages as `pageContextInit.user`
+    // Make the user object available at pageContext.user
     user
   }
   const result = await renderPage(pageContextInit)
@@ -24,8 +27,71 @@ app.get('*', async (req, res) => {
 })
 ```
 
+You can then access `pageContext.user` <Link text="from any UI component" href="/usePageContext" />.
+
+
+## Login flow
+
+By using [`guard()`](/guard) with [`throw redirect()`](/redirect) or [`throw render()`](/render) you can:
+ - Implement login flows.
+ - Protect private pages from unprivileged access.
+
+```js
+// /pages/admin/index.page.route.js
+
+import { render, redirect } from 'vite-plugin-ssr/abort'
+
+export const guard = (pageContext) => {
+  const { user } = pageContext
+  if (user === null) {
+    // Render the login page while preserving the URL. (This is novel technique
+    // which we explain down below.)
+    throw render('/login')
+    /* The more traditional way, redirect the user:
+    throw redirect(302, '/login')
+    */
+  }
+  if (user.role !== 'admin') {
+    // Render the error page and show message to the user
+    throw render(403, 'Only admins are allowed to access this page.')
+  }
+}
+```
+
+> Using `render('/login')` instead of `redirect(302, '/login')` allows the URL to be preserved during the entire login flow:
+>  1. Unauthenticated user goes to URL `/admin` and sees the login page. (URL is `/admin`.)
+>  2. User fills the sign-in form and successfully logs in. (URL is still `/admin`.)
+>  3. <Link text="Reload" href="/reload" /> the page, the user now sees the admin page. (URL is still `/admin`.)
+>
+> See <RepoLink text="example" path="/examples/auth/" />.
+
+We can also define a `guard()` hook that applies to multiple pages:
+
+```js
+// /pages/index.page.route.js
+
+// We define a guard() that applies to all pages: the file lives at /pages/ and
+// therefore applies to all /pages/**/*.page.js
+
+import { render } from 'vite-plugin-ssr/abort'
+
+export const guard = (pageContext) => {
+  if (!pageContext.user) {
+    throw render('/login')
+  }
+}
+```
+
+
+## Example
+
+- <RepoLink text="example" path="/examples/auth/" />
+
+
+## Tools
+
 Common auth tools:
-- [NextAuth.js](https://github.com/nextauthjs/next-auth) (also [works with Vite](/nextauth))
+- <Link text="Auth.js" href="/Auth.js" />
 - [Grant](https://github.com/simov/grant)
 - [Passport.js](https://github.com/jaredhanson/passport)
 - [Auth0](https://auth0.com/)

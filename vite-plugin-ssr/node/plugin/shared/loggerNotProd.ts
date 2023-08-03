@@ -264,6 +264,8 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
       assert(httpRequestId === store.httpRequestId)
     }
   }
-  const category = httpRequestId !== null ? (`request(${httpRequestId})` as const) : null
+  if (httpRequestId === null) return null
+  // const category = httpRequestId % 2 === 1 ? (`request-${httpRequestId}` as const) : (`request(${httpRequestId})` as const)
+  const category = `request(${httpRequestId})` as const
   return category
 }

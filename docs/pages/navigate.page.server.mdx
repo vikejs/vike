@@ -1,13 +1,13 @@
-import { RepoLink, Link, Warning } from '@brillout/docpress'
+import { RepoLink, Link } from '@brillout/docpress'
 
-Environment: browser.
+Environment: Browser, <Link text="Client Routing" href="/client-routing" />.
 
-We can use `navigate('/some/url')` to programmatically switch pages.
+The `navigate('/some/url')` function enables you to programmatically switch pages.
 
-<Warning>`navigate()` works only with <Link text="Client Routing" href="/client-routing" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.href = '/some/url'` instead.</Warning>
+> `navigate()` works only with <Link text="Client Routing" href="/client-routing" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.href = '/some/url'` instead.
 
-`navigate()` is useful when the navigation isn't triggered by the user clicking on an anchor tag `<a>`.
-For example, when redirecting a user after a successful form submission.
+With `navigate()`, you can implement navigations that aren't triggered by the user clicking on a `<a>` link:
+for example, when redirecting a user after a successful form submission.
 
 ```jsx
 import { navigate } from 'vite-plugin-ssr/client/router'
@@ -28,10 +28,10 @@ async function onSubmit() {
 }
 ```
 
-If you want to redirect your user at page-load time, see the [Page Redirection](/page-redirection) guide instead.
+> If you want to redirect users *before* the page finished rendering (e.g. to redirect non-authenticated users to a login page), then use <Link href='/redirect' noBreadcrumb /> instead.
 
 Options:
- - `navigate('/some-url', { keepScrollPosition: true })`: Don't scroll to the top of the page; keep scroll position where it is instead. (Useful for <Link text="Nested Layouts" href="/layouts#nested-layouts" />.) (We can also use `<a href="/some-url" keep-scroll-position />`.)
+ - `navigate('/some-url', { keepScrollPosition: true })`: Don't scroll to the top of the page; keep scroll position where it is instead. (Useful for <Link text="Nested Layouts" href="/layouts#nested-layouts" />.) (You can also use `<a href="/some-url" keep-scroll-position />`.)
  - `navigate('/some-url', { overwriteLastHistoryEntry: true })`: Don't create a new entry in the browser's history, instead let the new URL replace the current URL. (This effectively removes the current URL from the browser history).
 
 Vue example:

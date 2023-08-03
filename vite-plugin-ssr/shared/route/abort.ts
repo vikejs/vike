@@ -2,50 +2,65 @@ export { redirect }
 export { render }
 export { RenderErrorPage }
 export { isAbortError }
+export { isAbortPageContext }
 export { logAbortErrorHandled }
 export { getPageContextFromAllRewrites }
+export { AbortRender }
 export type { StatusCodeAbort }
 export type { StatusCodeError }
-export type { AbortError }
+export type { ErrorAbort }
 export type { PageContextFromRewrite }
-export type { AbortReason }
 export type { UrlRedirect }
 
-import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
 import {
   assert,
   assertInfo,
   assertUsage,
   assertWarning,
   checkType,
+  hasProp,
   joinEnglish,
   objectAssign,
   projectInfo,
   truncateString
 } from './utils'
+import pc from '@brillout/picocolors'
 
 type StatusCodeAbort = StatusCodeRedirect | StatusCodeError
-type StatusCodeRedirect = Parameters<typeof redirect>[0]
-type StatusCodeError = number & Parameters<typeof render>[0]
+type StatusCodeRedirect = 301 | 302
+type StatusCodeError = number &
+  // For improved IntelliSense, we define the list of status code directly on render()'s argument type
+  Parameters<typeof render>[0]
 
 type UrlRedirect = {
   url: string
   statusCode: StatusCodeRedirect
 }
+type AbortRedirect = Error
 
 /**
  * Abort the rendering of the current page, and redirect the user to another URL instead.
  *
- * https://vite-plugin-ssr.com/abort
+ * https://vite-plugin-ssr.com/redirect
  *
  * @param statusCode `301` (permanent) or `302` (temporary) redirection.
  * @param url The URL to redirect to.
  */
-function redirect(statusCode: 301 | 302, url: `/${string}` | `https://${string}` | `http://${string}`): Error {
+function redirect(url: `/${string}` | `https://${string}` | `http://${string}`): AbortRedirect
+function redirect(
+  url: `/${string}` | `https://${string}` | `http://${string}`,
+  statusCode?: StatusCodeRedirect
+): AbortRedirect {
   const abortCaller = 'redirect' as const
+  statusCode ??= 302
   assertStatusCode(statusCode, [301, 302], 'redirect')
-  const pageContextAddition = {}
-  objectAssign(pageContextAddition, {
+  assertWarning(
+    statusCode !== 301,
+    "Status code 301 for `throw redirect()' is experimental and may be removed at any point",
+    { onlyOnce: true }
+  )
+  const pageContextAbort = {}
+  objectAssign(pageContextAbort, {
     _abortCaller: abortCaller,
     _abortCall: `throw redirect(${statusCode})` as const,
     _urlRedirect: {
@@ -53,22 +68,13 @@ function redirect(statusCode: 301 | 302, url: `/${string}` | `https://${string}`
       statusCode
     }
   })
-  return RenderAbort(pageContextAddition)
+  return AbortRender(pageContextAbort)
 }
 
 /**
- * Abort the rendering of the current page, and render another page instead.
- *
- * https://vite-plugin-ssr.com/abort
- *
- * @param url The URL to render.
- * @param info `abortReason` (the reason why the page was aborted), or `pageContext` values.
- */
-function render(url: `/${string}`, info?: string | Record<string, unknown>): Error
-/**
  * Abort the rendering of the current page, and render the error page instead.
  *
- * https://vite-plugin-ssr.com/abort
+ * https://vite-plugin-ssr.com/render
  *
  * @param statusCode
  * One of the following:
@@ -78,107 +84,134 @@ function render(url: `/${string}`, info?: string | Record<string, unknown>): Err
  *   `429` Too Many Requests (rate limiting)
  *   `500` Internal Server Error (app has a bug)
  *   `503` Service Unavailable (server is overloaded, a third-party API isn't responding)
- * @param info `pageContext.abortReason` (the reason why the page was aborted, usually used for showing a custom message on the error page), or `pageContext` values.
+ * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
  */
-function render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, info?: string | Record<string, unknown>): Error
-function render(value: string | StatusCodeError, info?: string | Record<string, unknown>): Error {
-  const pageContextAddition = {}
-  if (typeof info === 'string') {
-    objectAssign(pageContextAddition, {
-      abortReason: info
-    })
-  } else if (info) {
-    assertPageContextProvidedByUser(info, { abortCaller: 'render' })
-    objectAssign(pageContextAddition, info)
+function render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: unknown): Error
+/**
+ * Abort the rendering of the current page, and render another page instead.
+ *
+ * https://vite-plugin-ssr.com/render
+ *
+ * @param url The URL to render.
+ * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
+ */
+function render(url: `/${string}`, abortReason?: unknown): Error
+function render(value: string | number, abortReason?: unknown): Error {
+  return render_(value, abortReason)
+}
+
+function render_(
+  value: string | number,
+  abortReason: unknown | undefined,
+  pageContextAddendum?: { _isLegacyRenderErrorPage: true } & Record<string, unknown>
+): Error {
+  const pageContextAbort = { abortReason }
+  if (pageContextAddendum) {
+    assert(pageContextAddendum._isLegacyRenderErrorPage === true)
+    objectAssign(pageContextAbort, pageContextAddendum)
   }
   {
-    const args = [String(value)]
-    if (typeof info === 'string') args.push(JSON.stringify(truncateString(info, 30, null)))
-    objectAssign(pageContextAddition, {
+    const args = [typeof value === 'number' ? String(value) : JSON.stringify(value)]
+    if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30, null))
+    objectAssign(pageContextAbort, {
       _abortCaller: 'render' as const,
       _abortCall: `throw render(${args.join(', ')})` as const
     })
   }
   if (typeof value === 'string') {
     const url = value
-    objectAssign(pageContextAddition, {
+    objectAssign(pageContextAbort, {
       _urlRewrite: url
     })
-    return RenderAbort(pageContextAddition)
+    return AbortRender(pageContextAbort)
   } else {
     const statusCode = value
     assertStatusCode(value, [401, 403, 404, 429, 500, 503], 'render')
-    objectAssign(pageContextAddition, {
+    objectAssign(pageContextAbort, {
       _abortStatusCode: statusCode,
       is404: statusCode === 404
     })
-    return RenderAbort(pageContextAddition)
+    return AbortRender(pageContextAbort)
   }
 }
 
-type AbortReason = string | JSX.Element | null
-
-type PageContextRenderAbort = {
+type PageContextAbort = {
   _abortCall: `throw redirect(${string})` | `throw render(${string})`
-  abortReason?: string
 } & (
-  | {
+  | ({
       _abortCaller: 'redirect'
       _urlRedirect: UrlRedirect
-    }
-  | {
+    } & Omit<AbortUndefined, '_urlRedirect'>)
+  | ({
       _abortCaller: 'render'
+      abortReason: undefined | unknown
       _urlRewrite: string
-    }
-  | {
+    } & Omit<AbortUndefined, '_urlRewrite'>)
+  | ({
       _abortCaller: 'render'
-      _abortStatusCode: StatusCodeError
-    }
+      abortReason: undefined | unknown
+      _abortStatusCode: number
+    } & Omit<AbortUndefined, '_abortStatusCode'>)
 )
-function RenderAbort(pageContextAddition: PageContextRenderAbort): Error {
-  const err = new Error('RenderAbort')
-  objectAssign(err, { _pageContextAddition: pageContextAddition, [stamp]: true })
-  checkType<AbortError>(err)
+type AbortUndefined = {
+  _urlRedirect?: undefined
+  _urlRewrite?: undefined
+  _abortStatusCode?: undefined
+}
+
+function AbortRender(pageContextAbort: PageContextAbort): Error {
+  const err = new Error('AbortRender')
+  objectAssign(err, { _pageContextAbort: pageContextAbort, [stamp]: true })
+  checkType<ErrorAbort>(err)
   return err
 }
 
 /**
- * @deprecated Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/abort'
+ * @deprecated Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/render'
  */
-function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown> } = {}): Error {
+function RenderErrorPage({ pageContext = {} }: { pageContext?: Record<string, unknown> } = {}): Error {
   assertWarning(
     false,
-    '`throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/abort',
+    '`throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/render',
     { onlyOnce: true }
   )
-  assertPageContextProvidedByUser(pageContext, { abortCaller: 'RenderErrorPage' })
   let statusCode: 404 | 500 = 404
   let abortReason = 'Page Not Found'
   if (pageContext.is404 === false || (pageContext.pageProps as any)?.is404 === false) {
     statusCode = 500
     abortReason = 'Something went wrong'
   }
-  objectAssign(pageContext, { abortReason })
-  return render(statusCode, pageContext)
+  objectAssign(pageContext, { _isLegacyRenderErrorPage: true as const })
+  return render_(statusCode, abortReason, pageContext)
 }
 
 const stamp = '_isAbortError'
-type AbortError = { _pageContextAddition: PageContextRenderAbort }
-function isAbortError(thing: unknown): thing is AbortError {
+type ErrorAbort = { _pageContextAbort: PageContextAbort }
+function isAbortError(thing: unknown): thing is ErrorAbort {
   return typeof thing === 'object' && thing !== null && stamp in thing
+}
+function isAbortPageContext(pageContext: Record<string, unknown>): pageContext is PageContextAbort {
+  if (!(pageContext._urlRewrite || pageContext._urlRedirect || pageContext._abortStatusCode)) {
+    return false
+  }
+  assert(hasProp(pageContext, '_abortCall', 'string'))
+  assert(hasProp(pageContext, '_abortCaller', 'string'))
+  checkType<Omit<PageContextAbort, '_abortCall' | '_abortCaller'> & { _abortCall: string; _abortCaller: string }>(
+    pageContext
+  )
+  return true
 }
 
 function logAbortErrorHandled(
-  err: AbortError,
+  err: ErrorAbort,
   isProduction: boolean,
   pageContext: { urlOriginal: string; _urlRewrite: null | string }
 ) {
   if (isProduction) return
   const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal
   assert(urlCurrent)
-  // TODO: add color for server-side
-  const abortCall = err._pageContextAddition._abortCall
-  assertInfo(false, `${abortCall} intercepted while rendering URL '${urlCurrent}'`, { onlyOnce: false })
+  const abortCall = err._pageContextAbort._abortCall
+  assertInfo(false, `${pc.cyan(abortCall)} intercepted while rendering URL ${pc.bold(urlCurrent)}`, { onlyOnce: false })
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {

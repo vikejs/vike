@@ -1,43 +1,63 @@
 import { Link } from '@brillout/docpress'
 
-When an error occurs (or when you call <Link href="/RenderErrorPage" text={<code>throw RenderErrorPage()</code>}></Link>), the page `/renderer/_error.page.tsx` is rendered (if one is defined).
+The error page, which is defined by `/renderer/_error.page.tsx`, is rendered when an error occurs. It's also rendered when you call <Link href="/render" text={<code>throw render(errorStatusCode)</code>}></Link>.
 
-```js
-// /renderer/_error.page.js
+```ts
+// /renderer/_error.page.ts
 
 export { Page }
 
-function Page(pageProps) {
-  if (pageProps.is404) {
-    // Return a UI component "Page Not Found."
-  } else {
-    // Return a UI component "Our server is having problems. Sincere apologies. Try again later."
+import { usePageContext } from 'vike-react/usePageContext'
+/* Or:
+import { usePageContext } from 'vike-vue/usePageContext'
+import { usePageContext } from 'vike-solid/usePageContext'
+*/
+
+function Page() {
+  const pageContext = usePageContext()
+
+  // Message shown to the user
+  let msg: string
+
+  const abortReason: unknown = pageContext.abortReason
+  // Handle `throw render(403, { notAdmin: true })`
+  if (abortReason?.notAdmin) {
+    msg = "You cannot access this page because you aren't an administrator."
   }
+  // Handle `throw render(401, { notLoggedIn: true })`
+  if (abortReason?.notLoggedIn) {
+    msg = "You cannot access this page because you aren't logged in. Please log in."
+  }
+  // Handle `throw render(someErrorStatusCode, `You cannot access ${someCustomMessage}`)`
+  if (typeof abortReason === 'string') {
+    msg = abortReason
+  }
+
+  // Fallback error message
+  if (!msg) {
+    msg = pageContext.is404 ?
+      "This page doesn't exist." :
+      "Something went wrong. Sincere apologies. Try again (later)."
+  }
+
+  return <p>{msg}</p>
 }
 ```
 
-The page `_error.page.js` is rendered when:
- 1. The URL doesn't match the route of any of your pages (`404 Page Not Found`).
- 2. One of your hooks (in `.page.js` / `.page.server.js` / `.page.route.js`) throws an error (`500 Internal Error`).
- 3. You call <Link href="/RenderErrorPage" text={<code>throw RenderErrorPage()</code>}></Link>.
+> The <Link href="/usePageContext" /> UI component hook allows you to access <Link href="/pageContext" noBreadcrumb /> from any UI component.
 
-For `1.` and `3.`, vite-plugin-ssr automatically sets the following:
- - `pageContext.is404 === true`
- - `pageContext.pageProps.is404 === true`
+The `pageContext.abortReason` value is set by <Link href="/render" text={<code>throw render(errorStatusCode, abortReason)</code>} />, and `pageContext.is404` is set by vite-pugin-ssr.
 
-For `2.`:
- - `pageContext.is404 === false`
- - `pageContext.pageProps.is404 === false`
+The error page is rendered if:
+ 1. The URL didn't match the route of any of your pages (`404 Page Not Found`).
+ 2. One of your hooks threw an error (`500 Internal Error`).
+ 3. You called <Link href="/render" text={<code>throw render(errorStatusCode)</code>} />.
 
-> You can `throw RenderErrorPage({ pageContext: { is404: false }})` to set `pageContext.is404 === false` and `pageContext.pageProps.is404 === false` instead.
-
-> Normally, the vite-plugin-ssr source code doesn't know anything about `pageContext.pageProps` but this is the only exception.
-
-> The error page is also rendered when vite-plugin-ssr throws an unexpected error (i.e. vite-plugin-ssr has a bug), but since vite-plugin-ssr has no known bug this is very rare.
+> The error page is also rendered when vite-plugin-ssr throws an unexpected error (it has a bug), but since vite-plugin-ssr has no known bug this is very rare.
 
 
 ## Pre-rendering
 
 If you use <Link text="pre-rendering" href="/pre-rendering" />, then vite-plugin-ssr uses `_error.page.js` to generate `/dist/client/404.html`.
 
-> Most Static Hosts follow the convention that the file `404.html` is used as 404 page.
+> Most Static Hosts follow the convention of using the file `404.html` as 404 page.

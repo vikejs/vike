@@ -1,18 +1,19 @@
 export { getPageContext }
 export { getPageContextErrorPage }
 export { checkIf404 }
+export { isAlreadyServerSideRouted }
 
 import { navigationState } from '../navigationState'
 import {
   assert,
   assertUsage,
   hasProp,
-  isPlainObject,
   objectAssign,
   getProjectError,
   serverSideRouteTo,
   executeHook,
-  isObject
+  isObject,
+  getGlobalObject
 } from './utils'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
@@ -30,15 +31,16 @@ import type { PageConfig } from '../../shared/page-configs/PageConfig'
 import { getConfigValue, getPageConfig } from '../../shared/page-configs/utils'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn'
 import { executeGuardHook } from '../../shared/route/executeGuardHook'
-import { render } from '../../shared/abort'
+import type { PageContextForPassToClientWarning } from '../getPageContextProxyForUser'
+import { AbortRender, isAbortPageContext } from '../../shared/route/abort'
+const globalObject = getGlobalObject<{ pageContextInitHasClientData?: true }>('router/getPageContext.ts', {})
 
 type PageContextAddendum = {
   _pageId: string
-  _pageContextRetrievedFromServer: null | Record<string, unknown>
   isHydration: boolean
-  _comesDirectlyFromServer: boolean
   _pageFilesLoaded: PageFile[]
-} & PageContextExports
+} & PageContextExports &
+  PageContextForPassToClientWarning
 
 type PageContextPassThrough = PageContextUrlsPrivate &
   PageContextForRoute & {
@@ -52,10 +54,14 @@ async function getPageContext(
 ): Promise<PageContextAddendum> {
   if (pageContext._isFirstRenderAttempt && navigationState.isFirstUrl(pageContext.urlOriginal)) {
     assert(hasProp(pageContext, '_isFirstRenderAttempt', 'true'))
-    return getPageContextFirstRender(pageContext)
+    const pageContextAddendum = await getPageContextFirstRender(pageContext)
+    setPageContextInitHasClientData(pageContextAddendum)
+    return pageContextAddendum
   } else {
     assert(hasProp(pageContext, '_isFirstRenderAttempt', 'false'))
-    return getPageContextUponNavigation(pageContext)
+    const pageContextAddendum = await getPageContextUponNavigation(pageContext)
+    setPageContextInitHasClientData(pageContextAddendum)
+    return pageContextAddendum
   }
 }
 
@@ -70,7 +76,7 @@ async function getPageContextFirstRender(pageContext: {
 
   objectAssign(pageContextAddendum, {
     isHydration: true,
-    _comesDirectlyFromServer: true
+    _hasPageContextFromClient: false
   })
 
   objectAssign(
@@ -81,153 +87,167 @@ async function getPageContextFirstRender(pageContext: {
   return pageContextAddendum
 }
 
-async function getPageContextErrorPage(pageContext: {
-  urlOriginal: string
-  _allPageIds: string[]
-  _isFirstRenderAttempt: boolean
-  _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
-}): Promise<PageContextAddendum> {
+async function getPageContextErrorPage(
+  pageContext: {
+    urlOriginal: string
+    _allPageIds: string[]
+    _isFirstRenderAttempt: boolean
+    _pageFilesAll: PageFile[]
+    _pageConfigs: PageConfig[]
+  } & PageContextPassThrough
+): Promise<PageContextAddendum> {
   const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
-  if (!errorPageId) {
-    throw new Error('No error page')
-  }
+  if (!errorPageId) throw new Error('No error page defined.')
   const pageContextAddendum = {
     isHydration: false,
-    _pageId: errorPageId,
-    _pageContextRetrievedFromServer: null,
-    _comesDirectlyFromServer: false
+    _pageId: errorPageId
   }
-
-  objectAssign(
-    pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
-  )
-
+  objectAssign(pageContextAddendum, await getPageContextAlreadyRouted({ ...pageContext, ...pageContextAddendum }, true))
   return pageContextAddendum
 }
 
 async function getPageContextUponNavigation(
   pageContext: { _isFirstRenderAttempt: false } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
-  let pageContextAddendum = {}
-  objectAssign(pageContextAddendum, {
+  const pageContextAddendum = {
     isHydration: false
-  })
+  }
   objectAssign(pageContextAddendum, await getPageContextFromRoute(pageContext))
-
   objectAssign(
     pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
+    await getPageContextAlreadyRouted({ ...pageContext, ...pageContextAddendum }, false)
   )
-
-  await executeGuardHook(
-    {
-      _comesDirectlyFromServer: false,
-      _pageContextRetrievedFromServer: null,
-      ...pageContext,
-      ...pageContextAddendum
-    },
-    (pageContext) => preparePageContextForUserConsumptionClientSide(pageContext, true)
-  )
-
-  const pageContextFromHook = await executeOnBeforeRenderHook({ ...pageContext, ...pageContextAddendum })
-  assert([true, false].includes(pageContextFromHook._comesDirectlyFromServer))
-  if (!pageContextFromHook['_isError']) {
-    objectAssign(pageContextAddendum, pageContextFromHook)
-    return pageContextAddendum
-  } else {
-    pageContextAddendum = {}
-
-    assert(pageContextFromHook._comesDirectlyFromServer === true)
-    assert(hasProp(pageContextFromHook, 'is404', 'boolean'))
-    assert(hasProp(pageContextFromHook, 'pageProps', 'object'))
-    assert(hasProp(pageContextFromHook.pageProps, 'is404', 'boolean'))
-    // When the user hasn't define a `_error.page.js` file: the mechanism with `serverSideError: true` is used instead
-    assert(!('serverSideError' in pageContextFromHook))
-    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
-    assert(errorPageId)
-
-    objectAssign(pageContextAddendum, {
-      isHydration: false,
-      _pageId: errorPageId
-    })
-    objectAssign(pageContextAddendum, pageContextFromHook)
-    objectAssign(
-      pageContextAddendum,
-      await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
-    )
-    return pageContextAddendum
-  }
+  return pageContextAddendum
 }
 
-async function executeOnBeforeRenderHook(
+async function getPageContextAlreadyRouted(
+  pageContext: { _pageId: string; isHydration: boolean } & PageContextPassThrough,
+  isErrorPage: boolean
+): Promise<Omit<PageContextAddendum, '_pageId' | 'isHydration'>> {
+  let pageContextAddendum = {}
+  objectAssign(
+    pageContextAddendum,
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContext._pageId)
+  )
+
+  // Needs to be called before any client-side hook, because it may contain pageContextInit.user which is needed for guard() and onBeforeRender()
+  if (
+    // For the error page, we cannot fetch pageContext from the server because the pageContext JSON request is based on the URL
+    !isErrorPage &&
+    (await hasPageContextServer({ ...pageContext, ...pageContextAddendum }))
+  ) {
+    const pageContextFromServer = await fetchPageContextFromServer(pageContext)
+    if (!pageContextFromServer['_isError']) {
+      objectAssign(pageContextAddendum, pageContextFromServer)
+    } else {
+      const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
+      assert(errorPageId)
+      pageContextAddendum = {}
+      objectAssign(pageContextAddendum, {
+        isHydration: false,
+        _pageId: errorPageId
+      })
+
+      objectAssign(
+        pageContextAddendum,
+        await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
+      )
+
+      assert(hasProp(pageContextFromServer, 'is404', 'boolean'))
+      assert(hasProp(pageContextFromServer, 'pageProps', 'object'))
+      assert(hasProp(pageContextFromServer.pageProps, 'is404', 'boolean'))
+      // When the user hasn't define a `_error.page.js` file: the mechanism with `serverSideError: true` is used instead
+      assert(!('serverSideError' in pageContextFromServer))
+      objectAssign(pageContextAddendum, pageContextFromServer)
+    }
+  } else {
+    objectAssign(pageContextAddendum, { _hasPageContextFromServer: false })
+    // We don't need to call guard() on the client-side if we fetch pageContext from the server side. (Because the `${url}.pageContext.json` HTTP request will already trigger the routing and guard() hook on the serve-side.)
+    // We cannot call guard() before retrieving pageContext from server, since the server-side may define pageContextInit.user which is paramount for guard() hooks
+    if (!isErrorPage) {
+      await executeGuardHook(
+        {
+          _hasPageContextFromClient: false,
+          ...pageContext,
+          ...pageContextAddendum
+        },
+        (pageContext) => preparePageContextForUserConsumptionClientSide(pageContext, true)
+      )
+    }
+  }
+
+  {
+    // For the error page, we also execute the client-side onBeforeRender() hook, but maybe we shouldn't? The server-side does it as well (but maybe it shouldn't).
+    const pageContextFromHook = await executeOnBeforeRenderHookClientSide({ ...pageContext, ...pageContextAddendum })
+    if (pageContextFromHook) {
+      objectAssign(pageContextAddendum, pageContextFromHook)
+    } else {
+      objectAssign(pageContextAddendum, { _hasPageContextFromClient: false })
+    }
+  }
+
+  return pageContextAddendum
+}
+
+async function executeOnBeforeRenderHookClientSide(
   pageContext: {
     _pageId: string
     urlOriginal: string
     isHydration: boolean
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfig[]
+    _hasPageContextFromServer: boolean
   } & PageContextExports &
     PageContextPassThrough
-): Promise<
-  { _comesDirectlyFromServer: boolean; _pageContextRetrievedFromServer: null | Record<string, unknown> } & Record<
-    string,
-    unknown
-  >
-> {
-  // `export { onBeforeRender }` defined in `.page.client.js` or `.page.js`
+) {
   const hook = getHook(pageContext, 'onBeforeRender')
-  if (hook) {
-    const onBeforeRender = hook.hookFn
-    const pageContextAddendum = {
-      _comesDirectlyFromServer: false,
-      _pageContextRetrievedFromServer: null
-    }
-    const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(
-      {
-        ...pageContext,
-        ...pageContextAddendum
-      },
-      true
-    )
-    const hookResult = await executeHook(
-      () => onBeforeRender(pageContextForUserConsumption),
-      'onBeforeRender',
-      hook.hookFilePath
-    )
-    assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
-    const pageContextFromHook = hookResult?.pageContext
-    objectAssign(pageContextAddendum, pageContextFromHook)
-    return pageContextAddendum
+  if (!hook) return null
+  const onBeforeRender = hook.hookFn
+  const pageContextAddendum = {
+    _hasPageContextFromClient: true
   }
-
-  // `export { onBeforeRender }` defined in `.page.server.js`
-  if (await onBeforeRenderServerSideExists(pageContext)) {
-    const pageContextFromServer = await retrievePageContextFromServer(pageContext)
+  const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(
     {
-      const urlRewrite = pageContextFromServer._urlRewrite
-      if (urlRewrite) {
-        assert(typeof urlRewrite === 'string')
-        assert(urlRewrite.startsWith('/'))
-        throw render(urlRewrite as `/${string}`, pageContextFromServer)
-      }
-    }
-    const pageContextAddendum = {}
-    Object.assign(pageContextAddendum, pageContextFromServer)
-    objectAssign(pageContextAddendum, {
-      _comesDirectlyFromServer: true,
-      _pageContextRetrievedFromServer: pageContextFromServer
-    })
-    return pageContextAddendum
-  }
-
-  // No `export { onBeforeRender }` defined
-  const pageContextAddendum = { _comesDirectlyFromServer: false, _pageContextRetrievedFromServer: null }
+      ...pageContext,
+      ...pageContextAddendum
+    },
+    true
+  )
+  const hookResult = await executeHook(
+    () => onBeforeRender(pageContextForUserConsumption),
+    'onBeforeRender',
+    hook.hookFilePath
+  )
+  assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
+  const pageContextFromHook = hookResult?.pageContext
+  objectAssign(pageContextAddendum, pageContextFromHook)
   return pageContextAddendum
 }
 
-async function onBeforeRenderServerSideExists(
+async function hasPageContextServer(
+  pageContext: Parameters<typeof onBeforeRenderServerOnlyExists>[0]
+): Promise<boolean> {
+  return !!globalObject.pageContextInitHasClientData || (await onBeforeRenderServerOnlyExists(pageContext))
+}
+// Workaround for the fact that the client-side cannot known whether a pageContext JSON request is needed in order to fetch pageContextInit data passed to the client.
+//  - The workaround is reliable as long as the user sets additional pageContextInit to undefined instead of not defining the property:
+//    ```diff
+//    - // Breaks the workaround:
+//    - const pageContextInit = { urlOriginal: req.url }
+//    - if (user) pageContextInit.user = user
+//    + // Makes the workaround reliable:
+//    + const pageContextInit = { urlOriginal: req.url, user }
+//    ```
+// - We can show a warning to users when the pageContextInit keys aren't always the same. (We didn't implement the waning yet because it would require a new doc page https://vite-plugin-ssr.com/pageContextInit#avoid-conditional-properties
+// - Workaround cannot be made completely reliable because the workaround assumes that passToClient is always the same, but the user may set a different passToClient value for another page
+// - Alternatively, we could define a new config `alwaysFetchPageContextFromServer: boolean`
+function setPageContextInitHasClientData(pageContext: Record<string, unknown>) {
+  if (pageContext._pageContextInitHasClientData) {
+    globalObject.pageContextInitHasClientData = true
+  }
+}
+
+async function onBeforeRenderServerOnlyExists(
   pageContext: {
     _pageId: string
     urlOriginal: string
@@ -273,46 +293,58 @@ function checkIf404(err: unknown): boolean {
   return isObject(err) && err._is404 === true
 }
 
-async function retrievePageContextFromServer(pageContext: {
+async function fetchPageContextFromServer(pageContext: {
   urlOriginal: string
   _urlRewrite: string | null
   _urlOriginalPristine?: string
-}): Promise<Record<string, unknown>> {
+}) {
   const urlLogical = pageContext._urlRewrite ?? pageContext._urlOriginalPristine ?? pageContext.urlOriginal
   const pageContextUrl = getPageContextRequestUrl(urlLogical)
   const response = await fetch(pageContextUrl)
 
   {
     const contentType = response.headers.get('content-type')
-    const isRightContentType = contentType && contentType.includes('application/json')
+    const contentTypeCorrect = 'application/json'
+    const isCorrect = contentType && contentType.includes(contentTypeCorrect)
 
     // Static hosts + page doesn't exist
-    if (!isRightContentType && response.status === 404) {
+    if (!isCorrect && response.status === 404) {
       serverSideRouteTo(pageContext.urlOriginal)
-      const err = new Error("Page doesn't exist")
-      Object.assign(err, { _abortRendering: true })
-      throw err
+      throw AlreadyServerSideRouted()
     }
 
     assertUsage(
-      isRightContentType,
-      `Wrong HTTP Response Header \`content-type\` value for URL ${pageContextUrl} (it should be \`application/json\` but we got \`${contentType}\`). Make sure to use \`pageContext.httpResponse.contentType\`, see https://github.com/brillout/vite-plugin-ssr/issues/191`
+      isCorrect,
+      `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vite-plugin-ssr.com/renderPage`
     )
   }
 
   const responseText = await response.text()
-  const pageContextFromServer = parse(responseText) as
-    | { pageContext: Record<string, unknown> }
-    | { serverSideError: true }
+  const pageContextFromServer: unknown = parse(responseText)
+  assert(isObject(pageContextFromServer))
+
   if ('serverSideError' in pageContextFromServer) {
     throw getProjectError(
       '`pageContext` could not be fetched from the server as an error occurred on the server; check your server logs.'
     )
   }
-  assert(isPlainObject(pageContextFromServer))
-  assert(hasProp(pageContextFromServer, '_pageId', 'string'))
 
+  if (isAbortPageContext(pageContextFromServer)) {
+    throw AbortRender(pageContextFromServer)
+  }
+
+  assert(hasProp(pageContextFromServer, '_pageId', 'string'))
   removeBuiltInOverrides(pageContextFromServer)
+  objectAssign(pageContextFromServer, { _hasPageContextFromServer: true })
 
   return pageContextFromServer
+}
+
+function isAlreadyServerSideRouted(err: unknown): boolean {
+  return isObject(err) && !!err._alreadyServerSideRouted
+}
+function AlreadyServerSideRouted() {
+  const err = new Error("Page doesn't exist")
+  Object.assign(err, { _alreadyServerSideRouted: true })
+  return err
 }

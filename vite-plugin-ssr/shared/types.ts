@@ -4,7 +4,6 @@ export { PageContextBuiltInClientWithServerRouting }
 
 import type { PageContextUrlsPublic } from './addComputedUrlProps'
 import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports'
-import type { AbortReason } from './route/abort'
 
 /** Built-in `pageContext` properties set by vite-plugin-ssr.
  *
@@ -59,9 +58,9 @@ type PageContextBuiltIn<Page = any> = {
   /**
    * The reason why the original page was aborted. Usually used for showing a custom message on the error page.
    *
-   * https://vite-plugin-ssr.com/abort
+   * https://vite-plugin-ssr.com/render
    */
-  abortReason?: AbortReason
+  abortReason?: unknown
 
   /**
    * Error that occured while rendering.

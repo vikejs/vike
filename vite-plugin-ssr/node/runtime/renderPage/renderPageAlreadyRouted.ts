@@ -1,11 +1,11 @@
 export { renderPageAlreadyRouted }
-export { prerenderPageContext }
+export { prerenderPage }
 export { prerender404Page }
-export { loadPageFilesServer }
-export { initPageContext }
+export { getPageContextInitEnhanced1 }
 export { getRenderContext }
 export type { RenderContext }
 export type { PageContextAfterRender }
+export type { PageContextInitEnhanced1 }
 
 import { getErrorPageId } from '../../../shared/error-page'
 import { getHtmlString } from '../html/renderHtml'
@@ -14,9 +14,8 @@ import { assert, assertUsage, hasProp, objectAssign, unique } from '../utils'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide'
 import { addComputedUrlProps, type PageContextUrlsPrivate } from '../../../shared/addComputedUrlProps'
 import { getGlobalContext } from '../globalContext'
-import { createHttpResponseObject, HttpResponse } from './createHttpResponseObject'
-import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } from './loadPageFilesServer'
-import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
+import { createHttpResponseObject, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponseObject'
+import { loadPageFilesServerSide, PageContext_loadPageFilesServerSide, type PageFiles } from './loadPageFilesServerSide'
 import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook'
 import { executeOnBeforeRenderHooks } from './executeOnBeforeRenderHook'
@@ -26,49 +25,29 @@ import { preparePageContextForUserConsumptionServerSide } from './preparePageCon
 import { executeGuardHook } from '../../../shared/route/executeGuardHook'
 import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageRoutes'
 import type { OnBeforeRouteHook } from '../../../shared/route/executeOnBeforeRouteHook'
-
-type GlobalRenderingContext = {
-  _allPageIds: string[]
-  _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
-}
+import type { PageContextInitEnhanced2 } from '../renderPage'
 
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 
 async function renderPageAlreadyRouted<
   PageContext extends {
-    _pageId: null | string
-    _httpRequestId: number
+    _pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
-    isClientSideNavigation: boolean
-    _allPageIds: string[]
     is404: null | boolean
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
-  } & PageContextUrlsPrivate &
-    PageContext_loadPageFilesServer
+  } & PageContextInitEnhanced2 &
+    PageContextUrlsPrivate &
+    PageContext_loadPageFilesServerSide
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
-  const isError = pageContext.is404 || pageContext.errorWhileRendering
-
-  if (isError) {
-    assert(pageContext._pageId === null)
-    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
-    if (errorPageId) {
-      objectAssign(pageContext, { _pageId: errorPageId })
-    } else {
-      // The user hasn't define a `_error.page.js`
-      objectAssign(pageContext, { _pageId: null })
-      return handleErrorWithoutErrorPage(pageContext)
-    }
-  }
-
-  // We now resolved `pageContext._pageId`. It can either be the:
+  // pageContext._pageId can either be the:
   //  - ID of the page matching the routing, or the
   //  - ID of the error page `_error.page.js`.
   assert(hasProp(pageContext, '_pageId', 'string'))
 
-  const pageFiles = await loadPageFilesServer(pageContext)
-  objectAssign(pageContext, pageFiles)
+  const isError = pageContext.is404 || pageContext.errorWhileRendering
+
+  objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
 
   await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionServerSide(pageContext))
 
@@ -88,8 +67,8 @@ async function renderPageAlreadyRouted<
     if (isError) {
       objectAssign(pageContext, { _isError: true })
     }
-    const body: string = serializePageContextClientSide(pageContext)
-    const httpResponse = await createHttpResponseObject(body, null, pageContext)
+    const pageContextSerialized: string = serializePageContextClientSide(pageContext)
+    const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -107,19 +86,17 @@ async function renderPageAlreadyRouted<
   }
 }
 
-async function prerenderPageContext(
-  pageContext: {
-    urlOriginal: string
-    routeParams: Record<string, string>
-    _pageId: string
-    _urlRewrite: null | string
-    _httpRequestId: number | null
-    _usesClientRouter: boolean
-    _pageContextAlreadyProvidedByOnPrerenderHook?: true
-    is404: null | boolean
-    _baseServer: string
-  } & PageFiles &
-    GlobalRenderingContext
+async function prerenderPage(
+  pageContext: PageContextInitEnhanced1 &
+    PageFiles & {
+      routeParams: Record<string, string>
+      _pageId: string
+      _urlRewrite: null
+      _httpRequestId: number | null
+      _usesClientRouter: boolean
+      _pageContextAlreadyProvidedByOnPrerenderHook?: true
+      is404: null | boolean
+    }
 ) {
   objectAssign(pageContext, {
     isClientSideNavigation: false,
@@ -173,21 +150,21 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
     ...pageContextInit_
   }
   {
-    const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
-    objectAssign(pageContext, pageContextInitAddendum)
+    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext)
+    objectAssign(pageContext, pageContextInitEnhanced1)
   }
 
-  const pageFiles = await loadPageFilesServer(pageContext)
-  objectAssign(pageContext, pageFiles)
+  objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
 
-  return prerenderPageContext(pageContext)
+  return prerenderPage(pageContext)
 }
 
-function initPageContext(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
+type PageContextInitEnhanced1 = ReturnType<typeof getPageContextInitEnhanced1>
+function getPageContextInitEnhanced1(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
   assert(pageContextInit.urlOriginal)
 
   const globalContext = getGlobalContext()
-  const pageContextAddendum = {
+  const pageContextInitEnhanced1 = {
     ...pageContextInit,
     _objectCreatedByVitePluginSsr: true,
     // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
@@ -200,10 +177,11 @@ function initPageContext(pageContextInit: { urlOriginal: string }, renderContext
     _pageConfigGlobal: renderContext.pageConfigGlobal,
     _allPageIds: renderContext.allPageIds,
     _pageRoutes: renderContext.pageRoutes,
-    _onBeforeRouteHook: renderContext.onBeforeRouteHook
+    _onBeforeRouteHook: renderContext.onBeforeRouteHook,
+    _pageContextInit: pageContextInit
   }
 
-  return pageContextAddendum
+  return pageContextInitEnhanced1
 }
 
 type RenderContext = {

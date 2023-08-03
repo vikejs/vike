@@ -1,5 +1,4 @@
 export { handleErrorWithoutErrorPage }
-export { warnMissingErrorPage }
 
 import { stringify } from '@brillout/json-serializer/stringify'
 import { getGlobalContext } from '../globalContext'
@@ -10,6 +9,7 @@ import type { GetPageAssets } from './getPageAssets'
 import type { PageContextAfterRender } from './renderPageAlreadyRouted'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 
+// When the user hasn't defined _error.page.js
 async function handleErrorWithoutErrorPage<
   PageContext extends {
     isClientSideNavigation: boolean
@@ -20,8 +20,13 @@ async function handleErrorWithoutErrorPage<
     urlOriginal: string
   }
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
-  assert(pageContext._pageId === null) // User didn't define a `_error.page.js` file
+  assert(pageContext._pageId === null)
   assert(pageContext.errorWhileRendering || pageContext.is404)
+
+  {
+    const isV1 = pageContext._pageConfigs.length > 0
+    warnMissingErrorPage(isV1)
+  }
 
   if (!pageContext.isClientSideNavigation) {
     objectAssign(pageContext, { httpResponse: null })
@@ -41,7 +46,7 @@ function warnMissingErrorPage(isV1: boolean): void {
     const msg = [
       `No ${isV1 ? 'error page' : pc.cyan('_error.page.js')} found,`,
       'we recommend defining an error page,',
-      "see https://vite-plugin-ssr.com/error-page"
+      'see https://vite-plugin-ssr.com/error-page'
     ].join(' ')
     assertWarning(false, msg, { onlyOnce: true })
   }

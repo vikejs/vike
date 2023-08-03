@@ -87,7 +87,8 @@ async function executeOnBeforeRouteHook(
   }
 
   assertPageContextProvidedByUser(hookReturn.pageContext, {
-    hook: { hookFilePath: onBeforeRouteHook.hookFilePath, hookName: 'onBeforeRoute' }
+    hookFilePath: onBeforeRouteHook.hookFilePath,
+    hookName: 'onBeforeRoute'
   })
 
   objectAssign(pageContextAddendumHook, hookReturn.pageContext)

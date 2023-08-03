@@ -11,11 +11,10 @@ import {
   throttle,
   sleep,
   getGlobalObject,
-  executeHook,
-  isObject
+  executeHook
 } from './utils'
 import { navigationState } from '../navigationState'
-import { checkIf404, getPageContext, getPageContextErrorPage } from './getPageContext'
+import { checkIf404, getPageContext, getPageContextErrorPage, isAlreadyServerSideRouted } from './getPageContext'
 import { createPageContext } from './createPageContext'
 import { addLinkPrefetchHandlers } from './prefetch'
 import { assertInfo, assertWarning, isReact, PromiseType } from './utils'
@@ -180,10 +179,16 @@ function useClientRouter() {
       _isFirstRenderAttempt: isFirstRenderAttempt
     })
 
-    let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>>
+    let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>> | undefined
+    let err: unknown
+    let hasError = false
     try {
       pageContextAddendum = await getPageContext(pageContext)
-    } catch (err: unknown) {
+    } catch (err_: unknown) {
+      hasError = true
+      err = err_
+    }
+    if (hasError) {
       if (!isAbortError(err)) {
         // We don't swallow 404 errors:
         //  - On the server-side, VPS swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
@@ -194,34 +199,34 @@ function useClientRouter() {
         // We handle the abort error down below.
       }
 
-      if (checkIfAbort(err, pageContext)) return
+      if (shouldSwallowAndInterrupt(err, pageContext)) return
 
       if (isAbortError(err)) {
         const errAbort = err
         logAbortErrorHandled(err, pageContext._isProduction, pageContext)
-        const pageContextAddition = errAbort._pageContextAddition
-        if ('_urlRewrite' in pageContextAddition) {
+        const pageContextAbort = errAbort._pageContextAbort
+        if (pageContextAbort._urlRewrite) {
           await fetchAndRender({
             scrollTarget,
             urlOriginal,
             overwriteLastHistoryEntry,
             isBackwardNavigation,
-            pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAddition]
+            pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort]
           })
           return
         }
-        if ('_urlRedirect' in pageContextAddition) {
+        if (pageContextAbort._urlRedirect) {
           await fetchAndRender({
             scrollTarget: 'scroll-to-top-or-hash',
-            urlOriginal: pageContextAddition._urlRedirect.url,
+            urlOriginal: pageContextAbort._urlRedirect.url,
             overwriteLastHistoryEntry: false,
             isBackwardNavigation: false,
             checkClientSideRenderable: true
           })
           return
         }
-        assert(pageContextAddition._abortStatusCode)
-        objectAssign(pageContext, pageContextAddition)
+        assert(pageContextAbort._abortStatusCode)
+        objectAssign(pageContext, pageContextAbort)
       } else {
         objectAssign(pageContext, { is404: checkIf404(err) })
       }
@@ -232,7 +237,7 @@ function useClientRouter() {
         // - When user hasn't defined a `_error.page.js` file
         // - Some unpexected vite-plugin-ssr internal error
 
-        if (checkIfAbort(err2, pageContext)) return
+        if (shouldSwallowAndInterrupt(err2, pageContext)) return
 
         if (!isFirstRenderAttempt) {
           setTimeout(() => {
@@ -249,6 +254,7 @@ function useClientRouter() {
         }
       }
     }
+    assert(pageContextAddendum)
     objectAssign(pageContext, pageContextAddendum)
     assertHook(pageContext, 'onPageTransitionStart')
     globalObject.onPageTransitionStart = pageContext.exports.onPageTransitionStart
@@ -514,13 +520,12 @@ function onPageShow(listener: () => void) {
   })
 }
 
-function checkIfAbort(err: unknown, pageContext: { urlOriginal: string; _isFirstRenderAttempt: boolean }): boolean {
-  if (isObject(err) && err._abortRendering) return true
-
-  if (handleErrorFetchingStaticAssets(err, pageContext)) {
-    return true
-  }
-
+function shouldSwallowAndInterrupt(
+  err: unknown,
+  pageContext: { urlOriginal: string; _isFirstRenderAttempt: boolean }
+): boolean {
+  if (isAlreadyServerSideRouted(err)) return true
+  if (handleErrorFetchingStaticAssets(err, pageContext)) return true
   return false
 }
 

@@ -1,4 +1,5 @@
 export default {
   clientRouting: true,
-  hydrationCanBeAborted: true
+  hydrationCanBeAborted: true,
+  passToClient: ['user']
 }

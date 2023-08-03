@@ -70,7 +70,7 @@ function addLinkPrefetchHandlers(pageContext: {
     try {
       if (!(await isClientSideRoutable(url))) return
     } catch {
-      // If a route() hook has a bug or `throw RenderErrorPage()`
+      // If a route() hook has a bug or `throw render()` / `throw redirect()`
       return
     }
 

@@ -1,37 +1,32 @@
-export { loadPageFilesServer }
+export { loadPageFilesServerSide }
 export type { PageFiles }
-export type { PageContext_loadPageFilesServer }
+export type { PageContext_loadPageFilesServerSide }
 
-import { type PageFile, getExportUnion } from '../../../shared/getPageFiles'
+import { type PageFile, getExportUnion, getPageFilesServerSide, getExports } from '../../../shared/getPageFiles'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide'
 import { assertWarning, objectAssign, PromiseType } from '../utils'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets'
-import { loadPageFilesServerSide } from '../../../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { debugPageFiles, type PageContextDebug } from './debugPageFiles'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig'
 import { analyzePage } from './analyzePage'
 import { getGlobalContext } from '../globalContext'
 import type { MediaType } from './inferMediaType'
+import { loadPageCode } from '../../../shared/page-configs/loadPageCode'
 
-type PageContext_loadPageFilesServer = PageContextGetPageAssets &
+type PageContext_loadPageFilesServerSide = PageContextGetPageAssets &
   PageContextDebug & {
     urlOriginal: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfig[]
   }
-type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
-async function loadPageFilesServer(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {
+type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServerSide>>
+async function loadPageFilesServerSide(pageContext: { _pageId: string } & PageContext_loadPageFilesServerSide) {
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext._pageId) // Make pageConfig globally available as pageContext._pageConfig?
 
   const [{ config, configEntries, exports, exportsAll, pageExports, pageFilesLoaded, pageConfigLoaded }] =
     await Promise.all([
-      loadPageFilesServerSide(
-        pageContext._pageFilesAll,
-        pageConfig,
-        pageContext._pageId,
-        !getGlobalContext().isProduction
-      ),
+      loadPageFiles(pageContext._pageFilesAll, pageConfig, pageContext._pageId, !getGlobalContext().isProduction),
       analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
     ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
@@ -61,7 +56,7 @@ async function loadPageFilesServer(pageContext: { _pageId: string } & PageContex
     }
   })
 
-  // TODO: remove this on next semver major
+  // TODO/v1-release: remove
   Object.assign(pageContextAddendum, {
     _getPageAssets: async () => {
       assertWarning(false, 'pageContext._getPageAssets() deprecated, see https://vite-plugin-ssr.com/preload', {
@@ -109,4 +104,20 @@ async function loadPageFilesServer(pageContext: { _pageId: string } & PageContex
   }
 
   return pageContextAddendum
+}
+
+async function loadPageFiles(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string, isDev: boolean) {
+  const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
+  const pageConfigLoaded = !pageConfig ? null : await loadPageCode(pageConfig, isDev)
+  await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
+  const { config, configEntries, exports, exportsAll, pageExports } = getExports(pageFilesServerSide, pageConfigLoaded)
+  return {
+    config,
+    configEntries,
+    exports,
+    exportsAll,
+    pageExports,
+    pageFilesLoaded: pageFilesServerSide,
+    pageConfigLoaded
+  }
 }

@@ -6,7 +6,7 @@ export type { PrerenderOptions }
 
 import '../runtime/page-files/setup'
 import path from 'path'
-import { route, type PageRoutes } from '../../shared/route'
+import { route } from '../../shared/route'
 import {
   assert,
   assertUsage,
@@ -27,12 +27,12 @@ import {
 } from './utils'
 import { pLimit, PLimit } from '../../utils/pLimit'
 import {
-  getRenderContext,
-  loadPageFilesServer,
-  prerenderPageContext,
-  type RenderContext,
+  prerenderPage,
   prerender404Page,
-  initPageContext
+  getRenderContext,
+  type RenderContext,
+  getPageContextInitEnhanced1,
+  PageContextInitEnhanced1
 } from '../runtime/renderPage/renderPageAlreadyRouted'
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
@@ -44,13 +44,13 @@ import type { InlineConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString'
-import type { PageConfig, PageConfigGlobal } from '../../shared/page-configs/PageConfig'
 import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode'
 import { isErrorPage } from '../../shared/error-page'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute'
-import type { OnBeforeRouteHook } from '../../shared/route/executeOnBeforeRouteHook'
+import { isAbortError } from '../../shared/route/abort'
+import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide'
 
 type HtmlFile = {
   urlOriginal: string
@@ -88,24 +88,13 @@ type PrerenderContext = {
   _noExtraDir: boolean
 }
 
-type PageContext = {
-  urlOriginal: string
+type PageContext = PageContextInitEnhanced1 & {
   _urlRewrite: null
+  _urlHandler: null
   _urlOriginalBeforeHook?: string
   _urlOriginalModifiedByHook?: TransformerHook
   _providedByHook: ProvidedByHook
-  _baseServer: string
-  _urlHandler: null
-  _baseAssets: null | string
-  _includeAssetsImportedByServer: boolean
   _pageContextAlreadyProvidedByOnPrerenderHook?: true
-  // TODO: use GlobalNodeContext instead
-  _allPageIds: string[]
-  _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
-  _pageConfigGlobal: PageConfigGlobal
-  _pageRoutes: PageRoutes
-  _onBeforeRouteHook: OnBeforeRouteHook | null
 }
 
 type PrerenderOptions = {
@@ -479,7 +468,7 @@ async function handlePagesWithStaticRoutes(
             }
           ]
         })
-        objectAssign(pageContext, await loadPageFilesServer(pageContext))
+        objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
 
         prerenderContext.pageContexts.push(pageContext)
       })
@@ -499,8 +488,8 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
     ...prerenderContext.pageContextInit
   }
   {
-    const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
-    objectAssign(pageContext, pageContextInitAddendum)
+    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext)
+    objectAssign(pageContext, pageContextInitEnhanced1)
   }
   addComputedUrlProps(
     pageContext,
@@ -740,8 +729,7 @@ async function routeAndPrerender(
         objectAssign(pageContext, routeResult.pageContextAddendum)
         const { _pageId: pageId } = pageContext
 
-        const pageFilesData = await loadPageFilesServer(pageContext)
-        objectAssign(pageContext, pageFilesData)
+        objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
 
         let usesClientRouter: boolean
         {
@@ -760,7 +748,14 @@ async function routeAndPrerender(
           _usesClientRouter: usesClientRouter
         })
 
-        const { documentHtml, pageContextSerialized } = await prerenderPageContext(pageContext)
+        let res: Awaited<ReturnType<typeof prerenderPage>>
+        try {
+          res = await prerenderPage(pageContext)
+        } catch (err) {
+          assertIsNotAbort(err, pc.bold(pageContext.urlOriginal))
+          throw err
+        }
+        const { documentHtml, pageContextSerialized } = res
         htmlFiles.push({
           urlOriginal,
           pageContext,
@@ -821,7 +816,13 @@ function warnMissingPages(
 
 async function prerender404(htmlFiles: HtmlFile[], renderContext: RenderContext, prerenderContext: PrerenderContext) {
   if (!htmlFiles.find(({ urlOriginal }) => urlOriginal === '/404')) {
-    const result = await prerender404Page(renderContext, prerenderContext.pageContextInit)
+    let result: Awaited<ReturnType<typeof prerender404Page>>
+    try {
+      result = await prerender404Page(renderContext, prerenderContext.pageContextInit)
+    } catch (err) {
+      assertIsNotAbort(err, 'the 404 page')
+      throw err
+    }
     if (result) {
       const urlOriginal = '/404'
       const { documentHtml, pageContext } = result
@@ -1076,4 +1077,15 @@ function prerenderForceExit() {
    * I don't known whether there is a way to call process.exit(0) only if needed, thus I'm not sure if there is a way to conditionally show a assertInfo().
   assertInfo(false, "Pre-rendering was forced exit. (Didn't gracefully exit because the event queue isn't empty. This is usally fine, see ...", { onlyOnce: false })
   */
+}
+
+function assertIsNotAbort(err: unknown, urlOr404: string) {
+  if (!isAbortError(err)) return
+  const { _abortCall: abortCall, _abortCaller: abortCaller } = err._pageContextAbort
+  assertUsage(
+    false,
+    `${pc.cyan(abortCall)} intercepted while pre-rendering ${urlOr404} but ${pc.cyan(
+      `throw ${abortCaller}()`
+    )} isn't support for pre-rendered pages. Create a GitHub ticket if you need this.`
+  )
 }

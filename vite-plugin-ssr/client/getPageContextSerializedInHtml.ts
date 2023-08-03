@@ -1,13 +1,9 @@
 import { parse } from '@brillout/json-serializer/parse'
-import { hasProp, objectAssign, assert, assertUsage } from './utils'
+import { hasProp, assert, assertUsage, objectAssign } from './utils'
 
 export { getPageContextSerializedInHtml }
 
-function getPageContextSerializedInHtml(): {
-  _pageId: string
-  _pageContextRetrievedFromServer: Record<string, unknown>
-  _comesDirectlyFromServer: true
-} {
+function getPageContextSerializedInHtml(): { _pageId: string; _hasPageContextFromServer: true } {
   const id = 'vite-plugin-ssr_pageContext'
   const elem = document.getElementById(id)
   assertUsage(
@@ -17,13 +13,12 @@ function getPageContextSerializedInHtml(): {
   const pageContextJson = elem.textContent
   assert(pageContextJson)
 
-  const pageContext = parse(pageContextJson)
-  assert(hasProp(pageContext, '_pageId', 'string'))
+  const pageContextSerializedInHtml = parse(pageContextJson)
+  assert(hasProp(pageContextSerializedInHtml, '_pageId', 'string'))
 
-  objectAssign(pageContext, {
-    _pageContextRetrievedFromServer: pageContext,
-    _comesDirectlyFromServer: true as const
+  objectAssign(pageContextSerializedInHtml, {
+    _hasPageContextFromServer: true as const
   })
 
-  return pageContext
+  return pageContextSerializedInHtml
 }

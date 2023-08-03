@@ -1,35 +1,42 @@
-The `render()` hook defines how a page is rendered to HTML.
+import { Link } from '@brillout/docpress'
+
+See also: <Link href="/redirect" noBreadcrumb={true} /> and <Link href="/abort#throw-redirect-vs-throw-render" doNotInferSectionTitle={true} noBreadcrumb={true} />.
+
+```ts
+// Render the error page
+render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: unknown)
+// Render another page
+render(url: `/${string}`, abortReason?: unknown)
+```
 
 ```js
-// /**/*.page.server.js (usually /renderer/_default.page.server.js)
-// Environment: server
+import { render } from 'vite-plugin-ssr/abort'
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
-import { renderToHtml, createElement } from 'some-ui-framework'
-
-export { render }
-
-async function render(pageContext){
-  const { Page, pageProps } = pageContext
-  const pageHtml = await renderToHtml(createElement(Page, pageProps))
-
-  const documentHtml = escapeInject`<!DOCTYPE html>
-    <html>
-      <head>
-        <title>My SSR App</title>
-      </head>
-      <body>
-        <div id="page-root">${dangerouslySkipEscape(pageHtml)}</div>
-      </body>
-    </html>`
-
-  return {
-    documentHtml,
-    pageContext: {
-      // We can add some `pageContext` here
-    }
+function onSomeHook() {
+  if (someCondition) {
+    throw render('/login')
+  }
+  if (someOtherCondition) {
+    throw render(401, "You don't have the permission to access this page.")
   }
 }
 ```
 
-> `pageContext.Page` is the `export { Page }` of the page's `.page.js` file that is being rendered.
+- If the first argument is a URL, then that URL is rendered.
+- If the first argument is a status code, then the <Link text="error page" href="/error-page" /> is rendered.
+  - [`401` Unauthorized](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401) - Access denied, the user isn't logged in.
+  - [`403` Forbidden](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403) - Access denied, the user is logged in but isn't allowed.
+  - [`404` Not Found](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404) - Page doesn't exist.
+  - [`429` Too Many Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) - Purposefully not serving the request, because of rate limiting or to protect from [DDoS attacks](https://en.wikipedia.org/wiki/Denial-of-service_attack).
+  - [`500` Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) - App has a bug.
+  - [`503` Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) - Server is overloaded and/or a third-party API isn't responding.
+- The `abortReason` argument sets `pageContext.abortReason` which is used by the error page to show a message to the user, see <Link href="/error-page" />.
+
+While it's most commonly used with [`guard()`](/guard) or [`onBeforeRender()`](/onBeforeRender), you can use it with any hook.
+
+Common use cases:
+
+- Authentication and authorization, see <Link href="/auth#login-flow" doNotInferSectionTitle={true} />.
+- Data fetching error handling, see <Link href="/data-fetching#error-handling" doNotInferSectionTitle={true} />.
+
+If `throw render()` doesn't work, see <Link href="/abort#how-to-debug" doNotInferSectionTitle={true} />.

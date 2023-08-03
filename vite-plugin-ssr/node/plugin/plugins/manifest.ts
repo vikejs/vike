@@ -25,7 +25,7 @@ function manifest(): Plugin[] {
         const runtimeManifest = getRuntimeManifest(configVps)
         const manifest = {
           version: projectInfo.projectVersion,
-          usesClientRouter: isUsingClientRouter(),
+          usesClientRouter: isUsingClientRouter(), // TODO/v1-release: remove
           manifestKeyMap: getManifestKeyMap(configVps, config),
           ...runtimeManifest
         }

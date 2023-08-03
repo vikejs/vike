@@ -4,7 +4,7 @@ export { resolveOutDir }
 
 import type { UserConfig, ResolvedConfig } from 'vite'
 import { viteIsSSR } from './viteIsSSR'
-import { assert } from './assert'
+import { assert, assertUsage } from './assert'
 import { pathJoin } from './path-shim'
 import { assertPosixPath, toPosixPath } from './filesystemPathHandling'
 
@@ -96,10 +96,13 @@ function assertIsNotOutDirRoot(outDir: string) {
 function assertOutDirResolved(outDir: string, config: UserConfig | ResolvedConfig) {
   assertPosixPath(outDir)
   assertIsNotOutDirRoot(outDir)
+  assert('/client'.length === '/server'.length)
+  const outDirCorrected = outDir.slice(0, -1 * '/client'.length)
+  const wrongUsage = `You've set Vite's config.build.outDir to '${outDir}' but you should set it to '${outDirCorrected}' instead.`
   if (viteIsSSR(config)) {
-    assert(outDir.endsWith('/server'))
+    assertUsage(outDir.endsWith('/server'), wrongUsage)
   } else {
-    assert(outDir.endsWith('/client'))
+    assertUsage(outDir.endsWith('/client'), wrongUsage)
   }
 }
 

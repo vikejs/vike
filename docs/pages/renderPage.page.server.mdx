@@ -2,31 +2,31 @@ import { RepoLink, Link, Warning } from '@brillout/docpress'
 
 Environment: server.
 
-The `renderPage()` function enables you to integrate and embed vite-plugin-ssr into any server:
+The `renderPage()` function enables you to integrate and embed vite-plugin-ssr into any server.
 
 ```js
 import { renderPage } from 'vite-plugin-ssr/server'
 
-// myServer can be Express.js, Fastify, Cloudflare Workers, Vercel Edge, Deno, ...
-myServer.addMiddleware({
+// Can be any JavaScript server: Express.js, Cloudflare Workers, Fastify, Vercel, Deno, ...
+server.addMiddleware({
   method: 'GET',
-  route: '*', // catch-all route
-  async handler(request, response) {
-    const pageContextInit = { urlOriginal: req.url }
+  route: '*', // Catch-all
+  async handler(request) {
+    const pageContextInit = { urlOriginal: request.url }
     const pageContext = await renderPage(pageContextInit)
-    if (pageContext.httpResponse === null) return
-    const { body, statusCode, contentType } = pageContext.httpResponse
-    response.status(statusCode).type(contentType).send(body)
+    return pageContext.httpResponse
   }
 })
 ```
 
-It's [optional](#optional) depending on how you use vite-plugin-ssr.
+It's [optional](#optional) and only needed if you use SSR.
 
 ## Examples
 
- - <RepoLink text='With JavaScript' path='/boilerplates/boilerplate-vue/server/index.js' />
- - <RepoLink text='With TypeScript' path='/boilerplates/boilerplate-vue-ts/server/index.ts' />
+ - <RepoLink text='Express.js' path='/boilerplates/boilerplate-vue/server/index.js' />
+ - <RepoLink text='Express.js + TypeScript' path='/boilerplates/boilerplate-vue-ts/server/index.ts' />
+ - <Link text="Cloudflare Workers" href="/cloudflare-workers#example" />
+ - <Link text="Vercel" href="/vercel#api-route" />
 
 
 ## Usage
@@ -74,8 +74,9 @@ async function startServer() {
     const pageContextInit = { urlOriginal: req.originalUrl }
     const pageContext = await renderPage(pageContextInit)
     if (pageContext.httpResponse === null) return next()
-    const { body, statusCode, contentType } = pageContext.httpResponse
-    res.status(statusCode).type(contentType).send(body)
+    const { body, statusCode, headers } = pageContext.httpResponse
+    headers.forEach(([name, value]) => res.setHeader(name, value))
+    res.status(statusCode).send(body)
   })
 
   const port = 3000
@@ -84,15 +85,16 @@ async function startServer() {
 }
 ```
 
-- `pageContext.httpResponse.statusCode` is either `200`, `404`, or `500`.
-- `pageContext.httpResponse.contentType` is either `text/html;charset=utf-8` or `application/json`. (The `Content-Type` is `application/json` when <Link text="Client Routing" href="/client-routing" /> fetches the `pageContext` of the newly navigated page.)
-- `pageContext.httpResponse.body` is the HTML string returned by the <Link text={<><code>render()</code> hook</>} href="/render" /> with additional `<script>` and `<style>` tags automatically injected by `vite-plugin-ssr`.
-- `pageContext.httpResponse` is `null` if:
-   - An error occurs while rendering the page and you didn't create an `_error.page.js` file.
-   - An error occurs while rendering `_error.page.js`.
-   - The URL is skipped: `vite-plugin-ssr` doesn't render certain URLs. (E.g. `pageContext.urlOriginal === '/favicon.ico'` because browsers automatically make favicon requests.)
+The `pageContext.httpResponse.body` value is the HTML string returned by the <Link text={<><code>render()</code> hook</>} href="/render-hook" /> with additional `<script>` and `<style>` tags automatically injected by `vite-plugin-ssr`.
 
-`renderPage()` doesn't depend on Node.js and you can use `renderPage()` (and therefore embed vite-plugin-ssr) anywhere:
+For HTML streams use `httpResponse.pipe()` instead of `pageContext.httpResponse.body`, see <Link href="/stream" />.
+
+The `pageContext.httpResponse` value is `null` if:
+   - An error occured while rendering the page and no <Link text="error page" href="/error-page" noBreadcrumb /> is defined.
+   - An error occured while rendering the error page.
+   - Vite-plugin-ssr skips certain URLs, such as `/favicon.ico` (because browsers automatically make favicon requests).
+
+The `renderPage()` function doesn't depend on Node.js and you can use `renderPage()` (and therefore embed vite-plugin-ssr) anywhere:
  - Any server environment (Express.js, HatTip, Deno, Fastify, Vite's development server, Node.js's HTTP server, ...)
  - Any deployment provider (AWS, Cloudflare Workers, Vercel, ...)
 
@@ -100,13 +102,13 @@ async function startServer() {
 
 See also:
  - <Link href="/NODE_ENV" />
- - <Link href="/render" />
+ - <Link href="/render-hook" />
 
 
 ## Optional
 
 If you <Link text="pre-render" href="/pre-rendering" /> all your pages then you don't need to use `renderPage()`. Because:
- - Vite-plugin-ssr automatically integrates and embeds `renderPage()` into Vite's development server (`$ vite`/`$ vite dev`) and Vite's preview server (`$ vite preview`).
+ - Vite-plugin-ssr automatically embeds itself into Vite's development server (`$ vite`/`$ vite dev`) and Vite's preview server (`$ vite preview`).
  - During pre-rendering (`$ vite build`/`$ vite-plugin-ssr prerender`) vite-plugin-ssr automatically renders your pages.
 
 If you use server-side rendering (SSR) and you don't pre-rendering all your pages, then you do need to use `renderPage()` in order to integrate and embed vite-plugin-ssr into your server.
