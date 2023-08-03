@@ -1,5 +1,4 @@
 - Remove assertInfo()
-- Isomorphic colors
 
 - Implement config.redirects
 - By default, only call guard() hooks on the server-side?

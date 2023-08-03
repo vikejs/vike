@@ -5,7 +5,6 @@ export { assertInfo }
 export { getProjectError }
 export { addOnBeforeLogHook }
 export { getAssertErrMsg }
-export { addAssertColorer }
 export { overwriteAssertProductionLogger }
 export { isBug }
 
@@ -13,11 +12,11 @@ import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace
 import { getGlobalObject } from './getGlobalObject'
 import { isObject } from './isObject'
 import { projectInfo } from './projectInfo'
+import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
   onBeforeLog?: () => void
   logger: Logger
-  colorer: Colorer
   showStackTraceList: WeakSet<Error>
 }>('utils/assert.ts', {
   alreadyLogged: new Set(),
@@ -29,12 +28,9 @@ const globalObject = getGlobalObject<{
       console.warn(msg)
     }
   },
-  // No colors in production
-  colorer: (str) => str,
   showStackTraceList: new WeakSet()
 })
 type Logger = (msg: string | Error, logType: 'warn' | 'info') => void
-type Colorer = (str: string, color: 'red' | 'blue' | 'yellow') => string
 
 const projectTag = `[${projectInfo.npmPackageName}]` as const
 const projectTagWithVersion = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]` as const
@@ -144,7 +140,7 @@ type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning' | 'Info'
 function addPrefixAssertType(msg: string, tag: Tag): string {
   let prefix = `[${tag}]`
   const color = tag === 'Info' ? 'blue' : tag === 'Warning' ? 'yellow' : 'red'
-  prefix = globalObject.colorer(prefix, color)
+  prefix = pc[color](prefix)
   const whitespace = msg.startsWith('[') ? '' : ' '
   return `${prefix}${whitespace}${msg}`
 }
@@ -195,9 +191,6 @@ function removeErrMsg(stack: unknown): string {
 
 function overwriteAssertProductionLogger(logger: Logger): void {
   globalObject.logger = logger
-}
-function addAssertColorer(colorer: Colorer): void {
-  globalObject.colorer = colorer
 }
 
 function isBug(err: unknown): boolean {

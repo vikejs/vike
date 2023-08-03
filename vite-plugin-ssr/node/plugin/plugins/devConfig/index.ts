@@ -32,14 +32,16 @@ function devConfig(): Plugin[] {
               'vite-plugin-ssr/client',
               'vite-plugin-ssr/client/router',
               'vite-plugin-ssr/routing',
-              // - We also exclude @brillout/json-serializer to avoid:
+              // - We also exclude @brillout/json-serializer and @brillout/picocolors to avoid:
               //   ```
               //   9:28:58 AM [vite] ✨ new dependencies optimized: @brillout/json-serializer/parse
               //   9:28:58 AM [vite] ✨ optimized dependencies changed. reloading
               //   ```
-              // - Previously, we had to exclude @brillout/json-serializer because of pnpm, but this doesn't seem to be the case anymore
+              // - Previously, we had to exclude @brillout/json-serializer and @brillout/picocolors because of pnpm, but this doesn't seem to be the case anymore.
+              //   - Actually, this should be still the case? How can Vite resolve @brillout/json-serializer when using pnpm?
               '@brillout/json-serializer/parse',
-              '@brillout/json-serializer/stringify'
+              '@brillout/json-serializer/stringify',
+              '@brillout/picocolors'
             ]
           }
         } satisfies UserConfig

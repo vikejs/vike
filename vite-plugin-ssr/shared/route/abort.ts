@@ -24,6 +24,7 @@ import {
   projectInfo,
   truncateString
 } from './utils'
+import pc from '@brillout/picocolors'
 
 type StatusCodeAbort = StatusCodeRedirect | StatusCodeError
 type StatusCodeRedirect = 301 | 302
@@ -210,7 +211,7 @@ function logAbortErrorHandled(
   const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal
   assert(urlCurrent)
   const abortCall = err._pageContextAbort._abortCall
-  assertInfo(false, `${abortCall} intercepted while rendering URL ${urlCurrent}`, { onlyOnce: false })
+  assertInfo(false, `${pc.cyan(abortCall)} intercepted while rendering URL ${pc.bold(urlCurrent)}`, { onlyOnce: false })
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
