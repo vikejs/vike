@@ -1,5 +1,6 @@
-import ServerMiddleware from './index/features/ServerMiddleware.mdx'
+import { JustAMiddlewareLink } from '../components'
+import { Link } from '@brillout/docpress'
 
-From the server-side point of view, `vite-plugin-ssr` is just a server middleware. It's versatile and we can use it any server environment we want.
+<JustAMiddlewareLink /> This means you you can use any deployment strategy and any deployment provider.
 
-<ServerMiddleware />
+You can also <Link text="pre-render" href="/pre-rendering" /> your pages to remove the need for a production server and deploy to a <Link text="static host" href="/static-hosts" /> instead.

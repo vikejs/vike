@@ -1,25 +1,11 @@
 import { RepoLink, Link, Warning } from '@brillout/docpress'
+import { JustAMiddleware } from '../components'
 
 Environment: server.
 
-The `renderPage()` function enables you to integrate and embed vite-plugin-ssr into any server.
+The `renderPage()` function enables you to integrate and embed vite-plugin-ssr into any server. It's [optional](#optional) and only needed if you use SSR.
 
-```js
-import { renderPage } from 'vite-plugin-ssr/server'
-
-// Can be any JavaScript server: Express.js, Cloudflare Workers, Fastify, Vercel, Deno, ...
-server.addMiddleware({
-  method: 'GET',
-  route: '*', // Catch-all
-  async handler(request) {
-    const pageContextInit = { urlOriginal: request.url }
-    const pageContext = await renderPage(pageContextInit)
-    return pageContext.httpResponse
-  }
-})
-```
-
-It's [optional](#optional) and only needed if you use SSR.
+<JustAMiddleware />
 
 ## Examples
 
@@ -51,7 +37,7 @@ async function startServer() {
   if (!isProduction) {
     // We instantiate Vite's development server and integrate its middleware to our server.
     // ⚠️ We instantiate it only in development. (It isn't needed in production and it
-    // would unnecessarily bloat our server in production.)
+    // would unnecessarily bloat our production server.)
     const vite = await import('vite')
     const viteDevMiddleware = (await vite.createServer({
       root,
@@ -107,8 +93,8 @@ See also:
 
 ## Optional
 
-If you <Link text="pre-render" href="/pre-rendering" /> all your pages then you don't need to use `renderPage()`. Because:
+If you <Link text="pre-render" href="/pre-rendering" /> all your pages then you don't need to use `renderPage()`, because:
  - Vite-plugin-ssr automatically embeds itself into Vite's development server (`$ vite`/`$ vite dev`) and Vite's preview server (`$ vite preview`).
  - During pre-rendering (`$ vite build`/`$ vite-plugin-ssr prerender`) vite-plugin-ssr automatically renders your pages.
 
-If you use server-side rendering (SSR) and you don't pre-rendering all your pages, then you do need to use `renderPage()` in order to integrate and embed vite-plugin-ssr into your server.
+If you use server-side rendering (SSR) and you don't pre-render all your pages, then you need a production server and you need to use `renderPage()` in order to embed vite-plugin-ssr into your server.

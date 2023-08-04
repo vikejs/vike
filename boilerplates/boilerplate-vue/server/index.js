@@ -27,7 +27,7 @@ async function startServer() {
   } else {
     // We instantiate Vite's development server and integrate its middleware to our server.
     // ⚠️ We instantiate it only in development. (It isn't needed in production and it
-    // would unnecessarily bloat our server in production.)
+    // would unnecessarily bloat our production server.)
     const vite = require('vite')
     const viteDevMiddleware = (
       await vite.createServer({

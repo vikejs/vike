@@ -1,13 +1,13 @@
 import { Link } from '@brillout/docpress'
 
-From the perspective of the server, vite-plugin-ssr is just a server-agnostic middleware:
+From the perspective of the server, vite-plugin-ssr is just a middleware:
 
 ```js
-// renderPage() doesn't depend on Node.js and can be used anywhere such as
-// Cloudflare Workers, AWS EC2, AWS Lambda, Vercel, Deno Deploy, Lagon, ...
+// renderPage() doesn't depend on Node.js and can be used in any JavaScript environment:
+// AWS, Cloudflare, Vercel, Node.js, Deno, Bun, Lagon, ...
 import { renderPage } from 'vite-plugin-ssr/server'
 
-// Can be any server framework (Express.js/Deno/Fastify/Hono/HatTip/...)
+// Can be any server: Express.js, Fastify, Hono, Cloudflare Worker, AWS Lambda Function, ...
 server.addMiddleware({
   method: 'GET',
   route: '*', // Catch-all
@@ -20,5 +20,7 @@ server.addMiddleware({
   }
 })
 ```
+
+The vite-plugin-ssr middleware is versatile and can be used within any server environment.
 
 Alternatively, you can <Link text="pre-render" href="/pre-rendering" /> your pages to remove the need for a production server and deploy to a <Link text="static host" href="/static-hosts" /> instead.

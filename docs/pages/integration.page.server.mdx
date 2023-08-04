@@ -6,11 +6,12 @@ If the tool you want to use isn't in the list of integration guides, you'll stil
 Vite-plugin-ssr is versatile:
  - From an architectural perspective, <Link text="vite-plugin-ssr only takes care of the frontend" href="/architecture" />: you keep control over the rest of your stack and architecture.
  - From a server perspective, vite-plugin-ssr is <Link text="just a middleware" href="#server-side-tools" />: you can embed vite-plugin-ssr into any server.
+ - You can <Link text="disable SSR (i.e. use SPA/MPA)" href="/render-modes" /> and/or <Link text="pre-render" href="/pre-rendering" /> your pages to remove the need for a production server and deploy to a <Link text="static host" href="/static-hosts" /> instead.
  - You have full control over how pages are rendered, which means that you can use any <Link text="UI tool" href="#ui-tool" /> and any <Link text="client-side tool" href="#client-side-tools" />.
 
 In principle, you should be able to use vite-plugin-ssr with any tool you want.
 
-> If you struggle integrating a tool, don't hesitate to [create a new GitHub Discussion](https://github.com/brillout/vite-plugin-ssr/discussions/new) &mdash; we are responsive and looking forward to assist you.
+> If you struggle integrating a tool, don't hesitate to [create a new GitHub Discussion](https://github.com/brillout/vite-plugin-ssr/discussions/new).
 
 
 ## UI tools
@@ -114,7 +115,7 @@ Integrating a client-side tool is usually only a matter of following its officia
 <JustAMiddleware />
 
 You can use:
-- Any server framework (Express, Koa, Fastify, Hapi, ...)
+- Any server framework (Express, Fastify, Hono, Nitro, HatTip, Koa, Hapi, ...)
 - Any authentication strategy/tool (email/password, OAuth, Auth.js, Passport.js, Grant, Keycloak, Auth0, ...).
 - Any serverless/edge environment (Cloudflare Workers, Vercel, Firebase, AWS Lambda, Google Cloud Functions, Deno Deploy, ...)
 - Any virtual private server (AWS EC2, Google Cloud, ...)

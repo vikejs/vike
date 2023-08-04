@@ -1,13 +1,13 @@
-export { JustANodeServer }
+export { JustAMiddlewareLink }
 
 import React from 'react'
 import { Link } from '@brillout/docpress'
 
-function JustANodeServer() {
+function JustAMiddlewareLink() {
   return (
-    <p>
-      From a server architecture point of view, vite-plugin-ssr app is{' '}
+    <>
+      From the perspective of the server, vite-plugin-ssr app is{' '}
       <Link text="just a middleware" href="/integration#server-side-tools" />.
-    </p>
+    </>
   )
 }
