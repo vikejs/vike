@@ -40,7 +40,8 @@ function getPageContextProxyForUser<PageContext extends Record<string, unknown> 
 function assertPassToClient(pageContext: PageContextForPassToClientWarning, prop: string, errMsg: string) {
   // We disable assertPassToClient() for the next attempt to read `prop`, because of how Vue's reactivity work. When changing a reactive object:
   //  - Vue tries to read its old value first. This triggers a `assertPassToClient()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.
-  if (globalObject.prev === prop) return
+  //  - Vue seems to read __v_raw before reading the property
+  if (globalObject.prev === prop || globalObject.prev === '__v_raw') return
   ignoreNextRead(prop)
   if (prop in pageContext) return
   if (isExpected(prop)) return
