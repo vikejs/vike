@@ -1,0 +1,22 @@
+import { Link, Construction } from '@brillout/docpress'
+
+See also:
+ - <Link href="/redirect" noBreadcrumb={true} />
+ - <Link href="/render" noBreadcrumb={true} />
+
+<Construction>
+  This isn't implemented yet. ETA: 1-2 weeks.
+</Construction>
+
+```js
+// /pages/+config.js
+
+// Permanent redirections (HTTP status code 301)
+export default {
+  redirects: {
+    '/about-us': '/about',
+    // Parameterized redirections
+    '/product/@id': '/buy/@id'
+  }
+}
+```

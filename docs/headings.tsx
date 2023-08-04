@@ -595,13 +595,21 @@ const headings = [
   },
   {
     level: 2,
-    title: '`prerender` config',
+    titleInNav: '`prerender`',
+    title: '`config.prerender`',
     url: '/prerender-config'
   },
   {
     level: 2,
-    title: '`disableAutoFullBuild`',
+    titleInNav: '`disableAutoFullBuild`',
+    title: '`config.disableAutoFullBuild`',
     url: '/disableAutoFullBuild'
+  },
+  {
+    level: 2,
+    titleInNav: '`redirects`',
+    title: '`config.redirects`',
+    url: '/redirects'
   },
   {
     level: 4,

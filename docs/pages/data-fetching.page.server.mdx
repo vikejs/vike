@@ -124,7 +124,7 @@ async function onBeforeRender(pageContext) {
     // Render the error page and show a message to the user
     throw render(404, `Movie with ID ${movieId} doesn't exist.`)
     /* Or redirect the user:
-    throw redirect(302, '/movie/add')
+    throw redirect('/movie/add')
     // Or render the movie submission form while preserving the URL:
     throw render('/movie/add')
     */
@@ -135,7 +135,7 @@ async function onBeforeRender(pageContext) {
 
 Upon `throw render(404)`, the <Link text="error page" href="/error-page" /> is rendered.
 
-Using `throw render('/movie/add')` instead of `throw redirect(302, '/movie/add')` is a novel technique which we explain at <Link href="/auth#login-flow" />.
+Using `throw render('/movie/add')` instead of `throw redirect('/movie/add')` is a novel technique which we explain at <Link href="/auth#login-flow" />.
 
 
 ## Custom Exports

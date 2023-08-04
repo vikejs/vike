@@ -1,6 +1,9 @@
 import { Link } from '@brillout/docpress'
 
-See also: <Link href="/render" noBreadcrumb={true} /> and <Link href="/abort#throw-redirect-vs-throw-render" doNotInferSectionTitle={true} noBreadcrumb={true} />.
+See also:
+ - <Link href="/redirects" noBreadcrumb={true} />
+ - <Link href="/render" noBreadcrumb={true} />
+ - <Link href="/abort#throw-redirect-vs-throw-render" doNotInferSectionTitle={true} noBreadcrumb={true} />
 
 ```ts
 // Redirect the user to another URL
@@ -17,9 +20,9 @@ function onSomeHook() {
 }
 ```
 
-> By default, `throw redirect()` makes a temporary redirection (using the HTTP status code `302`). We expect that permanent redirections aren't need for programmatically defined redirections. However, if you do, let us know (there is a hidden option to change the status code).
+> `throw redirect()` makes temporary redirections (HTTP status code `302`). For permanent redirections (HTTP status code `301`) use <Link href="/redirects" noBreadcrumb={true} /> instead. (If you need programmatically defined permanent redirections, let us know: there is a hidden option to change the status code.)
 
-While it's most commonly used with [`guard()`](/guard) or [`onBeforeRender()`](/onBeforeRender), you can use it with any hook.
+While it's most commonly used with [`guard()`](/guard) or [`onBeforeRender()`](/onBeforeRender) you can use it with any hook.
 
 Common use cases:
 

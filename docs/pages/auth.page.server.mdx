@@ -48,7 +48,7 @@ export const guard = (pageContext) => {
     // which we explain down below.)
     throw render('/login')
     /* The more traditional way, redirect the user:
-    throw redirect(302, '/login')
+    throw redirect('/login')
     */
   }
   if (user.role !== 'admin') {
@@ -58,7 +58,7 @@ export const guard = (pageContext) => {
 }
 ```
 
-> Using `render('/login')` instead of `redirect(302, '/login')` allows the URL to be preserved during the entire login flow:
+> Using `render('/login')` instead of `redirect('/login')` allows the URL to be preserved during the entire login flow:
 >  1. Unauthenticated user goes to URL `/admin` and sees the login page. (URL is `/admin`.)
 >  2. User fills the sign-in form and successfully logs in. (URL is still `/admin`.)
 >  3. <Link text="Reload" href="/reload" /> the page, the user now sees the admin page. (URL is still `/admin`.)
