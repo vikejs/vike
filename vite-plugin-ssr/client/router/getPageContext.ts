@@ -247,16 +247,11 @@ function setPageContextInitHasClientData(pageContext: Record<string, unknown>) {
   }
 }
 
-async function onBeforeRenderServerOnlyExists(
-  pageContext: {
-    _pageId: string
-    urlOriginal: string
-    isHydration: boolean
-    _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfig[]
-  } & PageContextExports &
-    PageContextPassThrough
-): Promise<boolean> {
+async function onBeforeRenderServerOnlyExists(pageContext: {
+  _pageId: string
+  _pageFilesAll: PageFile[]
+  _pageConfigs: PageConfig[]
+}): Promise<boolean> {
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
