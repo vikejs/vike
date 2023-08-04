@@ -1,4 +1,4 @@
-import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter } from './utils'
+import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter, isBrowser } from './utils'
 
 export { addComputedUrlProps }
 export { assertURLs }
@@ -116,6 +116,13 @@ function urlParsedGetter(this: PageContextUrlSource) {
   const urlParsedOriginal = getUrlParsed(this)
   const { origin, pathname, pathnameOriginal, search, searchAll, searchOriginal, hash, hashOriginal } =
     urlParsedOriginal
+  const warnHashNotAvailable = (prop: 'hash' | 'hashOriginal' | 'hashString') => {
+    assertWarning(
+      isBrowser(),
+      `pageContext.urlParsed.${prop} isn't available on the server-side (HTTP requests don't include the URL hash by design)`,
+      { onlyOnce: true, showStackTrace: true }
+    )
+  }
   const urlParsed: UrlParsed = {
     origin,
     pathname,
@@ -123,20 +130,26 @@ function urlParsedGetter(this: PageContextUrlSource) {
     search,
     searchAll,
     searchOriginal,
-    hash,
-    hashOriginal,
+    get hash() {
+      warnHashNotAvailable('hash')
+      return hash
+    },
+    get hashOriginal() {
+      warnHashNotAvailable('hashOriginal')
+      return hashOriginal
+    },
     get hashString() {
-      assertWarning(
-        false,
-        '`pageContext.urlParsed.hashString` has been renamed to `pageContext.urlParsed.hashOriginal`',
-        { onlyOnce: true, showStackTrace: true }
-      )
+      assertWarning(false, 'pageContext.urlParsed.hashString has been renamed to pageContext.urlParsed.hashOriginal', {
+        onlyOnce: true,
+        showStackTrace: true
+      })
+      warnHashNotAvailable('hashString')
       return hashOriginal
     },
     get searchString() {
       assertWarning(
         false,
-        '`pageContext.urlParsed.searchString` has been renamed to `pageContext.urlParsed.searchOriginal`',
+        'pageContext.urlParsed.searchString has been renamed to pageContext.urlParsed.searchOriginal',
         { onlyOnce: true, showStackTrace: true }
       )
       return searchOriginal
