@@ -7,15 +7,15 @@
   "dependencies": {
     "@types/node": "^17.0.31",
     "@types/node-fetch": "^2.5.12",
-    "@vitejs/plugin-vue": "^4.0.0",
-    "@vue/compiler-sfc": "3.2.33",
-    "@vue/server-renderer": "3.2.33",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "@vue/compiler-sfc": "3.3.4",
+    "@vue/server-renderer": "3.3.4",
     "cross-fetch": "^3.1.5",
     "node-fetch": "^2.6.1",
     "typescript": "^4.6.4",
-    "vite": "^4.0.3",
+    "vite": "^4.4.8",
     "vite-plugin-md": "^0.11.8",
     "vite-plugin-ssr": "0.4.134",
-    "vue": "3.2.33"
+    "vue": "3.3.4"
   }
 }
