@@ -260,7 +260,7 @@ async function onBeforeRenderServerOnlyExists(
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
-    return getConfigValue(pageConfig, 'hasServerOnBeforeRender', 'boolean') ?? false
+    return getConfigValue(pageConfig, 'onBeforeRenderEnv') === 'server-only'
   } else {
     // TODO/v1-release: remove
     // V0.4

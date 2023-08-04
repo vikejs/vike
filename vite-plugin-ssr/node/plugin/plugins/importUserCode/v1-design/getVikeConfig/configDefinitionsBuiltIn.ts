@@ -85,10 +85,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
       return onRenderClientExists && PageExists
     }
   },
-  hasServerOnBeforeRender: {
-    env: 'server-and-client',
+  onBeforeRenderEnv: {
+    env: 'client-only',
     _computed: (pageConfig) =>
-      !!getCodeFilePath(pageConfig, 'onBeforeRender') &&
-      pageConfig.configElements.onBeforeRender!.configEnv === 'server-only'
+      !getCodeFilePath(pageConfig, 'onBeforeRender') ? null : pageConfig.configElements.onBeforeRender!.configEnv
   }
 }

@@ -14,7 +14,7 @@ type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVpsUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
   | 'prerender'
 
-type ConfigNamePrivate = 'isClientSideRenderable' | 'hasServerOnBeforeRender'
+type ConfigNamePrivate = 'isClientSideRenderable' | 'onBeforeRenderEnv'
 
 /** Page configuration.
  *

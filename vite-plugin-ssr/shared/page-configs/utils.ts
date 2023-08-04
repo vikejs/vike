@@ -10,21 +10,23 @@ type ConfigName = ConfigNameBuiltIn | ConfigNamePrivate
 
 function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'string'): null | string
 function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'boolean'): null | boolean
-// function getConfigValue(pageConfig: PageConfigData, configName: ConfigName): unknown
+function getConfigValue(pageConfig: PageConfigData, configName: ConfigName): unknown
 function getConfigValue(
   pageConfig: PageConfigData,
   configName: ConfigName,
-  type: 'string' | 'boolean'
+  type?: 'string' | 'boolean'
 ): null | unknown {
   const configElement = pageConfig.configElements[configName]
   if (!configElement || isNullish(pageConfig, configName)) {
     return null
   }
   const { configValue, configDefinedAt } = configElement
-  assertUsage(
-    typeof configValue === type,
-    `${configDefinedAt} has an invalid type \`${typeof configValue}\`: is should be a ${type} instead`
-  )
+  if (type) {
+    assertUsage(
+      typeof configValue === type,
+      `${configDefinedAt} has an invalid type \`${typeof configValue}\`: is should be a ${type} instead`
+    )
+  }
   return configValue
 }
 
