@@ -65,12 +65,14 @@ async function getPageContext(
   }
 }
 
-async function getPageContextFirstRender(pageContext: {
-  _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
-  _isFirstRenderAttempt: true
-  urlOriginal: string
-}): Promise<PageContextAddendum> {
+async function getPageContextFirstRender(
+  pageContext: {
+    _pageFilesAll: PageFile[]
+    _pageConfigs: PageConfig[]
+    _isFirstRenderAttempt: true
+    urlOriginal: string
+  } & PageContextPassThrough
+): Promise<PageContextAddendum> {
   const pageContextAddendum = getPageContextSerializedInHtml()
   removeBuiltInOverrides(pageContextAddendum)
 
@@ -83,6 +85,14 @@ async function getPageContextFirstRender(pageContext: {
     pageContextAddendum,
     await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
   )
+
+  {
+    const pageContextForHook = { ...pageContext, ...pageContextAddendum }
+    if (await onBeforeRenderClientOnlyExists(pageContextForHook)) {
+      const pageContextFromHook = await executeOnBeforeRenderHookClientSide(pageContextForHook)
+      objectAssign(pageContextAddendum, pageContextFromHook)
+    }
+  }
 
   return pageContextAddendum
 }
@@ -179,11 +189,7 @@ async function getPageContextAlreadyRouted(
   {
     // For the error page, we also execute the client-side onBeforeRender() hook, but maybe we shouldn't? The server-side does it as well (but maybe it shouldn't).
     const pageContextFromHook = await executeOnBeforeRenderHookClientSide({ ...pageContext, ...pageContextAddendum })
-    if (pageContextFromHook) {
-      objectAssign(pageContextAddendum, pageContextFromHook)
-    } else {
-      objectAssign(pageContextAddendum, { _hasPageContextFromClient: false })
-    }
+    objectAssign(pageContextAddendum, pageContextFromHook)
   }
 
   return pageContextAddendum
@@ -201,7 +207,12 @@ async function executeOnBeforeRenderHookClientSide(
     PageContextPassThrough
 ) {
   const hook = getHook(pageContext, 'onBeforeRender')
-  if (!hook) return null
+  if (!hook) {
+    const pageContextAddendum = {
+      _hasPageContextFromClient: false
+    }
+    return pageContextAddendum
+  }
   const onBeforeRender = hook.hookFn
   const pageContextAddendum = {
     _hasPageContextFromClient: true
@@ -264,6 +275,19 @@ async function onBeforeRenderServerOnlyExists(pageContext: {
       pageContext._pageId
     )
     return hasOnBeforeRenderServerSideOnlyHook
+  }
+}
+async function onBeforeRenderClientOnlyExists(pageContext: {
+  _pageId: string
+  _pageConfigs: PageConfig[]
+}): Promise<boolean> {
+  if (pageContext._pageConfigs.length > 0) {
+    // V1
+    const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
+    return getConfigValue(pageConfig, 'onBeforeRenderEnv') === 'client-only'
+  } else {
+    // TODO/v1-release: remove
+    return false
   }
 }
 
