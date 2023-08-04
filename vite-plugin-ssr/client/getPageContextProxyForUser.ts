@@ -1,9 +1,9 @@
 export { getPageContextProxyForUser }
 export { PageContextForPassToClientWarning }
 
-import { assert, assertUsage, assertWarning, getGlobalObject } from './utils'
+import { assert, assertUsage, getGlobalObject } from './utils'
 import { notSerializable } from '../shared/notSerializable'
-const globalObject = getGlobalObject<{ disable?: string }>('getPageContextProxyForUser.ts', {})
+const globalObject = getGlobalObject<{ prev?: string }>('getPageContextProxyForUser.ts', {})
 
 type PageContextForPassToClientWarning = {
   _hasPageContextFromServer: boolean
@@ -38,9 +38,9 @@ function getPageContextProxyForUser<PageContext extends Record<string, unknown> 
 }
 
 function assertPassToClient(pageContext: PageContextForPassToClientWarning, prop: string, errMsg: string) {
-  // We disable assertPassToClient() for the next attempt to read `prop`, because of how Vue's reactivity work.
-  //  - (When changing a reactive object, Vue tries to read it's old value first. This triggers a `assertPassToClient()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.)
-  if (globalObject.disable === prop) return
+  // We disable assertPassToClient() for the next attempt to read `prop`, because of how Vue's reactivity work. When changing a reactive object:
+  //  - Vue tries to read its old value first. This triggers a `assertPassToClient()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.
+  if (globalObject.prev === prop) return
   ignoreNextRead(prop)
   if (prop in pageContext) return
   if (isExpected(prop)) return
@@ -71,8 +71,8 @@ function isExpected(prop: string): boolean {
 }
 
 function ignoreNextRead(prop: string) {
-  globalObject.disable = prop
+  globalObject.prev = prop
   window.setTimeout(() => {
-    globalObject.disable = undefined
+    globalObject.prev = undefined
   }, 0)
 }
