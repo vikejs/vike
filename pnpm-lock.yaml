@@ -1946,10 +1946,10 @@ importers:
         specifier: ^4.2.3
         version: 4.2.3(vite@4.4.8)(vue@3.3.4)
       '@vue/compiler-sfc':
-        specifier: 3.3.4
+        specifier: ^3.3.4
         version: 3.3.4
       '@vue/server-renderer':
-        specifier: 3.3.4
+        specifier: ^3.3.4
         version: 3.3.4(vue@3.3.4)
       cross-fetch:
         specifier: ^3.1.5
@@ -1970,7 +1970,7 @@ importers:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
       vue:
-        specifier: 3.3.4
+        specifier: ^3.3.4
         version: 3.3.4
 
   examples/vue-pinia:
@@ -5564,7 +5564,7 @@ packages:
       '@vue/shared': 3.3.4
       estree-walker: 2.0.2
       magic-string: 0.30.2
-      postcss: 8.4.23
+      postcss: 8.4.27
       source-map-js: 1.0.2
     dev: false
 
