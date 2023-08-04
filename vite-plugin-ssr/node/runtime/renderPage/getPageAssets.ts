@@ -142,7 +142,7 @@ function resolveClientEntriesDev(
     // VPS client entry
     assert(clientEntry.endsWith('.js'))
     const req = require // Prevent webpack from bundling client code
-    const res = req.resolve
+    const res = typeof Bun != "undefined" ? (toPath: string) => Bun.resolveSync(toPath, __dirname) : req.resolve;
     try {
       // For Vitest
       // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/node/runtime/html/injectAssets.js
