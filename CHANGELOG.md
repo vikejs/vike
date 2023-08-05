@@ -1,3 +1,16 @@
+## [0.4.135](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.134...v0.4.135) (2023-08-05)
+
+
+### Bug Fixes
+
+* also skip assertPassToClient when previous read was __v_raw (fix [#1041](https://github.com/brillout/vite-plugin-ssr/issues/1041)) ([ec0122b](https://github.com/brillout/vite-plugin-ssr/commit/ec0122b5f300b2f41ca21c0dc979df22ec9654ec))
+* call onBeforeRender for the first render if it's client-only (fix [#1043](https://github.com/brillout/vite-plugin-ssr/issues/1043)) ([ddf2e39](https://github.com/brillout/vite-plugin-ssr/commit/ddf2e39ca8210ae17654dd4991a39d9605fe8110))
+* oven-sh/bun[#3743](https://github.com/brillout/vite-plugin-ssr/issues/3743) - Support Bun ([45aa3ec](https://github.com/brillout/vite-plugin-ssr/commit/45aa3ec3f3b622dd7aded0b75ca95f3b2ed3972b))
+* properly hanlde frame error with id windows path (fix [#1053](https://github.com/brillout/vite-plugin-ssr/issues/1053)) ([6a760d1](https://github.com/brillout/vite-plugin-ssr/commit/6a760d167f767546efe561e43685d0831a780902))
+* warn when tring to access the URL hash on the server-side (fix [#1042](https://github.com/brillout/vite-plugin-ssr/issues/1042)) ([f0f6c0a](https://github.com/brillout/vite-plugin-ssr/commit/f0f6c0a761d4a9a6dbe5ca7f556861cbff1975cd))
+
+
+
 ## [0.4.134](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.133...v0.4.134) (2023-08-03)
 
 
