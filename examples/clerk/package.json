@@ -4,8 +4,7 @@
     "prod": "npm run lint && npm run build && npm run server:prod",
     "build": "vite build",
     "server:dev": "tsx ./server/index.ts",
-    "server:prod": "cross-env NODE_ENV=production tsx ./server/index.ts",
-    "lint": "eslint . --max-warnings 0"
+    "server:prod": "cross-env NODE_ENV=production tsx ./server/index.ts"
   },
   "devDependencies": {
     "@types/compression": "^1.7.2",
@@ -13,15 +12,8 @@
     "@types/node": "^18.11.9",
     "@types/react": "^18.0.8",
     "@types/react-dom": "^18.0.3",
-    "@typescript-eslint/eslint-plugin": "^5.59.0",
-    "@typescript-eslint/parser": "^5.59.0",
     "@vitejs/plugin-react": "^3.0.0",
     "dotenv": "^16.3.1",
-    "eslint": "^8.38.0",
-    "eslint-plugin-react": "^7.32.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.3.4",
-    "ts-node": "^10.9.1",
     "tsx": "^3.12.7",
     "typescript": "^4.9.4",
     "vite": "^4.0.3"
