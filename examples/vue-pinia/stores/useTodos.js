@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: v1.0
+ * @Author: LiWen
+ * @Date: 2023-08-04 17:39:02
+ * @LastEditors: LiWen
+ * @LastEditTime: 2023-08-07 15:45:42
+ */
 import { defineStore } from 'pinia'
 
 export const useTodos = defineStore('todos', {

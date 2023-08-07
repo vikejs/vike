@@ -4,10 +4,24 @@
     "module": "ES2020",
     "moduleResolution": "Node",
     "target": "ES2020",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": ["vite/client"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "types": [
+      "vite/client"
+    ],
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "renderer/*"
+      ]
+    },
+    "ignoreDeprecations": "5.0",
+    "suppressImplicitAnyIndexErrors": true
   },
   "ts-node": {
     "transpileOnly": true,

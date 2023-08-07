@@ -1,7 +1,17 @@
+/*
+ * @Descripttion: 
+ * @version: v1.0
+ * @Author: LiWen
+ * @Date: 2023-08-04 17:39:02
+ * @LastEditors: LiWen
+ * @LastEditTime: 2023-08-07 16:12:25
+ */
 import { createSSRApp, defineComponent, h, markRaw, reactive } from 'vue'
+import painia from './stores/store'
 import PageShell from './PageShell.vue'
 import type { Component, PageContext } from './types'
 import { setPageContext } from './usePageContext'
+
 
 export { createApp }
 
@@ -31,6 +41,8 @@ function createApp(pageContext: PageContext) {
   })
 
   const app = createSSRApp(PageWithWrapper)
+  // 注册Pinia
+  app.use(painia);
 
   // We use `app.changePage()` to do Client Routing, see `_default.page.client.js`
   objectAssign(app, {

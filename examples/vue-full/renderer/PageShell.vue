@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: v1.0
+ * @Author: LiWen
+ * @Date: 2023-08-04 17:39:02
+ * @LastEditors: LiWen
+ * @LastEditTime: 2023-08-07 19:30:15
+-->
 <template>
   <div class="layout">
     <div class="navigation">
@@ -9,7 +17,9 @@
       <Link href="/star-wars">Data Fetching</Link>
       <Link href="/hello">Routing</Link>
     </div>
-    <div class="content"><slot /></div>
+    <div class="content">
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -22,12 +32,15 @@ body {
   margin: 0;
   font-family: sans-serif;
 }
+
 * {
   box-sizing: border-box;
 }
+
 a {
   text-decoration: none;
 }
+
 code {
   font-family: monospace;
   background-color: #eaeaea;
@@ -42,11 +55,13 @@ code {
   max-width: 900px;
   margin: auto;
 }
+
 .content {
   padding: 20px;
   padding-bottom: 50px;
   min-height: 100vh;
 }
+
 .navigation {
   padding: 20px;
   flex-shrink: 0;
@@ -55,14 +70,16 @@ code {
   line-height: 1.8em;
   border-right: 2px solid #eee;
 }
+
 .logo {
   margin-top: 20px;
   margin-bottom: 10px;
 }
+
 .content {
   transition: opacity 0.1s ease-in;
 }
+
 .content.page-transition {
   opacity: 0;
-}
-</style>
+}</style>
