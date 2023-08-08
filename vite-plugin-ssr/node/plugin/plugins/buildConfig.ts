@@ -18,7 +18,7 @@ import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig'
 import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils'
 import { findPageFiles } from '../shared/findPageFiles'
 import { getConfigVps } from '../../shared/getConfigVps'
-import type { ResolvedConfig, Plugin, Rollup } from 'vite'
+import type { ResolvedConfig, Plugin, Rollup, UserConfig } from 'vite'
 import { getVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode'
 import type { PageConfigData } from '../../../shared/page-configs/PageConfig'
 import type { FileType } from '../../../shared/getPageFiles/fileTypes'
@@ -49,12 +49,10 @@ function buildConfig(): Plugin {
       return {
         build: {
           outDir: resolveOutDir(config),
-          manifest: !viteIsSSR(config)
-        },
-        /* We cannot do this because of https://github.com/brillout/vite-plugin-ssr/issues/447
-        publicDir: viteIsSSR(config) ? false : undefined,
-        //*/
-      }
+          manifest: !viteIsSSR(config),
+          copyPublicDir: !viteIsSSR(config)
+        }
+      } satisfies UserConfig
     }
   }
 }
