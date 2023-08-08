@@ -50,10 +50,10 @@ function buildConfig(): Plugin {
         build: {
           outDir: resolveOutDir(config),
           manifest: !viteIsSSR(config)
-        }
+        },
         /* We cannot do this because of https://github.com/brillout/vite-plugin-ssr/issues/447
-        plublicDir: !viteIsSSR(config),
-        */
+        publicDir: viteIsSSR(config) ? false : undefined,
+        //*/
       }
     }
   }
