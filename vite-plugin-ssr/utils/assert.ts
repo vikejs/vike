@@ -144,7 +144,7 @@ type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
 function addPrefixAssertType(msg: string, tag: Tag): string {
   let prefix = `[${tag}]`
   const color = tag === 'Warning' ? 'yellow' : 'red'
-  prefix = pc[color](prefix)
+  prefix = pc.bold(pc[color](prefix))
   return `${prefix}${msg}`
 }
 function addWhitespace(msg: string) {
