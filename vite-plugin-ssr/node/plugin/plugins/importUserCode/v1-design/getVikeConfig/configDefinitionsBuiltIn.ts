@@ -1,7 +1,7 @@
 export { configDefinitionsBuiltIn }
 export type { ConfigDefinition }
 
-import type { ConfigEnvPrivate, PageConfig, PageConfigData } from '../../../../../../shared/page-configs/PageConfig'
+import type { ConfigEnvPrivate, PageConfigData } from '../../../../../../shared/page-configs/PageConfig'
 import type { ConfigNameBuiltIn, ConfigNamePrivate } from '../../../../../../shared/page-configs/Config'
 import { getCodeFilePath } from '../../../../../../shared/page-configs/utils'
 

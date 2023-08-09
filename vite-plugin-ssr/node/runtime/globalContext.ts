@@ -56,6 +56,7 @@ type GlobalContext = (
   baseServer: string
   baseAssets: null | string
   includeAssetsImportedByServer: boolean
+  redirects: Record<string, string>
 }
 
 function getGlobalContext(): GlobalContext {
@@ -109,7 +110,8 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       configVps,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
-      includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer
+      includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
+      redirects: pluginManifest.redirects
     }
   } else {
     const buildEntries = await loadImportBuild(outDir)
@@ -126,7 +128,8 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       vitePreviewServer: vitePreviewServer ?? null,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
-      includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer
+      includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
+      redirects: pluginManifest.redirects
     }
     if (isPrerendering) {
       assert(viteConfig)
@@ -150,11 +153,12 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
 }
 
 function getRuntimeManifest(configVps: ConfigVpsResolved): RuntimeManifest {
-  const { includeAssetsImportedByServer, baseServer, baseAssets } = configVps
+  const { includeAssetsImportedByServer, baseServer, baseAssets, redirects } = configVps
   const manifest = {
     baseServer,
     baseAssets,
-    includeAssetsImportedByServer
+    includeAssetsImportedByServer,
+    redirects
   }
   assertRuntimeManifest(manifest)
   return manifest

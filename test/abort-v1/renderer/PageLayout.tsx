@@ -16,6 +16,7 @@ function PageLayout({ children, pageContext }: { children: React.ReactNode; page
             <Nav href="/redirect" />
             <Nav href="/render-homepage" />
             <Nav href="/show-error-page" />
+            <Nav href="/permanent-redirect" />
           </Sidebar>
           <Content>{children}</Content>
         </Layout>

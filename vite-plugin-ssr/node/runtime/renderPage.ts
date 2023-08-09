@@ -50,6 +50,7 @@ import { getErrorPageId } from '../../shared/error-page'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage'
 import { loadPageFilesServerSide } from './renderPage/loadPageFilesServerSide'
 import { normalizeUrlPathname } from './renderPage/normalizeUrlPathname'
+import { resolveRedirects } from '../../shared/route/resolveRedirects'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
@@ -142,6 +143,11 @@ async function renderPageAndPrepare(
     return handleInvalidConfig()
   } else {
     // From now on, renderContext.pageConfigs contains all the configuration data; getVikeConfig() isn't called anymore for this request
+  }
+
+  {
+    const pageContextHttpReponse = getPermanentRedirect(pageContextInit, httpRequestId)
+    if (pageContextHttpReponse) return pageContextHttpReponse
   }
 
   return await renderPageAlreadyPrepared(pageContextInit, httpRequestId, renderContext, [])
@@ -446,8 +452,24 @@ function normalizePathname(pageContextInit: { urlOriginal: string }, httpRequest
   const { urlOriginal } = pageContextInit
   const urlNormalized = normalizeUrlPathname(urlOriginal)
   if (!urlNormalized) return null
-  logRuntimeInfo?.(`HTTP redirect ${pc.bold(urlOriginal)} -> ${pc.bold(urlNormalized)}`, httpRequestId, 'info')
-  const httpResponse = createHttpResponseObjectRedirect({ url: urlNormalized, statusCode: 301 })
+  const httpResponse = createHttpResponseObjectRedirect(
+    { url: urlNormalized, statusCode: 301 },
+    pageContextInit.urlOriginal,
+    httpRequestId
+  )
+  const pageContextHttpResponse = { ...pageContextInit, httpResponse }
+  return pageContextHttpResponse
+}
+
+function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+  const { redirects } = getGlobalContext()
+  const urlTarget = resolveRedirects(redirects, pageContextInit.urlOriginal)
+  if (!urlTarget) return null
+  const httpResponse = createHttpResponseObjectRedirect(
+    { url: urlTarget, statusCode: 301 },
+    pageContextInit.urlOriginal,
+    httpRequestId
+  )
   const pageContextHttpResponse = { ...pageContextInit, httpResponse }
   return pageContextHttpResponse
 }
@@ -513,7 +535,11 @@ async function handleAbortError(
       ...pageContextInit,
       ...pageContextAbort
     }
-    const httpResponse = createHttpResponseObjectRedirect(pageContextAbort._urlRedirect)
+    const httpResponse = createHttpResponseObjectRedirect(
+      pageContextAbort._urlRedirect,
+      pageContextInit.urlOriginal,
+      httpRequestId
+    )
     objectAssign(pageContextReturn, { httpResponse })
     return { pageContextReturn }
   }

@@ -1,22 +1,25 @@
-import { Link, Construction } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
 
 See also:
- - <Link href="/redirect" noBreadcrumb={true} />
- - <Link href="/render" noBreadcrumb={true} />
 
-<Construction>
-  This isn't implemented yet. ETA: 1-2 weeks.
-</Construction>
+- <Link href="/redirect" noBreadcrumb={true} />
+- <Link href="/render" noBreadcrumb={true} />
 
 ```js
-// /pages/+config.js
+// vite.config.js
 
-// Permanent redirections (HTTP status code 301)
+import { ssr } from 'vite-plugin-ssr/plugin'
+
 export default {
-  redirects: {
-    '/about-us': '/about',
-    // Parameterized redirections
-    '/product/@id': '/buy/@id'
-  }
+  plugins: [
+    ssr({
+      // Permanent redirections (HTTP status code 301)
+      redirects: {
+        '/about-us': '/about',
+        // Parameterized redirections
+        '/product/@id': '/buy/@id'
+      }
+    })
+  ]
 }
 ```

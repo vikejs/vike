@@ -1,8 +1,10 @@
-- Implement config.redirects
-- By default, only call guard() hooks on the server-side?
+- improve redirect logging
+- Catch infinite redirect/rewrite
+  - Also for resolveRedirects()
 - Seems like passToClient is already cumulative for 0.4 design, should be as well for v1 design
   - https://github.com/vikejs/vike-react/issues/4
-- Catch infinite redirect/rewrite
+
+- By default, only call guard() hooks on the server-side?
 
 - improve TypeScript DX for abortReason
 - improve TypeScript DX for usePageContext

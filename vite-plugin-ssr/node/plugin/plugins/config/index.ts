@@ -51,7 +51,8 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
     prerender: resolvePrerenderOptions(configs),
     includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? true,
     baseServer,
-    baseAssets
+    baseAssets,
+    redirects: merge(configs.map((c) => c.redirects)) ?? {}
   }
 
   return configVps
@@ -72,4 +73,13 @@ function resolvePrerenderOptions(configs: ConfigVpsUserProvided[]): ConfigVpsRes
 
 function isObject<T>(p: T | boolean | undefined): p is T {
   return typeof p === 'object'
+}
+
+type Obj = Record<string, string>
+function merge(objs: (Obj | undefined)[]): Obj {
+  const obj: Record<string, string> = {}
+  objs.forEach((e) => {
+    Object.assign(obj, e)
+  })
+  return obj
 }

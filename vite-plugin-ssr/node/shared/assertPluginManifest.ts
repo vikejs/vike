@@ -20,6 +20,7 @@ type PluginManifest = {
   usesClientRouter: boolean
   includeAssetsImportedByServer: boolean
   manifestKeyMap: Record<string, string>
+  redirects: Record<string, string>
 }
 function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest is PluginManifest {
   assert(isPlainObject(pluginManifest))

@@ -1,12 +1,13 @@
 export { assertRuntimeManifest }
 export type { RuntimeManifest }
 
-import { assert, checkType, hasProp, isBaseAssets, isBaseServer, isObject } from './utils'
+import { assert, castType, checkType, hasProp, isBaseAssets, isBaseServer, isObject } from './utils'
 
 type RuntimeManifest = {
   baseServer: string
   baseAssets: string
   includeAssetsImportedByServer: boolean
+  redirects: Record<string, string>
 }
 
 function assertRuntimeManifest(obj: unknown): asserts obj is RuntimeManifest & Record<string, unknown> {
@@ -17,5 +18,7 @@ function assertRuntimeManifest(obj: unknown): asserts obj is RuntimeManifest & R
   assert(isBaseServer(obj.baseServer))
   assert(isBaseAssets(obj.baseAssets))
   assert(hasProp(obj, 'includeAssetsImportedByServer', 'boolean'))
+  assert(hasProp(obj, 'redirects', 'object'))
+  castType<{ redirects: Record<string, string> }>(obj)
   checkType<RuntimeManifest>(obj)
 }

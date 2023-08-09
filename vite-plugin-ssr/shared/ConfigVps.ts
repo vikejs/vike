@@ -39,6 +39,7 @@ type ConfigVpsResolved = {
   includeAssetsImportedByServer: boolean
   baseAssets: string
   baseServer: string
+  redirects: Record<string, string>
 }
 
 type ConfigVpsUserProvided = {
@@ -87,6 +88,7 @@ type ConfigVpsUserProvided = {
          */
         disableAutoRun?: boolean
       }
+
   /**
    * @beta
    * Don't use without having talked to a vite-plugin-ssr maintainer.
@@ -100,6 +102,7 @@ type ConfigVpsUserProvided = {
    * @default false
    */
   disableAutoFullBuild?: boolean
+
   /** The Base URL of your server.
    *
    * https://vite-plugin-ssr.com/base-url
@@ -110,7 +113,14 @@ type ConfigVpsUserProvided = {
    * https://vite-plugin-ssr.com/base-url
    */
   baseAssets?: string
+
   // We don't remove this option in case there is a bug with includeAssetsImportedByServer and the user needs to disable it.
   /** @deprecated It's now `true` by default. You can remove this option. */
   includeAssetsImportedByServer?: boolean
+
+  /** Permanent redirections (HTTP status code 301)
+   *
+   * https://vite-plugin-ssr.com/redirects
+   */
+  redirects?: Record<string, string>
 }

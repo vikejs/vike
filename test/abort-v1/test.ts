@@ -101,6 +101,14 @@ function testRun(cmd: string, pageContextInitHasClientData?: true) {
     })
   }
 
+  test('permanent redirect', async () => {
+    const url = getServerUrl() + '/permanent-redirect'
+    const resp = await fetch(url, { redirect: 'manual' })
+    expect(resp.status).toBe(301)
+    await page.click('a[href="/permanent-redirect"]')
+    expectUrl('/')
+  })
+
   return
 
   function expectPageContextJsonRequest() {

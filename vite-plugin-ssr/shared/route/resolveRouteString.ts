@@ -1,30 +1,28 @@
-// Unit tests at ./resolveRouteString.spec.ts
-
 export { resolveRouteString }
 export { getUrlFromRouteString }
 export { isStaticRouteString }
 export { analyzeRouteString }
-// export { assertRouteString }
+export { assertRouteString }
 
-import { assertWarning } from '../utils'
+import { assertWarning, isBrowser } from '../utils'
 import { assert, assertUsage } from './utils'
+import pc from '@brillout/picocolors'
 
 const PARAM_TOKEN_NEW = '@'
+// TODO/v1-release: remove
 const PARAM_TOKEN_OLD = ':'
 
-function assertRouteString(routeString: string, errMsgPrefix?: string) {
+function assertRouteString(routeString: string, errPrefix: `${string}Invalid` | `${string}invalid` = 'Invalid') {
+  assert(errPrefix.endsWith('Invalid') || errPrefix.endsWith('invalid'))
+  assertUsage(
+    routeString !== '',
+    `${errPrefix} Route String ${highlight(routeString)} (empty string): set it to ${highlight('/')} instead`
+  )
   assertUsage(
     routeString.startsWith('/') || routeString === '*',
-    (() => {
-      if (!errMsgPrefix) {
-        errMsgPrefix = 'Invalid'
-      } else {
-        errMsgPrefix = errMsgPrefix + ' invalid'
-      }
-      const routeStr = [`'${routeString}'`, routeString !== '' ? null : '(empty string)'].filter(Boolean).join(' ')
-      const errMsg = `${errMsgPrefix} Route String ${routeStr}: Route Strings should start with a leading slash '/' (or be '*')`
-      return errMsg
-    })()
+    `${errPrefix} Route String ${highlight(routeString)}: Route Strings should start with a leading slash ${highlight(
+      '/'
+    )} (or be ${highlight('*')})`
   )
 }
 
@@ -84,11 +82,13 @@ function assertGlob(routeString: string) {
   const numberOfGlobChars = routeString.split('*').length - 1
   assertUsage(
     numberOfGlobChars <= 1,
-    `Invalid Route String '${routeString}': Route Strings are not allowed to contain more than one glob character '*'`
+    `Invalid Route String ${highlight(
+      routeString
+    )}: Route Strings aren't allowed to contain more than one glob ${highlight('*')}`
   )
   assertUsage(
     numberOfGlobChars === 0 || (numberOfGlobChars === 1 && routeString.endsWith('*')),
-    `Invalid Route String '${routeString}': make sure your Route String ends with the glob character '*'`
+    `Invalid Route String ${highlight(routeString)}: make sure it ends with ${highlight('*')}`
   )
 }
 function analyzeRouteString(routeString: string) {
@@ -119,4 +119,15 @@ function isStaticRouteString(routeString: string): boolean {
   const match = resolveRouteString(routeString, url)
   assert(match)
   return Object.keys(match.routeParams).length === 0
+}
+
+function highlight(routeString: string) {
+  if (isBrowser()) {
+    return `'${routeString}'`
+  } else {
+    if (routeString === '') {
+      routeString = "''"
+    }
+    return pc.bold(routeString)
+  }
 }
