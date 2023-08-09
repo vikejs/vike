@@ -4,7 +4,7 @@
  * @Author: LiWen
  * @Date: 2023-08-09 17:25:26
  * @LastEditors: LiWen
- * @LastEditTime: 2023-08-09 17:34:59
+ * @LastEditTime: 2023-08-09 17:54:02
  */
 import { createSSRApp } from 'vue'
 import { createRouter } from './routers/router'
@@ -16,6 +16,5 @@ function createApp(pageContext: PageContext) {
   app.use(router)
   return { app, router }
 }
-
 
 export { createApp }

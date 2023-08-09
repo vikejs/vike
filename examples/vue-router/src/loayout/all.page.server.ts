@@ -1,12 +1,11 @@
 import { renderToString } from '@vue/server-renderer'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import { createApp } from '../app'
+import type { PageContext } from '../entity/types'
+import type { PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient } from 'vite-plugin-ssr/types'
 
-export { render }
-
-async function render(pageContext) {
-  const { Page } = pageContext
-  const { app, router } = createApp({ Page })
+async function render(pageContext: PageContextBuiltInClient & PageContext) {
+  const { app, router } = createApp(pageContext)
 
   // set the router to the desired URL before rendering
   router.push(pageContext.urlOriginal)
@@ -21,3 +20,5 @@ async function render(pageContext) {
       </body>
     </html>`
 }
+
+export { render }
