@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: v1.0
+ * @Author: LiWen
+ * @Date: 2023-08-09 17:25:26
+ * @LastEditors: LiWen
+ * @LastEditTime: 2023-08-09 17:34:26
+ */
 import { createMemoryHistory, createRouter as _createRouter, createWebHistory } from 'vue-router'
 
 export { createRouter }
@@ -10,11 +18,11 @@ function createRouter() {
     routes: [
       {
         path: '/',
-        component: () => import('./Home.vue')
+        component: () => import('../views/Home.vue')
       },
       {
         path: '/about',
-        component: () => import('./About.vue')
+        component: () => import('../views/About.vue')
       }
     ]
   })
