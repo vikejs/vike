@@ -23,6 +23,7 @@ import {
 } from './utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import {
+  assertNoInfiniteAbortLoop,
   ErrorAbort,
   getPageContextFromAllRewrites,
   isAbortError,
@@ -159,6 +160,12 @@ async function renderPageAlreadyPrepared(
   renderContext: RenderContext,
   pageContextsFromRewrite: PageContextFromRewrite[]
 ): Promise<PageContextAfterRender> {
+  assertNoInfiniteAbortLoop(
+    pageContextsFromRewrite.length,
+    // There doesn't seem to be a way to count the number of HTTP redirects (vite-plugin-ssr don't have access to the HTTP request headers/cookies)
+    // https://stackoverflow.com/questions/9683007/detect-infinite-http-redirect-loop-on-server-side
+    0
+  )
   let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
   let pageContextNominalPageInit = {}
   {
@@ -321,8 +328,6 @@ function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>
 }
 
 async function renderPageNominal(pageContext: { _urlRewrite: null | string } & PageContextInitEnhanced2) {
-  addComputedUrlProps(pageContext)
-
   objectAssign(pageContext, { errorWhileRendering: null })
 
   // Check Base URL
@@ -372,11 +377,9 @@ async function getPageContextErrorPageInit(
   const pageContext = {
     ...pageContextInitEnhanced2,
     is404: false,
-    _urlRewrite: null,
     errorWhileRendering: errNominalPage as Error,
     routeParams: {} as Record<string, string>
   }
-  addComputedUrlProps(pageContext)
 
   objectAssign(pageContext, {
     _routeMatches: (pageContextNominalPagePartial as PageContextDebug)._routeMatches || 'ROUTE_ERROR'
@@ -395,7 +398,8 @@ function getPageContextInitEnhanced2(
 ) {
   const pageContextInitEnhanced2 = {
     ...pageContextInit,
-    _httpRequestId: httpRequestId
+    _httpRequestId: httpRequestId,
+    _urlRewrite: urlRewrite
   }
   {
     const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext)
@@ -405,6 +409,7 @@ function getPageContextInitEnhanced2(
     const pageContextAddendum = handleUrl(pageContextInit.urlOriginal, urlRewrite)
     objectAssign(pageContextInitEnhanced2, pageContextAddendum)
   }
+  addComputedUrlProps(pageContextInitEnhanced2)
   return pageContextInitEnhanced2
 }
 
@@ -453,7 +458,10 @@ function normalizePathname(pageContextInit: { urlOriginal: string }) {
   const { urlOriginal } = pageContextInit
   const urlNormalized = normalizeUrlPathname(urlOriginal)
   if (!urlNormalized) return null
-  const httpResponse = createHttpResponseObjectRedirect({ url: urlNormalized, statusCode: 301 })
+  const httpResponse = createHttpResponseObjectRedirect(
+    { url: urlNormalized, statusCode: 301 },
+    pageContextInit.urlOriginal
+  )
   const pageContextHttpResponse = { ...pageContextInit, httpResponse }
   return pageContextHttpResponse
 }
@@ -462,7 +470,10 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }) {
   const { redirects } = getGlobalContext()
   const urlTarget = resolveRedirects(redirects, pageContextInit.urlOriginal)
   if (!urlTarget) return null
-  const httpResponse = createHttpResponseObjectRedirect({ url: urlTarget, statusCode: 301 })
+  const httpResponse = createHttpResponseObjectRedirect(
+    { url: urlTarget, statusCode: 301 },
+    pageContextInit.urlOriginal
+  )
   const pageContextHttpResponse = { ...pageContextInit, httpResponse }
   return pageContextHttpResponse
 }
@@ -473,6 +484,7 @@ async function handleAbortError(
   pageContextInit: { urlOriginal: string },
   pageContextNominalPageInit: {
     urlOriginal: string
+    urlPathname: string
     _urlRewrite: null | string
     isClientSideNavigation: boolean
   },
@@ -528,7 +540,10 @@ async function handleAbortError(
       ...pageContextInit,
       ...pageContextAbort
     }
-    const httpResponse = createHttpResponseObjectRedirect(pageContextAbort._urlRedirect)
+    const httpResponse = createHttpResponseObjectRedirect(
+      pageContextAbort._urlRedirect,
+      pageContextNominalPageInit.urlPathname
+    )
     objectAssign(pageContextReturn, { httpResponse })
     return { pageContextReturn }
   }

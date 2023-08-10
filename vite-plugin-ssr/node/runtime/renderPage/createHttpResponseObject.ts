@@ -12,6 +12,7 @@ import type { RenderHook } from './executeOnRenderHtmlHook'
 import type { StatusCodeAbort, StatusCodeError, UrlRedirect } from '../../../shared/route/abort'
 import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody'
 import { getEarlyHints, type EarlyHint } from './getEarlyHints'
+import { assertNoInfiniteHttpRedirect } from './createHttpResponseObject/assertNoInfiniteHttpRedirect'
 
 type HttpResponse = {
   statusCode: 200 | 404 | 500 | StatusCodeAbort
@@ -66,7 +67,12 @@ async function createHttpResponsePageContextJson(pageContextSerialized: string) 
   return httpResponse
 }
 
-function createHttpResponseObjectRedirect({ url, statusCode }: UrlRedirect): HttpResponse {
+function createHttpResponseObjectRedirect(
+  { url, statusCode }: UrlRedirect,
+  // We assume that the user uses urlPathname to implement his abort logic
+  urlPathname: string
+): HttpResponse {
+  assertNoInfiniteHttpRedirect(url, urlPathname)
   assert(url)
   assert(statusCode)
   assert(300 <= statusCode && statusCode <= 399)

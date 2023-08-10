@@ -4,7 +4,7 @@
 
 # Features
 
-All must-haves:
+All essentials:
  - All render modes: SSR, SPA, and HTML-templating (zero browser-side JavaScript)
    - Each page can choose a different render mode
  - Pre-rendering (AKA SSG)
@@ -33,8 +33,9 @@ Unique vite-plugin-ssr features:
      - Important for Solid: for React users that are tempted to use Solid, Solid can sell the story "try Solid while being able to fallback to React, e.g. if a page needs some React library".
  - Users can build a custom [Framework-as-a-Product](https://vike.land/#framework-as-a-product). (Vike has been designed so that frameworks can be built on top of it.)
    - [Custom configs](https://vite-plugin-ssr.com/meta)
- - Low-level hooks allowing deep integration with data fetching tools.
+ - Low-level primites allowing users to deeply integrate with data fetching tools.
    - For example, vite-plugin-ssr sponsors use it to deeply integrate Relay. (Facebook's internal framework deeply integrates with Relay in ways that aren't possible with Next.js.)
+ - URL rewriting for both [novel DX and novel UX](https://twitter.com/brillout/status/1687431520569425920) around authentication and authorization
 
 Marketing boost of using "Vike - The Open Framework" &mdash; collaboration and openness being one of Vike's core value.
 
@@ -57,6 +58,7 @@ Minor features that can be life changing for some users:
 - Not only Route Guards but also Route Functions (define your route with a function for full programmatic flexibility)
 - `pageContext.isBackwardsNavigation` (https://vite-plugin-ssr.com/pageContext) for backwards/forward page transition animations
 - vite-plugin-ssr can be loaded twice (or more) on the server-side, (some deployement architectures need this)
+- Catches and interupts infinite loops of URL redirections and URL rewrites
 
 And lots of details:
 - [Automatic frontend deployment synchronization](https://vite-plugin-ssr.com/deploy-sync)

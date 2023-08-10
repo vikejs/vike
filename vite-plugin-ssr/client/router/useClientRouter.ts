@@ -25,6 +25,7 @@ import { isErrorFetchingStaticAssets } from '../loadPageFilesClientSide'
 import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history'
 import { defineNavigate } from './navigate'
 import {
+  assertNoInfiniteAbortLoop,
   getPageContextFromAllRewrites,
   isAbortError,
   logAbortErrorHandled,
@@ -102,7 +103,8 @@ function useClientRouter() {
     overwriteLastHistoryEntry = false,
     isBackwardNavigation,
     checkClientSideRenderable,
-    pageContextsFromRewrite = []
+    pageContextsFromRewrite = [],
+    redirectCount = 0
   }: {
     scrollTarget: ScrollTarget
     urlOriginal?: string
@@ -110,11 +112,15 @@ function useClientRouter() {
     isBackwardNavigation: boolean | null
     checkClientSideRenderable?: boolean
     pageContextsFromRewrite?: PageContextFromRewrite[]
+    redirectCount?: number
   }): Promise<void> {
+    assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
+
     if (globalObject.clientRoutingIsDisabled) {
       serverSideRouteTo(urlOriginal)
       return
     }
+
     const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
     if (checkClientSideRenderable) {
       const urlLogical = pageContextFromAllRewrites._urlRewrite ?? urlOriginal
@@ -211,7 +217,8 @@ function useClientRouter() {
             urlOriginal,
             overwriteLastHistoryEntry,
             isBackwardNavigation,
-            pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort]
+            pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort],
+            redirectCount
           })
           return
         }
@@ -221,7 +228,9 @@ function useClientRouter() {
             urlOriginal: pageContextAbort._urlRedirect.url,
             overwriteLastHistoryEntry: false,
             isBackwardNavigation: false,
-            checkClientSideRenderable: true
+            checkClientSideRenderable: true,
+            pageContextsFromRewrite,
+            redirectCount: redirectCount++
           })
           return
         }

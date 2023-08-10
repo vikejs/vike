@@ -6,6 +6,7 @@ export { isAbortPageContext }
 export { logAbortErrorHandled }
 export { getPageContextFromAllRewrites }
 export { AbortRender }
+export { assertNoInfiniteAbortLoop }
 export type { StatusCodeAbort }
 export type { StatusCodeError }
 export type { ErrorAbort }
@@ -19,6 +20,7 @@ import {
   assertWarning,
   checkType,
   hasProp,
+  isBrowser,
   joinEnglish,
   objectAssign,
   projectInfo,
@@ -135,8 +137,9 @@ function render_(
   }
 }
 
+type AbortCall = `throw redirect(${string})` | `throw render(${string})`
 type PageContextAbort = {
-  _abortCall: `throw redirect(${string})` | `throw render(${string})`
+  _abortCall: AbortCall
 } & (
   | ({
       _abortCaller: 'redirect'
@@ -211,7 +214,7 @@ function logAbortErrorHandled(
   const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal
   assert(urlCurrent)
   const abortCall = err._pageContextAbort._abortCall
-  assertInfo(false, `${pc.cyan(abortCall)} intercepted while rendering ${pc.bold(urlCurrent)}`, { onlyOnce: false })
+  assertInfo(false, `${highlight(abortCall)} intercepted while rendering ${pc.bold(urlCurrent)}`, { onlyOnce: false })
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
@@ -251,9 +254,20 @@ function assertNoInfiniteLoop(pageContextsFromRewrite: PageContextFromRewrite[])
   })
 }
 
-declare global {
-  namespace JSX {
-    // Overriden by the user's UI framework. (Technically, TypeScript doesn't do overriding but interface merging, but it has same effect here.)
-    interface Element {}
-  }
+function highlight(abortCall: AbortCall) {
+  return isBrowser() ? '`' + abortCall + '`' : pc.cyan(abortCall)
+}
+
+function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) {
+  const abortCalls = [
+    // prettier-ignore
+    rewriteCount > 0 && highlight("throw render('/some-url')"),
+    redirectCount > 0 && highlight("throw redirect('/some-url')")
+  ]
+    .filter(Boolean)
+    .join(' and ')
+  assertUsage(
+    rewriteCount + redirectCount <= 7,
+    `Maximum chain length of 7 ${abortCalls} exceeded. Did you define an infinite loop of ${abortCalls}?`
+  )
 }
