@@ -122,7 +122,7 @@ async function renderPageAndPrepare(
   }
 
   {
-    const pageContextHttpReponse = normalizePathname(pageContextInit, httpRequestId)
+    const pageContextHttpReponse = normalizePathname(pageContextInit)
     if (pageContextHttpReponse) return pageContextHttpReponse
   }
 
@@ -146,7 +146,7 @@ async function renderPageAndPrepare(
   }
 
   {
-    const pageContextHttpReponse = getPermanentRedirect(pageContextInit, httpRequestId)
+    const pageContextHttpReponse = getPermanentRedirect(pageContextInit)
     if (pageContextHttpReponse) return pageContextHttpReponse
   }
 
@@ -293,8 +293,9 @@ function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageCon
   const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
   const isNominal = isSuccess || statusCode === 404
   const color = (s: number | string) => pc.bold(isSuccess ? pc.green(s) : pc.red(s))
+  const type = statusCode && 300 <= statusCode && statusCode <= 399 ? 'redirect' : 'response'
   logRuntimeInfo?.(
-    `HTTP response ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`,
+    `HTTP ${type} ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`,
     httpRequestId,
     isNominal ? 'info' : 'error'
   )
@@ -448,28 +449,20 @@ function skipRequest(urlOriginal: string): boolean {
     isViteClientRequest
   )
 }
-function normalizePathname(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+function normalizePathname(pageContextInit: { urlOriginal: string }) {
   const { urlOriginal } = pageContextInit
   const urlNormalized = normalizeUrlPathname(urlOriginal)
   if (!urlNormalized) return null
-  const httpResponse = createHttpResponseObjectRedirect(
-    { url: urlNormalized, statusCode: 301 },
-    pageContextInit.urlOriginal,
-    httpRequestId
-  )
+  const httpResponse = createHttpResponseObjectRedirect({ url: urlNormalized, statusCode: 301 })
   const pageContextHttpResponse = { ...pageContextInit, httpResponse }
   return pageContextHttpResponse
 }
 
-function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+function getPermanentRedirect(pageContextInit: { urlOriginal: string }) {
   const { redirects } = getGlobalContext()
   const urlTarget = resolveRedirects(redirects, pageContextInit.urlOriginal)
   if (!urlTarget) return null
-  const httpResponse = createHttpResponseObjectRedirect(
-    { url: urlTarget, statusCode: 301 },
-    pageContextInit.urlOriginal,
-    httpRequestId
-  )
+  const httpResponse = createHttpResponseObjectRedirect({ url: urlTarget, statusCode: 301 })
   const pageContextHttpResponse = { ...pageContextInit, httpResponse }
   return pageContextHttpResponse
 }
@@ -535,11 +528,7 @@ async function handleAbortError(
       ...pageContextInit,
       ...pageContextAbort
     }
-    const httpResponse = createHttpResponseObjectRedirect(
-      pageContextAbort._urlRedirect,
-      pageContextInit.urlOriginal,
-      httpRequestId
-    )
+    const httpResponse = createHttpResponseObjectRedirect(pageContextAbort._urlRedirect)
     objectAssign(pageContextReturn, { httpResponse })
     return { pageContextReturn }
   }

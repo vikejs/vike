@@ -211,7 +211,7 @@ function logAbortErrorHandled(
   const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal
   assert(urlCurrent)
   const abortCall = err._pageContextAbort._abortCall
-  assertInfo(false, `${pc.cyan(abortCall)} intercepted while rendering URL ${pc.bold(urlCurrent)}`, { onlyOnce: false })
+  assertInfo(false, `${pc.cyan(abortCall)} intercepted while rendering ${pc.bold(urlCurrent)}`, { onlyOnce: false })
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {

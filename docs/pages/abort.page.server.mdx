@@ -10,14 +10,14 @@ While `throw redirect()` changes the URL, `throw render()` preserves it:
 
 In general, we recommend using `throw render('/login')` instead of `throw redirect('/login')` as it preserves the URL and, therefore, the user's intention. We further explain this techniue at <Link href="/auth#login-flow" />.
 
-## How to debug
+## Debug
 
 If `throw redirect()` or `throw render()` doesn't work:
  - **Make sure `throw redirect()` / `throw render()` isn't swallowed.**  
-   In developement, check your server logs for the following log. If the log is missing then this means that vite-plugin-ssr didn't receive the `throw redirect()` / `throw render()` exception: some other code is catching and swallowing it.
+   In developement, check your server logs for the following log. If this log is missing then this means that vite-plugin-ssr didn't receive the `throw redirect()` / `throw render()` exception: some other code is catching and swallowing it.
    ```
    10:00:00 AM [vite-plugin-ssr][request(42)] throw redirect('/some-url') intercepted while
-   rendering URL /some-other-url
+   rendering /some-other-url
    ```
 If `throw redirect()` doesn't work:
  - **Make sure to add `pageContext.httpResponse.headers` to the HTTP response.**  

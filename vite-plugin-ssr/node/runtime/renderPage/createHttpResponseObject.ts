@@ -12,8 +12,6 @@ import type { RenderHook } from './executeOnRenderHtmlHook'
 import type { StatusCodeAbort, StatusCodeError, UrlRedirect } from '../../../shared/route/abort'
 import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody'
 import { getEarlyHints, type EarlyHint } from './getEarlyHints'
-import { logRuntimeInfo } from './loggerRuntime'
-import pc from '@brillout/picocolors'
 
 type HttpResponse = {
   statusCode: 200 | 404 | 500 | StatusCodeAbort
@@ -68,15 +66,10 @@ async function createHttpResponsePageContextJson(pageContextSerialized: string) 
   return httpResponse
 }
 
-function createHttpResponseObjectRedirect(
-  { url, statusCode }: UrlRedirect,
-  urlOriginal: string,
-  httpRequestId: number
-): HttpResponse {
+function createHttpResponseObjectRedirect({ url, statusCode }: UrlRedirect): HttpResponse {
   assert(url)
   assert(statusCode)
   assert(300 <= statusCode && statusCode <= 399)
-  logRuntimeInfo?.(`HTTP redirect ${pc.bold(urlOriginal)} -> ${pc.bold(url)} ${pc.gray(statusCode)}`, httpRequestId, 'info')
   const headers: ResponseHeaders = [['Location', url]]
   return getHttpResponse(
     statusCode,
