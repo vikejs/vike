@@ -4,16 +4,19 @@
  * @Author: LiWen
  * @Date: 2023-08-09 17:25:26
  * @LastEditors: LiWen
- * @LastEditTime: 2023-08-09 17:54:02
+ * @LastEditTime: 2023-08-10 17:30:12
  */
 import { createSSRApp } from 'vue'
-import { createRouter } from './routers/router'
+import { createRouter } from './router'
+import painia from './stores/store'
 import type { PageContext } from '../src/entity/types'
 
 function createApp(pageContext: PageContext) {
   const app = createSSRApp(pageContext.Page)
   const router = createRouter()
   app.use(router)
+  app.use(painia)
+  
   return { app, router }
 }
 

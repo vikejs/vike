@@ -8,22 +8,31 @@
  */
 import { createMemoryHistory, createRouter as _createRouter, createWebHistory } from 'vue-router'
 
-export { createRouter }
+const constantRoutes = [
+  {
+    path: '/',
+    component: () => import('../views/Home.vue')
+  },
+  {
+    path: '/about',
+    component: () => import('../views/About.vue')
+  }
+];
 
 function createRouter() {
   return _createRouter({
     // use appropriate history implementation for server/client
     // import.meta.env.SSR is injected by Vite.
     history: import.meta.env.SSR ? createMemoryHistory() : createWebHistory(),
-    routes: [
-      {
-        path: '/',
-        component: () => import('../views/Home.vue')
-      },
-      {
-        path: '/about',
-        component: () => import('../views/About.vue')
+    routes: constantRoutes,
+    scrollBehavior(_to, _from, savedPosition) {
+      if (savedPosition) {
+        return savedPosition;
+      } else {
+        return { top: 0 };
       }
-    ]
+    }
   })
 }
+
+export { createRouter }

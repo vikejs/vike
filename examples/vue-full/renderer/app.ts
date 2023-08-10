@@ -4,16 +4,13 @@
  * @Author: LiWen
  * @Date: 2023-08-04 17:39:02
  * @LastEditors: LiWen
- * @LastEditTime: 2023-08-07 16:12:25
+ * @LastEditTime: 2023-08-10 16:16:04
  */
 import { createSSRApp, defineComponent, h, markRaw, reactive } from 'vue'
 import painia from './stores/store'
 import PageShell from './PageShell.vue'
 import type { Component, PageContext } from './types'
 import { setPageContext } from './usePageContext'
-
-
-export { createApp }
 
 function createApp(pageContext: PageContext) {
   const { Page } = pageContext
@@ -70,3 +67,5 @@ function objectAssign<Obj extends object, ObjAddendum>(
 ): asserts obj is Obj & ObjAddendum {
   Object.assign(obj, objAddendum)
 }
+
+export { createApp }

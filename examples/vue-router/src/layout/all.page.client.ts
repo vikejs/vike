@@ -4,9 +4,9 @@
  * @Author: LiWen
  * @Date: 2023-08-09 17:25:26
  * @LastEditors: LiWen
- * @LastEditTime: 2023-08-09 17:43:35
+ * @LastEditTime: 2023-08-10 17:01:07
  */
-export { render }
+
 
 import { createApp } from '../app'
 import type { PageContext } from '../entity/types'
@@ -17,3 +17,5 @@ async function render(pageContext: PageContextBuiltInClient & PageContext) {
   await router.isReady()
   app.mount('#app')
 }
+
+export { render }
