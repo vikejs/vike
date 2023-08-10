@@ -7,7 +7,7 @@
  * @LastEditTime: 2023-08-07 17:18:18
  */
 import { defineStore } from 'pinia'
-import { UserE } from '../entity/user'
+import { UserE } from '../../entity/user'
 
 /** @description: 用户信息 */
 const userInfo: UserE = {
