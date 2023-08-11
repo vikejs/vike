@@ -1,10 +1,12 @@
-import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter, isBrowser } from './utils'
+// URLs props need to be computed props, because the user can modify the URL e.g. with onBeforeRoute() for i18n
 
 export { addUrlComputedProps }
 export { assertPageContextUrlComputedPropsPublic }
 export type { PageContextUrlComputedProps }
 export type { PageContextUrlComputedPropsPublic }
 export type { PageContextUrlSources }
+
+import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter, isBrowser } from './utils'
 
 // Copy paste from https://vite-plugin-ssr.com/pageContext
 type UrlParsed = {
