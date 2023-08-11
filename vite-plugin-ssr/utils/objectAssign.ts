@@ -2,7 +2,7 @@ export { objectAssign }
 
 // Same as Object.assign() but:
 //  - With type inference
-//  - Preserves property descriptors, which we need for addComputedUrlProps()
+//  - Preserves property descriptors, which we need for preserving the getters added by addComputedUrlProps()
 function objectAssign<Obj extends object, ObjAddendum>(
   obj: Obj,
   objAddendum: ObjAddendum
