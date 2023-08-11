@@ -1,11 +1,11 @@
 export { renderPageAlreadyRouted }
 export { prerenderPage }
 export { prerender404Page }
-export { getPageContextInitEnhanced1 }
+export { getPageContextInitEnhanced }
 export { getRenderContext }
 export type { RenderContext }
 export type { PageContextAfterRender }
-export type { PageContextInitEnhanced1 }
+export type { PageContextInitEnhanced }
 
 import { getErrorPageId } from '../../../shared/error-page'
 import { getHtmlString } from '../html/renderHtml'
@@ -36,7 +36,7 @@ async function renderPageAlreadyRouted<
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
     _httpRequestId: number
-  } & PageContextInitEnhanced1 &
+  } & PageContextInitEnhanced &
     PageContextUrlComputedProps &
     PageContext_loadPageFilesServerSide
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
@@ -87,7 +87,7 @@ async function renderPageAlreadyRouted<
 }
 
 async function prerenderPage(
-  pageContext: PageContextInitEnhanced1 &
+  pageContext: PageContextInitEnhanced &
     PageFiles & {
       routeParams: Record<string, string>
       _pageId: string
@@ -148,8 +148,8 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
     ...pageContextInit_
   }
   {
-    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext)
-    objectAssign(pageContext, pageContextInitEnhanced1)
+    const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext)
+    objectAssign(pageContext, pageContextInitEnhanced)
   }
 
   objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
@@ -157,8 +157,8 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
   return prerenderPage(pageContext)
 }
 
-type PageContextInitEnhanced1 = ReturnType<typeof getPageContextInitEnhanced1>
-function getPageContextInitEnhanced1(
+type PageContextInitEnhanced = ReturnType<typeof getPageContextInitEnhanced>
+function getPageContextInitEnhanced(
   pageContextInit: { urlOriginal: string },
   renderContext: RenderContext,
   {
@@ -180,7 +180,7 @@ function getPageContextInitEnhanced1(
   assert(pageContextInit.urlOriginal)
 
   const globalContext = getGlobalContext()
-  const pageContextInitEnhanced1 = {
+  const pageContextInitEnhanced = {
     ...pageContextInit,
     _objectCreatedByVitePluginSsr: true,
     // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
@@ -199,9 +199,9 @@ function getPageContextInitEnhanced1(
     _urlHandler: urlHandler,
     isClientSideNavigation
   }
-  addUrlComputedProps(pageContextInitEnhanced1, !urlComputedPropsNonEnumerable)
+  addUrlComputedProps(pageContextInitEnhanced, !urlComputedPropsNonEnumerable)
 
-  return pageContextInitEnhanced1
+  return pageContextInitEnhanced
 }
 
 type RenderContext = {

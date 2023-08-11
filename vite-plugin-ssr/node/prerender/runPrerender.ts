@@ -31,8 +31,8 @@ import {
   prerender404Page,
   getRenderContext,
   type RenderContext,
-  getPageContextInitEnhanced1,
-  PageContextInitEnhanced1
+  getPageContextInitEnhanced,
+  PageContextInitEnhanced
 } from '../runtime/renderPage/renderPageAlreadyRouted'
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
@@ -88,7 +88,7 @@ type PrerenderContext = {
   _noExtraDir: boolean
 }
 
-type PageContext = PageContextInitEnhanced1 & {
+type PageContext = PageContextInitEnhanced & {
   _urlRewrite: null
   _urlHandler: null
   _urlOriginalBeforeHook?: string
@@ -488,11 +488,11 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
     ...prerenderContext.pageContextInit
   }
   {
-    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext, {
+    const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext, {
       // We set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in a onPrerenderStart() hook, e.g. /examples/i18n/
       urlComputedPropsNonEnumerable: true
     })
-    objectAssign(pageContext, pageContextInitEnhanced1)
+    objectAssign(pageContext, pageContextInitEnhanced)
   }
   return pageContext
 }

@@ -3,10 +3,10 @@ export { renderPage_addWrapper }
 
 import {
   getRenderContext,
-  getPageContextInitEnhanced1,
+  getPageContextInitEnhanced,
   RenderContext,
   renderPageAlreadyRouted,
-  PageContextInitEnhanced1
+  PageContextInitEnhanced
 } from './renderPage/renderPageAlreadyRouted'
 import { route } from '../../shared/route'
 import {
@@ -327,7 +327,7 @@ function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>
 }
 
 async function renderPageNominal(
-  pageContext: { _urlRewrite: null | string; _httpRequestId: number } & PageContextInitEnhanced1
+  pageContext: { _urlRewrite: null | string; _httpRequestId: number } & PageContextInitEnhanced
 ) {
   objectAssign(pageContext, { errorWhileRendering: null })
 
@@ -397,15 +397,15 @@ function getPageContextInitEnhancedSSR(
   httpRequestId: number
 ) {
   const { isClientSideNavigation, _urlHandler } = handleUrl(pageContextInit.urlOriginal, urlRewrite)
-  const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext, {
+  const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext, {
     ssr: {
       urlRewrite,
       urlHandler: _urlHandler,
       isClientSideNavigation
     }
   })
-  objectAssign(pageContextInitEnhanced1, { _httpRequestId: httpRequestId })
-  return pageContextInitEnhanced1
+  objectAssign(pageContextInitEnhanced, { _httpRequestId: httpRequestId })
+  return pageContextInitEnhanced
 }
 
 function handleUrl(
