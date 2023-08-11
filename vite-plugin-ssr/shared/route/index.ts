@@ -10,7 +10,7 @@ if (isBrowser()) {
 
 import type { PageFile } from '../getPageFiles'
 import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils'
-import { addComputedUrlProps, PageContextUrlSource } from '../addComputedUrlProps'
+import { addComputedUrlProps, PageContextUrlSource } from '../UrlComputedProps'
 import { resolvePrecendence } from './resolvePrecedence'
 import { resolveRouteString } from './resolveRouteString'
 import { resolveRouteFunction } from './resolveRouteFunction'

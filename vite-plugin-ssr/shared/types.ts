@@ -2,7 +2,7 @@ export { PageContextBuiltIn }
 export { PageContextBuiltInClientWithClientRouting }
 export { PageContextBuiltInClientWithServerRouting }
 
-import type { PageContextUrlsPublic } from './addComputedUrlProps'
+import type { PageContextUrlsPublic } from './UrlComputedProps'
 import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports'
 
 /** Built-in `pageContext` properties set by vite-plugin-ssr.

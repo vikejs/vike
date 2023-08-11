@@ -2,7 +2,7 @@ export { resolveRouteFunction }
 export { assertRouteParams }
 export { assertSyncRouting }
 
-import { assertURLs, PageContextUrlsPrivate, PageContextUrlSource } from '../addComputedUrlProps'
+import { assertURLs, PageContextUrlsPrivate, PageContextUrlSource } from '../UrlComputedProps'
 import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise, isStringRecord } from './utils'
 
 async function resolveRouteFunction(

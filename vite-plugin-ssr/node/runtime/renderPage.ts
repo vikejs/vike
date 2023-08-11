@@ -21,7 +21,7 @@ import {
   checkType,
   assertUsage
 } from './utils'
-import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
+import { addComputedUrlProps } from '../../shared/UrlComputedProps'
 import {
   assertNoInfiniteAbortLoop,
   ErrorAbort,

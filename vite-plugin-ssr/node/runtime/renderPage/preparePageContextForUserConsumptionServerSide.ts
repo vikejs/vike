@@ -3,7 +3,7 @@ export type { PageContextForUserConsumptionServerSide }
 
 import { assert, isPlainObject, isObject } from '../utils'
 import { sortPageContext } from '../../../shared/sortPageContext'
-import { assertURLs, PageContextUrlsPublic } from '../../../shared/addComputedUrlProps'
+import { assertURLs, PageContextUrlsPublic } from '../../../shared/UrlComputedProps'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
 import type { ConfigEntries, ExportsAll } from '../../../shared/getPageFiles/getExports'
