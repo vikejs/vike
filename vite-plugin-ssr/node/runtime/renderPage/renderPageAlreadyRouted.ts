@@ -150,7 +150,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
     ...pageContextInit_
   }
   {
-    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext, null)
+    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext, null, null)
     objectAssign(pageContext, pageContextInitEnhanced1)
   }
 
@@ -160,7 +160,12 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
 }
 
 type PageContextInitEnhanced1 = ReturnType<typeof getPageContextInitEnhanced1>
-function getPageContextInitEnhanced1(pageContextInit: { urlOriginal: string }, renderContext: RenderContext, urlRewrite: null | string) {
+function getPageContextInitEnhanced1(
+  pageContextInit: { urlOriginal: string },
+  renderContext: RenderContext,
+  urlRewrite: null | string,
+  urlHandler: null | ((url: string) => string)
+) {
   assert(pageContextInit.urlOriginal)
 
   const globalContext = getGlobalContext()
@@ -178,8 +183,11 @@ function getPageContextInitEnhanced1(pageContextInit: { urlOriginal: string }, r
     _allPageIds: renderContext.allPageIds,
     _pageRoutes: renderContext.pageRoutes,
     _onBeforeRouteHook: renderContext.onBeforeRouteHook,
-    _pageContextInit: pageContextInit
+    _pageContextInit: pageContextInit,
+    _urlRewrite: urlRewrite,
+    _urlHandler: urlHandler
   }
+  addUrlComputedProps(pageContextInitEnhanced1)
 
   return pageContextInitEnhanced1
 }

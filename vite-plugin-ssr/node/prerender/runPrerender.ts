@@ -488,7 +488,7 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
     ...prerenderContext.pageContextInit
   }
   {
-    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext, null)
+    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext, null, null)
     objectAssign(pageContext, pageContextInitEnhanced1)
   }
   addUrlComputedProps(
