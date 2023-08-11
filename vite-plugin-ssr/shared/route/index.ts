@@ -10,7 +10,7 @@ if (isBrowser()) {
 
 import type { PageFile } from '../getPageFiles'
 import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils'
-import type { PageContextUrlComputedProps } from '../UrlComputedProps'
+import { addUrlComputedProps, PageContextUrlComputedProps, PageContextUrlSources } from '../UrlComputedProps'
 import { resolvePrecendence } from './resolvePrecedence'
 import { resolveRouteString } from './resolveRouteString'
 import { resolveRouteFunction } from './resolveRouteFunction'
@@ -26,7 +26,7 @@ type PageContextForRoute = PageContextUrlComputedProps & {
   _pageConfigGlobal: PageConfigGlobal
   _pageRoutes: PageRoutes
   _onBeforeRouteHook: OnBeforeRouteHook | null
-}
+} & PageContextUrlSources
 type RouteMatch = {
   pageId: string
   routeString?: string
@@ -44,6 +44,8 @@ async function route(pageContext: PageContextForRoute): Promise<{
     _routeMatches: RouteMatches
   } & Record<string, unknown>
 }> {
+  addUrlComputedProps(pageContext)
+
   debug('Pages routes:', pageContext._pageRoutes)
 
   const pageContextAddendum = {}
