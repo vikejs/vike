@@ -21,7 +21,6 @@ import {
   checkType,
   assertUsage
 } from './utils'
-import { addUrlComputedProps } from '../../shared/UrlComputedProps'
 import {
   assertNoInfiniteAbortLoop,
   ErrorAbort,
@@ -407,6 +406,7 @@ function getPageContextInitEnhanced2(
     const pageContextInitEnhanced1 = getPageContextInitEnhanced1(
       pageContextInit,
       renderContext,
+      true,
       urlRewrite,
       _urlHandler
     )
