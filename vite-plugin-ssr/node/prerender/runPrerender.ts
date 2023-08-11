@@ -47,7 +47,7 @@ import { getUrlFromRouteString } from '../../shared/route/resolveRouteString'
 import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode'
 import { isErrorPage } from '../../shared/error-page'
-import { addComputedUrlProps } from '../../shared/UrlComputedProps'
+import { addUrlComputedProps } from '../../shared/UrlComputedProps'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute'
 import { isAbortError } from '../../shared/route/abort'
 import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide'
@@ -491,7 +491,7 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
     const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitEnhanced1)
   }
-  addComputedUrlProps(
+  addUrlComputedProps(
     pageContext,
     // We set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in a onPrerenderStart() hook, e.g. /examples/i18n/
     false

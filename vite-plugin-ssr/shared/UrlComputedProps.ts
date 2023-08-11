@@ -1,10 +1,10 @@
 import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter, isBrowser } from './utils'
 
-export { addComputedUrlProps }
-export { assertURLs }
-export type { PageContextUrlsPrivate }
-export type { PageContextUrlsPublic }
-export type { PageContextUrlSource }
+export { addUrlComputedProps }
+export { assertPageContextUrlComputedPropsPublic }
+export type { PageContextUrlComputedProps }
+export type { PageContextUrlComputedPropsPublic }
+export type { PageContextUrlSources }
 
 // Copy paste from https://vite-plugin-ssr.com/pageContext
 type UrlParsed = {
@@ -29,7 +29,7 @@ type UrlParsed = {
   /** @deprecated */
   hashString: null | string
 }
-type PageContextUrlsPublic = {
+type PageContextUrlComputedPropsPublic = {
   /** @deprecated */
   url: string
   /** The URL of the HTTP request */
@@ -39,14 +39,14 @@ type PageContextUrlsPublic = {
   /** Parsed information about the current URL */
   urlParsed: UrlParsed
 }
-type PageContextUrlsPrivate = PageContextUrlsPublic & {
+type PageContextUrlComputedProps = PageContextUrlComputedPropsPublic & {
   _urlRewrite: string | null
 }
 
-function addComputedUrlProps<PageContext extends Record<string, unknown> & PageContextUrlSource>(
+function addUrlComputedProps<PageContext extends Record<string, unknown> & PageContextUrlSources>(
   pageContext: PageContext,
   enumerable = true
-): asserts pageContext is PageContext & PageContextUrlsPrivate {
+): asserts pageContext is PageContext & PageContextUrlComputedProps {
   assert(pageContext.urlOriginal)
 
   if ('urlPathname' in pageContext) {
@@ -76,13 +76,13 @@ function addComputedUrlProps<PageContext extends Record<string, unknown> & PageC
   })
 }
 
-type PageContextUrlSource = {
+type PageContextUrlSources = {
   urlOriginal: string
   _urlRewrite: string | null
   _baseServer: string
   _urlHandler: null | ((url: string) => string)
 }
-function getUrlParsed(pageContext: PageContextUrlSource) {
+function getUrlParsed(pageContext: PageContextUrlSources) {
   // We use a url handler function because the onBeforeRoute() hook may modify pageContext.urlOriginal (e.g. for i18n)
   let urlHandler = pageContext._urlHandler
   if (!urlHandler) {
@@ -98,13 +98,13 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
 
   return parseUrl(urlLogical, baseServer)
 }
-function urlPathnameGetter(this: PageContextUrlSource) {
+function urlPathnameGetter(this: PageContextUrlSources) {
   const { pathname } = getUrlParsed(this)
   const urlPathname = pathname
   assert(urlPathname.startsWith('/'))
   return urlPathname
 }
-function urlGetter(this: PageContextUrlSource) {
+function urlGetter(this: PageContextUrlSources) {
   assertWarning(
     false,
     '`pageContext.url` is outdated. Use `pageContext.urlPathname`, `pageContext.urlParsed`, or `pageContext.urlOriginal` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
@@ -112,7 +112,7 @@ function urlGetter(this: PageContextUrlSource) {
   )
   return urlPathnameGetter.call(this)
 }
-function urlParsedGetter(this: PageContextUrlSource) {
+function urlParsedGetter(this: PageContextUrlSources) {
   const urlParsedOriginal = getUrlParsed(this)
   const { origin, pathname, pathnameOriginal, search, searchAll, searchOriginal, hash, hashOriginal } =
     urlParsedOriginal
@@ -165,7 +165,9 @@ function makeNonEnumerable(obj: Object, prop: string) {
   Object.defineProperty(obj, prop, { ...descriptor, enumerable: false })
 }
 
-function assertURLs(pageContext: { urlOriginal: string } & PageContextUrlsPublic) {
+function assertPageContextUrlComputedPropsPublic(
+  pageContext: { urlOriginal: string } & PageContextUrlComputedPropsPublic
+) {
   assert(typeof pageContext.urlOriginal === 'string')
   assert(typeof pageContext.urlPathname === 'string')
   assert(isPlainObject(pageContext.urlParsed))

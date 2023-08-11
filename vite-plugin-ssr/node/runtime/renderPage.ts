@@ -21,7 +21,7 @@ import {
   checkType,
   assertUsage
 } from './utils'
-import { addComputedUrlProps } from '../../shared/UrlComputedProps'
+import { addUrlComputedProps } from '../../shared/UrlComputedProps'
 import {
   assertNoInfiniteAbortLoop,
   ErrorAbort,
@@ -409,7 +409,7 @@ function getPageContextInitEnhanced2(
     const pageContextAddendum = handleUrl(pageContextInit.urlOriginal, urlRewrite)
     objectAssign(pageContextInitEnhanced2, pageContextAddendum)
   }
-  addComputedUrlProps(pageContextInitEnhanced2)
+  addUrlComputedProps(pageContextInitEnhanced2)
   return pageContextInitEnhanced2
 }
 

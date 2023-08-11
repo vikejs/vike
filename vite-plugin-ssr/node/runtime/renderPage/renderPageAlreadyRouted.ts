@@ -12,7 +12,7 @@ import { getHtmlString } from '../html/renderHtml'
 import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles'
 import { assert, assertUsage, hasProp, objectAssign, unique } from '../utils'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide'
-import { addComputedUrlProps, type PageContextUrlsPrivate } from '../../../shared/UrlComputedProps'
+import { addUrlComputedProps, type PageContextUrlComputedProps } from '../../../shared/UrlComputedProps'
 import { getGlobalContext } from '../globalContext'
 import { createHttpResponseObject, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponseObject'
 import { loadPageFilesServerSide, PageContext_loadPageFilesServerSide, type PageFiles } from './loadPageFilesServerSide'
@@ -37,7 +37,7 @@ async function renderPageAlreadyRouted<
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
   } & PageContextInitEnhanced2 &
-    PageContextUrlsPrivate &
+    PageContextUrlComputedProps &
     PageContext_loadPageFilesServerSide
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   // pageContext._pageId can either be the:
@@ -103,7 +103,7 @@ async function prerenderPage(
     _urlHandler: null
   })
 
-  addComputedUrlProps(pageContext)
+  addUrlComputedProps(pageContext)
 
   /* Should we execute the guard() hook upon pre-rendering? Is there a use case for this?
    *  - It isn't trivial to implement, as it requires to duplicate / factor out the isAbortError() handling

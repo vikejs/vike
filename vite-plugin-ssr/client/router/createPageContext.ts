@@ -1,6 +1,6 @@
 export { createPageContext }
 
-import { addComputedUrlProps } from '../../shared/UrlComputedProps'
+import { addUrlComputedProps } from '../../shared/UrlComputedProps'
 import { getPageFilesAll } from '../../shared/getPageFiles'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes'
 import { getBaseServer } from '../getBaseServer'
@@ -37,6 +37,6 @@ async function createPageContext<T extends { urlOriginal: string }>(pageContextB
     _onBeforeRouteHook: onBeforeRouteHook
   }
   objectAssign(pageContext, pageContextBase)
-  addComputedUrlProps(pageContext)
+  addUrlComputedProps(pageContext)
   return pageContext
 }

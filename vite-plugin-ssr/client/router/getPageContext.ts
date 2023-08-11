@@ -19,7 +19,7 @@ import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
 import type { PageContextExports, PageFile } from '../../shared/getPageFiles'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide'
-import type { PageContextUrlsPrivate } from '../../shared/UrlComputedProps'
+import type { PageContextUrlComputedProps } from '../../shared/UrlComputedProps'
 import { PageContextForRoute, route } from '../../shared/route'
 import { getErrorPageId } from '../../shared/error-page'
 import { getHook } from '../../shared/getHook'
@@ -42,7 +42,7 @@ type PageContextAddendum = {
 } & PageContextExports &
   PageContextForPassToClientWarning
 
-type PageContextPassThrough = PageContextUrlsPrivate &
+type PageContextPassThrough = PageContextUrlComputedProps &
   PageContextForRoute & {
     isBackwardNavigation: boolean | null
   }
