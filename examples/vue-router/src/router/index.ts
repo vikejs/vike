@@ -4,9 +4,9 @@
  * @Author: LiWen
  * @Date: 2023-08-09 17:25:26
  * @LastEditors: LiWen
- * @LastEditTime: 2023-08-09 17:34:26
+ * @LastEditTime: 2023-08-11 10:50:01
  */
-import { createMemoryHistory, createRouter as _createRouter, createWebHistory } from 'vue-router'
+import { createMemoryHistory, createRouter as _createRouter, createWebHistory, Router } from 'vue-router'
 
 const constantRoutes = [
   {
@@ -19,7 +19,7 @@ const constantRoutes = [
   }
 ];
 
-function createRouter() {
+const createRouter = () => {
   return _createRouter({
     // use appropriate history implementation for server/client
     // import.meta.env.SSR is injected by Vite.

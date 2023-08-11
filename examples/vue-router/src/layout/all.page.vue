@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: v1.0
+ * @Author: LiWen
+ * @Date: 2023-08-09 17:25:26
+ * @LastEditors: LiWen
+ * @LastEditTime: 2023-08-11 10:52:36
+-->
 <template>
   <div>
     <router-link to="/">Home</router-link> |
@@ -13,7 +21,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { reactive } from 'vue'
 const state = reactive({ count: 0 })
 </script>

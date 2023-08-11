@@ -13,7 +13,7 @@ import ssr from 'vite-plugin-ssr/plugin'
 import createSvgIcon from './svg-icon'
 import createCompression from './compression'
 import createSetupExtend from './setup-extend'
-import { EnvDevelopmentE } from '@/entity/systemConfig'
+import { EnvDevelopmentE } from '~/entity/systemConfig'
 
 export default function createVitePlugins(viteEnv: EnvDevelopmentE, isBuild = false) {
   const vitePlugins = [vue({ include: [/\.vue$/, /\.md$/] })]

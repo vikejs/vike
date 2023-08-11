@@ -4,12 +4,12 @@
  * @Author: LiWen
  * @Date: 2022-02-23 10:48:42
  * @LastEditors: LiWen
- * @LastEditTime: 2023-08-07 19:15:22
+ * @LastEditTime: 2023-08-11 10:56:57
  */
 import compression from 'vite-plugin-compression';
-import { EnvDevelopmentE } from '@/entity/systemConfig'
+import { EnvDevelopmentE } from '~/entity/systemConfig'
 
-export default function createCompression(env: EnvDevelopmentE) {
+const createCompression = (env: EnvDevelopmentE) => {
   const { VITE_BUILD_COMPRESS } = env;
   const compressList = VITE_BUILD_COMPRESS.split(',');
   const plugin = [];
@@ -33,3 +33,5 @@ export default function createCompression(env: EnvDevelopmentE) {
   }
   return plugin;
 }
+
+export default createCompression;

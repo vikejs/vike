@@ -5,8 +5,8 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import pinia from '@/stores';
-import { userStore } from '@/stores/modules/user';
+import pinia from '~/stores';
+import { userStore } from '~/stores/modules/user';
 
 const userExample = userStore(pinia);
 const userNameComputed = computed(() => userExample.name);

@@ -4,12 +4,12 @@
  * @Author: LiWen
  * @Date: 2023-08-09 17:25:26
  * @LastEditors: LiWen
- * @LastEditTime: 2023-08-10 16:11:53
+ * @LastEditTime: 2023-08-11 10:38:33
  */
 import path from 'path'
 import { ProxyOptions, defineConfig, loadEnv } from 'vite'
 import createVitePlugins from './vite/init'
-import { EnvDevelopmentE } from '@/entity/systemConfig'
+import { EnvDevelopmentE } from '~/entity/systemConfig'
 
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd()) as unknown as EnvDevelopmentE
@@ -63,7 +63,7 @@ export default defineConfig(({ mode, command }) => {
     resolve: {
       alias: {
         // 设置别名
-        '@': path.resolve(__dirname, './src')
+        '~': path.resolve(__dirname, './src')
       }
     },
     // vite 相关配置

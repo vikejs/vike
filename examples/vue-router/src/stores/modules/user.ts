@@ -4,7 +4,7 @@
  * @Author: LiWen
  * @Date: 2023-08-07 14:32:14
  * @LastEditors: LiWen
- * @LastEditTime: 2023-08-07 17:18:18
+ * @LastEditTime: 2023-08-11 10:58:57
  */
 import { defineStore } from 'pinia'
 import { UserE } from '../../entity/user'
@@ -23,7 +23,7 @@ const userInfo: UserE = {
   isAdmin: false
 }
 
-export const userStore = defineStore('user', {
+const userStore = defineStore('user', {
   state: () => ({
     user: userInfo
   }),
@@ -39,3 +39,5 @@ export const userStore = defineStore('user', {
     }
   }
 })
+
+export { userStore }

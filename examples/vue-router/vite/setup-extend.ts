@@ -8,6 +8,8 @@
  */
 import setupExtend from 'vite-plugin-vue-setup-extend';
 
-export default function createSetupExtend() {
+const createSetupExtend = () => {
   return setupExtend();
 }
+
+export default createSetupExtend
