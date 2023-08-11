@@ -402,7 +402,7 @@ function getPageContextInitEnhanced2(
     _urlRewrite: urlRewrite
   }
   {
-    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext)
+    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext, urlRewrite)
     objectAssign(pageContextInitEnhanced2, pageContextInitEnhanced1)
   }
   {

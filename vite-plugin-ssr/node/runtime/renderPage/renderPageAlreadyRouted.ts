@@ -150,7 +150,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
     ...pageContextInit_
   }
   {
-    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext)
+    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext, null)
     objectAssign(pageContext, pageContextInitEnhanced1)
   }
 
@@ -160,7 +160,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
 }
 
 type PageContextInitEnhanced1 = ReturnType<typeof getPageContextInitEnhanced1>
-function getPageContextInitEnhanced1(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
+function getPageContextInitEnhanced1(pageContextInit: { urlOriginal: string }, renderContext: RenderContext, urlRewrite: null | string) {
   assert(pageContextInit.urlOriginal)
 
   const globalContext = getGlobalContext()

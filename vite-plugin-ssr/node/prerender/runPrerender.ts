@@ -47,7 +47,7 @@ import { getUrlFromRouteString } from '../../shared/route/resolveRouteString'
 import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode'
 import { isErrorPage } from '../../shared/error-page'
-import { addUrlComputedProps } from '../../shared/UrlComputedProps'
+import { addUrlComputedProps, type PageContextUrlComputedProps } from '../../shared/UrlComputedProps'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute'
 import { isAbortError } from '../../shared/route/abort'
 import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide'
@@ -95,7 +95,7 @@ type PageContext = PageContextInitEnhanced1 & {
   _urlOriginalModifiedByHook?: TransformerHook
   _providedByHook: ProvidedByHook
   _pageContextAlreadyProvidedByOnPrerenderHook?: true
-}
+} & PageContextUrlComputedProps
 
 type PrerenderOptions = {
   /** Initial `pageContext` values */
@@ -488,7 +488,7 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
     ...prerenderContext.pageContextInit
   }
   {
-    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext)
+    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext, null)
     objectAssign(pageContext, pageContextInitEnhanced1)
   }
   addUrlComputedProps(
@@ -658,7 +658,7 @@ async function callOnPrerenderStartHook(
   )
   prerenderContext.pageContexts = result.prerenderContext.pageContexts as PageContext[]
 
-  prerenderContext.pageContexts.forEach((pageContext: PageContext & { url?: string }) => {
+  prerenderContext.pageContexts.forEach((pageContext: { urlOriginal?: string; url?: string }) => {
     if (!hasPropertyGetter(pageContext, 'url') && pageContext.url) {
       assertWarning(
         false,
