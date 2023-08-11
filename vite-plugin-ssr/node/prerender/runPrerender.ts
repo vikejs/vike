@@ -488,14 +488,10 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
     ...prerenderContext.pageContextInit
   }
   {
-    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(
-      pageContextInit,
-      renderContext,
+    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext, {
       // We set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in a onPrerenderStart() hook, e.g. /examples/i18n/
-      false,
-      null,
-      null
-    )
+      urlComputedPropsNonEnumerable: true
+    })
     objectAssign(pageContext, pageContextInitEnhanced1)
   }
   return pageContext

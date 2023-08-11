@@ -148,7 +148,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
     ...pageContextInit_
   }
   {
-    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext, true, null, null)
+    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitEnhanced1)
   }
 
@@ -161,9 +161,17 @@ type PageContextInitEnhanced1 = ReturnType<typeof getPageContextInitEnhanced1>
 function getPageContextInitEnhanced1(
   pageContextInit: { urlOriginal: string },
   renderContext: RenderContext,
-  UrlComputedPropsEnumerable: boolean,
-  urlRewrite: null | string,
-  urlHandler: null | ((url: string) => string)
+  {
+    urlComputedPropsNonEnumerable = false,
+    ssr: { urlRewrite, urlHandler, isClientSideNavigation } = { urlRewrite: null, urlHandler: null, isClientSideNavigation: false }
+  }: {
+    urlComputedPropsNonEnumerable?: boolean
+    ssr?: {
+      urlRewrite: null | string
+      urlHandler: null | ((url: string) => string)
+      isClientSideNavigation: boolean
+    }
+  } = {}
 ) {
   assert(pageContextInit.urlOriginal)
 
@@ -184,9 +192,10 @@ function getPageContextInitEnhanced1(
     _onBeforeRouteHook: renderContext.onBeforeRouteHook,
     _pageContextInit: pageContextInit,
     _urlRewrite: urlRewrite,
-    _urlHandler: urlHandler
+    _urlHandler: urlHandler,
+    isClientSideNavigation
   }
-  addUrlComputedProps(pageContextInitEnhanced1, UrlComputedPropsEnumerable)
+  addUrlComputedProps(pageContextInitEnhanced1, !urlComputedPropsNonEnumerable)
 
   return pageContextInitEnhanced1
 }

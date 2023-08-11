@@ -402,14 +402,13 @@ function getPageContextInitEnhanced2(
   }
   {
     const { isClientSideNavigation, _urlHandler } = handleUrl(pageContextInit.urlOriginal, urlRewrite)
-    objectAssign(pageContextInitEnhanced2, { isClientSideNavigation })
-    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(
-      pageContextInit,
-      renderContext,
-      true,
-      urlRewrite,
-      _urlHandler
-    )
+    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext, {
+      ssr: {
+        urlRewrite,
+        urlHandler: _urlHandler,
+        isClientSideNavigation
+      }
+    })
     objectAssign(pageContextInitEnhanced2, pageContextInitEnhanced1)
   }
   return pageContextInitEnhanced2
