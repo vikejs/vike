@@ -25,7 +25,6 @@ import { preparePageContextForUserConsumptionServerSide } from './preparePageCon
 import { executeGuardHook } from '../../../shared/route/executeGuardHook'
 import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageRoutes'
 import type { OnBeforeRouteHook } from '../../../shared/route/executeOnBeforeRouteHook'
-import type { PageContextInitEnhanced2 } from '../renderPage'
 
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 
@@ -36,7 +35,8 @@ async function renderPageAlreadyRouted<
     is404: null | boolean
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
-  } & PageContextInitEnhanced2 &
+    _httpRequestId: number
+  } & PageContextInitEnhanced1 &
     PageContextUrlComputedProps &
     PageContext_loadPageFilesServerSide
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
@@ -163,7 +163,11 @@ function getPageContextInitEnhanced1(
   renderContext: RenderContext,
   {
     urlComputedPropsNonEnumerable = false,
-    ssr: { urlRewrite, urlHandler, isClientSideNavigation } = { urlRewrite: null, urlHandler: null, isClientSideNavigation: false }
+    ssr: { urlRewrite, urlHandler, isClientSideNavigation } = {
+      urlRewrite: null,
+      urlHandler: null,
+      isClientSideNavigation: false
+    }
   }: {
     urlComputedPropsNonEnumerable?: boolean
     ssr?: {

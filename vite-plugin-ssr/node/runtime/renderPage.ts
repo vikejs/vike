@@ -1,12 +1,12 @@
 export { renderPage }
 export { renderPage_addWrapper }
-export type { PageContextInitEnhanced2 }
 
 import {
   getRenderContext,
   getPageContextInitEnhanced1,
   RenderContext,
-  renderPageAlreadyRouted
+  renderPageAlreadyRouted,
+  PageContextInitEnhanced1
 } from './renderPage/renderPageAlreadyRouted'
 import { route } from '../../shared/route'
 import {
@@ -172,13 +172,13 @@ async function renderPageAlreadyPrepared(
     objectAssign(pageContextNominalPageInit, pageContextFromAllRewrites)
   }
   {
-    const pageContextInitEnhanced2 = getPageContextInitEnhanced2(
+    const pageContextInitEnhanced = getPageContextInitEnhancedSSR(
       pageContextInit,
       renderContext,
       pageContextNominalPageInit._urlRewrite,
       httpRequestId
     )
-    objectAssign(pageContextNominalPageInit, pageContextInitEnhanced2)
+    objectAssign(pageContextNominalPageInit, pageContextInitEnhanced)
   }
   let errNominalPage: unknown
   {
@@ -326,7 +326,9 @@ function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>
   return pageContextHttpReponseNull
 }
 
-async function renderPageNominal(pageContext: { _urlRewrite: null | string } & PageContextInitEnhanced2) {
+async function renderPageNominal(
+  pageContext: { _urlRewrite: null | string; _httpRequestId: number } & PageContextInitEnhanced1
+) {
   objectAssign(pageContext, { errorWhileRendering: null })
 
   // Check Base URL
@@ -370,11 +372,11 @@ async function getPageContextErrorPageInit(
   renderContext: RenderContext,
   httpRequestId: number
 ) {
-  const pageContextInitEnhanced2 = getPageContextInitEnhanced2(pageContextInit, renderContext, null, httpRequestId)
+  const pageContextInitEnhanced = getPageContextInitEnhancedSSR(pageContextInit, renderContext, null, httpRequestId)
 
   assert(errNominalPage)
   const pageContext = {
-    ...pageContextInitEnhanced2,
+    ...pageContextInitEnhanced,
     is404: false,
     errorWhileRendering: errNominalPage as Error,
     routeParams: {} as Record<string, string>
@@ -388,30 +390,22 @@ async function getPageContextErrorPageInit(
   return pageContext
 }
 
-type PageContextInitEnhanced2 = ReturnType<typeof getPageContextInitEnhanced2>
-function getPageContextInitEnhanced2(
+function getPageContextInitEnhancedSSR(
   pageContextInit: { urlOriginal: string },
   renderContext: RenderContext,
   urlRewrite: null | string,
   httpRequestId: number
 ) {
-  const pageContextInitEnhanced2 = {
-    ...pageContextInit,
-    _httpRequestId: httpRequestId,
-    _urlRewrite: urlRewrite
-  }
-  {
-    const { isClientSideNavigation, _urlHandler } = handleUrl(pageContextInit.urlOriginal, urlRewrite)
-    const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext, {
-      ssr: {
-        urlRewrite,
-        urlHandler: _urlHandler,
-        isClientSideNavigation
-      }
-    })
-    objectAssign(pageContextInitEnhanced2, pageContextInitEnhanced1)
-  }
-  return pageContextInitEnhanced2
+  const { isClientSideNavigation, _urlHandler } = handleUrl(pageContextInit.urlOriginal, urlRewrite)
+  const pageContextInitEnhanced1 = getPageContextInitEnhanced1(pageContextInit, renderContext, {
+    ssr: {
+      urlRewrite,
+      urlHandler: _urlHandler,
+      isClientSideNavigation
+    }
+  })
+  objectAssign(pageContextInitEnhanced1, { _httpRequestId: httpRequestId })
+  return pageContextInitEnhanced1
 }
 
 function handleUrl(
