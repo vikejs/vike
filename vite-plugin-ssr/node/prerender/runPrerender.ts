@@ -47,7 +47,7 @@ import { getUrlFromRouteString } from '../../shared/route/resolveRouteString'
 import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode'
 import { isErrorPage } from '../../shared/error-page'
-import type { PageContextUrlComputedProps } from '../../shared/UrlComputedProps'
+import { addUrlComputedProps, PageContextUrlComputedProps } from '../../shared/UrlComputedProps'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute'
 import { isAbortError } from '../../shared/route/abort'
 import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide'
@@ -657,6 +657,7 @@ async function callOnPrerenderStartHook(
   prerenderContext.pageContexts = result.prerenderContext.pageContexts as PageContext[]
 
   prerenderContext.pageContexts.forEach((pageContext: { urlOriginal?: string; url?: string }) => {
+    // TODO/v1-release: remove
     if (!hasPropertyGetter(pageContext, 'url') && pageContext.url) {
       assertWarning(
         false,
@@ -676,6 +677,8 @@ async function callOnPrerenderStartHook(
         hookName
       }
     }
+
+    addUrlComputedProps(pageContext)
   })
 }
 
