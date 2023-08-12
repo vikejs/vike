@@ -678,6 +678,7 @@ async function callOnPrerenderStartHook(
       }
     }
 
+    // Restore as URL computed props are lost when user makes a pageContext copy
     addUrlComputedProps(pageContext)
   })
 }
