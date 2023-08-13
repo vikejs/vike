@@ -79,7 +79,8 @@ function tolerateError({ logSource, logText }) {
     isTwitterEmbedsError() ||
     isGithubImageError() ||
     isSlowCrawlWarning() ||
-    isHtmlEscapingTest()
+    isHtmlEscapingTest() ||
+    isNodeExperimentalEsmLoader()
   )
 
   // [vite-plugin-ssr@0.4.42][Warning] The onBeforeRender() hook of /pages/star-wars/index/index.page.server.ts is taking more than 4 seconds
@@ -189,6 +190,13 @@ function tolerateError({ logSource, logText }) {
         'The 2nd HTML variable is `<b>I was defined without an HTML Fragment</b>` which seems to be HTML code'
       ) &&
       logText.includes('Did you forget to wrap the value with dangerouslySkipEscape')
+    )
+  }
+
+  function isNodeExperimentalEsmLoader() {
+    return (
+      logSource === 'stderr' &&
+      logText.includes('ExperimentalWarning: Custom ESM Loaders is an experimental feature.')
     )
   }
 }
