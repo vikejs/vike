@@ -9,7 +9,6 @@ import { pickFirst } from './pickFirst'
 import { resolveExtensions } from './resolveExtensions'
 import { resolveBase } from './resolveBase'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig'
-import '../../../../utils/require-shim' // Ensure require shim for dev
 
 function resolveVpsConfig(vpsConfig: unknown): Plugin {
   return {

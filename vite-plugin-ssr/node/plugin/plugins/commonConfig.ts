@@ -1,8 +1,9 @@
 export { commonConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { addRequireShim_setUserRootDir, assert, assertWarning, isValidPathAlias } from '../utils'
+import { assert, assertWarning, isValidPathAlias } from '../utils'
 import { assertRollupInput } from './buildConfig'
+import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 
 function commonConfig(): Plugin[] {
   return [
@@ -17,7 +18,7 @@ function commonConfig(): Plugin[] {
         }
       }),
       configResolved(config) {
-        addRequireShim_setUserRootDir(config.root)
+        installRequireShim_setUserRootDir(config.root)
       }
     },
     {

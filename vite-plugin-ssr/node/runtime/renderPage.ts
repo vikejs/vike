@@ -43,7 +43,6 @@ import type { PageContextDebug } from './renderPage/debugPageFiles'
 import { log404 } from './renderPage/log404'
 import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
-import '../../utils/require-shim' // Ensure require shim for production
 import type { PageContextBuiltIn } from '../../types'
 import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide'
 import { getErrorPageId } from '../../shared/error-page'

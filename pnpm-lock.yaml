@@ -2545,6 +2545,9 @@ importers:
       '@brillout/picocolors':
         specifier: ^1.0.6
         version: 1.0.6
+      '@brillout/require-shim':
+        specifier: ^0.1.0
+        version: 0.1.0
       '@brillout/vite-plugin-import-build':
         specifier: ^0.2.18
         version: 0.2.18
@@ -3446,6 +3449,10 @@ packages:
       picocolors: 1.0.0
       semver: 7.5.0
     dev: true
+
+  /@brillout/require-shim@0.1.0:
+    resolution: {integrity: sha512-ECIZTqzMFU4pdq/sVcg0bNstnLIevK8iBYGhwvI8lCSCE2u/LFm1KDf/bTzx0qlz8llOZun9M2BxBTnPU+6HCw==}
+    dev: false
 
   /@brillout/stem-react@0.1.3(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.5):
     resolution: {integrity: sha512-OAmzO5Tm1dhymXY1W3dlsYAYq6OwlZTXru6vG55RanyHifvGd2lmtPGaYuRnjOShFtF+xdYpqW/BgVsRSxLhpg==}
