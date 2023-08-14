@@ -1,9 +1,8 @@
 // Utils needed by Server Routing.
 
-// Ensure we don't bloat the server-side with client utils
-import { isBrowser } from '../utils/isBrowser'
-import { assert } from '../utils/assert'
-assert(isBrowser())
+// We assume all runtime entries will load this utils.ts file
+import { onLoad } from './onLoad'
+onLoad()
 
 export * from '../utils/assert'
 export * from '../utils/assertSingleInstance'

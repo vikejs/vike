@@ -1,12 +1,8 @@
 // Utils needed by vite-plugin-ssr's Vite plugin.
 
-import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser'
-assertIsNotBrowser()
-import { assertNodeVersion } from '../../utils/assertNodeVersion'
-assertNodeVersion()
-// Ensure we don't bloat the server runtime with plugin utils
-import { assertIsNotProductionRuntime } from '../../utils/assertIsNotProductionRuntime'
-assertIsNotProductionRuntime()
+// We assume all runtime entries will load this utils.ts file
+import { onLoad } from './onLoad'
+onLoad()
 
 // We tolerate the fact that we load all of the runtime utils even though some of it isn't needed
 export * from '../runtime/utils'

@@ -1,12 +1,8 @@
 // Utils needed by Client Routing.
 
-// Ensure we don't bloat the server-side with client utils
-import { isBrowser } from '../../utils/isBrowser'
-import { assert } from '../../utils/assert'
-assert(isBrowser())
-// Ensure we don't bloat Server Routing with Client Routing utils
-import { assertClientRouting } from '../../utils/assertRoutingType'
-assertClientRouting()
+// We assume all runtime entries will load this utils.ts file
+import { onLoad } from './onLoad'
+onLoad()
 
 // We load the Server Routing utils: we tolerate the tiny amount of code that is only needed by Server Routing (only 1-2 lines).
 // We re-export some of the utils down below only to list the utils needed by Client Routing.
