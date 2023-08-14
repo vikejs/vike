@@ -1,5 +1,5 @@
 import { parse } from '@brillout/json-serializer/parse'
-import { hasProp, assert, assertUsage, objectAssign } from '../utils'
+import { hasProp, assert, assertUsage, objectAssign } from '../server-routing-runtime/utils'
 
 export { getPageContextSerializedInHtml }
 

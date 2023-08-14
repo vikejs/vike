@@ -1,6 +1,6 @@
 export { executeOnRenderClientHook }
 
-import { assert, assertUsage, executeHook } from '../utils'
+import { assert, assertUsage, executeHook } from '../server-routing-runtime/utils'
 import { getHook, type Hook } from '../../shared/hooks/getHook'
 import type { PageFile, PageContextExports } from '../../shared/getPageFiles'
 import {
