@@ -31,8 +31,8 @@ type PageContextForUserConsumptionServerSide = {
   isClientSideNavigation: boolean
   pageProps?: Record<string, unknown>
 } & PageContextBuiltIn
-function preparePageContextForUserConsumptionServerSide<T extends PageContextForUserConsumptionServerSide>(
-  pageContext: T
+function preparePageContextForUserConsumptionServerSide(
+  pageContext: PageContextForUserConsumptionServerSide
 ): void {
   assertPageContextUrlComputedPropsPublic(pageContext)
 

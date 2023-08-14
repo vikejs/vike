@@ -252,7 +252,7 @@ function findPageGuard(pageId: string, pageFilesAll: PageFile[]): null | PageGua
   if (!hookFn) return null
   const hookFilePath = filePath
   assertUsage(isCallable(hookFn), `guard() defined by ${hookFilePath} should be a function`)
-  return { hookFn, hookFilePath }
+  return { hookFn, hookName: 'guard', hookFilePath }
 }
 
 function dirname(filePath: string): string {

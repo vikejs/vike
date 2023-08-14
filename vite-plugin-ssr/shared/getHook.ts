@@ -5,11 +5,13 @@ export type { Hook }
 import { PageContextExports } from './getPageFiles'
 import { assert, assertUsage, isCallable } from './utils'
 
-type Hook = { hookFn: (arg: unknown) => unknown; hookFilePath: string }
+type Hook = HookLoc & { hookFn: (arg: unknown) => unknown }
+type HookName = 'render' | 'onBeforeRender' | 'onRenderHtml' | 'onRenderClient' | 'guard'
+type HookLoc = { hookName: HookName, hookFilePath: string }
 
 function getHook(
   pageContext: PageContextExports,
-  hookName: 'render' | 'onBeforeRender' | 'onRenderHtml' | 'onRenderClient' | 'guard'
+  hookName: HookName
 ): null | Hook {
   if (!(hookName in pageContext.exports)) {
     return null
@@ -21,7 +23,7 @@ function getHook(
   assert(hookFilePath)
   assert(!hookName.endsWith(')'))
   assertUsage(isCallable(hookFn), `hook ${hookName}() defined by ${hookFilePath} should be a function`)
-  return { hookFn, hookFilePath }
+  return { hookFn, hookName, hookFilePath }
 }
 
 function assertHook<PC extends PageContextExports, HookName extends PropertyKey>(
