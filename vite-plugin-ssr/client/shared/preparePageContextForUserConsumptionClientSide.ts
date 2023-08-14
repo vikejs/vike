@@ -1,16 +1,16 @@
 export { preparePageContextForUserConsumptionClientSide }
 export type { PageContextForUserConsumptionClientSide }
 
-import { assert, isObject, objectAssign } from './utils'
-import { sortPageContext } from '../shared/sortPageContext'
-import type { PageContextExports } from '../shared/getPageFiles'
+import { assert, isObject, objectAssign } from '../utils'
+import { sortPageContext } from '../../shared/sortPageContext'
+import type { PageContextExports } from '../../shared/getPageFiles'
 import type {
   PageContextBuiltInClientWithServerRouting,
   PageContextBuiltInClientWithClientRouting
-} from '../shared/types'
-import { addIs404ToPageProps } from '../shared/addIs404ToPageProps'
-import type { PageConfig } from '../shared/page-configs/PageConfig'
-import { getPageContextProxyForUser, PageContextForPassToClientWarning } from './getPageContextProxyForUser'
+} from '../../shared/types'
+import { addIs404ToPageProps } from '../../shared/addIs404ToPageProps'
+import type { PageConfig } from '../../shared/page-configs/PageConfig'
+import { getPageContextProxyForUser, PageContextForPassToClientWarning } from '../getPageContextProxyForUser'
 
 type PageContextForUserConsumptionClientSide = PageContextExports &
   PageContextForPassToClientWarning & {

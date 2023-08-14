@@ -6,7 +6,7 @@ import type { PageFile, PageContextExports } from '../../shared/getPageFiles'
 import {
   type PageContextForUserConsumptionClientSide,
   preparePageContextForUserConsumptionClientSide
-} from '../preparePageContextForUserConsumptionClientSide'
+} from './preparePageContextForUserConsumptionClientSide'
 import type { PageConfig } from '../../shared/page-configs/PageConfig'
 
 async function executeOnRenderClientHook<

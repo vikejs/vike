@@ -1,7 +1,7 @@
 // Utils needed by Server Routing.
 
 // We assume all runtime entries will load this utils.ts file
-import { onLoad } from './onLoad'
+import { onLoad } from './server-routing-runtime/onLoad'
 onLoad()
 
 export * from '../utils/assert'
