@@ -2546,8 +2546,8 @@ importers:
         specifier: ^1.0.6
         version: 1.0.6
       '@brillout/require-shim':
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: ^0.1.2
+        version: 0.1.2
       '@brillout/vite-plugin-import-build':
         specifier: ^0.2.18
         version: 0.2.18
@@ -3450,8 +3450,8 @@ packages:
       semver: 7.5.0
     dev: true
 
-  /@brillout/require-shim@0.1.0:
-    resolution: {integrity: sha512-ECIZTqzMFU4pdq/sVcg0bNstnLIevK8iBYGhwvI8lCSCE2u/LFm1KDf/bTzx0qlz8llOZun9M2BxBTnPU+6HCw==}
+  /@brillout/require-shim@0.1.2:
+    resolution: {integrity: sha512-3I4LRHnVZXoSAsEoni5mosq9l6eiJED58d9V954W4CIZ88AUfYBanWGBGbJG3NztaRTpFHEA6wB3Hn93BmmJdg==}
     dev: false
 
   /@brillout/stem-react@0.1.3(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.5):
