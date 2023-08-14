@@ -1,7 +1,7 @@
-import { getPageFilesClientSide, getExports, type PageFile, type PageContextExports } from '../shared/getPageFiles'
-import { findPageConfig } from '../shared/page-configs/findPageConfig'
-import { loadPageCode } from '../shared/page-configs/loadPageCode'
-import type { PageConfig, PageConfigLoaded } from '../shared/page-configs/PageConfig'
+import { getPageFilesClientSide, getExports, type PageFile, type PageContextExports } from '../../shared/getPageFiles'
+import { findPageConfig } from '../../shared/page-configs/findPageConfig'
+import { loadPageCode } from '../../shared/page-configs/loadPageCode'
+import type { PageConfig, PageConfigLoaded } from '../../shared/page-configs/PageConfig'
 
 export { loadPageFilesClientSide }
 export { isErrorFetchingStaticAssets }

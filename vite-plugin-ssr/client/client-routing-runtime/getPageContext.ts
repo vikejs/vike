@@ -3,7 +3,7 @@ export { getPageContextErrorPage }
 export { checkIf404 }
 export { isAlreadyServerSideRouted }
 
-import { navigationState } from '../navigationState'
+import { navigationState } from './navigationState'
 import {
   assert,
   assertUsage,
@@ -16,7 +16,7 @@ import {
   getGlobalObject
 } from './utils'
 import { parse } from '@brillout/json-serializer/parse'
-import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
+import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml'
 import type { PageContextExports, PageFile } from '../../shared/getPageFiles'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide'
 import type { PageContextUrlComputedProps } from '../../shared/UrlComputedProps'
@@ -24,7 +24,7 @@ import { PageContextForRoute, route } from '../../shared/route'
 import { getErrorPageId } from '../../shared/error-page'
 import { getHook } from '../../shared/hooks/getHook'
 import { preparePageContextForUserConsumptionClientSide } from '../preparePageContextForUserConsumptionClientSide'
-import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
+import { loadPageFilesClientSide } from '../shared/loadPageFilesClientSide'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
 import type { PageConfig } from '../../shared/page-configs/PageConfig'

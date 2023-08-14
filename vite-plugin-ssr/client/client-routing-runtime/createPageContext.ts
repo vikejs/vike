@@ -3,7 +3,7 @@ export { createPageContext }
 import { addUrlComputedProps } from '../../shared/UrlComputedProps'
 import { getPageFilesAll } from '../../shared/getPageFiles'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes'
-import { getBaseServer } from '../getBaseServer'
+import { getBaseServer } from './getBaseServer'
 import { assert, isBaseServer, PromiseType, objectAssign, getGlobalObject } from './utils'
 const globalObject = getGlobalObject<{
   pageFilesData?: PromiseType<ReturnType<typeof getPageFilesAll>>

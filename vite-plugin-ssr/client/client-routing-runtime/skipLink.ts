@@ -1,7 +1,7 @@
 export { skipLink }
 export { isClientSideRoutable } from './skipLink/isClientSideRoutable'
 
-import { getBaseServer } from '../getBaseServer'
+import { getBaseServer } from './getBaseServer'
 import { isExternalLink } from './isExternalLink'
 import { assert, parseUrl, isBaseServer, isParsable } from './utils'
 import { isDisableAutomaticLinkInterception } from './useClientRouter'

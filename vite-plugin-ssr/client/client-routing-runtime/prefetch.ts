@@ -2,7 +2,7 @@ export { prefetch }
 export { addLinkPrefetchHandlers }
 
 import { assert, assertClientRouting, assertUsage, checkIfClientRouting } from './utils'
-import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../loadPageFilesClientSide'
+import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../shared/loadPageFilesClientSide'
 import { isClientSideRoutable, skipLink } from './skipLink'
 import { getPageId } from './getPageId'
 import { getPrefetchSettings } from './prefetch/getPrefetchSettings'
