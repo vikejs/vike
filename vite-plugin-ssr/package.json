@@ -29,17 +29,17 @@
   },
   "exports": {
     ".": {
-      "worker": "./dist/cjs/node/runtime/index-deprecated.js",
-      "edge-light": "./dist/cjs/node/runtime/index-deprecated.js",
-      "node": "./dist/cjs/node/runtime/index-deprecated.js",
-      "browser": "./dist/esm/client/node.js",
+      "worker": "./dist/cjs/node/runtime/index-deprecated.mjs",
+      "edge-light": "./dist/cjs/node/runtime/index-deprecated.mjs",
+      "node": "./dist/cjs/node/runtime/index-deprecated.mjs",
+      "browser": "./dist/esm/client/node.mjs",
       "types": "./dist/types/node/runtime/index-deprecated.d.ts"
     },
     "./server": {
-      "worker": "./dist/cjs/node/runtime/index.js",
-      "edge-light": "./dist/cjs/node/runtime/index.js",
-      "node": "./dist/cjs/node/runtime/index.js",
-      "browser": "./dist/esm/client/node.js",
+      "worker": "./dist/cjs/node/runtime/index.mjs",
+      "edge-light": "./dist/cjs/node/runtime/index.mjs",
+      "node": "./dist/cjs/node/runtime/index.mjs",
+      "browser": "./dist/esm/client/node.mjs",
       "types": "./dist/types/node/runtime/index.d.ts"
     },
     "./client": {
@@ -49,51 +49,51 @@
       "types": "./dist/types/types/index.d.ts"
     },
     "./client/router": {
-      "worker": "./dist/cjs/node/client/router.js",
-      "edge-light": "./dist/cjs/node/client/router.js",
-      "node": "./dist/cjs/node/client/router.js",
-      "browser": "./dist/esm/client/client-routing-runtime/index.js",
+      "worker": "./dist/cjs/node/client/router.mjs",
+      "edge-light": "./dist/cjs/node/client/router.mjs",
+      "node": "./dist/cjs/node/client/router.mjs",
+      "browser": "./dist/esm/client/client-routing-runtime/index.mjs",
       "types": "./dist/types/client/client-routing-runtime/index.d.ts"
     },
     "./routing": {
-      "worker": "./dist/cjs/shared/route/routing.js",
-      "edge-light": "./dist/cjs/shared/route/routing.js",
-      "node": "./dist/cjs/shared/route/routing.js",
-      "browser": "./dist/esm/shared/route/routing.js",
+      "worker": "./dist/cjs/shared/route/routing.mjs",
+      "edge-light": "./dist/cjs/shared/route/routing.mjs",
+      "node": "./dist/cjs/shared/route/routing.mjs",
+      "browser": "./dist/esm/shared/route/routing.mjs",
       "types": "./dist/types/shared/route/routing.d.ts"
     },
     "./cli": {
-      "node": "./dist/cjs/node/cli/index.js",
+      "node": "./dist/cjs/node/cli/index.mjs",
       "types": "./dist/types/node/cli/index.d.ts"
     },
     "./prerender": {
-      "node": "./dist/cjs/node/prerender/index.js",
+      "node": "./dist/cjs/node/prerender/index.mjs",
       "types": "./dist/types/node/prerender/index.d.ts"
     },
     "./plugin": {
-      "node": "./dist/cjs/node/plugin/index.js",
+      "node": "./dist/cjs/node/plugin/index.mjs",
       "types": "./dist/types/node/plugin/index.d.ts"
     },
     "./RenderErrorPage": {
-      "worker": "./dist/cjs/shared/RenderErrorPage.js",
-      "edge-light": "./dist/cjs/shared/RenderErrorPage.js",
-      "node": "./dist/cjs/shared/RenderErrorPage.js",
-      "browser": "./dist/esm/shared/RenderErrorPage.js",
+      "worker": "./dist/cjs/shared/RenderErrorPage.mjs",
+      "edge-light": "./dist/cjs/shared/RenderErrorPage.mjs",
+      "node": "./dist/cjs/shared/RenderErrorPage.mjs",
+      "browser": "./dist/esm/shared/RenderErrorPage.mjs",
       "types": "./dist/types/shared/RenderErrorPage.d.ts"
     },
     "./abort": {
-      "worker": "./dist/cjs/shared/abort.js",
-      "edge-light": "./dist/cjs/shared/abort.js",
-      "node": "./dist/cjs/shared/abort.js",
-      "browser": "./dist/esm/shared/abort.js",
+      "worker": "./dist/cjs/shared/abort.mjs",
+      "edge-light": "./dist/cjs/shared/abort.mjs",
+      "node": "./dist/cjs/shared/abort.mjs",
+      "browser": "./dist/esm/shared/abort.mjs",
       "types": "./dist/types/shared/abort.d.ts"
     },
     "./__internal": {
-      "node": "./dist/cjs/__internal/index.js",
+      "node": "./dist/cjs/__internal/index.mjs",
       "types": "./dist/types/__internal/index.d.ts"
     },
     "./__internal/setup": {
-      "node": "./dist/cjs/node/runtime/page-files/setup.js",
+      "node": "./dist/cjs/node/runtime/page-files/setup.mjs",
       "types": "./dist/types/node/runtime/page-files/setup.d.ts"
     }
   },
@@ -106,7 +106,7 @@
       "optional": true
     }
   },
-  "main": "./dist/cjs/node/runtime/index-deprecated.js",
+  "main": "./dist/cjs/node/runtime/index-deprecated.mjs",
   "types": "./dist/types/node/runtime/index-deprecated.d.ts",
   "typesVersions": {
     "*": {
@@ -149,7 +149,7 @@
     }
   },
   "bin": {
-    "vite-plugin-ssr": "./node/cli/bin-entry.js"
+    "vite-plugin-ssr": "./node/cli/bin-entry.mjs"
   },
   "devDependencies": {
     "@brillout/part-regex": "^0.1.2",
@@ -170,17 +170,17 @@
   "repository": "https://github.com/brillout/vite-plugin-ssr",
   "files": [
     "dist/",
-    "cli.js",
-    "client.js",
-    "client/router.js",
-    "plugin.js",
-    "prerender.js",
-    "routing.js",
-    "abort.js",
-    "RenderErrorPage.js",
-    "server.js",
-    "__internal.js",
-    "__internal/setup.js"
+    "cli.mjs",
+    "client.mjs",
+    "client/router.mjs",
+    "plugin.mjs",
+    "prerender.mjs",
+    "routing.mjs",
+    "abort.mjs",
+    "RenderErrorPage.mjs",
+    "server.mjs",
+    "__internal.mjs",
+    "__internal/setup.mjs"
   ],
   "license": "MIT",
   "keywords": [
