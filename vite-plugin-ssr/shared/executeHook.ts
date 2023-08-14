@@ -1,10 +1,10 @@
 export { executeHook }
 export { isUserHookError }
 
-import { getProjectError, assertWarning } from './assert'
-import { getGlobalObject } from './getGlobalObject'
-import { humanizeTime } from './humanizeTime'
-import { isObject } from './isObject'
+import { getProjectError, assertWarning } from '../utils/assert'
+import { getGlobalObject } from '../utils/getGlobalObject'
+import { humanizeTime } from '../utils/humanizeTime'
+import { isObject } from '../utils/isObject'
 
 type Hook = { hookName: HookName; hookFilePath: string }
 
