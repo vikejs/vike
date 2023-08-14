@@ -1,2 +1,2 @@
 // eslint doesn't seem to support `package.json#exports`.
-module.exports = require('./dist/cjs/shared/abort.js')
+module.exports = require('./dist/cjs/shared/abort.mjs')

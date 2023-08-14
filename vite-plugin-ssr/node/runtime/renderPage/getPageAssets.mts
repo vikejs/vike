@@ -147,13 +147,13 @@ function resolveClientEntriesDev(
     const res = typeof Bun !== 'undefined' ? (toPath: string) => Bun.resolveSync(toPath, __dirname) : req.resolve
     try {
       // For Vitest
-      // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/node/runtime/html/injectAssets.js
+      // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/node/runtime/html/injectAssets.mjs
       filePath = toPosixPath(
-        res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../../client/').replace('.js', '.ts'))
+        res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../../client/').replace('.mjs', '.mts'))
       )
     } catch {
       // For users
-      // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/dist/cjs/node/runtime/html/injectAssets.js
+      // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/dist/cjs/node/runtime/html/injectAssets.mjs
       filePath = toPosixPath(
         res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../../../../dist/esm/client/'))
       )

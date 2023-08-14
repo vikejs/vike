@@ -1,2 +1,2 @@
 // eslint doesn't seem to support `package.json#exports`.
-module.exports = require('./dist/cjs/__internal')
+module.exports = require('./dist/cjs/__internal/index.mjs')

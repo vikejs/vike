@@ -1193,7 +1193,7 @@ function handleUserFileError(err: unknown, isDev: boolean) {
     //   plugin: 'vite-plugin-ssr:importUserCode',
     //   hook: 'load',
     //   watchFiles: [
-    //     '/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/importBuild.js',
+    //     '/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/importBuild.mjs',
     //     '\x00virtual:vite-plugin-ssr:importUserCode:server'
     //   ]
     // }

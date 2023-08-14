@@ -69,7 +69,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     const serverEntries = analyzeServerEntries(pageConfigsData)
     const entries = {
       pageFiles: virtualFileIdImportUserCodeServer, // TODO/next-major-release: rename to configFiles
-      importBuild: resolve('dist/cjs/node/importBuild.js'), // TODO/next-major-release: remove
+      importBuild: resolve('dist/cjs/node/importBuild.mjs'), // TODO/next-major-release: remove
       ...pageFileEntries,
       ...serverEntries
     }
@@ -84,8 +84,8 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
       ...clientEntries,
       ...pageFileEntries
     }
-    const clientRoutingEntry = resolve(`dist/esm/client/client-routing-runtime/entry.js`)
-    const serverRoutingEntry = resolve(`dist/esm/client/server-routing-runtime/entry.js`)
+    const clientRoutingEntry = resolve(`dist/esm/client/client-routing-runtime/entry.mjs`)
+    const serverRoutingEntry = resolve(`dist/esm/client/server-routing-runtime/entry.mjs`)
     if (hasClientRouting) {
       entries['entries/entry-client-routing'] = clientRoutingEntry
     }
