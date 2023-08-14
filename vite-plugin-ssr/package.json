@@ -42,7 +42,7 @@
       "types": "./dist/types/node/runtime/index.d.ts"
     },
     "./client": {
-      "types": "./dist/types/client/index.d.ts"
+      "types": "./dist/types/client/server-router-runtime/index.d.ts"
     },
     "./types": {
       "types": "./dist/types/types/index.d.ts"
@@ -116,7 +116,7 @@
         "./dist/types/node/runtime/index.d.ts"
       ],
       "client": [
-        "./dist/types/client/index.d.ts"
+        "./dist/types/client/server-router-runtime/index.d.ts"
       ],
       "client/router": [
         "./dist/types/client/client-router-runtime/index.d.ts"

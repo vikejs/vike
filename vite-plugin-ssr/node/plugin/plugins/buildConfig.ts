@@ -85,7 +85,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
       ...pageFileEntries
     }
     const clientRoutingEntry = resolve(`dist/esm/client/client-router-runtime/entry.js`)
-    const serverRoutingEntry = resolve(`dist/esm/client/entry.js`)
+    const serverRoutingEntry = resolve(`dist/esm/client/server-router-runtime/entry.js`)
     if (hasClientRouting) {
       entries['entries/entry-client-routing'] = clientRoutingEntry
     }
