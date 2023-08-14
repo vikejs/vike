@@ -125,7 +125,7 @@ function expectErr(fn: Function, errMsg: string) {
     try {
       fn()
     } catch (err_) {
-      err = err_
+      err = err_ as Error
     }
     expect(err).toBeTruthy()
     expect(stripAnsi(err!.message)).toBe(errMsg)

@@ -134,7 +134,9 @@ describe('parseUrl', () => {
       searchOriginal: '?fruits=apples&candies=chocolate,lolipop'
     })
     const searchQuery = '?fruit=apples&fruit=bannanas&candy=chocolate&candy=lolipop'
-    const searchParams = new URLSearchParams(parseUrl(`/shop${searchQuery}`, '/').searchOriginal)
+    const { searchOriginal } = parseUrl(`/shop${searchQuery}`, '/')
+    assert(searchOriginal)
+    const searchParams = new URLSearchParams(searchOriginal)
     expect(searchParams.getAll('fruit')).toEqual(['apples', 'bannanas'])
     expect(searchParams.getAll('candy')).toEqual(['chocolate', 'lolipop'])
     expect(parseUrl(`/shop${searchQuery}`, '/shop')).toEqual({
@@ -206,7 +208,7 @@ describe('parseUrl', () => {
         decodeURI(decodeURI(encodeURI('%')))
         assert(false)
       } catch (err) {
-        assert(err.message === 'URI malformed')
+        assert((err as Error).message === 'URI malformed')
       }
       assert(encodeURIComponent('%') === '%25')
       expect(parseUrl('/user/%25rom', '/')).toEqual({

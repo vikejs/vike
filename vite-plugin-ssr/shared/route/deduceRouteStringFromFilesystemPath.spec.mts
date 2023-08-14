@@ -33,13 +33,13 @@ describe('deduceRouteStringFromFilesystemPath', () => {
       '/pages/index/index',
       '/pages/about/index',
     ]
-    expect(deduceRouteStringFromFilesystemPath(pS[0], [])).toBe('/admin')
-    expect(deduceRouteStringFromFilesystemPath(pS[1], [])).toBe('/admin/login')
-    expect(deduceRouteStringFromFilesystemPath(pS[3], [])).toBe('/about')
+    expect(deduceRouteStringFromFilesystemPath(pS[0]!, [])).toBe('/admin')
+    expect(deduceRouteStringFromFilesystemPath(pS[1]!, [])).toBe('/admin/login')
+    expect(deduceRouteStringFromFilesystemPath(pS[3]!, [])).toBe('/about')
     const fsBase = { filesystemRoot: '/pages/admin', urlRoot: '/_admin' }
-    expect(deduceRouteStringFromFilesystemPath(pS[0], [fsBase])).toBe('/_admin')
-    expect(deduceRouteStringFromFilesystemPath(pS[1], [fsBase])).toBe('/_admin/login')
-    expect(deduceRouteStringFromFilesystemPath(pS[3], [fsBase])).toBe('/about')
+    expect(deduceRouteStringFromFilesystemPath(pS[0]!, [fsBase])).toBe('/_admin')
+    expect(deduceRouteStringFromFilesystemPath(pS[1]!, [fsBase])).toBe('/_admin/login')
+    expect(deduceRouteStringFromFilesystemPath(pS[3]!, [fsBase])).toBe('/about')
   })
 
   it('domain-driven file structure', () => {
@@ -53,12 +53,12 @@ describe('deduceRouteStringFromFilesystemPath', () => {
       '/marketing/pages/about/index',
     ]
     const fsBase = { filesystemRoot: '/marketing/pages', urlRoot: '/' }
-    expect(deduceRouteStringFromFilesystemPath(pS[0], [fsBase])).toBe('/product')
-    expect(deduceRouteStringFromFilesystemPath(pS[1], [fsBase])).toBe('/product/@id')
-    expect(deduceRouteStringFromFilesystemPath(pS[2], [fsBase])).toBe('/auth')
-    expect(deduceRouteStringFromFilesystemPath(pS[3], [fsBase])).toBe('/auth/login')
-    expect(deduceRouteStringFromFilesystemPath(pS[4], [fsBase])).toBe('/')
-    expect(deduceRouteStringFromFilesystemPath(pS[5], [fsBase])).toBe('/about')
+    expect(deduceRouteStringFromFilesystemPath(pS[0]!, [fsBase])).toBe('/product')
+    expect(deduceRouteStringFromFilesystemPath(pS[1]!, [fsBase])).toBe('/product/@id')
+    expect(deduceRouteStringFromFilesystemPath(pS[2]!, [fsBase])).toBe('/auth')
+    expect(deduceRouteStringFromFilesystemPath(pS[3]!, [fsBase])).toBe('/auth/login')
+    expect(deduceRouteStringFromFilesystemPath(pS[4]!, [fsBase])).toBe('/')
+    expect(deduceRouteStringFromFilesystemPath(pS[5]!, [fsBase])).toBe('/about')
   })
 
   it('all features', () => {
