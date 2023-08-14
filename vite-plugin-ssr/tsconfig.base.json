@@ -13,5 +13,5 @@
     "skipLibCheck": true,
     "lib": ["ES2021", "DOM", "DOM.Iterable"]
   },
-  "exclude": ["**/*.d.ts", "**/*.spec.ts", "**/node_modules", "**/.*/"]
+  "exclude": ["**/*.spec.ts", "**/node_modules", "**/.*/"]
 }
