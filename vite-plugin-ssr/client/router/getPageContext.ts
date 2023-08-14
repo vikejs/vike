@@ -22,7 +22,7 @@ import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServ
 import type { PageContextUrlComputedProps } from '../../shared/UrlComputedProps'
 import { PageContextForRoute, route } from '../../shared/route'
 import { getErrorPageId } from '../../shared/error-page'
-import { getHook } from '../../shared/getHook'
+import { getHook } from '../../shared/hooks/getHook'
 import { preparePageContextForUserConsumptionClientSide } from '../preparePageContextForUserConsumptionClientSide'
 import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'

@@ -2,17 +2,14 @@ export { getHook }
 export { assertHook }
 export type { Hook }
 
-import { PageContextExports } from './getPageFiles'
-import { assert, assertUsage, isCallable } from './utils'
+import { PageContextExports } from '../getPageFiles'
+import { assert, assertUsage, isCallable } from '../utils'
 
 type Hook = HookLoc & { hookFn: (arg: unknown) => unknown }
 type HookName = 'render' | 'onBeforeRender' | 'onRenderHtml' | 'onRenderClient' | 'guard'
-type HookLoc = { hookName: HookName, hookFilePath: string }
+type HookLoc = { hookName: HookName; hookFilePath: string }
 
-function getHook(
-  pageContext: PageContextExports,
-  hookName: HookName
-): null | Hook {
+function getHook(pageContext: PageContextExports, hookName: HookName): null | Hook {
   if (!(hookName in pageContext.exports)) {
     return null
   }

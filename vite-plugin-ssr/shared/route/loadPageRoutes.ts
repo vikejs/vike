@@ -11,7 +11,7 @@ import type { OnBeforeRouteHook } from './executeOnBeforeRouteHook'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath'
 import { isCallable } from '../utils'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
-import type { Hook } from '../getHook'
+import type { Hook } from '../hooks/getHook'
 
 type PageRoute = {
   pageId: string

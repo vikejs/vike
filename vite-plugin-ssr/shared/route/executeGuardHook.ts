@@ -1,6 +1,6 @@
 export { executeGuardHook }
 
-import { getHook, Hook } from '../getHook'
+import { getHook, Hook } from '../hooks/getHook'
 import { assert, assertUsage, executeHook } from './utils'
 import type { PageContextExports, PageFile } from '../getPageFiles'
 import type { PageConfig } from '../page-configs/PageConfig'

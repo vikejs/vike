@@ -1,7 +1,7 @@
 export { executeOnRenderClientHook }
 
 import { assert, assertUsage, executeHook } from './utils'
-import { getHook, type Hook } from '../shared/getHook'
+import { getHook, type Hook } from '../shared/hooks/getHook'
 import type { PageFile, PageContextExports } from '../shared/getPageFiles'
 import {
   type PageContextForUserConsumptionClientSide,

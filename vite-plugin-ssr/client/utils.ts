@@ -7,7 +7,7 @@ assert(isBrowser())
 
 export * from '../utils/assert'
 export * from '../utils/assertSingleInstance'
-export * from '../shared/executeHook'
+export * from '../shared/hooks/executeHook'
 export * from '../utils/checkType' // Only used by Server Routing (not needed for Client Routing)
 export * from '../utils/getCurrentUrl'
 export * from '../utils/getGlobalObject'

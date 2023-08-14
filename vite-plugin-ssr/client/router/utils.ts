@@ -14,7 +14,7 @@ export * from '../../client/utils'
 
 export * from '../../utils/assert'
 export * from '../../utils/assertSingleInstance'
-export * from '../../shared/executeHook'
+export * from '../../shared/hooks/executeHook'
 export * from '../../utils/getCurrentUrl'
 export * from '../../utils/getGlobalObject'
 export * from '../../utils/hasProp'

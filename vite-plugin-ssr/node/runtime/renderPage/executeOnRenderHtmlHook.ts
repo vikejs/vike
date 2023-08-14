@@ -8,7 +8,7 @@ import {
   DocumentHtml,
   dangerouslySkipEscape
 } from '../html/renderHtml'
-import { getHook, type Hook } from '../../../shared/getHook'
+import { getHook, type Hook } from '../../../shared/hooks/getHook'
 import {
   assert,
   assertUsage,

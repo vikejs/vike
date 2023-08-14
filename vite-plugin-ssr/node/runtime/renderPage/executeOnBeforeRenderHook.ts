@@ -1,7 +1,7 @@
 export { executeOnBeforeRenderHooks }
 
 import { type PageContextExports } from '../../../shared/getPageFiles'
-import { getHook } from '../../../shared/getHook'
+import { getHook } from '../../../shared/hooks/getHook'
 import {
   preparePageContextForUserConsumptionServerSide,
   type PageContextForUserConsumptionServerSide
