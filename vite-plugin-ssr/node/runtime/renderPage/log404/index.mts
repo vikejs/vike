@@ -1,7 +1,7 @@
 export { log404 }
 export { getPagesAndRoutesInfo }
 
-import type { PageRoutes } from '../../../../shared/route.mjs'
+import type { PageRoutes } from '../../../../shared/route/index.mjs'
 import { getGlobalContext } from '../../globalContext.mjs'
 import {
   assert,

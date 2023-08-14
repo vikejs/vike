@@ -6,7 +6,7 @@ export type { PrerenderOptions }
 
 import '../runtime/page-files/setup'
 import path from 'path'
-import { route } from '../../shared/route.mjs'
+import { route } from '../../shared/route/index.mjs'
 import {
   assert,
   assertUsage,

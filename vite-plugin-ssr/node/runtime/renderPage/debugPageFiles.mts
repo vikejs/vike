@@ -1,7 +1,7 @@
 export { debugPageFiles }
 export type { PageContextDebug }
 
-import { RouteMatches } from '../../../shared/route.mjs'
+import { RouteMatches } from '../../../shared/route/index.mjs'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.mjs'
 import type { PageFile } from '../../../shared/getPageFiles.mjs'
 import pc from '@brillout/picocolors'

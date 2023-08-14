@@ -20,7 +20,7 @@ import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializ
 import type { PageContextExports, PageFile } from '../../shared/getPageFiles.mjs'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.mjs'
 import type { PageContextUrlComputedProps } from '../../shared/UrlComputedProps.mjs'
-import { PageContextForRoute, route } from '../../shared/route.mjs'
+import { PageContextForRoute, route } from '../../shared/route/index.mjs'
 import { getErrorPageId } from '../../shared/error-page.mjs'
 import { getHook } from '../../shared/hooks/getHook.mjs'
 import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide.mjs'

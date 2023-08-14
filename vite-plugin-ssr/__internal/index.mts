@@ -1,6 +1,6 @@
 // Internal functions of vps needed by other plugins are exported via this file
 
-import { route, type PageRoutes } from '../shared/route.mjs'
+import { route, type PageRoutes } from '../shared/route/index.mjs'
 import { type PageFile } from '../shared/getPageFiles.mjs'
 import { getGlobalContext, initGlobalContext } from '../node/runtime/globalContext.mjs'
 import { setNodeEnvToProduction } from '../utils/nodeEnv.mjs'

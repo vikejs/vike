@@ -8,7 +8,7 @@ import {
   renderPageAlreadyRouted,
   PageContextInitEnhanced
 } from './renderPage/renderPageAlreadyRouted.mjs'
-import { route } from '../../shared/route.mjs'
+import { route } from '../../shared/route/index.mjs'
 import {
   assert,
   hasProp,
