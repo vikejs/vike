@@ -5,23 +5,13 @@ import { getProjectError, assertWarning } from '../../utils/assert'
 import { getGlobalObject } from '../../utils/getGlobalObject'
 import { humanizeTime } from '../../utils/humanizeTime'
 import { isObject } from '../../utils/isObject'
+import type { HookName } from './getHook'
 
 type Hook = { hookName: HookName; hookFilePath: string }
 
 const globalObject = getGlobalObject('utils/executeHook.ts', {
   userHookErrors: new Map<object, Hook>()
 })
-
-type HookName =
-  | 'onRenderHtml'
-  | 'onRenderClient'
-  | 'render'
-  | 'onBeforeRender'
-  | 'onPrerenderStart'
-  | 'onBeforePrerender'
-  | 'onBeforeRoute'
-  | 'onHydrationEnd'
-  | 'guard'
 
 function isUserHookError(err: unknown): false | Hook {
   if (!isObject(err)) return false
