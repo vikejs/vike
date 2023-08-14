@@ -10,7 +10,7 @@ import type {
 } from '../../shared/types'
 import { addIs404ToPageProps } from '../../shared/addIs404ToPageProps'
 import type { PageConfig } from '../../shared/page-configs/PageConfig'
-import { getPageContextProxyForUser, PageContextForPassToClientWarning } from '../getPageContextProxyForUser'
+import { getPageContextProxyForUser, PageContextForPassToClientWarning } from './getPageContextProxyForUser'
 
 type PageContextForUserConsumptionClientSide = PageContextExports &
   PageContextForPassToClientWarning & {

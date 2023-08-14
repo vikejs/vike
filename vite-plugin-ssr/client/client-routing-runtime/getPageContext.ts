@@ -31,7 +31,7 @@ import type { PageConfig } from '../../shared/page-configs/PageConfig'
 import { getConfigValue, getPageConfig } from '../../shared/page-configs/utils'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn'
 import { executeGuardHook } from '../../shared/route/executeGuardHook'
-import type { PageContextForPassToClientWarning } from '../getPageContextProxyForUser'
+import type { PageContextForPassToClientWarning } from '../shared/getPageContextProxyForUser'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort'
 const globalObject = getGlobalObject<{ pageContextInitHasClientData?: true }>('router/getPageContext.ts', {})
 

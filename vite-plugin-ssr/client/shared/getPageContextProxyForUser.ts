@@ -1,8 +1,8 @@
 export { getPageContextProxyForUser }
 export { PageContextForPassToClientWarning }
 
-import { assert, assertUsage, getGlobalObject } from './server-routing-runtime/utils'
-import { notSerializable } from '../shared/notSerializable'
+import { assert, assertUsage, getGlobalObject } from '../server-routing-runtime/utils'
+import { notSerializable } from '../../shared/notSerializable'
 const globalObject = getGlobalObject<{ prev?: string }>('getPageContextProxyForUser.ts', {})
 
 type PageContextForPassToClientWarning = {
