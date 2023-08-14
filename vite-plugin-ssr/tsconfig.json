@@ -1,4 +1,23 @@
 {
-  "files": [],
-  "references": [{ "path": "./client/" }, { "path": "./node/" }, { "path": "./types/" }]
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "declaration": true,
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "Node",
+    "types": ["vite/client"],
+    // Strictness
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitAny": true,
+    // Output
+    "declaration": false,
+    "noEmitOnError": false,
+    "rootDir": "./",
+    // Misc
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "lib": ["ES2021", "DOM", "DOM.Iterable"]
+  },
+  "exclude": ["**/*.spec.ts", "**/node_modules", "**/.*/"]
 }

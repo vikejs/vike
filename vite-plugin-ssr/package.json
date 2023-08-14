@@ -6,10 +6,7 @@
     "dev": "pnpm run dev:fast",
     "// `dev:fast` and `dev:slow` achieve the same": "",
     "dev:slow": "tsc --build --watch",
-    "dev:fast": "pnpm run dev:node & pnpm run dev:client & pnpm run dev:types",
-    "dev:node": "tsc --incremental --watch --project ./node/tsconfig.json",
-    "dev:client": "tsc --incremental --watch --project ./client/tsconfig.json",
-    "dev:types": "tsc --incremental --watch --project ./types/tsconfig.json",
+    "dev:fast": "tsc --incremental --watch",
     "release": "release-me patch",
     "release:commit": "release-me commit"
   },
