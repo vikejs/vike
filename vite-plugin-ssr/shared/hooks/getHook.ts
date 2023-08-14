@@ -2,6 +2,7 @@ export { getHook }
 export { assertHook }
 export type { Hook }
 export type { HookName }
+export type { HookLoc }
 
 import { PageContextExports } from '../getPageFiles'
 import { assert, assertUsage, isCallable } from '../utils'

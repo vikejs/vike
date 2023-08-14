@@ -5,15 +5,13 @@ import { getProjectError, assertWarning } from '../../utils/assert'
 import { getGlobalObject } from '../../utils/getGlobalObject'
 import { humanizeTime } from '../../utils/humanizeTime'
 import { isObject } from '../../utils/isObject'
-import type { HookName } from './getHook'
-
-type Hook = { hookName: HookName; hookFilePath: string }
+import type { HookLoc, HookName } from './getHook'
 
 const globalObject = getGlobalObject('utils/executeHook.ts', {
-  userHookErrors: new Map<object, Hook>()
+  userHookErrors: new Map<object, HookLoc>()
 })
 
-function isUserHookError(err: unknown): false | Hook {
+function isUserHookError(err: unknown): false | HookLoc {
   if (!isObject(err)) return false
   return globalObject.userHookErrors.get(err) ?? false
 }
