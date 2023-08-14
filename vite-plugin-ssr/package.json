@@ -33,68 +33,68 @@
       "edge-light": "./dist/cjs/node/runtime/index-deprecated.mjs",
       "node": "./dist/cjs/node/runtime/index-deprecated.mjs",
       "browser": "./dist/esm/client/node.mjs",
-      "types": "./dist/types/node/runtime/index-deprecated.d.ts"
+      "types": "./dist/types/node/runtime/index-deprecated.d.mts"
     },
     "./server": {
       "worker": "./dist/cjs/node/runtime/index.mjs",
       "edge-light": "./dist/cjs/node/runtime/index.mjs",
       "node": "./dist/cjs/node/runtime/index.mjs",
       "browser": "./dist/esm/client/node.mjs",
-      "types": "./dist/types/node/runtime/index.d.ts"
+      "types": "./dist/types/node/runtime/index.d.mts"
     },
     "./client": {
-      "types": "./dist/types/client/server-routing-runtime/index.d.ts"
+      "types": "./dist/types/client/server-routing-runtime/index.d.mts"
     },
     "./types": {
-      "types": "./dist/types/types/index.d.ts"
+      "types": "./dist/types/types/index.d.mts"
     },
     "./client/router": {
       "worker": "./dist/cjs/node/client/router.mjs",
       "edge-light": "./dist/cjs/node/client/router.mjs",
       "node": "./dist/cjs/node/client/router.mjs",
       "browser": "./dist/esm/client/client-routing-runtime/index.mjs",
-      "types": "./dist/types/client/client-routing-runtime/index.d.ts"
+      "types": "./dist/types/client/client-routing-runtime/index.d.mts"
     },
     "./routing": {
       "worker": "./dist/cjs/shared/route/routing.mjs",
       "edge-light": "./dist/cjs/shared/route/routing.mjs",
       "node": "./dist/cjs/shared/route/routing.mjs",
       "browser": "./dist/esm/shared/route/routing.mjs",
-      "types": "./dist/types/shared/route/routing.d.ts"
+      "types": "./dist/types/shared/route/routing.d.mts"
     },
     "./cli": {
       "node": "./dist/cjs/node/cli/index.mjs",
-      "types": "./dist/types/node/cli/index.d.ts"
+      "types": "./dist/types/node/cli/index.d.mts"
     },
     "./prerender": {
       "node": "./dist/cjs/node/prerender/index.mjs",
-      "types": "./dist/types/node/prerender/index.d.ts"
+      "types": "./dist/types/node/prerender/index.d.mts"
     },
     "./plugin": {
       "node": "./dist/cjs/node/plugin/index.mjs",
-      "types": "./dist/types/node/plugin/index.d.ts"
+      "types": "./dist/types/node/plugin/index.d.mts"
     },
     "./RenderErrorPage": {
       "worker": "./dist/cjs/shared/RenderErrorPage.mjs",
       "edge-light": "./dist/cjs/shared/RenderErrorPage.mjs",
       "node": "./dist/cjs/shared/RenderErrorPage.mjs",
       "browser": "./dist/esm/shared/RenderErrorPage.mjs",
-      "types": "./dist/types/shared/RenderErrorPage.d.ts"
+      "types": "./dist/types/shared/RenderErrorPage.d.mts"
     },
     "./abort": {
       "worker": "./dist/cjs/shared/abort.mjs",
       "edge-light": "./dist/cjs/shared/abort.mjs",
       "node": "./dist/cjs/shared/abort.mjs",
       "browser": "./dist/esm/shared/abort.mjs",
-      "types": "./dist/types/shared/abort.d.ts"
+      "types": "./dist/types/shared/abort.d.mts"
     },
     "./__internal": {
       "node": "./dist/cjs/__internal/index.mjs",
-      "types": "./dist/types/__internal/index.d.ts"
+      "types": "./dist/types/__internal/index.d.mts"
     },
     "./__internal/setup": {
       "node": "./dist/cjs/node/runtime/page-files/setup.mjs",
-      "types": "./dist/types/node/runtime/page-files/setup.d.ts"
+      "types": "./dist/types/node/runtime/page-files/setup.d.mts"
     }
   },
   "peerDependencies": {
@@ -107,44 +107,44 @@
     }
   },
   "main": "./dist/cjs/node/runtime/index-deprecated.mjs",
-  "types": "./dist/types/node/runtime/index-deprecated.d.ts",
+  "types": "./dist/types/node/runtime/index-deprecated.d.mts",
   "typesVersions": {
     "*": {
       "types": [
-        "./dist/types/types/index.d.ts"
+        "./dist/types/types/index.d.mts"
       ],
       "server": [
-        "./dist/types/node/runtime/index.d.ts"
+        "./dist/types/node/runtime/index.d.mts"
       ],
       "client": [
-        "./dist/types/client/server-routing-runtime/index.d.ts"
+        "./dist/types/client/server-routing-runtime/index.d.mts"
       ],
       "client/router": [
-        "./dist/types/client/client-routing-runtime/index.d.ts"
+        "./dist/types/client/client-routing-runtime/index.d.mts"
       ],
       "routing": [
-        "./dist/types/shared/route/routing.d.ts"
+        "./dist/types/shared/route/routing.d.mts"
       ],
       "cli": [
-        "./dist/types/node/cli/index.d.ts"
+        "./dist/types/node/cli/index.d.mts"
       ],
       "prerender": [
-        "./dist/types/node/prerender/index.d.ts"
+        "./dist/types/node/prerender/index.d.mts"
       ],
       "plugin": [
-        "./dist/types/node/plugin/index.d.ts"
+        "./dist/types/node/plugin/index.d.mts"
       ],
       "RenderErrorPage": [
-        "./dist/types/shared/RenderErrorPage.d.ts"
+        "./dist/types/shared/RenderErrorPage.d.mts"
       ],
       "abort": [
-        "./dist/types/shared/abort.d.ts"
+        "./dist/types/shared/abort.d.mts"
       ],
       "__internal": [
-        "./dist/types/__internal/index.d.ts"
+        "./dist/types/__internal/index.d.mts"
       ],
       "__internal/setup": [
-        "./dist/types/node/runtime/page-files/setup.d.ts"
+        "./dist/types/node/runtime/page-files/setup.d.mts"
       ]
     }
   },
