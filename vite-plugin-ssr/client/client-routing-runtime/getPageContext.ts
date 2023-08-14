@@ -3,7 +3,7 @@ export { getPageContextErrorPage }
 export { checkIf404 }
 export { isAlreadyServerSideRouted }
 
-import { navigationState } from './navigationState'
+import { navigationState } from './navigationState.mjs'
 import {
   assert,
   assertUsage,
@@ -14,25 +14,25 @@ import {
   executeHook,
   isObject,
   getGlobalObject
-} from './utils'
+} from './utils.mjs'
 import { parse } from '@brillout/json-serializer/parse'
-import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml'
-import type { PageContextExports, PageFile } from '../../shared/getPageFiles'
-import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide'
-import type { PageContextUrlComputedProps } from '../../shared/UrlComputedProps'
-import { PageContextForRoute, route } from '../../shared/route'
-import { getErrorPageId } from '../../shared/error-page'
-import { getHook } from '../../shared/hooks/getHook'
-import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide'
-import { loadPageFilesClientSide } from '../shared/loadPageFilesClientSide'
-import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
-import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
-import type { PageConfig } from '../../shared/page-configs/PageConfig'
-import { getConfigValue, getPageConfig } from '../../shared/page-configs/utils'
-import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn'
-import { executeGuardHook } from '../../shared/route/executeGuardHook'
-import type { PageContextForPassToClientWarning } from '../shared/getPageContextProxyForUser'
-import { AbortRender, isAbortPageContext } from '../../shared/route/abort'
+import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.mjs'
+import type { PageContextExports, PageFile } from '../../shared/getPageFiles.mjs'
+import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.mjs'
+import type { PageContextUrlComputedProps } from '../../shared/UrlComputedProps.mjs'
+import { PageContextForRoute, route } from '../../shared/route.mjs'
+import { getErrorPageId } from '../../shared/error-page.mjs'
+import { getHook } from '../../shared/hooks/getHook.mjs'
+import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide.mjs'
+import { loadPageFilesClientSide } from '../shared/loadPageFilesClientSide.mjs'
+import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.mjs'
+import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.mjs'
+import type { PageConfig } from '../../shared/page-configs/PageConfig.mjs'
+import { getConfigValue, getPageConfig } from '../../shared/page-configs/utils.mjs'
+import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.mjs'
+import { executeGuardHook } from '../../shared/route/executeGuardHook.mjs'
+import type { PageContextForPassToClientWarning } from '../shared/getPageContextProxyForUser.mjs'
+import { AbortRender, isAbortPageContext } from '../../shared/route/abort.mjs'
 const globalObject = getGlobalObject<{ pageContextInitHasClientData?: true }>('router/getPageContext.ts', {})
 
 type PageContextAddendum = {

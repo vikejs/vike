@@ -2,9 +2,9 @@ export { assertClientRouting }
 export { assertServerRouting }
 export { checkIfClientRouting }
 
-import { assertUsage, assertWarning } from './assert'
-import { getGlobalObject } from './getGlobalObject'
-import { isBrowser } from './isBrowser'
+import { assertUsage, assertWarning } from './assert.mjs'
+import { getGlobalObject } from './getGlobalObject.mjs'
+import { isBrowser } from './isBrowser.mjs'
 
 const state = getGlobalObject<{ isClientRouting?: boolean }>('utils/assertRouterType.ts', {})
 

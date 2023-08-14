@@ -3,7 +3,7 @@ export { isTemplateFile }
 export { scriptFileExtensions }
 export { scriptFileExtensionList }
 
-import { assert } from './assert'
+import { assert } from './assert.mjs'
 
 // We can't use a RegExp:
 //  - Needs to work with Micromatch: https://github.com/micromatch/micromatch because:

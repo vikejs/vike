@@ -12,17 +12,17 @@ import {
   unique,
   assertPosixPath,
   assertUsage
-} from '../utils'
-import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode'
-import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig'
-import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils'
-import { findPageFiles } from '../shared/findPageFiles'
-import { getConfigVps } from '../../shared/getConfigVps'
+} from '../utils.mjs'
+import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode.mjs'
+import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.mjs'
+import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils.mjs'
+import { findPageFiles } from '../shared/findPageFiles.mjs'
+import { getConfigVps } from '../../shared/getConfigVps.mjs'
 import type { ResolvedConfig, Plugin, Rollup, UserConfig } from 'vite'
-import { getVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode'
-import type { PageConfigData } from '../../../shared/page-configs/PageConfig'
-import type { FileType } from '../../../shared/getPageFiles/fileTypes'
-import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery'
+import { getVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode.mjs'
+import type { PageConfigData } from '../../../shared/page-configs/PageConfig.mjs'
+import type { FileType } from '../../../shared/getPageFiles/fileTypes.mjs'
+import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.mjs'
 type InputOption = Rollup.InputOption
 
 function buildConfig(): Plugin {

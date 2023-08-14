@@ -23,7 +23,7 @@ import {
   joinEnglish,
   lowerFirst,
   scriptFileExtensions
-} from '../../../utils'
+} from '../../../utils.mjs'
 import path from 'path'
 import type {
   ConfigElement,
@@ -31,10 +31,10 @@ import type {
   PageConfigGlobalData,
   ConfigElementSource,
   ConfigEnvPrivate
-} from '../../../../../shared/page-configs/PageConfig'
-import { configDefinitionsBuiltIn, type ConfigDefinition } from './getVikeConfig/configDefinitionsBuiltIn'
+} from '../../../../../shared/page-configs/PageConfig.mjs'
+import { configDefinitionsBuiltIn, type ConfigDefinition } from './getVikeConfig/configDefinitionsBuiltIn.mjs'
 import glob from 'fast-glob'
-import type { ExtensionResolved } from '../../../../../shared/ConfigVps'
+import type { ExtensionResolved } from '../../../../../shared/ConfigVps.mjs'
 import {
   getLocationId,
   getRouteFilesystem,
@@ -43,18 +43,18 @@ import {
   sortAfterInheritanceOrder,
   isGlobalLocation,
   applyFilesystemRoutingRootEffect
-} from './getVikeConfig/filesystemRouting'
-import { isTmpFile, transpileAndExecuteFile } from './transpileAndExecuteFile'
-import { ImportData, parseImportData } from './replaceImportStatements'
-import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
-import { getViteDevServer } from '../../../../runtime/globalContext'
-import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd'
+} from './getVikeConfig/filesystemRouting.mjs'
+import { isTmpFile, transpileAndExecuteFile } from './transpileAndExecuteFile.mjs'
+import { ImportData, parseImportData } from './replaceImportStatements.mjs'
+import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid.mjs'
+import { getViteDevServer } from '../../../../runtime/globalContext.mjs'
+import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd.mjs'
 import {
   removeSuperfluousViteLog_enable,
   removeSuperfluousViteLog_disable
-} from '../../../shared/loggerVite/removeSuperfluousViteLog'
-import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser'
-import type { ConfigNameBuiltIn } from '../../../../../shared/page-configs/Config'
+} from '../../../shared/loggerVite/removeSuperfluousViteLog.mjs'
+import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.mjs'
+import type { ConfigNameBuiltIn } from '../../../../../shared/page-configs/Config.mjs'
 
 assertIsNotProductionRuntime()
 

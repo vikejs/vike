@@ -1,7 +1,7 @@
 import { cac } from 'cac'
 import { resolve } from 'path'
-import { prerenderFromCLI, prerenderForceExit } from '../prerender/runPrerender'
-import { projectInfo, assertUsage } from './utils'
+import { prerenderFromCLI, prerenderForceExit } from '../prerender/runPrerender.mjs'
+import { projectInfo, assertUsage } from './utils.mjs'
 
 const cli = cac(projectInfo.projectName)
 

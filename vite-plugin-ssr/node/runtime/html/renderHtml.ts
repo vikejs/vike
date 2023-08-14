@@ -11,9 +11,9 @@ export type { HtmlRender }
 export type { HtmlPart }
 export type { DocumentHtml }
 
-import { assert, assertUsage, assertWarning, checkType, hasProp, isHtml, isPromise, objectAssign } from '../utils'
-import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets'
-import type { PageContextInjectAssets } from './injectAssets'
+import { assert, assertUsage, assertWarning, checkType, hasProp, isHtml, isPromise, objectAssign } from '../utils.mjs'
+import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets.mjs'
+import type { PageContextInjectAssets } from './injectAssets.mjs'
 import {
   processStream,
   isStream,
@@ -21,12 +21,12 @@ import {
   streamToString,
   StreamTypePatch,
   StreamProviderNormalized
-} from './stream'
-import { isStreamReactStreaming } from './stream/react-streaming'
-import type { InjectToStream } from './stream/react-streaming'
-import type { PageAsset } from '../renderPage/getPageAssets'
-import type { PreloadFilter } from './injectAssets/getHtmlTags'
-import { getGlobalContext } from '../globalContext'
+} from './stream.mjs'
+import { isStreamReactStreaming } from './stream/react-streaming.mjs'
+import type { InjectToStream } from './stream/react-streaming.mjs'
+import type { PageAsset } from '../renderPage/getPageAssets.mjs'
+import type { PreloadFilter } from './injectAssets/getHtmlTags.mjs'
+import { getGlobalContext } from '../globalContext.mjs'
 
 type DocumentHtml = TemplateWrapped | EscapedString | StreamProviderAny
 type HtmlRender = string | StreamProviderNormalized

@@ -2,7 +2,7 @@ export { isVirtualFileId }
 export { getVirtualFileId }
 export { resolveVirtualFileId }
 
-import { assert } from './assert'
+import { assert } from './assert.mjs'
 
 const idBase = 'virtual:vite-plugin-ssr:'
 // https://vitejs.dev/guide/api-plugin.html#virtual-modules-convention

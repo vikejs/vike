@@ -1,9 +1,9 @@
-import { assertClientRouting } from '../../utils/assertRoutingType'
+import { assertClientRouting } from '../../utils/assertRoutingType.mjs'
 assertClientRouting()
 
 import './pageFiles'
-import { useClientRouter } from './useClientRouter'
-import { onClientEntry_ClientRouting } from './utils'
+import { useClientRouter } from './useClientRouter.mjs'
+import { onClientEntry_ClientRouting } from './utils.mjs'
 onClientEntry_ClientRouting(import.meta.env.PROD)
 
 useClientRouter()

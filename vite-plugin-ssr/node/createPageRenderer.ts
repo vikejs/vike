@@ -1,9 +1,9 @@
 // TODO/v1-release: remove this file
 
-//import { SsrEnv, setSsrEnv } from './ssrEnv'
-import { renderPage } from './runtime/renderPage'
-import { assertWarning } from './runtime/utils'
-//import { importBuildWasLoaded } from './importBuild'
+//import { SsrEnv, setSsrEnv } from './ssrEnv.mjs'
+import { renderPage } from './runtime/renderPage.mjs'
+import { assertWarning } from './runtime/utils.mjs'
+//import { importBuildWasLoaded } from './importBuild.mjs'
 
 export { createPageRenderer }
 

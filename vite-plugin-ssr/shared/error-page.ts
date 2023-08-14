@@ -4,9 +4,9 @@ export { isErrorPage }
 
 // TODO/v1-release: consider loading this file only for Client Routing
 
-import { assert, assertUsage, unique } from './utils'
-import type { PageConfig } from './page-configs/PageConfig'
-import type { PageFile } from './getPageFiles'
+import { assert, assertUsage, unique } from './utils.mjs'
+import type { PageConfig } from './page-configs/PageConfig.mjs'
+import type { PageFile } from './getPageFiles.mjs'
 
 function getErrorPageId(pageFilesAll: PageFile[], pageConfigs: PageConfig[]): string | null {
   if (pageConfigs.length > 0) {

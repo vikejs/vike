@@ -2,13 +2,13 @@ export { extensionsAssets }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ViteDevServer } from 'vite'
-import { assert, isScriptFile, assertUsage, assertPosixPath, getOutDirs } from '../utils'
+import { assert, isScriptFile, assertUsage, assertPosixPath, getOutDirs } from '../utils.mjs'
 import fs from 'fs'
 import path from 'path'
 import sirv from 'sirv'
-import type { ConfigVpsResolved } from '../../../shared/ConfigVps'
-import { getConfigVps } from '../../shared/getConfigVps'
-import { isAsset } from '../shared/isAsset'
+import type { ConfigVpsResolved } from '../../../shared/ConfigVps.mjs'
+import { getConfigVps } from '../../shared/getConfigVps.mjs'
+import { isAsset } from '../shared/isAsset.mjs'
 
 const ASSET_DIR = 'assets'
 

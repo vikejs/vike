@@ -1,16 +1,16 @@
 export { preparePageContextForUserConsumptionClientSide }
 export type { PageContextForUserConsumptionClientSide }
 
-import { assert, isObject, objectAssign } from '../server-routing-runtime/utils'
-import { sortPageContext } from '../../shared/sortPageContext'
-import type { PageContextExports } from '../../shared/getPageFiles'
+import { assert, isObject, objectAssign } from '../server-routing-runtime/utils.mjs'
+import { sortPageContext } from '../../shared/sortPageContext.mjs'
+import type { PageContextExports } from '../../shared/getPageFiles.mjs'
 import type {
   PageContextBuiltInClientWithServerRouting,
   PageContextBuiltInClientWithClientRouting
-} from '../../shared/types'
-import { addIs404ToPageProps } from '../../shared/addIs404ToPageProps'
-import type { PageConfig } from '../../shared/page-configs/PageConfig'
-import { getPageContextProxyForUser, PageContextForPassToClientWarning } from './getPageContextProxyForUser'
+} from '../../shared/types.mjs'
+import { addIs404ToPageProps } from '../../shared/addIs404ToPageProps.mjs'
+import type { PageConfig } from '../../shared/page-configs/PageConfig.mjs'
+import { getPageContextProxyForUser, PageContextForPassToClientWarning } from './getPageContextProxyForUser.mjs'
 
 type PageContextForUserConsumptionClientSide = PageContextExports &
   PageContextForPassToClientWarning & {

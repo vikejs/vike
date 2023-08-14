@@ -3,16 +3,16 @@ export { createHttpResponsePageContextJson }
 export { createHttpResponseObjectRedirect }
 export type { HttpResponse }
 
-import type { GetPageAssets } from './getPageAssets'
-import { assert, assertWarning } from '../utils'
-import type { HtmlRender } from '../html/renderHtml'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig'
-import { isErrorPage } from '../../../shared/error-page'
-import type { RenderHook } from './executeOnRenderHtmlHook'
-import type { StatusCodeAbort, StatusCodeError, UrlRedirect } from '../../../shared/route/abort'
-import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody'
-import { getEarlyHints, type EarlyHint } from './getEarlyHints'
-import { assertNoInfiniteHttpRedirect } from './createHttpResponseObject/assertNoInfiniteHttpRedirect'
+import type { GetPageAssets } from './getPageAssets.mjs'
+import { assert, assertWarning } from '../utils.mjs'
+import type { HtmlRender } from '../html/renderHtml.mjs'
+import type { PageConfig } from '../../../shared/page-configs/PageConfig.mjs'
+import { isErrorPage } from '../../../shared/error-page.mjs'
+import type { RenderHook } from './executeOnRenderHtmlHook.mjs'
+import type { StatusCodeAbort, StatusCodeError, UrlRedirect } from '../../../shared/route/abort.mjs'
+import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody.mjs'
+import { getEarlyHints, type EarlyHint } from './getEarlyHints.mjs'
+import { assertNoInfiniteHttpRedirect } from './createHttpResponseObject/assertNoInfiniteHttpRedirect.mjs'
 
 type HttpResponse = {
   statusCode: 200 | 404 | 500 | StatusCodeAbort

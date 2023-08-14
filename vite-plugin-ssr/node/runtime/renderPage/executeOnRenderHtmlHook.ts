@@ -7,8 +7,8 @@ import {
   renderDocumentHtml,
   DocumentHtml,
   dangerouslySkipEscape
-} from '../html/renderHtml'
-import { getHook, type Hook } from '../../../shared/hooks/getHook'
+} from '../html/renderHtml.mjs'
+import { getHook, type Hook } from '../../../shared/hooks/getHook.mjs'
 import {
   assert,
   assertUsage,
@@ -18,20 +18,20 @@ import {
   isPromise,
   executeHook,
   isCallable
-} from '../utils'
-import type { PageAsset } from './getPageAssets'
-import { isStream } from '../html/stream'
-import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser'
-import type { PreloadFilter } from '../html/injectAssets/getHtmlTags'
+} from '../utils.mjs'
+import type { PageAsset } from './getPageAssets.mjs'
+import { isStream } from '../html/stream.mjs'
+import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser.mjs'
+import type { PreloadFilter } from '../html/injectAssets/getHtmlTags.mjs'
 import {
   preparePageContextForUserConsumptionServerSide,
   type PageContextForUserConsumptionServerSide
-} from './preparePageContextForUserConsumptionServerSide'
-import type { PageContextPromise } from '../html/injectAssets'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig'
-import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject'
-import { logRuntimeError } from './loggerRuntime'
-import type { PageContextSerialization } from '../html/serializePageContextClientSide'
+} from './preparePageContextForUserConsumptionServerSide.mjs'
+import type { PageContextPromise } from '../html/injectAssets.mjs'
+import type { PageConfig } from '../../../shared/page-configs/PageConfig.mjs'
+import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject.mjs'
+import { logRuntimeError } from './loggerRuntime.mjs'
+import type { PageContextSerialization } from '../html/serializePageContextClientSide.mjs'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 

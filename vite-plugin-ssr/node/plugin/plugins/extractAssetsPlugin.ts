@@ -21,13 +21,13 @@ import {
   resolveVirtualFileId,
   isVirtualFileId,
   getVirtualFileId
-} from '../utils'
-import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery'
-import { getConfigVps } from '../../shared/getConfigVps'
-import type { ConfigVpsResolved } from '../../../shared/ConfigVps'
-import { isAsset } from '../shared/isAsset'
-import { getImportStatements, type ImportStatement } from '../shared/parseEsModule'
-import { removeSourceMap } from '../shared/removeSourceMap'
+} from '../utils.mjs'
+import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.mjs'
+import { getConfigVps } from '../../shared/getConfigVps.mjs'
+import type { ConfigVpsResolved } from '../../../shared/ConfigVps.mjs'
+import { isAsset } from '../shared/isAsset.mjs'
+import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.mjs'
+import { removeSourceMap } from '../shared/removeSourceMap.mjs'
 import type { Rollup } from 'vite'
 type ResolvedId = Rollup.ResolvedId
 
@@ -44,7 +44,7 @@ function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
   let configVps: ConfigVpsResolved
   return [
-    // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg'`).
+    // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.mjs'`).
     {
       name: 'vite-plugin-ssr:extractAssets:remove-javaScript',
       // In dev, things just work. (Because Vite's module graph erroneously conflates the Vite server-side importees with the client-side importees.)
@@ -107,7 +107,7 @@ function extractAssetsPlugin(): Plugin[] {
         // We include:
         //  - CSS(/LESS/SCSS/...) files
         //  - Asset files (`.svg`, `.pdf`, ...)
-        //  - URL imports (e.g. `import scriptUrl from './script.js?url'`)
+        //  - URL imports (e.g. `import scriptUrl from './script.js?url.mjs'`)
         if (styleFileRE.test(file) || isAsset(file) || urlRE.test(file)) {
           debugOperation('INCLUDED', file, importer)
           return resolution
@@ -213,18 +213,18 @@ function analyzeImport(importStatement: ImportStatement): { moduleName: string |
   const moduleName = n
 
   // Remove assertions such as:
-  //  - `import json from './json.json' assert { type: 'json' }`
+  //  - `import json from './json.json' assert { type: 'json.mjs' }`
   //  - `import('asdf', { assert: { type: 'json' }})
   if (assertion !== -1) {
     return { moduleName, skip: true }
   }
 
-  // Add imports such as `import logoUrl from './logo.svg?url'`
+  // Add imports such as `import logoUrl from './logo.svg?url.mjs'`
   if (urlRE.test(moduleName)) {
     return { moduleName, skip: false }
   }
 
-  // Remove imports such as `import logoUrl from './logo.svg?raw'`
+  // Remove imports such as `import logoUrl from './logo.svg?raw.mjs'`
   if (rawRE.test(moduleName)) {
     return { moduleName, skip: true }
   }

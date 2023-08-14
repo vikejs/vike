@@ -1,7 +1,7 @@
 export { getPrefetchSettings }
 export type { PrefetchStaticAssets }
 
-import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '../utils'
+import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '../utils.mjs'
 
 type PageContextPrefetch = {
   exports: Record<string, unknown>

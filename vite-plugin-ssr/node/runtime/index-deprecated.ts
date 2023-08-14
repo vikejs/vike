@@ -1,13 +1,13 @@
 // TODO/v1-release: replace this with:
 // assertUsage(false, "`import { something } from 'vite-plugin-ssr'` doesn't exist: instead import from 'vite-plugin-ssr/server', 'vite-plugin-ssr/client', 'vite-plugin-ssr/plugin', ...")
 
-export * from './index-common'
-export * from '../../types/index-dreprecated'
+export * from './index-common.mjs'
+export * from '../../types/index-dreprecated.mjs'
 
-import { assertWarning } from './utils'
+import { assertWarning } from './utils.mjs'
 import pc from '@brillout/picocolors'
 
-import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/abort'
+import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/abort.mjs'
 /** @deprecated
  * Replace:
  *   ```
@@ -49,7 +49,7 @@ assertWarning(
   { showStackTrace: true, onlyOnce: true }
 )
 
-import { isBrowser, assertUsage } from './utils'
+import { isBrowser, assertUsage } from './utils.mjs'
 assertUsage(
   !isBrowser(),
   "It's forbidden to `import { something } from 'vite-plugin-ssr'` in code loaded in the browser: the module 'vite-plugin-ssr' is a server-only module.",

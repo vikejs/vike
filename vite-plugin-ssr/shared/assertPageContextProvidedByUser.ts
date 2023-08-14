@@ -1,4 +1,4 @@
-import { assert, assertUsage, assertWarning, isObject } from './utils'
+import { assert, assertUsage, assertWarning, isObject } from './utils.mjs'
 
 export { assertPageContextProvidedByUser }
 

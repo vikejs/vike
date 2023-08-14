@@ -1,6 +1,6 @@
 import { expect, describe, it, assert } from 'vitest'
-import { stripAnsi } from '../../utils'
-import { assertNoInfiniteHttpRedirect } from './assertNoInfiniteHttpRedirect'
+import { stripAnsi } from '../../utils.mjs'
+import { assertNoInfiniteHttpRedirect } from './assertNoInfiniteHttpRedirect.mjs'
 
 describe('assertNoInfiniteHttpRedirect()', () => {
   it('works', () => {

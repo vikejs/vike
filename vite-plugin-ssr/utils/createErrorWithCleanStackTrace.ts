@@ -1,6 +1,6 @@
 export { createErrorWithCleanStackTrace }
 
-import { isNodeJS } from './isNodeJS'
+import { isNodeJS } from './isNodeJS.mjs'
 
 function createErrorWithCleanStackTrace(errorMessage: string, numberOfStackTraceLinesToRemove: number) {
   let err

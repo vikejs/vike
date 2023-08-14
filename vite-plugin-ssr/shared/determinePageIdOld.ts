@@ -1,6 +1,6 @@
 export { determinePageIdOld }
 
-import { slice, assert } from './utils'
+import { slice, assert } from './utils.mjs'
 
 // TODO/v1-release: remove
 function determinePageIdOld(filePath: string): string {

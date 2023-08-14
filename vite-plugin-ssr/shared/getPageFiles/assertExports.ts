@@ -4,8 +4,8 @@ export { assertDefaultExports }
 export { assertExportValues }
 export { forbiddenDefaultExports }
 
-import { assert, assertUsage } from '../utils'
-import type { PageFile } from './getPageFileObject'
+import { assert, assertUsage } from '../utils.mjs'
+import type { PageFile } from './getPageFileObject.mjs'
 
 const enforceTrue = ['clientRouting']
 function assertExportValues(pageFile: PageFile) {

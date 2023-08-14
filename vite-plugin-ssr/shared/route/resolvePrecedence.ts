@@ -1,11 +1,11 @@
 export { resolvePrecendence }
 // export type { RouteMatch }
 
-import { analyzeRouteString } from './resolveRouteString'
-import { higherFirst } from './utils'
-import { makeFirst } from './utils'
-import { isStaticRouteString } from './resolveRouteString'
-import type { RouteType } from './loadPageRoutes'
+import { analyzeRouteString } from './resolveRouteString.mjs'
+import { higherFirst } from './utils.mjs'
+import { makeFirst } from './utils.mjs'
+import { isStaticRouteString } from './resolveRouteString.mjs'
+import type { RouteType } from './loadPageRoutes.mjs'
 
 type RouteMatch = {
   precedence?: number | null

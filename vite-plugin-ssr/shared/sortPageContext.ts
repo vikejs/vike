@@ -1,4 +1,4 @@
-import { compareString } from './utils'
+import { compareString } from './utils.mjs'
 
 export { sortPageContext }
 

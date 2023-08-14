@@ -1,4 +1,4 @@
-import { getPrettyErrMessage } from '../errorWithCodeSnippet'
+import { getPrettyErrMessage } from '../errorWithCodeSnippet.mjs'
 
 import { expect, describe, it } from 'vitest'
 
@@ -70,7 +70,7 @@ describe('getPrettyErrMessage()', () => {
 /home/rom/code/vite-plugin-ssr/examples/vue-full-v1/pages/index/+Page.vue
 12 |  
 13 |  <script lang="ts" setup>
-14 |  iemport Counter from '../../components/Counter.vue'
+14 |  iemport Counter from '../../components/Counter.vue.mjs'
    |         ^
 15 |  import { navigate } from 'vite-plugin-ssr/client/router'
 16 |  `
@@ -78,7 +78,7 @@ describe('getPrettyErrMessage()', () => {
 
 12 |  
 13 |  <script lang="ts" setup>
-14 |  iemport Counter from '../../components/Counter.vue'
+14 |  iemport Counter from '../../components/Counter.vue.mjs'
    |         ^
 15 |  import { navigate } from 'vite-plugin-ssr/client/router'
 16 |`

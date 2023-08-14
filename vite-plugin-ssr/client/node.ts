@@ -1,4 +1,4 @@
-import { assertUsage } from './server-routing-runtime/utils'
+import { assertUsage } from './server-routing-runtime/utils.mjs'
 assertUsage(
   false,
   [

@@ -5,7 +5,7 @@ export const errSwcBig = {
   plugin: 'vite:react-swc',
   id: '/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+Page.tsx',
   pluginCode:
-    "export default Page\n\nimport React from 'react'\nimport { navigate } from 'vite-plugin-ssr/client/router'\nimport { Counter } from '../../components/Counter'\n\nfunction Page() {\n  return (\n    <>\n      <h1>\n        Welcome to <code>vite-plugin-ssr</code>\n      <h1>\n      This page is:\n      <ul>\n        <li>Rendered to HTML.</li>\n        <li>\n          Interactive. <Counter />\n        </li>\n      </ul>\n      <p>\n        <button\n          onClick={() => {\n            const randomIndex = Math.floor(Math.random() * 3)\n            navigate(['/markdown', '/star-wars', '/hello/alice'][randomIndex])\n          }}\n        >\n          Random Page\n        </button>\n      </p>\n    </>\n  )\n}\n",
+    "export default Page\n\nimport React from 'react'\nimport { navigate } from 'vite-plugin-ssr/client/router'\nimport { Counter } from '../../components/Counter'\n\nfunction Page() {\n  return (\n    <>\n      <h1>\n        Welcome to <code>vite-plugin-ssr</code>\n      <h1>\n      This page is:\n      <ul>\n        <li>Rendered to HTML.</li>\n        <li>\n          Interactive. <Counter />\n        </li>\n      </ul>\n      <p>\n        <button\n          onClick={() => {\n            const randomIndex = Math.floor(Math.random() * 3)\n            navigate(['/markdown', '/star-wars', '/hello/alice.mjs'][randomIndex])\n          }}\n        >\n          Random Page\n        </button>\n      </p>\n    </>\n  )\n}\n",
   loc: {
     file: '/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+Page.tsx',
     line: '6',

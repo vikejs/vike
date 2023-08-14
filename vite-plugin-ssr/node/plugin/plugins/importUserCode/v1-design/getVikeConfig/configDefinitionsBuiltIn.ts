@@ -1,9 +1,9 @@
 export { configDefinitionsBuiltIn }
 export type { ConfigDefinition }
 
-import type { ConfigEnvPrivate, PageConfigData } from '../../../../../../shared/page-configs/PageConfig'
-import type { ConfigNameBuiltIn, ConfigNamePrivate } from '../../../../../../shared/page-configs/Config'
-import { getCodeFilePath } from '../../../../../../shared/page-configs/utils'
+import type { ConfigEnvPrivate, PageConfigData } from '../../../../../../shared/page-configs/PageConfig.mjs'
+import type { ConfigNameBuiltIn, ConfigNamePrivate } from '../../../../../../shared/page-configs/Config.mjs'
+import { getCodeFilePath } from '../../../../../../shared/page-configs/utils.mjs'
 
 type ConfigDefinition = {
   env: ConfigEnvPrivate

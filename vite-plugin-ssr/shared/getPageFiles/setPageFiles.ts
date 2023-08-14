@@ -2,11 +2,11 @@ export { setPageFiles }
 export { setPageFilesAsync }
 export { getPageFilesAll }
 
-import { assert, unique } from '../utils'
-import type { PageFile } from './getPageFileObject'
-import { parseGlobResults } from './parseGlobResults'
-import { getGlobalObject } from '../../utils/getGlobalObject'
-import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
+import { assert, unique } from '../utils.mjs'
+import type { PageFile } from './getPageFileObject.mjs'
+import { parseGlobResults } from './parseGlobResults.mjs'
+import { getGlobalObject } from '../../utils/getGlobalObject.mjs'
+import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.mjs'
 
 const globalObject = getGlobalObject<{
   pageFilesAll?: PageFile[] | undefined

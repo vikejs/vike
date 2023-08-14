@@ -12,25 +12,25 @@ import {
   sleep,
   getGlobalObject,
   executeHook
-} from './utils'
-import { navigationState } from './navigationState'
-import { checkIf404, getPageContext, getPageContextErrorPage, isAlreadyServerSideRouted } from './getPageContext'
-import { createPageContext } from './createPageContext'
-import { addLinkPrefetchHandlers } from './prefetch'
-import { assertInfo, assertWarning, isReact, PromiseType } from './utils'
-import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook'
-import { assertHook } from '../../shared/hooks/getHook'
-import { isClientSideRoutable, skipLink } from './skipLink'
-import { isErrorFetchingStaticAssets } from '../shared/loadPageFilesClientSide'
-import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history'
-import { defineNavigate } from './navigate'
+} from './utils.mjs'
+import { navigationState } from './navigationState.mjs'
+import { checkIf404, getPageContext, getPageContextErrorPage, isAlreadyServerSideRouted } from './getPageContext.mjs'
+import { createPageContext } from './createPageContext.mjs'
+import { addLinkPrefetchHandlers } from './prefetch.mjs'
+import { assertInfo, assertWarning, isReact, PromiseType } from './utils.mjs'
+import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.mjs'
+import { assertHook } from '../../shared/hooks/getHook.mjs'
+import { isClientSideRoutable, skipLink } from './skipLink.mjs'
+import { isErrorFetchingStaticAssets } from '../shared/loadPageFilesClientSide.mjs'
+import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history.mjs'
+import { defineNavigate } from './navigate.mjs'
 import {
   assertNoInfiniteAbortLoop,
   getPageContextFromAllRewrites,
   isAbortError,
   logAbortErrorHandled,
   PageContextFromRewrite
-} from '../../shared/route/abort'
+} from '../../shared/route/abort.mjs'
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
   clientRoutingIsDisabled?: true

@@ -1,6 +1,6 @@
 export { normalizeUrlPathname }
 
-import { assert, parseUrl } from '../utils'
+import { assert, parseUrl } from '../utils.mjs'
 
 function normalizeUrlPathname(urlOriginal: string) {
   const urlParsed = parseUrl(urlOriginal, '/')

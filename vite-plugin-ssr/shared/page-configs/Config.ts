@@ -4,11 +4,11 @@ export type { ConfigNamePrivate }
 export type { Meta }
 export type { Effect }
 
-import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings'
-import type { ConfigVpsUserProvided } from '../ConfigVps'
+import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.mjs'
+import type { ConfigVpsUserProvided } from '../ConfigVps.mjs'
 // TODO: write docs of links below
 
-import type { ConfigEnvPublic } from './PageConfig'
+import type { ConfigEnvPublic } from './PageConfig.mjs'
 
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVpsUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>

@@ -13,18 +13,18 @@ import {
   unique,
   isNotNullish,
   pathJoin
-} from '../utils'
-import { retrieveAssetsDev } from './getPageAssets/retrieveAssetsDev'
-import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd'
-import { inferMediaType, type MediaType } from './inferMediaType'
-import { getManifestEntry } from './getPageAssets/getManifestEntry'
+} from '../utils.mjs'
+import { retrieveAssetsDev } from './getPageAssets/retrieveAssetsDev.mjs'
+import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd.mjs'
+import { inferMediaType, type MediaType } from './inferMediaType.mjs'
+import { getManifestEntry } from './getPageAssets/getManifestEntry.mjs'
 import type { ViteDevServer } from 'vite'
-import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
-import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader'
-import type { ConfigVpsResolved } from '../../../shared/ConfigVps'
-import { getGlobalContext } from '../globalContext'
-import { assertClientEntryId } from './getPageAssets/assertClientEntryId'
-import type { ViteManifest } from '../../shared/ViteManifest'
+import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.mjs'
+import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.mjs'
+import type { ConfigVpsResolved } from '../../../shared/ConfigVps.mjs'
+import { getGlobalContext } from '../globalContext.mjs'
+import { assertClientEntryId } from './getPageAssets/assertClientEntryId.mjs'
+import type { ViteManifest } from '../../shared/ViteManifest.mjs'
 
 type PageAsset = {
   src: string

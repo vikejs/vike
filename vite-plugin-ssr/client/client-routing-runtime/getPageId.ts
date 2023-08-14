@@ -1,7 +1,7 @@
 export { getPageId }
 
-import { route } from '../../shared/route'
-import { createPageContext } from './createPageContext'
+import { route } from '../../shared/route.mjs'
+import { createPageContext } from './createPageContext.mjs'
 
 async function getPageId(url: string) {
   const pageContext = await createPageContext({ urlOriginal: url })

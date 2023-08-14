@@ -4,14 +4,14 @@ export { findPageGuard }
 export type { PageRoutes }
 export type { RouteType }
 
-import type { PageFile } from '../getPageFiles'
-import { isErrorPageId } from '../error-page'
-import { assert, assertUsage, hasProp, slice } from './utils'
-import type { OnBeforeRouteHook } from './executeOnBeforeRouteHook'
-import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath'
-import { isCallable } from '../utils'
-import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
-import type { Hook } from '../hooks/getHook'
+import type { PageFile } from '../getPageFiles.mjs'
+import { isErrorPageId } from '../error-page.mjs'
+import { assert, assertUsage, hasProp, slice } from './utils.mjs'
+import type { OnBeforeRouteHook } from './executeOnBeforeRouteHook.mjs'
+import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.mjs'
+import { isCallable } from '../utils.mjs'
+import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.mjs'
+import type { Hook } from '../hooks/getHook.mjs'
 
 type PageRoute = {
   pageId: string

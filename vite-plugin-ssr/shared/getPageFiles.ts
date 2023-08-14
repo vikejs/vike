@@ -1,13 +1,13 @@
 // Types
-export type { PageFile } from './getPageFiles/getPageFileObject'
-export type { ExportsAll, PageContextExports } from './getPageFiles/getExports'
+export type { PageFile } from './getPageFiles/getPageFileObject.mjs'
+export type { ExportsAll, PageContextExports } from './getPageFiles/getExports.mjs'
 
 // Utils
-export { getExportUnion } from './getPageFiles/getExports'
+export { getExportUnion } from './getPageFiles/getExports.mjs'
 
-export { getPageFilesAll } from './getPageFiles/setPageFiles'
-export { setPageFiles } from './getPageFiles/setPageFiles'
-export { setPageFilesAsync } from './getPageFiles/setPageFiles'
-export { getPageFilesClientSide } from './getPageFiles/getAllPageIdFiles'
-export { getPageFilesServerSide } from './getPageFiles/getAllPageIdFiles'
-export { getExports } from './getPageFiles/getExports'
+export { getPageFilesAll } from './getPageFiles/setPageFiles.mjs'
+export { setPageFiles } from './getPageFiles/setPageFiles.mjs'
+export { setPageFilesAsync } from './getPageFiles/setPageFiles.mjs'
+export { getPageFilesClientSide } from './getPageFiles/getAllPageIdFiles.mjs'
+export { getPageFilesServerSide } from './getPageFiles/getAllPageIdFiles.mjs'
+export { getExports } from './getPageFiles/getExports.mjs'

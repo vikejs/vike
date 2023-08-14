@@ -5,7 +5,7 @@ import {
   setGlobalContext_viteDevServer,
   setGlobalContext_vitePreviewServer,
   setGlobalContext_viteConfig
-} from '../../runtime/globalContext'
+} from '../../runtime/globalContext.mjs'
 
 function setGlobalContext(): Plugin {
   return {

@@ -1,8 +1,8 @@
 export { analyzeExports }
 
-import { getExportNames } from './getExportNames'
-import { assertUsage } from '../../utils'
-import type { PageFile } from '../getPageFileObject'
+import { getExportNames } from './getExportNames.mjs'
+import { assertUsage } from '../../utils.mjs'
+import type { PageFile } from '../getPageFileObject.mjs'
 
 // TODO/v1-release: remove
 function analyzeExports({

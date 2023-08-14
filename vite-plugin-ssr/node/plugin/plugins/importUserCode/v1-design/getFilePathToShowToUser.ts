@@ -1,7 +1,7 @@
 export { getFilePathToShowToUser }
 export type { FilePath }
 
-import { assert } from '../../../utils'
+import { assert } from '../../../utils.mjs'
 
 type FilePath = {
   filePathAbsolute: string

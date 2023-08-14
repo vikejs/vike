@@ -1,8 +1,8 @@
 export { assertClientEntryId }
 
-import { getGlobalContext } from '../../globalContext'
-import { assert, assertPosixPath, isNpmPackageImport } from '../../utils'
-import { isVirtualFileIdImportPageCode } from '../../../shared/virtual-files/virtualFileImportPageCode'
+import { getGlobalContext } from '../../globalContext.mjs'
+import { assert, assertPosixPath, isNpmPackageImport } from '../../utils.mjs'
+import { isVirtualFileIdImportPageCode } from '../../../shared/virtual-files/virtualFileImportPageCode.mjs'
 
 function assertClientEntryId(id: string) {
   assertPosixPath(id)

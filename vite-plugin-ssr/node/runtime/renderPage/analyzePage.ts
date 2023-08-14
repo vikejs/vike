@@ -1,14 +1,14 @@
 export { analyzePage }
 
-import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
-import { getVPSClientEntry } from '../../../shared/getPageFiles/analyzePageClientSide/determineClientEntry'
-import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig'
-import { getCodeFilePath } from '../../../shared/page-configs/utils'
-import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide'
-import { getVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode'
-import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide'
-import { getGlobalContext } from '../globalContext'
+import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.mjs'
+import { getVPSClientEntry } from '../../../shared/getPageFiles/analyzePageClientSide/determineClientEntry.mjs'
+import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject.mjs'
+import type { PageConfig } from '../../../shared/page-configs/PageConfig.mjs'
+import { getCodeFilePath } from '../../../shared/page-configs/utils.mjs'
+import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide.mjs'
+import { getVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode.mjs'
+import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.mjs'
+import { getGlobalContext } from '../globalContext.mjs'
 
 function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string): AnalysisResult {
   if (pageConfig) {

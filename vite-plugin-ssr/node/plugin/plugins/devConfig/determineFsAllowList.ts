@@ -4,8 +4,8 @@ import { searchForWorkspaceRoot } from 'vite'
 import type { ResolvedConfig } from 'vite'
 import path from 'path'
 import fs from 'fs'
-import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
-import { assert } from '../../utils'
+import type { ConfigVpsResolved } from '../../../../shared/ConfigVps.mjs'
+import { assert } from '../../utils.mjs'
 
 async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVpsResolved) {
   const fsAllow = config.server.fs.allow

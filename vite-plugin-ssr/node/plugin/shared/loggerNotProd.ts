@@ -19,9 +19,9 @@ export type { LogErrorArgs }
 export type { LogType }
 export type { LogCategory }
 
-import { isAbortError } from '../../../shared/route/abort'
-import { getViteConfig } from '../../runtime/globalContext'
-import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/loggerRuntime'
+import { isAbortError } from '../../../shared/route/abort.mjs'
+import { getViteConfig } from '../../runtime/globalContext.mjs'
+import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/loggerRuntime.mjs'
 import {
   assert,
   assertIsNotProductionRuntime,
@@ -30,18 +30,18 @@ import {
   overwriteAssertProductionLogger,
   stripAnsi,
   warnIfObjectIsNotObject
-} from '../utils'
-import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore'
-import { isErrorDebug } from './isErrorDebug'
+} from '../utils.mjs'
+import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.mjs'
+import { isErrorDebug } from './isErrorDebug.mjs'
 import {
   isErrorWithCodeSnippet,
   getPrettyErrorWithCodeSnippet,
   type ErrorWithCodeSnippet
-} from './loggerNotProd/errorWithCodeSnippet'
+} from './loggerNotProd/errorWithCodeSnippet.mjs'
 import {
   getConfigExececutionErrorIntroMsg,
   getConfigBuildErrorFormatted
-} from '../plugins/importUserCode/v1-design/transpileAndExecuteFile'
+} from '../plugins/importUserCode/v1-design/transpileAndExecuteFile.mjs'
 import {
   logWithVikeTag,
   logWithViteTag,
@@ -49,10 +49,10 @@ import {
   isFirstLog,
   screenHasErrors,
   clearScreen
-} from './loggerNotProd/log'
+} from './loggerNotProd/log.mjs'
 import pc from '@brillout/picocolors'
-import { setAlreadyLogged } from '../../runtime/renderPage/isNewError'
-import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid'
+import { setAlreadyLogged } from '../../runtime/renderPage/isNewError.mjs'
+import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid.mjs'
 
 assertIsNotProductionRuntime()
 overwriteRuntimeProductionLogger(logRuntimeError, logRuntimeInfo)

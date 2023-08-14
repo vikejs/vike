@@ -1,6 +1,6 @@
 // Unit tests at ./deduceRouteStringFromFilesystemPath.spec.ts
 
-import { assert, higherFirst, slice } from './utils'
+import { assert, higherFirst, slice } from './utils.mjs'
 
 export { deduceRouteStringFromFilesystemPath }
 export type { FilesystemRoot }

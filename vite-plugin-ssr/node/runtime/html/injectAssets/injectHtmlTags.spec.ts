@@ -1,4 +1,4 @@
-import { injectAtOpeningTag, injectAtClosingTag } from './injectHtmlTags'
+import { injectAtOpeningTag, injectAtClosingTag } from './injectHtmlTags.mjs'
 import { expect, describe, it } from 'vitest'
 
 const htmlHead1 = '<html><head></head></html>'

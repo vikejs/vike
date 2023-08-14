@@ -2,7 +2,7 @@ export { envVarsPlugin }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
-import { assert, assertPosixPath, assertUsage, assertWarning, getFilePathVite, lowerFirst } from '../utils'
+import { assert, assertPosixPath, assertUsage, assertWarning, getFilePathVite, lowerFirst } from '../utils.mjs'
 
 function envVarsPlugin(): Plugin {
   let envsAll: Record<string, string>

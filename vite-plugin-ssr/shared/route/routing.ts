@@ -2,4 +2,4 @@
 //   import { resolveRoute } from 'vite-plugin-ssr/routing'
 // to:
 //   import { resolveRoute } from 'vite-plugin-ssr'
-export { resolveRoute } from './resolveRoute'
+export { resolveRoute } from './resolveRoute.mjs'

@@ -1,7 +1,7 @@
 export { assertRuntimeManifest }
 export type { RuntimeManifest }
 
-import { assert, castType, checkType, hasProp, isBaseAssets, isBaseServer, isObject } from './utils'
+import { assert, castType, checkType, hasProp, isBaseAssets, isBaseServer, isObject } from './utils.mjs'
 
 type RuntimeManifest = {
   baseServer: string

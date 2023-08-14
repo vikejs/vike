@@ -1,8 +1,8 @@
 export { determineClientEntry }
 export { getVPSClientEntry }
 
-import type { ClientDependency } from './ClientDependency'
-import type { PageFile } from '../../../shared/getPageFiles'
+import type { ClientDependency } from './ClientDependency.mjs'
+import type { PageFile } from '../../../shared/getPageFiles.mjs'
 
 function determineClientEntry({
   pageFilesClientSide,

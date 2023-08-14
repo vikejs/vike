@@ -6,7 +6,7 @@ export type { PageContextUrlComputedProps }
 export type { PageContextUrlComputedPropsPublic }
 export type { PageContextUrlSources }
 
-import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter, isBrowser } from './utils'
+import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter, isBrowser } from './utils.mjs'
 
 // Copy paste from https://vite-plugin-ssr.com/pageContext
 type UrlParsed = {

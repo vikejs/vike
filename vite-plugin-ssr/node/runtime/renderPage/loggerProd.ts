@@ -3,9 +3,9 @@
 
 export { logErrorProd }
 
-import { isAbortError } from '../../../shared/route/abort'
-import { setAlreadyLogged } from './isNewError'
-import { isObject, warnIfObjectIsNotObject } from '../utils'
+import { isAbortError } from '../../../shared/route/abort.mjs'
+import { setAlreadyLogged } from './isNewError.mjs'
+import { isObject, warnIfObjectIsNotObject } from '../utils.mjs'
 import pc from '@brillout/picocolors'
 
 function logErrorProd(err: unknown, _httpRquestId: null | number): void {

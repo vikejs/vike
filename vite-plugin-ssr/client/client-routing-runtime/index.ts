@@ -4,11 +4,11 @@
 //   import { navigate, prefetch } from 'vite-plugin-ssr'
 // Use package.json#exports to make the imports isomorphic.
 
-export { navigate, reload } from './navigate'
-export { prefetch } from './prefetch'
+export { navigate, reload } from './navigate.mjs'
+export { prefetch } from './prefetch.mjs'
 
 // TODO/v1-release: remove this
-import type { PageContextBuiltInClientWithClientRouting } from '../../shared/types'
+import type { PageContextBuiltInClientWithClientRouting } from '../../shared/types.mjs'
 /** @deprecated
  * Replace:
  *   ```

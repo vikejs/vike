@@ -1,8 +1,8 @@
 export { onLoad }
 
-import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser'
-import { assertIsNotProductionRuntime } from '../../utils/assertIsNotProductionRuntime'
-import { assertNodeVersion } from '../../utils/assertNodeVersion'
+import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.mjs'
+import { assertIsNotProductionRuntime } from '../../utils/assertIsNotProductionRuntime.mjs'
+import { assertNodeVersion } from '../../utils/assertNodeVersion.mjs'
 
 function onLoad() {
   assertIsNotBrowser()

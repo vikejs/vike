@@ -2,14 +2,14 @@ export { createDebugger }
 export { isDebugEnabled }
 export type { Debug }
 
-import { isBrowser } from './isBrowser'
-import { isCallable } from './isCallable'
-import { objectAssign } from './objectAssign'
-import { assert } from './assert'
-import { checkType } from './checkType'
-import { getTerminalWidth } from './getTerminWidth'
+import { isBrowser } from './isBrowser.mjs'
+import { isCallable } from './isCallable.mjs'
+import { objectAssign } from './objectAssign.mjs'
+import { assert } from './assert.mjs'
+import { checkType } from './checkType.mjs'
+import { getTerminalWidth } from './getTerminWidth.mjs'
 
-// Avoid this to be loaded in the browser. For isomorphic code: instead of `import { createDebugger } from './utils'`, use `globalThis.createDebugger()`.
+// Avoid this to be loaded in the browser. For isomorphic code: instead of `import { createDebugger } from './utils.mjs'`, use `globalThis.createDebugger()`.
 assert(!isBrowser())
 ;(globalThis as any).__brillout_debug_createDebugger = createDebugger
 

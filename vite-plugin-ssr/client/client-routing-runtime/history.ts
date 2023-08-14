@@ -1,6 +1,6 @@
 export { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition }
 
-import { assert, hasProp, isObject } from './utils'
+import { assert, hasProp, isObject } from './utils.mjs'
 
 // No way found to add TypeScript types to `history.state`: https://github.com/microsoft/TypeScript/issues/36178
 type HistoryState = {

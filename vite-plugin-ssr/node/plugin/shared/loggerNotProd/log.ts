@@ -5,11 +5,11 @@ export { isFirstLog }
 export { clearScreen }
 export { screenHasErrors }
 
-import { assert, projectInfo, type ProjectTag, stripAnsi, hasProp, assertIsNotProductionRuntime } from '../../utils'
+import { assert, projectInfo, type ProjectTag, stripAnsi, hasProp, assertIsNotProductionRuntime } from '../../utils.mjs'
 import pc from '@brillout/picocolors'
-import { isErrorDebug } from '../isErrorDebug'
-import { getViteDevServer } from '../../../runtime/globalContext'
-import type { LogCategory, LogType } from '../loggerNotProd'
+import { isErrorDebug } from '../isErrorDebug.mjs'
+import { getViteDevServer } from '../../../runtime/globalContext.mjs'
+import type { LogCategory, LogType } from '../loggerNotProd.mjs'
 import type { ResolvedConfig } from 'vite'
 
 assertIsNotProductionRuntime()

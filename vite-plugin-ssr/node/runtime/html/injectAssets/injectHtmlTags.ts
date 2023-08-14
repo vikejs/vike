@@ -7,9 +7,9 @@ export { createHtmlHeadIfMissing }
 export { injectAtOpeningTag }
 export { injectAtClosingTag }
 
-import { assert, assertUsage, slice } from '../../utils'
-import type { HtmlTag } from './getHtmlTags'
-import type { InjectToStream } from '../stream/react-streaming'
+import { assert, assertUsage, slice } from '../../utils.mjs'
+import type { HtmlTag } from './getHtmlTags.mjs'
+import type { InjectToStream } from '../stream/react-streaming.mjs'
 
 type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 const POSITIONS = ['HTML_BEGIN' as const, 'HTML_END' as const, 'STREAM' as const]

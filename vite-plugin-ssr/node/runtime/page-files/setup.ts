@@ -1,7 +1,7 @@
-import { setPageFilesAsync } from '../../../shared/getPageFiles'
-import { assert, debugGlob, isObject } from '../utils'
-import { getViteDevServer } from '../globalContext'
-import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode'
+import { setPageFilesAsync } from '../../../shared/getPageFiles.mjs'
+import { assert, debugGlob, isObject } from '../utils.mjs'
+import { getViteDevServer } from '../globalContext.mjs'
+import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode.mjs'
 
 setPageFilesAsync(getPageFilesExports)
 

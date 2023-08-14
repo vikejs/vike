@@ -1,6 +1,6 @@
 export { getRandomId }
 
-import { assert } from './assert'
+import { assert } from './assert.mjs'
 
 // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
 

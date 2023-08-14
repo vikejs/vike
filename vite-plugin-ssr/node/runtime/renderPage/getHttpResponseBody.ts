@@ -22,10 +22,10 @@ import {
   getStreamReadableWeb,
   pipeToStreamWritableWeb,
   pipeToStreamWritableNode
-} from '../html/stream'
-import { assert, assertUsage, assertWarning } from '../utils'
-import { getHtmlString, type HtmlRender } from '../html/renderHtml'
-import type { RenderHook } from './executeOnRenderHtmlHook'
+} from '../html/stream.mjs'
+import { assert, assertUsage, assertWarning } from '../utils.mjs'
+import { getHtmlString, type HtmlRender } from '../html/renderHtml.mjs'
+import type { RenderHook } from './executeOnRenderHtmlHook.mjs'
 
 const streamDocs = 'See https://vite-plugin-ssr.com/stream for more information.'
 

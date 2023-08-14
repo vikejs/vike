@@ -1,6 +1,6 @@
-import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
-import { assertUsage, hasProp, isObjectWithKeys, objectAssign, assertWarning, assertUsageUrl } from './utils'
-import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction'
+import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser.mjs'
+import { assertUsage, hasProp, isObjectWithKeys, objectAssign, assertWarning, assertUsageUrl } from './utils.mjs'
+import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.mjs'
 
 export { executeOnBeforeRouteHook }
 export type { OnBeforeRouteHook }

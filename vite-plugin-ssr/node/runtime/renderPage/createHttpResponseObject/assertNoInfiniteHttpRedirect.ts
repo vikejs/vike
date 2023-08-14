@@ -1,6 +1,6 @@
 export { assertNoInfiniteHttpRedirect }
 
-import { assert, assertUsage, getGlobalObject } from '../../utils'
+import { assert, assertUsage, getGlobalObject } from '../../utils.mjs'
 import pc from '@brillout/picocolors'
 
 type Graph = Record<string, Set<string>>

@@ -1,7 +1,7 @@
-import { assertUsage, assertWarning, getCurrentUrl, objectAssign } from './utils'
-import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml'
-import { getPageFilesAll } from '../../shared/getPageFiles'
-import { loadPageFilesClientSide } from '../shared/loadPageFilesClientSide'
+import { assertUsage, assertWarning, getCurrentUrl, objectAssign } from './utils.mjs'
+import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.mjs'
+import { getPageFilesAll } from '../../shared/getPageFiles.mjs'
+import { loadPageFilesClientSide } from '../shared/loadPageFilesClientSide.mjs'
 
 export { getPageContext }
 

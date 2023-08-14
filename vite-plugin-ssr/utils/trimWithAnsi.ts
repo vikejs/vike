@@ -1,8 +1,8 @@
 export { trimWithAnsi }
 export { trimWithAnsiTrailOnly }
 
-import { assert } from './assert'
-import { stripAnsi } from './stripAnsi'
+import { assert } from './assert.mjs'
+import { stripAnsi } from './stripAnsi.mjs'
 
 const whitespaceRegex = /(\s+)/ // Capturing parathesis so that split preserves seperator
 

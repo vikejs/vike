@@ -25,7 +25,7 @@ import {
   objectAssign,
   projectInfo,
   truncateString
-} from './utils'
+} from './utils.mjs'
 import pc from '@brillout/picocolors'
 
 type StatusCodeAbort = StatusCodeRedirect | StatusCodeError

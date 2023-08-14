@@ -1,8 +1,8 @@
 export { assertPageConfigs }
 export { assertPageConfigGlobal }
 
-import { assert, isObject, hasProp } from '../utils'
-import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
+import { assert, isObject, hasProp } from '../utils.mjs'
+import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.mjs'
 
 function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageConfig[] {
   assert(Array.isArray(pageConfigs) || pageConfigs === null)

@@ -4,7 +4,7 @@ export { distFileNames }
 //  - https://github.com/brillout/vite-plugin-ssr/commit/11a4c49e5403aa7c37c8020c462b499425b41854
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
-import { assertPosixPath, assert, assertUsage } from '../utils'
+import { assertPosixPath, assert, assertUsage } from '../utils.mjs'
 import path from 'path'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 type PreRenderedChunk = Rollup.PreRenderedChunk

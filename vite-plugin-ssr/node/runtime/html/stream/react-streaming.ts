@@ -6,8 +6,8 @@ export { getStreamFromReactStreaming }
 export type { StreamReactStreaming }
 export type { InjectToStream }
 
-import { assert, hasProp } from '../../utils'
-import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, StreamWritableNode } from '../stream'
+import { assert, hasProp } from '../../utils.mjs'
+import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, StreamWritableNode } from '../stream.mjs'
 
 // Same type than:
 // ```

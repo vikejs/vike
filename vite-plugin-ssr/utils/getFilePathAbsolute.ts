@@ -2,12 +2,12 @@ export { getFilePathAbsolute }
 export { getFilePathVite }
 
 import type { ResolvedConfig } from 'vite'
-import { assertPosixPath, toPosixPath } from './filesystemPathHandling'
-import { assert } from './assert'
+import { assertPosixPath, toPosixPath } from './filesystemPathHandling.mjs'
+import { assert } from './assert.mjs'
 import path from 'path'
-import { assertIsNotProductionRuntime } from './assertIsNotProductionRuntime'
-import { isNpmPackageImport } from './isNpmPackage'
-import { assertPathIsFilesystemAbsolute } from './assertPathIsFilesystemAbsolute'
+import { assertIsNotProductionRuntime } from './assertIsNotProductionRuntime.mjs'
+import { isNpmPackageImport } from './isNpmPackage.mjs'
+import { assertPathIsFilesystemAbsolute } from './assertPathIsFilesystemAbsolute.mjs'
 
 assertIsNotProductionRuntime()
 

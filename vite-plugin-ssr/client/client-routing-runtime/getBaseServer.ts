@@ -1,4 +1,4 @@
-import { assert } from '../server-routing-runtime/utils'
+import { assert } from '../server-routing-runtime/utils.mjs'
 export function getBaseServer(): string {
   const baseServer: string = import.meta.env.BASE_SERVER
   assert(isBaseServer(baseServer))

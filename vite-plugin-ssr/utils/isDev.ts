@@ -8,8 +8,8 @@ export { isDev2 }
 // ********
 // Method 1 - most reliable
 // ********
-import { assert } from './assert'
-import { getGlobalObject } from './getGlobalObject'
+import { assert } from './assert.mjs'
+import { getGlobalObject } from './getGlobalObject.mjs'
 const globalObject = getGlobalObject('utils/isDev.ts', { isDev: false, isDev_wasCalled: false })
 function isDev1(): boolean {
   globalObject.isDev_wasCalled = true

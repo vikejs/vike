@@ -1,6 +1,6 @@
 export { mergeScriptTags }
 
-import { assert } from '../../utils'
+import { assert } from '../../utils.mjs'
 
 const scriptRE = /(<script\b(?:\s[^>]*>|>))(.*?)<\/script>/gims
 const srcRE = /\bsrc\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s'">]+))/im

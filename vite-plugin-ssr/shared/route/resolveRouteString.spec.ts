@@ -1,6 +1,6 @@
-import { resolveRouteString } from './resolveRouteString'
-import { resolveRouteStringRedirect } from './resolveRedirects'
-import { stripAnsi } from '../../utils/stripAnsi'
+import { resolveRouteString } from './resolveRouteString.mjs'
+import { resolveRouteStringRedirect } from './resolveRedirects.mjs'
+import { stripAnsi } from '../../utils/stripAnsi.mjs'
 import { expect, describe, it } from 'vitest'
 
 const r: typeof resolveRouteString = (a, b) => resolveRouteString(a, b)

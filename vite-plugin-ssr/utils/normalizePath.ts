@@ -1,5 +1,5 @@
-import { assert } from './assert'
-import { isBrowser } from './isBrowser'
+import { assert } from './assert.mjs'
+import { isBrowser } from './isBrowser.mjs'
 
 export { normalizePath }
 

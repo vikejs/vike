@@ -1,7 +1,7 @@
 export { assertPluginManifest }
 export type { PluginManifest }
 
-import { assertRuntimeManifest } from './assertRuntimeManifest'
+import { assertRuntimeManifest } from './assertRuntimeManifest.mjs'
 import {
   assert,
   assertUsage,
@@ -11,7 +11,7 @@ import {
   hasProp,
   isStringRecord,
   objectAssign
-} from './utils'
+} from './utils.mjs'
 
 type PluginManifest = {
   version: string

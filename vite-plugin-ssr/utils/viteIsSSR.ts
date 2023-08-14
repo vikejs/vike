@@ -1,5 +1,5 @@
-import { assert } from './assert'
-import { isObject } from './isObject'
+import { assert } from './assert.mjs'
+import { isObject } from './isObject.mjs'
 
 export { viteIsSSR }
 export { viteIsSSR_options }

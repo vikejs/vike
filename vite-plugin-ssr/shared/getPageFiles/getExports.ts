@@ -4,12 +4,12 @@ export type { ExportsAll }
 export type { PageContextExports }
 export type { ConfigEntries }
 
-import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile'
-import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser, objectEntries } from '../utils'
-import { assertDefaultExports, forbiddenDefaultExports } from './assertExports'
-import type { FileType } from './fileTypes'
-import type { PageConfigLoaded } from './../page-configs/PageConfig'
-import type { PageFile } from './getPageFileObject'
+import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile.mjs'
+import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser, objectEntries } from '../utils.mjs'
+import { assertDefaultExports, forbiddenDefaultExports } from './assertExports.mjs'
+import type { FileType } from './fileTypes.mjs'
+import type { PageConfigLoaded } from './../page-configs/PageConfig.mjs'
+import type { PageFile } from './getPageFileObject.mjs'
 
 // TODO/v1-release: remove
 type ExportsAll = Record<

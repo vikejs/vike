@@ -1,12 +1,12 @@
 export { parseGlobResults }
 
-import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../utils'
-import { assertExportValues } from './assertExports'
-import { getPageFileObject, type PageFile } from './getPageFileObject'
-import { fileTypes, type FileType } from './fileTypes'
-import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
-import { assertPageConfigGlobal, assertPageConfigs } from './assertPageConfigs'
-import { parsePageConfigs } from './parsePageConfigs'
+import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../utils.mjs'
+import { assertExportValues } from './assertExports.mjs'
+import { getPageFileObject, type PageFile } from './getPageFileObject.mjs'
+import { fileTypes, type FileType } from './fileTypes.mjs'
+import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.mjs'
+import { assertPageConfigGlobal, assertPageConfigs } from './assertPageConfigs.mjs'
+import { parsePageConfigs } from './parsePageConfigs.mjs'
 
 // TODO: rename to parseVirtualFile
 function parseGlobResults(pageFilesExports: unknown): {

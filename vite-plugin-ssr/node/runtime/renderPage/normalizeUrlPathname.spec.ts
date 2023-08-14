@@ -1,4 +1,4 @@
-import { normalizeUrlPathname } from './normalizeUrlPathname'
+import { normalizeUrlPathname } from './normalizeUrlPathname.mjs'
 
 import { expect, describe, it } from 'vitest'
 describe('normalizeUrlPathname()', () => {

@@ -3,13 +3,13 @@ export { serializePageContextAbort }
 export type { PageContextSerialization }
 
 import { stringify } from '@brillout/json-serializer/stringify'
-import { assert, assertWarning, hasProp, unique } from '../utils'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig'
-import { isErrorPage } from '../../../shared/error-page'
-import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
+import { assert, assertWarning, hasProp, unique } from '../utils.mjs'
+import type { PageConfig } from '../../../shared/page-configs/PageConfig.mjs'
+import { isErrorPage } from '../../../shared/error-page.mjs'
+import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.mjs'
 import pc from '@brillout/picocolors'
-import { notSerializable } from '../../../shared/notSerializable'
-import type { UrlRedirect } from '../../../shared/route/abort'
+import { notSerializable } from '../../../shared/notSerializable.mjs'
+import type { UrlRedirect } from '../../../shared/route/abort.mjs'
 
 const PASS_TO_CLIENT: string[] = [
   'abortReason',

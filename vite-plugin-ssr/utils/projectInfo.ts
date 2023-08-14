@@ -1,7 +1,7 @@
 export { projectInfo }
 export type { ProjectTag }
 
-import { onProjectInfo } from './assertSingleInstance'
+import { onProjectInfo } from './assertSingleInstance.mjs'
 
 const PROJECT_VERSION = '0.4.136' as const
 

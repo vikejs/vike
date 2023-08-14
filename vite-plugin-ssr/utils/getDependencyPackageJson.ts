@@ -8,10 +8,10 @@ export { getDependencyRootDir }
 //  - https://stackoverflow.com/questions/58442451/finding-the-root-directory-of-a-dependency-in-npm
 //  - https://stackoverflow.com/questions/10111163/how-can-i-get-the-path-of-a-module-i-have-loaded-via-require-that-is-not-mine/63441056#63441056
 
-import { assert, assertUsage } from './assert'
-import { isNpmPackageName } from './isNpmPackage'
-import { toPosixPath } from './filesystemPathHandling'
-import { isObject } from './isObject'
+import { assert, assertUsage } from './assert.mjs'
+import { isNpmPackageName } from './isNpmPackage.mjs'
+import { toPosixPath } from './filesystemPathHandling.mjs'
+import { isObject } from './isObject.mjs'
 import path from 'path'
 import fs from 'fs'
 

@@ -1,7 +1,7 @@
 export { toPosixPath }
 export { assertPosixPath }
 
-import { assert } from './assert'
+import { assert } from './assert.mjs'
 
 function toPosixPath(path: string): string {
   const pathPosix = path.split('\\').join('/')

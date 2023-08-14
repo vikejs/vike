@@ -1,8 +1,8 @@
 export { commonConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertWarning, isValidPathAlias } from '../utils'
-import { assertRollupInput } from './buildConfig'
+import { assert, assertWarning, isValidPathAlias } from '../utils.mjs'
+import { assertRollupInput } from './buildConfig.mjs'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 
 function commonConfig(): Plugin[] {

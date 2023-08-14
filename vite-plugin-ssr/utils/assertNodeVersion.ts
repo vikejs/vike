@@ -1,7 +1,7 @@
 export { assertNodeVersion }
 
-import { assertUsage } from './assert'
-import { isNodeJS } from './isNodeJS'
+import { assertUsage } from './assert.mjs'
+import { isNodeJS } from './isNodeJS.mjs'
 
 // package.json#engines.node isn't enough as users can ignore it
 function assertNodeVersion() {

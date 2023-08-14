@@ -1,4 +1,4 @@
-import { trimWithAnsi, trimWithAnsiTrailOnly } from './trimWithAnsi'
+import { trimWithAnsi, trimWithAnsiTrailOnly } from './trimWithAnsi.mjs'
 import { expect, describe, it } from 'vitest'
 import pc from '@brillout/picocolors'
 

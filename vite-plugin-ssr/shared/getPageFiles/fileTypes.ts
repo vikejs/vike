@@ -5,8 +5,8 @@ export { fileTypes }
 export { isValidFileType }
 export { determineFileType }
 
-import { assert, assertPosixPath } from '../utils'
-import { isScriptFile } from '../../utils/isScriptFile'
+import { assert, assertPosixPath } from '../utils.mjs'
+import { isScriptFile } from '../../utils/isScriptFile.mjs'
 
 const fileTypes = [
   '.page',

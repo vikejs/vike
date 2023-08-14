@@ -1,6 +1,6 @@
 export { addSsrMiddleware }
 
-import { renderPage } from '../../runtime/renderPage'
+import { renderPage } from '../../runtime/renderPage.mjs'
 import type { ViteDevServer } from 'vite'
 type ConnectServer = ViteDevServer['middlewares']
 

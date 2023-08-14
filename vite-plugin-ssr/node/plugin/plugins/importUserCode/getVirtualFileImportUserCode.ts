@@ -6,13 +6,13 @@ export { getVirtualFileImportUserCode }
 //    - Systematically remove all pageFilesAll references does the trick?
 
 import type { ResolvedConfig } from 'vite'
-import { assert, assertPosixPath, viteIsSSR_options, isNotNullish, scriptFileExtensions, debugGlob } from '../../utils'
-import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
-import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode'
-import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes'
+import { assert, assertPosixPath, viteIsSSR_options, isNotNullish, scriptFileExtensions, debugGlob } from '../../utils.mjs'
+import type { ConfigVpsResolved } from '../../../../shared/ConfigVps.mjs'
+import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.mjs'
+import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes.mjs'
 import path from 'path'
-import { getVirtualFileImportPageConfigs } from './v1-design/getVirtualFileImportPageConfigs'
-import { generateEagerImport } from './generateEagerImport'
+import { getVirtualFileImportPageConfigs } from './v1-design/getVirtualFileImportPageConfigs.mjs'
+import { generateEagerImport } from './generateEagerImport.mjs'
 
 async function getVirtualFileImportUserCode(
   id: string,

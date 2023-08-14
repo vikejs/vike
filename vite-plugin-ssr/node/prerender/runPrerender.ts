@@ -6,7 +6,7 @@ export type { PrerenderOptions }
 
 import '../runtime/page-files/setup'
 import path from 'path'
-import { route } from '../../shared/route'
+import { route } from '../../shared/route.mjs'
 import {
   assert,
   assertUsage,
@@ -24,8 +24,8 @@ import {
   executeHook,
   isPlainObject,
   setNodeEnvToProduction
-} from './utils'
-import { pLimit, PLimit } from '../../utils/pLimit'
+} from './utils.mjs'
+import { pLimit, PLimit } from '../../utils/pLimit.mjs'
 import {
   prerenderPage,
   prerender404Page,
@@ -33,24 +33,24 @@ import {
   type RenderContext,
   getPageContextInitEnhanced,
   PageContextInitEnhanced
-} from '../runtime/renderPage/renderPageAlreadyRouted'
+} from '../runtime/renderPage/renderPageAlreadyRouted.mjs'
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
-import type { PageFile } from '../../shared/getPageFiles'
-import { getGlobalContext, initGlobalContext } from '../runtime/globalContext'
+import type { PageFile } from '../../shared/getPageFiles.mjs'
+import { getGlobalContext, initGlobalContext } from '../runtime/globalContext.mjs'
 import { resolveConfig } from 'vite'
-import { getConfigVps } from '../shared/getConfigVps'
+import { getConfigVps } from '../shared/getConfigVps.mjs'
 import type { InlineConfig } from 'vite'
-import { getPageFilesServerSide } from '../../shared/getPageFiles'
-import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
-import { getUrlFromRouteString } from '../../shared/route/resolveRouteString'
-import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils'
-import { loadPageCode } from '../../shared/page-configs/loadPageCode'
-import { isErrorPage } from '../../shared/error-page'
-import { addUrlComputedProps, PageContextUrlComputedProps } from '../../shared/UrlComputedProps'
-import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute'
-import { isAbortError } from '../../shared/route/abort'
-import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide'
+import { getPageFilesServerSide } from '../../shared/getPageFiles.mjs'
+import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.mjs'
+import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.mjs'
+import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils.mjs'
+import { loadPageCode } from '../../shared/page-configs/loadPageCode.mjs'
+import { isErrorPage } from '../../shared/error-page.mjs'
+import { addUrlComputedProps, PageContextUrlComputedProps } from '../../shared/UrlComputedProps.mjs'
+import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute.mjs'
+import { isAbortError } from '../../shared/route/abort.mjs'
+import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide.mjs'
 
 type HtmlFile = {
   urlOriginal: string

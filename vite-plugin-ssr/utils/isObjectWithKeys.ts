@@ -1,4 +1,4 @@
-import { isPlainObject } from './isPlainObject'
+import { isPlainObject } from './isPlainObject.mjs'
 
 export { isObjectWithKeys }
 

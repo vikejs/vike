@@ -1,10 +1,10 @@
 export { resolveBase }
 export { resolveBaseFromUserConfig }
 
-import { assert, assertUsage, isBaseServer, isBaseAssets } from '../../utils'
+import { assert, assertUsage, isBaseServer, isBaseAssets } from '../../utils.mjs'
 import type { ResolvedConfig, UserConfig } from 'vite'
-import type { ConfigVpsUserProvided } from '../../../../shared/ConfigVps'
-import { pickFirst } from './pickFirst'
+import type { ConfigVpsUserProvided } from '../../../../shared/ConfigVps.mjs'
+import { pickFirst } from './pickFirst.mjs'
 
 type BaseServers = {
   baseServer: string

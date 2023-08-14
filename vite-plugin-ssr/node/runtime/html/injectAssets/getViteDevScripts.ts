@@ -1,7 +1,7 @@
 export { getViteDevScripts }
 
-import { getGlobalContext } from '../../globalContext'
-import { assert, assertUsage } from '../../utils'
+import { getGlobalContext } from '../../globalContext.mjs'
+import { assert, assertUsage } from '../../utils.mjs'
 
 async function getViteDevScripts(): Promise<string> {
   const globalContext = getGlobalContext()

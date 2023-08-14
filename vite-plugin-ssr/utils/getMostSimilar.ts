@@ -1,8 +1,8 @@
 export { getMostSimilar }
 
-import { assert } from './assert'
-import { higherFirst } from './sorter'
-import { assertIsNotBrowser } from './assertIsNotBrowser'
+import { assert } from './assert.mjs'
+import { higherFirst } from './sorter.mjs'
+import { assertIsNotBrowser } from './assertIsNotBrowser.mjs'
 
 assertIsNotBrowser()
 

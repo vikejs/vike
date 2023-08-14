@@ -1,9 +1,9 @@
 export { isClientSideRoutable }
 
-import { getPageId } from '../getPageId'
-import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide'
-import { findPageConfig } from '../../../shared/page-configs/findPageConfig'
-import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide'
+import { getPageId } from '../getPageId.mjs'
+import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.mjs'
+import { findPageConfig } from '../../../shared/page-configs/findPageConfig.mjs'
+import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.mjs'
 
 async function isClientSideRoutable(url: string): Promise<boolean> {
   const { pageId, pageFilesAll, pageConfigs } = await getPageId(url)

@@ -5,8 +5,8 @@ export { assertSyncRouting }
 import {
   assertPageContextUrlComputedPropsPublic,
   PageContextUrlComputedProps,
-} from '../UrlComputedProps'
-import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise, isStringRecord } from './utils'
+} from '../UrlComputedProps.mjs'
+import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise, isStringRecord } from './utils.mjs'
 
 async function resolveRouteFunction(
   routeFunction: Function,

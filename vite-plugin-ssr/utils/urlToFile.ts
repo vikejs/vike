@@ -1,9 +1,9 @@
 export { urlToFile }
 export { baseServer }
 
-import { assert } from './assert'
-import { parseUrl } from './parseUrl'
-import { slice } from './slice'
+import { assert } from './assert.mjs'
+import { parseUrl } from './parseUrl.mjs'
+import { slice } from './slice.mjs'
 
 // - When doing a `.pageContext.json` HTTP request, the base URL should be preserved. (The server-side will handle the base URL.)
 // - While prerendering there is no base URL

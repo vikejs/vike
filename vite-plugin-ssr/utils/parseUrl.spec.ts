@@ -1,4 +1,4 @@
-import { parseUrl } from './parseUrl'
+import { parseUrl } from './parseUrl.mjs'
 import { expect, describe, it } from 'vitest'
 import assert from 'assert'
 

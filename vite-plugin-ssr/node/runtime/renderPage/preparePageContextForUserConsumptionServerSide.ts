@@ -1,16 +1,16 @@
 export { preparePageContextForUserConsumptionServerSide }
 export type { PageContextForUserConsumptionServerSide }
 
-import { assert, isPlainObject, isObject } from '../utils'
-import { sortPageContext } from '../../../shared/sortPageContext'
+import { assert, isPlainObject, isObject } from '../utils.mjs'
+import { sortPageContext } from '../../../shared/sortPageContext.mjs'
 import {
   assertPageContextUrlComputedPropsPublic,
   PageContextUrlComputedPropsPublic
-} from '../../../shared/UrlComputedProps'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig'
-import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps'
-import type { ConfigEntries, ExportsAll } from '../../../shared/getPageFiles/getExports'
-import type { PageContextBuiltIn } from '../../../types'
+} from '../../../shared/UrlComputedProps.mjs'
+import type { PageConfig } from '../../../shared/page-configs/PageConfig.mjs'
+import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.mjs'
+import type { ConfigEntries, ExportsAll } from '../../../shared/getPageFiles/getExports.mjs'
+import type { PageContextBuiltIn } from '../../../types.mjs'
 
 type PageContextForUserConsumptionServerSide = {
   urlOriginal: string

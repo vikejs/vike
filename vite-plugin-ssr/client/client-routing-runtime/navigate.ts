@@ -9,7 +9,7 @@ import {
   assertClientRouting,
   checkIfClientRouting,
   getCurrentUrl
-} from './utils'
+} from './utils.mjs'
 
 assertClientRouting()
 

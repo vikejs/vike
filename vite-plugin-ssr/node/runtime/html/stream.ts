@@ -47,14 +47,14 @@ import {
   createDebugger,
   dynamicImport,
   isBug
-} from '../utils'
-import { HtmlRender } from './renderHtml'
+} from '../utils.mjs'
+import { HtmlRender } from './renderHtml.mjs'
 import {
   getStreamFromReactStreaming,
   isStreamReactStreaming,
   StreamReactStreaming,
   streamReactStreamingToString
-} from './stream/react-streaming'
+} from './stream/react-streaming.mjs'
 import type { Readable as Readable_, Writable as Writable_ } from 'node:stream'
 
 const debug = createDebugger('vps:stream')

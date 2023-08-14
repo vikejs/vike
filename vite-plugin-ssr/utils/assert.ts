@@ -8,10 +8,10 @@ export { getAssertErrMsg }
 export { overwriteAssertProductionLogger }
 export { isBug }
 
-import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace'
-import { getGlobalObject } from './getGlobalObject'
-import { isObject } from './isObject'
-import { projectInfo } from './projectInfo'
+import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace.mjs'
+import { getGlobalObject } from './getGlobalObject.mjs'
+import { isObject } from './isObject.mjs'
+import { projectInfo } from './projectInfo.mjs'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>

@@ -1,10 +1,10 @@
 export { determineOptimizeDeps }
 
 import type { ResolvedConfig } from 'vite'
-import { findPageFiles } from '../../shared/findPageFiles'
-import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageImport, unique } from '../../utils'
-import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig'
-import { ConfigVpsResolved } from '../../../../shared/ConfigVps'
+import { findPageFiles } from '../../shared/findPageFiles.mjs'
+import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageImport, unique } from '../../utils.mjs'
+import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.mjs'
+import { ConfigVpsResolved } from '../../../../shared/ConfigVps.mjs'
 
 async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved, isDev: true) {
   const { entries, include } = await getPageDeps(config, configVps, isDev)

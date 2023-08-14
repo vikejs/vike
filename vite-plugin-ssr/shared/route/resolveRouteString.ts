@@ -4,8 +4,8 @@ export { isStaticRouteString }
 export { analyzeRouteString }
 export { assertRouteString }
 
-import { assertWarning, isBrowser } from '../utils'
-import { assert, assertUsage } from './utils'
+import { assertWarning, isBrowser } from '../utils.mjs'
+import { assert, assertUsage } from './utils.mjs'
 import pc from '@brillout/picocolors'
 
 const PARAM_TOKEN_NEW = '@'

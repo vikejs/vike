@@ -1,11 +1,11 @@
-import { assertServerRouting } from '../../utils/assertRoutingType'
+import { assertServerRouting } from '../../utils/assertRoutingType.mjs'
 assertServerRouting()
 
 import './pageFiles'
-import { getPageContext } from './getPageContext'
-import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook'
-import { assertHook } from '../../shared/hooks/getHook'
-import { onClientEntry_ServerRouting } from './utils'
+import { getPageContext } from './getPageContext.mjs'
+import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.mjs'
+import { assertHook } from '../../shared/hooks/getHook.mjs'
+import { onClientEntry_ServerRouting } from './utils.mjs'
 onClientEntry_ServerRouting(import.meta.env.PROD)
 
 hydrate()

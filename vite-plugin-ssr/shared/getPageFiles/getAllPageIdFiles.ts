@@ -3,9 +3,9 @@
 export { getPageFilesClientSide }
 export { getPageFilesServerSide }
 
-import { assert, assertUsage, isNotNullish } from '../utils'
-import { assertPageFilePath } from '../assertPageFilePath'
-import type { PageFile } from './getPageFileObject'
+import { assert, assertUsage, isNotNullish } from '../utils.mjs'
+import { assertPageFilePath } from '../assertPageFilePath.mjs'
+import type { PageFile } from './getPageFileObject.mjs'
 
 function getPageFilesClientSide(pageFilesAll: PageFile[], pageId: string): PageFile[] {
   return determine(pageFilesAll, pageId, true)

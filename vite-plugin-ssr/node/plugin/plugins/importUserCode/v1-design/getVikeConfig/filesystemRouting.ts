@@ -6,7 +6,7 @@ export { sortAfterInheritanceOrder }
 export { isGlobalLocation }
 export { applyFilesystemRoutingRootEffect }
 
-import { assert, assertPosixPath, getNpmPackageImportPath, isNpmPackageImport, higherFirst } from '../../../../utils'
+import { assert, assertPosixPath, getNpmPackageImportPath, isNpmPackageImport, higherFirst } from '../../../../utils.mjs'
 
 /**
  * getLocationId('/pages/some-page/+Page.js') => '/pages/some-page'

@@ -1,10 +1,10 @@
 export { baseUrls }
 
 import type { Plugin } from 'vite'
-import { resolveBaseFromUserConfig } from '../plugins/config/resolveBase'
-import { assert } from '../utils'
-import { getConfigVps } from '../../shared/getConfigVps'
-import type { ConfigVpsUserProvided } from '../../../shared/ConfigVps'
+import { resolveBaseFromUserConfig } from '../plugins/config/resolveBase.mjs'
+import { assert } from '../utils.mjs'
+import { getConfigVps } from '../../shared/getConfigVps.mjs'
+import type { ConfigVpsUserProvided } from '../../../shared/ConfigVps.mjs'
 
 function baseUrls(configVps?: ConfigVpsUserProvided): Plugin {
   let baseServer: string
@@ -25,7 +25,7 @@ function baseUrls(configVps?: ConfigVpsUserProvided): Plugin {
           'BASE_SERVER',
           'BASE_ASSETS'
         ],
-        base: baseAssets, // Make Vite inject baseAssets to imports e.g. `import logoUrl from './logo.svg'`
+        base: baseAssets, // Make Vite inject baseAssets to imports e.g. `import logoUrl from './logo.svg.mjs'`
         _baseOriginal: config.base ?? '/__UNSET__' // Vite resolves `_baseOriginal: null` to `undefined`
       }
     },

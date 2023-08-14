@@ -3,7 +3,7 @@ export { pathJoin }
 // Simple shim for `import * from "node:path"` used by the server runtime.
 // Robust alternative: https://github.com/unjs/pathe
 
-import { assert } from './assert'
+import { assert } from './assert.mjs'
 
 function pathJoin(path1: string, path2: string): string {
   assert(!path1.includes('\\'))

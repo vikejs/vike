@@ -8,8 +8,8 @@ export { normalizeBaseServer }
 export { isBaseServer }
 export { isBaseAssets }
 
-import { slice } from './slice'
-import { assert, assertUsage } from './assert'
+import { slice } from './slice.mjs'
+import { assert, assertUsage } from './assert.mjs'
 
 function isParsable(url: string): boolean {
   // `parseUrl()` works with these URLs

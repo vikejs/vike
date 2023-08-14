@@ -1,10 +1,10 @@
 export { retrieveAssetsProd }
 
-import { assert, isNpmPackageImport } from '../../utils'
-import type { ViteManifest } from '../../../shared/ViteManifest'
-import { getManifestEntry } from './getManifestEntry'
-import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery'
-import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
+import { assert, isNpmPackageImport } from '../../utils.mjs'
+import type { ViteManifest } from '../../../shared/ViteManifest.mjs'
+import { getManifestEntry } from './getManifestEntry.mjs'
+import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.mjs'
+import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.mjs'
 
 function retrieveAssetsProd(
   clientDependencies: ClientDependency[],

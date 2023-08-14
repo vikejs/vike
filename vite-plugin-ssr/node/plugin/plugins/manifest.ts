@@ -1,13 +1,13 @@
 export { manifest }
 
 import { Plugin, ResolvedConfig } from 'vite'
-import { projectInfo, viteIsSSR, toPosixPath, assertPosixPath, isNotNullish } from '../utils'
-import { assertPluginManifest } from '../../shared/assertPluginManifest'
-import { isUsingClientRouter } from './extractExportNamesPlugin'
-import { getConfigVps } from '../../shared/getConfigVps'
-import type { ConfigVpsResolved } from '../../../shared/ConfigVps'
+import { projectInfo, viteIsSSR, toPosixPath, assertPosixPath, isNotNullish } from '../utils.mjs'
+import { assertPluginManifest } from '../../shared/assertPluginManifest.mjs'
+import { isUsingClientRouter } from './extractExportNamesPlugin.mjs'
+import { getConfigVps } from '../../shared/getConfigVps.mjs'
+import type { ConfigVpsResolved } from '../../../shared/ConfigVps.mjs'
 import path from 'path'
-import { getRuntimeManifest } from '../../runtime/globalContext'
+import { getRuntimeManifest } from '../../runtime/globalContext.mjs'
 
 function manifest(): Plugin[] {
   let configVps: ConfigVpsResolved

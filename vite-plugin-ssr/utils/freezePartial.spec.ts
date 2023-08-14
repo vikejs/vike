@@ -1,5 +1,5 @@
 import { expect, describe, it } from 'vitest'
-import { freezePartial } from './freezePartial'
+import { freezePartial } from './freezePartial.mjs'
 
 describe('freezePartial', () => {
   it('works', () => {

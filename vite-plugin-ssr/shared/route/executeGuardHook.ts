@@ -1,10 +1,10 @@
 export { executeGuardHook }
 
-import { getHook, Hook } from '../hooks/getHook'
-import { assert, assertUsage, executeHook } from './utils'
-import type { PageContextExports, PageFile } from '../getPageFiles'
-import type { PageConfig } from '../page-configs/PageConfig'
-import { findPageGuard } from './loadPageRoutes'
+import { getHook, Hook } from '../hooks/getHook.mjs'
+import { assert, assertUsage, executeHook } from './utils.mjs'
+import type { PageContextExports, PageFile } from '../getPageFiles.mjs'
+import type { PageConfig } from '../page-configs/PageConfig.mjs'
+import { findPageGuard } from './loadPageRoutes.mjs'
 
 async function executeGuardHook<
   T extends PageContextExports & {

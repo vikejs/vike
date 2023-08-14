@@ -1,8 +1,8 @@
 export { injectAssets__public }
 
-import { assertUsage, assertWarning, castProp, hasProp } from '../../utils'
-import { injectHtmlTagsToString } from '../injectAssets'
-import type { PageAsset } from '../../renderPage/getPageAssets'
+import { assertUsage, assertWarning, castProp, hasProp } from '../../utils.mjs'
+import { injectHtmlTagsToString } from '../injectAssets.mjs'
+import type { PageAsset } from '../../renderPage/getPageAssets.mjs'
 
 // TODO: remove this on next semver major
 async function injectAssets__public(htmlString: string, pageContext: Record<string, unknown>): Promise<string> {

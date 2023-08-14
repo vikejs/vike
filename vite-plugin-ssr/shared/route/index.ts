@@ -2,22 +2,22 @@ export { route }
 export type { PageRoutes, PageContextForRoute, RouteMatches }
 
 // Ensure we don't bloat runtime of Server Routing
-import { assertClientRouting } from '../../utils/assertRoutingType'
-import { isBrowser } from '../../utils/isBrowser'
+import { assertClientRouting } from '../../utils/assertRoutingType.mjs'
+import { isBrowser } from '../../utils/isBrowser.mjs'
 if (isBrowser()) {
   assertClientRouting()
 }
 
-import type { PageFile } from '../getPageFiles'
-import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils'
-import { addUrlComputedProps, PageContextUrlComputedProps, PageContextUrlSources } from '../UrlComputedProps'
-import { resolvePrecendence } from './resolvePrecedence'
-import { resolveRouteString } from './resolveRouteString'
-import { resolveRouteFunction } from './resolveRouteFunction'
-import { executeOnBeforeRouteHook, type OnBeforeRouteHook } from './executeOnBeforeRouteHook'
-import type { PageRoutes, RouteType } from './loadPageRoutes'
-import { debug } from './debug'
-import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig'
+import type { PageFile } from '../getPageFiles.mjs'
+import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils.mjs'
+import { addUrlComputedProps, PageContextUrlComputedProps, PageContextUrlSources } from '../UrlComputedProps.mjs'
+import { resolvePrecendence } from './resolvePrecedence.mjs'
+import { resolveRouteString } from './resolveRouteString.mjs'
+import { resolveRouteFunction } from './resolveRouteFunction.mjs'
+import { executeOnBeforeRouteHook, type OnBeforeRouteHook } from './executeOnBeforeRouteHook.mjs'
+import type { PageRoutes, RouteType } from './loadPageRoutes.mjs'
+import { debug } from './debug.mjs'
+import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.mjs'
 
 type PageContextForRoute = PageContextUrlComputedProps & {
   _pageFilesAll: PageFile[]

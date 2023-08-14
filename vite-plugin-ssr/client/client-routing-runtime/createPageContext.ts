@@ -1,10 +1,10 @@
 export { createPageContext }
 
-import { addUrlComputedProps } from '../../shared/UrlComputedProps'
-import { getPageFilesAll } from '../../shared/getPageFiles'
-import { loadPageRoutes } from '../../shared/route/loadPageRoutes'
-import { getBaseServer } from './getBaseServer'
-import { assert, isBaseServer, PromiseType, objectAssign, getGlobalObject } from './utils'
+import { addUrlComputedProps } from '../../shared/UrlComputedProps.mjs'
+import { getPageFilesAll } from '../../shared/getPageFiles.mjs'
+import { loadPageRoutes } from '../../shared/route/loadPageRoutes.mjs'
+import { getBaseServer } from './getBaseServer.mjs'
+import { assert, isBaseServer, PromiseType, objectAssign, getGlobalObject } from './utils.mjs'
 const globalObject = getGlobalObject<{
   pageFilesData?: PromiseType<ReturnType<typeof getPageFilesAll>>
 }>('createPageContext.ts', {})

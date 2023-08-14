@@ -2,10 +2,10 @@ export { importUserCode }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode } from 'vite'
 import { normalizePath } from 'vite'
-import type { ConfigVpsResolved } from '../../../../shared/ConfigVps'
-import { getConfigVps } from '../../../shared/getConfigVps'
-import { getVirtualFileImportCodeFiles } from './v1-design/getVirtualFileImportCodeFiles'
-import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode'
+import type { ConfigVpsResolved } from '../../../../shared/ConfigVps.mjs'
+import { getConfigVps } from '../../../shared/getConfigVps.mjs'
+import { getVirtualFileImportCodeFiles } from './v1-design/getVirtualFileImportCodeFiles.mjs'
+import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.mjs'
 import {
   assert,
   assertPosixPath,
@@ -15,12 +15,12 @@ import {
   isDev1_onConfigureServer,
   isVirtualFileId,
   resolveVirtualFileId
-} from '../../utils'
-import { isVirtualFileIdImportPageCode } from '../../../shared/virtual-files/virtualFileImportPageCode'
-import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode'
-import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile } from './v1-design/getVikeConfig'
+} from '../../utils.mjs'
+import { isVirtualFileIdImportPageCode } from '../../../shared/virtual-files/virtualFileImportPageCode.mjs'
+import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.mjs'
+import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile } from './v1-design/getVikeConfig.mjs'
 import pc from '@brillout/picocolors'
-import { logConfigInfo, clearLogs } from '../../shared/loggerNotProd'
+import { logConfigInfo, clearLogs } from '../../shared/loggerNotProd.mjs'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig

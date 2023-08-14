@@ -22,7 +22,7 @@ import type {
   Config as Config_,
   Env as Env_,
   ConfigEntries as ConfigEntries_
-} from './index'
+} from './index.mjs'
 
 /** @deprecated All types have been moved to `vite-plugin-ssr/types`.
  * Replace:

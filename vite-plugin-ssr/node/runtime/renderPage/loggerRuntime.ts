@@ -4,8 +4,8 @@ export let logRuntimeError: LogError
 export let logRuntimeInfo: null | LogInfo = null // logInfo is null in production
 export { overwriteRuntimeProductionLogger }
 
-import { logErrorProd } from './loggerProd'
-import type { LogError, LogInfo } from '../../plugin/shared/loggerNotProd'
+import { logErrorProd } from './loggerProd.mjs'
+import type { LogError, LogInfo } from '../../plugin/shared/loggerNotProd.mjs'
 
 // Set production logger (which is overwritten by loggerNotProd.ts in non-production environments such as development and during pre-rendering)
 logRuntimeError =

@@ -1,7 +1,7 @@
 export { isAlreadyPrefetched }
 export { markAsAlreadyPrefetched }
 
-import { parseUrl } from '../utils'
+import { parseUrl } from '../utils.mjs'
 
 const linkAlreadyPrefetched = new Map<string, true>()
 

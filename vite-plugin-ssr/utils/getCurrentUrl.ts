@@ -1,7 +1,7 @@
 export { getCurrentUrl }
 
-import { parseUrl } from './parseUrl'
-import { assert } from './assert'
+import { parseUrl } from './parseUrl.mjs'
+import { assert } from './assert.mjs'
 
 function getCurrentUrl(options?: { withoutHash: true }): string {
   const url = window.location.href

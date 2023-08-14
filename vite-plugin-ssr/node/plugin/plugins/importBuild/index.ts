@@ -2,7 +2,7 @@ export { importBuild }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { importBuild as importBuild_ } from '@brillout/vite-plugin-import-build/plugin'
-import { getOutDirs, projectInfo, toPosixPath } from '../../utils'
+import { getOutDirs, projectInfo, toPosixPath } from '../../utils.mjs'
 import path from 'path'
 
 function importBuild(): Plugin[] {

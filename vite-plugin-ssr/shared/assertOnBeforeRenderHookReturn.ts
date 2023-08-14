@@ -1,8 +1,8 @@
 export { assertOnBeforeRenderHookReturn }
 
-import { assertUsage, isPlainObject } from './utils'
-import { assertPageContextProvidedByUser } from './assertPageContextProvidedByUser'
-import { assertHookReturnedObject } from './assertHookReturnedObject'
+import { assertUsage, isPlainObject } from './utils.mjs'
+import { assertPageContextProvidedByUser } from './assertPageContextProvidedByUser.mjs'
+import { assertHookReturnedObject } from './assertHookReturnedObject.mjs'
 
 function assertOnBeforeRenderHookReturn<Keys extends readonly string[]>(
   hookReturnValue: unknown,

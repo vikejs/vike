@@ -7,15 +7,15 @@ export { setGlobalContext_vitePreviewServer }
 export { setGlobalContext_viteConfig }
 export { getRuntimeManifest }
 
-import { assert, assertUsage, assertWarning, getGlobalObject, getNodeEnv, isPlainObject, objectAssign } from './utils'
-import type { ViteManifest } from '../shared/ViteManifest'
+import { assert, assertUsage, assertWarning, getGlobalObject, getNodeEnv, isPlainObject, objectAssign } from './utils.mjs'
+import type { ViteManifest } from '../shared/ViteManifest.mjs'
 import type { ResolvedConfig, ViteDevServer, PreviewServerForHook as VitePreviewServer } from 'vite'
-import { loadImportBuild } from './globalContext/loadImportBuild'
-import { setPageFiles } from '../../shared/getPageFiles'
-import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest'
-import type { ConfigVpsResolved } from '../../shared/ConfigVps'
-import { getConfigVps } from '../shared/getConfigVps'
-import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest'
+import { loadImportBuild } from './globalContext/loadImportBuild.mjs'
+import { setPageFiles } from '../../shared/getPageFiles.mjs'
+import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest.mjs'
+import type { ConfigVpsResolved } from '../../shared/ConfigVps.mjs'
+import { getConfigVps } from '../shared/getConfigVps.mjs'
+import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.mjs'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   viteDevServer?: ViteDevServer

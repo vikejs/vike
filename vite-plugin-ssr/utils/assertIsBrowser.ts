@@ -1,7 +1,7 @@
 export { assertIsBrowser }
 
-import { isBrowser } from './isBrowser'
-import { assert } from './assert'
+import { isBrowser } from './isBrowser.mjs'
+import { assert } from './assert.mjs'
 
 function assertIsBrowser() {
   assert(isBrowser())

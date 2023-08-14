@@ -1,7 +1,7 @@
 export { resolveExtensions }
 
 import type { ResolvedConfig } from 'vite'
-import type { ConfigVpsUserProvided, ExtensionResolved } from '../../../../shared/ConfigVps'
+import type { ConfigVpsUserProvided, ExtensionResolved } from '../../../../shared/ConfigVps.mjs'
 import {
   assert,
   assertUsage,
@@ -10,10 +10,10 @@ import {
   isNpmPackageName,
   getDependencyRootDir,
   assertPosixPath
-} from '../../utils'
+} from '../../utils.mjs'
 import path from 'path'
 import fs from 'fs'
-import { isValidFileType } from '../../../../shared/getPageFiles/fileTypes'
+import { isValidFileType } from '../../../../shared/getPageFiles/fileTypes.mjs'
 
 function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedConfig): ExtensionResolved[] {
   const extensions = configs.map((c) => c.extensions ?? []).flat()

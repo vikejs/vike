@@ -7,7 +7,7 @@ export { isValidPathAlias }
 // For ./isNpmPackage.spec.ts
 export { parse }
 
-import { assertIsNotBrowser } from './assertIsNotBrowser'
+import { assertIsNotBrowser } from './assertIsNotBrowser.mjs'
 assertIsNotBrowser()
 
 function isNpmPackageImport(str: string): boolean {

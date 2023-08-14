@@ -1,7 +1,7 @@
 export { getExportNames }
 
-import { assert } from '../../utils'
-import type { PageFile } from '../getPageFileObject'
+import { assert } from '../../utils.mjs'
+import type { PageFile } from '../getPageFileObject.mjs'
 
 function getExportNames(p: PageFile): string[] {
   if (p.fileType === '.css') {

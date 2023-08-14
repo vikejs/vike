@@ -1,11 +1,11 @@
 export { executeHook }
 export { isUserHookError }
 
-import { getProjectError, assertWarning } from '../../utils/assert'
-import { getGlobalObject } from '../../utils/getGlobalObject'
-import { humanizeTime } from '../../utils/humanizeTime'
-import { isObject } from '../../utils/isObject'
-import type { HookLoc, HookName } from './getHook'
+import { getProjectError, assertWarning } from '../../utils/assert.mjs'
+import { getGlobalObject } from '../../utils/getGlobalObject.mjs'
+import { humanizeTime } from '../../utils/humanizeTime.mjs'
+import { isObject } from '../../utils/isObject.mjs'
+import type { HookLoc, HookName } from './getHook.mjs'
 
 const globalObject = getGlobalObject('utils/executeHook.ts', {
   userHookErrors: new Map<object, HookLoc>()

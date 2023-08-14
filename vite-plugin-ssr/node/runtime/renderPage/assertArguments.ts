@@ -1,6 +1,6 @@
 export { assertArguments }
 
-import { assert, assertUsage, assertWarning, hasProp, isPlainObject } from '../utils'
+import { assert, assertUsage, assertWarning, hasProp, isPlainObject } from '../utils.mjs'
 
 function assertArguments(...args: unknown[]): void {
   const prefix = '[renderPage(pageContextInit)]'

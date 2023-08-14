@@ -4,8 +4,8 @@ export type { Hook }
 export type { HookName }
 export type { HookLoc }
 
-import { PageContextExports } from '../getPageFiles'
-import { assert, assertUsage, isCallable } from '../utils'
+import { PageContextExports } from '../getPageFiles.mjs'
+import { assert, assertUsage, isCallable } from '../utils.mjs'
 
 type Hook = HookLoc & { hookFn: (arg: unknown) => unknown }
 type HookName =

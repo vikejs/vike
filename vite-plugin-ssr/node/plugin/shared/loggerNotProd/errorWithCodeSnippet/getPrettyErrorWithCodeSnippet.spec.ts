@@ -1,18 +1,18 @@
-import { getPrettyErrorWithCodeSnippet, isErrorWithCodeSnippet } from '../errorWithCodeSnippet'
+import { getPrettyErrorWithCodeSnippet, isErrorWithCodeSnippet } from '../errorWithCodeSnippet.mjs'
 
 import { expect, describe, it } from 'vitest'
-import { stripAnsi } from '../../../utils'
+import { stripAnsi } from '../../../utils.mjs'
 
-import { errBabelSolid } from './fixture-errors/errBabelSolid'
-import { errBabelReact } from './fixture-errors/errBabelReact'
-import { errEsbuild } from './fixture-errors/errEsbuild'
-import { errVueCss } from './fixture-errors/errVueCss'
-import { errVueJavascript } from './fixture-errors/errVueJavascript'
-import { errVueHtml } from './fixture-errors/errVueHtml'
-import { errSwc } from './fixture-errors/errSwc'
-import { errSwcBig } from './fixture-errors/errSwcBig'
-import { errMdx } from './fixture-errors/errMdx'
-import { errPostcss } from './fixture-errors/errPostcss'
+import { errBabelSolid } from './fixture-errors/errBabelSolid.mjs'
+import { errBabelReact } from './fixture-errors/errBabelReact.mjs'
+import { errEsbuild } from './fixture-errors/errEsbuild.mjs'
+import { errVueCss } from './fixture-errors/errVueCss.mjs'
+import { errVueJavascript } from './fixture-errors/errVueJavascript.mjs'
+import { errVueHtml } from './fixture-errors/errVueHtml.mjs'
+import { errSwc } from './fixture-errors/errSwc.mjs'
+import { errSwcBig } from './fixture-errors/errSwcBig.mjs'
+import { errMdx } from './fixture-errors/errMdx.mjs'
+import { errPostcss } from './fixture-errors/errPostcss.mjs'
 
 // To generate new test cases:
 // Uncomment the console.log() statements in ./errorWithCodeSnippet.ts
@@ -98,7 +98,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
       [@vue/compiler-sfc] Missing semicolon. 
       12 |  
       13 |  <script lang=\\"ts\\" setup>
-      14 |  imeport Counter from '../../components/Counter.vue'
+      14 |  imeport Counter from '../../components/Counter.vue.mjs'
          |         ^
       15 |  import { navigate } from 'vite-plugin-ssr/client/router'
       16 |"
@@ -124,7 +124,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /renderer/PageShell.tsx because:
       Unexpected \\"}\\"
-      5  |  import type { PageContext } from './types'
+      5  |  import type { PageContext } from './types.mjs'
       6  |  
       7  |  export { PageShell }}
          |                      ^
@@ -138,7 +138,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /renderer/PageShell.tsx because:
       Unexpected token 
-         5 | import type { PageContext } from './types'
+         5 | import type { PageContext } from './types.mjs'
          6 |
       >  7 | export { PageShell }}
            |                     ^

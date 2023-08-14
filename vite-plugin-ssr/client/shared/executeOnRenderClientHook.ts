@@ -1,13 +1,13 @@
 export { executeOnRenderClientHook }
 
-import { assert, assertUsage, executeHook } from '../server-routing-runtime/utils'
-import { getHook, type Hook } from '../../shared/hooks/getHook'
-import type { PageFile, PageContextExports } from '../../shared/getPageFiles'
+import { assert, assertUsage, executeHook } from '../server-routing-runtime/utils.mjs'
+import { getHook, type Hook } from '../../shared/hooks/getHook.mjs'
+import type { PageFile, PageContextExports } from '../../shared/getPageFiles.mjs'
 import {
   type PageContextForUserConsumptionClientSide,
   preparePageContextForUserConsumptionClientSide
-} from './preparePageContextForUserConsumptionClientSide'
-import type { PageConfig } from '../../shared/page-configs/PageConfig'
+} from './preparePageContextForUserConsumptionClientSide.mjs'
+import type { PageConfig } from '../../shared/page-configs/PageConfig.mjs'
 
 async function executeOnRenderClientHook<
   PC extends {

@@ -8,7 +8,7 @@ export type { ImportData }
 
 import { parse } from 'acorn'
 import type { Program, Identifier, ImportDeclaration } from 'estree'
-import { assert, assertUsage, assertWarning, styleFileRE } from '../../../utils'
+import { assert, assertUsage, assertWarning, styleFileRE } from '../../../utils.mjs'
 import pc from '@brillout/picocolors'
 
 type FileImport = {

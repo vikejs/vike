@@ -1,4 +1,4 @@
-import { getCurrentUrl, getGlobalObject } from '../server-routing-runtime/utils'
+import { getCurrentUrl, getGlobalObject } from '../server-routing-runtime/utils.mjs'
 const globalObject = getGlobalObject<{ navigationChanged?: true }>('navigationState.ts', {})
 
 const urlFirst = getCurrentUrl()

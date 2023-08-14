@@ -1,6 +1,6 @@
 export { assertHookReturnedObject }
 
-import { assert, assertUsage, stringifyStringArray } from './utils'
+import { assert, assertUsage, stringifyStringArray } from './utils.mjs'
 
 function assertHookReturnedObject<Keys extends readonly string[]>(
   obj: Record<string, unknown>,

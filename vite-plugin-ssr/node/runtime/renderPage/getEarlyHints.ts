@@ -1,9 +1,9 @@
 export { getEarlyHints }
 export type { EarlyHint }
 
-import { inferEarlyHintLink } from '../html/injectAssets/inferHtmlTags'
-import { assert } from '../utils'
-import type { PageAsset } from './getPageAssets'
+import { inferEarlyHintLink } from '../html/injectAssets/inferHtmlTags.mjs'
+import { assert } from '../utils.mjs'
+import type { PageAsset } from './getPageAssets.mjs'
 
 type EarlyHint = PageAsset & {
   earlyHintLink: string

@@ -4,7 +4,7 @@ export { getStemPackages }
 export type { StemPackage }
 
 import path from 'path'
-import { assert, assertUsage, assertWarning, toPosixPath, assertPosixPath, getDependencyRootDir } from '../../utils'
+import { assert, assertUsage, assertWarning, toPosixPath, assertPosixPath, getDependencyRootDir } from '../../utils.mjs'
 import { import_ } from '@brillout/import'
 import fs from 'fs'
 

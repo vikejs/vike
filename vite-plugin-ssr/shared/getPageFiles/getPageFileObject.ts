@@ -3,11 +3,11 @@
 export { getPageFileObject }
 export type { PageFile }
 
-import { determinePageIdOld } from '../determinePageIdOld'
-import { assertPageFilePath } from '../assertPageFilePath'
-import { isErrorPageId } from '../error-page'
-import { assert, slice } from '../utils'
-import { determineFileType, FileType } from './fileTypes'
+import { determinePageIdOld } from '../determinePageIdOld.mjs'
+import { assertPageFilePath } from '../assertPageFilePath.mjs'
+import { isErrorPageId } from '../error-page.mjs'
+import { assert, slice } from '../utils.mjs'
+import { determineFileType, FileType } from './fileTypes.mjs'
 
 type PageFile = {
   filePath: string

@@ -1,5 +1,5 @@
-import { isObject } from './isObject'
-import { deepEqual } from './deepEqual'
+import { isObject } from './isObject.mjs'
+import { deepEqual } from './deepEqual.mjs'
 
 export { isEquivalentError }
 
