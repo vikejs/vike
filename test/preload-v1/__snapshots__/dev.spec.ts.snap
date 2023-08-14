@@ -4,10 +4,10 @@ exports[`preload tags > Preload Default 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/server-router-runtime/entry.ts>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/server-routing-runtime/entry.ts>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vite-plugin-ssr/client/server-router-runtime/entry.ts",
+    "src": "/@fs/$ROOT/vite-plugin-ssr/client/server-routing-runtime/entry.ts",
   },
   {
     "assetType": "style",
@@ -31,7 +31,7 @@ window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 import(\\"/@vite/client\\");
-import(\\"/@fs/$ROOT/vite-plugin-ssr/client/server-router-runtime/entry.ts\\");
+import(\\"/@fs/$ROOT/vite-plugin-ssr/client/server-routing-runtime/entry.ts\\");
 </script>
         <script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageProps\\":\\"!undefined\\",\\"abortReason\\":\\"!undefined\\",\\"_urlRewrite\\":null,\\"_urlRedirect\\":\\"!undefined\\",\\"_abortStatusCode\\":\\"!undefined\\",\\"_abortCall\\":\\"!undefined\\",\\"_abortCaller\\":\\"!undefined\\",\\"_pageContextInitHasClientData\\":\\"!undefined\\",\\"_pageId\\":\\"/pages/index\\"}</script>
       </head>
@@ -45,10 +45,10 @@ exports[`preload tags > Preload Disabled 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/server-router-runtime/entry.ts>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/server-routing-runtime/entry.ts>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vite-plugin-ssr/client/server-router-runtime/entry.ts",
+    "src": "/@fs/$ROOT/vite-plugin-ssr/client/server-routing-runtime/entry.ts",
   },
   {
     "assetType": "style",
@@ -72,7 +72,7 @@ window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 import(\\"/@vite/client\\");
-import(\\"/@fs/$ROOT/vite-plugin-ssr/client/server-router-runtime/entry.ts\\");
+import(\\"/@fs/$ROOT/vite-plugin-ssr/client/server-routing-runtime/entry.ts\\");
 </script>
         <script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageProps\\":\\"!undefined\\",\\"abortReason\\":\\"!undefined\\",\\"_urlRewrite\\":null,\\"_urlRedirect\\":\\"!undefined\\",\\"_abortStatusCode\\":\\"!undefined\\",\\"_abortCall\\":\\"!undefined\\",\\"_abortCaller\\":\\"!undefined\\",\\"_pageContextInitHasClientData\\":\\"!undefined\\",\\"_pageId\\":\\"/pages/preload-disabled\\"}</script>
       </head>
@@ -86,10 +86,10 @@ exports[`preload tags > Preload Eager 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/server-router-runtime/entry.ts>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/server-routing-runtime/entry.ts>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vite-plugin-ssr/client/server-router-runtime/entry.ts",
+    "src": "/@fs/$ROOT/vite-plugin-ssr/client/server-routing-runtime/entry.ts",
   },
   {
     "assetType": "style",
@@ -113,7 +113,7 @@ window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 import(\\"/@vite/client\\");
-import(\\"/@fs/$ROOT/vite-plugin-ssr/client/server-router-runtime/entry.ts\\");
+import(\\"/@fs/$ROOT/vite-plugin-ssr/client/server-routing-runtime/entry.ts\\");
 </script>
         <script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageProps\\":\\"!undefined\\",\\"abortReason\\":\\"!undefined\\",\\"_urlRewrite\\":null,\\"_urlRedirect\\":\\"!undefined\\",\\"_abortStatusCode\\":\\"!undefined\\",\\"_abortCall\\":\\"!undefined\\",\\"_abortCaller\\":\\"!undefined\\",\\"_pageContextInitHasClientData\\":\\"!undefined\\",\\"_pageId\\":\\"/pages/preload-eager\\"}</script>
       </head>
@@ -127,10 +127,10 @@ exports[`preload tags > Preload Images 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/server-router-runtime/entry.ts>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/server-routing-runtime/entry.ts>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vite-plugin-ssr/client/server-router-runtime/entry.ts",
+    "src": "/@fs/$ROOT/vite-plugin-ssr/client/server-routing-runtime/entry.ts",
   },
   {
     "assetType": "style",
@@ -154,7 +154,7 @@ window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 import(\\"/@vite/client\\");
-import(\\"/@fs/$ROOT/vite-plugin-ssr/client/server-router-runtime/entry.ts\\");
+import(\\"/@fs/$ROOT/vite-plugin-ssr/client/server-routing-runtime/entry.ts\\");
 </script>
         <script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageProps\\":\\"!undefined\\",\\"abortReason\\":\\"!undefined\\",\\"_urlRewrite\\":null,\\"_urlRedirect\\":\\"!undefined\\",\\"_abortStatusCode\\":\\"!undefined\\",\\"_abortCall\\":\\"!undefined\\",\\"_abortCaller\\":\\"!undefined\\",\\"_pageContextInitHasClientData\\":\\"!undefined\\",\\"_pageId\\":\\"/pages/preload-images\\"}</script>
       </head>

@@ -42,7 +42,7 @@
       "types": "./dist/types/node/runtime/index.d.ts"
     },
     "./client": {
-      "types": "./dist/types/client/server-router-runtime/index.d.ts"
+      "types": "./dist/types/client/server-routing-runtime/index.d.ts"
     },
     "./types": {
       "types": "./dist/types/types/index.d.ts"
@@ -51,8 +51,8 @@
       "worker": "./dist/cjs/node/client/router.js",
       "edge-light": "./dist/cjs/node/client/router.js",
       "node": "./dist/cjs/node/client/router.js",
-      "browser": "./dist/esm/client/client-router-runtime/index.js",
-      "types": "./dist/types/client/client-router-runtime/index.d.ts"
+      "browser": "./dist/esm/client/client-routing-runtime/index.js",
+      "types": "./dist/types/client/client-routing-runtime/index.d.ts"
     },
     "./routing": {
       "worker": "./dist/cjs/shared/route/routing.js",
@@ -116,10 +116,10 @@
         "./dist/types/node/runtime/index.d.ts"
       ],
       "client": [
-        "./dist/types/client/server-router-runtime/index.d.ts"
+        "./dist/types/client/server-routing-runtime/index.d.ts"
       ],
       "client/router": [
-        "./dist/types/client/client-router-runtime/index.d.ts"
+        "./dist/types/client/client-routing-runtime/index.d.ts"
       ],
       "routing": [
         "./dist/types/shared/route/routing.d.ts"
