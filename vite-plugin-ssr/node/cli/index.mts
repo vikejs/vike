@@ -1,6 +1,6 @@
 // TODO/v1-release: remove this file
 
-import { prerender as prerenderOriginal } from '../prerender.mjs'
+import { prerender as prerenderOriginal } from '../prerender/index.mjs'
 import { assertWarning } from './utils.mjs'
 export const prerender: typeof prerenderOriginal = (options) => {
   assertWarning(

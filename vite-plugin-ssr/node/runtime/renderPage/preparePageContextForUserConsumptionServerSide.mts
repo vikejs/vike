@@ -10,7 +10,7 @@ import {
 import type { PageConfig } from '../../../shared/page-configs/PageConfig.mjs'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.mjs'
 import type { ConfigEntries, ExportsAll } from '../../../shared/getPageFiles/getExports.mjs'
-import type { PageContextBuiltIn } from '../../../types.mjs'
+import type { PageContextBuiltIn } from '../../../types/index.mjs'
 
 type PageContextForUserConsumptionServerSide = {
   urlOriginal: string

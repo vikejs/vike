@@ -58,7 +58,7 @@ function expectErr(fn: Function, validate: (msg: string) => void) {
   try {
     fn()
   } catch (err_) {
-    err = err_
+    err = err_ as Error
   }
   expect(err).toBeTruthy()
   assert(err)

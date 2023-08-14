@@ -1,5 +1,5 @@
 import { expect, describe, it } from 'vitest'
-import { getPagesAndRoutesInfo } from '../log404.mjs'
+import { getPagesAndRoutesInfo } from '../log404/index.mjs'
 import { stripAnsi } from '../../utils.mjs'
 import type { PageRoutes } from '../../../../shared/route/index.mjs'
 

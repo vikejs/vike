@@ -40,10 +40,10 @@ import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime.mjs'
 import { isNewError } from './renderPage/isNewError.mjs'
 import { assertArguments } from './renderPage/assertArguments.mjs'
 import type { PageContextDebug } from './renderPage/debugPageFiles.mjs'
-import { log404 } from './renderPage/log404.mjs'
+import { log404 } from './renderPage/log404/index.mjs'
 import { isConfigInvalid } from './renderPage/isConfigInvalid.mjs'
 import pc from '@brillout/picocolors'
-import type { PageContextBuiltIn } from '../../types.mjs'
+import type { PageContextBuiltIn } from '../../types/index.mjs'
 import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide.mjs'
 import { getErrorPageId } from '../../shared/error-page.mjs'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.mjs'
@@ -55,7 +55,7 @@ const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
   pendingRequestsCount: 0
 })
-let renderPage_wrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
+let renderPage_wrapper = async <PageContext,>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
   pageContextReturn: await ret(),
   onRequestDone: () => {}
 })
