@@ -195,7 +195,7 @@ function prependEntriesDir(entryName: string): string {
 function resolve(filePath: string) {
   assert(filePath.startsWith('dist/'))
   // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vite-plugin-ssr/dist/node/plugin/plugins/
-  return require.resolve(`../../../../../${filePath}`)
+  return require.resolve(`../../../../${filePath}`)
 }
 
 function normalizeRollupInput(input?: InputOption): Record<string, string> {
