@@ -7,6 +7,8 @@ import path from 'path'
 import { assert, assertUsage, assertWarning, toPosixPath, assertPosixPath, getDependencyRootDir } from '../../utils.mjs'
 import { import_ } from '@brillout/import'
 import fs from 'fs'
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
 
 type StemPackage = {
   stemPackageName: string
