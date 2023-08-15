@@ -1,10 +1,10 @@
-const express = require('express')
-const { renderPage } = require('vite-plugin-ssr/server')
-const { ApolloClient, createHttpLink, InMemoryCache } = require('@apollo/client')
-const fetch = require('node-fetch')
-
+import express from 'express'
+import { renderPage } from 'vite-plugin-ssr/server'
+import apollo from '@apollo/client'
+const { ApolloClient, createHttpLink, InMemoryCache } = apollo
+import fetch from 'node-fetch'
+import { root } from './root.js'
 const isProduction = process.env.NODE_ENV === 'production'
-const root = `${__dirname}/..`
 
 startServer()
 
@@ -14,7 +14,7 @@ async function startServer() {
   if (isProduction) {
     app.use(express.static(`${root}/dist/client`))
   } else {
-    const vite = require('vite')
+    const vite = await import('vite')
     const viteDevMiddleware = (
       await vite.createServer({
         root,
