@@ -4,7 +4,7 @@ export { prerenderFromAutoFullBuild }
 export { prerenderForceExit }
 export type { PrerenderOptions }
 
-import '../runtime/page-files/setup'
+import '../runtime/page-files/setup.mjs'
 import path from 'path'
 import { route } from '../../shared/route/index.mjs'
 import {

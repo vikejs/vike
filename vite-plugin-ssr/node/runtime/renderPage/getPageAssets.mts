@@ -25,7 +25,6 @@ import type { ConfigVpsResolved } from '../../../shared/ConfigVps.mjs'
 import { getGlobalContext } from '../globalContext.mjs'
 import { assertClientEntryId } from './getPageAssets/assertClientEntryId.mjs'
 import type { ViteManifest } from '../../shared/ViteManifest.mjs'
-import { import_ } from '@brillout/import'
 import type { createRequire as CreateRequire } from 'module'
 
 type PageAsset = {
@@ -142,12 +141,18 @@ async function resolveClientEntriesDev(
     filePath = pathJoin(root, clientEntry)
   } else if (clientEntry.startsWith('@@vite-plugin-ssr/')) {
     // VPS client entry
-    assert(clientEntry.endsWith('.js'))
-    const createRequire = (await import_('module')).createRequire as typeof CreateRequire
+
+    const { createRequire } = (await import(/*webpackIgnore: true*/ 'module')).default
+    const { dirname } = (await import(/*webpackIgnore: true*/ 'path')).default
+    const { fileURLToPath } = (await import(/*webpackIgnore: true*/ 'url')).default
     const req = createRequire(import.meta.url)
+    const __dirname = dirname(fileURLToPath(import.meta.url))
+
     // @ts-expect-error
     // Bun workaround https://github.com/brillout/vite-plugin-ssr/pull/1048
     const res = typeof Bun !== 'undefined' ? (toPath: string) => Bun.resolveSync(toPath, __dirname) : req.resolve
+
+    assert(clientEntry.endsWith('.js'))
     try {
       // For Vitest (which doesn't resolve vite-plugin-ssr to its dist but to its source files)
       // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/node/runtime/renderPage/getPageAssets.mjs

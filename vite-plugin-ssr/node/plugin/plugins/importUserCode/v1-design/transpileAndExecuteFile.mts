@@ -21,7 +21,7 @@ import {
 } from '../../../utils.mjs'
 import { isImportData, replaceImportStatements, type FileImport } from './replaceImportStatements.mjs'
 import { vikeConfigDependencies } from './getVikeConfig.mjs'
-import 'source-map-support/register'
+import 'source-map-support/register.js'
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.mjs'
 
 assertIsNotProductionRuntime()

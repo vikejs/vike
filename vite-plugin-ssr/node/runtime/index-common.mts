@@ -15,4 +15,4 @@ declare global {
   var _isVike: true
 }
 
-import './page-files/setup'
+import './page-files/setup.mjs'
