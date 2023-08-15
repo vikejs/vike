@@ -14,6 +14,10 @@ import { toPosixPath } from './filesystemPathHandling.mjs'
 import { isObject } from './isObject.mjs'
 import path from 'path'
 import fs from 'fs'
+import { createRequire } from 'module'
+import { assertIsNotProductionRuntime } from './assertIsNotProductionRuntime.mjs'
+const require = createRequire(import.meta.url)
+assertIsNotProductionRuntime()
 
 function getDependencyPackageJson(npmPackageName: string, userAppRootDir: string): Record<string, unknown> {
   const packageJsonPath = getDependencyPackageJsonPath(npmPackageName, userAppRootDir)

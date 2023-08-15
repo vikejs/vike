@@ -8,7 +8,8 @@ import path from 'path'
 import { assertIsNotProductionRuntime } from './assertIsNotProductionRuntime.mjs'
 import { isNpmPackageImport } from './isNpmPackage.mjs'
 import { assertPathIsFilesystemAbsolute } from './assertPathIsFilesystemAbsolute.mjs'
-
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
 assertIsNotProductionRuntime()
 
 // Vite handles paths such as /pages/index.page.js which are relative to `config.root`.
