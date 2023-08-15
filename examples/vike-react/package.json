@@ -15,7 +15,7 @@
     "typescript": "^5.0.2",
     "vike-react": "^0.1.6",
     "vite": "^4.3.8",
-    "vite-plugin-ssr": "0.4.135"
+    "vite-plugin-ssr": "0.4.136"
   },
   "type": "module"
 }

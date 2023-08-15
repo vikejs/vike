@@ -8,7 +8,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "vite": "^4.0.3",
-    "vite-plugin-ssr": "0.4.135"
+    "vite-plugin-ssr": "0.4.136"
   },
   "type": "module"
 }

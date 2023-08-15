@@ -1,3 +1,21 @@
+## [0.4.136](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.135...v0.4.136) (2023-08-15)
+
+
+### Bug Fixes
+
+* contentType migratation link ([588f5eb](https://github.com/brillout/vite-plugin-ssr/commit/588f5eb9ed10ab5b3f235e661cb85b355f545e08))
+* ensure correct Node.js version (fix [#1068](https://github.com/brillout/vite-plugin-ssr/issues/1068)) ([3b305cb](https://github.com/brillout/vite-plugin-ssr/commit/3b305cbb83a3a9667c5ce1565520aaf5dca28033))
+* gracefully hanlde infinite loop of URL redirects/rewrites ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([522bd0f](https://github.com/brillout/vite-plugin-ssr/commit/522bd0fa3190e31aa4f59e781f7661d1a9569b12))
+* improve redirect logging ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([ec17c1f](https://github.com/brillout/vite-plugin-ssr/commit/ec17c1f2a2a92c209fba3676d30286ee84f7c3fa))
+* stop superfluous copying of publicDir for dist/server/ ([de43088](https://github.com/brillout/vite-plugin-ssr/commit/de4308860847d286af071f37157c11fb9e428a4d))
+
+
+### Features
+
+* config.redirects ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([c230680](https://github.com/brillout/vite-plugin-ssr/commit/c2306806a653f5fbe9f7ca85aa97c2fc54802169))
+
+
+
 ## [0.4.135](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.134...v0.4.135) (2023-08-05)
 
 

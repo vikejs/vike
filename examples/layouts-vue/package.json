@@ -9,7 +9,7 @@
     "@vue/compiler-sfc": "^3.2.33",
     "@vue/server-renderer": "^3.2.33",
     "vite": "^4.0.3",
-    "vite-plugin-ssr": "0.4.135",
+    "vite-plugin-ssr": "0.4.136",
     "vue": "^3.2.33"
   },
   "type": "module"
