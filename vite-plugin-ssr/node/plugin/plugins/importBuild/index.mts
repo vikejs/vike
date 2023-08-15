@@ -36,14 +36,14 @@ function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
   const importPath = path.posix.relative(outDirServer, importPathAbsolute)
   // The only reason we went for using CJS require() instead of ESM import() is because import() doesn't support .json files
   const importerCode = [
-    '{',
-    `  const { setImportBuildGetters } = require('${importPath}');`,
+    '(async () => {',
+    `  const { setImportBuildGetters } = await import('${importPath}');`,
     '  setImportBuildGetters({',
     `    pageFiles: () => import('./${pageFilesEntry}'),`,
     "    clientManifest: () => require('../client/manifest.json'),",
     "    pluginManifest: () => require('../client/vite-plugin-ssr.json'),",
     '  });',
-    '}',
+    '})()',
     ''
   ].join('\n')
   return importerCode
