@@ -152,7 +152,7 @@ async function resolveClientEntriesDev(
     // Bun workaround https://github.com/brillout/vite-plugin-ssr/pull/1048
     const res = typeof Bun !== 'undefined' ? (toPath: string) => Bun.resolveSync(toPath, __dirname) : req.resolve
 
-    assert(clientEntry.endsWith('.js'))
+    assert(clientEntry.endsWith('.mjs'))
     try {
       // For Vitest (which doesn't resolve vite-plugin-ssr to its dist but to its source files)
       // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/node/runtime/renderPage/getPageAssets.mjs
