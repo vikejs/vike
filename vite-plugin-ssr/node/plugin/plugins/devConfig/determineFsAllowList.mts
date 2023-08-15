@@ -6,6 +6,8 @@ import path from 'path'
 import fs from 'fs'
 import type { ConfigVpsResolved } from '../../../../shared/ConfigVps.mjs'
 import { assert } from '../../utils.mjs'
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
 
 async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVpsResolved) {
   const fsAllow = config.server.fs.allow

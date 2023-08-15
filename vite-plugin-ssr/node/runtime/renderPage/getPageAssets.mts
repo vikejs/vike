@@ -25,6 +25,8 @@ import type { ConfigVpsResolved } from '../../../shared/ConfigVps.mjs'
 import { getGlobalContext } from '../globalContext.mjs'
 import { assertClientEntryId } from './getPageAssets/assertClientEntryId.mjs'
 import type { ViteManifest } from '../../shared/ViteManifest.mjs'
+import { import_ } from '@brillout/import'
+import type { createRequire as CreateRequire } from 'module'
 
 type PageAsset = {
   src: string
@@ -52,8 +54,8 @@ async function getPageAssets(
   let clientEntriesSrc: string[]
   if (isDev) {
     const { viteDevServer, configVps } = globalContext
-    clientEntriesSrc = clientEntries.map((clientEntry) =>
-      resolveClientEntriesDev(clientEntry, viteDevServer, configVps)
+    clientEntriesSrc = await Promise.all(
+      clientEntries.map((clientEntry) => resolveClientEntriesDev(clientEntry, viteDevServer, configVps))
     )
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {
@@ -111,11 +113,11 @@ async function getPageAssets(
   return pageAssets
 }
 
-function resolveClientEntriesDev(
+async function resolveClientEntriesDev(
   clientEntry: string,
   viteDevServer: ViteDevServer,
   configVps: ConfigVpsResolved
-): string {
+): Promise<string> {
   assertClientEntryId(clientEntry)
 
   let root = viteDevServer.config.root
@@ -141,7 +143,8 @@ function resolveClientEntriesDev(
   } else if (clientEntry.startsWith('@@vite-plugin-ssr/')) {
     // VPS client entry
     assert(clientEntry.endsWith('.js'))
-    const req = require // Prevent webpack from bundling client code
+    const createRequire = (await import_('module')).createRequire as typeof CreateRequire
+    const req = createRequire(import.meta.url)
     // @ts-expect-error
     // Bun workaround https://github.com/brillout/vite-plugin-ssr/pull/1048
     const res = typeof Bun !== 'undefined' ? (toPath: string) => Bun.resolveSync(toPath, __dirname) : req.resolve

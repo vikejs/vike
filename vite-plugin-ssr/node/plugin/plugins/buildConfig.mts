@@ -24,6 +24,8 @@ import type { PageConfigData } from '../../../shared/page-configs/PageConfig.mjs
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.mjs'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.mjs'
 type InputOption = Rollup.InputOption
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
 
 function buildConfig(): Plugin {
   return {

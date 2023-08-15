@@ -14,6 +14,8 @@ import {
 import path from 'path'
 import fs from 'fs'
 import { isValidFileType } from '../../../../shared/getPageFiles/fileTypes.mjs'
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
 
 function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedConfig): ExtensionResolved[] {
   const extensions = configs.map((c) => c.extensions ?? []).flat()

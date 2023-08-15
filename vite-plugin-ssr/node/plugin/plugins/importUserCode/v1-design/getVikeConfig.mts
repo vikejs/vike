@@ -55,6 +55,8 @@ import {
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.mjs'
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.mjs'
 import type { ConfigNameBuiltIn } from '../../../../../shared/page-configs/Config.mjs'
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
 
 assertIsNotProductionRuntime()
 
