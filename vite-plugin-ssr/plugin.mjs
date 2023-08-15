@@ -1,2 +1,2 @@
 // eslint doesn't seem to support `package.json#exports`.
-module.exports = require('./dist/cjs/node/plugin/index.mjs')
+export * from './dist/cjs/node/plugin/index.mjs'
