@@ -69,7 +69,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     const serverEntries = analyzeServerEntries(pageConfigsData)
     const entries = {
       pageFiles: virtualFileIdImportUserCodeServer, // TODO/next-major-release: rename to configFiles
-      importBuild: resolve('dist/cjs/node/importBuild.mjs'), // TODO/next-major-release: remove
+      importBuild: resolve('dist/node/importBuild.mjs'), // TODO/next-major-release: remove
       ...pageFileEntries,
       ...serverEntries
     }
@@ -84,8 +84,8 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
       ...clientEntries,
       ...pageFileEntries
     }
-    const clientRoutingEntry = resolve(`dist/esm/client/client-routing-runtime/entry.mjs`)
-    const serverRoutingEntry = resolve(`dist/esm/client/server-routing-runtime/entry.mjs`)
+    const clientRoutingEntry = resolve(`dist/client/client-routing-runtime/entry.mjs`)
+    const serverRoutingEntry = resolve(`dist/client/server-routing-runtime/entry.mjs`)
     if (hasClientRouting) {
       entries['entries/entry-client-routing'] = clientRoutingEntry
     }
@@ -192,7 +192,7 @@ function prependEntriesDir(entryName: string): string {
 
 function resolve(filePath: string) {
   assert(filePath.startsWith('dist/'))
-  // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vite-plugin-ssr/dist/cjs/node/plugin/plugins/
+  // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vite-plugin-ssr/dist/node/plugin/plugins/
   return require.resolve(`../../../../../${filePath}`)
 }
 

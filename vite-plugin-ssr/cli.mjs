@@ -1,2 +1,2 @@
 // eslint doesn't seem to support `package.json#exports`.
-export * from './dist/cjs/node/cli/index.mjs'
+export * from './dist/node/cli/index.mjs'

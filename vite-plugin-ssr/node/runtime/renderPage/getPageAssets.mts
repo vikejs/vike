@@ -149,13 +149,13 @@ function resolveClientEntriesDev(
       // For Vitest
       // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/node/runtime/html/injectAssets.mjs
       filePath = toPosixPath(
-        res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../../client/').replace('.mjs', '.mts'))
+        res(clientEntry.replace('@@vite-plugin-ssr/dist/client/', '../../../client/').replace('.mjs', '.mts'))
       )
     } catch {
       // For users
-      // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/dist/cjs/node/runtime/html/injectAssets.mjs
+      // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/dist/node/runtime/html/injectAssets.mjs
       filePath = toPosixPath(
-        res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../../../../dist/esm/client/'))
+        res(clientEntry.replace('@@vite-plugin-ssr/dist/client/', '../../../../../dist/client/'))
       )
     }
   } else if (isNpmPackageImport(clientEntry)) {
