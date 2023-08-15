@@ -17,7 +17,6 @@ import {
   isObjectWithKeys,
   isCallable,
   getOutDirs_prerender,
-  loadModuleAtRuntime,
   hasPropertyGetter,
   assertPosixPath,
   urlToFile,
@@ -108,7 +107,7 @@ type PrerenderOptions = {
    * We recommend to either omit this option or set it to `prerender({ viteConfig: { root }})`: the `vite.config.js` file living at `root` will be loaded.
    *
    * Alternatively you can:
-   *  - Set `prerender({ viteConfig: { configFile: require.resolve('./path/to/vite.config.js') }})`.
+   *  - Set `prerender({ viteConfig: { configFile: './path/to/vite.config.js' }})`.
    *  - Not load any `vite.config.js` file and, instead, use `prerender({ viteConfig: { configFile: false, ...myViteConfig }})` to programmatically define the entire Vite config.
    *
    * You can also load a `vite.config.js` file while overriding parts of the Vite config.
@@ -167,7 +166,7 @@ async function runPrerender(
 
   setNodeEnvToProduction()
 
-  disableReactStreaming()
+  await disableReactStreaming()
 
   const viteConfig = await resolveConfig(options.viteConfig || {}, 'vite-plugin-ssr pre-rendering' as any, 'production')
   assertLoadedConfig(viteConfig, options)
@@ -921,7 +920,7 @@ function write(
       })
       await onPagePrerender(prerenderPageContext)
     } else {
-      const { promises } = require('fs')
+      const { promises } = await import('fs')
       const { writeFile, mkdir } = promises
       await mkdir(path.posix.dirname(filePath), { recursive: true })
       await writeFile(filePath, fileContent)
@@ -1026,10 +1025,10 @@ function checkOutdatedOptions(options: {
   })
 }
 
-function disableReactStreaming() {
+async function disableReactStreaming() {
   let mod: any
   try {
-    mod = loadModuleAtRuntime('react-streaming/server')
+    mod = await import('react-streaming/server')
   } catch {
     return
   }
