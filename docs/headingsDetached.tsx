@@ -296,5 +296,13 @@ const headingsDetached = [
   {
     title: 'Page Redirection',
     url: '/page-redirection'
+  },
+  {
+    title: (
+      <>
+        Migration <code>0.5</code>
+      </>
+    ),
+    url: '/migration-0.5'
   }
 ] satisfies HeadingDetachedDefinition[]
