@@ -24,74 +24,75 @@
     "sirv": "^2.0.2",
     "source-map-support": "^0.5.21"
   },
+  "type": "module",
   "exports": {
     ".": {
-      "worker": "./dist/node/runtime/index-deprecated.mjs",
-      "edge-light": "./dist/node/runtime/index-deprecated.mjs",
-      "node": "./dist/node/runtime/index-deprecated.mjs",
-      "browser": "./dist/client/node.mjs",
-      "types": "./dist/node/runtime/index-deprecated.d.mts"
+      "worker": "./dist/node/runtime/index-deprecated.js",
+      "edge-light": "./dist/node/runtime/index-deprecated.js",
+      "node": "./dist/node/runtime/index-deprecated.js",
+      "browser": "./dist/client/node.js",
+      "types": "./dist/node/runtime/index-deprecated.d.ts"
     },
     "./server": {
-      "worker": "./dist/node/runtime/index.mjs",
-      "edge-light": "./dist/node/runtime/index.mjs",
-      "node": "./dist/node/runtime/index.mjs",
-      "browser": "./dist/client/node.mjs",
-      "types": "./dist/node/runtime/index.d.mts"
+      "worker": "./dist/node/runtime/index.js",
+      "edge-light": "./dist/node/runtime/index.js",
+      "node": "./dist/node/runtime/index.js",
+      "browser": "./dist/client/node.js",
+      "types": "./dist/node/runtime/index.d.ts"
     },
     "./client": {
-      "types": "./dist/client/server-routing-runtime/index.d.mts"
+      "types": "./dist/client/server-routing-runtime/index.d.ts"
     },
     "./types": {
-      "types": "./dist/types/index.d.mts"
+      "types": "./dist/types/index.d.ts"
     },
     "./client/router": {
-      "worker": "./dist/node/client/router.mjs",
-      "edge-light": "./dist/node/client/router.mjs",
-      "node": "./dist/node/client/router.mjs",
-      "browser": "./dist/client/client-routing-runtime/index.mjs",
-      "types": "./dist/client/client-routing-runtime/index.d.mts"
+      "worker": "./dist/node/client/router.js",
+      "edge-light": "./dist/node/client/router.js",
+      "node": "./dist/node/client/router.js",
+      "browser": "./dist/client/client-routing-runtime/index.js",
+      "types": "./dist/client/client-routing-runtime/index.d.ts"
     },
     "./routing": {
-      "worker": "./dist/shared/route/routing.mjs",
-      "edge-light": "./dist/shared/route/routing.mjs",
-      "node": "./dist/shared/route/routing.mjs",
-      "browser": "./dist/shared/route/routing.mjs",
-      "types": "./dist/shared/route/routing.d.mts"
+      "worker": "./dist/shared/route/routing.js",
+      "edge-light": "./dist/shared/route/routing.js",
+      "node": "./dist/shared/route/routing.js",
+      "browser": "./dist/shared/route/routing.js",
+      "types": "./dist/shared/route/routing.d.ts"
     },
     "./cli": {
-      "node": "./dist/node/cli/index.mjs",
-      "types": "./dist/node/cli/index.d.mts"
+      "node": "./dist/node/cli/index.js",
+      "types": "./dist/node/cli/index.d.ts"
     },
     "./prerender": {
-      "node": "./dist/node/prerender/index.mjs",
-      "types": "./dist/node/prerender/index.d.mts"
+      "node": "./dist/node/prerender/index.js",
+      "types": "./dist/node/prerender/index.d.ts"
     },
     "./plugin": {
-      "node": "./dist/node/plugin/index.mjs",
-      "types": "./dist/node/plugin/index.d.mts"
+      "node": "./dist/node/plugin/index.js",
+      "types": "./dist/node/plugin/index.d.ts"
     },
     "./RenderErrorPage": {
-      "worker": "./dist/shared/RenderErrorPage.mjs",
-      "edge-light": "./dist/shared/RenderErrorPage.mjs",
-      "node": "./dist/shared/RenderErrorPage.mjs",
-      "browser": "./dist/shared/RenderErrorPage.mjs",
-      "types": "./dist/shared/RenderErrorPage.d.mts"
+      "worker": "./dist/shared/RenderErrorPage.js",
+      "edge-light": "./dist/shared/RenderErrorPage.js",
+      "node": "./dist/shared/RenderErrorPage.js",
+      "browser": "./dist/shared/RenderErrorPage.js",
+      "types": "./dist/shared/RenderErrorPage.d.ts"
     },
     "./abort": {
-      "worker": "./dist/shared/abort.mjs",
-      "edge-light": "./dist/shared/abort.mjs",
-      "node": "./dist/shared/abort.mjs",
-      "browser": "./dist/shared/abort.mjs",
-      "types": "./dist/shared/abort.d.mts"
+      "worker": "./dist/shared/abort.js",
+      "edge-light": "./dist/shared/abort.js",
+      "node": "./dist/shared/abort.js",
+      "browser": "./dist/shared/abort.js",
+      "types": "./dist/shared/abort.d.ts"
     },
     "./__internal": {
-      "node": "./dist/__internal/index.mjs",
-      "types": "./dist/__internal/index.d.mts"
+      "node": "./dist/__internal/index.js",
+      "types": "./dist/__internal/index.d.ts"
     },
     "./__internal/setup": {
-      "node": "./dist/node/runtime/page-files/setup.mjs",
-      "types": "./dist/node/runtime/page-files/setup.d.mts"
+      "node": "./dist/node/runtime/page-files/setup.js",
+      "types": "./dist/node/runtime/page-files/setup.d.ts"
     }
   },
   "peerDependencies": {
@@ -103,50 +104,50 @@
       "optional": true
     }
   },
-  "main": "./dist/node/runtime/index-deprecated.mjs",
-  "types": "./dist/node/runtime/index-deprecated.d.mts",
+  "main": "./dist/node/runtime/index-deprecated.js",
+  "types": "./dist/node/runtime/index-deprecated.d.ts",
   "typesVersions": {
     "*": {
       "types": [
-        "./dist/types/index.d.mts"
+        "./dist/types/index.d.ts"
       ],
       "server": [
-        "./dist/node/runtime/index.d.mts"
+        "./dist/node/runtime/index.d.ts"
       ],
       "client": [
-        "./dist/client/server-routing-runtime/index.d.mts"
+        "./dist/client/server-routing-runtime/index.d.ts"
       ],
       "client/router": [
-        "./dist/client/client-routing-runtime/index.d.mts"
+        "./dist/client/client-routing-runtime/index.d.ts"
       ],
       "routing": [
-        "./dist/shared/route/routing.d.mts"
+        "./dist/shared/route/routing.d.ts"
       ],
       "cli": [
-        "./dist/node/cli/index.d.mts"
+        "./dist/node/cli/index.d.ts"
       ],
       "prerender": [
-        "./dist/node/prerender/index.d.mts"
+        "./dist/node/prerender/index.d.ts"
       ],
       "plugin": [
-        "./dist/node/plugin/index.d.mts"
+        "./dist/node/plugin/index.d.ts"
       ],
       "RenderErrorPage": [
-        "./dist/shared/RenderErrorPage.d.mts"
+        "./dist/shared/RenderErrorPage.d.ts"
       ],
       "abort": [
-        "./dist/shared/abort.d.mts"
+        "./dist/shared/abort.d.ts"
       ],
       "__internal": [
-        "./dist/__internal/index.d.mts"
+        "./dist/__internal/index.d.ts"
       ],
       "__internal/setup": [
-        "./dist/node/runtime/page-files/setup.d.mts"
+        "./dist/node/runtime/page-files/setup.d.ts"
       ]
     }
   },
   "bin": {
-    "vite-plugin-ssr": "./node/cli/bin-entry.mjs"
+    "vite-plugin-ssr": "./node/cli/bin-entry.js"
   },
   "devDependencies": {
     "@brillout/part-regex": "^0.1.2",
@@ -167,17 +168,17 @@
   "repository": "https://github.com/brillout/vite-plugin-ssr",
   "files": [
     "dist/",
-    "cli.mjs",
-    "client.mjs",
-    "client/router.mjs",
-    "plugin.mjs",
-    "prerender.mjs",
-    "routing.mjs",
-    "abort.mjs",
-    "RenderErrorPage.mjs",
-    "server.mjs",
-    "__internal.mjs",
-    "__internal/setup.mjs"
+    "cli.js",
+    "client.js",
+    "client/router.js",
+    "plugin.js",
+    "prerender.js",
+    "routing.js",
+    "abort.js",
+    "RenderErrorPage.js",
+    "server.js",
+    "__internal.js",
+    "__internal/setup.js"
   ],
   "license": "MIT",
   "keywords": [
