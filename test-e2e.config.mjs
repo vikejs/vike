@@ -196,7 +196,7 @@ function tolerateError({ logSource, logText }) {
   function isNodeExperimentalEsmLoader() {
     return (
       logSource === 'stderr' &&
-      logText.includes('ExperimentalWarning: Custom ESM Loaders is an experimental feature.')
+      logText.includes('ExperimentalWarning: Custom ESM Loaders is an experimental feature')
     )
   }
 }
