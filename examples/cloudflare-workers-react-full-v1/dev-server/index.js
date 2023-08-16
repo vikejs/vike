@@ -1,10 +1,10 @@
 // We use a Express.js server for development
 
-const express = require('express')
-const { renderPage } = require('vite-plugin-ssr/server')
-const vite = require('vite')
-const fetch = require('node-fetch')
-const compression = require('compression')
+import express from 'express'
+import { renderPage } from 'vite-plugin-ssr/server'
+import vite from 'vite'
+import fetch from 'node-fetch'
+import compression from 'compression'
 
 startServer()
 

@@ -1,11 +1,9 @@
-const react = require('@vitejs/plugin-react')
-const ssr = require('vite-plugin-ssr/plugin')
+import react from '@vitejs/plugin-react'
+import ssr from 'vite-plugin-ssr/plugin'
 
-const config = {
+export default {
   plugins: [react(), ssr()],
   ssr: {
     noExternal: ['@apollo/client']
   }
 }
-
-export default config

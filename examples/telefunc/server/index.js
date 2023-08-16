@@ -1,9 +1,12 @@
-const express = require('express')
-const { renderPage } = require('vite-plugin-ssr/server')
-const { telefunc } = require('telefunc')
+// This file isn't processed by Vite, see https://github.com/brillout/vite-plugin-ssr/issues/562
+// Consequently:
+//  - When changing this file, you needed to manually restart your server for your changes to take effect.
+//  - To use your environment variables defined in your .env files, you need to install dotenv, see https://vite-plugin-ssr.com/env
+//  - To use your path aliases defined in your vite.config.js, you need to tell Node.js about them, see https://vite-plugin-ssr.com/path-aliases
 
-const isProduction = process.env.NODE_ENV === 'production'
-const root = `${__dirname}/..`
+import express from 'express'
+import { renderPage } from 'vite-plugin-ssr/server'
+import { root } from './root.js'
 
 startServer()
 
@@ -13,7 +16,7 @@ async function startServer() {
   if (isProduction) {
     app.use(express.static(`${root}/dist/client`))
   } else {
-    const vite = require('vite')
+    const vite = await import('vite')
     const viteDevMiddleware = (
       await vite.createServer({
         root,

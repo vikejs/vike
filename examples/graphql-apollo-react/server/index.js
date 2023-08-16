@@ -1,10 +1,16 @@
-const express = require('express')
-const { renderPage } = require('vite-plugin-ssr/server')
-const { ApolloClient, createHttpLink, InMemoryCache } = require('@apollo/client')
-const fetch = require('node-fetch')
+// This file isn't processed by Vite, see https://github.com/brillout/vite-plugin-ssr/issues/562
+// Consequently:
+//  - When changing this file, you needed to manually restart your server for your changes to take effect.
+//  - To use your environment variables defined in your .env files, you need to install dotenv, see https://vite-plugin-ssr.com/env
+//  - To use your path aliases defined in your vite.config.js, you need to tell Node.js about them, see https://vite-plugin-ssr.com/path-aliases
 
+import express from 'express'
+import { renderPage } from 'vite-plugin-ssr/server'
+import { root } from './root.js'
+import fetch from 'node-fetch'
+import apollo from '@apollo/client'
+const { ApolloClient, createHttpLink, InMemoryCache } = apollo
 const isProduction = process.env.NODE_ENV === 'production'
-const root = `${__dirname}/..`
 
 startServer()
 
@@ -14,7 +20,7 @@ async function startServer() {
   if (isProduction) {
     app.use(express.static(`${root}/dist/client`))
   } else {
-    const vite = require('vite')
+    const vite = await import('vite')
     const viteDevMiddleware = (
       await vite.createServer({
         root,

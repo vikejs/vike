@@ -1,8 +1,7 @@
-const express = require('express')
-const { renderPage } = require('vite-plugin-ssr/server')
-
+import express from 'express'
+import { renderPage } from 'vite-plugin-ssr/server'
+import { root } from './root.js'
 const isProduction = process.env.NODE_ENV === 'production'
-const root = `${__dirname}/..`
 
 startServer()
 
@@ -12,7 +11,7 @@ async function startServer() {
   if (isProduction) {
     app.use(express.static(`${root}/dist/client`))
   } else {
-    const vite = require('vite')
+    const vite = await import('vite')
     const viteDevMiddleware = (
       await vite.createServer({
         root,
