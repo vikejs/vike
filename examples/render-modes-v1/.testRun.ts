@@ -289,7 +289,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
       )
     } else {
       expect(html).toMatch(
-        partRegex`import("/@fs/${path}/vite-plugin-ssr/vite-plugin-ssr/dist/esm/client/client-routing-runtime/entry.js");`
+        partRegex`import("/@fs/${path}/vite-plugin-ssr/vite-plugin-ssr/dist/client/client-routing-runtime/entry.mjs");`
       )
     }
   }
