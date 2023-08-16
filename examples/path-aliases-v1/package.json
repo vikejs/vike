@@ -7,8 +7,9 @@
     "prod": "npm run build && npm run server:prod",
     "prod:static": "npm run build && npm run server:static",
     "build": "vite build",
-    "server:dev": "ts-node ./server",
-    "server:prod": "cross-env NODE_ENV=production ts-node ./server",
+    "server": "node --loader ts-node/esm ./server/index.ts",
+    "server:dev": "npm run server",
+    "server:prod": "cross-env NODE_ENV=production npm run server",
     "server:static": "serve dist/client/ --listen 3000"
   },
   "dependencies": {
