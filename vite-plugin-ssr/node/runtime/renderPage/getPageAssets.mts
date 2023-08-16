@@ -5,7 +5,6 @@ export type { PageContextGetPageAssets }
 
 import {
   assert,
-  normalizePath,
   prependBase,
   assertPosixPath,
   toPosixPath,
@@ -103,7 +102,7 @@ async function getPageAssets(
 
   pageAssets = pageAssets.map((pageAsset) => {
     const baseServerAssets = pageContext._baseAssets || pageContext._baseServer
-    pageAsset.src = prependBase(normalizePath(pageAsset.src), baseServerAssets)
+    pageAsset.src = prependBase(toPosixPath(pageAsset.src), baseServerAssets)
     return pageAsset
   })
 
