@@ -18,7 +18,7 @@ async function startServer() {
   app.use(compression())
 
   if (isProduction) {
-    const sirv = await import('sirv')
+    const sirv = (await import('sirv')).default
     app.use(sirv(`${root}/dist/client`))
   } else {
     const vite = await import('vite')
