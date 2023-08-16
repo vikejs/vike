@@ -11,5 +11,6 @@
     "vite": "^4.1.4",
     "vite-plugin-ssr": "0.4.136",
     "vue": "^3.2.47"
-  }
+  },
+  "type": "module"
 }
