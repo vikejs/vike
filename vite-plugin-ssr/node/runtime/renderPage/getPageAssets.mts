@@ -25,7 +25,7 @@ import type { ConfigVpsResolved } from '../../../shared/ConfigVps.mjs'
 import { getGlobalContext } from '../globalContext.mjs'
 import { assertClientEntryId } from './getPageAssets/assertClientEntryId.mjs'
 import type { ViteManifest } from '../../shared/ViteManifest.mjs'
-import type { createRequire as CreateRequire } from 'module'
+import { import_ } from '@brillout/import'
 
 type PageAsset = {
   src: string
@@ -142,9 +142,9 @@ async function resolveClientEntriesDev(
   } else if (clientEntry.startsWith('@@vite-plugin-ssr/')) {
     // VPS client entry
 
-    const { createRequire } = (await import(/*webpackIgnore: true*/ 'module')).default
-    const { dirname } = (await import(/*webpackIgnore: true*/ 'path')).default
-    const { fileURLToPath } = (await import(/*webpackIgnore: true*/ 'url')).default
+    const { createRequire } = (await import_('module')).default as Awaited<typeof import('module')>
+    const { dirname } = ((await import_('path'))).default as Awaited<typeof import('path')>
+    const { fileURLToPath } = (await import_('url')).default as Awaited<typeof import('url')>
     const req = createRequire(import.meta.url)
     const __dirname = dirname(fileURLToPath(import.meta.url))
 
