@@ -6,11 +6,11 @@ import { msg } from '#root/server/msg'
 
 import express from 'express'
 import { renderPage } from 'vite-plugin-ssr/server'
+import { root } from './root.js'
 
 console.log(msg)
 
 const isProduction = process.env.NODE_ENV === 'production'
-const root = `${__dirname}/..`
 
 startServer()
 
