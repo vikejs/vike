@@ -6,7 +6,9 @@
 
 import express from 'express'
 import { renderPage } from 'vite-plugin-ssr/server'
+import { telefunc } from 'telefunc'
 import { root } from './root.js'
+const isProduction = process.env.NODE_ENV === 'production'
 
 startServer()
 
