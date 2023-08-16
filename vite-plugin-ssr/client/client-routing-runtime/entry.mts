@@ -4,6 +4,7 @@ assertClientRouting()
 import './pageFiles'
 import { useClientRouter } from './useClientRouter.mjs'
 import { onClientEntry_ClientRouting } from './utils.mjs'
-onClientEntry_ClientRouting(import.meta.env.PROD)
+const isProd: boolean = import.meta.env.PROD
+onClientEntry_ClientRouting(isProd)
 
 useClientRouter()

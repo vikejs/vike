@@ -16,10 +16,11 @@ async function loadPageFilesClientSide(
   const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
   const pageConfig = findPageConfig(pageConfigs, pageId)
   let pageConfigLoaded: null | PageConfigLoaded
+  const isDev: boolean = import.meta.env.DEV
   try {
     // prettier-ignore
     const result = await Promise.all([
-      pageConfig && loadPageCode(pageConfig, import.meta.env.DEV),
+      pageConfig && loadPageCode(pageConfig, isDev),
       ...pageFilesClientSide.map((p) => p.loadFile?.()),
     ])
     pageConfigLoaded = result[0]

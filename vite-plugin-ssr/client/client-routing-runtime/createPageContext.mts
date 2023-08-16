@@ -22,12 +22,13 @@ async function createPageContext<T extends { urlOriginal: string }>(pageContextB
   )
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))
+  const isProd: boolean = import.meta.env.PROD
   const pageContext = {
     _objectCreatedByVitePluginSsr: true,
     _urlHandler: null,
     _urlRewrite: null,
     _baseServer: baseServer,
-    _isProduction: import.meta.env.PROD,
+    _isProduction: isProd,
     // TODO: use GlobalContext instead
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs,

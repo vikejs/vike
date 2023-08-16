@@ -50,11 +50,12 @@ function disableClientRouting(err: unknown, log: boolean) {
     // We don't use console.error() to avoid flooding error trackers such as Sentry
     console.log(err)
   }
+  const isProd: boolean = import.meta.env.PROD
   assertInfo(
     false,
     [
       'Failed to fetch static asset.',
-      import.meta.env.PROD ? 'This usually happens when a new frontend is deployed.' : null,
+      isProd ? 'This usually happens when a new frontend is deployed.' : null,
       'Falling back to Server Routing.',
       '(The next page navigation will use Server Routing instead of Client Routing.)'
     ]
