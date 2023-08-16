@@ -303,6 +303,6 @@ const headingsDetached = [
         Migration <code>0.5</code>
       </>
     ),
-    url: '/migration-0.5'
+    url: '/migration/0.5'
   }
 ] satisfies HeadingDetachedDefinition[]
