@@ -54,6 +54,10 @@ function plugin(vpsConfig?: ConfigVpsUserProvided): any {
   return plugins
 }
 
+// Enable `const ssr = require('vite-plugin-ssr/plugin')`
+// This lives at the end of the file to ensure it happens after all assignments to `exports`
+module.exports = Object.assign(exports.default, exports)
+
 // Error upon wrong usage
 Object.defineProperty(plugin, 'apply', {
   enumerable: true,
