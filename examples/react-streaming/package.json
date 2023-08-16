@@ -17,5 +17,6 @@
     "sirv": "^2.0.2",
     "vite": "^4.0.3",
     "vite-plugin-ssr": "0.4.136"
-  }
+  },
+  "type": "module"
 }
