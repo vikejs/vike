@@ -2,7 +2,7 @@
 
 import express from 'express'
 import { renderPage } from 'vite-plugin-ssr/server'
-import vite from 'vite'
+import { createServer } from 'vite'
 import fetch from 'node-fetch'
 import compression from 'compression'
 
@@ -16,7 +16,7 @@ async function startServer() {
   app.use(compression())
 
   const viteDevMiddleware = (
-    await vite.createServer({
+    await createServer({
       server: { middlewareMode: true }
     })
   ).middlewares
