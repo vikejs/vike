@@ -54,9 +54,12 @@ function plugin(vpsConfig?: ConfigVpsUserProvided): any {
   return plugins
 }
 
-// Enable `const ssr = require('vite-plugin-ssr/plugin')`
-// This lives at the end of the file to ensure it happens after all assignments to `exports`
-module.exports = Object.assign(exports.default, exports)
+// Enable `const ssr = require('vite-plugin-ssr/plugin')`.
+//  - This lives at the end of the file to ensure it happens after all assignments to `exports`.
+//  - This is only used for the CJS build; we wrap it in a try-catch for the ESM build.
+try {
+  module.exports = Object.assign(exports.default, exports)
+} catch {}
 
 // Error upon wrong usage
 Object.defineProperty(plugin, 'apply', {
