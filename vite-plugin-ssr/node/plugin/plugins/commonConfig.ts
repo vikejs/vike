@@ -16,11 +16,6 @@ function commonConfig(): Plugin[] {
           // TODO: can we remove this once VPS is published as ESM?
           external: ['vite-plugin-ssr', 'vite-plugin-ssr/server']
         }
-        /*
-        esbuild: {
-          exclude: ['virtual:vite-plugin-ssr:importUserCode:client:server-routing']
-        }
-        */
       }),
       configResolved(config) {
         installRequireShim_setUserRootDir(config.root)
@@ -36,32 +31,6 @@ function commonConfig(): Plugin[] {
           workaroundCI(config)
           assertRollupInput(config)
           assertResolveAlias(config)
-        }
-      }
-    },
-    {
-      name: 'vps-tmp',
-      resolveId(id) {
-        return
-        // console.log('resolve()', id)
-        if (id === '/virtual:vps-tmp') {
-          //const resolved = require.resolve('vite-plugin-ssr/client/server-routing-runtime/__internal_entry')
-          const resolved = 'vite-plugin-ssr/client/server-routing-runtime/__internal_entry'
-          console.log('resolved', resolved)
-          return resolved
-        }
-      },
-      load(id) {
-        // console.log('load()', id)
-        if (id === '/virtual:vps-tmp') {
-          return [
-            // "import { setPageFiles } from 'vite-plugin-ssr/client/server-routing-runtime/__internal_entry'",
-            "import 'vite-plugin-ssr/client/server-routing-runtime/__internal_entry'",
-            "const setPageFiles = globalThis.__tmp_setPageFiles",
-            "console.log(setPageFiles)",
-            "import * as pageFilesExports from 'virtual:vite-plugin-ssr:importUserCode:client:server-routing'",
-            'setPageFiles(pageFilesExports)',
-          ].join(';\n')
         }
       }
     }

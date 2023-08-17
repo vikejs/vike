@@ -1,15 +1,7 @@
-export { someF }
-
-import { setPageFiles } from '../../shared/getPageFiles.js'
-// @ts-ignore
-globalThis.__tmp_setPageFiles = setPageFiles
-/*
-export { setPageFiles } from '../../shared/getPageFiles.js'
-*/
-
 import { assertServerRouting } from '../../utils/assertRoutingType.js'
 assertServerRouting()
 
+import './pageFiles'
 import { getPageContext } from './getPageContext.js'
 import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { assertHook } from '../../shared/hooks/getHook.js'
@@ -25,8 +17,4 @@ async function hydrate() {
   await executeOnRenderClientHook(pageContext, false)
   assertHook(pageContext, 'onHydrationEnd')
   await pageContext.exports.onHydrationEnd?.(pageContext)
-}
-
-function someF() {
-  console.log('SMM')
 }

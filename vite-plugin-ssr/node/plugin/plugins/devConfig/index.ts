@@ -1,6 +1,6 @@
 export { devConfig }
 
-import type { ESBuildOptions, Plugin, ResolvedConfig, UserConfig } from 'vite'
+import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import { determineOptimizeDeps } from './determineOptimizeDeps.js'
 import { determineFsAllowList } from './determineFsAllowList.js'
 import { getConfigVps } from '../../../shared/getConfigVps.js'
@@ -27,12 +27,9 @@ function devConfig(): Plugin[] {
       config() {
         return {
           optimizeDeps: {
-            //*
-            include: [
+            exclude: [
               // We exclude the vite-plugin-ssr client to be able to use `import.meta.glob()`
-              //'vite-plugin-ssr/client',
-              'vite-plugin-ssr/client/server-routing-runtime/__internal_entry',
-              'vite-plugin-ssr/client/client-routing-runtime/__internal_entry',
+              'vite-plugin-ssr/client',
               'vite-plugin-ssr/client/router',
               'vite-plugin-ssr/routing',
               // - We also exclude @brillout/json-serializer and @brillout/picocolors to avoid:
@@ -46,31 +43,6 @@ function devConfig(): Plugin[] {
               '@brillout/json-serializer/stringify',
               '@brillout/picocolors'
             ]
-            //*/
-          },
-          esbuild: {
-            //exclude: ['virtual:vite-plugin-ssr:importUserCode:client:server-routing'],
-            // @ts-ignore
-     //       plugins: [
-     //         {
-     //           name: 'vps-tmppp',
-     //           setup(build: any) {
-     //             build.onResolve(
-     //               {
-     //                 filter: /.*/
-     //               },
-     //               async ({ path: id, importer, pluginData }: any) => {
-     //                 if (id.startsWith('virtual:vite-plugin-ssr:')) {
-     //                   console.log('onResolve dep-pre-bundle', id)
-     //                   return {
-     //                     external: true
-     //                   }
-     //                 }
-     //               }
-     //             )
-     //           }
-     //         }
-     //       ] as any
           }
         } satisfies UserConfig
       },

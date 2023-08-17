@@ -2,7 +2,7 @@
   "name": "vite-plugin-ssr",
   "version": "0.4.136",
   "scripts": {
-    "build": "rimraf dist/ && tsc --build && node ./dist-cjs-fixup.mjs",
+    "build": "rimraf dist/ && tsc --build",
     "dev": "pnpm run dev:fast",
     "// `dev:fast` and `dev:slow` achieve the same": "",
     "dev:slow": "tsc --build --watch",
@@ -24,6 +24,7 @@
     "sirv": "^2.0.2",
     "source-map-support": "^0.5.21"
   },
+  "type": "module",
   "exports": {
     ".": {
       "worker": "./dist/node/runtime/index-deprecated.js",
@@ -41,10 +42,6 @@
     },
     "./client": {
       "types": "./dist/client/server-routing-runtime/index.d.ts"
-    },
-    "./client/server-routing-runtime/__internal_entry": "./dist/client/server-routing-runtime/entry.js",
-    "./client/client-routing-runtime/__internal_entry": {
-      "browser": "./dist/client/server-routing-runtime/entry.js"
     },
     "./types": {
       "types": "./dist/types/index.d.ts"
