@@ -56,7 +56,9 @@ import {
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.js'
 import type { ConfigNameBuiltIn } from '../../../../../shared/page-configs/Config.js'
 import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
+// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+const __filename_: string = import.meta.url
+const require_ = createRequire(__filename_)
 
 assertIsNotProductionRuntime()
 
@@ -1274,7 +1276,7 @@ function resolveImport(importData: ImportData, importerFilePath: FilePath): stri
   const clean = addFileExtensionsToRequireResolve()
   let importedFile: string | null
   try {
-    importedFile = require.resolve(importData.importPath, { paths: [plusConfigFilDirPathAbsolute] })
+    importedFile = require_.resolve(importData.importPath, { paths: [plusConfigFilDirPathAbsolute] })
   } catch {
     importedFile = null
   } finally {

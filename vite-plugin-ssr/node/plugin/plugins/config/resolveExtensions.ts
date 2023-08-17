@@ -15,7 +15,9 @@ import path from 'path'
 import fs from 'fs'
 import { isValidFileType } from '../../../../shared/getPageFiles/fileTypes.js'
 import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
+// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+const __filename_: string = import.meta.url
+const require_ = createRequire(__filename_)
 
 function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedConfig): ExtensionResolved[] {
   const extensions = configs.map((c) => c.extensions ?? []).flat()
@@ -142,7 +144,7 @@ function resolveImportPath(
 ): string {
   let filePath: string
   try {
-    filePath = require.resolve(importPath, { paths: [config.root] })
+    filePath = require_.resolve(importPath, { paths: [config.root] })
   } catch (err: any) {
     if (err?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
       assertUsage(

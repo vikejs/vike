@@ -144,12 +144,14 @@ async function resolveClientEntriesDev(
     const { createRequire } = (await import_('module')).default as Awaited<typeof import('module')>
     const { dirname } = ((await import_('path'))).default as Awaited<typeof import('path')>
     const { fileURLToPath } = (await import_('url')).default as Awaited<typeof import('url')>
-    const req = createRequire(import.meta.url)
-    const __dirname = dirname(fileURLToPath(import.meta.url))
+    // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+    const __filename_: string = import.meta.url
+    const require_ = createRequire(__filename_)
+    const __dirname_ = dirname(fileURLToPath(__filename_))
 
     // @ts-expect-error
     // Bun workaround https://github.com/brillout/vite-plugin-ssr/pull/1048
-    const res = typeof Bun !== 'undefined' ? (toPath: string) => Bun.resolveSync(toPath, __dirname) : req.resolve
+    const res = typeof Bun !== 'undefined' ? (toPath: string) => Bun.resolveSync(toPath, __dirname_) : require_.resolve
 
     assert(clientEntry.endsWith('.js'))
     try {

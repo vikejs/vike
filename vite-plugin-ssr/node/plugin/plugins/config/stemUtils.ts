@@ -8,7 +8,9 @@ import { assert, assertUsage, assertWarning, toPosixPath, assertPosixPath, getDe
 import { import_ } from '@brillout/import'
 import fs from 'fs'
 import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
+// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+const __filename_: string = import.meta.url
+const require_ = createRequire(__filename_)
 
 type StemPackage = {
   stemPackageName: string
@@ -29,7 +31,7 @@ async function getStemPackages(userAppRootDir: string): Promise<StemPackage[]> {
       const resolveModulePath = (moduleId: string): null | string => {
         const importPath = `${stemPackageName}/${moduleId}`
         try {
-          const modulePath = require.resolve(importPath, { paths: [userRootDir] })
+          const modulePath = require_.resolve(importPath, { paths: [userRootDir] })
           return modulePath
         } catch (err) {
           // - ERR_PACKAGE_PATH_NOT_EXPORTED => package.json#exports[importPath] is missing
@@ -45,7 +47,7 @@ async function getStemPackages(userAppRootDir: string): Promise<StemPackage[]> {
         const modulePath = resolveModulePath(moduleId)
         if (modulePath === null) return null
         const moduleExports: Record<string, unknown> = moduleId.endsWith('.json')
-          ? require(modulePath)
+          ? require_(modulePath)
           : await import_(modulePath)
         return moduleExports
       }
@@ -104,7 +106,7 @@ function getUserPackageJson(userRootDir: string): UserPkgJson {
   const userPkgJsonPath = path.posix.join(userRootDir, './package.json')
   let userPkgJson: UserPkgJson
   try {
-    userPkgJson = require(userPkgJsonPath)
+    userPkgJson = require_(userPkgJsonPath)
   } catch {
     throw new Error(`No package.json found at ${userRootDir}`)
   }

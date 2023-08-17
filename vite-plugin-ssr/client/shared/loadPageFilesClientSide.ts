@@ -16,6 +16,7 @@ async function loadPageFilesClientSide(
   const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
   const pageConfig = findPageConfig(pageConfigs, pageId)
   let pageConfigLoaded: null | PageConfigLoaded
+  // @ts-ignore Since dist-cjs/client/ is never used, we can ignore this error.
   const isDev: boolean = import.meta.env.DEV
   try {
     // prettier-ignore

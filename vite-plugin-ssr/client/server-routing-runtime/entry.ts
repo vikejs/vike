@@ -6,6 +6,7 @@ import { getPageContext } from './getPageContext.js'
 import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { assertHook } from '../../shared/hooks/getHook.js'
 import { onClientEntry_ServerRouting } from './utils.js'
+// @ts-ignore Since dist-cjs/client/ is never used, we can ignore this error.
 const isProd: boolean = import.meta.env.PROD
 onClientEntry_ServerRouting(isProd)
 

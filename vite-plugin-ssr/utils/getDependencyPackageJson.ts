@@ -14,9 +14,11 @@ import { toPosixPath } from './filesystemPathHandling.js'
 import { isObject } from './isObject.js'
 import path from 'path'
 import fs from 'fs'
-import { createRequire } from 'module'
 import { assertIsNotProductionRuntime } from './assertIsNotProductionRuntime.js'
-const require = createRequire(import.meta.url)
+import { createRequire } from 'module'
+// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+const __filename_: string = import.meta.url
+const require_ = createRequire(__filename_)
 assertIsNotProductionRuntime()
 
 function getDependencyPackageJson(npmPackageName: string, userAppRootDir: string): Record<string, unknown> {
@@ -52,7 +54,7 @@ function getDependencyPackageJsonPath(npmPackageName: string, userAppRootDir: st
 function resolvePackageJsonDirectly(npmPackageName: string, userAppRootDir: string): null | string {
   let packageJsonPath: string
   try {
-    packageJsonPath = require.resolve(`${npmPackageName}/package.json`, { paths: [userAppRootDir] })
+    packageJsonPath = require_.resolve(`${npmPackageName}/package.json`, { paths: [userAppRootDir] })
   } catch (err) {
     if (isUnexpectedError(err)) throw err
     return null
@@ -63,7 +65,7 @@ function resolvePackageJsonDirectly(npmPackageName: string, userAppRootDir: stri
 function resolvePackageJsonWithMainEntry(npmPackageName: string, userAppRootDir: string): null | string {
   let mainEntry: string
   try {
-    mainEntry = require.resolve(npmPackageName, { paths: [userAppRootDir] })
+    mainEntry = require_.resolve(npmPackageName, { paths: [userAppRootDir] })
   } catch (err) {
     if (isUnexpectedError(err)) throw err
     return null

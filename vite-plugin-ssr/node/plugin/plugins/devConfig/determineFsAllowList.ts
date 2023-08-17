@@ -9,8 +9,10 @@ import { assert } from '../../utils.js'
 import { createRequire } from 'module'
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
-const require = createRequire(import.meta.url)
-const __dirname = dirname(fileURLToPath(import.meta.url))
+// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+const __filename_: string = import.meta.url
+const require_ = createRequire(__filename_)
+const __dirname_ = dirname(fileURLToPath(__filename_))
 
 async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVpsResolved) {
   const fsAllow = config.server.fs.allow
@@ -27,9 +29,9 @@ async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVps
   // Add node_modules/vite-plugin-ssr/
   {
     // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vite-plugin-ssr/dist/node/plugin/plugins/config/
-    const vitePluginSsrRoot = path.join(__dirname, '../../../../../')
+    const vitePluginSsrRoot = path.join(__dirname_, '../../../../../')
     // Assert that `vitePluginSsrRoot` is indeed pointing to `node_modules/vite-plugin-ssr/`
-    require.resolve(`${vitePluginSsrRoot}/dist/node/plugin/plugins/devConfig/index.js`)
+    require_.resolve(`${vitePluginSsrRoot}/dist/node/plugin/plugins/devConfig/index.js`)
     fsAllow.push(vitePluginSsrRoot)
   }
 

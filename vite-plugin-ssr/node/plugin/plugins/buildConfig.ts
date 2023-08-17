@@ -25,7 +25,9 @@ import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 type InputOption = Rollup.InputOption
 import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
+// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+const __filename_: string = import.meta.url
+const require_ = createRequire(__filename_)
 
 function buildConfig(): Plugin {
   return {
@@ -195,7 +197,7 @@ function prependEntriesDir(entryName: string): string {
 function resolve(filePath: string) {
   assert(filePath.startsWith('dist/'))
   // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vite-plugin-ssr/dist/node/plugin/plugins/
-  return require.resolve(`../../../../${filePath}`)
+  return require_.resolve(`../../../../${filePath}`)
 }
 
 function normalizeRollupInput(input?: InputOption): Record<string, string> {

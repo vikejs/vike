@@ -5,7 +5,9 @@ import { importBuild as importBuild_ } from '@brillout/vite-plugin-import-build/
 import { getOutDirs, projectInfo, toPosixPath } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
+// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+const __filename_: string = import.meta.url
+const require_ = createRequire(__filename_)
 
 function importBuild(): Plugin[] {
   let config: ResolvedConfig
@@ -30,7 +32,7 @@ function importBuild(): Plugin[] {
 function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
   const importPathAbsolute = toPosixPath(
     // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/dist/node/plugin/plugins/importBuild/index.js
-    require.resolve(`../../../../../dist/node/runtime/globalContext/loadImportBuild.js`)
+    require_.resolve(`../../../../../dist/node/runtime/globalContext/loadImportBuild.js`)
   )
   const { outDirServer } = getOutDirs(config)
   const importPath = path.posix.relative(outDirServer, importPathAbsolute)
