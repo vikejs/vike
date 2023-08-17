@@ -4,7 +4,6 @@ export { parseUrl }
 export { isParsable }
 export { assertUsageUrl }
 export { isBaseServer }
-export { isBaseAssets }
 
 import { slice } from './slice.js'
 import { assert, assertUsage } from './assert.js'
@@ -233,7 +232,4 @@ function analyzeBaseServer(
 
 function isBaseServer(baseServer: string): boolean {
   return baseServer.startsWith('/')
-}
-function isBaseAssets(base: string): boolean {
-  return base.startsWith('/') || base.startsWith('http://') || base.startsWith('https://')
 }

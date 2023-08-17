@@ -1,4 +1,5 @@
 export { prependBase }
+export { isBaseAssets }
 
 import { isBaseServer } from './parseUrl.js'
 import { assert } from './assert.js'
@@ -42,4 +43,8 @@ function normalizeBaseServer(baseServer: string) {
   // We can and should expect `baseServer` to not contain `/` doublets.
   assert(!baseServerNormalized.endsWith('/') || baseServerNormalized === '/')
   return baseServerNormalized
+}
+
+function isBaseAssets(base: string): boolean {
+  return base.startsWith('/') || base.startsWith('http://') || base.startsWith('https://')
 }
