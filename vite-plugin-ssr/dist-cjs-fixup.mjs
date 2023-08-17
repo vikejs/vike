@@ -6,7 +6,7 @@ main()
 
 async function replaceImportMetaWithFilename(filePath) {
   const fileContent = await fs.readFile(filePath, 'utf8')
-  const modifiedContent = fileContent.replace(/import\.meta\.url/g, '__filename')
+  const modifiedContent = fileContent.replace(/import\.meta\.url/g, '`file://${__filename}`')
   await fs.writeFile(filePath, modifiedContent, 'utf8')
 }
 
@@ -27,5 +27,5 @@ async function processFiles(directoryPath) {
 
 async function main() {
   await processFiles(sourceDir)
-  console.log('Import.meta.url replaced with __filename successfully.')
+  console.log('✅ Shimmed import.meta.url for dist-cjs/')
 }

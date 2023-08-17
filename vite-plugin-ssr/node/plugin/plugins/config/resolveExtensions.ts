@@ -16,8 +16,8 @@ import fs from 'fs'
 import { isValidFileType } from '../../../../shared/getPageFiles/fileTypes.js'
 import { createRequire } from 'module'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
-const __filename_: string = import.meta.url
-const require_ = createRequire(__filename_)
+const importMetaUrl: string = import.meta.url
+const require_ = createRequire(importMetaUrl)
 
 function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedConfig): ExtensionResolved[] {
   const extensions = configs.map((c) => c.extensions ?? []).flat()

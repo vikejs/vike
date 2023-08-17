@@ -10,9 +10,9 @@ import { createRequire } from 'module'
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
-const __filename_: string = import.meta.url
-const require_ = createRequire(__filename_)
-const __dirname_ = dirname(fileURLToPath(__filename_))
+const importMetaUrl: string = import.meta.url
+const require_ = createRequire(importMetaUrl)
+const __dirname_ = dirname(fileURLToPath(importMetaUrl))
 
 async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVpsResolved) {
   const fsAllow = config.server.fs.allow

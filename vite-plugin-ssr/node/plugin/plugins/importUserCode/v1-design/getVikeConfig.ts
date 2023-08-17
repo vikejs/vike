@@ -57,8 +57,8 @@ import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUse
 import type { ConfigNameBuiltIn } from '../../../../../shared/page-configs/Config.js'
 import { createRequire } from 'module'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
-const __filename_: string = import.meta.url
-const require_ = createRequire(__filename_)
+const importMetaUrl: string = import.meta.url
+const require_ = createRequire(importMetaUrl)
 
 assertIsNotProductionRuntime()
 

@@ -26,8 +26,8 @@ import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 type InputOption = Rollup.InputOption
 import { createRequire } from 'module'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
-const __filename_: string = import.meta.url
-const require_ = createRequire(__filename_)
+const importMetaUrl: string = import.meta.url
+const require_ = createRequire(importMetaUrl)
 
 function buildConfig(): Plugin {
   return {

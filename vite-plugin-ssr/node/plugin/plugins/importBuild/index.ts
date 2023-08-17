@@ -6,8 +6,8 @@ import { getOutDirs, projectInfo, toPosixPath } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
-const __filename_: string = import.meta.url
-const require_ = createRequire(__filename_)
+const importMetaUrl: string = import.meta.url
+const require_ = createRequire(importMetaUrl)
 
 function importBuild(): Plugin[] {
   let config: ResolvedConfig
