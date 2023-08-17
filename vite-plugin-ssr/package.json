@@ -33,16 +33,16 @@
     ".": {
       "worker": "./dist/node/runtime/index-deprecated.js",
       "edge-light": "./dist/node/runtime/index-deprecated.js",
-      "node": "./dist/node/runtime/index-deprecated.js",
       "require": "./dist-cjs/node/runtime/index-deprecated.js",
+      "node": "./dist/node/runtime/index-deprecated.js",
       "browser": "./dist/client/node.js",
       "types": "./dist/node/runtime/index-deprecated.d.ts"
     },
     "./server": {
       "worker": "./dist/node/runtime/index.js",
       "edge-light": "./dist/node/runtime/index.js",
-      "node": "./dist/node/runtime/index.js",
       "require": "./dist-cjs/node/runtime/index.js",
+      "node": "./dist/node/runtime/index.js",
       "browser": "./dist/client/node.js",
       "types": "./dist/node/runtime/index.d.ts"
     },
@@ -55,58 +55,58 @@
     "./client/router": {
       "worker": "./dist/node/client/router.js",
       "edge-light": "./dist/node/client/router.js",
-      "node": "./dist/node/client/router.js",
       "require": "./dist-cjs/node/client/router.js",
+      "node": "./dist/node/client/router.js",
       "browser": "./dist/client/client-routing-runtime/index.js",
       "types": "./dist/client/client-routing-runtime/index.d.ts"
     },
     "./routing": {
       "worker": "./dist/shared/route/routing.js",
       "edge-light": "./dist/shared/route/routing.js",
-      "node": "./dist/shared/route/routing.js",
       "require": "./dist-cjs/shared/route/routing.js",
+      "node": "./dist/shared/route/routing.js",
       "browser": "./dist/shared/route/routing.js",
       "types": "./dist/shared/route/routing.d.ts"
     },
     "./cli": {
-      "node": "./dist/node/cli/index.js",
       "require": "./dist-cjs/node/cli/index.js",
+      "node": "./dist/node/cli/index.js",
       "types": "./dist/node/cli/index.d.ts"
     },
     "./prerender": {
-      "node": "./dist/node/prerender/index.js",
       "require": "./dist-cjs/node/prerender/index.js",
+      "node": "./dist/node/prerender/index.js",
       "types": "./dist/node/prerender/index.d.ts"
     },
     "./plugin": {
-      "node": "./dist/node/plugin/index.js",
       "require": "./dist-cjs/node/plugin/index.js",
+      "node": "./dist/node/plugin/index.js",
       "types": "./dist/node/plugin/index.d.ts"
     },
     "./RenderErrorPage": {
       "worker": "./dist/shared/RenderErrorPage.js",
       "edge-light": "./dist/shared/RenderErrorPage.js",
-      "node": "./dist/shared/RenderErrorPage.js",
       "require": "./dist-cjs/shared/RenderErrorPage.js",
+      "node": "./dist/shared/RenderErrorPage.js",
       "browser": "./dist/shared/RenderErrorPage.js",
       "types": "./dist/shared/RenderErrorPage.d.ts"
     },
     "./abort": {
       "worker": "./dist/shared/abort.js",
       "edge-light": "./dist/shared/abort.js",
-      "node": "./dist/shared/abort.js",
       "require": "./dist-cjs/shared/abort.js",
+      "node": "./dist/shared/abort.js",
       "browser": "./dist/shared/abort.js",
       "types": "./dist/shared/abort.d.ts"
     },
     "./__internal": {
-      "node": "./dist/__internal/index.js",
       "require": "./dist-cjs/__internal/index.js",
+      "node": "./dist/__internal/index.js",
       "types": "./dist/__internal/index.d.ts"
     },
     "./__internal/setup": {
-      "node": "./dist/node/runtime/page-files/setup.js",
       "require": "./dist-cjs/node/runtime/page-files/setup.js",
+      "node": "./dist/node/runtime/page-files/setup.js",
       "types": "./dist/node/runtime/page-files/setup.d.ts"
     }
   },
