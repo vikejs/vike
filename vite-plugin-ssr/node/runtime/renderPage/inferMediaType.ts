@@ -24,7 +24,7 @@ function inferMediaType(href: string): MediaType {
   if (styleFileRE.test(href)) {
     return { mediaType: 'text/css', assetType: 'style' }
   }
-  if (isScriptFile(href)) {
+  if (isScriptFile(href) || href.includes('vite-plugin-ssr') || href.includes('virtual:')) {
     return { mediaType: 'text/javascript', assetType: 'script' }
   }
 

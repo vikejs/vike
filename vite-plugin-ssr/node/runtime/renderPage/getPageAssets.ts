@@ -153,18 +153,25 @@ async function resolveClientEntriesDev(
     // Bun workaround https://github.com/brillout/vite-plugin-ssr/pull/1048
     const res = typeof Bun !== 'undefined' ? (toPath: string) => Bun.resolveSync(toPath, __dirname_) : require_.resolve
 
+    //filePath = res(clientEntry.replace('@@vite-plugin-ssr', 'vite-plugin-ssr'))
+    //filePath = clientEntry.replace('@@vite-plugin-ssr', '/@vite-plugin-ssr')
+    filePath = '/virtual:vps-tmp'
+    return filePath
+
+    /*
     assert(clientEntry.endsWith('.js'))
     try {
       // For Vitest (which doesn't resolve vite-plugin-ssr to its dist but to its source files)
       // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/node/runtime/renderPage/getPageAssets.js
       filePath = toPosixPath(
-        res(clientEntry.replace('@@vite-plugin-ssr/dist/client/', '../../../client/').replace('.js', '.ts'))
+        res(clientEntry.replace('@@vite-plugin-ssr/client/', '../../../client/').replace('.js', '.ts'))
       )
     } catch {
       // For users
       // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/dist/node/runtime/renderPage/getPageAssets.js
-      filePath = toPosixPath(res(clientEntry.replace('@@vite-plugin-ssr/dist/client/', '../../../../dist/client/')))
+      filePath = toPosixPath(res(clientEntry.replace('@@vite-plugin-ssr/client/', '../../../../dist/client/')))
     }
+    //*/
   } else if (isNpmPackageImport(clientEntry)) {
     const extensionPageFile = configVps.extensions
       .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
@@ -177,12 +184,16 @@ async function resolveClientEntriesDev(
     assert(false)
   }
 
+  //*
   if (!filePath.startsWith('/')) {
     assert(process.platform === 'win32')
     filePath = '/' + filePath
   }
+  //*/
 
+  //if( filePath.startsWith('/') ) {
   filePath = '/@fs' + filePath
+  //}
   assertPosixPath(filePath)
 
   return filePath

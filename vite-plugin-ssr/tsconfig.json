@@ -2,9 +2,8 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "declaration": true,
-    "target": "ES2020",
-    "module": "ES2020",
-    "moduleResolution": "Node",
+    "target": "ES2017",
+    "module": "CommonJS",
     "types": ["vite/client"],
     // Strictness
     "strict": true,

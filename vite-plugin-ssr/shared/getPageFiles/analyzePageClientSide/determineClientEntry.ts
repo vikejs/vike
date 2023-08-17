@@ -44,6 +44,6 @@ function determineClientEntry({
 
 function getVPSClientEntry(isClientRouting: boolean) {
   return isClientRouting
-    ? '@@vite-plugin-ssr/dist/client/client-routing-runtime/entry.js'
-    : '@@vite-plugin-ssr/dist/client/server-routing-runtime/entry.js'
+    ? '@@vite-plugin-ssr/client/client-routing-runtime/__internal_entry'
+    : '@@vite-plugin-ssr/client/server-routing-runtime/__internal_entry'
 }
