@@ -1,8 +1,23 @@
 import fs from 'fs/promises'
 import path from 'path'
-const sourceDir = 'dist'
+const sourceDir = 'dist-cjs'
 
 main()
+
+async function main() {
+  await generatePackageJson()
+  await shimImportMetaUrl()
+}
+
+async function generatePackageJson() {
+  await fs.writeFile(sourceDir + '/package.json', '{ "type": "commonjs" }\n', 'utf8')
+  console.log('✅ dist-cjs/package.json generated')
+}
+
+async function shimImportMetaUrl() {
+  await processFiles(sourceDir)
+  console.log('✅ dist-cjs/ shimmed import.meta.url')
+}
 
 async function replaceImportMetaWithFilename(filePath) {
   const fileContent = await fs.readFile(filePath, 'utf8')
@@ -23,9 +38,4 @@ async function processFiles(directoryPath) {
       await replaceImportMetaWithFilename(filePath)
     }
   }
-}
-
-async function main() {
-  await processFiles(sourceDir)
-  console.log('✅ Shimmed import.meta.url for dist-cjs/')
 }
