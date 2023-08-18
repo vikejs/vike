@@ -50,6 +50,7 @@ import { addUrlComputedProps, PageContextUrlComputedProps } from '../../shared/U
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide.js'
+import { assertHookFn } from '../../shared/hooks/getHook.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -325,20 +326,18 @@ async function callOnBeforePrerenderStartHooks(
   await Promise.all(
     renderContext.pageConfigs.map((pageConfig) =>
       concurrencyLimit(async () => {
-        if (!pageConfig.configElements.onBeforePrerenderStart) return
-        const codeFilePath = getCodeFilePath(pageConfig, 'onBeforePrerenderStart')
+        const hookName = 'onBeforePrerenderStart'
+        if (!pageConfig.configElements[hookName]) return
+        const codeFilePath = getCodeFilePath(pageConfig, hookName)
         assert(codeFilePath)
         const pageConfigLoaded = await loadPageCode(pageConfig, false)
-        const hookFn = pageConfigLoaded.configValues.onBeforePrerenderStart
-        assert(hookFn)
-        assertUsage(
-          isCallable(hookFn),
-          `The onBeforePrerenderStart() hook defined by ${codeFilePath} should be a function`
-        )
+        const hookFilePath = codeFilePath
+        const hookFn = getConfigValue(pageConfigLoaded, hookName)
+        assertHookFn(hookFn, { hookName, hookFilePath })
         onBeforePrerenderStartHooks.push({
           hookFn,
           hookName: 'onBeforePrerenderStart',
-          hookFilePath: codeFilePath
+          hookFilePath
         })
       })
     )

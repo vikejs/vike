@@ -1,9 +1,10 @@
 export { getConfigValue }
 export { getCodeFilePath }
 export { getPageConfig }
+export { getConfigSource }
 
 import { assert, assertUsage } from '../utils.js'
-import type { PageConfig, PageConfigData } from './PageConfig.js'
+import type { ConfigSource, ConfigValue, PageConfig, PageConfigData } from './PageConfig.js'
 import type { ConfigNameBuiltIn, ConfigNamePrivate } from './Config.js'
 
 type ConfigName = ConfigNameBuiltIn | ConfigNamePrivate
@@ -16,41 +17,48 @@ function getConfigValue(
   configName: ConfigName,
   type?: 'string' | 'boolean'
 ): null | unknown {
-  const configElement = pageConfig.configElements[configName]
-  if (!configElement || isNullish(pageConfig, configName)) {
-    return null
-  }
-  const { configValue, configDefinedAt } = configElement
+  const v = getV(pageConfig, configName)
+  if (v === null) return null
+  const { configValue } = v
   if (type) {
+    if (isNullish(configValue)) return null
+    const configSource = getConfigSource(v)
+    const typeActual = typeof configValue
     assertUsage(
-      typeof configValue === type,
-      `${configDefinedAt} has an invalid type \`${typeof configValue}\`: is should be a ${type} instead`
+      typeActual === type,
+      `${configSource} has an invalid type \`${typeActual}\`: is should be a ${type} instead`
     )
   }
   return configValue
 }
 
-function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): null | string {
-  const configElement = pageConfig.configElements[configName]
-  if (!configElement || isNullish(pageConfig, configName)) {
+function getV(pageConfig: PageConfigData, configName: ConfigName): null | ConfigValue {
+  const v = pageConfig.configValues[configName]
+  if (!v) {
+    assert(!pageConfig.configElements[configName])
     return null
   }
-  if (configElement.codeFilePath !== null) {
-    return configElement.codeFilePath
-  }
-  const { configValue, configDefinedAt } = configElement
-  assertUsage(
-    typeof configValue === 'string',
-    `${configDefinedAt} has an invalid type \`${typeof configValue}\`: it should be a \`string\` instead`
-  )
-  assertUsage(false, `${configDefinedAt} has an invalid value \`${configValue}\`: it should be a file path instead`)
+  return v
 }
 
-function isNullish(pageConfig: PageConfigData, configName: ConfigName): boolean {
+function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): null | string {
+  const v = getV(pageConfig, configName)
+  if (v === null) return null
+  const { configValue } = v
+  const configSource = getConfigSource(v)
   const configElement = pageConfig.configElements[configName]
-  if (!configElement) return true
-  const { codeFilePath, configValue } = configElement
-  if (codeFilePath) return false
+  if (!configElement) return null
+  const { codeFilePath } = configElement
+  if (codeFilePath !== null) return codeFilePath
+  if (isNullish(configValue)) return null
+  assertUsage(
+    typeof configValue === 'string',
+    `${configSource} has an invalid type \`${typeof configValue}\`: it should be a string instead`
+  )
+  assertUsage(false, `${configSource} has an invalid value '${configValue}': it should be a file path instead`)
+}
+
+function isNullish(configValue: unknown): boolean {
   return configValue === null || configValue === undefined
 }
 
@@ -59,4 +67,22 @@ function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
   assert(pageConfigs.length > 0)
   assert(pageConfig)
   return pageConfig
+}
+
+function getConfigSource(configSource: ConfigSource): string {
+  const { configSourceFile, configSourceFileExportName, configSourceFileDefaultExportKey } = configSource
+  assert(configSourceFile)
+  if (configSourceFileDefaultExportKey) {
+    assert(configSourceFileDefaultExportKey !== 'default')
+    return `${configSourceFile} > \`export default { ${configSourceFileDefaultExportKey} }` as const
+  } else {
+    if (configSourceFileExportName === '*') {
+      return `${configSourceFile} > \`export *\`` as const
+    } else if (configSourceFileExportName === 'default') {
+      return `${configSourceFile} > \`export default\`` as const
+    } else {
+      assert(configSourceFileExportName)
+      return `${configSourceFile} > \`export { ${configSourceFileExportName} }\`` as const
+    }
+  }
 }

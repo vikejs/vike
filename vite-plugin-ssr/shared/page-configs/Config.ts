@@ -3,12 +3,27 @@ export type { ConfigNameBuiltIn }
 export type { ConfigNamePrivate }
 export type { Meta }
 export type { Effect }
+export type { HookName }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
 import type { ConfigVpsUserProvided } from '../ConfigVps.js'
 // TODO: write docs of links below
 
 import type { ConfigEnvPublic } from './PageConfig.js'
+
+type HookName =
+  | 'onHydrationEnd'
+  | 'onBeforePrerender'
+  | 'onBeforePrerenderStart'
+  | 'onBeforeRender'
+  | 'onBeforeRoute'
+  | 'onPageTransitionStart'
+  | 'onPageTransitionEnd'
+  | 'onPrerenderStart'
+  | 'onRenderHtml'
+  | 'onRenderClient'
+  | 'guard'
+  | 'render'
 
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVpsUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>

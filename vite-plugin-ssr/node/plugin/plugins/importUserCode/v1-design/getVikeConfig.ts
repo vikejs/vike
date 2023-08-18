@@ -30,7 +30,8 @@ import type {
   PageConfigData,
   PageConfigGlobalData,
   ConfigElementSource,
-  ConfigEnvPrivate
+  ConfigEnvPrivate,
+  ConfigValues
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import glob from 'fast-glob'
@@ -391,16 +392,29 @@ async function loadVikeConfig(
           configElements.filesystemRoutingRoot
         )
 
+        const configValues: ConfigValues = {}
         const pageConfigData: PageConfigData = {
           pageId: locationId,
           isErrorPage,
           routeFilesystemDefinedBy,
           routeFilesystem: isErrorPage ? null : routeFilesystem,
-          configElements
+          configElements,
+          configValues
         }
 
         applyEffects(configElements, configDefinitionsRelevant)
         applyComputed(pageConfigData, configDefinitionsRelevant)
+
+        // TODO: remove redundancy between configElements[string].configValue and configValues
+        objectEntries(configElements).map(([configName, configElement]) => {
+          if ('configValue' in configElement) {
+            configValues[configName] = {
+              configSourceFile: configElement.configDefinedByFile,
+              configSourceFileExportName: 'TODO',
+              configValue: configElement.configValue
+            }
+          }
+        })
 
         return pageConfigData
       })
@@ -706,6 +720,7 @@ function assertCodeFileEnv(codeFilePath: string, configEnv: ConfigEnvPrivate, co
 /* Use the type once we moved all dist/ to ESM
 type ConfigDefinedAt = ReturnType<typeof getConfigDefinedAt>
 */
+// TODO: remove
 function getConfigDefinedAt(filePath: string, exportName: string, isDefaultExportObject?: true) {
   if (isDefaultExportObject) {
     assert(exportName !== 'default')
@@ -1166,15 +1181,15 @@ function assertExtendsImportPath(importPath: string, filePath: string, configFil
 function getExtendsImportData(configFileExports: Record<string, unknown>, configFilePath: FilePath): ImportData[] {
   const filePathToShowToUser = getFilePathToShowToUser(configFilePath)
   assertDefaultExportObject(configFileExports, filePathToShowToUser)
-  const configValues = configFileExports.default
-  const wrongUsage = `${filePathToShowToUser} set the config 'extends' to an invalid value, see https://vite-plugin-ssr.com/extends`
+  const defaultExports = configFileExports.default
+  const wrongUsage = `${filePathToShowToUser} sets the config 'extends' to an invalid value, see https://vite-plugin-ssr.com/extends`
   let extendList: string[]
-  if (!('extends' in configValues)) {
+  if (!('extends' in defaultExports)) {
     return []
-  } else if (hasProp(configValues, 'extends', 'string')) {
-    extendList = [configValues.extends]
-  } else if (hasProp(configValues, 'extends', 'string[]')) {
-    extendList = configValues.extends
+  } else if (hasProp(defaultExports, 'extends', 'string')) {
+    extendList = [defaultExports.extends]
+  } else if (hasProp(defaultExports, 'extends', 'string[]')) {
+    extendList = defaultExports.extends
   } else {
     assertUsage(false, wrongUsage)
   }

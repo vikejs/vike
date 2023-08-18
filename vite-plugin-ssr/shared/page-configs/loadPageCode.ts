@@ -1,58 +1,51 @@
 export { loadPageCode }
 
 import { assert, assertDefaultExportUnknown, assertUsage, objectAssign } from '../utils.js'
-import type { PageConfig, PageConfigLoaded } from './PageConfig.js'
+import type { ConfigValues, PageConfig, PageConfigLoaded } from './PageConfig.js'
 import pc from '@brillout/picocolors'
 
 async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<PageConfigLoaded> {
-  const configValues: Record<string, unknown> = {}
+  const configValues: ConfigValues = {}
 
-  // In dev, Vite already caches the page's virtual module
-  if (!isDev && 'configValues' in pageConfig) {
+  if (
+    pageConfig.isLoaded &&
+    // We don't need to cache in dev, since Vite already caches the virtual module
+    !isDev
+  ) {
     return pageConfig as PageConfigLoaded
   }
 
   const codeFiles = await pageConfig.loadCodeFiles()
   codeFiles.forEach((codeFile) => {
-    const { configName, codeFilePath } = codeFile
     if (codeFile.isPlusFile) {
-      const { codeFileExports } = codeFile
-      if (configName !== 'client') {
+      const { codeFileExports, codeFilePath } = codeFile
+      if (codeFile.configName !== 'client') {
         assertDefaultExportUnknown(codeFileExports, codeFilePath)
       }
       Object.entries(codeFileExports).forEach(([exportName, exportValue]) => {
-        const isSideExport = exportName !== 'default'
+        const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
         const configName = isSideExport ? exportName : codeFile.configName
         const configValue = exportValue
-        configValues[configName] = configValue
-        assertIsNotNull(configValue, configName, codeFilePath)
-        if (isSideExport) {
-          const configElementOfMainExport = pageConfig.configElements[codeFile.configName]
-          assert(configElementOfMainExport)
-          pageConfig.configElements[configName] = {
-            configValue,
-            codeFileExport: exportName,
-            codeFilePath,
-            configDefinedByFile: codeFilePath,
-            configDefinedAt: `${pc.bold(codeFilePath)} > ${pc.cyan(`export { ${exportName} }`)}`,
-            configEnv: configElementOfMainExport.configEnv,
-            plusConfigFilePath: null
-          }
+        configValues[configName] = {
+          configSourceFile: codeFilePath,
+          configSourceFileExportName: exportName,
+          configValue
         }
+        assertIsNotNull(configValue, configName, codeFilePath)
       })
     } else {
+      const { configName, codeFilePath } = codeFile
       const configValue = codeFile.codeFileExportValue
-      configValues[configName] = configValue
+      configValues[configName] = {
+        configSourceFile: codeFilePath,
+        configSourceFileExportName: 'default',
+        configValue
+      }
       assertIsNotNull(configValue, configName, codeFilePath)
     }
   })
 
-  Object.entries(pageConfig.configElements).map(([configName, configElement]) => {
-    if (configElement.codeFilePath) return
-    configValues[configName] = configElement.configValue
-  })
-
-  objectAssign(pageConfig, { configValues })
+  objectAssign(pageConfig, { isLoaded: true as const })
 
   return pageConfig
 }
