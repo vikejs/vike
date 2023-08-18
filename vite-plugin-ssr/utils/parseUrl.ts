@@ -5,7 +5,7 @@ export { isParsable }
 export { assertUsageUrl }
 export { isBaseServer }
 export { assertUrlComponents }
-export { createUrl }
+export { createUrlFromComponents }
 
 import { slice } from './slice.js'
 import { assert, assertUsage } from './assert.js'
@@ -241,10 +241,10 @@ function assertUrlComponents(
   searchOriginal: string | null,
   hashOriginal: string | null
 ) {
-  const urlRecreated = createUrl(origin, pathname, searchOriginal, hashOriginal)
+  const urlRecreated = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
   assert(url === urlRecreated, { url, urlRecreated })
 }
-function createUrl(
+function createUrlFromComponents(
   origin: string | null,
   pathname: string,
   searchOriginal: string | null,
