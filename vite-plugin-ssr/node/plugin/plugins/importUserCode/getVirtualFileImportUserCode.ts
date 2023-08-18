@@ -6,7 +6,14 @@ export { getVirtualFileImportUserCode }
 //    - Systematically remove all pageFilesAll references does the trick?
 
 import type { ResolvedConfig } from 'vite'
-import { assert, assertPosixPath, viteIsSSR_options, isNotNullish, scriptFileExtensions, debugGlob } from '../../utils.js'
+import {
+  assert,
+  assertPosixPath,
+  viteIsSSR_options,
+  isNotNullish,
+  scriptFileExtensions,
+  debugGlob
+} from '../../utils.js'
 import type { ConfigVpsResolved } from '../../../../shared/ConfigVps.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes.js'

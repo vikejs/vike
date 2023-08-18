@@ -9,7 +9,9 @@ describe('assertNoInfiniteHttpRedirect()', () => {
         assertNoInfiniteHttpRedirect('/a', '/a')
       },
       (msg) => {
-        expect(msg).toMatchInlineSnapshot('"[vite-plugin-ssr][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /a"')
+        expect(msg).toMatchInlineSnapshot(
+          '"[vite-plugin-ssr][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /a"'
+        )
       }
     )
     assertNoInfiniteHttpRedirect('/a', '/b')
@@ -18,7 +20,9 @@ describe('assertNoInfiniteHttpRedirect()', () => {
         assertNoInfiniteHttpRedirect('/a', '/a')
       },
       (msg) => {
-        expect(msg).toMatchInlineSnapshot('"[vite-plugin-ssr][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /a"')
+        expect(msg).toMatchInlineSnapshot(
+          '"[vite-plugin-ssr][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /a"'
+        )
       }
     )
     expectErr(
@@ -26,7 +30,9 @@ describe('assertNoInfiniteHttpRedirect()', () => {
         assertNoInfiniteHttpRedirect('/b', '/a')
       },
       (msg) => {
-        expect(msg).toMatchInlineSnapshot('"[vite-plugin-ssr][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /b -> /a"')
+        expect(msg).toMatchInlineSnapshot(
+          '"[vite-plugin-ssr][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /b -> /a"'
+        )
       }
     )
     assertNoInfiniteHttpRedirect('/a', '/c')
@@ -37,7 +43,9 @@ describe('assertNoInfiniteHttpRedirect()', () => {
         assertNoInfiniteHttpRedirect('/d', '/b')
       },
       (msg) => {
-        expect(msg).toMatchInlineSnapshot('"[vite-plugin-ssr][Wrong Usage] Infinite loop of HTTP URL redirects: /b -> /c -> /d -> /b"')
+        expect(msg).toMatchInlineSnapshot(
+          '"[vite-plugin-ssr][Wrong Usage] Infinite loop of HTTP URL redirects: /b -> /c -> /d -> /b"'
+        )
       }
     )
     assertNoInfiniteHttpRedirect('/a', '/e')
@@ -47,7 +55,9 @@ describe('assertNoInfiniteHttpRedirect()', () => {
         assertNoInfiniteHttpRedirect('/d', '/a')
       },
       (msg) => {
-        expect(msg).toMatchInlineSnapshot('"[vite-plugin-ssr][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /b -> /c -> /d -> /a"')
+        expect(msg).toMatchInlineSnapshot(
+          '"[vite-plugin-ssr][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /b -> /c -> /d -> /a"'
+        )
       }
     )
   })

@@ -13,6 +13,8 @@ describe('normalizeUrlPathname()', () => {
     expect(normalizeUrlPathname('https://example.org/p/')).toBe('https://example.org/p')
     expect(normalizeUrlPathname('/p/?foo=bar#bla')).toBe('/p?foo=bar#bla')
     expect(normalizeUrlPathname('////?foo=bar#bla')).toBe('/?foo=bar#bla')
-    expect(normalizeUrlPathname('https://example.org/some-url/?foo=bar#bla')).toBe('https://example.org/some-url?foo=bar#bla')
+    expect(normalizeUrlPathname('https://example.org/some-url/?foo=bar#bla')).toBe(
+      'https://example.org/some-url?foo=bar#bla'
+    )
   })
 })

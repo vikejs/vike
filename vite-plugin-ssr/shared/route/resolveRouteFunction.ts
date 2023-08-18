@@ -2,10 +2,7 @@ export { resolveRouteFunction }
 export { assertRouteParams }
 export { assertSyncRouting }
 
-import {
-  assertPageContextUrlComputedPropsPublic,
-  PageContextUrlComputedProps,
-} from '../UrlComputedProps.js'
+import { assertPageContextUrlComputedPropsPublic, PageContextUrlComputedProps } from '../UrlComputedProps.js'
 import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise, isStringRecord } from './utils.js'
 
 async function resolveRouteFunction(

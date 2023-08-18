@@ -142,7 +142,7 @@ async function resolveClientEntriesDev(
     // VPS client entry
 
     const { createRequire } = (await import_('module')).default as Awaited<typeof import('module')>
-    const { dirname } = ((await import_('path'))).default as Awaited<typeof import('path')>
+    const { dirname } = (await import_('path')).default as Awaited<typeof import('path')>
     const { fileURLToPath } = (await import_('url')).default as Awaited<typeof import('url')>
     // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
     const importMetaUrl: string = import.meta.url

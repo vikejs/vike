@@ -3,7 +3,11 @@
 export { serializePageConfigs }
 
 import { assert, assertUsage, objectEntries } from '../../../utils.js'
-import type { ConfigElement, PageConfigData, PageConfigGlobalData } from '../../../../../shared/page-configs/PageConfig.js'
+import type {
+  ConfigElement,
+  PageConfigData,
+  PageConfigGlobalData
+} from '../../../../../shared/page-configs/PageConfig.js'
 import { generateEagerImport } from '../generateEagerImport.js'
 import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files/virtualFileImportPageCode.js'
 import { debug } from './debug.js'

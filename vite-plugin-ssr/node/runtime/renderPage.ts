@@ -58,7 +58,7 @@ const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
   pendingRequestsCount: 0
 })
-let renderPage_wrapper = async <PageContext,>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
+let renderPage_wrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
   pageContextReturn: await ret(),
   onRequestDone: () => {}
 })

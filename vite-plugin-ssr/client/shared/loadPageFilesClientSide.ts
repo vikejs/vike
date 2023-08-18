@@ -1,4 +1,9 @@
-import { getPageFilesClientSide, getExports, type PageFile, type PageContextExports } from '../../shared/getPageFiles.js'
+import {
+  getPageFilesClientSide,
+  getExports,
+  type PageFile,
+  type PageContextExports
+} from '../../shared/getPageFiles.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode.js'
 import type { PageConfig, PageConfigLoaded } from '../../shared/page-configs/PageConfig.js'

@@ -12,7 +12,7 @@ async function getExportNames(src: string): Promise<{ exportNames: string[]; wil
   const parseResult = await parseEsModule(src)
   const [imports, exports] = parseResult
 
-  const exportNames = exports.map(e => e.n)
+  const exportNames = exports.map((e) => e.n)
 
   // This seems to be the only way to detect re-exports
   //  - https://github.com/brillout/es-module-lexer_tests

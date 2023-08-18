@@ -7,7 +7,15 @@ export { setGlobalContext_vitePreviewServer }
 export { setGlobalContext_viteConfig }
 export { getRuntimeManifest }
 
-import { assert, assertUsage, assertWarning, getGlobalObject, getNodeEnv, isPlainObject, objectAssign } from './utils.js'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  getGlobalObject,
+  getNodeEnv,
+  isPlainObject,
+  objectAssign
+} from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer, PreviewServerForHook as VitePreviewServer } from 'vite'
 import { loadImportBuild } from './globalContext/loadImportBuild.js'
