@@ -69,10 +69,10 @@ async function createHttpResponsePageContextJson(pageContextSerialized: string) 
 
 function createHttpResponseObjectRedirect(
   { url, statusCode }: UrlRedirect,
-  // We assume that the user uses urlPathname to implement his abort logic
-  urlPathname: string
+  // The URL pathname we assume the redirect to be logically based on
+  urlPathnameLogical: string
 ): HttpResponse {
-  assertNoInfiniteHttpRedirect(url, urlPathname)
+  assertNoInfiniteHttpRedirect(url, urlPathnameLogical)
   assert(url)
   assert(statusCode)
   assert(300 <= statusCode && statusCode <= 399)
