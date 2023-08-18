@@ -51,11 +51,21 @@ function isBaseAssets(base: string): boolean {
 }
 
 function normalizeUrlPathname(urlOriginal: string): string | null {
-  const { origin, pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(urlOriginal, '/')
-  assert(pathnameOriginal.startsWith('/'))
-  const pathnameNormalized = '/' + pathnameOriginal.split('/').filter(Boolean).join('/')
-  if (pathnameOriginal === pathnameNormalized) return null
-  assertUrlComponents(urlOriginal, origin, pathnameOriginal, searchOriginal, hashOriginal)
-  const urlNormalized = createUrlFromComponents(origin, pathnameNormalized, searchOriginal, hashOriginal)
+  const urlNormalized = modifyUrlPathname(urlOriginal, (urlPathname) => {
+    assert(urlPathname.startsWith('/'))
+    const urlPathnameNormalized = '/' + urlPathname.split('/').filter(Boolean).join('/')
+    return urlPathnameNormalized
+  })
+  if (urlNormalized === urlOriginal) return null
   return urlNormalized
+}
+
+function modifyUrlPathname(url: string, modifier: (urlPathname: string) => string | null): string {
+  const { origin, pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, '/')
+  const pathnameModified = modifier(pathnameOriginal)
+  if (pathnameModified === null) return url
+  assertUrlComponents(url, origin, pathnameOriginal, searchOriginal, hashOriginal)
+  const urlModified = createUrlFromComponents(origin, pathnameModified, searchOriginal, hashOriginal)
+  assert((pathnameOriginal === pathnameModified) === (url === urlModified))
+  return urlModified
 }
