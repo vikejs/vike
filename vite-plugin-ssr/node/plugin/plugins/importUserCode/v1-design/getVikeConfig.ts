@@ -457,15 +457,16 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
 
   // Validate that global configs live in global interface files
   {
-    const interfaceFilesGlobalUserPaths: string[] = []
+    const interfaceFilesGlobalPaths: string[] = []
     Object.entries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
       assert(isGlobalLocation(locationId, locationIds))
       interfaceFiles.forEach(({ filePath: { filePathRelativeToUserRootDir } }) => {
         if (filePathRelativeToUserRootDir) {
-          interfaceFilesGlobalUserPaths.push(filePathRelativeToUserRootDir)
+          interfaceFilesGlobalPaths.push(filePathRelativeToUserRootDir)
         }
       })
     })
+    const globalPaths = Array.from(new Set(interfaceFilesGlobalPaths.map(p => path.posix.dirname(p))))
     Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
       interfaceFiles.forEach((interfaceFile) => {
         Object.keys(interfaceFile.configMap).forEach((configName) => {
@@ -476,8 +477,8 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
                 `${getFilePathToShowToUser(
                   interfaceFile.filePath
                 )} defines the config '${configName}' which is global:`,
-                interfaceFilesGlobalUserPaths.length
-                  ? `define '${configName}' in ${joinEnglish(interfaceFilesGlobalUserPaths, 'or')} instead`
+                globalPaths.length
+                  ? `define '${configName}' in ${joinEnglish(globalPaths, 'or')} instead`
                   : `create a global config (e.g. /pages/+config.js) and define '${configName}' there instead`
               ].join(' ')
             )

@@ -41,7 +41,7 @@ function getLogialPath(someDir: string, removeDirs: string[]): string {
 
 /** Whether configs defined in `locationId` apply in every `locationIds` */
 function isGlobalLocation(locationId: string, locationIds: string[]): boolean {
-  return locationIds.every((locId) => isInherited(locationId, locId))
+  return locationIds.every((locId) => isInherited(locationId, locId) || locationIsRendererDir(locId))
 }
 function sortAfterInheritanceOrder(locationId1: string, locationId2: string, locationIdPage: string): -1 | 1 | 0 {
   const inheritanceRoot1 = getInheritanceRoot(locationId1)
