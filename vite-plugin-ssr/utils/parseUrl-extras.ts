@@ -1,6 +1,8 @@
 export { prependBase }
 export { isBaseAssets }
 export { normalizeUrlPathname }
+export { removeBaseServer }
+export { modifyUrlPathname }
 
 import { assertUrlComponents, createUrlFromComponents, isBaseServer, parseUrl } from './parseUrl.js'
 import { assert } from './assert.js'
@@ -25,6 +27,14 @@ function prependBase(url: string, baseServer: string): string {
   assert(!baseServerNormalized.endsWith('/'))
   assert(url.startsWith('/'))
   return `${baseServerNormalized}${url}`
+}
+
+function removeBaseServer(url: string, baseServer: string): string {
+  const { hasBaseServer, origin, pathname, pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, baseServer)
+  assert(hasBaseServer)
+  assertUrlComponents(url, origin, pathnameOriginal, searchOriginal, hashOriginal)
+  const urlWithoutBase = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
+  return urlWithoutBase
 }
 
 function normalizeBaseAssets(baseAssets: string) {

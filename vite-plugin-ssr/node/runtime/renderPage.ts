@@ -20,7 +20,10 @@ import {
   getGlobalObject,
   checkType,
   assertUsage,
-  normalizeUrlPathname
+  normalizeUrlPathname,
+  removeBaseServer,
+  modifyUrlPathname,
+  prependBase
 } from './utils.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -461,13 +464,18 @@ function normalizePathname(pageContextInit: { urlOriginal: string }) {
 }
 
 function getPermanentRedirect(pageContextInit: { urlOriginal: string }) {
-  const { redirects } = getGlobalContext()
-  const urlTarget = resolveRedirects(redirects, pageContextInit.urlOriginal)
-  if (!urlTarget) return null
-  const httpResponse = createHttpResponseObjectRedirect(
-    { url: urlTarget, statusCode: 301 },
-    pageContextInit.urlOriginal
-  )
+  const { redirects, baseServer } = getGlobalContext()
+  const urlWithoutBase = removeBaseServer(pageContextInit.urlOriginal, baseServer)
+  let urlPathname: undefined | string
+  let urlRedirect = modifyUrlPathname(urlWithoutBase, (urlPathname_) => {
+    urlPathname = urlPathname_
+    return resolveRedirects(redirects, urlPathname)
+  })
+  assert(urlPathname)
+  if (urlRedirect === urlWithoutBase) return null
+  urlRedirect = prependBase(urlRedirect, baseServer)
+  assert(urlRedirect !== pageContextInit.urlOriginal)
+  const httpResponse = createHttpResponseObjectRedirect({ url: urlRedirect, statusCode: 301 }, urlPathname)
   const pageContextHttpResponse = { ...pageContextInit, httpResponse }
   return pageContextHttpResponse
 }
