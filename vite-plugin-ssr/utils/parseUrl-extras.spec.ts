@@ -1,4 +1,4 @@
-import { normalizeUrlPathname } from './normalizeUrlPathname.js'
+import { normalizeUrlPathname } from './parseUrl-extras.js'
 
 import { expect, describe, it } from 'vitest'
 describe('normalizeUrlPathname()', () => {

@@ -19,7 +19,8 @@ import {
   assertWarning,
   getGlobalObject,
   checkType,
-  assertUsage
+  assertUsage,
+  normalizeUrlPathname
 } from './utils.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -48,7 +49,6 @@ import { serializePageContextAbort, serializePageContextClientSide } from './htm
 import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
 import { loadPageFilesServerSide } from './renderPage/loadPageFilesServerSide.js'
-import { normalizeUrlPathname } from './renderPage/normalizeUrlPathname.js'
 import { resolveRedirects } from '../../shared/route/resolveRedirects.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {

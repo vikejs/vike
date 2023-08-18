@@ -1,7 +1,8 @@
 export { prependBase }
 export { isBaseAssets }
+export { normalizeUrlPathname }
 
-import { isBaseServer } from './parseUrl.js'
+import { assertUrlComponents, createUrl, isBaseServer, parseUrl } from './parseUrl.js'
 import { assert } from './assert.js'
 import { slice } from './slice.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -47,4 +48,15 @@ function normalizeBaseServer(baseServer: string) {
 
 function isBaseAssets(base: string): boolean {
   return base.startsWith('/') || base.startsWith('http://') || base.startsWith('https://')
+}
+
+function normalizeUrlPathname(urlOriginal: string): string | null {
+  const urlParsed = parseUrl(urlOriginal, '/')
+  const { pathnameOriginal } = urlParsed
+  assert(pathnameOriginal.startsWith('/'))
+  const pathnameNormalized = '/' + pathnameOriginal.split('/').filter(Boolean).join('/')
+  if (pathnameOriginal === pathnameNormalized) return null
+  assertUrlComponents(urlOriginal, urlParsed.origin, pathnameOriginal, urlParsed.searchOriginal, urlParsed.hashOriginal)
+  const urlNormalized = createUrl('', pathnameNormalized, urlParsed.searchOriginal, urlParsed.hashOriginal)
+  return urlNormalized
 }
