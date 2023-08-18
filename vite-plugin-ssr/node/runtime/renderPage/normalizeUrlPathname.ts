@@ -2,7 +2,7 @@ export { normalizeUrlPathname }
 
 import { assert, parseUrl } from '../utils.js'
 
-function normalizeUrlPathname(urlOriginal: string) {
+function normalizeUrlPathname(urlOriginal: string): string | null {
   const urlParsed = parseUrl(urlOriginal, '/')
   const { pathnameOriginal } = urlParsed
   assert(pathnameOriginal.startsWith('/'))

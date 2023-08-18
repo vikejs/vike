@@ -4,6 +4,8 @@ export { parseUrl }
 export { isParsable }
 export { assertUsageUrl }
 export { isBaseServer }
+export { assertUrlComponents }
+export { createUrl }
 
 import { slice } from './slice.js'
 import { assert, assertUsage } from './assert.js'
@@ -78,10 +80,8 @@ function parseUrl(
 
   // `pathnameOriginal`
   const pathnameOriginal = urlWithoutSearch.slice((origin || '').length)
-  {
-    const urlRecreated = `${origin || ''}${pathnameOriginal}${searchOriginal || ''}${hashOriginal || ''}`
-    assert(url === urlRecreated, { url, urlRecreated })
-  }
+
+  assertUrlComponents(url, origin, pathnameOriginal, searchOriginal, hashOriginal)
 
   // Base URL
   let { pathname, hasBaseServer } = analyzeBaseServer(pathnameResolved, baseServer)
@@ -232,4 +232,24 @@ function analyzeBaseServer(
 
 function isBaseServer(baseServer: string): boolean {
   return baseServer.startsWith('/')
+}
+
+function assertUrlComponents(
+  url: string,
+  origin: string | null,
+  pathname: string,
+  searchOriginal: string | null,
+  hashOriginal: string | null
+) {
+  const urlRecreated = createUrl(origin, pathname, searchOriginal, hashOriginal)
+  assert(url === urlRecreated, { url, urlRecreated })
+}
+function createUrl(
+  origin: string | null,
+  pathname: string,
+  searchOriginal: string | null,
+  hashOriginal: string | null
+) {
+  const urlRecreated = `${origin || ''}${pathname}${searchOriginal || ''}${hashOriginal || ''}`
+  return urlRecreated
 }
