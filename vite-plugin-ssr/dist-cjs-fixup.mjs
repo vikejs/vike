@@ -1,6 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
-const sourceDir = 'dist-cjs'
+const sourceDir = 'dist/cjs'
 
 main()
 
@@ -12,17 +12,17 @@ async function main() {
 
 async function generatePackageJson() {
   await fs.writeFile(sourceDir + '/package.json', '{ "type": "commonjs" }\n', 'utf8')
-  console.log('✅ dist-cjs/package.json generated')
+  console.log('✅ dist/cjs/package.json generated')
 }
 
 async function shimImportMetaUrl() {
   await processFiles(sourceDir)
-  console.log('✅ dist-cjs/ shimmed import.meta.url')
+  console.log('✅ dist/cjs/ shimmed import.meta.url')
 }
 
 async function slim() {
   await removeDirectory(sourceDir + '/client')
-  console.log('✅ dist-cjs/ slimmed: removed dist-cjs/client/')
+  console.log('✅ dist/cjs/ slimmed: removed dist/cjs/client/')
 }
 
 async function replaceImportMetaWithFilename(filePath) {

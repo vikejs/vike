@@ -3,10 +3,10 @@
   "version": "0.4.136",
   "scripts": {
     "dev": "tsc --watch",
-    "build": "pnpm run build:esm && pnpm run build:cjs",
-    "build:esm": "rimraf dist/ && tsc",
-    "build:cjs": "rimraf dist-cjs/ && pnpm run build:cjs:ts && pnpm run build:cjs:fixup",
-    "build:cjs:ts": "tsc --outDir ./dist-cjs/ --module CommonJS --target ES2020 --moduleResolution Node10 --declaration false",
+    "build": "rimraf dist/ && pnpm run build:esm && pnpm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "pnpm run build:cjs:ts && pnpm run build:cjs:fixup",
+    "build:cjs:ts": "tsc --outDir ./dist/cjs/ --module CommonJS --target ES2020 --moduleResolution Node10 --declaration false",
     "build:cjs:fixup": "node ./dist-cjs-fixup.mjs",
     "release": "release-me patch",
     "release:commit": "release-me commit"
@@ -28,83 +28,83 @@
   "type": "module",
   "exports": {
     ".": {
-      "worker": "./dist/node/runtime/index-deprecated.js",
-      "edge-light": "./dist/node/runtime/index-deprecated.js",
-      "require": "./dist-cjs/node/runtime/index-deprecated.js",
-      "node": "./dist/node/runtime/index-deprecated.js",
-      "browser": "./dist/client/node.js",
-      "types": "./dist/node/runtime/index-deprecated.d.ts"
+      "worker": "./dist/esm/node/runtime/index-deprecated.js",
+      "edge-light": "./dist/esm/node/runtime/index-deprecated.js",
+      "require": "./dist/cjs/node/runtime/index-deprecated.js",
+      "node": "./dist/esm/node/runtime/index-deprecated.js",
+      "browser": "./dist/esm/client/node.js",
+      "types": "./dist/esm/node/runtime/index-deprecated.d.ts"
     },
     "./server": {
-      "worker": "./dist/node/runtime/index.js",
-      "edge-light": "./dist/node/runtime/index.js",
-      "require": "./dist-cjs/node/runtime/index.js",
-      "node": "./dist/node/runtime/index.js",
-      "browser": "./dist/client/node.js",
-      "types": "./dist/node/runtime/index.d.ts"
+      "worker": "./dist/esm/node/runtime/index.js",
+      "edge-light": "./dist/esm/node/runtime/index.js",
+      "require": "./dist/cjs/node/runtime/index.js",
+      "node": "./dist/esm/node/runtime/index.js",
+      "browser": "./dist/esm/client/node.js",
+      "types": "./dist/esm/node/runtime/index.d.ts"
     },
     "./client": {
-      "types": "./dist/client/server-routing-runtime/index.d.ts"
+      "types": "./dist/esm/client/server-routing-runtime/index.d.ts"
     },
     "./types": {
-      "types": "./dist/types/index.d.ts"
+      "types": "./dist/esm/types/index.d.ts"
     },
     "./client/router": {
-      "worker": "./dist/node/client/router.js",
-      "edge-light": "./dist/node/client/router.js",
-      "require": "./dist-cjs/node/client/router.js",
-      "node": "./dist/node/client/router.js",
-      "browser": "./dist/client/client-routing-runtime/index.js",
-      "types": "./dist/client/client-routing-runtime/index.d.ts"
+      "worker": "./dist/esm/node/client/router.js",
+      "edge-light": "./dist/esm/node/client/router.js",
+      "require": "./dist/cjs/node/client/router.js",
+      "node": "./dist/esm/node/client/router.js",
+      "browser": "./dist/esm/client/client-routing-runtime/index.js",
+      "types": "./dist/esm/client/client-routing-runtime/index.d.ts"
     },
     "./routing": {
-      "worker": "./dist/shared/route/routing.js",
-      "edge-light": "./dist/shared/route/routing.js",
-      "require": "./dist-cjs/shared/route/routing.js",
-      "node": "./dist/shared/route/routing.js",
-      "browser": "./dist/shared/route/routing.js",
-      "types": "./dist/shared/route/routing.d.ts"
+      "worker": "./dist/esm/shared/route/routing.js",
+      "edge-light": "./dist/esm/shared/route/routing.js",
+      "require": "./dist/cjs/shared/route/routing.js",
+      "node": "./dist/esm/shared/route/routing.js",
+      "browser": "./dist/esm/shared/route/routing.js",
+      "types": "./dist/esm/shared/route/routing.d.ts"
     },
     "./cli": {
-      "require": "./dist-cjs/node/cli/index.js",
-      "node": "./dist/node/cli/index.js",
-      "types": "./dist/node/cli/index.d.ts"
+      "require": "./dist/cjs/node/cli/index.js",
+      "node": "./dist/esm/node/cli/index.js",
+      "types": "./dist/esm/node/cli/index.d.ts"
     },
     "./prerender": {
-      "require": "./dist-cjs/node/prerender/index.js",
-      "node": "./dist/node/prerender/index.js",
-      "types": "./dist/node/prerender/index.d.ts"
+      "require": "./dist/cjs/node/prerender/index.js",
+      "node": "./dist/esm/node/prerender/index.js",
+      "types": "./dist/esm/node/prerender/index.d.ts"
     },
     "./plugin": {
-      "require": "./dist-cjs/node/plugin/index.js",
-      "node": "./dist/node/plugin/index.js",
-      "types": "./dist/node/plugin/index.d.ts"
+      "require": "./dist/cjs/node/plugin/index.js",
+      "node": "./dist/esm/node/plugin/index.js",
+      "types": "./dist/esm/node/plugin/index.d.ts"
     },
     "./RenderErrorPage": {
-      "worker": "./dist/shared/RenderErrorPage.js",
-      "edge-light": "./dist/shared/RenderErrorPage.js",
-      "require": "./dist-cjs/shared/RenderErrorPage.js",
-      "node": "./dist/shared/RenderErrorPage.js",
-      "browser": "./dist/shared/RenderErrorPage.js",
-      "types": "./dist/shared/RenderErrorPage.d.ts"
+      "worker": "./dist/esm/shared/RenderErrorPage.js",
+      "edge-light": "./dist/esm/shared/RenderErrorPage.js",
+      "require": "./dist/cjs/shared/RenderErrorPage.js",
+      "node": "./dist/esm/shared/RenderErrorPage.js",
+      "browser": "./dist/esm/shared/RenderErrorPage.js",
+      "types": "./dist/esm/shared/RenderErrorPage.d.ts"
     },
     "./abort": {
-      "worker": "./dist/shared/abort.js",
-      "edge-light": "./dist/shared/abort.js",
-      "require": "./dist-cjs/shared/abort.js",
-      "node": "./dist/shared/abort.js",
-      "browser": "./dist/shared/abort.js",
-      "types": "./dist/shared/abort.d.ts"
+      "worker": "./dist/esm/shared/abort.js",
+      "edge-light": "./dist/esm/shared/abort.js",
+      "require": "./dist/cjs/shared/abort.js",
+      "node": "./dist/esm/shared/abort.js",
+      "browser": "./dist/esm/shared/abort.js",
+      "types": "./dist/esm/shared/abort.d.ts"
     },
     "./__internal": {
-      "require": "./dist-cjs/__internal/index.js",
-      "node": "./dist/__internal/index.js",
-      "types": "./dist/__internal/index.d.ts"
+      "require": "./dist/cjs/__internal/index.js",
+      "node": "./dist/esm/__internal/index.js",
+      "types": "./dist/esm/__internal/index.d.ts"
     },
     "./__internal/setup": {
-      "require": "./dist-cjs/node/runtime/page-files/setup.js",
-      "node": "./dist/node/runtime/page-files/setup.js",
-      "types": "./dist/node/runtime/page-files/setup.d.ts"
+      "require": "./dist/cjs/node/runtime/page-files/setup.js",
+      "node": "./dist/esm/node/runtime/page-files/setup.js",
+      "types": "./dist/esm/node/runtime/page-files/setup.d.ts"
     }
   },
   "peerDependencies": {
@@ -116,45 +116,45 @@
       "optional": true
     }
   },
-  "main": "./dist/node/runtime/index-deprecated.js",
-  "types": "./dist/node/runtime/index-deprecated.d.ts",
+  "main": "./dist/esm/node/runtime/index-deprecated.js",
+  "types": "./dist/esm/node/runtime/index-deprecated.d.ts",
   "typesVersions": {
     "*": {
       "types": [
-        "./dist/types/index.d.ts"
+        "./dist/esm/types/index.d.ts"
       ],
       "server": [
-        "./dist/node/runtime/index.d.ts"
+        "./dist/esm/node/runtime/index.d.ts"
       ],
       "client": [
-        "./dist/client/server-routing-runtime/index.d.ts"
+        "./dist/esm/client/server-routing-runtime/index.d.ts"
       ],
       "client/router": [
-        "./dist/client/client-routing-runtime/index.d.ts"
+        "./dist/esm/client/client-routing-runtime/index.d.ts"
       ],
       "routing": [
-        "./dist/shared/route/routing.d.ts"
+        "./dist/esm/shared/route/routing.d.ts"
       ],
       "cli": [
-        "./dist/node/cli/index.d.ts"
+        "./dist/esm/node/cli/index.d.ts"
       ],
       "prerender": [
-        "./dist/node/prerender/index.d.ts"
+        "./dist/esm/node/prerender/index.d.ts"
       ],
       "plugin": [
-        "./dist/node/plugin/index.d.ts"
+        "./dist/esm/node/plugin/index.d.ts"
       ],
       "RenderErrorPage": [
-        "./dist/shared/RenderErrorPage.d.ts"
+        "./dist/esm/shared/RenderErrorPage.d.ts"
       ],
       "abort": [
-        "./dist/shared/abort.d.ts"
+        "./dist/esm/shared/abort.d.ts"
       ],
       "__internal": [
-        "./dist/__internal/index.d.ts"
+        "./dist/esm/__internal/index.d.ts"
       ],
       "__internal/setup": [
-        "./dist/node/runtime/page-files/setup.d.ts"
+        "./dist/esm/node/runtime/page-files/setup.d.ts"
       ]
     }
   },

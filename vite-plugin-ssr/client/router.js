@@ -1,2 +1,2 @@
 // eslint doesn't seem to support `package.json#exports`.
-export * from '../dist/client/client-routing-runtime'
+export * from '../dist/esm/client/client-routing-runtime'

@@ -50,7 +50,7 @@ function disableClientRouting(err: unknown, log: boolean) {
     // We don't use console.error() to avoid flooding error trackers such as Sentry
     console.log(err)
   }
-  // @ts-ignore Since dist-cjs/client/ is never used, we can ignore this error.
+  // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
   const isProd: boolean = import.meta.env.PROD
   assertInfo(
     false,

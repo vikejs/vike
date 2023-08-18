@@ -1197,7 +1197,7 @@ function handleUserFileError(err: unknown, isDev: boolean) {
     //   plugin: 'vite-plugin-ssr:importUserCode',
     //   hook: 'load',
     //   watchFiles: [
-    //     '/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/node/importBuild.js',
+    //     '/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/esm/node/importBuild.js',
     //     '\x00virtual:vite-plugin-ssr:importUserCode:server'
     //   ]
     // }

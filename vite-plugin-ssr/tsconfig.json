@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
+    "outDir": "./dist/esm/",
     "declaration": true,
     "target": "ES2020",
     "module": "ES2020",

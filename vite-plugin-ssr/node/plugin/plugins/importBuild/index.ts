@@ -31,8 +31,8 @@ function importBuild(): Plugin[] {
 
 function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
   const importPathAbsolute = toPosixPath(
-    // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/dist/node/plugin/plugins/importBuild/index.js
-    require_.resolve(`../../../../../dist/node/runtime/globalContext/loadImportBuild.js`)
+    // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/dist/esm/node/plugin/plugins/importBuild/index.js
+    require_.resolve(`../../../../../../dist/esm/node/runtime/globalContext/loadImportBuild.js`)
   )
   const { outDirServer } = getOutDirs(config)
   const importPath = path.posix.relative(outDirServer, importPathAbsolute)

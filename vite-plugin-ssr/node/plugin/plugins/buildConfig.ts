@@ -73,7 +73,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     const serverEntries = analyzeServerEntries(pageConfigsData)
     const entries = {
       pageFiles: virtualFileIdImportUserCodeServer, // TODO/next-major-release: rename to configFiles
-      importBuild: resolve('dist/node/importBuild.js'), // TODO/next-major-release: remove
+      importBuild: resolve('dist/esm/node/importBuild.js'), // TODO/next-major-release: remove
       ...pageFileEntries,
       ...serverEntries
     }
@@ -88,8 +88,8 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
       ...clientEntries,
       ...pageFileEntries
     }
-    const clientRoutingEntry = resolve(`dist/client/client-routing-runtime/entry.js`)
-    const serverRoutingEntry = resolve(`dist/client/server-routing-runtime/entry.js`)
+    const clientRoutingEntry = resolve(`dist/esm/client/client-routing-runtime/entry.js`)
+    const serverRoutingEntry = resolve(`dist/esm/client/server-routing-runtime/entry.js`)
     if (hasClientRouting) {
       entries['entries/entry-client-routing'] = clientRoutingEntry
     }
@@ -196,8 +196,8 @@ function prependEntriesDir(entryName: string): string {
 
 function resolve(filePath: string) {
   assert(filePath.startsWith('dist/'))
-  // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vite-plugin-ssr/dist/node/plugin/plugins/
-  return require_.resolve(`../../../../${filePath}`)
+  // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vite-plugin-ssr/dist/esm/node/plugin/plugins/
+  return require_.resolve(`../../../../../${filePath}`)
 }
 
 function normalizeRollupInput(input?: InputOption): Record<string, string> {
