@@ -5,7 +5,7 @@
     "build": "pnpm run build:esm && pnpm run build:cjs",
     "build:esm": "rimraf dist/ && tsc --build",
     "build:cjs": "rimraf dist-cjs/ && pnpm run build:cjs:ts && pnpm run build:cjs:fixup",
-    "build:cjs:ts": "tsc --outDir ./dist-cjs/ --module CommonJS --target ES2020 --moduleResolution Node",
+    "build:cjs:ts": "tsc --outDir ./dist-cjs/ --module CommonJS --target ES2020 --moduleResolution Node10 --declaration false",
     "build:cjs:fixup": "node ./dist-cjs-fixup.mjs",
     "dev": "pnpm run dev:fast",
     "// `dev:fast` and `dev:slow` achieve the same": "",
