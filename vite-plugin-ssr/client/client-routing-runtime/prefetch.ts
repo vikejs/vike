@@ -59,7 +59,7 @@ function addLinkPrefetchHandlers(pageContext: {
   markAsAlreadyPrefetched(pageContext.urlPathname)
 
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
-  linkTags.forEach(async (linkTag) => {
+  linkTags.forEach((linkTag) => {
     if (linkPrefetchHandlerAdded.has(linkTag)) return
     linkPrefetchHandlerAdded.set(linkTag, true)
 
@@ -67,27 +67,30 @@ function addLinkPrefetchHandlers(pageContext: {
 
     if (skipLink(linkTag)) return
     assert(url)
-    try {
-      if (!(await isClientSideRoutable(url))) return
-    } catch {
-      // If a route() hook has a bug or `throw render()` / `throw redirect()`
-      return
-    }
 
     if (isAlreadyPrefetched(url)) return
 
     const { prefetchStaticAssets } = getPrefetchSettings(pageContext, linkTag)
+    if (!prefetchStaticAssets) return
 
-    if (!prefetchStaticAssets) {
-      return
-    } else if (prefetchStaticAssets === 'hover') {
-      linkTag.addEventListener('mouseover', () => prefetch(url))
-      linkTag.addEventListener('touchstart', () => prefetch(url), { passive: true })
-    } else if (prefetchStaticAssets === 'viewport') {
+    if (prefetchStaticAssets === 'hover') {
+      linkTag.addEventListener('mouseover', () => {
+        prefetchIfClientSideRoutable(url)
+      })
+      linkTag.addEventListener(
+        'touchstart',
+        () => {
+          prefetchIfClientSideRoutable(url)
+        },
+        { passive: true }
+      )
+    }
+
+    if (prefetchStaticAssets === 'viewport') {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            prefetch(url)
+            prefetchIfClientSideRoutable(url)
             observer.disconnect()
           }
         })
@@ -95,4 +98,14 @@ function addLinkPrefetchHandlers(pageContext: {
       observer.observe(linkTag)
     }
   })
+}
+
+async function prefetchIfClientSideRoutable(url: string): Promise<void> {
+  try {
+    if (!(await isClientSideRoutable(url))) return
+  } catch {
+    // If a route() hook has a bug or `throw render()` / `throw redirect()`
+    return
+  }
+  await prefetch(url)
 }
