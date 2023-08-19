@@ -235,10 +235,10 @@ async function renderPageAlreadyPrepared(
       if (handled.pageContextReturn) {
         // - throw redirect()
         // - throw render(url)
-        // - throw render(statusCode) if .pageContext.json request
+        // - throw render(abortStatusCode) if .pageContext.json request
         return handled.pageContextReturn
       } else {
-        // - throw render(statusCode) if not .pageContext.json request
+        // - throw render(abortStatusCode) if not .pageContext.json request
       }
       Object.assign(pageContextErrorPageInit, handled.pageContextAbort)
     }
@@ -267,7 +267,7 @@ async function renderPageAlreadyPrepared(
           renderContext,
           pageContextErrorPageInit
         )
-        // throw render(statusCode)
+        // throw render(abortStatusCode)
         if (!handled.pageContextReturn) {
           const abortCall = pc.cyan(errErrorPage._pageContextAbort._abortCall)
           const abortCaller = pc.cyan(`throw ${errErrorPage._pageContextAbort._abortCaller}()`)
@@ -502,7 +502,7 @@ async function handleAbortError(
   const pageContextAbort = errAbort._pageContextAbort
   let pageContextSerialized: string
   if (pageContextNominalPageInit.isClientSideNavigation) {
-    if (pageContextAbort._abortStatusCode) {
+    if (pageContextAbort.abortStatusCode) {
       const errorPageId = getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
       const abortCall = pageContextAbort._abortCall
       assert(abortCall)
@@ -549,6 +549,6 @@ async function handleAbortError(
     objectAssign(pageContextReturn, { httpResponse })
     return { pageContextReturn }
   }
-  assert(pageContextAbort._abortStatusCode)
+  assert(pageContextAbort.abortStatusCode)
   return { pageContextAbort }
 }

@@ -15,7 +15,7 @@ const PASS_TO_CLIENT: string[] = [
   'abortReason',
   '_urlRewrite',
   '_urlRedirect',
-  '_abortStatusCode',
+  'abortStatusCode',
   '_abortCall',
   '_abortCaller',
   '_pageContextInitHasClientData',
@@ -100,9 +100,9 @@ function getPassToClient(pageContext: {
 
 function serializePageContextAbort(
   pageContext: Record<string, unknown> &
-    ({ _urlRedirect: UrlRedirect } | { _urlRewrite: string } | { _abortStatusCode: number })
+    ({ _urlRedirect: UrlRedirect } | { _urlRewrite: string } | { abortStatusCode: number })
 ): string {
-  assert(pageContext._urlRedirect || pageContext._urlRewrite || pageContext._abortStatusCode)
+  assert(pageContext._urlRedirect || pageContext._urlRewrite || pageContext.abortStatusCode)
   ;['_abortCall', '_abortCaller'].forEach((p) => {
     assert(pageContext[p])
   })
@@ -113,7 +113,7 @@ function serializePageContextAbort(
         '_abortCaller',
         '_urlRedirect',
         '_urlRewrite',
-        '_abortStatusCode',
+        'abortStatusCode',
         'abortReason',
         'is404',
         'pageProps'

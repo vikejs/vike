@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-The error page, which is defined by `/renderer/_error.page.tsx`, is rendered when an error occurs. It's also rendered when you call <Link href="/render" text={<code>throw render(errorStatusCode)</code>}></Link>.
+The error page, which is defined by `/renderer/_error.page.tsx`, is rendered when an error occurs. It's also rendered when you call <Link href="/render" text={<code>throw render(abortStatusCode)</code>}></Link>.
 
 ```ts
 // /renderer/_error.page.ts
@@ -16,25 +16,22 @@ import { usePageContext } from 'vike-solid/usePageContext'
 function Page() {
   const pageContext = usePageContext()
 
-  // Message shown to the user
-  let msg: string
-
-  const abortReason: unknown = pageContext.abortReason
-  // Handle `throw render(403, { notAdmin: true })`
+  let msg: string // Message shown to the user
+  const { abortReason, abortStatusCode } = pageContext
   if (abortReason?.notAdmin) {
+    // Handle `throw render(403, { notAdmin: true })`
     msg = "You cannot access this page because you aren't an administrator."
-  }
-  // Handle `throw render(401, { notLoggedIn: true })`
-  if (abortReason?.notLoggedIn) {
-    msg = "You cannot access this page because you aren't logged in. Please log in."
-  }
-  // Handle `throw render(someErrorStatusCode, `You cannot access ${someCustomMessage}`)`
-  if (typeof abortReason === 'string') {
+  } else if (typeof abortReason === 'string') {
+    // Handle `throw render(abortStatusCode, `You cannot access ${someCustomMessage}`)`
     msg = abortReason
-  }
-
-  // Fallback error message
-  if (!msg) {
+  } else if (abortStatusCode === 403) {
+    // Handle `throw render(403)`
+    msg = "You cannot access this page because you don't have enough privileges."
+  } else if (abortStatusCode === 401) {
+    // Handle `throw render(401)`
+    msg = "You cannot access this page because you aren't logged in. Please log in."
+  } else {
+    // Fallback error message
     msg = pageContext.is404 ?
       "This page doesn't exist." :
       "Something went wrong. Sincere apologies. Try again (later)."
@@ -46,12 +43,12 @@ function Page() {
 
 > The <Link href="/usePageContext" /> UI component hook allows you to access <Link href="/pageContext" noBreadcrumb /> from any UI component.
 
-The `pageContext.abortReason` value is set by <Link href="/render" text={<code>throw render(errorStatusCode, abortReason)</code>} />, and `pageContext.is404` is set by vite-pugin-ssr.
+The `pageContext.abortReason` and `pageContext.abortStatusCode` values are set by <Link href="/render" text={<code>throw render(abortStatusCode, abortReason)</code>} />, and `pageContext.is404` is set by vite-pugin-ssr.
 
 The error page is rendered if:
  1. The URL didn't match the route of any of your pages (`404 Page Not Found`).
  2. One of your hooks threw an error (`500 Internal Error`).
- 3. You called <Link href="/render" text={<code>throw render(errorStatusCode)</code>} />.
+ 3. You called <Link href="/render" text={<code>throw render(abortStatusCode)</code>} />.
 
 > The error page is also rendered when vite-plugin-ssr throws an unexpected error (it has a bug), but since vite-plugin-ssr has no known bug this is very rare.
 

@@ -236,7 +236,7 @@ function useClientRouter() {
           })
           return
         }
-        assert(pageContextAbort._abortStatusCode)
+        assert(pageContextAbort.abortStatusCode)
         objectAssign(pageContext, pageContextAbort)
       } else {
         objectAssign(pageContext, { is404: checkIf404(err) })

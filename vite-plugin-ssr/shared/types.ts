@@ -4,6 +4,7 @@ export { PageContextBuiltInClientWithServerRouting }
 
 import type { PageContextUrlComputedPropsPublic } from './UrlComputedProps.js'
 import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports.js'
+import type { AbortStatusCode } from './route/abort.js'
 
 /** Built-in `pageContext` properties set by vite-plugin-ssr.
  *
@@ -61,6 +62,13 @@ type PageContextBuiltIn<Page = any> = {
    * https://vite-plugin-ssr.com/render
    */
   abortReason?: unknown
+
+  /**
+   * The status code set by `throw render(abortStatusCode)`.
+   *
+   * https://vite-plugin-ssr.com/render
+   */
+  abortStatusCode?: AbortStatusCode
 
   /**
    * Error that occured while rendering.

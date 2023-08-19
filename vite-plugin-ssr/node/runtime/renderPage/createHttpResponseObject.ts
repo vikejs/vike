@@ -9,19 +9,21 @@ import type { HtmlRender } from '../html/renderHtml.js'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig.js'
 import { isErrorPage } from '../../../shared/error-page.js'
 import type { RenderHook } from './executeOnRenderHtmlHook.js'
-import type { StatusCodeAbort, StatusCodeError, UrlRedirect } from '../../../shared/route/abort.js'
+import type { RedirectStatusCode, AbortStatusCode, UrlRedirect } from '../../../shared/route/abort.js'
 import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody.js'
 import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponseObject/assertNoInfiniteHttpRedirect.js'
 
 type HttpResponse = {
-  statusCode: 200 | 404 | 500 | StatusCodeAbort
+  statusCode: 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode
   headers: [string, string][]
   earlyHints: EarlyHint[]
   // We don't use @deprecated to avoid TypeScript to remove the JSDoc
   /** **Deprecated**: use `headers` instead, see https://vite-plugin-ssr.com/migration/0.4.134 */
   contentType: 'application/json' | 'text/html;charset=utf-8'
 } & HttpResponseBody
+
+// Trick to improve TypeScript DX
 type StatusCode = HttpResponse['statusCode']
 type ContentType = HttpResponse['contentType']
 type ResponseHeaders = HttpResponse['headers']
@@ -35,14 +37,14 @@ async function createHttpResponseObject(
     errorWhileRendering: null | Error
     __getPageAssets: GetPageAssets
     _pageConfigs: PageConfig[]
-    _abortStatusCode?: StatusCodeError
+    abortStatusCode?: AbortStatusCode
   }
 ): Promise<HttpResponse | null> {
   if (htmlRender === null) {
     return null
   }
 
-  let statusCode: StatusCode | undefined = pageContext._abortStatusCode
+  let statusCode: StatusCode | undefined = pageContext.abortStatusCode
   if (!statusCode) {
     const isError = !pageContext._pageId || isErrorPage(pageContext._pageId, pageContext._pageConfigs)
     if (pageContext.errorWhileRendering) {
