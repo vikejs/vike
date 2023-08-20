@@ -1,11 +1,9 @@
 import { RepoLink, Link } from '@brillout/docpress'
 
-We can use `vite-plugin-ssr` with any Vite/Rollup markdown plugin.
-
 
 ## Vue
 
-For Vue, we can use [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md).
+For Vue, you can use [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md).
 
 Example:
  - <RepoLink path='/examples/vue-full/vite.config.ts' />
@@ -14,19 +12,17 @@ Example:
 
 ## React
 
-For React and MDX v1 we can use [`vite-plugin-mdx`](https://github.com/brillout/vite-plugin-mdx).
-
-For MDX v2 we can use [`@mdx-js/rollup`](https://mdxjs.com/packages/rollup/).
+For React, you can use [`@mdx-js/rollup`](https://mdxjs.com/packages/rollup/).
 
 Example:
  - <RepoLink path='/examples/react-full/vite.config.ts' />
  - <RepoLink path='/examples/react-full/pages/markdown.page.mdx' />
 
 
-## `<head>` (`pageContext.exports`)
+## Metadata with `pageContext.exports`
 
 To set the `<head>` tags value of a markdown page,
-we can use <Link href="/exports" text="Custom Export" />.
+you can use <Link href="/exports" text="Custom Export" />.
 
 ~~~js
 // some.page.md
@@ -64,7 +60,7 @@ Examples:
  - <RepoLink path='/examples/vue-full/pages/markdown.page.md' />
 
 
-## `<head>` (frontmatter)
+## Metadata with frontmatter
 
 Some markdown processors also have support for a so-called *frontmatter* to define the page's metadata.
 
@@ -82,7 +78,7 @@ This page is written in _Markdown_.
 > Make sure the Vite markdown plugin you are using has frontmatter support.
 
 Markdown processors usually expose the frontmatter data as an export,
-which we can access at
+which you can access at
 <Link href="/exports" text={<code>pageContext.exports</code>} />.
 
 ```js
