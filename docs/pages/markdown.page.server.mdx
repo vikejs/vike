@@ -3,7 +3,7 @@ import { RepoLink, Link } from '@brillout/docpress'
 
 ## Vue
 
-For Vue, you can use [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md).
+If you use Vue, you can use [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md).
 
 Example:
  - <RepoLink path='/examples/vue-full/vite.config.ts' />
@@ -12,12 +12,117 @@ Example:
 
 ## React
 
-For React, you can use [`@mdx-js/rollup`](https://mdxjs.com/packages/rollup/).
+If you use React, you can use [`@mdx-js/rollup`](https://mdxjs.com/packages/rollup/).
 
 Example:
  - <RepoLink path='/examples/react-full/vite.config.ts' />
  - <RepoLink path='/examples/react-full/pages/markdown.page.mdx' />
 
+
+## Metadata
+
+A somewhat unconventional, but simple yet powerful, way to define the metadata of your pages (title, publishing date, ...) is to define a `metadata.js` file that contains the metadata of all your markdown pages.
+
+> If you want to show the list of pages to your users, then we recommend this approach over <Link href="#metadata-with-frontmatter" /> and <Link href="#metadata-with-pagecontext-exports" doNotInferSectionTitle={true} />. See explanation at <Link href="#page-list" />.
+
+```js
+// /pages/metadata.js
+
+export const metadata = [
+  {
+    url: '/blog/introducing-vike',
+    title: 'Introducing Vike',
+    date: new Date('2024-01-01')
+  },
+  {
+    url: '/blog/v1',
+    title: 'v1.0.0 release',
+    date: new Date('2024-02-01')
+  }
+]
+```
+
+```jsx
+// /pages/index/index.page.jsx
+
+import { metadata } from './metadata'
+
+// Show the list of blog posts
+export function Page() {
+  return <>
+    <p>Blog posts:</p>
+    <ul>{
+      metadata.map(({ title, url, date }) =>
+        <li>
+          <a href={url}>{title}</a> published in {date.toDateString()}
+        </li>
+      )
+    }</ul>
+  </>
+}
+```
+
+We don't have to redefine/duplicate the page titles in the markdown:
+
+```md
+// /pages/blog/introducing-vike.md
+
+We're thrilled to officially introduce Vike, the new name of vite-plugin-ssr,
+marking a new era for the project.
+```
+
+```md
+// /pages/blog/v1.md
+
+The `v1.0.0` release signals that Vike is ready for prime time: it now includes
+all essentials you'd expect from a frontend framework with a robust design.
+```
+
+Instead, we integrate the page title defined by `metadata.js`:
+
+```js
+// /renderer/PageShell.jsx
+
+import { metadata } from '../pages/metadata'
+
+export function PageShell({ pageContext }) {
+  // The component defined by our .md files
+  const { Page } = pageContext
+  // Current URL
+  const url = pageContext.urlParsed.pathname
+  // The page's metadata
+  const { title } = metadata.find(m => m.url === url)
+  return <>
+    <h1>{title}</h1>
+    <Page />
+  </>
+}
+```
+
+```js
+// /renderer/_default.page.server.jsx
+
+import { PageShell } from './PageShell'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { renderToString } from 'some-ui-framework' // React/Vue/Solid/...
+
+export async function render(pageContext) {
+  const url = pageContext.urlParsed.pathname
+  const { title } = metadata.find(m => m.url === url)
+  const page = <PageShell pageContext={pageContext} />
+  const pageHtml = renderToString(page)
+  return escapeInject`<html>
+    <head>
+      <title>${title}</title>
+    </head>
+    <body>
+      <div id="page-view">
+        ${dangerouslySkipEscape(pageHtml)}
+      </div>
+    <body>
+  </html>`
+}
+```
 
 ## Metadata with `pageContext.exports`
 
@@ -101,3 +206,11 @@ export async function render(pageContext) {
   </html>`
 }
 ```
+
+## Page list
+
+A frequent need when using markdown is to show the list of markdown pages to your users, for example the list of your blog posts.
+
+To be able to do so, we recommend defining a file `metadata.js` that contains the metadata of all your markdown pages, see <Link href="#metadata" />.
+
+Another apporach is to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve the list of markdown files, but we usually recommend against this approach. The problem is that, in order to retrieve the metadata of all your markdown files, you'd need to load the *entire* code of *all* your markdown files, which contradicts <Link text="Vite's lazy-transpiling approach" href="/lazy-transpiling" /> and dramatically degrading Vite's development DX speed.

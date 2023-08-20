@@ -1,0 +1,9 @@
+Vite introduces a novel development approach called Lazy Transpiling (aka On-demand Transpiling): instead of transpiling your entire codebase at once, Vite transpiles code only as your load that code.
+
+For example, if you define 100 pages and then open one of these pages in your browser then, in development, only the code for that one page is transpiled while the code for all the other 99 pages isn't transpiled.
+
+Thanks to lazy-transpiling, you can scale to extremely large codebases while preserving a fast development DX.
+
+This is a foundational novelty and is at the cornerstone of why Vite is fundamentally faster than alternatives.
+
+We believe Lazy Transpiling to be the future of web tooling.
