@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-To render a component only on the client-side, wrap it with `<ClientOnly>`:
+To render a component only on the client-side, you can wrap it with a `<ClientOnly>` component.
 
 ```jsx
 <ClientOnly>
@@ -8,19 +8,19 @@ To render a component only on the client-side, wrap it with `<ClientOnly>`:
 </ClientOnly>
 ```
 
-> Alternatively, opt-out of SSR and render the page as SPA (while rendering other pages with SSR), see <Link href="/render-modes" />.
+> Alternatively, opt-out of SSR and render the page as SPA (while rendering other pages with SSR). See <Link href="/render-modes" />.
 
 Common use cases:
 
- - **Library components that don't support SSR**. A solution is to render/load the problematic component only on the client-side.
+ - **Library components that don't support SSR**. A solution is to render/load the component only on the client-side.
    > Most component libraries nowadays support SSR but some don't. Some even crash when they're merely loaded on the server-side (for example, when libraries have hard references to browser-only APIs/objects such as `window`).
- - **Performance**. By using `<ClientOnly>` with a [dynamic `import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import), you can defer loading heavy components, for example as a complex interactive map. So that users can already interact with your page before even the browser starts loading the heavy component.
-   > Vite automatically code-splits `const { SomeComponent } = await import('some-library')`. In other words, the code of `<SomeComponent />` isn't included in the initial JavaScript client-side bundle: it's loaded only when/if `import()` is executed.
+ - **Performance**. By using `<ClientOnly>` with a [dynamic `import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import), you can defer loading heavy components, such as a complex interactive map. That way, your users can already interact with your page before even the browser starts loading that heavy component.
+   > Vite automatically code-splits `const { SomeComponent } = await import('some-library')`. In other words, the code of `<SomeComponent />` isn't included in the initial JavaScript client-side bundle: it's loaded only when and if `import()` is executed.
 
 
 ## React
 
-Rendering & loading a component only on the client-side:
+To render and load a component only on the client-side:
 
 ```jsx
 // /pages/location/select.page.jsx
