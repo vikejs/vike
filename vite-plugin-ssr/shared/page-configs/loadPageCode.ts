@@ -1,6 +1,6 @@
 export { loadPageCode }
 
-import { assert, assertDefaultExportUnknown, objectAssign } from '../utils.js'
+import { assert, assertDefaultExportUnknown, assertUsage, objectAssign } from '../utils.js'
 import type { PageConfig, PageConfigLoaded } from './PageConfig.js'
 import pc from '@brillout/picocolors'
 
@@ -25,6 +25,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
         const configName = isSideExport ? exportName : codeFile.configName
         const configValue = exportValue
         configValues[configName] = configValue
+        assertIsNotNull(configValue, configName, codeFilePath)
         if (isSideExport) {
           const configElementOfMainExport = pageConfig.configElements[codeFile.configName]
           assert(configElementOfMainExport)
@@ -42,6 +43,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     } else {
       const configValue = codeFile.codeFileExportValue
       configValues[configName] = configValue
+      assertIsNotNull(configValue, configName, codeFilePath)
     }
   })
 
@@ -53,4 +55,14 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
   objectAssign(pageConfig, { configValues })
 
   return pageConfig
+}
+
+function assertIsNotNull(configValue: unknown, configName: string, codeFilePath: string) {
+  assert(!codeFilePath.includes('+config.'))
+  assertUsage(
+    configValue !== null,
+    `Set ${pc.cyan(configName)} to ${pc.cyan('null')} in a ${pc.bold('+config.js')} file instead of ${pc.bold(
+      codeFilePath
+    )}`
+  )
 }

@@ -28,6 +28,7 @@ function getHook(pageContext: PageContextExports, hookName: HookName): null | Ho
   const hookFn = pageContext.exports[hookName]
   const file = pageContext.exportsAll[hookName]![0]!
   assert(file.exportValue === hookFn)
+  if (hookFn === null) return null
   const hookFilePath = file.exportSource
   assert(hookFilePath)
   assert(!hookName.endsWith(')'))

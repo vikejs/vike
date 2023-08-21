@@ -28,13 +28,32 @@ async function onBeforeRender(pageContext){
 }
 ```
 
+Examples:
+- <Link href='/examples/react-full/pages/star-wars/index/index.page.server.ts' />
+- <Link href='/examples/vue-full/pages/star-wars/index/index.page.server.ts' />
+
 You can also provide initial `pageContext` values at your server middleware with <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
 This is where you usually pass information about the authenticated user
 (see <Link href="/auth" />).
 
-Examples:
-- <Link href='/examples/react-full/pages/star-wars/index/index.page.server.ts' />
-- <Link href='/examples/vue-full/pages/star-wars/index/index.page.server.ts' />
+> If you use the <Link text="V1 design" href="/migration/v1-design" />, you can suppress globally defined `onBeforeRender()` hooks:
+> ```js
+> // /pages/+onBeforeRender.js
+>
+> // Some global onBeforeRender() hook
+> export default () => {
+>   // ...
+> }
+> ```
+> ```js
+> // /pages/some-page/+config.h.js
+>
+> export default {
+>   // Suppress the global onBeforeRender() hook
+>   onBeforeRender: null
+> }
+> ```
+
 
 ## Client Routing
 
