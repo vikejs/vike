@@ -55,6 +55,7 @@ import {
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.js'
 import type { ConfigNameBuiltIn } from '../../../../../shared/page-configs/Config.js'
+import pc from '@brillout/picocolors'
 import { createRequire } from 'module'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
@@ -702,14 +703,14 @@ type ConfigDefinedAt = ReturnType<typeof getConfigDefinedAt>
 function getConfigDefinedAt(filePath: string, exportName: string, isDefaultExportObject?: true) {
   if (isDefaultExportObject) {
     assert(exportName !== 'default')
-    return `${filePath} > \`export default { ${exportName} }\`` as const
+    return `${pc.bold(filePath)} > ${pc.cyan(`export default { ${exportName} }`)}`
   } else {
     if (exportName === '*') {
-      return `${filePath} > \`export *\`` as const
+      return `${pc.bold(filePath)} > ${pc.cyan('export *')}`
     } else if (exportName === 'default') {
-      return `${filePath} > \`export default\`` as const
+      return filePath
     } else {
-      return `${filePath} > \`export { ${exportName} }\`` as const
+      return `${pc.bold(filePath)} > ${pc.cyan(`export { ${exportName} }`)}`
     }
   }
 }
@@ -838,12 +839,12 @@ function getConfigEntry(
 function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaVal is Record<string, ConfigDefinition> {
   assertUsage(
     isObject(metaVal),
-    `${definedByFile} sets the config 'meta' to a value with an invalid type \`${typeof metaVal}\`: it should be an object instead.`
+    `${definedByFile} sets the config ${pc.cyan('meta')} to a value with an invalid type ${pc.cyan(typeof metaVal)}: it should be an object instead.`
   )
   objectEntries(metaVal).forEach(([configName, def]) => {
     assertUsage(
       isObject(def),
-      `${definedByFile} sets meta.${configName} to a value with an invalid type \`${typeof def}\`: it should be an object instead.`
+      `${definedByFile} sets meta.${configName} to a value with an invalid type ${pc.cyan(typeof def)}: it should be an object instead.`
     )
 
     // env
@@ -860,7 +861,7 @@ function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaV
       assertUsage('env' in def, `${definedByFile} doesn't set meta.${configName}.env but it's required. ${hint}`)
       assertUsage(
         hasProp(def, 'env', 'string'),
-        `${definedByFile} > meta.${configName}.env has an invalid type \`${typeof def.env}\`. ${hint}`
+        `${definedByFile} > meta.${configName}.env has an invalid type ${pc.cyan(typeof def.env)}. ${hint}`
       )
       assertUsage(
         envValues.includes(def.env),
@@ -872,7 +873,7 @@ function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaV
     if ('effect' in def) {
       assertUsage(
         hasProp(def, 'effect', 'function'),
-        `${definedByFile} > meta.${configName}.effect has an invalid type \`${typeof def.effect}\`: it should be a function instead`
+        `${definedByFile} > meta.${configName}.effect has an invalid type ${pc.cyan(typeof def.effect)}: it should be a function instead`
       )
       assertUsage(
         def.env === 'config-only',
