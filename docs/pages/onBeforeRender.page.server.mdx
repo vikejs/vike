@@ -28,8 +28,8 @@ async function onBeforeRender(pageContext){
 }
 ```
 
-We can also provide initial `pageContext` values at our server middleware with <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
-This is where we usually pass information about the authenticated user
+You can also provide initial `pageContext` values at your server middleware with <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
+This is where you usually pass information about the authenticated user
 (see <Link href="/auth" />).
 
 Examples:
@@ -38,6 +38,6 @@ Examples:
 
 ## Client Routing
 
-If we use <Link href="/clientRouting" noBreadcrumb />,
-we also have the option to define [`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`;
+If you use <Link href="/clientRouting" noBreadcrumb />,
+you also have the option to define [`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`;
 the hook is then called not only in Node.js but also in the browser.
