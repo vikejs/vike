@@ -1,6 +1,6 @@
 export { testRun as test }
 
-import { run, page, test, expect, getServerUrl, fetchHtml, expectLog, sleep } from '@brillout/test-e2e'
+import { run, page, test, expect, getServerUrl, fetchHtml, expectLog } from '@brillout/test-e2e'
 import { ensureWasClientSideRouted, expectPageContextJsonRequest, testCounter } from '../utils'
 
 function testRun(cmd: 'npm run dev' | 'npm run preview') {
