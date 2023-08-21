@@ -2,6 +2,7 @@ export { loadPageCode }
 
 import { assert, assertDefaultExportUnknown, objectAssign } from '../utils.js'
 import type { PageConfig, PageConfigLoaded } from './PageConfig.js'
+import pc from '@brillout/picocolors'
 
 async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<PageConfigLoaded> {
   const configValues: Record<string, unknown> = {}
@@ -14,7 +15,6 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
   const codeFiles = await pageConfig.loadCodeFiles()
   codeFiles.forEach((codeFile) => {
     const { configName, codeFilePath } = codeFile
-    let configValue: unknown
     if (codeFile.isPlusFile) {
       const { codeFileExports } = codeFile
       if (configName !== 'client') {
@@ -40,7 +40,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
         }
       })
     } else {
-      configValue = codeFile.codeFileExportValue
+      const configValue = codeFile.codeFileExportValue
       configValues[configName] = configValue
     }
   })
