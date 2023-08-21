@@ -84,7 +84,7 @@ function logConfigInfo(msg: string, logType: LogType): void {
   logWithVikeTag(msg, logType, category)
 }
 function logConfigErrorRecover(): void {
-  const msg = pc.green(pc.bold('Configuration successfully loaded.'))
+  const msg = pc.green(pc.bold('Configuration successfully loaded'))
   clearLogs({ clearAlsoIfConfigIsInvalid: true })
   const category = getConfigCategory()
   logWithVikeTag(msg, 'error-recover', category)

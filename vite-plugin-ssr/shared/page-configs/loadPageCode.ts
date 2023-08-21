@@ -33,7 +33,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
             codeFileExport: exportName,
             codeFilePath,
             configDefinedByFile: codeFilePath,
-            configDefinedAt: `${codeFilePath} > export { ${exportName} }`,
+            configDefinedAt: `${pc.bold(codeFilePath)} > ${pc.cyan(`export { ${exportName} }`)}`,
             configEnv: configElementOfMainExport.configEnv,
             plusConfigFilePath: null
           }
