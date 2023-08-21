@@ -1,9 +1,9 @@
 export { testRun as test }
 
 import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, partRegex } from '@brillout/test-e2e'
-import { ensureWasClientSideRouted, expectUrl, hydrationDone, testCounter } from '../utils'
+import { ensureWasClientSideRouted, expectUrl, hydrationDone, testCounter, expectPageContextJsonRequest } from '../utils'
 
-function testRun(cmd: string, pageContextInitHasClientData?: true) {
+function testRun(cmd: string, pageContextInitHasClientData = false) {
   run(cmd)
 
   test('HTML', async () => {
@@ -31,7 +31,7 @@ function testRun(cmd: string, pageContextInitHasClientData?: true) {
     await page.goto(getServerUrl() + '/about')
     expect(await page.textContent('h1')).toBe('About')
     await hydrationDone()
-    const done = expectPageContextJsonRequest()
+    const done = expectPageContextJsonRequest(pageContextInitHasClientData)
     await page.click('a[href="/render-homepage"]')
     await autoRetry(async () => {
       expect(await page.textContent('h1')).toBe('Welcome')
@@ -50,7 +50,7 @@ function testRun(cmd: string, pageContextInitHasClientData?: true) {
     await page.goto(getServerUrl() + '/about')
     expectUrl('/about')
     await hydrationDone()
-    const done = expectPageContextJsonRequest()
+    const done = expectPageContextJsonRequest(pageContextInitHasClientData)
     await page.click('a[href="/redirect"]')
     await autoRetry(async () => {
       expectUrl('/')
@@ -91,7 +91,7 @@ function testRun(cmd: string, pageContextInitHasClientData?: true) {
       await page.goto(getServerUrl() + '/about')
       expectUrl('/about')
       await hydrationDone()
-      const done = expectPageContextJsonRequest()
+      const done = expectPageContextJsonRequest(pageContextInitHasClientData)
       await page.click('a[href="/show-error-page"]')
       await testCounter()
       done()
@@ -108,22 +108,4 @@ function testRun(cmd: string, pageContextInitHasClientData?: true) {
     await page.click('a[href="/permanent-redirect"]')
     expectUrl('/')
   })
-
-  return
-
-  function expectPageContextJsonRequest() {
-    const reqs: string[] = []
-    const listener = (request: any) => reqs.push(request.url())
-    page.on('request', listener)
-    return () => {
-      page.removeListener('request', listener)
-      const count = reqs.filter((url) => url.endsWith('.pageContext.json')).length
-      const exists = count > 0
-      if (pageContextInitHasClientData) {
-        expect(exists).toBe(true)
-      } else {
-        expect(exists).toBe(false)
-      }
-    }
-  }
 }

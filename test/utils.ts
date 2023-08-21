@@ -2,6 +2,7 @@ export { testCounter }
 export { hydrationDone }
 export { ensureWasClientSideRouted }
 export { expectUrl }
+export { expectPageContextJsonRequest }
 
 import { page, expect, getServerUrl, autoRetry, partRegex } from '@brillout/test-e2e'
 
@@ -44,4 +45,16 @@ function findFirstPageId(html: string) {
   const pageId = match![1]
   expect(pageId).toBeTruthy()
   return pageId
+}
+
+function expectPageContextJsonRequest(shouldExist: boolean) {
+  const reqs: string[] = []
+  const listener = (request: any) => reqs.push(request.url())
+  page.on('request', listener)
+  return () => {
+    page.removeListener('request', listener)
+    const count = reqs.filter((url) => url.endsWith('.pageContext.json')).length
+    const exists = count > 0
+    expect(exists).toBe(shouldExist)
+  }
 }
