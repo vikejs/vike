@@ -566,6 +566,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'MDXEditor',
+    url: '/MDXEditor'
+  },
+  {
+    level: 2,
     title: 'Tauri',
     url: '/tauri'
   },
