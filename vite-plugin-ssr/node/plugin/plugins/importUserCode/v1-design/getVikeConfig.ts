@@ -702,7 +702,7 @@ type ConfigDefinedAt = ReturnType<typeof getConfigDefinedAt>
 function getConfigDefinedAt(filePath: string, exportName: string, isDefaultExportObject?: true) {
   if (isDefaultExportObject) {
     assert(exportName !== 'default')
-    return `${filePath} > \`export default { ${exportName} }` as const
+    return `${filePath} > \`export default { ${exportName} }\`` as const
   } else {
     if (exportName === '*') {
       return `${filePath} > \`export *\`` as const
