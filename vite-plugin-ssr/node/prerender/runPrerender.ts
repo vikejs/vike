@@ -1087,6 +1087,6 @@ function assertIsNotAbort(err: unknown, urlOr404: string) {
     false,
     `${pc.cyan(pageContextAbort._abortCall)} intercepted while pre-rendering ${urlOr404} but ${pc.cyan(
       pageContextAbort._abortCaller
-    )} isn't support for pre-rendered pages. Create a GitHub ticket if you need this.`
+    )} isn't support for pre-rendered pages`
   )
 }
