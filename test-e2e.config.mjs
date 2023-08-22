@@ -67,6 +67,7 @@ function getCiJobs() {
 
 function tolerateError({ logSource, logText }) {
   return (
+    isRenderErrorPageDeprecationWarning() ||
     isSlowHookWarning() ||
     isNoErrorPageWarning() ||
     isServiceExit() ||
@@ -82,6 +83,17 @@ function tolerateError({ logSource, logText }) {
     isHtmlEscapingTest() ||
     isNodeExperimentalEsmLoader()
   )
+
+  function isRenderErrorPageDeprecationWarning() {
+    return (
+      logSource === 'stderr' &&
+      logText.includes('[Warning]') &&
+      logText.includes('throw RenderErrorPage()') &&
+      logText.includes(
+        'is deprecated and will be removed in the next major release. Use `throw render()` or `throw redirect()` instead'
+      )
+    )
+  }
 
   // [vite-plugin-ssr@0.4.42][Warning] The onBeforeRender() hook of /pages/star-wars/index/index.page.server.ts is taking more than 4 seconds
   function isSlowHookWarning() {

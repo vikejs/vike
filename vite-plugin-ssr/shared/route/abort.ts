@@ -175,7 +175,7 @@ function RenderErrorPage({ pageContext = {} }: { pageContext?: Record<string, un
   assertWarning(
     false,
     '`throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/render',
-    { onlyOnce: true }
+    { onlyOnce: false }
   )
   let abortStatusCode: 404 | 500 = 404
   let abortReason = 'Page Not Found'
