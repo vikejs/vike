@@ -53,7 +53,8 @@ async function renderPageAlreadyRouted<
   //  - ID of the error page `_error.page.js`.
   assert(hasProp(pageContext, '_pageId', 'string'))
 
-  const isError = pageContext.is404 || pageContext.errorWhileRendering
+  const isError: boolean = pageContext.is404 || !!pageContext.errorWhileRendering
+  assert(isError === (pageContext._pageId === getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)))
 
   objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
 
