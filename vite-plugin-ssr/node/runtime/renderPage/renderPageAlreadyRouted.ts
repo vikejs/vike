@@ -58,7 +58,9 @@ async function renderPageAlreadyRouted<
 
   objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
 
-  await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionServerSide(pageContext))
+  if (!isError) {
+    await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionServerSide(pageContext))
+  }
 
   if (!isError) {
     await executeOnBeforeRenderHooks(pageContext)
