@@ -206,10 +206,10 @@ function isAbortPageContext(pageContext: Record<string, unknown>): pageContext i
     return false
   }
   assert(hasProp(pageContext, '_abortCall', 'string'))
+  /* Isn't needed and is missing on the client-side
   assert(hasProp(pageContext, '_abortCaller', 'string'))
-  checkType<Omit<PageContextAbort, '_abortCall' | '_abortCaller'> & { _abortCall: string; _abortCaller: string }>(
-    pageContext
-  )
+  */
+  checkType<Omit<PageContextAbort, '_abortCall' | '_abortCaller'> & { _abortCall: string }>(pageContext)
   return true
 }
 

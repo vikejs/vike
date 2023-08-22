@@ -17,7 +17,9 @@ const PASS_TO_CLIENT: string[] = [
   '_urlRedirect',
   'abortStatusCode',
   '_abortCall',
+  /* Not needed on the client-side
   '_abortCaller',
+  */
   '_pageContextInitHasClientData',
   '_pageId'
 ]
@@ -105,11 +107,16 @@ function serializePageContextAbort(
   assert(pageContext._urlRedirect || pageContext._urlRewrite || pageContext.abortStatusCode)
   assert(pageContext._abortCall)
   assert(pageContext._abortCaller)
+  // Not needed on the client-side
+  delete pageContext._abortCaller
   const unknownProps = Object.keys(pageContext).filter(
     (prop) =>
       ![
+        // prettier-ignore
         '_abortCall',
+        /* Not needed on the client-side
         '_abortCaller',
+        */
         '_urlRedirect',
         '_urlRewrite',
         'abortStatusCode',
