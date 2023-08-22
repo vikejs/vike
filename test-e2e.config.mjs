@@ -90,7 +90,7 @@ function tolerateError({ logSource, logText }) {
       logText.includes('[Warning]') &&
       logText.includes('throw RenderErrorPage()') &&
       logText.includes(
-        'is deprecated and will be removed in the next major release. Use `throw render()` or `throw redirect()` instead'
+        'is deprecated and will be removed in the next major release. Use throw render() or throw redirect() instead'
       )
     )
   }

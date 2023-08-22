@@ -98,12 +98,18 @@ function render(abortStatusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?
  */
 function render(url: `/${string}`, abortReason?: unknown): Error
 function render(value: string | number, abortReason?: unknown): Error {
-  return render_(value, abortReason)
+  const args = [typeof value === 'number' ? String(value) : JSON.stringify(value)]
+  if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30, null))
+  const abortCaller = 'render'
+  const abortCall = `throw render(${args.join(', ')})` as const
+  return render_(value, abortReason, abortCall, abortCaller)
 }
 
 function render_(
   value: string | number,
   abortReason: unknown | undefined,
+  abortCall: AbortCall,
+  abortCaller: 'render' | 'RenderErrorPage',
   pageContextAddendum?: { _isLegacyRenderErrorPage: true } & Record<string, unknown>
 ): Error {
   const pageContextAbort = { abortReason }
@@ -115,8 +121,8 @@ function render_(
     const args = [typeof value === 'number' ? String(value) : JSON.stringify(value)]
     if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30, null))
     objectAssign(pageContextAbort, {
-      _abortCaller: 'render' as const,
-      _abortCall: `throw render(${args.join(', ')})` as const
+      _abortCaller: abortCaller,
+      _abortCall: abortCall
     })
   }
   if (typeof value === 'string') {
@@ -136,7 +142,7 @@ function render_(
   }
 }
 
-type AbortCall = `throw redirect(${string})` | `throw render(${string})`
+type AbortCall = `throw redirect(${string})` | `throw render(${string})` | `throw RenderErrorPage()`
 type PageContextAbort = {
   _abortCall: AbortCall
 } & (
@@ -145,12 +151,12 @@ type PageContextAbort = {
       _urlRedirect: UrlRedirect
     } & Omit<AbortUndefined, '_urlRedirect'>)
   | ({
-      _abortCaller: 'render'
+      _abortCaller: 'render' | 'RenderErrorPage'
       abortReason: undefined | unknown
       _urlRewrite: string
     } & Omit<AbortUndefined, '_urlRewrite'>)
   | ({
-      _abortCaller: 'render'
+      _abortCaller: 'render' | 'RenderErrorPage'
       abortReason: undefined | unknown
       abortStatusCode: number
     } & Omit<AbortUndefined, 'abortStatusCode'>)
@@ -168,13 +174,16 @@ function AbortRender(pageContextAbort: PageContextAbort): Error {
   return err
 }
 
+// TODO/v1-release: remove
 /**
  * @deprecated Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/render'
  */
 function RenderErrorPage({ pageContext = {} }: { pageContext?: Record<string, unknown> } = {}): Error {
   assertWarning(
     false,
-    '`throw RenderErrorPage()` is deprecated and will be removed in the next major release. Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/render',
+    `${pc.cyan('throw RenderErrorPage()')} is deprecated and will be removed in the next major release. Use ${pc.cyan(
+      'throw render()'
+    )} or ${pc.cyan('throw redirect()')} instead, see https://vite-plugin-ssr.com/render`,
     { onlyOnce: false }
   )
   let abortStatusCode: 404 | 500 = 404
@@ -184,7 +193,7 @@ function RenderErrorPage({ pageContext = {} }: { pageContext?: Record<string, un
     abortReason = 'Something went wrong'
   }
   objectAssign(pageContext, { _isLegacyRenderErrorPage: true as const })
-  return render_(abortStatusCode, abortReason, pageContext)
+  return render_(abortStatusCode, abortReason, 'throw RenderErrorPage()', 'RenderErrorPage', pageContext)
 }
 
 const stamp = '_isAbortError'
