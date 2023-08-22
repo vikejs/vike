@@ -112,18 +112,14 @@ function render_(
   abortCaller: 'throw render()' | 'throw RenderErrorPage()',
   pageContextAddendum?: { _isLegacyRenderErrorPage: true } & Record<string, unknown>
 ): Error {
-  const pageContextAbort = { abortReason }
+  const pageContextAbort = {
+    abortReason,
+    _abortCaller: abortCaller,
+    _abortCall: abortCall
+  }
   if (pageContextAddendum) {
     assert(pageContextAddendum._isLegacyRenderErrorPage === true)
     objectAssign(pageContextAbort, pageContextAddendum)
-  }
-  {
-    const args = [typeof value === 'number' ? String(value) : JSON.stringify(value)]
-    if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30, null))
-    objectAssign(pageContextAbort, {
-      _abortCaller: abortCaller,
-      _abortCall: abortCall
-    })
   }
   if (typeof value === 'string') {
     const url = value
