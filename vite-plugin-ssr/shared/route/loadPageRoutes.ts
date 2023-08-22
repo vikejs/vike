@@ -1,6 +1,4 @@
 export { loadPageRoutes }
-export { findPageRouteFile }
-export { findPageGuard }
 export type { PageRoutes }
 export type { RouteType }
 
@@ -11,7 +9,6 @@ import type { OnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 import { isCallable } from '../utils.js'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
-import type { Hook } from '../hooks/getHook.js'
 
 type PageRoute = {
   pageId: string
@@ -116,7 +113,7 @@ function getPageRoutes(
     pageIds
       .filter((pageId) => !isErrorPageId(pageId, false))
       .forEach((pageId) => {
-        const pageRouteFile = findPageRouteFile(pageId, pageFilesAll)
+        const pageRouteFile = pageFilesAll.find((p) => p.pageId === pageId && p.fileType === '.page.route')
         if (!pageRouteFile || !('default' in pageRouteFile.fileExports!)) {
           const routeString = deduceRouteStringFromFilesystemPath(pageId, filesystemRoots)
           assert(routeString.startsWith('/'))
@@ -235,24 +232,6 @@ function getGlobalHooks(
     })
 
   return { onBeforeRouteHook, filesystemRoots }
-}
-
-function findPageRouteFile(pageId: string, pageFilesAll: PageFile[]) {
-  return pageFilesAll.find((p) => p.pageId === pageId && p.fileType === '.page.route')
-}
-
-// TODO/v1-release: remove
-type PageGuard = Hook
-function findPageGuard(pageId: string, pageFilesAll: PageFile[]): null | PageGuard {
-  const pageRouteFile = findPageRouteFile(pageId, pageFilesAll)
-  if (!pageRouteFile) return null
-  const { filePath, fileExports } = pageRouteFile
-  assert(fileExports) // loadPageRoutes() should already have been called
-  const hookFn = fileExports.guard
-  if (!hookFn) return null
-  const hookFilePath = filePath
-  assertUsage(isCallable(hookFn), `guard() defined by ${hookFilePath} should be a function`)
-  return { hookFn, hookName: 'guard', hookFilePath }
 }
 
 function dirname(filePath: string): string {

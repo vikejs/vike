@@ -1,10 +1,9 @@
 export { executeGuardHook }
 
 import { getHook, Hook } from '../hooks/getHook.js'
-import { assert, assertUsage, executeHook } from './utils.js'
+import { assert, assertUsage, executeHook, isCallable } from './utils.js'
 import type { PageContextExports, PageFile } from '../getPageFiles.js'
 import type { PageConfig } from '../page-configs/PageConfig.js'
-import { findPageGuard } from './loadPageRoutes.js'
 
 async function executeGuardHook<
   T extends PageContextExports & {
@@ -35,4 +34,19 @@ async function executeGuardHook<
     hookResult === undefined,
     `The guard() hook of ${hook.hookFilePath} returns a value, but guard() doesn't accept any return value`
   )
+}
+
+// We cannot easily use pageContext.exports for the V0.4 design
+// TODO/v1-release: remove
+type PageGuard = Hook
+function findPageGuard(pageId: string, pageFilesAll: PageFile[]): null | PageGuard {
+  const pageRouteFile = pageFilesAll.find((p) => p.pageId === pageId && p.fileType === '.page.route')
+  if (!pageRouteFile) return null
+  const { filePath, fileExports } = pageRouteFile
+  assert(fileExports) // loadPageRoutes() should already have been called
+  const hookFn = fileExports.guard
+  if (!hookFn) return null
+  const hookFilePath = filePath
+  assertUsage(isCallable(hookFn), `guard() defined by ${hookFilePath} should be a function`)
+  return { hookFn, hookName: 'guard', hookFilePath }
 }
