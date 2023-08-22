@@ -103,9 +103,8 @@ function serializePageContextAbort(
     ({ _urlRedirect: UrlRedirect } | { _urlRewrite: string } | { abortStatusCode: number })
 ): string {
   assert(pageContext._urlRedirect || pageContext._urlRewrite || pageContext.abortStatusCode)
-  ;['_abortCall', '_abortCaller'].forEach((p) => {
-    assert(pageContext[p])
-  })
+  assert(pageContext._abortCall)
+  assert(pageContext._abortCaller)
   const unknownProps = Object.keys(pageContext).filter(
     (prop) =>
       ![

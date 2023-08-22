@@ -52,7 +52,7 @@ function redirect(
   url: `/${string}` | `https://${string}` | `http://${string}`,
   statusCode?: RedirectStatusCode
 ): AbortRedirect {
-  const abortCaller = 'redirect' as const
+  const abortCaller = 'throw redirect()' as const
   statusCode ??= 302
   assertStatusCode(statusCode, [301, 302], 'redirect')
   assertWarning(
@@ -100,7 +100,7 @@ function render(url: `/${string}`, abortReason?: unknown): Error
 function render(value: string | number, abortReason?: unknown): Error {
   const args = [typeof value === 'number' ? String(value) : JSON.stringify(value)]
   if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30, null))
-  const abortCaller = 'render'
+  const abortCaller = 'throw render()'
   const abortCall = `throw render(${args.join(', ')})` as const
   return render_(value, abortReason, abortCall, abortCaller)
 }
@@ -109,7 +109,7 @@ function render_(
   value: string | number,
   abortReason: unknown | undefined,
   abortCall: AbortCall,
-  abortCaller: 'render' | 'RenderErrorPage',
+  abortCaller: 'throw render()' | 'throw RenderErrorPage()',
   pageContextAddendum?: { _isLegacyRenderErrorPage: true } & Record<string, unknown>
 ): Error {
   const pageContextAbort = { abortReason }
@@ -147,16 +147,16 @@ type PageContextAbort = {
   _abortCall: AbortCall
 } & (
   | ({
-      _abortCaller: 'redirect'
+      _abortCaller: 'throw redirect()'
       _urlRedirect: UrlRedirect
     } & Omit<AbortUndefined, '_urlRedirect'>)
   | ({
-      _abortCaller: 'render' | 'RenderErrorPage'
+      _abortCaller: 'throw render()' | 'throw RenderErrorPage()'
       abortReason: undefined | unknown
       _urlRewrite: string
     } & Omit<AbortUndefined, '_urlRewrite'>)
   | ({
-      _abortCaller: 'render' | 'RenderErrorPage'
+      _abortCaller: 'throw render()' | 'throw RenderErrorPage()'
       abortReason: undefined | unknown
       abortStatusCode: number
     } & Omit<AbortUndefined, 'abortStatusCode'>)
@@ -193,7 +193,7 @@ function RenderErrorPage({ pageContext = {} }: { pageContext?: Record<string, un
     abortReason = 'Something went wrong'
   }
   objectAssign(pageContext, { _isLegacyRenderErrorPage: true as const })
-  return render_(abortStatusCode, abortReason, 'throw RenderErrorPage()', 'RenderErrorPage', pageContext)
+  return render_(abortStatusCode, abortReason, 'throw RenderErrorPage()', 'throw RenderErrorPage()', pageContext)
 }
 
 const stamp = '_isAbortError'

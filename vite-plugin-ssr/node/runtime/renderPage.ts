@@ -269,11 +269,14 @@ async function renderPageAlreadyPrepared(
         )
         // throw render(abortStatusCode)
         if (!handled.pageContextReturn) {
-          const abortCall = pc.cyan(errErrorPage._pageContextAbort._abortCall)
-          const abortCaller = pc.cyan(`throw ${errErrorPage._pageContextAbort._abortCaller}()`)
+          const pageContextAbort = errErrorPage._pageContextAbort
           assertWarning(
             false,
-            `Failed to render error page because ${abortCall} was called: make sure ${abortCaller} doesn't occur while the error page is being rendered.`,
+            `Failed to render error page because ${pc.cyan(
+              pageContextAbort._abortCall
+            )} was called: make sure ${pc.cyan(
+              pageContextAbort._abortCaller
+            )} doesn't occur while the error page is being rendered.`,
             { onlyOnce: false }
           )
           const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(errNominalPage, pageContextInit)
