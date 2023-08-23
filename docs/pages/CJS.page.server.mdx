@@ -1,0 +1,41 @@
+While you can use vite-plugin-ssr with
+[CJS code](https://nodejs.org/api/modules.html#modules-commonjs-modules:~:text=CommonJS%20modules%20are%20the%20original%20way%20to%20package%20JavaScript%20code%20for%20Node.js.%20Node.js%20also%20supports%20the%20ECMAScript%20modules%20standard%20used%20by%20browsers%20and%20other%20JavaScript%20runtimes.),
+we recommend writing
+[ESM code](https://nodejs.org/api/esm.html#modules-ecmascript-modules:~:text=ECMAScript%20modules%20are%20the%20official%20standard%20format%20to%20package%20JavaScript%20code%20for%20reuse.%20Modules%20are%20defined%20using%20a%20variety%20of%20import%20and%20export%20statements.)
+instead.
+
+> The code you write that is processed by Vite is already ESM. But [some of your server code may not be processed by Vite](https://github.com/brillout/vite-plugin-ssr/issues/562) and may be CJS.
+
+If you get the following warning:
+
+```
+[vite-plugin-ssr][Warning] We recommend setting package.json#type to "module" (and therefore
+writing ESM code instead of CJS code)
+```
+
+Then, in order to remove the warning, add this to your `package.json`:
+
+```json5
+// package.json
+{
+   // ...
+   type: "module"
+}
+```
+
+This [makes Node.js treat all .js files as ESM](https://nodejs.org/docs/latest-v13.x/api/esm.html#esm_package_json_type_field:~:text=Files%20ending%20with%20.js%20will%20be%20loaded%20as%20ES%20modules%20when%20the%20nearest%20parent%20package.json%20file%20contains%20a%20top%2Dlevel%20field%20%22type%22%20with%20a%20value%20of%20%22module%22.).
+
+This means that, if you have .js files written in CJS, then you'll have to migrate them to ESM. For example:
+
+```js
+-// CJS code
+-const express = require('express')
+-const { renderPage } = require('vite-plugin-ssr/server')
++// ESM code
++import express from 'express'
++import { renderPage } from 'vite-plugin-ssr/server'
+```
+
+> An escape hatch is to use [the `.cjs` and `.mjs` file extensions](https://nodejs.org/api/esm.html#enabling:~:text=Authors%20can%20tell%20Node.js%20to%20use%20the%20ECMAScript%20modules%20loader%20via%20the%20.mjs%20file%20extension), enabling you to determine/change the module system on a file-by-file basis regardless of whether `package.json#type` is set to `"module"` or `"commonjs"`.
+
+> You still want to use CJS? Let us know why and we'll create a new `config.disableCJSWarning`.

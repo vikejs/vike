@@ -309,4 +309,8 @@ const headingsDetached = [
     title: "Vite's Lazy Transpiling",
     url: '/lazy-transpiling'
   },
+  {
+    title: 'CJS',
+    url: '/CJS'
+  }
 ] satisfies HeadingDetachedDefinition[]

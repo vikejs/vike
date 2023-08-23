@@ -9,19 +9,26 @@ import {
   autoRetry,
   fetchHtml,
   getServerUrl,
-  testScreenshotFixture
+  testScreenshotFixture,
+  expectLog
 } from '@brillout/test-e2e'
 import path from 'path'
 import url from 'url'
 import { createRequire } from 'module'
 
-function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
+function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod', isCJS?: true) {
   run(cmd)
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
     expect(html).toContain('<h1>Welcome</h1>')
     expectHtmlCommon(html)
+    if (isCJS) {
+      expectLog(
+        'package.json#type to "module" (and therefore writing ESM code instead of CJS code), see https://vite-plugin-ssr.com/CJS',
+        (log) => log.logSource === 'stderr'
+      )
+    }
   })
 
   test('page is rendered to the DOM and interactive', async () => {

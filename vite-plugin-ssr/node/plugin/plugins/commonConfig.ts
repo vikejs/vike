@@ -1,9 +1,15 @@
 export { commonConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertWarning, isValidPathAlias } from '../utils.js'
+import { assert, assertWarning, findUserPackageJsonPath, isValidPathAlias } from '../utils.js'
 import { assertRollupInput } from './buildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
+import pc from '@brillout/picocolors'
+import path from 'path'
+import { createRequire } from 'module'
+// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+const importMetaUrl: string = import.meta.url
+const require_ = createRequire(importMetaUrl)
 
 function commonConfig(): Plugin[] {
   return [
@@ -31,6 +37,7 @@ function commonConfig(): Plugin[] {
           workaroundCI(config)
           assertRollupInput(config)
           assertResolveAlias(config)
+          assertEsm(config.root)
         }
       }
     }
@@ -97,4 +104,22 @@ function getAliases(config: ResolvedConfig) {
   } else {
     return alias
   }
+}
+
+function assertEsm(userViteRoot: string) {
+  const packageJsonPath = findUserPackageJsonPath(userViteRoot)
+  if (!packageJsonPath) return
+  const packageJson = require_(packageJsonPath)
+  let dir = path.dirname(packageJsonPath)
+  if (dir !== '/') {
+    assert(!dir.endsWith('/'))
+    dir = dir + '/'
+  }
+  assert(dir.endsWith('/'))
+  dir = pc.dim(dir)
+  assertWarning(
+    packageJson.type === 'module',
+    `We recommend setting ${dir}package.json#type to "module" (and therefore writing ESM code instead of CJS code), see https://vite-plugin-ssr.com/CJS`,
+    { onlyOnce: true }
+  )
 }

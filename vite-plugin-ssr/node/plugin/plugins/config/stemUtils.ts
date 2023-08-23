@@ -4,9 +4,16 @@ export { getStemPackages }
 export type { StemPackage }
 
 import path from 'path'
-import { assert, assertUsage, assertWarning, toPosixPath, assertPosixPath, getDependencyRootDir } from '../../utils.js'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  toPosixPath,
+  assertPosixPath,
+  getDependencyRootDir,
+  findUserPackageJsonPath
+} from '../../utils.js'
 import { import_ } from '@brillout/import'
-import fs from 'fs'
 import { createRequire } from 'module'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
@@ -67,20 +74,6 @@ function findUserRootDir(userAppRootDir: string): string {
   const userPkgJsonPath = findUserPackageJsonPath(userAppRootDir)
   assertUsage(userPkgJsonPath, `Couldn't find package.json in any parent directory starting from ${userAppRootDir}`)
   return toPosixPath(path.dirname(userPkgJsonPath))
-}
-function findUserPackageJsonPath(userAppRootDir: string): null | string {
-  let dir = userAppRootDir
-  while (true) {
-    const configFilePath = path.join(dir, './package.json')
-    if (fs.existsSync(configFilePath)) {
-      return configFilePath
-    }
-    const dirPrevious = dir
-    dir = path.dirname(dir)
-    if (dir === dirPrevious) {
-      return null
-    }
-  }
 }
 
 function getStemPkgNames(userPkgJson: UserPkgJson): string[] {
