@@ -1,3 +1,27 @@
+## [0.4.137](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.136...v0.4.137) (2023-08-23)
+
+
+### Bug Fixes
+
+* [V1 design] improve error messages ([42e3b6c](https://github.com/brillout/vite-plugin-ssr/commit/42e3b6c83f7e5183054f1544a2fa93d32763497c))
+* apply config.redirects to URL without Base URL ([7202ab6](https://github.com/brillout/vite-plugin-ssr/commit/7202ab61ad07872335ad69147c00c358d87486f5))
+* check whether link is client-side routable only when strictly needed ([#1073](https://github.com/brillout/vite-plugin-ssr/issues/1073)) ([575d48c](https://github.com/brillout/vite-plugin-ssr/commit/575d48c96894627440cee8dff5e0582c279889fd))
+* don't call guard() hook for the error page (fix [#1090](https://github.com/brillout/vite-plugin-ssr/issues/1090)) ([4013ac6](https://github.com/brillout/vite-plugin-ssr/commit/4013ac66749dc56769596afb468ab9894102bff9))
+* don't pass _abortCaller to client-side ([359bddf](https://github.com/brillout/vite-plugin-ssr/commit/359bddf3c708f07481cd7f16c30a5e188ddbe818))
+* expose pageContext.abortStatusCode ([#1077](https://github.com/brillout/vite-plugin-ssr/issues/1077)) ([1f7b92b](https://github.com/brillout/vite-plugin-ssr/commit/1f7b92b9153f3f58f5d33e41678b10ace9e2386b))
+* improve RenderErrorPage() dev logging ([2dbc2a2](https://github.com/brillout/vite-plugin-ssr/commit/2dbc2a2dffc6e22ef5ac23780ac1fea70d30b065))
+* preserve URL origin upon URL path normalization redirection ([3b43bb7](https://github.com/brillout/vite-plugin-ssr/commit/3b43bb7bf790def4775d5ca58672b502d355fdea))
+* remove superfluous Node.js dependency ([fabbee3](https://github.com/brillout/vite-plugin-ssr/commit/fabbee3b5c8e30cdd7c6a09b93ef5b220ce44211))
+* show RenderErrorPage() deprecation warning more prominently ([6ba3a2a](https://github.com/brillout/vite-plugin-ssr/commit/6ba3a2a2fc1d8a547ce5b2476cbaea013a3dfe92))
+* warn users that still use CJS ([290403b](https://github.com/brillout/vite-plugin-ssr/commit/290403bda286fa39ac7c0233d373207dd02bd459))
+
+
+### Features
+
+* hook supressing by setting hook value to `null` (fix [#1075](https://github.com/brillout/vite-plugin-ssr/issues/1075)) ([11202d2](https://github.com/brillout/vite-plugin-ssr/commit/11202d24730af9e9477283f9e921609b421b6865))
+
+
+
 ## [0.4.136](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.135...v0.4.136) (2023-08-15)
 
 
