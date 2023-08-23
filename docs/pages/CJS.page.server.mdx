@@ -28,12 +28,12 @@ This [makes Node.js treat all .js files as ESM](https://nodejs.org/docs/latest-v
 This means that, if you have .js files written in CJS, then you'll have to migrate them to ESM. For example:
 
 ```diff
--// CJS code
--const express = require('express')
--const { renderPage } = require('vite-plugin-ssr/server')
-+// ESM code
-+import express from 'express'
-+import { renderPage } from 'vite-plugin-ssr/server'
+- // CJS code
+- const express = require('express')
+- const { renderPage } = require('vite-plugin-ssr/server')
++ // ESM code
++ import express from 'express'
++ import { renderPage } from 'vite-plugin-ssr/server'
 ```
 
 > An escape hatch is to use [the `.cjs` and `.mjs` file extensions](https://nodejs.org/api/esm.html#enabling:~:text=Authors%20can%20tell%20Node.js%20to%20use%20the%20ECMAScript%20modules%20loader%20via%20the%20.mjs%20file%20extension), enabling you to determine/change the module system on a file-by-file basis regardless of whether `package.json#type` is set to `"module"` or `"commonjs"`.
