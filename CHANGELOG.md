@@ -1070,8 +1070,8 @@
 
 ### Bug Fixes
 
-* assert Stem pacakges to define package.json#exports ([55c40b8](https://github.com/brillout/vite-plugin-ssr/commit/55c40b86d1cedb9dfc29ffcee1dedb465f3a8490))
-* don't assume Stem pacakges to always define a VPS config ([f5c41d6](https://github.com/brillout/vite-plugin-ssr/commit/f5c41d6a24d68c917cc86e4e4a805dfa929b92c3))
+* assert Stem packages to define package.json#exports ([55c40b8](https://github.com/brillout/vite-plugin-ssr/commit/55c40b86d1cedb9dfc29ffcee1dedb465f3a8490))
+* don't assume Stem packages to always define a VPS config ([f5c41d6](https://github.com/brillout/vite-plugin-ssr/commit/f5c41d6a24d68c917cc86e4e4a805dfa929b92c3))
 * fix resolving of Stem client entries ([cb2f359](https://github.com/brillout/vite-plugin-ssr/commit/cb2f35945d5644ef3961f0c6ba6fe0e80aac06d8))
 * refine wrong usage message ([#516](https://github.com/brillout/vite-plugin-ssr/issues/516)) ([1e4dbe6](https://github.com/brillout/vite-plugin-ssr/commit/1e4dbe65cf552665b388eac54e4dd3ad3f50db00))
 * workaround windows bug ([91393d7](https://github.com/brillout/vite-plugin-ssr/commit/91393d73ef4032059f3618fd652a09b0b80ee088))

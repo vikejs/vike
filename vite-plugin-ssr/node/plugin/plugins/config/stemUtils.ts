@@ -35,7 +35,7 @@ async function getStemPackages(userAppRootDir: string): Promise<StemPackage[]> {
           return modulePath
         } catch (err) {
           // - ERR_PACKAGE_PATH_NOT_EXPORTED => package.json#exports[importPath] is missing
-          // - We assert that Stem pacakges always define package.json#exports down below
+          // - We assert that Stem packages always define package.json#exports down below
           if ((err as any).code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
             return null
           }
