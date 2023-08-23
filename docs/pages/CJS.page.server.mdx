@@ -27,7 +27,7 @@ This [makes Node.js treat all .js files as ESM](https://nodejs.org/docs/latest-v
 
 This means that, if you have .js files written in CJS, then you'll have to migrate them to ESM. For example:
 
-```js
+```diff
 -// CJS code
 -const express = require('express')
 -const { renderPage } = require('vite-plugin-ssr/server')
