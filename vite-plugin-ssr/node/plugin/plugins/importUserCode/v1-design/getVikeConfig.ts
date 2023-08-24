@@ -467,7 +467,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
         }
       })
     })
-    const globalPaths = Array.from(new Set(interfaceFilesGlobalPaths.map(p => path.posix.dirname(p))))
+    const globalPaths = Array.from(new Set(interfaceFilesGlobalPaths.map((p) => path.posix.dirname(p))))
     Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
       interfaceFiles.forEach((interfaceFile) => {
         Object.keys(interfaceFile.configMap).forEach((configName) => {
@@ -839,12 +839,16 @@ function getConfigEntry(
 function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaVal is Record<string, ConfigDefinition> {
   assertUsage(
     isObject(metaVal),
-    `${definedByFile} sets the config ${pc.cyan('meta')} to a value with an invalid type ${pc.cyan(typeof metaVal)}: it should be an object instead.`
+    `${definedByFile} sets the config ${pc.cyan('meta')} to a value with an invalid type ${pc.cyan(
+      typeof metaVal
+    )}: it should be an object instead.`
   )
   objectEntries(metaVal).forEach(([configName, def]) => {
     assertUsage(
       isObject(def),
-      `${definedByFile} sets meta.${configName} to a value with an invalid type ${pc.cyan(typeof def)}: it should be an object instead.`
+      `${definedByFile} sets meta.${configName} to a value with an invalid type ${pc.cyan(
+        typeof def
+      )}: it should be an object instead.`
     )
 
     // env
@@ -873,7 +877,9 @@ function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaV
     if ('effect' in def) {
       assertUsage(
         hasProp(def, 'effect', 'function'),
-        `${definedByFile} > meta.${configName}.effect has an invalid type ${pc.cyan(typeof def.effect)}: it should be a function instead`
+        `${definedByFile} > meta.${configName}.effect has an invalid type ${pc.cyan(
+          typeof def.effect
+        )}: it should be a function instead`
       )
       assertUsage(
         def.env === 'config-only',

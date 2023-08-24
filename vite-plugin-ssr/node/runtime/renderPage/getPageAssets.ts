@@ -163,7 +163,9 @@ async function resolveClientEntriesDev(
     } catch {
       // For users
       // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage/getPageAssets.js
-      filePath = toPosixPath(res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../../../../dist/esm/client/')))
+      filePath = toPosixPath(
+        res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../../../../dist/esm/client/'))
+      )
     }
   } else if (isNpmPackageImport(clientEntry)) {
     const extensionPageFile = configVps.extensions
