@@ -1220,11 +1220,11 @@ function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
 function assertConfigExists(configName: string, configsDefined: string[], definedByFile: string) {
   if (isGlobalConfig(configName)) return
   if (configsDefined.includes(configName)) return
-  let errMsg = `${definedByFile} defines an unknown config '${configName}'`
+  let errMsg = `${definedByFile} defines an unknown config ${pc.bold(configName)}`
   const configNameSimilar = getMostSimilar(configName, configsDefined)
   if (configNameSimilar) {
     assert(configNameSimilar !== configName)
-    errMsg = `${errMsg}, did you mean to define '${configNameSimilar}' instead?`
+    errMsg = `${errMsg}, did you mean to define ${pc.bold(configNameSimilar)} instead?`
   }
   assertUsage(false, errMsg)
 }
