@@ -10,7 +10,9 @@ import type { AbortStatusCode } from './route/abort.js'
  *
  * https://vite-plugin-ssr.com/pageContext
  */
-type PageContextBuiltIn<Page = any> = {
+type PageContextBuiltIn<Page = any> = PageContextBuiltInCommon<Page>
+
+type PageContextBuiltInCommon<Page = any> = {
   /** The `export { Page }` of your `.page.js` file.
    *
    * https://vite-plugin-ssr.com/Page
@@ -81,6 +83,7 @@ type PageContextBuiltIn<Page = any> = {
   /** @deprecated */
   url: string
 
+  // TODO/v1-release: remove
   /** @deprecated */
   pageExports: Record<string, unknown>
 } & PageContextUrlComputedPropsPublic
@@ -89,9 +92,9 @@ type PageContextBuiltIn<Page = any> = {
  *
  * https://vite-plugin-ssr.com/pageContext
  */
-type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContextBuiltIn<Page>> &
+type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContextBuiltInCommon<Page>> &
   Pick<
-    PageContextBuiltIn<Page>,
+    PageContextBuiltInCommon<Page>,
     | 'Page'
     | 'pageExports'
     | 'config'
@@ -118,8 +121,8 @@ type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContext
  *
  * https://vite-plugin-ssr.com/pageContext
  */
-type PageContextBuiltInClientWithServerRouting<Page = any> = Partial<PageContextBuiltIn<Page>> &
-  Pick<PageContextBuiltIn<Page>, 'Page' | 'pageExports' | 'exports' | 'abortReason'> & {
+type PageContextBuiltInClientWithServerRouting<Page = any> = Partial<PageContextBuiltInCommon<Page>> &
+  Pick<PageContextBuiltInCommon<Page>, 'Page' | 'pageExports' | 'exports' | 'abortReason'> & {
     /**
      * Whether the current page is already rendered to HTML.
      *
