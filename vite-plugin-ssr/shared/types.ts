@@ -1,8 +1,13 @@
 export { PageContextBuiltIn }
+export { PageContextBuiltInServerInternal }
 export { PageContextBuiltInClientWithClientRouting }
 export { PageContextBuiltInClientWithServerRouting }
 
-import type { PageContextUrlComputedPropsPublic } from './UrlComputedProps.js'
+import type {
+  PageContextUrlComputedProps,
+  PageContextUrlComputedPropsPublicClient,
+  PageContextUrlComputedPropsPublicServer
+} from './UrlComputedProps.js'
 import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports.js'
 import type { AbortStatusCode } from './route/abort.js'
 
@@ -10,7 +15,9 @@ import type { AbortStatusCode } from './route/abort.js'
  *
  * https://vite-plugin-ssr.com/pageContext
  */
-type PageContextBuiltIn<Page = any> = PageContextBuiltInCommon<Page>
+type PageContextBuiltIn<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsPublicServer
+
+type PageContextBuiltInServerInternal<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedProps
 
 type PageContextBuiltInCommon<Page = any> = {
   /** The `export { Page }` of your `.page.js` file.
@@ -86,7 +93,7 @@ type PageContextBuiltInCommon<Page = any> = {
   // TODO/v1-release: remove
   /** @deprecated */
   pageExports: Record<string, unknown>
-} & PageContextUrlComputedPropsPublic
+}
 
 /** Client-side built-in `pageContext` properties set by vite-plugin-ssr (Client Routing).
  *
@@ -95,17 +102,7 @@ type PageContextBuiltInCommon<Page = any> = {
 type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContextBuiltInCommon<Page>> &
   Pick<
     PageContextBuiltInCommon<Page>,
-    | 'Page'
-    | 'pageExports'
-    | 'config'
-    | 'configEntries'
-    | 'exports'
-    | 'exportsAll'
-    | 'url'
-    | 'urlOriginal'
-    | 'urlPathname'
-    | 'urlParsed'
-    | 'abortReason'
+    'Page' | 'pageExports' | 'config' | 'configEntries' | 'exports' | 'exportsAll' | 'abortReason'
   > & {
     /** Whether the current page is already rendered to HTML */
     isHydration: boolean
@@ -115,7 +112,7 @@ type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContext
      * The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`.
      */
     isBackwardNavigation: boolean | null
-  }
+  } & PageContextUrlComputedPropsPublicClient
 
 /** Client-side built-in `pageContext` properties set by vite-plugin-ssr (Server Routing).
  *

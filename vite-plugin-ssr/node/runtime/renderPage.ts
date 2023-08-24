@@ -53,6 +53,7 @@ import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
 import { loadPageFilesServerSide } from './renderPage/loadPageFilesServerSide.js'
 import { resolveRedirects } from '../../shared/route/resolveRedirects.js'
+import { PageContextBuiltInServerInternal } from '../../shared/types.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
@@ -66,7 +67,7 @@ const renderPage_addWrapper = (wrapper: typeof renderPage_wrapper) => {
   renderPage_wrapper = wrapper
 }
 
-type PageContextAfterRender = { httpResponse: HttpResponse | null } & Partial<PageContextBuiltIn>
+type PageContextAfterRender = { httpResponse: HttpResponse | null } & Partial<PageContextBuiltInServerInternal>
 
 // `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<

@@ -3,7 +3,8 @@
 export { addUrlComputedProps }
 export { assertPageContextUrlComputedPropsPublic }
 export type { PageContextUrlComputedProps }
-export type { PageContextUrlComputedPropsPublic }
+export type { PageContextUrlComputedPropsPublicClient }
+export type { PageContextUrlComputedPropsPublicServer }
 export type { PageContextUrlSources }
 
 import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter, isBrowser } from './utils.js'
@@ -31,7 +32,8 @@ type UrlParsed = {
   /** @deprecated */
   hashString: null | string
 }
-type PageContextUrlComputedPropsPublic = {
+
+type PageContextUrlComputedPropsPublicClient = {
   /** @deprecated */
   url: string
   /** The URL of the HTTP request */
@@ -41,8 +43,19 @@ type PageContextUrlComputedPropsPublic = {
   /** Parsed information about the current URL */
   urlParsed: UrlParsed
 }
-type PageContextUrlComputedProps = PageContextUrlComputedPropsPublic & {
+type PageContextUrlComputedProps = PageContextUrlComputedPropsPublicClient & {
   _urlRewrite: string | null
+}
+type HashProps = 'hash' | 'hashString' | 'hashOriginal'
+type PageContextUrlComputedPropsPublicServer = PageContextUrlComputedPropsPublicClient & {
+  urlParsed: Omit<PageContextUrlComputedPropsPublicClient['urlParsed'], HashProps> & {
+    /** Only available on the client-side */
+    hash: ''
+    /** Only available on the client-side */
+    hashString: null
+    /** @deprecated */
+    hashOriginal: null
+  }
 }
 
 function addUrlComputedProps<PageContext extends Record<string, unknown> & PageContextUrlSources>(
@@ -120,7 +133,7 @@ function urlParsedGetter(this: PageContextUrlSources) {
     urlParsedOriginal
 
   const hashIsAvailable = isBrowser()
-  const warnHashNotAvailable = (prop: 'hash' | 'hashOriginal' | 'hashString') => {
+  const warnHashNotAvailable = (prop: HashProps) => {
     assertWarning(
       hashIsAvailable,
       `pageContext.urlParsed.${prop} isn't available on the server-side (HTTP requests don't include the URL hash by design)`,
@@ -177,7 +190,7 @@ function makeNonEnumerable(obj: Object, prop: string) {
 }
 
 function assertPageContextUrlComputedPropsPublic(
-  pageContext: { urlOriginal: string } & PageContextUrlComputedPropsPublic
+  pageContext: { urlOriginal: string } & PageContextUrlComputedPropsPublicClient
 ) {
   assert(typeof pageContext.urlOriginal === 'string')
   assert(typeof pageContext.urlPathname === 'string')
