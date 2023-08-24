@@ -1233,7 +1233,7 @@ function assertConfigExists(configName: string, configNamesRelevant: string[], d
   assert(false)
 }
 function handleUnknownConfig(configName: string, configNames: string[], definedByFile: string) {
-  let errMsg = `${definedByFile} defines an unknown config ${pc.bold(configName)}`
+  let errMsg = `${definedByFile} defines an unknown config ${pc.cyan(configName)}`
   let configNameSimilar: string | null = null
   if (configName === 'page') {
     configNameSimilar = 'Page'
@@ -1242,11 +1242,11 @@ function handleUnknownConfig(configName: string, configNames: string[], definedB
   }
   if (configNameSimilar) {
     assert(configNameSimilar !== configName)
-    errMsg += `, did you mean to define ${pc.bold(configNameSimilar)} instead?`
+    errMsg += `, did you mean to define ${pc.cyan(configNameSimilar)} instead?`
   }
   if (configName === 'page') {
     assert(configNameSimilar === 'Page')
-    errMsg += ` (The name of the config ${pc.bold('Page')} starts with a capital letter ${pc.bold(
+    errMsg += ` (The name of the config ${pc.cyan('Page')} starts with a capital letter ${pc.cyan(
       'P'
     )} because it usually defines a UI component: a ubiquitous JavaScript convention is to start the name of UI components with a capital letter.)`
   }
