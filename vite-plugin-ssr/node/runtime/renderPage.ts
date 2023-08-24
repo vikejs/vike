@@ -47,7 +47,7 @@ import type { PageContextDebug } from './renderPage/debugPageFiles.js'
 import { log404 } from './renderPage/log404/index.js'
 import { isConfigInvalid } from './renderPage/isConfigInvalid.js'
 import pc from '@brillout/picocolors'
-import type { PageContextBuiltIn } from '../../types/index.js'
+import type { PageContextBuiltInServer } from '../../types/index.js'
 import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
@@ -82,7 +82,7 @@ async function renderPage<
   pageContextInit: PageContextInit
 ): Promise<
   // Partial because rendering may fail at any user hook. Also Partial when httpResponse !== null because .pageContext.json requests may fail while still returning the HTTP response `JSON.stringify({ serverSideError: true })`.
-  PageContextInit & { httpResponse: HttpResponse | null } & Partial<PageContextBuiltIn & PageContextUserAdded>
+  PageContextInit & { httpResponse: HttpResponse | null } & Partial<PageContextBuiltInServer & PageContextUserAdded>
 > {
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string'))

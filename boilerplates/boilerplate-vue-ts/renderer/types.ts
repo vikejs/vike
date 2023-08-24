@@ -5,7 +5,7 @@ export type { PageProps }
 export type { Component }
 
 import type {
-  PageContextBuiltIn,
+  PageContextBuiltInServer,
   /*
   // When using Client Routing https://vite-plugin-ssr.com/clientRouting
   PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
@@ -32,7 +32,7 @@ export type PageContextCustom = {
   }
 }
 
-type PageContextServer = PageContextBuiltIn<Page> & PageContextCustom
+type PageContextServer = PageContextBuiltInServer<Page> & PageContextCustom
 type PageContextClient = PageContextBuiltInClient<Page> & PageContextCustom
 
 type PageContext = PageContextClient | PageContextServer

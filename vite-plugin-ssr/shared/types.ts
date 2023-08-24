@@ -1,4 +1,4 @@
-export { PageContextBuiltIn }
+export { PageContextBuiltInServer }
 export { PageContextBuiltInServerInternal }
 export { PageContextBuiltInClientWithClientRouting }
 export { PageContextBuiltInClientWithServerRouting }
@@ -15,7 +15,7 @@ import type { AbortStatusCode } from './route/abort.js'
  *
  * https://vite-plugin-ssr.com/pageContext
  */
-type PageContextBuiltIn<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsPublicServer
+type PageContextBuiltInServer<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsPublicServer
 
 type PageContextBuiltInServerInternal<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedProps
 

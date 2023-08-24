@@ -12,7 +12,7 @@ export type {
   ConfigEntries
 }
 import type {
-  PageContextBuiltIn as PageContextBuiltIn_,
+  PageContextBuiltInServer,
   PageContextBuiltInClientWithClientRouting as PageContextBuiltInClientWithClientRouting_,
   PageContextBuiltInClientWithServerRouting as PageContextBuiltInClientWithServerRouting_,
   InjectFilterEntry as InjectFilterEntry_,
@@ -25,9 +25,9 @@ import type {
  * Replace:
  *   `import type { PageContextBuiltIn } from 'vite-plugin-ssr'`
  * With:
- *   `import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'`
+ *   `import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'`
  */
-type PageContextBuiltIn<Page = any> = PageContextBuiltIn_<Page>
+type PageContextBuiltIn<Page = any> = PageContextBuiltInServer<Page>
 /** @deprecated All types have been moved to `vite-plugin-ssr/types`.
  * Replace:
  *   `import type { PageContextBuiltInClientWithClientRouting } from 'vite-plugin-ssr'`

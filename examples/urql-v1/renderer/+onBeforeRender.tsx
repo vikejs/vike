@@ -8,9 +8,9 @@ import React from 'react'
 import 'isomorphic-fetch'
 import { PageShell } from './PageShell'
 import type { PageContext } from './types'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'
 
-async function onBeforeRender(pageContext: PageContextBuiltIn & PageContext) {
+async function onBeforeRender(pageContext: PageContextBuiltInServer & PageContext) {
   const { Page, pageProps } = pageContext
 
   const ssr = ssrExchange({ initialState: undefined })

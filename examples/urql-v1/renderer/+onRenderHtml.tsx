@@ -3,9 +3,9 @@ export default onRenderHtml
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import type { PageContext } from './types'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'
 
-async function onRenderHtml(pageContext: PageContextBuiltIn & PageContext) {
+async function onRenderHtml(pageContext: PageContextBuiltInServer & PageContext) {
   const { pageHtml } = pageContext
 
   // See https://vite-plugin-ssr.com/head

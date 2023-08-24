@@ -5,13 +5,13 @@ import React from 'react'
 import { PageShell } from './PageShell'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import type { PageContext } from './types'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'
 import 'isomorphic-fetch'
 
 // See https://vite-plugin-ssr.com/data-fetching
 export const passToClient = ['pageProps', 'urlPathname', 'urqlState']
 
-export async function render(pageContext: PageContextBuiltIn & PageContext) {
+export async function render(pageContext: PageContextBuiltInServer & PageContext) {
   const { pageHtml } = pageContext
 
   // See https://vite-plugin-ssr.com/head
@@ -33,7 +33,7 @@ export async function render(pageContext: PageContextBuiltIn & PageContext) {
     </html>`
 }
 
-export async function onBeforeRender(pageContext: PageContextBuiltIn & PageContext) {
+export async function onBeforeRender(pageContext: PageContextBuiltInServer & PageContext) {
   const { Page, pageProps } = pageContext
 
   const ssr = ssrExchange({ initialState: undefined })

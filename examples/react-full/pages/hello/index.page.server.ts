@@ -1,4 +1,4 @@
-import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'
 import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
 
 export { onBeforeRender }
@@ -6,7 +6,7 @@ export { prerender }
 
 const names = ['evan', 'rom', 'alice', 'jon', 'eli']
 
-async function onBeforeRender(pageContext: PageContextBuiltIn) {
+async function onBeforeRender(pageContext: PageContextBuiltInServer) {
   const { name } = pageContext.routeParams
   if (name !== 'anonymous' && !names.includes(name)) {
     const errorDescription = `Unknown name: ${name}.`

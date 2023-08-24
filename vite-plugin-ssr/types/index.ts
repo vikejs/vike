@@ -1,4 +1,4 @@
-export type { PageContextBuiltIn } from '../shared/types.js'
+export type { PageContextBuiltInServer } from '../shared/types.js'
 export type { PageContextBuiltInClientWithClientRouting } from '../shared/types.js'
 export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
 export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtmlTags.js'
@@ -18,3 +18,13 @@ import { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
  */
 type PageContextBuiltInClient<Page = any> = PageContextBuiltInClientWithServerRouting<Page>
 export type { PageContextBuiltInClient }
+
+// TODO/v1-release: remove
+import { PageContextBuiltInServer } from '../shared/types.js'
+/** @deprecated Replace:
+ *   `import { PageContextBuiltIn } from 'vite-plugin-ssr/types'`
+ * With:
+ *   `import { PageContextBuiltInServer } from 'vite-plugin-ssr/types'`
+ */
+type PageContextBuiltIn<Page = any> = PageContextBuiltInServer<Page>
+export type { PageContextBuiltIn }

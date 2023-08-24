@@ -6,9 +6,9 @@ import { escapeInject } from 'vite-plugin-ssr/server'
 import { createApp } from './app'
 import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'
 
-async function onRenderHtml(pageContext: PageContextBuiltIn & PageContext) {
+async function onRenderHtml(pageContext: PageContextBuiltInServer & PageContext) {
   const app = createApp(pageContext)
   const stream = renderToNodeStream(app)
 
