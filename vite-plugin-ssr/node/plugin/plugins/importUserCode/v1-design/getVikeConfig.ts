@@ -1213,23 +1213,26 @@ function handleUserFileError(err: unknown, isDev: boolean) {
 
 function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
   if (configName === 'prerender') return false
-  const configNamesGlobal = Object.keys(configDefinitionsBuiltInGlobal)
+  const configNamesGlobal = getConfigNamesGlobal()
   return arrayIncludes(configNamesGlobal, configName)
 }
+function getConfigNamesGlobal() {
+  return Object.keys(configDefinitionsBuiltInGlobal)
+}
 
-function assertConfigExists(configName: string, configsDefined: string[], definedByFile: string) {
-  if (isGlobalConfig(configName)) return
-  if (configsDefined.includes(configName)) return
-  handleUnknownConfig(configName, configsDefined, definedByFile)
+function assertConfigExists(configName: string, configNamesRelevant: string[], definedByFile: string) {
+  const configNames = [...configNamesRelevant, ...getConfigNamesGlobal()]
+  if (configNames.includes(configName)) return
+  handleUnknownConfig(configName, configNames, definedByFile)
   assert(false)
 }
-function handleUnknownConfig(configName: string, configsDefined: string[], definedByFile: string) {
+function handleUnknownConfig(configName: string, configNames: string[], definedByFile: string) {
   let errMsg = `${definedByFile} defines an unknown config ${pc.bold(configName)}`
   let configNameSimilar: string | null = null
   if (configName === 'page') {
     configNameSimilar = 'Page'
   } else {
-    configNameSimilar = getMostSimilar(configName, configsDefined)
+    configNameSimilar = getMostSimilar(configName, configNames)
   }
   if (configNameSimilar) {
     assert(configNameSimilar !== configName)
