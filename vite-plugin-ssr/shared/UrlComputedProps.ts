@@ -118,13 +118,16 @@ function urlParsedGetter(this: PageContextUrlSources) {
   const urlParsedOriginal = getUrlParsed(this)
   const { origin, pathname, pathnameOriginal, search, searchAll, searchOriginal, hash, hashOriginal } =
     urlParsedOriginal
+
+  const hashIsAvailable = isBrowser()
   const warnHashNotAvailable = (prop: 'hash' | 'hashOriginal' | 'hashString') => {
     assertWarning(
-      isBrowser(),
+      hashIsAvailable,
       `pageContext.urlParsed.${prop} isn't available on the server-side (HTTP requests don't include the URL hash by design)`,
       { onlyOnce: true, showStackTrace: true }
     )
   }
+
   const urlParsed: UrlParsed = {
     origin,
     pathname,
@@ -157,8 +160,14 @@ function urlParsedGetter(this: PageContextUrlSources) {
       return searchOriginal
     }
   }
+
   makeNonEnumerable(urlParsed, 'hashString')
   makeNonEnumerable(urlParsed, 'searchString')
+  if (!hashIsAvailable) {
+    makeNonEnumerable(urlParsed, 'hash')
+    makeNonEnumerable(urlParsed, 'hashOriginal')
+  }
+
   return urlParsed
 }
 
