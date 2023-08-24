@@ -1,3 +1,17 @@
+## [0.4.138](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.137...v0.4.138) (2023-08-24)
+
+
+### Bug Fixes
+
+* add null to onBeforeRender type ([#1075](https://github.com/brillout/vite-plugin-ssr/issues/1075)) ([fefc63e](https://github.com/brillout/vite-plugin-ssr/commit/fefc63ead5959aec6e6344f53b049d9cafeb2139))
+* enable adding urlParsed to passToClient without triggering hash warning (fix [#1092](https://github.com/brillout/vite-plugin-ssr/issues/1092)) ([bee05be](https://github.com/brillout/vite-plugin-ssr/commit/bee05beb13363f03eee6f8fe55b2ad4dd0c3f391))
+* improve error message upon +page.js ([c0979f2](https://github.com/brillout/vite-plugin-ssr/commit/c0979f223d88b08f6d39c2e08459a07f32414c26))
+* improve similar known config hint ([9b55367](https://github.com/brillout/vite-plugin-ssr/commit/9b553679d12c2fdc2b5e2e9bdac2c0aec97bb3c3))
+* improve urlParsed type ([#1092](https://github.com/brillout/vite-plugin-ssr/issues/1092)) ([be471d4](https://github.com/brillout/vite-plugin-ssr/commit/be471d4d42ee5ef345d125cf9b1284bc29caf24c))
+* rename PageContextBuiltIn to PageContextBuiltInServer ([49cd1e6](https://github.com/brillout/vite-plugin-ssr/commit/49cd1e6f547b096c075fcf74f1c05ec2f5c8c00f))
+
+
+
 ## [0.4.137](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.136...v0.4.137) (2023-08-23)
 
 

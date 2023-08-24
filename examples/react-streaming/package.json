@@ -16,7 +16,7 @@
     "react-streaming": "^0.3.11",
     "sirv": "^2.0.2",
     "vite": "^4.0.3",
-    "vite-plugin-ssr": "0.4.137"
+    "vite-plugin-ssr": "0.4.138"
   },
   "type": "module"
 }
