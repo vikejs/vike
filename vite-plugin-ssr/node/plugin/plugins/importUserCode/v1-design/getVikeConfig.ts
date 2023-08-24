@@ -1220,11 +1220,26 @@ function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
 function assertConfigExists(configName: string, configsDefined: string[], definedByFile: string) {
   if (isGlobalConfig(configName)) return
   if (configsDefined.includes(configName)) return
+  handleUnknownConfig(configName, configsDefined, definedByFile)
+  assert(false)
+}
+function handleUnknownConfig(configName: string, configsDefined: string[], definedByFile: string) {
   let errMsg = `${definedByFile} defines an unknown config ${pc.bold(configName)}`
-  const configNameSimilar = getMostSimilar(configName, configsDefined)
+  let configNameSimilar: string | null = null
+  if (configName === 'page') {
+    configNameSimilar = 'Page'
+  } else {
+    configNameSimilar = getMostSimilar(configName, configsDefined)
+  }
   if (configNameSimilar) {
     assert(configNameSimilar !== configName)
-    errMsg = `${errMsg}, did you mean to define ${pc.bold(configNameSimilar)} instead?`
+    errMsg += `, did you mean to define ${pc.bold(configNameSimilar)} instead?`
+  }
+  if (configName === 'page') {
+    assert(configNameSimilar === 'Page')
+    errMsg += ` (The name of the config ${pc.bold('Page')} starts with a capital letter ${pc.bold(
+      'P'
+    )} because it usually defines a UI component: a ubiquitous JavaScript convention is to start the name of UI components with a capital letter.)`
   }
   assertUsage(false, errMsg)
 }
