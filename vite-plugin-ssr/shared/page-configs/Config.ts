@@ -53,7 +53,7 @@ type Config<Page = unknown> = Partial<{
    *
    *  https://vite-plugin-ssr.com/onBeforeRender
    */
-  onBeforeRender: Function | ImportString
+  onBeforeRender: Function | ImportString | null
 
   /** Determines what pageContext properties are sent to the client-side.
    *
