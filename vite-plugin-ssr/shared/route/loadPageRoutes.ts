@@ -9,6 +9,7 @@ import type { OnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 import { isCallable } from '../utils.js'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
+import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
 
 type PageRoute = {
   pageId: string
@@ -67,11 +68,9 @@ function getPageRoutes(
             } else {
               assert(isCallable(route))
               {
-                // TODO/v1-release: remove
                 const allowAsyncConfig = pageConfig.configElements.iKnowThePerformanceRisksOfAsyncRouteFunctions
                 if (allowAsyncConfig) {
-                  const val = allowAsyncConfig.configValue
-                  assert(typeof val === 'boolean', `${allowAsyncConfig.configDefinedAt} should be a boolean`)
+                  warnDeprecatedAllowKey()
                 }
               }
               pageRoute = {
@@ -147,13 +146,9 @@ function getPageRoutes(
           if (hasProp(fileExports, 'default', 'function')) {
             const routeFunction = fileExports.default
             {
-              // TODO/v1-release: remove
               const allowKey = 'iKnowThePerformanceRisksOfAsyncRouteFunctions'
               if (allowKey in fileExports) {
-                assertUsage(
-                  hasProp(fileExports, allowKey, 'boolean'),
-                  `The export \`${allowKey}\` of ${filePath} should be a boolean.`
-                )
+                warnDeprecatedAllowKey()
               }
             }
             pageRoutes.push({
