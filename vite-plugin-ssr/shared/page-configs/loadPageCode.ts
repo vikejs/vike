@@ -15,12 +15,12 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
 
   const codeFiles = await pageConfig.loadCodeFiles()
 
-  const isAlreadyDefined = (configName: string) => !!pageConfig.configValues.find((v) => v.configName === configName)
+  const isAlreadyDefined = (configName: string) => !!pageConfig.configValues.find((val) => val.configName === configName)
 
-  pageConfig.configValues = pageConfig.configValues.filter((v) => !v.definedByCodeFile)
-  const addConfigValue = (v: ConfigValue) => {
-    assert(!isAlreadyDefined(v.configName), v.configName) // Conflicts are resolved upstream
-    pageConfig.configValues.push(v)
+  pageConfig.configValues = pageConfig.configValues.filter((val) => !val.definedByCodeFile)
+  const addConfigValue = (val: ConfigValue) => {
+    assert(!isAlreadyDefined(val.configName), val.configName) // Conflicts are resolved upstream
+    pageConfig.configValues.push(val)
   }
 
   codeFiles.forEach((codeFile) => {

@@ -18,12 +18,12 @@ function getConfigValue(
   configName: ConfigName,
   type?: 'string' | 'boolean'
 ): null | unknown {
-  const v = getV(pageConfig, configName)
-  if (v === null) return null
-  const { configValue } = v
+  const val = getValue(pageConfig, configName)
+  if (val === null) return null
+  const { configValue } = val
   if (type) {
     if (isNullish(configValue)) return null
-    const configSource = getConfigSource(v)
+    const configSource = getConfigSource(val)
     const typeActual = typeof configValue
     assertUsage(
       typeActual === type,
@@ -33,22 +33,22 @@ function getConfigValue(
   return configValue
 }
 
-function getV(pageConfig: PageConfigData, configName: ConfigName): null | ConfigValue {
-  const vs = pageConfig.configValues.filter((v) => v.configName === configName)
-  assert(vs.length <= 1) // Conflicts are already handled upstream
-  const v = vs[0]
-  if (pageConfig.configElements && v) {
+function getValue(pageConfig: PageConfigData, configName: ConfigName): null | ConfigValue {
+  const values = pageConfig.configValues.filter((val) => val.configName === configName)
+  assert(values.length <= 1) // Conflicts are already handled upstream
+  const val = values[0]
+  if (pageConfig.configElements && val) {
     assert(!!pageConfig.configElements[configName])
   }
-  return v ?? null
+  return val ?? null
 }
 
 function isConfigDefined(pageConfig: PageConfigData, configName: ConfigName): boolean {
   assert(pageConfig.configElements)
   const configElement = pageConfig.configElements[configName]
   if (!configElement) return false
-  const v = getV(pageConfig, configName)
-  if (v && isNullish(v)) return false
+  const val = getValue(pageConfig, configName)
+  if (val && isNullish(val)) return false
   return true
 }
 
@@ -56,13 +56,13 @@ function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): nu
   assert(pageConfig.configElements)
   const configElement = pageConfig.configElements[configName]
   if (!configElement) return null
-  const v = getV(pageConfig, configName)
-  if (v && isNullish(v)) return null
+  const val = getValue(pageConfig, configName)
+  if (val && isNullish(val)) return null
   const { codeFilePath } = configElement
   if (codeFilePath !== null) return codeFilePath
-  if (!v) return null
-  const { configValue } = v
-  const configSource = getConfigSource(v)
+  if (!val) return null
+  const { configValue } = val
+  const configSource = getConfigSource(val)
   assertUsage(
     typeof configValue === 'string',
     `${configSource} has an invalid type \`${typeof configValue}\`: it should be a string instead`
