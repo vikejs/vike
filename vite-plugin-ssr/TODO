@@ -1,3 +1,14 @@
+- dig into regression
+
+- restore pc.cyan()
+  - search for \`
+- dig into the bug Aure found
+- stop treating undefined as null
+- remove copy()
+- refacor/fix skipConfigValue to differentiate between global/page virtual file
+- use json-s instead of JSON
+- remove getConfigDefinedAt() in favor of getConfigSource()
+
 - Seems like passToClient is already cumulative for 0.4 design, should be as well for v1 design
   - https://github.com/vikejs/vike-react/issues/4
 
@@ -17,9 +28,9 @@
   client/router.js
 
 V1 design stable release:
- - Implements TODO comments
  - Minimize what client-side loads
    - Fix bug that 'server-only' config is included in the client-side (e.g. Aure's ssr flag PR)
+ - Implements TODO comments
  - docs
    - update migration examples
    - pageContext.config
