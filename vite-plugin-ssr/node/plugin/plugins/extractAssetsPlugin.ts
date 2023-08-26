@@ -20,7 +20,8 @@ import {
   isScriptFile,
   resolveVirtualFileId,
   isVirtualFileId,
-  getVirtualFileId
+  getVirtualFileId,
+  assertUsage
 } from '../utils.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { getConfigVps } from '../../shared/getConfigVps.js'
@@ -177,6 +178,16 @@ function extractAssetsPlugin(): Plugin[] {
         if (debugEnabled) {
           return { logLevel: 'silent' }
         }
+      }
+    },
+    {
+      name: 'vite-plugin-ssr:extractAssets-4',
+      configResolved(config) {
+        // https://github.com/brillout/vite-plugin-ssr/issues/1060
+        assertUsage(
+          !config.plugins.find((p) => p.name === 'vite-tsconfig-paths'),
+          'vite-tsconfig-paths not supported, remove it and use vite.config.js#resolve.alias instead'
+        )
       }
     }
   ]
