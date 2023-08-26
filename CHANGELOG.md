@@ -1,3 +1,13 @@
+## [0.4.139](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.138...v0.4.139) (2023-08-26)
+
+
+### Bug Fixes
+
+* forbid vite-tsconfig-paths (fix [#1060](https://github.com/brillout/vite-plugin-ssr/issues/1060)) ([8192d28](https://github.com/brillout/vite-plugin-ssr/commit/8192d2822064d4e391c78eb8c21e1dd617cdd01b))
+* show iKnowThePerformanceRisksOfAsyncRouteFunctions deprecation warning ([9fd3748](https://github.com/brillout/vite-plugin-ssr/commit/9fd37484e10890f8c4f4d887ecd2452eda1c5d2d))
+
+
+
 ## [0.4.138](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.137...v0.4.138) (2023-08-24)
 
 
