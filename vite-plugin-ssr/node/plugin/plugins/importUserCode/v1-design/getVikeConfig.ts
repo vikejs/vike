@@ -397,7 +397,9 @@ async function loadVikeConfig(
           routeFilesystemDefinedBy,
           routeFilesystem: isErrorPage ? null : routeFilesystem,
           configElements,
-          configValues: []
+          configValues: [],
+          configSources2: [],
+          configValues2: {}
         }
 
         // TODO: remove redundancy between configElements[string].configValue and configValues

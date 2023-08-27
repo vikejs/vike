@@ -30,9 +30,29 @@ type PageConfigData = {
   isErrorPage: boolean
   routeFilesystem: null | string
   routeFilesystemDefinedBy: null | string
+  configSources2: ConfigSource2[]
+  configValues2: Record<string, ConfigValue2>
+  // TODO: remove in favor of configSources2 and configValues2
   configElements: Record<ConfigName, ConfigElement>
   configValues: ConfigValue[]
 }
+type ConfigSource2 = {
+  configName: string
+  // configEnv: ConfigEnvPrivate
+  configValueSerialized?: string
+  configValue?: unknown
+  configValueDefinedAt: DefinedAt
+}
+type ConfigValue2 = {
+  value: unknown
+  // isDefinedByCodeFile: boolean
+  definedAt: DefinedAt
+}
+type DefinedAt = {
+  filePath: string
+  fileExportPath: string
+}
+
 type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileExportName: string; configSourceFileDefaultExportKey?: undefined }
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
