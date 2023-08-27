@@ -48,7 +48,7 @@ function isConfigDefined(pageConfig: PageConfigData, configName: ConfigName): bo
   const configElement = pageConfig.configElements[configName]
   if (!configElement) return false
   const val = getValue(pageConfig, configName)
-  if (val && isNullish(val)) return false
+  if (val && isNullish(val.configValue)) return false
   return true
 }
 

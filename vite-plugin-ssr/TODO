@@ -1,8 +1,6 @@
-- dig into regression
-
+- dig into the bug Aure found
 - restore pc.cyan()
   - search for \`
-- dig into the bug Aure found
 - stop treating undefined as null
 - remove copy()
 - refacor/fix skipConfigValue to differentiate between global/page virtual file
