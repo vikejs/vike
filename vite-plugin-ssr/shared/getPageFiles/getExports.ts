@@ -76,7 +76,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
 
   // V1 design
   if (pageConfig) {
-    Object.entries(pageConfig.configValues2).forEach(([configName, configValue]) => {
+    Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       const { value, definedAt: { filePath } } = configValue
       const configDefinedAt = getConfigValueSource(configValue)
       assert(filePath)

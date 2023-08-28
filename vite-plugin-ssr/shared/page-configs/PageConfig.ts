@@ -9,7 +9,6 @@ export type { ConfigElement }
 export type { ConfigElementSource }
 export type { ConfigSource }
 export type { ConfigValue }
-export type { ConfigValue2 }
 export type { ConfigValueSource }
 
 type ConfigEnvPrivate =
@@ -33,8 +32,8 @@ type PageConfigData = {
   routeFilesystem: null | string
   routeFilesystemDefinedBy: null | string
   configValueSources: ConfigValueSource[]
-  configValues2: Record<string, ConfigValue2>
-  // TODO: remove in favor of configValueSources and configValues2
+  configValues: Record<string, ConfigValue>
+  // TODO: remove in favor of configValueSources
   configElements: Record<ConfigName, ConfigElement>
 }
 type ConfigValueSource = {
@@ -44,7 +43,7 @@ type ConfigValueSource = {
   value?: unknown
   definedAt: DefinedAt
 }
-type ConfigValue2 = {
+type ConfigValue = {
   value: unknown
   // isDefinedByCodeFile: boolean
   definedAt: DefinedAt
@@ -58,7 +57,6 @@ type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileExportName: string; configSourceFileDefaultExportKey?: undefined }
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
 )
-type ConfigValue = { configName: string; configValue: unknown; definedByCodeFile: boolean } & ConfigSource
 type PageConfig = PageConfigData & {
   loadCodeFiles: LoadCodeFiles
   isLoaded?: true

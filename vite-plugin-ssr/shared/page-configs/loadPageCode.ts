@@ -16,13 +16,13 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
   const codeFiles = await pageConfig.loadCodeFiles()
 
   // TODO: remove?
-  // pageConfig.configValues = pageConfig.configValues.filter((val) => !val.definedByCodeFile)
+  // pageConfig.configValuesOld = pageConfig.configValuesOld.filter((val) => !val.definedByCodeFile)
 
   const addConfigValue = (configName: string, value: unknown, filePath: string, fileExportPath: string) => {
     /* TODO
     assert(!isAlreadyDefined(val.configName), val.configName) // Conflicts are resolved upstream
     */
-    pageConfig.configValues2[configName] = {
+    pageConfig.configValues[configName] = {
       value,
       definedAt: {
         filePath,
@@ -44,7 +44,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
       Object.entries(codeFileExports).forEach(([exportName, exportValue]) => {
         const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
         const configName = isSideExport ? exportName : codeFile.configName
-        if (isSideExport && configName in pageConfig.configValues2) {
+        if (isSideExport && configName in pageConfig.configValues) {
           // We can't avoid side-export conflicts upstream. (Because we cannot know about side-exports upstream at build-time.)
           // Side-exports have the lowest priority.
           return
@@ -59,7 +59,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
   })
 
   /* TODO Remove? Conflicts are already handled
-  const codeFileExports: ({ configVal: ConfigValue } & (
+  const codeFileExports: ({ configVal: ConfigValueOld } & (
     | { isPlusFile: true; isSideExport: boolean }
     | { isPlusFile: false; isSideExport: null }
   ))[] = []
@@ -79,11 +79,11 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
       })
     )
     .forEach((codeFileExport) => {
-      const alreadyDefined = configValues.find(
+      const alreadyDefined = configValuesOld.find(
         (configVal) => codeFileExport.configVal.configName === configVal.configName
       )
       if (!alreadyDefined) {
-        configValues.push(codeFileExport.configVal)
+        configValuesOld.push(codeFileExport.configVal)
       }
     })
   */

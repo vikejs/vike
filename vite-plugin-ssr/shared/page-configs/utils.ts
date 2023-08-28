@@ -5,7 +5,7 @@ export { getConfigValueSource }
 export { isConfigDefined }
 
 import { assert, assertUsage } from '../utils.js'
-import type { ConfigSource, ConfigValue, ConfigValue2, PageConfig, PageConfigData } from './PageConfig.js'
+import type { ConfigSource, ConfigValue, PageConfig, PageConfigData } from './PageConfig.js'
 import type { ConfigNameBuiltIn, ConfigNamePrivate } from './Config.js'
 import pc from '@brillout/picocolors'
 
@@ -34,8 +34,8 @@ function getConfigValue(
   return value
 }
 
-function getValue(pageConfig: PageConfigData, configName: ConfigName): null | ConfigValue2 {
-  const configValue = pageConfig.configValues2[configName]
+function getValue(pageConfig: PageConfigData, configName: ConfigName): null | ConfigValue {
+  const configValue = pageConfig.configValues[configName]
   if (!configValue) return null
   return configValue
 }
@@ -97,7 +97,7 @@ function getConfigSource(configSource: ConfigSource): string {
   }
 }
 
-function getConfigValueSource(configValue: ConfigValue2): string {
+function getConfigValueSource(configValue: ConfigValue): string {
   const { filePath, fileExportPath } = configValue.definedAt
   return `${pc.bold(filePath)} > ${pc.cyan(fileExportPath)}`
 }

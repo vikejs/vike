@@ -5,7 +5,6 @@ export { serializePageConfigs }
 import { assert, assertUsage, objectEntries } from '../../../utils.js'
 import type {
   ConfigElement,
-  ConfigValue,
   PageConfigData,
   PageConfigGlobalData
 } from '../../../../../shared/page-configs/PageConfig.js'
@@ -43,8 +42,8 @@ function serializePageConfigs(
       lines.push(serializeConfigElement(configElement, configName, importStatements, whitespace, false))
     })
     lines.push(`    },`)
-    lines.push(`    configValues2: {`)
-    Object.entries(pageConfig.configValues2).forEach(([configName, configValue]) => {
+    lines.push(`    configValues: {`)
+    Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       {
         const configElement = pageConfig.configElements[configName]
         assert(configElement)

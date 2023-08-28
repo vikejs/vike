@@ -399,7 +399,7 @@ async function loadVikeConfig(
           routeFilesystem: isErrorPage ? null : routeFilesystem,
           configElements,
           configValueSources: [],
-          configValues2: {}
+          configValues: {}
         }
 
         const copy2 = () => {
@@ -421,9 +421,9 @@ async function loadVikeConfig(
             if ('configValue' in configElement) {
               configValueSource.value = configElement.configValue
               /* TODO: use this assert() as conflicts should be resolved upstream
-              assert(pageConfigData.configValues2[configName])
+              assert(pageConfigData.configValues[configName])
               */
-              pageConfigData.configValues2[configName] = {
+              pageConfigData.configValues[configName] = {
                 value: configElement.configValue,
                 definedAt
               }
