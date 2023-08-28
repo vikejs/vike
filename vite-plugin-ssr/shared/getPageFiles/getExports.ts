@@ -10,7 +10,7 @@ import { assertDefaultExports, forbiddenDefaultExports } from './assertExports.j
 import type { FileType } from './fileTypes.js'
 import type { PageConfigLoaded } from './../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
-import { getConfigSource } from '../page-configs/utils.js'
+import { getConfigValueSource } from '../page-configs/utils.js'
 
 // TODO/v1-release: remove
 type ExportsAll = Record<
@@ -76,30 +76,30 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
 
   // V1 design
   if (pageConfig) {
-    const { configValues } = pageConfig
-    Object.values(configValues).forEach((v) => {
-      const { configName, configValue, configSourceFile } = v
-      const configDefinedAt = getConfigSource(v)
-      assert(configSourceFile)
+    Object.entries(pageConfig.configValues2).forEach(([configName, configValue]) => {
+      const { value, definedAt: { filePath } } = configValue
+      const configDefinedAt = getConfigValueSource(configValue)
+      assert(filePath)
+      assert(configDefinedAt)
 
-      config[configName] = config[configName] ?? configValue
+      config[configName] = config[configName] ?? value
       configEntries[configName] = configEntries[configName] ?? []
       // Currently each configName has only one entry. Adding an entry for each overriden config value isn't implemented yet. (This is an isomorphic file and it isn't clear whether this can/should be implemented on the client-side. We should load a minimum amount of code on the client-side.)
       assert(configEntries[configName]!.length === 0)
       configEntries[configName]!.push({
-        configValue,
+        configValue: value,
         configDefinedAt,
-        configDefinedByFile: configSourceFile
+        configDefinedByFile: filePath
       })
 
       // TODO/v1-release: remove
       const exportName = configName
       exportsAll[exportName] = exportsAll[exportName] ?? []
       exportsAll[exportName]!.push({
-        exportValue: configValue,
+        exportValue: value,
         exportSource: configDefinedAt,
-        filePath: configSourceFile,
-        _filePath: configSourceFile,
+        filePath,
+        _filePath: filePath,
         _fileType: null,
         _isFromDefaultExport: null
       })

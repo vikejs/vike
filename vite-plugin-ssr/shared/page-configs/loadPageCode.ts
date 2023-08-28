@@ -1,7 +1,7 @@
 export { loadPageCode }
 
 import { assert, assertDefaultExportUnknown, assertUsage, objectAssign } from '../utils.js'
-import type { ConfigValue, PageConfig, PageConfigLoaded } from './PageConfig.js'
+import type { PageConfig, PageConfigLoaded } from './PageConfig.js'
 import pc from '@brillout/picocolors'
 
 async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<PageConfigLoaded> {
@@ -15,12 +15,24 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
 
   const codeFiles = await pageConfig.loadCodeFiles()
 
-  const isAlreadyDefined = (configName: string) => !!pageConfig.configValues.find((val) => val.configName === configName)
+  // TODO: remove?
+  // pageConfig.configValues = pageConfig.configValues.filter((val) => !val.definedByCodeFile)
 
-  pageConfig.configValues = pageConfig.configValues.filter((val) => !val.definedByCodeFile)
-  const addConfigValue = (val: ConfigValue) => {
+  const addConfigValue = (configName: string, value: unknown, filePath: string, fileExportPath: string) => {
+    /* TODO
     assert(!isAlreadyDefined(val.configName), val.configName) // Conflicts are resolved upstream
-    pageConfig.configValues.push(val)
+    */
+    pageConfig.configValues2[configName] = {
+      value,
+      definedAt: {
+        filePath,
+        fileExportPath
+      }
+      /* TODO: remove?
+      definedByCodeFile: true
+      */
+    }
+    assertIsNotNull(value, configName, filePath)
   }
 
   codeFiles.forEach((codeFile) => {
@@ -32,36 +44,21 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
       Object.entries(codeFileExports).forEach(([exportName, exportValue]) => {
         const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
         const configName = isSideExport ? exportName : codeFile.configName
-        if (isSideExport && isAlreadyDefined(configName)) {
-          // We don't (can't?) avoid side-export conflicts upstream.
-          // We override the side-export.
+        if (isSideExport && configName in pageConfig.configValues2) {
+          // We can't avoid side-export conflicts upstream. (Because we cannot know about side-exports upstream at build-time.)
+          // Side-exports have the lowest priority.
           return
         }
-        const configValue = exportValue
-        addConfigValue({
-          configName,
-          configSourceFile: codeFilePath,
-          configSourceFileExportName: exportName,
-          configValue,
-          definedByCodeFile: true
-        })
-        assertIsNotNull(configValue, configName, codeFilePath)
+        const fileExportPath = exportName ? 'export default' : `export { ${exportName} }`
+        addConfigValue(configName, exportValue, codeFilePath, fileExportPath)
       })
     } else {
       const { configName, codeFilePath } = codeFile
-      const configValue = codeFile.codeFileExportValue
-      addConfigValue({
-        configName,
-        configSourceFile: codeFilePath,
-        configSourceFileExportName: 'default',
-        configValue,
-        definedByCodeFile: true
-      })
-      assertIsNotNull(configValue, configName, codeFilePath)
+      addConfigValue(configName, codeFile.codeFileExportValue, codeFilePath, 'TODO')
     }
   })
 
-  /* Remove? Conflicts are already handled
+  /* TODO Remove? Conflicts are already handled
   const codeFileExports: ({ configVal: ConfigValue } & (
     | { isPlusFile: true; isSideExport: boolean }
     | { isPlusFile: false; isSideExport: null }

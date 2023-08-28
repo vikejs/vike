@@ -9,6 +9,8 @@ export type { ConfigElement }
 export type { ConfigElementSource }
 export type { ConfigSource }
 export type { ConfigValue }
+export type { ConfigValue2 }
+export type { ConfigValueSource }
 
 type ConfigEnvPrivate =
   | 'client-only'
@@ -30,18 +32,17 @@ type PageConfigData = {
   isErrorPage: boolean
   routeFilesystem: null | string
   routeFilesystemDefinedBy: null | string
-  configSources2: ConfigSource2[]
+  configValueSources: ConfigValueSource[]
   configValues2: Record<string, ConfigValue2>
-  // TODO: remove in favor of configSources2 and configValues2
+  // TODO: remove in favor of configValueSources and configValues2
   configElements: Record<ConfigName, ConfigElement>
-  configValues: ConfigValue[]
 }
-type ConfigSource2 = {
+type ConfigValueSource = {
   configName: string
   // configEnv: ConfigEnvPrivate
-  configValueSerialized?: string
-  configValue?: unknown
-  configValueDefinedAt: DefinedAt
+  valueSerialized?: string
+  value?: unknown
+  definedAt: DefinedAt
 }
 type ConfigValue2 = {
   value: unknown

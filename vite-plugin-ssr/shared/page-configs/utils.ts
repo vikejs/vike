@@ -1,12 +1,13 @@
 export { getConfigValue }
 export { getCodeFilePath }
 export { getPageConfig }
-export { getConfigSource }
+export { getConfigValueSource }
 export { isConfigDefined }
 
 import { assert, assertUsage } from '../utils.js'
-import type { ConfigSource, ConfigValue, PageConfig, PageConfigData } from './PageConfig.js'
+import type { ConfigSource, ConfigValue, ConfigValue2, PageConfig, PageConfigData } from './PageConfig.js'
 import type { ConfigNameBuiltIn, ConfigNamePrivate } from './Config.js'
+import pc from '@brillout/picocolors'
 
 type ConfigName = ConfigNameBuiltIn | ConfigNamePrivate
 
@@ -18,37 +19,33 @@ function getConfigValue(
   configName: ConfigName,
   type?: 'string' | 'boolean'
 ): null | unknown {
-  const val = getValue(pageConfig, configName)
-  if (val === null) return null
-  const { configValue } = val
+  const configValue = getValue(pageConfig, configName)
+  if (configValue === null) return null
+  const { value } = configValue
   if (type) {
-    if (isNullish(configValue)) return null
-    const configSource = getConfigSource(val)
-    const typeActual = typeof configValue
+    if (isNullish(value)) return null
+    const configSource = getConfigValueSource(configValue)
+    const typeActual = typeof value
     assertUsage(
       typeActual === type,
       `${configSource} has an invalid type \`${typeActual}\`: is should be a ${type} instead`
     )
   }
-  return configValue
+  return value
 }
 
-function getValue(pageConfig: PageConfigData, configName: ConfigName): null | ConfigValue {
-  const values = pageConfig.configValues.filter((val) => val.configName === configName)
-  assert(values.length <= 1) // Conflicts are already handled upstream
-  const val = values[0]
-  if (pageConfig.configElements && val) {
-    assert(!!pageConfig.configElements[configName])
-  }
-  return val ?? null
+function getValue(pageConfig: PageConfigData, configName: ConfigName): null | ConfigValue2 {
+  const configValue = pageConfig.configValues2[configName]
+  if (!configValue) return null
+  return configValue
 }
 
 function isConfigDefined(pageConfig: PageConfigData, configName: ConfigName): boolean {
   assert(pageConfig.configElements)
   const configElement = pageConfig.configElements[configName]
   if (!configElement) return false
-  const val = getValue(pageConfig, configName)
-  if (val && isNullish(val.configValue)) return false
+  const configValue = getValue(pageConfig, configName)
+  if (configValue && isNullish(configValue.value)) return false
   return true
 }
 
@@ -56,18 +53,18 @@ function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): nu
   assert(pageConfig.configElements)
   const configElement = pageConfig.configElements[configName]
   if (!configElement) return null
-  const val = getValue(pageConfig, configName)
-  if (val && isNullish(val)) return null
+  const configValue = getValue(pageConfig, configName)
+  if (configValue && isNullish(configValue.value)) return null
   const { codeFilePath } = configElement
   if (codeFilePath !== null) return codeFilePath
-  if (!val) return null
-  const { configValue } = val
-  const configSource = getConfigSource(val)
+  if (!configValue) return null
+  const { value } = configValue
+  const configValueSource = getConfigValueSource(configValue)
   assertUsage(
-    typeof configValue === 'string',
-    `${configSource} has an invalid type \`${typeof configValue}\`: it should be a string instead`
+    typeof value === 'string',
+    `${configValueSource} has an invalid type \`${typeof value}\`: it should be a string instead`
   )
-  assertUsage(false, `${configSource} has an invalid value '${configValue}': it should be a file path instead`)
+  assertUsage(false, `${configValueSource} has an invalid value '${value}': it should be a file path instead`)
 }
 
 function isNullish(configValue: unknown): boolean {
@@ -81,6 +78,7 @@ function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
   return pageConfig
 }
 
+// TODO: remove in favor of getConfigValueSource()
 function getConfigSource(configSource: ConfigSource): string {
   const { configSourceFile, configSourceFileExportName, configSourceFileDefaultExportKey } = configSource
   assert(configSourceFile)
@@ -97,4 +95,9 @@ function getConfigSource(configSource: ConfigSource): string {
       return `${configSourceFile} > \`export { ${configSourceFileExportName} }\`` as const
     }
   }
+}
+
+function getConfigValueSource(configValue: ConfigValue2): string {
+  const { filePath, fileExportPath } = configValue.definedAt
+  return `${pc.bold(filePath)} > ${pc.cyan(fileExportPath)}`
 }

@@ -30,7 +30,8 @@ import type {
   PageConfigData,
   PageConfigGlobalData,
   ConfigElementSource,
-  ConfigEnvPrivate
+  ConfigEnvPrivate,
+  ConfigValueSource
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import glob from 'fast-glob'
@@ -397,45 +398,46 @@ async function loadVikeConfig(
           routeFilesystemDefinedBy,
           routeFilesystem: isErrorPage ? null : routeFilesystem,
           configElements,
-          configValues: [],
-          configSources2: [],
+          configValueSources: [],
           configValues2: {}
         }
 
-        // TODO: remove redundancy between configElements[string].configValue and configValues
-        const copy = () => {
-          objectEntries(configElements).map(([configName, configElement]) => {
-            if ('configValue' in configElement) {
-              // TODO: remove
-              {
-                const alreadyDefined = !!pageConfigData.configValues.find((v) => v.configName === configName)
-                if (alreadyDefined) {
-                  pageConfigData.configValues = pageConfigData.configValues.filter((v) => v.configName !== configName)
-                }
-              }
-
-              // Conflicts are already resolved in resolveConfigElement()
-              {
-                const alreadyDefined = !!pageConfigData.configValues.find((v) => v.configName === configName)
-                assert(!alreadyDefined)
-              }
-
-              pageConfigData.configValues.push({
-                configName,
-                configSourceFile: configElement.configDefinedByFile,
-                configSourceFileExportName: 'TODO',
-                configValue: configElement.configValue,
-                definedByCodeFile: false
-              })
+        const copy2 = () => {
+          objectEntries(pageConfigData.configElements).map(([configName, configElement]) => {
+            const definedAt = {
+              filePath: configElement.configDefinedByFile,
+              fileExportPath: configElement.codeFileExport ?? 'TODO'
             }
+
+            const configValueSource: ConfigValueSource = {
+              configName,
+              definedAt
+            }
+
+            if (configElement.configValueSerialized !== undefined) {
+              configValueSource.valueSerialized = configElement.configValueSerialized
+            }
+
+            if ('configValue' in configElement) {
+              configValueSource.value = configElement.configValue
+              /* TODO: use this assert() as conflicts should be resolved upstream
+              assert(pageConfigData.configValues2[configName])
+              */
+              pageConfigData.configValues2[configName] = {
+                value: configElement.configValue,
+                definedAt
+              }
+            }
+
+            pageConfigData.configValueSources.push(configValueSource)
           })
         }
-        copy()
+        copy2()
 
         applyEffects(configElements, configDefinitionsRelevant)
         applyComputed(pageConfigData, configDefinitionsRelevant)
 
-        copy()
+        copy2()
 
         return pageConfigData
       })
