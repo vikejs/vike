@@ -20,8 +20,8 @@ importers:
         specifier: ^0.1.5
         version: 0.1.5
       '@brillout/test-e2e':
-        specifier: ^0.5.13
-        version: 0.5.13
+        specifier: ^0.5.14
+        version: 0.5.14
       '@brillout/test-types':
         specifier: ^0.1.6
         version: 0.1.6(typescript@4.9.5)
@@ -3382,8 +3382,8 @@ packages:
       vite-plugin-ssr: link:vite-plugin-ssr
     dev: false
 
-  /@brillout/test-e2e@0.5.13:
-    resolution: {integrity: sha512-sU1bllK7ZhevVP1eNN/GPvQWToO0nG+EuV4Ry1E8nVwjH3lRNOh5EO6vkwPz8IWiLy0Oj4e9kWx9NQZx79PqLw==}
+  /@brillout/test-e2e@0.5.14:
+    resolution: {integrity: sha512-+CN80USFk3WQU6F5UZHka3JvFGcoal++jGKpbKJ+3RkrIqa39iy5HlxaOulLTOrN6ZY1sqSQzS+ntcY4gkIlyg==}
     hasBin: true
     dependencies:
       '@brillout/part-regex': 0.1.2
@@ -8710,6 +8710,7 @@ packages:
   /iconv-lite@0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
+    requiresBuild: true
     dependencies:
       safer-buffer: 2.1.2
     dev: true

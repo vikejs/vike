@@ -67,6 +67,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
   if (!isPreview) {
     test('HTML-only - HMR', async () => {
       {
+        const url = getServerUrl() + '/html-only'
         {
           const viteClientConnected = page.waitForEvent('console', {
             predicate: (consoleMessage) => {
@@ -74,12 +75,15 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
               return text === '[vite] connected.'
             }
           })
-          await page.goto(getServerUrl() + '/html-only')
+          await page.goto(url)
           expect(await page.textContent('h1')).toBe('HTML-only')
           await viteClientConnected
         }
         // No HMR for JavaScript
         {
+          /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
+          const navPromise = page.waitForURL(url)
+          */
           const navPromise = page.waitForNavigation()
           const file = isV1Design ? './pages/html-only/+Page.jsx' : './pages/html-only/index.page.server.jsx'
           editFile(file, (s) => s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'))
@@ -88,6 +92,9 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
           expect(await page.textContent('h1')).toBe('HTML-only !')
         }
         {
+          /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
+          const navPromise = page.waitForURL(url)
+          */
           const navPromise = page.waitForNavigation()
           editFileRevert()
           await navPromise
@@ -174,9 +181,13 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
       expect(await page.textContent('button')).toContain('Counter 1')
       // JS auto-reload
       {
+        const url = getServerUrl() + '/html-js'
         expect(await page.textContent('h1')).toBe('HTML + JS')
+        // No HMR for HTML + JS
         {
-          // No HMR for HTML + JS
+          /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
+          const navPromise = page.waitForURL(url)
+          */
           const navPromise = page.waitForNavigation()
           const file = isV1Design ? './pages/html-js/+Page.jsx' : './pages/html-js/index.page.server.jsx'
           editFile(file, (s) => s.replace('<h1>HTML + JS</h1>', '<h1>HTML + JS !</h1>'))
@@ -185,6 +196,9 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
           expect(await page.textContent('h1')).toBe('HTML + JS !')
         }
         {
+          /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
+          const navPromise = page.waitForURL(url)
+          */
           const navPromise = page.waitForNavigation()
           editFileRevert()
           await navPromise
