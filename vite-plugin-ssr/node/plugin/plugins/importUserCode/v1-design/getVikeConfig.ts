@@ -410,10 +410,12 @@ async function loadVikeConfig(
               filePath: configElement.configDefinedByFile,
               fileExportPath: configElement.codeFileExport ?? 'TODO'
             }
-            const configValueSource: ConfigValueSource = { configName, definedAt }
+            const configValueSource: ConfigValueSource = { configName, definedAt, configEnv: configElement.configEnv }
+            /*
             if (configElement.configValueSerialized !== undefined) {
               configValueSource.valueSerialized = configElement.configValueSerialized
             }
+            */
             if ('configValue' in configElement) {
               configValueSource.value = configElement.configValue
             }
