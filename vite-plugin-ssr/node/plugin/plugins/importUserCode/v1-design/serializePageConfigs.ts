@@ -5,6 +5,7 @@ export { serializePageConfigs }
 import { assert, assertUsage, objectEntries } from '../../../utils.js'
 import type {
   ConfigElement,
+  ConfigValue,
   PageConfigData,
   PageConfigGlobalData
 } from '../../../../../shared/page-configs/PageConfig.js'
@@ -49,15 +50,22 @@ function serializePageConfigs(
         assert(configElement, configName)
         if (skipConfigValue(configElement.configEnv, isForClientSide, isClientRouting)) return
       }
-      let whitespace = '      '
-      lines.push(`${whitespace}['${configName}']: {`)
-      whitespace += '  '
-      Object.entries(configValue).forEach(([key, val]) => {
-        // if (val === undefined) return
-        lines.push(`${whitespace}  ${key}: ${JSON.stringify(val)},`)
-      })
-      whitespace = whitespace.slice(2)
-      lines.push(`${whitespace}},`)
+      // TODO: use @brillout/json-serializer
+      //  - re-use getConfigValueSerialized()?
+      const valueSerialized = JSON.stringify(configValue.value)
+      serializeConfigValue(lines, configName, configValue, valueSerialized)
+    })
+    // TODO: resolve conflicts
+    pageConfig.configValueSources.forEach((configValueSource) => {
+      if (configValueSource.configEnv === '_routing-eager') {
+        const { configName, definedAt } = configValueSource
+        const configValue = { configName, definedAt }
+        const { filePath, fileExportPath } = configValueSource.definedAt
+        const [exportName] = fileExportPath
+        assert(exportName)
+        const configValueEagerImport = getConfigValueEagerImport(filePath, exportName, importStatements)
+        serializeConfigValue(lines, configName, configValue, configValueEagerImport)
+      }
     })
     lines.push(`    },`)
     lines.push(`  },`)
@@ -81,6 +89,22 @@ function serializePageConfigs(
   const code = [...importStatements, ...lines].join('\n')
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
   return code
+}
+
+function serializeConfigValue(lines: string[], configName: string, configValue: Omit<ConfigValue, 'value'>, valueSerialized: string) {
+  let whitespace = '      '
+  lines.push(`${whitespace}['${configName}']: {`)
+  whitespace += '  '
+
+  lines.push(`${whitespace}  value: ${valueSerialized},`)
+  Object.entries(configValue).forEach(([key, val]) => {
+    if (key === 'value') return
+    // if (val === undefined) return
+    lines.push(`${whitespace}  ${key}: ${JSON.stringify(val)},`)
+  })
+
+  whitespace = whitespace.slice(2)
+  lines.push(`${whitespace}},`)
 }
 
 function serializeConfigElement(
