@@ -31,7 +31,8 @@ import type {
   PageConfigGlobalData,
   ConfigElementSource,
   ConfigEnvPrivate,
-  ConfigValueSource
+  ConfigValueSource,
+  ConfigValues
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import glob from 'fast-glob'
@@ -403,34 +404,23 @@ async function loadVikeConfig(
         }
 
         const copy2 = () => {
-          objectEntries(pageConfigData.configElements).map(([configName, configElement]) => {
+          Object.entries(pageConfigData.configElements).forEach(([configName, configElement]) => {
             const definedAt = {
               filePath: configElement.configDefinedByFile,
               fileExportPath: configElement.codeFileExport ?? 'TODO'
             }
-
-            const configValueSource: ConfigValueSource = {
-              configName,
-              definedAt
-            }
-
+            const configValueSource: ConfigValueSource = { configName, definedAt }
             if (configElement.configValueSerialized !== undefined) {
               configValueSource.valueSerialized = configElement.configValueSerialized
             }
-
             if ('configValue' in configElement) {
               configValueSource.value = configElement.configValue
-              /* TODO: use this assert() as conflicts should be resolved upstream
-              assert(pageConfigData.configValues[configName])
-              */
-              pageConfigData.configValues[configName] = {
-                value: configElement.configValue,
-                definedAt
-              }
             }
-
             pageConfigData.configValueSources.push(configValueSource)
           })
+
+          // pageConfigData.configValues = getConfigValues(pageConfigData)
+          Object.assign(pageConfigData.configValues, getConfigValues(pageConfigData))
         }
         copy2()
 
@@ -458,6 +448,25 @@ async function loadVikeConfig(
     })
   })
   return { pageConfigsData, pageConfigGlobal, globalVikeConfig }
+}
+
+function getConfigValues(pageConfigData: PageConfigData): ConfigValues {
+  const configValues: ConfigValues = {}
+  pageConfigData.configValueSources.forEach((configValueSource) => {
+    if ('value' in configValueSource) {
+      const { configName, value, definedAt } = configValueSource
+      /* TODO:
+       * - Move conflict resolution here
+       * - use this assert() as conflicts should be resolved
+      assert(pageConfigData.configValues[configName])
+      */
+      pageConfigData.configValues[configName] = {
+        value,
+        definedAt
+      }
+    }
+  })
+  return configValues
 }
 
 function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {

@@ -46,7 +46,7 @@ function serializePageConfigs(
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       {
         const configElement = pageConfig.configElements[configName]
-        assert(configElement)
+        assert(configElement, configName)
         if (skipConfigValue(configElement.configEnv, isForClientSide, isClientRouting)) return
       }
       let whitespace = '      '
