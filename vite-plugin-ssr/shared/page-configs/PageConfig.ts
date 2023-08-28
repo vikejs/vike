@@ -52,7 +52,7 @@ type ConfigValue = {
 type ConfigValues = Record<string, ConfigValue>
 type DefinedAt = {
   filePath: string
-  fileExportPath: string
+  fileExportPath: string[]
 }
 
 type ConfigSource = { configSourceFile: string } & (
@@ -117,6 +117,7 @@ type LoadCodeFiles = () => Promise<
     | {
         isPlusFile: false
         codeFileExportValue: unknown
+        codeFileExportName: string
       }
   ))[]
 >

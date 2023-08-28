@@ -81,7 +81,9 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
     if (isPlusFile) {
       lines.push(`    codeFileExports: ${importVar},`)
     } else {
-      lines.push(`    codeFileExportValue: ${importVar}`)
+      lines.push(`    codeFileExportValue: ${importVar},`)
+      assert(codeFileExport)
+      lines.push(`    codeFileExportName: ${JSON.stringify(codeFileExport)},`)
     }
     lines.push(`  },`)
   })

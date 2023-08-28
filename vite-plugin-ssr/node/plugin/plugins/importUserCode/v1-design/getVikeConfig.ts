@@ -408,7 +408,7 @@ async function loadVikeConfig(
           Object.entries(pageConfigData.configElements).forEach(([configName, configElement]) => {
             const definedAt = {
               filePath: configElement.configDefinedByFile,
-              fileExportPath: configElement.codeFileExport ?? 'TODO'
+              fileExportPath: [configElement.codeFileExport ?? 'TODO']
             }
             const configValueSource: ConfigValueSource = { configName, definedAt, configEnv: configElement.configEnv }
             /*

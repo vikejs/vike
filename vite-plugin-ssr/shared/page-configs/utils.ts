@@ -7,6 +7,7 @@ import { assert, assertUsage } from '../utils.js'
 import type { ConfigSource, ConfigValue, PageConfig, PageConfigData } from './PageConfig.js'
 import type { ConfigNameBuiltIn, ConfigNamePrivate } from './Config.js'
 import pc from '@brillout/picocolors'
+import { getExportPath } from './getExportPath.js'
 
 type ConfigName = ConfigNameBuiltIn | ConfigNamePrivate
 
@@ -89,5 +90,6 @@ function getConfigSource(configSource: ConfigSource): string {
 
 function getConfigValueSource(configValue: ConfigValue): string {
   const { filePath, fileExportPath } = configValue.definedAt
-  return `${pc.bold(filePath)} > ${pc.cyan(fileExportPath)}`
+  const exportPath = getExportPath(fileExportPath)
+  return `${pc.bold(filePath)} > ${pc.cyan(exportPath)}`
 }

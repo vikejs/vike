@@ -18,7 +18,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
   // TODO: remove?
   // pageConfig.configValuesOld = pageConfig.configValuesOld.filter((val) => !val.definedByCodeFile)
 
-  const addConfigValue = (configName: string, value: unknown, filePath: string, fileExportPath: string) => {
+  const addConfigValue = (configName: string, value: unknown, filePath: string, exportName: string) => {
     /* TODO
     assert(!isAlreadyDefined(val.configName), val.configName) // Conflicts are resolved upstream
     */
@@ -26,7 +26,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
       value,
       definedAt: {
         filePath,
-        fileExportPath
+        fileExportPath: [exportName]
       }
       /* TODO: remove?
       definedByCodeFile: true
@@ -49,12 +49,11 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
           // Side-exports have the lowest priority.
           return
         }
-        const fileExportPath = exportName ? 'export default' : `export { ${exportName} }`
-        addConfigValue(configName, exportValue, codeFilePath, fileExportPath)
+        addConfigValue(configName, exportValue, codeFilePath, exportName)
       })
     } else {
-      const { configName, codeFilePath } = codeFile
-      addConfigValue(configName, codeFile.codeFileExportValue, codeFilePath, 'TODO')
+      const { configName, codeFilePath, codeFileExportValue, codeFileExportName } = codeFile
+      addConfigValue(configName, codeFileExportValue, codeFilePath, codeFileExportName)
     }
   })
 
