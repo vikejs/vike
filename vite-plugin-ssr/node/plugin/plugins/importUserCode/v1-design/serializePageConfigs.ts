@@ -105,25 +105,37 @@ function serializeConfigElement(
   if ('configValue' in configElement) {
     assert(!eagerImport)
     const { configValue } = configElement
-    let configValueSerialized: string
-    try {
-      configValueSerialized = stringify(configValue)
-    } catch {
-      assertUsage(
-        false,
-        `The value of the config '${configName}' cannot live inside ${configDefinedByFile}, see https://vite-plugin-ssr.com/header-file`
-      )
-    }
-    lines.push(`${whitespace}  configValueSerialized: ${JSON.stringify(configValueSerialized)}`)
+    const configValueSerialized = getConfigValueSerialized(configValue, configName, configDefinedByFile)
+    lines.push(`${whitespace}  configValueSerialized: ${configValueSerialized}`)
   } else {
     assert(codeFilePath)
     if (configEnv === '_routing-eager' || eagerImport) {
-      const { importVar, importStatement } = generateEagerImport(codeFilePath)
-      // TODO: expose all exports so that assertDefaultExport can be applied
-      lines.push(`${whitespace}  configValue: ${importVar}[${JSON.stringify(codeFileExport)}]`)
-      importStatements.push(importStatement)
+      const configValueEagerImport = getConfigValueEagerImport(codeFilePath, codeFileExport, importStatements)
+      lines.push(`${whitespace}  configValue: ${configValueEagerImport}`)
     }
   }
   lines.push(`${whitespace}},`)
   return lines.join('\n')
+}
+
+function getConfigValueSerialized(value: unknown, configName: string, configDefinedByFile: string): string {
+  let configValueSerialized: string
+  try {
+    configValueSerialized = stringify(value)
+  } catch {
+    assertUsage(
+      false,
+      `The value of the config '${configName}' cannot live inside ${configDefinedByFile}, see https://vite-plugin-ssr.com/header-file`
+    )
+  }
+  configValueSerialized = JSON.stringify(configValueSerialized)
+  return configValueSerialized
+}
+function getConfigValueEagerImport(codeFilePath: string, codeFileExport: string, importStatements: string[]) {
+  let configValueEagerImport: string
+  const { importVar, importStatement } = generateEagerImport(codeFilePath)
+  importStatements.push(importStatement)
+  // TODO: expose all exports so that assertDefaultExport can be applied
+  configValueEagerImport = `${importVar}[${JSON.stringify(codeFileExport)}]`
+  return configValueEagerImport
 }
