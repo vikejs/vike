@@ -2,7 +2,6 @@ export { getConfigValue }
 export { getCodeFilePath }
 export { getPageConfig }
 export { getConfigValueSource }
-export { isConfigDefined }
 
 import { assert, assertUsage } from '../utils.js'
 import type { ConfigSource, ConfigValue, PageConfig, PageConfigData } from './PageConfig.js'
@@ -38,15 +37,6 @@ function getValue(pageConfig: PageConfigData, configName: ConfigName): null | Co
   const configValue = pageConfig.configValues[configName]
   if (!configValue) return null
   return configValue
-}
-
-function isConfigDefined(pageConfig: PageConfigData, configName: ConfigName): boolean {
-  assert(pageConfig.configElements)
-  const configElement = pageConfig.configElements[configName]
-  if (!configElement) return false
-  const configValue = getValue(pageConfig, configName)
-  if (configValue && isNullish(configValue.value)) return false
-  return true
 }
 
 function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): null | string {

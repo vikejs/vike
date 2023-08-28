@@ -3,7 +3,7 @@ export type { ConfigDefinition }
 
 import type { ConfigEnvPrivate, PageConfigData } from '../../../../../../shared/page-configs/PageConfig.js'
 import type { ConfigNameBuiltIn, ConfigNamePrivate } from '../../../../../../shared/page-configs/Config.js'
-import { isConfigDefined } from '../../../../../../shared/page-configs/utils.js'
+import { assert } from '../../../../utils.js'
 
 type ConfigDefinition = {
   env: ConfigEnvPrivate
@@ -90,4 +90,16 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     _computed: (pageConfig) =>
       !isConfigDefined(pageConfig, 'onBeforeRender') ? null : pageConfig.configElements.onBeforeRender!.configEnv
   }
+}
+
+function isConfigDefined(pageConfig: PageConfigData, configName: ConfigNameBuiltIn): boolean {
+  assert(pageConfig.configValueSources)
+  const hasSource = pageConfig.configValueSources.find((s) => s.configName === configName)
+  if (!hasSource) return false
+  if (pageConfig.configValues[configName]) {
+    const val = pageConfig.configValues[configName]!.value
+    // Enable users to suppress a gloabal config by overriding the config's value to null in +config.js
+    if (val === null) return false
+  }
+  return true
 }
