@@ -403,9 +403,8 @@ async function loadVikeConfig(
           configValues: {}
         }
 
-        const copy2 = () => {
-          pageConfigData.configValueSources = []
-
+        const tempMigration = () => {
+          const configValueSources: ConfigValueSource[] = []
           Object.entries(pageConfigData.configElements).forEach(([configName, configElement]) => {
             const definedAt = {
               filePath: configElement.configDefinedByFile,
@@ -418,20 +417,17 @@ async function loadVikeConfig(
             if ('configValue' in configElement) {
               configValueSource.value = configElement.configValue
             }
-            pageConfigData.configValueSources.push(configValueSource)
+            configValueSources.push(configValueSource)
           })
-
-          /* TODO
-           pageConfigData.configValues = getConfigValues(pageConfigData)
-          */
-          Object.assign(pageConfigData.configValues, getConfigValues(pageConfigData))
+          pageConfigData.configValues = getConfigValues(configValueSources)
+          pageConfigData.configValueSources = configValueSources
         }
-        copy2()
+        tempMigration()
 
         applyEffects(configElements, configDefinitionsRelevant)
         applyComputed(pageConfigData, configDefinitionsRelevant)
 
-        copy2()
+        tempMigration()
 
         return pageConfigData
       })
@@ -454,9 +450,9 @@ async function loadVikeConfig(
   return { pageConfigsData, pageConfigGlobal, globalVikeConfig }
 }
 
-function getConfigValues(pageConfigData: PageConfigData): ConfigValues {
+function getConfigValues(configValueSources: ConfigValueSource[]): ConfigValues {
   const configValues: ConfigValues = {}
-  pageConfigData.configValueSources.forEach((configValueSource) => {
+  configValueSources.forEach((configValueSource) => {
     if ('value' in configValueSource) {
       const { configName, value, definedAt } = configValueSource
       /* TODO:
@@ -464,7 +460,7 @@ function getConfigValues(pageConfigData: PageConfigData): ConfigValues {
        * - use this assert() as conflicts should be resolved
       assert(pageConfigData.configValues[configName])
       */
-      pageConfigData.configValues[configName] = {
+      configValues[configName] = {
         value,
         definedAt
       }
