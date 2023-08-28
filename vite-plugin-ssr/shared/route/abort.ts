@@ -82,12 +82,13 @@ function redirect(
  *   `401` Unauthorized (user isn't logged in)
  *   `403` Forbidden (user is logged in but isn't allowed)
  *   `404` Not Found
+ *   `410` Gone (use this instead of `404` if the page existed in the past, see https://github.com/brillout/vite-plugin-ssr/issues/1097#issuecomment-1695260887)
  *   `429` Too Many Requests (rate limiting)
  *   `500` Internal Server Error (app has a bug)
  *   `503` Service Unavailable (server is overloaded, a third-party API isn't responding)
  * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
  */
-function render(abortStatusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: unknown): Error
+function render(abortStatusCode: 401 | 403 | 404 | 410 | 429 | 500 | 503, abortReason?: unknown): Error
 /**
  * Abort the rendering of the current page, and render another page instead.
  *
@@ -129,7 +130,7 @@ function render_(
     return AbortRender(pageContextAbort)
   } else {
     const abortStatusCode = value
-    assertStatusCode(value, [401, 403, 404, 429, 500, 503], 'render')
+    assertStatusCode(value, [401, 403, 404, 410, 429, 500, 503], 'render')
     objectAssign(pageContextAbort, {
       abortStatusCode,
       is404: abortStatusCode === 404
