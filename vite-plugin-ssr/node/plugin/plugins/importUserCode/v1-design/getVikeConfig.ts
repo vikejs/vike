@@ -404,6 +404,10 @@ async function loadVikeConfig(
         }
 
         const copy2 = () => {
+          /* TODO
+          pageConfigData.configValueSources = []
+          */
+
           Object.entries(pageConfigData.configElements).forEach(([configName, configElement]) => {
             const definedAt = {
               filePath: configElement.configDefinedByFile,
@@ -419,7 +423,9 @@ async function loadVikeConfig(
             pageConfigData.configValueSources.push(configValueSource)
           })
 
-          // pageConfigData.configValues = getConfigValues(pageConfigData)
+          /* TODO
+           pageConfigData.configValues = getConfigValues(pageConfigData)
+          */
           Object.assign(pageConfigData.configValues, getConfigValues(pageConfigData))
         }
         copy2()
