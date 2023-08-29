@@ -3,7 +3,7 @@ export type { ConfigDefinition }
 
 import type { ConfigEnvPrivate, PageConfigData } from '../../../../../../shared/page-configs/PageConfig.js'
 import type { ConfigNameBuiltIn, ConfigNamePrivate } from '../../../../../../shared/page-configs/Config.js'
-import { getConfigEnv } from '../getConfigEnv.js'
+import { getConfigEnv, isConfigSet } from '../getConfigEnv.js'
 
 type ConfigDefinition = {
   env: ConfigEnvPrivate
@@ -78,11 +78,14 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   isClientSideRenderable: {
     env: 'server-and-client',
-    _computed: (pageConfig) =>
-      getConfigEnv(pageConfig, 'onRenderClient') !== null && getConfigEnv(pageConfig, 'Page') !== 'server-only'
+    _computed: (pageConfig): boolean =>
+      isConfigSet(pageConfig, 'onRenderClient') &&
+      isConfigSet(pageConfig, 'Page') &&
+      getConfigEnv(pageConfig, 'Page') !== 'server-only'
   },
   onBeforeRenderEnv: {
     env: 'client-only',
-    _computed: (pageConfig) => getConfigEnv(pageConfig, 'onBeforeRender')
+    _computed: (pageConfig): null | ConfigEnvPrivate =>
+      !isConfigSet(pageConfig, 'onBeforeRender') ? null : getConfigEnv(pageConfig, 'onBeforeRender')
   }
 }

@@ -15,7 +15,7 @@ import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files
 import { debug } from './debug.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import { skipConfigValue } from './getVirtualFileImportCodeFiles.js'
-import {getConfigEnv} from './getConfigEnv.js'
+import { getConfigEnv } from './getConfigEnv.js'
 
 function serializePageConfigs(
   pageConfigsData: PageConfigData[],
@@ -65,7 +65,7 @@ function serializePageConfigs(
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       {
         const configEnv = getConfigEnv(pageConfig, configName)
-        assert(configEnv)
+        assert(configEnv, configName)
         if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
       }
       // TODO: use @brillout/json-serializer
