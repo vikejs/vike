@@ -6,19 +6,25 @@ import { assert, assertUsage } from './utils.js'
 
 function getClientEntryPath(pageConfig: PageConfigData): null | string {
   const configName = 'client'
-  assert(pageConfig.configElements)
-  const configElement = pageConfig.configElements[configName]
-  if (!configElement) return null
+  assert(pageConfig.configValueSources)
+  const sources = pageConfig.configValueSources[configName]
+  if (!sources) return null
+  const configValueSource = sources[0]
+  assert(configValueSource)
+
+  // Enable users to suppress client entry by setting its value to null
   const configValue = pageConfig.configValues[configName]
   if (configValue && configValue.value === null) return null
-  const { codeFilePath } = configElement
-  if (codeFilePath !== null) return codeFilePath
-  if (!configValue) return null
-  const { value } = configValue
-  const configValueSource = getConfigValueSource(configValue)
+
+  // Enable client config is an import path
+  const src = getConfigValueSource(configValueSource)
+  assert(src)
+  configValueSource
   assertUsage(
-    typeof value === 'string',
-    `${configValueSource} has an invalid type \`${typeof value}\`: it should be a string instead`
+    configValueSource.value === undefined && configValueSource.valueSerialized === undefined,
+    `${src} should be an import path`
   )
-  assertUsage(false, `${configValueSource} has an invalid value '${value}': it should be a file path instead`)
+  assert(!configValue)
+
+  return configValueSource.definedAt.filePath
 }

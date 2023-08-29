@@ -78,8 +78,8 @@ function getConfigSource(configSource: ConfigSource): string {
   }
 }
 
-function getConfigValueSource(configValue: ConfigValue): string {
-  const { filePath, fileExportPath } = configValue.definedAt
+function getConfigValueSource({ definedAt }: { definedAt: { filePath: string; fileExportPath: string[] } }): string {
+  const { filePath, fileExportPath } = definedAt
   const exportPath = getExportPath(fileExportPath)
   return `${pc.bold(filePath)} > ${pc.cyan(exportPath)}`
 }
