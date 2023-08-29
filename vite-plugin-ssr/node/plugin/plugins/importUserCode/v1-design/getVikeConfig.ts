@@ -429,8 +429,9 @@ async function loadVikeConfig(
         tempMigration()
 
         applyEffects(configElements, configDefinitionsRelevant)
-        applyComputed(pageConfigData, configDefinitionsRelevant)
+        tempMigration()
 
+        applyComputed(pageConfigData, configDefinitionsRelevant)
         tempMigration()
 
         return pageConfigData
