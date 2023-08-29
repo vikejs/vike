@@ -25,7 +25,7 @@ import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 type InputOption = Rollup.InputOption
 import { createRequire } from 'module'
-import { getClientEntryPath } from '../../shared/getClientEntryPath.js'
+import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -118,7 +118,7 @@ function analyzeClientEntries(pageConfigsData: PageConfigData[], config: Resolve
       clientEntries[entryName] = entryTarget
     }
     {
-      const clientFilePath = getClientEntryPath(pageConfigData)
+      const clientFilePath = getClientEntryFilePath(pageConfigData)
       if (clientFilePath) {
         clientFilePaths.push(clientFilePath)
       }

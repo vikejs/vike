@@ -1,10 +1,10 @@
-export { getClientEntryPath }
+export { getClientEntryFilePath }
 
 import { PageConfigData } from '../../shared/page-configs/PageConfig.js'
 import { getConfigValueSource } from '../../shared/page-configs/utils.js'
 import { assert, assertUsage } from './utils.js'
 
-function getClientEntryPath(pageConfig: PageConfigData): null | string {
+function getClientEntryFilePath(pageConfig: PageConfigData): null | string {
   const configName = 'client'
   assert(pageConfig.configValueSources)
   const sources = pageConfig.configValueSources[configName]
@@ -25,5 +25,6 @@ function getClientEntryPath(pageConfig: PageConfigData): null | string {
   )
   assert(!configValue)
 
-  return configValueSource.definedAt.filePath
+  const clientEntryFilePath = configValueSource.definedAt.filePath
+  return clientEntryFilePath
 }
