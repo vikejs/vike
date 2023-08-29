@@ -1,6 +1,5 @@
 export { getConfigValue }
 export { getConfigValue2 }
-export { getCodeFilePath }
 export { getPageConfig }
 export { getConfigValueSource }
 
@@ -34,8 +33,8 @@ function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName, typ
 function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName): null | ConfigValue
 // prettier-ignore
 function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue {
-  const configValue = getValue(pageConfig, configName)
-  if (configValue === null) return null
+  const configValue = pageConfig.configValues[configName]
+  if (!configValue) return null
   const { value } = configValue
   if (type) {
     if (isNullish(value)) return null
@@ -47,30 +46,6 @@ function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName, typ
     )
   }
   return configValue
-}
-
-function getValue(pageConfig: PageConfigData, configName: ConfigName): null | ConfigValue {
-  const configValue = pageConfig.configValues[configName]
-  if (!configValue) return null
-  return configValue
-}
-
-function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): null | string {
-  assert(pageConfig.configElements)
-  const configElement = pageConfig.configElements[configName]
-  if (!configElement) return null
-  const configValue = getValue(pageConfig, configName)
-  if (configValue && isNullish(configValue.value)) return null
-  const { codeFilePath } = configElement
-  if (codeFilePath !== null) return codeFilePath
-  if (!configValue) return null
-  const { value } = configValue
-  const configValueSource = getConfigValueSource(configValue)
-  assertUsage(
-    typeof value === 'string',
-    `${configValueSource} has an invalid type \`${typeof value}\`: it should be a string instead`
-  )
-  assertUsage(false, `${configValueSource} has an invalid value '${value}': it should be a file path instead`)
 }
 
 function isNullish(configValue: unknown): boolean {

@@ -15,7 +15,7 @@ import {
 } from '../utils.js'
 import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
-import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils.js'
+import { getConfigValue } from '../../../shared/page-configs/utils.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
 import { getConfigVps } from '../../shared/getConfigVps.js'
 import type { ResolvedConfig, Plugin, Rollup, UserConfig } from 'vite'
@@ -25,6 +25,7 @@ import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 type InputOption = Rollup.InputOption
 import { createRequire } from 'module'
+import { getClientEntryPath } from '../../shared/getClientEntryPath.js'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -117,7 +118,7 @@ function analyzeClientEntries(pageConfigsData: PageConfigData[], config: Resolve
       clientEntries[entryName] = entryTarget
     }
     {
-      const clientFilePath = getCodeFilePath(pageConfigData, 'client')
+      const clientFilePath = getClientEntryPath(pageConfigData)
       if (clientFilePath) {
         clientFilePaths.push(clientFilePath)
       }
