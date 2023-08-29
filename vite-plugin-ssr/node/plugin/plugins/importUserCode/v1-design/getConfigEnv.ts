@@ -1,10 +1,9 @@
 export { getConfigEnv }
 
 import type { ConfigEnvPrivate, PageConfigData } from '../../../../../shared/page-configs/PageConfig.js'
-import type { ConfigNameBuiltIn } from '../../../../../shared/page-configs/Config.js'
 import { getConfigValueSource } from '../../../../shared/getConfigValueSource.js'
 
-function getConfigEnv(pageConfig: PageConfigData, configName: ConfigNameBuiltIn): null | ConfigEnvPrivate {
+function getConfigEnv(pageConfig: PageConfigData, configName: string): null | ConfigEnvPrivate {
   const configValueSource = getConfigValueSource(pageConfig, configName)
   if (!configValueSource) return null
   if (pageConfig.configValues[configName]) {
