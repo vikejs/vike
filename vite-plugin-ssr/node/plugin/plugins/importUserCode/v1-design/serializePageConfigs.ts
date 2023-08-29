@@ -15,7 +15,7 @@ import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files
 import { debug } from './debug.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import { skipConfigValue } from './getVirtualFileImportCodeFiles.js'
-import { getConfigEnv } from './getConfigEnv.js'
+import { getConfigEnv } from './helpers.js'
 
 function serializePageConfigs(
   pageConfigsData: PageConfigData[],

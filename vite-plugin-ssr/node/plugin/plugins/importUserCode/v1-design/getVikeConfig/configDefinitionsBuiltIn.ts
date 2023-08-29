@@ -3,7 +3,7 @@ export type { ConfigDefinition }
 
 import type { ConfigEnvPrivate, PageConfigData } from '../../../../../../shared/page-configs/PageConfig.js'
 import type { ConfigNameBuiltIn, ConfigNamePrivate } from '../../../../../../shared/page-configs/Config.js'
-import { getConfigEnv, isConfigSet } from '../getConfigEnv.js'
+import { getConfigEnv, isConfigSet } from '../helpers.js'
 
 type ConfigDefinition = {
   env: ConfigEnvPrivate
