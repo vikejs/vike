@@ -5,7 +5,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useAttrs, computed } from 'vue'
 import { usePageContext } from '../../renderer/usePageContext'
 
 const ctx = usePageContext()
