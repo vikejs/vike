@@ -16,10 +16,9 @@ function getClientEntryPath(pageConfig: PageConfigData): null | string {
   const configValue = pageConfig.configValues[configName]
   if (configValue && configValue.value === null) return null
 
-  // Enable client config is an import path
+  // Ensure client config is an import path
   const src = getConfigValueSource(configValueSource)
   assert(src)
-  configValueSource
   assertUsage(
     configValueSource.value === undefined && configValueSource.valueSerialized === undefined,
     `${src} should be an import path`
