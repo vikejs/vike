@@ -6,6 +6,7 @@ import { assert, assertUsage, objectEntries } from '../../../utils.js'
 import type {
   ConfigElement,
   ConfigValue,
+  ConfigValueSource,
   PageConfigData,
   PageConfigGlobalData
 } from '../../../../../shared/page-configs/PageConfig.js'
@@ -36,6 +37,8 @@ function serializePageConfigs(
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
     lines.push(`    loadCodeFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`)
+
+    // TODO: remove
     lines.push(`    configElements: {`)
     Object.entries(configElements).forEach(([configName, configElement]) => {
       if (configElement.configEnv === 'config-only') return
@@ -43,6 +46,20 @@ function serializePageConfigs(
       lines.push(serializeConfigElement(configElement, configName, importStatements, whitespace, false))
     })
     lines.push(`    },`)
+
+    lines.push(`    configValueSources: {`)
+    Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
+      let whitespace = '      '
+      lines.push(`${whitespace}[${JSON.stringify(configName)}]: [`)
+      whitespace += '  '
+      sources.forEach((configValueSource) => {
+        lines.push(serializeConfigValueSource(configValueSource, configName, whitespace))
+      })
+      whitespace = whitespace.slice(2)
+      lines.push(`${whitespace}],`)
+    })
+    lines.push(`    },`)
+
     lines.push(`    configValues: {`)
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       {
@@ -92,7 +109,12 @@ function serializePageConfigs(
   return code
 }
 
-function serializeConfigValue(lines: string[], configName: string, configValue: Omit<ConfigValue, 'value'>, valueSerialized: string) {
+function serializeConfigValue(
+  lines: string[],
+  configName: string,
+  configValue: Omit<ConfigValue, 'value'>,
+  valueSerialized: string
+) {
   let whitespace = '      '
   lines.push(`${whitespace}['${configName}']: {`)
   whitespace += '  '
@@ -143,6 +165,20 @@ function serializeConfigElement(
   return lines.join('\n')
 }
 
+function serializeConfigValueSource(configValueSource: ConfigValueSource, configName: string, whitespace: string) {
+  const { definedAt, configEnv } = configValueSource
+  const lines: string[] = []
+  lines.push(`${whitespace}{`)
+  lines.push(`${whitespace}  definedAt: ${JSON.stringify(definedAt)},`)
+  lines.push(`${whitespace}  configEnv: ${JSON.stringify(configEnv)},`)
+  if ('configValue' in configValueSource) {
+    const { configValue } = configValueSource
+    const valueSerialized = getConfigValueSerialized(configValue, configName, definedAt.filePath)
+    lines.push(`${whitespace}  valueSerialized: ${valueSerialized}`)
+  }
+  lines.push(`${whitespace}},`)
+  return lines.join('\n')
+}
 function getConfigValueSerialized(value: unknown, configName: string, configDefinedByFile: string): string {
   let configValueSerialized: string
   try {

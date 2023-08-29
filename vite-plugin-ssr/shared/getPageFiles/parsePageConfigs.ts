@@ -8,20 +8,33 @@ import { assert, assertUsage, hasProp, isCallable } from '../utils.js'
 
 function parsePageConfigs(pageConfigs: PageConfig[]) {
   pageConfigs.forEach((pageConfig) => {
+    // TODO: remove
     Object.entries(pageConfig.configElements).forEach(([configName, configElement]) => {
-      parseConfigValue(configElement)
+      {
+        const { configValueSerialized } = configElement
+        if (configValueSerialized !== undefined) {
+          configElement.configValue = parse(configValueSerialized)
+        }
+      }
       if (configName === 'route') {
         assertRouteConfigValue(configElement)
       }
     })
-  })
-}
 
-function parseConfigValue(configElement: ConfigElement) {
-  const { configValueSerialized } = configElement
-  if (configValueSerialized !== undefined) {
-    configElement.configValue = parse(configValueSerialized)
-  }
+    Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
+      sources.forEach((configValueSource) => {
+        if ('valueSerialized' in configValueSource) {
+          assert(configValueSource.valueSerialized !== undefined)
+          configValueSource.value = parse(configValueSource.valueSerialized)
+        }
+      })
+      if (configName === 'route') {
+        /* TODO
+        assertRouteConfigValue(configElement)
+        */
+      }
+    })
+  })
 }
 
 function assertRouteConfigValue(configElement: ConfigElement) {

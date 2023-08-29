@@ -40,7 +40,7 @@ type PageConfigData = {
 }
 type ConfigValueSource = {
   configEnv: ConfigEnvPrivate
-  // valueSerialized?: string
+  valueSerialized?: string
   value?: unknown
   definedAt: DefinedAt
 }
