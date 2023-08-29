@@ -59,7 +59,7 @@ function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
   return pageConfig
 }
 
-// TODO: remove in favor of getConfigValueSource()
+// TODO: remove in favor of getConfigSrc()
 function getConfigSource(configSource: ConfigSource): string {
   const { configSourceFile, configSourceFileExportName, configSourceFileDefaultExportKey } = configSource
   assert(configSourceFile)

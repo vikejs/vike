@@ -2,15 +2,13 @@ export { getClientEntryFilePath }
 
 import { PageConfigData } from '../../shared/page-configs/PageConfig.js'
 import { getConfigSrc } from '../../shared/page-configs/utils.js'
+import { getConfigValueSource } from './getConfigValueSource.js'
 import { assert, assertUsage } from './utils.js'
 
 function getClientEntryFilePath(pageConfig: PageConfigData): null | string {
   const configName = 'client'
-  assert(pageConfig.configValueSources)
-  const sources = pageConfig.configValueSources[configName]
-  if (!sources) return null
-  const configValueSource = sources[0]
-  assert(configValueSource)
+  const configValueSource = getConfigValueSource(pageConfig, configName)
+  if (!configValueSource) return null
 
   // Enable users to suppress client entry by setting its value to null
   const configValue = pageConfig.configValues[configName]
