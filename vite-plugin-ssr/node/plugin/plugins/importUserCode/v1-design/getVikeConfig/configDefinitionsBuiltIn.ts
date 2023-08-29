@@ -81,14 +81,16 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     _computed(pageConfig) {
       const onRenderClientExists: boolean = isConfigDefined(pageConfig, 'onRenderClient')
       const PageExists: boolean =
-        isConfigDefined(pageConfig, 'Page') && pageConfig.configElements.Page!.configEnv !== 'server-only'
+        isConfigDefined(pageConfig, 'Page') && pageConfig.configValueSources.Page![0]!.configEnv !== 'server-only'
       return onRenderClientExists && PageExists
     }
   },
   onBeforeRenderEnv: {
     env: 'client-only',
     _computed: (pageConfig) =>
-      !isConfigDefined(pageConfig, 'onBeforeRender') ? null : pageConfig.configElements.onBeforeRender!.configEnv
+      !isConfigDefined(pageConfig, 'onBeforeRender')
+        ? null
+        : pageConfig.configValueSources.onBeforeRender![0]!.configEnv
   }
 }
 
