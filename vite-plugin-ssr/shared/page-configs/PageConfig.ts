@@ -11,6 +11,7 @@ export type { ConfigSource }
 export type { ConfigValue }
 export type { ConfigValues }
 export type { ConfigValueSource }
+export type { ConfigValueSources }
 
 type ConfigEnvPrivate =
   | 'client-only'
@@ -32,24 +33,32 @@ type PageConfigData = {
   isErrorPage: boolean
   routeFilesystem: null | string
   routeFilesystemDefinedBy: null | string
-  configValueSources: ConfigValueSource[]
+  configValueSources: ConfigValueSources
   configValues: ConfigValues
   // TODO: remove in favor of configValueSources
   configElements: Record<ConfigName, ConfigElement>
 }
 type ConfigValueSource = {
-  configName: string
   configEnv: ConfigEnvPrivate
   // valueSerialized?: string
   value?: unknown
   definedAt: DefinedAt
 }
+type ConfigValueSources = Record<
+  // configName
+  string,
+  ConfigValueSource[]
+>
 type ConfigValue = {
   value: unknown
   // isDefinedByCodeFile: boolean
   definedAt: DefinedAt
 }
-type ConfigValues = Record<string, ConfigValue>
+type ConfigValues = Record<
+  // configName
+  string,
+  ConfigValue
+>
 type DefinedAt = {
   filePath: string
   fileExportPath: string[]

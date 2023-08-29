@@ -56,9 +56,10 @@ function serializePageConfigs(
       serializeConfigValue(lines, configName, configValue, valueSerialized)
     })
     // TODO: resolve conflicts
-    pageConfig.configValueSources.forEach((configValueSource) => {
+    Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
+      const configValueSource = sources[0]!
       if (configValueSource.configEnv === '_routing-eager') {
-        const { configName, definedAt } = configValueSource
+        const { definedAt } = configValueSource
         const configValue = { configName, definedAt }
         const { filePath, fileExportPath } = configValueSource.definedAt
         const [exportName] = fileExportPath

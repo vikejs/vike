@@ -94,8 +94,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
 
 function isConfigDefined(pageConfig: PageConfigData, configName: ConfigNameBuiltIn): boolean {
   assert(pageConfig.configValueSources)
-  const hasSource = pageConfig.configValueSources.find((s) => s.configName === configName)
-  if (!hasSource) return false
+  if (!pageConfig.configValueSources[configName]) return false
   if (pageConfig.configValues[configName]) {
     const val = pageConfig.configValues[configName]!.value
     // Enable users to suppress a gloabal config by overriding the config's value to null in +config.js

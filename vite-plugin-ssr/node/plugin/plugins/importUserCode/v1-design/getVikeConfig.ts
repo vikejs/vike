@@ -32,6 +32,7 @@ import type {
   ConfigElementSource,
   ConfigEnvPrivate,
   ConfigValueSource,
+  ConfigValueSources,
   ConfigValues
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './getVikeConfig/configDefinitionsBuiltIn.js'
@@ -399,18 +400,18 @@ async function loadVikeConfig(
           routeFilesystemDefinedBy,
           routeFilesystem: isErrorPage ? null : routeFilesystem,
           configElements,
-          configValueSources: [],
+          configValueSources: {},
           configValues: {}
         }
 
         const tempMigration = () => {
-          const configValueSources: ConfigValueSource[] = []
+          const configValueSources: ConfigValueSources = {}
           Object.entries(pageConfigData.configElements).forEach(([configName, configElement]) => {
             const definedAt = {
               filePath: configElement.configDefinedByFile,
               fileExportPath: [configElement.codeFileExport ?? 'TODO']
             }
-            const configValueSource: ConfigValueSource = { configName, definedAt, configEnv: configElement.configEnv }
+            const configValueSource: ConfigValueSource = { definedAt, configEnv: configElement.configEnv }
             /*
             if (configElement.configValueSerialized !== undefined) {
               configValueSource.valueSerialized = configElement.configValueSerialized
@@ -419,7 +420,8 @@ async function loadVikeConfig(
             if ('configValue' in configElement) {
               configValueSource.value = configElement.configValue
             }
-            configValueSources.push(configValueSource)
+            configValueSources[configName] ??= []
+            configValueSources[configName]!.push(configValueSource)
           })
           pageConfigData.configValues = getConfigValues(configValueSources)
           pageConfigData.configValueSources = configValueSources
@@ -452,11 +454,12 @@ async function loadVikeConfig(
   return { pageConfigsData, pageConfigGlobal, globalVikeConfig }
 }
 
-function getConfigValues(configValueSources: ConfigValueSource[]): ConfigValues {
+function getConfigValues(configValueSources: ConfigValueSources): ConfigValues {
   const configValues: ConfigValues = {}
-  configValueSources.forEach((configValueSource) => {
+  Object.entries(configValueSources).forEach(([configName, sources]) => {
+    const configValueSource = sources[0]!
     if ('value' in configValueSource) {
-      const { configName, value, definedAt } = configValueSource
+      const { value, definedAt } = configValueSource
       /* TODO:
        * - Move conflict resolution here
        * - use this assert() as conflicts should be resolved
