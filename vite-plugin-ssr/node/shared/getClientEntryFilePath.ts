@@ -1,7 +1,7 @@
 export { getClientEntryFilePath }
 
 import { PageConfigData } from '../../shared/page-configs/PageConfig.js'
-import { getConfigValueSource } from '../../shared/page-configs/utils.js'
+import { getConfigSrc } from '../../shared/page-configs/utils.js'
 import { assert, assertUsage } from './utils.js'
 
 function getClientEntryFilePath(pageConfig: PageConfigData): null | string {
@@ -17,11 +17,11 @@ function getClientEntryFilePath(pageConfig: PageConfigData): null | string {
   if (configValue && configValue.value === null) return null
 
   // Ensure client config is an import path
-  const src = getConfigValueSource(configValueSource)
-  assert(src)
+  const configSrc = getConfigSrc(configValueSource)
+  assert(configSrc)
   assertUsage(
     configValueSource.value === undefined && configValueSource.valueSerialized === undefined,
-    `${src} should be an import path`
+    `${configSrc} should be an import path`
   )
   assert(!configValue)
 

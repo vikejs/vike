@@ -1,7 +1,7 @@
 export { getConfigValue }
 export { getConfigValue2 }
 export { getPageConfig }
-export { getConfigValueSource }
+export { getConfigSrc }
 
 import { assert, assertUsage } from '../utils.js'
 import type { ConfigSource, ConfigValue, PageConfig, PageConfigData } from './PageConfig.js'
@@ -38,11 +38,11 @@ function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName, typ
   const { value } = configValue
   if (type) {
     if (isNullish(value)) return null
-    const configSource = getConfigValueSource(configValue)
+    const configSrc = getConfigSrc(configValue)
     const typeActual = typeof value
     assertUsage(
       typeActual === type,
-      `${configSource} has an invalid type \`${typeActual}\`: is should be a ${type} instead`
+      `${configSrc} has an invalid type \`${typeActual}\`: is should be a ${type} instead`
     )
   }
   return configValue
@@ -78,8 +78,9 @@ function getConfigSource(configSource: ConfigSource): string {
   }
 }
 
-function getConfigValueSource({ definedAt }: { definedAt: { filePath: string; fileExportPath: string[] } }): string {
+function getConfigSrc({ definedAt }: { definedAt: { filePath: string; fileExportPath: string[] } }): string {
   const { filePath, fileExportPath } = definedAt
   const exportPath = getExportPath(fileExportPath)
-  return `${pc.bold(filePath)} > ${pc.cyan(exportPath)}`
+  const configSrc = `${pc.bold(filePath)} > ${pc.cyan(exportPath)}`
+  return configSrc
 }
