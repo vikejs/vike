@@ -1,4 +1,5 @@
 export { getConfigValue }
+export { getConfigValue2 }
 export { getCodeFilePath }
 export { getPageConfig }
 export { getConfigValueSource }
@@ -11,6 +12,7 @@ import { getExportPath } from './getExportPath.js'
 
 type ConfigName = ConfigNameBuiltIn | ConfigNamePrivate
 
+// TODO: remove in favor of getConfigValue2()
 function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'string'): null | string
 function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'boolean'): null | boolean
 function getConfigValue(pageConfig: PageConfigData, configName: ConfigName): unknown
@@ -19,6 +21,19 @@ function getConfigValue(
   configName: ConfigName,
   type?: 'string' | 'boolean'
 ): null | unknown {
+  const configValue = getConfigValue2(pageConfig, configName, type as any)
+  if (!configValue) return null
+  return configValue.value
+}
+
+// prettier-ignore
+function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName, type: 'string'): null | ConfigValue & { value: string }
+// prettier-ignore
+function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName, type: 'boolean'): null | ConfigValue & { value: boolean }
+// prettier-ignore
+function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName): null | ConfigValue
+// prettier-ignore
+function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue {
   const configValue = getValue(pageConfig, configName)
   if (configValue === null) return null
   const { value } = configValue
@@ -31,7 +46,7 @@ function getConfigValue(
       `${configSource} has an invalid type \`${typeActual}\`: is should be a ${type} instead`
     )
   }
-  return value
+  return configValue
 }
 
 function getValue(pageConfig: PageConfigData, configName: ConfigName): null | ConfigValue {

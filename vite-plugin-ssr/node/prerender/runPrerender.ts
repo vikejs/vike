@@ -43,7 +43,7 @@ import type { InlineConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
-import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils.js'
+import { getConfigValue2 } from '../../shared/page-configs/utils.js'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode.js'
 import { isErrorPage } from '../../shared/error-page.js'
 import { addUrlComputedProps, PageContextUrlComputedProps } from '../../shared/UrlComputedProps.js'
@@ -241,16 +241,15 @@ async function collectDoNoPrerenderList(
   concurrencyLimit: PLimit
 ) {
   renderContext.pageConfigs.forEach((pageConfig) => {
-    const prerenderConfigValue = getConfigValue(pageConfig, 'prerender', 'boolean')
-    if (prerenderConfigValue === false) {
-      const configElement = pageConfig.configElements.prerender
-      assert(configElement)
-      assert(configElement.configValue === false)
+    const prerenderConfigValue = getConfigValue2(pageConfig, 'prerender', 'boolean')
+    if (prerenderConfigValue?.value === false) {
+      const setByConfigFile = prerenderConfigValue.definedAt.filePath
+      assert(setByConfigFile)
       doNotPrerenderList.push({
         pageId: pageConfig.pageId,
         setByConfigName: 'prerender',
         setByConfigValue: false,
-        setByConfigFile: configElement.configDefinedByFile
+        setByConfigFile
       })
     }
   })
@@ -327,12 +326,13 @@ async function callOnBeforePrerenderStartHooks(
     renderContext.pageConfigs.map((pageConfig) =>
       concurrencyLimit(async () => {
         const hookName = 'onBeforePrerenderStart'
-        if (!pageConfig.configElements[hookName]) return
-        const codeFilePath = getCodeFilePath(pageConfig, hookName)
-        assert(codeFilePath)
+        if (!pageConfig.configValueSources[hookName]) return
         const pageConfigLoaded = await loadPageCode(pageConfig, false)
-        const hookFilePath = codeFilePath
-        const hookFn = getConfigValue(pageConfigLoaded, hookName)
+        const configValue = getConfigValue2(pageConfigLoaded, hookName)
+        if (!configValue) return
+        const hookFn = configValue.value
+        const hookFilePath = configValue.definedAt.filePath
+        assert(hookFilePath)
         assertHookFn(hookFn, { hookName, hookFilePath })
         onBeforePrerenderStartHooks.push({
           hookFn,
@@ -736,7 +736,7 @@ async function routeAndPrerender(
           if (pageContext._pageConfigs.length > 0) {
             const pageConfig = pageContext._pageConfigs.find((p) => p.pageId === pageId)
             assert(pageConfig)
-            usesClientRouter = getConfigValue(pageConfig, 'clientRouting', 'boolean') ?? false
+            usesClientRouter = getConfigValue2(pageConfig, 'clientRouting', 'boolean')?.value ?? false
           } else {
             usesClientRouter = globalContext.pluginManifest.usesClientRouter
           }
