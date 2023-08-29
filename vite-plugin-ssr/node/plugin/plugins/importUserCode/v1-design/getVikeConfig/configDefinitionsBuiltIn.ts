@@ -78,29 +78,22 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   isClientSideRenderable: {
     env: 'server-and-client',
-    _computed(pageConfig) {
-      const onRenderClientExists: boolean = isConfigDefined(pageConfig, 'onRenderClient')
-      const PageExists: boolean =
-        isConfigDefined(pageConfig, 'Page') && pageConfig.configValueSources.Page![0]!.configEnv !== 'server-only'
-      return onRenderClientExists && PageExists
-    }
+    _computed: (pageConfig) =>
+      getConfigEnv(pageConfig, 'onRenderClient') !== null && getConfigEnv(pageConfig, 'Page') !== 'server-only'
   },
   onBeforeRenderEnv: {
     env: 'client-only',
-    _computed: (pageConfig) =>
-      !isConfigDefined(pageConfig, 'onBeforeRender')
-        ? null
-        : pageConfig.configValueSources.onBeforeRender![0]!.configEnv
+    _computed: (pageConfig) => getConfigEnv(pageConfig, 'onBeforeRender')
   }
 }
 
-function isConfigDefined(pageConfig: PageConfigData, configName: ConfigNameBuiltIn): boolean {
+function getConfigEnv(pageConfig: PageConfigData, configName: ConfigNameBuiltIn): null | ConfigEnvPrivate {
   const configValueSource = getConfigValueSource(pageConfig, configName)
-  if (!configValueSource) return false
+  if (!configValueSource) return null
   if (pageConfig.configValues[configName]) {
     const val = pageConfig.configValues[configName]!.value
     // Enable users to suppress a gloabal config by overriding the config's value to null in +config.js
-    if (val === null) return false
+    if (val === null) return null
   }
-  return true
+  return configValueSource.configEnv
 }
