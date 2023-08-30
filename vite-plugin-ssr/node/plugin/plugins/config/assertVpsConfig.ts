@@ -18,6 +18,17 @@ function assertVpsConfig(
 function checkConfigVps(configVps: unknown): null | WrongUsage {
   assert(isObject(configVps))
   {
+    const prop = 'redirects'
+    const { redirects } = configVps
+    if (
+      !(
+        redirects === undefined ||
+        (isObject(redirects) && Object.values(redirects).every((v) => typeof v === 'string'))
+      )
+    )
+      return { prop, errMsg: 'should be an object of strings' }
+  }
+  {
     const prop = 'disableAutoFullBuild'
     if (!hasProp(configVps, prop, 'boolean') && !hasProp(configVps, prop, 'undefined'))
       return { prop, errMsg: 'should be a boolean' }
