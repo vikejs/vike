@@ -4,6 +4,13 @@
 //  - To use your environment variables defined in your .env files, you need to install dotenv, see https://vite-plugin-ssr.com/env
 //  - To use your path aliases defined in your vite.config.js, you need to tell Node.js about them, see https://vite-plugin-ssr.com/path-aliases
 
+// If you want Vite to process your server code then use one of these:
+//  - vavite (https://github.com/cyco130/vavite)
+//     - See vavite + vite-pugin-ssr examples at https://github.com/cyco130/vavite/tree/main/examples
+//  - vite-note (https://github.com/antfu/vite-node)
+//  - HatTip (https://github.com/hattipjs/hattip)
+//    - You can use Bati (https://batijs.github.io/) to scaffold a vite-plugin-ssr + HatTip app. Note that Bati generates apps that use the V1 design (https://vite-plugin-ssr.com/migration/v1-design) and Vike packages (https://vite-plugin-ssr.com/vike-packages)
+
 import express from 'express'
 import compression from 'compression'
 import { renderPage } from 'vite-plugin-ssr/server'
