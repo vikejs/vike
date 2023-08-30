@@ -436,7 +436,6 @@ async function loadVikeConfig(
         tempMigration()
 
         applyComputed(pageConfigData, configDefinitionsRelevant)
-        tempMigration()
 
         return pageConfigData
       })
@@ -1017,17 +1016,22 @@ function applyComputed(pageConfigData: PageConfigData, configDefinitionsRelevant
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     const computed = configDef._computed
     if (!computed) return
-    const configValue = computed(pageConfigData)
-    if (configValue === undefined) return
-    pageConfigData.configElements[configName] = {
-      configValue,
+    const value = computed(pageConfigData)
+    if (value === undefined) return
+
+    const configValueSource: ConfigValueSource = {
+      value,
       configEnv: configDef.env,
-      configDefinedAt: 'TODO',
-      configDefinedByFile: 'TODO',
-      plusConfigFilePath: 'TODO',
-      codeFilePath: null,
-      codeFileExport: null
+      definedAt: {
+        filePath: 'TODO',
+        fileExportPath: ['TODO']
+      },
+      isCodeEntry: false
     }
+
+    pageConfigData.configValueSources[configName] ??= []
+    pageConfigData.configValueSources[configName]!.push(configValueSource)
+    updateConfigValues(pageConfigData)
   })
 }
 
