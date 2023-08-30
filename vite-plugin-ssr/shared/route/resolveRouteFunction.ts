@@ -88,11 +88,7 @@ function assertSyncRouting(res: unknown, errPrefix: string) {
 // TODO/v1-release: remove
 function warnDeprecatedAllowKey() {
   const allowKey = pc.cyan('iKnowThePerformanceRisksOfAsyncRouteFunctions')
-  assertWarning(
-    false,
-    `${allowKey} is deprecated and will be removed in the next major release`,
-    { onlyOnce: true }
-  )
+  assertWarning(false, `${allowKey} is deprecated and will be removed in the next major release`, { onlyOnce: true })
 }
 
 function assertRouteParams<T>(

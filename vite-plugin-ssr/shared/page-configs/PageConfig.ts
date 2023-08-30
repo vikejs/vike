@@ -43,6 +43,12 @@ type ConfigValueSource = {
   valueSerialized?: string
   value?: unknown
   definedAt: DefinedAt
+  /**
+   * Whether definedAt.filePath contains runtime code. (If it doesn't, then it contains config code that isn't loaded in any runtime.)
+   *
+   * For example config.Page is a code entry. (Since the Page component is loaded by runtimes.)
+   * Whereas config.passToClient is config-only and therefore isn't a code entry.
+   */
   isCodeEntry: boolean
 }
 type ConfigValueSources = Record<
