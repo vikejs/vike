@@ -102,6 +102,7 @@ type ConfigNameGlobal =
   | 'includeAssetsImportedByServer'
   | 'baseAssets'
   | 'baseServer'
+  | 'redirects'
 const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition> = {
   onPrerenderStart: {
     env: 'server-only'
@@ -116,7 +117,8 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition>
   disableAutoFullBuild: { env: 'config-only' },
   includeAssetsImportedByServer: { env: 'config-only' },
   baseAssets: { env: 'config-only' },
-  baseServer: { env: 'config-only' }
+  baseServer: { env: 'config-only' },
+  redirects: { env: 'server-only' }
 }
 
 let devServerIsCorrupt = false
