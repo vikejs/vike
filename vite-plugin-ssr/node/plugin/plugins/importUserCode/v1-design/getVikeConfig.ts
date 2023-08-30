@@ -427,8 +427,8 @@ async function loadVikeConfig(
             configValueSources[configName] ??= []
             configValueSources[configName]!.push(configValueSource)
           })
-          pageConfigData.configValues = getConfigValues(configValueSources)
           pageConfigData.configValueSources = configValueSources
+          updateConfigValues(pageConfigData)
         }
         tempMigration()
 
@@ -459,6 +459,9 @@ async function loadVikeConfig(
   return { pageConfigsData, pageConfigGlobal, globalVikeConfig }
 }
 
+function updateConfigValues(pageConfigData: PageConfigData): void {
+  pageConfigData.configValues = getConfigValues(pageConfigData.configValueSources)
+}
 function getConfigValues(configValueSources: ConfigValueSources): ConfigValues {
   const configValues: ConfigValues = {}
   Object.entries(configValueSources).forEach(([configName, sources]) => {
