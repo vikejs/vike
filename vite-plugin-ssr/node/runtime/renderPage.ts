@@ -149,7 +149,7 @@ async function renderPageAndPrepare(
   }
 
   {
-    const pageContextHttpReponse = getPermanentRedirect(pageContextInit)
+    const pageContextHttpReponse = getPermanentRedirect(pageContextInit, httpRequestId)
     if (pageContextHttpReponse) return pageContextHttpReponse
   }
 
@@ -467,7 +467,7 @@ function normalizePathname(pageContextInit: { urlOriginal: string }) {
   return pageContextHttpResponse
 }
 
-function getPermanentRedirect(pageContextInit: { urlOriginal: string }) {
+function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
   const { redirects, baseServer } = getGlobalContext()
   const urlWithoutBase = removeBaseServer(pageContextInit.urlOriginal, baseServer)
   let urlPathname: undefined | string
@@ -477,6 +477,11 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }) {
   })
   assert(urlPathname)
   if (urlRedirect === urlWithoutBase) return null
+  logRuntimeInfo?.(
+    `Permanent redirect defined by your config.redirects (https://vite-plugin-ssr.com/redirects)`,
+    httpRequestId,
+    'info'
+  )
   urlRedirect = prependBase(urlRedirect, baseServer)
   assert(urlRedirect !== pageContextInit.urlOriginal)
   const httpResponse = createHttpResponseObjectRedirect({ url: urlRedirect, statusCode: 301 }, urlPathname)
