@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup>
 import Counter from '../../components/Counter.vue'
 </script>
 
