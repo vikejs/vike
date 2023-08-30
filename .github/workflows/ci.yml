@@ -50,6 +50,8 @@ jobs:
           cache: "pnpm"
 
       - run: pnpm install
+      # NOTE(aurelien): I actually also need to do this on my Ubuntu machine,
+      # so I suggest we remove the Windows/MacOS comment?
       - run: pnpm exec playwright install chromium # Needed for Windows/MacOS
       - run: pnpm run build
 
