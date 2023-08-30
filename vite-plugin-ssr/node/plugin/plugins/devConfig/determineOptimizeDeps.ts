@@ -5,6 +5,7 @@ import { findPageFiles } from '../../shared/findPageFiles.js'
 import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageImport, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { ConfigVpsResolved } from '../../../../shared/ConfigVps.js'
+import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSource.js'
 
 async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved, isDev: true) {
   const { entries, include } = await getPageDeps(config, configVps, isDev)
@@ -25,28 +26,35 @@ async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved,
   // V1 design
   {
     const { pageConfigsData } = await getVikeConfig(config.root, isDev, configVps.extensions)
-    pageConfigsData.forEach((data) => {
-      Object.entries(data.configElements).forEach(([_configName, configElement]) => {
-        const { codeFilePath, configEnv } = configElement
-        if (!codeFilePath) return
+    pageConfigsData.forEach((pageConfig) => {
+      const configValueSourcesRelevant = getConfigValueSourcesRelevant(pageConfig)
+      configValueSourcesRelevant.forEach((configValueSource) => {
+        const {
+          isCodeEntry,
+          configEnv,
+          definedAt: { filePath }
+        } = configValueSource
+        if (!isCodeEntry) return
+        assert(filePath)
+
         if (configEnv !== 'client-only' && configEnv !== 'server-and-client') return
 
-        if (codeFilePath.startsWith('/')) {
+        if (filePath.startsWith('/')) {
           // Is getFilePathAbsolute() really needed? This contradicts the code below that doesn't need getFilePathAbsolute().
-          entries.push(getFilePathAbsolute(codeFilePath, config))
+          entries.push(getFilePathAbsolute(filePath, config))
           return
         }
 
         // getVikeConfig() resolves relative import paths
-        assert(!codeFilePath.startsWith('.'))
+        assert(!filePath.startsWith('.'))
 
         // We need to differentiate between npm package imports and path aliases.
         // There are path aliases that cannot be distinguished from npm package names.
         // We recommend users to use the '#' prefix convention for path aliases, see https://vite-plugin-ssr.com/path-aliases#vite and assertResolveAlias()
-        if (isNpmPackageImport(codeFilePath)) {
+        if (isNpmPackageImport(filePath)) {
           // isNpmPackageImport() returns false for a path alias like #root/renderer/onRenderClient
-          assert(!codeFilePath.startsWith('#'))
-          include.push(codeFilePath)
+          assert(!filePath.startsWith('#'))
+          include.push(filePath)
         } else {
           /* Path aliases, e.g.:
            * ```js
@@ -55,7 +63,7 @@ async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved,
            * ```
            * Does Vite resolve the path aliases or is getFilePathAbsolute() needed?
            */
-          entries.push(codeFilePath)
+          entries.push(filePath)
         }
       })
     })

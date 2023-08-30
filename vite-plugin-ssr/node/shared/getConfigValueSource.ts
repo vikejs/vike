@@ -1,4 +1,5 @@
 export { getConfigValueSource }
+export { getConfigValueSourcesRelevant }
 
 import { ConfigValueSource, PageConfigData } from '../../shared/page-configs/PageConfig.js'
 import { assert, assertIsNotBrowser } from './utils.js'
@@ -12,4 +13,12 @@ function getConfigValueSource(pageConfig: PageConfigData, configName: string): n
   const configValueSource = sources[0]
   assert(configValueSource)
   return configValueSource
+}
+function getConfigValueSourcesRelevant(pageConfig: PageConfigData): ConfigValueSource[] {
+  const configValueSourcesRelevant = Object.entries(pageConfig.configValueSources).map(([_configName, sources]) => {
+    const configValueSource = sources[0]
+    assert(configValueSource)
+    return configValueSource
+  })
+  return configValueSourcesRelevant
 }

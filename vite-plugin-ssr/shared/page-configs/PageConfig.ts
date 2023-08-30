@@ -43,6 +43,7 @@ type ConfigValueSource = {
   valueSerialized?: string
   value?: unknown
   definedAt: DefinedAt
+  isCodeEntry: boolean
 }
 type ConfigValueSources = Record<
   // configName
