@@ -1,3 +1,19 @@
+## [0.4.140](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.139...v0.4.140) (2023-08-30)
+
+
+### Bug Fixes
+
+* allow 410 status code (fix [#1097](https://github.com/brillout/vite-plugin-ssr/issues/1097)) ([ac52a24](https://github.com/brillout/vite-plugin-ssr/commit/ac52a24b88adab168c404dcfd433074cf55581b7))
+* log redirect target ([afc81e9](https://github.com/brillout/vite-plugin-ssr/commit/afc81e95849618be12886c12a00683be313eafe0))
+* show log upon permanent redirect defined by config.redirects ([4eb8f59](https://github.com/brillout/vite-plugin-ssr/commit/4eb8f59fa220714c7cd59fec332f914c15f5e596))
+
+
+### Features
+
+* config.trailingSlash and config.disableUrlNormalization ([#949](https://github.com/brillout/vite-plugin-ssr/issues/949), [#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([7c8fc28](https://github.com/brillout/vite-plugin-ssr/commit/7c8fc28e2be07c643f20e0480ec832c5aa98fae3))
+
+
+
 ## [0.4.139](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.138...v0.4.139) (2023-08-26)
 
 
