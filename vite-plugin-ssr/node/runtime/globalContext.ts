@@ -31,7 +31,12 @@ const globalObject = getGlobalObject<{
   viteConfig?: ResolvedConfig
 }>('globalContext.ts', {})
 
-type GlobalContext = (
+type GlobalContext = {
+  baseServer: string
+  baseAssets: null | string
+  includeAssetsImportedByServer: boolean
+  redirects: Record<string, string>
+} & (
   | {
       isProduction: false
       isPrerendering: false
@@ -60,12 +65,7 @@ type GlobalContext = (
           configVps: ConfigVpsResolved
         }
     ))
-) & {
-  baseServer: string
-  baseAssets: null | string
-  includeAssetsImportedByServer: boolean
-  redirects: Record<string, string>
-}
+)
 
 function getGlobalContext(): GlobalContext {
   assert(globalObject.globalContext)
