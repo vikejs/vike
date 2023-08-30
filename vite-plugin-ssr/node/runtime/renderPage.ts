@@ -305,7 +305,18 @@ function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageCon
   const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
   const isNominal = isSuccess || statusCode === 404
   const color = (s: number | string) => pc.bold(isSuccess ? pc.green(s) : pc.red(s))
-  const type = statusCode && 300 <= statusCode && statusCode <= 399 ? 'redirect' : 'response'
+  const isRedirect = statusCode && 300 <= statusCode && statusCode <= 399
+  const type = isRedirect ? 'redirect' : 'response'
+  if (isRedirect) {
+    assert(pageContextReturn.httpResponse)
+    const headerRedirect = pageContextReturn.httpResponse.headers
+      .slice()
+      .reverse()
+      .find((header) => header[0] === 'Location')
+    assert(headerRedirect)
+    const urlRedirect = headerRedirect[1]
+    urlToShowToUser = pc.bold(urlRedirect)
+  }
   logRuntimeInfo?.(
     `HTTP ${type} ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`,
     httpRequestId,
