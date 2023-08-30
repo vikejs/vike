@@ -432,7 +432,7 @@ async function loadVikeConfig(
         }
         tempMigration()
 
-        applyEffects(configElements, configDefinitionsRelevant)
+        applyEffects(pageConfigData, configDefinitionsRelevant)
         tempMigration()
 
         applyComputed(pageConfigData, configDefinitionsRelevant)
@@ -955,10 +955,18 @@ function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaV
 }
 
 type ConfigElements = Record<string, ConfigElement>
-function applyEffects(configElements: ConfigElements, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
+function applyEffects(pageConfigData: PageConfigData, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
+  const { configElements } = pageConfigData
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef.effect) return
-    assert(configDef.env === 'config-only')
+    // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
+    // (We could support effect for non config-only by always loading its value at config time, regardless of the config's `env` value.)
+    assertUsage(
+      configDef.env === 'config-only',
+      `Being able to add an effect to a config with an ${pc.cyan('env')} different than ${pc.cyan(
+        'config-only'
+      )} isn't supported (yet).`
+    )
     const configElement = configElements[configName]
     if (!configElement) return
     assert('configValue' in configElement)
