@@ -8,6 +8,8 @@ type RuntimeManifest = {
   baseAssets: string
   includeAssetsImportedByServer: boolean
   redirects: Record<string, string>
+  trailingSlash: boolean
+  disableUrlNormalization: boolean
 }
 
 function assertRuntimeManifest(obj: unknown): asserts obj is RuntimeManifest & Record<string, unknown> {
@@ -20,5 +22,7 @@ function assertRuntimeManifest(obj: unknown): asserts obj is RuntimeManifest & R
   assert(hasProp(obj, 'includeAssetsImportedByServer', 'boolean'))
   assert(hasProp(obj, 'redirects', 'object'))
   castType<{ redirects: Record<string, string> }>(obj)
+  assert(hasProp(obj, 'trailingSlash', 'boolean'))
+  assert(hasProp(obj, 'disableUrlNormalization', 'boolean'))
   checkType<RuntimeManifest>(obj)
 }

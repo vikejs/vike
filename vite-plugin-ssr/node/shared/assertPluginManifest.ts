@@ -21,6 +21,8 @@ type PluginManifest = {
   includeAssetsImportedByServer: boolean
   manifestKeyMap: Record<string, string>
   redirects: Record<string, string>
+  trailingSlash: boolean
+  disableUrlNormalization: boolean
 }
 function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest is PluginManifest {
   assert(isPlainObject(pluginManifest))

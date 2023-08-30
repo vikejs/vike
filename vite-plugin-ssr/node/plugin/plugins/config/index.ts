@@ -51,7 +51,9 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
     includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? true,
     baseServer,
     baseAssets,
-    redirects: merge(configs.map((c) => c.redirects)) ?? {}
+    redirects: merge(configs.map((c) => c.redirects)) ?? {},
+    disableUrlNormalization: pickFirst(configs.map((c) => c.disableUrlNormalization)) ?? false,
+    trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false
   }
 
   return configVps

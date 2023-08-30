@@ -1,0 +1,29 @@
+By default, URLs are normalized:
+
+```
+[vite-plugin-ssr] HTTP request: /some//path/
+[vite-plugin-ssr] URL normalized from /some//path/ to /some-path
+[vite-plugin-ssr] HTTP redirect /some/path 301
+```
+
+You can configure whether URLs are normalized and whether URLs should end with a trailing slash:
+
+```js
+// vite.config.js
+
+import { ssr } from 'vite-plugin-ssr/plugin'
+
+export default {
+  plugins: [
+    ssr({
+      // Make URLs end with a trailing slash.
+      // For example: /some//path/ -> /some/path/
+      trailingSlash: true,
+
+      // Or completely disable automatic URL normalization.
+      // For example keep URL /some//path/
+      disableUrlNormalization: true
+    })
+  ]
+}
+```

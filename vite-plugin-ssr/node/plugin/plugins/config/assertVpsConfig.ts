@@ -18,6 +18,16 @@ function assertVpsConfig(
 function checkConfigVps(configVps: unknown): null | WrongUsage {
   assert(isObject(configVps))
   {
+    const prop = 'disableUrlNormalization'
+    if (!hasProp(configVps, prop, 'boolean') && !hasProp(configVps, prop, 'undefined'))
+      return { prop, errMsg: 'should be a boolean' }
+  }
+  {
+    const prop = 'trailingSlash'
+    if (!hasProp(configVps, prop, 'boolean') && !hasProp(configVps, prop, 'undefined'))
+      return { prop, errMsg: 'should be a boolean' }
+  }
+  {
     const prop = 'redirects'
     const { redirects } = configVps
     if (

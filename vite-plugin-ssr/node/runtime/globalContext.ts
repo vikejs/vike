@@ -36,6 +36,8 @@ type GlobalContext = {
   baseAssets: null | string
   includeAssetsImportedByServer: boolean
   redirects: Record<string, string>
+  trailingSlash: boolean
+  disableUrlNormalization: boolean
 } & (
   | {
       isProduction: false
@@ -119,7 +121,9 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
-      redirects: pluginManifest.redirects
+      redirects: pluginManifest.redirects,
+      trailingSlash: pluginManifest.trailingSlash,
+      disableUrlNormalization: pluginManifest.disableUrlNormalization
     }
   } else {
     const buildEntries = await loadImportBuild(outDir)
@@ -137,7 +141,9 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
-      redirects: pluginManifest.redirects
+      redirects: pluginManifest.redirects,
+      trailingSlash: pluginManifest.trailingSlash,
+      disableUrlNormalization: pluginManifest.disableUrlNormalization
     }
     if (isPrerendering) {
       assert(viteConfig)
@@ -161,12 +167,15 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
 }
 
 function getRuntimeManifest(configVps: ConfigVpsResolved): RuntimeManifest {
-  const { includeAssetsImportedByServer, baseServer, baseAssets, redirects } = configVps
+  const { includeAssetsImportedByServer, baseServer, baseAssets, redirects, trailingSlash, disableUrlNormalization } =
+    configVps
   const manifest = {
     baseServer,
     baseAssets,
     includeAssetsImportedByServer,
-    redirects
+    redirects,
+    trailingSlash,
+    disableUrlNormalization
   }
   assertRuntimeManifest(manifest)
   return manifest

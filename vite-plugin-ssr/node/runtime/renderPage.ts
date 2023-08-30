@@ -124,11 +124,6 @@ async function renderPageAndPrepare(
     return handleInvalidConfig()
   }
 
-  {
-    const pageContextHttpReponse = normalizePathname(pageContextInit)
-    if (pageContextHttpReponse) return pageContextHttpReponse
-  }
-
   // Prepare context
   let renderContext: RenderContext
   try {
@@ -146,6 +141,11 @@ async function renderPageAndPrepare(
     return handleInvalidConfig()
   } else {
     // From now on, renderContext.pageConfigs contains all the configuration data; getVikeConfig() isn't called anymore for this request
+  }
+
+  {
+    const pageContextHttpReponse = normalizeUrl(pageContextInit, httpRequestId)
+    if (pageContextHttpReponse) return pageContextHttpReponse
   }
 
   {
@@ -466,10 +466,19 @@ function skipRequest(urlOriginal: string): boolean {
     isViteClientRequest
   )
 }
-function normalizePathname(pageContextInit: { urlOriginal: string }) {
+function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+  const { trailingSlash, disableUrlNormalization } = getGlobalContext()
+  if (disableUrlNormalization) return null
   const { urlOriginal } = pageContextInit
-  const urlNormalized = normalizeUrlPathname(urlOriginal)
+  const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash)
   if (!urlNormalized) return null
+  logRuntimeInfo?.(
+    `URL normalized from ${pc.bold(urlOriginal)} to ${pc.bold(
+      urlNormalized
+    )} (https://vite-plugin-ssr.com/url-normalization)`,
+    httpRequestId,
+    'info'
+  )
   const httpResponse = createHttpResponseObjectRedirect(
     { url: urlNormalized, statusCode: 301 },
     pageContextInit.urlOriginal

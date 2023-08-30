@@ -40,6 +40,8 @@ type ConfigVpsResolved = {
   baseAssets: string
   baseServer: string
   redirects: Record<string, string>
+  trailingSlash: boolean
+  disableUrlNormalization: boolean
 }
 
 type ConfigVpsUserProvided = {
@@ -123,4 +125,20 @@ type ConfigVpsUserProvided = {
    * https://vite-plugin-ssr.com/redirects
    */
   redirects?: Record<string, string>
+
+  /** Whether URLs should end with a trailing slash.
+   *
+   * https://vite-plugin-ssr.com/url-normalization
+   *
+   * @default false
+   */
+  trailingSlash?: boolean
+
+  /** Disable automatic URL normalization.
+   *
+   * https://vite-plugin-ssr.com/url-normalization
+   *
+   * @default false
+   */
+  disableUrlNormalization?: boolean
 }

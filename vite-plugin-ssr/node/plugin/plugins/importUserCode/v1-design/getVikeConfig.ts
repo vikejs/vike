@@ -103,6 +103,8 @@ type ConfigNameGlobal =
   | 'baseAssets'
   | 'baseServer'
   | 'redirects'
+  | 'trailingSlash'
+  | 'disableUrlNormalization'
 const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition> = {
   onPrerenderStart: {
     env: 'server-only'
@@ -118,7 +120,9 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition>
   includeAssetsImportedByServer: { env: 'config-only' },
   baseAssets: { env: 'config-only' },
   baseServer: { env: 'config-only' },
-  redirects: { env: 'server-only' }
+  redirects: { env: 'server-only' },
+  trailingSlash: { env: 'server-only' },
+  disableUrlNormalization: { env: 'server-only' }
 }
 
 let devServerIsCorrupt = false

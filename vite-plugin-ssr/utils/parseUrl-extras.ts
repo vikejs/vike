@@ -60,10 +60,16 @@ function isBaseAssets(base: string): boolean {
   return base.startsWith('/') || base.startsWith('http://') || base.startsWith('https://')
 }
 
-function normalizeUrlPathname(urlOriginal: string): string | null {
+function normalizeUrlPathname(urlOriginal: string, trailingSlash: boolean): string | null {
   const urlNormalized = modifyUrlPathname(urlOriginal, (urlPathname) => {
     assert(urlPathname.startsWith('/'))
-    const urlPathnameNormalized = '/' + urlPathname.split('/').filter(Boolean).join('/')
+    let urlPathnameNormalized = '/' + urlPathname.split('/').filter(Boolean).join('/')
+    if (urlPathnameNormalized !== '/') {
+      assert(!urlPathnameNormalized.endsWith('/'))
+      if (trailingSlash) {
+        urlPathnameNormalized = urlPathnameNormalized + '/'
+      }
+    }
     return urlPathnameNormalized
   })
   if (urlNormalized === urlOriginal) return null
