@@ -985,16 +985,15 @@ function applyEffects(pageConfigData: PageConfigData, configDefinitionsRelevant:
 }
 function applyEffect(
   configModFromEffect: Record<string, Partial<ConfigDefinition>>,
-  configValue: ConfigValue,
+  configValueEffectSource: ConfigValue,
   configValueSources: ConfigValueSources
 ) {
   const notSupported = `config.meta[configName].effect currently only supports modifying the the ${pc.cyan(
     'env'
   )} of a config. Reach out to a maintainer if you need more capabilities.`
-  const configDefinedAtWithEffect = `${getConfigSrc(configValue, 'effect')}`
   objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
-      assertMetaValue(configValue, configDefinedAtWithEffect)
+      assertMetaValue(configValue, getConfigSrc(configValueEffectSource, 'effect'))
       objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
         {
           const keys = Object.keys(configTargetDef)
