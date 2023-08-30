@@ -25,7 +25,7 @@ async function startServer() {
     app.use(sirv(`${root}/dist/client`))
   } else {
     // We instantiate Vite's development server and integrate its middleware to our server.
-    // ⚠️ We instantiate it only in development. (It isn't needed in production and it
+    // ⚠️  We instantiate it only in development. (It isn't needed in production and it
     // would unnecessarily bloat our production server.)
     const vite = await import('vite')
     const viteDevMiddleware = (
