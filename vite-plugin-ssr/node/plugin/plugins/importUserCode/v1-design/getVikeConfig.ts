@@ -1022,6 +1022,7 @@ function applyComputed(pageConfigData: PageConfigData, configDefinitionsRelevant
     const configValueSource: ConfigValueSource = {
       value,
       configEnv: configDef.env,
+      // TODO: make definedAt optional and update all usages accordingly
       definedAt: {
         filePath: 'TODO',
         fileExportPath: ['TODO']
