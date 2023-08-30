@@ -29,11 +29,11 @@ import type {
   ConfigElement,
   PageConfigData,
   PageConfigGlobalData,
-  ConfigElementSource,
   ConfigEnvPrivate,
   ConfigValueSource,
   ConfigValueSources,
-  ConfigValues
+  ConfigValues,
+  ConfigValue
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import glob from 'fast-glob'
@@ -60,6 +60,7 @@ import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUse
 import type { ConfigNameBuiltIn } from '../../../../../shared/page-configs/Config.js'
 import pc from '@brillout/picocolors'
 import { createRequire } from 'module'
+import { getConfigSrc } from '../../../../../shared/page-configs/utils.js'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -433,9 +434,10 @@ async function loadVikeConfig(
         tempMigration()
 
         applyEffects(pageConfigData, configDefinitionsRelevant)
-        tempMigration()
+        updateConfigValues(pageConfigData)
 
         applyComputed(pageConfigData, configDefinitionsRelevant)
+        updateConfigValues(pageConfigData)
 
         return pageConfigData
       })
@@ -954,68 +956,61 @@ function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaV
   })
 }
 
-type ConfigElements = Record<string, ConfigElement>
 function applyEffects(pageConfigData: PageConfigData, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
-  const { configElements } = pageConfigData
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef.effect) return
     // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
     // (We could support effect for non config-only by always loading its value at config time, regardless of the config's `env` value.)
-    assertUsage(
+    assertWarning(
       configDef.env === 'config-only',
-      `Being able to add an effect to a config with an ${pc.cyan('env')} different than ${pc.cyan(
-        'config-only'
-      )} isn't supported (yet).`
+      [
+        `Adding an effect to ${pc.cyan(configName)} may not work as expected because ${pc.cyan(
+          configName
+        )} has an ${pc.cyan('env')} that is different than ${pc.cyan('config-only')} (its env is ${pc.cyan(
+          configDef.env
+        )}).`,
+        'Reach out to a maintainer if you want to use this in production.'
+      ].join(' '),
+      { onlyOnce: true }
     )
-    const configElement = configElements[configName]
-    if (!configElement) return
-    assert('configValue' in configElement)
-    const { configValue, configDefinedAt } = configElement
-    const configFromEffect = configDef.effect({
-      configValue,
-      configDefinedAt
+    const configValue = pageConfigData.configValues[configName]
+    if (!configValue) return
+    const configModFromEffect = configDef.effect({
+      configValue: configValue.value,
+      configDefinedAt: getConfigSrc(configValue)
     })
-    if (!configFromEffect) return
-    applyEffect(configFromEffect, configElement, configElements, configDefinitionsRelevant)
+    if (!configModFromEffect) return
+    applyEffect(configModFromEffect, configValue, pageConfigData.configValueSources)
   })
 }
 function applyEffect(
-  configFromEffect: Record<string, Partial<ConfigDefinition>>,
-  configElement: ConfigElement,
-  configElements: ConfigElements,
-  configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
+  configModFromEffect: Record<string, Partial<ConfigDefinition>>,
+  configValue: ConfigValue,
+  configValueSources: ConfigValueSources
 ) {
-  const configDefinedAtWithEffect = `${configElement.configDefinedAt} > effect()`
-  objectEntries(configFromEffect).forEach(([configName, configValue]) => {
+  const notSupported = `config.meta[configName].effect currently only supports modifying the the ${pc.cyan(
+    'env'
+  )} of a config. Reach out to a maintainer if you need more capabilities.`
+  const configDefinedAtWithEffect = `${getConfigSrc(configValue, 'effect')}`
+  objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
       assertMetaValue(configValue, configDefinedAtWithEffect)
       objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
-        const keys = Object.keys(configTargetDef)
-        assert(keys.includes('env'))
-        assert(keys.length === 1)
-        const configTargetElement = configElements[configTargetName]
-        if (configTargetElement) {
-          configTargetElement.configEnv = configTargetDef.env
+        {
+          const keys = Object.keys(configTargetDef)
+          assertUsage(keys.includes('env'), notSupported)
+          assertUsage(keys.length === 1, notSupported)
         }
+        const envOverriden = configTargetDef.env
+        const sources = configValueSources[configTargetName]
+        sources?.forEach((configValueSource) => {
+          configValueSource.configEnv = envOverriden
+        })
       })
     } else {
-      // AFAIK we don't use this, nor do we need it?
-      assertWarning(
-        false,
-        `${configDefinedAtWithEffect} is modifying a config value; this is an experimental functionality; reach out to a maintainer if you want to use this in production`,
-        { onlyOnce: true }
-      )
-      /* We're completely overriding any previous configElement
-      const configElementTargetOriginal = configElements[configName]
-      */
-      const configDef = getConfigDefinition(configDefinitionsRelevant, configName, configDefinedAtWithEffect)
-      configElements[configName] = {
-        configValue,
-        configEnv: configDef.env,
-        ...getConfigElementSource(configElement),
-        configDefinedAt: configDefinedAtWithEffect,
-        configDefinedByFile: configElement.configDefinedByFile
-      }
+      assertUsage(false, notSupported)
+      // If we do end implementing being able to set the value of a config:
+      //  - For setting definedAt: we could take the definedAt of the effect config while appending '(effect)' to definedAt.fileExportPath
     }
   })
 }
@@ -1040,14 +1035,7 @@ function applyComputed(pageConfigData: PageConfigData, configDefinitionsRelevant
 
     pageConfigData.configValueSources[configName] ??= []
     pageConfigData.configValueSources[configName]!.push(configValueSource)
-    updateConfigValues(pageConfigData)
   })
-}
-
-function getConfigElementSource(configElement: ConfigElement): ConfigElementSource {
-  const { plusConfigFilePath, codeFilePath, codeFileExport }: ConfigElementSource = configElement
-  const configElementSource = { plusConfigFilePath, codeFilePath, codeFileExport } as ConfigElementSource
-  return configElementSource
 }
 
 async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]) {

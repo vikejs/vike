@@ -78,9 +78,15 @@ function getConfigSource(configSource: ConfigSource): string {
   }
 }
 
-function getConfigSrc({ definedAt }: { definedAt: { filePath: string; fileExportPath: string[] } }): string {
+function getConfigSrc(
+  { definedAt }: { definedAt: { filePath: string; fileExportPath: string[] } },
+  append?: 'effect'
+): string {
   const { filePath, fileExportPath } = definedAt
   const exportPath = getExportPath(fileExportPath)
-  const configSrc = `${pc.bold(filePath)} > ${pc.cyan(exportPath)}`
+  let configSrc = `${pc.bold(filePath)} > ${pc.cyan(exportPath)}`
+  if (append) {
+    configSrc = `${configSrc} > (${append})`
+  }
   return configSrc
 }

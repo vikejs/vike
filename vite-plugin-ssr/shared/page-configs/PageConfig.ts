@@ -6,7 +6,6 @@ export type { PageConfigData }
 export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
 export type { ConfigElement }
-export type { ConfigElementSource }
 export type { ConfigSource }
 export type { ConfigValue }
 export type { ConfigValues }
