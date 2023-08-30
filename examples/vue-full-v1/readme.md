@@ -16,7 +16,7 @@ Features:
 
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/vue-full/
+cd vite-plugin-ssr/examples/vue-full-v1/
 npm install
 npm run dev
 ```
