@@ -14,6 +14,7 @@ import { debug } from './debug.js'
 import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps.js'
 import path from 'path'
 import { getConfigValue } from '../../../../../shared/page-configs/utils.js'
+import { getConfigValueSourcesRelevant } from '../../../../shared/getConfigValueSource.js'
 
 async function getVirtualFileImportCodeFiles(
   id: string,
@@ -57,33 +58,40 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   const importStatements: string[] = []
   lines.push('export default [')
   let varCounter = 0
-  Object.entries(pageConfigData.configElements).forEach(([configName, configElement]) => {
-    if (!configElement.codeFilePath) return
-    const { configEnv, codeFilePath, codeFileExport } = configElement
+  getConfigValueSourcesRelevant(pageConfigData).forEach((configValueSource) => {
+    const {
+      isCodeEntry,
+      configName,
+      configEnv,
+      definedAt: { filePath, fileExportPath }
+    } = configValueSource
+    const fileExportName = fileExportPath[0]
+    assert(fileExportName)
 
+    if (!isCodeEntry) return
     if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
 
-    assertPosixPath(codeFilePath)
-    const fileName = path.posix.basename(codeFilePath)
+    assertPosixPath(filePath)
+    const fileName = path.posix.basename(filePath)
     const isPlusFile = fileName.startsWith('+')
 
     const { importVar, importStatement } = generateEagerImport(
-      codeFilePath,
+      filePath,
       varCounter++,
-      isPlusFile ? undefined : codeFileExport
+      isPlusFile ? undefined : fileExportName
     )
     importStatements.push(importStatement)
 
     lines.push(`  {`)
     lines.push(`    configName: '${configName}',`)
-    lines.push(`    codeFilePath: '${codeFilePath}',`)
+    lines.push(`    codeFilePath: '${filePath}',`)
     lines.push(`    isPlusFile: ${JSON.stringify(isPlusFile)},`)
     if (isPlusFile) {
       lines.push(`    codeFileExports: ${importVar},`)
     } else {
       lines.push(`    codeFileExportValue: ${importVar},`)
-      assert(codeFileExport)
-      lines.push(`    codeFileExportName: ${JSON.stringify(codeFileExport)},`)
+      assert(fileExportName)
+      lines.push(`    codeFileExportName: ${JSON.stringify(fileExportName)},`)
     }
     lines.push(`  },`)
   })
