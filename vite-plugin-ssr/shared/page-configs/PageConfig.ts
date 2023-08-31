@@ -41,6 +41,7 @@ type ConfigValueSource = {
   configEnv: ConfigEnvPrivate
   valueSerialized?: string
   value?: unknown
+  // Replace definedAt.filePath with definedAt.filePathRelativeToUserRootDir? and definedAt.filePathAbsolute!
   definedAt: DefinedAt
   /**
    * Whether definedAt.filePath contains runtime code. (If it doesn't, then it contains config code that isn't loaded in any runtime.)
@@ -57,7 +58,7 @@ type ConfigValueSources = Record<
 >
 type ConfigValue = {
   value: unknown
-  // isDefinedByCodeFile: boolean
+  // TODO: Replace with valueSrc?
   definedAt: DefinedAt
 }
 type ConfigValues = Record<

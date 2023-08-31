@@ -433,6 +433,10 @@ async function loadVikeConfig(
         tempMigration()
 
         applyEffects(pageConfigData, configDefinitionsRelevant)
+        // TODO:
+        //  - use pageConfigData.configValueSources[configName][0].value instead of pageConfigData.configValues[configName].value
+        //  - call updateConfigValues() only once
+        //  - rename updateConfigValues() to getConfigValues()
         updateConfigValues(pageConfigData)
 
         applyComputed(pageConfigData, configDefinitionsRelevant)
