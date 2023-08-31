@@ -762,7 +762,7 @@ importers:
         version: 4.2.1(vite@4.3.5)(vue@3.2.47)
       '@vue/apollo-composable':
         specifier: ^4.0.0-beta.4
-        version: 4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@5.1.6)(vue@3.2.47)
+        version: 4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@5.2.2)(vue@3.2.47)
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.2.47
@@ -804,7 +804,7 @@ importers:
         version: 4.2.1(vite@4.3.5)(vue@3.2.47)
       '@vue/apollo-composable':
         specifier: ^4.0.0-beta.4
-        version: 4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@5.1.6)(vue@3.2.47)
+        version: 4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@5.2.2)(vue@3.2.47)
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.2.47
@@ -2655,8 +2655,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       typescript:
-        specifier: ^5.1.6
-        version: 5.1.6
+        specifier: ^5.2.2
+        version: 5.2.2
       vite:
         specifier: ^4.2.1
         version: 4.3.5(@types/node@20.1.0)
@@ -5611,7 +5611,7 @@ packages:
       '@babel/plugin-transform-react-jsx-self': 7.22.5(@babel/core@7.22.10)
       '@babel/plugin-transform-react-jsx-source': 7.22.5(@babel/core@7.22.10)
       react-refresh: 0.14.0
-      vite: 4.4.9(@types/node@20.4.10)
+      vite: 4.4.9(@types/node@15.14.9)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -5698,7 +5698,7 @@ packages:
       pretty-format: 29.6.0
     dev: true
 
-  /@vue/apollo-composable@4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@5.1.6)(vue@3.2.47):
+  /@vue/apollo-composable@4.0.0-beta.4(@apollo/client@3.7.14)(graphql@16.6.0)(typescript@5.2.2)(vue@3.2.47):
     resolution: {integrity: sha512-lErWL+9LGfWfdfrSYY3DQB/A8Asqs46MiKwmgKeKSj7fe01tx0UpH43aiwMGj+VgEzBZ9AfqEa/Bxf0Nff/NNw==}
     peerDependencies:
       '@apollo/client': ^3.4.13
@@ -5712,7 +5712,7 @@ packages:
       '@apollo/client': 3.7.14(graphql@16.6.0)(react-dom@18.2.0)(react@18.2.0)
       graphql: 16.6.0
       throttle-debounce: 3.0.1
-      ts-essentials: 9.3.2(typescript@5.1.6)
+      ts-essentials: 9.3.2(typescript@5.2.2)
       vue: 3.2.47
       vue-demi: 0.13.11(vue@3.2.47)
     transitivePeerDependencies:
@@ -12556,12 +12556,12 @@ packages:
       typescript: 5.1.6
     dev: false
 
-  /ts-essentials@9.3.2(typescript@5.1.6):
+  /ts-essentials@9.3.2(typescript@5.2.2):
     resolution: {integrity: sha512-JxKJzuWqH1MmH4ZFHtJzGEhkfN3QvVR3C3w+4BIoWeoY68UVVoA2Np/Bca9z0IPSErVCWhv439aT0We4Dks8kQ==}
     peerDependencies:
       typescript: '>=4.1.0'
     dependencies:
-      typescript: 5.1.6
+      typescript: 5.2.2
     dev: false
 
   /ts-invariant@0.10.3:
@@ -12742,6 +12742,12 @@ packages:
 
   /typescript@5.1.6:
     resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: false
+
+  /typescript@5.2.2:
+    resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
     engines: {node: '>=14.17'}
     hasBin: true
 
