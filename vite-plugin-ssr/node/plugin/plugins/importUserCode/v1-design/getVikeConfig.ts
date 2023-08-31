@@ -57,7 +57,6 @@ import {
   removeSuperfluousViteLog_disable
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.js'
-import type { ConfigNameBuiltIn } from '../../../../../shared/page-configs/Config.js'
 import pc from '@brillout/picocolors'
 import { createRequire } from 'module'
 import { getConfigSrc } from '../../../../../shared/page-configs/utils.js'
@@ -387,7 +386,7 @@ async function loadVikeConfig(
           .forEach(([configName, configDef]) => {
             const configElement = resolveConfigElement(configName, configDef, interfaceFilesRelevant, userRootDir)
             if (!configElement) return
-            configElements[configName as ConfigNameBuiltIn] = configElement
+            configElements[configName] = configElement
           })
 
         const { routeFilesystem, routeFilesystemDefinedBy, isErrorPage } = determineRouteFilesystem(
@@ -1033,6 +1032,7 @@ function applyComputed(pageConfigData: PageConfigData, configDefinitionsRelevant
     }
 
     pageConfigData.configValueSources[configName] ??= []
+    // Computed values are inserted last: they have the least priority (i.e. computed can be overriden)
     pageConfigData.configValueSources[configName]!.push(configValueSource)
   })
 }
