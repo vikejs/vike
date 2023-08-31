@@ -3,7 +3,8 @@
     "strict": true,
     "module": "ES2020",
     "target": "ES2020",
-    "moduleResolution": "Node",
+    // Doesn't apply to server/, see ts-node config down below and server/tsconfig.json
+    "moduleResolution": "Bundler",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["vite/client"],
     "jsx": "react-jsx",
@@ -14,6 +15,7 @@
     "transpileOnly": true,
     "esm": true,
     "compilerOptions": {
+      "module": "Node16",
       "moduleResolution": "Node16"
     }
   }
