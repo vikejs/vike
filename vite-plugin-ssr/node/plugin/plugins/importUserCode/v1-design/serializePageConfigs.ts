@@ -44,7 +44,7 @@ function serializePageConfigs(
       lines.push(`${whitespace}[${JSON.stringify(configName)}]: [`)
       whitespace += '  '
       sources.forEach((configValueSource) => {
-        const content = serializeConfigValueSource(configValueSource, configName, whitespace)
+        const content = serializeConfigValueSource(configValueSource, configName, whitespace, importStatements)
         assert(content.startsWith('{') && content.endsWith('},') && content.includes('\n'))
         lines.push(whitespace + content)
       })
@@ -97,7 +97,7 @@ function serializePageConfigs(
     if (configValueSource === null) {
       content = 'null,'
     } else {
-      content = serializeConfigValueSource(configValueSource, configName, whitespace)
+      content = serializeConfigValueSource(configValueSource, configName, whitespace, importStatements)
       assert(content.startsWith('{') && content.endsWith('},') && content.includes('\n'))
     }
     content = `${whitespace}[${JSON.stringify(configName)}]: ${content}`
@@ -134,7 +134,8 @@ function serializeConfigValue(
 function serializeConfigValueSource(
   configValueSource: ConfigValueSource,
   configName: string,
-  whitespace: string
+  whitespace: string,
+  importStatements: string[]
 ): string {
   const { definedAt, configEnv } = configValueSource
   const lines: string[] = []
@@ -145,6 +146,12 @@ function serializeConfigValueSource(
     const { value } = configValueSource
     const valueSerialized = getConfigValueSerialized(value, configName, definedAt.filePath)
     lines.push(`${whitespace}  valueSerialized: ${valueSerialized}`)
+  } else if (configValueSource.configEnv === '_routing-eager') {
+    const { filePath, fileExportPath } = configValueSource.definedAt
+    const [exportName] = fileExportPath
+    assert(exportName)
+    const configValueEagerImport = getConfigValueEagerImport(filePath, exportName, importStatements)
+    lines.push(`${whitespace}  value: ${configValueEagerImport},`)
   }
   lines.push(`${whitespace}},`)
   return lines.join('\n')
