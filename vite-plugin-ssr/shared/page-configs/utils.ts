@@ -78,6 +78,7 @@ function getConfigSource(configSource: ConfigSource): string {
   }
 }
 
+// TODO: rename to getValueSrc()
 function getConfigSrc(
   { definedAt }: { definedAt: { filePath: string; fileExportPath: string[] } },
   append?: 'effect'

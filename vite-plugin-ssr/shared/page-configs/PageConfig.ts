@@ -5,7 +5,6 @@ export type { ConfigEnvPublic }
 export type { PageConfigData }
 export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
-export type { ConfigElement }
 export type { ConfigSource }
 export type { ConfigValue }
 export type { ConfigValues }
@@ -25,8 +24,6 @@ type ConfigEnvPrivate =
  */
 type ConfigEnvPublic = Exclude<ConfigEnvPrivate, '_routing-eager' | '_routing-lazy'>
 
-type ConfigName = string
-
 type PageConfigData = {
   pageId: string
   isErrorPage: boolean
@@ -34,8 +31,6 @@ type PageConfigData = {
   routeFilesystemDefinedBy: null | string
   configValueSources: ConfigValueSources
   configValues: ConfigValues
-  // TODO: remove in favor of configValueSources
-  configElements: Record<ConfigName, ConfigElement>
 }
 type ConfigValueSource = {
   configEnv: ConfigEnvPrivate
@@ -84,12 +79,12 @@ type PageConfigLoaded = PageConfig & {
 }
 
 type PageConfigGlobalData = {
-  onPrerenderStart: null | ConfigElement
-  onBeforeRoute: null | ConfigElement
+  onPrerenderStart: null | ConfigValueSource
+  onBeforeRoute: null | ConfigValueSource
 }
 type PageConfigGlobal = {
-  onPrerenderStart: null | (ConfigElement & { configValue: unknown })
-  onBeforeRoute: null | (ConfigElement & { configValue: unknown })
+  onPrerenderStart: null | (ConfigValueSource & { value: unknown })
+  onBeforeRoute: null | (ConfigValueSource & { value: unknown })
 }
 
 type ConfigElementSource =
@@ -111,13 +106,6 @@ type ConfigElementSource =
       codeFilePath: string
       codeFileExport: string
     }
-type ConfigElement = {
-  configEnv: ConfigEnvPrivate
-  configValue?: unknown
-  configValueSerialized?: string
-  configDefinedAt: string
-  configDefinedByFile: string
-} & ConfigElementSource
 
 type LoadCodeFiles = () => Promise<
   ({

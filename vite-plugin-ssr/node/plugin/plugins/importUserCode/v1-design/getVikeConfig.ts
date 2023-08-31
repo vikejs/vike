@@ -26,7 +26,6 @@ import {
 } from '../../../utils.js'
 import path from 'path'
 import type {
-  ConfigElement,
   PageConfigData,
   PageConfigGlobalData,
   ConfigEnvPrivate,
@@ -380,18 +379,23 @@ async function loadVikeConfig(
           })
         )
 
-        let configElements: PageConfigData['configElements'] = {}
+        const configValueSources: ConfigValueSources = {}
         objectEntries(configDefinitionsRelevant)
           .filter(([configName]) => !isGlobalConfig(configName))
           .forEach(([configName, configDef]) => {
-            const configElement = resolveConfigElement(configName, configDef, interfaceFilesRelevant, userRootDir)
-            if (!configElement) return
-            configElements[configName] = configElement
+            const configValueSource = resolveConfigValueSource(
+              configName,
+              configDef,
+              interfaceFilesRelevant,
+              userRootDir
+            )
+            if (!configValueSource) return
+            configValueSources[configName] = [configValueSource]
           })
 
         const { routeFilesystem, routeFilesystemDefinedBy, isErrorPage } = determineRouteFilesystem(
           locationId,
-          configElements.filesystemRoutingRoot
+          configValueSources.filesystemRoutingRoot?.[0]
         )
 
         const pageConfigData: PageConfigData = {
@@ -399,38 +403,10 @@ async function loadVikeConfig(
           isErrorPage,
           routeFilesystemDefinedBy,
           routeFilesystem: isErrorPage ? null : routeFilesystem,
-          configElements,
-          configValueSources: {},
+          configValueSources,
           configValues: {}
         }
-
-        const tempMigration = () => {
-          const configValueSources: ConfigValueSources = {}
-          Object.entries(pageConfigData.configElements).forEach(([configName, configElement]) => {
-            const definedAt = {
-              filePath: configElement.configDefinedByFile,
-              fileExportPath: [configElement.codeFileExport ?? 'TODO']
-            }
-            const configValueSource: ConfigValueSource = {
-              definedAt,
-              configEnv: configElement.configEnv,
-              isCodeEntry: !!configElement.codeFilePath
-            }
-            /*
-            if (configElement.configValueSerialized !== undefined) {
-              configValueSource.valueSerialized = configElement.configValueSerialized
-            }
-            */
-            if ('configValue' in configElement) {
-              configValueSource.value = configElement.configValue
-            }
-            configValueSources[configName] ??= []
-            configValueSources[configName]!.push(configValueSource)
-          })
-          pageConfigData.configValueSources = configValueSources
-          updateConfigValues(pageConfigData)
-        }
-        tempMigration()
+        updateConfigValues(pageConfigData)
 
         applyEffects(pageConfigData, configDefinitionsRelevant)
         // TODO:
@@ -564,32 +540,32 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
     onPrerenderStart: null
   }
   objectEntries(configDefinitionsBuiltInGlobal).forEach(([configName, configDef]) => {
-    const configElement = resolveConfigElement(configName, configDef, interfaceFilesGlobal, userRootDir)
-    if (!configElement) return
+    const configValueSource = resolveConfigValueSource(configName, configDef, interfaceFilesGlobal, userRootDir)
+    if (!configValueSource) return
     if (arrayIncludes(objectKeys(pageConfigGlobal), configName)) {
-      assert(!('configValue' in configElement))
-      pageConfigGlobal[configName] = configElement
+      assert(!('value' in configValueSource))
+      pageConfigGlobal[configName] = configValueSource
     } else {
-      assert('configValue' in configElement)
-      if (configName === 'prerender' && typeof configElement.configValue === 'boolean') return
+      assert('value' in configValueSource)
+      if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
       assertWarning(
         false,
-        `Being able to define config '${configName}' in ${configElement.configDefinedByFile} is experimental and will likely be removed. Define the config '${configName}' in vite-plugin-ssr's Vite plugin options instead.`,
+        `Being able to define config '${configName}' in ${configValueSource.definedAt.filePath} is experimental and will likely be removed. Define the config '${configName}' in vite-plugin-ssr's Vite plugin options instead.`,
         { onlyOnce: true }
       )
-      globalVikeConfig[configName] = configElement.configValue
+      globalVikeConfig[configName] = configValueSource.value
     }
   })
 
   return { pageConfigGlobal, globalVikeConfig }
 }
 
-function resolveConfigElement(
+function resolveConfigValueSource(
   configName: string,
   configDef: ConfigDefinition,
   interfaceFilesRelevant: InterfaceFilesByLocationId,
   userRootDir: string
-): null | ConfigElement {
+): null | ConfigValueSource {
   // interfaceFilesRelevant is sorted by sortAfterInheritanceOrder()
   for (const interfaceFiles of Object.values(interfaceFilesRelevant)) {
     const interfaceFilesDefiningConfig = interfaceFiles.filter((interfaceFile) => interfaceFile.configMap[configName])
@@ -626,7 +602,7 @@ function resolveConfigElement(
         )
         // A user-land conflict of interfaceFiles with the same locationId means that the user has superfluously defined the config twice; the user should remove such redundancy making things unnecessarily ambiguous
         warnOverridenConfigValues(interfaceFileWinner, interfaceFilesOverriden, configName, configDef, userRootDir)
-        return getConfigElement(configName, interfaceFileWinner, configDef, userRootDir)
+        return getConfigValueSource(configName, interfaceFileWinner, configDef, userRootDir)
       }
     }
 
@@ -638,7 +614,7 @@ function resolveConfigElement(
         assert(
           interfaceValueFileSideEffect.isValueFile && interfaceValueFileSideEffect.configNameDefault !== configName
         )
-        return getConfigElement(configName, interfaceValueFileSideEffect, configDef, userRootDir)
+        return getConfigValueSource(configName, interfaceValueFileSideEffect, configDef, userRootDir)
       }
     }
 
@@ -649,7 +625,7 @@ function resolveConfigElement(
     // extended config files are already sorted by inheritance order
     const interfaceFile = interfaceFilesDefiningConfig[0]
     assert(interfaceFile)
-    return getConfigElement(configName, interfaceFile, configDef, userRootDir)
+    return getConfigValueSource(configName, interfaceFile, configDef, userRootDir)
   }
 
   return null
@@ -670,11 +646,13 @@ function warnOverridenConfigValues(
   userRootDir: string
 ) {
   interfaceFilesOverriden.forEach((interfaceFileLoser) => {
-    const configElementWinner = getConfigElement(configName, interfaceFileWinner, configDef, userRootDir)
-    const configElementLoser = getConfigElement(configName, interfaceFileLoser, configDef, userRootDir)
+    const configValueSourceWinner = getConfigValueSource(configName, interfaceFileWinner, configDef, userRootDir)
+    const configValueSourceLoser = getConfigValueSource(configName, interfaceFileLoser, configDef, userRootDir)
     assertWarning(
       false,
-      `${configElementLoser.configDefinedAt} overriden by ${configElementWinner.configDefinedAt}, remove one of the two`,
+      `${getConfigSrc(configValueSourceLoser)} overriden by ${getConfigSrc(
+        configValueSourceWinner
+      )}, remove one of the two`,
       { onlyOnce: false }
     )
   })
@@ -684,12 +662,12 @@ function isInterfaceFileUserLand(interfaceFile: InterfaceFile) {
   return (interfaceFile.isConfigFile && !interfaceFile.isConfigExtend) || interfaceFile.isValueFile
 }
 
-function getConfigElement(
+function getConfigValueSource(
   configName: string,
   interfaceFile: InterfaceFile,
   configDef: ConfigDefinition,
   userRootDir: string
-): ConfigElement {
+): ConfigValueSource {
   // TODO: rethink file paths of ConfigElement
   const configFilePath = interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
   const conf = interfaceFile.configMap[configName]
@@ -702,45 +680,45 @@ function getConfigElement(
     if (codeFile) {
       const { codeFilePath, codeFileExport } = codeFile
       assertCodeFileEnv(codeFilePath, configEnv, configName)
-      const configElement = {
-        plusConfigFilePath: configFilePath,
-        codeFilePath,
-        codeFileExport,
-        configDefinedAt: getConfigDefinedAt(codeFilePath, codeFileExport),
-        configDefinedByFile: codeFilePath,
-        configEnv
-      }
-      return configElement
-    } else {
-      const configElement: ConfigElement = {
-        plusConfigFilePath: configFilePath,
-        configDefinedAt: getConfigDefinedAt(configFilePath, configName, true),
-        configDefinedByFile: configFilePath,
-        codeFilePath: null,
-        codeFileExport: null,
+      const configValueSource: ConfigValueSource = {
         configEnv,
-        configValue
+        isCodeEntry: true,
+        definedAt: {
+          filePath: codeFilePath,
+          fileExportPath: [codeFileExport]
+        }
       }
-      return configElement
+      return configValueSource
+    } else {
+      const configValueSource: ConfigValueSource = {
+        value: configValue,
+        configEnv,
+        isCodeEntry: false,
+        definedAt: {
+          filePath: configFilePath,
+          fileExportPath: ['default', configName]
+        }
+      }
+      return configValueSource
     }
   } else if (interfaceFile.isValueFile) {
     // TODO: rethink file paths of ConfigElement
     const codeFilePath = interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
     const codeFileExport = configName === interfaceFile.configNameDefault ? 'default' : configName
-    const configElement: ConfigElement = {
+    const configValueSource: ConfigValueSource = {
       configEnv,
-      codeFilePath,
-      codeFileExport,
-      plusConfigFilePath: null,
-      configDefinedAt: getConfigDefinedAt(codeFilePath, codeFileExport),
-      configDefinedByFile: codeFilePath
+      isCodeEntry: true,
+      definedAt: {
+        filePath: codeFilePath,
+        fileExportPath: [codeFileExport]
+      }
     }
     if ('configValue' in conf) {
-      configElement.configValue = conf.configValue
+      configValueSource.value = conf.configValue
     } else {
       assert(configEnv !== 'config-only')
     }
-    return configElement
+    return configValueSource
   }
   assert(false)
 }
@@ -763,25 +741,6 @@ function assertCodeFileEnv(codeFilePath: string, configEnv: ConfigEnvPrivate, co
         'Defining config values in the same file is allowed only if they live in the same environment, see https://vite-plugin-ssr.com/header-file/import-from-same-file'
       ].join('\n')
     )
-  }
-}
-
-/* Use the type once we moved all dist/ to ESM
-type ConfigDefinedAt = ReturnType<typeof getConfigDefinedAt>
-*/
-// TODO: remove
-function getConfigDefinedAt(filePath: string, exportName: string, isDefaultExportObject?: true) {
-  if (isDefaultExportObject) {
-    assert(exportName !== 'default')
-    return `${pc.bold(filePath)} > ${pc.cyan(`export default { ${exportName} }`)}`
-  } else {
-    if (exportName === '*') {
-      return `${pc.bold(filePath)} > ${pc.cyan('export *')}`
-    } else if (exportName === 'default') {
-      return filePath
-    } else {
-      return `${pc.bold(filePath)} > ${pc.cyan(`export { ${exportName} }`)}`
-    }
   }
 }
 
@@ -1323,7 +1282,7 @@ function handleUnknownConfig(configName: string, configNames: string[], definedB
   assertUsage(false, errMsg)
 }
 
-function determineRouteFilesystem(locationId: string, configFilesystemRoutingRoot: undefined | ConfigElement) {
+function determineRouteFilesystem(locationId: string, configFilesystemRoutingRoot: undefined | ConfigValueSource) {
   let routeFilesystem = getRouteFilesystem(locationId)
   if (determineIsErrorPage(routeFilesystem)) {
     return { isErrorPage: true, routeFilesystem: null, routeFilesystemDefinedBy: null }
@@ -1343,22 +1302,21 @@ function determineRouteFilesystem(locationId: string, configFilesystemRoutingRoo
   assert(routeFilesystem.startsWith('/'))
   return { routeFilesystem, routeFilesystemDefinedBy, isErrorPage: false }
 }
-function getFilesystemRoutingRootEffect(configFilesystemRoutingRoot: ConfigElement) {
+function getFilesystemRoutingRootEffect(configFilesystemRoutingRoot: ConfigValueSource) {
   assert(configFilesystemRoutingRoot.configEnv === 'config-only')
   // Eagerly loaded since it's config-only
-  assert('configValue' in configFilesystemRoutingRoot)
-  const { configValue } = configFilesystemRoutingRoot
-  assertUsage(typeof configValue === 'string', `${configFilesystemRoutingRoot.configDefinedAt} should be a string`)
-  const { configDefinedAt } = configFilesystemRoutingRoot
+  assert('value' in configFilesystemRoutingRoot)
+  const { value } = configFilesystemRoutingRoot
+  const configSrc = getConfigSrc(configFilesystemRoutingRoot)
+  assertUsage(typeof value === 'string', `${configSrc} should be a string`)
   assertUsage(
-    configValue.startsWith('/'),
-    `${configDefinedAt} is '${configValue}' but it should start with a leading slash '/'`
+    value.startsWith('/'),
+    `${configSrc} is '${value}' but it should start with a leading slash '/'`
   )
-  const { configDefinedByFile } = configFilesystemRoutingRoot
-  const before = getRouteFilesystem(getLocationId(configDefinedByFile))
-  const after = configValue
+  const before = getRouteFilesystem(getLocationId(configFilesystemRoutingRoot.definedAt.filePath))
+  const after = value
   const filesystemRoutingRootEffect = { before, after }
-  return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt: configDefinedAt }
+  return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt: configSrc }
 }
 function determineIsErrorPage(routeFilesystem: string) {
   assertPosixPath(routeFilesystem)

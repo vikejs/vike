@@ -4,7 +4,6 @@ export { serializePageConfigs }
 
 import { assert, assertUsage, objectEntries } from '../../../utils.js'
 import type {
-  ConfigElement,
   ConfigValue,
   ConfigValueSource,
   PageConfigData,
@@ -30,7 +29,7 @@ function serializePageConfigs(
 
   lines.push('export const pageConfigs = [')
   pageConfigsData.forEach((pageConfig) => {
-    const { pageId, routeFilesystem, routeFilesystemDefinedBy, configElements, isErrorPage } = pageConfig
+    const { pageId, routeFilesystem, routeFilesystemDefinedBy, isErrorPage } = pageConfig
     const virtualFileIdImportPageCode = getVirtualFileIdImportPageCode(pageId, isForClientSide)
     lines.push(`  {`)
     lines.push(`    pageId: ${JSON.stringify(pageId)},`)
@@ -39,22 +38,15 @@ function serializePageConfigs(
     lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
     lines.push(`    loadCodeFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`)
 
-    // TODO: remove
-    lines.push(`    configElements: {`)
-    Object.entries(configElements).forEach(([configName, configElement]) => {
-      if (configElement.configEnv === 'config-only') return
-      const whitespace = '      '
-      lines.push(serializeConfigElement(configElement, configName, importStatements, whitespace, false))
-    })
-    lines.push(`    },`)
-
     lines.push(`    configValueSources: {`)
     Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
       let whitespace = '      '
       lines.push(`${whitespace}[${JSON.stringify(configName)}]: [`)
       whitespace += '  '
       sources.forEach((configValueSource) => {
-        lines.push(serializeConfigValueSource(configValueSource, configName, whitespace))
+        const content = serializeConfigValueSource(configValueSource, configName, whitespace)
+        assert(content.startsWith('{') && content.endsWith('},') && content.includes('\n'))
+        lines.push(whitespace + content)
       })
       whitespace = whitespace.slice(2)
       lines.push(`${whitespace}],`)
@@ -92,7 +84,7 @@ function serializePageConfigs(
   lines.push('];')
 
   lines.push('export const pageConfigGlobal = {')
-  objectEntries(pageConfigGlobal).forEach(([configName, configElement]) => {
+  objectEntries(pageConfigGlobal).forEach(([configName, configValueSource]) => {
     if (configName === 'onBeforeRoute') {
       // if( isForClientSide && !isClientRouting ) return
     } else if (configName === 'onPrerenderStart') {
@@ -100,8 +92,16 @@ function serializePageConfigs(
     } else {
       assert(false)
     }
-    const whitespace = '  '
-    lines.push(serializeConfigElement(configElement, configName, importStatements, whitespace, true))
+    let whitespace = '  '
+    let content: string
+    if (configValueSource === null) {
+      content = 'null,'
+    } else {
+      content = serializeConfigValueSource(configValueSource, configName, whitespace)
+      assert(content.startsWith('{') && content.endsWith('},') && content.includes('\n'))
+    }
+    content = `${whitespace}[${JSON.stringify(configName)}]: ${content}`
+    lines.push(content)
   })
   lines.push('};')
 
@@ -131,50 +131,19 @@ function serializeConfigValue(
   lines.push(`${whitespace}},`)
 }
 
-function serializeConfigElement(
-  configElement: ConfigElement | null,
+function serializeConfigValueSource(
+  configValueSource: ConfigValueSource,
   configName: string,
-  importStatements: string[],
-  whitespace: string,
-  eagerImport: boolean
-) {
-  if (configElement === null) return `${whitespace}['${configName}']: null,`
-  assert(configElement.configEnv !== 'config-only')
-  const lines: string[] = []
-  lines.push(`${whitespace}['${configName}']: {`)
-  const { configDefinedAt, configDefinedByFile, configEnv, codeFilePath, codeFileExport, plusConfigFilePath } =
-    configElement
-  lines.push(`${whitespace}  configDefinedAt: ${JSON.stringify(configDefinedAt)},`)
-  lines.push(`${whitespace}  configDefinedByFile: ${JSON.stringify(configDefinedByFile)},`)
-  lines.push(`${whitespace}  codeFilePath: ${JSON.stringify(codeFilePath)},`)
-  lines.push(`${whitespace}  codeFileExport: ${JSON.stringify(codeFileExport)},`)
-  lines.push(`${whitespace}  plusConfigFilePath: ${JSON.stringify(plusConfigFilePath)},`)
-  lines.push(`${whitespace}  configEnv: '${configEnv}',`)
-  if ('configValue' in configElement) {
-    assert(!eagerImport)
-    const { configValue } = configElement
-    const configValueSerialized = getConfigValueSerialized(configValue, configName, configDefinedByFile)
-    lines.push(`${whitespace}  configValueSerialized: ${configValueSerialized}`)
-  } else {
-    assert(codeFilePath)
-    if (configEnv === '_routing-eager' || eagerImport) {
-      const configValueEagerImport = getConfigValueEagerImport(codeFilePath, codeFileExport, importStatements)
-      lines.push(`${whitespace}  configValue: ${configValueEagerImport}`)
-    }
-  }
-  lines.push(`${whitespace}},`)
-  return lines.join('\n')
-}
-
-function serializeConfigValueSource(configValueSource: ConfigValueSource, configName: string, whitespace: string) {
+  whitespace: string
+): string {
   const { definedAt, configEnv } = configValueSource
   const lines: string[] = []
-  lines.push(`${whitespace}{`)
+  lines.push(`{`)
   lines.push(`${whitespace}  definedAt: ${JSON.stringify(definedAt)},`)
   lines.push(`${whitespace}  configEnv: ${JSON.stringify(configEnv)},`)
-  if ('configValue' in configValueSource) {
-    const { configValue } = configValueSource
-    const valueSerialized = getConfigValueSerialized(configValue, configName, definedAt.filePath)
+  if ('value' in configValueSource) {
+    const { value } = configValueSource
+    const valueSerialized = getConfigValueSerialized(value, configName, definedAt.filePath)
     lines.push(`${whitespace}  valueSerialized: ${valueSerialized}`)
   }
   lines.push(`${whitespace}},`)
