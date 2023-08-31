@@ -1309,10 +1309,7 @@ function getFilesystemRoutingRootEffect(configFilesystemRoutingRoot: ConfigValue
   const { value } = configFilesystemRoutingRoot
   const configSrc = getConfigSrc(configFilesystemRoutingRoot)
   assertUsage(typeof value === 'string', `${configSrc} should be a string`)
-  assertUsage(
-    value.startsWith('/'),
-    `${configSrc} is '${value}' but it should start with a leading slash '/'`
-  )
+  assertUsage(value.startsWith('/'), `${configSrc} is '${value}' but it should start with a leading slash '/'`)
   const before = getRouteFilesystem(getLocationId(configFilesystemRoutingRoot.definedAt.filePath))
   const after = value
   const filesystemRoutingRootEffect = { before, after }
