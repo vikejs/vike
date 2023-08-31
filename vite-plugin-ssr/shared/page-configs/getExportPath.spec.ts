@@ -11,4 +11,7 @@ describe('getExportPath()', () => {
     expect(getExportPath(['object', 'nested', 'prop'])).toBe('export { object { nested { prop } } }')
     expect(getExportPath(['default', 'nested', 'prop'])).toBe('export default { nested { prop } }')
   })
+  it('edge cases work', () => {
+    expect(getExportPath(['*'])).toBe('export *')
+  })
 })
