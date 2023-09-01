@@ -1,4 +1,6 @@
 export { resolveRedirects }
+
+// For ./resolveRedirects.spec.ts
 export { resolveRouteStringRedirect }
 
 import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
