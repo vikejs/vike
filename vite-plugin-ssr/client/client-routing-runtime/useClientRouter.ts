@@ -225,15 +225,21 @@ function useClientRouter() {
           return
         }
         if (pageContextAbort._urlRedirect) {
-          await fetchAndRender({
-            scrollTarget: 'scroll-to-top-or-hash',
-            urlOriginal: pageContextAbort._urlRedirect.url,
-            overwriteLastHistoryEntry: false,
-            isBackwardNavigation: false,
-            checkClientSideRenderable: true,
-            pageContextsFromRewrite,
-            redirectCount: redirectCount++
-          })
+          const urlRedirect = pageContextAbort._urlRedirect.url
+          if (urlRedirect.startsWith('http')) {
+            // External redirection
+            window.location.href = urlRedirect
+          } else {
+            await fetchAndRender({
+              scrollTarget: 'scroll-to-top-or-hash',
+              urlOriginal: urlRedirect,
+              overwriteLastHistoryEntry: false,
+              isBackwardNavigation: false,
+              checkClientSideRenderable: true,
+              pageContextsFromRewrite,
+              redirectCount: redirectCount++
+            })
+          }
           return
         }
         assert(pageContextAbort.abortStatusCode)
