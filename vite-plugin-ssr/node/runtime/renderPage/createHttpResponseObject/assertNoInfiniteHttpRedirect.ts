@@ -9,6 +9,15 @@ const globalObject = getGlobalObject<{ redirectGraph: Graph }>('assertNoInfinite
 })
 
 function assertNoInfiniteHttpRedirect(urlRedirectOriginal: string, urlRedirectPathnameLogical: string) {
+  if (urlRedirectOriginal.startsWith('http')) {
+    // We assume that the redirect points to an external origin, and we can therefore assume that the app doesn't define an infinite loop (in itself).
+    //  - There isn't a reliable way to check whether the redirect points to an external origin or the same origin: the user usually passes the URL without origin.
+    //    ```js
+    //    // URL origin is usually missing
+    //    renderPage({ urlOriginal: '/some/pathname' })
+    //    ```
+    return
+  }
   assert(urlRedirectOriginal.startsWith('/'))
   assert(urlRedirectPathnameLogical.startsWith('/'))
   const graph = copy(globalObject.redirectGraph)

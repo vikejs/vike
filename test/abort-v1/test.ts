@@ -1,7 +1,13 @@
 export { testRun as test }
 
 import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, partRegex } from '@brillout/test-e2e'
-import { ensureWasClientSideRouted, expectUrl, hydrationDone, testCounter, expectPageContextJsonRequest } from '../utils'
+import {
+  ensureWasClientSideRouted,
+  expectUrl,
+  hydrationDone,
+  testCounter,
+  expectPageContextJsonRequest
+} from '../utils'
 
 function testRun(cmd: string, pageContextInitHasClientData = false) {
   run(cmd)
@@ -107,5 +113,11 @@ function testRun(cmd: string, pageContextInitHasClientData = false) {
     expect(resp.status).toBe(301)
     await page.click('a[href="/permanent-redirect"]')
     expectUrl('/')
+  })
+
+  test('external redirect', async () => {
+    await page.goto(getServerUrl() + '/')
+    await page.click('a[href="/redirect-external"]')
+    await page.waitForURL('https://vite-plugin-ssr.com')
   })
 }
