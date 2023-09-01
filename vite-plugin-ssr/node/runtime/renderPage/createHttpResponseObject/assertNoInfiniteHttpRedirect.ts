@@ -8,12 +8,12 @@ const globalObject = getGlobalObject<{ redirectGraph: Graph }>('assertNoInfinite
   redirectGraph: {}
 })
 
-function assertNoInfiniteHttpRedirect(urlSource: string, urlPathnameLogical: string) {
-  assert(urlSource.startsWith('/'))
-  assert(urlPathnameLogical.startsWith('/'))
+function assertNoInfiniteHttpRedirect(urlRedirectOriginal: string, urlRedirectPathnameLogical: string) {
+  assert(urlRedirectOriginal.startsWith('/'))
+  assert(urlRedirectPathnameLogical.startsWith('/'))
   const graph = copy(globalObject.redirectGraph)
-  graph[urlSource] ??= new Set()
-  graph[urlSource]!.add(urlPathnameLogical)
+  graph[urlRedirectOriginal] ??= new Set()
+  graph[urlRedirectOriginal]!.add(urlRedirectPathnameLogical)
   validate(graph)
   globalObject.redirectGraph = graph
 }
