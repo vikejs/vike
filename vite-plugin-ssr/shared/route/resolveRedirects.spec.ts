@@ -25,7 +25,7 @@ describe('resolveRouteStringRedirect', () => {
     )
     expectErr(
       () => resolveRouteStringRedirect('/a', 'b', '/'),
-      '[vite-plugin-ssr][Wrong Usage][vite.config.js > ssr({ redirects })] Invalid Route String b: Route Strings should start with a leading slash / (or be *)'
+      '[vite-plugin-ssr][Wrong Usage][vite.config.js > ssr({ redirects })] Invalid redirection target URL b: the target URL should start with /, http://, https://, or be *'
     )
     expectErr(
       () => resolveRouteStringRedirect('/a', '/@i', '/'),
@@ -47,6 +47,12 @@ describe('resolveRouteStringRedirect', () => {
   it('globs', () => {
     expect(resolveRouteStringRedirect('/a/*', '/b/*', '/a/1')).toEqual('/b/1')
     expect(resolveRouteStringRedirect('/a/*', '/b/c/*', '/a/1/2/3')).toEqual('/b/c/1/2/3')
+    expect(resolveRouteStringRedirect('/a/*', '/*', '/a/b')).toEqual('/b')
+  })
+  it('external redirects', () => {
+    expect(resolveRouteStringRedirect('/a/*', 'https://a.org/*', '/a/1')).toEqual('https://a.org/1')
+    expect(resolveRouteStringRedirect('/a/*', 'http://a.org/b/c/d/*', '/a/1/2/3')).toEqual('http://a.org/b/c/d/1/2/3')
+    expect(resolveRouteStringRedirect('/a/b/c', 'http://a.com', '/a/b/c')).toEqual('http://a.com')
   })
 })
 

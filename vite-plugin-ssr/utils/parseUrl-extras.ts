@@ -3,6 +3,8 @@ export { isBaseAssets }
 export { normalizeUrlPathname }
 export { removeBaseServer }
 export { modifyUrlPathname }
+export { removeUrlOrigin }
+export { addUrlOrigin }
 
 import { assertUrlComponents, createUrlFromComponents, isBaseServer, parseUrl } from './parseUrl.js'
 import { assert } from './assert.js'
@@ -83,5 +85,18 @@ function modifyUrlPathname(url: string, modifier: (urlPathname: string) => strin
   assertUrlComponents(url, origin, pathnameOriginal, searchOriginal, hashOriginal)
   const urlModified = createUrlFromComponents(origin, pathnameModified, searchOriginal, hashOriginal)
   assert((pathnameOriginal === pathnameModified) === (url === urlModified))
+  return urlModified
+}
+
+function removeUrlOrigin(url: string): { urlModified: string; origin: string | null } {
+  const { origin, pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, '/')
+  const urlModified = createUrlFromComponents(null, pathnameOriginal, searchOriginal, hashOriginal)
+  return { urlModified, origin }
+}
+function addUrlOrigin(url: string, origin: string | null): string {
+  const { origin: originCurrent, pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, '/')
+  assert(originCurrent === null)
+  assert(origin === null || origin.startsWith('http'))
+  const urlModified = createUrlFromComponents(origin, pathnameOriginal, searchOriginal, hashOriginal)
   return urlModified
 }

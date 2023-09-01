@@ -19,7 +19,9 @@ export default {
         // Parameterized redirections
         '/product/@id': '/buy/@id',
         // Glob redirections
-        '/admin/*': '/private/*'
+        '/admin/*': '/private/*',
+        // External redirections
+        '/admin/*': 'https://admin.example.org/*'
       }
     })
   ]

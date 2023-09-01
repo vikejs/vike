@@ -26,7 +26,17 @@ function resolveRouteStringRedirect(
   urlPathname: string
 ): null | string {
   assertRouteString(routeStringSource, `${redirectSrc} Invalid`)
-  assertRouteString(routeStringTarget, `${redirectSrc} Invalid`)
+  assertUsage(
+    routeStringTarget.startsWith('/') ||
+      routeStringTarget.startsWith('http://') ||
+      routeStringTarget.startsWith('https://') ||
+      routeStringTarget === '*',
+    `${redirectSrc} Invalid redirection target URL ${highlight(
+      routeStringTarget
+    )}: the target URL should start with ${highlight('/')}, ${highlight('http://')}, ${highlight(
+      'https://'
+    )}, or be ${highlight('*')}`
+  )
   assertParams(routeStringSource, routeStringTarget)
   const match = resolveRouteString(routeStringSource, urlPathname)
   if (!match) return null
@@ -39,6 +49,7 @@ function resolveRouteStringRedirect(
   })
   assert(!urlTarget.includes('@'))
   if (urlTarget === urlPathname) return null
+  assert(routeStringTarget.startsWith('/') || routeStringTarget.startsWith('http'))
   return urlTarget
 }
 

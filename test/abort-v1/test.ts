@@ -109,8 +109,10 @@ function testRun(cmd: string, pageContextInitHasClientData = false) {
 
   test('permanent redirect', async () => {
     const url = getServerUrl() + '/permanent-redirect'
+    // server-side
     const resp = await fetch(url, { redirect: 'manual' })
     expect(resp.status).toBe(301)
+    // client-side
     await page.click('a[href="/permanent-redirect"]')
     expectUrl('/')
   })
@@ -124,5 +126,17 @@ function testRun(cmd: string, pageContextInitHasClientData = false) {
   test('external redirect - server-side', async () => {
     await page.goto(getServerUrl() + '/redirect-external')
     await page.waitForURL('https://vite-plugin-ssr.com')
+  })
+
+  test('permanent external redirect', async () => {
+    const url = getServerUrl() + '/permanent-redirect'
+    // server-side
+    const resp = await fetch(url, { redirect: 'manual' })
+    expect(resp.status).toBe(301)
+    // client-side
+    await page.goto(getServerUrl() + '/')
+    await hydrationDone()
+    await page.click('a[href="/external/redirect"]')
+    await page.waitForURL('https://vite-plugin-ssr.com/redirect')
   })
 }

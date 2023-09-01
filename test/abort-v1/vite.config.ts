@@ -7,7 +7,8 @@ export default {
     react(),
     ssr({
       redirects: {
-        '/permanent-redirect': '/'
+        '/permanent-redirect': '/',
+        '/external/*': 'https://vite-plugin-ssr.com/*'
       }
     })
   ]
