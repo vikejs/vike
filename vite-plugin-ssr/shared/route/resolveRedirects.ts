@@ -60,9 +60,11 @@ function assertParams(routeStringSource: string, routeStringTarget: string) {
       const segments = routeStringSource.split('/')
       assertUsage(
         segments.includes(routeSegment),
-        `${redirectSrc} The redirect source ${highlight(routeStringSource)} is missing the URL parameter ${highlight(
-          routeSegment
-        )} used by the redirect target ${highlight(routeStringTarget)}`
+        `${redirectSrc} The redirection source URL ${highlight(
+          routeStringSource
+        )} is missing the URL parameter ${highlight(routeSegment)} used by the redirection target URL ${highlight(
+          routeStringTarget
+        )}`
       )
     }
   })
