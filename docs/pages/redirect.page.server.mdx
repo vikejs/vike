@@ -20,7 +20,7 @@ function onSomeHook() {
 }
 ```
 
-> `throw redirect()` makes temporary redirections (HTTP status code `302`). For permanent redirections (HTTP status code `301`) use <Link href="/redirects" noBreadcrumb={true} /> instead. (If you need programmatically defined permanent redirections then let us know: there is a hidden option to change the status code.)
+> `throw redirect()` makes temporary redirections (HTTP status code `302`). For permanent redirections (HTTP status code `301`) use <Link href="/redirects" noBreadcrumb={true} /> instead.
 
 While it's most commonly used with [`guard()`](/guard) or [`onBeforeRender()`](/onBeforeRender) you can use it with any hook.
 
