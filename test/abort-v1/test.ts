@@ -115,14 +115,14 @@ function testRun(cmd: string, pageContextInitHasClientData = false) {
     expectUrl('/')
   })
 
-  test('external redirect - server-side', async () => {
-    await page.goto(getServerUrl() + '/redirect-external')
-    await page.waitForURL('https://vite-plugin-ssr.com')
-  })
   test('external redirect - client-side', async () => {
     await page.goto(getServerUrl() + '/')
     await hydrationDone()
     await page.click('a[href="/redirect-external"]')
+    await page.waitForURL('https://vite-plugin-ssr.com')
+  })
+  test('external redirect - server-side', async () => {
+    await page.goto(getServerUrl() + '/redirect-external')
     await page.waitForURL('https://vite-plugin-ssr.com')
   })
 }
