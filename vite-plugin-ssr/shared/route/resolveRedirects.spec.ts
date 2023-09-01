@@ -31,6 +31,22 @@ describe('resolveRouteStringRedirect', () => {
       () => resolveRouteStringRedirect('/a', '/@i', '/'),
       '[vite-plugin-ssr][Wrong Usage][vite.config.js > ssr({ redirects })] The redirect source /a is missing the URL parameter @i used by the redirect target /@i'
     )
+    expectErr(
+      () => resolveRouteStringRedirect('/a', '/b/*', '/'),
+      '[vite-plugin-ssr][Wrong Usage][vite.config.js > ssr({ redirects })] The redirect source /a is missing the URL parameter * used by the redirect target /b/*'
+    )
+    expectErr(
+      () => resolveRouteStringRedirect('/', '/*', '/'),
+      '[vite-plugin-ssr][Wrong Usage][vite.config.js > ssr({ redirects })] The redirect source / is missing the URL parameter * used by the redirect target /*'
+    )
+    expectErr(
+      () => resolveRouteStringRedirect('/', '*', '/'),
+      '[vite-plugin-ssr][Wrong Usage][vite.config.js > ssr({ redirects })] The redirect source / is missing the URL parameter * used by the redirect target *'
+    )
+  })
+  it('globs', () => {
+    expect(resolveRouteStringRedirect('/a/*', '/b/*', '/a/1')).toEqual('/b/1')
+    expect(resolveRouteStringRedirect('/a/*', '/b/c/*', '/a/1/2/3')).toEqual('/b/c/1/2/3')
   })
 })
 

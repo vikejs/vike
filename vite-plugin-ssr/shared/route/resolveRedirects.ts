@@ -32,7 +32,10 @@ function resolveRouteStringRedirect(
   if (!match) return null
   let urlTarget = routeStringTarget
   Object.entries(match.routeParams).forEach(([key, val]) => {
-    urlTarget = urlTarget.replaceAll(`@${key}`, val)
+    if (key !== '*') {
+      key = `@${key}`
+    }
+    urlTarget = urlTarget.replaceAll(key, val)
   })
   assert(!urlTarget.includes('@'))
   if (urlTarget === urlPathname) return null
@@ -42,7 +45,7 @@ function resolveRouteStringRedirect(
 function assertParams(routeStringSource: string, routeStringTarget: string) {
   const routeSegments = routeStringTarget.split('/')
   routeSegments.forEach((routeSegment) => {
-    if (routeSegment.startsWith('@')) {
+    if (routeSegment.startsWith('@') || routeSegment.startsWith('*')) {
       const segments = routeStringSource.split('/')
       assertUsage(
         segments.includes(routeSegment),
