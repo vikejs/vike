@@ -10,61 +10,53 @@ import pc from '@brillout/picocolors'
 assertIsNotBrowser() // Don't bloat the client
 
 // TODO/v1-release: update
-const redirectSrc = '[vite.config.js > ssr({ redirects })]'
+const configSrc = '[vite.config.js > ssr({ redirects })]'
 
 function resolveRedirects(redirects: Record<string, string>, urlPathname: string): null | string {
-  for (const [routeStringSource, routeStringTarget] of Object.entries(redirects)) {
-    const urlTarget = resolveRouteStringRedirect(routeStringSource, routeStringTarget, urlPathname)
-    if (urlTarget) return urlTarget
+  for (const [urlSource, urlTarget] of Object.entries(redirects)) {
+    const urlResolved = resolveRouteStringRedirect(urlSource, urlTarget, urlPathname)
+    if (urlResolved) return urlResolved
   }
   return null
 }
 
-function resolveRouteStringRedirect(
-  routeStringSource: string,
-  routeStringTarget: string,
-  urlPathname: string
-): null | string {
-  assertRouteString(routeStringSource, `${redirectSrc} Invalid`)
+function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPathname: string): null | string {
+  assertRouteString(urlSource, `${configSrc} Invalid`)
   assertUsage(
-    routeStringTarget.startsWith('/') ||
-      routeStringTarget.startsWith('http://') ||
-      routeStringTarget.startsWith('https://') ||
-      routeStringTarget === '*',
-    `${redirectSrc} Invalid redirection target URL ${highlight(
-      routeStringTarget
-    )}: the target URL should start with ${highlight('/')}, ${highlight('http://')}, ${highlight(
-      'https://'
-    )}, or be ${highlight('*')}`
+    urlTarget.startsWith('/') ||
+      urlTarget.startsWith('http://') ||
+      urlTarget.startsWith('https://') ||
+      urlTarget === '*',
+    `${configSrc} Invalid redirection target URL ${highlight(urlTarget)}: the target URL should start with ${highlight(
+      '/'
+    )}, ${highlight('http://')}, ${highlight('https://')}, or be ${highlight('*')}`
   )
-  assertParams(routeStringSource, routeStringTarget)
-  const match = resolveRouteString(routeStringSource, urlPathname)
+  assertParams(urlSource, urlTarget)
+  const match = resolveRouteString(urlSource, urlPathname)
   if (!match) return null
-  let urlTarget = routeStringTarget
+  let urlResolved = urlTarget
   Object.entries(match.routeParams).forEach(([key, val]) => {
     if (key !== '*') {
       key = `@${key}`
     }
-    urlTarget = urlTarget.replaceAll(key, val)
+    urlResolved = urlResolved.replaceAll(key, val)
   })
-  assert(!urlTarget.includes('@'))
-  if (urlTarget === urlPathname) return null
-  assert(routeStringTarget.startsWith('/') || routeStringTarget.startsWith('http'))
-  return urlTarget
+  assert(!urlResolved.includes('@'))
+  if (urlResolved === urlPathname) return null
+  assert(urlTarget.startsWith('/') || urlTarget.startsWith('http'))
+  return urlResolved
 }
 
-function assertParams(routeStringSource: string, routeStringTarget: string) {
-  const routeSegments = routeStringTarget.split('/')
+function assertParams(urlSource: string, urlTarget: string) {
+  const routeSegments = urlTarget.split('/')
   routeSegments.forEach((routeSegment) => {
     if (routeSegment.startsWith('@') || routeSegment.startsWith('*')) {
-      const segments = routeStringSource.split('/')
+      const segments = urlSource.split('/')
       assertUsage(
         segments.includes(routeSegment),
-        `${redirectSrc} The redirection source URL ${highlight(
-          routeStringSource
-        )} is missing the URL parameter ${highlight(routeSegment)} used by the redirection target URL ${highlight(
-          routeStringTarget
-        )}`
+        `${configSrc} The redirection source URL ${highlight(urlSource)} is missing the URL parameter ${highlight(
+          routeSegment
+        )} used by the redirection target URL ${highlight(urlTarget)}`
       )
     }
   })
