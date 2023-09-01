@@ -28,7 +28,9 @@ import {
 } from './utils.js'
 import pc from '@brillout/picocolors'
 
-type RedirectStatusCode = 301 | 302
+type RedirectStatusCode = number &
+  // For improved IntelliSense, we define the list of status code directly on redirect()'s argument type
+  Parameters<typeof redirect>[1]
 type AbortStatusCode = number &
   // For improved IntelliSense, we define the list of status code directly on render()'s argument type
   Parameters<typeof render>[0]
@@ -44,22 +46,15 @@ type AbortRedirect = Error
  *
  * https://vite-plugin-ssr.com/redirect
  *
- * @param statusCode `301` (permanent) or `302` (temporary) redirection.
  * @param url The URL to redirect to.
+ * @param statusCode By default a `302` (temporary) redirection is performed, but you can trigger a `301` (permanent) redirection instead. Alternatively, you can define permanent redirections by setting `config.redirects`, see https://vite-plugin-ssr.com/redirects.
  */
-function redirect(url: `/${string}` | `https://${string}` | `http://${string}`): AbortRedirect
 function redirect(
   url: `/${string}` | `https://${string}` | `http://${string}`,
-  statusCode?: RedirectStatusCode
+  statusCode: 301 | 302 = 302
 ): AbortRedirect {
-  const abortCaller = 'throw redirect()' as const
-  statusCode ??= 302
   assertStatusCode(statusCode, [301, 302], 'redirect')
-  assertWarning(
-    statusCode !== 301,
-    "Status code 301 for `throw redirect()' is experimental and may be removed at any point",
-    { onlyOnce: true }
-  )
+  const abortCaller = 'throw redirect()' as const
   const pageContextAbort = {}
   objectAssign(pageContextAbort, {
     _abortCaller: abortCaller,
