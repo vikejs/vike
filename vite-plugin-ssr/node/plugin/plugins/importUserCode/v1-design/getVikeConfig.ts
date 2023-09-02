@@ -34,7 +34,12 @@ import type {
   ConfigValues,
   ConfigValue
 } from '../../../../../shared/page-configs/PageConfig.js'
-import { configDefinitionsBuiltIn, type ConfigDefinition } from './getVikeConfig/configDefinitionsBuiltIn.js'
+import {
+  configDefinitionsBuiltIn,
+  type ConfigDefinition,
+  configDefinitionsBuiltInGlobal,
+  type ConfigNameGlobal
+} from './getVikeConfig/configDefinitionsBuiltIn.js'
 import glob from 'fast-glob'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVps.js'
 import {
@@ -94,38 +99,6 @@ type VikeConfig = {
 }
 
 type ConfigDefinitionsIncludingCustom = Record<string, ConfigDefinition>
-
-type ConfigNameGlobal =
-  | 'onPrerenderStart'
-  | 'onBeforeRoute'
-  | 'prerender'
-  | 'extensions'
-  | 'disableAutoFullBuild'
-  | 'includeAssetsImportedByServer'
-  | 'baseAssets'
-  | 'baseServer'
-  | 'redirects'
-  | 'trailingSlash'
-  | 'disableUrlNormalization'
-const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition> = {
-  onPrerenderStart: {
-    env: 'server-only'
-  },
-  onBeforeRoute: {
-    env: '_routing-eager'
-  },
-  prerender: {
-    env: 'config-only'
-  },
-  extensions: { env: 'config-only' },
-  disableAutoFullBuild: { env: 'config-only' },
-  includeAssetsImportedByServer: { env: 'config-only' },
-  baseAssets: { env: 'config-only' },
-  baseServer: { env: 'config-only' },
-  redirects: { env: 'server-only' },
-  trailingSlash: { env: 'server-only' },
-  disableUrlNormalization: { env: 'server-only' }
-}
 
 let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null

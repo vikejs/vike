@@ -1,5 +1,7 @@
 export { configDefinitionsBuiltIn }
+export { configDefinitionsBuiltInGlobal }
 export type { ConfigDefinition }
+export type { ConfigNameGlobal }
 
 import type { ConfigEnvPrivate, PageConfigData } from '../../../../../../shared/page-configs/PageConfig.js'
 import type { ConfigNameBuiltIn, ConfigNamePrivate } from '../../../../../../shared/page-configs/Config.js'
@@ -88,4 +90,36 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     _computed: (pageConfig): null | ConfigEnvPrivate =>
       !isConfigSet(pageConfig, 'onBeforeRender') ? null : getConfigEnv(pageConfig, 'onBeforeRender')
   }
+}
+
+type ConfigNameGlobal =
+  | 'onPrerenderStart'
+  | 'onBeforeRoute'
+  | 'prerender'
+  | 'extensions'
+  | 'disableAutoFullBuild'
+  | 'includeAssetsImportedByServer'
+  | 'baseAssets'
+  | 'baseServer'
+  | 'redirects'
+  | 'trailingSlash'
+  | 'disableUrlNormalization'
+const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition> = {
+  onPrerenderStart: {
+    env: 'server-only'
+  },
+  onBeforeRoute: {
+    env: '_routing-eager'
+  },
+  prerender: {
+    env: 'config-only'
+  },
+  extensions: { env: 'config-only' },
+  disableAutoFullBuild: { env: 'config-only' },
+  includeAssetsImportedByServer: { env: 'config-only' },
+  baseAssets: { env: 'config-only' },
+  baseServer: { env: 'config-only' },
+  redirects: { env: 'server-only' },
+  trailingSlash: { env: 'server-only' },
+  disableUrlNormalization: { env: 'server-only' }
 }
