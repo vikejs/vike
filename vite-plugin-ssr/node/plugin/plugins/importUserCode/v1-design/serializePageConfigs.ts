@@ -97,7 +97,7 @@ function serializePageConfigs(
     if (configValueSource === null) {
       content = 'null,'
     } else {
-      content = serializeConfigValueSource(configValueSource, configName, whitespace, importStatements)
+      content = serializeConfigValueSource(configValueSource, configName, whitespace, importStatements, true)
       assert(content.startsWith('{') && content.endsWith('},') && content.includes('\n'))
     }
     content = `${whitespace}[${JSON.stringify(configName)}]: ${content}`
@@ -135,7 +135,8 @@ function serializeConfigValueSource(
   configValueSource: ConfigValueSource,
   configName: string,
   whitespace: string,
-  importStatements: string[]
+  importStatements: string[],
+  isGlobalConfig?: true
 ): string {
   const { definedAt, configEnv } = configValueSource
   const lines: string[] = []
@@ -146,7 +147,7 @@ function serializeConfigValueSource(
     const { value } = configValueSource
     const valueSerialized = getConfigValueSerialized(value, configName, definedAt.filePath)
     lines.push(`${whitespace}  valueSerialized: ${valueSerialized}`)
-  } else if (configValueSource.configEnv === '_routing-eager') {
+  } else if (configValueSource.configEnv === '_routing-eager' || isGlobalConfig) {
     const { filePath, fileExportPath } = configValueSource.definedAt
     const [exportName] = fileExportPath
     assert(exportName)
