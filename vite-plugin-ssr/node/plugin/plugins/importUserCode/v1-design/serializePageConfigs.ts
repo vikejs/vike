@@ -2,7 +2,7 @@
 
 export { serializePageConfigs }
 
-import { assert, assertUsage, objectEntries } from '../../../utils.js'
+import { assert, assertUsage, getPropAccessNotation, hasProp, objectEntries } from '../../../utils.js'
 import type {
   ConfigValue,
   ConfigValueSource,
@@ -15,6 +15,7 @@ import { debug } from './debug.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import { skipConfigValue } from './getVirtualFileImportCodeFiles.js'
 import { getConfigEnv } from './helpers.js'
+import pc from '@brillout/picocolors'
 
 function serializePageConfigs(
   pageConfigsData: PageConfigData[],
@@ -159,12 +160,19 @@ function serializeConfigValueSource(
 }
 function getConfigValueSerialized(value: unknown, configName: string, configDefinedByFile: string): string {
   let configValueSerialized: string
+  const valueName = `config${getPropAccessNotation(configName)}`
   try {
-    configValueSerialized = stringify(value)
-  } catch {
+    configValueSerialized = stringify(value, { valueName })
+  } catch (err) {
+    assert(hasProp(err, 'messageCore', 'string'))
+    const configPath = pc.bold(configDefinedByFile)
     assertUsage(
       false,
-      `The value of the config '${configName}' cannot live inside ${configDefinedByFile}, see https://vite-plugin-ssr.com/header-file`
+      [
+        `The value of the config ${pc.cyan(configName)} cannot be defined inside the file ${configPath}.`,
+        `Its value must be defined in an another file and then imported by ${configPath} (because it isn't serializable: ${err.messageCore}).`,
+        `Only serializable config values can be defined inside ${configPath}, see https://vite-plugin-ssr.com/header-file.`
+      ].join(' ')
     )
   }
   configValueSerialized = JSON.stringify(configValueSerialized)
