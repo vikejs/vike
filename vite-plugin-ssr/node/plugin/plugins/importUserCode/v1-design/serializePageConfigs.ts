@@ -45,7 +45,15 @@ function serializePageConfigs(
       lines.push(`${whitespace}[${JSON.stringify(configName)}]: [`)
       whitespace += '  '
       sources.forEach((configValueSource) => {
-        const content = serializeConfigValueSource(configValueSource, configName, whitespace, importStatements)
+        const content = serializeConfigValueSource(
+          configValueSource,
+          configName,
+          whitespace,
+          isForClientSide,
+          isClientRouting,
+          importStatements,
+          false
+        )
         assert(content.startsWith('{') && content.endsWith('},') && content.includes('\n'))
         lines.push(whitespace + content)
       })
@@ -98,7 +106,15 @@ function serializePageConfigs(
     if (configValueSource === null) {
       content = 'null,'
     } else {
-      content = serializeConfigValueSource(configValueSource, configName, whitespace, importStatements, true)
+      content = serializeConfigValueSource(
+        configValueSource,
+        configName,
+        whitespace,
+        isForClientSide,
+        isClientRouting,
+        importStatements,
+        true
+      )
       assert(content.startsWith('{') && content.endsWith('},') && content.includes('\n'))
     }
     content = `${whitespace}[${JSON.stringify(configName)}]: ${content}`
@@ -136,20 +152,23 @@ function serializeConfigValueSource(
   configValueSource: ConfigValueSource,
   configName: string,
   whitespace: string,
+  isForClientSide: boolean,
+  isClientRouting: boolean,
   importStatements: string[],
-  isGlobalConfig?: true
+  isGlobalConfig: boolean
 ): string {
   const { definedAt, configEnv } = configValueSource
   const lines: string[] = []
   lines.push(`{`)
   lines.push(`${whitespace}  definedAt: ${JSON.stringify(definedAt)},`)
   lines.push(`${whitespace}  configEnv: ${JSON.stringify(configEnv)},`)
-  if (configEnv !== 'config-only') {
+  const eager = configValueSource.configEnv === '_routing-eager' || isGlobalConfig
+  if (!skipConfigValue(configEnv, isForClientSide, isClientRouting) || eager) {
     if ('value' in configValueSource) {
       const { value } = configValueSource
       const valueSerialized = getConfigValueSerialized(value, configName, definedAt.filePath)
       lines.push(`${whitespace}  valueSerialized: ${valueSerialized}`)
-    } else if (configValueSource.configEnv === '_routing-eager' || isGlobalConfig) {
+    } else if (eager) {
       const { filePath, fileExportPath } = configValueSource.definedAt
       const [exportName] = fileExportPath
       assert(exportName)
