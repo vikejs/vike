@@ -520,6 +520,7 @@ async function callOnPrerenderStartHook(
     if (configValueSource) {
       const hookFn = configValueSource.value
       const hookFilePath = configValueSource.definedAt.filePath
+      assert(hookFn)
       assert(hookFilePath)
       if (hookFn) {
         onPrerenderStartHook = {
