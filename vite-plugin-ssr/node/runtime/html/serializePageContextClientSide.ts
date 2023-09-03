@@ -60,13 +60,13 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
       } catch (err) {
         hasWarned = true
         propsNonSerializable.push(prop)
-        assert(hasProp(err, 'message', 'string'))
+        assert(hasProp(err, 'messageCore', 'string'))
         assertWarning(
           false,
           [
             `${varName} cannot be serialized and, therefore, cannot be passed to the client.`,
             `Make sure that ${varName} is serializable, or remove ${h(propName)} from ${h('passToClient')}.`,
-            `Serialization error: ${lowercaseFirstLetter(err.message)}`
+            `Serialization error: ${err.messageCore}.`
           ].join(' '),
           { onlyOnce: false }
         )
@@ -142,8 +142,4 @@ function serializePageContextAbort(
     )
   }
   return serialize(pageContext)
-}
-
-function lowercaseFirstLetter(str: string) {
-  return str.charAt(0).toLowerCase() + str.slice(1)
 }
