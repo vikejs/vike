@@ -180,7 +180,7 @@ async function runPrerender(
     assert(manuallyTriggered)
     assertWarning(
       prerenderConfig,
-      `You're executing \`${manuallyTriggered}\` but the config \`prerender\` isn't set to true`,
+      `You're executing ${pc.cyan(manuallyTriggered)} but the config ${pc.cyan('prerender')} isn't set to true`,
       {
         onlyOnce: true
       }
@@ -625,7 +625,9 @@ async function callOnPrerenderStartHook(
   }
 
   const errPrefix = `The ${hookName}() hook exported by ${hookFilePath}`
-  const rightUsage = `${errPrefix} should return \`null\`, \`undefined\`, or \`{ prerenderContext: { pageContexts } }\`.`
+  const rightUsage = `${errPrefix} should return ${pc.cyan('null')}, ${pc.cyan('undefined')}, or ${pc.cyan(
+    '{ prerenderContext: { pageContexts } }'
+  )}`
 
   // TODO/v1-release: remove
   if (hasProp(result, 'globalContext')) {
@@ -637,7 +639,9 @@ async function callOnPrerenderStartHook(
     )
     assertWarning(
       false,
-      `${errPrefix} returns \`{ globalContext: { prerenderPageContexts } }\` but the return value has been renamed to \`{ prerenderContext: { pageContexts } }\`, see ${docLink}`,
+      `${errPrefix} returns ${pc.cyan(
+        '{ globalContext: { prerenderPageContexts } }'
+      )} but the return value has been renamed to ${pc.cyan('{ prerenderContext: { pageContexts } }')}, see ${docLink}`,
       { onlyOnce: true }
     )
     result = {
@@ -809,7 +813,9 @@ function warnMissingPages(
       const pageAt = getPageAt(pageId)
       assertWarning(
         partial,
-        `Cannot pre-render page ${pageAt} because it has a non-static route, and no ${hookName}() hook returned (an) URL(s) matching the page's route. Either use a ${hookName}() hook to pre-render the page, or use the option \`prerender.partial\` to suppress this warning, see https://vite-plugin-ssr.com/prerender-config`,
+        `Cannot pre-render page ${pageAt} because it has a non-static route, and no ${hookName}() hook returned (an) URL(s) matching the page's route. Either use a ${hookName}() hook to pre-render the page, or use the option ${pc.cyan(
+          'prerender.partial'
+        )} to suppress this warning, see https://vite-plugin-ssr.com/prerender-config`,
         { onlyOnce: true }
       )
     })
@@ -955,31 +961,39 @@ function normalizeOnPrerenderHookResult(
 
     const errMsg1 = `The ${hookName}() hook defined by ${prerenderHookFile} returned` as const
     const errMsg2 = `${errMsg1} an invalid value` as const
-    const errHint =
-      `Make sure your ${hookName}() hook returns an object \`{ url, pageContext }\` or an array of such objects.` as const
+    const errHint = `Make sure your ${hookName}() hook returns an object ${pc.cyan(
+      '{ url, pageContext }'
+    )} or an array of such objects.` as const
     assertUsage(isPlainObject(prerenderElement), `${errMsg2}. ${errHint}`)
-    assertUsage(hasProp(prerenderElement, 'url'), `${errMsg2}: \`url\` is missing. ${errHint}`)
+    assertUsage(hasProp(prerenderElement, 'url'), `${errMsg2}: ${pc.cyan('url')} is missing. ${errHint}`)
     assertUsage(
       hasProp(prerenderElement, 'url', 'string'),
-      `${errMsg2}: \`url\` should be a string (but \`typeof url === "${typeof prerenderElement.url}"\`).`
+      `${errMsg2}: ${pc.cyan('url')} should be a string (but ${pc.cyan(
+        `typeof url === "${typeof prerenderElement.url}"`
+      )}).`
     )
     assertUsage(
       prerenderElement.url.startsWith('/'),
       `${errMsg1} a URL with an invalid value '${prerenderElement.url}' which doesn't start with '/'. Make sure each URL starts with '/'.`
     )
     Object.keys(prerenderElement).forEach((key) => {
-      assertUsage(key === 'url' || key === 'pageContext', `${errMsg2}: unexpected object key \`${key}\`. ${errHint}`)
+      assertUsage(
+        key === 'url' || key === 'pageContext',
+        `${errMsg2}: unexpected object key ${pc.cyan(key)}. ${errHint}`
+      )
     })
     if (!hasProp(prerenderElement, 'pageContext')) {
       prerenderElement.pageContext = null
     } else if (!hasProp(prerenderElement, 'pageContext', 'null')) {
       assertUsage(
         hasProp(prerenderElement, 'pageContext', 'object'),
-        `${errMsg1} an invalid \`pageContext\` value: make sure \`pageContext\` is an object.`
+        `${errMsg1} an invalid ${pc.cyan('pageContext')} value: make sure ${pc.cyan('pageContext')} is an object.`
       )
       assertUsage(
         isPlainObject(prerenderElement.pageContext),
-        `${errMsg1} an invalid \`pageContext\` object: make sure \`pageContext\` is a plain JavaScript object.`
+        `${errMsg1} an invalid ${pc.cyan('pageContext')} object: make sure ${pc.cyan(
+          'pageContext'
+        )} is a plain JavaScript object.`
       )
     }
     assert(hasProp(prerenderElement, 'pageContext', 'object') || hasProp(prerenderElement, 'pageContext', 'null'))
@@ -1009,14 +1023,18 @@ function checkOutdatedOptions(options: {
   ;(['noExtraDir', 'partial', 'parallel'] as const).forEach((prop) => {
     assertUsage(
       options[prop] === undefined,
-      `[prerender()] Option \`${prop}\` is deprecated. Define \`${prop}\` in \`vite.config.js\` instead. See https://vite-plugin-ssr.com/prerender-config`,
+      `[prerender()] Option ${pc.cyan(prop)} is deprecated. Define ${pc.cyan(
+        prop
+      )} in vite.config.js instead. See https://vite-plugin-ssr.com/prerender-config`,
       { showStackTrace: true }
     )
   })
   ;(['base', 'outDir'] as const).forEach((prop) => {
     assertWarning(
       options[prop] === undefined,
-      `[prerender()] Option \`${prop}\` is outdated and has no effect (vite-plugin-ssr now automatically determines \`${prop}\`)`,
+      `[prerender()] Option ${pc.cyan(
+        prop
+      )} is outdated and has no effect (vite-plugin-ssr now automatically determines ${pc.cyan(prop)})`,
       {
         showStackTrace: true,
         onlyOnce: true
@@ -1045,12 +1063,14 @@ function assertLoadedConfig(
   }
   const { configFile } = viteConfig
   if (configFile) {
-    assertUsage(false, `${configFile} is missing vite-plugin-ssr. Add vite-plugin-ssr to \`${configFile}\`.`)
+    assertUsage(false, `${configFile} doesn't install vite-plugin-ssr`)
   } else {
     if (!options.viteConfig) {
       assertUsage(
         false,
-        `[prerender()] No \`vite.config.js\` file found at \`${process.cwd()}\`. Use the option \`prerender({ viteConfig })\`.`,
+        `[prerender()] No vite.config.js file found at ${process.cwd()}. Use the option ${pc.cyan(
+          'prerender({ viteConfig })'
+        )}.`,
         { showStackTrace: true }
       )
     } else {
