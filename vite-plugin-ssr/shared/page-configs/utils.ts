@@ -59,25 +59,6 @@ function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
   return pageConfig
 }
 
-// TODO: remove in favor of getConfigSrc()
-function getConfigSource(configSource: ConfigSource): string {
-  const { configSourceFile, configSourceFileExportName, configSourceFileDefaultExportKey } = configSource
-  assert(configSourceFile)
-  if (configSourceFileDefaultExportKey) {
-    assert(configSourceFileDefaultExportKey !== 'default')
-    return `${configSourceFile} > \`export default { ${configSourceFileDefaultExportKey} }` as const
-  } else {
-    if (configSourceFileExportName === '*') {
-      return `${configSourceFile} > \`export *\`` as const
-    } else if (configSourceFileExportName === 'default') {
-      return `${configSourceFile} > \`export default\`` as const
-    } else {
-      assert(configSourceFileExportName)
-      return `${configSourceFile} > \`export { ${configSourceFileExportName} }\`` as const
-    }
-  }
-}
-
 // TODO: rename to getValueSrc()
 function getConfigSrc(
   { definedAt }: { definedAt: { filePath: string; fileExportPath: string[] } },

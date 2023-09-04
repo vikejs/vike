@@ -1,11 +1,6 @@
-- dig into the bug Aure found
-- restore pc.cyan()
-  - search for \`
 - stop treating undefined as null
-- remove copy()
 - refacor/fix skipConfigValue to differentiate between global/page virtual file
 - use json-s instead of JSON
-- remove getConfigDefinedAt() in favor of getConfigSource()
 
 - Seems like passToClient is already cumulative for 0.4 design, should be as well for v1 design
   - https://github.com/vikejs/vike-react/issues/4
