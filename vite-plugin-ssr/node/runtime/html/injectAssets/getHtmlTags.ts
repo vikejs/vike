@@ -13,6 +13,7 @@ import type { PageContextInjectAssets } from '../injectAssets.js'
 import type { InjectToStream } from '../stream/react-streaming.js'
 import type { PageAsset } from '../../renderPage/getPageAssets.js'
 import { getGlobalContext } from '../../globalContext.js'
+import pc from '@brillout/picocolors'
 
 type PreloadFilter = null | ((assets: InjectFilterEntry[]) => InjectFilterEntry[])
 type PreloadFilterInject = false | 'HTML_BEGIN' | 'HTML_END'
@@ -189,7 +190,7 @@ function assertInjectFilterEntries(injectFilterEntries: InjectFilterEntry[], sta
 function assertInjectFilterUsage(injectFilterEntries: InjectFilterEntry[], stamp: any) {
   injectFilterEntries.forEach((entry, i) => {
     assertUsage(isObject(entry), `[injectFilter()] Entry ${i} isn't an object`)
-    assertUsage(typeof entry.src === 'string', `[injectFilter()] Entry ${i} is missing property \`src\``)
+    assertUsage(typeof entry.src === 'string', `[injectFilter()] Entry ${i} is missing property ${pc.cyan('src')}`)
     assertUsage(
       (entry as any)[stamp] === true,
       `[injectFilter()] Entry ${i} (${entry.src}) isn't the original object, see https://vite-plugin-ssr.com/injectFilter`

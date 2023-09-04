@@ -26,6 +26,7 @@ import {
 import { assert, assertUsage, assertWarning } from '../utils.js'
 import { getHtmlString, type HtmlRender } from '../html/renderHtml.js'
 import type { RenderHook } from './executeOnRenderHtmlHook.js'
+import pc from '@brillout/picocolors'
 
 const streamDocs = 'See https://vite-plugin-ssr.com/stream for more information.'
 
@@ -148,10 +149,9 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       }
       assertUsage(
         false,
-        `The argument \`writable\` passed to \`pageContext.httpResponse.pipe(writable)\` doesn't seem to be ${getStreamName(
-          'writable',
-          'web'
-        )} nor ${getStreamName('writable', 'node')}.`
+        `The argument ${pc.cyan('writable')} passed to ${pc.cyan(
+          'pageContext.httpResponse.pipe(writable)'
+        )} doesn't seem to be ${getStreamName('writable', 'web')} nor ${getStreamName('writable', 'node')}.`
       )
     }
   }

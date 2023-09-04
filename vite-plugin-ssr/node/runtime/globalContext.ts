@@ -24,6 +24,7 @@ import { assertPluginManifest, PluginManifest } from '../shared/assertPluginMani
 import type { ConfigVpsResolved } from '../../shared/ConfigVps.js'
 import { getConfigVps } from '../shared/getConfigVps.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
+import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   viteDevServer?: ViteDevServer
@@ -214,9 +215,9 @@ function assertNodeEnv(hasViteDevServer: boolean) {
     hasViteDevServer === isDevNodeEnv,
     `Vite's development server was${hasViteDevServer ? '' : "n't"} instantiated while the environment is set to be a ${
       isDevNodeEnv ? 'development' : 'production'
-    } environment by \`process.env.NODE_ENV === ${JSON.stringify(
-      nodeEnv
-    )}\` which is contradictory, see https://vite-plugin-ssr.com/NODE_ENV`,
+    } environment by ${pc.cyan(
+      `process.env.NODE_ENV === ${JSON.stringify(nodeEnv)}`
+    )} which is contradictory, see https://vite-plugin-ssr.com/NODE_ENV`,
     { onlyOnce: true }
   )
 }

@@ -11,6 +11,7 @@ import type { FileType } from './fileTypes.js'
 import type { PageConfigLoaded } from './../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
 import { getConfigSrc } from '../page-configs/utils.js'
+import pc from '@brillout/picocolors'
 
 // TODO/v1-release: remove
 type ExportsAll = Record<
@@ -157,7 +158,7 @@ function getExportValues(pageFile: PageFile) {
         if (isTemplateFile(filePath)) {
           exportName = 'Page'
         } else {
-          assertUsage(isObject(exportValue), `The \`export default\` of ${filePath} should be an object.`)
+          assertUsage(isObject(exportValue), `The ${pc.cyan('export default')} of ${filePath} should be an object.`)
           Object.entries(exportValue).forEach(([defaultExportName, defaultExportValue]) => {
             assertDefaultExports(defaultExportName, filePath)
             exportValues.push({

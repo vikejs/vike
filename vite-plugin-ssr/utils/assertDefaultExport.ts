@@ -3,6 +3,7 @@ export { assertDefaultExportObject }
 
 import { assert, assertUsage, assertWarning } from './assert.js'
 import { isObject } from './isObject.js'
+import pc from '@brillout/picocolors'
 
 const IGNORE = [
   // vite-plugin-solid adds `export { $$registrations }`
@@ -26,10 +27,12 @@ function assertDefaultExportObject(
   filePath: string
 ): asserts fileExports is { default: Record<string, unknown> } {
   assertSingleDefaultExport(fileExports, filePath, false)
-  const defaultExport = fileExports.default
+  const exportDefault = fileExports.default
   assertUsage(
-    isObject(defaultExport),
-    `${filePath} should default export an object: its \`export default\` is a \`${typeof defaultExport}\` but it should be an object instead`
+    isObject(exportDefault),
+    `The ${pc.cyan('export default')} of ${pc.bold(filePath)} should be an object (but it's ${pc.cyan(
+      `typeof exportDefault === ${JSON.stringify(typeof exportDefault)}`
+    )} instead)`
   )
 }
 
@@ -47,20 +50,25 @@ function assertSingleDefaultExport(
       return
     } else {
       assert(exportsRelevant.length === 0)
-      assertUsage(false, `${filePath} doesn't export any value, but it should have a \`export default\` instead`)
+      assertUsage(
+        false,
+        `${filePath} doesn't export any value, but it should have a ${pc.cyan('export default')} instead`
+      )
     }
   } else if (!FILES_WITH_SIDE_EXPORTS.some((ext) => filePath.endsWith(ext))) {
     const exportsInvalidStr = exportsInvalid.join(', ')
     if (defaultExportValueIsUnknown) {
       assertWarning(
         exportsInvalid.length === 0,
-        `${filePath} should only have a default export: remove \`export { ${exportsInvalidStr} }\``,
+        `${filePath} should only have a default export: remove ${pc.cyan(`export { ${exportsInvalidStr} }`)}`,
         { onlyOnce: true }
       )
     } else {
       assertWarning(
         exportsInvalid.length === 0,
-        `${filePath} replace \`export { ${exportsInvalidStr} }\` with \`export default { ${exportsInvalidStr} }\``,
+        `${filePath} replace ${pc.cyan(`export { ${exportsInvalidStr} }`)} with ${pc.cyan(
+          `export default { ${exportsInvalidStr} }`
+        )}`,
         { onlyOnce: true }
       )
     }

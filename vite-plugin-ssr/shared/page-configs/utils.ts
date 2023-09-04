@@ -42,7 +42,7 @@ function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName, typ
     const typeActual = typeof value
     assertUsage(
       typeActual === type,
-      `${configSrc} has an invalid type \`${typeActual}\`: is should be a ${type} instead`
+      `${configSrc} has an invalid type ${pc.cyan(typeActual)}: is should be a ${pc.cyan(type)} instead`
     )
   }
   return configValue
