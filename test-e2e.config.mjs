@@ -77,6 +77,7 @@ function tolerateError({ logSource, logText }) {
     isCloudflareFalseError1() ||
     isCloudflareFalseError2() ||
     isCloudflareVueWarning() ||
+    isCloudflarePrewarmWarning() ||
     isTwitterEmbedsError() ||
     isGithubImageError() ||
     isSlowCrawlWarning() ||
@@ -175,6 +176,9 @@ function tolerateError({ logSource, logText }) {
       logSource === 'stderr' &&
       logText.includes('Feature flags __VUE_OPTIONS_API__, __VUE_PROD_DEVTOOLS__ are not explicitly defined.')
     )
+  }
+  function isCloudflarePrewarmWarning() {
+    return logSource === 'stderr' && logText.includes('worker failed to prewarm')
   }
   function isTwitterEmbedsError() {
     return (
