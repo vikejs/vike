@@ -17,7 +17,7 @@ import {
   objectAssign
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
-import type { ResolvedConfig, ViteDevServer, PreviewServerForHook as VitePreviewServer } from 'vite'
+import type { ResolvedConfig, ViteDevServer, PreviewServer as VitePreviewServer } from 'vite'
 import { loadImportBuild } from './globalContext/loadImportBuild.js'
 import { setPageFiles } from '../../shared/getPageFiles.js'
 import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest.js'
