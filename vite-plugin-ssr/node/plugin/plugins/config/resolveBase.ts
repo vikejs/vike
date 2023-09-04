@@ -5,6 +5,7 @@ import { assert, assertUsage, isBaseServer, isBaseAssets } from '../../utils.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
 import type { ConfigVpsUserProvided } from '../../../../shared/ConfigVps.js'
 import { pickFirst } from './pickFirst.js'
+import pc from '@brillout/picocolors'
 
 type BaseServers = {
   baseServer: string
@@ -26,12 +27,20 @@ function resolveBaseFromUserConfig(config: UserConfig, configVps: undefined | Co
 
 function resolve(base: string | null, baseServer_: string | null, baseAssets_: string | null): BaseServers {
   {
-    const wrongBase = (val: string) => `should start with '/', 'http://', or 'https://' (it is '${val}' instead)`
+    const wrongBase = (val: string) =>
+      `should start with ${pc.bold('/')}, ${pc.bold('http://')}, or ${pc.bold('https://')} (it's ${pc.bold(
+        val
+      )} instead)`
     assertUsage(base === null || isBaseAssets(base), `vite.config.js#base ${wrongBase(base!)}`)
-    assertUsage(baseAssets_ === null || isBaseAssets(baseAssets_), `Config \`baseAssets\` ${wrongBase(baseAssets_!)}`)
+    assertUsage(
+      baseAssets_ === null || isBaseAssets(baseAssets_),
+      `Config ${pc.cyan('baseAssets')} ${wrongBase(baseAssets_!)}`
+    )
     assertUsage(
       baseServer_ === null || baseServer_.startsWith('/'),
-      `Config \`baseServer\` should start with a leading slash '/' (it is '${baseServer_}' instead)`
+      `Config ${pc.cyan('baseServer')} should start with a leading slash ${pc.bold('/')} (it's ${pc.bold(
+        baseServer_
+      )} instead)`
     )
   }
   if (base) {

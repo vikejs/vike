@@ -27,6 +27,7 @@ import type { InjectToStream } from './stream/react-streaming.js'
 import type { PageAsset } from '../renderPage/getPageAssets.js'
 import type { PreloadFilter } from './injectAssets/getHtmlTags.js'
 import { getGlobalContext } from '../globalContext.js'
+import pc from '@brillout/picocolors'
 
 type DocumentHtml = TemplateWrapped | EscapedString | StreamProviderAny
 type HtmlRender = string | StreamProviderNormalized
@@ -172,7 +173,9 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   }
   assertUsage(
     !isPromise(arg),
-    `[dangerouslySkipEscape(str)] Argument \`str\` is a promise. It should be a string instead (or a stream). Make sure to \`await str\`.`,
+    `[dangerouslySkipEscape(${pc.cyan('str')})] Argument ${pc.cyan(
+      'str'
+    )} is a promise. It should be a string instead (or a stream). Make sure to ${pc.cyan('await str')}.`,
     { showStackTrace: true }
   )
   if (typeof arg === 'string') {
@@ -180,7 +183,9 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   }
   assertWarning(
     false,
-    `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof arg}"\`.`,
+    `[dangerouslySkipEscape(${pc.cyan('str')})] Argument ${pc.cyan('str')} should be a string but we got ${pc.cyan(
+      `typeof str === "${typeof arg}"`
+    )}.`,
     {
       onlyOnce: false,
       showStackTrace: true
@@ -214,7 +219,9 @@ async function renderTemplate(
     const { hookName, hookFilePath } = pageContext._renderHook
     assertUsage(
       !htmlStream,
-      `Injecting two streams in \`escapeInject\` template tag of ${hookName}() hook defined by ${hookFilePath}. Inject only one stream instead.`
+      `Injecting two streams in ${pc.cyan('escapeInject')} template tag of ${hookName}() hook defined by ${pc.bold(
+        hookFilePath
+      )}. Inject only one stream instead.`
     )
     htmlStream = stream
   }
@@ -254,7 +261,10 @@ async function renderTemplate(
     const getErrMsg = (typeText: string, end: null | string) => {
       const { hookName, hookFilePath } = pageContext._renderHook
       const nth: string = (i === 0 && '1st') || (i === 1 && '2nd') || (i === 2 && '3rd') || `${i}-th`
-      return [`The ${nth} HTML variable is ${typeText}, see ${hookName}() hook defined by ${hookFilePath}.`, end]
+      return [
+        `The ${nth} HTML variable is ${typeText}, see ${hookName}() hook defined by ${pc.bold(hookFilePath)}.`,
+        end
+      ]
         .filter(Boolean)
         .join(' ')
     }
@@ -265,8 +275,8 @@ async function renderTemplate(
       assertWarning(
         false,
         getErrMsg(
-          `\`${templateVar}\` which will be converted to an empty string`,
-          `Pass an empty string instead of \`${templateVar}\` to remove this warning.`
+          `${pc.cyan(templateVar)} which will be converted to an empty string`,
+          `Pass an empty string instead of ${pc.cyan(templateVar)} to remove this warning.`
         ),
         { onlyOnce: false }
       )
@@ -278,16 +288,20 @@ async function renderTemplate(
       const streamNote = ['boolean', 'number', 'bigint', 'symbol'].includes(varType)
         ? null
         : '(See https://vite-plugin-ssr.com/stream for HTML streaming.)'
-      assertUsage(varType === 'string', getErrMsg(`\`typeof htmlVar === "${varType}"\``, streamNote))
+      assertUsage(varType === 'string', getErrMsg(pc.cyan(`typeof htmlVar === "${varType}"`), streamNote))
     }
 
     {
       const { isProduction } = getGlobalContext()
-      if (isHtml(templateVar) && !isProduction) {
+      if (
+        isHtml(templateVar) &&
+        // We don't show this warning in production because it's expected that some users may (un)willingly do some XSS injection: we avoid flooding the production logs.
+        !isProduction
+      ) {
         assertWarning(
           false,
           getErrMsg(
-            `\`${templateVar}\` which seems to be HTML code`,
+            `${pc.cyan(templateVar)} which seems to be HTML code`,
             'Did you forget to wrap the value with dangerouslySkipEscape()?'
           ),
           { onlyOnce: false }

@@ -50,9 +50,9 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
     } else if (routeSegment && isParam(routeSegment)) {
       assertWarning(
         !routeSegment.startsWith(PARAM_TOKEN_OLD),
-        `Outdated Route String \`${routeString}\`, use \`${routeString
-          .split(PARAM_TOKEN_OLD)
-          .join(PARAM_TOKEN_NEW)}\` instead.`,
+        `Outdated Route String ${pc.bold(routeString)}, use ${pc.bold(
+          routeString.split(PARAM_TOKEN_OLD).join(PARAM_TOKEN_NEW)
+        )} instead.`,
         { onlyOnce: true }
       )
       if (!urlSegment) {

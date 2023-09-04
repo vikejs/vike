@@ -69,7 +69,6 @@ function tolerateError({ logSource, logText }) {
   return (
     isRenderErrorPageDeprecationWarning() ||
     isSlowHookWarning() ||
-    isNoErrorPageWarning() ||
     isServiceExit() ||
     isGetPageAssetsDeprecationWarning() ||
     isDocpressAssetWarning() ||
@@ -81,7 +80,6 @@ function tolerateError({ logSource, logText }) {
     isTwitterEmbedsError() ||
     isGithubImageError() ||
     isSlowCrawlWarning() ||
-    isHtmlEscapingTest() ||
     isNodeExperimentalEsmLoader()
   )
 
@@ -103,16 +101,6 @@ function tolerateError({ logSource, logText }) {
       logText.includes('[Warning]') &&
       logText.includes('hook') &&
       logText.includes('is taking more than 4 seconds')
-    )
-  }
-
-  // [vite-plugin-ssr@0.4.42][Warning] No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)
-  function isNoErrorPageWarning() {
-    return (
-      logSource === 'stderr' &&
-      logText.includes(
-        'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)'
-      )
     )
   }
 
@@ -197,16 +185,6 @@ function tolerateError({ logSource, logText }) {
   }
   function isSlowCrawlWarning() {
     return logSource === 'stderr' && logText.includes('Crawling your user files took an unexpected long time')
-  }
-
-  function isHtmlEscapingTest() {
-    return (
-      logSource === 'stderr' &&
-      logText.includes(
-        'The 2nd HTML variable is `<b>I was defined without an HTML Fragment</b>` which seems to be HTML code'
-      ) &&
-      logText.includes('Did you forget to wrap the value with dangerouslySkipEscape')
-    )
   }
 
   function isNodeExperimentalEsmLoader() {
