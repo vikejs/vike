@@ -30,16 +30,16 @@ async function resolveRouteFunction(
   }
   assertUsage(
     isPlainObject(result),
-    `The Route Function ${routeDefinedAt} should return a boolean or a plain JavaScript object, instead it returns \`${
-      hasProp(result, 'constructor') ? result.constructor : result
-    }\`.`
+    `The Route Function ${routeDefinedAt} should return a boolean or a plain JavaScript object (but it's ${pc.cyan(
+      `typeof result === ${JSON.stringify(typeof result)}`
+    )} instead)`
   )
 
   if ('match' in result) {
     const { match } = result
     assertUsage(
       typeof match === 'boolean',
-      `The \`match\` value returned by the Route Function ${routeDefinedAt} should be a boolean.`
+      `The ${pc.cyan('match')} value returned by the Route Function ${routeDefinedAt} should be a boolean.`
     )
     if (!match) {
       return null
@@ -51,11 +51,14 @@ async function resolveRouteFunction(
     precedence = result.precedence
     assertUsage(
       typeof precedence === 'number',
-      `The \`precedence\` value returned by the Route Function ${routeDefinedAt} should be a number.`
+      `The ${pc.cyan('precedence')} value returned by the Route Function ${routeDefinedAt} should be a number.`
     )
   }
 
-  assertRouteParams(result, `The \`routeParams\` object returned by the Route Function ${routeDefinedAt} should`)
+  assertRouteParams(
+    result,
+    `The ${pc.cyan('routeParams')} object returned by the Route Function ${routeDefinedAt} should`
+  )
   const routeParams: Record<string, string> = result.routeParams || {}
 
   assertUsage(
@@ -67,7 +70,9 @@ async function resolveRouteFunction(
   Object.keys(result).forEach((key) => {
     assertUsage(
       key === 'match' || key === 'routeParams' || key === 'precedence',
-      `The Route Function ${routeDefinedAt} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'routeParams', 'precedence'].`
+      `The Route Function ${routeDefinedAt} returned an object with an unknown property ${pc.cyan(
+        key
+      )} (the known properties are ${pc.cyan('match')}, ${pc.cyan('routeParams')}, and ${pc.cyan('precedence')})`
     )
   })
 

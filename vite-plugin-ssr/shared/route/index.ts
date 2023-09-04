@@ -18,6 +18,7 @@ import { executeOnBeforeRouteHook, type OnBeforeRouteHook } from './executeOnBef
 import type { PageRoutes, RouteType } from './loadPageRoutes.js'
 import { debug } from './debug.js'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
+import pc from '@brillout/picocolors'
 
 type PageContextForRoute = PageContextUrlComputedProps & {
   _pageFilesAll: PageFile[]
@@ -136,7 +137,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
   resolvePrecendence(routeMatches)
   const winner = routeMatches[0]
 
-  debug(`Route matches for URL \`${urlPathname}\` (in precedence order):`, routeMatches)
+  debug(`Route matches for URL ${pc.bold(urlPathname)} (in precedence order):`, routeMatches)
 
   objectAssign(pageContextAddendum, { _routeMatches: routeMatches })
 
