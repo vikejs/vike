@@ -387,11 +387,11 @@ async function callOnBeforePrerenderStartHooks(
               assert(pageContextFound._providedByHook)
               const providedTwice =
                 hookFilePath === pageContextFound._providedByHook.hookFilePath
-                  ? `twice by the ${hookName}() hook (${hookFilePath})`
-                  : `twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${pageContextFound._providedByHook.hookFilePath}() (${pageContextFound._providedByHook.hookName})`
+                  ? (`twice by the ${hookName}() hook (${hookFilePath})` as const)
+                  : (`twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${pageContextFound._providedByHook.hookFilePath}() (${pageContextFound._providedByHook.hookName})` as const)
               assertUsage(
                 false,
-                `URL '${url}' provided ${providedTwice}. Make sure to provide the URL only once instead.`
+                `URL ${pc.cyan(url)} provided ${providedTwice}. Make sure to provide the URL only once instead.`
               )
             }
           }
@@ -720,7 +720,9 @@ async function routeAndPrerender(
             assert(hookFilePath)
             assertUsage(
               false,
-              `The ${hookName}() hook defined by ${hookFilePath} returns a URL '${urlOriginal}' that doesn't match any of your page routes. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
+              `The ${hookName}() hook defined by ${hookFilePath} returns a URL ${pc.cyan(
+                urlOriginal
+              )} that doesn't match any of your page routes. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
             )
           } else {
             // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
@@ -789,7 +791,13 @@ function warnContradictoryNoPrerenderList(
     const { setByConfigName, setByConfigValue, setByConfigFile } = doNotPrerenderListEntry
     assertWarning(
       false,
-      `The ${providedByHook.hookName}() hook defined by ${providedByHook.hookFilePath} returns the URL '${urlOriginal}', while ${setByConfigFile} sets the config '${setByConfigName}' to ${setByConfigValue}. This is contradictory: either don't set the config '${setByConfigName}' to ${setByConfigValue} or remove the URL '${urlOriginal}' from the list of URLs to be pre-rendered.`,
+      `The ${providedByHook.hookName}() hook defined by ${providedByHook.hookFilePath} returns the URL ${pc.cyan(
+        urlOriginal
+      )}, while ${setByConfigFile} sets the config ${pc.cyan(setByConfigName)} to ${pc.cyan(
+        String(setByConfigValue)
+      )}. This is contradictory: either don't set the config ${pc.cyan(setByConfigName)} to ${pc.cyan(
+        String(setByConfigValue)
+      )} or remove the URL ${pc.cyan(urlOriginal)} from the list of URLs to be pre-rendered.`,
       { onlyOnce: true }
     )
   })

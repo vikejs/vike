@@ -7,6 +7,7 @@ import { viteIsSSR } from './viteIsSSR.js'
 import { assert, assertUsage } from './assert.js'
 import { pathJoin } from './path-shim.js'
 import { assertPosixPath, toPosixPath } from './filesystemPathHandling.js'
+import pc from '@brillout/picocolors'
 
 type OutDirs = {
   /** Absolute path to `outDir` */
@@ -98,7 +99,9 @@ function assertOutDirResolved(outDir: string, config: UserConfig | ResolvedConfi
   assertIsNotOutDirRoot(outDir)
   assert('/client'.length === '/server'.length)
   const outDirCorrected = outDir.slice(0, -1 * '/client'.length)
-  const wrongUsage = `You've set Vite's config.build.outDir to '${outDir}' but you should set it to '${outDirCorrected}' instead.`
+  const wrongUsage = `You've set Vite's config.build.outDir to ${pc.cyan(outDir)} but you should set it to ${pc.cyan(
+    outDirCorrected
+  )} instead.`
   if (viteIsSSR(config)) {
     assertUsage(outDir.endsWith('/server'), wrongUsage)
   } else {

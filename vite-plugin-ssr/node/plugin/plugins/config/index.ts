@@ -9,6 +9,7 @@ import { pickFirst } from './pickFirst.js'
 import { resolveExtensions } from './resolveExtensions.js'
 import { resolveBase } from './resolveBase.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
+import pc from '@brillout/picocolors'
 
 function resolveVpsConfig(vpsConfig: unknown): Plugin {
   return {
@@ -36,7 +37,7 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
 
   assertVpsConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
     // TODO: add config file path ?
-    return `config '${prop}' ${errMsg}`
+    return `config ${pc.cyan(prop)} ${errMsg}`
   })
   assertVpsConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vitePluginSsr.${prop} ${errMsg}`)
   // TODO/v1-release: deprecate this

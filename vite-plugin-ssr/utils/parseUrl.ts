@@ -9,6 +9,7 @@ export { createUrlFromComponents }
 
 import { slice } from './slice.js'
 import { assert, assertUsage } from './assert.js'
+import pc from '@brillout/picocolors'
 
 function isParsable(url: string): boolean {
   // `parseUrl()` works with these URLs
@@ -29,7 +30,9 @@ function assertUsageUrl(url: unknown, errPrefix: string): asserts url is string 
   if (!url.startsWith('/') && !url.includes(':')) {
     assertUsage(
       false,
-      `${errPrefix} is '${url}' and it should be '/${url}' instead (URL pathnames should start with a leading slash)`
+      `${errPrefix} is ${pc.cyan(url)} and it should be /${pc.cyan(
+        url
+      )} instead (URL pathnames should start with a leading slash)`
     )
   } else {
     assertUsage(false, `${errPrefix} isn't a valid URL`)

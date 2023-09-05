@@ -33,6 +33,7 @@ import { preparePageContextForUserConsumptionServerSide } from './preparePageCon
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageRoutes.js'
 import type { OnBeforeRouteHook } from '../../../shared/route/executeOnBeforeRouteHook.js'
+import pc from '@brillout/picocolors'
 
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 
@@ -124,7 +125,9 @@ async function prerenderPage(
   const { htmlRender, renderHook } = await executeOnRenderHtmlHook(pageContext)
   assertUsage(
     htmlRender !== null,
-    `Cannot pre-render '${pageContext.urlOriginal}' because the ${renderHook.hookName}() hook defined by ${renderHook.hookFilePath} didn't return an HTML string.`
+    `Cannot pre-render ${pc.cyan(pageContext.urlOriginal)} because the ${renderHook.hookName}() hook defined by ${
+      renderHook.hookFilePath
+    } didn't return an HTML string.`
   )
   assert(pageContext.isClientSideNavigation === false)
   const documentHtml = await getHtmlString(htmlRender)

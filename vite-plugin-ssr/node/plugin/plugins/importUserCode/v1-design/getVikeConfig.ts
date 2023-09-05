@@ -32,7 +32,8 @@ import type {
   ConfigValueSource,
   ConfigValueSources,
   ConfigValues,
-  ConfigValue
+  ConfigValue,
+  ConfigEnvPublic
 } from '../../../../../shared/page-configs/PageConfig.js'
 import {
   configDefinitionsBuiltIn,
@@ -493,12 +494,12 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
             assertUsage(
               false,
               [
-                `${getFilePathToShowToUser(
-                  interfaceFile.filePath
-                )} defines the config '${configName}' which is global:`,
+                `${getFilePathToShowToUser(interfaceFile.filePath)} defines the config ${pc.cyan(
+                  configName
+                )} which is global:`,
                 globalPaths.length
-                  ? `define '${configName}' in ${joinEnglish(globalPaths, 'or')} instead`
-                  : `create a global config (e.g. /pages/+config.js) and define '${configName}' there instead`
+                  ? `define ${pc.cyan(configName)} in ${joinEnglish(globalPaths, 'or')} instead`
+                  : `create a global config (e.g. /pages/+config.js) and define ${pc.cyan(configName)} there instead`
               ].join(' ')
             )
           }
@@ -780,9 +781,9 @@ function resolveRelativeCodeFilePath(importData: ImportData, configFilePath: Fil
   } else {
     assertUsage(
       false,
-      `${getFilePathToShowToUser(configFilePath)} imports from a relative path '${
+      `${getFilePathToShowToUser(configFilePath)} imports from a relative path ${pc.cyan(
         importData.importPath
-      }' outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir}, or import from a dependency's package.json#exports entry instead`
+      )} outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir}, or import from a dependency's package.json#exports entry instead`
     )
     // None of the following works. Seems to be a Vite bug?
     // /*
@@ -859,7 +860,12 @@ function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaV
 
     // env
     {
-      const envValues = ['client-only', 'server-only', 'server-and-client', 'config-only']
+      const envValues: string[] = [
+        'client-only',
+        'server-only',
+        'server-and-client',
+        'config-only'
+      ] satisfies ConfigEnvPublic[]
       const hint = [
         `Set the value of ${pc.cyan('env')} to `,
         joinEnglish(
@@ -875,7 +881,7 @@ function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaV
       )
       assertUsage(
         envValues.includes(def.env),
-        `${definedByFile} > meta.${configName}.env has an invalid value '${def.env}'. ${hint}`
+        `${definedByFile} > meta.${configName}.env has an invalid value ${pc.cyan(`'${def.env}'`)}. ${hint}`
       )
     }
 
@@ -1157,9 +1163,9 @@ function assertExtendsImportPath(importPath: string, filePath: string, configFil
   } else {
     assertWarning(
       false,
-      `${getFilePathToShowToUser(
-        configFilePath
-      )} uses 'extends' to inherit from '${importPath}' which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this feature.`,
+      `${getFilePathToShowToUser(configFilePath)} uses ${pc.cyan('extends')} to inherit from ${pc.cyan(
+        importPath
+      )} which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this feature.`,
       { onlyOnce: true }
     )
   }
@@ -1288,7 +1294,10 @@ function getFilesystemRoutingRootEffect(configFilesystemRoutingRoot: ConfigValue
   const { value } = configFilesystemRoutingRoot
   const configSrc = getConfigSrc(configFilesystemRoutingRoot)
   assertUsage(typeof value === 'string', `${configSrc} should be a string`)
-  assertUsage(value.startsWith('/'), `${configSrc} is '${value}' but it should start with a leading slash '/'`)
+  assertUsage(
+    value.startsWith('/'),
+    `${configSrc} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
+  )
   const before = getRouteFilesystem(getLocationId(configFilesystemRoutingRoot.definedAt.filePath))
   const after = value
   const filesystemRoutingRootEffect = { before, after }

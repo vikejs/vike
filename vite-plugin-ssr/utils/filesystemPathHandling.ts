@@ -12,7 +12,7 @@ function toPosixPath(path: string): string {
 function assertPosixPath(path: string): void {
   const errMsg = (msg: string) => `Not a posix path: ${msg}`
   assert(path !== null, errMsg('null'))
-  assert(typeof path === 'string', errMsg(`typeof path === '${typeof path}'`))
+  assert(typeof path === 'string', errMsg(`typeof path === ${JSON.stringify(typeof path)}`))
   assert(path !== '', errMsg('(empty string)'))
   assert(path)
   assert(!path.includes('\\'), errMsg(path))
