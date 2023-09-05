@@ -1,7 +1,11 @@
 export { warnIfObjectIsNotObject }
 
 import { assertWarning } from './assert.js'
+import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 import { isObject } from './isObject.js'
+import pc from '@brillout/picocolors'
+
+assertIsNotBrowser()
 
 function warnIfObjectIsNotObject(err: unknown): void {
   if (!isObject(err)) {
@@ -9,7 +13,13 @@ function warnIfObjectIsNotObject(err: unknown): void {
     console.warn(err)
     assertWarning(
       false,
-      "Your source code threw a value that is not an object. Make sure to wrap the value with `new Error()`. For example, if your code throws `throw 'some-string'` then do `throw new Error('some-string')` instead. The thrown value is printed above. Feel free to contact vite-plugin-ssr maintainers to get help.",
+      `One of your hooks threw an error ${pc.cyan('throw someValue')} but ${pc.cyan(
+        'someValue'
+      )} isn't an object (it's ${pc.cyan(
+        `typeof someValue === ${typeof err}`
+      )} instead). Make sure thrown values are always wrapped with ${pc.cyan('new Error()')}, in other words: ${pc.cyan(
+        'throw someValue'
+      )} should be replaced with ${pc.cyan('throw new Error(someValue)')}. The thrown value is printed above.`,
       { onlyOnce: false }
     )
   }

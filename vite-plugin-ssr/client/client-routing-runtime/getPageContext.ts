@@ -344,7 +344,7 @@ async function fetchPageContextFromServer(pageContext: {
 
   if ('serverSideError' in pageContextFromServer) {
     throw getProjectError(
-      '`pageContext` could not be fetched from the server as an error occurred on the server; check your server logs.'
+      `The pageContext object couldn't be fetched from the server as an error occurred on the server-side. Check your server logs.`
     )
   }
 
