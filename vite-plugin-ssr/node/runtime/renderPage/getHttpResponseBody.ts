@@ -53,7 +53,7 @@ function getHttpResponseBody(htmlRender: HtmlRender, renderHook: null | RenderHo
         htmlRender,
         renderHook,
         'body',
-        'Use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getBody()` instead'
+        `Use ${pc.cyan('pageContext.httpResponse.pipe()')} or ${pc.cyan('pageContext.httpResponse.getBody()')} instead`
       )
     )
   }
@@ -67,6 +67,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       const body = await getHtmlString(htmlRender)
       return body
     },
+    // TODO/v1-release: remove
     async getNodeStream() {
       assertWarning(
         false,
@@ -80,6 +81,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       }
       return nodeStream
     },
+    // TODO/v1-release: remove
     getWebStream() {
       assertWarning(
         false,
@@ -100,6 +102,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       }
       return webStream
     },
+    // TODO/v1-release: remove
     pipeToWebWritable(writable: StreamWritableWeb) {
       assertWarning(
         false,
@@ -112,6 +115,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
         assertUsage(false, getErrMsg(htmlRender, renderHook, 'pipeToWebWritable()'))
       }
     },
+    // TODO/v1-release: remove
     pipeToNodeWritable(writable: StreamWritableNode) {
       assertWarning(
         false,

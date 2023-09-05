@@ -30,6 +30,7 @@ import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
 import { removeSourceMap } from '../shared/removeSourceMap.js'
 import type { Rollup } from 'vite'
+import pc from '@brillout/picocolors'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
@@ -171,7 +172,7 @@ function extractAssetsPlugin(): Plugin[] {
         id = getVirtualFileId(id)
 
         if (id === EMPTY_MODULE_ID) {
-          return '// Erased by `vite-plugin-ssr:extractAssets`.'
+          return '// Erased by vite-plugin-ssr:extractAssets'
         }
       },
       config() {
@@ -277,11 +278,8 @@ function stringifyImportStatements(importStatements: ImportStatement[]) {
 }
 
 function debugTransformResult(id: string, code: string, importStatements: ImportStatement[]) {
-  debug(
-    `source TRANSFORMED: ${id} (CODE: \`${code.split('\n').join(' ')}\`, IMPORTS: ${stringifyImportStatements(
-      importStatements
-    )
-      .map((s) => `\`${s}\``)
-      .join(', ')})`
-  )
+  const importStatementsStr = stringifyImportStatements(importStatements)
+    .map((s) => pc.cyan(s))
+    .join(', ')
+  debug(`source TRANSFORMED: ${id} (CODE: ${pc.cyan(code.split('\n').join(' '))}, IMPORTS: ${importStatementsStr})`)
 }

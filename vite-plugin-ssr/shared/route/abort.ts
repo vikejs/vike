@@ -20,7 +20,6 @@ import {
   assertWarning,
   checkType,
   hasProp,
-  isBrowser,
   joinEnglish,
   objectAssign,
   projectInfo,
@@ -214,7 +213,7 @@ function logAbortErrorHandled(
   const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal
   assert(urlCurrent)
   const abortCall = err._pageContextAbort._abortCall
-  assertInfo(false, `${highlight(abortCall)} intercepted while rendering ${pc.bold(urlCurrent)}`, { onlyOnce: false })
+  assertInfo(false, `${pc.cyan(abortCall)} intercepted while rendering ${pc.bold(urlCurrent)}`, { onlyOnce: false })
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
@@ -254,15 +253,11 @@ function assertNoInfiniteLoop(pageContextsFromRewrite: PageContextFromRewrite[])
   })
 }
 
-function highlight(abortCall: AbortCall) {
-  return isBrowser() ? '`' + abortCall + '`' : pc.cyan(abortCall)
-}
-
 function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) {
   const abortCalls = [
     // prettier-ignore
-    rewriteCount > 0 && highlight("throw render('/some-url')"),
-    redirectCount > 0 && highlight("throw redirect('/some-url')")
+    rewriteCount > 0 && pc.cyan("throw render('/some-url')"),
+    redirectCount > 0 && pc.cyan("throw redirect('/some-url')")
   ]
     .filter(Boolean)
     .join(' and ')

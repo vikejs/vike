@@ -120,6 +120,7 @@ function urlPathnameGetter(this: PageContextUrlSources) {
   return urlPathname
 }
 function urlGetter(this: PageContextUrlSources) {
+  // TODO/v1-release: remove
   assertWarning(
     false,
     '`pageContext.url` is outdated. Use `pageContext.urlPathname`, `pageContext.urlParsed`, or `pageContext.urlOriginal` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',

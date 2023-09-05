@@ -974,7 +974,9 @@ function normalizeOnPrerenderHookResult(
     )
     assertUsage(
       prerenderElement.url.startsWith('/'),
-      `${errMsg1} a URL with an invalid value '${prerenderElement.url}' which doesn't start with '/'. Make sure each URL starts with '/'.`
+      `${errMsg1} a URL with an invalid value ${pc.cyan(prerenderElement.url)} which doesn't start with ${pc.cyan(
+        '/'
+      )}. Make sure each URL starts with ${pc.cyan('/')}.`
     )
     Object.keys(prerenderElement).forEach((key) => {
       assertUsage(
@@ -1001,6 +1003,7 @@ function normalizeOnPrerenderHookResult(
   }
 }
 
+// TODO/v1-release: remove
 function checkOutdatedOptions(options: {
   partial?: unknown
   noExtraDir?: unknown
@@ -1063,7 +1066,7 @@ function assertLoadedConfig(
   }
   const { configFile } = viteConfig
   if (configFile) {
-    assertUsage(false, `${configFile} doesn't install vite-plugin-ssr`)
+    assertUsage(false, `${configFile} doesn't install the vite-plugin-ssr plugin`)
   } else {
     if (!options.viteConfig) {
       assertUsage(
@@ -1074,9 +1077,13 @@ function assertLoadedConfig(
         { showStackTrace: true }
       )
     } else {
-      assertUsage(false, '[prerender()] The Vite config `prerender({ viteConfig })` is missing vite-plugin-ssr.', {
-        showStackTrace: true
-      })
+      assertUsage(
+        false,
+        `[prerender()] The Vite config ${pc.cyan('prerender({ viteConfig })')} is missing the vite-plugin-ssr plugin.`,
+        {
+          showStackTrace: true
+        }
+      )
     }
   }
 }

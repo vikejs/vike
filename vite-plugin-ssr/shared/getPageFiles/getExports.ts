@@ -116,7 +116,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
     values.forEach(({ exportValue, _fileType, _isFromDefaultExport }) => {
       exports[exportName] = exports[exportName] ?? exportValue
 
-      // Legacy `pageContext.pageExports`
+      // Legacy pageContext.pageExports
       if (_fileType === '.page' && !_isFromDefaultExport) {
         if (!(exportName in pageExports)) {
           pageExports[exportName] = exportValue
@@ -185,6 +185,7 @@ function getExportValues(pageFile: PageFile) {
   return exportValues
 }
 
+// TODO/v1-release: remove
 function createObjectWithDeprecationWarning(): Record<string, unknown> {
   return new Proxy(
     {},

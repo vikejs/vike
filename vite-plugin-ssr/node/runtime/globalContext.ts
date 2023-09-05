@@ -186,7 +186,7 @@ function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean):
   const errMsg = [
     `You are tyring to run`,
     isPreRendering ? 'pre-rendering' : 'the server for production',
-    "but your app isn't built yet. Run `$ vite build` before ",
+    `but your app isn't built yet. Run ${pc.cyan('$ vite build')} before `,
     isPreRendering ? 'pre-rendering.' : 'running the server.'
   ].join(' ')
   assertUsage(buildEntries, errMsg)

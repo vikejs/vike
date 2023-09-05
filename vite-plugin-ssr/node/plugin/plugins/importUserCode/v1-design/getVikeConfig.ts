@@ -523,7 +523,11 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
       if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
       assertWarning(
         false,
-        `Being able to define config '${configName}' in ${configValueSource.definedAt.filePath} is experimental and will likely be removed. Define the config '${configName}' in vite-plugin-ssr's Vite plugin options instead.`,
+        `Being able to define config ${pc.cyan(configName)} in ${
+          configValueSource.definedAt.filePath
+        } is experimental and will likely be removed. Define the config ${pc.cyan(
+          configName
+        )} in vite-plugin-ssr's Vite plugin options instead.`,
         { onlyOnce: true }
       )
       globalVikeConfig[configName] = configValueSource.value
@@ -709,7 +713,7 @@ function assertCodeFileEnv(codeFilePath: string, configEnv: ConfigEnvPrivate, co
       [
         `${codeFilePath} defines the value of configs living in different environments:`,
         ...[configDifferentEnv, { configName, configEnv }].map(
-          (c) => `  - config '${c.configName}' which value lives in environment '${c.configEnv}'`
+          (c) => `  - config ${pc.cyan(c.configName)} which value lives in environment ${pc.cyan(c.configEnv)}`
         ),
         'Defining config values in the same file is allowed only if they live in the same environment, see https://vite-plugin-ssr.com/header-file/import-from-same-file'
       ].join('\n')
@@ -857,9 +861,9 @@ function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaV
     {
       const envValues = ['client-only', 'server-only', 'server-and-client', 'config-only']
       const hint = [
-        'Set the value of `env` to ',
+        `Set the value of ${pc.cyan('env')} to `,
         joinEnglish(
-          envValues.map((s) => `'${s}'`),
+          envValues.map((s) => pc.cyan(`'${s}'`)),
           'or'
         ),
         '.'
@@ -885,7 +889,9 @@ function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaV
       )
       assertUsage(
         def.env === 'config-only',
-        `${definedByFile} > meta.${configName}.effect is only supported if meta.${configName}.env is 'config-only' (but it's '${def.env}')`
+        `${definedByFile} > meta.${configName}.effect is only supported if meta.${configName}.env is ${pc.cyan(
+          'config-only'
+        )} (but it's ${pc.cyan(def.env)} instead)`
       )
     }
   })
@@ -1319,10 +1325,11 @@ function assertImport(
   const filePathToShowToUser = getFilePathToShowToUser(importerFilePath)
 
   if (!importedFile) {
+    const importPathString = pc.cyan(`'${importPath}'`)
     const errIntro = importWasGenerated
-      ? (`The import '${importPath}' in ${filePathToShowToUser}` as const)
-      : (`'${importDataString}' defined in ${filePathToShowToUser}` as const)
-    const errIntro2 = `${errIntro} couldn't be resolved: does '${importPath}'` as const
+      ? (`The import path ${importPathString} in ${filePathToShowToUser}` as const)
+      : (`The import ${pc.cyan(importDataString)} defined in ${filePathToShowToUser}` as const)
+    const errIntro2 = `${errIntro} couldn't be resolved: does ${importPathString}` as const
     if (importPath.startsWith('.')) {
       assertUsage(false, `${errIntro2} point to an existing file?`)
     } else {

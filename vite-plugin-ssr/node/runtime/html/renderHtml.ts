@@ -152,7 +152,9 @@ function escapeInject(
 ): TemplateWrapped {
   assertUsage(
     templateStrings.length === templateVariables.length + 1 && templateStrings.every((str) => typeof str === 'string'),
-    'You seem to use `escapeInject` as a function, but `escapeInject` is a string template tag, see https://vite-plugin-ssr.com/escapeInject',
+    `You're using ${pc.cyan('escapeInject')} as a function, but ${pc.cyan(
+      'escapeInject'
+    )} is a string template tag, see https://vite-plugin-ssr.com/escapeInject`,
     { showStackTrace: true }
   )
   return {
@@ -269,7 +271,7 @@ async function renderTemplate(
         .join(' ')
     }
 
-    assertUsage(!isPromise(templateVar), getErrMsg('a promise', 'Did you forget to `await` the promise?'))
+    assertUsage(!isPromise(templateVar), getErrMsg('a promise', `Did you forget to ${pc.cyan('await')} the promise?`))
 
     if (templateVar === undefined || templateVar === null) {
       assertWarning(

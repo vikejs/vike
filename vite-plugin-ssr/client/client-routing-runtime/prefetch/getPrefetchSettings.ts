@@ -29,6 +29,7 @@ function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag: HTML
     if (prefetchAttribute !== null) return prefetchAttribute
   }
 
+    // TODO/v1-release: remove
   if ('prefetchLinks' in pageContext.exports) {
     assertUsage(false, '`export { prefetchLinks }` is deprecated, use `export { prefetchStaticAssets }` instead.')
   }
@@ -76,6 +77,7 @@ function getPrefetchAttribute(linkTag: HTMLElement): PrefetchStaticAssets | null
     return null
   }
 
+  // TODO/v1-release: remove
   const deprecationNotice = 'The attribute data-prefetch is outdated, use data-prefetch-static-assets instead.'
 
   if (attr) {

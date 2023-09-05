@@ -25,13 +25,14 @@ import { commonConfig } from './plugins/commonConfig.js'
 import { extensionsAssets } from './plugins/extensionsAssets.js'
 import { baseUrls } from './plugins/baseUrls.js'
 import { envVarsPlugin } from './plugins/envVars.js'
+import pc from '@brillout/picocolors'
 
 markEnvAsVite()
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
 function plugin(vpsConfig?: ConfigVpsUserProvided): any {
   const plugins: Plugin[] = [
-    resolveVpsConfig(vpsConfig), // `resolveVpsConfig()`'s hook `configResolved()` should be the first called
+    resolveVpsConfig(vpsConfig), // The configResolved() hook of resolveVpsConfig() should be the first called
     ...commonConfig(),
     importUserCode(),
     ...devConfig(),
@@ -67,7 +68,9 @@ Object.defineProperty(plugin, 'apply', {
   get: () => {
     assertUsage(
       false,
-      'Add `ssr()` instead of `ssr` to vite.config.js#plugins (i.e. call the function and add the return value instead of adding the function itself)',
+      `Add ${pc.cyan('ssr()')} instead of ${pc.cyan(
+        'ssr'
+      )} to vite.config.js#plugins (i.e. call the function and add the return value instead of adding the function itself)`,
       { showStackTrace: true }
     )
   }

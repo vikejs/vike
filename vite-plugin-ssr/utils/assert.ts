@@ -44,13 +44,16 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
     if (!debugInfo) {
       return null
     }
-    const debugInfoSerialized = typeof debugInfo === 'string' ? debugInfo : '`' + JSON.stringify(debugInfo) + '`'
-    return `Debug info (this is for the ${projectInfo.projectName} maintainers; you can ignore this): ${debugInfoSerialized}`
+    const debugInfoSerialized = typeof debugInfo === 'string' ? debugInfo : JSON.stringify(debugInfo)
+    return pc.dim(
+      `Debug info (this is for the ${projectInfo.projectName} maintainers; you can ignore this): ${debugInfoSerialized}`
+    )
   })()
 
+  const link = `${projectInfo.githubRepository}/issues/new`
   let errMsg = [
     `You stumbled upon a bug in ${projectInfo.projectName}'s source code.`,
-    `Go to ${projectInfo.githubRepository}/issues/new and copy-paste this error; a maintainer will fix the bug (usually under 24 hours).`,
+    `Go to ${pc.blue(link)} and copy-paste this error; a maintainer will fix the bug (usually under 24 hours).`,
     debugStr
   ]
     .filter(Boolean)
