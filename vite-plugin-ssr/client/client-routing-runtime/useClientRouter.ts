@@ -251,6 +251,9 @@ function useClientRouter() {
         // throw render(statusCode)
         assert(pageContextAbort.abortStatusCode)
         objectAssign(pageContext, pageContextAbort)
+        if (pageContextAbort.abortStatusCode === 404) {
+          objectAssign(pageContext, { is404: true })
+        }
       } else {
         objectAssign(pageContext, { is404: checkIf404(err) })
       }
