@@ -137,7 +137,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
   resolvePrecendence(routeMatches)
   const winner = routeMatches[0]
 
-  debug(`Route matches for URL ${pc.bold(urlPathname)} (in precedence order):`, routeMatches)
+  debug(`Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)
 
   objectAssign(pageContextAddendum, { _routeMatches: routeMatches })
 

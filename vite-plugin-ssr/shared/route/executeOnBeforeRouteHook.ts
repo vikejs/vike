@@ -63,7 +63,7 @@ async function executeOnBeforeRouteHook(
     assertUsage(
       pageContext._allPageIds.includes(hookReturn.pageContext._pageId),
       `${errPrefix2} ${joinEnglish(
-        pageContext._allPageIds.map((s) => pc.bold(s)),
+        pageContext._allPageIds.map((s) => pc.cyan(s)),
         'or'
       )}`
     )

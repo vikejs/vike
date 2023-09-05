@@ -186,13 +186,12 @@ function getConfigValueSerialized(value: unknown, configName: string, configDefi
     configValueSerialized = stringify(value, { valueName })
   } catch (err) {
     assert(hasProp(err, 'messageCore', 'string'))
-    const configPath = pc.bold(configDefinedByFile)
     assertUsage(
       false,
       [
-        `The value of the config ${pc.cyan(configName)} cannot be defined inside the file ${configPath}.`,
-        `Its value must be defined in an another file and then imported by ${configPath} (because it isn't serializable: ${err.messageCore}).`,
-        `Only serializable config values can be defined inside ${configPath}, see https://vite-plugin-ssr.com/header-file.`
+        `The value of the config ${pc.cyan(configName)} cannot be defined inside the file ${configDefinedByFile}.`,
+        `Its value must be defined in an another file and then imported by ${configDefinedByFile} (because it isn't serializable: ${err.messageCore}).`,
+        `Only serializable config values can be defined inside ${configDefinedByFile}, see https://vite-plugin-ssr.com/header-file.`
       ].join(' ')
     )
   }

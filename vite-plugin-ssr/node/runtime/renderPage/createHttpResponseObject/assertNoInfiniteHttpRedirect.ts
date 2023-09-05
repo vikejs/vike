@@ -35,7 +35,7 @@ function copy(G: Graph): Graph {
 function check(G: Graph, n: string, path: string[]) {
   if (path.includes(n)) {
     const cycle = path.slice(path.indexOf(n)).concat(n)
-    assertUsage(false, `Infinite loop of HTTP URL redirects: ${cycle.map(pc.bold).join(' -> ')}`)
+    assertUsage(false, `Infinite loop of HTTP URL redirects: ${cycle.map(pc.cyan).join(' -> ')}`)
   }
   G[n]?.forEach((node) => check(G, node, [...path, n]))
 }

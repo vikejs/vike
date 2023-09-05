@@ -757,7 +757,7 @@ async function routeAndPrerender(
         try {
           res = await prerenderPage(pageContext)
         } catch (err) {
-          assertIsNotAbort(err, pc.bold(pageContext.urlOriginal))
+          assertIsNotAbort(err, pc.cyan(pageContext.urlOriginal))
           throw err
         }
         const { documentHtml, pageContextSerialized } = res

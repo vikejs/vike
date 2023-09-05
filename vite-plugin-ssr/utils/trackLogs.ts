@@ -18,7 +18,7 @@ function trackLogs() {
     var methodOriginal = process[stdName].write
     // @ts-ignore
     process[stdName].write = function (...args) {
-      log(pc.blue(pc.bold('*** LOG ***')))
+      log(pc.bold(pc.blue('*** LOG ***')))
       // @ts-ignore
       methodOriginal.apply(process[stdName], args)
       // @ts-ignore

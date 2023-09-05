@@ -30,7 +30,7 @@ function assertDefaultExportObject(
   const exportDefault = fileExports.default
   assertUsage(
     isObject(exportDefault),
-    `The ${pc.cyan('export default')} of ${pc.bold(filePath)} should be an object (but it's ${pc.cyan(
+    `The ${pc.cyan('export default')} of ${filePath} should be an object (but it's ${pc.cyan(
       `typeof exportDefault === ${JSON.stringify(typeof exportDefault)}`
     )} instead)`
   )

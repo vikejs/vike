@@ -315,7 +315,7 @@ function triggerPrepareStackTrace(err: unknown) {
 function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePath) {
   const msg = [
     pc.red(`Failed to ${operation}`),
-    pc.red(pc.bold(getFilePathToShowToUser(filePath))),
+    pc.bold(pc.red(getFilePathToShowToUser(filePath))),
     pc.red(`because:`)
   ].join(' ')
   return msg

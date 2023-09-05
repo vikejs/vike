@@ -66,7 +66,7 @@ function getConfigSrc(
 ): string {
   const { filePath, fileExportPath } = definedAt
   const exportPath = getExportPath(fileExportPath)
-  let configSrc = `${pc.bold(filePath)} > ${pc.cyan(exportPath)}`
+  let configSrc = `${filePath} > ${pc.cyan(exportPath)}`
   if (append) {
     configSrc = `${configSrc} > (${pc.blue(append)})`
   }

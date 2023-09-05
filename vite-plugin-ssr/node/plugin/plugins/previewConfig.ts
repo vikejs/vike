@@ -44,7 +44,7 @@ function previewConfig(): Plugin {
     ;[outDirRoot, outDirClient, outDirServer].forEach((outDirAny) => {
       assertUsage(
         fs.existsSync(outDirAny),
-        `Cannot run ${pc.cyan('$ vite preview')}: your app isn't built (the build directory ${pc.bold(
+        `Cannot run ${pc.cyan('$ vite preview')}: your app isn't built (the build directory ${pc.cyan(
           outDirAny
         )} is missing). Make sure to run ${pc.cyan('$ vite build')} before running ${pc.cyan('$ vite preview')}.`
       )

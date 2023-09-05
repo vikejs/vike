@@ -84,7 +84,7 @@ function logConfigInfo(msg: string, logType: LogType): void {
   logWithVikeTag(msg, logType, category)
 }
 function logConfigErrorRecover(): void {
-  const msg = pc.green(pc.bold('Configuration successfully loaded'))
+  const msg = pc.bold(pc.green('Configuration successfully loaded'))
   clearLogs({ clearAlsoIfConfigIsInvalid: true })
   const category = getConfigCategory()
   logWithVikeTag(msg, 'error-recover', category)
@@ -189,7 +189,7 @@ function logConfigError(err: unknown): void {
 }
 
 function logFallbackErrIntro(category: LogCategory) {
-  logWithVikeTag(pc.red(pc.bold('[Error] An error was thrown:')), 'error', category)
+  logWithVikeTag(pc.bold(pc.red('[Error] An error was thrown:')), 'error', category)
 }
 
 function getConfigCategory(): LogCategory {

@@ -221,9 +221,9 @@ async function renderTemplate(
     const { hookName, hookFilePath } = pageContext._renderHook
     assertUsage(
       !htmlStream,
-      `Injecting two streams in ${pc.cyan('escapeInject')} template tag of ${hookName}() hook defined by ${pc.bold(
-        hookFilePath
-      )}. Inject only one stream instead.`
+      `Injecting two streams in ${pc.cyan(
+        'escapeInject'
+      )} template tag of ${hookName}() hook defined by ${hookFilePath}. Inject only one stream instead.`
     )
     htmlStream = stream
   }
@@ -263,10 +263,7 @@ async function renderTemplate(
     const getErrMsg = (typeText: string, end: null | string) => {
       const { hookName, hookFilePath } = pageContext._renderHook
       const nth: string = (i === 0 && '1st') || (i === 1 && '2nd') || (i === 2 && '3rd') || `${i}-th`
-      return [
-        `The ${nth} HTML variable is ${typeText}, see ${hookName}() hook defined by ${pc.bold(hookFilePath)}.`,
-        end
-      ]
+      return [`The ${nth} HTML variable is ${typeText}, see ${hookName}() hook defined by ${hookFilePath}.`, end]
         .filter(Boolean)
         .join(' ')
     }

@@ -27,9 +27,9 @@ function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPat
       urlTarget.startsWith('http://') ||
       urlTarget.startsWith('https://') ||
       urlTarget === '*',
-    `${configSrc} Invalid redirection target URL ${highlight(urlTarget)}: the target URL should start with ${highlight(
+    `${configSrc} Invalid redirection target URL ${pc.cyan(urlTarget)}: the target URL should start with ${pc.cyan(
       '/'
-    )}, ${highlight('http://')}, ${highlight('https://')}, or be ${highlight('*')}`
+    )}, ${pc.cyan('http://')}, ${pc.cyan('https://')}, or be ${pc.cyan('*')}`
   )
   assertParams(urlSource, urlTarget)
   const match = resolveRouteString(urlSource, urlPathname)
@@ -54,14 +54,10 @@ function assertParams(urlSource: string, urlTarget: string) {
       const segments = urlSource.split('/')
       assertUsage(
         segments.includes(routeSegment),
-        `${configSrc} The redirection source URL ${highlight(urlSource)} is missing the URL parameter ${highlight(
+        `${configSrc} The redirection source URL ${pc.cyan(urlSource)} is missing the URL parameter ${pc.cyan(
           routeSegment
-        )} used by the redirection target URL ${highlight(urlTarget)}`
+        )} used by the redirection target URL ${pc.cyan(urlTarget)}`
       )
     }
   })
-}
-
-function highlight(str: string) {
-  return pc.bold(str)
 }

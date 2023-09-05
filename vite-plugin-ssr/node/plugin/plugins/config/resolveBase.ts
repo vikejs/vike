@@ -28,7 +28,7 @@ function resolveBaseFromUserConfig(config: UserConfig, configVps: undefined | Co
 function resolve(base: string | null, baseServer_: string | null, baseAssets_: string | null): BaseServers {
   {
     const wrongBase = (val: string) =>
-      `should start with ${pc.bold('/')}, ${pc.bold('http://')}, or ${pc.bold('https://')} (it's ${pc.bold(
+      `should start with ${pc.cyan('/')}, ${pc.cyan('http://')}, or ${pc.cyan('https://')} (it's ${pc.cyan(
         val
       )} instead)`
     assertUsage(base === null || isBaseAssets(base), `vite.config.js#base ${wrongBase(base!)}`)
@@ -38,7 +38,7 @@ function resolve(base: string | null, baseServer_: string | null, baseAssets_: s
     )
     assertUsage(
       baseServer_ === null || baseServer_.startsWith('/'),
-      `Config ${pc.cyan('baseServer')} should start with a leading slash ${pc.bold('/')} (it's ${pc.bold(
+      `Config ${pc.cyan('baseServer')} should start with a leading slash ${pc.cyan('/')} (it's ${pc.cyan(
         String(baseServer_)
       )} instead)`
     )
