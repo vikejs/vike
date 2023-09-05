@@ -39,7 +39,7 @@ function resolve(base: string | null, baseServer_: string | null, baseAssets_: s
     assertUsage(
       baseServer_ === null || baseServer_.startsWith('/'),
       `Config ${pc.cyan('baseServer')} should start with a leading slash ${pc.bold('/')} (it's ${pc.bold(
-        baseServer_
+        String(baseServer_)
       )} instead)`
     )
   }

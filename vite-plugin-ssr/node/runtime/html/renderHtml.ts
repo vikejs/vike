@@ -275,8 +275,8 @@ async function renderTemplate(
       assertWarning(
         false,
         getErrMsg(
-          `${pc.cyan(templateVar)} which will be converted to an empty string`,
-          `Pass an empty string instead of ${pc.cyan(templateVar)} to remove this warning.`
+          `${pc.cyan(String(templateVar))} which will be converted to an empty string`,
+          `Pass an empty string instead of ${pc.cyan(String(templateVar))} to remove this warning.`
         ),
         { onlyOnce: false }
       )

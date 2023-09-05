@@ -306,7 +306,7 @@ function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageCon
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
   const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
   const isNominal = isSuccess || statusCode === 404
-  const color = (s: number | string) => pc.bold(isSuccess ? pc.green(s) : pc.red(s))
+  const color = (s: number | string) => pc.bold(isSuccess ? pc.green(String(s)) : pc.red(String(s)))
   const isRedirect = statusCode && 300 <= statusCode && statusCode <= 399
   const type = isRedirect ? 'redirect' : 'response'
   if (isRedirect) {
