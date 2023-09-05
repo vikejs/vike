@@ -1,4 +1,4 @@
-export { warnIfObjectIsNotObject }
+export { warnIfErrorIsNotObject }
 
 import { assertWarning } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -7,7 +7,7 @@ import pc from '@brillout/picocolors'
 
 assertIsNotBrowser()
 
-function warnIfObjectIsNotObject(err: unknown): void {
+function warnIfErrorIsNotObject(err: unknown): void {
   if (!isObject(err)) {
     console.warn('[vite-plugin-ssr] The thrown value is:')
     console.warn(err)

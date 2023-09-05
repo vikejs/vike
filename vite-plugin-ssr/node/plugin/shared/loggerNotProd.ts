@@ -29,7 +29,7 @@ import {
   isUserHookError,
   overwriteAssertProductionLogger,
   stripAnsi,
-  warnIfObjectIsNotObject
+  warnIfErrorIsNotObject
 } from '../utils.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { isErrorDebug } from './isErrorDebug.js'
@@ -101,7 +101,7 @@ function logViteErrorContainingCodeSnippet(err: ErrorWithCodeSnippet): void {
   logErr(err)
 }
 function logErr(err: unknown, httpRequestId: number | null = null): void {
-  warnIfObjectIsNotObject(err)
+  warnIfErrorIsNotObject(err)
 
   if (isAbortError(err) && !isErrorDebug()) {
     return
@@ -154,7 +154,7 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
 function logConfigError(err: unknown): void {
   clearLogs({ clearAlsoIfConfigIsInvalid: true })
 
-  warnIfObjectIsNotObject(err)
+  warnIfErrorIsNotObject(err)
 
   const category = getConfigCategory()
 
