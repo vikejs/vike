@@ -11,10 +11,6 @@ export type { ConfigValues }
 export type { ConfigValueSource }
 export type { ConfigValueSources }
 
-/** The environments in which the configuration value is loaded.
- *
- * https://vite-plugin-ssr/meta
- */
 type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
 type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
 

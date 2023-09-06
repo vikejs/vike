@@ -2,9 +2,12 @@ export type { PageContextBuiltInServer } from '../shared/types.js'
 export type { PageContextBuiltInClientWithClientRouting } from '../shared/types.js'
 export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
 export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtmlTags.js'
-export type { Config, Meta, Effect } from '../shared/page-configs/Config.js'
+export type { Config, Meta } from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
-export type { ConfigDefinition } from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
+export type {
+  ConfigDefinition,
+  ConfigEffect
+} from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 export type { ConfigEntries } from '../shared/getPageFiles/getExports.js'
 
 // TODO/v1-release: remove
@@ -16,6 +19,16 @@ import type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
  */
 type Env = ConfigEnv
 export type { Env }
+
+// TODO/v1-release: remove
+import type { ConfigEffect } from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
+/** @deprecated Replace:
+ *   `import type { Effect } from 'vite-plugin-ssr/types'`
+ * With:
+ *   `import type { ConfigEffect } from 'vite-plugin-ssr/types'`
+ */
+type Effect = ConfigEffect
+export type { Effect }
 
 // TODO/v1-release: remove
 // Ancient VPS versions used to have `import type { PageContextBuiltInClient } from 'vite-plugin-ssr/types'`

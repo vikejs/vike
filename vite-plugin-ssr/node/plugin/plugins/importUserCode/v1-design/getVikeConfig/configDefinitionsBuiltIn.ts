@@ -3,9 +3,10 @@ export { configDefinitionsBuiltInGlobal }
 export type { ConfigDefinition }
 export type { ConfigDefinitionInternal }
 export type { ConfigNameGlobal }
+export type { ConfigEffect }
 
 import type { ConfigEnvInternal, ConfigEnv, PageConfigData } from '../../../../../../shared/page-configs/PageConfig.js'
-import type { ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
+import type { Config, ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
 import { getConfigEnv, isConfigSet } from '../helpers.js'
 
 // For user
@@ -24,15 +25,26 @@ type ConfigDefinition = {
    *
    * https://vite-plugin-ssr.com/meta
    */
-  effect?: (config: {
-    configValue: unknown
-    configDefinedAt: string
-  }) => undefined | Record<string, Partial<ConfigDefinitionInternal>>
+  effect?: ConfigEffect
 }
+
+type ConfigEffect = (config: {
+  /** The resolved config value.
+   *
+   * https://vite-plugin-ssr.com/meta
+   */
+  configValue: unknown
+  /** Place where the resolved config value comes from.
+   *
+   * https://vite-plugin-ssr.com/meta
+   */
+  configDefinedAt: string
+}) => Config | undefined
+
 // For maintainer
 type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
-  env: ConfigEnvInternal
   _computed?: (pageConfig: PageConfigData) => unknown
+  env: ConfigEnvInternal
 }
 
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn, ConfigDefinitionInternal>

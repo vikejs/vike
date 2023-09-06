@@ -1,7 +1,6 @@
 export type { Config }
 export type { ConfigNameBuiltIn }
 export type { Meta }
-export type { Effect }
 export type { HookName }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
@@ -159,19 +158,6 @@ type Config<Page = unknown> = Partial<{
    */
   prefetchStaticAssets: PrefetchStaticAssets | ImportString
 }>
-
-type Effect = (args: {
-  /** Place where the resolved config value comes from.
-   *
-   * https://vite-plugin-ssr.com/meta
-   */
-  configDefinedAt: string
-  /** The resolved config value.
-   *
-   * https://vite-plugin-ssr.com/meta
-   */
-  configValue: unknown
-}) => Config | undefined
 
 type Meta = Record<string, ConfigDefinition>
 

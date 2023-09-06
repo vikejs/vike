@@ -35,6 +35,7 @@ import type {
   ConfigValue,
   ConfigEnv
 } from '../../../../../shared/page-configs/PageConfig.js'
+import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
   configDefinitionsBuiltIn,
   type ConfigDefinitionInternal,
@@ -934,7 +935,7 @@ function applyEffects(pageConfigData: PageConfigData, configDefinitionsRelevant:
   })
 }
 function applyEffect(
-  configModFromEffect: Record<string, Partial<ConfigDefinitionInternal>>,
+  configModFromEffect: Config,
   configValueEffectSource: ConfigValue,
   configValueSources: ConfigValueSources
 ) {
