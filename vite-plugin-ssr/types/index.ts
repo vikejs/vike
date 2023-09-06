@@ -2,7 +2,7 @@ export type { PageContextBuiltInServer } from '../shared/types.js'
 export type { PageContextBuiltInClientWithClientRouting } from '../shared/types.js'
 export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
 export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtmlTags.js'
-export type { Config, Meta } from '../shared/page-configs/Config.js'
+export type { Config, ConfigMeta } from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {
   ConfigDefinition,
@@ -29,6 +29,16 @@ import type { ConfigEffect } from '../node/plugin/plugins/importUserCode/v1-desi
  */
 type Effect = ConfigEffect
 export type { Effect }
+
+// TODO/v1-release: remove
+import type { ConfigMeta } from '../shared/page-configs/Config.js'
+/** @deprecated Replace:
+ *   `import type { Meta } from 'vite-plugin-ssr/types'`
+ * With:
+ *   `import type { ConfigMeta } from 'vite-plugin-ssr/types'`
+ */
+type Meta = ConfigMeta
+export type { Meta }
 
 // TODO/v1-release: remove
 // Ancient VPS versions used to have `import type { PageContextBuiltInClient } from 'vite-plugin-ssr/types'`

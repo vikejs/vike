@@ -1,6 +1,6 @@
 export type { Config }
 export type { ConfigNameBuiltIn }
-export type { Meta }
+export type { ConfigMeta }
 export type { HookName }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
@@ -150,7 +150,7 @@ type Config<Page = unknown> = Partial<{
    *
    * https://vite-plugin-ssr.com/meta
    */
-  meta: Meta | ImportString
+  meta: ConfigMeta | ImportString
 
   /** Prefetch links.
    *
@@ -159,6 +159,6 @@ type Config<Page = unknown> = Partial<{
   prefetchStaticAssets: PrefetchStaticAssets | ImportString
 }>
 
-type Meta = Record<string, ConfigDefinition>
+type ConfigMeta = Record<string, ConfigDefinition>
 
 type ImportString = `import:${string}`
