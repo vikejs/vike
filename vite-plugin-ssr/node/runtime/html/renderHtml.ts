@@ -1,15 +1,13 @@
-// Public
 export { escapeInject }
 export { dangerouslySkipEscape }
-export type { TemplateWrapped } // https://github.com/brillout/vite-plugin-ssr/issues/511
-
-// Private
 export { renderDocumentHtml }
 export { isDocumentHtml }
 export { getHtmlString }
 export type { HtmlRender }
 export type { HtmlPart }
 export type { DocumentHtml }
+// This export is needed even though it's not used anywhere, see https://github.com/brillout/vite-plugin-ssr/issues/511
+export type { TemplateWrapped }
 
 import { assert, assertUsage, assertWarning, checkType, hasProp, isHtml, isPromise, objectAssign } from '../utils.js'
 import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets.js'

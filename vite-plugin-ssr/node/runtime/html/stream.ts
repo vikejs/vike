@@ -1,6 +1,9 @@
 export { processStream }
 export { streamToString }
-
+export { stampPipe }
+export { pipeStream }
+export { pipeWebStream }
+export { pipeNodeStream }
 export { getStreamReadableNode }
 export { getStreamReadableWeb }
 export { pipeToStreamWritableNode }
@@ -12,12 +15,10 @@ export { isStreamReadableWeb }
 export { isStreamReadableNode }
 export { getStreamName }
 export { inferStreamName }
-
 export { streamReadableWebToString }
 export { streamPipeNodeToString }
 export { isStreamWritableWeb }
 export { isStreamWritableNode }
-
 export type { StreamProviderAny }
 export type { StreamProviderNormalized }
 export type { StreamTypePatch }
@@ -27,12 +28,6 @@ export type { StreamWritableWeb }
 export type { StreamWritableNode }
 export type { StreamPipeWeb }
 export type { StreamPipeNode }
-
-// Public: consumed by vite-plugin-ssr users
-export { stampPipe }
-export { pipeStream }
-export { pipeWebStream }
-export { pipeNodeStream }
 
 import {
   assert,

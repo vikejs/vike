@@ -3,19 +3,19 @@ export { assertRouteParams }
 export { assertSyncRouting }
 export { warnDeprecatedAllowKey }
 
-import { assertPageContextUrlComputedPropsPublic, PageContextUrlComputedProps } from '../UrlComputedProps.js'
+import { assertPageContextUrlComputedProps, PageContextUrlComputedPropsInternal } from '../addUrlComputedProps.js'
 import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise, isStringRecord } from './utils.js'
 import pc from '@brillout/picocolors'
 
 async function resolveRouteFunction(
   routeFunction: Function,
-  pageContext: PageContextUrlComputedProps,
+  pageContext: PageContextUrlComputedPropsInternal,
   routeDefinedAt: string
 ): Promise<null | {
   precedence: number | null
   routeParams: Record<string, string>
 }> {
-  assertPageContextUrlComputedPropsPublic(pageContext)
+  assertPageContextUrlComputedProps(pageContext)
   let result: unknown = routeFunction(pageContext)
   assertSyncRouting(result, `The Route Function ${routeDefinedAt}`)
   // TODO/v1-release

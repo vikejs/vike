@@ -28,16 +28,16 @@ import path from 'path'
 import type {
   PageConfigData,
   PageConfigGlobalData,
-  ConfigEnvPrivate,
+  ConfigEnvInternal,
   ConfigValueSource,
   ConfigValueSources,
   ConfigValues,
   ConfigValue,
-  ConfigEnvPublic
+  ConfigEnv
 } from '../../../../../shared/page-configs/PageConfig.js'
 import {
   configDefinitionsBuiltIn,
-  type ConfigDefinition,
+  type ConfigDefinitionInternal,
   configDefinitionsBuiltInGlobal,
   type ConfigNameGlobal
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
@@ -99,13 +99,13 @@ type VikeConfig = {
   globalVikeConfig: Record<string, unknown>
 }
 
-type ConfigDefinitionsIncludingCustom = Record<string, ConfigDefinition>
+type ConfigDefinitionsIncludingCustom = Record<string, ConfigDefinitionInternal>
 
 let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfig> | null = null
 const vikeConfigDependencies: Set<string> = new Set()
-const codeFilesEnv: Map<string, { configEnv: ConfigEnvPrivate; configName: string }[]> = new Map()
+const codeFilesEnv: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
 function reloadVikeConfig(userRootDir: string, extensions: ExtensionResolved[]) {
   vikeConfigDependencies.clear()
   codeFilesEnv.clear()
@@ -229,19 +229,19 @@ async function loadInterfaceFiles(
   return interfaceFilesByLocationId
 }
 function getConfigDefinition(
-  configDefinitionsRelevant: Record<string, ConfigDefinition>,
+  configDefinitionsRelevant: Record<string, ConfigDefinitionInternal>,
   configName: string,
   definedByFile: string
-): ConfigDefinition {
+): ConfigDefinitionInternal {
   const configDef = configDefinitionsRelevant[configName]
   assertConfigExists(configName, Object.keys(configDefinitionsRelevant), definedByFile)
   assert(configDef)
   return configDef
 }
 function getConfigDefinitionOptional(
-  configDefinitions: Record<string, ConfigDefinition>,
+  configDefinitions: Record<string, ConfigDefinitionInternal>,
   configName: string
-): null | ConfigDefinition {
+): null | ConfigDefinitionInternal {
   return configDefinitions[configName] ?? null
 }
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string, userRootDir: string) {
@@ -540,7 +540,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
 
 function resolveConfigValueSource(
   configName: string,
-  configDef: ConfigDefinition,
+  configDef: ConfigDefinitionInternal,
   interfaceFilesRelevant: InterfaceFilesByLocationId,
   userRootDir: string
 ): null | ConfigValueSource {
@@ -620,7 +620,7 @@ function warnOverridenConfigValues(
   interfaceFileWinner: InterfaceFile,
   interfaceFilesOverriden: InterfaceFile[],
   configName: string,
-  configDef: ConfigDefinition,
+  configDef: ConfigDefinitionInternal,
   userRootDir: string
 ) {
   interfaceFilesOverriden.forEach((interfaceFileLoser) => {
@@ -643,7 +643,7 @@ function isInterfaceFileUserLand(interfaceFile: InterfaceFile) {
 function getConfigValueSource(
   configName: string,
   interfaceFile: InterfaceFile,
-  configDef: ConfigDefinition,
+  configDef: ConfigDefinitionInternal,
   userRootDir: string
 ): ConfigValueSource {
   // TODO: rethink file paths of ConfigElement
@@ -701,7 +701,7 @@ function getConfigValueSource(
   assert(false)
 }
 
-function assertCodeFileEnv(codeFilePath: string, configEnv: ConfigEnvPrivate, configName: string) {
+function assertCodeFileEnv(codeFilePath: string, configEnv: ConfigEnvInternal, configName: string) {
   if (!codeFilesEnv.has(codeFilePath)) {
     codeFilesEnv.set(codeFilePath, [])
   }
@@ -843,7 +843,10 @@ function getConfigEntry(
   return { configIsDefined: true, interfaceFile, ...val }
 }
 
-function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaVal is Record<string, ConfigDefinition> {
+function assertMetaValue(
+  metaVal: unknown,
+  definedByFile: string
+): asserts metaVal is Record<string, ConfigDefinitionInternal> {
   assertUsage(
     isObject(metaVal),
     `${definedByFile} sets the config ${pc.cyan('meta')} to a value with an invalid type ${pc.cyan(
@@ -865,7 +868,7 @@ function assertMetaValue(metaVal: unknown, definedByFile: string): asserts metaV
         'server-only',
         'server-and-client',
         'config-only'
-      ] satisfies ConfigEnvPublic[]
+      ] satisfies ConfigEnv[]
       const hint = [
         `Set the value of ${pc.cyan('env')} to `,
         joinEnglish(
@@ -931,7 +934,7 @@ function applyEffects(pageConfigData: PageConfigData, configDefinitionsRelevant:
   })
 }
 function applyEffect(
-  configModFromEffect: Record<string, Partial<ConfigDefinition>>,
+  configModFromEffect: Record<string, Partial<ConfigDefinitionInternal>>,
   configValueEffectSource: ConfigValue,
   configValueSources: ConfigValueSources
 ) {

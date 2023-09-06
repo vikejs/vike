@@ -1,7 +1,7 @@
 export type { PageConfig }
 export type { PageConfigLoaded }
-export type { ConfigEnvPrivate }
-export type { ConfigEnvPublic }
+export type { ConfigEnvInternal }
+export type { ConfigEnv }
 export type { PageConfigData }
 export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
@@ -11,18 +11,12 @@ export type { ConfigValues }
 export type { ConfigValueSource }
 export type { ConfigValueSources }
 
-type ConfigEnvPrivate =
-  | 'client-only'
-  | 'server-only'
-  | 'server-and-client'
-  | 'config-only'
-  | '_routing-eager'
-  | '_routing-lazy'
 /** The environments in which the configuration value is loaded.
  *
  * https://vite-plugin-ssr/meta
  */
-type ConfigEnvPublic = Exclude<ConfigEnvPrivate, '_routing-eager' | '_routing-lazy'>
+type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
+type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
 
 type PageConfigData = {
   pageId: string
@@ -33,7 +27,7 @@ type PageConfigData = {
   configValues: ConfigValues
 }
 type ConfigValueSource = {
-  configEnv: ConfigEnvPrivate
+  configEnv: ConfigEnvInternal
   valueSerialized?: string
   value?: unknown
   // Replace definedAt.filePath with definedAt.filePathRelativeToUserRootDir? and definedAt.filePathAbsolute!

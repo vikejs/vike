@@ -1,22 +1,41 @@
 export { configDefinitionsBuiltIn }
 export { configDefinitionsBuiltInGlobal }
 export type { ConfigDefinition }
+export type { ConfigDefinitionInternal }
 export type { ConfigNameGlobal }
 
-import type { ConfigEnvPrivate, PageConfigData } from '../../../../../../shared/page-configs/PageConfig.js'
-import type { ConfigNameBuiltIn, ConfigNamePrivate } from '../../../../../../shared/page-configs/Config.js'
+import type { ConfigEnvInternal, ConfigEnv, PageConfigData } from '../../../../../../shared/page-configs/PageConfig.js'
+import type { ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
 import { getConfigEnv, isConfigSet } from '../helpers.js'
 
+// For user
+/** The meta definition of a config.
+ *
+ * https://vite-plugin-ssr.com/meta
+ */
 type ConfigDefinition = {
-  env: ConfigEnvPrivate
+  /** In what environment(s) the config value is loaded.
+   *
+   * https://vite-plugin-ssr.com/meta
+   */
+  env: ConfigEnv
+  /**
+   * Define a so-called "Shortcut Config".
+   *
+   * https://vite-plugin-ssr.com/meta
+   */
   effect?: (config: {
     configValue: unknown
     configDefinedAt: string
-  }) => undefined | Record<string, Partial<ConfigDefinition>>
+  }) => undefined | Record<string, Partial<ConfigDefinitionInternal>>
+}
+// For maintainer
+type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
+  env: ConfigEnvInternal
   _computed?: (pageConfig: PageConfigData) => unknown
 }
 
-type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNamePrivate, ConfigDefinition>
+type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn, ConfigDefinitionInternal>
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: 'server-only'
@@ -87,7 +106,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   onBeforeRenderEnv: {
     env: 'client-only',
-    _computed: (pageConfig): null | ConfigEnvPrivate =>
+    _computed: (pageConfig): null | ConfigEnvInternal =>
       !isConfigSet(pageConfig, 'onBeforeRender') ? null : getConfigEnv(pageConfig, 'onBeforeRender')
   }
 }
@@ -104,7 +123,7 @@ type ConfigNameGlobal =
   | 'redirects'
   | 'trailingSlash'
   | 'disableUrlNormalization'
-const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition> = {
+const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionInternal> = {
   onPrerenderStart: {
     env: 'server-only'
   },

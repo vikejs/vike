@@ -4,12 +4,12 @@ export { getPageConfig }
 export { getConfigSrc }
 
 import { assert, assertUsage } from '../utils.js'
-import type { ConfigSource, ConfigValue, PageConfig, PageConfigData } from './PageConfig.js'
-import type { ConfigNameBuiltIn, ConfigNamePrivate } from './Config.js'
+import type { ConfigValue, PageConfig, PageConfigData } from './PageConfig.js'
+import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
 
-type ConfigName = ConfigNameBuiltIn | ConfigNamePrivate
+type ConfigName = ConfigNameBuiltIn
 
 // TODO: remove in favor of getConfigValue2()
 function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'string'): null | string

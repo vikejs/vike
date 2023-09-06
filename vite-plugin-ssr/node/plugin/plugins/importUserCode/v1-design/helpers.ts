@@ -1,11 +1,11 @@
 export { getConfigEnv }
 export { isConfigSet }
 
-import type { ConfigEnvPrivate, PageConfigData } from '../../../../../shared/page-configs/PageConfig.js'
+import type { ConfigEnvInternal, PageConfigData } from '../../../../../shared/page-configs/PageConfig.js'
 import { getConfigValueSource } from '../../../../shared/getConfigValueSource.js'
 import { assert } from '../../../utils.js'
 
-function getConfigEnv(pageConfig: PageConfigData, configName: string): null | ConfigEnvPrivate {
+function getConfigEnv(pageConfig: PageConfigData, configName: string): null | ConfigEnvInternal {
   const configValueSource = getConfigValueSource(pageConfig, configName)
   const configValue = pageConfig.configValues[configName]
   if (!configValueSource && !configValue) return null

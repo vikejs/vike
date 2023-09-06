@@ -46,7 +46,7 @@ import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
 import { getConfigValue2 } from '../../shared/page-configs/utils.js'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode.js'
 import { isErrorPage } from '../../shared/error-page.js'
-import { addUrlComputedProps, PageContextUrlComputedProps } from '../../shared/UrlComputedProps.js'
+import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide.js'
@@ -95,7 +95,7 @@ type PageContext = PageContextInitEnhanced & {
   _urlOriginalModifiedByHook?: TransformerHook
   _providedByHook: ProvidedByHook
   _pageContextAlreadyProvidedByOnPrerenderHook?: true
-} & PageContextUrlComputedProps
+} & PageContextUrlComputedPropsInternal
 
 type PrerenderOptions = {
   /** Initial `pageContext` values */

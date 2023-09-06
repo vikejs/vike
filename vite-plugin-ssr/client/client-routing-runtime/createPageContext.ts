@@ -1,6 +1,6 @@
 export { createPageContext }
 
-import { addUrlComputedProps } from '../../shared/UrlComputedProps.js'
+import { addUrlComputedProps } from '../../shared/addUrlComputedProps.js'
 import { getPageFilesAll } from '../../shared/getPageFiles.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { getBaseServer } from './getBaseServer.js'

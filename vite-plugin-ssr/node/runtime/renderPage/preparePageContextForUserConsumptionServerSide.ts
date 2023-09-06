@@ -4,9 +4,9 @@ export type { PageContextForUserConsumptionServerSide }
 import { assert, isPlainObject, isObject } from '../utils.js'
 import { sortPageContext } from '../../../shared/sortPageContext.js'
 import {
-  assertPageContextUrlComputedPropsPublic,
-  PageContextUrlComputedProps
-} from '../../../shared/UrlComputedProps.js'
+  assertPageContextUrlComputedProps,
+  PageContextUrlComputedPropsInternal
+} from '../../../shared/addUrlComputedProps.js'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig.js'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
 import type { ConfigEntries, ExportsAll } from '../../../shared/getPageFiles/getExports.js'
@@ -17,7 +17,7 @@ type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal 
   /** @deprecated */
   url: string
   urlPathname: string
-  urlParsed: PageContextUrlComputedProps['urlParsed']
+  urlParsed: PageContextUrlComputedPropsInternal['urlParsed']
   routeParams: Record<string, string>
   Page: unknown
   pageExports: Record<string, unknown>
@@ -32,7 +32,7 @@ type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal 
   pageProps?: Record<string, unknown>
 }
 function preparePageContextForUserConsumptionServerSide(pageContext: PageContextForUserConsumptionServerSide): void {
-  assertPageContextUrlComputedPropsPublic(pageContext)
+  assertPageContextUrlComputedProps(pageContext)
 
   assert(isPlainObject(pageContext.routeParams))
   assert('Page' in pageContext)

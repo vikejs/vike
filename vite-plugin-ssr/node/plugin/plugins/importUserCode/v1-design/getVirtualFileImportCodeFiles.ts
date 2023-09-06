@@ -2,7 +2,7 @@ export { getVirtualFileImportCodeFiles }
 export { skipConfigValue }
 
 import { assert, assertPosixPath } from '../../../utils.js'
-import type { ConfigEnvPrivate, PageConfigData } from '../../../../../shared/page-configs/PageConfig.js'
+import type { ConfigEnvInternal, PageConfigData } from '../../../../../shared/page-configs/PageConfig.js'
 import { generateEagerImport } from '../generateEagerImport.js'
 import {
   getVirtualFileIdImportPageCode,
@@ -103,7 +103,7 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   return code
 }
 
-function skipConfigValue(configEnv: ConfigEnvPrivate, isForClientSide: boolean, isClientRouting: boolean) {
+function skipConfigValue(configEnv: ConfigEnvInternal, isForClientSide: boolean, isClientRouting: boolean) {
   if (configEnv === '_routing-eager' || configEnv === 'config-only') return true
   if (configEnv === (isForClientSide ? 'server-only' : 'client-only')) return true
   if (configEnv === '_routing-lazy' && isForClientSide && !isClientRouting) return true

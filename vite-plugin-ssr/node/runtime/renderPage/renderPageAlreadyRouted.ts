@@ -12,7 +12,7 @@ import { getHtmlString } from '../html/renderHtml.js'
 import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles.js'
 import { assert, assertUsage, hasProp, objectAssign, unique } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
-import { addUrlComputedProps, type PageContextUrlComputedProps } from '../../../shared/UrlComputedProps.js'
+import { addUrlComputedProps, type PageContextUrlComputedPropsInternal } from '../../../shared/addUrlComputedProps.js'
 import { getGlobalContext } from '../globalContext.js'
 import {
   createHttpResponseObject,
@@ -46,7 +46,7 @@ async function renderPageAlreadyRouted<
     errorWhileRendering: null | Error
     _httpRequestId: number
   } & PageContextInitEnhanced &
-    PageContextUrlComputedProps &
+    PageContextUrlComputedPropsInternal &
     PageContext_loadPageFilesServerSide
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   // pageContext._pageId can either be the:

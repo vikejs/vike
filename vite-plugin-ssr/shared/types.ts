@@ -4,10 +4,10 @@ export { PageContextBuiltInClientWithClientRouting }
 export { PageContextBuiltInClientWithServerRouting }
 
 import type {
-  PageContextUrlComputedProps,
-  PageContextUrlComputedPropsPublicClient,
-  PageContextUrlComputedPropsPublicServer
-} from './UrlComputedProps.js'
+  PageContextUrlComputedPropsInternal,
+  PageContextUrlComputedPropsClient,
+  PageContextUrlComputedPropsServer
+} from './addUrlComputedProps.js'
 import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports.js'
 import type { AbortStatusCode } from './route/abort.js'
 
@@ -15,9 +15,9 @@ import type { AbortStatusCode } from './route/abort.js'
  *
  * https://vite-plugin-ssr.com/pageContext
  */
-type PageContextBuiltInServer<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsPublicServer
+type PageContextBuiltInServer<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsServer
 
-type PageContextBuiltInServerInternal<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedProps
+type PageContextBuiltInServerInternal<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsInternal
 
 type PageContextBuiltInCommon<Page = any> = {
   /** The `export { Page }` of your `.page.js` file.
@@ -112,7 +112,7 @@ type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContext
      * The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`.
      */
     isBackwardNavigation: boolean | null
-  } & PageContextUrlComputedPropsPublicClient
+  } & PageContextUrlComputedPropsClient
 
 /** Client-side built-in `pageContext` properties set by vite-plugin-ssr (Server Routing).
  *

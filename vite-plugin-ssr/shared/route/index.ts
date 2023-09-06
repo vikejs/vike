@@ -10,7 +10,11 @@ if (isBrowser()) {
 
 import type { PageFile } from '../getPageFiles.js'
 import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils.js'
-import { addUrlComputedProps, PageContextUrlComputedProps, PageContextUrlSources } from '../UrlComputedProps.js'
+import {
+  addUrlComputedProps,
+  PageContextUrlComputedPropsInternal,
+  PageContextUrlSources
+} from '../addUrlComputedProps.js'
 import { resolvePrecendence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'
 import { resolveRouteFunction } from './resolveRouteFunction.js'
@@ -20,7 +24,7 @@ import { debug } from './debug.js'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
 import pc from '@brillout/picocolors'
 
-type PageContextForRoute = PageContextUrlComputedProps & {
+type PageContextForRoute = PageContextUrlComputedPropsInternal & {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfig[]
   _allPageIds: string[]

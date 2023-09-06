@@ -1,15 +1,13 @@
 export type { Config }
 export type { ConfigNameBuiltIn }
-export type { ConfigNamePrivate }
 export type { Meta }
 export type { Effect }
 export type { HookName }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
+import { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { ConfigVpsUserProvided } from '../ConfigVps.js'
 // TODO: write docs of links below
-
-import type { ConfigEnvPublic } from './PageConfig.js'
 
 type HookName =
   | 'onHydrationEnd'
@@ -25,11 +23,12 @@ type HookName =
   | 'guard'
   | 'render'
 
-type ConfigNameBuiltIn =
+// Do we need the distinction between ConfigNameBuiltInPublic and ConfigNameBuiltInInternal?
+type ConfigNameBuiltInPublic =
   | Exclude<keyof Config, keyof ConfigVpsUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
   | 'prerender'
-
-type ConfigNamePrivate = 'isClientSideRenderable' | 'onBeforeRenderEnv'
+type ConfigNameBuiltInInternal = 'isClientSideRenderable' | 'onBeforeRenderEnv'
+type ConfigNameBuiltIn = ConfigNameBuiltInPublic | ConfigNameBuiltInInternal
 
 /** Page configuration.
  *
@@ -174,21 +173,6 @@ type Effect = (args: {
   configValue: unknown
 }) => Config | undefined
 
-type Meta = Record<
-  string,
-  {
-    /** In what environment(s) the config value is loaded.
-     *
-     * https://vite-plugin-ssr.com/meta
-     */
-    env: ConfigEnvPublic
-    /**
-     * Define a so-called "Shortcut Config".
-     *
-     * https://vite-plugin-ssr.com/meta
-     */
-    effect?: Effect
-  }
->
+type Meta = Record<string, ConfigDefinition>
 
 type ImportString = `import:${string}`
