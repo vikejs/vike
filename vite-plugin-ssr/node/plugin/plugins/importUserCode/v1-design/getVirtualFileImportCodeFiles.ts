@@ -2,7 +2,7 @@ export { getVirtualFileImportCodeFiles }
 export { skipConfigValue }
 
 import { assert, assertPosixPath } from '../../../utils.js'
-import type { ConfigEnvInternal, PageConfigData } from '../../../../../shared/page-configs/PageConfig.js'
+import type { ConfigEnvInternal, PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
 import { generateEagerImport } from '../generateEagerImport.js'
 import {
   getVirtualFileIdImportPageCode,
@@ -13,7 +13,7 @@ import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
 import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps.js'
 import path from 'path'
-import { getConfigValue } from '../../../../../shared/page-configs/utils.js'
+import { getConfigValue2 } from '../../../../../shared/page-configs/utils.js'
 import { getConfigValueSourcesRelevant } from '../../../../shared/getConfigValueSource.js'
 
 async function getVirtualFileImportCodeFiles(
@@ -33,10 +33,10 @@ async function getVirtualFileImportCodeFiles(
   const { pageId, isForClientSide } = result
   const { pageConfigsData } = await getVikeConfig(userRootDir, isDev, configVps.extensions, true)
   assert(pageConfigsData)
-  const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId === pageId)
-  assert(pageConfigData)
+  const pageConfigs = pageConfigsData.find((pageConfig) => pageConfig.pageId === pageId)
+  assert(pageConfigs)
   const code = generateSourceCodeOfLoadCodeFileVirtualFile(
-    pageConfigData,
+    pageConfigs,
     isForClientSide,
     pageId,
     configVps.includeAssetsImportedByServer,
@@ -47,18 +47,19 @@ async function getVirtualFileImportCodeFiles(
 }
 
 function generateSourceCodeOfLoadCodeFileVirtualFile(
-  pageConfigData: PageConfigData,
+  pageConfig: PageConfigBuildTime,
   isForClientSide: boolean,
   pageId: string,
   includeAssetsImportedByServer: boolean,
   isDev: boolean
 ): string {
-  const isClientRouting = getConfigValue(pageConfigData, 'clientRouting', 'boolean') ?? false
+  const configValue = getConfigValue2(pageConfig, 'clientRouting', 'boolean')
+  const isClientRouting = configValue?.value ?? false
   const lines: string[] = []
   const importStatements: string[] = []
   lines.push('export default [')
   let varCounter = 0
-  getConfigValueSourcesRelevant(pageConfigData).forEach((configValueSource) => {
+  getConfigValueSourcesRelevant(pageConfig).forEach((configValueSource) => {
     const {
       isCodeEntry,
       configName,

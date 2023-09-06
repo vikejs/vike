@@ -2,9 +2,10 @@ export { getConfigValue }
 export { getConfigValue2 }
 export { getPageConfig }
 export { getConfigSrc }
+export { assertConfigValueType }
 
 import { assert, assertUsage } from '../utils.js'
-import type { ConfigValue, PageConfig, PageConfigData } from './PageConfig.js'
+import type { ConfigValue, DefinedAt, PageConfig, PageConfigBuildTime } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
@@ -12,44 +13,44 @@ import { getExportPath } from './getExportPath.js'
 type ConfigName = ConfigNameBuiltIn
 
 // TODO: remove in favor of getConfigValue2()
-function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'string'): null | string
-function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'boolean'): null | boolean
-function getConfigValue(pageConfig: PageConfigData, configName: ConfigName): unknown
-function getConfigValue(
-  pageConfig: PageConfigData,
-  configName: ConfigName,
-  type?: 'string' | 'boolean'
-): null | unknown {
+function getConfigValue(pageConfig: PageConfig, configName: ConfigName, type: 'string'): null | string
+function getConfigValue(pageConfig: PageConfig, configName: ConfigName, type: 'boolean'): null | boolean
+function getConfigValue(pageConfig: PageConfig, configName: ConfigName): unknown
+function getConfigValue(pageConfig: PageConfig, configName: ConfigName, type?: 'string' | 'boolean'): null | unknown {
   const configValue = getConfigValue2(pageConfig, configName, type as any)
   if (!configValue) return null
   return configValue.value
 }
 
+type PageConfigValue = PageConfig | PageConfigBuildTime
+
 // prettier-ignore
-function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName, type: 'string'): null | ConfigValue & { value: string }
+function getConfigValue2(pageConfig: PageConfigValue, configName: ConfigName, type: 'string'): null | ConfigValue & { value: string }
 // prettier-ignore
-function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName, type: 'boolean'): null | ConfigValue & { value: boolean }
+function getConfigValue2(pageConfig: PageConfigValue, configName: ConfigName, type: 'boolean'): null | ConfigValue & { value: boolean }
 // prettier-ignore
-function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName): null | ConfigValue
+function getConfigValue2(pageConfig: PageConfigValue, configName: ConfigName): null | ConfigValue
 // prettier-ignore
-function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue {
-  const configValue = pageConfig.configValues[configName]
-  if (!configValue) return null
-  const { value } = configValue
-  if (type) {
-    if (isNullish(value)) return null
-    const configSrc = getConfigSrc(configValue)
-    const typeActual = typeof value
-    assertUsage(
-      typeActual === type,
-      `${configSrc} has an invalid type ${pc.cyan(typeActual)}: is should be a ${pc.cyan(type)} instead`
-    )
+function getConfigValue2(pageConfig: PageConfigValue, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue {
+  if( !pageConfig.configValues ) {
+    pageConfig.configValueSources[configName]
+  } else {
+    pageConfig.configValueSources[configName]
   }
-  return configValue
+  const configValue = pageConfig.configValues ? pageConfig.configValues[configName] : pageConfig.configValueSources[configName]?.[0]
+  if( !configValue   ) return null
+  const { value, definedAt} = configValue
+  if (isNullish(value)) return null
+  assertConfigValueType({ value, definedAt }, type)
+  return { value, definedAt }
 }
 
 function isNullish(configValue: unknown): boolean {
-  return configValue === null || configValue === undefined
+  return (
+    configValue === null ||
+    // TODO: stop allowing users to set undefined and, instead, force them to use `null`?
+    configValue === undefined
+  )
 }
 
 function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
@@ -59,11 +60,22 @@ function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
   return pageConfig
 }
 
+function assertConfigValueType(
+  { value, definedAt }: { value: unknown; definedAt: DefinedAt },
+  type: undefined | 'string' | 'boolean'
+) {
+  if (type === undefined) return
+  assert(value !== null)
+  const configSrc = getConfigSrc({ definedAt })
+  const typeActual = typeof value
+  assertUsage(
+    typeActual === type,
+    `${configSrc} has an invalid type ${pc.cyan(typeActual)}: is should be a ${pc.cyan(type)} instead`
+  )
+}
+
 // TODO: rename to getValueSrc()
-function getConfigSrc(
-  { definedAt }: { definedAt: { filePath: string; fileExportPath: string[] } },
-  append?: 'effect'
-): string {
+function getConfigSrc({ definedAt }: { definedAt: DefinedAt }, append?: 'effect'): string {
   const { filePath, fileExportPath } = definedAt
   const exportPath = getExportPath(fileExportPath)
   let configSrc = `${filePath} > ${pc.cyan(exportPath)}`

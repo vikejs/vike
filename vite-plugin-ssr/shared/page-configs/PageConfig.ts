@@ -3,6 +3,7 @@ export type { PageConfigLoaded }
 export type { ConfigEnvInternal }
 export type { ConfigEnv }
 export type { PageConfigData }
+export type { PageConfigBuildTime }
 export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
 export type { ConfigSource }
@@ -10,9 +11,17 @@ export type { ConfigValue }
 export type { ConfigValues }
 export type { ConfigValueSource }
 export type { ConfigValueSources }
+export type { DefinedAt }
 
 type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
 type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
+
+type PageConfigRuntime = Omit<PageConfigData, 'configValues'> & {
+  configValues: NonNullable<PageConfigData['configValues']>
+}
+type PageConfigBuildTime = Omit<PageConfigData, 'configValueSources'> & {
+  configValueSources: Required<PageConfigData['configValueSources']>
+}
 
 type PageConfigData = {
   pageId: string
@@ -21,7 +30,7 @@ type PageConfigData = {
   routeFilesystem: null | string
   routeFilesystemDefinedBy: null | string
   configValueSources: ConfigValueSources
-  configValues: ConfigValues
+  configValues: null | ConfigValues
 }
 type ConfigValueSource = {
   configEnv: ConfigEnvInternal
@@ -61,7 +70,7 @@ type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileExportName: string; configSourceFileDefaultExportKey?: undefined }
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
 )
-type PageConfig = PageConfigData & {
+type PageConfig = PageConfigRuntime & {
   loadCodeFiles: LoadCodeFiles
   isLoaded?: true
 }

@@ -6,7 +6,7 @@ import { assert, assertUsage, getPropAccessNotation, hasProp, objectEntries } fr
 import type {
   ConfigValue,
   ConfigValueSource,
-  PageConfigData,
+  PageConfigBuildTime,
   PageConfigGlobalData
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { generateEagerImport } from '../generateEagerImport.js'
@@ -18,7 +18,7 @@ import { getConfigEnv } from './helpers.js'
 import pc from '@brillout/picocolors'
 
 function serializePageConfigs(
-  pageConfigsData: PageConfigData[],
+  pageConfigs: PageConfigBuildTime[],
   pageConfigGlobal: PageConfigGlobalData,
   isForClientSide: boolean,
   isDev: boolean,
@@ -29,7 +29,7 @@ function serializePageConfigs(
   const importStatements: string[] = []
 
   lines.push('export const pageConfigs = [')
-  pageConfigsData.forEach((pageConfig) => {
+  pageConfigs.forEach((pageConfig) => {
     const { pageId, routeFilesystem, routeFilesystemDefinedBy, isErrorPage } = pageConfig
     const virtualFileIdImportPageCode = getVirtualFileIdImportPageCode(pageId, isForClientSide)
     lines.push(`  {`)
@@ -63,16 +63,20 @@ function serializePageConfigs(
     lines.push(`    },`)
 
     lines.push(`    configValues: {`)
-    Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
+    Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
+      const configValueSource = sources[0]
+      if (!configValueSource) return
+      if (!('value' in configValueSource)) return
       {
         const configEnv = getConfigEnv(pageConfig, configName)
         assert(configEnv, configName)
         if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
       }
+      const { value, definedAt } = configValueSource
       // TODO: use @brillout/json-serializer
       //  - re-use getConfigValueSerialized()?
-      const valueSerialized = JSON.stringify(configValue.value)
-      serializeConfigValue(lines, configName, configValue, valueSerialized)
+      const valueSerialized = JSON.stringify(value)
+      serializeConfigValue(lines, configName, { definedAt }, valueSerialized)
     })
     // TODO: resolve conflicts
     Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {

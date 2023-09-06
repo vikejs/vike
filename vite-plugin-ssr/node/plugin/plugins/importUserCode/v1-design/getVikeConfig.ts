@@ -33,7 +33,8 @@ import type {
   ConfigValueSources,
   ConfigValues,
   ConfigValue,
-  ConfigEnv
+  ConfigEnv,
+  PageConfigBuildTime
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -373,27 +374,27 @@ async function loadVikeConfig(
           configValueSources.filesystemRoutingRoot?.[0]
         )
 
-        const pageConfigData: PageConfigData = {
+        const pageConfig: PageConfigBuildTime = {
           pageId: locationId,
           isErrorPage,
           routeFilesystemDefinedBy,
           routeFilesystem: isErrorPage ? null : routeFilesystem,
           configValueSources,
-          configValues: {}
+          configValues: null
         }
-        updateConfigValues(pageConfigData)
+        updateConfigValues(pageConfig)
 
-        applyEffects(pageConfigData, configDefinitionsRelevant)
+        applyEffects(pageConfig, configDefinitionsRelevant)
         // TODO:
         //  - use pageConfigData.configValueSources[configName][0].value instead of pageConfigData.configValues[configName].value
         //  - call updateConfigValues() only once
         //  - rename updateConfigValues() to getConfigValues()
-        updateConfigValues(pageConfigData)
+        updateConfigValues(pageConfig)
 
-        applyComputed(pageConfigData, configDefinitionsRelevant)
-        updateConfigValues(pageConfigData)
+        applyComputed(pageConfig, configDefinitionsRelevant)
+        updateConfigValues(pageConfig)
 
-        return pageConfigData
+        return pageConfig
       })
   )
 
@@ -414,8 +415,8 @@ async function loadVikeConfig(
   return { pageConfigsData, pageConfigGlobal, globalVikeConfig }
 }
 
-function updateConfigValues(pageConfigData: PageConfigData): void {
-  pageConfigData.configValues = getConfigValues(pageConfigData.configValueSources)
+function updateConfigValues(pageConfig: PageConfigBuildTime): void {
+  pageConfig.configValues = getConfigValues(pageConfig.configValueSources)
 }
 function getConfigValues(configValueSources: ConfigValueSources): ConfigValues {
   const configValues: ConfigValues = {}
@@ -907,7 +908,7 @@ function assertMetaValue(
   })
 }
 
-function applyEffects(pageConfigData: PageConfigData, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
+function applyEffects(pageConfig: PageConfigBuildTime, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef.effect) return
     // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
@@ -924,14 +925,15 @@ function applyEffects(pageConfigData: PageConfigData, configDefinitionsRelevant:
       ].join(' '),
       { onlyOnce: true }
     )
-    const configValue = pageConfigData.configValues[configName]
+    const configValue = pageConfig.configValueSources[configName]?.[0]
     if (!configValue) return
     const configModFromEffect = configDef.effect({
       configValue: configValue.value,
       configDefinedAt: getConfigSrc(configValue)
     })
     if (!configModFromEffect) return
-    applyEffect(configModFromEffect, configValue, pageConfigData.configValueSources)
+    assert(hasProp(configValue, 'value')) // We need to assume that the config value is loaded at build-time
+    applyEffect(configModFromEffect, configValue, pageConfig.configValueSources)
   })
 }
 function applyEffect(

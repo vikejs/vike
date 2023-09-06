@@ -15,12 +15,12 @@ import {
 } from '../utils.js'
 import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
-import { getConfigValue } from '../../../shared/page-configs/utils.js'
+import { getConfigValue2 } from '../../../shared/page-configs/utils.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
 import { getConfigVps } from '../../shared/getConfigVps.js'
 import type { ResolvedConfig, Plugin, Rollup, UserConfig } from 'vite'
 import { getVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode.js'
-import type { PageConfigData } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigBuildTime, PageConfigData } from '../../../shared/page-configs/PageConfig.js'
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 type InputOption = Rollup.InputOption
@@ -101,24 +101,24 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
   }
 }
 
-function analyzeClientEntries(pageConfigsData: PageConfigData[], config: ResolvedConfig) {
+function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: ResolvedConfig) {
   let hasClientRouting = false
   let hasServerRouting = false
   let clientEntries: Record<string, string> = {}
   let clientFilePaths: string[] = []
-  pageConfigsData.forEach((pageConfigData) => {
-    const clientRouting = getConfigValue(pageConfigData, 'clientRouting', 'boolean')
-    if (clientRouting) {
+  pageConfigs.forEach((pageConfig) => {
+    const configValue = getConfigValue2(pageConfig, 'clientRouting', 'boolean')
+    if (configValue?.value) {
       hasClientRouting = true
     } else {
       hasServerRouting = true
     }
     {
-      const { entryName, entryTarget } = getEntryFromPageConfigData(pageConfigData, true)
+      const { entryName, entryTarget } = getEntryFromPageConfigData(pageConfig, true)
       clientEntries[entryName] = entryTarget
     }
     {
-      const clientFilePath = getClientEntryFilePath(pageConfigData)
+      const clientFilePath = getClientEntryFilePath(pageConfig)
       if (clientFilePath) {
         clientFilePaths.push(clientFilePath)
       }

@@ -1,3 +1,5 @@
+- remove all occurrences of pageConfigData
+
 - fix pageContext._renderHook.hookFilePath / replace with new prop hookSrc
 - stop treating undefined as null
 - refacor/fix skipConfigValue to differentiate between global/page virtual file
