@@ -17,6 +17,7 @@ type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
 type PageConfigData = {
   pageId: string
   isErrorPage: boolean
+  // TODO: unify to routeFilesystem: null | { routeString: string, definedBy: string }
   routeFilesystem: null | string
   routeFilesystemDefinedBy: null | string
   configValueSources: ConfigValueSources
