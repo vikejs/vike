@@ -32,11 +32,6 @@ function getConfigValue2(pageConfig: PageConfigValue, configName: ConfigName, ty
 function getConfigValue2(pageConfig: PageConfigValue, configName: ConfigName): null | ConfigValue
 // prettier-ignore
 function getConfigValue2(pageConfig: PageConfigValue, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue {
-  if( !pageConfig.configValues ) {
-    pageConfig.configValueSources[configName]
-  } else {
-    pageConfig.configValueSources[configName]
-  }
   const configValue = pageConfig.configValues ? pageConfig.configValues[configName] : pageConfig.configValueSources[configName]?.[0]
   if( !configValue   ) return null
   const { value, definedAt} = configValue
