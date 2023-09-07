@@ -1,16 +1,9 @@
 export { getConfigEnv }
 export { isConfigSet }
-export { getConfigValueBuildTime }
 
-import type { ConfigNameBuiltIn } from '../../../../../shared/page-configs/Config.js'
-import type {
-  ConfigEnvInternal,
-  ConfigValueSource,
-  PageConfigBuildTime
-} from '../../../../../shared/page-configs/PageConfig.js'
-import { assertConfigValueType } from '../../../../../shared/page-configs/utils.js'
+import type { ConfigEnvInternal, PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
 import { getConfigValueSource } from '../../../../shared/getConfigValueSource.js'
-import { assert, assertIsNotProductionRuntime, hasProp } from '../../../utils.js'
+import { assert, assertIsNotProductionRuntime } from '../../../utils.js'
 assertIsNotProductionRuntime()
 
 function getConfigEnv(pageConfig: PageConfigBuildTime, configName: string): null | ConfigEnvInternal {
@@ -36,23 +29,4 @@ function isConfigSet(pageConfig: PageConfigBuildTime, configName: string): boole
   // Enable users to suppress global config values by overriding the config's value to null
   if (configValueSource?.value === null) return false
   return !!configValueSource
-}
-
-// prettier-ignore
-function getConfigValueBuildTime(pageConfig: PageConfigBuildTime, configName: ConfigNameBuiltIn, type: 'string'): null | ConfigValueSource & { value: string }
-// prettier-ignore
-function getConfigValueBuildTime(pageConfig: PageConfigBuildTime, configName: ConfigNameBuiltIn, type: 'boolean'): null | ConfigValueSource & { value: boolean }
-// prettier-ignore
-function getConfigValueBuildTime(pageConfig: PageConfigBuildTime, configName: ConfigNameBuiltIn): null | ConfigValueSource & { value: unknown }
-// prettier-ignore
-function getConfigValueBuildTime(pageConfig: PageConfigBuildTime, configName: ConfigNameBuiltIn, type?: 'string' | 'boolean'): null | ConfigValueSource & { value: unknown } {
-  const configValueSource = getConfigValueSource(pageConfig, configName)
-  if (!configValueSource) return null
-  if (!('value' in configValueSource)) return null
-  assert(hasProp(configValueSource, 'value')) // Help TypeScript
-  const { value, definedAt } = configValueSource
-  // Enable users to suppress global config values by overriding the config's value to null
-  if (value === null) return null
-  assertConfigValueType({ value, definedAt }, type)
-  return configValueSource
 }
