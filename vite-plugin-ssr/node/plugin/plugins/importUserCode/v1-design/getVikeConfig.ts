@@ -653,6 +653,44 @@ function getConfigValueSource(
   const conf = interfaceFile.configMap[configName]
   assert(conf)
   const configEnv = configDef.env
+
+  const definedAtConfigFile = {
+    filePath: configFilePath,
+    fileExportPath: ['default', configName]
+  }
+
+  if (configDef._isFilePath) {
+    let filePath: string
+    if (interfaceFile.isConfigFile) {
+      const { configValue } = conf
+      const codeFile = getCodeFilePath(configValue, interfaceFile.filePath, userRootDir)
+      assertUsage(
+        codeFile,
+        `config ${pc.cyan(configName)} defined at ${getConfigSrc({
+          definedAt: definedAtConfigFile
+        })} should be an import`
+      )
+      filePath = codeFile.codeFilePath
+    } else {
+      assert(interfaceFile.isValueFile)
+      filePath =
+        interfaceFile.filePath.filePathRelativeToUserRootDir ??
+        // Experimental: is this needed? Would it work?
+        interfaceFile.filePath.filePathAbsolute
+    }
+    const configValueSource: ConfigValueSource = {
+      value: filePath,
+      configEnv,
+      isCodeEntry: true,
+      isFilePath: true,
+      definedAt: {
+        filePath,
+        fileExportPath: []
+      }
+    }
+    return configValueSource
+  }
+
   if (interfaceFile.isConfigFile) {
     assert('configValue' in conf)
     const { configValue } = conf
@@ -674,10 +712,7 @@ function getConfigValueSource(
         value: configValue,
         configEnv,
         isCodeEntry: false,
-        definedAt: {
-          filePath: configFilePath,
-          fileExportPath: ['default', configName]
-        }
+        definedAt: definedAtConfigFile
       }
       return configValueSource
     }
@@ -737,6 +772,7 @@ function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
 
+// TODO: improve naming
 function getCodeFilePath(
   configValue: unknown,
   configFilePath: FilePath,

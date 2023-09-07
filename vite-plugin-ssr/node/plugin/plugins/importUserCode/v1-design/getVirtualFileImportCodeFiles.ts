@@ -66,15 +66,18 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
       configEnv,
       definedAt: { filePath, fileExportPath }
     } = configValueSource
-    const fileExportName = fileExportPath[0]
-    assert(fileExportName)
 
     if (!isCodeEntry) return
+    if (configValueSource.isFilePath) return
     if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
 
     assertPosixPath(filePath)
     const fileName = path.posix.basename(filePath)
     const isPlusFile = fileName.startsWith('+')
+
+    const fileExportName = fileExportPath[0]
+    assert(!configValueSource.isFilePath)
+    assert(fileExportName)
 
     const { importVar, importStatement } = generateEagerImport(
       filePath,

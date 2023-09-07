@@ -77,8 +77,11 @@ function assertConfigValueType(
 // TODO: rename to getValueSrc()
 function getConfigSrc({ definedAt }: { definedAt: DefinedAt }, append?: 'effect'): string {
   const { filePath, fileExportPath } = definedAt
+  let configSrc = filePath
   const exportPath = getExportPath(fileExportPath)
-  let configSrc = `${filePath} > ${pc.cyan(exportPath)}`
+  if (exportPath) {
+    configSrc = `${configSrc} > ${pc.cyan(exportPath)}`
+  }
   if (append) {
     configSrc = `${configSrc} > (${pc.blue(append)})`
   }
