@@ -44,7 +44,7 @@ type ConfigEffect = (config: {
 // For maintainer
 type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
   _computed?: (pageConfig: PageConfigData) => unknown
-  _isFilePath?: true
+  _valueIsFilePath?: true
   env: ConfigEnvInternal
 }
 
@@ -92,7 +92,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   client: {
     // The value of the client config is merely the file path to the client entry file, which is only needed on the sever-side
     env: 'server-only',
-    _isFilePath: true
+    _valueIsFilePath: true
   },
   clientRouting: {
     env: 'server-and-client' // TODO: config-only instead?

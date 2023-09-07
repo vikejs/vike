@@ -659,7 +659,7 @@ function getConfigValueSource(
     fileExportPath: ['default', configName]
   }
 
-  if (configDef._isFilePath) {
+  if (configDef._valueIsFilePath) {
     let filePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
@@ -680,9 +680,9 @@ function getConfigValueSource(
     }
     const configValueSource: ConfigValueSource = {
       value: filePath,
+      valueIsFilePath: true,
       configEnv,
       isCodeEntry: true,
-      isFilePath: true,
       definedAt: {
         filePath,
         fileExportPath: []

@@ -45,7 +45,7 @@ type ConfigValueSource = {
    * Whereas config.passToClient is config-only and therefore isn't a code entry.
    */
   isCodeEntry: boolean
-  isFilePath?: true
+  valueIsFilePath?: true
 }
 type ConfigValueSources = Record<
   // configName
