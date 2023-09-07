@@ -6,9 +6,10 @@ import { getGlobalContext, initGlobalContext } from '../node/runtime/globalConte
 import { setNodeEnvToProduction } from '../utils/nodeEnv.js'
 import { assert } from '../utils/assert.js'
 import { getRenderContext } from '../node/runtime/renderPage/renderPageAlreadyRouted.js'
+import { PageConfig } from '../shared/page-configs/PageConfig.js'
 
 export { route, getPagesAndRoutes }
-export type { PageRoutes, PageFile }
+export type { PageRoutes, PageFile, PageConfig }
 
 /**
  * Used by {@link https://github.com/magne4000/vite-plugin-vercel|vite-plugin-vercel}
