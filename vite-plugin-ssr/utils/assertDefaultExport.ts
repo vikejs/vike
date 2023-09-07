@@ -56,14 +56,18 @@ function assertSingleDefaultExport(
       )
     }
   } else if (!FILES_WITH_SIDE_EXPORTS.some((ext) => filePath.endsWith(ext))) {
-    const exportsInvalidStr = exportsInvalid.join(', ')
     if (defaultExportValueIsUnknown) {
-      assertWarning(
-        exportsInvalid.length === 0,
-        `${filePath} should only have a default export: remove ${pc.cyan(`export { ${exportsInvalidStr} }`)}`,
-        { onlyOnce: true }
-      )
+      exportsInvalid.forEach((exportInvalid) => {
+        assertWarning(
+          exportsInvalid.length === 0,
+          `${filePath} should only have a default export: move ${pc.cyan(
+            `export { ${exportInvalid} }`
+          )} to +config.h.js or its own +${exportsInvalid}.js`,
+          { onlyOnce: true }
+        )
+      })
     } else {
+      const exportsInvalidStr = exportsInvalid.join(', ')
       assertWarning(
         exportsInvalid.length === 0,
         `${filePath} replace ${pc.cyan(`export { ${exportsInvalidStr} }`)} with ${pc.cyan(
