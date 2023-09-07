@@ -12,7 +12,10 @@ function getCiJobs() {
   }
   const ubuntu20 = {
     os: 'ubuntu-latest',
-    node_version: '20'
+    // Pin until fix for the following is released
+    //   - https://github.com/nodejs/node/issues/49497
+    //   - https://github.com/vitejs/vite/issues/14299
+    node_version: '20.5'
   }
   const win16 = {
     os: 'windows-latest',

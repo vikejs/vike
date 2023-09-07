@@ -38,13 +38,13 @@ async function getTestJobs() {
       jobName: 'Unit Tests',
       jobCmd: 'pnpm run test:units',
       jobTestFiles: specFiles,
-      jobSetups: [{ os: 'ubuntu-latest', node_version: '20' }]
+      jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
     },
     // Typecheck `.ts` files
     {
       jobName: 'TypeScript',
       jobCmd: 'pnpm run test:types',
-      jobSetups: [{ os: 'ubuntu-latest', node_version: '20' }]
+      jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
     },
     // E2e tests
     ...(await crawlE2eJobs(testFiles))
