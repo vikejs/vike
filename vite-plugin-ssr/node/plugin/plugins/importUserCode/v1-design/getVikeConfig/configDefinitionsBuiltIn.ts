@@ -98,7 +98,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: 'server-and-client' // TODO: config-only instead?
   },
   prerender: {
-    env: 'config-only'
+    env: 'server-only'
   },
   hydrationCanBeAborted: {
     env: 'client-only' // TODO: config-only instead?
