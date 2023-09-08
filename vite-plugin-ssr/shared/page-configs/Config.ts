@@ -2,6 +2,11 @@ export type { Config }
 export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
+export type { ConfigVikePackages }
+export type { ConfigVikeReact }
+export type { ConfigVikeVue }
+export type { ConfigVikeSolid }
+export type { ConfigVikeSvelte }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
 import { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
@@ -33,7 +38,7 @@ type ConfigNameBuiltIn = ConfigNameBuiltInPublic | ConfigNameBuiltInInternal
  *
  * https://vite-plugin-ssr.com/config
  */
-type Config<Page = unknown> = {
+type Config<Page = unknown> = ConfigVikePackagesAll & {
   Page?: Page
 
   /** The page's URL(s).
@@ -157,6 +162,14 @@ type Config<Page = unknown> = {
    */
   prefetchStaticAssets?: PrefetchStaticAssets | ImportString
 }
+
+type ConfigVikePackagesAll = ConfigVikePackages & (ConfigVikeReact | ConfigVikeVue | ConfigVikeSolid | ConfigVikeSvelte)
+interface ConfigVikePackages {} // For vike-* packages that don't conflict, e.g. the `isr` config of vike-vercel
+// Because of conflicts, e.g. the Page config, we need a different interface for each vike-{react/vue/solid/svelte}
+interface ConfigVikeReact {} // For vike-react
+interface ConfigVikeVue {} // For vike-vue
+interface ConfigVikeSolid {} // For vike-solid
+interface ConfigVikeSvelte {} // For vike-svelte (doesn't exist yet)
 
 type ConfigMeta = Record<string, ConfigDefinition>
 

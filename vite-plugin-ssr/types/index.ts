@@ -2,7 +2,15 @@ export type { PageContextBuiltInServer } from '../shared/types.js'
 export type { PageContextBuiltInClientWithClientRouting } from '../shared/types.js'
 export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
 export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtmlTags.js'
-export type { Config, ConfigMeta as Meta } from '../shared/page-configs/Config.js'
+export type {
+  Config,
+  ConfigMeta as Meta,
+  ConfigVikePackages,
+  ConfigVikeReact,
+  ConfigVikeVue,
+  ConfigVikeSolid,
+  ConfigVikeSvelte
+} from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {
   ConfigDefinition,
