@@ -9,18 +9,14 @@ import type {
   PageContextUrlComputedPropsServer
 } from './addUrlComputedProps.js'
 import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports.js'
-import type { Config } from './page-configs/Config.js'
+import type { PageContextConfig } from './page-configs/Config.js'
 import type { AbortStatusCode } from './route/abort.js'
 
 /** Built-in `pageContext` properties set by vite-plugin-ssr.
  *
  * https://vite-plugin-ssr.com/pageContext
  */
-type PageContextBuiltInServer<Page = any> = PageContextBuiltInCommon<Page> &
-  PageContextUrlComputedPropsServer & {
-    /** [V1 design] The page's config values */
-    config: Config
-  }
+type PageContextBuiltInServer<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsServer
 
 type PageContextBuiltInServerInternal<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsInternal
 
@@ -35,11 +31,11 @@ type PageContextBuiltInCommon<Page = any> = {
    * https://vite-plugin-ssr.com/route-string
    */
   routeParams: Record<string, string>
-  /** The page's configuration.
+  /** The page's configuration values.
    *
    * https://vite-plugin-ssr.com/config
    */
-  config: Record<string, unknown>
+  config: PageContextConfig
   /** The page's configuration, including the configs origin and overriden configs.
    *
    * https://vite-plugin-ssr.com/config
