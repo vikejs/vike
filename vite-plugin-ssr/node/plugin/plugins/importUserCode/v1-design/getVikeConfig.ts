@@ -851,34 +851,22 @@ function getVitePathFromAbsolutePath(filePathAbsolute: string, root: string): st
 
 function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId): ConfigDefinitionsIncludingCustom {
   const configDefinitions: ConfigDefinitionsIncludingCustom = { ...configDefinitionsBuiltIn }
-  Object.values(interfaceFilesRelevant).forEach((interfaceFiles) => {
-    const configEntry = getConfigEntry('meta', interfaceFiles)
-    if (!configEntry.configIsDefined) return
-    assert('configValue' in configEntry)
-    const metaVal = configEntry.configValue
-    const { interfaceFile } = configEntry
-    assertMetaValue(metaVal, getFilePathToShowToUser(interfaceFile.filePath))
-    objectEntries(metaVal).forEach(([configName, configDefinition]) => {
-      // User can override an existing config definition
-      configDefinitions[configName] = {
-        ...configDefinitions[configName],
-        ...configDefinition
-      }
+  Object.entries(interfaceFilesRelevant).forEach(([_locationId, interfaceFiles]) => {
+    interfaceFiles.forEach((interfaceFile) => {
+      const configMeta = interfaceFile.configMap['meta']
+      if (!configMeta) return
+      const meta = configMeta.configValue
+      assertMetaValue(meta, getFilePathToShowToUser(interfaceFile.filePath))
+      objectEntries(meta).forEach(([configName, configDefinition]) => {
+        // User can override an existing config definition
+        configDefinitions[configName] = {
+          ...configDefinitions[configName],
+          ...configDefinition
+        }
+      })
     })
   })
   return configDefinitions
-}
-
-function getConfigEntry(
-  configName: string,
-  interfaceFiles: InterfaceFile[]
-): { configIsDefined: true; configValue?: unknown; interfaceFile: InterfaceFile } | { configIsDefined: false } {
-  const interfaceFilesForConfig = interfaceFiles.filter((interfaceFile) => configName in interfaceFile.configMap)
-  if (interfaceFilesForConfig.length === 0) return { configIsDefined: false }
-  const interfaceFile = interfaceFilesForConfig[0]!
-  const val = interfaceFile.configMap[configName]
-  assert(val)
-  return { configIsDefined: true, interfaceFile, ...val }
 }
 
 function assertMetaValue(
