@@ -5,7 +5,7 @@ export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtm
 export type {
   Config,
   ConfigMeta as Meta,
-  ConfigVikePackages,
+  ConfigCustom,
   ConfigVikeReact,
   ConfigVikeVue,
   ConfigVikeSolid,
