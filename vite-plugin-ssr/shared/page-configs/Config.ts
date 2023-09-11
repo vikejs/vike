@@ -169,11 +169,15 @@ type ConfigBuiltIn = {
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`
 
+// Enable users and vike-* packages to extend the type Config, for example:
+//  - The user can set Config['Page'] over ConfigCustom['Page']
+//  - vike-vercel can add Config['isr'] over ConfigCustom['isr']
 interface ConfigCustom {}
 
-// We need a different interface for each vike-{react/vue/solid/svelte} package because of conflicts, e.g. the config 'Page' can be a React/Vue/Solid/Svelte componenent depending on which vike-{react/vue/solid/svelte} packages the user installed
-// Enable Vike packages to extend Config
+// Enable vike-{react/vue/solid/svelte} to extend the type Config.
+//  - We need a different interface for each vike-{react/vue/solid/svelte} package because of conflicts.
+//    - E.g. the config 'Page' can be a React/Vue/Solid/Svelte componenent depending on which vike-{react/vue/solid/svelte} packages the user installed.
 interface ConfigVikeReact {} // For vike-react
 interface ConfigVikeVue {} // For vike-vue
 interface ConfigVikeSolid {} // For vike-solid
-interface ConfigVikeSvelte {} // For vike-svelte (doesn't exist yet)
+interface ConfigVikeSvelte {} // For vike-svelte (the vike-svelte package doesn't exist yet)
