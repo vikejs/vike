@@ -9,7 +9,7 @@ import type {
   PageContextUrlComputedPropsServer
 } from './addUrlComputedProps.js'
 import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports.js'
-import type { PageContextConfig } from './page-configs/Config.js'
+import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'
 
 /** Built-in `pageContext` properties set by vite-plugin-ssr.
