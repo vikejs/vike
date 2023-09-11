@@ -1,5 +1,5 @@
 export type { Config }
-export type { ConfigCore }
+export type { ConfigBuiltIn }
 export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
@@ -34,7 +34,7 @@ type ConfigNameBuiltInPublic =
 type ConfigNameBuiltInInternal = 'isClientSideRenderable' | 'onBeforeRenderEnv'
 type ConfigNameBuiltIn = ConfigNameBuiltInPublic | ConfigNameBuiltInInternal
 
-type Config = ConfigCore & ConfigVikePackages & (ConfigVikeReact | ConfigVikeVue | ConfigVikeSolid | ConfigVikeSvelte)
+type Config = ConfigBuiltIn & ConfigVikePackages & (ConfigVikeReact | ConfigVikeVue | ConfigVikeSolid | ConfigVikeSvelte)
 
 // TODO: write docs of links below
 
@@ -42,7 +42,7 @@ type Config = ConfigCore & ConfigVikePackages & (ConfigVikeReact | ConfigVikeVue
  *
  * https://vite-plugin-ssr.com/config
  */
-type ConfigCore = {
+type ConfigBuiltIn = {
   Page?: unknown
 
   /** The page's URL(s).
