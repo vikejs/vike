@@ -9,6 +9,7 @@ import type {
   PageContextUrlComputedPropsServer
 } from './addUrlComputedProps.js'
 import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports.js'
+import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'
 
@@ -16,16 +17,21 @@ import type { AbortStatusCode } from './route/abort.js'
  *
  * https://vite-plugin-ssr.com/pageContext
  */
-type PageContextBuiltInServer<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsServer
+type PageContextBuiltInServer<Page = [never]> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsServer
 
-type PageContextBuiltInServerInternal<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsInternal
+type PageContextBuiltInServerInternal<Page = [never]> = PageContextBuiltInCommon<Page> &
+  PageContextUrlComputedPropsInternal
 
-type PageContextBuiltInCommon<Page = any> = {
+type PageContextBuiltInCommon<
+  // TODO/v1-design-release: deprecate PageContextBuilt{Server,Client}<Page> in favor of interface merging
+  // `= [never]` instead of `= never` because: https://github.com/microsoft/TypeScript/issues/31751#issuecomment-498526919
+  Page = [never]
+> = {
   /** The `export { Page }` of your `.page.js` file.
    *
    * https://vite-plugin-ssr.com/Page
    */
-  Page: Page
+  Page: Page extends [never] ? Config['Page'] : Page
   /** Route Parameters, e.g. `pageContext.routeParams.productId` for a Route String `/product/@productId`.
    *
    * https://vite-plugin-ssr.com/route-string

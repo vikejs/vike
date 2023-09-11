@@ -42,8 +42,8 @@ type Config = ConfigCore & ConfigVikePackages & (ConfigVikeReact | ConfigVikeVue
  *
  * https://vite-plugin-ssr.com/config
  */
-type ConfigCore<Page = unknown> = {
-  Page?: Page
+type ConfigCore = {
+  Page?: unknown
 
   /** The page's URL(s).
    *
