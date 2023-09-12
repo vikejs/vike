@@ -5,7 +5,7 @@ import { findPageFiles } from '../../shared/findPageFiles.js'
 import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageImport, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { ConfigVpsResolved } from '../../../../shared/ConfigVps.js'
-import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSource.js'
+import { getConfigValueSourcesRelevant } from '../../shared/getConfigValueSource.js'
 
 async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved, isDev: true) {
   const { entries, include } = await getPageDeps(config, configVps, isDev)

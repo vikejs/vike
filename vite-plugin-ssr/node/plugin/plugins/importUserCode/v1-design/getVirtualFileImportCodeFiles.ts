@@ -14,7 +14,7 @@ import { debug } from './debug.js'
 import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps.js'
 import path from 'path'
 import { getConfigValue2 } from '../../../../../shared/page-configs/utils.js'
-import { getConfigValueSourcesRelevant } from '../../../../shared/getConfigValueSource.js'
+import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSource.js'
 
 async function getVirtualFileImportCodeFiles(
   id: string,

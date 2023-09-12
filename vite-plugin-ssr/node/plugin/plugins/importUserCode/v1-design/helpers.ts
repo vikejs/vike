@@ -2,7 +2,7 @@ export { getConfigEnv }
 export { isConfigSet }
 
 import type { ConfigEnvInternal, PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
-import { getConfigValueSource } from '../../../../shared/getConfigValueSource.js'
+import { getConfigValueSource } from '../../../shared/getConfigValueSource.js'
 import { assert, assertIsNotProductionRuntime } from '../../../utils.js'
 assertIsNotProductionRuntime()
 
