@@ -1,3 +1,11 @@
+- Choose between:
+  - ConfigCustom
+  - ConfigCustomization
+  - ConfigExtension
+  - ConfigAdditional
+  - ConfigUserDefined
+  - ConfigMore
+
 - remove all occurrences of pageConfigData
 
 - fix pageContext._renderHook.hookFilePath / replace with new prop hookSrc
