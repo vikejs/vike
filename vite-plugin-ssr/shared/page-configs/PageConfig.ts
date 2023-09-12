@@ -10,7 +10,7 @@ export type { ConfigValue }
 export type { ConfigValues }
 export type { ConfigValueSource }
 export type { ConfigValueSources }
-export type { DefinedAt }
+export type { DefinedAtInfo }
 
 type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
 type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
@@ -34,10 +34,10 @@ type ConfigValueSource = {
   configEnv: ConfigEnvInternal
   valueSerialized?: string
   value?: unknown
-  // TODO: replace definedAt.filePath with definedAt.filePathRelativeToUserRootDir? and definedAt.filePathAbsolute!
-  definedAt: DefinedAt
+  // TODO: replace definedAtInfo.filePath with definedAtInfo.filePathRelativeToUserRootDir? and definedAtInfo.filePathAbsolute!
+  definedAtInfo: DefinedAtInfo
   /**
-   * Whether definedAt.filePath contains runtime code. (If it doesn't, then it contains config code that isn't loaded in any runtime.)
+   * Whether definedAtInfo.filePath contains runtime code. (If it doesn't, then it contains config code that isn't loaded in any runtime.)
    *
    * For example config.Page is a code entry. (Since the Page component is loaded by runtimes.)
    * Whereas config.passToClient is config-only and therefore isn't a code entry.
@@ -53,14 +53,14 @@ type ConfigValueSources = Record<
 type ConfigValue = {
   value: unknown
   // TODO: Replace with valueSrc?
-  definedAt: DefinedAt
+  definedAtInfo: DefinedAtInfo
 }
 type ConfigValues = Record<
   // configName
   string,
   ConfigValue
 >
-type DefinedAt = {
+type DefinedAtInfo = {
   filePath: string
   fileExportPath: string[]
 }

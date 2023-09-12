@@ -24,7 +24,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     */
     pageConfig.configValues[configName] = {
       value,
-      definedAt: {
+      definedAtInfo: {
         filePath,
         fileExportPath: [exportName]
       }

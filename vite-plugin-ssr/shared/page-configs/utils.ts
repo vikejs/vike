@@ -4,7 +4,7 @@ export { getValueSrc }
 export { assertConfigValueType }
 
 import { assert, assertUsage } from '../utils.js'
-import type { ConfigValue, DefinedAt, PageConfig, PageConfigBuildTime } from './PageConfig.js'
+import type { ConfigValue, DefinedAtInfo, PageConfig, PageConfigBuildTime } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
@@ -21,12 +21,14 @@ function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, typ
 function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName): null | ConfigValue
 // prettier-ignore
 function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue {
-  const configValue = pageConfig.configValues ? pageConfig.configValues[configName] : pageConfig.configValueSources[configName]?.[0]
-  if( !configValue   ) return null
-  const { value, definedAt} = configValue
+  const configValue = pageConfig.configValues
+    ? pageConfig.configValues[configName]
+    : pageConfig.configValueSources[configName]?.[0]
+  if (!configValue) return null
+  const { value, definedAtInfo } = configValue
   if (isNullish(value)) return null
-  assertConfigValueType({ value, definedAt }, type)
-  return { value, definedAt }
+  assertConfigValueType({ value, definedAtInfo }, type)
+  return { value, definedAtInfo }
 }
 
 function isNullish(configValue: unknown): boolean {
@@ -45,12 +47,12 @@ function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
 }
 
 function assertConfigValueType(
-  { value, definedAt }: { value: unknown; definedAt: DefinedAt },
+  { value, definedAtInfo }: { value: unknown; definedAtInfo: DefinedAtInfo },
   type: undefined | 'string' | 'boolean'
 ) {
   if (type === undefined) return
   assert(value !== null)
-  const valueSrc = getValueSrc({ definedAt })
+  const valueSrc = getValueSrc({ definedAtInfo })
   const typeActual = typeof value
   assertUsage(
     typeActual === type,
@@ -58,8 +60,8 @@ function assertConfigValueType(
   )
 }
 
-function getValueSrc({ definedAt }: { definedAt: DefinedAt }, append?: 'effect'): string {
-  const { filePath, fileExportPath } = definedAt
+function getValueSrc({ definedAtInfo }: { definedAtInfo: DefinedAtInfo }, append?: 'effect'): string {
+  const { filePath, fileExportPath } = definedAtInfo
   let valueSrc = filePath
   const exportPath = getExportPath(fileExportPath)
   if (exportPath) {

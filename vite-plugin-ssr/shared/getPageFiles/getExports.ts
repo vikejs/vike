@@ -80,7 +80,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       const {
         value,
-        definedAt: { filePath }
+        definedAtInfo: { filePath }
       } = configValue
       const valueSrc = getValueSrc(configValue)
       assert(filePath)

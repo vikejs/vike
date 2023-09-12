@@ -32,7 +32,7 @@ async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved,
         const {
           isCodeEntry,
           configEnv,
-          definedAt: { filePath }
+          definedAtInfo: { filePath }
         } = configValueSource
         if (!isCodeEntry) return
         assert(filePath)

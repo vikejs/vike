@@ -493,7 +493,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
       assertWarning(
         false,
         `Being able to define config ${pc.cyan(configName)} in ${
-          configValueSource.definedAt.filePath
+          configValueSource.definedAtInfo.filePath
         } is experimental and will likely be removed. Define the config ${pc.cyan(
           configName
         )} in vite-plugin-ssr's Vite plugin options instead.`,
@@ -620,7 +620,7 @@ function getConfigValueSource(
   assert(conf)
   const configEnv = configDef.env
 
-  const definedAtConfigFile = {
+  const definedAtInfoConfigFile = {
     filePath: configFilePath,
     fileExportPath: ['default', configName]
   }
@@ -633,7 +633,7 @@ function getConfigValueSource(
       assertUsage(
         codeFile,
         `config ${pc.cyan(configName)} defined at ${getValueSrc({
-          definedAt: definedAtConfigFile
+          definedAtInfo: definedAtInfoConfigFile
         })} should be an import`
       )
       filePath = codeFile.codeFilePath
@@ -649,7 +649,7 @@ function getConfigValueSource(
       valueIsFilePath: true,
       configEnv,
       isCodeEntry: true,
-      definedAt: {
+      definedAtInfo: {
         filePath,
         fileExportPath: []
       }
@@ -667,7 +667,7 @@ function getConfigValueSource(
       const configValueSource: ConfigValueSource = {
         configEnv,
         isCodeEntry: true,
-        definedAt: {
+        definedAtInfo: {
           filePath: codeFilePath,
           fileExportPath: [codeFileExport]
         }
@@ -678,7 +678,7 @@ function getConfigValueSource(
         value: configValue,
         configEnv,
         isCodeEntry: false,
-        definedAt: definedAtConfigFile
+        definedAtInfo: definedAtInfoConfigFile
       }
       return configValueSource
     }
@@ -689,7 +689,7 @@ function getConfigValueSource(
     const configValueSource: ConfigValueSource = {
       configEnv,
       isCodeEntry: true,
-      definedAt: {
+      definedAtInfo: {
         filePath: codeFilePath,
         fileExportPath: [codeFileExport]
       }
@@ -952,7 +952,7 @@ function applyEffect(
     } else {
       assertUsage(false, notSupported)
       // If we do end implementing being able to set the value of a config:
-      //  - For setting definedAt: we could take the definedAt of the effect config while appending '(effect)' to definedAt.fileExportPath
+      //  - For setting definedAtInfo: we could take the definedAtInfo of the effect config while appending '(effect)' to definedAtInfo.fileExportPath
     }
   })
 }
@@ -967,8 +967,8 @@ function applyComputed(pageConfig: PageConfigBuildTime, configDefinitionsRelevan
     const configValueSource: ConfigValueSource = {
       value,
       configEnv: configDef.env,
-      // TODO: make definedAt optional and update all usages accordingly
-      definedAt: {
+      // TODO: make definedAtInfo optional and update all usages accordingly
+      definedAtInfo: {
         filePath: 'TODO',
         fileExportPath: ['TODO']
       },
@@ -1294,7 +1294,7 @@ function getFilesystemRoutingRootEffect(configFilesystemRoutingRoot: ConfigValue
     value.startsWith('/'),
     `${valueSrc} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
-  const before = getRouteFilesystem(getLocationId(configFilesystemRoutingRoot.definedAt.filePath))
+  const before = getRouteFilesystem(getLocationId(configFilesystemRoutingRoot.definedAtInfo.filePath))
   const after = value
   const filesystemRoutingRootEffect = { before, after }
   return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt: valueSrc }

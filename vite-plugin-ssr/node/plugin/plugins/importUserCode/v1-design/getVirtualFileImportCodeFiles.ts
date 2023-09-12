@@ -64,7 +64,7 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
       isCodeEntry,
       configName,
       configEnv,
-      definedAt: { filePath, fileExportPath }
+      definedAtInfo: { filePath, fileExportPath }
     } = configValueSource
 
     if (!isCodeEntry) return

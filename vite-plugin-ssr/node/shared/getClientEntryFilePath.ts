@@ -8,9 +8,9 @@ function getClientEntryFilePath(pageConfig: PageConfig | PageConfigBuildTime): n
   const configName = 'client'
   const configValue = getConfigValue(pageConfig, configName, 'string')
   if (!configValue) return null
-  const { value, definedAt } = configValue
+  const { value, definedAtInfo } = configValue
   // Users should be able to suppress client entry by setting its value to null
   assert(value !== null)
-  const clientEntryFilePath = definedAt.filePath
+  const clientEntryFilePath = definedAtInfo.filePath
   return clientEntryFilePath
 }
