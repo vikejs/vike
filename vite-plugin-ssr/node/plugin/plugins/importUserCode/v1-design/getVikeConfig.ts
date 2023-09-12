@@ -32,7 +32,8 @@ import type {
   ConfigValueSources,
   ConfigValue,
   ConfigEnv,
-  PageConfigBuildTime
+  PageConfigBuildTime,
+  ConfigValues
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -377,10 +378,15 @@ async function loadVikeConfig(
           isErrorPage,
           routeFilesystemDefinedBy,
           routeFilesystem: isErrorPage ? null : routeFilesystem,
-          configValueSources
+          configValueSources,
+          configValues: getConfigValues(configValueSources)
         }
+
         applyEffects(pageConfig, configDefinitionsRelevant)
+        pageConfig.configValues = getConfigValues(configValueSources)
+
         applyComputed(pageConfig, configDefinitionsRelevant)
+        pageConfig.configValues = getConfigValues(configValueSources)
 
         return pageConfig
       })
@@ -1344,4 +1350,24 @@ function assertImport(
 
 function isVikeConfigFile(filePath: string): boolean {
   return !!getConfigName(filePath)
+}
+
+function getConfigValues(configValueSources: ConfigValueSources): ConfigValues {
+  const configValues: ConfigValues = {}
+  Object.entries(configValueSources).forEach(([configName, sources]) => {
+    const configValueSource = sources[0]!
+    if ('value' in configValueSource) {
+      const { value, definedAtInfo } = configValueSource
+      /* TODO:
+       * - Move conflict resolution here
+       * - use this assert() as conflicts should be resolved
+      assert(pageConfigData.configValues[configName])
+      */
+      configValues[configName] = {
+        value,
+        definedAtInfo
+      }
+    }
+  })
+  return configValues
 }

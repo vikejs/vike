@@ -15,9 +15,6 @@ export type { DefinedAtInfo }
 type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
 type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
 
-type PageConfigRuntime = PageConfigCommon & {
-  configValues: ConfigValues
-}
 type PageConfigBuildTime = PageConfigCommon & {
   configValueSources: ConfigValueSources
 }
@@ -27,6 +24,7 @@ type PageConfigCommon = {
   // TODO: unify to routeFilesystem: null | { routeString: string, definedBy: string }
   routeFilesystem: null | string
   routeFilesystemDefinedBy: null | string
+  configValues: ConfigValues
 }
 type ConfigValueSource = {
   configEnv: ConfigEnvInternal
@@ -67,7 +65,7 @@ type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileExportName: string; configSourceFileDefaultExportKey?: undefined }
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
 )
-type PageConfig = PageConfigRuntime & {
+type PageConfig = PageConfigCommon & {
   loadCodeFiles: LoadCodeFiles
   isLoaded?: true
 }

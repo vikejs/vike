@@ -20,9 +20,7 @@ function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, typ
 function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName): null | ConfigValue
 // prettier-ignore
 function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue {
-  const configValue = 'configValues' in pageConfig
-    ? pageConfig.configValues[configName]
-    : pageConfig.configValueSources[configName]?.[0]
+  const configValue = pageConfig.configValues[configName]
   if (!configValue) return null
   const { value, definedAtInfo } = configValue
   // Enable users to suppress global config values by setting the local config value to null
