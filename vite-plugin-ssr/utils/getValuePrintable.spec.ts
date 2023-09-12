@@ -13,4 +13,3 @@ describe('getValuePrintable()', () => {
     expect(getValuePrintable(null)).toBe('null')
   })
 })
-

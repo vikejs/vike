@@ -5,7 +5,11 @@ export type { ConfigDefinitionInternal }
 export type { ConfigNameGlobal }
 export type { ConfigEffect }
 
-import type { ConfigEnvInternal, ConfigEnv, PageConfigBuildTime } from '../../../../../../shared/page-configs/PageConfig.js'
+import type {
+  ConfigEnvInternal,
+  ConfigEnv,
+  PageConfigBuildTime
+} from '../../../../../../shared/page-configs/PageConfig.js'
 import type { Config, ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
 import { getConfigEnv, isConfigSet } from '../helpers.js'
 

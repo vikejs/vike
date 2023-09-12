@@ -29,7 +29,7 @@ function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag: HTML
     if (prefetchAttribute !== null) return prefetchAttribute
   }
 
-    // TODO/v1-release: remove
+  // TODO/v1-release: remove
   if ('prefetchLinks' in pageContext.exports) {
     assertUsage(false, '`export { prefetchLinks }` is deprecated, use `export { prefetchStaticAssets }` instead.')
   }
