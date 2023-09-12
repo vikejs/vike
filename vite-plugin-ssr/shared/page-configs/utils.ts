@@ -20,7 +20,7 @@ function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, typ
 function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName): null | ConfigValue
 // prettier-ignore
 function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue {
-  const configValue = pageConfig.configValues
+  const configValue = 'configValues' in pageConfig
     ? pageConfig.configValues[configName]
     : pageConfig.configValueSources[configName]?.[0]
   if (!configValue) return null

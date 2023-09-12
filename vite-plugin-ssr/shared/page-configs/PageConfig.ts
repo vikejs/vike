@@ -16,12 +16,10 @@ type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-o
 type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
 
 type PageConfigRuntime = PageConfigCommon & {
-  configValueSources?: undefined
   configValues: ConfigValues
 }
 type PageConfigBuildTime = PageConfigCommon & {
   configValueSources: ConfigValueSources
-  configValues?: undefined
 }
 type PageConfigCommon = {
   pageId: string
