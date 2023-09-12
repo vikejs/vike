@@ -326,7 +326,7 @@ async function loadVikeConfig(
 
   const { globalVikeConfig, pageConfigGlobal } = getGlobalConfigs(interfaceFilesByLocationId, userRootDir)
 
-  const pageConfigsData: PageConfigBuildTime[] = await Promise.all(
+  const pageConfigs: PageConfigBuildTime[] = await Promise.all(
     Object.entries(interfaceFilesByLocationId)
       .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
       .map(async ([locationId]) => {
@@ -411,7 +411,7 @@ async function loadVikeConfig(
       })
     })
   })
-  return { pageConfigs: pageConfigsData, pageConfigGlobal, globalVikeConfig }
+  return { pageConfigs, pageConfigGlobal, globalVikeConfig }
 }
 
 function updateConfigValues(pageConfig: PageConfigBuildTime): void {
