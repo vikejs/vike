@@ -26,7 +26,6 @@ import {
 } from '../../../utils.js'
 import path from 'path'
 import type {
-  PageConfigData,
   PageConfigGlobalData,
   ConfigEnvInternal,
   ConfigValueSource,
@@ -96,7 +95,7 @@ type LocationId = string
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 
 type VikeConfig = {
-  pageConfigsData: PageConfigData[]
+  pageConfigsData: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalData
   globalVikeConfig: Record<string, unknown>
 }
@@ -327,7 +326,7 @@ async function loadVikeConfig(
 
   const { globalVikeConfig, pageConfigGlobal } = getGlobalConfigs(interfaceFilesByLocationId, userRootDir)
 
-  const pageConfigsData: PageConfigData[] = await Promise.all(
+  const pageConfigsData: PageConfigBuildTime[] = await Promise.all(
     Object.entries(interfaceFilesByLocationId)
       .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
       .map(async ([locationId]) => {
@@ -991,11 +990,11 @@ function applyEffect(
   })
 }
 
-function applyComputed(pageConfigData: PageConfigData, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
+function applyComputed(pageConfig: PageConfigBuildTime, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     const computed = configDef._computed
     if (!computed) return
-    const value = computed(pageConfigData)
+    const value = computed(pageConfig)
     if (value === undefined) return
 
     const configValueSource: ConfigValueSource = {
@@ -1009,9 +1008,9 @@ function applyComputed(pageConfigData: PageConfigData, configDefinitionsRelevant
       isCodeEntry: false
     }
 
-    pageConfigData.configValueSources[configName] ??= []
+    pageConfig.configValueSources[configName] ??= []
     // Computed values are inserted last: they have the least priority (i.e. computed can be overriden)
-    pageConfigData.configValueSources[configName]!.push(configValueSource)
+    pageConfig.configValueSources[configName]!.push(configValueSource)
   })
 }
 

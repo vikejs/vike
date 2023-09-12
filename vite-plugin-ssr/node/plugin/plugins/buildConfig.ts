@@ -20,7 +20,7 @@ import { findPageFiles } from '../shared/findPageFiles.js'
 import { getConfigVps } from '../../shared/getConfigVps.js'
 import type { ResolvedConfig, Plugin, Rollup, UserConfig } from 'vite'
 import { getVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode.js'
-import type { PageConfigBuildTime, PageConfigData } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 type InputOption = Rollup.InputOption
@@ -132,10 +132,10 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
 
   return { hasClientRouting, hasServerRouting, clientEntries }
 }
-function analyzeServerEntries(pageConfigsData: PageConfigData[]) {
+function analyzeServerEntries(pageConfigs: PageConfigBuildTime[]) {
   const serverEntries: Record<string, string> = {}
-  pageConfigsData.forEach((pageConfigData) => {
-    const { entryName, entryTarget } = getEntryFromPageConfigData(pageConfigData, false)
+  pageConfigs.forEach((pageConfig) => {
+    const { entryName, entryTarget } = getEntryFromPageConfigData(pageConfig, false)
     serverEntries[entryName] = entryTarget
   })
   return serverEntries
@@ -178,8 +178,8 @@ function getEntryFromFilePath(filePath: string, config: ResolvedConfig, addExtra
 
   return { entryName, entryTarget }
 }
-function getEntryFromPageConfigData(pageConfigData: PageConfigData, isForClientSide: boolean) {
-  let { pageId } = pageConfigData
+function getEntryFromPageConfigData(pageConfig: PageConfigBuildTime, isForClientSide: boolean) {
+  let { pageId } = pageConfig
   const entryTarget = getVirtualFileIdImportPageCode(pageId, isForClientSide)
   let entryName = pageId
   entryName = prependEntriesDir(entryName)

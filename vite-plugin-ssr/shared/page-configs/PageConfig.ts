@@ -2,7 +2,6 @@ export type { PageConfig }
 export type { PageConfigLoaded }
 export type { ConfigEnvInternal }
 export type { ConfigEnv }
-export type { PageConfigData }
 export type { PageConfigBuildTime }
 export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
@@ -15,6 +14,17 @@ export type { DefinedAt }
 
 type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
 type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
+
+/*
+type PageConfigRuntime = PageConfigData & {
+  configValueSources: ConfigValueSources
+  configValues?: undefined
+}
+type PageConfigBuildTime = PageConfigData & {
+  configValueSources?: undefined
+  configValues: ConfigValues
+}
+*/
 
 type PageConfigRuntime = Omit<PageConfigData, 'configValues'> & {
   configValues: NonNullable<PageConfigData['configValues']>
