@@ -1,7 +1,6 @@
 export { getConfigValue }
 export { getPageConfig }
 export { getDefinedAt }
-export { assertConfigValueType }
 
 import { assert, assertUsage } from '../utils.js'
 import type { ConfigValue, DefinedAtInfo, PageConfig, PageConfigBuildTime } from './PageConfig.js'
@@ -26,17 +25,10 @@ function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, typ
     : pageConfig.configValueSources[configName]?.[0]
   if (!configValue) return null
   const { value, definedAtInfo } = configValue
-  if (isNullish(value)) return null
-  assertConfigValueType({ value, definedAtInfo }, type)
+  // Enable users to suppress global config values by setting the local config value to null
+  if (value === null) return null
+  if( type ) assertConfigValueType({ value, definedAtInfo }, type)
   return { value, definedAtInfo }
-}
-
-function isNullish(configValue: unknown): boolean {
-  return (
-    configValue === null ||
-    // TODO: stop allowing users to set undefined and, instead, force them to use `null`?
-    configValue === undefined
-  )
 }
 
 function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
@@ -48,16 +40,23 @@ function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
 
 function assertConfigValueType(
   { value, definedAtInfo }: { value: unknown; definedAtInfo: DefinedAtInfo },
-  type: undefined | 'string' | 'boolean'
+  type: 'string' | 'boolean'
 ) {
-  if (type === undefined) return
   assert(value !== null)
   const definedAt = getDefinedAt({ definedAtInfo })
   const typeActual = typeof value
-  assertUsage(
-    typeActual === type,
-    `${definedAt} has an invalid type ${pc.cyan(typeActual)}: is should be a ${pc.cyan(type)} instead`
-  )
+  if (typeActual === type) return
+  const valuePrintable = getValuePrintable(value)
+  const problem =
+    valuePrintable !== null ? (`value ${pc.cyan(valuePrintable)}` as const) : (`type ${pc.cyan(typeActual)}` as const)
+  assertUsage(false, `${definedAt} has an invalid ${problem}: is should be a ${pc.cyan(type)} instead`)
+}
+
+function getValuePrintable(value: unknown): null | string {
+  return ['undefined', 'boolean', 'number', 'string'].includes(typeof value)
+    ? // String casting with String() is needed because JSON.stringify(undefined) === undefined
+      String(JSON.stringify(value))
+    : null
 }
 
 function getDefinedAt({ definedAtInfo }: { definedAtInfo: DefinedAtInfo }, append?: 'effect'): string {
