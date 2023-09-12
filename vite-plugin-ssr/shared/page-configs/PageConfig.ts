@@ -36,6 +36,7 @@ type ConfigValueSource = {
   value?: unknown
   // TODO: replace definedAtInfo.filePath with definedAtInfo.filePathRelativeToUserRootDir? and definedAtInfo.filePathAbsolute!
   definedAtInfo: DefinedAtInfo
+  // TODO: improve naming of `isCodeEntry` and `valueIsFilePath`?
   /**
    * Whether definedAtInfo.filePath contains runtime code. (If it doesn't, then it contains config code that isn't loaded in any runtime.)
    *
@@ -52,7 +53,6 @@ type ConfigValueSources = Record<
 >
 type ConfigValue = {
   value: unknown
-  // TODO: Replace with valueSrc?
   definedAtInfo: DefinedAtInfo
 }
 type ConfigValues = Record<

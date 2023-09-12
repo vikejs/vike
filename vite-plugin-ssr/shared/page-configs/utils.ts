@@ -1,6 +1,6 @@
 export { getConfigValue }
 export { getPageConfig }
-export { getValueSrc }
+export { getDefinedAt }
 export { assertConfigValueType }
 
 import { assert, assertUsage } from '../utils.js'
@@ -52,23 +52,23 @@ function assertConfigValueType(
 ) {
   if (type === undefined) return
   assert(value !== null)
-  const valueSrc = getValueSrc({ definedAtInfo })
+  const definedAt = getDefinedAt({ definedAtInfo })
   const typeActual = typeof value
   assertUsage(
     typeActual === type,
-    `${valueSrc} has an invalid type ${pc.cyan(typeActual)}: is should be a ${pc.cyan(type)} instead`
+    `${definedAt} has an invalid type ${pc.cyan(typeActual)}: is should be a ${pc.cyan(type)} instead`
   )
 }
 
-function getValueSrc({ definedAtInfo }: { definedAtInfo: DefinedAtInfo }, append?: 'effect'): string {
+function getDefinedAt({ definedAtInfo }: { definedAtInfo: DefinedAtInfo }, append?: 'effect'): string {
   const { filePath, fileExportPath } = definedAtInfo
-  let valueSrc = filePath
+  let definedAt = filePath
   const exportPath = getExportPath(fileExportPath)
   if (exportPath) {
-    valueSrc = `${valueSrc} > ${pc.cyan(exportPath)}`
+    definedAt = `${definedAt} > ${pc.cyan(exportPath)}`
   }
   if (append) {
-    valueSrc = `${valueSrc} > (${pc.blue(append)})`
+    definedAt = `${definedAt} > (${pc.blue(append)})`
   }
-  return valueSrc
+  return definedAt
 }

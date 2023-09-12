@@ -9,7 +9,7 @@ import type { OnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 import { isCallable } from '../utils.js'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
-import { getConfigValue, getValueSrc } from '../page-configs/utils.js'
+import { getConfigValue, getDefinedAt } from '../page-configs/utils.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
 
 type PageRoute = {
@@ -61,14 +61,14 @@ function getPageRoutes(
           const routeConfig = pageConfig.configValues.route
           if (routeConfig) {
             const route = routeConfig.value
-            const valueSrc = getValueSrc(routeConfig)
-            assert(valueSrc)
+            const definedAt = getDefinedAt(routeConfig)
+            assert(definedAt)
             if (typeof route === 'string') {
               pageRoute = {
                 pageId,
                 comesFromV1PageConfig,
                 routeString: route,
-                routeDefinedAt: valueSrc,
+                routeDefinedAt: definedAt,
                 routeType: 'STRING'
               }
             } else {
@@ -79,7 +79,7 @@ function getPageRoutes(
                 pageId,
                 comesFromV1PageConfig,
                 routeFunction: route,
-                routeDefinedAt: valueSrc,
+                routeDefinedAt: definedAt,
                 routeType: 'FUNCTION'
               }
             }

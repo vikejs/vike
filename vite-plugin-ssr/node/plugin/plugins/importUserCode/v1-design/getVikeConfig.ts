@@ -30,7 +30,6 @@ import type {
   ConfigEnvInternal,
   ConfigValueSource,
   ConfigValueSources,
-  ConfigValues,
   ConfigValue,
   ConfigEnv,
   PageConfigBuildTime
@@ -65,7 +64,7 @@ import {
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.js'
 import pc from '@brillout/picocolors'
 import { createRequire } from 'module'
-import { getValueSrc } from '../../../../../shared/page-configs/utils.js'
+import { getDefinedAt } from '../../../../../shared/page-configs/utils.js'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -596,7 +595,7 @@ function warnOverridenConfigValues(
     const configValueSourceLoser = getConfigValueSource(configName, interfaceFileLoser, configDef, userRootDir)
     assertWarning(
       false,
-      `${getValueSrc(configValueSourceLoser)} overriden by ${getValueSrc(
+      `${getDefinedAt(configValueSourceLoser)} overriden by ${getDefinedAt(
         configValueSourceWinner
       )}, remove one of the two`,
       { onlyOnce: false }
@@ -632,7 +631,7 @@ function getConfigValueSource(
       const codeFile = getCodeFilePath(configValue, interfaceFile.filePath, userRootDir)
       assertUsage(
         codeFile,
-        `config ${pc.cyan(configName)} defined at ${getValueSrc({
+        `config ${pc.cyan(configName)} defined at ${getDefinedAt({
           definedAtInfo: definedAtInfoConfigFile
         })} should be an import`
       )
@@ -837,18 +836,18 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
 
 function assertMetaValue(
   metaVal: unknown,
-  valueSrc: string
+  definedAt: string
 ): asserts metaVal is Record<string, ConfigDefinitionInternal> {
   assertUsage(
     isObject(metaVal),
-    `${valueSrc} sets the config ${pc.cyan('meta')} to a value with an invalid type ${pc.cyan(
+    `${definedAt} sets the config ${pc.cyan('meta')} to a value with an invalid type ${pc.cyan(
       typeof metaVal
     )}: it should be an object instead.`
   )
   objectEntries(metaVal).forEach(([configName, def]) => {
     assertUsage(
       isObject(def),
-      `${valueSrc} sets meta.${configName} to a value with an invalid type ${pc.cyan(
+      `${definedAt} sets meta.${configName} to a value with an invalid type ${pc.cyan(
         typeof def
       )}: it should be an object instead.`
     )
@@ -869,14 +868,14 @@ function assertMetaValue(
         ),
         '.'
       ].join('')
-      assertUsage('env' in def, `${valueSrc} doesn't set meta.${configName}.env but it's required. ${hint}`)
+      assertUsage('env' in def, `${definedAt} doesn't set meta.${configName}.env but it's required. ${hint}`)
       assertUsage(
         hasProp(def, 'env', 'string'),
-        `${valueSrc} > meta.${configName}.env has an invalid type ${pc.cyan(typeof def.env)}. ${hint}`
+        `${definedAt} > meta.${configName}.env has an invalid type ${pc.cyan(typeof def.env)}. ${hint}`
       )
       assertUsage(
         envValues.includes(def.env),
-        `${valueSrc} > meta.${configName}.env has an invalid value ${pc.cyan(`'${def.env}'`)}. ${hint}`
+        `${definedAt} > meta.${configName}.env has an invalid value ${pc.cyan(`'${def.env}'`)}. ${hint}`
       )
     }
 
@@ -884,13 +883,13 @@ function assertMetaValue(
     if ('effect' in def) {
       assertUsage(
         hasProp(def, 'effect', 'function'),
-        `${valueSrc} > meta.${configName}.effect has an invalid type ${pc.cyan(
+        `${definedAt} > meta.${configName}.effect has an invalid type ${pc.cyan(
           typeof def.effect
         )}: it should be a function instead`
       )
       assertUsage(
         def.env === 'config-only',
-        `${valueSrc} > meta.${configName}.effect is only supported if meta.${configName}.env is ${pc.cyan(
+        `${definedAt} > meta.${configName}.effect is only supported if meta.${configName}.env is ${pc.cyan(
           'config-only'
         )} (but it's ${pc.cyan(def.env)} instead)`
       )
@@ -919,7 +918,7 @@ function applyEffects(pageConfig: PageConfigBuildTime, configDefinitionsRelevant
     if (!configValue) return
     const configModFromEffect = configDef.effect({
       configValue: configValue.value,
-      configDefinedAt: getValueSrc(configValue)
+      configDefinedAt: getDefinedAt(configValue)
     })
     if (!configModFromEffect) return
     assert(hasProp(configValue, 'value')) // We need to assume that the config value is loaded at build-time
@@ -936,7 +935,7 @@ function applyEffect(
   )} of a config. Reach out to a maintainer if you need more capabilities.`
   objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
-      assertMetaValue(configValue, getValueSrc(configValueEffectSource, 'effect'))
+      assertMetaValue(configValue, getDefinedAt(configValueEffectSource, 'effect'))
       objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
         {
           const keys = Object.keys(configTargetDef)
@@ -1288,16 +1287,16 @@ function getFilesystemRoutingRootEffect(configFilesystemRoutingRoot: ConfigValue
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const valueSrc = getValueSrc(configFilesystemRoutingRoot)
-  assertUsage(typeof value === 'string', `${valueSrc} should be a string`)
+  const definedAt = getDefinedAt(configFilesystemRoutingRoot)
+  assertUsage(typeof value === 'string', `${definedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),
-    `${valueSrc} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
+    `${definedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
   const before = getRouteFilesystem(getLocationId(configFilesystemRoutingRoot.definedAtInfo.filePath))
   const after = value
   const filesystemRoutingRootEffect = { before, after }
-  return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt: valueSrc }
+  return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt: definedAt }
 }
 function determineIsErrorPage(routeFilesystem: string) {
   assertPosixPath(routeFilesystem)
