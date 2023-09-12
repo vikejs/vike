@@ -42,30 +42,28 @@ function serializePageConfigs(
     lines.push(`    configValues: {`)
     Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
       const configValueSource = sources[0]
-      if (!configValueSource) return
-      if (!('value' in configValueSource)) return
-      {
-        const configEnv = getConfigEnv(pageConfig, configName)
-        assert(configEnv, configName)
-        if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
-      }
-      const { value, definedAtInfo } = configValueSource
-      // TODO: use @brillout/json-serializer
-      //  - re-use getConfigValueSerialized()?
-      const valueSerialized = JSON.stringify(value)
-      serializeConfigValue(lines, configName, { definedAtInfo }, valueSerialized)
-    })
-    // TODO: resolve conflicts
-    Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
-      const configValueSource = sources[0]!
-      if (configValueSource.configEnv === '_routing-eager') {
-        const { definedAtInfo } = configValueSource
-        const configValue = { configName, definedAtInfo }
-        const { filePath, fileExportPath } = configValueSource.definedAtInfo
-        const [exportName] = fileExportPath
-        assert(exportName)
-        const configValueEagerImport = getConfigValueEagerImport(filePath, exportName, importStatements)
-        serializeConfigValue(lines, configName, configValue, configValueEagerImport)
+      assert(configValueSource)
+      if ('value' in configValueSource) {
+        {
+          const configEnv = getConfigEnv(pageConfig, configName)
+          assert(configEnv, configName)
+          if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
+        }
+        const { value, definedAtInfo } = configValueSource
+        // TODO: use @brillout/json-serializer
+        //  - re-use getConfigValueSerialized()?
+        const valueSerialized = JSON.stringify(value)
+        serializeConfigValue(lines, configName, { definedAtInfo }, valueSerialized)
+      } else {
+        if (configValueSource.configEnv === '_routing-eager') {
+          const { definedAtInfo } = configValueSource
+          const configValue = { configName, definedAtInfo }
+          const { filePath, fileExportPath } = configValueSource.definedAtInfo
+          const [exportName] = fileExportPath
+          assert(exportName)
+          const configValueEagerImport = getConfigValueEagerImport(filePath, exportName, importStatements)
+          serializeConfigValue(lines, configName, configValue, configValueEagerImport)
+        }
       }
     })
     lines.push(`    },`)
