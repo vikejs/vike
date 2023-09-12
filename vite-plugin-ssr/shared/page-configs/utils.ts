@@ -2,7 +2,7 @@ export { getConfigValue }
 export { getPageConfig }
 export { getDefinedAt }
 
-import { assert, assertUsage } from '../utils.js'
+import { assert, assertUsage, getValuePrintable } from '../utils.js'
 import type { ConfigValue, DefinedAtInfo, PageConfig, PageConfigBuildTime } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
@@ -50,13 +50,6 @@ function assertConfigValueType(
   const problem =
     valuePrintable !== null ? (`value ${pc.cyan(valuePrintable)}` as const) : (`type ${pc.cyan(typeActual)}` as const)
   assertUsage(false, `${definedAt} has an invalid ${problem}: is should be a ${pc.cyan(type)} instead`)
-}
-
-function getValuePrintable(value: unknown): null | string {
-  return ['undefined', 'boolean', 'number', 'string'].includes(typeof value)
-    ? // String casting with String() is needed because JSON.stringify(undefined) === undefined
-      String(JSON.stringify(value))
-    : null
 }
 
 function getDefinedAt({ definedAtInfo }: { definedAtInfo: DefinedAtInfo }, append?: 'effect'): string {
