@@ -43,7 +43,7 @@ import type { InlineConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
-import { getConfigValue2 } from '../../shared/page-configs/utils.js'
+import { getConfigValue } from '../../shared/page-configs/utils.js'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode.js'
 import { isErrorPage } from '../../shared/error-page.js'
 import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
@@ -241,7 +241,7 @@ async function collectDoNoPrerenderList(
   concurrencyLimit: PLimit
 ) {
   renderContext.pageConfigs.forEach((pageConfig) => {
-    const prerenderConfigValue = getConfigValue2(pageConfig, 'prerender', 'boolean')
+    const prerenderConfigValue = getConfigValue(pageConfig, 'prerender', 'boolean')
     if (prerenderConfigValue?.value === false) {
       const setByConfigFile = prerenderConfigValue.definedAt.filePath
       assert(setByConfigFile)
@@ -327,7 +327,7 @@ async function callOnBeforePrerenderStartHooks(
       concurrencyLimit(async () => {
         const hookName = 'onBeforePrerenderStart'
         const pageConfigLoaded = await loadPageCode(pageConfig, false)
-        const configValue = getConfigValue2(pageConfigLoaded, hookName)
+        const configValue = getConfigValue(pageConfigLoaded, hookName)
         if (!configValue) return
         const hookFn = configValue.value
         const hookFilePath = configValue.definedAt.filePath
@@ -742,7 +742,7 @@ async function routeAndPrerender(
           if (pageContext._pageConfigs.length > 0) {
             const pageConfig = pageContext._pageConfigs.find((p) => p.pageId === pageId)
             assert(pageConfig)
-            usesClientRouter = getConfigValue2(pageConfig, 'clientRouting', 'boolean')?.value ?? false
+            usesClientRouter = getConfigValue(pageConfig, 'clientRouting', 'boolean')?.value ?? false
           } else {
             usesClientRouter = globalContext.pluginManifest.usesClientRouter
           }

@@ -13,7 +13,7 @@ import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
 import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps.js'
 import path from 'path'
-import { getConfigValue2 } from '../../../../../shared/page-configs/utils.js'
+import { getConfigValue } from '../../../../../shared/page-configs/utils.js'
 import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSource.js'
 
 async function getVirtualFileImportCodeFiles(
@@ -53,7 +53,7 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   includeAssetsImportedByServer: boolean,
   isDev: boolean
 ): string {
-  const configValue = getConfigValue2(pageConfig, 'clientRouting', 'boolean')
+  const configValue = getConfigValue(pageConfig, 'clientRouting', 'boolean')
   const isClientRouting = configValue?.value ?? false
   const lines: string[] = []
   const importStatements: string[] = []

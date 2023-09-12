@@ -15,7 +15,7 @@ import {
 } from '../utils.js'
 import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
-import { getConfigValue2 } from '../../../shared/page-configs/utils.js'
+import { getConfigValue } from '../../../shared/page-configs/utils.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
 import { getConfigVps } from '../../shared/getConfigVps.js'
 import type { ResolvedConfig, Plugin, Rollup, UserConfig } from 'vite'
@@ -107,7 +107,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
   let clientEntries: Record<string, string> = {}
   let clientFilePaths: string[] = []
   pageConfigs.forEach((pageConfig) => {
-    const configValue = getConfigValue2(pageConfig, 'clientRouting', 'boolean')
+    const configValue = getConfigValue(pageConfig, 'clientRouting', 'boolean')
     if (configValue?.value) {
       hasClientRouting = true
     } else {

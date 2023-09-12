@@ -1,4 +1,4 @@
-export { getConfigValue2 }
+export { getConfigValue }
 export { getPageConfig }
 export { getConfigSrc }
 export { assertConfigValueType }
@@ -14,13 +14,13 @@ type ConfigName = ConfigNameBuiltIn
 type PageConfigValue = PageConfig | PageConfigBuildTime
 
 // prettier-ignore
-function getConfigValue2(pageConfig: PageConfigValue, configName: ConfigName, type: 'string'): null | ConfigValue & { value: string }
+function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, type: 'string'): null | ConfigValue & { value: string }
 // prettier-ignore
-function getConfigValue2(pageConfig: PageConfigValue, configName: ConfigName, type: 'boolean'): null | ConfigValue & { value: boolean }
+function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, type: 'boolean'): null | ConfigValue & { value: boolean }
 // prettier-ignore
-function getConfigValue2(pageConfig: PageConfigValue, configName: ConfigName): null | ConfigValue
+function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName): null | ConfigValue
 // prettier-ignore
-function getConfigValue2(pageConfig: PageConfigValue, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue {
+function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue {
   const configValue = pageConfig.configValues ? pageConfig.configValues[configName] : pageConfig.configValueSources[configName]?.[0]
   if( !configValue   ) return null
   const { value, definedAt} = configValue
