@@ -39,29 +39,6 @@ function serializePageConfigs(
     lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
     lines.push(`    loadCodeFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`)
 
-    lines.push(`    configValueSources: {`)
-    Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
-      let whitespace = '      '
-      lines.push(`${whitespace}[${JSON.stringify(configName)}]: [`)
-      whitespace += '  '
-      sources.forEach((configValueSource) => {
-        const content = serializeConfigValueSource(
-          configValueSource,
-          configName,
-          whitespace,
-          isForClientSide,
-          isClientRouting,
-          importStatements,
-          false
-        )
-        assert(content.startsWith('{') && content.endsWith('},') && content.includes('\n'))
-        lines.push(whitespace + content)
-      })
-      whitespace = whitespace.slice(2)
-      lines.push(`${whitespace}],`)
-    })
-    lines.push(`    },`)
-
     lines.push(`    configValues: {`)
     Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
       const configValueSource = sources[0]
