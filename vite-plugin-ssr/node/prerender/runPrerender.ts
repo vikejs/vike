@@ -326,7 +326,6 @@ async function callOnBeforePrerenderStartHooks(
     renderContext.pageConfigs.map((pageConfig) =>
       concurrencyLimit(async () => {
         const hookName = 'onBeforePrerenderStart'
-        if (!pageConfig.configValues[hookName]) return
         const pageConfigLoaded = await loadPageCode(pageConfig, false)
         const configValue = getConfigValue2(pageConfigLoaded, hookName)
         if (!configValue) return
