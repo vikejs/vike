@@ -379,19 +379,9 @@ async function loadVikeConfig(
           routeFilesystemDefinedBy,
           routeFilesystem: isErrorPage ? null : routeFilesystem,
           configValueSources,
-          configValues: null
         }
-        updateConfigValues(pageConfig)
-
         applyEffects(pageConfig, configDefinitionsRelevant)
-        // TODO:
-        //  - use pageConfigData.configValueSources[configName][0].value instead of pageConfigData.configValues[configName].value
-        //  - call updateConfigValues() only once
-        //  - rename updateConfigValues() to getConfigValues()
-        updateConfigValues(pageConfig)
-
         applyComputed(pageConfig, configDefinitionsRelevant)
-        updateConfigValues(pageConfig)
 
         return pageConfig
       })
@@ -412,29 +402,6 @@ async function loadVikeConfig(
     })
   })
   return { pageConfigs, pageConfigGlobal, globalVikeConfig }
-}
-
-function updateConfigValues(pageConfig: PageConfigBuildTime): void {
-  pageConfig.configValues = getConfigValues(pageConfig.configValueSources)
-}
-function getConfigValues(configValueSources: ConfigValueSources): ConfigValues {
-  const configValues: ConfigValues = {}
-  Object.entries(configValueSources).forEach(([configName, sources]) => {
-    const configValueSource = sources[0]!
-    if ('value' in configValueSource) {
-      const { value, definedAt } = configValueSource
-      /* TODO:
-       * - Move conflict resolution here
-       * - use this assert() as conflicts should be resolved
-      assert(pageConfigData.configValues[configName])
-      */
-      configValues[configName] = {
-        value,
-        definedAt
-      }
-    }
-  })
-  return configValues
 }
 
 function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
