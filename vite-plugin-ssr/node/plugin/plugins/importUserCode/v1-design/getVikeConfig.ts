@@ -95,7 +95,7 @@ type LocationId = string
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 
 type VikeConfig = {
-  pageConfigsData: PageConfigBuildTime[]
+  pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalData
   globalVikeConfig: Record<string, unknown>
 }
@@ -306,7 +306,7 @@ async function loadVikeConfig_withErrorHandling(
         devServerIsCorrupt = true
       }
       const dummyData: VikeConfig = {
-        pageConfigsData: [],
+        pageConfigs: [],
         pageConfigGlobal: {
           onPrerenderStart: null,
           onBeforeRoute: null
@@ -411,7 +411,7 @@ async function loadVikeConfig(
       })
     })
   })
-  return { pageConfigsData, pageConfigGlobal, globalVikeConfig }
+  return { pageConfigs: pageConfigsData, pageConfigGlobal, globalVikeConfig }
 }
 
 function updateConfigValues(pageConfig: PageConfigBuildTime): void {

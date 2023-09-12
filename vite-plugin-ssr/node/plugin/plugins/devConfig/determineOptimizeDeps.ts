@@ -25,7 +25,7 @@ async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved,
 
   // V1 design
   {
-    const { pageConfigsData } = await getVikeConfig(config.root, isDev, configVps.extensions)
+    const { pageConfigs: pageConfigsData } = await getVikeConfig(config.root, isDev, configVps.extensions)
     pageConfigsData.forEach((pageConfig) => {
       const configValueSourcesRelevant = getConfigValueSourcesRelevant(pageConfig)
       configValueSourcesRelevant.forEach((configValueSource) => {
