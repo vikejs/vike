@@ -34,7 +34,7 @@ type ConfigValueSource = {
   configEnv: ConfigEnvInternal
   valueSerialized?: string
   value?: unknown
-  // Replace definedAt.filePath with definedAt.filePathRelativeToUserRootDir? and definedAt.filePathAbsolute!
+  // TODO: replace definedAt.filePath with definedAt.filePathRelativeToUserRootDir? and definedAt.filePathAbsolute!
   definedAt: DefinedAt
   /**
    * Whether definedAt.filePath contains runtime code. (If it doesn't, then it contains config code that isn't loaded in any runtime.)
@@ -85,26 +85,6 @@ type PageConfigGlobal = {
   onPrerenderStart: null | (ConfigValueSource & { value: unknown })
   onBeforeRoute: null | (ConfigValueSource & { value: unknown })
 }
-
-type ConfigElementSource =
-  | // Defined directly in +config.js
-  {
-      plusConfigFilePath: string
-      codeFilePath: null
-      codeFileExport: null
-    }
-  // Defined by a + value file
-  | {
-      plusConfigFilePath: null
-      codeFilePath: string
-      codeFileExport: string
-    }
-  // Defined by an import in +config.js
-  | {
-      plusConfigFilePath: string
-      codeFilePath: string
-      codeFileExport: string
-    }
 
 type LoadCodeFiles = () => Promise<
   ({
