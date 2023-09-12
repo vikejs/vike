@@ -10,7 +10,7 @@ import { assertDefaultExports, forbiddenDefaultExports } from './assertExports.j
 import type { FileType } from './fileTypes.js'
 import type { PageConfigLoaded } from './../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
-import { getConfigSrc } from '../page-configs/utils.js'
+import { getValueSrc } from '../page-configs/utils.js'
 import pc from '@brillout/picocolors'
 
 // TODO/v1-release: remove
@@ -82,9 +82,9 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
         value,
         definedAt: { filePath }
       } = configValue
-      const configSrc = getConfigSrc(configValue)
+      const valueSrc = getValueSrc(configValue)
       assert(filePath)
-      assert(configSrc)
+      assert(valueSrc)
 
       config[configName] = config[configName] ?? value
       configEntries[configName] = configEntries[configName] ?? []
@@ -92,7 +92,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
       assert(configEntries[configName]!.length === 0)
       configEntries[configName]!.push({
         configValue: value,
-        configDefinedAt: configSrc,
+        configDefinedAt: valueSrc,
         configDefinedByFile: filePath
       })
 
@@ -101,7 +101,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
       exportsAll[exportName] = exportsAll[exportName] ?? []
       exportsAll[exportName]!.push({
         exportValue: value,
-        exportSource: configSrc,
+        exportSource: valueSrc,
         filePath,
         _filePath: filePath,
         _fileType: null,

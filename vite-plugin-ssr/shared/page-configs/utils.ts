@@ -1,6 +1,6 @@
 export { getConfigValue }
 export { getPageConfig }
-export { getConfigSrc }
+export { getValueSrc }
 export { assertConfigValueType }
 
 import { assert, assertUsage } from '../utils.js'
@@ -50,24 +50,23 @@ function assertConfigValueType(
 ) {
   if (type === undefined) return
   assert(value !== null)
-  const configSrc = getConfigSrc({ definedAt })
+  const valueSrc = getValueSrc({ definedAt })
   const typeActual = typeof value
   assertUsage(
     typeActual === type,
-    `${configSrc} has an invalid type ${pc.cyan(typeActual)}: is should be a ${pc.cyan(type)} instead`
+    `${valueSrc} has an invalid type ${pc.cyan(typeActual)}: is should be a ${pc.cyan(type)} instead`
   )
 }
 
-// TODO: rename to getValueSrc()
-function getConfigSrc({ definedAt }: { definedAt: DefinedAt }, append?: 'effect'): string {
+function getValueSrc({ definedAt }: { definedAt: DefinedAt }, append?: 'effect'): string {
   const { filePath, fileExportPath } = definedAt
-  let configSrc = filePath
+  let valueSrc = filePath
   const exportPath = getExportPath(fileExportPath)
   if (exportPath) {
-    configSrc = `${configSrc} > ${pc.cyan(exportPath)}`
+    valueSrc = `${valueSrc} > ${pc.cyan(exportPath)}`
   }
   if (append) {
-    configSrc = `${configSrc} > (${pc.blue(append)})`
+    valueSrc = `${valueSrc} > (${pc.blue(append)})`
   }
-  return configSrc
+  return valueSrc
 }
