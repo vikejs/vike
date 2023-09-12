@@ -1,4 +1,3 @@
-export { getConfigValue }
 export { getConfigValue2 }
 export { getPageConfig }
 export { getConfigSrc }
@@ -11,16 +10,6 @@ import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
 
 type ConfigName = ConfigNameBuiltIn
-
-// TODO: remove in favor of getConfigValue2()
-function getConfigValue(pageConfig: PageConfig, configName: ConfigName, type: 'string'): null | string
-function getConfigValue(pageConfig: PageConfig, configName: ConfigName, type: 'boolean'): null | boolean
-function getConfigValue(pageConfig: PageConfig, configName: ConfigName): unknown
-function getConfigValue(pageConfig: PageConfig, configName: ConfigName, type?: 'string' | 'boolean'): null | unknown {
-  const configValue = getConfigValue2(pageConfig, configName, type as any)
-  if (!configValue) return null
-  return configValue.value
-}
 
 type PageConfigValue = PageConfig | PageConfigBuildTime
 

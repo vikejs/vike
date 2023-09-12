@@ -28,7 +28,7 @@ import { loadPageFilesClientSide } from '../shared/loadPageFilesClientSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import type { PageConfig } from '../../shared/page-configs/PageConfig.js'
-import { getConfigValue, getPageConfig } from '../../shared/page-configs/utils.js'
+import { getConfigValue2, getPageConfig } from '../../shared/page-configs/utils.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.js'
 import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import type { PageContextForPassToClientWarning } from '../shared/getPageContextProxyForUser.js'
@@ -266,7 +266,7 @@ async function onBeforeRenderServerOnlyExists(pageContext: {
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
-    return getConfigValue(pageConfig, 'onBeforeRenderEnv') === 'server-only'
+    return getConfigValue2(pageConfig, 'onBeforeRenderEnv')?.value === 'server-only'
   } else {
     // TODO/v1-release: remove
     // V0.4
@@ -284,7 +284,7 @@ async function onBeforeRenderClientOnlyExists(pageContext: {
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
-    return getConfigValue(pageConfig, 'onBeforeRenderEnv') === 'client-only'
+    return getConfigValue2(pageConfig, 'onBeforeRenderEnv')?.value === 'client-only'
   } else {
     // TODO/v1-release: remove
     return false
