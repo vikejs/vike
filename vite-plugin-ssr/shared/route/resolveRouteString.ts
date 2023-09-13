@@ -84,11 +84,11 @@ function assertGlob(routeString: string) {
     numberOfGlobChars <= 1,
     `Invalid Route String ${highlight(
       routeString
-    )}: Route Strings aren't allowed to contain more than one glob ${highlight('*')}`
+    )}: Route Strings aren't allowed to contain more than one glob ${highlight('*')} (use a Route Function instead)`
   )
   assertUsage(
     numberOfGlobChars === 0 || (numberOfGlobChars === 1 && routeString.endsWith('*')),
-    `Invalid Route String ${highlight(routeString)}: make sure it ends with ${highlight('*')}`
+    `Invalid Route String ${highlight(routeString)}: make sure it ends with ${highlight('*')} or use a Route Function`
   )
 }
 function analyzeRouteString(routeString: string) {

@@ -65,11 +65,11 @@ describe('resolveRouteString', () => {
 
     expectErr(
       () => r('/a/*/c/*', '/a/b/c'),
-      `[vite-plugin-ssr][Wrong Usage] Invalid Route String /a/*/c/*: Route Strings aren't allowed to contain more than one glob *`
+      `[vite-plugin-ssr][Wrong Usage] Invalid Route String /a/*/c/*: Route Strings aren't allowed to contain more than one glob * (use a Route Function instead)`
     )
     expectErr(
       () => r('/a/*/c', '/a/b/c'),
-      `[vite-plugin-ssr][Wrong Usage] Invalid Route String /a/*/c: make sure it ends with *`
+      `[vite-plugin-ssr][Wrong Usage] Invalid Route String /a/*/c: make sure it ends with * or use a Route Function`
     )
   })
 
