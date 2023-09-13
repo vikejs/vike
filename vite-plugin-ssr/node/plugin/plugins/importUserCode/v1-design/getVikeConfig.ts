@@ -1419,7 +1419,9 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
       'value' in configValueSource,
       `${configDefinedAt} is only allowed to be defined in a +config.h.js file. (Because the values of ${configNameColored} are cumulative.)`
     )
+    /* This is more confusing than adding value. For example, this explanation shouldn't be shown for the passToClient config.
     const explanation = `(Because the values of ${configNameColored} are cumulative and therefore merged together.)` as const
+    */
 
     const assertNoMixing = (isSet: boolean) => {
       type T = 'a Set' | 'an array'
@@ -1433,7 +1435,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
       const configPreviousDefinedAt = getConfigDefinedAtString(configName, configValueSourcePrevious, false)
       assertUsage(
         false,
-        `${configDefinedAt} sets ${t1} but another ${configPreviousDefinedAt} sets ${t2} which is forbidden: the values must be all arrays or all sets (you cannot mix). ${explanation}`
+        `${configDefinedAt} sets ${t1} but another ${configPreviousDefinedAt} sets ${t2} which is forbidden: the values must be all arrays or all sets (you cannot mix).`
       )
     }
 
@@ -1445,10 +1447,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
       valuesSet.push(value)
       assertNoMixing(true)
     } else {
-      assertUsage(
-        false,
-        `${configDefinedAt} must be an array or a Set. ${explanation}`
-      )
+      assertUsage(false, `${configDefinedAt} must be an array or a Set`)
     }
 
     configValueSourcePrevious = configValueSource
