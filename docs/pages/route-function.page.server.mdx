@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-Route Functions enable full programmatic flexibility to implement advanced routing logic.
+Route Functions give you full programmatic flexibility to define routes.
 
 ```js
 // /pages/product/edit.page.route.js
@@ -8,7 +8,7 @@ Route Functions enable full programmatic flexibility to implement advanced routi
 import partRegex from 'part-regex'
 
 export default (pageContext) => {
-  // Route guard
+  // Route guard (we can also use a guard() hook instead)
   if (!pageContext.user.isAdmin) {
     return false
   }
@@ -25,6 +25,8 @@ export default (pageContext) => {
   }
 }
 ```
+
+If you merely want to guard your page, then you can use a <Link text="Route String" href="/route-string" /> with a <Link text={<code>guard()</code>} href="/guard" /> hook instead of a Route Function, which is usually a better approach.
 
 You can use any routing tool you want, such as:
  - Vite-plugin-ssr's <Link text="Route String" href="/route-string" /> resolver [`resolveRoute()`](#resolveroute)
