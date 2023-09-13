@@ -1,10 +1,11 @@
 export { getConfigValue }
 export { getPageConfig }
 export { getConfigDefinedAtString }
+export { getConfigDefinedAtInfo }
 export { getDefinedAtString }
 
 import { assert, assertUsage, getValuePrintable } from '../utils.js'
-import type { ConfigValue, DefinedAtInfo, PageConfig, PageConfigCommon } from './PageConfig.js'
+import type { DefinedAtInfo, PageConfig, PageConfigCommon } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
@@ -12,19 +13,38 @@ import { getExportPath } from './getExportPath.js'
 type ConfigName = ConfigNameBuiltIn
 
 // prettier-ignore
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'string'): null | ConfigValue & { value: string }
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'string'): null | { value: string }
 // prettier-ignore
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'boolean'): null | ConfigValue & { value: boolean }
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'boolean'): null | { value: boolean }
 // prettier-ignore
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName): null | ConfigValue
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName): null | { value: unknown }
 // prettier-ignore
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue {
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type?: 'string' | 'boolean'): null | { value: unknown } {
+  const configValue = getConfigValueEntry(pageConfig, configName)
+  if (configValue === null) return null
+  const { value, definedAtInfo } = configValue
+  if (type) assertConfigValueType(value, type, configName, definedAtInfo)
+  return { value }
+}
+
+function getConfigDefinedAtInfo(pageConfig: PageConfigCommon, configName: ConfigName): DefinedAtInfo {
+  const configValue = getConfigValueEntry(pageConfig, configName)
+  // We assume the caller to have ensured that the config value exists prior to calling getConfigDefinedAtInfo()
+  assert(configValue)
+  const { definedAtInfo } = configValue
+  // definedAtInfo is available only for config values that aren't:
+  //  - computed, nor
+  //  - cumulative
+  assert(definedAtInfo)
+  return definedAtInfo
+}
+
+function getConfigValueEntry(pageConfig: PageConfigCommon, configName: ConfigName) {
   const configValue = pageConfig.configValues[configName]
   if (!configValue) return null
   const { value, definedAtInfo } = configValue
   // Enable users to suppress global config values by setting the local config value to null
   if (value === null) return null
-  if (type) assertConfigValueType(value, type, configName, definedAtInfo)
   return { value, definedAtInfo }
 }
 

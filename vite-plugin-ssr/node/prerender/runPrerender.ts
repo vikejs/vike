@@ -43,7 +43,7 @@ import type { InlineConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
-import { getConfigValue } from '../../shared/page-configs/utils.js'
+import { getConfigDefinedAtInfo, getConfigValue } from '../../shared/page-configs/utils.js'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode.js'
 import { isErrorPage } from '../../shared/error-page.js'
 import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
@@ -241,16 +241,15 @@ async function collectDoNoPrerenderList(
   concurrencyLimit: PLimit
 ) {
   renderContext.pageConfigs.forEach((pageConfig) => {
-    const prerenderConfigValue = getConfigValue(pageConfig, 'prerender', 'boolean')
-    if (prerenderConfigValue?.value === false) {
-      assert(prerenderConfigValue.definedAtInfo)
-      const setByConfigFile = prerenderConfigValue.definedAtInfo.filePath
-      assert(setByConfigFile)
+    const configName = 'prerender'
+    const configValue = getConfigValue(pageConfig, configName, 'boolean')
+    if (configValue?.value === false) {
+      const definedAtInfo = getConfigDefinedAtInfo(pageConfig, configName)
       doNotPrerenderList.push({
         pageId: pageConfig.pageId,
         setByConfigName: 'prerender',
         setByConfigValue: false,
-        setByConfigFile
+        setByConfigFile: definedAtInfo.filePath
       })
     }
   })
@@ -331,8 +330,8 @@ async function callOnBeforePrerenderStartHooks(
         const configValue = getConfigValue(pageConfigLoaded, hookName)
         if (!configValue) return
         const hookFn = configValue.value
-        assert(configValue.definedAtInfo)
-        const hookFilePath = configValue.definedAtInfo.filePath
+        const definedAtInfo = getConfigDefinedAtInfo(pageConfigLoaded, hookName)
+        const hookFilePath = definedAtInfo.filePath
         assert(hookFilePath)
         assertHookFn(hookFn, { hookName, hookFilePath })
         onBeforePrerenderStartHooks.push({
