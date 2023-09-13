@@ -41,20 +41,19 @@ function serializePageConfigs(
 
     lines.push(`    configValues: {`)
     Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
-      const configValueSource = sources[0]
-      assert(configValueSource)
-      if ('value' in configValueSource) {
-        {
-          const configEnv = getConfigEnv(pageConfig, configName)
-          assert(configEnv, configName)
-          if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
-        }
-        const { value, definedAtInfo } = configValueSource
+      const configValue = pageConfig.configValues[configName]
+      if (configValue) {
+        const configEnv = getConfigEnv(pageConfig, configName)
+        assert(configEnv, configName)
+        if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
+        const { value, definedAtInfo } = configValue
         // TODO: use @brillout/json-serializer
         //  - re-use getConfigValueSerialized()?
         const valueSerialized = JSON.stringify(value)
         serializeConfigValue(lines, configName, { definedAtInfo }, valueSerialized)
       } else {
+        const configValueSource = sources[0]
+        assert(configValueSource)
         if (configValueSource.configEnv === '_routing-eager') {
           const { definedAtInfo } = configValueSource
           const configValue = { configName, definedAtInfo }
