@@ -360,14 +360,9 @@ async function loadVikeConfig(
         objectEntries(configDefinitionsRelevant)
           .filter(([configName]) => !isGlobalConfig(configName))
           .forEach(([configName, configDef]) => {
-            const configValueSource = resolveConfigValueSource(
-              configName,
-              configDef,
-              interfaceFilesRelevant,
-              userRootDir
-            )
-            if (!configValueSource) return
-            configValueSources[configName] = [configValueSource]
+            const sources = resolveConfigValueSources(configName, configDef, interfaceFilesRelevant, userRootDir)
+            if (!sources) return
+            configValueSources[configName] = sources
           })
 
         const { routeFilesystem, routeFilesystemDefinedBy, isErrorPage } = determineRouteFilesystem(
@@ -489,7 +484,8 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
     onPrerenderStart: null
   }
   objectEntries(configDefinitionsBuiltInGlobal).forEach(([configName, configDef]) => {
-    const configValueSource = resolveConfigValueSource(configName, configDef, interfaceFilesGlobal, userRootDir)
+    const sources = resolveConfigValueSources(configName, configDef, interfaceFilesGlobal, userRootDir)
+    const configValueSource = sources?.[0]
     if (!configValueSource) return
     if (arrayIncludes(objectKeys(pageConfigGlobal), configName)) {
       assert(!('value' in configValueSource))
@@ -514,16 +510,26 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
   return { pageConfigGlobal, globalVikeConfig }
 }
 
-function resolveConfigValueSource(
+function resolveConfigValueSources(
   configName: string,
   configDef: ConfigDefinitionInternal,
   interfaceFilesRelevant: InterfaceFilesByLocationId,
   userRootDir: string
-): null | ConfigValueSource {
+): null | ConfigValueSource[] {
+  let sources: ConfigValueSource[] | null = null
+
   // interfaceFilesRelevant is sorted by sortAfterInheritanceOrder()
   for (const interfaceFiles of Object.values(interfaceFilesRelevant)) {
     const interfaceFilesDefiningConfig = interfaceFiles.filter((interfaceFile) => interfaceFile.configMap[configName])
     if (interfaceFilesDefiningConfig.length === 0) continue
+    sources = []
+    const visited = new WeakSet<InterfaceFile>()
+    const add = (interfaceFile: InterfaceFile) => {
+      assert(!visited.has(interfaceFile))
+      visited.add(interfaceFile)
+      const configValueSource = getConfigValueSource(configName, interfaceFile, configDef, userRootDir)
+      sources!.push(configValueSource)
+    }
 
     // Main resolution logic
     {
@@ -556,33 +562,39 @@ function resolveConfigValueSource(
         )
         // A user-land conflict of interfaceFiles with the same locationId means that the user has superfluously defined the config twice; the user should remove such redundancy making things unnecessarily ambiguous
         warnOverridenConfigValues(interfaceFileWinner, interfaceFilesOverriden, configName, configDef, userRootDir)
-        return getConfigValueSource(configName, interfaceFileWinner, configDef, userRootDir)
+        ;[interfaceFileWinner, ...interfaceFilesOverriden].forEach((interfaceFile) => {
+          add(interfaceFile)
+        })
       }
     }
 
     // Side-effect configs such as `export { frontmatter }` in .mdx files
-    {
-      const interfaceValueFiles = interfaceFilesDefiningConfig.filter((interfaceFile) => interfaceFile.isValueFile)
-      const interfaceValueFileSideEffect = interfaceValueFiles[0]
-      if (interfaceValueFileSideEffect) {
-        assert(
-          interfaceValueFileSideEffect.isValueFile && interfaceValueFileSideEffect.configNameDefault !== configName
-        )
-        return getConfigValueSource(configName, interfaceValueFileSideEffect, configDef, userRootDir)
-      }
-    }
+    interfaceFilesDefiningConfig
+      .filter(
+        (interfaceFile) =>
+          interfaceFile.isValueFile &&
+          // Is side-effect export
+          interfaceFile.configNameDefault !== configName
+      )
+      .forEach((interfaceValueFileSideEffect) => {
+        add(interfaceValueFileSideEffect)
+      })
 
     // extends
-    assert(
-      interfaceFilesDefiningConfig.every((interfaceFile) => interfaceFile.isConfigFile && interfaceFile.isConfigExtend)
-    )
-    // extended config files are already sorted by inheritance order
-    const interfaceFile = interfaceFilesDefiningConfig[0]
-    assert(interfaceFile)
-    return getConfigValueSource(configName, interfaceFile, configDef, userRootDir)
+    interfaceFilesDefiningConfig
+      .filter((interfaceFile) => interfaceFile.isConfigFile && interfaceFile.isConfigExtend)
+      // extended config files are already sorted by inheritance order
+      .forEach((interfaceFile) => {
+        add(interfaceFile)
+      })
+
+    interfaceFilesDefiningConfig.forEach((interfaceFile) => {
+      assert(visited.has(interfaceFile))
+    })
   }
 
-  return null
+  assert(sources === null || sources.length > 0)
+  return sources
 }
 function makeOrderDeterministic(interfaceFile1: InterfaceFile, interfaceFile2: InterfaceFile): 0 | -1 | 1 {
   return lowerFirst<InterfaceFile>((interfaceFile) => {
