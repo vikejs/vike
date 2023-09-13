@@ -1,8 +1,9 @@
 export type { PageConfig }
 export type { PageConfigLoaded }
+export type { PageConfigBuildTime }
+export type { PageConfigCommon }
 export type { ConfigEnvInternal }
 export type { ConfigEnv }
-export type { PageConfigBuildTime }
 export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
 export type { ConfigSource }

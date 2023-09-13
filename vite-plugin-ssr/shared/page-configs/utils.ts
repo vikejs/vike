@@ -4,24 +4,21 @@ export { getDefinedAt }
 export { getDefinedAtString }
 
 import { assert, assertUsage, getValuePrintable } from '../utils.js'
-import type { ConfigValue, DefinedAtInfo, PageConfig, PageConfigBuildTime } from './PageConfig.js'
+import type { ConfigValue, DefinedAtInfo, PageConfig, PageConfigCommon } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
 
 type ConfigName = ConfigNameBuiltIn
 
-// TODO: simplify type
-type PageConfigValue = PageConfig | PageConfigBuildTime
-
 // prettier-ignore
-function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, type: 'string'): null | ConfigValue & { value: string }
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'string'): null | ConfigValue & { value: string }
 // prettier-ignore
-function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, type: 'boolean'): null | ConfigValue & { value: boolean }
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'boolean'): null | ConfigValue & { value: boolean }
 // prettier-ignore
-function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName): null | ConfigValue
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName): null | ConfigValue
 // prettier-ignore
-function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue {
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue {
   const configValue = pageConfig.configValues[configName]
   if (!configValue) return null
   const { value, definedAtInfo } = configValue
