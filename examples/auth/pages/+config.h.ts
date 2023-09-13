@@ -4,11 +4,6 @@ import vikeReact from 'vike-react'
 
 export default {
   Layout,
-  passToClient: [
-    'userFullName',
-    // https://github.com/vikejs/vike-react/issues/4
-    'pageProps',
-    'title'
-  ],
+  passToClient: ['userFullName'],
   extends: vikeReact
 } satisfies Config
