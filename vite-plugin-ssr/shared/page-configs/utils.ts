@@ -1,6 +1,6 @@
 export { getConfigValue }
 export { getPageConfig }
-export { getDefinedAt }
+export { getConfigDefinedAtString }
 export { getDefinedAtString }
 
 import { assert, assertUsage, getValuePrintable } from '../utils.js'
@@ -47,25 +47,25 @@ function assertConfigValueType(
   const valuePrintable = getValuePrintable(value)
   const problem =
     valuePrintable !== null ? (`value ${pc.cyan(valuePrintable)}` as const) : (`type ${pc.cyan(typeActual)}` as const)
-  const configDefinedAt = getDefinedAt(configName, { definedAtInfo }, true)
+  const configDefinedAt = getConfigDefinedAtString(configName, { definedAtInfo }, true)
   assertUsage(false, `${configDefinedAt} has an invalid ${problem}: is should be a ${pc.cyan(type)} instead`)
 }
 
 type ConfigDefinedAtUppercase<ConfigName extends string> = `Config ${ConfigName}${string}`
 type ConfigDefinedAtLowercase<ConfigName extends string> = `config ${ConfigName}${string}`
-function getDefinedAt<ConfigName extends string>(
+function getConfigDefinedAtString<ConfigName extends string>(
   configName: ConfigName,
   { definedAtInfo }: { definedAtInfo: null | DefinedAtInfo },
   sentenceBegin: true,
   append?: 'effect'
 ): ConfigDefinedAtUppercase<ConfigName>
-function getDefinedAt<ConfigName extends string>(
+function getConfigDefinedAtString<ConfigName extends string>(
   configName: ConfigName,
   { definedAtInfo }: { definedAtInfo: null | DefinedAtInfo },
   sentenceBegin: false,
   append?: 'effect'
 ): ConfigDefinedAtLowercase<ConfigName>
-function getDefinedAt<ConfigName extends string>(
+function getConfigDefinedAtString<ConfigName extends string>(
   configName: ConfigName,
   { definedAtInfo }: { definedAtInfo: null | DefinedAtInfo },
   sentenceBegin: boolean,

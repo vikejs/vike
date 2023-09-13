@@ -10,7 +10,7 @@ import { assertDefaultExports, forbiddenDefaultExports } from './assertExports.j
 import type { FileType } from './fileTypes.js'
 import type { PageConfigLoaded } from './../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
-import { getDefinedAt } from '../page-configs/utils.js'
+import { getConfigDefinedAtString } from '../page-configs/utils.js'
 import pc from '@brillout/picocolors'
 
 // TODO/v1-release: remove
@@ -83,7 +83,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
       if (definedAtInfo) {
         filePath = definedAtInfo.filePath
       }
-      const configDefinedAt = getDefinedAt(configName, configValue, true)
+      const configDefinedAt = getConfigDefinedAtString(configName, configValue, true)
 
       config[configName] = config[configName] ?? value
       configEntries[configName] = configEntries[configName] ?? []

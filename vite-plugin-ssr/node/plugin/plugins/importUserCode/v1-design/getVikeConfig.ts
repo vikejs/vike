@@ -65,7 +65,7 @@ import {
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.js'
 import pc from '@brillout/picocolors'
 import { createRequire } from 'module'
-import { getDefinedAt } from '../../../../../shared/page-configs/utils.js'
+import { getConfigDefinedAtString } from '../../../../../shared/page-configs/utils.js'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -602,7 +602,11 @@ function warnOverridenConfigValues(
     const configValueSourceLoser = getConfigValueSource(configName, interfaceFileLoser, configDef, userRootDir)
     assertWarning(
       false,
-      `${getDefinedAt(configName, configValueSourceLoser, true)} overriden by another ${getDefinedAt(
+      `${getConfigDefinedAtString(
+        configName,
+        configValueSourceLoser,
+        true
+      )} overriden by another ${getConfigDefinedAtString(
         configName,
         configValueSourceWinner,
         false
@@ -638,7 +642,7 @@ function getConfigValueSource(
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
       const codeFile = getCodeFilePath(configValue, interfaceFile.filePath, userRootDir)
-      const configDefinedAt = getDefinedAt(configName, { definedAtInfo: definedAtInfoConfigFile }, true)
+      const configDefinedAt = getConfigDefinedAtString(configName, { definedAtInfo: definedAtInfoConfigFile }, true)
       assertUsage(codeFile, `${configDefinedAt} should be an import`)
       filePath = codeFile.codeFilePath
     } else {
@@ -832,7 +836,7 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
       const meta = configMeta.configValue
       assertMetaValue(
         meta,
-        // Maybe we should use the getDefinedAt() helper?
+        // Maybe we should use the getConfigDefinedAtString() helper?
         `Config ${pc.cyan('meta')} defined at ${getFilePathToShowToUser(interfaceFile.filePath)}`
       )
       objectEntries(meta).forEach(([configName, configDefinition]) => {
@@ -929,7 +933,7 @@ function applyEffects(pageConfig: PageConfigBuildTime, configDefinitionsRelevant
     if (!configValue) return
     const configModFromEffect = configDef.effect({
       configValue: configValue.value,
-      configDefinedAt: getDefinedAt(configName, configValue, true)
+      configDefinedAt: getConfigDefinedAtString(configName, configValue, true)
     })
     if (!configModFromEffect) return
     assert(hasProp(configValue, 'value')) // We need to assume that the config value is loaded at build-time
@@ -946,7 +950,7 @@ function applyEffect(
   )} of a config. Reach out to a maintainer if you need more capabilities.`
   objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
-      assertMetaValue(configValue, getDefinedAt(configName, configValueEffectSource, true, 'effect'))
+      assertMetaValue(configValue, getConfigDefinedAtString(configName, configValueEffectSource, true, 'effect'))
       objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
         {
           const keys = Object.keys(configTargetDef)
@@ -1300,7 +1304,7 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const configDefinedAt = getDefinedAt(configName, configFilesystemRoutingRoot, true)
+  const configDefinedAt = getConfigDefinedAtString(configName, configFilesystemRoutingRoot, true)
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),
