@@ -60,16 +60,12 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   lines.push('export default [')
   let varCounter = 0
   getConfigValueSourcesRelevant(pageConfig).forEach((configValueSource) => {
-    const {
-      isCodeEntry,
-      configName,
-      configEnv,
-      definedAtInfo: { filePath, fileExportPath }
-    } = configValueSource
+    const { isCodeEntry, configName, configEnv, definedAtInfo } = configValueSource
 
     if (!isCodeEntry) return
     if (configValueSource.valueIsFilePath) return
     if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
+    const { filePath, fileExportPath } = definedAtInfo
 
     assertPosixPath(filePath)
     const fileName = path.posix.basename(filePath)

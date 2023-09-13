@@ -30,8 +30,6 @@ type ConfigValueSource = {
   configEnv: ConfigEnvInternal
   valueSerialized?: string
   value?: unknown
-  // TODO: replace definedAtInfo.filePath with definedAtInfo.filePathRelativeToUserRootDir? and definedAtInfo.filePathAbsolute!
-  definedAtInfo: DefinedAtInfo
   // TODO: improve naming of `isCodeEntry` and `valueIsFilePath`?
   /**
    * Whether definedAtInfo.filePath contains runtime code. (If it doesn't, then it contains config code that isn't loaded in any runtime.)
@@ -41,7 +39,18 @@ type ConfigValueSource = {
    */
   isCodeEntry: boolean
   valueIsFilePath?: true
-}
+} & (
+  | {
+      // TODO: replace definedAtInfo.filePath with definedAtInfo.filePathRelativeToUserRootDir? and definedAtInfo.filePathAbsolute!
+      definedAtInfo: DefinedAtInfo
+      isComputed: false
+    }
+  | {
+      definedAtInfo: null
+      isComputed: true
+      isCodeEntry: false
+    }
+)
 type ConfigValueSources = Record<
   // configName
   string,
@@ -49,7 +58,10 @@ type ConfigValueSources = Record<
 >
 type ConfigValue = {
   value: unknown
-  definedAtInfo: DefinedAtInfo
+  // Is null when config value is:
+  //  - computed
+  //  - cumulative
+  definedAtInfo: null | DefinedAtInfo
 }
 type ConfigValues = Record<
   // configName

@@ -42,7 +42,7 @@ type ConfigEffect = (config: {
    *
    * https://vite-plugin-ssr.com/meta
    */
-  configDefinedAt: string
+  configDefinedAt: `Config ${string}`
 }) => Config | undefined
 
 // For maintainer

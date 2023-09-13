@@ -10,7 +10,7 @@ export type { PageContextInitEnhanced }
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
 import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles.js'
-import { assert, assertUsage, hasProp, objectAssign, unique } from '../utils.js'
+import { assert, assertUsage, hasProp, isNotNullish, objectAssign, unique } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
 import { addUrlComputedProps, type PageContextUrlComputedPropsInternal } from '../../../shared/addUrlComputedProps.js'
 import { getGlobalContext } from '../globalContext.js'
@@ -257,7 +257,12 @@ function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfig[
   const indent = '- '
   const v1Files: string[] = unique(
     pageConfigs
-      .map((p) => Object.values(p.configValues).map(({ definedAtInfo }) => indent + definedAtInfo.filePath))
+      .map((p) =>
+        Object.values(p.configValues)
+          .map(({ definedAtInfo }) => definedAtInfo)
+          .filter(isNotNullish)
+          .map((definedAtInfo) => indent + definedAtInfo.filePath)
+      )
       .flat(2)
   )
   assertUsage(

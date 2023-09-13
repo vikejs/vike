@@ -11,6 +11,7 @@ function getClientEntryFilePath(pageConfig: PageConfig | PageConfigBuildTime): n
   const { value, definedAtInfo } = configValue
   // Users should be able to suppress client entry by setting its value to null
   assert(value !== null)
+  assert(definedAtInfo) // Config 'client' isn't computed and shouldn't be cumulative
   const clientEntryFilePath = definedAtInfo.filePath
   return clientEntryFilePath
 }

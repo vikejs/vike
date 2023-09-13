@@ -243,6 +243,7 @@ async function collectDoNoPrerenderList(
   renderContext.pageConfigs.forEach((pageConfig) => {
     const prerenderConfigValue = getConfigValue(pageConfig, 'prerender', 'boolean')
     if (prerenderConfigValue?.value === false) {
+      assert(prerenderConfigValue.definedAtInfo)
       const setByConfigFile = prerenderConfigValue.definedAtInfo.filePath
       assert(setByConfigFile)
       doNotPrerenderList.push({
@@ -330,6 +331,7 @@ async function callOnBeforePrerenderStartHooks(
         const configValue = getConfigValue(pageConfigLoaded, hookName)
         if (!configValue) return
         const hookFn = configValue.value
+        assert(configValue.definedAtInfo)
         const hookFilePath = configValue.definedAtInfo.filePath
         assert(hookFilePath)
         assertHookFn(hookFn, { hookName, hookFilePath })
@@ -518,6 +520,7 @@ async function callOnPrerenderStartHook(
     const configValueSource = renderContext.pageConfigGlobal.onPrerenderStart
     if (configValueSource) {
       const hookFn = configValueSource.value
+      assert(configValueSource.definedAtInfo)
       const hookFilePath = configValueSource.definedAtInfo.filePath
       assert(hookFn)
       assert(hookFilePath)

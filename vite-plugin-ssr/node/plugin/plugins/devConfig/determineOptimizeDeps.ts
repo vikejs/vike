@@ -29,12 +29,9 @@ async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved,
     pageConfigsData.forEach((pageConfig) => {
       const configValueSourcesRelevant = getConfigValueSourcesRelevant(pageConfig)
       configValueSourcesRelevant.forEach((configValueSource) => {
-        const {
-          isCodeEntry,
-          configEnv,
-          definedAtInfo: { filePath }
-        } = configValueSource
+        const { isCodeEntry, configEnv, definedAtInfo } = configValueSource
         if (!isCodeEntry) return
+        const { filePath } = definedAtInfo
         assert(filePath)
 
         if (configEnv !== 'client-only' && configEnv !== 'server-and-client') return

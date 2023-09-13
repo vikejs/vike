@@ -370,7 +370,7 @@ async function loadVikeConfig(
 
         const { routeFilesystem, routeFilesystemDefinedBy, isErrorPage } = determineRouteFilesystem(
           locationId,
-          configValueSources.filesystemRoutingRoot?.[0]
+          configValueSources
         )
 
         const pageConfig: PageConfigBuildTime = {
@@ -495,6 +495,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
     } else {
       assert('value' in configValueSource)
       if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
+      assert(configValueSource.definedAtInfo)
       assertWarning(
         false,
         `Being able to define config ${pc.cyan(configName)} in ${
@@ -601,8 +602,10 @@ function warnOverridenConfigValues(
     const configValueSourceLoser = getConfigValueSource(configName, interfaceFileLoser, configDef, userRootDir)
     assertWarning(
       false,
-      `${getDefinedAt(configValueSourceLoser)} overriden by ${getDefinedAt(
-        configValueSourceWinner
+      `${getDefinedAt(configName, configValueSourceLoser, true)} overriden by another ${getDefinedAt(
+        configName,
+        configValueSourceWinner,
+        false
       )}, remove one of the two`,
       { onlyOnce: false }
     )
@@ -635,12 +638,8 @@ function getConfigValueSource(
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
       const codeFile = getCodeFilePath(configValue, interfaceFile.filePath, userRootDir)
-      assertUsage(
-        codeFile,
-        `config ${pc.cyan(configName)} defined at ${getDefinedAt({
-          definedAtInfo: definedAtInfoConfigFile
-        })} should be an import`
-      )
+      const configDefinedAt = getDefinedAt(configName, { definedAtInfo: definedAtInfoConfigFile }, true)
+      assertUsage(codeFile, `${configDefinedAt} should be an import`)
       filePath = codeFile.codeFilePath
     } else {
       assert(interfaceFile.isValueFile)
@@ -654,6 +653,7 @@ function getConfigValueSource(
       valueIsFilePath: true,
       configEnv,
       isCodeEntry: true,
+      isComputed: false,
       definedAtInfo: {
         filePath,
         fileExportPath: []
@@ -672,6 +672,7 @@ function getConfigValueSource(
       const configValueSource: ConfigValueSource = {
         configEnv,
         isCodeEntry: true,
+        isComputed: false,
         definedAtInfo: {
           filePath: codeFilePath,
           fileExportPath: [codeFileExport]
@@ -683,6 +684,7 @@ function getConfigValueSource(
         value: configValue,
         configEnv,
         isCodeEntry: false,
+        isComputed: false,
         definedAtInfo: definedAtInfoConfigFile
       }
       return configValueSource
@@ -694,6 +696,7 @@ function getConfigValueSource(
     const configValueSource: ConfigValueSource = {
       configEnv,
       isCodeEntry: true,
+      isComputed: false,
       definedAtInfo: {
         filePath: codeFilePath,
         fileExportPath: [codeFileExport]
@@ -827,7 +830,11 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
       const configMeta = interfaceFile.configMap['meta']
       if (!configMeta) return
       const meta = configMeta.configValue
-      assertMetaValue(meta, getFilePathToShowToUser(interfaceFile.filePath))
+      assertMetaValue(
+        meta,
+        // Maybe we should use the getDefinedAt() helper?
+        `Config ${pc.cyan('meta')} defined at ${getFilePathToShowToUser(interfaceFile.filePath)}`
+      )
       objectEntries(meta).forEach(([configName, configDefinition]) => {
         // User can override an existing config definition
         configDefinitions[configName] = {
@@ -842,18 +849,16 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
 
 function assertMetaValue(
   metaVal: unknown,
-  definedAt: string
+  configMetaDefinedAt: `Config meta${string}`
 ): asserts metaVal is Record<string, ConfigDefinitionInternal> {
   assertUsage(
     isObject(metaVal),
-    `${definedAt} sets the config ${pc.cyan('meta')} to a value with an invalid type ${pc.cyan(
-      typeof metaVal
-    )}: it should be an object instead.`
+    `${configMetaDefinedAt} has an invalid type ${pc.cyan(typeof metaVal)}: it should be an object instead.`
   )
   objectEntries(metaVal).forEach(([configName, def]) => {
     assertUsage(
       isObject(def),
-      `${definedAt} sets meta.${configName} to a value with an invalid type ${pc.cyan(
+      `${configMetaDefinedAt} sets meta.${configName} to a value with an invalid type ${pc.cyan(
         typeof def
       )}: it should be an object instead.`
     )
@@ -874,14 +879,14 @@ function assertMetaValue(
         ),
         '.'
       ].join('')
-      assertUsage('env' in def, `${definedAt} doesn't set meta.${configName}.env but it's required. ${hint}`)
+      assertUsage('env' in def, `${configMetaDefinedAt} doesn't set meta.${configName}.env but it's required. ${hint}`)
       assertUsage(
         hasProp(def, 'env', 'string'),
-        `${definedAt} > meta.${configName}.env has an invalid type ${pc.cyan(typeof def.env)}. ${hint}`
+        `${configMetaDefinedAt} sets meta.${configName}.env to an invalid type ${pc.cyan(typeof def.env)}. ${hint}`
       )
       assertUsage(
         envValues.includes(def.env),
-        `${definedAt} > meta.${configName}.env has an invalid value ${pc.cyan(`'${def.env}'`)}. ${hint}`
+        `${configMetaDefinedAt} sets meta.${configName}.env to an invalid value ${pc.cyan(`'${def.env}'`)}. ${hint}`
       )
     }
 
@@ -889,13 +894,13 @@ function assertMetaValue(
     if ('effect' in def) {
       assertUsage(
         hasProp(def, 'effect', 'function'),
-        `${definedAt} > meta.${configName}.effect has an invalid type ${pc.cyan(
+        `${configMetaDefinedAt} sets meta.${configName}.effect to an invalid type ${pc.cyan(
           typeof def.effect
         )}: it should be a function instead`
       )
       assertUsage(
         def.env === 'config-only',
-        `${definedAt} > meta.${configName}.effect is only supported if meta.${configName}.env is ${pc.cyan(
+        `${configMetaDefinedAt} sets meta.${configName}.effect but it's only supported if meta.${configName}.env is ${pc.cyan(
           'config-only'
         )} (but it's ${pc.cyan(def.env)} instead)`
       )
@@ -924,7 +929,7 @@ function applyEffects(pageConfig: PageConfigBuildTime, configDefinitionsRelevant
     if (!configValue) return
     const configModFromEffect = configDef.effect({
       configValue: configValue.value,
-      configDefinedAt: getDefinedAt(configValue)
+      configDefinedAt: getDefinedAt(configName, configValue, true)
     })
     if (!configModFromEffect) return
     assert(hasProp(configValue, 'value')) // We need to assume that the config value is loaded at build-time
@@ -941,7 +946,7 @@ function applyEffect(
   )} of a config. Reach out to a maintainer if you need more capabilities.`
   objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
-      assertMetaValue(configValue, getDefinedAt(configValueEffectSource, 'effect'))
+      assertMetaValue(configValue, getDefinedAt(configName, configValueEffectSource, true, 'effect'))
       objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
         {
           const keys = Object.keys(configTargetDef)
@@ -972,11 +977,8 @@ function applyComputed(pageConfig: PageConfigBuildTime, configDefinitionsRelevan
     const configValueSource: ConfigValueSource = {
       value,
       configEnv: configDef.env,
-      // TODO: make definedAtInfo optional and update all usages accordingly
-      definedAtInfo: {
-        filePath: 'TODO',
-        fileExportPath: ['TODO']
-      },
+      definedAtInfo: null,
+      isComputed: true,
       isCodeEntry: false
     }
 
@@ -1268,14 +1270,16 @@ function handleUnknownConfig(configName: string, configNames: string[], definedB
   assertUsage(false, errMsg)
 }
 
-function determineRouteFilesystem(locationId: string, configFilesystemRoutingRoot: undefined | ConfigValueSource) {
+function determineRouteFilesystem(locationId: string, configValueSources: ConfigValueSources) {
+  const configName = 'filesystemRoutingRoot'
+  const configFilesystemRoutingRoot = configValueSources[configName]?.[0]
   let routeFilesystem = getRouteFilesystem(locationId)
   if (determineIsErrorPage(routeFilesystem)) {
     return { isErrorPage: true, routeFilesystem: null, routeFilesystemDefinedBy: null }
   }
   let routeFilesystemDefinedBy = getRouteFilesystemDefinedBy(locationId) // for log404()
   if (configFilesystemRoutingRoot) {
-    const routingRoot = getFilesystemRoutingRootEffect(configFilesystemRoutingRoot)
+    const routingRoot = getFilesystemRoutingRootEffect(configFilesystemRoutingRoot, configName)
     if (routingRoot) {
       const { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt } = routingRoot
       const debugInfo = { locationId, routeFilesystem, configFilesystemRoutingRoot }
@@ -1288,21 +1292,25 @@ function determineRouteFilesystem(locationId: string, configFilesystemRoutingRoo
   assert(routeFilesystem.startsWith('/'))
   return { routeFilesystem, routeFilesystemDefinedBy, isErrorPage: false }
 }
-function getFilesystemRoutingRootEffect(configFilesystemRoutingRoot: ConfigValueSource) {
+function getFilesystemRoutingRootEffect(
+  configFilesystemRoutingRoot: ConfigValueSource,
+  configName: 'filesystemRoutingRoot'
+) {
   assert(configFilesystemRoutingRoot.configEnv === 'config-only')
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const definedAt = getDefinedAt(configFilesystemRoutingRoot)
-  assertUsage(typeof value === 'string', `${definedAt} should be a string`)
+  const configDefinedAt = getDefinedAt(configName, configFilesystemRoutingRoot, true)
+  assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),
-    `${definedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
+    `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
+  assert(configFilesystemRoutingRoot.definedAtInfo)
   const before = getRouteFilesystem(getLocationId(configFilesystemRoutingRoot.definedAtInfo.filePath))
   const after = value
   const filesystemRoutingRootEffect = { before, after }
-  return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt: definedAt }
+  return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt: configDefinedAt }
 }
 function determineIsErrorPage(routeFilesystem: string) {
   assertPosixPath(routeFilesystem)

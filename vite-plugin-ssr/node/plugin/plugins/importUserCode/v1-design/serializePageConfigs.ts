@@ -57,6 +57,7 @@ function serializePageConfigs(
         if (configValueSource.configEnv === '_routing-eager') {
           const { definedAtInfo } = configValueSource
           const configValue = { configName, definedAtInfo }
+          assert(configValueSource.definedAtInfo)
           const { filePath, fileExportPath } = configValueSource.definedAtInfo
           const [exportName] = fileExportPath
           assert(exportName)
@@ -135,6 +136,7 @@ function serializeConfigValueSource(
   importStatements: string[],
   isGlobalConfig: boolean
 ): string {
+  assert(!configValueSource.isComputed)
   const { definedAtInfo, configEnv } = configValueSource
   const lines: string[] = []
   lines.push(`{`)

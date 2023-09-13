@@ -1,6 +1,7 @@
 export { getConfigValue }
 export { getPageConfig }
 export { getDefinedAt }
+export { getDefinedAtString }
 
 import { assert, assertUsage, getValuePrintable } from '../utils.js'
 import type { ConfigValue, DefinedAtInfo, PageConfig, PageConfigBuildTime } from './PageConfig.js'
@@ -10,6 +11,7 @@ import { getExportPath } from './getExportPath.js'
 
 type ConfigName = ConfigNameBuiltIn
 
+// TODO: simplify type
 type PageConfigValue = PageConfig | PageConfigBuildTime
 
 // prettier-ignore
@@ -25,7 +27,7 @@ function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, typ
   const { value, definedAtInfo } = configValue
   // Enable users to suppress global config values by setting the local config value to null
   if (value === null) return null
-  if( type ) assertConfigValueType({ value, definedAtInfo }, type)
+  if (type) assertConfigValueType(value,type, configName, definedAtInfo)
   return { value, definedAtInfo }
 }
 
@@ -37,20 +39,50 @@ function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
 }
 
 function assertConfigValueType(
-  { value, definedAtInfo }: { value: unknown; definedAtInfo: DefinedAtInfo },
-  type: 'string' | 'boolean'
+  value: unknown,
+  type: 'string' | 'boolean',
+  configName: string,
+  definedAtInfo: null | DefinedAtInfo
 ) {
   assert(value !== null)
-  const definedAt = getDefinedAt({ definedAtInfo })
   const typeActual = typeof value
   if (typeActual === type) return
   const valuePrintable = getValuePrintable(value)
   const problem =
     valuePrintable !== null ? (`value ${pc.cyan(valuePrintable)}` as const) : (`type ${pc.cyan(typeActual)}` as const)
-  assertUsage(false, `${definedAt} has an invalid ${problem}: is should be a ${pc.cyan(type)} instead`)
+  const configDefinedAt = getDefinedAt(configName, { definedAtInfo }, true)
+  assertUsage(false, `${configDefinedAt} has an invalid ${problem}: is should be a ${pc.cyan(type)} instead`)
 }
 
-function getDefinedAt({ definedAtInfo }: { definedAtInfo: DefinedAtInfo }, append?: 'effect'): string {
+type ConfigDefinedAtUppercase<ConfigName extends string> = `Config ${ConfigName}${string}`
+type ConfigDefinedAtLowercase<ConfigName extends string> = `config ${ConfigName}${string}`
+function getDefinedAt<ConfigName extends string>(
+  configName: ConfigName,
+  { definedAtInfo }: { definedAtInfo: null | DefinedAtInfo },
+  sentenceBegin: true,
+  append?: 'effect'
+): ConfigDefinedAtUppercase<ConfigName>
+function getDefinedAt<ConfigName extends string>(
+  configName: ConfigName,
+  { definedAtInfo }: { definedAtInfo: null | DefinedAtInfo },
+  sentenceBegin: false,
+  append?: 'effect'
+): ConfigDefinedAtLowercase<ConfigName>
+function getDefinedAt<ConfigName extends string>(
+  configName: ConfigName,
+  { definedAtInfo }: { definedAtInfo: null | DefinedAtInfo },
+  sentenceBegin: boolean,
+  append?: 'effect'
+): ConfigDefinedAtUppercase<ConfigName> | ConfigDefinedAtLowercase<ConfigName> {
+  let configDefinedAt: ConfigDefinedAtUppercase<ConfigName> | ConfigDefinedAtLowercase<ConfigName> = `${
+    sentenceBegin ? `Config` : `config`
+  } ${pc.cyan(configName)}` as const
+  if (definedAtInfo !== null) {
+    configDefinedAt = `${configDefinedAt} defined at ${getDefinedAtString(definedAtInfo, append)}`
+  }
+  return configDefinedAt
+}
+function getDefinedAtString(definedAtInfo: DefinedAtInfo, append?: 'effect'): string {
   const { filePath, fileExportPath } = definedAtInfo
   let definedAt = filePath
   const exportPath = getExportPath(fileExportPath)

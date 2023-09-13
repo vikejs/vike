@@ -9,7 +9,7 @@ import type { OnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 import { isCallable } from '../utils.js'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
-import { getConfigValue, getDefinedAt } from '../page-configs/utils.js'
+import { getConfigValue, getDefinedAtString } from '../page-configs/utils.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
 
 type PageRoute = {
@@ -58,10 +58,12 @@ function getPageRoutes(
 
         let pageRoute: null | PageRoute = null
         {
-          const routeConfig = pageConfig.configValues.route
+          const configName = 'route'
+          const routeConfig = pageConfig.configValues[configName]
           if (routeConfig) {
             const route = routeConfig.value
-            const definedAt = getDefinedAt(routeConfig)
+            assert(routeConfig.definedAtInfo)
+            const definedAt = getDefinedAtString(routeConfig.definedAtInfo)
             assert(definedAt)
             if (typeof route === 'string') {
               pageRoute = {
@@ -183,6 +185,7 @@ function getGlobalHooks(
     if (pageConfigGlobal.onBeforeRoute) {
       const hookFn = pageConfigGlobal.onBeforeRoute.value
       if (hookFn) {
+        assert(pageConfigGlobal.onBeforeRoute.definedAtInfo)
         const hookFilePath = pageConfigGlobal.onBeforeRoute.definedAtInfo.filePath
         assert(hookFilePath)
         assertUsage(isCallable(hookFn), `The hook onBeforeRoute() defined by ${hookFilePath} should be a function.`)

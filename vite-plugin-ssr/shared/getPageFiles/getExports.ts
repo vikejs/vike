@@ -24,9 +24,9 @@ type ExportsAll = Record<
     /** @deprecated */
     _isFromDefaultExport: boolean | null
     /** @deprecated */
-    filePath: string
+    filePath: string | null
     /** @deprecated */
-    _filePath: string
+    _filePath: string | null
   }[]
 >
 /** All the config's values (including overriden ones) and where they come from.
@@ -38,7 +38,7 @@ type ConfigEntries = Record<
   {
     configValue: unknown
     configDefinedAt: string
-    configDefinedByFile: string
+    configDefinedByFile: string | null
   }[]
 >
 type PageContextExports = {
@@ -78,13 +78,13 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
   // V1 design
   if (pageConfig) {
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
-      const {
-        value,
-        definedAtInfo: { filePath }
-      } = configValue
-      const definedAt = getDefinedAt(configValue)
-      assert(filePath)
-      assert(definedAt)
+      const { value, definedAtInfo } = configValue
+      let filePath: null | string = null
+      if (definedAtInfo) {
+        filePath = definedAtInfo.filePath
+      }
+      const configDefinedAt = getDefinedAt(configName, configValue, true)
+      assert(configDefinedAt)
 
       config[configName] = config[configName] ?? value
       configEntries[configName] = configEntries[configName] ?? []
@@ -92,7 +92,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
       assert(configEntries[configName]!.length === 0)
       configEntries[configName]!.push({
         configValue: value,
-        configDefinedAt: definedAt,
+        configDefinedAt,
         configDefinedByFile: filePath
       })
 
@@ -101,7 +101,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
       exportsAll[exportName] = exportsAll[exportName] ?? []
       exportsAll[exportName]!.push({
         exportValue: value,
-        exportSource: definedAt,
+        exportSource: configDefinedAt,
         filePath,
         _filePath: filePath,
         _fileType: null,
