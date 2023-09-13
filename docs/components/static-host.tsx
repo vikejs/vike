@@ -36,6 +36,11 @@ function StaticHostDocStrategies({ name = 'the static host' }: { name?: string }
         </li>
         <li>Let {name} build your app.</li>
       </ul>
+      <blockquote>
+        <p>
+          The <code>$ vite build</code> command generates <code>dist/client/</code> containing all static assets.
+        </p>
+      </blockquote>
     </>
   )
 }
@@ -54,12 +59,6 @@ function StaticHostDocOutro({ baseUrlAddendum }: { baseUrlAddendum?: JSX.Element
         </a>
         .
       </p>
-      <blockquote>
-        <p>
-          The <code>$ vite build</code> command generates a directory <code>dist/client/</code> that contains all static
-          assets.
-        </p>
-      </blockquote>
       <blockquote>
         <p>
           If you don't deploy your app at your domain root <code>https://my-domain.com</code>, but at{' '}
