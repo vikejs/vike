@@ -59,7 +59,7 @@ type ConfigValueSources = Record<
 type ConfigValue = {
   value: unknown
   // Is null when config value is:
-  //  - computed
+  //  - computed, or
   //  - cumulative
   definedAtInfo: null | DefinedAtInfo
 }

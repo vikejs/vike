@@ -520,7 +520,7 @@ async function callOnPrerenderStartHook(
     const configValueSource = renderContext.pageConfigGlobal.onPrerenderStart
     if (configValueSource) {
       const hookFn = configValueSource.value
-      assert(configValueSource.definedAtInfo)
+      assert(!configValueSource.isComputed)
       const hookFilePath = configValueSource.definedAtInfo.filePath
       assert(hookFn)
       assert(hookFilePath)

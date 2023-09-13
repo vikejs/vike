@@ -84,7 +84,6 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
         filePath = definedAtInfo.filePath
       }
       const configDefinedAt = getDefinedAt(configName, configValue, true)
-      assert(configDefinedAt)
 
       config[configName] = config[configName] ?? value
       configEntries[configName] = configEntries[configName] ?? []

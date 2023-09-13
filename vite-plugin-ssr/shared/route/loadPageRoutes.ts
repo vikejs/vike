@@ -64,7 +64,6 @@ function getPageRoutes(
             const route = routeConfig.value
             assert(routeConfig.definedAtInfo)
             const definedAt = getDefinedAtString(routeConfig.definedAtInfo)
-            assert(definedAt)
             if (typeof route === 'string') {
               pageRoute = {
                 pageId,
@@ -185,7 +184,7 @@ function getGlobalHooks(
     if (pageConfigGlobal.onBeforeRoute) {
       const hookFn = pageConfigGlobal.onBeforeRoute.value
       if (hookFn) {
-        assert(pageConfigGlobal.onBeforeRoute.definedAtInfo)
+        assert(!pageConfigGlobal.onBeforeRoute.isComputed)
         const hookFilePath = pageConfigGlobal.onBeforeRoute.definedAtInfo.filePath
         assert(hookFilePath)
         assertUsage(isCallable(hookFn), `The hook onBeforeRoute() defined by ${hookFilePath} should be a function.`)

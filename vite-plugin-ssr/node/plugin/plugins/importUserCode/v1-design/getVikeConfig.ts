@@ -495,7 +495,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
     } else {
       assert('value' in configValueSource)
       if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
-      assert(configValueSource.definedAtInfo)
+      assert(!configValueSource.isComputed)
       assertWarning(
         false,
         `Being able to define config ${pc.cyan(configName)} in ${
@@ -1306,7 +1306,7 @@ function getFilesystemRoutingRootEffect(
     value.startsWith('/'),
     `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
-  assert(configFilesystemRoutingRoot.definedAtInfo)
+  assert(!configFilesystemRoutingRoot.isComputed)
   const before = getRouteFilesystem(getLocationId(configFilesystemRoutingRoot.definedAtInfo.filePath))
   const after = value
   const filesystemRoutingRootEffect = { before, after }

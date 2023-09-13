@@ -27,7 +27,7 @@ function getConfigValue(pageConfig: PageConfigValue, configName: ConfigName, typ
   const { value, definedAtInfo } = configValue
   // Enable users to suppress global config values by setting the local config value to null
   if (value === null) return null
-  if (type) assertConfigValueType(value,type, configName, definedAtInfo)
+  if (type) assertConfigValueType(value, type, configName, definedAtInfo)
   return { value, definedAtInfo }
 }
 
