@@ -1413,8 +1413,13 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
   configValueSources.forEach((configValueSource) => {
     assert(!configValueSource.isComputed)
     const configDefinedAt = getConfigDefinedAtString(configName, configValueSource, true)
+    const configNameColored = pc.cyan(configName)
     // We could, in principle, also support cumulative values to be defined in +${configName}.js but it ins't completely trivial to implement
-    assertUsage('value' in configValueSource, `${configDefinedAt} is only allowed to be defined in a +config.h.js file. (Because the values of ${pc.cyan(configName)} are cumulative.)`)
+    assertUsage(
+      'value' in configValueSource,
+      `${configDefinedAt} is only allowed to be defined in a +config.h.js file. (Because the values of ${configNameColored} are cumulative.)`
+    )
+    const explanation = `(Because the values of ${configNameColored} are cumulative and therefore merged together.)` as const
 
     const assertNoMixing = (isSet: boolean) => {
       type T = 'a Set' | 'an array'
@@ -1426,10 +1431,9 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
       if (vals2.length === 0) return
       assert(configValueSourcePrevious)
       const configPreviousDefinedAt = getConfigDefinedAtString(configName, configValueSourcePrevious, false)
-      const configNameColored = pc.cyan(configName)
       assertUsage(
         false,
-        `${configDefinedAt} sets ${t1} but another ${configPreviousDefinedAt} sets ${t2} which is forbidden: the values must be all arrays or all sets (you cannot mix). The config ${configNameColored} is a cumulative config and all its values must be arrays/Sets.`
+        `${configDefinedAt} sets ${t1} but another ${configPreviousDefinedAt} sets ${t2} which is forbidden: the values must be all arrays or all sets (you cannot mix). ${explanation}`
       )
     }
 
@@ -1443,7 +1447,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
     } else {
       assertUsage(
         false,
-        `${configDefinedAt} must be an array or a Set (because ${pc.cyan(configName)} is a cumulative config)`
+        `${configDefinedAt} must be an array or a Set. ${explanation}`
       )
     }
 
