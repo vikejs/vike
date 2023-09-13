@@ -2,6 +2,7 @@ export { StaticHostDocIntro }
 export { StaticHostDocStrategies }
 export { StaticHostDocOutro }
 
+import { Link } from '@brillout/docpress'
 import React from 'react'
 
 function StaticHostDocIntro({ staticHostLink }: { staticHostLink?: JSX.Element }) {
@@ -10,6 +11,14 @@ function StaticHostDocIntro({ staticHostLink }: { staticHostLink?: JSX.Element }
       By <a href="/pre-rendering">pre-rendering</a> your pages, you can remove the need for a production server. You can
       then deploy your app to any static host
       {staticHostLink}.
+      <blockquote>
+        <p>
+          Static hosts always expect one <code>.html</code> file per URL. This means you need to pre-render <em>all</em>{' '}
+          your pages, regardless of <Link text="render mode" href="/render-modes" />. For example, if you have SPA
+          pages, then you also need to pre-render them which will generate <code>.html</code> files with an empty{' '}
+          <code>&lt;body&gt;</code>.
+        </p>
+      </blockquote>
     </p>
   )
 }
