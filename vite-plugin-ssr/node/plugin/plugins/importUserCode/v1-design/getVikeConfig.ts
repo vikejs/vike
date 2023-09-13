@@ -22,7 +22,8 @@ import {
   isNpmPackageImport,
   joinEnglish,
   lowerFirst,
-  scriptFileExtensions
+  scriptFileExtensions,
+  mergeCumulativeValues
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -33,7 +34,8 @@ import type {
   ConfigValue,
   ConfigEnv,
   PageConfigBuildTime,
-  ConfigValues
+  ConfigValues,
+  DefinedAtInfo
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -379,14 +381,14 @@ async function loadVikeConfig(
           routeFilesystemDefinedBy,
           routeFilesystem: isErrorPage ? null : routeFilesystem,
           configValueSources,
-          configValues: getConfigValues(configValueSources)
+          configValues: getConfigValues(configValueSources, configDefinitionsRelevant)
         }
 
         applyEffects(pageConfig, configDefinitionsRelevant)
-        pageConfig.configValues = getConfigValues(configValueSources)
+        pageConfig.configValues = getConfigValues(configValueSources, configDefinitionsRelevant)
 
         applyComputed(pageConfig, configDefinitionsRelevant)
-        pageConfig.configValues = getConfigValues(configValueSources)
+        pageConfig.configValues = getConfigValues(configValueSources, configDefinitionsRelevant)
 
         return pageConfig
       })
@@ -1364,22 +1366,89 @@ function isVikeConfigFile(filePath: string): boolean {
   return !!getConfigName(filePath)
 }
 
-function getConfigValues(configValueSources: ConfigValueSources): ConfigValues {
+function getConfigValues(
+  configValueSources: ConfigValueSources,
+  configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
+): ConfigValues {
   const configValues: ConfigValues = {}
   Object.entries(configValueSources).forEach(([configName, sources]) => {
-    const configValueSource = sources[0]!
-    if ('value' in configValueSource) {
-      const { value, definedAtInfo } = configValueSource
-      /* TODO:
-       * - Move conflict resolution here
-       * - use this assert() as conflicts should be resolved
-      assert(pageConfigData.configValues[configName])
-      */
+    const configDef = configDefinitionsRelevant[configName]
+    assert(configDef)
+    if (!configDef.cumulative) {
+      const configValueSource = sources[0]!
+      if ('value' in configValueSource) {
+        const { value, definedAtInfo } = configValueSource
+        configValues[configName] = {
+          value,
+          definedAtInfo
+        }
+      }
+    } else {
+      const value = mergeCumulative(configName, sources)
       configValues[configName] = {
         value,
-        definedAtInfo
+        definedAtInfo: null
       }
     }
   })
   return configValues
+}
+
+function mergeCumulative(configName: string, configValueSources: ConfigValueSource[]): unknown[] | Set<unknown> {
+  const valuesArr: unknown[][] = []
+  const valuesSet: Set<unknown>[] = []
+  let configValueSourcePrevious: ConfigValueSource | null = null
+  configValueSources.forEach((configValueSource) => {
+    assert(!configValueSource.isComputed)
+    const configDefinedAt = getConfigDefinedAtString(configName, configValueSource, true)
+    // We could, in principle, also support cumulative values to be defined in +${configName}.js but it ins't completely trivial to implement
+    assertUsage('value' in configValueSource, `${configDefinedAt} is only allowed to be defined in a +config.h.js file. (Because the values of ${pc.cyan(configName)} are cumulative.)`)
+
+    const assertNoMixing = (isSet: boolean) => {
+      type T = 'a Set' | 'an array'
+      const vals1 = isSet ? valuesSet : valuesArr
+      const t1: T = isSet ? 'a Set' : 'an array'
+      const vals2 = !isSet ? valuesSet : valuesArr
+      const t2: T = !isSet ? 'a Set' : 'an array'
+      assert(vals1.length > 0)
+      if (vals2.length === 0) return
+      assert(configValueSourcePrevious)
+      const configPreviousDefinedAt = getConfigDefinedAtString(configName, configValueSourcePrevious, false)
+      const configNameColored = pc.cyan(configName)
+      assertUsage(
+        false,
+        `${configDefinedAt} sets ${t1} but another ${configPreviousDefinedAt} sets ${t2} which is forbidden: the values must be all arrays or all sets (you cannot mix). The config ${configNameColored} is a cumulative config and all its values must be arrays/Sets.`
+      )
+    }
+
+    const { value } = configValueSource
+    if (Array.isArray(value)) {
+      valuesArr.push(value)
+      assertNoMixing(false)
+    } else if (value instanceof Set) {
+      valuesSet.push(value)
+      assertNoMixing(true)
+    } else {
+      assertUsage(
+        false,
+        `${configDefinedAt} must be an array or a Set (because ${pc.cyan(configName)} is a cumulative config)`
+      )
+    }
+
+    configValueSourcePrevious = configValueSource
+  })
+
+  if (valuesArr.length > 0) {
+    assert(valuesSet.length === 0)
+    const result = mergeCumulativeValues(valuesArr)
+    assert(result !== null)
+    return result
+  }
+  if (valuesSet.length > 0) {
+    assert(valuesArr.length === 0)
+    const result = mergeCumulativeValues(valuesSet)
+    assert(result !== null)
+    return result
+  }
+  assert(false)
 }

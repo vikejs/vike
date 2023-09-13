@@ -24,6 +24,13 @@ type ConfigDefinition = {
    * https://vite-plugin-ssr.com/meta
    */
   env: ConfigEnv
+  /** Disable config overriding and make config values cumulative instead.
+   *
+   * @default false
+   *
+   * https://vite-plugin-ssr.com/meta
+   */
+  cumulative?: boolean
   /**
    * Define a so-called "Shortcut Config".
    *
@@ -79,7 +86,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: 'server-and-client'
   },
   passToClient: {
-    env: 'server-only'
+    env: 'server-only',
+    cumulative: true
   },
   route: {
     env: '_routing-eager'
