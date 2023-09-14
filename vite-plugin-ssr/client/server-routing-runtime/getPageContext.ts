@@ -23,7 +23,7 @@ function assertPristineUrl() {
   const urlCurrent = getCurrentUrl({ withoutHash: true })
   assertUsage(
     urlFirst === urlCurrent,
-    `URL manipulated before hydration finished (\`${urlFirst}\` to \`${urlCurrent}\`). Ensure the hydration finishes with \`onHydrationEnd()\` before manipulating the URL.`
+    `The URL was manipulated before the hydration finished ('${urlFirst}' to '${urlCurrent}'). Ensure the hydration has finished before manipulating the URL. Consider using the onHydrationEnd() hook.`
   )
 }
 
@@ -42,7 +42,7 @@ async function loadPageFiles(pageId: string) {
     .forEach((p) => {
       assertWarning(
         !p.fileExports?.onBeforeRender,
-        `\`export { onBeforeRender }\` of ${p.filePath} is loaded in the browser but never executed (because you are using Server-side Routing). In order to reduce the size of you browser-side JavaScript, define \`onBeforeRender()\` in \`.page.server.js\` instead. See https://vite-plugin-ssr.com/onBeforeRender-isomorphic#server-routing`,
+        `export { onBeforeRender } of ${p.filePath} is loaded in the browser but never executed (because you are using Server-side Routing). In order to reduce the size of you browser-side JavaScript, define onBeforeRender() in a .page.server.js file instead, see https://vite-plugin-ssr.com/onBeforeRender-isomorphic#server-routing`,
         { onlyOnce: true }
       )
     })

@@ -1,15 +1,13 @@
-// Public
 export { escapeInject }
 export { dangerouslySkipEscape }
-export type { TemplateWrapped } // https://github.com/brillout/vite-plugin-ssr/issues/511
-
-// Private
 export { renderDocumentHtml }
 export { isDocumentHtml }
 export { getHtmlString }
 export type { HtmlRender }
 export type { HtmlPart }
 export type { DocumentHtml }
+// This export is needed even though it's not used anywhere, see https://github.com/brillout/vite-plugin-ssr/issues/511
+export type { TemplateWrapped }
 
 import { assert, assertUsage, assertWarning, checkType, hasProp, isHtml, isPromise, objectAssign } from '../utils.js'
 import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets.js'
@@ -27,6 +25,7 @@ import type { InjectToStream } from './stream/react-streaming.js'
 import type { PageAsset } from '../renderPage/getPageAssets.js'
 import type { PreloadFilter } from './injectAssets/getHtmlTags.js'
 import { getGlobalContext } from '../globalContext.js'
+import pc from '@brillout/picocolors'
 
 type DocumentHtml = TemplateWrapped | EscapedString | StreamProviderAny
 type HtmlRender = string | StreamProviderNormalized
@@ -151,7 +150,9 @@ function escapeInject(
 ): TemplateWrapped {
   assertUsage(
     templateStrings.length === templateVariables.length + 1 && templateStrings.every((str) => typeof str === 'string'),
-    'You seem to use `escapeInject` as a function, but `escapeInject` is a string template tag, see https://vite-plugin-ssr.com/escapeInject',
+    `You're using ${pc.cyan('escapeInject')} as a function, but ${pc.cyan(
+      'escapeInject'
+    )} is a string template tag, see https://vite-plugin-ssr.com/escapeInject`,
     { showStackTrace: true }
   )
   return {
@@ -172,7 +173,9 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   }
   assertUsage(
     !isPromise(arg),
-    `[dangerouslySkipEscape(str)] Argument \`str\` is a promise. It should be a string instead (or a stream). Make sure to \`await str\`.`,
+    `[dangerouslySkipEscape(${pc.cyan('str')})] Argument ${pc.cyan(
+      'str'
+    )} is a promise. It should be a string instead (or a stream). Make sure to ${pc.cyan('await str')}.`,
     { showStackTrace: true }
   )
   if (typeof arg === 'string') {
@@ -180,7 +183,9 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   }
   assertWarning(
     false,
-    `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof arg}"\`.`,
+    `[dangerouslySkipEscape(${pc.cyan('str')})] Argument ${pc.cyan('str')} should be a string but we got ${pc.cyan(
+      `typeof str === "${typeof arg}"`
+    )}.`,
     {
       onlyOnce: false,
       showStackTrace: true
@@ -214,7 +219,9 @@ async function renderTemplate(
     const { hookName, hookFilePath } = pageContext._renderHook
     assertUsage(
       !htmlStream,
-      `Injecting two streams in \`escapeInject\` template tag of ${hookName}() hook defined by ${hookFilePath}. Inject only one stream instead.`
+      `Injecting two streams in ${pc.cyan(
+        'escapeInject'
+      )} template tag of ${hookName}() hook defined by ${hookFilePath}. Inject only one stream instead.`
     )
     htmlStream = stream
   }
@@ -259,14 +266,14 @@ async function renderTemplate(
         .join(' ')
     }
 
-    assertUsage(!isPromise(templateVar), getErrMsg('a promise', 'Did you forget to `await` the promise?'))
+    assertUsage(!isPromise(templateVar), getErrMsg('a promise', `Did you forget to ${pc.cyan('await')} the promise?`))
 
     if (templateVar === undefined || templateVar === null) {
       assertWarning(
         false,
         getErrMsg(
-          `\`${templateVar}\` which will be converted to an empty string`,
-          `Pass an empty string instead of \`${templateVar}\` to remove this warning.`
+          `${pc.cyan(String(templateVar))} which will be converted to an empty string`,
+          `Pass an empty string instead of ${pc.cyan(String(templateVar))} to remove this warning.`
         ),
         { onlyOnce: false }
       )
@@ -278,16 +285,20 @@ async function renderTemplate(
       const streamNote = ['boolean', 'number', 'bigint', 'symbol'].includes(varType)
         ? null
         : '(See https://vite-plugin-ssr.com/stream for HTML streaming.)'
-      assertUsage(varType === 'string', getErrMsg(`\`typeof htmlVar === "${varType}"\``, streamNote))
+      assertUsage(varType === 'string', getErrMsg(pc.cyan(`typeof htmlVar === "${varType}"`), streamNote))
     }
 
     {
       const { isProduction } = getGlobalContext()
-      if (isHtml(templateVar) && !isProduction) {
+      if (
+        isHtml(templateVar) &&
+        // We don't show this warning in production because it's expected that some users may (un)willingly do some XSS injection: we avoid flooding the production logs.
+        !isProduction
+      ) {
         assertWarning(
           false,
           getErrMsg(
-            `\`${templateVar}\` which seems to be HTML code`,
+            `${pc.cyan(templateVar)} which seems to be HTML code`,
             'Did you forget to wrap the value with dangerouslySkipEscape()?'
           ),
           { onlyOnce: false }

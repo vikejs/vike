@@ -7,6 +7,7 @@ import { prerenderFromAutoFullBuild, prerenderForceExit } from '../../prerender/
 import { getConfigVps } from '../../shared/getConfigVps.js'
 import type { ConfigVpsResolved } from '../../../shared/ConfigVps.js'
 import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
+import pc from '@brillout/picocolors'
 
 let forceExit = false
 
@@ -32,7 +33,7 @@ function autoFullBuild(): Plugin[] {
           try {
             await triggerFullBuild(config, configVps, bundle)
           } catch (err) {
-            // Avoid Rollup prefixing the error with `[vite-plugin-ssr:autoFullBuild]`, for example see https://github.com/brillout/vite-plugin-ssr/issues/472#issuecomment-1276274203
+            // Avoid Rollup prefixing the error with [vite-plugin-ssr:autoFullBuild], for example see https://github.com/brillout/vite-plugin-ssr/issues/472#issuecomment-1276274203
             console.error(err)
             process.exit(1)
           }
@@ -59,7 +60,7 @@ function autoFullBuild(): Plugin[] {
 async function triggerFullBuild(config: ResolvedConfig, configVps: ConfigVpsResolved, bundle: Record<string, unknown>) {
   if (config.build.ssr) return // already triggered
   if (isDisabled(configVps)) return
-  // `vite-plugin-ssr.json` missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's `build()`) => skip
+  // vite-plugin-ssr.json missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's build() API) => skip
   if (!bundle['vite-plugin-ssr.json']) return
 
   const configFromCli = !isViteCliCall() ? null : getViteConfigFromCli()
@@ -90,7 +91,11 @@ function abortViteBuildSsr(configVps: ConfigVpsResolved) {
   if (!configVps.disableAutoFullBuild && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
     assertWarning(
       false,
-      "The CLI call `$ vite build --ssr` is superfluous since `$ vite build` also builds the server-side. If you want two separate build steps then use https://vite-plugin-ssr.com/disableAutoFullBuild or use Vite's `build()` API.",
+      `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
+        '$ vite build'
+      )} also builds the server-side. If you want two separate build steps then use https://vite-plugin-ssr.com/disableAutoFullBuild or use Vite's ${pc.cyan(
+        'build()'
+      )} API.`,
       { onlyOnce: true }
     )
     process.exit(0)

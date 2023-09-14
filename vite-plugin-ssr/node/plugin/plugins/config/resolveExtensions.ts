@@ -15,6 +15,7 @@ import path from 'path'
 import fs from 'fs'
 import { isValidFileType } from '../../../../shared/getPageFiles/fileTypes.js'
 import { createRequire } from 'module'
+import pc from '@brillout/picocolors'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -25,7 +26,7 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
     const { npmPackageName } = extension
     assertUsage(
       isNpmPackageName(npmPackageName),
-      `vite-plugin-ssr extension '${npmPackageName}' doesn't seem to be a valid npm package name`
+      `vite-plugin-ssr extension ${pc.cyan(npmPackageName)} doesn't seem to be a valid npm package name`
     )
 
     const npmPackageRootDir = getDependencyRootDir(npmPackageName, config.root)
@@ -86,7 +87,7 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
 }
 
 function assertPathProvidedByUser(pathName: 'assetsDir' | 'pageConfigsSrcDir', pathValue: string, starSuffix?: true) {
-  const errMsg = `extension[number].${pathName} value '${pathValue}'`
+  const errMsg = `extension[number].${pathName} value ${pc.cyan(pathValue)}`
   assertUsage(
     !pathValue.includes('\\'),
     `${errMsg} shouldn't contain any backward slahes '\' (replace them with forward slahes '/')`
@@ -106,10 +107,12 @@ function resolvePageFilesDist(
   const pageConfigsDistFilesResolved: NonNullable<ExtensionResolved['pageConfigsDistFiles']>[number][] = []
 
   pageConfigsDistFiles.forEach((importPath) => {
-    const errPrefix = `The page file '${importPath}' (provided in extensions[number].pageFiles) should`
+    const errPrefix = `The page file ${pc.cyan(importPath)} (provided in extensions[number].pageFiles) should` as const
     assertUsage(
       npmPackageName === getNpmPackageName(importPath),
-      `${errPrefix} be a ${npmPackageName} module (e.g. '${npmPackageName}/renderer/_default.page.server.js')`
+      `${errPrefix} be a ${pc.cyan(npmPackageName)} module (e.g. ${pc.cyan(
+        `${npmPackageName}/renderer/_default.page.server.js`
+      )})`
     )
     assertUsage(isValidFileType(importPath), `${errPrefix} end with '.js', '.js', '.cjs', or '.css'`)
 

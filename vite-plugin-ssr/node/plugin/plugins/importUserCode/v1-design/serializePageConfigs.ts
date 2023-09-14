@@ -6,7 +6,7 @@ import { assert, assertUsage, getPropAccessNotation, hasProp, objectEntries } fr
 import type {
   ConfigValue,
   ConfigValueSource,
-  PageConfigData,
+  PageConfigBuildTime,
   PageConfigGlobalData
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { generateEagerImport } from '../generateEagerImport.js'
@@ -18,7 +18,7 @@ import { getConfigEnv } from './helpers.js'
 import pc from '@brillout/picocolors'
 
 function serializePageConfigs(
-  pageConfigsData: PageConfigData[],
+  pageConfigs: PageConfigBuildTime[],
   pageConfigGlobal: PageConfigGlobalData,
   isForClientSide: boolean,
   isDev: boolean,
@@ -29,7 +29,7 @@ function serializePageConfigs(
   const importStatements: string[] = []
 
   lines.push('export const pageConfigs = [')
-  pageConfigsData.forEach((pageConfig) => {
+  pageConfigs.forEach((pageConfig) => {
     const { pageId, routeFilesystem, routeFilesystemDefinedBy, isErrorPage } = pageConfig
     const virtualFileIdImportPageCode = getVirtualFileIdImportPageCode(pageId, isForClientSide)
     lines.push(`  {`)
@@ -39,52 +39,31 @@ function serializePageConfigs(
     lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
     lines.push(`    loadCodeFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`)
 
-    lines.push(`    configValueSources: {`)
-    Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
-      let whitespace = '      '
-      lines.push(`${whitespace}[${JSON.stringify(configName)}]: [`)
-      whitespace += '  '
-      sources.forEach((configValueSource) => {
-        const content = serializeConfigValueSource(
-          configValueSource,
-          configName,
-          whitespace,
-          isForClientSide,
-          isClientRouting,
-          importStatements,
-          false
-        )
-        assert(content.startsWith('{') && content.endsWith('},') && content.includes('\n'))
-        lines.push(whitespace + content)
-      })
-      whitespace = whitespace.slice(2)
-      lines.push(`${whitespace}],`)
-    })
-    lines.push(`    },`)
-
     lines.push(`    configValues: {`)
-    Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
-      {
+    Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
+      const configValue = pageConfig.configValues[configName]
+      if (configValue) {
         const configEnv = getConfigEnv(pageConfig, configName)
         assert(configEnv, configName)
         if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
-      }
-      // TODO: use @brillout/json-serializer
-      //  - re-use getConfigValueSerialized()?
-      const valueSerialized = JSON.stringify(configValue.value)
-      serializeConfigValue(lines, configName, configValue, valueSerialized)
-    })
-    // TODO: resolve conflicts
-    Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
-      const configValueSource = sources[0]!
-      if (configValueSource.configEnv === '_routing-eager') {
-        const { definedAt } = configValueSource
-        const configValue = { configName, definedAt }
-        const { filePath, fileExportPath } = configValueSource.definedAt
-        const [exportName] = fileExportPath
-        assert(exportName)
-        const configValueEagerImport = getConfigValueEagerImport(filePath, exportName, importStatements)
-        serializeConfigValue(lines, configName, configValue, configValueEagerImport)
+        const { value, definedAtInfo } = configValue
+        // TODO: use @brillout/json-serializer
+        //  - re-use getConfigValueSerialized()?
+        const valueSerialized = JSON.stringify(value)
+        serializeConfigValue(lines, configName, { definedAtInfo }, valueSerialized)
+      } else {
+        const configValueSource = sources[0]
+        assert(configValueSource)
+        if (configValueSource.configEnv === '_routing-eager') {
+          const { definedAtInfo } = configValueSource
+          const configValue = { configName, definedAtInfo }
+          assert(!configValueSource.isComputed)
+          const { filePath, fileExportPath } = configValueSource.definedAtInfo
+          const [exportName] = fileExportPath
+          assert(exportName)
+          const configValueEagerImport = getConfigValueEagerImport(filePath, exportName, importStatements)
+          serializeConfigValue(lines, configName, configValue, configValueEagerImport)
+        }
       }
     })
     lines.push(`    },`)
@@ -157,19 +136,20 @@ function serializeConfigValueSource(
   importStatements: string[],
   isGlobalConfig: boolean
 ): string {
-  const { definedAt, configEnv } = configValueSource
+  assert(!configValueSource.isComputed)
+  const { definedAtInfo, configEnv } = configValueSource
   const lines: string[] = []
   lines.push(`{`)
-  lines.push(`${whitespace}  definedAt: ${JSON.stringify(definedAt)},`)
+  lines.push(`${whitespace}  definedAtInfo: ${JSON.stringify(definedAtInfo)},`)
   lines.push(`${whitespace}  configEnv: ${JSON.stringify(configEnv)},`)
   const eager = configValueSource.configEnv === '_routing-eager' || isGlobalConfig
   if (!skipConfigValue(configEnv, isForClientSide, isClientRouting) || eager) {
     if ('value' in configValueSource) {
       const { value } = configValueSource
-      const valueSerialized = getConfigValueSerialized(value, configName, definedAt.filePath)
+      const valueSerialized = getConfigValueSerialized(value, configName, definedAtInfo.filePath)
       lines.push(`${whitespace}  valueSerialized: ${valueSerialized}`)
     } else if (eager) {
-      const { filePath, fileExportPath } = configValueSource.definedAt
+      const { filePath, fileExportPath } = configValueSource.definedAtInfo
       const [exportName] = fileExportPath
       assert(exportName)
       const configValueEagerImport = getConfigValueEagerImport(filePath, exportName, importStatements)
@@ -186,13 +166,12 @@ function getConfigValueSerialized(value: unknown, configName: string, configDefi
     configValueSerialized = stringify(value, { valueName })
   } catch (err) {
     assert(hasProp(err, 'messageCore', 'string'))
-    const configPath = pc.bold(configDefinedByFile)
     assertUsage(
       false,
       [
-        `The value of the config ${pc.cyan(configName)} cannot be defined inside the file ${configPath}.`,
-        `Its value must be defined in an another file and then imported by ${configPath} (because it isn't serializable: ${err.messageCore}).`,
-        `Only serializable config values can be defined inside ${configPath}, see https://vite-plugin-ssr.com/header-file.`
+        `The value of the config ${pc.cyan(configName)} cannot be defined inside the file ${configDefinedByFile}.`,
+        `Its value must be defined in an another file and then imported by ${configDefinedByFile} (because it isn't serializable: ${err.messageCore}).`,
+        `Only serializable config values can be defined inside ${configDefinedByFile}, see https://vite-plugin-ssr.com/header-file.`
       ].join(' ')
     )
   }

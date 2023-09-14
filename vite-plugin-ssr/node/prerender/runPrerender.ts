@@ -43,10 +43,10 @@ import type { InlineConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
-import { getConfigValue2 } from '../../shared/page-configs/utils.js'
+import { getConfigDefinedAtInfo, getConfigValue } from '../../shared/page-configs/utils.js'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode.js'
 import { isErrorPage } from '../../shared/error-page.js'
-import { addUrlComputedProps, PageContextUrlComputedProps } from '../../shared/UrlComputedProps.js'
+import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide.js'
@@ -95,7 +95,7 @@ type PageContext = PageContextInitEnhanced & {
   _urlOriginalModifiedByHook?: TransformerHook
   _providedByHook: ProvidedByHook
   _pageContextAlreadyProvidedByOnPrerenderHook?: true
-} & PageContextUrlComputedProps
+} & PageContextUrlComputedPropsInternal
 
 type PrerenderOptions = {
   /** Initial `pageContext` values */
@@ -180,7 +180,7 @@ async function runPrerender(
     assert(manuallyTriggered)
     assertWarning(
       prerenderConfig,
-      `You're executing \`${manuallyTriggered}\` but the config \`prerender\` isn't set to true`,
+      `You're executing ${pc.cyan(manuallyTriggered)} but the config ${pc.cyan('prerender')} isn't set to true`,
       {
         onlyOnce: true
       }
@@ -241,15 +241,15 @@ async function collectDoNoPrerenderList(
   concurrencyLimit: PLimit
 ) {
   renderContext.pageConfigs.forEach((pageConfig) => {
-    const prerenderConfigValue = getConfigValue2(pageConfig, 'prerender', 'boolean')
-    if (prerenderConfigValue?.value === false) {
-      const setByConfigFile = prerenderConfigValue.definedAt.filePath
-      assert(setByConfigFile)
+    const configName = 'prerender'
+    const configValue = getConfigValue(pageConfig, configName, 'boolean')
+    if (configValue?.value === false) {
+      const definedAtInfo = getConfigDefinedAtInfo(pageConfig, configName)
       doNotPrerenderList.push({
         pageId: pageConfig.pageId,
         setByConfigName: 'prerender',
         setByConfigValue: false,
-        setByConfigFile
+        setByConfigFile: definedAtInfo.filePath
       })
     }
   })
@@ -326,12 +326,12 @@ async function callOnBeforePrerenderStartHooks(
     renderContext.pageConfigs.map((pageConfig) =>
       concurrencyLimit(async () => {
         const hookName = 'onBeforePrerenderStart'
-        if (!pageConfig.configValueSources[hookName]) return
         const pageConfigLoaded = await loadPageCode(pageConfig, false)
-        const configValue = getConfigValue2(pageConfigLoaded, hookName)
+        const configValue = getConfigValue(pageConfigLoaded, hookName)
         if (!configValue) return
         const hookFn = configValue.value
-        const hookFilePath = configValue.definedAt.filePath
+        const definedAtInfo = getConfigDefinedAtInfo(pageConfigLoaded, hookName)
+        const hookFilePath = definedAtInfo.filePath
         assert(hookFilePath)
         assertHookFn(hookFn, { hookName, hookFilePath })
         onBeforePrerenderStartHooks.push({
@@ -387,11 +387,11 @@ async function callOnBeforePrerenderStartHooks(
               assert(pageContextFound._providedByHook)
               const providedTwice =
                 hookFilePath === pageContextFound._providedByHook.hookFilePath
-                  ? `twice by the ${hookName}() hook (${hookFilePath})`
-                  : `twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${pageContextFound._providedByHook.hookFilePath}() (${pageContextFound._providedByHook.hookName})`
+                  ? (`twice by the ${hookName}() hook (${hookFilePath})` as const)
+                  : (`twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${pageContextFound._providedByHook.hookFilePath}() (${pageContextFound._providedByHook.hookName})` as const)
               assertUsage(
                 false,
-                `URL '${url}' provided ${providedTwice}. Make sure to provide the URL only once instead.`
+                `URL ${pc.cyan(url)} provided ${providedTwice}. Make sure to provide the URL only once instead.`
               )
             }
           }
@@ -519,7 +519,8 @@ async function callOnPrerenderStartHook(
     const configValueSource = renderContext.pageConfigGlobal.onPrerenderStart
     if (configValueSource) {
       const hookFn = configValueSource.value
-      const hookFilePath = configValueSource.definedAt.filePath
+      assert(!configValueSource.isComputed)
+      const hookFilePath = configValueSource.definedAtInfo.filePath
       assert(hookFn)
       assert(hookFilePath)
       if (hookFn) {
@@ -625,7 +626,9 @@ async function callOnPrerenderStartHook(
   }
 
   const errPrefix = `The ${hookName}() hook exported by ${hookFilePath}`
-  const rightUsage = `${errPrefix} should return \`null\`, \`undefined\`, or \`{ prerenderContext: { pageContexts } }\`.`
+  const rightUsage = `${errPrefix} should return ${pc.cyan('null')}, ${pc.cyan('undefined')}, or ${pc.cyan(
+    '{ prerenderContext: { pageContexts } }'
+  )}`
 
   // TODO/v1-release: remove
   if (hasProp(result, 'globalContext')) {
@@ -637,7 +640,9 @@ async function callOnPrerenderStartHook(
     )
     assertWarning(
       false,
-      `${errPrefix} returns \`{ globalContext: { prerenderPageContexts } }\` but the return value has been renamed to \`{ prerenderContext: { pageContexts } }\`, see ${docLink}`,
+      `${errPrefix} returns ${pc.cyan(
+        '{ globalContext: { prerenderPageContexts } }'
+      )} but the return value has been renamed to ${pc.cyan('{ prerenderContext: { pageContexts } }')}, see ${docLink}`,
       { onlyOnce: true }
     )
     result = {
@@ -716,7 +721,9 @@ async function routeAndPrerender(
             assert(hookFilePath)
             assertUsage(
               false,
-              `The ${hookName}() hook defined by ${hookFilePath} returns a URL '${urlOriginal}' that doesn't match any of your page routes. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
+              `The ${hookName}() hook defined by ${hookFilePath} returns a URL ${pc.cyan(
+                urlOriginal
+              )} that doesn't match any of your page routes. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
             )
           } else {
             // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
@@ -737,7 +744,7 @@ async function routeAndPrerender(
           if (pageContext._pageConfigs.length > 0) {
             const pageConfig = pageContext._pageConfigs.find((p) => p.pageId === pageId)
             assert(pageConfig)
-            usesClientRouter = getConfigValue2(pageConfig, 'clientRouting', 'boolean')?.value ?? false
+            usesClientRouter = getConfigValue(pageConfig, 'clientRouting', 'boolean')?.value ?? false
           } else {
             usesClientRouter = globalContext.pluginManifest.usesClientRouter
           }
@@ -753,7 +760,7 @@ async function routeAndPrerender(
         try {
           res = await prerenderPage(pageContext)
         } catch (err) {
-          assertIsNotAbort(err, pc.bold(pageContext.urlOriginal))
+          assertIsNotAbort(err, pc.cyan(pageContext.urlOriginal))
           throw err
         }
         const { documentHtml, pageContextSerialized } = res
@@ -785,7 +792,13 @@ function warnContradictoryNoPrerenderList(
     const { setByConfigName, setByConfigValue, setByConfigFile } = doNotPrerenderListEntry
     assertWarning(
       false,
-      `The ${providedByHook.hookName}() hook defined by ${providedByHook.hookFilePath} returns the URL '${urlOriginal}', while ${setByConfigFile} sets the config '${setByConfigName}' to ${setByConfigValue}. This is contradictory: either don't set the config '${setByConfigName}' to ${setByConfigValue} or remove the URL '${urlOriginal}' from the list of URLs to be pre-rendered.`,
+      `The ${providedByHook.hookName}() hook defined by ${providedByHook.hookFilePath} returns the URL ${pc.cyan(
+        urlOriginal
+      )}, while ${setByConfigFile} sets the config ${pc.cyan(setByConfigName)} to ${pc.cyan(
+        String(setByConfigValue)
+      )}. This is contradictory: either don't set the config ${pc.cyan(setByConfigName)} to ${pc.cyan(
+        String(setByConfigValue)
+      )} or remove the URL ${pc.cyan(urlOriginal)} from the list of URLs to be pre-rendered.`,
       { onlyOnce: true }
     )
   })
@@ -809,7 +822,9 @@ function warnMissingPages(
       const pageAt = getPageAt(pageId)
       assertWarning(
         partial,
-        `Cannot pre-render page ${pageAt} because it has a non-static route, and no ${hookName}() hook returned (an) URL(s) matching the page's route. Either use a ${hookName}() hook to pre-render the page, or use the option \`prerender.partial\` to suppress this warning, see https://vite-plugin-ssr.com/prerender-config`,
+        `Cannot pre-render page ${pageAt} because it has a non-static route, and no ${hookName}() hook returned (an) URL(s) matching the page's route. Either use a ${hookName}() hook to pre-render the page, or use the option ${pc.cyan(
+          'prerender.partial'
+        )} to suppress this warning, see https://vite-plugin-ssr.com/prerender-config`,
         { onlyOnce: true }
       )
     })
@@ -955,31 +970,41 @@ function normalizeOnPrerenderHookResult(
 
     const errMsg1 = `The ${hookName}() hook defined by ${prerenderHookFile} returned` as const
     const errMsg2 = `${errMsg1} an invalid value` as const
-    const errHint =
-      `Make sure your ${hookName}() hook returns an object \`{ url, pageContext }\` or an array of such objects.` as const
+    const errHint = `Make sure your ${hookName}() hook returns an object ${pc.cyan(
+      '{ url, pageContext }'
+    )} or an array of such objects.` as const
     assertUsage(isPlainObject(prerenderElement), `${errMsg2}. ${errHint}`)
-    assertUsage(hasProp(prerenderElement, 'url'), `${errMsg2}: \`url\` is missing. ${errHint}`)
+    assertUsage(hasProp(prerenderElement, 'url'), `${errMsg2}: ${pc.cyan('url')} is missing. ${errHint}`)
     assertUsage(
       hasProp(prerenderElement, 'url', 'string'),
-      `${errMsg2}: \`url\` should be a string (but \`typeof url === "${typeof prerenderElement.url}"\`).`
+      `${errMsg2}: ${pc.cyan('url')} should be a string (but ${pc.cyan(
+        `typeof url === "${typeof prerenderElement.url}"`
+      )}).`
     )
     assertUsage(
       prerenderElement.url.startsWith('/'),
-      `${errMsg1} a URL with an invalid value '${prerenderElement.url}' which doesn't start with '/'. Make sure each URL starts with '/'.`
+      `${errMsg1} a URL with an invalid value ${pc.cyan(prerenderElement.url)} which doesn't start with ${pc.cyan(
+        '/'
+      )}. Make sure each URL starts with ${pc.cyan('/')}.`
     )
     Object.keys(prerenderElement).forEach((key) => {
-      assertUsage(key === 'url' || key === 'pageContext', `${errMsg2}: unexpected object key \`${key}\`. ${errHint}`)
+      assertUsage(
+        key === 'url' || key === 'pageContext',
+        `${errMsg2}: unexpected object key ${pc.cyan(key)}. ${errHint}`
+      )
     })
     if (!hasProp(prerenderElement, 'pageContext')) {
       prerenderElement.pageContext = null
     } else if (!hasProp(prerenderElement, 'pageContext', 'null')) {
       assertUsage(
         hasProp(prerenderElement, 'pageContext', 'object'),
-        `${errMsg1} an invalid \`pageContext\` value: make sure \`pageContext\` is an object.`
+        `${errMsg1} an invalid ${pc.cyan('pageContext')} value: make sure ${pc.cyan('pageContext')} is an object.`
       )
       assertUsage(
         isPlainObject(prerenderElement.pageContext),
-        `${errMsg1} an invalid \`pageContext\` object: make sure \`pageContext\` is a plain JavaScript object.`
+        `${errMsg1} an invalid ${pc.cyan('pageContext')} object: make sure ${pc.cyan(
+          'pageContext'
+        )} is a plain JavaScript object.`
       )
     }
     assert(hasProp(prerenderElement, 'pageContext', 'object') || hasProp(prerenderElement, 'pageContext', 'null'))
@@ -987,6 +1012,7 @@ function normalizeOnPrerenderHookResult(
   }
 }
 
+// TODO/v1-release: remove
 function checkOutdatedOptions(options: {
   partial?: unknown
   noExtraDir?: unknown
@@ -1009,14 +1035,18 @@ function checkOutdatedOptions(options: {
   ;(['noExtraDir', 'partial', 'parallel'] as const).forEach((prop) => {
     assertUsage(
       options[prop] === undefined,
-      `[prerender()] Option \`${prop}\` is deprecated. Define \`${prop}\` in \`vite.config.js\` instead. See https://vite-plugin-ssr.com/prerender-config`,
+      `[prerender()] Option ${pc.cyan(prop)} is deprecated. Define ${pc.cyan(
+        prop
+      )} in vite.config.js instead. See https://vite-plugin-ssr.com/prerender-config`,
       { showStackTrace: true }
     )
   })
   ;(['base', 'outDir'] as const).forEach((prop) => {
     assertWarning(
       options[prop] === undefined,
-      `[prerender()] Option \`${prop}\` is outdated and has no effect (vite-plugin-ssr now automatically determines \`${prop}\`)`,
+      `[prerender()] Option ${pc.cyan(
+        prop
+      )} is outdated and has no effect (vite-plugin-ssr now automatically determines ${pc.cyan(prop)})`,
       {
         showStackTrace: true,
         onlyOnce: true
@@ -1045,18 +1075,24 @@ function assertLoadedConfig(
   }
   const { configFile } = viteConfig
   if (configFile) {
-    assertUsage(false, `${configFile} is missing vite-plugin-ssr. Add vite-plugin-ssr to \`${configFile}\`.`)
+    assertUsage(false, `${configFile} doesn't install the vite-plugin-ssr plugin`)
   } else {
     if (!options.viteConfig) {
       assertUsage(
         false,
-        `[prerender()] No \`vite.config.js\` file found at \`${process.cwd()}\`. Use the option \`prerender({ viteConfig })\`.`,
+        `[prerender()] No vite.config.js file found at ${process.cwd()}. Use the option ${pc.cyan(
+          'prerender({ viteConfig })'
+        )}.`,
         { showStackTrace: true }
       )
     } else {
-      assertUsage(false, '[prerender()] The Vite config `prerender({ viteConfig })` is missing vite-plugin-ssr.', {
-        showStackTrace: true
-      })
+      assertUsage(
+        false,
+        `[prerender()] The Vite config ${pc.cyan('prerender({ viteConfig })')} is missing the vite-plugin-ssr plugin.`,
+        {
+          showStackTrace: true
+        }
+      )
     }
   }
 }

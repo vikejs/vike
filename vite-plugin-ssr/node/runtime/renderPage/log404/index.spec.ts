@@ -25,7 +25,7 @@ describe('getPagesAndRoutesInfo()', () => {
 const routeFunction = {
   pageId: '/pages/hello',
   comesFromV1PageConfig: true,
-  routeDefinedAt: '/pages/hello/+route.ts > `export default`',
+  routeDefinedAt: '/pages/hello/+route.ts > export default',
   routeType: 'FUNCTION',
   routeFunction: function route(pageContext: { urlPathname: string }) {
     if (pageContext.urlPathname === '/hello' || pageContext.urlPathname === '/hello/') {

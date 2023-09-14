@@ -41,8 +41,8 @@
   "devDependencies": {
     "@brillout/bump-dependencies": "^0.1.1",
     "@brillout/dev-my-dep": "^0.1.5",
-    "@brillout/test-e2e": "^0.5.14",
-    "@brillout/test-types": "^0.1.6",
+    "@brillout/test-e2e": "^0.5.15",
+    "@brillout/test-types": "^0.1.7",
     "vitest": "^0.34.1"
   },
   "pnpm": {

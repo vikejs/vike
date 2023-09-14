@@ -91,7 +91,9 @@ function assertResolveAlias(config: ResolvedConfig) {
       if (find.startsWith('react')) return
       assertWarning(
         isValidPathAlias(find),
-        `${errPrefix} defines an alias '${find}' that cannot be distinguished from npm package imports, ${errSuffix1}`,
+        `${errPrefix} defines an alias ${pc.cyan(
+          find
+        )} that cannot be distinguished from npm package imports, ${errSuffix1}`,
         { onlyOnce: true }
       )
     }

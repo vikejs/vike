@@ -26,6 +26,7 @@ import {
 import { assert, assertUsage, assertWarning } from '../utils.js'
 import { getHtmlString, type HtmlRender } from '../html/renderHtml.js'
 import type { RenderHook } from './executeOnRenderHtmlHook.js'
+import pc from '@brillout/picocolors'
 
 const streamDocs = 'See https://vite-plugin-ssr.com/stream for more information.'
 
@@ -52,7 +53,7 @@ function getHttpResponseBody(htmlRender: HtmlRender, renderHook: null | RenderHo
         htmlRender,
         renderHook,
         'body',
-        'Use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getBody()` instead'
+        `Use ${pc.cyan('pageContext.httpResponse.pipe()')} or ${pc.cyan('pageContext.httpResponse.getBody()')} instead`
       )
     )
   }
@@ -66,6 +67,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       const body = await getHtmlString(htmlRender)
       return body
     },
+    // TODO/v1-release: remove
     async getNodeStream() {
       assertWarning(
         false,
@@ -79,6 +81,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       }
       return nodeStream
     },
+    // TODO/v1-release: remove
     getWebStream() {
       assertWarning(
         false,
@@ -99,6 +102,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       }
       return webStream
     },
+    // TODO/v1-release: remove
     pipeToWebWritable(writable: StreamWritableWeb) {
       assertWarning(
         false,
@@ -111,6 +115,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
         assertUsage(false, getErrMsg(htmlRender, renderHook, 'pipeToWebWritable()'))
       }
     },
+    // TODO/v1-release: remove
     pipeToNodeWritable(writable: StreamWritableNode) {
       assertWarning(
         false,
@@ -148,10 +153,9 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       }
       assertUsage(
         false,
-        `The argument \`writable\` passed to \`pageContext.httpResponse.pipe(writable)\` doesn't seem to be ${getStreamName(
-          'writable',
-          'web'
-        )} nor ${getStreamName('writable', 'node')}.`
+        `The argument ${pc.cyan('writable')} passed to ${pc.cyan(
+          'pageContext.httpResponse.pipe(writable)'
+        )} doesn't seem to be ${getStreamName('writable', 'web')} nor ${getStreamName('writable', 'node')}.`
       )
     }
   }

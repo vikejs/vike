@@ -1,5 +1,6 @@
 import { expect, describe, it } from 'vitest'
 import { freezePartial } from './freezePartial.js'
+import pc from '@brillout/picocolors'
 
 describe('freezePartial', () => {
   it('works', () => {
@@ -14,7 +15,7 @@ describe('freezePartial', () => {
     expect(obj.question).toBe(42)
     expect(() => {
       obj.question = 4
-    }).toThrowError(`You aren't allowed to mutate property \`question\``)
+    }).toThrowError(`You aren't allowed to mutate property ${pc.cyan('question')}`)
     expect(obj.question).toBe(42)
 
     expect(() => {
@@ -28,7 +29,7 @@ describe('freezePartial', () => {
     expect(obj.changeme).toBe('hello')
     expect(() => {
       obj.changeme = 'abc'
-    }).toThrowError('Setting wrong value `abc` for property `changeme`')
+    }).toThrowError(`Setting wrong value ${pc.cyan('"abc"')} for property ${pc.cyan('changeme')}`)
     obj.changeme = 'bonjour'
     expect(obj.changeme).toBe('bonjour')
   })

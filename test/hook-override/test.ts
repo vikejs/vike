@@ -23,7 +23,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
   test('wrong hook suppressing usage', async () => {
     await fetchHtml('/page-2')
     expectLog(
-      '[Wrong Usage] Set onBeforeRender to null in a +config.js file instead of /pages/page-2/+onBeforeRender.tsx',
+      '[Wrong Usage] Set onBeforeRender to null in a +config.h.js file instead of /pages/page-2/+onBeforeRender.tsx',
       (log) => log.logSource === 'stderr'
     )
     expectLog('HTTP response', (log) => log.logSource === 'stderr')

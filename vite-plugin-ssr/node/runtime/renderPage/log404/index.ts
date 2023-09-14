@@ -25,14 +25,17 @@ async function log404(pageContext: {
   const pageRoutes = pageContext._pageRoutes
   assertUsage(
     pageRoutes.length > 0,
-    'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'
+    'No page found.'
+    /* TODO/v1-release: use this
+    'No page found. Create at least one /pages/some-page/+Page.js file.'
+    */
   )
   const globalContext = getGlobalContext()
   if (!globalContext.isProduction && !isFileRequest(urlPathname) && !pageContext.isClientSideNavigation) {
     assertInfo(
       false,
       [
-        `URL ${pc.bold(urlPathname)} doesn't match the route of any of your pages:`,
+        `URL ${pc.cyan(urlPathname)} doesn't match the route of any of your pages:`,
         getPagesAndRoutesInfo(pageRoutes),
         'See https://vite-plugin-ssr.com/routing for more information about routing.'
       ].join('\n'),
@@ -94,7 +97,7 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
   linesContent.forEach((lineContent) => {
     let { routeStr } = lineContent
     if (lineContent.routeTypeSrc !== 'Route Function') {
-      routeStr = truncateString(routeStr, width1, (s) => pc.gray(s))
+      routeStr = truncateString(routeStr, width1, (s) => pc.dim(s))
     } else {
       routeStr = truncateRouteFunction(routeStr, width1)
     }
@@ -142,7 +145,7 @@ function truncateRouteFunction(routeStr: string, lenMax: number) {
   routeStr = stripAnsi(routeStr)
   routeStr = removeNonAscii(routeStr)
   routeStr = routeStr.split(/\s/).filter(Boolean).join(' ')
-  routeStr = truncateString(routeStr, lenMax, (s) => pc.gray(s))
+  routeStr = truncateString(routeStr, lenMax, (s) => pc.dim(s))
   return routeStr
 }
 

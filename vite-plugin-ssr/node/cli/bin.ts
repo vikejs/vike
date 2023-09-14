@@ -17,9 +17,8 @@ cli
   })
 
 function assertOptions() {
-  // We use `rawOptions` because `cac` maps option names to camelCase
+  // Using process.argv because cac convert names to camelCase
   const rawOptions = process.argv.slice(3)
-  assertUsage(!rawOptions.includes('--no-extra-dir'), '`--no-extra-dir` has been renamed: use `--noExtraDir` instead.')
   Object.values(rawOptions).forEach((option) => {
     assertUsage(
       !option.startsWith('--') ||

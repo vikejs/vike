@@ -1,10 +1,10 @@
 // URLs props need to be computed props, because the user can modify the URL e.g. with onBeforeRoute() for i18n
 
 export { addUrlComputedProps }
-export { assertPageContextUrlComputedPropsPublic }
-export type { PageContextUrlComputedProps }
-export type { PageContextUrlComputedPropsPublicClient }
-export type { PageContextUrlComputedPropsPublicServer }
+export { assertPageContextUrlComputedProps }
+export type { PageContextUrlComputedPropsInternal }
+export type { PageContextUrlComputedPropsClient }
+export type { PageContextUrlComputedPropsServer }
 export type { PageContextUrlSources }
 
 import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter, isBrowser } from './utils.js'
@@ -33,7 +33,7 @@ type UrlParsed = {
   hashString: null | string
 }
 
-type PageContextUrlComputedPropsPublicClient = {
+type PageContextUrlComputedPropsClient = {
   /** @deprecated */
   url: string
   /** The URL of the HTTP request */
@@ -43,12 +43,12 @@ type PageContextUrlComputedPropsPublicClient = {
   /** Parsed information about the current URL */
   urlParsed: UrlParsed
 }
-type PageContextUrlComputedProps = PageContextUrlComputedPropsPublicClient & {
+type PageContextUrlComputedPropsInternal = PageContextUrlComputedPropsClient & {
   _urlRewrite: string | null
 }
 type HashProps = 'hash' | 'hashString' | 'hashOriginal'
-type PageContextUrlComputedPropsPublicServer = PageContextUrlComputedPropsPublicClient & {
-  urlParsed: Omit<PageContextUrlComputedPropsPublicClient['urlParsed'], HashProps> & {
+type PageContextUrlComputedPropsServer = PageContextUrlComputedPropsClient & {
+  urlParsed: Omit<PageContextUrlComputedPropsClient['urlParsed'], HashProps> & {
     /** Only available on the client-side */
     hash: ''
     /** Only available on the client-side */
@@ -61,7 +61,7 @@ type PageContextUrlComputedPropsPublicServer = PageContextUrlComputedPropsPublic
 function addUrlComputedProps<PageContext extends Record<string, unknown> & PageContextUrlSources>(
   pageContext: PageContext,
   enumerable = true
-): asserts pageContext is PageContext & PageContextUrlComputedProps {
+): asserts pageContext is PageContext & PageContextUrlComputedPropsInternal {
   assert(pageContext.urlOriginal)
 
   if ('urlPathname' in pageContext) {
@@ -120,6 +120,7 @@ function urlPathnameGetter(this: PageContextUrlSources) {
   return urlPathname
 }
 function urlGetter(this: PageContextUrlSources) {
+  // TODO/v1-release: remove
   assertWarning(
     false,
     '`pageContext.url` is outdated. Use `pageContext.urlPathname`, `pageContext.urlParsed`, or `pageContext.urlOriginal` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
@@ -189,9 +190,7 @@ function makeNonEnumerable(obj: Object, prop: string) {
   Object.defineProperty(obj, prop, { ...descriptor, enumerable: false })
 }
 
-function assertPageContextUrlComputedPropsPublic(
-  pageContext: { urlOriginal: string } & PageContextUrlComputedPropsPublicClient
-) {
+function assertPageContextUrlComputedProps(pageContext: { urlOriginal: string } & PageContextUrlComputedPropsClient) {
   assert(typeof pageContext.urlOriginal === 'string')
   assert(typeof pageContext.urlPathname === 'string')
   assert(isPlainObject(pageContext.urlParsed))

@@ -10,6 +10,7 @@ describe('parse()', () => {
       pkgName: '@scope/name',
       importPath: 'some/deep/path.js'
     })
+    expect(parse('somePkg')).toBe(null) // NPM packages are not allowed upper case characters in their name
     expect(parse('./some/path')).toBe(null)
     expect(parse('/some-path')).toBe(null)
     expect(parse('\\some/path')).toBe(null)

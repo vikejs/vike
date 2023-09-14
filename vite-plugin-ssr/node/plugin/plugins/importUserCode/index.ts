@@ -106,7 +106,7 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
   // - Can be annoying for files that obviously aren't processed by Vite.
   if (!isVikeConfig && !isViteModule) {
     logViteAny(
-      `${msg} — ${pc.bold('no HMR')}, see https://vite-plugin-ssr.com/on-demand-compiler`,
+      `${msg} — ${pc.cyan('no HMR')}, see https://vite-plugin-ssr.com/on-demand-compiler`,
       'info',
       null,
       true,

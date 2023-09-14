@@ -4,37 +4,44 @@ export { PageContextBuiltInClientWithClientRouting }
 export { PageContextBuiltInClientWithServerRouting }
 
 import type {
-  PageContextUrlComputedProps,
-  PageContextUrlComputedPropsPublicClient,
-  PageContextUrlComputedPropsPublicServer
-} from './UrlComputedProps.js'
+  PageContextUrlComputedPropsInternal,
+  PageContextUrlComputedPropsClient,
+  PageContextUrlComputedPropsServer
+} from './addUrlComputedProps.js'
 import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports.js'
+import type { Config } from './page-configs/Config.js'
+import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'
 
 /** Built-in `pageContext` properties set by vite-plugin-ssr.
  *
  * https://vite-plugin-ssr.com/pageContext
  */
-type PageContextBuiltInServer<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsPublicServer
+type PageContextBuiltInServer<Page = [never]> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsServer
 
-type PageContextBuiltInServerInternal<Page = any> = PageContextBuiltInCommon<Page> & PageContextUrlComputedProps
+type PageContextBuiltInServerInternal<Page = [never]> = PageContextBuiltInCommon<Page> &
+  PageContextUrlComputedPropsInternal
 
-type PageContextBuiltInCommon<Page = any> = {
+type PageContextBuiltInCommon<
+  // TODO/v1-design-release: deprecate PageContextBuilt{Server,Client}<Page> in favor of interface merging
+  // `= [never]` instead of `= never` because: https://github.com/microsoft/TypeScript/issues/31751#issuecomment-498526919
+  Page = [never]
+> = {
   /** The `export { Page }` of your `.page.js` file.
    *
    * https://vite-plugin-ssr.com/Page
    */
-  Page: Page
+  Page: Page extends [never] ? Config['Page'] : Page
   /** Route Parameters, e.g. `pageContext.routeParams.productId` for a Route String `/product/@productId`.
    *
    * https://vite-plugin-ssr.com/route-string
    */
   routeParams: Record<string, string>
-  /** The page's configuration.
+  /** The page's configuration values.
    *
    * https://vite-plugin-ssr.com/config
    */
-  config: Record<string, unknown>
+  config: PageContextConfig
   /** The page's configuration, including the configs origin and overriden configs.
    *
    * https://vite-plugin-ssr.com/config
@@ -112,7 +119,7 @@ type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContext
      * The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`.
      */
     isBackwardNavigation: boolean | null
-  } & PageContextUrlComputedPropsPublicClient
+  } & PageContextUrlComputedPropsClient
 
 /** Client-side built-in `pageContext` properties set by vite-plugin-ssr (Server Routing).
  *

@@ -5,7 +5,7 @@ export type PLimit = (job: () => Promise<void>) => Promise<undefined> & { __stam
 
 function pLimit(concurrency: number): PLimit {
   if (!((Number.isInteger(concurrency) || concurrency === Number.POSITIVE_INFINITY) && concurrency > 0)) {
-    throw new TypeError('Expected `concurrency` to be a number from 1 and up')
+    throw new TypeError('Expected concurrency to be a number from 1 and up')
   }
 
   const queue = new Queue()

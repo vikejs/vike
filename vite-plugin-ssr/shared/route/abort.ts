@@ -20,7 +20,6 @@ import {
   assertWarning,
   checkType,
   hasProp,
-  isBrowser,
   joinEnglish,
   objectAssign,
   projectInfo,
@@ -47,18 +46,21 @@ type AbortRedirect = Error
  * https://vite-plugin-ssr.com/redirect
  *
  * @param url The URL to redirect to.
- * @param statusCode By default a `302` (temporary) redirection is performed, but you can trigger a `301` (permanent) redirection instead. Alternatively, you can define permanent redirections by setting `config.redirects`, see https://vite-plugin-ssr.com/redirects.
+ * @param statusCode By default a temporary redirection (`302`) is performed. For permanent redirections (`301`), use `config.redirects` https://vite-plugin-ssr.com/redirects instead or, alternatively, set the `statusCode` argument to `301`.
  */
-function redirect(
-  url: `/${string}` | `https://${string}` | `http://${string}`,
-  statusCode: 301 | 302 = 302
-): AbortRedirect {
-  assertStatusCode(statusCode, [301, 302], 'redirect')
+function redirect(url: `/${string}` | `https://${string}` | `http://${string}`, statusCode?: 301 | 302): AbortRedirect {
   const abortCaller = 'throw redirect()' as const
+  const args = [JSON.stringify(url)]
+  if (!statusCode) {
+    statusCode = 302
+  } else {
+    assertStatusCode(statusCode, [301, 302], 'redirect')
+    args.push(String(statusCode))
+  }
   const pageContextAbort = {}
   objectAssign(pageContextAbort, {
     _abortCaller: abortCaller,
-    _abortCall: `throw redirect(${statusCode})` as const,
+    _abortCall: `throw redirect(${args.join(', ')})` as const,
     _urlRedirect: {
       url,
       statusCode
@@ -214,7 +216,7 @@ function logAbortErrorHandled(
   const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal
   assert(urlCurrent)
   const abortCall = err._pageContextAbort._abortCall
-  assertInfo(false, `${highlight(abortCall)} intercepted while rendering ${pc.bold(urlCurrent)}`, { onlyOnce: false })
+  assertInfo(false, `${pc.cyan(abortCall)} intercepted while rendering ${pc.cyan(urlCurrent)}`, { onlyOnce: false })
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
@@ -254,15 +256,11 @@ function assertNoInfiniteLoop(pageContextsFromRewrite: PageContextFromRewrite[])
   })
 }
 
-function highlight(abortCall: AbortCall) {
-  return isBrowser() ? '`' + abortCall + '`' : pc.cyan(abortCall)
-}
-
 function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) {
   const abortCalls = [
     // prettier-ignore
-    rewriteCount > 0 && highlight("throw render('/some-url')"),
-    redirectCount > 0 && highlight("throw redirect('/some-url')")
+    rewriteCount > 0 && pc.cyan("throw render('/some-url')"),
+    redirectCount > 0 && pc.cyan("throw redirect('/some-url')")
   ]
     .filter(Boolean)
     .join(' and ')

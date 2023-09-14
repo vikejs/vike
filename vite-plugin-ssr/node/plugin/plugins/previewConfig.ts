@@ -8,6 +8,7 @@ import path from 'path'
 import type { ViteDevServer } from 'vite'
 import type { ConfigVpsResolved } from '../../../shared/ConfigVps.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
+import pc from '@brillout/picocolors'
 type ConnectServer = ViteDevServer['middlewares']
 
 function previewConfig(): Plugin {
@@ -43,7 +44,9 @@ function previewConfig(): Plugin {
     ;[outDirRoot, outDirClient, outDirServer].forEach((outDirAny) => {
       assertUsage(
         fs.existsSync(outDirAny),
-        `Cannot run \`$ vite preview\`: your app isn't built (the build directory ${outDirAny} is missing). Make sure to run \`$ vite build\` before running \`$ vite preview\`.`
+        `Cannot run ${pc.cyan('$ vite preview')}: your app isn't built (the build directory ${pc.cyan(
+          outDirAny
+        )} is missing). Make sure to run ${pc.cyan('$ vite build')} before running ${pc.cyan('$ vite preview')}.`
       )
     })
   }

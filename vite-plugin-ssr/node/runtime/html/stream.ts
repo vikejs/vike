@@ -1,6 +1,9 @@
 export { processStream }
 export { streamToString }
-
+export { stampPipe }
+export { pipeStream }
+export { pipeWebStream }
+export { pipeNodeStream }
 export { getStreamReadableNode }
 export { getStreamReadableWeb }
 export { pipeToStreamWritableNode }
@@ -12,12 +15,10 @@ export { isStreamReadableWeb }
 export { isStreamReadableNode }
 export { getStreamName }
 export { inferStreamName }
-
 export { streamReadableWebToString }
 export { streamPipeNodeToString }
 export { isStreamWritableWeb }
 export { isStreamWritableNode }
-
 export type { StreamProviderAny }
 export type { StreamProviderNormalized }
 export type { StreamTypePatch }
@@ -27,12 +28,6 @@ export type { StreamWritableWeb }
 export type { StreamWritableNode }
 export type { StreamPipeWeb }
 export type { StreamPipeNode }
-
-// Public: consumed by vite-plugin-ssr users
-export { stampPipe }
-export { pipeStream }
-export { pipeWebStream }
-export { pipeNodeStream }
 
 import {
   assert,
@@ -56,6 +51,7 @@ import {
   streamReactStreamingToString
 } from './stream/react-streaming.js'
 import type { Readable as Readable_, Writable as Writable_ } from 'node:stream'
+import pc from '@brillout/picocolors'
 
 const debug = createDebugger('vps:stream')
 
@@ -84,7 +80,7 @@ type StreamProviderAny =
 // Not needed but just to clarify StreamProvider vs StreamConsumer
 type StreamConsumer = StreamWritableWeb | StreamWritableNode
 
-// `ReactDOMServer.renderToNodeStream()` returns a `NodeJS.ReadableStream` which differs from `Stream.Readable`
+// ReactDOMServer.renderToNodeStream() returns a NodeJS.ReadableStream which differs from Stream.Readable
 type StreamTypePatch = NodeJS.ReadableStream
 
 function isStreamReadableWeb(thing: unknown): thing is StreamReadableWeb {
@@ -135,7 +131,7 @@ async function stringToStreamReadableNode(str: string): Promise<StreamReadableNo
   return Readable.from(str)
 }
 function stringToStreamReadableWeb(str: string): StreamReadableWeb {
-  // `ReadableStream.from()` spec discussion: https://github.com/whatwg/streams/issues/1018
+  // ReadableStream.from() spec discussion: https://github.com/whatwg/streams/issues/1018
   assertReadableStreamConstructor()
   const readableStream = new ReadableStream({
     start(controller) {
@@ -310,7 +306,7 @@ async function processStream(
   if (injectStringAtBegin) {
     const injectionBegin: string = await injectStringAtBegin()
     writeStream(injectionBegin) // Adds injectionBegin to buffer
-    flushStream() // Sets shouldFlushStream to `true`
+    flushStream() // Sets shouldFlushStream to true
   }
 
   const { streamWrapper, streamWrapperOperations } = await createStreamWrapper({
@@ -423,7 +419,7 @@ async function processStream(
   //  - We don't need this anymore if we implement a client-side recover mechanism.
   //     - I.e. rendering the error page on the client-side if there is an error during the stream.
   //       - We cannot do this with Server Routing
-  //     - Emitting the wrong status code doesn't matter with libraries like `react-streaming` which automatically disable streaming for bots. (Emitting the right status code only matters for bots.)
+  //     - Emitting the wrong status code doesn't matter with libraries like react-streaming which automatically disable streaming for bots. (Emitting the right status code only matters for bots.)
   function delayStreamStart() {
     return !enableEagerStreaming && !streamOriginalHasStartedEmitting
   }
@@ -448,7 +444,7 @@ async function createStreamWrapper({
   streamWrapperOperations: { writeChunk: (chunk: unknown) => void; flushStream: null | (() => void) }
 }> {
   if (isStreamReactStreaming(streamOriginal)) {
-    debug('onRenderHtml() hook returned `react-streaming` result')
+    debug(`onRenderHtml() hook returned ${pc.cyan('react-streaming')} result`)
     const stream = getStreamFromReactStreaming(streamOriginal)
     ;(streamOriginal as StreamProviderAny) = stream
   }
@@ -462,7 +458,7 @@ async function createStreamWrapper({
       debug('original Node.js Writable received')
       onReadyToWrite()
       if (hasEnded) {
-        // `onReadyToWrite()` already wrote everything; we can close the stream right away
+        // onReadyToWrite() already wrote everything; we can close the stream right away
         writableOriginal.end()
       }
     }
@@ -539,7 +535,7 @@ async function createStreamWrapper({
         } catch (e: any) {}
         onReadyToWrite()
         if (hasEnded) {
-          // `onReadyToWrite()` already wrote everything; we can close the stream right away
+          // onReadyToWrite() already wrote everything; we can close the stream right away
           writerOriginal.close()
         }
       })()
@@ -648,7 +644,7 @@ async function createStreamWrapper({
     const readableOriginal: StreamReadableNode = streamOriginal
 
     const { Readable } = await loadStreamNodeModule()
-    // Vue doesn't always set the `read()` handler: https://github.com/brillout/vite-plugin-ssr/issues/138#issuecomment-934743375
+    // Vue doesn't always set the read() handler: https://github.com/brillout/vite-plugin-ssr/issues/138#issuecomment-934743375
     if (readableOriginal._read === Readable.prototype._read) {
       readableOriginal._read = function () {}
     }
@@ -807,10 +803,14 @@ function isStreamPipeNode(thing: unknown): thing is StreamPipeNodeWrapped | Stre
 }
 
 function stampPipe(pipe: StreamPipeNode | StreamPipeWeb, pipeType: 'web-stream' | 'node-stream') {
-  assertUsage(pipeType, 'stampPipe(pipe, pipeType): argument `pipeType` is missing.)', { showStackTrace: true })
+  assertUsage(pipeType, `stampPipe(pipe, pipeType): argument ${pc.cyan('pipeType')} is missing.)`, {
+    showStackTrace: true
+  })
   assertUsage(
     ['web-stream', 'node-stream'].includes(pipeType),
-    "stampPipe(pipe, pipeType): argument `pipeType` should be either 'web-stream' or 'node-stream'.",
+    `stampPipe(pipe, pipeType): argument ${pc.cyan('pipeType')} should be either ${pc.cyan(
+      "'web-stream'"
+    )} or ${pc.cyan("'node-stream'")}.`,
     { showStackTrace: true }
   )
   if (pipeType === 'node-stream') {
@@ -849,10 +849,10 @@ async function streamToString(stream: StreamProviderAny): Promise<string> {
 function assertReadableStreamConstructor() {
   assertUsage(
     typeof ReadableStream === 'function',
-    // Error message copied from vue's `renderToWebStream()` implementation
-    `ReadableStream constructor isn't available in the global scope. ` +
-      `If the target environment does support web streams, consider using ` +
-      `pipeToWebWritable() with an existing WritableStream instance instead.`
+    // Error message copied from vue's renderToWebStream() implementation
+    "ReadableStream constructor isn't available in the global scope. " +
+      'If the target environment does support web streams, consider using ' +
+      'pipeToWebWritable() with an existing WritableStream instance instead.'
   )
 }
 

@@ -1,6 +1,15 @@
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser.js'
-import { assertUsage, hasProp, isObjectWithKeys, objectAssign, assertWarning, assertUsageUrl } from './utils.js'
+import {
+  assertUsage,
+  hasProp,
+  isObjectWithKeys,
+  objectAssign,
+  assertWarning,
+  assertUsageUrl,
+  joinEnglish
+} from './utils.js'
 import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
+import pc from '@brillout/picocolors'
 
 export { executeOnBeforeRouteHook }
 export type { OnBeforeRouteHook }
@@ -32,7 +41,9 @@ async function executeOnBeforeRouteHook(
     hookReturn === null ||
       hookReturn === undefined ||
       (isObjectWithKeys(hookReturn, ['pageContext'] as const) && hasProp(hookReturn, 'pageContext')),
-    `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ pageContext: { /* ... */ } }\`.`
+    `${errPrefix} should return ${pc.cyan('null')}, ${pc.cyan('undefined')}, or a plain JavaScript object ${pc.cyan(
+      '{ pageContext: { /* ... */ } }'
+    )}`
   )
 
   if (hookReturn === null || hookReturn === undefined) {
@@ -41,21 +52,26 @@ async function executeOnBeforeRouteHook(
 
   assertUsage(
     hasProp(hookReturn, 'pageContext', 'object'),
-    `${errPrefix} returned \`{ pageContext }\` but pageContext should be a plain JavaScript object.`
+    `${errPrefix} returned ${pc.cyan('{ pageContext }')} but pageContext should be a plain JavaScript object.`
   )
 
   if (hasProp(hookReturn.pageContext, '_pageId') && !hasProp(hookReturn.pageContext, '_pageId', 'null')) {
-    const errPrefix2 = `${errPrefix} returned \`{ pageContext: { _pageId } }\` but _pageId should be`
+    const errPrefix2 = `${errPrefix} returned ${pc.cyan('{ pageContext: { _pageId } }')} but ${pc.cyan(
+      '_pageId'
+    )} should be` as const
     assertUsage(hasProp(hookReturn.pageContext, '_pageId', 'string'), `${errPrefix2} a string or null`)
     assertUsage(
       pageContext._allPageIds.includes(hookReturn.pageContext._pageId),
-      `${errPrefix2} one of following values: \`[${pageContext._allPageIds.map((s) => `'${s}'`).join(', ')}]\`.`
+      `${errPrefix2} ${joinEnglish(
+        pageContext._allPageIds.map((s) => pc.cyan(s)),
+        'or'
+      )}`
     )
   }
   if (hasProp(hookReturn.pageContext, 'routeParams')) {
     assertRouteParams(
       hookReturn.pageContext,
-      `${errPrefix} returned \`{ pageContext: { routeParams } }\` but routeParams should`
+      `${errPrefix} returned ${pc.cyan('{ pageContext: { routeParams } }')} but routeParams should`
     )
   }
 
@@ -64,7 +80,11 @@ async function executeOnBeforeRouteHook(
   if (hasProp(hookReturn.pageContext, 'url')) {
     assertWarning(
       false,
-      `${errPrefix} returned \`{ pageContext: { url } }\` but \`pageContext.url\` has been renamed to \`pageContext.urlOriginal\`. Return \`{ pageContext: { urlOriginal } }\` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)`,
+      `${errPrefix} returned ${pc.cyan('{ pageContext: { url } }')} but ${pc.cyan(
+        'pageContext.url'
+      )} has been renamed to ${pc.cyan('pageContext.urlOriginal')}. Return ${pc.cyan(
+        '{ pageContext: { urlOriginal } }'
+      )} instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)`,
       { onlyOnce: true }
     )
     hookReturn.pageContext.urlOriginal = hookReturn.pageContext.url
@@ -73,7 +93,7 @@ async function executeOnBeforeRouteHook(
   if (hasProp(hookReturn.pageContext, 'urlOriginal')) {
     assertUsageUrl(
       hookReturn.pageContext.urlOriginal,
-      `${errPrefix} returned \`{ pageContext: { urlOriginal } }\` but urlOriginal`
+      `${errPrefix} returned ${pc.cyan('{ pageContext: { urlOriginal } }')} but ${pc.cyan('urlOriginal')}`
     )
     // Ugly workaround: ideally urlOriginal should be immutable.
     //  - Instead of using pageContext._urlOriginalPristine, maybe we can keep pageContext.urlOriginal immutable while re-using `pageContext._urlRewrite`.

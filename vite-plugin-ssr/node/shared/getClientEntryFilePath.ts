@@ -1,28 +1,17 @@
 export { getClientEntryFilePath }
 
-import { PageConfigData } from '../../shared/page-configs/PageConfig.js'
-import { getConfigSrc } from '../../shared/page-configs/utils.js'
-import { getConfigValueSource } from './getConfigValueSource.js'
-import { assert, assertUsage } from './utils.js'
+import type { PageConfig, PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
+import { getConfigDefinedAtInfo, getConfigValue } from '../../shared/page-configs/utils.js'
+import { assert } from './utils.js'
 
-function getClientEntryFilePath(pageConfig: PageConfigData): null | string {
+function getClientEntryFilePath(pageConfig: PageConfig | PageConfigBuildTime): null | string {
   const configName = 'client'
-  const configValueSource = getConfigValueSource(pageConfig, configName)
-  if (!configValueSource) return null
-
-  // Enable users to suppress client entry by setting its value to null
-  const configValue = pageConfig.configValues[configName]
-  if (configValue && configValue.value === null) return null
-
-  // Ensure client config is an import path
-  const configSrc = getConfigSrc(configValueSource)
-  assert(configSrc)
-  assertUsage(
-    configValueSource.value === undefined && configValueSource.valueSerialized === undefined,
-    `${configSrc} should be an import path`
-  )
-  assert(!configValue)
-
-  const clientEntryFilePath = configValueSource.definedAt.filePath
+  const configValue = getConfigValue(pageConfig, configName, 'string')
+  if (!configValue) return null
+  const definedAtInfo = getConfigDefinedAtInfo(pageConfig, configName)
+  const { value } = configValue
+  // Users should be able to suppress client entry by setting its value to null
+  assert(value !== null)
+  const clientEntryFilePath = definedAtInfo.filePath
   return clientEntryFilePath
 }

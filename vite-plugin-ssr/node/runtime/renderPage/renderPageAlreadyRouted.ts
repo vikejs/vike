@@ -10,9 +10,9 @@ export type { PageContextInitEnhanced }
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
 import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles.js'
-import { assert, assertUsage, hasProp, objectAssign, unique } from '../utils.js'
+import { assert, assertUsage, hasProp, isNotNullish, objectAssign, unique } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
-import { addUrlComputedProps, type PageContextUrlComputedProps } from '../../../shared/UrlComputedProps.js'
+import { addUrlComputedProps, type PageContextUrlComputedPropsInternal } from '../../../shared/addUrlComputedProps.js'
 import { getGlobalContext } from '../globalContext.js'
 import {
   createHttpResponseObject,
@@ -33,6 +33,7 @@ import { preparePageContextForUserConsumptionServerSide } from './preparePageCon
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageRoutes.js'
 import type { OnBeforeRouteHook } from '../../../shared/route/executeOnBeforeRouteHook.js'
+import pc from '@brillout/picocolors'
 
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 
@@ -45,7 +46,7 @@ async function renderPageAlreadyRouted<
     errorWhileRendering: null | Error
     _httpRequestId: number
   } & PageContextInitEnhanced &
-    PageContextUrlComputedProps &
+    PageContextUrlComputedPropsInternal &
     PageContext_loadPageFilesServerSide
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   // pageContext._pageId can either be the:
@@ -124,7 +125,9 @@ async function prerenderPage(
   const { htmlRender, renderHook } = await executeOnRenderHtmlHook(pageContext)
   assertUsage(
     htmlRender !== null,
-    `Cannot pre-render '${pageContext.urlOriginal}' because the ${renderHook.hookName}() hook defined by ${renderHook.hookFilePath} didn't return an HTML string.`
+    `Cannot pre-render ${pc.cyan(pageContext.urlOriginal)} because the ${renderHook.hookName}() hook defined by ${
+      renderHook.hookFilePath
+    } didn't return an HTML string.`
   )
   assert(pageContext.isClientSideNavigation === false)
   const documentHtml = await getHtmlString(htmlRender)
@@ -255,9 +258,10 @@ function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfig[
   const v1Files: string[] = unique(
     pageConfigs
       .map((p) =>
-        Object.values(p.configValueSources).map((sources) =>
-          sources.map((configValueSource) => indent + configValueSource.definedAt.filePath)
-        )
+        Object.values(p.configValues)
+          .map(({ definedAtInfo }) => definedAtInfo)
+          .filter(isNotNullish)
+          .map((definedAtInfo) => indent + definedAtInfo.filePath)
       )
       .flat(2)
   )

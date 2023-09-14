@@ -1,8 +1,9 @@
 export type { PageConfig }
 export type { PageConfigLoaded }
-export type { ConfigEnvPrivate }
-export type { ConfigEnvPublic }
-export type { PageConfigData }
+export type { PageConfigBuildTime }
+export type { PageConfigCommon }
+export type { ConfigEnvInternal }
+export type { ConfigEnv }
 export type { PageConfigGlobal }
 export type { PageConfigGlobalData }
 export type { ConfigSource }
@@ -10,42 +11,47 @@ export type { ConfigValue }
 export type { ConfigValues }
 export type { ConfigValueSource }
 export type { ConfigValueSources }
+export type { DefinedAtInfo }
 
-type ConfigEnvPrivate =
-  | 'client-only'
-  | 'server-only'
-  | 'server-and-client'
-  | 'config-only'
-  | '_routing-eager'
-  | '_routing-lazy'
-/** The environments in which the configuration value is loaded.
- *
- * https://vite-plugin-ssr/meta
- */
-type ConfigEnvPublic = Exclude<ConfigEnvPrivate, '_routing-eager' | '_routing-lazy'>
+type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
+type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
 
-type PageConfigData = {
+type PageConfigBuildTime = PageConfigCommon & {
+  configValueSources: ConfigValueSources
+}
+type PageConfigCommon = {
   pageId: string
   isErrorPage: boolean
+  // TODO: unify to routeFilesystem: null | { routeString: string, definedBy: string }
   routeFilesystem: null | string
   routeFilesystemDefinedBy: null | string
-  configValueSources: ConfigValueSources
   configValues: ConfigValues
 }
 type ConfigValueSource = {
-  configEnv: ConfigEnvPrivate
+  configEnv: ConfigEnvInternal
   valueSerialized?: string
   value?: unknown
-  // Replace definedAt.filePath with definedAt.filePathRelativeToUserRootDir? and definedAt.filePathAbsolute!
-  definedAt: DefinedAt
+  // TODO: improve naming of `isCodeEntry` and `valueIsFilePath`?
   /**
-   * Whether definedAt.filePath contains runtime code. (If it doesn't, then it contains config code that isn't loaded in any runtime.)
+   * Whether definedAtInfo.filePath contains runtime code. (If it doesn't, then it contains config code that isn't loaded in any runtime.)
    *
    * For example config.Page is a code entry. (Since the Page component is loaded by runtimes.)
    * Whereas config.passToClient is config-only and therefore isn't a code entry.
    */
   isCodeEntry: boolean
-}
+  valueIsFilePath?: true
+} & (
+  | {
+      // TODO: replace definedAtInfo.filePath with definedAtInfo.filePathRelativeToUserRootDir? and definedAtInfo.filePathAbsolute!
+      definedAtInfo: DefinedAtInfo
+      isComputed: false
+    }
+  | {
+      definedAtInfo: null
+      isComputed: true
+      isCodeEntry: false
+    }
+)
 type ConfigValueSources = Record<
   // configName
   string,
@@ -53,15 +59,17 @@ type ConfigValueSources = Record<
 >
 type ConfigValue = {
   value: unknown
-  // TODO: Replace with valueSrc?
-  definedAt: DefinedAt
+  // Is null when config value is:
+  //  - computed, or
+  //  - cumulative
+  definedAtInfo: null | DefinedAtInfo
 }
 type ConfigValues = Record<
   // configName
   string,
   ConfigValue
 >
-type DefinedAt = {
+type DefinedAtInfo = {
   filePath: string
   fileExportPath: string[]
 }
@@ -70,7 +78,7 @@ type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileExportName: string; configSourceFileDefaultExportKey?: undefined }
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
 )
-type PageConfig = PageConfigData & {
+type PageConfig = PageConfigCommon & {
   loadCodeFiles: LoadCodeFiles
   isLoaded?: true
 }
@@ -86,26 +94,6 @@ type PageConfigGlobal = {
   onPrerenderStart: null | (ConfigValueSource & { value: unknown })
   onBeforeRoute: null | (ConfigValueSource & { value: unknown })
 }
-
-type ConfigElementSource =
-  | // Defined directly in +config.js
-  {
-      plusConfigFilePath: string
-      codeFilePath: null
-      codeFileExport: null
-    }
-  // Defined by a + value file
-  | {
-      plusConfigFilePath: null
-      codeFilePath: string
-      codeFileExport: string
-    }
-  // Defined by an import in +config.js
-  | {
-      plusConfigFilePath: string
-      codeFilePath: string
-      codeFileExport: string
-    }
 
 type LoadCodeFiles = () => Promise<
   ({

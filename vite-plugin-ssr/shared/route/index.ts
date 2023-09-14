@@ -10,7 +10,11 @@ if (isBrowser()) {
 
 import type { PageFile } from '../getPageFiles.js'
 import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils.js'
-import { addUrlComputedProps, PageContextUrlComputedProps, PageContextUrlSources } from '../UrlComputedProps.js'
+import {
+  addUrlComputedProps,
+  PageContextUrlComputedPropsInternal,
+  PageContextUrlSources
+} from '../addUrlComputedProps.js'
 import { resolvePrecendence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'
 import { resolveRouteFunction } from './resolveRouteFunction.js'
@@ -18,8 +22,9 @@ import { executeOnBeforeRouteHook, type OnBeforeRouteHook } from './executeOnBef
 import type { PageRoutes, RouteType } from './loadPageRoutes.js'
 import { debug } from './debug.js'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
+import pc from '@brillout/picocolors'
 
-type PageContextForRoute = PageContextUrlComputedProps & {
+type PageContextForRoute = PageContextUrlComputedPropsInternal & {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfig[]
   _allPageIds: string[]
@@ -136,7 +141,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
   resolvePrecendence(routeMatches)
   const winner = routeMatches[0]
 
-  debug(`Route matches for URL \`${urlPathname}\` (in precedence order):`, routeMatches)
+  debug(`Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)
 
   objectAssign(pageContextAddendum, { _routeMatches: routeMatches })
 

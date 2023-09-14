@@ -9,7 +9,7 @@ import type { OnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 import { isCallable } from '../utils.js'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
-import { getConfigValue, getConfigSrc } from '../page-configs/utils.js'
+import { getConfigDefinedAtInfo, getConfigValue, getDefinedAtString } from '../page-configs/utils.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
 
 type PageRoute = {
@@ -58,30 +58,29 @@ function getPageRoutes(
 
         let pageRoute: null | PageRoute = null
         {
-          const routeConfig = pageConfig.configValues.route
-          if (routeConfig) {
-            const route = routeConfig.value
-            const configSrc = getConfigSrc(routeConfig)
-            assert(configSrc)
+          const configName = 'route'
+          const configValue = getConfigValue(pageConfig, configName)
+          if (configValue) {
+            const definedAtInfo = getConfigDefinedAtInfo(pageConfig, configName)
+            const route = configValue.value
+            const definedAt = getDefinedAtString(definedAtInfo)
             if (typeof route === 'string') {
               pageRoute = {
                 pageId,
                 comesFromV1PageConfig,
                 routeString: route,
-                routeDefinedAt: configSrc,
+                routeDefinedAt: definedAt,
                 routeType: 'STRING'
               }
             } else {
               assert(isCallable(route))
-              {
-                const val = getConfigValue(pageConfig, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean')
-                if (val !== null) warnDeprecatedAllowKey()
-              }
+              if (getConfigValue(pageConfig, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'))
+                warnDeprecatedAllowKey()
               pageRoute = {
                 pageId,
                 comesFromV1PageConfig,
                 routeFunction: route,
-                routeDefinedAt: configSrc,
+                routeDefinedAt: definedAt,
                 routeType: 'FUNCTION'
               }
             }
@@ -185,7 +184,8 @@ function getGlobalHooks(
     if (pageConfigGlobal.onBeforeRoute) {
       const hookFn = pageConfigGlobal.onBeforeRoute.value
       if (hookFn) {
-        const hookFilePath = pageConfigGlobal.onBeforeRoute.definedAt.filePath
+        assert(!pageConfigGlobal.onBeforeRoute.isComputed)
+        const hookFilePath = pageConfigGlobal.onBeforeRoute.definedAtInfo.filePath
         assert(hookFilePath)
         assertUsage(isCallable(hookFn), `The hook onBeforeRoute() defined by ${hookFilePath} should be a function.`)
         const onBeforeRouteHook: OnBeforeRouteHook = {

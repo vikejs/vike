@@ -1,55 +1,51 @@
 export { getConfigValue }
-export { getConfigValue2 }
 export { getPageConfig }
-export { getConfigSrc }
+export { getConfigDefinedAtString }
+export { getConfigDefinedAtInfo }
+export { getDefinedAtString }
 
-import { assert, assertUsage } from '../utils.js'
-import type { ConfigSource, ConfigValue, PageConfig, PageConfigData } from './PageConfig.js'
-import type { ConfigNameBuiltIn, ConfigNamePrivate } from './Config.js'
+import { assert, assertUsage, getValuePrintable } from '../utils.js'
+import type { DefinedAtInfo, PageConfig, PageConfigCommon } from './PageConfig.js'
+import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
 
-type ConfigName = ConfigNameBuiltIn | ConfigNamePrivate
+type ConfigName = ConfigNameBuiltIn
 
-// TODO: remove in favor of getConfigValue2()
-function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'string'): null | string
-function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'boolean'): null | boolean
-function getConfigValue(pageConfig: PageConfigData, configName: ConfigName): unknown
-function getConfigValue(
-  pageConfig: PageConfigData,
-  configName: ConfigName,
-  type?: 'string' | 'boolean'
-): null | unknown {
-  const configValue = getConfigValue2(pageConfig, configName, type as any)
-  if (!configValue) return null
-  return configValue.value
+// prettier-ignore
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'string'): null | { value: string }
+// prettier-ignore
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'boolean'): null | { value: boolean }
+// prettier-ignore
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName): null | { value: unknown }
+// prettier-ignore
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type?: 'string' | 'boolean'): null | { value: unknown } {
+  const configValue = getConfigValueEntry(pageConfig, configName)
+  if (configValue === null) return null
+  const { value, definedAtInfo } = configValue
+  if (type) assertConfigValueType(value, type, configName, definedAtInfo)
+  return { value }
 }
 
-// prettier-ignore
-function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName, type: 'string'): null | ConfigValue & { value: string }
-// prettier-ignore
-function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName, type: 'boolean'): null | ConfigValue & { value: boolean }
-// prettier-ignore
-function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName): null | ConfigValue
-// prettier-ignore
-function getConfigValue2(pageConfig: PageConfigData, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue {
+function getConfigDefinedAtInfo(pageConfig: PageConfigCommon, configName: ConfigName): DefinedAtInfo {
+  const configValue = getConfigValueEntry(pageConfig, configName)
+  // We assume the caller to have ensured that the config value exists prior to calling getConfigDefinedAtInfo()
+  assert(configValue)
+  const { definedAtInfo } = configValue
+  // definedAtInfo is available only for config values that aren't:
+  //  - computed, nor
+  //  - cumulative
+  assert(definedAtInfo)
+  return definedAtInfo
+}
+
+function getConfigValueEntry(pageConfig: PageConfigCommon, configName: ConfigName) {
   const configValue = pageConfig.configValues[configName]
   if (!configValue) return null
-  const { value } = configValue
-  if (type) {
-    if (isNullish(value)) return null
-    const configSrc = getConfigSrc(configValue)
-    const typeActual = typeof value
-    assertUsage(
-      typeActual === type,
-      `${configSrc} has an invalid type \`${typeActual}\`: is should be a ${type} instead`
-    )
-  }
-  return configValue
-}
-
-function isNullish(configValue: unknown): boolean {
-  return configValue === null || configValue === undefined
+  const { value, definedAtInfo } = configValue
+  // Enable users to suppress global config values by setting the local config value to null
+  if (value === null) return null
+  return { value, definedAtInfo }
 }
 
 function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
@@ -59,35 +55,59 @@ function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
   return pageConfig
 }
 
-// TODO: remove in favor of getConfigSrc()
-function getConfigSource(configSource: ConfigSource): string {
-  const { configSourceFile, configSourceFileExportName, configSourceFileDefaultExportKey } = configSource
-  assert(configSourceFile)
-  if (configSourceFileDefaultExportKey) {
-    assert(configSourceFileDefaultExportKey !== 'default')
-    return `${configSourceFile} > \`export default { ${configSourceFileDefaultExportKey} }` as const
-  } else {
-    if (configSourceFileExportName === '*') {
-      return `${configSourceFile} > \`export *\`` as const
-    } else if (configSourceFileExportName === 'default') {
-      return `${configSourceFile} > \`export default\`` as const
-    } else {
-      assert(configSourceFileExportName)
-      return `${configSourceFile} > \`export { ${configSourceFileExportName} }\`` as const
-    }
-  }
+function assertConfigValueType(
+  value: unknown,
+  type: 'string' | 'boolean',
+  configName: string,
+  definedAtInfo: null | DefinedAtInfo
+) {
+  assert(value !== null)
+  const typeActual = typeof value
+  if (typeActual === type) return
+  const valuePrintable = getValuePrintable(value)
+  const problem =
+    valuePrintable !== null ? (`value ${pc.cyan(valuePrintable)}` as const) : (`type ${pc.cyan(typeActual)}` as const)
+  const configDefinedAt = getConfigDefinedAtString(configName, { definedAtInfo }, true)
+  assertUsage(false, `${configDefinedAt} has an invalid ${problem}: is should be a ${pc.cyan(type)} instead`)
 }
 
-// TODO: rename to getValueSrc()
-function getConfigSrc(
-  { definedAt }: { definedAt: { filePath: string; fileExportPath: string[] } },
+type ConfigDefinedAtUppercase<ConfigName extends string> = `Config ${ConfigName}${string}`
+type ConfigDefinedAtLowercase<ConfigName extends string> = `config ${ConfigName}${string}`
+function getConfigDefinedAtString<ConfigName extends string>(
+  configName: ConfigName,
+  { definedAtInfo }: { definedAtInfo: null | DefinedAtInfo },
+  sentenceBegin: true,
   append?: 'effect'
-): string {
-  const { filePath, fileExportPath } = definedAt
-  const exportPath = getExportPath(fileExportPath)
-  let configSrc = `${pc.bold(filePath)} > ${pc.cyan(exportPath)}`
-  if (append) {
-    configSrc = `${configSrc} > (${pc.blue(append)})`
+): ConfigDefinedAtUppercase<ConfigName>
+function getConfigDefinedAtString<ConfigName extends string>(
+  configName: ConfigName,
+  { definedAtInfo }: { definedAtInfo: null | DefinedAtInfo },
+  sentenceBegin: false,
+  append?: 'effect'
+): ConfigDefinedAtLowercase<ConfigName>
+function getConfigDefinedAtString<ConfigName extends string>(
+  configName: ConfigName,
+  { definedAtInfo }: { definedAtInfo: null | DefinedAtInfo },
+  sentenceBegin: boolean,
+  append?: 'effect'
+): ConfigDefinedAtUppercase<ConfigName> | ConfigDefinedAtLowercase<ConfigName> {
+  let configDefinedAt: ConfigDefinedAtUppercase<ConfigName> | ConfigDefinedAtLowercase<ConfigName> = `${
+    sentenceBegin ? `Config` : `config`
+  } ${pc.cyan(configName)}` as const
+  if (definedAtInfo !== null) {
+    configDefinedAt = `${configDefinedAt} defined at ${getDefinedAtString(definedAtInfo, append)}`
   }
-  return configSrc
+  return configDefinedAt
+}
+function getDefinedAtString(definedAtInfo: DefinedAtInfo, append?: 'effect'): string {
+  const { filePath, fileExportPath } = definedAtInfo
+  let definedAt = filePath
+  const exportPath = getExportPath(fileExportPath)
+  if (exportPath) {
+    definedAt = `${definedAt} > ${pc.cyan(exportPath)}`
+  }
+  if (append) {
+    definedAt = `${definedAt} > (${pc.blue(append)})`
+  }
+  return definedAt
 }

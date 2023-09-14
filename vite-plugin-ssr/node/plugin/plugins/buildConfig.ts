@@ -20,7 +20,7 @@ import { findPageFiles } from '../shared/findPageFiles.js'
 import { getConfigVps } from '../../shared/getConfigVps.js'
 import type { ResolvedConfig, Plugin, Rollup, UserConfig } from 'vite'
 import { getVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode.js'
-import type { PageConfigData } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 type InputOption = Rollup.InputOption
@@ -65,7 +65,7 @@ function buildConfig(): Plugin {
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const configVps = await getConfigVps(config)
   const pageFileEntries = await getPageFileEntries(config, configVps.includeAssetsImportedByServer) // TODO/v1-release: remove
-  const { pageConfigsData } = await getVikeConfig(config.root, false, configVps.extensions)
+  const { pageConfigs: pageConfigsData } = await getVikeConfig(config.root, false, configVps.extensions)
   assertUsage(
     Object.keys(pageFileEntries).length !== 0 || pageConfigsData.length !== 0,
     'At least one page should be defined, see https://vite-plugin-ssr.com/add'
@@ -101,24 +101,24 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
   }
 }
 
-function analyzeClientEntries(pageConfigsData: PageConfigData[], config: ResolvedConfig) {
+function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: ResolvedConfig) {
   let hasClientRouting = false
   let hasServerRouting = false
   let clientEntries: Record<string, string> = {}
   let clientFilePaths: string[] = []
-  pageConfigsData.forEach((pageConfigData) => {
-    const clientRouting = getConfigValue(pageConfigData, 'clientRouting', 'boolean')
-    if (clientRouting) {
+  pageConfigs.forEach((pageConfig) => {
+    const configValue = getConfigValue(pageConfig, 'clientRouting', 'boolean')
+    if (configValue?.value) {
       hasClientRouting = true
     } else {
       hasServerRouting = true
     }
     {
-      const { entryName, entryTarget } = getEntryFromPageConfigData(pageConfigData, true)
+      const { entryName, entryTarget } = getEntryFromPageConfig(pageConfig, true)
       clientEntries[entryName] = entryTarget
     }
     {
-      const clientFilePath = getClientEntryFilePath(pageConfigData)
+      const clientFilePath = getClientEntryFilePath(pageConfig)
       if (clientFilePath) {
         clientFilePaths.push(clientFilePath)
       }
@@ -132,10 +132,10 @@ function analyzeClientEntries(pageConfigsData: PageConfigData[], config: Resolve
 
   return { hasClientRouting, hasServerRouting, clientEntries }
 }
-function analyzeServerEntries(pageConfigsData: PageConfigData[]) {
+function analyzeServerEntries(pageConfigs: PageConfigBuildTime[]) {
   const serverEntries: Record<string, string> = {}
-  pageConfigsData.forEach((pageConfigData) => {
-    const { entryName, entryTarget } = getEntryFromPageConfigData(pageConfigData, false)
+  pageConfigs.forEach((pageConfig) => {
+    const { entryName, entryTarget } = getEntryFromPageConfig(pageConfig, false)
     serverEntries[entryName] = entryTarget
   })
   return serverEntries
@@ -178,8 +178,8 @@ function getEntryFromFilePath(filePath: string, config: ResolvedConfig, addExtra
 
   return { entryName, entryTarget }
 }
-function getEntryFromPageConfigData(pageConfigData: PageConfigData, isForClientSide: boolean) {
-  let { pageId } = pageConfigData
+function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide: boolean) {
+  let { pageId } = pageConfig
   const entryTarget = getVirtualFileIdImportPageCode(pageId, isForClientSide)
   let entryName = pageId
   entryName = prependEntriesDir(entryName)

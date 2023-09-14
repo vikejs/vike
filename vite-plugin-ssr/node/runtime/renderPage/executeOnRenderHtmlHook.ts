@@ -32,6 +32,7 @@ import type { PageConfig } from '../../../shared/page-configs/PageConfig.js'
 import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject.js'
 import { logRuntimeError } from './loggerRuntime.js'
 import type { PageContextSerialization } from '../html/serializePageContextClientSide.js'
+import pc from '@brillout/picocolors'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
@@ -156,8 +157,11 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
   }
 
   const errPrefix = `The ${renderHook.hookName as string}() hook defined at ${renderHook.hookFilePath}` as const
-  const errSuffix =
-    'a string generated with the escapeInject`<html>...</html>` template tag or a string returned by dangerouslySkipEscape(), see https://vite-plugin-ssr.com/escapeInject' as const
+  const errSuffix = `a string generated with the ${pc.cyan(
+    'escapeInject`<html>...</html>`'
+  )} template tag or a string returned by ${pc.cyan(
+    'dangerouslySkipEscape()'
+  )}, see https://vite-plugin-ssr.com/escapeInject` as const
   if (typeof hookReturnValue === 'string') {
     assertWarning(
       false,
@@ -172,7 +176,11 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
     isObject(hookReturnValue),
     [
       errPrefix,
-      'should return `null`, a value `documentHtml`, or an object `{ documentHtml, pageContext }` where `pageContext` is `undefined` or an object holding additional pageContext values, and where `documentHtml` is',
+      `should return ${pc.cyan('null')}, the value ${pc.cyan('documentHtml')}, or an object ${pc.cyan(
+        '{ documentHtml, pageContext }'
+      )} where ${pc.cyan('pageContext')} is ${pc.cyan(
+        'undefined'
+      )} or an object holding additional pageContext values, and where ${pc.cyan('documentHtml')} is`,
       errSuffix
     ].join(' ')
   )
@@ -185,11 +193,15 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
 
   if (hookReturnValue.documentHtml) {
     let val = hookReturnValue.documentHtml
-    const errBegin = `${errPrefix} returned \`{ documentHtml }\`, but documentHtml`
+    const errBegin = `${errPrefix} returned ${pc.cyan('{ documentHtml }')}, but ${pc.cyan('documentHtml')}` as const
     if (typeof val === 'string') {
       assertWarning(
         false,
-        [errBegin, 'is a plain JavaScript string which is dangerous: documentHtml should be', errSuffix].join(' '),
+        [
+          errBegin,
+          `is a plain JavaScript string which is dangerous: ${pc.cyan('documentHtml')} should be`,
+          errSuffix
+        ].join(' '),
         { onlyOnce: true }
       )
       val = dangerouslySkipEscape(val)
@@ -200,7 +212,7 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
 
   if (hookReturnValue.pageContext) {
     const val = hookReturnValue.pageContext
-    const errBegin = `${errPrefix} returned \`{ pageContext }\`, but pageContext`
+    const errBegin = `${errPrefix} returned ${pc.cyan('{ pageContext }')}, but ${pc.cyan('pageContext')}`
     if (isPromise(val) || isCallable(val)) {
       assertWarning(
         !isPromise(val),

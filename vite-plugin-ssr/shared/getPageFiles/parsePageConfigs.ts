@@ -2,14 +2,12 @@
 
 export { parsePageConfigs }
 
-import { parse } from '@brillout/json-serializer/parse'
 import type { PageConfig } from '../page-configs/PageConfig.js'
-import { assert, assertUsage, hasProp, isCallable } from '../utils.js'
 
 function parsePageConfigs(pageConfigs: PageConfig[]) {
+  // TODO: remove
+  /*
   pageConfigs.forEach((pageConfig) => {
-    // TODO: remove
-    /*
     Object.entries(pageConfig.configElements).forEach(([configName, configElement]) => {
       {
         const { configValueSerialized } = configElement
@@ -21,22 +19,8 @@ function parsePageConfigs(pageConfigs: PageConfig[]) {
         assertRouteConfigValue(configElement)
       }
     })
-    */
-
-    Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
-      sources.forEach((configValueSource) => {
-        if ('valueSerialized' in configValueSource) {
-          assert(configValueSource.valueSerialized !== undefined)
-          configValueSource.value = parse(configValueSource.valueSerialized)
-        }
-      })
-      if (configName === 'route') {
-        /* TODO
-        assertRouteConfigValue(configElement)
-        */
-      }
-    })
   })
+  */
 }
 
 // TODO: use again

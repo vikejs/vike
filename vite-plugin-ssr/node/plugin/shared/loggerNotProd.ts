@@ -29,7 +29,7 @@ import {
   isUserHookError,
   overwriteAssertProductionLogger,
   stripAnsi,
-  warnIfObjectIsNotObject
+  warnIfErrorIsNotObject
 } from '../utils.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { isErrorDebug } from './isErrorDebug.js'
@@ -84,7 +84,7 @@ function logConfigInfo(msg: string, logType: LogType): void {
   logWithVikeTag(msg, logType, category)
 }
 function logConfigErrorRecover(): void {
-  const msg = pc.green(pc.bold('Configuration successfully loaded'))
+  const msg = pc.bold(pc.green('Configuration successfully loaded'))
   clearLogs({ clearAlsoIfConfigIsInvalid: true })
   const category = getConfigCategory()
   logWithVikeTag(msg, 'error-recover', category)
@@ -101,7 +101,7 @@ function logViteErrorContainingCodeSnippet(err: ErrorWithCodeSnippet): void {
   logErr(err)
 }
 function logErr(err: unknown, httpRequestId: number | null = null): void {
-  warnIfObjectIsNotObject(err)
+  warnIfErrorIsNotObject(err)
 
   if (isAbortError(err) && !isErrorDebug()) {
     return
@@ -154,7 +154,7 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
 function logConfigError(err: unknown): void {
   clearLogs({ clearAlsoIfConfigIsInvalid: true })
 
-  warnIfObjectIsNotObject(err)
+  warnIfErrorIsNotObject(err)
 
   const category = getConfigCategory()
 
@@ -189,7 +189,7 @@ function logConfigError(err: unknown): void {
 }
 
 function logFallbackErrIntro(category: LogCategory) {
-  logWithVikeTag(pc.red(pc.bold('[Error] An error was thrown:')), 'error', category)
+  logWithVikeTag(pc.bold(pc.red('[Error] An error was thrown:')), 'error', category)
 }
 
 function getConfigCategory(): LogCategory {

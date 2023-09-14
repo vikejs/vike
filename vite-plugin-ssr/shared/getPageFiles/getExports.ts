@@ -10,7 +10,8 @@ import { assertDefaultExports, forbiddenDefaultExports } from './assertExports.j
 import type { FileType } from './fileTypes.js'
 import type { PageConfigLoaded } from './../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
-import { getConfigSrc } from '../page-configs/utils.js'
+import { getConfigDefinedAtString } from '../page-configs/utils.js'
+import pc from '@brillout/picocolors'
 
 // TODO/v1-release: remove
 type ExportsAll = Record<
@@ -23,9 +24,9 @@ type ExportsAll = Record<
     /** @deprecated */
     _isFromDefaultExport: boolean | null
     /** @deprecated */
-    filePath: string
+    filePath: string | null
     /** @deprecated */
-    _filePath: string
+    _filePath: string | null
   }[]
 >
 /** All the config's values (including overriden ones) and where they come from.
@@ -37,7 +38,7 @@ type ConfigEntries = Record<
   {
     configValue: unknown
     configDefinedAt: string
-    configDefinedByFile: string
+    configDefinedByFile: string | null
   }[]
 >
 type PageContextExports = {
@@ -77,13 +78,12 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
   // V1 design
   if (pageConfig) {
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
-      const {
-        value,
-        definedAt: { filePath }
-      } = configValue
-      const configSrc = getConfigSrc(configValue)
-      assert(filePath)
-      assert(configSrc)
+      const { value, definedAtInfo } = configValue
+      let filePath: null | string = null
+      if (definedAtInfo) {
+        filePath = definedAtInfo.filePath
+      }
+      const configDefinedAt = getConfigDefinedAtString(configName, configValue, true)
 
       config[configName] = config[configName] ?? value
       configEntries[configName] = configEntries[configName] ?? []
@@ -91,7 +91,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
       assert(configEntries[configName]!.length === 0)
       configEntries[configName]!.push({
         configValue: value,
-        configDefinedAt: configSrc,
+        configDefinedAt,
         configDefinedByFile: filePath
       })
 
@@ -100,7 +100,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
       exportsAll[exportName] = exportsAll[exportName] ?? []
       exportsAll[exportName]!.push({
         exportValue: value,
-        exportSource: configSrc,
+        exportSource: configDefinedAt,
         filePath,
         _filePath: filePath,
         _fileType: null,
@@ -115,7 +115,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
     values.forEach(({ exportValue, _fileType, _isFromDefaultExport }) => {
       exports[exportName] = exports[exportName] ?? exportValue
 
-      // Legacy `pageContext.pageExports`
+      // Legacy pageContext.pageExports
       if (_fileType === '.page' && !_isFromDefaultExport) {
         if (!(exportName in pageExports)) {
           pageExports[exportName] = exportValue
@@ -157,7 +157,7 @@ function getExportValues(pageFile: PageFile) {
         if (isTemplateFile(filePath)) {
           exportName = 'Page'
         } else {
-          assertUsage(isObject(exportValue), `The \`export default\` of ${filePath} should be an object.`)
+          assertUsage(isObject(exportValue), `The ${pc.cyan('export default')} of ${filePath} should be an object.`)
           Object.entries(exportValue).forEach(([defaultExportName, defaultExportValue]) => {
             assertDefaultExports(defaultExportName, filePath)
             exportValues.push({
@@ -184,6 +184,7 @@ function getExportValues(pageFile: PageFile) {
   return exportValues
 }
 
+// TODO/v1-release: remove
 function createObjectWithDeprecationWarning(): Record<string, unknown> {
   return new Proxy(
     {},

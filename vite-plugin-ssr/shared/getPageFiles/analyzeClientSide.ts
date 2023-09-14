@@ -12,8 +12,8 @@ function analyzeClientSide(
 ): { isClientSideRenderable: boolean; isClientRouting: boolean } {
   // V1 design
   if (pageConfig) {
-    const isClientRouting = getConfigValue(pageConfig, 'clientRouting', 'boolean') ?? false
-    const isClientSideRenderable = getConfigValue(pageConfig, 'isClientSideRenderable', 'boolean') ?? false
+    const isClientRouting = getConfigValue(pageConfig, 'clientRouting', 'boolean')?.value ?? false
+    const isClientSideRenderable = getConfigValue(pageConfig, 'isClientSideRenderable', 'boolean')?.value ?? false
     return { isClientSideRenderable, isClientRouting }
   } else {
     // TODO/v1-release:

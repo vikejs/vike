@@ -2,6 +2,7 @@ export { getViteDevScripts }
 
 import { getGlobalContext } from '../../globalContext.js'
 import { assert, assertUsage } from '../../utils.js'
+import pc from '@brillout/picocolors'
 
 async function getViteDevScripts(): Promise<string> {
   const globalContext = getGlobalContext()
@@ -16,7 +17,9 @@ async function getViteDevScripts(): Promise<string> {
   fakeHtml = await viteDevServer.transformIndexHtml('/', fakeHtml)
   assertUsage(
     !fakeHtml.includes('vite-plugin-pwa'),
-    'The HTML transformer of `vite-plugin-pwa` cannot be applied, see workaround at https://github.com/brillout/vite-plugin-ssr/issues/388#issuecomment-1199280084'
+    `The HTML transformer of ${pc.cyan(
+      'vite-plugin-pwa'
+    )} cannot be applied, see workaround at https://github.com/brillout/vite-plugin-ssr/issues/388#issuecomment-1199280084`
   )
   assertUsage(
     !fakeHtml.startsWith(fakeHtmlBegin.replace(' ', '')),

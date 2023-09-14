@@ -5,7 +5,7 @@ import { findPageFiles } from '../../shared/findPageFiles.js'
 import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageImport, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { ConfigVpsResolved } from '../../../../shared/ConfigVps.js'
-import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSource.js'
+import { getConfigValueSourcesRelevant } from '../../shared/getConfigValueSource.js'
 
 async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved, isDev: true) {
   const { entries, include } = await getPageDeps(config, configVps, isDev)
@@ -25,16 +25,13 @@ async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved,
 
   // V1 design
   {
-    const { pageConfigsData } = await getVikeConfig(config.root, isDev, configVps.extensions)
+    const { pageConfigs: pageConfigsData } = await getVikeConfig(config.root, isDev, configVps.extensions)
     pageConfigsData.forEach((pageConfig) => {
       const configValueSourcesRelevant = getConfigValueSourcesRelevant(pageConfig)
       configValueSourcesRelevant.forEach((configValueSource) => {
-        const {
-          isCodeEntry,
-          configEnv,
-          definedAt: { filePath }
-        } = configValueSource
+        const { isCodeEntry, configEnv, definedAtInfo } = configValueSource
         if (!isCodeEntry) return
+        const { filePath } = definedAtInfo
         assert(filePath)
 
         if (configEnv !== 'client-only' && configEnv !== 'server-and-client') return

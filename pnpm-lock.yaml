@@ -20,11 +20,11 @@ importers:
         specifier: ^0.1.5
         version: 0.1.5
       '@brillout/test-e2e':
-        specifier: ^0.5.14
-        version: 0.5.14
+        specifier: ^0.5.15
+        version: 0.5.15
       '@brillout/test-types':
-        specifier: ^0.1.6
-        version: 0.1.6(typescript@4.9.5)
+        specifier: ^0.1.7
+        version: 0.1.7(typescript@4.9.5)
       vitest:
         specifier: ^0.34.1
         version: 0.34.1
@@ -2597,8 +2597,8 @@ importers:
         specifier: ^0.5.6
         version: 0.5.6
       '@brillout/picocolors':
-        specifier: ^1.0.7
-        version: 1.0.7
+        specifier: ^1.0.9
+        version: 1.0.9
       '@brillout/require-shim':
         specifier: ^0.1.2
         version: 0.1.2
@@ -3326,9 +3326,8 @@ packages:
     resolution: {integrity: sha512-3b/5PLhJ4xMF/cyY1aJXIMQT0TONFFgUX3tH2wfdrHe78OYe8igl0iaHkJ3kzgN0V+x562Of2AoMwThtLaAj5Q==}
     dev: true
 
-  /@brillout/picocolors@1.0.7:
-    resolution: {integrity: sha512-VQtuP4T/y9Ba5XgG78AN4vNmkndYm7dR4DzLeYs7SRJcNl3rcMgQUMCYbvSco/QDOKWW6ZmJ7G7wloyAGdbbOA==}
-    dev: false
+  /@brillout/picocolors@1.0.9:
+    resolution: {integrity: sha512-Lt/W5JsA75hcDJ2cOAlE4TqSMl6c9K+rXGRo/cU2fApnmhbRcNdkR4UHQDAwtWfZyUKWaxdwSui+jp+74J1pZg==}
 
   /@brillout/release-me@0.0.8:
     resolution: {integrity: sha512-sZUjOMkcQ2Eq3tDiL24t4Mgt93tMAs7oeNy/LHqPBlWGO+db8U+ZSpdAhae7rIyse53fBuXV9KLH0DdDkFkLGA==}
@@ -3378,8 +3377,8 @@ packages:
       vite-plugin-ssr: link:vite-plugin-ssr
     dev: false
 
-  /@brillout/test-e2e@0.5.14:
-    resolution: {integrity: sha512-+CN80USFk3WQU6F5UZHka3JvFGcoal++jGKpbKJ+3RkrIqa39iy5HlxaOulLTOrN6ZY1sqSQzS+ntcY4gkIlyg==}
+  /@brillout/test-e2e@0.5.15:
+    resolution: {integrity: sha512-KOr7OBU1QPM1OSeCnKtslz6ST6e0+1D/ranRQtXQ9sif0gJXS3aNqp60oULH9+8tzlHp8LVJ1CT0vVSPo/gCpg==}
     hasBin: true
     dependencies:
       '@brillout/part-regex': 0.1.2
@@ -3397,12 +3396,13 @@ packages:
       - encoding
     dev: true
 
-  /@brillout/test-types@0.1.6(typescript@4.9.5):
-    resolution: {integrity: sha512-V4K2ZCSb/gJHVgNwtmiqBuPHFkf4UF3kKbtUqb4Zf/qSg2s/OWC4naITBlvse5RnKR+rtQbNY6jQ+eUDsk21Qw==}
+  /@brillout/test-types@0.1.7(typescript@4.9.5):
+    resolution: {integrity: sha512-K2Kwnlz5PA12t+fywEJwhnOiDzFBLj2WMDy5YPH60UuLMBM3kkPiOd/hWGTlsI3PiGegLa+XQYOboSm8G4Pw5Q==}
     hasBin: true
     peerDependencies:
       typescript: ^4.0.0
     dependencies:
+      '@brillout/picocolors': 1.0.9
       fast-glob: 3.2.12
       source-map-support: 0.5.21
       typescript: 4.9.5

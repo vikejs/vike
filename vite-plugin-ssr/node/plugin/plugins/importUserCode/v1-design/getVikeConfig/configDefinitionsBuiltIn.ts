@@ -1,22 +1,65 @@
 export { configDefinitionsBuiltIn }
 export { configDefinitionsBuiltInGlobal }
 export type { ConfigDefinition }
+export type { ConfigDefinitionInternal }
 export type { ConfigNameGlobal }
+export type { ConfigEffect }
 
-import type { ConfigEnvPrivate, PageConfigData } from '../../../../../../shared/page-configs/PageConfig.js'
-import type { ConfigNameBuiltIn, ConfigNamePrivate } from '../../../../../../shared/page-configs/Config.js'
+import type {
+  ConfigEnvInternal,
+  ConfigEnv,
+  PageConfigBuildTime
+} from '../../../../../../shared/page-configs/PageConfig.js'
+import type { Config, ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
 import { getConfigEnv, isConfigSet } from '../helpers.js'
 
+// For user
+/** The meta definition of a config.
+ *
+ * https://vite-plugin-ssr.com/meta
+ */
 type ConfigDefinition = {
-  env: ConfigEnvPrivate
-  effect?: (config: {
-    configValue: unknown
-    configDefinedAt: string
-  }) => undefined | Record<string, Partial<ConfigDefinition>>
-  _computed?: (pageConfig: PageConfigData) => unknown
+  /** In what environment(s) the config value is loaded.
+   *
+   * https://vite-plugin-ssr.com/meta
+   */
+  env: ConfigEnv
+  /** Disable config overriding and make config values cumulative instead.
+   *
+   * @default false
+   *
+   * https://vite-plugin-ssr.com/meta
+   */
+  cumulative?: boolean
+  /**
+   * Define a so-called "Shortcut Config".
+   *
+   * https://vite-plugin-ssr.com/meta
+   */
+  effect?: ConfigEffect
 }
 
-type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNamePrivate, ConfigDefinition>
+type ConfigEffect = (config: {
+  /** The resolved config value.
+   *
+   * https://vite-plugin-ssr.com/meta
+   */
+  configValue: unknown
+  /** Place where the resolved config value comes from.
+   *
+   * https://vite-plugin-ssr.com/meta
+   */
+  configDefinedAt: `Config ${string}`
+}) => Config | undefined
+
+// For maintainer
+type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
+  _computed?: (pageConfig: PageConfigBuildTime) => unknown
+  _valueIsFilePath?: true
+  env: ConfigEnvInternal
+}
+
+type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn, ConfigDefinitionInternal>
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: 'server-only'
@@ -43,7 +86,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: 'server-and-client'
   },
   passToClient: {
-    env: 'server-only'
+    env: 'server-only',
+    cumulative: true
   },
   route: {
     env: '_routing-eager'
@@ -58,13 +102,15 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: 'config-only'
   },
   client: {
-    env: 'client-only'
+    // The value of the client config is merely the file path to the client entry file, which is only needed on the sever-side
+    env: 'server-only',
+    _valueIsFilePath: true
   },
   clientRouting: {
     env: 'server-and-client' // TODO: config-only instead?
   },
   prerender: {
-    env: 'config-only'
+    env: 'server-only'
   },
   hydrationCanBeAborted: {
     env: 'client-only' // TODO: config-only instead?
@@ -87,7 +133,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   onBeforeRenderEnv: {
     env: 'client-only',
-    _computed: (pageConfig): null | ConfigEnvPrivate =>
+    _computed: (pageConfig): null | ConfigEnvInternal =>
       !isConfigSet(pageConfig, 'onBeforeRender') ? null : getConfigEnv(pageConfig, 'onBeforeRender')
   }
 }
@@ -104,7 +150,7 @@ type ConfigNameGlobal =
   | 'redirects'
   | 'trailingSlash'
   | 'disableUrlNormalization'
-const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinition> = {
+const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionInternal> = {
   onPrerenderStart: {
     env: 'server-only'
   },

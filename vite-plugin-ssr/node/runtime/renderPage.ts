@@ -97,7 +97,7 @@ async function renderPage<
   }
 
   const httpRequestId = getRequestId()
-  const urlToShowToUser = pc.bold(pageContextInit.urlOriginal)
+  const urlToShowToUser = pageContextInit.urlOriginal
   logHttpRequest(urlToShowToUser, httpRequestId)
   globalObject.pendingRequestsCount++
 
@@ -118,7 +118,7 @@ async function renderPageAndPrepare(
 ): Promise<PageContextAfterRender> {
   // Invalid config
   const handleInvalidConfig = () => {
-    logRuntimeInfo?.(pc.red(pc.bold("Couldn't load configuration: see error above.")), httpRequestId, 'error')
+    logRuntimeInfo?.(pc.bold(pc.red("Couldn't load configuration: see error above.")), httpRequestId, 'error')
     const pageContextHttpReponseNull = getPageContextHttpResponseNull(pageContextInit)
     return pageContextHttpReponseNull
   }
@@ -300,13 +300,13 @@ async function renderPageAlreadyPrepared(
 
 function logHttpRequest(urlToShowToUser: string, httpRequestId: number) {
   const clearErrors = globalObject.pendingRequestsCount === 0
-  logRuntimeInfo?.(`HTTP request: ${urlToShowToUser}`, httpRequestId, 'info', clearErrors)
+  logRuntimeInfo?.(`HTTP request: ${pc.bold(urlToShowToUser)}`, httpRequestId, 'info', clearErrors)
 }
 function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageContextReturn: PageContextAfterRender) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
   const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
   const isNominal = isSuccess || statusCode === 404
-  const color = (s: number | string) => pc.bold(isSuccess ? pc.green(s) : pc.red(s))
+  const color = (s: number | string) => pc.bold(isSuccess ? pc.green(String(s)) : pc.red(String(s)))
   const isRedirect = statusCode && 300 <= statusCode && statusCode <= 399
   const type = isRedirect ? 'redirect' : 'response'
   if (isRedirect) {
@@ -317,10 +317,10 @@ function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageCon
       .find((header) => header[0] === 'Location')
     assert(headerRedirect)
     const urlRedirect = headerRedirect[1]
-    urlToShowToUser = pc.bold(urlRedirect)
+    urlToShowToUser = urlRedirect
   }
   logRuntimeInfo?.(
-    `HTTP ${type} ${urlToShowToUser} ${color(statusCode ?? 'ERR')}`,
+    `HTTP ${type} ${pc.bold(urlToShowToUser)} ${color(statusCode ?? 'ERR')}`,
     httpRequestId,
     isNominal ? 'info' : 'error'
   )
@@ -475,7 +475,7 @@ function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
   const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash)
   if (!urlNormalized) return null
   logRuntimeInfo?.(
-    `URL normalized from ${pc.bold(urlOriginal)} to ${pc.bold(
+    `URL normalized from ${pc.cyan(urlOriginal)} to ${pc.cyan(
       urlNormalized
     )} (https://vite-plugin-ssr.com/url-normalization)`,
     httpRequestId,

@@ -1,29 +1,35 @@
 export { assertArguments }
 
-import { assert, assertUsage, assertWarning, hasProp, isPlainObject } from '../utils.js'
+import { assert, assertUsage, assertWarning, hasProp, isObject } from '../utils.js'
+import pc from '@brillout/picocolors'
 
 function assertArguments(...args: unknown[]): void {
-  const prefix = '[renderPage(pageContextInit)]'
+  const prefix = `[renderPage(${pc.cyan('pageContextInit')})]` as const
 
   const pageContextInit = args[0]
-  assertUsage(pageContextInit, prefix + ' argument `pageContextInit` is missing', { showStackTrace: true })
+  assertUsage(
+    pageContextInit !== undefined && pageContextInit !== null,
+    prefix + ` argument ${pc.cyan('pageContextInit')} is missing`,
+    { showStackTrace: true }
+  )
   const len = args.length
-  assertUsage(len === 1, `${prefix} You passed ${len} arguments but \`renderPage()\` accepts only one argument.'`, {
+  assertUsage(len === 1, `${prefix} You passed ${len} arguments but renderPage() accepts only one argument.'`, {
     showStackTrace: true
   })
 
   assertUsage(
-    isPlainObject(pageContextInit),
-    `${prefix} \`pageContextInit\` should be a plain JavaScript object, but \`pageContextInit.constructor === ${
-      (pageContextInit as any).constructor
-    }\``,
+    isObject(pageContextInit),
+    `${prefix} ${pc.cyan('pageContextInit')} should be an object, but ${pc.cyan(
+      `typeof pageContextInit === ${JSON.stringify(typeof pageContextInit)}`
+    )}`,
     { showStackTrace: true }
   )
 
+  // TODO/v1-release: remove
   if ('url' in pageContextInit) {
     assertWarning(
       false,
-      '`pageContext.url` has been renamed to `pageContext.urlOriginal`: replace `renderPage({ url })` with `renderPage({ urlOriginal })`. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
+      '`pageContextInit.url` has been renamed to `pageContextInit.urlOriginal`: replace `renderPage({ url })` with `renderPage({ urlOriginal })`. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
       { showStackTrace: true, onlyOnce: true }
     )
     pageContextInit.urlOriginal = pageContextInit.url
@@ -33,38 +39,42 @@ function assertArguments(...args: unknown[]): void {
 
   assertUsage(
     hasProp(pageContextInit, 'urlOriginal'),
-    prefix + ' `pageContextInit` is missing the property `pageContextInit.urlOriginal`',
+    prefix + ` ${pc.cyan('pageContextInit')} is missing the property ${pc.cyan('pageContextInit.urlOriginal')}`,
+    { showStackTrace: true }
+  )
+  const { urlOriginal } = pageContextInit
+  assertUsage(
+    typeof urlOriginal === 'string',
+    prefix +
+      ` ${pc.cyan('pageContextInit.urlOriginal')} should be a string but ${pc.cyan(
+        `typeof pageContextInit.urlOriginal === ${JSON.stringify(typeof urlOriginal)}`
+      )}`,
     { showStackTrace: true }
   )
   assertUsage(
-    typeof pageContextInit.urlOriginal === 'string',
+    urlOriginal.startsWith('/') || urlOriginal.startsWith('https://') || urlOriginal.startsWith('http://'),
     prefix +
-      ' `pageContextInit.urlOriginal` should be a string but `typeof pageContextInit.urlOriginal === "' +
-      typeof pageContextInit.urlOriginal +
-      '"`.',
-    { showStackTrace: true }
-  )
-  assertUsage(
-    pageContextInit.urlOriginal.startsWith('/') || pageContextInit.urlOriginal.startsWith('http'),
-    prefix +
-      ' `pageContextInit.urlOriginal` should start with `/` (e.g. `/product/42`) or `http` (e.g. `http://example.org/product/42`) but `pageContextInit.urlOriginal === "' +
-      pageContextInit.urlOriginal +
-      '"`',
+      ` ${pc.cyan('pageContextInit.urlOriginal')} should start with ${pc.cyan('/')} (e.g. ${pc.cyan(
+        '/product/42'
+      )}), ${pc.cyan('http://')}, or ${pc.cyan('https://')} (e.g. ${pc.cyan(
+        'https://example.com/product/42'
+      )}), but ${pc.cyan(`pageContextInit.urlOriginal === ${JSON.stringify(urlOriginal)}`)}`,
     { showStackTrace: true }
   )
 
+  const urlOriginalWithoutOrigin = urlOriginal.startsWith('http')
+    ? urlOriginal
+    : 'http://fake-origin.example.org' + urlOriginal
   try {
-    const { urlOriginal } = pageContextInit
-    const urlWithOrigin = urlOriginal.startsWith('http') ? urlOriginal : 'http://fake-origin.example.org' + urlOriginal
     // We use `new URL()` to validate the URL. (`new URL(url)` throws an error if `url` isn't a valid URL.)
-    new URL(urlWithOrigin)
+    new URL(urlOriginalWithoutOrigin)
   } catch (err) {
     assertUsage(
       false,
       prefix +
-        ' `pageContextInit.urlOriginal` should be a URL but `pageContextInit.urlOriginal==="' +
-        pageContextInit.urlOriginal +
-        '"`.',
+        ` ${pc.cyan('pageContextInit.urlOriginal')} should be a URL but ${pc.cyan(
+          `pageContextInit.urlOriginal === ${JSON.stringify(urlOriginal)}`
+        )}`,
       { showStackTrace: true }
     )
   }

@@ -1,4 +1,4 @@
-export function truncateString(str: string, lenMax: number, gray: null | ((ellipsis: string) => string)) {
+export function truncateString(str: string, lenMax: number, dim: null | ((ellipsis: string) => string)) {
   if (str.length < lenMax) {
     return str
   } else {
@@ -7,7 +7,7 @@ export function truncateString(str: string, lenMax: number, gray: null | ((ellip
     str = str.substring(0, lenMax - 3)
 
     let ellipsis = '...'
-    if (gray) ellipsis = gray(ellipsis)
+    if (dim) ellipsis = dim(ellipsis)
     str = str + ellipsis
 
     return str

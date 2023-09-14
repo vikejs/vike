@@ -42,7 +42,7 @@ assertWarning(
     pc.red("  import { something } from 'vite-plugin-ssr'"),
     'Replace them with:',
     pc.green("  import { something } from 'vite-plugin-ssr/server'"),
-    'Or if `something` is a type:',
+    `Or if ${pc.cyan('something')} is a type:`,
     pc.green("  import type { something } from 'vite-plugin-ssr/types'"),
     "Make sure to import renderPage(), escapeInject, html, dangerouslySkipEscape(), pipeWebStream(), pipeNodeStream(), pipeStream(), stampPipe() from 'vite-plugin-ssr/server'. (Or inspect the error stack below to find the import causing this warning.)"
   ].join('\n'),

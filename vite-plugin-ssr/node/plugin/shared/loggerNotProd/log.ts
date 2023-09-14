@@ -83,14 +83,14 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
 
 function prependTags(msg: string, projectTag: '[vite]' | ProjectTag, category: LogCategory | null, logType: LogType) {
   const color = (s: string) => {
-    if (logType === 'error' && !hasRed(msg)) return pc.red(pc.bold(s))
-    if (logType === 'error-recover' && !hasGreen(msg)) return pc.green(pc.bold(s))
+    if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(s))
+    if (logType === 'error-recover' && !hasGreen(msg)) return pc.bold(pc.green(s))
     if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(s)
-    if (projectTag === '[vite]') return pc.cyan(pc.bold(s))
-    if (projectTag.startsWith(`[${projectInfo.projectName}`)) return pc.cyan(pc.bold(s))
+    if (projectTag === '[vite]') return pc.bold(pc.cyan(s))
+    if (projectTag.startsWith(`[${projectInfo.projectName}`)) return pc.bold(pc.cyan(s))
     assert(false)
   }
-  let tag = color(pc.bold(`${projectTag}`))
+  let tag = color(`${projectTag}`)
   if (category) {
     tag = tag + pc.dim(`[${category}]`)
   }

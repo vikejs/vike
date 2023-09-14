@@ -12,7 +12,10 @@ function getCiJobs() {
   }
   const ubuntu20 = {
     os: 'ubuntu-latest',
-    node_version: '20'
+    // Pin until fix for the following is released
+    //   - https://github.com/nodejs/node/issues/49497
+    //   - https://github.com/vitejs/vite/issues/14299
+    node_version: '20.5'
   }
   const win16 = {
     os: 'windows-latest',
@@ -69,7 +72,6 @@ function tolerateError({ logSource, logText }) {
   return (
     isRenderErrorPageDeprecationWarning() ||
     isSlowHookWarning() ||
-    isNoErrorPageWarning() ||
     isServiceExit() ||
     isGetPageAssetsDeprecationWarning() ||
     isDocpressAssetWarning() ||
@@ -77,10 +79,10 @@ function tolerateError({ logSource, logText }) {
     isCloudflareFalseError1() ||
     isCloudflareFalseError2() ||
     isCloudflareVueWarning() ||
+    isCloudflarePrewarmWarning() ||
     isTwitterEmbedsError() ||
     isGithubImageError() ||
     isSlowCrawlWarning() ||
-    isHtmlEscapingTest() ||
     isNodeExperimentalEsmLoader()
   )
 
@@ -102,16 +104,6 @@ function tolerateError({ logSource, logText }) {
       logText.includes('[Warning]') &&
       logText.includes('hook') &&
       logText.includes('is taking more than 4 seconds')
-    )
-  }
-
-  // [vite-plugin-ssr@0.4.42][Warning] No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)
-  function isNoErrorPageWarning() {
-    return (
-      logSource === 'stderr' &&
-      logText.includes(
-        'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)'
-      )
     )
   }
 
@@ -176,6 +168,9 @@ function tolerateError({ logSource, logText }) {
       logText.includes('Feature flags __VUE_OPTIONS_API__, __VUE_PROD_DEVTOOLS__ are not explicitly defined.')
     )
   }
+  function isCloudflarePrewarmWarning() {
+    return logSource === 'stderr' && logText.includes('worker failed to prewarm')
+  }
   function isTwitterEmbedsError() {
     return (
       logSource === 'Browser Error' &&
@@ -193,16 +188,6 @@ function tolerateError({ logSource, logText }) {
   }
   function isSlowCrawlWarning() {
     return logSource === 'stderr' && logText.includes('Crawling your user files took an unexpected long time')
-  }
-
-  function isHtmlEscapingTest() {
-    return (
-      logSource === 'stderr' &&
-      logText.includes(
-        'The 2nd HTML variable is `<b>I was defined without an HTML Fragment</b>` which seems to be HTML code'
-      ) &&
-      logText.includes('Did you forget to wrap the value with dangerouslySkipEscape')
-    )
   }
 
   function isNodeExperimentalEsmLoader() {

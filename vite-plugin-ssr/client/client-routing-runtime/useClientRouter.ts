@@ -213,6 +213,8 @@ function useClientRouter() {
         const errAbort = err
         logAbortErrorHandled(err, pageContext._isProduction, pageContext)
         const pageContextAbort = errAbort._pageContextAbort
+
+        // throw render('/some-url')
         if (pageContextAbort._urlRewrite) {
           await fetchAndRender({
             scrollTarget,
@@ -224,11 +226,14 @@ function useClientRouter() {
           })
           return
         }
+
+        // throw redirect('/some-url')
         if (pageContextAbort._urlRedirect) {
           const urlRedirect = pageContextAbort._urlRedirect.url
           if (urlRedirect.startsWith('http')) {
             // External redirection
             window.location.href = urlRedirect
+            return
           } else {
             await fetchAndRender({
               scrollTarget: 'scroll-to-top-or-hash',
@@ -242,8 +247,13 @@ function useClientRouter() {
           }
           return
         }
+
+        // throw render(statusCode)
         assert(pageContextAbort.abortStatusCode)
         objectAssign(pageContext, pageContextAbort)
+        if (pageContextAbort.abortStatusCode === 404) {
+          objectAssign(pageContext, { is404: true })
+        }
       } else {
         objectAssign(pageContext, { is404: checkIf404(err) })
       }
@@ -280,7 +290,7 @@ function useClientRouter() {
     } else {
       assertWarning(
         !isReact(),
-        'You seem to be using React; we recommend setting `hydrationCanBeAborted` to `true`, see https://vite-plugin-ssr.com/clientRouting',
+        'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vite-plugin-ssr.com/clientRouting',
         { onlyOnce: true }
       )
     }

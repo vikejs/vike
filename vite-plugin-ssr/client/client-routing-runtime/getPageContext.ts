@@ -19,7 +19,7 @@ import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
 import type { PageContextExports, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
-import type { PageContextUrlComputedProps } from '../../shared/UrlComputedProps.js'
+import type { PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
 import { PageContextForRoute, route } from '../../shared/route/index.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import { getHook } from '../../shared/hooks/getHook.js'
@@ -42,7 +42,7 @@ type PageContextAddendum = {
 } & PageContextExports &
   PageContextForPassToClientWarning
 
-type PageContextPassThrough = PageContextUrlComputedProps &
+type PageContextPassThrough = PageContextUrlComputedPropsInternal &
   PageContextForRoute & {
     isBackwardNavigation: boolean | null
   }
@@ -266,7 +266,7 @@ async function onBeforeRenderServerOnlyExists(pageContext: {
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
-    return getConfigValue(pageConfig, 'onBeforeRenderEnv') === 'server-only'
+    return getConfigValue(pageConfig, 'onBeforeRenderEnv')?.value === 'server-only'
   } else {
     // TODO/v1-release: remove
     // V0.4
@@ -284,7 +284,7 @@ async function onBeforeRenderClientOnlyExists(pageContext: {
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
-    return getConfigValue(pageConfig, 'onBeforeRenderEnv') === 'client-only'
+    return getConfigValue(pageConfig, 'onBeforeRenderEnv')?.value === 'client-only'
   } else {
     // TODO/v1-release: remove
     return false
@@ -344,7 +344,7 @@ async function fetchPageContextFromServer(pageContext: {
 
   if ('serverSideError' in pageContextFromServer) {
     throw getProjectError(
-      '`pageContext` could not be fetched from the server as an error occurred on the server; check your server logs.'
+      `The pageContext object couldn't be fetched from the server as an error occurred on the server-side. Check your server logs.`
     )
   }
 
