@@ -48,16 +48,19 @@ type AbortRedirect = Error
  * @param url The URL to redirect to.
  * @param statusCode By default a `302` (temporary) redirection is performed, but you can trigger a `301` (permanent) redirection instead. Alternatively, you can define permanent redirections by setting `config.redirects`, see https://vite-plugin-ssr.com/redirects.
  */
-function redirect(
-  url: `/${string}` | `https://${string}` | `http://${string}`,
-  statusCode: 301 | 302 = 302
-): AbortRedirect {
-  assertStatusCode(statusCode, [301, 302], 'redirect')
+function redirect(url: `/${string}` | `https://${string}` | `http://${string}`, statusCode?: 301 | 302): AbortRedirect {
   const abortCaller = 'throw redirect()' as const
+  const args = [JSON.stringify(url)]
+  if (!statusCode) {
+    statusCode = 302
+  } else {
+    assertStatusCode(statusCode, [301, 302], 'redirect')
+    args.push(String(statusCode))
+  }
   const pageContextAbort = {}
   objectAssign(pageContextAbort, {
     _abortCaller: abortCaller,
-    _abortCall: `throw redirect(${statusCode})` as const,
+    _abortCall: `throw redirect(${args.join(', ')})` as const,
     _urlRedirect: {
       url,
       statusCode
