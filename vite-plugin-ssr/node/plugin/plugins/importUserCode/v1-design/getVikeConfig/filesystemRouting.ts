@@ -23,7 +23,7 @@ function getLocationId(somePath: string): string {
 function getRouteFilesystem(locationId: string): string {
   return getLogialPath(locationId, ['renderer', 'pages', 'src', 'index'])
 }
-/** Get apply root for config inheritance **/
+/** Get apply root for config inheritance */
 function getInheritanceRoot(someDir: string): string {
   return getLogialPath(someDir, ['renderer'])
 }

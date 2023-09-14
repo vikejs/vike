@@ -114,7 +114,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
       hasServerRouting = true
     }
     {
-      const { entryName, entryTarget } = getEntryFromPageConfigData(pageConfig, true)
+      const { entryName, entryTarget } = getEntryFromPageConfig(pageConfig, true)
       clientEntries[entryName] = entryTarget
     }
     {
@@ -135,7 +135,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
 function analyzeServerEntries(pageConfigs: PageConfigBuildTime[]) {
   const serverEntries: Record<string, string> = {}
   pageConfigs.forEach((pageConfig) => {
-    const { entryName, entryTarget } = getEntryFromPageConfigData(pageConfig, false)
+    const { entryName, entryTarget } = getEntryFromPageConfig(pageConfig, false)
     serverEntries[entryName] = entryTarget
   })
   return serverEntries
@@ -178,7 +178,7 @@ function getEntryFromFilePath(filePath: string, config: ResolvedConfig, addExtra
 
   return { entryName, entryTarget }
 }
-function getEntryFromPageConfigData(pageConfig: PageConfigBuildTime, isForClientSide: boolean) {
+function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide: boolean) {
   let { pageId } = pageConfig
   const entryTarget = getVirtualFileIdImportPageCode(pageId, isForClientSide)
   let entryName = pageId

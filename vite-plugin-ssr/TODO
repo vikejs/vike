@@ -1,4 +1,5 @@
 - Choose between:
+  - ConfigInterface (better for overriding Config.Page and Config.abortReason - try it out for Page and abortReason)
   - ConfigCustom
   - ConfigCustomization
   - ConfigExtension
@@ -6,15 +7,9 @@
   - ConfigUserDefined
   - ConfigMore
 
-- remove all occurrences of pageConfigData
-
 - fix pageContext._renderHook.hookFilePath / replace with new prop hookSrc
-- stop treating undefined as null
 - refacor/fix skipConfigValue to differentiate between global/page virtual file
 - use json-s instead of JSON
-
-- Seems like passToClient is already cumulative for 0.4 design, should be as well for v1 design
-  - https://github.com/vikejs/vike-react/issues/4
 
 - By default, only call guard() hooks on the server-side?
 
