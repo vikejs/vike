@@ -6,13 +6,15 @@ export { sortAfterInheritanceOrder }
 export { isGlobalLocation }
 export { applyFilesystemRoutingRootEffect }
 
+// For ./filesystemRouting.spec.ts
+export { getLogicalPath }
+
 import { assert, assertPosixPath, getNpmPackageImportPath, isNpmPackageImport, higherFirst } from '../../../../utils.js'
 
 /**
  * getLocationId('/pages/some-page/+Page.js') => '/pages/some-page'
  * getLocationId('/pages/some-page') => '/pages/some-page'
  * getLocationId('/renderer/+config.js') => '/renderer'
- * getLocationId('someNpmPackage/renderer/+config.js') => 'someNpmPackage/renderer'
  */
 function getLocationId(somePath: string): string {
   const locationId = removeFilename(somePath, true)
@@ -21,21 +23,20 @@ function getLocationId(somePath: string): string {
 }
 /** Get URL determined by filesystem path */
 function getRouteFilesystem(locationId: string): string {
-  return getLogialPath(locationId, ['renderer', 'pages', 'src', 'index'])
+  return getLogicalPath(locationId, ['renderer', 'pages', 'src', 'index'])
 }
 /** Get apply root for config inheritance */
 function getInheritanceRoot(someDir: string): string {
-  return getLogialPath(someDir, ['renderer'])
+  return getLogicalPath(someDir, ['renderer'])
 }
 /**
- * getLogialPath('/pages/some-page', ['pages']) => '/some-page'
- * getLogialPath('someNpmPackage/renderer', ['renderer']) => '/'
+ * getLogicalPath('/pages/some-page', ['pages']) => '/some-page'
+ * getLogicalPath('some-npm-pkg/renderer', ['renderer']) => '/'
  */
-function getLogialPath(someDir: string, removeDirs: string[]): string {
+function getLogicalPath(someDir: string, removeDirs: string[]): string {
   someDir = removeNpmPackageName(someDir)
   someDir = removeDirectories(someDir, removeDirs)
-  assert(someDir.startsWith('/'))
-  assert(!someDir.endsWith('/') || someDir === '/')
+  assertIsPath(someDir)
   return someDir
 }
 
@@ -52,12 +53,12 @@ function sortAfterInheritanceOrder(locationId1: string, locationId2: string, loc
   assert(isInherited(locationId1, locationIdPage))
   assert(isInherited(locationId2, locationIdPage))
   // Equivalent assertion (see isInherited() implementation)
-  assert(inheritanceRootPage.startsWith(inheritanceRoot1))
-  assert(inheritanceRootPage.startsWith(inheritanceRoot2))
+  assert(startsWith(inheritanceRootPage, inheritanceRoot1))
+  assert(startsWith(inheritanceRootPage, inheritanceRoot2))
 
   if (inheritanceRoot1 !== inheritanceRoot2) {
     // Should be true since locationId1 and locationId2 are both inherited by the same page
-    assert(inheritanceRoot1.startsWith(inheritanceRoot2) || inheritanceRoot2.startsWith(inheritanceRoot1))
+    assert(startsWith(inheritanceRoot1, inheritanceRoot2) || startsWith(inheritanceRoot2, inheritanceRoot1))
     assert(inheritanceRoot1.length !== inheritanceRoot2.length)
     return higherFirst<string>((inheritanceRoot) => inheritanceRoot.length)(inheritanceRoot1, inheritanceRoot2)
   }
@@ -95,11 +96,12 @@ function locationIsRendererDir(locationId: string) {
 function isInherited(locationId1: string, locationId2: string): boolean {
   const inheritanceRoot1 = getInheritanceRoot(locationId1)
   const inheritanceRoot2 = getInheritanceRoot(locationId2)
-  return inheritanceRoot2.startsWith(inheritanceRoot1)
+  return startsWith(inheritanceRoot2, inheritanceRoot1)
 }
 
 function removeNpmPackageName(somePath: string): string {
   if (!isNpmPackageImport(somePath)) {
+    assert(somePath.startsWith('/'))
     return somePath
   }
   const importPath = getNpmPackageImportPath(somePath)
@@ -131,8 +133,7 @@ function removeFilename(filePath: string, optional?: true) {
   }
   filePath = filePath.split('/').slice(0, -1).join('/')
   if (filePath === '') filePath = '/'
-  assert(filePath.startsWith('/') || isNpmPackageImport(filePath))
-  assert(!filePath.endsWith('/') || filePath === '/')
+  assertLocationId(filePath)
   return filePath
 }
 
@@ -141,11 +142,6 @@ function getRouteFilesystemDefinedBy(locationId: string) {
   assert(!locationId.endsWith('/'))
   const routeFilesystemDefinedBy = locationId + '/'
   return routeFilesystemDefinedBy
-}
-
-function assertLocationId(locationId: string) {
-  assert(locationId.startsWith('/') || isNpmPackageImport(locationId))
-  assert(!locationId.endsWith('/') || locationId === '/')
 }
 
 function applyFilesystemRoutingRootEffect(
@@ -158,4 +154,37 @@ function applyFilesystemRoutingRootEffect(
   routeFilesystem = after + '/' + routeFilesystem.slice(before.length)
   routeFilesystem = '/' + routeFilesystem.split('/').filter(Boolean).join('/')
   return routeFilesystem
+}
+
+function assertLocationId(locationId: string) {
+  assert(locationId.startsWith('/') || isNpmPackageImport(locationId))
+  assert(!locationId.endsWith('/') || locationId === '/')
+}
+function assertIsPath(logicalPath: string) {
+  assert(logicalPath.startsWith('/'))
+  assert(!logicalPath.endsWith('/') || logicalPath === '/')
+}
+
+/** Whether `inheritanceRoot1` starts with `inheritanceRoot2` */
+function startsWith(inheritanceRoot1: string, inheritanceRoot2: string): boolean {
+  assertIsPath(inheritanceRoot1)
+  assertIsPath(inheritanceRoot2)
+  const segments1 = inheritanceRoot1.split('/').filter(Boolean)
+  const segments2 = inheritanceRoot2.split('/').filter(Boolean)
+  for (const i in segments2) {
+    const segment1 = segments1[i]
+    const segment2 = segments2[i]
+    if (segment1 !== segment2 ) {
+      /* This assertion fails for:
+         ```
+         inheritanceRoot1: '/pages/about2'
+         inheritanceRoot2: '/pages/about'
+         ```
+      assert(!inheritanceRoot1.startsWith(inheritanceRoot2))
+      */
+      return false
+    }
+  }
+  assert(inheritanceRoot1.startsWith(inheritanceRoot2))
+  return true
 }
