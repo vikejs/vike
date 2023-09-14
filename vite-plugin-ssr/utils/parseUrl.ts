@@ -64,8 +64,8 @@ function parseUrl(
   const hash = hashOriginal === null ? '' : decodeSafe(hashOriginal.slice(1))
 
   // Search
-  const [urlWithoutSearch, ...searchList] = urlWithoutHash.split('?')
-  assert(urlWithoutSearch !== undefined)
+  const [urlWithoutHashNorSearch, ...searchList] = urlWithoutHash.split('?')
+  assert(urlWithoutHashNorSearch !== undefined)
   const searchOriginal = ['', ...searchList].join('?') || null
   assert(searchOriginal === null || searchOriginal.startsWith('?'), { url, searchOriginal })
   const search: Record<string, string> = {}
@@ -76,13 +76,13 @@ function parseUrl(
   })
 
   // Origin + pathname
-  const { origin, pathnameResolved } = parseWithNewUrl(urlWithoutSearch, baseServer)
+  const { origin, pathnameResolved } = parseWithNewUrl(urlWithoutHashNorSearch, baseServer)
   assert(origin === null || origin === decodeSafe(origin), { origin }) // AFAICT decoding the origin is useless
   assert(pathnameResolved.startsWith('/'), { url, pathnameResolved })
   assert(origin === null || url.startsWith(origin), { url, origin })
 
   // `pathnameOriginal`
-  const pathnameOriginal = urlWithoutSearch.slice((origin || '').length)
+  const pathnameOriginal = urlWithoutHashNorSearch.slice((origin || '').length)
 
   assertUrlComponents(url, origin, pathnameOriginal, searchOriginal, hashOriginal)
 
@@ -118,25 +118,25 @@ function decodePathname(urlPathname: string) {
     .map((dir) => decodeSafe(dir).split('/').join('%2F'))
     .join('/')
 }
-function parseWithNewUrl(urlWithoutSearch: string, baseServer: string) {
+function parseWithNewUrl(urlWithoutHashNorSearch: string, baseServer: string) {
   // `new URL('//', 'https://example.org')` throws `ERR_INVALID_URL`
-  if (urlWithoutSearch.startsWith('//')) {
-    return { origin: null, pathnameResolved: urlWithoutSearch }
+  if (urlWithoutHashNorSearch.startsWith('//')) {
+    return { origin: null, pathnameResolved: urlWithoutHashNorSearch }
   }
 
   let isTauriProtocol = false
   const PROTOCOL_TAURI = 'tauri://'
   const PROTOCOL_FAKE = 'http://'
-  if (urlWithoutSearch.startsWith(PROTOCOL_TAURI)) {
+  if (urlWithoutHashNorSearch.startsWith(PROTOCOL_TAURI)) {
     isTauriProtocol = true
-    urlWithoutSearch = PROTOCOL_FAKE + urlWithoutSearch.slice(PROTOCOL_TAURI.length)
+    urlWithoutHashNorSearch = PROTOCOL_FAKE + urlWithoutHashNorSearch.slice(PROTOCOL_TAURI.length)
   }
 
   let origin: string | null
   let pathnameResolved: string
   try {
     // `new URL(url)` throws an error if `url` doesn't have an origin
-    const urlParsed = new URL(urlWithoutSearch)
+    const urlParsed = new URL(urlWithoutHashNorSearch)
     origin = urlParsed.origin
     pathnameResolved = urlParsed.pathname
   } catch (err) {
@@ -154,7 +154,7 @@ function parseWithNewUrl(urlWithoutSearch: string, baseServer: string) {
     //  - `url === '?queryWithoutPath'`
     //  - `url === '''`
     // `base` in `new URL(url, base)` is used for resolving relative paths (`new URL()` doesn't remove `base` from `pathname`)
-    const urlParsed = new URL(urlWithoutSearch, base)
+    const urlParsed = new URL(urlWithoutHashNorSearch, base)
     pathnameResolved = urlParsed.pathname
   }
 
@@ -166,7 +166,7 @@ function parseWithNewUrl(urlWithoutSearch: string, baseServer: string) {
     origin = PROTOCOL_TAURI + origin.slice(PROTOCOL_FAKE.length)
   }
 
-  assert(pathnameResolved.startsWith('/'), { urlWithoutSearch, pathnameResolved })
+  assert(pathnameResolved.startsWith('/'), { urlWithoutSearch: urlWithoutHashNorSearch, pathnameResolved })
   // The URL pathname should be the URL without origin, query string, and hash.
   //  - https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname
   assert(pathnameResolved === pathnameResolved.split('?')[0]!.split('#')[0])
