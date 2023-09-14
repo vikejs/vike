@@ -53,8 +53,8 @@ function parseUrl(
   hash: string
   hashOriginal: null | string
 } {
-  assert(isParsable(url), { url })
-  assert(baseServer.startsWith('/'), { url, baseServer })
+  assert(isParsable(url))
+  assert(baseServer.startsWith('/'))
 
   // Hash
   const [urlWithoutHash, ...hashList] = url.split('#')
@@ -67,7 +67,7 @@ function parseUrl(
   const [urlWithoutHashNorSearch, ...searchList] = urlWithoutHash.split('?')
   assert(urlWithoutHashNorSearch !== undefined)
   const searchOriginal = ['', ...searchList].join('?') || null
-  assert(searchOriginal === null || searchOriginal.startsWith('?'), { url, searchOriginal })
+  assert(searchOriginal === null || searchOriginal.startsWith('?'))
   const search: Record<string, string> = {}
   const searchAll: Record<string, string[]> = {}
   Array.from(new URLSearchParams(searchOriginal || '')).forEach(([key, val]) => {
@@ -77,9 +77,9 @@ function parseUrl(
 
   // Origin + pathname
   const { origin, pathnameResolved } = parseWithNewUrl(urlWithoutHashNorSearch, baseServer)
-  assert(origin === null || origin === decodeSafe(origin), { origin }) // AFAICT decoding the origin is useless
-  assert(pathnameResolved.startsWith('/'), { url, pathnameResolved })
-  assert(origin === null || url.startsWith(origin), { url, origin })
+  assert(origin === null || origin === decodeSafe(origin)) // AFAICT decoding the origin is useless
+  assert(pathnameResolved.startsWith('/'))
+  assert(origin === null || url.startsWith(origin))
 
   // `pathnameOriginal`
   const pathnameOriginal = urlWithoutHashNorSearch.slice((origin || '').length)
@@ -166,7 +166,7 @@ function parseWithNewUrl(urlWithoutHashNorSearch: string, baseServer: string) {
     origin = PROTOCOL_TAURI + origin.slice(PROTOCOL_FAKE.length)
   }
 
-  assert(pathnameResolved.startsWith('/'), { urlWithoutSearch: urlWithoutHashNorSearch, pathnameResolved })
+  assert(pathnameResolved.startsWith('/'))
   // The URL pathname should be the URL without origin, query string, and hash.
   //  - https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname
   assert(pathnameResolved === pathnameResolved.split('?')[0]!.split('#')[0])
@@ -245,7 +245,7 @@ function assertUrlComponents(
   hashOriginal: string | null
 ) {
   const urlRecreated = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
-  assert(url === urlRecreated, { url, urlRecreated })
+  assert(url === urlRecreated)
 }
 function createUrlFromComponents(
   origin: string | null,
