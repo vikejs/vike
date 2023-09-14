@@ -46,7 +46,7 @@ type AbortRedirect = Error
  * https://vite-plugin-ssr.com/redirect
  *
  * @param url The URL to redirect to.
- * @param statusCode By default a `302` (temporary) redirection is performed, but you can trigger a `301` (permanent) redirection instead. Alternatively, you can define permanent redirections by setting `config.redirects`, see https://vite-plugin-ssr.com/redirects.
+ * @param statusCode By default a temporary redirection (`302`) is performed. For permanent redirections (`301`), use `config.redirects` https://vite-plugin-ssr.com/redirects instead or, alternatively, set the `statusCode` argument to `301`.
  */
 function redirect(url: `/${string}` | `https://${string}` | `http://${string}`, statusCode?: 301 | 302): AbortRedirect {
   const abortCaller = 'throw redirect()' as const
