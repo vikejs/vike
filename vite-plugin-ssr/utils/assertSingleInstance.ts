@@ -30,9 +30,9 @@ const clientNotSingleInstance =
 function assertSingleInstance() {
   {
     const versions = unique(globalObject.instances)
-    // We don't warn but fail in order to avoid issues that are hard to debug, e.g. https://github.com/brillout/vite-plugin-ssr/issues/1108
     assertUsage(
       versions.length <= 1,
+      // DO *NOT* patch vite-plugin-ssr to remove this error: because of multiple conflicting versions, you *will* eventually encounter insidious issues that hard to debug and potentially a security hazard, see for example https://github.com/brillout/vite-plugin-ssr/issues/1108
       `Both vite-plugin-ssr@${versions[0]} and vite-plugin-ssr@${versions[1]} loaded. Only one version should be loaded.`
     )
   }
