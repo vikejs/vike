@@ -522,7 +522,7 @@ function resolveConfigValueSources(
   for (const interfaceFiles of Object.values(interfaceFilesRelevant)) {
     const interfaceFilesDefiningConfig = interfaceFiles.filter((interfaceFile) => interfaceFile.configMap[configName])
     if (interfaceFilesDefiningConfig.length === 0) continue
-    sources = []
+    sources = sources ?? []
     const visited = new WeakSet<InterfaceFile>()
     const add = (interfaceFile: InterfaceFile) => {
       assert(!visited.has(interfaceFile))
