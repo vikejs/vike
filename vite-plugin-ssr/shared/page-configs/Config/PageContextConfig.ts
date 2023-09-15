@@ -1,7 +1,7 @@
 export type { PageContextConfig }
 
 import type { ConfigBuiltIn, ConfigVikeReact, ConfigVikeSolid, ConfigVikeSvelte, ConfigVikeVue } from '../Config.js'
-import type { Combine, IsNotEmpty, XOR4 } from './helpers.d.ts'
+import type { Combine, IsNotEmpty, XOR4 } from './helpers.ts'
 
 // Like the type `Config` but meant for pageContext.config
 type PageContextConfig = ConfigBuiltIn &
