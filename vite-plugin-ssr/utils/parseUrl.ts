@@ -132,31 +132,22 @@ function parseWithNewUrl(urlWithoutHashNorSearch: string, baseServer: string) {
     urlWithoutHashNorSearch = PROTOCOL_FAKE + urlWithoutHashNorSearch.slice(PROTOCOL_TAURI.length)
   }
 
-  let origin: string | null
-  let pathnameResolved: string
-  try {
-    // `new URL(url)` throws an error if `url` doesn't have an origin
-    const urlParsed = new URL(urlWithoutHashNorSearch)
-    origin = urlParsed.origin
-    pathnameResolved = urlParsed.pathname
-  } catch (err) {
-    // `url` has no origin
-    origin = null
-    // In the browser, this is the Base URL of the current URL
-    let base =
-      typeof window !== 'undefined' &&
-      // We need to access safely in case the user sets `window` in Node.js
-      window?.document?.baseURI
-    base = base || 'http://fake.example.org' + baseServer
-    // `new Url()` supports:
-    //  - `url === '/absolute/path'`
-    //  - `url === './relative/path'`
-    //  - `url === '?queryWithoutPath'`
-    //  - `url === '''`
-    // `base` in `new URL(url, base)` is used for resolving relative paths (`new URL()` doesn't remove `base` from `pathname`)
-    const urlParsed = new URL(urlWithoutHashNorSearch, base)
-    pathnameResolved = urlParsed.pathname
-  }
+  // In the browser, this is the Base URL of the current URL
+  let base =
+    typeof window === 'undefined'
+      ? 'http://fake.org' + baseServer
+      : // We need to access safely in case the user sets `window` in Node.js
+        window?.document?.baseURI
+
+  // `new Url()` supports:
+  //  - `url === '/absolute/path'`
+  //  - `url === './relative/path'`
+  //  - `url === '?queryWithoutPath'`
+  //  - `url === '''`
+  // `base` in `new URL(url, base)` is used for resolving relative paths (`new URL()` doesn't remove `base` from `pathname`)
+  const urlParsed = new URL(urlWithoutHashNorSearch, base)
+  let pathnameResolved = urlParsed.pathname
+  let origin = urlWithoutHashNorSearch.startsWith(urlParsed.origin) ? urlParsed.origin : null
 
   if (!pathnameResolved) pathnameResolved = '/'
 
