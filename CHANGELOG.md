@@ -1,3 +1,44 @@
+## [0.4.141](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.140...v0.4.141) (2023-09-15)
+
+
+### Bug Fixes
+
+* `throw redirect(/some-url/, 301)` (fix [#1104](https://github.com/brillout/vite-plugin-ssr/issues/1104)) ([64f684f](https://github.com/brillout/vite-plugin-ssr/commit/64f684f8e8709b1e0fb8ae06570120b4291e72be))
+* +config.h.js prerender flag ([2c58da8](https://github.com/brillout/vite-plugin-ssr/commit/2c58da83abbcd3b2d6720838040f39ceb996a451))
+* add hint to error message upon invalid route string ([c1537dc](https://github.com/brillout/vite-plugin-ssr/commit/c1537dcf2bd7725ae9690606cd31ec9f51b7dc69))
+* add missing config type to PageContextBuiltInServer ([362d69c](https://github.com/brillout/vite-plugin-ssr/commit/362d69c3cb98b165038de8262a04aab2203d29a1))
+* avoid overriding meta ([f2ec4bd](https://github.com/brillout/vite-plugin-ssr/commit/f2ec4bd44d98dcf8a0604234da702f3019f36765))
+* enable vike-* packages to seamlessly extend Config using interface merging ([894c039](https://github.com/brillout/vite-plugin-ssr/commit/894c03903265f0fc7ed4d09e8d4c126316b10198))
+* external redirects (fix [#1103](https://github.com/brillout/vite-plugin-ssr/issues/1103)) ([7343a85](https://github.com/brillout/vite-plugin-ssr/commit/7343a85f11fc7115a41659c0aeb76a6eb1fc1b4b))
+* further discourage loading multiple versions (fix [#1108](https://github.com/brillout/vite-plugin-ssr/issues/1108)) ([3a66e95](https://github.com/brillout/vite-plugin-ssr/commit/3a66e952396b739bbedb6f8f8d7bac1d64026e90))
+* further use colors instead of backtick in error messages ([3cdb970](https://github.com/brillout/vite-plugin-ssr/commit/3cdb9707bd6ad0969dd004612efebaaf5fb3861e))
+* further use colors instead of backtick in error messages ([6739302](https://github.com/brillout/vite-plugin-ssr/commit/6739302e8e71eb4fc1f5c6098caf6a75f785fbdb))
+* further use colors instead of backtick in error messages ([0f23c0d](https://github.com/brillout/vite-plugin-ssr/commit/0f23c0d2ac9c22d46f2828e3bb0b0bc52d733e46))
+* further use colors instead of backtick in error messages ([b178539](https://github.com/brillout/vite-plugin-ssr/commit/b1785391d5ecf2f85ec5f38143503012125db313))
+* further use colors instead of backtick in error messages ([2296914](https://github.com/brillout/vite-plugin-ssr/commit/229691493d90e505a2cae9b74da2f03171f0bcb9))
+* improve error message about non-default exports ([58f8b2f](https://github.com/brillout/vite-plugin-ssr/commit/58f8b2fb5fbcea2f3ee28cbc9b0c741440c8d225))
+* improve error message upon code defined inside header files ([687c5b2](https://github.com/brillout/vite-plugin-ssr/commit/687c5b25b42a264d7730bbdec8a4b8bfb7106643))
+* improve JSDoc of `throw redirect()` ([2ce54a2](https://github.com/brillout/vite-plugin-ssr/commit/2ce54a2d6834d133a271b4d787530d4260be537c))
+* improve log colors ([b936aee](https://github.com/brillout/vite-plugin-ssr/commit/b936aee111a78ead7274f6929000e4897b906039))
+* improve serialization error message ([1bedc8a](https://github.com/brillout/vite-plugin-ssr/commit/1bedc8a76f7388fb269c188f3d0ba782e744713c))
+* improve wrong redirection usage error ([83f8586](https://github.com/brillout/vite-plugin-ssr/commit/83f8586f47f59eda03613fe5bd53a4eb2ab0dd44))
+* intercept log for `throw redirect()` ([950ebd0](https://github.com/brillout/vite-plugin-ssr/commit/950ebd0212c7717be5135c28d0e253ca4aacb561))
+* make inheritence check consider whole path segments (fix [#1109](https://github.com/brillout/vite-plugin-ssr/issues/1109)) ([5bd8c1e](https://github.com/brillout/vite-plugin-ssr/commit/5bd8c1e128cad87d04ba5d54af1eda788dc69f54))
+* set Page type to unknown instead of any by default ([412a26a](https://github.com/brillout/vite-plugin-ssr/commit/412a26aed262b868ef250265173372525d706a07))
+* set pageContext.is404 upon throw render(404) (fix [#1107](https://github.com/brillout/vite-plugin-ssr/issues/1107)) ([9dd96c3](https://github.com/brillout/vite-plugin-ssr/commit/9dd96c31104e34f2cd9dc9313ccce0906a81dff1))
+* use colors instead of backtick in error messages ([a052d52](https://github.com/brillout/vite-plugin-ssr/commit/a052d52656fd084d2df5f44502ddfad892aec97b))
+* use colors instead of quotes in error messages ([ceb7af8](https://github.com/brillout/vite-plugin-ssr/commit/ceb7af8ec059159e0eea90f2a60b084af8691591))
+
+
+### Features
+
+* [V1 design] cumulative ([25af958](https://github.com/brillout/vite-plugin-ssr/commit/25af9587611e0bdf8df993f7c8f027460c0206aa))
+* new namespace `Vike` to enable users to refine type `Config` ([c0e909d](https://github.com/brillout/vite-plugin-ssr/commit/c0e909d4e4e58ff506f02889773f0e927d4ccfde))
+* static external redirections ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([fa02b0e](https://github.com/brillout/vite-plugin-ssr/commit/fa02b0e0d1b1fc38689888482a6da629374f9e1b))
+* static glob redirections ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([80a15a1](https://github.com/brillout/vite-plugin-ssr/commit/80a15a110f3140001486e776af55e07a1917e00b))
+
+
+
 ## [0.4.140](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.139...v0.4.140) (2023-08-30)
 
 
