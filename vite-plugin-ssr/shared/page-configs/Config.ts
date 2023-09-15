@@ -3,7 +3,7 @@ export type { ConfigBuiltIn }
 export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
-export type { ConfigCustom }
+export type { ConfigInterface }
 export type { ConfigVikeReact }
 export type { ConfigVikeVue }
 export type { ConfigVikeSolid }
@@ -34,7 +34,7 @@ type ConfigNameBuiltInPublic =
 type ConfigNameBuiltInInternal = 'isClientSideRenderable' | 'onBeforeRenderEnv'
 type ConfigNameBuiltIn = ConfigNameBuiltInPublic | ConfigNameBuiltInInternal
 
-type Config = ConfigBuiltIn & ConfigCustom & (ConfigVikeReact | ConfigVikeVue | ConfigVikeSolid | ConfigVikeSvelte)
+type Config = ConfigBuiltIn & ConfigInterface & (ConfigVikeReact | ConfigVikeVue | ConfigVikeSolid | ConfigVikeSvelte)
 
 // TODO: write docs of links below
 
@@ -170,9 +170,9 @@ type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`
 
 // Enable users and vike-* packages to extend the type Config, for example:
-//  - The user can set Config['Page'] over ConfigCustom['Page']
-//  - vike-vercel can add Config['isr'] over ConfigCustom['isr']
-interface ConfigCustom {}
+//  - The user can set Config['Page'] over ConfigInterface['Page']
+//  - vike-vercel can add Config['isr'] over ConfigInterface['isr']
+interface ConfigInterface {}
 
 // Enable vike-{react/vue/solid/svelte} to extend the type Config.
 //  - We need a different interface for each vike-{react/vue/solid/svelte} package because of conflicts.
