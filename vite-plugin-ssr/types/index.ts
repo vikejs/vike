@@ -5,11 +5,6 @@ export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtm
 export type {
   Config,
   ConfigMeta as Meta,
-  ConfigInterface,
-  ConfigVikeReact,
-  ConfigVikeVue,
-  ConfigVikeSolid,
-  ConfigVikeSvelte
 } from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {

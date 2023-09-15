@@ -1,11 +1,12 @@
+- Add Vike.PageContext
+  - improve TypeScript DX for `abortReason`
+  - improve TypeScript DX for `usePageContext()`
 - fix pageContext._renderHook.hookFilePath / replace with new prop hookSrc
 - refacor/fix skipConfigValue to differentiate between global/page virtual file
 - use json-s instead of JSON
 
 - By default, only call guard() hooks on the server-side?
 
-- improve TypeScript DX for abortReason
-- improve TypeScript DX for usePageContext
 - release 0.5.0
   - `import * from 'vite-plugin-ssr'`
   - pageContext.url
@@ -55,3 +56,4 @@ Contact:
  - Cloudflare Workers
  - UI frameworks like qwik (maybe even Angular)
    - See `pnpm create vite@latest` for a list of UI frameworks
+

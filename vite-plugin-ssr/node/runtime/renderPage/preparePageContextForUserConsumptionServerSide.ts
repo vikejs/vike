@@ -30,7 +30,7 @@ type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal 
   is404: null | boolean
   isClientSideNavigation: boolean
   pageProps?: Record<string, unknown>
-}
+} & Record<string, unknown>
 function preparePageContextForUserConsumptionServerSide(pageContext: PageContextForUserConsumptionServerSide): void {
   assertPageContextUrlComputedProps(pageContext)
 

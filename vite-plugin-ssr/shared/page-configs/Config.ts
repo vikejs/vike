@@ -3,15 +3,11 @@ export type { ConfigBuiltIn }
 export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
-export type { ConfigInterface }
-export type { ConfigVikeReact }
-export type { ConfigVikeVue }
-export type { ConfigVikeSolid }
-export type { ConfigVikeSvelte }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { ConfigVpsUserProvided } from '../ConfigVps.js'
+import type { Vike, VikePackages } from '../VikeNamespace.js'
 
 type HookName =
   | 'onHydrationEnd'
@@ -34,7 +30,14 @@ type ConfigNameBuiltInPublic =
 type ConfigNameBuiltInInternal = 'isClientSideRenderable' | 'onBeforeRenderEnv'
 type ConfigNameBuiltIn = ConfigNameBuiltInPublic | ConfigNameBuiltInInternal
 
-type Config = ConfigBuiltIn & ConfigInterface & (ConfigVikeReact | ConfigVikeVue | ConfigVikeSolid | ConfigVikeSvelte)
+type Config = ConfigBuiltIn &
+  Vike.Config &
+  (
+    | VikePackages.ConfigVikeReact
+    | VikePackages.ConfigVikeVue
+    | VikePackages.ConfigVikeSolid
+    | VikePackages.ConfigVikeSvelte
+  )
 
 // TODO: write docs of links below
 
@@ -168,16 +171,3 @@ type ConfigBuiltIn = {
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`
-
-// Enable users and vike-* packages to extend the type Config, for example:
-//  - The user can set Config['Page'] over ConfigInterface['Page']
-//  - vike-vercel can add Config['isr'] over ConfigInterface['isr']
-interface ConfigInterface {}
-
-// Enable vike-{react/vue/solid/svelte} to extend the type Config.
-//  - We need a different interface for each vike-{react/vue/solid/svelte} package because of conflicts.
-//    - E.g. the config 'Page' can be a React/Vue/Solid/Svelte componenent depending on which vike-{react/vue/solid/svelte} packages the user installed.
-interface ConfigVikeReact {} // For vike-react
-interface ConfigVikeVue {} // For vike-vue
-interface ConfigVikeSolid {} // For vike-solid
-interface ConfigVikeSvelte {} // For vike-svelte (the vike-svelte package doesn't exist yet)
