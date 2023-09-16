@@ -12,7 +12,7 @@ const resultBase = {
   search: {},
   searchAll: {},
   searchOriginal: null
-}
+} as const
 
 describe('parseUrl', () => {
   it('basics', () => {
@@ -163,6 +163,9 @@ describe('parseUrl', () => {
         pathnameOriginal: '/user/%40rom',
         pathname: '/user/@rom'
       })
+      assert(encodeURIComponent('/') === '%2F')
+      assert(decodeURIComponent('%2F') === '/')
+      assert(decodeURI('%2F') === '%2F')
       expect(parseUrl(`/r${encodeURIComponent('/')}om`, '/')).toEqual({
         ...resultBase,
         pathnameOriginal: '/r%2Fom',
@@ -316,6 +319,7 @@ describe('parseUrl', () => {
       pathnameOriginal: '',
       pathname: '/'
     })
+    assert((new URL('', 'http://fake.org/base')).pathname === '/base')
     expect(parseUrl('', '/base')).toEqual({
       ...resultBase,
       pathnameOriginal: '',

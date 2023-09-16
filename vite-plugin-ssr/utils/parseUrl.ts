@@ -1,3 +1,7 @@
+// We don't use new URL() as it doesn't exactly do what we need, for example:
+//  - It loses the original URL parts (which we need to manipulate and recreate URLs)
+//  - It doesn't support the tauri:// protocol
+
 // Unit tests at ./parseUrl.spec.ts
 
 export { parseUrl }
@@ -11,12 +15,13 @@ import { slice } from './slice.js'
 import { assert, assertUsage } from './assert.js'
 import pc from '@brillout/picocolors'
 
+const PROTOCOLS = ['http://', 'https://', 'tauri://']
+
 function isParsable(url: string): boolean {
   // `parseUrl()` works with these URLs
   return (
+    PROTOCOLS.some((p) => url.startsWith(p)) ||
     url.startsWith('/') ||
-    url.startsWith('http') ||
-    url.startsWith('tauri://') ||
     url.startsWith('.') ||
     url.startsWith('?') ||
     url.startsWith('#') ||
@@ -76,7 +81,7 @@ function parseUrl(
   })
 
   // Origin + pathname
-  const { origin, pathnameResolved } = parseWithNewUrl(urlWithoutHashNorSearch, baseServer)
+  const { origin, pathname: pathnameResolved } = parsePathname(urlWithoutHashNorSearch, baseServer)
   assert(origin === null || origin === decodeSafe(origin)) // AFAICT decoding the origin is useless
   assert(pathnameResolved.startsWith('/'))
   assert(origin === null || url.startsWith(origin))
@@ -113,53 +118,71 @@ function decodeSafe(urlComponent: string): string {
   return urlComponent
 }
 function decodePathname(urlPathname: string) {
-  return urlPathname
+  urlPathname = urlPathname
     .split('/')
     .map((dir) => decodeSafe(dir).split('/').join('%2F'))
     .join('/')
+  urlPathname = urlPathname.replace(/\s/g, '')
+  return urlPathname
 }
-function parseWithNewUrl(urlWithoutHashNorSearch: string, baseServer: string) {
-  // `new URL('//', 'https://example.org')` throws `ERR_INVALID_URL`
-  if (urlWithoutHashNorSearch.startsWith('//')) {
-    return { origin: null, pathnameResolved: urlWithoutHashNorSearch }
+function parsePathname(
+  urlWithoutHashNorSearch: string,
+  baseServer: string
+): { origin: null | string; pathname: string } {
+  {
+    const { origin, pathname } = parseOrigin(urlWithoutHashNorSearch)
+    if (origin) {
+      return { origin, pathname }
+    }
+    assert(pathname === urlWithoutHashNorSearch)
   }
 
-  let isTauriProtocol = false
-  const PROTOCOL_TAURI = 'tauri://'
-  const PROTOCOL_FAKE = 'http://'
-  if (urlWithoutHashNorSearch.startsWith(PROTOCOL_TAURI)) {
-    isTauriProtocol = true
-    urlWithoutHashNorSearch = PROTOCOL_FAKE + urlWithoutHashNorSearch.slice(PROTOCOL_TAURI.length)
+  if (urlWithoutHashNorSearch.startsWith('/')) {
+    return { origin: null, pathname: urlWithoutHashNorSearch }
+  } else {
+    // In the browser, this is the Base URL of the current URL
+    // Safe access `window?.document?.baseURI` for users who shim `window` in Node.js
+    const base = (typeof window !== 'undefined' && window?.document?.baseURI) || baseServer
+    const pathname = resolveUrlPathnameRelative(urlWithoutHashNorSearch, base)
+    // We need to parse the origin in case `base === window.document.baseURI`
+    const parsed = parseOrigin(pathname)
+    return parsed
   }
+}
 
-  // In the browser, this is the Base URL of the current URL
-  // Safe access `window?.document?.baseURI` for users who shim `window` in Node.js
-  const base = (typeof window !== 'undefined' && window?.document?.baseURI) || 'http://fake.org' + baseServer
-
-  // `new URL(url)` supports:
-  //  - `url === '/absolute/path'`
-  //  - `url === './relative/path'`
-  //  - `url === '?queryWithoutPath'`
-  //  - `url === ''`
-  // `base` in `new URL(url, base)` is used for resolving relative paths (`new URL()` doesn't remove `base` from `pathname`)
-  const urlParsed = new URL(urlWithoutHashNorSearch, base)
-  let pathnameResolved = urlParsed.pathname
-  let origin = urlWithoutHashNorSearch.startsWith(urlParsed.origin) ? urlParsed.origin : null
-
-  if (!pathnameResolved) pathnameResolved = '/'
-
-  if (isTauriProtocol) {
-    assert(origin)
-    assert(origin.startsWith(PROTOCOL_FAKE))
-    origin = PROTOCOL_TAURI + origin.slice(PROTOCOL_FAKE.length)
+function parseOrigin(url: string): { pathname: string; origin: null | string } {
+  if (!PROTOCOLS.some((protocol) => url.startsWith(protocol))) {
+    return { pathname: url, origin: null }
+  } else {
+    const [originPart1, originPart2, originPart3, ...pathnameParts] = url.split('/')
+    const origin = [originPart1, originPart2, originPart3].join('/')
+    const pathname = ['', ...pathnameParts].join('/') || '/'
+    return { origin, pathname }
   }
+}
 
-  assert(pathnameResolved.startsWith('/'))
-  // The URL pathname should be the URL without origin, query string, and hash.
-  //  - https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname
-  assert(pathnameResolved === pathnameResolved.split('?')[0]!.split('#')[0])
-
-  return { origin, pathnameResolved }
+// Adapted from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript/14780463#14780463
+function resolveUrlPathnameRelative(pathnameRelative: string, base: string) {
+  const stack = base.split('/')
+  const parts = pathnameRelative.split('/')
+  let baseRestoreTrailingSlash = base.endsWith('/')
+  if (pathnameRelative.startsWith('.')) {
+    // remove current file name
+    stack.pop()
+  }
+  for (const i in parts) {
+    const p = parts[i]!
+    if (p == '' && i === '0') continue
+    if (p == '.') continue
+    if (p == '..') stack.pop()
+    else {
+      baseRestoreTrailingSlash = false
+      stack.push(p)
+    }
+  }
+  let pathnameAbsolute = stack.join('/')
+  if (baseRestoreTrailingSlash && !pathnameAbsolute.endsWith('/')) pathnameAbsolute += '/'
+  return pathnameAbsolute
 }
 
 /* Not needed anymore?
