@@ -46,7 +46,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
     }
     const debugInfoSerialized = typeof debugInfo === 'string' ? debugInfo : JSON.stringify(debugInfo)
     return pc.dim(
-      `Debug info (this is for the ${projectInfo.projectName} maintainers; you can ignore this): ${debugInfoSerialized}`
+      `Debug info (for ${projectInfo.projectName} maintainers; you can ignore this): ${debugInfoSerialized}`
     )
   })()
 
