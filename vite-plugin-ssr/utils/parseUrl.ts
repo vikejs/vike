@@ -133,11 +133,8 @@ function parseWithNewUrl(urlWithoutHashNorSearch: string, baseServer: string) {
   }
 
   // In the browser, this is the Base URL of the current URL
-  let base =
-    typeof window === 'undefined'
-      ? 'http://fake.org' + baseServer
-      : // We need to access safely in case the user sets `window` in Node.js
-        window?.document?.baseURI
+  // Safe access `window?.document?.baseURI` for users who shim `window` in Node.js
+  const base = (typeof window !== 'undefined' && window?.document?.baseURI) || 'http://fake.org' + baseServer
 
   // `new URL(url)` supports:
   //  - `url === '/absolute/path'`
