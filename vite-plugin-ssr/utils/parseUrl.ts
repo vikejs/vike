@@ -139,11 +139,11 @@ function parseWithNewUrl(urlWithoutHashNorSearch: string, baseServer: string) {
       : // We need to access safely in case the user sets `window` in Node.js
         window?.document?.baseURI
 
-  // `new Url()` supports:
+  // `new URL(url)` supports:
   //  - `url === '/absolute/path'`
   //  - `url === './relative/path'`
   //  - `url === '?queryWithoutPath'`
-  //  - `url === '''`
+  //  - `url === ''`
   // `base` in `new URL(url, base)` is used for resolving relative paths (`new URL()` doesn't remove `base` from `pathname`)
   const urlParsed = new URL(urlWithoutHashNorSearch, base)
   let pathnameResolved = urlParsed.pathname
