@@ -13,7 +13,7 @@ import type {
 import type { Config, ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
 import { getConfigEnv, isConfigSet } from '../helpers.js'
 
-// For user
+// For users
 /** The meta definition of a config.
  *
  * https://vite-plugin-ssr.com/meta
@@ -52,7 +52,7 @@ type ConfigEffect = (config: {
   configDefinedAt: `Config ${string}`
 }) => Config | undefined
 
-// For maintainer
+// For maintainers
 type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
   _computed?: (pageConfig: PageConfigBuildTime) => unknown
   _valueIsFilePath?: true

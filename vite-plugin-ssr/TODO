@@ -1,6 +1,7 @@
 - Add Vike.PageContext
   - improve TypeScript DX for `abortReason`
   - improve TypeScript DX for `usePageContext()`
+- Set env type to `{ client: boolean, server: boolean, eager?: boolean }`
 - fix pageContext._renderHook.hookFilePath / replace with new prop hookSrc
 - refacor/fix skipConfigValue to differentiate between global/page virtual file
 - use json-s instead of JSON
