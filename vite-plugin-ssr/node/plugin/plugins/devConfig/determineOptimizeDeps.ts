@@ -29,8 +29,8 @@ async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved,
     pageConfigsData.forEach((pageConfig) => {
       const configValueSourcesRelevant = getConfigValueSourcesRelevant(pageConfig)
       configValueSourcesRelevant.forEach((configValueSource) => {
-        const { isCodeEntry, configEnv, definedAtInfo } = configValueSource
-        if (!isCodeEntry) return
+        const { valueIsImportedAtRuntime, configEnv, definedAtInfo } = configValueSource
+        if (!valueIsImportedAtRuntime) return
         const { filePath } = definedAtInfo
         assert(filePath)
 

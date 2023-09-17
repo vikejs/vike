@@ -670,7 +670,7 @@ function getConfigValueSource(
       value: filePath,
       valueIsFilePath: true,
       configEnv,
-      isCodeEntry: true,
+      valueIsImportedAtRuntime: true,
       isComputed: false,
       definedAtInfo: {
         filePath,
@@ -689,7 +689,7 @@ function getConfigValueSource(
       assertCodeFileEnv(codeFilePath, configEnv, configName)
       const configValueSource: ConfigValueSource = {
         configEnv,
-        isCodeEntry: true,
+        valueIsImportedAtRuntime: true,
         isComputed: false,
         definedAtInfo: {
           filePath: codeFilePath,
@@ -701,7 +701,7 @@ function getConfigValueSource(
       const configValueSource: ConfigValueSource = {
         value: configValue,
         configEnv,
-        isCodeEntry: false,
+        valueIsImportedAtRuntime: false,
         isComputed: false,
         definedAtInfo: definedAtInfoConfigFile
       }
@@ -713,7 +713,7 @@ function getConfigValueSource(
     const codeFileExport = configName === interfaceFile.configNameDefault ? 'default' : configName
     const configValueSource: ConfigValueSource = {
       configEnv,
-      isCodeEntry: true,
+      valueIsImportedAtRuntime: true,
       isComputed: false,
       definedAtInfo: {
         filePath: codeFilePath,
@@ -997,7 +997,7 @@ function applyComputed(pageConfig: PageConfigBuildTime, configDefinitionsRelevan
       configEnv: configDef.env,
       definedAtInfo: null,
       isComputed: true,
-      isCodeEntry: false
+      valueIsImportedAtRuntime: false
     }
 
     pageConfig.configValueSources[configName] ??= []

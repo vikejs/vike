@@ -31,25 +31,20 @@ type ConfigValueSource = {
   configEnv: ConfigEnvInternal
   valueSerialized?: string
   value?: unknown
-  // TODO: improve naming of `isCodeEntry` and `valueIsFilePath`?
-  /**
-   * Whether definedAtInfo.filePath contains runtime code. (If it doesn't, then it contains config code that isn't loaded in any runtime.)
-   *
-   * For example config.Page is a code entry. (Since the Page component is loaded by runtimes.)
-   * Whereas config.passToClient is config-only and therefore isn't a code entry.
-   */
-  isCodeEntry: boolean
+  // For example: config.Page or config.onBeforeRender
+  valueIsImportedAtRuntime: boolean
+  // For config.client
   valueIsFilePath?: true
 } & (
   | {
+      isComputed: false
       // TODO: replace definedAtInfo.filePath with definedAtInfo.filePathRelativeToUserRootDir? and definedAtInfo.filePathAbsolute!
       definedAtInfo: DefinedAtInfo
-      isComputed: false
     }
   | {
-      definedAtInfo: null
       isComputed: true
-      isCodeEntry: false
+      definedAtInfo: null
+      valueIsImportedAtRuntime: false
     }
 )
 type ConfigValueSources = Record<
