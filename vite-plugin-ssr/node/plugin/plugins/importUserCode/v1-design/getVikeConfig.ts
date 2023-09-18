@@ -711,17 +711,17 @@ function getConfigValueSource(
     // TODO: rethink file paths of ConfigElement
     const codeFilePath = interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
     const codeFileExport = configName === interfaceFile.configNameDefault ? 'default' : configName
+    const valueAlreadyLoaded = 'configValue' in conf
     const configValueSource: ConfigValueSource = {
       configEnv,
-      // TODO: This actually isn't true for value files that define config-only values. (And won't be true also for the upcoming `eager: true` option.)
-      valueIsImportedAtRuntime: true,
+      valueIsImportedAtRuntime: !valueAlreadyLoaded,
       isComputed: false,
       definedAtInfo: {
         filePath: codeFilePath,
         fileExportPath: [codeFileExport]
       }
     }
-    if ('configValue' in conf) {
+    if (valueAlreadyLoaded) {
       configValueSource.value = conf.configValue
     } else {
       assert(configEnv !== 'config-only')
