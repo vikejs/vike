@@ -52,8 +52,8 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
         addConfigValue(configName, exportValue, importFilePath, exportName)
       })
     } else {
-      const { configName, importFilePath, importFileExportAlias, importFileExportName } = codeFile
-      addConfigValue(configName, importFileExportAlias, importFilePath, importFileExportName)
+      const { configName, importFilePath, importFileExportValue, importFileExportName } = codeFile
+      addConfigValue(configName, importFileExportValue, importFilePath, importFileExportName)
     }
   })
 

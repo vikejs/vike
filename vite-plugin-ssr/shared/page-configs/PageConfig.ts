@@ -103,9 +103,11 @@ type LoadCodeFiles = () => Promise<
     // An import in +config.js
     | {
         isPlusFile: false
-        // import { exportName as exportAlias } from './importFilePathRelative.js'
+        // import { something } from './importFilePathRelative.js'
+        // -> importFileExportName === 'something'
+        // -> importFileExportValue holds the value of `something`
         importFileExportName: string
-        importFileExportAlias: unknown
+        importFileExportValue: unknown
       }
   ))[]
 >
