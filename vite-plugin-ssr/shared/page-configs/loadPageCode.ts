@@ -57,36 +57,6 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     }
   })
 
-  /* TODO Remove? Conflicts are already handled
-  const importFileExports: ({ configVal: ConfigValueOld } & (
-    | { isPlusFile: true; isSideExport: boolean }
-    | { isPlusFile: false; isSideExport: null }
-  ))[] = []
-  importFileExports
-    .sort(
-      lowerFirst((codeFileExport) => {
-        const { isPlusFile, isSideExport } = codeFileExport
-        if (isPlusFile) {
-          if (isSideExport) {
-            return 2
-          } else {
-            return 0
-          }
-        } else {
-          return 1
-        }
-      })
-    )
-    .forEach((codeFileExport) => {
-      const alreadyDefined = configValuesOld.find(
-        (configVal) => codeFileExport.configVal.configName === configVal.configName
-      )
-      if (!alreadyDefined) {
-        configValuesOld.push(codeFileExport.configVal)
-      }
-    })
-  */
-
   objectAssign(pageConfig, { isLoaded: true as const })
 
   return pageConfig

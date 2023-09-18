@@ -655,10 +655,10 @@ function getConfigValueSource(
     let filePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
-      const codeFile = getCodeFilePath(configValue, interfaceFile.filePath, userRootDir)
+      const importInfo = getImportInfo(configValue, interfaceFile.filePath, userRootDir)
       const configDefinedAt = getConfigDefinedAtString(configName, { definedAtInfo: definedAtInfoConfigFile }, true)
-      assertUsage(codeFile, `${configDefinedAt} should be an import`)
-      filePath = codeFile.importFilePath
+      assertUsage(importInfo, `${configDefinedAt} should be an import`)
+      filePath = importInfo.importFilePath
     } else {
       assert(interfaceFile.isValueFile)
       filePath =
@@ -683,9 +683,9 @@ function getConfigValueSource(
   if (interfaceFile.isConfigFile) {
     assert('configValue' in conf)
     const { configValue } = conf
-    const codeFile = getCodeFilePath(configValue, interfaceFile.filePath, userRootDir)
-    if (codeFile) {
-      const { importFilePath, codeFileExport } = codeFile
+    const importInfo = getImportInfo(configValue, interfaceFile.filePath, userRootDir)
+    if (importInfo) {
+      const { importFilePath, importFileExportName } = importInfo
       assertCodeFileEnv(importFilePath, configEnv, configName)
       const configValueSource: ConfigValueSource = {
         configEnv,
@@ -693,7 +693,7 @@ function getConfigValueSource(
         isComputed: false,
         definedAtInfo: {
           filePath: importFilePath,
-          fileExportPath: [codeFileExport]
+          fileExportPath: [importFileExportName]
         }
       }
       return configValueSource
@@ -710,7 +710,7 @@ function getConfigValueSource(
   } else if (interfaceFile.isValueFile) {
     // TODO: rethink file paths of ConfigElement
     const importFilePath = interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
-    const codeFileExport = configName === interfaceFile.configNameDefault ? 'default' : configName
+    const importFileExportName = configName === interfaceFile.configNameDefault ? 'default' : configName
     const valueAlreadyLoaded = 'configValue' in conf
     const configValueSource: ConfigValueSource = {
       configEnv,
@@ -718,7 +718,7 @@ function getConfigValueSource(
       isComputed: false,
       definedAtInfo: {
         filePath: importFilePath,
-        fileExportPath: [codeFileExport]
+        fileExportPath: [importFileExportName]
       }
     }
     if (valueAlreadyLoaded) {
@@ -765,11 +765,11 @@ function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
 
-function getCodeFilePath(
+function getImportInfo(
   configValue: unknown,
   configFilePath: FilePath,
   userRootDir: string
-): null | { importFilePath: string; codeFileExport: string } {
+): null | { importFilePath: string; importFileExportName: string } {
   if (typeof configValue !== 'string') {
     return null
   }
@@ -794,9 +794,8 @@ function getCodeFilePath(
   }
 
   return {
-    // TODO: rename?
     importFilePath,
-    codeFileExport: importExportName
+    importFileExportName: importExportName
   }
 }
 
