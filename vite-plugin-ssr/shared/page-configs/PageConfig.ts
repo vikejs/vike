@@ -95,12 +95,12 @@ type LoadCodeFiles = () => Promise<
     configName: string
     codeFilePath: string
   } & (
-    | // Defined by a + value file
+    | // A +{configName}.js file
     {
-        isPlusFile: true
+        isPlusFile: true // TODO: improve naming
         codeFileExports: Record<string, unknown>
       }
-    // Defined by an import in +config.js
+    // An import in +config.js
     | {
         isPlusFile: false
         codeFileExportValue: unknown

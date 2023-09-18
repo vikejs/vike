@@ -765,7 +765,6 @@ function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
 
-// TODO: improve naming
 function getCodeFilePath(
   configValue: unknown,
   configFilePath: FilePath,
