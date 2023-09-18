@@ -34,8 +34,7 @@ import type {
   ConfigValue,
   ConfigEnv,
   PageConfigBuildTime,
-  ConfigValues,
-  DefinedAtInfo
+  ConfigValues
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -655,10 +654,10 @@ function getConfigValueSource(
     let filePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
-      const importInfo = getImportInfo(configValue, interfaceFile.filePath, userRootDir)
+      const import_ = getImport(configValue, interfaceFile.filePath, userRootDir)
       const configDefinedAt = getConfigDefinedAtString(configName, { definedAtInfo: definedAtInfoConfigFile }, true)
-      assertUsage(importInfo, `${configDefinedAt} should be an import`)
-      filePath = importInfo.importFilePath
+      assertUsage(import_, `${configDefinedAt} should be an import`)
+      filePath = import_.importFilePath
     } else {
       assert(interfaceFile.isValueFile)
       filePath =
@@ -683,9 +682,9 @@ function getConfigValueSource(
   if (interfaceFile.isConfigFile) {
     assert('configValue' in conf)
     const { configValue } = conf
-    const importInfo = getImportInfo(configValue, interfaceFile.filePath, userRootDir)
-    if (importInfo) {
-      const { importFilePath, importFileExportName } = importInfo
+    const import_ = getImport(configValue, interfaceFile.filePath, userRootDir)
+    if (import_) {
+      const { importFilePath, importFileExportName } = import_
       assertCodeFileEnv(importFilePath, configEnv, configName)
       const configValueSource: ConfigValueSource = {
         configEnv,
@@ -709,7 +708,8 @@ function getConfigValueSource(
     }
   } else if (interfaceFile.isValueFile) {
     // TODO: rethink file paths of ConfigElement
-    const importFilePath = interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
+    const importFilePath =
+      interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
     const importFileExportName = configName === interfaceFile.configNameDefault ? 'default' : configName
     const valueAlreadyLoaded = 'configValue' in conf
     const configValueSource: ConfigValueSource = {
@@ -765,22 +765,16 @@ function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
 
-function getImportInfo(
+function getImport(
   configValue: unknown,
   configFilePath: FilePath,
   userRootDir: string
 ): null | { importFilePath: string; importFileExportName: string } {
-  if (typeof configValue !== 'string') {
-    return null
-  }
+  if (typeof configValue !== 'string') return null
   const importData = parseImportData(configValue)
-  if (!importData) {
-    return null
-  }
-  const { importPath, importExportName } = importData
+  if (!importData) return null
 
-  let importFilePath = importPath
-
+  let { importFilePath, importFileExportName } = importData
   if (importFilePath.startsWith('.')) {
     // We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
     // ```
@@ -795,7 +789,7 @@ function getImportInfo(
 
   return {
     importFilePath,
-    importFileExportName: importExportName
+    importFileExportName
   }
 }
 
@@ -811,7 +805,7 @@ function resolveRelativeCodeFilePath(importData: ImportData, configFilePath: Fil
     assertUsage(
       false,
       `${getFilePathToShowToUser(configFilePath)} imports from a relative path ${pc.cyan(
-        importData.importPath
+        importData.importFilePath
       )} outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir}, or import from a dependency's package.json#exports entry instead`
     )
     // None of the following works. Seems to be a Vite bug?
@@ -1131,7 +1125,7 @@ async function loadExtendsConfigs(
   const extendsImportData = getExtendsImportData(configFileExports, configFilePath)
   const extendsConfigFiles: FilePath[] = []
   extendsImportData.map((importData) => {
-    const { importPath } = importData
+    const { importFilePath: importPath } = importData
     // TODO
     //  - validate extends configs
     const filePathAbsolute = resolveImport(importData, configFilePath)
@@ -1341,7 +1335,7 @@ function resolveImport(importData: ImportData, importerFilePath: FilePath): stri
   const clean = addFileExtensionsToRequireResolve()
   let importedFile: string | null
   try {
-    importedFile = require_.resolve(importData.importPath, { paths: [plusConfigFilDirPathAbsolute] })
+    importedFile = require_.resolve(importData.importFilePath, { paths: [plusConfigFilDirPathAbsolute] })
   } catch {
     importedFile = null
   } finally {
@@ -1356,7 +1350,7 @@ function assertImport(
   importData: ImportData,
   importerFilePath: FilePath
 ): asserts importedFile is string {
-  const { importPath, importWasGenerated, importDataString } = importData
+  const { importFilePath: importPath, importWasGenerated, importDataString } = importData
   const filePathToShowToUser = getFilePathToShowToUser(importerFilePath)
 
   if (!importedFile) {
