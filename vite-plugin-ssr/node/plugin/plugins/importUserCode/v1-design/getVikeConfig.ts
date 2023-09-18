@@ -713,6 +713,7 @@ function getConfigValueSource(
     const codeFileExport = configName === interfaceFile.configNameDefault ? 'default' : configName
     const configValueSource: ConfigValueSource = {
       configEnv,
+      // TODO: This actually isn't true for value files that define config-only values. (And won't be true also for the upcoming `eager: true` option.)
       valueIsImportedAtRuntime: true,
       isComputed: false,
       definedAtInfo: {
