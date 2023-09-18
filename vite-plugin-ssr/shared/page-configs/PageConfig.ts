@@ -95,14 +95,12 @@ type LoadCodeFiles = () => Promise<
     configName: string
     importFilePath: string
   } & (
-    | // A +{configName}.js file
-    {
-        isPlusFile: true // TODO: improve naming
+    | {
+        isPlusFile: true // The file `importFilePath` is a +{configName}.js file
         importFileExports: Record<string, unknown>
       }
-    // An import in +config.js
     | {
-        isPlusFile: false
+        isPlusFile: false // The file `importFilePath` is imported by a +config.js file
         // import { something } from './importFilePathRelative.js'
         // -> importFileExportName === 'something'
         // -> importFileExportValue holds the value of `something`
