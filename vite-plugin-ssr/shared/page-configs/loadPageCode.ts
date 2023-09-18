@@ -37,9 +37,9 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
 
   codeFiles.forEach((codeFile) => {
     if (codeFile.isPlusFile) {
-      const { codeFileExports, codeFilePath } = codeFile
+      const { codeFileExports, importFilePath } = codeFile
       if (codeFile.configName !== 'client') {
-        assertDefaultExportUnknown(codeFileExports, codeFilePath)
+        assertDefaultExportUnknown(codeFileExports, importFilePath)
       }
       Object.entries(codeFileExports).forEach(([exportName, exportValue]) => {
         const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
@@ -49,11 +49,11 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
           // Side-exports have the lowest priority.
           return
         }
-        addConfigValue(configName, exportValue, codeFilePath, exportName)
+        addConfigValue(configName, exportValue, importFilePath, exportName)
       })
     } else {
-      const { configName, codeFilePath, codeFileExportValue, codeFileExportName } = codeFile
-      addConfigValue(configName, codeFileExportValue, codeFilePath, codeFileExportName)
+      const { configName, importFilePath, importFileExportAlias, importFileExportName } = codeFile
+      addConfigValue(configName, importFileExportAlias, importFilePath, importFileExportName)
     }
   })
 
@@ -92,10 +92,10 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
   return pageConfig
 }
 
-function assertIsNotNull(configValue: unknown, configName: string, codeFilePath: string) {
-  assert(!codeFilePath.includes('+config.'))
+function assertIsNotNull(configValue: unknown, configName: string, importFilePath: string) {
+  assert(!importFilePath.includes('+config.'))
   assertUsage(
     configValue !== null,
-    `Set ${pc.cyan(configName)} to ${pc.cyan('null')} in a +config.h.js file instead of ${codeFilePath}`
+    `Set ${pc.cyan(configName)} to ${pc.cyan('null')} in a +config.h.js file instead of ${importFilePath}`
   )
 }

@@ -178,9 +178,9 @@ function getConfigValueSerialized(value: unknown, configName: string, configDefi
   configValueSerialized = JSON.stringify(configValueSerialized)
   return configValueSerialized
 }
-function getConfigValueEagerImport(codeFilePath: string, codeFileExport: string, importStatements: string[]) {
+function getConfigValueEagerImport(importFilePath: string, codeFileExport: string, importStatements: string[]) {
   let configValueEagerImport: string
-  const { importVar, importStatement } = generateEagerImport(codeFilePath)
+  const { importVar, importStatement } = generateEagerImport(importFilePath)
   importStatements.push(importStatement)
   // TODO: expose all exports so that assertDefaultExport can be applied
   configValueEagerImport = `${importVar}[${JSON.stringify(codeFileExport)}]`

@@ -93,7 +93,7 @@ type PageConfigGlobal = {
 type LoadCodeFiles = () => Promise<
   ({
     configName: string
-    codeFilePath: string
+    importFilePath: string
   } & (
     | // A +{configName}.js file
     {
@@ -103,8 +103,8 @@ type LoadCodeFiles = () => Promise<
     // An import in +config.js
     | {
         isPlusFile: false
-        codeFileExportValue: unknown
-        codeFileExportName: string
+        importFileExportAlias: unknown
+        importFileExportName: string
       }
   ))[]
 >

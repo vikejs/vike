@@ -658,7 +658,7 @@ function getConfigValueSource(
       const codeFile = getCodeFilePath(configValue, interfaceFile.filePath, userRootDir)
       const configDefinedAt = getConfigDefinedAtString(configName, { definedAtInfo: definedAtInfoConfigFile }, true)
       assertUsage(codeFile, `${configDefinedAt} should be an import`)
-      filePath = codeFile.codeFilePath
+      filePath = codeFile.importFilePath
     } else {
       assert(interfaceFile.isValueFile)
       filePath =
@@ -685,14 +685,14 @@ function getConfigValueSource(
     const { configValue } = conf
     const codeFile = getCodeFilePath(configValue, interfaceFile.filePath, userRootDir)
     if (codeFile) {
-      const { codeFilePath, codeFileExport } = codeFile
-      assertCodeFileEnv(codeFilePath, configEnv, configName)
+      const { importFilePath, codeFileExport } = codeFile
+      assertCodeFileEnv(importFilePath, configEnv, configName)
       const configValueSource: ConfigValueSource = {
         configEnv,
         valueIsImportedAtRuntime: true,
         isComputed: false,
         definedAtInfo: {
-          filePath: codeFilePath,
+          filePath: importFilePath,
           fileExportPath: [codeFileExport]
         }
       }
@@ -709,7 +709,7 @@ function getConfigValueSource(
     }
   } else if (interfaceFile.isValueFile) {
     // TODO: rethink file paths of ConfigElement
-    const codeFilePath = interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
+    const importFilePath = interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
     const codeFileExport = configName === interfaceFile.configNameDefault ? 'default' : configName
     const valueAlreadyLoaded = 'configValue' in conf
     const configValueSource: ConfigValueSource = {
@@ -717,7 +717,7 @@ function getConfigValueSource(
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
       isComputed: false,
       definedAtInfo: {
-        filePath: codeFilePath,
+        filePath: importFilePath,
         fileExportPath: [codeFileExport]
       }
     }
@@ -731,18 +731,18 @@ function getConfigValueSource(
   assert(false)
 }
 
-function assertCodeFileEnv(codeFilePath: string, configEnv: ConfigEnvInternal, configName: string) {
-  if (!codeFilesEnv.has(codeFilePath)) {
-    codeFilesEnv.set(codeFilePath, [])
+function assertCodeFileEnv(importFilePath: string, configEnv: ConfigEnvInternal, configName: string) {
+  if (!codeFilesEnv.has(importFilePath)) {
+    codeFilesEnv.set(importFilePath, [])
   }
-  const codeFileEnv = codeFilesEnv.get(codeFilePath)!
+  const codeFileEnv = codeFilesEnv.get(importFilePath)!
   codeFileEnv.push({ configEnv, configName })
   const configDifferentEnv = codeFileEnv.filter((c) => c.configEnv !== configEnv)[0]
   if (configDifferentEnv) {
     assertUsage(
       false,
       [
-        `${codeFilePath} defines the value of configs living in different environments:`,
+        `${importFilePath} defines the value of configs living in different environments:`,
         ...[configDifferentEnv, { configName, configEnv }].map(
           (c) => `  - config ${pc.cyan(c.configName)} which value lives in environment ${pc.cyan(c.configEnv)}`
         ),
@@ -769,7 +769,7 @@ function getCodeFilePath(
   configValue: unknown,
   configFilePath: FilePath,
   userRootDir: string
-): null | { codeFilePath: string; codeFileExport: string } {
+): null | { importFilePath: string; codeFileExport: string } {
   if (typeof configValue !== 'string') {
     return null
   }
@@ -779,35 +779,35 @@ function getCodeFilePath(
   }
   const { importPath, importExportName } = importData
 
-  let codeFilePath = importPath
+  let importFilePath = importPath
 
-  if (codeFilePath.startsWith('.')) {
+  if (importFilePath.startsWith('.')) {
     // We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
     // ```
     // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vite-plugin-ssr:importPageCode:client:/pages/index". Does the file exist?
     // ```
-    codeFilePath = resolveRelativeCodeFilePath(importData, configFilePath, userRootDir)
+    importFilePath = resolveRelativeCodeFilePath(importData, configFilePath, userRootDir)
   } else {
-    // codeFilePath can be:
+    // importFilePath can be:
     //  - an npm package import
     //  - a path alias
   }
 
   return {
     // TODO: rename?
-    codeFilePath,
+    importFilePath,
     codeFileExport: importExportName
   }
 }
 
 function resolveRelativeCodeFilePath(importData: ImportData, configFilePath: FilePath, userRootDir: string) {
-  let codeFilePath = resolveImport(importData, configFilePath)
+  let importFilePath = resolveImport(importData, configFilePath)
 
   // Make it a Vite path
   assertPosixPath(userRootDir)
-  assertPosixPath(codeFilePath)
-  if (codeFilePath.startsWith(userRootDir)) {
-    codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
+  assertPosixPath(importFilePath)
+  if (importFilePath.startsWith(userRootDir)) {
+    importFilePath = getVitePathFromAbsolutePath(importFilePath, userRootDir)
   } else {
     assertUsage(
       false,
@@ -817,18 +817,18 @@ function resolveRelativeCodeFilePath(importData: ImportData, configFilePath: Fil
     )
     // None of the following works. Seems to be a Vite bug?
     // /*
-    // assert(codeFilePath.startsWith('/'))
-    // codeFilePath = `/@fs${codeFilePath}`
+    // assert(importFilePath.startsWith('/'))
+    // importFilePath = `/@fs${importFilePath}`
     // /*/
-    // codeFilePath = path.posix.relative(userRootDir, codeFilePath)
-    // assert(codeFilePath.startsWith('../'))
-    // codeFilePath = '/' + codeFilePath
+    // importFilePath = path.posix.relative(userRootDir, importFilePath)
+    // assert(importFilePath.startsWith('../'))
+    // importFilePath = '/' + importFilePath
     // //*/
   }
 
-  assertPosixPath(codeFilePath)
-  assert(codeFilePath.startsWith('/'))
-  return codeFilePath
+  assertPosixPath(importFilePath)
+  assert(importFilePath.startsWith('/'))
+  return importFilePath
 }
 
 function getVitePathFromAbsolutePath(filePathAbsolute: string, root: string): string {

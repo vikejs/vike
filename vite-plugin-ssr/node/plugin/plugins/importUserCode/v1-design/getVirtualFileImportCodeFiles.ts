@@ -84,14 +84,14 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
 
     lines.push(`  {`)
     lines.push(`    configName: '${configName}',`)
-    lines.push(`    codeFilePath: '${filePath}',`)
+    lines.push(`    importFilePath: '${filePath}',`)
     lines.push(`    isPlusFile: ${JSON.stringify(isPlusFile)},`)
     if (isPlusFile) {
       lines.push(`    codeFileExports: ${importVar},`)
     } else {
-      lines.push(`    codeFileExportValue: ${importVar},`)
+      lines.push(`    importFileExportAlias: ${importVar},`)
       assert(fileExportName)
-      lines.push(`    codeFileExportName: ${JSON.stringify(fileExportName)},`)
+      lines.push(`    importFileExportName: ${JSON.stringify(fileExportName)},`)
     }
     lines.push(`  },`)
   })
