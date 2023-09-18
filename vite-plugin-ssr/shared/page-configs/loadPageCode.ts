@@ -37,11 +37,11 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
 
   codeFiles.forEach((codeFile) => {
     if (codeFile.isPlusFile) {
-      const { codeFileExports, importFilePath } = codeFile
+      const { importFileExports, importFilePath } = codeFile
       if (codeFile.configName !== 'client') {
-        assertDefaultExportUnknown(codeFileExports, importFilePath)
+        assertDefaultExportUnknown(importFileExports, importFilePath)
       }
-      Object.entries(codeFileExports).forEach(([exportName, exportValue]) => {
+      Object.entries(importFileExports).forEach(([exportName, exportValue]) => {
         const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
         const configName = isSideExport ? exportName : codeFile.configName
         if (isSideExport && configName in pageConfig.configValues) {
@@ -58,11 +58,11 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
   })
 
   /* TODO Remove? Conflicts are already handled
-  const codeFileExports: ({ configVal: ConfigValueOld } & (
+  const importFileExports: ({ configVal: ConfigValueOld } & (
     | { isPlusFile: true; isSideExport: boolean }
     | { isPlusFile: false; isSideExport: null }
   ))[] = []
-  codeFileExports
+  importFileExports
     .sort(
       lowerFirst((codeFileExport) => {
         const { isPlusFile, isSideExport } = codeFileExport
