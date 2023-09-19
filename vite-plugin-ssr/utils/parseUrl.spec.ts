@@ -319,7 +319,7 @@ describe('parseUrl', () => {
       pathnameOriginal: '',
       pathname: '/'
     })
-    assert((new URL('', 'http://fake.org/base')).pathname === '/base')
+    assert(new URL('', 'http://fake.org/base').pathname === '/base')
     expect(parseUrl('', '/base')).toEqual({
       ...resultBase,
       pathnameOriginal: '',

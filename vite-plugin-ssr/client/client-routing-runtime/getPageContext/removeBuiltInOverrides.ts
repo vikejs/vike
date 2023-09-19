@@ -4,7 +4,7 @@ import { assert, assertWarning } from '../utils.js'
 
 const BUILT_IN_CLIENT_ROUTER = ['urlPathname', 'urlParsed'] as const
 const BUILT_IN_CLIENT = ['Page', 'pageExports', 'exports'] as const
-type DeletedKeys = typeof BUILT_IN_CLIENT[number] | typeof BUILT_IN_CLIENT_ROUTER[number]
+type DeletedKeys = (typeof BUILT_IN_CLIENT)[number] | (typeof BUILT_IN_CLIENT_ROUTER)[number]
 function removeBuiltInOverrides(pageContext: Record<string, unknown> & { [key in DeletedKeys]?: never }) {
   const alreadySet = [...BUILT_IN_CLIENT, ...BUILT_IN_CLIENT_ROUTER]
   alreadySet.forEach((prop) => {

@@ -174,7 +174,7 @@ function startsWith(inheritanceRoot1: string, inheritanceRoot2: string): boolean
   for (const i in segments2) {
     const segment1 = segments1[i]
     const segment2 = segments2[i]
-    if (segment1 !== segment2 ) {
+    if (segment1 !== segment2) {
       /* This assertion fails for:
          ```
          inheritanceRoot1: '/pages/about2'
