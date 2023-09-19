@@ -97,11 +97,18 @@ function assertResolveAlias(config: ResolvedConfig) {
         )}: a path alias cannot be the empty string ${pc.cyan("''")}` as const
         assertUsage(find !== '', msg)
       }
-      {
-        const msg = `${errPrefix} defines an alias ${pc.cyan(
-          find
-        )} that cannot be distinguished from npm package imports ${deprecation}, ${errSuffix1}` as const
-        assertWarning(isValidPathAlias(find), msg, { onlyOnce: true })
+      if (!isValidPathAlias(find)) {
+        if (find.startsWith('@')) {
+          const msg =
+            `${errPrefix} defines an invalid resolve.alias ${deprecation}: a path alias cannot start with ${pc.cyan(
+              '@'
+            )}, ${errSuffix1}` as const
+          assertWarning(false, msg, { onlyOnce: true })
+        } else {
+          const msg =
+            `${errPrefix} defines an invalid resolve.alias ${deprecation}: a path alias needs to start with a special character, ${errSuffix1}` as const
+          assertWarning(false, msg, { onlyOnce: true })
+        }
       }
     }
   })
