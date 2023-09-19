@@ -54,7 +54,9 @@ function getContent(
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
-    lines.push(`    loadConfigValuesAll: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`)
+    lines.push(
+      `    loadConfigValuesAll: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`
+    )
 
     lines.push(`    configValues: {`)
     Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
@@ -93,7 +95,10 @@ function getContent(
     if (configName === 'onBeforeRoute') {
       // if( isForClientSide && !isClientRouting ) return
     } else if (configName === 'onPrerenderStart') {
-      if (isDev || isForClientSide) return
+      if (isDev || isForClientSide) {
+        // Only load onPrerenderStart() in server production runtime
+        configValueSource = null
+      }
     } else {
       assert(false)
     }
