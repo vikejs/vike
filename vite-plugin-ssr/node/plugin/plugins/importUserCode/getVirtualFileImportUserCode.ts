@@ -1,7 +1,8 @@
 export { getVirtualFileImportUserCode }
 
-// TODO/v1-release:
+// TODO/v1-design-release:
 //  - Remove this file
+//    - Instead only generate getVirtualFilePageConfigs()
 //  - Remove old `.page.js`/`.page.client.js`/`.page.server.js` interface
 //    - Systematically remove all pageFilesAll references does the trick?
 
@@ -18,7 +19,7 @@ import type { ConfigVpsResolved } from '../../../../shared/ConfigVps.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes.js'
 import path from 'path'
-import { getVirtualFileImportPageConfigs } from './v1-design/getVirtualFileImportPageConfigs.js'
+import { getVirtualFilePageConfigs } from './v1-design/getVirtualFilePageConfigs.js'
 import { generateEagerImport } from './generateEagerImport.js'
 
 async function getVirtualFileImportUserCode(
@@ -217,7 +218,7 @@ export const pageFilesList = [];
 export const neverLoaded = {};
 export const isGeneratedFile = true;
 
-${await getVirtualFileImportPageConfigs(config.root, isForClientSide, isDev, id, configVps, isClientRouting)}
+${await getVirtualFilePageConfigs(config.root, isForClientSide, isDev, id, configVps, isClientRouting)}
 
 `
 

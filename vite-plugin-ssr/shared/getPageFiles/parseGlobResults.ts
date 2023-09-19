@@ -7,7 +7,6 @@ import { fileTypes, type FileType } from './fileTypes.js'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
 import { assertPageConfigGlobal, assertPageConfigs } from './assertPageConfigs.js'
 
-// TODO: rename to parseVirtualFile
 function parseGlobResults(pageFilesExports: unknown): {
   pageFiles: PageFile[]
   pageConfigs: PageConfig[]

@@ -1,4 +1,4 @@
-export { getVirtualFileImportPageConfigs }
+export { getVirtualFilePageConfigs }
 
 import { assert, assertUsage, getPropAccessNotation, hasProp, objectEntries } from '../../../utils.js'
 import type {
@@ -17,7 +17,7 @@ import pc from '@brillout/picocolors'
 import { getVikeConfig } from './getVikeConfig.js'
 import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps.js'
 
-async function getVirtualFileImportPageConfigs(
+async function getVirtualFilePageConfigs(
   userRootDir: string,
   isForClientSide: boolean,
   isDev: boolean,

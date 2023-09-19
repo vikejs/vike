@@ -15,6 +15,7 @@ const globalObject = getGlobalObject<{
   pageFilesGetter?: () => Promise<void> | undefined
 }>('setPageFiles.ts', {})
 
+// TODO:v1-design-release: rename setPageFiles() getPageFilesAll() parseGlobResult()
 function setPageFiles(pageFilesExports: unknown) {
   const { pageFiles, pageConfigs, pageConfigGlobal } = parseGlobResults(pageFilesExports)
   globalObject.pageFilesAll = pageFiles
