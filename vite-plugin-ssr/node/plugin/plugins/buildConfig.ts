@@ -26,11 +26,16 @@ import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 type InputOption = Rollup.InputOption
 import { createRequire } from 'module'
 import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
+import fs from 'fs/promises'
+import path from 'path'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 
+const manifestTempFile = '_temp_manifest.json'
+
 function buildConfig(): Plugin {
+  let generateManifest: boolean
   return {
     name: 'vite-plugin-ssr:buildConfig',
     apply: 'build',
@@ -51,13 +56,27 @@ function buildConfig(): Plugin {
       }
     },
     config(config) {
+      generateManifest = !viteIsSSR(config)
       return {
         build: {
           outDir: resolveOutDir(config),
-          manifest: !viteIsSSR(config),
+          manifest: generateManifest ? manifestTempFile : false,
           copyPublicDir: !viteIsSSR(config)
         }
       } satisfies UserConfig
+    },
+    async writeBundle(options, bundle) {
+      const manifestEntry = bundle[manifestTempFile]
+      if (generateManifest) {
+        assert(manifestEntry)
+        const { dir } = options
+        assert(dir)
+        const manifestFilePathOld = path.join(dir, manifestEntry.fileName)
+        const manifestFilePathNew = path.join(dir, '..', 'manifest.json')
+        await fs.rename(manifestFilePathOld, manifestFilePathNew)
+      } else {
+        assert(!manifestEntry)
+      }
     }
   }
 }

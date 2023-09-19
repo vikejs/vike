@@ -42,7 +42,7 @@ function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
     `  const { setImportBuildGetters } = await import('${importPath}');`,
     '  setImportBuildGetters({',
     `    pageFiles: () => import('./${pageFilesEntry}'),`,
-    "    clientManifest: () => require('../client/manifest.json'),",
+    "    clientManifest: () => require('../manifest.json'),",
     "    pluginManifest: () => require('../client/vite-plugin-ssr.json'),",
     '  });',
     '})()',
