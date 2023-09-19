@@ -1,8 +1,7 @@
-export { getVirtualFileImportCodeFiles }
-export { skipConfigValue }
+export { getVirtualFilePageConfigValuesAll }
 
 import { assert, assertPosixPath } from '../../../utils.js'
-import type { ConfigEnvInternal, PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
+import type { PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
 import { generateEagerImport } from '../generateEagerImport.js'
 import {
   getVirtualFileIdImportPageCode,
@@ -15,8 +14,9 @@ import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps.js'
 import path from 'path'
 import { getConfigValue } from '../../../../../shared/page-configs/utils.js'
 import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSource.js'
+import { isConfigEnvMatch } from './isConfigEnvMatch.js'
 
-async function getVirtualFileImportCodeFiles(
+async function getVirtualFilePageConfigValuesAll(
   id: string,
   userRootDir: string,
   isDev: boolean,
@@ -64,7 +64,7 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
 
     if (!valueIsImportedAtRuntime) return
     if (configValueSource.valueIsFilePath) return
-    if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
+    if (!isConfigEnvMatch(configEnv, isForClientSide, isClientRouting)) return
     const { filePath, fileExportPath } = definedAtInfo
 
     assertPosixPath(filePath)
@@ -101,11 +101,4 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   }
   const code = [...importStatements, ...lines].join('\n')
   return code
-}
-
-function skipConfigValue(configEnv: ConfigEnvInternal, isForClientSide: boolean, isClientRouting: boolean) {
-  if (configEnv === '_routing-eager' || configEnv === 'config-only') return true
-  if (configEnv === (isForClientSide ? 'server-only' : 'client-only')) return true
-  if (configEnv === '_routing-lazy' && isForClientSide && !isClientRouting) return true
-  return false
 }

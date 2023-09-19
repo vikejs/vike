@@ -11,11 +11,11 @@ import { generateEagerImport } from '../generateEagerImport.js'
 import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files/virtualFileImportPageCode.js'
 import { debug } from './debug.js'
 import { stringify } from '@brillout/json-serializer/stringify'
-import { skipConfigValue } from './getVirtualFileImportCodeFiles.js'
 import { getConfigEnv } from './helpers.js'
 import pc from '@brillout/picocolors'
 import { getVikeConfig } from './getVikeConfig.js'
 import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps.js'
+import { isConfigEnvMatch } from './isConfigEnvMatch.js'
 
 async function getVirtualFilePageConfigs(
   userRootDir: string,
@@ -62,7 +62,7 @@ function getContent(
       if (configValue) {
         const configEnv = getConfigEnv(pageConfig, configName)
         assert(configEnv, configName)
-        if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
+        if (!isConfigEnvMatch(configEnv, isForClientSide, isClientRouting)) return
         const { value, definedAtInfo } = configValue
         // TODO: use @brillout/json-serializer
         //  - re-use getConfigValueSerialized()?
@@ -160,7 +160,7 @@ function serializeConfigValueSource(
   lines.push(`${whitespace}  definedAtInfo: ${JSON.stringify(definedAtInfo)},`)
   lines.push(`${whitespace}  configEnv: ${JSON.stringify(configEnv)},`)
   const eager = configValueSource.configEnv === '_routing-eager' || isGlobalConfig
-  if (!skipConfigValue(configEnv, isForClientSide, isClientRouting) || eager) {
+  if (isConfigEnvMatch(configEnv, isForClientSide, isClientRouting) || eager) {
     if ('value' in configValueSource) {
       const { value } = configValueSource
       const valueSerialized = getConfigValueSerialized(value, configName, definedAtInfo.filePath)

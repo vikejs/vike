@@ -4,7 +4,7 @@ import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode } fr
 import { normalizePath } from 'vite'
 import type { ConfigVpsResolved } from '../../../../shared/ConfigVps.js'
 import { getConfigVps } from '../../../shared/getConfigVps.js'
-import { getVirtualFileImportCodeFiles } from './v1-design/getVirtualFileImportCodeFiles.js'
+import { getVirtualFilePageConfigValuesAll } from './v1-design/getVirtualFilePageConfigValuesAll.js'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
 import {
   assert,
@@ -60,7 +60,7 @@ function importUserCode(): Plugin {
       id = getVirtualFileId(id)
 
       if (isVirtualFileIdImportPageCode(id)) {
-        const code = await getVirtualFileImportCodeFiles(id, config.root, isDev, configVps)
+        const code = await getVirtualFilePageConfigValuesAll(id, config.root, isDev, configVps)
         return code
       }
 
