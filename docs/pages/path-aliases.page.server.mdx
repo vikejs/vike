@@ -28,22 +28,24 @@ Example:
 export default {
   resolve: {
     alias: {
-     // Prefix your path aliases with a special character, most commonly #
      "#root": __dirname,
     }
   }
 }
 ```
 
-Your path aliases need to start with a special character, so that your aliased imports can be distinguished from npm package imports.
-We recommend following the [`#` prefix convention](https://nodejs.org/api/packages.html#subpath-imports:~:text=must%20always%20start%20with%20%23%20to%20ensure%20they%20are%20disambiguated%20from%20external%20package%20specifiers).
-
-> It only applies to files that are processed by Vite.
-> Some of your Node.js files may not be processed by Vite,
+> The Vite config `resolve.alias` only applies to files that are processed by Vite.
+> Keep in mind that some of your server files may not be processed by Vite,
 > see the [Node.js section below](#node-js).
 
+We recommend following the [Node.js convention](https://nodejs.org/api/packages.html#subpath-imports:~:text=must%20always%20start%20with%20%23%20to%20ensure%20they%20are%20disambiguated%20from%20external%20package%20specifiers) to prefix path aliases with the special character `#`.
+
+> While your path aliases don't need to follow the `#` convention, they do need to start with a special character to distinguish them from npm package names.
+>
+> Vite-plugin-ssr needs to be able to distinguish between path alias imports and npm package imports. If it's an issue for you then elaborate your use case in a new [GitHub Discussion](https://github.com/brillout/vite-plugin-ssr/discussions).
+
 See also:
- - [Vite > `vite.config.js#resolve.alias`](https://vitejs.dev/config/shared-options.html#resolve-alias)
+ - [Vite Docs > `resolve.alias`](https://vitejs.dev/config/shared-options.html#resolve-alias)
  - <RepoLink path='/examples/path-aliases/vite.config.ts' />
 
 
