@@ -1,7 +1,7 @@
 export { commonConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertWarning, findUserPackageJsonPath, isValidPathAlias } from '../utils.js'
+import { assert, assertUsage, assertWarning, findUserPackageJsonPath, isValidPathAlias } from '../utils.js'
 import { assertRollupInput } from './buildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
@@ -66,15 +66,14 @@ function assertResolveAlias(config: ResolvedConfig) {
   const aliases = getAliases(config)
   const errPrefix = config.configFile || 'Your Vite configuration'
   const errSuffix1 = 'see https://vite-plugin-ssr.com/path-aliases#vite'
-  const errSuffix2 =
-    `which will be deprecated in the next major release, use a string insead and ${errSuffix1}` as const
+  const deprecation = 'which will be deprecated in the next major release'
+  const errSuffix2 = `${deprecation}, use a string insead and ${errSuffix1}` as const
   aliases.forEach((alias) => {
     const { customResolver, find } = alias
-    assertWarning(
-      customResolver === undefined,
-      `${errPrefix} defines resolve.alias with customResolver() ${errSuffix2}`,
-      { onlyOnce: true }
-    )
+    {
+      const msg = `${errPrefix} defines resolve.alias with customResolver() ${errSuffix2}` as const
+      assertWarning(customResolver === undefined, msg, { onlyOnce: true })
+    }
     if (typeof find !== 'string') {
       assert(find instanceof RegExp)
       // Skip aliases set by Vite:
@@ -83,19 +82,27 @@ function assertResolveAlias(config: ResolvedConfig) {
       if (find.toString().includes('@vite')) return
       // Skip alias /^solid-refresh$/ set by vite-plugin-solid
       if (find.toString().includes('solid-refresh')) return
-      assertWarning(false, `${errPrefix} defines resolve.alias with a regular expression ${errSuffix2}`, {
-        onlyOnce: true
-      })
+      {
+        const msg = `${errPrefix} defines resolve.alias with a regular expression ${errSuffix2}` as const
+        assertWarning(false, msg, {
+          onlyOnce: true
+        })
+      }
     } else {
       // Skip aliases set by @preact/preset-vite
       if (find.startsWith('react')) return
-      assertWarning(
-        isValidPathAlias(find),
-        `${errPrefix} defines an alias ${pc.cyan(
+      {
+        const msg = `${errPrefix} defines an invalid ${pc.cyan(
+          'resolve.alias'
+        )}: a path alias cannot be the empty string ${pc.cyan("''")}` as const
+        assertUsage(find !== '', msg)
+      }
+      {
+        const msg = `${errPrefix} defines an alias ${pc.cyan(
           find
-        )} that cannot be distinguished from npm package imports, ${errSuffix1}`,
-        { onlyOnce: true }
-      )
+        )} that cannot be distinguished from npm package imports ${deprecation}, ${errSuffix1}` as const
+        assertWarning(isValidPathAlias(find), msg, { onlyOnce: true })
+      }
     }
   })
 }

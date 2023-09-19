@@ -1,5 +1,5 @@
-import { expect, describe, it } from 'vitest'
-import { isValidPathAlias, parse } from './isNpmPackage.js'
+import { expect, describe, it, assert } from 'vitest'
+import { isDistinguishable, isValidPathAlias, parse } from './isNpmPackage.js'
 
 describe('parse()', () => {
   it('basics', () => {
@@ -43,23 +43,33 @@ describe('parse()', () => {
 
 describe('isValidPathAlias()', () => {
   it('basics', () => {
+    // Distinguishable from npm package names
+    expect(isValidPathAlias('a')).toBe(false)
+    expect(isValidPathAlias('a/b')).toBe(false)
+    expect(isValidPathAlias('a/b/c')).toBe(false)
+    expect(isValidPathAlias('a/b/c/d')).toBe(false)
+    expect(isValidPathAlias('@')).toBe(false)
+    expect(isValidPathAlias('@a')).toBe(false)
+    expect(isValidPathAlias('@a/b')).toBe(false)
+    expect(isValidPathAlias('@a/b/c')).toBe(false)
+    expect(isValidPathAlias('@a/b/c/d')).toBe(false)
+
+    // Edge-case needed by contra.com
+    expect(isValidPathAlias('@/a')).toBe(true)
+
+    // Starts with a special character
+    expect(isValidPathAlias('A')).toBe(false)
+    expect(isValidPathAlias('a!')).toBe(false)
+    // Even though they are distinguishable
+    assert(isDistinguishable('A'))
+    assert(isDistinguishable('a!'))
+
+    // Valid path aliases
     expect(isValidPathAlias('#')).toBe(true)
     expect(isValidPathAlias('#a')).toBe(true)
     expect(isValidPathAlias('!')).toBe(true)
     expect(isValidPathAlias('!a')).toBe(true)
     expect(isValidPathAlias('/')).toBe(true)
     expect(isValidPathAlias('/a')).toBe(true)
-
-    expect(isValidPathAlias('a')).toBe(false)
-    expect(isValidPathAlias('a/b')).toBe(false)
-    expect(isValidPathAlias('a/b/c')).toBe(false)
-    expect(isValidPathAlias('a/b/c/d')).toBe(false)
-
-    expect(isValidPathAlias('@')).toBe(false)
-    expect(isValidPathAlias('@a')).toBe(false)
-    expect(isValidPathAlias('@/a')).toBe(true) // needed by contra.com
-    expect(isValidPathAlias('@a/b')).toBe(false)
-    expect(isValidPathAlias('@a/b/c')).toBe(false)
-    expect(isValidPathAlias('@a/b/c/d')).toBe(false)
   })
 })

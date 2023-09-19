@@ -6,7 +6,9 @@ export { isValidPathAlias }
 
 // For ./isNpmPackage.spec.ts
 export { parse }
+export { isDistinguishable }
 
+import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 assertIsNotBrowser()
 
@@ -33,6 +35,21 @@ function getNpmPackageImportPath(str: string): null | string {
 }
 
 function isValidPathAlias(alias: string): boolean {
+  // Cannot be distinguished from npm package names
+  if (!isDistinguishable(alias)) return false
+
+  // Ensure path alias starts with a special character.
+  //  - In principle, we could allow path aliases that don't start with special character as long as they can be distinguished from npm package names.
+  //    - But we still enforce path aliases to start with a special character because it's a much simpler rule to follow.
+  if (alias.startsWith('@/')) return true // Needed by contra.com
+  const firstLetter = alias[0]
+  assert(firstLetter)
+  if (firstLetter === '@' || /[0-9a-z]/.test(firstLetter.toLowerCase())) return false
+
+  return true
+}
+
+function isDistinguishable(alias: string): boolean {
   return (
     parse(alias) === null &&
     parse(`${alias}fake-path`) === null &&
