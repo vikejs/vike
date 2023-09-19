@@ -74,7 +74,7 @@ type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
 )
 type PageConfig = PageConfigCommon & {
-  loadCodeFiles: LoadCodeFiles
+  loadConfigValuesAll: LoadConfigValuesAll
   isLoaded?: true
 }
 type PageConfigLoaded = PageConfig & {
@@ -90,7 +90,7 @@ type PageConfigGlobal = {
   onBeforeRoute: null | (ConfigValueSource & { value: unknown })
 }
 
-type LoadCodeFiles = () => Promise<
+type LoadConfigValuesAll = () => Promise<
   ({
     configName: string
     importFilePath: string

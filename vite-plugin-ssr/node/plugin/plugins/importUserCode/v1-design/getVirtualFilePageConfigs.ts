@@ -54,7 +54,7 @@ function getContent(
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
-    lines.push(`    loadCodeFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`)
+    lines.push(`    loadConfigValuesAll: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`)
 
     lines.push(`    configValues: {`)
     Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {

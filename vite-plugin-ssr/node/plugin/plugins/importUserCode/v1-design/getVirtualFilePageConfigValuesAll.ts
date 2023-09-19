@@ -35,7 +35,7 @@ async function getVirtualFilePageConfigValuesAll(
   assert(pageConfigsData)
   const pageConfigs = pageConfigsData.find((pageConfig) => pageConfig.pageId === pageId)
   assert(pageConfigs)
-  const code = generateSourceCodeOfLoadCodeFileVirtualFile(
+  const code = getLoadConfigValuesAll(
     pageConfigs,
     isForClientSide,
     pageId,
@@ -46,7 +46,7 @@ async function getVirtualFilePageConfigValuesAll(
   return code
 }
 
-function generateSourceCodeOfLoadCodeFileVirtualFile(
+function getLoadConfigValuesAll(
   pageConfig: PageConfigBuildTime,
   isForClientSide: boolean,
   pageId: string,
