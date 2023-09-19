@@ -40,9 +40,9 @@ export default {
 
 We recommend following the [Node.js convention](https://nodejs.org/api/packages.html#subpath-imports:~:text=must%20always%20start%20with%20%23%20to%20ensure%20they%20are%20disambiguated%20from%20external%20package%20specifiers) to prefix path aliases with the special character `#`.
 
-> While your path aliases don't need to follow the `#` convention, they do need to start with a special character to distinguish them from npm package names.
+> While your path aliases don't need to follow the `#` convention, they do need to start with a special character (`!root`, `/root`, `$root`, ...).
 >
-> Vite-plugin-ssr needs to be able to distinguish between path alias imports and npm package imports. If it's an issue for you then elaborate your use case in a new [GitHub Discussion](https://github.com/brillout/vite-plugin-ssr/discussions).
+> Path aliases must start with a special character so that vite-plugin-ssr can distinguish between path alias imports and npm package imports. If it's an issue for you then elaborate your use case in a new [GitHub Discussion](https://github.com/brillout/vite-plugin-ssr/discussions).
 
 See also:
  - [Vite Docs > `resolve.alias`](https://vitejs.dev/config/shared-options.html#resolve-alias)

@@ -71,5 +71,7 @@ describe('isValidPathAlias()', () => {
     expect(isValidPathAlias('!a')).toBe(true)
     expect(isValidPathAlias('/')).toBe(true)
     expect(isValidPathAlias('/a')).toBe(true)
+    expect(isValidPathAlias('$a/b/c')).toBe(true)
+    expect(isValidPathAlias('%bla')).toBe(true)
   })
 })
