@@ -5,6 +5,8 @@
   - Eager means that the value is always loaded, no matter what page is being loaded. (By default only the values of the page being renderered are loaded.)
   - Should the option be '_eager' and internal? Is there any added value to make it internal? Custom configs are only meant for advanced use cases anyways. Maybe naming it 'eager' (instead of '_eager') while omitting 'eager` in the Meta type until some user needs it?
   - Values that are defined in `+config.h.js` are loaded at config-time even if `config: false`. (But they can be defined in a `+{configName}.js` and they won't be loaded then.)
+    - But they can still be lazily loaded in the client/server runtime
+  - Global page config values are always eager
 - fix pageContext._renderHook.hookFilePath / replace with new prop hookSrc
 - refacor/fix skipConfigValue to differentiate between global/page virtual file
 - use json-s instead of JSON
