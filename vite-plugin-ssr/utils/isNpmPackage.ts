@@ -39,6 +39,10 @@ function isValidPathAlias(alias: string): boolean {
     parse(`${alias}/fake-path`) === null &&
     parse(`${alias}fake/deep/path`) === null &&
     parse(`${alias}/fake/deep/path`) === null &&
+    // See note about '-' in ./isNpmPackageName.spec.ts
+    // ```ts
+    // expect(parse('-')).toBe(null) // actually wrong: https://www.npmjs.com/package/-
+    // ```
     !alias.startsWith('-')
   )
 }
