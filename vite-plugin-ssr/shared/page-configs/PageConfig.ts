@@ -12,6 +12,7 @@ export type { ConfigValues }
 export type { ConfigValueSource }
 export type { ConfigValueSources }
 export type { DefinedAtInfo }
+export type { DefinedAtInfoFull }
 
 type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
 type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
@@ -39,8 +40,10 @@ type ConfigValueSource = {
 } & (
   | {
       isComputed: false
-      // TODO: replace definedAtInfo.filePath with definedAtInfo.filePathRelativeToUserRootDir? and definedAtInfo.filePathAbsolute!
       definedAtInfo: DefinedAtInfo
+      /* TODO: use it
+      definedAtInfo: DefinedAtInfoFull
+      */
     }
   | {
       isComputed: true
@@ -67,6 +70,11 @@ type ConfigValues = Record<
 >
 type DefinedAtInfo = {
   filePath: string
+  fileExportPath: string[]
+}
+type DefinedAtInfoFull = {
+  filePathRelativeToUserRootDir?: string
+  filePathAbsolute: string
   fileExportPath: string[]
 }
 
