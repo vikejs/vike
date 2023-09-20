@@ -1296,7 +1296,6 @@ function determineRouteFilesystem(locationId: string, configValueSources: Config
       const debugInfo = { locationId, routeFilesystem, configFilesystemRoutingRoot }
       assert(routeFilesystem.startsWith(filesystemRoutingRootEffect.before), debugInfo)
       routeFilesystem = applyFilesystemRoutingRootEffect(routeFilesystem, filesystemRoutingRootEffect)
-      assert(filesystemRoutingRootDefinedAt.includes('export'))
       routeFilesystemDefinedBy = `${routeFilesystemDefinedBy} (with ${filesystemRoutingRootDefinedAt})`
     }
   }
@@ -1311,7 +1310,7 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const configDefinedAt = getConfigDefinedAtString(configName, configFilesystemRoutingRoot, true)
+  const configDefinedAt = getConfigDefinedAtString(configName, configFilesystemRoutingRoot, false)
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),

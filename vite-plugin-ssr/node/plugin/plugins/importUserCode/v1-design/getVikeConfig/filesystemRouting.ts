@@ -137,7 +137,7 @@ function removeFilename(filePath: string, optional?: true) {
   return filePath
 }
 
-function getRouteFilesystemDefinedBy(locationId: string) {
+function getRouteFilesystemDefinedBy(locationId: string): string {
   if (locationId === '/') return locationId
   assert(!locationId.endsWith('/'))
   const routeFilesystemDefinedBy = locationId + '/'
