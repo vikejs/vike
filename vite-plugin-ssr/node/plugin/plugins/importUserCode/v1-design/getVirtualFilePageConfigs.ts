@@ -47,13 +47,12 @@ function getContent(
 
   lines.push('export const pageConfigs = [')
   pageConfigs.forEach((pageConfig) => {
-    const { pageId, routeFilesystem, routeFilesystemDefinedBy, isErrorPage } = pageConfig
+    const { pageId, routeFilesystem, isErrorPage } = pageConfig
     const virtualFileIdImportPageCode = getVirtualFileIdImportPageCode(pageId, isForClientSide)
     lines.push(`  {`)
     lines.push(`    pageId: ${JSON.stringify(pageId)},`)
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
-    lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
     lines.push(
       `    loadConfigValuesAll: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`
     )

@@ -10,7 +10,6 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
     assert(isObject(pageConfig))
     assert(hasProp(pageConfig, 'pageId', 'string'))
     assert(hasProp(pageConfig, 'routeFilesystem'))
-    assert(hasProp(pageConfig, 'routeFilesystemDefinedBy'))
   })
 }
 

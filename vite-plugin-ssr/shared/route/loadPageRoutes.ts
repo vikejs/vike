@@ -88,15 +88,15 @@ function getPageRoutes(
         }
 
         if (!pageRoute) {
-          const { routeFilesystem, routeFilesystemDefinedBy } = pageConfig
+          const { routeFilesystem } = pageConfig
           assert(routeFilesystem)
-          assert(routeFilesystem.startsWith('/'))
-          assert(routeFilesystemDefinedBy)
+          const { routeString, definedBy } = routeFilesystem
+          assert(routeFilesystem.routeString.startsWith('/'))
           pageRoute = {
             pageId,
-            routeFilesystemDefinedBy,
+            routeFilesystemDefinedBy: definedBy,
             comesFromV1PageConfig,
-            routeString: routeFilesystem,
+            routeString,
             routeDefinedAt: null,
             routeType: 'FILESYSTEM'
           }

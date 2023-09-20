@@ -372,8 +372,10 @@ async function loadVikeConfig(
         const pageConfig: PageConfigBuildTime = {
           pageId: locationId,
           isErrorPage,
-          routeFilesystemDefinedBy,
-          routeFilesystem: isErrorPage ? null : routeFilesystem,
+          routeFilesystem: routeFilesystem && !isErrorPage ? {
+            routeString: routeFilesystem,
+            definedBy: routeFilesystemDefinedBy
+          }: null,
           configValueSources,
           configValues: getConfigValues(configValueSources, configDefinitionsRelevant)
         }

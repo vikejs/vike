@@ -22,9 +22,10 @@ type PageConfigBuildTime = PageConfigCommon & {
 type PageConfigCommon = {
   pageId: string
   isErrorPage: boolean
-  // TODO: unify to routeFilesystem: null | { routeString: string, definedBy: string }
-  routeFilesystem: null | string
-  routeFilesystemDefinedBy: null | string
+  routeFilesystem: null | {
+    routeString: string
+    definedBy: string
+  }
   configValues: ConfigValues
 }
 type ConfigValueSource = {
