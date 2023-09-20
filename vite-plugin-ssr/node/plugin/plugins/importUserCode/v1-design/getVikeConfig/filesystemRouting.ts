@@ -1,5 +1,5 @@
-export { getRouteFilesystem }
-export { getRouteFilesystemDefinedBy }
+export { getFilesystemRouteString }
+export { getFilesystemRouteDefinedBy }
 export { isInherited }
 export { getLocationId }
 export { sortAfterInheritanceOrder }
@@ -22,7 +22,7 @@ function getLocationId(somePath: string): string {
   return locationId
 }
 /** Get URL determined by filesystem path */
-function getRouteFilesystem(locationId: string): string {
+function getFilesystemRouteString(locationId: string): string {
   return getLogicalPath(locationId, ['renderer', 'pages', 'src', 'index'])
 }
 /** Get apply root for config inheritance */
@@ -137,7 +137,7 @@ function removeFilename(filePath: string, optional?: true) {
   return filePath
 }
 
-function getRouteFilesystemDefinedBy(locationId: string): string {
+function getFilesystemRouteDefinedBy(locationId: string): string {
   if (locationId === '/') return locationId
   assert(!locationId.endsWith('/'))
   const routeFilesystemDefinedBy = locationId + '/'
