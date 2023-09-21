@@ -43,6 +43,7 @@ function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
     '  setImportBuildGetters({',
     `    pageFiles: () => import('./${pageFilesEntry}'),`,
     "    clientManifest: () => require('../manifest.json'),",
+    // TODO: use virtual file instead of generating vite-plugin-ssr.json
     "    pluginManifest: () => require('../client/vite-plugin-ssr.json'),",
     '  });',
     '})()',
