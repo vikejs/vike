@@ -4,9 +4,9 @@ import { assert, assertPosixPath } from '../../../utils.js'
 import type { PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
 import { generateEagerImport } from '../generateEagerImport.js'
 import {
-  getVirtualFileIdImportPageCode,
-  isVirtualFileIdImportPageCode
-} from '../../../../shared/virtual-files/virtualFileImportPageCode.js'
+  getVirtualFileIdPageConfigValuesAll,
+  isVirtualFileIdPageConfigValuesAll
+} from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { getVikeConfig } from './getVikeConfig.js'
 import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
@@ -22,7 +22,7 @@ async function getVirtualFilePageConfigValuesAll(
   isDev: boolean,
   configVps: ConfigVpsResolved
 ): Promise<string> {
-  const result = isVirtualFileIdImportPageCode(id)
+  const result = isVirtualFileIdPageConfigValuesAll(id)
   assert(result)
   /* This assertion fails when using includeAssetsImportedByServer
   {
@@ -97,7 +97,7 @@ function getLoadConfigValuesAll(
   })
   lines.push('];')
   if (includeAssetsImportedByServer && isForClientSide && !isDev) {
-    lines.push(`import '${extractAssetsAddQuery(getVirtualFileIdImportPageCode(pageId, false))}'`)
+    lines.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigValuesAll(pageId, false))}'`)
   }
   const code = [...importStatements, ...lines].join('\n')
   return code

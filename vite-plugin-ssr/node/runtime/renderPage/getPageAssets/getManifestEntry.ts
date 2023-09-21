@@ -3,7 +3,7 @@ export { getManifestEntry }
 import type { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
 import { assert, slice, isNpmPackageImport } from '../../utils.js'
 import { assertClientEntryId } from './assertClientEntryId.js'
-import { isVirtualFileIdImportPageCode } from '../../../shared/virtual-files/virtualFileImportPageCode.js'
+import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 
 function getManifestEntry(
   id: string,
@@ -22,7 +22,7 @@ function getManifestEntry(
   }
 
   // Page code importer
-  if (isVirtualFileIdImportPageCode(id)) {
+  if (isVirtualFileIdPageConfigValuesAll(id)) {
     {
       const manifestKey = id
       const manifestEntry = clientManifest[manifestKey]
@@ -32,9 +32,9 @@ function getManifestEntry(
     }
     // Workaround for what seems to be a Vite bug when process.cwd() !== config.root
     //  - Manifest key is:
-    //       ../../virtual:vite-plugin-ssr:importPageCode:client:/pages/index
+    //       ../../virtual:vite-plugin-ssr:pageConfigValuesAll:client:/pages/index
     //    But it should be this instead:
-    //      virtual:vite-plugin-ssr:importPageCode:client:/pages/index
+    //      virtual:vite-plugin-ssr:pageConfigValuesAll:client:/pages/index
     //  - This workaround was implemented to support Vitest runnung /tests/*
     //    - I don't know whether end users actually need this workaround? (I'm not sure what the bug actually is.)
     const manifestKeyEnd = id

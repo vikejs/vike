@@ -19,7 +19,7 @@ import { getConfigValue } from '../../../shared/page-configs/utils.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
 import { getConfigVps } from '../../shared/getConfigVps.js'
 import type { ResolvedConfig, Plugin, Rollup, UserConfig } from 'vite'
-import { getVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode.js'
+import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
@@ -202,7 +202,7 @@ function getEntryFromFilePath(filePath: string, config: ResolvedConfig, addExtra
 }
 function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide: boolean) {
   let { pageId } = pageConfig
-  const entryTarget = getVirtualFileIdImportPageCode(pageId, isForClientSide)
+  const entryTarget = getVirtualFileIdPageConfigValuesAll(pageId, isForClientSide)
   let entryName = pageId
   entryName = prependEntriesDir(entryName)
   return { entryName, entryTarget }

@@ -774,7 +774,7 @@ function getImport(
   if (importFilePath.startsWith('.')) {
     // We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
     // ```
-    // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vite-plugin-ssr:importPageCode:client:/pages/index". Does the file exist?
+    // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vite-plugin-ssr:pageConfigValuesAll:client:/pages/index". Does the file exist?
     // ```
     importFilePath = resolveRelativeCodeFilePath(importData, configFilePath, userRootDir)
   } else {

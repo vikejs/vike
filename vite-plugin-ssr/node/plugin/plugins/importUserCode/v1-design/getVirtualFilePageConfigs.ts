@@ -8,7 +8,7 @@ import type {
   PageConfigGlobalData
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { generateEagerImport } from '../generateEagerImport.js'
-import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files/virtualFileImportPageCode.js'
+import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import { getConfigEnv } from './helpers.js'
@@ -48,13 +48,13 @@ function getContent(
   lines.push('export const pageConfigs = [')
   pageConfigs.forEach((pageConfig) => {
     const { pageId, routeFilesystem, isErrorPage } = pageConfig
-    const virtualFileIdImportPageCode = getVirtualFileIdImportPageCode(pageId, isForClientSide)
+    const virtualFileIdPageConfigValuesAll = getVirtualFileIdPageConfigValuesAll(pageId, isForClientSide)
     lines.push(`  {`)
     lines.push(`    pageId: ${JSON.stringify(pageId)},`)
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(
-      `    loadConfigValuesAll: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`
+      `    loadConfigValuesAll: async () => (await import(${JSON.stringify(virtualFileIdPageConfigValuesAll)})).default,`
     )
 
     lines.push(`    configValues: {`)
