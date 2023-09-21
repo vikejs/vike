@@ -12,6 +12,7 @@ For example, we can render an admin panel as SPA while rendering marketing pages
 
 > The `vite-plugin-ssr` boilerplates do SSR by default, which is a sensible default that works for most apps.
 
+> Instead of manually integrating render modes yourself, you can use <Link text={<><code>vike-*</code> packages</>} href="/vike-packages" /> and [Bati](https://batijs.github.io/): `vike-*` packages include an `ssr: boolean` config and Bati helps you scaffold projects. Bati and `vike-*` packages are going to get out of beta soon.
 
 ## SPA
 
@@ -185,12 +186,6 @@ Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example`](https://github.c
  - Client-side hook: [/pages/_default/_default.page.client.ts](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/_default/_default.page.client.ts)
  - SPA page: [/pages/spa.page.client.vue](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/spa.page.client.vue)
  - SSR page: [/pages/ssr.page.vue](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/ssr.page.vue)
-
-> See [`clientRouting`](/clientRouting) for another illustration of conditional DOM hydration.
-
-> The <Link text={<><code>vike-*</code> packages</>} href="/vike-packages" /> are doing this for you. You can use
-> [Bati](https://batijs.github.io/) to easily scaffold a project using `vite-plugin-ssr` and one of the `vike-*`
-> packages. This uses the [V1 design](/migration/v1-design).
 
 
 ## SSR

@@ -7,11 +7,9 @@ By default, `vite-plugin-ssr` does <Link text="Server Routing" href="/server-rou
 We opt into <Link text="Client Routing" href="/client-routing" /> by modifying `/renderer/_default.client.js` to:
  1. Set `export const clientRouting = true`.
  2. Update and adapt the <Link text={<>client-side <code>render()</code> hook</>} href="/render-client" /> to
-    conditionally hydrate the DOM.
+    hydrate the DOM only when rendering the first page.
 
-> The <Link text={<><code>vike-*</code> packages</>} href="/vike-packages" /> are doing this for you. You can use
-> [Bati](https://batijs.github.io/) to easily scaffold a project using `vite-plugin-ssr` and one of the `vike-*`
-> packages. This uses the [V1 design](/migration/v1-design).
+> Instead of manually integrating Client Routing yourself, you can use <Link text={<><code>vike-*</code> packages</>} href="/vike-packages" /> and [Bati](https://batijs.github.io/): `vike-*` packages use Client Routing and Bati helps you scaffold projects. Bati and `vike-*` packages are going to get out of beta soon.
 
 React example:
  - <RepoLink path='/examples/react-full/renderer/_default.page.client.tsx' />
