@@ -72,7 +72,7 @@ function buildConfig(): Plugin {
         const { dir } = options
         assert(dir)
         const manifestFilePathOld = path.join(dir, manifestEntry.fileName)
-        const manifestFilePathNew = path.join(dir, '..', 'manifest.json')
+        const manifestFilePathNew = path.join(dir, '../server/', 'client-assets.json')
         await fs.rename(manifestFilePathOld, manifestFilePathNew)
       } else {
         assert(!manifestEntry)
