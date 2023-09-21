@@ -8,8 +8,8 @@ const idBase = 'virtual:vite-plugin-ssr:pageConfigValuesAll:'
 const idBaseClient = `${idBase}client:` as const
 const idBaseServer = `${idBase}server:` as const
 
-function getVirtualFileIdPageConfigValuesAll(pageId: string, isForClientSide: boolean): string {
-  const id = (isForClientSide ? idBaseClient : idBaseServer) + pageId
+function getVirtualFileIdPageConfigValuesAll(pageId: string, isForClientSide: boolean): `${typeof idBase}${string}` {
+  const id = `${(isForClientSide ? idBaseClient : idBaseServer)}${pageId}` as const
   return id
 }
 function isVirtualFileIdPageConfigValuesAll(
