@@ -1286,10 +1286,10 @@ importers:
         specifier: ^2.6.5
         version: 2.6.5
       '@types/react':
-        specifier: ^18.2.22
+        specifier: ^18.2.8
         version: 18.2.22
       '@types/react-dom':
-        specifier: ^18.2.7
+        specifier: ^18.2.4
         version: 18.2.7
       '@vitejs/plugin-react-swc':
         specifier: ^3.3.2
