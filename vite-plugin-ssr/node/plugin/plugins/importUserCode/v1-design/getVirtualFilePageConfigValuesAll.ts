@@ -31,12 +31,11 @@ async function getVirtualFilePageConfigValuesAll(
   }
   */
   const { pageId, isForClientSide } = result
-  const { pageConfigs: pageConfigsData } = await getVikeConfig(userRootDir, isDev, configVps.extensions, true)
-  assert(pageConfigsData)
-  const pageConfigs = pageConfigsData.find((pageConfig) => pageConfig.pageId === pageId)
-  assert(pageConfigs)
+  const { pageConfigs } = await getVikeConfig(userRootDir, isDev, configVps.extensions, true)
+  const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
+  assert(pageConfig)
   const code = getLoadConfigValuesAll(
-    pageConfigs,
+    pageConfig,
     isForClientSide,
     pageId,
     configVps.includeAssetsImportedByServer,

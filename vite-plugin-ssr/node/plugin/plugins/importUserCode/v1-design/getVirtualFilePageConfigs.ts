@@ -25,13 +25,13 @@ async function getVirtualFilePageConfigs(
   configVps: ConfigVpsResolved,
   isClientRouting: boolean
 ): Promise<string> {
-  const { pageConfigs: pageConfigsData, pageConfigGlobal } = await getVikeConfig(
+  const { pageConfigs, pageConfigGlobal } = await getVikeConfig(
     userRootDir,
     isDev,
     configVps.extensions,
     true
   )
-  return getContent(pageConfigsData, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
+  return getContent(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
 }
 
 function getContent(

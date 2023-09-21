@@ -87,13 +87,13 @@ function buildConfig(): Plugin {
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const configVps = await getConfigVps(config)
   const pageFileEntries = await getPageFileEntries(config, configVps.includeAssetsImportedByServer) // TODO/v1-release: remove
-  const { pageConfigs: pageConfigsData } = await getVikeConfig(config.root, false, configVps.extensions)
+  const { pageConfigs } = await getVikeConfig(config.root, false, configVps.extensions)
   assertUsage(
-    Object.keys(pageFileEntries).length !== 0 || pageConfigsData.length !== 0,
+    Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,
     'At least one page should be defined, see https://vite-plugin-ssr.com/add'
   )
   if (viteIsSSR(config)) {
-    const serverEntries = analyzeServerEntries(pageConfigsData)
+    const serverEntries = analyzeServerEntries(pageConfigs)
     const entries = {
       pageFiles: virtualFileIdImportUserCodeServer, // TODO/next-major-release: rename to configFiles
       importBuild: resolve('dist/esm/node/importBuild.js'), // TODO/next-major-release: remove
@@ -102,7 +102,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     }
     return entries
   } else {
-    let { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigsData, config)
+    let { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigs, config)
     if (Object.entries(pageFileEntries).length > 0) {
       hasClientRouting = true
       hasServerRouting = true
