@@ -81,7 +81,7 @@ importers:
         version: 2.0.3
       vite:
         specifier: ^4.4.9
-        version: 4.4.9(@types/node@15.14.9)
+        version: 4.4.9(@types/node@20.6.3)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -180,7 +180,7 @@ importers:
         version: 2.0.3
       vite:
         specifier: ^4.4.9
-        version: 4.4.9(@types/node@15.14.9)
+        version: 4.4.9(@types/node@20.6.3)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -297,7 +297,7 @@ importers:
         version: 0.1.6(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.9)
       vite:
         specifier: ^4.0.3
-        version: 4.3.9(@types/node@20.2.5)
+        version: 4.3.9
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -1280,26 +1280,26 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0(rollup@3.27.2)
       '@types/node':
-        specifier: ^20.2.5
-        version: 20.2.5
+        specifier: ^20.6.3
+        version: 20.6.3
       '@types/node-fetch':
-        specifier: ^2.6.4
-        version: 2.6.4
+        specifier: ^2.6.5
+        version: 2.6.5
       '@types/react':
-        specifier: ^18.2.8
-        version: 18.2.8
+        specifier: ^18.2.22
+        version: 18.2.22
       '@types/react-dom':
-        specifier: ^18.2.4
-        version: 18.2.4
+        specifier: ^18.2.7
+        version: 18.2.7
       '@vitejs/plugin-react-swc':
         specifier: ^3.3.2
-        version: 3.3.2(vite@4.3.9)
+        version: 3.3.2(vite@4.4.9)
       cross-fetch:
-        specifier: ^3.1.6
-        version: 3.1.6
+        specifier: ^4.0.0
+        version: 4.0.0
       node-fetch:
-        specifier: ^3.3.1
-        version: 3.3.1
+        specifier: ^3.3.2
+        version: 3.3.2
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1307,14 +1307,14 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: ^0.3.12
-        version: 0.3.12(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^0.3.14
+        version: 0.3.14(react-dom@18.2.0)(react@18.2.0)
       typescript:
-        specifier: ^5.1.3
-        version: 5.1.3
+        specifier: ^5.2.2
+        version: 5.2.2
       vite:
-        specifier: ^4.3.9
-        version: 4.3.9(@types/node@20.2.5)
+        specifier: ^4.4.9
+        version: 4.4.9(@types/node@20.6.3)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2187,7 +2187,7 @@ importers:
         version: 5.1.3
       vite:
         specifier: ^4.0.3
-        version: 4.3.9(@types/node@20.2.5)
+        version: 4.3.9
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2250,7 +2250,7 @@ importers:
         version: 2.0.3
       vite:
         specifier: ^4.0.3
-        version: 4.4.9(@types/node@15.14.9)
+        version: 4.4.9(@types/node@20.6.3)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2370,7 +2370,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: ^4.0.3
-        version: 4.3.9(@types/node@20.2.5)
+        version: 4.3.9
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -2397,7 +2397,7 @@ importers:
         version: 5.1.6
       vite:
         specifier: ^4.0.3
-        version: 4.4.9(@types/node@15.14.9)
+        version: 4.4.9(@types/node@20.6.3)
       vite-plugin-ssr:
         specifier: link:../../vite-plugin-ssr
         version: link:../../vite-plugin-ssr
@@ -5010,14 +5010,14 @@ packages:
   /@types/better-sqlite3@7.6.4:
     resolution: {integrity: sha512-dzrRZCYPXIXfSR1/surNbJ/grU3scTaygS0OMzjlGf71i9sc2fGyHPXXiXmEvNIoE0cGwsanEFMVJxPXmco9Eg==}
     dependencies:
-      '@types/node': 20.4.10
+      '@types/node': 20.6.3
     dev: false
 
   /@types/body-parser@1.19.2:
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
     dependencies:
       '@types/connect': 3.4.35
-      '@types/node': 20.4.10
+      '@types/node': 20.6.3
     dev: false
 
   /@types/chai-subset@1.3.3:
@@ -5039,7 +5039,7 @@ packages:
   /@types/connect@3.4.35:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
-      '@types/node': 20.4.10
+      '@types/node': 20.6.3
     dev: false
 
   /@types/debug@4.1.7:
@@ -5074,7 +5074,7 @@ packages:
   /@types/express-serve-static-core@4.17.34:
     resolution: {integrity: sha512-fvr49XlCGoUj2Pp730AItckfjat4WNb0lb3kfrLWffd+RLeoGAMsq7UOy04PAPtoL01uKwcp6u8nhzpgpDYr3w==}
     dependencies:
-      '@types/node': 20.4.10
+      '@types/node': 20.6.3
       '@types/qs': 6.9.7
       '@types/range-parser': 1.2.4
       '@types/send': 0.17.1
@@ -5092,7 +5092,7 @@ packages:
   /@types/fs-extra@9.0.13:
     resolution: {integrity: sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==}
     dependencies:
-      '@types/node': 20.4.10
+      '@types/node': 20.6.3
     dev: false
 
   /@types/hast@2.3.4:
@@ -5104,7 +5104,7 @@ packages:
   /@types/hoist-non-react-statics@3.3.1:
     resolution: {integrity: sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==}
     dependencies:
-      '@types/react': 18.2.20
+      '@types/react': 18.2.22
       hoist-non-react-statics: 3.3.2
     dev: false
 
@@ -5126,7 +5126,7 @@ packages:
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 20.4.10
+      '@types/node': 20.6.3
     dev: true
 
   /@types/linkify-it@3.0.2:
@@ -5176,11 +5176,11 @@ packages:
       form-data: 3.0.1
     dev: false
 
-  /@types/node-fetch@2.6.4:
-    resolution: {integrity: sha512-1ZX9fcN4Rvkvgv4E6PAY5WXUFWFcRWxZa3EW83UjycOB9ljJCedb2CupIP4RZMEwF/M3eTcCihbBRgwtGbg5Rg==}
+  /@types/node-fetch@2.6.5:
+    resolution: {integrity: sha512-OZsUlr2nxvkqUFLSaY2ZbA+P1q22q+KrlxWOn/38RX+u5kTkYL2mTujEpzUhGkS+K/QCYp9oagfXG39XOzyySg==}
     dependencies:
-      '@types/node': 20.4.10
-      form-data: 3.0.1
+      '@types/node': 20.6.3
+      form-data: 4.0.0
     dev: false
 
   /@types/node@15.14.9:
@@ -5194,12 +5194,12 @@ packages:
   /@types/node@20.1.0:
     resolution: {integrity: sha512-O+z53uwx64xY7D6roOi4+jApDGFg0qn6WHcxe5QeqjMaTezBO/mxdfFXIVAVVyNWKx84OmPB3L8kbVYOTeN34A==}
 
-  /@types/node@20.2.5:
-    resolution: {integrity: sha512-JJulVEQXmiY9Px5axXHeYGLSjhkZEnD+MDPDGbCbIAbMslkKwmygtZFy1X6s/075Yo94sf8GuSlFfPzysQrWZQ==}
-    dev: false
-
   /@types/node@20.4.10:
     resolution: {integrity: sha512-vwzFiiy8Rn6E0MtA13/Cxxgpan/N6UeNYR9oUu6kuJWxu6zCk98trcDp8CBhbtaeuq9SykCmXkFr2lWLoPcvLg==}
+    dev: false
+
+  /@types/node@20.6.3:
+    resolution: {integrity: sha512-HksnYH4Ljr4VQgEy2lTStbCKv/P590tmPe5HqOnv9Gprffgv5WXAY+Y5Gqniu0GGqeTCUdBnzC3QSrzPkBkAMA==}
 
   /@types/normalize-package-data@2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -5258,16 +5258,16 @@ packages:
       csstype: 3.1.2
     dev: false
 
-  /@types/react@18.2.6:
-    resolution: {integrity: sha512-wRZClXn//zxCFW+ye/D2qY65UsYP1Fpex2YXorHc8awoNamkMZSvBxwxdYVInsHOZZd2Ppq8isnSzJL5Mpf8OA==}
+  /@types/react@18.2.22:
+    resolution: {integrity: sha512-60fLTOLqzarLED2O3UQImc/lsNRgG0jE/a1mPW9KjMemY0LMITWEsbS4VvZ4p6rorEHd5YKxxmMKSDK505GHpA==}
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.3
       csstype: 3.1.2
     dev: false
 
-  /@types/react@18.2.8:
-    resolution: {integrity: sha512-lTyWUNrd8ntVkqycEEplasWy2OxNlShj3zqS0LuB1ENUGis5HodmhM7DtCoUGbxj3VW/WsGA0DUhpG6XrM7gPA==}
+  /@types/react@18.2.6:
+    resolution: {integrity: sha512-wRZClXn//zxCFW+ye/D2qY65UsYP1Fpex2YXorHc8awoNamkMZSvBxwxdYVInsHOZZd2Ppq8isnSzJL5Mpf8OA==}
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.3
@@ -5281,7 +5281,7 @@ packages:
   /@types/responselike@1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
-      '@types/node': 20.4.10
+      '@types/node': 20.6.3
     dev: true
 
   /@types/scheduler@0.16.3:
@@ -5296,14 +5296,14 @@ packages:
     resolution: {integrity: sha512-Cwo8LE/0rnvX7kIIa3QHCkcuF21c05Ayb0ZfxPiv0W8VRiZiNW/WuRupHKpqqGVGf7SUA44QSOUKaEd9lIrd/Q==}
     dependencies:
       '@types/mime': 1.3.2
-      '@types/node': 20.4.10
+      '@types/node': 20.6.3
     dev: false
 
   /@types/serve-static@1.15.1:
     resolution: {integrity: sha512-NUo5XNiAdULrJENtJXZZ3fHtfMolzZwczzBbnAeBbqBwG+LaG6YaJtuwzwGSQZ2wsCrxjEhNNjAkKigy3n8teQ==}
     dependencies:
       '@types/mime': 3.0.1
-      '@types/node': 20.4.10
+      '@types/node': 20.6.3
     dev: false
 
   /@types/source-map-support@0.5.6:
@@ -5466,24 +5466,13 @@ packages:
       wonka: 4.0.15
     dev: false
 
-  /@vitejs/plugin-react-swc@3.3.2(vite@4.3.9):
-    resolution: {integrity: sha512-VJFWY5sfoZerQRvJrh518h3AcQt6f/yTuWn4/TRB+dqmYU0NX1qz7qM5Wfd+gOQqUzQW4gxKqKN3KpE/P3+zrA==}
-    peerDependencies:
-      vite: ^4
-    dependencies:
-      '@swc/core': 1.3.62
-      vite: 4.3.9(@types/node@20.2.5)
-    transitivePeerDependencies:
-      - '@swc/helpers'
-    dev: false
-
   /@vitejs/plugin-react-swc@3.3.2(vite@4.4.9):
     resolution: {integrity: sha512-VJFWY5sfoZerQRvJrh518h3AcQt6f/yTuWn4/TRB+dqmYU0NX1qz7qM5Wfd+gOQqUzQW4gxKqKN3KpE/P3+zrA==}
     peerDependencies:
       vite: ^4
     dependencies:
       '@swc/core': 1.3.62
-      vite: 4.4.9(@types/node@15.14.9)
+      vite: 4.4.9(@types/node@20.6.3)
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: false
@@ -5565,7 +5554,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.22.5(@babel/core@7.22.10)
       magic-string: 0.27.0
       react-refresh: 0.14.0
-      vite: 4.3.9(@types/node@20.2.5)
+      vite: 4.3.9
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -5581,7 +5570,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.22.5(@babel/core@7.22.10)
       magic-string: 0.27.0
       react-refresh: 0.14.0
-      vite: 4.4.9(@types/node@15.14.9)
+      vite: 4.4.9(@types/node@20.6.3)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -5611,7 +5600,7 @@ packages:
       '@babel/plugin-transform-react-jsx-self': 7.22.5(@babel/core@7.22.10)
       '@babel/plugin-transform-react-jsx-source': 7.22.5(@babel/core@7.22.10)
       react-refresh: 0.14.0
-      vite: 4.4.9(@types/node@15.14.9)
+      vite: 4.4.9(@types/node@20.6.3)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -5656,7 +5645,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.4.9(@types/node@15.14.9)
+      vite: 4.4.9(@types/node@20.6.3)
       vue: 3.3.4
     dev: false
 
@@ -7190,10 +7179,10 @@ packages:
       - encoding
     dev: false
 
-  /cross-fetch@3.1.6:
-    resolution: {integrity: sha512-riRvo06crlE8HiqOwIpQhxwdOk4fOeR7FVM/wXoxchFEqMNUjvbs3bfo4OTgMEMHzppd4DxFBDbyySj8Cv781g==}
+  /cross-fetch@4.0.0:
+    resolution: {integrity: sha512-e4a5N8lVvuLgAWgnCrLr2PP0YyDOTHa9H/Rj54dirp61qXnNq46m82bRhNqIA5VccJtWBvPTFRV3TtvHUKPB1g==}
     dependencies:
-      node-fetch: 2.6.11
+      node-fetch: 2.7.0
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -8210,6 +8199,15 @@ packages:
       mime-types: 2.1.35
     dev: false
 
+  /form-data@4.0.0:
+    resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
+    engines: {node: '>= 6'}
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      mime-types: 2.1.35
+    dev: false
+
   /formdata-polyfill@4.0.10:
     resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
     engines: {node: '>=12.20.0'}
@@ -9162,7 +9160,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.4.10
+      '@types/node': 20.6.3
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: false
@@ -10417,8 +10415,29 @@ packages:
       whatwg-url: 5.0.0
     dev: false
 
+  /node-fetch@2.7.0:
+    resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
+    engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+    dependencies:
+      whatwg-url: 5.0.0
+    dev: false
+
   /node-fetch@3.3.1:
     resolution: {integrity: sha512-cRVc/kyto/7E5shrWca1Wsea4y6tL9iYJE5FBCius3JQfb/4P4I295PfhgbJQBLTx6lATE4z+wK0rPM4VS2uow==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dependencies:
+      data-uri-to-buffer: 4.0.1
+      fetch-blob: 3.2.0
+      formdata-polyfill: 4.0.10
+    dev: false
+
+  /node-fetch@3.3.2:
+    resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dependencies:
       data-uri-to-buffer: 4.0.1
@@ -11408,13 +11427,14 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /react-streaming@0.3.12(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-j/a2w9gGJfG/wxRzpe5gR8dFxVyya3D7sMGX7ruTB7sMvzvE0nIxScaHoAZKk2F2Q2JURFZKa2nzhSM15e5G4g==}
+  /react-streaming@0.3.14(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-nYTYNp1NjJbEDFiiN/NpuUOhDm94GszLD/aGxXRtbYO2z2GlvL3S/OHjku17+qFfP91IQTF1fcHcvjCKEd3Ong==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      '@brillout/json-serializer': 0.5.3
+      '@brillout/import': 0.2.3
+      '@brillout/json-serializer': 0.5.6
       isbot-fast: 1.2.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -13117,7 +13137,7 @@ packages:
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      vite: 4.3.9(@types/node@20.2.5)
+      vite: 4.3.9
       vite-plugin-ssr: link:vite-plugin-ssr
     dev: false
 
@@ -13135,7 +13155,7 @@ packages:
       vite-plugin-ssr: link:vite-plugin-ssr
     dev: false
 
-  /vite-node@0.34.1(@types/node@20.4.10):
+  /vite-node@0.34.1(@types/node@20.6.3):
     resolution: {integrity: sha512-odAZAL9xFMuAg8aWd7nSPT+hU8u2r9gU3LRm9QKjxBEF2rRdWpMuqkrkjvyVQEdNFiBctqr2Gg4uJYizm5Le6w==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -13145,7 +13165,7 @@ packages:
       mlly: 1.4.0
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 4.4.9(@types/node@20.4.10)
+      vite: 4.4.9(@types/node@20.6.3)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -13306,7 +13326,7 @@ packages:
       fsevents: 2.3.2
     dev: false
 
-  /vite@4.3.9(@types/node@20.2.5):
+  /vite@4.3.9:
     resolution: {integrity: sha512-qsTNZjO9NoJNW7KnOrgYwczm0WctJ8m/yqYAMAK9Lxt4SoySUfS5S8ia9K7JHpa3KEeMfyF8LoJ3c5NeBJy6pg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -13331,7 +13351,6 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 20.2.5
       esbuild: 0.17.18
       postcss: 8.4.23
       rollup: 3.21.5
@@ -13445,6 +13464,42 @@ packages:
       rollup: 3.27.2
     optionalDependencies:
       fsevents: 2.3.2
+    dev: false
+
+  /vite@4.4.9(@types/node@20.6.3):
+    resolution: {integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      '@types/node': 20.6.3
+      esbuild: 0.18.17
+      postcss: 8.4.27
+      rollup: 3.27.2
+    optionalDependencies:
+      fsevents: 2.3.2
 
   /vitefu@0.2.4(vite@4.3.5):
     resolution: {integrity: sha512-fanAXjSaf9xXtOOeno8wZXIhgia+CZury481LsDaV++lSvcU2R9Ch2bPh3PYFyoHW+w9LqAeYRISVQjUIew14g==}
@@ -13490,7 +13545,7 @@ packages:
     dependencies:
       '@types/chai': 4.3.5
       '@types/chai-subset': 1.3.3
-      '@types/node': 20.4.10
+      '@types/node': 20.6.3
       '@vitest/expect': 0.34.1
       '@vitest/runner': 0.34.1
       '@vitest/snapshot': 0.34.1
@@ -13509,8 +13564,8 @@ packages:
       strip-literal: 1.0.1
       tinybench: 2.5.0
       tinypool: 0.7.0
-      vite: 4.4.9(@types/node@20.4.10)
-      vite-node: 0.34.1(@types/node@20.4.10)
+      vite: 4.4.9(@types/node@20.6.3)
+      vite-node: 0.34.1(@types/node@20.6.3)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
