@@ -1286,11 +1286,11 @@ importers:
         specifier: ^2.6.5
         version: 2.6.5
       '@types/react':
-        specifier: ^18.2.8
-        version: 18.2.22
+        specifier: 18.2.8
+        version: 18.2.8
       '@types/react-dom':
-        specifier: ^18.2.4
-        version: 18.2.7
+        specifier: 18.2.4
+        version: 18.2.4
       '@vitejs/plugin-react-swc':
         specifier: ^3.3.2
         version: 3.3.2(vite@4.4.9)
@@ -5268,6 +5268,14 @@ packages:
 
   /@types/react@18.2.6:
     resolution: {integrity: sha512-wRZClXn//zxCFW+ye/D2qY65UsYP1Fpex2YXorHc8awoNamkMZSvBxwxdYVInsHOZZd2Ppq8isnSzJL5Mpf8OA==}
+    dependencies:
+      '@types/prop-types': 15.7.5
+      '@types/scheduler': 0.16.3
+      csstype: 3.1.2
+    dev: false
+
+  /@types/react@18.2.8:
+    resolution: {integrity: sha512-lTyWUNrd8ntVkqycEEplasWy2OxNlShj3zqS0LuB1ENUGis5HodmhM7DtCoUGbxj3VW/WsGA0DUhpG6XrM7gPA==}
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.3
