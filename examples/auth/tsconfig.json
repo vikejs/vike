@@ -3,6 +3,7 @@
     "strict": true,
     "skipLibCheck": true,
     "jsx": "preserve",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "lib": ["DOM"]
   }
 }
