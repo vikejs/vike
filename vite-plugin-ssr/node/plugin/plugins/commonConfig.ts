@@ -15,7 +15,7 @@ const require_ = createRequire(importMetaUrl)
 function commonConfig(): Plugin[] {
   return [
     {
-      name: 'vike.devmonConfig-1',
+      name: 'vike-commonConfig-1',
       config: () => ({
         appType: 'custom',
         ssr: {
@@ -29,7 +29,7 @@ function commonConfig(): Plugin[] {
       }
     },
     {
-      name: 'vike.devmonConfig-2',
+      name: 'vike-.commonConfig-2',
       enforce: 'post',
       configResolved: {
         order: 'post',
