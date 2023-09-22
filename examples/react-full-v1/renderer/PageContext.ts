@@ -1,12 +1,3 @@
-export { Component }
-export { PageProps }
-
-import type { ComponentPublicInstance } from 'vue'
-type Component = ComponentPublicInstance // https://stackoverflow.com/questions/63985658/how-to-type-vue-instance-out-of-definecomponent-in-vue-3/63986086#63986086
-
-type Page = Component
-type PageProps = Record<string, unknown>
-
 declare global {
   namespace Vike {
     interface PageContext {
@@ -22,3 +13,9 @@ declare global {
     }
   }
 }
+
+type Page = (pageProps: PageProps) => React.ReactElement
+type PageProps = Record<string, unknown>
+
+// Tell TypeScript that this file isn't an ambient module
+export {}

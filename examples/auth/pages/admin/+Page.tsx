@@ -5,7 +5,7 @@ import { usePageContext } from 'vike-react/usePageContext'
 import { Counter } from '../../components/Counter'
 
 function Page() {
-  const pageContext: any = usePageContext()
+  const pageContext = usePageContext()
   const { userFullName } = pageContext
   return (
     <>

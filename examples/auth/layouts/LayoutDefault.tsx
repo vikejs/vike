@@ -35,7 +35,7 @@ function Links() {
 }
 
 function UserInfo() {
-  const pageContext: any = usePageContext()
+  const pageContext = usePageContext()
   const { userFullName } = pageContext
   let content
   if (!userFullName) {

@@ -5,7 +5,7 @@ import { usePageContext } from 'vike-react/usePageContext'
 import { Counter } from '../../components/Counter'
 
 function Page() {
-  const pageContext: any = usePageContext()
+  const pageContext = usePageContext()
 
   // Message shown to the user
   let msg
@@ -32,4 +32,14 @@ function Page() {
       </p>
     </>
   )
+}
+
+declare global {
+  namespace Vike {
+    export interface PageContext {
+      abortReason?: {
+        notAdmin?: true
+      }
+    }
+  }
 }

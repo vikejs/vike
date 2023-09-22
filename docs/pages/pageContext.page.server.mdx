@@ -155,20 +155,60 @@ When using <Link href="/client-routing" noBreadcrumb={true} />, the following ar
 ## TypeScript
 
 ```ts
-// Server-side pageContext built-in values
-import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'
-
-// Client-side pageContext built-in values, when using Server Routing
 import type {
-  PageContextBuiltInClientWithServerRouting as PageContextBuiltInClient
-} from 'vite-plugin-ssr/types'
-
-// Client-side pageContext built-in values, when using Client Routing
-import type {
-  PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
+  // For code loaded in client and server
+  PageContext
+  // For code loaded in client only
+  PageContextClient,
+  // For code loaded in server only
+  PageContextServer
 } from 'vite-plugin-ssr/types'
 ```
 
+To extend and/or refine the `PageContext` type, use the global interface `Vike.PageContext`:
+
+> Vike is the upcoming new name of vite-plugin-ssr, see [#736](https://github.com/brillout/vite-plugin-ssr/issues/736).
+
+```
+declare global {
+  namespace Vike {
+    interface PageContext {
+      // Define type of pageContext.user
+      user?: {
+        name: string
+        id: string
+        isAdmin: boolean
+      }
+      // Define type of pageContext.pageProps
+      pageProps?: PageProps
+      // Refine type of pageContext.Page (it's `unknown` by default)
+      Page: (pageProps) => JSX.Element
+    }
+  }
+}
+type PageProps = {
+  movies: {
+    title: string
+    releaseDate: Date
+  }[]
+}
+
+// Tell TypeScript this file isn't an ambient module
+export {}
+```
+
+If you use <Link text="Server Routing" href="/server-routing" />:
+
+```ts
+import type {
+  // For code loaded in client and server
+  PageContextWithServerRouting as PageContext,
+  // For code loaded in client only
+  PageContextClientWithServerRouting as PageContextClient,
+  // For code loaded in server only
+  PageContextServer
+} from 'vite-plugin-ssr/types'
+```
 
 ## Lifecycle
 

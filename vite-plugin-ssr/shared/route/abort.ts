@@ -40,6 +40,8 @@ type UrlRedirect = {
 }
 type AbortRedirect = Error
 
+type AbortReason = Required<({ abortReason?: unknown } & Vike.PageContext)['abortReason']>
+
 /**
  * Abort the rendering of the current page, and redirect the user to another URL instead.
  *
@@ -85,7 +87,7 @@ function redirect(url: `/${string}` | `https://${string}` | `http://${string}`, 
  *   `503` Service Unavailable (server is overloaded, a third-party API isn't responding)
  * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
  */
-function render(abortStatusCode: 401 | 403 | 404 | 410 | 429 | 500 | 503, abortReason?: unknown): Error
+function render(abortStatusCode: 401 | 403 | 404 | 410 | 429 | 500 | 503, abortReason?: AbortReason): Error
 /**
  * Abort the rendering of the current page, and render another page instead.
  *
@@ -94,7 +96,7 @@ function render(abortStatusCode: 401 | 403 | 404 | 410 | 429 | 500 | 503, abortR
  * @param url The URL to render.
  * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
  */
-function render(url: `/${string}`, abortReason?: unknown): Error
+function render(url: `/${string}`, abortReason?: AbortReason): Error
 function render(value: string | number, abortReason?: unknown): Error {
   const args = [typeof value === 'number' ? String(value) : JSON.stringify(value)]
   if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30, null))
