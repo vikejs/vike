@@ -4,7 +4,7 @@ import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 
 assertIsNotBrowser()
 
-if (isDebugEnabled('vps:log')) {
+if (isDebugEnabled('vike:log')) {
   trackLogs()
 }
 

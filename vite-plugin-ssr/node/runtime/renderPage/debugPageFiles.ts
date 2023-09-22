@@ -35,7 +35,7 @@ function debugPageFiles({
   clientEntries: string[]
   clientDependencies: ClientDependency[]
 }): void {
-  const debug = createDebugger('vps:pageFiles', { serialization: { emptyArray: 'None' } })
+  const debug = createDebugger('vike:pageFiles', { serialization: { emptyArray: 'None' } })
   const padding = '   - '
 
   debug('All page files:', printPageFiles(pageContext._pageFilesAll, true)) // TODO

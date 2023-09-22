@@ -53,7 +53,7 @@ import {
 import type { Readable as Readable_, Writable as Writable_ } from 'node:stream'
 import pc from '@brillout/picocolors'
 
-const debug = createDebugger('vps:stream')
+const debug = createDebugger('vike:stream')
 
 type StreamReadableWeb = ReadableStream
 type StreamReadableNode = Readable_

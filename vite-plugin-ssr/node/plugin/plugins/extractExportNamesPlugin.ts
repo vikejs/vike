@@ -15,7 +15,7 @@ import {
 import { getExportNames } from '../shared/parseEsModule.js'
 import { removeSourceMap } from '../shared/removeSourceMap.js'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
-const debugNamespace = 'vps:extractExportNames'
+const debugNamespace = 'vike:extractExportNames'
 const debug = createDebugger(debugNamespace)
 const debugEnabled = isDebugEnabled(debugNamespace)
 const globalObject = getGlobalObject<{ usesClientRouter?: true }>('extractExportNamesPlugin.ts', {})

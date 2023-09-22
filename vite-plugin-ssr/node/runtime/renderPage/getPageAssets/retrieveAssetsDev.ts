@@ -9,7 +9,7 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
   const assetUrls = new Set<string>()
   await Promise.all(
     clientDependencies.map(async ({ id }) => {
-      if (id.startsWith('@@vike')) return // vps doesn't have any CSS
+      if (id.startsWith('@@vike')) return // vike doesn't have any CSS
       assert(id)
       const { moduleGraph } = viteDevServer
       const [_, graphId] = await moduleGraph.resolveUrl(id)

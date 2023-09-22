@@ -32,7 +32,7 @@ function determineClientEntry({
   if (isHtmlOnly) {
     clientEntries = pageFilesClientSide.map((p) => p.filePath)
   } else {
-    // Add the vps client entry
+    // Add the vike client entry
     const clientEntry = getVikeClientEntry(isClientRouting)
     clientDependencies.push({ id: clientEntry, onlyAssets: false, eagerlyImported: false })
     clientEntries = [clientEntry]

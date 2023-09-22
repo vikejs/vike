@@ -11,20 +11,20 @@ import { resolveBase } from './resolveBase.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 
-function resolveVpsConfig(vpsConfig: unknown): Plugin {
+function resolveVpsConfig(vikeConfig: unknown): Plugin {
   return {
     name: 'vike:resolveVpsConfig',
     enforce: 'pre',
     async configResolved(config) {
-      const promise = resolveConfig(vpsConfig, config)
+      const promise = resolveConfig(vikeConfig, config)
       ;(config as Record<string, unknown>).configVpsPromise = promise
       await promise
     }
   }
 }
 
-async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promise<ConfigVpsResolved> {
-  const fromPluginOptions = (vpsConfig ?? {}) as ConfigVpsUserProvided
+async function resolveConfig(vikeConfig: unknown, config: ResolvedConfig): Promise<ConfigVpsResolved> {
+  const fromPluginOptions = (vikeConfig ?? {}) as ConfigVpsUserProvided
   const fromViteConfig = ((config as Record<string, unknown>).vike ?? {}) as ConfigVpsUserProvided
   const fromStemPackages = await findConfigVpsFromStemPackages(config.root)
 

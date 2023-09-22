@@ -30,9 +30,9 @@ import pc from '@brillout/picocolors'
 markEnvAsVite()
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
-function plugin(vpsConfig?: ConfigVpsUserProvided): any {
+function plugin(vikeConfig?: ConfigVpsUserProvided): any {
   const plugins: Plugin[] = [
-    resolveVpsConfig(vpsConfig), // The configResolved() hook of resolveVpsConfig() should be the first called
+    resolveVpsConfig(vikeConfig), // The configResolved() hook of resolveVpsConfig() should be the first called
     ...commonConfig(),
     importUserCode(),
     ...devConfig(),
@@ -49,7 +49,7 @@ function plugin(vpsConfig?: ConfigVpsUserProvided): any {
     setGlobalContext(),
     ...importBuild(),
     extensionsAssets(),
-    baseUrls(vpsConfig),
+    baseUrls(vikeConfig),
     envVarsPlugin()
   ]
   return plugins

@@ -14,16 +14,16 @@ assert(!isBrowser())
 ;(globalThis as any).__brillout_debug_createDebugger = createDebugger
 
 type Namespace =
-  | 'vps:error'
-  | 'vps:extractAssets'
-  | 'vps:extractExportNames'
-  | 'vps:glob'
-  | 'vps:pageFiles'
-  | 'vps:log'
-  | 'vps:routing'
-  | 'vps:virtual-files'
-  | 'vps:stem'
-  | 'vps:stream'
+  | 'vike:error'
+  | 'vike:extractAssets'
+  | 'vike:extractExportNames'
+  | 'vike:glob'
+  | 'vike:pageFiles'
+  | 'vike:log'
+  | 'vike:routing'
+  | 'vike:virtual-files'
+  | 'vike:stem'
+  | 'vike:stream'
 type Debug = ReturnType<typeof createDebugger>
 
 type Options = {
@@ -33,7 +33,7 @@ type Options = {
 }
 
 function createDebugger(namespace: Namespace, optionsGlobal?: Options) {
-  checkType<`vps:${string}`>(namespace)
+  checkType<`vike:${string}`>(namespace)
 
   const debugWithOptions = (options: Options) => {
     return (...msgs: unknown[]) => {
@@ -58,7 +58,7 @@ function createDebugger(namespace: Namespace, optionsGlobal?: Options) {
 }
 
 function isDebugEnabled(namespace: Namespace): boolean {
-  checkType<`vps:${string}`>(namespace)
+  checkType<`vike:${string}`>(namespace)
 
   let DEBUG: undefined | string
   // - `process` can be undefined in edge workers

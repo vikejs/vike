@@ -1,4 +1,4 @@
-// Internal functions of vps needed by other plugins are exported via this file
+// Internal functions of vike needed by other plugins are exported via this file
 
 import { route, type PageRoutes } from '../shared/route/index.js'
 import { type PageFile } from '../shared/getPageFiles.js'

@@ -4,7 +4,7 @@ import type { ConfigVpsUserProvided } from '../../../../shared/ConfigVps.js'
 import { assert, createDebugger, isObject } from '../../utils.js'
 import { getStemPackages } from './stemUtils.js'
 
-const debug = createDebugger('vps:stem')
+const debug = createDebugger('vike:stem')
 
 async function findConfigVpsFromStemPackages(root: string): Promise<ConfigVpsUserProvided[]> {
   if (isDeno()) return []
