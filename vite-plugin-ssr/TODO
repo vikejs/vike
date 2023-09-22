@@ -1,5 +1,4 @@
 - Vike rename
-  - restore CHANGELOG.md
   - vike npm package
   - vike.dev
   - algolia (do we need to change the id `vite-pluginssr`?)
