@@ -1,6 +1,6 @@
 declare global {
   namespace Vike {
-    export interface PageContext {
+    interface PageContext {
       userFullName?: string
       user?: {
         isAdmin: boolean

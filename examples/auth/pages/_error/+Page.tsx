@@ -36,7 +36,7 @@ function Page() {
 
 declare global {
   namespace Vike {
-    export interface PageContext {
+    interface PageContext {
       abortReason?: {
         notAdmin?: true
       }
