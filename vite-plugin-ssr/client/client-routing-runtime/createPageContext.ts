@@ -25,7 +25,7 @@ async function createPageContext<T extends { urlOriginal: string }>(pageContextB
   // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
   const isProd: boolean = import.meta.env.PROD
   const pageContext = {
-    _objectCreatedByVitePluginSsr: true,
+    _objectCreatedByVike: true,
     _urlHandler: null,
     _urlRewrite: null,
     _baseServer: baseServer,

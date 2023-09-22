@@ -29,10 +29,10 @@ async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVps
   // Add node_modules/vike/
   {
     // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vike/dist/esm/node/plugin/plugins/config/
-    const vitePluginSsrRoot = path.join(__dirname_, '../../../../../../')
-    // Assert that `vitePluginSsrRoot` is indeed pointing to `node_modules/vike/`
-    require_.resolve(`${vitePluginSsrRoot}/dist/esm/node/plugin/plugins/devConfig/index.js`)
-    fsAllow.push(vitePluginSsrRoot)
+    const vikeRoot = path.join(__dirname_, '../../../../../../')
+    // Assert that `vikeRoot` is indeed pointing to `node_modules/vike/`
+    require_.resolve(`${vikeRoot}/dist/esm/node/plugin/plugins/devConfig/index.js`)
+    fsAllow.push(vikeRoot)
   }
 
   // Add Vike extensions, e.g. node_modules/stem-react/

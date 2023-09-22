@@ -196,7 +196,7 @@ function getPageContextInitEnhanced(
   const globalContext = getGlobalContext()
   const pageContextInitEnhanced = {
     ...pageContextInit,
-    _objectCreatedByVitePluginSsr: true,
+    _objectCreatedByVike: true,
     // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,

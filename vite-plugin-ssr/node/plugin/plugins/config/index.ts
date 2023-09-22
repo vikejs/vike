@@ -25,7 +25,7 @@ function resolveVpsConfig(vpsConfig: unknown): Plugin {
 
 async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promise<ConfigVpsResolved> {
   const fromPluginOptions = (vpsConfig ?? {}) as ConfigVpsUserProvided
-  const fromViteConfig = ((config as Record<string, unknown>).vitePluginSsr ?? {}) as ConfigVpsUserProvided
+  const fromViteConfig = ((config as Record<string, unknown>).vike ?? {}) as ConfigVpsUserProvided
   const fromStemPackages = await findConfigVpsFromStemPackages(config.root)
 
   const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig]
@@ -39,7 +39,7 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
     // TODO: add config file path ?
     return `config ${pc.cyan(prop)} ${errMsg}`
   })
-  assertVpsConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vitePluginSsr.${prop} ${errMsg}`)
+  assertVpsConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vike.${prop} ${errMsg}`)
   // TODO/v1-release: deprecate this
   assertVpsConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
 
