@@ -1,5 +1,6 @@
 export { buildConfig }
 export { assertRollupInput }
+export { analyzeClientEntries }
 
 import {
   assert,
