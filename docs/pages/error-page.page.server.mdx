@@ -56,7 +56,7 @@ declare global {
 
 > The <Link href="/usePageContext" /> UI component hook allows you to access <Link href="/pageContext" noBreadcrumb /> from any UI component.
 
-The `pageContext.abortReason` and `pageContext.abortStatusCode` values are set by <Link href="/render" text={<code>throw render(abortStatusCode, abortReason)</code>} />, and `pageContext.is404` is set by vite-pugin-ssr.
+The `pageContext.abortReason` and `pageContext.abortStatusCode` values are set by <Link href="/render" text={<code>throw render(abortStatusCode, abortReason)</code>} />, and `pageContext.is404` is set by Vike.
 
 The error page is rendered if:
  1. The URL didn't match the route of any of your pages (`404 Page Not Found`).

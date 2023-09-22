@@ -6,7 +6,7 @@
 
 // If you want Vite to process your server code then use one of these:
 //  - vavite (https://github.com/cyco130/vavite)
-//     - See vavite + vite-pugin-ssr examples at https://github.com/cyco130/vavite/tree/main/examples
+//     - See vavite + Vike examples at https://github.com/cyco130/vavite/tree/main/examples
 //  - vite-node (https://github.com/antfu/vite-node)
 //  - HatTip (https://github.com/hattipjs/hattip)
 //    - You can use Bati (https://batijs.github.io/) to scaffold a vike + HatTip app. Note that Bati generates apps that use the V1 design (https://vike.dev/migration/v1-design) and Vike packages (https://vike.dev/vike-packages)
