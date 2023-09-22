@@ -2,10 +2,10 @@ export default onBeforeRender
 
 import fetch from 'cross-fetch'
 import { filterMovieData } from '../filterMovieData'
-import type { PageContextBuiltIn } from 'vike-react/types'
 import type { MovieDetails } from '../types'
+import type { PageContextServer } from 'vite-plugin-ssr/types'
 
-async function onBeforeRender(pageContext: PageContextBuiltIn) {
+async function onBeforeRender(pageContext: PageContextServer) {
   const response = await fetch(`https://star-wars.brillout.com/api/films/${pageContext.routeParams.id}.json`)
   let movie = (await response.json()) as MovieDetails
 

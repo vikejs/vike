@@ -42,7 +42,8 @@ function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
     `  const { setImportBuildGetters } = await import('${importPath}');`,
     '  setImportBuildGetters({',
     `    pageFiles: () => import('./${pageFilesEntry}'),`,
-    "    clientManifest: () => require('../client/manifest.json'),",
+    "    clientManifest: () => require('../assets.json'),",
+    // TODO: use virtual file instead of generating vite-plugin-ssr.json
     "    pluginManifest: () => require('../client/vite-plugin-ssr.json'),",
     '  });',
     '})()',

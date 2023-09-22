@@ -1,7 +1,16 @@
+export { PageContext }
+export { PageContextServer }
+export { PageContextClient }
+
+// For users who don't use Client Routing
+export { PageContextWithServerRouting }
+export { PageContextClientWithServerRouting }
+
 export { PageContextBuiltInServer }
 export { PageContextBuiltInServerInternal }
 export { PageContextBuiltInClientWithClientRouting }
 export { PageContextBuiltInClientWithServerRouting }
+
 
 import type {
   PageContextUrlComputedPropsInternal,
@@ -12,6 +21,17 @@ import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports.js'
 import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'
+
+// Because of vike-{react/vue/solid} most users will be using Client Routing => we give out the succint type names such as `PageContext` to these users
+type PageContext = PageContextWithClientRouting
+type PageContextClient = PageContextClientWithClientRouting
+
+type PageContextWithClientRouting = PageContextClientWithClientRouting | PageContextServer
+type PageContextWithServerRouting = PageContextClientWithServerRouting | PageContextServer
+
+type PageContextServer = PageContextBuiltInServer & Vike.PageContext
+type PageContextClientWithClientRouting = PageContextBuiltInClientWithClientRouting & Vike.PageContext
+type PageContextClientWithServerRouting = PageContextBuiltInClientWithServerRouting & Vike.PageContext
 
 /** Built-in `pageContext` properties set by vite-plugin-ssr.
  *
@@ -106,7 +126,7 @@ type PageContextBuiltInCommon<
  *
  * https://vite-plugin-ssr.com/pageContext
  */
-type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContextBuiltInCommon<Page>> &
+type PageContextBuiltInClientWithClientRouting<Page = unknown> = Partial<PageContextBuiltInCommon<Page>> &
   Pick<
     PageContextBuiltInCommon<Page>,
     'Page' | 'pageExports' | 'config' | 'configEntries' | 'exports' | 'exportsAll' | 'abortReason'
@@ -125,7 +145,7 @@ type PageContextBuiltInClientWithClientRouting<Page = any> = Partial<PageContext
  *
  * https://vite-plugin-ssr.com/pageContext
  */
-type PageContextBuiltInClientWithServerRouting<Page = any> = Partial<PageContextBuiltInCommon<Page>> &
+type PageContextBuiltInClientWithServerRouting<Page = unknown> = Partial<PageContextBuiltInCommon<Page>> &
   Pick<PageContextBuiltInCommon<Page>, 'Page' | 'pageExports' | 'exports' | 'abortReason'> & {
     /**
      * Whether the current page is already rendered to HTML.

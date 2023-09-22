@@ -12,6 +12,7 @@ export type { ConfigValues }
 export type { ConfigValueSource }
 export type { ConfigValueSources }
 export type { DefinedAtInfo }
+export type { DefinedAtInfoFull }
 
 type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
 type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
@@ -22,9 +23,10 @@ type PageConfigBuildTime = PageConfigCommon & {
 type PageConfigCommon = {
   pageId: string
   isErrorPage: boolean
-  // TODO: unify to routeFilesystem: null | { routeString: string, definedBy: string }
-  routeFilesystem: null | string
-  routeFilesystemDefinedBy: null | string
+  routeFilesystem: null | {
+    routeString: string
+    definedBy: string
+  }
   configValues: ConfigValues
 }
 type ConfigValueSource = {
@@ -38,8 +40,10 @@ type ConfigValueSource = {
 } & (
   | {
       isComputed: false
-      // TODO: replace definedAtInfo.filePath with definedAtInfo.filePathRelativeToUserRootDir? and definedAtInfo.filePathAbsolute!
       definedAtInfo: DefinedAtInfo
+      /* TODO: use it
+      definedAtInfo: DefinedAtInfoFull
+      */
     }
   | {
       isComputed: true
@@ -68,13 +72,18 @@ type DefinedAtInfo = {
   filePath: string
   fileExportPath: string[]
 }
+type DefinedAtInfoFull = {
+  filePathRelativeToUserRootDir?: string
+  filePathAbsolute: string
+  fileExportPath: string[]
+}
 
 type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileExportName: string; configSourceFileDefaultExportKey?: undefined }
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
 )
 type PageConfig = PageConfigCommon & {
-  loadCodeFiles: LoadCodeFiles
+  loadConfigValuesAll: LoadConfigValuesAll
   isLoaded?: true
 }
 type PageConfigLoaded = PageConfig & {
@@ -90,7 +99,7 @@ type PageConfigGlobal = {
   onBeforeRoute: null | (ConfigValueSource & { value: unknown })
 }
 
-type LoadCodeFiles = () => Promise<
+type LoadConfigValuesAll = () => Promise<
   ({
     configName: string
     importFilePath: string

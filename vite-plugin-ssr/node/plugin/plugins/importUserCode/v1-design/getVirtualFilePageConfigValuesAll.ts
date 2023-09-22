@@ -1,13 +1,12 @@
-export { getVirtualFileImportCodeFiles }
-export { skipConfigValue }
+export { getVirtualFilePageConfigValuesAll }
 
 import { assert, assertPosixPath } from '../../../utils.js'
-import type { ConfigEnvInternal, PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
+import type { PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
 import { generateEagerImport } from '../generateEagerImport.js'
 import {
-  getVirtualFileIdImportPageCode,
-  isVirtualFileIdImportPageCode
-} from '../../../../shared/virtual-files/virtualFileImportPageCode.js'
+  getVirtualFileIdPageConfigValuesAll,
+  isVirtualFileIdPageConfigValuesAll
+} from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { getVikeConfig } from './getVikeConfig.js'
 import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
@@ -15,14 +14,15 @@ import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps.js'
 import path from 'path'
 import { getConfigValue } from '../../../../../shared/page-configs/utils.js'
 import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSource.js'
+import { isConfigEnvMatch } from './isConfigEnvMatch.js'
 
-async function getVirtualFileImportCodeFiles(
+async function getVirtualFilePageConfigValuesAll(
   id: string,
   userRootDir: string,
   isDev: boolean,
   configVps: ConfigVpsResolved
 ): Promise<string> {
-  const result = isVirtualFileIdImportPageCode(id)
+  const result = isVirtualFileIdPageConfigValuesAll(id)
   assert(result)
   /* This assertion fails when using includeAssetsImportedByServer
   {
@@ -31,12 +31,11 @@ async function getVirtualFileImportCodeFiles(
   }
   */
   const { pageId, isForClientSide } = result
-  const { pageConfigs: pageConfigsData } = await getVikeConfig(userRootDir, isDev, configVps.extensions, true)
-  assert(pageConfigsData)
-  const pageConfigs = pageConfigsData.find((pageConfig) => pageConfig.pageId === pageId)
-  assert(pageConfigs)
-  const code = generateSourceCodeOfLoadCodeFileVirtualFile(
-    pageConfigs,
+  const { pageConfigs } = await getVikeConfig(userRootDir, isDev, configVps.extensions, true)
+  const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
+  assert(pageConfig)
+  const code = getLoadConfigValuesAll(
+    pageConfig,
     isForClientSide,
     pageId,
     configVps.includeAssetsImportedByServer,
@@ -46,7 +45,7 @@ async function getVirtualFileImportCodeFiles(
   return code
 }
 
-function generateSourceCodeOfLoadCodeFileVirtualFile(
+function getLoadConfigValuesAll(
   pageConfig: PageConfigBuildTime,
   isForClientSide: boolean,
   pageId: string,
@@ -64,7 +63,7 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
 
     if (!valueIsImportedAtRuntime) return
     if (configValueSource.valueIsFilePath) return
-    if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
+    if (!isConfigEnvMatch(configEnv, isForClientSide, isClientRouting)) return
     const { filePath, fileExportPath } = definedAtInfo
 
     assertPosixPath(filePath)
@@ -97,15 +96,8 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(
   })
   lines.push('];')
   if (includeAssetsImportedByServer && isForClientSide && !isDev) {
-    lines.push(`import '${extractAssetsAddQuery(getVirtualFileIdImportPageCode(pageId, false))}'`)
+    lines.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigValuesAll(pageId, false))}'`)
   }
   const code = [...importStatements, ...lines].join('\n')
   return code
-}
-
-function skipConfigValue(configEnv: ConfigEnvInternal, isForClientSide: boolean, isClientRouting: boolean) {
-  if (configEnv === '_routing-eager' || configEnv === 'config-only') return true
-  if (configEnv === (isForClientSide ? 'server-only' : 'client-only')) return true
-  if (configEnv === '_routing-lazy' && isForClientSide && !isClientRouting) return true
-  return false
 }

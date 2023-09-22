@@ -31,16 +31,16 @@ function PresetButtons() {
       </Button>
     </>
   )
-  function fill(username, password) {
-    document.querySelector('input#username').value = username
-    document.querySelector('input#password').value = password
+  function fill(username: string, password: string) {
+    getHtmlInputElement('username').value = username
+    getHtmlInputElement('password').value = password
   }
 }
 
-async function onSubmit(ev) {
+async function onSubmit(ev: React.FormEvent) {
   ev.preventDefault()
-  const username = document.querySelector('input#username').value
-  const password = document.querySelector('input#password').value
+  const username = getHtmlInputElement('username').value
+  const password = getHtmlInputElement('password').value
   const response = await fetch('/_auth/login', {
     method: 'POST',
     body: JSON.stringify({ username, password }),
@@ -50,7 +50,7 @@ async function onSubmit(ev) {
   if (success) {
     await reload()
   } else {
-    document.querySelector('#validation').style.display = 'block'
+    getHtmltElement('validation')!.style.display = 'block'
   }
 }
 
@@ -62,12 +62,19 @@ function Validation() {
   )
 }
 
-function Input({ id, ...props }) {
+function Input({ id, ...props }: { id: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <label style={{ display: 'block' }}>
       <span style={{ fontSize: '0.91em' }}>{id}</span>
       <br />
-      <input type="text" id={id} size="20" {...props}></input>
+      <input type="text" id={id} size={20} {...props}></input>
     </label>
   )
+}
+
+function getHtmlInputElement(id: string): HTMLInputElement {
+  return document.querySelector(`input#${id}`)!
+}
+function getHtmltElement(id: string): HTMLElement {
+  return document.querySelector(`#${id}`)!
 }

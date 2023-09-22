@@ -4,7 +4,7 @@ import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode } fr
 import { normalizePath } from 'vite'
 import type { ConfigVpsResolved } from '../../../../shared/ConfigVps.js'
 import { getConfigVps } from '../../../shared/getConfigVps.js'
-import { getVirtualFileImportCodeFiles } from './v1-design/getVirtualFileImportCodeFiles.js'
+import { getVirtualFilePageConfigValuesAll } from './v1-design/getVirtualFilePageConfigValuesAll.js'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
 import {
   assert,
@@ -16,7 +16,7 @@ import {
   isVirtualFileId,
   resolveVirtualFileId
 } from '../../utils.js'
-import { isVirtualFileIdImportPageCode } from '../../../shared/virtual-files/virtualFileImportPageCode.js'
+import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile } from './v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
@@ -59,8 +59,8 @@ function importUserCode(): Plugin {
       if (!isVirtualFileId(id)) return undefined
       id = getVirtualFileId(id)
 
-      if (isVirtualFileIdImportPageCode(id)) {
-        const code = await getVirtualFileImportCodeFiles(id, config.root, isDev, configVps)
+      if (isVirtualFileIdPageConfigValuesAll(id)) {
+        const code = await getVirtualFilePageConfigValuesAll(id, config.root, isDev, configVps)
         return code
       }
 
@@ -152,7 +152,7 @@ function reloadConfig(
 
 function getVirtualModules(server: ViteDevServer): ModuleNode[] {
   const virtualModules = Array.from(server.moduleGraph.urlToModuleMap.keys())
-    .filter((url) => isVirtualFileIdImportPageCode(url) || isVirtualFileIdImportUserCode(url))
+    .filter((url) => isVirtualFileIdPageConfigValuesAll(url) || isVirtualFileIdImportUserCode(url))
     .map((url) => {
       const mod = server.moduleGraph.urlToModuleMap.get(url)
       assert(mod)

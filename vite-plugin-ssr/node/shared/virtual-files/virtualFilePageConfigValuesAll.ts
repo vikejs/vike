@@ -1,18 +1,18 @@
-export { isVirtualFileIdImportPageCode }
-export { getVirtualFileIdImportPageCode }
+export { isVirtualFileIdPageConfigValuesAll }
+export { getVirtualFileIdPageConfigValuesAll }
 
 import { extractAssetsRemoveQuery } from '../extractAssetsQuery.js'
 import { assert, getVirtualFileId } from '../utils.js'
 
-const idBase = 'virtual:vite-plugin-ssr:importPageCode:'
+const idBase = 'virtual:vite-plugin-ssr:pageConfigValuesAll:'
 const idBaseClient = `${idBase}client:` as const
 const idBaseServer = `${idBase}server:` as const
 
-function getVirtualFileIdImportPageCode(pageId: string, isForClientSide: boolean): string {
-  const id = (isForClientSide ? idBaseClient : idBaseServer) + pageId
+function getVirtualFileIdPageConfigValuesAll(pageId: string, isForClientSide: boolean): `${typeof idBase}${string}` {
+  const id = `${(isForClientSide ? idBaseClient : idBaseServer)}${pageId}` as const
   return id
 }
-function isVirtualFileIdImportPageCode(
+function isVirtualFileIdPageConfigValuesAll(
   id: string
 ): false | { isForClientSide: boolean; pageId: string; isExtractAssets: boolean } {
   id = getVirtualFileId(id)

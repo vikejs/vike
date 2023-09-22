@@ -1,0 +1,23 @@
+import { Construction, Comment } from '@brillout/docpress'
+
+<Construction>
+  The Vike rename ([#736](https://github.com/brillout/vite-plugin-ssr/issues/736)) is being implemented as we speak: ETA this weekend.
+  This page will be updated and will contain instructions for how to migrate to Vike.
+</Construction>
+
+<Comment>
+The vite-plugin-ssr project has been renamed to Vike ([vike.dev](https://vike.dev/)).
+
+Functionally, nothing changes: it's just a new name for the same tool.
+
+There are no breaking changes, although, starting from version `0.4.142` you'll have to use the [npm package `vike`](https://www.npmjs.com/package/vike) instead of the [npm package `vite-plugin-ssr`](https://www.npmjs.com/package/vite-plugin-ssr). We recommend applying following find-and-replace bash script:
+```bash
+grep ite-plugin-ssr --exclude-dir node_modules/ --exclude-dir .git/ | xargs sed -i 's/ite-plugin-ssr/ike/g'
+```
+
+This should do the trick for most users.
+
+> Let us know if this bash script doesn't work out for you.
+
+For more information about the rename see [#736](https://github.com/brillout/vite-plugin-ssr/issues/736).
+</Comment>

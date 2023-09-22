@@ -1,7 +1,8 @@
 import { createSSRApp, defineComponent, h, markRaw, reactive } from 'vue'
 import PageShell from './PageShell.vue'
-import type { Component, PageContext, PageProps } from './types'
+import type { Component, PageProps } from './types'
 import { setPageContext } from './usePageContext'
+import type { PageContext } from 'vite-plugin-ssr/types'
 
 export { createApp }
 

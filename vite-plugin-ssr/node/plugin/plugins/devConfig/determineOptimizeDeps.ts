@@ -6,9 +6,25 @@ import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageImport, unique }
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { ConfigVpsResolved } from '../../../../shared/ConfigVps.js'
 import { getConfigValueSourcesRelevant } from '../../shared/getConfigValueSource.js'
+import { analyzeClientEntries } from '../buildConfig.js'
+import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
+import {
+  virtualFileIdImportUserCodeClientCR,
+  virtualFileIdImportUserCodeClientSR
+} from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 
 async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved, isDev: true) {
-  const { entries, include } = await getPageDeps(config, configVps, isDev)
+  const { pageConfigs } = await getVikeConfig(config.root, isDev, configVps.extensions)
+
+  const { entries, include } = await getPageDeps(config, pageConfigs, isDev)
+  {
+    // This actually doesn't work: Vite's dep optimizer doesn't seem to be able to crawl virtual files.
+    //  - Should we make it work? E.g. by creating a temporary file at node_modules/.vite-plugin-ssr/virtualFiles.js
+    //  - Or should we remove it? And make sure getPageDeps() also works for aliased import paths
+    //    - If we do, then we need to adjust include/entries (maybe by making include === entries -> will Vite complain?)
+    const entriesVirtualFiles = getVirtualFiles(config, pageConfigs)
+    entries.push(...entriesVirtualFiles)
+  }
 
   include.push(...getExtensionsDeps(configVps))
 
@@ -17,16 +33,17 @@ async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVp
   */
   config.optimizeDeps.include = [...include, ...normalizeInclude(config.optimizeDeps.include)]
   config.optimizeDeps.entries = [...entries, ...normalizeEntries(config.optimizeDeps.entries)]
+
+  // console.log('config.optimizeDeps', config.optimizeDeps)
 }
 
-async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved, isDev: true) {
+async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildTime[], isDev: true) {
   let entries: string[] = []
   let include: string[] = []
 
   // V1 design
   {
-    const { pageConfigs: pageConfigsData } = await getVikeConfig(config.root, isDev, configVps.extensions)
-    pageConfigsData.forEach((pageConfig) => {
+    pageConfigs.forEach((pageConfig) => {
       const configValueSourcesRelevant = getConfigValueSourcesRelevant(pageConfig)
       configValueSourcesRelevant.forEach((configValueSource) => {
         const { valueIsImportedAtRuntime, configEnv, definedAtInfo } = configValueSource
@@ -78,6 +95,16 @@ async function getPageDeps(config: ResolvedConfig, configVps: ConfigVpsResolved,
   entries = unique(entries)
   include = unique(include)
   return { entries, include }
+}
+
+function getVirtualFiles(config: ResolvedConfig, pageConfigs: PageConfigBuildTime[]): string[] {
+  const { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigs, config)
+
+  const entriesVirtualFiles = Object.values(clientEntries)
+  if (hasClientRouting) entriesVirtualFiles.push(virtualFileIdImportUserCodeClientCR)
+  if (hasServerRouting) entriesVirtualFiles.push(virtualFileIdImportUserCodeClientSR)
+
+  return entriesVirtualFiles
 }
 
 function getExtensionsDeps(configVps: ConfigVpsResolved): string[] {

@@ -24,21 +24,20 @@ type InjectToStream = (
 // import { renderToStream } from 'react-streaming/server'
 // const { pipe, readable, injectToStream } = await renderToStream()`
 // ```
-type StreamReactStreaming =
+type StreamReactStreaming = {
+  injectToStream: InjectToStream
+  // Older `react-streaming` versions don't define `disabled`
+  disabled?: boolean
+} & (
   | {
-      injectToStream: InjectToStream
-      // Older `react-streaming` versions don't define `disabled`
-      disabled?: boolean
-    } & (
-      | {
-          pipe: (writable: StreamWritableNode) => void
-          readable: null
-        }
-      | {
-          pipe: null
-          readable: StreamReadableWeb
-        }
-    )
+      pipe: (writable: StreamWritableNode) => void
+      readable: null
+    }
+  | {
+      pipe: null
+      readable: StreamReadableWeb
+    }
+)
 function streamReactStreamingToString(stream: StreamReactStreaming) {
   if (stream.pipe) {
     return streamPipeNodeToString(stream.pipe)

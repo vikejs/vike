@@ -46,6 +46,7 @@ type Config = ConfigBuiltIn &
  * https://vite-plugin-ssr.com/config
  */
 type ConfigBuiltIn = {
+  /** The page's root component */
   Page?: unknown
 
   /** The page's URL(s).

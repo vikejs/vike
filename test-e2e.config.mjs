@@ -70,6 +70,7 @@ function getCiJobs() {
 
 function tolerateError({ logSource, logText }) {
   return (
+    isVikeRename() ||
     isRenderErrorPageDeprecationWarning() ||
     isSlowHookWarning() ||
     isServiceExit() ||
@@ -85,6 +86,14 @@ function tolerateError({ logSource, logText }) {
     isSlowCrawlWarning() ||
     isNodeExperimentalEsmLoader()
   )
+
+  function isVikeRename() {
+    return (
+      logSource === 'stderr' &&
+      logText.includes('[Warning]') &&
+      logText.includes('The vite-plugin-ssr project has been renamed to Vike')
+    )
+  }
 
   function isRenderErrorPageDeprecationWarning() {
     return (

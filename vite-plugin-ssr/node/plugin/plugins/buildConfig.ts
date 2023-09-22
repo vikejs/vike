@@ -1,5 +1,6 @@
 export { buildConfig }
 export { assertRollupInput }
+export { analyzeClientEntries }
 
 import {
   assert,
@@ -19,18 +20,23 @@ import { getConfigValue } from '../../../shared/page-configs/utils.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
 import { getConfigVps } from '../../shared/getConfigVps.js'
 import type { ResolvedConfig, Plugin, Rollup, UserConfig } from 'vite'
-import { getVirtualFileIdImportPageCode } from '../../shared/virtual-files/virtualFileImportPageCode.js'
+import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 type InputOption = Rollup.InputOption
 import { createRequire } from 'module'
 import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
+import fs from 'fs/promises'
+import path from 'path'
 // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 
+const manifestTempFile = '_temp_manifest.json'
+
 function buildConfig(): Plugin {
+  let generateManifest: boolean
   return {
     name: 'vite-plugin-ssr:buildConfig',
     apply: 'build',
@@ -51,13 +57,30 @@ function buildConfig(): Plugin {
       }
     },
     config(config) {
+      generateManifest = !viteIsSSR(config)
       return {
         build: {
           outDir: resolveOutDir(config),
-          manifest: !viteIsSSR(config),
+          manifest: generateManifest ? manifestTempFile : false,
           copyPublicDir: !viteIsSSR(config)
         }
       } satisfies UserConfig
+    },
+    async writeBundle(options, bundle) {
+      const manifestEntry = bundle[manifestTempFile]
+      if (generateManifest) {
+        assert(manifestEntry)
+        const { dir } = options
+        assert(dir)
+        const manifestFilePathOld = path.join(dir, manifestEntry.fileName)
+        // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
+        //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
+        //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
+        const manifestFilePathNew = path.join(dir, '..', 'assets.json')
+        await fs.rename(manifestFilePathOld, manifestFilePathNew)
+      } else {
+        assert(!manifestEntry)
+      }
     }
   }
 }
@@ -65,13 +88,13 @@ function buildConfig(): Plugin {
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const configVps = await getConfigVps(config)
   const pageFileEntries = await getPageFileEntries(config, configVps.includeAssetsImportedByServer) // TODO/v1-release: remove
-  const { pageConfigs: pageConfigsData } = await getVikeConfig(config.root, false, configVps.extensions)
+  const { pageConfigs } = await getVikeConfig(config.root, false, configVps.extensions)
   assertUsage(
-    Object.keys(pageFileEntries).length !== 0 || pageConfigsData.length !== 0,
+    Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,
     'At least one page should be defined, see https://vite-plugin-ssr.com/add'
   )
   if (viteIsSSR(config)) {
-    const serverEntries = analyzeServerEntries(pageConfigsData)
+    const serverEntries = analyzeServerEntries(pageConfigs)
     const entries = {
       pageFiles: virtualFileIdImportUserCodeServer, // TODO/next-major-release: rename to configFiles
       importBuild: resolve('dist/esm/node/importBuild.js'), // TODO/next-major-release: remove
@@ -80,7 +103,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     }
     return entries
   } else {
-    let { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigsData, config)
+    let { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigs, config)
     if (Object.entries(pageFileEntries).length > 0) {
       hasClientRouting = true
       hasServerRouting = true
@@ -180,7 +203,7 @@ function getEntryFromFilePath(filePath: string, config: ResolvedConfig, addExtra
 }
 function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide: boolean) {
   let { pageId } = pageConfig
-  const entryTarget = getVirtualFileIdImportPageCode(pageId, isForClientSide)
+  const entryTarget = getVirtualFileIdPageConfigValuesAll(pageId, isForClientSide)
   let entryName = pageId
   entryName = prependEntriesDir(entryName)
   return { entryName, entryTarget }

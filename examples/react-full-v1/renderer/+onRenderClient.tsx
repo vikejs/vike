@@ -6,7 +6,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { PageShell } from './PageShell'
 import { getPageTitle } from './getPageTitle'
-import type { PageContextClient } from './types'
+import type { PageContextClient } from 'vite-plugin-ssr/types'
 
 let root: ReactDOM.Root
 async function onRenderClient(pageContext: PageContextClient) {

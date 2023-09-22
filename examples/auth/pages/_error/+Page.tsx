@@ -33,3 +33,13 @@ function Page() {
     </>
   )
 }
+
+declare global {
+  namespace Vike {
+    interface PageContext {
+      abortReason?: {
+        notAdmin?: true
+      }
+    }
+  }
+}

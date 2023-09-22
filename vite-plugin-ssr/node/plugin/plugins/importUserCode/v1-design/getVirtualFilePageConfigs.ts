@@ -1,6 +1,4 @@
-// Counterpart: ../../../../../shared/getPageFiles/parsePageConfigs.ts
-
-export { serializePageConfigs }
+export { getVirtualFilePageConfigs }
 
 import { assert, assertUsage, getPropAccessNotation, hasProp, objectEntries } from '../../../utils.js'
 import type {
@@ -10,14 +8,33 @@ import type {
   PageConfigGlobalData
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { generateEagerImport } from '../generateEagerImport.js'
-import { getVirtualFileIdImportPageCode } from '../../../../shared/virtual-files/virtualFileImportPageCode.js'
+import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
 import { stringify } from '@brillout/json-serializer/stringify'
-import { skipConfigValue } from './getVirtualFileImportCodeFiles.js'
 import { getConfigEnv } from './helpers.js'
 import pc from '@brillout/picocolors'
+import { getVikeConfig } from './getVikeConfig.js'
+import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps.js'
+import { isConfigEnvMatch } from './isConfigEnvMatch.js'
 
-function serializePageConfigs(
+async function getVirtualFilePageConfigs(
+  userRootDir: string,
+  isForClientSide: boolean,
+  isDev: boolean,
+  id: string,
+  configVps: ConfigVpsResolved,
+  isClientRouting: boolean
+): Promise<string> {
+  const { pageConfigs, pageConfigGlobal } = await getVikeConfig(
+    userRootDir,
+    isDev,
+    configVps.extensions,
+    true
+  )
+  return getContent(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
+}
+
+function getContent(
   pageConfigs: PageConfigBuildTime[],
   pageConfigGlobal: PageConfigGlobalData,
   isForClientSide: boolean,
@@ -30,14 +47,15 @@ function serializePageConfigs(
 
   lines.push('export const pageConfigs = [')
   pageConfigs.forEach((pageConfig) => {
-    const { pageId, routeFilesystem, routeFilesystemDefinedBy, isErrorPage } = pageConfig
-    const virtualFileIdImportPageCode = getVirtualFileIdImportPageCode(pageId, isForClientSide)
+    const { pageId, routeFilesystem, isErrorPage } = pageConfig
+    const virtualFileIdPageConfigValuesAll = getVirtualFileIdPageConfigValuesAll(pageId, isForClientSide)
     lines.push(`  {`)
     lines.push(`    pageId: ${JSON.stringify(pageId)},`)
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
-    lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
-    lines.push(`    loadCodeFiles: async () => (await import(${JSON.stringify(virtualFileIdImportPageCode)})).default,`)
+    lines.push(
+      `    loadConfigValuesAll: async () => (await import(${JSON.stringify(virtualFileIdPageConfigValuesAll)})).default,`
+    )
 
     lines.push(`    configValues: {`)
     Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
@@ -45,7 +63,7 @@ function serializePageConfigs(
       if (configValue) {
         const configEnv = getConfigEnv(pageConfig, configName)
         assert(configEnv, configName)
-        if (skipConfigValue(configEnv, isForClientSide, isClientRouting)) return
+        if (!isConfigEnvMatch(configEnv, isForClientSide, isClientRouting)) return
         const { value, definedAtInfo } = configValue
         // TODO: use @brillout/json-serializer
         //  - re-use getConfigValueSerialized()?
@@ -76,7 +94,10 @@ function serializePageConfigs(
     if (configName === 'onBeforeRoute') {
       // if( isForClientSide && !isClientRouting ) return
     } else if (configName === 'onPrerenderStart') {
-      if (isDev || isForClientSide) return
+      if (isDev || isForClientSide) {
+        // Only load onPrerenderStart() in server production runtime
+        configValueSource = null
+      }
     } else {
       assert(false)
     }
@@ -143,7 +164,7 @@ function serializeConfigValueSource(
   lines.push(`${whitespace}  definedAtInfo: ${JSON.stringify(definedAtInfo)},`)
   lines.push(`${whitespace}  configEnv: ${JSON.stringify(configEnv)},`)
   const eager = configValueSource.configEnv === '_routing-eager' || isGlobalConfig
-  if (!skipConfigValue(configEnv, isForClientSide, isClientRouting) || eager) {
+  if (isConfigEnvMatch(configEnv, isForClientSide, isClientRouting) || eager) {
     if ('value' in configValueSource) {
       const { value } = configValueSource
       const valueSerialized = getConfigValueSerialized(value, configName, definedAtInfo.filePath)

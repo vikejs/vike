@@ -12,6 +12,8 @@ render(abortStatusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: unknown
 render(url: `/${string}`, abortReason?: unknown)
 ```
 
+> If you use TypeScript, you can define the `abortReason` type by using the global interface `Vike.PageContext`, see <Link href="/error-page" />.
+
 ```js
 import { render } from 'vite-plugin-ssr/abort'
 

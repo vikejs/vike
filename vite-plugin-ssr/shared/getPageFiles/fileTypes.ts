@@ -18,7 +18,7 @@ const fileTypes = [
   //  - Since these `.page.css` files Bundlers We can therefore expect that there isn't any `.page.server.sass`/...
   '.css'
 ] as const
-type FileType = typeof fileTypes[number]
+type FileType = (typeof fileTypes)[number]
 
 function isValidFileType(filePath: string): boolean {
   return ['.js', '.mjs', '.cjs', '.css'].some((ext) => filePath.endsWith(ext))

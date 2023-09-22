@@ -13,7 +13,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     return pageConfig as PageConfigLoaded
   }
 
-  const codeFiles = await pageConfig.loadCodeFiles()
+  const codeFiles = await pageConfig.loadConfigValuesAll()
 
   // TODO: remove?
   // pageConfig.configValuesOld = pageConfig.configValuesOld.filter((val) => !val.definedByCodeFile)

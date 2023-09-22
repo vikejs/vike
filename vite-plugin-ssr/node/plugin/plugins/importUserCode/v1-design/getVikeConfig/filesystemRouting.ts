@@ -1,5 +1,5 @@
-export { getRouteFilesystem }
-export { getRouteFilesystemDefinedBy }
+export { getFilesystemRouteString }
+export { getFilesystemRouteDefinedBy }
 export { isInherited }
 export { getLocationId }
 export { sortAfterInheritanceOrder }
@@ -22,7 +22,7 @@ function getLocationId(somePath: string): string {
   return locationId
 }
 /** Get URL determined by filesystem path */
-function getRouteFilesystem(locationId: string): string {
+function getFilesystemRouteString(locationId: string): string {
   return getLogicalPath(locationId, ['renderer', 'pages', 'src', 'index'])
 }
 /** Get apply root for config inheritance */
@@ -137,7 +137,7 @@ function removeFilename(filePath: string, optional?: true) {
   return filePath
 }
 
-function getRouteFilesystemDefinedBy(locationId: string) {
+function getFilesystemRouteDefinedBy(locationId: string): string {
   if (locationId === '/') return locationId
   assert(!locationId.endsWith('/'))
   const routeFilesystemDefinedBy = locationId + '/'
@@ -174,7 +174,7 @@ function startsWith(inheritanceRoot1: string, inheritanceRoot2: string): boolean
   for (const i in segments2) {
     const segment1 = segments1[i]
     const segment2 = segments2[i]
-    if (segment1 !== segment2 ) {
+    if (segment1 !== segment2) {
       /* This assertion fails for:
          ```
          inheritanceRoot1: '/pages/about2'

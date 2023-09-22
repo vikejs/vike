@@ -175,6 +175,7 @@ async function getPageContextAlreadyRouted(
     // We don't need to call guard() on the client-side if we fetch pageContext from the server side. (Because the `${url}.pageContext.json` HTTP request will already trigger the routing and guard() hook on the serve-side.)
     // We cannot call guard() before retrieving pageContext from server, since the server-side may define pageContextInit.user which is paramount for guard() hooks
     if (!isErrorPage) {
+      // Should we really call the guard() hook on the client-side? Shouldn't we make the guard() hook a server-side only hook? Or maybe make its env configurable like onBeforeRender()?
       await executeGuardHook(
         {
           _hasPageContextFromClient: false,

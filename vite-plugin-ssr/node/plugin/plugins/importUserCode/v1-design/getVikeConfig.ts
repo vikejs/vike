@@ -47,8 +47,8 @@ import glob from 'fast-glob'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVps.js'
 import {
   getLocationId,
-  getRouteFilesystem,
-  getRouteFilesystemDefinedBy,
+  getFilesystemRouteString,
+  getFilesystemRouteDefinedBy,
   isInherited,
   sortAfterInheritanceOrder,
   isGlobalLocation,
@@ -364,16 +364,12 @@ async function loadVikeConfig(
             configValueSources[configName] = sources
           })
 
-        const { routeFilesystem, routeFilesystemDefinedBy, isErrorPage } = determineRouteFilesystem(
-          locationId,
-          configValueSources
-        )
+        const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
 
         const pageConfig: PageConfigBuildTime = {
           pageId: locationId,
           isErrorPage,
-          routeFilesystemDefinedBy,
-          routeFilesystem: isErrorPage ? null : routeFilesystem,
+          routeFilesystem,
           configValueSources,
           configValues: getConfigValues(configValueSources, configDefinitionsRelevant)
         }
@@ -778,7 +774,7 @@ function getImport(
   if (importFilePath.startsWith('.')) {
     // We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
     // ```
-    // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vite-plugin-ssr:importPageCode:client:/pages/index". Does the file exist?
+    // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vite-plugin-ssr:pageConfigValuesAll:client:/pages/index". Does the file exist?
     // ```
     importFilePath = resolveRelativeCodeFilePath(importData, configFilePath, userRootDir)
   } else {
@@ -1284,24 +1280,27 @@ function handleUnknownConfig(configName: string, configNames: string[], definedB
 function determineRouteFilesystem(locationId: string, configValueSources: ConfigValueSources) {
   const configName = 'filesystemRoutingRoot'
   const configFilesystemRoutingRoot = configValueSources[configName]?.[0]
-  let routeFilesystem = getRouteFilesystem(locationId)
-  if (determineIsErrorPage(routeFilesystem)) {
-    return { isErrorPage: true, routeFilesystem: null, routeFilesystemDefinedBy: null }
+  let filesystemRouteString = getFilesystemRouteString(locationId)
+  if (determineIsErrorPage(filesystemRouteString)) {
+    return { isErrorPage: true, routeFilesystem: null }
   }
-  let routeFilesystemDefinedBy = getRouteFilesystemDefinedBy(locationId) // for log404()
+  let filesystemRouteDefinedBy = getFilesystemRouteDefinedBy(locationId) // for log404()
   if (configFilesystemRoutingRoot) {
     const routingRoot = getFilesystemRoutingRootEffect(configFilesystemRoutingRoot, configName)
     if (routingRoot) {
       const { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt } = routingRoot
-      const debugInfo = { locationId, routeFilesystem, configFilesystemRoutingRoot }
-      assert(routeFilesystem.startsWith(filesystemRoutingRootEffect.before), debugInfo)
-      routeFilesystem = applyFilesystemRoutingRootEffect(routeFilesystem, filesystemRoutingRootEffect)
-      assert(filesystemRoutingRootDefinedAt.includes('export'))
-      routeFilesystemDefinedBy = `${routeFilesystemDefinedBy} (with ${filesystemRoutingRootDefinedAt})`
+      const debugInfo = { locationId, routeFilesystem: filesystemRouteString, configFilesystemRoutingRoot }
+      assert(filesystemRouteString.startsWith(filesystemRoutingRootEffect.before), debugInfo)
+      filesystemRouteString = applyFilesystemRoutingRootEffect(filesystemRouteString, filesystemRoutingRootEffect)
+      filesystemRouteDefinedBy = `${filesystemRouteDefinedBy} (with ${filesystemRoutingRootDefinedAt})`
     }
   }
-  assert(routeFilesystem.startsWith('/'))
-  return { routeFilesystem, routeFilesystemDefinedBy, isErrorPage: false }
+  assert(filesystemRouteString.startsWith('/'))
+  const routeFilesystem = {
+    routeString: filesystemRouteString,
+    definedBy: filesystemRouteDefinedBy
+  }
+  return { routeFilesystem, isErrorPage: false }
 }
 function getFilesystemRoutingRootEffect(
   configFilesystemRoutingRoot: ConfigValueSource,
@@ -1311,14 +1310,14 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const configDefinedAt = getConfigDefinedAtString(configName, configFilesystemRoutingRoot, true)
+  const configDefinedAt = getConfigDefinedAtString(configName, configFilesystemRoutingRoot, false)
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),
     `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
   assert(!configFilesystemRoutingRoot.isComputed)
-  const before = getRouteFilesystem(getLocationId(configFilesystemRoutingRoot.definedAtInfo.filePath))
+  const before = getFilesystemRouteString(getLocationId(configFilesystemRoutingRoot.definedAtInfo.filePath))
   const after = value
   const filesystemRoutingRootEffect = { before, after }
   return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt: configDefinedAt }
