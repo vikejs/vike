@@ -5,7 +5,7 @@ Next.js manages server side hydration of styles as well as transpilation, so to 
 
 View <a href="https://github.com/jeremypress/vite-ssr-styled-jsx">this example project</a> using styled-components and react with VPS.
 
-To use vite-plugin-ssr with `styled-jsx`:
+To use vike with `styled-jsx`:
 
 1. Install:
 
@@ -19,7 +19,7 @@ npm install styled-jsx
 // vite.config.js
 
 import react from '@vitejs/plugin-react'
-import ssr from 'vite-plugin-ssr/plugin'
+import ssr from 'vike/plugin'
 
 export default {
   plugins: [react({ babel: { plugins: ['styled-jsx/babel'] } }), ssr()]
@@ -35,7 +35,7 @@ export { render }
 
 import React from 'react'
 import { renderToString, renderToStaticMarkup } from 'react-dom/server'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { PageLayout } from './PageLayout'
 import { createStyleRegistry, StyleRegistry } from 'styled-jsx'
 

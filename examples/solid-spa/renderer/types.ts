@@ -12,7 +12,7 @@ import type {
   // When using Server Routing
   PageContextBuiltInClientWithServerRouting as PageContextBuiltInClient
   //*/
-} from 'vite-plugin-ssr/types'
+} from 'vike/types'
 import type { Component } from 'solid-js'
 
 type Page = Component<PageProps>

@@ -5,7 +5,7 @@ export { isVirtualFileIdImportUserCode }
 
 import { assert, getVirtualFileId } from '../utils.js'
 
-const idBase = 'virtual:vite-plugin-ssr:importUserCode'
+const idBase = 'virtual:vike:importUserCode'
 const virtualFileIdImportUserCodeServer = `${idBase}:server`
 const virtualFileIdImportUserCodeClientSR = `${idBase}:client:server-routing`
 const virtualFileIdImportUserCodeClientCR = `${idBase}:client:client-routing`

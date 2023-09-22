@@ -1,4 +1,4 @@
-Example of defining import path aliases for `vite-plugin-ssr` apps.
+Example of defining import path aliases for `vike` apps.
 
 We use:
  - [`vite.config.js#resolve.alias`](https://vitejs.dev/config/#resolve-alias) for files processed by Vite.
@@ -19,8 +19,8 @@ Path alias usage examples:
 To run the example:
 
 ```bash
-git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/path-aliases/
+git clone git@github.com:brillout/vike
+cd vike/examples/path-aliases/
 npm install
 npm run dev
 ```

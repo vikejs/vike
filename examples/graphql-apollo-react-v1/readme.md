@@ -1,8 +1,8 @@
-Example of using `vite-plugin-ssr` with Apollo GraphQL and React.
+Example of using `vike` with Apollo GraphQL and React.
 
 ```bash
-git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/graphql-apollo-react/
+git clone git@github.com:brillout/vike
+cd vike/examples/graphql-apollo-react/
 npm run install
 npm run dev
 ```

@@ -1,4 +1,4 @@
-import type { Config } from 'vite-plugin-ssr/types'
+import type { Config } from 'vike/types'
 
 export default {
   onRenderClient: 'import:./onRenderClient.jsx',

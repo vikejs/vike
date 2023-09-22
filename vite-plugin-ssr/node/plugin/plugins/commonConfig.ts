@@ -21,7 +21,7 @@ function commonConfig(): Plugin[] {
         ssr: {
           // Needed as long as VPS is published as CJS.
           // TODO: can we remove this once VPS is published as ESM?
-          external: ['vite-plugin-ssr', 'vite-plugin-ssr/server']
+          external: ['vike', 'vike/server']
         }
       }),
       configResolved(config) {

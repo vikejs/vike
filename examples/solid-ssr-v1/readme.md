@@ -1,8 +1,8 @@
-Example of using `vite-plugin-ssr` with [Solid](https://www.solidjs.com/).
+Example of using `vike` with [Solid](https://www.solidjs.com/).
 
 ```bash
-git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/solid-ssr/
+git clone git@github.com:brillout/vike
+cd vike/examples/solid-ssr/
 npm install
 npm run dev
 ```

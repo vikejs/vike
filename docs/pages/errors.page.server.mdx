@@ -6,7 +6,7 @@ Errors can be tracked with `pageContext.errorWhileRendering`:
 // server.js
 
 import { someErrorTracker } from 'some-error-tracker'
-import { renderPage } from 'vite-plugin-ssr/server'
+import { renderPage } from 'vike/server'
 
 app.get('*', async (req, res) => {
   const pageContext = await renderPage({ urlOriginal: req.url })
@@ -25,9 +25,9 @@ Allowing you to install the error tracking code of services such as [Sentry](htt
 
 ## Verbose
 
-Vite-plugin-ssr prettifies transpilation errors, such as errors thrown by [esbuild](https://esbuild.github.io/) and [Babel](https://babeljs.io/).
+Vike prettifies transpilation errors, such as errors thrown by [esbuild](https://esbuild.github.io/) and [Babel](https://babeljs.io/).
 
-While vite-plugin-ssr is careful about not removing relevant information, it may mistakenly do so. In that case [create a new GitHub issue](https://github.com/brillout/vite-plugin-ssr/issues/new?assignees=&labels=bug+%3Aboom%3A&projects=&template=bug_report.yml). Until a vite-plugin-ssr maintainer fixes the issue you can use the debug flag `DEBUG=vps:error`.
+While vike is careful about not removing relevant information, it may mistakenly do so. In that case [create a new GitHub issue](https://github.com/brillout/vike/issues/new?assignees=&labels=bug+%3Aboom%3A&projects=&template=bug_report.yml). Until a vike maintainer fixes the issue you can use the debug flag `DEBUG=vps:error`.
 
 ```shell
 # Show verbose and original errors
@@ -37,6 +37,6 @@ DEBUG=vps:error npm run dev
 For even more verbose errors:
 
 ```shell
-# Usually only used by vite-plugin-ssr maintainers
+# Usually only used by vike maintainers
 DEBUG=vps:error,vps:log npm run dev
 ```

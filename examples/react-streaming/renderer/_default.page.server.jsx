@@ -1,6 +1,6 @@
 import React from 'react'
 import { renderToStream } from 'react-streaming/server'
-import { escapeInject } from 'vite-plugin-ssr/server'
+import { escapeInject } from 'vike/server'
 import { PageLayout } from './PageLayout'
 
 export { render }

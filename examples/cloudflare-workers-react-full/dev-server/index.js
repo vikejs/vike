@@ -1,7 +1,7 @@
 // We use a Express.js server for development
 
 import express from 'express'
-import { renderPage } from 'vite-plugin-ssr/server'
+import { renderPage } from 'vike/server'
 import { createServer } from 'vite'
 import fetch from 'node-fetch'
 import compression from 'compression'
@@ -12,7 +12,7 @@ async function startServer() {
   const app = express()
 
   // We don't need gzip compression for dev. We use compression just to show
-  // that it's properly handled by vite-plugin-ssr and react-streaming.
+  // that it's properly handled by vike and react-streaming.
   app.use(compression())
 
   const viteDevMiddleware = (

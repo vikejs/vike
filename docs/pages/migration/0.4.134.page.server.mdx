@@ -11,9 +11,9 @@ See the sections below for how to migrate.
 ```diff
  // /server/index.js
 
- import { renderPage } from 'vite-plugin-ssr/server'
+ import { renderPage } from 'vike/server'
 
- // Vite-plugin-ssr middleware
+ // Vike middleware
  app.get('*', async (req, res, next) => {
    const pageContextInit = {
      urlOriginal: req.originalUrl
@@ -36,9 +36,9 @@ See the sections below for how to migrate.
 ```diff
  // /worker/ssr.js
 
- import { renderPage } from 'vite-plugin-ssr/server'
+ import { renderPage } from 'vike/server'
 
- // Vite-plugin-ssr middleware
+ // Vike middleware
  async function handleSsr(url) {
    const pageContextInit = {
      urlOriginal: url
@@ -64,7 +64,7 @@ See the sections below for how to migrate.
 ```diff
  // /api/ssr.js
 
- import { renderPage } from 'vite-plugin-ssr/server'
+ import { renderPage } from 'vike/server'
 
  export default async function handler(req, res) {
    const pageContextInit = { urlOriginal: req.url }

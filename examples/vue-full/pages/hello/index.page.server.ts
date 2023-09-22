@@ -1,4 +1,4 @@
-import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInServer } from 'vike/types'
 import { names } from './names'
 
 export { onBeforeRender }

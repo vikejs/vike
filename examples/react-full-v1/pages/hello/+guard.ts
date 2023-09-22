@@ -1,6 +1,6 @@
 export default guard
 
-import { render } from 'vite-plugin-ssr/abort'
+import { render } from 'vike/abort'
 
 // The guard() hook enables to protect pages
 async function guard(pageContext: { urlPathname: string }) {

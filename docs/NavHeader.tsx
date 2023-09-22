@@ -1,5 +1,5 @@
 import React from 'react'
-import logoUrl from './images/icons/vite-plugin-ssr.svg'
+import logoUrl from './images/icons/vike.svg'
 
 export { NavHeader }
 export { NavHeaderMobile }
@@ -35,7 +35,7 @@ function HeaderTitle({ fontSize, marginLeft }: { fontSize: string; marginLeft: n
         marginLeft
       }}
     >
-      {'vite-plugin-ssr'}
+      {'vike'}
     </code>
   )
 }

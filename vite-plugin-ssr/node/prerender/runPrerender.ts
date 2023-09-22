@@ -121,7 +121,7 @@ type PrerenderOptions = {
   viteConfig?: InlineConfig
   /**
    * @internal
-   * Don't use without having talked to a vite-plugin-ssr maintainer.
+   * Don't use without having talked to a vike maintainer.
    */
   onPagePrerender?: Function
 
@@ -149,27 +149,27 @@ async function prerenderFromAPI(options: PrerenderOptions = {}): Promise<void> {
   await runPrerender(options, 'prerender()')
 }
 async function prerenderFromCLI(options: PrerenderOptions): Promise<void> {
-  await runPrerender(options, '$ vite-plugin-ssr prerender')
+  await runPrerender(options, '$ vike prerender')
 }
 async function prerenderFromAutoFullBuild(options: PrerenderOptions): Promise<void> {
   await runPrerender(options, null)
 }
 async function runPrerender(
   options: PrerenderOptions,
-  manuallyTriggered: null | '$ vite-plugin-ssr prerender' | 'prerender()'
+  manuallyTriggered: null | '$ vike prerender' | 'prerender()'
 ): Promise<void> {
   checkOutdatedOptions(options)
 
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
   if (logLevel === 'info') {
-    console.log(`${pc.cyan(`vite-plugin-ssr v${projectInfo.projectVersion}`)} ${pc.green('pre-rendering HTML...')}`)
+    console.log(`${pc.cyan(`vike v${projectInfo.projectVersion}`)} ${pc.green('pre-rendering HTML...')}`)
   }
 
   setNodeEnvToProduction()
 
   await disableReactStreaming()
 
-  const viteConfig = await resolveConfig(options.viteConfig || {}, 'vite-plugin-ssr pre-rendering' as any, 'production')
+  const viteConfig = await resolveConfig(options.viteConfig || {}, 'vike pre-rendering' as any, 'production')
   assertLoadedConfig(viteConfig, options)
   const configVps = await getConfigVps(viteConfig)
 
@@ -1046,7 +1046,7 @@ function checkOutdatedOptions(options: {
       options[prop] === undefined,
       `[prerender()] Option ${pc.cyan(
         prop
-      )} is outdated and has no effect (vite-plugin-ssr now automatically determines ${pc.cyan(prop)})`,
+      )} is outdated and has no effect (vike now automatically determines ${pc.cyan(prop)})`,
       {
         showStackTrace: true,
         onlyOnce: true
@@ -1070,12 +1070,12 @@ function assertLoadedConfig(
   viteConfig: { plugins: readonly { name: string }[]; configFile?: string },
   options: { viteConfig?: InlineConfig }
 ) {
-  if (viteConfig.plugins.some((p) => p.name.startsWith('vite-plugin-ssr'))) {
+  if (viteConfig.plugins.some((p) => p.name.startsWith('vike'))) {
     return
   }
   const { configFile } = viteConfig
   if (configFile) {
-    assertUsage(false, `${configFile} doesn't install the vite-plugin-ssr plugin`)
+    assertUsage(false, `${configFile} doesn't install the vike plugin`)
   } else {
     if (!options.viteConfig) {
       assertUsage(
@@ -1088,7 +1088,7 @@ function assertLoadedConfig(
     } else {
       assertUsage(
         false,
-        `[prerender()] The Vite config ${pc.cyan('prerender({ viteConfig })')} is missing the vite-plugin-ssr plugin.`,
+        `[prerender()] The Vite config ${pc.cyan('prerender({ viteConfig })')} is missing the vike plugin.`,
         {
           showStackTrace: true
         }
@@ -1106,8 +1106,8 @@ function normalizeUrl(url: string) {
 
 function prerenderForceExit() {
   // Force exit; known situations where pre-rendering is hanging:
-  //  - https://github.com/brillout/vite-plugin-ssr/discussions/774#discussioncomment-5584551
-  //  - https://github.com/brillout/vite-plugin-ssr/issues/807#issuecomment-1519010902
+  //  - https://github.com/brillout/vike/discussions/774#discussioncomment-5584551
+  //  - https://github.com/brillout/vike/issues/807#issuecomment-1519010902
   process.exit(0)
 
   /* I guess there is no need to tell the user about it? Let's see if a user complains.

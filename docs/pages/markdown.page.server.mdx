@@ -67,7 +67,7 @@ We don't have to redefine/duplicate the page titles in the markdown:
 ```md
 // /pages/blog/introducing-vike.md
 
-We're thrilled to officially introduce Vike, the new name of vite-plugin-ssr,
+We're thrilled to officially introduce Vike, the new name of vike,
 marking a new era for the project.
 ```
 
@@ -103,7 +103,7 @@ export function PageShell({ pageContext }) {
 // /renderer/_default.page.server.jsx
 
 import { PageShell } from './PageShell'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToString } from 'some-ui-framework' // React/Vue/Solid/...
 
 export async function render(pageContext) {
@@ -145,7 +145,7 @@ This page is written in _Markdown_.
 ```js
 // _default.page.server.js
 
-import { escapeInject } from 'vite-plugin-ssr/server'
+import { escapeInject } from 'vike/server'
 
 export async function render(pageContext) {
   // `pageContext.exports` holds all exports of the page's `.page.js` file
@@ -189,7 +189,7 @@ which you can access at
 ```js
 // _default.page.server.js
 
-import { escapeInject } from 'vite-plugin-ssr/server'
+import { escapeInject } from 'vike/server'
 
 export async function render(pageContext) {
   // Read the documentation of your Vite markdown plugin or of its underlying markdown

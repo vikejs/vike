@@ -3,7 +3,7 @@
 
 import { inject } from 'vue'
 import type { App } from 'vue'
-import type { PageContext } from 'vite-plugin-ssr/types'
+import type { PageContext } from 'vike/types'
 
 export { usePageContext }
 export { setPageContext }

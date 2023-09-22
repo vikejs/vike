@@ -13,7 +13,7 @@ function importBuild(): Plugin[] {
   let config: ResolvedConfig
   return [
     {
-      name: 'vite-plugin-ssr:importBuild:config',
+      name: 'vike:importBuild:config',
       enforce: 'post',
       configResolved(config_) {
         config = config_
@@ -31,7 +31,7 @@ function importBuild(): Plugin[] {
 
 function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
   const importPathAbsolute = toPosixPath(
-    // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vite-plugin-ssr/dist/esm/node/plugin/plugins/importBuild/index.js
+    // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/plugins/importBuild/index.js
     require_.resolve(`../../../../../../dist/esm/node/runtime/globalContext/loadImportBuild.js`)
   )
   const { outDirServer } = getOutDirs(config)
@@ -43,8 +43,8 @@ function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
     '  setImportBuildGetters({',
     `    pageFiles: () => import('./${pageFilesEntry}'),`,
     "    clientManifest: () => require('../assets.json'),",
-    // TODO: use virtual file instead of generating vite-plugin-ssr.json
-    "    pluginManifest: () => require('../client/vite-plugin-ssr.json'),",
+    // TODO: use virtual file instead of generating vike.json
+    "    pluginManifest: () => require('../client/vike.json'),",
     '  });',
     '})()',
     ''

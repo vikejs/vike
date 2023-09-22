@@ -5,7 +5,7 @@ addScaffoldCodeClickHandler()
 function addScaffoldCodeClickHandler() {
   document.getElementById('npm-init-code-snippet')!.onclick = async () => {
     if (window.navigator.clipboard) {
-      await window.navigator.clipboard.writeText('npm init vite-plugin-ssr@latest')
+      await window.navigator.clipboard.writeText('npm init vike@latest')
     }
     const el = document.getElementById('npm-init-code-snippet')!
     const attr = 'aria-label'

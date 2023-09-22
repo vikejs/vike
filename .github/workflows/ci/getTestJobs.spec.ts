@@ -31,11 +31,11 @@ describe('getTestJobs()', () => {
           "jobTestFiles": [
             ".github/workflows/ci/getTestJobs.spec.ts",
             "test/renderPage.spec.ts",
-            "vite-plugin-ssr/shared/route/deduceRouteStringFromFilesystemPath.spec.ts",
-            "vite-plugin-ssr/shared/route/resolvePrecedence/overall.spec.ts",
-            "vite-plugin-ssr/shared/route/resolvePrecedence/route-strings.spec.ts",
-            "vite-plugin-ssr/shared/route/resolveRouteString.spec.ts",
-            "vite-plugin-ssr/utils/parseUrl.spec.ts",
+            "vike/shared/route/deduceRouteStringFromFilesystemPath.spec.ts",
+            "vike/shared/route/resolvePrecedence/overall.spec.ts",
+            "vike/shared/route/resolvePrecedence/route-strings.spec.ts",
+            "vike/shared/route/resolveRouteString.spec.ts",
+            "vike/utils/parseUrl.spec.ts",
           ],
         },
         {

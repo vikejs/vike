@@ -1,4 +1,4 @@
-import type { Config } from 'vite-plugin-ssr/types'
+import type { Config } from 'vike/types'
 import Layout from '../layouts/LayoutDefault'
 import Head from '../layouts/HeadDefault'
 import logoUrl from '../assets/logo.svg'

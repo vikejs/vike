@@ -23,7 +23,7 @@ const globalObject = getGlobalObject<{ usesClientRouter?: true }>('extractExport
 function extractExportNamesPlugin(): Plugin {
   let isDev = false
   return {
-    name: 'vite-plugin-ssr:extractExportNames',
+    name: 'vike:extractExportNames',
     enforce: 'post',
     async transform(src, id, options) {
       const isClientSide = !viteIsSSR_options(options)
@@ -90,7 +90,7 @@ function addQuery(moduleName: string, id: string) {
       const idReal = id.split('?')[0]!
       assertUsage(
         false,
-        `Modify the re-export of ${idReal}, see https://github.com/brillout/vite-plugin-ssr/issues/864#issuecomment-1537202290`
+        `Modify the re-export of ${idReal}, see https://github.com/brillout/vike/issues/864#issuecomment-1537202290`
       )
     }
     moduleName = `${moduleName}?extractExportNames&lang.${fileExtension}`

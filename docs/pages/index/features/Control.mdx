@@ -1,16 +1,16 @@
-With `vite-plugin-ssr`, you control how your pages are rendered:
+With `vike`, you control how your pages are rendered:
 
 ```jsx
 // /pages/about.page.js
 // Environment: browser and server
 
-// vite-plugin-ssr uses Filesystem Routing: the file `/pages/about.page.js` matches the URL `/about`.
+// vike uses Filesystem Routing: the file `/pages/about.page.js` matches the URL `/about`.
 
 // `Page` can be anything you want — typically a React/Vue/Svelte/... component.
 export function Page() {
   return <>
     <h1>About</h1>
-    <p>This is our first vite-plugin-ssr app.</p>
+    <p>This is our first vike app.</p>
   </>
 }
 ```
@@ -18,14 +18,14 @@ export function Page() {
 // /renderer/_default.page.server.js
 // Environment: server
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 // This can be any UI framework (React, Vue, Svelte, ...)
 import { renderToHtml } from 'my-favorite-ui-framework'
 
 // You control how `Page` is rendered to HTML
 export async function render({ Page }) {
   const pageHtml = await renderToHtml(Page)
-  const title = 'My first vite-plugin-ssr app'
+  const title = 'My first vike app'
   return escapeInject`<!DOCTYPE html>
     <html>
       <head>

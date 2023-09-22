@@ -3,10 +3,10 @@ export default onRenderHtml
 
 import { renderToStream } from 'react-streaming/server'
 import React from 'react'
-import { escapeInject } from 'vite-plugin-ssr/server'
+import { escapeInject } from 'vike/server'
 import { PageShell } from './PageShell'
 import { getPageTitle } from './getPageTitle'
-import type { PageContextServer } from 'vite-plugin-ssr/types'
+import type { PageContextServer } from 'vike/types'
 
 async function onRenderHtml(pageContext: PageContextServer) {
   const { Page, pageProps } = pageContext

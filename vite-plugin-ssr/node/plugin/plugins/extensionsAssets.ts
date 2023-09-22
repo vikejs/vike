@@ -16,7 +16,7 @@ function extensionsAssets(): Plugin {
   let config: ResolvedConfig
   let extensionsAssetsDir: string[]
   return {
-    name: 'vite-plugin-ssr:extensionsAssets',
+    name: 'vike:extensionsAssets',
     async configResolved(config_) {
       config = config_
       const configVps = await getConfigVps(config)

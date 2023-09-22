@@ -9,7 +9,7 @@ are defined by our [server-side `render()` hook](/render-hook).
 // /renderer/_default.page.server.js
 // Environment: server
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
 export { render }
@@ -48,7 +48,7 @@ export const documentProps = {
 // /renderer/_default.page.server.js
 // Environment: server
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
 export { render }
@@ -105,7 +105,7 @@ function getDocumentProps(pageProps) {
 
 export { render }
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
 async function render(pageContext) {
@@ -156,7 +156,7 @@ For example:
 // /renderer/_default.page.server.js
 // Environment: server
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import renderToHtml from 'some-ui-framework'
 
 export async function render(pageContext) {
@@ -235,7 +235,7 @@ Head libraries already sanitize the HTML `<head>`, this means we can skip `escap
 // /renderer/_default.page.server.js
 // Environment: server
 
-import { dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
 export async function render(pageContext) {

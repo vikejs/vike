@@ -1,4 +1,4 @@
-Example of using `vite-plugin-ssr` with Vue that showcases many features.
+Example of using `vike` with Vue that showcases many features.
 
 For a simpler example, check out [/examples/vue/](/examples/vue/).
 
@@ -15,8 +15,8 @@ Features:
  - HTML streaming
 
 ```bash
-git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/vue-full/
+git clone git@github.com:brillout/vike
+cd vike/examples/vue-full/
 npm install
 npm run dev
 ```

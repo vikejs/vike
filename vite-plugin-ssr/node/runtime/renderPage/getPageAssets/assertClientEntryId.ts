@@ -10,7 +10,7 @@ function assertClientEntryId(id: string) {
   const isPkg = isNpmPackageImport(id)
   assert(
     // Client entry
-    id.startsWith('@@vite-plugin-ssr/') ||
+    id.startsWith('@@vike/') ||
       // User files
       id.startsWith('/') ||
       // Page code importer

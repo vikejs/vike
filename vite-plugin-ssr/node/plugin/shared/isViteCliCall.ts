@@ -25,7 +25,7 @@ function getViteConfigFromCli(): null | ConfigFromCli {
   if (!isViteCliCall()) return null
 
   // Copied and adapted from https://github.com/vitejs/vite/blob/8d0a9c1ab8ddd26973509ca230b29604e872e2cd/packages/vite/src/node/cli.ts#L137-L197
-  const cli = cac('vite-plugin-ssr:vite-simulation')
+  const cli = cac('vike:vite-simulation')
   const desc = 'FAKE_CLI'
   cli
     .option('-c, --config <file>', desc)

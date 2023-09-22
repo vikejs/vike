@@ -6,7 +6,7 @@ export { getHtmlString }
 export type { HtmlRender }
 export type { HtmlPart }
 export type { DocumentHtml }
-// This export is needed even though it's not used anywhere, see https://github.com/brillout/vite-plugin-ssr/issues/511
+// This export is needed even though it's not used anywhere, see https://github.com/brillout/vike/issues/511
 export type { TemplateWrapped }
 
 import { assert, assertUsage, assertWarning, checkType, hasProp, isHtml, isPromise, objectAssign } from '../utils.js'

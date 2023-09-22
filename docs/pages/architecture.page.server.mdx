@@ -1,18 +1,18 @@
 import { Link } from '@brillout/docpress'
 import { JustAMiddleware } from '../components'
 
-Vite-plugin-ssr provides an frontend architecture that is both flexible and robust.
+Vike provides an frontend architecture that is both flexible and robust.
 
 ## Do-one-thing-do-it-well
 
-Vite-plugin-ssr's architecture is designed with meticulous care and follows what we call a "do-one-thing-do-it-well architecture": vite-plugin-ssr focuses on being an excellent frontend framework while not interfering with the rest of your stack.
+Vike's architecture is designed with meticulous care and follows what we call a "do-one-thing-do-it-well architecture": vike focuses on being an excellent frontend framework while not interfering with the rest of your stack.
 
-With vite-plugin-ssr, you can choose:
+With vike, you can choose:
  - Any UI framework (React/Vue/Solid/...)
  - Any server (Express.js, Deno, HatTip, ...)
  - Any deployment (AWS, Cloudflare Workers, Vercel, ...)
 
-With vite-plugin-ssr, your application's architecture is composed of loosely coupled core constituents with a clear separation of concerns.
+With vike, your application's architecture is composed of loosely coupled core constituents with a clear separation of concerns.
 
 We believe it's paramount for the web that these core constituents are developed mostly independent of each other. Providing freedom for the user, and fostering a vibrant ecosystem with an innovation-driven competition delivering high-quality tools for the users.
 
@@ -32,7 +32,7 @@ Not only can you manually integrate with any UI framework you want and however y
 export default onRenderHtml
 
 import { renderToHtml } from 'some-ui-framework'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 
 async function onRenderHtml(pageContext) {
   const { Page } = pageContext
@@ -68,4 +68,4 @@ async function onRenderClient(pageContext) {
 
 <JustAMiddleware />
 
-Vite-plugin-ssr can easily be embedded into any server architecture and any deployment strategy.
+Vike can easily be embedded into any server architecture and any deployment strategy.

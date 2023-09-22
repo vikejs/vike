@@ -2,8 +2,8 @@ export default onRenderHtml
 
 import React from 'react'
 import { renderToString } from 'react-dom/server'
-import { escapeInject, dangerouslySkipEscape } from '../../../vite-plugin-ssr/node/runtime'
-import type { InjectFilterEntry } from '../../../vite-plugin-ssr/types'
+import { escapeInject, dangerouslySkipEscape } from '../../../vike/node/runtime'
+import type { InjectFilterEntry } from '../../../vike/types'
 // @ts-ignore
 import { PageLayout } from './PageLayout'
 
@@ -26,7 +26,7 @@ async function onRenderHtml(pageContext: any) {
   return {
     documentHtml,
     injectFilter(assets: InjectFilterEntry[]) {
-      // Default vite-plugin-ssr's preloading strategy
+      // Default vike's preloading strategy
       if (!preloadStrategy) return
 
       if (preloadStrategy === 'EAGER') {

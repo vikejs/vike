@@ -14,7 +14,7 @@ function manifest(): Plugin[] {
   let config: ResolvedConfig
   return [
     {
-      name: 'vite-plugin-ssr:pluginManifest',
+      name: 'vike:pluginManifest',
       apply: 'build',
       async configResolved(config_: ResolvedConfig) {
         config = config_
@@ -31,7 +31,7 @@ function manifest(): Plugin[] {
         }
         assertPluginManifest(manifest)
         this.emitFile({
-          fileName: `vite-plugin-ssr.json`,
+          fileName: `vike.json`,
           type: 'asset',
           source: JSON.stringify(manifest, null, 2)
         })

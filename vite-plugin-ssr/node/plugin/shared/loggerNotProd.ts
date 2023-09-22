@@ -234,9 +234,9 @@ function clearLogs(
   }
 }
 
-/** Note shown to user when vite-plugin-ssr does something risky:
- *  - When vite-plugin-ssr dedupes (i.e. swallows) an error with getHttpRequestAsyncStore().shouldErrorBeSwallowed(err)
- *  - When vite-plugin-ssr modifies the error with getPrettyErrorWithCodeSnippet(err)
+/** Note shown to user when vike does something risky:
+ *  - When vike dedupes (i.e. swallows) an error with getHttpRequestAsyncStore().shouldErrorBeSwallowed(err)
+ *  - When vike modifies the error with getPrettyErrorWithCodeSnippet(err)
  */
 function logErrorDebugNote() {
   if (isErrorDebug()) return

@@ -25,7 +25,7 @@ Stream Docs & API:
 
 export { render }
 
-import { escapeInject } from 'vite-plugin-ssr/server'
+import { escapeInject } from 'vike/server'
 import { renderToStream } from 'some-ui-framework' // React, Vue, ...
 
 async function render(pageContext) {
@@ -47,7 +47,7 @@ Node.js platforms (Vercel, AWS EC2, AWS Lambda, ...):
 ```js
 // server.js
 
-import { renderPage } from 'vite-plugin-ssr/server'
+import { renderPage } from 'vike/server'
 
 app.get("*", async (req, res, next) => {
   const pageContextInit = { urlOriginal: req.url }
@@ -64,7 +64,7 @@ Edge platforms (e.g. Cloudflare Workers):
 ```js
 // worker.js
 
-import { renderPage } from 'vite-plugin-ssr/server'
+import { renderPage } from 'vike/server'
 
 addEventListener('fetch', (event) => {
   event.respondWith(handleFetchEvent(event))
@@ -88,7 +88,7 @@ async function handleFetchEvent(event) {
 
 ## `pageContext.enableEagerStreaming`
 
-By default, the HTML template (we provide in our `render()` hook) isn't immediately written to the stream: instead, `vite-plugin-ssr` awaits for our UI framework to start writing to the stream.
+By default, the HTML template (we provide in our `render()` hook) isn't immediately written to the stream: instead, `vike` awaits for our UI framework to start writing to the stream.
 
 ```js
 import { renderToStream } from 'some-ui-framework' // React, Vue, ...
@@ -99,7 +99,7 @@ async function render(pageContext) {
   const stream = renderToStream(Page)
 
   // The HTML template (e.g. `<title>`) isn't immediately written to the stream.
-  // Instead, vite-plugin-ssr awaits for `stream` to start.
+  // Instead, vike awaits for `stream` to start.
   return escapeInject`<!DOCTYPE html>
     <html>
       <head>
@@ -112,7 +112,7 @@ async function render(pageContext) {
 }
 ```
 
-If we set `pageContext.enableEagerStreaming` to `true` then `vite-plugin-ssr` starts writing the HTML template right away.
+If we set `pageContext.enableEagerStreaming` to `true` then `vike` starts writing the HTML template right away.
 
 ```js
 async function render(pageContext) {
@@ -162,7 +162,7 @@ To be able to use stream pipes, we need to use `stampPipe()`:
 export { render }
 
 import { renderToStreamPipe } from 'some-ui-framework' // React, Vue, ...
-import { escapeInject, stampPipe } from 'vite-plugin-ssr/server'
+import { escapeInject, stampPipe } from 'vike/server'
 
 async function render(pageContext) {
   const { Page } = pageContext
@@ -210,7 +210,7 @@ For some UI frameworks, such as Vue, we need a pipe wrapper:
 // renderer/_deault.page.server.js
 
 import { pipePageToWritable } from 'some-ui-framework'
-import { stampPipe, escapeInject } from 'vite-plugin-ssr/server'
+import { stampPipe, escapeInject } from 'vike/server'
 
 export function render(pageContext) {
   const { Page } = pageContext
@@ -247,7 +247,7 @@ In such situations, we can return a `pageContext` async function in our `render(
 export { render }
 export { passToClient }
 
-import { escapeInject } from 'vite-plugin-ssr/server'
+import { escapeInject } from 'vike/server'
 import { renderToStream } from 'some-ui-framework' // React, Vue, ...
 
 const passToClient = ['initialData']

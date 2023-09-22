@@ -14,7 +14,7 @@ Example:
 ```ts
 // /renderer/+config.h.ts
 
-import type { Config } from 'vite-plugin-ssr/types'
+import type { Config } from 'vike/types'
 
 export default {
   meta: {
@@ -35,9 +35,9 @@ export default {
 
 export default {
   // Set <title>
-  title: 'My vite-plugin-ssr app',
+  title: 'My vike app',
   // Set <meta name="description" />
-  description: 'This app showcases using vite-plugin-ssr'
+  description: 'This app showcases using vike'
 }
 ```
 
@@ -46,7 +46,7 @@ export default {
 
 export default onRenderHtml
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 
 async function onRenderHtml(pageContext) {
   // The page's config is available at pageContext.config
@@ -84,7 +84,7 @@ Example:
 ```ts
 // /pages/some-page/+config.h.ts
 
-import type { Config } from 'vite-plugin-ssr/types'
+import type { Config } from 'vike/types'
 
 export default {
   meta: {
@@ -105,7 +105,7 @@ For extra convenience, we can create a `onBeforeRenderIsomorph` toggle:
 ```ts
 // /pages/some-page/+config.h.ts
 
-import type { Config, Effect } from 'vite-plugin-ssr/types'
+import type { Config, Effect } from 'vike/types'
 
 const onBeforeRenderIsomorphEffect: Effect = ({ configDefinedAt, configValue }) {
   if (typeof configValue !== 'boolean') {
@@ -133,6 +133,6 @@ export default {
 ```
 
 Example:
- - [/examples/react-full-v1/](https://github.com/brillout/vite-plugin-ssr/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/)
-   - Config defintion: [/renderer/+config.h.ts > `meta.onBeforeRenderIsomorph`](https://github.com/brillout/vite-plugin-ssr/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/renderer/+config.h.ts#L14-L33)
-   - Config usage: [/pages/star-wars/@id/+onBeforeRenderIsomorph.ts](https://github.com/brillout/vite-plugin-ssr/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts)
+ - [/examples/react-full-v1/](https://github.com/brillout/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/)
+   - Config defintion: [/renderer/+config.h.ts > `meta.onBeforeRenderIsomorph`](https://github.com/brillout/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/renderer/+config.h.ts#L14-L33)
+   - Config usage: [/pages/star-wars/@id/+onBeforeRenderIsomorph.ts](https://github.com/brillout/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts)

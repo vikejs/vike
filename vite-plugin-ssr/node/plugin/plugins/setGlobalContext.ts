@@ -10,7 +10,7 @@ import {
 
 function setGlobalContext(): Plugin {
   return {
-    name: 'vite-plugin-ssr:setGlobalContext',
+    name: 'vike:setGlobalContext',
     enforce: 'pre',
     configureServer: {
       order: 'pre',

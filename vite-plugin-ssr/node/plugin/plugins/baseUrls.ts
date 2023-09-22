@@ -10,7 +10,7 @@ function baseUrls(configVps?: ConfigVpsUserProvided): Plugin {
   let baseServer: string
   let baseAssets: string
   return {
-    name: 'vite-plugin-ssr:baseUrls',
+    name: 'vike:baseUrls',
     enforce: 'post',
     config: (config) => {
       const bases = resolveBaseFromUserConfig(config, configVps)
@@ -21,7 +21,7 @@ function baseUrls(configVps?: ConfigVpsUserProvided): Plugin {
       process.env.BASE_ASSETS = baseAssets
       return {
         envPrefix: [
-          'VITE_', // Vite doesn't seem to merge in its default, see https://github.com/brillout/vite-plugin-ssr/issues/554
+          'VITE_', // Vite doesn't seem to merge in its default, see https://github.com/brillout/vike/issues/554
           'BASE_SERVER',
           'BASE_ASSETS'
         ],

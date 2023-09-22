@@ -1,11 +1,11 @@
-// This file isn't processed by Vite, see https://github.com/brillout/vite-plugin-ssr/issues/562
+// This file isn't processed by Vite, see https://github.com/brillout/vike/issues/562
 // Consequently:
 //  - When changing this file, you needed to manually restart your server for your changes to take effect.
 //  - To use your environment variables defined in your .env files, you need to install dotenv, see https://vike.dev/env
 //  - To use your path aliases defined in your vite.config.js, you need to tell Node.js about them, see https://vike.dev/path-aliases
 
 import express from 'express'
-import { renderPage } from 'vite-plugin-ssr/server'
+import { renderPage } from 'vike/server'
 import { root } from './root.js'
 import fetch from 'node-fetch'
 import apollo from '@apollo/client'

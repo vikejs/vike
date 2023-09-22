@@ -1,7 +1,7 @@
 // https://vike.dev/onRenderHtml
 export default onRenderHtml
 
-import { escapeInject } from 'vite-plugin-ssr/server'
+import { escapeInject } from 'vike/server'
 
 async function onRenderHtml(pageContext) {
   const { stream } = pageContext

@@ -20,7 +20,7 @@ jobs:
       - name: Install
         run: pnpm install
 
-      - name: Build vite-plugin-ssr
+      - name: Build vike
         run: pnpm run build
 
       - name: Build docs

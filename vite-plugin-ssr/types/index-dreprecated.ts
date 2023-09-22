@@ -21,52 +21,52 @@ import type {
   ConfigEntries as ConfigEntries_
 } from './index.js'
 
-/** @deprecated All types have been moved to `vite-plugin-ssr/types`.
+/** @deprecated All types have been moved to `vike/types`.
  * Replace:
- *   `import type { PageContextBuiltIn } from 'vite-plugin-ssr'`
+ *   `import type { PageContextBuiltIn } from 'vike'`
  * With:
- *   `import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'`
+ *   `import type { PageContextBuiltInServer } from 'vike/types'`
  */
 type PageContextBuiltIn<Page = any> = PageContextBuiltInServer<Page>
-/** @deprecated All types have been moved to `vite-plugin-ssr/types`.
+/** @deprecated All types have been moved to `vike/types`.
  * Replace:
- *   `import type { PageContextBuiltInClientWithClientRouting } from 'vite-plugin-ssr'`
+ *   `import type { PageContextBuiltInClientWithClientRouting } from 'vike'`
  * With:
- *   `import type { PageContextBuiltInClientWithClientRouting } from 'vite-plugin-ssr/types'`
+ *   `import type { PageContextBuiltInClientWithClientRouting } from 'vike/types'`
  */
 type PageContextBuiltInClientWithClientRouting<Page = any> = PageContextBuiltInClientWithClientRouting_<Page>
-/** @deprecated All types have been moved to `vite-plugin-ssr/types`.
+/** @deprecated All types have been moved to `vike/types`.
  * Replace:
- *   `import type { PageContextBuiltInClientWithServerRouting } from 'vite-plugin-ssr'`
+ *   `import type { PageContextBuiltInClientWithServerRouting } from 'vike'`
  * With:
- *   `import type { PageContextBuiltInClientWithServerRouting } from 'vite-plugin-ssr/types'`
+ *   `import type { PageContextBuiltInClientWithServerRouting } from 'vike/types'`
  */
 type PageContextBuiltInClientWithServerRouting<Page = any> = PageContextBuiltInClientWithServerRouting_<Page>
-/** @deprecated All types have been moved to `vite-plugin-ssr/types`.
+/** @deprecated All types have been moved to `vike/types`.
  * Replace:
- *   `import type { InjectFilterEntry } from 'vite-plugin-ssr'`
+ *   `import type { InjectFilterEntry } from 'vike'`
  * With:
- *   `import type { InjectFilterEntry } from 'vite-plugin-ssr/types'`
+ *   `import type { InjectFilterEntry } from 'vike/types'`
  */
 type InjectFilterEntry = InjectFilterEntry_
-/** @deprecated All types have been moved to `vite-plugin-ssr/types`.
+/** @deprecated All types have been moved to `vike/types`.
  * Replace:
- *   `import type { Config } from 'vite-plugin-ssr'`
+ *   `import type { Config } from 'vike'`
  * With:
- *   `import type { Config } from 'vite-plugin-ssr/types'`
+ *   `import type { Config } from 'vike/types'`
  */
 type Config = Config_
-/** @deprecated All types have been moved to `vite-plugin-ssr/types`.
+/** @deprecated All types have been moved to `vike/types`.
  * Replace:
- *   `import type { Env } from 'vite-plugin-ssr'`
+ *   `import type { Env } from 'vike'`
  * With:
- *   `import type { Env } from 'vite-plugin-ssr/types'`
+ *   `import type { Env } from 'vike/types'`
  */
 type Env = Env_
-/** @deprecated All types have been moved to `vite-plugin-ssr/types`.
+/** @deprecated All types have been moved to `vike/types`.
  * Replace:
- *   `import type { ConfigEntries } from 'vite-plugin-ssr'`
+ *   `import type { ConfigEntries } from 'vike'`
  * With:
- *   `import type { ConfigEntries } from 'vite-plugin-ssr/types'`
+ *   `import type { ConfigEntries } from 'vike/types'`
  */
 type ConfigEntries = ConfigEntries_

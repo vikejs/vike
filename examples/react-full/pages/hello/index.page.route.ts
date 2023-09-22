@@ -1,5 +1,5 @@
-import { resolveRoute } from 'vite-plugin-ssr/routing'
-import { RenderErrorPage } from 'vite-plugin-ssr/RenderErrorPage'
+import { resolveRoute } from 'vike/routing'
+import { RenderErrorPage } from 'vike/RenderErrorPage'
 
 // Route Functions enables advanced routing logic
 export default (pageContext: { urlPathname: string }) => {

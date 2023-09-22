@@ -1,5 +1,5 @@
 // TODO/v1-release: replace this with:
-// assertUsage(false, "`import { something } from 'vite-plugin-ssr'` doesn't exist: instead import from 'vite-plugin-ssr/server', 'vite-plugin-ssr/client', 'vite-plugin-ssr/plugin', ...")
+// assertUsage(false, "`import { something } from 'vike'` doesn't exist: instead import from 'vike/server', 'vike/client', 'vike/plugin', ...")
 
 export * from './index-common.js'
 export * from '../../types/index-dreprecated.js'
@@ -11,11 +11,11 @@ import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/abort.js
 /** @deprecated
  * Replace:
  *   ```
- *   import { RenderErrorPage } from 'vite-plugin-ssr'
+ *   import { RenderErrorPage } from 'vike'
  *   ```
  * With:
  *   ```
- *   import { render } from 'vite-plugin-ssr/abort'
+ *   import { render } from 'vike/abort'
  *   ```
  *
  * See https://vike.dev/render
@@ -25,9 +25,9 @@ export const RenderErrorPage = (...args: Parameters<typeof RenderErrorPage_>): E
     false,
     [
       'Replace:',
-      pc.red("  import { RenderErrorPage } from 'vite-plugin-ssr'"),
+      pc.red("  import { RenderErrorPage } from 'vike'"),
       'With:',
-      pc.green("  import { render } from 'vite-plugin-ssr/abort'"),
+      pc.green("  import { render } from 'vike/abort'"),
       'See https://vike.dev/render'
     ].join('\n'),
     { onlyOnce: true, showStackTrace: true }
@@ -39,12 +39,12 @@ assertWarning(
   false,
   [
     'You have following imports which are outdated:',
-    pc.red("  import { something } from 'vite-plugin-ssr'"),
+    pc.red("  import { something } from 'vike'"),
     'Replace them with:',
-    pc.green("  import { something } from 'vite-plugin-ssr/server'"),
+    pc.green("  import { something } from 'vike/server'"),
     `Or if ${pc.cyan('something')} is a type:`,
-    pc.green("  import type { something } from 'vite-plugin-ssr/types'"),
-    "Make sure to import renderPage(), escapeInject, html, dangerouslySkipEscape(), pipeWebStream(), pipeNodeStream(), pipeStream(), stampPipe() from 'vite-plugin-ssr/server'. (Or inspect the error stack below to find the import causing this warning.)"
+    pc.green("  import type { something } from 'vike/types'"),
+    "Make sure to import renderPage(), escapeInject, html, dangerouslySkipEscape(), pipeWebStream(), pipeNodeStream(), pipeStream(), stampPipe() from 'vike/server'. (Or inspect the error stack below to find the import causing this warning.)"
   ].join('\n'),
   { showStackTrace: true, onlyOnce: true }
 )
@@ -52,6 +52,6 @@ assertWarning(
 import { isBrowser, assertUsage } from './utils.js'
 assertUsage(
   !isBrowser(),
-  "It's forbidden to `import { something } from 'vite-plugin-ssr'` in code loaded in the browser: the module 'vite-plugin-ssr' is a server-only module.",
+  "It's forbidden to `import { something } from 'vike'` in code loaded in the browser: the module 'vike' is a server-only module.",
   { showStackTrace: true }
 )

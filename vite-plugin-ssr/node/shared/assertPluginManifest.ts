@@ -28,7 +28,7 @@ function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest i
   assert(isPlainObject(pluginManifest))
   assertUsage(
     pluginManifest.version === projectInfo.projectVersion,
-    `Re-build your app (you're using vite-plugin-ssr@${projectInfo.projectVersion} but your app was built with vite-plugin-ssr@${pluginManifest.version})`
+    `Re-build your app (you're using vike@${projectInfo.projectVersion} but your app was built with vike@${pluginManifest.version})`
   )
   assertRuntimeManifest(pluginManifest)
   assert(hasProp(pluginManifest, 'usesClientRouter', 'boolean'))
@@ -40,7 +40,7 @@ function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest i
   // ```
   // Uncaught (in promise) TypeError: Cannot set property manifestKeyMap of #<Object> which has only a getter
   // ```
-  // See https://github.com/brillout/vite-plugin-ssr/issues/596
+  // See https://github.com/brillout/vike/issues/596
   const pluginManifestClone = { ...pluginManifest }
   objectAssign(pluginManifestClone, { manifestKeyMap })
   checkType<PluginManifest>(pluginManifestClone)

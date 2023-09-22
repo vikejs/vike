@@ -1,5 +1,5 @@
 import { Component } from 'solid-js'
-import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInServer } from 'vike/types'
 export type PageProps = {}
 type Page = Component<PageProps>
 export type PageContext = PageContextBuiltInServer<Page> & {

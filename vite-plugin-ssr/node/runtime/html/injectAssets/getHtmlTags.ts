@@ -17,7 +17,7 @@ import pc from '@brillout/picocolors'
 
 type PreloadFilter = null | ((assets: InjectFilterEntry[]) => InjectFilterEntry[])
 type PreloadFilterInject = false | 'HTML_BEGIN' | 'HTML_END'
-/** Filter what assets vite-plugin-ssr injects in the HTML.
+/** Filter what assets vike injects in the HTML.
  *
  * https://vike.dev/injectFilter
  */
@@ -102,7 +102,7 @@ async function getHtmlTags(
       if (a.assetType === 'style' && a.isEntry) {
         // In development, Vite automatically inject styles, but we still inject `<link rel="stylesheet" type="text/css" href="${src}">` tags in order to avoid FOUC (flash of unstyled content).
         //  - https://github.com/vitejs/vite/issues/2282
-        //  - https://github.com/brillout/vite-plugin-ssr/issues/261
+        //  - https://github.com/brillout/vike/issues/261
         assertWarning(a.inject, `[injectFilter()] We recommend against not injecting ${a.src}`, {
           onlyOnce: true
         })
@@ -150,7 +150,7 @@ async function getHtmlTags(
     // Don't allow the user to manipulate with injectFilter(): injecting <script type="application/json"> before the stream can break the app when:
     //  - using https://vike.dev/stream#initial-data-after-stream-end
     //  - `pageContext` is modified during the stream, e.g. /examples/vue-pinia which uses https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch
-    // The <script> tags are handled separately by vite-plugin-ssr down below.
+    // The <script> tags are handled separately by vike down below.
     htmlTags.push({
       // Needs to be called after `resolvePageContextPromise()`
       htmlTag: () => getPageContextTag(pageContext),
@@ -171,7 +171,7 @@ async function getMergedScriptTag(pageAssets: PageAsset[], isProduction: boolean
 
 function getPageContextTag(pageContext: PageContextSerialization): string {
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
-  const htmlTag = `<script id="vite-plugin-ssr_pageContext" type="application/json">${pageContextSerialized}</script>`
+  const htmlTag = `<script id="vike_pageContext" type="application/json">${pageContextSerialized}</script>`
   // @ts-expect-error
   pageContext._pageContextHtmlTag = htmlTag
   return htmlTag

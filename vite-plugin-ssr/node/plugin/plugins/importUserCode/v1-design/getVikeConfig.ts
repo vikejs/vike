@@ -121,7 +121,7 @@ async function handleReloadSideEffects() {
     await vikeConfigPromise
   } catch (err) {
     // handleReloadSideEffects() is only called in dev.
-    // In dev, if loadVikeConfig_withErrorHandling() throws an error, then it's a vite-plugin-ssr bug.
+    // In dev, if loadVikeConfig_withErrorHandling() throws an error, then it's a vike bug.
     console.error(err)
     assert(false)
   }
@@ -495,7 +495,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
           configValueSource.definedAtInfo.filePath
         } is experimental and will likely be removed. Define the config ${pc.cyan(
           configName
-        )} in vite-plugin-ssr's Vite plugin options instead.`,
+        )} in vike's Vite plugin options instead.`,
         { onlyOnce: true }
       )
       globalVikeConfig[configName] = configValueSource.value
@@ -774,7 +774,7 @@ function getImport(
   if (importFilePath.startsWith('.')) {
     // We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
     // ```
-    // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vite-plugin-ssr:pageConfigValuesAll:client:/pages/index". Does the file exist?
+    // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
     // ```
     importFilePath = resolveRelativeCodeFilePath(importData, configFilePath, userRootDir)
   } else {
@@ -1016,7 +1016,7 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
     // We only warn in dev, because while building it's expected to take a long time as fast-glob is competing for resources with other tasks
     assertWarning(
       time < 2 * 1000,
-      `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on vite-plugin-ssr's GitHub.`,
+      `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on vike's GitHub.`,
       {
         onlyOnce: 'slow-page-files-search'
       }
@@ -1217,8 +1217,8 @@ function handleUserFileError(err: unknown, isDev: boolean) {
   } else {
     // Avoid ugly error format:
     // ```
-    // [vite-plugin-ssr:importUserCode] Could not load virtual:vite-plugin-ssr:importUserCode:server: [vite-plugin-ssr@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vite-plugin-ssr/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
-    // Error: [vite-plugin-ssr@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vite-plugin-ssr/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
+    // [vike:importUserCode] Could not load virtual:vike:importUserCode:server: [vike@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vike/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
+    // Error: [vike@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vike/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
     //     at ...
     //     at ...
     //     at ...
@@ -1226,11 +1226,11 @@ function handleUserFileError(err: unknown, isDev: boolean) {
     //     at ...
     //     at ...
     //   code: 'PLUGIN_ERROR',
-    //   plugin: 'vite-plugin-ssr:importUserCode',
+    //   plugin: 'vike:importUserCode',
     //   hook: 'load',
     //   watchFiles: [
-    //     '/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/esm/node/importBuild.js',
-    //     '\x00virtual:vite-plugin-ssr:importUserCode:server'
+    //     '/home/rom/code/vike/vike/dist/esm/node/importBuild.js',
+    //     '\x00virtual:vike:importUserCode:server'
     //   ]
     // }
     //  ELIFECYCLE  Command failed with exit code 1.

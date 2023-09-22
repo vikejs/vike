@@ -2,7 +2,7 @@
 export default onRenderHtml
 
 import { renderToString } from '@vue/server-renderer'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { createApp } from './app'
 
 async function onRenderHtml(pageContext) {

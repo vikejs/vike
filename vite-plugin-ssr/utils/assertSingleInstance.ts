@@ -2,13 +2,13 @@ export { onClientEntry_ServerRouting }
 export { onClientEntry_ClientRouting }
 export { onProjectInfo }
 
-//  - Throw error if there are two different versions of vite-plugin-ssr loaded
+//  - Throw error if there are two different versions of vike loaded
 //  - Show warning if entry of Client Routing and entry of Server Routing are both loaded
-//  - Show warning if vite-plugin-ssr is loaded twice
+//  - Show warning if vike is loaded twice
 
 import { unique } from './unique.js'
 import { getGlobalObject } from './getGlobalObject.js'
-/* Use original assertUsage() & assertWarning() after all CJS is removed from node_modules/vite-plugin-ssr/dist/
+/* Use original assertUsage() & assertWarning() after all CJS is removed from node_modules/vike/dist/
 import { assertUsage, assertWarning } from './assert.js'
 */
 const globalObject = getGlobalObject<{
@@ -25,15 +25,15 @@ const globalObject = getGlobalObject<{
 const clientRuntimesClonflict =
   "The client runtime of Server Routing as well as the client runtime of Client Routing are both being loaded. Make sure they aren't loaded both at the same time for a given page. See https://vike.dev/client-runtimes-conflict"
 const clientNotSingleInstance =
-  "Two vite-plugin-ssr client runtime instances are being loaded. Make sure your client-side bundles don't include vite-plugin-ssr twice. (In order to reduce the size of your client-side JavaScript bundles.)"
+  "Two vike client runtime instances are being loaded. Make sure your client-side bundles don't include vike twice. (In order to reduce the size of your client-side JavaScript bundles.)"
 
 function assertSingleInstance() {
   {
     const versions = unique(globalObject.instances)
     assertUsage(
       versions.length <= 1,
-      // DO *NOT* patch vite-plugin-ssr to remove this error: because of multiple conflicting versions, you *will* eventually encounter insidious issues that hard to debug and potentially a security hazard, see for example https://github.com/brillout/vite-plugin-ssr/issues/1108
-      `Both vite-plugin-ssr@${versions[0]} and vite-plugin-ssr@${versions[1]} loaded. Only one version should be loaded.`
+      // DO *NOT* patch vike to remove this error: because of multiple conflicting versions, you *will* eventually encounter insidious issues that hard to debug and potentially a security hazard, see for example https://github.com/brillout/vike/issues/1108
+      `Both vike@${versions[0]} and vike@${versions[1]} loaded. Only one version should be loaded.`
     )
   }
 
@@ -83,7 +83,7 @@ function assertUsage(condition: unknown, errorMessage: string): asserts conditio
   if (condition) {
     return
   }
-  const errMsg = `[vite-plugin-ssr][Wrong Usage] ${errorMessage}`
+  const errMsg = `[vike][Wrong Usage] ${errorMessage}`
   throw new Error(errMsg)
 }
 function assertWarning(
@@ -94,7 +94,7 @@ function assertWarning(
   if (condition) {
     return
   }
-  const msg = `[vite-plugin-ssr][Warning] ${errorMessage}`
+  const msg = `[vike][Warning] ${errorMessage}`
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = onlyOnce === true ? msg : onlyOnce

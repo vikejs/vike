@@ -37,7 +37,7 @@ But then we lose IntelliSense such as auto-import, refactoring, type safety, and
 > export default { onRenderHtml, onRenderClient }
 > ```
 >
-> Using `'import:./some-file'` instead of a real import `import onRenderClient from './some-file'` enables vite-plugin-ssr to load the `onRenderClient()` hook only when needed and in the right environment.
+> Using `'import:./some-file'` instead of a real import `import onRenderClient from './some-file'` enables vike to load the `onRenderClient()` hook only when needed and in the right environment.
 
 
 ## Optional
@@ -49,7 +49,7 @@ Instead of defining a `+config.h.ts` file:
 ```ts
 // /pages/some-page/+config.h.ts
 
-import type { Config } from 'vite-plugin-ssr/types'
+import type { Config } from 'vike/types'
 import Page from './some-file'
 import { onBeforeRender } from './some-other-file'
 
@@ -64,7 +64,7 @@ We can define a `+config.ts` file (without `.h`):
 ```ts
 // /pages/some-page/+config.ts
 
-import type { Config } from 'vite-plugin-ssr/types'
+import type { Config } from 'vike/types'
 
 export default {
   Page: 'import:./some-file',
@@ -90,7 +90,7 @@ export default {
 }
 ```
 
-Vite-plugin-ssr throws:
+Vike throws:
 ```
 [Wrong Usage] The code of config 'Page' cannot live inside /pages/some-page/+config.h.js
 ```
@@ -119,7 +119,7 @@ import { something } from './some-file'
 // This import has no effect. (CSS should be imported in runtime code such as +Page.js instead.)
 import './some.css'
 
-// This log is printed only when vite-plugin-ssr reads +config.h.js files. It
+// This log is printed only when vike reads +config.h.js files. It
 // isn't included in the client nor the server runtime.
 console.log(something) // Prints: 'import:./some-file:something'
 

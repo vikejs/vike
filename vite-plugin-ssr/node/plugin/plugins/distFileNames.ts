@@ -12,12 +12,12 @@ type PreRenderedAsset = Rollup.PreRenderedAsset
 
 function distFileNames(): Plugin {
   return {
-    name: 'vite-plugin-ssr:distFileNames',
+    name: 'vike:distFileNames',
     apply: 'build',
     enforce: 'post',
     configResolved(config) {
       const rollupOutputs = getRollupOutputs(config)
-      // We need to support multiple outputs: @vite/plugin-legacy adds an ouput, see https://github.com/brillout/vite-plugin-ssr/issues/477#issuecomment-1406434802
+      // We need to support multiple outputs: @vite/plugin-legacy adds an ouput, see https://github.com/brillout/vike/issues/477#issuecomment-1406434802
       rollupOutputs.forEach((rollupOutput) => {
         if (!rollupOutput.entryFileNames) {
           rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config, true)
@@ -42,7 +42,7 @@ function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): 
     return `${dir}/[name].[hash][extname]`
   }
 
-  // https://github.com/brillout/vite-plugin-ssr/issues/794
+  // https://github.com/brillout/vike/issues/794
   assertPosixPath(name)
   name = path.posix.basename(name)
 

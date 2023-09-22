@@ -1,6 +1,6 @@
 [Cloudflare Workers](https://workers.cloudflare.com/) with:
  - Vite
- - `vite-plugin-ssr`
+ - `vike`
  - React
 
 
@@ -12,8 +12,8 @@ See [vike.dev/cloudflare-workers](https://vike.dev/cloudflare-workers).
 ## Run
 
 ```bash
-git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/cloudflare-workers-react/
+git clone git@github.com:brillout/vike
+cd vike/examples/cloudflare-workers-react/
 npm install
 ```
 

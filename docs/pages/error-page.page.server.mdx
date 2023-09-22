@@ -52,7 +52,7 @@ declare global {
 }
 ```
 
-> `namespace Vike` refers to Vike which is the upcoming new name of vite-plugin-ssr, see [#736](https://github.com/brillout/vite-plugin-ssr/issues/736).
+> `namespace Vike` refers to Vike which is the upcoming new name of vike, see [#736](https://github.com/brillout/vike/issues/736).
 
 > The <Link href="/usePageContext" /> UI component hook allows you to access <Link href="/pageContext" noBreadcrumb /> from any UI component.
 
@@ -63,11 +63,11 @@ The error page is rendered if:
  2. One of your hooks threw an error (`500 Internal Error`).
  3. You called <Link href="/render" text={<code>throw render(abortStatusCode)</code>} />.
 
-> The error page is also rendered when vite-plugin-ssr throws an unexpected error (it has a bug), but since vite-plugin-ssr has no known bug this is very rare.
+> The error page is also rendered when vike throws an unexpected error (it has a bug), but since vike has no known bug this is very rare.
 
 
 ## Pre-rendering
 
-If you use <Link text="pre-rendering" href="/pre-rendering" />, then vite-plugin-ssr uses `_error.page.js` to generate `/dist/client/404.html`.
+If you use <Link text="pre-rendering" href="/pre-rendering" />, then vike uses `_error.page.js` to generate `/dist/client/404.html`.
 
 > Most Static Hosts follow the convention of using the file `404.html` as 404 page.

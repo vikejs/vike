@@ -5,7 +5,7 @@ import { assertWarning } from './utils.js'
 export const prerender: typeof prerenderOriginal = (options) => {
   assertWarning(
     false,
-    "`import { prerender } from 'vite-plugin-ssr/cli'` is deprecated in favor of `import { prerender } from 'vite-plugin-ssr/prerender'``",
+    "`import { prerender } from 'vike/cli'` is deprecated in favor of `import { prerender } from 'vike/prerender'``",
     { onlyOnce: true, showStackTrace: true }
   )
   return prerenderOriginal(options)

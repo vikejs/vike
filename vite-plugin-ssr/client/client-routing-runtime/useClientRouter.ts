@@ -262,7 +262,7 @@ function useClientRouter() {
         pageContextAddendum = await getPageContextErrorPage(pageContext)
       } catch (err2: unknown) {
         // - When user hasn't defined a `_error.page.js` file
-        // - Some unpexected vite-plugin-ssr internal error
+        // - Some unpexected vike internal error
 
         if (shouldSwallowAndInterrupt(err2, pageContext)) return
 
@@ -401,8 +401,8 @@ function onBrowserHistoryNavigation(
 
     if (isHashNavigation) {
       // - `history.state` is uninitialized (`null`) when:
-      //   - The vite-plugin-ssr app runs `window.location.hash = '#section'`.
-      //   - The user clicks on an anchor link `<a href="#section">Section</a>`. (Because vite-plugin-ssr's `onLinkClick()` handler skips hash links.)
+      //   - The vike app runs `window.location.hash = '#section'`.
+      //   - The user clicks on an anchor link `<a href="#section">Section</a>`. (Because vike's `onLinkClick()` handler skips hash links.)
       // - `history.state` is `null` when uninitialized: https://developer.mozilla.org/en-US/docs/Web/API/History/state
       // - Alternatively, we completely take over hash navigation and reproduce the browser's native behavior upon hash navigation.
       //   - Problem: we cannot intercept `window.location.hash = '#section'`. (Or maybe we can with the `hashchange` event?)
@@ -502,7 +502,7 @@ function setScroll(scrollPosition: ScrollPosition) {
 }
 
 function autoSaveScrollPosition() {
-  // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/brillout/vite-plugin-ssr/issues/46)
+  // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/brillout/vike/issues/46)
   window.addEventListener('scroll', throttle(saveScrollPosition, Math.ceil(1000 / 3)), { passive: true })
   onPageHide(saveScrollPosition)
 }

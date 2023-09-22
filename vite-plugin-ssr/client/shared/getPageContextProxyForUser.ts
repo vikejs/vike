@@ -49,7 +49,7 @@ function assertPassToClient(pageContext: PageContextForPassToClientWarning, prop
   if (pageContext._hasPageContextFromServer && !pageContext._hasPageContextFromClient) {
     // We can safely assume that the property is missing in passToClient, because the server-side defines all passToClient properties even if they have an undefined value:
     // ```
-    // <script id="vite-plugin-ssr_pageContext" type="application/json">{"_pageId":"/pages/admin","user":"!undefined","pageProps":"!undefined","title":"!undefined","abortReason":"!undefined","_urlRewrite":null}</script>
+    // <script id="vike_pageContext" type="application/json">{"_pageId":"/pages/admin","user":"!undefined","pageProps":"!undefined","title":"!undefined","abortReason":"!undefined","_urlRewrite":null}</script>
     // ```
     // Note how properties have "!undefined" values => we can tell whether an undefined pageContext value exists in passToClient.
     assertUsage(false, errMsg)

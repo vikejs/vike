@@ -8,11 +8,11 @@
 export { render }
 export { Design2 as Page }
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { Title } from './index/Header'
-import iconPlugin from '../images/icons/vite-plugin-ssr.svg'
+import iconPlugin from '../images/icons/vike.svg'
 import '@brillout/docpress/renderer/_default.page.client.css'
 import '@brillout/docpress/renderer/_default.page.server.css'
 

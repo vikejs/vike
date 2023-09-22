@@ -14,7 +14,7 @@ import type {
   // When using Server Routing
   PageContextBuiltInClientWithServerRouting as PageContextBuiltInClient
   //*/
-} from 'vite-plugin-ssr/types'
+} from 'vike/types'
 
 async function onRenderClient(pageContext: PageContextBuiltInClient & PageContext) {
   const { Page, pageProps, urqlState } = pageContext

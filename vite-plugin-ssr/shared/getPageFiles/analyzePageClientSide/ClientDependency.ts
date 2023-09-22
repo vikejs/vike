@@ -3,7 +3,7 @@ export type { ClientDependency }
 type ClientDependency = {
   // Can be:
   //  - absolute path, or `
-  //  - `@vite-plugin-ssr/dist/...`.
+  //  - `@vike/dist/...`.
   id: string
   onlyAssets: boolean
   eagerlyImported: boolean

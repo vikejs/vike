@@ -1,7 +1,7 @@
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { PageShell } from './PageShell'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 // Assets deployed to a CDN:
 //  - logo.svg
 //  - manifest.json

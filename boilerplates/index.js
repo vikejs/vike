@@ -183,7 +183,7 @@ function initGitRepo(cwd) {
   try {
     execSync('git init', {
       cwd,
-      // See https://github.com/brillout/vite-plugin-ssr/issues/478
+      // See https://github.com/brillout/vike/issues/478
       stdio: 'ignore'
     })
 
@@ -192,10 +192,10 @@ function initGitRepo(cwd) {
       [
         'git',
         '-c user.name="Romuald Brillout"',
-        '-c user.email="vite-plugin-ssr@brillout.com"',
+        '-c user.email="vike@brillout.com"',
         'commit',
         '--no-gpg-sign',
-        '--message="boilerplate Vite w/ vite-plugin-ssr"'
+        '--message="boilerplate Vite w/ vike"'
       ].join(' '),
       { cwd, stdio: 'ignore' }
     )

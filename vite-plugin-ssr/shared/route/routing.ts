@@ -1,5 +1,5 @@
 // TODO/v1-release - move:
-//   import { resolveRoute } from 'vite-plugin-ssr/routing'
+//   import { resolveRoute } from 'vike/routing'
 // to:
-//   import { resolveRoute } from 'vite-plugin-ssr'
+//   import { resolveRoute } from 'vike'
 export { resolveRoute } from './resolveRoute.js'

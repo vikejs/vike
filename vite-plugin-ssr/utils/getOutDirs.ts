@@ -35,7 +35,7 @@ function getOutDirs_prerender(config: ResolvedConfig): OutDirs {
 /** Appends `client/` or `server/` to `config.build.outDir` */
 function resolveOutDir(config: UserConfig): string {
   const outDir = getOutDirFromUserConfig(config) || 'dist'
-  // outDir may already be resolved when using Telefunc + vite-plugin-ssr (because both Telefunc and vite-plugin-ssr use this logic)
+  // outDir may already be resolved when using Telefunc + vike (because both Telefunc and vike use this logic)
   if (!isOutDirRoot(outDir)) {
     assertOutDirResolved(outDir, config)
     return outDir

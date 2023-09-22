@@ -26,7 +26,7 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
     const { npmPackageName } = extension
     assertUsage(
       isNpmPackageName(npmPackageName),
-      `vite-plugin-ssr extension ${pc.cyan(npmPackageName)} doesn't seem to be a valid npm package name`
+      `vike extension ${pc.cyan(npmPackageName)} doesn't seem to be a valid npm package name`
     )
 
     const npmPackageRootDir = getDependencyRootDir(npmPackageName, config.root)

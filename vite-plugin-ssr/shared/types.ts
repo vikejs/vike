@@ -33,7 +33,7 @@ type PageContextServer = PageContextBuiltInServer & Vike.PageContext
 type PageContextClientWithClientRouting = PageContextBuiltInClientWithClientRouting & Vike.PageContext
 type PageContextClientWithServerRouting = PageContextBuiltInClientWithServerRouting & Vike.PageContext
 
-/** Built-in `pageContext` properties set by vite-plugin-ssr.
+/** Built-in `pageContext` properties set by vike.
  *
  * https://vike.dev/pageContext
  */
@@ -122,7 +122,7 @@ type PageContextBuiltInCommon<
   pageExports: Record<string, unknown>
 }
 
-/** Client-side built-in `pageContext` properties set by vite-plugin-ssr (Client Routing).
+/** Client-side built-in `pageContext` properties set by vike (Client Routing).
  *
  * https://vike.dev/pageContext
  */
@@ -141,7 +141,7 @@ type PageContextBuiltInClientWithClientRouting<Page = unknown> = Partial<PageCon
     isBackwardNavigation: boolean | null
   } & PageContextUrlComputedPropsClient
 
-/** Client-side built-in `pageContext` properties set by vite-plugin-ssr (Server Routing).
+/** Client-side built-in `pageContext` properties set by vike (Server Routing).
  *
  * https://vike.dev/pageContext
  */

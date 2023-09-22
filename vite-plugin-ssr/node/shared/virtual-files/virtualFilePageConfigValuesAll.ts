@@ -4,7 +4,7 @@ export { getVirtualFileIdPageConfigValuesAll }
 import { extractAssetsRemoveQuery } from '../extractAssetsQuery.js'
 import { assert, getVirtualFileId } from '../utils.js'
 
-const idBase = 'virtual:vite-plugin-ssr:pageConfigValuesAll:'
+const idBase = 'virtual:vike:pageConfigValuesAll:'
 const idBaseClient = `${idBase}client:` as const
 const idBaseServer = `${idBase}server:` as const
 

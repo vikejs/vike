@@ -2,7 +2,7 @@ export { render }
 export { passToClient }
 
 import ReactDOMServer from 'react-dom/server'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { PageLayout } from './PageLayout'
 
 // See https://vike.dev/data-fetching

@@ -3,7 +3,7 @@ export default onRenderHtml
 
 import React from 'react'
 import { renderToString } from 'react-dom/server'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { PageShell } from './PageShell'
 
 async function onRenderHtml(pageContext) {

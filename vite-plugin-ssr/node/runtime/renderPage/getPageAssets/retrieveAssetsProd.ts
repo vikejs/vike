@@ -68,7 +68,7 @@ function collectAssets(
   }
 }
 
-// Support `config.build.cssCodeSplit: false`, https://github.com/brillout/vite-plugin-ssr/issues/644
+// Support `config.build.cssCodeSplit: false`, https://github.com/brillout/vike/issues/644
 function collectSingleStyle(assetUrls: Set<string>, manifest: ViteManifest) {
   const style = manifest['style.css']
   if (style && Object.values(manifest).filter((asset) => asset.file.endsWith('.css')).length === 1) {

@@ -3,7 +3,7 @@ import { JustAMiddleware } from '../components'
 
 Environment: server.
 
-The `renderPage()` function enables you to integrate and embed vite-plugin-ssr into any server. It's [optional](#optional) (it's only needed if you use SSR).
+The `renderPage()` function enables you to integrate and embed vike into any server. It's [optional](#optional) (it's only needed if you use SSR).
 
 <JustAMiddleware />
 
@@ -22,7 +22,7 @@ The `renderPage()` function enables you to integrate and embed vite-plugin-ssr i
 
 // In this example we use Express.js but we could use any other server framework
 import express from 'express'
-import { renderPage } from 'vite-plugin-ssr/server'
+import { renderPage } from 'vike/server'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
@@ -54,7 +54,7 @@ async function startServer() {
   // Other middlewares (e.g. some RPC middleware such as Telefunc)
   // ...
 
-  // Vite-plugin-ssr middleware. It should always be our last middleware (because it's a
+  // Vike middleware. It should always be our last middleware (because it's a
   // catch-all middleware superseding any middleware placed after it).
   app.get('*', async (req, res, next) => {
     const pageContextInit = { urlOriginal: req.originalUrl }
@@ -71,20 +71,20 @@ async function startServer() {
 }
 ```
 
-The `pageContext.httpResponse.body` value is the HTML string returned by the <Link text={<><code>render()</code> hook</>} href="/render-hook" /> with additional `<script>` and `<style>` tags automatically injected by `vite-plugin-ssr`.
+The `pageContext.httpResponse.body` value is the HTML string returned by the <Link text={<><code>render()</code> hook</>} href="/render-hook" /> with additional `<script>` and `<style>` tags automatically injected by `vike`.
 
 For HTML streams use `httpResponse.pipe()` instead of `pageContext.httpResponse.body`, see <Link href="/stream" />.
 
 The `pageContext.httpResponse` value is `null` if:
    - An error occured while rendering the page and no <Link text="error page" href="/error-page" noBreadcrumb /> is defined.
    - An error occured while rendering the error page.
-   - Vite-plugin-ssr skips certain URLs, such as `/favicon.ico` (because browsers automatically make favicon requests).
+   - Vike skips certain URLs, such as `/favicon.ico` (because browsers automatically make favicon requests).
 
-The `renderPage()` function doesn't depend on Node.js and you can use `renderPage()` (and therefore embed vite-plugin-ssr) anywhere:
+The `renderPage()` function doesn't depend on Node.js and you can use `renderPage()` (and therefore embed vike) anywhere:
  - Any server environment (Express.js, HatTip, Deno, Fastify, Vite's development server, Node.js's HTTP server, ...)
  - Any deployment provider (AWS, Cloudflare Workers, Vercel, ...)
 
-> When modifying your server, you may need to manually restart your server for your changes to take effect. See [#562](https://github.com/brillout/vite-plugin-ssr/issues/562).
+> When modifying your server, you may need to manually restart your server for your changes to take effect. See [#562](https://github.com/brillout/vike/issues/562).
 
 See also:
  - <Link href="/NODE_ENV" />
@@ -94,7 +94,7 @@ See also:
 ## Optional
 
 If you <Link text="pre-render" href="/pre-rendering" /> all your pages then you don't need to use `renderPage()`, because:
- - Vite-plugin-ssr automatically embeds itself into Vite's development server (`$ vite`/`$ vite dev`) and Vite's preview server (`$ vite preview`).
- - During pre-rendering (`$ vite build`/`$ vite-plugin-ssr prerender`) vite-plugin-ssr automatically renders your pages.
+ - Vike automatically embeds itself into Vite's development server (`$ vite`/`$ vite dev`) and Vite's preview server (`$ vite preview`).
+ - During pre-rendering (`$ vite build`/`$ vike prerender`) vike automatically renders your pages.
 
-If you use server-side rendering (SSR) and you don't pre-render all your pages, then you need a production server and you need to use `renderPage()` in order to embed vite-plugin-ssr into your server.
+If you use server-side rendering (SSR) and you don't pre-render all your pages, then you need a production server and you need to use `renderPage()` in order to embed vike into your server.

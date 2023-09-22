@@ -1,14 +1,14 @@
 export default Page
 
 import React from 'react'
-import { navigate } from 'vite-plugin-ssr/client/router'
+import { navigate } from 'vike/client/router'
 import { Counter } from '../../components/Counter'
 
 function Page() {
   return (
     <>
       <h1>
-        Welcome to <code>vite-plugin-ssr</code>
+        Welcome to <code>vike</code>
       </h1>
       This page is:
       <ul>

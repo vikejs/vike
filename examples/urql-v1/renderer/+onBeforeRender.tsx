@@ -8,7 +8,7 @@ import React from 'react'
 import 'isomorphic-fetch'
 import { PageShell } from './PageShell'
 import type { PageContext } from './types'
-import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInServer } from 'vike/types'
 
 async function onBeforeRender(pageContext: PageContextBuiltInServer & PageContext) {
   const { Page, pageProps } = pageContext

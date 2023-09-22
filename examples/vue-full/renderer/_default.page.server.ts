@@ -1,9 +1,9 @@
 import { renderToNodeStream } from '@vue/server-renderer'
-import { escapeInject } from 'vite-plugin-ssr/server'
+import { escapeInject } from 'vike/server'
 import { createApp } from './app'
 import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'
-import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInServer } from 'vike/types'
 
 export { passToClient }
 export { render }

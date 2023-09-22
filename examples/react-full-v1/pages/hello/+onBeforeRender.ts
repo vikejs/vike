@@ -1,7 +1,7 @@
 export default onBeforeRender
 
-import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'
-import { render } from 'vite-plugin-ssr/abort'
+import type { PageContextBuiltInServer } from 'vike/types'
+import { render } from 'vike/abort'
 
 import { names } from './names'
 

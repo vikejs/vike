@@ -21,27 +21,27 @@ describe('resolveRouteStringRedirect', () => {
   it('handles invalid redirects', () => {
     expectErr(
       () => resolveRouteStringRedirect('a', 'b', '/'),
-      '[vite-plugin-ssr][Wrong Usage][vite.config.js > ssr({ redirects })] Invalid Route String a: Route Strings should start with a leading slash / (or be *)'
+      '[vike][Wrong Usage][vite.config.js > ssr({ redirects })] Invalid Route String a: Route Strings should start with a leading slash / (or be *)'
     )
     expectErr(
       () => resolveRouteStringRedirect('/a', 'b', '/'),
-      '[vite-plugin-ssr][Wrong Usage][vite.config.js > ssr({ redirects })] Invalid redirection target URL b: the target URL should start with /, http://, https://, or be *'
+      '[vike][Wrong Usage][vite.config.js > ssr({ redirects })] Invalid redirection target URL b: the target URL should start with /, http://, https://, or be *'
     )
     expectErr(
       () => resolveRouteStringRedirect('/a', '/@i', '/'),
-      '[vite-plugin-ssr][Wrong Usage][vite.config.js > ssr({ redirects })] The redirection source URL /a is missing the URL parameter @i used by the redirection target URL /@i'
+      '[vike][Wrong Usage][vite.config.js > ssr({ redirects })] The redirection source URL /a is missing the URL parameter @i used by the redirection target URL /@i'
     )
     expectErr(
       () => resolveRouteStringRedirect('/a', '/b/*', '/'),
-      '[vite-plugin-ssr][Wrong Usage][vite.config.js > ssr({ redirects })] The redirection source URL /a is missing the URL parameter * used by the redirection target URL /b/*'
+      '[vike][Wrong Usage][vite.config.js > ssr({ redirects })] The redirection source URL /a is missing the URL parameter * used by the redirection target URL /b/*'
     )
     expectErr(
       () => resolveRouteStringRedirect('/', '/*', '/'),
-      '[vite-plugin-ssr][Wrong Usage][vite.config.js > ssr({ redirects })] The redirection source URL / is missing the URL parameter * used by the redirection target URL /*'
+      '[vike][Wrong Usage][vite.config.js > ssr({ redirects })] The redirection source URL / is missing the URL parameter * used by the redirection target URL /*'
     )
     expectErr(
       () => resolveRouteStringRedirect('/', '*', '/'),
-      '[vite-plugin-ssr][Wrong Usage][vite.config.js > ssr({ redirects })] The redirection source URL / is missing the URL parameter * used by the redirection target URL *'
+      '[vike][Wrong Usage][vite.config.js > ssr({ redirects })] The redirection source URL / is missing the URL parameter * used by the redirection target URL *'
     )
   })
   it('globs', () => {

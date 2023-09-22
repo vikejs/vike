@@ -1,4 +1,4 @@
-// This file isn't processed by Vite, see https://github.com/brillout/vite-plugin-ssr/issues/562
+// This file isn't processed by Vite, see https://github.com/brillout/vike/issues/562
 // Consequently:
 //  - When changing this file, you needed to manually restart your server for your changes to take effect.
 //  - To use your environment variables defined in your .env files, you need to install dotenv, see https://vike.dev/env
@@ -6,7 +6,7 @@
 
 const express = require('express')
 const compression = require('compression')
-const { renderPage } = require('vite-plugin-ssr/server')
+const { renderPage } = require('vike/server')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
@@ -42,7 +42,7 @@ async function startServer() {
   // Other middlewares (e.g. some RPC middleware such as Telefunc)
   // ...
 
-  // Vite-plugin-ssr middleware. It should always be our last middleware (because it's a
+  // Vike middleware. It should always be our last middleware (because it's a
   // catch-all middleware superseding any middleware placed after it).
   app.get('*', async (req, res, next) => {
     const pageContextInit = {

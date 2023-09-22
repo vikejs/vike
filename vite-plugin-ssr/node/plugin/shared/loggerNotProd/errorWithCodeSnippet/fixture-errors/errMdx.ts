@@ -11,11 +11,11 @@ export const errMdx = {
   source: 'mdast-util-mdx-jsx',
   ruleId: 'unexpected-closing-slash',
   plugin: '@mdx-js/rollup',
-  id: '/home/rom/code/vite-plugin-ssr/docs/pages/dynamic-import.page.server.mdx',
+  id: '/home/rom/code/vike/docs/pages/dynamic-import.page.server.mdx',
   pluginCode:
     'import { Link, Note } from \'@brillout/docpress\'\n\nPage moved to <Link href="/client-only-components" />.\n\n   </Note>\n\n\nexport const headings = [];\n',
   loc: {
-    file: '/home/rom/code/vite-plugin-ssr/docs/pages/dynamic-import.page.server.mdx',
+    file: '/home/rom/code/vike/docs/pages/dynamic-import.page.server.mdx',
     start: { line: 5, column: 5, offset: 109, _index: 6, _bufferIndex: 4 },
     end: { line: 5, column: 6, offset: 110, _index: 6, _bufferIndex: 5 }
   },

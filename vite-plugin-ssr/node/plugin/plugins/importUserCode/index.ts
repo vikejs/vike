@@ -26,7 +26,7 @@ function importUserCode(): Plugin {
   let config: ResolvedConfig
   let configVps: ConfigVpsResolved
   return {
-    name: 'vite-plugin-ssr:importUserCode',
+    name: 'vike:importUserCode',
     config() {
       return {
         experimental: {

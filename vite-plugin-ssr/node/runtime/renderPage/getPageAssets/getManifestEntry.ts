@@ -14,8 +14,8 @@ function getManifestEntry(
   const debugInfo = getDebugInfo(id, clientManifest)
 
   // VPS client entry
-  if (id.startsWith('@@vite-plugin-ssr/')) {
-    const manifestKeyEnd = slice(id, '@@vite-plugin-ssr'.length, 0)
+  if (id.startsWith('@@vike/')) {
+    const manifestKeyEnd = slice(id, '@@vike'.length, 0)
     const { manifestKey, manifestEntry } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
     assert(manifestEntry && manifestKey, debugInfo)
     return { manifestEntry, manifestKey }
@@ -32,9 +32,9 @@ function getManifestEntry(
     }
     // Workaround for what seems to be a Vite bug when process.cwd() !== config.root
     //  - Manifest key is:
-    //       ../../virtual:vite-plugin-ssr:pageConfigValuesAll:client:/pages/index
+    //       ../../virtual:vike:pageConfigValuesAll:client:/pages/index
     //    But it should be this instead:
-    //      virtual:vite-plugin-ssr:pageConfigValuesAll:client:/pages/index
+    //      virtual:vike:pageConfigValuesAll:client:/pages/index
     //  - This workaround was implemented to support Vitest runnung /tests/*
     //    - I don't know whether end users actually need this workaround? (I'm not sure what the bug actually is.)
     const manifestKeyEnd = id

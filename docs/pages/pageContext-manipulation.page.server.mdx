@@ -44,7 +44,7 @@ In general, we should try to avoid mutating `pageContext`:
 
 > **Why?** Mutations make reasoning harder; it is easier to think in terms of extending an immutable object.
 
-> While nothing stops us from mutating `pageContext` today, future `vite-plugin-ssr` versions will print a warning discouraging us from mutations (although we will be able to escape hatch and suppress the warning as some rare use cases warrant mutations).
+> While nothing stops us from mutating `pageContext` today, future `vike` versions will print a warning discouraging us from mutations (although we will be able to escape hatch and suppress the warning as some rare use cases warrant mutations).
 
 ## Don't return entire `pageContext`
 

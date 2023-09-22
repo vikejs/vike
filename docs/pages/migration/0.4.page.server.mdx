@@ -9,7 +9,7 @@ Breaking changes:
  1. Use Vite `>=2.9.10` or Vite `>=3.0.0-beta.7`.
  1. [Deprecated: `getPage()` (Server Routing)](#getpage).
  1. [Deprecated: `useClientRouter()` (Client Routing)](#useclientrouter).
- 1. [Deprecated: pre-render CLI `$ vite-plugin-ssr prerender`](#pre-render-cli).
+ 1. [Deprecated: pre-render CLI `$ vike prerender`](#pre-render-cli).
  1. [Base URL options `base` and `baseAsset` are now defined as `vite.config.js#base`](#base-url).
  1. [`export default Page` deprecated: use `export { Page }` instead](#export-default-page).
  1. [Deprecated: Multiple `onBeforeRender()` hooks](#multiple-onbeforerender).
@@ -22,7 +22,7 @@ If you use <Link href="/server-routing" noBreadcrumb />:
 ```diff
   // /renderer/_default.page.client.js
 
-- import { getPage } from 'vite-plugin-ssr/client'
+- import { getPage } from 'vike/client'
 + export { render }
 
 - const pageContext = await getPage()
@@ -39,7 +39,7 @@ If you use <Link href="/client-routing" noBreadcrumb />:
 ```diff
   // renderer/_default.page.client.js
 
-- import { useClientRouter } from 'vite-plugin-ssr/client'
+- import { useClientRouter } from 'vike/client'
 + export { render }
 + export const clientRouting = true
 
@@ -67,15 +67,15 @@ export const prefetchStaticAssets = { when: 'VIEWPORT' } // (instead of `prefetc
 
 ## Pre-render CLI
 
-The pre-render CLI `$ vite-plugin-ssr prerender` is deprecated in favor of setting the `prerender` option to `true` in `vite.config.js`.
+The pre-render CLI `$ vike prerender` is deprecated in favor of setting the `prerender` option to `true` in `vite.config.js`.
 
 ```diff
-- $ vite build && vite-plugin-ssr prerender
+- $ vite build && vike prerender
 + $ vite build
 ```
 ```diff
   // vite.config.js
-  import { ssr } from 'vite-plugin-ssr/plugin'
+  import { ssr } from 'vike/plugin'
 
   export config {
     plugins: [
@@ -90,11 +90,11 @@ The pre-render CLI `$ vite-plugin-ssr prerender` is deprecated in favor of setti
 All pre-render options are now defined in `vite.config.js`:
 
 ```diff
-- $ vite-plugin-ssr prerender --partial -- noExtraDir --root src/ --outDir build/ --parallel 1
+- $ vike prerender --partial -- noExtraDir --root src/ --outDir build/ --parallel 1
 ```
 ```diff
   // vite.config.js
-  import { ssr } from 'vite-plugin-ssr/plugin'
+  import { ssr } from 'vike/plugin'
 
   export config {
 +   root: 'src/',
@@ -122,10 +122,10 @@ All pre-render options are now defined in `vite.config.js`:
 ```diff
   // server.js
 
-- import { createPageRenderer } from 'vite-plugin-ssr'
+- import { createPageRenderer } from 'vike'
 - const renderPage = createPageRenderer({ base })
 
-+ import { renderPage } from 'vite-plugin-ssr/server'
++ import { renderPage } from 'vike/server'
 + // We don't need to set `base` here anymore.
 
   const pageContext = await renderPage({ url })

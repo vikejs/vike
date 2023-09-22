@@ -9,7 +9,7 @@ import type {
   // When using Server Routing
   PageContextBuiltInClientWithServerRouting as PageContextBuiltInClient
   //*/
-} from 'vite-plugin-ssr/types'
+} from 'vike/types'
 
 export const clientRouting = true
 export const prefetchStaticAssets = 'viewport'

@@ -93,7 +93,7 @@ type ConfigVpsUserProvided = {
 
   /**
    * @beta
-   * Don't use without having talked to a vite-plugin-ssr maintainer.
+   * Don't use without having talked to a vike maintainer.
    */
   extensions?: ExtensionUserProvided[]
   /**

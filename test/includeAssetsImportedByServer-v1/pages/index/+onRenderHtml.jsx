@@ -1,6 +1,6 @@
 export default onRenderHtml
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import logo1Url from './logo-1.svg?url'
 import logo2Url from './logo-2.svg?raw'
 

@@ -1,5 +1,5 @@
 import express from 'express'
-import { renderPage } from 'vite-plugin-ssr/server'
+import { renderPage } from 'vike/server'
 import apollo from '@apollo/client'
 const { ApolloClient, createHttpLink, InMemoryCache } = apollo
 import fetch from 'node-fetch'

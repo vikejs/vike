@@ -3,7 +3,7 @@ export default onRenderClient
 
 import { hydrate, render } from 'solid-js/web'
 import { PageLayout } from './PageLayout'
-import type { PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient } from 'vike/types'
 import type { PageContext } from './types'
 import { createStore, reconcile } from 'solid-js/store'
 

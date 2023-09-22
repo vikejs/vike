@@ -2,10 +2,10 @@
 export default onRenderHtml
 
 import { renderToNodeStream } from '@vue/server-renderer'
-import { escapeInject } from 'vite-plugin-ssr/server'
+import { escapeInject } from 'vike/server'
 import { createApp } from './app'
 import { getPageTitle } from './getPageTitle'
-import type { PageContextServer } from 'vite-plugin-ssr/types'
+import type { PageContextServer } from 'vike/types'
 
 async function onRenderHtml(pageContext: PageContextServer) {
   const app = createApp(pageContext)

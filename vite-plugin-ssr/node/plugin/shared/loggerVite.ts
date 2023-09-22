@@ -45,7 +45,7 @@ function intercept(logType: LogType, config: ResolvedConfig) {
       return
     }
 
-    // Only allow Vite to clear its first log. All other clearing is controlled by vite-plugin-ssr.
+    // Only allow Vite to clear its first log. All other clearing is controlled by vike.
     if (options.clear) clearLogs({ clearIfFirstLog: true })
     if (options.error) store?.markErrorAsLogged(options.error)
     // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true

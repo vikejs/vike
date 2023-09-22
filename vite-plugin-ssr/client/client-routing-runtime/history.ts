@@ -11,9 +11,9 @@ type ScrollPosition = { x: number; y: number }
 
 // Fill missing state information.
 //  - The very first render => `history.state` is uninitialized (`null`).
-//  - The vite-plugin-ssr app runs `location.hash = '#section'` => `history.state` is uninitialized (`null`).
+//  - The vike app runs `location.hash = '#section'` => `history.state` is uninitialized (`null`).
 //  - The user clicks on an anchor link `<a href="#section">Section</a>` => `history.state` is uninitialized (`null`).
-//  - `history.state` set by an old vite-plugin-ssr version => state information may be incomplete. (E.g. `state.timestamp` was introduced for `pageContext.isBackwardNavigation` in `0.4.19`.)
+//  - `history.state` set by an old vike version => state information may be incomplete. (E.g. `state.timestamp` was introduced for `pageContext.isBackwardNavigation` in `0.4.19`.)
 function initHistoryState() {
   let state: HistoryState = window.history.state
   if (!state) {

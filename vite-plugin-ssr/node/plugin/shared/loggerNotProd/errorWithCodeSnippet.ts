@@ -108,7 +108,7 @@ function getPrettyErrMessage(err: ErrorWithCodeSnippet): string | null {
   const trail = /(?:\:|)(?:\s|$)/
   // Remove "Transform failed with 1 error:" (redundant since we already print an intro message)
   errMsg = errMsg.split(reg([/Transform failed with \d* error(?:s|)/, trail], 'gi')).join('')
-  // Remove "/home/rom/code/vite-plugin-ssr/examples/react-full-v1/components/Counter.tsx:1:8:" (redundant since we already print the filename)
+  // Remove "/home/rom/code/vike/examples/react-full-v1/components/Counter.tsx:1:8:" (redundant since we already print the filename)
   const pos = /(?:\:\d+|)/
   errMsg = errMsg.split(reg([id, pos, pos, trail], 'gi')).join('')
   errMsg = errMsg.split(reg([normalizeId(id), pos, pos, trail], 'gi')).join('')

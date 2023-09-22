@@ -1,20 +1,20 @@
 import { Link } from '@brillout/docpress'
 
-With `vite-plugin-ssr` we have the choice between:
+With `vike` we have the choice between:
  - Server Routing and Client Routing.
  - Filesystem Routing, Route Strings and Route Functions.
 
 
 ## Server Routing or Client Routing?
 
-`vite-plugin-ssr` has first-class support for both Server-side Routing (full HTML reload upon page navigation) and Client-side Routing (DOM mutations upon page navigation).
+`vike` has first-class support for both Server-side Routing (full HTML reload upon page navigation) and Client-side Routing (DOM mutations upon page navigation).
 
 The guide <Link href="/server-routing-vs-client-routing" noBreadcrumb /> helps you choose which one to use.
 
 
 ## Route Strings & Route Functions
 
-By default, `vite-plugin-ssr` does Filesystem Routing:
+By default, `vike` does Filesystem Routing:
 
 ```
 FILESYSTEM                        URL
@@ -44,7 +44,7 @@ Route Functions give us full programmatic flexibility to implement advanced rout
 
 // This file defines the route of `/pages/product/edit.page.js`
 
-import { resolveRoute } from 'vite-plugin-ssr/routing'
+import { resolveRoute } from 'vike/routing'
 
 export default async (pageContext) => {
   // Ensure that `/product/@id/edit` can be accessed only by admins
@@ -52,7 +52,7 @@ export default async (pageContext) => {
     return false
   }
 
-  // We can use vite-plugin-ssr's Route String resolver
+  // We can use vike's Route String resolver
   return resolveRoute('/product/@id/edit', pageContext.urlPathname)
 }
 ```
@@ -65,4 +65,4 @@ See also:
 
 ## React Router / Vue Router
 
-We recommend using `vite-plugin-ssr`'s built-in router instead of React Router and Vue Router. See <Link href="/vue-router-and-react-router" />.
+We recommend using `vike`'s built-in router instead of React Router and Vue Router. See <Link href="/vue-router-and-react-router" />.

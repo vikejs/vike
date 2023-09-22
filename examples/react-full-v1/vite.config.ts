@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react-swc'
 import mdx from '@mdx-js/rollup'
-import ssr from 'vite-plugin-ssr/plugin'
+import ssr from 'vike/plugin'
 import { UserConfig } from 'vite'
 
 const root = __dirname

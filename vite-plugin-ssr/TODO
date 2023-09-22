@@ -14,7 +14,7 @@
 - By default, only call guard() hooks on the server-side?
 
 - release 0.5.0
-  - `import * from 'vite-plugin-ssr'`
+  - `import * from 'vike'`
   - pageContext.url
   - rename hooks for 0.4 designA?
 

@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: "🙏 Help & Questions"
-    url: https://github.com/brillout/vite-plugin-ssr/discussions
+    url: https://github.com/brillout/vike/discussions
     about: Get help and ask questions.
   - name: "💬 Chit-chat"
     url: https://discord.com/invite/hfHhnJyVg8
-    about: Casual conversations about vite-plugin-ssr and broader topics.
+    about: Casual conversations about vike and broader topics.

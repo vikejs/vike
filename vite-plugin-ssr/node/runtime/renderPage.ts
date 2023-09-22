@@ -71,7 +71,7 @@ const renderPage_addWrapper = (wrapper: typeof renderPage_wrapper) => {
 
 type PageContextAfterRender = { httpResponse: HttpResponse | null } & Partial<PageContextBuiltInServerInternal>
 
-// `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
+// `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vike` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
   PageContextUserAdded extends {},
   PageContextInit extends {
@@ -166,7 +166,7 @@ async function renderPageAlreadyPrepared(
 ): Promise<PageContextAfterRender> {
   assertNoInfiniteAbortLoop(
     pageContextsFromRewrite.length,
-    // There doesn't seem to be a way to count the number of HTTP redirects (vite-plugin-ssr don't have access to the HTTP request headers/cookies)
+    // There doesn't seem to be a way to count the number of HTTP redirects (vike don't have access to the HTTP request headers/cookies)
     // https://stackoverflow.com/questions/9683007/detect-infinite-http-redirect-loop-on-server-side
     0
   )
@@ -458,7 +458,7 @@ function skipRequest(urlOriginal: string): boolean {
   const isViteClientRequest = urlOriginal.endsWith('/@vite/client') || urlOriginal.startsWith('/@fs/')
   assertWarning(
     !isViteClientRequest,
-    `The vite-plugin-ssr middleware renderPage() was called with the URL ${urlOriginal} which is unexpected because the HTTP request should have already been handled by Vite's development middleware. Make sure to 1. install Vite's development middleware and 2. add Vite's middleware *before* vite-plugin-ssr's middleware, see https://vike.dev/renderPage`,
+    `The vike middleware renderPage() was called with the URL ${urlOriginal} which is unexpected because the HTTP request should have already been handled by Vite's development middleware. Make sure to 1. install Vite's development middleware and 2. add Vite's middleware *before* vike's middleware, see https://vike.dev/renderPage`,
     { onlyOnce: true }
   )
   return (

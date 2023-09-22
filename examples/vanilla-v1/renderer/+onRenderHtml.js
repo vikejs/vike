@@ -1,7 +1,7 @@
 // https://vike.dev/onRenderHtml
 export default onRenderHtml
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { PageLayout } from './PageLayout'
 
 async function onRenderHtml(pageContext) {

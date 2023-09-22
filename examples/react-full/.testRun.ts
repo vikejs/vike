@@ -10,12 +10,12 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
-    expect(html).toContain('<h1>Welcome to <code>vite-plugin-ssr</code></h1>')
+    expect(html).toContain('<h1>Welcome to <code>vike</code></h1>')
   })
 
   test('page is rendered to the DOM and interactive', async () => {
     await page.goto(getServerUrl() + '/')
-    expect(await page.textContent('h1')).toBe('Welcome to vite-plugin-ssr')
+    expect(await page.textContent('h1')).toBe('Welcome to vike')
 
     // Interactive button
     expect(await page.textContent('button')).toBe('Counter 0')

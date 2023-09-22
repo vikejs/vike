@@ -16,8 +16,8 @@ function ScaffoldCallToActionTour() {
         </div>
         <div style={{ fontSize: '0.83rem', marginTop: 9, display: 'flex' }}>
           <div style={{ width: 0, flexGrow: 1, color: '#888' }}>
-            Run <CodeInline>$ npm init vite-plugin-ssr</CodeInline> to scaffold a new Vite/
-            <CodeInline>vite-plugin-ssr</CodeInline> app, or add <CodeInline>vite-plugin-ssr</CodeInline> to your
+            Run <CodeInline>$ npm init vike</CodeInline> to scaffold a new Vite/
+            <CodeInline>vike</CodeInline> app, or add <CodeInline>vike</CodeInline> to your
             existing app by following the instructions <a href="/add">here</a>.
           </div>
         </div>
@@ -44,7 +44,7 @@ function ScaffoldCallToAction() {
             cursor: 'pointer'
           }}
         >
-          <span style={{ color: '#bbb' }}>$</span> npm init vite-plugin-ssr
+          <span style={{ color: '#bbb' }}>$</span> npm init vike
         </code>
       </div>
     </>

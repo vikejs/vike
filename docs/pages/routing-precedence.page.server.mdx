@@ -1,15 +1,15 @@
-If the route of two pages both match the same URL then we have a routing conflict: `vite-plugin-ssr` has to decide which of the two pages should be rendered for that URL.
+If the route of two pages both match the same URL then we have a routing conflict: `vike` has to decide which of the two pages should be rendered for that URL.
 
-Upon Route String conflicts, `vite-plugin-ssr` chooses the first route from most specific to least specific. For example:
+Upon Route String conflicts, `vike` chooses the first route from most specific to least specific. For example:
 
 1. `/about/team` (most specific: it matches only a single URL)
 1. `/about/@path` (less specific: it also matches `/about/company`, `/about/vision`, ...)
 1. `/about/*` (less specific: it also matches `/about/some/nested/path`)
 1. `/*` (least specific: it matches all URLs)
 
-> More examples at [`resolvePrecedence/route-strings.spec.ts`](https://github.com/brillout/vite-plugin-ssr/blob/main/vite-plugin-ssr/shared/route/resolvePrecedence/route-strings.spec.ts).
+> More examples at [`resolvePrecedence/route-strings.spec.ts`](https://github.com/brillout/vike/blob/main/vike/shared/route/resolvePrecedence/route-strings.spec.ts).
 
-Upon conflicts between Filesystem Routing, Route Strings and Route Functions, `vite-plugin-ssr` chooses the first route in following order:
+Upon conflicts between Filesystem Routing, Route Strings and Route Functions, `vike` chooses the first route in following order:
 
 1. Route Function, returned high positive `precedence` number (e.g. `99`)
 1. Route Function, returned low positive `precedence` number (e.g. `1`)
@@ -100,4 +100,4 @@ URL                   pageContext.user       MATCHES                       WINNE
 1: Route Function, returned high positive `precedence` number  
 4: Route String, static (without `@param` segment, e.g. `/about/company`)  
 
-> More examples at [`resolvePrecedence/overall.spec.ts`](https://github.com/brillout/vite-plugin-ssr/blob/main/vite-plugin-ssr/shared/route/resolvePrecedence/overall.spec.ts).
+> More examples at [`resolvePrecedence/overall.spec.ts`](https://github.com/brillout/vike/blob/main/vike/shared/route/resolvePrecedence/overall.spec.ts).

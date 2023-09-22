@@ -1,7 +1,7 @@
 export default route
 
-import { resolveRoute } from 'vite-plugin-ssr/routing'
-import { render } from 'vite-plugin-ssr/abort'
+import { resolveRoute } from 'vike/routing'
+import { render } from 'vike/abort'
 import { names } from './names'
 
 // We use a Route Function to implement advanced routing logic

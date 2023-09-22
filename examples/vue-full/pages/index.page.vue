@@ -1,5 +1,5 @@
 <template>
-  <h1>Welcome to <code>vite-plugin-ssr</code></h1>
+  <h1>Welcome to <code>vike</code></h1>
   This page is:
   <ul>
     <li>Rendered to HTML.</li>
@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import Counter from '../components/Counter.vue'
-import { navigate } from 'vite-plugin-ssr/client/router'
+import { navigate } from 'vike/client/router'
 
 const randomNavigation = () => {
   const randomIndex = Math.floor(Math.random() * 3)

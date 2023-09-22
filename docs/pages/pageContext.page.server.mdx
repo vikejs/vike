@@ -162,12 +162,12 @@ import type {
   PageContextClient,
   // For code loaded in server only
   PageContextServer
-} from 'vite-plugin-ssr/types'
+} from 'vike/types'
 ```
 
 To extend and/or refine the `PageContext` type, use the global interface `Vike.PageContext`:
 
-> Vike is the upcoming new name of vite-plugin-ssr, see [#736](https://github.com/brillout/vite-plugin-ssr/issues/736).
+> Vike is the upcoming new name of vike, see [#736](https://github.com/brillout/vike/issues/736).
 
 ```ts
 declare global {
@@ -207,7 +207,7 @@ import type {
   PageContextClientWithServerRouting as PageContextClient,
   // For code loaded in server only
   PageContextServer
-} from 'vite-plugin-ssr/types'
+} from 'vike/types'
 ```
 
 ## Lifecycle
@@ -220,6 +220,6 @@ On the client-side, upon <Link text="client-side page navigation" href="/client-
 
 At build-time, upon <Link text="pre-rendering" href="/pre-rendering" />, a `pageContext` object is created for each URL and saved at `dist/client/${url}/index.pageContext.json`.
 
-Vite-plugin-ssr adds information to `pageContext` only while rendering the page, and we recommend to treat `pageContext` as immutable after the rendering of the page has finished. Consequently:
+Vike adds information to `pageContext` only while rendering the page, and we recommend to treat `pageContext` as immutable after the rendering of the page has finished. Consequently:
  - We recommend against using `pageContext` to store UI state. (Use a proper <Link text="state management tool" href="/store" /> instead.)
  - If you use <Link text="pre-rendering" href="/pre-rendering" />, then the `pageContext` object of each URL is set in stone already at build-time.

@@ -1,6 +1,6 @@
 export default route
 
-import { resolveRoute } from 'vite-plugin-ssr/routing'
+import { resolveRoute } from 'vike/routing'
 
 // Route Functions enables advanced routing logic
 function route(pageContext: { urlPathname: string }) {

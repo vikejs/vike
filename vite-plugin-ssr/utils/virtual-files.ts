@@ -4,7 +4,7 @@ export { resolveVirtualFileId }
 
 import { assert } from './assert.js'
 
-const idBase = 'virtual:vite-plugin-ssr:'
+const idBase = 'virtual:vike:'
 // https://vitejs.dev/guide/api-plugin.html#virtual-modules-convention
 const tag = '\0'
 

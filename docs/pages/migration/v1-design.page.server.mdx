@@ -13,7 +13,7 @@ The migration is straightforward and usually quick to implement. We encourage to
 
 ## Main migration
 
-> Make sure to update `vite-plugin-ssr` to its latest version.
+> Make sure to update `vike` to its latest version.
 
 > You need to either fully use the V1 design, or fully use the old design. You cannot mix both.
 
@@ -61,7 +61,7 @@ If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 
 > See <Link href="/config" /> for more information about what `+` and `.h.js` means.
 
-> The suffixes such as `.page.server.js` and `.page.client.js` don't exist anymore. After the feature request [#744](https://github.com/brillout/vite-plugin-ssr/issues/744) is implemented, you'll be able to use `.server.js` and `.client.js` suffixes again but note that they'll serve another purpose.
+> The suffixes such as `.page.server.js` and `.page.client.js` don't exist anymore. After the feature request [#744](https://github.com/brillout/vike/issues/744) is implemented, you'll be able to use `.server.js` and `.client.js` suffixes again but note that they'll serve another purpose.
 
 Move `/renderer/` configurations to `/renderer/+config.h.ts`:
 
@@ -75,7 +75,7 @@ Move `/renderer/` configurations to `/renderer/+config.h.ts`:
 ```ts
 // /renderer/+config.h.ts
 
-import type { Config } from 'vite-plugin-ssr/types'
+import type { Config } from 'vike/types'
 
 export default {
   clientRouting: true,
@@ -141,7 +141,7 @@ Apply following additional steps if you've defined:
 
 ## Examples
 
-All official examples have been migrated, see [`examples/*-v1`](https://github.com/brillout/vite-plugin-ssr/tree/main/examples).
+All official examples have been migrated, see [`examples/*-v1`](https://github.com/brillout/vike/tree/main/examples).
 
 Notable migrations:
  - Basic apps:
@@ -216,7 +216,7 @@ You define custom configs by using `meta`:
 ```ts
 // /renderer/+config.h.ts
 
-import type { Config } from 'vite-plugin-ssr/types'
+import type { Config } from 'vike/types'
 
 export default {
   meta: {
@@ -254,7 +254,7 @@ export default {
 
 See:
  - <Link href="#examples" />
- - [Advanced example of implementing `config.renderMode`](https://github.com/brillout/vite-plugin-ssr/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/render-modes-v1/renderer/+config.h.ts#L10-L24)
+ - [Advanced example of implementing `config.renderMode`](https://github.com/brillout/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/render-modes-v1/renderer/+config.h.ts#L10-L24)
 
 
 ## `onBeforeRender` in `.page.js`
@@ -264,12 +264,12 @@ If you've defined `onBeforeRender()` hooks in `.page.js` (instead of `.page.serv
 ```ts
 // /renderer/+config.h.ts
 
-import type { Config } from 'vite-plugin-ssr/types'
+import type { Config } from 'vike/types'
 
 export default {
   meta: {
     onBeforeRender: {
-      // We tell vite-plugin-ssr to load and execute onBeforeRender()
+      // We tell vike to load and execute onBeforeRender()
       // not only on the server-side but also on the client-side.
       env: 'server-and-client'
     }
@@ -277,7 +277,7 @@ export default {
 } satisfies Config
 ```
 
-For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> in order to [create a new config `onBeforeRenderIsomorph: boolean`](https://github.com/brillout/vite-plugin-ssr/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/renderer/+config.h.ts#L14-L33) for a [page-per-page toggle](https://github.com/brillout/vite-plugin-ssr/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts).
+For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> in order to [create a new config `onBeforeRenderIsomorph: boolean`](https://github.com/brillout/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/renderer/+config.h.ts#L14-L33) for a [page-per-page toggle](https://github.com/brillout/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts).
 
 
 ## Client init code
@@ -300,7 +300,7 @@ console.log("I'm run when the client-side JavaScript is loaded.")
 
 ## See also
 
- - [#578 [RFC] V1 Design](https://github.com/brillout/vite-plugin-ssr/issues/578)
+ - [#578 [RFC] V1 Design](https://github.com/brillout/vike/issues/578)
  - <Link href="/why-the-v1-design" />
  - <Link href="/config" />
  - <Link href="/header-file" />

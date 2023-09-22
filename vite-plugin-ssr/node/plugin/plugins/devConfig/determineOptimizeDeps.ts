@@ -19,7 +19,7 @@ async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVp
   const { entries, include } = await getPageDeps(config, pageConfigs, isDev)
   {
     // This actually doesn't work: Vite's dep optimizer doesn't seem to be able to crawl virtual files.
-    //  - Should we make it work? E.g. by creating a temporary file at node_modules/.vite-plugin-ssr/virtualFiles.js
+    //  - Should we make it work? E.g. by creating a temporary file at node_modules/.vike/virtualFiles.js
     //  - Or should we remove it? And make sure getPageDeps() also works for aliased import paths
     //    - If we do, then we need to adjust include/entries (maybe by making include === entries -> will Vite complain?)
     const entriesVirtualFiles = getVirtualFiles(config, pageConfigs)
@@ -28,7 +28,7 @@ async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVp
 
   include.push(...getExtensionsDeps(configVps))
 
-  /* Other Vite plugins may populate optimizeDeps, e.g. Cypress: https://github.com/brillout/vite-plugin-ssr/issues/386
+  /* Other Vite plugins may populate optimizeDeps, e.g. Cypress: https://github.com/brillout/vike/issues/386
   assert(config.optimizeDeps.entries === undefined)
   */
   config.optimizeDeps.include = [...include, ...normalizeInclude(config.optimizeDeps.include)]

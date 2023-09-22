@@ -16,11 +16,11 @@ Everything is handled automatically and there is nothing for you to do.
 >
 > What many websites do is to show a little popup to users saying "a new version is available, click here to reload". But this solution is far from ideal.
 >
-> What vite-plugin-ssr does instead is that it falls back to Server Routing: the next time the user navigates to a new page, the page does a full reload so that the user loads the new frontend.
+> What vike does instead is that it falls back to Server Routing: the next time the user navigates to a new page, the page does a full reload so that the user loads the new frontend.
 
-> **How does vite-plugin-ssr's solution work?**
+> **How does vike's solution work?**
 >
-> Vite-plugin-ssr temporarily falls back to <Link text="Server Routing" href="/server-routing" /> whenever retrieving a static asset returns a `404`: the URL of all static assets contain a unique hash and, consequently, when the user navigates to a new page then the old frontend requests static asset URLs that don't exist anymore.
+> Vike temporarily falls back to <Link text="Server Routing" href="/server-routing" /> whenever retrieving a static asset returns a `404`: the URL of all static assets contain a unique hash and, consequently, when the user navigates to a new page then the old frontend requests static asset URLs that don't exist anymore.
 >
 > With Server Routing, when the user navigates to a new page, the entire client-side is reloaded (i.e. the new frontend is loaded). After the reload, Client Routing is resumed.
 >

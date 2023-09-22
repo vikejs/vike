@@ -59,7 +59,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
     if (pageContextAddendumHook) {
       objectAssign(pageContextAddendum, pageContextAddendumHook)
       if (hasProp(pageContextAddendum, '_pageId', 'string') || hasProp(pageContextAddendum, '_pageId', 'null')) {
-        // We bypass `vite-plugin-ssr`'s routing
+        // We bypass `vike`'s routing
         if (!hasProp(pageContextAddendum, 'routeParams')) {
           objectAssign(pageContextAddendum, { routeParams: {} })
         } else {
@@ -79,7 +79,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
     _routingProvidedByOnBeforeRouteHook: false
   })
 
-  // `vite-plugin-ssr`'s routing
+  // `vike`'s routing
   const allPageIds = pageContext._allPageIds
   assert(allPageIds.length >= 0)
   assertUsage(

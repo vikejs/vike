@@ -1,4 +1,4 @@
-// Prevent XSS attacks, see https://github.com/brillout/vite-plugin-ssr/pull/181#issuecomment-952846026
+// Prevent XSS attacks, see https://github.com/brillout/vike/pull/181#issuecomment-952846026
 
 export { sanitizeJson }
 

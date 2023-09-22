@@ -3,7 +3,7 @@ export default onRenderClient
 
 import { createApp } from './app'
 import { getPageTitle } from './getPageTitle'
-import type { PageContextClient } from 'vite-plugin-ssr/types'
+import type { PageContextClient } from 'vike/types'
 
 let app: ReturnType<typeof createApp>
 async function onRenderClient(pageContext: PageContextClient) {

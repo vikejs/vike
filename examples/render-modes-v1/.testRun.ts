@@ -302,7 +302,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
         partRegex`<script type="module" src="/assets/entries/entry-client-routing.${hash}.js" defer>`
       )
     } else {
-      expect(html).toMatch(partRegex`import("/@fs/${path}/vite-plugin-ssr/${path}/client-routing-runtime/${path}");`)
+      expect(html).toMatch(partRegex`import("/@fs/${path}/vike/${path}/client-routing-runtime/${path}");`)
     }
   }
 }

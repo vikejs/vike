@@ -42,7 +42,7 @@ We recommend following the [Node.js convention](https://nodejs.org/api/packages.
 
 > While your path aliases don't need to follow the `#` convention, they do need to start with a special character (`!root`, `/root`, `$root`, ...).
 >
-> Path aliases must start with a special character so that vite-plugin-ssr can distinguish between path alias imports and npm package imports. If it's an issue for you then elaborate your use case in a new [GitHub Discussion](https://github.com/brillout/vite-plugin-ssr/discussions).
+> Path aliases must start with a special character so that vike can distinguish between path alias imports and npm package imports. If it's an issue for you then elaborate your use case in a new [GitHub Discussion](https://github.com/brillout/vike/discussions).
 
 See also:
  - [Vite Docs > `resolve.alias`](https://vitejs.dev/config/shared-options.html#resolve-alias)
@@ -75,7 +75,7 @@ Browser files are always processed by Vite,
 but this isn't always the case for Node.js server files,
 for example <RepoLink path="/boilerplates/boilerplate-react/server/index.js" text="Express.js server code"/>.
 
-You can use Node.js's built-in support `package.json#imports` or, alternatively, you can use one of many npm packages such as [`module-alias`](https://github.com/ilearnio/module-alias). (Example of using `module-alias`: [/examples/path-aliases (@c914dad)](https://github.com/brillout/vite-plugin-ssr/tree/c914dade5f0809ff330478c3531928055abdadef/examples/path-aliases).)
+You can use Node.js's built-in support `package.json#imports` or, alternatively, you can use one of many npm packages such as [`module-alias`](https://github.com/ilearnio/module-alias). (Example of using `module-alias`: [/examples/path-aliases (@c914dad)](https://github.com/brillout/vike/tree/c914dade5f0809ff330478c3531928055abdadef/examples/path-aliases).)
 
 
 ## TypeScript

@@ -22,16 +22,16 @@ function devConfig(): Plugin[] {
   let config: ResolvedConfig
   return [
     {
-      name: 'vite-plugin-ssr:devConfig',
+      name: 'vike:devConfig',
       apply,
       config() {
         return {
           optimizeDeps: {
             exclude: [
-              // We exclude the vite-plugin-ssr client to be able to use `import.meta.glob()`
-              'vite-plugin-ssr/client',
-              'vite-plugin-ssr/client/router',
-              'vite-plugin-ssr/routing',
+              // We exclude the vike client to be able to use `import.meta.glob()`
+              'vike/client',
+              'vike/client/router',
+              'vike/routing',
               // - We also exclude @brillout/json-serializer and @brillout/picocolors to avoid:
               //   ```
               //   9:28:58 AM [vite] ✨ new dependencies optimized: @brillout/json-serializer/parse
@@ -61,7 +61,7 @@ function devConfig(): Plugin[] {
       }
     },
     {
-      name: 'vite-plugin-ssr:devConfig:addSsrMiddleware',
+      name: 'vike:devConfig:addSsrMiddleware',
       apply,
       // The SSR middleware should be last middleware
       enforce: 'post',

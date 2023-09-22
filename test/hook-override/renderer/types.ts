@@ -6,7 +6,7 @@ export type { PageProps }
 import type {
   PageContextBuiltInServer,
   PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
-} from 'vite-plugin-ssr/types'
+} from 'vike/types'
 
 type Page = (pageProps: PageProps) => React.ReactElement
 type PageProps = Record<string, unknown>

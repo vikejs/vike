@@ -16,8 +16,8 @@ Features:
  - Page Transition Loading Animation
 
 ```bash
-git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/react-full/
+git clone git@github.com:brillout/vike
+cd vike/examples/react-full/
 npm install
 npm run dev
 ```

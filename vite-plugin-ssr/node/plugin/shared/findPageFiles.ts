@@ -21,7 +21,7 @@ async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[], isDe
       time < 1.5 * 1000,
       `Finding your page files ${pc.cyan(
         '**/*.page.*'
-      )} took an unexpected long time (${time}ms). Reach out to the vite-plugin-ssr maintainer.`,
+      )} took an unexpected long time (${time}ms). Reach out to the vike maintainer.`,
       {
         onlyOnce: 'slow-page-files-search'
       }

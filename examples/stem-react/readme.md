@@ -1,8 +1,8 @@
-Example of using vite-plugin-ssr with [Stem React](https://github.com/brillout/stem-react).
+Example of using vike with [Stem React](https://github.com/brillout/stem-react).
 
 ```bash
-git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/stem-react/
+git clone git@github.com:brillout/vike
+cd vike/examples/stem-react/
 npm install
 npm run dev
 ```

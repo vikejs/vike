@@ -8,7 +8,7 @@ export { removeRequireHookPlugin }
 
 function removeRequireHookPlugin(): Plugin {
   return {
-    name: 'vite-plugin-ssr:removeRequireHookPlugin',
+    name: 'vike:removeRequireHookPlugin',
     apply: 'build',
     configResolved(config) {
       const pluginsMod = config.plugins.filter((plugin) => plugin.name !== 'vite:ssr-require-hook')

@@ -6,7 +6,7 @@ import { Link, RepoLink } from '@brillout/docpress'
 To make information about the authenticated user available to your pages and UI components, you usually define `pageContext.user` at [`renderPage()`](/renderPage):
 
 ```js
-// `vite-plugin-ssr` server middleware
+// `vike` server middleware
 app.get('*', async (req, res) => {
   // Authentication middlewares (e.g. Passport.js and Grant) provide information about the
   // logged-in user at req.user
@@ -39,7 +39,7 @@ By using [`guard()`](/guard) with [`throw redirect()`](/redirect) or [`throw ren
 ```js
 // /pages/admin/index.page.route.js
 
-import { render, redirect } from 'vite-plugin-ssr/abort'
+import { render, redirect } from 'vike/abort'
 
 export const guard = (pageContext) => {
   const { user } = pageContext
@@ -73,7 +73,7 @@ We can also define a `guard()` hook that applies to multiple pages:
 // We define a guard() that applies to all pages: the file lives at /pages/ and
 // therefore applies to all /pages/**/*.page.js
 
-import { render } from 'vite-plugin-ssr/abort'
+import { render } from 'vike/abort'
 
 export const guard = (pageContext) => {
   if (!pageContext.user) {

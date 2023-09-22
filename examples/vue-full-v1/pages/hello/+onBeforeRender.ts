@@ -1,6 +1,6 @@
 export default onBeforeRender
 
-import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInServer } from 'vike/types'
 
 async function onBeforeRender(pageContext: PageContextBuiltInServer) {
   const { name } = pageContext.routeParams

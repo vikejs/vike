@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import type { PageContext } from 'vite-plugin-ssr/types'
+import type { PageContext } from 'vike/types'
 
 export { PageContextProvider }
 export { usePageContext }

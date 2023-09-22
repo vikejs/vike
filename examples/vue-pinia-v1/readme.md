@@ -1,11 +1,11 @@
-Example of using `vite-plugin-ssr` with:
+Example of using `vike` with:
  - Vue
  - [Pinia](https://pinia.vuejs.org/)
  - [Client Routing](https://vike.dev/client-routing)
 
 ```bash
-git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/vue-pinia/
+git clone git@github.com:brillout/vike
+cd vike/examples/vue-pinia/
 npm install
 npm run dev
 ```

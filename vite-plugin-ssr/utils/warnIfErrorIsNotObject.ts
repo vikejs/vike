@@ -10,11 +10,11 @@ assertIsNotBrowser()
 // It would be cleaner to:
 //  - Call assertUsageErrorIsObject() right after calling the user's hook
 //    - Attach the original error: assertUsageError.originalErrorValue = err
-//      - Show the original error in vite-plugin-ssr's error handling
+//      - Show the original error in vike's error handling
 //  - Use assertErrorIsObject() throughout Vike's source code
 function warnIfErrorIsNotObject(err: unknown): void {
   if (!isObject(err)) {
-    console.warn('[vite-plugin-ssr] The thrown value is:')
+    console.warn('[vike] The thrown value is:')
     console.warn(err)
     assertWarning(
       false,

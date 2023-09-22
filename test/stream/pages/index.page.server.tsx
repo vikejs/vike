@@ -2,7 +2,7 @@ export { render }
 
 import { renderToString, renderToPipeableStream, version } from 'react-dom/server'
 // import { renderToStream } from 'react-streaming/server'
-import { escapeInject, dangerouslySkipEscape, stampPipe } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape, stampPipe } from 'vike/server'
 
 console.log(`react-dom@${version}`)
 console.log(`node@${process.version}`)

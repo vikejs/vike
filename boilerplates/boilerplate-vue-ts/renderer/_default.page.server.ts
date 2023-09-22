@@ -4,7 +4,7 @@ export const passToClient = ['pageProps', 'urlPathname']
 
 import { renderToString as renderToString_ } from '@vue/server-renderer'
 import type { App } from 'vue'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { createApp } from './app'
 import logoUrl from './logo.svg'
 import type { PageContextServer } from './types'
@@ -20,7 +20,7 @@ async function render(pageContext: PageContextServer) {
   // See https://vike.dev/head
   const { documentProps } = pageContext.exports
   const title = (documentProps && documentProps.title) || 'Vite SSR app'
-  const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
+  const desc = (documentProps && documentProps.description) || 'App using Vite + vike'
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html lang="en">

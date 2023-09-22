@@ -1,5 +1,5 @@
 import vue from '@vitejs/plugin-vue'
-import ssr from 'vite-plugin-ssr/plugin'
+import ssr from 'vike/plugin'
 
 export default {
   plugins: [vue(), ssr()],

@@ -15,7 +15,7 @@ function previewConfig(): Plugin {
   let config: ResolvedConfig
   let configVps: ConfigVpsResolved
   return {
-    name: 'vite-plugin-ssr:previewConfig',
+    name: 'vike:previewConfig',
     apply: 'serve',
     config(config) {
       return {

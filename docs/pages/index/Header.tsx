@@ -1,6 +1,6 @@
 import React from 'react'
 import './Header.css'
-import iconPlugin from '../../images/icons/vite-plugin-ssr.svg'
+import iconPlugin from '../../images/icons/vike.svg'
 import iconReact from '../../images/icons/react.svg'
 import iconVue from '../../images/icons/vue.svg'
 import { HorizontalLine } from '@brillout/docpress'
@@ -29,7 +29,7 @@ function Logo() {
   return <img src={iconPlugin} />
 }
 function Title() {
-  return <code style={{ display: 'inline-block', padding: '0.17em 0.6em', borderRadius: 5 }}>vite-plugin-ssr</code>
+  return <code style={{ display: 'inline-block', padding: '0.17em 0.6em', borderRadius: 5 }}>vike</code>
 }
 function Tagline() {
   return <p id="header-tagline">Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
@@ -59,7 +59,7 @@ function RightSide() {
   return (
     <div id="header-right-side" style={{ marginLeft: 40 }}>
       <CallToActionDescription style={{ marginTop: 0 }}>
-        Scaffold a new Vite + <code>vite-plugin-ssr</code> app
+        Scaffold a new Vite + <code>vike</code> app
       </CallToActionDescription>
       <ScaffoldCallToAction />
       <div style={{ width: 1, height: 1, margin: 12 }} />
@@ -72,7 +72,7 @@ function TourCallToAction({ style }: { style?: React.CSSProperties }) {
   return (
     <div style={style}>
       <CallToActionDescription>
-        Explore how it's like to use <code style={{ whiteSpace: 'nowrap' }}>vite-plugin-ssr</code>
+        Explore how it's like to use <code style={{ whiteSpace: 'nowrap' }}>vike</code>
       </CallToActionDescription>
       <div
         style={{

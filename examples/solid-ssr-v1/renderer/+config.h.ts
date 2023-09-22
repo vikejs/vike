@@ -1,4 +1,4 @@
-import { Config } from 'vite-plugin-ssr/types'
+import { Config } from 'vike/types'
 
 // https://vike.dev/config
 export default {

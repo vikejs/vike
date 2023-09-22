@@ -2,7 +2,7 @@ import type { Config } from '@brillout/docpress'
 import { headings } from './headings'
 import { headingsDetached } from './headingsDetached'
 import { projectInfo } from './utils'
-import faviconUrl from './images/icons/vite-plugin-ssr.svg'
+import faviconUrl from './images/icons/vike.svg'
 import React from 'react'
 import { NavHeader, NavHeaderMobile } from './NavHeader'
 

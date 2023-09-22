@@ -1,6 +1,6 @@
-## vite-plugin-ssr
+## vike
 
-To use `vite-plugin-ssr`'s debug logs:
+To use `vike`'s debug logs:
 
 ```shell
 # Inspect the routing
@@ -17,11 +17,11 @@ DEBUG=vps:log npm run dev
 DEBUG=vps:log,vps:error,vps:stream npm run dev
 ```
 
-> These debug logs allow you to understand how `vite-plugin-ssr` thinks of your app. For example, to figure out why your app returns a `404`, use `vps:routing` and `vps:pageFiles`.
+> These debug logs allow you to understand how `vike` thinks of your app. For example, to figure out why your app returns a `404`, use `vps:routing` and `vps:pageFiles`.
 
-There are more debug logs (`vps:glob`, `vps:extractAssets`, ...) but these aren't user friendly as they are meant for vite-plugin-ssr maintainers.
+There are more debug logs (`vps:glob`, `vps:extractAssets`, ...) but these aren't user friendly as they are meant for vike maintainers.
 
-> If you want more debug logs, add a comment at [#249](https://github.com/brillout/vite-plugin-ssr/issues/249).
+> If you want more debug logs, add a comment at [#249](https://github.com/brillout/vike/issues/249).
 
 ## Vite
 
@@ -35,7 +35,7 @@ If you have a problem with Vite, we recommend considering injecting a bunch of `
 
 > It may sound scary to dig into Vite's source code, but it's sometimes quicker to find the root cause of your problem than treating Vite as a black box. Also:
 > - It's more interesting. (Vite's source code is well-written and pleasurable to read.)
-> - You may end up being able to do a Vite PR solving your problem (while helping the whole community!). (If you open a Vite PR, feel free to reach out to `vite-plugin-ssr` maintainers to get your PR merged quicker.)
+> - You may end up being able to do a Vite PR solving your problem (while helping the whole community!). (If you open a Vite PR, feel free to reach out to `vike` maintainers to get your PR merged quicker.)
 
 > Instead of:
 > ```bash

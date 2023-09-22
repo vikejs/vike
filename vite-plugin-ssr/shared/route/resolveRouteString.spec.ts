@@ -12,11 +12,11 @@ describe('resolveRouteString', () => {
 
     expectErr(
       () => r('', '/a/b/c'),
-      `[vite-plugin-ssr][Wrong Usage] Invalid Route String '' (empty string): set it to / instead`
+      `[vike][Wrong Usage] Invalid Route String '' (empty string): set it to / instead`
     )
     expectErr(
       () => r('a', '/a/b/c'),
-      `[vite-plugin-ssr][Wrong Usage] Invalid Route String a: Route Strings should start with a leading slash / (or be *)`
+      `[vike][Wrong Usage] Invalid Route String a: Route Strings should start with a leading slash / (or be *)`
     )
   })
 
@@ -65,11 +65,11 @@ describe('resolveRouteString', () => {
 
     expectErr(
       () => r('/a/*/c/*', '/a/b/c'),
-      `[vite-plugin-ssr][Wrong Usage] Invalid Route String /a/*/c/*: Route Strings aren't allowed to contain more than one glob * (use a Route Function instead)`
+      `[vike][Wrong Usage] Invalid Route String /a/*/c/*: Route Strings aren't allowed to contain more than one glob * (use a Route Function instead)`
     )
     expectErr(
       () => r('/a/*/c', '/a/b/c'),
-      `[vite-plugin-ssr][Wrong Usage] Invalid Route String /a/*/c: make sure it ends with * or use a Route Function`
+      `[vike][Wrong Usage] Invalid Route String /a/*/c: make sure it ends with * or use a Route Function`
     )
   })
 

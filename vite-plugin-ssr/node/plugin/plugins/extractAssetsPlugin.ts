@@ -36,7 +36,7 @@ type ResolvedId = Rollup.ResolvedId
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
 const rawRE = /(\?|&)raw(?:&|$)/
 const urlRE = /(\?|&)url(?:&|$)/
-const EMPTY_MODULE_ID = 'virtual:vite-plugin-ssr:empty-module'
+const EMPTY_MODULE_ID = 'virtual:vike:empty-module'
 
 const debugNamespace = 'vps:extractAssets'
 const debug = createDebugger(debugNamespace)
@@ -48,7 +48,7 @@ function extractAssetsPlugin(): Plugin[] {
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.js'`).
     {
-      name: 'vite-plugin-ssr:extractAssets:remove-javaScript',
+      name: 'vike:extractAssets:remove-javaScript',
       // In dev, things just work. (Because Vite's module graph erroneously conflates the Vite server-side importees with the client-side importees.)
       apply: 'build',
       enforce: 'post',
@@ -67,7 +67,7 @@ function extractAssetsPlugin(): Plugin[] {
     },
     // This plugin appends `?extractAssets` to module IDs
     {
-      name: 'vite-plugin-ssr:extractAssets:append-extractAssets-query',
+      name: 'vike:extractAssets:append-extractAssets-query',
       apply: 'build',
       // We ensure this plugin to be run before:
       //  - rollup's `alias` plugin; https://github.com/rollup/plugins/blob/5363f55aa1933b6c650832b08d6a54cb9ea64539/packages/alias/src/index.ts
@@ -161,7 +161,7 @@ function extractAssetsPlugin(): Plugin[] {
       }
     },
     {
-      name: 'vite-plugin-ssr:extractAssets-3',
+      name: 'vike:extractAssets-3',
       apply: 'build',
       async configResolved(config_) {
         configVps = await getConfigVps(config_)
@@ -172,7 +172,7 @@ function extractAssetsPlugin(): Plugin[] {
         id = getVirtualFileId(id)
 
         if (id === EMPTY_MODULE_ID) {
-          return '// Erased by vite-plugin-ssr:extractAssets'
+          return '// Erased by vike:extractAssets'
         }
       },
       config() {
@@ -182,9 +182,9 @@ function extractAssetsPlugin(): Plugin[] {
       }
     },
     {
-      name: 'vite-plugin-ssr:extractAssets-4',
+      name: 'vike:extractAssets-4',
       configResolved(config) {
-        // https://github.com/brillout/vite-plugin-ssr/issues/1060
+        // https://github.com/brillout/vike/issues/1060
         assertUsage(
           !config.plugins.find((p) => p.name === 'vite-tsconfig-paths'),
           'vite-tsconfig-paths not supported, remove it and use vite.config.js#resolve.alias instead'

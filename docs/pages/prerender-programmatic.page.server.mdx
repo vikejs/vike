@@ -9,7 +9,7 @@ Instead, we can programmatically initiate pre-rendering:
 ```js
 // vite.config.js
 
-import { ssr } from 'vite-plugin-ssr/plugin'
+import { ssr } from 'vike/plugin'
 
 export default {
   plugins: [
@@ -25,7 +25,7 @@ export default {
 ```js
 // my-custom-build-script.js
 
-import { prerender } from 'vite-plugin-ssr/prerender'
+import { prerender } from 'vike/prerender'
 
 // Without options
 prerender()
@@ -78,7 +78,7 @@ See [Vite > JavaScript API > `InlineConfig`](https://vitejs.dev/guide/api-javasc
 
 ## `onPagePrerender()`
 
-<Warning>DON'T use this option without having contacted a `vite-plugin-ssr` maintainer: this functionality may be completely changed/removed at any time if you don't.</Warning>
+<Warning>DON'T use this option without having contacted a `vike` maintainer: this functionality may be completely changed/removed at any time if you don't.</Warning>
 
 <Warning>This feature is experimental and may be changed in any minor version update.</Warning>
 
@@ -86,7 +86,7 @@ The `onPagePrerender` option allows us to override where the HTML is written.
 
 ```js
 prerender({
-  // If we provide `onPagePrerender` then vite-plugin-ssr won't write the HTML to the filesystem
+  // If we provide `onPagePrerender` then vike won't write the HTML to the filesystem
   onPagePrerender(pageContext) {
     // TODO: write the HTML to the filesystem.
     // ...

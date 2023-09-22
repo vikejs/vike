@@ -1,8 +1,8 @@
-Example of using `vite-plugin-ssr` with React.
+Example of using `vike` with React.
 
 ```bash
-git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/react/
+git clone git@github.com:brillout/vike
+cd vike/examples/react/
 npm install
 npm run dev
 ```

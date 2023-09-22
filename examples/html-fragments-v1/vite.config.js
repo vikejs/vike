@@ -1,4 +1,4 @@
-import ssr from 'vite-plugin-ssr/plugin'
+import ssr from 'vike/plugin'
 
 export default {
   plugins: [ssr()]

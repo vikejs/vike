@@ -31,13 +31,13 @@ Then the problem is likely due to one the following.
  - You're importing a utility that is only available to <Link text="Client Routing" href="/client-routing" /> such as `prefetch()` or `navigate()`, for a page that uses <Link text="Server Routing" href="/server-routing" />.
    ```js
    // ❌ Don't import these for pages that use Server Routing
-   import { prefetch } from 'vite-plugin-ssr/client/router'
-   import { navigate } from 'vite-plugin-ssr/client/router'
+   import { prefetch } from 'vike/client/router'
+   import { navigate } from 'vike/client/router'
    ```
    > You'll get a warning:
    > ```
-   > You shouldn't `import { something } from 'vite-plugin-ssr/client/router'` when using
-   > Server Routing. The 'vite-plugin-ssr/client/router' utilities work only with
+   > You shouldn't `import { something } from 'vike/client/router'` when using
+   > Server Routing. The 'vike/client/router' utilities work only with
    > Client Routing. In particular, don't `import { navigate }` nor `import { prefetch }`
    > as they unnecessarily bloat your client-side bundle.
    > ```

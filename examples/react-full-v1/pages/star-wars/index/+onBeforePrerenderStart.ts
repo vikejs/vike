@@ -10,7 +10,7 @@ async function onBeforePrerenderStart() {
   return [
     {
       url: '/star-wars',
-      // We already provide `pageContext` here so that `vite-plugin-ssr`
+      // We already provide `pageContext` here so that `vike`
       // will *not* have to call the `onBeforeRender()` hook defined
       // above in this file.
       pageContext: {
@@ -25,7 +25,7 @@ async function onBeforePrerenderStart() {
       return {
         url,
         // Note that we can also provide the `pageContext` of other pages.
-        // This means that `vite-plugin-ssr` will not call any
+        // This means that `vike` will not call any
         // `onBeforeRender()` hook and the Star Wars API will be called
         // only once (in this `prerender()` hook).
         pageContext: {

@@ -3,15 +3,15 @@ import { JustAMiddleware } from '../components'
 
 If the tool you want to use isn't in the list of integration guides, you'll still most likely be able to use it.
 
-Vite-plugin-ssr is versatile:
- - From an architectural perspective, <Link text="vite-plugin-ssr only takes care of the frontend" href="/architecture" />: you keep control over the rest of your stack and architecture.
- - From a server perspective, vite-plugin-ssr is <Link text="just a middleware" href="#server-side-tools" />: you can embed vite-plugin-ssr into any server.
+Vike is versatile:
+ - From an architectural perspective, <Link text="vike only takes care of the frontend" href="/architecture" />: you keep control over the rest of your stack and architecture.
+ - From a server perspective, vike is <Link text="just a middleware" href="#server-side-tools" />: you can embed vike into any server.
  - You can <Link text="disable SSR (i.e. use SPA/MPA)" href="/render-modes" /> and/or <Link text="pre-render" href="/pre-rendering" /> your pages to remove the need for a production server and deploy to a <Link text="static host" href="/static-hosts" /> instead.
  - You have full control over how pages are rendered, which means that you can use any <Link text="UI tool" href="#ui-tool" /> and any <Link text="client-side tool" href="#client-side-tools" />.
 
-In principle, you should be able to use vite-plugin-ssr with any tool you want.
+In principle, you should be able to use vike with any tool you want.
 
-> If you struggle integrating a tool, don't hesitate to [create a new GitHub Discussion](https://github.com/brillout/vite-plugin-ssr/discussions/new).
+> If you struggle integrating a tool, don't hesitate to [create a new GitHub Discussion](https://github.com/brillout/vike/discussions/new).
 
 
 ## UI tools
@@ -20,7 +20,7 @@ In principle, you should be able to use vite-plugin-ssr with any tool you want.
 // /renderer/_default.page.server.js
 // Environment: server
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 // This can be any UI framework (React, Vue, Solid, Svelte, ...)
 import renderToHtml from 'some-ui-framework'
 
@@ -28,7 +28,7 @@ export { render }
 
 async function render(pageContext) {
   // `Page` is the `export { Page }` of our `*.page.js` files;
-  // `vite-plugin-ssr` doesn't do anything with `Page` and just makes it available as
+  // `vike` doesn't do anything with `Page` and just makes it available as
   // `pageContex.Page`; we can export any `Page` value we want and do whatever we want with it.
   const { Page } = pageContext
 
@@ -131,8 +131,8 @@ See also:
 
 ## Examples
 
-Official examples: [GitHub > `brillout/vite-plugin-ssr` > `examples/`](https://github.com/brillout/vite-plugin-ssr/tree/main/examples).
+Official examples: [GitHub > `brillout/vike` > `examples/`](https://github.com/brillout/vike/tree/main/examples).
 
-Beyond the official examples, many tools have community examples of being used with `vite-plugin-ssr` &ndash; search this website (`CTRL+K`) for the tool you want an example of.
+Beyond the official examples, many tools have community examples of being used with `vike` &ndash; search this website (`CTRL+K`) for the tool you want an example of.
 
 If an example is missing/outdated, contribution welcome to create/improve one.

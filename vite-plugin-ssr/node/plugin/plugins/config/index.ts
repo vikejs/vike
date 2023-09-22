@@ -13,7 +13,7 @@ import pc from '@brillout/picocolors'
 
 function resolveVpsConfig(vpsConfig: unknown): Plugin {
   return {
-    name: 'vite-plugin-ssr:resolveVpsConfig',
+    name: 'vike:resolveVpsConfig',
     enforce: 'pre',
     async configResolved(config) {
       const promise = resolveConfig(vpsConfig, config)
@@ -41,7 +41,7 @@ async function resolveConfig(vpsConfig: unknown, config: ResolvedConfig): Promis
   })
   assertVpsConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vitePluginSsr.${prop} ${errMsg}`)
   // TODO/v1-release: deprecate this
-  assertVpsConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vite-plugin-ssr option ${prop} ${errMsg}`)
+  assertVpsConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
 
   const { baseServer, baseAssets } = resolveBase(configs, config)
 

@@ -25,9 +25,9 @@ export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtm
 // TODO/v1-release: remove
 import type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 /** @deprecated Replace:
- *   `import type { Env } from 'vite-plugin-ssr/types'`
+ *   `import type { Env } from 'vike/types'`
  * With:
- *   `import type { ConfigEnv } from 'vite-plugin-ssr/types'`
+ *   `import type { ConfigEnv } from 'vike/types'`
  */
 type Env = ConfigEnv
 export type { Env }
@@ -35,22 +35,22 @@ export type { Env }
 // TODO/v1-release: remove
 import type { ConfigEffect } from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 /** @deprecated Replace:
- *   `import type { Effect } from 'vite-plugin-ssr/types'`
+ *   `import type { Effect } from 'vike/types'`
  * With:
- *   `import type { ConfigEffect } from 'vite-plugin-ssr/types'`
+ *   `import type { ConfigEffect } from 'vike/types'`
  */
 type Effect = ConfigEffect
 export type { Effect }
 
 // TODO/v1-release: remove
-// Ancient VPS versions used to have `import type { PageContextBuiltInClient } from 'vite-plugin-ssr/types'`
+// Ancient VPS versions used to have `import type { PageContextBuiltInClient } from 'vike/types'`
 import { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
 /** @deprecated Replace:
- *   `import type { PageContextBuiltInClient } from 'vite-plugin-ssr/types'`
+ *   `import type { PageContextBuiltInClient } from 'vike/types'`
  * With:
- *   `import type { PageContextBuiltInClientWithServerRouting } from 'vite-plugin-ssr/types'`
+ *   `import type { PageContextBuiltInClientWithServerRouting } from 'vike/types'`
  * Or:
- *   `import type { PageContextBuiltInClientWithClientRouting } from 'vite-plugin-ssr/types'`
+ *   `import type { PageContextBuiltInClientWithClientRouting } from 'vike/types'`
  */
 type PageContextBuiltInClient<Page = any> = PageContextBuiltInClientWithServerRouting<Page>
 export type { PageContextBuiltInClient }
@@ -58,9 +58,9 @@ export type { PageContextBuiltInClient }
 // TODO/v1-release: remove
 import { PageContextBuiltInServer } from '../shared/types.js'
 /** @deprecated Replace:
- *   `import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'`
+ *   `import type { PageContextBuiltIn } from 'vike/types'`
  * With:
- *   `import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'`
+ *   `import type { PageContextBuiltInServer } from 'vike/types'`
  */
 type PageContextBuiltIn<Page = any> = PageContextBuiltInServer<Page>
 export type { PageContextBuiltIn }

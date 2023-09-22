@@ -1,6 +1,6 @@
 import { RepoLink, Link } from '@brillout/docpress'
 
-We can internationalize (i18n) a `vite-plugin-ssr` app by using a <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
+We can internationalize (i18n) a `vike` app by using a <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
 
 ```js
 // /renderer/_default.page.route.js
@@ -36,7 +36,7 @@ function extractLocale(url) {
 }
 ```
 
-Upon rendering a page, `onBeforeRoute()` is the first hook that `vite-plugin-ssr` calls, which means that the rest of our app doesn't have to deal with localized URLs anymore and we can simply use `pageContext.locale` instead.
+Upon rendering a page, `onBeforeRoute()` is the first hook that `vike` calls, which means that the rest of our app doesn't have to deal with localized URLs anymore and we can simply use `pageContext.locale` instead.
 
 > See <Link href="/pageContext-anywhere" /> for being able to access `pageContext.locale` in any React/Vue component.
 
@@ -45,7 +45,7 @@ This technique also works with:
 - `?lang=fr` query parameters
 - `domain.fr` domain TLDs
 - `Accept-Language: fr-FR` headers
-   > The `Accept-Language` header can be used for redirecting the user to the right localized URL (e.g. URL `/about` + Header `Accept-Language: de-DE` => redirect to `/de-DE/about`). Once the user is redirected to a localized URL, we can use the technique described above. We can perform the redirection by using our server (e.g. Express.js) independently of vite-plugin-ssr.
+   > The `Accept-Language` header can be used for redirecting the user to the right localized URL (e.g. URL `/about` + Header `Accept-Language: de-DE` => redirect to `/de-DE/about`). Once the user is redirected to a localized URL, we can use the technique described above. We can perform the redirection by using our server (e.g. Express.js) independently of vike.
 
    > Using the `Accept-Language` header to show different languages for the same URL is considered bad practice for both SEO and UX reasons. It's recommended to use `Accept-Language` only to redirect the user.
 
@@ -112,7 +112,7 @@ async function prerender() {
 
 We basically use `prerender()` to determine URLs and/or load data, and use `onBeforePrerender()` merely to manipulate the URLs and set `pageContext.locale`.
 
-> Despite what the naming suggests, note that vite-plugin-ssr calls our `onBeforePrerender()` hook *after* our `prerender()` hooks. Also note that `onBeforePrerender(prerenderContext)` is a global hook we can define only once, while `prerender()` (it doesn't have any argument) is a per-page hook we can define multiple times.
+> Despite what the naming suggests, note that vike calls our `onBeforePrerender()` hook *after* our `prerender()` hooks. Also note that `onBeforePrerender(prerenderContext)` is a global hook we can define only once, while `prerender()` (it doesn't have any argument) is a per-page hook we can define multiple times.
 
 Alternatively, if we need to load data that depends on localization, instead of `onBeforePrerender()` we can use `prerender()` to localize `pageContext`:
 

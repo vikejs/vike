@@ -1,7 +1,7 @@
 // TODO/v1-release - move:
-//   import { navigate, prefetch } from 'vite-plugin-ssr/client/router'
+//   import { navigate, prefetch } from 'vike/client/router'
 // to:
-//   import { navigate, prefetch } from 'vite-plugin-ssr'
+//   import { navigate, prefetch } from 'vike'
 // Use package.json#exports to make the imports isomorphic.
 
 export { navigate, reload } from './navigate.js'
@@ -19,7 +19,7 @@ import type { PageContextBuiltInClientWithClientRouting } from '../../shared/typ
  *   import type {
  *     PageContextBuiltInClientWithClientRouting as
  *     PageContextBuiltInClient
- *   } from 'vite-plugin-ssr/types'
+ *   } from 'vike/types'
  *   ```
  */
 type PageContextBuiltInClient<Page = any> = PageContextBuiltInClientWithClientRouting<Page>

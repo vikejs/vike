@@ -1,6 +1,6 @@
 export { render }
 
-import { escapeInject } from 'vite-plugin-ssr/server'
+import { escapeInject } from 'vike/server'
 import type { PageContextServer } from './types'
 
 // SPA mode: the HTML is static with an empty <div id="root">, see https://vike.dev/render-modes#spa

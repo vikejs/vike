@@ -11,7 +11,7 @@ const headings = [
   {
     level: 2,
     title: 'Introduction',
-    titleDocument: 'vite-plugin-ssr',
+    titleDocument: 'vike',
     url: '/'
   },
   {

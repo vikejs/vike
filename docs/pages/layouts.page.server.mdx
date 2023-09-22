@@ -126,18 +126,18 @@ Examples:
 > +------------------+                  +-----------------+
 > ```
 
-> For a DX similar to Next.js's new Layout RFC, see [#346](https://github.com/brillout/vite-plugin-ssr/issues/346).
+> For a DX similar to Next.js's new Layout RFC, see [#346](https://github.com/brillout/vike/issues/346).
 > Add a comment if you need/want this and it will be implemented.
 
 > If our nested layout doesn't need to be persisted/assigned to a URL (e.g. the "Product Pricing" page and the "Product Reviews" page share the same URL `/product/42`), then we can simply use a stateful component.
 
-Until [#346](https://github.com/brillout/vite-plugin-ssr/issues/346) is implemented,
+Until [#346](https://github.com/brillout/vike/issues/346) is implemented,
 a way to implement a nested layout is to use a Route Function:
 
 ```js
 // /pages/product/index.page.route.js
 
-import { resolveRoute } from 'vite-plugin-ssr/routing'
+import { resolveRoute } from 'vike/routing'
 
 export default (pageContext) => {
   {

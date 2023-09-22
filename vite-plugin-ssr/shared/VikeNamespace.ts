@@ -8,7 +8,7 @@ export type { VikePackages }
 declare global {
   /** Refine Vike types. */
   namespace Vike {
-    /** Extend and/or refine the `Config` type (`import type { Config } from 'vite-plugin-ssr/types'`).
+    /** Extend and/or refine the `Config` type (`import type { Config } from 'vike/types'`).
      *
      *  For example:
      *  - You can refine the type of `Config['Page']`.
@@ -17,7 +17,7 @@ declare global {
      */
     interface Config {}
 
-    /** Extend and/or refine the `PageContext` type (`import type { PageContext } from 'vite-plugin-ssr/types'`).
+    /** Extend and/or refine the `PageContext` type (`import type { PageContext } from 'vike/types'`).
      *
      *  For example:
      *  - You can define the type of fetched data, e.g. `PageContext['movies']`.

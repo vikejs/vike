@@ -8,14 +8,14 @@ function envVarsPlugin(): Plugin {
   let envsAll: Record<string, string>
   let config: ResolvedConfig
   return {
-    name: 'vite-plugin-ssr:env',
+    name: 'vike:env',
     enforce: 'post',
     configResolved(config_) {
       config = config_
       config.command
       envsAll = loadEnv(config.mode, config.envDir || config.root, '')
       // Vite's built-in plugin vite:define needs to apply after this plugin.
-      //  - This plugin vite-plugin-ssr:env needs to apply after vite-plugin-ssr:extractAssets and vite-plugin-ssr:extractExportNames which need to apply after @vitejs/plugin-vue
+      //  - This plugin vike:env needs to apply after vike:extractAssets and vike:extractExportNames which need to apply after @vitejs/plugin-vue
       ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
     },
     transform(code, id, options) {
@@ -47,7 +47,7 @@ function envVarsPlugin(): Plugin {
             const filePathVite = getFilePathVite(id, config.root)
             const errMsgAddendum = isBuild
               ? ''
-              : ' (vite-plugin-ssr will prevent your app from building for production)'
+              : ' (vike will prevent your app from building for production)'
             const errMsg =
               `${varName} used in ${filePathVite} and therefore included in client-side bundle which can be be a security leak${errMsgAddendum}, remove ${varName} or rename ${key} to ${keyPublic}, see https://vike.dev/env` as const
             if (isBuild) {

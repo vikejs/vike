@@ -1,9 +1,9 @@
 By default, URLs are normalized:
 
 ```
-[vite-plugin-ssr] HTTP request: /some//path/
-[vite-plugin-ssr] URL normalized from /some//path/ to /some-path
-[vite-plugin-ssr] HTTP redirect /some/path 301
+[vike] HTTP request: /some//path/
+[vike] URL normalized from /some//path/ to /some-path
+[vike] HTTP redirect /some/path 301
 ```
 
 You can configure whether URLs are normalized and whether URLs should end with a trailing slash:
@@ -11,7 +11,7 @@ You can configure whether URLs are normalized and whether URLs should end with a
 ```js
 // vite.config.js
 
-import { ssr } from 'vite-plugin-ssr/plugin'
+import { ssr } from 'vike/plugin'
 
 export default {
   plugins: [

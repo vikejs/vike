@@ -472,7 +472,7 @@ async function createStreamWrapper({
     }
     // For libraries such as https://www.npmjs.com/package/compression
     //  - React calls writable.flush() when available
-    //  - https://github.com/brillout/vite-plugin-ssr/issues/466#issuecomment-1269601710
+    //  - https://github.com/brillout/vike/issues/466#issuecomment-1269601710
     const flushStream = () => {
       assert(writableOriginal)
       if (typeof writableOriginal.flush === 'function') {
@@ -644,7 +644,7 @@ async function createStreamWrapper({
     const readableOriginal: StreamReadableNode = streamOriginal
 
     const { Readable } = await loadStreamNodeModule()
-    // Vue doesn't always set the read() handler: https://github.com/brillout/vite-plugin-ssr/issues/138#issuecomment-934743375
+    // Vue doesn't always set the read() handler: https://github.com/brillout/vike/issues/138#issuecomment-934743375
     if (readableOriginal._read === Readable.prototype._read) {
       readableOriginal._read = function () {}
     }

@@ -1,8 +1,8 @@
 Example of changing the [Base URL](https://vike.dev/base-url).
 
 ```bash
-git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/base-url/
+git clone git@github.com:brillout/vike
+cd vike/examples/base-url/
 npm install
 npm run dev
 # Or

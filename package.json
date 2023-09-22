@@ -1,15 +1,15 @@
 {
   "scripts": {
     "========= Dev": "",
-    "// Develop vite-plugin-ssr": "",
-    "dev": "cd vite-plugin-ssr/ && pnpm run dev",
-    "dev:cjs": "cd vite-plugin-ssr/ && pnpm run dev:cjs",
-    "dev:esm": "cd vite-plugin-ssr/ && pnpm run dev:esm",
+    "// Develop vike": "",
+    "dev": "cd vike/ && pnpm run dev",
+    "dev:cjs": "cd vike/ && pnpm run dev:cjs",
+    "dev:esm": "cd vike/ && pnpm run dev:esm",
     "// Run `$ pnpm dev:setup` before running `$ pnpm dev`": "",
     "dev:setup": "pnpm run clean && pnpm install",
     "========= Build": "",
-    "// Build vite-plugin-ssr": "",
-    "build": "cd vite-plugin-ssr/ && pnpm run build",
+    "// Build vike": "",
+    "build": "cd vike/ && pnpm run build",
     "========= Test": "",
     "// Run tests": "",
     "test": "pnpm run test:units && pnpm run test:e2e && pnpm run test:types",
@@ -29,8 +29,8 @@
     "// Upgrade all dependencies of all package.json to @latest": "",
     "bump": "bump-dependencies",
     "========= Release": "",
-    "release": "cd vite-plugin-ssr/ && pnpm run release",
-    "release:commit": "cd vite-plugin-ssr/ && pnpm run release:commit",
+    "release": "cd vike/ && pnpm run release",
+    "release:commit": "cd vike/ && pnpm run release:commit",
     "========= Clean": "",
     "// Remove all generated files": "",
     "clean": "git clean -Xdf",
@@ -47,7 +47,7 @@
   },
   "pnpm": {
     "overrides": {
-      "vite-plugin-ssr": "link:./vite-plugin-ssr/"
+      "vike": "link:./vike/"
     },
     "packageExtensions": {
       "@apollo/client": {

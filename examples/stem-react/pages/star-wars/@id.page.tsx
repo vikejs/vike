@@ -1,7 +1,7 @@
 import React from 'react'
 import fetch from 'cross-fetch'
 import { filterMovieData } from './filterMovieData'
-import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInServer } from 'vike/types'
 import type { MovieDetails } from './types'
 
 export { Page }

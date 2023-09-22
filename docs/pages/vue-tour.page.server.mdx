@@ -18,7 +18,7 @@ import Counter from '../components/Counter.vue'
 </script>
 ```
 
-By default, `vite-plugin-ssr` does Filesystem Routing.
+By default, `vike` does Filesystem Routing.
 ```
 FILESYSTEM                  URL
 /pages/index.page.vue        /
@@ -30,13 +30,13 @@ We can also define a page's route with a *Route String* (for parameterized route
 ```js
 // /pages/index.page.route.js
 
-// Note how the two files share the same base `/pages/index.page.`; this is how `vite-plugin-ssr`
+// Note how the two files share the same base `/pages/index.page.`; this is how `vike`
 // knows that `/pages/index.page.route.js` defines the route of `/pages/index.page.vue`.
 
 // Route Function
 export default pageContext => pageContext.urlPathname === '/'
 
-// If we don't create a `.page.route.js` file then vite-plugin-ssr does Filesystem Routing
+// If we don't create a `.page.route.js` file then vike does Filesystem Routing
 ```
 
 
@@ -50,7 +50,7 @@ Unlike Nuxt, we control how our pages are rendered.
 
 import { createSSRApp, h } from 'vue'
 import { renderToString } from '@vue/server-renderer'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 
 export { render }
 
@@ -170,12 +170,12 @@ export async function onBeforeRender(pageContext) {
 
 // By default `pageContext.*` are available only on the server. But our hydrate function
 // we defined earlier runs in the browser and needs `pageContext.pageProps`; we use
-// `passToClient` to tell `vite-plugin-ssr` to serialize and make `pageContext.pageProps`
+// `passToClient` to tell `vike` to serialize and make `pageContext.pageProps`
 // available to the browser.
 export const passToClient = ['pageProps']
 ```
 
 That's it for the tour and we have actually already seen most of the interface;
-not only is `vite-plugin-ssr` flexible but it's also simple to use!
+not only is `vike` flexible but it's also simple to use!
 
 <ScaffoldCallToActionTour />

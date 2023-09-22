@@ -44,7 +44,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run prod:static') {
     }
   })
 
-  // This tests the `vite-plugin-ssr:extractAssets` plugin.
+  // This tests the `vike:extractAssets` plugin.
   // (Retrieving the CSS from aliased import paths is not trivial.)
   test('CSS loaded also for HTML-only pages', async () => {
     page.goto(`${getServerUrl()}/about`)

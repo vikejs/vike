@@ -2,9 +2,9 @@ import { Link } from '@brillout/docpress'
 
 > **What is preloading?** Preloading denotes the practice of loading assets (JavaScript, CSS, images, etc.) before the browser discovers them in HTML/CSS/JavaScript code. That way we reduce the network round trips required before the browser starts discovering and loading all dependencies.
 
-By default, vite-plugin-ssr automatically inject tags to our HTML, such as `<script type="module" stc="script.js">`, `<link rel="stylesheet" type="text/css" href="style.css">`, and `<link rel="preload" href="font.ttf" as="font" type="font/ttf">`. It does so using a preload strategy that works for most users, but we can use `injectFilter()` to implement a custom preload strategy.
+By default, vike automatically inject tags to our HTML, such as `<script type="module" stc="script.js">`, `<link rel="stylesheet" type="text/css" href="style.css">`, and `<link rel="preload" href="font.ttf" as="font" type="font/ttf">`. It does so using a preload strategy that works for most users, but we can use `injectFilter()` to implement a custom preload strategy.
 
-To improve preloading performance, we can use [Early Hints](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) which vite-plugin-ssr automatically generates.
+To improve preloading performance, we can use [Early Hints](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) which vike automatically generates.
 
 
 ## Early Hints
@@ -14,7 +14,7 @@ To improve preloading performance, we can use [Early Hints](https://developer.mo
 ```js
 // server.js
 
-import { renderPage } from 'vite-plugin-ssr/server'
+import { renderPage } from 'vike/server'
 
 app.get('*', async (req, res) => {
   const pageContext = await renderPage({ urlOriginal: req.originalUrl } )
@@ -38,7 +38,7 @@ type PageContext = {
 }
 ```
 
-Examples: `$ npm init vite-plugin-ssr@latest`.
+Examples: `$ npm init vike@latest`.
 
 See also:
  - [developer.chrome.com > Early Hints](https://developer.chrome.com/blog/early-hints/)
@@ -47,7 +47,7 @@ See also:
 
 ## `injectFilter()`
 
-If vite-plugin-ssr's default preload strategy doesn't work for us, we can customize which and where preload/asset tags are injected.
+If vike's default preload strategy doesn't work for us, we can customize which and where preload/asset tags are injected.
 
 ```ts
 // /renderer/_default.page.server.js

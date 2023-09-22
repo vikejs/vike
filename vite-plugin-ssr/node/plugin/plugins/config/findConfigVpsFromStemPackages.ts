@@ -16,7 +16,7 @@ async function findConfigVpsFromStemPackages(root: string): Promise<ConfigVpsUse
   )
   await Promise.all(
     stemPackages.map(async ({ loadModule }) => {
-      const moduleExports = await loadModule('vite-plugin-ssr.config.js')
+      const moduleExports = await loadModule('vike.config.js')
       if (!moduleExports) return
       const configVps: ConfigVpsUserProvided = moduleExports.default as any
       assert(isObject(configVps))

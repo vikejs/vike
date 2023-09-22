@@ -1,7 +1,7 @@
 // https://vike.dev/onRenderHtml
 export default render
 
-import { escapeInject } from 'vite-plugin-ssr/server'
+import { escapeInject } from 'vike/server'
 
 function render() {
   // Note how `<b>` is (not) escaped

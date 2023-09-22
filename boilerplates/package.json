@@ -1,15 +1,15 @@
 {
-  "name": "create-vite-plugin-ssr",
+  "name": "create-vike",
   "version": "0.0.304",
   "license": "MIT",
   "bin": {
-    "create-vite-plugin-ssr": "index.js"
+    "create-vike": "index.js"
   },
   "main": "index.js",
   "engines": {
     "node": ">=12.0.0"
   },
-  "repository": "https://github.com/brillout/vite-plugin-ssr",
+  "repository": "https://github.com/brillout/vike",
   "dependencies": {
     "enquirer": "^2.3.6",
     "minimist": "^1.2.6",

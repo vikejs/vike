@@ -1,6 +1,6 @@
 <template>
   <h1>About</h1>
-  <p>Example of app using <code>vite-plugin-ssr</code>.</p>
+  <p>Example of app using <code>vike</code>.</p>
 </template>
 
 <style>

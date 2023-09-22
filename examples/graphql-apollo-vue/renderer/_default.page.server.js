@@ -1,5 +1,5 @@
 import { renderToString } from '@vue/server-renderer'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { createApp } from './app'
 import logoUrl from './logo.svg'
 
@@ -12,7 +12,7 @@ async function render(pageContext) {
   // See https://vike.dev/head
   const { documentProps } = pageContext
   const title = (documentProps && documentProps.title) || 'Vite SSR app'
-  const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
+  const desc = (documentProps && documentProps.description) || 'App using Vite + vike'
 
   const { appHtml } = pageContext
 

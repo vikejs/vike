@@ -24,15 +24,15 @@ function assertServerRouting() {
 }
 
 function assertNoContradiction(noContradiction: boolean) {
-  // If an assertion fails because of a wrong usage, then we assume that the user is trying to import from 'vite-plugin-ssr/client/router' while not setting `clientRouting` to `true`. Note that 'vite-plugin-ssr/client' only exports the type `PageContextBuiltInClient` and that the package.json#exports entry 'vite-plugin-ssr/client' will eventually be removed.
+  // If an assertion fails because of a wrong usage, then we assume that the user is trying to import from 'vike/client/router' while not setting `clientRouting` to `true`. Note that 'vike/client' only exports the type `PageContextBuiltInClient` and that the package.json#exports entry 'vike/client' will eventually be removed.
   assertUsage(
     isBrowser(),
-    `${pc.cyan("import { something } from 'vite-plugin-ssr/client/router'")} is forbidden on the server-side`,
+    `${pc.cyan("import { something } from 'vike/client/router'")} is forbidden on the server-side`,
     { showStackTrace: true }
   )
   assertWarning(
     noContradiction,
-    "You shouldn't `import { something } from 'vite-plugin-ssr/client/router'` when using Server Routing. The 'vite-plugin-ssr/client/router' utilities work only with Client Routing. In particular, don't `import { navigate }` nor `import { prefetch }` as they unnecessarily bloat your client-side bundle sizes.",
+    "You shouldn't `import { something } from 'vike/client/router'` when using Server Routing. The 'vike/client/router' utilities work only with Client Routing. In particular, don't `import { navigate }` nor `import { prefetch }` as they unnecessarily bloat your client-side bundle sizes.",
     { showStackTrace: true, onlyOnce: true }
   )
 }

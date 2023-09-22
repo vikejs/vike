@@ -16,7 +16,7 @@ function autoFullBuild(): Plugin[] {
   let configVps: ConfigVpsResolved
   return [
     {
-      name: 'vite-plugin-ssr:autoFullBuild',
+      name: 'vike:autoFullBuild',
       apply: 'build',
       enforce: 'pre',
       async configResolved(config_) {
@@ -33,7 +33,7 @@ function autoFullBuild(): Plugin[] {
           try {
             await triggerFullBuild(config, configVps, bundle)
           } catch (err) {
-            // Avoid Rollup prefixing the error with [vite-plugin-ssr:autoFullBuild], for example see https://github.com/brillout/vite-plugin-ssr/issues/472#issuecomment-1276274203
+            // Avoid Rollup prefixing the error with [vike:autoFullBuild], for example see https://github.com/brillout/vike/issues/472#issuecomment-1276274203
             console.error(err)
             process.exit(1)
           }
@@ -41,7 +41,7 @@ function autoFullBuild(): Plugin[] {
       }
     },
     {
-      name: 'vite-plugin-ssr:autoFullBuild:forceExit',
+      name: 'vike:autoFullBuild:forceExit',
       apply: 'build',
       enforce: 'post',
       closeBundle: {
@@ -60,8 +60,8 @@ function autoFullBuild(): Plugin[] {
 async function triggerFullBuild(config: ResolvedConfig, configVps: ConfigVpsResolved, bundle: Record<string, unknown>) {
   if (config.build.ssr) return // already triggered
   if (isDisabled(configVps)) return
-  // vite-plugin-ssr.json missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's build() API) => skip
-  if (!bundle['vite-plugin-ssr.json']) return
+  // vike.json missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's build() API) => skip
+  if (!bundle['vike.json']) return
 
   const configFromCli = !isViteCliCall() ? null : getViteConfigFromCli()
   const configInline = {

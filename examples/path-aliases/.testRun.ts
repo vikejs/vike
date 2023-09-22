@@ -28,7 +28,7 @@ function testRun(npmScript: 'npm run dev' | 'npm run prod' | 'npm run prod:stati
     expect(await page.textContent('body')).toContain('This liltle app uses path aliases.')
   })
 
-  // This tests the `vite-plugin-ssr:extractAssets` plugin.
+  // This tests the `vike:extractAssets` plugin.
   // (Retrieving the CSS from aliased import paths is not trivial.)
   test('CSS loaded also for HTML-only pages', async () => {
     page.goto(`${getServerUrl()}/about`)

@@ -10,7 +10,7 @@
 
 ## System requirements
 
-> These requirements are only needed for developing the source code of vite-plugin-ssr. The npm package `vite-plugin-ssr` can be used with Windows and with any package manager.
+> These requirements are only needed for developing the source code of vike. The npm package `vike` can be used with Windows and with any package manager.
 
 - Node.js `>= v16.0.0`.
 - [pnpm](https://pnpm.io/).
@@ -28,22 +28,22 @@
 Download and install the entire monorepo:
 
 ```shell
-git clone git@github.com:brillout/vite-plugin-ssr
+git clone git@github.com:brillout/vike
 # Go to the monorepo root
-cd vite-plugin-ssr/
+cd vike/
 pnpm install
 ```
 
 #### Build & Dev
 
-Build vite-plugin-ssr's source code:
+Build vike's source code:
 
 ```shell
 # At the monorepo root
 pnpm run build
 ```
 
-Develop vite-plugin-ssr:
+Develop vike:
 
 ```shell
 # At the monorepo root
@@ -71,7 +71,7 @@ cd examples/some-example/ && pnpm exec test-e2e
 pnpm exec test-e2e ome-exampl # At the monorepo root
 ```
 
-> On Debian, [these additional steps](https://github.com/brillout/vite-plugin-ssr/issues/283#issuecomment-1072974554) are required.
+> On Debian, [these additional steps](https://github.com/brillout/vike/issues/283#issuecomment-1072974554) are required.
 
 <br/>
 
@@ -87,7 +87,7 @@ New examples should be minimal and implement only what you want to showcase.
 
 Follow the setup instructions at [Basics](#basics).
 
-> The `README` instructions of examples use `npm`. We use `pnpm` instead if we want to install the entire monorepo and build & link vite-plugin-ssr's source code.
+> The `README` instructions of examples use `npm`. We use `pnpm` instead if we want to install the entire monorepo and build & link vike's source code.
 
 To run the example:
 

@@ -64,12 +64,12 @@ async function prerender() {
       const pageContext = { pageProps }
       return {
         url,
-        // Because we already provide the `pageContext`, vite-plugin-ssr will *not* call
+        // Because we already provide the `pageContext`, vike will *not* call
         // the `onBeforeRender()` hook for `url`.
         pageContext
       }
       /* We could also only return `url` and not provide `pageContext`. In that case
-       * vite-plugin-ssr would call the `onBeforeRender()` hook. But that would be wasteful
+       * vike would call the `onBeforeRender()` hook. But that would be wasteful
        * since we already have all the data of all movies from our `await Movie.findAll()` call.
        * Instead, we provide `pageContext` to make the pre-rendering build step faster.
        */

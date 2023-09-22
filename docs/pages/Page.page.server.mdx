@@ -1,6 +1,6 @@
 The `.page.js` files can have a `export { Page }` which represents the page's root (React/Vue/...) component.
 
-`vite-plugin-ssr` doesn't do anything with `Page` and just makes it available at `pageContext.Page`:
+`vike` doesn't do anything with `Page` and just makes it available at `pageContext.Page`:
 
 ```js
 // /pages/hello.page.js
@@ -8,7 +8,7 @@ The `.page.js` files can have a `export { Page }` which represents the page's ro
 
 export { Page }
 
-// We export a JSX component, but we can export anything we want since vite-plugin-ssr doesn't
+// We export a JSX component, but we can export anything we want since vike doesn't
 // do anything with `Page`: it just makes it available at `pageContext.Page`.
 function Page() {
   return <>Hello</>
@@ -21,7 +21,7 @@ function Page() {
 
 export { render }
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import renderToHtml from 'some-ui-framework'
 
 async function render(pageContext) {

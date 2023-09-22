@@ -1,4 +1,4 @@
-import type { Config } from 'vite-plugin-ssr/types'
+import type { Config } from 'vike/types'
 import Layout from '../layouts/LayoutDefault'
 import vikeReact from 'vike-react'
 

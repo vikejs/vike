@@ -1,5 +1,5 @@
 {
-  "name": "vite-plugin-ssr",
+  "name": "vike",
   "version": "0.4.142",
   "scripts": {
     "dev": "tsc --watch",
@@ -159,7 +159,7 @@
     }
   },
   "bin": {
-    "vite-plugin-ssr": "./node/cli/bin-entry.js"
+    "vike": "./node/cli/bin-entry.js"
   },
   "devDependencies": {
     "@brillout/part-regex": "^0.1.2",
@@ -177,7 +177,7 @@
     "node": ">=16.0.0"
   },
   "description": "Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.",
-  "repository": "https://github.com/brillout/vite-plugin-ssr",
+  "repository": "https://github.com/brillout/vike",
   "files": [
     "dist/",
     "cli.js",

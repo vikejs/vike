@@ -38,7 +38,7 @@ const manifestTempFile = '_temp_manifest.json'
 function buildConfig(): Plugin {
   let generateManifest: boolean
   return {
-    name: 'vite-plugin-ssr:buildConfig',
+    name: 'vike:buildConfig',
     apply: 'build',
     enforce: 'post',
     configResolved: {
@@ -164,7 +164,7 @@ function analyzeServerEntries(pageConfigs: PageConfigBuildTime[]) {
   return serverEntries
 }
 
-// Ensure Rollup creates entries for each page file, see https://github.com/brillout/vite-plugin-ssr/issues/350
+// Ensure Rollup creates entries for each page file, see https://github.com/brillout/vike/issues/350
 // (Otherwise the page files may be missing in the client manifest.json)
 async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedByServer: boolean) {
   const isForClientSide = !viteIsSSR(config)
@@ -220,7 +220,7 @@ function prependEntriesDir(entryName: string): string {
 
 function resolve(filePath: string) {
   assert(filePath.startsWith('dist/'))
-  // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vite-plugin-ssr/dist/esm/node/plugin/plugins/
+  // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vike/dist/esm/node/plugin/plugins/
   return require_.resolve(`../../../../../${filePath}`)
 }
 
@@ -272,6 +272,6 @@ function assertRollupInput(config: ResolvedConfig): void {
   const htmlInput = htmlInputs[0]
   assertUsage(
     htmlInput === undefined,
-    `The entry ${htmlInput} of config build.rollupOptions.input is an HTML entry which is forbidden when using vite-plugin-ssr, instead follow https://vike.dev/add`
+    `The entry ${htmlInput} of config build.rollupOptions.input is an HTML entry which is forbidden when using vike, instead follow https://vike.dev/add`
   )
 }

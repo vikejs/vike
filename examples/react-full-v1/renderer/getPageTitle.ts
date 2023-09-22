@@ -1,6 +1,6 @@
 export { getPageTitle }
 
-import type { PageContext } from 'vite-plugin-ssr/types'
+import type { PageContext } from 'vike/types'
 
 function getPageTitle(pageContext: PageContext): string {
   const title =

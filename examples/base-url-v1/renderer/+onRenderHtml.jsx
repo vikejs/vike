@@ -4,7 +4,7 @@ export default onRenderHtml
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { PageShell } from './PageShell'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 // Vite automatically injects the Base URL to `logoUrl`.
 import logoUrl from './logo.svg'
 

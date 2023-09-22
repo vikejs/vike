@@ -1,4 +1,4 @@
-// This file isn't processed by Vite, see https://github.com/brillout/vite-plugin-ssr/issues/562
+// This file isn't processed by Vite, see https://github.com/brillout/vike/issues/562
 // Consequently:
 //  - When changing this file, you needed to manually restart your server for your changes to take effect.
 //  - To use your environment variables defined in your .env files, you need to install dotenv, see https://vike.dev/env
@@ -6,7 +6,7 @@
 
 import express from 'express'
 import compression from 'compression'
-import { renderPage } from 'vite-plugin-ssr/server'
+import { renderPage } from 'vike/server'
 import { root } from './root.js'
 const isProduction = process.env.NODE_ENV === 'production'
 

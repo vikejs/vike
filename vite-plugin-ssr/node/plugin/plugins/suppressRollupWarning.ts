@@ -7,7 +7,7 @@ type RollupWarning = Rollup.RollupWarning
 
 function suppressRollupWarning(): Plugin {
   return {
-    name: 'vite-plugin-ssr:suppressRollupWarning',
+    name: 'vike:suppressRollupWarning',
     apply: 'build',
     enforce: 'post',
     async configResolved(config) {

@@ -19,11 +19,11 @@ import { errPostcss } from './fixture-errors/errPostcss.js'
 
 describe('getPrettyErrorWithCodeSnippet() - success', () => {
   it('real use case - @vitejs/plugin-react-swc', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(errSwc, '/home/rom/code/vite-plugin-ssr/examples/react-full-v1')
+    const formatted = getPrettyErrorWithCodeSnippet(errSwc, '/home/rom/code/vike/examples/react-full-v1')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /pages/hello/+Page.tsx because:
       × Expected ';', '}' or <eof>
-         ╭─[/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/hello/+Page.tsx:1:1]
+         ╭─[/home/rom/code/vike/examples/react-full-v1/pages/hello/+Page.tsx:1:1]
        1 │ export default Page
        2 │ 
        3 │ impeort React from 'react'
@@ -39,22 +39,22 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   })
 
   it('real use case - @vitejs/plugin-react-swc - big JSX error', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(errSwcBig, '/home/rom/code/vite-plugin-ssr/examples/react-full-v1')
+    const formatted = getPrettyErrorWithCodeSnippet(errSwcBig, '/home/rom/code/vike/examples/react-full-v1')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /pages/index/+Page.tsx because:
       × Expression expected
-          ╭─[/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+Page.tsx:6:1]
+          ╭─[/home/rom/code/vike/examples/react-full-v1/pages/index/+Page.tsx:6:1]
         6 │ 
         7 │ function Page() {
         8 │   return (
         9 │     <>
           ·      ─
        10 │       <h1>
-       11 │         Welcome to <code>vite-plugin-ssr</code>
+       11 │         Welcome to <code>vike</code>
        12 │       <h1>
           ╰────
         × Unexpected token. Did you mean \`{'}'}\` or \`&rbrace;\`?
-          ╭─[/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+Page.tsx:29:1]
+          ╭─[/home/rom/code/vike/examples/react-full-v1/pages/index/+Page.tsx:29:1]
        29 │       </p>
        30 │     </>
        31 │   )
@@ -62,7 +62,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
           · ▲
           ╰────
         × Unterminated JSX contents
-          ╭─[/home/rom/code/vite-plugin-ssr/examples/react-full-v1/pages/index/+Page.tsx:27:1]
+          ╭─[/home/rom/code/vike/examples/react-full-v1/pages/index/+Page.tsx:27:1]
        27 │               Random Page
        28 │             </button>
        29 │           </p>
@@ -76,12 +76,12 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   })
 
   it('real use case - @vitejs/plugin-vue - SFC HTML', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(errVueHtml, '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1')
+    const formatted = getPrettyErrorWithCodeSnippet(errVueHtml, '/home/rom/code/vike/examples/vue-full-v1')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /pages/index/+Page.vue because:
       Element is missing end tag.
       1  |  <template>
-      2  |    <h1>Welcome to <code>vite-plugin-ssr</code><h1>
+      2  |    <h1>Welcome to <code>vike</code><h1>
          |                                                ^
       3  |    This page is:
       4  |    <ul>"
@@ -91,7 +91,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   it('real use case - @vitejs/plugin-vue - SFC JavaScript', () => {
     const formatted = getPrettyErrorWithCodeSnippet(
       errVueJavascript,
-      '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1'
+      '/home/rom/code/vike/examples/vue-full-v1'
     )
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /pages/index/+Page.vue because:
@@ -100,13 +100,13 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
       13 |  <script lang=\\"ts\\" setup>
       14 |  imeport Counter from '../../components/Counter.vue'
          |         ^
-      15 |  import { navigate } from 'vite-plugin-ssr/client/router.js'
+      15 |  import { navigate } from 'vike/client/router.js'
       16 |"
     `)
   })
 
   it('real use case - @vitejs/plugin-vue - SFC CSS', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(errVueCss, '/home/rom/code/vite-plugin-ssr/examples/vue-full-v1')
+    const formatted = getPrettyErrorWithCodeSnippet(errVueCss, '/home/rom/code/vike/examples/vue-full-v1')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /renderer/PageShell.vue because:
       Unexpected }
@@ -120,7 +120,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   })
 
   it('real use case - @vitejs/plugin-react - JavaScript esbuild', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(errEsbuild, '/home/rom/code/vite-plugin-ssr/examples/react-full')
+    const formatted = getPrettyErrorWithCodeSnippet(errEsbuild, '/home/rom/code/vike/examples/react-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /renderer/PageShell.tsx because:
       Unexpected \\"}\\"
@@ -134,7 +134,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   })
 
   it('real use case - @vitejs/plugin-react - JavaScript Babel', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(errBabelReact, '/home/rom/code/vite-plugin-ssr/examples/react-full')
+    const formatted = getPrettyErrorWithCodeSnippet(errBabelReact, '/home/rom/code/vike/examples/react-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /renderer/PageShell.tsx because:
       Unexpected token 
@@ -149,7 +149,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   })
 
   it('real use case - vite-plugin-solid - JavaScript with Babel', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(errBabelSolid, '/home/rom/code/vite-plugin-ssr/examples/solid-spa')
+    const formatted = getPrettyErrorWithCodeSnippet(errBabelSolid, '/home/rom/code/vike/examples/solid-spa')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /renderer/_default.page.client.tsx because:
       Invalid left-hand side in assignment expression. 
@@ -172,7 +172,7 @@ describe('getPrettyErrorWithCodeSnippet() - failure', () => {
   })
 
   it('real use case - @vitejs/plugin-react - CSS with PostCSS', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(errPostcss, '/home/rom/code/vite-plugin-ssr/examples/react-full')
+    const formatted = getPrettyErrorWithCodeSnippet(errPostcss, '/home/rom/code/vike/examples/react-full')
     // The code snippet should be (note the erroneous double }} at line 3 column 2):
     // ```css
     // a {

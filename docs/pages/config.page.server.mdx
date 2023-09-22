@@ -8,7 +8,7 @@ import HeaderFileIntro from '../components/HeaderFileIntro.mdx'
 
 ## `+config.h.js` files
 
-The `+config.h.js` files define the interface between your app and vite-plugin-ssr.
+The `+config.h.js` files define the interface between your app and vike.
 
 ```js
 // /pages/about/+config.h.js
@@ -20,7 +20,7 @@ export default { Page }
 ```jsx
 // /pages/about/Page.jsx
 
-export default () => <>Vite-plugin-ssr Demo</>
+export default () => <>Vike Demo</>
 ```
 
 > The URL `/about` is determined by <Link text="Filesystem Routing" href="/filesystem-routing" />.
@@ -29,7 +29,7 @@ export default () => <>Vite-plugin-ssr Demo</>
 // /pages/product/+config.h.ts
 
 import Page from './Page'
-import type { Config } from 'vite-plugin-ssr/types'
+import type { Config } from 'vike/types'
 
 // Define a new page with URL '/product/@id'
 export default {
@@ -97,7 +97,7 @@ You can use `+config.h.js` to define default values for all (or only a group of)
 // Defaults for all pages
 export default {
   // Default <title> value
-  title: 'My vite-plugin-ssr app'
+  title: 'My vike app'
 }
 ```
 

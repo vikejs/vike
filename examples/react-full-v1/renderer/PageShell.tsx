@@ -2,7 +2,7 @@ import React from 'react'
 import logoUrl from './logo.svg'
 import { PageContextProvider } from './usePageContext'
 import { Link } from './Link'
-import type { PageContext } from 'vite-plugin-ssr/types'
+import type { PageContext } from 'vike/types'
 
 export { PageShell }
 

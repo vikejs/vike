@@ -13,7 +13,7 @@ function parseGlobResults(pageFilesExports: unknown): {
   pageConfigGlobal: PageConfigGlobal
 } {
   assert(hasProp(pageFilesExports, 'isGeneratedFile'))
-  assert(pageFilesExports.isGeneratedFile !== false, `vite-plugin-ssr was re-installed(/re-built). Restart your app.`)
+  assert(pageFilesExports.isGeneratedFile !== false, `vike was re-installed(/re-built). Restart your app.`)
   assert(pageFilesExports.isGeneratedFile === true, `\`isGeneratedFile === ${pageFilesExports.isGeneratedFile}\``)
   assert(hasProp(pageFilesExports, 'pageFilesLazy', 'object'))
   assert(hasProp(pageFilesExports, 'pageFilesEager', 'object'))
@@ -51,10 +51,10 @@ function parseGlobResults(pageFilesExports: unknown): {
     pageFile.loadExportNames = async () => {
       if (!('exportNames' in pageFile)) {
         const moduleExports = await loadModule()
-        // Vite 2 seems to choke following assertion: https://github.com/brillout/vite-plugin-ssr/issues/455
+        // Vite 2 seems to choke following assertion: https://github.com/brillout/vike/issues/455
         assertUsage(
           'exportNames' in moduleExports,
-          'You seem to be using Vite 2 but the latest vite-plugin-ssr versions only work with Vite 3'
+          'You seem to be using Vite 2 but the latest vike versions only work with Vite 3'
         )
         assert(hasProp(moduleExports, 'exportNames', 'string[]'), pageFile.filePath)
         pageFile.exportNames = moduleExports.exportNames

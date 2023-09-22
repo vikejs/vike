@@ -3,7 +3,7 @@ export default onRenderHtml
 
 import renderToString from 'preact-render-to-string'
 import { PageShell } from './PageShell'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import logoUrl from './logo.svg'
 
 async function onRenderHtml(pageContext) {
@@ -17,7 +17,7 @@ async function onRenderHtml(pageContext) {
   // See https://vike.dev/head
   const { documentProps } = pageContext
   const title = (documentProps && documentProps.title) || 'Vite SSR app'
-  const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
+  const desc = (documentProps && documentProps.description) || 'App using Vite + vike'
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html lang="en">

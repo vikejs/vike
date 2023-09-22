@@ -3,7 +3,7 @@ export default onRenderHtml
 
 import { generateHydrationScript, renderToStream } from 'solid-js/web'
 import { PageLayout } from './PageLayout'
-import { escapeInject, dangerouslySkipEscape, stampPipe } from 'vite-plugin-ssr/server'
+import { escapeInject, dangerouslySkipEscape, stampPipe } from 'vike/server'
 import { PageContext } from './types'
 import logoUrl from './logo.svg'
 
@@ -14,7 +14,7 @@ function onRenderHtml(pageContext: PageContext) {
   // See https://vike.dev/head
   const { documentProps } = pageContext
   const title = (documentProps && documentProps.title) || 'Vite SSR app'
-  const description = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
+  const description = (documentProps && documentProps.description) || 'App using Vite + vike'
 
   return escapeInject`<!DOCTYPE html>
     <html lang="en">
