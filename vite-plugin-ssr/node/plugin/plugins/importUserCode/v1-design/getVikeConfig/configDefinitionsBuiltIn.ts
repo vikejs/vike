@@ -16,25 +16,25 @@ import { getConfigEnv, isConfigSet } from '../helpers.js'
 // For users
 /** The meta definition of a config.
  *
- * https://vite-plugin-ssr.com/meta
+ * https://vike.dev/meta
  */
 type ConfigDefinition = {
   /** In what environment(s) the config value is loaded.
    *
-   * https://vite-plugin-ssr.com/meta
+   * https://vike.dev/meta
    */
   env: ConfigEnv
   /** Disable config overriding and make config values cumulative instead.
    *
    * @default false
    *
-   * https://vite-plugin-ssr.com/meta
+   * https://vike.dev/meta
    */
   cumulative?: boolean
   /**
    * Define a so-called "Shortcut Config".
    *
-   * https://vite-plugin-ssr.com/meta
+   * https://vike.dev/meta
    */
   effect?: ConfigEffect
 }
@@ -42,12 +42,12 @@ type ConfigDefinition = {
 type ConfigEffect = (config: {
   /** The resolved config value.
    *
-   * https://vite-plugin-ssr.com/meta
+   * https://vike.dev/meta
    */
   configValue: unknown
   /** Place where the resolved config value comes from.
    *
-   * https://vite-plugin-ssr.com/meta
+   * https://vike.dev/meta
    */
   configDefinedAt: `Config ${string}`
 }) => Config | undefined

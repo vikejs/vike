@@ -290,7 +290,7 @@ function useClientRouter() {
     } else {
       assertWarning(
         !isReact(),
-        'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vite-plugin-ssr.com/clientRouting',
+        'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vike.dev/clientRouting',
         { onlyOnce: true }
       )
     }

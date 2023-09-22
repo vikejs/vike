@@ -1,4 +1,4 @@
-// https://vite-plugin-ssr.com/onRenderHtml
+// https://vike.dev/onRenderHtml
 export default render
 
 import { escapeInject } from 'vite-plugin-ssr/server'

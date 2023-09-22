@@ -1,4 +1,4 @@
-// https://vite-plugin-ssr.com/onRenderHtml
+// https://vike.dev/onRenderHtml
 export default onRenderHtml
 
 import { generateHydrationScript, renderToStream } from 'solid-js/web'
@@ -11,7 +11,7 @@ function onRenderHtml(pageContext: PageContext) {
   const { pipe } = renderToStream(() => <PageLayout pageContext={pageContext} />)
   stampPipe(pipe, 'node-stream')
 
-  // See https://vite-plugin-ssr.com/head
+  // See https://vike.dev/head
   const { documentProps } = pageContext
   const title = (documentProps && documentProps.title) || 'Vite SSR app'
   const description = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'

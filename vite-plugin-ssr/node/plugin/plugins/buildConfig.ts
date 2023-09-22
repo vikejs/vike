@@ -91,7 +91,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
   const { pageConfigs } = await getVikeConfig(config.root, false, configVps.extensions)
   assertUsage(
     Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,
-    'At least one page should be defined, see https://vite-plugin-ssr.com/add'
+    'At least one page should be defined, see https://vike.dev/add'
   )
   if (viteIsSSR(config)) {
     const serverEntries = analyzeServerEntries(pageConfigs)
@@ -272,6 +272,6 @@ function assertRollupInput(config: ResolvedConfig): void {
   const htmlInput = htmlInputs[0]
   assertUsage(
     htmlInput === undefined,
-    `The entry ${htmlInput} of config build.rollupOptions.input is an HTML entry which is forbidden when using vite-plugin-ssr, instead follow https://vite-plugin-ssr.com/add`
+    `The entry ${htmlInput} of config build.rollupOptions.input is an HTML entry which is forbidden when using vite-plugin-ssr, instead follow https://vike.dev/add`
   )
 }

@@ -1,1 +1,1 @@
-Search [vite-plugin-ssr.com](https://vite-plugin-ssr.com) (`CTRL+K`) for more examples.
+Search [vike.dev](https://vike.dev) (`CTRL+K`) for more examples.

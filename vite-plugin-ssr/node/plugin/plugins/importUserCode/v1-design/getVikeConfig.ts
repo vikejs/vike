@@ -742,7 +742,7 @@ function assertCodeFileEnv(importFilePath: string, configEnv: ConfigEnvInternal,
         ...[configDifferentEnv, { configName, configEnv }].map(
           (c) => `  - config ${pc.cyan(c.configName)} which value lives in environment ${pc.cyan(c.configEnv)}`
         ),
-        'Defining config values in the same file is allowed only if they live in the same environment, see https://vite-plugin-ssr.com/header-file/import-from-same-file'
+        'Defining config values in the same file is allowed only if they live in the same environment, see https://vike.dev/header-file/import-from-same-file'
       ].join('\n')
     )
   }
@@ -1185,7 +1185,7 @@ function getExtendsImportData(configFileExports: Record<string, unknown>, config
   const filePathToShowToUser = getFilePathToShowToUser(configFilePath)
   assertDefaultExportObject(configFileExports, filePathToShowToUser)
   const defaultExports = configFileExports.default
-  const wrongUsage = `${filePathToShowToUser} sets the config 'extends' to an invalid value, see https://vite-plugin-ssr.com/extends`
+  const wrongUsage = `${filePathToShowToUser} sets the config 'extends' to an invalid value, see https://vike.dev/extends`
   let extendList: string[]
   if (!('extends' in defaultExports)) {
     return []

@@ -7,7 +7,7 @@ import type { Writable } from 'stream'
 export { render }
 export { passToClient }
 
-// See https://vite-plugin-ssr.com/data-fetching
+// See https://vike.dev/data-fetching
 const passToClient = ['pageProps']
 
 async function render(pageContext: any) {

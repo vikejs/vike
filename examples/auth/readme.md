@@ -1,4 +1,4 @@
-Authentication example, see [vite-plugin-ssr.com/auth](https://vite-plugin-ssr.com/auth).
+Authentication example, see [vike.dev/auth](https://vike.dev/auth).
 
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr

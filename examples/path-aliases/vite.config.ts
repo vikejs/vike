@@ -5,7 +5,7 @@ import { UserConfig } from 'vite'
 const config: UserConfig = {
   resolve: {
     alias: {
-      // We prefix path aliases with '#', see https://vite-plugin-ssr.com/path-aliases#vite
+      // We prefix path aliases with '#', see https://vike.dev/path-aliases#vite
       '#root': __dirname
     }
   },

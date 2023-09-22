@@ -90,7 +90,7 @@ function injectToHtmlEnd(htmlEnd: string, htmlTags: HtmlTag[]): string {
   return htmlEnd
 }
 
-// https://vite-plugin-ssr.com/stream#initial-data-after-stream-end
+// https://vike.dev/stream#initial-data-after-stream-end
 type PageContextPromise = null | Promise<unknown> | (() => void | Promise<unknown>)
 async function resolvePageContextPromise(pageContext: {
   _pageContextPromise: PageContextPromise

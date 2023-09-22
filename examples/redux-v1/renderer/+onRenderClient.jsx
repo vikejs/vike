@@ -1,4 +1,4 @@
-// https://vite-plugin-ssr.com/onRenderClient
+// https://vike.dev/onRenderClient
 export default onRenderClient
 
 import React from 'react'
@@ -9,7 +9,7 @@ import { getStore } from './store'
 async function onRenderClient(pageContext) {
   const { Page } = pageContext
   // We initilaize the store on every render because we use Server Routing. If we use Client Routing, then we should initialize the store only once instead.
-  // (See https://vite-plugin-ssr.com/server-routing-vs-client-routing for more information about Client Routing and Server Routing.)
+  // (See https://vike.dev/server-routing-vs-client-routing for more information about Client Routing and Server Routing.)
   const store = getStore(pageContext.PRELOADED_STATE)
   hydrateRoot(
     document.getElementById('react-root'),

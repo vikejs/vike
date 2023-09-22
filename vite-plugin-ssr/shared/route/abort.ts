@@ -45,10 +45,10 @@ type AbortReason = Required<({ abortReason?: unknown } & Vike.PageContext)['abor
 /**
  * Abort the rendering of the current page, and redirect the user to another URL instead.
  *
- * https://vite-plugin-ssr.com/redirect
+ * https://vike.dev/redirect
  *
  * @param url The URL to redirect to.
- * @param statusCode By default a temporary redirection (`302`) is performed. For permanent redirections (`301`), use `config.redirects` https://vite-plugin-ssr.com/redirects instead or, alternatively, set the `statusCode` argument to `301`.
+ * @param statusCode By default a temporary redirection (`302`) is performed. For permanent redirections (`301`), use `config.redirects` https://vike.dev/redirects instead or, alternatively, set the `statusCode` argument to `301`.
  */
 function redirect(url: `/${string}` | `https://${string}` | `http://${string}`, statusCode?: 301 | 302): AbortRedirect {
   const abortCaller = 'throw redirect()' as const
@@ -74,7 +74,7 @@ function redirect(url: `/${string}` | `https://${string}` | `http://${string}`, 
 /**
  * Abort the rendering of the current page, and render the error page instead.
  *
- * https://vite-plugin-ssr.com/render
+ * https://vike.dev/render
  *
  * @param abortStatusCode
  * One of the following:
@@ -85,16 +85,16 @@ function redirect(url: `/${string}` | `https://${string}` | `http://${string}`, 
  *   `429` Too Many Requests (rate limiting)
  *   `500` Internal Server Error (app has a bug)
  *   `503` Service Unavailable (server is overloaded, a third-party API isn't responding)
- * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
+ * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vike.dev/error-page
  */
 function render(abortStatusCode: 401 | 403 | 404 | 410 | 429 | 500 | 503, abortReason?: AbortReason): Error
 /**
  * Abort the rendering of the current page, and render another page instead.
  *
- * https://vite-plugin-ssr.com/render
+ * https://vike.dev/render
  *
  * @param url The URL to render.
- * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vite-plugin-ssr.com/error-page
+ * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vike.dev/error-page
  */
 function render(url: `/${string}`, abortReason?: AbortReason): Error
 function render(value: string | number, abortReason?: unknown): Error {
@@ -172,14 +172,14 @@ function AbortRender(pageContextAbort: PageContextAbort): Error {
 
 // TODO/v1-release: remove
 /**
- * @deprecated Use `throw render()` or `throw redirect()` instead, see https://vite-plugin-ssr.com/render'
+ * @deprecated Use `throw render()` or `throw redirect()` instead, see https://vike.dev/render'
  */
 function RenderErrorPage({ pageContext = {} }: { pageContext?: Record<string, unknown> } = {}): Error {
   assertWarning(
     false,
     `${pc.cyan('throw RenderErrorPage()')} is deprecated and will be removed in the next major release. Use ${pc.cyan(
       'throw render()'
-    )} or ${pc.cyan('throw redirect()')} instead, see https://vite-plugin-ssr.com/render`,
+    )} or ${pc.cyan('throw redirect()')} instead, see https://vike.dev/render`,
     { onlyOnce: false }
   )
   let abortStatusCode: 404 | 500 = 404

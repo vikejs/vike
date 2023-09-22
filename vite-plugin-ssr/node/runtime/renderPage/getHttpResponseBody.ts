@@ -28,7 +28,7 @@ import { getHtmlString, type HtmlRender } from '../html/renderHtml.js'
 import type { RenderHook } from './executeOnRenderHtmlHook.js'
 import pc from '@brillout/picocolors'
 
-const streamDocs = 'See https://vite-plugin-ssr.com/stream for more information.'
+const streamDocs = 'See https://vike.dev/stream for more information.'
 
 type HttpResponseBody = {
   body: string

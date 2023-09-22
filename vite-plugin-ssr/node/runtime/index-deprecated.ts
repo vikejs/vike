@@ -18,7 +18,7 @@ import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/abort.js
  *   import { render } from 'vite-plugin-ssr/abort'
  *   ```
  *
- * See https://vite-plugin-ssr.com/render
+ * See https://vike.dev/render
  */
 export const RenderErrorPage = (...args: Parameters<typeof RenderErrorPage_>): Error => {
   assertWarning(
@@ -28,7 +28,7 @@ export const RenderErrorPage = (...args: Parameters<typeof RenderErrorPage_>): E
       pc.red("  import { RenderErrorPage } from 'vite-plugin-ssr'"),
       'With:',
       pc.green("  import { render } from 'vite-plugin-ssr/abort'"),
-      'See https://vite-plugin-ssr.com/render'
+      'See https://vike.dev/render'
     ].join('\n'),
     { onlyOnce: true, showStackTrace: true }
   )

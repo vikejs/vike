@@ -1,11 +1,11 @@
 import type { Config } from 'vite-plugin-ssr/types'
 
-// https://vite-plugin-ssr.com/config
+// https://vike.dev/config
 export default {
   passToClient: ['pageProps', 'title', 'someAsyncProps'],
   clientRouting: true,
   hydrationCanBeAborted: true,
-  // https://vite-plugin-ssr.com/meta
+  // https://vike.dev/meta
   meta: {
     // Create new config 'title'
     title: {

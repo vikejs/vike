@@ -35,7 +35,7 @@ type PageContextClientWithServerRouting = PageContextBuiltInClientWithServerRout
 
 /** Built-in `pageContext` properties set by vite-plugin-ssr.
  *
- * https://vite-plugin-ssr.com/pageContext
+ * https://vike.dev/pageContext
  */
 type PageContextBuiltInServer<Page = [never]> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsServer
 
@@ -49,67 +49,67 @@ type PageContextBuiltInCommon<
 > = {
   /** The `export { Page }` of your `.page.js` file.
    *
-   * https://vite-plugin-ssr.com/Page
+   * https://vike.dev/Page
    */
   Page: Page extends [never] ? Config['Page'] : Page
   /** Route Parameters, e.g. `pageContext.routeParams.productId` for a Route String `/product/@productId`.
    *
-   * https://vite-plugin-ssr.com/route-string
+   * https://vike.dev/route-string
    */
   routeParams: Record<string, string>
   /** The page's configuration values.
    *
-   * https://vite-plugin-ssr.com/config
+   * https://vike.dev/config
    */
   config: PageContextConfig
   /** The page's configuration, including the configs origin and overriden configs.
    *
-   * https://vite-plugin-ssr.com/config
+   * https://vike.dev/config
    */
   configEntries: ConfigEntries
   /** Custom Exports/Hooks.
    *
-   * https://vite-plugin-ssr.com/exports
+   * https://vike.dev/exports
    */
   exports: Record<string, unknown>
   /**
    * Same as `pageContext.exports` but cumulative.
    *
-   * https://vite-plugin-ssr.com/exports
+   * https://vike.dev/exports
    */
   exportsAll: ExportsAll
   /** The URL of the current page */
   urlOriginal: string
   /** If an error occurs, whether the error is a `404 Page Not Found`.
    *
-   * https://vite-plugin-ssr.com/error-page
+   * https://vike.dev/error-page
    */
   is404: boolean | null
   /**
    * Whether the page was navigated by the client-side router.
    *
-   * https://vite-plugin-ssr.com/pageContext
+   * https://vike.dev/pageContext
    */
   isClientSideNavigation: boolean
 
   /**
    * The reason why the original page was aborted. Usually used for showing a custom message on the error page.
    *
-   * https://vite-plugin-ssr.com/render
+   * https://vike.dev/render
    */
   abortReason?: unknown
 
   /**
    * The status code set by `throw render(abortStatusCode)`.
    *
-   * https://vite-plugin-ssr.com/render
+   * https://vike.dev/render
    */
   abortStatusCode?: AbortStatusCode
 
   /**
    * Error that occured while rendering.
    *
-   * https://vite-plugin-ssr.com/errors
+   * https://vike.dev/errors
    */
   errorWhileRendering?: unknown
 
@@ -124,7 +124,7 @@ type PageContextBuiltInCommon<
 
 /** Client-side built-in `pageContext` properties set by vite-plugin-ssr (Client Routing).
  *
- * https://vite-plugin-ssr.com/pageContext
+ * https://vike.dev/pageContext
  */
 type PageContextBuiltInClientWithClientRouting<Page = unknown> = Partial<PageContextBuiltInCommon<Page>> &
   Pick<
@@ -143,7 +143,7 @@ type PageContextBuiltInClientWithClientRouting<Page = unknown> = Partial<PageCon
 
 /** Client-side built-in `pageContext` properties set by vite-plugin-ssr (Server Routing).
  *
- * https://vite-plugin-ssr.com/pageContext
+ * https://vike.dev/pageContext
  */
 type PageContextBuiltInClientWithServerRouting<Page = unknown> = Partial<PageContextBuiltInCommon<Page>> &
   Pick<PageContextBuiltInCommon<Page>, 'Page' | 'pageExports' | 'exports' | 'abortReason'> & {

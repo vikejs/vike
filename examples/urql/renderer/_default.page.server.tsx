@@ -8,13 +8,13 @@ import type { PageContext } from './types'
 import type { PageContextBuiltInServer } from 'vite-plugin-ssr/types'
 import 'isomorphic-fetch'
 
-// See https://vite-plugin-ssr.com/data-fetching
+// See https://vike.dev/data-fetching
 export const passToClient = ['pageProps', 'urlPathname', 'urqlState']
 
 export async function render(pageContext: PageContextBuiltInServer & PageContext) {
   const { pageHtml } = pageContext
 
-  // See https://vite-plugin-ssr.com/head
+  // See https://vike.dev/head
   const { documentProps } = pageContext
   const title = (documentProps && documentProps.title) || 'Vite SSR app'
   const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'

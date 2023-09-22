@@ -1,4 +1,4 @@
-// https://vite-plugin-ssr.com/onRenderHtml
+// https://vike.dev/onRenderHtml
 export default onRenderHtml
 
 import React from 'react'

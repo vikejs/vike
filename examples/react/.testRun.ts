@@ -25,7 +25,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod', isCJS?
     expectHtmlCommon(html)
     if (isCJS) {
       expectLog(
-        'package.json#type to "module" (and therefore writing ESM code instead of CJS code), see https://vite-plugin-ssr.com/CJS',
+        'package.json#type to "module" (and therefore writing ESM code instead of CJS code), see https://vike.dev/CJS',
         (log) => log.logSource === 'stderr'
       )
     }

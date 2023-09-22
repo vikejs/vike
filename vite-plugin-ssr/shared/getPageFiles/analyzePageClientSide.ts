@@ -71,7 +71,7 @@ async function analyzePageClientSideInit(
   )
 }
 
-// [WIP] Just an experiment needed by https://vite-plugin-ssr.com/banner
+// [WIP] Just an experiment needed by https://vike.dev/banner
 //  - Not sure I want to make something like a public API: the CSS of `_default.page.server.js` are still loaded -> weird DX.
 function removeOverridenPageFiles(pageFilesClientSide: PageFile[]) {
   const pageFilesClientSide_: PageFile[] = []

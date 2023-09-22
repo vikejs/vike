@@ -127,9 +127,9 @@ function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
     assertUsage(
       false,
       [
-        `No ${hookName}() hook found, see https://vite-plugin-ssr.com/${hookName}`
+        `No ${hookName}() hook found, see https://vike.dev/${hookName}`
         /*
-      'See https://vite-plugin-ssr.com/render-modes for more information.',
+      'See https://vike.dev/render-modes for more information.',
       [
         // 'Loaded config files (none of them define the onRenderHtml() hook):',
         'Loaded server-side page files (none of them `export { render }`):',
@@ -161,7 +161,7 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
     'escapeInject`<html>...</html>`'
   )} template tag or a string returned by ${pc.cyan(
     'dangerouslySkipEscape()'
-  )}, see https://vite-plugin-ssr.com/escapeInject` as const
+  )}, see https://vike.dev/escapeInject` as const
   if (typeof hookReturnValue === 'string') {
     assertWarning(
       false,
@@ -216,14 +216,14 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
     if (isPromise(val) || isCallable(val)) {
       assertWarning(
         !isPromise(val),
-        `${errBegin} is a promise which is deprecated in favor of async functions, see https://vite-plugin-ssr.com/stream#initial-data-after-stream-end`,
+        `${errBegin} is a promise which is deprecated in favor of async functions, see https://vike.dev/stream#initial-data-after-stream-end`,
         { onlyOnce: true }
       )
       pageContextPromise = val
     } else {
       assertUsage(
         isObject(val),
-        `${errBegin} should be an object or an async function, see https://vite-plugin-ssr.com/stream#initial-data-after-stream-end`
+        `${errBegin} should be an object or an async function, see https://vike.dev/stream#initial-data-after-stream-end`
       )
       assertPageContextProvidedByUser(val, renderHook)
       pageContextProvidedByRenderHook = val

@@ -1,4 +1,4 @@
-// https://vite-plugin-ssr.com/config
+// https://vike.dev/config
 export default {
   title: 'Some Markdown Page'
 }

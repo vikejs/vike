@@ -31,7 +31,7 @@ function assertPageContextProvidedByUser(
     !('_objectCreatedByVitePluginSsr' in pageContextProvidedByUser),
     `${errPrefix} shouldn't be the whole ${pc.cyan(
       'pageContext'
-    )} object, see https://vite-plugin-ssr.com/pageContext-manipulation#do-not-return-entire-pagecontext`
+    )} object, see https://vike.dev/pageContext-manipulation#do-not-return-entire-pagecontext`
   )
 
   // In principle, it's possible to use onBeforeRoute()` to override and define the whole routing.
@@ -48,6 +48,6 @@ function assertPageContextProvidedByUser(
     !('is404' in pageContextProvidedByUser),
     `${errPrefix} sets ${pc.cyan('pageContext.is404')} which is forbidden, use ${pc.cyan(
       'throw render()'
-    )} instead, see https://vite-plugin-ssr.com/render`
+    )} instead, see https://vike.dev/render`
   )
 }

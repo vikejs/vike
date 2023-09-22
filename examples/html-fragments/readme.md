@@ -1,4 +1,4 @@
-Example of using [HTML fragments](https://vite-plugin-ssr.com/escapeInject#html-fragments).
+Example of using [HTML fragments](https://vike.dev/escapeInject#html-fragments).
 
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr

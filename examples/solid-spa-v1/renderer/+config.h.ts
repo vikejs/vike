@@ -1,8 +1,8 @@
 import type { Config } from 'vite-plugin-ssr/types'
 
-// https://vite-plugin-ssr.com/config
+// https://vike.dev/config
 export default {
-  // https://vite-plugin-ssr.com/meta
+  // https://vike.dev/meta
   meta: {
     Page: {
       // Our pages are rendered as SPA, we therefore load our Page component only on the client-side

@@ -1,7 +1,7 @@
 import type { Config } from 'vite-plugin-ssr/types'
 import { onHydrationEnd, onPageTransitionStart, onPageTransitionEnd } from './onPageTransitionHooks'
 
-// https://vite-plugin-ssr.com/config
+// https://vike.dev/config
 export default {
   passToClient: ['pageProps', 'title'],
   clientRouting: true,
@@ -9,7 +9,7 @@ export default {
   onHydrationEnd,
   onPageTransitionStart,
   onPageTransitionEnd,
-  // https://vite-plugin-ssr.com/meta
+  // https://vike.dev/meta
   meta: {
     // Create new config 'title'
     title: {

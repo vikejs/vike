@@ -9,7 +9,7 @@ export type { PageContextUrlSources }
 
 import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter, isBrowser } from './utils.js'
 
-// Copy paste from https://vite-plugin-ssr.com/pageContext
+// Copy paste from https://vike.dev/pageContext
 type UrlParsed = {
   /** The URL origin, e.g. `https://example.com` of `https://example.com/product/42?details=yes#reviews` */
   origin: null | string
@@ -123,7 +123,7 @@ function urlGetter(this: PageContextUrlSources) {
   // TODO/v1-release: remove
   assertWarning(
     false,
-    '`pageContext.url` is outdated. Use `pageContext.urlPathname`, `pageContext.urlParsed`, or `pageContext.urlOriginal` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
+    '`pageContext.url` is outdated. Use `pageContext.urlPathname`, `pageContext.urlParsed`, or `pageContext.urlOriginal` instead. (See https://vike.dev/migration/0.4.23 for more information.)',
     { onlyOnce: true, showStackTrace: true }
   )
   return urlPathnameGetter.call(this)

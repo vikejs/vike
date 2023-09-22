@@ -1,7 +1,7 @@
-// https://vite-plugin-ssr.com/config
+// https://vike.dev/config
 export default {
-  // https://vite-plugin-ssr.com/passToClient
+  // https://vike.dev/passToClient
   passToClient: ['pageProps', 'documentProps'],
-  // https://vite-plugin-ssr.com/clientRouting
+  // https://vike.dev/clientRouting
   clientRouting: true
 }

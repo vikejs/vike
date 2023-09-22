@@ -4,7 +4,7 @@ import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import logoUrl from './logo.svg'
 
 export { render }
-// See https://vite-plugin-ssr.com/data-fetching
+// See https://vike.dev/data-fetching
 export const passToClient = ['pageProps', 'documentProps']
 
 async function render(pageContext) {
@@ -15,7 +15,7 @@ async function render(pageContext) {
     </PageShell>
   )
 
-  // See https://vite-plugin-ssr.com/head
+  // See https://vike.dev/head
   const { documentProps } = pageContext
   const title = (documentProps && documentProps.title) || 'Vite SSR app'
   const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
@@ -37,7 +37,7 @@ async function render(pageContext) {
   return {
     documentHtml,
     pageContext: {
-      // We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
+      // We can add some `pageContext` here, which is useful if we want to do page redirection https://vike.dev/page-redirection
     }
   }
 }

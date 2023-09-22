@@ -1,4 +1,4 @@
-Minimal example of using `vite-plugin-ssr` with [Solid](https://www.solidjs.com/) in [SPA mode](https://vite-plugin-ssr.com/render-modes#spa).
+Minimal example of using `vite-plugin-ssr` with [Solid](https://www.solidjs.com/) in [SPA mode](https://vike.dev/render-modes#spa).
 
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr

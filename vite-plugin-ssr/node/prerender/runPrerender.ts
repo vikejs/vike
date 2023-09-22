@@ -133,11 +133,11 @@ type PrerenderOptions = {
   root?: string
   /** @deprecated Define `prerender({ viteConfig: { configFile }})` instead. */
   configFile?: string
-  /** @deprecated Define `partial` in vite.config.js instead, see https://vite-plugin-ssr.com/prerender-config */
+  /** @deprecated Define `partial` in vite.config.js instead, see https://vike.dev/prerender-config */
   partial?: boolean
-  /** @deprecated Define `noExtraDir` in vite.config.js instead, see https://vite-plugin-ssr.com/prerender-config */
+  /** @deprecated Define `noExtraDir` in vite.config.js instead, see https://vike.dev/prerender-config */
   noExtraDir?: boolean
-  /** @deprecated Define `parallel` in vite.config.js instead, see https://vite-plugin-ssr.com/prerender-config */
+  /** @deprecated Define `parallel` in vite.config.js instead, see https://vike.dev/prerender-config */
   parallel?: number
   /** @deprecated */
   outDir?: string
@@ -590,7 +590,7 @@ async function callOnPrerenderStartHook(
         assertWarning(
           false,
           msgPrefix +
-            ' uses pageContext.url but it should use pageContext.urlOriginal instead, see https://vite-plugin-ssr.com/migration/0.4.23',
+            ' uses pageContext.url but it should use pageContext.urlOriginal instead, see https://vike.dev/migration/0.4.23',
           { showStackTrace: true, onlyOnce: true }
         )
         return pageContext.urlOriginal
@@ -603,7 +603,7 @@ async function callOnPrerenderStartHook(
     pageContext._urlOriginalBeforeHook = pageContext.urlOriginal
   })
 
-  const docLink = 'https://vite-plugin-ssr.com/i18n#pre-rendering'
+  const docLink = 'https://vike.dev/i18n#pre-rendering'
 
   let result: unknown = await executeHook(
     () =>
@@ -666,7 +666,7 @@ async function callOnPrerenderStartHook(
       assertWarning(
         false,
         msgPrefix +
-          ' provided pageContext.url but it should provide pageContext.urlOriginal instead, see https://vite-plugin-ssr.com/migration/0.4.23',
+          ' provided pageContext.url but it should provide pageContext.urlOriginal instead, see https://vike.dev/migration/0.4.23',
         { onlyOnce: true }
       )
       pageContext.urlOriginal = pageContext.url
@@ -824,7 +824,7 @@ function warnMissingPages(
         partial,
         `Cannot pre-render page ${pageAt} because it has a non-static route, and no ${hookName}() hook returned (an) URL(s) matching the page's route. Either use a ${hookName}() hook to pre-render the page, or use the option ${pc.cyan(
           'prerender.partial'
-        )} to suppress this warning, see https://vite-plugin-ssr.com/prerender-config`,
+        )} to suppress this warning, see https://vike.dev/prerender-config`,
         { onlyOnce: true }
       )
     })
@@ -1037,7 +1037,7 @@ function checkOutdatedOptions(options: {
       options[prop] === undefined,
       `[prerender()] Option ${pc.cyan(prop)} is deprecated. Define ${pc.cyan(
         prop
-      )} in vite.config.js instead. See https://vite-plugin-ssr.com/prerender-config`,
+      )} in vite.config.js instead. See https://vike.dev/prerender-config`,
       { showStackTrace: true }
     )
   })

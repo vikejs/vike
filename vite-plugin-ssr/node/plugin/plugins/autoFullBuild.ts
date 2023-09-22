@@ -93,7 +93,7 @@ function abortViteBuildSsr(configVps: ConfigVpsResolved) {
       false,
       `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
         '$ vite build'
-      )} also builds the server-side. If you want two separate build steps then use https://vite-plugin-ssr.com/disableAutoFullBuild or use Vite's ${pc.cyan(
+      )} also builds the server-side. If you want two separate build steps then use https://vike.dev/disableAutoFullBuild or use Vite's ${pc.cyan(
         'build()'
       )} API.`,
       { onlyOnce: true }

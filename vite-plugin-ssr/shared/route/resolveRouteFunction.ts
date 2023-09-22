@@ -65,7 +65,7 @@ async function resolveRouteFunction(
     !('pageContext' in result),
     `Providing ${pc.cyan(
       'pageContext'
-    )} in Route Functions is prohibited, see https://vite-plugin-ssr.com/route-function#cannot-provide-pagecontext`
+    )} in Route Functions is prohibited, see https://vike.dev/route-function#cannot-provide-pagecontext`
   )
 
   assert(isPlainObject(routeParams))
@@ -88,7 +88,7 @@ async function resolveRouteFunction(
 function assertSyncRouting(res: unknown, errPrefix: string) {
   assertWarning(
     !isPromise(res),
-    `${errPrefix} returned a promise, but asynchronous routing is deprecated and will be removed in the next major release, see https://vite-plugin-ssr.com/route-function#async`,
+    `${errPrefix} returned a promise, but asynchronous routing is deprecated and will be removed in the next major release, see https://vike.dev/route-function#async`,
     { onlyOnce: true }
   )
 }

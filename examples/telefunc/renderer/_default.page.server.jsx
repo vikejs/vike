@@ -1,6 +1,6 @@
-// See https://vite-plugin-ssr.com/render-hook
+// See https://vike.dev/render-hook
 export { render }
-// See https://vite-plugin-ssr.com/data-fetching
+// See https://vike.dev/data-fetching
 export { passToClient }
 
 import React from 'react'

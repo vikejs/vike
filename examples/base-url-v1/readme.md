@@ -1,4 +1,4 @@
-Example of changing the [Base URL](https://vite-plugin-ssr.com/base-url).
+Example of changing the [Base URL](https://vike.dev/base-url).
 
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr
@@ -15,4 +15,4 @@ Highlights:
  - Referencing static assets: [renderer/_default.page.server.jsx](renderer/_default.page.server.jsx) (see `logoUrl` and `manifestUrl`).
 
 See also:
- - [vite-plugin-ssr.com > Guides > Base URL](https://vite-plugin-ssr.com/base-url)
+ - [vike.dev > Guides > Base URL](https://vike.dev/base-url)

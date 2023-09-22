@@ -59,7 +59,7 @@ async function loadPageFilesServerSide(pageContext: { _pageId: string } & PageCo
   // TODO/v1-release: remove
   Object.assign(pageContextAddendum, {
     _getPageAssets: async () => {
-      assertWarning(false, 'pageContext._getPageAssets() deprecated, see https://vite-plugin-ssr.com/preload', {
+      assertWarning(false, 'pageContext._getPageAssets() deprecated, see https://vike.dev/preload', {
         onlyOnce: true,
         showStackTrace: true
       })

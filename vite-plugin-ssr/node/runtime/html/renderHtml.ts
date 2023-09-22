@@ -152,7 +152,7 @@ function escapeInject(
     templateStrings.length === templateVariables.length + 1 && templateStrings.every((str) => typeof str === 'string'),
     `You're using ${pc.cyan('escapeInject')} as a function, but ${pc.cyan(
       'escapeInject'
-    )} is a string template tag, see https://vite-plugin-ssr.com/escapeInject`,
+    )} is a string template tag, see https://vike.dev/escapeInject`,
     { showStackTrace: true }
   )
   return {
@@ -284,7 +284,7 @@ async function renderTemplate(
       const varType = typeof templateVar
       const streamNote = ['boolean', 'number', 'bigint', 'symbol'].includes(varType)
         ? null
-        : '(See https://vite-plugin-ssr.com/stream for HTML streaming.)'
+        : '(See https://vike.dev/stream for HTML streaming.)'
       assertUsage(varType === 'string', getErrMsg(pc.cyan(`typeof htmlVar === "${varType}"`), streamNote))
     }
 

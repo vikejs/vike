@@ -1,4 +1,4 @@
-// https://vite-plugin-ssr.com/onRenderHtml
+// https://vike.dev/onRenderHtml
 export default onRenderHtml
 
 import { renderToStream } from 'react-streaming/server'
@@ -33,7 +33,7 @@ async function onRenderHtml(pageContext: PageContextServer) {
 
   return {
     documentHtml,
-    // See https://vite-plugin-ssr.com/stream#initial-data-after-stream-end
+    // See https://vike.dev/stream#initial-data-after-stream-end
     pageContext: async () => {
       return {
         someAsyncProps: 42

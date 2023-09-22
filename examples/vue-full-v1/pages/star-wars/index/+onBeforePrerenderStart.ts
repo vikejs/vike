@@ -1,4 +1,4 @@
-// https://vite-plugin-ssr.com/onBeforePrerenderStart
+// https://vike.dev/onBeforePrerenderStart
 export default onBeforePrerenderStart
 
 import { filterMovieData } from '../filterMovieData'

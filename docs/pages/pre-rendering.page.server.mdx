@@ -25,7 +25,7 @@ But pre-rendering cannot be used for every kind of website.
 
 Pre-rendering cannot be used for websites with content that changes very frequently. For example, a social site such as [Hacker News](https://news.ycombinator.com/) or [Reddit](https://www.reddit.com/): new content is created every time a user shares a link or writes a comment. Pre-rendering cannot be run again and again every other (milli)second whenever there is new content (Reddit has millions of pages which obviously cannot all be re-rendered every other millisecond). (In theory, it's possible to re-render only the subset of pages that are affected by new content, but it isn't practical and we recommend against this practice.)
 
-Pre-rendering can be used for websites with content that changes only occasionally. For example, the content of `https://vite-plugin-ssr.com` changes only when a maintainer updates the documentation: all pages of `https://vite-plugin-ssr.com` can then be pre-rendered again. Thanks to pre-rendering, `https://vite-plugin-ssr.com` is deployed to the static host <Link href="/github-pages" text="GitHub Pages" />, which is a lot easier (and more performant) than using a production server.
+Pre-rendering can be used for websites with content that changes only occasionally. For example, the content of `https://vike.dev` changes only when a maintainer updates the documentation: all pages of `https://vike.dev` can then be pre-rendered again. Thanks to pre-rendering, `https://vike.dev` is deployed to the static host <Link href="/github-pages" text="GitHub Pages" />, which is a lot easier (and more performant) than using a production server.
 
 
 ## How to pre-render

@@ -5,7 +5,7 @@ import { createApp } from './app'
 export { render }
 export { passToClient }
 
-// See https://vite-plugin-ssr.com/data-fetching
+// See https://vike.dev/data-fetching
 const passToClient = ['pageProps']
 
 async function render(pageContext) {

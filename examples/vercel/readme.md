@@ -1,1 +1,1 @@
-See [https://vite-plugin-ssr.com/vercel](vite-plugin-ssr.com/vercel).
+See [https://vike.dev/vercel](vike.dev/vercel).

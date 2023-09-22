@@ -58,7 +58,7 @@ function getCiJobs() {
       setups: [ubuntu16]
     },
     {
-      name: 'https://vite-plugin-ssr.com',
+      name: 'https://vike.dev',
       setups: [ubuntu20]
     },
     {
@@ -128,7 +128,7 @@ function tolerateError({ logSource, logText }) {
     )
   }
 
-  // [vite-plugin-ssr@0.4.51][Warning] pageContext._getPageAssets() deprecated, see https://vite-plugin-ssr.com/preload
+  // [vite-plugin-ssr@0.4.51][Warning] pageContext._getPageAssets() deprecated, see https://vike.dev/preload
   function isGetPageAssetsDeprecationWarning() {
     return (
       logSource === 'stderr' &&

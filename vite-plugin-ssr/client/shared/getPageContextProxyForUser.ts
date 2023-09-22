@@ -30,7 +30,7 @@ function getPageContextProxyForUser<PageContext extends Record<string, unknown> 
       assertPassToClient(
         pageContext,
         prop,
-        `pageContext[${propName}] isn't available on the client-side because ${propName} is missing in passToClient, see https://vite-plugin-ssr.com/passToClient`
+        `pageContext[${propName}] isn't available on the client-side because ${propName} is missing in passToClient, see https://vike.dev/passToClient`
       )
       return val
     }

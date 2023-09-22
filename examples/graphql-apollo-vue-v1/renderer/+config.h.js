@@ -1,5 +1,5 @@
-// https://vite-plugin-ssr.com/config
+// https://vike.dev/config
 export default {
-  // https://vite-plugin-ssr.com/passToClient
+  // https://vike.dev/passToClient
   passToClient: ['pageProps', 'urlPathname', 'apolloInitialState']
 }

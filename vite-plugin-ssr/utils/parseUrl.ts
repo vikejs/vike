@@ -190,7 +190,7 @@ function assertUsageBaseServer(baseServer: string, usageErrorMessagePrefix: stri
   assertUsage(
     !baseServer.startsWith('http'),
     usageErrorMessagePrefix +
-      '`base` is not allowed to start with `http`. Consider using `baseAssets` instead, see https://vite-plugin-ssr.com/base-url'
+      '`base` is not allowed to start with `http`. Consider using `baseAssets` instead, see https://vike.dev/base-url'
   )
   assertUsage(
     baseServer.startsWith('/'),

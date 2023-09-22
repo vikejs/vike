@@ -458,7 +458,7 @@ function skipRequest(urlOriginal: string): boolean {
   const isViteClientRequest = urlOriginal.endsWith('/@vite/client') || urlOriginal.startsWith('/@fs/')
   assertWarning(
     !isViteClientRequest,
-    `The vite-plugin-ssr middleware renderPage() was called with the URL ${urlOriginal} which is unexpected because the HTTP request should have already been handled by Vite's development middleware. Make sure to 1. install Vite's development middleware and 2. add Vite's middleware *before* vite-plugin-ssr's middleware, see https://vite-plugin-ssr.com/renderPage`,
+    `The vite-plugin-ssr middleware renderPage() was called with the URL ${urlOriginal} which is unexpected because the HTTP request should have already been handled by Vite's development middleware. Make sure to 1. install Vite's development middleware and 2. add Vite's middleware *before* vite-plugin-ssr's middleware, see https://vike.dev/renderPage`,
     { onlyOnce: true }
   )
   return (
@@ -477,7 +477,7 @@ function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
   logRuntimeInfo?.(
     `URL normalized from ${pc.cyan(urlOriginal)} to ${pc.cyan(
       urlNormalized
-    )} (https://vite-plugin-ssr.com/url-normalization)`,
+    )} (https://vike.dev/url-normalization)`,
     httpRequestId,
     'info'
   )
@@ -506,7 +506,7 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
   assert(urlOriginalPathnameWithouBase)
   if (urlTarget === urlWithoutBase) return null
   logRuntimeInfo?.(
-    `Permanent redirect defined by your config.redirects (https://vite-plugin-ssr.com/redirects)`,
+    `Permanent redirect defined by your config.redirects (https://vike.dev/redirects)`,
     httpRequestId,
     'info'
   )
@@ -550,7 +550,7 @@ async function handleAbortError(
         errorPageId,
         `You called ${pc.cyan(
           abortCall
-        )} but you didn't define an error page, make sure to define one https://vite-plugin-ssr.com/error-page`
+        )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`
       )
       const pageContext = {
         _pageId: errorPageId,

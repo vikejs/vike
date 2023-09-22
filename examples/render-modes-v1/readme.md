@@ -1,4 +1,4 @@
-Example of using all [Render Modes](https://vite-plugin-ssr.com/render-modes).
+Example of using all [Render Modes](https://vike.dev/render-modes).
 
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr

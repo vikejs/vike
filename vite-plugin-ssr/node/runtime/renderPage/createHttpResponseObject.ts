@@ -19,7 +19,7 @@ type HttpResponse = {
   headers: [string, string][]
   earlyHints: EarlyHint[]
   // We don't use @deprecated to avoid TypeScript to remove the JSDoc
-  /** **Deprecated**: use `headers` instead, see https://vite-plugin-ssr.com/migration/0.4.134 */
+  /** **Deprecated**: use `headers` instead, see https://vike.dev/migration/0.4.134 */
   contentType: 'application/json' | 'text/html;charset=utf-8'
 } & HttpResponseBody
 
@@ -107,7 +107,7 @@ function getHttpResponse(
     get contentType() {
       assertWarning(
         false,
-        'pageContext.httpResponse.contentType is deprecated and will be removed in the next major release. Use pageContext.httpResponse.headers instead, see https://vite-plugin-ssr.com/migration/0.4.134',
+        'pageContext.httpResponse.contentType is deprecated and will be removed in the next major release. Use pageContext.httpResponse.headers instead, see https://vike.dev/migration/0.4.134',
         { onlyOnce: true }
       )
       return contentType

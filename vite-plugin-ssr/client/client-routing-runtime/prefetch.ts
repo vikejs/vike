@@ -17,14 +17,14 @@ const linkPrefetchHandlerAdded = new Map<HTMLElement, true>()
 /**
  * Programmatically prefetch client assets.
  *
- * https://vite-plugin-ssr.com/prefetch
+ * https://vike.dev/prefetch
  *
  * @param url - The URL of the page you want to prefetch.
  */
 async function prefetch(url: string): Promise<void> {
   assertUsage(
     checkIfClientRouting(),
-    'prefetch() only works with Client Routing, see https://vite-plugin-ssr.com/prefetch',
+    'prefetch() only works with Client Routing, see https://vike.dev/prefetch',
     { showStackTrace: true }
   )
   assertUsage(

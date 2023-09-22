@@ -84,7 +84,7 @@ async function executeOnBeforeRouteHook(
         'pageContext.url'
       )} has been renamed to ${pc.cyan('pageContext.urlOriginal')}. Return ${pc.cyan(
         '{ pageContext: { urlOriginal } }'
-      )} instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)`,
+      )} instead. (See https://vike.dev/migration/0.4.23 for more information.)`,
       { onlyOnce: true }
     )
     hookReturn.pageContext.urlOriginal = hookReturn.pageContext.url

@@ -52,7 +52,7 @@ function analyzeExports({
       hasClientSideRenderHook,
       [
         'No client-side `render()` hook found.',
-        'See https://vite-plugin-ssr.com/render-modes for more information.',
+        'See https://vike.dev/render-modes for more information.',
         [
           'Loaded client-side page files (none of them `export { render }`):',
           ...pageFilesClientSide.map((p, i) => ` (${i + 1}): ${p.filePath}`)

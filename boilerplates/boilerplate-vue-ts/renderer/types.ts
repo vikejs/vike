@@ -7,7 +7,7 @@ export type { Component }
 import type {
   PageContextBuiltInServer,
   /*
-  // When using Client Routing https://vite-plugin-ssr.com/clientRouting
+  // When using Client Routing https://vike.dev/clientRouting
   PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
   /*/
   // When using Server Routing

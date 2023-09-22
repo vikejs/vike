@@ -48,7 +48,7 @@ type ConfigVpsUserProvided = {
   /**
    * Enable pre-rendering.
    *
-   * https://vite-plugin-ssr.com/pre-rendering
+   * https://vike.dev/pre-rendering
    *
    * @default false
    */
@@ -84,7 +84,7 @@ type ConfigVpsUserProvided = {
          *
          * Use this if you want to programmatically initiate the pre-rendering process instead.
          *
-         * https://vite-plugin-ssr.com/prerender-programmatic
+         * https://vike.dev/prerender-programmatic
          *
          * @default false
          */
@@ -99,7 +99,7 @@ type ConfigVpsUserProvided = {
   /**
    * Set to `true` to disable the automatic chaining of all the build steps.
    *
-   * https://vite-plugin-ssr.com/disableAutoFullBuild
+   * https://vike.dev/disableAutoFullBuild
    *
    * @default false
    */
@@ -107,12 +107,12 @@ type ConfigVpsUserProvided = {
 
   /** The Base URL of your server.
    *
-   * https://vite-plugin-ssr.com/base-url
+   * https://vike.dev/base-url
    */
   baseServer?: string
   /** The Base URL of your static assets.
    *
-   * https://vite-plugin-ssr.com/base-url
+   * https://vike.dev/base-url
    */
   baseAssets?: string
 
@@ -122,13 +122,13 @@ type ConfigVpsUserProvided = {
 
   /** Permanent redirections (HTTP status code 301)
    *
-   * https://vite-plugin-ssr.com/redirects
+   * https://vike.dev/redirects
    */
   redirects?: Record<string, string>
 
   /** Whether URLs should end with a trailing slash.
    *
-   * https://vite-plugin-ssr.com/url-normalization
+   * https://vike.dev/url-normalization
    *
    * @default false
    */
@@ -136,7 +136,7 @@ type ConfigVpsUserProvided = {
 
   /** Disable automatic URL normalization.
    *
-   * https://vite-plugin-ssr.com/url-normalization
+   * https://vike.dev/url-normalization
    *
    * @default false
    */

@@ -29,7 +29,7 @@ function assertArguments(...args: unknown[]): void {
   if ('url' in pageContextInit) {
     assertWarning(
       false,
-      '`pageContextInit.url` has been renamed to `pageContextInit.urlOriginal`: replace `renderPage({ url })` with `renderPage({ urlOriginal })`. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
+      '`pageContextInit.url` has been renamed to `pageContextInit.urlOriginal`: replace `renderPage({ url })` with `renderPage({ urlOriginal })`. (See https://vike.dev/migration/0.4.23 for more information.)',
       { showStackTrace: true, onlyOnce: true }
     )
     pageContextInit.urlOriginal = pageContextInit.url

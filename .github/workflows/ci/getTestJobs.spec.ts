@@ -164,7 +164,7 @@ describe('getTestJobs()', () => {
         },
         {
           "jobCmd": "pnpm run test:e2e",
-          "jobName": "https://vite-plugin-ssr.com",
+          "jobName": "https://vike.dev",
           "jobSetups": [
             {
               "node_version": "17",

@@ -43,7 +43,7 @@ async function executeOnRenderClientHook<
       // V1 design
       assertUsage(
         false,
-        `No onRenderClient() hook defined for URL '${urlLogical}', but it's needed, see https://vite-plugin-ssr.com/onRenderClient`
+        `No onRenderClient() hook defined for URL '${urlLogical}', but it's needed, see https://vike.dev/onRenderClient`
       )
     } else {
       // TODO/v1-release: remove

@@ -19,7 +19,7 @@ const globalObject = getGlobalObject<{
 
 /** Programmatically navigate to a new page.
  *
- * https://vite-plugin-ssr.com/navigate
+ * https://vike.dev/navigate
  *
  * @param url - The URL of the new page.
  * @param keepScrollPosition - Don't scroll to the top of the page, instead keep the current scroll position.
@@ -30,7 +30,7 @@ async function navigate(
   { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {}
 ): Promise<void> {
   assertUsage(isBrowser(), 'The navigate() function can be called only on the client-side', { showStackTrace: true })
-  const errMsg = 'navigate() works only with Client Routing, see https://vite-plugin-ssr.com/navigate'
+  const errMsg = 'navigate() works only with Client Routing, see https://vike.dev/navigate'
   assertUsage(globalObject.navigate, errMsg, { showStackTrace: true })
   assertUsage(checkIfClientRouting(), errMsg, { showStackTrace: true })
   assertUsage(url, '[navigate(url)] Missing argument url', { showStackTrace: true })

@@ -1,4 +1,4 @@
-Example using `vite-plugin-ssr` with `preact` and [client-side routing](https://vite-plugin-ssr.com/client-routing).
+Example using `vite-plugin-ssr` with `preact` and [client-side routing](https://vike.dev/client-routing).
 
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr

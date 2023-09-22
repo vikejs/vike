@@ -1,9 +1,9 @@
-// https://vite-plugin-ssr.com/onPrerenderStart
+// https://vike.dev/onPrerenderStart
 export default onPrerenderStart
 
 import { locales, localeDefault } from '../locales'
 
-// We only need this for pre-rendered apps https://vite-plugin-ssr.com/pre-rendering
+// We only need this for pre-rendered apps https://vike.dev/pre-rendering
 function onPrerenderStart(prerenderContext) {
   const pageContexts = []
   prerenderContext.pageContexts.forEach((pageContext) => {

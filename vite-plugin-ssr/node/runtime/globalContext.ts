@@ -217,7 +217,7 @@ function assertNodeEnv(hasViteDevServer: boolean) {
       isDevNodeEnv ? 'development' : 'production'
     } environment by ${pc.cyan(
       `process.env.NODE_ENV === ${JSON.stringify(nodeEnv)}`
-    )} which is contradictory, see https://vite-plugin-ssr.com/NODE_ENV`,
+    )} which is contradictory, see https://vike.dev/NODE_ENV`,
     { onlyOnce: true }
   )
 }

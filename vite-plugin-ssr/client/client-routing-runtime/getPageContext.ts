@@ -250,7 +250,7 @@ async function hasPageContextServer(
 //    + // Makes the workaround reliable:
 //    + const pageContextInit = { urlOriginal: req.url, user }
 //    ```
-// - We can show a warning to users when the pageContextInit keys aren't always the same. (We didn't implement the waning yet because it would require a new doc page https://vite-plugin-ssr.com/pageContextInit#avoid-conditional-properties
+// - We can show a warning to users when the pageContextInit keys aren't always the same. (We didn't implement the waning yet because it would require a new doc page https://vike.dev/pageContextInit#avoid-conditional-properties
 // - Workaround cannot be made completely reliable because the workaround assumes that passToClient is always the same, but the user may set a different passToClient value for another page
 // - Alternatively, we could define a new config `alwaysFetchPageContextFromServer: boolean`
 function setPageContextInitHasClientData(pageContext: Record<string, unknown>) {
@@ -335,7 +335,7 @@ async function fetchPageContextFromServer(pageContext: {
 
     assertUsage(
       isCorrect,
-      `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vite-plugin-ssr.com/renderPage`
+      `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vike.dev/renderPage`
     )
   }
 

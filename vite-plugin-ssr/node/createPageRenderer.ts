@@ -26,7 +26,7 @@ function createPageRenderer(options: Options): RenderPage {
 function showWarnings(options: Options) {
   assertWarning(
     false,
-    '`createPageRenderer()` is outdated, use `renderPage()` instead. See https://vite-plugin-ssr.com/renderPage',
+    '`createPageRenderer()` is outdated, use `renderPage()` instead. See https://vike.dev/renderPage',
     { onlyOnce: true, showStackTrace: true }
   )
 
@@ -53,7 +53,7 @@ function showWarnings(options: Options) {
       opts.length === 0,
       `The options ${str(
         opts
-      )} you passed to \`createPageRenderer()\` have no effect. See https://vite-plugin-ssr.com/migration-0.4`,
+      )} you passed to \`createPageRenderer()\` have no effect. See https://vike.dev/migration-0.4`,
       { onlyOnce: true }
     )
   }

@@ -29,7 +29,7 @@ function render(pageContext) {
     </html>`
 }
 
-// We only need this for pre-rendered apps https://vite-plugin-ssr.com/pre-rendering
+// We only need this for pre-rendered apps https://vike.dev/pre-rendering
 function onBeforePrerender(prerenderContext) {
   const pageContexts = []
   prerenderContext.pageContexts.forEach((pageContext) => {

@@ -8,7 +8,7 @@
 
 ## Docs
 
-See [vite-plugin-ssr.com/cloudflare-workers](https://vite-plugin-ssr.com/cloudflare-workers).
+See [vike.dev/cloudflare-workers](https://vike.dev/cloudflare-workers).
 
 
 ## Run

@@ -8,7 +8,7 @@ import pc from '@brillout/picocolors'
 function assertResolveAlias(config: ResolvedConfig) {
   const aliases = getAliases(config)
   const errPrefix = config.configFile || 'Your Vite configuration'
-  const errSuffix1 = 'see https://vite-plugin-ssr.com/path-aliases#vite'
+  const errSuffix1 = 'see https://vike.dev/path-aliases#vite'
   const deprecation = 'which will be deprecated in the next major release'
   const errSuffix2 = `${deprecation}, use a string insead and ${errSuffix1}` as const
   aliases.forEach((alias) => {

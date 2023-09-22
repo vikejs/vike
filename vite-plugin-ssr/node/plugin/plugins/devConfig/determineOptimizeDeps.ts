@@ -64,7 +64,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
 
         // We need to differentiate between npm package imports and path aliases.
         // There are path aliases that cannot be distinguished from npm package names.
-        // We recommend users to use the '#' prefix convention for path aliases, see https://vite-plugin-ssr.com/path-aliases#vite and assertResolveAlias()
+        // We recommend users to use the '#' prefix convention for path aliases, see https://vike.dev/path-aliases#vite and assertResolveAlias()
         if (isNpmPackageImport(filePath)) {
           // isNpmPackageImport() returns false for a path alias like #root/renderer/onRenderClient
           assert(!filePath.startsWith('#'))

@@ -65,7 +65,7 @@ function transpileImports(codeOriginal: string, filePath: FilePath, isValueFile:
   const filePathToShowToUser = getFilePathToShowToUser(filePath)
   assertWarning(
     isPageConfigFile,
-    `${filePathToShowToUser} is a JavaScript header file (.h.js), but JavaScript header files should only be used for +config.h.js, see https://vite-plugin-ssr.com/header-file`,
+    `${filePathToShowToUser} is a JavaScript header file (.h.js), but JavaScript header files should only be used for +config.h.js, see https://vike.dev/header-file`,
     { onlyOnce: true }
   )
 
@@ -79,7 +79,7 @@ function transpileImports(codeOriginal: string, filePath: FilePath, isValueFile:
     const filePathCorrect = appendHeaderFileExtension(filePathToShowToUser)
     assertWarning(
       false,
-      `Rename ${filePathToShowToUser} to ${filePathCorrect}, see https://vite-plugin-ssr.com/header-file`,
+      `Rename ${filePathToShowToUser} to ${filePathCorrect}, see https://vike.dev/header-file`,
       { onlyOnce: true }
     )
   }
@@ -269,7 +269,7 @@ function assertFileImports(
         singular ? "isn't" : "aren't"
       } re-exported at ${pc.cyan('export default { ... }')} and therefore ${
         singular ? 'has' : 'have'
-      } no effect, see explanation at https://vite-plugin-ssr.com/header-file`
+      } no effect, see explanation at https://vike.dev/header-file`
     ].join('\n'),
     { onlyOnce: true }
   )

@@ -192,7 +192,7 @@ function getConfigValueSerialized(value: unknown, configName: string, configDefi
       [
         `The value of the config ${pc.cyan(configName)} cannot be defined inside the file ${configDefinedByFile}.`,
         `Its value must be defined in an another file and then imported by ${configDefinedByFile} (because it isn't serializable: ${err.messageCore}).`,
-        `Only serializable config values can be defined inside ${configDefinedByFile}, see https://vite-plugin-ssr.com/header-file.`
+        `Only serializable config values can be defined inside ${configDefinedByFile}, see https://vike.dev/header-file.`
       ].join(' ')
     )
   }

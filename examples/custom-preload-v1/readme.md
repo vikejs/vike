@@ -1,6 +1,6 @@
 Example of implementing a custom preloading strategy.
 
-See [vite-plugin-ssr.com > Preload](https://vite-plugin-ssr.com/preload).
+See [vike.dev > Preload](https://vike.dev/preload).
 
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr

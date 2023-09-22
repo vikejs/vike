@@ -13,7 +13,7 @@ type RouteMatch = {
   routeType: RouteType
 }
 
-// See https://vite-plugin-ssr.com/route-function#precedence
+// See https://vike.dev/route-function#precedence
 function resolvePrecendence<T extends RouteMatch>(routeMatches: T[]): void {
   // prettier-ignore
   routeMatches

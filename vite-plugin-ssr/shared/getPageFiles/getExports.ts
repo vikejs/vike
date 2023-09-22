@@ -31,7 +31,7 @@ type ExportsAll = Record<
 >
 /** All the config's values (including overriden ones) and where they come from.
  *
- * https://vite-plugin-ssr.com/pageContext
+ * https://vike.dev/pageContext
  */
 type ConfigEntries = Record<
   string,
@@ -194,7 +194,7 @@ function createObjectWithDeprecationWarning(): Record<string, unknown> {
         if (!isBrowser()) {
           assertWarning(
             false,
-            '`pageContext.pageExports` is outdated. Use `pageContext.exports` instead, see https://vite-plugin-ssr.com/exports',
+            '`pageContext.pageExports` is outdated. Use `pageContext.exports` instead, see https://vike.dev/exports',
             { onlyOnce: true, showStackTrace: true }
           )
         }

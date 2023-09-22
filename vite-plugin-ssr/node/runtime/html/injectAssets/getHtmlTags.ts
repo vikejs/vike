@@ -19,7 +19,7 @@ type PreloadFilter = null | ((assets: InjectFilterEntry[]) => InjectFilterEntry[
 type PreloadFilterInject = false | 'HTML_BEGIN' | 'HTML_END'
 /** Filter what assets vite-plugin-ssr injects in the HTML.
  *
- * https://vite-plugin-ssr.com/injectFilter
+ * https://vike.dev/injectFilter
  */
 type InjectFilterEntry = {
   src: string
@@ -91,7 +91,7 @@ async function getHtmlTags(
     )
 
     const res = injectFilter(injectFilterEntries)
-    assertUsage(res === undefined, 'Wrong injectFilter() usage, see https://vite-plugin-ssr.com/injectFilter')
+    assertUsage(res === undefined, 'Wrong injectFilter() usage, see https://vike.dev/injectFilter')
     assertInjectFilterUsage(injectFilterEntries, stamp)
     injectFilterEntries.forEach((a) => {
       /*
@@ -148,7 +148,7 @@ async function getHtmlTags(
   // `pageContext` JSON data
   if (!isHtmlOnly) {
     // Don't allow the user to manipulate with injectFilter(): injecting <script type="application/json"> before the stream can break the app when:
-    //  - using https://vite-plugin-ssr.com/stream#initial-data-after-stream-end
+    //  - using https://vike.dev/stream#initial-data-after-stream-end
     //  - `pageContext` is modified during the stream, e.g. /examples/vue-pinia which uses https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch
     // The <script> tags are handled separately by vite-plugin-ssr down below.
     htmlTags.push({
@@ -193,7 +193,7 @@ function assertInjectFilterUsage(injectFilterEntries: InjectFilterEntry[], stamp
     assertUsage(typeof entry.src === 'string', `[injectFilter()] Entry ${i} is missing property ${pc.cyan('src')}`)
     assertUsage(
       (entry as any)[stamp] === true,
-      `[injectFilter()] Entry ${i} (${entry.src}) isn't the original object, see https://vite-plugin-ssr.com/injectFilter`
+      `[injectFilter()] Entry ${i} (${entry.src}) isn't the original object, see https://vike.dev/injectFilter`
     )
     assert([false, 'HTML_BEGIN', 'HTML_END'].includes(entry.inject))
     assert(entry.assetType === null || typeof entry.assetType === 'string')

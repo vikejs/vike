@@ -1,4 +1,4 @@
-Example of using `vite-plugin-ssr` with [domain-driven file structure](https://vite-plugin-ssr.com/file-structure#domain-driven).
+Example of using `vite-plugin-ssr` with [domain-driven file structure](https://vike.dev/file-structure#domain-driven).
 
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr

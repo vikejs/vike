@@ -12,7 +12,7 @@ declare global {
      *
      *  For example:
      *  - You can refine the type of `Config['Page']`.
-     *  - You can define the type of custom configurations created with `config.meta` (https://vite-plugin-ssr.com/meta)
+     *  - You can define the type of custom configurations created with `config.meta` (https://vike.dev/meta)
      *
      */
     interface Config {}

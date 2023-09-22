@@ -134,7 +134,7 @@ function parsePageConfigs(pageConfigs: PageConfig[]) {
 //   const configValueType = typeof configValue
 //   assertUsage(
 //     configValueType === 'string' || isCallable(configValue),
-//     `${configElement.configDefinedAt} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vite-plugin-ssr.com/route`
+//     `${configElement.configDefinedAt} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`
 //   )
 //   /* We don't do that to avoid unnecessarily bloating the client-side bundle when using Server Routing
 //    *  - When using Server Routing, this file is loaded as well

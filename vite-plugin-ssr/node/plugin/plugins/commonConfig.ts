@@ -15,7 +15,7 @@ const require_ = createRequire(importMetaUrl)
 function commonConfig(): Plugin[] {
   return [
     {
-      name: 'vite-plugin-ssr:commonConfig-1',
+      name: 'vike.devmonConfig-1',
       config: () => ({
         appType: 'custom',
         ssr: {
@@ -29,7 +29,7 @@ function commonConfig(): Plugin[] {
       }
     },
     {
-      name: 'vite-plugin-ssr:commonConfig-2',
+      name: 'vike.devmonConfig-2',
       enforce: 'post',
       configResolved: {
         order: 'post',
@@ -75,7 +75,7 @@ function assertEsm(userViteRoot: string) {
   dir = pc.dim(dir)
   assertWarning(
     packageJson.type === 'module',
-    `We recommend setting ${dir}package.json#type to "module" (and therefore writing ESM code instead of CJS code), see https://vite-plugin-ssr.com/CJS`,
+    `We recommend setting ${dir}package.json#type to "module" (and therefore writing ESM code instead of CJS code), see https://vike.dev/CJS`,
     { onlyOnce: true }
   )
 }

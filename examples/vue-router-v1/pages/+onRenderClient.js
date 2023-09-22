@@ -1,4 +1,4 @@
-// https://vite-plugin-ssr.com/onRenderClient
+// https://vike.dev/onRenderClient
 export default onRenderClient
 
 import { createApp } from './app'

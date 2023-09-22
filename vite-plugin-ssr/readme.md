@@ -1,3 +1,3 @@
-# [vite-plugin-ssr.com](https://vite-plugin-ssr.com)
+# [vike.dev](https://vike.dev)
 
-Docs at [vite-plugin-ssr.com](https://vite-plugin-ssr.com).
+Docs at [vike.dev](https://vike.dev).

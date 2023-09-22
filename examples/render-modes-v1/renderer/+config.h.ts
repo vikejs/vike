@@ -1,11 +1,11 @@
 import type { Config, Env } from 'vite-plugin-ssr/types'
 
-// https://vite-plugin-ssr.com/config
+// https://vike.dev/config
 export default {
   clientRouting: true,
   hydrationCanBeAborted: true,
   passToClient: ['pageProps'],
-  // https://vite-plugin-ssr.com/meta
+  // https://vike.dev/meta
   meta: {
     renderMode: {
       env: 'config-only',

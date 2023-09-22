@@ -1,4 +1,4 @@
-// https://vite-plugin-ssr.com/onRenderClient
+// https://vike.dev/onRenderClient
 export default onRenderClient
 
 import React from 'react'
@@ -8,7 +8,7 @@ import { PageShell } from './PageShell'
 import type { PageContext } from './types'
 import type {
   /*
-  // When using Client Routing https://vite-plugin-ssr.com/clientRouting
+  // When using Client Routing https://vike.dev/clientRouting
   PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
   /*/
   // When using Server Routing
