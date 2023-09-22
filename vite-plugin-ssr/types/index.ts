@@ -43,7 +43,7 @@ type Effect = ConfigEffect
 export type { Effect }
 
 // TODO/v1-release: remove
-// Ancient VPS versions used to have `import type { PageContextBuiltInClient } from 'vike/types'`
+// Ancient Vike versions used to have `import type { PageContextBuiltInClient } from 'vike/types'`
 import { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
 /** @deprecated Replace:
  *   `import type { PageContextBuiltInClient } from 'vike/types'`

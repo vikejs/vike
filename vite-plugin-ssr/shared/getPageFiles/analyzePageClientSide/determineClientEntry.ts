@@ -1,5 +1,5 @@
 export { determineClientEntry }
-export { getVPSClientEntry }
+export { getVikeClientEntry }
 
 import type { ClientDependency } from './ClientDependency.js'
 import type { PageFile } from '../../../shared/getPageFiles.js'
@@ -33,7 +33,7 @@ function determineClientEntry({
     clientEntries = pageFilesClientSide.map((p) => p.filePath)
   } else {
     // Add the vps client entry
-    const clientEntry = getVPSClientEntry(isClientRouting)
+    const clientEntry = getVikeClientEntry(isClientRouting)
     clientDependencies.push({ id: clientEntry, onlyAssets: false, eagerlyImported: false })
     clientEntries = [clientEntry]
   }
@@ -42,7 +42,7 @@ function determineClientEntry({
   return { clientEntries, clientDependencies }
 }
 
-function getVPSClientEntry(isClientRouting: boolean) {
+function getVikeClientEntry(isClientRouting: boolean) {
   return isClientRouting
     ? '@@vike/dist/esm/client/client-routing-runtime/entry.js'
     : '@@vike/dist/esm/client/server-routing-runtime/entry.js'

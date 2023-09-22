@@ -1,28 +1,28 @@
 import { Link } from '@brillout/docpress'
 
-VPS (vike) differs from Next.js in three fundamental ways:
- 1. VPS is UI Framework agnostic.
-    > VPS is completely agnostic to React and its source code has zero dependency on React. You can actually use VPS with any other UI Framework (Vue, Preact, Solid, etc.).
+Vike (vike) differs from Next.js in three fundamental ways:
+ 1. Vike is UI Framework agnostic.
+    > Vike is completely agnostic to React and its source code has zero dependency on React. You can actually use Vike with any other UI Framework (Vue, Preact, Solid, etc.).
     >
-    > With VPS, you implement and fully control the React integration, which has many benefits. For example, you can use Relay in the same way that Facebook does (with a render-as-you-fetch stream) which isn't possible with Next.js.
- 1. VPS is server and deployment agnostic.
-    > With VPS, you keep full control over your server and you can use any deployment strategy.
- 1. VPS is full-fledged yet minimal.
-    > [All dependencies](https://github.com/vikejs/vike/blob/89073c8375d46af7cc05057a8f2efcd833273be6/vike/package.json#L4-L13) are either shared with Vite (e.g. [`fast-glob`](https://github.com/mrmlnc/fast-glob)) or fully/transitively owned (e.g. [`@brillout/json-serializer`](https://github.com/brillout/json-serializer)). Adding VPS to your Vite app doesn't add any frivolous dependency.
+    > With Vike, you implement and fully control the React integration, which has many benefits. For example, you can use Relay in the same way that Facebook does (with a render-as-you-fetch stream) which isn't possible with Next.js.
+ 1. Vike is server and deployment agnostic.
+    > With Vike, you keep full control over your server and you can use any deployment strategy.
+ 1. Vike is full-fledged yet minimal.
+    > [All dependencies](https://github.com/vikejs/vike/blob/89073c8375d46af7cc05057a8f2efcd833273be6/vike/package.json#L4-L13) are either shared with Vite (e.g. [`fast-glob`](https://github.com/mrmlnc/fast-glob)) or fully/transitively owned (e.g. [`@brillout/json-serializer`](https://github.com/brillout/json-serializer)). Adding Vike to your Vite app doesn't add any frivolous dependency.
     >
-    > We believe VPS hits the sweet spot of being a full-fledged frontend tool while avoiding unnecessary bells and whistles.
+    > We believe Vike hits the sweet spot of being a full-fledged frontend tool while avoiding unnecessary bells and whistles.
 
 Beyond these structural differences,
-VPS introduces features such as blazing fast HMR (powered by Vite), first-class SPA support (especially with the upcoming new VPS design), Domain-driven File Structure, state-of-the-art Code Splitting (powered by Vite/Rollup), Automatic Deployment Synchronization, [Build Your Own Framework](https://vike.land), etc.
+Vike introduces features such as blazing fast HMR (powered by Vite), first-class SPA support (especially with the upcoming new Vike design), Domain-driven File Structure, state-of-the-art Code Splitting (powered by Vite/Rollup), Automatic Deployment Synchronization, [Build Your Own Framework](https://vike.land), etc.
 
 > Turbopack replicates some of Vite's blazing fast DX techniques, but it's still in its infancy and it'll take a while until Turbopack is production-ready. With Vite, you can use lightning fast DX today.
 
-Finally, VPS is a community project: instead of leaning on a framework with business interests that are fundamentally at odds with yours, use a community-driven project that is sponsored by and made for the community.
+Finally, Vike is a community project: instead of leaning on a framework with business interests that are fundamentally at odds with yours, use a community-driven project that is sponsored by and made for the community.
 
 
 ## UI Framework agnostic
 
-With VPS, you integrate React yourself. This means you need to write a little bit more boilerplate but, in exchange, you get a lot more flexibility.
+With Vike, you integrate React yourself. This means you need to write a little bit more boilerplate but, in exchange, you get a lot more flexibility.
 
 Because you integrate React yourself, you have full control over the frontend integration of your favorite tools (data fetching, state management, authentication, etc.).
 
@@ -30,32 +30,32 @@ For example, you can use Relay and Apollo in ways that aren't possible with Next
 
 > Relay is a state-of-the-art GraphQL client developed and used at scale by Facebook (which invented GraphQL). The [YouTube video "Re-introducing Relay"](https://www.youtube.com/watch?v=lhVGdErZuN4) explains in detail the benefits of Relay.
 >
-> Many users and sponsors leverage VPS's flexibility to integrate Relay with SSR Streaming.
+> Many users and sponsors leverage Vike's flexibility to integrate Relay with SSR Streaming.
 
-Except of React, VPS includes everything you'd expect from a frontend framework: Client-side Routing, HMR, Filesystem Routing, Pre-rendering, Data Fetching, Code Splitting, Layouts, i18n, etc.
+Except of React, Vike includes everything you'd expect from a frontend framework: Client-side Routing, HMR, Filesystem Routing, Pre-rendering, Data Fetching, Code Splitting, Layouts, i18n, etc.
 
 
 ## Server/deployment agnostic
 
-From a server perspective, <Link text="VPS is just a middleware" href="/deploy" /> that can run anywhere (AWS, Vercel, Cloudflare, Deno Deploy, etc.).
+From a server perspective, <Link text="Vike is just a middleware" href="/deploy" /> that can run anywhere (AWS, Vercel, Cloudflare, Deno Deploy, etc.).
 
-To integrate VPS, you simply add VPS's middleware to your server (Express.js, Fastify, Edge Worker, Serverless Function,  etc.).
+To integrate Vike, you simply add Vike's middleware to your server (Express.js, Fastify, Edge Worker, Serverless Function,  etc.).
 
-With VPS, you have full control over your server and deployment, one of the most critical aspects of your architecture.
+With Vike, you have full control over your server and deployment, one of the most critical aspects of your architecture.
 
 
 ## Manual integrations
 
-As depicted above, VPS's philosophy is that you integrate tools manually instead of being locked into decisions made by your framework. Use any tool you want, however you want.
+As depicted above, Vike's philosophy is that you integrate tools manually instead of being locked into decisions made by your framework. Use any tool you want, however you want.
 
-All-in-all, VPS is less easy, but simpler. For large scale projects, simplicity is *fundamentally* more important than being "easy".
+All-in-all, Vike is less easy, but simpler. For large scale projects, simplicity is *fundamentally* more important than being "easy".
 
 Last but not least, manual integration is fun and insightful. (Whereas fighting a framework is pesky.)
 
 
 ## Build your own framework
 
-VPS is designed from the ground up to enable users to build frameworks on top of VPS.
+Vike is designed from the ground up to enable users to build frameworks on top of Vike.
 
 You can build your own Next.js with only hundreds of lines of code.
 
@@ -69,11 +69,11 @@ We foster the proliferation of React frameworks, highly-tailored to specific use
 [From @Axxxx0n](https://github.com/vikejs/vike/issues/158#issuecomment-934224512):
 
 1. Blazing fast development speed powered by Vite (on-demand transpiling, native ESM).
-1. Next.js has to have many examples and a whole plethora of libraries are existing just to integrate some library with Next.js because it's not trivial (for example [next-i18next](https://github.com/isaachinman/next-i18next)). With VPS, you just read the documentation of the library you want to integrate and you're good to go.
+1. Next.js has to have many examples and a whole plethora of libraries are existing just to integrate some library with Next.js because it's not trivial (for example [next-i18next](https://github.com/isaachinman/next-i18next)). With Vike, you just read the documentation of the library you want to integrate and you're good to go.
 1. When new React features arrive you can start to use it right away and don't have to wait for the Next.js team to integrate it. (Streaming API, server components, suspense on server, partial hydration, etc.)
 1. Next.js can't read files in `/public` directory after it was built, i.e. user uploaded images.
 1. With `getServerSideProps()`, Next.js blocks client-side rendering.
-1. You cannot bypass data fetching on client-side navigation ([Next.js - 	&#35;23921](https://github.com/vercel/next.js/discussions/23921)) while with VPS you're flexible and can choose what you want.
+1. You cannot bypass data fetching on client-side navigation ([Next.js - 	&#35;23921](https://github.com/vercel/next.js/discussions/23921)) while with Vike you're flexible and can choose what you want.
 1. Next.js is really pushing the Vercel platform and is starting to show in recent feature updates. Features that align with this are getting priority while important fixes are delayed.
 1. Next.js is leaning on serverless and complicates usage when you don't want it.
 
@@ -82,7 +82,7 @@ We foster the proliferation of React frameworks, highly-tailored to specific use
 
 [From @patryk-smc and @redbar0n](https://github.com/vikejs/vike/issues/158#issuecomment-1250068578):
 
-|                                                                 | VPS                                                        | Next.js                       |
+|                                                                 | Vike                                                        | Next.js                       |
 | --------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------- |
 | UI Framework                                                    | Any (React, Preact, Solid, etc.)                           | React only                    |
 | Code-splitting and bundling                                     | Yes                                                        | Yes                           |
@@ -114,4 +114,4 @@ HTTP server | No*, bring your own | Baked-in, custom server partially supported 
 | Cloudflare Workers                                              | Yes, minimal config                                        | No, [work in progress](https://github.com/vercel/next.js/discussions/34179#discussioncomment-3578259)                            |
 | Node server (Docker, Heroku, Digital Ocean etc.)                | Yes, minimal config                                        | Yes, but limited              |
 
-(\*) VPS doesn't ship those extras by design.
+(\*) Vike doesn't ship those extras by design.

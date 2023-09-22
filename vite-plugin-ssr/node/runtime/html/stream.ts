@@ -412,7 +412,7 @@ async function processStream(
     )
   }
 
-  // Delay streaming, so that if the page shell fails then VPS is able to render the error page.
+  // Delay streaming, so that if the page shell fails then Vike is able to render the error page.
   //  - We can't erase the previously written stream data => we need to delay streaming if we want to be able to restart rendering anew for the error page
   //  - This is what React expects.
   //  - Does this make sense for UI frameworks other than React?

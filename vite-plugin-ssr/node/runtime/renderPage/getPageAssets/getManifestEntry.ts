@@ -13,7 +13,7 @@ function getManifestEntry(
   assertClientEntryId(id)
   const debugInfo = getDebugInfo(id, clientManifest)
 
-  // VPS client entry
+  // Vike client entry
   if (id.startsWith('@@vike/')) {
     const manifestKeyEnd = slice(id, '@@vike'.length, 0)
     const { manifestKey, manifestEntry } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)

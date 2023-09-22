@@ -82,7 +82,7 @@ function extractAssetsPlugin(): Plugin[] {
         }
 
         // If there is no `importer` then `module` is an entry.
-        // We don't need to append `?extractAssets` to entries because they already have `?extractAssets` as VPS appends `?extractAssets` to entries by using `import.meta.glob('/**/*.page.server.js', { as: "extractAssets" })` (see `generateImportGlobs.ts`).
+        // We don't need to append `?extractAssets` to entries because they already have `?extractAssets` as Vike appends `?extractAssets` to entries by using `import.meta.glob('/**/*.page.server.js', { as: "extractAssets" })` (see `generateImportGlobs.ts`).
         if (!importer) {
           return
         }
@@ -120,7 +120,7 @@ function extractAssetsPlugin(): Plugin[] {
           return emptyModule(file, importer)
         }
 
-        // If the dependency is a VPS extension and has `configVps.extension[number].pageConfigsSrcDir`, then include its CSS
+        // If the dependency is a Vike extension and has `configVps.extension[number].pageConfigsSrcDir`, then include its CSS
         if (
           configVps.extensions
             .filter(({ pageConfigsSrcDir }) => pageConfigsSrcDir !== null)

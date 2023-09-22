@@ -74,7 +74,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod', isCJS?
     await autoRetry(async () => {
       expect(await page.textContent('h1')).toBe('About')
     })
-    expect(await page.textContent('p')).toBe('Example of using VPS.')
+    expect(await page.textContent('p')).toBe('Example of using Vike.')
     const html = await fetchHtml('/about')
     expect(html).toContain('<h1>About</h1>')
     expectHtmlCommon(html)

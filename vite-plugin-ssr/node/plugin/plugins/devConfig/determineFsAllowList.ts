@@ -35,7 +35,7 @@ async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVps
     fsAllow.push(vitePluginSsrRoot)
   }
 
-  // Add VPS extensions, e.g. node_modules/stem-react/
+  // Add Vike extensions, e.g. node_modules/stem-react/
   configVps.extensions.forEach(({ npmPackageRootDir }) => {
     const npmPackageRootDirReal = fs.realpathSync(npmPackageRootDir)
     fsAllow.push(npmPackageRootDir)

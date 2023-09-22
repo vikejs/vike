@@ -139,7 +139,7 @@ async function resolveClientEntriesDev(
     // User files
     filePath = pathJoin(root, clientEntry)
   } else if (clientEntry.startsWith('@@vike/')) {
-    // VPS client entry
+    // Vike client entry
 
     const { createRequire } = (await import_('module')).default as Awaited<typeof import('module')>
     const { dirname } = (await import_('path')).default as Awaited<typeof import('path')>

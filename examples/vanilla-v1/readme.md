@@ -1,4 +1,4 @@
-Example of using VPS without any UI framework.
+Example of using Vike without any UI framework.
 
 ```bash
 git clone git@github.com:vikejs/vike

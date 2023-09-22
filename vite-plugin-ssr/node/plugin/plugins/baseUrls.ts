@@ -36,7 +36,7 @@ function baseUrls(configVps?: ConfigVpsUserProvided): Plugin {
       assert(configVps.baseAssets === baseAssets)
       /* In dev, Vite seems buggy around setting vite.config.js#base to an absolute URL (e.g. http://localhost:8080/cdn/)
        *  - In dev, Vite removes the URL origin. (I.e. it resolves the user config `vite.config.js#base: 'http://localhost:8080/cdn/'` to resolved config `config.base === '/cdn/'`.)
-       *  - Instead of having an internal VPS assertion fail, we let the user discover Vite's buggy behavior.
+       *  - Instead of having an internal Vike assertion fail, we let the user discover Vite's buggy behavior.
       assert(config.base === baseAssets)
       */
     }
