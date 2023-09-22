@@ -4,7 +4,7 @@ import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageImport, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
-import { ConfigVpsResolved } from '../../../../shared/ConfigVps.js'
+import { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { getConfigValueSourcesRelevant } from '../../shared/getConfigValueSource.js'
 import { analyzeClientEntries } from '../buildConfig.js'
 import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
@@ -13,8 +13,8 @@ import {
   virtualFileIdImportUserCodeClientSR
 } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 
-async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved, isDev: true) {
-  const { pageConfigs } = await getVikeConfig(config.root, isDev, configVps.extensions)
+async function determineOptimizeDeps(config: ResolvedConfig, configVike: ConfigVikeResolved, isDev: true) {
+  const { pageConfigs } = await getVikeConfig(config.root, isDev, configVike.extensions)
 
   const { entries, include } = await getPageDeps(config, pageConfigs, isDev)
   {
@@ -26,7 +26,7 @@ async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVp
     entries.push(...entriesVirtualFiles)
   }
 
-  include.push(...getExtensionsDeps(configVps))
+  include.push(...getExtensionsDeps(configVike))
 
   /* Other Vite plugins may populate optimizeDeps, e.g. Cypress: https://github.com/vikejs/vike/issues/386
   assert(config.optimizeDeps.entries === undefined)
@@ -107,15 +107,15 @@ function getVirtualFiles(config: ResolvedConfig, pageConfigs: PageConfigBuildTim
   return entriesVirtualFiles
 }
 
-function getExtensionsDeps(configVps: ConfigVpsResolved): string[] {
+function getExtensionsDeps(configVike: ConfigVikeResolved): string[] {
   return [
     /* Doesn't work since `pageConfigsSrcDir` is a directory. We could make it work by using find-glob.
-    ...configVps.extensions
+    ...configVike.extensions
       .map(({ pageConfigsSrcDir }) => pageConfigsSrcDir)
       .flat()
       .filter(isNotNullish),
     //*/
-    ...configVps.extensions
+    ...configVike.extensions
       .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
       .flat()
       .filter(isNotNullish)

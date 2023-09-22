@@ -38,7 +38,7 @@ import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles.js'
 import { getGlobalContext, initGlobalContext } from '../runtime/globalContext.js'
 import { resolveConfig } from 'vite'
-import { getConfigVps } from '../shared/getConfigVps.js'
+import { getConfigVike } from '../shared/getConfigVike.js'
 import type { InlineConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
@@ -171,11 +171,11 @@ async function runPrerender(
 
   const viteConfig = await resolveConfig(options.viteConfig || {}, 'vike pre-rendering' as any, 'production')
   assertLoadedConfig(viteConfig, options)
-  const configVps = await getConfigVps(viteConfig)
+  const configVike = await getConfigVike(viteConfig)
 
   const { outDirClient, outDirRoot } = getOutDirs_prerender(viteConfig)
   const { root } = viteConfig
-  const prerenderConfig = configVps.prerender
+  const prerenderConfig = configVike.prerender
   if (!prerenderConfig) {
     assert(manuallyTriggered)
     assertWarning(

@@ -6,8 +6,8 @@ import { assert, isScriptFile, assertUsage, assertPosixPath, getOutDirs } from '
 import fs from 'fs'
 import path from 'path'
 import sirv from 'sirv'
-import type { ConfigVpsResolved } from '../../../shared/ConfigVps.js'
-import { getConfigVps } from '../../shared/getConfigVps.js'
+import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
+import { getConfigVike } from '../../shared/getConfigVike.js'
 import { isAsset } from '../shared/isAsset.js'
 
 const ASSET_DIR = 'assets'
@@ -19,8 +19,8 @@ function extensionsAssets(): Plugin {
     name: 'vike:extensionsAssets',
     async configResolved(config_) {
       config = config_
-      const configVps = await getConfigVps(config)
-      extensionsAssetsDir = getExtensionsAssetsDir(config, configVps)
+      const configVike = await getConfigVike(config)
+      extensionsAssetsDir = getExtensionsAssetsDir(config, configVike)
     },
     configureServer(server) {
       if (extensionsAssetsDir.length > 0) {
@@ -54,8 +54,8 @@ function serveExtensionsAssets(middlewares: ConnectServer, extensionsAssetsDirs:
   })
 }
 
-function getExtensionsAssetsDir(config: ResolvedConfig, configVps: ConfigVpsResolved): string[] {
-  const { extensions } = configVps
+function getExtensionsAssetsDir(config: ResolvedConfig, configVike: ConfigVikeResolved): string[] {
+  const { extensions } = configVike
   const extensionsWithAssetsDir = extensions.filter(({ assetsDir }) => assetsDir)
   if (0 === extensionsWithAssetsDir.length) return []
   assertUsage(

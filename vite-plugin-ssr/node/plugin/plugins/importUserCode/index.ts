@@ -2,8 +2,8 @@ export { importUserCode }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode } from 'vite'
 import { normalizePath } from 'vite'
-import type { ConfigVpsResolved } from '../../../../shared/ConfigVps.js'
-import { getConfigVps } from '../../../shared/getConfigVps.js'
+import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
+import { getConfigVike } from '../../../shared/getConfigVike.js'
 import { getVirtualFilePageConfigValuesAll } from './v1-design/getVirtualFilePageConfigValuesAll.js'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
 import {
@@ -24,7 +24,7 @@ import { logConfigInfo, clearLogs } from '../../shared/loggerNotProd.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
-  let configVps: ConfigVpsResolved
+  let configVike: ConfigVikeResolved
   return {
     name: 'vike:importUserCode',
     config() {
@@ -36,7 +36,7 @@ function importUserCode(): Plugin {
       }
     },
     async configResolved(config_) {
-      configVps = await getConfigVps(config_)
+      configVike = await getConfigVike(config_)
       config = config_
     },
     resolveId(id) {
@@ -46,7 +46,7 @@ function importUserCode(): Plugin {
     },
     handleHotUpdate(ctx) {
       try {
-        return handleHotUpdate(ctx, config, configVps)
+        return handleHotUpdate(ctx, config, configVike)
       } catch (err) {
         // Vite swallows errors thrown by handleHotUpdate()
         console.error(err)
@@ -60,23 +60,23 @@ function importUserCode(): Plugin {
       id = getVirtualFileId(id)
 
       if (isVirtualFileIdPageConfigValuesAll(id)) {
-        const code = await getVirtualFilePageConfigValuesAll(id, config.root, isDev, configVps)
+        const code = await getVirtualFilePageConfigValuesAll(id, config.root, isDev, configVike)
         return code
       }
 
       if (isVirtualFileIdImportUserCode(id)) {
-        const code = await getVirtualFileImportUserCode(id, options, configVps, config, isDev)
+        const code = await getVirtualFileImportUserCode(id, options, configVike, config, isDev)
         return code
       }
     },
     configureServer(server) {
       isDev1_onConfigureServer()
-      handleFileAddRemove(server, config, configVps)
+      handleFileAddRemove(server, config, configVike)
     }
   }
 }
 
-function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig, configVps: ConfigVpsResolved) {
+function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig, configVike: ConfigVikeResolved) {
   server.watcher.prependListener('add', (f) => listener(f, false))
   server.watcher.prependListener('unlink', (f) => listener(f, true))
   return
@@ -88,12 +88,12 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig, conf
       virtualModules.forEach((mod) => {
         server.moduleGraph.invalidateModule(mod)
       })
-      reloadConfig(file, config, configVps, isRemove ? 'removed' : 'created')
+      reloadConfig(file, config, configVike, isRemove ? 'removed' : 'created')
     }
   }
 }
 
-function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: ConfigVpsResolved) {
+function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVike: ConfigVikeResolved) {
   const { file, server } = ctx
   assertPosixPath(file)
   vikeConfigDependencies.forEach((f) => assertPosixPath(f))
@@ -126,7 +126,7 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVps: Con
 
   if (isVikeConfig) {
     assert(!isViteModule)
-    reloadConfig(file, config, configVps, 'modified')
+    reloadConfig(file, config, configVike, 'modified')
     const virtualModules = getVirtualModules(server)
     return virtualModules
   }
@@ -139,7 +139,7 @@ function isVikeConfigModule(filePathAbsolute: string): boolean {
 function reloadConfig(
   filePath: string,
   config: ResolvedConfig,
-  configVps: ConfigVpsResolved,
+  configVike: ConfigVikeResolved,
   op: 'modified' | 'created' | 'removed'
 ) {
   {
@@ -147,7 +147,7 @@ function reloadConfig(
     const msg = `${op} ${filePathToShowToUser}`
     logConfigInfo(msg, 'info')
   }
-  reloadVikeConfig(config.root, configVps.extensions)
+  reloadVikeConfig(config.root, configVike.extensions)
 }
 
 function getVirtualModules(server: ViteDevServer): ModuleNode[] {

@@ -1,7 +1,7 @@
 export default plugin
 export { plugin }
 export { plugin as ssr }
-export type { ConfigVpsUserProvided as UserConfig }
+export type { ConfigVikeUserProvided as UserConfig }
 
 import type { Plugin } from 'vite'
 import { assertUsage, markEnvAsVite } from './utils.js'
@@ -13,8 +13,8 @@ import { manifest } from './plugins/manifest.js'
 import { packageJsonFile } from './plugins/packageJsonFile.js'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin.js'
 import { importUserCode } from './plugins/importUserCode/index.js'
-import { resolveVpsConfig } from './plugins/config/index.js'
-import type { ConfigVpsUserProvided } from '../../shared/ConfigVps.js'
+import { resolveVikeConfig } from './plugins/config/index.js'
+import type { ConfigVikeUserProvided } from '../../shared/ConfigVike.js'
 import { distFileNames } from './plugins/distFileNames.js'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin.js'
@@ -30,9 +30,9 @@ import pc from '@brillout/picocolors'
 markEnvAsVite()
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
-function plugin(vikeConfig?: ConfigVpsUserProvided): any {
+function plugin(vikeConfig?: ConfigVikeUserProvided): any {
   const plugins: Plugin[] = [
-    resolveVpsConfig(vikeConfig), // The configResolved() hook of resolveVpsConfig() should be the first called
+    resolveVikeConfig(vikeConfig), // The configResolved() hook of resolveVikeConfig() should be the first called
     ...commonConfig(),
     importUserCode(),
     ...devConfig(),

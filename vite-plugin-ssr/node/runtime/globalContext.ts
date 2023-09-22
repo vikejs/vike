@@ -21,8 +21,8 @@ import type { ResolvedConfig, ViteDevServer, PreviewServer as VitePreviewServer 
 import { loadImportBuild } from './globalContext/loadImportBuild.js'
 import { setPageFiles } from '../../shared/getPageFiles.js'
 import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest.js'
-import type { ConfigVpsResolved } from '../../shared/ConfigVps.js'
-import { getConfigVps } from '../shared/getConfigVps.js'
+import type { ConfigVikeResolved } from '../../shared/ConfigVike.js'
+import { getConfigVike } from '../shared/getConfigVike.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
@@ -44,7 +44,7 @@ type GlobalContext = {
       isProduction: false
       isPrerendering: false
       viteConfig: ResolvedConfig
-      configVps: ConfigVpsResolved
+      configVike: ConfigVikeResolved
       viteDevServer: ViteDevServer
       vitePreviewServer: null
       clientManifest: null
@@ -60,12 +60,12 @@ type GlobalContext = {
       | {
           isPrerendering: false
           viteConfig: null
-          configVps: null
+          configVike: null
         }
       | {
           isPrerendering: true
           viteConfig: ResolvedConfig
-          configVps: ConfigVpsResolved
+          configVike: ConfigVikeResolved
         }
     ))
 )
@@ -108,8 +108,8 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
     assert(viteConfig)
     assert(!isPrerendering)
     assert(!vitePreviewServer)
-    const configVps = await getConfigVps(viteConfig)
-    const pluginManifest = getRuntimeManifest(configVps)
+    const configVike = await getConfigVike(viteConfig)
+    const pluginManifest = getRuntimeManifest(configVike)
     globalObject.globalContext = {
       isProduction: false,
       isPrerendering: false,
@@ -118,7 +118,7 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       viteDevServer,
       vitePreviewServer: null,
       viteConfig,
-      configVps,
+      configVike,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
@@ -148,28 +148,28 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
     }
     if (isPrerendering) {
       assert(viteConfig)
-      const configVps = await getConfigVps(viteConfig)
-      assert(configVps)
+      const configVike = await getConfigVike(viteConfig)
+      assert(configVike)
       objectAssign(globalContext, {
         isPrerendering: true as const,
         viteConfig,
-        configVps
+        configVike
       })
       globalObject.globalContext = globalContext
     } else {
       objectAssign(globalContext, {
         isPrerendering: false as const,
         viteConfig: null,
-        configVps: null
+        configVike: null
       })
       globalObject.globalContext = globalContext
     }
   }
 }
 
-function getRuntimeManifest(configVps: ConfigVpsResolved): RuntimeManifest {
+function getRuntimeManifest(configVike: ConfigVikeResolved): RuntimeManifest {
   const { includeAssetsImportedByServer, baseServer, baseAssets, redirects, trailingSlash, disableUrlNormalization } =
-    configVps
+    configVike
   const manifest = {
     baseServer,
     baseAssets,

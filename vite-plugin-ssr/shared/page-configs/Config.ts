@@ -6,7 +6,7 @@ export type { HookName }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
-import type { ConfigVpsUserProvided } from '../ConfigVps.js'
+import type { ConfigVikeUserProvided } from '../ConfigVike.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 
 type HookName =
@@ -25,7 +25,7 @@ type HookName =
 
 // Do we need the distinction between ConfigNameBuiltInPublic and ConfigNameBuiltInInternal?
 type ConfigNameBuiltInPublic =
-  | Exclude<keyof Config, keyof ConfigVpsUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
+  | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
   | 'prerender'
 type ConfigNameBuiltInInternal = 'isClientSideRenderable' | 'onBeforeRenderEnv'
 type ConfigNameBuiltIn = ConfigNameBuiltInPublic | ConfigNameBuiltInInternal

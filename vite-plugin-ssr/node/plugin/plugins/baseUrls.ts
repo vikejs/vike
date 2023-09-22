@@ -3,17 +3,17 @@ export { baseUrls }
 import type { Plugin } from 'vite'
 import { resolveBaseFromUserConfig } from '../plugins/config/resolveBase.js'
 import { assert } from '../utils.js'
-import { getConfigVps } from '../../shared/getConfigVps.js'
-import type { ConfigVpsUserProvided } from '../../../shared/ConfigVps.js'
+import { getConfigVike } from '../../shared/getConfigVike.js'
+import type { ConfigVikeUserProvided } from '../../../shared/ConfigVike.js'
 
-function baseUrls(configVps?: ConfigVpsUserProvided): Plugin {
+function baseUrls(configVike?: ConfigVikeUserProvided): Plugin {
   let baseServer: string
   let baseAssets: string
   return {
     name: 'vike:baseUrls',
     enforce: 'post',
     config: (config) => {
-      const bases = resolveBaseFromUserConfig(config, configVps)
+      const bases = resolveBaseFromUserConfig(config, configVike)
       baseServer = bases.baseServer
       baseAssets = bases.baseAssets
       // We cannot define these in configResolved() because Vite picks up the env variables before any configResolved() hook is called
@@ -30,10 +30,10 @@ function baseUrls(configVps?: ConfigVpsUserProvided): Plugin {
       }
     },
     async configResolved(config) {
-      const configVps = await getConfigVps(config)
+      const configVike = await getConfigVike(config)
       // Ensure that the premature base URL resolving we did in config() isn't erroneous
-      assert(configVps.baseServer === baseServer)
-      assert(configVps.baseAssets === baseAssets)
+      assert(configVike.baseServer === baseServer)
+      assert(configVike.baseAssets === baseAssets)
       /* In dev, Vite seems buggy around setting vite.config.js#base to an absolute URL (e.g. http://localhost:8080/cdn/)
        *  - In dev, Vite removes the URL origin. (I.e. it resolves the user config `vite.config.js#base: 'http://localhost:8080/cdn/'` to resolved config `config.base === '/cdn/'`.)
        *  - Instead of having an internal Vike assertion fail, we let the user discover Vite's buggy behavior.

@@ -18,7 +18,7 @@ import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/vi
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValue } from '../../../shared/page-configs/utils.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
-import { getConfigVps } from '../../shared/getConfigVps.js'
+import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ResolvedConfig, Plugin, Rollup, UserConfig } from 'vite'
 import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
@@ -86,9 +86,9 @@ function buildConfig(): Plugin {
 }
 
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
-  const configVps = await getConfigVps(config)
-  const pageFileEntries = await getPageFileEntries(config, configVps.includeAssetsImportedByServer) // TODO/v1-release: remove
-  const { pageConfigs } = await getVikeConfig(config.root, false, configVps.extensions)
+  const configVike = await getConfigVike(config)
+  const pageFileEntries = await getPageFileEntries(config, configVike.includeAssetsImportedByServer) // TODO/v1-release: remove
+  const { pageConfigs } = await getVikeConfig(config.root, false, configVike.extensions)
   assertUsage(
     Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,
     'At least one page should be defined, see https://vike.dev/add'

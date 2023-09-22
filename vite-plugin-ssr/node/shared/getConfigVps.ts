@@ -1,8 +1,8 @@
-export { getConfigVps }
+export { getConfigVike }
 
-import type { ConfigVpsResolved } from '../../shared/ConfigVps.js'
+import type { ConfigVikeResolved } from '../../shared/ConfigVike.js'
 
-async function getConfigVps(config: Record<string, unknown>): Promise<ConfigVpsResolved> {
-  const configVps: ConfigVpsResolved = (await config.configVpsPromise) as any
-  return configVps
+async function getConfigVike(config: Record<string, unknown>): Promise<ConfigVikeResolved> {
+  const configVike: ConfigVikeResolved = (await config.configVikePromise) as any
+  return configVike
 }

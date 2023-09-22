@@ -3,7 +3,7 @@ export { devConfig }
 import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import { determineOptimizeDeps } from './determineOptimizeDeps.js'
 import { determineFsAllowList } from './determineFsAllowList.js'
-import { getConfigVps } from '../../../shared/getConfigVps.js'
+import { getConfigVike } from '../../../shared/getConfigVike.js'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware.js'
 import { markEnvAsDev } from '../../utils.js'
 import { improveViteLogs } from '../../shared/loggerVite.js'
@@ -48,9 +48,9 @@ function devConfig(): Plugin[] {
       },
       async configResolved(config_) {
         config = config_
-        const configVps = await getConfigVps(config)
-        await determineOptimizeDeps(config, configVps, isDev)
-        await determineFsAllowList(config, configVps)
+        const configVike = await getConfigVike(config)
+        await determineOptimizeDeps(config, configVike, isDev)
+        await determineFsAllowList(config, configVike)
         if (!isErrorDebug()) {
           await installHttpRequestAsyncStore()
           improveViteLogs(config)

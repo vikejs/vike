@@ -1,32 +1,32 @@
-export { resolveVpsConfig }
+export { resolveVikeConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import type { ConfigVpsUserProvided, ConfigVpsResolved } from '../../../../shared/ConfigVps.js'
-import { assertVpsConfig } from './assertVpsConfig.js'
+import type { ConfigVikeUserProvided, ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
+import { assertVikeConfig } from './assertVikeConfig.js'
 import { isDev2 } from '../../utils.js'
-import { findConfigVpsFromStemPackages } from './findConfigVpsFromStemPackages.js'
+import { findConfigVikeFromStemPackages } from './findConfigVikeFromStemPackages.js'
 import { pickFirst } from './pickFirst.js'
 import { resolveExtensions } from './resolveExtensions.js'
 import { resolveBase } from './resolveBase.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 
-function resolveVpsConfig(vikeConfig: unknown): Plugin {
+function resolveVikeConfig(vikeConfig: unknown): Plugin {
   return {
-    name: 'vike:resolveVpsConfig',
+    name: 'vike:resolveVikeConfig',
     enforce: 'pre',
     async configResolved(config) {
       const promise = resolveConfig(vikeConfig, config)
-      ;(config as Record<string, unknown>).configVpsPromise = promise
+      ;(config as Record<string, unknown>).configVikePromise = promise
       await promise
     }
   }
 }
 
-async function resolveConfig(vikeConfig: unknown, config: ResolvedConfig): Promise<ConfigVpsResolved> {
-  const fromPluginOptions = (vikeConfig ?? {}) as ConfigVpsUserProvided
-  const fromViteConfig = ((config as Record<string, unknown>).vike ?? {}) as ConfigVpsUserProvided
-  const fromStemPackages = await findConfigVpsFromStemPackages(config.root)
+async function resolveConfig(vikeConfig: unknown, config: ResolvedConfig): Promise<ConfigVikeResolved> {
+  const fromPluginOptions = (vikeConfig ?? {}) as ConfigVikeUserProvided
+  const fromViteConfig = ((config as Record<string, unknown>).vike ?? {}) as ConfigVikeUserProvided
+  const fromStemPackages = await findConfigVikeFromStemPackages(config.root)
 
   const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig]
 
@@ -35,17 +35,17 @@ async function resolveConfig(vikeConfig: unknown, config: ResolvedConfig): Promi
   const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config.root, isDev2(config), extensions)
   configs.push(fromPlusConfigFile)
 
-  assertVpsConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
+  assertVikeConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
     // TODO: add config file path ?
     return `config ${pc.cyan(prop)} ${errMsg}`
   })
-  assertVpsConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vike.${prop} ${errMsg}`)
+  assertVikeConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vike.${prop} ${errMsg}`)
   // TODO/v1-release: deprecate this
-  assertVpsConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
+  assertVikeConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
 
   const { baseServer, baseAssets } = resolveBase(configs, config)
 
-  const configVps: ConfigVpsResolved = {
+  const configVike: ConfigVikeResolved = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? null,
     extensions,
     prerender: resolvePrerenderOptions(configs),
@@ -57,10 +57,10 @@ async function resolveConfig(vikeConfig: unknown, config: ResolvedConfig): Promi
     trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false
   }
 
-  return configVps
+  return configVike
 }
 
-function resolvePrerenderOptions(configs: ConfigVpsUserProvided[]): ConfigVpsResolved['prerender'] {
+function resolvePrerenderOptions(configs: ConfigVikeUserProvided[]): ConfigVikeResolved['prerender'] {
   if (!configs.some((c) => c.prerender)) {
     return false
   }

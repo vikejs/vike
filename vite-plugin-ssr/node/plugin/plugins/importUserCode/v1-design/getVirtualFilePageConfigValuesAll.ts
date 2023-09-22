@@ -10,7 +10,7 @@ import {
 import { getVikeConfig } from './getVikeConfig.js'
 import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
-import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps.js'
+import type { ConfigVikeResolved } from '../../../../../shared/ConfigVike.js'
 import path from 'path'
 import { getConfigValue } from '../../../../../shared/page-configs/utils.js'
 import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSource.js'
@@ -20,7 +20,7 @@ async function getVirtualFilePageConfigValuesAll(
   id: string,
   userRootDir: string,
   isDev: boolean,
-  configVps: ConfigVpsResolved
+  configVike: ConfigVikeResolved
 ): Promise<string> {
   const result = isVirtualFileIdPageConfigValuesAll(id)
   assert(result)
@@ -31,14 +31,14 @@ async function getVirtualFilePageConfigValuesAll(
   }
   */
   const { pageId, isForClientSide } = result
-  const { pageConfigs } = await getVikeConfig(userRootDir, isDev, configVps.extensions, true)
+  const { pageConfigs } = await getVikeConfig(userRootDir, isDev, configVike.extensions, true)
   const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
   assert(pageConfig)
   const code = getLoadConfigValuesAll(
     pageConfig,
     isForClientSide,
     pageId,
-    configVps.includeAssetsImportedByServer,
+    configVike.includeAssetsImportedByServer,
     isDev
   )
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)

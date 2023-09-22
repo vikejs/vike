@@ -44,7 +44,7 @@ import {
   type ConfigNameGlobal
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import glob from 'fast-glob'
-import type { ExtensionResolved } from '../../../../../shared/ConfigVps.js'
+import type { ExtensionResolved } from '../../../../../shared/ConfigVike.js'
 import {
   getLocationId,
   getFilesystemRouteString,

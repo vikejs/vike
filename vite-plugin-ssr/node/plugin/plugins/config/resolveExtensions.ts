@@ -1,7 +1,7 @@
 export { resolveExtensions }
 
 import type { ResolvedConfig } from 'vite'
-import type { ConfigVpsUserProvided, ExtensionResolved } from '../../../../shared/ConfigVps.js'
+import type { ConfigVikeUserProvided, ExtensionResolved } from '../../../../shared/ConfigVike.js'
 import {
   assert,
   assertUsage,
@@ -20,7 +20,7 @@ import pc from '@brillout/picocolors'
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 
-function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedConfig): ExtensionResolved[] {
+function resolveExtensions(configs: ConfigVikeUserProvided[], config: ResolvedConfig): ExtensionResolved[] {
   const extensions = configs.map((c) => c.extensions ?? []).flat()
   return extensions.map((extension) => {
     const { npmPackageName } = extension

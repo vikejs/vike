@@ -20,7 +20,7 @@ function assertClientEntryId(id: string) {
     id
   )
   if (isPkg) {
-    const { configVps } = getGlobalContext()
-    assert(configVps === null || configVps.extensions.some(({ npmPackageName }) => id.startsWith(npmPackageName)), id)
+    const { configVike } = getGlobalContext()
+    assert(configVike === null || configVike.extensions.some(({ npmPackageName }) => id.startsWith(npmPackageName)), id)
   }
 }

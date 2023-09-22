@@ -4,8 +4,8 @@ import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assertWarning } from '../utils.js'
 import { prerenderFromAutoFullBuild, prerenderForceExit } from '../../prerender/runPrerender.js'
-import { getConfigVps } from '../../shared/getConfigVps.js'
-import type { ConfigVpsResolved } from '../../../shared/ConfigVps.js'
+import { getConfigVike } from '../../shared/getConfigVike.js'
+import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
 
@@ -13,16 +13,16 @@ let forceExit = false
 
 function autoFullBuild(): Plugin[] {
   let config: ResolvedConfig
-  let configVps: ConfigVpsResolved
+  let configVike: ConfigVikeResolved
   return [
     {
       name: 'vike:autoFullBuild',
       apply: 'build',
       enforce: 'pre',
       async configResolved(config_) {
-        configVps = await getConfigVps(config_)
+        configVike = await getConfigVike(config_)
         config = config_
-        abortViteBuildSsr(configVps)
+        abortViteBuildSsr(configVike)
       },
       writeBundle: {
         /* We can't use this because it breaks Vite's logging. TODO: try again with latest Vite version.
@@ -31,7 +31,7 @@ function autoFullBuild(): Plugin[] {
         */
         async handler(_options, bundle) {
           try {
-            await triggerFullBuild(config, configVps, bundle)
+            await triggerFullBuild(config, configVike, bundle)
           } catch (err) {
             // Avoid Rollup prefixing the error with [vike:autoFullBuild], for example see https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
             console.error(err)
@@ -57,9 +57,9 @@ function autoFullBuild(): Plugin[] {
   ]
 }
 
-async function triggerFullBuild(config: ResolvedConfig, configVps: ConfigVpsResolved, bundle: Record<string, unknown>) {
+async function triggerFullBuild(config: ResolvedConfig, configVike: ConfigVikeResolved, bundle: Record<string, unknown>) {
   if (config.build.ssr) return // already triggered
-  if (isDisabled(configVps)) return
+  if (isDisabled(configVike)) return
   // vike.json missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's build() API) => skip
   if (!bundle['vike.json']) return
 
@@ -81,14 +81,14 @@ async function triggerFullBuild(config: ResolvedConfig, configVps: ConfigVpsReso
     }
   })
 
-  if (configVps.prerender && !configVps.prerender.disableAutoRun) {
+  if (configVike.prerender && !configVike.prerender.disableAutoRun) {
     await prerenderFromAutoFullBuild({ viteConfig: configInline })
     forceExit = true
   }
 }
 
-function abortViteBuildSsr(configVps: ConfigVpsResolved) {
-  if (!configVps.disableAutoFullBuild && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
+function abortViteBuildSsr(configVike: ConfigVikeResolved) {
+  if (!configVike.disableAutoFullBuild && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
     assertWarning(
       false,
       `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
@@ -102,11 +102,11 @@ function abortViteBuildSsr(configVps: ConfigVpsResolved) {
   }
 }
 
-function isDisabled(configVps: ConfigVpsResolved): boolean {
-  if (configVps.disableAutoFullBuild === null) {
+function isDisabled(configVike: ConfigVikeResolved): boolean {
+  if (configVike.disableAutoFullBuild === null) {
     // TODO/v1-release: also enable autoFullBuild when running Vite's build() API
     return !isViteCliCall()
   } else {
-    return configVps.disableAutoFullBuild
+    return configVike.disableAutoFullBuild
   }
 }

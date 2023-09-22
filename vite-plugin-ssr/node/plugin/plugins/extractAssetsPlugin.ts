@@ -24,8 +24,8 @@ import {
   assertUsage
 } from '../utils.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
-import { getConfigVps } from '../../shared/getConfigVps.js'
-import type { ConfigVpsResolved } from '../../../shared/ConfigVps.js'
+import { getConfigVike } from '../../shared/getConfigVike.js'
+import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
 import { removeSourceMap } from '../shared/removeSourceMap.js'
@@ -44,7 +44,7 @@ const debugEnabled = isDebugEnabled(debugNamespace)
 
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
-  let configVps: ConfigVpsResolved
+  let configVike: ConfigVikeResolved
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.js'`).
     {
@@ -56,7 +56,7 @@ function extractAssetsPlugin(): Plugin[] {
         if (!extractAssetsRE.test(id)) {
           return
         }
-        assert(configVps.includeAssetsImportedByServer)
+        assert(configVike.includeAssetsImportedByServer)
         assert(!viteIsSSR_options(options))
         const importStatements = await getImportStatements(src)
         const moduleNames = getImportedModules(importStatements)
@@ -91,7 +91,7 @@ function extractAssetsPlugin(): Plugin[] {
         if (!extractAssetsRE.test(importer)) {
           return
         }
-        assert(configVps.includeAssetsImportedByServer)
+        assert(configVike.includeAssetsImportedByServer)
 
         let resolution: null | ResolvedId = null
         try {
@@ -120,9 +120,9 @@ function extractAssetsPlugin(): Plugin[] {
           return emptyModule(file, importer)
         }
 
-        // If the dependency is a Vike extension and has `configVps.extension[number].pageConfigsSrcDir`, then include its CSS
+        // If the dependency is a Vike extension and has `configVike.extension[number].pageConfigsSrcDir`, then include its CSS
         if (
-          configVps.extensions
+          configVike.extensions
             .filter(({ pageConfigsSrcDir }) => pageConfigsSrcDir !== null)
             .some(({ npmPackageName }) => {
               const check1 =
@@ -164,7 +164,7 @@ function extractAssetsPlugin(): Plugin[] {
       name: 'vike:extractAssets-3',
       apply: 'build',
       async configResolved(config_) {
-        configVps = await getConfigVps(config_)
+        configVike = await getConfigVike(config_)
         config = config_
       },
       load(id) {

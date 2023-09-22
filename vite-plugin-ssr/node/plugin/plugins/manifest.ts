@@ -4,13 +4,13 @@ import { Plugin, ResolvedConfig } from 'vite'
 import { projectInfo, viteIsSSR, toPosixPath, assertPosixPath, isNotNullish } from '../utils.js'
 import { assertPluginManifest } from '../../shared/assertPluginManifest.js'
 import { isUsingClientRouter } from './extractExportNamesPlugin.js'
-import { getConfigVps } from '../../shared/getConfigVps.js'
-import type { ConfigVpsResolved } from '../../../shared/ConfigVps.js'
+import { getConfigVike } from '../../shared/getConfigVike.js'
+import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import path from 'path'
 import { getRuntimeManifest } from '../../runtime/globalContext.js'
 
 function manifest(): Plugin[] {
-  let configVps: ConfigVpsResolved
+  let configVike: ConfigVikeResolved
   let config: ResolvedConfig
   return [
     {
@@ -18,15 +18,15 @@ function manifest(): Plugin[] {
       apply: 'build',
       async configResolved(config_: ResolvedConfig) {
         config = config_
-        configVps = await getConfigVps(config)
+        configVike = await getConfigVike(config)
       },
       generateBundle() {
         if (viteIsSSR(config)) return
-        const runtimeManifest = getRuntimeManifest(configVps)
+        const runtimeManifest = getRuntimeManifest(configVike)
         const manifest = {
           version: projectInfo.projectVersion,
           usesClientRouter: isUsingClientRouter(), // TODO/v1-release: remove
-          manifestKeyMap: getManifestKeyMap(configVps, config),
+          manifestKeyMap: getManifestKeyMap(configVike, config),
           ...runtimeManifest
         }
         assertPluginManifest(manifest)
@@ -40,9 +40,9 @@ function manifest(): Plugin[] {
   ]
 }
 
-function getManifestKeyMap(configVps: ConfigVpsResolved, config: ResolvedConfig): Record<string, string> {
+function getManifestKeyMap(configVike: ConfigVikeResolved, config: ResolvedConfig): Record<string, string> {
   const manifestKeyMap: Record<string, string> = {}
-  configVps.extensions
+  configVike.extensions
     .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
     .flat()
     .filter(isNotNullish)

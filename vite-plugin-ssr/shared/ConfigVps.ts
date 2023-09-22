@@ -1,5 +1,5 @@
-export type { ConfigVpsUserProvided }
-export type { ConfigVpsResolved }
+export type { ConfigVikeUserProvided }
+export type { ConfigVikeResolved }
 export type { ExtensionResolved }
 
 type ExtensionUserProvided = {
@@ -25,7 +25,7 @@ type ExtensionResolved = {
   assetsDir: null | string
 }
 
-type ConfigVpsResolved = {
+type ConfigVikeResolved = {
   prerender:
     | false
     | {
@@ -44,7 +44,7 @@ type ConfigVpsResolved = {
   disableUrlNormalization: boolean
 }
 
-type ConfigVpsUserProvided = {
+type ConfigVikeUserProvided = {
   /**
    * Enable pre-rendering.
    *

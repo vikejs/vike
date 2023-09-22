@@ -15,7 +15,7 @@ import {
   scriptFileExtensions,
   debugGlob
 } from '../../utils.js'
-import type { ConfigVpsResolved } from '../../../../shared/ConfigVps.js'
+import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes.js'
 import path from 'path'
@@ -25,7 +25,7 @@ import { generateEagerImport } from './generateEagerImport.js'
 async function getVirtualFileImportUserCode(
   id: string,
   options: { ssr?: boolean } | undefined,
-  configVps: ConfigVpsResolved,
+  configVike: ConfigVikeResolved,
   config: ResolvedConfig,
   isDev: boolean
 ) {
@@ -33,14 +33,14 @@ async function getVirtualFileImportUserCode(
   assert(idParsed)
   const { isForClientSide, isClientRouting } = idParsed
   assert(isForClientSide === !viteIsSSR_options(options))
-  const isPrerendering = !!configVps.prerender
-  const code = await getCode(config, configVps, isForClientSide, isClientRouting, isPrerendering, isDev, id)
+  const isPrerendering = !!configVike.prerender
+  const code = await getCode(config, configVike, isForClientSide, isClientRouting, isPrerendering, isDev, id)
   return code
 }
 
 async function getCode(
   config: ResolvedConfig,
-  configVps: ConfigVpsResolved,
+  configVike: ConfigVikeResolved,
   isForClientSide: boolean,
   isClientRouting: boolean,
   isPrerendering: boolean,
@@ -53,14 +53,14 @@ async function getCode(
   assert(isDev === !isBuild)
   let content = ''
   {
-    const globRoots = getGlobRoots(config, configVps)
+    const globRoots = getGlobRoots(config, configVike)
     debugGlob('Glob roots: ', globRoots)
     content += await generateGlobImports(
       globRoots,
       isBuild,
       isForClientSide,
       isClientRouting,
-      configVps,
+      configVike,
       isPrerendering,
       config,
       isDev,
@@ -68,7 +68,7 @@ async function getCode(
     )
   }
   {
-    const extensionsImportPaths = configVps.extensions
+    const extensionsImportPaths = configVike.extensions
       .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
       .flat()
       .filter(isNotNullish)
@@ -202,7 +202,7 @@ async function generateGlobImports(
   isBuild: boolean,
   isForClientSide: boolean,
   isClientRouting: boolean,
-  configVps: ConfigVpsResolved,
+  configVike: ConfigVikeResolved,
   isPrerendering: boolean,
   config: ResolvedConfig,
   isDev: boolean,
@@ -218,7 +218,7 @@ export const pageFilesList = [];
 export const neverLoaded = {};
 export const isGeneratedFile = true;
 
-${await getVirtualFilePageConfigs(config.root, isForClientSide, isDev, id, configVps, isClientRouting)}
+${await getVirtualFilePageConfigs(config.root, isForClientSide, isDev, id, configVike, isClientRouting)}
 
 `
 
@@ -240,7 +240,7 @@ ${await getVirtualFilePageConfigs(config.root, isForClientSide, isDev, id, confi
         fileContent += getGlobs(globRoots, isBuild, fileType, 'extractExportNames')
       }
     })
-  if (configVps.includeAssetsImportedByServer && isForClientSide) {
+  if (configVike.includeAssetsImportedByServer && isForClientSide) {
     fileContent += getGlobs(globRoots, isBuild, '.page.server', 'extractAssets')
   }
 
@@ -308,9 +308,9 @@ function getGlobs(
   ].join('\n')
 }
 
-function getGlobRoots(config: ResolvedConfig, configVps: ConfigVpsResolved): string[] {
+function getGlobRoots(config: ResolvedConfig, configVike: ConfigVikeResolved): string[] {
   const globRoots = ['/']
-  configVps.extensions
+  configVike.extensions
     .map(({ pageConfigsSrcDir }) => pageConfigsSrcDir)
     .filter(isNotNullish)
     .forEach((pageConfigsSrcDir) => {

@@ -3,7 +3,7 @@ export { resolveBaseFromUserConfig }
 
 import { assert, assertUsage, isBaseServer, isBaseAssets } from '../../utils.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
-import type { ConfigVpsUserProvided } from '../../../../shared/ConfigVps.js'
+import type { ConfigVikeUserProvided } from '../../../../shared/ConfigVike.js'
 import { pickFirst } from './pickFirst.js'
 import pc from '@brillout/picocolors'
 
@@ -12,7 +12,7 @@ type BaseServers = {
   baseAssets: string
 }
 
-function resolveBase(configs: ConfigVpsUserProvided[], config: ResolvedConfig): BaseServers {
+function resolveBase(configs: ConfigVikeUserProvided[], config: ResolvedConfig): BaseServers {
   const baseServer = pickFirst(configs.map((c) => c.baseServer)) ?? null
   const baseAssets = pickFirst(configs.map((c) => c.baseAssets)) ?? null
   let baseOriginal: unknown = (config as Record<string, unknown>)._baseOriginal
@@ -21,8 +21,8 @@ function resolveBase(configs: ConfigVpsUserProvided[], config: ResolvedConfig): 
   return resolve(baseOriginal, baseServer, baseAssets)
 }
 
-function resolveBaseFromUserConfig(config: UserConfig, configVps: undefined | ConfigVpsUserProvided): BaseServers {
-  return resolve(config.base ?? null, configVps?.baseServer ?? null, configVps?.baseAssets ?? null)
+function resolveBaseFromUserConfig(config: UserConfig, configVike: undefined | ConfigVikeUserProvided): BaseServers {
+  return resolve(config.base ?? null, configVike?.baseServer ?? null, configVike?.baseAssets ?? null)
 }
 
 function resolve(base: string | null, baseServer_: string | null, baseAssets_: string | null): BaseServers {

@@ -2,18 +2,18 @@ export { previewConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assertUsage, getOutDirs, resolveOutDir, markEnvAsPreview } from '../utils.js'
-import { getConfigVps } from '../../shared/getConfigVps.js'
+import { getConfigVike } from '../../shared/getConfigVike.js'
 import fs from 'fs'
 import path from 'path'
 import type { ViteDevServer } from 'vite'
-import type { ConfigVpsResolved } from '../../../shared/ConfigVps.js'
+import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import pc from '@brillout/picocolors'
 type ConnectServer = ViteDevServer['middlewares']
 
 function previewConfig(): Plugin {
   let config: ResolvedConfig
-  let configVps: ConfigVpsResolved
+  let configVike: ConfigVikeResolved
   return {
     name: 'vike:previewConfig',
     apply: 'serve',
@@ -26,13 +26,13 @@ function previewConfig(): Plugin {
     },
     async configResolved(config_) {
       config = config_
-      configVps = await getConfigVps(config)
+      configVike = await getConfigVike(config)
     },
     configurePreviewServer(server) {
       markEnvAsPreview()
       return () => {
         assertDist()
-        if (!configVps.prerender) {
+        if (!configVike.prerender) {
           addSsrMiddleware(server.middlewares)
         }
         addStatic404Middleware(server.middlewares)

@@ -14,7 +14,7 @@ import { stringify } from '@brillout/json-serializer/stringify'
 import { getConfigEnv } from './helpers.js'
 import pc from '@brillout/picocolors'
 import { getVikeConfig } from './getVikeConfig.js'
-import type { ConfigVpsResolved } from '../../../../../shared/ConfigVps.js'
+import type { ConfigVikeResolved } from '../../../../../shared/ConfigVike.js'
 import { isConfigEnvMatch } from './isConfigEnvMatch.js'
 
 async function getVirtualFilePageConfigs(
@@ -22,13 +22,13 @@ async function getVirtualFilePageConfigs(
   isForClientSide: boolean,
   isDev: boolean,
   id: string,
-  configVps: ConfigVpsResolved,
+  configVike: ConfigVikeResolved,
   isClientRouting: boolean
 ): Promise<string> {
   const { pageConfigs, pageConfigGlobal } = await getVikeConfig(
     userRootDir,
     isDev,
-    configVps.extensions,
+    configVike.extensions,
     true
   )
   return getContent(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
