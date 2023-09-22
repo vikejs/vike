@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  vite-plugin-ssr: link:./vite-plugin-ssr/
+  vike: link:./vike/
 
 packageExtensionsChecksum: f050d50401848e89704474c6985d439e
 
@@ -79,12 +79,12 @@ importers:
       sirv:
         specifier: ^2.0.3
         version: 2.0.3
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.4.9
         version: 4.4.9(@types/node@20.6.3)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   boilerplates/boilerplate-react-ts:
     dependencies:
@@ -148,12 +148,12 @@ importers:
       typescript:
         specifier: ^5.1.6
         version: 5.1.6
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.4.9
         version: 4.4.9(@types/node@20.4.10)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   boilerplates/boilerplate-vue:
     dependencies:
@@ -178,12 +178,12 @@ importers:
       sirv:
         specifier: ^2.0.3
         version: 2.0.3
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.4.9
         version: 4.4.9(@types/node@20.6.3)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
       vue:
         specifier: ^3.3.4
         version: 3.3.4
@@ -226,12 +226,12 @@ importers:
       typescript:
         specifier: ^5.1.6
         version: 5.1.6
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.4.9
         version: 4.4.9(@types/node@20.4.10)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
       vue:
         specifier: ^3.3.4
         version: 3.3.4
@@ -259,9 +259,9 @@ importers:
       typescript:
         specifier: ^5.0.3
         version: 5.0.4
-      vite-plugin-ssr:
-        specifier: link:../vite-plugin-ssr
-        version: link:../vite-plugin-ssr
+      vike:
+        specifier: link:../vike
+        version: link:../vike
 
   examples/auth:
     dependencies:
@@ -292,15 +292,15 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.1.3
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vike-react:
         specifier: 0.2.0-commit-af9b3c5
-        version: 0.2.0-commit-af9b3c5(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.9)
+        version: 0.2.0-commit-af9b3c5(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@0.4.142)(vite@4.3.9)
       vite:
         specifier: ^4.0.3
         version: 4.3.9
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   examples/base-url:
     dependencies:
@@ -313,12 +313,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/base-url-cdn:
     dependencies:
@@ -343,12 +343,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/base-url-cdn-v1:
     dependencies:
@@ -373,12 +373,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/base-url-server:
     dependencies:
@@ -403,12 +403,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/base-url-server-v1:
     dependencies:
@@ -433,12 +433,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/base-url-v1:
     dependencies:
@@ -451,12 +451,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/cloudflare-workers-react:
     dependencies:
@@ -472,12 +472,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       wrangler:
         specifier: ^2.9.1
         version: 2.19.0
@@ -508,12 +508,12 @@ importers:
       react-streaming:
         specifier: ^0.3.9
         version: 0.3.10(react-dom@18.2.0)(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       wrangler:
         specifier: ^2.9.1
         version: 2.19.0
@@ -544,12 +544,12 @@ importers:
       react-streaming:
         specifier: ^0.3.9
         version: 0.3.10(react-dom@18.2.0)(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       wrangler:
         specifier: ^2.9.1
         version: 2.19.0
@@ -568,12 +568,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       wrangler:
         specifier: ^2.9.1
         version: 2.19.0
@@ -592,12 +592,12 @@ importers:
       '@vue/server-renderer':
         specifier: ^3.2.47
         version: 3.2.47(vue@3.2.47)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       vue:
         specifier: ^3.2.47
         version: 3.2.47
@@ -619,12 +619,12 @@ importers:
       '@vue/server-renderer':
         specifier: ^3.2.47
         version: 3.2.47(vue@3.2.47)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       vue:
         specifier: ^3.2.47
         version: 3.2.47
@@ -643,12 +643,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/file-structure-domain-driven:
     dependencies:
@@ -661,12 +661,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/file-structure-domain-driven-v1:
     dependencies:
@@ -679,12 +679,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/graphql-apollo-react:
     dependencies:
@@ -712,12 +712,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.1.4
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/graphql-apollo-react-v1:
     dependencies:
@@ -745,12 +745,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.1.4
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/graphql-apollo-vue:
     dependencies:
@@ -784,12 +784,12 @@ importers:
       graphql:
         specifier: ^16.6.0
         version: 16.6.0
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.1.4
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       vue:
         specifier: ^3.2.47
         version: 3.2.47
@@ -826,12 +826,12 @@ importers:
       graphql:
         specifier: ^16.6.0
         version: 16.6.0
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.1.4
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       vue:
         specifier: ^3.2.47
         version: 3.2.47
@@ -841,24 +841,24 @@ importers:
       typescript:
         specifier: ^4.6.4
         version: 4.9.5
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/html-fragments-v1:
     dependencies:
       typescript:
         specifier: ^4.6.4
         version: 4.9.5
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/i18n:
     dependencies:
@@ -874,12 +874,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/i18n-v1:
     dependencies:
@@ -892,12 +892,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/layouts-react:
     dependencies:
@@ -910,12 +910,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/layouts-react-v1:
     dependencies:
@@ -928,12 +928,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/layouts-vue:
     dependencies:
@@ -946,12 +946,12 @@ importers:
       '@vue/server-renderer':
         specifier: ^3.2.33
         version: 3.2.47(vue@3.2.47)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       vue:
         specifier: ^3.2.33
         version: 3.2.47
@@ -967,12 +967,12 @@ importers:
       '@vue/server-renderer':
         specifier: ^3.2.33
         version: 3.2.47(vue@3.2.47)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       vue:
         specifier: ^3.2.33
         version: 3.2.47
@@ -1015,12 +1015,12 @@ importers:
       typescript:
         specifier: ^4.6.4
         version: 4.9.5
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
         version: 4.3.5(@types/node@17.0.45)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   examples/path-aliases-v1:
     dependencies:
@@ -1060,12 +1060,12 @@ importers:
       typescript:
         specifier: ^4.6.4
         version: 4.9.5
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
         version: 4.3.5(@types/node@17.0.45)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   examples/preact-client-routing:
     dependencies:
@@ -1084,12 +1084,12 @@ importers:
       preact-render-to-string:
         specifier: ^5.2.1
         version: 5.2.6(preact@10.13.2)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/preact-client-routing-v1:
     dependencies:
@@ -1108,12 +1108,12 @@ importers:
       preact-render-to-string:
         specifier: ^5.2.1
         version: 5.2.6(preact@10.13.2)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/preact-server-routing:
     dependencies:
@@ -1132,12 +1132,12 @@ importers:
       preact-render-to-string:
         specifier: ^5.2.1
         version: 5.2.6(preact@10.13.2)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/preact-server-routing-v1:
     dependencies:
@@ -1156,12 +1156,12 @@ importers:
       preact-render-to-string:
         specifier: ^5.2.1
         version: 5.2.6(preact@10.13.2)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/react:
     dependencies:
@@ -1174,12 +1174,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/react-17:
     dependencies:
@@ -1192,12 +1192,12 @@ importers:
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/react-17-v1:
     dependencies:
@@ -1210,12 +1210,12 @@ importers:
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/react-full:
     dependencies:
@@ -1261,12 +1261,12 @@ importers:
       typescript:
         specifier: ^4.8.4
         version: 4.9.5
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
         version: 4.3.5(@types/node@17.0.45)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   examples/react-full-v1:
     dependencies:
@@ -1312,12 +1312,12 @@ importers:
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.4.9
         version: 4.4.9(@types/node@20.6.3)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   examples/react-router:
     dependencies:
@@ -1336,12 +1336,12 @@ importers:
       react-router-dom:
         specifier: ^6.3.0
         version: 6.11.1(react-dom@18.2.0)(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/react-router-v1:
     dependencies:
@@ -1360,12 +1360,12 @@ importers:
       react-router-dom:
         specifier: ^6.3.0
         version: 6.11.1(react-dom@18.2.0)(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/react-streaming:
     dependencies:
@@ -1393,12 +1393,12 @@ importers:
       sirv:
         specifier: ^2.0.2
         version: 2.0.3
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/react-streaming-v1:
     dependencies:
@@ -1426,12 +1426,12 @@ importers:
       sirv:
         specifier: ^2.0.2
         version: 2.0.3
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/react-v1:
     dependencies:
@@ -1444,12 +1444,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/redux:
     dependencies:
@@ -1468,12 +1468,12 @@ importers:
       redux:
         specifier: ^4.2.0
         version: 4.2.1
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/redux-v1:
     dependencies:
@@ -1492,12 +1492,12 @@ importers:
       redux:
         specifier: ^4.2.0
         version: 4.2.1
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/render-modes:
     dependencies:
@@ -1510,12 +1510,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/render-modes-v1:
     dependencies:
@@ -1528,12 +1528,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/solid-spa:
     dependencies:
@@ -1543,15 +1543,15 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.0.4
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
+        version: 4.3.5(@types/node@17.0.45)
       vite-plugin-solid:
         specifier: ^2.3.0
         version: 2.7.0(solid-js@1.7.5)(vite@4.3.5)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   examples/solid-spa-v1:
     dependencies:
@@ -1561,15 +1561,15 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.0.4
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
+        version: 4.3.5(@types/node@17.0.45)
       vite-plugin-solid:
         specifier: ^2.3.0
         version: 2.7.0(solid-js@1.7.5)(vite@4.3.5)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   examples/solid-ssr:
     dependencies:
@@ -1579,15 +1579,15 @@ importers:
       typescript:
         specifier: ^4.8.2
         version: 4.9.5
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
+        version: 4.3.5(@types/node@17.0.45)
       vite-plugin-solid:
         specifier: ^2.3.0
         version: 2.7.0(solid-js@1.7.5)(vite@4.3.5)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   examples/solid-ssr-v1:
     dependencies:
@@ -1597,21 +1597,21 @@ importers:
       typescript:
         specifier: ^4.8.2
         version: 4.9.5
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
+        version: 4.3.5(@types/node@17.0.45)
       vite-plugin-solid:
         specifier: ^2.3.0
         version: 2.7.0(solid-js@1.7.5)(vite@4.3.5)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   examples/stem-react:
     dependencies:
       '@brillout/stem-react':
         specifier: ^0.1.3
-        version: 0.1.3(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.5)
+        version: 0.1.3(react@18.2.0)(vite@4.3.5)
       '@vitejs/plugin-react':
         specifier: ^3.0.0
         version: 3.1.0(vite@4.3.5)
@@ -1627,12 +1627,12 @@ importers:
       typescript:
         specifier: ^4.6.4
         version: 4.9.5
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/svelte-v1:
     dependencies:
@@ -1642,12 +1642,12 @@ importers:
       svelte:
         specifier: ^3.58.0
         version: 3.59.0
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/telefunc:
     dependencies:
@@ -1678,12 +1678,12 @@ importers:
       typescript:
         specifier: ^5.0.4
         version: 5.0.4
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.2.2
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/telefunc-v1:
     dependencies:
@@ -1714,12 +1714,12 @@ importers:
       typescript:
         specifier: ^5.0.4
         version: 5.0.4
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.2.2
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/urql:
     dependencies:
@@ -1756,12 +1756,12 @@ importers:
       urql:
         specifier: ^2.2.3
         version: 2.2.3(graphql@16.6.0)(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/urql-v1:
     dependencies:
@@ -1798,24 +1798,24 @@ importers:
       urql:
         specifier: ^2.2.3
         version: 2.2.3(graphql@16.6.0)(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/vanilla-v1:
     dependencies:
       typescript:
         specifier: 4.8.4
         version: 4.8.4
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/vike-react:
     dependencies:
@@ -1843,15 +1843,15 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.0.4
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vike-react:
         specifier: ^0.2.0
-        version: 0.2.0(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.8)
+        version: 0.2.0(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@0.4.142)(vite@4.3.8)
       vite:
         specifier: ^4.3.8
         version: 4.3.8
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   examples/vike-react-simple:
     dependencies:
@@ -1864,15 +1864,15 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vike-react-simple:
         specifier: ^0.0.7
-        version: 0.0.7(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)
+        version: 0.0.7(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@0.4.142)
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   examples/vue:
     dependencies:
@@ -1885,12 +1885,12 @@ importers:
       '@vue/server-renderer':
         specifier: ^3.2.47
         version: 3.2.47(vue@3.2.47)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.1.4
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       vue:
         specifier: ^3.2.47
         version: 3.2.47
@@ -1924,12 +1924,12 @@ importers:
       unplugin-vue-markdown:
         specifier: ^0.24.3
         version: 0.24.3(vite@4.3.5)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
         version: 4.3.5(@types/node@17.0.45)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
       vue:
         specifier: 3.2.33
         version: 3.2.33
@@ -1963,12 +1963,12 @@ importers:
       unplugin-vue-markdown:
         specifier: ^0.24.3
         version: 0.24.3(vite@4.4.8)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.4.8
         version: 4.4.8(@types/node@17.0.45)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
       vue:
         specifier: ^3.3.4
         version: 3.3.4
@@ -1987,12 +1987,12 @@ importers:
       pinia:
         specifier: ^2.0.14
         version: 2.0.35(typescript@4.9.5)(vue@3.2.47)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       vue:
         specifier: ^3.2.37
         version: 3.2.47
@@ -2011,12 +2011,12 @@ importers:
       pinia:
         specifier: ^2.0.14
         version: 2.0.35(typescript@4.9.5)(vue@3.2.47)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       vue:
         specifier: ^3.2.37
         version: 3.2.47
@@ -2032,12 +2032,12 @@ importers:
       '@vue/server-renderer':
         specifier: ^3.2.33
         version: 3.2.47(vue@3.2.47)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       vue:
         specifier: ^3.2.33
         version: 3.2.47
@@ -2056,12 +2056,12 @@ importers:
       '@vue/server-renderer':
         specifier: ^3.2.33
         version: 3.2.47(vue@3.2.47)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       vue:
         specifier: ^3.2.33
         version: 3.2.47
@@ -2080,12 +2080,12 @@ importers:
       '@vue/server-renderer':
         specifier: ^3.2.47
         version: 3.2.47(vue@3.2.47)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.1.4
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       vue:
         specifier: ^3.2.47
         version: 3.2.47
@@ -2101,12 +2101,12 @@ importers:
       '@vue/server-renderer':
         specifier: ^3.2.47
         version: 3.2.47(vue@3.2.47)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       vue:
         specifier: ^3.2.47
         version: 3.2.47
@@ -2125,12 +2125,12 @@ importers:
       '@vue/server-renderer':
         specifier: ^3.2.47
         version: 3.2.47(vue@3.2.47)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.1.1
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       vue:
         specifier: ^3.2.47
         version: 3.2.47
@@ -2152,12 +2152,12 @@ importers:
       rimraf:
         specifier: ^5.0.0
         version: 5.0.0
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.2.1
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
       webpack:
         specifier: ^5.79.0
         version: 5.82.0(webpack-cli@5.1.0)
@@ -2185,12 +2185,12 @@ importers:
       typescript:
         specifier: ^5.1.3
         version: 5.1.3
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
         version: 4.3.9
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   test/build.outDir:
     dependencies:
@@ -2203,12 +2203,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   test/build.outDir-v1:
     dependencies:
@@ -2221,12 +2221,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   test/cjs:
     dependencies:
@@ -2248,12 +2248,12 @@ importers:
       sirv:
         specifier: ^2.0.3
         version: 2.0.3
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
         version: 4.4.9(@types/node@20.6.3)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   test/config-file-paths-v1:
     dependencies:
@@ -2266,12 +2266,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   test/config-side-export:
     dependencies:
@@ -2284,12 +2284,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   test/contra:
     dependencies:
@@ -2299,12 +2299,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   test/contra-v1:
     dependencies:
@@ -2314,12 +2314,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.3.1
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   test/disableAutoImporter:
     dependencies:
@@ -2332,12 +2332,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   test/disableAutoImporter-v1:
     dependencies:
@@ -2350,12 +2350,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   test/env:
     dependencies:
@@ -2368,12 +2368,12 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
         version: 4.3.9
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   test/hook-override:
     dependencies:
@@ -2395,30 +2395,30 @@ importers:
       typescript:
         specifier: ^5.1.3
         version: 5.1.6
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
         version: 4.4.9(@types/node@20.6.3)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   test/includeAssetsImportedByServer:
     dependencies:
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   test/includeAssetsImportedByServer-v1:
     dependencies:
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   test/pageFlesSrc:
     dependencies:
@@ -2443,9 +2443,9 @@ importers:
       typescript:
         specifier: ^4.9.3
         version: 4.9.5
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
 
   test/preload-v1:
     dependencies:
@@ -2455,30 +2455,30 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   test/renderPage:
     dependencies:
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   test/renderPage-v1:
     dependencies:
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   test/require-shim:
     dependencies:
@@ -2506,12 +2506,12 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: 4.0.3
         version: 4.0.3
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   test/require-shim-v1:
     dependencies:
@@ -2539,12 +2539,12 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: 4.0.3
         version: 4.0.3
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
 
   test/stream:
     dependencies:
@@ -2560,12 +2560,12 @@ importers:
       react-streaming:
         specifier: ^0.3.9
         version: 0.3.10(react-dom@18.2.0)(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
+        version: 4.3.5(@types/node@17.0.45)
 
   test/stream-v1:
     dependencies:
@@ -2581,85 +2581,12 @@ importers:
       react-streaming:
         specifier: ^0.3.9
         version: 0.3.10(react-dom@18.2.0)(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
       vite:
         specifier: ^4.0.3
-        version: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr:
-        specifier: link:../../vite-plugin-ssr
-        version: link:../../vite-plugin-ssr
-
-  vite-plugin-ssr:
-    dependencies:
-      '@brillout/import':
-        specifier: 0.2.3
-        version: 0.2.3
-      '@brillout/json-serializer':
-        specifier: ^0.5.6
-        version: 0.5.6
-      '@brillout/picocolors':
-        specifier: ^1.0.9
-        version: 1.0.9
-      '@brillout/require-shim':
-        specifier: ^0.1.2
-        version: 0.1.2
-      '@brillout/vite-plugin-import-build':
-        specifier: ^0.2.18
-        version: 0.2.18
-      acorn:
-        specifier: ^8.8.2
-        version: 8.8.2
-      cac:
-        specifier: ^6.7.14
-        version: 6.7.14
-      es-module-lexer:
-        specifier: ^1.3.0
-        version: 1.3.0
-      esbuild:
-        specifier: ^0.17.18
-        version: 0.17.18
-      fast-glob:
-        specifier: ^3.2.12
-        version: 3.2.12
-      react-streaming:
-        specifier: '>=0.3.5'
-        version: 0.3.10(react-dom@18.2.0)(react@18.2.0)
-      sirv:
-        specifier: ^2.0.2
-        version: 2.0.3
-      source-map-support:
-        specifier: ^0.5.21
-        version: 0.5.21
-    devDependencies:
-      '@brillout/part-regex':
-        specifier: ^0.1.2
-        version: 0.1.2
-      '@brillout/release-me':
-        specifier: ^0.1.7
-        version: 0.1.7
-      '@types/estree':
-        specifier: ^1.0.0
-        version: 1.0.1
-      '@types/jest':
-        specifier: ^27.4.1
-        version: 27.5.2
-      '@types/node':
-        specifier: ^20.1.0
-        version: 20.1.0
-      '@types/resolve':
-        specifier: ^1.20.2
-        version: 1.20.2
-      '@types/source-map-support':
-        specifier: ^0.5.6
-        version: 0.5.6
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.2.2
-        version: 5.2.2
-      vite:
-        specifier: ^4.2.1
-        version: 4.3.5(@types/node@20.1.0)
+        version: 4.3.5(@types/node@17.0.45)
 
 packages:
 
@@ -2753,6 +2680,7 @@ packages:
     dependencies:
       '@babel/highlight': 7.22.10
       chalk: 2.4.2
+    dev: false
 
   /@babel/compat-data@7.22.9:
     resolution: {integrity: sha512-5UamI7xkUcJ3i9qVDS+KFDEK8/7oJ55/sJMB1Ge7IEapr7KfdfV/HErR+koZwOfd+SgtFKOKRhRakdg++DcJpQ==}
@@ -2989,6 +2917,7 @@ packages:
   /@babel/helper-validator-identifier@7.22.5:
     resolution: {integrity: sha512-aJXu+6lErq8ltp+JhkJUfk1MTGyuA4v7f3pA+BJ5HLfNC6nAQ0Cpi9uOquUj8Hehg0aUiHzWQbOVJGao6ztBAQ==}
     engines: {node: '>=6.9.0'}
+    dev: false
 
   /@babel/helper-validator-option@7.22.5:
     resolution: {integrity: sha512-R3oB6xlIVKUnxNUxbmgq7pKjxpru24zlimpE8WK47fACIlM0II/Hm1RS8IaOI7NgCr6LNS+jl5l75m20npAziw==}
@@ -3013,6 +2942,7 @@ packages:
       '@babel/helper-validator-identifier': 7.22.5
       chalk: 2.4.2
       js-tokens: 4.0.0
+    dev: false
 
   /@babel/parser@7.21.8:
     resolution: {integrity: sha512-6zavDGdzG3gUqAdWvlLFfk+36RilI+Pwyuuh7HItyeScCWP3k6i8vKclAQ0bM/0y/Kz/xiwvxhMv9MgTJP5gmA==}
@@ -3249,10 +3179,11 @@ packages:
       shiki: 0.10.1
       twemoji: 13.1.1
       vite: /@brillout/vite@4.0.1-fix(@types/node@15.14.9)
-      vite-plugin-ssr: link:vite-plugin-ssr
+      vite-plugin-ssr: 0.4.142(@brillout/vite@4.0.1-fix)
     transitivePeerDependencies:
       - '@types/node'
       - less
+      - react-streaming
       - rollup
       - sass
       - stylus
@@ -3281,12 +3212,13 @@ packages:
       shiki: 0.10.1
       twemoji: 13.1.1
       vite: 4.4.9(@types/node@15.14.9)
-      vite-plugin-ssr: link:vite-plugin-ssr
+      vite-plugin-ssr: 0.4.142(vite@4.4.9)
     transitivePeerDependencies:
       - '@swc/helpers'
       - '@types/node'
       - less
       - lightningcss
+      - react-streaming
       - rollup
       - sass
       - stylus
@@ -3340,22 +3272,11 @@ packages:
       semver: 7.5.4
     dev: false
 
-  /@brillout/release-me@0.1.7:
-    resolution: {integrity: sha512-8zvrKzrAGa3hl6DqQuFzqNCnRUl3W2TePUhbi9Kd1X53AoPGqJ9du1zfAuxHRR7j2TXaVfLj/zBDtNrHQDndZA==}
-    hasBin: true
-    dependencies:
-      conventional-changelog: 3.1.25
-      execa: 5.1.1
-      js-yaml: 4.1.0
-      picocolors: 1.0.0
-      semver: 7.5.0
-    dev: true
-
   /@brillout/require-shim@0.1.2:
     resolution: {integrity: sha512-3I4LRHnVZXoSAsEoni5mosq9l6eiJED58d9V954W4CIZ88AUfYBanWGBGbJG3NztaRTpFHEA6wB3Hn93BmmJdg==}
     dev: false
 
-  /@brillout/stem-react@0.1.3(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.5):
+  /@brillout/stem-react@0.1.3(react@18.2.0)(vite@4.3.5):
     resolution: {integrity: sha512-OAmzO5Tm1dhymXY1W3dlsYAYq6OwlZTXru6vG55RanyHifvGd2lmtPGaYuRnjOShFtF+xdYpqW/BgVsRSxLhpg==}
     peerDependencies:
       react: 18.x.x
@@ -3373,8 +3294,7 @@ packages:
       '@brillout/eject': 0.1.2
       '@brillout/release-me': 0.0.8
       react: 18.2.0
-      vite: 4.3.5(@types/node@20.1.0)
-      vite-plugin-ssr: link:vite-plugin-ssr
+      vite: 4.3.5(@types/node@17.0.45)
     dev: false
 
   /@brillout/test-e2e@0.5.15:
@@ -3513,6 +3433,7 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/android-arm64@0.18.17:
@@ -3546,6 +3467,7 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/android-arm@0.18.17:
@@ -3579,6 +3501,7 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/android-x64@0.18.17:
@@ -3612,6 +3535,7 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/darwin-arm64@0.18.17:
@@ -3645,6 +3569,7 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/darwin-x64@0.18.17:
@@ -3678,6 +3603,7 @@ packages:
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/freebsd-arm64@0.18.17:
@@ -3711,6 +3637,7 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/freebsd-x64@0.18.17:
@@ -3744,6 +3671,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-arm64@0.18.17:
@@ -3777,6 +3705,7 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-arm@0.18.17:
@@ -3810,6 +3739,7 @@ packages:
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-ia32@0.18.17:
@@ -3843,6 +3773,7 @@ packages:
     cpu: [loong64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-loong64@0.18.17:
@@ -3876,6 +3807,7 @@ packages:
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-mips64el@0.18.17:
@@ -3909,6 +3841,7 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-ppc64@0.18.17:
@@ -3942,6 +3875,7 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-riscv64@0.18.17:
@@ -3975,6 +3909,7 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-s390x@0.18.17:
@@ -4008,6 +3943,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-x64@0.18.17:
@@ -4041,6 +3977,7 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/netbsd-x64@0.18.17:
@@ -4074,6 +4011,7 @@ packages:
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/openbsd-x64@0.18.17:
@@ -4107,6 +4045,7 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/sunos-x64@0.18.17:
@@ -4140,6 +4079,7 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/win32-arm64@0.18.17:
@@ -4173,6 +4113,7 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/win32-ia32@0.18.17:
@@ -4206,6 +4147,7 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/win32-x64@0.18.17:
@@ -4296,6 +4238,7 @@ packages:
   /@hutson/parse-repository-url@3.0.2:
     resolution: {integrity: sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==}
     engines: {node: '>=6.9.0'}
+    dev: false
 
   /@iarna/toml@2.2.5:
     resolution: {integrity: sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==}
@@ -4714,7 +4657,7 @@ packages:
       debug: 4.3.4
       kolorist: 1.8.0
       resolve: 1.22.2
-      vite: 4.3.5(@types/node@20.1.0)
+      vite: 4.3.5(@types/node@17.0.45)
     transitivePeerDependencies:
       - preact
       - supports-color
@@ -4748,7 +4691,7 @@ packages:
       '@prefresh/utils': 1.1.3
       '@rollup/pluginutils': 4.2.1
       preact: 10.13.2
-      vite: 4.3.5(@types/node@20.1.0)
+      vite: 4.3.5(@types/node@17.0.45)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -4781,7 +4724,7 @@ packages:
       rollup: 3.27.2
     dev: false
 
-  /@rollup/pluginutils@5.0.4(rollup@3.27.2):
+  /@rollup/pluginutils@5.0.4:
     resolution: {integrity: sha512-0KJnIoRI8A+a1dqOYLxH8vBf8bphDmty5QvIm2hqm7oFCFYKCAZWWd2hXgMibaPsNDhI0AtpYfQZJG47pt/k4g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -4793,7 +4736,6 @@ packages:
       '@types/estree': 1.0.1
       estree-walker: 2.0.2
       picomatch: 2.3.1
-      rollup: 3.27.2
     dev: false
 
   /@sinclair/typebox@0.27.8:
@@ -4818,7 +4760,7 @@ packages:
       magic-string: 0.30.0
       svelte: 3.59.0
       svelte-hmr: 0.15.1(svelte@3.59.0)
-      vite: 4.3.5(@types/node@20.1.0)
+      vite: 4.3.5(@types/node@17.0.45)
       vitefu: 0.2.4(vite@4.3.5)
     transitivePeerDependencies:
       - supports-color
@@ -5071,6 +5013,7 @@ packages:
 
   /@types/estree@1.0.1:
     resolution: {integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==}
+    dev: false
 
   /@types/express-serve-static-core@4.17.34:
     resolution: {integrity: sha512-fvr49XlCGoUj2Pp730AItckfjat4WNb0lb3kfrLWffd+RLeoGAMsq7UOy04PAPtoL01uKwcp6u8nhzpgpDYr3w==}
@@ -5108,13 +5051,6 @@ packages:
       '@types/react': 18.2.22
       hoist-non-react-statics: 3.3.2
     dev: false
-
-  /@types/jest@27.5.2:
-    resolution: {integrity: sha512-mpT8LJJ4CMeeahobofYWIjFo0xonRS/HfxnVEPMPFSQdGUt1uHCnoPT7Zhb+sjDU2wz0oKV0OLUR0WzrHNgfeA==}
-    dependencies:
-      jest-matcher-utils: 27.5.1
-      pretty-format: 27.5.1
-    dev: true
 
   /@types/json-schema@7.0.11:
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
@@ -5165,6 +5101,7 @@ packages:
 
   /@types/minimist@1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
+    dev: false
 
   /@types/ms@0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
@@ -5192,9 +5129,6 @@ packages:
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
     dev: false
 
-  /@types/node@20.1.0:
-    resolution: {integrity: sha512-O+z53uwx64xY7D6roOi4+jApDGFg0qn6WHcxe5QeqjMaTezBO/mxdfFXIVAVVyNWKx84OmPB3L8kbVYOTeN34A==}
-
   /@types/node@20.4.10:
     resolution: {integrity: sha512-vwzFiiy8Rn6E0MtA13/Cxxgpan/N6UeNYR9oUu6kuJWxu6zCk98trcDp8CBhbtaeuq9SykCmXkFr2lWLoPcvLg==}
     dev: false
@@ -5204,6 +5138,7 @@ packages:
 
   /@types/normalize-package-data@2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
+    dev: false
 
   /@types/prop-types@15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
@@ -5283,10 +5218,6 @@ packages:
       csstype: 3.1.2
     dev: false
 
-  /@types/resolve@1.20.2:
-    resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
-    dev: true
-
   /@types/responselike@1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
@@ -5314,12 +5245,6 @@ packages:
       '@types/mime': 3.0.1
       '@types/node': 20.6.3
     dev: false
-
-  /@types/source-map-support@0.5.6:
-    resolution: {integrity: sha512-b2nJ9YyXmkhGaa2b8VLM0kJ04xxwNyijcq12/kDoomCt43qbHBeK2SLNJ9iJmETaAj+bKUT05PQUu3Q66GvLhQ==}
-    dependencies:
-      source-map: 0.6.1
-    dev: true
 
   /@types/stack-trace@0.0.29:
     resolution: {integrity: sha512-TgfOX+mGY/NyNxJLIbDWrO9DjGoVSW9+aB8H2yy1fy32jsvxijhmyJI9fDFgvz3YP4lvJaq9DzdR/M1bOgVc9g==}
@@ -5499,7 +5424,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.19.6(@babel/core@7.21.8)
       magic-string: 0.26.7
       react-refresh: 0.14.0
-      vite: 4.3.5(@types/node@20.1.0)
+      vite: 4.3.5(@types/node@17.0.45)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -5547,7 +5472,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.22.5(@babel/core@7.22.10)
       magic-string: 0.27.0
       react-refresh: 0.14.0
-      vite: 4.3.5(@types/node@20.1.0)
+      vite: 4.3.5(@types/node@17.0.45)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -5632,7 +5557,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.3.5(@types/node@20.1.0)
+      vite: 4.3.5(@types/node@17.0.45)
       vue: 3.2.47
     dev: false
 
@@ -6159,6 +6084,7 @@ packages:
     dependencies:
       jsonparse: 1.3.1
       through: 2.3.8
+    dev: false
 
   /abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
@@ -6205,6 +6131,7 @@ packages:
 
   /add-stream@1.0.0:
     resolution: {integrity: sha512-qQLMr+8o0WC4FZGQTcJiKBVC59JylcPSrTtk6usvmIDFUOCKegapy1VHQwRbFMOFyb/inzUVqHs+eMYKDM1YeQ==}
+    dev: false
 
   /agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
@@ -6279,6 +6206,7 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       color-convert: 1.9.3
+    dev: false
 
   /ansi-styles@4.3.0:
     resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
@@ -6349,6 +6277,7 @@ packages:
 
   /array-ify@1.0.0:
     resolution: {integrity: sha512-c5AMf34bKdvPhQ7tBGhqkgKNUzMr4WUs+WDtC2ZUGOUncbxKMTvqxYctiseW3+L4bA8ec+GcZ6/A/FW4m8ukng==}
+    dev: false
 
   /array-includes@3.1.6:
     resolution: {integrity: sha512-sgTbLvL6cNnw24FnbaDyjmvddQ2ML8arZsgaJhoABMoplz/4QRhtrYS+alr1BUM1Bwp6dhx8vVCBSLG+StwOFw==}
@@ -6388,6 +6317,7 @@ packages:
   /arrify@1.0.1:
     resolution: {integrity: sha512-3CYzex9M9FGQjCGMGyi6/31c8GJbgb0qGyrx5HWxPd0aCwh4cB2YjMb2Xf9UuoogrMrlO9cTqnB5rI5GHZTcUA==}
     engines: {node: '>=0.10.0'}
+    dev: false
 
   /asn1@0.2.6:
     resolution: {integrity: sha512-ix/FxPn0MDjeyJ7i/yoHGFt/EX6LyNbxSEhPPXODPL+KB0VPk86UYfL0lMdy+KCnv+fmvIzySwaK5COwqVbWTQ==}
@@ -6666,10 +6596,12 @@ packages:
       camelcase: 5.3.1
       map-obj: 4.3.0
       quick-lru: 4.0.1
+    dev: false
 
   /camelcase@5.3.1:
     resolution: {integrity: sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==}
     engines: {node: '>=6'}
+    dev: false
 
   /camelcase@6.3.0:
     resolution: {integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==}
@@ -6716,6 +6648,7 @@ packages:
       ansi-styles: 3.2.1
       escape-string-regexp: 1.0.5
       supports-color: 5.5.0
+    dev: false
 
   /chalk@4.1.2:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
@@ -6808,6 +6741,7 @@ packages:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
+    dev: false
 
   /cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
@@ -6846,6 +6780,7 @@ packages:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
     dependencies:
       color-name: 1.1.3
+    dev: false
 
   /color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
@@ -6855,6 +6790,7 @@ packages:
 
   /color-name@1.1.3:
     resolution: {integrity: sha512-72fSenhMw2HZMTVHeCA9KCmpEIbzWiQsjN+BHcBbS9vr1mtt+vJjPdksIBNUmKAW8TFUDPJK5SUU3QhE9NEXDw==}
+    dev: false
 
   /color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
@@ -6897,6 +6833,7 @@ packages:
     dependencies:
       array-ify: 1.0.0
       dot-prop: 5.3.0
+    dev: false
 
   /compressible@2.0.18:
     resolution: {integrity: sha512-AF3r7P5dWxL8MxyITRMlORQNaOA2IkAFaTr4k7BUumjPtRpGDTZpl0Pb1XCO6JeDCBdp126Cgs9sMxqSjgYyRg==}
@@ -6993,18 +6930,21 @@ packages:
     dependencies:
       compare-func: 2.0.0
       q: 1.5.1
+    dev: false
 
   /conventional-changelog-atom@2.0.8:
     resolution: {integrity: sha512-xo6v46icsFTK3bb7dY/8m2qvc8sZemRgdqLb/bjpBsH2UyOS8rKNTgcb5025Hri6IpANPApbXMg15QLb1LJpBw==}
     engines: {node: '>=10'}
     dependencies:
       q: 1.5.1
+    dev: false
 
   /conventional-changelog-codemirror@2.0.8:
     resolution: {integrity: sha512-z5DAsn3uj1Vfp7po3gpt2Boc+Bdwmw2++ZHa5Ak9k0UKsYAO5mH1UBTN0qSCuJZREIhX6WU4E1p3IW2oRCNzQw==}
     engines: {node: '>=10'}
     dependencies:
       q: 1.5.1
+    dev: false
 
   /conventional-changelog-conventionalcommits@4.6.3:
     resolution: {integrity: sha512-LTTQV4fwOM4oLPad317V/QNQ1FY4Hju5qeBIM1uTHbrnCE+Eg4CdRZ3gO2pUeR+tzWdp80M2j3qFFEDWVqOV4g==}
@@ -7013,6 +6953,7 @@ packages:
       compare-func: 2.0.0
       lodash: 4.17.21
       q: 1.5.1
+    dev: false
 
   /conventional-changelog-core@4.2.4:
     resolution: {integrity: sha512-gDVS+zVJHE2v4SLc6B0sLsPiloR0ygU7HaDW14aNJE1v4SlqJPILPl/aJC7YdtRE4CybBf8gDwObBvKha8Xlyg==}
@@ -7032,30 +6973,35 @@ packages:
       read-pkg: 3.0.0
       read-pkg-up: 3.0.0
       through2: 4.0.2
+    dev: false
 
   /conventional-changelog-ember@2.0.9:
     resolution: {integrity: sha512-ulzIReoZEvZCBDhcNYfDIsLTHzYHc7awh+eI44ZtV5cx6LVxLlVtEmcO+2/kGIHGtw+qVabJYjdI5cJOQgXh1A==}
     engines: {node: '>=10'}
     dependencies:
       q: 1.5.1
+    dev: false
 
   /conventional-changelog-eslint@3.0.9:
     resolution: {integrity: sha512-6NpUCMgU8qmWmyAMSZO5NrRd7rTgErjrm4VASam2u5jrZS0n38V7Y9CzTtLT2qwz5xEChDR4BduoWIr8TfwvXA==}
     engines: {node: '>=10'}
     dependencies:
       q: 1.5.1
+    dev: false
 
   /conventional-changelog-express@2.0.6:
     resolution: {integrity: sha512-SDez2f3iVJw6V563O3pRtNwXtQaSmEfTCaTBPCqn0oG0mfkq0rX4hHBq5P7De2MncoRixrALj3u3oQsNK+Q0pQ==}
     engines: {node: '>=10'}
     dependencies:
       q: 1.5.1
+    dev: false
 
   /conventional-changelog-jquery@3.0.11:
     resolution: {integrity: sha512-x8AWz5/Td55F7+o/9LQ6cQIPwrCjfJQ5Zmfqi8thwUEKHstEn4kTIofXub7plf1xvFA2TqhZlq7fy5OmV6BOMw==}
     engines: {node: '>=10'}
     dependencies:
       q: 1.5.1
+    dev: false
 
   /conventional-changelog-jshint@2.0.9:
     resolution: {integrity: sha512-wMLdaIzq6TNnMHMy31hql02OEQ8nCQfExw1SE0hYL5KvU+JCTuPaDO+7JiogGT2gJAxiUGATdtYYfh+nT+6riA==}
@@ -7063,10 +7009,12 @@ packages:
     dependencies:
       compare-func: 2.0.0
       q: 1.5.1
+    dev: false
 
   /conventional-changelog-preset-loader@2.3.4:
     resolution: {integrity: sha512-GEKRWkrSAZeTq5+YjUZOYxdHq+ci4dNwHvpaBC3+ENalzFWuCWa9EZXSuZBpkr72sMdKB+1fyDV4takK1Lf58g==}
     engines: {node: '>=10'}
+    dev: false
 
   /conventional-changelog-writer@5.0.1:
     resolution: {integrity: sha512-5WsuKUfxW7suLblAbFnxAcrvf6r+0b7GvNaWUwUIk0bXMnENP/PEieGKVUQrjPqwPT4o3EPAASBXiY6iHooLOQ==}
@@ -7082,6 +7030,7 @@ packages:
       semver: 6.3.1
       split: 1.0.1
       through2: 4.0.2
+    dev: false
 
   /conventional-changelog@3.1.25:
     resolution: {integrity: sha512-ryhi3fd1mKf3fSjbLXOfK2D06YwKNic1nC9mWqybBHdObPd8KJ2vjaXZfYj1U23t+V8T8n0d7gwnc9XbIdFbyQ==}
@@ -7098,6 +7047,7 @@ packages:
       conventional-changelog-jquery: 3.0.11
       conventional-changelog-jshint: 2.0.9
       conventional-changelog-preset-loader: 2.3.4
+    dev: false
 
   /conventional-commits-filter@2.0.7:
     resolution: {integrity: sha512-ASS9SamOP4TbCClsRHxIHXRfcGCnIoQqkvAzCSbZzTFLfcTqJVugB0agRgsEELsqaeWgsXv513eS116wnlSSPA==}
@@ -7105,6 +7055,7 @@ packages:
     dependencies:
       lodash.ismatch: 4.4.0
       modify-values: 1.0.1
+    dev: false
 
   /conventional-commits-parser@3.2.4:
     resolution: {integrity: sha512-nK7sAtfi+QXbxHCYfhpZsfRtaitZLIA6889kFIouLvz6repszQDgxBu7wf2WbU+Dco7sAnNCJYERCwt54WPC2Q==}
@@ -7117,6 +7068,7 @@ packages:
       meow: 8.1.2
       split2: 3.2.2
       through2: 4.0.2
+    dev: false
 
   /convert-source-map@1.9.0:
     resolution: {integrity: sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A==}
@@ -7231,6 +7183,7 @@ packages:
   /dargs@7.0.0:
     resolution: {integrity: sha512-2iy1EkLdlBzQGvbweYRFxmFath8+K7+AKB0TlhHWkNuH+TmovaMH/Wp7V7R4u7f4SnX3OgLsU9t1NI9ioDnUpg==}
     engines: {node: '>=8'}
+    dev: false
 
   /dashdash@1.14.1:
     resolution: {integrity: sha512-jRFi8UDGo6j+odZiEpjazZaWqEal3w/basFjQHQEwVtZJGDpxbH1MeYluwCS8Xq5wmLJooDlMgvVarmWfGM44g==}
@@ -7253,6 +7206,7 @@ packages:
 
   /dateformat@3.0.3:
     resolution: {integrity: sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==}
+    dev: false
 
   /debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
@@ -7282,10 +7236,12 @@ packages:
     dependencies:
       decamelize: 1.2.0
       map-obj: 1.0.1
+    dev: false
 
   /decamelize@1.2.0:
     resolution: {integrity: sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==}
     engines: {node: '>=0.10.0'}
+    dev: false
 
   /decode-named-character-reference@1.0.2:
     resolution: {integrity: sha512-O8x12RzrUF8xyVcY0KJowWsmaJxQbmy0/EtnNtHRpsOcT7dFk5W598coHqBVpmWo1oQQfsCqfCmkZN5DJrZVdg==}
@@ -7353,11 +7309,6 @@ packages:
     resolution: {integrity: sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
     dev: false
-
-  /diff-sequences@27.5.1:
-    resolution: {integrity: sha512-k1gCAXAsNgLwEL+Y8Wvl+M6oEFj5bgazfZULpS5CneoPPXRaCCW7dm+q21Ky2VEE5X+VeRDBVg1Pcvvsr4TtNQ==}
-    engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
-    dev: true
 
   /diff-sequences@29.4.3:
     resolution: {integrity: sha512-ofrBgwpPhCD85kMKtE9RYFFq6OC1A89oW2vvgWZNCwxrUpRUILopY7lsYyMDSjc8g6U6aiO0Qubg6r4Wgt5ZnA==}
@@ -7492,6 +7443,7 @@ packages:
     resolution: {integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==}
     dependencies:
       is-arrayish: 0.2.1
+    dev: false
 
   /es-abstract@1.21.2:
     resolution: {integrity: sha512-y/B5POM2iBnIxCiernH1G7rC9qQoM77lLIMQLuob0zhp8C56Po81+2Nj0WFKnd0pNReDTnkYryc+zhOzpEIROg==}
@@ -7652,6 +7604,7 @@ packages:
       '@esbuild/win32-arm64': 0.17.18
       '@esbuild/win32-ia32': 0.17.18
       '@esbuild/win32-x64': 0.17.18
+    dev: false
 
   /esbuild@0.18.17:
     resolution: {integrity: sha512-1GJtYnUxsJreHYA0Y+iQz2UEykonY66HNWOb0yXYZi9/kNrORUEHVg87eQsCtqh59PEJ5YVZJO98JHznMJSWjg==}
@@ -7685,6 +7638,7 @@ packages:
   /escalade@3.1.1:
     resolution: {integrity: sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==}
     engines: {node: '>=6'}
+    dev: false
 
   /escape-goat@2.1.1:
     resolution: {integrity: sha512-8/uIhbG12Csjy2JEW7D9pHbreaVaS/OpN3ycnyvElTdwM5n6GY6W6e2IPemfvGZeUMqZ9A/3GqIZMgKnBhAw/Q==}
@@ -7698,6 +7652,7 @@ packages:
   /escape-string-regexp@1.0.5:
     resolution: {integrity: sha512-vbRorB5FUQWvla16U8R/qgaFIya2qGzwDrNmCZuYKrbdSUMG6I1ZCGQRefkRVhuOkIGVne7BQ35DSfo1qvJqFg==}
     engines: {node: '>=0.8.0'}
+    dev: false
 
   /escape-string-regexp@4.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
@@ -8138,6 +8093,7 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       locate-path: 2.0.0
+    dev: false
 
   /find-up@3.0.0:
     resolution: {integrity: sha512-1yD6RmLI1XBfxugvORwlck6f75tYL+iR0jqwsOrOxMZyGYqUuDhJ0l4AXdO1iX/FTs9cBAMEk1gWSEx1kSbylg==}
@@ -8152,6 +8108,7 @@ packages:
     dependencies:
       locate-path: 5.0.0
       path-exists: 4.0.0
+    dev: false
 
   /find-up@5.0.0:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
@@ -8276,6 +8233,7 @@ packages:
 
   /function-bind@1.1.1:
     resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==}
+    dev: false
 
   /function.prototype.name@1.1.5:
     resolution: {integrity: sha512-uN7m/BzVKQnCUF/iW8jYea67v++2u7m5UgENbHRtdDVclOUP+FMPlCNdmk0h/ysGyo2tavMJEDqJAkJdRa1vMA==}
@@ -8312,6 +8270,7 @@ packages:
   /get-caller-file@2.0.5:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
     engines: {node: 6.* || 8.* || >= 10.*}
+    dev: false
 
   /get-func-name@2.0.0:
     resolution: {integrity: sha512-Hm0ixYtaSZ/V7C8FJrtZIuBBI+iSgL+1Aq82zSu8VQNB4S3Gk8e7Qs3VwBDJAhmRZcFqkl3tQu36g/Foh5I5ig==}
@@ -8334,6 +8293,7 @@ packages:
       hosted-git-info: 4.1.0
       through2: 2.0.5
       yargs: 16.2.0
+    dev: false
 
   /get-stdin@8.0.0:
     resolution: {integrity: sha512-sY22aA6xchAzprjyqmSEQv4UbAAzRN0L2dQB0NlN5acTTK9Don6nhoc3eAbUnpZiCANAMfd/+40kVdKfFygohg==}
@@ -8381,6 +8341,7 @@ packages:
       meow: 8.1.2
       split2: 3.2.2
       through2: 4.0.2
+    dev: false
 
   /git-remote-origin-url@2.0.0:
     resolution: {integrity: sha512-eU+GGrZgccNJcsDH5LkXR3PB9M958hxc7sbA8DFJjrv9j4L2P/eZfKhM+QD6wyzpiv+b1BpK0XrYCxkovtjSLw==}
@@ -8388,6 +8349,7 @@ packages:
     dependencies:
       gitconfiglocal: 1.0.0
       pify: 2.3.0
+    dev: false
 
   /git-semver-tags@4.1.1:
     resolution: {integrity: sha512-OWyMt5zBe7xFs8vglMmhM9lRQzCWL3WjHtxNNfJTMngGym7pC1kh8sP6jevfydJ6LP3ZvGxfb6ABYgPUM0mtsA==}
@@ -8396,11 +8358,13 @@ packages:
     dependencies:
       meow: 8.1.2
       semver: 6.3.1
+    dev: false
 
   /gitconfiglocal@1.0.0:
     resolution: {integrity: sha512-spLUXeTAVHxDtKsJc8FkFVgFtMdEN9qPGpL23VfSHx4fP4+Ds097IXLvymbnDH8FnmxX5Nr9bPw3A+AQ6mWEaQ==}
     dependencies:
       ini: 1.3.8
+    dev: false
 
   /glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -8561,6 +8525,7 @@ packages:
       wordwrap: 1.0.0
     optionalDependencies:
       uglify-js: 3.17.4
+    dev: false
 
   /har-schema@2.0.0:
     resolution: {integrity: sha512-Oqluz6zhGX8cyRaTQlFMPw80bSJVG2x/cFb8ZPhUILGgHka9SsokCCOQgpveePerqidZOrT14ipqfJb7ILcW5Q==}
@@ -8579,6 +8544,7 @@ packages:
   /hard-rejection@2.1.0:
     resolution: {integrity: sha512-VIZB+ibDhx7ObhAe7OVtoEbuP4h/MuOTHJ+J8h/eBXotJYl0fBgR72xDFCKgIh22OJZIOVNxBMWuhAr10r8HdA==}
     engines: {node: '>=6'}
+    dev: false
 
   /has-bigints@1.0.2:
     resolution: {integrity: sha512-tSvCKtBr9lkF0Ex0aQiP9N+OpV4zi2r/Nee5VkRDbaqv35RLYMzbwQfFSZZH0kR+Rd6302UJZ2p/bJCEoR3VoQ==}
@@ -8587,6 +8553,7 @@ packages:
   /has-flag@3.0.0:
     resolution: {integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==}
     engines: {node: '>=4'}
+    dev: false
 
   /has-flag@4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
@@ -8629,6 +8596,7 @@ packages:
     engines: {node: '>= 0.4.0'}
     dependencies:
       function-bind: 1.1.1
+    dev: false
 
   /hast-util-to-estree@2.3.2:
     resolution: {integrity: sha512-YYDwATNdnvZi3Qi84iatPIl1lWpXba1MeNrNbDfJfVzEBZL8uUmtR7mt7bxKBC8kuAuvb0bkojXYZzsNHyHCLg==}
@@ -8664,6 +8632,7 @@ packages:
 
   /hosted-git-info@2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
+    dev: false
 
   /hosted-git-info@4.1.0:
     resolution: {integrity: sha512-kyCuEOWjJqZuDbRHzL8V93NzQhwIB71oFWSyzVo+KPZI+pnQPPxucdkrOZvkLRnrf5URsQM+IJ09Dw29cRALIA==}
@@ -8863,6 +8832,7 @@ packages:
 
   /is-arrayish@0.2.1:
     resolution: {integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==}
+    dev: false
 
   /is-bigint@1.0.4:
     resolution: {integrity: sha512-zB9CruMamjym81i2JZ3UMn54PKGsQzsJeo6xvN3HJJ4CAsQNB6iRutp2To77OfCNuoxspsIhzaPoO1zyCEhFOg==}
@@ -8906,6 +8876,7 @@ packages:
     resolution: {integrity: sha512-RECHCBCd/viahWmwj6enj19sKbHfJrddi/6cBDsNTKbNq0f7VeaUkBo60BqzvPqo/W54ChS62Z5qyun7cfOMqQ==}
     dependencies:
       has: 1.0.3
+    dev: false
 
   /is-date-object@1.0.5:
     resolution: {integrity: sha512-9YQaSxsAiSwcvS33MBk3wTCVnWK+HhF8VZR2jRxehM16QcVOdHqPn4VPHmRK4lSr38n9JriurInLcP90xsYNfQ==}
@@ -8998,6 +8969,7 @@ packages:
   /is-plain-obj@1.1.0:
     resolution: {integrity: sha512-yvkRyxmFKEOQ4pNXCmJG5AEQNlXJS5LaONXo5/cLdTZdWvsZ1ioJEonLGAosKlMWE8lwUy/bJzMjcw8az73+Fg==}
     engines: {node: '>=0.10.0'}
+    dev: false
 
   /is-plain-obj@4.1.0:
     resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
@@ -9064,6 +9036,7 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       text-extensions: 1.9.0
+    dev: false
 
   /is-typed-array@1.1.10:
     resolution: {integrity: sha512-PJqgEHiWZvMpaFZ3uTc8kHPM4+4ADTlDniuQL7cU/UDA0Ql7F70yGfHph3cLNe+c9toaigv+DFzTJKhc2CtO6A==}
@@ -9140,31 +9113,6 @@ packages:
       '@pkgjs/parseargs': 0.11.0
     dev: false
 
-  /jest-diff@27.5.1:
-    resolution: {integrity: sha512-m0NvkX55LDt9T4mctTEgnZk3fmEg3NRYutvMPWM/0iPnkFj2wIeF45O1718cMSOFO1vINkqmxqD8vE37uTEbqw==}
-    engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
-    dependencies:
-      chalk: 4.1.2
-      diff-sequences: 27.5.1
-      jest-get-type: 27.5.1
-      pretty-format: 27.5.1
-    dev: true
-
-  /jest-get-type@27.5.1:
-    resolution: {integrity: sha512-2KY95ksYSaK7DMBWQn6dQz3kqAf3BB64y2udeG+hv4KfSOb9qwcYQstTJc1KCbsix+wLZWZYN8t7nwX3GOBLRw==}
-    engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
-    dev: true
-
-  /jest-matcher-utils@27.5.1:
-    resolution: {integrity: sha512-z2uTx/T6LBaCoNWNFWwChLBKYxTMcGBRjAt+2SbP929/Fflb9aa5LGma654Rz8z9HLxsrUaYzxE9T/EFIL/PAw==}
-    engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
-    dependencies:
-      chalk: 4.1.2
-      jest-diff: 27.5.1
-      jest-get-type: 27.5.1
-      pretty-format: 27.5.1
-    dev: true
-
   /jest-worker@27.5.1:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
@@ -9180,6 +9128,7 @@ packages:
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
+    dev: false
 
   /js-yaml@3.14.1:
     resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
@@ -9211,6 +9160,7 @@ packages:
 
   /json-parse-better-errors@1.0.2:
     resolution: {integrity: sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==}
+    dev: false
 
   /json-parse-even-better-errors@2.3.1:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
@@ -9300,6 +9250,7 @@ packages:
   /kind-of@6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
     engines: {node: '>=0.10.0'}
+    dev: false
 
   /kleur@3.0.3:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
@@ -9341,6 +9292,7 @@ packages:
 
   /lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
+    dev: false
 
   /linkify-it@4.0.1:
     resolution: {integrity: sha512-C7bfi1UZmoj8+PQx22XyeXCuBlokoyWQL5pWSP+EI6nzRylyThouddufc2c1NDIcP9k5agmN9fLpA7VNJfIiqw==}
@@ -9356,6 +9308,7 @@ packages:
       parse-json: 4.0.0
       pify: 3.0.0
       strip-bom: 3.0.0
+    dev: false
 
   /loader-runner@4.3.0:
     resolution: {integrity: sha512-3R/1M+yS3j5ou80Me59j7F9IMs4PXs3VqRrm0TU3AbKPxlmpoY1TNscJV/oGJXo8qCatFGTfDbY6W6ipGOYXfg==}
@@ -9373,6 +9326,7 @@ packages:
     dependencies:
       p-locate: 2.0.0
       path-exists: 3.0.0
+    dev: false
 
   /locate-path@3.0.0:
     resolution: {integrity: sha512-7AO748wWnIhNqAuaty2ZWHkQHRSNfPVIsPIfwEOWO22AmaoVrWavlOcMR5nzTLNYvp36X220/maaRsrec1G65A==}
@@ -9387,6 +9341,7 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       p-locate: 4.1.0
+    dev: false
 
   /locate-path@6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
@@ -9396,6 +9351,7 @@ packages:
 
   /lodash.ismatch@4.4.0:
     resolution: {integrity: sha512-fPMfXjGQEV9Xsq/8MTSgUf255gawYRbjwMyDbcvDhXgV7enSZA0hynz6vMPnpAb5iONEzBHBPsT+0zes5Z301g==}
+    dev: false
 
   /lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
@@ -9520,10 +9476,12 @@ packages:
   /map-obj@1.0.1:
     resolution: {integrity: sha512-7N/q3lyZ+LVCp7PzuxrJr4KMbBE2hW7BT7YNia330OFxIf4d3r5zVpicP2650l7CPN6RM9zOJRl3NGpqSiw3Eg==}
     engines: {node: '>=0.10.0'}
+    dev: false
 
   /map-obj@4.3.0:
     resolution: {integrity: sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==}
     engines: {node: '>=8'}
+    dev: false
 
   /markdown-extensions@1.1.1:
     resolution: {integrity: sha512-WWC0ZuMzCyDHYCasEGs4IPvLyTGftYwh6wIEOULOF0HXcqZlhwRzrK0w2VUlxWA98xnvb/jszw4ZSkJ6ADpM6Q==}
@@ -9755,6 +9713,7 @@ packages:
       trim-newlines: 3.0.1
       type-fest: 0.18.1
       yargs-parser: 20.2.9
+    dev: false
 
   /merge-anything@5.1.6:
     resolution: {integrity: sha512-0SIP3417t0sOL6/crPb6oC+ZNSMrjJeWkydlddgZVzsjQA86l8v3+f3WwvKanbsHxVF80QouJIdSh+Q249bu0g==}
@@ -10168,6 +10127,7 @@ packages:
   /min-indent@1.0.1:
     resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==}
     engines: {node: '>=4'}
+    dev: false
 
   /miniflare@2.13.0:
     resolution: {integrity: sha512-ayNhVa4a6bZiOuHtrPmOt4BCYcmW1fBQ/+qGL85smq1m2OBBm3aUs6f4ISf38xH8tk+qewgmAywetyVtn6KHPw==}
@@ -10243,6 +10203,7 @@ packages:
       arrify: 1.0.1
       is-plain-obj: 1.1.0
       kind-of: 6.0.3
+    dev: false
 
   /minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
@@ -10329,6 +10290,7 @@ packages:
   /modify-values@1.0.1:
     resolution: {integrity: sha512-xV2bxeN6F7oYjZWTe/YPAy6MN2M+sL4u/Rlm2AHCIVGfo2p1yGmBHQ6vHehl4bRTZBdHu3TSkWdYgkwpYzAGSw==}
     engines: {node: '>=0.10.0'}
+    dev: false
 
   /mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
@@ -10374,6 +10336,7 @@ packages:
 
   /neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
+    dev: false
 
   /nice-try@1.0.5:
     resolution: {integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==}
@@ -10495,6 +10458,7 @@ packages:
       resolve: 1.22.2
       semver: 5.7.1
       validate-npm-package-license: 3.0.4
+    dev: false
 
   /normalize-package-data@3.0.3:
     resolution: {integrity: sha512-p2W1sgqij3zMMyRC067Dg16bfzVH+w7hyegmpIvZ4JNjqtGOVAIvLmjBx3yP7YTe9vKJgkoNOPjwQGogDoMXFA==}
@@ -10504,6 +10468,7 @@ packages:
       is-core-module: 2.12.0
       semver: 7.5.4
       validate-npm-package-license: 3.0.4
+    dev: false
 
   /normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -10781,6 +10746,7 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       p-try: 1.0.0
+    dev: false
 
   /p-limit@2.3.0:
     resolution: {integrity: sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==}
@@ -10806,6 +10772,7 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       p-limit: 1.3.0
+    dev: false
 
   /p-locate@3.0.0:
     resolution: {integrity: sha512-x+12w/To+4GFfgJhBEpiDcLozRJGegY+Ei7/z0tSLkMmxGZNybVMSfWj9aJn8Z5Fc7dBUNJOOVgPv2H7IwulSQ==}
@@ -10819,6 +10786,7 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       p-limit: 2.3.0
+    dev: false
 
   /p-locate@5.0.0:
     resolution: {integrity: sha512-LaNjtRWUBY++zB5nE/NwcaoMylSPk+S+ZHNB1TzdbMJMny6dynpAGt7X/tl/QYq3TIeE6nxHppbo2LGymrG5Pw==}
@@ -10836,6 +10804,7 @@ packages:
   /p-try@1.0.0:
     resolution: {integrity: sha512-U1etNYuMJoIz3ZXSrrySFjsXQTWOx2/jdi86L+2pRvph/qMKL6sbcCYdH23fqsbm8TH2Gn0OybpT4eSFlCVHww==}
     engines: {node: '>=4'}
+    dev: false
 
   /p-try@2.2.0:
     resolution: {integrity: sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==}
@@ -10912,6 +10881,7 @@ packages:
     dependencies:
       error-ex: 1.3.2
       json-parse-better-errors: 1.0.2
+    dev: false
 
   /parse-json@5.2.0:
     resolution: {integrity: sha512-ayCKvm/phCGxOkYRSCM82iDwct8/EonSEgCSxWxD7ve6jHggsFl4fZVQBPRNgQoKiuV/odhFrGzQXZwbifC8Rg==}
@@ -10921,6 +10891,7 @@ packages:
       error-ex: 1.3.2
       json-parse-even-better-errors: 2.3.1
       lines-and-columns: 1.2.4
+    dev: false
 
   /parse-numeric-range@1.3.0:
     resolution: {integrity: sha512-twN+njEipszzlMJd4ONUYgSfZPDxgHhT9Ahed5uTigpQn90FggW4SA/AIPq/6a149fTbE9qBEcSwE3FAEp6wQQ==}
@@ -10971,6 +10942,7 @@ packages:
 
   /path-parse@1.0.7:
     resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
+    dev: false
 
   /path-scurry@1.7.0:
     resolution: {integrity: sha512-UkZUeDjczjYRE495+9thsgcVgsaCPkaw80slmfVFgllxY+IO8ubTsOpFVjDPROBqJdHfVPUFRHPBV/WciOVfWg==}
@@ -10997,6 +10969,7 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       pify: 3.0.0
+    dev: false
 
   /path-type@4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
@@ -11032,10 +11005,12 @@ packages:
   /pify@2.3.0:
     resolution: {integrity: sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==}
     engines: {node: '>=0.10.0'}
+    dev: false
 
   /pify@3.0.0:
     resolution: {integrity: sha512-C3FsVNH1udSEX48gGX1xfvwTWfsYWj5U+8/uK15BGzIGrKoUpghX8hWZwa/OFnakBiiVNmBvemTJR5mcy7iPcg==}
     engines: {node: '>=4'}
+    dev: false
 
   /pinia@2.0.35(typescript@4.9.5)(vue@3.2.47):
     resolution: {integrity: sha512-P1IKKQWhxGXiiZ3atOaNI75bYlFUbRxtJdhPLX059Z7+b9Z04rnTZdSY8Aph1LA+/4QEMAYHsTQ638Wfe+6K5g==}
@@ -11104,6 +11079,7 @@ packages:
       nanoid: 3.3.6
       picocolors: 1.0.0
       source-map-js: 1.0.2
+    dev: false
 
   /postcss@8.4.27:
     resolution: {integrity: sha512-gY/ACJtJPSmUFPDCHtX78+01fHa64FaU4zaaWfuh1MhGJISufJAH4cun6k/8fwsHYeK4UQmENQK+tRLCFJE8JQ==}
@@ -11134,15 +11110,6 @@ packages:
   /prepend-http@2.0.0:
     resolution: {integrity: sha512-ravE6m9Atw9Z/jjttRUZ+clIXogdghyZAuWJ3qEzjT+jI/dL1ifAqhZeC5VHzQp1MSt1+jxKkFNemj/iO7tVUA==}
     engines: {node: '>=4'}
-    dev: true
-
-  /pretty-format@27.5.1:
-    resolution: {integrity: sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==}
-    engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
-    dependencies:
-      ansi-regex: 5.0.1
-      ansi-styles: 5.2.0
-      react-is: 17.0.2
     dev: true
 
   /pretty-format@29.6.0:
@@ -11239,6 +11206,7 @@ packages:
   /q@1.5.1:
     resolution: {integrity: sha512-kV/CThkXo6xyFEZUugw/+pIOywXcDbFYgSct5cT3gqlbkBE1SJdwy6UQoZvodiWF/ckQLZyDE/Bu1M6gVu5lVw==}
     engines: {node: '>=0.6.0', teleport: '>=0.2.0'}
+    dev: false
 
   /qs@6.10.3:
     resolution: {integrity: sha512-wr7M2E0OFRfIfJZjKGieI8lBKb7fRCH4Fv5KNPEs7gJ8jadvotdsS08PzOKR7opXhZ/Xkjtt3WF9g38drmyRqQ==}
@@ -11265,6 +11233,7 @@ packages:
   /quick-lru@4.0.1:
     resolution: {integrity: sha512-ARhCpm70fzdcvNQfPoy49IaanKkTlRWF2JMzqhcJbhSFRZv7nPTvZJdcY7301IPmvW+/p0RgIWnQDLJxifsQ7g==}
     engines: {node: '>=8'}
+    dev: false
 
   /randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
@@ -11336,10 +11305,6 @@ packages:
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: false
-
-  /react-is@17.0.2:
-    resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
-    dev: true
 
   /react-is@18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
@@ -11478,6 +11443,7 @@ packages:
     dependencies:
       find-up: 2.1.0
       read-pkg: 3.0.0
+    dev: false
 
   /read-pkg-up@7.0.1:
     resolution: {integrity: sha512-zK0TB7Xd6JpCLmlLmufqykGE+/TlOePD6qKClNW7hHDKFh/J7/7gCWGR7joEQEW1bKq3a3yUZSObOoWLFQ4ohg==}
@@ -11486,6 +11452,7 @@ packages:
       find-up: 4.1.0
       read-pkg: 5.2.0
       type-fest: 0.8.1
+    dev: false
 
   /read-pkg@3.0.0:
     resolution: {integrity: sha512-BLq/cCO9two+lBgiTYNqD6GdtK8s4NpaWrl6/rCO9w0TUS8oJl7cmToOZfRYllKTISY6nt1U7jQ53brmKqY6BA==}
@@ -11494,6 +11461,7 @@ packages:
       load-json-file: 4.0.0
       normalize-package-data: 2.5.0
       path-type: 3.0.0
+    dev: false
 
   /read-pkg@5.2.0:
     resolution: {integrity: sha512-Ug69mNOpfvKDAc2Q8DRpMjjzdtrnv9HcSMX+4VsZxD1aZ6ZzrIE7rlzXBtWTyhULSMKg076AW6WR5iZpD0JiOg==}
@@ -11503,6 +11471,7 @@ packages:
       normalize-package-data: 2.5.0
       parse-json: 5.2.0
       type-fest: 0.6.0
+    dev: false
 
   /readable-stream@2.3.8:
     resolution: {integrity: sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==}
@@ -11522,6 +11491,7 @@ packages:
       inherits: 2.0.4
       string_decoder: 1.3.0
       util-deprecate: 1.0.2
+    dev: false
 
   /readdirp@3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
@@ -11543,6 +11513,7 @@ packages:
     dependencies:
       indent-string: 4.0.0
       strip-indent: 3.0.0
+    dev: false
 
   /redux@4.2.1:
     resolution: {integrity: sha512-LAUYz4lc+Do8/g7aeRa8JkyDErK6ekstQaqWQrNRW//MY1TvCEpMtpTWvlQ+FPbWCx+Xixu/6SHt5N0HR+SB4w==}
@@ -11675,6 +11646,7 @@ packages:
   /require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
     engines: {node: '>=0.10.0'}
+    dev: false
 
   /require-from-string@2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
@@ -11705,6 +11677,7 @@ packages:
       is-core-module: 2.12.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
+    dev: false
 
   /resolve@2.0.0-next.4:
     resolution: {integrity: sha512-iMDbmAWtfU+MHpxt/I5iWI7cY6YVEZUQ3MBgPQ++XD1PELuJHIl82xBmObyP2KyQmkNB2dsqF7seoQQiAn5yDQ==}
@@ -11776,6 +11749,7 @@ packages:
     hasBin: true
     optionalDependencies:
       fsevents: 2.3.2
+    dev: false
 
   /rollup@3.27.2:
     resolution: {integrity: sha512-YGwmHf7h2oUHkVBT248x0yt6vZkYQ3/rvE5iQuVBh3WO8GcJ6BNeOkpoX1yMHIiBm18EMLjBPIoUDkhgnyxGOQ==}
@@ -11875,18 +11849,11 @@ packages:
   /semver@5.7.1:
     resolution: {integrity: sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==}
     hasBin: true
+    dev: false
 
   /semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
-
-  /semver@7.5.0:
-    resolution: {integrity: sha512-+XC0AD/R7Q2mPSRuy2Id0+CGTZ98+8f+KvwirxOKIEyid+XSx6HbC63p+O4IndTHuX5Z+JxQ0TghCkO5Cg/2HA==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dependencies:
-      lru-cache: 6.0.0
-    dev: true
 
   /semver@7.5.4:
     resolution: {integrity: sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==}
@@ -12143,28 +12110,34 @@ packages:
     dependencies:
       spdx-expression-parse: 3.0.1
       spdx-license-ids: 3.0.13
+    dev: false
 
   /spdx-exceptions@2.3.0:
     resolution: {integrity: sha512-/tTrYOC7PPI1nUAgx34hUpqXuyJG+DTHJTnIULG4rDygi4xu/tfgmq1e1cIRwRzwZgo4NLySi+ricLkZkw4i5A==}
+    dev: false
 
   /spdx-expression-parse@3.0.1:
     resolution: {integrity: sha512-cbqHunsQWnJNE6KhVSMsMeH5H/L9EpymbzqTQ3uLwNCLZ1Q481oWaofqH7nO6V07xlXwY6PhQdQ2IedWx/ZK4Q==}
     dependencies:
       spdx-exceptions: 2.3.0
       spdx-license-ids: 3.0.13
+    dev: false
 
   /spdx-license-ids@3.0.13:
     resolution: {integrity: sha512-XkD+zwiqXHikFZm4AX/7JSCXA98U5Db4AFd5XUg/+9UNtnH75+Z9KxtpYiJZx36mUDVOwH83pl7yvCer6ewM3w==}
+    dev: false
 
   /split2@3.2.2:
     resolution: {integrity: sha512-9NThjpgZnifTkJpzTZ7Eue85S49QwpNhZTq6GRJwObb6jnLFNGB7Qm73V5HewTROPyxD0C29xqmaI68bQtV+hg==}
     dependencies:
       readable-stream: 3.6.2
+    dev: false
 
   /split@1.0.1:
     resolution: {integrity: sha512-mTyOoPbrivtXnwnIxZRFYRrPNtEFKlpB2fvjSnCQUiAA6qAZzqwna5envK4uk6OIeP17CsdF3rSBGYVBsU0Tkg==}
     dependencies:
       through: 2.3.8
+    dev: false
 
   /sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
@@ -12288,6 +12261,7 @@ packages:
     resolution: {integrity: sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==}
     dependencies:
       safe-buffer: 5.2.1
+    dev: false
 
   /stringify-entities@4.0.3:
     resolution: {integrity: sha512-BP9nNHMhhfcMbiuQKCqMjhDP5yBCAxsPu4pHFFzJ6Alo9dZgY4VLDPutXqIjpRiMoKdp7Av85Gr73Q5uH9k7+g==}
@@ -12324,6 +12298,7 @@ packages:
   /strip-bom@3.0.0:
     resolution: {integrity: sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA==}
     engines: {node: '>=4'}
+    dev: false
 
   /strip-eof@1.0.0:
     resolution: {integrity: sha512-7FCwGGmx8mD5xQd3RPUvnSpUXHM3BWuzjtpD4TXsfcZ9EL4azvVVUscFYwD9nx8Kh+uCBC00XBtAykoMHwTh8Q==}
@@ -12344,6 +12319,7 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       min-indent: 1.0.1
+    dev: false
 
   /strip-json-comments@2.0.1:
     resolution: {integrity: sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ==}
@@ -12371,6 +12347,7 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       has-flag: 3.0.0
+    dev: false
 
   /supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
@@ -12388,6 +12365,7 @@ packages:
   /supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+    dev: false
 
   /svelte-hmr@0.15.1(svelte@3.59.0):
     resolution: {integrity: sha512-BiKB4RZ8YSwRKCNVdNxK/GfY+r4Kjgp9jCLEy0DuqAKfmQtpL38cQK3afdpjw4sqSs4PLi3jIPJIFp259NkZtA==}
@@ -12484,6 +12462,7 @@ packages:
   /text-extensions@1.9.0:
     resolution: {integrity: sha512-wiBrwC1EhBelW12Zy26JeOUkQ5mRu+5o8rpsJk5+2t+Y5vE7e842qtZDQ2g1NpX/29HdyFeJ4nSIhI47ENSxlQ==}
     engines: {node: '>=0.10'}
+    dev: false
 
   /text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
@@ -12499,14 +12478,17 @@ packages:
     dependencies:
       readable-stream: 2.3.8
       xtend: 4.0.2
+    dev: false
 
   /through2@4.0.2:
     resolution: {integrity: sha512-iOqSav00cVxEEICeD7TjLB1sueEL+81Wpzp2bY17uZjZN0pWZPuo4suZ/61VujxmqSGFfgOcNuTZ85QJwNZQpw==}
     dependencies:
       readable-stream: 3.6.2
+    dev: false
 
   /through@2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
+    dev: false
 
   /tinybench@2.5.0:
     resolution: {integrity: sha512-kRwSG8Zx4tjF9ZiyH4bhaebu+EDz1BOx9hOigYHlUW4xxI/wKIUQUqo018UlU4ar6ATPBsaMrdbKZ+tmPdohFA==}
@@ -12571,6 +12553,7 @@ packages:
   /trim-newlines@3.0.1:
     resolution: {integrity: sha512-c1PTsA3tYrIsLGkJkzHF+w9F2EyxfXGo4UyJc4pFL++FMjnq0HJS69T3M7d//gKrFKwy429bouPescbjecU+Zw==}
     engines: {node: '>=8'}
+    dev: false
 
   /trough@2.1.0:
     resolution: {integrity: sha512-AqTiAOLcj85xS7vQ8QkAV41hPDIJ71XJB4RCUrzo/1GM2CQwhkJGaf9Hgr7BOugMRpgGUrqRg/DrBDl4H40+8g==}
@@ -12711,6 +12694,7 @@ packages:
   /type-fest@0.18.1:
     resolution: {integrity: sha512-OIAYXk8+ISY+qTOwkHtKqzAuxchoMiD9Udx+FSGQDuiRR+PJKJHc2NJAXlbhkGwTt/4/nKZxELY1w3ReWOL8mw==}
     engines: {node: '>=10'}
+    dev: false
 
   /type-fest@0.20.2:
     resolution: {integrity: sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==}
@@ -12719,10 +12703,12 @@ packages:
   /type-fest@0.6.0:
     resolution: {integrity: sha512-q+MB8nYR1KDLrgr4G5yemftpMC7/QLqVndBmEEdqzmNj5dcFOO4Oo8qlwZE3ULT3+Zim1F8Kq4cBnikNhlCMlg==}
     engines: {node: '>=8'}
+    dev: false
 
   /type-fest@0.8.1:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
+    dev: false
 
   /type-is@1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
@@ -12779,6 +12765,7 @@ packages:
     resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
     engines: {node: '>=14.17'}
     hasBin: true
+    dev: false
 
   /uc.micro@1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
@@ -12793,6 +12780,7 @@ packages:
     engines: {node: '>=0.8.0'}
     hasBin: true
     requiresBuild: true
+    dev: false
     optional: true
 
   /unbox-primitive@1.0.2:
@@ -12915,7 +12903,7 @@ packages:
       '@mdit-vue/plugin-component': 0.12.1
       '@mdit-vue/plugin-frontmatter': 0.12.1
       '@mdit-vue/types': 0.12.0
-      '@rollup/pluginutils': 5.0.4(rollup@3.27.2)
+      '@rollup/pluginutils': 5.0.4
       '@types/markdown-it': 13.0.1
       markdown-it: 13.0.1
       unplugin: 1.4.0
@@ -12932,7 +12920,7 @@ packages:
       '@mdit-vue/plugin-component': 0.12.1
       '@mdit-vue/plugin-frontmatter': 0.12.1
       '@mdit-vue/types': 0.12.0
-      '@rollup/pluginutils': 5.0.4(rollup@3.27.2)
+      '@rollup/pluginutils': 5.0.4
       '@types/markdown-it': 13.0.1
       markdown-it: 13.0.1
       unplugin: 1.4.0
@@ -13073,6 +13061,7 @@ packages:
     dependencies:
       spdx-correct: 3.2.0
       spdx-expression-parse: 3.0.1
+    dev: false
 
   /validate-npm-package-name@3.0.0:
     resolution: {integrity: sha512-M6w37eVCMMouJ9V/sdPGnC5H4uDr73/+xdq0FBLO3TFFX1+7wiUY6Es328NN+y43tmY+doUdN9g9J21vqB7iLw==}
@@ -13124,7 +13113,7 @@ packages:
       vfile-message: 3.1.4
     dev: false
 
-  /vike-react-simple@0.0.7(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr):
+  /vike-react-simple@0.0.7(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@0.4.142):
     resolution: {integrity: sha512-DlxzbRG30IyIgW6njy0Oddi3a4MTv6SGTer2JyCZcSv+PgNEaL6c4Wd9rpyrMHvlR8aH4QbRCgMoLK62toAsXA==}
     peerDependencies:
       react: 18.x.x
@@ -13133,10 +13122,10 @@ packages:
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      vite-plugin-ssr: link:vite-plugin-ssr
+      vite-plugin-ssr: 0.4.142(vite@4.3.5)
     dev: false
 
-  /vike-react@0.2.0(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.8):
+  /vike-react@0.2.0(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@0.4.142)(vite@4.3.8):
     resolution: {integrity: sha512-8AqXqaDRuaB2gBfySGhG6ptDsIyOZOckykgmS0x8TishuPFTJeaxJyHvUe7/ksmqAMt+BdVSeWl4g23RBZkKeQ==}
     peerDependencies:
       react: 18.x.x
@@ -13147,10 +13136,10 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       vite: 4.3.8
-      vite-plugin-ssr: link:vite-plugin-ssr
+      vite-plugin-ssr: 0.4.142(vite@4.3.8)
     dev: false
 
-  /vike-react@0.2.0-commit-af9b3c5(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@vite-plugin-ssr)(vite@4.3.9):
+  /vike-react@0.2.0-commit-af9b3c5(react-dom@18.2.0)(react@18.2.0)(vite-plugin-ssr@0.4.142)(vite@4.3.9):
     resolution: {integrity: sha512-7ZoLLEPQRFR6FRRPyZQ9pN7spdao6b2vdbx+oiwUmcuRuwT1C8nSAAsq9FQ9gOXTUUK/HfW9kskuTr5nhuHHPQ==}
     peerDependencies:
       react: 18.x.x
@@ -13161,7 +13150,7 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       vite: 4.3.9
-      vite-plugin-ssr: link:vite-plugin-ssr
+      vite-plugin-ssr: 0.4.142(vite@4.3.9)
     dev: false
 
   /vite-node@0.34.1(@types/node@20.6.3):
@@ -13199,10 +13188,140 @@ packages:
       merge-anything: 5.1.6
       solid-js: 1.7.5
       solid-refresh: 0.5.2(solid-js@1.7.5)
-      vite: 4.3.5(@types/node@20.1.0)
+      vite: 4.3.5(@types/node@17.0.45)
       vitefu: 0.2.4(vite@4.3.5)
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /vite-plugin-ssr@0.4.142(@brillout/vite@4.0.1-fix):
+    resolution: {integrity: sha512-ZDgpocnTEUmhYxGgMah8ZNK1Sfy5CFVcdXu+Ll3zRtGIPyWT5vYvASs2BLYEneqantHpde2b31Khzb0hxmP62w==}
+    engines: {node: '>=16.0.0'}
+    hasBin: true
+    peerDependencies:
+      react-streaming: '>=0.3.5'
+      vite: '>=3.1.0'
+    peerDependenciesMeta:
+      react-streaming:
+        optional: true
+    dependencies:
+      '@brillout/import': 0.2.3
+      '@brillout/json-serializer': 0.5.6
+      '@brillout/picocolors': 1.0.9
+      '@brillout/require-shim': 0.1.2
+      '@brillout/vite-plugin-import-build': 0.2.18
+      acorn: 8.9.0
+      cac: 6.7.14
+      es-module-lexer: 1.3.0
+      esbuild: 0.17.18
+      fast-glob: 3.2.12
+      sirv: 2.0.3
+      source-map-support: 0.5.21
+      vite: /@brillout/vite@4.0.1-fix(@types/node@15.14.9)
+    dev: false
+
+  /vite-plugin-ssr@0.4.142(vite@4.3.5):
+    resolution: {integrity: sha512-ZDgpocnTEUmhYxGgMah8ZNK1Sfy5CFVcdXu+Ll3zRtGIPyWT5vYvASs2BLYEneqantHpde2b31Khzb0hxmP62w==}
+    engines: {node: '>=16.0.0'}
+    hasBin: true
+    peerDependencies:
+      react-streaming: '>=0.3.5'
+      vite: '>=3.1.0'
+    peerDependenciesMeta:
+      react-streaming:
+        optional: true
+    dependencies:
+      '@brillout/import': 0.2.3
+      '@brillout/json-serializer': 0.5.6
+      '@brillout/picocolors': 1.0.9
+      '@brillout/require-shim': 0.1.2
+      '@brillout/vite-plugin-import-build': 0.2.18
+      acorn: 8.9.0
+      cac: 6.7.14
+      es-module-lexer: 1.3.0
+      esbuild: 0.17.18
+      fast-glob: 3.2.12
+      sirv: 2.0.3
+      source-map-support: 0.5.21
+      vite: 4.3.5(@types/node@17.0.45)
+    dev: false
+
+  /vite-plugin-ssr@0.4.142(vite@4.3.8):
+    resolution: {integrity: sha512-ZDgpocnTEUmhYxGgMah8ZNK1Sfy5CFVcdXu+Ll3zRtGIPyWT5vYvASs2BLYEneqantHpde2b31Khzb0hxmP62w==}
+    engines: {node: '>=16.0.0'}
+    hasBin: true
+    peerDependencies:
+      react-streaming: '>=0.3.5'
+      vite: '>=3.1.0'
+    peerDependenciesMeta:
+      react-streaming:
+        optional: true
+    dependencies:
+      '@brillout/import': 0.2.3
+      '@brillout/json-serializer': 0.5.6
+      '@brillout/picocolors': 1.0.9
+      '@brillout/require-shim': 0.1.2
+      '@brillout/vite-plugin-import-build': 0.2.18
+      acorn: 8.9.0
+      cac: 6.7.14
+      es-module-lexer: 1.3.0
+      esbuild: 0.17.18
+      fast-glob: 3.2.12
+      sirv: 2.0.3
+      source-map-support: 0.5.21
+      vite: 4.3.8
+    dev: false
+
+  /vite-plugin-ssr@0.4.142(vite@4.3.9):
+    resolution: {integrity: sha512-ZDgpocnTEUmhYxGgMah8ZNK1Sfy5CFVcdXu+Ll3zRtGIPyWT5vYvASs2BLYEneqantHpde2b31Khzb0hxmP62w==}
+    engines: {node: '>=16.0.0'}
+    hasBin: true
+    peerDependencies:
+      react-streaming: '>=0.3.5'
+      vite: '>=3.1.0'
+    peerDependenciesMeta:
+      react-streaming:
+        optional: true
+    dependencies:
+      '@brillout/import': 0.2.3
+      '@brillout/json-serializer': 0.5.6
+      '@brillout/picocolors': 1.0.9
+      '@brillout/require-shim': 0.1.2
+      '@brillout/vite-plugin-import-build': 0.2.18
+      acorn: 8.9.0
+      cac: 6.7.14
+      es-module-lexer: 1.3.0
+      esbuild: 0.17.18
+      fast-glob: 3.2.12
+      sirv: 2.0.3
+      source-map-support: 0.5.21
+      vite: 4.3.9
+    dev: false
+
+  /vite-plugin-ssr@0.4.142(vite@4.4.9):
+    resolution: {integrity: sha512-ZDgpocnTEUmhYxGgMah8ZNK1Sfy5CFVcdXu+Ll3zRtGIPyWT5vYvASs2BLYEneqantHpde2b31Khzb0hxmP62w==}
+    engines: {node: '>=16.0.0'}
+    hasBin: true
+    peerDependencies:
+      react-streaming: '>=0.3.5'
+      vite: '>=3.1.0'
+    peerDependenciesMeta:
+      react-streaming:
+        optional: true
+    dependencies:
+      '@brillout/import': 0.2.3
+      '@brillout/json-serializer': 0.5.6
+      '@brillout/picocolors': 1.0.9
+      '@brillout/require-shim': 0.1.2
+      '@brillout/vite-plugin-import-build': 0.2.18
+      acorn: 8.9.0
+      cac: 6.7.14
+      es-module-lexer: 1.3.0
+      esbuild: 0.17.18
+      fast-glob: 3.2.12
+      sirv: 2.0.3
+      source-map-support: 0.5.21
+      vite: 4.4.9(@types/node@15.14.9)
     dev: false
 
   /vite@4.0.3:
@@ -13270,38 +13389,6 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: false
-
-  /vite@4.3.5(@types/node@20.1.0):
-    resolution: {integrity: sha512-0gEnL9wiRFxgz40o/i/eTBwm+NEbpUeTWhzKrZDSdKm6nplj+z4lKz8ANDgildxHm47Vg8EUia0aicKbawUVVA==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': '>= 14'
-      less: '*'
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      '@types/node': 20.1.0
-      esbuild: 0.17.18
-      postcss: 8.4.23
-      rollup: 3.21.5
-    optionalDependencies:
-      fsevents: 2.3.2
 
   /vite@4.3.8:
     resolution: {integrity: sha512-uYB8PwN7hbMrf4j1xzGDk/lqjsZvCDbt/JC5dyfxc19Pg8kRm14LinK/uq+HSLNswZEoKmweGdtpbnxRtrAXiQ==}
@@ -13518,7 +13605,7 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: 4.3.5(@types/node@20.1.0)
+      vite: 4.3.5(@types/node@17.0.45)
     dev: false
 
   /vitest@0.34.1:
@@ -13856,6 +13943,7 @@ packages:
 
   /wordwrap@1.0.0:
     resolution: {integrity: sha512-gvVzJFlPycKc5dZN4yPkP8w7Dc37BtP1yczEneOb4uq34pXZcvrtRTmWV8W+Ume+XCxKgbjM+nevkyFPMybd4Q==}
+    dev: false
 
   /wrangler@2.19.0:
     resolution: {integrity: sha512-/XykXkD7dtvBMWq2p84V/aHhkifZA15+HBD7nm/pV62s6MJrJ+DWd1QJB7CF2D7DqknBLxdWpmmZB6YCo0BtMw==}
@@ -13937,6 +14025,7 @@ packages:
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
     engines: {node: '>=0.4'}
+    dev: false
 
   /xxhash-wasm@1.0.2:
     resolution: {integrity: sha512-ibF0Or+FivM9lNrg+HGJfVX8WJqgo+kCLDc4vx6xMeTce7Aj+DLttKbxxRR/gNLSAelRc1omAPlJ77N/Jem07A==}
@@ -13945,6 +14034,7 @@ packages:
   /y18n@5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
     engines: {node: '>=10'}
+    dev: false
 
   /yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
@@ -13956,6 +14046,7 @@ packages:
   /yargs-parser@20.2.9:
     resolution: {integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==}
     engines: {node: '>=10'}
+    dev: false
 
   /yargs-parser@21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
@@ -13973,6 +14064,7 @@ packages:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 20.2.9
+    dev: false
 
   /yargs@17.7.2:
     resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
