@@ -1,3 +1,26 @@
+## [0.4.142](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.141...v0.4.142) (2023-09-22)
+
+
+### Bug Fixes
+
+* add vite-plugin-ssr -> Vike rename warning ([fbc46ad](https://github.com/brillout/vite-plugin-ssr/commit/fbc46ad3ce0950956e518fe3737ff3600d6c4e46))
+* improve invalid path alias error message ([16e41f3](https://github.com/brillout/vite-plugin-ssr/commit/16e41f3189137b402ed1f3a600b759db4c41cc90))
+* improve invalid path alias handling ([7d7b240](https://github.com/brillout/vite-plugin-ssr/commit/7d7b240a3142ca4d7ffc46ffdd44c98130c0e51f))
+* improve manifest.json location ([5baecef](https://github.com/brillout/vite-plugin-ssr/commit/5baecef1d816bfd34930cdab6c1e3df8996acc8d))
+* make URL parsing more robust for users shimming `window` in Node.js ([b324757](https://github.com/brillout/vite-plugin-ssr/commit/b3247573c5798fe9fefd014338d71753136af123))
+
+
+### Features
+
+* provide new type `PageContext` and enable users to extend it ([785821b](https://github.com/brillout/vite-plugin-ssr/commit/785821bb79c903907374c58a0d01058ae3ac3c7f))
+
+
+### Performance Improvements
+
+* dont use try catch in url parsing ([#1115](https://github.com/brillout/vite-plugin-ssr/issues/1115)) ([f1b34b0](https://github.com/brillout/vite-plugin-ssr/commit/f1b34b04c514d215d2102d280f0689331f95f168))
+
+
+
 ## [0.4.141](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.140...v0.4.141) (2023-09-15)
 
 

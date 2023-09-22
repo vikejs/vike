@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-ssr",
-  "version": "0.4.141",
+  "version": "0.4.142",
   "scripts": {
     "dev": "tsc --watch",
     "build": "rimraf dist/ && pnpm run build:esm && pnpm run build:cjs",
