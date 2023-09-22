@@ -2,11 +2,12 @@
   - restore CHANGELOG.md
   - vike npm package
   - vike.dev
-  - algolia
+  - algolia (do we need to change the id `vite-pluginssr`?)
   - vike-* packages
   - twitter bio
   - github sponsorship page
   - Vite Ecosystem CI
+  - In docs: vike -> Vike
 
 - fix pageContext._renderHook.hookFilePath / replace with new prop hookSrc
 - refacor/fix skipConfigValue to differentiate between global/page virtual file
