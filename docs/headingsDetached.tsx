@@ -316,5 +316,9 @@ const headingsDetached = [
   {
     title: 'URL Normalization',
     url: '/url-normalization'
-  }
+  },
+  {
+    title: 'Vike',
+    url: '/vike'
+  },
 ] satisfies HeadingDetachedDefinition[]
