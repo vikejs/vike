@@ -103,7 +103,6 @@ function getVirtualFiles(config: ResolvedConfig, pageConfigs: PageConfigBuildTim
   const entriesVirtualFiles = Object.values(clientEntries)
   if (hasClientRouting) entriesVirtualFiles.push(virtualFileIdImportUserCodeClientCR)
   if (hasServerRouting) entriesVirtualFiles.push(virtualFileIdImportUserCodeClientSR)
-  assert(entriesVirtualFiles.every((virtualFile) => virtualFile.startsWith('virtual:vite-plugin-ssr:')))
 
   return entriesVirtualFiles
 }
