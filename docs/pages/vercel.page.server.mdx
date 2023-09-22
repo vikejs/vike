@@ -1,11 +1,11 @@
 import { Link, Warning } from '@brillout/docpress'
 
-We can deploy `vike` to [Vercel](https://vercel.com) simply by using a Vercel API Route, or we can use `vite-plugin-vercel` if we want advanced Vercel features such as ISR and Edge Middleware.
+We can deploy Vike to [Vercel](https://vercel.com) simply by using a Vercel API Route, or we can use `vite-plugin-vercel` if we want advanced Vercel features such as ISR and Edge Middleware.
 
 
 ## API Route
 
-We can deploy our `vike` app to Vercel simply by creating a Vercel API Route `api/ssr.js` that server-side renders our app.
+We can deploy our Vike app to Vercel simply by creating a Vercel API Route `api/ssr.js` that server-side renders our app.
 
 Example: [github.com/brillout/vike_vercel](https://github.com/brillout/vike_vercel).
 
@@ -20,7 +20,7 @@ Example: [github.com/brillout/vike_vercel](https://github.com/brillout/vike_verc
 
 If we <Link text="pre-render our pages only partially" href="/prerender-config#partial" />, we can also use `vite-plugin-vercel` to statically deploy our pre-rendered pages while dynamically serving our non-prerendered pages.
 
-> See `vike` + `vite-plugin-vercel` installation instructions at [`vite-plugin-vercel` > Usage with vike](https://github.com/magne4000/vite-plugin-vercel#usage-with-vike).
+> See Vike + `vite-plugin-vercel` installation instructions at [`vite-plugin-vercel` > Usage with vike](https://github.com/magne4000/vite-plugin-vercel#usage-with-vike).
 
 > Under the hood, `vite-plugin-vercel` uses Vercel's [Build Output API](https://vercel.com/docs/build-output-api/v3).
 

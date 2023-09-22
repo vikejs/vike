@@ -1,6 +1,6 @@
 import { RepoLink, Link } from '@brillout/docpress'
 
-We can internationalize (i18n) a `vike` app by using a <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
+We can internationalize (i18n) a Vike app by using a <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
 
 ```js
 // /renderer/_default.page.route.js
@@ -36,7 +36,7 @@ function extractLocale(url) {
 }
 ```
 
-Upon rendering a page, `onBeforeRoute()` is the first hook that `vike` calls, which means that the rest of our app doesn't have to deal with localized URLs anymore and we can simply use `pageContext.locale` instead.
+Upon rendering a page, `onBeforeRoute()` is the first hook that Vike calls, which means that the rest of our app doesn't have to deal with localized URLs anymore and we can simply use `pageContext.locale` instead.
 
 > See <Link href="/pageContext-anywhere" /> for being able to access `pageContext.locale` in any React/Vue component.
 

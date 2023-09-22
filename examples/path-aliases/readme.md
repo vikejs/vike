@@ -1,4 +1,4 @@
-Example of defining import path aliases for `vike` apps.
+Example of defining import path aliases for Vike apps.
 
 We use:
  - [`vite.config.js#resolve.alias`](https://vitejs.dev/config/#resolve-alias) for files processed by Vite.

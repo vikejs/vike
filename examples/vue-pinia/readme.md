@@ -1,4 +1,4 @@
-Example of using `vike` with:
+Example of using Vike with:
  - Vue
  - [Pinia](https://pinia.vuejs.org/)
  - [Client Routing](https://vike.dev/client-routing)

@@ -1,4 +1,4 @@
-Example of using `vike` with Vue and Apollo GraphQL.
+Example of using Vike with Vue and Apollo GraphQL.
 
 ```bash
 git clone git@github.com:brillout/vike

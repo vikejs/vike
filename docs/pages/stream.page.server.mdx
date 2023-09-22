@@ -88,7 +88,7 @@ async function handleFetchEvent(event) {
 
 ## `pageContext.enableEagerStreaming`
 
-By default, the HTML template (we provide in our `render()` hook) isn't immediately written to the stream: instead, `vike` awaits for our UI framework to start writing to the stream.
+By default, the HTML template (we provide in our `render()` hook) isn't immediately written to the stream: instead, Vike awaits for our UI framework to start writing to the stream.
 
 ```js
 import { renderToStream } from 'some-ui-framework' // React, Vue, ...
@@ -112,7 +112,7 @@ async function render(pageContext) {
 }
 ```
 
-If we set `pageContext.enableEagerStreaming` to `true` then `vike` starts writing the HTML template right away.
+If we set `pageContext.enableEagerStreaming` to `true` then Vike starts writing the HTML template right away.
 
 ```js
 async function render(pageContext) {

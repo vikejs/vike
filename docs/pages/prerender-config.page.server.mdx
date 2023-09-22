@@ -37,7 +37,7 @@ This setting doesn't affect the pre-rendering process: it merely suppresses the 
 
 > As explained in <Link href="/pre-rendering" />, if we don't pre-render all pages, then we need a production server. By using <Link text={<code>vite-plugin-vercel</code>} href="/vercel#vite-plugin-vercel" />, we can still statically deploy our pre-rendered pages while using a production server for our non-pre-rendered pages.
 
-> `vike` shows a warning that a page cannot be pre-rendered, when the page has a parameterized route (e.g. a  <Link text="Route String" href="/route-string" /> `/movie/@movieId`, or a <Link text="Route Function" href="/route-function" />), and there isn't any <Link text={<><code>prerender()</code> hook</>} href="/prerender" /> that provides at least one URL matching the page's route (e.g. `/movie/42`).
+> Vike shows a warning that a page cannot be pre-rendered, when the page has a parameterized route (e.g. a  <Link text="Route String" href="/route-string" /> `/movie/@movieId`, or a <Link text="Route Function" href="/route-function" />), and there isn't any <Link text={<><code>prerender()</code> hook</>} href="/prerender" /> that provides at least one URL matching the page's route (e.g. `/movie/42`).
 
 
 ## `noExtraDir`

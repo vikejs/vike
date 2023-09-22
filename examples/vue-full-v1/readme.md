@@ -1,4 +1,4 @@
-Example of using `vike` with Vue that showcases many features.
+Example of using Vike with Vue that showcases many features.
 
 For a simpler example, check out [/examples/vue/](/examples/vue/).
 

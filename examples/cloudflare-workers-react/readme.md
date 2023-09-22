@@ -1,6 +1,6 @@
 [Cloudflare Workers](https://workers.cloudflare.com/) with:
  - Vite
- - `vike`
+ - Vike
  - React
 
 

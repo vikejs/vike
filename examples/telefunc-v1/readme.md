@@ -1,4 +1,4 @@
-Example of using `vike` with [Telefunc](https://telefunc.com).
+Example of using Vike with [Telefunc](https://telefunc.com).
 
 To run it:
 

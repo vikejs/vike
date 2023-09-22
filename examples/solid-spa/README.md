@@ -1,4 +1,4 @@
-Minimal example of using `vike` with [Solid](https://www.solidjs.com/) in [SPA mode](https://vike.dev/render-modes#spa).
+Minimal example of using Vike with [Solid](https://www.solidjs.com/) in [SPA mode](https://vike.dev/render-modes#spa).
 
 ```bash
 git clone git@github.com:brillout/vike

@@ -20,7 +20,7 @@ function render(pageContext) {
 
   const pageHtml = ReactDOMServer.renderToString(collect(page));
 
-  // `vike` inserts the `<script>` tags at the end of the HTML; the
+  // Vike inserts the `<script>` tags at the end of the HTML; the
   // browser will load the `<style>` tag first.
   return escapeInject`<!DOCTYPE html>
     <html>

@@ -59,7 +59,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
     if (pageContextAddendumHook) {
       objectAssign(pageContextAddendum, pageContextAddendumHook)
       if (hasProp(pageContextAddendum, '_pageId', 'string') || hasProp(pageContextAddendum, '_pageId', 'null')) {
-        // We bypass `vike`'s routing
+        // We bypass Vike's routing
         if (!hasProp(pageContextAddendum, 'routeParams')) {
           objectAssign(pageContextAddendum, { routeParams: {} })
         } else {
@@ -79,7 +79,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
     _routingProvidedByOnBeforeRouteHook: false
   })
 
-  // `vike`'s routing
+  // Vike's routing
   const allPageIds = pageContext._allPageIds
   assert(allPageIds.length >= 0)
   assertUsage(

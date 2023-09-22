@@ -10,7 +10,7 @@
 
 ## System requirements
 
-> These requirements are only needed for developing the source code of vike. The npm package `vike` can be used with Windows and with any package manager.
+> These requirements are only needed for developing the source code of vike. The npm package Vike can be used with Windows and with any package manager.
 
 - Node.js `>= v16.0.0`.
 - [pnpm](https://pnpm.io/).

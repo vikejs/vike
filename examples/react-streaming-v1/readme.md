@@ -1,4 +1,4 @@
-Example of using `vike` with React and [react-streaming](https://github.com/brillout/react-streaming).
+Example of using Vike with React and [react-streaming](https://github.com/brillout/react-streaming).
 
 ```bash
 git clone git@github.com:brillout/vike

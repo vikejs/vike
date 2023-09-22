@@ -1,4 +1,4 @@
-Example of using `vike` with [vike-react-simple](https://github.com/brillout/vike-react-simple).
+Example of using Vike with [vike-react-simple](https://github.com/brillout/vike-react-simple).
 
 ```bash
 git clone git@github.com:brillout/vike

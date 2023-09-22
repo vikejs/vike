@@ -1,4 +1,4 @@
-Example of using `vike` with [urql](https://github.com/FormidableLabs/urql).
+Example of using Vike with [urql](https://github.com/FormidableLabs/urql).
 
 ```bash
 git clone git@github.com:brillout/vike

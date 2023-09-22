@@ -1,4 +1,4 @@
-Example of using `vike` with [webpack](https://webpack.js.org).
+Example of using Vike with [webpack](https://webpack.js.org).
 
 ```bash
 git clone git@github.com:brillout/vike

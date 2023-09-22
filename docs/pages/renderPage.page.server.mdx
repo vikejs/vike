@@ -71,7 +71,7 @@ async function startServer() {
 }
 ```
 
-The `pageContext.httpResponse.body` value is the HTML string returned by the <Link text={<><code>render()</code> hook</>} href="/render-hook" /> with additional `<script>` and `<style>` tags automatically injected by `vike`.
+The `pageContext.httpResponse.body` value is the HTML string returned by the <Link text={<><code>render()</code> hook</>} href="/render-hook" /> with additional `<script>` and `<style>` tags automatically injected by Vike.
 
 For HTML streams use `httpResponse.pipe()` instead of `pageContext.httpResponse.body`, see <Link href="/stream" />.
 

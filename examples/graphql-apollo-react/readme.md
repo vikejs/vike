@@ -1,4 +1,4 @@
-Example of using `vike` with Apollo GraphQL and React.
+Example of using Vike with Apollo GraphQL and React.
 
 ```bash
 git clone git@github.com:brillout/vike

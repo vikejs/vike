@@ -99,7 +99,7 @@ function Page(pageProps) {
 }
 ```
 
-> Note that `vike` doesn't know anything about `pageProps`: it's just an object we create in order to conveniently pass all the page's props at once.
+> Note that Vike doesn't know anything about `pageProps`: it's just an object we create in order to conveniently pass all the page's props at once.
 
 
 ## Error Handling
@@ -189,7 +189,7 @@ then we can define `onBeforeRender()` in `.page.js` instead.
 
 When using GraphQL, we define GraphQL queries/fragments on a component-level, while we fetch the GraphQL data in a single global `onBeforeRender()` hook.
 
-In general, with `vike`, we have full control over rendering which means that integrating GraphQL is mostly only a matter of following the official SSR guide of the tool we want to use.
+In general, with Vike, we have full control over rendering which means that integrating GraphQL is mostly only a matter of following the official SSR guide of the tool we want to use.
 
 - <Link href="/apollo-graphql" />
 - <Link href="/urql" />
@@ -199,7 +199,7 @@ In general, with `vike`, we have full control over rendering which means that in
 
 When using a global store ([Vuex](https://vuex.vuejs.org/), [Redux](https://redux.js.org/), [PullState](https://lostpebble.github.io/pullstate/), ...), our components don't access the fetched data directly. Instead, our components only access the store, while the fetched data merely determines the initial state of the store.
 
-In general, with `vike`, we have full control over rendering which means that integrating a global store is mostly only a matter of following the official SSR guide of the tool we want to use.
+In general, with Vike, we have full control over rendering which means that integrating a global store is mostly only a matter of following the official SSR guide of the tool we want to use.
 
 - <Link href="/redux" />
 - <Link href="/vuex" />

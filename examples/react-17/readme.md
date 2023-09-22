@@ -1,4 +1,4 @@
-Example of using `vike` with React 17.
+Example of using Vike with React 17.
 
 ```bash
 git clone git@github.com:brillout/vike

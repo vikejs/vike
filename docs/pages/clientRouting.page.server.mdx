@@ -2,7 +2,7 @@ import { Link, RepoLink, ReadingRecommendation } from '@brillout/docpress'
 
 Environment: browser.
 
-By default, `vike` does <Link text="Server Routing" href="/server-routing" />.
+By default, Vike does <Link text="Server Routing" href="/server-routing" />.
 
 We opt into <Link text="Client Routing" href="/client-routing" /> by modifying `/renderer/_default.client.js` to:
  1. Set `export const clientRouting = true`.
@@ -55,7 +55,7 @@ the user navigates to the render() hook the first page finishes rendering render
 import { renderToDom, hydrateDom } from 'some-ui-framework'
 
 async function render(pageContext) {
-    // `pageContext.isHydration` is set by `vike` and is `true` when the page
+    // `pageContext.isHydration` is set by Vike and is `true` when the page
     // is already rendered to HTML.
     if (pageContext.isHydration) {
       // We hydrate the first page. (Since we do SSR, the first page is already

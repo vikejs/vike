@@ -18,7 +18,7 @@ async function injectAssets__public(htmlString: string, pageContext: Record<stri
   const errMsg = (body: string) =>
     '[injectAssets(htmlString, pageContext)]: ' +
     body +
-    '. Make sure that `pageContext` is the object that `vike` provided to your `render(pageContext)` hook.'
+    '. Make sure that `pageContext` is the object that Vike provided to your `render(pageContext)` hook.'
   assertUsage(hasProp(pageContext, 'urlPathname', 'string'), errMsg('`pageContext.urlPathname` should be a string'), {
     showStackTrace: true
   })

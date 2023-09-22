@@ -1,6 +1,6 @@
 [Cloudflare Workers](https://workers.cloudflare.com/) with:
  - Vite
- - `vike`
+ - Vike
  - React
  - [`react-streaming`](https://github.com/brillout/react-streaming)
  - Universal `fetch()`

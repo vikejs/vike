@@ -4,7 +4,7 @@
 <br/>
 **Examples (official)** :arrow_right: [examples/](https://github.com/brillout/vike/tree/main/examples)
 <br/>
-**Examples (community)** :arrow_right: Many tools have community examples of being used with `vike` – search [vike.dev](https://vike.dev) (`CTRL+K`) for the tool you want an example of.
+**Examples (community)** :arrow_right: Many tools have community examples of being used with Vike – search [vike.dev](https://vike.dev) (`CTRL+K`) for the tool you want an example of.
 
 **Version history (& breaking changes)** :arrow_right: [CHANGELOG.md](/CHANGELOG.md)
 

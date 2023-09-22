@@ -1,4 +1,4 @@
-Example of using `vike` with Svelte.
+Example of using Vike with Svelte.
 
 ```bash
 git clone git@github.com:brillout/vike

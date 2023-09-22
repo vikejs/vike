@@ -1,4 +1,4 @@
-Example of using `vike` with React and Redux.
+Example of using Vike with React and Redux.
 
 ```bash
 git clone git@github.com:brillout/vike

@@ -18,7 +18,7 @@ import Counter from '../components/Counter.vue'
 </script>
 ```
 
-By default, `vike` does Filesystem Routing.
+By default, Vike does Filesystem Routing.
 ```
 FILESYSTEM                  URL
 /pages/index.page.vue        /
@@ -30,7 +30,7 @@ We can also define a page's route with a *Route String* (for parameterized route
 ```js
 // /pages/index.page.route.js
 
-// Note how the two files share the same base `/pages/index.page.`; this is how `vike`
+// Note how the two files share the same base `/pages/index.page.`; this is how Vike
 // knows that `/pages/index.page.route.js` defines the route of `/pages/index.page.vue`.
 
 // Route Function
@@ -170,12 +170,12 @@ export async function onBeforeRender(pageContext) {
 
 // By default `pageContext.*` are available only on the server. But our hydrate function
 // we defined earlier runs in the browser and needs `pageContext.pageProps`; we use
-// `passToClient` to tell `vike` to serialize and make `pageContext.pageProps`
+// `passToClient` to tell Vike to serialize and make `pageContext.pageProps`
 // available to the browser.
 export const passToClient = ['pageProps']
 ```
 
 That's it for the tour and we have actually already seen most of the interface;
-not only is `vike` flexible but it's also simple to use!
+not only is Vike flexible but it's also simple to use!
 
 <ScaffoldCallToActionTour />

@@ -1,4 +1,4 @@
-Example of using `vike` with Vue and Vuex.
+Example of using Vike with Vue and Vuex.
 
 ```bash
 git clone git@github.com:brillout/vike
