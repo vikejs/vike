@@ -5,7 +5,7 @@ This example completely replaces Vike's built-in router with Vue Router. Alterna
  - Deeply integrate Vue Router with Vike's router. (:construction: Work-in-progress: follow this [ticket](https://github.com/vikejs/vike/issues/9) and see this [PR](https://github.com/vikejs/vike/pull/40).)
 
 ```bash
-git clone git@github.com:brillout/vike
+git clone git@github.com:vikejs/vike
 cd vike/examples/vue-router/
 npm install
 npm run dev

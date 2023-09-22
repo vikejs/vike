@@ -19,7 +19,7 @@ Path alias usage examples:
 To run the example:
 
 ```bash
-git clone git@github.com:brillout/vike
+git clone git@github.com:vikejs/vike
 cd vike/examples/path-aliases/
 npm install
 npm run dev

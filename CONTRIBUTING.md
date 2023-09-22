@@ -28,7 +28,7 @@
 Download and install the entire monorepo:
 
 ```shell
-git clone git@github.com:brillout/vike
+git clone git@github.com:vikejs/vike
 # Go to the monorepo root
 cd vike/
 pnpm install

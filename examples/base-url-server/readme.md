@@ -1,7 +1,7 @@
 Example of deploying static assets to a CDN + setting a Base URL for the server.
 
 ```bash
-git clone git@github.com:brillout/vike
+git clone git@github.com:vikejs/vike
 cd vike/examples/base-url-server/
 npm install
 npm run start

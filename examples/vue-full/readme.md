@@ -15,7 +15,7 @@ Features:
  - HTML streaming
 
 ```bash
-git clone git@github.com:brillout/vike
+git clone git@github.com:vikejs/vike
 cd vike/examples/vue-full/
 npm install
 npm run dev

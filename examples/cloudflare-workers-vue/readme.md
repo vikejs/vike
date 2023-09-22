@@ -13,7 +13,7 @@ See [vike.dev/cloudflare-workers](https://vike.dev/cloudflare-workers).
 ## Run
 
 ```bash
-git clone git@github.com:brillout/vike
+git clone git@github.com:vikejs/vike
 cd vike/examples/cloudflare-workers-vue/
 npm install
 ```

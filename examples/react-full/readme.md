@@ -16,7 +16,7 @@ Features:
  - Page Transition Loading Animation
 
 ```bash
-git clone git@github.com:brillout/vike
+git clone git@github.com:vikejs/vike
 cd vike/examples/react-full/
 npm install
 npm run dev

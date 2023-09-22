@@ -1,7 +1,7 @@
 Example of using vike with [Stem React](https://github.com/brillout/stem-react).
 
 ```bash
-git clone git@github.com:brillout/vike
+git clone git@github.com:vikejs/vike
 cd vike/examples/stem-react/
 npm install
 npm run dev

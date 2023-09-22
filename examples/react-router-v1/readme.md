@@ -5,7 +5,7 @@ This example completely replaces Vike's built-in router with React Router. Alter
  - Deeply integrate React Router with Vike's router. (:construction: Work-in-progress: follow this [ticket](https://github.com/vikejs/vike/issues/9) and this [PR](https://github.com/vikejs/vike/pull/40).)
 
 ```bash
-git clone git@github.com:brillout/vike
+git clone git@github.com:vikejs/vike
 cd vike/examples/react-router/
 npm install
 npm run dev
