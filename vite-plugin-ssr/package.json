@@ -177,7 +177,7 @@
     "node": ">=16.0.0"
   },
   "description": "Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.",
-  "repository": "https://github.com/brillout/vike",
+  "repository": "https://github.com/vikejs/vike",
   "files": [
     "dist/",
     "cli.js",

@@ -75,11 +75,11 @@ async function getPageAssets(
     const { mediaType = null, assetType = null } = inferMediaType(src) || {}
 
     if (isDev && assetType === 'style') {
-      // https://github.com/brillout/vike/issues/449
+      // https://github.com/vikejs/vike/issues/449
       if (src.endsWith('?inline')) {
         return
       }
-      // https://github.com/brillout/vike/issues/401
+      // https://github.com/vikejs/vike/issues/401
       src = src + '?direct'
     }
 
@@ -150,7 +150,7 @@ async function resolveClientEntriesDev(
     const __dirname_ = dirname(fileURLToPath(importMetaUrl))
 
     // @ts-expect-error
-    // Bun workaround https://github.com/brillout/vike/pull/1048
+    // Bun workaround https://github.com/vikejs/vike/pull/1048
     const res = typeof Bun !== 'undefined' ? (toPath: string) => Bun.resolveSync(toPath, __dirname_) : require_.resolve
 
     assert(clientEntry.endsWith('.js'))

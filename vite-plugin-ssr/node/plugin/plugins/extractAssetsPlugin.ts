@@ -184,7 +184,7 @@ function extractAssetsPlugin(): Plugin[] {
     {
       name: 'vike:extractAssets-4',
       configResolved(config) {
-        // https://github.com/brillout/vike/issues/1060
+        // https://github.com/vikejs/vike/issues/1060
         assertUsage(
           !config.plugins.find((p) => p.name === 'vite-tsconfig-paths'),
           'vite-tsconfig-paths not supported, remove it and use vite.config.js#resolve.alias instead'

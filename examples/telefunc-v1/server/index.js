@@ -1,4 +1,4 @@
-// This file isn't processed by Vite, see https://github.com/brillout/vike/issues/562
+// This file isn't processed by Vite, see https://github.com/vikejs/vike/issues/562
 // Consequently:
 //  - When changing this file, you needed to manually restart your server for your changes to take effect.
 //  - To use your environment variables defined in your .env files, you need to install dotenv, see https://vike.dev/env

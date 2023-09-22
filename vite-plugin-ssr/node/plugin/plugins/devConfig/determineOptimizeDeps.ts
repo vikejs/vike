@@ -28,7 +28,7 @@ async function determineOptimizeDeps(config: ResolvedConfig, configVps: ConfigVp
 
   include.push(...getExtensionsDeps(configVps))
 
-  /* Other Vite plugins may populate optimizeDeps, e.g. Cypress: https://github.com/brillout/vike/issues/386
+  /* Other Vite plugins may populate optimizeDeps, e.g. Cypress: https://github.com/vikejs/vike/issues/386
   assert(config.optimizeDeps.entries === undefined)
   */
   config.optimizeDeps.include = [...include, ...normalizeInclude(config.optimizeDeps.include)]

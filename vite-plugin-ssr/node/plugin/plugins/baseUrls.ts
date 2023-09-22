@@ -21,7 +21,7 @@ function baseUrls(configVps?: ConfigVpsUserProvided): Plugin {
       process.env.BASE_ASSETS = baseAssets
       return {
         envPrefix: [
-          'VITE_', // Vite doesn't seem to merge in its default, see https://github.com/brillout/vike/issues/554
+          'VITE_', // Vite doesn't seem to merge in its default, see https://github.com/vikejs/vike/issues/554
           'BASE_SERVER',
           'BASE_ASSETS'
         ],

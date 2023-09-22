@@ -102,7 +102,7 @@ async function getHtmlTags(
       if (a.assetType === 'style' && a.isEntry) {
         // In development, Vite automatically inject styles, but we still inject `<link rel="stylesheet" type="text/css" href="${src}">` tags in order to avoid FOUC (flash of unstyled content).
         //  - https://github.com/vitejs/vite/issues/2282
-        //  - https://github.com/brillout/vike/issues/261
+        //  - https://github.com/vikejs/vike/issues/261
         assertWarning(a.inject, `[injectFilter()] We recommend against not injecting ${a.src}`, {
           onlyOnce: true
         })

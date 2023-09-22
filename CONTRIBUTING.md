@@ -71,7 +71,7 @@ cd examples/some-example/ && pnpm exec test-e2e
 pnpm exec test-e2e ome-exampl # At the monorepo root
 ```
 
-> On Debian, [these additional steps](https://github.com/brillout/vike/issues/283#issuecomment-1072974554) are required.
+> On Debian, [these additional steps](https://github.com/vikejs/vike/issues/283#issuecomment-1072974554) are required.
 
 <br/>
 

@@ -90,7 +90,7 @@ function addQuery(moduleName: string, id: string) {
       const idReal = id.split('?')[0]!
       assertUsage(
         false,
-        `Modify the re-export of ${idReal}, see https://github.com/brillout/vike/issues/864#issuecomment-1537202290`
+        `Modify the re-export of ${idReal}, see https://github.com/vikejs/vike/issues/864#issuecomment-1537202290`
       )
     }
     moduleName = `${moduleName}?extractExportNames&lang.${fileExtension}`

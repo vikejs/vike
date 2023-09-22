@@ -17,7 +17,7 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
       const mod = moduleGraph.getModuleById(graphId)
       if (!mod) {
         /* Not sure when the assertion fails. So let's just remove it for now.
-         *  - https://github.com/brillout/vike/issues/391
+         *  - https://github.com/vikejs/vike/issues/391
         // `moduleGraph` is missing `.page.client.js` files on the very first render
         assert(id.includes('.page.client.'), { id })
         */
@@ -31,7 +31,7 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
 }
 
 // Collect the CSS to be injected to the HTML to avoid FLOUC
-//  - We only collect the root import: https://github.com/brillout/vike/issues/400
+//  - We only collect the root import: https://github.com/vikejs/vike/issues/400
 function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set<string>, importer?: ModuleNode): void {
   assert(mod)
   if (!mod.url) return
@@ -43,7 +43,7 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
     } else {
       // Vuetify uses virtual SCSS modules which we skip
       //  - We skip because `<link rel="stylesheet" type="text/css" href="virtual-module.css">` doesn't work
-      //  - Reproduction: https://github.com/brillout/vike/issues/479
+      //  - Reproduction: https://github.com/vikejs/vike/issues/479
       //  - Possible workaround: `<script>import 'virtual-module.css'</script>`
       // logModule(mod)
     }

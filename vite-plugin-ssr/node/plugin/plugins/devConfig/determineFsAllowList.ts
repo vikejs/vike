@@ -21,7 +21,7 @@ async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVps
   assert(fsAllow.length >= 1)
 
   fsAllow.push(process.cwd())
-  // searchForWorkspaceRoot() is buggy: https://github.com/brillout/vike/issues/555.
+  // searchForWorkspaceRoot() is buggy: https://github.com/vikejs/vike/issues/555.
   // BUt that's not a problem since Vite automatically inserts searchForWorkspaceRoot().
   // We add it again just to be sure.
   fsAllow.push(searchForWorkspaceRoot(process.cwd()))

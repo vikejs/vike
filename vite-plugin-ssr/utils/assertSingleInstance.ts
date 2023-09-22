@@ -32,7 +32,7 @@ function assertSingleInstance() {
     const versions = unique(globalObject.instances)
     assertUsage(
       versions.length <= 1,
-      // DO *NOT* patch vike to remove this error: because of multiple conflicting versions, you *will* eventually encounter insidious issues that hard to debug and potentially a security hazard, see for example https://github.com/brillout/vike/issues/1108
+      // DO *NOT* patch vike to remove this error: because of multiple conflicting versions, you *will* eventually encounter insidious issues that hard to debug and potentially a security hazard, see for example https://github.com/vikejs/vike/issues/1108
       `Both vike@${versions[0]} and vike@${versions[1]} loaded. Only one version should be loaded.`
     )
   }

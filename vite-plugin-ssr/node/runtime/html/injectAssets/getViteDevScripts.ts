@@ -19,11 +19,11 @@ async function getViteDevScripts(): Promise<string> {
     !fakeHtml.includes('vite-plugin-pwa'),
     `The HTML transformer of ${pc.cyan(
       'vite-plugin-pwa'
-    )} cannot be applied, see workaround at https://github.com/brillout/vike/issues/388#issuecomment-1199280084`
+    )} cannot be applied, see workaround at https://github.com/vikejs/vike/issues/388#issuecomment-1199280084`
   )
   assertUsage(
     !fakeHtml.startsWith(fakeHtmlBegin.replace(' ', '')),
-    'Vite plugins that minify the HTML are not supported by vike, see https://github.com/brillout/vike/issues/224'
+    'Vite plugins that minify the HTML are not supported by vike, see https://github.com/vikejs/vike/issues/224'
   )
   assertUsage(
     fakeHtml.startsWith(fakeHtmlBegin) && fakeHtml.endsWith(fakeHtmlEnd),

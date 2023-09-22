@@ -8,7 +8,7 @@ VPS (vike) differs from Next.js in three fundamental ways:
  1. VPS is server and deployment agnostic.
     > With VPS, you keep full control over your server and you can use any deployment strategy.
  1. VPS is full-fledged yet minimal.
-    > [All dependencies](https://github.com/brillout/vike/blob/89073c8375d46af7cc05057a8f2efcd833273be6/vike/package.json#L4-L13) are either shared with Vite (e.g. [`fast-glob`](https://github.com/mrmlnc/fast-glob)) or fully/transitively owned (e.g. [`@brillout/json-serializer`](https://github.com/brillout/json-serializer)). Adding VPS to your Vite app doesn't add any frivolous dependency.
+    > [All dependencies](https://github.com/vikejs/vike/blob/89073c8375d46af7cc05057a8f2efcd833273be6/vike/package.json#L4-L13) are either shared with Vite (e.g. [`fast-glob`](https://github.com/mrmlnc/fast-glob)) or fully/transitively owned (e.g. [`@brillout/json-serializer`](https://github.com/brillout/json-serializer)). Adding VPS to your Vite app doesn't add any frivolous dependency.
     >
     > We believe VPS hits the sweet spot of being a full-fledged frontend tool while avoiding unnecessary bells and whistles.
 
@@ -66,7 +66,7 @@ We foster the proliferation of React frameworks, highly-tailored to specific use
 
 ## User feedback
 
-[From @Axxxx0n](https://github.com/brillout/vike/issues/158#issuecomment-934224512):
+[From @Axxxx0n](https://github.com/vikejs/vike/issues/158#issuecomment-934224512):
 
 1. Blazing fast development speed powered by Vite (on-demand transpiling, native ESM).
 1. Next.js has to have many examples and a whole plethora of libraries are existing just to integrate some library with Next.js because it's not trivial (for example [next-i18next](https://github.com/isaachinman/next-i18next)). With VPS, you just read the documentation of the library you want to integrate and you're good to go.
@@ -80,7 +80,7 @@ We foster the proliferation of React frameworks, highly-tailored to specific use
 
 ## Detailed comparison table
 
-[From @patryk-smc and @redbar0n](https://github.com/brillout/vike/issues/158#issuecomment-1250068578):
+[From @patryk-smc and @redbar0n](https://github.com/vikejs/vike/issues/158#issuecomment-1250068578):
 
 |                                                                 | VPS                                                        | Next.js                       |
 | --------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------- |
@@ -99,7 +99,7 @@ We foster the proliferation of React frameworks, highly-tailored to specific use
 | <Link text="Server Routing" href="/server-routing" />           | Yes                                                        | No                            |
 | <Link text="Base URL" href="/base-url" />                       | Yes                                                        | Limited                       |
 | <p align="center">**Integrations**</p>                                                    |                                                            |                               |
-HTTP server | No*, bring your own | Baked-in, custom server partially supported with caveats[[1]](https://github.com/brillout/vike/issues/158#issuecomment-1355306156)[[2]](https://stackoverflow.com/questions/58742343/do-i-have-to-use-express-in-next-js-project/70945468#70945468) |
+HTTP server | No*, bring your own | Baked-in, custom server partially supported with caveats[[1]](https://github.com/vikejs/vike/issues/158#issuecomment-1355306156)[[2]](https://stackoverflow.com/questions/58742343/do-i-have-to-use-express-in-next-js-project/70945468#70945468) |
 | Apollo Client with SSR                                          | Fully supported                                            | Partially supported           |
 | Relay with SSR                                                  | Fully supported                                            | Partially supported           |
 | <p align="center">**Extras**</p> |                                                            |                               |

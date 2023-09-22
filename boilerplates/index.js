@@ -183,7 +183,7 @@ function initGitRepo(cwd) {
   try {
     execSync('git init', {
       cwd,
-      // See https://github.com/brillout/vike/issues/478
+      // See https://github.com/vikejs/vike/issues/478
       stdio: 'ignore'
     })
 

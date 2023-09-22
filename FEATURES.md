@@ -47,7 +47,7 @@ No known bugs, most notably:
 
 Things missing that some frameworks have (but is on the roadmap):
  - Nested Layouts (TODO: update ticket with latest design)
- - Typesafe links ([#698](https://github.com/brillout/vike/issues/698))
+ - Typesafe links ([#698](https://github.com/vikejs/vike/issues/698))
  - Single Route File
 
 Minor features that can be life changing for some users:

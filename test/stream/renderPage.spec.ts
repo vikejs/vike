@@ -33,7 +33,7 @@ describe('renderPage()', () => {
   // ```
   // ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command was killed with SIGSEGV (Segmentation fault): vitest test/stream
   // ```
-  // The error occurs during the `pageContext._viteDevServer.transformIndexHtml()` call: https://github.com/brillout/vike/blob/d7a45b6b0bf27386c6dbdcdd6b630823e76ace85/vike/node/html/injectAssets/getViteDevScripts.ts#L22
+  // The error occurs during the `pageContext._viteDevServer.transformIndexHtml()` call: https://github.com/vikejs/vike/blob/d7a45b6b0bf27386c6dbdcdd6b630823e76ace85/vike/node/html/injectAssets/getViteDevScripts.ts#L22
   if (SKIP) {
     const msg = 'SKIPPED: streaming is causing segfault'
     it(msg, () => {})

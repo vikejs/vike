@@ -40,7 +40,7 @@ function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest i
   // ```
   // Uncaught (in promise) TypeError: Cannot set property manifestKeyMap of #<Object> which has only a getter
   // ```
-  // See https://github.com/brillout/vike/issues/596
+  // See https://github.com/vikejs/vike/issues/596
   const pluginManifestClone = { ...pluginManifest }
   objectAssign(pluginManifestClone, { manifestKeyMap })
   checkType<PluginManifest>(pluginManifestClone)

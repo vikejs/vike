@@ -51,7 +51,7 @@ function parseGlobResults(pageFilesExports: unknown): {
     pageFile.loadExportNames = async () => {
       if (!('exportNames' in pageFile)) {
         const moduleExports = await loadModule()
-        // Vite 2 seems to choke following assertion: https://github.com/brillout/vike/issues/455
+        // Vite 2 seems to choke following assertion: https://github.com/vikejs/vike/issues/455
         assertUsage(
           'exportNames' in moduleExports,
           'You seem to be using Vite 2 but the latest vike versions only work with Vite 3'

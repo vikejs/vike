@@ -2,7 +2,7 @@
 
 **Introducion & documentation** :arrow_right: [vike.dev](https://vike.dev)
 <br/>
-**Examples (official)** :arrow_right: [examples/](https://github.com/brillout/vike/tree/main/examples)
+**Examples (official)** :arrow_right: [examples/](https://github.com/vikejs/vike/tree/main/examples)
 <br/>
 **Examples (community)** :arrow_right: Many tools have community examples of being used with Vike – search [vike.dev](https://vike.dev) (`CTRL+K`) for the tool you want an example of.
 
@@ -14,7 +14,7 @@
 <br/>
 **Request a feature** :arrow_right: [GitHub Issue > Feature Request](https://github.com/vitejs/vite/issues/new/choose).
 <br/>
-**Get help** :arrow_right: [GitHub Discussions](https://github.com/brillout/vike/discussions).
+**Get help** :arrow_right: [GitHub Discussions](https://github.com/vikejs/vike/discussions).
 <br/>
 **Chit-chat** :arrow_right: [Discord](https://discord.com/invite/hfHhnJyVg8).
 

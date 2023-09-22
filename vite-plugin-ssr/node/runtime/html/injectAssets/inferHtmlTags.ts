@@ -26,8 +26,8 @@ function inferAssetTag(pageAsset: PageAsset): string {
   if (assetType === 'script') {
     assert(mediaType === 'text/javascript')
     // Using <script async> seems problematic:
-    //  - in dev: https://github.com/brillout/vike/issues/524
-    //  - in prod: https://github.com/brillout/vike/issues/567
+    //  - in dev: https://github.com/vikejs/vike/issues/524
+    //  - in prod: https://github.com/vikejs/vike/issues/567
     return `<script type="module" src="${src}" defer></script>`
   }
   if (assetType === 'style') {
@@ -36,7 +36,7 @@ function inferAssetTag(pageAsset: PageAsset): string {
   assert(false, { pageAsset })
 }
 
-// We ignore crossorigin, it seems like Early Hints doesn't have a "crossorigin" property: https://github.com/brillout/vike/issues/618#issuecomment-1415752222
+// We ignore crossorigin, it seems like Early Hints doesn't have a "crossorigin" property: https://github.com/vikejs/vike/issues/618#issuecomment-1415752222
 function inferEarlyHintLink(pageAsset: PageAsset): string {
   const { src, assetType } = pageAsset
   const rel = getRel(pageAsset)

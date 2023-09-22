@@ -1106,8 +1106,8 @@ function normalizeUrl(url: string) {
 
 function prerenderForceExit() {
   // Force exit; known situations where pre-rendering is hanging:
-  //  - https://github.com/brillout/vike/discussions/774#discussioncomment-5584551
-  //  - https://github.com/brillout/vike/issues/807#issuecomment-1519010902
+  //  - https://github.com/vikejs/vike/discussions/774#discussioncomment-5584551
+  //  - https://github.com/vikejs/vike/issues/807#issuecomment-1519010902
   process.exit(0)
 
   /* I guess there is no need to tell the user about it? Let's see if a user complains.

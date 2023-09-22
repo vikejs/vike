@@ -61,7 +61,7 @@ If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 
 > See <Link href="/config" /> for more information about what `+` and `.h.js` means.
 
-> The suffixes such as `.page.server.js` and `.page.client.js` don't exist anymore. After the feature request [#744](https://github.com/brillout/vike/issues/744) is implemented, you'll be able to use `.server.js` and `.client.js` suffixes again but note that they'll serve another purpose.
+> The suffixes such as `.page.server.js` and `.page.client.js` don't exist anymore. After the feature request [#744](https://github.com/vikejs/vike/issues/744) is implemented, you'll be able to use `.server.js` and `.client.js` suffixes again but note that they'll serve another purpose.
 
 Move `/renderer/` configurations to `/renderer/+config.h.ts`:
 
@@ -141,38 +141,38 @@ Apply following additional steps if you've defined:
 
 ## Examples
 
-All official examples have been migrated, see [`examples/*-v1`](https://github.com/brillout/vike/tree/main/examples).
+All official examples have been migrated, see [`examples/*-v1`](https://github.com/vikejs/vike/tree/main/examples).
 
 Notable migrations:
  - Basic apps:
-   - [migrate /examples/react](https://github.com/brillout/vike.devmit/428c1c6b0fb7c9a5fa2f2fe57ac3e4bb0a57ea54)
-   - [migrate /examples/vue](https://github.com/brillout/vike.devmit/b87e6dc85462d74f16fdfd0eb4dee1c2c8d29325)
+   - [migrate /examples/react](https://github.com/vikejs/vike.devmit/428c1c6b0fb7c9a5fa2f2fe57ac3e4bb0a57ea54)
+   - [migrate /examples/vue](https://github.com/vikejs/vike.devmit/b87e6dc85462d74f16fdfd0eb4dee1c2c8d29325)
  - `onBeforeRender()` hook:
    - Defined by page in `pages/`:
-     - [migrate /examples/telefunc](https://github.com/brillout/vike.devmit/bfcd801419acd18c676b49d835c805ef6e89a607#diff-41adf2b043a30483759686ad913c5dba5dc4d0594d45913cf5a504f2205ce8a4)
-     - [migrate /examples/i18n](https://github.com/brillout/vike.devmit/9dd3db3bb6f0c1fc16befa9f504e94ea732339e8#diff-c4d06dd7331553f9855baa90f752a40b51c379631574135f38e50c9da40fa1ee)
-     - [migrate /examples/vue-full](https://github.com/brillout/vike.devmit/b612023a6b209424a75aacb2fde9b2305c44f3ee#diff-cad2d8171bf407df47ce02bd4110bd010a2beecf7e5f52e43892fba7c4c1123b)
-     - [migrate /examples/react-full](https://github.com/brillout/vike.devmit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-793fcad526e46c52916bab033cd16d35f05e1a6f18e4e43b45b3a28b8ba34f59)
+     - [migrate /examples/telefunc](https://github.com/vikejs/vike.devmit/bfcd801419acd18c676b49d835c805ef6e89a607#diff-41adf2b043a30483759686ad913c5dba5dc4d0594d45913cf5a504f2205ce8a4)
+     - [migrate /examples/i18n](https://github.com/vikejs/vike.devmit/9dd3db3bb6f0c1fc16befa9f504e94ea732339e8#diff-c4d06dd7331553f9855baa90f752a40b51c379631574135f38e50c9da40fa1ee)
+     - [migrate /examples/vue-full](https://github.com/vikejs/vike.devmit/b612023a6b209424a75aacb2fde9b2305c44f3ee#diff-cad2d8171bf407df47ce02bd4110bd010a2beecf7e5f52e43892fba7c4c1123b)
+     - [migrate /examples/react-full](https://github.com/vikejs/vike.devmit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-793fcad526e46c52916bab033cd16d35f05e1a6f18e4e43b45b3a28b8ba34f59)
    - Defined globally in `renderer/`:
-     - [migrate /examples/redux](https://github.com/brillout/vike.devmit/69c06b03c5ce5199147eb0f2e574c626038d18a7#diff-a7cdea11336cb81f500e3509f6c26587c6cc765cc438e61760f1e89eeea6817a)
-     - [migrate /examples/graphql-apollo-vue/](https://github.com/brillout/vike.devmit/aa2055f731f2ed8fc4f8763edcdc1f76ced7d061#diff-231c5dd641627a629961695a7502a3ac28cb782e48e6cb386aadd8d84b43c45d)
-     - [migrate /examples/vue-pinia](https://github.com/brillout/vike.devmit/2b830d0db9a9cd2cb9b4402a00887cd840a16eda#diff-4324476edca4f275a3fcab4e7022e86df396235bdbb5f6632b5332c192e1acec)
+     - [migrate /examples/redux](https://github.com/vikejs/vike.devmit/69c06b03c5ce5199147eb0f2e574c626038d18a7#diff-a7cdea11336cb81f500e3509f6c26587c6cc765cc438e61760f1e89eeea6817a)
+     - [migrate /examples/graphql-apollo-vue/](https://github.com/vikejs/vike.devmit/aa2055f731f2ed8fc4f8763edcdc1f76ced7d061#diff-231c5dd641627a629961695a7502a3ac28cb782e48e6cb386aadd8d84b43c45d)
+     - [migrate /examples/vue-pinia](https://github.com/vikejs/vike.devmit/2b830d0db9a9cd2cb9b4402a00887cd840a16eda#diff-4324476edca4f275a3fcab4e7022e86df396235bdbb5f6632b5332c192e1acec)
  - Pre-rendered app (that uses `prerender()` hooks):
-   - [migrate /examples/react-full](https://github.com/brillout/vike.devmit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-4f57f0b913952581bf391a9cde442cb1e9f3e2a8e9b06d213fe1b450d58450f3)
-   - [migrate /examples/vue-full](https://github.com/brillout/vike.devmit/b612023a6b209424a75aacb2fde9b2305c44f3ee#diff-a2b72a140b77af0c45a8692a277e3b5199a502249a43715af04d3255f23e6e37)
+   - [migrate /examples/react-full](https://github.com/vikejs/vike.devmit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-4f57f0b913952581bf391a9cde442cb1e9f3e2a8e9b06d213fe1b450d58450f3)
+   - [migrate /examples/vue-full](https://github.com/vikejs/vike.devmit/b612023a6b209424a75aacb2fde9b2305c44f3ee#diff-a2b72a140b77af0c45a8692a277e3b5199a502249a43715af04d3255f23e6e37)
  - Custom exports to custom configs (see migration explanation at <Link href="#custom-hooks-exports" doNotInferSectionTitle={true} />):
    - `pageContext.exports.documentProps` -> `pageContext.config.title`:
-     - [migrate /examples/vue-full](https://github.com/brillout/vike.devmit/b612023a6b209424a75aacb2fde9b2305c44f3ee#diff-a6e5f41440d58640eb9657abe90cedf2f41b01e34cd9d4dfc51d5c2757a85050)
-     - [migrate /examples/react-full](https://github.com/brillout/vike.devmit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-cef88db49c9c381b7c787a9ea464c4b9803253a51e0af23ba3fb78d4f50f970d)
+     - [migrate /examples/vue-full](https://github.com/vikejs/vike.devmit/b612023a6b209424a75aacb2fde9b2305c44f3ee#diff-a6e5f41440d58640eb9657abe90cedf2f41b01e34cd9d4dfc51d5c2757a85050)
+     - [migrate /examples/react-full](https://github.com/vikejs/vike.devmit/8e71e27802b1990fae360b4ce01935e12fc09237#diff-cef88db49c9c381b7c787a9ea464c4b9803253a51e0af23ba3fb78d4f50f970d)
    - `pageContext.exports.Layout` -> `pageContext.config.Layout`:
-     - [migrate /examples/layouts-react](https://github.com/brillout/vike.devmit/9b31b7497510d4add7c0e4aa4f19675b2f37fa94#diff-366cb44a235f430b996e8cfb4a0e2a65388e9ea23caf635363ee87e56666d52eL9-R9)
-     - [migrate /examples/layouts-vue](https://github.com/brillout/vike.devmit/499ee0184c4a6331e399ded299f413fc1d1a46e3#diff-056c4a494c1d68ae12d195e6d2f050d6f205b50cfe3efde4703a2755da3e37c6L15-R16)
+     - [migrate /examples/layouts-react](https://github.com/vikejs/vike.devmit/9b31b7497510d4add7c0e4aa4f19675b2f37fa94#diff-366cb44a235f430b996e8cfb4a0e2a65388e9ea23caf635363ee87e56666d52eL9-R9)
+     - [migrate /examples/layouts-vue](https://github.com/vikejs/vike.devmit/499ee0184c4a6331e399ded299f413fc1d1a46e3#diff-056c4a494c1d68ae12d195e6d2f050d6f205b50cfe3efde4703a2755da3e37c6L15-R16)
    - `pageContext.exports.preloadStrategy` -> `pageContext.config.preloadStrategy`:
-     - [migrate /examples/custom-preload](https://github.com/brillout/vike.devmit/f28880b0b85cde12647aa0613c99dbdeadc467de#diff-f1f3a4c9f73f2c7ee1444e278cf4c6115efbee1cc294649e8f5a2a05a593f18dL15-R12)
+     - [migrate /examples/custom-preload](https://github.com/vikejs/vike.devmit/f28880b0b85cde12647aa0613c99dbdeadc467de#diff-f1f3a4c9f73f2c7ee1444e278cf4c6115efbee1cc294649e8f5a2a05a593f18dL15-R12)
  - i18n (pre-rendered) app (that uses hooks `onBeforeRoute()`, `onBeforePrerender()`, `prerender()`):
-   - [migrate /examples/i18n](https://github.com/brillout/vike.devmit/9dd3db3bb6f0c1fc16befa9f504e94ea732339e8#diff-50a58ddbb03951878eebb954f765ff2406b04dad278c69c9ce03d9bff567ad76)
+   - [migrate /examples/i18n](https://github.com/vikejs/vike.devmit/9dd3db3bb6f0c1fc16befa9f504e94ea732339e8#diff-50a58ddbb03951878eebb954f765ff2406b04dad278c69c9ce03d9bff567ad76)
  - Domain-driven file structure (that uses `filesystemRoutingRoot`)
-   - [migrate /examples/file-structure-domain-driven/](https://github.com/brillout/vike.devmit/09c47412f94af825c0b48ad4553a42e6896363b3#diff-fb554213bca0ce54bf15ec3d058d4a214ec35fc797bda13ed877d767244b875bL1)
+   - [migrate /examples/file-structure-domain-driven/](https://github.com/vikejs/vike.devmit/09c47412f94af825c0b48ad4553a42e6896363b3#diff-fb554213bca0ce54bf15ec3d058d4a214ec35fc797bda13ed877d767244b875bL1)
 
 
 
@@ -254,7 +254,7 @@ export default {
 
 See:
  - <Link href="#examples" />
- - [Advanced example of implementing `config.renderMode`](https://github.com/brillout/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/render-modes-v1/renderer/+config.h.ts#L10-L24)
+ - [Advanced example of implementing `config.renderMode`](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/render-modes-v1/renderer/+config.h.ts#L10-L24)
 
 
 ## `onBeforeRender` in `.page.js`
@@ -277,7 +277,7 @@ export default {
 } satisfies Config
 ```
 
-For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> in order to [create a new config `onBeforeRenderIsomorph: boolean`](https://github.com/brillout/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/renderer/+config.h.ts#L14-L33) for a [page-per-page toggle](https://github.com/brillout/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts).
+For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> in order to [create a new config `onBeforeRenderIsomorph: boolean`](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/renderer/+config.h.ts#L14-L33) for a [page-per-page toggle](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts).
 
 
 ## Client init code
@@ -300,7 +300,7 @@ console.log("I'm run when the client-side JavaScript is loaded.")
 
 ## See also
 
- - [#578 [RFC] V1 Design](https://github.com/brillout/vike/issues/578)
+ - [#578 [RFC] V1 Design](https://github.com/vikejs/vike/issues/578)
  - <Link href="/why-the-v1-design" />
  - <Link href="/config" />
  - <Link href="/header-file" />

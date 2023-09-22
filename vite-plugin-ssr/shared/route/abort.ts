@@ -81,7 +81,7 @@ function redirect(url: `/${string}` | `https://${string}` | `http://${string}`, 
  *   `401` Unauthorized (user isn't logged in)
  *   `403` Forbidden (user is logged in but isn't allowed)
  *   `404` Not Found
- *   `410` Gone (use this instead of `404` if the page existed in the past, see https://github.com/brillout/vike/issues/1097#issuecomment-1695260887)
+ *   `410` Gone (use this instead of `404` if the page existed in the past, see https://github.com/vikejs/vike/issues/1097#issuecomment-1695260887)
  *   `429` Too Many Requests (rate limiting)
  *   `500` Internal Server Error (app has a bug)
  *   `503` Service Unavailable (server is overloaded, a third-party API isn't responding)

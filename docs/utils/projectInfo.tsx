@@ -6,9 +6,9 @@ export const projectInfo = {
   projectName: 'vike' as const,
   projectNameJsx: <code>vike</code>,
   projectVersion: PROJECT_VERSION,
-  githubRepository: 'https://github.com/brillout/vike' as const,
-  githubIssues: 'https://github.com/brillout/vike/issues/new' as const,
-  githubDiscussions: 'https://github.com/brillout/vike/discussions' as const,
+  githubRepository: 'https://github.com/vikejs/vike' as const,
+  githubIssues: 'https://github.com/vikejs/vike/issues/new' as const,
+  githubDiscussions: 'https://github.com/vikejs/vike/discussions' as const,
   discordInvite: 'https://discord.com/invite/hfHhnJyVg8' as const,
   twitterProfile: 'https://twitter.com/brillout' as const
 }

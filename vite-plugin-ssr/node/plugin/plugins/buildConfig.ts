@@ -164,7 +164,7 @@ function analyzeServerEntries(pageConfigs: PageConfigBuildTime[]) {
   return serverEntries
 }
 
-// Ensure Rollup creates entries for each page file, see https://github.com/brillout/vike/issues/350
+// Ensure Rollup creates entries for each page file, see https://github.com/vikejs/vike/issues/350
 // (Otherwise the page files may be missing in the client manifest.json)
 async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedByServer: boolean) {
   const isForClientSide = !viteIsSSR(config)

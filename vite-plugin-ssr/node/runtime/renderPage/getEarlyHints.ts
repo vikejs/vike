@@ -13,7 +13,7 @@ function getEarlyHints(assets: PageAsset[]): EarlyHint[] {
   const earlyHints: EarlyHint[] = []
   {
     assets.forEach((asset) => {
-      // Don't early hint fallback fonts, https://github.com/brillout/vike/issues/624
+      // Don't early hint fallback fonts, https://github.com/vikejs/vike/issues/624
       if (isFontFallback(asset, earlyHints)) return
       earlyHints.push({
         ...asset,

@@ -194,7 +194,7 @@ function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean):
 
 function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest {
   assert(isPlainObject(manifest))
-  /* We should include these assertions but we don't as a workaround for PWA manifests: https://github.com/brillout/vike/issues/769
+  /* We should include these assertions but we don't as a workaround for PWA manifests: https://github.com/vikejs/vike/issues/769
      Instead, we should rename the vite manifest e.g. with https://vitejs.dev/config/build-options.html#build-manifest
   Object.entries(manifest)
     // circumvent esbuild bug: esbuild adds a `default` key to JSON upon `require('./some.json')`.
@@ -210,7 +210,7 @@ function assertNodeEnv(hasViteDevServer: boolean) {
   const nodeEnv = getNodeEnv()
   if (nodeEnv === null || nodeEnv === 'test') return
   const isDevNodeEnv = [undefined, '', 'dev', 'development'].includes(nodeEnv)
-  // calling Vite's createServer() is enough for hasViteDevServer to be true, even without actually adding Vite's development middleware to the server: https://github.com/brillout/vike/issues/792#issuecomment-1516830759
+  // calling Vite's createServer() is enough for hasViteDevServer to be true, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
   assertWarning(
     hasViteDevServer === isDevNodeEnv,
     `Vite's development server was${hasViteDevServer ? '' : "n't"} instantiated while the environment is set to be a ${

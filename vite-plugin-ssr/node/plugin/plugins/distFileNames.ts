@@ -1,7 +1,7 @@
 export { distFileNames }
 
 // Attempt to preserve file structure of `.page.js` files:
-//  - https://github.com/brillout/vike.devmit/11a4c49e5403aa7c37c8020c462b499425b41854
+//  - https://github.com/vikejs/vike.devmit/11a4c49e5403aa7c37c8020c462b499425b41854
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
 import { assertPosixPath, assert, assertUsage } from '../utils.js'
@@ -17,7 +17,7 @@ function distFileNames(): Plugin {
     enforce: 'post',
     configResolved(config) {
       const rollupOutputs = getRollupOutputs(config)
-      // We need to support multiple outputs: @vite/plugin-legacy adds an ouput, see https://github.com/brillout/vike/issues/477#issuecomment-1406434802
+      // We need to support multiple outputs: @vite/plugin-legacy adds an ouput, see https://github.com/vikejs/vike/issues/477#issuecomment-1406434802
       rollupOutputs.forEach((rollupOutput) => {
         if (!rollupOutput.entryFileNames) {
           rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config, true)
@@ -42,7 +42,7 @@ function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): 
     return `${dir}/[name].[hash][extname]`
   }
 
-  // https://github.com/brillout/vike/issues/794
+  // https://github.com/vikejs/vike/issues/794
   assertPosixPath(name)
   name = path.posix.basename(name)
 
