@@ -4,7 +4,7 @@ import React from 'react'
 
 export const projectInfo = {
   projectName: 'vike' as const,
-  projectNameJsx: <code>vike</code>,
+  projectNameJsx: Vike,
   projectVersion: PROJECT_VERSION,
   githubRepository: 'https://github.com/vikejs/vike' as const,
   githubIssues: 'https://github.com/vikejs/vike/issues/new' as const,

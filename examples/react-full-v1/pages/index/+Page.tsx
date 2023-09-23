@@ -8,7 +8,7 @@ function Page() {
   return (
     <>
       <h1>
-        Welcome to <code>vike</code>
+        Welcome to Vike
       </h1>
       This page is:
       <ul>

@@ -1,6 +1,6 @@
 <template>
   <h1>About</h1>
-  <p>Example of app using <code>vike</code>.</p>
+  <p>Example of app using Vike.</p>
 </template>
 
 <style>

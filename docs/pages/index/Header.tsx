@@ -59,7 +59,7 @@ function RightSide() {
   return (
     <div id="header-right-side" style={{ marginLeft: 40, flexShrink: 0 }}>
       <CallToActionDescription style={{ marginTop: 0 }}>
-        Scaffold a new Vite + <code>vike</code> app
+        Scaffold a new Vite + Vike app
       </CallToActionDescription>
       <ScaffoldCallToAction />
       <div style={{ width: 1, height: 1, margin: 12 }} />

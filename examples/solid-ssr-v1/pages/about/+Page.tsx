@@ -6,7 +6,7 @@ const Page: Component = () => {
     <>
       <h1>About</h1>
       <p>
-        Demo using <code>vike</code> with Solid.
+        Demo using Vike with Solid.
       </p>
     </>
   )

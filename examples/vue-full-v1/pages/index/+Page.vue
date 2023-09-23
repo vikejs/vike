@@ -1,5 +1,5 @@
 <template>
-  <h1>Welcome to <code>vike</code></h1>
+  <h1>Welcome to Vike</h1>
   This page is:
   <ul>
     <li>Rendered to HTML.</li>

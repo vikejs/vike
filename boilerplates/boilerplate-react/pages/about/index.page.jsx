@@ -7,7 +7,7 @@ function Page() {
     <>
       <h1>About</h1>
       <p>
-        Example of using <code>vike</code>.
+        Example of using Vike.
       </p>
     </>
   )

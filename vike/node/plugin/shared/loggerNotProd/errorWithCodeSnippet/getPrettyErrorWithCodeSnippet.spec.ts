@@ -50,7 +50,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
         9 │     <>
           ·      ─
        10 │       <h1>
-       11 │         Welcome to <code>vike</code>
+       11 │         Welcome to Vike
        12 │       <h1>
           ╰────
         × Unexpected token. Did you mean \`{'}'}\` or \`&rbrace;\`?
@@ -81,7 +81,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
       "Failed to transpile /pages/index/+Page.vue because:
       Element is missing end tag.
       1  |  <template>
-      2  |    <h1>Welcome to <code>vike</code><h1>
+      2  |    <h1>Welcome to Vike<h1>
          |                                                ^
       3  |    This page is:
       4  |    <ul>"

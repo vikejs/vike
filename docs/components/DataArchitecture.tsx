@@ -46,7 +46,7 @@ function DataRenderControl({
   return (
     <blockquote>
       <p>
-        With <code>vike</code> we keep control over our app architecture; we can integrate {toolEl}
+        With Vike we keep control over our app architecture; we can integrate {toolEl}
         {isGeneric ? ' we want' : ''} simply by following its SSR docs.
       </p>
       {toolDocs && (
