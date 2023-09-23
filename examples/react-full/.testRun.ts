@@ -15,7 +15,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
 
   test('page is rendered to the DOM and interactive', async () => {
     await page.goto(getServerUrl() + '/')
-    expect(await page.textContent('h1')).toBe('Welcome to vike')
+    expect(await page.textContent('h1')).toBe('Welcome to Vike')
 
     // Interactive button
     expect(await page.textContent('button')).toBe('Counter 0')

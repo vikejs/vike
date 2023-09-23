@@ -22,7 +22,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     }
     {
       const html = await fetchHtml('/stream')
-      expect(html).toContain('<title>HTML Streaming | vike</title>')
+      expect(html).toContain('<title>HTML Streaming | Vike</title>')
       expect(html).toContain('<h2 id="initial-data-after-stream-end">Initial data after stream end</h2>')
       expect(html).not.toContain('<meta name="description"')
     }
