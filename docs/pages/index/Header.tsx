@@ -29,7 +29,7 @@ function Logo() {
   return <img src={iconPlugin} />
 }
 function Title() {
-  return <code style={{ display: 'inline-block', padding: '0.17em 0.6em', borderRadius: 5 }}>vike</code>
+  return <span style={{ display: 'inline-block' }}>Vike</span>
 }
 function Tagline() {
   return <p id="header-tagline">Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
@@ -57,7 +57,7 @@ function LeftSide() {
 
 function RightSide() {
   return (
-    <div id="header-right-side" style={{ marginLeft: 40 }}>
+    <div id="header-right-side" style={{ marginLeft: 40, flexShrink: 0 }}>
       <CallToActionDescription style={{ marginTop: 0 }}>
         Scaffold a new Vite + <code>vike</code> app
       </CallToActionDescription>

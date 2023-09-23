@@ -9,7 +9,7 @@ function NavHeaderMobile() {
   return (
     <>
       <img src={logoUrl} height={LOGO_SIZE} width={LOGO_SIZE} />
-      <HeaderTitle fontSize={'1.25em'} marginLeft={5} />
+      <HeaderTitle fontSize={'1.55em'} marginLeft={6} />
     </>
   )
 }
@@ -19,23 +19,21 @@ function NavHeader() {
   return (
     <>
       <img src={logoUrl} height={LOGO_SIZE} width={LOGO_SIZE} />
-      <HeaderTitle fontSize={'1.55em'} marginLeft={10} />
+      <HeaderTitle fontSize={'2.55em'} marginLeft={10} />
     </>
   )
 }
 
 function HeaderTitle({ fontSize, marginLeft }: { fontSize: string; marginLeft: number }) {
   return (
-    <code
+    <span
       style={{
-        backgroundColor: '#f4f4f4',
-        borderRadius: 4,
         fontSize,
-        padding: '2px 5px',
-        marginLeft
+        marginLeft,
+        fontWeight: 600
       }}
     >
-      {'vike'}
-    </code>
+      Vike
+    </span>
   )
 }

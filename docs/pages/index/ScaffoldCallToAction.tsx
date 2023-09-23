@@ -41,7 +41,8 @@ function ScaffoldCallToAction() {
             borderRadius: 5,
             display: 'inline-block',
             color: 'black',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            width: 352
           }}
         >
           <span style={{ color: '#bbb' }}>$</span> npm init vike

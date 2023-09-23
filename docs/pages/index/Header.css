@@ -22,33 +22,7 @@
 #header-logo h1 {
   margin: 0;
   margin-left: 0.3em;
-  font-size: 2em;
-}
-@media screen and (min-width: 400px) {
-  #header-logo h1 {
-    font-size: 2.3em;
-  }
-}
-/* DocPress's Mobile/Tablet break point */
-@media screen and (max-width: 1139px) {
-  #header-logo h1 {
-    margin-left: 0 !important;
-  }
-}
-@media screen and (min-width: 1160px) {
-  #header-logo h1 {
-    font-size: 2.1em;
-  }
-}
-@media screen and (min-width: 1190px) {
-  #header-logo h1 {
-    font-size: 2.3em;
-  }
-}
-@media screen and (min-width: 1229px) {
-  #header-logo h1 {
-    font-size: 2.6em;
-  }
+  font-size: 4em;
 }
 
 :root {
