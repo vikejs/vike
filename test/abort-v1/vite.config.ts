@@ -8,7 +8,7 @@ export default {
     ssr({
       redirects: {
         '/permanent-redirect': '/',
-        '/external/*': 'https://vike.dev/*'
+        '/external/*': 'https://vite-plugin-ssr.com/*'
       }
     })
   ]

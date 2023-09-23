@@ -121,11 +121,11 @@ function testRun(cmd: string, pageContextInitHasClientData = false) {
     await page.goto(getServerUrl() + '/')
     await hydrationDone()
     await page.click('a[href="/redirect-external"]')
-    await page.waitForURL('https://vike.dev')
+    await page.waitForURL('https://vite-plugin-ssr.com')
   })
   test('external redirect - server-side', async () => {
     await page.goto(getServerUrl() + '/redirect-external')
-    await page.waitForURL('https://vike.dev')
+    await page.waitForURL('https://vite-plugin-ssr.com')
   })
 
   test('permanent external redirect', async () => {
@@ -137,6 +137,6 @@ function testRun(cmd: string, pageContextInitHasClientData = false) {
     await page.goto(getServerUrl() + '/')
     await hydrationDone()
     await page.click('a[href="/external/redirect"]')
-    await page.waitForURL('https://vike.dev/redirect')
+    await page.waitForURL('https://vite-plugin-ssr.com/redirect')
   })
 }
