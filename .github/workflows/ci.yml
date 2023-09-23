@@ -20,7 +20,7 @@ jobs:
     - id: getMatrix
       run: |
         matrix=`node ./.github/workflows/ci/getTestJobs.mjs --ci`
-        echo "::set-output name=matrix::$matrix"
+        echo "matrix=$matrix" >> $GITHUB_OUTPUT
     - run: echo ${{ steps.getMatrix.outputs.matrix }}
     outputs:
       matrix: ${{ steps.getMatrix.outputs.matrix }}
