@@ -25,9 +25,9 @@ function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | n
 function getProjectTag(showVikeVersion: boolean) {
   let projectTag: ProjectTag
   if (showVikeVersion) {
-    projectTag = `[${projectInfo.projectName}@${projectInfo.projectVersion}]`
+    projectTag = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]`
   } else {
-    projectTag = `[${projectInfo.projectName}]`
+    projectTag = `[${projectInfo.npmPackageName}]`
   }
   return projectTag
 }
@@ -87,7 +87,7 @@ function prependTags(msg: string, projectTag: '[vite]' | ProjectTag, category: L
     if (logType === 'error-recover' && !hasGreen(msg)) return pc.bold(pc.green(s))
     if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(s)
     if (projectTag === '[vite]') return pc.bold(pc.cyan(s))
-    if (projectTag.startsWith(`[${projectInfo.projectName}`)) return pc.bold(pc.cyan(s))
+    if (projectTag.startsWith(`[${projectInfo.npmPackageName}`)) return pc.bold(pc.cyan(s))
     assert(false)
   }
   let tag = color(`${projectTag}`)

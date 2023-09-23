@@ -10,7 +10,7 @@ type ProjectVersion = typeof projectInfo.projectVersion
 type ProjectTag = `[${PackageName}]` | `[${PackageName}@${ProjectVersion}]`
 
 const projectInfo = {
-  projectName: 'vike' as const,
+  projectName: 'Vike' as const,
   projectVersion: PROJECT_VERSION,
   npmPackageName: 'vike' as const,
   githubRepository: 'https://github.com/vikejs/vike' as const
