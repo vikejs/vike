@@ -1,3 +1,6 @@
+> [!NOTE]  
+> The [`vite-plugin-ssr`](https://vite-plugin-ssr.com/) project has been renamed Vike. See [migration guide](https://vite-plugin-ssr.com/vike).
+
 *Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.*
 
 **Introducion & documentation** :arrow_right: [vike.dev](https://vike.dev)
