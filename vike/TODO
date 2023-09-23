@@ -1,12 +1,6 @@
 - Vike rename
-  - npm package (create-)vike
-  - vike.dev
-  - add global note "vite-plugin-ssr has been renamed Vike (https://vike.dev)"
-  - create new Algolia account
   ====== later
   - vike-* packages
-  - twitter bio
-  - github sponsorship page
   - Vite Ecosystem CI
   ====== later
   - remove notes "Vike is the upcoming new name"
