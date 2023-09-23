@@ -17,11 +17,7 @@ export default {
   titleNormalCase: false,
   twitterHandle: '@brillout',
   websiteUrl: 'https://vike.dev',
-  algolia: {
-    appId: 'MUXG1ZE9F6',
-    apiKey: '8d5986fca9ba9110bcbbfc51263de88b',
-    indexName: 'vite-pluginssr'
-  },
+  algolia: { PENDING_APPROVAL: true },
   bannerUrl: 'https://vike.dev/banner.png',
   i18n: true
 } satisfies Config
