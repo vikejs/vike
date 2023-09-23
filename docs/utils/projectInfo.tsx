@@ -1,10 +1,7 @@
 const PROJECT_VERSION = '0.4.142'
 
-import React from 'react'
-
 export const projectInfo = {
-  projectName: 'vike' as const,
-  projectNameJsx: Vike,
+  projectName: 'Vike' as const,
   projectVersion: PROJECT_VERSION,
   githubRepository: 'https://github.com/vikejs/vike' as const,
   githubIssues: 'https://github.com/vikejs/vike/issues/new' as const,

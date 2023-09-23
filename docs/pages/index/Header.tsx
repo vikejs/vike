@@ -59,7 +59,7 @@ function RightSide() {
   return (
     <div id="header-right-side" style={{ marginLeft: 40, flexShrink: 0 }}>
       <CallToActionDescription style={{ marginTop: 0 }}>
-        Scaffold a new Vite + Vike app
+        Scaffold a new Vike app
       </CallToActionDescription>
       <ScaffoldCallToAction />
       <div style={{ width: 1, height: 1, margin: 12 }} />
@@ -72,7 +72,7 @@ function TourCallToAction({ style }: { style?: React.CSSProperties }) {
   return (
     <div style={style}>
       <CallToActionDescription>
-        Explore how it's like to use <code style={{ whiteSpace: 'nowrap' }}>vike</code>
+        Explore how it's like to use Vike
       </CallToActionDescription>
       <div
         style={{

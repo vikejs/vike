@@ -195,7 +195,7 @@ function initGitRepo(cwd) {
         '-c user.email="vike@brillout.com"',
         'commit',
         '--no-gpg-sign',
-        '--message="boilerplate Vite w/ vike"'
+        '--message="Scaffold Vike app"'
       ].join(' '),
       { cwd, stdio: 'ignore' }
     )

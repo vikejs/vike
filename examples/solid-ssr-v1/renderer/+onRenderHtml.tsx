@@ -14,7 +14,7 @@ function onRenderHtml(pageContext: PageContext) {
   // See https://vike.dev/head
   const { documentProps } = pageContext
   const title = (documentProps && documentProps.title) || 'Vite SSR app'
-  const description = (documentProps && documentProps.description) || 'App using Vite + vike'
+  const description = (documentProps && documentProps.description) || 'App using Vite + Vike'
 
   return escapeInject`<!DOCTYPE html>
     <html lang="en">
