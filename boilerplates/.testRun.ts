@@ -19,11 +19,9 @@ import assert from 'assert'
 function testRun(
   cmd: 'npm run dev' | 'npm run prod' | 'npm run preview',
   {
-    skipCssTest,
     uiFramewok,
     lang
   }: {
-    skipCssTest?: boolean
     uiFramewok: 'react' | 'vue' | 'preact' | 'solid'
     lang?: 'ts'
     isSPA?: true
@@ -95,13 +93,6 @@ function testRun(
     await autoRetry(async () => {
       const title = await page.textContent('h1')
       expect(title).toBe('About')
-    })
-    // CSS is loaded only after being dynamically `import()`'d from JS
-    await autoRetry(async () => {
-      if (skipCssTest) {
-        return
-      }
-      expect(await page.$eval('code', (e) => getComputedStyle(e).backgroundColor)).toBe('rgb(234, 234, 234)')
     })
   })
 

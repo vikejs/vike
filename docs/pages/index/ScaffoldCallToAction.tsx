@@ -57,7 +57,7 @@ function CallToActionDescription({
   style
 }: {
   style?: React.CSSProperties
-  children: (string | JSX.Element)[]
+  children: React.ReactNode
 }) {
   return <p style={{ marginBottom: 5, color: 'inherit', opacity: 0.7, fontSize: '0.92em', ...style }}>{children}</p>
 }
