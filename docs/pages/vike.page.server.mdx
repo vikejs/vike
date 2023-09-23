@@ -10,14 +10,15 @@ The vike project has been renamed to Vike ([vike.dev](https://vike.dev/)).
 
 Functionally, nothing changes: it's just a new name for the same tool.
 
-There are no breaking changes, although, starting from version `0.4.142` you'll have to use the [npm package `vike`](https://www.npmjs.com/package/vike) instead of the [npm package `vite-plugin-ssr`](https://www.npmjs.com/package/vite-plugin-ssr). We recommend applying following find-and-replace bash script:
-```bash
-grep ike --exclude-dir node_modules/ --exclude-dir .git/ | xargs sed -i 's/ike/ike/g'
-```
+There are no breaking changes, although
+ - Starting from version `0.4.142` you'll have to use the [npm package `vike`](https://www.npmjs.com/package/vike) instead of the [npm package `vite-plugin-ssr`](https://www.npmjs.com/package/vite-plugin-ssr). We recommend applying following find-and-replace bash script:
+   ```bash
+   grep ike --exclude-dir node_modules/ --exclude-dir .git/ | xargs sed -i 's/ike/ike/g'
+   ```
+   This should do the trick for most users.
 
-This should do the trick for most users.
-
-> Let us know if this bash script doesn't work out for you.
+   > Let us know if this bash script doesn't work out for you.
+ - If you use [`vike-react`](https://github.com/vikejs/vike-react)/[`vike-vue`](https://github.com/vikejs/vike-vue)/[`vike-solid`](https://github.com/magne4000/vike-solid) then update it to the latest version.
 
 For more information about the rename see [#736](https://github.com/vikejs/vike/issues/736).
 </Comment>
