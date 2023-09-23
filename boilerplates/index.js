@@ -45,7 +45,7 @@ async function init() {
       type: 'input',
       name: 'name',
       message: `Project name:`,
-      initial: 'vite-ssr-project'
+      initial: 'vike-app'
     })
     targetDir = name
   }
