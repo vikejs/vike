@@ -2,7 +2,7 @@ import type { Config } from '@brillout/docpress'
 import { headings } from './headings'
 import { headingsDetached } from './headingsDetached'
 import { projectInfo } from './utils'
-import faviconUrl from './images/icons/vike.svg'
+import faviconUrl from './images/icons/vike-favicon.svg'
 import React from 'react'
 import { NavHeader, NavHeaderMobile } from './NavHeader'
 
@@ -13,7 +13,7 @@ export default {
   navHeaderMobile: <NavHeaderMobile />,
   headings,
   headingsDetached,
-  tagline: 'Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.',
+  tagline: 'Next Geenration Frontend Framework',
   titleNormalCase: false,
   twitterHandle: '@brillout',
   websiteUrl: 'https://vike.dev',

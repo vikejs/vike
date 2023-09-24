@@ -12,7 +12,7 @@ import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import './index/Header.css'
-import iconPlugin from '../images/icons/vike.svg'
+import iconPlugin from '../images/icons/vike-vertical.svg'
 import '@brillout/docpress/renderer/_default.page.client.css'
 import '@brillout/docpress/renderer/_default.page.server.css'
 
@@ -31,21 +31,25 @@ function Design2() {
     <>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
         <div style={{ display: 'flex', alignItems: 'start' }}>
-          <img width="260" src={iconPlugin} style={{ marginRight: 80, marginTop: 59 }} />
+          <img height="320" src={iconPlugin} style={{ marginRight: 80, marginTop: 0 }} />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div>
-              <span style={{ fontSize: '10.3em', display: 'inline-block', verticalAlign: 'middle' }}>
-                <span style={{ display: 'inline-block' }}>Vike</span>
+              <span
+                style={{
+                  fontSize: '8.8em',
+                  display: 'inline-block',
+                  verticalAlign: 'middle',
+                  fontWeight: 500,
+                  lineHeight: '1.1em',
+                }}
+              >
+                Vike
               </span>
             </div>
-            <div style={{ fontSize: '2.0em', paddingLeft: 4, paddingTop: 0, paddingBottom: 0 }}>
-              <p id="header-tagline">
-                Like Next.js/Nuxt but as
-                <br />
-                do-one-thing-do-it-well
-                <br />
-                Vite plugin.
-              </p>
+            <div style={{ fontSize: '4.2em', paddingLeft: 4, paddingTop: 0, paddingBottom: 0, lineHeight: '1.2em' }}>
+              Next Generation
+              <br />
+              Frontend Framework
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import React from 'react'
 import './Header.css'
-import iconPlugin from '../../images/icons/vike.svg'
+import iconVike from '../../images/icons/vike-vertical.svg'
 import iconReact from '../../images/icons/react.svg'
 import iconVue from '../../images/icons/vue.svg'
 import { HorizontalLine } from '@brillout/docpress'
@@ -20,13 +20,6 @@ function Header() {
   )
 }
 
-function Logo() {
-  return <img src={iconPlugin} />
-}
-function Tagline() {
-  return <p id="header-tagline">Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
-}
-
 function LeftSide() {
   return (
     <div id="header-left-side">
@@ -37,12 +30,12 @@ function LeftSide() {
           alignItems: 'center'
         }}
       >
-        <Logo />
-        <h1>
-          <span style={{ display: 'inline-block' }}>Vike</span>
-        </h1>
+        <img src={iconVike} />
+        <div>
+          <h1>Vike</h1>
+          <p id="header-tagline">Next Generation<br/>Frontend Framework</p>
+        </div>
       </div>
-      <Tagline />
     </div>
   )
 }

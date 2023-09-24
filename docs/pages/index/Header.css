@@ -21,8 +21,11 @@
 }
 #header-logo h1 {
   margin: 0;
-  margin-left: 0.3em;
   font-size: 4em;
+}
+#header-logo h1,
+#header-logo p {
+  margin-left: 20px;
 }
 
 :root {
@@ -54,7 +57,7 @@
     margin-bottom: 10px;
   }
   #header-logo img {
-    height: 90px;
+    height: 160px;
     margin-right: 20;
   }
   #header-tagline {
