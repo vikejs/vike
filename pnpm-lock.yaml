@@ -239,8 +239,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.5.11
-        version: 0.5.11(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.27.2)
+        specifier: ^0.5.12
+        version: 0.5.12(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.27.2)
       '@types/node':
         specifier: ^15.12.1
         version: 15.14.9
@@ -3262,8 +3262,8 @@ packages:
       - terser
     dev: false
 
-  /@brillout/docpress@0.5.11(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.27.2):
-    resolution: {integrity: sha512-Y2D86HnrKzYg+j3avS4KivVWWtzJSD+xDtoDk5jYR9GOiiUPFmqUjO/InhjRkyGYHeiqF8CZQJ6SFbz1ZPL+Kg==}
+  /@brillout/docpress@0.5.12(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.27.2):
+    resolution: {integrity: sha512-bqVE8gqnTZFSoccKhQHeZ4sARGUXakccdxDmaFg6fRelqmwBXhpM/13Lj1mcOX+67xBSNssi383fSQNjtbaMSQ==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -3281,14 +3281,13 @@ packages:
       remark-gfm: 3.0.1
       shiki: 0.10.1
       twemoji: 13.1.1
+      vike: link:vike
       vite: 4.4.9(@types/node@15.14.9)
-      vite-plugin-ssr: 0.4.142(vite@4.4.9)
     transitivePeerDependencies:
       - '@swc/helpers'
       - '@types/node'
       - less
       - lightningcss
-      - react-streaming
       - rollup
       - sass
       - stylus
@@ -4804,7 +4803,7 @@ packages:
       rollup: 3.27.2
     dev: false
 
-  /@rollup/pluginutils@5.0.4:
+  /@rollup/pluginutils@5.0.4(rollup@3.27.2):
     resolution: {integrity: sha512-0KJnIoRI8A+a1dqOYLxH8vBf8bphDmty5QvIm2hqm7oFCFYKCAZWWd2hXgMibaPsNDhI0AtpYfQZJG47pt/k4g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -4816,6 +4815,7 @@ packages:
       '@types/estree': 1.0.1
       estree-walker: 2.0.2
       picomatch: 2.3.1
+      rollup: 3.27.2
     dev: false
 
   /@sinclair/typebox@0.27.8:
@@ -12929,7 +12929,7 @@ packages:
       '@mdit-vue/plugin-component': 0.12.1
       '@mdit-vue/plugin-frontmatter': 0.12.1
       '@mdit-vue/types': 0.12.0
-      '@rollup/pluginutils': 5.0.4
+      '@rollup/pluginutils': 5.0.4(rollup@3.27.2)
       '@types/markdown-it': 13.0.1
       markdown-it: 13.0.1
       unplugin: 1.4.0
@@ -12946,7 +12946,7 @@ packages:
       '@mdit-vue/plugin-component': 0.12.1
       '@mdit-vue/plugin-frontmatter': 0.12.1
       '@mdit-vue/types': 0.12.0
-      '@rollup/pluginutils': 5.0.4
+      '@rollup/pluginutils': 5.0.4(rollup@3.27.2)
       '@types/markdown-it': 13.0.1
       markdown-it: 13.0.1
       unplugin: 1.4.0
@@ -13321,32 +13321,6 @@ packages:
       sirv: 2.0.3
       source-map-support: 0.5.21
       vite: 4.3.9
-    dev: false
-
-  /vite-plugin-ssr@0.4.142(vite@4.4.9):
-    resolution: {integrity: sha512-ZDgpocnTEUmhYxGgMah8ZNK1Sfy5CFVcdXu+Ll3zRtGIPyWT5vYvASs2BLYEneqantHpde2b31Khzb0hxmP62w==}
-    engines: {node: '>=16.0.0'}
-    hasBin: true
-    peerDependencies:
-      react-streaming: '>=0.3.5'
-      vite: '>=3.1.0'
-    peerDependenciesMeta:
-      react-streaming:
-        optional: true
-    dependencies:
-      '@brillout/import': 0.2.3
-      '@brillout/json-serializer': 0.5.6
-      '@brillout/picocolors': 1.0.9
-      '@brillout/require-shim': 0.1.2
-      '@brillout/vite-plugin-import-build': 0.2.18
-      acorn: 8.9.0
-      cac: 6.7.14
-      es-module-lexer: 1.3.0
-      esbuild: 0.17.18
-      fast-glob: 3.2.12
-      sirv: 2.0.3
-      source-map-support: 0.5.21
-      vite: 4.4.9(@types/node@15.14.9)
     dev: false
 
   /vite@4.0.3:
