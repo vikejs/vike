@@ -9,11 +9,6 @@ import { CallToActionDescription, ScaffoldCallToAction } from './ScaffoldCallToA
 export { Header }
 export { MobileCallToAction }
 
-// For `/banner`
-export { Logo }
-export { Title }
-//export { Tagline }
-
 function Header() {
   return (
     <>
@@ -27,9 +22,6 @@ function Header() {
 
 function Logo() {
   return <img src={iconPlugin} />
-}
-function Title() {
-  return <span style={{ display: 'inline-block' }}>Vike</span>
 }
 function Tagline() {
   return <p id="header-tagline">Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
@@ -47,7 +39,7 @@ function LeftSide() {
       >
         <Logo />
         <h1>
-          <Title />
+          <span style={{ display: 'inline-block' }}>Vike</span>
         </h1>
       </div>
       <Tagline />
@@ -58,9 +50,7 @@ function LeftSide() {
 function RightSide() {
   return (
     <div id="header-right-side" style={{ marginLeft: 40, flexShrink: 0 }}>
-      <CallToActionDescription style={{ marginTop: 0 }}>
-        Scaffold a new Vike app
-      </CallToActionDescription>
+      <CallToActionDescription style={{ marginTop: 0 }}>Scaffold a new Vike app</CallToActionDescription>
       <ScaffoldCallToAction />
       <div style={{ width: 1, height: 1, margin: 12 }} />
       <TourCallToAction />
@@ -71,9 +61,7 @@ function RightSide() {
 function TourCallToAction({ style }: { style?: React.CSSProperties }) {
   return (
     <div style={style}>
-      <CallToActionDescription>
-        Explore how it's like to use Vike
-      </CallToActionDescription>
+      <CallToActionDescription>Explore how it's like to use Vike</CallToActionDescription>
       <div
         style={{
           display: 'grid',

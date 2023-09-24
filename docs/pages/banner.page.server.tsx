@@ -11,7 +11,7 @@ export { Design2 as Page }
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import { Title } from './index/Header'
+import './index/Header.css'
 import iconPlugin from '../images/icons/vike.svg'
 import '@brillout/docpress/renderer/_default.page.client.css'
 import '@brillout/docpress/renderer/_default.page.server.css'
@@ -31,14 +31,14 @@ function Design2() {
     <>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
         <div style={{ display: 'flex', alignItems: 'start' }}>
-          <img width="260" src={iconPlugin} style={{ marginRight: 60, marginTop: 19 }} />
+          <img width="260" src={iconPlugin} style={{ marginRight: 80, marginTop: 59 }} />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div>
-              <span style={{ fontSize: '5.3em', display: 'inline-block', verticalAlign: 'middle' }}>
-                <Title />
+              <span style={{ fontSize: '10.3em', display: 'inline-block', verticalAlign: 'middle' }}>
+                <span style={{ display: 'inline-block' }}>Vike</span>
               </span>
             </div>
-            <div style={{ fontSize: '2.0em', paddingLeft: 4, paddingTop: 26, paddingBottom: 0 }}>
+            <div style={{ fontSize: '2.0em', paddingLeft: 4, paddingTop: 0, paddingBottom: 0 }}>
               <p id="header-tagline">
                 Like Next.js/Nuxt but as
                 <br />
@@ -63,7 +63,7 @@ function Design1() {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div>
               <span style={{ fontSize: '5.2em', display: 'inline-block', verticalAlign: 'middle' }}>
-                <Title />
+                <span style={{ display: 'inline-block' }}>Vike</span>
               </span>
             </div>
             <div style={{ fontSize: '2.1em', paddingTop: 20, paddingBottom: 20 }}>
