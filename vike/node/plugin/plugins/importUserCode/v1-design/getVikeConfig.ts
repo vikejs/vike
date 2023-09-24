@@ -1273,6 +1273,10 @@ function handleUnknownConfig(configName: string, configNames: string[], definedB
         'P'
       )} because it usually defines a UI component: a ubiquitous JavaScript convention is to start the name of UI components with a capital letter.)`
     }
+  } else {
+    errMsg += `, you need to define the config ${pc.cyan(configName)} by using ${pc.cyan(
+      'config.meta'
+    )} https://vike.dev/meta`
   }
   assertUsage(false, errMsg)
 }
