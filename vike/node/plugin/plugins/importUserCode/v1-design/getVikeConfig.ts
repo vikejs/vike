@@ -1264,15 +1264,15 @@ function handleUnknownConfig(configName: string, configNames: string[], definedB
   } else {
     configNameSimilar = getMostSimilar(configName, configNames)
   }
-  if (configNameSimilar) {
+  if (configNameSimilar || configName === 'page') {
+    assert(configNameSimilar)
     assert(configNameSimilar !== configName)
     errMsg += `, did you mean to define ${pc.cyan(configNameSimilar)} instead?`
-  }
-  if (configName === 'page') {
-    assert(configNameSimilar === 'Page')
-    errMsg += ` (The name of the config ${pc.cyan('Page')} starts with a capital letter ${pc.cyan(
-      'P'
-    )} because it usually defines a UI component: a ubiquitous JavaScript convention is to start the name of UI components with a capital letter.)`
+    if (configName === 'page') {
+      errMsg += ` (The name of the config ${pc.cyan('Page')} starts with a capital letter ${pc.cyan(
+        'P'
+      )} because it usually defines a UI component: a ubiquitous JavaScript convention is to start the name of UI components with a capital letter.)`
+    }
   }
   assertUsage(false, errMsg)
 }
