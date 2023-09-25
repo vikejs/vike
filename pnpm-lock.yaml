@@ -1853,6 +1853,36 @@ importers:
         specifier: ^4.3.8
         version: 4.3.8
 
+  examples/vike-react-min:
+    dependencies:
+      '@types/react':
+        specifier: ^18.0.8
+        version: 18.2.22
+      '@types/react-dom':
+        specifier: ^18.0.3
+        version: 18.2.7
+      '@vitejs/plugin-react':
+        specifier: ^4.0.0
+        version: 4.0.4(vite@4.4.9)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      typescript:
+        specifier: ^5.0.2
+        version: 5.2.2
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vike-react:
+        specifier: ^0.3.0
+        version: 0.3.0(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@4.4.9)
+      vite:
+        specifier: ^4.3.8
+        version: 4.4.9(@types/node@20.6.3)
+
   examples/vike-react-simple:
     dependencies:
       '@vitejs/plugin-react':
@@ -3385,7 +3415,7 @@ packages:
       chai: 4.3.7
       esbuild: 0.16.17
       fast-glob: 3.2.12
-      node-fetch: 2.6.11
+      node-fetch: 2.7.0
       picocolors: 1.0.0
       pixelmatch: 5.3.0
       playwright-chromium: 1.33.0
@@ -10418,6 +10448,7 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
+    dev: false
 
   /node-fetch@2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
@@ -10453,7 +10484,6 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
-    dev: false
 
   /node-fetch@3.3.1:
     resolution: {integrity: sha512-cRVc/kyto/7E5shrWca1Wsea4y6tL9iYJE5FBCius3JQfb/4P4I295PfhgbJQBLTx6lATE4z+wK0rPM4VS2uow==}
@@ -13175,6 +13205,20 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       vike: link:vike
       vite: 4.3.8
+    dev: false
+
+  /vike-react@0.3.0(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@4.4.9):
+    resolution: {integrity: sha512-7WuUkA4ECy7vZlEHxfPykyCUGOG/1RqP8i24ydbR11yMvmGBg6uELDYhH9miyE+YGgwEgAfFbvw/NhAolf9c7w==}
+    peerDependencies:
+      react: 18.x.x
+      react-dom: 18.x.x
+      vike: ^0.4.142
+      vite: ^4.3.8
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      vike: link:vike
+      vite: 4.4.9(@types/node@20.6.3)
     dev: false
 
   /vite-node@0.34.1(@types/node@20.6.3):
