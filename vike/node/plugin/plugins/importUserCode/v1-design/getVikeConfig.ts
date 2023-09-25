@@ -10,7 +10,6 @@ import {
   assertUsage,
   toPosixPath,
   assertWarning,
-  addFileExtensionsToRequireResolve,
   assertDefaultExportUnknown,
   assertDefaultExportObject,
   objectEntries,
@@ -23,7 +22,8 @@ import {
   joinEnglish,
   lowerFirst,
   scriptFileExtensions,
-  mergeCumulativeValues
+  mergeCumulativeValues,
+  resolve
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -65,11 +65,7 @@ import {
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.js'
 import pc from '@brillout/picocolors'
-import { createRequire } from 'module'
 import { getConfigDefinedAtString } from '../../../../../shared/page-configs/utils.js'
-// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
-const importMetaUrl: string = import.meta.url
-const require_ = createRequire(importMetaUrl)
 
 assertIsNotProductionRuntime()
 
@@ -1334,18 +1330,9 @@ function determineIsErrorPage(routeFilesystem: string) {
 function resolveImport(importData: ImportData, importerFilePath: FilePath): string {
   const { filePathAbsolute } = importerFilePath
   assertPosixPath(filePathAbsolute)
-  let plusConfigFilDirPathAbsolute = path.posix.dirname(filePathAbsolute)
-  const clean = addFileExtensionsToRequireResolve()
-  let importedFile: string | null
-  try {
-    importedFile = require_.resolve(importData.importFilePath, { paths: [plusConfigFilDirPathAbsolute] })
-  } catch {
-    importedFile = null
-  } finally {
-    clean()
-  }
+  const plusConfigFilDirPathAbsolute = path.posix.dirname(filePathAbsolute)
+  const importedFile = resolve(importData.importFilePath, plusConfigFilDirPathAbsolute)
   assertImport(importedFile, importData, importerFilePath)
-  importedFile = toPosixPath(importedFile)
   return importedFile
 }
 function assertImport(
