@@ -19,9 +19,9 @@ export default {
   websiteUrl: 'https://vike.dev',
   algolia: {
     PENDING_APPROVAL: true,
-    appId: '9I3TIPWD8C',
-    apiKey: '62a6bb4f96d3cc479e9cee43b1a02ea9',
-    indexName: 'vike.dev'
+    appId: 'YMV9Y4B58S',
+    apiKey: '9ac178c1a29ba00e8afb98365015f677',
+    indexName: 'vike'
   },
   bannerUrl: 'https://vike.dev/banner.png',
   i18n: true
