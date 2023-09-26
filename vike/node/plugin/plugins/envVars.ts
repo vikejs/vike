@@ -2,7 +2,14 @@ export { envVarsPlugin }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
-import { assert, assertPosixPath, assertUsage, assertWarning, getFilePathVite, lowerFirst } from '../utils.js'
+import {
+  assert,
+  assertPosixPath,
+  assertUsage,
+  assertWarning,
+  getFilePathRelativeToUserRootDir,
+  lowerFirst
+} from '../utils.js'
 
 function envVarsPlugin(): Plugin {
   let envsAll: Record<string, string>
@@ -44,12 +51,10 @@ function envVarsPlugin(): Plugin {
           const isPrivate = !key.startsWith(publicPrefix)
           if (isPrivate && isClientSide) {
             if (!code.includes(varName)) return
-            const filePathVite = getFilePathVite(id, config.root)
-            const errMsgAddendum = isBuild
-              ? ''
-              : ' (vike will prevent your app from building for production)'
+            const filePathToShowToUser = getFilePathRelativeToUserRootDir(id, config.root)
+            const errMsgAddendum = isBuild ? '' : ' (vike will prevent your app from building for production)'
             const errMsg =
-              `${varName} used in ${filePathVite} and therefore included in client-side bundle which can be be a security leak${errMsgAddendum}, remove ${varName} or rename ${key} to ${keyPublic}, see https://vike.dev/env` as const
+              `${varName} used in ${filePathToShowToUser} and therefore included in client-side bundle which can be be a security leak${errMsgAddendum}, remove ${varName} or rename ${key} to ${keyPublic}, see https://vike.dev/env` as const
             if (isBuild) {
               assertUsage(false, errMsg)
             } else {

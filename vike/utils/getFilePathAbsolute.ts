@@ -1,5 +1,5 @@
 export { getFilePathAbsolute }
-export { getFilePathVite }
+export { getFilePathRelativeToUserRootDir }
 
 import type { ResolvedConfig } from 'vite'
 import { assertPosixPath, toPosixPath } from './filesystemPathHandling.js'
@@ -47,18 +47,23 @@ function getFilePathAbsolute(filePath: string, config: ResolvedConfig): string {
   return filePathAbsolute
 }
 
-function getFilePathVite(filePath: string, userRootDir: string, alwaysRelativeToRoot = false): string {
-  assertPosixPath(filePath)
+function getFilePathRelativeToUserRootDir(
+  filePathAbsolute: string,
+  userRootDir: string,
+  alwaysRelative = false
+): string {
+  assertPosixPath(filePathAbsolute)
   assertPosixPath(userRootDir)
-  const filePathRelativeToRoot = path.posix.relative(userRootDir, filePath)
-  if (!filePath.startsWith(userRootDir)) {
-    if (alwaysRelativeToRoot) {
-      return filePathRelativeToRoot
+  let filePathRelativeToUserRootDir = path.posix.relative(userRootDir, filePathAbsolute)
+  if (filePathAbsolute.startsWith(userRootDir)) {
+    assert(!filePathRelativeToUserRootDir.startsWith('.') && !filePathRelativeToUserRootDir.startsWith('/'))
+    filePathRelativeToUserRootDir = `/${filePathRelativeToUserRootDir}`
+    return filePathRelativeToUserRootDir
+  } else {
+    if (alwaysRelative) {
+      return filePathRelativeToUserRootDir
     } else {
-      return filePath
+      return filePathAbsolute
     }
   }
-  assert(!filePathRelativeToRoot.startsWith('.') && !filePathRelativeToRoot.startsWith('/'))
-  const filePathVite = `/${filePathRelativeToRoot}`
-  return filePathVite
 }

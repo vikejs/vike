@@ -9,7 +9,7 @@ import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
 import {
   assert,
   assertPosixPath,
-  getFilePathVite,
+  getFilePathRelativeToUserRootDir,
   getVirtualFileId,
   isDev1,
   isDev1_onConfigureServer,
@@ -143,7 +143,7 @@ function reloadConfig(
   op: 'modified' | 'created' | 'removed'
 ) {
   {
-    const filePathToShowToUser = pc.dim(getFilePathVite(filePath, config.root, true))
+    const filePathToShowToUser = pc.dim(getFilePathRelativeToUserRootDir(filePath, config.root, true))
     const msg = `${op} ${filePathToShowToUser}`
     logConfigInfo(msg, 'info')
   }
