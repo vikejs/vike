@@ -6,7 +6,7 @@
 //  - Chrome will generate a 2600x1300 PNG
 
 export { render }
-export { Design2 as Page }
+export { Page }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import React from 'react'
@@ -26,13 +26,13 @@ function render(pageContext: PageContext) {
   return escapeInject`<html><body><div>${dangerouslySkipEscape(pageHtml)}</div></body></html>`
 }
 
-function Design2() {
+function Page() {
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-        <div style={{ display: 'flex', alignItems: 'start' }}>
-          <img height="320" src={iconPlugin} style={{ marginRight: 80, marginTop: 0 }} />
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', height: 320 }}>
+          <img src={iconPlugin} style={{ marginRight: 50, marginTop: 0, height: '100%' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', height: '100%' }}>
             <div>
               <span
                 style={{
@@ -40,7 +40,7 @@ function Design2() {
                   display: 'inline-block',
                   verticalAlign: 'middle',
                   fontWeight: 500,
-                  lineHeight: '1.1em',
+                  lineHeight: '1.1em'
                 }}
               >
                 Vike
