@@ -33,7 +33,7 @@ function LeftSide() {
         <img src={iconVike} />
         <div>
           <h1>Vike</h1>
-          <p id="header-tagline">Next Generation<br/>Frontend Framework</p>
+          <p id="header-tagline">Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
         </div>
       </div>
     </div>

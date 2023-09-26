@@ -11,7 +11,7 @@ const headings = [
   {
     level: 2,
     title: 'Introduction',
-    titleDocument: 'Vike | Next Generation Frontend Framework',
+    titleDocument: 'Vike',
     url: '/'
   },
   {
