@@ -57,31 +57,3 @@ function Page() {
     </>
   )
 }
-
-function Design1() {
-  return (
-    <>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-        <div style={{ display: 'flex' }}>
-          <img width="180" src={iconPlugin} style={{ verticalAlign: 'middle', marginRight: 20 }} />
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div>
-              <span style={{ fontSize: '5.2em', display: 'inline-block', verticalAlign: 'middle' }}>
-                <span style={{ display: 'inline-block' }}>Vike</span>
-              </span>
-            </div>
-            <div style={{ fontSize: '2.1em', paddingTop: 20, paddingBottom: 20 }}>
-              <p id="header-tagline">
-                Like Next.js/Nuxt but as
-                <br />
-                do-one-thing-do-it-well
-                <br />
-                Vite plugin.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  )
-}
