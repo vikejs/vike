@@ -13,7 +13,7 @@ export default {
   navHeaderMobile: <NavHeaderMobile />,
   headings,
   headingsDetached,
-  tagline: 'Next Geenration Frontend Framework',
+  tagline: 'Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.',
   titleNormalCase: false,
   twitterHandle: '@brillout',
   websiteUrl: 'https://vike.dev',
