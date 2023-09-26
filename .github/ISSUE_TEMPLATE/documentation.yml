@@ -1,7 +1,0 @@
-name: "📚 Documentation"
-description: Ask for (improved) documentation.
-labels: ["docs :memo:"]
-body:
-  - type: textarea
-    attributes:
-      label: Description
