@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
-  - name: "🙏 Help & Questions (GitHub Discussions)"
+  - name: "🙏 Help & Questions"
     url: https://github.com/vikejs/vike/discussions/new?category=help-questions
-    about: Get official help and answers from maintainers.
-  - name: "🗨️ Other (GitHub Discussions)"
+    about: [GitHub Discussions] Get official help and answers from maintainers.
+  - name: "🗨️ Other"
     url: https://github.com/vikejs/vike/discussions/new?category=other
-    about: Ideas, complaints, show-and-tell, ...
+    about: [GitHub Discussions] Ideas, complaints, show-and-tell, ...
   - name: "💬 Chit-chat (Discord)"
     url: https://discord.com/invite/hfHhnJyVg8
-    about: Casual conversation with the community about Vike and broader Software Engineering topics.
+    about: [Discord] Casual conversation with the community about Vike and broader Software Engineering topics.
