@@ -11,17 +11,15 @@
 #mobile-call-to-action {
   display: none;
 }
-@media screen and (max-width: 1159px) {
-  #header-right-side {
-    display: none;
-  }
-  #mobile-call-to-action {
-    display: block;
-  }
+#header-logo {
+  display: flex;
+  align-items: center;
 }
 #header-logo h1 {
   margin: 0;
   font-size: 4em;
+  line-height: 1.1em;
+  margin-bottom: 8px;
 }
 #header-logo h1,
 #header-logo p {
@@ -33,9 +31,23 @@
 }
 #header {
   display: flex;
+  align-items: center;
   margin: auto;
   max-width: var(--header-max-width);
   padding: var(--header-padding) 0px;
+}
+#header-logo img {
+  height: 160px;
+  margin-right: 6px;
+}
+@media screen and (max-width: 719px) {
+  #header-logo {
+    flex-direction: column;
+    text-align: center;
+  }
+  #header-logo img {
+    display: none;
+  }
 }
 @media screen and (min-width: 720px) {
   :root {
@@ -52,21 +64,20 @@
     padding-top: 30px;
     padding-bottom: 30px;
   }
-  #header-logo {
-    padding-bottom: 20px;
-    margin-bottom: 10px;
-  }
-  #header-logo img {
-    height: 160px;
-    margin-right: 20;
-  }
   #header-tagline {
-    font-size: 2em;
+    font-size: 1.5em;
     padding: 0;
     margin: 0;
+    max-width: 400px;
   }
 }
 @media screen and (max-width: 1159px) {
+  #header-right-side {
+    display: none;
+  }
+  #mobile-call-to-action {
+    display: block;
+  }
   :root {
     --header-padding: 10px;
   }
@@ -75,28 +86,13 @@
     padding-bottom: 20px;
     justify-content: center;
   }
-  #header-left-side {
-    max-width: 400px;
-  }
   .header-separator-line {
     padding-top: 15px;
     padding-bottom: 15px;
   }
   #header-logo {
-    padding-bottom: 20px;
+    padding-top: 20px;
+    padding-bottom: 0px;
     margin-bottom: 0px;
-  }
-  #header-logo {
-    flex-direction: column;
-  }
-  #header-logo img {
-    height: 160px;
-    margin-bottom: 20px;
-  }
-  #header-tagline {
-    font-size: 1.3em;
-    padding: 0;
-    margin: 0;
-    text-align: center;
   }
 }

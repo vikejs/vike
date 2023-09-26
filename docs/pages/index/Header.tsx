@@ -23,13 +23,7 @@ function Header() {
 function LeftSide() {
   return (
     <div id="header-left-side">
-      <div
-        id="header-logo"
-        style={{
-          display: 'flex',
-          alignItems: 'center'
-        }}
-      >
+      <div id="header-logo">
         <img src={iconVike} />
         <div>
           <h1>Vike</h1>
