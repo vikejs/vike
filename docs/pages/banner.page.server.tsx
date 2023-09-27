@@ -29,7 +29,14 @@ function render(pageContext: PageContext) {
 function Page() {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-      <div style={{ display: 'flex', height: 320 }}>
+      <div
+        style={{
+          display: 'flex',
+          height: 320,
+          // Needs to have the right size upon 1300x650 (that's the viewport we use to generate banner.png as explained in the HOW-TO above)
+          scale: '1.2'
+        }}
+      >
         <img src={iconPlugin} style={{ marginRight: 50, marginTop: 0, height: '100%' }} />
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', height: '100%' }}>
           <div>
