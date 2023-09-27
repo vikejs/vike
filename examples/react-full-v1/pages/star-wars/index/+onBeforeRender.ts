@@ -1,9 +1,9 @@
 // https://vike.dev/onBeforeRender
-export default onBeforeRender
 
+import type { Config } from 'vike/types'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
 
-async function onBeforeRender() {
+const onBeforeRender: Config['onBeforeRender'] = async () => {
   await sleep(700) // Simulate slow network
   const movies = await getStarWarsMovies()
   return {
@@ -18,6 +18,7 @@ async function onBeforeRender() {
     }
   }
 }
+export default onBeforeRender
 
 function sleep(milliseconds: number): Promise<void> {
   return new Promise((r) => setTimeout(r, milliseconds))
