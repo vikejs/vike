@@ -239,8 +239,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.5.12
-        version: 0.5.12(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.27.2)
+        specifier: ^0.5.13
+        version: 0.5.13(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.27.2)
       '@types/node':
         specifier: ^15.12.1
         version: 15.14.9
@@ -3292,8 +3292,8 @@ packages:
       - terser
     dev: false
 
-  /@brillout/docpress@0.5.12(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.27.2):
-    resolution: {integrity: sha512-bqVE8gqnTZFSoccKhQHeZ4sARGUXakccdxDmaFg6fRelqmwBXhpM/13Lj1mcOX+67xBSNssi383fSQNjtbaMSQ==}
+  /@brillout/docpress@0.5.13(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.27.2):
+    resolution: {integrity: sha512-ubtC9Ti8Ui9TKCMxJUv2kkcwdlikTnnwf7C38RvHQvjbsbR12gEuiQy29ESYjrPe+ym3wt8l6i4a/F5jG9wn1g==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -4833,7 +4833,7 @@ packages:
       rollup: 3.27.2
     dev: false
 
-  /@rollup/pluginutils@5.0.4:
+  /@rollup/pluginutils@5.0.4(rollup@3.27.2):
     resolution: {integrity: sha512-0KJnIoRI8A+a1dqOYLxH8vBf8bphDmty5QvIm2hqm7oFCFYKCAZWWd2hXgMibaPsNDhI0AtpYfQZJG47pt/k4g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -4845,6 +4845,7 @@ packages:
       '@types/estree': 1.0.1
       estree-walker: 2.0.2
       picomatch: 2.3.1
+      rollup: 3.27.2
     dev: false
 
   /@sinclair/typebox@0.27.8:
@@ -12958,7 +12959,7 @@ packages:
       '@mdit-vue/plugin-component': 0.12.1
       '@mdit-vue/plugin-frontmatter': 0.12.1
       '@mdit-vue/types': 0.12.0
-      '@rollup/pluginutils': 5.0.4
+      '@rollup/pluginutils': 5.0.4(rollup@3.27.2)
       '@types/markdown-it': 13.0.1
       markdown-it: 13.0.1
       unplugin: 1.4.0
@@ -12975,7 +12976,7 @@ packages:
       '@mdit-vue/plugin-component': 0.12.1
       '@mdit-vue/plugin-frontmatter': 0.12.1
       '@mdit-vue/types': 0.12.0
-      '@rollup/pluginutils': 5.0.4
+      '@rollup/pluginutils': 5.0.4(rollup@3.27.2)
       '@types/markdown-it': 13.0.1
       markdown-it: 13.0.1
       unplugin: 1.4.0
