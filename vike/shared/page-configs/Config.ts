@@ -8,7 +8,6 @@ import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/p
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { ConfigVikeUserProvided } from '../ConfigVike.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
-import type { PageContext } from '../types.js'
 
 type HookName =
   | 'onHydrationEnd'
@@ -81,7 +80,7 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/onBeforeRender
    */
-  onBeforeRender?: <PC extends PageContext>(
+  onBeforeRender?: <PC extends Vike.PageContext>(
     pageContext: PC
   ) => OptionalPromise<{ pageContext: Record<string, any> }> | ImportString | null
 
