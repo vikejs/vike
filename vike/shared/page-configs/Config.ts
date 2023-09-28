@@ -8,6 +8,7 @@ import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/p
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { ConfigVikeUserProvided } from '../ConfigVike.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
+import type { PageContextClient, PageContextServer } from '../types.js'
 
 type HookName =
   | 'onHydrationEnd'
@@ -80,9 +81,11 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/onBeforeRender
    */
-  onBeforeRender?: <PC extends Vike.PageContext>(
-    pageContext: PC
-  ) => OptionalPromise<{ pageContext: Record<string, any> }> | ImportString | null
+  onBeforeRender?:
+    | ((pageContext: PageContextServer) => OptionalPromise<{ pageContext: Record<string, any> }>)
+    | ((pageContext: PageContextClient) => OptionalPromise<{ pageContext: Record<string, any> }>)
+    | ImportString
+    | null
 
   /** Determines what pageContext properties are sent to the client-side.
    *
