@@ -3,7 +3,7 @@ import { JustAMiddleware } from '../components'
 
 Environment: server.
 
-The `renderPage()` function enables you to integrate and embed vike into any server. It's [optional](#optional) (it's only needed if you use SSR).
+The `renderPage()` function enables you to embed Vike into your server. It's [optional](#optional) and only needed if you use SSR.
 
 <JustAMiddleware />
 
@@ -80,7 +80,7 @@ The `pageContext.httpResponse` value is `null` if:
    - An error occured while rendering the error page.
    - Vike skips certain URLs, such as `/favicon.ico` (because browsers automatically make favicon requests).
 
-The `renderPage()` function doesn't depend on Node.js and you can use `renderPage()` (and therefore embed vike) anywhere:
+The `renderPage()` function doesn't depend on Node.js and you can use `renderPage()` (and therefore embed Vike) anywhere:
  - Any server environment (Express.js, HatTip, Deno, Fastify, Vite's development server, Node.js's HTTP server, ...)
  - Any deployment provider (AWS, Cloudflare Workers, Vercel, ...)
 
@@ -95,6 +95,6 @@ See also:
 
 If you <Link text="pre-render" href="/pre-rendering" /> all your pages then you don't need to use `renderPage()`, because:
  - Vike automatically embeds itself into Vite's development server (`$ vite`/`$ vite dev`) and Vite's preview server (`$ vite preview`).
- - During pre-rendering (`$ vite build`/`$ vike prerender`) vike automatically renders your pages.
+ - During pre-rendering (`$ vite build`/`$ vike prerender`) Vike automatically renders your pages.
 
-If you use server-side rendering (SSR) and you don't pre-render all your pages, then you need a production server and you need to use `renderPage()` in order to embed vike into your server.
+If you use server-side rendering (SSR) and you don't pre-render *all* your pages, then you need a production server and you need to use `renderPage()` to embed Vike into your server.
