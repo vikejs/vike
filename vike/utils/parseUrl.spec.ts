@@ -327,26 +327,6 @@ describe('parseUrl', () => {
     })
   })
 
-  it('relative paths', () => {
-    expect(parseUrl('.', '/b1/b2/')).toEqual({
-      ...resultBase,
-      pathnameOriginal: '.',
-      pathname: '/'
-    })
-    expect(parseUrl('..', '/b1/b2/')).toEqual({
-      ...resultBase,
-      hasBaseServer: false,
-      pathnameOriginal: '..',
-      pathname: '/b1/'
-    })
-  })
-  expect(parseUrl('../../', '/b1/b2/')).toEqual({
-    ...resultBase,
-    hasBaseServer: false,
-    pathnameOriginal: '../../',
-    pathname: '/'
-  })
-
   it('doc example', () => {
     expect(
       parseUrl(
@@ -381,6 +361,31 @@ describe('parseUrl', () => {
       origin: 'tauri://localhost',
       pathname: '/somePath',
       pathnameOriginal: '/somePath'
+    })
+  })
+
+  it('relative paths', () => {
+    expect(parseUrl('.', '/b1/b2/')).toEqual({
+      ...resultBase,
+      pathnameOriginal: '.',
+      pathname: '/'
+    })
+    expect(parseUrl('..', '/b1/b2/')).toEqual({
+      ...resultBase,
+      hasBaseServer: false,
+      pathnameOriginal: '..',
+      pathname: '/b1/'
+    })
+    expect(parseUrl('../../', '/b1/b2/')).toEqual({
+      ...resultBase,
+      hasBaseServer: false,
+      pathnameOriginal: '../../',
+      pathname: '/'
+    })
+    expect(parseUrl('./markdown', '/')).toEqual({
+      ...resultBase,
+      pathnameOriginal: './markdown',
+      pathname: '/markdown'
     })
   })
 })
