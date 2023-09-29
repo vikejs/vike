@@ -70,6 +70,7 @@ function getCiJobs() {
 
 function tolerateError({ logSource, logText }) {
   return (
+    isViteCjsWarning() ||
     isVikeRename() ||
     isRenderErrorPageDeprecationWarning() ||
     isSlowHookWarning() ||
@@ -86,6 +87,10 @@ function tolerateError({ logSource, logText }) {
     isSlowCrawlWarning() ||
     isNodeExperimentalEsmLoader()
   )
+
+  function isViteCjsWarning() {
+    return logSource === 'stderr' && logText.includes("The CJS build of Vite's Node API is deprecated")
+  }
 
   function isVikeRename() {
     return (
