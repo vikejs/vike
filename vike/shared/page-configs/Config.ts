@@ -107,7 +107,9 @@ type ConfigBuiltIn = {
   onRenderHtml?:
     | ((
         pageContext: PageContextServer
-      ) => OptionalPromise<{ documentHtml: DocumentHtml; pageContext?: Partial<Vike.PageContext> | Function }>)
+      ) => OptionalPromise<
+        DocumentHtml | { documentHtml: DocumentHtml; pageContext?: Partial<Vike.PageContext> | Function }
+      >)
     | ImportString
 
   /** Enable async Route Functions.

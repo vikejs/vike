@@ -5,10 +5,11 @@ import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { PageLayout } from './PageLayout'
-import type { PageContext } from '#root/types'
+import { ReactComponent } from '#root/types'
+import type { PageContextServer } from 'vike/types'
 
-function onRenderHtml(pageContext: PageContext) {
-  const { Page } = pageContext
+function onRenderHtml(pageContext: PageContextServer) {
+  const Page = pageContext.Page as ReactComponent
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
       <Page />
