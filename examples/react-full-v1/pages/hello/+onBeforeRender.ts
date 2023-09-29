@@ -1,11 +1,13 @@
-export default onBeforeRender
+// https://vike.dev/onBeforeRender
 
-import type { PageContextBuiltInServer } from 'vike/types'
+import type { Config, PageContextServer } from 'vike/types'
 import { render } from 'vike/abort'
 
 import { names } from './names'
 
-async function onBeforeRender(pageContext: PageContextBuiltInServer) {
+const onBeforeRender: Config['onBeforeRender'] = async (
+  pageContext: PageContextServer
+): Promise<{ pageContext: Partial<Vike.PageContext> }> => {
   const { name } = pageContext.routeParams
   if (name !== 'anonymous' && !names.includes(name)) {
     throw render(404, `Unknown name: ${name}.`)
@@ -17,3 +19,4 @@ async function onBeforeRender(pageContext: PageContextBuiltInServer) {
     }
   }
 }
+export default onBeforeRender

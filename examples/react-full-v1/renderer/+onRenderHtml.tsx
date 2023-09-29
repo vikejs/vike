@@ -1,14 +1,14 @@
 // https://vike.dev/onRenderHtml
-export default onRenderHtml
-
 import { renderToStream } from 'react-streaming/server'
 import React from 'react'
 import { escapeInject } from 'vike/server'
 import { PageShell } from './PageShell'
 import { getPageTitle } from './getPageTitle'
-import type { PageContextServer } from 'vike/types'
+import type { Config, DocumentHtml, PageContextServer } from 'vike/types'
 
-async function onRenderHtml(pageContext: PageContextServer) {
+const onRenderHtml: Config['onRenderHtml'] = async (
+  pageContext: PageContextServer
+): Promise<{ documentHtml: DocumentHtml; pageContext: Partial<Vike.PageContext> | Function }> => {
   const { Page, pageProps } = pageContext
 
   const stream = await renderToStream(
@@ -34,6 +34,8 @@ async function onRenderHtml(pageContext: PageContextServer) {
   return {
     documentHtml,
     // See https://vike.dev/stream#initial-data-after-stream-end
+    // temp(aurelien): interesting that this can be an async function. Can this be the case in
+    // onBeforeRender() as well? Or is this specific to onRenderHtml()?
     pageContext: async () => {
       return {
         someAsyncProps: 42
@@ -41,3 +43,4 @@ async function onRenderHtml(pageContext: PageContextServer) {
     }
   }
 }
+export default onRenderHtml
