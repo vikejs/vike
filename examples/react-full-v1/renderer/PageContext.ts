@@ -10,6 +10,7 @@ declare global {
       /** Title defined dynamically by onBeforeRender() */
       title?: string
       abortReason?: string
+      someAsyncProps?: number
     }
   }
 }

@@ -84,8 +84,6 @@ type ConfigBuiltIn = {
    */
   onBeforeRender?:
     | ((pageContext: PageContextServer) => OptionalPromise<{ pageContext: Partial<Vike.PageContext> }>)
-    | ((pageContext: PageContextClient) => OptionalPromise<{ pageContext: Partial<Vike.PageContext> }>)
-    | ((pageContext: PageContext) => OptionalPromise<{ pageContext: Partial<Vike.PageContext> }>)
     | ImportString
     | null
 
@@ -105,10 +103,13 @@ type ConfigBuiltIn = {
    * https://vike.dev/onRenderHtml
    */
   onRenderHtml?:
-    | ((
-        pageContext: PageContextServer
-      ) => OptionalPromise<
-        DocumentHtml | { documentHtml: DocumentHtml; pageContext?: Partial<Vike.PageContext> | Function }
+    | ((pageContext: PageContextServer) => OptionalPromise<
+        | DocumentHtml
+        | {
+            documentHtml: DocumentHtml
+            // See https://vike.dev/stream#initial-data-after-stream-end
+            pageContext: Partial<Vike.PageContext> | (() => Promise<Partial<Vike.PageContext>>)
+          }
       >)
     | ImportString
 

@@ -8,7 +8,7 @@ import type { Config, DocumentHtml, PageContextServer } from 'vike/types'
 
 const onRenderHtml: Config['onRenderHtml'] = async (
   pageContext: PageContextServer
-): Promise<{ documentHtml: DocumentHtml; pageContext: Partial<Vike.PageContext> | Function }> => {
+): Promise<{ documentHtml: DocumentHtml; pageContext: () => Promise<Partial<Vike.PageContext>> }> => {
   const { Page, pageProps } = pageContext
 
   const stream = await renderToStream(
@@ -34,8 +34,6 @@ const onRenderHtml: Config['onRenderHtml'] = async (
   return {
     documentHtml,
     // See https://vike.dev/stream#initial-data-after-stream-end
-    // temp(aurelien): interesting that this can be an async function. Can this be the case in
-    // onBeforeRender() as well? Or is this specific to onRenderHtml()?
     pageContext: async () => {
       return {
         someAsyncProps: 42
