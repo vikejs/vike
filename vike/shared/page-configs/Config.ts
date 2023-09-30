@@ -97,7 +97,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/onRenderClient
    */
-  onRenderClient?: Function | ImportString
+  onRenderClient?: ((pageContext: PageContextClient) => OptionalPromise<void>) | ImportString
   /** Hook called when page is rendered to HTML on the server-side.
    *
    * https://vike.dev/onRenderHtml

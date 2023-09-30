@@ -1,15 +1,14 @@
 // https://vike.dev/onRenderClient
-export default onRenderClient
 
 import './css/index.css'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { PageShell } from './PageShell'
 import { getPageTitle } from './getPageTitle'
-import type { PageContextClient } from 'vike/types'
+import type { Config, PageContextClient } from 'vike/types'
 
 let root: ReactDOM.Root
-async function onRenderClient(pageContext: PageContextClient) {
+const onRenderClient: Config['onRenderClient'] = async (pageContext: PageContextClient): Promise<void> => {
   const { Page, pageProps } = pageContext
   const page = (
     <PageShell pageContext={pageContext}>
@@ -27,3 +26,4 @@ async function onRenderClient(pageContext: PageContextClient) {
   }
   document.title = getPageTitle(pageContext)
 }
+export default onRenderClient
