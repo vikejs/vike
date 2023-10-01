@@ -75,7 +75,7 @@ function assertEsm(userViteRoot: string) {
   dir = pc.dim(dir)
   assertWarning(
     packageJson.type === 'module',
-    `We recommend setting ${dir}package.json#type to "module" (and therefore writing ESM code instead of CJS code), see https://vike.dev/CJS`,
+    `We recommend setting ${dir}package.json#type to "module", see https://vike.dev/CJS`,
     { onlyOnce: true }
   )
 }
