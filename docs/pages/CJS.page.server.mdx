@@ -35,6 +35,6 @@ If you have .js files written in CJS then migrate them to ESM, for example:
 + import { renderPage } from 'vike/server'
 ```
 
-> An escape hatch is to use [the `.cjs` and `.mjs` file extensions](https://nodejs.org/api/esm.html#enabling:~:text=Authors%20can%20tell%20Node.js%20to%20use%20the%20ECMAScript%20modules%20loader%20via%20the%20.mjs%20file%20extension): it enables you to choose between CJS and ESM on a file-by-file basis (regardless of the `package.json#type` value).
+> An escape hatch is to use [the `.cjs` and `.mjs` file extensions](https://nodejs.org/api/esm.html#enabling:~:text=Authors%20can%20tell%20Node.js%20to%20use%20the%20ECMAScript%20modules%20loader%20via%20the%20.mjs%20file%20extension): it enables you to choose between CJS and ESM on a file-by-file basis (regardless of `package.json#type`).
 
-> If you still want to use CJS, then let us know and we'll create a new `config.disableCJSWarning`.
+> If you want to use CJS then let us know and we'll create a new `config.disableCJSWarning`.
