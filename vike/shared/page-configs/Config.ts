@@ -63,7 +63,7 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/guard
    */
-  guard?: Function | ImportString
+  guard?: ((pageContext: PageContextServer) => OptionalPromise<void>) | ImportString
   /**
    * Whether to pre-render the page(s).
    *
