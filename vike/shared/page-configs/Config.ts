@@ -154,7 +154,9 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/onBeforeRoute
    */
-  onBeforeRoute?: Function | ImportString
+  onBeforeRoute?:
+    | ((pageContext: PageContextServer) => OptionalPromise<{ pageContext: Partial<Vike.PageContext> }>)
+    | ImportString
 
   /** Hook called after the page is hydrated.
    *
