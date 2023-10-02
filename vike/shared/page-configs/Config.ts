@@ -57,7 +57,7 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/route
    */
-  route?: string | Function | ImportString
+  route?: string | ((pageContext: PageContextServer) => { routeParams: Record<string, string> }) | ImportString
 
   /** Protect page(s), e.g. forbid unauthorized access.
    *
