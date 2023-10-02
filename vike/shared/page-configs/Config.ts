@@ -129,7 +129,11 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/onPrerenderStart
    */
-  onPrerenderStart?: Function | ImportString
+  onPrerenderStart?:
+    | ((prerenderContext: {
+        pageContexts: PageContextServer[]
+      }) => OptionalPromise<{ prerenderContext: { pageContexts: PageContextServer[] } }>)
+    | ImportString
   /** Global Hook called before the whole pre-rendering process starts.
    *
    * https://vike.dev/onBeforePrerenderStart
