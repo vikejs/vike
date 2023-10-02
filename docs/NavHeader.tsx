@@ -1,5 +1,5 @@
 import React from 'react'
-import logoUrl from './images/icons/vike.png'
+import logoUrl from './images/icons/vike-square.png'
 
 export { NavHeader }
 export { NavHeaderMobile }

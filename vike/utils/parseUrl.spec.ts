@@ -327,26 +327,6 @@ describe('parseUrl', () => {
     })
   })
 
-  it('relative paths', () => {
-    expect(parseUrl('.', '/b1/b2/')).toEqual({
-      ...resultBase,
-      pathnameOriginal: '.',
-      pathname: '/'
-    })
-    expect(parseUrl('..', '/b1/b2/')).toEqual({
-      ...resultBase,
-      hasBaseServer: false,
-      pathnameOriginal: '..',
-      pathname: '/b1/'
-    })
-  })
-  expect(parseUrl('../../', '/b1/b2/')).toEqual({
-    ...resultBase,
-    hasBaseServer: false,
-    pathnameOriginal: '../../',
-    pathname: '/'
-  })
-
   it('doc example', () => {
     expect(
       parseUrl(
@@ -382,5 +362,62 @@ describe('parseUrl', () => {
       pathname: '/somePath',
       pathnameOriginal: '/somePath'
     })
+  })
+
+  it('relative paths', () => {
+    expect(parseUrl('.', '/b1/b2/')).toEqual({
+      ...resultBase,
+      pathnameOriginal: '.',
+      pathname: '/'
+    })
+    expect(parseUrl('..', '/b1/b2/')).toEqual({
+      ...resultBase,
+      hasBaseServer: false,
+      pathnameOriginal: '..',
+      pathname: '/b1/'
+    })
+    expect(parseUrl('../../', '/b1/b2/')).toEqual({
+      ...resultBase,
+      hasBaseServer: false,
+      pathnameOriginal: '../../',
+      pathname: '/'
+    })
+    expect(parseUrl('./markdown', '/')).toEqual({
+      ...resultBase,
+      pathnameOriginal: './markdown',
+      pathname: '/markdown'
+    })
+  })
+  it('relative paths - browser-side', () => {
+    // @ts-ignore
+    globalThis.window = { document: { baseURI: 'http://localhost:3000/' } }
+    expect(parseUrl('./markdown', '/')).toEqual({
+      ...resultBase,
+      pathnameOriginal: './markdown',
+      pathname: '/markdown'
+    })
+    // @ts-ignore
+    globalThis.window = { document: { baseURI: 'http://localhost:3000/some/deep/path' } }
+    expect(parseUrl('./markdown', '/')).toEqual({
+      ...resultBase,
+      pathnameOriginal: './markdown',
+      pathname: '/some/deep/markdown'
+    })
+    // @ts-ignore
+    globalThis.window = { document: { baseURI: 'http://localhost:3000/some/deep/' } }
+    expect(parseUrl('..//bla', '/')).toEqual({
+      ...resultBase,
+      pathnameOriginal: '..//bla',
+      pathname: '/some//bla'
+    })
+    // @ts-ignore
+    globalThis.window = { document: { baseURI: 'http://localhost:3000/some/very/deep/' } }
+    expect(parseUrl('../../../../bla', '/')).toEqual({
+      ...resultBase,
+      pathnameOriginal: '../../../../bla',
+      pathname: '/bla'
+    })
+    // @ts-ignore
+    globalThis.window = undefined
   })
 })

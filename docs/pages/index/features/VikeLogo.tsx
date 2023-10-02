@@ -1,7 +1,7 @@
 export { VikeLogo }
 
 import React from 'react'
-import logo from './vike.png'
+import logo from '../../../images/icons/vike-square.png'
 
 function VikeLogo() {
   return (

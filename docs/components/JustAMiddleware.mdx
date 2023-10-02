@@ -1,16 +1,16 @@
 import { Link } from '@brillout/docpress'
 
-From the perspective of the server, vike is just a middleware:
+From the perspective of a server, Vike is just a middleware:
 
 ```js
-// renderPage() doesn't depend on Node.js and can be used in any JavaScript environment:
-// AWS, Cloudflare, Vercel, Node.js, Deno, Bun, Lagon, ...
+// renderPage() doesn't depend on Node.js and can be used within any JavaScript environment:
+// Node.js, AWS, Cloudflare, Vercel, Deno, Bun, Lagon, ...
 import { renderPage } from 'vike/server'
 
-// Can be any server: Express.js, Fastify, Hono, Cloudflare Worker, AWS Lambda Function, ...
+// Any server: Express.js, Fastify, Hono, Cloudflare Worker, AWS Lambda Function, ...
 server.addMiddleware({
   method: 'GET',
-  route: '*', // Catch-all
+  route: '*', // catch-all
   async handler(request) {
     const pageContextInit = { urlOriginal: request.url }
     const pageContext = await renderPage(pageContextInit)
@@ -21,6 +21,6 @@ server.addMiddleware({
 })
 ```
 
-The vike middleware is versatile and can be used within any server environment.
+It's versatile and can be embedded into any server.
 
 Alternatively, you can <Link text="pre-render" href="/pre-rendering" /> your pages to remove the need for a production server and deploy to a <Link text="static host" href="/static-hosts" /> instead.
