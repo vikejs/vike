@@ -138,7 +138,17 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/onBeforePrerenderStart
    */
-  onBeforePrerenderStart?: Function | ImportString
+  onBeforePrerenderStart?:
+    | (() => OptionalPromise<
+        (
+          | string
+          | {
+              url: string
+              pageContext: Partial<Vike.PageContext>
+            }
+        )[]
+      >)
+    | ImportString
 
   /** Hook called before the URL is routed to a page.
    *

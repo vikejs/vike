@@ -1,10 +1,15 @@
 // https://vike.dev/onBeforePrerenderStart
-export default onBeforePrerenderStart
 
+import type { Config } from 'vike/types'
 import { filterMovieData } from '../filterMovieData'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
 
-async function onBeforePrerenderStart() {
+const onBeforePrerenderStart: Config['onBeforePrerenderStart'] = async (): Promise<
+  {
+    url: string
+    pageContext: Partial<Vike.PageContext>
+  }[]
+> => {
   const movies = await getStarWarsMovies()
 
   return [
@@ -38,3 +43,4 @@ async function onBeforePrerenderStart() {
     })
   ]
 }
+export default onBeforePrerenderStart
