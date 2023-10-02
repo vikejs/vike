@@ -162,17 +162,17 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/clientRouting
    */
-  onHydrationEnd?: Function | ImportString
+  onHydrationEnd?: (() => OptionalPromise<void>) | ImportString
   /** Hook called before the user navigates to a new page.
    *
    * https://vike.dev/clientRouting
    */
-  onPageTransitionStart?: Function | ImportString
+  onPageTransitionStart?: ((pageContext: PageContextClient) => void) | ImportString
   /** Hook called after the user navigates to a new page.
    *
    * https://vike.dev/clientRouting
    */
-  onPageTransitionEnd?: Function | ImportString
+  onPageTransitionEnd?: ((pageContext: PageContextClient) => void) | ImportString
 
   /** Whether the UI framework (React/Vue/Solid/...) allows the page's hydration to be aborted.
    *
