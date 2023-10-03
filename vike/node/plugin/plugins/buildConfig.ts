@@ -68,7 +68,7 @@ function buildConfig(): Plugin {
     },
     async writeBundle(options, bundle) {
       const manifestEntry = bundle[manifestTempFile]
-      if (generateManifest) {
+      if (generateManifest && manifestEntry) {
         assert(manifestEntry)
         const { dir } = options
         assert(dir)
@@ -78,8 +78,6 @@ function buildConfig(): Plugin {
         //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
         const manifestFilePathNew = path.join(dir, '..', 'assets.json')
         await fs.rename(manifestFilePathOld, manifestFilePathNew)
-      } else {
-        assert(!manifestEntry)
       }
     }
   }
