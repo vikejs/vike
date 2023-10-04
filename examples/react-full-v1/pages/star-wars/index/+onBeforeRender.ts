@@ -1,11 +1,13 @@
 // https://vike.dev/onBeforeRender
 
-import type { Config, PageContextServer } from 'vike/types'
+import type { Config } from 'vike/types'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
 
-const onBeforeRender: Config['onBeforeRender'] = async (
-  pageContext: PageContextServer
-): Promise<{ pageContext: Partial<Vike.PageContext> }> => {
+type OnBeforeRender = Extract<Config['onBeforeRender'], Function>
+
+const onBeforeRender: OnBeforeRender = async (
+  pageContext: Parameters<OnBeforeRender>[0]
+): Extract<ReturnType<OnBeforeRender>, Promise<any>> => {
   await sleep(700) // Simulate slow network
   const movies = await getStarWarsMovies()
   return {
