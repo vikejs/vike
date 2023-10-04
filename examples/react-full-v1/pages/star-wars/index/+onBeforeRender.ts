@@ -1,13 +1,11 @@
 // https://vike.dev/onBeforeRender
 
-import type { Config } from 'vike/types'
+import type { Hook, HookParam, HookReturnTypeAsync } from 'vike/types'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
 
-type OnBeforeRender = Extract<Config['onBeforeRender'], Function>
-
-const onBeforeRender: OnBeforeRender = async (
-  pageContext: Parameters<OnBeforeRender>[0]
-): Extract<ReturnType<OnBeforeRender>, Promise<any>> => {
+const onBeforeRender: Hook<'onBeforeRender'> = async (
+  pageContext: HookParam<'onBeforeRender', 0>
+): HookReturnTypeAsync<'onBeforeRender'> => {
   await sleep(700) // Simulate slow network
   const movies = await getStarWarsMovies()
   return {

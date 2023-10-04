@@ -12,7 +12,14 @@ export type { PageContextBuiltInServer } from '../shared/types.js'
 export type { PageContextBuiltInClientWithClientRouting } from '../shared/types.js'
 export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
 
-export type { Config, ConfigMeta as Meta } from '../shared/page-configs/Config.js'
+export type {
+  Config,
+  ConfigMeta as Meta,
+  Hook,
+  HookParam,
+  HookReturnTypeSync,
+  HookReturnTypeAsync
+} from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {
   ConfigDefinition,
