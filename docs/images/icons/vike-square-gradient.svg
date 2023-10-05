@@ -1,6 +1,6 @@
 <svg class="hammer" width="41.217" height="41.217" version="1.1" viewBox="-50 -50 41.217 41.217" xmlns="http://www.w3.org/2000/svg">
  <defs>
-  <mask id="mask111" maskUnits="userSpaceOnUse">
+  <mask id="mask111">
    <rect x="-19.21" y="-25.7" width="46.217" height="41.217" fill="url(#linearGradient115)"/>
   </mask>
   <linearGradient id="linearGradient115" x1="-25.395" x2="-25.395" y1="-9.3005" y2="-18.03" gradientTransform="matrix(1.0589 0 0 .94436 30.79 24.3)" gradientUnits="userSpaceOnUse">
