@@ -1,11 +1,12 @@
 // https://vike.dev/onBeforeRender
 
-import type { Hook, HookParam, HookReturn } from 'vike/types'
+import type { OnBeforeRender, OnBeforeRenderParam, OnBeforeRenderReturn } from 'vike/types'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
 
-const onBeforeRender: Hook<'onBeforeRender'> = async (
-  pageContext: HookParam<'onBeforeRender'>
-): HookReturn<'onBeforeRender'> => {
+// NOTE(aurelien): that's the alternative style, still with full safety. I'm wondering if we should
+// keep `Config['onBeforeRender']` instead of `OnBeforeRender` in order for the user to easily modify
+// `Config` through `Vike.Config` without unexpected results?
+const onBeforeRender: OnBeforeRender = async (pageContext: OnBeforeRenderParam): OnBeforeRenderReturn => {
   await sleep(700) // Simulate slow network
   const movies = await getStarWarsMovies()
   return {

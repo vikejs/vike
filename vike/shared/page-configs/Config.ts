@@ -3,6 +3,8 @@ export type { ConfigBuiltIn }
 export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
+
+// NOTE(aurelien): to be removed
 export type { Hook }
 export type { HookParam }
 export type { HookParams }
@@ -10,12 +12,19 @@ export type { HookReturnSync }
 export type { HookReturnAsync }
 export type { HookReturn }
 
+// NOTE(aurelien): to be extended
+export type { OnBeforeRender }
+export type { OnBeforeRenderParam }
+export type { OnBeforeRenderReturnSync }
+export type { OnBeforeRenderReturnAsync }
+export type { OnBeforeRenderReturn }
+
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
 import type { ConfigVikeUserProvided } from '../ConfigVike.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
-import type { PageContext, PageContextClient, PageContextServer } from '../types.js'
+import type { PageContextClient, PageContextServer } from '../types.js'
 
 type HookName =
   | 'onHydrationEnd'
@@ -48,6 +57,8 @@ type Config = ConfigBuiltIn &
   )
 
 type OptionalPromise<T> = T | Promise<T>
+
+// NOTE(aurelien): to be removed
 type Hook<Name extends keyof Config> = Extract<Config[Name], (...args: any) => any>
 type HookParams<Name extends keyof Config, Index extends number> = Parameters<Hook<Name>>[Index]
 type HookParam<Name extends keyof Config> = HookParams<Name, 0>
@@ -55,6 +66,18 @@ type HookReturnType<Name extends keyof Config> = ReturnType<Hook<Name>>
 type HookReturnSync<Name extends keyof Config> = Exclude<HookReturnType<Name>, Promise<any>>
 type HookReturnAsync<Name extends keyof Config> = Extract<HookReturnType<Name>, Promise<any>>
 type HookReturn<Name extends keyof Config> = HookReturnAsync<Name>
+
+// NOTE(aurelien): to be extended. I'm wondering if this is all worth it as I'm wondering if people
+// will/should really use this style.
+type OnBeforeRenderParam = PageContextServer
+// NOTE(aurelien): unfortunately the user can't use directly `OnBeforeRenderReturnType` but needs
+// to explicitly select either the Async or the Sync version.
+type OnBeforeRenderReturnType = OptionalPromise<{ pageContext: Partial<Vike.PageContext> } | void>
+type OnBeforeRenderReturnAsync = Extract<OnBeforeRenderReturnType, Promise<any>>
+type OnBeforeRenderReturnSync = Exclude<OnBeforeRenderReturnType, Promise<any>>
+// NOTE(aurelien): but as discussed we still provide a simpler name for Async as default.
+type OnBeforeRenderReturn = OnBeforeRenderReturnAsync
+type OnBeforeRender = (pageContext: OnBeforeRenderParam) => OnBeforeRenderReturnType
 
 // TODO: write docs of links below
 
@@ -95,10 +118,7 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/onBeforeRender
    */
-  onBeforeRender?:
-    | ((pageContext: PageContextServer) => OptionalPromise<{ pageContext: Partial<Vike.PageContext> }>)
-    | ImportString
-    | null
+  onBeforeRender?: OnBeforeRender | ImportString | null
 
   /** Determines what pageContext properties are sent to the client-side.
    *

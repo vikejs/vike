@@ -7,6 +7,8 @@ import type { MovieDetails } from '../types'
 import { render } from 'vike/abort'
 import React from 'react'
 
+// NOTE(aurelien): this is still my favorite style as a user. And as a Vike contributor I'll
+// probably personally advertise for this.
 const onBeforeRender: Config['onBeforeRender'] = async (
   pageContext: PageContextServer | PageContextClient
 ): Promise<{ pageContext: Partial<Vike.PageContext> }> => {

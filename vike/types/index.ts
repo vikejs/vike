@@ -16,11 +16,20 @@ export type {
   Config,
   ConfigMeta as Meta,
   Hook,
+
+  // NOTE(aurelien): to be removed
   HookParam,
   HookParams,
   HookReturnSync,
   HookReturnAsync,
-  HookReturn
+  HookReturn,
+
+  // NOTE(aurelien): to be extended
+  OnBeforeRender,
+  OnBeforeRenderParam,
+  OnBeforeRenderReturnSync,
+  OnBeforeRenderReturnAsync,
+  OnBeforeRenderReturn
 } from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {
