@@ -1,7 +1,7 @@
 export { VikeLogo }
 
 import React from 'react'
-import vikeIcon from '../../../images/icons/vike-square-gradient.small.png'
+import vikeIcon from '../../../images/icons/vike-square-gradient.svg'
 
 function VikeLogo() {
   return (

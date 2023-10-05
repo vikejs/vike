@@ -2,7 +2,7 @@ import type { Config } from '@brillout/docpress'
 import { headings } from './headings'
 import { headingsDetached } from './headingsDetached'
 import { projectInfo } from './utils'
-import vikeIcon from './images/icons/vike-square-gradient.small.png'
+import vikeIcon from './images/icons/vike-square-gradient.svg'
 import React from 'react'
 import { NavHeader, NavHeaderMobile } from './NavHeader'
 
