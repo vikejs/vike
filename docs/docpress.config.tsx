@@ -23,5 +23,6 @@ export default {
     indexName: 'vike'
   },
   bannerUrl: 'https://vike.dev/banner.png',
-  i18n: true
+  i18n: true,
+  pressKit: true
 } satisfies Config
