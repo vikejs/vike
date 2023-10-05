@@ -17,8 +17,10 @@ export type {
   ConfigMeta as Meta,
   Hook,
   HookParam,
-  HookReturnTypeSync,
-  HookReturnTypeAsync
+  HookParams,
+  HookReturnSync,
+  HookReturnAsync,
+  HookReturn
 } from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {

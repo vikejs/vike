@@ -5,8 +5,10 @@ export type { ConfigMeta }
 export type { HookName }
 export type { Hook }
 export type { HookParam }
-export type { HookReturnTypeSync }
-export type { HookReturnTypeAsync }
+export type { HookParams }
+export type { HookReturnSync }
+export type { HookReturnAsync }
+export type { HookReturn }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
@@ -47,10 +49,12 @@ type Config = ConfigBuiltIn &
 
 type OptionalPromise<T> = T | Promise<T>
 type Hook<Name extends keyof Config> = Extract<Config[Name], (...args: any) => any>
-type HookParam<Name extends keyof Config, Index extends number> = Parameters<Hook<Name>>[Index]
+type HookParams<Name extends keyof Config, Index extends number> = Parameters<Hook<Name>>[Index]
+type HookParam<Name extends keyof Config> = HookParams<Name, 0>
 type HookReturnType<Name extends keyof Config> = ReturnType<Hook<Name>>
-type HookReturnTypeSync<Name extends keyof Config> = Exclude<HookReturnType<Name>, Promise<any>>
-type HookReturnTypeAsync<Name extends keyof Config> = Extract<HookReturnType<Name>, Promise<any>>
+type HookReturnSync<Name extends keyof Config> = Exclude<HookReturnType<Name>, Promise<any>>
+type HookReturnAsync<Name extends keyof Config> = Extract<HookReturnType<Name>, Promise<any>>
+type HookReturn<Name extends keyof Config> = HookReturnAsync<Name>
 
 // TODO: write docs of links below
 
