@@ -2,13 +2,13 @@ import type { Config } from '@brillout/docpress'
 import { headings } from './headings'
 import { headingsDetached } from './headingsDetached'
 import { projectInfo } from './utils'
-import faviconUrl from './images/icons/vike-square.png'
+import vikeIcon from './images/icons/vike-square-gradient.svg'
 import React from 'react'
 import { NavHeader, NavHeaderMobile } from './NavHeader'
 
 export default {
   projectInfo,
-  faviconUrl,
+  faviconUrl: vikeIcon,
   navHeader: <NavHeader />,
   navHeaderMobile: <NavHeaderMobile />,
   headings,
@@ -23,5 +23,6 @@ export default {
     indexName: 'vike'
   },
   bannerUrl: 'https://vike.dev/banner.png',
-  i18n: true
+  i18n: true,
+  pressKit: true
 } satisfies Config

@@ -321,4 +321,8 @@ const headingsDetached = [
     title: 'Vike',
     url: '/vike'
   },
+  {
+    title: 'Press Kit',
+    url: '/press'
+  },
 ] satisfies HeadingDetachedDefinition[]

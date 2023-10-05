@@ -1,12 +1,12 @@
 export { VikeLogo }
 
 import React from 'react'
-import logo from '../../../images/icons/vike-square.png'
+import vikeIcon from '../../../images/icons/vike-square-gradient.svg'
 
 function VikeLogo() {
   return (
     <img
-      src={logo}
+      src={vikeIcon}
       style={{
         height: '1.4em',
         verticalAlign: 'middle',

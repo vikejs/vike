@@ -1,5 +1,5 @@
 import React from 'react'
-import logoUrl from './images/icons/vike-square.png'
+import vikeIcon from './images/icons/vike-square-gradient.svg'
 
 export { NavHeader }
 export { NavHeaderMobile }
@@ -8,7 +8,7 @@ function NavHeaderMobile() {
   const LOGO_SIZE = 40
   return (
     <>
-      <img src={logoUrl} height={LOGO_SIZE} width={LOGO_SIZE} />
+      <img src={vikeIcon} height={LOGO_SIZE} width={LOGO_SIZE} />
       <HeaderTitle fontSize={'1.55em'} marginLeft={6} />
     </>
   )
@@ -18,7 +18,7 @@ function NavHeader() {
   const LOGO_SIZE = 55
   return (
     <>
-      <img src={logoUrl} height={LOGO_SIZE} width={LOGO_SIZE} />
+      <img src={vikeIcon} height={LOGO_SIZE} width={LOGO_SIZE} />
       <HeaderTitle fontSize={'2.55em'} marginLeft={10} />
     </>
   )

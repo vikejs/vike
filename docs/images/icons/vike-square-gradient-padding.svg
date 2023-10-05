@@ -1,5 +1,14 @@
-<svg class="hammer" width="41.217" height="41.217" version="1.1" viewBox="-50 -50 41.217 41.217" xmlns="http://www.w3.org/2000/svg">
- <g transform="translate(-33.29,-24.3)">
+<svg class="hammer" width="51.217" height="51.217" version="1.1" viewBox="-50 -50 51.217 51.217" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <mask id="mask111">
+   <rect x="-19.21" y="-25.7" width="46.217" height="41.217" fill="url(#linearGradient115)"/>
+  </mask>
+  <linearGradient id="linearGradient115" x1="-25.395" x2="-25.395" y1="-9.3005" y2="-18.03" gradientTransform="matrix(1.0589 0 0 .94436 30.79 24.3)" gradientUnits="userSpaceOnUse">
+   <stop offset="0"/>
+   <stop stop-color="#fff" offset="1"/>
+  </linearGradient>
+ </defs>
+ <g transform="translate(-28.29,-19.3)" mask="url(#mask111)">
   <g stroke-linecap="round" stroke-linejoin="round">
    <path d="m-8.511-10.449 1.126 4.064 2.707-2.765z" fill="#ababab"/>
    <path d="m-2.273-24.496-6.238 14.047 3.833 1.299 6.238-14.048z" fill="#949494"/>
