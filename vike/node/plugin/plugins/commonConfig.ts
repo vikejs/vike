@@ -17,12 +17,7 @@ function commonConfig(): Plugin[] {
     {
       name: 'vike-commonConfig-1',
       config: () => ({
-        appType: 'custom',
-        ssr: {
-          // Needed as long as Vike is published as CJS.
-          // TODO: can we remove this once Vike is published as ESM?
-          external: ['vike', 'vike/server']
-        }
+        appType: 'custom'
       }),
       configResolved(config) {
         installRequireShim_setUserRootDir(config.root)
