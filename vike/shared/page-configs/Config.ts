@@ -68,14 +68,14 @@ type HookReturn<Name extends keyof Config> = HookReturnAsync<Name>
 
 // NOTE(aurelien): to be extended. I'm wondering if this is all worth it as I'm wondering if people
 // will/should really use this style.
-/** https://vite.dev/onBeforeRender#typescript */
+/** https://vike.dev/onBeforeRender#typescript */
 type OnBeforeRenderParam = PageContextServer
-/** https://vite.dev/onBeforeRender#typescript */
+/** https://vike.dev/onBeforeRender#typescript */
 type OnBeforeRenderReturn = Promise<{ pageContext: Partial<Vike.PageContext> } | undefined>
 // NOTE(brillout): Purposely doing code duplication for improving that quickinfo IntelliSense shows on hover
-/** https://vite.dev/onBeforeRender#typescript */
+/** https://vike.dev/onBeforeRender#typescript */
 type OnBeforeRenderReturnSync = { pageContext: Partial<Vike.PageContext> } | undefined
-/** https://vite.dev/onBeforeRender */
+/** https://vike.dev/onBeforeRender */
 type OnBeforeRender = (pageContext: OnBeforeRenderParam) => OnBeforeRenderReturn | OnBeforeRenderReturnSync
 
 // TODO: write docs of links below
