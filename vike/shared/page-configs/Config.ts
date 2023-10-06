@@ -14,6 +14,7 @@ export type { HookReturn }
 
 // NOTE(aurelien): to be extended
 export type { OnBeforeRender }
+export type { OnBeforeRenderSync }
 export type { OnBeforeRenderParam }
 export type { OnBeforeRenderReturnSync }
 export type { OnBeforeRenderReturn }
@@ -82,7 +83,9 @@ type OnBeforeRenderReturn = Promise<{ pageContext: Partial<Vike.PageContext> } |
 /** https://vike.dev/onBeforeRender#typescript */
 type OnBeforeRenderReturnSync = { pageContext: Partial<Vike.PageContext> } | undefined
 /** https://vike.dev/onBeforeRender */
-type OnBeforeRender = (pageContext: OnBeforeRenderParam) => OnBeforeRenderReturn | OnBeforeRenderReturnSync
+type OnBeforeRender = (pageContext: OnBeforeRenderParam) => OnBeforeRenderReturn
+/** https://vike.dev/onBeforeRender */
+type OnBeforeRenderSync = (pageContext: OnBeforeRenderParam) => OnBeforeRenderReturnSync
 
 // TODO: write docs of links below
 
@@ -123,7 +126,7 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/onBeforeRender
    */
-  onBeforeRender?: OnBeforeRender | ImportString | null
+  onBeforeRender?: OnBeforeRender | OnBeforeRenderSync | ImportString | null
 
   /** Determines what pageContext properties are sent to the client-side.
    *

@@ -26,6 +26,7 @@ export type {
 
   // NOTE(aurelien): to be extended
   OnBeforeRender,
+  OnBeforeRenderSync,
   OnBeforeRenderParam,
   OnBeforeRenderReturnSync,
   OnBeforeRenderReturn
