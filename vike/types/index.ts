@@ -28,7 +28,6 @@ export type {
   OnBeforeRender,
   OnBeforeRenderParam,
   OnBeforeRenderReturnSync,
-  OnBeforeRenderReturnAsync,
   OnBeforeRenderReturn
 } from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'

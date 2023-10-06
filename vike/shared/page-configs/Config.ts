@@ -16,7 +16,6 @@ export type { HookReturn }
 export type { OnBeforeRender }
 export type { OnBeforeRenderParam }
 export type { OnBeforeRenderReturnSync }
-export type { OnBeforeRenderReturnAsync }
 export type { OnBeforeRenderReturn }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
@@ -69,15 +68,15 @@ type HookReturn<Name extends keyof Config> = HookReturnAsync<Name>
 
 // NOTE(aurelien): to be extended. I'm wondering if this is all worth it as I'm wondering if people
 // will/should really use this style.
+/** https://vite.dev/onBeforeRender#typescript */
 type OnBeforeRenderParam = PageContextServer
-// NOTE(aurelien): unfortunately the user can't use directly `OnBeforeRenderReturnType` but needs
-// to explicitly select either the Async or the Sync version.
-type OnBeforeRenderReturnType = OptionalPromise<{ pageContext: Partial<Vike.PageContext> } | void>
-type OnBeforeRenderReturnAsync = Extract<OnBeforeRenderReturnType, Promise<any>>
-type OnBeforeRenderReturnSync = Exclude<OnBeforeRenderReturnType, Promise<any>>
-// NOTE(aurelien): but as discussed we still provide a simpler name for Async as default.
-type OnBeforeRenderReturn = OnBeforeRenderReturnAsync
-type OnBeforeRender = (pageContext: OnBeforeRenderParam) => OnBeforeRenderReturnType
+/** https://vite.dev/onBeforeRender#typescript */
+type OnBeforeRenderReturn = Promise<{ pageContext?: Partial<Vike.PageContext> } | undefined>
+// NOTE(brillout): Purposely doing code duplication for improving that quickinfo IntelliSense shows on hover
+/** https://vite.dev/onBeforeRender#typescript */
+type OnBeforeRenderReturnSync = { pageContext?: Partial<Vike.PageContext> }
+/** https://vite.dev/onBeforeRender */
+type OnBeforeRender = (pageContext: OnBeforeRenderParam) => OnBeforeRenderReturn | OnBeforeRenderReturnSync
 
 // TODO: write docs of links below
 
