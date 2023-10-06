@@ -68,7 +68,13 @@ type HookReturn<Name extends keyof Config> = HookReturnAsync<Name>
 
 // NOTE(aurelien): to be extended. I'm wondering if this is all worth it as I'm wondering if people
 // will/should really use this style.
-/** https://vike.dev/onBeforeRender#typescript */
+/**
+ * `OnBeforeRenderParam` is an alias of `PageContextServer`:
+ *
+ *   `import type { PageContextServer } from 'vike/types'`
+ *   `type OnBeforeRenderParam = PageContextServer`
+ *
+ * https://vike.dev/onBeforeRender#typescript */
 type OnBeforeRenderParam = PageContextServer
 /** https://vike.dev/onBeforeRender#typescript */
 type OnBeforeRenderReturn = Promise<{ pageContext: Partial<Vike.PageContext> } | undefined>
