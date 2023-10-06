@@ -71,10 +71,10 @@ type HookReturn<Name extends keyof Config> = HookReturnAsync<Name>
 /** https://vite.dev/onBeforeRender#typescript */
 type OnBeforeRenderParam = PageContextServer
 /** https://vite.dev/onBeforeRender#typescript */
-type OnBeforeRenderReturn = Promise<{ pageContext?: Partial<Vike.PageContext> } | undefined>
+type OnBeforeRenderReturn = Promise<{ pageContext: Partial<Vike.PageContext> } | undefined>
 // NOTE(brillout): Purposely doing code duplication for improving that quickinfo IntelliSense shows on hover
 /** https://vite.dev/onBeforeRender#typescript */
-type OnBeforeRenderReturnSync = { pageContext?: Partial<Vike.PageContext> }
+type OnBeforeRenderReturnSync = { pageContext: Partial<Vike.PageContext> } | undefined
 /** https://vite.dev/onBeforeRender */
 type OnBeforeRender = (pageContext: OnBeforeRenderParam) => OnBeforeRenderReturn | OnBeforeRenderReturnSync
 
