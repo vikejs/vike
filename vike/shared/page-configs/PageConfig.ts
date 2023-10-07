@@ -58,6 +58,7 @@ type ConfigValueSources = Record<
 >
 type ConfigValue = {
   value: unknown
+  valueSerialized?: string
   // Is null when config value is:
   //  - computed, or
   //  - cumulative

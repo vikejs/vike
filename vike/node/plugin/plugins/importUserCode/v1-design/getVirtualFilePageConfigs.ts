@@ -1,9 +1,11 @@
 export { getVirtualFilePageConfigs }
+export { getConfigValueSerialized }
 
 import { assert, assertUsage, getPropAccessNotation, hasProp, objectEntries } from '../../../utils.js'
 import type {
   ConfigValue,
   ConfigValueSource,
+  DefinedAtInfo,
   PageConfigBuildTime,
   PageConfigGlobalData
 } from '../../../../../shared/page-configs/PageConfig.js'
@@ -25,12 +27,7 @@ async function getVirtualFilePageConfigs(
   configVike: ConfigVikeResolved,
   isClientRouting: boolean
 ): Promise<string> {
-  const { pageConfigs, pageConfigGlobal } = await getVikeConfig(
-    userRootDir,
-    isDev,
-    configVike.extensions,
-    true
-  )
+  const { pageConfigs, pageConfigGlobal } = await getVikeConfig(userRootDir, isDev, configVike.extensions, true)
   return getContent(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
 }
 
@@ -54,7 +51,9 @@ function getContent(
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(
-      `    loadConfigValuesAll: async () => (await import(${JSON.stringify(virtualFileIdPageConfigValuesAll)})).default,`
+      `    loadConfigValuesAll: async () => (await import(${JSON.stringify(
+        virtualFileIdPageConfigValuesAll
+      )})).default,`
     )
 
     lines.push(`    configValues: {`)
@@ -65,22 +64,21 @@ function getContent(
         assert(configEnv, configName)
         if (!isConfigEnvMatch(configEnv, isForClientSide, isClientRouting)) return
         const { value, definedAtInfo } = configValue
-        // TODO: use @brillout/json-serializer
-        //  - re-use getConfigValueSerialized()?
-        const valueSerialized = JSON.stringify(value)
-        serializeConfigValue(lines, configName, { definedAtInfo }, valueSerialized)
+        const valueSerialized = getConfigValueSerialized(value, configName, definedAtInfo)
+        const configValue2 = { definedAtInfo, valueSerialized }
+        serializeConfigValue(lines, configName, configValue2)
       } else {
         const configValueSource = sources[0]
         assert(configValueSource)
         if (configValueSource.configEnv === '_routing-eager') {
           const { definedAtInfo } = configValueSource
-          const configValue = { configName, definedAtInfo }
           assert(!configValueSource.isComputed)
           const { filePath, fileExportPath } = configValueSource.definedAtInfo
           const [exportName] = fileExportPath
           assert(exportName)
           const configValueEagerImport = getConfigValueEagerImport(filePath, exportName, importStatements)
-          serializeConfigValue(lines, configName, configValue, configValueEagerImport)
+          const configValue = { definedAtInfo, value: configValueEagerImport }
+          serializeConfigValue(lines, configName, configValue)
         }
       }
     })
@@ -127,21 +125,14 @@ function getContent(
   return code
 }
 
-function serializeConfigValue(
-  lines: string[],
-  configName: string,
-  configValue: Omit<ConfigValue, 'value'>,
-  valueSerialized: string
-) {
+function serializeConfigValue(lines: string[], configName: string, configValue: Omit<ConfigValue, 'value'>) {
   let whitespace = '      '
   lines.push(`${whitespace}['${configName}']: {`)
   whitespace += '  '
 
-  lines.push(`${whitespace}  value: ${valueSerialized},`)
   Object.entries(configValue).forEach(([key, val]) => {
-    if (key === 'value') return
-    // if (val === undefined) return
-    lines.push(`${whitespace}  ${key}: ${JSON.stringify(val)},`)
+    const valSerialized = key === 'value' || key === 'valueSerialized' ? val : JSON.stringify(val)
+    lines.push(`${whitespace}  ${key}: ${valSerialized},`)
   })
 
   whitespace = whitespace.slice(2)
@@ -167,7 +158,7 @@ function serializeConfigValueSource(
   if (isConfigEnvMatch(configEnv, isForClientSide, isClientRouting) || eager) {
     if ('value' in configValueSource) {
       const { value } = configValueSource
-      const valueSerialized = getConfigValueSerialized(value, configName, definedAtInfo.filePath)
+      const valueSerialized = getConfigValueSerialized(value, configName, definedAtInfo)
       lines.push(`${whitespace}  valueSerialized: ${valueSerialized}`)
     } else if (eager) {
       const { filePath, fileExportPath } = configValueSource.definedAtInfo
@@ -180,19 +171,27 @@ function serializeConfigValueSource(
   lines.push(`${whitespace}},`)
   return lines.join('\n')
 }
-function getConfigValueSerialized(value: unknown, configName: string, configDefinedByFile: string): string {
+function getConfigValueSerialized(value: unknown, configName: string, definedAtInfo: null | DefinedAtInfo): string {
   let configValueSerialized: string
   const valueName = `config${getPropAccessNotation(configName)}`
   try {
     configValueSerialized = stringify(value, { valueName })
   } catch (err) {
     assert(hasProp(err, 'messageCore', 'string'))
+
+    // definedAtInfo is null when config value is:
+    //  - computed => all computed values defined by Vike can are serializable
+    //  - cumulative => the values are already ensured to be serializable
+    assert(definedAtInfo)
+
+    const configDefinedByFile = definedAtInfo.filePath
+    assert(configDefinedByFile)
     assertUsage(
       false,
       [
-        `The value of the config ${pc.cyan(configName)} cannot be defined inside the file ${configDefinedByFile}.`,
-        `Its value must be defined in an another file and then imported by ${configDefinedByFile} (because it isn't serializable: ${err.messageCore}).`,
-        `Only serializable config values can be defined inside ${configDefinedByFile}, see https://vike.dev/header-file.`
+        `The value of the config ${pc.cyan(configName)} cannot be defined inside the file ${configDefinedByFile}:`,
+        `its value must be defined in an another file and then imported by ${configDefinedByFile}. (Because the value isn't serializable: ${err.messageCore}.)`,
+        `Only serializable config values can be defined inside +config.h.js files, see https://vike.dev/header-file.`
       ].join(' ')
     )
   }
