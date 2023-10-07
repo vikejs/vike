@@ -475,9 +475,7 @@ function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
   const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash)
   if (!urlNormalized) return null
   logRuntimeInfo?.(
-    `URL normalized from ${pc.cyan(urlOriginal)} to ${pc.cyan(
-      urlNormalized
-    )} (https://vike.dev/url-normalization)`,
+    `URL normalized from ${pc.cyan(urlOriginal)} to ${pc.cyan(urlNormalized)} (https://vike.dev/url-normalization)`,
     httpRequestId,
     'info'
   )

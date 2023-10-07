@@ -767,11 +767,10 @@ const __streamPipeNode = '__streamPipeNode'
 type StreamPipeNodeWrapped = { [__streamPipeNode]: StreamPipeNode }
 /** @deprecated */
 function pipeNodeStream(pipe: StreamPipeNode): StreamPipeNodeWrapped {
-  assertWarning(
-    false,
-    'pipeNodeStream() is outdated, use stampPipe() instead. See https://vike.dev/stream',
-    { onlyOnce: true, showStackTrace: true }
-  )
+  assertWarning(false, 'pipeNodeStream() is outdated, use stampPipe() instead. See https://vike.dev/stream', {
+    onlyOnce: true,
+    showStackTrace: true
+  })
   return { [__streamPipeNode]: pipe }
 }
 function getStreamPipeNode(thing: StreamPipeNodeWrapped | StreamPipeNode): StreamPipeNode

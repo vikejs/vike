@@ -22,11 +22,9 @@ const linkPrefetchHandlerAdded = new Map<HTMLElement, true>()
  * @param url - The URL of the page you want to prefetch.
  */
 async function prefetch(url: string): Promise<void> {
-  assertUsage(
-    checkIfClientRouting(),
-    'prefetch() only works with Client Routing, see https://vike.dev/prefetch',
-    { showStackTrace: true }
-  )
+  assertUsage(checkIfClientRouting(), 'prefetch() only works with Client Routing, see https://vike.dev/prefetch', {
+    showStackTrace: true
+  })
   assertUsage(
     !isExternalLink(url),
     `You are trying to prefetch the URL ${url} of another domain which cannot be prefetched`,

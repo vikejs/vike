@@ -77,11 +77,9 @@ function transpileImports(codeOriginal: string, filePath: FilePath, isValueFile:
   const { code, fileImports } = res
   if (!isHeader) {
     const filePathCorrect = appendHeaderFileExtension(filePathToShowToUser)
-    assertWarning(
-      false,
-      `Rename ${filePathToShowToUser} to ${filePathCorrect}, see https://vike.dev/header-file`,
-      { onlyOnce: true }
-    )
+    assertWarning(false, `Rename ${filePathToShowToUser} to ${filePathCorrect}, see https://vike.dev/header-file`, {
+      onlyOnce: true
+    })
   }
   return { code, fileImports }
 }

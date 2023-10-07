@@ -1044,9 +1044,9 @@ function checkOutdatedOptions(options: {
   ;(['base', 'outDir'] as const).forEach((prop) => {
     assertWarning(
       options[prop] === undefined,
-      `[prerender()] Option ${pc.cyan(
+      `[prerender()] Option ${pc.cyan(prop)} is outdated and has no effect (vike now automatically determines ${pc.cyan(
         prop
-      )} is outdated and has no effect (vike now automatically determines ${pc.cyan(prop)})`,
+      )})`,
       {
         showStackTrace: true,
         onlyOnce: true

@@ -10,10 +10,7 @@ describe('resolveRouteString', () => {
     expect(r('/a', '/a')).toEqual({ routeParams: {} })
     expect(r('/', '/')).toEqual({ routeParams: {} })
 
-    expectErr(
-      () => r('', '/a/b/c'),
-      `[vike][Wrong Usage] Invalid Route String '' (empty string): set it to / instead`
-    )
+    expectErr(() => r('', '/a/b/c'), `[vike][Wrong Usage] Invalid Route String '' (empty string): set it to / instead`)
     expectErr(
       () => r('a', '/a/b/c'),
       `[vike][Wrong Usage] Invalid Route String a: Route Strings should start with a leading slash / (or be *)`

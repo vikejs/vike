@@ -24,10 +24,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod', isCJS?
     expect(html).toContain('<h1>Welcome</h1>')
     expectHtmlCommon(html)
     if (isCJS) {
-      expectLog(
-        'package.json#type to "module", see https://vike.dev/CJS',
-        (log) => log.logSource === 'stderr'
-      )
+      expectLog('package.json#type to "module", see https://vike.dev/CJS', (log) => log.logSource === 'stderr')
     }
   })
 
