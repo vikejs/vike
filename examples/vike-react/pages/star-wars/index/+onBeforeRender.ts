@@ -16,7 +16,7 @@ async function onBeforeRender() {
         movies: filterMoviesData(movies)
       },
       // The page's <title>
-      title: getTitle(movies)
+      // title: getTitle(movies)
     }
   }
 }
