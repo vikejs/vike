@@ -3,11 +3,10 @@ export { getPageConfig }
 export { getConfigDefinedAtString }
 export { getConfigDefinedAtInfo }
 export { getDefinedAtString }
-export { defineVikeConfig }
 
 import { assert, assertUsage, getValuePrintable } from '../utils.js'
 import type { DefinedAtInfo, PageConfig, PageConfigCommon } from './PageConfig.js'
-import type { Config, ConfigNameBuiltIn } from './Config.js'
+import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
 
@@ -111,12 +110,4 @@ function getDefinedAtString(definedAtInfo: DefinedAtInfo, append?: 'effect'): st
     definedAt = `${definedAt} > (${pc.blue(append)})`
   }
   return definedAt
-}
-
-/**
- * Define the Vike configuration. Must be the default export in a `+config.ts` file.
- * @param config A Vike configuration Object
- */
-function defineVikeConfig(config: Config) {
-  return config
 }
