@@ -68,7 +68,7 @@ function assertConfigValueType(
   const problem =
     valuePrintable !== null ? (`value ${pc.cyan(valuePrintable)}` as const) : (`type ${pc.cyan(typeActual)}` as const)
   const configDefinedAt = getConfigDefinedAtString(configName, { definedAtInfo }, true)
-  assertUsage(false, `${configDefinedAt} has an invalid ${problem}: is should be a ${pc.cyan(type)} instead`)
+  assertUsage(false, `${configDefinedAt} has an invalid ${problem}: it should be a ${pc.cyan(type)} instead`)
 }
 
 type ConfigDefinedAtUppercase<ConfigName extends string> = `Config ${ConfigName}${string}`
