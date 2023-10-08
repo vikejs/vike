@@ -1,23 +1,23 @@
 import { resolveRouteString } from './resolveRouteString.js'
 import { stripAnsi } from '../../utils/stripAnsi.js'
-import { expect, describe, it, assert } from 'vitest'
+import { expect, describe, it } from 'vitest'
 
 const r: typeof resolveRouteString = (a, b) => resolveRouteString(a, b)
 
 describe('resolveRouteString', () => {
   /*
   it('tmp', () => {
-    expect(r('/@p', '/a')).toEqual({ routeParams: { p: 'a' } })
-    expect(r('/@p/b', '/a/b')).toEqual({ routeParams: { p: 'a' } })
     expect(r('/@p1/@p2', '/a/b')).toEqual({ routeParams: { p1: 'a', p2: 'b' } })
   })
   return
   //*/
 
   it('basics', () => {
-    expect(r('/a', '/b')).toEqual(null)
     expect(r('/a', '/a')).toEqual({ routeParams: {} })
     expect(r('/', '/')).toEqual({ routeParams: {} })
+    expect(r('/a/b', '/a/b')).toEqual({ routeParams: {} })
+    expect(r('/a/b/c/d', '/a/b/c/d')).toEqual({ routeParams: {} })
+    expect(r('/a', '/b')).toEqual(null)
   })
 
   it('parameterized routes', () => {
@@ -53,7 +53,7 @@ describe('resolveRouteString', () => {
     expect(r('/@p1/@p2', '/a/b/c')).toEqual(null)
   })
 
-  it('glob', () => {
+  it('glob - trailing', () => {
     expect(r('*', '/')).toEqual({ routeParams: { '*': '/' } })
     expect(r('/*', '/')).toEqual({ routeParams: { '*': '' } })
     expect(r('/*', '/a')).toEqual({ routeParams: { '*': 'a' } })
@@ -64,7 +64,34 @@ describe('resolveRouteString', () => {
     expect(r('*', '/a/b/c')).toEqual({ routeParams: { '*': '/a/b/c' } })
     expect(r('/a/*', '/a/b')).toEqual({ routeParams: { '*': 'b' } })
     expect(r('/a/*', '/a/b/c/d')).toEqual({ routeParams: { '*': 'b/c/d' } })
+    expect(r('/a/b/*', '/a/b/c/d')).toEqual({ routeParams: { '*': 'c/d' } })
     expect(r('/a/*', '/b/c')).toEqual(null)
+  })
+  it('glob - middle', () => {
+    expect(r('/a/*/c', '/a/b/c')).toEqual({ routeParams: { '*': 'b' } })
+    expect(r('/a/*/c', '/a/b/d')).toEqual(null)
+    expect(r('/a/*/e', '/a/b/c/d/e')).toEqual({ routeParams: { '*': 'b/c/d' } })
+    expect(r('/a*e', '/a/b/c/d/e')).toEqual({ routeParams: { '*': '/b/c/d/' } })
+  })
+  it('glob - multiple', () => {
+    expect(r('/a/*/c/*/e', '/a/b/c/d/e')).toEqual({ routeParams: { '*1': 'b', '*2': 'd' } })
+    expect(r('/a/*/c/*', '/a/b/c/d/e')).toEqual({ routeParams: { '*1': 'b', '*2': 'd/e' } })
+    expect(r('*a*', '/a/b/c/d/e')).toEqual({ routeParams: { '*1': '/', '*2': '/b/c/d/e' } })
+    expect(r('*a*e', '/a/b/c/d/e')).toEqual({ routeParams: { '*1': '/', '*2': '/b/c/d/' } })
+    expect(r('*a*c', '/a/b/c/d/e')).toEqual(null)
+    expect(r('*a*c*', '/a/b/c/d/e')).toEqual({ routeParams: { '*1': '/', '*2': '/b/', '*3': '/d/e' } })
+  })
+  it('glob - ambigious matching', () => {
+    expect(r('*a*c*', '/a/b/c/b/a')).toEqual({ routeParams: { '*1': '/', '*2': '/b/', '*3': '/b/a' } })
+  })
+  it('glob - BurdaForward', () => {
+    // Use case 1
+    expect(r('/some/*.html', '/some/a.html')).toEqual({ routeParams: { '*': 'a' } })
+    expect(r('/some/*.html', '/some/a/b/c.html')).toEqual({ routeParams: { '*': 'a/b/c' } })
+    // Use case 2
+    expect(r('/some/route*.html', '/some/route.html')).toEqual({ routeParams: { '*': '' } })
+    expect(r('/some/route*.html', '/some/route-a.html')).toEqual({ routeParams: { '*': '-a' } })
+    expect(r('/some/route*.html', '/some/routea/b/c.html')).toEqual({ routeParams: { '*': 'a/b/c' } })
   })
 
   it('special characters', () => {
@@ -85,54 +112,6 @@ describe('resolveRouteString', () => {
     expectErr(() => r('/a**b', '/a/b/c'), `[vike][Wrong Usage] Invalid Route String /a**b: set it to /a*b instead`)
   })
 })
-
-describe('resolveRouteString - advanced globbing', () => {
-  it('basics', () => {
-    expect(test('/a', '/a')).toEqual([])
-    expect(test('/', '/')).toEqual([])
-    expect(test('/a', '/b')).toBe(false)
-    expect(test('/a/b', '/a/b')).toEqual([])
-  })
-  it('globbing', () => {
-    expect(test('/a/*/c', '/a/b/c')).toEqual(['b'])
-    expect(test('/a/*/c', '/a/b/d')).toEqual(false)
-    expect(test('/a/*', '/a/b/c')).toEqual(['b/c'])
-    expect(test('/*', '/a')).toEqual(['a'])
-    expect(test('/*', '/a/b/c/d')).toEqual(['a/b/c/d'])
-    expect(test('/a/*', '/a/b/c/d')).toEqual(['b/c/d'])
-    expect(test('/a/b/*', '/a/b/c/d')).toEqual(['c/d'])
-    expect(test('/a/b/c/d', '/a/b/c/d')).toEqual([])
-    expect(test('/a/*/c/*/e', '/a/b/c/d/e')).toEqual(['b', 'd'])
-    expect(test('/a/*/c/*', '/a/b/c/d/e')).toEqual(['b', 'd/e'])
-    expect(test('/a/*/e', '/a/b/c/d/e')).toEqual(['b/c/d'])
-  })
-  it('globbing - inside segment', () => {
-    expect(test('/a*e', '/a/b/c/d/e')).toEqual(['/b/c/d/'])
-  })
-  it('BurdaForward', () => {
-    // Use case 1
-    expect(test('/some/*.html', '/some/a.html')).toEqual(['a'])
-    expect(test('/some/*.html', '/some/a/b/c.html')).toEqual(['a/b/c'])
-    expect(test('/some/*.html', '/some/a/b/c.html')).toEqual(['a/b/c'])
-    // Use case 2
-    expect(test('/some/route*.html', '/some/route.html')).toEqual([''])
-    expect(test('/some/route*.html', '/some/route-a.html')).toEqual(['-a'])
-    expect(test('/some/route*.html', '/some/routea/b/c.html')).toEqual(['a/b/c'])
-  })
-})
-
-function test(routeString: string, urlPathname: string): false | string[] {
-  const res = resolveRouteString(routeString, urlPathname)
-  if (!res) return false
-  const globs: string[] = []
-  Object.entries(res.routeParams).forEach(([key, val]) => {
-    assert(key.startsWith('*'))
-    key = key.slice(1)
-    const i = key === '' ? 0 : parseInt(key, 10) - 1
-    globs[i] = val
-  })
-  return globs
-}
 
 function expectErr(fn: Function, errMsg: string) {
   {
