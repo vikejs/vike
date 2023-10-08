@@ -79,25 +79,13 @@ describe('resolveRouteString', () => {
     expect(r('/*', '/¥')).toEqual({ routeParams: { '*': '¥' } })
   })
 
-  return
   it('invalid route string', () => {
     expectErr(() => r('', '/a/b/c'), `[vike][Wrong Usage] Invalid Route String '' (empty string): set it to / instead`)
-    expectErr(
-      () => r('a', '/a/b/c'),
-      `[vike][Wrong Usage] Invalid Route String a: Route Strings should start with a leading slash / (or be *)`
-    )
-    expectErr(
-      () => r('/a/*/c/*', '/a/b/c'),
-      `[vike][Wrong Usage] Invalid Route String /a/*/c/*: Route Strings aren't allowed to contain more than one glob * (use a Route Function instead)`
-    )
-    expectErr(
-      () => r('/a/*/c', '/a/b/c'),
-      `[vike][Wrong Usage] Invalid Route String /a/*/c: make sure it ends with * or use a Route Function`
-    )
+    expectErr(() => r('a', '/a/b/c'), `[vike][Wrong Usage] Invalid Route String a: it should start with / or *`)
+    expectErr(() => r('/a**b', '/a/b/c'), `[vike][Wrong Usage] Invalid Route String /a**b: set it to /a*b instead`)
   })
 })
 
-//if (false)
 describe('resolveRouteString - advanced globbing', () => {
   it('basics', () => {
     expect(test('/a', '/a')).toEqual([])

@@ -14,22 +14,24 @@ const PARAM_TOKEN_OLD = ':'
 
 function assertRouteString(routeString: string, errPrefix: `${string}Invalid` | `${string}invalid` = 'Invalid') {
   assert(errPrefix.endsWith('Invalid') || errPrefix.endsWith('invalid'))
+  let errPrefix2 = `${errPrefix} Route String ${highlight(routeString)}` as const
+  assertUsage(routeString !== '', `${errPrefix2} (empty string): set it to ${highlight('/')} instead`)
   assertUsage(
-    routeString !== '',
-    `${errPrefix} Route String ${highlight(routeString)} (empty string): set it to ${highlight('/')} instead`
+    ['/', '*'].includes(routeString[0]!),
+    `${errPrefix2}: it should start with ${highlight('/')} or ${highlight('*')}`
   )
   assertUsage(
-    routeString.startsWith('/') || routeString === '*',
-    `${errPrefix} Route String ${highlight(routeString)}: Route Strings should start with a leading slash ${highlight(
-      '/'
-    )} (or be ${highlight('*')})`
+    !routeString.includes('**'),
+    `${errPrefix2}: set it to ${highlight(routeString.split('**').join('*'))} instead`
   )
 }
 
 // TODO: precedence
 function resolveRouteString(routeString: string, urlPathname: string): null | { routeParams: Record<string, string> } {
+  assertRouteString(routeString)
+
   const segments = getRouteSegments(routeString)
-  //*
+  /*
   console.log()
   console.log('routeString', routeString)
   console.log('urlPathname', urlPathname)
@@ -54,10 +56,6 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
 
   for (const segmentIdx in segments) {
     const segment = segments[segmentIdx]!
-    /*
-    console.log('routeSegment', routeSegment)
-    console.log('urlRest', urlRest)
-    */
     if (segment.static) {
       const { s } = segment
       if (!isGlobbing) {
@@ -76,10 +74,8 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
       const [match, ...rest] = urlRest.split('/')
       if (!match) return null
       routeParams[segment.s] = match
-      console.log('urlRest', urlRest)
       urlRest = rest.join('/')
       if (urlRest) urlRest = '/' + urlRest
-      console.log('urlRest', urlRest)
     } else {
       assert(segment.glob)
       pushGlob()
@@ -133,17 +129,16 @@ function getRouteSegments(routeString: string) {
     if (isParam(s)) {
       assertWarning(
         !s.startsWith(PARAM_TOKEN_OLD),
-        `Outdated Route String ${pc.cyan(routeString)}, use ${pc.cyan(
+        `Outdated Route String ${highlight(routeString)}, use ${highlight(
           routeString.split(PARAM_TOKEN_OLD).join(PARAM_TOKEN_NEW)
-        )} instead.`,
+        )} instead`,
         { onlyOnce: true }
       )
       segments.push({ param: true, s: s.slice(1) })
       if (isNotLast) segments.push({ static: true, s: '/' })
     } else {
       if (isNotLast) s += '/'
-      const parts2 = s.split('*')
-      parts2.forEach((s, i) => {
+      s.split('*').forEach((s, i) => {
         if (i !== 0) segments.push({ glob: true })
         if (s !== '') {
           const segmentLast = segments[segments.length - 1]
@@ -159,52 +154,6 @@ function getRouteSegments(routeString: string) {
   return segments
 }
 
-function resolveRouteStringOld(
-  routeString: string,
-  urlPathname: string
-): null | { routeParams: Record<string, string> } {
-  assertRouteString(routeString)
-  assert(urlPathname.startsWith('/'))
-
-  const routeSegments = routeString.split('/')
-  const urlSegments = urlPathname.split('/')
-
-  const routeParams: Record<string, string> = {}
-
-  assertGlob(routeString)
-
-  if (routeString === '*') {
-    routeString = '/*'
-  }
-
-  for (let i = 0; i < Math.max(routeSegments.length, urlSegments.length); i++) {
-    const routeSegment = routeSegments[i]
-    const urlSegment = urlSegments[i]
-    if (routeSegment === '*') {
-      routeParams['*'] = urlSegments.slice(Math.max(1, i)).join('/')
-      return { routeParams }
-    } else if (routeSegment && isParam(routeSegment)) {
-      assertWarning(
-        !routeSegment.startsWith(PARAM_TOKEN_OLD),
-        `Outdated Route String ${pc.cyan(routeString)}, use ${pc.cyan(
-          routeString.split(PARAM_TOKEN_OLD).join(PARAM_TOKEN_NEW)
-        )} instead.`,
-        { onlyOnce: true }
-      )
-      if (!urlSegment) {
-        return null
-      }
-      routeParams[routeSegment.slice(1)] = urlSegment
-    } else {
-      if ((routeSegment || '') !== (urlSegment || '')) {
-        return null
-      }
-    }
-  }
-
-  return { routeParams }
-}
-
 function getUrlFromRouteString(routeString: string): null | string {
   assert(routeString.startsWith('/'))
   if (isStaticRouteString(routeString)) {
@@ -214,19 +163,6 @@ function getUrlFromRouteString(routeString: string): null | string {
   return null
 }
 
-function assertGlob(routeString: string) {
-  const numberOfGlobChars = routeString.split('*').length - 1
-  assertUsage(
-    numberOfGlobChars <= 1,
-    `Invalid Route String ${highlight(
-      routeString
-    )}: Route Strings aren't allowed to contain more than one glob ${highlight('*')} (use a Route Function instead)`
-  )
-  assertUsage(
-    numberOfGlobChars === 0 || (numberOfGlobChars === 1 && routeString.endsWith('*')),
-    `Invalid Route String ${highlight(routeString)}: make sure it ends with ${highlight('*')} or use a Route Function`
-  )
-}
 function analyzeRouteString(routeString: string) {
   const routeSegments = routeString.split('/').filter((routeSegment) => routeSegment !== '' && routeSegment !== '*')
 
