@@ -28,12 +28,12 @@ function assertRouteString(routeString: string, errPrefix: `${string}Invalid` | 
 
 // TODO: precedence
 function resolveRouteString(routeString: string, urlPathname: string): null | { routeParams: Record<string, string> } {
-  const routeSegments = splitRouteString(routeString)
+  const segments = getRouteSegments(routeString)
   //*
   console.log()
   console.log('routeString', routeString)
   console.log('urlPathname', urlPathname)
-  console.log('routeSegments', routeSegments)
+  console.log('routeSegments', segments)
   //*/
   let urlRest = urlPathname
 
@@ -45,65 +45,54 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
         match: string[]
         isTrailingGlob?: true
       } = false
-  let isParam: false | string = false
   const pushGlob = () => {
     if (isGlobbing) {
       globs.push(isGlobbing.match.join('/'))
       isGlobbing = false
     }
   }
-  const pushParam = (match: string) => {
-    if (match!.includes('/')) return true
-    assert(isParam)
-    routeParams[isParam] = match!
-    isParam = false
-  }
 
-  for (const routeIndex in routeSegments) {
-    const routeSegment = routeSegments[routeIndex]!
+  for (const segmentIdx in segments) {
+    const segment = segments[segmentIdx]!
     /*
     console.log('routeSegment', routeSegment)
     console.log('urlRest', urlRest)
     */
-    if (routeSegment.static) {
-      const { s } = routeSegment
-      if (!isGlobbing && !isParam) {
+    if (segment.static) {
+      const { s } = segment
+      if (!isGlobbing) {
         if (!urlRest.startsWith(s)) return null
         urlRest = urlRest.slice(s.length)
       } else {
         if (!urlRest.includes(s)) return null
         const [match, ...rest] = urlRest.split(s)
-        if (isParam) {
-          const failed = pushParam(match!)
-          if (failed) return null
-        }
         if (isGlobbing) {
           isGlobbing.match.push(match!)
           pushGlob()
         }
         urlRest = rest.join(s)
       }
-    } else if (routeSegment.param) {
-      isParam = routeSegment.s
+    } else if (segment.param) {
+      const [match, ...rest] = urlRest.split('/')
+      if (!match) return null
+      routeParams[segment.s] = match
+      console.log('urlRest', urlRest)
+      urlRest = rest.join('/')
+      if (urlRest) urlRest = '/' + urlRest
+      console.log('urlRest', urlRest)
     } else {
-      assert(routeSegment.glob)
+      assert(segment.glob)
       pushGlob()
       isGlobbing = { match: [] }
       // TODO: remove
-      if (routeIndex === String(routeSegments.length - 1)) {
+      if (segmentIdx === String(segments.length - 1)) {
         isGlobbing.isTrailingGlob = true
       }
     }
   }
 
-  if (urlRest && !isGlobbing && !isParam) {
+  if (urlRest && !isGlobbing) {
     return null
-  }
-  if (isParam) {
-    if (!urlRest) return null
-    if (urlRest.endsWith('/') && urlRest !== '/') urlRest = urlRest.slice(0, -1)
-    const failed = pushParam(urlRest)
-    if (failed) return null
   }
   if (isGlobbing) {
     isGlobbing.match.push(urlRest)
@@ -136,10 +125,11 @@ type Segment =
       param: true
       s: string
     }
-function splitRouteString(routeString: string) {
+function getRouteSegments(routeString: string) {
   const segments: Segment[] = []
   const parts = routeString.split('/')
   parts.forEach((s, i) => {
+    const isNotLast = i !== parts.length - 1
     if (isParam(s)) {
       assertWarning(
         !s.startsWith(PARAM_TOKEN_OLD),
@@ -149,10 +139,9 @@ function splitRouteString(routeString: string) {
         { onlyOnce: true }
       )
       segments.push({ param: true, s: s.slice(1) })
+      if (isNotLast) segments.push({ static: true, s: '/' })
     } else {
-      // TODO: simplify?
-      if (i !== parts.length - 1) s += '/'
-      if (segments[segments.length - 1]?.param) s = '/' + s
+      if (isNotLast) s += '/'
       const parts2 = s.split('*')
       parts2.forEach((s, i) => {
         if (i !== 0) segments.push({ glob: true })

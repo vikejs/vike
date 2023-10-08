@@ -5,6 +5,15 @@ import { expect, describe, it, assert } from 'vitest'
 const r: typeof resolveRouteString = (a, b) => resolveRouteString(a, b)
 
 describe('resolveRouteString', () => {
+  /*
+  it('tmp', () => {
+    expect(r('/@p', '/a')).toEqual({ routeParams: { p: 'a' } })
+    expect(r('/@p/b', '/a/b')).toEqual({ routeParams: { p: 'a' } })
+    expect(r('/@p1/@p2', '/a/b')).toEqual({ routeParams: { p1: 'a', p2: 'b' } })
+  })
+  return
+  //*/
+
   it('basics', () => {
     expect(r('/a', '/b')).toEqual(null)
     expect(r('/a', '/a')).toEqual({ routeParams: {} })
@@ -38,7 +47,6 @@ describe('resolveRouteString', () => {
     expect(r('/a/b/@p', '/a/c')).toEqual(null)
     expect(r('/a/b/@p', '/a')).toEqual(null)
 
-    return
     expect(r('/@p1/@p2', '/a/b')).toEqual({ routeParams: { p1: 'a', p2: 'b' } })
     expect(r('/@p1/@p2', '/a/b/')).toEqual({ routeParams: { p1: 'a', p2: 'b' } })
     expect(r('/@p1/@p2', '/a/b/c/d')).toEqual(null)
@@ -88,6 +96,8 @@ describe('resolveRouteString', () => {
     )
   })
 })
+
+//if (false)
 describe('resolveRouteString - advanced globbing', () => {
   it('basics', () => {
     expect(test('/a', '/a')).toEqual([])
