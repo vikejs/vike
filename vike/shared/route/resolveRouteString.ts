@@ -13,7 +13,6 @@ const PARAM_TOKEN_NEW = '@'
 const PARAM_TOKEN_OLD = ':'
 
 function assertRouteString(routeString: string, errPrefix: `${string}Invalid` | `${string}invalid` = 'Invalid') {
-  assert(errPrefix.endsWith('Invalid') || errPrefix.endsWith('invalid'))
   let errPrefix2 = `${errPrefix} Route String ${highlight(routeString)}` as const
   assertUsage(routeString !== '', `${errPrefix2} (empty string): set it to ${highlight('/')} instead`)
   assertUsage(
@@ -30,25 +29,21 @@ function assertRouteString(routeString: string, errPrefix: `${string}Invalid` | 
 function resolveRouteString(routeString: string, urlPathname: string): null | { routeParams: Record<string, string> } {
   assertRouteString(routeString)
 
-  const segments = getRouteSegments(routeString)
-  const routeParams: Record<string, string> = {}
+  const segments = parse(routeString)
   const routeRegexStrInner: string = segments
     .map((segment) => {
       if (segment.static) {
-        return escapeRegex(segment.s)
-      }
-      if (segment.glob) {
-        return '.*'
+        return escapeRegex(segment.static)
       }
       if (segment.param) {
         return '[^/]+'
       }
-      assert(false)
+      // segement.glob
+      return '.*'
     })
     .map((s) => `(${s})`)
     .join('')
-  const routeRegexStr = `^${routeRegexStrInner}/?$`
-  const routeRegex = new RegExp(routeRegexStr)
+  const routeRegex = new RegExp(`^${routeRegexStrInner}/?$`)
   const routeRegexMatch = urlPathname.match(routeRegex)
 
   /*
@@ -61,23 +56,22 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
   //*/
 
   if (!routeRegexMatch) return null
+
+  const routeParams: Record<string, string> = {}
   const [_, ...segmentsValue] = routeRegexMatch
-  assert(segmentsValue.length === segments.length)
   let globIdx = 0
   const hasMultipleGlobs = segments.filter((segment) => segment.glob).length > 1
   segments.forEach((segment, i) => {
     if (segment.param) {
-      routeParams[segment.s] = segmentsValue[i]!
+      routeParams[segment.param] = segmentsValue[i]!
     }
     if (segment.glob) {
       const param = `*${hasMultipleGlobs ? ++globIdx : ''}` as const
       routeParams[param] = segmentsValue[i]!
     }
   })
-
   return { routeParams }
 }
-// TODO: simplify
 type Segment =
   | {
       glob: true
@@ -86,17 +80,15 @@ type Segment =
     }
   | {
       glob?: undefined
-      static: true
+      static: string
       param?: undefined
-      s: string
     }
   | {
       glob?: undefined
       static?: undefined
-      param: true
-      s: string
+      param: string
     }
-function getRouteSegments(routeString: string) {
+function parse(routeString: string) {
   const segments: Segment[] = []
   const parts = routeString.split('/')
   parts.forEach((s, i) => {
@@ -109,8 +101,8 @@ function getRouteSegments(routeString: string) {
         )} instead`,
         { onlyOnce: true }
       )
-      segments.push({ param: true, s: s.slice(1) })
-      if (isNotLast) segments.push({ static: true, s: '/' })
+      segments.push({ param: s.slice(1) })
+      if (isNotLast) segments.push({ static: '/' })
     } else {
       if (isNotLast) s += '/'
       s.split('*').forEach((s, i) => {
@@ -118,9 +110,9 @@ function getRouteSegments(routeString: string) {
         if (s !== '') {
           const segmentLast = segments[segments.length - 1]
           if (segmentLast?.static) {
-            segmentLast.s += s
+            segmentLast.static += s
           } else {
-            segments.push({ static: true, s })
+            segments.push({ static: s })
           }
         }
       })
