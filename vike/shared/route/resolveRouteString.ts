@@ -3,6 +3,7 @@ export { getUrlFromRouteString }
 export { isStaticRouteString }
 export { analyzeRouteString }
 export { assertRouteString }
+export { parseRouteString }
 
 import { assertWarning, isBrowser, escapeRegex } from '../utils.js'
 import { assert, assertUsage } from './utils.js'
@@ -25,11 +26,10 @@ function assertRouteString(routeString: string, errPrefix: `${string}Invalid` | 
   )
 }
 
-// TODO: precedence
 function resolveRouteString(routeString: string, urlPathname: string): null | { routeParams: Record<string, string> } {
   assertRouteString(routeString)
 
-  const segments = parse(routeString)
+  const segments = parseRouteString(routeString)
   const routeRegexStrInner: string = segments
     .map((segment) => {
       if (segment.param) {
@@ -50,7 +50,7 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
   const routeRegex = new RegExp(`^${routeRegexStrInner}/?$`)
   const routeRegexMatch = urlPathname.match(routeRegex)
 
-  /*
+  /* DEBUG
   console.log()
   console.log('routeString', routeString)
   console.log('urlPathname', urlPathname)
@@ -96,7 +96,7 @@ type Segment =
       static?: undefined
       param: string
     }
-function parse(routeString: string) {
+function parseRouteString(routeString: string) {
   const segments: Segment[] = []
   const pushStatic = (s: string) => {
     const segmentLast = segments[segments.length - 1]
@@ -147,22 +147,21 @@ function getUrlFromRouteString(routeString: string): null | string {
 }
 
 function analyzeRouteString(routeString: string) {
-  const routeSegments = routeString.split('/').filter((routeSegment) => routeSegment !== '' && routeSegment !== '*')
+  const segments = parseRouteString(routeString)
 
-  let numberOfStaticSegmentsBeginning = 0
-  for (const routeSegment of routeSegments) {
-    if (isParam(routeSegment)) {
-      break
-    }
-    numberOfStaticSegmentsBeginning++
+  const countStaticParts = (s: string | undefined): number => s?.split('/').filter(Boolean).length || 0
+
+  let numberOfStaticPartsBeginning = 0
+  for (const segment of segments) {
+    if (!segment.static) break
+    numberOfStaticPartsBeginning += countStaticParts(segment.static)
   }
 
-  const numberOfStaticSegements = routeSegments.filter((s) => !isParam(s)).length
-  const numberOfParameterSegments = routeSegments.filter((s) => isParam(s)).length
+  const numberOfStaticParts = segments.map((s) => countStaticParts(s.static)).reduce((sum, a) => sum + a, 0)
+  const numberOfParams = segments.filter((s) => s.param).length
+  const numberOfGlobs = segments.filter((s) => s.glob).length
 
-  const isCatchAll = routeString.endsWith('*')
-
-  return { numberOfParameterSegments, numberOfStaticSegmentsBeginning, numberOfStaticSegements, isCatchAll }
+  return { numberOfStaticPartsBeginning, numberOfStaticParts, numberOfParams, numberOfGlobs }
 }
 
 function isParam(routeSegment: string) {

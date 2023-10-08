@@ -2,9 +2,9 @@ export { resolvePrecendence }
 // export type { RouteMatch }
 
 import { analyzeRouteString } from './resolveRouteString.js'
-import { higherFirst } from './utils.js'
+import { higherFirst, lowerFirst } from './utils.js'
 import { makeFirst } from './utils.js'
-import { isStaticRouteString } from './resolveRouteString.js'
+import { isStaticRouteString, parseRouteString } from './resolveRouteString.js'
 import type { RouteType } from './loadPageRoutes.js'
 
 type RouteMatch = {
@@ -44,40 +44,62 @@ function sortMatches(routeMatch1: RouteMatch, routeMatch2: RouteMatch): 0 | -1 |
     return 0
   }
 
+  /* DEBUG
+  console.log('routeMatch1.routeString', routeMatch1.routeString)
+  console.log('routeMatch2.routeString', routeMatch2.routeString)
+  console.log('parseRouteString(routeMatch1.routeString)', parseRouteString(routeMatch1.routeString))
+  console.log('parseRouteString(routeMatch2.routeString)', parseRouteString(routeMatch2.routeString))
+  //*/
+
   // Return route with highest number of static path segments at beginning first
   {
-    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfStaticSegmentsBeginning
+    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfStaticPartsBeginning
     const result = higherFirst(getValue)(routeMatch1.routeString, routeMatch2.routeString)
     if (result !== 0) {
+      /* DEBUG
+      console.log('analyzeRouteString(routeMatch1.routeString).numberOfStaticPartsBeginning', getValue(routeMatch1.routeString))
+      console.log('analyzeRouteString(routeMatch2.routeString).numberOfStaticPartsBeginning', getValue(routeMatch2.routeString))
+      //*/
       return result
     }
   }
 
   // Return route with highest number of static path segments in total first
   {
-    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfStaticSegements
+    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfStaticParts
     const result = higherFirst(getValue)(routeMatch1.routeString, routeMatch2.routeString)
     if (result !== 0) {
+      /* DEBUG
+      console.log('analyzeRouteString(routeMatch1.routeString).numberOfStaticParts', getValue(routeMatch1.routeString))
+      console.log('analyzeRouteString(routeMatch2.routeString).numberOfStaticParts', getValue(routeMatch2.routeString))
+      //*/
       return result
     }
   }
 
-  // Return route with most parameter segements first
+  // Return route with least amount of globs first
   {
-    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfParameterSegments
-    const result = higherFirst(getValue)(routeMatch1.routeString, routeMatch2.routeString)
+    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfGlobs
+    const result = lowerFirst(getValue)(routeMatch1.routeString, routeMatch2.routeString)
     if (result !== 0) {
+      /* DEBUG
+      console.log('analyzeRouteString(routeMatch1.routeString).numberOfGlobs', getValue(routeMatch1.routeString))
+      console.log('analyzeRouteString(routeMatch2.routeString).numberOfGlobs', getValue(routeMatch2.routeString))
+      //*/
       return result
     }
   }
 
-  // Return catch-all routes last
+  // Return route with highest number of parameters first
   {
-    if (analyzeRouteString(routeMatch2.routeString).isCatchAll) {
-      return -1
-    }
-    if (analyzeRouteString(routeMatch1.routeString).isCatchAll) {
-      return 1
+    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfParams
+    const result = higherFirst(getValue)(routeMatch1.routeString, routeMatch2.routeString)
+    if (result !== 0) {
+      /* DEBUG
+      console.log('analyzeRouteString(routeMatch1.routeString).numberOfParams', getValue(routeMatch1.routeString))
+      console.log('analyzeRouteString(routeMatch2.routeString).numberOfParams', getValue(routeMatch2.routeString))
+      //*/
+      return result
     }
   }
 

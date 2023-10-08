@@ -3,6 +3,22 @@ import { resolveRouteString } from '../resolveRouteString.js'
 import { expect, describe, it } from 'vitest'
 
 describe('Route Strings Precedence', () => {
+  /*
+  it('tmp', () => {
+    testUrl('/product/42', '/product/@productId', [
+      //
+      '/@path/@subpath',
+      '/product/@productId'
+    ])
+    testUrl('/news/press-releases', '/news/press-releases/*', [
+      //
+      '/news/@page',
+      '/news/press-releases/*'
+    ])
+  })
+  return
+  //*/
+
   it('basics', () => {
     const routes = ['/', '/about', '/about/team', '/about/@path', '/about/*']
 
