@@ -1,3 +1,31 @@
+## [0.4.143](https://github.com/vikejs/vike/compare/v0.4.142...v0.4.143) (2023-10-08)
+
+
+### Bug Fixes
+
+* [v1 design] further use @brillout/json-serializer instead of JSON.stringify for serializing config values (fix [#1159](https://github.com/vikejs/vike/issues/1159)) ([50a417c](https://github.com/vikejs/vike/commit/50a417c7ee1319b68b6e84a4b8c8f7079ea70bcd))
+* [v1 design] make unused import an error instead of a warning (fix [#1159](https://github.com/vikejs/vike/issues/1159)) ([ac0bb99](https://github.com/vikejs/vike/commit/ac0bb99f8828d98d88a2525564b90f7c0b9eeabe))
+* [V1 design] support NodeNext import paths with file extension (fix [#1142](https://github.com/vikejs/vike/issues/1142)) ([7d2383c](https://github.com/vikejs/vike/commit/7d2383cbfd46e56f7b1b0eb9062568f1c98fe1e5))
+* add hint to error upon unknown config ([5e62d95](https://github.com/vikejs/vike/commit/5e62d95303330d8a12be4f66ad2a9c9cc252bffb))
+* fix defineConfig implementation ([#1156](https://github.com/vikejs/vike/issues/1156)) ([463fad8](https://github.com/vikejs/vike/commit/463fad89d0001958b90f7f1defcff9ec0ecb885b))
+* improve CJS warning ([aa6af48](https://github.com/vikejs/vike/commit/aa6af4861ac1f20e93fe8dab3fd9890ed609b50d))
+* improve suppressing of expected Rollup warnings ([acfc159](https://github.com/vikejs/vike/commit/acfc1590f7fa3a7a4fa230f4b7d997bf65623cc0))
+* relative URL resolving (fix [#1155](https://github.com/vikejs/vike/issues/1155)) ([937cb3b](https://github.com/vikejs/vike/commit/937cb3b8a8a0480bfe5b992db3a31fbef081739e))
+* remove problematic assertion for legacy plugin (fix [#1154](https://github.com/vikejs/vike/issues/1154)) ([279d82b](https://github.com/vikejs/vike/commit/279d82b1e99adc81b6bf09b47fa23453a34f4320))
+* remove vike from ssr.noExternal (fix [#1163](https://github.com/vikejs/vike/issues/1163)) ([86abfd5](https://github.com/vikejs/vike/commit/86abfd54091baae5a8140adb35524eb29599d653))
+* suppress expected Rollup warning about Solid transformed code (batijs/bati[#89](https://github.com/vikejs/vike/issues/89)) ([7111abb](https://github.com/vikejs/vike/commit/7111abb4d89c8ad535d963b7c9e74a969eea9aa3))
+* update @brillout/vite-plugin-import-build ([2dfbf8a](https://github.com/vikejs/vike/commit/2dfbf8aa1c82e1b198aa7ce9fd4cdf48240a7948))
+* update @brillout/vite-plugin-import-build ([e5018ae](https://github.com/vikejs/vike/commit/e5018ae5ea788a31da64ec340b3534935daec8c0))
+* update border of not-helpful-error hint ([85e89b8](https://github.com/vikejs/vike/commit/85e89b8fce58f5d54b25d3c00784bb069123fe35))
+
+
+### Features
+
+* add defineConfig helper (fix [#1156](https://github.com/vikejs/vike/issues/1156)) ([219760b](https://github.com/vikejs/vike/commit/219760ba341835f68219c4dbababd95e5be7dec8))
+* add extensive support for glob routes (closes [#1167](https://github.com/vikejs/vike/issues/1167)) ([42b51df](https://github.com/vikejs/vike/commit/42b51dfe3a1b8d40e7f28d99016363c47c8ab64e))
+
+
+
 ## [0.4.142](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.141...v0.4.142) (2023-09-22)
 
 
