@@ -4,7 +4,7 @@ export { isStaticRouteString }
 export { analyzeRouteString }
 export { assertRouteString }
 
-import { assertWarning, isBrowser } from '../utils.js'
+import { assertWarning, isBrowser, escapeRegex } from '../utils.js'
 import { assert, assertUsage } from './utils.js'
 import pc from '@brillout/picocolors'
 
@@ -31,74 +31,48 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
   assertRouteString(routeString)
 
   const segments = getRouteSegments(routeString)
-  /*
+  const routeParams: Record<string, string> = {}
+  const routeRegexStrInner: string = segments
+    .map((segment) => {
+      if (segment.static) {
+        return escapeRegex(segment.s)
+      }
+      if (segment.glob) {
+        return '.*'
+      }
+      if (segment.param) {
+        return '[^/]+'
+      }
+      assert(false)
+    })
+    .map((s) => `(${s})`)
+    .join('')
+  const routeRegexStr = `^${routeRegexStrInner}$`
+  const routeRegex = new RegExp(routeRegexStr)
+  const routeRegexMatch = urlPathname.match(routeRegex)
+
+  //*
   console.log()
   console.log('routeString', routeString)
   console.log('urlPathname', urlPathname)
   console.log('routeSegments', segments)
+  console.log('routeRegex', routeRegex)
+  console.log('routeRegexMatch', routeRegexMatch)
   //*/
-  let urlRest = urlPathname
 
-  const routeParams: Record<string, string> = {}
-  const globs: string[] = []
-  let isGlobbing:
-    | false
-    | {
-        match: string[]
-        isTrailingGlob?: true
-      } = false
-  const pushGlob = () => {
-    assert(isGlobbing)
-    globs.push(isGlobbing.match.join('/'))
-    isGlobbing = false
-  }
-
-  for (const segmentIdx in segments) {
-    const segment = segments[segmentIdx]!
-    if (segment.static) {
-      const { s } = segment
-      if (!isGlobbing) {
-        if (!urlRest.startsWith(s)) return null
-        urlRest = urlRest.slice(s.length)
-      } else {
-        if (!urlRest.includes(s)) return null
-        const [match, ...rest] = urlRest.split(s)
-        isGlobbing.match.push(match!)
-        pushGlob()
-        // console.log('urlRest', urlRest)
-        urlRest = rest.join(s)
-        // console.log('urlRest', urlRest)
-      }
-    } else if (segment.param) {
-      const [match, ...rest] = urlRest.split('/')
-      if (!match) return null
-      routeParams[segment.s] = match
-      urlRest = rest.join('/')
-      if (urlRest) urlRest = '/' + urlRest
-    } else {
-      assert(segment.glob)
-      if (isGlobbing) {
-        pushGlob()
-      }
-      isGlobbing = { match: [] }
-      // TODO: remove
-      if (segmentIdx === String(segments.length - 1)) {
-        isGlobbing.isTrailingGlob = true
-      }
+  if (!routeRegexMatch) return null
+  const [_, ...segmentsValue] = routeRegexMatch
+  assert(segmentsValue.length === segments.length)
+  let globIdx = 0
+  const hasMultipleGlobs = segments.filter((segment) => segment.glob).length > 1
+  segments.forEach((segment, i) => {
+    if (segment.param) {
+      routeParams[segment.s] = segmentsValue[i]!
     }
-  }
-
-  if (urlRest && !isGlobbing) {
-    return null
-  }
-  if (isGlobbing) {
-    isGlobbing.match.push(urlRest)
-    pushGlob()
-  }
-
-  globs.forEach((val, i) => {
-    const idx = `*${globs.length !== 1 ? i + 1 : ''}` as const
-    routeParams[idx] = val
+    if (segment.glob) {
+      const param = `*${hasMultipleGlobs ? ++globIdx : ''}` as const
+      routeParams[param] = segmentsValue[i]!
+    }
   })
 
   return { routeParams }

@@ -13,6 +13,8 @@ describe('resolveRouteString', () => {
     expect(Array.from('abaabeec'.match(/(.*)(b)(.*)(c)/)!)).toEqual(['abaabeec', 'abaa', 'b', 'ee', 'c'])
     expect(Array.from('abaabeec'.match(/(.*)(b)(.*)(beec)/)!)).toEqual(['abaabeec', 'a', 'b', 'aa', 'beec'])
     expect(Array.from('/aaaa'.match(/(\/a)(.*)(a)/)!)).toEqual(['/aaaa', '/a', 'aa', 'a'])
+    expect(Array.from('/a'.match(/^(\/)(.+)$/)!)).toEqual(['/a', '/', 'a'])
+    expect(r('/@p', '/a')).toEqual({ routeParams: { p: 'a' } })
   })
   return
   //*/
