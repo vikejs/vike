@@ -7,7 +7,7 @@ const r: typeof resolveRouteString = (a, b) => resolveRouteString(a, b)
 describe('resolveRouteString', () => {
   /*
   it('tmp', () => {
-    expect(r('/@p1/@p2', '/a/b')).toEqual({ routeParams: { p1: 'a', p2: 'b' } })
+    expect(r('/a*a', '/aaaa')).toEqual({ routeParams: { '*': 'aa' } })
   })
   return
   //*/
@@ -83,6 +83,8 @@ describe('resolveRouteString', () => {
   })
   it('glob - ambigious matching', () => {
     expect(r('*a*c*', '/a/b/c/b/a')).toEqual({ routeParams: { '*1': '/', '*2': '/b/', '*3': '/b/a' } })
+    // expect(r('/a*a', '/aaaa')).toEqual({ routeParams: { '*': 'aa' } })
+    // expect(r('*a', '/aaaa')).toEqual({ routeParams: { '*': '/aaa' } })
   })
   it('glob - BurdaForward', () => {
     // Use case 1

@@ -48,10 +48,9 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
         isTrailingGlob?: true
       } = false
   const pushGlob = () => {
-    if (isGlobbing) {
-      globs.push(isGlobbing.match.join('/'))
-      isGlobbing = false
-    }
+    assert(isGlobbing)
+    globs.push(isGlobbing.match.join('/'))
+    isGlobbing = false
   }
 
   for (const segmentIdx in segments) {
@@ -64,11 +63,11 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
       } else {
         if (!urlRest.includes(s)) return null
         const [match, ...rest] = urlRest.split(s)
-        if (isGlobbing) {
-          isGlobbing.match.push(match!)
-          pushGlob()
-        }
+        isGlobbing.match.push(match!)
+        pushGlob()
+        // console.log('urlRest', urlRest)
         urlRest = rest.join(s)
+        // console.log('urlRest', urlRest)
       }
     } else if (segment.param) {
       const [match, ...rest] = urlRest.split('/')
@@ -78,7 +77,9 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
       if (urlRest) urlRest = '/' + urlRest
     } else {
       assert(segment.glob)
-      pushGlob()
+      if (isGlobbing) {
+        pushGlob()
+      }
       isGlobbing = { match: [] }
       // TODO: remove
       if (segmentIdx === String(segments.length - 1)) {
