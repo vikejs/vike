@@ -7,14 +7,12 @@ const r: typeof resolveRouteString = (a, b) => resolveRouteString(a, b)
 describe('resolveRouteString', () => {
   //*
   it('tmp', () => {
-    expect(Array.from('abc'.match(/.*/)!)).toEqual(['abc'])
-    expect(Array.from('abc'.match(/(.*)(b)(.*)/)!)).toEqual(['abc', 'a', 'b', 'c'])
-    expect(Array.from('aaabc'.match(/(.*)(b)(.*)/)!)).toEqual(['aaabc', 'aaa', 'b', 'c'])
-    expect(Array.from('abaabeec'.match(/(.*)(b)(.*)(c)/)!)).toEqual(['abaabeec', 'abaa', 'b', 'ee', 'c'])
-    expect(Array.from('abaabeec'.match(/(.*)(b)(.*)(beec)/)!)).toEqual(['abaabeec', 'a', 'b', 'aa', 'beec'])
-    expect(Array.from('/aaaa'.match(/(\/a)(.*)(a)/)!)).toEqual(['/aaaa', '/a', 'aa', 'a'])
-    expect(Array.from('/a'.match(/^(\/)(.+)$/)!)).toEqual(['/a', '/', 'a'])
-    expect(r('/@p', '/a')).toEqual({ routeParams: { p: 'a' } })
+    //expect(Array.from('/a'.match(/^(\/)(.+)$/)!)).toEqual(['/a', '/', 'a'])
+    //expect(r('/@p', '/a')).toEqual({ routeParams: { p: 'a' } })
+
+    //expect(Array.from('/a/'.match(/^(\/)([^\/]+)(?=\/)$/)!)).toEqual(['/a/', '/', 'a'])
+    //expect(Array.from('/a/'.match(/^(\/)([^\/]+)(?=\/?)$/)!)).toEqual(['/a', '/', 'a'])
+    expect(r('/@p', '/a/')).toEqual({ routeParams: { p: 'a' } })
   })
   return
   //*/
