@@ -35,23 +35,23 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
   const routeRegexStrInner: string = segments
     .map((segment) => {
       if (segment.static) {
-        return '(' + escapeRegex(segment.s) + ')'
+        return escapeRegex(segment.s)
       }
       if (segment.glob) {
-        return '(.*)'
+        return '.*'
       }
       if (segment.param) {
-        return '([^/]+)'
+        return '[^/]+'
       }
       assert(false)
     })
-    //.map((s) => `(${s})`)
+    .map((s) => `(${s})`)
     .join('')
-  const routeRegexStr = `^${routeRegexStrInner}$`
+  const routeRegexStr = `^${routeRegexStrInner}/?$`
   const routeRegex = new RegExp(routeRegexStr)
   const routeRegexMatch = urlPathname.match(routeRegex)
 
-  //*
+  /*
   console.log()
   console.log('routeString', routeString)
   console.log('urlPathname', urlPathname)

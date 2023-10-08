@@ -5,13 +5,8 @@ import { expect, describe, it } from 'vitest'
 const r: typeof resolveRouteString = (a, b) => resolveRouteString(a, b)
 
 describe('resolveRouteString', () => {
-  //*
+  /*
   it('tmp', () => {
-    //expect(Array.from('/a'.match(/^(\/)(.+)$/)!)).toEqual(['/a', '/', 'a'])
-    //expect(r('/@p', '/a')).toEqual({ routeParams: { p: 'a' } })
-
-    //expect(Array.from('/a/'.match(/^(\/)([^\/]+)(?=\/)$/)!)).toEqual(['/a/', '/', 'a'])
-    //expect(Array.from('/a/'.match(/^(\/)([^\/]+)(?=\/?)$/)!)).toEqual(['/a', '/', 'a'])
     expect(r('/@p', '/a/')).toEqual({ routeParams: { p: 'a' } })
   })
   return
@@ -65,6 +60,7 @@ describe('resolveRouteString', () => {
     expect(r('*', '/a')).toEqual({ routeParams: { '*': '/a' } })
     expect(r('/*', '/a/b')).toEqual({ routeParams: { '*': 'a/b' } })
     expect(r('*', '/a/b')).toEqual({ routeParams: { '*': '/a/b' } })
+    expect(r('*', '/a/b/')).toEqual({ routeParams: { '*': '/a/b/' } })
     expect(r('/*', '/a/b/c')).toEqual({ routeParams: { '*': 'a/b/c' } })
     expect(r('*', '/a/b/c')).toEqual({ routeParams: { '*': '/a/b/c' } })
     expect(r('/a/*', '/a/b')).toEqual({ routeParams: { '*': 'b' } })
@@ -81,15 +77,26 @@ describe('resolveRouteString', () => {
   it('glob - multiple', () => {
     expect(r('/a/*/c/*/e', '/a/b/c/d/e')).toEqual({ routeParams: { '*1': 'b', '*2': 'd' } })
     expect(r('/a/*/c/*', '/a/b/c/d/e')).toEqual({ routeParams: { '*1': 'b', '*2': 'd/e' } })
+    expect(r('/a/*/c/*', '/a/b/c/d/e/')).toEqual({ routeParams: { '*1': 'b', '*2': 'd/e/' } })
     expect(r('*a*', '/a/b/c/d/e')).toEqual({ routeParams: { '*1': '/', '*2': '/b/c/d/e' } })
     expect(r('*a*e', '/a/b/c/d/e')).toEqual({ routeParams: { '*1': '/', '*2': '/b/c/d/' } })
     expect(r('*a*c', '/a/b/c/d/e')).toEqual(null)
     expect(r('*a*c*', '/a/b/c/d/e')).toEqual({ routeParams: { '*1': '/', '*2': '/b/', '*3': '/d/e' } })
   })
-  it('glob - ambigious matching', () => {
-    expect(r('*a*c*', '/a/b/c/b/a')).toEqual({ routeParams: { '*1': '/', '*2': '/b/', '*3': '/b/a' } })
-    // expect(r('/a*a', '/aaaa')).toEqual({ routeParams: { '*': 'aa' } })
-    // expect(r('*a', '/aaaa')).toEqual({ routeParams: { '*': '/aaa' } })
+  it('glob - edge cases', () => {
+    expect(r('/a*b*c', '/abc')).toEqual({ routeParams: { '*1': '', '*2': '' } })
+    expect(r('/a*b*c*', '/abc')).toEqual({ routeParams: { '*1': '', '*2': '', '*3': '' } })
+    expect(r('*/a*b*c*', '/abc')).toEqual({ routeParams: { '*1': '', '*2': '', '*3': '', '*4': '' } })
+  })
+  // A linear matching implementation fails with the following
+  it('glob - complex non-linear matching', () => {
+    // Only works if linear matching is greedy:
+    expect(r('*a', '/aaaa')).toEqual({ routeParams: { '*': '/aaa' } })
+    expect(r('/a*a', '/aaaa')).toEqual({ routeParams: { '*': 'aa' } })
+    // A linear matching implementation cannot handle this:
+    expect(r('/a*a*b*', '/aaaaaba')).toEqual({ routeParams: { '*1': 'aaa', '*2': '', '*3': 'a' } })
+    expect(r('/a*b*0*', '/aabcbc0')).toEqual({ routeParams: { '*1': 'abc', '*2': 'c', '*3': '' } })
+    expect(r('/a*b*0*', '/aab0cbc')).toEqual({ routeParams: { '*1': 'a', '*2': '', '*3': 'cbc' } })
   })
   it('glob - BurdaForward', () => {
     // Use case 1
