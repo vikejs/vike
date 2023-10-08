@@ -7,7 +7,7 @@ const r: typeof resolveRouteString = (a, b) => resolveRouteString(a, b)
 describe('resolveRouteString', () => {
   /*
   it('tmp', () => {
-    expect(r('/@p', '/a/')).toEqual({ routeParams: { p: 'a' } })
+    expect(r('/a/*', '/a/b')).toEqual({ routeParams: { '*': 'b' } })
   })
   return
   //*/
@@ -106,6 +106,13 @@ describe('resolveRouteString', () => {
     expect(r('/some/route*.html', '/some/route.html')).toEqual({ routeParams: { '*': '' } })
     expect(r('/some/route*.html', '/some/route-a.html')).toEqual({ routeParams: { '*': '-a' } })
     expect(r('/some/route*.html', '/some/routea/b/c.html')).toEqual({ routeParams: { '*': 'a/b/c' } })
+  })
+
+  it('trailing slash', () => {
+    expect(r('/@p', '/a/')).toEqual({ routeParams: { p: 'a' } })
+    expect(r('/a/*', '/a')).toEqual({ routeParams: { '*': '' } })
+    expect(r('/news/press-releases/*', '/news/press-releases')).toEqual({ routeParams: { '*': '' } })
+    expect(r('/news/press-releases*', '/news/press-releases')).toEqual({ routeParams: { '*': '' } })
   })
 
   it('special characters', () => {

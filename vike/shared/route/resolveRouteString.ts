@@ -32,14 +32,18 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
   const segments = parse(routeString)
   const routeRegexStrInner: string = segments
     .map((segment) => {
-      if (segment.static) {
-        return escapeRegex(segment.static)
-      }
       if (segment.param) {
         return '[^/]+'
       }
-      // segement.glob
-      return '.*'
+      if (segment.glob) {
+        if (segment.isLastDir) {
+          return '|/.*'
+        } else {
+          return '.*'
+        }
+      }
+      // segment.static
+      return escapeRegex(segment.static!)
     })
     .map((s) => `(${s})`)
     .join('')
@@ -62,12 +66,14 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
   let globIdx = 0
   const hasMultipleGlobs = segments.filter((segment) => segment.glob).length > 1
   segments.forEach((segment, i) => {
+    let val = segmentsValue[i]!
     if (segment.param) {
-      routeParams[segment.param] = segmentsValue[i]!
+      routeParams[segment.param] = val
     }
     if (segment.glob) {
       const param = `*${hasMultipleGlobs ? ++globIdx : ''}` as const
-      routeParams[param] = segmentsValue[i]!
+      if (segment.isLastDir) val = val.slice(1)
+      routeParams[param] = val
     }
   })
   return { routeParams }
@@ -75,6 +81,8 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
 type Segment =
   | {
       glob: true
+      /** Make route /a/* match URL /a */
+      isLastDir?: true
       static?: undefined
       param?: undefined
     }
@@ -90,9 +98,18 @@ type Segment =
     }
 function parse(routeString: string) {
   const segments: Segment[] = []
+  const pushStatic = (s: string) => {
+    const segmentLast = segments[segments.length - 1]
+    if (segmentLast?.static) {
+      segmentLast.static += s
+    } else {
+      segments.push({ static: s })
+    }
+  }
   const parts = routeString.split('/')
   parts.forEach((s, i) => {
-    const isNotLast = i !== parts.length - 1
+    const isFirst = i === 0
+    const isLast = i === parts.length - 1
     if (isParam(s)) {
       assertWarning(
         !s.startsWith(PARAM_TOKEN_OLD),
@@ -101,21 +118,20 @@ function parse(routeString: string) {
         )} instead`,
         { onlyOnce: true }
       )
+      if (!isFirst) pushStatic('/')
       segments.push({ param: s.slice(1) })
-      if (isNotLast) segments.push({ static: '/' })
     } else {
-      if (isNotLast) s += '/'
-      s.split('*').forEach((s, i) => {
-        if (i !== 0) segments.push({ glob: true })
-        if (s !== '') {
-          const segmentLast = segments[segments.length - 1]
-          if (segmentLast?.static) {
-            segmentLast.static += s
-          } else {
-            segments.push({ static: s })
+      if (s === '*' && isLast && routeString !== '*' && routeString !== '/*') {
+        segments.push({ glob: true, isLastDir: true })
+      } else {
+        if (!isFirst) pushStatic('/')
+        s.split('*').forEach((s, i) => {
+          if (i !== 0) segments.push({ glob: true })
+          if (s !== '') {
+            pushStatic(s)
           }
-        }
-      })
+        })
+      }
     }
   })
   return segments
