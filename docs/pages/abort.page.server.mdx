@@ -14,11 +14,11 @@ In general, we recommend using `throw render('/login')` instead of `throw redire
 
 If `throw redirect()` or `throw render()` doesn't work:
  - **Make sure `throw redirect()` / `throw render()` isn't swallowed.**  
-   In developement, check your server logs for the following log. If this log is missing then this means that vike didn't receive the `throw redirect()` / `throw render()` exception: some other code is catching and swallowing it.
+   In developement, check your server logs for the following log. If this log is missing then this means that Vike didn't receive the `throw redirect()` / `throw render()` exception: some other code is catching and swallowing it.
    ```
    10:00:00 AM [vike][request(42)] throw redirect('/some-url') intercepted while
    rendering /some-other-url
    ```
 If `throw redirect()` doesn't work:
  - **Make sure to add `pageContext.httpResponse.headers` to the HTTP response.**  
-   If you've embedded vike into your server using <Link text={<code>renderPage()</code>} href="/renderPage" />, then insepct whether `pageContext.httpResponse.headers` contains the `Location` header and double check that you're correctly adding all the headers defined by `pageContext.httpResponse.headers` to the HTTP response.
+   If you've embedded Vike into your server using <Link text={<code>renderPage()</code>} href="/renderPage" />, then insepct whether `pageContext.httpResponse.headers` contains the `Location` header and double check that you're correctly adding all the headers defined by `pageContext.httpResponse.headers` to the HTTP response.

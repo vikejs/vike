@@ -6,6 +6,7 @@ import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
 import { assertPageConfigGlobal, assertPageConfigs } from './assertPageConfigs.js'
+import { parse } from '@brillout/json-serializer/parse'
 
 function parseGlobResults(pageFilesExports: unknown): {
   pageFiles: PageFile[]
@@ -109,22 +110,21 @@ function assertLoadModule(globValue: unknown): asserts globValue is () => Promis
 }
 
 function parsePageConfigs(pageConfigs: PageConfig[]) {
-  // TODO: remove
-  /*
   pageConfigs.forEach((pageConfig) => {
-    Object.entries(pageConfig.configElements).forEach(([configName, configElement]) => {
+    Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       {
-        const { configValueSerialized } = configElement
-        if (configValueSerialized !== undefined) {
-          configElement.configValue = parse(configValueSerialized)
+        const { valueSerialized } = configValue
+        if (valueSerialized !== undefined) {
+          configValue.value = parse(valueSerialized)
         }
       }
+      /*
       if (configName === 'route') {
         assertRouteConfigValue(configElement)
       }
+      */
     })
   })
-  */
 }
 
 // TODO: use again

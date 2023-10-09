@@ -9,7 +9,7 @@ const idBaseClient = `${idBase}client:` as const
 const idBaseServer = `${idBase}server:` as const
 
 function getVirtualFileIdPageConfigValuesAll(pageId: string, isForClientSide: boolean): `${typeof idBase}${string}` {
-  const id = `${(isForClientSide ? idBaseClient : idBaseServer)}${pageId}` as const
+  const id = `${isForClientSide ? idBaseClient : idBaseServer}${pageId}` as const
   return id
 }
 function isVirtualFileIdPageConfigValuesAll(

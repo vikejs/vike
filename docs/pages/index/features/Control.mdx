@@ -4,13 +4,13 @@ With Vike, you control how your pages are rendered:
 // /pages/about.page.js
 // Environment: browser and server
 
-// vike uses Filesystem Routing: the file `/pages/about.page.js` matches the URL `/about`.
+// Vike uses Filesystem Routing: the file `/pages/about.page.js` matches the URL `/about`.
 
 // `Page` can be anything you want — typically a React/Vue/Svelte/... component.
 export function Page() {
   return <>
     <h1>About</h1>
-    <p>This is our first vike app.</p>
+    <p>This is our first Vike app.</p>
   </>
 }
 ```
@@ -25,7 +25,7 @@ import { renderToHtml } from 'my-favorite-ui-framework'
 // You control how `Page` is rendered to HTML
 export async function render({ Page }) {
   const pageHtml = await renderToHtml(Page)
-  const title = 'My first vike app'
+  const title = 'My first Vike app'
   return escapeInject`<!DOCTYPE html>
     <html>
       <head>

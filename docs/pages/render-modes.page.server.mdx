@@ -161,7 +161,7 @@ export async function render(pageContext) {
   if (
     // We detect SPAs by using the fact that `innerHTML === ''` for the first render of an SPA
     root.innerHTML === '' ||
-    // Upon Client Routing page navigation, vike sets `pageContext.isHydration`
+    // Upon Client Routing page navigation, Vike sets `pageContext.isHydration`
     // to `false`.
     !pageContext.isHydration
   ) {

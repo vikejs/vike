@@ -89,10 +89,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   })
 
   it('real use case - @vitejs/plugin-vue - SFC JavaScript', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(
-      errVueJavascript,
-      '/home/rom/code/vike/examples/vue-full-v1'
-    )
+    const formatted = getPrettyErrorWithCodeSnippet(errVueJavascript, '/home/rom/code/vike/examples/vue-full-v1')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /pages/index/+Page.vue because:
       [@vue/compiler-sfc] Missing semicolon. 

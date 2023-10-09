@@ -21,7 +21,7 @@ describe('resolveRouteStringRedirect', () => {
   it('handles invalid redirects', () => {
     expectErr(
       () => resolveRouteStringRedirect('a', 'b', '/'),
-      '[vike][Wrong Usage][vite.config.js > ssr({ redirects })] Invalid Route String a: Route Strings should start with a leading slash / (or be *)'
+      '[vike][Wrong Usage][vite.config.js > ssr({ redirects })] Invalid Route String a: it should start with / or *'
     )
     expectErr(
       () => resolveRouteStringRedirect('/a', 'b', '/'),

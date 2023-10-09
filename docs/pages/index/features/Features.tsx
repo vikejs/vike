@@ -64,8 +64,7 @@ function Features() {
                 <b>fundamentally simpler & more stable foundation</b> to build upon.
               </p>
               <p>
-                The clean cut between Vike and your UI framework (React/Vue/...) makes reasoning
-                about your app easier.
+                The clean cut between Vike and your UI framework (React/Vue/...) makes reasoning about your app easier.
               </p>
             </>
           ),
@@ -73,34 +72,31 @@ function Features() {
             <>
               <h3>Less easy, but simpler</h3>
               <p>
-                With Vike you integrate tools yourself. This usually means more work and it's
-                less easy; getting started is often slower.
+                With Vike you integrate tools yourself. This usually means more work and it's less easy; getting started
+                is often slower.
               </p>
               <p>
                 But the black box nature of frameworks like Next.js/Nuxt is limiting and requires brittle workarounds.
                 In the end, you waste time fighting the framework.
               </p>
               <p>
-                In contrast, Vike is transparent: it gets out of your way and integrating tools
-                is simply a matter of following the tool's official installation guide.
+                In contrast, Vike is transparent: it gets out of your way and integrating tools is simply a matter of
+                following the tool's official installation guide.
               </p>
-              <p>
-                In a nutshell: Vike is less easy, but simpler.
-              </p>
+              <p>In a nutshell: Vike is less easy, but simpler.</p>
               <h3>Stable foundation</h3>
               <p>
                 Frameworks need to constantly keep up with the ecosystem, whereas do-one-thing-do-it-well tools can
                 quickly stabilize.
               </p>
               <p>
-                Actually, Vike is already stable: breaking changes are only about improving the
-                design of Vike which means that you can expect your integrations to keep working
-                in the future.
+                Actually, Vike is already stable: breaking changes are only about improving the design of Vike which
+                means that you can expect your integrations to keep working in the future.
               </p>
               <h3>Clean cut</h3>
               <p>
-                There is no conflation between Vike and your UI framework (React/Vue/...). This
-                makes reasoning about your app a lot easier.
+                There is no conflation between Vike and your UI framework (React/Vue/...). This makes reasoning about
+                your app a lot easier.
               </p>
               <h3>Fun</h3>
               <p>
@@ -165,9 +161,8 @@ function Features() {
           desc: (
             <>
               <p>
-                The source code of Vike has <b>no known bugs</b>, every release is assailed
-                against a heavy suite of <b>automated tests</b>, and it's <b>used in production</b> by many
-                comp&shy;anies.
+                The source code of Vike has <b>no known bugs</b>, every release is assailed against a heavy suite of{' '}
+                <b>automated tests</b>, and it's <b>used in production</b> by many comp&shy;anies.
               </p>
             </>
           )
@@ -207,22 +202,18 @@ function Features() {
               </p>
               <h3>No black box</h3>
               <p>At scale, Next.js/Nuxt's black-box nature become painfully limiting.</p>
+              <p>In contrast, Vike is transparent: you keep control over both the server- and browser-side.</p>
               <p>
-                In contrast, Vike is transparent: you keep control over both the server- and
-                browser-side.
-              </p>
-              <p>
-                As you scale, you usually need increasingly custom SSR integrations; Vike's
-                flexibility accommodates such needs.
+                As you scale, you usually need increasingly custom SSR integrations; Vike's flexibility accommodates
+                such needs.
               </p>
               <h3>
                 Vite + SSR + Scale = <Emoji name="red-heart" />
               </h3>
               <p>
-                At (very) large scale, you can progressively replace Vike with Vite's native SSR
-                API which is lower-level and highly flexible. If you're Netflix and perfecting UX leads to a substantial
-                revenue increase, then Vike and Vite's native SSR API are what you are looking
-                for.
+                At (very) large scale, you can progressively replace Vike with Vite's native SSR API which is
+                lower-level and highly flexible. If you're Netflix and perfecting UX leads to a substantial revenue
+                increase, then Vike and Vite's native SSR API are what you are looking for.
               </p>
               <TweetsAboutScability />
             </>
@@ -276,8 +267,8 @@ function Features() {
           desc: (
             <>
               <p>
-                Vike is simple, clear, and robust: no magic, no unexpected behavior, no
-                conflation, no bugs (known in Vike's source code).
+                Vike is simple, clear, and robust: no magic, no unexpected behavior, no conflation, no bugs (known in
+                Vike's source code).
               </p>
               <p>
                 With Vike, <b>you are under control which is addictively fun</b>.
@@ -295,8 +286,8 @@ function Features() {
           desc: (
             <>
               <p>
-                Use Vike to <a href="https://vike.land/">Build Your Own Framework</a>. Hundreds
-                of lines of code are enough to build your own Next.js / Nuxt.
+                Use Vike to <a href="https://vike.land/">Build Your Own Framework</a>. Hundreds of lines of code are
+                enough to build your own Next.js / Nuxt.
               </p>
               <p>
                 Build <b>internal company frameworks</b> to scale your teams, or <b>enhance your product</b> with a

@@ -32,6 +32,8 @@ export type { ConfigEntries } from '../shared/getPageFiles/getExports.js'
 export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtmlTags.js'
 export type { DocumentHtml } from '../node/runtime/html/renderHtml.js'
 
+export { defineConfig } from './defineConfig.js'
+
 // TODO/v1-release: remove
 import type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 /** @deprecated Replace:

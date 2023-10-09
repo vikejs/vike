@@ -68,8 +68,10 @@ function buildConfig(): Plugin {
     },
     async writeBundle(options, bundle) {
       const manifestEntry = bundle[manifestTempFile]
-      if (generateManifest) {
-        assert(manifestEntry)
+      /* Fails with @vitejs/plugin-legacy because writeBundle() is called twice during the client build (once for normal client assets and a second time for legacy assets), see reproduction at https://github.com/vikejs/vike/issues/1154
+      assert(generateManifest === !!manifestEntry)
+      */
+      if (manifestEntry) {
         const { dir } = options
         assert(dir)
         const manifestFilePathOld = path.join(dir, manifestEntry.fileName)
@@ -78,8 +80,6 @@ function buildConfig(): Plugin {
         //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
         const manifestFilePathNew = path.join(dir, '..', 'assets.json')
         await fs.rename(manifestFilePathOld, manifestFilePathNew)
-      } else {
-        assert(!manifestEntry)
       }
     }
   }

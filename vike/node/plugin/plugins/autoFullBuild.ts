@@ -57,7 +57,11 @@ function autoFullBuild(): Plugin[] {
   ]
 }
 
-async function triggerFullBuild(config: ResolvedConfig, configVike: ConfigVikeResolved, bundle: Record<string, unknown>) {
+async function triggerFullBuild(
+  config: ResolvedConfig,
+  configVike: ConfigVikeResolved,
+  bundle: Record<string, unknown>
+) {
   if (config.build.ssr) return // already triggered
   if (isDisabled(configVike)) return
   // vike.json missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's build() API) => skip

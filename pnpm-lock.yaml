@@ -2633,8 +2633,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       '@brillout/vite-plugin-import-build':
-        specifier: ^0.2.18
-        version: 0.2.18
+        specifier: ^0.2.20
+        version: 0.2.20
       acorn:
         specifier: ^8.8.2
         version: 8.9.0
@@ -3444,8 +3444,8 @@ packages:
       '@brillout/import': 0.2.3
     dev: false
 
-  /@brillout/vite-plugin-import-build@0.2.18:
-    resolution: {integrity: sha512-sedZNrqIboHCeSnN7hwo34xRyP8egfMHcifixQ2YGNnQVb93884drTVE3b0vlSGz7LWumVDochKuHdWQljup9A==}
+  /@brillout/vite-plugin-import-build@0.2.20:
+    resolution: {integrity: sha512-/bdw1dg+H1nOYSy2PzYInQoZlIFP2uwyaF2GX64fyBqVAEWGopiMlnx294CbysjmP9Z+fJe48TkMzyogkyIDLw==}
     dependencies:
       '@brillout/import': 0.2.3
     dev: false
@@ -4833,7 +4833,7 @@ packages:
       rollup: 3.27.2
     dev: false
 
-  /@rollup/pluginutils@5.0.4(rollup@3.27.2):
+  /@rollup/pluginutils@5.0.4:
     resolution: {integrity: sha512-0KJnIoRI8A+a1dqOYLxH8vBf8bphDmty5QvIm2hqm7oFCFYKCAZWWd2hXgMibaPsNDhI0AtpYfQZJG47pt/k4g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -4845,7 +4845,6 @@ packages:
       '@types/estree': 1.0.1
       estree-walker: 2.0.2
       picomatch: 2.3.1
-      rollup: 3.27.2
     dev: false
 
   /@sinclair/typebox@0.27.8:
@@ -12959,7 +12958,7 @@ packages:
       '@mdit-vue/plugin-component': 0.12.1
       '@mdit-vue/plugin-frontmatter': 0.12.1
       '@mdit-vue/types': 0.12.0
-      '@rollup/pluginutils': 5.0.4(rollup@3.27.2)
+      '@rollup/pluginutils': 5.0.4
       '@types/markdown-it': 13.0.1
       markdown-it: 13.0.1
       unplugin: 1.4.0
@@ -12976,7 +12975,7 @@ packages:
       '@mdit-vue/plugin-component': 0.12.1
       '@mdit-vue/plugin-frontmatter': 0.12.1
       '@mdit-vue/types': 0.12.0
-      '@rollup/pluginutils': 5.0.4(rollup@3.27.2)
+      '@rollup/pluginutils': 5.0.4
       '@types/markdown-it': 13.0.1
       markdown-it: 13.0.1
       unplugin: 1.4.0
@@ -13278,7 +13277,7 @@ packages:
       '@brillout/json-serializer': 0.5.6
       '@brillout/picocolors': 1.0.9
       '@brillout/require-shim': 0.1.2
-      '@brillout/vite-plugin-import-build': 0.2.18
+      '@brillout/vite-plugin-import-build': 0.2.20
       acorn: 8.9.0
       cac: 6.7.14
       es-module-lexer: 1.3.0
@@ -13304,7 +13303,7 @@ packages:
       '@brillout/json-serializer': 0.5.6
       '@brillout/picocolors': 1.0.9
       '@brillout/require-shim': 0.1.2
-      '@brillout/vite-plugin-import-build': 0.2.18
+      '@brillout/vite-plugin-import-build': 0.2.20
       acorn: 8.9.0
       cac: 6.7.14
       es-module-lexer: 1.3.0
@@ -13313,6 +13312,32 @@ packages:
       sirv: 2.0.3
       source-map-support: 0.5.21
       vite: 4.3.5(@types/node@17.0.45)
+    dev: false
+
+  /vite-plugin-ssr@0.4.142(vite@4.3.9):
+    resolution: {integrity: sha512-ZDgpocnTEUmhYxGgMah8ZNK1Sfy5CFVcdXu+Ll3zRtGIPyWT5vYvASs2BLYEneqantHpde2b31Khzb0hxmP62w==}
+    engines: {node: '>=16.0.0'}
+    hasBin: true
+    peerDependencies:
+      react-streaming: '>=0.3.5'
+      vite: '>=3.1.0'
+    peerDependenciesMeta:
+      react-streaming:
+        optional: true
+    dependencies:
+      '@brillout/import': 0.2.3
+      '@brillout/json-serializer': 0.5.6
+      '@brillout/picocolors': 1.0.9
+      '@brillout/require-shim': 0.1.2
+      '@brillout/vite-plugin-import-build': 0.2.20
+      acorn: 8.9.0
+      cac: 6.7.14
+      es-module-lexer: 1.3.0
+      esbuild: 0.17.18
+      fast-glob: 3.2.12
+      sirv: 2.0.3
+      source-map-support: 0.5.21
+      vite: 4.3.9
     dev: false
 
   /vite@4.0.3:

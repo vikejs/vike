@@ -17,7 +17,8 @@ import {
   unique,
   assertWarning,
   isObject,
-  toPosixPath
+  toPosixPath,
+  assertUsage
 } from '../../../utils.js'
 import { isImportData, replaceImportStatements, type FileImport } from './replaceImportStatements.js'
 import { vikeConfigDependencies } from './getVikeConfig.js'
@@ -77,11 +78,9 @@ function transpileImports(codeOriginal: string, filePath: FilePath, isValueFile:
   const { code, fileImports } = res
   if (!isHeader) {
     const filePathCorrect = appendHeaderFileExtension(filePathToShowToUser)
-    assertWarning(
-      false,
-      `Rename ${filePathToShowToUser} to ${filePathCorrect}, see https://vike.dev/header-file`,
-      { onlyOnce: true }
-    )
+    assertWarning(false, `Rename ${filePathToShowToUser} to ${filePathCorrect}, see https://vike.dev/header-file`, {
+      onlyOnce: true
+    })
   }
   return { code, fileImports }
 }
@@ -260,7 +259,7 @@ function assertFileImports(
   const importStatements = unique(fileImportsUnused.map((fi) => fi.importStatementCode))
   const importNamesUnused: string = fileImportsUnused.map((fi) => pc.cyan(fi.importLocalName)).join(', ')
   const singular = fileImportsUnused.length === 1
-  assertWarning(
+  assertUsage(
     fileImportsUnused.length === 0,
     [
       `${filePath} imports the following:`,
@@ -270,8 +269,7 @@ function assertFileImports(
       } re-exported at ${pc.cyan('export default { ... }')} and therefore ${
         singular ? 'has' : 'have'
       } no effect, see explanation at https://vike.dev/header-file`
-    ].join('\n'),
-    { onlyOnce: true }
+    ].join('\n')
   )
 }
 

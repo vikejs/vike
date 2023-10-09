@@ -17,8 +17,8 @@ function ScaffoldCallToActionTour() {
         <div style={{ fontSize: '0.83rem', marginTop: 9, display: 'flex' }}>
           <div style={{ width: 0, flexGrow: 1, color: '#888' }}>
             Run <CodeInline>$ npm init vike</CodeInline> to scaffold a new Vite/
-            <CodeInline>vike</CodeInline> app, or add <CodeInline>vike</CodeInline> to your
-            existing app by following the instructions <a href="/add">here</a>.
+            <CodeInline>vike</CodeInline> app, or add <CodeInline>vike</CodeInline> to your existing app by following
+            the instructions <a href="/add">here</a>.
           </div>
         </div>
       </div>
@@ -52,12 +52,6 @@ function ScaffoldCallToAction() {
   )
 }
 
-function CallToActionDescription({
-  children,
-  style
-}: {
-  style?: React.CSSProperties
-  children: React.ReactNode
-}) {
+function CallToActionDescription({ children, style }: { style?: React.CSSProperties; children: React.ReactNode }) {
   return <p style={{ marginBottom: 5, color: 'inherit', opacity: 0.7, fontSize: '0.92em', ...style }}>{children}</p>
 }

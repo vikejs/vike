@@ -99,7 +99,7 @@ async function render(pageContext) {
   const stream = renderToStream(Page)
 
   // The HTML template (e.g. `<title>`) isn't immediately written to the stream.
-  // Instead, vike awaits for `stream` to start.
+  // Instead, Vike awaits for `stream` to start.
   return escapeInject`<!DOCTYPE html>
     <html>
       <head>

@@ -9,7 +9,7 @@
     "typescript": "^4.8.2",
     "vite": "^4.0.3",
     "vite-plugin-solid": "^2.3.0",
-    "vike": "0.4.142"
+    "vike": "0.4.143"
   },
   "type": "module"
 }

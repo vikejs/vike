@@ -66,6 +66,7 @@ import {
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAtString } from '../../../../../shared/page-configs/utils.js'
+import { getConfigValueSerialized } from './getVirtualFilePageConfigs.js'
 
 assertIsNotProductionRuntime()
 
@@ -1405,6 +1406,9 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
     /* This is more confusing than adding value. For example, this explanation shouldn't be shown for the passToClient config.
     const explanation = `(Because the values of ${configNameColored} are cumulative and therefore merged together.)` as const
     */
+
+    // Make sure configValueSource.value is serializable
+    getConfigValueSerialized(configValueSource.value, configName, configValueSource.definedAtInfo)
 
     const assertNoMixing = (isSet: boolean) => {
       type T = 'a Set' | 'an array'

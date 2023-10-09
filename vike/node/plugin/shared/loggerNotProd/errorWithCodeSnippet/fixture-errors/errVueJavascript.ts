@@ -7,8 +7,7 @@ export const errVueJavascript = {
   id: '/home/rom/code/vike/examples/vue-full-v1/pages/index/+Page.vue',
   pluginCode:
     "<template>\n  <h1>Welcome to Vike</h1>\n  This page is:\n  <ul>\n    <li>Rendered to HTML.</li>\n    <li>Interactive. <Counter /></li>\n  </ul>\n  <p>\n    <button @click=\"randomNavigation\">Random Page</button>\n  </p>\n</template>\n\n<script lang=\"ts\" setup>\nimeport Counter from '../../components/Counter.vue'\nimport { navigate } from 'vike/client/router'\n\nconst randomNavigation = () => {\n  const randomIndex = Math.floor(Math.random() * 3)\n  navigate(['/markdown', '/star-wars', '/hello/alice.js'][randomIndex])\n}\n</script>\n",
-  frame:
-    '1  |  <template>\n   |          ^\n2  |    <h1>Welcome to Vike</h1>\n3  |    This page is:',
+  frame: '1  |  <template>\n   |          ^\n2  |    <h1>Welcome to Vike</h1>\n3  |    This page is:',
   message:
     "[@vue/compiler-sfc] Missing semicolon. (2:7)\n\n/home/rom/code/vike/examples/vue-full-v1/pages/index/+Page.vue\n12 |  \n13 |  <script lang=\"ts\" setup>\n14 |  imeport Counter from '../../components/Counter.vue'\n   |         ^\n15 |  import { navigate } from 'vike/client/router.js'\n16 |  ",
   stack:
