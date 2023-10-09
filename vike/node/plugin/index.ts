@@ -1,5 +1,6 @@
 export default plugin
 export { plugin }
+// TODO/v1-release: remove
 export { plugin as ssr }
 export type { ConfigVikeUserProvided as UserConfig }
 
@@ -55,7 +56,7 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
   return plugins
 }
 
-// Enable `const ssr = require('vike/plugin')`.
+// Enable `const vike = require('vike/plugin')`.
 //  - This lives at the end of the file to ensure it happens after all assignments to `exports`.
 //  - This is only used for the CJS build; we wrap it in a try-catch for the ESM build.
 try {
@@ -68,8 +69,8 @@ Object.defineProperty(plugin, 'apply', {
   get: () => {
     assertUsage(
       false,
-      `Add ${pc.cyan('ssr()')} instead of ${pc.cyan(
-        'ssr'
+      `Add ${pc.cyan('vike()')} instead of ${pc.cyan(
+        'vike'
       )} to vite.config.js#plugins (i.e. call the function and add the return value instead of adding the function itself)`,
       { showStackTrace: true }
     )

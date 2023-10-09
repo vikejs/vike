@@ -10,7 +10,7 @@ import pc from '@brillout/picocolors'
 assertIsNotBrowser() // Don't bloat the client
 
 // TODO/v1-release: update
-const configSrc = '[vite.config.js > ssr({ redirects })]'
+const configSrc = '[vite.config.js > vike({ redirects })]'
 
 function resolveRedirects(redirects: Record<string, string>, urlPathname: string): null | string {
   for (const [urlSource, urlTarget] of Object.entries(redirects)) {
