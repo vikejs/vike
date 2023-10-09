@@ -4,20 +4,11 @@ export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
 
-// NOTE(aurelien): to be removed
-export type { Hook }
-export type { HookParam }
-export type { HookParams }
-export type { HookReturnSync }
-export type { HookReturnAsync }
-export type { HookReturn }
-
 // NOTE(aurelien): to be extended
 export type { OnBeforeRender }
 export type { OnBeforeRenderSync }
-export type { OnBeforeRenderParam }
-export type { OnBeforeRenderReturnSync }
 export type { OnBeforeRenderReturn }
+export type { OnBeforeRenderReturnSync }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
@@ -56,36 +47,19 @@ type Config = ConfigBuiltIn &
     | VikePackages.ConfigVikeSvelte
   )
 
+// NOTE(aurelien): to be removed
 type OptionalPromise<T> = T | Promise<T>
 
-// NOTE(aurelien): to be removed
-type Hook<Name extends keyof Config> = Extract<Config[Name], (...args: any) => any>
-type HookParams<Name extends keyof Config, Index extends number> = Parameters<Hook<Name>>[Index]
-type HookParam<Name extends keyof Config> = HookParams<Name, 0>
-type HookReturnType<Name extends keyof Config> = ReturnType<Hook<Name>>
-type HookReturnSync<Name extends keyof Config> = Exclude<HookReturnType<Name>, Promise<any>>
-type HookReturnAsync<Name extends keyof Config> = Extract<HookReturnType<Name>, Promise<any>>
-type HookReturn<Name extends keyof Config> = HookReturnAsync<Name>
-
-// NOTE(aurelien): to be extended. I'm wondering if this is all worth it as I'm wondering if people
-// will/should really use this style.
-/**
- * `OnBeforeRenderParam` is an alias of `PageContextServer`:
- *
- *   `import type { PageContextServer } from 'vike/types'`
- *   `type OnBeforeRenderParam = PageContextServer`
- *
- * https://vike.dev/onBeforeRender#typescript */
-type OnBeforeRenderParam = PageContextServer
+// NOTE(aurelien): to be extended
 /** https://vike.dev/onBeforeRender#typescript */
 type OnBeforeRenderReturn = Promise<{ pageContext: Partial<Vike.PageContext> } | undefined>
 // NOTE(brillout): Purposely doing code duplication for improving that quickinfo IntelliSense shows on hover
 /** https://vike.dev/onBeforeRender#typescript */
 type OnBeforeRenderReturnSync = { pageContext: Partial<Vike.PageContext> } | undefined
 /** https://vike.dev/onBeforeRender */
-type OnBeforeRender = (pageContext: OnBeforeRenderParam) => OnBeforeRenderReturn
+type OnBeforeRender = (pageContext: PageContextServer) => OnBeforeRenderReturn
 /** https://vike.dev/onBeforeRender */
-type OnBeforeRenderSync = (pageContext: OnBeforeRenderParam) => OnBeforeRenderReturnSync
+type OnBeforeRenderSync = (pageContext: PageContextServer) => OnBeforeRenderReturnSync
 
 // TODO: write docs of links below
 

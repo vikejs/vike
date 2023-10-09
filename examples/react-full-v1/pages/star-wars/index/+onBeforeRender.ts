@@ -1,12 +1,9 @@
 // https://vike.dev/onBeforeRender
 
-import type { OnBeforeRender, OnBeforeRenderParam, OnBeforeRenderReturn } from 'vike/types'
+import type { OnBeforeRender, OnBeforeRenderReturn, PageContextServer } from 'vike/types'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
 
-// NOTE(aurelien): that's the alternative style, still with full safety. I'm wondering if we should
-// keep `Config['onBeforeRender']` instead of `OnBeforeRender` in order for the user to easily modify
-// `Config` through `Vike.Config` without unexpected results?
-const onBeforeRender: OnBeforeRender = async (pageContext: OnBeforeRenderParam): OnBeforeRenderReturn => {
+const onBeforeRender: OnBeforeRender = async (pageContext: PageContextServer): OnBeforeRenderReturn => {
   await sleep(700) // Simulate slow network
   const movies = await getStarWarsMovies()
   return {

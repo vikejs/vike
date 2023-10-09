@@ -15,21 +15,12 @@ export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.
 export type {
   Config,
   ConfigMeta as Meta,
-  Hook,
-
-  // NOTE(aurelien): to be removed
-  HookParam,
-  HookParams,
-  HookReturnSync,
-  HookReturnAsync,
-  HookReturn,
 
   // NOTE(aurelien): to be extended
   OnBeforeRender,
   OnBeforeRenderSync,
-  OnBeforeRenderParam,
-  OnBeforeRenderReturnSync,
-  OnBeforeRenderReturn
+  OnBeforeRenderReturn,
+  OnBeforeRenderReturnSync
 } from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {

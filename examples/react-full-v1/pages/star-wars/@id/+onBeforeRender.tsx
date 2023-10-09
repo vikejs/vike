@@ -2,16 +2,14 @@
 
 import fetch from 'cross-fetch'
 import { filterMovieData } from '../filterMovieData'
-import type { Config, PageContextClient, PageContextServer } from 'vike/types'
+import type { OnBeforeRender, OnBeforeRenderReturn, PageContextClient, PageContextServer } from 'vike/types'
 import type { MovieDetails } from '../types'
 import { render } from 'vike/abort'
 import React from 'react'
 
-// NOTE(aurelien): this is still my favorite style as a user. And as a Vike contributor I'll
-// probably personally advertise for this.
-const onBeforeRender: Config['onBeforeRender'] = async (
+const onBeforeRender: OnBeforeRender = async (
   pageContext: PageContextServer | PageContextClient
-): Promise<{ pageContext: Partial<Vike.PageContext> }> => {
+): OnBeforeRenderReturn => {
   const dataUrl = `https://star-wars.brillout.com/api/films/${pageContext.routeParams?.id}.json`
   let movie: MovieDetails
   try {
