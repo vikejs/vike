@@ -19,10 +19,10 @@ npm install styled-jsx
 // vite.config.js
 
 import react from '@vitejs/plugin-react'
-import ssr from 'vike/plugin'
+import vike from 'vike/plugin'
 
 export default {
-  plugins: [react({ babel: { plugins: ['styled-jsx/babel'] } }), ssr()]
+  plugins: [react({ babel: { plugins: ['styled-jsx/babel'] } }), vike()]
 }
 ```
 

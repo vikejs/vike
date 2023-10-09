@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react'
-import ssr from 'vike/plugin'
+import vike from 'vike/plugin'
 import { UserConfig } from 'vite'
 
 const config: UserConfig = {
@@ -10,7 +10,7 @@ const config: UserConfig = {
   },
   plugins: [
     react(),
-    ssr({
+    vike({
       prerender: true
     })
   ],

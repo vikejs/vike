@@ -1,5 +1,5 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte'
-import ssr from 'vike/plugin'
+import vike from 'vike/plugin'
 
 export default {
   plugins: [
@@ -9,6 +9,6 @@ export default {
       }
     }),
 
-    ssr()
+    vike()
   ]
 }

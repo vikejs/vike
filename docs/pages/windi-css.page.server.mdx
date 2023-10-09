@@ -11,12 +11,12 @@ To use Vike with [Windi CSS](https://github.com/windicss/windicss):
    ```js
    // vite.config.js
 
-   import ssr from 'vike/plugin'
+   import vike from 'vike/plugin'
    import WindiCSS from 'vite-plugin-windicss'
 
    export default {
      plugins: [
-       ssr(),
+       vike(),
        WindiCSS({
          scan: {
            // By default only `src/` is scanned
