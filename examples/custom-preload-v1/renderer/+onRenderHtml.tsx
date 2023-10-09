@@ -28,7 +28,7 @@ async function onRenderHtml(pageContext: any) {
   return {
     documentHtml,
     injectFilter(assets: InjectFilterEntry[]) {
-      // Default vike's preloading strategy
+      // Default Vike's preloading strategy
       if (!preloadStrategy) return
 
       if (preloadStrategy === 'DISABLED') {

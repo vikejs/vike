@@ -1,4 +1,4 @@
-Example of using vike with [Stem React](https://github.com/brillout/stem-react).
+Example of using Vike with [Stem React](https://github.com/brillout/stem-react).
 
 ```bash
 git clone git@github.com:vikejs/vike

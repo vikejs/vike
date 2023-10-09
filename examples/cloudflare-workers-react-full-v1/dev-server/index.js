@@ -12,7 +12,7 @@ async function startServer() {
   const app = express()
 
   // We don't need gzip compression for dev. We use compression just to show
-  // that it's properly handled by vike and react-streaming.
+  // that it's properly handled by Vike and react-streaming.
   app.use(compression())
 
   const viteDevMiddleware = (
