@@ -1,6 +1,5 @@
 - Vike rename
   - Update `import ssr from 'vike/plugin'`
-  - remove notes "Vike is the upcoming new name"
   - add vike.dev/vite-plugin-ssr and point to it whenever the docs link to a repository using vite-plugin-ssr
   - update examples/vike-react, examples/vike-react-simple, examples/stem-react, docs/ (docpress)
     - update vike-react, vike-react-simple, and docpress to use and depend on vike npm package
