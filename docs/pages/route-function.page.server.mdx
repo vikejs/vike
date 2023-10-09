@@ -114,7 +114,7 @@ export default pageContext => {
 
 > This authentication routing trick is further explained at <Link href="/auth#login-flow" />.
 
-Vike cannot know whether another Route Function will return a higher precedence number, therefore vike has to execute all Route Functions.
+Vike cannot know whether another Route Function will return a higher precedence number, therefore Vike has to execute all Route Functions.
 
 If you use <Link text="Client Routing" href="/client-routing" />, then *all* your Route Functions are loaded in the browser. This means that if a Route Function imports a lot of code, then all that code is loaded on the client-side of *every* page. A heavy Route Function slows down your whole app.
 
@@ -154,7 +154,7 @@ Using Route Functions to provide `pageContext` values is forbidden.
 
 export default () => {
   return {
-    // This is forbidden and vike will throw an error
+    // This is forbidden and Vike will throw an error
     pageContext: {
       some: 'value'
     }
@@ -162,7 +162,7 @@ export default () => {
 }
 ```
 
-In principle, vike could support providing `pageContext` values but it deliberately doesn't support it in order to foster lightweight Route Functions.
+In principle, Vike could support providing `pageContext` values but it deliberately doesn't support it in order to foster lightweight Route Functions.
 
 > As explained in [Lightweight & fast](#lightweight-fast), you should keep Route Functions simple and you shouldn't implement complex logic in `.page.route.js` files.
 
