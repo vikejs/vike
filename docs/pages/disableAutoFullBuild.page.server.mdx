@@ -5,11 +5,11 @@ Set to `true` to disable the automatic chaining of all build steps.
 ```js
 // vite.config.js
 
-import { ssr } from 'vike/plugin'
+import vike from 'vike/plugin'
 
 export default {
   plugins: [
-    ssr({
+    vike({
       disableAutoFullBuild: true
     })
   ]

@@ -52,11 +52,11 @@ We can change the Base URL *only* of our assets by using the `baseAssets` config
 ```js
 // vite.config.js
 
-import { ssr } from 'vike/plugin'
+import vike from 'vike/plugin'
 
 export default {
   plugins: [
-    ssr({
+    vike({
       baseAssets: 'https://cdn.example.org/my-website-assets/'
     })
   ]
@@ -108,11 +108,11 @@ We can do both:
 ```js
 // vite.config.js
 
-import { ssr } from 'vike/plugin'
+import vike from 'vike/plugin'
 
 export default {
   plugins: [
-    ssr({
+    vike({
       baseAssets: 'https://cdn.example.org/my-website-assets/',
       baseServer: '/some-base/'
     })

@@ -75,12 +75,12 @@ The pre-render CLI `$ vike prerender` is deprecated in favor of setting the `pre
 ```
 ```diff
   // vite.config.js
-  import { ssr } from 'vike/plugin'
+  import vike from 'vike/plugin'
 
   export config {
     plugins: [
--     ssr()
-+     ssr({ prerender: true })
+-     vike()
++     vike({ prerender: true })
     ]
   }
 ```
@@ -94,7 +94,7 @@ All pre-render options are now defined in `vite.config.js`:
 ```
 ```diff
   // vite.config.js
-  import { ssr } from 'vike/plugin'
+  import vike from 'vike/plugin'
 
   export config {
 +   root: 'src/',
@@ -102,7 +102,7 @@ All pre-render options are now defined in `vite.config.js`:
 +     outDir: 'build/
 +   },
     plugins: [
-      ssr({
+      vike({
 +       prerender: {
 +         partial: true,
 +         noExtraDir: true,

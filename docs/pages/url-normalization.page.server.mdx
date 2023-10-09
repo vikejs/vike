@@ -11,11 +11,11 @@ You can configure whether URLs are normalized and whether URLs should end with a
 ```js
 // vite.config.js
 
-import { ssr } from 'vike/plugin'
+import vike from 'vike/plugin'
 
 export default {
   plugins: [
-    ssr({
+    vike({
       // Make URLs end with a trailing slash.
       // For example: /some//path -> /some/path/
       trailingSlash: true,
