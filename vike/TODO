@@ -4,7 +4,8 @@
     - update vike-react, vike-react-simple, and docpress to use and depend on vike npm package
     - update stem-react to new major using vike.config.js instead of vite-plugin-ssr.config.js
     - revert ignoring of rename warning c3174ae5a16433bc5a24b44e8f13732f0cfe2faf
-  - improve docs about Vike.PageContext
+
+- Update all examples/boilerplates to not use PageContextBuiltIn but Vike.PageContext instead
 
 - fix pageContext._renderHook.hookFilePath / replace with new prop hookSrc
 - refacor/fix skipConfigValue to differentiate between global/page virtual file
