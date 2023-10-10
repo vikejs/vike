@@ -7,8 +7,6 @@ export type { HookName }
 // NOTE(aurelien): to be extended
 export type { OnBeforeRender }
 export type { OnBeforeRenderSync }
-export type { OnBeforeRenderReturn }
-export type { OnBeforeRenderReturnSync }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
@@ -51,15 +49,19 @@ type Config = ConfigBuiltIn &
 type OptionalPromise<T> = T | Promise<T>
 
 // NOTE(aurelien): to be extended
-/** https://vike.dev/onBeforeRender#typescript */
-type OnBeforeRenderReturn = Promise<{ pageContext: Partial<Vike.PageContext> } | undefined>
-// NOTE(brillout): Purposely doing code duplication for improving that quickinfo IntelliSense shows on hover
-/** https://vike.dev/onBeforeRender#typescript */
-type OnBeforeRenderReturnSync = { pageContext: Partial<Vike.PageContext> } | undefined
-/** https://vike.dev/onBeforeRender */
-type OnBeforeRender = (pageContext: PageContextServer) => OnBeforeRenderReturn
-/** https://vike.dev/onBeforeRender */
-type OnBeforeRenderSync = (pageContext: PageContextServer) => OnBeforeRenderReturnSync
+// NOTE(brillout): AFAICT there isn't a way to re-use the JSDoc "Hook called before the page is rendered, usually for fetching data." - we need to repeat three times (or we write a little build script)
+
+// Purposeful code duplication for improving QuickInfo IntelliSense
+/** Hook called before the page is rendered, usually for fetching data.
+ *
+ *  https://vike.dev/onBeforeRender
+ */
+type OnBeforeRender = (pageContext: PageContextServer) => Promise<{ pageContext: Partial<Vike.PageContext> } | void>
+/** Hook called before the page is rendered, usually for fetching data.
+ *
+ *  https://vike.dev/onBeforeRender
+ */
+type OnBeforeRenderSync = (pageContext: PageContextServer) => { pageContext: Partial<Vike.PageContext> } | void
 
 // TODO: write docs of links below
 

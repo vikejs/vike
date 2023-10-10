@@ -18,9 +18,7 @@ export type {
 
   // NOTE(aurelien): to be extended
   OnBeforeRender,
-  OnBeforeRenderSync,
-  OnBeforeRenderReturn,
-  OnBeforeRenderReturnSync
+  OnBeforeRenderSync
 } from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {

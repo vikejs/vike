@@ -2,14 +2,14 @@
 
 import fetch from 'cross-fetch'
 import { filterMovieData } from '../filterMovieData'
-import type { OnBeforeRender, OnBeforeRenderReturn, PageContextClient, PageContextServer } from 'vike/types'
+import type { OnBeforeRender, PageContextClient, PageContextServer } from 'vike/types'
 import type { MovieDetails } from '../types'
 import { render } from 'vike/abort'
 import React from 'react'
 
 const onBeforeRender: OnBeforeRender = async (
   pageContext: PageContextServer | PageContextClient
-): OnBeforeRenderReturn => {
+): ReturnType<OnBeforeRender> => {
   const dataUrl = `https://star-wars.brillout.com/api/films/${pageContext.routeParams?.id}.json`
   let movie: MovieDetails
   try {
