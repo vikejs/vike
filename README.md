@@ -11,7 +11,7 @@
 
 **Version history (& breaking changes)** :arrow_right: [CHANGELOG.md](/CHANGELOG.md)
 
-**Follow** :arrow_right: [Twitter > @brillout](https://twitter.com/brillout), or [Mastodon > @brillout@webtoo.ls](https://m.webtoo.ls/@brillout).
+**Follow** :arrow_right: [Twitter > @vike_js](https://twitter.com/vike_js).
 
 **Report a bug** :arrow_right: [GitHub Issue > Bug Report](https://github.com/vitejs/vite/issues/new/choose).
 <br/>
