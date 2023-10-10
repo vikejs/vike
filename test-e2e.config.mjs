@@ -71,7 +71,6 @@ function getCiJobs() {
 function tolerateError({ logSource, logText }) {
   return (
     isViteCjsWarning() ||
-    isVikeRename() ||
     isRenderErrorPageDeprecationWarning() ||
     isSlowHookWarning() ||
     isServiceExit() ||
@@ -90,14 +89,6 @@ function tolerateError({ logSource, logText }) {
 
   function isViteCjsWarning() {
     return logSource === 'stderr' && logText.includes("The CJS build of Vite's Node API is deprecated")
-  }
-
-  function isVikeRename() {
-    return (
-      logSource === 'stderr' &&
-      logText.includes('[Warning]') &&
-      logText.includes('The vite-plugin-ssr project has been renamed to Vike')
-    )
   }
 
   function isRenderErrorPageDeprecationWarning() {
