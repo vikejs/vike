@@ -84,12 +84,12 @@ type InterfaceConfigFile = InterfaceFileCommons & {
   extendsFilePaths: string[]
   isConfigExtend: boolean
 }
-// +someConfig.js
+// +{configName}.js
 type InterfaceValueFile = InterfaceFileCommons & {
   isConfigFile: false
   isValueFile: true
   configNameDefault: string
-  // All value files are +someConfig.js file living in user-land => filePathRelativeToUserRootDir is always defined
+  // All value files are +{configName}.js file living in user-land => filePathRelativeToUserRootDir is always defined
   filePath: UserFilePath
 }
 type ConfigName = string
@@ -214,7 +214,7 @@ async function loadInterfaceFiles(
       }
       {
         // We don't have access to custom config definitions yet
-        //  - We load +someCustomConifg.js later
+        //  - We load +{configName}.js later
         //  - But we do need to eagerly load +meta.js (to get all the custom config definitions)
         const configDef = getConfigDefinitionOptional(configDefinitionsBuiltIn, configNameDefault)
         if (configDef?.env === 'config-only') {
@@ -549,9 +549,9 @@ function resolveConfigValueSources(
       const interfaceValueFile = interfaceValueFiles[0]
       const interfaceConfigFile = interfaceConfigFiles[0]
       // Make this value:
-      //   /pages/some-page/+someConfig.js > `export default`
+      //   /pages/some-page/+{configName}.js > `export default`
       // override that value:
-      //   /pages/some-page/+config > `export default { someConfig }`
+      //   /pages/some-page/+config.h.js > `export default { someConfig }`
       const interfaceFileWinner = interfaceValueFile ?? interfaceConfigFile
       if (interfaceFileWinner) {
         const interfaceFilesOverriden = [...interfaceValueFiles, ...interfaceConfigFiles].filter(
