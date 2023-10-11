@@ -1,35 +1,33 @@
-export type { PageContextServer }
-export type { PageContextClient }
-export type { PageContext }
-export type { PageProps }
-
-import type {
-  PageContextBuiltInServer,
+export type {
+  PageContextServer,
   /*
   // When using Client Routing https://vike.dev/clientRouting
-  PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
+  PageContextClient,
+  PageContext,
   /*/
   // When using Server Routing
-  PageContextBuiltInClientWithServerRouting as PageContextBuiltInClient
+  PageContextClientWithServerRouting as PageContextClient,
+  PageContextWithServerRouting as PageContext
   //*/
 } from 'vike/types'
+export type { PageProps }
 
-type Page = (pageProps: PageProps) => React.ReactElement
-type PageProps = Record<string, unknown>
-
-export type PageContextCustom = {
-  Page: Page
-  pageProps?: PageProps
-  urlPathname: string
-  exports: {
-    documentProps?: {
-      title?: string
-      description?: string
+// https://vike.dev/pageContext#typescript
+declare global {
+  namespace Vike {
+    interface PageContext {
+      Page: Page
+      pageProps?: PageProps
+      urlPathname: string
+      exports: {
+        documentProps?: {
+          title?: string
+          description?: string
+        }
+      }
     }
   }
 }
 
-type PageContextServer = PageContextBuiltInServer<Page> & PageContextCustom
-type PageContextClient = PageContextBuiltInClient<Page> & PageContextCustom
-
-type PageContext = PageContextClient | PageContextServer
+type Page = (pageProps: PageProps) => React.ReactElement
+type PageProps = Record<string, unknown>
