@@ -1,5 +1,6 @@
+- Update boilerplates to not use PageContextBuiltIn but Vike.PageContext instead
 - Improve https://vike.dev/header-file
-- Update all examples/boilerplates to not use PageContextBuiltIn but Vike.PageContext instead
+- Update all examples to not use PageContextBuiltIn but Vike.PageContext instead
 
 - fix pageContext._renderHook.hookFilePath / replace with new prop hookSrc
 - refacor/fix skipConfigValue to differentiate between global/page virtual file
@@ -7,19 +8,12 @@
 - replace configValueSources with configValues for global configs
   - maybe add a _isGlobal option
 
-- Set env type to `{ client: boolean | '_eager', server: boolean | '_eager', config?: boolean }`
+- Set env type to `{ client: boolean | 'eager', server: boolean | 'eager', config?: boolean }`
   - Eager means that the value is always loaded, no matter what page is being loaded. (By default only the values of the page being renderered are loaded.)
   - Should the option be '_eager' and internal? Is there any added value to make it internal? Custom configs are only meant for advanced use cases anyways. Maybe naming it 'eager' (instead of '_eager') while omitting 'eager` in the Meta type until some user needs it?
   - Values that are defined in `+config.h.js` are loaded at config-time even if `config: false`. (But they can be defined in a `+{configName}.js` and they won't be loaded then.)
     - But they can still be lazily loaded in the client/server runtime
   - Global page config values are always eager
-
-- By default, only call guard() hooks on the server-side?
-
-- release 0.5.0
-  - `import * from 'vike'`
-  - pageContext.url
-  - rename hooks for 0.4 designA?
 
 - improve ignoring of dist/
 - client/shared/
@@ -36,6 +30,13 @@ V1 design stable release:
    - pageContext.config
    - pageContext.configEntries
 
+Implement vike.config.js
+ - Move all globals there and add migration warnings
+
+Implement data() hook
+ - New config `minimizeSubsequentServerRequests: boolean` (or `noSubsequentServerRequests: boolean` / `serverRquestsOnNavigation: true | false | 'minimal'`?)
+   - By default, only call guard() hooks on the server-side (if minimizeServerRequests isn't set)
+
 Features:
  - multiple error pages
  - nested layouts
@@ -44,14 +45,14 @@ Sometime:
  - Replace "isomorphic"/"isomorph" to "universal"
  - remove documentProps from examples and boilerplates
 
-After stable release:
+Release 1.0.0 breaking changes:
+  - `import * from 'vike'`
+  - pageContext.url
+
+After 1.0.0 release:
  - Remove 0.4 design examples
    - Update all links to /examples/*-v1
  - Add deprecation warning for pageContext.exports
-
-After Vike rename:
- - Implement vike.config.js
-   - Move all globals there and add migration warnings
 
 Contact:
  - Bun
