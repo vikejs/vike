@@ -36,24 +36,23 @@ function assertExportsOfConfigFile(
   )
 }
 
-function assertExports(
-  fileExports: Record<string, unknown>,
-  filePathToShowToUser: string,
-  configName?: string
-) {
+function assertExports(fileExports: Record<string, unknown>, filePathToShowToUser: string, configName?: string) {
   const exportsAll = Object.keys(fileExports)
   const exportsRelevant = exportsAll.filter((exportName) => !EXPORTS_IGNORE.includes(exportName))
-  const exportsInvalid = exportsRelevant.filter((e) => e !== 'default')
-  const exportsHasDefault = exportsRelevant.includes('default')
+  const exportsInvalid = exportsRelevant.filter(
+    (e) =>
+      e !== 'default' &&
+      // !!configName => isValueFile
+      e !== configName
+  )
   if (exportsInvalid.length === 0) {
-    if (exportsHasDefault) {
+    if (exportsRelevant.length === 1) {
       return
     } else {
       assert(exportsRelevant.length === 0)
-      assertUsage(
-        false,
-        `${filePathToShowToUser} doesn't export any value, but it should have a ${pc.cyan('export default')} instead`
-      )
+      let errMsg = `${filePathToShowToUser} doesn't export any value, but it should have a ${pc.cyan('export default')}`
+      if (configName) errMsg += ` or ${pc.cyan(`export { ${configName} }`)}`
+      assertUsage(false, errMsg)
     }
   } else {
     // !configName => isConfigFile
@@ -66,13 +65,13 @@ function assertExports(
         )}`
       )
     }
-    // configName => isValueFile
+    // !!configName => isValueFile
     else {
       if (TOLERATE_SIDE_EXPORTS.some((ext) => filePathToShowToUser.endsWith(ext))) return
       exportsInvalid.forEach((exportInvalid) => {
         assertWarning(
           false,
-          `${filePathToShowToUser} should only have a default export: move ${pc.cyan(
+          `${filePathToShowToUser} should have only a single export: move ${pc.cyan(
             `export { ${exportInvalid} }`
           )} to +config.h.js or its own +${exportsInvalid}.js`,
           { onlyOnce: true }
