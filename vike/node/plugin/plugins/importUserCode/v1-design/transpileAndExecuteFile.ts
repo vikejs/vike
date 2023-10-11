@@ -186,7 +186,7 @@ async function executeFile(filePath: FilePath, code: string, fileImports: FileIm
   if (fileImports && !isValueFile) {
     assert(filePathRelativeToUserRootDir !== undefined)
     const filePathToShowToUser = filePathRelativeToUserRootDir ?? filePathAbsolute
-    assertFileImports(fileImports, fileExports, filePathToShowToUser)
+    assertImportsAreReExported(fileImports, fileExports, filePathToShowToUser)
   }
   return { fileExports }
 }
@@ -235,7 +235,7 @@ function isTmpFile(filePath: string): boolean {
   return fileName.startsWith(tmpPrefix)
 }
 
-function assertFileImports(
+function assertImportsAreReExported(
   fileImports: (FileImport & { isReExported?: true })[],
   fileExports: Record<string, unknown>,
   filePathToShowToUser: string
