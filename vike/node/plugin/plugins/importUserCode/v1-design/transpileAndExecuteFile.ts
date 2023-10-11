@@ -13,7 +13,6 @@ import {
   getRandomId,
   assertIsNotProductionRuntime,
   assert,
-  assertDefaultExportObject,
   unique,
   assertWarning,
   isObject,
@@ -24,6 +23,7 @@ import { isImportData, replaceImportStatements, type FileImport } from './replac
 import { vikeConfigDependencies } from './getVikeConfig.js'
 import 'source-map-support/register.js'
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.js'
+import { assertDefaultExportObject } from '../../../../../shared/page-configs/assertDefaultExport.js'
 
 assertIsNotProductionRuntime()
 

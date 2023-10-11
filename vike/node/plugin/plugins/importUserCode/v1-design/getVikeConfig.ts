@@ -10,8 +10,6 @@ import {
   assertUsage,
   toPosixPath,
   assertWarning,
-  assertDefaultExportUnknown,
-  assertDefaultExportObject,
   objectEntries,
   hasProp,
   arrayIncludes,
@@ -66,6 +64,10 @@ import {
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAtString } from '../../../../../shared/page-configs/utils.js'
+import {
+  assertDefaultExportObject,
+  assertDefaultExportUnknown
+} from '../../../../../shared/page-configs/assertDefaultExport.js'
 import { getConfigValueSerialized } from './getVirtualFilePageConfigs.js'
 
 assertIsNotProductionRuntime()

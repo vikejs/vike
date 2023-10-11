@@ -1,8 +1,7 @@
 export { assertDefaultExportUnknown }
 export { assertDefaultExportObject }
 
-import { assert, assertUsage, assertWarning } from './assert.js'
-import { isObject } from './isObject.js'
+import { assert, assertUsage, assertWarning, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
 
 const IGNORE = [
