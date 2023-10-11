@@ -1,5 +1,5 @@
 export { assertDefaultExportUnknown }
-export { assertDefaultExportObject }
+export { assertExportsOfConfigFile }
 
 import { assert, assertUsage, assertWarning, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
@@ -21,7 +21,7 @@ function assertDefaultExportUnknown(
   assertSingleDefaultExport(fileExports, filePathToShowToUser, true)
 }
 
-function assertDefaultExportObject(
+function assertExportsOfConfigFile(
   fileExports: Record<string, unknown>,
   filePathToShowToUser: string
 ): asserts fileExports is { default: Record<string, unknown> } {

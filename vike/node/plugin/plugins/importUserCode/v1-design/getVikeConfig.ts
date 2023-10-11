@@ -65,7 +65,7 @@ import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUse
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAtString } from '../../../../../shared/page-configs/utils.js'
 import {
-  assertDefaultExportObject,
+  assertExportsOfConfigFile,
   assertDefaultExportUnknown
 } from '../../../../../shared/page-configs/assertExports.js'
 import { getConfigValueSerialized } from './getVirtualFilePageConfigs.js'
@@ -269,7 +269,7 @@ function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: 
     extendsFilePaths
   }
   const filePathToShowToUser = getFilePathToShowToUser(filePath)
-  assertDefaultExportObject(fileExports, filePathToShowToUser)
+  assertExportsOfConfigFile(fileExports, filePathToShowToUser)
   Object.entries(fileExports.default).forEach(([configName, configValue]) => {
     interfaceFile.configMap[configName] = { configValue }
   })
@@ -1185,7 +1185,7 @@ function assertExtendsImportPath(importPath: string, filePath: string, configFil
 
 function getExtendsImportData(configFileExports: Record<string, unknown>, configFilePath: FilePath): ImportData[] {
   const filePathToShowToUser = getFilePathToShowToUser(configFilePath)
-  assertDefaultExportObject(configFileExports, filePathToShowToUser)
+  assertExportsOfConfigFile(configFileExports, filePathToShowToUser)
   const defaultExports = configFileExports.default
   const wrongUsage = `${filePathToShowToUser} sets the config 'extends' to an invalid value, see https://vike.dev/extends`
   let extendList: string[]
