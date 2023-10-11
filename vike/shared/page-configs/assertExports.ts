@@ -55,7 +55,7 @@ function assertExports(
         `${filePathToShowToUser} doesn't export any value, but it should have a ${pc.cyan('export default')} instead`
       )
     }
-  } else if (!TOLERATE_SIDE_EXPORTS.some((ext) => filePathToShowToUser.endsWith(ext))) {
+  } else {
     // !configName => isConfigFile
     if (!configName) {
       const exportsInvalidStr = exportsInvalid.join(', ')
@@ -69,6 +69,7 @@ function assertExports(
     }
     // configName => isValueFile
     else {
+      if (TOLERATE_SIDE_EXPORTS.some((ext) => filePathToShowToUser.endsWith(ext))) return
       exportsInvalid.forEach((exportInvalid) => {
         assertWarning(
           exportsInvalid.length === 0,
