@@ -88,7 +88,7 @@ type InterfaceConfigFile = InterfaceFileCommons & {
 type InterfaceValueFile = InterfaceFileCommons & {
   isConfigFile: false
   isValueFile: true
-  configNameDefault: string
+  configName: string
   // All value files are +{configName}.js file living in user-land => filePathRelativeToUserRootDir is always defined
   filePath: UserFilePath
 }
@@ -198,27 +198,27 @@ async function loadInterfaceFiles(
   // Value files
   await Promise.all(
     valueFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
-      const configNameDefault = getConfigName(filePathRelativeToUserRootDir)
-      assert(configNameDefault)
+      const configName = getConfigName(filePathRelativeToUserRootDir)
+      assert(configName)
       const interfaceFile: InterfaceValueFile = {
         filePath: {
           filePathRelativeToUserRootDir,
           filePathAbsolute
         },
         configMap: {
-          [configNameDefault]: {}
+          [configName]: {}
         },
         isConfigFile: false,
         isValueFile: true,
-        configNameDefault
+        configName
       }
       {
         // We don't have access to custom config definitions yet
         //  - We load +{configName}.js later
         //  - But we do need to eagerly load +meta.js (to get all the custom config definitions)
-        const configDef = getConfigDefinitionOptional(configDefinitionsBuiltIn, configNameDefault)
+        const configDef = getConfigDefinitionOptional(configDefinitionsBuiltIn, configName)
         if (configDef?.env === 'config-only') {
-          await loadValueFile(interfaceFile, configNameDefault, userRootDir)
+          await loadValueFile(interfaceFile, configName, userRootDir)
         }
       }
       {
@@ -247,16 +247,13 @@ function getConfigDefinitionOptional(
 ): null | ConfigDefinitionInternal {
   return configDefinitions[configName] ?? null
 }
-async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string, userRootDir: string) {
+async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName: string, userRootDir: string) {
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, true, userRootDir)
   const filePathToShowToUser = getFilePathToShowToUser(interfaceValueFile.filePath)
-  assertExportsOfValueFile(fileExports, filePathToShowToUser, configNameDefault)
+  assertExportsOfValueFile(fileExports, filePathToShowToUser, configName)
   Object.entries(fileExports).forEach(([exportName, configValue]) => {
-    let configName = exportName
-    if (exportName === 'default') {
-      configName = configNameDefault
-    }
-    interfaceValueFile.configMap[configName] = { configValue }
+    const configName_ = exportName === 'default' ? configName : exportName
+    interfaceValueFile.configMap[configName_] = { configValue }
   })
 }
 function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: boolean): InterfaceFile {
@@ -342,19 +339,19 @@ async function loadVikeConfig(
         await Promise.all(
           getInterfaceFileList(interfaceFilesRelevant).map(async (interfaceFile) => {
             if (!interfaceFile.isValueFile) return
-            const { configNameDefault } = interfaceFile
-            if (isGlobalConfig(configNameDefault)) return
+            const { configName } = interfaceFile
+            if (isGlobalConfig(configName)) return
             const configDef = getConfigDefinition(
               configDefinitionsRelevant,
-              configNameDefault,
+              configName,
               getFilePathToShowToUser(interfaceFile.filePath)
             )
             if (configDef.env !== 'config-only') return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
             // Value files for built-in confg-only configs should have already been loaded at loadInterfaceFiles()
-            assert(!(configNameDefault in configDefinitionsBuiltIn))
-            await loadValueFile(interfaceFile, configNameDefault, userRootDir)
+            assert(!(configName in configDefinitionsBuiltIn))
+            await loadValueFile(interfaceFile, configName, userRootDir)
           })
         )
 
@@ -536,7 +533,7 @@ function resolveConfigValueSources(
           (interfaceFile) =>
             interfaceFile.isValueFile &&
             // We consider side-effect exports (e.g. `export { frontmatter }` of .mdx files) later (i.e. with less priority)
-            interfaceFile.configNameDefault === configName
+            interfaceFile.configName === configName
         )
         .sort(makeOrderDeterministic)
       const interfaceConfigFiles = interfaceFilesDefiningConfig
@@ -572,7 +569,7 @@ function resolveConfigValueSources(
         (interfaceFile) =>
           interfaceFile.isValueFile &&
           // Is side-effect export
-          interfaceFile.configNameDefault !== configName
+          interfaceFile.configName !== configName
       )
       .forEach((interfaceValueFileSideEffect) => {
         add(interfaceValueFileSideEffect)
@@ -709,7 +706,7 @@ function getConfigValueSource(
     // TODO: rethink file paths of ConfigElement
     const importFilePath =
       interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
-    const importFileExportName = configName === interfaceFile.configNameDefault ? 'default' : configName
+    const importFileExportName = configName === interfaceFile.configName ? 'default' : configName
     const valueAlreadyLoaded = 'configValue' in conf
     const configValueSource: ConfigValueSource = {
       configEnv,
