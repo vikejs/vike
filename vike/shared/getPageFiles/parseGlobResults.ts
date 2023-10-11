@@ -1,7 +1,7 @@
 export { parseGlobResults }
 
 import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../utils.js'
-import { assertExportValues } from './assertExports.js'
+import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'

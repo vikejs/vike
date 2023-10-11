@@ -1,7 +1,7 @@
 export { loadPageCode }
 
 import { assert, assertUsage, objectAssign } from '../utils.js'
-import { assertDefaultExportUnknown } from './assertDefaultExport.js'
+import { assertDefaultExportUnknown } from './assertExports.js'
 import type { PageConfig, PageConfigLoaded } from './PageConfig.js'
 import pc from '@brillout/picocolors'
 

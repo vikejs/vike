@@ -67,7 +67,7 @@ import { getConfigDefinedAtString } from '../../../../../shared/page-configs/uti
 import {
   assertDefaultExportObject,
   assertDefaultExportUnknown
-} from '../../../../../shared/page-configs/assertDefaultExport.js'
+} from '../../../../../shared/page-configs/assertExports.js'
 import { getConfigValueSerialized } from './getVirtualFilePageConfigs.js'
 
 assertIsNotProductionRuntime()
