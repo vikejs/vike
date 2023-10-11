@@ -10,8 +10,6 @@ import {
   assertUsage,
   toPosixPath,
   assertWarning,
-  assertDefaultExportUnknown,
-  assertDefaultExportObject,
   objectEntries,
   hasProp,
   arrayIncludes,
@@ -66,6 +64,10 @@ import {
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAtString } from '../../../../../shared/page-configs/utils.js'
+import {
+  assertExportsOfConfigFile,
+  assertExportsOfValueFile
+} from '../../../../../shared/page-configs/assertExports.js'
 import { getConfigValueSerialized } from './getVirtualFilePageConfigs.js'
 
 assertIsNotProductionRuntime()
@@ -75,17 +77,19 @@ type InterfaceFileCommons = {
   filePath: FilePath
   configMap: Record<ConfigName, { configValue?: unknown }>
 }
+// +config.h.js
 type InterfaceConfigFile = InterfaceFileCommons & {
   isConfigFile: true
   isValueFile: false
   extendsFilePaths: string[]
   isConfigExtend: boolean
 }
+// +{configName}.js
 type InterfaceValueFile = InterfaceFileCommons & {
   isConfigFile: false
   isValueFile: true
-  configNameDefault: string
-  // All value files are +someConfig.js file living in user-land => filePathRelativeToUserRootDir is always defined
+  configName: string
+  // All value files are +{configName}.js file living in user-land => filePathRelativeToUserRootDir is always defined
   filePath: UserFilePath
 }
 type ConfigName = string
@@ -104,10 +108,10 @@ let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfig> | null = null
 const vikeConfigDependencies: Set<string> = new Set()
-const codeFilesEnv: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
+const filesEnv: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
 function reloadVikeConfig(userRootDir: string, extensions: ExtensionResolved[]) {
   vikeConfigDependencies.clear()
-  codeFilesEnv.clear()
+  filesEnv.clear()
   vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, extensions, true)
   handleReloadSideEffects()
 }
@@ -194,27 +198,27 @@ async function loadInterfaceFiles(
   // Value files
   await Promise.all(
     valueFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
-      const configNameDefault = getConfigName(filePathRelativeToUserRootDir)
-      assert(configNameDefault)
+      const configName = getConfigName(filePathRelativeToUserRootDir)
+      assert(configName)
       const interfaceFile: InterfaceValueFile = {
         filePath: {
           filePathRelativeToUserRootDir,
           filePathAbsolute
         },
         configMap: {
-          [configNameDefault]: {}
+          [configName]: {}
         },
         isConfigFile: false,
         isValueFile: true,
-        configNameDefault
+        configName
       }
       {
         // We don't have access to custom config definitions yet
-        //  - We load +someCustomConifg.js later
+        //  - We load +{configName}.js later
         //  - But we do need to eagerly load +meta.js (to get all the custom config definitions)
-        const configDef = getConfigDefinitionOptional(configDefinitionsBuiltIn, configNameDefault)
+        const configDef = getConfigDefinitionOptional(configDefinitionsBuiltIn, configName)
         if (configDef?.env === 'config-only') {
-          await loadValueFile(interfaceFile, configNameDefault, userRootDir)
+          await loadValueFile(interfaceFile, configName, userRootDir)
         }
       }
       {
@@ -243,14 +247,13 @@ function getConfigDefinitionOptional(
 ): null | ConfigDefinitionInternal {
   return configDefinitions[configName] ?? null
 }
-async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string, userRootDir: string) {
+async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName: string, userRootDir: string) {
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, true, userRootDir)
-  assertDefaultExportUnknown(fileExports, getFilePathToShowToUser(interfaceValueFile.filePath))
-  Object.entries(fileExports).forEach(([configName, configValue]) => {
-    if (configName === 'default') {
-      configName = configNameDefault
-    }
-    interfaceValueFile.configMap[configName] = { configValue }
+  const filePathToShowToUser = getFilePathToShowToUser(interfaceValueFile.filePath)
+  assertExportsOfValueFile(fileExports, filePathToShowToUser, configName)
+  Object.entries(fileExports).forEach(([exportName, configValue]) => {
+    const configName_ = exportName === 'default' ? configName : exportName
+    interfaceValueFile.configMap[configName_] = { configValue }
   })
 }
 function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: boolean): InterfaceFile {
@@ -263,8 +266,8 @@ function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: 
     isConfigExtend,
     extendsFilePaths
   }
-  const interfaceFilePathToShowToUser = getFilePathToShowToUser(filePath)
-  assertDefaultExportObject(fileExports, interfaceFilePathToShowToUser)
+  const filePathToShowToUser = getFilePathToShowToUser(filePath)
+  assertExportsOfConfigFile(fileExports, filePathToShowToUser)
   Object.entries(fileExports.default).forEach(([configName, configValue]) => {
     interfaceFile.configMap[configName] = { configValue }
   })
@@ -336,19 +339,19 @@ async function loadVikeConfig(
         await Promise.all(
           getInterfaceFileList(interfaceFilesRelevant).map(async (interfaceFile) => {
             if (!interfaceFile.isValueFile) return
-            const { configNameDefault } = interfaceFile
-            if (isGlobalConfig(configNameDefault)) return
+            const { configName } = interfaceFile
+            if (isGlobalConfig(configName)) return
             const configDef = getConfigDefinition(
               configDefinitionsRelevant,
-              configNameDefault,
+              configName,
               getFilePathToShowToUser(interfaceFile.filePath)
             )
             if (configDef.env !== 'config-only') return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
             // Value files for built-in confg-only configs should have already been loaded at loadInterfaceFiles()
-            assert(!(configNameDefault in configDefinitionsBuiltIn))
-            await loadValueFile(interfaceFile, configNameDefault, userRootDir)
+            assert(!(configName in configDefinitionsBuiltIn))
+            await loadValueFile(interfaceFile, configName, userRootDir)
           })
         )
 
@@ -530,7 +533,7 @@ function resolveConfigValueSources(
           (interfaceFile) =>
             interfaceFile.isValueFile &&
             // We consider side-effect exports (e.g. `export { frontmatter }` of .mdx files) later (i.e. with less priority)
-            interfaceFile.configNameDefault === configName
+            interfaceFile.configName === configName
         )
         .sort(makeOrderDeterministic)
       const interfaceConfigFiles = interfaceFilesDefiningConfig
@@ -544,9 +547,9 @@ function resolveConfigValueSources(
       const interfaceValueFile = interfaceValueFiles[0]
       const interfaceConfigFile = interfaceConfigFiles[0]
       // Make this value:
-      //   /pages/some-page/+someConfig.js > `export default`
+      //   /pages/some-page/+{configName}.js > `export default`
       // override that value:
-      //   /pages/some-page/+config > `export default { someConfig }`
+      //   /pages/some-page/+config.h.js > `export default { someConfig }`
       const interfaceFileWinner = interfaceValueFile ?? interfaceConfigFile
       if (interfaceFileWinner) {
         const interfaceFilesOverriden = [...interfaceValueFiles, ...interfaceConfigFiles].filter(
@@ -566,7 +569,7 @@ function resolveConfigValueSources(
         (interfaceFile) =>
           interfaceFile.isValueFile &&
           // Is side-effect export
-          interfaceFile.configNameDefault !== configName
+          interfaceFile.configName !== configName
       )
       .forEach((interfaceValueFileSideEffect) => {
         add(interfaceValueFileSideEffect)
@@ -678,7 +681,7 @@ function getConfigValueSource(
     const import_ = getImport(configValue, interfaceFile.filePath, userRootDir)
     if (import_) {
       const { importFilePath, importFileExportName } = import_
-      assertCodeFileEnv(importFilePath, configEnv, configName)
+      assertFileEnv(importFilePath, configEnv, configName)
       const configValueSource: ConfigValueSource = {
         configEnv,
         valueIsImportedAtRuntime: true,
@@ -703,7 +706,7 @@ function getConfigValueSource(
     // TODO: rethink file paths of ConfigElement
     const importFilePath =
       interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
-    const importFileExportName = configName === interfaceFile.configNameDefault ? 'default' : configName
+    const importFileExportName = configName === interfaceFile.configName ? 'default' : configName
     const valueAlreadyLoaded = 'configValue' in conf
     const configValueSource: ConfigValueSource = {
       configEnv,
@@ -724,13 +727,13 @@ function getConfigValueSource(
   assert(false)
 }
 
-function assertCodeFileEnv(importFilePath: string, configEnv: ConfigEnvInternal, configName: string) {
-  if (!codeFilesEnv.has(importFilePath)) {
-    codeFilesEnv.set(importFilePath, [])
+function assertFileEnv(importFilePath: string, configEnv: ConfigEnvInternal, configName: string) {
+  if (!filesEnv.has(importFilePath)) {
+    filesEnv.set(importFilePath, [])
   }
-  const codeFileEnv = codeFilesEnv.get(importFilePath)!
-  codeFileEnv.push({ configEnv, configName })
-  const configDifferentEnv = codeFileEnv.filter((c) => c.configEnv !== configEnv)[0]
+  const fileEnv = filesEnv.get(importFilePath)!
+  fileEnv.push({ configEnv, configName })
+  const configDifferentEnv = fileEnv.filter((c) => c.configEnv !== configEnv)[0]
   if (configDifferentEnv) {
     assertUsage(
       false,
@@ -773,7 +776,7 @@ function getImport(
     // ```
     // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
     // ```
-    importFilePath = resolveRelativeCodeFilePath(importData, configFilePath, userRootDir)
+    importFilePath = resolveRelativeFilePath(importData, configFilePath, userRootDir)
   } else {
     // importFilePath can be:
     //  - an npm package import
@@ -786,7 +789,7 @@ function getImport(
   }
 }
 
-function resolveRelativeCodeFilePath(importData: ImportData, configFilePath: FilePath, userRootDir: string) {
+function resolveRelativeFilePath(importData: ImportData, configFilePath: FilePath, userRootDir: string) {
   let importFilePath = resolveImport(importData, configFilePath)
 
   // Make it a Vite path
@@ -1180,7 +1183,7 @@ function assertExtendsImportPath(importPath: string, filePath: string, configFil
 
 function getExtendsImportData(configFileExports: Record<string, unknown>, configFilePath: FilePath): ImportData[] {
   const filePathToShowToUser = getFilePathToShowToUser(configFilePath)
-  assertDefaultExportObject(configFileExports, filePathToShowToUser)
+  assertExportsOfConfigFile(configFileExports, filePathToShowToUser)
   const defaultExports = configFileExports.default
   const wrongUsage = `${filePathToShowToUser} sets the config 'extends' to an invalid value, see https://vike.dev/extends`
   let extendList: string[]

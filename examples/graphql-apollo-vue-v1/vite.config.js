@@ -1,8 +1,8 @@
 import vue from '@vitejs/plugin-vue'
-import ssr from 'vike/plugin'
+import vike from 'vike/plugin'
 
 export default {
-  plugins: [vue(), ssr()],
+  plugins: [vue(), vike()],
   ssr: {
     noExternal: ['@apollo/client', '@vue/apollo-composable']
   }

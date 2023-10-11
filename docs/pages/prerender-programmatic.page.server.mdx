@@ -9,11 +9,11 @@ Instead, we can programmatically initiate pre-rendering:
 ```js
 // vite.config.js
 
-import { ssr } from 'vike/plugin'
+import vike from 'vike/plugin'
 
 export default {
   plugins: [
-    ssr({
+    vike({
       prerender: {
         // Stop `$ vite build` from initiating pre-rendering
         disableAutoRun: true

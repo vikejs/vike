@@ -68,7 +68,7 @@ function getLoadConfigValuesAll(
 
     assertPosixPath(filePath)
     const fileName = path.posix.basename(filePath)
-    const isPlusFile = fileName.startsWith('+')
+    const isValueFile = fileName.startsWith('+')
 
     const fileExportName = fileExportPath[0]
     assert(!configValueSource.valueIsFilePath)
@@ -77,15 +77,15 @@ function getLoadConfigValuesAll(
     const { importVar, importStatement } = generateEagerImport(
       filePath,
       varCounter++,
-      isPlusFile ? undefined : fileExportName
+      isValueFile ? undefined : fileExportName
     )
     importStatements.push(importStatement)
 
     lines.push(`  {`)
     lines.push(`    configName: '${configName}',`)
     lines.push(`    importFilePath: '${filePath}',`)
-    lines.push(`    isPlusFile: ${JSON.stringify(isPlusFile)},`)
-    if (isPlusFile) {
+    lines.push(`    isValueFile: ${JSON.stringify(isValueFile)},`)
+    if (isValueFile) {
       lines.push(`    importFileExports: ${importVar},`)
     } else {
       lines.push(`    importFileExportValue: ${importVar},`)

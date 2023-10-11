@@ -39,7 +39,7 @@ function Page() {
 }
 
 function Link(props) {
-  // We set `keep-scroll-position` to tell vike to preserve the current scroll position
+  // We set `keep-scroll-position` to tell Vike to preserve the current scroll position
   return <a keep-scroll-position="" style={{ marginRight: 10, ...props.style }} {...props} />
 }
 

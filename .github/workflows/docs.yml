@@ -20,7 +20,7 @@ jobs:
       - name: Install
         run: pnpm install
 
-      - name: Build vike
+      - name: Build Vike
         run: pnpm run build
 
       - name: Build docs

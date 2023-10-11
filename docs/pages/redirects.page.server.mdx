@@ -8,11 +8,11 @@ See also:
 ```js
 // vite.config.js
 
-import { ssr } from 'vike/plugin'
+import vike from 'vike/plugin'
 
 export default {
   plugins: [
-    ssr({
+    vike({
       // Permanent redirections (HTTP status code 301)
       redirects: {
         '/about-us': '/about',

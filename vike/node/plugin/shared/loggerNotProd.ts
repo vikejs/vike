@@ -39,7 +39,7 @@ import {
   type ErrorWithCodeSnippet
 } from './loggerNotProd/errorWithCodeSnippet.js'
 import {
-  getConfigExececutionErrorIntroMsg,
+  getConfigExecutionErrorIntroMsg,
   getConfigBuildErrorFormatted
 } from '../plugins/importUserCode/v1-design/transpileAndExecuteFile.js'
 import {
@@ -159,7 +159,7 @@ function logConfigError(err: unknown): void {
   const category = getConfigCategory()
 
   {
-    const errIntroMsg = getConfigExececutionErrorIntroMsg(err)
+    const errIntroMsg = getConfigExecutionErrorIntroMsg(err)
     if (errIntroMsg) {
       assert(stripAnsi(errIntroMsg).startsWith('Failed to execute'))
       logWithVikeTag(errIntroMsg, 'error', category)

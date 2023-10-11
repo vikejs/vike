@@ -1,12 +1,5 @@
-- Vike rename
-  - Update `import ssr from 'vike/plugin'`
-  - add vike.dev/vite-plugin-ssr and point to it whenever the docs link to a repository using vite-plugin-ssr
-  - update examples/vike-react, examples/vike-react-simple, examples/stem-react, docs/ (docpress)
-    - update vike-react, vike-react-simple, and docpress to use and depend on vike npm package
-    - update stem-react to new major using vike.config.js instead of vite-plugin-ssr.config.js
-    - revert ignoring of rename warning c3174ae5a16433bc5a24b44e8f13732f0cfe2faf
-  - In docs: capitalize vike -> Vike
-  - improve docs about Vike.PageContext
+- Improve https://vike.dev/header-file
+- Update all examples to not use PageContextBuiltIn but Vike.PageContext instead
 
 - fix pageContext._renderHook.hookFilePath / replace with new prop hookSrc
 - refacor/fix skipConfigValue to differentiate between global/page virtual file
@@ -14,19 +7,12 @@
 - replace configValueSources with configValues for global configs
   - maybe add a _isGlobal option
 
-- Set env type to `{ client: boolean | '_eager', server: boolean | '_eager', config?: boolean }`
+- Set env type to `{ client: boolean | 'eager', server: boolean | 'eager', config?: boolean }`
   - Eager means that the value is always loaded, no matter what page is being loaded. (By default only the values of the page being renderered are loaded.)
   - Should the option be '_eager' and internal? Is there any added value to make it internal? Custom configs are only meant for advanced use cases anyways. Maybe naming it 'eager' (instead of '_eager') while omitting 'eager` in the Meta type until some user needs it?
   - Values that are defined in `+config.h.js` are loaded at config-time even if `config: false`. (But they can be defined in a `+{configName}.js` and they won't be loaded then.)
     - But they can still be lazily loaded in the client/server runtime
   - Global page config values are always eager
-
-- By default, only call guard() hooks on the server-side?
-
-- release 0.5.0
-  - `import * from 'vike'`
-  - pageContext.url
-  - rename hooks for 0.4 designA?
 
 - improve ignoring of dist/
 - client/shared/
@@ -43,6 +29,24 @@ V1 design stable release:
    - pageContext.config
    - pageContext.configEntries
 
+Implement vike.config.js
+ - Move all globals there and add migration warnings
+
+Implement data() hook
+ - New config requestPageContextOnNavigation
+   ```ts
+   type requestPageContextOnNavigation =
+     | true // default
+     | 'minimal' // Equivalent to `{ makeHooksUniversal: true }`. (Or maybe `{ makeHooksUniversal: ['data', 'onBeforeRender'] }`?)
+     | false // Equivalent to { makeHooksUniversal: true, skipPageContextInit: true }
+     | {
+         makeHooksUniversal: true | ('onBeforeRender' | 'data' | 'guard')[] // Change env of hooks from `{ client: false, server: true }` to `{ client: true, server: true }`
+         // Is `skipPageContextInit: true` too dangerous (the user may break its app)? I think it's ok and, so far, I think a warning in the docs is enough.
+         skipPageContextInit: true | string[] // e.g. ['user']
+       }
+   ```
+   - By default, only call guard() hooks on the server-side (if requestPageContextOnNavigation.minimal isn't true)
+
 Features:
  - multiple error pages
  - nested layouts
@@ -51,14 +55,14 @@ Sometime:
  - Replace "isomorphic"/"isomorph" to "universal"
  - remove documentProps from examples and boilerplates
 
-After stable release:
+Release 1.0.0 breaking changes:
+  - `import * from 'vike'`
+  - pageContext.url
+
+After 1.0.0 release:
  - Remove 0.4 design examples
    - Update all links to /examples/*-v1
  - Add deprecation warning for pageContext.exports
-
-After Vike rename:
- - Implement vike.config.js
-   - Move all globals there and add migration warnings
 
 Contact:
  - Bun

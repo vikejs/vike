@@ -1,4 +1,4 @@
-import ssr from 'vike/plugin'
+import vike from 'vike/plugin'
 export default {
-  plugins: [ssr()]
+  plugins: [vike()]
 }

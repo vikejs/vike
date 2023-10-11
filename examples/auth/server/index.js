@@ -13,7 +13,7 @@ async function startServer() {
   const app = express()
   auth(app)
   await assets(app)
-  ssr(app)
+  vike(app)
   app.listen(port)
   console.log(`Server running at http://localhost:${port}`)
 }
@@ -60,7 +60,7 @@ async function assets(app) {
   }
 }
 
-function ssr(app) {
+function vike(app) {
   app.get('*', async (req, res, next) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl,

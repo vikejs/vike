@@ -1,7 +1,7 @@
 import type { UserConfig } from 'vite'
 import solid from 'vite-plugin-solid'
-import ssr from 'vike/plugin'
+import vike from 'vike/plugin'
 
 export default {
-  plugins: [solid({ ssr: true }), ssr()]
+  plugins: [solid({ ssr: true }), vike()]
 } satisfies UserConfig

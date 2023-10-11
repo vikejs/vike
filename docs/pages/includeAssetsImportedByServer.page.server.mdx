@@ -9,11 +9,11 @@ It's `true` by default and, in principle, there isn't any reason to disable it. 
 ```js
 // vite.config.js
 
-import { ssr } from 'vike/plugin'
+import vike from 'vike/plugin'
 
 export default {
   plugins: [
-    ssr({
+    vike({
       includeAssetsImportedByServer: false
     })
   ]

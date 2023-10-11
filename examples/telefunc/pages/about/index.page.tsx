@@ -6,7 +6,7 @@ function Page() {
   return (
     <>
       <h1>About</h1>
-      <p>Showcase of using Telefunc + vike.</p>
+      <p>Showcase of using Telefunc + Vike.</p>
     </>
   )
 }

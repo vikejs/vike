@@ -103,14 +103,17 @@ type PageConfigGlobal = {
 type LoadConfigValuesAll = () => Promise<
   ({
     configName: string
+    // TODO: rename?
     importFilePath: string
   } & (
     | {
-        isPlusFile: true // The file `importFilePath` is a +{configName}.js file
+        isValueFile: true // importFilePath is a +{configName}.js file
+        // TODO: rename?
         importFileExports: Record<string, unknown>
       }
     | {
-        isPlusFile: false // The file `importFilePath` is imported by a +config.js file
+        isValueFile: false // importFilePath is imported by a +config.js file
+        // TODO: rename?
         // import { something } from './importFilePathRelative.js'
         // -> importFileExportName === 'something'
         // -> importFileExportValue holds the value of `something`

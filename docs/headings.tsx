@@ -220,11 +220,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Catch-All Routes',
-    url: '/catch-all'
-  },
-  {
-    level: 2,
     title: 'Routing Precedence',
     url: '/routing-precedence'
   },

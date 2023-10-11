@@ -1,6 +1,6 @@
 export { transpileAndExecuteFile }
 export { getConfigBuildErrorFormatted }
-export { getConfigExececutionErrorIntroMsg }
+export { getConfigExecutionErrorIntroMsg as getConfigExecutionErrorIntroMsg }
 export { isTmpFile }
 
 import { build, type BuildResult, type BuildOptions, formatMessages } from 'esbuild'
@@ -13,7 +13,6 @@ import {
   getRandomId,
   assertIsNotProductionRuntime,
   assert,
-  assertDefaultExportObject,
   unique,
   assertWarning,
   isObject,
@@ -24,6 +23,7 @@ import { isImportData, replaceImportStatements, type FileImport } from './replac
 import { vikeConfigDependencies } from './getVikeConfig.js'
 import 'source-map-support/register.js'
 import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.js'
+import { assertExportsOfConfigFile } from '../../../../../shared/page-configs/assertExports.js'
 
 assertIsNotProductionRuntime()
 
@@ -33,7 +33,7 @@ async function transpileAndExecuteFile(
   userRootDir: string
 ): Promise<{ fileExports: Record<string, unknown> }> {
   const { code, fileImports } = await transpileFile(filePath, isValueFile, userRootDir)
-  const { fileExports } = await executeFile(filePath, code, fileImports)
+  const { fileExports } = await executeFile(filePath, code, fileImports, isValueFile)
   return { fileExports }
 }
 
@@ -160,7 +160,7 @@ async function transpileWithEsbuild(filePath: FilePath, bundle: boolean, userRoo
   return code
 }
 
-async function executeFile(filePath: FilePath, code: string, fileImports: FileImport[] | null) {
+async function executeFile(filePath: FilePath, code: string, fileImports: FileImport[] | null, isValueFile: boolean) {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = filePath
   // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
   //  - But seems to break source maps, so I don't think it's worth it
@@ -183,10 +183,10 @@ async function executeFile(filePath: FilePath, code: string, fileImports: FileIm
   //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
   //  - We don't need this special object
   fileExports = { ...fileExports }
-  if (fileImports) {
+  if (fileImports && !isValueFile) {
     assert(filePathRelativeToUserRootDir !== undefined)
-    const filePath = filePathRelativeToUserRootDir ?? filePathAbsolute
-    assertFileImports(fileImports, fileExports, filePath)
+    const filePathToShowToUser = filePathRelativeToUserRootDir ?? filePathAbsolute
+    assertImportsAreReExported(fileImports, fileExports, filePathToShowToUser)
   }
   return { fileExports }
 }
@@ -213,7 +213,7 @@ async function formatBuildErr(err: unknown, filePath: FilePath): Promise<void> {
 }
 
 const execErrIntroMsg = new WeakMap<object, string>()
-function getConfigExececutionErrorIntroMsg(err: unknown): string | null {
+function getConfigExecutionErrorIntroMsg(err: unknown): string | null {
   if (!isObject(err)) return null
   const errIntroMsg = execErrIntroMsg.get(err)
   return errIntroMsg ?? null
@@ -235,12 +235,12 @@ function isTmpFile(filePath: string): boolean {
   return fileName.startsWith(tmpPrefix)
 }
 
-function assertFileImports(
+function assertImportsAreReExported(
   fileImports: (FileImport & { isReExported?: true })[],
   fileExports: Record<string, unknown>,
-  filePath: string
+  filePathToShowToUser: string
 ) {
-  assertDefaultExportObject(fileExports, filePath)
+  assertExportsOfConfigFile(fileExports, filePathToShowToUser)
   const exportedStrings = getExportedStrings(fileExports.default)
   Object.values(exportedStrings).forEach((exportVal) => {
     if (typeof exportVal !== 'string') return
@@ -262,7 +262,7 @@ function assertFileImports(
   assertUsage(
     fileImportsUnused.length === 0,
     [
-      `${filePath} imports the following:`,
+      `${filePathToShowToUser} imports the following:`,
       ...importStatements.map((s) => pc.cyan(`  ${s}`)),
       `But the import${singular ? '' : 's'} ${importNamesUnused} ${
         singular ? "isn't" : "aren't"

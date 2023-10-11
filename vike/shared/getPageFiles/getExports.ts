@@ -6,7 +6,7 @@ export type { ConfigEntries }
 
 import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile.js'
 import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils.js'
-import { assertDefaultExports, forbiddenDefaultExports } from './assertExports.js'
+import { assertDefaultExports, forbiddenDefaultExports } from './assert_exports_old_design.js'
 import type { FileType } from './fileTypes.js'
 import type { PageConfigLoaded } from './../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'

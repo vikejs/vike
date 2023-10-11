@@ -6,29 +6,63 @@ For a page `/pages/film.page.js`, a Route String can be defined in a `/pages/fil
 ```js
 // /pages/film.page.route.js
 
-// Match URLs `/film/1`, `/film/2`, ...
+// Matches the URLs:
+//  /film/1
+//  /film/2
+//  /film/a
+//  /film/b
+//  ...
 export default '/film/@filmId'
 ```
 
 The value of `filmId` is available at `pageContext.routeParams.filmId`.
 
-## Multiple Parameters
+You can define:
+ - Multiple parameters, for example `/film/@category/@name`.
+ - <Link href="#globs">Globs</Link>, for example `/product/*`.
 
-We can define multiple parameters.
+For more advanced routing logic, consider using a [Route Function](/route-function) instead of Route String.
+
+
+## Globs
 
 ```js
-// /pages/film.page.route.js
+// product.page.route.js
 
-// Parameters available at:
-//  - `pageContext.routeParams.year`
-//  - `pageContext.routeParams.slug`
-export default '/news/@year/@slug'
+// Match URLs that start with `/product/*`:
+// `/product/42`
+// `/product/1337/details`
+// `/product/2048/some/deeply/nested/path`
+//  ...
+export default '/product/*'
 ```
+
+The value of the glob is available at `pageContext.routeParams['*']`.
+
+> The difference between `/product/*` and `/product/@productId` is that the former includes nested paths whereas the latter doesn't.
+> For example `/product/42/details` matches `/product/*` but doesn't match `/product/@productId`.
+
+If you define multiple globs, then the glob values are available at `pageContext.routeParams['*1']`, `pageContext.routeParams['*2']`, etc.
 
 
 ## Catch-All
 
-We can use Route Strings to implement [catch-all routes](/catch-all).
+You can use a <Link href="#globs">glob</Link> to catch all URLs:
+
+```js
+// catch-all.page.route.js
+
+// Route all URLs to a single page
+export default '*'
+```
+```js
+// catch-all.page.js
+
+// The only page of our app.
+export { Page }
+
+// ...
+```
 
 
 ## Precedence
@@ -45,7 +79,3 @@ The special character `@` cannot be escaped, use a [Route Function](/route-funct
 ## Domain-driven file structure
 
 <RouteDomainDriven />
-
-## More
-
-For more advanced routing, we can use [Route Functions](/route-function) which are fundamentally more powerful than Route Strings.

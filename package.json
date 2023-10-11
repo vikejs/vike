@@ -1,14 +1,14 @@
 {
   "scripts": {
     "========= Dev": "",
-    "// Develop vike": "",
+    "// Develop Vike": "",
     "dev": "cd vike/ && pnpm run dev",
     "dev:cjs": "cd vike/ && pnpm run dev:cjs",
     "dev:esm": "cd vike/ && pnpm run dev:esm",
     "// Run `$ pnpm dev:setup` before running `$ pnpm dev`": "",
     "dev:setup": "pnpm run clean && pnpm install",
     "========= Build": "",
-    "// Build vike": "",
+    "// Build Vike": "",
     "build": "cd vike/ && pnpm run build",
     "========= Test": "",
     "// Run tests": "",

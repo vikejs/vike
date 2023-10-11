@@ -11,12 +11,12 @@ To use Vike with [Windi CSS](https://github.com/windicss/windicss):
    ```js
    // vite.config.js
 
-   import ssr from 'vike/plugin'
+   import vike from 'vike/plugin'
    import WindiCSS from 'vite-plugin-windicss'
 
    export default {
      plugins: [
-       ssr(),
+       vike(),
        WindiCSS({
          scan: {
            // By default only `src/` is scanned
@@ -50,3 +50,4 @@ To use Vike with [Windi CSS](https://github.com/windicss/windicss):
 
 Example of using Vike with Windi CSS:
  - [GitHub > `brillout/vite-plugin-ssr_windi-css`](https://github.com/brillout/vite-plugin-ssr_windi-css)
+   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).

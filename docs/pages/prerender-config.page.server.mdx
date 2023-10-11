@@ -7,11 +7,11 @@ By default, pre-rendering is disabled. To enable it:
 ```js
 // vite.config.js
 
-import { ssr } from 'vike/plugin'
+import vike from 'vike/plugin'
 
 export default {
   plugins: [
-    ssr({
+    vike({
       // Use the default pre-render config:
       prerender: true
       // Deviate from the default pre-render config:

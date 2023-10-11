@@ -36,7 +36,7 @@ pnpm install
 
 #### Build & Dev
 
-Build vike's source code:
+Build Vike's source code:
 
 ```shell
 # At the monorepo root
@@ -87,7 +87,7 @@ New examples should be minimal and implement only what you want to showcase.
 
 Follow the setup instructions at [Basics](#basics).
 
-> The `README` instructions of examples use `npm`. We use `pnpm` instead if we want to install the entire monorepo and build & link vike's source code.
+> The `README` instructions of examples use `npm`. We use `pnpm` instead if we want to install the entire monorepo and build & link Vike's source code.
 
 To run the example:
 
