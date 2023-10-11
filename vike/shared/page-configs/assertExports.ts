@@ -4,29 +4,29 @@ export { assertExportsOfConfigFile }
 import { assert, assertUsage, assertWarning, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
 
-const IGNORE = [
+const EXPORTS_IGNORE = [
   // vite-plugin-solid adds `export { $$registrations }`
   '$$registrations',
   // @vitejs/plugin-vue adds `export { _rerender_only }`
   '_rerender_only'
 ]
 
-// support `export { frontmatter }` in .mdx files
-const FILES_WITH_SIDE_EXPORTS = ['.md', '.mdx']
+// Tolerate `export { frontmatter }` in .mdx files
+const TOLERATE_SIDE_EXPORTS = ['.md', '.mdx']
 
 function assertExportsOfValueFile(
   fileExports: Record<string, unknown>,
   filePathToShowToUser: string,
   configName: string
 ) {
-  assertSingleDefaultExport(fileExports, filePathToShowToUser, configName)
+  assertExports(fileExports, filePathToShowToUser, configName)
 }
 
 function assertExportsOfConfigFile(
   fileExports: Record<string, unknown>,
   filePathToShowToUser: string
 ): asserts fileExports is { default: Record<string, unknown> } {
-  assertSingleDefaultExport(fileExports, filePathToShowToUser)
+  assertExports(fileExports, filePathToShowToUser)
   const exportDefault = fileExports.default
   assertUsage(
     isObject(exportDefault),
@@ -36,13 +36,13 @@ function assertExportsOfConfigFile(
   )
 }
 
-function assertSingleDefaultExport(
+function assertExports(
   fileExports: Record<string, unknown>,
   filePathToShowToUser: string,
   configName?: string
 ) {
   const exportsAll = Object.keys(fileExports)
-  const exportsRelevant = exportsAll.filter((exportName) => !IGNORE.includes(exportName))
+  const exportsRelevant = exportsAll.filter((exportName) => !EXPORTS_IGNORE.includes(exportName))
   const exportsInvalid = exportsRelevant.filter((e) => e !== 'default')
   const exportsHasDefault = exportsRelevant.includes('default')
   if (exportsInvalid.length === 0) {
@@ -55,7 +55,7 @@ function assertSingleDefaultExport(
         `${filePathToShowToUser} doesn't export any value, but it should have a ${pc.cyan('export default')} instead`
       )
     }
-  } else if (!FILES_WITH_SIDE_EXPORTS.some((ext) => filePathToShowToUser.endsWith(ext))) {
+  } else if (!TOLERATE_SIDE_EXPORTS.some((ext) => filePathToShowToUser.endsWith(ext))) {
     // !configName => isConfigFile
     if (!configName) {
       const exportsInvalidStr = exportsInvalid.join(', ')
