@@ -77,12 +77,14 @@ type InterfaceFileCommons = {
   filePath: FilePath
   configMap: Record<ConfigName, { configValue?: unknown }>
 }
+// +config.h.js
 type InterfaceConfigFile = InterfaceFileCommons & {
   isConfigFile: true
   isValueFile: false
   extendsFilePaths: string[]
   isConfigExtend: boolean
 }
+// +someConfig.js
 type InterfaceValueFile = InterfaceFileCommons & {
   isConfigFile: false
   isValueFile: true
