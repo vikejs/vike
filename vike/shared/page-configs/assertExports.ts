@@ -60,7 +60,7 @@ function assertExports(
     if (!configName) {
       const exportsInvalidStr = exportsInvalid.join(', ')
       assertUsage(
-        exportsInvalid.length === 0,
+        false,
         `${filePathToShowToUser} replace ${pc.cyan(`export { ${exportsInvalidStr} }`)} with ${pc.cyan(
           `export default { ${exportsInvalidStr} }`
         )}`
@@ -71,7 +71,7 @@ function assertExports(
       if (TOLERATE_SIDE_EXPORTS.some((ext) => filePathToShowToUser.endsWith(ext))) return
       exportsInvalid.forEach((exportInvalid) => {
         assertWarning(
-          exportsInvalid.length === 0,
+          false,
           `${filePathToShowToUser} should only have a default export: move ${pc.cyan(
             `export { ${exportInvalid} }`
           )} to +config.h.js or its own +${exportsInvalid}.js`,
