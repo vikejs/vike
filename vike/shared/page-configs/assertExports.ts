@@ -1,4 +1,4 @@
-export { assertDefaultExportUnknown }
+export { assertExportsOfValueFile }
 export { assertExportsOfConfigFile }
 
 import { assert, assertUsage, assertWarning, isObject } from '../utils.js'
@@ -14,7 +14,7 @@ const IGNORE = [
 // support `export { frontmatter }` in .mdx files
 const FILES_WITH_SIDE_EXPORTS = ['.md', '.mdx']
 
-function assertDefaultExportUnknown(
+function assertExportsOfValueFile(
   fileExports: Record<string, unknown>,
   filePathToShowToUser: string
 ): asserts fileExports is Record<string, unknown> & { default: unknown } {

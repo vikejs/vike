@@ -66,7 +66,7 @@ import pc from '@brillout/picocolors'
 import { getConfigDefinedAtString } from '../../../../../shared/page-configs/utils.js'
 import {
   assertExportsOfConfigFile,
-  assertDefaultExportUnknown
+  assertExportsOfValueFile
 } from '../../../../../shared/page-configs/assertExports.js'
 import { getConfigValueSerialized } from './getVirtualFilePageConfigs.js'
 
@@ -250,7 +250,7 @@ function getConfigDefinitionOptional(
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string, userRootDir: string) {
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, true, userRootDir)
   const filePathToShowToUser = getFilePathToShowToUser(interfaceValueFile.filePath)
-  assertDefaultExportUnknown(fileExports, filePathToShowToUser)
+  assertExportsOfValueFile(fileExports, filePathToShowToUser)
   Object.entries(fileExports).forEach(([configName, configValue]) => {
     if (configName === 'default') {
       configName = configNameDefault

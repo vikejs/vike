@@ -1,7 +1,7 @@
 export { loadPageCode }
 
 import { assert, assertUsage, objectAssign } from '../utils.js'
-import { assertDefaultExportUnknown } from './assertExports.js'
+import { assertExportsOfValueFile } from './assertExports.js'
 import type { PageConfig, PageConfigLoaded } from './PageConfig.js'
 import pc from '@brillout/picocolors'
 
@@ -40,7 +40,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     if (configValueLoaded.isValueFile) {
       const { importFileExports, importFilePath } = configValueLoaded
       if (configValueLoaded.configName !== 'client') {
-        assertDefaultExportUnknown(importFileExports, importFilePath)
+        assertExportsOfValueFile(importFileExports, importFilePath)
       }
       Object.entries(importFileExports).forEach(([exportName, exportValue]) => {
         const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
