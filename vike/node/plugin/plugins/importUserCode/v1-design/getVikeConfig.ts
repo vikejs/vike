@@ -250,9 +250,10 @@ function getConfigDefinitionOptional(
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string, userRootDir: string) {
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, true, userRootDir)
   const filePathToShowToUser = getFilePathToShowToUser(interfaceValueFile.filePath)
-  assertExportsOfValueFile(fileExports, filePathToShowToUser)
-  Object.entries(fileExports).forEach(([configName, configValue]) => {
-    if (configName === 'default') {
+  assertExportsOfValueFile(fileExports, filePathToShowToUser, configNameDefault)
+  Object.entries(fileExports).forEach(([exportName, configValue]) => {
+    let configName = exportName
+    if (exportName === 'default') {
       configName = configNameDefault
     }
     interfaceValueFile.configMap[configName] = { configValue }

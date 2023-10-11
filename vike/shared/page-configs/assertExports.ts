@@ -16,16 +16,17 @@ const FILES_WITH_SIDE_EXPORTS = ['.md', '.mdx']
 
 function assertExportsOfValueFile(
   fileExports: Record<string, unknown>,
-  filePathToShowToUser: string
-): asserts fileExports is Record<string, unknown> & { default: unknown } {
-  assertSingleDefaultExport(fileExports, filePathToShowToUser, true)
+  filePathToShowToUser: string,
+  configName: string
+) {
+  assertSingleDefaultExport(fileExports, filePathToShowToUser, configName)
 }
 
 function assertExportsOfConfigFile(
   fileExports: Record<string, unknown>,
   filePathToShowToUser: string
 ): asserts fileExports is { default: Record<string, unknown> } {
-  assertSingleDefaultExport(fileExports, filePathToShowToUser, false)
+  assertSingleDefaultExport(fileExports, filePathToShowToUser)
   const exportDefault = fileExports.default
   assertUsage(
     isObject(exportDefault),
@@ -38,7 +39,7 @@ function assertExportsOfConfigFile(
 function assertSingleDefaultExport(
   fileExports: Record<string, unknown>,
   filePathToShowToUser: string,
-  defaultExportValueIsUnknown: boolean
+  configName?: string
 ) {
   const exportsAll = Object.keys(fileExports)
   const exportsRelevant = exportsAll.filter((exportName) => !IGNORE.includes(exportName))
@@ -55,7 +56,19 @@ function assertSingleDefaultExport(
       )
     }
   } else if (!FILES_WITH_SIDE_EXPORTS.some((ext) => filePathToShowToUser.endsWith(ext))) {
-    if (defaultExportValueIsUnknown) {
+    // !configName => isConfigFile
+    if (!configName) {
+      const exportsInvalidStr = exportsInvalid.join(', ')
+      assertWarning(
+        exportsInvalid.length === 0,
+        `${filePathToShowToUser} replace ${pc.cyan(`export { ${exportsInvalidStr} }`)} with ${pc.cyan(
+          `export default { ${exportsInvalidStr} }`
+        )}`,
+        { onlyOnce: true }
+      )
+    }
+    // configName => isValueFile
+    else {
       exportsInvalid.forEach((exportInvalid) => {
         assertWarning(
           exportsInvalid.length === 0,
@@ -65,15 +78,6 @@ function assertSingleDefaultExport(
           { onlyOnce: true }
         )
       })
-    } else {
-      const exportsInvalidStr = exportsInvalid.join(', ')
-      assertWarning(
-        exportsInvalid.length === 0,
-        `${filePathToShowToUser} replace ${pc.cyan(`export { ${exportsInvalidStr} }`)} with ${pc.cyan(
-          `export default { ${exportsInvalidStr} }`
-        )}`,
-        { onlyOnce: true }
-      )
     }
   }
 }

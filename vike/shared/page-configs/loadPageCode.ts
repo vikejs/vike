@@ -38,9 +38,9 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
 
   configValuesAll.forEach((configValueLoaded) => {
     if (configValueLoaded.isValueFile) {
-      const { importFileExports, importFilePath } = configValueLoaded
-      if (configValueLoaded.configName !== 'client') {
-        assertExportsOfValueFile(importFileExports, importFilePath)
+      const { importFileExports, importFilePath, configName } = configValueLoaded
+      if (configName !== 'client') {
+        assertExportsOfValueFile(importFileExports, importFilePath, configName)
       }
       Object.entries(importFileExports).forEach(([exportName, exportValue]) => {
         const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
