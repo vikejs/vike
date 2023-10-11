@@ -34,8 +34,19 @@ Implement vike.config.js
  - Move all globals there and add migration warnings
 
 Implement data() hook
- - New config `minimizeSubsequentServerRequests: boolean` (or `noSubsequentServerRequests: boolean` / `serverRquestsOnNavigation: true | false | 'minimal'`?)
-   - By default, only call guard() hooks on the server-side (if minimizeServerRequests isn't set)
+ - New config requestPageContextOnNavigation
+   ```ts
+   type requestPageContextOnNavigation =
+     | true // default
+     | 'minimal' // Equivalent to `{ makeHooksUniversal: true }`. (Or maybe `{ makeHooksUniversal: ['data', 'onBeforeRender'] }`?)
+     | false // Equivalent to { makeHooksUniversal: true, skipPageContextInit: true }
+     | {
+         makeHooksUniversal: true | ('onBeforeRender' | 'data' | 'guard')[] // Change env of hooks from `{ client: false, server: true }` to `{ client: true, server: true }`
+         // Is `skipPageContextInit: true` too dangerous (the user may break its app)? I think it's ok and, so far, I think a warning in the docs is enough.
+         skipPageContextInit: true | string[] // e.g. ['user']
+       }
+   ```
+   - By default, only call guard() hooks on the server-side (if requestPageContextOnNavigation.minimal isn't true)
 
 Features:
  - multiple error pages
