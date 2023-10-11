@@ -1,6 +1,6 @@
 export { transpileAndExecuteFile }
 export { getConfigBuildErrorFormatted }
-export { getConfigExececutionErrorIntroMsg }
+export { getConfigExecutionErrorIntroMsg as getConfigExecutionErrorIntroMsg }
 export { isTmpFile }
 
 import { build, type BuildResult, type BuildOptions, formatMessages } from 'esbuild'
@@ -213,7 +213,7 @@ async function formatBuildErr(err: unknown, filePath: FilePath): Promise<void> {
 }
 
 const execErrIntroMsg = new WeakMap<object, string>()
-function getConfigExececutionErrorIntroMsg(err: unknown): string | null {
+function getConfigExecutionErrorIntroMsg(err: unknown): string | null {
   if (!isObject(err)) return null
   const errIntroMsg = execErrIntroMsg.get(err)
   return errIntroMsg ?? null
