@@ -37,7 +37,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
   }
 
   configValuesAll.forEach((configValueLoaded) => {
-    if (configValueLoaded.isPlusFile) {
+    if (configValueLoaded.isValueFile) {
       const { importFileExports, importFilePath } = configValueLoaded
       if (configValueLoaded.configName !== 'client') {
         assertDefaultExportUnknown(importFileExports, importFilePath)
