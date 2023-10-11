@@ -59,12 +59,11 @@ function assertExports(
     // !configName => isConfigFile
     if (!configName) {
       const exportsInvalidStr = exportsInvalid.join(', ')
-      assertWarning(
+      assertUsage(
         exportsInvalid.length === 0,
         `${filePathToShowToUser} replace ${pc.cyan(`export { ${exportsInvalidStr} }`)} with ${pc.cyan(
           `export default { ${exportsInvalidStr} }`
-        )}`,
-        { onlyOnce: true }
+        )}`
       )
     }
     // configName => isValueFile
