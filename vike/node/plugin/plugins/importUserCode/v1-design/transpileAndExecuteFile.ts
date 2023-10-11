@@ -185,8 +185,8 @@ async function executeFile(filePath: FilePath, code: string, fileImports: FileIm
   fileExports = { ...fileExports }
   if (fileImports) {
     assert(filePathRelativeToUserRootDir !== undefined)
-    const filePath = filePathRelativeToUserRootDir ?? filePathAbsolute
-    assertFileImports(fileImports, fileExports, filePath)
+    const filePathToShowToUser = filePathRelativeToUserRootDir ?? filePathAbsolute
+    assertFileImports(fileImports, fileExports, filePathToShowToUser)
   }
   return { fileExports }
 }
@@ -238,9 +238,9 @@ function isTmpFile(filePath: string): boolean {
 function assertFileImports(
   fileImports: (FileImport & { isReExported?: true })[],
   fileExports: Record<string, unknown>,
-  filePath: string
+  filePathToShowToUser: string
 ) {
-  assertDefaultExportObject(fileExports, filePath)
+  assertDefaultExportObject(fileExports, filePathToShowToUser)
   const exportedStrings = getExportedStrings(fileExports.default)
   Object.values(exportedStrings).forEach((exportVal) => {
     if (typeof exportVal !== 'string') return
@@ -262,7 +262,7 @@ function assertFileImports(
   assertUsage(
     fileImportsUnused.length === 0,
     [
-      `${filePath} imports the following:`,
+      `${filePathToShowToUser} imports the following:`,
       ...importStatements.map((s) => pc.cyan(`  ${s}`)),
       `But the import${singular ? '' : 's'} ${importNamesUnused} ${
         singular ? "isn't" : "aren't"

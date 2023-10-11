@@ -106,10 +106,10 @@ let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfig> | null = null
 const vikeConfigDependencies: Set<string> = new Set()
-const codeFilesEnv: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
+const filesEnv: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
 function reloadVikeConfig(userRootDir: string, extensions: ExtensionResolved[]) {
   vikeConfigDependencies.clear()
-  codeFilesEnv.clear()
+  filesEnv.clear()
   vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, extensions, true)
   handleReloadSideEffects()
 }
@@ -247,7 +247,8 @@ function getConfigDefinitionOptional(
 }
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configNameDefault: string, userRootDir: string) {
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, true, userRootDir)
-  assertDefaultExportUnknown(fileExports, getFilePathToShowToUser(interfaceValueFile.filePath))
+  const filePathToShowToUser = getFilePathToShowToUser(interfaceValueFile.filePath)
+  assertDefaultExportUnknown(fileExports, filePathToShowToUser)
   Object.entries(fileExports).forEach(([configName, configValue]) => {
     if (configName === 'default') {
       configName = configNameDefault
@@ -265,8 +266,8 @@ function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: 
     isConfigExtend,
     extendsFilePaths
   }
-  const interfaceFilePathToShowToUser = getFilePathToShowToUser(filePath)
-  assertDefaultExportObject(fileExports, interfaceFilePathToShowToUser)
+  const filePathToShowToUser = getFilePathToShowToUser(filePath)
+  assertDefaultExportObject(fileExports, filePathToShowToUser)
   Object.entries(fileExports.default).forEach(([configName, configValue]) => {
     interfaceFile.configMap[configName] = { configValue }
   })
@@ -680,7 +681,7 @@ function getConfigValueSource(
     const import_ = getImport(configValue, interfaceFile.filePath, userRootDir)
     if (import_) {
       const { importFilePath, importFileExportName } = import_
-      assertCodeFileEnv(importFilePath, configEnv, configName)
+      assertFileEnv(importFilePath, configEnv, configName)
       const configValueSource: ConfigValueSource = {
         configEnv,
         valueIsImportedAtRuntime: true,
@@ -726,13 +727,13 @@ function getConfigValueSource(
   assert(false)
 }
 
-function assertCodeFileEnv(importFilePath: string, configEnv: ConfigEnvInternal, configName: string) {
-  if (!codeFilesEnv.has(importFilePath)) {
-    codeFilesEnv.set(importFilePath, [])
+function assertFileEnv(importFilePath: string, configEnv: ConfigEnvInternal, configName: string) {
+  if (!filesEnv.has(importFilePath)) {
+    filesEnv.set(importFilePath, [])
   }
-  const codeFileEnv = codeFilesEnv.get(importFilePath)!
-  codeFileEnv.push({ configEnv, configName })
-  const configDifferentEnv = codeFileEnv.filter((c) => c.configEnv !== configEnv)[0]
+  const fileEnv = filesEnv.get(importFilePath)!
+  fileEnv.push({ configEnv, configName })
+  const configDifferentEnv = fileEnv.filter((c) => c.configEnv !== configEnv)[0]
   if (configDifferentEnv) {
     assertUsage(
       false,
@@ -775,7 +776,7 @@ function getImport(
     // ```
     // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
     // ```
-    importFilePath = resolveRelativeCodeFilePath(importData, configFilePath, userRootDir)
+    importFilePath = resolveRelativeFilePath(importData, configFilePath, userRootDir)
   } else {
     // importFilePath can be:
     //  - an npm package import
@@ -788,7 +789,7 @@ function getImport(
   }
 }
 
-function resolveRelativeCodeFilePath(importData: ImportData, configFilePath: FilePath, userRootDir: string) {
+function resolveRelativeFilePath(importData: ImportData, configFilePath: FilePath, userRootDir: string) {
   let importFilePath = resolveImport(importData, configFilePath)
 
   // Make it a Vite path

@@ -16,20 +16,20 @@ const FILES_WITH_SIDE_EXPORTS = ['.md', '.mdx']
 
 function assertDefaultExportUnknown(
   fileExports: Record<string, unknown>,
-  filePath: string
+  filePathToShowToUser: string
 ): asserts fileExports is Record<string, unknown> & { default: unknown } {
-  assertSingleDefaultExport(fileExports, filePath, true)
+  assertSingleDefaultExport(fileExports, filePathToShowToUser, true)
 }
 
 function assertDefaultExportObject(
   fileExports: Record<string, unknown>,
-  filePath: string
+  filePathToShowToUser: string
 ): asserts fileExports is { default: Record<string, unknown> } {
-  assertSingleDefaultExport(fileExports, filePath, false)
+  assertSingleDefaultExport(fileExports, filePathToShowToUser, false)
   const exportDefault = fileExports.default
   assertUsage(
     isObject(exportDefault),
-    `The ${pc.cyan('export default')} of ${filePath} should be an object (but it's ${pc.cyan(
+    `The ${pc.cyan('export default')} of ${filePathToShowToUser} should be an object (but it's ${pc.cyan(
       `typeof exportDefault === ${JSON.stringify(typeof exportDefault)}`
     )} instead)`
   )
@@ -37,7 +37,7 @@ function assertDefaultExportObject(
 
 function assertSingleDefaultExport(
   fileExports: Record<string, unknown>,
-  filePath: string,
+  filePathToShowToUser: string,
   defaultExportValueIsUnknown: boolean
 ) {
   const exportsAll = Object.keys(fileExports)
@@ -51,15 +51,15 @@ function assertSingleDefaultExport(
       assert(exportsRelevant.length === 0)
       assertUsage(
         false,
-        `${filePath} doesn't export any value, but it should have a ${pc.cyan('export default')} instead`
+        `${filePathToShowToUser} doesn't export any value, but it should have a ${pc.cyan('export default')} instead`
       )
     }
-  } else if (!FILES_WITH_SIDE_EXPORTS.some((ext) => filePath.endsWith(ext))) {
+  } else if (!FILES_WITH_SIDE_EXPORTS.some((ext) => filePathToShowToUser.endsWith(ext))) {
     if (defaultExportValueIsUnknown) {
       exportsInvalid.forEach((exportInvalid) => {
         assertWarning(
           exportsInvalid.length === 0,
-          `${filePath} should only have a default export: move ${pc.cyan(
+          `${filePathToShowToUser} should only have a default export: move ${pc.cyan(
             `export { ${exportInvalid} }`
           )} to +config.h.js or its own +${exportsInvalid}.js`,
           { onlyOnce: true }
@@ -69,7 +69,7 @@ function assertSingleDefaultExport(
       const exportsInvalidStr = exportsInvalid.join(', ')
       assertWarning(
         exportsInvalid.length === 0,
-        `${filePath} replace ${pc.cyan(`export { ${exportsInvalidStr} }`)} with ${pc.cyan(
+        `${filePathToShowToUser} replace ${pc.cyan(`export { ${exportsInvalidStr} }`)} with ${pc.cyan(
           `export default { ${exportsInvalidStr} }`
         )}`,
         { onlyOnce: true }

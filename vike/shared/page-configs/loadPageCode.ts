@@ -14,7 +14,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     return pageConfig as PageConfigLoaded
   }
 
-  const codeFiles = await pageConfig.loadConfigValuesAll()
+  const configValuesAll = await pageConfig.loadConfigValuesAll()
 
   // TODO: remove?
   // pageConfig.configValuesOld = pageConfig.configValuesOld.filter((val) => !val.definedByCodeFile)
@@ -36,15 +36,15 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     assertIsNotNull(value, configName, filePath)
   }
 
-  codeFiles.forEach((codeFile) => {
-    if (codeFile.isPlusFile) {
-      const { importFileExports, importFilePath } = codeFile
-      if (codeFile.configName !== 'client') {
+  configValuesAll.forEach((configValueLoaded) => {
+    if (configValueLoaded.isPlusFile) {
+      const { importFileExports, importFilePath } = configValueLoaded
+      if (configValueLoaded.configName !== 'client') {
         assertDefaultExportUnknown(importFileExports, importFilePath)
       }
       Object.entries(importFileExports).forEach(([exportName, exportValue]) => {
         const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
-        const configName = isSideExport ? exportName : codeFile.configName
+        const configName = isSideExport ? exportName : configValueLoaded.configName
         if (isSideExport && configName in pageConfig.configValues) {
           // We can't avoid side-export conflicts upstream. (Because we cannot know about side-exports upstream at build-time.)
           // Side-exports have the lowest priority.
@@ -53,7 +53,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
         addConfigValue(configName, exportValue, importFilePath, exportName)
       })
     } else {
-      const { configName, importFilePath, importFileExportValue, importFileExportName } = codeFile
+      const { configName, importFilePath, importFileExportValue, importFileExportName } = configValueLoaded
       addConfigValue(configName, importFileExportValue, importFilePath, importFileExportName)
     }
   })
