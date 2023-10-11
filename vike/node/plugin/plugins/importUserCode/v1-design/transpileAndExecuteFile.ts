@@ -33,7 +33,7 @@ async function transpileAndExecuteFile(
   userRootDir: string
 ): Promise<{ fileExports: Record<string, unknown> }> {
   const { code, fileImports } = await transpileFile(filePath, isValueFile, userRootDir)
-  const { fileExports } = await executeFile(filePath, code, fileImports)
+  const { fileExports } = await executeFile(filePath, code, fileImports, isValueFile)
   return { fileExports }
 }
 
@@ -160,7 +160,7 @@ async function transpileWithEsbuild(filePath: FilePath, bundle: boolean, userRoo
   return code
 }
 
-async function executeFile(filePath: FilePath, code: string, fileImports: FileImport[] | null) {
+async function executeFile(filePath: FilePath, code: string, fileImports: FileImport[] | null, isValueFile: boolean) {
   const { filePathAbsolute, filePathRelativeToUserRootDir } = filePath
   // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
   //  - But seems to break source maps, so I don't think it's worth it
@@ -183,7 +183,7 @@ async function executeFile(filePath: FilePath, code: string, fileImports: FileIm
   //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
   //  - We don't need this special object
   fileExports = { ...fileExports }
-  if (fileImports) {
+  if (fileImports && !isValueFile) {
     assert(filePathRelativeToUserRootDir !== undefined)
     const filePathToShowToUser = filePathRelativeToUserRootDir ?? filePathAbsolute
     assertFileImports(fileImports, fileExports, filePathToShowToUser)
