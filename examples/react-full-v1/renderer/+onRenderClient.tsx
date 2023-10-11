@@ -1,4 +1,5 @@
 // https://vike.dev/onRenderClient
+export { onRenderClient }
 
 import './css/index.css'
 import React from 'react'
@@ -26,4 +27,3 @@ const onRenderClient: Config['onRenderClient'] = async (pageContext: PageContext
   }
   document.title = getPageTitle(pageContext)
 }
-export default onRenderClient

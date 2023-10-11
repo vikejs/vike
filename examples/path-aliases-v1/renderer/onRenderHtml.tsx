@@ -1,4 +1,5 @@
 // https://vike.dev/onRenderHtml
+export { onRenderHtml }
 
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
@@ -21,4 +22,3 @@ const onRenderHtml: Config['onRenderHtml'] = (pageContext: PageContextServer): D
       </body>
     </html>`
 }
-export default onRenderHtml

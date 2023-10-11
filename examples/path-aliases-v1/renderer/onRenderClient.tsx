@@ -1,4 +1,5 @@
 // https://vike.dev/onRenderClient
+export { onRenderClient }
 
 import React from 'react'
 import { hydrateRoot } from 'react-dom/client'
@@ -15,4 +16,3 @@ const onRenderClient: Config['onRenderClient'] = (pageContext: PageContextClient
     </PageLayout>
   )
 }
-export default onRenderClient

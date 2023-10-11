@@ -1,4 +1,5 @@
 // https://vike.dev/onBeforeRender
+export { onBeforeRender }
 
 import fetch from 'cross-fetch'
 import { filterMovieData } from '../filterMovieData'
@@ -45,4 +46,3 @@ const onBeforeRender: OnBeforeRender = async (
     }
   }
 }
-export default onBeforeRender

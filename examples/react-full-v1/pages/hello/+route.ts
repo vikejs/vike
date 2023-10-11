@@ -1,3 +1,5 @@
+export { route }
+
 import type { Config, PageContextClient, PageContextServer } from 'vike/types'
 import { resolveRoute } from 'vike/routing'
 
@@ -11,4 +13,3 @@ const route: Config['route'] = (
   }
   return resolveRoute('/hello/@name', pageContext.urlPathname)
 }
-export default route

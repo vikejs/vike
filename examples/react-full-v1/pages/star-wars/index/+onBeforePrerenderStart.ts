@@ -1,4 +1,5 @@
 // https://vike.dev/onBeforePrerenderStart
+export { onBeforePrerenderStart }
 
 import type { Config } from 'vike/types'
 import { filterMovieData } from '../filterMovieData'
@@ -43,4 +44,3 @@ const onBeforePrerenderStart: Config['onBeforePrerenderStart'] = async (): Promi
     })
   ]
 }
-export default onBeforePrerenderStart

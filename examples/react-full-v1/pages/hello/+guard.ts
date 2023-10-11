@@ -1,3 +1,5 @@
+export { guard }
+
 import type { Config, PageContextServer } from 'vike/types'
 import { render } from 'vike/abort'
 
@@ -8,7 +10,6 @@ const guard: Config['guard'] = async (pageContext: PageContextServer): Promise<v
     throw render(401, 'This page is forbidden.')
   }
 }
-export default guard
 
 function sleep(milliseconds: number): Promise<void> {
   return new Promise((r) => setTimeout(r, milliseconds))

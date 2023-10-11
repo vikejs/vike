@@ -1,4 +1,6 @@
 // https://vike.dev/onRenderHtml
+export { onRenderHtml }
+
 import { renderToStream } from 'react-streaming/server'
 import React from 'react'
 import { escapeInject } from 'vike/server'
@@ -41,4 +43,3 @@ const onRenderHtml: Config['onRenderHtml'] = async (
     }
   }
 }
-export default onRenderHtml

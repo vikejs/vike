@@ -1,8 +1,8 @@
 // https://vike.dev/onBeforeRender
+export { onBeforeRender }
 
 import type { Config, PageContextServer } from 'vike/types'
 import { render } from 'vike/abort'
-
 import { names } from './names'
 
 const onBeforeRender: Config['onBeforeRender'] = async (
@@ -19,4 +19,3 @@ const onBeforeRender: Config['onBeforeRender'] = async (
     }
   }
 }
-export default onBeforeRender

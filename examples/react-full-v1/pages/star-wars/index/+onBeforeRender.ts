@@ -1,4 +1,5 @@
 // https://vike.dev/onBeforeRender
+export { onBeforeRender }
 
 import type { OnBeforeRender } from 'vike/types'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
@@ -18,7 +19,6 @@ const onBeforeRender: OnBeforeRender = async (pageContext): ReturnType<OnBeforeR
     }
   }
 }
-export default onBeforeRender
 
 function sleep(milliseconds: number): Promise<void> {
   return new Promise((r) => setTimeout(r, milliseconds))
