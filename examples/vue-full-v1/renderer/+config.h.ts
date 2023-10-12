@@ -6,7 +6,7 @@ export default {
   passToClient: ['pageProps', 'title'],
   clientRouting: true,
   prefetchStaticAssets: 'viewport',
-  onHydrationEnd, // NOTE(aurelien): this assignment breaks if we stop supporting the sync variant
+  onHydrationEnd,
   onPageTransitionStart,
   onPageTransitionEnd,
   // https://vike.dev/meta
