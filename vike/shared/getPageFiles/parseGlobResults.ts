@@ -7,6 +7,7 @@ import { fileTypes, type FileType } from './fileTypes.js'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
 import { assertPageConfigGlobal, assertPageConfigs } from './assertPageConfigs.js'
 import { parse } from '@brillout/json-serializer/parse'
+import { processConfigValuesImported } from '../page-configs/loadPageCode.js'
 
 function parseGlobResults(pageFilesExports: unknown): {
   pageFiles: PageFile[]
@@ -124,6 +125,7 @@ function parsePageConfigs(pageConfigs: PageConfig[]) {
       }
       */
     })
+    processConfigValuesImported(pageConfig.configValuesImported, pageConfig)
   })
 }
 

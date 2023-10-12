@@ -1,1 +1,1 @@
-export default '/star-wars/@movieId'
+export const route = '/star-wars/@movieId'

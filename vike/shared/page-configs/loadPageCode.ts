@@ -1,10 +1,12 @@
 export { loadPageCode }
+export { processConfigValuesImported }
 
 import { assert, assertUsage, objectAssign } from '../utils.js'
 import { assertExportsOfValueFile } from './assertExports.js'
-import type { PageConfig, PageConfigLoaded } from './PageConfig.js'
+import type { ConfigValueImported, PageConfig, PageConfigLoaded } from './PageConfig.js'
 import pc from '@brillout/picocolors'
 
+// TODO: rename loadPageCode() -> loadConfigValues()
 async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<PageConfigLoaded> {
   if (
     pageConfig.isLoaded &&
@@ -13,9 +15,13 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
   ) {
     return pageConfig as PageConfigLoaded
   }
+  const configValuesImported = await pageConfig.loadConfigValuesAll()
+  processConfigValuesImported(configValuesImported, pageConfig)
+  objectAssign(pageConfig, { isLoaded: true as const })
+  return pageConfig
+}
 
-  const configValuesAll = await pageConfig.loadConfigValuesAll()
-
+function processConfigValuesImported(configValuesImported: ConfigValueImported[], pageConfig: PageConfig) {
   // TODO: remove?
   // pageConfig.configValuesOld = pageConfig.configValuesOld.filter((val) => !val.definedByCodeFile)
 
@@ -36,7 +42,7 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     assertIsNotNull(value, configName, filePath)
   }
 
-  configValuesAll.forEach((configValueLoaded) => {
+  configValuesImported.forEach((configValueLoaded) => {
     if (configValueLoaded.isValueFile) {
       const { importFileExports, importFilePath, configName } = configValueLoaded
       if (configName !== 'client') {
@@ -57,10 +63,6 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
       addConfigValue(configName, importFileExportValue, importFilePath, importFileExportName)
     }
   })
-
-  objectAssign(pageConfig, { isLoaded: true as const })
-
-  return pageConfig
 }
 
 function assertIsNotNull(configValue: unknown, configName: string, importFilePath: string) {
