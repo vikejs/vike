@@ -1,10 +1,10 @@
 export { guard }
 
-import type { GuardAsync, PageContextServer } from 'vike/types'
+import type { GuardAsync } from 'vike/types'
 import { render } from 'vike/abort'
 
 // The guard() hook enables to protect pages
-const guard: GuardAsync = async (pageContext: PageContextServer): ReturnType<GuardAsync> => {
+const guard: GuardAsync = async (pageContext): ReturnType<GuardAsync> => {
   if (pageContext.urlPathname === '/hello/forbidden') {
     await sleep(2 * 1000) // Unlike Route Functions, guard() can be async
     throw render(401, 'This page is forbidden.')
