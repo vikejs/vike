@@ -157,7 +157,7 @@ function useClientRouter() {
     // Start transition before any await's
     if (renderingNumber > 1) {
       if (isTransitioning === false) {
-        globalObject.onPageTransitionStart?.(pageContextBase)
+        await globalObject.onPageTransitionStart?.(pageContextBase)
         isTransitioning = true
       }
     }
@@ -329,7 +329,7 @@ function useClientRouter() {
     } else if (renderingNumber === renderingCounter) {
       if (pageContext.exports.onPageTransitionEnd) {
         assertHook(pageContext, 'onPageTransitionEnd')
-        pageContext.exports.onPageTransitionEnd(pageContext)
+        await pageContext.exports.onPageTransitionEnd(pageContext)
       }
       isTransitioning = false
     }

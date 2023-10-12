@@ -21,15 +21,15 @@ import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'
 
-// Because of vike-{react/vue/solid} most users will be using Client Routing => we give out the succint type names such as `PageContext` to these users
-type PageContext = PageContextWithClientRouting
-type PageContextClient = PageContextClientWithClientRouting
-
-type PageContextWithClientRouting = PageContextClientWithClientRouting | PageContextServer
-type PageContextWithServerRouting = PageContextClientWithServerRouting | PageContextServer
-
 type PageContextServer = PageContextBuiltInServer & Vike.PageContext
-type PageContextClientWithClientRouting = PageContextBuiltInClientWithClientRouting & Vike.PageContext
+
+// When user uses Client Routing
+// Because of vike-{react/vue/solid} most users will be using Client Routing => we give out the succint type names `PageContext` and `PageContextClient` to these users
+type PageContext = PageContextClient | PageContextServer
+type PageContextClient = PageContextBuiltInClientWithClientRouting & Vike.PageContext
+
+// When user uses Server Routing
+type PageContextWithServerRouting = PageContextClientWithServerRouting | PageContextServer
 type PageContextClientWithServerRouting = PageContextBuiltInClientWithServerRouting & Vike.PageContext
 
 /** Built-in `pageContext` properties set by vike.
