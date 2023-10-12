@@ -34,6 +34,7 @@ function Page() {
   )
 }
 
+// https://vike.dev/pageContext#typescript
 declare global {
   namespace Vike {
     interface PageContext {

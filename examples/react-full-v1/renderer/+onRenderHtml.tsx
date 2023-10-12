@@ -1,14 +1,14 @@
 // https://vike.dev/onRenderHtml
-export default onRenderHtml
+export { onRenderHtml }
 
 import { renderToStream } from 'react-streaming/server'
 import React from 'react'
 import { escapeInject } from 'vike/server'
 import { PageShell } from './PageShell'
 import { getPageTitle } from './getPageTitle'
-import type { PageContextServer } from 'vike/types'
+import type { OnRenderHtmlAsync } from 'vike/types'
 
-async function onRenderHtml(pageContext: PageContextServer) {
+const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
   const { Page, pageProps } = pageContext
 
   const stream = await renderToStream(

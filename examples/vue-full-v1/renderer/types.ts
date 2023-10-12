@@ -7,6 +7,7 @@ type Component = ComponentPublicInstance // https://stackoverflow.com/questions/
 type Page = Component
 type PageProps = Record<string, unknown>
 
+// https://vike.dev/pageContext#typescript
 declare global {
   namespace Vike {
     interface PageContext {

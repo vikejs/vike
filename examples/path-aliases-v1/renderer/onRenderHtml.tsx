@@ -1,13 +1,13 @@
 // https://vike.dev/onRenderHtml
-export default onRenderHtml
+export { onRenderHtml }
 
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { PageLayout } from './PageLayout'
-import type { PageContext } from '#root/types'
+import type { OnRenderHtmlSync } from 'vike/types'
 
-function onRenderHtml(pageContext: PageContext) {
+const onRenderHtml: OnRenderHtmlSync = (pageContext): ReturnType<OnRenderHtmlSync> => {
   const { Page } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>

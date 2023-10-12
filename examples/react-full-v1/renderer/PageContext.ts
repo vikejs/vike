@@ -1,3 +1,4 @@
+// https://vike.dev/pageContext#typescript
 declare global {
   namespace Vike {
     interface PageContext {
@@ -10,6 +11,7 @@ declare global {
       /** Title defined dynamically by onBeforeRender() */
       title?: string
       abortReason?: string
+      someAsyncProps?: number
     }
   }
 }

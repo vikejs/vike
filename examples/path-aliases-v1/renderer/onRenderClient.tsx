@@ -1,12 +1,12 @@
 // https://vike.dev/onRenderClient
-export default onRenderClient
+export { onRenderClient }
 
 import React from 'react'
 import { hydrateRoot } from 'react-dom/client'
 import { PageLayout } from './PageLayout'
-import type { PageContext } from '#root/types'
+import type { OnRenderClientSync } from 'vike/types'
 
-async function onRenderClient(pageContext: PageContext) {
+const onRenderClient: OnRenderClientSync = (pageContext): ReturnType<OnRenderClientSync> => {
   const { Page } = pageContext
   hydrateRoot(
     document.getElementById('page-view')!,

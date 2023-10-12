@@ -1,10 +1,11 @@
 // https://vike.dev/onBeforePrerenderStart
-export default onBeforePrerenderStart
+export { onBeforePrerenderStart }
 
+import type { OnBeforePrerenderStartAsync } from 'vike/types'
 import { filterMovieData } from '../filterMovieData'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
 
-async function onBeforePrerenderStart() {
+const onBeforePrerenderStart: OnBeforePrerenderStartAsync = async (): ReturnType<OnBeforePrerenderStartAsync> => {
   const movies = await getStarWarsMovies()
 
   return [

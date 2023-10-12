@@ -1,15 +1,17 @@
 // https://vike.dev/onBeforeRender
-export default onBeforeRender
+export { onBeforeRender }
 
 import fetch from 'cross-fetch'
 import { filterMovieData } from '../filterMovieData'
-import type { PageContextBuiltInServer } from 'vike/types'
+import type { OnBeforeRenderAsync, PageContextClient, PageContextServer } from 'vike/types'
 import type { MovieDetails } from '../types'
 import { render } from 'vike/abort'
 import React from 'react'
 
-async function onBeforeRender(pageContext: PageContextBuiltInServer) {
-  const dataUrl = `https://star-wars.brillout.com/api/films/${pageContext.routeParams.id}.json`
+const onBeforeRender: OnBeforeRenderAsync = async (
+  pageContext: PageContextServer | PageContextClient
+): ReturnType<OnBeforeRenderAsync> => {
+  const dataUrl = `https://star-wars.brillout.com/api/films/${pageContext.routeParams?.id}.json`
   let movie: MovieDetails
   try {
     const response = await fetch(dataUrl)

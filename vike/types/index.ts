@@ -12,7 +12,33 @@ export type { PageContextBuiltInServer } from '../shared/types.js'
 export type { PageContextBuiltInClientWithClientRouting } from '../shared/types.js'
 export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
 
-export type { Config, ConfigMeta as Meta } from '../shared/page-configs/Config.js'
+export type {
+  Config,
+  ConfigMeta as Meta,
+  GuardAsync,
+  GuardSync,
+  OnBeforePrerenderStartAsync,
+  OnBeforePrerenderStartSync,
+  OnBeforeRenderAsync,
+  OnBeforeRenderSync,
+  OnBeforeRouteAsync,
+  OnBeforeRouteSync,
+  OnHydrationEndAsync,
+  OnHydrationEndSync,
+  OnPageTransitionEndAsync,
+  OnPageTransitionEndSync,
+  OnPageTransitionStartAsync,
+  OnPageTransitionStartSync,
+  OnPrerenderStartAsync,
+  OnPrerenderStartSync,
+  OnRenderClientAsync,
+  OnRenderClientSync,
+  OnRenderHtmlAsync,
+  OnRenderHtmlSync,
+  RouteAsync,
+  RouteSync,
+  Route
+} from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {
   ConfigDefinition,
