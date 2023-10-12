@@ -36,7 +36,8 @@ export type {
   OnRenderHtmlAsync,
   OnRenderHtmlSync,
   RouteAsync,
-  RouteSync
+  RouteSync,
+  Route
 } from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {
