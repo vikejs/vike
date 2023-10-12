@@ -4,24 +4,27 @@ export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
 
-export type { Guard }
+export type { GuardAsync }
 export type { GuardSync }
-export type { OnBeforePrerenderStart }
+export type { OnBeforePrerenderStartAsync }
 export type { OnBeforePrerenderStartSync }
-export type { OnBeforeRender }
+export type { OnBeforeRenderAsync }
 export type { OnBeforeRenderSync }
-export type { OnBeforeRoute }
+export type { OnBeforeRouteAsync }
 export type { OnBeforeRouteSync }
-export type { OnHydrationEnd }
+export type { OnHydrationEndAsync }
 export type { OnHydrationEndSync }
+export type { OnPageTransitionEndAsync }
 export type { OnPageTransitionEndSync }
+export type { OnPageTransitionStartAsync }
 export type { OnPageTransitionStartSync }
-export type { OnPrerenderStart }
+export type { OnPrerenderStartAsync }
 export type { OnPrerenderStartSync }
-export type { OnRenderClient }
+export type { OnRenderClientAsync }
 export type { OnRenderClientSync }
-export type { OnRenderHtml }
+export type { OnRenderHtmlAsync }
 export type { OnRenderHtmlSync }
+export type { RouteAsync }
 export type { RouteSync }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
@@ -66,7 +69,7 @@ type Config = ConfigBuiltIn &
  *
  *  https://vike.dev/guard
  */
-type Guard = (pageContext: PageContextServer) => Promise<void>
+type GuardAsync = (pageContext: PageContextServer) => Promise<void>
 /** Protect page(s), e.g. forbid unauthorized access.
  *
  *  https://vike.dev/guard
@@ -76,7 +79,7 @@ type GuardSync = (pageContext: PageContextServer) => void
  *
  * https://vike.dev/onBeforePrerenderStart
  */
-type OnBeforePrerenderStart = () => Promise<
+type OnBeforePrerenderStartAsync = () => Promise<
   (
     | string
     | {
@@ -100,7 +103,9 @@ type OnBeforePrerenderStartSync = () => (
  *
  *  https://vike.dev/onBeforeRender
  */
-type OnBeforeRender = (pageContext: PageContextServer) => Promise<{ pageContext: Partial<Vike.PageContext> } | void>
+type OnBeforeRenderAsync = (
+  pageContext: PageContextServer
+) => Promise<{ pageContext: Partial<Vike.PageContext> } | void>
 /** Hook called before the page is rendered, usually for fetching data.
  *
  *  https://vike.dev/onBeforeRender
@@ -110,7 +115,7 @@ type OnBeforeRenderSync = (pageContext: PageContextServer) => { pageContext: Par
  *
  * https://vike.dev/onBeforeRoute
  */
-type OnBeforeRoute = (pageContext: PageContextServer) => Promise<{ pageContext: Partial<Vike.PageContext> }>
+type OnBeforeRouteAsync = (pageContext: PageContextServer) => Promise<{ pageContext: Partial<Vike.PageContext> }>
 /** Hook called before the URL is routed to a page.
  *
  * https://vike.dev/onBeforeRoute
@@ -120,7 +125,7 @@ type OnBeforeRouteSync = (pageContext: PageContextServer) => { pageContext: Part
  *
  * https://vike.dev/clientRouting
  */
-type OnHydrationEnd = () => Promise<void>
+type OnHydrationEndAsync = () => Promise<void>
 /** Hook called after the page is hydrated.
  *
  * https://vike.dev/clientRouting
@@ -130,7 +135,17 @@ type OnHydrationEndSync = () => void
  *
  * https://vike.dev/clientRouting
  */
+type OnPageTransitionEndAsync = (pageContext: PageContextClient) => Promise<void>
+/** Hook called after the user navigates to a new page.
+ *
+ * https://vike.dev/clientRouting
+ */
 type OnPageTransitionEndSync = (pageContext: PageContextClient) => void
+/** Hook called before the user navigates to a new page.
+ *
+ * https://vike.dev/clientRouting
+ */
+type OnPageTransitionStartAsync = (pageContext: PageContextClient) => Promise<void>
 /** Hook called before the user navigates to a new page.
  *
  * https://vike.dev/clientRouting
@@ -140,7 +155,7 @@ type OnPageTransitionStartSync = (pageContext: PageContextClient) => void
  *
  * https://vike.dev/onPrerenderStart
  */
-type OnPrerenderStart = (prerenderContext: {
+type OnPrerenderStartAsync = (prerenderContext: {
   pageContexts: PageContextServer[]
 }) => Promise<{ prerenderContext: { pageContexts: PageContextServer[] } }>
 /** Page Hook called when pre-rendering starts.
@@ -154,7 +169,7 @@ type OnPrerenderStartSync = (prerenderContext: { pageContexts: PageContextServer
  *
  * https://vike.dev/onRenderClient
  */
-type OnRenderClient = (pageContext: PageContextClient) => Promise<void>
+type OnRenderClientAsync = (pageContext: PageContextClient) => Promise<void>
 /** Hook called when page is rendered on the client-side.
  *
  * https://vike.dev/onRenderClient
@@ -164,7 +179,7 @@ type OnRenderClientSync = (pageContext: PageContextClient) => void
  *
  * https://vike.dev/onRenderHtml
  */
-type OnRenderHtml = (pageContext: PageContextServer) => Promise<
+type OnRenderHtmlAsync = (pageContext: PageContextServer) => Promise<
   | DocumentHtml
   | {
       documentHtml: DocumentHtml
@@ -187,6 +202,11 @@ type OnRenderHtmlSync = (pageContext: PageContextServer) =>
  *
  *  https://vike.dev/route
  */
+type RouteAsync = (pageContext: PageContextServer) => Promise<{ routeParams: Record<string, string> }>
+/** The page's URL(s).
+ *
+ *  https://vike.dev/route
+ */
 type RouteSync = (pageContext: PageContextServer) => { routeParams: Record<string, string> }
 
 // TODO: write docs of links below
@@ -203,13 +223,13 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/route
    */
-  route?: string | RouteSync | ImportString
+  route?: string | RouteAsync | RouteSync | ImportString
 
   /** Protect page(s), e.g. forbid unauthorized access.
    *
    *  https://vike.dev/guard
    */
-  guard?: Guard | GuardSync | ImportString
+  guard?: GuardAsync | GuardSync | ImportString
   /**
    * Whether to pre-render the page(s).
    *
@@ -228,7 +248,7 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/onBeforeRender
    */
-  onBeforeRender?: OnBeforeRender | OnBeforeRenderSync | ImportString | null
+  onBeforeRender?: OnBeforeRenderAsync | OnBeforeRenderSync | ImportString | null
 
   /** Determines what pageContext properties are sent to the client-side.
    *
@@ -240,12 +260,12 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/onRenderClient
    */
-  onRenderClient?: OnRenderClient | OnRenderClientSync | ImportString
+  onRenderClient?: OnRenderClientAsync | OnRenderClientSync | ImportString
   /** Hook called when page is rendered to HTML on the server-side.
    *
    * https://vike.dev/onRenderHtml
    */
-  onRenderHtml?: OnRenderHtml | OnRenderHtmlSync | ImportString
+  onRenderHtml?: OnRenderHtmlAsync | OnRenderHtmlSync | ImportString
 
   /** Enable async Route Functions.
    *
@@ -263,34 +283,34 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/onPrerenderStart
    */
-  onPrerenderStart?: OnPrerenderStart | OnPrerenderStartSync | ImportString
+  onPrerenderStart?: OnPrerenderStartAsync | OnPrerenderStartSync | ImportString
   /** Global Hook called before the whole pre-rendering process starts.
    *
    * https://vike.dev/onBeforePrerenderStart
    */
-  onBeforePrerenderStart?: OnBeforePrerenderStart | OnBeforePrerenderStartSync | ImportString
+  onBeforePrerenderStart?: OnBeforePrerenderStartAsync | OnBeforePrerenderStartSync | ImportString
 
   /** Hook called before the URL is routed to a page.
    *
    * https://vike.dev/onBeforeRoute
    */
-  onBeforeRoute?: OnBeforeRoute | OnBeforeRouteSync | ImportString
+  onBeforeRoute?: OnBeforeRouteAsync | OnBeforeRouteSync | ImportString
 
   /** Hook called after the page is hydrated.
    *
    * https://vike.dev/clientRouting
    */
-  onHydrationEnd?: OnHydrationEnd | OnHydrationEndSync | ImportString
+  onHydrationEnd?: OnHydrationEndAsync | OnHydrationEndSync | ImportString
   /** Hook called before the user navigates to a new page.
    *
    * https://vike.dev/clientRouting
    */
-  onPageTransitionStart?: OnPageTransitionStartSync | ImportString
+  onPageTransitionStart?: OnPageTransitionStartAsync | OnPageTransitionStartSync | ImportString
   /** Hook called after the user navigates to a new page.
    *
    * https://vike.dev/clientRouting
    */
-  onPageTransitionEnd?: OnPageTransitionEndSync | ImportString
+  onPageTransitionEnd?: OnPageTransitionEndAsync | OnPageTransitionEndSync | ImportString
 
   /** Whether the UI framework (React/Vue/Solid/...) allows the page's hydration to be aborted.
    *

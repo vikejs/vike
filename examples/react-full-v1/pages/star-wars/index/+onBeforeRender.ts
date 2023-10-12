@@ -1,10 +1,10 @@
 // https://vike.dev/onBeforeRender
 export { onBeforeRender }
 
-import type { OnBeforeRender } from 'vike/types'
+import type { OnBeforeRenderAsync } from 'vike/types'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
 
-const onBeforeRender: OnBeforeRender = async (pageContext): ReturnType<OnBeforeRender> => {
+const onBeforeRender: OnBeforeRenderAsync = async (pageContext): ReturnType<OnBeforeRenderAsync> => {
   await sleep(700) // Simulate slow network
   const movies = await getStarWarsMovies()
   return {

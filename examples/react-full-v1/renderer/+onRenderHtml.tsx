@@ -6,9 +6,9 @@ import React from 'react'
 import { escapeInject } from 'vike/server'
 import { PageShell } from './PageShell'
 import { getPageTitle } from './getPageTitle'
-import type { OnRenderHtml, PageContextServer } from 'vike/types'
+import type { OnRenderHtmlAsync, PageContextServer } from 'vike/types'
 
-const onRenderHtml: OnRenderHtml = async (pageContext: PageContextServer): ReturnType<OnRenderHtml> => {
+const onRenderHtml: OnRenderHtmlAsync = async (pageContext: PageContextServer): ReturnType<OnRenderHtmlAsync> => {
   const { Page, pageProps } = pageContext
 
   const stream = await renderToStream(
