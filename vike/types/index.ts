@@ -15,10 +15,25 @@ export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.
 export type {
   Config,
   ConfigMeta as Meta,
-
-  // NOTE(aurelien): to be extended
+  Guard,
+  GuardSync,
+  OnBeforePrerenderStart,
+  OnBeforePrerenderStartSync,
   OnBeforeRender,
-  OnBeforeRenderSync
+  OnBeforeRenderSync,
+  OnBeforeRoute,
+  OnBeforeRouteSync,
+  OnHydrationEnd,
+  OnHydrationEndSync,
+  OnPageTransitionEndSync,
+  OnPageTransitionStartSync,
+  OnPrerenderStart,
+  OnPrerenderStartSync,
+  OnRenderClient,
+  OnRenderClientSync,
+  OnRenderHtml,
+  OnRenderHtmlSync,
+  RouteSync
 } from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {

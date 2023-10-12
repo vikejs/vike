@@ -6,10 +6,10 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { PageShell } from './PageShell'
 import { getPageTitle } from './getPageTitle'
-import type { Config, PageContextClient } from 'vike/types'
+import type { OnRenderClient, PageContextClient } from 'vike/types'
 
 let root: ReactDOM.Root
-const onRenderClient: Config['onRenderClient'] = async (pageContext: PageContextClient): Promise<void> => {
+const onRenderClient: OnRenderClient = async (pageContext: PageContextClient): ReturnType<OnRenderClient> => {
   const { Page, pageProps } = pageContext
   const page = (
     <PageShell pageContext={pageContext}>

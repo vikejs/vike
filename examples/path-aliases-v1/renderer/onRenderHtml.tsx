@@ -6,9 +6,9 @@ import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { PageLayout } from './PageLayout'
 import type { PageContextServer } from '#root/types'
-import type { Config, DocumentHtml } from 'vike/types'
+import type { DocumentHtml, OnRenderHtmlSync } from 'vike/types'
 
-const onRenderHtml: Config['onRenderHtml'] = (pageContext: PageContextServer): DocumentHtml => {
+const onRenderHtml: OnRenderHtmlSync = (pageContext: PageContextServer): ReturnType<OnRenderHtmlSync> => {
   const { Page } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
