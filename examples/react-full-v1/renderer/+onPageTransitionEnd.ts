@@ -1,8 +1,8 @@
 export { onPageTransitionEnd }
 
-import type { OnPageTransitionEndSync } from 'vike/types'
+import type { OnPageTransitionEnd } from 'vike/types'
 
-const onPageTransitionEnd: OnPageTransitionEndSync = (): ReturnType<OnPageTransitionEndSync> => {
+const onPageTransitionEnd: OnPageTransitionEnd = (): ReturnType<OnPageTransitionEnd> => {
   console.log('Page transition end')
   document.querySelector('body')!.classList.remove('page-is-transitioning')
 }

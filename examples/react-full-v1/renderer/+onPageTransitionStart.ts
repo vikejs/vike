@@ -1,8 +1,8 @@
 export { onPageTransitionStart }
 
-import type { OnPageTransitionStartSync } from 'vike/types'
+import type { OnPageTransitionStart } from 'vike/types'
 
-const onPageTransitionStart: OnPageTransitionStartSync = (): ReturnType<OnPageTransitionStartSync> => {
+const onPageTransitionStart: OnPageTransitionStart = (): ReturnType<OnPageTransitionStart> => {
   console.log('Page transition start')
   document.querySelector('body')!.classList.add('page-is-transitioning')
 }

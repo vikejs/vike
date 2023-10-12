@@ -24,16 +24,15 @@ export type {
   OnBeforeRoute,
   OnBeforeRouteSync,
   OnHydrationEnd,
-  OnHydrationEndSync,
-  OnPageTransitionEndSync,
-  OnPageTransitionStartSync,
+  OnPageTransitionEnd,
+  OnPageTransitionStart,
   OnPrerenderStart,
   OnPrerenderStartSync,
   OnRenderClient,
   OnRenderClientSync,
   OnRenderHtml,
   OnRenderHtmlSync,
-  RouteSync
+  Route
 } from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {

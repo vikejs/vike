@@ -13,16 +13,15 @@ export type { OnBeforeRenderSync }
 export type { OnBeforeRoute }
 export type { OnBeforeRouteSync }
 export type { OnHydrationEnd }
-export type { OnHydrationEndSync }
-export type { OnPageTransitionEndSync }
-export type { OnPageTransitionStartSync }
+export type { OnPageTransitionEnd }
+export type { OnPageTransitionStart }
 export type { OnPrerenderStart }
 export type { OnPrerenderStartSync }
 export type { OnRenderClient }
 export type { OnRenderClientSync }
 export type { OnRenderHtml }
 export type { OnRenderHtmlSync }
-export type { RouteSync }
+export type { Route }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
@@ -121,21 +120,16 @@ type OnBeforeRouteSync = (pageContext: PageContextServer) => { pageContext: Part
  * https://vike.dev/clientRouting
  */
 type OnHydrationEnd = () => Promise<void>
-/** Hook called after the page is hydrated.
- *
- * https://vike.dev/clientRouting
- */
-type OnHydrationEndSync = () => void
 /** Hook called after the user navigates to a new page.
  *
  * https://vike.dev/clientRouting
  */
-type OnPageTransitionEndSync = (pageContext: PageContextClient) => void
+type OnPageTransitionEnd = (pageContext: PageContextClient) => void
 /** Hook called before the user navigates to a new page.
  *
  * https://vike.dev/clientRouting
  */
-type OnPageTransitionStartSync = (pageContext: PageContextClient) => void
+type OnPageTransitionStart = (pageContext: PageContextClient) => void
 /** Page Hook called when pre-rendering starts.
  *
  * https://vike.dev/onPrerenderStart
@@ -187,7 +181,7 @@ type OnRenderHtmlSync = (pageContext: PageContextServer) =>
  *
  *  https://vike.dev/route
  */
-type RouteSync = (pageContext: PageContextServer) => { routeParams: Record<string, string> }
+type Route = (pageContext: PageContextServer) => { routeParams: Record<string, string> }
 
 // TODO: write docs of links below
 
@@ -203,7 +197,7 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/route
    */
-  route?: string | RouteSync | ImportString
+  route?: string | Route | ImportString
 
   /** Protect page(s), e.g. forbid unauthorized access.
    *
@@ -280,17 +274,17 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/clientRouting
    */
-  onHydrationEnd?: OnHydrationEnd | OnHydrationEndSync | ImportString
+  onHydrationEnd?: OnHydrationEnd | ImportString
   /** Hook called before the user navigates to a new page.
    *
    * https://vike.dev/clientRouting
    */
-  onPageTransitionStart?: OnPageTransitionStartSync | ImportString
+  onPageTransitionStart?: OnPageTransitionStart | ImportString
   /** Hook called after the user navigates to a new page.
    *
    * https://vike.dev/clientRouting
    */
-  onPageTransitionEnd?: OnPageTransitionEndSync | ImportString
+  onPageTransitionEnd?: OnPageTransitionEnd | ImportString
 
   /** Whether the UI framework (React/Vue/Solid/...) allows the page's hydration to be aborted.
    *

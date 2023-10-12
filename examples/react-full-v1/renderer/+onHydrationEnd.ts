@@ -1,7 +1,7 @@
 export { onHydrationEnd }
 
-import type { OnHydrationEndSync } from 'vike/types'
+import type { OnHydrationEnd } from 'vike/types'
 
-const onHydrationEnd: OnHydrationEndSync = (): ReturnType<OnHydrationEndSync> => {
+const onHydrationEnd: OnHydrationEnd = async (): ReturnType<OnHydrationEnd> => {
   console.log('Hydration finished; page is now interactive.')
 }
