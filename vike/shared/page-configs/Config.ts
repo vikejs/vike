@@ -126,12 +126,12 @@ type OnBeforeRouteSync = (pageContext: PageContextServer) => { pageContext: Part
  *
  * https://vike.dev/clientRouting
  */
-type OnHydrationEndAsync = () => Promise<void>
+type OnHydrationEndAsync = (pageContext: PageContextClient) => Promise<void>
 /** Hook called after the page is hydrated.
  *
  * https://vike.dev/clientRouting
  */
-type OnHydrationEndSync = () => void
+type OnHydrationEndSync = (pageContext: PageContextClient) => void
 /** Hook called after the user navigates to a new page.
  *
  * https://vike.dev/clientRouting
