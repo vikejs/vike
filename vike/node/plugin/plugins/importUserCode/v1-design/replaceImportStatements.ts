@@ -63,7 +63,7 @@ function replaceImportStatements(
           specifier.type === 'ImportNamespaceSpecifier'
       )
       const importLocalName = specifier.local.name
-      const importFileExportName = (() => {
+      const importName = (() => {
         if (specifier.type === 'ImportDefaultSpecifier') return 'default'
         if (specifier.type === 'ImportNamespaceSpecifier') return '*'
         {
@@ -72,7 +72,7 @@ function replaceImportStatements(
         }
         return importLocalName
       })()
-      const importDataString = serializeImportData({ importFilePath, importFileExportName, importWasGenerated: true })
+      const importDataString = serializeImportData({ importFilePath, importName, importWasGenerated: true })
       replacement += `const ${importLocalName} = '${importDataString}';`
       fileImports.push({
         importStatementCode,
@@ -109,18 +109,18 @@ const SEP = ':'
 const zeroWidthSpace = '\u200b'
 type ImportData = {
   importFilePath: string
-  importFileExportName: string
+  importName: string
   importWasGenerated: boolean
   importDataString: string
 }
 function serializeImportData({
   importFilePath,
-  importFileExportName,
+  importName,
   importWasGenerated
 }: Omit<ImportData, 'importDataString'>): string {
   const tag = importWasGenerated ? zeroWidthSpace : ''
   // `import:${importFilePath}:${importFilePath}`
-  return `${tag}${import_}${SEP}${importFilePath}${SEP}${importFileExportName}`
+  return `${tag}${import_}${SEP}${importFilePath}${SEP}${importName}`
 }
 function isImportData(str: string): boolean {
   return str.startsWith(import_ + SEP) || str.startsWith(zeroWidthSpace + import_ + SEP)
@@ -139,14 +139,14 @@ function parseImportData(importDataString: string): null | ImportData {
 
   const parts = importDataString.split(SEP).slice(1)
   if (!importWasGenerated && parts.length === 1) {
-    const importFileExportName = 'default'
+    const importName = 'default'
     const importFilePath = parts[0]!
-    return { importFilePath, importFileExportName, importWasGenerated, importDataString }
+    return { importFilePath, importName, importWasGenerated, importDataString }
   }
   assert(parts.length >= 2)
-  const importFileExportName = parts[parts.length - 1]!
+  const importName = parts[parts.length - 1]!
   const importFilePath = parts.slice(0, -1).join(SEP)
-  return { importFilePath, importFileExportName, importWasGenerated, importDataString }
+  return { importFilePath, importName, importWasGenerated, importDataString }
 }
 
 // https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368

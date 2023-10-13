@@ -59,8 +59,8 @@ function processConfigValuesImported(configValuesImported: ConfigValueImported[]
         addConfigValue(configName, exportValue, importFilePath, exportName)
       })
     } else {
-      const { configName, importFilePath, importFileExportValue, importFileExportName } = configValueLoaded
-      addConfigValue(configName, importFileExportValue, importFilePath, importFileExportName)
+      const { configName, importFilePath, importFileExportValue, importName } = configValueLoaded
+      addConfigValue(configName, importFileExportValue, importFilePath, importName)
     }
   })
 }

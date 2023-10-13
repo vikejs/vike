@@ -117,7 +117,7 @@ function serializeConfigValueImported(
   } else {
     lines.push(`    importFileExportValue: ${importVar},`)
     assert(fileExportName)
-    lines.push(`    importFileExportName: ${JSON.stringify(fileExportName)},`)
+    lines.push(`    importName: ${JSON.stringify(fileExportName)},`)
   }
   lines.push(`  },`)
   return lines
