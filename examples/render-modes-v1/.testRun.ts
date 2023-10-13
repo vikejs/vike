@@ -89,7 +89,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
           editFile(file, (s) => s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'))
           await navPromise
           // But auto reload works
-          expect(await page.textContent('h1')).toBe('HTML-only !!!!')
+          expect(await page.textContent('h1')).toBe('HTML-only !')
         }
         {
           /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
