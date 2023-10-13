@@ -21,7 +21,7 @@ import {
   lowerFirst,
   scriptFileExtensions,
   mergeCumulativeValues,
-  resolve
+  requireResolve
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -636,13 +636,14 @@ function getConfigValueSource(
   userRootDir: string
 ): ConfigValueSource {
   // TODO: rethink file paths of ConfigElement
-  const configFilePath = interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
+  const filePathToShowToUser =
+    interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
   const conf = interfaceFile.configMap[configName]
   assert(conf)
   const configEnv = configDef.env
 
   const definedAtInfoConfigFile = {
-    filePath: configFilePath,
+    filePath: filePathToShowToUser,
     fileExportPath: ['default', configName]
   }
 
@@ -1335,7 +1336,7 @@ function resolveImport(importData: ImportData, importerFilePath: FilePath): stri
   const { filePathAbsolute } = importerFilePath
   assertPosixPath(filePathAbsolute)
   const plusConfigFilDirPathAbsolute = path.posix.dirname(filePathAbsolute)
-  const importedFile = resolve(importData.importFilePath, plusConfigFilDirPathAbsolute)
+  const importedFile = requireResolve(importData.importFilePath, plusConfigFilDirPathAbsolute)
   assertImport(importedFile, importData, importerFilePath)
   return importedFile
 }
