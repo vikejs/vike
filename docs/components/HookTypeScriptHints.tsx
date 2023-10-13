@@ -10,7 +10,7 @@ function HookTypeScriptHints({ hookTypeName, wrongDefinition }: { hookTypeName: 
     <>
       <blockquote>
         <p>
-          Do not omit the <code>ReturnType&lt;{hookTypeName}&gt;</code> annotation (i.e. do not write
+          Do not omit the <code>ReturnType&lt;{hookTypeName}&gt;</code> annotation (i.e. do not write{' '}
           <code>{wrongDefinition}</code>), otherwise TypeScript won't strictly check the return type for unknown extra
           properties. See also:
           <ul>
@@ -29,7 +29,7 @@ function HookTypeScriptHints({ hookTypeName, wrongDefinition }: { hookTypeName: 
       </blockquote>
       <blockquote>
         <p>
-          See <Link href="/pageContext#typescript" /> for more information on how to extend <code>pageContext</code>
+          See <Link href="/pageContext#typescript" /> for more information on how to extend <code>pageContext</code>{' '}
           with your own extra properties.
         </p>
       </blockquote>
