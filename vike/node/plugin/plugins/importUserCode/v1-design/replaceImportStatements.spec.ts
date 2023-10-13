@@ -10,9 +10,9 @@ describe('getErrMsg()', () => {
         "code": "const something = '​import:./bla.js:something';",
         "fileImports": [
           {
-            "importString": "​import:./bla.js:something",
             "importLocalName": "something",
             "importStatementCode": "import { something } from './bla.js'",
+            "importString": "​import:./bla.js:something",
           },
         ],
         "noImportStatement": false,
@@ -23,9 +23,9 @@ describe('getErrMsg()', () => {
         "code": "const def = '​import:./bla.js:default';",
         "fileImports": [
           {
-            "importString": "​import:./bla.js:default",
             "importLocalName": "def",
             "importStatementCode": "import def from './bla.js'",
+            "importString": "​import:./bla.js:default",
           },
         ],
         "noImportStatement": false,
@@ -36,9 +36,9 @@ describe('getErrMsg()', () => {
         "code": "const blu = '​import:./bla.js:bla';",
         "fileImports": [
           {
-            "importString": "​import:./bla.js:bla",
             "importLocalName": "blu",
             "importStatementCode": "import { bla as blu } from './bla.js'",
+            "importString": "​import:./bla.js:bla",
           },
         ],
         "noImportStatement": false,
@@ -49,9 +49,9 @@ describe('getErrMsg()', () => {
         "code": "const blo = '​import:./bla.js:*';",
         "fileImports": [
           {
-            "importString": "​import:./bla.js:*",
             "importLocalName": "blo",
             "importStatementCode": "import * as blo from './bla.js'",
+            "importString": "​import:./bla.js:*",
           },
         ],
         "noImportStatement": false,
