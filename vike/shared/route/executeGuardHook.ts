@@ -40,7 +40,7 @@ async function executeGuardHook<
 // TODO/v1-release: remove
 type PageGuard = Hook
 function findPageGuard(pageId: string, pageFilesAll: PageFile[]): null | PageGuard {
-  const pageRouteFile = pageFilesAll.find((p) => p.pageId === pageId && p.fileType === '.page.route')
+  const pageRouteFile = pageFilesAll.find((p) => p.fileType === '.page.route')
   if (!pageRouteFile) return null
   const { filePath, fileExports } = pageRouteFile
   assert(fileExports) // loadPageRoutes() should already have been called
