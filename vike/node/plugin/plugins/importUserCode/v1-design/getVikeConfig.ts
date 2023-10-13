@@ -651,7 +651,7 @@ function getConfigValueSource(
     let filePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
-      const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir)
+      const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
       const configDefinedAt = getConfigDefinedAtString(configName, { definedAtInfo: definedAtInfoConfigFile }, true)
       assertUsage(import_, `${configDefinedAt} should be an import`)
       filePath = import_.filePathToShowToUser
@@ -679,10 +679,9 @@ function getConfigValueSource(
   if (interfaceFile.isConfigFile) {
     assert('configValue' in conf)
     const { configValue } = conf
-    const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir)
+    const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
     if (import_) {
-      const { filePathToShowToUser, fileExportName: importFileExportName, filePathForEnvCheck } = import_
-      assertFileEnv(filePathForEnvCheck, configEnv, configName)
+      const { filePathToShowToUser, fileExportName: importFileExportName } = import_
       const configValueSource: ConfigValueSource = {
         configEnv,
         valueIsImportedAtRuntime: true,
@@ -764,7 +763,13 @@ function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
 
-function resolveImport(configValue: unknown, importerFilePath: FilePath, userRootDir: string) {
+function resolveImport(
+  configValue: unknown,
+  importerFilePath: FilePath,
+  userRootDir: string,
+  configEnv: ConfigEnvInternal,
+  configName: string
+) {
   if (typeof configValue !== 'string') return null
   const importData = parseImportData(configValue)
   if (!importData) return null
@@ -793,8 +798,12 @@ function resolveImport(configValue: unknown, importerFilePath: FilePath, userRoo
     filePathToShowToUser = importFilePath
   }
 
+  {
+    const filePathForEnvCheck = filePathAbsolute ?? importFilePath
+    assertFileEnv(filePathForEnvCheck, configEnv, configName)
+  }
+
   return {
-    filePathForEnvCheck: filePathAbsolute ?? importFilePath,
     filePathToShowToUser,
     fileExportName: importFileExportName
   }
