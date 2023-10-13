@@ -1366,12 +1366,12 @@ function assertImportPath(
   importData: ImportData,
   importerFilePath: FilePath
 ): asserts filePathAbsolute is string {
-  const { importPath: importPath, importWasGenerated, importString } = importData
+  const { importPath: importPath, importStringWasGenerated, importString } = importData
   const filePathToShowToUser = getFilePathToShowToUser(importerFilePath)
 
   if (!filePathAbsolute) {
     const importPathString = pc.cyan(`'${importPath}'`)
-    const errIntro = importWasGenerated
+    const errIntro = importStringWasGenerated
       ? (`The import path ${importPathString} in ${filePathToShowToUser}` as const)
       : (`The import ${pc.cyan(importString)} defined in ${filePathToShowToUser}` as const)
     const errIntro2 = `${errIntro} couldn't be resolved: does ${importPathString}` as const

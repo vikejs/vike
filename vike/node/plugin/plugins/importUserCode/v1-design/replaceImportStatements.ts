@@ -72,7 +72,7 @@ function replaceImportStatements(
         }
         return importLocalName
       })()
-      const importString = serializeImportData({ importPath, exportName, importWasGenerated: true })
+      const importString = serializeImportData({ importPath, exportName, importStringWasGenerated: true })
       replacement += `const ${importLocalName} = '${importString}';`
       fileImports.push({
         importStatementCode,
@@ -114,7 +114,7 @@ const zeroWidthSpace = '\u200b'
  *   `importData === {`
  *      `importPath: './some-file',`
  *      `exportName: 'someImport',`
- *      `importWasGenerated: false,`
+ *      `importStringWasGenerated: false,`
  *      `importString: 'import:./some-file:someImport'`
  *    `}`
  * We discard the information that the import variable is called `someVar` because we don't need it.
@@ -122,15 +122,15 @@ const zeroWidthSpace = '\u200b'
 type ImportData = {
   importPath: string
   exportName: string
-  importWasGenerated: boolean
+  importStringWasGenerated: boolean
   importString: string
 }
 function serializeImportData({
   importPath,
   exportName,
-  importWasGenerated
+  importStringWasGenerated
 }: Omit<ImportData, 'importString'>): string {
-  const tag = importWasGenerated ? zeroWidthSpace : ''
+  const tag = importStringWasGenerated ? zeroWidthSpace : ''
   // `import:${importPath}:${importPath}`
   return `${tag}${import_}${SEP}${importPath}${SEP}${exportName}`
 }
@@ -142,23 +142,23 @@ function parseImportData(importString: string): null | ImportData {
     return null
   }
 
-  let importWasGenerated = false
+  let importStringWasGenerated = false
   if (importString.startsWith(zeroWidthSpace)) {
-    importWasGenerated = true
+    importStringWasGenerated = true
     assert(zeroWidthSpace.length === 1)
     importString = importString.slice(1)
   }
 
   const parts = importString.split(SEP).slice(1)
-  if (!importWasGenerated && parts.length === 1) {
+  if (!importStringWasGenerated && parts.length === 1) {
     const exportName = 'default'
     const importPath = parts[0]!
-    return { importPath, exportName, importWasGenerated, importString }
+    return { importPath, exportName, importStringWasGenerated, importString }
   }
   assert(parts.length >= 2)
   const exportName = parts[parts.length - 1]!
   const importPath = parts.slice(0, -1).join(SEP)
-  return { importPath, exportName, importWasGenerated, importString }
+  return { importPath, exportName, importStringWasGenerated, importString }
 }
 
 // https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368
