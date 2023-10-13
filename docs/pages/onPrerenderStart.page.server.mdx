@@ -1,3 +1,4 @@
+import { HookTypeScriptHints } from '../components/HookTypeScriptHints'
 import { Link } from '@brillout/docpress'
 
 The `onBeforePrerender()` hook has been renamed to `onPrerenderStart()` for the V1 design.
@@ -7,3 +8,60 @@ The `onBeforePrerender()` hook has been renamed to `onPrerenderStart()` for the 
 > The documentation will be moved here after the stable release of the V1 design.
 
 See <Link href="/migration/v1-design#renamed-hooks" />.
+
+The `onPrerenderStart()` hook is called once when <Link href="/pre-rendering">pre-rendering</Link> starts. Conceptually
+it receives as argument an array of all <Link href="/pageContext">page contexts</Link> to be pre-rendered, and returns
+a new array of page contexts, giving you a chance to add/remove/modify pages. This is especially useful for
+<Link href="/i18n">internationalization</Link>.
+
+```js
+export { onPrerenderStart }
+
+async function onPrerenderStart(prerenderContext) {
+  const newPageContexts = []
+
+  // for each original page context:
+  prerenderContext.pageContexts.forEach((pageContext) => {
+    // for each locale, push a new page context to newPageContexts
+    // ...
+  })
+
+  return {
+    prerenderContext: {
+      newPageContexts
+    }
+  }
+}
+```
+
+
+## TypeScript
+
+```ts
+export { onPrerenderStart }
+
+import type { OnPrerenderStartAsync, PageContextServer } from 'vike/types'
+
+const onPrerenderStart: OnPrerenderStartAsync = async (
+  prerenderContext
+): ReturnType<OnPrerenderStartAsync> => {
+  const newPageContexts: PageContextServer[] = []
+
+  // for each original page context:
+  prerenderContext.pageContexts.forEach((pageContext) => {
+    // for each locale, push a new page context to newPageContexts
+    // ...
+  })
+
+  return {
+    prerenderContext: {
+      newPageContexts
+    }
+  }
+}
+```
+
+<HookTypeScriptHints
+  hookTypeName="OnPrerenderStartAsync"
+  wrongDefinition="const onPrerenderStart: OnPrerenderStartAsync = async (prerenderContext) => {"
+/>
