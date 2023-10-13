@@ -681,14 +681,14 @@ function getConfigValueSource(
     const { configValue } = conf
     const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
     if (import_) {
-      const { filePathToShowToUser, fileExportName: importName } = import_
+      const { filePathToShowToUser, fileExportName: importFileExportName } = import_
       const configValueSource: ConfigValueSource = {
         configEnv,
         valueIsImportedAtRuntime: true,
         isComputed: false,
         definedAtInfo: {
           filePath: filePathToShowToUser,
-          fileExportPath: [importName]
+          fileExportPath: [importFileExportName]
         }
       }
       return configValueSource
@@ -706,7 +706,7 @@ function getConfigValueSource(
     // TODO: rethink file paths of ConfigElement
     const importFilePath =
       interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
-    const importName = configName === interfaceFile.configName ? 'default' : configName
+    const importFileExportName = configName === interfaceFile.configName ? 'default' : configName
     const valueAlreadyLoaded = 'configValue' in conf
     const configValueSource: ConfigValueSource = {
       configEnv,
@@ -714,7 +714,7 @@ function getConfigValueSource(
       isComputed: false,
       definedAtInfo: {
         filePath: importFilePath,
-        fileExportPath: [importName]
+        fileExportPath: [importFileExportName]
       }
     }
     if (valueAlreadyLoaded) {
@@ -774,7 +774,7 @@ function resolveImport(
   const importData = parseImportData(configValue)
   if (!importData) return null
 
-  const { importFilePath, importName } = importData
+  const { importFilePath, importFileExportName } = importData
   const filePathAbsolute = resolveImportPath(importData, importerFilePath)
 
   let filePathToShowToUser: string
@@ -805,7 +805,7 @@ function resolveImport(
 
   return {
     filePathToShowToUser,
-    fileExportName: importName
+    fileExportName: importFileExportName
   }
 }
 

@@ -122,9 +122,9 @@ type ConfigValueImported = {
       isValueFile: false // importFilePath is imported by a +config.js file
       // TODO: rename?
       // import { something } from './importFilePathRelative.js'
-      // -> importName === 'something'
+      // -> importFileExportName === 'something'
       // -> importFileExportValue holds the value of `something`
-      importName: string
+      importFileExportName: string
       importFileExportValue: unknown
     }
 )
