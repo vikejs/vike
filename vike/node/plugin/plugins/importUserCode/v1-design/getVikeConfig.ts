@@ -704,8 +704,7 @@ function getConfigValueSource(
     }
   } else if (interfaceFile.isValueFile) {
     // TODO: rethink file paths of ConfigElement
-    const importPath =
-      interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
+    const importPath = interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
     const exportName = configName === interfaceFile.configName ? 'default' : configName
     const valueAlreadyLoaded = 'configValue' in conf
     const configValueSource: ConfigValueSource = {
