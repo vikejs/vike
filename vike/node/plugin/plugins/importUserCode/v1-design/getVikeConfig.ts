@@ -704,7 +704,7 @@ function getConfigValueSource(
     }
   } else if (interfaceFile.isValueFile) {
     // TODO: rethink file paths of ConfigElement
-    const importFilePath =
+    const importPath =
       interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
     const exportName = configName === interfaceFile.configName ? 'default' : configName
     const valueAlreadyLoaded = 'configValue' in conf
@@ -713,7 +713,7 @@ function getConfigValueSource(
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
       isComputed: false,
       definedAtInfo: {
-        filePath: importFilePath,
+        filePath: importPath,
         fileExportPath: [exportName]
       }
     }
@@ -773,11 +773,11 @@ function resolveImport(
   const importData = parseImportData(configValue)
   if (!importData) return null
 
-  const { importFilePath, exportName } = importData
+  const { importPath, exportName } = importData
   const filePathAbsolute = resolveImportPath(importData, importerFilePath)
 
   let filePathToShowToUser: string
-  if (importFilePath.startsWith('.')) {
+  if (importPath.startsWith('.')) {
     // We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
     // ```
     // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
@@ -791,14 +791,14 @@ function resolveImport(
     )
     filePathToShowToUser = filePathRelativeToUserRootDir
   } else {
-    // importFilePath can be:
+    // importPath can be:
     //  - an npm package import
     //  - a path alias
-    filePathToShowToUser = importFilePath
+    filePathToShowToUser = importPath
   }
 
   {
-    const filePathForEnvCheck = filePathAbsolute ?? importFilePath
+    const filePathForEnvCheck = filePathAbsolute ?? importPath
     assertFileEnv(filePathForEnvCheck, configEnv, configName)
   }
 
@@ -822,7 +822,7 @@ function resolveImportPath_relativeToUserRootDir(
     assertUsage(
       false,
       `${getFilePathToShowToUser(configFilePath)} imports from a relative path ${pc.cyan(
-        importData.importFilePath
+        importData.importPath
       )} outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir}, or import from a dependency's package.json#exports entry instead`
     )
     // None of the following works. Seems to be a Vite bug?
@@ -1142,7 +1142,7 @@ async function loadExtendsConfigs(
   const extendsImportData = getExtendsImportData(configFileExports, configFilePath)
   const extendsConfigFiles: FilePath[] = []
   extendsImportData.map((importData) => {
-    const { importFilePath: importPath } = importData
+    const { importPath: importPath } = importData
     // TODO
     //  - validate extends configs
     const filePathAbsolute = resolveImportPath(importData, configFilePath)
@@ -1357,8 +1357,8 @@ function resolveImportPath(importData: ImportData, importerFilePath: FilePath): 
   const importerFilePathAbsolute = importerFilePath.filePathAbsolute
   assertPosixPath(importerFilePathAbsolute)
   const cwd = path.posix.dirname(importerFilePathAbsolute)
-  // filePathAbsolute is expected to be null when importData.importFilePath is a Vite path alias
-  const filePathAbsolute = requireResolve(importData.importFilePath, cwd)
+  // filePathAbsolute is expected to be null when importData.importPath is a Vite path alias
+  const filePathAbsolute = requireResolve(importData.importPath, cwd)
   return filePathAbsolute
 }
 function assertImportPath(
@@ -1366,7 +1366,7 @@ function assertImportPath(
   importData: ImportData,
   importerFilePath: FilePath
 ): asserts filePathAbsolute is string {
-  const { importFilePath: importPath, importWasGenerated, importDataString } = importData
+  const { importPath: importPath, importWasGenerated, importDataString } = importData
   const filePathToShowToUser = getFilePathToShowToUser(importerFilePath)
 
   if (!filePathAbsolute) {

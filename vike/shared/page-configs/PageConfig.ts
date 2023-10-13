@@ -111,17 +111,17 @@ type LoadConfigValuesAll = () => Promise<ConfigValueImported[]>
 type ConfigValueImported = {
   configName: string
   // TODO: rename?
-  importFilePath: string
+  importPath: string
 } & (
   | {
-      isValueFile: true // importFilePath is a +{configName}.js file
+      isValueFile: true // importPath is a +{configName}.js file
       // TODO: rename?
       importFileExports: Record<string, unknown>
     }
   | {
-      isValueFile: false // importFilePath is imported by a +config.js file
+      isValueFile: false // importPath is imported by a +config.js file
       // TODO: rename?
-      // import { something } from './importFilePathRelative.js'
+      // import { something } from './importPathRelative.js'
       // -> exportName === 'something'
       // -> importFileExportValue holds the value of `something`
       exportName: string

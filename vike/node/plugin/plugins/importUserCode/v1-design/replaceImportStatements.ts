@@ -29,8 +29,8 @@ function replaceImportStatements(
   imports.forEach((node) => {
     if (node.type !== 'ImportDeclaration') return
 
-    const importFilePath = node.source.value
-    assert(typeof importFilePath === 'string')
+    const importPath = node.source.value
+    assert(typeof importPath === 'string')
 
     const { start, end } = node
 
@@ -38,7 +38,7 @@ function replaceImportStatements(
 
     // No variable imported
     if (node.specifiers.length === 0) {
-      const isWarning = !styleFileRE.test(importFilePath)
+      const isWarning = !styleFileRE.test(importPath)
       let quote = indent(importStatementCode)
       if (isWarning) {
         quote = pc.cyan(quote)
@@ -72,7 +72,7 @@ function replaceImportStatements(
         }
         return importLocalName
       })()
-      const importDataString = serializeImportData({ importFilePath, exportName, importWasGenerated: true })
+      const importDataString = serializeImportData({ importPath, exportName, importWasGenerated: true })
       replacement += `const ${importLocalName} = '${importDataString}';`
       fileImports.push({
         importStatementCode,
@@ -108,19 +108,19 @@ const import_ = 'import'
 const SEP = ':'
 const zeroWidthSpace = '\u200b'
 type ImportData = {
-  importFilePath: string
+  importPath: string
   exportName: string
   importWasGenerated: boolean
   importDataString: string
 }
 function serializeImportData({
-  importFilePath,
+  importPath,
   exportName,
   importWasGenerated
 }: Omit<ImportData, 'importDataString'>): string {
   const tag = importWasGenerated ? zeroWidthSpace : ''
-  // `import:${importFilePath}:${importFilePath}`
-  return `${tag}${import_}${SEP}${importFilePath}${SEP}${exportName}`
+  // `import:${importPath}:${importPath}`
+  return `${tag}${import_}${SEP}${importPath}${SEP}${exportName}`
 }
 function isImportData(str: string): boolean {
   return str.startsWith(import_ + SEP) || str.startsWith(zeroWidthSpace + import_ + SEP)
@@ -140,13 +140,13 @@ function parseImportData(importDataString: string): null | ImportData {
   const parts = importDataString.split(SEP).slice(1)
   if (!importWasGenerated && parts.length === 1) {
     const exportName = 'default'
-    const importFilePath = parts[0]!
-    return { importFilePath, exportName, importWasGenerated, importDataString }
+    const importPath = parts[0]!
+    return { importPath, exportName, importWasGenerated, importDataString }
   }
   assert(parts.length >= 2)
   const exportName = parts[parts.length - 1]!
-  const importFilePath = parts.slice(0, -1).join(SEP)
-  return { importFilePath, exportName, importWasGenerated, importDataString }
+  const importPath = parts.slice(0, -1).join(SEP)
+  return { importPath, exportName, importWasGenerated, importDataString }
 }
 
 // https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368

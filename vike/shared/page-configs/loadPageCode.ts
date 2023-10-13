@@ -44,9 +44,9 @@ function processConfigValuesImported(configValuesImported: ConfigValueImported[]
 
   configValuesImported.forEach((configValueLoaded) => {
     if (configValueLoaded.isValueFile) {
-      const { importFileExports, importFilePath, configName } = configValueLoaded
+      const { importFileExports, importPath, configName } = configValueLoaded
       if (configName !== 'client') {
-        assertExportsOfValueFile(importFileExports, importFilePath, configName)
+        assertExportsOfValueFile(importFileExports, importPath, configName)
       }
       Object.entries(importFileExports).forEach(([exportName, exportValue]) => {
         const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
@@ -56,19 +56,19 @@ function processConfigValuesImported(configValuesImported: ConfigValueImported[]
           // Side-exports have the lowest priority.
           return
         }
-        addConfigValue(configName, exportValue, importFilePath, exportName)
+        addConfigValue(configName, exportValue, importPath, exportName)
       })
     } else {
-      const { configName, importFilePath, importFileExportValue, exportName } = configValueLoaded
-      addConfigValue(configName, importFileExportValue, importFilePath, exportName)
+      const { configName, importPath, importFileExportValue, exportName } = configValueLoaded
+      addConfigValue(configName, importFileExportValue, importPath, exportName)
     }
   })
 }
 
-function assertIsNotNull(configValue: unknown, configName: string, importFilePath: string) {
-  assert(!importFilePath.includes('+config.'))
+function assertIsNotNull(configValue: unknown, configName: string, importPath: string) {
+  assert(!importPath.includes('+config.'))
   assertUsage(
     configValue !== null,
-    `Set ${pc.cyan(configName)} to ${pc.cyan('null')} in a +config.h.js file instead of ${importFilePath}`
+    `Set ${pc.cyan(configName)} to ${pc.cyan('null')} in a +config.h.js file instead of ${importPath}`
   )
 }

@@ -110,7 +110,7 @@ function serializeConfigValueImported(
   const lines: string[] = []
   lines.push(`  {`)
   lines.push(`    configName: '${configName}',`)
-  lines.push(`    importFilePath: '${filePath}',`)
+  lines.push(`    importPath: '${filePath}',`)
   lines.push(`    isValueFile: ${JSON.stringify(isValueFile)},`)
   if (isValueFile) {
     lines.push(`    importFileExports: ${importVar},`)
