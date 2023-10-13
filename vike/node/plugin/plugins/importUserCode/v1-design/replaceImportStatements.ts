@@ -114,16 +114,16 @@ const zeroWidthSpace = '\u200b'
  *   `importData === {`
  *      `importPath: './some-file',`
  *      `exportName: 'someImport',`
- *      `importStringWasGenerated: true,`
- *      `importString: 'import:./some-file:someImport'`
+ *      `importString: 'import:./some-file:someImport'`,
+ *      `importStringWasGenerated: true,
  *    `}`
  * We discard the information that the import variable is called `someVar` because we don't need it.
  */
 type ImportData = {
   importPath: string
   exportName: string
-  importStringWasGenerated: boolean
   importString: string
+  importStringWasGenerated: boolean
 }
 function serializeImportData({
   importPath,
