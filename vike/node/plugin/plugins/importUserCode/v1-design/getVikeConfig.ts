@@ -681,14 +681,14 @@ function getConfigValueSource(
     const { configValue } = conf
     const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
     if (import_) {
-      const { filePathToShowToUser, fileExportName: importFileExportName } = import_
+      const { filePathToShowToUser, fileExportName: exportName } = import_
       const configValueSource: ConfigValueSource = {
         configEnv,
         valueIsImportedAtRuntime: true,
         isComputed: false,
         definedAtInfo: {
           filePath: filePathToShowToUser,
-          fileExportPath: [importFileExportName]
+          fileExportPath: [exportName]
         }
       }
       return configValueSource
@@ -706,7 +706,7 @@ function getConfigValueSource(
     // TODO: rethink file paths of ConfigElement
     const importFilePath =
       interfaceFile.filePath.filePathRelativeToUserRootDir ?? interfaceFile.filePath.filePathAbsolute
-    const importFileExportName = configName === interfaceFile.configName ? 'default' : configName
+    const exportName = configName === interfaceFile.configName ? 'default' : configName
     const valueAlreadyLoaded = 'configValue' in conf
     const configValueSource: ConfigValueSource = {
       configEnv,
@@ -714,7 +714,7 @@ function getConfigValueSource(
       isComputed: false,
       definedAtInfo: {
         filePath: importFilePath,
-        fileExportPath: [importFileExportName]
+        fileExportPath: [exportName]
       }
     }
     if (valueAlreadyLoaded) {
@@ -773,7 +773,7 @@ function resolveImport(
   const importData = parseImportData(configValue)
   if (!importData) return null
 
-  const { importFilePath, importFileExportName } = importData
+  const { importFilePath, exportName } = importData
   const filePathAbsolute = resolveImportPath(importData, importerFilePath)
 
   let filePathToShowToUser: string
@@ -804,7 +804,7 @@ function resolveImport(
 
   return {
     filePathToShowToUser,
-    fileExportName: importFileExportName
+    fileExportName: exportName
   }
 }
 
