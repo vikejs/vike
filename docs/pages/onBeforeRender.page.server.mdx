@@ -1,3 +1,4 @@
+import { HookTypeScriptHints } from '../components/HookTypeScriptHints'
 import { Link } from '@brillout/docpress'
 
 The `onBeforeRender()` hook is usually used together with [`passToClient`](/passToClient) to fetch data, see [Guides > Data Fetching](/data-fetching).
@@ -75,14 +76,10 @@ const onBeforeRender: OnBeforeRenderAsync = async (
 }
 ```
 
-> Do not omit the `ReturnType<OnBeforeRenderAsync>` annotation (i.e. do not write
-> `const onBeforeRender: OnBeforeRenderAsync = async (pageContext) => {`), otherwise TypeScript won't strictly check
-> the return type for unknown extra properties. See also:
-> * https://stackoverflow.com/questions/63006497/typescript-why-not-strict-return-type
-> * https://stackoverflow.com/questions/57214325/typescript-excess-properties-are-not-checked-in-lambdas-without-explicit-return
-
-> See <Link href="/pageContext#typescript" /> for more information on how to extend `pageContext` with your own extra
-> properties.
+<HookTypeScriptHints
+  hookTypeName="OnBeforeRenderAsync"
+  wrongDefinition="const onBeforeRender: OnBeforeRenderAsync = async (pageContext) => {"
+/>
 
 
 ## Client Routing
