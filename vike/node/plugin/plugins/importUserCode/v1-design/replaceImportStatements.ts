@@ -109,15 +109,15 @@ const SEP = ':'
 const zeroWidthSpace = '\u200b'
 /**
  * Data Structure holding info about import statement:
- *   `import { someImport as someVar } from './some-file'`
+ *   `import { someExport as someImport } from './some-file'`
  * <=>
  *   `importData === {`
  *      `importPath: './some-file',`
- *      `exportName: 'someImport',`
- *      `importString: 'import:./some-file:someImport'`,
- *      `importStringWasGenerated: true,
+ *      `exportName: 'someExport',`
+ *      `importString: 'import:./some-file:someExport',`
+ *      `importStringWasGenerated: true,`
  *    `}`
- * We discard the information that the import variable is called `someVar` because we don't need it.
+ * We discard the import name `someImport` because we don't need it.
  */
 type ImportData = {
   importPath: string
