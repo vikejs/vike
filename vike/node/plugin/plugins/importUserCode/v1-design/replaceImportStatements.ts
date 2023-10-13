@@ -114,7 +114,7 @@ const zeroWidthSpace = '\u200b'
  *   `importData === {`
  *      `importPath: './some-file',`
  *      `exportName: 'someImport',`
- *      `importStringWasGenerated: false,`
+ *      `importStringWasGenerated: true,`
  *      `importString: 'import:./some-file:someImport'`
  *    `}`
  * We discard the information that the import variable is called `someVar` because we don't need it.
