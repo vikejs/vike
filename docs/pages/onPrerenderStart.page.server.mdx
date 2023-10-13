@@ -18,17 +18,18 @@ a new array of page contexts, giving you a chance to add/remove/modify pages. Th
 export { onPrerenderStart }
 
 async function onPrerenderStart(prerenderContext) {
-  const newPageContexts = []
+  // new page contexts
+  const pageContexts = []
 
   // for each original page context:
   prerenderContext.pageContexts.forEach((pageContext) => {
-    // for each locale, push a new page context to newPageContexts
+    // for each locale, push a new page context to pageContexts
     // ...
   })
 
   return {
     prerenderContext: {
-      newPageContexts
+      pageContexts
     }
   }
 }
@@ -45,17 +46,18 @@ import type { OnPrerenderStartAsync, PageContextServer } from 'vike/types'
 const onPrerenderStart: OnPrerenderStartAsync = async (
   prerenderContext
 ): ReturnType<OnPrerenderStartAsync> => {
-  const newPageContexts: PageContextServer[] = []
+  // new page contexts
+  const pageContexts: PageContextServer[] = []
 
   // for each original page context:
   prerenderContext.pageContexts.forEach((pageContext) => {
-    // for each locale, push a new page context to newPageContexts
+    // for each locale, push a new page context to pageContexts
     // ...
   })
 
   return {
     prerenderContext: {
-      newPageContexts
+      pageContexts
     }
   }
 }
