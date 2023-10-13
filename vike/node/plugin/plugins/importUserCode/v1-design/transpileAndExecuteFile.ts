@@ -245,9 +245,9 @@ function assertImportsAreReExported(
   Object.values(exportedStrings).forEach((exportVal) => {
     if (typeof exportVal !== 'string') return
     if (!isImportData(exportVal)) return
-    const importDataString = exportVal
+    const importString = exportVal
     fileImports.forEach((fileImport) => {
-      if (fileImport.importDataString === importDataString) {
+      if (fileImport.importString === importString) {
         fileImport.isReExported = true
       }
     })

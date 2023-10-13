@@ -1366,14 +1366,14 @@ function assertImportPath(
   importData: ImportData,
   importerFilePath: FilePath
 ): asserts filePathAbsolute is string {
-  const { importPath: importPath, importWasGenerated, importDataString } = importData
+  const { importPath: importPath, importWasGenerated, importString } = importData
   const filePathToShowToUser = getFilePathToShowToUser(importerFilePath)
 
   if (!filePathAbsolute) {
     const importPathString = pc.cyan(`'${importPath}'`)
     const errIntro = importWasGenerated
       ? (`The import path ${importPathString} in ${filePathToShowToUser}` as const)
-      : (`The import ${pc.cyan(importDataString)} defined in ${filePathToShowToUser}` as const)
+      : (`The import ${pc.cyan(importString)} defined in ${filePathToShowToUser}` as const)
     const errIntro2 = `${errIntro} couldn't be resolved: does ${importPathString}` as const
     if (importPath.startsWith('.')) {
       assertUsage(false, `${errIntro2} point to an existing file?`)
