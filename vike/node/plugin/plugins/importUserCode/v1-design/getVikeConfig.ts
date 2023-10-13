@@ -681,8 +681,8 @@ function getConfigValueSource(
     const { configValue } = conf
     const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir)
     if (import_) {
-      const { filePathToShowToUser, fileExportName: importFileExportName } = import_
-      assertFileEnv(filePathToShowToUser, configEnv, configName)
+      const { filePathToShowToUser, fileExportName: importFileExportName, filePathAbsolute } = import_
+      assertFileEnv(filePathAbsolute, configEnv, configName)
       const configValueSource: ConfigValueSource = {
         configEnv,
         valueIsImportedAtRuntime: true,
@@ -728,18 +728,20 @@ function getConfigValueSource(
   assert(false)
 }
 
-function assertFileEnv(importFilePath: string, configEnv: ConfigEnvInternal, configName: string) {
-  if (!filesEnv.has(importFilePath)) {
-    filesEnv.set(importFilePath, [])
+function assertFileEnv(filePathAbsolute: string, configEnv: ConfigEnvInternal, configName: string) {
+  assertPosixPath(filePathAbsolute)
+  assert(path.isAbsolute(filePathAbsolute))
+  if (!filesEnv.has(filePathAbsolute)) {
+    filesEnv.set(filePathAbsolute, [])
   }
-  const fileEnv = filesEnv.get(importFilePath)!
+  const fileEnv = filesEnv.get(filePathAbsolute)!
   fileEnv.push({ configEnv, configName })
   const configDifferentEnv = fileEnv.filter((c) => c.configEnv !== configEnv)[0]
   if (configDifferentEnv) {
     assertUsage(
       false,
       [
-        `${importFilePath} defines the value of configs living in different environments:`,
+        `${filePathAbsolute} defines the value of configs living in different environments:`,
         ...[configDifferentEnv, { configName, configEnv }].map(
           (c) => `  - config ${pc.cyan(c.configName)} which value lives in environment ${pc.cyan(c.configEnv)}`
         ),
@@ -766,12 +768,14 @@ function resolveImport(
   configValue: unknown,
   configFilePath: FilePath,
   userRootDir: string
-): null | { filePathToShowToUser: string; fileExportName: string } {
+): null | { filePathToShowToUser: string; fileExportName: string; filePathAbsolute: string } {
   if (typeof configValue !== 'string') return null
   const importData = parseImportData(configValue)
   if (!importData) return null
 
   const { importFilePath, importFileExportName } = importData
+  const filePathAbsolute = resolveImportPath(importData, configFilePath)
+
   let filePathToShowToUser: string
   if (importFilePath.startsWith('.')) {
     // We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
@@ -779,6 +783,7 @@ function resolveImport(
     // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
     // ```
     const filePathRelativeToUserRootDir = resolveImportPath_relativeToUserRootDir(
+      filePathAbsolute,
       importData,
       configFilePath,
       userRootDir
@@ -792,19 +797,18 @@ function resolveImport(
   }
 
   return {
+    filePathAbsolute,
     filePathToShowToUser,
     fileExportName: importFileExportName
   }
 }
 
 function resolveImportPath_relativeToUserRootDir(
+  filePathAbsolute: string,
   importData: ImportData,
   configFilePath: FilePath,
   userRootDir: string
-): string {
-  const filePathAbsolute = resolveImportPath(importData, configFilePath)
-
-  // Make it a Vite path
+) {
   assertPosixPath(userRootDir)
   let filePathRelativeToUserRootDir: string
   if (filePathAbsolute.startsWith(userRootDir)) {
