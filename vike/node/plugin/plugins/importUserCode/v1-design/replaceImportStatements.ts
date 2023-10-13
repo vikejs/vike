@@ -107,6 +107,18 @@ function getImports(code: string): ImportDeclaration[] {
 const import_ = 'import'
 const SEP = ':'
 const zeroWidthSpace = '\u200b'
+/**
+ * Data Structure holding info about import statement:
+ *   `import { someImport as someVar } from './some-file'`
+ * <=>
+ *   `importData === {`
+ *      `importPath: './some-file',`
+ *      `exportName: 'someImport',`
+ *      `importWasGenerated: false,`
+ *      `importDataString: 'import:./some-file:someImport'`
+ *    `}`
+ * We discard the information that the import variable is called `someVar` because we don't need it.
+ */
 type ImportData = {
   importPath: string
   exportName: string
