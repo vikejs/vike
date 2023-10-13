@@ -20,8 +20,8 @@ importers:
         specifier: ^0.1.5
         version: 0.1.5
       '@brillout/test-e2e':
-        specifier: ^0.5.16
-        version: 0.5.16
+        specifier: ^0.5.17
+        version: 0.5.17
       '@brillout/test-types':
         specifier: ^0.1.7
         version: 0.1.7(typescript@4.9.5)
@@ -3408,8 +3408,8 @@ packages:
       vite: 4.3.5(@types/node@17.0.45)
     dev: false
 
-  /@brillout/test-e2e@0.5.16:
-    resolution: {integrity: sha512-vQ/Mo1wvDv2ixQf77LxOcqnPaT7T7bUR5dM9k7NHn0FMV6m/9+ymk+b0hlaRDq9dgazKoTdDmPqeKwKDH/iC/Q==}
+  /@brillout/test-e2e@0.5.17:
+    resolution: {integrity: sha512-+8VoGywg+Fmd83tdPRH2/Vo/NnwE7ZRGwiB75W6E3yeXyBpDqzFc+b+jcJch9R+yn6+9uNK0pCXxOWrU1CNEeg==}
     hasBin: true
     dependencies:
       '@brillout/part-regex': 0.1.2
