@@ -211,15 +211,15 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAtI
   return configValueSerialized
 }
 function getConfigValueEagerImportNew(importPath: string, importStatements: string[]) {
-  const { importVar, importStatement } = generateEagerImport(importPath)
+  const { importName, importStatement } = generateEagerImport(importPath)
   importStatements.push(importStatement)
-  return importVar
+  return importName
 }
 function getConfigValueEagerImport(importPath: string, exportName: string, importStatements: string[]) {
   let configValueEagerImport: string
-  const { importVar, importStatement } = generateEagerImport(importPath)
+  const { importName, importStatement } = generateEagerImport(importPath)
   importStatements.push(importStatement)
   // TODO: expose all exports so that assertDefaultExport can be applied
-  configValueEagerImport = `${importVar}[${JSON.stringify(exportName)}]`
+  configValueEagerImport = `${importName}[${JSON.stringify(exportName)}]`
   return configValueEagerImport
 }

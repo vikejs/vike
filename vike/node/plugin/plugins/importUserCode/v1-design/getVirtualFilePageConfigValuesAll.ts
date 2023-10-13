@@ -100,7 +100,7 @@ function serializeConfigValueImported(
   assert(!configValueSource.valueIsFilePath)
   assert(fileExportName)
 
-  const { importVar, importStatement } = generateEagerImport(
+  const { importName, importStatement } = generateEagerImport(
     filePath,
     varCounterContainer.varCounter++,
     isValueFile ? undefined : fileExportName
@@ -113,9 +113,9 @@ function serializeConfigValueImported(
   lines.push(`    importPath: '${filePath}',`)
   lines.push(`    isValueFile: ${JSON.stringify(isValueFile)},`)
   if (isValueFile) {
-    lines.push(`    importFileExports: ${importVar},`)
+    lines.push(`    importFileExports: ${importName},`)
   } else {
-    lines.push(`    importFileExportValue: ${importVar},`)
+    lines.push(`    importFileExportValue: ${importName},`)
     assert(fileExportName)
     lines.push(`    exportName: ${JSON.stringify(fileExportName)},`)
   }
