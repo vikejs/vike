@@ -790,14 +790,14 @@ function getImport(
   }
 }
 
-function resolveRelativeFilePath(importData: ImportData, configFilePath: FilePath, userRootDir: string) {
-  let importFilePath = resolveImport(importData, configFilePath)
+function resolveRelativeFilePath(importData: ImportData, configFilePath: FilePath, userRootDir: string): string {
+  const filePathAbsolute = resolveImportPath(importData, configFilePath)
 
   // Make it a Vite path
   assertPosixPath(userRootDir)
-  assertPosixPath(importFilePath)
-  if (importFilePath.startsWith(userRootDir)) {
-    importFilePath = getVitePathFromAbsolutePath(importFilePath, userRootDir)
+  let filePathRelativeToUserRootDir: string
+  if (filePathAbsolute.startsWith(userRootDir)) {
+    filePathRelativeToUserRootDir = getVitePathFromAbsolutePath(filePathAbsolute, userRootDir)
   } else {
     assertUsage(
       false,
@@ -807,18 +807,18 @@ function resolveRelativeFilePath(importData: ImportData, configFilePath: FilePat
     )
     // None of the following works. Seems to be a Vite bug?
     // /*
-    // assert(importFilePath.startsWith('/'))
-    // importFilePath = `/@fs${importFilePath}`
+    // assert(filePathAbsolute.startsWith('/'))
+    // filePath = `/@fs${filePathAbsolute}`
     // /*/
-    // importFilePath = path.posix.relative(userRootDir, importFilePath)
-    // assert(importFilePath.startsWith('../'))
-    // importFilePath = '/' + importFilePath
+    // filePathRelativeToUserRootDir = path.posix.relative(userRootDir, filePathAbsolute)
+    // assert(filePathRelativeToUserRootDir.startsWith('../'))
+    // filePathRelativeToUserRootDir = '/' + filePathRelativeToUserRootDir
     // //*/
   }
 
-  assertPosixPath(importFilePath)
-  assert(importFilePath.startsWith('/'))
-  return importFilePath
+  assertPosixPath(filePathRelativeToUserRootDir)
+  assert(filePathRelativeToUserRootDir.startsWith('/'))
+  return filePathRelativeToUserRootDir
 }
 
 function getVitePathFromAbsolutePath(filePathAbsolute: string, root: string): string {
@@ -1125,7 +1125,7 @@ async function loadExtendsConfigs(
     const { importFilePath: importPath } = importData
     // TODO
     //  - validate extends configs
-    const filePathAbsolute = resolveImport(importData, configFilePath)
+    const filePathAbsolute = resolveImportPath(importData, configFilePath)
     assertExtendsImportPath(importPath, filePathAbsolute, configFilePath)
     extendsConfigFiles.push({
       filePathAbsolute,
@@ -1332,23 +1332,23 @@ function determineIsErrorPage(routeFilesystem: string) {
   return routeFilesystem.split('/').includes('_error')
 }
 
-function resolveImport(importData: ImportData, importerFilePath: FilePath): string {
-  const { filePathAbsolute } = importerFilePath
-  assertPosixPath(filePathAbsolute)
-  const plusConfigFilDirPathAbsolute = path.posix.dirname(filePathAbsolute)
-  const importedFile = requireResolve(importData.importFilePath, plusConfigFilDirPathAbsolute)
-  assertImport(importedFile, importData, importerFilePath)
-  return importedFile
+function resolveImportPath(importData: ImportData, importerFilePath: FilePath): string {
+  const importerFilePathAbsolute = importerFilePath.filePathAbsolute
+  assertPosixPath(importerFilePathAbsolute)
+  const cwd = path.posix.dirname(importerFilePathAbsolute)
+  const filePathAbsolute = requireResolve(importData.importFilePath, cwd)
+  assertImport(filePathAbsolute, importData, importerFilePath)
+  return filePathAbsolute
 }
 function assertImport(
-  importedFile: string | null,
+  filePathAbsolute: string | null,
   importData: ImportData,
   importerFilePath: FilePath
-): asserts importedFile is string {
+): asserts filePathAbsolute is string {
   const { importFilePath: importPath, importWasGenerated, importDataString } = importData
   const filePathToShowToUser = getFilePathToShowToUser(importerFilePath)
 
-  if (!importedFile) {
+  if (!filePathAbsolute) {
     const importPathString = pc.cyan(`'${importPath}'`)
     const errIntro = importWasGenerated
       ? (`The import path ${importPathString} in ${filePathToShowToUser}` as const)
