@@ -797,7 +797,7 @@ function resolveImport(
   }
 
   {
-    const filePathForEnvCheck = filePathAbsolute as string
+    const filePathForEnvCheck = filePathAbsolute ?? importPath
     assertFileEnv(filePathForEnvCheck, configEnv, configName)
   }
 
