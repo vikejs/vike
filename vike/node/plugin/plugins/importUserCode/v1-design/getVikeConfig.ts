@@ -681,8 +681,8 @@ function getConfigValueSource(
     const { configValue } = conf
     const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir)
     if (import_) {
-      const { filePathToShowToUser, fileExportName: importFileExportName, filePathAbsolute } = import_
-      assertFileEnv(filePathAbsolute, configEnv, configName)
+      const { filePathToShowToUser, fileExportName: importFileExportName, filePathForEnvCheck } = import_
+      assertFileEnv(filePathForEnvCheck, configEnv, configName)
       const configValueSource: ConfigValueSource = {
         configEnv,
         valueIsImportedAtRuntime: true,
@@ -764,17 +764,13 @@ function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
 
-function resolveImport(
-  configValue: unknown,
-  configFilePath: FilePath,
-  userRootDir: string
-): null | { filePathToShowToUser: string; fileExportName: string; filePathAbsolute: string } {
+function resolveImport(configValue: unknown, importerFilePath: FilePath, userRootDir: string) {
   if (typeof configValue !== 'string') return null
   const importData = parseImportData(configValue)
   if (!importData) return null
 
   const { importFilePath, importFileExportName } = importData
-  const filePathAbsolute = resolveImportPath(importData, configFilePath)
+  const filePathAbsolute = resolveImportPath(importData, importerFilePath)
 
   let filePathToShowToUser: string
   if (importFilePath.startsWith('.')) {
@@ -782,10 +778,11 @@ function resolveImport(
     // ```
     // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
     // ```
+    assertImportPath(filePathAbsolute, importData, importerFilePath)
     const filePathRelativeToUserRootDir = resolveImportPath_relativeToUserRootDir(
       filePathAbsolute,
       importData,
-      configFilePath,
+      importerFilePath,
       userRootDir
     )
     filePathToShowToUser = filePathRelativeToUserRootDir
@@ -797,7 +794,7 @@ function resolveImport(
   }
 
   return {
-    filePathAbsolute,
+    filePathForEnvCheck: filePathAbsolute ?? importFilePath,
     filePathToShowToUser,
     fileExportName: importFileExportName
   }
@@ -1141,6 +1138,7 @@ async function loadExtendsConfigs(
     // TODO
     //  - validate extends configs
     const filePathAbsolute = resolveImportPath(importData, configFilePath)
+    assertImportPath(filePathAbsolute, importData, configFilePath)
     assertExtendsImportPath(importPath, filePathAbsolute, configFilePath)
     extendsConfigFiles.push({
       filePathAbsolute,
@@ -1347,15 +1345,15 @@ function determineIsErrorPage(routeFilesystem: string) {
   return routeFilesystem.split('/').includes('_error')
 }
 
-function resolveImportPath(importData: ImportData, importerFilePath: FilePath): string {
+function resolveImportPath(importData: ImportData, importerFilePath: FilePath): string | null {
   const importerFilePathAbsolute = importerFilePath.filePathAbsolute
   assertPosixPath(importerFilePathAbsolute)
   const cwd = path.posix.dirname(importerFilePathAbsolute)
+  // filePathAbsolute is expected to be null when importData.importFilePath is a Vite path alias
   const filePathAbsolute = requireResolve(importData.importFilePath, cwd)
-  assertImport(filePathAbsolute, importData, importerFilePath)
   return filePathAbsolute
 }
-function assertImport(
+function assertImportPath(
   filePathAbsolute: string | null,
   importData: ImportData,
   importerFilePath: FilePath
