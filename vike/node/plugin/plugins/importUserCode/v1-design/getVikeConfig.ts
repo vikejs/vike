@@ -727,20 +727,19 @@ function getConfigValueSource(
   assert(false)
 }
 
-function assertFileEnv(filePathAbsolute: string, configEnv: ConfigEnvInternal, configName: string) {
-  assertPosixPath(filePathAbsolute)
-  assert(path.isAbsolute(filePathAbsolute))
-  if (!filesEnv.has(filePathAbsolute)) {
-    filesEnv.set(filePathAbsolute, [])
+function assertFileEnv(filePathForEnvCheck: string, configEnv: ConfigEnvInternal, configName: string) {
+  assertPosixPath(filePathForEnvCheck)
+  if (!filesEnv.has(filePathForEnvCheck)) {
+    filesEnv.set(filePathForEnvCheck, [])
   }
-  const fileEnv = filesEnv.get(filePathAbsolute)!
+  const fileEnv = filesEnv.get(filePathForEnvCheck)!
   fileEnv.push({ configEnv, configName })
   const configDifferentEnv = fileEnv.filter((c) => c.configEnv !== configEnv)[0]
   if (configDifferentEnv) {
     assertUsage(
       false,
       [
-        `${filePathAbsolute} defines the value of configs living in different environments:`,
+        `${filePathForEnvCheck} defines the value of configs living in different environments:`,
         ...[configDifferentEnv, { configName, configEnv }].map(
           (c) => `  - config ${pc.cyan(c.configName)} which value lives in environment ${pc.cyan(c.configEnv)}`
         ),
