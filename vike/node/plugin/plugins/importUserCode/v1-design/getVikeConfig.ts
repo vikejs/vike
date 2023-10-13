@@ -651,10 +651,10 @@ function getConfigValueSource(
     let filePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
-      const import_ = getImport(configValue, interfaceFile.filePath, userRootDir)
+      const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir)
       const configDefinedAt = getConfigDefinedAtString(configName, { definedAtInfo: definedAtInfoConfigFile }, true)
       assertUsage(import_, `${configDefinedAt} should be an import`)
-      filePath = import_.importFilePath
+      filePath = import_.filePathToShowToUser
     } else {
       assert(interfaceFile.isValueFile)
       filePath =
@@ -679,16 +679,16 @@ function getConfigValueSource(
   if (interfaceFile.isConfigFile) {
     assert('configValue' in conf)
     const { configValue } = conf
-    const import_ = getImport(configValue, interfaceFile.filePath, userRootDir)
+    const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir)
     if (import_) {
-      const { importFilePath, importFileExportName } = import_
-      assertFileEnv(importFilePath, configEnv, configName)
+      const { filePathToShowToUser, fileExportName: importFileExportName } = import_
+      assertFileEnv(filePathToShowToUser, configEnv, configName)
       const configValueSource: ConfigValueSource = {
         configEnv,
         valueIsImportedAtRuntime: true,
         isComputed: false,
         definedAtInfo: {
-          filePath: importFilePath,
+          filePath: filePathToShowToUser,
           fileExportPath: [importFileExportName]
         }
       }
@@ -762,35 +762,46 @@ function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
 
-function getImport(
+function resolveImport(
   configValue: unknown,
   configFilePath: FilePath,
   userRootDir: string
-): null | { importFilePath: string; importFileExportName: string } {
+): null | { filePathToShowToUser: string; fileExportName: string } {
   if (typeof configValue !== 'string') return null
   const importData = parseImportData(configValue)
   if (!importData) return null
 
-  let { importFilePath, importFileExportName } = importData
+  const { importFilePath, importFileExportName } = importData
+  let filePathToShowToUser: string
   if (importFilePath.startsWith('.')) {
     // We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
     // ```
     // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
     // ```
-    importFilePath = resolveRelativeFilePath(importData, configFilePath, userRootDir)
+    const filePathRelativeToUserRootDir = resolveImportPath_relativeToUserRootDir(
+      importData,
+      configFilePath,
+      userRootDir
+    )
+    filePathToShowToUser = filePathRelativeToUserRootDir
   } else {
     // importFilePath can be:
     //  - an npm package import
     //  - a path alias
+    filePathToShowToUser = importFilePath
   }
 
   return {
-    importFilePath,
-    importFileExportName
+    filePathToShowToUser,
+    fileExportName: importFileExportName
   }
 }
 
-function resolveRelativeFilePath(importData: ImportData, configFilePath: FilePath, userRootDir: string): string {
+function resolveImportPath_relativeToUserRootDir(
+  importData: ImportData,
+  configFilePath: FilePath,
+  userRootDir: string
+): string {
   const filePathAbsolute = resolveImportPath(importData, configFilePath)
 
   // Make it a Vite path
