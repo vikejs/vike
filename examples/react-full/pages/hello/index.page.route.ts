@@ -13,7 +13,7 @@ export default (pageContext: { urlPathname: string }) => {
 // The guard() hook enables to protect pages
 export const guard = async (pageContext: { urlPathname: string }) => {
   if (pageContext.urlPathname === '/hello/forbidden') {
-    await sleep(2 * 1000) // Unlike Route Functions, guard() can be async
+    await sleep(2 * 1000)
     throw RenderErrorPage({
       pageContext: { pageProps: { errorTitle: 'Forbidden', errorDescription: 'This page is forbidden.' } }
     })
