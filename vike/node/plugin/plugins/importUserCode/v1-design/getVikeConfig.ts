@@ -480,7 +480,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
     const sources = resolveConfigValueSources(configName, configDef, interfaceFilesGlobal, userRootDir)
     const configValueSource = sources?.[0]
     if (!configValueSource) return
-    if (arrayIncludes(objectKeys(pageConfigGlobal), configName)) {
+    if (configName === 'onBeforeRoute' || configName === 'onPrerenderStart') {
       assert(!('value' in configValueSource))
       pageConfigGlobal.configValueSources[configName] = [configValueSource]
     } else {
