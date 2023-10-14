@@ -23,7 +23,9 @@ async function onBeforeRender(pageContext){
   const movies = sql`SELECT * FROM movies;` */
   return {
     pageContext: {
-      movies
+      pageProps: {
+        movies
+      }
     }
   }
 }
@@ -70,7 +72,9 @@ const onBeforeRender: OnBeforeRenderAsync = async (
   const { movies } = await response.json()
   return {
     pageContext: {
-      movies
+      pageProps: {
+        movies
+      }
     }
   }
 }
