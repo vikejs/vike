@@ -25,7 +25,7 @@ import {
 } from '../../../utils.js'
 import path from 'path'
 import type {
-  PageConfigGlobalData,
+  PageConfigGlobalAtBuildTime,
   ConfigEnvInternal,
   ConfigValueSource,
   ConfigValueSources,
@@ -98,7 +98,7 @@ type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 
 type VikeConfig = {
   pageConfigs: PageConfigBuildTime[]
-  pageConfigGlobal: PageConfigGlobalData
+  pageConfigGlobal: PageConfigGlobalAtBuildTime
   globalVikeConfig: Record<string, unknown>
 }
 
@@ -474,7 +474,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
   }
 
   const globalVikeConfig: Record<string, unknown> = {}
-  const pageConfigGlobal: PageConfigGlobalData = {
+  const pageConfigGlobal: PageConfigGlobalAtBuildTime = {
     onBeforeRoute: null,
     onPrerenderStart: null
   }

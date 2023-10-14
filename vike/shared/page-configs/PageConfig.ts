@@ -5,7 +5,7 @@ export type { PageConfigCommon }
 export type { ConfigEnvInternal }
 export type { ConfigEnv }
 export type { PageConfigGlobal }
-export type { PageConfigGlobalData }
+export type { PageConfigGlobalAtBuildTime }
 export type { ConfigSource }
 export type { ConfigValue }
 export type { ConfigValueSerialized }
@@ -98,7 +98,7 @@ type PageConfigLoaded = PageConfig & {
   isLoaded: true
 }
 
-type PageConfigGlobalData = {
+type PageConfigGlobalAtBuildTime = {
   onPrerenderStart: null | ConfigValueSource
   onBeforeRoute: null | ConfigValueSource
 }

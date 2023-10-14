@@ -7,7 +7,7 @@ import type {
   ConfigValueSource,
   DefinedAtInfo,
   PageConfigBuildTime,
-  PageConfigGlobalData
+  PageConfigGlobalAtBuildTime
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { generateEagerImport } from '../generateEagerImport.js'
 import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
@@ -34,7 +34,7 @@ async function getVirtualFilePageConfigs(
 
 function getContent(
   pageConfigs: PageConfigBuildTime[],
-  pageConfigGlobal: PageConfigGlobalData,
+  pageConfigGlobal: PageConfigGlobalAtBuildTime,
   isForClientSide: boolean,
   isDev: boolean,
   id: string,
