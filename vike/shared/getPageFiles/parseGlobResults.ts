@@ -4,7 +4,12 @@ import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../uti
 import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
-import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
+import type {
+  PageConfig,
+  PageConfigGlobal,
+  PageConfigGlobalSerialized,
+  PageConfigSeriliazed
+} from '../page-configs/PageConfig.js'
 import { assertPageConfigGlobal, assertPageConfigs } from './assertPageConfigs.js'
 import { parse } from '@brillout/json-serializer/parse'
 import { processConfigValuesImported } from '../page-configs/loadPageCode.js'
@@ -110,7 +115,7 @@ function assertLoadModule(globValue: unknown): asserts globValue is () => Promis
   assert(isCallable(globValue))
 }
 
-function parsePageConfigs(pageConfigs: PageConfig[], pageConfigGlobal: PageConfigGlobal) {
+function parsePageConfigs(pageConfigs: PageConfigSeriliazed[], pageConfigGlobal: PageConfigGlobalSerialized) {
   pageConfigs.forEach((pageConfig) => {
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       {

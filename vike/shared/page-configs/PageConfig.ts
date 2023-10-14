@@ -1,11 +1,13 @@
 export type { PageConfig }
 export type { PageConfigLoaded }
+export type { PageConfigSeriliazed }
 export type { PageConfigBuildTime }
 export type { PageConfigCommon }
 export type { ConfigEnvInternal }
 export type { ConfigEnv }
 export type { PageConfigGlobal }
 export type { PageConfigGlobalAtBuildTime }
+export type { PageConfigGlobalSerialized }
 export type { ConfigSource }
 export type { ConfigValue }
 export type { ConfigValueSerialized }
@@ -88,23 +90,27 @@ type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
 )
 type PageConfig = PageConfigCommon & {
-  /** Config values loaded/imported eagerly */
-  configValuesImported: ConfigValueImported[]
   /** Config values loaded/imported lazily */
   loadConfigValuesAll: LoadConfigValuesAll
   /** Whether loadConfigValuesAll() was already called */
   isLoaded?: true
 }
+type PageConfigSeriliazed = PageConfig & {
+  /** Config values loaded/imported eagerly */
+  configValuesImported: ConfigValueImported[]
+}
 type PageConfigLoaded = PageConfig & {
   isLoaded: true
 }
 
+type PageConfigGlobal = {
+  configValues: ConfigValues
+}
+type PageConfigGlobalSerialized = PageConfigGlobal & {
+  configValuesImported: ConfigValueImported[]
+}
 type PageConfigGlobalAtBuildTime = {
   configValueSources: ConfigValueSources
-}
-type PageConfigGlobal = {
-  configValues: ConfigValues,
-  configValuesImported: ConfigValueImported[]
 }
 
 type LoadConfigValuesAll = () => Promise<ConfigValueImported[]>

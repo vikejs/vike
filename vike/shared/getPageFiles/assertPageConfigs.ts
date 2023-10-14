@@ -2,9 +2,9 @@ export { assertPageConfigs }
 export { assertPageConfigGlobal }
 
 import { assert, isObject, hasProp } from '../utils.js'
-import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
+import type { PageConfigGlobalSerialized, PageConfigSeriliazed } from '../page-configs/PageConfig.js'
 
-function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageConfig[] {
+function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageConfigSeriliazed[] {
   assert(Array.isArray(pageConfigs))
   pageConfigs.forEach((pageConfig) => {
     assert(isObject(pageConfig))
@@ -13,7 +13,7 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
   })
 }
 
-function assertPageConfigGlobal(pageConfigGlobal: unknown): asserts pageConfigGlobal is PageConfigGlobal {
+function assertPageConfigGlobal(pageConfigGlobal: unknown): asserts pageConfigGlobal is PageConfigGlobalSerialized {
   assert(pageConfigGlobal)
   assert(hasProp(pageConfigGlobal, 'configValues'))
   assert(hasProp(pageConfigGlobal, 'configValuesImported'))
