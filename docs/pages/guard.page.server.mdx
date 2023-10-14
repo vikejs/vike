@@ -9,3 +9,31 @@ Note that:
 - It's always used together with <Link href="/render" text={<code>throw render()</code>} /> or <Link href="/redirect" text={<code>throw redirect()</code>} />. (The `guard()` hook doesn't accept any return value.)
 - It can be asynchronous.
 - A single `guard()` hook can apply to multiple pages. (By using the usual inheritance rules.)
+
+```js
+export { guard }
+
+import { render } from 'vike/abort'
+
+async function guard(pageContext) {
+  if (pageContext.urlPathname === '/hello/forbidden') {
+    throw render(401, 'This page is forbidden.')
+  }
+}
+```
+
+
+## TypeScript
+
+```ts
+export { guard }
+
+import type { GuardAsync } from 'vike/types'
+import { render } from 'vike/abort'
+
+const guard: GuardAsync = async (pageContext): ReturnType<GuardAsync> => {
+  if (pageContext.urlPathname === '/hello/forbidden') {
+    throw render(401, 'This page is forbidden.')
+  }
+}
+```
