@@ -1,3 +1,4 @@
+import { HookTypeScriptHints } from '../components/HookTypeScriptHints'
 import { Link } from '@brillout/docpress'
 
 The `prerender()` hook has been renamed to `onBeforePrerenderStart()` for the V1 design.
@@ -7,3 +8,47 @@ The `prerender()` hook has been renamed to `onBeforePrerenderStart()` for the V1
 > The documentation will be moved here after the stable release of the V1 design.
 
 See <Link href="/migration/v1-design#renamed-hooks" />.
+
+{ /*NOTE(aurelien) move the content of prerender.page.server.mdx here*/ }
+
+## TypeScript
+
+```ts
+export { onBeforePrerenderStart }
+
+import type { OnBeforePrerenderStartAsync } from 'vike/types'
+
+const onBeforePrerenderStart: OnBeforePrerenderStartAsync = async (
+): ReturnType<OnBeforePrerenderStartAsync> => {
+  const movies = await Movie.findAll()
+
+  const moviePages = (
+    movies
+    .map(movie => {
+      const url = '/movie/' + movie.id
+      const pageProps = { movie }
+      const pageContext = { pageProps }
+      return {
+        url,
+        pageContext
+      }
+    })
+  )
+
+  const movieListPage = {
+    url: '/movies',
+    pageContext: {
+      pageProps: {
+        movieList: movies.map(({id, title}) => ({id, title})
+      }
+    }
+  }
+
+  return [movieListPage, ...moviePages]
+}
+```
+
+<HookTypeScriptHints
+  hookTypeName="onBeforePrerenderStart"
+  wrongDefinition="const onBeforePrerenderStart: OnBeforePrerenderStartAsync = async () => {"
+/>
