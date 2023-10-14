@@ -63,6 +63,7 @@ type ConfigValue = {
   // Is null when config value is:
   //  - computed, or
   //  - cumulative
+  // TODO: replace with filePathToShowToUser
   definedAtInfo: null | DefinedAtInfo
 }
 type ConfigValueSerialized = Omit<ConfigValue, 'valueSerialized' | 'value'> & { valueSerialized: string }
