@@ -31,8 +31,8 @@ function parseGlobResults(pageFilesExports: unknown): {
   assert(hasProp(pageFilesExports, 'pageConfigGlobal'))
   const { pageConfigs, pageConfigGlobal } = pageFilesExports
   assertPageConfigs(pageConfigs)
-  parsePageConfigs(pageConfigs)
   assertPageConfigGlobal(pageConfigGlobal)
+  parsePageConfigs(pageConfigs, pageConfigGlobal)
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(pageFilesExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {
@@ -110,7 +110,7 @@ function assertLoadModule(globValue: unknown): asserts globValue is () => Promis
   assert(isCallable(globValue))
 }
 
-function parsePageConfigs(pageConfigs: PageConfig[]) {
+function parsePageConfigs(pageConfigs: PageConfig[], pageConfigGlobal: PageConfigGlobal) {
   pageConfigs.forEach((pageConfig) => {
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       {
@@ -126,6 +126,7 @@ function parsePageConfigs(pageConfigs: PageConfig[]) {
       */
     })
     processConfigValuesImported(pageConfig.configValuesImported, pageConfig)
+    processConfigValuesImported(pageConfigGlobal.configValuesImported, pageConfigGlobal)
   })
 }
 

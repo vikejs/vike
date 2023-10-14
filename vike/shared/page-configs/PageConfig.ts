@@ -100,12 +100,11 @@ type PageConfigLoaded = PageConfig & {
 }
 
 type PageConfigGlobalAtBuildTime = {
-  onPrerenderStart: null | ConfigValueSource
-  onBeforeRoute: null | ConfigValueSource
+  configValueSources: ConfigValueSources
 }
 type PageConfigGlobal = {
-  onPrerenderStart: null | (ConfigValueSource & { value: unknown })
-  onBeforeRoute: null | (ConfigValueSource & { value: unknown })
+  configValues: ConfigValues,
+  configValuesImported: ConfigValueImported[]
 }
 
 type LoadConfigValuesAll = () => Promise<ConfigValueImported[]>

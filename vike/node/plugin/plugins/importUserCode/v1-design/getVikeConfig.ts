@@ -309,8 +309,7 @@ async function loadVikeConfig_withErrorHandling(
       const dummyData: VikeConfig = {
         pageConfigs: [],
         pageConfigGlobal: {
-          onPrerenderStart: null,
-          onBeforeRoute: null
+          configValueSources: {}
         },
         globalVikeConfig: {}
       }
@@ -475,8 +474,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
 
   const globalVikeConfig: Record<string, unknown> = {}
   const pageConfigGlobal: PageConfigGlobalAtBuildTime = {
-    onBeforeRoute: null,
-    onPrerenderStart: null
+    configValueSources: {}
   }
   objectEntries(configDefinitionsBuiltInGlobal).forEach(([configName, configDef]) => {
     const sources = resolveConfigValueSources(configName, configDef, interfaceFilesGlobal, userRootDir)
@@ -484,7 +482,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
     if (!configValueSource) return
     if (arrayIncludes(objectKeys(pageConfigGlobal), configName)) {
       assert(!('value' in configValueSource))
-      pageConfigGlobal[configName] = configValueSource
+      pageConfigGlobal.configValueSources[configName] = [configValueSource]
     } else {
       assert('value' in configValueSource)
       if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return

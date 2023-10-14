@@ -3,7 +3,7 @@ export { processConfigValuesImported }
 
 import { assert, assertUsage, objectAssign } from '../utils.js'
 import { assertExportsOfValueFile } from './assertExports.js'
-import type { ConfigValueImported, PageConfig, PageConfigLoaded } from './PageConfig.js'
+import type { ConfigValueImported, ConfigValues, PageConfig, PageConfigLoaded } from './PageConfig.js'
 import pc from '@brillout/picocolors'
 
 // TODO: rename loadPageCode() -> loadConfigValues()
@@ -21,7 +21,10 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
   return pageConfig
 }
 
-function processConfigValuesImported(configValuesImported: ConfigValueImported[], pageConfig: PageConfig) {
+function processConfigValuesImported(
+  configValuesImported: ConfigValueImported[],
+  pageConfig: { configValues: ConfigValues }
+) {
   // TODO: remove?
   // pageConfig.configValuesOld = pageConfig.configValuesOld.filter((val) => !val.definedByCodeFile)
 

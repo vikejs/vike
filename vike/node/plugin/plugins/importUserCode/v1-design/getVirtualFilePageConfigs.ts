@@ -99,36 +99,29 @@ function getContent(
   lines.push('];')
 
   lines.push('export const pageConfigGlobal = {')
-  objectEntries(pageConfigGlobal).forEach(([configName, configValueSource]) => {
+  lines.push(`  configValues: {`)
+  // Nothing (yet?)
+  lines.push(`  },`)
+  lines.push(`  configValuesImported: [`)
+  objectEntries(pageConfigGlobal.configValueSources).forEach(([configName, sources]) => {
     if (configName === 'onBeforeRoute') {
       // if( isForClientSide && !isClientRouting ) return
     } else if (configName === 'onPrerenderStart') {
       if (isDev || isForClientSide) {
         // Only load onPrerenderStart() in server production runtime
-        configValueSource = null
+        return
       }
     } else {
       assert(false)
     }
-    let whitespace = '  '
-    let content: string
-    if (configValueSource === null) {
-      content = 'null,'
-    } else {
-      content = serializeConfigValueSource(
-        configValueSource,
-        configName,
-        whitespace,
-        isForClientSide,
-        isClientRouting,
-        importStatements,
-        true
-      )
-      assert(content.startsWith('{') && content.endsWith('},') && content.includes('\n'))
-    }
-    content = `${whitespace}[${JSON.stringify(configName)}]: ${content}`
-    lines.push(content)
+    const configValueSource = sources[0]
+    assert(configValueSource)
+    const whitespace = '    '
+    lines.push(
+      ...serializeConfigValueImported(configValueSource, configName, whitespace, varCounterContainer, importStatements)
+    )
   })
+  lines.push(`  ],`)
   lines.push('};')
 
   const code = [...importStatements, ...lines].join('\n')

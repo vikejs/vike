@@ -15,6 +15,6 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
 
 function assertPageConfigGlobal(pageConfigGlobal: unknown): asserts pageConfigGlobal is PageConfigGlobal {
   assert(pageConfigGlobal)
-  assert(hasProp(pageConfigGlobal, 'onBeforeRoute'))
-  assert(hasProp(pageConfigGlobal, 'onPrerenderStart'))
+  assert(hasProp(pageConfigGlobal, 'configValues'))
+  assert(hasProp(pageConfigGlobal, 'configValuesImported'))
 }
