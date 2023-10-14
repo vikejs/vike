@@ -59,7 +59,6 @@ function getContent(
     )
 
     lines.push(`    configValues: {`)
-    // TODO: iterate over pageConfig.configValues instead?
     Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
       const configValue = pageConfig.configValues[configName]
       if (configValue) {
@@ -209,11 +208,6 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAtI
   }
   configValueSerialized = JSON.stringify(configValueSerialized)
   return configValueSerialized
-}
-function getConfigValueEagerImportNew(importPath: string, importStatements: string[]) {
-  const { importName, importStatement } = generateEagerImport(importPath)
-  importStatements.push(importStatement)
-  return importName
 }
 function getConfigValueEagerImport(importPath: string, exportName: string, importStatements: string[]) {
   let configValueEagerImport: string
