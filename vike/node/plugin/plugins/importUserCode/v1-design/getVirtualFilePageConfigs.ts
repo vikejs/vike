@@ -4,12 +4,10 @@ export { getConfigValueSerialized }
 import { assert, assertUsage, getPropAccessNotation, hasProp, objectEntries } from '../../../utils.js'
 import type {
   ConfigValueSerialized,
-  ConfigValueSource,
   DefinedAtInfo,
   PageConfigBuildTime,
   PageConfigGlobalAtBuildTime
 } from '../../../../../shared/page-configs/PageConfig.js'
-import { generateEagerImport } from '../generateEagerImport.js'
 import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
 import { stringify } from '@brillout/json-serializer/stringify'
@@ -143,38 +141,6 @@ function serializeConfigValue(lines: string[], configName: string, configValueSe
   lines.push(`${whitespace}},`)
 }
 
-function serializeConfigValueSource(
-  configValueSource: ConfigValueSource,
-  configName: string,
-  whitespace: string,
-  isForClientSide: boolean,
-  isClientRouting: boolean,
-  importStatements: string[],
-  isGlobalConfig: boolean
-): string {
-  assert(!configValueSource.isComputed)
-  const { definedAtInfo, configEnv } = configValueSource
-  const lines: string[] = []
-  lines.push(`{`)
-  lines.push(`${whitespace}  definedAtInfo: ${JSON.stringify(definedAtInfo)},`)
-  lines.push(`${whitespace}  configEnv: ${JSON.stringify(configEnv)},`)
-  const eager = configValueSource.configEnv === '_routing-eager' || isGlobalConfig
-  if (isConfigEnvMatch(configEnv, isForClientSide, isClientRouting) || eager) {
-    if ('value' in configValueSource) {
-      const { value } = configValueSource
-      const valueSerialized = getConfigValueSerialized(value, configName, definedAtInfo)
-      lines.push(`${whitespace}  valueSerialized: ${valueSerialized}`)
-    } else if (eager) {
-      const { filePath, fileExportPath } = configValueSource.definedAtInfo
-      const [exportName] = fileExportPath
-      assert(exportName)
-      const configValueEagerImport = getConfigValueEagerImport(filePath, exportName, importStatements)
-      lines.push(`${whitespace}  value: ${configValueEagerImport},`)
-    }
-  }
-  lines.push(`${whitespace}},`)
-  return lines.join('\n')
-}
 function getConfigValueSerialized(value: unknown, configName: string, definedAtInfo: null | DefinedAtInfo): string {
   let configValueSerialized: string
   const valueName = `config${getPropAccessNotation(configName)}`
@@ -201,12 +167,4 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAtI
   }
   configValueSerialized = JSON.stringify(configValueSerialized)
   return configValueSerialized
-}
-function getConfigValueEagerImport(importPath: string, exportName: string, importStatements: string[]) {
-  let configValueEagerImport: string
-  const { importName, importStatement } = generateEagerImport(importPath)
-  importStatements.push(importStatement)
-  // TODO: expose all exports so that assertDefaultExport can be applied
-  configValueEagerImport = `${importName}[${JSON.stringify(exportName)}]`
-  return configValueEagerImport
 }
