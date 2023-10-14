@@ -1,6 +1,6 @@
 export type { PageConfig }
 export type { PageConfigLoaded }
-export type { PageConfigSeriliazed }
+export type { PageConfigSerialized }
 export type { PageConfigBuildTime }
 export type { PageConfigCommon }
 export type { ConfigEnvInternal }
@@ -95,7 +95,7 @@ type PageConfig = PageConfigCommon & {
   /** Whether loadConfigValuesAll() was already called */
   isLoaded?: true
 }
-type PageConfigSeriliazed = PageConfig & {
+type PageConfigSerialized = PageConfig & {
   /** Config values loaded/imported eagerly */
   configValuesImported: ConfigValueImported[]
 }

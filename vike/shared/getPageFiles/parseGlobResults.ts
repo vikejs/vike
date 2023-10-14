@@ -8,7 +8,7 @@ import type {
   PageConfig,
   PageConfigGlobal,
   PageConfigGlobalSerialized,
-  PageConfigSeriliazed
+  PageConfigSerialized
 } from '../page-configs/PageConfig.js'
 import { assertPageConfigGlobal, assertPageConfigs } from './assertPageConfigs.js'
 import { parse } from '@brillout/json-serializer/parse'
@@ -115,7 +115,7 @@ function assertLoadModule(globValue: unknown): asserts globValue is () => Promis
   assert(isCallable(globValue))
 }
 
-function parsePageConfigs(pageConfigs: PageConfigSeriliazed[], pageConfigGlobal: PageConfigGlobalSerialized) {
+function parsePageConfigs(pageConfigs: PageConfigSerialized[], pageConfigGlobal: PageConfigGlobalSerialized) {
   pageConfigs.forEach((pageConfig) => {
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       {
