@@ -996,9 +996,8 @@ function applyEffect(
 
 function applyComputed(pageConfig: PageConfigBuildTime, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
-    const computed = configDef._computed
-    if (!computed) return
-    const value = computed(pageConfig)
+    if (!configDef._computed) return
+    const value = configDef._computed(pageConfig)
     if (value === undefined) return
 
     const configValueSource: ConfigValueSource = {
