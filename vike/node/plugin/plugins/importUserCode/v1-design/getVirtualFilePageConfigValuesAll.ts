@@ -14,7 +14,7 @@ import { debug } from './debug.js'
 import type { ConfigVikeResolved } from '../../../../../shared/ConfigVike.js'
 import path from 'path'
 import { getConfigValue } from '../../../../../shared/page-configs/utils.js'
-import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSource.js'
+import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSourcesRelevant.js'
 import { isConfigEnvMatch } from './isConfigEnvMatch.js'
 
 async function getVirtualFilePageConfigValuesAll(
