@@ -1,8 +1,9 @@
+// https://vike.dev/clientRouting
 export { onPageTransitionStart }
 
-import type { OnPageTransitionStartSync } from 'vike/types'
+import type { OnPageTransitionStartAsync } from 'vike/types'
 
-const onPageTransitionStart: OnPageTransitionStartSync = (): ReturnType<OnPageTransitionStartSync> => {
+const onPageTransitionStart: OnPageTransitionStartAsync = async (): ReturnType<OnPageTransitionStartAsync> => {
   console.log('Page transition start')
   document.querySelector('body')!.classList.add('page-is-transitioning')
 }

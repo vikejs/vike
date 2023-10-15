@@ -68,7 +68,7 @@ async function render(pageContext) {
   }
 }
 
-function onPageTransitionStart(pageContext) {
+async function onPageTransitionStart(pageContext) {
   console.log('Page transition start')
   // `pageContext.isBackwardNavigation` is also set at `render(pageContext)`
   // and `onPageTransitionEnd(pageContext)`.
@@ -76,13 +76,13 @@ function onPageTransitionStart(pageContext) {
   // For example:
   document.body.classList.add('page-transition')
 }
-function onPageTransitionEnd(pageContext) {
+async function onPageTransitionEnd(pageContext) {
   console.log('Page transition end')
   // For example:
   document.body.classList.remove('page-transition')
 }
 
-function onHydrationEnd() {
+async function onHydrationEnd() {
   console.log('The page is now interactive')
 }
 ```
@@ -262,3 +262,33 @@ export const prefetchStaticAssets = window.matchMedia('(any-hover: none)').match
 See also:
  - [MDN > Web API > Window > matchMedia()](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia)
  - [Stack Overflow > Detecting that the browser has no mouse and is touch-only](https://stackoverflow.com/questions/7838680/detecting-that-the-browser-has-no-mouse-and-is-touch-only/52854585#52854585)
+
+## TypeScript
+
+```ts
+export { onPageTransitionStart }
+export { onPageTransitionEnd }
+export { onHydrationEnd }
+
+import type {
+  OnPageTransitionStartAsync
+  OnPageTransitionEndAsync
+  OnHydrationEndAsync
+} from 'vike/types'
+
+const onPageTransitionStart: OnPageTransitionStartAsync = async (
+): ReturnType<OnPageTransitionStartAsync> => {
+  console.log('Page transition start')
+  console.log('Is backwards navigation?', pageContext.isBackwardNavigation)
+  document.body.classList.add('page-transition')
+}
+const onPageTransitionEnd: OnPageTransitionEndAsync = async (
+): ReturnType<OnPageTransitionEndAsync> => {
+  console.log('Page transition end')
+  document.body.classList.remove('page-transition')
+}
+
+const onHydrationEnd: OnHydrationEndAsync = async (): ReturnType<OnHydrationEndAsync> => {
+  console.log('The page is now interactive')
+}
+```

@@ -1,7 +1,8 @@
+// https://vike.dev/clientRouting
 export { onHydrationEnd }
 
-import type { OnHydrationEndSync } from 'vike/types'
+import type { OnHydrationEndAsync } from 'vike/types'
 
-const onHydrationEnd: OnHydrationEndSync = (): ReturnType<OnHydrationEndSync> => {
+const onHydrationEnd: OnHydrationEndAsync = async (): ReturnType<OnHydrationEndAsync> => {
   console.log('Hydration finished; page is now interactive.')
 }
