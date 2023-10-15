@@ -4,16 +4,9 @@ import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../uti
 import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
-import type {
-  ConfigValues,
-  PageConfig,
-  PageConfigGlobal,
-  PageConfigGlobalSerialized,
-  PageConfigSerialized
-} from '../page-configs/PageConfig.js'
+import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
 import { assertPageConfigGlobalSerialized, assertPageConfigsSerialized } from './assertPageConfigs.js'
-import { parse } from '@brillout/json-serializer/parse'
-import { processConfigValuesImported } from '../page-configs/loadPageCode.js'
+import { parsePageConfigsSerialized } from './parsePageConfigsSerialized.js'
 
 function parseGlobResults(pageFilesExports: unknown): {
   pageFiles: PageFile[]
@@ -38,7 +31,10 @@ function parseGlobResults(pageFilesExports: unknown): {
   const { pageConfigsSerialized, pageConfigGlobalSerialized } = pageFilesExports
   assertPageConfigsSerialized(pageConfigsSerialized)
   assertPageConfigGlobalSerialized(pageConfigGlobalSerialized)
-  const { pageConfigs, pageConfigGlobal } = parsePageConfigs(pageConfigsSerialized, pageConfigGlobalSerialized)
+  const { pageConfigs, pageConfigGlobal } = parsePageConfigsSerialized(
+    pageConfigsSerialized,
+    pageConfigGlobalSerialized
+  )
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(pageFilesExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {
@@ -115,72 +111,3 @@ function parseGlobResult(globObject: Record<string, unknown>): GlobResult {
 function assertLoadModule(globValue: unknown): asserts globValue is () => Promise<Record<string, unknown>> {
   assert(isCallable(globValue))
 }
-
-function parsePageConfigs(
-  pageConfigsSerialized: PageConfigSerialized[],
-  pageConfigGlobalSerialized: PageConfigGlobalSerialized
-): { pageConfigs: PageConfig[]; pageConfigGlobal: PageConfigGlobal } {
-  const pageConfigs: PageConfig[] = pageConfigsSerialized.map((pageConfigSerialized) => {
-    const configValues: ConfigValues = {}
-    {
-      const { configValuesSerialized } = pageConfigSerialized
-      Object.entries(configValuesSerialized).forEach(([configName, configValueSeriliazed]) => {
-        {
-          const { valueSerialized, definedAtInfo } = configValueSeriliazed
-          assert(valueSerialized)
-          assert(!configValues[configName])
-          configValues[configName] = {
-            value: parse(valueSerialized),
-            definedAtInfo
-          }
-        }
-      })
-    }
-    {
-      const { configValuesImported } = pageConfigSerialized
-      const configValuesAddendum = processConfigValuesImported(configValuesImported)
-      Object.assign(configValues, configValuesAddendum)
-    }
-
-    /* TODO
-    if (configName === 'route') {
-      assertRouteConfigValue(configElement)
-    }
-    */
-
-    const { pageId, isErrorPage, routeFilesystem, loadConfigValuesAll } = pageConfigSerialized
-    return {
-      pageId,
-      isErrorPage,
-      routeFilesystem,
-      configValues,
-      loadConfigValuesAll
-    } satisfies PageConfig
-  })
-
-  const pageConfigGlobal: PageConfigGlobal = { configValues: {} }
-  {
-    const configValuesAddendum = processConfigValuesImported(pageConfigGlobalSerialized.configValuesImported)
-    Object.assign(pageConfigGlobal.configValues, configValuesAddendum)
-  }
-
-  return { pageConfigs, pageConfigGlobal }
-}
-
-// TODO: use again
-// function assertRouteConfigValue(configElement: ConfigElement) {
-//   assert(hasProp(configElement, 'configValue')) // route files are eagerly loaded
-//   const { configValue } = configElement
-//   const configValueType = typeof configValue
-//   assertUsage(
-//     configValueType === 'string' || isCallable(configValue),
-//     `${configElement.configDefinedAt} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`
-//   )
-//   /* We don't do that to avoid unnecessarily bloating the client-side bundle when using Server Routing
-//    *  - When using Server Routing, this file is loaded as well
-//    *  - When using Server Routing, client-side validation is superfluous as Route Strings only need to be validated on the server-side
-//   if (typeof configValue === 'string') {
-//     assertRouteString(configValue, `${configElement.configDefinedAt} defines an`)
-//   }
-//   */
-// }
