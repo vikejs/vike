@@ -6,24 +6,15 @@ import type { ConfigValueImported, ConfigValues } from './PageConfig.js'
 import pc from '@brillout/picocolors'
 
 function parseConfigValuesImported(configValuesImported: ConfigValueImported[]): ConfigValues {
-  // TODO: remove?
-  // pageConfig.configValuesOld = pageConfig.configValuesOld.filter((val) => !val.definedByCodeFile)
-
   const configValues: ConfigValues = {}
 
   const addConfigValue = (configName: string, value: unknown, filePath: string, exportName: string) => {
-    /* TODO
-    assert(!isAlreadyDefined(val.configName), val.configName) // Conflicts are resolved upstream
-    */
     configValues[configName] = {
       value,
       definedAtInfo: {
         filePath,
         fileExportPath: [exportName]
       }
-      /* TODO: remove?
-      definedByCodeFile: true
-      */
     }
     assertIsNotNull(value, configName, filePath)
   }
