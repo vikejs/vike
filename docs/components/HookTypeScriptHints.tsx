@@ -16,12 +16,12 @@ function HookTypeScriptHints({ hookTypeName, wrongDefinition }: { hookTypeName: 
           <ul>
             <li>
               <a href="https://stackoverflow.com/questions/63006497/typescript-why-not-strict-return-type">
-                https://stackoverflow.com/questions/63006497/typescript-why-not-strict-return-type
+                Stack Overflow &gt; Typescript: why not strict return type?
               </a>
             </li>
             <li>
               <a href="https://stackoverflow.com/questions/57214325/typescript-excess-properties-are-not-checked-in-lambdas-without-explicit-return">
-                https://stackoverflow.com/questions/57214325/typescript-excess-properties-are-not-checked-in-lambdas-without-explicit-return
+                Stack Overflow &gt; TypeScript: Excess properties are not checked in lambdas without explicit return
               </a>
             </li>
           </ul>
