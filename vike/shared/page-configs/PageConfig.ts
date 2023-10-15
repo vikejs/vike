@@ -22,6 +22,7 @@ type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-o
 type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
 
 type PageConfigBuildTime = PageConfigCommon & {
+  configValues: ConfigValues
   configValueSources: ConfigValueSources
 }
 type PageConfigCommon = {
@@ -31,7 +32,6 @@ type PageConfigCommon = {
     routeString: string
     definedBy: string
   }
-  configValues: ConfigValues
 }
 type ConfigValueSource = {
   configEnv: ConfigEnvInternal
@@ -61,14 +61,16 @@ type ConfigValueSources = Record<
 >
 type ConfigValue = {
   value: unknown
-  valueSerialized?: string
   // Is null when config value is:
   //  - computed, or
   //  - cumulative
   // TODO: replace with filePathToShowToUser
   definedAtInfo: null | DefinedAtInfo
 }
-type ConfigValueSerialized = Omit<ConfigValue, 'valueSerialized' | 'value'> & { valueSerialized: string }
+type ConfigValueSerialized = {
+  valueSerialized: string
+  definedAtInfo: null | DefinedAtInfo
+}
 
 type ConfigValues = Record<
   // configName
@@ -90,14 +92,17 @@ type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
 )
 type PageConfig = PageConfigCommon & {
+  configValues: ConfigValues
   /** Config values loaded/imported lazily */
   loadConfigValuesAll: LoadConfigValuesAll
   /** Whether loadConfigValuesAll() was already called */
   isLoaded?: true
 }
-type PageConfigSerialized = PageConfig & {
+type PageConfigSerialized = PageConfigCommon & {
+  configValuesSerialized: Record<string, ConfigValueSerialized>
   /** Config values loaded/imported eagerly */
   configValuesImported: ConfigValueImported[]
+  loadConfigValuesAll: LoadConfigValuesAll
 }
 type PageConfigLoaded = PageConfig & {
   isLoaded: true
@@ -106,7 +111,7 @@ type PageConfigLoaded = PageConfig & {
 type PageConfigGlobal = {
   configValues: ConfigValues
 }
-type PageConfigGlobalSerialized = PageConfigGlobal & {
+type PageConfigGlobalSerialized = {
   configValuesImported: ConfigValueImported[]
 }
 type PageConfigGlobalAtBuildTime = {

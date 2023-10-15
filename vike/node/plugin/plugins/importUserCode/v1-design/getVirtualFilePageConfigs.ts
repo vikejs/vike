@@ -42,7 +42,7 @@ function getContent(
   const importStatements: string[] = []
   const varCounterContainer = { varCounter: 0 }
 
-  lines.push('export const pageConfigs = [')
+  lines.push('export const pageConfigsSerialized = [')
   pageConfigs.forEach((pageConfig) => {
     const { pageId, routeFilesystem, isErrorPage } = pageConfig
     const virtualFileIdPageConfigValuesAll = getVirtualFileIdPageConfigValuesAll(pageId, isForClientSide)
@@ -56,7 +56,7 @@ function getContent(
       )})).default,`
     )
 
-    lines.push(`    configValues: {`)
+    lines.push(`    configValuesSerialized: {`)
     Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
       const configValue = pageConfig.configValues[configName]
       if (configValue) {
@@ -96,10 +96,11 @@ function getContent(
   })
   lines.push('];')
 
-  lines.push('export const pageConfigGlobal = {')
-  lines.push(`  configValues: {`)
-  // Nothing (yet?)
+  lines.push('export const pageConfigGlobalSerialized = {')
+  /* Nothing (yet)
+  lines.push(`  configValuesSerialized: {`)
   lines.push(`  },`)
+  */
   lines.push(`  configValuesImported: [`)
   objectEntries(pageConfigGlobal.configValueSources).forEach(([configName, sources]) => {
     if (configName === 'onBeforeRoute') {

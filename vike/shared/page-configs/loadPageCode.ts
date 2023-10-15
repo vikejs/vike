@@ -16,23 +16,23 @@ async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<Pag
     return pageConfig as PageConfigLoaded
   }
   const configValuesImported = await pageConfig.loadConfigValuesAll()
-  processConfigValuesImported(configValuesImported, pageConfig)
+  const configValuesAddendum = processConfigValuesImported(configValuesImported)
+  Object.assign(pageConfig.configValues, configValuesAddendum)
   objectAssign(pageConfig, { isLoaded: true as const })
   return pageConfig
 }
 
-function processConfigValuesImported(
-  configValuesImported: ConfigValueImported[],
-  pageConfig: { configValues: ConfigValues }
-) {
+function processConfigValuesImported(configValuesImported: ConfigValueImported[]): ConfigValues {
   // TODO: remove?
   // pageConfig.configValuesOld = pageConfig.configValuesOld.filter((val) => !val.definedByCodeFile)
+
+  const configValues: ConfigValues = {}
 
   const addConfigValue = (configName: string, value: unknown, filePath: string, exportName: string) => {
     /* TODO
     assert(!isAlreadyDefined(val.configName), val.configName) // Conflicts are resolved upstream
     */
-    pageConfig.configValues[configName] = {
+    configValues[configName] = {
       value,
       definedAtInfo: {
         filePath,
@@ -54,7 +54,7 @@ function processConfigValuesImported(
       Object.entries(importFileExports).forEach(([exportName, exportValue]) => {
         const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
         const configName = isSideExport ? exportName : configValueLoaded.configName
-        if (isSideExport && configName in pageConfig.configValues) {
+        if (isSideExport && configName in configValues) {
           // We can't avoid side-export conflicts upstream. (Because we cannot know about side-exports upstream at build-time.)
           // Side-exports have the lowest priority.
           return
@@ -66,6 +66,8 @@ function processConfigValuesImported(
       addConfigValue(configName, importFileExportValue, importPath, exportName)
     }
   })
+
+  return configValues
 }
 
 function assertIsNotNull(configValue: unknown, configName: string, importPath: string) {

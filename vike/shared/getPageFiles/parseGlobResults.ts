@@ -5,12 +5,13 @@ import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
 import type {
+  ConfigValues,
   PageConfig,
   PageConfigGlobal,
   PageConfigGlobalSerialized,
   PageConfigSerialized
 } from '../page-configs/PageConfig.js'
-import { assertPageConfigGlobal, assertPageConfigs } from './assertPageConfigs.js'
+import { assertPageConfigGlobalSerialized, assertPageConfigsSerialized } from './assertPageConfigs.js'
 import { parse } from '@brillout/json-serializer/parse'
 import { processConfigValuesImported } from '../page-configs/loadPageCode.js'
 
@@ -32,12 +33,12 @@ function parseGlobResults(pageFilesExports: unknown): {
   )
   assert(hasProp(pageFilesExports, 'pageFilesList', 'string[]'))
 
-  assert(hasProp(pageFilesExports, 'pageConfigs'))
-  assert(hasProp(pageFilesExports, 'pageConfigGlobal'))
-  const { pageConfigs, pageConfigGlobal } = pageFilesExports
-  assertPageConfigs(pageConfigs)
-  assertPageConfigGlobal(pageConfigGlobal)
-  parsePageConfigs(pageConfigs, pageConfigGlobal)
+  assert(hasProp(pageFilesExports, 'pageConfigsSerialized'))
+  assert(hasProp(pageFilesExports, 'pageConfigGlobalSerialized'))
+  const { pageConfigsSerialized, pageConfigGlobalSerialized } = pageFilesExports
+  assertPageConfigsSerialized(pageConfigsSerialized)
+  assertPageConfigGlobalSerialized(pageConfigGlobalSerialized)
+  const { pageConfigs, pageConfigGlobal } = parsePageConfigs(pageConfigsSerialized, pageConfigGlobalSerialized)
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(pageFilesExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {
@@ -115,24 +116,55 @@ function assertLoadModule(globValue: unknown): asserts globValue is () => Promis
   assert(isCallable(globValue))
 }
 
-function parsePageConfigs(pageConfigs: PageConfigSerialized[], pageConfigGlobal: PageConfigGlobalSerialized) {
-  pageConfigs.forEach((pageConfig) => {
-    Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
-      {
-        const { valueSerialized } = configValue
-        if (valueSerialized !== undefined) {
-          configValue.value = parse(valueSerialized)
+function parsePageConfigs(
+  pageConfigsSerialized: PageConfigSerialized[],
+  pageConfigGlobalSerialized: PageConfigGlobalSerialized
+): { pageConfigs: PageConfig[]; pageConfigGlobal: PageConfigGlobal } {
+  const pageConfigs: PageConfig[] = pageConfigsSerialized.map((pageConfigSerialized) => {
+    const configValues: ConfigValues = {}
+    {
+      const { configValuesSerialized } = pageConfigSerialized
+      Object.entries(configValuesSerialized).forEach(([configName, configValueSeriliazed]) => {
+        {
+          const { valueSerialized, definedAtInfo } = configValueSeriliazed
+          assert(valueSerialized)
+          assert(!configValues[configName])
+          configValues[configName] = {
+            value: parse(valueSerialized),
+            definedAtInfo
+          }
         }
-      }
-      /*
-      if (configName === 'route') {
-        assertRouteConfigValue(configElement)
-      }
-      */
-    })
-    processConfigValuesImported(pageConfig.configValuesImported, pageConfig)
-    processConfigValuesImported(pageConfigGlobal.configValuesImported, pageConfigGlobal)
+      })
+    }
+    {
+      const { configValuesImported } = pageConfigSerialized
+      const configValuesAddendum = processConfigValuesImported(configValuesImported)
+      Object.assign(configValues, configValuesAddendum)
+    }
+
+    /* TODO
+    if (configName === 'route') {
+      assertRouteConfigValue(configElement)
+    }
+    */
+
+    const { pageId, isErrorPage, routeFilesystem, loadConfigValuesAll } = pageConfigSerialized
+    return {
+      pageId,
+      isErrorPage,
+      routeFilesystem,
+      configValues,
+      loadConfigValuesAll
+    } satisfies PageConfig
   })
+
+  const pageConfigGlobal: PageConfigGlobal = { configValues: {} }
+  {
+    const configValuesAddendum = processConfigValuesImported(pageConfigGlobalSerialized.configValuesImported)
+    Object.assign(pageConfigGlobal.configValues, configValuesAddendum)
+  }
+
+  return { pageConfigs, pageConfigGlobal }
 }
 
 // TODO: use again
