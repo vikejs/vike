@@ -1,8 +1,25 @@
+import { HookTypeScriptHints } from '../components/HookTypeScriptHints'
 import { Link, Warning } from '@brillout/docpress'
 
 The `onBeforeRoute()` hook provides full control over routing.
 
-It is usually used for [internationalization](/i18n).
+It is usually used for [internationalization](/i18n):
+
+```js
+export { onBeforeRoute }
+
+async function onBeforeRoute(pageContext) {
+  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlOriginal)
+  return {
+    pageContext: {
+      // We make `locale` available as `pageContext.locale`
+      locale,
+      // We overwrite the original URL
+      urlOriginal: urlWithoutLocale
+    }
+  }
+}
+```
 
 We can also use it to [implement a custom router](https://github.com/vikejs/vike/issues/140).
 
@@ -10,3 +27,28 @@ We can also use it to [implement a custom router](https://github.com/vikejs/vike
 
 Example:
 - <Link href='/examples/i18n/renderer/_default.page.route.js' />
+
+## TypeScript
+
+```ts
+export { onBeforeRoute }
+
+import type { OnBeforeRouteAsync } from 'vike/types'
+
+const onBeforeRoute: OnBeforeRouteAsync = async (pageContext): ReturnType<OnBeforeRouteAsync> => {
+  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlOriginal)
+  return {
+    pageContext: {
+      // We make `locale` available as `pageContext.locale`
+      locale,
+      // We overwrite the original URL
+      urlOriginal: urlWithoutLocale
+    }
+  }
+}
+```
+
+<HookTypeScriptHints
+  hookTypeName="OnBeforeRouteAsync"
+  wrongDefinition="const onBeforeRoute: OnBeforeRouteAsync = async (pageContext) => {"
+/>
