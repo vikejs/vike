@@ -1,4 +1,4 @@
-export { loadPageCode }
+export { loadConfigValues }
 export { processConfigValuesImported }
 
 import { assert, assertUsage, objectAssign } from '../utils.js'
@@ -6,8 +6,7 @@ import { assertExportsOfValueFile } from './assertExports.js'
 import type { ConfigValueImported, ConfigValues, PageConfig, PageConfigLoaded } from './PageConfig.js'
 import pc from '@brillout/picocolors'
 
-// TODO: rename loadPageCode() -> loadConfigValues()
-async function loadPageCode(pageConfig: PageConfig, isDev: boolean): Promise<PageConfigLoaded> {
+async function loadConfigValues(pageConfig: PageConfig, isDev: boolean): Promise<PageConfigLoaded> {
   if (
     pageConfig.isLoaded &&
     // We don't need to cache in dev, since Vite already caches the virtual module

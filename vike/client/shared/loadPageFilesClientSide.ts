@@ -5,7 +5,7 @@ import {
   type PageContextExports
 } from '../../shared/getPageFiles.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
-import { loadPageCode } from '../../shared/page-configs/loadPageCode.js'
+import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import type { PageConfig, PageConfigLoaded } from '../../shared/page-configs/PageConfig.js'
 
 export { loadPageFilesClientSide }
@@ -26,7 +26,7 @@ async function loadPageFilesClientSide(
   try {
     // prettier-ignore
     const result = await Promise.all([
-      pageConfig && loadPageCode(pageConfig, isDev),
+      pageConfig && loadConfigValues(pageConfig, isDev),
       ...pageFilesClientSide.map((p) => p.loadFile?.()),
     ])
     pageConfigLoaded = result[0]

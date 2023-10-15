@@ -8,7 +8,7 @@ import type {
   PageConfigSerialized
 } from '../page-configs/PageConfig.js'
 import { parse } from '@brillout/json-serializer/parse'
-import { processConfigValuesImported } from '../page-configs/loadPageCode.js'
+import { processConfigValuesImported } from '../page-configs/loadConfigValues.js'
 import { assert } from '../utils.js'
 
 function parsePageConfigsSerialized(
