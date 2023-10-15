@@ -9,7 +9,7 @@ import type {
 } from '../page-configs/PageConfig.js'
 import { parse } from '@brillout/json-serializer/parse'
 import { parseConfigValuesImported } from '../page-configs/parseConfigValuesImported.js'
-import { assert } from '../utils.js'
+import { assert, assertUsage, isCallable } from '../utils.js'
 
 function parsePageConfigsSerialized(
   pageConfigsSerialized: PageConfigSerialized[],
@@ -37,13 +37,8 @@ function parsePageConfigsSerialized(
       Object.assign(configValues, configValuesAddendum)
     }
 
-    /* TODO
-    if (configName === 'route') {
-      assertRouteConfigValue(configElement)
-    }
-    */
-
     const { pageId, isErrorPage, routeFilesystem, loadConfigValuesAll } = pageConfigSerialized
+    assertRouteConfigValue(configValues)
     return {
       pageId,
       isErrorPage,
@@ -62,20 +57,21 @@ function parsePageConfigsSerialized(
   return { pageConfigs, pageConfigGlobal }
 }
 
-// TODO: use again
-// function assertRouteConfigValue(configElement: ConfigElement) {
-//   assert(hasProp(configElement, 'configValue')) // route files are eagerly loaded
-//   const { configValue } = configElement
-//   const configValueType = typeof configValue
-//   assertUsage(
-//     configValueType === 'string' || isCallable(configValue),
-//     `${configElement.configDefinedAt} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`
-//   )
-//   /* We don't do that to avoid unnecessarily bloating the client-side bundle when using Server Routing
-//    *  - When using Server Routing, this file is loaded as well
-//    *  - When using Server Routing, client-side validation is superfluous as Route Strings only need to be validated on the server-side
-//   if (typeof configValue === 'string') {
-//     assertRouteString(configValue, `${configElement.configDefinedAt} defines an`)
-//   }
-//   */
-// }
+function assertRouteConfigValue(configValues: ConfigValues) {
+  if (!configValues.route) return
+  const { value, definedAtInfo } = configValues.route
+  const configValueType = typeof value
+  assert(definedAtInfo)
+  assertUsage(
+    configValueType === 'string' || isCallable(value),
+    `${definedAtInfo.filePath} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`
+  )
+  /* We don't use assertRouteString() in order to avoid unnecessarily bloating the client-side bundle when using Server Routing:
+  * - When using Server Routing, this file is loaded => loading assertRouteString() would bloat the client bundle.
+  * - assertRouteString() is already called on the server-side
+  * - When using Server Routing, client-side validation is superfluous as Route Strings only need to be validated on the server-side
+ if (typeof configValue === 'string') {
+   assertRouteString(configValue, `${configElement.configDefinedAt} defines an`)
+ }
+ */
+}
