@@ -7,7 +7,7 @@ import {
   assertPageContextUrlComputedProps,
   PageContextUrlComputedPropsInternal
 } from '../../../shared/addUrlComputedProps.js'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
 import type { ConfigEntries, ExportsAll } from '../../../shared/getPageFiles/getExports.js'
 import { PageContextBuiltInServerInternal } from '../../../shared/types.js'
@@ -26,7 +26,7 @@ type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal 
   exports: Record<string, unknown>
   exportsAll: ExportsAll
   _pageId: string
-  _pageConfigs: PageConfig[]
+  _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
   isClientSideNavigation: boolean
   pageProps?: Record<string, unknown>

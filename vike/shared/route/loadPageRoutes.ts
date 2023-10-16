@@ -8,7 +8,7 @@ import { assert, assertUsage, hasProp, slice } from './utils.js'
 import type { OnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 import { isCallable } from '../utils.js'
-import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
+import type { PageConfigRuntime, PageConfigGlobal } from '../page-configs/PageConfig.js'
 import { getConfigDefinedAtInfo, getConfigValue, getDefinedAtString } from '../page-configs/utils.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
 
@@ -26,7 +26,7 @@ type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
 async function loadPageRoutes(
   // TODO: remove all arguments and use GlobalContext instead
   pageFilesAll: PageFile[],
-  pageConfigs: PageConfig[],
+  pageConfigs: PageConfigRuntime[],
   pageConfigGlobal: PageConfigGlobal,
   allPageIds: string[]
 ): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
@@ -39,7 +39,7 @@ async function loadPageRoutes(
 function getPageRoutes(
   filesystemRoots: null | FilesystemRoot[],
   pageFilesAll: PageFile[],
-  pageConfigs: PageConfig[],
+  pageConfigs: PageConfigRuntime[],
   allPageIds: string[]
 ): PageRoutes {
   const pageRoutes: PageRoutes = []
@@ -173,7 +173,7 @@ function getPageRoutes(
 
 function getGlobalHooks(
   pageFilesAll: PageFile[],
-  pageConfigs: PageConfig[],
+  pageConfigs: PageConfigRuntime[],
   pageConfigGlobal: PageConfigGlobal
 ): {
   onBeforeRouteHook: null | OnBeforeRouteHook

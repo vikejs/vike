@@ -5,10 +5,10 @@ export { isErrorPage }
 // TODO/v1-release: consider loading this file only for Client Routing
 
 import { assert, assertUsage, unique } from './utils.js'
-import type { PageConfig } from './page-configs/PageConfig.js'
+import type { PageConfigRuntime } from './page-configs/PageConfig.js'
 import type { PageFile } from './getPageFiles.js'
 
-function getErrorPageId(pageFilesAll: PageFile[], pageConfigs: PageConfig[]): string | null {
+function getErrorPageId(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]): string | null {
   if (pageConfigs.length > 0) {
     const errorPageConfigs = pageConfigs.filter((p) => p.isErrorPage)
     if (errorPageConfigs.length === 0) return null
@@ -35,7 +35,7 @@ function isErrorPageId(pageId: string, _isV1Design: false): boolean {
   return pageId.includes('/_error')
 }
 
-function isErrorPage(pageId: string, pageConfigs: PageConfig[]): boolean {
+function isErrorPage(pageId: string, pageConfigs: PageConfigRuntime[]): boolean {
   if (pageConfigs.length > 0) {
     const pageConfig = pageConfigs.find((p) => p.pageId === pageId)
     assert(pageConfig)

@@ -7,7 +7,7 @@ import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzeP
 import { assertWarning, objectAssign, PromiseType } from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
 import { debugPageFiles, type PageContextDebug } from './debugPageFiles.js'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
 import { getGlobalContext } from '../globalContext.js'
@@ -18,7 +18,7 @@ type PageContext_loadPageFilesServerSide = PageContextGetPageAssets &
   PageContextDebug & {
     urlOriginal: string
     _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfig[]
+    _pageConfigs: PageConfigRuntime[]
   }
 type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServerSide>>
 async function loadPageFilesServerSide(pageContext: { _pageId: string } & PageContext_loadPageFilesServerSide) {
@@ -106,7 +106,12 @@ async function loadPageFilesServerSide(pageContext: { _pageId: string } & PageCo
   return pageContextAddendum
 }
 
-async function loadPageFiles(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string, isDev: boolean) {
+async function loadPageFiles(
+  pageFilesAll: PageFile[],
+  pageConfig: null | PageConfigRuntime,
+  pageId: string,
+  isDev: boolean
+) {
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))

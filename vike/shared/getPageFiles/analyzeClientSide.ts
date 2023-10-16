@@ -1,12 +1,12 @@
 export { analyzeClientSide }
 
 import { getConfigValue } from '../page-configs/utils.js'
-import type { PageConfig } from '../page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
 import { analyzePageClientSide } from './analyzePageClientSide.js'
 
 function analyzeClientSide(
-  pageConfig: PageConfig | null,
+  pageConfig: PageConfigRuntime | null,
   pageFilesAll: PageFile[],
   pageId: string
 ): { isClientSideRenderable: boolean; isClientRouting: boolean } {

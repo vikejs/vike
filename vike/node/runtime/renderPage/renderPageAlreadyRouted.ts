@@ -24,7 +24,7 @@ import {
   PageContext_loadPageFilesServerSide,
   type PageFiles
 } from './loadPageFilesServerSide.js'
-import type { PageConfig, PageConfigGlobal } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime, PageConfigGlobal } from '../../../shared/page-configs/PageConfig.js'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook.js'
 import { executeOnBeforeRenderHooks } from './executeOnBeforeRenderHook.js'
 import { logRuntimeError } from './loggerRuntime.js'
@@ -220,7 +220,7 @@ function getPageContextInitEnhanced(
 
 type RenderContext = {
   pageFilesAll: PageFile[]
-  pageConfigs: PageConfig[]
+  pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobal
   allPageIds: string[]
   pageRoutes: PageRoutes
@@ -252,7 +252,7 @@ async function getRenderContext(): Promise<RenderContext> {
   return renderContext
 }
 
-function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfig[]) {
+function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]) {
   if (pageFilesAll.length === 0 || pageConfigs.length === 0) return
   const indent = '- '
   const v1Files: string[] = unique(

@@ -4,7 +4,7 @@ export type { PageContextSerialization }
 
 import { stringify } from '@brillout/json-serializer/stringify'
 import { assert, assertWarning, hasProp, unique } from '../utils.js'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { isErrorPage } from '../../../shared/error-page.js'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
 import pc from '@brillout/picocolors'
@@ -28,7 +28,7 @@ const PASS_TO_CLIENT_ERROR_PAGE = ['pageProps', 'is404', '_isError']
 type PageContextSerialization = {
   _pageId: string
   _passToClient: string[]
-  _pageConfigs: PageConfig[]
+  _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
   pageProps?: Record<string, unknown>
   _isError?: true
@@ -87,7 +87,7 @@ function serialize(value: unknown, varName?: string): string {
 function getPassToClient(pageContext: {
   _pageId: string
   _passToClient: string[]
-  _pageConfigs: PageConfig[]
+  _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
 }): string[] {
   let passToClient = [...pageContext._passToClient, ...PASS_TO_CLIENT]

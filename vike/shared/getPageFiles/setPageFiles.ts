@@ -6,11 +6,11 @@ import { assert, unique } from '../utils.js'
 import type { PageFile } from './getPageFileObject.js'
 import { parseGlobResults } from './parseGlobResults.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
-import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
+import type { PageConfigRuntime, PageConfigGlobal } from '../page-configs/PageConfig.js'
 
 const globalObject = getGlobalObject<{
   pageFilesAll?: PageFile[] | undefined
-  pageConfigs?: PageConfig[] | undefined
+  pageConfigs?: PageConfigRuntime[] | undefined
   pageConfigGlobal?: PageConfigGlobal | undefined
   pageFilesGetter?: () => Promise<void> | undefined
 }>('setPageFiles.ts', {})
@@ -34,7 +34,7 @@ async function getPageFilesAll(
 ): Promise<{
   pageFilesAll: PageFile[]
   allPageIds: string[]
-  pageConfigs: PageConfig[]
+  pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobal
 }> {
   if (isClientSide) {
@@ -57,7 +57,7 @@ async function getPageFilesAll(
   return { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal }
 }
 
-function getAllPageIds(allPageFiles: PageFile[], pageConfigs: PageConfig[]): string[] {
+function getAllPageIds(allPageFiles: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {
   const fileIds = allPageFiles.filter(({ isDefaultPageFile }) => !isDefaultPageFile).map(({ pageId }) => pageId)
   const allPageIds = unique(fileIds)
 

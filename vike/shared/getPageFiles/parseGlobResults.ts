@@ -4,13 +4,13 @@ import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../uti
 import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
-import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
+import type { PageConfigRuntime, PageConfigGlobal } from '../page-configs/PageConfig.js'
 import { assertPageConfigGlobalSerialized, assertPageConfigsSerialized } from './assertPageConfigs.js'
 import { parsePageConfigsSerialized } from './parsePageConfigsSerialized.js'
 
 function parseGlobResults(pageFilesExports: unknown): {
   pageFiles: PageFile[]
-  pageConfigs: PageConfig[]
+  pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobal
 } {
   assert(hasProp(pageFilesExports, 'isGeneratedFile'))

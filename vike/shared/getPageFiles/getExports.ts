@@ -8,7 +8,7 @@ import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile.js'
 import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils.js'
 import { assertDefaultExports, forbiddenDefaultExports } from './assert_exports_old_design.js'
 import type { FileType } from './fileTypes.js'
-import type { PageConfigLoaded } from './../page-configs/PageConfig.js'
+import type { PageConfigRuntimeLoaded } from './../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
 import { getConfigDefinedAtString } from '../page-configs/utils.js'
 import pc from '@brillout/picocolors'
@@ -50,7 +50,7 @@ type PageContextExports = {
   pageExports: Record<string, unknown>
 }
 
-function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null): PageContextExports {
+function getExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded | null): PageContextExports {
   const configEntries: ConfigEntries = {}
   const config: Record<string, unknown> = {}
   const exportsAll: ExportsAll = {}

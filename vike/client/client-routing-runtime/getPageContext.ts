@@ -27,7 +27,7 @@ import { preparePageContextForUserConsumptionClientSide } from '../shared/prepar
 import { loadPageFilesClientSide } from '../shared/loadPageFilesClientSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
-import type { PageConfig } from '../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getConfigValue, getPageConfig } from '../../shared/page-configs/utils.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.js'
 import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
@@ -68,7 +68,7 @@ async function getPageContext(
 async function getPageContextFirstRender(
   pageContext: {
     _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfig[]
+    _pageConfigs: PageConfigRuntime[]
     _isFirstRenderAttempt: true
     urlOriginal: string
   } & PageContextPassThrough
@@ -103,7 +103,7 @@ async function getPageContextErrorPage(
     _allPageIds: string[]
     _isFirstRenderAttempt: boolean
     _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfig[]
+    _pageConfigs: PageConfigRuntime[]
   } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
   const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
@@ -202,7 +202,7 @@ async function executeOnBeforeRenderHookClientSide(
     urlOriginal: string
     isHydration: boolean
     _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfig[]
+    _pageConfigs: PageConfigRuntime[]
     _hasPageContextFromServer: boolean
   } & PageContextExports &
     PageContextPassThrough
@@ -262,7 +262,7 @@ function setPageContextInitHasClientData(pageContext: Record<string, unknown>) {
 async function onBeforeRenderServerOnlyExists(pageContext: {
   _pageId: string
   _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
+  _pageConfigs: PageConfigRuntime[]
 }): Promise<boolean> {
   if (pageContext._pageConfigs.length > 0) {
     // V1
@@ -280,7 +280,7 @@ async function onBeforeRenderServerOnlyExists(pageContext: {
 }
 async function onBeforeRenderClientOnlyExists(pageContext: {
   _pageId: string
-  _pageConfigs: PageConfig[]
+  _pageConfigs: PageConfigRuntime[]
 }): Promise<boolean> {
   if (pageContext._pageConfigs.length > 0) {
     // V1

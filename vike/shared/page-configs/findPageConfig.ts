@@ -1,9 +1,9 @@
 export { findPageConfig }
 
 import { assert } from '../utils.js'
-import type { PageConfig } from './PageConfig.js'
+import type { PageConfigRuntime } from './PageConfig.js'
 
-function findPageConfig(pageConfigs: PageConfig[], pageId: string): null | PageConfig {
+function findPageConfig(pageConfigs: PageConfigRuntime[], pageId: string): null | PageConfigRuntime {
   const result = pageConfigs.filter((p) => p.pageId === pageId)
   assert(result.length <= 1)
   const pageConfig = result[0] ?? null

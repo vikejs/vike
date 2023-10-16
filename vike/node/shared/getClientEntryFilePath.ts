@@ -1,10 +1,10 @@
 export { getClientEntryFilePath }
 
-import type { PageConfig, PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime, PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import { getConfigDefinedAtInfo, getConfigValue } from '../../shared/page-configs/utils.js'
 import { assert } from './utils.js'
 
-function getClientEntryFilePath(pageConfig: PageConfig | PageConfigBuildTime): null | string {
+function getClientEntryFilePath(pageConfig: PageConfigRuntime | PageConfigBuildTime): null | string {
   const configName = 'client'
   const configValue = getConfigValue(pageConfig, configName, 'string')
   if (!configValue) return null

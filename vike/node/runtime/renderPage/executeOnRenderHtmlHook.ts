@@ -28,7 +28,7 @@ import {
   type PageContextForUserConsumptionServerSide
 } from './preparePageContextForUserConsumptionServerSide.js'
 import type { PageContextPromise } from '../html/injectAssets.js'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject.js'
 import { logRuntimeError } from './loggerRuntime.js'
 import type { PageContextSerialization } from '../html/serializePageContextClientSide.js'
@@ -49,7 +49,7 @@ async function executeOnRenderHtmlHook(
   pageContext: PageContextForUserConsumptionServerSide &
     PageContextSerialization & {
       _pageId: string
-      _pageConfigs: PageConfig[]
+      _pageConfigs: PageConfigRuntime[]
       __getPageAssets: GetPageAssets
       _isHtmlOnly: boolean
       _baseServer: string

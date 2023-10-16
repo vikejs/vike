@@ -7,7 +7,7 @@ import { createHttpResponseObject } from './createHttpResponseObject.js'
 import pc from '@brillout/picocolors'
 import type { GetPageAssets } from './getPageAssets.js'
 import type { PageContextAfterRender } from './renderPageAlreadyRouted.js'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 
 // When the user hasn't defined _error.page.js
 async function handleErrorWithoutErrorPage<
@@ -16,7 +16,7 @@ async function handleErrorWithoutErrorPage<
     errorWhileRendering: null | Error
     is404: null | boolean
     _pageId: null
-    _pageConfigs: PageConfig[]
+    _pageConfigs: PageConfigRuntime[]
     urlOriginal: string
   }
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {

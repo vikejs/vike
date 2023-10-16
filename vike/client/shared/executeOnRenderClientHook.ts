@@ -7,7 +7,7 @@ import {
   type PageContextForUserConsumptionClientSide,
   preparePageContextForUserConsumptionClientSide
 } from './preparePageContextForUserConsumptionClientSide.js'
-import type { PageConfig } from '../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 
 async function executeOnRenderClientHook<
   PC extends {
@@ -15,7 +15,7 @@ async function executeOnRenderClientHook<
     urlOriginal?: string
     urlPathname?: string
     _pageId: string
-    _pageConfigs: PageConfig[]
+    _pageConfigs: PageConfigRuntime[]
   } & PageContextExports &
     PageContextForUserConsumptionClientSide
 >(pageContext: PC, isClientRouting: boolean): Promise<void> {

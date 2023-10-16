@@ -6,7 +6,7 @@ export type { HttpResponse }
 import type { GetPageAssets } from './getPageAssets.js'
 import { assert, assertWarning } from '../utils.js'
 import type { HtmlRender } from '../html/renderHtml.js'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { isErrorPage } from '../../../shared/error-page.js'
 import type { RenderHook } from './executeOnRenderHtmlHook.js'
 import type { RedirectStatusCode, AbortStatusCode, UrlRedirect } from '../../../shared/route/abort.js'
@@ -36,7 +36,7 @@ async function createHttpResponseObject(
     is404: null | boolean
     errorWhileRendering: null | Error
     __getPageAssets: GetPageAssets
-    _pageConfigs: PageConfig[]
+    _pageConfigs: PageConfigRuntime[]
     abortStatusCode?: AbortStatusCode
   }
 ): Promise<HttpResponse | null> {

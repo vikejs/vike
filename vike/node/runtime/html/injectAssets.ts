@@ -10,7 +10,7 @@ import { injectHtmlTags, createHtmlHeadIfMissing } from './injectAssets/injectHt
 import type { HtmlPart } from './renderHtml.js'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags.js'
 import type { InjectToStream } from './stream/react-streaming.js'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import type { PageContextSerialization } from './serializePageContextClientSide.js'
 
 type PageContextInjectAssets = {
@@ -24,7 +24,7 @@ type PageContextInjectAssets = {
     hookName: 'onRenderHtml' | 'render'
   }
   _baseServer: string
-  _pageConfigs: PageConfig[]
+  _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
 } & PageContextSerialization
 

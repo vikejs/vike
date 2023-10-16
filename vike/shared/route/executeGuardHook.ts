@@ -3,13 +3,13 @@ export { executeGuardHook }
 import { getHook, Hook } from '../hooks/getHook.js'
 import { assert, assertUsage, executeHook, isCallable } from './utils.js'
 import type { PageContextExports, PageFile } from '../getPageFiles.js'
-import type { PageConfig } from '../page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
 
 async function executeGuardHook<
   T extends PageContextExports & {
     _pageId: string
     _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfig[]
+    _pageConfigs: PageConfigRuntime[]
   }
 >(pageContext: T, prepareForUserConsumption: (pageConfig: T) => T | void): Promise<void> {
   let hook: Hook | null

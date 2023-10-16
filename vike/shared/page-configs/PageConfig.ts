@@ -1,6 +1,6 @@
-export type { PageConfig }
-export type { PageConfigLoaded }
-export type { PageConfigSerialized }
+export type { PageConfigRuntime }
+export type { PageConfigRuntimeLoaded }
+export type { PageConfigRuntimeSerialized }
 export type { PageConfigBuildTime }
 export type { ConfigEnvInternal }
 export type { ConfigEnv }
@@ -18,14 +18,14 @@ export type { DefinedAtInfo }
 export type { DefinedAtInfoFull }
 
 /** PageConfig data structure at runtime */
-type PageConfig = PageConfigBase & {
+type PageConfigRuntime = PageConfigBase & {
   configValues: ConfigValues
   /** Config values loaded/imported lazily */
   loadConfigValuesAll: LoadConfigValuesAll
   /** Whether loadConfigValuesAll() was already called */
   isLoaded?: true
 }
-type PageConfigLoaded = PageConfig & {
+type PageConfigRuntimeLoaded = PageConfigRuntime & {
   isLoaded: true
 }
 /** PageConfig data structure at build-time */
@@ -42,7 +42,7 @@ type PageConfigBase = {
   }
 }
 /** PageConfig data structure serialized in virtual files: parsing results in the runtime PageConfig data structure */
-type PageConfigSerialized = PageConfigBase & {
+type PageConfigRuntimeSerialized = PageConfigBase & {
   configValuesSerialized: Record<string, ConfigValueSerialized>
   /** Config values loaded/imported eagerly */
   configValuesImported: ConfigValueImported[]

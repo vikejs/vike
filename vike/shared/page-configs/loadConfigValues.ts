@@ -1,16 +1,16 @@
 export { loadConfigValues }
 
 import { objectAssign } from '../utils.js'
-import type { PageConfig, PageConfigLoaded } from './PageConfig.js'
+import type { PageConfigRuntime, PageConfigRuntimeLoaded } from './PageConfig.js'
 import { parseConfigValuesImported } from './parseConfigValuesImported.js'
 
-async function loadConfigValues(pageConfig: PageConfig, isDev: boolean): Promise<PageConfigLoaded> {
+async function loadConfigValues(pageConfig: PageConfigRuntime, isDev: boolean): Promise<PageConfigRuntimeLoaded> {
   if (
     pageConfig.isLoaded &&
     // We don't need to cache in dev, since Vite already caches the virtual module
     !isDev
   ) {
-    return pageConfig as PageConfigLoaded
+    return pageConfig as PageConfigRuntimeLoaded
   }
   const configValuesImported = await pageConfig.loadConfigValuesAll()
   const configValuesAddendum = parseConfigValuesImported(configValuesImported)

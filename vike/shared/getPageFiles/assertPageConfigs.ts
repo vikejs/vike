@@ -2,11 +2,11 @@ export { assertPageConfigsSerialized }
 export { assertPageConfigGlobalSerialized }
 
 import { assert, isObject, hasProp } from '../utils.js'
-import type { PageConfigGlobalSerialized, PageConfigSerialized } from '../page-configs/PageConfig.js'
+import type { PageConfigGlobalSerialized, PageConfigRuntimeSerialized } from '../page-configs/PageConfig.js'
 
 function assertPageConfigsSerialized(
   pageConfigsSerialized: unknown
-): asserts pageConfigsSerialized is PageConfigSerialized[] {
+): asserts pageConfigsSerialized is PageConfigRuntimeSerialized[] {
   assert(Array.isArray(pageConfigsSerialized))
   pageConfigsSerialized.forEach((pageConfigSerialized) => {
     assert(isObject(pageConfigSerialized))

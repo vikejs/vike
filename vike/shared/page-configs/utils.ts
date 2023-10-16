@@ -5,12 +5,12 @@ export { getConfigDefinedAtInfo }
 export { getDefinedAtString }
 
 import { assert, assertUsage, getValuePrintable } from '../utils.js'
-import type { DefinedAtInfo, PageConfig, PageConfigBuildTime } from './PageConfig.js'
+import type { DefinedAtInfo, PageConfigRuntime, PageConfigBuildTime } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
 
-type PageConfigCommon = PageConfig | PageConfigBuildTime
+type PageConfigCommon = PageConfigRuntime | PageConfigBuildTime
 type ConfigName = ConfigNameBuiltIn
 
 // prettier-ignore
@@ -49,7 +49,7 @@ function getConfigValueEntry(pageConfig: PageConfigCommon, configName: ConfigNam
   return { value, definedAtInfo }
 }
 
-function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
+function getPageConfig(pageId: string, pageConfigs: PageConfigRuntime[]): PageConfigRuntime {
   const pageConfig = pageConfigs.find((p) => p.pageId === pageId)
   assert(pageConfigs.length > 0)
   assert(pageConfig)

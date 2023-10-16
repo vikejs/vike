@@ -9,13 +9,13 @@ import type {
   PageContextBuiltInClientWithClientRouting
 } from '../../shared/types.js'
 import { addIs404ToPageProps } from '../../shared/addIs404ToPageProps.js'
-import type { PageConfig } from '../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getPageContextProxyForUser, PageContextForPassToClientWarning } from './getPageContextProxyForUser.js'
 
 type PageContextForUserConsumptionClientSide = PageContextExports &
   PageContextForPassToClientWarning & {
     _pageId: string
-    _pageConfigs: PageConfig[]
+    _pageConfigs: PageConfigRuntime[]
   }
 
 // Release `pageContext` for user consumption.

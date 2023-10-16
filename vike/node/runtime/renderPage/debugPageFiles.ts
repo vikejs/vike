@@ -6,7 +6,7 @@ import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageC
 import type { PageFile } from '../../../shared/getPageFiles.js'
 import pc from '@brillout/picocolors'
 import { assert, makeFirst, createDebugger } from '../utils.js'
-import type { PageConfig } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 
 type PageContextDebug = {
   _routeMatches: 'ROUTE_ERROR' | RouteMatches
@@ -25,7 +25,7 @@ function debugPageFiles({
     urlOriginal: string
     _pageId: string
     _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfig[]
+    _pageConfigs: PageConfigRuntime[]
   } & PageContextDebug
   isHtmlOnly: boolean
   isClientRouting: boolean
