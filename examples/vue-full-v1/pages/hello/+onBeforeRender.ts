@@ -1,8 +1,9 @@
-export default onBeforeRender
+// https://vike.dev/onBeforeRender
+export { onBeforeRender }
 
-import type { PageContextBuiltInServer } from 'vike/types'
+import type { OnBeforeRenderAsync, PageContextBuiltInServer } from 'vike/types'
 
-async function onBeforeRender(pageContext: PageContextBuiltInServer) {
+const onBeforeRender: OnBeforeRenderAsync = async (pageContext): ReturnType<OnBeforeRenderAsync> => {
   const { name } = pageContext.routeParams
   const pageProps = { name }
   return {

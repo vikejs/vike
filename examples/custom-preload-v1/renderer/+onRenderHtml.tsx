@@ -1,14 +1,14 @@
 // https://vike.dev/onRenderHtml
-export default onRenderHtml
+export { onRenderHtml }
 
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import type { InjectFilterEntry } from 'vike/types'
+import type { InjectFilterEntry, OnRenderHtmlAsync } from 'vike/types'
 // @ts-ignore
 import { PageLayout } from './PageLayout'
 
-async function onRenderHtml(pageContext: any) {
+const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
   const { Page, pageProps } = pageContext
   // The config 'preloadStrategy' is a custom config we defined at ./+config.ts
   const { preloadStrategy } = pageContext.config

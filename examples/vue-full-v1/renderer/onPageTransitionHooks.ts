@@ -1,13 +1,16 @@
+// https://vike.dev/clientRouting
 export { onHydrationEnd, onPageTransitionStart, onPageTransitionEnd }
 
-function onHydrationEnd() {
+import type { OnHydrationEndAsync, OnPageTransitionEndAsync, OnPageTransitionStartAsync } from 'vike/types'
+
+const onHydrationEnd: OnHydrationEndAsync = async (): ReturnType<OnHydrationEndAsync> => {
   console.log('Hydration finished; page is now interactive.')
 }
-function onPageTransitionStart() {
+const onPageTransitionStart: OnPageTransitionStartAsync = async (): ReturnType<OnPageTransitionStartAsync> => {
   console.log('Page transition start')
   document.querySelector('.content')!.classList.add('page-transition')
 }
-function onPageTransitionEnd() {
+const onPageTransitionEnd: OnPageTransitionEndAsync = async (): ReturnType<OnPageTransitionEndAsync> => {
   console.log('Page transition end')
   document.querySelector('.content')!.classList.remove('page-transition')
 }
