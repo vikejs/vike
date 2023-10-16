@@ -118,7 +118,10 @@ type OnBeforeRenderSync = (pageContext: PageContextServer) => { pageContext: Par
 type OnBeforeRouteAsync = (pageContext: PageContextServer) => Promise<{
   pageContext: Partial<
     | {
-        /** The URL your provided to Vike when calling `renderPage({ urlOriginal })` in your server middleware. */
+        /** The URL you provided to Vike when calling `renderPage({ urlOriginal })` in your server middleware.
+         *
+         * https://vike.dev/renderPage
+         */
         urlOriginal: string
       }
     | Vike.PageContext
@@ -131,7 +134,10 @@ type OnBeforeRouteAsync = (pageContext: PageContextServer) => Promise<{
 type OnBeforeRouteSync = (pageContext: PageContextServer) => {
   pageContext: Partial<
     | {
-        /** The URL your provided to Vike when calling `renderPage({ urlOriginal })` in your server middleware. */
+        /** The URL you provided to Vike when calling `renderPage({ urlOriginal })` in your server middleware.
+         *
+         * https://vike.dev/renderPage
+         */
         urlOriginal: string
       }
     | Vike.PageContext
@@ -199,10 +205,10 @@ type OnRenderHtmlAsync = (pageContext: PageContextServer) => Promise<
   | DocumentHtml
   | {
       documentHtml: DocumentHtml
-      // See https://vike.dev/stream#initial-data-after-stream-end
       pageContext:
-        | Partial<{ enableEagerStreaming: boolean } | Vike.PageContext>
-        | (() => Promise<Partial<Vike.PageContext>>)
+        | OnRenderHtmlPageContextReturn
+        // See https://vike.dev/stream#initial-data-after-stream-end
+        | (() => Promise<OnRenderHtmlPageContextReturn> | OnRenderHtmlPageContextReturn)
     }
 >
 /** Hook called when page is rendered to HTML on the server-side.
@@ -213,11 +219,17 @@ type OnRenderHtmlSync = (pageContext: PageContextServer) =>
   | DocumentHtml
   | {
       documentHtml: DocumentHtml
-      // See https://vike.dev/stream#initial-data-after-stream-end
       pageContext:
-        | Partial<{ enableEagerStreaming: boolean } | Vike.PageContext>
-        | (() => Promise<Partial<Vike.PageContext>>)
+        | OnRenderHtmlPageContextReturn
+        // See https://vike.dev/stream#initial-data-after-stream-end
+        | (() => Promise<OnRenderHtmlPageContextReturn> | OnRenderHtmlPageContextReturn)
     }
+type OnRenderHtmlPageContextReturn = Partial<
+  Vike.PageContext & {
+    /** See https://vike.dev/stream */
+    enableEagerStreaming: boolean
+  }
+>
 /** @deprecated Use a sync route() with an async guard() instead */
 type RouteAsync = (
   pageContext: PageContextServer | PageContextClient
