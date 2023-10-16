@@ -1,3 +1,4 @@
+import { HookTypeScriptHints } from '../components/HookTypeScriptHints'
 import { Link } from '@brillout/docpress'
 
 The `render()` hook of `.page.server.js` has been renamed to `onRenderHtml()` for the V1 design.
@@ -7,3 +8,42 @@ The `render()` hook of `.page.server.js` has been renamed to `onRenderHtml()` fo
 > The documentation will be moved to this page after the stable release of the V1 design.
 
 See <Link href="/migration/v1-design#renamed-hooks" />.
+
+{ /*NOTE(aurelien) move the content of render-hook.page.server.mdx here*/ }
+
+## TypeScript
+
+```ts
+export { onRenderHtml }
+
+import type { OnRenderHtmlAsync } from 'vike/types'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
+import { renderToHtml, createElement } from 'some-ui-framework'
+
+const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
+  const { Page, pageProps } = pageContext
+  const pageHtml = await renderToHtml(createElement(Page, pageProps))
+
+  const documentHtml = escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>My SSR App</title>
+      </head>
+      <body>
+        <div id="page-root">${dangerouslySkipEscape(pageHtml)}</div>
+      </body>
+    </html>`
+
+  return {
+    documentHtml,
+    pageContext: {
+      // We can add some `pageContext` here
+    }
+  }
+}
+```
+
+<HookTypeScriptHints
+  hookTypeName="OnRenderHtmlAsync"
+  wrongDefinition="const onRenderHtml: OnRenderHtmlAsync = async (pageContext) => {"
+/>
