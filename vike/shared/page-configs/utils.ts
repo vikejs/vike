@@ -5,15 +5,13 @@ export { getConfigDefinedAtInfo }
 export { getDefinedAtString }
 
 import { assert, assertUsage, getValuePrintable } from '../utils.js'
-import type { ConfigValues, DefinedAtInfo, PageConfig, PageConfigCommon as PageConfigCommon1 } from './PageConfig.js'
+import type { DefinedAtInfo, PageConfig, PageConfigBuildTime } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
 
+type PageConfigCommon = PageConfig | PageConfigBuildTime
 type ConfigName = ConfigNameBuiltIn
-
-// TODO
-type PageConfigCommon = PageConfigCommon1 & { configValues: ConfigValues }
 
 // prettier-ignore
 function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'string'): null | { value: string }

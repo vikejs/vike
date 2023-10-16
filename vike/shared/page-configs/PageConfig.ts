@@ -2,7 +2,6 @@ export type { PageConfig }
 export type { PageConfigLoaded }
 export type { PageConfigSerialized }
 export type { PageConfigBuildTime }
-export type { PageConfigCommon }
 export type { ConfigEnvInternal }
 export type { ConfigEnv }
 export type { PageConfigGlobal }
@@ -21,11 +20,11 @@ export type { DefinedAtInfoFull }
 type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
 type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
 
-type PageConfigBuildTime = PageConfigCommon & {
+type PageConfigBuildTime = PageConfigBase & {
   configValues: ConfigValues
   configValueSources: ConfigValueSources
 }
-type PageConfigCommon = {
+type PageConfigBase = {
   pageId: string
   isErrorPage: boolean
   routeFilesystem: null | {
@@ -91,14 +90,14 @@ type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileExportName: string; configSourceFileDefaultExportKey?: undefined }
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
 )
-type PageConfig = PageConfigCommon & {
+type PageConfig = PageConfigBase & {
   configValues: ConfigValues
   /** Config values loaded/imported lazily */
   loadConfigValuesAll: LoadConfigValuesAll
   /** Whether loadConfigValuesAll() was already called */
   isLoaded?: true
 }
-type PageConfigSerialized = PageConfigCommon & {
+type PageConfigSerialized = PageConfigBase & {
   configValuesSerialized: Record<string, ConfigValueSerialized>
   /** Config values loaded/imported eagerly */
   configValuesImported: ConfigValueImported[]
