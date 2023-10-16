@@ -4,9 +4,9 @@ export { onRenderClient }
 import React from 'react'
 import { hydrateRoot } from 'react-dom/client'
 import { PageLayout } from './PageLayout'
-import type { OnRenderClientSync } from 'vike/types'
+import type { OnRenderClientAsync } from 'vike/types'
 
-const onRenderClient: OnRenderClientSync = (pageContext): ReturnType<OnRenderClientSync> => {
+const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRenderClientAsync> => {
   const { Page } = pageContext
   hydrateRoot(
     document.getElementById('page-view')!,
