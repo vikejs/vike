@@ -6,7 +6,7 @@ import type {
   ConfigValueSerialized,
   DefinedAtInfo,
   PageConfigBuildTime,
-  PageConfigGlobalAtBuildTime
+  PageConfigGlobalBuildTime
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
@@ -32,7 +32,7 @@ async function getVirtualFilePageConfigs(
 
 function getContent(
   pageConfigs: PageConfigBuildTime[],
-  pageConfigGlobal: PageConfigGlobalAtBuildTime,
+  pageConfigGlobal: PageConfigGlobalBuildTime,
   isForClientSide: boolean,
   isDev: boolean,
   id: string,

@@ -6,12 +6,12 @@ import { assert, unique } from '../utils.js'
 import type { PageFile } from './getPageFileObject.js'
 import { parseGlobResults } from './parseGlobResults.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
-import type { PageConfigRuntime, PageConfigGlobal } from '../page-configs/PageConfig.js'
+import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 
 const globalObject = getGlobalObject<{
   pageFilesAll?: PageFile[] | undefined
   pageConfigs?: PageConfigRuntime[] | undefined
-  pageConfigGlobal?: PageConfigGlobal | undefined
+  pageConfigGlobal?: PageConfigGlobalRuntime | undefined
   pageFilesGetter?: () => Promise<void> | undefined
 }>('setPageFiles.ts', {})
 
@@ -35,7 +35,7 @@ async function getPageFilesAll(
   pageFilesAll: PageFile[]
   allPageIds: string[]
   pageConfigs: PageConfigRuntime[]
-  pageConfigGlobal: PageConfigGlobal
+  pageConfigGlobal: PageConfigGlobalRuntime
 }> {
   if (isClientSide) {
     assert(!globalObject.pageFilesGetter)

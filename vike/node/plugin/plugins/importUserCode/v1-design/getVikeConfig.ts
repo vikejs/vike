@@ -13,7 +13,6 @@ import {
   objectEntries,
   hasProp,
   arrayIncludes,
-  objectKeys,
   assertIsNotProductionRuntime,
   getMostSimilar,
   isNpmPackageImport,
@@ -25,7 +24,7 @@ import {
 } from '../../../utils.js'
 import path from 'path'
 import type {
-  PageConfigGlobalAtBuildTime,
+  PageConfigGlobalBuildTime,
   ConfigEnvInternal,
   ConfigValueSource,
   ConfigValueSources,
@@ -98,7 +97,7 @@ type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 
 type VikeConfig = {
   pageConfigs: PageConfigBuildTime[]
-  pageConfigGlobal: PageConfigGlobalAtBuildTime
+  pageConfigGlobal: PageConfigGlobalBuildTime
   globalVikeConfig: Record<string, unknown>
 }
 
@@ -473,7 +472,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
   }
 
   const globalVikeConfig: Record<string, unknown> = {}
-  const pageConfigGlobal: PageConfigGlobalAtBuildTime = {
+  const pageConfigGlobal: PageConfigGlobalBuildTime = {
     configValueSources: {}
   }
   objectEntries(configDefinitionsBuiltInGlobal).forEach(([configName, configDef]) => {

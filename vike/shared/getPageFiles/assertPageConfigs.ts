@@ -2,7 +2,7 @@ export { assertPageConfigsSerialized }
 export { assertPageConfigGlobalSerialized }
 
 import { assert, isObject, hasProp } from '../utils.js'
-import type { PageConfigGlobalSerialized, PageConfigRuntimeSerialized } from '../page-configs/PageConfig.js'
+import type { PageConfigGlobalRuntimeSerialized, PageConfigRuntimeSerialized } from '../page-configs/PageConfig.js'
 
 function assertPageConfigsSerialized(
   pageConfigsSerialized: unknown
@@ -19,6 +19,6 @@ function assertPageConfigsSerialized(
 
 function assertPageConfigGlobalSerialized(
   pageConfigGlobalSerialized: unknown
-): asserts pageConfigGlobalSerialized is PageConfigGlobalSerialized {
+): asserts pageConfigGlobalSerialized is PageConfigGlobalRuntimeSerialized {
   assert(hasProp(pageConfigGlobalSerialized, 'configValuesImported'))
 }

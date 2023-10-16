@@ -4,9 +4,9 @@ export type { PageConfigRuntimeSerialized }
 export type { PageConfigBuildTime }
 export type { ConfigEnvInternal }
 export type { ConfigEnv }
-export type { PageConfigGlobal }
-export type { PageConfigGlobalAtBuildTime }
-export type { PageConfigGlobalSerialized }
+export type { PageConfigGlobalRuntime }
+export type { PageConfigGlobalRuntimeSerialized }
+export type { PageConfigGlobalBuildTime }
 export type { ConfigSource }
 export type { ConfigValue }
 export type { ConfigValueSerialized }
@@ -52,13 +52,13 @@ type PageConfigRuntimeSerialized = PageConfigBase & {
   loadConfigValuesAll: LoadConfigValuesAll
 }
 
-type PageConfigGlobal = {
+type PageConfigGlobalRuntime = {
   configValues: ConfigValues
 }
-type PageConfigGlobalSerialized = {
+type PageConfigGlobalRuntimeSerialized = {
   configValuesImported: ConfigValueImported[]
 }
-type PageConfigGlobalAtBuildTime = {
+type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
 }
 

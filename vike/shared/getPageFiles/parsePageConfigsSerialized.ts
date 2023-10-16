@@ -3,8 +3,8 @@ export { parsePageConfigsSerialized }
 import type {
   ConfigValues,
   PageConfigRuntime,
-  PageConfigGlobal,
-  PageConfigGlobalSerialized,
+  PageConfigGlobalRuntime,
+  PageConfigGlobalRuntimeSerialized,
   PageConfigRuntimeSerialized
 } from '../page-configs/PageConfig.js'
 import { parse } from '@brillout/json-serializer/parse'
@@ -13,8 +13,8 @@ import { assert, assertUsage, isCallable } from '../utils.js'
 
 function parsePageConfigsSerialized(
   pageConfigsSerialized: PageConfigRuntimeSerialized[],
-  pageConfigGlobalSerialized: PageConfigGlobalSerialized
-): { pageConfigs: PageConfigRuntime[]; pageConfigGlobal: PageConfigGlobal } {
+  pageConfigGlobalSerialized: PageConfigGlobalRuntimeSerialized
+): { pageConfigs: PageConfigRuntime[]; pageConfigGlobal: PageConfigGlobalRuntime } {
   const pageConfigs: PageConfigRuntime[] = pageConfigsSerialized.map((pageConfigSerialized) => {
     const configValues: ConfigValues = {}
     {
@@ -48,7 +48,7 @@ function parsePageConfigsSerialized(
     } satisfies PageConfigRuntime
   })
 
-  const pageConfigGlobal: PageConfigGlobal = { configValues: {} }
+  const pageConfigGlobal: PageConfigGlobalRuntime = { configValues: {} }
   {
     const configValuesAddendum = parseConfigValuesImported(pageConfigGlobalSerialized.configValuesImported)
     Object.assign(pageConfigGlobal.configValues, configValuesAddendum)

@@ -21,14 +21,14 @@ import { resolveRouteFunction } from './resolveRouteFunction.js'
 import { executeOnBeforeRouteHook, type OnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
 import type { PageRoutes, RouteType } from './loadPageRoutes.js'
 import { debug } from './debug.js'
-import type { PageConfigRuntime, PageConfigGlobal } from '../page-configs/PageConfig.js'
+import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 import pc from '@brillout/picocolors'
 
 type PageContextForRoute = PageContextUrlComputedPropsInternal & {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfigRuntime[]
   _allPageIds: string[]
-  _pageConfigGlobal: PageConfigGlobal
+  _pageConfigGlobal: PageConfigGlobalRuntime
   _pageRoutes: PageRoutes
   _onBeforeRouteHook: OnBeforeRouteHook | null
 } & PageContextUrlSources

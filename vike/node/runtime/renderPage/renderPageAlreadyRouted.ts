@@ -24,7 +24,7 @@ import {
   PageContext_loadPageFilesServerSide,
   type PageFiles
 } from './loadPageFilesServerSide.js'
-import type { PageConfigRuntime, PageConfigGlobal } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook.js'
 import { executeOnBeforeRenderHooks } from './executeOnBeforeRenderHook.js'
 import { logRuntimeError } from './loggerRuntime.js'
@@ -221,7 +221,7 @@ function getPageContextInitEnhanced(
 type RenderContext = {
   pageFilesAll: PageFile[]
   pageConfigs: PageConfigRuntime[]
-  pageConfigGlobal: PageConfigGlobal
+  pageConfigGlobal: PageConfigGlobalRuntime
   allPageIds: string[]
   pageRoutes: PageRoutes
   onBeforeRouteHook: OnBeforeRouteHook | null
