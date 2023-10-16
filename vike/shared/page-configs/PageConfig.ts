@@ -52,6 +52,7 @@ type PageConfigRuntimeSerialized = PageConfigBase & {
   loadConfigValuesAll: LoadConfigValuesAll
 }
 
+/** page config that applies to all pages */
 type PageConfigGlobalRuntime = {
   configValues: ConfigValues
 }
