@@ -1,12 +1,13 @@
 // https://vike.dev/onRenderClient
-export default onRenderClient
+export { onRenderClient }
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { PageLayout } from './PageLayout'
+import type { OnRenderClientAsync } from 'vike/types'
 
 let root: ReactDOM.Root
-async function onRenderClient(pageContext: any) {
+const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRenderClientAsync> => {
   const { Page, pageProps } = pageContext
   const page = (
     <PageLayout>

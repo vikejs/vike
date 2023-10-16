@@ -1,11 +1,13 @@
-export default route
+// https://vike.dev/route
+export { route }
 
+import type { RouteSync } from 'vike/types'
 import { resolveRoute } from 'vike/routing'
 import { render } from 'vike/abort'
 import { names } from './names'
 
 // We use a Route Function to implement advanced routing logic
-function route(pageContext: { urlPathname: string }) {
+const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
   if (pageContext.urlPathname === '/hello' || pageContext.urlPathname === '/hello/') {
     const name = 'anonymous'
     return { routeParams: { name } }
