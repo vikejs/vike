@@ -4,12 +4,10 @@ export { getConfigValueSerialized }
 import { assert, assertUsage, getPropAccessNotation, hasProp, objectEntries } from '../../../utils.js'
 import type {
   ConfigValueSerialized,
-  ConfigValueSource,
   DefinedAtInfo,
   PageConfigBuildTime,
-  PageConfigGlobalData
+  PageConfigGlobalAtBuildTime
 } from '../../../../../shared/page-configs/PageConfig.js'
-import { generateEagerImport } from '../generateEagerImport.js'
 import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
 import { stringify } from '@brillout/json-serializer/stringify'
@@ -34,7 +32,7 @@ async function getVirtualFilePageConfigs(
 
 function getContent(
   pageConfigs: PageConfigBuildTime[],
-  pageConfigGlobal: PageConfigGlobalData,
+  pageConfigGlobal: PageConfigGlobalAtBuildTime,
   isForClientSide: boolean,
   isDev: boolean,
   id: string,
@@ -44,7 +42,7 @@ function getContent(
   const importStatements: string[] = []
   const varCounterContainer = { varCounter: 0 }
 
-  lines.push('export const pageConfigs = [')
+  lines.push('export const pageConfigsSerialized = [')
   pageConfigs.forEach((pageConfig) => {
     const { pageId, routeFilesystem, isErrorPage } = pageConfig
     const virtualFileIdPageConfigValuesAll = getVirtualFileIdPageConfigValuesAll(pageId, isForClientSide)
@@ -58,8 +56,7 @@ function getContent(
       )})).default,`
     )
 
-    lines.push(`    configValues: {`)
-    // TODO: iterate over pageConfig.configValues instead?
+    lines.push(`    configValuesSerialized: {`)
     Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
       const configValue = pageConfig.configValues[configName]
       if (configValue) {
@@ -99,37 +96,31 @@ function getContent(
   })
   lines.push('];')
 
-  lines.push('export const pageConfigGlobal = {')
-  objectEntries(pageConfigGlobal).forEach(([configName, configValueSource]) => {
+  lines.push('export const pageConfigGlobalSerialized = {')
+  /* Nothing (yet)
+  lines.push(`  configValuesSerialized: {`)
+  lines.push(`  },`)
+  */
+  lines.push(`  configValuesImported: [`)
+  objectEntries(pageConfigGlobal.configValueSources).forEach(([configName, sources]) => {
     if (configName === 'onBeforeRoute') {
       // if( isForClientSide && !isClientRouting ) return
     } else if (configName === 'onPrerenderStart') {
       if (isDev || isForClientSide) {
         // Only load onPrerenderStart() in server production runtime
-        configValueSource = null
+        return
       }
     } else {
       assert(false)
     }
-    let whitespace = '  '
-    let content: string
-    if (configValueSource === null) {
-      content = 'null,'
-    } else {
-      content = serializeConfigValueSource(
-        configValueSource,
-        configName,
-        whitespace,
-        isForClientSide,
-        isClientRouting,
-        importStatements,
-        true
-      )
-      assert(content.startsWith('{') && content.endsWith('},') && content.includes('\n'))
-    }
-    content = `${whitespace}[${JSON.stringify(configName)}]: ${content}`
-    lines.push(content)
+    const configValueSource = sources[0]
+    assert(configValueSource)
+    const whitespace = '    '
+    lines.push(
+      ...serializeConfigValueImported(configValueSource, configName, whitespace, varCounterContainer, importStatements)
+    )
   })
+  lines.push(`  ],`)
   lines.push('};')
 
   const code = [...importStatements, ...lines].join('\n')
@@ -151,38 +142,6 @@ function serializeConfigValue(lines: string[], configName: string, configValueSe
   lines.push(`${whitespace}},`)
 }
 
-function serializeConfigValueSource(
-  configValueSource: ConfigValueSource,
-  configName: string,
-  whitespace: string,
-  isForClientSide: boolean,
-  isClientRouting: boolean,
-  importStatements: string[],
-  isGlobalConfig: boolean
-): string {
-  assert(!configValueSource.isComputed)
-  const { definedAtInfo, configEnv } = configValueSource
-  const lines: string[] = []
-  lines.push(`{`)
-  lines.push(`${whitespace}  definedAtInfo: ${JSON.stringify(definedAtInfo)},`)
-  lines.push(`${whitespace}  configEnv: ${JSON.stringify(configEnv)},`)
-  const eager = configValueSource.configEnv === '_routing-eager' || isGlobalConfig
-  if (isConfigEnvMatch(configEnv, isForClientSide, isClientRouting) || eager) {
-    if ('value' in configValueSource) {
-      const { value } = configValueSource
-      const valueSerialized = getConfigValueSerialized(value, configName, definedAtInfo)
-      lines.push(`${whitespace}  valueSerialized: ${valueSerialized}`)
-    } else if (eager) {
-      const { filePath, fileExportPath } = configValueSource.definedAtInfo
-      const [exportName] = fileExportPath
-      assert(exportName)
-      const configValueEagerImport = getConfigValueEagerImport(filePath, exportName, importStatements)
-      lines.push(`${whitespace}  value: ${configValueEagerImport},`)
-    }
-  }
-  lines.push(`${whitespace}},`)
-  return lines.join('\n')
-}
 function getConfigValueSerialized(value: unknown, configName: string, definedAtInfo: null | DefinedAtInfo): string {
   let configValueSerialized: string
   const valueName = `config${getPropAccessNotation(configName)}`
@@ -209,17 +168,4 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAtI
   }
   configValueSerialized = JSON.stringify(configValueSerialized)
   return configValueSerialized
-}
-function getConfigValueEagerImportNew(importFilePath: string, importStatements: string[]) {
-  const { importVar, importStatement } = generateEagerImport(importFilePath)
-  importStatements.push(importStatement)
-  return importVar
-}
-function getConfigValueEagerImport(importFilePath: string, exportName: string, importStatements: string[]) {
-  let configValueEagerImport: string
-  const { importVar, importStatement } = generateEagerImport(importFilePath)
-  importStatements.push(importStatement)
-  // TODO: expose all exports so that assertDefaultExport can be applied
-  configValueEagerImport = `${importVar}[${JSON.stringify(exportName)}]`
-  return configValueEagerImport
 }

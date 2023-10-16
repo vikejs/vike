@@ -1,20 +1,24 @@
-export { assertPageConfigs }
-export { assertPageConfigGlobal }
+export { assertPageConfigsSerialized }
+export { assertPageConfigGlobalSerialized }
 
 import { assert, isObject, hasProp } from '../utils.js'
-import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
+import type { PageConfigGlobalSerialized, PageConfigSerialized } from '../page-configs/PageConfig.js'
 
-function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageConfig[] {
-  assert(Array.isArray(pageConfigs))
-  pageConfigs.forEach((pageConfig) => {
-    assert(isObject(pageConfig))
-    assert(hasProp(pageConfig, 'pageId', 'string'))
-    assert(hasProp(pageConfig, 'routeFilesystem'))
+function assertPageConfigsSerialized(
+  pageConfigsSerialized: unknown
+): asserts pageConfigsSerialized is PageConfigSerialized[] {
+  assert(Array.isArray(pageConfigsSerialized))
+  pageConfigsSerialized.forEach((pageConfigSerialized) => {
+    assert(isObject(pageConfigSerialized))
+    assert(hasProp(pageConfigSerialized, 'pageId', 'string'))
+    assert(hasProp(pageConfigSerialized, 'routeFilesystem'))
+    assert(hasProp(pageConfigSerialized, 'configValuesSerialized'))
+    assert(hasProp(pageConfigSerialized, 'configValuesImported'))
   })
 }
 
-function assertPageConfigGlobal(pageConfigGlobal: unknown): asserts pageConfigGlobal is PageConfigGlobal {
-  assert(pageConfigGlobal)
-  assert(hasProp(pageConfigGlobal, 'onBeforeRoute'))
-  assert(hasProp(pageConfigGlobal, 'onPrerenderStart'))
+function assertPageConfigGlobalSerialized(
+  pageConfigGlobalSerialized: unknown
+): asserts pageConfigGlobalSerialized is PageConfigGlobalSerialized {
+  assert(hasProp(pageConfigGlobalSerialized, 'configValuesImported'))
 }

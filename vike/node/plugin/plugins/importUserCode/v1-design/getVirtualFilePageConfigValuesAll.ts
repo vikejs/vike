@@ -14,7 +14,7 @@ import { debug } from './debug.js'
 import type { ConfigVikeResolved } from '../../../../../shared/ConfigVike.js'
 import path from 'path'
 import { getConfigValue } from '../../../../../shared/page-configs/utils.js'
-import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSource.js'
+import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSourcesRelevant.js'
 import { isConfigEnvMatch } from './isConfigEnvMatch.js'
 
 async function getVirtualFilePageConfigValuesAll(
@@ -100,7 +100,7 @@ function serializeConfigValueImported(
   assert(!configValueSource.valueIsFilePath)
   assert(fileExportName)
 
-  const { importVar, importStatement } = generateEagerImport(
+  const { importName, importStatement } = generateEagerImport(
     filePath,
     varCounterContainer.varCounter++,
     isValueFile ? undefined : fileExportName
@@ -110,14 +110,14 @@ function serializeConfigValueImported(
   const lines: string[] = []
   lines.push(`  {`)
   lines.push(`    configName: '${configName}',`)
-  lines.push(`    importFilePath: '${filePath}',`)
+  lines.push(`    importPath: '${filePath}',`)
   lines.push(`    isValueFile: ${JSON.stringify(isValueFile)},`)
   if (isValueFile) {
-    lines.push(`    importFileExports: ${importVar},`)
+    lines.push(`    importFileExports: ${importName},`)
   } else {
-    lines.push(`    importFileExportValue: ${importVar},`)
+    lines.push(`    importFileExportValue: ${importName},`)
     assert(fileExportName)
-    lines.push(`    importFileExportName: ${JSON.stringify(fileExportName)},`)
+    lines.push(`    exportName: ${JSON.stringify(fileExportName)},`)
   }
   lines.push(`  },`)
   return lines

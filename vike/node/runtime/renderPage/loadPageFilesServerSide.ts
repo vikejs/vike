@@ -12,7 +12,7 @@ import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
 import { getGlobalContext } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
-import { loadPageCode } from '../../../shared/page-configs/loadPageCode.js'
+import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
 
 type PageContext_loadPageFilesServerSide = PageContextGetPageAssets &
   PageContextDebug & {
@@ -108,7 +108,7 @@ async function loadPageFilesServerSide(pageContext: { _pageId: string } & PageCo
 
 async function loadPageFiles(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string, isDev: boolean) {
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
-  const pageConfigLoaded = !pageConfig ? null : await loadPageCode(pageConfig, isDev)
+  const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
   const { config, configEntries, exports, exportsAll, pageExports } = getExports(pageFilesServerSide, pageConfigLoaded)
   return {

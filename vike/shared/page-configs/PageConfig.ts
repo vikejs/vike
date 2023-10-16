@@ -1,11 +1,13 @@
 export type { PageConfig }
 export type { PageConfigLoaded }
+export type { PageConfigSerialized }
 export type { PageConfigBuildTime }
 export type { PageConfigCommon }
 export type { ConfigEnvInternal }
 export type { ConfigEnv }
 export type { PageConfigGlobal }
-export type { PageConfigGlobalData }
+export type { PageConfigGlobalAtBuildTime }
+export type { PageConfigGlobalSerialized }
 export type { ConfigSource }
 export type { ConfigValue }
 export type { ConfigValueSerialized }
@@ -20,6 +22,7 @@ type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-o
 type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
 
 type PageConfigBuildTime = PageConfigCommon & {
+  configValues: ConfigValues
   configValueSources: ConfigValueSources
 }
 type PageConfigCommon = {
@@ -29,7 +32,6 @@ type PageConfigCommon = {
     routeString: string
     definedBy: string
   }
-  configValues: ConfigValues
 }
 type ConfigValueSource = {
   configEnv: ConfigEnvInternal
@@ -59,13 +61,16 @@ type ConfigValueSources = Record<
 >
 type ConfigValue = {
   value: unknown
-  valueSerialized?: string
   // Is null when config value is:
   //  - computed, or
   //  - cumulative
+  // TODO: replace with filePathToShowToUser
   definedAtInfo: null | DefinedAtInfo
 }
-type ConfigValueSerialized = Omit<ConfigValue, 'valueSerialized' | 'value'> & { valueSerialized: string }
+type ConfigValueSerialized = {
+  valueSerialized: string
+  definedAtInfo: null | DefinedAtInfo
+}
 
 type ConfigValues = Record<
   // configName
@@ -87,44 +92,50 @@ type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
 )
 type PageConfig = PageConfigCommon & {
-  /** Config values loaded/imported eagerly */
-  configValuesImported: ConfigValueImported[]
+  configValues: ConfigValues
   /** Config values loaded/imported lazily */
   loadConfigValuesAll: LoadConfigValuesAll
   /** Whether loadConfigValuesAll() was already called */
   isLoaded?: true
 }
+type PageConfigSerialized = PageConfigCommon & {
+  configValuesSerialized: Record<string, ConfigValueSerialized>
+  /** Config values loaded/imported eagerly */
+  configValuesImported: ConfigValueImported[]
+  loadConfigValuesAll: LoadConfigValuesAll
+}
 type PageConfigLoaded = PageConfig & {
   isLoaded: true
 }
 
-type PageConfigGlobalData = {
-  onPrerenderStart: null | ConfigValueSource
-  onBeforeRoute: null | ConfigValueSource
-}
 type PageConfigGlobal = {
-  onPrerenderStart: null | (ConfigValueSource & { value: unknown })
-  onBeforeRoute: null | (ConfigValueSource & { value: unknown })
+  configValues: ConfigValues
+}
+type PageConfigGlobalSerialized = {
+  configValuesImported: ConfigValueImported[]
+}
+type PageConfigGlobalAtBuildTime = {
+  configValueSources: ConfigValueSources
 }
 
 type LoadConfigValuesAll = () => Promise<ConfigValueImported[]>
 type ConfigValueImported = {
   configName: string
   // TODO: rename?
-  importFilePath: string
+  importPath: string
 } & (
   | {
-      isValueFile: true // importFilePath is a +{configName}.js file
+      isValueFile: true // importPath is a +{configName}.js file
       // TODO: rename?
       importFileExports: Record<string, unknown>
     }
   | {
-      isValueFile: false // importFilePath is imported by a +config.js file
+      isValueFile: false // importPath is imported by a +config.js file
       // TODO: rename?
-      // import { something } from './importFilePathRelative.js'
-      // -> importFileExportName === 'something'
+      // import { something } from './importPathRelative.js'
+      // -> exportName === 'something'
       // -> importFileExportValue holds the value of `something`
-      importFileExportName: string
+      exportName: string
       importFileExportValue: unknown
     }
 )

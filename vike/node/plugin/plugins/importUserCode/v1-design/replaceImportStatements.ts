@@ -13,7 +13,7 @@ import pc from '@brillout/picocolors'
 
 type FileImport = {
   importStatementCode: string
-  importDataString: string
+  importString: string
   importLocalName: string
 }
 function replaceImportStatements(
@@ -29,8 +29,8 @@ function replaceImportStatements(
   imports.forEach((node) => {
     if (node.type !== 'ImportDeclaration') return
 
-    const importFilePath = node.source.value
-    assert(typeof importFilePath === 'string')
+    const importPath = node.source.value
+    assert(typeof importPath === 'string')
 
     const { start, end } = node
 
@@ -38,7 +38,7 @@ function replaceImportStatements(
 
     // No variable imported
     if (node.specifiers.length === 0) {
-      const isWarning = !styleFileRE.test(importFilePath)
+      const isWarning = !styleFileRE.test(importPath)
       let quote = indent(importStatementCode)
       if (isWarning) {
         quote = pc.cyan(quote)
@@ -63,7 +63,7 @@ function replaceImportStatements(
           specifier.type === 'ImportNamespaceSpecifier'
       )
       const importLocalName = specifier.local.name
-      const importFileExportName = (() => {
+      const exportName = (() => {
         if (specifier.type === 'ImportDefaultSpecifier') return 'default'
         if (specifier.type === 'ImportNamespaceSpecifier') return '*'
         {
@@ -72,11 +72,11 @@ function replaceImportStatements(
         }
         return importLocalName
       })()
-      const importDataString = serializeImportData({ importFilePath, importFileExportName, importWasGenerated: true })
-      replacement += `const ${importLocalName} = '${importDataString}';`
+      const importString = serializeImportData({ importPath, exportName, importStringWasGenerated: true })
+      replacement += `const ${importLocalName} = '${importString}';`
       fileImports.push({
         importStatementCode,
-        importDataString,
+        importString,
         importLocalName
       })
     })
@@ -107,46 +107,58 @@ function getImports(code: string): ImportDeclaration[] {
 const import_ = 'import'
 const SEP = ':'
 const zeroWidthSpace = '\u200b'
+/**
+ * Data Structure holding info about import statement:
+ *   `import { someExport as someImport } from './some-file'`
+ * <=>
+ *   `importData === {`
+ *      `importPath: './some-file',`
+ *      `exportName: 'someExport',`
+ *      `importString: 'import:./some-file:someExport',`
+ *      `importStringWasGenerated: true,`
+ *    `}`
+ * We discard the import name `someImport` because we don't need it.
+ */
 type ImportData = {
-  importFilePath: string
-  importFileExportName: string
-  importWasGenerated: boolean
-  importDataString: string
+  importPath: string
+  exportName: string
+  importString: string
+  importStringWasGenerated: boolean
 }
 function serializeImportData({
-  importFilePath,
-  importFileExportName,
-  importWasGenerated
-}: Omit<ImportData, 'importDataString'>): string {
-  const tag = importWasGenerated ? zeroWidthSpace : ''
-  // `import:${importFilePath}:${importFilePath}`
-  return `${tag}${import_}${SEP}${importFilePath}${SEP}${importFileExportName}`
+  importPath,
+  exportName,
+  importStringWasGenerated
+}: Omit<ImportData, 'importString'>): string {
+  const tag = importStringWasGenerated ? zeroWidthSpace : ''
+  // `import:${importPath}:${importPath}`
+  return `${tag}${import_}${SEP}${importPath}${SEP}${exportName}`
 }
 function isImportData(str: string): boolean {
   return str.startsWith(import_ + SEP) || str.startsWith(zeroWidthSpace + import_ + SEP)
 }
-function parseImportData(importDataString: string): null | ImportData {
-  if (!isImportData(importDataString)) {
+function parseImportData(importString: string): null | ImportData {
+  if (!isImportData(importString)) {
     return null
   }
 
-  let importWasGenerated = false
-  if (importDataString.startsWith(zeroWidthSpace)) {
-    importWasGenerated = true
+  let importStringWasGenerated = false
+  if (importString.startsWith(zeroWidthSpace)) {
+    importStringWasGenerated = true
     assert(zeroWidthSpace.length === 1)
-    importDataString = importDataString.slice(1)
+    importString = importString.slice(1)
   }
 
-  const parts = importDataString.split(SEP).slice(1)
-  if (!importWasGenerated && parts.length === 1) {
-    const importFileExportName = 'default'
-    const importFilePath = parts[0]!
-    return { importFilePath, importFileExportName, importWasGenerated, importDataString }
+  const parts = importString.split(SEP).slice(1)
+  if (!importStringWasGenerated && parts.length === 1) {
+    const exportName = 'default'
+    const importPath = parts[0]!
+    return { importPath, exportName, importStringWasGenerated, importString }
   }
   assert(parts.length >= 2)
-  const importFileExportName = parts[parts.length - 1]!
-  const importFilePath = parts.slice(0, -1).join(SEP)
-  return { importFilePath, importFileExportName, importWasGenerated, importDataString }
+  const exportName = parts[parts.length - 1]!
+  const importPath = parts.slice(0, -1).join(SEP)
+  return { importPath, exportName, importStringWasGenerated, importString }
 }
 
 // https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368

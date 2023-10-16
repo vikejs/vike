@@ -5,9 +5,8 @@ import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
 import type { PageConfig, PageConfigGlobal } from '../page-configs/PageConfig.js'
-import { assertPageConfigGlobal, assertPageConfigs } from './assertPageConfigs.js'
-import { parse } from '@brillout/json-serializer/parse'
-import { processConfigValuesImported } from '../page-configs/loadPageCode.js'
+import { assertPageConfigGlobalSerialized, assertPageConfigsSerialized } from './assertPageConfigs.js'
+import { parsePageConfigsSerialized } from './parsePageConfigsSerialized.js'
 
 function parseGlobResults(pageFilesExports: unknown): {
   pageFiles: PageFile[]
@@ -27,12 +26,15 @@ function parseGlobResults(pageFilesExports: unknown): {
   )
   assert(hasProp(pageFilesExports, 'pageFilesList', 'string[]'))
 
-  assert(hasProp(pageFilesExports, 'pageConfigs'))
-  assert(hasProp(pageFilesExports, 'pageConfigGlobal'))
-  const { pageConfigs, pageConfigGlobal } = pageFilesExports
-  assertPageConfigs(pageConfigs)
-  parsePageConfigs(pageConfigs)
-  assertPageConfigGlobal(pageConfigGlobal)
+  assert(hasProp(pageFilesExports, 'pageConfigsSerialized'))
+  assert(hasProp(pageFilesExports, 'pageConfigGlobalSerialized'))
+  const { pageConfigsSerialized, pageConfigGlobalSerialized } = pageFilesExports
+  assertPageConfigsSerialized(pageConfigsSerialized)
+  assertPageConfigGlobalSerialized(pageConfigGlobalSerialized)
+  const { pageConfigs, pageConfigGlobal } = parsePageConfigsSerialized(
+    pageConfigsSerialized,
+    pageConfigGlobalSerialized
+  )
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(pageFilesExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {
@@ -109,40 +111,3 @@ function parseGlobResult(globObject: Record<string, unknown>): GlobResult {
 function assertLoadModule(globValue: unknown): asserts globValue is () => Promise<Record<string, unknown>> {
   assert(isCallable(globValue))
 }
-
-function parsePageConfigs(pageConfigs: PageConfig[]) {
-  pageConfigs.forEach((pageConfig) => {
-    Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
-      {
-        const { valueSerialized } = configValue
-        if (valueSerialized !== undefined) {
-          configValue.value = parse(valueSerialized)
-        }
-      }
-      /*
-      if (configName === 'route') {
-        assertRouteConfigValue(configElement)
-      }
-      */
-    })
-    processConfigValuesImported(pageConfig.configValuesImported, pageConfig)
-  })
-}
-
-// TODO: use again
-// function assertRouteConfigValue(configElement: ConfigElement) {
-//   assert(hasProp(configElement, 'configValue')) // route files are eagerly loaded
-//   const { configValue } = configElement
-//   const configValueType = typeof configValue
-//   assertUsage(
-//     configValueType === 'string' || isCallable(configValue),
-//     `${configElement.configDefinedAt} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`
-//   )
-//   /* We don't do that to avoid unnecessarily bloating the client-side bundle when using Server Routing
-//    *  - When using Server Routing, this file is loaded as well
-//    *  - When using Server Routing, client-side validation is superfluous as Route Strings only need to be validated on the server-side
-//   if (typeof configValue === 'string') {
-//     assertRouteString(configValue, `${configElement.configDefinedAt} defines an`)
-//   }
-//   */
-// }

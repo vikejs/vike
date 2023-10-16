@@ -163,7 +163,7 @@
   },
   "devDependencies": {
     "@brillout/part-regex": "^0.1.2",
-    "@brillout/release-me": "^0.1.7",
+    "@brillout/release-me": "^0.1.8",
     "@types/estree": "^1.0.0",
     "@types/jest": "^27.4.1",
     "@types/node": "^20.1.0",

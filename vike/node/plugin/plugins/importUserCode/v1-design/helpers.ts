@@ -1,8 +1,11 @@
 export { getConfigEnv }
 export { isConfigSet }
 
-import type { ConfigEnvInternal, PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
-import { getConfigValueSource } from '../../../shared/getConfigValueSource.js'
+import type {
+  ConfigEnvInternal,
+  ConfigValueSource,
+  PageConfigBuildTime
+} from '../../../../../shared/page-configs/PageConfig.js'
 import { assert, assertIsNotProductionRuntime } from '../../../utils.js'
 assertIsNotProductionRuntime()
 
@@ -29,4 +32,14 @@ function isConfigSet(pageConfig: PageConfigBuildTime, configName: string): boole
   // Enable users to suppress global config values by overriding the config's value to null
   if (configValueSource?.value === null) return false
   return !!configValueSource
+}
+
+function getConfigValueSource(pageConfig: PageConfigBuildTime, configName: string): null | ConfigValueSource {
+  // Doesn't exist on the client-side, but we are on the server-side as attested by assertIsNotBrowser()
+  assert(pageConfig.configValueSources)
+  const sources = pageConfig.configValueSources[configName]
+  if (!sources) return null
+  const configValueSource = sources[0]
+  assert(configValueSource)
+  return configValueSource
 }

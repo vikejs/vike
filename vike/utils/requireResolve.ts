@@ -1,4 +1,4 @@
-export { resolve }
+export { requireResolve }
 
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -13,7 +13,7 @@ const require_ = createRequire(importMetaUrl)
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
 
-function resolve(importPath: string, cwd: string): string | null {
+function requireResolve(importPath: string, cwd: string): string | null {
   assertPosixPath(cwd)
   const clean = addFileExtensionsToRequireResolve()
   importPath = removeFileExtention(importPath)

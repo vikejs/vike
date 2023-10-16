@@ -181,19 +181,17 @@ function getGlobalHooks(
 } {
   // V1 Design
   if (pageConfigs.length > 0) {
-    if (pageConfigGlobal.onBeforeRoute) {
-      const hookFn = pageConfigGlobal.onBeforeRoute.value
-      if (hookFn) {
-        assert(!pageConfigGlobal.onBeforeRoute.isComputed)
-        const hookFilePath = pageConfigGlobal.onBeforeRoute.definedAtInfo.filePath
-        assert(hookFilePath)
-        assertUsage(isCallable(hookFn), `The hook onBeforeRoute() defined by ${hookFilePath} should be a function.`)
-        const onBeforeRouteHook: OnBeforeRouteHook = {
-          hookFilePath: hookFilePath,
-          onBeforeRoute: hookFn
-        }
-        return { onBeforeRouteHook, filesystemRoots: null }
+    if (pageConfigGlobal.configValues.onBeforeRoute?.value) {
+      const { value: hookFn, definedAtInfo } = pageConfigGlobal.configValues.onBeforeRoute
+      // config.onBeforeRoute isn't a computed nor a cumulative config => definedAtInfo should always be defined
+      assert(definedAtInfo)
+      const hookFilePath = definedAtInfo.filePath
+      assertUsage(isCallable(hookFn), `The hook onBeforeRoute() defined by ${hookFilePath} should be a function.`)
+      const onBeforeRouteHook: OnBeforeRouteHook = {
+        hookFilePath: hookFilePath,
+        onBeforeRoute: hookFn
       }
+      return { onBeforeRouteHook, filesystemRoots: null }
     }
     return { onBeforeRouteHook: null, filesystemRoots: null }
   }

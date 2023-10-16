@@ -5,7 +5,7 @@ import { findPageFiles } from '../../shared/findPageFiles.js'
 import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageImport, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
-import { getConfigValueSourcesRelevant } from '../../shared/getConfigValueSource.js'
+import { getConfigValueSourcesRelevant } from '../../shared/getConfigValueSourcesRelevant.js'
 import { analyzeClientEntries } from '../buildConfig.js'
 import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
 import {
