@@ -39,7 +39,7 @@ function isErrorPage(pageId: string, pageConfigs: PageConfigRuntime[]): boolean 
   if (pageConfigs.length > 0) {
     const pageConfig = pageConfigs.find((p) => p.pageId === pageId)
     assert(pageConfig)
-    return pageConfig.isErrorPage
+    return !!pageConfig.isErrorPage
   } else {
     return isErrorPageId(pageId, false)
   }

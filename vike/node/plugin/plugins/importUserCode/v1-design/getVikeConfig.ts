@@ -1303,7 +1303,7 @@ function determineRouteFilesystem(locationId: string, configValueSources: Config
   const configFilesystemRoutingRoot = configValueSources[configName]?.[0]
   let filesystemRouteString = getFilesystemRouteString(locationId)
   if (determineIsErrorPage(filesystemRouteString)) {
-    return { isErrorPage: true, routeFilesystem: null }
+    return { isErrorPage: true as const, routeFilesystem: undefined }
   }
   let filesystemRouteDefinedBy = getFilesystemRouteDefinedBy(locationId) // for log404()
   if (configFilesystemRoutingRoot) {
@@ -1321,7 +1321,7 @@ function determineRouteFilesystem(locationId: string, configValueSources: Config
     routeString: filesystemRouteString,
     definedBy: filesystemRouteDefinedBy
   }
-  return { routeFilesystem, isErrorPage: false }
+  return { routeFilesystem, isErrorPage: undefined }
 }
 function getFilesystemRoutingRootEffect(
   configFilesystemRoutingRoot: ConfigValueSource,

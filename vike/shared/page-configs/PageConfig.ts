@@ -19,8 +19,8 @@ export type { DefinedAtInfoFull }
 
 type PageConfigBase = {
   pageId: string
-  isErrorPage: boolean
-  routeFilesystem: null | {
+  isErrorPage?: true
+  routeFilesystem?: {
     routeString: string
     definedBy: string
   }
