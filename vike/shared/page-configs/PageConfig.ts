@@ -17,9 +17,18 @@ export type { ConfigValueSources }
 export type { DefinedAtInfo }
 export type { DefinedAtInfoFull }
 
-type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
-type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
-
+/** PageConfig data structure at runtime */
+type PageConfig = PageConfigBase & {
+  configValues: ConfigValues
+  /** Config values loaded/imported lazily */
+  loadConfigValuesAll: LoadConfigValuesAll
+  /** Whether loadConfigValuesAll() was already called */
+  isLoaded?: true
+}
+type PageConfigLoaded = PageConfig & {
+  isLoaded: true
+}
+/** PageConfig data structure at build-time */
 type PageConfigBuildTime = PageConfigBase & {
   configValues: ConfigValues
   configValueSources: ConfigValueSources
@@ -32,6 +41,26 @@ type PageConfigBase = {
     definedBy: string
   }
 }
+/** PageConfig data structure serialized in virtual files: parsing results in the runtime PageConfig data structure */
+type PageConfigSerialized = PageConfigBase & {
+  configValuesSerialized: Record<string, ConfigValueSerialized>
+  /** Config values loaded/imported eagerly */
+  configValuesImported: ConfigValueImported[]
+  loadConfigValuesAll: LoadConfigValuesAll
+}
+
+type PageConfigGlobal = {
+  configValues: ConfigValues
+}
+type PageConfigGlobalSerialized = {
+  configValuesImported: ConfigValueImported[]
+}
+type PageConfigGlobalAtBuildTime = {
+  configValueSources: ConfigValueSources
+}
+
+type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
+type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
 type ConfigValueSource = {
   configEnv: ConfigEnvInternal
   value?: unknown
@@ -90,32 +119,6 @@ type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileExportName: string; configSourceFileDefaultExportKey?: undefined }
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
 )
-type PageConfig = PageConfigBase & {
-  configValues: ConfigValues
-  /** Config values loaded/imported lazily */
-  loadConfigValuesAll: LoadConfigValuesAll
-  /** Whether loadConfigValuesAll() was already called */
-  isLoaded?: true
-}
-type PageConfigSerialized = PageConfigBase & {
-  configValuesSerialized: Record<string, ConfigValueSerialized>
-  /** Config values loaded/imported eagerly */
-  configValuesImported: ConfigValueImported[]
-  loadConfigValuesAll: LoadConfigValuesAll
-}
-type PageConfigLoaded = PageConfig & {
-  isLoaded: true
-}
-
-type PageConfigGlobal = {
-  configValues: ConfigValues
-}
-type PageConfigGlobalSerialized = {
-  configValuesImported: ConfigValueImported[]
-}
-type PageConfigGlobalAtBuildTime = {
-  configValueSources: ConfigValueSources
-}
 
 type LoadConfigValuesAll = () => Promise<ConfigValueImported[]>
 type ConfigValueImported = {
