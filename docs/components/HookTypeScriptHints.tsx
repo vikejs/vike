@@ -4,17 +4,23 @@ import React from 'react'
 import { assert, Link, Warning } from '@brillout/docpress'
 
 function HookTypeScriptHints({ hookTypeName }: { hookTypeName: `${string}Sync` | `${string}Async` }) {
+  // Ensure hookTypeName starts with an upper case
+  assert(hookTypeName[0] !== hookTypeName[0].toLowerCase(), hookTypeName)
+
   let hookName: string
   let isSync: boolean
   if (hookTypeName.endsWith('Sync')) {
-    hookName = hookTypeName.slice('Sync'.length)
+    hookName = hookTypeName.slice(0, -1 * 'Sync'.length)
     isSync = true
   } else if (hookTypeName.endsWith('Async')) {
-    hookName = hookTypeName.slice('Async'.length)
+    hookName = hookTypeName.slice(0, -1 * 'Async'.length)
     isSync = false
   } else {
     assert(false, hookTypeName)
   }
+
+  hookName = hookName[0].toLowerCase() + hookName.slice(1)
+
   return (
     <>
       <Warning>
