@@ -1,3 +1,4 @@
+// https://vike.dev/route
 export { route }
 
 import type { Route } from 'vike/types'

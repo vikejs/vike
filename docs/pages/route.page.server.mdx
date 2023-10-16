@@ -1,3 +1,4 @@
+import { HookTypeScriptHints } from '../components/HookTypeScriptHints'
 import { Link } from '@brillout/docpress'
 
 > This page is part of the <Link text="V1 design" href="/migration/v1-design" />.
@@ -36,7 +37,9 @@ Instead of a Route String, you can also define a Route Function:
 ```js
 // /pages/product/+route.js
 
-export default (pageContext) => {
+export { route }
+
+function route(pageContext) => {
   const parts = pageContext.urlPathname.split('/')
   if (parts[1] !== 'product') {
     return false
@@ -49,6 +52,32 @@ export default (pageContext) => {
   }
 }
 ```
+
+## TypeScript
+
+```ts
+export { route }
+
+import type { Route } from 'vike/types'
+
+const route: Route = (pageContext): ReturnType<Route> => {
+  const parts = pageContext.urlPathname.split('/')
+  if (parts[1] !== 'product') {
+    return false
+  } else {
+    return {
+      routeParams: {
+        id: parts[2]
+      }
+    }
+  }
+}
+```
+
+<HookTypeScriptHints
+  hookTypeName="Route"
+  wrongDefinition="const route: Route = (pageContext) => {"
+/>
 
 See also:
  - <Link href="/routing" />
