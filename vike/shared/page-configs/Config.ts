@@ -116,12 +116,16 @@ type OnBeforeRenderSync = (pageContext: PageContextServer) => { pageContext: Par
  *
  * https://vike.dev/onBeforeRoute
  */
-type OnBeforeRouteAsync = (pageContext: PageContextServer) => Promise<{ pageContext: Partial<Vike.PageContext> }>
+type OnBeforeRouteAsync = (
+  pageContext: PageContextServer
+) => Promise<{ pageContext: Partial<{ urlOriginal: string } | Vike.PageContext> }>
 /** Hook called before the URL is routed to a page.
  *
  * https://vike.dev/onBeforeRoute
  */
-type OnBeforeRouteSync = (pageContext: PageContextServer) => { pageContext: Partial<Vike.PageContext> }
+type OnBeforeRouteSync = (pageContext: PageContextServer) => {
+  pageContext: Partial<{ urlOriginal: string } | Vike.PageContext>
+}
 /** Hook called after the page is hydrated.
  *
  * https://vike.dev/clientRouting
