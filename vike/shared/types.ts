@@ -77,7 +77,7 @@ type PageContextBuiltInCommon<
    * https://vike.dev/exports
    */
   exportsAll: ExportsAll
-  /** The URL of the current page */
+  /** The URL your provided to Vike when calling `renderPage({ urlOriginal })` in your server middleware. */
   urlOriginal: string
   /** If an error occurs, whether the error is a `404 Page Not Found`.
    *
