@@ -202,12 +202,14 @@ type OnRenderHtmlSync = (pageContext: PageContextServer) =>
 /** @deprecated Use a sync route() with an async guard() instead */
 type RouteAsync = (
   pageContext: PageContextServer | PageContextClient
-) => Promise<{ routeParams: Record<string, string> } | false>
+) => Promise<{ routeParams?: Record<string, string>; precedence?: number } | boolean>
 /** The page's URL(s).
  *
  *  https://vike.dev/route
  */
-type RouteSync = (pageContext: PageContextServer | PageContextClient) => { routeParams: Record<string, string> } | false
+type RouteSync = (
+  pageContext: PageContextServer | PageContextClient
+) => { routeParams?: Record<string, string>; precedence?: number } | boolean
 /** The page's URL(s).
  *
  *  https://vike.dev/route
