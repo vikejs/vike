@@ -35,6 +35,7 @@ async function resolveRouteFunction(
     )} instead)`
   )
 
+  // AFAICT this return interface is superfluous. Should we soft-deprecate it and remove it?
   if ('match' in result) {
     const { match } = result
     assertUsage(
