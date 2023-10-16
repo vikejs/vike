@@ -1,13 +1,13 @@
 // https://vike.dev/onRenderHtml
-export default onRenderHtml
+export { onRenderHtml }
 
 import { renderToNodeStream } from '@vue/server-renderer'
 import { escapeInject } from 'vike/server'
 import { createApp } from './app'
 import { getPageTitle } from './getPageTitle'
-import type { PageContextServer } from 'vike/types'
+import type { OnRenderHtmlAsync } from 'vike/types'
 
-async function onRenderHtml(pageContext: PageContextServer) {
+const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
   const app = createApp(pageContext)
   const stream = renderToNodeStream(app)
 
@@ -26,6 +26,7 @@ async function onRenderHtml(pageContext: PageContextServer) {
   return {
     documentHtml,
     pageContext: {
+      // https://vike.dev/stream
       enableEagerStreaming: true
     }
   }

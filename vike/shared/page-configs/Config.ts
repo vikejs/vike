@@ -200,7 +200,9 @@ type OnRenderHtmlAsync = (pageContext: PageContextServer) => Promise<
   | {
       documentHtml: DocumentHtml
       // See https://vike.dev/stream#initial-data-after-stream-end
-      pageContext: Partial<Vike.PageContext> | (() => Promise<Partial<Vike.PageContext>>)
+      pageContext:
+        | Partial<{ enableEagerStreaming: boolean } | Vike.PageContext>
+        | (() => Promise<Partial<Vike.PageContext>>)
     }
 >
 /** Hook called when page is rendered to HTML on the server-side.
@@ -212,7 +214,9 @@ type OnRenderHtmlSync = (pageContext: PageContextServer) =>
   | {
       documentHtml: DocumentHtml
       // See https://vike.dev/stream#initial-data-after-stream-end
-      pageContext: Partial<Vike.PageContext> | (() => Promise<Partial<Vike.PageContext>>)
+      pageContext:
+        | Partial<{ enableEagerStreaming: boolean } | Vike.PageContext>
+        | (() => Promise<Partial<Vike.PageContext>>)
     }
 /** @deprecated Use a sync route() with an async guard() instead */
 type RouteAsync = (
