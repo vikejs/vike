@@ -26,7 +26,6 @@ export type { OnRenderHtmlAsync }
 export type { OnRenderHtmlSync }
 export type { RouteAsync }
 export type { RouteSync }
-export type { Route }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
@@ -230,7 +229,6 @@ type RouteSync = (
  *
  *  https://vike.dev/route
  */
-type Route = RouteSync
 
 // TODO: write docs of links below
 
