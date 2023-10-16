@@ -200,12 +200,14 @@ type OnRenderHtmlSync = (pageContext: PageContextServer) =>
       pageContext: Partial<Vike.PageContext> | (() => Promise<Partial<Vike.PageContext>>)
     }
 /** @deprecated Use a sync route() with an async guard() instead */
-type RouteAsync = (pageContext: PageContextServer | PageContextClient) => Promise<{ routeParams: Record<string, string> }>
+type RouteAsync = (
+  pageContext: PageContextServer | PageContextClient
+) => Promise<{ routeParams: Record<string, string> } | false>
 /** The page's URL(s).
  *
  *  https://vike.dev/route
  */
-type RouteSync = (pageContext: PageContextServer | PageContextClient) => { routeParams: Record<string, string> }
+type RouteSync = (pageContext: PageContextServer | PageContextClient) => { routeParams: Record<string, string> } | false
 /** The page's URL(s).
  *
  *  https://vike.dev/route
