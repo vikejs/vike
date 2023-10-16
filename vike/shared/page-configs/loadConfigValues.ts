@@ -6,7 +6,7 @@ import { parseConfigValuesImported } from './parseConfigValuesImported.js'
 
 async function loadConfigValues(pageConfig: PageConfigRuntime, isDev: boolean): Promise<PageConfigRuntimeLoaded> {
   if (
-    pageConfig.isLoaded &&
+    'isLoaded' in pageConfig &&
     // We don't need to cache in dev, since Vite already caches the virtual module
     !isDev
   ) {

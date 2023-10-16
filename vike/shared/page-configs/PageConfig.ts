@@ -17,22 +17,6 @@ export type { ConfigValueSources }
 export type { DefinedAtInfo }
 export type { DefinedAtInfoFull }
 
-/** PageConfig data structure at runtime */
-type PageConfigRuntime = PageConfigBase & {
-  configValues: ConfigValues
-  /** Config values loaded/imported lazily */
-  loadConfigValuesAll: LoadConfigValuesAll
-  /** Whether loadConfigValuesAll() was already called */
-  isLoaded?: true
-}
-type PageConfigRuntimeLoaded = PageConfigRuntime & {
-  isLoaded: true
-}
-/** PageConfig data structure at build-time */
-type PageConfigBuildTime = PageConfigBase & {
-  configValues: ConfigValues
-  configValueSources: ConfigValueSources
-}
 type PageConfigBase = {
   pageId: string
   isErrorPage: boolean
@@ -41,11 +25,30 @@ type PageConfigBase = {
     definedBy: string
   }
 }
-/** PageConfig data structure serialized in virtual files: parsing results in the runtime PageConfig data structure */
+/** Page config data structure available and used at runtime */
+type PageConfigRuntime = PageConfigBase & {
+  /** Loaded config values */
+  configValues: ConfigValues
+  /** Load config values that are lazily loaded such as config.Page */
+  loadConfigValuesAll: LoadConfigValuesAll
+}
+/** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
+type PageConfigRuntimeLoaded = PageConfigRuntime & {
+  /** Whether loadConfigValuesAll() was called */
+  isLoaded: true
+}
+/** page config data structure available and used at build-time */
+type PageConfigBuildTime = PageConfigBase & {
+  configValues: ConfigValues
+  configValueSources: ConfigValueSources
+}
+/** page config data structure serialized in virtual files: parsing it results in PageConfigRuntime */
 type PageConfigRuntimeSerialized = PageConfigBase & {
+  /** Config values that are loaded eagerly and serializable such as config.passToClient */
   configValuesSerialized: Record<string, ConfigValueSerialized>
-  /** Config values loaded/imported eagerly */
+  /** Config values imported eagerly such as config.route */
   configValuesImported: ConfigValueImported[]
+  /** Config values imported lazily such as config.page */
   loadConfigValuesAll: LoadConfigValuesAll
 }
 
