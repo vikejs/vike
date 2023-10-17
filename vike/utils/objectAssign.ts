@@ -7,5 +7,7 @@ function objectAssign<Obj extends object, ObjAddendum>(
   obj: Obj,
   objAddendum: ObjAddendum
 ): asserts obj is Obj & ObjAddendum {
-  Object.defineProperties(obj, Object.getOwnPropertyDescriptors(objAddendum))
+  if (objAddendum) {
+    Object.defineProperties(obj, Object.getOwnPropertyDescriptors(objAddendum))
+  }
 }
