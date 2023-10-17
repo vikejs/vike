@@ -49,7 +49,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod', isCJS?
     }
     {
       const dirname = path.dirname(url.fileURLToPath(import.meta.url))
-      // dirname isn't the directory of this file: because this file is bundled with the entry, e.g. dirname is the directory examples/react-17/ of the entry /examples/react-17/.test-dev.test.ts
+      // dirname isn't the directory of this file: because this file is bundled with the entry, e.g. dirname is the directory examples/react-streaming/ of the entry /examples/react-streaming/.test-dev.test.ts
       const repoRoot = path.join(dirname, `../../`)
       const screenshotFixturePathUnresolved = path.join(repoRoot, 'examples/react/.test-screenshot-fixture.png')
       const require = createRequire(import.meta.url)
