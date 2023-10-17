@@ -1,11 +1,11 @@
 // https://vike.dev/onRenderHtml
-export default onRenderHtml
+export { onRenderHtml }
 
 import { escapeInject } from 'vike/server'
-import type { PageContextServer } from './types'
+import type { OnRenderHtmlAsync } from 'vike/types'
 
 // SPA mode: the HTML is static with an empty <div id="root">, see https://vike.dev/render-modes#spa
-function onRenderHtml(pageContext: PageContextServer) {
+const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
   return escapeInject`<!DOCTYPE html>
     <html lang="en">
       <head>

@@ -1,8 +1,8 @@
 // https://vike.dev/onRenderClient
-export default onRenderClient
+export { onRenderClient }
 
 import { render } from 'solid-js/web'
-import type { PageContextClient } from './types'
+import type { OnRenderClientAsync } from 'vike/types'
 
 /**
  * A function that disposes previously rendered pages.
@@ -13,7 +13,7 @@ import type { PageContextClient } from './types'
  */
 let disposePreviousPage: () => void
 
-async function onRenderClient(pageContext: PageContextClient) {
+const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRenderClientAsync> => {
   const { Page } = pageContext
 
   if (disposePreviousPage) {
