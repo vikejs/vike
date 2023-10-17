@@ -40,12 +40,12 @@ type ConfigDefinition = {
 }
 
 type ConfigEffect = (config: {
-  /** The resolved config value.
+  /** The config value.
    *
    * https://vike.dev/meta
    */
   configValue: unknown
-  /** Place where the resolved config value comes from.
+  /** Where the config value is defined.
    *
    * https://vike.dev/meta
    */
