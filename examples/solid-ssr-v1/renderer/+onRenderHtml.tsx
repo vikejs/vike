@@ -1,13 +1,13 @@
 // https://vike.dev/onRenderHtml
-export default onRenderHtml
+export { onRenderHtml }
 
 import { generateHydrationScript, renderToStream } from 'solid-js/web'
 import { PageLayout } from './PageLayout'
 import { escapeInject, dangerouslySkipEscape, stampPipe } from 'vike/server'
-import { PageContext } from './types'
 import logoUrl from './logo.svg'
+import type { OnRenderHtmlAsync } from 'vike/types'
 
-function onRenderHtml(pageContext: PageContext) {
+const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
   const { pipe } = renderToStream(() => <PageLayout pageContext={pageContext} />)
   stampPipe(pipe, 'node-stream')
 

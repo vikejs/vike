@@ -3,7 +3,7 @@ import { Link } from './Link'
 import logo from './logo.svg'
 import './PageLayout.css'
 import { PageContextProvider, usePageContext } from './usePageContext'
-import type { PageContext } from './types'
+import type { PageContext } from 'vike/types'
 import type { Store } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 

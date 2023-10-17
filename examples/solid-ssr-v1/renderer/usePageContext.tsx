@@ -3,7 +3,7 @@ export { PageContextProvider }
 
 import { useContext, createContext, type JSX } from 'solid-js'
 import { type Store } from 'solid-js/store'
-import type { PageContext } from './types'
+import type { PageContext } from 'vike/types'
 
 const Context = createContext<Store<PageContext>>()
 

@@ -1,20 +1,17 @@
 // https://vike.dev/onRenderClient
-export default onRenderClient
+export { onRenderClient }
 
 import { hydrate, render } from 'solid-js/web'
 import { PageLayout } from './PageLayout'
-import type { PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient } from 'vike/types'
-import type { PageContext } from './types'
+import type { OnRenderClientAsync, PageContextClient } from 'vike/types'
 import { createStore, reconcile } from 'solid-js/store'
-
-type PageContextClient = PageContextBuiltInClient & PageContext
 
 let dispose: () => void
 let rendered = false
 
 const [pageContextStore, setPageContext] = createStore<PageContextClient>({} as PageContextClient)
 
-async function onRenderClient(pageContext: PageContextClient) {
+const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRenderClientAsync> => {
   pageContext = removeUnmergableInternals(pageContext)
 
   if (!rendered) {
