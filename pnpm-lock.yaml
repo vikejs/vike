@@ -1307,54 +1307,6 @@ importers:
         specifier: ^4.0.3
         version: 4.3.5(@types/node@17.0.45)
 
-  examples/redux:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^3.0.0
-        version: 3.1.0(vite@4.3.5)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      react-redux:
-        specifier: ^8.0.1
-        version: 8.0.5(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1)
-      redux:
-        specifier: ^4.2.0
-        version: 4.2.1
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
-  examples/redux-v1:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^3.0.0
-        version: 3.1.0(vite@4.3.5)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      react-redux:
-        specifier: ^8.0.1
-        version: 8.0.5(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1)
-      redux:
-        specifier: ^4.2.0
-        version: 4.2.1
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
   examples/render-modes:
     dependencies:
       '@vitejs/plugin-react':
@@ -1844,54 +1796,6 @@ importers:
         specifier: ^3.3.4
         version: 3.3.4
 
-  examples/vue-pinia:
-    dependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^4.0.0
-        version: 4.2.1(vite@4.3.5)(vue@3.2.47)
-      '@vue/compiler-sfc':
-        specifier: ^3.2.31
-        version: 3.2.47
-      '@vue/server-renderer':
-        specifier: ^3.2.37
-        version: 3.2.47(vue@3.2.47)
-      pinia:
-        specifier: ^2.0.14
-        version: 2.0.35(typescript@4.9.5)(vue@3.2.47)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-      vue:
-        specifier: ^3.2.37
-        version: 3.2.47
-
-  examples/vue-pinia-v1:
-    dependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^4.0.0
-        version: 4.2.1(vite@4.3.5)(vue@3.2.47)
-      '@vue/compiler-sfc':
-        specifier: ^3.2.31
-        version: 3.2.47
-      '@vue/server-renderer':
-        specifier: ^3.2.37
-        version: 3.2.47(vue@3.2.47)
-      pinia:
-        specifier: ^2.0.14
-        version: 2.0.35(typescript@4.9.5)(vue@3.2.47)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-      vue:
-        specifier: ^3.2.37
-        version: 3.2.47
-
   examples/vue-v1:
     dependencies:
       '@vitejs/plugin-vue':
@@ -1912,54 +1816,6 @@ importers:
       vue:
         specifier: ^3.2.47
         version: 3.2.47
-
-  examples/vuex:
-    dependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^4.0.0
-        version: 4.2.1(vite@4.3.5)(vue@3.2.47)
-      '@vue/compiler-sfc':
-        specifier: ^3.2.47
-        version: 3.2.47
-      '@vue/server-renderer':
-        specifier: ^3.2.47
-        version: 3.2.47(vue@3.2.47)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.1.1
-        version: 4.3.5(@types/node@17.0.45)
-      vue:
-        specifier: ^3.2.47
-        version: 3.2.47
-      vuex:
-        specifier: ^4.1.0
-        version: 4.1.0(vue@3.2.47)
-
-  examples/vuex-v1:
-    dependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^4.0.0
-        version: 4.2.1(vite@4.3.5)(vue@3.2.47)
-      '@vue/compiler-sfc':
-        specifier: ^3.2.47
-        version: 3.2.47
-      '@vue/server-renderer':
-        specifier: ^3.2.47
-        version: 3.2.47(vue@3.2.47)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.1.1
-        version: 4.3.5(@types/node@17.0.45)
-      vue:
-        specifier: ^3.2.47
-        version: 3.2.47
-      vuex:
-        specifier: ^4.1.0
-        version: 4.1.0(vue@3.2.47)
 
   examples/webpack-v1:
     dependencies:
@@ -4867,13 +4723,6 @@ packages:
       '@types/unist': 2.0.6
     dev: false
 
-  /@types/hoist-non-react-statics@3.3.1:
-    resolution: {integrity: sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==}
-    dependencies:
-      '@types/react': 18.2.22
-      hoist-non-react-statics: 3.3.2
-    dev: false
-
   /@types/jest@27.5.2:
     resolution: {integrity: sha512-mpT8LJJ4CMeeahobofYWIjFo0xonRS/HfxnVEPMPFSQdGUt1uHCnoPT7Zhb+sjDU2wz0oKV0OLUR0WzrHNgfeA==}
     dependencies:
@@ -5090,10 +4939,6 @@ packages:
 
   /@types/unist@2.0.6:
     resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
-    dev: false
-
-  /@types/use-sync-external-store@0.0.3:
-    resolution: {integrity: sha512-EwmlvuaxPNej9+T4v5AuBPJa2x2UOJVdjCtDHgcDqitUeOtjnJKJ+apYjVcAoBEMjKW1VVFGZLUb5+qqa09XFA==}
     dev: false
 
   /@typescript-eslint/eslint-plugin@6.3.0(@typescript-eslint/parser@6.3.0)(eslint@8.47.0)(typescript@5.1.6):
@@ -5592,10 +5437,6 @@ packages:
     dependencies:
       '@vue/compiler-dom': 3.3.4
       '@vue/shared': 3.3.4
-    dev: false
-
-  /@vue/devtools-api@6.5.0:
-    resolution: {integrity: sha512-o9KfBeaBmCKl10usN4crU53fYtC1r7jJwdGKjPT24t348rHxgfpZ0xL3Xm/gLUYnc0oTp8LAmrxOeLyu6tbk2Q==}
     dev: false
 
   /@vue/reactivity-transform@3.2.33:
@@ -11062,24 +10903,6 @@ packages:
     engines: {node: '>=4'}
     dev: false
 
-  /pinia@2.0.35(typescript@4.9.5)(vue@3.2.47):
-    resolution: {integrity: sha512-P1IKKQWhxGXiiZ3atOaNI75bYlFUbRxtJdhPLX059Z7+b9Z04rnTZdSY8Aph1LA+/4QEMAYHsTQ638Wfe+6K5g==}
-    peerDependencies:
-      '@vue/composition-api': ^1.4.0
-      typescript: '>=4.4.4'
-      vue: ^2.6.14 || ^3.2.0
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-      typescript:
-        optional: true
-    dependencies:
-      '@vue/devtools-api': 6.5.0
-      typescript: 4.9.5
-      vue: 3.2.47
-      vue-demi: 0.14.0(vue@3.2.47)
-    dev: false
-
   /pixelmatch@5.3.0:
     resolution: {integrity: sha512-o8mkY4E/+LNUf6LzX96ht6k6CEDi65k9G2rjMtBe9Oo+VPKSvl+0GKHuH/AlG+GA5LPG/i5hrekkxUc3s2HU+Q==}
     hasBin: true
@@ -11354,38 +11177,7 @@ packages:
 
   /react-is@18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
-
-  /react-redux@8.0.5(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1):
-    resolution: {integrity: sha512-Q2f6fCKxPFpkXt1qNRZdEDLlScsDWyrgSj0mliK59qU6W5gvBiKkdMEG2lJzhd1rCctf0hb6EtePPLZ2e0m1uw==}
-    peerDependencies:
-      '@types/react': ^16.8 || ^17.0 || ^18.0
-      '@types/react-dom': ^16.8 || ^17.0 || ^18.0
-      react: ^16.8 || ^17.0 || ^18.0
-      react-dom: ^16.8 || ^17.0 || ^18.0
-      react-native: '>=0.59'
-      redux: ^4
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      '@types/react-dom':
-        optional: true
-      react-dom:
-        optional: true
-      react-native:
-        optional: true
-      redux:
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.21.5
-      '@types/hoist-non-react-statics': 3.3.1
-      '@types/use-sync-external-store': 0.0.3
-      hoist-non-react-statics: 3.3.2
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      react-is: 18.2.0
-      redux: 4.2.1
-      use-sync-external-store: 1.2.0(react@18.2.0)
-    dev: false
+    dev: true
 
   /react-refresh@0.14.0:
     resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
@@ -11555,12 +11347,6 @@ packages:
     dependencies:
       indent-string: 4.0.0
       strip-indent: 3.0.0
-    dev: false
-
-  /redux@4.2.1:
-    resolution: {integrity: sha512-LAUYz4lc+Do8/g7aeRa8JkyDErK6ekstQaqWQrNRW//MY1TvCEpMtpTWvlQ+FPbWCx+Xixu/6SHt5N0HR+SB4w==}
-    dependencies:
-      '@babel/runtime': 7.21.5
     dev: false
 
   /regenerator-runtime@0.13.11:
@@ -13055,14 +12841,6 @@ packages:
       wonka: 4.0.15
     dev: false
 
-  /use-sync-external-store@1.2.0(react@18.2.0):
-    resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      react: 18.2.0
-    dev: false
-
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
@@ -13645,21 +13423,6 @@ packages:
       vue: 3.2.47
     dev: false
 
-  /vue-demi@0.14.0(vue@3.2.47):
-    resolution: {integrity: sha512-gt58r2ogsNQeVoQ3EhoUAvUsH9xviydl0dWJj7dabBC/2L4uBId7ujtCwDRD0JhkGsV1i0CtfLAeyYKBht9oWg==}
-    engines: {node: '>=12'}
-    hasBin: true
-    requiresBuild: true
-    peerDependencies:
-      '@vue/composition-api': ^1.0.0-rc.1
-      vue: ^3.0.0-0 || ^2.6.0
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-    dependencies:
-      vue: 3.2.47
-    dev: false
-
   /vue@3.2.33:
     resolution: {integrity: sha512-si1ExAlDUrLSIg/V7D/GgA4twJwfsfgG+t9w10z38HhL/HA07132pUQ2KuwAo8qbCyMJ9e6OqrmWrOCr+jW7ZQ==}
     dependencies:
@@ -13688,15 +13451,6 @@ packages:
       '@vue/runtime-dom': 3.3.4
       '@vue/server-renderer': 3.3.4(vue@3.3.4)
       '@vue/shared': 3.3.4
-    dev: false
-
-  /vuex@4.1.0(vue@3.2.47):
-    resolution: {integrity: sha512-hmV6UerDrPcgbSy9ORAtNXDr9M4wlNP4pEFKye4ujJF8oqgFFuxDCdOLS3eNoRTtq5O3hoBDh9Doj1bQMYHRbQ==}
-    peerDependencies:
-      vue: ^3.2.0
-    dependencies:
-      '@vue/devtools-api': 6.5.0
-      vue: 3.2.47
     dev: false
 
   /watchpack@2.4.0:
