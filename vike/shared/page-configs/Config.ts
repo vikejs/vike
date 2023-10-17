@@ -48,12 +48,11 @@ type HookName =
   | 'guard'
   | 'render'
 
-// Do we need the distinction between ConfigNameBuiltInPublic and ConfigNameBuiltInInternal?
-type ConfigNameBuiltInPublic =
+type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
   | 'prerender'
-type ConfigNameBuiltInInternal = 'isClientSideRenderable' | 'onBeforeRenderEnv'
-type ConfigNameBuiltIn = ConfigNameBuiltInPublic | ConfigNameBuiltInInternal
+  | 'isClientSideRenderable'
+  | 'onBeforeRenderEnv'
 
 type Config = ConfigBuiltIn &
   Vike.Config &
