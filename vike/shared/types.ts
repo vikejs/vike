@@ -38,6 +38,7 @@ type PageContextClientWithServerRouting = PageContextBuiltInClientWithServerRout
  */
 type PageContextBuiltInServer<Page = [never]> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsServer
 
+/** For Vike internal use */
 type PageContextBuiltInServerInternal<Page = [never]> = PageContextBuiltInCommon<Page> &
   PageContextUrlComputedPropsInternal
 

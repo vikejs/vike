@@ -64,6 +64,7 @@ type PageConfigGlobalBuildTime = {
 }
 
 type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
+/** For Vike internal use */
 type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
 type ConfigValueSource = {
   configEnv: ConfigEnvInternal

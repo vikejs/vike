@@ -43,6 +43,7 @@ type PageContextUrlComputedPropsClient = {
   /** Parsed information about the current URL */
   urlParsed: UrlParsed
 }
+/** For Vike internal use */
 type PageContextUrlComputedPropsInternal = PageContextUrlComputedPropsClient & {
   _urlRewrite: string | null
 }
