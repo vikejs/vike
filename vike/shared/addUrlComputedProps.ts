@@ -6,11 +6,12 @@ export type { PageContextUrlComputedPropsInternal }
 export type { PageContextUrlComputedPropsClient }
 export type { PageContextUrlComputedPropsServer }
 export type { PageContextUrlSources }
+export type { Url }
 
 import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter, isBrowser } from './utils.js'
 
 // Copy paste from https://vike.dev/pageContext
-type UrlParsed = {
+type Url = {
   /** The URL origin, e.g. `https://example.com` of `https://example.com/product/42?details=yes#reviews` */
   origin: null | string
   /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */
@@ -41,7 +42,7 @@ type PageContextUrlComputedPropsClient = {
   /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */
   urlPathname: string
   /** Parsed information about the current URL */
-  urlParsed: UrlParsed
+  urlParsed: Url
 }
 /** For Vike internal use */
 type PageContextUrlComputedPropsInternal = PageContextUrlComputedPropsClient & {
@@ -143,7 +144,7 @@ function urlParsedGetter(this: PageContextUrlSources) {
     )
   }
 
-  const urlParsed: UrlParsed = {
+  const urlParsed: Url = {
     origin,
     pathname,
     pathnameOriginal,
