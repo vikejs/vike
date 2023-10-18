@@ -14,8 +14,11 @@ export type { ConfigValueImported }
 export type { ConfigValues }
 export type { ConfigValueSource }
 export type { ConfigValueSources }
-export type { DefinedAtInfo }
+export type { DefinedAt }
+export type { DefinedAtInfoNew }
+// TODO: clean
 export type { DefinedAtInfoFull }
+export type { DefinedAtInfoFull as DefinedAtInfo }
 
 type PageConfigBase = {
   pageId: string
@@ -73,13 +76,10 @@ type ConfigValueSource = {
   valueIsImportedAtRuntime: boolean
   // For config.client
   valueIsFilePath?: true
-} & (
+} & ( // TODO: remove computed from sources
   | {
       isComputed: false
-      definedAtInfo: DefinedAtInfo
-      /* TODO: use it
       definedAtInfo: DefinedAtInfoFull
-      */
     }
   | {
       isComputed: true
@@ -94,15 +94,11 @@ type ConfigValueSources = Record<
 >
 type ConfigValue = {
   value: unknown
-  // Is null when config value is:
-  //  - computed, or
-  //  - cumulative
-  // TODO: replace with filePathToShowToUser
-  definedAtInfo: null | DefinedAtInfo
+  definedAt: DefinedAt
 }
 type ConfigValueSerialized = {
   valueSerialized: string
-  definedAtInfo: null | DefinedAtInfo
+  definedAt: DefinedAt
 }
 
 type ConfigValues = Record<
@@ -110,14 +106,50 @@ type ConfigValues = Record<
   string,
   ConfigValue
 >
-type DefinedAtInfo = {
-  filePath: string
-  fileExportPath: string[]
+
+type DefinedAt =
+  // Normal config values
+  | {
+      source: DefinedAtInfoNew
+      // TODO: is this really needed?
+      isEffect?: true
+      isComputed?: undefined
+      isCumulative?: undefined
+    }
+  // Cumulative config values => can be defined at multiple places
+  | {
+      isCumulative: true
+      sources: DefinedAtInfoNew[]
+      isEffect?: undefined
+      isComputed?: undefined
+    }
+  // Computed config values => are defined internally by Vike
+  | {
+      isComputed: true
+      isEffect?: undefined
+      isCumulative?: undefined
+    }
+
+// TODO: rename
+type DefinedAtInfoNew = {
+  filePathToShowToUser: string
+  fileExportPath: null | string[]
 }
-type DefinedAtInfoFull = {
-  filePathRelativeToUserRootDir?: string
-  filePathAbsolute: string
-  fileExportPath: string[]
+// TODO: rename
+type DefinedAtInfoFull = (
+  | {
+      filePathRelativeToUserRootDir: string
+      filePathAbsolute: string
+      importPathAbsolute: null
+    }
+  | {
+      filePathRelativeToUserRootDir: null
+      filePathAbsolute: string | null
+      importPathAbsolute: string
+    }
+) & {
+  exportName?: string
+  fileExportPath: null | string[]
 }
 
 type ConfigSource = { configSourceFile: string } & (

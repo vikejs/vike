@@ -4,7 +4,7 @@ export { getConfigValueSerialized }
 import { assert, assertUsage, getPropAccessNotation, hasProp, objectEntries } from '../../../utils.js'
 import type {
   ConfigValueSerialized,
-  DefinedAtInfo,
+  DefinedAt,
   PageConfigBuildTime,
   PageConfigGlobalBuildTime
 } from '../../../../../shared/page-configs/PageConfig.js'
@@ -17,6 +17,7 @@ import { getVikeConfig } from './getVikeConfig.js'
 import type { ConfigVikeResolved } from '../../../../../shared/ConfigVike.js'
 import { isConfigEnvMatch } from './isConfigEnvMatch.js'
 import { serializeConfigValueImported } from './getVirtualFilePageConfigValuesAll.js'
+import { getConfigValueFilePathToShowToUser } from '../../../../../shared/page-configs/utils.js'
 
 async function getVirtualFilePageConfigs(
   userRootDir: string,
@@ -63,9 +64,9 @@ function getContent(
         const configEnv = getConfigEnv(pageConfig, configName)
         assert(configEnv, configName)
         if (!isConfigEnvMatch(configEnv, isForClientSide, isClientRouting)) return
-        const { value, definedAtInfo } = configValue
-        const valueSerialized = getConfigValueSerialized(value, configName, definedAtInfo)
-        serializeConfigValue(lines, configName, { definedAtInfo, valueSerialized })
+        const { value, definedAt } = configValue
+        const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
+        serializeConfigValue(lines, configName, { definedAt, valueSerialized })
       }
     })
     lines.push(`    },`)
@@ -134,7 +135,7 @@ function serializeConfigValue(lines: string[], configName: string, configValueSe
   whitespace += '  '
 
   Object.entries(configValueSerialized).forEach(([key, val]) => {
-    const valSerialized = key === 'definedAtInfo' ? JSON.stringify(val) : val
+    const valSerialized = key === 'definedAt' ? JSON.stringify(val) : val
     lines.push(`${whitespace}  ${key}: ${valSerialized},`)
   })
 
@@ -142,7 +143,7 @@ function serializeConfigValue(lines: string[], configName: string, configValueSe
   lines.push(`${whitespace}},`)
 }
 
-function getConfigValueSerialized(value: unknown, configName: string, definedAtInfo: null | DefinedAtInfo): string {
+function getConfigValueSerialized(value: unknown, configName: string, definedAt: DefinedAt): string {
   let configValueSerialized: string
   const valueName = `config${getPropAccessNotation(configName)}`
   try {
@@ -150,18 +151,19 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAtI
   } catch (err) {
     assert(hasProp(err, 'messageCore', 'string'))
 
-    // definedAtInfo is null when config value is:
+    const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser({ definedAt })
+    // definedAt is null when config value is:
     //  - computed => all computed values defined by Vike can are serializable
     //  - cumulative => the values are already ensured to be serializable
-    assert(definedAtInfo)
+    assert(configValueFilePathToShowToUser)
 
-    const configDefinedByFile = definedAtInfo.filePath
-    assert(configDefinedByFile)
     assertUsage(
       false,
       [
-        `The value of the config ${pc.cyan(configName)} cannot be defined inside the file ${configDefinedByFile}:`,
-        `its value must be defined in an another file and then imported by ${configDefinedByFile}. (Because the value isn't serializable: ${err.messageCore}.)`,
+        `The value of the config ${pc.cyan(
+          configName
+        )} cannot be defined inside the file ${configValueFilePathToShowToUser}:`,
+        `its value must be defined in an another file and then imported by ${configValueFilePathToShowToUser}. (Because the value isn't serializable: ${err.messageCore}.)`,
         `Only serializable config values can be defined inside +config.h.js files, see https://vike.dev/header-file.`
       ].join(' ')
     )

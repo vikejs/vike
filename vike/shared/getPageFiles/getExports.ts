@@ -10,7 +10,7 @@ import { assertDefaultExports, forbiddenDefaultExports } from './assert_exports_
 import type { FileType } from './fileTypes.js'
 import type { PageConfigRuntimeLoaded } from './../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
-import { getConfigDefinedAtString } from '../page-configs/utils.js'
+import { getConfigDefinedAtString, getConfigValueFilePathToShowToUser } from '../page-configs/utils.js'
 import pc from '@brillout/picocolors'
 
 // TODO/v1-release: remove
@@ -19,12 +19,11 @@ type ExportsAll = Record<
   {
     exportValue: unknown
     exportSource: string
+    filePath: string | null
     /** @deprecated */
     _fileType: FileType | null
     /** @deprecated */
     _isFromDefaultExport: boolean | null
-    /** @deprecated */
-    filePath: string | null
     /** @deprecated */
     _filePath: string | null
   }[]
@@ -78,11 +77,8 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded |
   // V1 design
   if (pageConfig) {
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
-      const { value, definedAtInfo } = configValue
-      let filePath: null | string = null
-      if (definedAtInfo) {
-        filePath = definedAtInfo.filePath
-      }
+      const { value } = configValue
+      const filePath: null | string = getConfigValueFilePathToShowToUser(configValue)
       const configDefinedAt = getConfigDefinedAtString(configName, configValue, true)
 
       config[configName] = config[configName] ?? value

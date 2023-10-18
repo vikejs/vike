@@ -34,7 +34,7 @@ async function determineOptimizeDeps(config: ResolvedConfig, configVike: ConfigV
   config.optimizeDeps.include = [...include, ...normalizeInclude(config.optimizeDeps.include)]
   config.optimizeDeps.entries = [...entries, ...normalizeEntries(config.optimizeDeps.entries)]
 
-  // console.log('config.optimizeDeps', config.optimizeDeps)
+  console.log('config.optimizeDeps', config.optimizeDeps)
 }
 
 async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildTime[], isDev: true) {
@@ -46,38 +46,37 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     pageConfigs.forEach((pageConfig) => {
       const configValueSourcesRelevant = getConfigValueSourcesRelevant(pageConfig)
       configValueSourcesRelevant.forEach((configValueSource) => {
-        const { valueIsImportedAtRuntime, configEnv, definedAtInfo } = configValueSource
-        if (!valueIsImportedAtRuntime) return
-        const { filePath } = definedAtInfo
-        assert(filePath)
+        if (!configValueSource.valueIsImportedAtRuntime) return
+        if (configValueSource.isComputed) return
+        const { definedAtInfo, configEnv } = configValueSource
 
         if (configEnv !== 'client-only' && configEnv !== 'server-and-client') return
 
-        if (filePath.startsWith('/')) {
-          // Is getFilePathAbsolute() really needed? This contradicts the code below that doesn't need getFilePathAbsolute().
-          entries.push(getFilePathAbsolute(filePath, config))
-          return
-        }
-
-        // getVikeConfig() resolves relative import paths
-        assert(!filePath.startsWith('.'))
-
-        // We need to differentiate between npm package imports and path aliases.
-        // There are path aliases that cannot be distinguished from npm package names.
-        // We recommend users to use the '#' prefix convention for path aliases, see https://vike.dev/path-aliases#vite and assertResolveAlias()
-        if (isNpmPackageImport(filePath)) {
-          // isNpmPackageImport() returns false for a path alias like #root/renderer/onRenderClient
-          assert(!filePath.startsWith('#'))
-          include.push(filePath)
+        if (definedAtInfo.filePathRelativeToUserRootDir !== null) {
+          const { filePathAbsolute } = definedAtInfo
+          assert(filePathAbsolute)
+          // Surpsingly Vite expects entries to be absolute paths
+          entries.push(filePathAbsolute)
         } else {
-          /* Path aliases, e.g.:
-           * ```js
-           * // /renderer/+config.js
-           * import onRenderClient from '#root/renderer/onRenderClient'
-           * ```
-           * Does Vite resolve the path aliases or is getFilePathAbsolute() needed?
-           */
-          entries.push(filePath)
+          // Adding definedAtInfo.filePathAbsolute doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
+          const { importPathAbsolute } = definedAtInfo
+          assert(importPathAbsolute)
+          // We need to differentiate between npm package imports and path aliases.
+          // There are path aliases that cannot be distinguished from npm package names.
+          // We recommend users to use the '#' prefix convention for path aliases, see https://vike.dev/path-aliases#vite and assertResolveAlias()
+          if (isNpmPackageImport(importPathAbsolute)) {
+            // isNpmPackageImport() returns false for a path alias like #root/renderer/onRenderClient
+            assert(!importPathAbsolute.startsWith('#'))
+            include.push(importPathAbsolute)
+          } else {
+            /* Path aliases, e.g.:
+             * ```js
+             * // /renderer/+config.js
+             * import onRenderClient from '#root/renderer/onRenderClient'
+             * ```
+             */
+            entries.push(importPathAbsolute)
+          }
         }
       })
     })

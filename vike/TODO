@@ -1,3 +1,4 @@
+- Don't show superfluous export path in 404 route table
 - Improve https://vike.dev/header-file
 - Update all examples to not use PageContextBuiltIn but Vike.PageContext instead
 
