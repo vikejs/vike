@@ -179,7 +179,8 @@ async function loadInterfaceFiles(
     configFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
       const configFilePath = {
         filePathAbsolute: filePathAbsolute,
-        filePathRelativeToUserRootDir: filePathRelativeToUserRootDir
+        filePathRelativeToUserRootDir: filePathRelativeToUserRootDir,
+        importPathAbsolute: null
       }
       const { configFile, extendsConfigs } = await loadConfigFile(configFilePath, userRootDir, [])
       const interfaceFile = getInterfaceFileFromConfigFile(configFile, false)
@@ -202,7 +203,8 @@ async function loadInterfaceFiles(
       const interfaceFile: InterfaceValueFile = {
         filePath: {
           filePathRelativeToUserRootDir,
-          filePathAbsolute
+          filePathAbsolute,
+          importPathAbsolute: null
         },
         configMap: {
           [configName]: {}
@@ -1102,7 +1104,7 @@ async function loadConfigFile(
   userRootDir: string,
   visited: string[]
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
-  const { filePathAbsolute, filePathRelativeToUserRootDir } = configFilePath
+  const { filePathAbsolute } = configFilePath
   assertNoInfiniteLoop(visited, filePathAbsolute)
   const { fileExports } = await transpileAndExecuteFile(configFilePath, false, userRootDir)
   const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir, [
@@ -1112,10 +1114,7 @@ async function loadConfigFile(
 
   const configFile: ConfigFile = {
     fileExports,
-    filePath: {
-      filePathRelativeToUserRootDir,
-      filePathAbsolute
-    },
+    filePath: configFilePath,
     extendsFilePaths
   }
   return { configFile, extendsConfigs }
@@ -1143,11 +1142,14 @@ async function loadExtendsConfigs(
     const filePathAbsolute = resolveImportPath(importData, configFilePath)
     assertImportPath(filePathAbsolute, importData, configFilePath)
     assertExtendsImportPath(importPath, filePathAbsolute, configFilePath)
+    // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
+    // - Using importPath would be visually nicer but it's ambigous => we rather pick filePathAbsolute for added clarity
+    const filePathRelativeToUserRootDir = determineFilePathRelativeToUserDir(filePathAbsolute, userRootDir)
     extendsConfigFiles.push({
       filePathAbsolute,
-      // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
-      // - Using importPath would be visually nicer but it's ambigous => we rather pick filePathAbsolute for added clarity
-      filePathRelativeToUserRootDir: determineFilePathRelativeToUserDir(filePathAbsolute, userRootDir)
+      // TODO: fix type cast
+      filePathRelativeToUserRootDir: filePathRelativeToUserRootDir as null,
+      importPathAbsolute: importPath
     })
   })
 

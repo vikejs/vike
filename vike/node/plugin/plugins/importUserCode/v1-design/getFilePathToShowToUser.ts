@@ -9,12 +9,32 @@ type FilePath = {
    * Example: `/home/rom/code/my-app/pages/some-page/Page.js`
    */
   filePathAbsolute: string
-  /** The file's path relative to the Vite's root (i.e. the user's project root directory).
-   *
-   * Example: `/pages/some-page/Page.js`
-   */
-  filePathRelativeToUserRootDir: null | string
+} & (
+  | {
+      /** The file's path relative to the Vite's root (i.e. the user's project root directory).
+       *
+       * Example: `/pages/some-page/Page.js`
+       */
+      filePathRelativeToUserRootDir: string
+      importPathAbsolute: null
+    }
+  | {
+      filePathRelativeToUserRootDir: null
+      /** The file's absolute import path.
+       *
+       * Example: `vike-react/config`
+       */
+      importPathAbsolute: string
+    }
+)
+
+/*
+const f: FilePath = 1 as any
+if (f.filePathRelativeToUserRootDir === null) {
+  f.importPathAbsolute
 }
+//*/
+
 function getFilePathToShowToUser(filePath: FilePath): string {
   const filePathToShowToUser = filePath.filePathRelativeToUserRootDir ?? filePath.filePathAbsolute
   assert(filePathToShowToUser)
