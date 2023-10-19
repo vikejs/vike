@@ -2,16 +2,16 @@ export { getExportPath }
 
 import { assert } from '../utils.js'
 
-function getExportPath(fileExportPath: null | string[]): null | string {
+function getExportPath(fileExportPath: null | string[], configName: string): null | string {
   if (!fileExportPath) return null
-  let prefix = ''
-  let suffix = ''
   let [exportName, ...exportObjectPath] = fileExportPath
   if (!exportName) return null
-  if (exportName === '*') {
-    assert(exportObjectPath.length === 0)
-    return 'export *'
-  } else if (exportName === 'default') {
+  if (exportObjectPath.length === 0 && ['*', 'default', configName].includes(exportName)) return null
+  assert(exportName !== '*')
+
+  let prefix = ''
+  let suffix = ''
+  if (exportName === 'default') {
     prefix = 'export default'
   } else {
     prefix = 'export'

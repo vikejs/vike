@@ -78,11 +78,11 @@ function getConfigDefinedAtString<ConfigName extends string>(
   sentenceBegin: boolean
 ): ConfigDefinedAtUppercase<ConfigName> | ConfigDefinedAtLowercase<ConfigName> {
   const configDefinedAt = `${sentenceBegin ? `Config` : `config`} ${pc.cyan(configName)} defined ${getSourceString(
-    definedAt
+    definedAt, configName
   )}` as const
   return configDefinedAt
 }
-function getSourceString(definedAt: DefinedAt): 'internally' | `at ${string}` {
+function getSourceString(definedAt: DefinedAt, configName: string): 'internally' | `at ${string}` {
   if (definedAt.isComputed) {
     return 'internally'
   }
@@ -99,7 +99,7 @@ function getSourceString(definedAt: DefinedAt): 'internally' | `at ${string}` {
     .map((source) => {
       const { filePathToShowToUser, fileExportPath } = source
       let s = filePathToShowToUser
-      const exportPath = getExportPath(fileExportPath)
+      const exportPath = getExportPath(fileExportPath, configName)
       if (exportPath) {
         s = `${s} > ${pc.cyan(exportPath)}`
       }
@@ -111,8 +111,8 @@ function getSourceString(definedAt: DefinedAt): 'internally' | `at ${string}` {
     .join(' / ')
   return `at ${sourceString}`
 }
-function getDefinedAtString(configValue: ConfigValue): string {
-  let sourceString: string = getSourceString(configValue.definedAt)
+function getDefinedAtString(configValue: ConfigValue, configName: string): string {
+  let sourceString: string = getSourceString(configValue.definedAt, configName)
   if (sourceString.startsWith('at ')) sourceString = sourceString.slice('at '.length)
   return sourceString
 }
