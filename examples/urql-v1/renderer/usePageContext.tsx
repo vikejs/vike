@@ -2,7 +2,7 @@
 // More infos: https://vike.dev/pageContext-anywhere
 
 import React, { useContext } from 'react'
-import type { PageContext } from './types'
+import type { PageContext } from 'vike/types'
 
 export { PageContextProvider }
 export { usePageContext }

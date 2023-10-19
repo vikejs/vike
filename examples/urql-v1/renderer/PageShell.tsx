@@ -1,6 +1,6 @@
 import React from 'react'
 import { PageContextProvider } from './usePageContext'
-import type { PageContext } from './types'
+import type { PageContext } from 'vike/types'
 
 export { PageShell }
 

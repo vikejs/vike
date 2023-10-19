@@ -1,11 +1,10 @@
 // https://vike.dev/onRenderHtml
-export default onRenderHtml
+export { onRenderHtml }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import type { PageContext } from './types'
-import type { PageContextBuiltInServer } from 'vike/types'
+import type { OnRenderHtmlAsync } from 'vike/types'
 
-async function onRenderHtml(pageContext: PageContextBuiltInServer & PageContext) {
+const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
   const { pageHtml } = pageContext
 
   // See https://vike.dev/head

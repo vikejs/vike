@@ -1,22 +1,13 @@
 // https://vike.dev/onRenderClient
-export default onRenderClient
+export { onRenderClient }
 
 import React from 'react'
 import { hydrateRoot } from 'react-dom/client'
 import { createClient, ssrExchange, dedupExchange, cacheExchange, fetchExchange, Provider } from 'urql'
 import { PageShell } from './PageShell'
-import type { PageContext } from './types'
-import type {
-  /*
-  // When using Client Routing https://vike.dev/clientRouting
-  PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
-  /*/
-  // When using Server Routing
-  PageContextBuiltInClientWithServerRouting as PageContextBuiltInClient
-  //*/
-} from 'vike/types'
+import type { OnRenderClientAsync } from 'vike/types'
 
-async function onRenderClient(pageContext: PageContextBuiltInClient & PageContext) {
+const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRenderClientAsync> => {
   const { Page, pageProps, urqlState } = pageContext
   const client = createClient({
     url: 'https://countries.trevorblades.com',

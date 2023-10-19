@@ -1,5 +1,5 @@
 // https://vike.dev/onBeforeRender
-export default onBeforeRender
+export { onBeforeRender }
 
 import ReactDOMServer from 'react-dom/server'
 import { createClient, ssrExchange, dedupExchange, cacheExchange, fetchExchange, Provider } from 'urql'
@@ -7,10 +7,9 @@ import prepass from 'react-ssr-prepass'
 import React from 'react'
 import 'isomorphic-fetch'
 import { PageShell } from './PageShell'
-import type { PageContext } from './types'
-import type { PageContextBuiltInServer } from 'vike/types'
+import type { OnBeforeRenderAsync } from 'vike/types'
 
-async function onBeforeRender(pageContext: PageContextBuiltInServer & PageContext) {
+const onBeforeRender: OnBeforeRenderAsync = async (pageContext): ReturnType<OnBeforeRenderAsync> => {
   const { Page, pageProps } = pageContext
 
   const ssr = ssrExchange({ initialState: undefined })
