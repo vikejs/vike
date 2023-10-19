@@ -40,7 +40,7 @@ function assertPageContextProvidedByUser(
     !('_pageId' in pageContextProvidedByUser),
     `${errPrefix} sets ${pc.cyan(
       'pageContext._pageId'
-    )} which means that vike's routing is overriden. This is an experimental feature: make sure to contact a vike maintainer before using this.`,
+    )} which means that Vike's routing is overriden. This is an experimental feature: make sure to contact a vike maintainer before using this.`,
     { onlyOnce: true }
   )
 

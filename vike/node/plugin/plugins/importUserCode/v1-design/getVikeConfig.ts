@@ -499,7 +499,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
           configName
         )} in ${sourceFilePath} is experimental and will likely be removed. Define the config ${pc.cyan(
           configName
-        )} in vike's Vite plugin options instead.`,
+        )} in Vike's Vite plugin options instead.`,
         { onlyOnce: true }
       )
       globalVikeConfig[configName] = configValueSource.value
@@ -536,7 +536,7 @@ function resolveConfigValueSources(
         .filter(
           (interfaceFile) =>
             interfaceFile.isValueFile &&
-            // We consider side-effect exports (e.g. `export { frontmatter }` of .mdx files) later (i.e. with less priority)
+            // We consider side-effect configs (e.g. `export { frontmatter }` of .mdx files) later (i.e. with less priority)
             interfaceFile.configName === configName
         )
         .sort(makeOrderDeterministic)
@@ -572,7 +572,7 @@ function resolveConfigValueSources(
       .filter(
         (interfaceFile) =>
           interfaceFile.isValueFile &&
-          // Is side-effect export
+          // Is side-effect config
           interfaceFile.configName !== configName
       )
       .forEach((interfaceValueFileSideEffect) => {
@@ -704,7 +704,6 @@ function getConfigValueSource(
       return configValueSource
     }
   } else if (interfaceFile.isValueFile) {
-    // TODO: rethink file paths of ConfigElement
     const valueAlreadyLoaded = 'configValue' in conf
     const configValueSource: ConfigValueSource = {
       configEnv,
@@ -712,7 +711,11 @@ function getConfigValueSource(
       isComputed: false,
       definedAtInfo: {
         ...interfaceFile.filePath,
-        fileExportPath: configName === interfaceFile.configName ? [] : [configName]
+        fileExportPath:
+          configName === interfaceFile.configName
+            ? []
+            : // Side-effect config (e.g. `export { frontmatter }` of .md files)
+              [configName]
       }
     }
     if (valueAlreadyLoaded) {
@@ -1041,7 +1044,7 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
     // We only warn in dev, because while building it's expected to take a long time as fast-glob is competing for resources with other tasks
     assertWarning(
       time < 2 * 1000,
-      `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on vike's GitHub.`,
+      `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on Vike's GitHub.`,
       {
         onlyOnce: 'slow-page-files-search'
       }
@@ -1348,10 +1351,9 @@ function getFilesystemRoutingRootEffect(
     `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
   assert(!configFilesystemRoutingRoot.isComputed)
-  assert(configFilesystemRoutingRoot.definedAtInfo.filePathRelativeToUserRootDir)
-  const before = getFilesystemRouteString(
-    getLocationId(configFilesystemRoutingRoot.definedAtInfo.filePathRelativeToUserRootDir)
-  )
+  const { filePathRelativeToUserRootDir } = configFilesystemRoutingRoot.definedAtInfo
+  assert(filePathRelativeToUserRootDir)
+  const before = getFilesystemRouteString(getLocationId(filePathRelativeToUserRootDir))
   const after = value
   const filesystemRoutingRootEffect = { before, after }
   return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt: configDefinedAt }
@@ -1461,7 +1463,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
         configName,
         configValueSourcePrevious,
         undefined,
-        true
+        false
       )
       assertUsage(
         false,

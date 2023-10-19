@@ -15,7 +15,10 @@ function parseConfigValuesImported(configValuesImported: ConfigValueImported[]):
         source: {
           // importPath is always relative the user's root directory (it cannot be relative to the current file since the current file is a virtual file)
           filePathToShowToUser: importPath,
-          fileExportPath: [exportName]
+          fileExportPath: [configName, 'default'].includes(exportName)
+            ? []
+            : // Side-effect config
+              [exportName]
         }
       }
     }

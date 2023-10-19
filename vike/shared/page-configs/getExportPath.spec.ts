@@ -3,15 +3,22 @@ import { expect, describe, it } from 'vitest'
 
 describe('getExportPath()', () => {
   it('works', () => {
-    expect(getExportPath(['default'])).toBe('export default')
-    expect(getExportPath(['object'])).toBe('export { object }')
-    expect(getExportPath(['default', 'prop'])).toBe('export default { prop }')
-    expect(getExportPath(['object', 'prop'])).toBe('export { object { prop } }')
-    expect(getExportPath(['object', 'nested'])).toBe('export { object { nested } }')
-    expect(getExportPath(['object', 'nested', 'prop'])).toBe('export { object { nested { prop } } }')
-    expect(getExportPath(['default', 'nested', 'prop'])).toBe('export default { nested { prop } }')
+    expect(t(['prop'])).toBe('export { prop }')
+    expect(t(['default', 'prop'])).toBe('export default { prop }')
+    expect(t(['prop', 'nested'])).toBe('export { prop { nested } }')
+    expect(t(['prop', 'nested1', 'nested2'])).toBe('export { prop { nested1 { nested2 } } }')
+    expect(t(['default', 'nested1', 'nested2'])).toBe('export default { nested1 { nested2 } }')
+  })
+  it('succint', () => {
+    expect(t(['default'])).toBe(null)
+    expect(t(['route'], 'route')).toBe(null)
+    expect(t(['route'], 'route2')).toBe('export { route }')
   })
   it('edge cases work', () => {
-    expect(getExportPath(['*'])).toBe('export *')
+    expect(t(['*'])).toBe(null)
   })
 })
+
+function t(fileExportPath: null | string[], configName = 'bla'): null | string {
+  return getExportPath(fileExportPath, configName)
+}
