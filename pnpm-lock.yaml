@@ -239,8 +239,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.5.14
-        version: 0.5.14(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.27.2)
+        specifier: ^0.5.15
+        version: 0.5.15(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.27.2)
       '@types/node':
         specifier: ^15.12.1
         version: 15.14.9
@@ -1067,102 +1067,6 @@ importers:
         specifier: ^4.0.3
         version: 4.3.5(@types/node@17.0.45)
 
-  examples/preact-client-routing:
-    dependencies:
-      '@babel/core':
-        specifier: ^7.17.10
-        version: 7.21.8
-      '@babel/plugin-transform-react-jsx':
-        specifier: ^7.17.3
-        version: 7.21.5(@babel/core@7.21.8)
-      '@preact/preset-vite':
-        specifier: ^2.3.0
-        version: 2.5.0(@babel/core@7.21.8)(preact@10.13.2)(vite@4.3.5)
-      preact:
-        specifier: ^10.10.0
-        version: 10.13.2
-      preact-render-to-string:
-        specifier: ^5.2.1
-        version: 5.2.6(preact@10.13.2)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
-  examples/preact-client-routing-v1:
-    dependencies:
-      '@babel/core':
-        specifier: ^7.17.10
-        version: 7.21.8
-      '@babel/plugin-transform-react-jsx':
-        specifier: ^7.17.3
-        version: 7.21.5(@babel/core@7.21.8)
-      '@preact/preset-vite':
-        specifier: ^2.3.0
-        version: 2.5.0(@babel/core@7.21.8)(preact@10.13.2)(vite@4.3.5)
-      preact:
-        specifier: ^10.10.0
-        version: 10.13.2
-      preact-render-to-string:
-        specifier: ^5.2.1
-        version: 5.2.6(preact@10.13.2)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
-  examples/preact-server-routing:
-    dependencies:
-      '@babel/core':
-        specifier: ^7.17.10
-        version: 7.21.8
-      '@babel/plugin-transform-react-jsx':
-        specifier: ^7.17.3
-        version: 7.21.5(@babel/core@7.21.8)
-      '@preact/preset-vite':
-        specifier: ^2.3.0
-        version: 2.5.0(@babel/core@7.21.8)(preact@10.13.2)(vite@4.3.5)
-      preact:
-        specifier: ^10.10.0
-        version: 10.13.2
-      preact-render-to-string:
-        specifier: ^5.2.1
-        version: 5.2.6(preact@10.13.2)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
-  examples/preact-server-routing-v1:
-    dependencies:
-      '@babel/core':
-        specifier: ^7.17.10
-        version: 7.21.8
-      '@babel/plugin-transform-react-jsx':
-        specifier: ^7.17.3
-        version: 7.21.5(@babel/core@7.21.8)
-      '@preact/preset-vite':
-        specifier: ^2.3.0
-        version: 2.5.0(@babel/core@7.21.8)(preact@10.13.2)(vite@4.3.5)
-      preact:
-        specifier: ^10.10.0
-        version: 10.13.2
-      preact-render-to-string:
-        specifier: ^5.2.1
-        version: 5.2.6(preact@10.13.2)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
   examples/react:
     dependencies:
       '@vitejs/plugin-react':
@@ -1174,42 +1078,6 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
-  examples/react-17:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^3.0.0
-        version: 3.1.0(vite@4.3.5)
-      react:
-        specifier: ^17.0.2
-        version: 17.0.2
-      react-dom:
-        specifier: ^17.0.2
-        version: 17.0.2(react@17.0.2)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
-  examples/react-17-v1:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^3.0.0
-        version: 3.1.0(vite@4.3.5)
-      react:
-        specifier: ^17.0.2
-        version: 17.0.2
-      react-dom:
-        specifier: ^17.0.2
-        version: 17.0.2(react@17.0.2)
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -1319,54 +1187,6 @@ importers:
         specifier: ^4.4.9
         version: 4.4.9(@types/node@20.6.3)
 
-  examples/react-router:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^3.0.0
-        version: 3.1.0(vite@4.3.5)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      react-router:
-        specifier: ^6.3.0
-        version: 6.11.1(react@18.2.0)
-      react-router-dom:
-        specifier: ^6.3.0
-        version: 6.11.1(react-dom@18.2.0)(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
-  examples/react-router-v1:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^3.0.0
-        version: 3.1.0(vite@4.3.5)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      react-router:
-        specifier: ^6.3.0
-        version: 6.11.1(react@18.2.0)
-      react-router-dom:
-        specifier: ^6.3.0
-        version: 6.11.1(react-dom@18.2.0)(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
   examples/react-streaming:
     dependencies:
       '@vitejs/plugin-react':
@@ -1444,54 +1264,6 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
-  examples/redux:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^3.0.0
-        version: 3.1.0(vite@4.3.5)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      react-redux:
-        specifier: ^8.0.1
-        version: 8.0.5(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1)
-      redux:
-        specifier: ^4.2.0
-        version: 4.2.1
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
-  examples/redux-v1:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^3.0.0
-        version: 3.1.0(vite@4.3.5)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      react-redux:
-        specifier: ^8.0.1
-        version: 8.0.5(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1)
-      redux:
-        specifier: ^4.2.0
-        version: 4.2.1
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -1627,21 +1399,6 @@ importers:
       typescript:
         specifier: ^4.6.4
         version: 4.9.5
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
-  examples/svelte-v1:
-    dependencies:
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^2.0.4
-        version: 2.2.0(svelte@3.59.0)(vite@4.3.5)
-      svelte:
-        specifier: ^3.58.0
-        version: 3.59.0
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -1853,36 +1610,6 @@ importers:
         specifier: ^4.3.8
         version: 4.3.8
 
-  examples/vike-react-min:
-    dependencies:
-      '@types/react':
-        specifier: ^18.0.8
-        version: 18.2.22
-      '@types/react-dom':
-        specifier: ^18.0.3
-        version: 18.2.7
-      '@vitejs/plugin-react':
-        specifier: ^4.0.0
-        version: 4.0.4(vite@4.4.9)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      typescript:
-        specifier: ^5.0.2
-        version: 5.2.2
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vike-react:
-        specifier: ^0.3.0
-        version: 0.3.0(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@4.4.9)
-      vite:
-        specifier: ^4.3.8
-        version: 4.4.9(@types/node@20.6.3)
-
   examples/vike-react-simple:
     dependencies:
       '@vitejs/plugin-react':
@@ -2003,102 +1730,6 @@ importers:
         specifier: ^3.3.4
         version: 3.3.4
 
-  examples/vue-pinia:
-    dependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^4.0.0
-        version: 4.2.1(vite@4.3.5)(vue@3.2.47)
-      '@vue/compiler-sfc':
-        specifier: ^3.2.31
-        version: 3.2.47
-      '@vue/server-renderer':
-        specifier: ^3.2.37
-        version: 3.2.47(vue@3.2.47)
-      pinia:
-        specifier: ^2.0.14
-        version: 2.0.35(typescript@4.9.5)(vue@3.2.47)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-      vue:
-        specifier: ^3.2.37
-        version: 3.2.47
-
-  examples/vue-pinia-v1:
-    dependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^4.0.0
-        version: 4.2.1(vite@4.3.5)(vue@3.2.47)
-      '@vue/compiler-sfc':
-        specifier: ^3.2.31
-        version: 3.2.47
-      '@vue/server-renderer':
-        specifier: ^3.2.37
-        version: 3.2.47(vue@3.2.47)
-      pinia:
-        specifier: ^2.0.14
-        version: 2.0.35(typescript@4.9.5)(vue@3.2.47)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-      vue:
-        specifier: ^3.2.37
-        version: 3.2.47
-
-  examples/vue-router:
-    dependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^4.0.0
-        version: 4.2.1(vite@4.3.5)(vue@3.2.47)
-      '@vue/compiler-sfc':
-        specifier: ^3.2.33
-        version: 3.2.47
-      '@vue/server-renderer':
-        specifier: ^3.2.33
-        version: 3.2.47(vue@3.2.47)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-      vue:
-        specifier: ^3.2.33
-        version: 3.2.47
-      vue-router:
-        specifier: ^4.0.14
-        version: 4.1.6(vue@3.2.47)
-
-  examples/vue-router-v1:
-    dependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^4.0.0
-        version: 4.2.1(vite@4.3.5)(vue@3.2.47)
-      '@vue/compiler-sfc':
-        specifier: ^3.2.33
-        version: 3.2.47
-      '@vue/server-renderer':
-        specifier: ^3.2.33
-        version: 3.2.47(vue@3.2.47)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-      vue:
-        specifier: ^3.2.33
-        version: 3.2.47
-      vue-router:
-        specifier: ^4.0.14
-        version: 4.1.6(vue@3.2.47)
-
   examples/vue-v1:
     dependencies:
       '@vitejs/plugin-vue':
@@ -2119,54 +1750,6 @@ importers:
       vue:
         specifier: ^3.2.47
         version: 3.2.47
-
-  examples/vuex:
-    dependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^4.0.0
-        version: 4.2.1(vite@4.3.5)(vue@3.2.47)
-      '@vue/compiler-sfc':
-        specifier: ^3.2.47
-        version: 3.2.47
-      '@vue/server-renderer':
-        specifier: ^3.2.47
-        version: 3.2.47(vue@3.2.47)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.1.1
-        version: 4.3.5(@types/node@17.0.45)
-      vue:
-        specifier: ^3.2.47
-        version: 3.2.47
-      vuex:
-        specifier: ^4.1.0
-        version: 4.1.0(vue@3.2.47)
-
-  examples/vuex-v1:
-    dependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^4.0.0
-        version: 4.2.1(vite@4.3.5)(vue@3.2.47)
-      '@vue/compiler-sfc':
-        specifier: ^3.2.47
-        version: 3.2.47
-      '@vue/server-renderer':
-        specifier: ^3.2.47
-        version: 3.2.47(vue@3.2.47)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.1.1
-        version: 4.3.5(@types/node@17.0.45)
-      vue:
-        specifier: ^3.2.47
-        version: 3.2.47
-      vuex:
-        specifier: ^4.1.0
-        version: 4.1.0(vue@3.2.47)
 
   examples/webpack-v1:
     dependencies:
@@ -3292,8 +2875,8 @@ packages:
       - terser
     dev: false
 
-  /@brillout/docpress@0.5.14(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.27.2):
-    resolution: {integrity: sha512-ldEdBOq0mjZsx7VsXP0hwCsgwIeqq9SAqegbyVOIVTblEojsekYnCLkaUoyCvUWjHAz+SNCkBbSmdYCdUEwOMQ==}
+  /@brillout/docpress@0.5.15(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@3.27.2):
+    resolution: {integrity: sha512-mEz+uhtpwurMDCRo/+XFX2SAfAz65EcxJZBphB3R3J+uaoFUFVc/YQp8PlvlxLEBjH7TLPSMGg+p6iNz42Zu7Q==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -4758,73 +4341,6 @@ packages:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
     dev: false
 
-  /@preact/preset-vite@2.5.0(@babel/core@7.21.8)(preact@10.13.2)(vite@4.3.5):
-    resolution: {integrity: sha512-BUhfB2xQ6ex0yPkrT1Z3LbfPzjpJecOZwQ/xJrXGFSZD84+ObyS//41RdEoQCMWsM0t7UHGaujUxUBub7WM1Jw==}
-    peerDependencies:
-      '@babel/core': 7.x
-      vite: 2.x || 3.x || 4.x
-    dependencies:
-      '@babel/core': 7.21.8
-      '@babel/plugin-transform-react-jsx': 7.21.5(@babel/core@7.21.8)
-      '@babel/plugin-transform-react-jsx-development': 7.18.6(@babel/core@7.21.8)
-      '@prefresh/vite': 2.2.9(preact@10.13.2)(vite@4.3.5)
-      '@rollup/pluginutils': 4.2.1
-      babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.21.8)
-      debug: 4.3.4
-      kolorist: 1.8.0
-      resolve: 1.22.2
-      vite: 4.3.5(@types/node@17.0.45)
-    transitivePeerDependencies:
-      - preact
-      - supports-color
-    dev: false
-
-  /@prefresh/babel-plugin@0.4.4:
-    resolution: {integrity: sha512-/EvgIFMDL+nd20WNvMO0JQnzIl1EJPgmSaSYrZUww7A+aSdKsi37aL07TljrZR1cBMuzFxcr4xvqsUQLFJEukw==}
-    dev: false
-
-  /@prefresh/core@1.4.1(preact@10.13.2):
-    resolution: {integrity: sha512-og1vaBj3LMJagVncNrDb37Gqc0cWaUcDbpVt5hZtsN4i2Iwzd/5hyTsDHvlMirhSym3wL9ihU0Xa2VhSaOue7g==}
-    peerDependencies:
-      preact: ^10.0.0
-    dependencies:
-      preact: 10.13.2
-    dev: false
-
-  /@prefresh/utils@1.1.3:
-    resolution: {integrity: sha512-Mb9abhJTOV4yCfkXrMrcgFiFT7MfNOw8sDa+XyZBdq/Ai2p4Zyxqsb3EgHLOEdHpMj6J9aiZ54W8H6FTam1u+A==}
-    dev: false
-
-  /@prefresh/vite@2.2.9(preact@10.13.2)(vite@4.3.5):
-    resolution: {integrity: sha512-1ERBF85Ja9/lkrfaltmo4Gca7R2ClQPSHHDDysFgfvPzHmLUeyB0x9WHwhwov/AA1DnyPhsfYT54z3yQd8XrgA==}
-    peerDependencies:
-      preact: ^10.4.0
-      vite: '>=2.0.0-beta.3'
-    dependencies:
-      '@babel/core': 7.22.10
-      '@prefresh/babel-plugin': 0.4.4
-      '@prefresh/core': 1.4.1(preact@10.13.2)
-      '@prefresh/utils': 1.1.3
-      '@rollup/pluginutils': 4.2.1
-      preact: 10.13.2
-      vite: 4.3.5(@types/node@17.0.45)
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@remix-run/router@1.6.1:
-    resolution: {integrity: sha512-YUkWj+xs0oOzBe74OgErsuR3wVn+efrFhXBWrit50kOiED+pvQe2r6MWY0iJMQU/mSVKxvNzL4ZaYvjdX+G7ZA==}
-    engines: {node: '>=14'}
-    dev: false
-
-  /@rollup/pluginutils@4.2.1:
-    resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
-    engines: {node: '>= 8.0.0'}
-    dependencies:
-      estree-walker: 2.0.2
-      picomatch: 2.3.1
-    dev: false
-
   /@rollup/pluginutils@5.0.2(rollup@3.27.2):
     resolution: {integrity: sha512-pTd9rIsP92h+B6wWwFbW8RkZv4hiR/xKsqre4SIuAOaOEQRxi0lqLke9k2/7WegC85GgUs9pjmOjCUi3In4vwA==}
     engines: {node: '>=14.0.0'}
@@ -4840,7 +4356,7 @@ packages:
       rollup: 3.27.2
     dev: false
 
-  /@rollup/pluginutils@5.0.4:
+  /@rollup/pluginutils@5.0.4(rollup@3.27.2):
     resolution: {integrity: sha512-0KJnIoRI8A+a1dqOYLxH8vBf8bphDmty5QvIm2hqm7oFCFYKCAZWWd2hXgMibaPsNDhI0AtpYfQZJG47pt/k4g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -4852,6 +4368,7 @@ packages:
       '@types/estree': 1.0.1
       estree-walker: 2.0.2
       picomatch: 2.3.1
+      rollup: 3.27.2
     dev: false
 
   /@sinclair/typebox@0.27.8:
@@ -4862,25 +4379,6 @@ packages:
     resolution: {integrity: sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ==}
     engines: {node: '>=6'}
     dev: true
-
-  /@sveltejs/vite-plugin-svelte@2.2.0(svelte@3.59.0)(vite@4.3.5):
-    resolution: {integrity: sha512-KDtdva+FZrZlyug15KlbXuubntAPKcBau0K7QhAIqC5SAy0uDbjZwoexDRx0L0J2T4niEfC6FnA9GuQQJKg+Aw==}
-    engines: {node: ^14.18.0 || >= 16}
-    peerDependencies:
-      svelte: ^3.54.0
-      vite: ^4.0.0
-    dependencies:
-      debug: 4.3.4
-      deepmerge: 4.3.1
-      kleur: 4.1.5
-      magic-string: 0.30.0
-      svelte: 3.59.0
-      svelte-hmr: 0.15.1(svelte@3.59.0)
-      vite: 4.3.5(@types/node@17.0.45)
-      vitefu: 0.2.4(vite@4.3.5)
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
 
   /@swc/core-darwin-arm64@1.3.62:
     resolution: {integrity: sha512-MmGilibITz68LEje6vJlKzc2gUUSgzvB3wGLSjEORikTNeM7P8jXVxE4A8fgZqDeudJUm9HVWrxCV+pHDSwXhA==}
@@ -5160,13 +4658,6 @@ packages:
       '@types/unist': 2.0.6
     dev: false
 
-  /@types/hoist-non-react-statics@3.3.1:
-    resolution: {integrity: sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==}
-    dependencies:
-      '@types/react': 18.2.22
-      hoist-non-react-statics: 3.3.2
-    dev: false
-
   /@types/jest@27.5.2:
     resolution: {integrity: sha512-mpT8LJJ4CMeeahobofYWIjFo0xonRS/HfxnVEPMPFSQdGUt1uHCnoPT7Zhb+sjDU2wz0oKV0OLUR0WzrHNgfeA==}
     dependencies:
@@ -5315,14 +4806,6 @@ packages:
       csstype: 3.1.2
     dev: false
 
-  /@types/react@18.2.22:
-    resolution: {integrity: sha512-60fLTOLqzarLED2O3UQImc/lsNRgG0jE/a1mPW9KjMemY0LMITWEsbS4VvZ4p6rorEHd5YKxxmMKSDK505GHpA==}
-    dependencies:
-      '@types/prop-types': 15.7.5
-      '@types/scheduler': 0.16.3
-      csstype: 3.1.2
-    dev: false
-
   /@types/react@18.2.6:
     resolution: {integrity: sha512-wRZClXn//zxCFW+ye/D2qY65UsYP1Fpex2YXorHc8awoNamkMZSvBxwxdYVInsHOZZd2Ppq8isnSzJL5Mpf8OA==}
     dependencies:
@@ -5383,10 +4866,6 @@ packages:
 
   /@types/unist@2.0.6:
     resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
-    dev: false
-
-  /@types/use-sync-external-store@0.0.3:
-    resolution: {integrity: sha512-EwmlvuaxPNej9+T4v5AuBPJa2x2UOJVdjCtDHgcDqitUeOtjnJKJ+apYjVcAoBEMjKW1VVFGZLUb5+qqa09XFA==}
     dev: false
 
   /@typescript-eslint/eslint-plugin@6.3.0(@typescript-eslint/parser@6.3.0)(eslint@8.47.0)(typescript@5.1.6):
@@ -5710,7 +5189,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.4.9(@types/node@20.4.10)
+      vite: 4.4.9(@types/node@20.6.3)
       vue: 3.3.4
     dev: false
 
@@ -5885,10 +5364,6 @@ packages:
     dependencies:
       '@vue/compiler-dom': 3.3.4
       '@vue/shared': 3.3.4
-    dev: false
-
-  /@vue/devtools-api@6.5.0:
-    resolution: {integrity: sha512-o9KfBeaBmCKl10usN4crU53fYtC1r7jJwdGKjPT24t348rHxgfpZ0xL3Xm/gLUYnc0oTp8LAmrxOeLyu6tbk2Q==}
     dev: false
 
   /@vue/reactivity-transform@3.2.33:
@@ -6493,14 +5968,6 @@ packages:
       '@babel/types': 7.22.10
       html-entities: 2.3.3
       validate-html-nesting: 1.2.2
-    dev: false
-
-  /babel-plugin-transform-hook-names@1.0.2(@babel/core@7.21.8):
-    resolution: {integrity: sha512-5gafyjyyBTTdX/tQQ0hRgu4AhNHG/hqWi0ZZmg2xvs2FgRkJXzDNKBZCyoYqgFkovfDrgM8OoKg8karoUvWeCw==}
-    peerDependencies:
-      '@babel/core': ^7.12.10
-    dependencies:
-      '@babel/core': 7.21.8
     dev: false
 
   /babel-preset-solid@1.7.4(@babel/core@7.21.8):
@@ -7515,11 +6982,6 @@ packages:
 
   /deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
-    dev: false
-
-  /deepmerge@4.3.1:
-    resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
-    engines: {node: '>=0.10.0'}
     dev: false
 
   /defer-to-connect@1.1.3:
@@ -9575,10 +9037,6 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /kolorist@1.8.0:
-    resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
-    dev: false
-
   /latest-version@5.1.0:
     resolution: {integrity: sha512-weT+r0kTkRQdCdYCNtkMwWXQTMEswKrFBkm4ckQOMVhhqhIMI1UT2hMj+1iigIhgSZm5gTmrRXBNoGUgaTY1xA==}
     engines: {node: '>=8'}
@@ -9749,13 +9207,6 @@ packages:
 
   /magic-string@0.27.0:
     resolution: {integrity: sha512-8UnnX2PeRAPZuN12svgR9j7M1uWMovg/CEnIwIG0LFkXSJJe4PdfUGiTGl8V9bsBHFUtfVINcSyYxd7q+kx9fA==}
-    engines: {node: '>=12'}
-    dependencies:
-      '@jridgewell/sourcemap-codec': 1.4.15
-    dev: false
-
-  /magic-string@0.30.0:
-    resolution: {integrity: sha512-LA+31JYDJLs82r2ScLrlz1GjSgu66ZV518eyWT+S8VhyQn/JL0u9MeBOvQMGYiPk1DBiSN9DDMOcXvigJZaViQ==}
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
@@ -11379,24 +10830,6 @@ packages:
     engines: {node: '>=4'}
     dev: false
 
-  /pinia@2.0.35(typescript@4.9.5)(vue@3.2.47):
-    resolution: {integrity: sha512-P1IKKQWhxGXiiZ3atOaNI75bYlFUbRxtJdhPLX059Z7+b9Z04rnTZdSY8Aph1LA+/4QEMAYHsTQ638Wfe+6K5g==}
-    peerDependencies:
-      '@vue/composition-api': ^1.4.0
-      typescript: '>=4.4.4'
-      vue: ^2.6.14 || ^3.2.0
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-      typescript:
-        optional: true
-    dependencies:
-      '@vue/devtools-api': 6.5.0
-      typescript: 4.9.5
-      vue: 3.2.47
-      vue-demi: 0.14.0(vue@3.2.47)
-    dev: false
-
   /pixelmatch@5.3.0:
     resolution: {integrity: sha512-o8mkY4E/+LNUf6LzX96ht6k6CEDi65k9G2rjMtBe9Oo+VPKSvl+0GKHuH/AlG+GA5LPG/i5hrekkxUc3s2HU+Q==}
     hasBin: true
@@ -11456,19 +10889,6 @@ packages:
       picocolors: 1.0.0
       source-map-js: 1.0.2
 
-  /preact-render-to-string@5.2.6(preact@10.13.2):
-    resolution: {integrity: sha512-JyhErpYOvBV1hEPwIxc/fHWXPfnEGdRKxc8gFdAZ7XV4tlzyzG847XAyEZqoDnynP88akM4eaHcSOzNcLWFguw==}
-    peerDependencies:
-      preact: '>=10'
-    dependencies:
-      preact: 10.13.2
-      pretty-format: 3.8.0
-    dev: false
-
-  /preact@10.13.2:
-    resolution: {integrity: sha512-q44QFLhOhty2Bd0Y46fnYW0gD/cbVM9dUVtNTDKPcdXSMA7jfY+Jpd6rk3GB0lcQss0z5s/6CmVP0Z/hV+g6pw==}
-    dev: false
-
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -11496,10 +10916,6 @@ packages:
       ansi-styles: 5.2.0
       react-is: 18.2.0
     dev: true
-
-  /pretty-format@3.8.0:
-    resolution: {integrity: sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==}
-    dev: false
 
   /process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
@@ -11657,17 +11073,6 @@ packages:
       minimist: 1.2.8
       strip-json-comments: 2.0.1
 
-  /react-dom@17.0.2(react@17.0.2):
-    resolution: {integrity: sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==}
-    peerDependencies:
-      react: 17.0.2
-    dependencies:
-      loose-envify: 1.4.0
-      object-assign: 4.1.1
-      react: 17.0.2
-      scheduler: 0.20.2
-    dev: false
-
   /react-dom@18.2.0(react@18.2.0):
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
@@ -11688,65 +11093,11 @@ packages:
 
   /react-is@18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
-
-  /react-redux@8.0.5(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1):
-    resolution: {integrity: sha512-Q2f6fCKxPFpkXt1qNRZdEDLlScsDWyrgSj0mliK59qU6W5gvBiKkdMEG2lJzhd1rCctf0hb6EtePPLZ2e0m1uw==}
-    peerDependencies:
-      '@types/react': ^16.8 || ^17.0 || ^18.0
-      '@types/react-dom': ^16.8 || ^17.0 || ^18.0
-      react: ^16.8 || ^17.0 || ^18.0
-      react-dom: ^16.8 || ^17.0 || ^18.0
-      react-native: '>=0.59'
-      redux: ^4
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      '@types/react-dom':
-        optional: true
-      react-dom:
-        optional: true
-      react-native:
-        optional: true
-      redux:
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.21.5
-      '@types/hoist-non-react-statics': 3.3.1
-      '@types/use-sync-external-store': 0.0.3
-      hoist-non-react-statics: 3.3.2
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      react-is: 18.2.0
-      redux: 4.2.1
-      use-sync-external-store: 1.2.0(react@18.2.0)
-    dev: false
+    dev: true
 
   /react-refresh@0.14.0:
     resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
     engines: {node: '>=0.10.0'}
-    dev: false
-
-  /react-router-dom@6.11.1(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-dPC2MhoPeTQ1YUOt5uIK376SMNWbwUxYRWk2ZmTT4fZfwlOvabF8uduRKKJIyfkCZvMgiF0GSCQckmkGGijIrg==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      react: '>=16.8'
-      react-dom: '>=16.8'
-    dependencies:
-      '@remix-run/router': 1.6.1
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      react-router: 6.11.1(react@18.2.0)
-    dev: false
-
-  /react-router@6.11.1(react@18.2.0):
-    resolution: {integrity: sha512-OZINSdjJ2WgvAi7hgNLazrEV8SGn6xrKA+MkJe9wVDMZ3zQ6fdJocUjpCUCI0cNrelWjcvon0S/QK/j0NzL3KA==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      react: '>=16.8'
-    dependencies:
-      '@remix-run/router': 1.6.1
-      react: 18.2.0
     dev: false
 
   /react-ssr-prepass@1.5.0(react@18.2.0):
@@ -11792,14 +11143,6 @@ packages:
       isbot-fast: 1.2.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    dev: false
-
-  /react@17.0.2:
-    resolution: {integrity: sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==}
-    engines: {node: '>=0.10.0'}
-    dependencies:
-      loose-envify: 1.4.0
-      object-assign: 4.1.1
     dev: false
 
   /react@18.2.0:
@@ -11912,12 +11255,6 @@ packages:
     dependencies:
       indent-string: 4.0.0
       strip-indent: 3.0.0
-    dev: false
-
-  /redux@4.2.1:
-    resolution: {integrity: sha512-LAUYz4lc+Do8/g7aeRa8JkyDErK6ekstQaqWQrNRW//MY1TvCEpMtpTWvlQ+FPbWCx+Xixu/6SHt5N0HR+SB4w==}
-    dependencies:
-      '@babel/runtime': 7.21.5
     dev: false
 
   /regenerator-runtime@0.13.11:
@@ -12191,13 +11528,6 @@ packages:
 
   /safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
-
-  /scheduler@0.20.2:
-    resolution: {integrity: sha512-2eWfGgAqqWFGqtdMmcL5zCMK1U8KlXv8SQFGglL3CEtd0aDVDWgeF/YoCmvln55m5zSk3J/20hTaSBeSObsQDQ==}
-    dependencies:
-      loose-envify: 1.4.0
-      object-assign: 4.1.1
-    dev: false
 
   /scheduler@0.23.0:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
@@ -12766,20 +12096,6 @@ packages:
     engines: {node: '>= 0.4'}
     dev: false
 
-  /svelte-hmr@0.15.1(svelte@3.59.0):
-    resolution: {integrity: sha512-BiKB4RZ8YSwRKCNVdNxK/GfY+r4Kjgp9jCLEy0DuqAKfmQtpL38cQK3afdpjw4sqSs4PLi3jIPJIFp259NkZtA==}
-    engines: {node: ^12.20 || ^14.13.1 || >= 16}
-    peerDependencies:
-      svelte: '>=3.19.0'
-    dependencies:
-      svelte: 3.59.0
-    dev: false
-
-  /svelte@3.59.0:
-    resolution: {integrity: sha512-Di1wVPwdWriw5pSyInMRpr5EZmwrzKxtDKv5aXu8A/WDUi59Y5bIvl42eLef0x1vwz+ZtrjdnT8nXir2bDqR/A==}
-    engines: {node: '>= 8'}
-    dev: false
-
   /symbol-observable@4.0.0:
     resolution: {integrity: sha512-b19dMThMV4HVFynSAM1++gBHAbk2Tc/osgLIBZMKsyqh34jb2e8Os7T6ZW/Bt3pJFdBTd2JwAnAAEQV7rSNvcQ==}
     engines: {node: '>=0.10'}
@@ -13314,7 +12630,7 @@ packages:
       '@mdit-vue/plugin-component': 0.12.1
       '@mdit-vue/plugin-frontmatter': 0.12.1
       '@mdit-vue/types': 0.12.0
-      '@rollup/pluginutils': 5.0.4
+      '@rollup/pluginutils': 5.0.4(rollup@3.27.2)
       '@types/markdown-it': 13.0.1
       markdown-it: 13.0.1
       unplugin: 1.4.0
@@ -13331,7 +12647,7 @@ packages:
       '@mdit-vue/plugin-component': 0.12.1
       '@mdit-vue/plugin-frontmatter': 0.12.1
       '@mdit-vue/types': 0.12.0
-      '@rollup/pluginutils': 5.0.4
+      '@rollup/pluginutils': 5.0.4(rollup@3.27.2)
       '@types/markdown-it': 13.0.1
       markdown-it: 13.0.1
       unplugin: 1.4.0
@@ -13424,14 +12740,6 @@ packages:
       graphql: 16.6.0
       react: 18.2.0
       wonka: 4.0.15
-    dev: false
-
-  /use-sync-external-store@1.2.0(react@18.2.0):
-    resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      react: 18.2.0
     dev: false
 
   /util-deprecate@1.0.2:
@@ -13561,20 +12869,6 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       vike: link:vike
       vite: 4.3.9
-    dev: false
-
-  /vike-react@0.3.0(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@4.4.9):
-    resolution: {integrity: sha512-7WuUkA4ECy7vZlEHxfPykyCUGOG/1RqP8i24ydbR11yMvmGBg6uELDYhH9miyE+YGgwEgAfFbvw/NhAolf9c7w==}
-    peerDependencies:
-      react: 18.x.x
-      react-dom: 18.x.x
-      vike: ^0.4.142
-      vite: ^4.3.8
-    dependencies:
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      vike: link:vike
-      vite: 4.4.9(@types/node@20.6.3)
     dev: false
 
   /vite-node@0.34.1(@types/node@20.6.3):
@@ -14016,30 +13310,6 @@ packages:
       vue: 3.2.47
     dev: false
 
-  /vue-demi@0.14.0(vue@3.2.47):
-    resolution: {integrity: sha512-gt58r2ogsNQeVoQ3EhoUAvUsH9xviydl0dWJj7dabBC/2L4uBId7ujtCwDRD0JhkGsV1i0CtfLAeyYKBht9oWg==}
-    engines: {node: '>=12'}
-    hasBin: true
-    requiresBuild: true
-    peerDependencies:
-      '@vue/composition-api': ^1.0.0-rc.1
-      vue: ^3.0.0-0 || ^2.6.0
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-    dependencies:
-      vue: 3.2.47
-    dev: false
-
-  /vue-router@4.1.6(vue@3.2.47):
-    resolution: {integrity: sha512-DYWYwsG6xNPmLq/FmZn8Ip+qrhFEzA14EI12MsMgVxvHFDYvlr4NXpVF5hrRH1wVcDP8fGi5F4rxuJSl8/r+EQ==}
-    peerDependencies:
-      vue: ^3.2.0
-    dependencies:
-      '@vue/devtools-api': 6.5.0
-      vue: 3.2.47
-    dev: false
-
   /vue@3.2.33:
     resolution: {integrity: sha512-si1ExAlDUrLSIg/V7D/GgA4twJwfsfgG+t9w10z38HhL/HA07132pUQ2KuwAo8qbCyMJ9e6OqrmWrOCr+jW7ZQ==}
     dependencies:
@@ -14068,15 +13338,6 @@ packages:
       '@vue/runtime-dom': 3.3.4
       '@vue/server-renderer': 3.3.4(vue@3.3.4)
       '@vue/shared': 3.3.4
-    dev: false
-
-  /vuex@4.1.0(vue@3.2.47):
-    resolution: {integrity: sha512-hmV6UerDrPcgbSy9ORAtNXDr9M4wlNP4pEFKye4ujJF8oqgFFuxDCdOLS3eNoRTtq5O3hoBDh9Doj1bQMYHRbQ==}
-    peerDependencies:
-      vue: ^3.2.0
-    dependencies:
-      '@vue/devtools-api': 6.5.0
-      vue: 3.2.47
     dev: false
 
   /watchpack@2.4.0:

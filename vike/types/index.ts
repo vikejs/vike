@@ -45,6 +45,8 @@ export type {
 } from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 export type { ConfigEntries } from '../shared/getPageFiles/getExports.js'
 
+export type { Url } from '../shared/addUrlComputedProps.js'
+
 export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtmlTags.js'
 
 export { defineConfig } from './defineConfig.js'

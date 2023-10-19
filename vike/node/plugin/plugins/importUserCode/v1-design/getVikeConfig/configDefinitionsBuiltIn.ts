@@ -52,7 +52,7 @@ type ConfigEffect = (config: {
   configDefinedAt: `Config ${string}`
 }) => Config | undefined
 
-// For maintainers
+/** For Vike internal use */
 type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
   _computed?: (pageConfig: PageConfigBuildTime) => unknown
   _valueIsFilePath?: true

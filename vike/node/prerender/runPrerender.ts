@@ -43,7 +43,7 @@ import type { InlineConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
-import { getConfigDefinedAtInfo, getConfigValue } from '../../shared/page-configs/utils.js'
+import { getConfigValue, getConfigValueFilePathToShowToUser, getHookFilePathToShowToUser } from '../../shared/page-configs/utils.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
 import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
@@ -244,12 +244,13 @@ async function collectDoNoPrerenderList(
     const configName = 'prerender'
     const configValue = getConfigValue(pageConfig, configName, 'boolean')
     if (configValue?.value === false) {
-      const definedAtInfo = getConfigDefinedAtInfo(pageConfig, configName)
+      const filePath = getConfigValueFilePathToShowToUser(configValue)
+      assert(filePath)
       doNotPrerenderList.push({
         pageId: pageConfig.pageId,
         setByConfigName: 'prerender',
         setByConfigValue: false,
-        setByConfigFile: definedAtInfo.filePath
+        setByConfigFile: filePath
       })
     }
   })
@@ -330,8 +331,7 @@ async function callOnBeforePrerenderStartHooks(
         const configValue = getConfigValue(pageConfigLoaded, hookName)
         if (!configValue) return
         const hookFn = configValue.value
-        const definedAtInfo = getConfigDefinedAtInfo(pageConfigLoaded, hookName)
-        const hookFilePath = definedAtInfo.filePath
+        const hookFilePath = getHookFilePathToShowToUser(configValue)
         assert(hookFilePath)
         assertHookFn(hookFn, { hookName, hookFilePath })
         onBeforePrerenderStartHooks.push({
@@ -517,11 +517,12 @@ async function callOnPrerenderStartHook(
   // V1 design
   if (renderContext.pageConfigs.length > 0) {
     const { pageConfigGlobal } = renderContext
-    if (pageConfigGlobal.configValues.onPrerenderStart?.value) {
-      const { value: hookFn, definedAtInfo } = pageConfigGlobal.configValues.onPrerenderStart
+    const configValue = pageConfigGlobal.configValues.onPrerenderStart
+    if (configValue?.value) {
+      const { value: hookFn } = configValue
       // config.onPrerenderStart isn't a computed nor a cumulative config => definedAtInfo should always be defined
-      assert(definedAtInfo)
-      const hookFilePath = definedAtInfo.filePath
+      const hookFilePath = getHookFilePathToShowToUser(configValue)
+      assert(hookFilePath)
       onPrerenderStartHook = {
         hookFn,
         hookName: 'onPrerenderStart',

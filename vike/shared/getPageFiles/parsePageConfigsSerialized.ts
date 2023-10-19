@@ -10,6 +10,7 @@ import type {
 import { parse } from '@brillout/json-serializer/parse'
 import { parseConfigValuesImported } from '../page-configs/parseConfigValuesImported.js'
 import { assert, assertUsage, isCallable } from '../utils.js'
+import { getConfigDefinedAtString } from '../page-configs/utils.js'
 
 function parsePageConfigsSerialized(
   pageConfigsSerialized: PageConfigRuntimeSerialized[],
@@ -21,12 +22,12 @@ function parsePageConfigsSerialized(
       const { configValuesSerialized } = pageConfigSerialized
       Object.entries(configValuesSerialized).forEach(([configName, configValueSeriliazed]) => {
         {
-          const { valueSerialized, definedAtInfo } = configValueSeriliazed
+          const { valueSerialized, definedAt } = configValueSeriliazed
           assert(valueSerialized)
           assert(!configValues[configName])
           configValues[configName] = {
             value: parse(valueSerialized),
-            definedAtInfo
+            definedAt
           }
         }
       })
@@ -58,13 +59,15 @@ function parsePageConfigsSerialized(
 }
 
 function assertRouteConfigValue(configValues: ConfigValues) {
-  if (!configValues.route) return
-  const { value, definedAtInfo } = configValues.route
+  const configName = 'route'
+  const configValue = configValues[configName]
+  if (!configValue) return
+  const { value } = configValue
   const configValueType = typeof value
-  assert(definedAtInfo)
+  const configDefinedAt = getConfigDefinedAtString(configName, configValue, true)
   assertUsage(
     configValueType === 'string' || isCallable(value),
-    `${definedAtInfo.filePath} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`
+    `${configDefinedAt} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`
   )
   /* We don't use assertRouteString() in order to avoid unnecessarily bloating the client-side bundle when using Server Routing:
   * - When using Server Routing, this file is loaded => loading assertRouteString() would bloat the client bundle.

@@ -149,7 +149,7 @@ async function getHtmlTags(
   if (!isHtmlOnly) {
     // Don't allow the user to manipulate with injectFilter(): injecting <script type="application/json"> before the stream can break the app when:
     //  - using https://vike.dev/stream#initial-data-after-stream-end
-    //  - `pageContext` is modified during the stream, e.g. /examples/vue-pinia which uses https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch
+    //  - `pageContext` is modified during the stream, e.g. https://github.com/brillout/vike-with-pinia which uses https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch
     // The <script> tags are handled separately by vike down below.
     htmlTags.push({
       // Needs to be called after `resolvePageContextPromise()`

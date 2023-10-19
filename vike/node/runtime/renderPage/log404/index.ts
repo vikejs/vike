@@ -90,8 +90,8 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
 
   const terminalWidth = getTerminalWidth() || 134
 
-  let width2 = Math.max(...linesContent.map(({ routeTypeSrc }) => routeTypeSrc.length))
-  let width3 = Math.max(...linesContent.map(({ routeDefinedBy }) => routeDefinedBy.length))
+  let width2 = Math.max(...linesContent.map(({ routeTypeSrc }) => stripAnsi(routeTypeSrc).length))
+  let width3 = Math.max(...linesContent.map(({ routeDefinedBy }) => stripAnsi(routeDefinedBy).length))
 
   let width1 = terminalWidth - width3 - width2 - 10
   linesContent.forEach((lineContent) => {
@@ -107,9 +107,9 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
   width1 = Math.max(...linesContent.map(({ routeStr }) => stripAnsi(routeStr).length))
 
   let lines = linesContent.map(({ routeStr, routeTypeSrc, routeDefinedBy }, i) => {
-    let cell1 = routeStr.padEnd(width1 + (routeStr.length - stripAnsi(routeStr).length), ' ')
-    let cell2 = routeTypeSrc.padEnd(width2, ' ')
-    let cell3 = routeDefinedBy.padEnd(width3, ' ')
+    let cell1 = padEnd(routeStr, width1 + (stripAnsi(routeStr).length - stripAnsi(routeStr).length))
+    let cell2 = padEnd(routeTypeSrc, width2)
+    let cell3 = padEnd(routeDefinedBy, width3)
     const isHeader = i === 0
     if (isHeader) {
       cell1 = pc.dim(cell1)
@@ -147,6 +147,12 @@ function truncateRouteFunction(routeStr: string, lenMax: number) {
   routeStr = routeStr.split(/\s/).filter(Boolean).join(' ')
   routeStr = truncateString(routeStr, lenMax, (s) => pc.dim(s))
   return routeStr
+}
+
+/** Same as String.prototype.padEnd but with stripAnsi() */
+function padEnd(str: string, width: number): string {
+  const padWidth = Math.max(0, width - stripAnsi(str).length)
+  return str + ''.padEnd(padWidth, ' ')
 }
 
 function removeNonAscii(str: string) {

@@ -86,38 +86,37 @@ function serializeConfigValueImported(
   varCounterContainer: { varCounter: number },
   importStatements: string[]
 ): string[] {
+  assert(!configValueSource.valueIsFilePath)
   assert(whitespace.replaceAll(' ', '').length === 0)
 
   const { valueIsImportedAtRuntime, definedAtInfo } = configValueSource
   assert(valueIsImportedAtRuntime)
-  const { filePath, fileExportPath } = definedAtInfo
+  const { filePathRelativeToUserRootDir, importPathAbsolute, exportName } = definedAtInfo
+  const importPath = filePathRelativeToUserRootDir ?? importPathAbsolute
 
-  assertPosixPath(filePath)
-  const fileName = path.posix.basename(filePath)
+  assertPosixPath(importPath)
+  const fileName = path.posix.basename(importPath)
   const isValueFile = fileName.startsWith('+')
 
-  const fileExportName = fileExportPath[0]
-  assert(!configValueSource.valueIsFilePath)
-  assert(fileExportName)
-
+  if (isValueFile) assert(exportName === undefined)
   const { importName, importStatement } = generateEagerImport(
-    filePath,
+    importPath,
     varCounterContainer.varCounter++,
-    isValueFile ? undefined : fileExportName
+    exportName
   )
   importStatements.push(importStatement)
 
   const lines: string[] = []
   lines.push(`  {`)
   lines.push(`    configName: '${configName}',`)
-  lines.push(`    importPath: '${filePath}',`)
+  lines.push(`    importPath: '${importPath}',`)
   lines.push(`    isValueFile: ${JSON.stringify(isValueFile)},`)
   if (isValueFile) {
     lines.push(`    importFileExports: ${importName},`)
   } else {
     lines.push(`    importFileExportValue: ${importName},`)
-    assert(fileExportName)
-    lines.push(`    exportName: ${JSON.stringify(fileExportName)},`)
+    assert(exportName)
+    lines.push(`    exportName: ${JSON.stringify(exportName)},`)
   }
   lines.push(`  },`)
   return lines

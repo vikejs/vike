@@ -1,11 +1,12 @@
 export { getConfigValue }
 export { getPageConfig }
 export { getConfigDefinedAtString }
-export { getConfigDefinedAtInfo }
 export { getDefinedAtString }
+export { getConfigValueFilePathToShowToUser }
+export { getHookFilePathToShowToUser }
 
 import { assert, assertUsage, getValuePrintable } from '../utils.js'
-import type { DefinedAtInfo, PageConfigRuntime, PageConfigBuildTime } from './PageConfig.js'
+import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAt, DefinedAtInfoNew } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
@@ -14,39 +15,36 @@ type PageConfigCommon = PageConfigRuntime | PageConfigBuildTime
 type ConfigName = ConfigNameBuiltIn
 
 // prettier-ignore
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'string'): null | { value: string }
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'string'): null | ConfigValue & { value: string }
 // prettier-ignore
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'boolean'): null | { value: boolean }
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'boolean'): null | ConfigValue & { value: boolean }
 // prettier-ignore
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName): null | { value: unknown }
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName): null | ConfigValue & { value: unknown }
 // prettier-ignore
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type?: 'string' | 'boolean'): null | { value: unknown } {
+function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue & { value: unknown } {
   const configValue = getConfigValueEntry(pageConfig, configName)
   if (configValue === null) return null
-  const { value, definedAtInfo } = configValue
-  if (type) assertConfigValueType(value, type, configName, definedAtInfo)
-  return { value }
+  const { value, definedAt } = configValue
+  if (type) assertConfigValueType(value, type, configName, definedAt)
+  return configValue
 }
-
-function getConfigDefinedAtInfo(pageConfig: PageConfigCommon, configName: ConfigName): DefinedAtInfo {
-  const configValue = getConfigValueEntry(pageConfig, configName)
-  // We assume the caller to have ensured that the config value exists prior to calling getConfigDefinedAtInfo()
-  assert(configValue)
-  const { definedAtInfo } = configValue
-  // definedAtInfo is available only for config values that aren't:
-  //  - computed, nor
-  //  - cumulative
-  assert(definedAtInfo)
-  return definedAtInfo
+function assertConfigValueType(value: unknown, type: 'string' | 'boolean', configName: string, definedAt: DefinedAt) {
+  assert(value !== null)
+  const typeActual = typeof value
+  if (typeActual === type) return
+  const valuePrintable = getValuePrintable(value)
+  const problem =
+    valuePrintable !== null ? (`value ${pc.cyan(valuePrintable)}` as const) : (`type ${pc.cyan(typeActual)}` as const)
+  const configDefinedAt = getConfigDefinedAtString(configName, { definedAt }, true)
+  assertUsage(false, `${configDefinedAt} has an invalid ${problem}: it should be a ${pc.cyan(type)} instead`)
 }
 
 function getConfigValueEntry(pageConfig: PageConfigCommon, configName: ConfigName) {
   const configValue = pageConfig.configValues[configName]
   if (!configValue) return null
-  const { value, definedAtInfo } = configValue
   // Enable users to suppress global config values by setting the local config value to null
-  if (value === null) return null
-  return { value, definedAtInfo }
+  if (configValue.value === null) return null
+  return configValue
 }
 
 function getPageConfig(pageId: string, pageConfigs: PageConfigRuntime[]): PageConfigRuntime {
@@ -56,59 +54,82 @@ function getPageConfig(pageId: string, pageConfigs: PageConfigRuntime[]): PageCo
   return pageConfig
 }
 
-function assertConfigValueType(
-  value: unknown,
-  type: 'string' | 'boolean',
-  configName: string,
-  definedAtInfo: null | DefinedAtInfo
-) {
-  assert(value !== null)
-  const typeActual = typeof value
-  if (typeActual === type) return
-  const valuePrintable = getValuePrintable(value)
-  const problem =
-    valuePrintable !== null ? (`value ${pc.cyan(valuePrintable)}` as const) : (`type ${pc.cyan(typeActual)}` as const)
-  const configDefinedAt = getConfigDefinedAtString(configName, { definedAtInfo }, true)
-  assertUsage(false, `${configDefinedAt} has an invalid ${problem}: it should be a ${pc.cyan(type)} instead`)
-}
-
-type ConfigDefinedAtUppercase<ConfigName extends string> = `Config ${ConfigName}${string}`
-type ConfigDefinedAtLowercase<ConfigName extends string> = `config ${ConfigName}${string}`
+// TODO: support sentences:
+//  - "Hook defined at ..." and use it at loadPageRoutes()
+//  - "Effect ${configNameEffect} of config ${configNameSource} ..." and use it at loadPageRoutes()
+//    - Do we really need `append: 'effect'`?
+type ConfigDefinedAtUppercase<ConfigName extends string> = `Config ${ConfigName} defined ${string}`
+type ConfigDefinedAtLowercase<ConfigName extends string> = `config ${ConfigName} defined ${string}`
 function getConfigDefinedAtString<ConfigName extends string>(
   configName: ConfigName,
-  { definedAtInfo }: { definedAtInfo: null | DefinedAtInfo },
+  { definedAt }: { definedAt: DefinedAt },
   sentenceBegin: true,
   append?: 'effect'
 ): ConfigDefinedAtUppercase<ConfigName>
 function getConfigDefinedAtString<ConfigName extends string>(
   configName: ConfigName,
-  { definedAtInfo }: { definedAtInfo: null | DefinedAtInfo },
+  { definedAt }: { definedAt: DefinedAt },
   sentenceBegin: false,
   append?: 'effect'
 ): ConfigDefinedAtLowercase<ConfigName>
 function getConfigDefinedAtString<ConfigName extends string>(
   configName: ConfigName,
-  { definedAtInfo }: { definedAtInfo: null | DefinedAtInfo },
-  sentenceBegin: boolean,
-  append?: 'effect'
+  { definedAt }: { definedAt: DefinedAt },
+  sentenceBegin: boolean
 ): ConfigDefinedAtUppercase<ConfigName> | ConfigDefinedAtLowercase<ConfigName> {
-  let configDefinedAt: ConfigDefinedAtUppercase<ConfigName> | ConfigDefinedAtLowercase<ConfigName> = `${
-    sentenceBegin ? `Config` : `config`
-  } ${pc.cyan(configName)}` as const
-  if (definedAtInfo !== null) {
-    configDefinedAt = `${configDefinedAt} defined at ${getDefinedAtString(definedAtInfo, append)}`
-  }
+  const configDefinedAt = `${sentenceBegin ? `Config` : `config`} ${pc.cyan(configName)} defined ${getSourceString(
+    definedAt
+  )}` as const
   return configDefinedAt
 }
-function getDefinedAtString(definedAtInfo: DefinedAtInfo, append?: 'effect'): string {
-  const { filePath, fileExportPath } = definedAtInfo
-  let definedAt = filePath
-  const exportPath = getExportPath(fileExportPath)
-  if (exportPath) {
-    definedAt = `${definedAt} > ${pc.cyan(exportPath)}`
+function getSourceString(definedAt: DefinedAt): 'internally' | `at ${string}` {
+  if (definedAt.isComputed) {
+    return 'internally'
   }
-  if (append) {
-    definedAt = `${definedAt} > (${pc.blue(append)})`
+
+  let sources: DefinedAtInfoNew[]
+  if (definedAt.isCumulative) {
+    sources = definedAt.sources
+  } else {
+    sources = [definedAt.source]
   }
-  return definedAt
+
+  assert(sources.length >= 1)
+  const sourceString = sources
+    .map((source) => {
+      const { filePathToShowToUser, fileExportPath } = source
+      let s = filePathToShowToUser
+      const exportPath = getExportPath(fileExportPath)
+      if (exportPath) {
+        s = `${s} > ${pc.cyan(exportPath)}`
+      }
+      if (definedAt.isEffect) {
+        s = `${s} > (${pc.blue('effect')})`
+      }
+      return s
+    })
+    .join(' / ')
+  return `at ${sourceString}`
+}
+function getDefinedAtString(configValue: ConfigValue): string {
+  let sourceString: string = getSourceString(configValue.definedAt)
+  if (sourceString.startsWith('at ')) sourceString = sourceString.slice('at '.length)
+  return sourceString
+}
+
+function getConfigValueFilePathToShowToUser({ definedAt }: { definedAt: DefinedAt }): null | string {
+  // A unique file path only exists if the config value isn't cumulative nor computed:
+  //  - cumulative config values have multiple file paths
+  //  - computed values don't have any file path
+  if (definedAt.isComputed || definedAt.isCumulative) return null
+  const { source } = definedAt
+  const { filePathToShowToUser } = source
+  assert(filePathToShowToUser)
+  return filePathToShowToUser
+}
+
+function getHookFilePathToShowToUser({ definedAt }: { definedAt: DefinedAt }): string {
+  const filePathToShowToUser = getConfigValueFilePathToShowToUser({ definedAt })
+  assert(filePathToShowToUser)
+  return filePathToShowToUser
 }

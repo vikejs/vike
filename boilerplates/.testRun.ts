@@ -27,10 +27,11 @@ function testRun(
     isSPA?: true
   }
 ) {
-  run(cmd)
-
   const isProd = cmd === 'npm run prod' || cmd === 'npm run preview'
   const isDev = !isProd
+  const testHMR = isDev && (uiFramewok === 'react' || uiFramewok === 'vue')
+
+  run(cmd, { isFlaky: testHMR })
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
@@ -56,7 +57,7 @@ function testRun(
     })
   })
 
-  if (isDev && (uiFramewok === 'react' || uiFramewok === 'vue')) {
+  if (testHMR) {
     test('HMR', async () => {
       const file = (() => {
         if (uiFramewok === 'vue') {
@@ -73,13 +74,11 @@ function testRun(
       })()
       expect(await page.textContent('button')).toBe('Counter 1')
       expect(await page.textContent('h1')).toBe('Welcome')
-      await sleep(2 * 1000) // timeout can probably be decreased
       editFile(file, (s) => s.replace('Welcome', 'Welcome !'))
       await autoRetry(async () => {
         expect(await page.textContent('h1')).toBe('Welcome !')
       })
       expect(await page.textContent('button')).toBe('Counter 1')
-      await sleep(300)
       editFileRevert()
       await autoRetry(async () => {
         expect(await page.textContent('h1')).toBe('Welcome')

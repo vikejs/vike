@@ -2,9 +2,8 @@ export { getExportPath }
 
 import { assert } from '../utils.js'
 
-// TODO: return null instead of 'export default'
-//  - Also return null insead of 'export *'?
-function getExportPath(fileExportPath: string[]): null | string {
+function getExportPath(fileExportPath: null | string[]): null | string {
+  if (!fileExportPath) return null
   let prefix = ''
   let suffix = ''
   let [exportName, ...exportObjectPath] = fileExportPath

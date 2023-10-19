@@ -34,6 +34,7 @@ import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageRoutes.js'
 import type { OnBeforeRouteHook } from '../../../shared/route/executeOnBeforeRouteHook.js'
 import pc from '@brillout/picocolors'
+import { getConfigValueFilePathToShowToUser } from '../../../shared/page-configs/utils.js'
 
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 
@@ -259,9 +260,9 @@ function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfigR
     pageConfigs
       .map((p) =>
         Object.values(p.configValues)
-          .map(({ definedAtInfo }) => definedAtInfo)
+          .map(getConfigValueFilePathToShowToUser)
           .filter(isNotNullish)
-          .map((definedAtInfo) => indent + definedAtInfo.filePath)
+          .map((filePathToShowToUser) => indent + filePathToShowToUser)
       )
       .flat(2)
   )

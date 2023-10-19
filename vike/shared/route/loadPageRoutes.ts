@@ -9,7 +9,7 @@ import type { OnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 import { isCallable } from '../utils.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
-import { getConfigDefinedAtInfo, getConfigValue, getDefinedAtString } from '../page-configs/utils.js'
+import { getConfigValue, getDefinedAtString, getHookFilePathToShowToUser } from '../page-configs/utils.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
 
 type PageRoute = {
@@ -61,9 +61,8 @@ function getPageRoutes(
           const configName = 'route'
           const configValue = getConfigValue(pageConfig, configName)
           if (configValue) {
-            const definedAtInfo = getConfigDefinedAtInfo(pageConfig, configName)
             const route = configValue.value
-            const definedAt = getDefinedAtString(definedAtInfo)
+            const definedAt = getDefinedAtString(configValue)
             if (typeof route === 'string') {
               pageRoute = {
                 pageId,
@@ -182,10 +181,10 @@ function getGlobalHooks(
   // V1 Design
   if (pageConfigs.length > 0) {
     if (pageConfigGlobal.configValues.onBeforeRoute?.value) {
-      const { value: hookFn, definedAtInfo } = pageConfigGlobal.configValues.onBeforeRoute
-      // config.onBeforeRoute isn't a computed nor a cumulative config => definedAtInfo should always be defined
-      assert(definedAtInfo)
-      const hookFilePath = definedAtInfo.filePath
+      const configValue = pageConfigGlobal.configValues.onBeforeRoute
+      const { value: hookFn } = configValue
+      const hookFilePath = getHookFilePathToShowToUser(configValue)
+      // TODO: use getConfigDefinedAtString()
       assertUsage(isCallable(hookFn), `The hook onBeforeRoute() defined by ${hookFilePath} should be a function.`)
       const onBeforeRouteHook: OnBeforeRouteHook = {
         hookFilePath: hookFilePath,

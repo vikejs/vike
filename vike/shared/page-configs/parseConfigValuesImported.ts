@@ -8,15 +8,18 @@ import pc from '@brillout/picocolors'
 function parseConfigValuesImported(configValuesImported: ConfigValueImported[]): ConfigValues {
   const configValues: ConfigValues = {}
 
-  const addConfigValue = (configName: string, value: unknown, filePath: string, exportName: string) => {
+  const addConfigValue = (configName: string, value: unknown, importPath: string, exportName: string) => {
     configValues[configName] = {
       value,
-      definedAtInfo: {
-        filePath,
-        fileExportPath: [exportName]
+      definedAt: {
+        source: {
+          // importPath is always relative the user's root directory (it cannot be relative to the current file since the current file is a virtual file)
+          filePathToShowToUser: importPath,
+          fileExportPath: [exportName]
+        }
       }
     }
-    assertIsNotNull(value, configName, filePath)
+    assertIsNotNull(value, configName, importPath)
   }
 
   configValuesImported.forEach((configValueLoaded) => {
