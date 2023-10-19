@@ -536,7 +536,7 @@ function resolveConfigValueSources(
         .filter(
           (interfaceFile) =>
             interfaceFile.isValueFile &&
-            // We consider side-effect exports (e.g. `export { frontmatter }` of .mdx files) later (i.e. with less priority)
+            // We consider side-effect configs (e.g. `export { frontmatter }` of .mdx files) later (i.e. with less priority)
             interfaceFile.configName === configName
         )
         .sort(makeOrderDeterministic)
@@ -572,7 +572,7 @@ function resolveConfigValueSources(
       .filter(
         (interfaceFile) =>
           interfaceFile.isValueFile &&
-          // Is side-effect export
+          // Is side-effect config
           interfaceFile.configName !== configName
       )
       .forEach((interfaceValueFileSideEffect) => {
@@ -704,7 +704,6 @@ function getConfigValueSource(
       return configValueSource
     }
   } else if (interfaceFile.isValueFile) {
-    // TODO: rethink file paths of ConfigElement
     const valueAlreadyLoaded = 'configValue' in conf
     const configValueSource: ConfigValueSource = {
       configEnv,
@@ -712,7 +711,11 @@ function getConfigValueSource(
       isComputed: false,
       definedAtInfo: {
         ...interfaceFile.filePath,
-        fileExportPath: configName === interfaceFile.configName ? [] : [configName]
+        fileExportPath:
+          configName === interfaceFile.configName
+            ? []
+            : // Side-effect config (e.g. `export { frontmatter }` of .md files)
+              [configName]
       }
     }
     if (valueAlreadyLoaded) {
