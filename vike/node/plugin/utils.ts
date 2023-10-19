@@ -1,4 +1,4 @@
-// Utils needed by vike's Vite plugin.
+// Utils needed by Vike's Vite plugin.
 
 // We assume all runtime entries will load this utils.ts file
 import { onLoad } from './onLoad.js'

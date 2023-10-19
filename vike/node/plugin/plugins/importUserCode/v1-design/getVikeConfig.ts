@@ -499,7 +499,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
           configName
         )} in ${sourceFilePath} is experimental and will likely be removed. Define the config ${pc.cyan(
           configName
-        )} in vike's Vite plugin options instead.`,
+        )} in Vike's Vite plugin options instead.`,
         { onlyOnce: true }
       )
       globalVikeConfig[configName] = configValueSource.value
@@ -1041,7 +1041,7 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
     // We only warn in dev, because while building it's expected to take a long time as fast-glob is competing for resources with other tasks
     assertWarning(
       time < 2 * 1000,
-      `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on vike's GitHub.`,
+      `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on Vike's GitHub.`,
       {
         onlyOnce: 'slow-page-files-search'
       }
