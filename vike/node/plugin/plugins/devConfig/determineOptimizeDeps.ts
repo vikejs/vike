@@ -34,7 +34,7 @@ async function determineOptimizeDeps(config: ResolvedConfig, configVike: ConfigV
   config.optimizeDeps.include = [...include, ...normalizeInclude(config.optimizeDeps.include)]
   config.optimizeDeps.entries = [...entries, ...normalizeEntries(config.optimizeDeps.entries)]
 
-  console.log('config.optimizeDeps', config.optimizeDeps)
+  // console.log('config.optimizeDeps', { entries: config.optimizeDeps.entries, include: config.optimizeDeps.include })
 }
 
 async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildTime[], isDev: true) {
@@ -55,7 +55,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
         if (definedAtInfo.filePathRelativeToUserRootDir !== null) {
           const { filePathAbsolute } = definedAtInfo
           assert(filePathAbsolute)
-          // Surpsingly Vite expects entries to be absolute paths
+          // Surprisingly Vite expects entries to be absolute paths
           entries.push(filePathAbsolute)
         } else {
           // Adding definedAtInfo.filePathAbsolute doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
