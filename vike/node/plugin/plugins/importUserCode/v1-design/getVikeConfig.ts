@@ -1463,7 +1463,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
         configName,
         configValueSourcePrevious,
         undefined,
-        true
+        false
       )
       assertUsage(
         false,
