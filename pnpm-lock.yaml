@@ -1478,90 +1478,6 @@ importers:
         specifier: ^4.2.2
         version: 4.3.5(@types/node@17.0.45)
 
-  examples/urql:
-    dependencies:
-      '@types/react':
-        specifier: ^18.0.8
-        version: 18.2.6
-      '@types/react-dom':
-        specifier: ^18.0.3
-        version: 18.2.4
-      '@vitejs/plugin-react':
-        specifier: ^3.0.0
-        version: 3.1.0(vite@4.3.5)
-      graphql:
-        specifier: ^16.4.0
-        version: 16.6.0
-      isomorphic-fetch:
-        specifier: ^3.0.0
-        version: 3.0.0
-      node-fetch:
-        specifier: ^3.0.0
-        version: 3.3.1
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      react-ssr-prepass:
-        specifier: ^1.5.0
-        version: 1.5.0(react@18.2.0)
-      typescript:
-        specifier: ^4.6.4
-        version: 4.9.5
-      urql:
-        specifier: ^2.2.3
-        version: 2.2.3(graphql@16.6.0)(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
-  examples/urql-v1:
-    dependencies:
-      '@types/react':
-        specifier: ^18.0.8
-        version: 18.2.6
-      '@types/react-dom':
-        specifier: ^18.0.3
-        version: 18.2.4
-      '@vitejs/plugin-react':
-        specifier: ^3.0.0
-        version: 3.1.0(vite@4.3.5)
-      graphql:
-        specifier: ^16.4.0
-        version: 16.6.0
-      isomorphic-fetch:
-        specifier: ^3.0.0
-        version: 3.0.0
-      node-fetch:
-        specifier: ^3.0.0
-        version: 3.3.1
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      react-ssr-prepass:
-        specifier: ^1.5.0
-        version: 1.5.0(react@18.2.0)
-      typescript:
-        specifier: ^4.6.4
-        version: 4.9.5
-      urql:
-        specifier: ^2.2.3
-        version: 2.2.3(graphql@16.6.0)(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.3.5(@types/node@17.0.45)
-
   examples/vanilla-v1:
     dependencies:
       typescript:
@@ -4356,7 +4272,7 @@ packages:
       rollup: 3.27.2
     dev: false
 
-  /@rollup/pluginutils@5.0.4(rollup@3.27.2):
+  /@rollup/pluginutils@5.0.4:
     resolution: {integrity: sha512-0KJnIoRI8A+a1dqOYLxH8vBf8bphDmty5QvIm2hqm7oFCFYKCAZWWd2hXgMibaPsNDhI0AtpYfQZJG47pt/k4g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -4368,7 +4284,6 @@ packages:
       '@types/estree': 1.0.1
       estree-walker: 2.0.2
       picomatch: 2.3.1
-      rollup: 3.27.2
     dev: false
 
   /@sinclair/typebox@0.27.8:
@@ -4998,16 +4913,6 @@ packages:
     dependencies:
       '@typescript-eslint/types': 6.3.0
       eslint-visitor-keys: 3.4.3
-    dev: false
-
-  /@urql/core@2.6.1(graphql@16.6.0):
-    resolution: {integrity: sha512-gYrEHy3tViJhwIhauK6MIf2Qp09QTsgNHZRd0n71rS+hF6gdwjspf1oKljl4m25+272cJF7fPjBUGmjaiEr7Kg==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.6.0)
-      graphql: 16.6.0
-      wonka: 4.0.15
     dev: false
 
   /@vitejs/plugin-react-swc@3.3.2(vite@4.4.9):
@@ -8837,15 +8742,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /isomorphic-fetch@3.0.0:
-    resolution: {integrity: sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==}
-    dependencies:
-      node-fetch: 2.6.11
-      whatwg-fetch: 3.6.2
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
   /isstream@0.1.2:
     resolution: {integrity: sha512-Yljz7ffyPbrLpLngrMtZ7NduUgVvi6wG9RJ9IUcyCd59YQ911PBJphODUcbOVbqYfxe1wuYf/LJ8PauMRwsM/g==}
     dev: true
@@ -10137,18 +10033,6 @@ packages:
     engines: {node: 4.x || >=6.0.0}
     dev: false
 
-  /node-fetch@2.6.11:
-    resolution: {integrity: sha512-4I6pdBY1EthSqDmJkiNk3JIT8cswwR9nfeW/cPdUagJYEQG7R95WRH74wpz7ma8Gh/9dI9FP+OU+0E4FvtA55w==}
-    engines: {node: 4.x || >=6.0.0}
-    peerDependencies:
-      encoding: ^0.1.0
-    peerDependenciesMeta:
-      encoding:
-        optional: true
-    dependencies:
-      whatwg-url: 5.0.0
-    dev: false
-
   /node-fetch@2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
     engines: {node: 4.x || >=6.0.0}
@@ -11098,14 +10982,6 @@ packages:
   /react-refresh@0.14.0:
     resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
     engines: {node: '>=0.10.0'}
-    dev: false
-
-  /react-ssr-prepass@1.5.0(react@18.2.0):
-    resolution: {integrity: sha512-yFNHrlVEReVYKsLI5lF05tZoHveA5pGzjFbFJY/3pOqqjGOmMmqx83N4hIjN2n6E1AOa+eQEUxs3CgRnPmT0RQ==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      react: 18.2.0
     dev: false
 
   /react-streaming@0.3.10(react-dom@18.2.0)(react@18.2.0):
@@ -12630,7 +12506,7 @@ packages:
       '@mdit-vue/plugin-component': 0.12.1
       '@mdit-vue/plugin-frontmatter': 0.12.1
       '@mdit-vue/types': 0.12.0
-      '@rollup/pluginutils': 5.0.4(rollup@3.27.2)
+      '@rollup/pluginutils': 5.0.4
       '@types/markdown-it': 13.0.1
       markdown-it: 13.0.1
       unplugin: 1.4.0
@@ -12647,7 +12523,7 @@ packages:
       '@mdit-vue/plugin-component': 0.12.1
       '@mdit-vue/plugin-frontmatter': 0.12.1
       '@mdit-vue/types': 0.12.0
-      '@rollup/pluginutils': 5.0.4(rollup@3.27.2)
+      '@rollup/pluginutils': 5.0.4
       '@types/markdown-it': 13.0.1
       markdown-it: 13.0.1
       unplugin: 1.4.0
@@ -12728,18 +12604,6 @@ packages:
 
   /urlpattern-polyfill@4.0.3:
     resolution: {integrity: sha512-DOE84vZT2fEcl9gqCUTcnAw5ZY5Id55ikUcziSUntuEFL3pRvavg5kwDmTEUJkeCHInTlV/HexFomgYnzO5kdQ==}
-    dev: false
-
-  /urql@2.2.3(graphql@16.6.0)(react@18.2.0):
-    resolution: {integrity: sha512-XMkSYJKW9s4ZlbSuxcUz3fTBIykOn0sGileRXQeyZpaRBXJPVz5saSY05k7jdefNxShZtTI+/nr7PYUWQertfg==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-      react: '>= 16.8.0'
-    dependencies:
-      '@urql/core': 2.6.1(graphql@16.6.0)
-      graphql: 16.6.0
-      react: 18.2.0
-      wonka: 4.0.15
     dev: false
 
   /util-deprecate@1.0.2:
@@ -13447,10 +13311,6 @@ packages:
       - uglify-js
     dev: false
 
-  /whatwg-fetch@3.6.2:
-    resolution: {integrity: sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==}
-    dev: false
-
   /whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
     dependencies:
@@ -13516,10 +13376,6 @@ packages:
 
   /wildcard@2.0.1:
     resolution: {integrity: sha512-CC1bOL87PIWSBhDcTrdeLo6eGT7mCFtrg0uIJtqJUFyK+eJnzl8A1niH56uu7KMa5XFrtiV+AQuHO3n7DsHnLQ==}
-    dev: false
-
-  /wonka@4.0.15:
-    resolution: {integrity: sha512-U0IUQHKXXn6PFo9nqsHphVCE5m3IntqZNB9Jjn7EB1lrR7YTDY3YWgFvEvwniTzXSvOH/XMzAZaIfJF/LvHYXg==}
     dev: false
 
   /wordwrap@1.0.0:
