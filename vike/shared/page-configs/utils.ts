@@ -57,9 +57,11 @@ function getPageConfig(pageId: string, pageConfigs: PageConfigRuntime[]): PageCo
 // TODO: support sentences:
 //  - "Hook defined at ..." and use it at loadPageRoutes()
 //  - "Effect ${configNameEffect} of config ${configNameSource} ..." and use it at loadPageRoutes()
-//    - Do we really need `append: 'effect'`?
-type ConfigDefinedAtUppercase<ConfigName extends string> = `Config ${ConfigName} defined ${string}`
-type ConfigDefinedAtLowercase<ConfigName extends string> = `config ${ConfigName} defined ${string}`
+//    ~~- Do we really need `append: 'effect'`?~~ EDIT: yes we do
+//  - Restore implementation of append option?
+//  - Review/refactor getSourceString()
+type ConfigDefinedAtUppercase<ConfigName extends string> = `Config ${ConfigName} defined ${'internally' | `at ${string}`}`
+type ConfigDefinedAtLowercase<ConfigName extends string> = `config ${ConfigName} defined ${'internally' | `at ${string}`}`
 function getConfigDefinedAtString<ConfigName extends string>(
   configName: ConfigName,
   { definedAt }: { definedAt: DefinedAt },

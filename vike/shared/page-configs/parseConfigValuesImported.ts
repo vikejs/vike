@@ -13,7 +13,7 @@ function parseConfigValuesImported(configValuesImported: ConfigValueImported[]):
       value,
       definedAt: {
         source: {
-          // importPath is always relative the user's root directory (it cannot be relative to the current file since the current file is a virtual file)
+          // importPath cannot be relative to the current file, since the current file is a virtual file
           filePathToShowToUser: importPath,
           fileExportPath: [configName, 'default'].includes(exportName)
             ? []

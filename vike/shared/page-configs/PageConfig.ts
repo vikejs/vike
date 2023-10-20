@@ -1,14 +1,17 @@
 export type { PageConfigRuntime }
 export type { PageConfigRuntimeLoaded }
+// TODO: move to shared/serializePageConfig/
 export type { PageConfigRuntimeSerialized }
 export type { PageConfigBuildTime }
 export type { ConfigEnvInternal }
 export type { ConfigEnv }
 export type { PageConfigGlobalRuntime }
+// TODO: move to shared/serializePageConfig/
 export type { PageConfigGlobalRuntimeSerialized }
 export type { PageConfigGlobalBuildTime }
 export type { ConfigSource }
 export type { ConfigValue }
+// TODO: move to shared/serializePageConfig/
 export type { ConfigValueSerialized }
 export type { ConfigValueImported }
 export type { ConfigValues }
@@ -76,7 +79,7 @@ type ConfigValueSource = {
   valueIsImportedAtRuntime: boolean
   // For config.client
   valueIsFilePath?: true
-} & ( // TODO: remove computed from sources
+} & ( // TODO: remove computed from sources?
   | {
       isComputed: false
       definedAtInfo: DefinedAtInfoFull
@@ -108,7 +111,7 @@ type ConfigValues = Record<
 >
 
 type DefinedAt =
-  // Normal config values
+  // Normal config values => defined by a unique source / file path
   | {
       source: DefinedAtInfoNew
       // TODO: is this really needed?
@@ -116,14 +119,14 @@ type DefinedAt =
       isComputed?: undefined
       isCumulative?: undefined
     }
-  // Cumulative config values => can be defined at multiple places
+  // Cumulative config values => defined at multiple sources / file paths
   | {
       isCumulative: true
       sources: DefinedAtInfoNew[]
       isEffect?: undefined
       isComputed?: undefined
     }
-  // Computed config values => are defined internally by Vike
+  // Computed config values => defined internally by Vike
   | {
       isComputed: true
       isEffect?: undefined
@@ -137,6 +140,12 @@ type DefinedAtInfoNew = {
 }
 // TODO: rename
 type DefinedAtInfoFull = (
+  // TODO: simplify/replace with following?
+  // {
+  //   filePathAbsoluteVite: string
+  //   filePathAbsoluteResolved: string | null
+  // }
+  // TODO: rename? filePathRelativeToUserRootDir => filePathRelativeToViteRoot
   | {
       filePathRelativeToUserRootDir: string
       filePathAbsolute: string

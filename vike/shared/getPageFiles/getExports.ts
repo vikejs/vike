@@ -78,7 +78,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded |
   if (pageConfig) {
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       const { value } = configValue
-      const filePath: null | string = getConfigValueFilePathToShowToUser(configValue)
+      const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue)
       const configDefinedAt = getConfigDefinedAtString(configName, configValue, true)
 
       config[configName] = config[configName] ?? value
@@ -88,7 +88,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded |
       configEntries[configName]!.push({
         configValue: value,
         configDefinedAt,
-        configDefinedByFile: filePath
+        configDefinedByFile: configValueFilePathToShowToUser
       })
 
       // TODO/v1-release: remove
@@ -97,8 +97,8 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded |
       exportsAll[exportName]!.push({
         exportValue: value,
         exportSource: configDefinedAt,
-        filePath,
-        _filePath: filePath,
+        filePath: configValueFilePathToShowToUser,
+        _filePath: configValueFilePathToShowToUser,
         _fileType: null,
         _isFromDefaultExport: null
       })

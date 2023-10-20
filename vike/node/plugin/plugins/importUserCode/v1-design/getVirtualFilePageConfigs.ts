@@ -144,19 +144,14 @@ function serializeConfigValue(lines: string[], configName: string, configValueSe
 }
 
 function getConfigValueSerialized(value: unknown, configName: string, definedAt: DefinedAt): string {
-  let configValueSerialized: string
   const valueName = `config${getPropAccessNotation(configName)}`
+  let configValueSerialized: string
   try {
     configValueSerialized = stringify(value, { valueName })
   } catch (err) {
     assert(hasProp(err, 'messageCore', 'string'))
-
     const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser({ definedAt })
-    // definedAt is null when config value is:
-    //  - computed => all computed values defined by Vike can are serializable
-    //  - cumulative => the values are already ensured to be serializable
     assert(configValueFilePathToShowToUser)
-
     assertUsage(
       false,
       [
