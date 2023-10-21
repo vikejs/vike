@@ -89,7 +89,7 @@ type ConfigValues = Record<
 type DefinedAt =
   // Normal config values => defined by a unique source / file path
   | {
-      source: DefinedAtFile
+      file: DefinedAtFile
       // TODO: is this really needed?
       isEffect?: true
       isComputed?: undefined
@@ -98,7 +98,7 @@ type DefinedAt =
   // Cumulative config values => defined at multiple sources / file paths
   | {
       isCumulative: true
-      sources: DefinedAtFile[]
+      files: DefinedAtFile[]
       isEffect?: undefined
       isComputed?: undefined
     }
@@ -109,12 +109,10 @@ type DefinedAt =
       isCumulative?: undefined
     }
 
-// TODO: rename
 type DefinedAtFile = {
   filePathToShowToUser: string
   fileExportPath: null | string[]
 }
-// TODO: rename
 type DefinedAtFileInfo = // TODO: replace filePathRelativeToUserRootDir and importPathAbsolute with following?
   // {
   //   filePathAbsoluteVite: string

@@ -490,7 +490,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
       assert('value' in configValueSource)
       if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
       assert(!configValueSource.isComputed)
-      const sourceFilePath = getFilePathToShowToUser2(configValueSource.definedAtInfo)
+      const sourceFilePath = getDefinedAtFilePathToShowToUser(configValueSource.definedAtInfo)
       assert(sourceFilePath)
       assertWarning(
         false,
@@ -1420,7 +1420,7 @@ function getConfigValues(
         value,
         definedAt: {
           isCumulative: true,
-          sources: sources.map((source) => getSourceDefinedAt(source))
+          files: sources.map((source) => getDefinedAtFile(source))
         }
       }
     }
@@ -1512,8 +1512,8 @@ function getConfigSourceDefinedAtString<T extends string>(
     {
       definedAt: {
         isEffect,
-        source: {
-          filePathToShowToUser: getFilePathToShowToUser2(definedAtInfo),
+        file: {
+          filePathToShowToUser: getDefinedAtFilePathToShowToUser(definedAtInfo),
           fileExportPath: definedAtInfo.fileExportPath
         }
       }
@@ -1522,35 +1522,18 @@ function getConfigSourceDefinedAtString<T extends string>(
   )
 }
 
-// TODO: rename
-function getFilePathToShowToUser2(definedAtInfo: DefinedAtFileInfo): string {
+function getDefinedAtFilePathToShowToUser(definedAtInfo: DefinedAtFileInfo): string {
   return definedAtInfo.filePathRelativeToUserRootDir ?? definedAtInfo.importPathAbsolute
-  /*
-  if (definedAtInfo.filePathRelativeToUserRootDir !== null) {
-    return definedAtInfo.filePathRelativeToUserRootDir
-  }
-  if (definedAtInfo.importPathAbsolute !== null) {
-    return definedAtInfo.importPathAbsolute
-  } else {
-    const filePathToShowToUser = definedAtInfo.filePathAbsolute
-    // TypeScript failes to infer that definedAtInfo.filePathAbsolute cannot be null
-    assert(filePathToShowToUser)
-    return filePathToShowToUser
-  }
-  */
 }
-
-// TODO: rename
-function getSourceDefinedAt(source: ConfigValueSource): DefinedAtFile {
+function getDefinedAtFile(source: ConfigValueSource): DefinedAtFile {
   assert(!source.isComputed)
   return {
-    filePathToShowToUser: getFilePathToShowToUser2(source.definedAtInfo),
+    filePathToShowToUser: getDefinedAtFilePathToShowToUser(source.definedAtInfo),
     fileExportPath: source.definedAtInfo.fileExportPath
   }
 }
-
 function getDefinedAt(configValueSource: ConfigValueSource): DefinedAt {
   return {
-    source: getSourceDefinedAt(configValueSource)
+    file: getDefinedAtFile(configValueSource)
   }
 }
