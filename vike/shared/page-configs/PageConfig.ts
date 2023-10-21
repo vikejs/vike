@@ -10,10 +10,8 @@ export type { ConfigValues }
 export type { ConfigValueSource }
 export type { ConfigValueSources }
 export type { DefinedAt }
-export type { DefinedAtInfoNew }
-// TODO: clean
-export type { DefinedAtInfoFull }
-export type { DefinedAtInfoFull as DefinedAtInfo }
+export type { DefinedAtFile }
+export type { DefinedAtFileInfo }
 
 import type { ConfigValueImported } from './serialize/PageConfigSerialized.js'
 
@@ -64,7 +62,7 @@ type ConfigValueSource = {
 } & ( // TODO: remove computed from sources?
   | {
       isComputed: false
-      definedAtInfo: DefinedAtInfoFull
+      definedAtInfo: DefinedAtFileInfo
     }
   | {
       isComputed: true
@@ -91,7 +89,7 @@ type ConfigValues = Record<
 type DefinedAt =
   // Normal config values => defined by a unique source / file path
   | {
-      source: DefinedAtInfoNew
+      source: DefinedAtFile
       // TODO: is this really needed?
       isEffect?: true
       isComputed?: undefined
@@ -100,7 +98,7 @@ type DefinedAt =
   // Cumulative config values => defined at multiple sources / file paths
   | {
       isCumulative: true
-      sources: DefinedAtInfoNew[]
+      sources: DefinedAtFile[]
       isEffect?: undefined
       isComputed?: undefined
     }
@@ -112,28 +110,29 @@ type DefinedAt =
     }
 
 // TODO: rename
-type DefinedAtInfoNew = {
+type DefinedAtFile = {
   filePathToShowToUser: string
   fileExportPath: null | string[]
 }
 // TODO: rename
-type DefinedAtInfoFull = // TODO: replace filePathRelativeToUserRootDir and importPathAbsolute with following?
-// {
-//   filePathAbsoluteVite: string
-//   filePathAbsoluteResolved: string | null
-// }
-// In other places, rename: filePathRelativeToUserRootDir => filePathRelativeToViteRoot
-(| {
-      filePathRelativeToUserRootDir: string
-      filePathAbsolute: string
-      importPathAbsolute: null
-    }
-  | {
-      filePathRelativeToUserRootDir: null
-      filePathAbsolute: string | null
-      importPathAbsolute: string
-    }
-) & {
-  exportName?: string
-  fileExportPath: null | string[]
-}
+type DefinedAtFileInfo = // TODO: replace filePathRelativeToUserRootDir and importPathAbsolute with following?
+  // {
+  //   filePathAbsoluteVite: string
+  //   filePathAbsoluteResolved: string | null
+  // }
+  // In other places, rename: filePathRelativeToUserRootDir => filePathRelativeToViteRoot
+  (
+    | {
+        filePathRelativeToUserRootDir: string
+        filePathAbsolute: string
+        importPathAbsolute: null
+      }
+    | {
+        filePathRelativeToUserRootDir: null
+        filePathAbsolute: string | null
+        importPathAbsolute: string
+      }
+  ) & {
+    exportName?: string
+    fileExportPath: null | string[]
+  }

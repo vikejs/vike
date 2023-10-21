@@ -28,13 +28,12 @@ import type {
   ConfigEnvInternal,
   ConfigValueSource,
   ConfigValueSources,
-  ConfigValue,
   ConfigEnv,
   PageConfigBuildTime,
   ConfigValues,
   DefinedAt,
-  DefinedAtInfo,
-  DefinedAtInfoNew
+  DefinedAtFileInfo,
+  DefinedAtFile
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -647,13 +646,13 @@ function getConfigValueSource(
   assert(conf)
   const configEnv = configDef.env
 
-  const definedAtConfigFile: DefinedAtInfo = {
+  const definedAtConfigFile: DefinedAtFileInfo = {
     ...interfaceFile.filePath,
     fileExportPath: ['default', configName]
   }
 
   if (configDef._valueIsFilePath) {
-    let definedAtInfo: DefinedAtInfo
+    let definedAtInfo: DefinedAtFileInfo
     let valueFilePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
@@ -1504,7 +1503,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
 // TODO: refactor
 function getConfigSourceDefinedAtString<T extends string>(
   configName: T,
-  { definedAtInfo }: { definedAtInfo: DefinedAtInfo },
+  { definedAtInfo }: { definedAtInfo: DefinedAtFileInfo },
   isEffect: true | undefined = undefined,
   sentenceBegin = true
 ) {
@@ -1524,7 +1523,7 @@ function getConfigSourceDefinedAtString<T extends string>(
 }
 
 // TODO: rename
-function getFilePathToShowToUser2(definedAtInfo: DefinedAtInfo): string {
+function getFilePathToShowToUser2(definedAtInfo: DefinedAtFileInfo): string {
   return definedAtInfo.filePathRelativeToUserRootDir ?? definedAtInfo.importPathAbsolute
   /*
   if (definedAtInfo.filePathRelativeToUserRootDir !== null) {
@@ -1542,7 +1541,7 @@ function getFilePathToShowToUser2(definedAtInfo: DefinedAtInfo): string {
 }
 
 // TODO: rename
-function getSourceDefinedAt(source: ConfigValueSource): DefinedAtInfoNew {
+function getSourceDefinedAt(source: ConfigValueSource): DefinedAtFile {
   assert(!source.isComputed)
   return {
     filePathToShowToUser: getFilePathToShowToUser2(source.definedAtInfo),

@@ -6,7 +6,7 @@ export { getConfigValueFilePathToShowToUser }
 export { getHookFilePathToShowToUser }
 
 import { assert, assertUsage, getValuePrintable } from '../utils.js'
-import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAt, DefinedAtInfoNew } from './PageConfig.js'
+import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAt, DefinedAtFile } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
@@ -89,7 +89,7 @@ function getSourceString(definedAt: DefinedAt, configName: string): 'internally'
     return 'internally'
   }
 
-  let sources: DefinedAtInfoNew[]
+  let sources: DefinedAtFile[]
   if (definedAt.isCumulative) {
     sources = definedAt.sources
   } else {
