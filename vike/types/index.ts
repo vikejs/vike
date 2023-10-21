@@ -6,8 +6,9 @@ export type { PageContextClient } from '../shared/types.js'
 export type { PageContextWithServerRouting } from '../shared/types.js'
 export type { PageContextClientWithServerRouting } from '../shared/types.js'
 
+// TODO/eventually: add @deprecated to these types (ideally before v1 release)
+// TODO/v1-release: remove these
 // Legacy way of enabling users to construct their own `PageContext` type.
-//  - Should we (eventually) remove these from the public types? (While telling users to extend the Vike.PageContext interface instead.)
 export type { PageContextBuiltInServer } from '../shared/types.js'
 export type { PageContextBuiltInClientWithClientRouting } from '../shared/types.js'
 export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
