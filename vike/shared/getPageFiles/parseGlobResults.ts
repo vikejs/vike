@@ -6,7 +6,7 @@ import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 import { assertPageConfigGlobalSerialized, assertPageConfigsSerialized } from './assertPageConfigs.js'
-import { parsePageConfigsSerialized } from './parsePageConfigsSerialized.js'
+import { parsePageConfigsSerialized } from '../page-configs/serialize/parsePageConfigs.js'
 
 function parseGlobResults(pageFilesExports: unknown): {
   pageFiles: PageFile[]
