@@ -1,8 +1,9 @@
 export type { PageConfigRuntimeSerialized }
-export type { ConfigValueSerialized }
 export type { PageConfigGlobalRuntimeSerialized }
+export type { ConfigValueSerialized }
+export type { ConfigValueImported }
 
-import type { ConfigValueImported, DefinedAt, PageConfigRuntime } from '../PageConfig.js'
+import type { DefinedAt, PageConfigRuntime } from '../PageConfig.js'
 
 /** page config data structure serialized in virtual files: parsing it results in PageConfigRuntime */
 type PageConfigRuntimeSerialized = Omit<PageConfigRuntime, 'configValues'> & {
@@ -12,10 +13,33 @@ type PageConfigRuntimeSerialized = Omit<PageConfigRuntime, 'configValues'> & {
   configValuesImported: ConfigValueImported[]
 }
 
+type PageConfigGlobalRuntimeSerialized = {
+  configValuesImported: ConfigValueImported[]
+}
+
+/** Value is serialized. */
 type ConfigValueSerialized = {
   valueSerialized: string
   definedAt: DefinedAt
 }
-type PageConfigGlobalRuntimeSerialized = {
-  configValuesImported: ConfigValueImported[]
-}
+/** Value is imported. */
+type ConfigValueImported = {
+  configName: string
+  // TODO: rename?
+  importPath: string
+} & (
+  | {
+      isValueFile: true // importPath is a +{configName}.js file
+      // TODO: rename?
+      importFileExports: Record<string, unknown>
+    }
+  | {
+      isValueFile: false // importPath is imported by a +config.js file
+      // TODO: rename?
+      // import { something } from './importPathRelative.js'
+      // -> exportName === 'something'
+      // -> importFileExportValue holds the value of `something`
+      exportName: string
+      importFileExportValue: unknown
+    }
+)

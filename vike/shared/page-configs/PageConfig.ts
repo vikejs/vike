@@ -7,7 +7,6 @@ export type { PageConfigGlobalRuntime }
 export type { PageConfigGlobalBuildTime }
 export type { ConfigSource }
 export type { ConfigValue }
-export type { ConfigValueImported }
 export type { ConfigValues }
 export type { ConfigValueSource }
 export type { ConfigValueSources }
@@ -16,6 +15,8 @@ export type { DefinedAtInfoNew }
 // TODO: clean
 export type { DefinedAtInfoFull }
 export type { DefinedAtInfoFull as DefinedAtInfo }
+
+import type { ConfigValueImported } from './serialize/PageConfigSerialized.js'
 
 type PageConfigBase = {
   pageId: string
@@ -30,7 +31,7 @@ type PageConfigRuntime = PageConfigBase & {
   /** Loaded config values */
   configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
-  loadConfigValuesAll: LoadConfigValuesAll
+  loadConfigValuesAll: () => Promise<ConfigValueImported[]>
 }
 /** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
 type PageConfigRuntimeLoaded = PageConfigRuntime & {
@@ -117,14 +118,13 @@ type DefinedAtInfoNew = {
   fileExportPath: null | string[]
 }
 // TODO: rename
-type DefinedAtInfoFull = (
-  // TODO: simplify/replace with following?
-  // {
-  //   filePathAbsoluteVite: string
-  //   filePathAbsoluteResolved: string | null
-  // }
-  // TODO: rename? filePathRelativeToUserRootDir => filePathRelativeToViteRoot
-  | {
+type DefinedAtInfoFull = // TODO: simplify/replace with following?
+// {
+//   filePathAbsoluteVite: string
+//   filePathAbsoluteResolved: string | null
+// }
+// TODO: rename? filePathRelativeToUserRootDir => filePathRelativeToViteRoot
+(| {
       filePathRelativeToUserRootDir: string
       filePathAbsolute: string
       importPathAbsolute: null
@@ -142,26 +142,4 @@ type DefinedAtInfoFull = (
 type ConfigSource = { configSourceFile: string } & (
   | { configSourceFileExportName: string; configSourceFileDefaultExportKey?: undefined }
   | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
-)
-
-type LoadConfigValuesAll = () => Promise<ConfigValueImported[]>
-type ConfigValueImported = {
-  configName: string
-  // TODO: rename?
-  importPath: string
-} & (
-  | {
-      isValueFile: true // importPath is a +{configName}.js file
-      // TODO: rename?
-      importFileExports: Record<string, unknown>
-    }
-  | {
-      isValueFile: false // importPath is imported by a +config.js file
-      // TODO: rename?
-      // import { something } from './importPathRelative.js'
-      // -> exportName === 'something'
-      // -> importFileExportValue holds the value of `something`
-      exportName: string
-      importFileExportValue: unknown
-    }
 )
