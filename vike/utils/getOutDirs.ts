@@ -1,3 +1,4 @@
+export { getOutDirRoot }
 export { getOutDirs }
 export { getOutDirs_prerender }
 export { resolveOutDir }
@@ -91,6 +92,16 @@ function isOutDirRoot(outDirRot: string) {
 }
 function assertIsNotOutDirRoot(outDir: string) {
   assert(outDir.endsWith('/client') || outDir.endsWith('/server'))
+}
+
+/** remove trailing `/server` or `/client` if necessary */
+function getOutDirRoot(outDir: string) {
+  assertPosixPath(outDir)
+  outDir = outDir.replace(/\/+$/, '') // remove trailing slashes
+  if (isOutDirRoot(outDir)) return outDir
+  assertIsNotOutDirRoot(outDir)
+  assert('/client'.length === '/server'.length)
+  return outDir.slice(0, -1 * '/client'.length)
 }
 
 /** `outDir` ends with `/server` or `/client` */
