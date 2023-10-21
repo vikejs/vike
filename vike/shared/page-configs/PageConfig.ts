@@ -1,11 +1,10 @@
 export type { PageConfigRuntime }
 export type { PageConfigRuntimeLoaded }
 export type { PageConfigBuildTime }
-export type { ConfigEnvInternal }
 export type { ConfigEnv }
+export type { ConfigEnvInternal }
 export type { PageConfigGlobalRuntime }
 export type { PageConfigGlobalBuildTime }
-export type { ConfigSource }
 export type { ConfigValue }
 export type { ConfigValues }
 export type { ConfigValueSource }
@@ -138,8 +137,3 @@ type DefinedAtInfoFull = // TODO: replace filePathRelativeToUserRootDir and impo
   exportName?: string
   fileExportPath: null | string[]
 }
-
-type ConfigSource = { configSourceFile: string } & (
-  | { configSourceFileExportName: string; configSourceFileDefaultExportKey?: undefined }
-  | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
-)
