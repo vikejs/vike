@@ -1,4 +1,4 @@
-export { parsePageConfigsSerialized }
+export { parsePageConfigs }
 
 import type {
   ConfigValues,
@@ -12,7 +12,7 @@ import { parseConfigValuesImported } from '../parseConfigValuesImported.js'
 import { assert, assertUsage, isCallable } from '../../utils.js'
 import { getConfigDefinedAtString } from '../utils.js'
 
-function parsePageConfigsSerialized(
+function parsePageConfigs(
   pageConfigsSerialized: PageConfigRuntimeSerialized[],
   pageConfigGlobalSerialized: PageConfigGlobalRuntimeSerialized
 ): { pageConfigs: PageConfigRuntime[]; pageConfigGlobal: PageConfigGlobalRuntime } {
