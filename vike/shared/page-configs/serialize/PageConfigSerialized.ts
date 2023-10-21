@@ -25,21 +25,20 @@ type ConfigValueSerialized = {
 /** Value is imported. */
 type ConfigValueImported = {
   configName: string
-  // TODO: rename?
   importPath: string
 } & (
   | {
-      isValueFile: true // importPath is a +{configName}.js file
-      // TODO: rename?
-      importFileExports: Record<string, unknown>
+      // importPath is /path/to/+{configName}.js
+      isValueFile: true
+      exportValues: Record<string, unknown>
     }
   | {
-      isValueFile: false // importPath is imported by a +config.js file
-      // TODO: rename?
-      // import { something } from './importPathRelative.js'
-      // -> exportName === 'something'
-      // -> importFileExportValue holds the value of `something`
+      // importPath is a `import { something } from '${importPath}'` in a +config.h.js file
+      isValueFile: false
+      // import { something } from '${importPath}'
+      // -> exportName === 'something' (the variable name "something")
+      // -> exportValue === something (the value of `something`)
       exportName: string
-      importFileExportValue: unknown
+      exportValue: unknown
     }
 )

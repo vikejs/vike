@@ -57,9 +57,9 @@ function serializeConfigValueImported(
   lines.push(`    importPath: '${importPath}',`)
   lines.push(`    isValueFile: ${JSON.stringify(isValueFile)},`)
   if (isValueFile) {
-    lines.push(`    importFileExports: ${importName},`)
+    lines.push(`    exportValues: ${importName},`)
   } else {
-    lines.push(`    importFileExportValue: ${importName},`)
+    lines.push(`    exportValue: ${importName},`)
     assert(exportName)
     lines.push(`    exportName: ${JSON.stringify(exportName)},`)
   }

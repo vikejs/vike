@@ -118,12 +118,12 @@ type DefinedAtInfoNew = {
   fileExportPath: null | string[]
 }
 // TODO: rename
-type DefinedAtInfoFull = // TODO: simplify/replace with following?
+type DefinedAtInfoFull = // TODO: replace filePathRelativeToUserRootDir and importPathAbsolute with following?
 // {
 //   filePathAbsoluteVite: string
 //   filePathAbsoluteResolved: string | null
 // }
-// TODO: rename? filePathRelativeToUserRootDir => filePathRelativeToViteRoot
+// In other places, rename: filePathRelativeToUserRootDir => filePathRelativeToViteRoot
 (| {
       filePathRelativeToUserRootDir: string
       filePathAbsolute: string

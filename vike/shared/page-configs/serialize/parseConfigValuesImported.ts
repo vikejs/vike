@@ -28,11 +28,11 @@ function parseConfigValuesImported(configValuesImported: ConfigValueImported[]):
 
   configValuesImported.forEach((configValueLoaded) => {
     if (configValueLoaded.isValueFile) {
-      const { importFileExports, importPath, configName } = configValueLoaded
+      const { exportValues, importPath, configName } = configValueLoaded
       if (configName !== 'client') {
-        assertExportsOfValueFile(importFileExports, importPath, configName)
+        assertExportsOfValueFile(exportValues, importPath, configName)
       }
-      Object.entries(importFileExports).forEach(([exportName, exportValue]) => {
+      Object.entries(exportValues).forEach(([exportName, exportValue]) => {
         const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
         const configName = isSideExport ? exportName : configValueLoaded.configName
         if (isSideExport && configName in configValues) {
@@ -43,8 +43,8 @@ function parseConfigValuesImported(configValuesImported: ConfigValueImported[]):
         addConfigValue(configName, exportValue, importPath, exportName)
       })
     } else {
-      const { configName, importPath, importFileExportValue, exportName } = configValueLoaded
-      addConfigValue(configName, importFileExportValue, importPath, exportName)
+      const { configName, importPath, exportValue, exportName } = configValueLoaded
+      addConfigValue(configName, exportValue, importPath, exportName)
     }
   })
 
