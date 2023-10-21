@@ -3,11 +3,11 @@ export { getConfigValueSerialized }
 
 import { assert, assertUsage, getPropAccessNotation, hasProp, objectEntries } from '../../../utils.js'
 import type {
-  ConfigValueSerialized,
   DefinedAt,
   PageConfigBuildTime,
   PageConfigGlobalBuildTime
 } from '../../../../../shared/page-configs/PageConfig.js'
+import type { ConfigValueSerialized } from '../../../../../shared/page-configs/serialize/PageConfigSerialized.js'
 import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
 import { stringify } from '@brillout/json-serializer/stringify'

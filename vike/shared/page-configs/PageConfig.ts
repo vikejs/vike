@@ -1,18 +1,12 @@
 export type { PageConfigRuntime }
 export type { PageConfigRuntimeLoaded }
-// TODO: move to shared/serializePageConfig/
-export type { PageConfigRuntimeSerialized }
 export type { PageConfigBuildTime }
 export type { ConfigEnvInternal }
 export type { ConfigEnv }
 export type { PageConfigGlobalRuntime }
-// TODO: move to shared/serializePageConfig/
-export type { PageConfigGlobalRuntimeSerialized }
 export type { PageConfigGlobalBuildTime }
 export type { ConfigSource }
 export type { ConfigValue }
-// TODO: move to shared/serializePageConfig/
-export type { ConfigValueSerialized }
 export type { ConfigValueImported }
 export type { ConfigValues }
 export type { ConfigValueSource }
@@ -43,27 +37,15 @@ type PageConfigRuntimeLoaded = PageConfigRuntime & {
   /** Whether loadConfigValuesAll() was called */
   isLoaded: true
 }
-/** page config data structure available and used at build-time */
+/** Page config data structure available and used at build-time */
 type PageConfigBuildTime = PageConfigBase & {
   configValues: ConfigValues
   configValueSources: ConfigValueSources
 }
-/** page config data structure serialized in virtual files: parsing it results in PageConfigRuntime */
-type PageConfigRuntimeSerialized = PageConfigBase & {
-  /** Config values that are loaded eagerly and serializable such as config.passToClient */
-  configValuesSerialized: Record<string, ConfigValueSerialized>
-  /** Config values imported eagerly such as config.route */
-  configValuesImported: ConfigValueImported[]
-  /** Config values imported lazily such as config.page */
-  loadConfigValuesAll: LoadConfigValuesAll
-}
 
-/** page config that applies to all pages */
+/** Page config that applies to all pages */
 type PageConfigGlobalRuntime = {
   configValues: ConfigValues
-}
-type PageConfigGlobalRuntimeSerialized = {
-  configValuesImported: ConfigValueImported[]
 }
 type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
@@ -97,10 +79,6 @@ type ConfigValueSources = Record<
 >
 type ConfigValue = {
   value: unknown
-  definedAt: DefinedAt
-}
-type ConfigValueSerialized = {
-  valueSerialized: string
   definedAt: DefinedAt
 }
 
