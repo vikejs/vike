@@ -16,7 +16,7 @@ import {
   objectAssign,
   isObjectWithKeys,
   isCallable,
-  getOutDirs_prerender,
+  getOutDirs,
   hasPropertyGetter,
   assertPosixPath,
   urlToFile,
@@ -173,7 +173,7 @@ async function runPrerender(
   assertLoadedConfig(viteConfig, options)
   const configVike = await getConfigVike(viteConfig)
 
-  const { outDirClient, outDirRoot } = getOutDirs_prerender(viteConfig)
+  const { outDirClient, outDirRoot } = getOutDirs(viteConfig)
   const { root } = viteConfig
   const prerenderConfig = configVike.prerender
   if (!prerenderConfig) {

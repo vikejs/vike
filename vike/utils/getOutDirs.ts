@@ -1,5 +1,4 @@
 export { getOutDirs }
-export { getOutDirs_prerender }
 export { resolveOutDir }
 
 import type { UserConfig, ResolvedConfig } from 'vite'
@@ -19,16 +18,18 @@ type OutDirs = {
 }
 
 function getOutDirs(config: ResolvedConfig): OutDirs {
-  const outDir = getOutDirFromResolvedConfig(config)
-  assertOutDirResolved(outDir, config)
-  assert(outDir.endsWith('/server') || outDir.endsWith('/client'))
-  assert('/client'.length === '/server'.length)
-  const outDirRoot = outDir.slice(0, -1 * '/client'.length)
-  return getOutDirsAll(outDirRoot, config.root)
-}
-function getOutDirs_prerender(config: ResolvedConfig): OutDirs {
-  const outDirRoot = getOutDirFromResolvedConfig(config)
-  assert(isOutDirRoot(outDirRoot))
+  let outDirRoot: string
+  {
+    const outDir = getOutDirFromResolvedConfig(config)
+    if (isOutDirRoot(outDir)) {
+      outDirRoot = outDir
+    } else {
+      assertOutDirResolved(outDir, config)
+      assert(outDir.endsWith('/server') || outDir.endsWith('/client'))
+      assert('/client'.length === '/server'.length)
+      outDirRoot = outDir.slice(0, -1 * '/client'.length)
+    }
+  }
   return getOutDirsAll(outDirRoot, config.root)
 }
 
@@ -51,6 +52,7 @@ function resolveOutDir(config: UserConfig): string {
 
 function determineOutDirs(outDirRoot: string) {
   assertPosixPath(outDirRoot)
+  outDirRoot = outDirRoot.replace(/\/+$/, '')
   assert(isOutDirRoot(outDirRoot))
   const outDirClient = pathJoin(outDirRoot, 'client')
   const outDirServer = pathJoin(outDirRoot, 'server')
