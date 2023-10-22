@@ -1,4 +1,4 @@
-export { getOutDirRoot }
+export { getOutDirRootFromResolvedConfig }
 export { getOutDirs }
 export { getOutDirs_prerender }
 export { resolveOutDir }
@@ -132,6 +132,10 @@ function getOutDirFromResolvedConfig(config: ResolvedConfig): string {
   // Vite seems to be buggy and doesn't always normalize config.build.outDir
   outDir = toPosixPath(outDir)
   return outDir
+}
+
+function getOutDirRootFromResolvedConfig(config: ResolvedConfig): string {
+  return getOutDirRoot(getOutDirFromResolvedConfig(config))
 }
 
 function outDirIsAbsolutePath(outDir: string) {

@@ -2,7 +2,7 @@ export { determineOptimizeDeps }
 
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import { assert, getFilePathAbsolute, getOutDirRoot, isNotNullish, isNpmPackageImport, unique } from '../../utils.js'
+import { assert, getFilePathAbsolute, getOutDirRootFromResolvedConfig, isNotNullish, isNpmPackageImport, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { getConfigValueSourcesRelevant } from '../../shared/getConfigValueSourcesRelevant.js'
@@ -16,7 +16,7 @@ import {
 async function determineOptimizeDeps(config: ResolvedConfig, configVike: ConfigVikeResolved, isDev: true) {
   const { pageConfigs } = await getVikeConfig(
     config.root,
-    getOutDirRoot(config.build.outDir),
+    getOutDirRootFromResolvedConfig(config),
     isDev,
     configVike.extensions
   )

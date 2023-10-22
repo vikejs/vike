@@ -2,13 +2,13 @@ export { findPageFiles }
 
 import glob from 'fast-glob'
 import type { ResolvedConfig } from 'vite'
-import { assertWarning, toPosixPath, scriptFileExtensions, getOutDirRoot } from '../utils.js'
+import { assertWarning, toPosixPath, scriptFileExtensions, getOutDirRootFromResolvedConfig } from '../utils.js'
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import pc from '@brillout/picocolors'
 
 async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[], isDev: boolean): Promise<string[]> {
   const cwd = config.root
-  const outDirRoot = getOutDirRoot(config.build.outDir)
+  const outDirRoot = getOutDirRootFromResolvedConfig(config)
   const timeBase = new Date().getTime()
   let pageFiles = await glob(
     fileTypes.map((fileType) => `**/*${fileType}.${scriptFileExtensions}`),
