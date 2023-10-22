@@ -10,6 +10,7 @@ import {
   assert,
   assertPosixPath,
   getFilePathRelativeToUserRootDir,
+  getOutDirRoot,
   getVirtualFileId,
   isDev1,
   isDev1_onConfigureServer,
@@ -60,7 +61,13 @@ function importUserCode(): Plugin {
       id = getVirtualFileId(id)
 
       if (isVirtualFileIdPageConfigValuesAll(id)) {
-        const code = await getVirtualFilePageConfigValuesAll(id, config.root, isDev, configVike)
+        const code = await getVirtualFilePageConfigValuesAll(
+          id,
+          config.root,
+          getOutDirRoot(config.build.outDir),
+          isDev,
+          configVike
+        )
         return code
       }
 
@@ -147,7 +154,7 @@ function reloadConfig(
     const msg = `${op} ${filePathToShowToUser}`
     logConfigInfo(msg, 'info')
   }
-  reloadVikeConfig(config.root, configVike.extensions)
+  reloadVikeConfig(config.root, getOutDirRoot(config.build.outDir), configVike.extensions)
 }
 
 function getVirtualModules(server: ViteDevServer): ModuleNode[] {

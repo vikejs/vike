@@ -20,6 +20,7 @@ import { isConfigEnvMatch } from './isConfigEnvMatch.js'
 async function getVirtualFilePageConfigValuesAll(
   id: string,
   userRootDir: string,
+  outDirRoot: string,
   isDev: boolean,
   configVike: ConfigVikeResolved
 ): Promise<string> {
@@ -32,7 +33,7 @@ async function getVirtualFilePageConfigValuesAll(
   }
   */
   const { pageId, isForClientSide } = result
-  const { pageConfigs } = await getVikeConfig(userRootDir, isDev, configVike.extensions, true)
+  const { pageConfigs } = await getVikeConfig(userRootDir, outDirRoot, isDev, configVike.extensions, true)
   const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
   assert(pageConfig)
   const code = getLoadConfigValuesAll(
@@ -99,11 +100,7 @@ function serializeConfigValueImported(
   const isValueFile = fileName.startsWith('+')
 
   if (isValueFile) assert(exportName === undefined)
-  const { importName, importStatement } = generateEagerImport(
-    importPath,
-    varCounterContainer.varCounter++,
-    exportName
-  )
+  const { importName, importStatement } = generateEagerImport(importPath, varCounterContainer.varCounter++, exportName)
   importStatements.push(importStatement)
 
   const lines: string[] = []

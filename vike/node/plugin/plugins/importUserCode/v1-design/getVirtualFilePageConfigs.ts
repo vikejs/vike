@@ -21,13 +21,20 @@ import { getConfigValueFilePathToShowToUser } from '../../../../../shared/page-c
 
 async function getVirtualFilePageConfigs(
   userRootDir: string,
+  outDirRoot: string,
   isForClientSide: boolean,
   isDev: boolean,
   id: string,
   configVike: ConfigVikeResolved,
   isClientRouting: boolean
 ): Promise<string> {
-  const { pageConfigs, pageConfigGlobal } = await getVikeConfig(userRootDir, isDev, configVike.extensions, true)
+  const { pageConfigs, pageConfigGlobal } = await getVikeConfig(
+    userRootDir,
+    outDirRoot,
+    isDev,
+    configVike.extensions,
+    true
+  )
   return getContent(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
 }
 

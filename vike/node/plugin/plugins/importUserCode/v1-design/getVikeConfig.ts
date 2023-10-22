@@ -111,10 +111,10 @@ let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfig> | null = null
 const vikeConfigDependencies: Set<string> = new Set()
 const filesEnv: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
-function reloadVikeConfig(userRootDir: string, extensions: ExtensionResolved[]) {
+function reloadVikeConfig(userRootDir: string, outDirRoot: string, extensions: ExtensionResolved[]) {
   vikeConfigDependencies.clear()
   filesEnv.clear()
-  vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, extensions, true)
+  vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, outDirRoot, true, extensions, true)
   handleReloadSideEffects()
 }
 async function handleReloadSideEffects() {
@@ -149,22 +149,30 @@ async function handleReloadSideEffects() {
 }
 async function getVikeConfig(
   userRootDir: string,
+  outDirRoot: string,
   isDev: boolean,
   extensions: ExtensionResolved[],
   tolerateInvalidConfig = false
 ): Promise<VikeConfig> {
   if (!vikeConfigPromise) {
-    vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, isDev, extensions, tolerateInvalidConfig)
+    vikeConfigPromise = loadVikeConfig_withErrorHandling(
+      userRootDir,
+      outDirRoot,
+      isDev,
+      extensions,
+      tolerateInvalidConfig
+    )
   }
   return await vikeConfigPromise
 }
 
 async function loadInterfaceFiles(
   userRootDir: string,
+  outDirRoot: string,
   isDev: boolean,
   extensions: ExtensionResolved[]
 ): Promise<InterfaceFilesByLocationId> {
-  const plusFiles = await findPlusFiles(userRootDir, isDev, extensions)
+  const plusFiles = await findPlusFiles(userRootDir, [outDirRoot], isDev, extensions)
   const configFiles: UserFilePath[] = []
   const valueFiles: UserFilePath[] = []
   plusFiles.forEach((f) => {
@@ -280,6 +288,7 @@ function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: 
 
 async function loadVikeConfig_withErrorHandling(
   userRootDir: string,
+  outDirRoot: string,
   isDev: boolean,
   extensions: ExtensionResolved[],
   tolerateInvalidConfig: boolean
@@ -288,7 +297,7 @@ async function loadVikeConfig_withErrorHandling(
   let ret: VikeConfig | undefined
   let err: unknown
   try {
-    ret = await loadVikeConfig(userRootDir, isDev, extensions)
+    ret = await loadVikeConfig(userRootDir, outDirRoot, isDev, extensions)
   } catch (err_) {
     hasError = true
     err = err_
@@ -323,10 +332,11 @@ async function loadVikeConfig_withErrorHandling(
 }
 async function loadVikeConfig(
   userRootDir: string,
+  outDirRoot: string,
   isDev: boolean,
   extensions: ExtensionResolved[]
 ): Promise<VikeConfig> {
-  const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, isDev, extensions)
+  const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, outDirRoot, isDev, extensions)
 
   const { globalVikeConfig, pageConfigGlobal } = getGlobalConfigs(interfaceFilesByLocationId, userRootDir)
 
@@ -1023,9 +1033,20 @@ function applyComputed(pageConfig: PageConfigBuildTime, configDefinitionsRelevan
   })
 }
 
-async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: ExtensionResolved[]) {
+async function findPlusFiles(
+  userRootDir: string,
+  ignoreDirs: string[],
+  isDev: boolean,
+  extensions: ExtensionResolved[]
+) {
   const timeBase = new Date().getTime()
   assertPosixPath(userRootDir)
+
+  const ignorePatterns = []
+  for (const dir of ignoreDirs) {
+    assertPosixPath(dir)
+    ignorePatterns.push(`${path.posix.relative(userRootDir, dir)}/**`)
+  }
   const result = await glob(`**/+*.${scriptFileExtensions}`, {
     ignore: [
       '**/node_modules/**',
@@ -1034,7 +1055,8 @@ async function findPlusFiles(userRootDir: string, isDev: boolean, extensions: Ex
       // +Page.js
       // +Page.telefunc.js
       // ```
-      '**/*.telefunc.*'
+      '**/*.telefunc.*',
+      ...ignorePatterns
     ],
     cwd: userRootDir,
     dot: false
