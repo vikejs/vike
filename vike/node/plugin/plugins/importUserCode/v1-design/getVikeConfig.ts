@@ -386,7 +386,7 @@ async function loadVikeConfig(
           configValues: getConfigValues(configValueSources, configDefinitionsRelevant)
         }
 
-        applyEffects(pageConfig, configDefinitionsRelevant)
+        applyEffectsAll(pageConfig, configDefinitionsRelevant)
         pageConfig.configValues = getConfigValues(configValueSources, configDefinitionsRelevant)
 
         applyComputed(pageConfig, configDefinitionsRelevant)
@@ -951,7 +951,7 @@ function assertMetaValue(
   })
 }
 
-function applyEffects(pageConfig: PageConfigBuildTime, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
+function applyEffectsAll(pageConfig: PageConfigBuildTime, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef.effect) return
     // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
@@ -987,7 +987,7 @@ function applyEffect(
 ) {
   const notSupported = `config.meta[configName].effect currently only supports modifying the the ${pc.cyan(
     'env'
-  )} of a config. Reach out to a maintainer if you need more capabilities.`
+  )} of a config. Reach out to a maintainer if you need more capabilities.` as const
   objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
       assert(!configValueEffectSource.isComputed)
