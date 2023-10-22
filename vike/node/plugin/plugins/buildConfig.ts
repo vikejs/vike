@@ -13,7 +13,7 @@ import {
   unique,
   assertPosixPath,
   assertUsage,
-  getOutDirRootFromResolvedConfig
+  getOutDirs,
 } from '../utils.js'
 import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
@@ -91,7 +91,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
   const pageFileEntries = await getPageFileEntries(config, configVike.includeAssetsImportedByServer) // TODO/v1-release: remove
   const { pageConfigs } = await getVikeConfig(
     config.root,
-    getOutDirRootFromResolvedConfig(config),
+    getOutDirs(config).outDirRoot,
     false,
     configVike.extensions
   )

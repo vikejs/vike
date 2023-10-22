@@ -10,7 +10,7 @@ import {
   assert,
   assertPosixPath,
   getFilePathRelativeToUserRootDir,
-  getOutDirRootFromResolvedConfig,
+  getOutDirs,
   getVirtualFileId,
   isDev1,
   isDev1_onConfigureServer,
@@ -64,7 +64,7 @@ function importUserCode(): Plugin {
         const code = await getVirtualFilePageConfigValuesAll(
           id,
           config.root,
-          getOutDirRootFromResolvedConfig(config),
+          getOutDirs(config).outDirRoot,
           isDev,
           configVike
         )
@@ -154,7 +154,7 @@ function reloadConfig(
     const msg = `${op} ${filePathToShowToUser}`
     logConfigInfo(msg, 'info')
   }
-  reloadVikeConfig(config.root, getOutDirRootFromResolvedConfig(config), configVike.extensions)
+  reloadVikeConfig(config.root, getOutDirs(config).outDirRoot, configVike.extensions)
 }
 
 function getVirtualModules(server: ViteDevServer): ModuleNode[] {

@@ -14,7 +14,7 @@ import {
   isNotNullish,
   scriptFileExtensions,
   debugGlob,
-  getOutDirRootFromResolvedConfig
+  getOutDirs
 } from '../../utils.js'
 import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
@@ -226,7 +226,7 @@ export const isGeneratedFile = true;
 
 ${await getVirtualFilePageConfigs(
   config.root,
-  getOutDirRootFromResolvedConfig(config),
+  getOutDirs(config).outDirRoot,
   isForClientSide,
   isDev,
   id,
@@ -328,7 +328,7 @@ function getGlobRoots(config: ResolvedConfig, configVike: ConfigVikeResolved): G
   const globRoots: GlobRoot[] = [
     {
       includeDir: '/',
-      excludeDir: getOutDirRootFromResolvedConfig(config)
+      excludeDir: getOutDirs(config).outDirRoot
     }
   ]
   configVike.extensions
