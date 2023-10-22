@@ -6,7 +6,7 @@ export { getConfigValueFilePathToShowToUser }
 export { getHookFilePathToShowToUser }
 
 import { assert, assertUsage, getValuePrintable } from '../utils.js'
-import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAt, DefinedAtInfoNew } from './PageConfig.js'
+import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAt, DefinedAtFile } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
@@ -60,8 +60,12 @@ function getPageConfig(pageId: string, pageConfigs: PageConfigRuntime[]): PageCo
 //    ~~- Do we really need `append: 'effect'`?~~ EDIT: yes we do
 //  - Restore implementation of append option?
 //  - Review/refactor getSourceString()
-type ConfigDefinedAtUppercase<ConfigName extends string> = `Config ${ConfigName} defined ${'internally' | `at ${string}`}`
-type ConfigDefinedAtLowercase<ConfigName extends string> = `config ${ConfigName} defined ${'internally' | `at ${string}`}`
+type ConfigDefinedAtUppercase<ConfigName extends string> = `Config ${ConfigName} defined ${
+  | 'internally'
+  | `at ${string}`}`
+type ConfigDefinedAtLowercase<ConfigName extends string> = `config ${ConfigName} defined ${
+  | 'internally'
+  | `at ${string}`}`
 function getConfigDefinedAtString<ConfigName extends string>(
   configName: ConfigName,
   { definedAt }: { definedAt: DefinedAt },
@@ -80,7 +84,8 @@ function getConfigDefinedAtString<ConfigName extends string>(
   sentenceBegin: boolean
 ): ConfigDefinedAtUppercase<ConfigName> | ConfigDefinedAtLowercase<ConfigName> {
   const configDefinedAt = `${sentenceBegin ? `Config` : `config`} ${pc.cyan(configName)} defined ${getSourceString(
-    definedAt, configName
+    definedAt,
+    configName
   )}` as const
   return configDefinedAt
 }
@@ -89,15 +94,15 @@ function getSourceString(definedAt: DefinedAt, configName: string): 'internally'
     return 'internally'
   }
 
-  let sources: DefinedAtInfoNew[]
+  let files: DefinedAtFile[]
   if (definedAt.isCumulative) {
-    sources = definedAt.sources
+    files = definedAt.files
   } else {
-    sources = [definedAt.source]
+    files = [definedAt.file]
   }
 
-  assert(sources.length >= 1)
-  const sourceString = sources
+  assert(files.length >= 1)
+  const sourceString = files
     .map((source) => {
       const { filePathToShowToUser, fileExportPath } = source
       let s = filePathToShowToUser
@@ -124,8 +129,7 @@ function getConfigValueFilePathToShowToUser({ definedAt }: { definedAt: DefinedA
   //  - cumulative config values have multiple file paths
   //  - computed values don't have any file path
   if (definedAt.isComputed || definedAt.isCumulative) return null
-  const { source } = definedAt
-  const { filePathToShowToUser } = source
+  const { filePathToShowToUser } = definedAt.file
   assert(filePathToShowToUser)
   return filePathToShowToUser
 }

@@ -3,7 +3,6 @@ export { getConfigValueSerialized }
 
 import { assert, assertUsage, getPropAccessNotation, hasProp, objectEntries } from '../../../utils.js'
 import type {
-  ConfigValueSerialized,
   DefinedAt,
   PageConfigBuildTime,
   PageConfigGlobalBuildTime
@@ -16,8 +15,11 @@ import pc from '@brillout/picocolors'
 import { getVikeConfig } from './getVikeConfig.js'
 import type { ConfigVikeResolved } from '../../../../../shared/ConfigVike.js'
 import { isConfigEnvMatch } from './isConfigEnvMatch.js'
-import { serializeConfigValueImported } from './getVirtualFilePageConfigValuesAll.js'
 import { getConfigValueFilePathToShowToUser } from '../../../../../shared/page-configs/utils.js'
+import {
+  serializeConfigValue,
+  serializeConfigValueImported
+} from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
 
 async function getVirtualFilePageConfigs(
   userRootDir: string,
@@ -134,20 +136,6 @@ function getContent(
   const code = [...importStatements, ...lines].join('\n')
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
   return code
-}
-
-function serializeConfigValue(lines: string[], configName: string, configValueSerialized: ConfigValueSerialized) {
-  let whitespace = '      '
-  lines.push(`${whitespace}['${configName}']: {`)
-  whitespace += '  '
-
-  Object.entries(configValueSerialized).forEach(([key, val]) => {
-    const valSerialized = key === 'definedAt' ? JSON.stringify(val) : val
-    lines.push(`${whitespace}  ${key}: ${valSerialized},`)
-  })
-
-  whitespace = whitespace.slice(2)
-  lines.push(`${whitespace}},`)
 }
 
 function getConfigValueSerialized(value: unknown, configName: string, definedAt: DefinedAt): string {

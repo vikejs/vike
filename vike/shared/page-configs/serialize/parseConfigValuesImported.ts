@@ -1,8 +1,9 @@
 export { parseConfigValuesImported }
 
-import { assert, assertUsage } from '../utils.js'
-import { assertExportsOfValueFile } from './assertExports.js'
-import type { ConfigValueImported, ConfigValues } from './PageConfig.js'
+import { assert, assertUsage } from '../../utils.js'
+import { assertExportsOfValueFile } from '../assertExports.js'
+import type { ConfigValues } from '../PageConfig.js'
+import type { ConfigValueImported } from './PageConfigSerialized.js'
 import pc from '@brillout/picocolors'
 
 function parseConfigValuesImported(configValuesImported: ConfigValueImported[]): ConfigValues {
@@ -12,7 +13,7 @@ function parseConfigValuesImported(configValuesImported: ConfigValueImported[]):
     configValues[configName] = {
       value,
       definedAt: {
-        source: {
+        file: {
           // importPath cannot be relative to the current file, since the current file is a virtual file
           filePathToShowToUser: importPath,
           fileExportPath: [configName, 'default'].includes(exportName)
@@ -27,11 +28,11 @@ function parseConfigValuesImported(configValuesImported: ConfigValueImported[]):
 
   configValuesImported.forEach((configValueLoaded) => {
     if (configValueLoaded.isValueFile) {
-      const { importFileExports, importPath, configName } = configValueLoaded
+      const { exportValues, importPath, configName } = configValueLoaded
       if (configName !== 'client') {
-        assertExportsOfValueFile(importFileExports, importPath, configName)
+        assertExportsOfValueFile(exportValues, importPath, configName)
       }
-      Object.entries(importFileExports).forEach(([exportName, exportValue]) => {
+      Object.entries(exportValues).forEach(([exportName, exportValue]) => {
         const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
         const configName = isSideExport ? exportName : configValueLoaded.configName
         if (isSideExport && configName in configValues) {
@@ -42,8 +43,8 @@ function parseConfigValuesImported(configValuesImported: ConfigValueImported[]):
         addConfigValue(configName, exportValue, importPath, exportName)
       })
     } else {
-      const { configName, importPath, importFileExportValue, exportName } = configValueLoaded
-      addConfigValue(configName, importFileExportValue, importPath, exportName)
+      const { configName, importPath, exportValue, exportName } = configValueLoaded
+      addConfigValue(configName, exportValue, importPath, exportName)
     }
   })
 

@@ -3,7 +3,7 @@
 export { suppressRollupWarning }
 
 import type { Plugin, Rollup } from 'vite'
-type RollupWarning = Rollup.RollupWarning
+type RollupLog = Rollup.RollupLog
 
 function suppressRollupWarning(): Plugin {
   return {
@@ -30,17 +30,17 @@ function suppressRollupWarning(): Plugin {
 }
 
 /** Suppress warning about Rollup removing the React Server Components `"use client";` directives */
-function suppressUseClientDirective(warning: RollupWarning) {
+function suppressUseClientDirective(warning: RollupLog) {
   return warning.code === 'MODULE_LEVEL_DIRECTIVE' && warning.message.includes('"use client"')
 }
 
 /** Suppress warning about generating emtpy chunks in dist/ */
-function suppressEmptyBundle(warning: RollupWarning) {
+function suppressEmptyBundle(warning: RollupLog) {
   return warning.code === 'EMPTY_BUNDLE'
 }
 
 /** Suppress warning about unused import statements */
-function suppressUnusedImport(warning: RollupWarning & { ids?: string[] }): boolean {
+function suppressUnusedImport(warning: RollupLog & { ids?: string[] }): boolean {
   if (warning.code !== 'UNUSED_EXTERNAL_IMPORT') return false
 
   // I guess it's expected that JSX contains unsused `import React from 'react'`

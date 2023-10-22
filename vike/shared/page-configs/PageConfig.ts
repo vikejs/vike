@@ -1,27 +1,19 @@
 export type { PageConfigRuntime }
 export type { PageConfigRuntimeLoaded }
-// TODO: move to shared/serializePageConfig/
-export type { PageConfigRuntimeSerialized }
 export type { PageConfigBuildTime }
-export type { ConfigEnvInternal }
 export type { ConfigEnv }
+export type { ConfigEnvInternal }
 export type { PageConfigGlobalRuntime }
-// TODO: move to shared/serializePageConfig/
-export type { PageConfigGlobalRuntimeSerialized }
 export type { PageConfigGlobalBuildTime }
-export type { ConfigSource }
 export type { ConfigValue }
-// TODO: move to shared/serializePageConfig/
-export type { ConfigValueSerialized }
-export type { ConfigValueImported }
 export type { ConfigValues }
 export type { ConfigValueSource }
 export type { ConfigValueSources }
 export type { DefinedAt }
-export type { DefinedAtInfoNew }
-// TODO: clean
-export type { DefinedAtInfoFull }
-export type { DefinedAtInfoFull as DefinedAtInfo }
+export type { DefinedAtFile }
+export type { DefinedAtFileInfo }
+
+import type { ConfigValueImported } from './serialize/PageConfigSerialized.js'
 
 type PageConfigBase = {
   pageId: string
@@ -36,34 +28,22 @@ type PageConfigRuntime = PageConfigBase & {
   /** Loaded config values */
   configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
-  loadConfigValuesAll: LoadConfigValuesAll
+  loadConfigValuesAll: () => Promise<ConfigValueImported[]>
 }
 /** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
 type PageConfigRuntimeLoaded = PageConfigRuntime & {
   /** Whether loadConfigValuesAll() was called */
   isLoaded: true
 }
-/** page config data structure available and used at build-time */
+/** Page config data structure available and used at build-time */
 type PageConfigBuildTime = PageConfigBase & {
   configValues: ConfigValues
   configValueSources: ConfigValueSources
 }
-/** page config data structure serialized in virtual files: parsing it results in PageConfigRuntime */
-type PageConfigRuntimeSerialized = PageConfigBase & {
-  /** Config values that are loaded eagerly and serializable such as config.passToClient */
-  configValuesSerialized: Record<string, ConfigValueSerialized>
-  /** Config values imported eagerly such as config.route */
-  configValuesImported: ConfigValueImported[]
-  /** Config values imported lazily such as config.page */
-  loadConfigValuesAll: LoadConfigValuesAll
-}
 
-/** page config that applies to all pages */
+/** Page config that applies to all pages */
 type PageConfigGlobalRuntime = {
   configValues: ConfigValues
-}
-type PageConfigGlobalRuntimeSerialized = {
-  configValuesImported: ConfigValueImported[]
 }
 type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
@@ -82,7 +62,7 @@ type ConfigValueSource = {
 } & ( // TODO: remove computed from sources?
   | {
       isComputed: false
-      definedAtInfo: DefinedAtInfoFull
+      definedAtInfo: DefinedAtFileInfo
     }
   | {
       isComputed: true
@@ -99,10 +79,6 @@ type ConfigValue = {
   value: unknown
   definedAt: DefinedAt
 }
-type ConfigValueSerialized = {
-  valueSerialized: string
-  definedAt: DefinedAt
-}
 
 type ConfigValues = Record<
   // configName
@@ -113,7 +89,7 @@ type ConfigValues = Record<
 type DefinedAt =
   // Normal config values => defined by a unique source / file path
   | {
-      source: DefinedAtInfoNew
+      file: DefinedAtFile
       // TODO: is this really needed?
       isEffect?: true
       isComputed?: undefined
@@ -122,7 +98,7 @@ type DefinedAt =
   // Cumulative config values => defined at multiple sources / file paths
   | {
       isCumulative: true
-      sources: DefinedAtInfoNew[]
+      files: DefinedAtFile[]
       isEffect?: undefined
       isComputed?: undefined
     }
@@ -133,57 +109,28 @@ type DefinedAt =
       isCumulative?: undefined
     }
 
-// TODO: rename
-type DefinedAtInfoNew = {
+type DefinedAtFile = {
   filePathToShowToUser: string
   fileExportPath: null | string[]
 }
-// TODO: rename
-type DefinedAtInfoFull = (
-  // TODO: simplify/replace with following?
+type DefinedAtFileInfo = // TODO: replace filePathRelativeToUserRootDir and importPathAbsolute with following?
   // {
   //   filePathAbsoluteVite: string
   //   filePathAbsoluteResolved: string | null
   // }
-  // TODO: rename? filePathRelativeToUserRootDir => filePathRelativeToViteRoot
-  | {
-      filePathRelativeToUserRootDir: string
-      filePathAbsolute: string
-      importPathAbsolute: null
-    }
-  | {
-      filePathRelativeToUserRootDir: null
-      filePathAbsolute: string | null
-      importPathAbsolute: string
-    }
-) & {
-  exportName?: string
-  fileExportPath: null | string[]
-}
-
-type ConfigSource = { configSourceFile: string } & (
-  | { configSourceFileExportName: string; configSourceFileDefaultExportKey?: undefined }
-  | { configSourceFileDefaultExportKey: string; configSourceFileExportName?: undefined }
-)
-
-type LoadConfigValuesAll = () => Promise<ConfigValueImported[]>
-type ConfigValueImported = {
-  configName: string
-  // TODO: rename?
-  importPath: string
-} & (
-  | {
-      isValueFile: true // importPath is a +{configName}.js file
-      // TODO: rename?
-      importFileExports: Record<string, unknown>
-    }
-  | {
-      isValueFile: false // importPath is imported by a +config.js file
-      // TODO: rename?
-      // import { something } from './importPathRelative.js'
-      // -> exportName === 'something'
-      // -> importFileExportValue holds the value of `something`
-      exportName: string
-      importFileExportValue: unknown
-    }
-)
+  // In other places, rename: filePathRelativeToUserRootDir => filePathRelativeToViteRoot
+  (
+    | {
+        filePathRelativeToUserRootDir: string
+        filePathAbsolute: string
+        importPathAbsolute: null
+      }
+    | {
+        filePathRelativeToUserRootDir: null
+        filePathAbsolute: string | null
+        importPathAbsolute: string
+      }
+  ) & {
+    exportName?: string
+    fileExportPath: null | string[]
+  }

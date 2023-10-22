@@ -28,13 +28,12 @@ import type {
   ConfigEnvInternal,
   ConfigValueSource,
   ConfigValueSources,
-  ConfigValue,
   ConfigEnv,
   PageConfigBuildTime,
   ConfigValues,
   DefinedAt,
-  DefinedAtInfo,
-  DefinedAtInfoNew
+  DefinedAtFileInfo,
+  DefinedAtFile
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -501,7 +500,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
       assert('value' in configValueSource)
       if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
       assert(!configValueSource.isComputed)
-      const sourceFilePath = getFilePathToShowToUser2(configValueSource.definedAtInfo)
+      const sourceFilePath = getDefinedAtFilePathToShowToUser(configValueSource.definedAtInfo)
       assert(sourceFilePath)
       assertWarning(
         false,
@@ -657,13 +656,13 @@ function getConfigValueSource(
   assert(conf)
   const configEnv = configDef.env
 
-  const definedAtConfigFile: DefinedAtInfo = {
+  const definedAtConfigFile: DefinedAtFileInfo = {
     ...interfaceFile.filePath,
     fileExportPath: ['default', configName]
   }
 
   if (configDef._valueIsFilePath) {
-    let definedAtInfo: DefinedAtInfo
+    let definedAtInfo: DefinedAtFileInfo
     let valueFilePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
@@ -1443,7 +1442,7 @@ function getConfigValues(
         value,
         definedAt: {
           isCumulative: true,
-          sources: sources.map((source) => getSourceDefinedAt(source))
+          files: sources.map((source) => getDefinedAtFile(source))
         }
       }
     }
@@ -1526,7 +1525,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
 // TODO: refactor
 function getConfigSourceDefinedAtString<T extends string>(
   configName: T,
-  { definedAtInfo }: { definedAtInfo: DefinedAtInfo },
+  { definedAtInfo }: { definedAtInfo: DefinedAtFileInfo },
   isEffect: true | undefined = undefined,
   sentenceBegin = true
 ) {
@@ -1535,8 +1534,8 @@ function getConfigSourceDefinedAtString<T extends string>(
     {
       definedAt: {
         isEffect,
-        source: {
-          filePathToShowToUser: getFilePathToShowToUser2(definedAtInfo),
+        file: {
+          filePathToShowToUser: getDefinedAtFilePathToShowToUser(definedAtInfo),
           fileExportPath: definedAtInfo.fileExportPath
         }
       }
@@ -1545,35 +1544,18 @@ function getConfigSourceDefinedAtString<T extends string>(
   )
 }
 
-// TODO: rename
-function getFilePathToShowToUser2(definedAtInfo: DefinedAtInfo): string {
+function getDefinedAtFilePathToShowToUser(definedAtInfo: DefinedAtFileInfo): string {
   return definedAtInfo.filePathRelativeToUserRootDir ?? definedAtInfo.importPathAbsolute
-  /*
-  if (definedAtInfo.filePathRelativeToUserRootDir !== null) {
-    return definedAtInfo.filePathRelativeToUserRootDir
-  }
-  if (definedAtInfo.importPathAbsolute !== null) {
-    return definedAtInfo.importPathAbsolute
-  } else {
-    const filePathToShowToUser = definedAtInfo.filePathAbsolute
-    // TypeScript failes to infer that definedAtInfo.filePathAbsolute cannot be null
-    assert(filePathToShowToUser)
-    return filePathToShowToUser
-  }
-  */
 }
-
-// TODO: rename
-function getSourceDefinedAt(source: ConfigValueSource): DefinedAtInfoNew {
+function getDefinedAtFile(source: ConfigValueSource): DefinedAtFile {
   assert(!source.isComputed)
   return {
-    filePathToShowToUser: getFilePathToShowToUser2(source.definedAtInfo),
+    filePathToShowToUser: getDefinedAtFilePathToShowToUser(source.definedAtInfo),
     fileExportPath: source.definedAtInfo.fileExportPath
   }
 }
-
 function getDefinedAt(configValueSource: ConfigValueSource): DefinedAt {
   return {
-    source: getSourceDefinedAt(configValueSource)
+    file: getDefinedAtFile(configValueSource)
   }
 }

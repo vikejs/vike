@@ -1,9 +1,7 @@
 export { getVirtualFilePageConfigValuesAll }
-export { serializeConfigValueImported }
 
-import { assert, assertPosixPath } from '../../../utils.js'
-import type { ConfigValueSource, PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
-import { generateEagerImport } from '../generateEagerImport.js'
+import { assert } from '../../../utils.js'
+import type { PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
 import {
   getVirtualFileIdPageConfigValuesAll,
   isVirtualFileIdPageConfigValuesAll
@@ -12,10 +10,10 @@ import { getVikeConfig } from './getVikeConfig.js'
 import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
 import type { ConfigVikeResolved } from '../../../../../shared/ConfigVike.js'
-import path from 'path'
 import { getConfigValue } from '../../../../../shared/page-configs/utils.js'
 import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSourcesRelevant.js'
 import { isConfigEnvMatch } from './isConfigEnvMatch.js'
+import { serializeConfigValueImported } from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
 
 async function getVirtualFilePageConfigValuesAll(
   id: string,
@@ -78,43 +76,4 @@ function getLoadConfigValuesAll(
   }
   const code = [...importStatements, ...lines].join('\n')
   return code
-}
-
-function serializeConfigValueImported(
-  configValueSource: ConfigValueSource,
-  configName: string,
-  whitespace: string,
-  varCounterContainer: { varCounter: number },
-  importStatements: string[]
-): string[] {
-  assert(!configValueSource.valueIsFilePath)
-  assert(whitespace.replaceAll(' ', '').length === 0)
-
-  const { valueIsImportedAtRuntime, definedAtInfo } = configValueSource
-  assert(valueIsImportedAtRuntime)
-  const { filePathRelativeToUserRootDir, importPathAbsolute, exportName } = definedAtInfo
-  const importPath = filePathRelativeToUserRootDir ?? importPathAbsolute
-
-  assertPosixPath(importPath)
-  const fileName = path.posix.basename(importPath)
-  const isValueFile = fileName.startsWith('+')
-
-  if (isValueFile) assert(exportName === undefined)
-  const { importName, importStatement } = generateEagerImport(importPath, varCounterContainer.varCounter++, exportName)
-  importStatements.push(importStatement)
-
-  const lines: string[] = []
-  lines.push(`  {`)
-  lines.push(`    configName: '${configName}',`)
-  lines.push(`    importPath: '${importPath}',`)
-  lines.push(`    isValueFile: ${JSON.stringify(isValueFile)},`)
-  if (isValueFile) {
-    lines.push(`    importFileExports: ${importName},`)
-  } else {
-    lines.push(`    importFileExportValue: ${importName},`)
-    assert(exportName)
-    lines.push(`    exportName: ${JSON.stringify(exportName)},`)
-  }
-  lines.push(`  },`)
-  return lines
 }
