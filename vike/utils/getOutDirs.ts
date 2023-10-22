@@ -20,7 +20,7 @@ type OutDirs = {
 function getOutDirs(config: ResolvedConfig): OutDirs {
   let outDirRoot: string
   {
-    const outDir = getOutDirFromResolvedConfig(config)
+    const outDir = getOutDirFromViteResolvedConfig(config)
     if (isOutDirRoot(outDir)) {
       outDirRoot = outDir
     } else {
@@ -35,7 +35,7 @@ function getOutDirs(config: ResolvedConfig): OutDirs {
 
 /** Appends `client/` or `server/` to `config.build.outDir` */
 function resolveOutDir(config: UserConfig): string {
-  const outDir = getOutDirFromUserConfig(config) || 'dist'
+  const outDir = getOutDirFromViteUserConfig(config) || 'dist'
   // outDir may already be resolved when using Telefunc + vike (because both Telefunc and vike use this logic)
   if (!isOutDirRoot(outDir)) {
     assertOutDirResolved(outDir, config)
@@ -52,7 +52,7 @@ function resolveOutDir(config: UserConfig): string {
 
 function determineOutDirs(outDirRoot: string) {
   assertPosixPath(outDirRoot)
-  outDirRoot = outDirRoot.replace(/\/+$/, '')
+  assert(!outDirRoot.endsWith('/'))
   assert(isOutDirRoot(outDirRoot))
   const outDirClient = pathJoin(outDirRoot, 'client')
   const outDirServer = pathJoin(outDirRoot, 'server')
@@ -111,17 +111,21 @@ function assertOutDirResolved(outDir: string, config: UserConfig | ResolvedConfi
   }
 }
 
-function getOutDirFromUserConfig(config: UserConfig): string | undefined {
+function getOutDirFromViteUserConfig(config: UserConfig | ResolvedConfig): string | undefined {
   let outDir = config.build?.outDir
   if (outDir === undefined) return undefined
-  // I believe Vite normalizes config.build.outDir only if config is ResolvedConfig
-  outDir = toPosixPath(outDir)
+  outDir = normalize(outDir)
   return outDir
 }
-function getOutDirFromResolvedConfig(config: ResolvedConfig): string {
+function getOutDirFromViteResolvedConfig(config: ResolvedConfig): string {
   let outDir = config.build.outDir
-  // Vite seems to be buggy and doesn't always normalize config.build.outDir
+  assert(outDir)
+  outDir = normalize(outDir)
+  return outDir
+}
+function normalize(outDir: string): string {
   outDir = toPosixPath(outDir)
+  outDir = outDir.replace(/\/+$/, '')
   return outDir
 }
 
