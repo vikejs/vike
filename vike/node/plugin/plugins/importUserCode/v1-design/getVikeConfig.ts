@@ -386,7 +386,7 @@ async function loadVikeConfig(
           configValues: getConfigValues(configValueSources, configDefinitionsRelevant)
         }
 
-        applyEffectsAll(pageConfig, configDefinitionsRelevant)
+        applyEffectsAll(pageConfig.configValueSources, configDefinitionsRelevant)
         pageConfig.configValues = getConfigValues(configValueSources, configDefinitionsRelevant)
 
         applyComputed(pageConfig, configDefinitionsRelevant)
@@ -951,7 +951,10 @@ function assertMetaValue(
   })
 }
 
-function applyEffectsAll(pageConfig: PageConfigBuildTime, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
+function applyEffectsAll(
+  configValueSources: ConfigValueSources,
+  configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
+) {
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef.effect) return
     // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
@@ -964,7 +967,7 @@ function applyEffectsAll(pageConfig: PageConfigBuildTime, configDefinitionsRelev
         )}: effects can only be added to configs with an env that is ${pc.cyan('config-only')}.`
       ].join(' ')
     )
-    const source = pageConfig.configValueSources[configName]?.[0]
+    const source = configValueSources[configName]?.[0]
     if (!source) return
     // All computed configs have no effect (users cannot created computed configs)
     assert(!source.isComputed)
@@ -977,7 +980,7 @@ function applyEffectsAll(pageConfig: PageConfigBuildTime, configDefinitionsRelev
     })
     if (!configModFromEffect) return
     assert(hasProp(source, 'value')) // We need to assume that the config value is loaded at build-time
-    applyEffect(configModFromEffect, source, pageConfig.configValueSources)
+    applyEffect(configModFromEffect, source, configValueSources)
   })
 }
 function applyEffect(
