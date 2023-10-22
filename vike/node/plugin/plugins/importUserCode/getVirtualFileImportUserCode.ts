@@ -13,7 +13,8 @@ import {
   viteIsSSR_options,
   isNotNullish,
   scriptFileExtensions,
-  debugGlob
+  debugGlob,
+  getOutDirRoot
 } from '../../utils.js'
 import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
@@ -21,6 +22,11 @@ import { type FileType, fileTypes, determineFileType } from '../../../../shared/
 import path from 'path'
 import { getVirtualFilePageConfigs } from './v1-design/getVirtualFilePageConfigs.js'
 import { generateEagerImport } from './generateEagerImport.js'
+
+type GlobRoot = {
+  includeDir: string // slash-terminated
+  excludeDir?: string // slash-terminated, no leading exclamation mark
+}
 
 async function getVirtualFileImportUserCode(
   id: string,
@@ -198,7 +204,7 @@ function addImport(importPath: string, fileType: FileType, exportNames: boolean,
 }
 
 async function generateGlobImports(
-  globRoots: string[],
+  globRoots: GlobRoot[],
   isBuild: boolean,
   isForClientSide: boolean,
   isClientRouting: boolean,
@@ -255,7 +261,7 @@ type PageFileVar =
   | 'neverLoaded'
 
 function getGlobs(
-  globRoots: string[],
+  globRoots: GlobRoot[],
   isBuild: boolean,
   fileType: Exclude<FileType, '.css'>,
   query?: 'extractExportNames' | 'extractAssets'
@@ -296,10 +302,12 @@ function getGlobs(
     ...globRoots.map((globRoot, i) => {
       const varNameLocal = `${varName}${i + 1}`
       varNameLocals.push(varNameLocal)
-      const globPath = `'${getGlobPath(globRoot, fileType)}'`
+      const globIncludePath = `'${getGlobPath(globRoot.includeDir, fileType)}'`
+      const globExcludePath = globRoot.excludeDir ? `'!${getGlobPath(globRoot.excludeDir, fileType)}'` : null
       const globOptions = JSON.stringify({ eager: isEager, as: query })
       assert(globOptions.startsWith('{"eager":true') || globOptions.startsWith('{"eager":false'))
-      const globLine = `const ${varNameLocal} = import.meta.glob(${globPath}, ${globOptions});`
+      const globPaths = globExcludePath ? `[${globIncludePath}, ${globExcludePath}]` : `[${globIncludePath}]`
+      const globLine = `const ${varNameLocal} = import.meta.glob(${globPaths}, ${globOptions});`
       return globLine
     }),
     `const ${varName} = {${varNameLocals.map((varNameLocal) => `...${varNameLocal}`).join(',')}};`,
@@ -308,21 +316,28 @@ function getGlobs(
   ].join('\n')
 }
 
-function getGlobRoots(config: ResolvedConfig, configVike: ConfigVikeResolved): string[] {
-  const globRoots = ['/']
+function getGlobRoots(config: ResolvedConfig, configVike: ConfigVikeResolved): GlobRoot[] {
+  const globRoots: GlobRoot[] = [
+    {
+      includeDir: '/',
+      excludeDir: getOutDirRoot(config.build.outDir)
+    }
+  ]
   configVike.extensions
     .map(({ pageConfigsSrcDir }) => pageConfigsSrcDir)
     .filter(isNotNullish)
     .forEach((pageConfigsSrcDir) => {
-      const globRoot = path.posix.relative(config.root, pageConfigsSrcDir)
+      const globRoot: GlobRoot = {
+        includeDir: path.posix.relative(config.root, pageConfigsSrcDir)
+      }
       globRoots.push(globRoot)
     })
   return globRoots
 }
 
-function getGlobPath(globRoot: string, fileType: FileType): string {
-  assertPosixPath(globRoot)
-  let globPath = [...globRoot.split('/'), '**', `*${fileType}.${scriptFileExtensions}`].filter(Boolean).join('/')
+function getGlobPath(globRootDir: string, fileType: FileType): string {
+  assertPosixPath(globRootDir)
+  let globPath = [...globRootDir.split('/'), '**', `*${fileType}.${scriptFileExtensions}`].filter(Boolean).join('/')
   if (!globPath.startsWith('/')) {
     globPath = '/' + globPath
   }
