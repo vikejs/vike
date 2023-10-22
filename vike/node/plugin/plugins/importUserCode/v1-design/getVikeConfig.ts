@@ -956,21 +956,21 @@ function applyEffectsAll(pageConfig: PageConfigBuildTime, configDefinitionsRelev
     if (!configDef.effect) return
     // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
     // (We could support effect for non config-only by always loading its value at config time, regardless of the config's `env` value.)
-    assertWarning(
+    assertUsage(
       configDef.env === 'config-only',
       [
-        `Adding an effect to ${pc.cyan(configName)} may not work as expected because ${pc.cyan(
-          configName
-        )} has an ${pc.cyan('env')} that is different than ${pc.cyan('config-only')} (its env is ${pc.cyan(
+        `Cannot add effect to ${pc.cyan(configName)} because its ${pc.cyan('env')} is ${pc.cyan(
           configDef.env
-        )}).`,
-        'Reach out to a maintainer if you want to use this in production.'
-      ].join(' '),
-      { onlyOnce: true }
+        )}: effects can only be added to configs with an env that is ${pc.cyan('config-only')}.`
+      ].join(' ')
     )
     const source = pageConfig.configValueSources[configName]?.[0]
     if (!source) return
+    // All computed configs have no effect (users cannot created computed configs)
     assert(!source.isComputed)
+    // The config value is eagerly loaded since `configDef.env === 'config-only``
+    assert('value' in source)
+    // Call effect
     const configModFromEffect = configDef.effect({
       configValue: source.value,
       configDefinedAt: getConfigSourceDefinedAtString(configName, source)
@@ -985,9 +985,7 @@ function applyEffect(
   configValueEffectSource: ConfigValueSource,
   configValueSources: ConfigValueSources
 ) {
-  const notSupported = `config.meta[configName].effect currently only supports modifying the the ${pc.cyan(
-    'env'
-  )} of a config. Reach out to a maintainer if you need more capabilities.` as const
+  const notSupported = `Effects currently only supports modifying the the ${pc.cyan('env')} of a config.` as const
   objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
       assert(!configValueEffectSource.isComputed)
@@ -1001,6 +999,7 @@ function applyEffect(
         const envOverriden = configTargetDef.env
         const sources = configValueSources[configTargetName]
         sources?.forEach((configValueSource) => {
+          // Apply effect
           configValueSource.configEnv = envOverriden
         })
       })
