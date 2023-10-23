@@ -1,5 +1,5 @@
 // https://vike.dev/onRenderHtml
-export default onRenderHtml
+export { onRenderHtml }
 
 import React from 'react'
 import { renderToStream } from 'react-streaming/server'

@@ -1,5 +1,5 @@
 // https://vike.dev/onRenderClient
-export default onRenderClient
+export { onRenderClient }
 
 import { createApp } from './app'
 import './app.css'

@@ -14,7 +14,7 @@
   </ul>
   <p>
     Parameterized routes can be defined by exporting a route string in
-    <code>*.page.route.js</code>.
+    <code>+route.ts</code>.
   </p>
 </template>
 

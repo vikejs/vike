@@ -18,7 +18,7 @@ function Page({ name }: { name: string }) {
         </li>
       </ul>
       <p>
-        Parameterized routes can be defined by exporting a route string in <code>*.page.route.js</code>.
+        Parameterized routes can be defined by exporting a route string in <code>+route.ts</code>.
       </p>
     </>
   )
