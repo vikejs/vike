@@ -6,6 +6,7 @@ export default {
     // `.spec.ts` => Vitest
     include: ['{.github/**,**}/*.spec.ts'],
     // @ts-ignore
-    outputTruncateLength: Infinity
+    outputTruncateLength: Infinity,
+    threads: false
   }
 } satisfies UserConfig
