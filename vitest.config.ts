@@ -5,6 +5,7 @@ export default {
     // `.test.ts` => Jest
     // `.spec.ts` => Vitest
     include: ['{.github/**,**}/*.spec.ts'],
+    // @ts-ignore
     outputTruncateLength: Infinity
   }
 } satisfies UserConfig
