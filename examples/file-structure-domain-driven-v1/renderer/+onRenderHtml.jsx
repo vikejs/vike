@@ -1,4 +1,5 @@
-export default onRenderHtml
+// https://vike.dev/onRenderHtml
+export { onRenderHtml }
 
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'

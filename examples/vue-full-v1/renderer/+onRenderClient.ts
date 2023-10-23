@@ -3,7 +3,7 @@ export { onRenderClient }
 
 import { createApp } from './app'
 import { getPageTitle } from './getPageTitle'
-import type { OnRenderClientAsync, PageContextClient } from 'vike/types'
+import type { OnRenderClientAsync } from 'vike/types'
 
 let app: ReturnType<typeof createApp>
 const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRenderClientAsync> => {

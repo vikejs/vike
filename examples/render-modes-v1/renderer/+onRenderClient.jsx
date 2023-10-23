@@ -1,5 +1,5 @@
 // https://vike.dev/onRenderClient
-export default onRenderClient
+export { onRenderClient }
 
 import ReactDOM from 'react-dom/client'
 import { PageLayout } from './PageLayout'
