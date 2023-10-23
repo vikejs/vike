@@ -1,3 +1,37 @@
+## [0.4.144](https://github.com/vikejs/vike/compare/v0.4.143...v0.4.144) (2023-10-23)
+
+
+### Bug Fixes
+
+* [v1 design] allow export name to match config name ([051f3e7](https://github.com/vikejs/vike/commit/051f3e73e41c4a5e9179124919b0590c8c0daf86))
+* [v1 design] always check env consistency of resolve import paths ([8444966](https://github.com/vikejs/vike/commit/8444966c6424b240f54c9a29a33d020e0bed4ac0))
+* [v1 design] don't assert re-exports of value files ([4a86ab4](https://github.com/vikejs/vike/commit/4a86ab421785d82fe006cf32084b8d1d05d8133a))
+* [v1 design] improve error handling of config effects ([4034f86](https://github.com/vikejs/vike/commit/4034f86cac342097dccdab7da8da7857ee16d827))
+* [v1 design] more succint logs ([11c207a](https://github.com/vikejs/vike/commit/11c207a5d9143c0b9bc0c8f7f104a9b5bfd22f45))
+* [v1 design] only tolerate side exports for value files ([ad8e233](https://github.com/vikejs/vike/commit/ad8e233bca7bf67742276984555a2c280cb0fa3a))
+* [v1 design] use absolute file paths to check for consistent env ([0cd8de6](https://github.com/vikejs/vike/commit/0cd8de6f899cff08a791a0e0788be9bbb1de9c8a))
+* 404 table layout: strip ansi ([76a5530](https://github.com/vikejs/vike/commit/76a553022706f63152e6529e31e626499e090411))
+* add/improve pageContext.urlOriginal JSDoc ([e93d5e9](https://github.com/vikejs/vike/commit/e93d5e928f8fe245946c5e15ee018c7ae886fb14))
+* apply Rollup 4 breaking change ([521b895](https://github.com/vikejs/vike/commit/521b895b6f041a028e4b1d33ecc79c9a0e3d47cf))
+* assertUsage() route value ([14def35](https://github.com/vikejs/vike/commit/14def35100f38468cf47452c0cede09e5580aeb3))
+* await aysnc `onPageTransition{Start,End}` ([58f822b](https://github.com/vikejs/vike/commit/58f822b8f8880f9168478a1956ff8ed6997d06da))
+* be stricter about side exports ([8b553f8](https://github.com/vikejs/vike/commit/8b553f850d8c59782fe7567a5b00ea05fb08595c))
+* don't glob +files in dist/ ([b25fbb2](https://github.com/vikejs/vike/commit/b25fbb25b7d4d49eaea2127180ed8d070cd29d90))
+* don't glob page files in dist/ ([db783c9](https://github.com/vikejs/vike/commit/db783c9622827808fd8be179193d9da1fdf04e3d))
+* don't glob page files in dist/ // [#1189](https://github.com/vikejs/vike/issues/1189) ([4e8d082](https://github.com/vikejs/vike/commit/4e8d082ed9d7e9aecd87d4319183cdbb80f9d918))
+* expose type `Url` (fix [#1184](https://github.com/vikejs/vike/issues/1184)) ([dc6fea0](https://github.com/vikejs/vike/commit/dc6fea0d7a72ca8666616f51358cc8b7698cbcf8))
+* improve JSDoc ([8b0c0a2](https://github.com/vikejs/vike/commit/8b0c0a2733365b2a263ca523fe295e9bf58eda83))
+* improve TypeScript's IntelliSense QuickInfo of PageContext and PageContextClient ([3fd1378](https://github.com/vikejs/vike/commit/3fd13788f5023e5227df5e31a25c8f830a4edd16))
+* properly handle undefined return value (fix [#1179](https://github.com/vikejs/vike/issues/1179)) ([f03b42d](https://github.com/vikejs/vike/commit/f03b42d0fa872b33db2547e4831458b6edf90303))
+* update boilerplates to use Vike.PageContext ([a69556b](https://github.com/vikejs/vike/commit/a69556b53d1e83c1ec12233690a5b1ad5d78f451))
+
+
+### Features
+
+* hooks types, e.g. https://vike.dev/onBeforeRender#typescript ([b3a4709](https://github.com/vikejs/vike/commit/b3a4709d8e029f6e0fd014d998daf1186a986912))
+
+
+
 ## [0.4.143](https://github.com/vikejs/vike/compare/v0.4.142...v0.4.143) (2023-10-08)
 
 
