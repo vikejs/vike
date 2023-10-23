@@ -9,6 +9,8 @@ export type { ConfigValue }
 export type { ConfigValues }
 export type { ConfigValueSource }
 export type { ConfigValueSources }
+export type { ConfigValueComputed }
+export type { ConfigValuesComputed }
 export type { DefinedAt }
 export type { DefinedAtFile }
 export type { DefinedAtFileInfo }
@@ -39,6 +41,7 @@ type PageConfigRuntimeLoaded = PageConfigRuntime & {
 type PageConfigBuildTime = PageConfigBase & {
   configValues: ConfigValues
   configValueSources: ConfigValueSources
+  configValuesComputed: ConfigValuesComputed
 }
 
 /** Page config that applies to all pages */
@@ -53,23 +56,23 @@ type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-o
 /** For Vike internal use */
 type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
 type ConfigValueSource = {
-  configEnv: ConfigEnvInternal
   value?: unknown
+  configEnv: ConfigEnvInternal
+  definedAtInfo: DefinedAtFileInfo
   // For example: config.Page or config.onBeforeRender
   valueIsImportedAtRuntime: boolean
   // For config.client
   valueIsFilePath?: true
-} & ( // TODO: remove computed from sources?
-  | {
-      isComputed: false
-      definedAtInfo: DefinedAtFileInfo
-    }
-  | {
-      isComputed: true
-      definedAtInfo: null
-      valueIsImportedAtRuntime: false
-    }
-)
+}
+type ConfigValueComputed = {
+  configEnv: ConfigEnvInternal
+  value: unknown
+}
+type ConfigValuesComputed = Record<
+  // configName
+  string,
+  ConfigValueComputed
+>
 type ConfigValueSources = Record<
   // configName
   string,

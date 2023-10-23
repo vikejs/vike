@@ -8,7 +8,7 @@ export type { ConfigEffect }
 import type {
   ConfigEnvInternal,
   ConfigEnv,
-  PageConfigBuildTime
+  ConfigValueSources
 } from '../../../../../../shared/page-configs/PageConfig.js'
 import type { Config, ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
 import { getConfigEnv, isConfigSet } from '../helpers.js'
@@ -54,7 +54,7 @@ type ConfigEffect = (config: {
 
 /** For Vike internal use */
 type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
-  _computed?: (pageConfig: PageConfigBuildTime) => unknown
+  _computed?: (configValueSources: ConfigValueSources) => unknown
   _valueIsFilePath?: true
   env: ConfigEnvInternal
 }
@@ -126,15 +126,15 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   isClientSideRenderable: {
     env: 'server-and-client',
-    _computed: (pageConfig): boolean =>
-      isConfigSet(pageConfig, 'onRenderClient') &&
-      isConfigSet(pageConfig, 'Page') &&
-      getConfigEnv(pageConfig, 'Page') !== 'server-only'
+    _computed: (configValueSources): boolean =>
+      isConfigSet(configValueSources, 'onRenderClient') &&
+      isConfigSet(configValueSources, 'Page') &&
+      getConfigEnv(configValueSources, 'Page') !== 'server-only'
   },
   onBeforeRenderEnv: {
     env: 'client-only',
-    _computed: (pageConfig): null | ConfigEnvInternal =>
-      !isConfigSet(pageConfig, 'onBeforeRender') ? null : getConfigEnv(pageConfig, 'onBeforeRender')
+    _computed: (configValueSources): null | ConfigEnvInternal =>
+      !isConfigSet(configValueSources, 'onBeforeRender') ? null : getConfigEnv(configValueSources, 'onBeforeRender')
   }
 }
 

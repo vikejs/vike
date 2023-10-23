@@ -47,7 +47,6 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
       const configValueSourcesRelevant = getConfigValueSourcesRelevant(pageConfig)
       configValueSourcesRelevant.forEach((configValueSource) => {
         if (!configValueSource.valueIsImportedAtRuntime) return
-        if (configValueSource.isComputed) return
         const { definedAtInfo, configEnv } = configValueSource
 
         if (configEnv !== 'client-only' && configEnv !== 'server-and-client') return

@@ -67,10 +67,20 @@ function getContent(
     )
 
     lines.push(`    configValuesSerialized: {`)
-    Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
+    Object.entries(pageConfig.configValuesComputed).forEach(([configName, configValuesComputed]) => {
+      const { value, configEnv } = configValuesComputed
+      if (!isConfigEnvMatch(configEnv, isForClientSide, isClientRouting)) return
+      if (pageConfig.configValueSources[configName]) return
+      const configValue = pageConfig.configValues[configName]
+      assert(configValue)
+      const { definedAt } = configValue
+      const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
+      serializeConfigValue(lines, configName, { definedAt, valueSerialized })
+    })
+    Object.entries(pageConfig.configValueSources).forEach(([configName]) => {
       const configValue = pageConfig.configValues[configName]
       if (configValue) {
-        const configEnv = getConfigEnv(pageConfig, configName)
+        const configEnv = getConfigEnv(pageConfig.configValueSources, configName)
         assert(configEnv, configName)
         if (!isConfigEnvMatch(configEnv, isForClientSide, isClientRouting)) return
         const { value, definedAt } = configValue
@@ -88,7 +98,6 @@ function getContent(
       const configValueSource = sources[0]
       assert(configValueSource)
       if (configValueSource.configEnv !== '_routing-eager') return
-      assert(!configValueSource.isComputed)
       lines.push(
         ...serializeConfigValueImported(
           configValueSource,

@@ -4,13 +4,13 @@ export { isConfigSet }
 import type {
   ConfigEnvInternal,
   ConfigValueSource,
-  PageConfigBuildTime
+  ConfigValueSources
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { assert, assertIsNotProductionRuntime } from '../../../utils.js'
 assertIsNotProductionRuntime()
 
-function getConfigEnv(pageConfig: PageConfigBuildTime, configName: string): null | ConfigEnvInternal {
-  const configValueSource = getConfigValueSource(pageConfig, configName)
+function getConfigEnv(configValueSources: ConfigValueSources, configName: string): null | ConfigEnvInternal {
+  const configValueSource = getConfigValueSource(configValueSources, configName)
   if (!configValueSource) return null
   if (configValueSource) {
     return configValueSource.configEnv
@@ -27,17 +27,15 @@ function getConfigEnv(pageConfig: PageConfigBuildTime, configName: string): null
   }
 }
 
-function isConfigSet(pageConfig: PageConfigBuildTime, configName: string): boolean {
-  const configValueSource = getConfigValueSource(pageConfig, configName)
+function isConfigSet(configValueSources: ConfigValueSources, configName: string): boolean {
+  const configValueSource = getConfigValueSource(configValueSources, configName)
   // Enable users to suppress global config values by overriding the config's value to null
   if (configValueSource?.value === null) return false
   return !!configValueSource
 }
 
-function getConfigValueSource(pageConfig: PageConfigBuildTime, configName: string): null | ConfigValueSource {
-  // Doesn't exist on the client-side, but we are on the server-side as attested by assertIsNotBrowser()
-  assert(pageConfig.configValueSources)
-  const sources = pageConfig.configValueSources[configName]
+function getConfigValueSource(configValueSources: ConfigValueSources, configName: string): null | ConfigValueSource {
+  const sources = configValueSources[configName]
   if (!sources) return null
   const configValueSource = sources[0]
   assert(configValueSource)

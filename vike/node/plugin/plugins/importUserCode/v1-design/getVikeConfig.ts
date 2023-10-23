@@ -33,7 +33,8 @@ import type {
   ConfigValues,
   DefinedAt,
   DefinedAtFileInfo,
-  DefinedAtFile
+  DefinedAtFile,
+  ConfigValuesComputed
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -378,20 +379,18 @@ async function loadVikeConfig(
 
         const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
 
+        applyEffectsAll(configValueSources, configDefinitionsRelevant)
+        const configValuesComputed = getComputed(configValueSources, configDefinitionsRelevant)
+        const configValues = getConfigValues(configValueSources, configValuesComputed, configDefinitionsRelevant)
+
         const pageConfig: PageConfigBuildTime = {
           pageId: locationId,
           isErrorPage,
           routeFilesystem,
           configValueSources,
-          configValues: getConfigValues(configValueSources, configDefinitionsRelevant)
+          configValuesComputed,
+          configValues
         }
-
-        applyEffectsAll(pageConfig.configValueSources, configDefinitionsRelevant)
-        pageConfig.configValues = getConfigValues(configValueSources, configDefinitionsRelevant)
-
-        applyComputed(pageConfig, configDefinitionsRelevant)
-        pageConfig.configValues = getConfigValues(configValueSources, configDefinitionsRelevant)
-
         return pageConfig
       })
   )
@@ -499,7 +498,6 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
     } else {
       assert('value' in configValueSource)
       if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
-      assert(!configValueSource.isComputed)
       const sourceFilePath = getDefinedAtFilePathToShowToUser(configValueSource.definedAtInfo)
       assert(sourceFilePath)
       assertWarning(
@@ -622,8 +620,6 @@ function warnOverridenConfigValues(
   interfaceFilesOverriden.forEach((interfaceFileLoser) => {
     const configValueSourceWinner = getConfigValueSource(configName, interfaceFileWinner, configDef, userRootDir)
     const configValueSourceLoser = getConfigValueSource(configName, interfaceFileLoser, configDef, userRootDir)
-    assert(!configValueSourceLoser.isComputed)
-    assert(!configValueSourceWinner.isComputed)
     assertWarning(
       false,
       `${getConfigSourceDefinedAtString(
@@ -684,7 +680,6 @@ function getConfigValueSource(
       valueIsFilePath: true,
       configEnv,
       valueIsImportedAtRuntime: true,
-      isComputed: false,
       definedAtInfo
     }
     return configValueSource
@@ -698,7 +693,6 @@ function getConfigValueSource(
       const configValueSource: ConfigValueSource = {
         configEnv,
         valueIsImportedAtRuntime: true,
-        isComputed: false,
         definedAtInfo: import_
       }
       return configValueSource
@@ -707,7 +701,6 @@ function getConfigValueSource(
         value: configValue,
         configEnv,
         valueIsImportedAtRuntime: false,
-        isComputed: false,
         definedAtInfo: definedAtConfigFile
       }
       return configValueSource
@@ -717,7 +710,6 @@ function getConfigValueSource(
     const configValueSource: ConfigValueSource = {
       configEnv,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
-      isComputed: false,
       definedAtInfo: {
         ...interfaceFile.filePath,
         fileExportPath:
@@ -969,8 +961,6 @@ function applyEffectsAll(
     )
     const source = configValueSources[configName]?.[0]
     if (!source) return
-    // All computed configs have no effect (users cannot created computed configs)
-    assert(!source.isComputed)
     // The config value is eagerly loaded since `configDef.env === 'config-only``
     assert('value' in source)
     // Call effect
@@ -991,7 +981,6 @@ function applyEffect(
   const notSupported = `Effects currently only supports modifying the the ${pc.cyan('env')} of a config.` as const
   objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
-      assert(!configValueEffectSource.isComputed)
       assertMetaValue(configValue, getConfigSourceDefinedAtString(configName, configValueEffectSource, true))
       objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
         {
@@ -1014,24 +1003,21 @@ function applyEffect(
   })
 }
 
-function applyComputed(pageConfig: PageConfigBuildTime, configDefinitionsRelevant: ConfigDefinitionsIncludingCustom) {
+function getComputed(
+  configValueSources: ConfigValueSources,
+  configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
+) {
+  const configValuesComputed: ConfigValuesComputed = {}
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
     if (!configDef._computed) return
-    const value = configDef._computed(pageConfig)
+    const value = configDef._computed(configValueSources)
     if (value === undefined) return
-
-    const configValueSource: ConfigValueSource = {
+    configValuesComputed[configName] = {
       value,
-      configEnv: configDef.env,
-      definedAtInfo: null,
-      isComputed: true,
-      valueIsImportedAtRuntime: false
+      configEnv: configDef.env
     }
-
-    pageConfig.configValueSources[configName] ??= []
-    // Computed values are inserted last: they have the least priority (i.e. computed can be overriden)
-    pageConfig.configValueSources[configName]!.push(configValueSource)
   })
+  return configValuesComputed
 }
 
 async function findPlusFiles(
@@ -1366,14 +1352,12 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  assert(!configFilesystemRoutingRoot.isComputed)
   const configDefinedAt = getConfigSourceDefinedAtString(configName, configFilesystemRoutingRoot)
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),
     `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
-  assert(!configFilesystemRoutingRoot.isComputed)
   const { filePathRelativeToUserRootDir } = configFilesystemRoutingRoot.definedAtInfo
   assert(filePathRelativeToUserRootDir)
   const before = getFilesystemRouteString(getLocationId(filePathRelativeToUserRootDir))
@@ -1422,20 +1406,25 @@ function isVikeConfigFile(filePath: string): boolean {
 
 function getConfigValues(
   configValueSources: ConfigValueSources,
+  configValuesComputed: ConfigValuesComputed,
   configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
 ): ConfigValues {
   const configValues: ConfigValues = {}
+  Object.entries(configValuesComputed).forEach(([configName, configValueComputed]) => {
+    configValues[configName] = {
+      value: configValueComputed.value,
+      definedAt: { isComputed: true }
+    }
+  })
   Object.entries(configValueSources).forEach(([configName, sources]) => {
     const configDef = configDefinitionsRelevant[configName]
     assert(configDef)
     if (!configDef.cumulative) {
       const configValueSource = sources[0]!
       if ('value' in configValueSource) {
-        const { value } = configValueSource
-        const definedAt = configValueSource.isComputed ? { isComputed: true as const } : getDefinedAt(configValueSource)
         configValues[configName] = {
-          value,
-          definedAt
+          value: configValueSource.value,
+          definedAt: getDefinedAt(configValueSource)
         }
       }
     } else {
@@ -1457,7 +1446,6 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
   const valuesSet: Set<unknown>[] = []
   let configValueSourcePrevious: ConfigValueSource | null = null
   configValueSources.forEach((configValueSource) => {
-    assert(!configValueSource.isComputed)
     const configDefinedAt = getConfigSourceDefinedAtString(configName, configValueSource)
     const configNameColored = pc.cyan(configName)
     // We could, in principle, also support cumulative values to be defined in +${configName}.js but it ins't completely trivial to implement
@@ -1481,7 +1469,6 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
       assert(vals1.length > 0)
       if (vals2.length === 0) return
       assert(configValueSourcePrevious)
-      assert(!configValueSourcePrevious.isComputed)
       const configPreviousDefinedAt = getConfigSourceDefinedAtString(
         configName,
         configValueSourcePrevious,
@@ -1550,7 +1537,6 @@ function getDefinedAtFilePathToShowToUser(definedAtInfo: DefinedAtFileInfo): str
   return definedAtInfo.filePathRelativeToUserRootDir ?? definedAtInfo.importPathAbsolute
 }
 function getDefinedAtFile(source: ConfigValueSource): DefinedAtFile {
-  assert(!source.isComputed)
   return {
     filePathToShowToUser: getDefinedAtFilePathToShowToUser(source.definedAtInfo),
     fileExportPath: source.definedAtInfo.fileExportPath
