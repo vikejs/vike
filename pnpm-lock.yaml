@@ -20,8 +20,8 @@ importers:
         specifier: ^0.1.5
         version: 0.1.5
       '@brillout/test-e2e':
-        specifier: ^0.5.20
-        version: 0.5.20
+        specifier: ^0.5.21
+        version: 0.5.21
       '@brillout/test-types':
         specifier: ^0.1.7
         version: 0.1.7(typescript@4.9.5)
@@ -2669,6 +2669,10 @@ packages:
     resolution: {integrity: sha512-3b/5PLhJ4xMF/cyY1aJXIMQT0TONFFgUX3tH2wfdrHe78OYe8igl0iaHkJ3kzgN0V+x562Of2AoMwThtLaAj5Q==}
     dev: true
 
+  /@brillout/part-regex@0.1.3:
+    resolution: {integrity: sha512-ZyqtOYHvQs3Ca0xt9fb2OlGzCrKwXtMcAATDObkFmI4jKuObEORjWrqAslWTelquXlyEYLz7h1nt6jp50LDyJA==}
+    dev: true
+
   /@brillout/picocolors@1.0.9:
     resolution: {integrity: sha512-Lt/W5JsA75hcDJ2cOAlE4TqSMl6c9K+rXGRo/cU2fApnmhbRcNdkR4UHQDAwtWfZyUKWaxdwSui+jp+74J1pZg==}
 
@@ -2720,11 +2724,11 @@ packages:
       vite: 4.3.5(@types/node@17.0.45)
     dev: false
 
-  /@brillout/test-e2e@0.5.20:
-    resolution: {integrity: sha512-DoOnERJNeZLx56VD3TrmYJM1CLaHv8P8xqbVVUI8bCPdSRqfLjakQJ0xvHNkum6nFsYNiPSY5OWpgVk9u6I04A==}
+  /@brillout/test-e2e@0.5.21:
+    resolution: {integrity: sha512-BTGXtERQMnYcRJ/4yJ7N3rdGsTfFqL5XEl78FJ1//gkqLTeSO0FXybJjaxIOX8kl8i4qDCe0jZV8bbdfLN/LUg==}
     hasBin: true
     dependencies:
-      '@brillout/part-regex': 0.1.2
+      '@brillout/part-regex': 0.1.3
       chai: 4.3.7
       esbuild: 0.16.17
       fast-glob: 3.2.12
