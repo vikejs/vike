@@ -14,9 +14,10 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       '<svg width="46.72" height="46.72" fill="none" version="1.1" viewBox="0 0 46.72 46.72" xmlns="http://www.w3.org/2000/svg">'
     )
 
-    let logoUrl: string = isDev
+    const hash = /[a-z0-9_-]+/i
+    const logoUrl: string = isDev
       ? '/pages/index/logo-1.svg'
-      : html.match(partRegex`/assets/static/logo-1.${/[a-zA-Z0-9]+/}.svg`)![0]
+      : html.match(partRegex`/assets/static/logo-1.${hash}.svg`)![0]
     expect(html).toContain(`<img src="${logoUrl}" />`)
 
     const logoSrc: string = await (await fetch(getServerUrl() + logoUrl)).text()
