@@ -328,7 +328,7 @@ function getGlobRoots(config: ResolvedConfig, configVike: ConfigVikeResolved): G
   const globRoots: GlobRoot[] = [
     {
       includeDir: '/',
-      excludeDir: getOutDirs(config).outDirRoot
+      excludeDir: path.posix.relative(config.root, getOutDirs(config).outDirRoot)
     }
   ]
   configVike.extensions
