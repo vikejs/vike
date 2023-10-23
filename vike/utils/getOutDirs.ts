@@ -125,7 +125,7 @@ function getOutDirFromViteResolvedConfig(config: ResolvedConfig): string {
 }
 function normalize(outDir: string): string {
   outDir = toPosixPath(outDir)
-  outDir = outDir.replace(/\/+$/, '')
+  outDir = outDir.replace(/\/+$/, '') // remove trailing slashes
   return outDir
 }
 
