@@ -5,7 +5,7 @@ export { testRun }
 function testRun(cmd: 'npm run preview') {
   run(cmd)
 
-  const hash = /[a-z0-9_-]+/i
+  const hash = /[a-zA-Z0-9_-]+/
   const fontRE = partRegex`<link rel="preload" href="/assets/static/Sono-Light.${hash}.ttf" as="font" type="font/ttf" crossorigin>`
   const logoRE = partRegex`<link rel="preload" href="/assets/static/logo.${hash}.svg" as="image" type="image/svg+xml">`
   const styleRE = partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/onRenderClient.${hash}.css">`

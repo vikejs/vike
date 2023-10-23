@@ -23,7 +23,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
 
   const isPreview = cmd === 'npm run preview'
 
-  const hash = /[a-z0-9_-]+/i
+  const hash = /[a-zA-Z0-9_-]+/
   const path = /[^\>]+/
 
   test('HTML-only', async () => {
