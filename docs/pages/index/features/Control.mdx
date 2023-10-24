@@ -14,6 +14,7 @@ export function Page() {
   </>
 }
 ```
+
 ```js
 // /renderer/_default.page.server.js
 // Environment: server
@@ -22,8 +23,10 @@ import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 // This can be any UI framework (React, Vue, Svelte, ...)
 import { renderToHtml } from 'my-favorite-ui-framework'
 
+export { onRenderHtml }
+
 // You control how `Page` is rendered to HTML
-export async function render({ Page }) {
+async function onRenderHtml({ Page }) {
   const pageHtml = await renderToHtml(Page)
   const title = 'My first Vike app'
   return escapeInject`<!DOCTYPE html>
@@ -37,14 +40,17 @@ export async function render({ Page }) {
     </html>`
 }
 ```
+
 ```js
 // /renderer/_default.page.client.js
 // Environment: browser
 
 import { hydrateDom } from 'my-favorite-ui-framework'
 
+export { onRenderClient }
+
 // You control how `Page` is hydrated
-export async function render({ Page }) {
+async function onRenderClient({ Page }) {
   await hydrateDom(Page)
 }
 ```

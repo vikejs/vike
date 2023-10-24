@@ -24,9 +24,9 @@ const passToClient = [
 // *.page.client.js
 // Environment: browser
 
-export { render }
+export { onRenderClient }
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   // Thanks to `passToClient`, these `pageContext` are available here in the browser
   pageContext.pageProps
   pageContext.routeParams

@@ -102,11 +102,13 @@ export function PageShell({ pageContext }) {
 ```js
 // /renderer/_default.page.server.jsx
 
+export { onRenderHtml }
+
 import { PageShell } from './PageShell'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToString } from 'some-ui-framework' // React/Vue/Solid/...
 
-export async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const url = pageContext.urlParsed.pathname
   const { title } = metadata.find(m => m.url === url)
   const page = <PageShell pageContext={pageContext} />
@@ -145,9 +147,11 @@ This page is written in _Markdown_.
 ```js
 // _default.page.server.js
 
+export { onRenderHtml }
+
 import { escapeInject } from 'vike/server'
 
-export async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   // `pageContext.exports` holds all exports of the page's `.page.js` file
   const { title, description } = pageContext.exports.documentProps
   return escapeInject`<html>
@@ -189,9 +193,11 @@ which you can access at
 ```js
 // _default.page.server.js
 
+export { onRenderHtml }
+
 import { escapeInject } from 'vike/server'
 
-export async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   // Read the documentation of your Vite markdown plugin or of its underlying markdown
   // processor to find the name of the export that holds the frontmatter data.
   const frontmatterExportName = 'nameOfTheFrontmatterExport'

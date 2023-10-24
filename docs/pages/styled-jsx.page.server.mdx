@@ -33,7 +33,7 @@ export default {
 ```js
 // renderer/server.page.server.js
 
-export { render }
+export { onRenderHtml }
 
 import React from 'react'
 import { renderToString, renderToStaticMarkup } from 'react-dom/server'
@@ -43,7 +43,7 @@ import { createStyleRegistry, StyleRegistry } from 'styled-jsx'
 
 const registry = createStyleRegistry()
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   // flush styles to support the possibility of concurrent rendering
   registry.flush()
 

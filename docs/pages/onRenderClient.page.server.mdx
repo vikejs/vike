@@ -5,7 +5,7 @@ The client-side `onRenderClient()` hook exported in `+onRenderClient.js` files (
 defines how a page is rendered/<Link text="hydrated" href="/hydration" /> on the browser-side.
 
 ```js
-// +onRenderClient.js
+// /**/+onRenderClient.js (usually /renderer/+onRenderClient.js)
 // Environment: browser
 
 import { renderToDom, hydrateDom } from 'some-ui-framework'
@@ -59,6 +59,9 @@ different rendering for different pages. See <Link href='/multiple-renderer' />.
 ## TypeScript
 
 ```ts
+// /**/+onRenderClient.ts (usually /renderer/+onRenderClient.ts)
+// Environment: browser
+
 export { onRenderClient }
 
 import type { OnRenderClientAsync } from 'vike/types'

@@ -38,14 +38,14 @@ async function onBeforeRender(pageContext) {
 // /renderer/_default.page.server.js
 // Environment: server
 
-export { render }
+export { onRenderHtml }
 // Make pageContext.pageProps available in the browser
 export const passToClient = ['pageProps']
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml, createElement } from 'some-ui-framework'
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext
   const pageHtml = await renderToHtml(
     // We pass `pageProps` to `Page`
@@ -67,11 +67,11 @@ async function render(pageContext) {
 // /renderer/_default.page.client.js
 // Environment: browser
 
-export { render }
+export { onRenderClient }
 
 import { hydrateDom, createElement } from 'some-ui-framework'
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   // Thanks to `passToClient = ['pageProps']` our `pageContext.pageProps` is
   // available here in the browser.
   const { Page, pageProps } = pageContext
@@ -92,7 +92,7 @@ async function render(pageContext) {
 
 export { Page }
 
-// In the `render()` functions above, we pass `pageContext.pageProps` to `Page`
+// In the `onRender*()` functions above, we pass `pageContext.pageProps` to `Page`
 function Page(pageProps) {
   const { movies } = pageProps
   // ...

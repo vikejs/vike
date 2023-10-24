@@ -1,20 +1,20 @@
 import { Link } from '@brillout/docpress'
 
 The `<head>` tags (e.g. `<title>` or `<meta name="description">`)
-are defined by our [server-side `render()` hook](/render-hook).
+are defined by our [server-side `onRenderHtml()` hook](/onRenderHtml).
 
 > We can also define `<head>` tags on a page-by-page basis and on a component-by-component basis, see sections below.
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
-export { render }
+export { onRenderHtml }
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   return escapeInject`<html>
     <head>
       <title>SpaceX</title>
@@ -44,16 +44,17 @@ export const documentProps = {
   description: 'Our mission is to explore the galaxy.'
 }
 ```
+
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
-export { render }
+export { onRenderHtml }
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   // Our custom export is available here as `pageContext.exports.documentProps`
   const { documentProps } = pageContext.exports
 
@@ -85,6 +86,7 @@ we can also use a <Link href="/exports" text="Custom Export" />.
 // /pages/rocket.page.route.js
 export const '/rocket/@rocketSlug'
 ```
+
 ```js
 // /pages/rocket.page.js
 
@@ -99,16 +101,17 @@ function getDocumentProps(pageProps) {
   }
 }
 ```
+
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
-export { render }
+export { onRenderHtml }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   // `pageProps` is provided by our data fetching mechanism, see the "Data Fetching" Guide.
   const { Page, pageProps } = pageContext
 
@@ -153,13 +156,15 @@ To define `<head>` tags by some deeply nested view (React/Vue/...) component:
 For example:
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
+
+export { onRenderHtml }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import renderToHtml from 'some-ui-framework'
 
-export async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   // We use our UI framework to pass `pageContext.documentProps` to all components
   // of our component tree. (E.g. React Context or Vue's `app.config.globalProperties`.)
   const pageHtml = await renderToHtml(
@@ -206,13 +211,14 @@ If we use Client Routing, we need to make sure to update `document.title` upon p
 // We make `pageContext.documentProps` available in the browser.
 export const passToClient = ['documentProps', 'pageProps']
 ```
+
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+onRenderClient.js
 // Environment: browser
 
-export { render }
+export { onRenderClient }
 
-function render(pageContext) {
+async function onRenderClient(pageContext) {
   if (!pageContext.isHydration) {
     // Page navigation — we update the website's title
     document.title = pageContext.documentProps.title
@@ -232,13 +238,15 @@ the aforementioned solutions are simpler and work for most use cases.
 Head libraries already sanitize the HTML `<head>`, this means we can skip `escapeInject` and wrap the overall result with `dangerouslySkipEscape()`.
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
+
+export { onRenderHtml }
 
 import { dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
-export async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   return dangerouslySkipEscape(await renderToHtml(pageContext.Page))
 }
 ```

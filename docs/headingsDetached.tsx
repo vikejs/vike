@@ -192,8 +192,12 @@ const headingsDetached = [
     url: '/onPrerenderStart'
   },
   {
-    title: <code>onRenderHtml()</code>,
-    url: '/onRenderHtml'
+    title: (
+      <>
+        <code>render()</code> hook (server-side)
+      </>
+    ),
+    url: '/render-hook'
   },
   {
     title: (

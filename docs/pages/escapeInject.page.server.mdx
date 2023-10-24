@@ -4,17 +4,17 @@ Environment: server.
 
 The `escapeInject` string template tag sanitizes HTML (to prevent so-called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting) security breaches).
 
-It's usually used in the `render()` hook defined in `renderer/_default.page.server.js`.
+It's usually used in the `onRenderHtml()` hook defined in `renderer/_default.page.server.js`.
 
 ```js
 // renderer/_default.page.server.js
 // Environment: server
 
-export { render }
+export { onRenderHtml }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 
-async function render() {
+async function onRenderHtml() {
   const title = 'Hello<script src="https://devil.org/evil-code"></script>'
 
   // This HTML is safe thanks to `escapeInject` which sanitizes `title`
@@ -52,9 +52,9 @@ For example, if we want some HTML parts to be included only for certain pages:
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
-export { render }
+export { onRenderHtml }
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const description = pageContext.exports.description
   const descriptionTag = !description ?
     '' :

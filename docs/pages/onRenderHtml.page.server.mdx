@@ -1,19 +1,48 @@
 import { HookTypeScriptHints } from '../components'
-import { Link } from '@brillout/docpress'
 
-The `render()` hook of `.page.server.js` has been renamed to `onRenderHtml()` for the V1 design.
+The `onRenderHtml()` hook defines how a page is rendered to HTML.
 
-> It's just a rename: the hook is equivalent and its documentation is the same as <Link href="/render-hook" />.
->
-> The documentation will be moved to this page after the stable release of the V1 design.
+```js
+// /**/+onRenderHtml.js (usually /renderer/+onRenderHtml.js)
+// Environment: server
 
-See <Link href="/migration/v1-design#renamed-hooks" />.
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
+import { renderToHtml, createElement } from 'some-ui-framework'
 
-{ /*NOTE(aurelien) move the content of render-hook.page.server.mdx here*/ }
+export { onRenderHtml }
+
+async function onRenderHtml(pageContext){
+  const { Page, pageProps } = pageContext
+  const pageHtml = await renderToHtml(createElement(Page, pageProps))
+
+  const documentHtml = escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>My SSR App</title>
+      </head>
+      <body>
+        <div id="page-root">${dangerouslySkipEscape(pageHtml)}</div>
+      </body>
+    </html>`
+
+  return {
+    documentHtml,
+    pageContext: {
+      // We can add some `pageContext` here
+    }
+  }
+}
+```
+
+> `pageContext.Page` is the `export { Page }` of the page's `.page.js` file that is being rendered.
+
 
 ## TypeScript
 
 ```ts
+// /**/+onRenderHtml.ts (usually /renderer/+onRenderHtml.ts)
+// Environment: server
+
 export { onRenderHtml }
 
 import type { OnRenderHtmlAsync } from 'vike/types'

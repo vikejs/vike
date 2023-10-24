@@ -2,14 +2,17 @@ import { Link } from '@brillout/docpress'
 
 The `_default.page.*` files allow us to define hooks and settings that apply to all pages.
 
-For example, we usually define a <Link text={<><code>render()</code> hook</>} href="/render-hook" /> in `_default.page.server.js` in order to define how our pages are rendered to HTML.
+For example, we usually define an <Link text={<><code>onRenderHtml()</code> hook</>} href="/onRenderHtml" /> in
+`+onRenderHtml.js` in order to define how our pages are rendered to HTML.
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
-// This `render()` hook applies to all our pages
-export async function render(pageContext) {
+export { onRenderHtml }
+
+// This `onRenderHtml()` hook applies to all our pages
+async function onRenderHtml(pageContext) {
   return escapeInject`<!DOCTYPE html>
     <html>
       <head>

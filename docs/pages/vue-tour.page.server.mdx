@@ -52,9 +52,9 @@ import { createSSRApp, h } from 'vue'
 import { renderToString } from '@vue/server-renderer'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 
-export { render }
+export { onRenderHtml }
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext
   const app = createSSRApp({
     render: () => h(Page, pageProps)
@@ -75,15 +75,16 @@ async function render(pageContext) {
     </html>`
 }
 ```
+
 ```js
 // /renderer/_default.page.client.js
 // Environment: browser
 
 import { createSSRApp, h } from 'vue'
 
-export { render }
+export { onRenderClient }
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   const { Page, pageProps } = pageContext
   const app = createSSRApp({
     render: () => h(Page, pageProps)
@@ -113,7 +114,8 @@ we can create `/renderer/_default.page.client.js` and `/renderer/_default.page.s
 The last two files we created are actually `/renderer/_default.page.client.js` and `/renderer/_default.page.server.js`,
 which means that we can now create a new page just by defining a new `.page.vue` file (the `.page.route.js` file is optional).
 
-The `_default.page.` files can be overridden. For example, we can override our `render()` hooks for rendering some of our pages with a completely different UI framework such as React.
+The `_default.page.` files can be overridden. For example, we can override our `onRender*()` hooks for rendering some of
+our pages with a completely different UI framework such as React.
 
 
 ## Data Fetching
@@ -135,6 +137,7 @@ const pageProps = ['movie']
 export default { props: pageProps }
 </script>
 ```
+
 ```js
 // /pages/star-wars/movie.page.route.js
 // Environment: server
@@ -142,6 +145,7 @@ export default { props: pageProps }
 // Route String
 export default '/star-wars/@movieId'
 ```
+
 ```js
 // /pages/star-wars/movie.page.server.js
 // Environment: server

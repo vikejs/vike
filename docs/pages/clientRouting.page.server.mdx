@@ -27,7 +27,7 @@ Vue example:
 // /renderer/_default.page.client.js
 // Environment: browser
 
-export { render }
+export { onRenderClient }
 
 // Enable Client Routing
 export const clientRouting = true
@@ -45,16 +45,14 @@ export const hydrationCanBeAborted = true
 export { onPageTransitionStart }
 export { onPageTransitionEnd }
 
-// The onHydrationEnd() hook is called after the render() hook finishes for the
+// The onHydrationEnd() hook is called after the onRenderClient() hook finishes for the
 // first page the user navigates to (the onHydrationEnd() hook isn't called for
 // subsequent page navigation).
 export { onHydrationEnd }
 
-the user navigates to the render() hook the first page finishes rendering render())
-
 import { renderToDom, hydrateDom } from 'some-ui-framework'
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
     // `pageContext.isHydration` is set by Vike and is `true` when the page
     // is already rendered to HTML.
     if (pageContext.isHydration) {
@@ -70,7 +68,7 @@ async function render(pageContext) {
 
 async function onPageTransitionStart(pageContext) {
   console.log('Page transition start')
-  // `pageContext.isBackwardNavigation` is also set at `render(pageContext)`
+  // `pageContext.isBackwardNavigation` is also set at `onRenderClient(pageContext)`
   // and `onPageTransitionEnd(pageContext)`.
   console.log('Is backwards navigation?', pageContext.isBackwardNavigation)
   // For example:
@@ -119,7 +117,7 @@ To initialize once:
 // /renderer/_default.page.server.js
 // Environment: server
 
-export { render }
+export { onRenderHtml }
 export { passToClient }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
@@ -128,9 +126,9 @@ import { getInitialState } from './getInitialState'
 
 const passToClient = ['initialState']
 
-// The `render()` hook is called only for the first page.
+// The `onRenderHtml()` hook is called only for the first page.
 // (Whereas `onBeforeRender()` is called as well upon page navigation.)
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const initialState = await getInitialState()
 
   // We use `initialState` for rendering the HTML, so that the HTML contains
@@ -152,22 +150,23 @@ async function render(pageContext) {
   }
 }
 ```
+
 ```js
 // /renderer/_default.page.client.js
 // Environment: browser
 
-export { render }
+export { onRenderClient }
 
 import { initClientSide } from './initClientSide'
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   // The first page is rendered to HTML and `pageContext.isHydration === true`
   if (pageContext.isHydration) {
     // `pageContext.initialState` is available here
     initClientSide(pageContext.initialState)
   } else {
     // Note that `pageContext.initialState` isn't available here,
-    // since our `render()` hook is only called for the first page.
+    // since our `onRenderHtml()` hook is only called for the first page.
   }
 
   // ...
@@ -188,7 +187,7 @@ import { getInitialState } from './getInitialState'
 const passToClient = ['initialState']
 
 // The `onBeforeRender()` hook is called for the first page as well as upon page navigation.
-// (Whereas `render()` is called only for the first page.)
+// (Whereas `onRenderHtml()` is called only for the first page.)
 async function onBeforeRender() {
   const initialState = await getInitialState()
   return {
@@ -198,15 +197,16 @@ async function onBeforeRender() {
   }
 }
 ```
+
 ```js
 // /renderer/_default.page.client.js
 // Environment: browser
 
-export { render }
+export { onRenderClient }
 
 import { initClientSide } from './initClientSide'
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   // We initialize the state for every page rendering. So not only
   // the first page but also any subsequent page navigation.
   initClientSide(pageContext.initialState)
@@ -252,6 +252,7 @@ We can viewport prefetch for mobile users while only hover prefetch for desktop 
 export const prefetchStaticAssets = window.matchMedia('(max-width: 600px)').matches
   ? 'viewport' : 'hover'
 ```
+
 ```js
 // Or we enable viewport prefetching for any device without a mouse: mobile and tablets (but
 // not laptops that have a touch display).

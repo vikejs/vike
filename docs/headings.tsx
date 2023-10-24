@@ -676,10 +676,10 @@ const headings = [
   },
   {
     level: 2,
-    title: '`render()` hook',
-    titleInNav: '`export { render }`',
+    title: '`onRenderHtml()` hook',
+    titleInNav: '`export { onRenderHtml }`',
     isListTitle: true,
-    url: '/render-hook'
+    url: '/onRenderHtml'
   },
   {
     level: 2,

@@ -55,9 +55,9 @@ import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { escapeInject, dangerouslySkipEscape } from "vike/server";
 
-export { render };
+export { onRenderHtml };
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext;
   const viewHtml = ReactDOMServer.renderToString(
     <Page {...pageProps} />
@@ -76,6 +76,7 @@ async function render(pageContext) {
     </html>`;
 }
 ```
+
 ```jsx
 // /renderer/_default.page.client.jsx
 // Environment: browser
@@ -83,9 +84,9 @@ async function render(pageContext) {
 import ReactDOM from "react-dom/client";
 import React from "react";
 
-export { render };
+export { onRenderClient };
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   const { Page, pageProps } = pageContext
   ReactDOM.hydrateRoot(
     document.getElementById("page-view"),
@@ -108,7 +109,8 @@ we can create `/renderer/_default.page.client.js` and `/renderer/_default.page.s
 The last two files we created are actually `/renderer/_default.page.client.jsx` and `/renderer/_default.page.server.jsx`,
 which means that we can now create a new page just by defining a new `.page.jsx` file (the `.page.route.js` file is optional).
 
-The `_default.page.` files can be overridden. For example, we can override our `render()` hooks for rendering some of our pages with a completely different UI framework such as Vue.
+The `_default.page.` files can be overridden. For example, we can override our `onRender*()` hooks for rendering some of
+our pages with a completely different UI framework such as Vue.
 
 
 ## Data Fetching
@@ -132,6 +134,7 @@ function Page(pageProps) {
   </>;
 }
 ```
+
 ```js
 // /pages/star-wars/movie.page.route.js
 // Environment: server
@@ -139,6 +142,7 @@ function Page(pageProps) {
 // Route String
 export default "/star-wars/@movieId";
 ```
+
 ```js
 // /pages/star-wars/movie.page.server.js
 // Environment: server

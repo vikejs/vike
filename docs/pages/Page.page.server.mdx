@@ -19,12 +19,12 @@ function Page() {
 // /renderer/_default.page.server.js
 // Environment: server
 
-export { render }
+export { onRenderHtml }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import renderToHtml from 'some-ui-framework'
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   // `Page` is available at `pageContext.Page`
   const { Page } = pageContext
   const pageHtml = await renderToHtml(Page)
@@ -38,15 +38,16 @@ async function render(pageContext) {
   </html>`
 }
 ```
+
 ```js
 // /renderer/_default.page.client.js
 // Environment: browser
 
-export { render }
+export { onRenderClient }
 
 import { hydrateDom } from 'some-ui-framework'
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   // `pageContext.Page` is also available in the browser.
   const { Page } = pageContext
   await hydrateDom(Page, document.getElementById('root'))

@@ -62,13 +62,13 @@ function Page() {
 Our renderer can then access `pageContext.exports.Layout` and render it accordingly:
 
 ```js
-// /renderer/_default.page.{server|client}.js
+// /renderer/+onRenderHtml.js or /renderer/+onRenderClient.js
 
-export { render }
+export { onRenderHtml } // or onRenderClient
 
 import { LayoutDefault } from '../layouts/LayoutDefault'
 
-function render() {
+function onRenderHtml() { // or onRenderClient
   const Layout = pageContext.exports.Layout || LayoutDefault
   const { Page } = pageContext
   // We render `<Layout><Page/></Layout>`

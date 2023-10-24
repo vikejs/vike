@@ -232,7 +232,9 @@ export default {
 ```js
 // /renderer/+onRenderHtml.js
 
-export default function(pageContext) {
+export { onRenderHtml }
+
+async function onRenderHtml(pageContext) {
   // Config values are available at pageContext.config
   const { title } = pageContext.config
   return escapeInject`<html>

@@ -10,17 +10,20 @@ For example:
 
 export const title = 'Earth Countries'
 ```
+
 ```js
 // /pages/countries.page.server.js
 // Environment: server
 
 export const dataUrl = 'https://restcountries.com/v3.1/all'
 ```
+
 ```js
 // /renderer/_default.page.server.js
 // Environment: server
 
 export { onBeforeRender }
+export { onRenderHtml }
 
 import fetch from 'node-fetch'
 
@@ -29,19 +32,20 @@ async function onBeforeRender(pageContext) {
   // ...
 }
 
-function render(pageContext) {
+async function onRenderHtml(pageContext) {
    const titleTag = `<title>${pageContext.exports.title}</title>`
    // ...
 }
 ```
+
 ```js
 // /renderer/_default.page.client.js
 // Environment: browser
 
 export const clientRouting = true
-export { render }
+export { onRenderClient }
 
-function render(pageContext) {
+async function onRenderClient(pageContext) {
   if (!pageContext.isHydration) {
     // Update the website's title upon page navigation.
     document.title = pageContext.exports.title
@@ -49,6 +53,7 @@ function render(pageContext) {
   // ...
 }
 ```
+
 > Note how `pageContext.exports.title` is available in both Node.js and the browser: that's because `export { title }` is defined in a `.page.js` file which is loaded in Node.js as well as in the browser.
 >
 > Whereas `pageContext.exports.dataUrl` isn't available in the browser: `.page.server.js` files are loaded only in Node.js.
@@ -84,10 +89,12 @@ export function Page() {
 // /renderer/_default.page.server.js
 // Environment: server
 
+export { onRenderHtml }
+
 import { renderToHtml } from 'some-ui-framework'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 
-export function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page, Layout } = pageContext.exports
   const pageHtml = renderToHtml(<Layout><Page /></Layout>)
   return escapeInject`<!DOCTYPE html>
@@ -98,13 +105,16 @@ export function render(pageContext) {
     </html>`
 }
 ```
+
 ```js
 // /renderer/_default.page.client.js
 // Environment: browser
 
+export { onRenderClient }
+
 import { renderDom } from 'some-ui-framework'
 
-export function render(pageContext) {
+async function onRenderClient(pageContext) {
   // `.page.js` files are also loaded in the browser: `Layout` and `Page` are also available here
   const { Page, Layout } = pageContext.exports
   renderDom(
@@ -136,7 +146,7 @@ export const query = { modelName: 'User', select: ['firstName', 'lastName'] }
 // Environment: server
 
 export { onBeforeRender }
-export { render }
+export { onRenderHtml }
 export const passToClient = ['pageProps']
 
 import { renderToHtml } from 'some-ui-framework'
@@ -150,7 +160,7 @@ async function onBeforeRender(pageContext) {
   return { pageContext: { pageProps } }
 }
 
-function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext
   const pageHtml = renderToHtml(<Page {...pageProps} />)
   return escapeInject`<!DOCTYPE html>
@@ -161,15 +171,16 @@ function render(pageContext) {
     </html>`
 }
 ```
+
 ```js
 // /renderer/_default.page.client.js
 // Environment: browser
 
-export { render }
+export { onRenderClient }
 
 import { renderDom } from 'some-ui-framework'
 
-function render(pageContext) {
+async function onRenderClient(pageContext) {
   const { Page, pageProps } = pageContext
   renderDom(
     <Page {...pageProps} />,
@@ -200,12 +211,12 @@ export const getDescription = pageProps => `User: ${pageProps.firstName} ${pageP
 // /renderer/_default.page.server.js
 // Environment: server
 
-export { render }
+export { onRenderHtml }
 
 import { renderToHtml } from 'some-ui-framework'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 
-function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext
   const { title, getDescription } = pageContext.exports
   const description = getDescription(pageProps)

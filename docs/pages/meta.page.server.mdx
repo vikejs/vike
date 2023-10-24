@@ -44,7 +44,7 @@ export default {
 ```ts
 // /renderer/+onRenderHtml.js
 
-export default onRenderHtml
+export { onRenderHtml }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 
@@ -65,7 +65,7 @@ async function onRenderHtml(pageContext) {
 ```ts
 // /renderer/+onRenderClient.js
 
-export default onRenderClient
+export { onRenderClient }
 
 async function onRenderClient(pageContext) {
   // Because meta.title.env is 'server-and-client' we can access its value

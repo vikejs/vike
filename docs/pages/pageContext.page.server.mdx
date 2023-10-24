@@ -87,6 +87,7 @@ You can define custom `pageContext` properties.
     }
     ```
     > A common use case for `onBeforeRender()` is to fetch data: <Link href="/data-fetching" />.
+
  - At your <Link text="Vike server middleware" href="/renderPage" />:
     ```js
     app.get('*', async (req, res, next) => {
@@ -107,9 +108,11 @@ You can define custom `pageContext` properties.
     })
     ```
     > A common use case is to integrate authentication tools: <Link href="/auth" />.
- - Using the [`render()`](/render-hook) hook:
+
+ - Using the [`onRenderHtml()`](/onRenderHtml) hook:
     ```js
-    export function render() {
+    export { onRenderHtml }
+    async function onRenderHtml() {
       return {
         documentHtml: escapeInject`<html><!--...--></html>`,
         pageContext: {

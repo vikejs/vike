@@ -10,11 +10,11 @@ This also means that we have full control over the browser-side code. Not only c
 ```js
 // _default.page.client.js
 
-export { render }
+export { onRenderClient }
 
 import { hydrate } from 'some-ui-framework'
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   const { Page } = pageContext
   await hydrate(Page)
 }

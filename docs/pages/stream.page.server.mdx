@@ -23,12 +23,12 @@ Stream Docs & API:
 ```js
 // renderer/_deault.page.server.js
 
-export { render }
+export { onRenderHtml }
 
 import { escapeInject } from 'vike/server'
 import { renderToStream } from 'some-ui-framework' // React, Vue, ...
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page } = pageContext
 
   const stream = renderToStream(Page)
@@ -88,12 +88,15 @@ async function handleFetchEvent(event) {
 
 ## `pageContext.enableEagerStreaming`
 
-By default, the HTML template (we provide in our `render()` hook) isn't immediately written to the stream: instead, Vike awaits for our UI framework to start writing to the stream.
+By default, the HTML template (we provide in our `onRenderHtml()` hook) isn't immediately written to the stream:
+instead, Vike awaits for our UI framework to start writing to the stream.
 
 ```js
 import { renderToStream } from 'some-ui-framework' // React, Vue, ...
 
-async function render(pageContext) {
+export { onRenderHtml }
+
+async function onRenderHtml(pageContext) {
   const { Page } = pageContext
 
   const stream = renderToStream(Page)
@@ -115,7 +118,7 @@ async function render(pageContext) {
 If we set `pageContext.enableEagerStreaming` to `true` then Vike starts writing the HTML template right away.
 
 ```js
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   // The HTML template (e.g. `<title>`) is immediately written to the stream
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html>
@@ -159,12 +162,12 @@ To be able to use stream pipes, we need to use `stampPipe()`:
 ```js
 // renderer/_deault.page.server.js
 
-export { render }
+export { onRenderHtml }
 
 import { renderToStreamPipe } from 'some-ui-framework' // React, Vue, ...
 import { escapeInject, stampPipe } from 'vike/server'
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page } = pageContext
 
   const pipe = renderToStreamPipe(Page)
@@ -207,12 +210,14 @@ const resp = new Response(readable)
 For some UI frameworks, such as Vue, we need a pipe wrapper:
 
 ```js
-// renderer/_deault.page.server.js
+// renderer/_default.page.server.js
 
 import { pipePageToWritable } from 'some-ui-framework'
 import { stampPipe, escapeInject } from 'vike/server'
 
-export function render(pageContext) {
+export { onRenderHtml }
+
+async function onRenderHtml(pageContext) {
   const { Page } = pageContext
 
   // We use a pipe wrapper so that `pipePageToWritable()` can access `Page`
@@ -239,12 +244,12 @@ Some data fetching tools, such as <Link href="/relay">Relay</Link> and [Vue's `o
 
 Consequently, we can determine the initial data (passed to the browser) only after the stream has ended.
 
-In such situations, we can return a `pageContext` async function in our `render()` hook:
+In such situations, we can return a `pageContext` async function in our `onRenderHtml()` hook:
 
 ```js
 // renderer/_deault.page.server.js
 
-export { render }
+export { onRenderHtml }
 export { passToClient }
 
 import { escapeInject } from 'vike/server'
@@ -252,7 +257,7 @@ import { renderToStream } from 'some-ui-framework' // React, Vue, ...
 
 const passToClient = ['initialData']
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page } = pageContext
 
   const stream = renderToStream(Page)

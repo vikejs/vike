@@ -1,3 +1,13 @@
+import { Link, Warning } from '@brillout/docpress'
+
+<Warning>
+  `render()` is deprecated in favor of `onRenderHtml()`, see
+  <ul>
+    <li><Link href="/onRenderHtml" /></li>
+    <li><Link href="/migration/v1-design#renamed-hooks" /></li>
+  </ul>
+</Warning>
+
 The `render()` hook defines how a page is rendered to HTML.
 
 ```js

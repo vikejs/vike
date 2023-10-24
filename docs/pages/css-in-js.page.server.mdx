@@ -10,9 +10,9 @@ import React from "react";
 import { escapeInject, dangerouslySkipEscape } from "vike/server";
 import { CssCollector } from 'some-css-in-js-tool'
 
-export { render };
+export { onRenderHtml };
 
-function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page } = pageContext;
   const page = <Page />;
 

@@ -71,7 +71,9 @@ async function startServer() {
 }
 ```
 
-The `pageContext.httpResponse.body` value is the HTML string returned by the <Link text={<><code>render()</code> hook</>} href="/render-hook" /> with additional `<script>` and `<style>` tags automatically injected by Vike.
+The `pageContext.httpResponse.body` value is the HTML string returned by the
+<Link text={<><code>onRenderHtml()</code> hook</>} href="/onRenderHtml" /> with additional `<script>` and `<style>` tags
+automatically injected by Vike.
 
 For HTML streams use `httpResponse.pipe()` instead of `pageContext.httpResponse.body`, see <Link href="/stream" />.
 
@@ -88,7 +90,7 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
 
 See also:
  - <Link href="/NODE_ENV" />
- - <Link href="/render-hook" />
+ - <Link href="/onRenderHtml" />
 
 
 ## Optional
