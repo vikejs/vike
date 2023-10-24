@@ -8,7 +8,7 @@ type FilePath = {
    *
    * Example: `/home/rom/code/my-app/pages/some-page/Page.js`
    */
-  filePathAbsolute: string
+  filePathAbsoluteFilesystem: string
 } & (
   | {
       /** The file's path relative to the Vite's root (i.e. the user's project root directory).
@@ -36,7 +36,7 @@ if (f.filePathRelativeToUserRootDir === null) {
 //*/
 
 function getFilePathToShowToUser(filePath: FilePath): string {
-  const filePathToShowToUser = filePath.filePathRelativeToUserRootDir ?? filePath.filePathAbsolute
+  const filePathToShowToUser = filePath.filePathRelativeToUserRootDir ?? filePath.filePathAbsoluteFilesystem
   assert(filePathToShowToUser)
   return filePathToShowToUser
 }

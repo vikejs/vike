@@ -139,8 +139,8 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVike: Co
   }
 }
 
-function isVikeConfigModule(filePathAbsolute: string): boolean {
-  return vikeConfigDependencies.has(filePathAbsolute)
+function isVikeConfigModule(filePathAbsoluteFilesystem: string): boolean {
+  return vikeConfigDependencies.has(filePathAbsoluteFilesystem)
 }
 
 function reloadConfig(

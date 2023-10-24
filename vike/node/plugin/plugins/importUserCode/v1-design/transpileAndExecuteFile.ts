@@ -38,9 +38,9 @@ async function transpileAndExecuteFile(
 }
 
 async function transpileFile(filePath: FilePath, isValueFile: boolean, userRootDir: string) {
-  const { filePathAbsolute } = filePath
-  assertPosixPath(filePathAbsolute)
-  vikeConfigDependencies.add(filePathAbsolute)
+  const { filePathAbsoluteFilesystem } = filePath
+  assertPosixPath(filePathAbsoluteFilesystem)
+  vikeConfigDependencies.add(filePathAbsoluteFilesystem)
   let code = await transpileWithEsbuild(filePath, isValueFile, userRootDir)
 
   let fileImports: FileImport[] | null = null
@@ -56,9 +56,9 @@ async function transpileFile(filePath: FilePath, isValueFile: boolean, userRootD
 
 function transpileImports(codeOriginal: string, filePath: FilePath, isValueFile: boolean) {
   // Do we need to remove the imports?
-  const { filePathAbsolute } = filePath
-  assertPosixPath(filePathAbsolute)
-  const isHeader = isHeaderFile(filePathAbsolute)
+  const { filePathAbsoluteFilesystem } = filePath
+  assertPosixPath(filePathAbsoluteFilesystem)
+  const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
   const isPageConfigFile = !isValueFile
   if (!isHeader && !isPageConfigFile) {
     return null
@@ -86,7 +86,7 @@ function transpileImports(codeOriginal: string, filePath: FilePath, isValueFile:
 }
 
 async function transpileWithEsbuild(filePath: FilePath, bundle: boolean, userRootDir: string) {
-  const entryFilePath = filePath.filePathAbsolute
+  const entryFilePath = filePath.filePathAbsoluteFilesystem
   const entryFileDir = path.posix.dirname(entryFilePath)
   const options: BuildOptions = {
     platform: 'node',
@@ -151,8 +151,8 @@ async function transpileWithEsbuild(filePath: FilePath, bundle: boolean, userRoo
     Object.keys(result.metafile.inputs).forEach((filePathRelative) => {
       filePathRelative = toPosixPath(filePathRelative)
       assertPosixPath(userRootDir)
-      const filePathAbsolute = path.posix.join(userRootDir, filePathRelative)
-      vikeConfigDependencies.add(filePathAbsolute)
+      const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathRelative)
+      vikeConfigDependencies.add(filePathAbsoluteFilesystem)
     })
   }
   const code = result.outputFiles![0]!.text
@@ -161,10 +161,10 @@ async function transpileWithEsbuild(filePath: FilePath, bundle: boolean, userRoo
 }
 
 async function executeFile(filePath: FilePath, code: string, fileImports: FileImport[] | null, isValueFile: boolean) {
-  const { filePathAbsolute, filePathRelativeToUserRootDir } = filePath
+  const { filePathAbsoluteFilesystem, filePathRelativeToUserRootDir } = filePath
   // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
   //  - But seems to break source maps, so I don't think it's worth it
-  const filePathTmp = getFilePathTmp(filePathAbsolute)
+  const filePathTmp = getFilePathTmp(filePathAbsoluteFilesystem)
   fs.writeFileSync(filePathTmp, code)
   const clean = () => fs.unlinkSync(filePathTmp)
   let fileExports: Record<string, unknown> = {}
@@ -185,7 +185,7 @@ async function executeFile(filePath: FilePath, code: string, fileImports: FileIm
   fileExports = { ...fileExports }
   if (fileImports && !isValueFile) {
     assert(filePathRelativeToUserRootDir !== undefined)
-    const filePathToShowToUser = filePathRelativeToUserRootDir ?? filePathAbsolute
+    const filePathToShowToUser = filePathRelativeToUserRootDir ?? filePathAbsoluteFilesystem
     assertImportsAreReExported(fileImports, fileExports, filePathToShowToUser)
   }
   return { fileExports }

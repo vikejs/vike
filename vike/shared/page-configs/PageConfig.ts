@@ -125,12 +125,12 @@ type DefinedAtFileInfo = // TODO: replace filePathRelativeToUserRootDir and impo
   (
     | {
         filePathRelativeToUserRootDir: string
-        filePathAbsolute: string
+        filePathAbsoluteFilesystem: string
         importPathAbsolute: null
       }
     | {
         filePathRelativeToUserRootDir: null
-        filePathAbsolute: string | null
+        filePathAbsoluteFilesystem: string | null
         importPathAbsolute: string
       }
   ) & {

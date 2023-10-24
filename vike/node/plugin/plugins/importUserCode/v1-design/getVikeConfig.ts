@@ -187,9 +187,9 @@ async function loadInterfaceFiles(
 
   // Config files
   await Promise.all(
-    configFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
+    configFiles.map(async ({ filePathAbsoluteFilesystem, filePathRelativeToUserRootDir }) => {
       const configFilePath = {
-        filePathAbsolute: filePathAbsolute,
+        filePathAbsoluteFilesystem: filePathAbsoluteFilesystem,
         filePathRelativeToUserRootDir: filePathRelativeToUserRootDir,
         importPathAbsolute: null
       }
@@ -208,13 +208,13 @@ async function loadInterfaceFiles(
 
   // Value files
   await Promise.all(
-    valueFiles.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
+    valueFiles.map(async ({ filePathAbsoluteFilesystem, filePathRelativeToUserRootDir }) => {
       const configName = getConfigName(filePathRelativeToUserRootDir)
       assert(configName)
       const interfaceFile: InterfaceValueFile = {
         filePath: {
           filePathRelativeToUserRootDir,
-          filePathAbsolute,
+          filePathAbsoluteFilesystem,
           importPathAbsolute: null
         },
         configMap: {
@@ -776,9 +776,9 @@ function resolveImport(
   if (!importData) return null
 
   const { importPath, exportName } = importData
-  const filePathAbsolute = resolveImportPath(importData, importerFilePath)
+  const filePathAbsoluteFilesystem = resolveImportPath(importData, importerFilePath)
 
-  assertFileEnv(filePathAbsolute ?? importPath, configEnv, configName)
+  assertFileEnv(filePathAbsoluteFilesystem ?? importPath, configEnv, configName)
 
   const fileExportPath = exportName === 'default' || exportName === configName ? [] : [exportName]
 
@@ -787,9 +787,9 @@ function resolveImport(
     // ```
     // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
     // ```
-    assertImportPath(filePathAbsolute, importData, importerFilePath)
+    assertImportPath(filePathAbsoluteFilesystem, importData, importerFilePath)
     const filePathRelativeToUserRootDir = resolveImportPath_relativeToUserRootDir(
-      filePathAbsolute,
+      filePathAbsoluteFilesystem,
       importData,
       importerFilePath,
       userRootDir
@@ -797,7 +797,7 @@ function resolveImport(
     return {
       exportName,
       fileExportPath,
-      filePathAbsolute,
+      filePathAbsoluteFilesystem,
       filePathRelativeToUserRootDir,
       importPathAbsolute: null
     }
@@ -808,7 +808,7 @@ function resolveImport(
     return {
       exportName,
       fileExportPath,
-      filePathAbsolute,
+      filePathAbsoluteFilesystem,
       filePathRelativeToUserRootDir: null,
       importPathAbsolute: importPath
     }
@@ -816,15 +816,15 @@ function resolveImport(
 }
 
 function resolveImportPath_relativeToUserRootDir(
-  filePathAbsolute: string,
+  filePathAbsoluteFilesystem: string,
   importData: ImportData,
   configFilePath: FilePath,
   userRootDir: string
 ) {
   assertPosixPath(userRootDir)
   let filePathRelativeToUserRootDir: string
-  if (filePathAbsolute.startsWith(userRootDir)) {
-    filePathRelativeToUserRootDir = getVitePathFromAbsolutePath(filePathAbsolute, userRootDir)
+  if (filePathAbsoluteFilesystem.startsWith(userRootDir)) {
+    filePathRelativeToUserRootDir = getVitePathFromAbsolutePath(filePathAbsoluteFilesystem, userRootDir)
   } else {
     assertUsage(
       false,
@@ -834,10 +834,10 @@ function resolveImportPath_relativeToUserRootDir(
     )
     // None of the following works. Seems to be a Vite bug?
     // /*
-    // assert(filePathAbsolute.startsWith('/'))
-    // filePath = `/@fs${filePathAbsolute}`
+    // assert(filePathAbsoluteFilesystem.startsWith('/'))
+    // filePath = `/@fs${filePathAbsoluteFilesystem}`
     // /*/
-    // filePathRelativeToUserRootDir = path.posix.relative(userRootDir, filePathAbsolute)
+    // filePathRelativeToUserRootDir = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
     // assert(filePathRelativeToUserRootDir.startsWith('../'))
     // filePathRelativeToUserRootDir = '/' + filePathRelativeToUserRootDir
     // //*/
@@ -848,11 +848,11 @@ function resolveImportPath_relativeToUserRootDir(
   return filePathRelativeToUserRootDir
 }
 
-function getVitePathFromAbsolutePath(filePathAbsolute: string, root: string): string {
-  assertPosixPath(filePathAbsolute)
+function getVitePathFromAbsolutePath(filePathAbsoluteFilesystem: string, root: string): string {
+  assertPosixPath(filePathAbsoluteFilesystem)
   assertPosixPath(root)
-  assert(filePathAbsolute.startsWith(root))
-  let vitePath = path.posix.relative(root, filePathAbsolute)
+  assert(filePathAbsoluteFilesystem.startsWith(root))
+  let vitePath = path.posix.relative(root, filePathAbsoluteFilesystem)
   assert(!vitePath.startsWith('/') && !vitePath.startsWith('.'))
   vitePath = '/' + vitePath
   return vitePath
@@ -1063,8 +1063,8 @@ async function findPlusFiles(
   const plusFiles = result.map((p) => {
     p = toPosixPath(p)
     const filePathRelativeToUserRootDir = path.posix.join('/', p)
-    const filePathAbsolute = path.posix.join(userRootDir, p)
-    return { filePathRelativeToUserRootDir, filePathAbsolute }
+    const filePathAbsoluteFilesystem = path.posix.join(userRootDir, p)
+    return { filePathRelativeToUserRootDir, filePathAbsoluteFilesystem }
   })
 
   extensions.forEach((extension) => {
@@ -1076,7 +1076,7 @@ async function findPlusFiles(
       const { importPath, filePath } = pageConfigDistFile
       plusFiles.push({
         filePathRelativeToUserRootDir: importPath,
-        filePathAbsolute: filePath
+        filePathAbsoluteFilesystem: filePath
       })
     })
   })
@@ -1123,12 +1123,12 @@ async function loadConfigFile(
   userRootDir: string,
   visited: string[]
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
-  const { filePathAbsolute } = configFilePath
-  assertNoInfiniteLoop(visited, filePathAbsolute)
+  const { filePathAbsoluteFilesystem } = configFilePath
+  assertNoInfiniteLoop(visited, filePathAbsoluteFilesystem)
   const { fileExports } = await transpileAndExecuteFile(configFilePath, false, userRootDir)
   const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir, [
     ...visited,
-    filePathAbsolute
+    filePathAbsoluteFilesystem
   ])
 
   const configFile: ConfigFile = {
@@ -1138,12 +1138,12 @@ async function loadConfigFile(
   }
   return { configFile, extendsConfigs }
 }
-function assertNoInfiniteLoop(visited: string[], filePathAbsolute: string) {
-  const idx = visited.indexOf(filePathAbsolute)
+function assertNoInfiniteLoop(visited: string[], filePathAbsoluteFilesystem: string) {
+  const idx = visited.indexOf(filePathAbsoluteFilesystem)
   if (idx === -1) return
   const loop = visited.slice(idx)
-  assert(loop[0] === filePathAbsolute)
-  assertUsage(idx === -1, `Infinite extends loop ${[...loop, filePathAbsolute].join('>')}`)
+  assert(loop[0] === filePathAbsoluteFilesystem)
+  assertUsage(idx === -1, `Infinite extends loop ${[...loop, filePathAbsoluteFilesystem].join('>')}`)
 }
 
 async function loadExtendsConfigs(
@@ -1158,14 +1158,14 @@ async function loadExtendsConfigs(
     const { importPath: importPath } = importData
     // TODO
     //  - validate extends configs
-    const filePathAbsolute = resolveImportPath(importData, configFilePath)
-    assertImportPath(filePathAbsolute, importData, configFilePath)
-    assertExtendsImportPath(importPath, filePathAbsolute, configFilePath)
+    const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
+    assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
+    assertExtendsImportPath(importPath, filePathAbsoluteFilesystem, configFilePath)
     // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
-    // - Using importPath would be visually nicer but it's ambigous => we rather pick filePathAbsolute for added clarity
-    const filePathRelativeToUserRootDir = determineFilePathRelativeToUserDir(filePathAbsolute, userRootDir)
+    // - Using importPath would be visually nicer but it's ambigous => we rather pick filePathAbsoluteFilesystem for added clarity
+    const filePathRelativeToUserRootDir = determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem, userRootDir)
     extendsConfigFiles.push({
-      filePathAbsolute,
+      filePathAbsoluteFilesystem,
       // TODO: fix type cast
       filePathRelativeToUserRootDir: filePathRelativeToUserRootDir as null,
       importPathAbsolute: importPath
@@ -1181,18 +1181,18 @@ async function loadExtendsConfigs(
     })
   )
 
-  const extendsFilePaths = extendsConfigFiles.map((f) => f.filePathAbsolute)
+  const extendsFilePaths = extendsConfigFiles.map((f) => f.filePathAbsoluteFilesystem)
 
   return { extendsConfigs, extendsFilePaths }
 }
 
-function determineFilePathRelativeToUserDir(filePathAbsolute: string, userRootDir: string): null | string {
-  assertPosixPath(filePathAbsolute)
+function determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem: string, userRootDir: string): null | string {
+  assertPosixPath(filePathAbsoluteFilesystem)
   assertPosixPath(userRootDir)
-  if (!filePathAbsolute.startsWith(userRootDir)) {
+  if (!filePathAbsoluteFilesystem.startsWith(userRootDir)) {
     return null
   }
-  let filePathRelativeToUserRootDir = filePathAbsolute.slice(userRootDir.length)
+  let filePathRelativeToUserRootDir = filePathAbsoluteFilesystem.slice(userRootDir.length)
   if (!filePathRelativeToUserRootDir.startsWith('/'))
     filePathRelativeToUserRootDir = '/' + filePathRelativeToUserRootDir
   return filePathRelativeToUserRootDir
@@ -1243,7 +1243,7 @@ function getExtendsImportData(configFileExports: Record<string, unknown>, config
 }
 
 type UserFilePath = {
-  filePathAbsolute: string
+  filePathAbsoluteFilesystem: string
   filePathRelativeToUserRootDir: string
 }
 
@@ -1371,22 +1371,22 @@ function determineIsErrorPage(routeFilesystem: string) {
 }
 
 function resolveImportPath(importData: ImportData, importerFilePath: FilePath): string | null {
-  const importerFilePathAbsolute = importerFilePath.filePathAbsolute
+  const importerFilePathAbsolute = importerFilePath.filePathAbsoluteFilesystem
   assertPosixPath(importerFilePathAbsolute)
   const cwd = path.posix.dirname(importerFilePathAbsolute)
-  // filePathAbsolute is expected to be null when importData.importPath is a Vite path alias
-  const filePathAbsolute = requireResolve(importData.importPath, cwd)
-  return filePathAbsolute
+  // filePathAbsoluteFilesystem is expected to be null when importData.importPath is a Vite path alias
+  const filePathAbsoluteFilesystem = requireResolve(importData.importPath, cwd)
+  return filePathAbsoluteFilesystem
 }
 function assertImportPath(
-  filePathAbsolute: string | null,
+  filePathAbsoluteFilesystem: string | null,
   importData: ImportData,
   importerFilePath: FilePath
-): asserts filePathAbsolute is string {
+): asserts filePathAbsoluteFilesystem is string {
   const { importPath: importPath, importStringWasGenerated, importString } = importData
   const filePathToShowToUser = getFilePathToShowToUser(importerFilePath)
 
-  if (!filePathAbsolute) {
+  if (!filePathAbsoluteFilesystem) {
     const importPathString = pc.cyan(`'${importPath}'`)
     const errIntro = importStringWasGenerated
       ? (`The import path ${importPathString} in ${filePathToShowToUser}` as const)
