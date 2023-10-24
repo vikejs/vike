@@ -92,7 +92,7 @@ async function onRenderClient(pageContext) {
 
 export { Page }
 
-// In the `onRender*()` functions above, we pass `pageContext.pageProps` to `Page`
+// In the `onRenderHtml()` and `onRenderClient()` functions above, we pass `pageContext.pageProps` to `Page`
 function Page(pageProps) {
   const { movies } = pageProps
   // ...

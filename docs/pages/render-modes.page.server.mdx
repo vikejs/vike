@@ -20,7 +20,7 @@ Rendering a page as SPA means that the page is loaded and rendered only in the b
 
 To achieve that:
  1. We define `.page.client.js` instead of `.page.js`.
- 2. We adapt our `onRender*()` hooks.
+ 2. We adapt our `onRenderHtml()` and `onRenderClient()` hooks.
 
 
 **1. `.page.js` => `.page.client.js`**
@@ -33,9 +33,9 @@ Example:
    > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
 
 
-**2. `onRender*()` hooks (SPA only)**
+**2. Render hooks (SPA only)**
 
-If we only have SPA pages, then we adapt our `onRender*()` hooks like the following.
+If we only have SPA pages, then we adapt our `onRenderHtml()` and `onRenderClient()` hooks like the following.
 
 Client-side `onRenderClient()` hook:
 
@@ -126,9 +126,9 @@ Note how we define `pageContext.exports.meta` in `about.page.js` instead of `abo
 This means that we define both `about.page.js` (defining meta data) and `about.page.client.js` (defining our page's root component `pageContext.Page`).
 
 
-**2. `onRender*()` hooks (SPA + SSR)**
+**2. Render hooks (SPA + SSR)**
 
-If we have both SPA and SSR pages, then we adapt our `onRender*()` hooks like this:
+If we have both SPA and SSR pages, then we adapt our `onRenderHtml()` and `onRenderClient()` hooks like this:
 
 ```js
 // /renderer/_default.page.server.js
