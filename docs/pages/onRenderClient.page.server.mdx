@@ -1,15 +1,60 @@
 import { HookTypeScriptHints } from '../components'
 import { Link } from '@brillout/docpress'
 
-The `render()` hook of `.page.client.js` has been renamed to `onRenderClient()` for the V1 design.
+The client-side `onRenderClient()` hook exported in `+onRenderClient.js` files (usually `/renderer/+onRenderClient.js`)
+defines how a page is rendered/<Link text="hydrated" href="/hydration" /> on the browser-side.
 
-> It's just a rename: the hook is equivalent and its documentation is the same as <Link href="/render-client" />.
->
-> The documentation will be moved to this page after the stable release of the V1 design.
+```js
+// +onRenderClient.js
+// Environment: browser
 
-See <Link href="/migration/v1-design#renamed-hooks" />.
+import { renderToDom, hydrateDom } from 'some-ui-framework'
 
-{ /*NOTE(aurelien) move the content of render-client.page.server.mdx here*/ }
+export { onRenderClient }
+
+async function onRenderClient(pageContext) {
+  const { Page } = pageContext
+
+  // SPA:
+  await renderToDom(Page)
+
+  // SSR:
+  await hydrateDom(Page)
+}
+```
+
+Where:
+ - `Page` is the <Link text={<>page's <code>{'export { Page }'}</code></>} href="/Page" />.
+ - `pageContext` is a subset of the `pageContext` defined on the server-side.
+
+We use [`passToClient`](/passToClient) to determine what subset of `pageContext` is sent to the browser.
+
+> See [Render Modes](/render-modes) and [`clientRouting`](/clientRouting) for illustrations of conditional DOM
+> hydration, for supporting both SPA and SSR.
+
+
+## SPA vs SSR
+
+When implementing SSR, the client-side `onRenderClient()` hook works in tandem with the
+<Link text={<>server-side <code>onRenderHtml()</code> hook</>} href="/onRenderHtml" />: the server-side `onRenderHtml()`
+hook renders the page to HTML and the client-side `onRenderClient()` hook <Link text="hydrates" href="/hydration" /> the
+HTML.
+
+When implementing an SPA, then the client-side `onRenderClient()` hook is solely responsible for rendering the page.
+(There is still a server-side `onRenderHtml()` hook but it only renders the HTML shell; it doesn't render
+`pageContext.Page` to HTML.)
+
+See <Link href='/render-modes' />.
+
+
+## Multiple `onRenderClient()` hooks
+
+If we `export { onRenderClient }` in `/pages/star-wars/+onRenderClient.js` then we define how
+`/pages/star-wars/+Page.js` is rendered while overriding `/renderer/+onRenderClient.js`.
+
+And, defining multiple `onRenderClient()` hooks, with multiple `+onRenderClient.js` files, enables us to define
+different rendering for different pages. See <Link href='/multiple-renderer' />.
+
 
 ## TypeScript
 

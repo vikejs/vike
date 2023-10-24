@@ -196,8 +196,12 @@ const headingsDetached = [
     url: '/onRenderHtml'
   },
   {
-    title: <code>onRenderClient()</code>,
-    url: '/onRenderClient'
+    title: (
+      <>
+        <code>render()</code> hook (client-side)
+      </>
+    ),
+    url: '/render-client'
   },
   {
     title: <code>meta</code>,

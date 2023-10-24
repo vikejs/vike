@@ -1,4 +1,12 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
+
+<Warning>
+  `render()` is deprecated in favor of `onRenderClient()`, see
+  <ul>
+    <li><Link href="/onRenderClient" /></li>
+    <li><Link href="/migration/v1-design#renamed-hooks" /></li>
+  </ul>
+</Warning>
 
 The client-side `render()` hook exported in `*.page.client.js` files (usually `/renderer/_default.page.client.js`) defines how a page is rendered/<Link text="hydrated" href="/hydration" /> on the browser-side.
 

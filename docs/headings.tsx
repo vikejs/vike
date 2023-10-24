@@ -733,10 +733,10 @@ const headings = [
   },
   {
     level: 2,
-    title: '`render()` hook (client-side)',
-    titleInNav: '`export { render }`',
+    title: '`onRenderClient()` hook',
+    titleInNav: '`export { onRenderClient }`',
     isListTitle: true,
-    url: '/render-client'
+    url: '/onRenderClient'
   },
   {
     level: 2,

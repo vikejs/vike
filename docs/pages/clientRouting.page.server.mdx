@@ -6,7 +6,7 @@ By default, Vike does <Link text="Server Routing" href="/server-routing" />.
 
 We opt into <Link text="Client Routing" href="/client-routing" /> by modifying `/renderer/_default.client.js` to:
  1. Set `export const clientRouting = true`.
- 2. Update and adapt the <Link text={<>client-side <code>render()</code> hook</>} href="/render-client" /> to
+ 2. Update and adapt the <Link text={<><code>onRenderClient()</code> hook</>} href="/onRenderClient" /> to
     hydrate the DOM only when rendering the first page.
 
 > Instead of manually integrating Client Routing yourself, you can use <Link text={<><code>vike-*</code> packages</>} href="/vike-packages" /> and [Bati](https://batijs.github.io/): `vike-*` packages use Client Routing and Bati helps you scaffold projects. Bati and `vike-*` packages are going to get out of beta soon.
