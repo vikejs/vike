@@ -16,6 +16,7 @@ import { assert, assertPosixPath, getNpmPackageImportPath, isNpmPackageImport, h
  * getLocationId('/pages/some-page') => '/pages/some-page'
  * getLocationId('/renderer/+config.js') => '/renderer'
  */
+// TODO: rename somePath to filePathAbsoluteVite
 function getLocationId(somePath: string): string {
   const locationId = removeFilename(somePath, true)
   assertLocationId(locationId)

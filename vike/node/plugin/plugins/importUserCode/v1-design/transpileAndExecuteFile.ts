@@ -22,13 +22,13 @@ import {
 import { isImportData, replaceImportStatements, type FileImport } from './replaceImportStatements.js'
 import { vikeConfigDependencies } from './getVikeConfig.js'
 import 'source-map-support/register.js'
-import { type FilePath, getFilePathToShowToUser } from './getFilePathToShowToUser.js'
 import { assertExportsOfConfigFile } from '../../../../../shared/page-configs/assertExports.js'
+import type { FilePathResolved } from '../../../../../shared/page-configs/PageConfig.js'
 
 assertIsNotProductionRuntime()
 
 async function transpileAndExecuteFile(
-  filePath: FilePath,
+  filePath: FilePathResolved,
   isValueFile: boolean,
   userRootDir: string
 ): Promise<{ fileExports: Record<string, unknown> }> {
@@ -37,7 +37,7 @@ async function transpileAndExecuteFile(
   return { fileExports }
 }
 
-async function transpileFile(filePath: FilePath, isValueFile: boolean, userRootDir: string) {
+async function transpileFile(filePath: FilePathResolved, isValueFile: boolean, userRootDir: string) {
   const { filePathAbsoluteFilesystem } = filePath
   assertPosixPath(filePathAbsoluteFilesystem)
   vikeConfigDependencies.add(filePathAbsoluteFilesystem)
@@ -54,16 +54,15 @@ async function transpileFile(filePath: FilePath, isValueFile: boolean, userRootD
   return { code, fileImports }
 }
 
-function transpileImports(codeOriginal: string, filePath: FilePath, isValueFile: boolean) {
+function transpileImports(codeOriginal: string, filePath: FilePathResolved, isValueFile: boolean) {
   // Do we need to remove the imports?
-  const { filePathAbsoluteFilesystem } = filePath
+  const { filePathAbsoluteFilesystem, filePathToShowToUser } = filePath
   assertPosixPath(filePathAbsoluteFilesystem)
   const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
   const isPageConfigFile = !isValueFile
   if (!isHeader && !isPageConfigFile) {
     return null
   }
-  const filePathToShowToUser = getFilePathToShowToUser(filePath)
   assertWarning(
     isPageConfigFile,
     `${filePathToShowToUser} is a JavaScript header file (.h.js), but JavaScript header files should only be used for +config.h.js, see https://vike.dev/header-file`,
@@ -85,7 +84,7 @@ function transpileImports(codeOriginal: string, filePath: FilePath, isValueFile:
   return { code, fileImports }
 }
 
-async function transpileWithEsbuild(filePath: FilePath, bundle: boolean, userRootDir: string) {
+async function transpileWithEsbuild(filePath: FilePathResolved, bundle: boolean, userRootDir: string) {
   const entryFilePath = filePath.filePathAbsoluteFilesystem
   const entryFileDir = path.posix.dirname(entryFilePath)
   const options: BuildOptions = {
@@ -160,7 +159,12 @@ async function transpileWithEsbuild(filePath: FilePath, bundle: boolean, userRoo
   return code
 }
 
-async function executeFile(filePath: FilePath, code: string, fileImports: FileImport[] | null, isValueFile: boolean) {
+async function executeFile(
+  filePath: FilePathResolved,
+  code: string,
+  fileImports: FileImport[] | null,
+  isValueFile: boolean
+) {
   const { filePathAbsoluteFilesystem, filePathRelativeToUserRootDir } = filePath
   // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
   //  - But seems to break source maps, so I don't think it's worth it
@@ -198,7 +202,7 @@ function getConfigBuildErrorFormatted(err: unknown): null | string {
   assert(typeof err[formatted] === 'string')
   return err[formatted]
 }
-async function formatBuildErr(err: unknown, filePath: FilePath): Promise<void> {
+async function formatBuildErr(err: unknown, filePath: FilePathResolved): Promise<void> {
   assert(isObject(err) && err.errors)
   const msgEsbuild = (
     await formatMessages(err.errors as any, {
@@ -310,10 +314,10 @@ function triggerPrepareStackTrace(err: unknown) {
   }
 }
 
-function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePath) {
+function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePathResolved) {
   const msg = [
     pc.red(`Failed to ${operation}`),
-    pc.bold(pc.red(getFilePathToShowToUser(filePath))),
+    pc.bold(pc.red(filePath.filePathToShowToUser)),
     pc.red(`because:`)
   ].join(' ')
   return msg
