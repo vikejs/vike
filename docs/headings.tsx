@@ -628,7 +628,7 @@ const headings = [
   },
   {
     level: 2,
-    title: '`onBeforeRender()` hook (`.page.js`)',
+    title: '`onBeforeRender()` hook (server- and client-side)',
     titleInNav: '`export { onBeforeRender }`',
     isListTitle: true,
     url: '/onBeforeRender-isomorphic'
@@ -661,7 +661,7 @@ const headings = [
   },
   {
     level: 2,
-    title: '`onBeforeRender()` hook (`.page.server.js`)',
+    title: '`onBeforeRender()` hook (server-side)',
     titleInNav: '`export { onBeforeRender }`',
     isListTitle: true,
     sectionTitles: ['Client Routing'],

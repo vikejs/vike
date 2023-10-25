@@ -3,12 +3,12 @@ import { Link } from '@brillout/docpress'
 
 The `onBeforeRender()` hook is usually used together with [`passToClient`](/passToClient) to fetch data, see [Guides > Data Fetching](/data-fetching).
 
-Since `.page.server.js` is only loaded in Node.js, ORM/SQL database queries can be used.
+By default it is only loaded in Node.js, so ORM/SQL database queries can be used.
 
 ```js
-// /pages/movies.page.server.js
+// /pages/movies/+onBeforeRender.js
 
-// Note how we use `node-fetch`; this file is only run in Node.js thus we don't need
+// Note how we use `node-fetch`; this file is only run in Node.js by default, thus we don't need
 // to use an isomorphic (aka universal) implementation such as `cross-fetch`.
 import fetch from 'node-fetch'
 
@@ -32,14 +32,14 @@ async function onBeforeRender(pageContext){
 ```
 
 Examples:
-- <Link href='/examples/react-full/pages/star-wars/index/index.page.server.ts' />
-- <Link href='/examples/vue-full/pages/star-wars/index/index.page.server.ts' />
+- <Link href='/examples/react-full-v1/pages/star-wars/index/+onBeforeRender.ts' />
+- <Link href='/examples/vue-full-v1/pages/star-wars/index/+onBeforeRender.ts' />
 
 You can also provide initial `pageContext` values at your server middleware with <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
 This is where you usually pass information about the authenticated user
 (see <Link href="/auth" />).
 
-> If you use the <Link text="V1 design" href="/migration/v1-design" />, you can suppress globally defined `onBeforeRender()` hooks:
+> You can also suppress on a per-page basis globally defined `onBeforeRender()` hooks:
 > ```js
 > // /pages/+onBeforeRender.js
 >
@@ -86,5 +86,5 @@ const onBeforeRender: OnBeforeRenderAsync = async (
 ## Client Routing
 
 If you use <Link href="/clientRouting" noBreadcrumb />,
-you also have the option to define [`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`;
+you have the option to [also run `onBeforeRender()` in the client](/onBeforeRender-isomorphic);
 the hook is then called not only in Node.js but also in the browser.
