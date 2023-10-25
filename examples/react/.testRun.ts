@@ -62,7 +62,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod', isCJS?
         console.log('screenshotFixturePathUnresolved:', screenshotFixturePathUnresolved)
         throw err
       }
-      await testScreenshotFixture({ screenshotFixturePath })
+      await testScreenshotFixture({ screenshotFixturePath, doNotTestLocally: true })
     }
   })
 

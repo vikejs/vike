@@ -46,6 +46,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   })
 
   test('screenshot fixture', async () => {
-    await testScreenshotFixture()
+    await testScreenshotFixture({ doNotTestLocally: true })
   })
 }

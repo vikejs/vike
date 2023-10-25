@@ -67,6 +67,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       return
     }
     await page.locator('#version-number').evaluate((element) => (element.innerHTML = 'v9.9.99'))
-    await testScreenshotFixture()
+    await testScreenshotFixture({ doNotTestLocally: true })
   })
 }
