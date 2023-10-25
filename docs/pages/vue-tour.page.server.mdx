@@ -3,10 +3,10 @@ import { ScaffoldCallToActionTour } from './index/ScaffoldCallToAction'
 ## Routing
 
 Similarly to Nuxt,
-we define a new page by creating a new `.page.vue` file.
+we define a new page by creating a new `+Page.vue` file.
 
 ```vue
-<!-- /pages/index.page.vue -->
+<!-- /pages/index/+Page.vue -->
 <!-- Environment: browser and server -->
 
 <template>
@@ -19,24 +19,25 @@ import Counter from '../components/Counter.vue'
 ```
 
 By default, Vike does Filesystem Routing.
+
 ```
 FILESYSTEM                  URL
-/pages/index.page.vue        /
-/pages/about.page.vue        /about
+/pages/index/+Page.vue      /
+/pages/about/+Page.vue      /about
 ```
 
 We can also define a page's route with a *Route String* (for parameterized routes such as `/movies/@id`) or a *Route Function* (for full programmatic flexibility).
 
 ```js
-// /pages/index.page.route.js
+// /pages/index/+route.js
 
-// Note how the two files share the same base `/pages/index.page.`; this is how Vike
-// knows that `/pages/index.page.route.js` defines the route of `/pages/index.page.vue`.
+// Note how the two files share the same folder `/pages/index/`; this is how Vike
+// knows that `/pages/index/+route.js` defines the route of `/pages/index/+Page.vue`.
 
 // Route Function
 export default pageContext => pageContext.urlPathname === '/'
 
-// If we don't create a `.page.route.js` file then Vike does Filesystem Routing
+// If we don't create a `+route.js` file then Vike does Filesystem Routing
 ```
 
 
@@ -45,7 +46,7 @@ export default pageContext => pageContext.urlPathname === '/'
 Unlike Nuxt, we control how our pages are rendered.
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 import { createSSRApp, h } from 'vue'
@@ -77,7 +78,7 @@ async function onRenderHtml(pageContext) {
 ```
 
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+onRenderClient.js
 // Environment: browser
 
 import { createSSRApp, h } from 'vue'
@@ -102,19 +103,19 @@ async function onRenderClient(pageContext) {
 
 This control enables us to *easily* and *naturally* integrate any tool we want (Vuex, GraphQL, Service Worker, ...).
 
-There are four page file suffixes:
- - `.page.js`: runs in the browser as well as in Node.js
- - `.page.client.js`: runs only in the browser
- - `.page.server.js`: runs only in Node.js
- - `.page.route.js`: defines the page's Route String or Route Function.
+So far we have seen four page-related files:
+ - `+Page.*`: runs in the browser as well as in Node.js
+ - `+onRenderClient.*`: runs only in the browser
+ - `+onRenderHtml.*`: runs only in Node.js
+ - `+route.*`: defines the page's Route String or Route Function.
 
-Instead of creating a `.page.client.js` and `.page.server.js` file for each page,
-we can create `/renderer/_default.page.client.js` and `/renderer/_default.page.server.js` which apply as default for all pages.
+Instead of creating a `+onRenderClient.js` and `+onRenderHtml.js` file for each page,
+we can create `/renderer/+onRenderClient.js` and `/renderer/+onRenderHtml.js` which apply as default for all pages.
 
-The last two files we created are actually `/renderer/_default.page.client.js` and `/renderer/_default.page.server.js`,
-which means that we can now create a new page just by defining a new `.page.vue` file (the `.page.route.js` file is optional).
+The last two files we created are actually `/renderer/+onRenderClient.js` and `/renderer/+onRenderHtml.js`,
+which means that we can now create a new page just by defining a new `+Page.vue` file (the `+route.js` file is optional).
 
-The `_default.page.` files can be overridden. For example, we can override our `onRenderHtml()` and `onRenderClient()` hooks for rendering some of
+The `/renderer/+*` files can be overridden. For example, we can override our `onRenderHtml()` and `onRenderClient()` hooks for rendering some of
 our pages with a completely different UI framework such as React.
 
 
@@ -123,7 +124,7 @@ our pages with a completely different UI framework such as React.
 Let's now have a look at how to fetch data.
 
 ```vue
-<!-- /pages/star-wars/movie.page.vue -->
+<!-- /pages/star-wars/movie/+Page.vue -->
 <!-- Environment: browser and server -->
 
 <template>
@@ -139,7 +140,7 @@ export default { props: pageProps }
 ```
 
 ```js
-// /pages/star-wars/movie.page.route.js
+// /pages/star-wars/movie/+route.js
 // Environment: server
 
 // Route String
@@ -147,7 +148,7 @@ export default '/star-wars/@movieId'
 ```
 
 ```js
-// /pages/star-wars/movie.page.server.js
+// /pages/star-wars/movie/+onRenderHtml.js
 // Environment: server
 
 import fetch from 'node-fetch'
@@ -171,12 +172,19 @@ export async function onBeforeRender(pageContext) {
     }
   }
 }
+```
+
+```js
+// /renderer/+config.h.js
+// Environment: build-time
 
 // By default `pageContext.*` are available only on the server. But our hydrate function
 // we defined earlier runs in the browser and needs `pageContext.pageProps`; we use
 // `passToClient` to tell Vike to serialize and make `pageContext.pageProps`
 // available to the browser.
-export const passToClient = ['pageProps']
+export default {
+  passToClient: ['pageProps']
+}
 ```
 
 That's it for the tour and we have actually already seen most of the interface;
