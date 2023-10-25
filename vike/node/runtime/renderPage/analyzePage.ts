@@ -13,8 +13,6 @@ import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
 function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRuntime, pageId: string): AnalysisResult {
   if (pageConfig) {
     const { isClientSideRenderable, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
-    const clientFilePath = getClientEntryFilePath(pageConfig)
-    const clientEntry = !isClientSideRenderable ? clientFilePath : getVikeClientEntry(isClientRouting)
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
       id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, true),
@@ -46,15 +44,28 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRunt
       }
     })
     */
+
     const clientEntries: string[] = []
-    if (clientEntry) {
-      clientDependencies.push({
-        id: clientEntry,
-        onlyAssets: false,
-        eagerlyImported: false
+    {
+      const entries: string[] = []
+      if (isClientSideRenderable) {
+        const clientEntryVike = getVikeClientEntry(isClientRouting)
+        entries.push(clientEntryVike)
+      }
+      const clientEntryUser = getClientEntryFilePath(pageConfig)
+      if (clientEntryUser) {
+        entries.push(clientEntryUser)
+      }
+      entries.forEach((clientEntry) => {
+        clientDependencies.push({
+          id: clientEntry,
+          onlyAssets: false,
+          eagerlyImported: false
+        })
+        clientEntries.push(clientEntry)
       })
-      clientEntries.push(clientEntry)
     }
+
     return {
       isHtmlOnly: !isClientSideRenderable,
       isClientRouting,
