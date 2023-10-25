@@ -741,8 +741,6 @@ const headings = [
   {
     level: 2,
     title: '`clientRouting`',
-    titleInNav: '`export { clientRouting }`',
-    isListTitle: true,
     url: '/clientRouting'
   },
   {
