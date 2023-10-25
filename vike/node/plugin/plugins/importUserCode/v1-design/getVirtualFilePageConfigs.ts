@@ -14,7 +14,7 @@ import { getConfigEnv } from './helpers.js'
 import pc from '@brillout/picocolors'
 import { getVikeConfig } from './getVikeConfig.js'
 import type { ConfigVikeResolved } from '../../../../../shared/ConfigVike.js'
-import { isConfigEnvMatch } from './isConfigEnvMatch.js'
+import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import { getConfigValueFilePathToShowToUser } from '../../../../../shared/page-configs/utils.js'
 import {
   serializeConfigValue,
@@ -69,7 +69,7 @@ function getContent(
     lines.push(`    configValuesSerialized: {`)
     Object.entries(pageConfig.configValuesComputed).forEach(([configName, configValuesComputed]) => {
       const { value, configEnv } = configValuesComputed
-      if (!isConfigEnvMatch(configEnv, isForClientSide, isClientRouting)) return
+      if (!isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting })) return
       if (pageConfig.configValueSources[configName]) return
       const configValue = pageConfig.configValues[configName]
       assert(configValue)
@@ -82,7 +82,8 @@ function getContent(
       if (configValue) {
         const configEnv = getConfigEnv(pageConfig.configValueSources, configName)
         assert(configEnv, configName)
-        if (!isConfigEnvMatch(configEnv, isForClientSide, isClientRouting)) return
+        const isEnvMatch = isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting })
+        if (!isEnvMatch) return
         const { value, definedAt } = configValue
         const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
         serializeConfigValue(lines, configName, { definedAt, valueSerialized })
