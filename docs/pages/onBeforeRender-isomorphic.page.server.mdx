@@ -1,31 +1,34 @@
 import { RepoLink, Link } from '@brillout/docpress'
 
-> In general, we recommend defining `onBeforeRender()` hooks in `.page.server.js` instead of `.page.js`. (We elaborate below.)
+> In general, we recommend running `onBeforeRender()` hooks only on the server. (We elaborate below.)
 
-> Defining `onBeforeRender()` in `.page.js` only works when using Client Routing.
+> Running `onBeforeRender()` in the browser only works when using Client Routing.
 
-Usually, we define [`onBeforeRender()` in `.page.server.js`](/onBeforeRender)
+By default [`onBeforeRender()` runs only on the server](/onBeforeRender)
 but, if we use [Client Routing](/clientRouting),
-then we also have the option to define `onBeforeRender()` in `.page.js` instead.
+then we also have the option to run it in the browser.
+This is achieved by [modifying the `meta` config](/meta#modify-existing-configurations).
 
-When defined in `.page.server.js` the `onBeforeRender()` hook is only loaded & executed in Node.js,
-whereas if we define it in `.page.js` then `onBeforeRender()` is also loaded & executed in the browser:
-for the first page the user visits `onBeforeRender()` is called in Node.js
+For the first page the user visits `onBeforeRender()` is called in Node.js
 while for any subsequent page navigation `onBeforeRender()` is called in the browser.
 
-Examples:
-- <RepoLink path='/examples/react-full/pages/star-wars/@id.page.tsx' />
-- <RepoLink path='/examples/vue-full/pages/star-wars/movie/index.page.vue' />
+Example:
+ - [/examples/react-full-v1/](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/)
+   - Config defintion: [/renderer/+config.h.ts > `meta.onBeforeRenderIsomorph`](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/renderer/+config.h.ts#L14-L33)
+   - Config usage: [/pages/star-wars/@id/+onBeforeRenderIsomorph.ts](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts)
+   - Hook: [/pages/star-wars/@id/+onBeforeRender.tsx](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRender.tsx)
+
 
 ## Recommendation
 
-In general, we recommend defining `onBeforeRender()` hooks in `.page.server.js` since it's easier to write code that only runs
+In general, we recommend running `onBeforeRender()` only server-side since it's easier to write code that only runs
 in Node.js.
 
-That said, if we want to minimize requests made to our Node.js server, then we may want to define our `onBeforeRender()` hooks in `.page.js`.
+That said, if we want to minimize requests made to our Node.js server, then we may want to run `onBeforeRender()` client-side too.
 But then we need to ensure that our `onBeforeRender()` hook is isomorphic: it needs to be able to run in both Node.js and the browser.
 
 ## Server Routing
 
-If we use <Link href="/server-routing" noBreadcrumb={true} /> we shouldn't define `onBeforeRender()` in `.page.js`
-(the browser loads `onBeforeRender()` but never calls it). We should always define [`onBeforeRender()` in `.page.server.js`](/onBeforeRender) instead.
+If we use <Link href="/server-routing" noBreadcrumb={true} /> we shouldn't
+[modify the `meta` config](/meta#modify-existing-configurations) to run `onBeforeRender()` in the browser, as this would
+cause the browser to load `onBeforeRender()` but never call it.
