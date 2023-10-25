@@ -1,14 +1,14 @@
 import { RepoLink, Link } from '@brillout/docpress'
 
 > We recommend taking the <Link text="React Tour" href="/react-tour" /> or <Link text="Vue Tour" href="/vue-tour" /> before reading this guide.
-> The tour explains what the files `/renderer/_default.page.*` are about.
+> The tour explains what the files `/renderer/+onRenderHtml.js` and `/renderer/+onRenderClient.js` are about.
 
 ## `onBeforeRender()`
 
-The usual way to fetch data is to use a `onBeforeRender()` hook.
+The usual way to fetch data is to use an `onBeforeRender()` hook.
 
 ```js
-// /pages/movies.page.server.js
+// /pages/movies/+onBeforeRender.js
 // Environment: server
 
 export { onBeforeRender }
@@ -35,7 +35,7 @@ async function onBeforeRender(pageContext) {
 ```
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 export { onRenderHtml }
@@ -64,7 +64,7 @@ async function onRenderHtml(pageContext) {
 ```
 
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+onRenderClient.js
 // Environment: browser
 
 export { onRenderClient }
@@ -87,12 +87,13 @@ async function onRenderClient(pageContext) {
 ```
 
 ```js
-// /pages/movies.page.js
+// /pages/movies/+Page.js
 // Environment: browser and server
 
 export { Page }
 
-// In the `onRenderHtml()` and `onRenderClient()` functions above, we pass `pageContext.pageProps` to `Page`
+// In the `onRenderHtml()` and `onRenderClient()` functions above, we pass
+// `pageContext.pageProps` to `Page`
 function Page(pageProps) {
   const { movies } = pageProps
   // ...
@@ -107,7 +108,7 @@ function Page(pageProps) {
 To gracefully handle errors, use <Link href="/render" text={<code>throw render()</code>}></Link> or <Link href="/redirect" text={<code>throw redirect()</code>}></Link>.
 
 ```js
-// /pages/movie/@id.page.server.js
+// /pages/movie/@id/+onBeforeRender.js
 // Environment: server
 
 export { onBeforeRender }
@@ -140,22 +141,22 @@ Using `throw render('/movie/add')` instead of `throw redirect('/movie/add')` is 
 
 ## Custom Exports
 
-For more convenience, instead of creating a new `onBeforeRender()` hook for each page, we can define `onBeforeRender()` only once in `/renderer/_default.page.server.js` while using a <Link text="Custom Export/Hook" href="/exports" />.
+For more convenience, instead of creating a new `onBeforeRender()` hook for each page, we can define `onBeforeRender()` only once in `/renderer/+onBeforeRender.js` while using a <Link text="Custom Export/Hook" href="/exports" />.
 
 For example:
 
 ```js
-// /pages/user.page.js
-export const query = { modelName: 'User', select: ['firstName', 'lastName'] }
+// /pages/user/+query.js
+export default { modelName: 'User', select: ['firstName', 'lastName'] }
 ```
 
 ```js
-// /pages/product.page.js
-export const query = { modelName: 'Product', select: ['name', 'price'] }
+// /pages/product/+query.js
+export default { modelName: 'Product', select: ['name', 'price'] }
 ```
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onBeforeRender.js
 // Environment: server
 
 // We use a single global `onBeforeRender()` hook
@@ -164,8 +165,8 @@ export { onBeforeRender }
 import { runQuery } from 'some-sql-engine'
 
 async function onBeforeRender(pageContext) {
-  // Our `query` export values are available at `pageContext.exports.query`
-  const { query } = pageContext.exports
+  // Our `query` export values are available at `pageContext.query`
+  const { query } = pageContext
   const data = await runQuery(query)
   const pageProps = { data }
   return { pageContext: { pageProps } }
@@ -174,16 +175,13 @@ async function onBeforeRender(pageContext) {
 
 ## Client Routing
 
-The `.page.server.js` files are loaded only in Node.js;
+The `+onBeforeRender.js` files are loaded only in Node.js;
 our data fetching code is always executed in Node.js.
 This is convenient as it makes writing data fetching code easier.
 
 If we use [Client Routing](/clientRouting),
-then we have the option to define [`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`. In that case, `onBeforeRender()` is not only called in Node.js but also in the browser (upon page navigation).
-
-In general, [we recommend defining `onBeforeRender()` in `.page.server.js`](/onBeforeRender-isomorphic#recommendation) (even when using Client Routing) but,
-if we want to minimize requests made to our Node.js server,
-then we can define `onBeforeRender()` in `.page.js` instead.
+then we have the option to [also run `onBeforeRender()` in the client](/onBeforeRender-isomorphic), i.e it is not only
+called in Node.js but also in the browser (upon page navigation).
 
 ## GraphQL
 
