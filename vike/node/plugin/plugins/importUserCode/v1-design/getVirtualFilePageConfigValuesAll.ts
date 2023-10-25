@@ -63,7 +63,7 @@ function getLoadConfigValuesAll(
 
     if (!valueIsImportedAtRuntime) return
     if (configValueSource.valueIsFilePath) return
-    if (!isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting })) return
+    if (!isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: false })) return
 
     const whitespace = '  '
     lines.push(

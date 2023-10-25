@@ -69,7 +69,7 @@ function getContent(
     lines.push(`    configValuesSerialized: {`)
     Object.entries(pageConfig.configValuesComputed).forEach(([configName, configValuesComputed]) => {
       const { value, configEnv } = configValuesComputed
-      if (!isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting })) return
+      if (!isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: true })) return
       if (pageConfig.configValueSources[configName]) return
       const configValue = pageConfig.configValues[configName]
       assert(configValue)
@@ -82,7 +82,7 @@ function getContent(
       if (configValue) {
         const configEnv = getConfigEnv(pageConfig.configValueSources, configName)
         assert(configEnv, configName)
-        const isEnvMatch = isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting })
+        const isEnvMatch = isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: true })
         if (!isEnvMatch) return
         const { value, definedAt } = configValue
         const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
