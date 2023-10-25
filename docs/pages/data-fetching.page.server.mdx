@@ -181,7 +181,9 @@ This is convenient as it makes writing data fetching code easier.
 
 If we use [Client Routing](/clientRouting),
 then we have the option to [also run `onBeforeRender()` in the client](/onBeforeRender-isomorphic), i.e it is not only
-called in Node.js but also in the browser (upon page navigation).
+called in Node.js but also in the browser (upon page navigation). Although
+[not recommended](/onBeforeRender-isomorphic#recommendation), this can be achieved by
+[modifying the `meta` config](/meta#modify-existing-configurations).
 
 ## GraphQL
 

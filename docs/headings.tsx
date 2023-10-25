@@ -740,11 +740,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`clientRouting`',
-    url: '/clientRouting'
-  },
-  {
-    level: 2,
     title: '`navigate()`',
     url: '/navigate'
   },
@@ -757,6 +752,20 @@ const headings = [
     level: 2,
     title: '`prefetch()`',
     url: '/prefetch'
+  },
+  {
+    level: 4,
+    title: '+config.h.js'
+  },
+  {
+    level: 2,
+    title: '`clientRouting`',
+    url: '/clientRouting'
+  },
+  {
+    level: 2,
+    title: '`meta`',
+    url: '/meta'
   },
   {
     level: 4,

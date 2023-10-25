@@ -1,7 +1,5 @@
 import { Link } from '@brillout/docpress'
 
-> The `meta` config is part of the <Link text="V1 design" href="/migration/v1-design" />.
-
 The `meta` config enables you to:
  - <Link href="#create-new-configurations" />
  - <Link href="#modify-existing-configurations" />
@@ -100,7 +98,7 @@ export default {
 
 > Making `onBeforeRender()` isomorphic allows us to fetch data directly between the user's browser and the data source (without involving our SSR server). See <Link href="/onBeforeRender#client-routing" doNotInferSectionTitle={true} />.
 
-For extra convenience, we can create a `onBeforeRenderIsomorph` toggle:
+For extra convenience, we can create an `onBeforeRenderIsomorph` toggle:
 
 ```ts
 // /pages/some-page/+config.h.ts
