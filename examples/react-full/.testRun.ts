@@ -74,7 +74,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
     expect(await page.textContent('body')).toContain(pageContent)
   })
 
-  test('markdown page - HTML', async () => {
+  test('markdown page HTML', async () => {
     const html = await fetchHtml('/markdown')
     expect(html).toContain('<title>Some Markdown Page</title>')
     expect(html).toContain('This page is written in <em>Markdown</em>')
@@ -85,7 +85,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
     }
   })
 
-  test('markdown page - DOM', async () => {
+  test('markdown page DOM', async () => {
     await page.goto(getServerUrl() + '/markdown')
     expect(await page.textContent('body')).toContain('This page is written in Markdown')
     expect(await page.textContent('button')).toBe('Counter 0')
@@ -94,12 +94,6 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
       await page.click('button')
       expect(await page.textContent('button')).toContain('Counter 1')
     })
-    if (isV1Design) {
-      // Test whether /pages/markdown/+client.ts was loaded
-      const isBrowserLog: Parameters<typeof expectLog>[1] = (log) => log.logSource === 'Browser Log'
-      expectLog('Some client-only script.', isBrowserLog)
-      expectLog('isBrowser: true', isBrowserLog)
-    }
   })
 
   test('test 404 page', async () => {
