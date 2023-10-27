@@ -7,6 +7,4 @@ try {
   err = err_
 }
 expect(err).toBeTruthy()
-expect(err.message).toContain(
-  'import.meta.env.SOME_OTHER_ENV used in /pages/index/+Page.jsx and therefore included in client-side bundle which can be be a security leak, remove import.meta.env.SOME_OTHER_ENV or rename SOME_OTHER_ENV to PUBLIC_ENV__SOME_OTHER_ENV, see https://vike.dev/env'
-)
+expect(err.message).toContain('import.meta.env.SOME_OTHER_ENV is used in client-side file /pages/index/+Page.jsx')

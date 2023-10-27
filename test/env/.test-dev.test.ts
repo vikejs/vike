@@ -20,7 +20,7 @@ function testRun() {
     expect(await page.textContent('h1')).toBe('Welcome')
     await testCounter()
     expectLog(
-      'import.meta.env.SOME_OTHER_ENV used in /pages/index/+Page.jsx and therefore included in client-side bundle which can be be a security leak (vike will prevent your app from building for production), remove import.meta.env.SOME_OTHER_ENV or rename SOME_OTHER_ENV to PUBLIC_ENV__SOME_OTHER_ENV, see https://vike.dev/env',
+      'import.meta.env.SOME_OTHER_ENV is used in client-side file /pages/index/+Page.jsx',
       (log) => log.logSource === 'stderr'
     )
   })
