@@ -7,6 +7,7 @@ import {
   assertPosixPath,
   assertUsage,
   assertWarning,
+  escapeRegex,
   getFilePathRelativeToUserRootDir,
   lowerFirst
 } from '../utils.js'
@@ -46,23 +47,30 @@ function envVarsPlugin(): Plugin {
         })
         .forEach(([key, val]) => {
           const varName = `import.meta.env.${key}` as const
-          const publicPrefix = 'PUBLIC_ENV__'
-          const keyPublic = `${publicPrefix}${key}` as const
-          const isPrivate = !key.startsWith(publicPrefix)
-          if (isPrivate && isClientSide) {
-            if (!code.includes(varName)) return
-            const filePathToShowToUser = getFilePathRelativeToUserRootDir(id, config.root)
-            const errMsgAddendum = isBuild ? '' : ' (vike will prevent your app from building for production)'
-            const errMsg =
-              `${varName} used in ${filePathToShowToUser} and therefore included in client-side bundle which can be be a security leak${errMsgAddendum}, remove ${varName} or rename ${key} to ${keyPublic}, see https://vike.dev/env` as const
-            if (isBuild) {
-              assertUsage(false, errMsg)
-            } else {
-              // Only a warning for faster development DX (e.g. when use toggles `ssr: boolean` or `onBeforeRenderIsomorph: boolean`)
-              assertWarning(false, errMsg, { onlyOnce: true })
+
+          // Security check
+          {
+            const publicPrefix = 'PUBLIC_ENV__'
+            const isPrivate = !key.startsWith(publicPrefix)
+            if (isPrivate && isClientSide) {
+              if (!code.includes(varName)) return
+              const filePathToShowToUser = getFilePathRelativeToUserRootDir(id, config.root)
+              const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
+              const keyPublic = `${publicPrefix}${key}` as const
+              const errMsg =
+                `${varName} is used in client-side file ${filePathToShowToUser} which means that the environment variable ${key} will be included in client-side bundles and, therefore, ${key} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${varName} only in server-side files, or rename ${key} to ${keyPublic}, see https://vike.dev/env` as const
+              if (isBuild) {
+                assertUsage(false, errMsg)
+              } else {
+                // Only a warning for faster development DX (e.g. when user toggles `ssr: boolean` or `onBeforeRenderIsomorph: boolean`)
+                assertWarning(false, errMsg, { onlyOnce: true })
+              }
             }
+            // Double check
+            assert(!(isPrivate && isClientSide) || !isBuild)
           }
-          assert(!(isPrivate && isClientSide) || !isBuild)
+
+          // Apply
           code = code.replaceAll(varName, JSON.stringify(val))
         })
 
