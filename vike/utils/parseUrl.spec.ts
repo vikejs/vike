@@ -133,7 +133,7 @@ describe('parseUrl', () => {
       searchAll: { fruits: ['apples'], candies: ['chocolate,lolipop'] },
       searchOriginal: '?fruits=apples&candies=chocolate,lolipop'
     })
-    const searchQuery = '?fruit=apples&fruit=bannanas&candy=chocolate&candy=lolipop'
+    const searchQuery = '?fruit=apples&fruit=bannanas&candy=chocolate&candy=lolipop&constructor=val1&constructor=val2'
     const { searchOriginal } = parseUrl(`/shop${searchQuery}`, '/')
     assert(searchOriginal)
     const searchParams = new URLSearchParams(searchOriginal)
@@ -143,8 +143,12 @@ describe('parseUrl', () => {
       ...resultBase,
       pathnameOriginal: '/shop',
       pathname: '/',
-      search: { fruit: 'bannanas', candy: 'lolipop' },
-      searchAll: { fruit: ['apples', 'bannanas'], candy: ['chocolate', 'lolipop'] },
+      search: { fruit: 'bannanas', candy: 'lolipop', constructor: 'val2' },
+      searchAll: {
+        fruit: ['apples', 'bannanas'],
+        candy: ['chocolate', 'lolipop'],
+        constructor: ['val1', 'val2']
+      },
       searchOriginal: searchQuery
     })
   })
