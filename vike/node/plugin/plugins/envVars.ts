@@ -71,7 +71,7 @@ function envVarsPlugin(): Plugin {
           }
 
           // Apply
-          code = code.replaceAll(varName, JSON.stringify(val))
+          code = code.replace(new RegExp(escapeRegex(varName) + '\b', 'g'), JSON.stringify(val))
         })
 
       // No need for low-resolution source map since line numbers didn't change. (Does Vite do high-resolution column numbers source mapping?)
