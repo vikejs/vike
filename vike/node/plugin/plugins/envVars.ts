@@ -45,20 +45,20 @@ function envVarsPlugin(): Plugin {
             : [config.envPrefix]
           return !envPrefix.some((prefix) => key.startsWith(prefix))
         })
-        .forEach(([key, val]) => {
-          const varName = `import.meta.env.${key}` as const
+        .forEach(([envName, envVal]) => {
+          const varName = `import.meta.env.${envName}` as const
 
           // Security check
           {
             const publicPrefix = 'PUBLIC_ENV__'
-            const isPrivate = !key.startsWith(publicPrefix)
+            const isPrivate = !envName.startsWith(publicPrefix)
             if (isPrivate && isClientSide) {
               if (!code.includes(varName)) return
               const filePathToShowToUser = getFilePathRelativeToUserRootDir(id, config.root)
               const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
-              const keyPublic = `${publicPrefix}${key}` as const
+              const keyPublic = `${publicPrefix}${envName}` as const
               const errMsg =
-                `${varName} is used in client-side file ${filePathToShowToUser} which means that the environment variable ${key} will be included in client-side bundles and, therefore, ${key} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${varName} only in server-side files, or rename ${key} to ${keyPublic}, see https://vike.dev/env` as const
+                `${varName} is used in client-side file ${filePathToShowToUser} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${varName} only in server-side files, or rename ${envName} to ${keyPublic}, see https://vike.dev/env` as const
               if (isBuild) {
                 assertUsage(false, errMsg)
               } else {
@@ -71,7 +71,7 @@ function envVarsPlugin(): Plugin {
           }
 
           // Apply
-          code = code.replace(new RegExp(escapeRegex(varName) + '\b', 'g'), JSON.stringify(val))
+          code = code.replace(new RegExp(escapeRegex(varName) + '\b', 'g'), JSON.stringify(envVal))
         })
 
       // No need for low-resolution source map since line numbers didn't change. (Does Vite do high-resolution column numbers source mapping?)
