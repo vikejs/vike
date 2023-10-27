@@ -83,7 +83,7 @@ function envVarsPlugin(): Plugin {
 }
 function applyEnvVar(envName: string, envVal: string, code: string) {
   const envStatement = getEnvStatement(envName)
-  const regex = new RegExp(escapeRegex(envStatement) + '\b', 'g')
+  const regex = new RegExp(escapeRegex(envStatement) + '\\b', 'g')
   return code.replace(regex, JSON.stringify(envVal))
 }
 function getEnvStatement(envName: string) {
