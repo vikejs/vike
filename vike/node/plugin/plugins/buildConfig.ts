@@ -13,7 +13,7 @@ import {
   unique,
   assertPosixPath,
   assertUsage,
-  getOutDirs,
+  getOutDirs
 } from '../utils.js'
 import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
@@ -89,12 +89,7 @@ function buildConfig(): Plugin {
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const configVike = await getConfigVike(config)
   const pageFileEntries = await getPageFileEntries(config, configVike.includeAssetsImportedByServer) // TODO/v1-release: remove
-  const { pageConfigs } = await getVikeConfig(
-    config.root,
-    getOutDirs(config).outDirRoot,
-    false,
-    configVike.extensions
-  )
+  const { pageConfigs } = await getVikeConfig(config.root, getOutDirs(config).outDirRoot, false, configVike.extensions)
   assertUsage(
     Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,
     'At least one page should be defined, see https://vike.dev/add'

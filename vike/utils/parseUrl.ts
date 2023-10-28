@@ -77,7 +77,7 @@ function parseUrl(
   const searchAll: Record<string, string[]> = {}
   Array.from(new URLSearchParams(searchOriginal || '')).forEach(([key, val]) => {
     search[key] = val
-    searchAll[key] = [...(searchAll[key] || []), val]
+    searchAll[key] = [...(searchAll.hasOwnProperty(key) ? searchAll[key]! : []), val]
   })
 
   // Origin + pathname

@@ -125,26 +125,30 @@ describe('parseUrl', () => {
       searchAll: { q: ['apples'] },
       searchOriginal: '?q=apples'
     })
-    expect(parseUrl('/shop?fruits=apples&candies=chocolate,lolipop', '/')).toEqual({
+    expect(parseUrl('/shop?fruits=apples&candies=chocolate,lollipop', '/')).toEqual({
       ...resultBase,
       pathnameOriginal: '/shop',
       pathname: '/shop',
-      search: { fruits: 'apples', candies: 'chocolate,lolipop' },
-      searchAll: { fruits: ['apples'], candies: ['chocolate,lolipop'] },
-      searchOriginal: '?fruits=apples&candies=chocolate,lolipop'
+      search: { fruits: 'apples', candies: 'chocolate,lollipop' },
+      searchAll: { fruits: ['apples'], candies: ['chocolate,lollipop'] },
+      searchOriginal: '?fruits=apples&candies=chocolate,lollipop'
     })
-    const searchQuery = '?fruit=apples&fruit=bannanas&candy=chocolate&candy=lolipop'
+    const searchQuery = '?fruit=apples&fruit=bananas&candy=chocolate&candy=lollipop&constructor=val1&constructor=val2'
     const { searchOriginal } = parseUrl(`/shop${searchQuery}`, '/')
     assert(searchOriginal)
     const searchParams = new URLSearchParams(searchOriginal)
-    expect(searchParams.getAll('fruit')).toEqual(['apples', 'bannanas'])
-    expect(searchParams.getAll('candy')).toEqual(['chocolate', 'lolipop'])
+    expect(searchParams.getAll('fruit')).toEqual(['apples', 'bananas'])
+    expect(searchParams.getAll('candy')).toEqual(['chocolate', 'lollipop'])
     expect(parseUrl(`/shop${searchQuery}`, '/shop')).toEqual({
       ...resultBase,
       pathnameOriginal: '/shop',
       pathname: '/',
-      search: { fruit: 'bannanas', candy: 'lolipop' },
-      searchAll: { fruit: ['apples', 'bannanas'], candy: ['chocolate', 'lolipop'] },
+      search: { fruit: 'bananas', candy: 'lollipop', constructor: 'val2' },
+      searchAll: {
+        fruit: ['apples', 'bananas'],
+        candy: ['chocolate', 'lollipop'],
+        constructor: ['val1', 'val2']
+      },
       searchOriginal: searchQuery
     })
   })

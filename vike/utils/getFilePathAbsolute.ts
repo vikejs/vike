@@ -35,31 +35,31 @@ function getFilePathAbsolute(filePath: string, config: ResolvedConfig): string {
     assertPathIsFilesystemAbsolute(filePathUnresolved)
   }
 
-  let filePathAbsolute: string
+  let filePathAbsoluteFilesystem: string
   try {
-    filePathAbsolute = require_.resolve(filePathUnresolved, { paths: [config.root] })
+    filePathAbsoluteFilesystem = require_.resolve(filePathUnresolved, { paths: [config.root] })
   } catch (err) {
     console.error(err)
     assert(false)
   }
-  filePathAbsolute = toPosixPath(filePathAbsolute)
-  assertPathIsFilesystemAbsolute(filePathAbsolute)
-  return filePathAbsolute
+  filePathAbsoluteFilesystem = toPosixPath(filePathAbsoluteFilesystem)
+  assertPathIsFilesystemAbsolute(filePathAbsoluteFilesystem)
+  return filePathAbsoluteFilesystem
 }
 
 function getFilePathRelativeToUserRootDir(
-  filePathAbsolute: string,
+  filePathAbsoluteFilesystem: string,
   userRootDir: string,
   alwaysRelative = false
 ): string {
-  assertPosixPath(filePathAbsolute)
+  assertPosixPath(filePathAbsoluteFilesystem)
   assertPosixPath(userRootDir)
-  let filePathRelativeToUserRootDir = path.posix.relative(userRootDir, filePathAbsolute)
-  if (filePathAbsolute.startsWith(userRootDir)) {
+  let filePathRelativeToUserRootDir = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
+  if (filePathAbsoluteFilesystem.startsWith(userRootDir)) {
     assert(
       !filePathRelativeToUserRootDir.startsWith('.') && !filePathRelativeToUserRootDir.startsWith('/'),
       // Surprinsingly, this assertion seem to fail sometimes: https://github.com/vikejs/vike/issues/1139
-      { filePathRelativeToUserRootDir, filePathAbsolute, userRootDir }
+      { filePathRelativeToUserRootDir, filePathAbsoluteFilesystem, userRootDir }
     )
     filePathRelativeToUserRootDir = `/${filePathRelativeToUserRootDir}`
     return filePathRelativeToUserRootDir
@@ -67,7 +67,7 @@ function getFilePathRelativeToUserRootDir(
     if (alwaysRelative) {
       return filePathRelativeToUserRootDir
     } else {
-      return filePathAbsolute
+      return filePathAbsoluteFilesystem
     }
   }
 }

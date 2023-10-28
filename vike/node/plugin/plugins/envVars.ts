@@ -1,5 +1,8 @@
 export { envVarsPlugin }
 
+// For ./envVars.spec.ts
+export { applyEnvVar }
+
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
 import {
@@ -7,6 +10,7 @@ import {
   assertPosixPath,
   assertUsage,
   assertWarning,
+  escapeRegex,
   getFilePathRelativeToUserRootDir,
   lowerFirst
 } from '../utils.js'
@@ -44,32 +48,46 @@ function envVarsPlugin(): Plugin {
             : [config.envPrefix]
           return !envPrefix.some((prefix) => key.startsWith(prefix))
         })
-        .forEach(([key, val]) => {
-          const varName = `import.meta.env.${key}` as const
-          const publicPrefix = 'PUBLIC_ENV__'
-          const keyPublic = `${publicPrefix}${key}` as const
-          const isPrivate = !key.startsWith(publicPrefix)
-          if (isPrivate && isClientSide) {
-            if (!code.includes(varName)) return
-            const filePathToShowToUser = getFilePathRelativeToUserRootDir(id, config.root)
-            const errMsgAddendum = isBuild ? '' : ' (vike will prevent your app from building for production)'
-            const errMsg =
-              `${varName} used in ${filePathToShowToUser} and therefore included in client-side bundle which can be be a security leak${errMsgAddendum}, remove ${varName} or rename ${key} to ${keyPublic}, see https://vike.dev/env` as const
-            if (isBuild) {
-              assertUsage(false, errMsg)
-            } else {
-              // Only a warning for faster development DX (e.g. when use toggles `ssr: boolean` or `onBeforeRenderIsomorph: boolean`)
-              assertWarning(false, errMsg, { onlyOnce: true })
+        .forEach(([envName, envVal]) => {
+          // Security check
+          {
+            const envStatement = getEnvStatement(envName)
+            const publicPrefix = 'PUBLIC_ENV__'
+            const isPrivate = !envName.startsWith(publicPrefix)
+            if (isPrivate && isClientSide) {
+              if (!code.includes(envStatement)) return
+              const filePathToShowToUser = getFilePathRelativeToUserRootDir(id, config.root)
+              const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
+              const keyPublic = `${publicPrefix}${envName}` as const
+              const errMsg =
+                `${envStatement} is used in client-side file ${filePathToShowToUser} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${envStatement} only in server-side files, or rename ${envName} to ${keyPublic}, see https://vike.dev/env` as const
+              if (isBuild) {
+                assertUsage(false, errMsg)
+              } else {
+                // Only a warning for faster development DX (e.g. when user toggles `ssr: boolean` or `onBeforeRenderIsomorph: boolean`)
+                assertWarning(false, errMsg, { onlyOnce: true })
+              }
             }
+            // Double check
+            assert(!(isPrivate && isClientSide) || !isBuild)
           }
-          assert(!(isPrivate && isClientSide) || !isBuild)
-          code = code.replaceAll(varName, JSON.stringify(val))
+
+          // Apply
+          code = applyEnvVar(envName, envVal, code)
         })
 
       // No need for low-resolution source map since line numbers didn't change. (Does Vite do high-resolution column numbers source mapping?)
       return code
     }
   }
+}
+function applyEnvVar(envName: string, envVal: string, code: string) {
+  const envStatement = getEnvStatement(envName)
+  const regex = new RegExp(escapeRegex(envStatement) + '\\b', 'g')
+  return code.replace(regex, JSON.stringify(envVal))
+}
+function getEnvStatement(envName: string) {
+  return `import.meta.env.${envName}` as const
 }
 
 function getIsClientSide(config: ResolvedConfig, options?: { ssr?: boolean }): boolean {

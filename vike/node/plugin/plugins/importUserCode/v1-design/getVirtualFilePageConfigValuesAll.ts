@@ -12,7 +12,7 @@ import { debug } from './debug.js'
 import type { ConfigVikeResolved } from '../../../../../shared/ConfigVike.js'
 import { getConfigValue } from '../../../../../shared/page-configs/utils.js'
 import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSourcesRelevant.js'
-import { isConfigEnvMatch } from './isConfigEnvMatch.js'
+import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import { serializeConfigValueImported } from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
 
 async function getVirtualFilePageConfigValuesAll(
@@ -63,7 +63,7 @@ function getLoadConfigValuesAll(
 
     if (!valueIsImportedAtRuntime) return
     if (configValueSource.valueIsFilePath) return
-    if (!isConfigEnvMatch(configEnv, isForClientSide, isClientRouting)) return
+    if (!isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: false })) return
 
     const whitespace = '  '
     lines.push(

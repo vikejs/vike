@@ -49,6 +49,19 @@ After V1 design release:
          }
      ```
      - By default, only call guard() hooks on the server-side (if requestPageContextOnNavigation.minimal isn't true)
+ - Make +client.js work for all render modes
+   - In order to support [github.com/vikejs/vike-react#28 - Client-side init code](https://github.com/vikejs/vike-react/issues/28)
+   - Use case: ad-hoc client-side scripts such as error tracking and analytics
+   - revert/adapt commit "[failed-attempt] make +client.js work for all render modes (#1209)" https://github.com/vikejs/vike/commit/64e423bd6c2cee860defc8157e7aa176d62d42e0
+   - Make +client.js cumulative
+     - Is a new computed config `config.clusterId: number` needed?
+       - Server Routing instead of Client Routing for two pages that have a different clusterId
+       - We do need this if we want to be able to "remove" +client.js scripts upon navigation, in other word in order to ensure that a +client.js doesn't leak to sibling pages
+       - While a less clean implementation is possible (e.g. by not caring about leaking +client.js scripts), implementing clusterId could fairly easy while being future proof
+       - clusterId is an auto-increment number that uniquely identifies following combination:
+          - The list of +client.js file paths (if two pages have a different list of +client.js => they have different clusterId)
+          - onRenderClient() file path (e.g. if a page uses vike-react while another page uses vike-vue => they have different onRenderClient() => they have different clusterId)
+          - Maybe: allow user to assign a "cluster name" with `config.clientRouting: string`. Is this needed?
 
 Features:
  - multiple error pages

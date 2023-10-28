@@ -59,9 +59,9 @@ type ConfigValueSource = {
   value?: unknown
   configEnv: ConfigEnvInternal
   definedAtInfo: DefinedAtFileInfo
-  // For example: config.Page or config.onBeforeRender
+  /** Wether the config value is loaded at run-time, for example config.Page or config.onBeforeRender */
   valueIsImportedAtRuntime: boolean
-  // For config.client
+  /** Whether the config value is a file path, for example config.client */
   valueIsFilePath?: true
 }
 type ConfigValueComputed = {
@@ -125,12 +125,12 @@ type DefinedAtFileInfo = // TODO: replace filePathRelativeToUserRootDir and impo
   (
     | {
         filePathRelativeToUserRootDir: string
-        filePathAbsolute: string
+        filePathAbsoluteFilesystem: string
         importPathAbsolute: null
       }
     | {
         filePathRelativeToUserRootDir: null
-        filePathAbsolute: string | null
+        filePathAbsoluteFilesystem: string | null
         importPathAbsolute: string
       }
   ) & {
