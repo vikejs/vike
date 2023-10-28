@@ -488,13 +488,12 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
     } else {
       assert('value' in configValueSource)
       if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
-      const sourceFilePath = getDefinedAtFilePathToShowToUser(configValueSource.definedAtInfo)
-      assert(sourceFilePath)
+      const { filePathToShowToUser } = configValueSource.definedAtInfo
       assertWarning(
         false,
         `Being able to define config ${pc.cyan(
           configName
-        )} in ${sourceFilePath} is experimental and will likely be removed. Define the config ${pc.cyan(
+        )} in ${filePathToShowToUser} is experimental and will likely be removed. Define the config ${pc.cyan(
           configName
         )} in Vike's Vite plugin options instead.`,
         { onlyOnce: true }
@@ -1538,7 +1537,7 @@ function getConfigSourceDefinedAtString<T extends string>(
       definedAt: {
         isEffect,
         file: {
-          filePathToShowToUser: getDefinedAtFilePathToShowToUser(definedAtInfo),
+          filePathToShowToUser: definedAtInfo.filePathToShowToUser,
           fileExportPath: definedAtInfo.fileExportPath
         }
       }
@@ -1546,13 +1545,9 @@ function getConfigSourceDefinedAtString<T extends string>(
     sentenceBegin as true
   )
 }
-
-function getDefinedAtFilePathToShowToUser(definedAtInfo: DefinedAtFileInfo): string {
-  return definedAtInfo.filePathAbsoluteVite
-}
 function getDefinedAtFile(source: ConfigValueSource): DefinedAtFile {
   return {
-    filePathToShowToUser: getDefinedAtFilePathToShowToUser(source.definedAtInfo),
+    filePathToShowToUser: source.definedAtInfo.filePathToShowToUser,
     fileExportPath: source.definedAtInfo.fileExportPath
   }
 }
