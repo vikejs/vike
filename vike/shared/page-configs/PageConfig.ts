@@ -118,30 +118,30 @@ type DefinedAtFile = {
   filePathToShowToUser: string
   fileExportPath: null | string[]
 }
-type DefinedAtFileInfo = {
+type DefinedAtFileInfo = FilePath & {
   exportName?: string
   fileExportPath: null | string[]
-} & FilePath
+}
 
 type FilePathResolved = FilePath & { filePathAbsoluteFilesystem: string }
 type FilePath = {
   /** The file's path, absolute from Vite's perspective.
    *
-   * We use this to generate import paths in virtual modules (virtual modules cannot have relative import paths).
+   * We use this to generate import paths in virtual modules. (Virtual modules cannot have relative import paths.)
    *
-   * Currently, its value is equivalent to `filePath.filePathRelativeToUserRootDir ?? filePath.importPathAbsolute`, for example:
+   * Its value is equivalent to `filePath.filePathRelativeToUserRootDir ?? filePath.importPathAbsolute`, for example:
    *   - `vike-react/config`, or
    *   - `/pages/+config.h.js`.
    */
   filePathAbsoluteVite: string
-  /** The file's path relative to the filesystem root.
+  /** The file's path, absolute from the filesystem root.
    *
    * Example: `/home/rom/code/my-app/pages/some-page/Page.js`
    *
    * The value is `null` upon aliased import paths which we cannot resolve (we'd need to re-implement https://www.npmjs.com/package/@rollup/plugin-alias).
    */
   filePathAbsoluteFilesystem: string | null
-  /** The file's path shown to user, e.g. when logging information about the file.
+  /** The file's path, shown to user upon logging.
    *
    * Currently, its value is equivalent to `FilePath['filePathAbsoluteVite']`.
    */
@@ -149,9 +149,7 @@ type FilePath = {
 } & (
   | {
       filePathRelativeToUserRootDir: null
-      /** The file's path, as absolute import path.
-       *
-       * The import path is either:
+      /** The file's path, as absolute import path. It's either:
        *  - an npm package import (e.g. `vike-react/config`), or
        *  - an alias (`#components/Counter').
        */

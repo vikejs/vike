@@ -236,10 +236,10 @@ async function loadInterfaceFiles(
 function getConfigDefinition(
   configDefinitionsRelevant: Record<string, ConfigDefinitionInternal>,
   configName: string,
-  definedByFile: string
+  filePathToShowToUser: string
 ): ConfigDefinitionInternal {
   const configDef = configDefinitionsRelevant[configName]
-  assertConfigExists(configName, Object.keys(configDefinitionsRelevant), definedByFile)
+  assertConfigExists(configName, Object.keys(configDefinitionsRelevant), filePathToShowToUser)
   assert(configDef)
   return configDef
 }
@@ -251,7 +251,7 @@ function getConfigDefinitionOptional(
 }
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName: string, userRootDir: string) {
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, true, userRootDir)
-  const filePathToShowToUser = interfaceValueFile.filePath.filePathToShowToUser
+  const { filePathToShowToUser } = interfaceValueFile.filePath
   assertExportsOfValueFile(fileExports, filePathToShowToUser, configName)
   Object.entries(fileExports).forEach(([exportName, configValue]) => {
     const configName_ = exportName === 'default' ? configName : exportName
@@ -1301,14 +1301,14 @@ function getConfigNamesGlobal() {
   return Object.keys(configDefinitionsBuiltInGlobal)
 }
 
-function assertConfigExists(configName: string, configNamesRelevant: string[], definedByFile: string) {
+function assertConfigExists(configName: string, configNamesRelevant: string[], filePathToShowToUser: string) {
   const configNames = [...configNamesRelevant, ...getConfigNamesGlobal()]
   if (configNames.includes(configName)) return
-  handleUnknownConfig(configName, configNames, definedByFile)
+  handleUnknownConfig(configName, configNames, filePathToShowToUser)
   assert(false)
 }
-function handleUnknownConfig(configName: string, configNames: string[], definedByFile: string) {
-  let errMsg = `${definedByFile} defines an unknown config ${pc.cyan(configName)}`
+function handleUnknownConfig(configName: string, configNames: string[], filePathToShowToUser: string) {
+  let errMsg = `${filePathToShowToUser} defines an unknown config ${pc.cyan(configName)}`
   let configNameSimilar: string | null = null
   if (configName === 'page') {
     configNameSimilar = 'Page'
