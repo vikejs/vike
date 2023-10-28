@@ -17,19 +17,18 @@ The guide <Link href="/server-routing-vs-client-routing" noBreadcrumb /> helps y
 By default, Vike does Filesystem Routing:
 
 ```
-FILESYSTEM                        URL
-pages/index.page.js               /
-pages/about.page.js               /about
-pages/faq/index.page.js           /faq
-pages/movie/@id/index.page.js     /movie/1, /movie/2, /movie/3, ...
+FILESYSTEM                   URL
+pages/+Page.js               /
+pages/about/+Page.js         /about
+pages/movie/@id/+Page.js     /movie/1, /movie/2, /movie/3, ...
 ```
 
 We can also define so-called "Route Strings" and "Route Functions".
 
 ```js
-// /pages/product.page.route.js
+// /pages/product/+route.js
 
-// This file defines the route of `/pages/product.page.js`
+// This file defines the route of `/pages/product/+Page.js`
 
 // Route String
 export default '/product/@productId'
@@ -40,9 +39,9 @@ export default '/product/@productId'
 Route Functions give us full programmatic flexibility to implement advanced routing logic, for example route guards:
 
 ```js
-// /pages/product/edit.page.route.js
+// /pages/product/edit/+route.js
 
-// This file defines the route of `/pages/product/edit.page.js`
+// This file defines the route of `/pages/product/edit/+Page.js`
 
 import { resolveRoute } from 'vike/routing'
 
