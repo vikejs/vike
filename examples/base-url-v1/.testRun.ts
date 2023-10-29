@@ -31,9 +31,7 @@ function testRun(
       expect(html).toContain(`<link rel="icon" href="${addBaseAssets('/renderer/logo.svg')}" />`)
     } else {
       const hash = /[a-zA-Z0-9_-]+/
-      expect(html).toMatch(
-        partRegex`<link rel="icon" href="${addBaseAssets('/assets/static/logo.')}${hash}.svg" />`
-      )
+      expect(html).toMatch(partRegex`<link rel="icon" href="${addBaseAssets('/assets/static/logo.')}${hash}.svg" />`)
     }
   })
 
