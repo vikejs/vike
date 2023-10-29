@@ -23,7 +23,7 @@ function Page() {
       </p>
       <p>
         The Apollo client on the server runs the query and stores the result in its cache. This cache is then passed to
-        the client-side Apollo client defined in <code>/renderer/_default.page.client.jsx</code>
+        the client-side Apollo client defined in <code>/renderer/+onRenderClient.jsx</code>
         {' via '}
         <code>restore()</code>.
       </p>

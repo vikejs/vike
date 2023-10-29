@@ -1,5 +1,5 @@
 // https://vike.dev/onRenderHtml
-export default onRenderHtml
+export { onRenderHtml }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import logoUrl from './logo.svg'

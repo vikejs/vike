@@ -1,5 +1,5 @@
 // https://vike.dev/onRenderHtml
-export default onRenderHtml
+export { onRenderHtml }
 
 import { renderToString } from '@vue/server-renderer'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'

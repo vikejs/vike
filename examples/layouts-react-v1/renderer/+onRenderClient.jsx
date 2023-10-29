@@ -1,5 +1,5 @@
 // https://vike.dev/onRenderClient
-export default onRenderClient
+export { onRenderClient }
 
 import React from 'react'
 import { createRoot, hydrateRoot } from 'react-dom/client'

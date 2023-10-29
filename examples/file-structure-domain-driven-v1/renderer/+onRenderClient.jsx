@@ -1,4 +1,5 @@
-export default onRenderClient
+// https://vike.dev/onRenderClient
+export { onRenderClient }
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'

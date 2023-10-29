@@ -1,5 +1,5 @@
 // https://vike.dev/onRenderHtml
-export default onRenderHtml
+export { onRenderHtml }
 
 import ReactDOMServer from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
