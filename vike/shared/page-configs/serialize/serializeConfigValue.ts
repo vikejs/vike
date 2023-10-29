@@ -40,14 +40,18 @@ function serializeConfigValueImported(
 
   const { valueIsImportedAtRuntime, definedAtInfo } = configValueSource
   assert(valueIsImportedAtRuntime)
-  const { filePathAbsoluteVite, exportName } = definedAtInfo
+  const { filePathAbsoluteVite, fileExportName } = definedAtInfo
 
   assertPosixPath(filePathAbsoluteVite)
   const fileName = path.posix.basename(filePathAbsoluteVite)
   const isValueFile = fileName.startsWith('+')
 
-  if (isValueFile) assert(exportName === undefined)
-  const { importName, importStatement } = generateEagerImport(filePathAbsoluteVite, varCounterContainer.varCounter++, exportName)
+  if (isValueFile) assert(fileExportName === undefined)
+  const { importName, importStatement } = generateEagerImport(
+    filePathAbsoluteVite,
+    varCounterContainer.varCounter++,
+    fileExportName
+  )
   importStatements.push(importStatement)
 
   const lines: string[] = []
@@ -59,8 +63,8 @@ function serializeConfigValueImported(
     lines.push(`    exportValues: ${importName},`)
   } else {
     lines.push(`    exportValue: ${importName},`)
-    assert(exportName)
-    lines.push(`    exportName: ${JSON.stringify(exportName)},`)
+    assert(fileExportName)
+    lines.push(`    exportName: ${JSON.stringify(fileExportName)},`)
   }
   lines.push(`  },`)
   return lines

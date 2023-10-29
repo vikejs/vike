@@ -792,7 +792,7 @@ function resolveImport(
     }
     return {
       ...filePath,
-      exportName,
+      fileExportName: exportName,
       fileExportPathToShowToUser
     }
   } else {
@@ -808,7 +808,7 @@ function resolveImport(
     }
     return {
       ...filePath,
-      exportName,
+      fileExportName: exportName,
       fileExportPathToShowToUser
     }
   }
@@ -1253,43 +1253,6 @@ function getExtendsImportData(
     return importData
   })
   return extendsImportData
-}
-
-type UserFilePath = {
-  filePathAbsoluteFilesystem: string
-  filePathRelativeToUserRootDir: string
-}
-
-// TODO: re-use this
-function handleUserFileError(err: unknown, isDev: boolean) {
-  // Properly handle error during transpilation so that we can use assertUsage() during transpilation
-  if (isDev) {
-    throw err
-  } else {
-    // Avoid ugly error format:
-    // ```
-    // [vike:importUserCode] Could not load virtual:vike:importUserCode:server: [vike@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vike/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
-    // Error: [vike@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vike/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
-    //     at ...
-    //     at ...
-    //     at ...
-    //     at ...
-    //     at ...
-    //     at ...
-    //   code: 'PLUGIN_ERROR',
-    //   plugin: 'vike:importUserCode',
-    //   hook: 'load',
-    //   watchFiles: [
-    //     '/home/rom/code/vike/vike/dist/esm/node/importBuild.js',
-    //     '\x00virtual:vike:importUserCode:server'
-    //   ]
-    // }
-    //  ELIFECYCLE  Command failed with exit code 1.
-    // ```
-    console.log('')
-    console.error(err)
-    process.exit(1)
-  }
 }
 
 function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
