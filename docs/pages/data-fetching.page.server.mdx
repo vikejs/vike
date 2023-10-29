@@ -35,12 +35,20 @@ async function onBeforeRender(pageContext) {
 ```
 
 ```js
+// /renderer/+config.h.js
+// Environment: build-time
+
+export default {
+  // Make pageContext.pageProps available in the browser
+  passToClient: ['pageProps']
+}
+```
+
+```js
 // /renderer/+onRenderHtml.js
 // Environment: server
 
 export { onRenderHtml }
-// Make pageContext.pageProps available in the browser
-export const passToClient = ['pageProps']
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml, createElement } from 'some-ui-framework'
