@@ -16,7 +16,7 @@ function parseConfigValuesImported(configValuesImported: ConfigValueImported[]):
         file: {
           // importPath cannot be relative to the current file, since the current file is a virtual file
           filePathToShowToUser: importPath,
-          fileExportPath: [configName, 'default'].includes(exportName)
+          fileExportPathToShowToUser: [configName, 'default'].includes(exportName)
             ? []
             : // Side-effect config
               [exportName]

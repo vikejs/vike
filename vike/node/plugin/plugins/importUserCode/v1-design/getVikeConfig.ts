@@ -643,7 +643,7 @@ function getConfigValueSource(
 
   const definedAtConfigFile: DefinedAtFileInfo = {
     ...interfaceFile.filePath,
-    fileExportPath: ['default', configName]
+    fileExportPathToShowToUser: ['default', configName]
   }
 
   if (configDef._valueIsFilePath) {
@@ -661,7 +661,7 @@ function getConfigValueSource(
       valueFilePath = interfaceFile.filePath.filePathAbsoluteVite
       definedAtInfo = {
         ...interfaceFile.filePath,
-        fileExportPath: []
+        fileExportPathToShowToUser: []
       }
     }
     const configValueSource: ConfigValueSource = {
@@ -701,7 +701,7 @@ function getConfigValueSource(
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
       definedAtInfo: {
         ...interfaceFile.filePath,
-        fileExportPath:
+        fileExportPathToShowToUser:
           configName === interfaceFile.configName
             ? []
             : // Side-effect config (e.g. `export { frontmatter }` of .md files)
@@ -769,7 +769,7 @@ function resolveImport(
 
   assertFileEnv(filePathAbsoluteFilesystem ?? importPath, configEnv, configName)
 
-  const fileExportPath = exportName === 'default' || exportName === configName ? [] : [exportName]
+  const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
 
   if (importPath.startsWith('.')) {
     // We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
@@ -793,7 +793,7 @@ function resolveImport(
     return {
       ...filePath,
       exportName,
-      fileExportPath
+      fileExportPathToShowToUser
     }
   } else {
     // importPath can be:
@@ -809,7 +809,7 @@ function resolveImport(
     return {
       ...filePath,
       exportName,
-      fileExportPath
+      fileExportPathToShowToUser
     }
   }
 }
@@ -997,7 +997,7 @@ function applyEffect(
     } else {
       assertUsage(false, notSupported)
       // If we do end implementing being able to set the value of a config:
-      //  - For setting definedAtInfo: we could take the definedAtInfo of the effect config while appending '(effect)' to definedAtInfo.fileExportPath
+      //  - For setting definedAtInfo: we could take the definedAtInfo of the effect config while appending '(effect)' to definedAtInfo.fileExportPathToShowToUser
     }
   })
 }
@@ -1538,7 +1538,7 @@ function getConfigSourceDefinedAtString<T extends string>(
         isEffect,
         file: {
           filePathToShowToUser: definedAtInfo.filePathToShowToUser,
-          fileExportPath: definedAtInfo.fileExportPath
+          fileExportPathToShowToUser: definedAtInfo.fileExportPathToShowToUser
         }
       }
     },
@@ -1548,7 +1548,7 @@ function getConfigSourceDefinedAtString<T extends string>(
 function getDefinedAtFile(source: ConfigValueSource): DefinedAtFile {
   return {
     filePathToShowToUser: source.definedAtInfo.filePathToShowToUser,
-    fileExportPath: source.definedAtInfo.fileExportPath
+    fileExportPathToShowToUser: source.definedAtInfo.fileExportPathToShowToUser
   }
 }
 function getDefinedAt(configValueSource: ConfigValueSource): DefinedAt {

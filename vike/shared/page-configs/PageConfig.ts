@@ -71,7 +71,7 @@ type ConfigValueSource = {
 }
 type DefinedAtFileInfo = FilePath & {
   exportName?: string
-  fileExportPath: null | string[]
+  fileExportPathToShowToUser: null | string[]
 }
 type ConfigValueSources = Record<
   // configName
@@ -117,7 +117,7 @@ type DefinedAt =
     }
 type DefinedAtFile = {
   filePathToShowToUser: string
-  fileExportPath: null | string[]
+  fileExportPathToShowToUser: null | string[]
 }
 type ConfigValues = Record<
   // configName
