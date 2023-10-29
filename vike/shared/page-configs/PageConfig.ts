@@ -27,9 +27,10 @@ type PageConfigBase = {
     definedBy: string
   }
 }
-/** Page config data structure available and used at runtime */
+
+/** Page config data structure available at runtime */
 type PageConfigRuntime = PageConfigBase & {
-  /** Loaded config values */
+  /** All loaded config values */
   configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
   loadConfigValuesAll: () => Promise<ConfigValueImported[]>
@@ -37,9 +38,10 @@ type PageConfigRuntime = PageConfigBase & {
 /** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
 type PageConfigRuntimeLoaded = PageConfigRuntime & {
   /** Whether loadConfigValuesAll() was called */
-  isLoaded: true
+  isAllLoaded: true
 }
-/** Page config data structure available and used at build-time */
+
+/** Page config data structure available at build-time */
 type PageConfigBuildTime = PageConfigBase & {
   configValues: ConfigValues
   configValueSources: ConfigValueSources
@@ -57,15 +59,26 @@ type PageConfigGlobalBuildTime = {
 type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
 /** For Vike internal use */
 type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
+
 type ConfigValueSource = {
   value?: unknown
   configEnv: ConfigEnvInternal
   definedAtInfo: DefinedAtFileInfo
-  /** Wether the config value is loaded at run-time, for example config.Page or config.onBeforeRender */
+  /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
   valueIsImportedAtRuntime: boolean
   /** Whether the config value is a file path, for example config.client */
   valueIsFilePath?: true
 }
+type DefinedAtFileInfo = FilePath & {
+  exportName?: string
+  fileExportPath: null | string[]
+}
+type ConfigValueSources = Record<
+  // configName
+  string,
+  ConfigValueSource[]
+>
+
 type ConfigValueComputed = {
   configEnv: ConfigEnvInternal
   value: unknown
@@ -75,22 +88,11 @@ type ConfigValuesComputed = Record<
   string,
   ConfigValueComputed
 >
-type ConfigValueSources = Record<
-  // configName
-  string,
-  ConfigValueSource[]
->
+
 type ConfigValue = {
   value: unknown
   definedAt: DefinedAt
 }
-
-type ConfigValues = Record<
-  // configName
-  string,
-  ConfigValue
->
-
 type DefinedAt =
   // Normal config values => defined by a unique source / file path
   | {
@@ -113,15 +115,15 @@ type DefinedAt =
       isEffect?: undefined
       isCumulative?: undefined
     }
-
 type DefinedAtFile = {
   filePathToShowToUser: string
   fileExportPath: null | string[]
 }
-type DefinedAtFileInfo = FilePath & {
-  exportName?: string
-  fileExportPath: null | string[]
-}
+type ConfigValues = Record<
+  // configName
+  string,
+  ConfigValue
+>
 
 type FilePathResolved = FilePath & { filePathAbsoluteFilesystem: string }
 type FilePath = {

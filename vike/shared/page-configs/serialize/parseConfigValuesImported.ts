@@ -55,6 +55,8 @@ function assertIsNotNull(configValue: unknown, configName: string, importPath: s
   assert(!importPath.includes('+config.'))
   assertUsage(
     configValue !== null,
-    `Set ${pc.cyan(configName)} to ${pc.cyan('null')} in a +config.h.js file instead of ${importPath}`
+    `Set ${pc.cyan(configName)} to ${pc.cyan('null')} in a +config.h.js file instead of setting it to ${pc.cyan(
+      'null'
+    )} in ${importPath}`
   )
 }
