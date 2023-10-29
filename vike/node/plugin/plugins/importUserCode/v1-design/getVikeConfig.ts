@@ -31,6 +31,7 @@ import type {
   ConfigEnv,
   PageConfigBuildTime,
   ConfigValues,
+  ConfigValue,
   DefinedAt,
   DefinedAtFileInfo,
   DefinedAtFile,
@@ -1416,6 +1417,17 @@ function getConfigValues(
   })
   return configValues
 }
+function getDefinedAtFile(configValueSource: ConfigValueSource): DefinedAtFile {
+  return {
+    filePathToShowToUser: configValueSource.definedAtInfo.filePathToShowToUser,
+    fileExportPathToShowToUser: configValueSource.definedAtInfo.fileExportPathToShowToUser
+  }
+}
+function getDefinedAt(configValueSource: ConfigValueSource): DefinedAt {
+  return {
+    file: getDefinedAtFile(configValueSource)
+  }
+}
 
 function mergeCumulative(configName: string, configValueSources: ConfigValueSource[]): unknown[] | Set<unknown> {
   const valuesArr: unknown[][] = []
@@ -1486,8 +1498,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
   assert(false)
 }
 
-// TODO: rename
-// TODO: refactor
+// TODO: rename and/or refactor
 function getConfigSourceDefinedAtString<T extends string>(
   configName: T,
   { definedAtInfo }: { definedAtInfo: DefinedAtFileInfo },
@@ -1507,15 +1518,4 @@ function getConfigSourceDefinedAtString<T extends string>(
     },
     sentenceBegin as true
   )
-}
-function getDefinedAtFile(source: ConfigValueSource): DefinedAtFile {
-  return {
-    filePathToShowToUser: source.definedAtInfo.filePathToShowToUser,
-    fileExportPathToShowToUser: source.definedAtInfo.fileExportPathToShowToUser
-  }
-}
-function getDefinedAt(configValueSource: ConfigValueSource): DefinedAt {
-  return {
-    file: getDefinedAtFile(configValueSource)
-  }
 }
