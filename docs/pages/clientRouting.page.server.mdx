@@ -294,6 +294,19 @@ See also:
 
 ## TypeScript
 
+```js
+// /renderer/+config.h.ts
+// Environment: build-time
+
+import type { Config } from 'vike/types'
+
+export default {
+  clientRouting: true,
+  prefetchStaticAssets: 'viewport',
+  hydrationCanBeAborted: true
+} satisfies Config
+```
+
 ```ts
 // /renderer/+onPageTransitionStart.ts
 // Environment: browser
