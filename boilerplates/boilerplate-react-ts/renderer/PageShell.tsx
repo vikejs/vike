@@ -1,7 +1,7 @@
 import React from 'react'
 import logo from './logo.svg'
 import { PageContextProvider } from './usePageContext'
-import type { PageContext } from './types'
+import type { PageContext } from 'vike/types'
 import './PageShell.css'
 import { Link } from './Link'
 

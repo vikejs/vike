@@ -61,13 +61,13 @@ function testRun(
     test('HMR', async () => {
       const file = (() => {
         if (uiFramewok === 'vue') {
-          return './pages/index/index.page.vue'
+          return './pages/index/+Page.vue'
         }
         if (uiFramewok === 'react') {
           if (lang === 'ts') {
-            return './pages/index/index.page.tsx'
+            return './pages/index/+Page.tsx'
           } else {
-            return './pages/index/index.page.jsx'
+            return './pages/index/+Page.jsx'
           }
         }
         assert(false)
