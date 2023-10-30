@@ -884,19 +884,25 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
 
 function assertMetaValue(
   metaVal: unknown,
-  configMetaDefinedAt: `Config meta${string}`
+  configMetaDefinedAt: `Config meta${string}` | null
 ): asserts metaVal is Record<string, ConfigDefinitionInternal> {
-  assertUsage(
-    isObject(metaVal),
-    `${configMetaDefinedAt} has an invalid type ${pc.cyan(typeof metaVal)}: it should be an object instead.`
-  )
-  objectEntries(metaVal).forEach(([configName, def]) => {
+  if (!isObject(metaVal)) {
+    assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
     assertUsage(
-      isObject(def),
-      `${configMetaDefinedAt} sets meta.${configName} to a value with an invalid type ${pc.cyan(
-        typeof def
-      )}: it should be an object instead.`
+      false,
+      `${configMetaDefinedAt} has an invalid type ${pc.cyan(typeof metaVal)}: it should be an object instead.`
     )
+  }
+  objectEntries(metaVal).forEach(([configName, def]) => {
+    if (!isObject(def)) {
+      assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
+      assertUsage(
+        false,
+        `${configMetaDefinedAt} sets meta.${configName} to a value with an invalid type ${pc.cyan(
+          typeof def
+        )}: it should be an object instead.`
+      )
+    }
 
     // env
     {
@@ -914,31 +920,46 @@ function assertMetaValue(
         ),
         '.'
       ].join('')
-      assertUsage('env' in def, `${configMetaDefinedAt} doesn't set meta.${configName}.env but it's required. ${hint}`)
-      assertUsage(
-        hasProp(def, 'env', 'string'),
-        `${configMetaDefinedAt} sets meta.${configName}.env to an invalid type ${pc.cyan(typeof def.env)}. ${hint}`
-      )
-      assertUsage(
-        envValues.includes(def.env),
-        `${configMetaDefinedAt} sets meta.${configName}.env to an invalid value ${pc.cyan(`'${def.env}'`)}. ${hint}`
-      )
+      if (!('env' in def)) {
+        assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
+        assertUsage(false, `${configMetaDefinedAt} doesn't set meta.${configName}.env but it's required. ${hint}`)
+      }
+      if (!hasProp(def, 'env', 'string')) {
+        assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
+        assertUsage(
+          false,
+          `${configMetaDefinedAt} sets meta.${configName}.env to an invalid type ${pc.cyan(typeof def.env)}. ${hint}`
+        )
+      }
+      if (!envValues.includes(def.env)) {
+        assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
+        assertUsage(
+          false,
+          `${configMetaDefinedAt} sets meta.${configName}.env to an invalid value ${pc.cyan(`'${def.env}'`)}. ${hint}`
+        )
+      }
     }
 
     // effect
     if ('effect' in def) {
-      assertUsage(
-        hasProp(def, 'effect', 'function'),
-        `${configMetaDefinedAt} sets meta.${configName}.effect to an invalid type ${pc.cyan(
-          typeof def.effect
-        )}: it should be a function instead`
-      )
-      assertUsage(
-        def.env === 'config-only',
-        `${configMetaDefinedAt} sets meta.${configName}.effect but it's only supported if meta.${configName}.env is ${pc.cyan(
-          'config-only'
-        )} (but it's ${pc.cyan(def.env)} instead)`
-      )
+      if (!hasProp(def, 'effect', 'function')) {
+        assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
+        assertUsage(
+          false,
+          `${configMetaDefinedAt} sets meta.${configName}.effect to an invalid type ${pc.cyan(
+            typeof def.effect
+          )}: it should be a function instead`
+        )
+      }
+      if (def.env !== 'config-only') {
+        assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
+        assertUsage(
+          false,
+          `${configMetaDefinedAt} sets meta.${configName}.effect but it's only supported if meta.${configName}.env is ${pc.cyan(
+            'config-only'
+          )} (but it's ${pc.cyan(def.env)} instead)`
+        )
+      }
     }
   })
 }
