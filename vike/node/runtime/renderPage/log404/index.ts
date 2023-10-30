@@ -1,5 +1,7 @@
 export { log404 }
-export { getPagesAndRoutesInfo }
+
+// Exported for ./index.spec.ts
+export { getRoutesInfo }
 
 import type { PageRoutes } from '../../../../shared/route/index.js'
 import { getGlobalContext } from '../../globalContext.js'
@@ -32,18 +34,18 @@ async function log404(pageContext: {
   )
   const globalContext = getGlobalContext()
   if (!globalContext.isProduction && !isFileRequest(urlPathname) && !pageContext.isClientSideNavigation) {
-    assertInfo(
-      false,
-      [
-        `URL ${pc.cyan(urlPathname)} doesn't match the route of any of your pages:`,
-        getPagesAndRoutesInfo(pageRoutes),
-        'See https://vike.dev/routing for more information about routing.'
-      ].join('\n'),
-      { onlyOnce: false }
-    )
+    const routesInfo = getRoutesInfo(pageRoutes)
+    let msg = `URL ${pc.cyan(urlPathname)} doesn't match the route of any of your pages`
+    const outro = 'See https://vike.dev/routing for more information about routing.'
+    if (!routesInfo) {
+      msg = `${msg}. ${pc.dim(outro)}`
+    } else {
+      msg = `${msg}:\n${routesInfo}\n${outro}`
+    }
+    assertInfo(false, msg, { onlyOnce: false })
   }
 }
-function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
+function getRoutesInfo(pageRoutes: PageRoutes): string | null {
   const entries = pageRoutes
     .map((pageRoute) => {
       let routeStr: string
@@ -93,18 +95,23 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
   let width2 = Math.max(...linesContent.map(({ routeTypeSrc }) => stripAnsi(routeTypeSrc).length))
   let width3 = Math.max(...linesContent.map(({ routeDefinedBy }) => stripAnsi(routeDefinedBy).length))
 
-  let width1 = terminalWidth - width3 - width2 - 10
+  const width1_max =
+    terminalWidth -
+    width3 -
+    width2 -
+    // Total width of table border & padding
+    10
+  if (width1_max < 10) return null
   linesContent.forEach((lineContent) => {
     let { routeStr } = lineContent
-    if (lineContent.routeTypeSrc !== 'Route Function') {
-      routeStr = truncateString(routeStr, width1, (s) => pc.dim(s))
-    } else {
-      routeStr = truncateRouteFunction(routeStr, width1)
+    if (lineContent.routeTypeSrc === 'Route Function') {
+      routeStr = truncateRouteFunction(routeStr, width1_max)
+      assert(stripAnsi(routeStr).length <= width1_max)
     }
-    assert(stripAnsi(routeStr).length <= width1)
     lineContent.routeStr = routeStr
   })
-  width1 = Math.max(...linesContent.map(({ routeStr }) => stripAnsi(routeStr).length))
+  let width1 = Math.max(...linesContent.map(({ routeStr }) => stripAnsi(routeStr).length))
+  if (width1 > width1_max) return null
 
   let lines = linesContent.map(({ routeStr, routeTypeSrc, routeDefinedBy }, i) => {
     let cell1 = padEnd(routeStr, width1 + (stripAnsi(routeStr).length - stripAnsi(routeStr).length))
@@ -145,7 +152,7 @@ function truncateRouteFunction(routeStr: string, lenMax: number) {
   routeStr = stripAnsi(routeStr)
   routeStr = removeNonAscii(routeStr)
   routeStr = routeStr.split(/\s/).filter(Boolean).join(' ')
-  routeStr = truncateString(routeStr, lenMax, (s) => pc.dim(s))
+  routeStr = truncateString(routeStr, lenMax)
   return routeStr
 }
 
