@@ -62,7 +62,7 @@ function getPageRoutes(
           const configValue = getConfigValue(pageConfig, configName)
           if (configValue) {
             const route = configValue.value
-            const definedAt = getDefinedAtString(configValue, configName)
+            const definedAt = getDefinedAtString(configValue.definedAt, configName)
             if (typeof route === 'string') {
               pageRoute = {
                 pageId,
