@@ -1505,11 +1505,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
       assert(vals1.length > 0)
       if (vals2.length === 0) return
       assert(configValueSourcePrevious)
-      const configPreviousDefinedAt = getConfigSourceDefinedAtString(
-        configName,
-        configValueSourcePrevious,
-        false
-      )
+      const configPreviousDefinedAt = getConfigSourceDefinedAtString(configName, configValueSourcePrevious, false)
       assertUsage(
         false,
         `${configDefinedAt} sets ${t1} but another ${configPreviousDefinedAt} sets ${t2} which is forbidden: the values must be all arrays or all sets (you cannot mix).`
