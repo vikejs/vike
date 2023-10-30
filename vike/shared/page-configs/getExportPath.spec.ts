@@ -8,6 +8,9 @@ describe('getExportPath()', () => {
     expect(t(['prop', 'nested'])).toBe('export { prop { nested } }')
     expect(t(['prop', 'nested1', 'nested2'])).toBe('export { prop { nested1 { nested2 } } }')
     expect(t(['default', 'nested1', 'nested2'])).toBe('export default { nested1 { nested2 } }')
+    expect(t(['default', 'meta', 'onBeforeRenderIsomorph', 'effect'])).toBe(
+      'export default { meta { onBeforeRenderIsomorph { effect } } }'
+    )
   })
   it('succint', () => {
     expect(t(['default'])).toBe(null)

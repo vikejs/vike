@@ -898,7 +898,7 @@ function assertMetaValue(
       assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
       assertUsage(
         false,
-        `${configMetaDefinedAt} sets meta.${configName} to a value with an invalid type ${pc.cyan(
+        `${configMetaDefinedAt} sets ${pc.cyan(`meta.${configName}`)} to a value with an invalid type ${pc.cyan(
           typeof def
         )}: it should be an object instead.`
       )
@@ -912,8 +912,8 @@ function assertMetaValue(
         'server-and-client',
         'config-only'
       ] satisfies ConfigEnv[]
-      const hint = [
-        `Set the value of ${pc.cyan('env')} to `,
+      const fix = [
+        `Set the value of ${pc.cyan(`meta.${configName}.env`)} to `,
         joinEnglish(
           envValues.map((s) => pc.cyan(`'${s}'`)),
           'or'
@@ -922,20 +922,27 @@ function assertMetaValue(
       ].join('')
       if (!('env' in def)) {
         assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
-        assertUsage(false, `${configMetaDefinedAt} doesn't set meta.${configName}.env but it's required. ${hint}`)
+        assertUsage(
+          false,
+          `${configMetaDefinedAt} doesn't set ${pc.cyan(`meta.${configName}.env`)} but it's required. ${fix}`
+        )
       }
       if (!hasProp(def, 'env', 'string')) {
         assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
         assertUsage(
           false,
-          `${configMetaDefinedAt} sets meta.${configName}.env to an invalid type ${pc.cyan(typeof def.env)}. ${hint}`
+          `${configMetaDefinedAt} sets ${pc.cyan(`meta.${configName}.env`)} to an invalid type ${pc.cyan(
+            typeof def.env
+          )}. ${fix}`
         )
       }
       if (!envValues.includes(def.env)) {
         assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
         assertUsage(
           false,
-          `${configMetaDefinedAt} sets meta.${configName}.env to an invalid value ${pc.cyan(`'${def.env}'`)}. ${hint}`
+          `${configMetaDefinedAt} sets ${pc.cyan(`meta.${configName}.env`)} to an unknown value ${pc.cyan(
+            `'${def.env}'`
+          )}. ${fix}`
         )
       }
     }
@@ -946,7 +953,7 @@ function assertMetaValue(
         assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
         assertUsage(
           false,
-          `${configMetaDefinedAt} sets meta.${configName}.effect to an invalid type ${pc.cyan(
+          `${configMetaDefinedAt} sets ${pc.cyan(`meta.${configName}.effect`)} to an invalid type ${pc.cyan(
             typeof def.effect
           )}: it should be a function instead`
         )
@@ -955,9 +962,11 @@ function assertMetaValue(
         assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
         assertUsage(
           false,
-          `${configMetaDefinedAt} sets meta.${configName}.effect but it's only supported if meta.${configName}.env is ${pc.cyan(
-            'config-only'
-          )} (but it's ${pc.cyan(def.env)} instead)`
+          `${configMetaDefinedAt} sets ${pc.cyan(
+            `meta.${configName}.effect`
+          )} but it's only supported if meta.${configName}.env is ${pc.cyan('config-only')} (but it's ${pc.cyan(
+            def.env
+          )} instead)`
         )
       }
     }
