@@ -98,7 +98,7 @@ type DefinedAt =
   | {
       file: DefinedAtFile
       // TODO: is this really needed?
-      isEffect?: true
+      isEffect?: undefined
       isComputed?: undefined
       isCumulative?: undefined
     }

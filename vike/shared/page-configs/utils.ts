@@ -70,13 +70,11 @@ function getConfigDefinedAtString<ConfigName extends string>(
   configName: ConfigName,
   { definedAt }: { definedAt: DefinedAt },
   sentenceBegin: true,
-  append?: 'effect'
 ): ConfigDefinedAtUppercase<ConfigName>
 function getConfigDefinedAtString<ConfigName extends string>(
   configName: ConfigName,
   { definedAt }: { definedAt: DefinedAt },
   sentenceBegin: false,
-  append?: 'effect'
 ): ConfigDefinedAtLowercase<ConfigName>
 function getConfigDefinedAtString<ConfigName extends string>(
   configName: ConfigName,

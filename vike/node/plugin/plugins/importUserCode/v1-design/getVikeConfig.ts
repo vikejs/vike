@@ -31,7 +31,6 @@ import type {
   ConfigEnv,
   PageConfigBuildTime,
   ConfigValues,
-  ConfigValue,
   DefinedAt,
   DefinedAtFileInfo,
   DefinedAtFile,
@@ -867,9 +866,20 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
       const meta = configMeta.configValue
       assertMetaValue(
         meta,
-        // Maybe we should use the getConfigDefinedAtString() helper?
+        // TODO: Maybe we should use the getConfigDefinedAtString() helper?
         `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`
       )
+
+      // Set configDef._userEffectDefinedAt
+      Object.entries(meta).forEach(([configName, configDef]) => {
+        if (!configDef.effect) return
+        assert(interfaceFile.isConfigFile)
+        configDef._userEffectDefinedAt = {
+          ...interfaceFile.filePath,
+          fileExportPathToShowToUser: ['default', 'meta', configName, 'effect']
+        }
+      })
+
       objectEntries(meta).forEach(([configName, configDefinition]) => {
         // User can override an existing config definition
         configDefinitions[configName] = {
@@ -1000,18 +1010,26 @@ function applyEffectsAll(
     })
     if (!configModFromEffect) return
     assert(hasProp(source, 'value')) // We need to assume that the config value is loaded at build-time
-    applyEffect(configModFromEffect, source, configValueSources)
+    applyEffect(configModFromEffect, configValueSources, configDef)
   })
 }
 function applyEffect(
   configModFromEffect: Config,
-  configValueEffectSource: ConfigValueSource,
-  configValueSources: ConfigValueSources
+  configValueSources: ConfigValueSources,
+  configDefEffect: ConfigDefinitionInternal
 ) {
   const notSupported = `Effects currently only supports modifying the the ${pc.cyan('env')} of a config.` as const
   objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
-      assertMetaValue(configValue, getConfigSourceDefinedAtString(configName, configValueEffectSource, true))
+      let configDefinedAtString: Parameters<typeof assertMetaValue>[1]
+      if (configDefEffect._userEffectDefinedAt) {
+        configDefinedAtString = getConfigSourceDefinedAtString(configName, {
+          definedAtInfo: configDefEffect._userEffectDefinedAt
+        })
+      } else {
+        configDefinedAtString = null
+      }
+      assertMetaValue(configValue, configDefinedAtString)
       objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
         {
           const keys = Object.keys(configTargetDef)
@@ -1267,7 +1285,9 @@ function getExtendsImportData(
   const { filePathToShowToUser } = configFilePath
   assertExportsOfConfigFile(configFileExports, filePathToShowToUser)
   const defaultExports = configFileExports.default
-  const wrongUsage = `${filePathToShowToUser} sets the config 'extends' to an invalid value, see https://vike.dev/extends`
+  const wrongUsage = `${filePathToShowToUser} sets the config ${pc.cyan(
+    'extends'
+  )} to an invalid value, see https://vike.dev/extends`
   let extendList: string[]
   if (!('extends' in defaultExports)) {
     return []
@@ -1532,7 +1552,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
 function getConfigSourceDefinedAtString<T extends string>(
   configName: T,
   { definedAtInfo }: { definedAtInfo: DefinedAtFileInfo },
-  isEffect: true | undefined = undefined,
+  isEffect: undefined = undefined,
   sentenceBegin = true
 ) {
   return getConfigDefinedAtString(
