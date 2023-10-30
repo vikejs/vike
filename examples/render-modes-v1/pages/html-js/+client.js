@@ -1,5 +1,5 @@
-// TODO: rename to +client.js
-//
+// https://vike.dev/render-modes
+
 handleCounter()
 
 function handleCounter() {

@@ -1,4 +1,4 @@
-import type { Config, Env } from 'vike/types'
+import type { Config, ConfigEnv } from 'vike/types'
 
 // https://vike.dev/config
 export default {
@@ -10,7 +10,7 @@ export default {
     renderMode: {
       env: 'config-only',
       effect({ configDefinedAt, configValue }) {
-        let env: Env | undefined
+        let env: ConfigEnv | undefined
         if (configValue == 'HTML') env = 'server-only'
         if (configValue == 'SPA') env = 'client-only'
         if (configValue == 'SSR') env = 'server-and-client'
