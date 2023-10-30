@@ -40,28 +40,31 @@ function serializeConfigValueImported(
 
   const { valueIsImportedAtRuntime, definedAtInfo } = configValueSource
   assert(valueIsImportedAtRuntime)
-  const { filePathRelativeToUserRootDir, importPathAbsolute, exportName } = definedAtInfo
-  const importPath = filePathRelativeToUserRootDir ?? importPathAbsolute
+  const { filePathAbsoluteVite, fileExportName } = definedAtInfo
 
-  assertPosixPath(importPath)
-  const fileName = path.posix.basename(importPath)
+  assertPosixPath(filePathAbsoluteVite)
+  const fileName = path.posix.basename(filePathAbsoluteVite)
   const isValueFile = fileName.startsWith('+')
 
-  if (isValueFile) assert(exportName === undefined)
-  const { importName, importStatement } = generateEagerImport(importPath, varCounterContainer.varCounter++, exportName)
+  if (isValueFile) assert(fileExportName === undefined)
+  const { importName, importStatement } = generateEagerImport(
+    filePathAbsoluteVite,
+    varCounterContainer.varCounter++,
+    fileExportName
+  )
   importStatements.push(importStatement)
 
   const lines: string[] = []
   lines.push(`  {`)
   lines.push(`    configName: '${configName}',`)
-  lines.push(`    importPath: '${importPath}',`)
+  lines.push(`    importPath: '${filePathAbsoluteVite}',`)
   lines.push(`    isValueFile: ${JSON.stringify(isValueFile)},`)
   if (isValueFile) {
     lines.push(`    exportValues: ${importName},`)
   } else {
     lines.push(`    exportValue: ${importName},`)
-    assert(exportName)
-    lines.push(`    exportName: ${JSON.stringify(exportName)},`)
+    assert(fileExportName)
+    lines.push(`    exportName: ${JSON.stringify(fileExportName)},`)
   }
   lines.push(`  },`)
   return lines

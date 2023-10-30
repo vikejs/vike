@@ -16,8 +16,8 @@ import { assert, assertPosixPath, getNpmPackageImportPath, isNpmPackageImport, h
  * getLocationId('/pages/some-page') => '/pages/some-page'
  * getLocationId('/renderer/+config.js') => '/renderer'
  */
-function getLocationId(somePath: string): string {
-  const locationId = removeFilename(somePath, true)
+function getLocationId(filePathAbsoluteVite: string): string {
+  const locationId = removeFilename(filePathAbsoluteVite, true)
   assertLocationId(locationId)
   return locationId
 }
@@ -121,20 +121,20 @@ function removeDirectories(somePath: string, removeDirs: string[]): string {
   return somePath
 }
 
-function removeFilename(filePath: string, optional?: true) {
-  assertPosixPath(filePath)
-  assert(filePath.startsWith('/') || isNpmPackageImport(filePath))
+function removeFilename(filePathAbsoluteVite: string, optional?: true) {
+  assertPosixPath(filePathAbsoluteVite)
+  assert(filePathAbsoluteVite.startsWith('/') || isNpmPackageImport(filePathAbsoluteVite))
   {
-    const filename = filePath.split('/').slice(-1)[0]!
+    const filename = filePathAbsoluteVite.split('/').slice(-1)[0]!
     if (!filename.includes('.')) {
       assert(optional)
-      return filePath
+      return filePathAbsoluteVite
     }
   }
-  filePath = filePath.split('/').slice(0, -1).join('/')
-  if (filePath === '') filePath = '/'
-  assertLocationId(filePath)
-  return filePath
+  let locationId = filePathAbsoluteVite.split('/').slice(0, -1).join('/')
+  if (locationId === '') locationId = '/'
+  assertLocationId(locationId)
+  return locationId
 }
 
 function getFilesystemRouteDefinedBy(locationId: string): string {

@@ -104,9 +104,9 @@ function getSourceString(definedAt: DefinedAt, configName: string): 'internally'
   assert(files.length >= 1)
   const sourceString = files
     .map((source) => {
-      const { filePathToShowToUser, fileExportPath } = source
+      const { filePathToShowToUser, fileExportPathToShowToUser } = source
       let s = filePathToShowToUser
-      const exportPath = getExportPath(fileExportPath, configName)
+      const exportPath = getExportPath(fileExportPathToShowToUser, configName)
       if (exportPath) {
         s = `${s} > ${pc.cyan(exportPath)}`
       }

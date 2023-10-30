@@ -2,9 +2,9 @@ export { getExportPath }
 
 import { assert } from '../utils.js'
 
-function getExportPath(fileExportPath: null | string[], configName: string): null | string {
-  if (!fileExportPath) return null
-  let [exportName, ...exportObjectPath] = fileExportPath
+function getExportPath(fileExportPathToShowToUser: null | string[], configName: string): null | string {
+  if (!fileExportPathToShowToUser) return null
+  let [exportName, ...exportObjectPath] = fileExportPathToShowToUser
   if (!exportName) return null
   if (exportObjectPath.length === 0 && ['*', 'default', configName].includes(exportName)) return null
   assert(exportName !== '*')

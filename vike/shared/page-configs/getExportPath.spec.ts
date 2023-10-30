@@ -19,6 +19,6 @@ describe('getExportPath()', () => {
   })
 })
 
-function t(fileExportPath: null | string[], configName = 'bla'): null | string {
-  return getExportPath(fileExportPath, configName)
+function t(fileExportPathToShowToUser: null | string[], configName = 'bla'): null | string {
+  return getExportPath(fileExportPathToShowToUser, configName)
 }

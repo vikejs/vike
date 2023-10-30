@@ -5,9 +5,9 @@ export type { ConfigValueImported }
 
 import type { DefinedAt, PageConfigRuntime } from '../PageConfig.js'
 
-/** page config data structure serialized in virtual files: parsing it results in PageConfigRuntime */
+/** Page config data structure serialized in virtual files: parsing it results in PageConfigRuntime */
 type PageConfigRuntimeSerialized = Omit<PageConfigRuntime, 'configValues'> & {
-  /** Config values that are loaded eagerly and serializable such as config.passToClient */
+  /** Config values that are serializable and loaded eagerly such as config.passToClient */
   configValuesSerialized: Record<string, ConfigValueSerialized>
   /** Config values imported eagerly such as config.route */
   configValuesImported: ConfigValueImported[]
@@ -17,12 +17,12 @@ type PageConfigGlobalRuntimeSerialized = {
   configValuesImported: ConfigValueImported[]
 }
 
-/** Value is serialized. */
+/** Value is serialized */
 type ConfigValueSerialized = {
   valueSerialized: string
   definedAt: DefinedAt
 }
-/** Value is imported. */
+/** Value is imported */
 type ConfigValueImported = {
   configName: string
   importPath: string
