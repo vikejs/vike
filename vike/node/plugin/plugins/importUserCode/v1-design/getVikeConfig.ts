@@ -956,7 +956,7 @@ function applyEffectsAll(
       [
         `Cannot add effect to ${pc.cyan(configName)} because its ${pc.cyan('env')} is ${pc.cyan(
           configDef.env
-        )}: effects can only be added to configs with an env that is ${pc.cyan('config-only')}.`
+        )}: effects can only be added to configs with an ${pc.cyan('env')} value of ${pc.cyan('config-only')}.`
       ].join(' ')
     )
     const source = configValueSources[configName]?.[0]
