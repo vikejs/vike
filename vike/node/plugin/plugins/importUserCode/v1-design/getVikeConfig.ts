@@ -614,12 +614,10 @@ function warnOverridenConfigValues(
       `${getConfigSourceDefinedAtString(
         configName,
         configValueSourceLoser,
-        undefined,
         true
       )} overriden by another ${getConfigSourceDefinedAtString(
         configName,
         configValueSourceWinner,
-        undefined,
         false
       )}, remove one of the two`,
       { onlyOnce: false }
@@ -1510,7 +1508,6 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
       const configPreviousDefinedAt = getConfigSourceDefinedAtString(
         configName,
         configValueSourcePrevious,
-        undefined,
         false
       )
       assertUsage(
@@ -1552,14 +1549,12 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
 function getConfigSourceDefinedAtString<T extends string>(
   configName: T,
   { definedAtInfo }: { definedAtInfo: DefinedAtFileInfo },
-  isEffect: undefined = undefined,
   sentenceBegin = true
 ) {
   return getConfigDefinedAtString(
     configName,
     {
       definedAt: {
-        isEffect,
         file: {
           filePathToShowToUser: definedAtInfo.filePathToShowToUser,
           fileExportPathToShowToUser: definedAtInfo.fileExportPathToShowToUser

@@ -109,9 +109,6 @@ function getDefinedAtString(definedAt: DefinedAt, configName: string): string {
       if (exportPath) {
         s = `${s} > ${pc.cyan(exportPath)}`
       }
-      if (definedAt.isEffect) {
-        s = `${s} > (${pc.blue('effect')})`
-      }
       return s
     })
     .join(' / ')
