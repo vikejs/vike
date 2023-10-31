@@ -32,7 +32,7 @@ function previewConfig(): Plugin {
       markEnvAsPreview()
       return () => {
         assertDist()
-        if (!configVike.prerender) {
+        if (!configVike.prerender || configVike.prerender.partial) {
           addSsrMiddleware(server.middlewares)
         }
         addStatic404Middleware(server.middlewares)
