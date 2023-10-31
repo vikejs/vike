@@ -524,7 +524,7 @@ async function callOnPrerenderStartHook(
     const configValue = pageConfigGlobal.configValues.onPrerenderStart
     if (configValue?.value) {
       const { value: hookFn } = configValue
-      // config.onPrerenderStart isn't a computed nor a cumulative config => definedAtInfo should always be defined
+      // config.onPrerenderStart isn't a computed nor a cumulative config => definedAt should always be defined
       const hookFilePath = getHookFilePathToShowToUser(configValue)
       assert(hookFilePath)
       onPrerenderStartHook = {

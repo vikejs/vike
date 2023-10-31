@@ -488,7 +488,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
     } else {
       assert('value' in configValueSource)
       if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
-      const { filePathToShowToUser } = configValueSource.definedAtInfo
+      const { filePathToShowToUser } = configValueSource.definedAt
       assertWarning(
         false,
         `Being able to define config ${pc.cyan(
@@ -645,19 +645,19 @@ function getConfigValueSource(
   }
 
   if (configDef._valueIsFilePath) {
-    let definedAtInfo: DefinedAtFileFullInfo
+    let definedAt: DefinedAtFileFullInfo
     let valueFilePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
       const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
-      const configDefinedAt = getConfigSourceDefinedAtString(configName, { definedAtInfo: definedAtConfigFile })
+      const configDefinedAt = getConfigSourceDefinedAtString(configName, { definedAt: definedAtConfigFile })
       assertUsage(import_, `${configDefinedAt} should be an import`)
       valueFilePath = import_.filePathAbsoluteVite
-      definedAtInfo = import_
+      definedAt = import_
     } else {
       assert(interfaceFile.isValueFile)
       valueFilePath = interfaceFile.filePath.filePathAbsoluteVite
-      definedAtInfo = {
+      definedAt = {
         ...interfaceFile.filePath,
         fileExportPathToShowToUser: []
       }
@@ -667,7 +667,7 @@ function getConfigValueSource(
       valueIsFilePath: true,
       configEnv,
       valueIsImportedAtRuntime: true,
-      definedAtInfo
+      definedAt
     }
     return configValueSource
   }
@@ -680,7 +680,7 @@ function getConfigValueSource(
       const configValueSource: ConfigValueSource = {
         configEnv,
         valueIsImportedAtRuntime: true,
-        definedAtInfo: import_
+        definedAt: import_
       }
       return configValueSource
     } else {
@@ -688,7 +688,7 @@ function getConfigValueSource(
         value: configValue,
         configEnv,
         valueIsImportedAtRuntime: false,
-        definedAtInfo: definedAtConfigFile
+        definedAt: definedAtConfigFile
       }
       return configValueSource
     }
@@ -697,7 +697,7 @@ function getConfigValueSource(
     const configValueSource: ConfigValueSource = {
       configEnv,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
-      definedAtInfo: {
+      definedAt: {
         ...interfaceFile.filePath,
         fileExportPathToShowToUser:
           configName === interfaceFile.configName
@@ -1022,7 +1022,7 @@ function applyEffect(
       let configDefinedAtString: Parameters<typeof assertMetaValue>[1]
       if (configDefEffect._userEffectDefinedAt) {
         configDefinedAtString = getConfigSourceDefinedAtString(configName, {
-          definedAtInfo: configDefEffect._userEffectDefinedAt
+          definedAt: configDefEffect._userEffectDefinedAt
         })
       } else {
         configDefinedAtString = null
@@ -1044,7 +1044,7 @@ function applyEffect(
     } else {
       assertUsage(false, notSupported)
       // If we do end implementing being able to set the value of a config:
-      //  - For setting definedAtInfo: we could take the definedAtInfo of the effect config while appending '(effect)' to definedAtInfo.fileExportPathToShowToUser
+      //  - For setting definedAt: we could take the definedAt of the effect config while appending '(effect)' to definedAt.fileExportPathToShowToUser
     }
   })
 }
@@ -1383,7 +1383,7 @@ function getFilesystemRoutingRootEffect(
     value.startsWith('/'),
     `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
-  const { filePathRelativeToUserRootDir } = configFilesystemRoutingRoot.definedAtInfo
+  const { filePathRelativeToUserRootDir } = configFilesystemRoutingRoot.definedAt
   assert(filePathRelativeToUserRootDir)
   const before = getFilesystemRouteString(getLocationId(filePathRelativeToUserRootDir))
   const after = value
@@ -1466,8 +1466,8 @@ function getConfigValues(
 }
 function getDefinedAtFile(configValueSource: ConfigValueSource): DefinedAtFile {
   return {
-    filePathToShowToUser: configValueSource.definedAtInfo.filePathToShowToUser,
-    fileExportPathToShowToUser: configValueSource.definedAtInfo.fileExportPathToShowToUser
+    filePathToShowToUser: configValueSource.definedAt.filePathToShowToUser,
+    fileExportPathToShowToUser: configValueSource.definedAt.fileExportPathToShowToUser
   }
 }
 function getDefinedAt(configValueSource: ConfigValueSource): DefinedAt {
@@ -1541,15 +1541,15 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
 // TODO: rename and/or refactor
 function getConfigSourceDefinedAtString<T extends string>(
   configName: T,
-  { definedAtInfo }: { definedAtInfo: DefinedAtFileFullInfo },
+  { definedAt }: { definedAt: DefinedAtFileFullInfo },
   sentenceBegin = true
 ) {
   return getConfigDefinedAtString(
     configName,
     {
       definedAt: {
-        filePathToShowToUser: definedAtInfo.filePathToShowToUser,
-        fileExportPathToShowToUser: definedAtInfo.fileExportPathToShowToUser
+        filePathToShowToUser: definedAt.filePathToShowToUser,
+        fileExportPathToShowToUser: definedAt.fileExportPathToShowToUser
       }
     },
     sentenceBegin as true

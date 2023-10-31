@@ -38,9 +38,9 @@ function serializeConfigValueImported(
   assert(!configValueSource.valueIsFilePath)
   assert(whitespace.replaceAll(' ', '').length === 0)
 
-  const { valueIsImportedAtRuntime, definedAtInfo } = configValueSource
+  const { valueIsImportedAtRuntime, definedAt } = configValueSource
   assert(valueIsImportedAtRuntime)
-  const { filePathAbsoluteVite, fileExportName } = definedAtInfo
+  const { filePathAbsoluteVite, fileExportName } = definedAt
 
   assertPosixPath(filePathAbsoluteVite)
   const fileName = path.posix.basename(filePathAbsoluteVite)
