@@ -769,6 +769,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`filesystemRoutingRoot`',
+    url: '/filesystemRoutingRoot'
+  },
+  {
+    level: 2,
     title: '`meta`',
     url: '/meta'
   },
@@ -785,13 +790,6 @@ const headings = [
     level: 2,
     title: '`_default.page.route.js`',
     url: '/_default.page.route.js'
-  },
-  {
-    level: 2,
-    title: '`filesystemRoutingRoot`',
-    titleInNav: '`export { filesystemRoutingRoot }`',
-    isListTitle: true,
-    url: '/filesystemRoutingRoot'
   },
   {
     level: 2,

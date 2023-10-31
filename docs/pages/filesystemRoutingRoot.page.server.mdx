@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-The `export { filesystemRoutingRoot }` of `_default.page.route.js` allows us to change the URL root of Filesystem Routing.
+The `filesystemRoutingRoot` config option allows us to change the URL root of Filesystem Routing.
 
 > **Don't use `filesystemRoutingRoot` to change the base URL**, see <Link href="/base-url" /> instead.
 
@@ -9,24 +9,26 @@ The `export { filesystemRoutingRoot }` of `_default.page.route.js` allows us to 
 ## Example
 
 ```js
-// /marketing/_default.page.route.js
+// /marketing/+config.h.js
 
-// We route our marketing pages to `/*` instead of `/marketing/*`
-export const filesystemRoutingRoot = '/'
+export default {
+  // We route our marketing pages to `/*` instead of `/marketing/*`
+  filesystemRoutingRoot: '/'
+}
 ```
 
 ```
-/marketing/_default.page.route.js
-/marketing/pages/index/index.page.js
-/marketing/pages/about/index.page.js
-/marketing/pages/jobs/index.page.js
+/marketing/+config.h.js
+/marketing/pages/index/+Page.js
+/marketing/pages/about/+Page.js
+/marketing/pages/jobs/+Page.js
 ```
 
 Result:
 
 ```
-PROJECT FILES                                    URL
-/marketing/pages/index/index.page.js             /
-/marketing/pages/about/index.page.js             /about
-/marketing/pages/jobs/index.page.js              /jobs
+PROJECT FILES                               URL
+/marketing/pages/index/+Page.js             /
+/marketing/pages/about/+Page.js             /about
+/marketing/pages/jobs/+Page.js              /jobs
 ```
