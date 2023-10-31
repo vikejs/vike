@@ -611,11 +611,11 @@ function warnOverridenConfigValues(
     const configValueSourceLoser = getConfigValueSource(configName, interfaceFileLoser, configDef, userRootDir)
     assertWarning(
       false,
-      `${getConfigSourceDefinedAtString(
+      `${getConfigDefinedAtString(
         configName,
         configValueSourceLoser,
         true
-      )} overriden by another ${getConfigSourceDefinedAtString(
+      )} overriden by another ${getConfigDefinedAtString(
         configName,
         configValueSourceWinner,
         false
@@ -650,7 +650,7 @@ function getConfigValueSource(
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
       const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
-      const configDefinedAt = getConfigSourceDefinedAtString(configName, { definedAt: definedAtConfigFile })
+      const configDefinedAt = getConfigDefinedAtString(configName, { definedAt: definedAtConfigFile }, true)
       assertUsage(import_, `${configDefinedAt} should be an import`)
       valueFilePath = import_.filePathAbsoluteVite
       definedAt = import_
@@ -862,11 +862,7 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
       const configMeta = interfaceFile.configMap['meta']
       if (!configMeta) return
       const meta = configMeta.configValue
-      assertMetaValue(
-        meta,
-        // TODO: Maybe we should use the getConfigDefinedAtString() helper?
-        `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`
-      )
+      assertMetaValue(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
 
       // Set configDef._userEffectDefinedAt
       Object.entries(meta).forEach(([configName, configDef]) => {
@@ -1004,7 +1000,7 @@ function applyEffectsAll(
     // Call effect
     const configModFromEffect = configDef.effect({
       configValue: source.value,
-      configDefinedAt: getConfigSourceDefinedAtString(configName, source)
+      configDefinedAt: getConfigDefinedAtString(configName, source, true)
     })
     if (!configModFromEffect) return
     assert(hasProp(source, 'value')) // We need to assume that the config value is loaded at build-time
@@ -1021,9 +1017,13 @@ function applyEffect(
     if (configName === 'meta') {
       let configDefinedAtString: Parameters<typeof assertMetaValue>[1]
       if (configDefEffect._userEffectDefinedAt) {
-        configDefinedAtString = getConfigSourceDefinedAtString(configName, {
-          definedAt: configDefEffect._userEffectDefinedAt
-        })
+        configDefinedAtString = getConfigDefinedAtString(
+          configName,
+          {
+            definedAt: configDefEffect._userEffectDefinedAt
+          },
+          true
+        )
       } else {
         configDefinedAtString = null
       }
@@ -1377,7 +1377,7 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const configDefinedAt = getConfigSourceDefinedAtString(configName, configFilesystemRoutingRoot)
+  const configDefinedAt = getConfigDefinedAtString(configName, configFilesystemRoutingRoot, true)
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),
@@ -1479,7 +1479,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
   const valuesSet: Set<unknown>[] = []
   let configValueSourcePrevious: ConfigValueSource | null = null
   configValueSources.forEach((configValueSource) => {
-    const configDefinedAt = getConfigSourceDefinedAtString(configName, configValueSource)
+    const configDefinedAt = getConfigDefinedAtString(configName, configValueSource, true)
     const configNameColored = pc.cyan(configName)
     // We could, in principle, also support cumulative values to be defined in +${configName}.js but it ins't completely trivial to implement
     assertUsage(
@@ -1502,7 +1502,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
       assert(vals1.length > 0)
       if (vals2.length === 0) return
       assert(configValueSourcePrevious)
-      const configPreviousDefinedAt = getConfigSourceDefinedAtString(configName, configValueSourcePrevious, false)
+      const configPreviousDefinedAt = getConfigDefinedAtString(configName, configValueSourcePrevious, false)
       assertUsage(
         false,
         `${configDefinedAt} sets ${t1} but another ${configPreviousDefinedAt} sets ${t2} which is forbidden: the values must be all arrays or all sets (you cannot mix).`
@@ -1536,22 +1536,4 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
     return result
   }
   assert(false)
-}
-
-// TODO: rename and/or refactor
-function getConfigSourceDefinedAtString<T extends string>(
-  configName: T,
-  { definedAt }: { definedAt: DefinedAtFileFullInfo },
-  sentenceBegin = true
-) {
-  return getConfigDefinedAtString(
-    configName,
-    {
-      definedAt: {
-        filePathToShowToUser: definedAt.filePathToShowToUser,
-        fileExportPathToShowToUser: definedAt.fileExportPathToShowToUser
-      }
-    },
-    sentenceBegin as true
-  )
 }
