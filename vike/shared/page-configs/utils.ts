@@ -89,15 +89,15 @@ function getConfigDefinedAtString<ConfigName extends string>(
   return configDefinedAt
 }
 function getDefinedAtString(definedAt: DefinedAt, configName: string): string {
-  if (definedAt.isComputed) {
+  if ('isComputed' in definedAt) {
     return 'internally'
   }
 
   let files: DefinedAtFile[]
-  if (definedAt.isCumulative) {
+  if ('files' in definedAt) {
     files = definedAt.files
   } else {
-    files = [definedAt.file]
+    files = [definedAt]
   }
 
   assert(files.length >= 1)
@@ -119,8 +119,8 @@ function getConfigValueFilePathToShowToUser({ definedAt }: { definedAt: DefinedA
   // A unique file path only exists if the config value isn't cumulative nor computed:
   //  - cumulative config values have multiple file paths
   //  - computed values don't have any file path
-  if (definedAt.isComputed || definedAt.isCumulative) return null
-  const { filePathToShowToUser } = definedAt.file
+  if ('isComputed' in definedAt || 'files' in definedAt) return null
+  const { filePathToShowToUser } = definedAt
   assert(filePathToShowToUser)
   return filePathToShowToUser
 }

@@ -13,14 +13,12 @@ function parseConfigValuesImported(configValuesImported: ConfigValueImported[]):
     configValues[configName] = {
       value,
       definedAt: {
-        file: {
-          // importPath cannot be relative to the current file, since the current file is a virtual file
-          filePathToShowToUser: importPath,
-          fileExportPathToShowToUser: [configName, 'default'].includes(exportName)
-            ? []
-            : // Side-effect config
-              [exportName]
-        }
+        // importPath cannot be relative to the current file, since the current file is a virtual file
+        filePathToShowToUser: importPath,
+        fileExportPathToShowToUser: [configName, 'default'].includes(exportName)
+          ? []
+          : // Side-effect config
+            [exportName]
       }
     }
     assertIsNotNull(value, configName, importPath)

@@ -32,7 +32,7 @@ import type {
   PageConfigBuildTime,
   ConfigValues,
   DefinedAt,
-  DefinedAtFileInfo,
+  DefinedAtFileFullInfo,
   DefinedAtFile,
   ConfigValuesComputed,
   FilePathResolved,
@@ -639,13 +639,13 @@ function getConfigValueSource(
   assert(conf)
   const configEnv = configDef.env
 
-  const definedAtConfigFile: DefinedAtFileInfo = {
+  const definedAtConfigFile: DefinedAtFileFullInfo = {
     ...interfaceFile.filePath,
     fileExportPathToShowToUser: ['default', configName]
   }
 
   if (configDef._valueIsFilePath) {
-    let definedAtInfo: DefinedAtFileInfo
+    let definedAtInfo: DefinedAtFileFullInfo
     let valueFilePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
@@ -757,7 +757,7 @@ function resolveImport(
   userRootDir: string,
   configEnv: ConfigEnvInternal,
   configName: string
-): null | DefinedAtFileInfo {
+): null | DefinedAtFileFullInfo {
   if (typeof configValue !== 'string') return null
   const importData = parseImportData(configValue)
   if (!importData) return null
@@ -1355,7 +1355,7 @@ function determineRouteFilesystem(locationId: string, configValueSources: Config
   if (configFilesystemRoutingRoot) {
     const routingRoot = getFilesystemRoutingRootEffect(configFilesystemRoutingRoot, configName)
     if (routingRoot) {
-      const { filesystemRoutingRootEffect/*, filesystemRoutingRootDefinedAt*/ } = routingRoot
+      const { filesystemRoutingRootEffect /*, filesystemRoutingRootDefinedAt*/ } = routingRoot
       const debugInfo = { locationId, routeFilesystem: filesystemRouteString, configFilesystemRoutingRoot }
       assert(filesystemRouteString.startsWith(filesystemRoutingRootEffect.before), debugInfo)
       filesystemRouteString = applyFilesystemRoutingRootEffect(filesystemRouteString, filesystemRoutingRootEffect)
@@ -1457,7 +1457,6 @@ function getConfigValues(
       configValues[configName] = {
         value,
         definedAt: {
-          isCumulative: true,
           files: sources.map((source) => getDefinedAtFile(source))
         }
       }
@@ -1472,9 +1471,7 @@ function getDefinedAtFile(configValueSource: ConfigValueSource): DefinedAtFile {
   }
 }
 function getDefinedAt(configValueSource: ConfigValueSource): DefinedAt {
-  return {
-    file: getDefinedAtFile(configValueSource)
-  }
+  return getDefinedAtFile(configValueSource)
 }
 
 function mergeCumulative(configName: string, configValueSources: ConfigValueSource[]): unknown[] | Set<unknown> {
@@ -1544,17 +1541,15 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
 // TODO: rename and/or refactor
 function getConfigSourceDefinedAtString<T extends string>(
   configName: T,
-  { definedAtInfo }: { definedAtInfo: DefinedAtFileInfo },
+  { definedAtInfo }: { definedAtInfo: DefinedAtFileFullInfo },
   sentenceBegin = true
 ) {
   return getConfigDefinedAtString(
     configName,
     {
       definedAt: {
-        file: {
-          filePathToShowToUser: definedAtInfo.filePathToShowToUser,
-          fileExportPathToShowToUser: definedAtInfo.fileExportPathToShowToUser
-        }
+        filePathToShowToUser: definedAtInfo.filePathToShowToUser,
+        fileExportPathToShowToUser: definedAtInfo.fileExportPathToShowToUser
       }
     },
     sentenceBegin as true

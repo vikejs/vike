@@ -9,7 +9,7 @@ import type {
   ConfigEnvInternal,
   ConfigEnv,
   ConfigValueSources,
-  DefinedAtFileInfo
+  DefinedAtFileFullInfo
 } from '../../../../../../shared/page-configs/PageConfig.js'
 import type { Config, ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
 import { getConfigEnv, isConfigSet } from '../helpers.js'
@@ -57,7 +57,7 @@ type ConfigEffect = (config: {
 type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
   _computed?: (configValueSources: ConfigValueSources) => unknown
   _valueIsFilePath?: true
-  _userEffectDefinedAt?: DefinedAtFileInfo
+  _userEffectDefinedAt?: DefinedAtFileFullInfo
   env: ConfigEnvInternal
 }
 

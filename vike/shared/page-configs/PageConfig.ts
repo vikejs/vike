@@ -13,7 +13,7 @@ export type { ConfigValueComputed }
 export type { ConfigValuesComputed }
 export type { DefinedAt }
 export type { DefinedAtFile }
-export type { DefinedAtFileInfo }
+export type { DefinedAtFileFullInfo }
 export type { FilePathResolved }
 export type { FilePath }
 
@@ -63,16 +63,13 @@ type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
 type ConfigValueSource = {
   value?: unknown
   configEnv: ConfigEnvInternal
-  definedAtInfo: DefinedAtFileInfo
+  definedAtInfo: DefinedAtFileFullInfo
   /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
   valueIsImportedAtRuntime: boolean
   /** Whether the config value is a file path, for example config.client */
   valueIsFilePath?: true
 }
-type DefinedAtFileInfo = FilePath & {
-  fileExportName?: string
-  fileExportPathToShowToUser: null | string[]
-}
+type DefinedAtFileFullInfo = DefinedAtFile & FilePath & { fileExportName?: string }
 type ConfigValueSources = Record<
   // configName
   string,
@@ -95,22 +92,11 @@ type ConfigValue = {
 }
 type DefinedAt =
   // Normal config values => defined by a unique source / file path
-  | {
-      file: DefinedAtFile
-      isComputed?: undefined
-      isCumulative?: undefined
-    }
+  | DefinedAtFile
   // Cumulative config values => defined at multiple sources / file paths
-  | {
-      isCumulative: true
-      files: DefinedAtFile[]
-      isComputed?: undefined
-    }
-  // Computed config values => defined internally by Vike
-  | {
-      isComputed: true
-      isCumulative?: undefined
-    }
+  | { files: DefinedAtFile[] }
+  // Computed config values => defined internally by Vike (currently, Vike doesn't support computed configs craeted by users)
+  | { isComputed: true }
 type DefinedAtFile = {
   filePathToShowToUser: string
   fileExportPathToShowToUser: null | string[]
