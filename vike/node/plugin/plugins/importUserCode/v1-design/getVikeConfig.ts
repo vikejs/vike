@@ -607,21 +607,15 @@ function warnOverridenConfigValues(
   userRootDir: string
 ) {
   interfaceFilesOverriden.forEach((interfaceFileLoser) => {
+    const configValueSourceLoser_ = getConfigValueSource(configName, interfaceFileLoser, configDef, userRootDir)
     const configValueSourceWinner = getConfigValueSource(configName, interfaceFileWinner, configDef, userRootDir)
-    const configValueSourceLoser = getConfigValueSource(configName, interfaceFileLoser, configDef, userRootDir)
-    assertWarning(
-      false,
-      `${getConfigDefinedAtString(
-        configName,
-        configValueSourceLoser,
-        true
-      )} overriden by another ${getConfigDefinedAtString(
-        configName,
-        configValueSourceWinner,
-        false
-      )}, remove one of the two`,
-      { onlyOnce: false }
-    )
+    // prettier-ignore
+    const configLoser_DefinedAt: `Config ${string} defined ${string}` = getConfigDefinedAtString('Config', configName, configValueSourceLoser_)
+    // prettier-ignore
+    const configWinnerDefinedAt: `config ${string} defined ${string}` = getConfigDefinedAtString('config', configName, configValueSourceWinner)
+    const errMsg =
+      `${configLoser_DefinedAt} is overriden by another ${configWinnerDefinedAt}, remove one of the two` as const
+    assertWarning(false, errMsg, { onlyOnce: false })
   })
 }
 
@@ -650,7 +644,7 @@ function getConfigValueSource(
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
       const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
-      const configDefinedAt = getConfigDefinedAtString(configName, { definedAt: definedAtConfigFile }, true)
+      const configDefinedAt = getConfigDefinedAtString('Config', configName, { definedAt: definedAtConfigFile })
       assertUsage(import_, `${configDefinedAt} should be an import`)
       valueFilePath = import_.filePathAbsoluteVite
       definedAt = import_
@@ -1000,7 +994,7 @@ function applyEffectsAll(
     // Call effect
     const configModFromEffect = configDef.effect({
       configValue: source.value,
-      configDefinedAt: getConfigDefinedAtString(configName, source, true)
+      configDefinedAt: getConfigDefinedAtString('Config', configName, source)
     })
     if (!configModFromEffect) return
     assert(hasProp(source, 'value')) // We need to assume that the config value is loaded at build-time
@@ -1017,13 +1011,9 @@ function applyEffect(
     if (configName === 'meta') {
       let configDefinedAtString: Parameters<typeof assertMetaValue>[1]
       if (configDefEffect._userEffectDefinedAt) {
-        configDefinedAtString = getConfigDefinedAtString(
-          configName,
-          {
-            definedAt: configDefEffect._userEffectDefinedAt
-          },
-          true
-        )
+        configDefinedAtString = getConfigDefinedAtString('Config', configName, {
+          definedAt: configDefEffect._userEffectDefinedAt
+        })
       } else {
         configDefinedAtString = null
       }
@@ -1377,7 +1367,7 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const configDefinedAt = getConfigDefinedAtString(configName, configFilesystemRoutingRoot, true)
+  const configDefinedAt = getConfigDefinedAtString('Config', configName, configFilesystemRoutingRoot)
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),
@@ -1479,7 +1469,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
   const valuesSet: Set<unknown>[] = []
   let configValueSourcePrevious: ConfigValueSource | null = null
   configValueSources.forEach((configValueSource) => {
-    const configDefinedAt = getConfigDefinedAtString(configName, configValueSource, true)
+    const configDefinedAt = getConfigDefinedAtString('Config', configName, configValueSource)
     const configNameColored = pc.cyan(configName)
     // We could, in principle, also support cumulative values to be defined in +${configName}.js but it ins't completely trivial to implement
     assertUsage(
@@ -1502,7 +1492,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
       assert(vals1.length > 0)
       if (vals2.length === 0) return
       assert(configValueSourcePrevious)
-      const configPreviousDefinedAt = getConfigDefinedAtString(configName, configValueSourcePrevious, false)
+      const configPreviousDefinedAt = getConfigDefinedAtString('Config', configName, configValueSourcePrevious)
       assertUsage(
         false,
         `${configDefinedAt} sets ${t1} but another ${configPreviousDefinedAt} sets ${t2} which is forbidden: the values must be all arrays or all sets (you cannot mix).`
