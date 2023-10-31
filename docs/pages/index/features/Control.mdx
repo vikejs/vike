@@ -1,7 +1,7 @@
 With Vike, you control how your pages are rendered:
 
 ```jsx
-// /pages/about.page.js
+// /pages/about/+Page.js
 // Environment: browser and server
 
 // Vike uses Filesystem Routing: the file `/pages/about.page.js` matches the URL `/about`.
@@ -16,7 +16,7 @@ export function Page() {
 ```
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
@@ -42,7 +42,7 @@ async function onRenderHtml({ Page }) {
 ```
 
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+onRenderClient.js
 // Environment: browser
 
 import { hydrateDom } from 'my-favorite-ui-framework'
