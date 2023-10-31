@@ -60,10 +60,6 @@ function getCiJobs() {
     {
       name: 'https://vike.dev',
       setups: [ubuntu20]
-    },
-    {
-      name: 'pageFilesSrc',
-      setups: [ubuntu16]
     }
   ]
 }
