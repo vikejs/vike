@@ -9,7 +9,12 @@ import type { OnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 import { isCallable } from '../utils.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
-import { getConfigValue, getDefinedAtString, getHookFilePathToShowToUser } from '../page-configs/utils.js'
+import {
+  getConfigDefinedAtString,
+  getConfigValue,
+  getDefinedAtString,
+  getHookFilePathToShowToUser
+} from '../page-configs/utils.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
 
 type PageRoute = {
@@ -24,7 +29,7 @@ type PageRoutes = PageRoute[]
 type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
 
 async function loadPageRoutes(
-  // TODO: remove all arguments and use GlobalContext instead
+  // Remove all arguments and use GlobalContext instead?
   pageFilesAll: PageFile[],
   pageConfigs: PageConfigRuntime[],
   pageConfigGlobal: PageConfigGlobalRuntime,
@@ -180,12 +185,13 @@ function getGlobalHooks(
 } {
   // V1 Design
   if (pageConfigs.length > 0) {
-    if (pageConfigGlobal.configValues.onBeforeRoute?.value) {
-      const configValue = pageConfigGlobal.configValues.onBeforeRoute
+    const hookName = 'onBeforeRoute'
+    if (pageConfigGlobal.configValues[hookName]?.value) {
+      const configValue = pageConfigGlobal.configValues[hookName]
       const { value: hookFn } = configValue
       const hookFilePath = getHookFilePathToShowToUser(configValue)
-      // TODO: use getConfigDefinedAtString()
-      assertUsage(isCallable(hookFn), `The hook onBeforeRoute() defined by ${hookFilePath} should be a function.`)
+      const hookDefinedAt = getConfigDefinedAtString('Hook', hookName, configValue)
+      assertUsage(isCallable(hookFn), `${hookDefinedAt} should be a function.`)
       const onBeforeRouteHook: OnBeforeRouteHook = {
         hookFilePath: hookFilePath,
         onBeforeRoute: hookFn

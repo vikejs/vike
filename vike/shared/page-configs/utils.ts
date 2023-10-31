@@ -61,21 +61,15 @@ function getPageConfig(pageId: string, pageConfigs: PageConfigRuntime[]): PageCo
   return pageConfig
 }
 
-// TODO: use it for hooks
 function getConfigDefinedAtString<ConfigName extends string, SentenceBegin extends 'Config' | 'config' | 'Hook'>(
   sentenceBegin: SentenceBegin,
   configName: ConfigName,
   { definedAt }: { definedAt: DefinedAt }
-): `${SentenceBegin} ${ConfigName} defined ${'internally' | `at ${string}`}` {
+): `${SentenceBegin} ${ConfigName}${string} defined ${'internally' | `at ${string}`}` {
   const definedAtString = getDefinedAtString(definedAt, configName)
   const definedAtStr = definedAtString === 'internally' ? definedAtString : (`at ${definedAtString}` as const)
-  const configDefinedAt = `${sentenceBegin} ${pc.cyan(configName)} defined ${definedAtStr}` as const
-  /*
-  if( sentenceBegin === 'Hook' ) {
-  const configDefinedAt = `${sentenceBegin} ${pc.cyan(configName)}() defined ${definedAtStr}` as const
-  return configDefinedAt
-  }
-  */
+  let configNameStr: `${ConfigName}${string}` = `${configName}${sentenceBegin === 'Hook' ? '()' : ''}`
+  const configDefinedAt = `${sentenceBegin} ${pc.cyan(configNameStr)} defined ${definedAtStr}` as const
   return configDefinedAt
 }
 function getDefinedAtString(definedAt: DefinedAt, configName: string): string {
