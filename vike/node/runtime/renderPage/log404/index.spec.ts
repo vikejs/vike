@@ -1,11 +1,12 @@
-import { expect, describe, it } from 'vitest'
-import { getPagesAndRoutesInfo } from '../log404/index.js'
+import { expect, describe, it, assert } from 'vitest'
+import { getRoutesInfo } from '../log404/index.js'
 import { stripAnsi } from '../../utils.js'
 import type { PageRoutes } from '../../../../shared/route/index.js'
 
-describe('getPagesAndRoutesInfo()', () => {
+describe('getRoutesInfo()', () => {
   it('table layout - basic', () => {
-    const table = getPagesAndRoutesInfo(pageRoutes1)
+    const table = getRoutesInfo(pageRoutes1)
+    assert(table)
     /*/
     console.log(table)
     /*/
@@ -13,7 +14,8 @@ describe('getPagesAndRoutesInfo()', () => {
     //*/
   })
   it('table layout - with Route Function', () => {
-    const table = getPagesAndRoutesInfo(pageRoutes2)
+    const table = getRoutesInfo(pageRoutes2)
+    assert(table)
     /*/
     console.log(table)
     /*/

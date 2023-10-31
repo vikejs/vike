@@ -70,26 +70,25 @@ function getConfigDefinedAtString<ConfigName extends string>(
   configName: ConfigName,
   { definedAt }: { definedAt: DefinedAt },
   sentenceBegin: true,
-  append?: 'effect'
 ): ConfigDefinedAtUppercase<ConfigName>
 function getConfigDefinedAtString<ConfigName extends string>(
   configName: ConfigName,
   { definedAt }: { definedAt: DefinedAt },
   sentenceBegin: false,
-  append?: 'effect'
 ): ConfigDefinedAtLowercase<ConfigName>
 function getConfigDefinedAtString<ConfigName extends string>(
   configName: ConfigName,
   { definedAt }: { definedAt: DefinedAt },
   sentenceBegin: boolean
 ): ConfigDefinedAtUppercase<ConfigName> | ConfigDefinedAtLowercase<ConfigName> {
-  const configDefinedAt = `${sentenceBegin ? `Config` : `config`} ${pc.cyan(configName)} defined ${getSourceString(
-    definedAt,
+  const definedAtString = getDefinedAtString(definedAt, configName)
+  const definedAtStr = definedAtString === 'internally' ? definedAtString : (`at ${definedAtString}` as const)
+  const configDefinedAt = `${sentenceBegin ? `Config` : `config`} ${pc.cyan(
     configName
-  )}` as const
+  )} defined ${definedAtStr}` as const
   return configDefinedAt
 }
-function getSourceString(definedAt: DefinedAt, configName: string): 'internally' | `at ${string}` {
+function getDefinedAtString(definedAt: DefinedAt, configName: string): string {
   if (definedAt.isComputed) {
     return 'internally'
   }
@@ -102,7 +101,7 @@ function getSourceString(definedAt: DefinedAt, configName: string): 'internally'
   }
 
   assert(files.length >= 1)
-  const sourceString = files
+  const definedAtString = files
     .map((source) => {
       const { filePathToShowToUser, fileExportPathToShowToUser } = source
       let s = filePathToShowToUser
@@ -110,18 +109,10 @@ function getSourceString(definedAt: DefinedAt, configName: string): 'internally'
       if (exportPath) {
         s = `${s} > ${pc.cyan(exportPath)}`
       }
-      if (definedAt.isEffect) {
-        s = `${s} > (${pc.blue('effect')})`
-      }
       return s
     })
     .join(' / ')
-  return `at ${sourceString}`
-}
-function getDefinedAtString(configValue: ConfigValue, configName: string): string {
-  let sourceString: string = getSourceString(configValue.definedAt, configName)
-  if (sourceString.startsWith('at ')) sourceString = sourceString.slice('at '.length)
-  return sourceString
+  return definedAtString
 }
 
 function getConfigValueFilePathToShowToUser({ definedAt }: { definedAt: DefinedAt }): null | string {

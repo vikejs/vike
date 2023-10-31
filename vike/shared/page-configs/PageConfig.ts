@@ -97,8 +97,6 @@ type DefinedAt =
   // Normal config values => defined by a unique source / file path
   | {
       file: DefinedAtFile
-      // TODO: is this really needed?
-      isEffect?: true
       isComputed?: undefined
       isCumulative?: undefined
     }
@@ -106,13 +104,11 @@ type DefinedAt =
   | {
       isCumulative: true
       files: DefinedAtFile[]
-      isEffect?: undefined
       isComputed?: undefined
     }
   // Computed config values => defined internally by Vike
   | {
       isComputed: true
-      isEffect?: undefined
       isCumulative?: undefined
     }
 type DefinedAtFile = {

@@ -99,7 +99,7 @@ function render(abortStatusCode: 401 | 403 | 404 | 410 | 429 | 500 | 503, abortR
 function render(url: `/${string}`, abortReason?: AbortReason): Error
 function render(value: string | number, abortReason?: unknown): Error {
   const args = [typeof value === 'number' ? String(value) : JSON.stringify(value)]
-  if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30, null))
+  if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30))
   const abortCaller = 'throw render()'
   const abortCall = `throw render(${args.join(', ')})` as const
   return render_(value, abortReason, abortCall, abortCaller)
