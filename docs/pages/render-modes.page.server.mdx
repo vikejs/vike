@@ -19,18 +19,33 @@ For example, we can render an admin panel as SPA while rendering marketing pages
 Rendering a page as SPA means that the page is loaded and rendered only in the browser.
 
 To achieve that:
- 1. We define `.page.client.js` instead of `.page.js`.
+ 1. We set the `Page` [meta config](/meta#modify-existing-configurations) to `client-only` instead of `server-and-client`.
  2. We adapt our `onRenderHtml()` and `onRenderClient()` hooks.
 
 
-**1. `.page.js` => `.page.client.js`**
+**1. `Page` meta config**
 
-By defining `/pages/about.page.client.js` instead of `/pages/about.page.js` we ensure that the page is loaded only in the browser.
+By setting the `Page` meta config to `client-only` we ensure that `+Page.js` is loaded only in the browser.
 
-Example:
- - React Example: <RepoLink path="/examples/render-modes/pages/spa/index.page.client.jsx" />
- - Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example` > `/pages/spa.page.client.vue`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/spa.page.client.vue)
-   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
+```js
+// /renderer/+config.h.js
+// Environment: build-time
+
+export default {
+  meta: {
+    Page: {
+      env: 'client-only' // SPA for all pages
+    }
+  }
+}
+```
+
+SPA + SSR React example:
+ - Custom `renderMode` config: <RepoLink path="/examples/render-modes-v1/renderer/+config.h.ts" />
+ - SPA page: <RepoLink path="/examples/render-modes-v1/pages/spa/+Page.jsx" />
+ - SPA page's `renderMode` config value: <RepoLink path="/examples/render-modes-v1/pages/spa/+renderMode.js" />
+ - SSR page: <RepoLink path="/examples/render-modes-v1/pages/ssr/+Page.jsx" />
+ - SSR page's `renderMode` config value: <RepoLink path="/examples/render-modes-v1/pages/ssr/+renderMode.js" />
 
 
 **2. Render hooks (SPA only)**
@@ -40,7 +55,7 @@ If we only have SPA pages, then we adapt our `onRenderHtml()` and `onRenderClien
 Client-side `onRenderClient()` hook:
 
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+onRenderClient.js
 // Environment: browser
 
 import { renderToDom } from 'some-ui-framework'
@@ -60,7 +75,7 @@ async function onRenderClient(pageContext) {
 We also adapt our server-side `onRenderHtml()` hook:
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 import { escapeInject } from 'vike/server'
@@ -88,7 +103,7 @@ For production, we usually want to <Link text="pre-render" href="/pre-rendering"
 We can also use our server-side `onRenderHtml()` hook to render `<head>`:
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 import { escapeInject } from 'vike/server'
@@ -96,7 +111,7 @@ import { escapeInject } from 'vike/server'
 export { onRenderHtml }
 
 async function onRenderHtml(pageContext) {
-  const { title, description } = pageContext.exports.meta
+  const { title, description } = pageContext.exports
   // Even though we load and render our page's components only in the browser,
   // we define our page's `<title>` and `<meta name="description">` on the server-side.
   return escapeInject`<html>
@@ -114,16 +129,34 @@ async function onRenderHtml(pageContext) {
 > `pageContext.exports` is explained at <Link href="/exports" />.
 
 ```js
-// /pages/about.page.js
-export const meta = {
-  title: 'About | My App',
-  description: 'My App is ...'
+// /pages/about/+title.js
+export const title = 'About | My App'
+```
+
+```js
+// /pages/about/+description.js
+export const description = 'My App is ...'
+```
+
+```js
+// /renderer/+config.h.js
+export default {
+  meta: {
+    Page: {
+      env: 'client-only' // SPA for all pages
+    },
+    title: {
+      env: 'server-and-client'
+    },
+    description: {
+      env: 'server-and-client'
+    }
+  }
 }
 ```
 
-Note how we define `pageContext.exports.meta` in `about.page.js` instead of `about.page.client.js`. That's because we need to be able to access `pageContext.exports.meta` from the server-side.
-
-This means that we define both `about.page.js` (defining meta data) and `about.page.client.js` (defining our page's root component `pageContext.Page`).
+Note how we declare `title` and `description` to be `server-and-client`. That's because we need to be able to access
+them from the server-side too.
 
 
 **2. Render hooks (SPA + SSR)**
@@ -131,7 +164,7 @@ This means that we define both `about.page.js` (defining meta data) and `about.p
 If we have both SPA and SSR pages, then we adapt our `onRenderHtml()` and `onRenderClient()` hooks like this:
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
@@ -156,10 +189,11 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-> If we define a page's root component (`pageContext.Page`) in `.page.client.js` instead of `.page.js`, then `pageContext.Page` is only defined in the browser.
+> If we set the `Page` meta config to `client-only` instead of `server-and-client` in `config.h.js`, then
+> `pageContext.Page` is only defined in the browser.
 
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+onRenderClient.js
 // Environment: browser
 
 import { renderToDom, hydrateDom } from 'some-ui-framework'
@@ -186,19 +220,14 @@ async function onRenderClient(pageContext) {
 }
 ```
 
-React example: <Link href="/examples/render-modes/" />.
- - Server-side hook: <Link text="/renderer/_default.page.server.jsx" href="/examples/render-modes/renderer/_default.page.server.jsx" />
- - Client-side hook: <Link text="/renderer/_default.page.client.jsx" href="/examples/render-modes/renderer/_default.page.client.jsx" />
- - SPA page: <Link text="/pages/spa/index.page.client.jsx" href="/examples/render-modes/pages/spa/index.page.client.jsx" />
- - SSR page: <Link text="/pages/ssr/index.page.jsx" href="/examples/render-modes/pages/ssr/index.page.jsx" />
-
-Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example).
- - Server-side hook: [/pages/_default/_default.page.server.ts](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/_default/_default.page.server.ts)
- - Client-side hook: [/pages/_default/_default.page.client.ts](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/_default/_default.page.client.ts)
- - SPA page: [/pages/spa.page.client.vue](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/spa.page.client.vue)
- - SSR page: [/pages/ssr.page.vue](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/ssr.page.vue)
-
-> vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
+React example: <Link href="/examples/render-modes-v1/" />.
+ - Server-side hook: <RepoLink path="/examples/render-modes-v1/renderer/+onRenderHtml.jsx" />
+ - Client-side hook: <RepoLink path="/examples/render-modes-v1/renderer/+onRenderClient.jsx" />
+ - Custom `renderMode` config: <RepoLink path="/examples/render-modes-v1/renderer/+config.h.ts" />
+ - SPA page: <RepoLink path="/examples/render-modes-v1/pages/spa/+Page.jsx" />
+ - SPA page's `renderMode` config value: <RepoLink path="/examples/render-modes-v1/pages/spa/+renderMode.js" />
+ - SSR page: <RepoLink path="/examples/render-modes-v1/pages/ssr/+Page.jsx" />
+ - SSR page's `renderMode` config value: <RepoLink path="/examples/render-modes-v1/pages/ssr/+renderMode.js" />
 
 ## SSR
 
@@ -220,16 +249,27 @@ See <Link href="/pre-rendering" />.
 
 To render a page to HTML-only:
 
- 1. We define `.page.server.js` instead of `.page.js`.
- 1. (Optional) We define `.page.client.js` (e.g. to add minimal amount of JavaScript surgically injecting bits of interactivity).
+ 1. We set the `Page` [meta config](/meta#modify-existing-configurations) to `server-only` instead of `server-and-client`.
+ 1. (Optional) We define `+client.js` (e.g. to add minimal amount of JavaScript surgically injecting bits of interactivity).
 
 
 ```js
-// /pages/about.page.server.js
+// /renderer/+config.h.js
+// Environment: build-time
+
+export default {
+  meta: {
+    Page: {
+      env: 'server-only' // HTML-only for all pages
+    }
+  }
+}
+```
+
+```js
+// /pages/about/+Page.js
 // Environment: server
 
-// Usually `Page` is defined in `*.page.js` but for HTML-only we
-// define `Page` in `*.page.server.js` instead.
 export { Page }
 
 function Page() {
@@ -243,18 +283,15 @@ function Page() {
 ```
 
 ```js
-// /pages/about.page.client.js
+// /pages/about/+client.js
 // Environment: browser
 
 // This file represents the entire browser-side JavaScript.
-// We can omit defining `.page.client.js` in which case the page has zero browser-side JavaScript.
+// We can omit defining `+client.js` in which case the page has zero browser-side JavaScript.
 
 console.log("I'm the page's only browser-side JavaScript line.")
 ```
 
-Examples:
- - React Example (zero JavaScript): <RepoLink path="/examples/render-modes/pages/html-only/" />
- - React Example (minimal JavaScript): <RepoLink path="/examples/render-modes/pages/html-js/" />
- - Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example` > `/pages/html.page.server.vue`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/html.page.server.vue)
-   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
- - [@brillout/docpress](https://github.com/brillout/docpress) which powers this website `https://vike.dev` (this website uses the HTML-only technique).
+React example:
+ - Zero JavaScript: <RepoLink path="/examples/render-modes-v1/pages/html-only/" />
+ - Minimal JavaScript: <RepoLink path="/examples/render-modes-v1/pages/html-js/" />
