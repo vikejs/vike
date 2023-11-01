@@ -26,6 +26,7 @@ function devConfig(): Plugin[] {
       apply,
       config() {
         return {
+          appType: 'custom',
           optimizeDeps: {
             exclude: [
               // We exclude the vike client to be able to use `import.meta.glob()`

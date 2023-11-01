@@ -16,9 +16,6 @@ function commonConfig(): Plugin[] {
   return [
     {
       name: 'vike-commonConfig-1',
-      config: () => ({
-        appType: 'custom'
-      }),
       configResolved(config) {
         installRequireShim_setUserRootDir(config.root)
       }
