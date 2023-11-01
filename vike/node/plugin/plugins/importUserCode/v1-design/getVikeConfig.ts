@@ -66,7 +66,7 @@ import {
   removeSuperfluousViteLog_disable
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAtString } from '../../../../../shared/page-configs/utils.js'
+import { getConfigDefinedAtString } from '../../../../../shared/page-configs/helpers.js'
 import {
   assertExportsOfConfigFile,
   assertExportsOfValueFile

@@ -1,7 +1,9 @@
 export { getConfigValue }
 export { getPageConfig }
+
 export { getConfigDefinedAtString }
 export { getDefinedAtString }
+
 export { getConfigValueFilePathToShowToUser }
 export { getHookFilePathToShowToUser }
 
@@ -28,6 +30,7 @@ function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, ty
   if (type) assertConfigValueType(value, type, configName, definedAt)
   return configValue
 }
+
 function assertConfigValueType(value: unknown, type: 'string' | 'boolean', configName: string, definedAt: DefinedAt) {
   assert(value !== null)
   const typeActual = typeof value

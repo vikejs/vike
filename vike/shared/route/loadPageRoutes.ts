@@ -14,7 +14,7 @@ import {
   getConfigValue,
   getDefinedAtString,
   getHookFilePathToShowToUser
-} from '../page-configs/utils.js'
+} from '../page-configs/helpers.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
 
 type PageRoute = {

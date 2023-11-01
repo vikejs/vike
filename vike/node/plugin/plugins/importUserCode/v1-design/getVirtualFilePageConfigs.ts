@@ -15,7 +15,7 @@ import pc from '@brillout/picocolors'
 import { getVikeConfig } from './getVikeConfig.js'
 import type { ConfigVikeResolved } from '../../../../../shared/ConfigVike.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
-import { getConfigValueFilePathToShowToUser } from '../../../../../shared/page-configs/utils.js'
+import { getConfigValueFilePathToShowToUser } from '../../../../../shared/page-configs/helpers.js'
 import {
   serializeConfigValue,
   serializeConfigValueImported

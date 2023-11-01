@@ -47,7 +47,7 @@ import {
   getConfigValue,
   getConfigValueFilePathToShowToUser,
   getHookFilePathToShowToUser
-} from '../../shared/page-configs/utils.js'
+} from '../../shared/page-configs/helpers.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
 import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
