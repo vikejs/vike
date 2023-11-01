@@ -681,10 +681,10 @@ const headings = [
   },
   {
     level: 2,
-    title: '`prerender()` hook',
-    titleInNav: '`export { prerender }`',
+    title: '`onBeforePrerenderStart()` hook',
+    titleInNav: '`export { onBeforePrerenderStart }`',
     isListTitle: true,
-    url: '/prerender'
+    url: '/onBeforePrerenderStart'
   },
   {
     level: 2,

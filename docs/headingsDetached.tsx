@@ -184,8 +184,12 @@ const headingsDetached = [
     url: '/common-problems'
   },
   {
-    title: <code>onBeforePrerenderStart()</code>,
-    url: '/onBeforePrerenderStart'
+    title: (
+      <>
+        <code>prerender()</code> hook
+      </>
+    ),
+    url: '/prerender'
   },
   {
     title: <code>onPrerenderStart()</code>,

@@ -1,4 +1,12 @@
-import { RepoLink, Link } from '@brillout/docpress'
+import { RepoLink, Link, Warning } from '@brillout/docpress'
+
+<Warning>
+  `prerender()` is deprecated in favor of `onBeforePrerenderStart()`, see
+  <ul>
+    <li><Link href="/onBeforePrerenderStart" /></li>
+    <li><Link href="/migration/v1-design#renamed-hooks" /></li>
+  </ul>
+</Warning>
 
 The `prerender()` hook is executed during <Link text="pre-rendering" href="/pre-rendering" /> (and only during pre-rendering) and has two purposes:
  - For providing a list of URLs for parameterized routes (e.g. `/movie/1` and `/movie/2` for a route `/movie/@id`).

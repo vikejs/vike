@@ -1,15 +1,127 @@
 import { HookTypeScriptHints } from '../components'
-import { Link } from '@brillout/docpress'
+import { Link, RepoLink } from '@brillout/docpress'
 
-The `prerender()` hook has been renamed to `onBeforePrerenderStart()` for the V1 design.
 
-> It's just a rename: the hook is equivalent and its documentation is the same as <Link href="/prerender" />.
+The `onBeforePrerenderStart()` hook is executed during <Link text="pre-rendering" href="/pre-rendering" />
+(and only during pre-rendering) and has two purposes:
+ - For providing a list of URLs for parameterized routes (e.g. `/movie/1` and `/movie/2` for a route `/movie/@id`).
+ - For fetching data in bulk in order to make pre-rendering faster.
+
+
+## For providing URLs
+
+Most of the time, we use the `onBeforePrerenderStart()` hook in order to provide the URLs of parameterized routes.
+
+```js
+// /pages/movie/+route.js
+// Environment: Node.js
+
+export default '/movie/@movieId'
+```
+
+```js
+// /pages/movie/+onBeforePrerenderStart.js
+// Environment: Node.js
+
+export { onBeforePrerenderStart }
+
+async function onBeforePrerenderStart() {
+  const movies = await Movie.findAll()
+  const moviePageURLs = movies.map(movie => '/movie/' + movie.id)
+  return moviePageURLs
+}
+```
+
+> If we don't have any parameterized route,
+> then we can pre-render our app without defining any `onBeforePrerenderStart()` hook.
+
+> The `onBeforePrerenderStart()` hooks are called when we run <code>$ vite build</code>.
+> (The `onBeforePrerenderStart()` hooks are never called in development.)
+
+
+## For bulk data fetching
+
+If we have a high number of pages that are to be pre-rendered, then running the command <code>$ vite build</code> may become slow.
+
+We can make it significantly faster by providing the `pageContext` of pages in `onBeforePrerenderStart()` hooks.
+
+```js
+// /pages/movie/+route.js
+// Environment: Node.js
+
+export default '/movie/@movieId'
+```
+
+```js
+// /pages/movie/+onBeforePrerenderStart.js
+// Environment: Node.js
+
+export { onBeforePrerenderStart }
+
+async function onBeforePrerenderStart() {
+  const movies = await Movie.findAll()
+
+  const moviePages = (
+    movies
+    .map(movie => {
+      const url = '/movie/' + movie.id
+      const pageProps = { movie }
+      const pageContext = { pageProps }
+      return {
+        url,
+        // Because we already provide the `pageContext`, Vike will *not* call
+        // the `onBeforeRender()` hook for `url`.
+        pageContext
+      }
+      /* We could also only return `url` and not provide `pageContext`. In that case
+       * Vike would call the `onBeforeRender()` hook. But that would be wasteful
+       * since we already have all the data of all movies from our `await Movie.findAll()` call.
+       * Instead, we provide `pageContext` to make the pre-rendering build step faster.
+       */
+      // return { url }
+    })
+  )
+
+  // We can also return URLs that don't match the page's route.
+  // That way we can provide the `pageContext` of other pages.
+  // Here we provide the `pageContext` of the `/movies` page since
+  // we already have the data.
+  const movieListPage = {
+    url: '/movies', // Note how the URL `/movies` isn't part of the page's route `/movie/@movieId`
+    pageContext: {
+      pageProps: {
+        // We filter out the data we don't need in order to minimize what is sent to the browser.
+        // We explain this practice at https://vike.dev/data-fetching
+        movieList: movies.map(({id, title}) => ({id, title})
+      }
+    }
+  }
+
+  return [movieListPage, ...moviePages]
+}
+```
+
+Essentially, the `onBeforePrerenderStart()` hook allows us to prefetch data for multiple pages at once.
+
+> <p><b>Providing <code>pageContext</code> in <code>onBeforePrerenderStart()</code> hooks should only be used for making the pre-rendering build step faster</b> and
+> we recommend against using <code>onBeforePrerenderStart()</code> hooks for other purposes.</p>
 >
-> The documentation will be moved here after the stable release of the V1 design.
+> For example, we should avoid providing additional `pageContext` in `onBeforePrerenderStart()` hooks that wouldn't otherwise exist.
+> Instead, we should make sure that our `onBeforeRender()` hooks provide all the `pageContext` we need.
+>
+> The reason being that `onBeforePrerenderStart()` hooks are never called in development and we should keep our app consistent between development and production.
 
-See <Link href="/migration/v1-design#renamed-hooks" />.
 
-{ /*NOTE(aurelien) move the content of prerender.page.server.mdx here*/ }
+## Examples
+
+React Example:
+ - <RepoLink path='/examples/react-full-v1/pages/star-wars/index/+onBeforePrerenderStart.ts' />
+ - <RepoLink path='/examples/react-full-v1/pages/hello/+onBeforePrerenderStart.ts' />
+
+Vue Example:
+ - <RepoLink path='/examples/vue-full-v1/pages/star-wars/index/+onBeforePrerenderStart.ts' />
+ - <RepoLink path='/examples/vue-full-v1/pages/hello/+onBeforePrerenderStart.ts' />
+
 
 ## TypeScript
 
