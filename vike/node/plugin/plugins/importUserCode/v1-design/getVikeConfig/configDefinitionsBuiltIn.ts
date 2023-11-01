@@ -129,6 +129,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   isClientSideRenderable: {
     env: 'server-and-client',
     _computed: (configValueSources): boolean =>
+      isConfigSet(configValueSources, 'clientRouting') &&
       isConfigSet(configValueSources, 'onRenderClient') &&
       isConfigSet(configValueSources, 'Page') &&
       getConfigEnv(configValueSources, 'Page') !== 'server-only'
