@@ -41,6 +41,6 @@ function assertHookFn(
 ): asserts hookFn is HookFn {
   assert(hookName && hookFilePath)
   assert(!hookName.endsWith(')'))
-  assertUsage(isCallable(hookFn), `hook ${hookName}() defined by ${hookFilePath} should be a function`)
+  assertUsage(isCallable(hookFn), `Hook ${hookName}() defined by ${hookFilePath} should be a function`)
   checkType<HookFn>(hookFn)
 }

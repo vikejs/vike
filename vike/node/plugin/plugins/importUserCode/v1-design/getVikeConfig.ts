@@ -32,7 +32,7 @@ import type {
   PageConfigBuildTime,
   ConfigValues,
   DefinedAt,
-  DefinedAtFileInfo,
+  DefinedAtFileFullInfo,
   DefinedAtFile,
   ConfigValuesComputed,
   FilePathResolved,
@@ -488,7 +488,7 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
     } else {
       assert('value' in configValueSource)
       if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
-      const { filePathToShowToUser } = configValueSource.definedAtInfo
+      const { filePathToShowToUser } = configValueSource.definedAt
       assertWarning(
         false,
         `Being able to define config ${pc.cyan(
@@ -607,21 +607,15 @@ function warnOverridenConfigValues(
   userRootDir: string
 ) {
   interfaceFilesOverriden.forEach((interfaceFileLoser) => {
+    const configValueSourceLoser_ = getConfigValueSource(configName, interfaceFileLoser, configDef, userRootDir)
     const configValueSourceWinner = getConfigValueSource(configName, interfaceFileWinner, configDef, userRootDir)
-    const configValueSourceLoser = getConfigValueSource(configName, interfaceFileLoser, configDef, userRootDir)
-    assertWarning(
-      false,
-      `${getConfigSourceDefinedAtString(
-        configName,
-        configValueSourceLoser,
-        true
-      )} overriden by another ${getConfigSourceDefinedAtString(
-        configName,
-        configValueSourceWinner,
-        false
-      )}, remove one of the two`,
-      { onlyOnce: false }
-    )
+    // prettier-ignore
+    const configLoser_DefinedAt: `Config ${string} defined ${string}` = getConfigDefinedAtString('Config', configName, configValueSourceLoser_)
+    // prettier-ignore
+    const configWinnerDefinedAt: `config ${string} defined ${string}` = getConfigDefinedAtString('config', configName, configValueSourceWinner)
+    const errMsg =
+      `${configLoser_DefinedAt} is overriden by another ${configWinnerDefinedAt}, remove one of the two` as const
+    assertWarning(false, errMsg, { onlyOnce: false })
   })
 }
 
@@ -639,25 +633,25 @@ function getConfigValueSource(
   assert(conf)
   const configEnv = configDef.env
 
-  const definedAtConfigFile: DefinedAtFileInfo = {
+  const definedAtConfigFile: DefinedAtFileFullInfo = {
     ...interfaceFile.filePath,
     fileExportPathToShowToUser: ['default', configName]
   }
 
   if (configDef._valueIsFilePath) {
-    let definedAtInfo: DefinedAtFileInfo
+    let definedAt: DefinedAtFileFullInfo
     let valueFilePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
       const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
-      const configDefinedAt = getConfigSourceDefinedAtString(configName, { definedAtInfo: definedAtConfigFile })
+      const configDefinedAt = getConfigDefinedAtString('Config', configName, { definedAt: definedAtConfigFile })
       assertUsage(import_, `${configDefinedAt} should be an import`)
       valueFilePath = import_.filePathAbsoluteVite
-      definedAtInfo = import_
+      definedAt = import_
     } else {
       assert(interfaceFile.isValueFile)
       valueFilePath = interfaceFile.filePath.filePathAbsoluteVite
-      definedAtInfo = {
+      definedAt = {
         ...interfaceFile.filePath,
         fileExportPathToShowToUser: []
       }
@@ -667,7 +661,7 @@ function getConfigValueSource(
       valueIsFilePath: true,
       configEnv,
       valueIsImportedAtRuntime: true,
-      definedAtInfo
+      definedAt
     }
     return configValueSource
   }
@@ -680,7 +674,7 @@ function getConfigValueSource(
       const configValueSource: ConfigValueSource = {
         configEnv,
         valueIsImportedAtRuntime: true,
-        definedAtInfo: import_
+        definedAt: import_
       }
       return configValueSource
     } else {
@@ -688,7 +682,7 @@ function getConfigValueSource(
         value: configValue,
         configEnv,
         valueIsImportedAtRuntime: false,
-        definedAtInfo: definedAtConfigFile
+        definedAt: definedAtConfigFile
       }
       return configValueSource
     }
@@ -697,7 +691,7 @@ function getConfigValueSource(
     const configValueSource: ConfigValueSource = {
       configEnv,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
-      definedAtInfo: {
+      definedAt: {
         ...interfaceFile.filePath,
         fileExportPathToShowToUser:
           configName === interfaceFile.configName
@@ -757,7 +751,7 @@ function resolveImport(
   userRootDir: string,
   configEnv: ConfigEnvInternal,
   configName: string
-): null | DefinedAtFileInfo {
+): null | DefinedAtFileFullInfo {
   if (typeof configValue !== 'string') return null
   const importData = parseImportData(configValue)
   if (!importData) return null
@@ -862,11 +856,7 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
       const configMeta = interfaceFile.configMap['meta']
       if (!configMeta) return
       const meta = configMeta.configValue
-      assertMetaValue(
-        meta,
-        // TODO: Maybe we should use the getConfigDefinedAtString() helper?
-        `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`
-      )
+      assertMetaValue(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
 
       // Set configDef._userEffectDefinedAt
       Object.entries(meta).forEach(([configName, configDef]) => {
@@ -1004,7 +994,7 @@ function applyEffectsAll(
     // Call effect
     const configModFromEffect = configDef.effect({
       configValue: source.value,
-      configDefinedAt: getConfigSourceDefinedAtString(configName, source)
+      configDefinedAt: getConfigDefinedAtString('Config', configName, source)
     })
     if (!configModFromEffect) return
     assert(hasProp(source, 'value')) // We need to assume that the config value is loaded at build-time
@@ -1021,8 +1011,8 @@ function applyEffect(
     if (configName === 'meta') {
       let configDefinedAtString: Parameters<typeof assertMetaValue>[1]
       if (configDefEffect._userEffectDefinedAt) {
-        configDefinedAtString = getConfigSourceDefinedAtString(configName, {
-          definedAtInfo: configDefEffect._userEffectDefinedAt
+        configDefinedAtString = getConfigDefinedAtString('Config', configName, {
+          definedAt: configDefEffect._userEffectDefinedAt
         })
       } else {
         configDefinedAtString = null
@@ -1044,7 +1034,7 @@ function applyEffect(
     } else {
       assertUsage(false, notSupported)
       // If we do end implementing being able to set the value of a config:
-      //  - For setting definedAtInfo: we could take the definedAtInfo of the effect config while appending '(effect)' to definedAtInfo.fileExportPathToShowToUser
+      //  - For setting definedAt: we could take the definedAt of the effect config while appending '(effect)' to definedAt.fileExportPathToShowToUser
     }
   })
 }
@@ -1211,8 +1201,7 @@ async function loadExtendsConfigs(
   const extendsConfigFiles: FilePathResolved[] = []
   extendsImportData.map((importData) => {
     const { importPath: importPath } = importData
-    // TODO
-    //  - validate extends configs
+    // TODO: validate extends configs
     const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
     assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
     assertExtendsImportPath(importPath, filePathAbsoluteFilesystem, configFilePath)
@@ -1355,7 +1344,7 @@ function determineRouteFilesystem(locationId: string, configValueSources: Config
   if (configFilesystemRoutingRoot) {
     const routingRoot = getFilesystemRoutingRootEffect(configFilesystemRoutingRoot, configName)
     if (routingRoot) {
-      const { filesystemRoutingRootEffect/*, filesystemRoutingRootDefinedAt*/ } = routingRoot
+      const { filesystemRoutingRootEffect /*, filesystemRoutingRootDefinedAt*/ } = routingRoot
       const debugInfo = { locationId, routeFilesystem: filesystemRouteString, configFilesystemRoutingRoot }
       assert(filesystemRouteString.startsWith(filesystemRoutingRootEffect.before), debugInfo)
       filesystemRouteString = applyFilesystemRoutingRootEffect(filesystemRouteString, filesystemRoutingRootEffect)
@@ -1377,13 +1366,13 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const configDefinedAt = getConfigSourceDefinedAtString(configName, configFilesystemRoutingRoot)
+  const configDefinedAt = getConfigDefinedAtString('Config', configName, configFilesystemRoutingRoot)
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),
     `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
-  const { filePathRelativeToUserRootDir } = configFilesystemRoutingRoot.definedAtInfo
+  const { filePathRelativeToUserRootDir } = configFilesystemRoutingRoot.definedAt
   assert(filePathRelativeToUserRootDir)
   const before = getFilesystemRouteString(getLocationId(filePathRelativeToUserRootDir))
   const after = value
@@ -1457,7 +1446,6 @@ function getConfigValues(
       configValues[configName] = {
         value,
         definedAt: {
-          isCumulative: true,
           files: sources.map((source) => getDefinedAtFile(source))
         }
       }
@@ -1467,14 +1455,12 @@ function getConfigValues(
 }
 function getDefinedAtFile(configValueSource: ConfigValueSource): DefinedAtFile {
   return {
-    filePathToShowToUser: configValueSource.definedAtInfo.filePathToShowToUser,
-    fileExportPathToShowToUser: configValueSource.definedAtInfo.fileExportPathToShowToUser
+    filePathToShowToUser: configValueSource.definedAt.filePathToShowToUser,
+    fileExportPathToShowToUser: configValueSource.definedAt.fileExportPathToShowToUser
   }
 }
 function getDefinedAt(configValueSource: ConfigValueSource): DefinedAt {
-  return {
-    file: getDefinedAtFile(configValueSource)
-  }
+  return getDefinedAtFile(configValueSource)
 }
 
 function mergeCumulative(configName: string, configValueSources: ConfigValueSource[]): unknown[] | Set<unknown> {
@@ -1482,7 +1468,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
   const valuesSet: Set<unknown>[] = []
   let configValueSourcePrevious: ConfigValueSource | null = null
   configValueSources.forEach((configValueSource) => {
-    const configDefinedAt = getConfigSourceDefinedAtString(configName, configValueSource)
+    const configDefinedAt = getConfigDefinedAtString('Config', configName, configValueSource)
     const configNameColored = pc.cyan(configName)
     // We could, in principle, also support cumulative values to be defined in +${configName}.js but it ins't completely trivial to implement
     assertUsage(
@@ -1505,7 +1491,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
       assert(vals1.length > 0)
       if (vals2.length === 0) return
       assert(configValueSourcePrevious)
-      const configPreviousDefinedAt = getConfigSourceDefinedAtString(configName, configValueSourcePrevious, false)
+      const configPreviousDefinedAt = getConfigDefinedAtString('Config', configName, configValueSourcePrevious)
       assertUsage(
         false,
         `${configDefinedAt} sets ${t1} but another ${configPreviousDefinedAt} sets ${t2} which is forbidden: the values must be all arrays or all sets (you cannot mix).`
@@ -1539,24 +1525,4 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
     return result
   }
   assert(false)
-}
-
-// TODO: rename and/or refactor
-function getConfigSourceDefinedAtString<T extends string>(
-  configName: T,
-  { definedAtInfo }: { definedAtInfo: DefinedAtFileInfo },
-  sentenceBegin = true
-) {
-  return getConfigDefinedAtString(
-    configName,
-    {
-      definedAt: {
-        file: {
-          filePathToShowToUser: definedAtInfo.filePathToShowToUser,
-          fileExportPathToShowToUser: definedAtInfo.fileExportPathToShowToUser
-        }
-      }
-    },
-    sentenceBegin as true
-  )
 }

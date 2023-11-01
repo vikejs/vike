@@ -12,19 +12,7 @@ assertIsNotProductionRuntime()
 function getConfigEnv(configValueSources: ConfigValueSources, configName: string): null | ConfigEnvInternal {
   const configValueSource = getConfigValueSource(configValueSources, configName)
   if (!configValueSource) return null
-  if (configValueSource) {
-    return configValueSource.configEnv
-  } else {
-    // In case of effect/computed config values, there isn't any configValueSource
-    // TODO: make it work for custom config definitions
-    //  - Ideally set configValueSource also for effect/computed config values?
-    assert(false, 'TODO')
-    /*
-    const configDef = configDefinitionsBuiltIn[configName as keyof typeof configDefinitionsBuiltIn]
-    if (!configDef) return null
-    return configDef.env
-    */
-  }
+  return configValueSource.configEnv
 }
 
 function isConfigSet(configValueSources: ConfigValueSources, configName: string): boolean {

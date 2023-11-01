@@ -59,7 +59,7 @@ function assertRouteConfigValue(configValues: ConfigValues) {
   if (!configValue) return
   const { value } = configValue
   const configValueType = typeof value
-  const configDefinedAt = getConfigDefinedAtString(configName, configValue, true)
+  const configDefinedAt = getConfigDefinedAtString('Config', configName, configValue)
   assertUsage(
     configValueType === 'string' || isCallable(value),
     `${configDefinedAt} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`

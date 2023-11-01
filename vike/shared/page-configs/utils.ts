@@ -33,10 +33,17 @@ function assertConfigValueType(value: unknown, type: 'string' | 'boolean', confi
   const typeActual = typeof value
   if (typeActual === type) return
   const valuePrintable = getValuePrintable(value)
-  const problem =
-    valuePrintable !== null ? (`value ${pc.cyan(valuePrintable)}` as const) : (`type ${pc.cyan(typeActual)}` as const)
-  const configDefinedAt = getConfigDefinedAtString(configName, { definedAt }, true)
-  assertUsage(false, `${configDefinedAt} has an invalid ${problem}: it should be a ${pc.cyan(type)} instead`)
+  const problem: string =
+    valuePrintable !== null
+      ? (`value ${pc.cyan(valuePrintable)}` as const)
+      : (`type ${pc.cyan(typeActual) as string}` as const)
+  const configDefinedAt: `Config ${string} defined ${string}` = getConfigDefinedAtString('Config', configName, {
+    definedAt
+  })
+  const errMsg = `${configDefinedAt} has an invalid ${problem}: it should be a ${
+    pc.cyan(type) as string
+  } instead` as const
+  assertUsage(false, errMsg)
 }
 
 function getConfigValueEntry(pageConfig: PageConfigCommon, configName: ConfigName) {
@@ -54,50 +61,27 @@ function getPageConfig(pageId: string, pageConfigs: PageConfigRuntime[]): PageCo
   return pageConfig
 }
 
-// TODO: support sentences:
-//  - "Hook defined at ..." and use it at loadPageRoutes()
-//  - "Effect ${configNameEffect} of config ${configNameSource} ..." and use it at loadPageRoutes()
-//    ~~- Do we really need `append: 'effect'`?~~ EDIT: yes we do
-//  - Restore implementation of append option?
-//  - Review/refactor getSourceString()
-type ConfigDefinedAtUppercase<ConfigName extends string> = `Config ${ConfigName} defined ${
-  | 'internally'
-  | `at ${string}`}`
-type ConfigDefinedAtLowercase<ConfigName extends string> = `config ${ConfigName} defined ${
-  | 'internally'
-  | `at ${string}`}`
-function getConfigDefinedAtString<ConfigName extends string>(
+function getConfigDefinedAtString<ConfigName extends string, SentenceBegin extends 'Config' | 'config' | 'Hook'>(
+  sentenceBegin: SentenceBegin,
   configName: ConfigName,
-  { definedAt }: { definedAt: DefinedAt },
-  sentenceBegin: true,
-): ConfigDefinedAtUppercase<ConfigName>
-function getConfigDefinedAtString<ConfigName extends string>(
-  configName: ConfigName,
-  { definedAt }: { definedAt: DefinedAt },
-  sentenceBegin: false,
-): ConfigDefinedAtLowercase<ConfigName>
-function getConfigDefinedAtString<ConfigName extends string>(
-  configName: ConfigName,
-  { definedAt }: { definedAt: DefinedAt },
-  sentenceBegin: boolean
-): ConfigDefinedAtUppercase<ConfigName> | ConfigDefinedAtLowercase<ConfigName> {
+  { definedAt }: { definedAt: DefinedAt }
+): `${SentenceBegin} ${ConfigName}${string} defined ${'internally' | `at ${string}`}` {
   const definedAtString = getDefinedAtString(definedAt, configName)
   const definedAtStr = definedAtString === 'internally' ? definedAtString : (`at ${definedAtString}` as const)
-  const configDefinedAt = `${sentenceBegin ? `Config` : `config`} ${pc.cyan(
-    configName
-  )} defined ${definedAtStr}` as const
+  let configNameStr: `${ConfigName}${string}` = `${configName}${sentenceBegin === 'Hook' ? '()' : ''}`
+  const configDefinedAt = `${sentenceBegin} ${pc.cyan(configNameStr)} defined ${definedAtStr}` as const
   return configDefinedAt
 }
 function getDefinedAtString(definedAt: DefinedAt, configName: string): string {
-  if (definedAt.isComputed) {
+  if ('isComputed' in definedAt) {
     return 'internally'
   }
 
   let files: DefinedAtFile[]
-  if (definedAt.isCumulative) {
+  if ('files' in definedAt) {
     files = definedAt.files
   } else {
-    files = [definedAt.file]
+    files = [definedAt]
   }
 
   assert(files.length >= 1)
@@ -119,8 +103,8 @@ function getConfigValueFilePathToShowToUser({ definedAt }: { definedAt: DefinedA
   // A unique file path only exists if the config value isn't cumulative nor computed:
   //  - cumulative config values have multiple file paths
   //  - computed values don't have any file path
-  if (definedAt.isComputed || definedAt.isCumulative) return null
-  const { filePathToShowToUser } = definedAt.file
+  if ('isComputed' in definedAt || 'files' in definedAt) return null
+  const { filePathToShowToUser } = definedAt
   assert(filePathToShowToUser)
   return filePathToShowToUser
 }

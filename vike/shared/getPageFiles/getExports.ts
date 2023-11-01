@@ -79,7 +79,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded |
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       const { value } = configValue
       const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue)
-      const configDefinedAt = getConfigDefinedAtString(configName, configValue, true)
+      const configDefinedAt = getConfigDefinedAtString('Config', configName, configValue)
 
       config[configName] = config[configName] ?? value
       configEntries[configName] = configEntries[configName] ?? []

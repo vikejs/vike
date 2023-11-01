@@ -47,18 +47,18 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
       const configValueSourcesRelevant = getConfigValueSourcesRelevant(pageConfig)
       configValueSourcesRelevant.forEach((configValueSource) => {
         if (!configValueSource.valueIsImportedAtRuntime) return
-        const { definedAtInfo, configEnv } = configValueSource
+        const { definedAt, configEnv } = configValueSource
 
         if (configEnv !== 'client-only' && configEnv !== 'server-and-client') return
 
-        if (definedAtInfo.filePathRelativeToUserRootDir !== null) {
-          const { filePathAbsoluteFilesystem } = definedAtInfo
+        if (definedAt.filePathRelativeToUserRootDir !== null) {
+          const { filePathAbsoluteFilesystem } = definedAt
           assert(filePathAbsoluteFilesystem)
           // Surprisingly Vite expects entries to be absolute paths
           entries.push(filePathAbsoluteFilesystem)
         } else {
-          // Adding definedAtInfo.filePathAbsoluteFilesystem doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
-          const { importPathAbsolute } = definedAtInfo
+          // Adding definedAt.filePathAbsoluteFilesystem doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
+          const { importPathAbsolute } = definedAt
           assert(importPathAbsolute)
           // We need to differentiate between npm package imports and path aliases.
           // There are path aliases that cannot be distinguished from npm package names.

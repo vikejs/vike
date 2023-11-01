@@ -9,7 +9,6 @@ import {
   partRegex,
   getServerUrl,
   testScreenshotFixture,
-  isCI,
   skip
 } from '@brillout/test-e2e'
 
@@ -60,12 +59,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   })
 
   test('screenshot fixture', async () => {
-    if (!isCI()) {
-      // skip() has no effect here (the skip() function is used to avoid an error when omitting the run() function)
-      //  - @brillout/test-e2e should eventually make it useful here as well
-      skip('The screenshot fixture of the docs website only matches the CI environment')
-      return
-    }
     await page.locator('#version-number').evaluate((element) => (element.innerHTML = 'v9.9.99'))
     await testScreenshotFixture({ doNotTestLocally: true })
   })
