@@ -1,6 +1,6 @@
 export { getVirtualFileImportUserCode }
 
-// TODO/v1-design-release:
+// TODO/v1-release:
 //  - Remove this file
 //    - Instead only generate getVirtualFilePageConfigs()
 //  - Remove old `.page.js`/`.page.client.js`/`.page.server.js` interface

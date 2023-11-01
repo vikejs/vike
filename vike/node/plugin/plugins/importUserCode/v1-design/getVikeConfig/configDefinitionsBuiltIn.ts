@@ -109,16 +109,17 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     _valueIsFilePath: true
   },
   clientRouting: {
-    env: 'server-and-client' // TODO: config-only instead?
+    // We could make it 'server-only' (we don't yet because of some legacy V0.4 design code)
+    env: 'server-and-client'
   },
   prerender: {
     env: 'server-only'
   },
   hydrationCanBeAborted: {
-    env: 'client-only' // TODO: config-only instead?
+    env: 'client-only'
   },
   prefetchStaticAssets: {
-    env: 'client-only' // TODO: config-only instead?
+    env: 'client-only'
   },
   extends: {
     env: 'config-only'

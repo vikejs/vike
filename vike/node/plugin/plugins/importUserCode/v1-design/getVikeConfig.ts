@@ -1201,7 +1201,6 @@ async function loadExtendsConfigs(
   const extendsConfigFiles: FilePathResolved[] = []
   extendsImportData.map((importData) => {
     const { importPath: importPath } = importData
-    // TODO: validate extends configs
     const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
     assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
     assertExtendsImportPath(importPath, filePathAbsoluteFilesystem, configFilePath)

@@ -16,9 +16,7 @@ function analyzeClientSide(
     const isClientSideRenderable = getConfigValue(pageConfig, 'isClientSideRenderable', 'boolean')?.value ?? false
     return { isClientSideRenderable, isClientRouting }
   } else {
-    // TODO/v1-release:
-    //  - remove V0.4 implementation
-    //  - globally rename isHtmlOnly to !isClientSideRenderable
+    // TODO/v1-release: remove
     // V0.4 design
     const { isHtmlOnly, isClientRouting } = analyzePageClientSide(pageFilesAll, pageId)
     return { isClientSideRenderable: !isHtmlOnly, isClientRouting }
