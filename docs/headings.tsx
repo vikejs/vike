@@ -674,13 +674,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`passToClient`',
-    titleInNav: '`export { passToClient }`',
-    isListTitle: true,
-    url: '/passToClient'
-  },
-  {
-    level: 2,
     title: '`onRenderHtml()` hook',
     titleInNav: '`export { onRenderHtml }`',
     isListTitle: true,
@@ -766,6 +759,11 @@ const headings = [
     level: 2,
     title: '`clientRouting`',
     url: '/clientRouting'
+  },
+  {
+    level: 2,
+    title: '`passToClient`',
+    url: '/passToClient'
   },
   {
     level: 2,
