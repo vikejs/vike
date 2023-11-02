@@ -385,8 +385,15 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
 function onBrowserHistoryNavigation(
   callback: (scrollPosition: ScrollTarget, isBackwardNavigation: null | boolean) => void
 ) {
-  // The `event` of `window.addEventListener('popstate', (event) => /*...*/)` is useless:
-  //  - The History API doesn't provide the previous state (the popped state): https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
+  // - The popstate event is trigged upon:
+  //   - Back-/forward navigation.
+  //     - By user clicking on his browser's back-/forward navigation (or using a shortcut)
+  //     - By JavaScript: `history.back()` / `history.forward()`
+  //   - URL hash change.
+  //     - By user clicking on a hash link `<a href="#some-hash" />`
+  //       - The popstate event is *only* triggered if `href` starts with '#' (even if `href` is '/#some-hash' while the current URL's pathname is '/' then the popstate still isn't triggered)
+  //     - By JavaScript: `location.hash = 'some-hash'`
+  // - The `event` of `window.addEventListener('popstate', (event) => /*...*/)` is useless: the History API doesn't provide the previous state (the popped state), see https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
   window.addEventListener('popstate', (): void => {
     const currentState = getState()
 
@@ -403,8 +410,8 @@ function onBrowserHistoryNavigation(
 
     if (isHashNavigation) {
       // - `history.state` is uninitialized (`null`) when:
-      //   - The vike app runs `window.location.hash = '#section'`.
-      //   - The user clicks on an anchor link `<a href="#section">Section</a>`. (Because Vike's `onLinkClick()` handler skips hash links.)
+      //   - The user's code runs `window.location.hash = '#section'`.
+      //   - The user clicks on an anchor link `<a href="#section">Section</a>` (because Vike's `onLinkClick()` handler skips hash links).
       // - `history.state` is `null` when uninitialized: https://developer.mozilla.org/en-US/docs/Web/API/History/state
       // - Alternatively, we completely take over hash navigation and reproduce the browser's native behavior upon hash navigation.
       //   - Problem: we cannot intercept `window.location.hash = '#section'`. (Or maybe we can with the `hashchange` event?)

@@ -297,11 +297,14 @@ async function getPageContextFromRoute(
 ): Promise<{ _pageId: string; routeParams: Record<string, string> }> {
   const routeResult = await route(pageContext)
   const pageContextFromRoute = routeResult.pageContextAddendum
+
+  // We'll be able to remove this once async route functions are deprecated (because we'll be able to skip link hijacking if a link doesn't match a route (because whether to call event.preventDefault() needs to be determined synchronously))
   if (!pageContextFromRoute._pageId) {
     const err = new Error('No routing match')
     markIs404(err)
     throw err
   }
+
   assert(hasProp(pageContextFromRoute, '_pageId', 'string'))
   return pageContextFromRoute
 }

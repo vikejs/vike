@@ -9,11 +9,12 @@ type HistoryState = {
 }
 type ScrollPosition = { x: number; y: number }
 
-// Fill missing state information.
-//  - The very first render => `history.state` is uninitialized (`null`).
-//  - The vike app runs `location.hash = '#section'` => `history.state` is uninitialized (`null`).
-//  - The user clicks on an anchor link `<a href="#section">Section</a>` => `history.state` is uninitialized (`null`).
-//  - `history.state` set by an old vike version => state information may be incomplete. (E.g. `state.timestamp` was introduced for `pageContext.isBackwardNavigation` in `0.4.19`.)
+// Fill missing state information:
+//  - `history.state` can uninitialized (i.e. `null`):
+//    - The very first render
+//    - The user's code runs `location.hash = '#section'`
+//    - The user clicks on an anchor link `<a href="#section">Section</a>` (Vike's `onLinkClick()` handler skips hash links).
+//  - State information may be incomplete if `history.state` is set by an old Vike version. (E.g. `state.timestamp` was introduced for `pageContext.isBackwardNavigation` in `0.4.19`.)
 function initHistoryState() {
   let state: HistoryState = window.history.state
   if (!state) {
