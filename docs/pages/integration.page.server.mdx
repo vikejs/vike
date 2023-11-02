@@ -17,7 +17,7 @@ In principle, you should be able to use Vike with any tool you want.
 ## UI tools
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
@@ -27,7 +27,7 @@ import renderToHtml from 'some-ui-framework'
 export { onRenderHtml }
 
 async function onRenderHtml(pageContext) {
-  // `Page` is the `export { Page }` of our `*.page.js` files;
+  // `Page` is the `export { Page }` of our `+Page.js` files;
   // Vike doesn't do anything with `Page` and just makes it available as
   // `pageContext.Page`; we can export any `Page` value we want and do whatever we want with it.
   const { Page } = pageContext
@@ -51,7 +51,7 @@ async function onRenderHtml(pageContext) {
 ```
 
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+onRenderClient.js
 // Environment: browser
 
 export { onRenderClient }
@@ -75,7 +75,7 @@ Integrating a UI tool is usually only a matter of following its official install
 ## Client-side tools
 
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+onRenderClient.js
 // Environment: browser
 
 export { onRenderClient }
