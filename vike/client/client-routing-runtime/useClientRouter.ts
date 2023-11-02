@@ -153,15 +153,6 @@ function useClientRouter() {
 
     const renderingNumber = ++renderingCounter
     assert(renderingNumber >= 1)
-
-    // Start transition before any await's
-    if (renderingNumber > 1) {
-      if (isTransitioning === false) {
-        await globalObject.onPageTransitionStart?.(pageContextBase)
-        isTransitioning = true
-      }
-    }
-
     let hydrationCanBeAborted = false
     const shouldAbort = () => {
       {
@@ -176,6 +167,17 @@ function useClientRouter() {
         return true
       }
       return false
+    }
+
+    // Start transition before any await's
+    if (renderingNumber > 1) {
+      if (isTransitioning === false) {
+        await globalObject.onPageTransitionStart?.(pageContextBase)
+        isTransitioning = true
+      }
+    }
+    if (shouldAbort()) {
+      return
     }
 
     const pageContext = await createPageContext(pageContextBase)
