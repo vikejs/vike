@@ -35,7 +35,7 @@ async function onRenderHtml(pageContext) {
 To define `<head>` tags for a specific page, we can use a <Link href="/exports" text="Custom Export" />.
 
 ```js
-// /pages/about.page.js
+// /pages/about/+Page.js
 
 // Custom Export
 export const documentProps = {
@@ -83,12 +83,12 @@ To define `<head>` tags that are dynamic (determined at run-time),
 we can also use a <Link href="/exports" text="Custom Export" />.
 
 ```js
-// /pages/rocket.page.route.js
+// /pages/rocket/+route.js
 export const '/rocket/@rocketSlug'
 ```
 
 ```js
-// /pages/rocket.page.js
+// /pages/rocket/+Page.js
 
 // Custom Export
 export { getDocumentProps }
@@ -205,11 +205,13 @@ documentProps.description = 'Me too.'
 If we use Client Routing, we need to make sure to update `document.title` upon page navigation:
 
 ```js
-// /renderer/_default.page.server.js
-// Environment: server
+// /renderer/+config.h.js
+// Environment: build-time
 
-// We make `pageContext.documentProps` available in the browser.
-export const passToClient = ['documentProps', 'pageProps']
+export default {
+  // We make `pageContext.documentProps` available in the browser.
+  passToClient: ['documentProps', 'pageProps']
+}
 ```
 
 ```js
