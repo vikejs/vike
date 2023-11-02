@@ -4,14 +4,14 @@ import { RepoLink, Link } from '@brillout/docpress'
 ## Examples & docs
 
 React Examples:
- - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Node.js: <RepoLink path='/examples/react-full/' />
- - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-react-full/' />
+ - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Node.js: <RepoLink path='/examples/react-full-v1/' />
+ - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-react-full-v1/' />
  - React 18 + Relay: [Vilay](https://github.com/XiNiHa/vilay)
  - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + [Telefunc](https://telefunc.com/) + [TigrisDB](https://www.tigrisdata.com/) + [Blueprint](https://blueprintjs.com/): [GitHub > `pyrossh/react-streaming-tigris`](https://github.com/pyrossh/react-streaming-tigris)
 
 Vue Examples:
- - Vue's `renderToNodeStream()` + Node.js: <RepoLink path='/examples/vue-full/' />
- - Vue's `pipeToWebWritable()` + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-vue/' />
+ - Vue's `renderToNodeStream()` + Node.js: <RepoLink path='/examples/vue-full-v1/' />
+ - Vue's `pipeToWebWritable()` + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-vue-v1/' />
 
 Stream Docs & API:
  - [Node.js Streams](https://nodejs.org/api/stream.html)
@@ -21,7 +21,7 @@ Stream Docs & API:
 ## Basics
 
 ```js
-// renderer/_deault.page.server.js
+// renderer/+onRenderHtml.js
 
 export { onRenderHtml }
 
@@ -160,7 +160,7 @@ res.send(body)
 To be able to use stream pipes, we need to use `stampPipe()`:
 
 ```js
-// renderer/_deault.page.server.js
+// /renderer/+onRenderHtml.js
 
 export { onRenderHtml }
 
@@ -210,7 +210,7 @@ const resp = new Response(readable)
 For some UI frameworks, such as Vue, we need a pipe wrapper:
 
 ```js
-// renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 
 import { pipePageToWritable } from 'some-ui-framework'
 import { stampPipe, escapeInject } from 'vike/server'
@@ -247,15 +247,12 @@ Consequently, we can determine the initial data (passed to the browser) only aft
 In such situations, we can return a `pageContext` async function in our `onRenderHtml()` hook:
 
 ```js
-// renderer/_deault.page.server.js
+// /renderer/+onRenderHtml.js
 
 export { onRenderHtml }
-export { passToClient }
 
 import { escapeInject } from 'vike/server'
 import { renderToStream } from 'some-ui-framework' // React, Vue, ...
-
-const passToClient = ['initialData']
 
 async function onRenderHtml(pageContext) {
   const { Page } = pageContext
@@ -280,5 +277,13 @@ async function onRenderHtml(pageContext) {
     documentHtml,
     pageContext: pageContextPromise
   }
+}
+```
+
+```js
+// /renderer/+config.h.js
+
+export default {
+  passToClient: ['initialData']
 }
 ```
