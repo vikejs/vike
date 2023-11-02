@@ -5,7 +5,7 @@ import type { PageConfigGlobalRuntimeSerialized, PageConfigRuntimeSerialized } f
 import { parse } from '@brillout/json-serializer/parse'
 import { parseConfigValuesImported } from './parseConfigValuesImported.js'
 import { assert, assertUsage, isCallable } from '../../utils.js'
-import { getConfigDefinedAtString } from '../utils.js'
+import { getConfigDefinedAtString } from '../helpers.js'
 
 function parsePageConfigs(
   pageConfigsSerialized: PageConfigRuntimeSerialized[],

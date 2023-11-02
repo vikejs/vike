@@ -66,7 +66,7 @@ import {
   removeSuperfluousViteLog_disable
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAtString } from '../../../../../shared/page-configs/utils.js'
+import { getConfigDefinedAtString } from '../../../../../shared/page-configs/helpers.js'
 import {
   assertExportsOfConfigFile,
   assertExportsOfValueFile
@@ -1201,7 +1201,6 @@ async function loadExtendsConfigs(
   const extendsConfigFiles: FilePathResolved[] = []
   extendsImportData.map((importData) => {
     const { importPath: importPath } = importData
-    // TODO: validate extends configs
     const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
     assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
     assertExtendsImportPath(importPath, filePathAbsoluteFilesystem, configFilePath)

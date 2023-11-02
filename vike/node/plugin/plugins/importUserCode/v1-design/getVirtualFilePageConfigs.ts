@@ -9,13 +9,13 @@ import type {
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
-import { stringify } from '@brillout/json-serializer/stringify'
+import { isJsonSerializerError, stringify } from '@brillout/json-serializer/stringify'
 import { getConfigEnv } from './helpers.js'
 import pc from '@brillout/picocolors'
 import { getVikeConfig } from './getVikeConfig.js'
 import type { ConfigVikeResolved } from '../../../../../shared/ConfigVike.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
-import { getConfigValueFilePathToShowToUser } from '../../../../../shared/page-configs/utils.js'
+import { getConfigValueFilePathToShowToUser } from '../../../../../shared/page-configs/helpers.js'
 import {
   serializeConfigValue,
   serializeConfigValueImported
@@ -152,9 +152,16 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAt:
   const valueName = `config${getPropAccessNotation(configName)}`
   let configValueSerialized: string
   try {
-    configValueSerialized = stringify(value, { valueName })
+    configValueSerialized = stringify(value, { valueName, forbidReactElements: true })
   } catch (err) {
-    assert(hasProp(err, 'messageCore', 'string'))
+    let serializationErrMsg = ''
+    if (isJsonSerializerError(err)) {
+      serializationErrMsg = err.messageCore
+    } else {
+      console.error('Serialization error:')
+      console.error(err)
+      serializationErrMsg = 'see serialization error printed above'
+    }
     const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser({ definedAt })
     assert(configValueFilePathToShowToUser)
     assertUsage(
@@ -163,7 +170,7 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAt:
         `The value of the config ${pc.cyan(
           configName
         )} cannot be defined inside the file ${configValueFilePathToShowToUser}:`,
-        `its value must be defined in an another file and then imported by ${configValueFilePathToShowToUser}. (Because the value isn't serializable: ${err.messageCore}.)`,
+        `its value must be defined in an another file and then imported by ${configValueFilePathToShowToUser}. (Because its value isn't serializable: ${serializationErrMsg}.)`,
         `Only serializable config values can be defined inside +config.h.js files, see https://vike.dev/header-file.`
       ].join(' ')
     )

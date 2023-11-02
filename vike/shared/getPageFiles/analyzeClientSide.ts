@@ -1,6 +1,6 @@
 export { analyzeClientSide }
 
-import { getConfigValue } from '../page-configs/utils.js'
+import { getConfigValue } from '../page-configs/helpers.js'
 import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
 import { analyzePageClientSide } from './analyzePageClientSide.js'
@@ -16,9 +16,7 @@ function analyzeClientSide(
     const isClientSideRenderable = getConfigValue(pageConfig, 'isClientSideRenderable', 'boolean')?.value ?? false
     return { isClientSideRenderable, isClientRouting }
   } else {
-    // TODO/v1-release:
-    //  - remove V0.4 implementation
-    //  - globally rename isHtmlOnly to !isClientSideRenderable
+    // TODO/v1-release: remove
     // V0.4 design
     const { isHtmlOnly, isClientRouting } = analyzePageClientSide(pageFilesAll, pageId)
     return { isClientSideRenderable: !isHtmlOnly, isClientRouting }

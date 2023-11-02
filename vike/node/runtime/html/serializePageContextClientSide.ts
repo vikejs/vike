@@ -2,7 +2,7 @@ export { serializePageContextClientSide }
 export { serializePageContextAbort }
 export type { PageContextSerialization }
 
-import { stringify } from '@brillout/json-serializer/stringify'
+import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
 import { assert, assertWarning, hasProp, unique } from '../utils.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { isErrorPage } from '../../../shared/error-page.js'
@@ -60,23 +60,30 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
       } catch (err) {
         hasWarned = true
         propsNonSerializable.push(prop)
-        assert(hasProp(err, 'messageCore', 'string'))
-        assertWarning(
-          false,
-          [
-            `${varName} cannot be serialized and, therefore, cannot be passed to the client.`,
-            `Make sure that ${varName} is serializable, or remove ${h(propName)} from ${h('passToClient')}.`,
-            `Serialization error: ${err.messageCore}.`
-          ].join(' '),
-          { onlyOnce: false }
-        )
+        let msg = [
+          `${varName} cannot be serialized and, therefore, cannot be passed to the client.`,
+          `Make sure that ${varName} is serializable, or remove ${h(propName)} from ${h('passToClient')}.`
+        ].join(' ')
+        if (isJsonSerializerError(err)) {
+          msg = `${msg} Serialization error: ${err.messageCore}.`
+        } else {
+          console.warn('Serialization error:')
+          console.warn(err)
+          msg = `${msg} The serialization failed because of the error printed above.`
+        }
+        // We warn (instead of throwing an error) since Vike's client runtime throws an error (with `assertUsage()`) if the user's client code tries to access the property that cannot be serialized
+        assertWarning(false, msg, { onlyOnce: false })
       }
     })
     assert(hasWarned)
     propsNonSerializable.forEach((prop) => {
       pageContextClient[prop] = notSerializable
     })
-    pageContextSerialized = serialize(pageContextClient)
+    try {
+      pageContextSerialized = serialize(pageContextClient)
+    } catch (err) {
+      assert(false)
+    }
   }
 
   return pageContextSerialized

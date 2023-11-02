@@ -34,7 +34,7 @@ import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageRoutes.js'
 import type { OnBeforeRouteHook } from '../../../shared/route/executeOnBeforeRouteHook.js'
 import pc from '@brillout/picocolors'
-import { getConfigValueFilePathToShowToUser } from '../../../shared/page-configs/utils.js'
+import { getConfigValueFilePathToShowToUser } from '../../../shared/page-configs/helpers.js'
 
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 

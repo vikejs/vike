@@ -10,7 +10,7 @@ import { assertDefaultExports, forbiddenDefaultExports } from './assert_exports_
 import type { FileType } from './fileTypes.js'
 import type { PageConfigRuntimeLoaded } from './../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
-import { getConfigDefinedAtString, getConfigValueFilePathToShowToUser } from '../page-configs/utils.js'
+import { getConfigDefinedAtString, getConfigValueFilePathToShowToUser } from '../page-configs/helpers.js'
 import pc from '@brillout/picocolors'
 
 // TODO/v1-release: remove
