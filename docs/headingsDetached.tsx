@@ -192,10 +192,6 @@ const headingsDetached = [
     url: '/prerender'
   },
   {
-    title: <code>onPrerenderStart()</code>,
-    url: '/onPrerenderStart'
-  },
-  {
     title: <code>doNotPrerender</code>,
     url: '/doNotPrerender'
   },

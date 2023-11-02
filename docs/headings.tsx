@@ -688,6 +688,13 @@ const headings = [
   },
   {
     level: 2,
+    title: '`onPrerenderStart()` hook',
+    titleInNav: '`export { onPrerenderStart }`',
+    isListTitle: true,
+    url: '/onPrerenderStart'
+  },
+  {
+    level: 2,
     title: '`renderPage()`',
     url: '/renderPage'
   },
