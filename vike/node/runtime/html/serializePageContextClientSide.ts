@@ -67,6 +67,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
         if (isJsonSerializerError(err)) {
           msg = `${msg} Serialization error: ${err.messageCore}.`
         } else {
+          // When a property getter throws an error
           console.warn('Serialization error:')
           console.warn(err)
           msg = `${msg} The serialization failed because of the error printed above.`
