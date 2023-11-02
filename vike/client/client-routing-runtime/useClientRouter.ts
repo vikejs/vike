@@ -385,7 +385,7 @@ function onBrowserHistoryNavigation(
 ) {
   // The `event` of `window.addEventListener('popstate', (event) => /*...*/)` is useless:
   //  - The History API doesn't provide the previous state (the popped state): https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
-  window.addEventListener('popstate', () => {
+  window.addEventListener('popstate', (): void => {
     const currentState = getState()
 
     const scrollTarget = currentState.historyState.scrollPosition || 'scroll-to-top-or-hash'
