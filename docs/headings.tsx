@@ -688,13 +688,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`doNotPrerender`',
-    titleInNav: '`export { doNotPrerender }`',
-    isListTitle: true,
-    url: '/doNotPrerender'
-  },
-  {
-    level: 2,
     title: '`renderPage()`',
     url: '/renderPage'
   },
@@ -769,6 +762,11 @@ const headings = [
     level: 2,
     title: '`filesystemRoutingRoot`',
     url: '/filesystemRoutingRoot'
+  },
+  {
+    level: 2,
+    title: '`prerender`',
+    url: '/prerender-meta'
   },
   {
     level: 2,

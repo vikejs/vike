@@ -1,0 +1,73 @@
+import { Link } from '@brillout/docpress'
+
+In some situations we don't want to pre-render a page.
+For example a news page that displays the latest news fetched from a database should be rendered at request-time and certainly not at build-time.
+
+We can use `prerender: false` to tell Vike to skip a page from pre-rendering.
+
+```js
+// /pages/news/+config.h.js
+
+export default {
+  prerender: false
+}
+```
+
+
+## `/renderer/+config.h.js`
+
+We can define `prerender` in higher levels so it applies to more/all pages, e.g. in `/pages/+config.h.js`,
+`/pages/+prerender.js` or even `/renderer/+config.h.js` or `/renderer/+prerender.js`.
+
+For example, to make pre-rendering opt-in instead of opt-out:
+
+```js
+// /renderer/+config.h.js
+
+export default {
+  // By default, our pages are not pre-rendered
+  prerender: false
+}
+```
+
+```js
+// /pages/about-us/+prerender.js
+
+// Opt-in pre-rendering
+export const prerender = true
+```
+
+This is especially handy with <Link text="Domain-Driven File Structure" href='/file-structure#domain-driven' />:
+
+```js
+// /pages/marketing/+prerender.js
+
+// We use Domain-Driven File Structure and `+prerender.js` applies to
+// all our marketing pages.
+
+// Enable pre-rendering for all our marketing pages
+export const prerender = true
+```
+
+
+## Conditional pre-rendering
+
+We can pre-render pages conditionally:
+
+```js
+// /renderer/+prerender.js
+
+export const prerender = isCmsPreview() ? false : true
+```
+
+> This is particularly useful for previewing CMS pages (we don't want to pre-renderer a CMS preview deploy).
+
+Note that <Link text={<><code>onBeforePrerenderStart()</code> hooks</>} href="/onBeforePrerenderStart" /> are always
+called, regardless of `prerender`. If we want to call `onBeforePrerenderStart()` hooks conditionally as well:
+
+{ /* NOTE(aurelien): rewrite this last part after Vike bug fixed where `prerender` seems to have no effect */ }
+
+```js
+export const doNotPrerender = someCondition() ? true : false
+export const prerender = doNotPrerender ? undefined : myPrerenderHook
+```

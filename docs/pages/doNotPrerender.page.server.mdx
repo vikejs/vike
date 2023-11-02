@@ -1,9 +1,17 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
+
+<Warning>
+  `doNotPrerender` is deprecated in favor of `prerender`, see
+  <ul>
+    <li><Link href="/prerender-meta" /></li>
+    <li><Link href="/migration/v1-design#renamed-hooks" /></li>
+  </ul>
+</Warning>
 
 In some situations we don't want to pre-render a page.
 For example a news page that displays the latest news fetched from a database should be rendered at request-time and certainly not at build-time.
 
-We can use `.page.server.js#noNoPrerender` to tell Vike to skip a page from pre-rendering.
+We can use `.page.server.js#doNotPrerender` to tell Vike to skip a page from pre-rendering.
 
 ```js
 // /pages/news.page.server.js
@@ -37,7 +45,7 @@ export const doNotPrerender = false
 This is especially handy with <Link text="Domain-Driven File Structure" href='/file-structure#domain-driven' />:
 
 ```js
-// /pages/mareting/_default.page.server.js
+// /pages/marketing/_default.page.server.js
 
 // We use Domain-Driven File Structure and `_default.page.server.js` applies to
 // all our marketing pages.
