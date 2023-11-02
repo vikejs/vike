@@ -23,6 +23,7 @@ app.get('*', async (req, res) => {
   res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
 })
 ```
+
 ```ts
 type PageContext = {
   httpResponse: {
@@ -50,7 +51,7 @@ See also:
 If Vike's default preload strategy doesn't work for us, we can customize which and where preload/asset tags are injected.
 
 ```ts
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 
 export { onRenderHtml }
 
