@@ -6,8 +6,8 @@ import { RepoLink, Link } from '@brillout/docpress'
 If you use Vue, you can use [`unplugin-vue-markdown`](https://github.com/antfu/unplugin-vue-markdown), or [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md) (make sure to use at least `vite-plugin-md@0.22.x`, see [this bug report](https://github.com/antfu/vite-plugin-md/issues/112#issuecomment-1353626379)).
 
 Example:
- - <RepoLink path='/examples/vue-full/vite.config.ts' />
- - <RepoLink path='/examples/vue-full/pages/markdown.page.md' />
+ - <RepoLink path='/examples/vue-full-v1/vite.config.ts' />
+ - <RepoLink path='/examples/vue-full-v1/pages/markdown/+Page.md' />
 
 
 ## React
@@ -15,8 +15,8 @@ Example:
 If you use React, you can use [`@mdx-js/rollup`](https://mdxjs.com/packages/rollup/).
 
 Example:
- - <RepoLink path='/examples/react-full/vite.config.ts' />
- - <RepoLink path='/examples/react-full/pages/markdown.page.mdx' />
+ - <RepoLink path='/examples/react-full-v1/vite.config.ts' />
+ - <RepoLink path='/examples/react-full-v1/pages/markdown/+Page.mdx' />
 
 
 ## Metadata
@@ -43,7 +43,7 @@ export const metadata = [
 ```
 
 ```jsx
-// /pages/index/index.page.jsx
+// /pages/index/+Page.jsx
 
 import { metadata } from './metadata'
 
@@ -65,14 +65,14 @@ export function Page() {
 We don't have to redefine/duplicate the page titles in the markdown:
 
 ```md
-// /pages/blog/introducing-vike.md
+// /pages/blog/introducing-vike/+Page.md
 
 We're thrilled to officially introduce Vike, the new name of vite-plugin-ssr,
 marking a new era for the project.
 ```
 
 ```md
-// /pages/blog/v1.md
+// /pages/blog/v1/+Page.md
 
 The `v1.0.0` release signals that Vike is ready for prime time: it now includes
 all essentials you'd expect from a frontend framework with a robust design.
@@ -100,7 +100,7 @@ export function PageShell({ pageContext }) {
 ```
 
 ```js
-// /renderer/_default.page.server.jsx
+// /renderer/+onRenderHtml.jsx
 
 export { onRenderHtml }
 
@@ -131,8 +131,8 @@ async function onRenderHtml(pageContext) {
 To set the `<head>` tags value of a markdown page,
 you can use <Link href="/exports" text="Custom Export" />.
 
-~~~js
-// some.page.md
+~~~md
+// /pages/some/+Page.md
 
 export const documentProps = {
   title: 'A Markdown Page',
@@ -145,7 +145,7 @@ This page is written in _Markdown_.
 ~~~
 
 ```js
-// _default.page.server.js
+// /renderer/+onRenderHtml.js
 
 export { onRenderHtml }
 
@@ -165,8 +165,8 @@ async function onRenderHtml(pageContext) {
 ```
 
 Examples:
- - <RepoLink path='/examples/react-full/pages/markdown.page.md' />
- - <RepoLink path='/examples/vue-full/pages/markdown.page.md' />
+ - <RepoLink path='/examples/react-full-v1/pages/markdown/+Page.mdx' />
+ - <RepoLink path='/examples/vue-full-v1/pages/markdown/+Page.md' />
 
 
 ## Metadata with frontmatter
@@ -191,7 +191,7 @@ which you can access at
 <Link href="/exports" text={<code>pageContext.exports</code>} />.
 
 ```js
-// _default.page.server.js
+// /renderer/+onRenderHtml.js
 
 export { onRenderHtml }
 
@@ -219,4 +219,4 @@ A frequent need when using markdown is to show the list of markdown pages to you
 
 To be able to do so, we recommend defining a file `metadata.js` that contains the metadata of all your markdown pages, see <Link href="#metadata" />.
 
-Another apporach is to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve the list of markdown files, but we usually recommend against this approach. The problem is that, in order to retrieve the metadata of all your markdown files, you'd need to load the *entire* code of *all* your markdown files, which contradicts <Link text="Vite's lazy-transpiling approach" href="/lazy-transpiling" /> and dramatically degrading Vite's development DX speed.
+Another approach is to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve the list of markdown files, but we usually recommend against this approach. The problem is that, in order to retrieve the metadata of all your markdown files, you'd need to load the *entire* code of *all* your markdown files, which contradicts <Link text="Vite's lazy-transpiling approach" href="/lazy-transpiling" /> and dramatically degrading Vite's development DX speed.
