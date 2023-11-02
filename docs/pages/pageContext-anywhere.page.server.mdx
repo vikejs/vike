@@ -34,6 +34,7 @@ to make `pageContext` accessible from any Vue component.
 const app = createSSRApp(/*...*/)
 app.provide('pageContext', pageContext)
 ```
+
 ```vue
 <!-- someComponent.vue -->
 
@@ -68,10 +69,12 @@ function setPageContext(app, pageContext) {
   app.provide(key, pageContext)
 }
 ```
+
 ```js
 const app = createSSRApp(/*...*/)
 setPageContext(app, pageContext)
 ```
+
 ```vue
 <script setup>
 import { usePageContext } from './path/to/usePageContext'
@@ -85,7 +88,7 @@ Example:
  - <RepoLink path='/boilerplates/boilerplate-vue/renderer/app.js' /> (<code>setPageContext(app, pageContext)</code>)
 
 If we use <Link href="/client-routing" noBreadcrumb={true} />, we need to make `pageContext` reactive:
- - <RepoLink path='/examples/vue-full/renderer/app.ts' />
+ - <RepoLink path='/examples/vue-full-v1/renderer/app.ts' />
 
 ## Vue 3 - `globalProperties`
 
@@ -97,6 +100,7 @@ Alternatively, we can make `pageContext` available to all Vue components by usin
 const app = createSSRApp(/*...*/)
 app.config.globalProperties.$pageContext = pageContext
 ```
+
 ```vue
 <!-- someComponent.vue -->
 
