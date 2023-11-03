@@ -154,7 +154,7 @@ export { onRenderClient }
 import { renderDom } from 'some-ui-framework'
 
 async function onRenderClient(pageContext) {
-  // `.page.js` files are also loaded in the browser: `Layout` and `Page` are also available here
+  // `+Page.js` files are also loaded in the browser: `Layout` and `Page` are also available here
   const { Page, Layout } = pageContext.exports
   renderDom(
     <Layout><Page /></Layout>,
