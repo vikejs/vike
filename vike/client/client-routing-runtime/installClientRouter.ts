@@ -1,6 +1,7 @@
 export { installClientRouter }
 export { disableClientRouting }
 export { isDisableAutomaticLinkInterception }
+export { fetchAndRender }
 
 import {
   assert,
@@ -23,7 +24,6 @@ import { assertHook } from '../../shared/hooks/getHook.js'
 import { isClientSideRoutable, skipLink } from './skipLink.js'
 import { isErrorFetchingStaticAssets } from '../shared/loadPageFilesClientSide.js'
 import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history.js'
-import { defineNavigate } from './navigate.js'
 import {
   assertNoInfiniteAbortLoop,
   getPageContextFromAllRewrites,
@@ -87,18 +87,6 @@ function installClientRouter() {
   // Handle back-/forward navigation
   onBrowserHistoryNavigation((scrollTarget, isBackwardNavigation) => {
     fetchAndRender({ scrollTarget, isBackwardNavigation })
-  })
-
-  // Define navigate() function
-  defineNavigate(async (url: string, { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {}) => {
-    const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
-    await fetchAndRender({
-      scrollTarget,
-      urlOriginal: url,
-      overwriteLastHistoryEntry,
-      isBackwardNavigation: false,
-      checkClientSideRenderable: true
-    })
   })
 
   // Intial render

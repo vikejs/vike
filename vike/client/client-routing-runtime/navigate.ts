@@ -1,7 +1,7 @@
 export { navigate }
 export { reload }
-export { defineNavigate }
 
+import { fetchAndRender } from './installClientRouter.js'
 import {
   assertUsage,
   isBrowser,
@@ -48,11 +48,15 @@ async function navigate(
   assertUsage(url.startsWith('/'), '[navigate(url)] Argument url should start with a leading /', {
     showStackTrace: true
   })
-  await globalObject.navigate(url, { keepScrollPosition, overwriteLastHistoryEntry })
-}
 
-function defineNavigate(navigate_: typeof navigate) {
-  globalObject.navigate = navigate_
+  const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
+  await fetchAndRender({
+    scrollTarget,
+    urlOriginal: url,
+    overwriteLastHistoryEntry,
+    isBackwardNavigation: false,
+    checkClientSideRenderable: true
+  })
 }
 
 async function reload(): Promise<void> {
