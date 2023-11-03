@@ -240,11 +240,6 @@ const headingsDetached = [
     url: '/Page-client'
   },
   {
-    title: 'Architecture',
-    url: '/architecture',
-    sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', 'Do-one-thing-do-it-well']
-  },
-  {
     title: <code>.page.route.js</code>,
     url: '/.page.route.js'
   },

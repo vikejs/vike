@@ -37,6 +37,12 @@ const headings = [
     url: '/react-tour'
   },
   {
+    level: 2,
+    title: 'Architecture',
+    url: '/architecture',
+    sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', 'Do-one-thing-do-it-well']
+  },
+  {
     level: 1,
     title: 'Get Started',
     titleEmoji: 'seedling'
