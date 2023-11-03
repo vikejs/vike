@@ -757,6 +757,11 @@ const headings = [
     url: '/prefetch'
   },
   {
+    level: 2,
+    title: '`usePageContext()`',
+    url: '/usePageContext'
+  },
+  {
     level: 4,
     title: 'Build-time'
   },
