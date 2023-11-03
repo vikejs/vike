@@ -189,13 +189,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // throw render('/some-url')
       if (pageContextAbort._urlRewrite) {
         await renderPageClientSide({
-          scrollTarget,
-          urlOriginal,
-          overwriteLastHistoryEntry,
-          isBackwardNavigation,
+          ...renderArgs,
           checkClientSideRenderable: true,
-          pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort],
-          redirectCount
+          pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort]
         })
         return
       }
@@ -209,12 +205,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           return
         } else {
           await renderPageClientSide({
+            ...renderArgs,
             scrollTarget: 'scroll-to-top-or-hash',
             urlOriginal: urlRedirect,
             overwriteLastHistoryEntry: false,
             isBackwardNavigation: false,
             checkClientSideRenderable: true,
-            pageContextsFromRewrite,
             redirectCount: redirectCount + 1
           })
         }
