@@ -1,10 +1,5 @@
 import { Link, Warning } from '@brillout/docpress'
 
-<Warning>
-  Having multiple `/renderer` folders is deprecated in favor of having `+*.js` files in higher page folders,
-  see <Link href="/default-page" />
-</Warning>
-
 If we have pages with substantially different rendering logic,
 for example different <Link text="Render Modes" href="/render-modes" />,
 then we may want to define multiple `renderer/`.
@@ -13,24 +8,24 @@ then we may want to define multiple `renderer/`.
 # =====================
 # == Marketing Pages ==
 # =====================
-marketing/pages/index.page.js # /
-marketing/pages/about.page.js # /about
-marketing/pages/jobs.page.js # /jobs
+marketing/pages/index/+Page.js # /
+marketing/pages/about/+Page.js # /about
+marketing/pages/jobs/+Page.js # /jobs
 # Render Marketing Pages as HTML-only
-marketing/renderer/_default.page.server.js
-marketing/renderer/_default.page.client.js
-marketing/renderer/_default.page.route.js # (Route to `/*` instead of `/marketing/*`.)
+marketing/renderer/+onRenderHtml.js
+marketing/renderer/+onRenderClient.js
+marketing/+config.h.js # (Route to `/*` instead of `/marketing/*`.)
 
 # =================
 # == Admin Panel ==
 # =================
-admin-panel/pages/index.page.js
+admin-panel/pages/index/+Page.js
 # Render Admin Panel as SPA
-admin-panel/renderer/_default.page.server.js
-admin-panel/renderer/_default.page.client.js
+admin-panel/renderer/+onRenderHtml.js
+admin-panel/renderer/+onRenderClient.js
 ```
 
-(We use `_default.page.route.js` to change the Filesystem Routing Root, see <Link href="/filesystemRoutingRoot" />.)
+(We use `+config.h.js` to change the Filesystem Routing Root, see <Link href="/filesystemRoutingRoot" />.)
 
 ## Partial
 
@@ -38,16 +33,16 @@ We can also override only a subset of `renderer/`.
 
 ```bash
 # Our "default" renderer
-renderer/_default.page.server.js
-renderer/_default.page.client.js
+renderer/+onRenderHtml.js
+renderer/+onRenderClient.js
 
-pages/some-page/index.page.js # Rendered with our default renderer
+pages/some-page/index/+Page.js # Rendered with our default renderer
 
 # Our Product pages need a slightly different client-side.
-# We only override `_default.page.client.js` while `_default.page.server.js` stays the same.
-pages/product/_default.page.client.js
-pages/product/@productId.page.js
-pages/product/index.page.js
+# We only override `+onRenderClient.js` while `+onRenderHtml.js` stays the same.
+pages/product/+onRenderClient.js
+pages/product/@productId/+Page.js
+pages/product/index/+Page.js
 ```
 
 ## Alternative: Custom Hooks
