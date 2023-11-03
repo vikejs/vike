@@ -4,10 +4,10 @@ Environment: server.
 
 The `escapeInject` string template tag sanitizes HTML (to prevent so-called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting) security breaches).
 
-It's usually used in the `onRenderHtml()` hook defined in `renderer/_default.page.server.js`.
+It's usually used in the `onRenderHtml()` hook defined in `/renderer/+onRenderHtml.js`.
 
 ```js
-// renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 export { onRenderHtml }
@@ -46,7 +46,7 @@ We can assemble the overall HTML document from several HTML fragments.
 For example, if we want some HTML parts to be included only for certain pages:
 
 ```js
-// _default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
@@ -78,4 +78,4 @@ async function onRenderHtml(pageContext) {
 > `pageContext.exports.description` is a <Link text="Custom Export" href="/exports" />.
 
 Example:
-- <RepoLink path='/examples/html-fragments/' />
+- <RepoLink path='/examples/html-fragments-v1/' />
