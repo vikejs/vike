@@ -1,5 +1,7 @@
 export { route }
-export type { PageRoutes, PageContextForRoute, RouteMatches, PageContextFromRoute }
+export type { PageContextForRoute }
+export type { PageRoutes }
+export type { RouteMatches }
 
 // Ensure we don't bloat runtime of Server Routing
 import { assertClientRouting } from '../../utils/assertRoutingType.js'
