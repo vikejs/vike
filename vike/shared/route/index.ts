@@ -1,5 +1,5 @@
 export { route }
-export type { PageRoutes, PageContextForRoute, RouteMatches }
+export type { PageRoutes, PageContextForRoute, RouteMatches, PageContextFromRoute }
 
 // Ensure we don't bloat runtime of Server Routing
 import { assertClientRouting } from '../../utils/assertRoutingType.js'
@@ -32,6 +32,12 @@ type PageContextForRoute = PageContextUrlComputedPropsInternal & {
   _pageRoutes: PageRoutes
   _onBeforeRouteHook: OnBeforeRouteHook | null
 } & PageContextUrlSources
+type PageContextFromRoute = {
+  _pageId: string | null
+  routeParams: Record<string, string>
+  _routingProvidedByOnBeforeRouteHook: boolean
+  _routeMatches: RouteMatches
+}
 type RouteMatch = {
   pageId: string
   routeString?: string
@@ -42,12 +48,7 @@ type RouteMatch = {
 type RouteMatches = 'CUSTOM_ROUTE' | RouteMatch[]
 
 async function route(pageContext: PageContextForRoute): Promise<{
-  pageContextAddendum: {
-    _pageId: string | null
-    routeParams: Record<string, string>
-    _routingProvidedByOnBeforeRouteHook: boolean
-    _routeMatches: RouteMatches
-  } & Record<string, unknown>
+  pageContextAddendum: PageContextFromRoute
 }> {
   addUrlComputedProps(pageContext)
 
