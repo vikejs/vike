@@ -2,7 +2,7 @@ The hooks [`onBeforeRender()`](/onBeforeRender), [`onRenderHtml()`](/onRenderHtm
 [`onBeforeRoute()`](/onBeforeRoute) enable us to extend `pageContext`.
 
 ```js
-// .page.server.js
+// +onBeforeRender.js
 
 export { onBeforeRender }
 
@@ -27,7 +27,7 @@ async function getStarWarsMovies() {
 In general, we should try to avoid mutating `pageContext`:
 
 ```diff
-  // .page.server.js
+  // +onBeforeRender.js
 
   export { onBeforeRender }
 
@@ -52,7 +52,7 @@ In general, we should try to avoid mutating `pageContext`:
 We also shouldn't do this:
 
 ```diff
-  // .page.server.js
+  // +onBeforeRender.js
 
   export { onBeforeRender }
 
