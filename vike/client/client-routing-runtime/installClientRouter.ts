@@ -1,4 +1,4 @@
-export { useClientRouter }
+export { installClientRouter }
 export { disableClientRouting }
 export { isDisableAutomaticLinkInterception }
 
@@ -39,7 +39,7 @@ const globalObject = getGlobalObject<{
   renderingCounter: number
   renderPromise?: Promise<void>
   isTransitioning?: true
-}>('useClientRouter.ts', { previousState: getState(), renderingCounter: 0 })
+}>('installClientRouter.ts', { previousState: getState(), renderingCounter: 0 })
 
 setupNativeScrollRestoration()
 initHistoryState()
@@ -69,7 +69,7 @@ function disableClientRouting(err: unknown, log: boolean) {
   )
 }
 
-function useClientRouter() {
+function installClientRouter() {
   autoSaveScrollPosition()
 
   onLinkClick((url: string, { keepScrollPosition }) => {
