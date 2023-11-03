@@ -281,14 +281,6 @@ const headingsDetached = [
     url: '/extends'
   },
   {
-    title: (
-      <>
-        Header file (<code>.h.js</code>)
-      </>
-    ),
-    url: '/header-file'
-  },
-  {
     title: <code>throw RenderErrorPage()</code>,
     url: '/RenderErrorPage'
   },
