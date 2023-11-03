@@ -2,20 +2,9 @@ export { navigate }
 export { reload }
 
 import { renderPageClientSide } from './installClientRouter.js'
-import {
-  assertUsage,
-  isBrowser,
-  getGlobalObject,
-  assertClientRouting,
-  checkIfClientRouting,
-  getCurrentUrl
-} from './utils.js'
+import { assertUsage, isBrowser, assertClientRouting, checkIfClientRouting, getCurrentUrl } from './utils.js'
 
 assertClientRouting()
-
-const globalObject = getGlobalObject<{
-  navigate?: typeof navigate
-}>('navigate.ts', {})
 
 /** Programmatically navigate to a new page.
  *
@@ -31,7 +20,6 @@ async function navigate(
 ): Promise<void> {
   assertUsage(isBrowser(), 'The navigate() function can be called only on the client-side', { showStackTrace: true })
   const errMsg = 'navigate() works only with Client Routing, see https://vike.dev/navigate'
-  assertUsage(globalObject.navigate, errMsg, { showStackTrace: true })
   assertUsage(checkIfClientRouting(), errMsg, { showStackTrace: true })
   assertUsage(url, '[navigate(url)] Missing argument url', { showStackTrace: true })
   assertUsage(typeof url === 'string', '[navigate(url)] Argument url should be a string', { showStackTrace: true })
