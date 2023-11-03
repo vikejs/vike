@@ -1,7 +1,7 @@
 export { installClientRouter }
 export { disableClientRouting }
 export { isDisableAutomaticLinkInterception }
-export { fetchAndRender }
+export { renderPageClientSide }
 
 import {
   assert,
@@ -76,7 +76,7 @@ function installClientRouter() {
   // Intercept <a> links
   onLinkClick((url: string, { keepScrollPosition }) => {
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
-    fetchAndRender({
+    renderPageClientSide({
       scrollTarget,
       urlOriginal: url,
       isBackwardNavigation: false,
@@ -86,14 +86,14 @@ function installClientRouter() {
 
   // Handle back-/forward navigation
   onBrowserHistoryNavigation((scrollTarget, isBackwardNavigation) => {
-    fetchAndRender({ scrollTarget, isBackwardNavigation })
+    renderPageClientSide({ scrollTarget, isBackwardNavigation })
   })
 
   // Intial render
-  fetchAndRender({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
+  renderPageClientSide({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
 }
 
-async function fetchAndRender({
+async function renderPageClientSide({
   scrollTarget,
   urlOriginal = getCurrentUrl(),
   overwriteLastHistoryEntry = false,
@@ -212,7 +212,7 @@ async function fetchAndRender({
 
       // throw render('/some-url')
       if (pageContextAbort._urlRewrite) {
-        await fetchAndRender({
+        await renderPageClientSide({
           scrollTarget,
           urlOriginal,
           overwriteLastHistoryEntry,
@@ -231,7 +231,7 @@ async function fetchAndRender({
           window.location.href = urlRedirect
           return
         } else {
-          await fetchAndRender({
+          await renderPageClientSide({
             scrollTarget: 'scroll-to-top-or-hash',
             urlOriginal: urlRedirect,
             overwriteLastHistoryEntry: false,

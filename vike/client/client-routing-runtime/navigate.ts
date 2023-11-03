@@ -1,7 +1,7 @@
 export { navigate }
 export { reload }
 
-import { fetchAndRender } from './installClientRouter.js'
+import { renderPageClientSide } from './installClientRouter.js'
 import {
   assertUsage,
   isBrowser,
@@ -50,7 +50,7 @@ async function navigate(
   })
 
   const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
-  await fetchAndRender({
+  await renderPageClientSide({
     scrollTarget,
     urlOriginal: url,
     overwriteLastHistoryEntry,
