@@ -644,12 +644,20 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Abort',
+    url: '/abort',
+    sectionTitles: ['`throw redirect()` VS `throw render()`']
+  },
+  {
+    level: 2,
     title: '`throw redirect()`',
+    isListTitle: true,
     url: '/redirect'
   },
   {
     level: 2,
     title: '`throw render()`',
+    isListTitle: true,
     url: '/render'
   },
   {

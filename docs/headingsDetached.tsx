@@ -321,11 +321,6 @@ const headingsDetached = [
     url: '/usePageContext'
   },
   {
-    title: 'Abort',
-    url: '/abort',
-    sectionTitles: ['`throw redirect()` VS `throw render()`']
-  },
-  {
     title: 'Page Redirection',
     url: '/page-redirection'
   },
