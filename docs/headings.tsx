@@ -658,12 +658,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`Page` (server-side)',
-    titleInNav: '`export { Page }`',
-    url: '/Page-server'
-  },
-  {
-    level: 2,
     title: '`onBeforeRender()` hook (server-side)',
     titleInNav: '`export { onBeforeRender }`',
     sectionTitles: ['Client Routing'],
@@ -710,12 +704,6 @@ const headings = [
   {
     level: 4,
     title: 'Client-side'
-  },
-  {
-    level: 2,
-    title: '`Page` (client-side)',
-    titleInNav: '`export { Page }`',
-    url: '/Page-client'
   },
   {
     level: 2,
