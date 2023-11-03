@@ -1,4 +1,9 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
+
+<Warning>
+  Having multiple `/renderer` folders is deprecated in favor of having `+*.js` files in higher page folders,
+  see <Link href="/default-page" />
+</Warning>
 
 If we have pages with substantially different rendering logic,
 for example different <Link text="Render Modes" href="/render-modes" />,
