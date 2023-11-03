@@ -193,6 +193,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           urlOriginal,
           overwriteLastHistoryEntry,
           isBackwardNavigation,
+          checkClientSideRenderable: true,
           pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort],
           redirectCount
         })
