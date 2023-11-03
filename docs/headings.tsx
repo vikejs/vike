@@ -730,6 +730,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`client`',
+    url: '/client'
+  },
+  {
+    level: 2,
     title: '`navigate()`',
     url: '/navigate'
   },

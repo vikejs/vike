@@ -225,10 +225,6 @@ const headingsDetached = [
     sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', 'Do-one-thing-do-it-well']
   },
   {
-    title: <code>client</code>,
-    url: '/client'
-  },
-  {
     title: <code>route</code>,
     url: '/route'
   },
