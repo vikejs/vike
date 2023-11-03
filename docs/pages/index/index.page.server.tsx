@@ -1,14 +1,14 @@
 import React from 'react'
 import { Header, MobileCallToAction } from './Header'
 import { Features } from './features/Features'
-import { HorizontalLine, Sponsors } from '@brillout/docpress'
+import { HorizontalLine, Link, Sponsors } from '@brillout/docpress'
 
 export { Page }
 
 function Page() {
   return (
     <>
-      <GlobalNoteRename />
+      <GlobalNote />
       <Header />
       <HorizontalLine primary={true} />
       <Features />
@@ -20,15 +20,13 @@ function Page() {
   )
 }
 
-function GlobalNoteRename() {
+function GlobalNote() {
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
         <blockquote>
           <p>
-            <a href="https://vite-plugin-ssr.com"></a>
-            <code>vite-plugin-ssr</code> has been renamed Vike, see{' '}
-            <a href="https://vite-plugin-ssr.com/vike">migration guide</a>.
+            The <i>V1 design</i> has been released, see <Link text="migration guide" href="/migration/v1-design" />.
           </p>
         </blockquote>
       </div>
