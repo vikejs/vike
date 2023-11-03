@@ -190,6 +190,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (pageContextAbort._urlRewrite) {
         await renderPageClientSide({
           ...renderArgs,
+          scrollTarget: 'scroll-to-top-or-hash',
           checkClientSideRenderable: true,
           pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort]
         })
