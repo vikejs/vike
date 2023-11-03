@@ -41,11 +41,9 @@ const globalObject = getGlobalObject<{
   isTransitioning?: true
 }>('installClientRouter.ts', { previousState: getState(), renderingCounter: 0 })
 
-setupNativeScrollRestoration()
-initHistoryState()
-
 function installClientRouter() {
-  // Save scroll position (needed for back-/forward navigation)
+  setupNativeScrollRestoration()
+  initHistoryState()
   autoSaveScrollPosition()
 
   // Intercept <a> links
@@ -478,6 +476,7 @@ function setScroll(scrollPosition: ScrollPosition) {
   })
 }
 
+// Save scroll position (needed for back-/forward navigation)
 function autoSaveScrollPosition() {
   // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/vikejs/vike/issues/46)
   window.addEventListener('scroll', throttle(saveScrollPosition, Math.ceil(1000 / 3)), { passive: true })
