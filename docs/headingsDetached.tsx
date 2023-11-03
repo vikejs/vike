@@ -249,6 +249,10 @@ const headingsDetached = [
     url: '/.page.route.js'
   },
   {
+    title: <code>_default.page.route.js</code>,
+    url: '/_default.page.route.js'
+  },
+  {
     title: 'Built-in renderers',
     url: '/renderers'
   },
