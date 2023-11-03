@@ -27,7 +27,7 @@ const globalObject = getGlobalObject<{
  */
 async function navigate(
   url: string,
-  { keepScrollPosition = false, overwriteLastHistoryEntry = false, data = true } = {}
+  { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {}
 ): Promise<void> {
   assertUsage(isBrowser(), 'The navigate() function can be called only on the client-side', { showStackTrace: true })
   const errMsg = 'navigate() works only with Client Routing, see https://vike.dev/navigate'
@@ -48,7 +48,7 @@ async function navigate(
   assertUsage(url.startsWith('/'), '[navigate(url)] Argument url should start with a leading /', {
     showStackTrace: true
   })
-  await globalObject.navigate(url, { keepScrollPosition, overwriteLastHistoryEntry, data })
+  await globalObject.navigate(url, { keepScrollPosition, overwriteLastHistoryEntry })
 }
 
 function defineNavigate(navigate_: typeof navigate) {

@@ -20,7 +20,7 @@ import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializ
 import type { PageContextExports, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
 import type { PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
-import { route, type PageContextForRoute } from '../../shared/route/index.js'
+import { PageContextForRoute, route } from '../../shared/route/index.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import { getHook } from '../../shared/hooks/getHook.js'
 import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide.js'
@@ -47,22 +47,18 @@ type PageContextPassThrough = PageContextUrlComputedPropsInternal &
     isBackwardNavigation: boolean | null
   }
 
-type PageContextSkipData = {
-  _skipIfSameRoute: boolean
-  _previousPageContext: null | { _pageId: string }
-}
-
 async function getPageContext(
   pageContext: {
     _isFirstRenderAttempt: boolean
-  } & PageContextSkipData &
-    PageContextPassThrough
+  } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
   if (pageContext._isFirstRenderAttempt && navigationState.isFirstUrl(pageContext.urlOriginal)) {
+    assert(hasProp(pageContext, '_isFirstRenderAttempt', 'true'))
     const pageContextAddendum = await getPageContextFirstRender(pageContext)
     setPageContextInitHasClientData(pageContextAddendum)
     return pageContextAddendum
   } else {
+    assert(hasProp(pageContext, '_isFirstRenderAttempt', 'false'))
     const pageContextAddendum = await getPageContextUponNavigation(pageContext)
     setPageContextInitHasClientData(pageContextAddendum)
     return pageContextAddendum
@@ -73,6 +69,7 @@ async function getPageContextFirstRender(
   pageContext: {
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
+    _isFirstRenderAttempt: true
     urlOriginal: string
   } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
@@ -104,10 +101,10 @@ async function getPageContextErrorPage(
   pageContext: {
     urlOriginal: string
     _allPageIds: string[]
+    _isFirstRenderAttempt: boolean
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
-  } & PageContextSkipData &
-    PageContextPassThrough
+  } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
   const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
   if (!errorPageId) throw new Error('No error page defined.')
@@ -120,12 +117,12 @@ async function getPageContextErrorPage(
 }
 
 async function getPageContextUponNavigation(
-  pageContext: { _pageId: string } & PageContextSkipData & PageContextPassThrough
+  pageContext: { _isFirstRenderAttempt: false } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
   const pageContextAddendum = {
-    isHydration: false,
-    _pageId: pageContext._pageId
+    isHydration: false
   }
+  objectAssign(pageContextAddendum, await getPageContextFromRoute(pageContext))
   objectAssign(
     pageContextAddendum,
     await getPageContextAlreadyRouted({ ...pageContext, ...pageContextAddendum }, false)
@@ -134,8 +131,7 @@ async function getPageContextUponNavigation(
 }
 
 async function getPageContextAlreadyRouted(
-  pageContext: { _pageId: string; isHydration: boolean; _skipIfSameRoute: boolean } & PageContextSkipData &
-    PageContextPassThrough,
+  pageContext: { _pageId: string; isHydration: boolean } & PageContextPassThrough,
   isErrorPage: boolean
 ): Promise<Omit<PageContextAddendum, '_pageId' | 'isHydration'>> {
   let pageContextAddendum = {}
@@ -143,10 +139,6 @@ async function getPageContextAlreadyRouted(
     pageContextAddendum,
     await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContext._pageId)
   )
-
-  //if( pageContext._skipIfSameRoute && pageContextAddendum._pageId === pageContext._previousPageContext?._pageId ) return pageContextAddendum
-  //if( pageContext._skipIfSameRoute && pageContext._pageId === pageContext._previousPageContext?._pageId ) return pageContextAddendum
-  //const skipData = pageContext._skipIfSameRoute && pageContext._pageId === pageContext._previousPageContext?._pageId
 
   // Needs to be called before any client-side hook, because it may contain pageContextInit.user which is needed for guard() and onBeforeRender()
   if (
@@ -298,6 +290,23 @@ async function onBeforeRenderClientOnlyExists(pageContext: {
     // TODO/v1-release: remove
     return false
   }
+}
+
+async function getPageContextFromRoute(
+  pageContext: PageContextForRoute
+): Promise<{ _pageId: string; routeParams: Record<string, string> }> {
+  const routeResult = await route(pageContext)
+  const pageContextFromRoute = routeResult.pageContextAddendum
+
+  // We'll be able to remove this once async route functions are deprecated (because we'll be able to skip link hijacking if a link doesn't match a route (because whether to call event.preventDefault() needs to be determined synchronously))
+  if (!pageContextFromRoute._pageId) {
+    const err = new Error('No routing match')
+    markIs404(err)
+    throw err
+  }
+
+  assert(hasProp(pageContextFromRoute, '_pageId', 'string'))
+  return pageContextFromRoute
 }
 
 function markIs404(err: Error) {
