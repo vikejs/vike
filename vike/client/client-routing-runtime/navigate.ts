@@ -43,7 +43,7 @@ async function navigate(
     urlOriginal: url,
     overwriteLastHistoryEntry,
     isBackwardNavigation: false,
-    checkClientSideRenderable: true
+    checkIfClientSideRenderable: true
   })
 }
 

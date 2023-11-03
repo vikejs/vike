@@ -53,7 +53,7 @@ function installClientRouter() {
       scrollTarget,
       urlOriginal: url,
       isBackwardNavigation: false,
-      checkClientSideRenderable: true
+      checkIfClientSideRenderable: true
     })
   })
 
@@ -71,7 +71,7 @@ type RenderArgs = {
   urlOriginal?: string
   overwriteLastHistoryEntry?: boolean
   isBackwardNavigation: boolean | null
-  checkClientSideRenderable?: boolean
+  checkIfClientSideRenderable?: boolean
   pageContextsFromRewrite?: PageContextFromRewrite[]
   redirectCount?: number
 }
@@ -81,7 +81,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     urlOriginal = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
     isBackwardNavigation,
-    checkClientSideRenderable,
+    checkIfClientSideRenderable,
     pageContextsFromRewrite = [],
     redirectCount = 0
   } = renderArgs
@@ -94,7 +94,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   }
 
   const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
-  if (checkClientSideRenderable) {
+  if (checkIfClientSideRenderable) {
     const urlLogical = pageContextFromAllRewrites._urlRewrite ?? urlOriginal
     let isClientRoutable: boolean
     try {
@@ -191,7 +191,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         await renderPageClientSide({
           ...renderArgs,
           scrollTarget: 'scroll-to-top-or-hash',
-          checkClientSideRenderable: true,
+          checkIfClientSideRenderable: true,
           pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort]
         })
         return
@@ -211,7 +211,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
             urlOriginal: urlRedirect,
             overwriteLastHistoryEntry: false,
             isBackwardNavigation: false,
-            checkClientSideRenderable: true,
+            checkIfClientSideRenderable: true,
             redirectCount: redirectCount + 1
           })
         }
