@@ -713,11 +713,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`.page.client.js`',
-    url: '/.page.client.js'
-  },
-  {
-    level: 2,
     title: '`Page` (client-side)',
     titleInNav: '`export { Page }`',
     url: '/Page-client'
