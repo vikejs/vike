@@ -1,12 +1,12 @@
 import { Link } from '@brillout/docpress'
 
-The `_default.page.*` files allow us to define hooks and settings that apply to all pages.
+`/pages/+*.js` files (directly under `/pages`) allow us to define hooks and settings that apply to all pages.
 
 For example, we usually define an <Link text={<><code>onRenderHtml()</code> hook</>} href="/onRenderHtml" /> in
 `+onRenderHtml.js` in order to define how our pages are rendered to HTML.
 
 ```js
-// /renderer/+onRenderHtml.js
+// /pages/+onRenderHtml.js
 // Environment: server
 
 export { onRenderHtml }
@@ -25,10 +25,9 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-
-## `_default.page.route.js`
-
-The `_default.page.route.js` file allows us to control the routing process, see [_default.page.route.js](/_default.page.route.js).
+This is equivalent to defining the `onRenderHtml()` hook in `/renderer/+onRenderHtml.js`, is however useful if we don't own
+the `/renderer` directory, e.g. if it is located in a third-party package like the
+<Link text={<><code>vike-*</code> packages</>} href="/vike-packages" />.
 
 
 ## Multiple defaults
@@ -36,15 +35,16 @@ The `_default.page.route.js` file allows us to control the routing process, see 
 There can be multiple defaults:
 
 ```
-marketing/renderer/_default.page.server.js
-marketing/renderer/_default.page.client.js
-marketing/pages/index.page.js
-marketing/pages/about.page.js
-marketing/pages/jobs.page.js
+marketing/pages/+onRenderHtml.js
+marketing/pages/+onRenderClient.js
+marketing/pages/index/+Page.js
+marketing/pages/about/+Page.js
+marketing/pages/jobs/+Page.js
 
-admin-panel/renderer/_default.page.server.js
-admin-panel/renderer/_default.page.client.js
-admin-panel/pages/index.page.js
+admin-panel/pages/+onRenderHtml.js
+admin-panel/pages/+onRenderClient.js
+admin-panel/pages/index/+Page.js
 ```
 
-The `marketing/_default.page.*` files apply as default to `marketing/**/*.page.js`, while `admin-panel/_default.page.*` apply as default to `admin-panel/**/*.page.js`.
+The `marketing/+*.js` files apply as default to `marketing/**/+Page.js`, while `admin-panel/+*.js` apply as default to
+`admin-panel/**/+Page.js`.

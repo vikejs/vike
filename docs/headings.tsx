@@ -790,7 +790,7 @@ const headings = [
   },
   {
     level: 2,
-    title: '`_default.page.*`',
+    title: 'Default `+*.js` files',
     url: '/default-page'
   },
   {
