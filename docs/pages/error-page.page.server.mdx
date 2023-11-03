@@ -1,9 +1,10 @@
 import { Link } from '@brillout/docpress'
 
-The error page, which is defined by `/renderer/_error.page.tsx`, is rendered when an error occurs. It's also rendered when you call <Link href="/render" text={<code>throw render(abortStatusCode)</code>}></Link>.
+The error page, which is defined by `/pages/_error/+Page.js`, is rendered when an error occurs. It's also rendered when
+you call <Link href="/render" text={<code>throw render(abortStatusCode)</code>}></Link>.
 
 ```ts
-// /renderer/_error.page.ts
+// /pages/_error/+Page.ts
 
 export { Page }
 
@@ -66,6 +67,7 @@ The error page is rendered if:
 
 ## Pre-rendering
 
-If you use <Link text="pre-rendering" href="/pre-rendering" />, then Vike uses `_error.page.js` to generate `/dist/client/404.html`.
+If you use <Link text="pre-rendering" href="/pre-rendering" />, then Vike uses the `_error` page to generate
+`/dist/client/404.html`.
 
 > Most Static Hosts follow the convention of using the file `404.html` as 404 page.

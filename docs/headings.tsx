@@ -795,7 +795,7 @@ const headings = [
   },
   {
     level: 2,
-    title: '`_error.page.js`',
+    title: '`_error` page',
     url: '/error-page'
   }
 ] satisfies HeadingDefinition[]
