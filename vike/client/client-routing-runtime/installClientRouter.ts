@@ -66,15 +66,7 @@ function installClientRouter() {
   renderPageClientSide({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
 }
 
-async function renderPageClientSide({
-  scrollTarget,
-  urlOriginal = getCurrentUrl(),
-  overwriteLastHistoryEntry = false,
-  isBackwardNavigation,
-  checkClientSideRenderable,
-  pageContextsFromRewrite = [],
-  redirectCount = 0
-}: {
+type RenderArgs = {
   scrollTarget: ScrollTarget
   urlOriginal?: string
   overwriteLastHistoryEntry?: boolean
@@ -82,7 +74,18 @@ async function renderPageClientSide({
   checkClientSideRenderable?: boolean
   pageContextsFromRewrite?: PageContextFromRewrite[]
   redirectCount?: number
-}): Promise<void> {
+}
+async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
+  const {
+    scrollTarget,
+    urlOriginal = getCurrentUrl(),
+    overwriteLastHistoryEntry = false,
+    isBackwardNavigation,
+    checkClientSideRenderable,
+    pageContextsFromRewrite = [],
+    redirectCount = 0
+  } = renderArgs
+
   assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
 
   if (globalObject.clientRoutingIsDisabled) {
@@ -211,7 +214,7 @@ async function renderPageClientSide({
             isBackwardNavigation: false,
             checkClientSideRenderable: true,
             pageContextsFromRewrite,
-            redirectCount: redirectCount++
+            redirectCount: redirectCount + 1
           })
         }
         return
@@ -586,4 +589,3 @@ function disableClientRouting(err: unknown, log: boolean) {
     { onlyOnce: true }
   )
 }
-
