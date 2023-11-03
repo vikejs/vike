@@ -216,8 +216,8 @@ const headingsDetached = [
     url: '/config'
   },
   {
-    title: 'Config',
-    url: '/Config'
+    title: <code>.page.js</code>,
+    url: '/.page.js'
   },
   {
     title: 'Architecture',

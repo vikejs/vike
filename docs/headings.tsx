@@ -622,8 +622,9 @@ const headings = [
   },
   {
     level: 2,
-    title: '`.page.js`',
-    url: '/.page.js'
+    titleInNav: 'Configuration list',
+    title: 'Configuration list',
+    url: '/Config'
   },
   {
     level: 2,
@@ -753,7 +754,7 @@ const headings = [
   },
   {
     level: 4,
-    title: '+config.h.js'
+    title: 'Build-time'
   },
   {
     level: 2,
