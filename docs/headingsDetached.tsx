@@ -253,10 +253,6 @@ const headingsDetached = [
     url: '/_default.page.route.js'
   },
   {
-    title: 'Built-in renderers',
-    url: '/renderers'
-  },
-  {
     title: 'Vue Router & React Router',
     url: '/vue-router-and-react-router'
   },
