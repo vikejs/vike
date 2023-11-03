@@ -634,14 +634,12 @@ const headings = [
   {
     level: 2,
     title: '`export { Page }`',
-    isListTitle: true,
     url: '/Page'
   },
   {
     level: 2,
     title: '`onBeforeRender()` hook (server- and client-side)',
     titleInNav: '`export { onBeforeRender }`',
-    isListTitle: true,
     url: '/onBeforeRender-isomorphic'
   },
   {
@@ -660,21 +658,14 @@ const headings = [
   },
   {
     level: 2,
-    title: '`.page.server.js`',
-    url: '/.page.server.js'
-  },
-  {
-    level: 2,
     title: '`Page` (server-side)',
     titleInNav: '`export { Page }`',
-    isListTitle: true,
     url: '/Page-server'
   },
   {
     level: 2,
     title: '`onBeforeRender()` hook (server-side)',
     titleInNav: '`export { onBeforeRender }`',
-    isListTitle: true,
     sectionTitles: ['Client Routing'],
     url: '/onBeforeRender'
   },
@@ -682,21 +673,18 @@ const headings = [
     level: 2,
     title: '`onRenderHtml()` hook',
     titleInNav: '`export { onRenderHtml }`',
-    isListTitle: true,
     url: '/onRenderHtml'
   },
   {
     level: 2,
     title: '`onBeforePrerenderStart()` hook',
     titleInNav: '`export { onBeforePrerenderStart }`',
-    isListTitle: true,
     url: '/onBeforePrerenderStart'
   },
   {
     level: 2,
     title: '`onPrerenderStart()` hook',
     titleInNav: '`export { onPrerenderStart }`',
-    isListTitle: true,
     url: '/onPrerenderStart'
   },
   {
@@ -732,14 +720,12 @@ const headings = [
     level: 2,
     title: '`Page` (client-side)',
     titleInNav: '`export { Page }`',
-    isListTitle: true,
     url: '/Page-client'
   },
   {
     level: 2,
     title: '`onRenderClient()` hook',
     titleInNav: '`export { onRenderClient }`',
-    isListTitle: true,
     url: '/onRenderClient'
   },
   {
@@ -805,7 +791,6 @@ const headings = [
     title: '`onBeforeRoute()` hook',
     titleInNav: '`export { onBeforeRoute }`',
     // titleInNav: '`onBeforeRoute`',
-    isListTitle: true,
     url: '/onBeforeRoute'
   },
   {

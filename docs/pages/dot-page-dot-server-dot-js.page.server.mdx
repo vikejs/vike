@@ -1,4 +1,13 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
+
+<Warning>
+  `*.page*.js` files are deprecated in favor of `+*.js` files, see
+  <ul>
+    <li><Link href="/Config" /></li>
+    <li><Link href="/Page" /></li>
+    <li><Link href="/migration/v1-design" /></li>
+  </ul>
+</Warning>
 
 Environment: server.
 
@@ -8,7 +17,7 @@ A `.page.server.js` file can export the following:
 - `export { passToClient }`
 - `export { render }`
 - `export { prerender }`
-- `export { doNoPrerender }`
+- `export { doNotPrerender }`
 - <Link href="/exports" />
 
 The `.page.server.js` file is lazy-loaded: it is loaded only when needed which means that if no URL request were to match the page's route then `.page.server.js` is never loaded in our Node.js process' memory.
