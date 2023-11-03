@@ -774,8 +774,8 @@ const headings = [
   },
   {
     level: 2,
-    title: '`.page.route.js`',
-    url: '/.page.route.js'
+    title: '`export { route }`',
+    url: '/route'
   },
   {
     level: 2,

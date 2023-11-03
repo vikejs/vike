@@ -245,8 +245,8 @@ const headingsDetached = [
     sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', 'Do-one-thing-do-it-well']
   },
   {
-    title: <code>route</code>,
-    url: '/route'
+    title: <code>.page.route.js</code>,
+    url: '/.page.route.js'
   },
   {
     title: 'Built-in renderers',
