@@ -152,7 +152,7 @@ export { onRenderHtml }
 import { escapeInject } from 'vike/server'
 
 async function onRenderHtml(pageContext) {
-  // `pageContext.exports` holds all exports of the page's `.page.js` file
+  // `pageContext.exports` holds all exports of the page's `+Page.md` file
   const { title, description } = pageContext.exports.documentProps
   return escapeInject`<html>
     <head>
