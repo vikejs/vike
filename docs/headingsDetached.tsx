@@ -260,10 +260,6 @@ const headingsDetached = [
     url: '/react-router'
   },
   {
-    title: <code>extends</code>,
-    url: '/extends'
-  },
-  {
     title: <code>throw RenderErrorPage()</code>,
     url: '/RenderErrorPage'
   },

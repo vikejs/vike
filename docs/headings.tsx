@@ -797,6 +797,11 @@ const headings = [
     url: '/meta'
   },
   {
+    level: 2,
+    title: '`extends`',
+    url: '/extends'
+  },
+  {
     level: 4,
     title: 'Routing'
   },
