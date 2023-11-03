@@ -36,7 +36,10 @@ const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   previousState: ReturnType<typeof getState>
   initialRenderIsDone?: true
-}>('useClientRouter.ts', { previousState: getState() })
+  renderingCounter: number
+  renderPromise?: Promise<void>
+  isTransitioning?: true
+}>('useClientRouter.ts', { previousState: getState(), renderingCounter: 0 })
 
 setupNativeScrollRestoration()
 initHistoryState()
@@ -92,12 +95,11 @@ function useClientRouter() {
     })
   })
 
-  let renderingCounter = 0
-  let renderPromise: Promise<void> | undefined
-  let isTransitioning: boolean = false
   fetchAndRender({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
 
   return
+
+}
 
   async function fetchAndRender({
     scrollTarget,
@@ -151,7 +153,7 @@ function useClientRouter() {
       ...pageContextFromAllRewrites
     }
 
-    const renderingNumber = ++renderingCounter
+    const renderingNumber = ++globalObject.renderingCounter
     assert(renderingNumber >= 1)
     let hydrationCanBeAborted = false
     const shouldAbort = () => {
@@ -163,7 +165,7 @@ function useClientRouter() {
         }
       }
       // If there is a newer rendering, we should abort all previous renderings
-      if (renderingNumber !== renderingCounter) {
+      if (renderingNumber !== globalObject.renderingCounter) {
         return true
       }
       return false
@@ -171,9 +173,9 @@ function useClientRouter() {
 
     // Start transition before any await's
     if (renderingNumber > 1) {
-      if (isTransitioning === false) {
+      if (!globalObject.isTransitioning) {
         await globalObject.onPageTransitionStart?.(pageContextBase)
-        isTransitioning = true
+        globalObject.isTransitioning = true
       }
     }
     if (shouldAbort()) {
@@ -301,10 +303,10 @@ function useClientRouter() {
       return
     }
 
-    if (renderPromise) {
+    if (globalObject.renderPromise) {
       // Always make sure that the previous render has finished,
       // otherwise that previous render may finish after this one.
-      await renderPromise
+      await globalObject.renderPromise
     }
     if (shouldAbort()) {
       return
@@ -312,13 +314,13 @@ function useClientRouter() {
 
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     navigationState.markNavigationChange()
-    assert(renderPromise === undefined)
-    renderPromise = (async () => {
+    assert(globalObject.renderPromise === undefined)
+    globalObject.renderPromise = (async () => {
       await executeOnRenderClientHook(pageContext, true)
       addLinkPrefetchHandlers(pageContext)
     })()
-    await renderPromise
-    renderPromise = undefined
+    await globalObject.renderPromise
+    globalObject.renderPromise = undefined
 
     if (pageContext._isFirstRenderAttempt) {
       assertHook(pageContext, 'onHydrationEnd')
@@ -328,19 +330,18 @@ function useClientRouter() {
         assert(hookFilePath)
         await executeHook(() => onHydrationEnd(pageContext), 'onHydrationEnd', hookFilePath)
       }
-    } else if (renderingNumber === renderingCounter) {
+    } else if (renderingNumber === globalObject.renderingCounter) {
       if (pageContext.exports.onPageTransitionEnd) {
         assertHook(pageContext, 'onPageTransitionEnd')
         await pageContext.exports.onPageTransitionEnd(pageContext)
       }
-      isTransitioning = false
+      globalObject.isTransitioning = undefined
     }
 
     setScrollPosition(scrollTarget)
     browserNativeScrollRestoration_disable()
     globalObject.initialRenderIsDone = true
   }
-}
 
 function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => void) {
   document.addEventListener('click', onClick)
