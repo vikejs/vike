@@ -48,3 +48,17 @@ admin-panel/pages/index/+Page.js
 
 The `marketing/+*.js` files apply as default to `marketing/**/+Page.js`, while `admin-panel/+*.js` apply as default to
 `admin-panel/**/+Page.js`.
+
+Alternatively `renderer/` *subfolders* can be used. This is equivalent to the previous example:
+
+```
+marketing/renderer/+onRenderHtml.js
+marketing/renderer/+onRenderClient.js
+marketing/pages/index/+Page.js
+marketing/pages/about/+Page.js
+marketing/pages/jobs/+Page.js
+
+admin-panel/renderer/+onRenderHtml.js
+admin-panel/renderer/+onRenderClient.js
+admin-panel/pages/index/+Page.js
+```
