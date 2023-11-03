@@ -184,6 +184,12 @@ const headings = [
     url: '/build-your-own-framework'
   },
   {
+    level: 2,
+    title: '`vike-*` packages',
+    isListTitle: true,
+    url: '/vike-packages'
+  },
+  {
     level: 1,
     title: 'Routing',
     titleEmoji: 'road-fork'

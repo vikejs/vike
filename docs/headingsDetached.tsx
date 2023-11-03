@@ -269,14 +269,6 @@ const headingsDetached = [
     url: '/react-router'
   },
   {
-    title: (
-      <>
-        <code>vike-*</code> packages
-      </>
-    ),
-    url: '/vike-packages'
-  },
-  {
     title: <code>extends</code>,
     url: '/extends'
   },
