@@ -53,12 +53,10 @@ async function getPageContext(
   } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
   if (pageContext._isFirstRenderAttempt && navigationState.isFirstUrl(pageContext.urlOriginal)) {
-    assert(hasProp(pageContext, '_isFirstRenderAttempt', 'true'))
     const pageContextAddendum = await getPageContextFirstRender(pageContext)
     setPageContextInitHasClientData(pageContextAddendum)
     return pageContextAddendum
   } else {
-    assert(hasProp(pageContext, '_isFirstRenderAttempt', 'false'))
     const pageContextAddendum = await getPageContextUponNavigation(pageContext)
     setPageContextInitHasClientData(pageContextAddendum)
     return pageContextAddendum
@@ -69,7 +67,6 @@ async function getPageContextFirstRender(
   pageContext: {
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
-    _isFirstRenderAttempt: true
     urlOriginal: string
   } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
@@ -101,7 +98,6 @@ async function getPageContextErrorPage(
   pageContext: {
     urlOriginal: string
     _allPageIds: string[]
-    _isFirstRenderAttempt: boolean
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
   } & PageContextPassThrough
@@ -116,9 +112,7 @@ async function getPageContextErrorPage(
   return pageContextAddendum
 }
 
-async function getPageContextUponNavigation(
-  pageContext: { _isFirstRenderAttempt: false } & PageContextPassThrough
-): Promise<PageContextAddendum> {
+async function getPageContextUponNavigation(pageContext: PageContextPassThrough): Promise<PageContextAddendum> {
   const pageContextAddendum = {
     isHydration: false
   }
