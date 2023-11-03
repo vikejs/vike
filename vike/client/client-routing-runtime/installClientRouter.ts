@@ -70,8 +70,10 @@ function disableClientRouting(err: unknown, log: boolean) {
 }
 
 function installClientRouter() {
+  // Save scroll position (needed for back-/forward navigation)
   autoSaveScrollPosition()
 
+  // Intercept <a> links
   onLinkClick((url: string, { keepScrollPosition }) => {
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
     fetchAndRender({
@@ -81,9 +83,13 @@ function installClientRouter() {
       checkClientSideRenderable: true
     })
   })
+
+  // Handle back-/forward navigation
   onBrowserHistoryNavigation((scrollTarget, isBackwardNavigation) => {
     fetchAndRender({ scrollTarget, isBackwardNavigation })
   })
+
+  // Define navigate() function
   defineNavigate(async (url: string, { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {}) => {
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
     await fetchAndRender({
@@ -95,9 +101,8 @@ function installClientRouter() {
     })
   })
 
+  // Intial render
   fetchAndRender({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
-
-  return
 }
 
 async function fetchAndRender({
