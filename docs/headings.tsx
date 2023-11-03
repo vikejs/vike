@@ -622,6 +622,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`+config.h.js`',
+    url: '/config'
+  },
+  {
+    level: 2,
     titleInNav: 'Configuration list',
     title: 'Configuration list',
     url: '/Config'

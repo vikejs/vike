@@ -212,10 +212,6 @@ const headingsDetached = [
     url: '/render-client'
   },
   {
-    title: <code>+config.h.js</code>,
-    url: '/config'
-  },
-  {
     title: <code>.page.js</code>,
     url: '/.page.js'
   },
