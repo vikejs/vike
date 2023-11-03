@@ -1,9 +1,9 @@
-The `.page.js` files can have a `export { Page }` which represents the page's root (React/Vue/...) component.
-
-Vike doesn't do anything with `Page` and just makes it available at `pageContext.Page`:
+The `+Page.js` files can export an object representing the page's root (React/Vue/...) component, either as
+`export { Page }` or `export default`. Vike doesn't do anything with this object and just makes it available at
+`pageContext.Page`:
 
 ```js
-// /pages/hello.page.js
+// /pages/hello/+Page.js
 // Environment: browser and server
 
 export { Page }
@@ -16,7 +16,7 @@ function Page() {
 ```
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 export { onRenderHtml }
@@ -40,7 +40,7 @@ async function onRenderHtml(pageContext) {
 ```
 
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+onRenderClient.js
 // Environment: browser
 
 export { onRenderClient }
