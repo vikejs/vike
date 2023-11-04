@@ -363,8 +363,8 @@ async function renderPageNominal(
 
   // Route
   {
-    const routeResult = await route(pageContext)
-    objectAssign(pageContext, routeResult.pageContextAddendum)
+    const pageContextFromRoute = await route(pageContext)
+    objectAssign(pageContext, pageContextFromRoute)
     objectAssign(pageContext, { is404: pageContext._pageId ? null : true })
     if (pageContext._pageId === null) {
       const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
