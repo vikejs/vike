@@ -12,6 +12,7 @@ import {
   sleep
 } from '@brillout/test-e2e'
 import assert from 'assert'
+import { waitForNavigation } from '../../test/utils'
 
 export { testRun }
 
@@ -84,7 +85,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
           /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
           const navPromise = page.waitForURL(url)
           */
-          const navPromise = page.waitForNavigation()
+          const navPromise = waitForNavigation()
           const file = isV1Design ? './pages/html-only/+Page.jsx' : './pages/html-only/index.page.server.jsx'
           editFile(file, (s) => s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'))
           await navPromise
@@ -95,7 +96,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
           /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
           const navPromise = page.waitForURL(url)
           */
-          const navPromise = page.waitForNavigation()
+          const navPromise = waitForNavigation()
           editFileRevert()
           await navPromise
           expect(await page.textContent('h1')).toBe('HTML-only')
@@ -180,29 +181,28 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
       expect(await page.textContent('button')).toContain('Counter 1')
       // JS auto-reload
       {
-        const url = getServerUrl() + '/html-js'
         expect(await page.textContent('h1')).toBe('HTML + JS')
         // No HMR for HTML + JS
         {
-          /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
-          const navPromise = page.waitForURL(url)
-          */
-          // Is there a way to make waitForNavigation not timeout? https://github.com/microsoft/playwright/issues/20853#issuecomment-1698770812
-          const navPromise = page.waitForNavigation()
+          const navPromise = waitForNavigation()
           const file = isV1Design ? './pages/html-js/+Page.jsx' : './pages/html-js/index.page.server.jsx'
+          expect(await page.textContent('button')).toContain('Counter 1')
           editFile(file, (s) => s.replace('<h1>HTML + JS</h1>', '<h1>HTML + JS !</h1>'))
           await navPromise
           // But auto-reload works
           expect(await page.textContent('h1')).toBe('HTML + JS !')
+          // Page was reloaded
+          expect(await page.textContent('button')).toContain('Counter 0')
+          await clickCounter()
         }
         {
-          /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
-          const navPromise = page.waitForURL(url)
-          */
-          const navPromise = page.waitForNavigation()
+          const navPromise = waitForNavigation()
+          expect(await page.textContent('button')).toContain('Counter 1')
           editFileRevert()
           await navPromise
           expect(await page.textContent('h1')).toBe('HTML + JS')
+          // Page was reloaded
+          expect(await page.textContent('button')).toContain('Counter 0')
         }
       }
       // CSS HMR
