@@ -8,7 +8,7 @@ export type { PageContextUrlComputedPropsServer }
 export type { PageContextUrlSources }
 export type { Url }
 
-import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter, isBrowser } from './utils.js'
+import { assert, parseUrl, assertWarning, isPlainObject, isPropertyGetter, isBrowser } from './utils.js'
 
 // Copy paste from https://vike.dev/pageContext
 type Url = {
@@ -80,7 +80,7 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
        objectAssign(pageContext2, pageContext)
        ```
     */
-    assert(hasPropertyGetter(pageContext, 'urlPathname'))
+    assert(isPropertyGetter(pageContext, 'urlPathname'))
   }
   Object.defineProperty(pageContext, 'urlPathname', {
     get: urlPathnameGetter,
@@ -89,7 +89,7 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
   })
 
   // TODO/v1-release: move pageContext.urlParsed to pageContext.url
-  if ('url' in pageContext) assert(hasPropertyGetter(pageContext, 'url'))
+  if ('url' in pageContext) assert(isPropertyGetter(pageContext, 'url'))
   Object.defineProperty(pageContext, 'url', {
     get: urlGetter,
     enumerable: false,
@@ -97,7 +97,7 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
   })
 
   if ('urlParsed' in pageContext) {
-    assert(hasPropertyGetter(pageContext, 'urlParsed'))
+    assert(isPropertyGetter(pageContext, 'urlParsed'))
   }
   Object.defineProperty(pageContext, 'urlParsed', {
     get: urlParsedGetter,

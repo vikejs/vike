@@ -17,7 +17,7 @@ import {
   isObjectWithKeys,
   isCallable,
   getOutDirs,
-  hasPropertyGetter,
+  isPropertyGetter,
   assertPosixPath,
   urlToFile,
   executeHook,
@@ -600,7 +600,7 @@ async function callOnPrerenderStartHook(
       enumerable: false,
       configurable: true
     })
-    assert(hasPropertyGetter(pageContext, 'url'))
+    assert(isPropertyGetter(pageContext, 'url'))
     assert(pageContext.urlOriginal)
     pageContext._urlOriginalBeforeHook = pageContext.urlOriginal
   })
@@ -664,7 +664,7 @@ async function callOnPrerenderStartHook(
 
   prerenderContext.pageContexts.forEach((pageContext: { urlOriginal?: string; url?: string }) => {
     // TODO/v1-release: remove
-    if (!hasPropertyGetter(pageContext, 'url') && pageContext.url) {
+    if (pageContext.url && !isPropertyGetter(pageContext, 'url')) {
       assertWarning(
         false,
         msgPrefix +
