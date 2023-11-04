@@ -82,23 +82,20 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
     */
     assert(isPropertyGetter(pageContext, 'urlPathname'))
   }
+  if ('urlParsed' in pageContext) assert(isPropertyGetter(pageContext, 'urlParsed'))
+  // TODO/v1-release: move pageContext.urlParsed to pageContext.url
+  if ('url' in pageContext) assert(isPropertyGetter(pageContext, 'url'))
+
   Object.defineProperty(pageContext, 'urlPathname', {
     get: urlPathnameGetter,
     enumerable,
     configurable: true
   })
-
-  // TODO/v1-release: move pageContext.urlParsed to pageContext.url
-  if ('url' in pageContext) assert(isPropertyGetter(pageContext, 'url'))
   Object.defineProperty(pageContext, 'url', {
     get: urlGetter,
     enumerable: false,
     configurable: true
   })
-
-  if ('urlParsed' in pageContext) {
-    assert(isPropertyGetter(pageContext, 'urlParsed'))
-  }
   Object.defineProperty(pageContext, 'urlParsed', {
     get: urlParsedGetter,
     enumerable,
