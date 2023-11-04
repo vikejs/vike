@@ -3,12 +3,13 @@ export { addLinkPrefetchHandlers }
 
 import { assert, assertClientRouting, assertUsage, checkIfClientRouting } from './utils.js'
 import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../shared/loadPageFilesClientSide.js'
-import { isClientSideRoutable, skipLink } from './skipLink.js'
+import { skipLink } from './skipLink.js'
 import { getPageId } from './getPageId.js'
 import { getPrefetchSettings } from './prefetch/getPrefetchSettings.js'
 import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched.js'
 import { disableClientRouting } from './installClientRouter.js'
 import { isExternalLink } from './isExternalLink.js'
+import { isClientSideRoutable } from './isClientSideRoutable.js'
 
 assertClientRouting()
 

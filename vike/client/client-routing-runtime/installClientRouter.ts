@@ -21,7 +21,7 @@ import { addLinkPrefetchHandlers } from './prefetch.js'
 import { assertInfo, assertWarning, isReact, PromiseType } from './utils.js'
 import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { assertHook } from '../../shared/hooks/getHook.js'
-import { isClientSideRoutable, skipLink } from './skipLink.js'
+import { skipLink } from './skipLink.js'
 import { isErrorFetchingStaticAssets } from '../shared/loadPageFilesClientSide.js'
 import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history.js'
 import {
@@ -32,6 +32,7 @@ import {
   PageContextFromRewrite
 } from '../../shared/route/abort.js'
 import { route } from '../../shared/route/index.js'
+import { isClientSideRoutable } from './isClientSideRoutable.js'
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
   clientRoutingIsDisabled?: true

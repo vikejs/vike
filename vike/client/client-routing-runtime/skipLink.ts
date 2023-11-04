@@ -1,5 +1,4 @@
 export { skipLink }
-export { isClientSideRoutable } from './skipLink/isClientSideRoutable.js'
 
 import { getBaseServer } from './getBaseServer.js'
 import { isExternalLink } from './isExternalLink.js'
