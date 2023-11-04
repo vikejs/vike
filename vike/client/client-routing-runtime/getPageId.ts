@@ -3,8 +3,8 @@ export { getPageId }
 import { route } from '../../shared/route/index.js'
 import { createPageContext } from './createPageContext.js'
 
-async function getPageId(url: string) {
-  const pageContext = await createPageContext({ urlOriginal: url })
+async function getPageId(urlOriginal: string) {
+  const pageContext = await createPageContext(urlOriginal)
   const pageFilesAll = pageContext._pageFilesAll
   const pageConfigs = pageContext._pageConfigs
   const pageContextFromRoute = await route(pageContext)

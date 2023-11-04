@@ -94,7 +94,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     return
   }
 
-  const pageContext = await createPageContext({ urlOriginal: urlOriginal })
+  const pageContext = await createPageContext(urlOriginal)
   objectAssign(pageContext, {
     isBackwardNavigation
   })

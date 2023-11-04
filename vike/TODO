@@ -1,5 +1,3 @@
-- createPageContext(urlOriginal)
-
 - Improve https://vike.dev/header-file
 - Update all examples to not use PageContextBuiltIn but Vike.PageContext instead
 
