@@ -11,7 +11,7 @@ import { renderPage } from 'vike/server'
 app.get('*', async (req, res) => {
   const pageContext = await renderPage({ urlOriginal: req.url })
 
-  // An error occured during server-side rendering
+  // An error occurred during server-side rendering
   if (pageContext.errorWhileRendering) {
     someErrorTracker(pageContext.errorWhileRendering)
   }

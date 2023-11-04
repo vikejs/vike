@@ -92,8 +92,7 @@ async function onRenderHtml() {
 }
 ```
 
-This is the key difference between SPA and SSR: in SPA `div#root` is empty, whereas with SSR `div#root` contains our
-Page's root component `pageContext.Page` rendered to HTML.
+This is the key difference between SPA and SSR: in SPA `div#root` is empty, whereas with SSR `div#root` contains our Page's root component `pageContext.Page` rendered to HTML.
 
 This means that, with SPA, we use our server-side `onRenderHtml()` hook to generate HTML that is just an empty shell:
 the HTML doesn't contain the page's content.

@@ -30,10 +30,10 @@ Unique Vike features:
    - Especially important for large companies that already have a deployment architecture
  - Vike allows the user to use different UI frameworks for the same app
    - For example, a Vike sponsor uses Vike to use Solid for all its pages except for one page that uses React because it needs a React library that doesn't exist for Solid
-     - Important for Solid: for React users that are tempted to use Solid, Solid can sell the story "try Solid while being able to fallback to React, e.g. if a page needs some React library".
+     - Important for Solid: for React users that are tempted to use Solid, Solid can sell the story "try Solid while being able to fall back to React, e.g. if a page needs some React library".
  - Users can build a custom [Framework-as-a-Product](https://vike.land/#framework-as-a-product). (Vike has been designed so that frameworks can be built on top of it.)
    - [Custom configs](https://vike.dev/meta)
- - Low-level primites allowing users to deeply integrate with data fetching tools.
+ - Low-level primitives allowing users to deeply integrate with data fetching tools.
    - For example, Vike sponsors use it to deeply integrate Relay. (Facebook's internal framework deeply integrates with Relay in ways that aren't possible with Next.js.)
  - URL rewriting for both [novel DX and novel UX](https://twitter.com/brillout/status/1687431520569425920) around authentication and authorization
 
@@ -57,8 +57,8 @@ Minor features that can be life changing for some users:
 - Low-level i18n hooks which allow to implement i18n without compromise (not a single user has reported a missing i18n use case, covering all i18n use cases is hard)
 - Not only Route Guards but also Route Functions (define your route with a function for full programmatic flexibility)
 - `pageContext.isBackwardsNavigation` (https://vike.dev/pageContext) for backwards/forward page transition animations
-- Vike can be loaded twice (or more) on the server-side, (some deployement architectures need this)
-- Catches and interupts infinite loops of URL redirections and URL rewrites
+- Vike can be loaded twice (or more) on the server-side, (some deployment architectures need this)
+- Catches and interrupts infinite loops of URL redirections and URL rewrites
 
 And lots of details:
 - [Automatic frontend deployment synchronization](https://vike.dev/deploy-sync)
@@ -66,11 +66,11 @@ And lots of details:
   - Warning is shown when a hook takes more than 4 seconds to resolve (avoiding the user to ask himself "why is my Vike app hanging?")
   - Warning is shown when client runtime is included twice in the bundle
   - Warning wrongly using `process.env.NODE_ENV`, including docs: https://vike.dev/NODE_ENV
-- `294` helpul error messages. For example:
+- `294` helpful error messages. For example:
   - Upon a 404 in dev, the complete list of routes is shown
   - Helpful error when different versions of Vike are loaded
   - Typo in an option name (with "Did you mean xxx instead?")
-- Proper development error hanlding (hard to achieve, especially since Vite is bogus about it)
+- Proper development error handling (hard to achieve, especially since Vite is bogus about it)
 
 Misc:
 - `throw Render()`

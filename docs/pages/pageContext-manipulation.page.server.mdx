@@ -6,7 +6,7 @@ The hooks [`onBeforeRender()`](/onBeforeRender), [`onRenderHtml()`](/onRenderHtm
 
 export { onBeforeRender }
 
-function onBeforeRender(pageContext) {
+async function onBeforeRender(pageContext) {
   const starWarsMovies = await getStarWarsMovies()
   return {
     pageContext: {

@@ -58,7 +58,7 @@ export { onRenderClient }
 
 import { hydrateDom } from 'some-ui-framework'
 
-async onRenderClient(pageContex) {
+async function onRenderClient(pageContext) {
   const { Page } = pageContext
   // We control how our pages are hydrated
   await hydrateDom(Page)
@@ -87,16 +87,16 @@ Sentry.init()
 // And also for initializing a Service Worker.
 navigator.serviceWorker.register(/* ... */)
 
-async onRenderClient(pageContex) {
+async function onRenderClient(pageContext) {
   // Here we can integrate performance measurement tools, e.g. to measure hydration performance
-  const { Page } = pageContex
+  const { Page } = pageContext
   await hydrateDom(Page)
   init()
 }
 
 function init() {
   // After hydration we usually initialize vanilla JS component libraries, for example tooltips
-  tooltip.init(document.querySelectorAll('.tooltip')
+  tooltip.init(document.querySelectorAll('.tooltip'))
   // Or some vanilla JS modal library
   $('.my-modals').modal()
 }

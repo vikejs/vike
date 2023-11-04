@@ -7,14 +7,14 @@
 * [v1 design] always check env consistency of resolve import paths ([8444966](https://github.com/vikejs/vike/commit/8444966c6424b240f54c9a29a33d020e0bed4ac0))
 * [v1 design] don't assert re-exports of value files ([4a86ab4](https://github.com/vikejs/vike/commit/4a86ab421785d82fe006cf32084b8d1d05d8133a))
 * [v1 design] improve error handling of config effects ([4034f86](https://github.com/vikejs/vike/commit/4034f86cac342097dccdab7da8da7857ee16d827))
-* [v1 design] more succint logs ([11c207a](https://github.com/vikejs/vike/commit/11c207a5d9143c0b9bc0c8f7f104a9b5bfd22f45))
+* [v1 design] more succinct logs ([11c207a](https://github.com/vikejs/vike/commit/11c207a5d9143c0b9bc0c8f7f104a9b5bfd22f45))
 * [v1 design] only tolerate side exports for value files ([ad8e233](https://github.com/vikejs/vike/commit/ad8e233bca7bf67742276984555a2c280cb0fa3a))
 * [v1 design] use absolute file paths to check for consistent env ([0cd8de6](https://github.com/vikejs/vike/commit/0cd8de6f899cff08a791a0e0788be9bbb1de9c8a))
 * 404 table layout: strip ansi ([76a5530](https://github.com/vikejs/vike/commit/76a553022706f63152e6529e31e626499e090411))
 * add/improve pageContext.urlOriginal JSDoc ([e93d5e9](https://github.com/vikejs/vike/commit/e93d5e928f8fe245946c5e15ee018c7ae886fb14))
 * apply Rollup 4 breaking change ([521b895](https://github.com/vikejs/vike/commit/521b895b6f041a028e4b1d33ecc79c9a0e3d47cf))
 * assertUsage() route value ([14def35](https://github.com/vikejs/vike/commit/14def35100f38468cf47452c0cede09e5580aeb3))
-* await aysnc `onPageTransition{Start,End}` ([58f822b](https://github.com/vikejs/vike/commit/58f822b8f8880f9168478a1956ff8ed6997d06da))
+* await async `onPageTransition{Start,End}` ([58f822b](https://github.com/vikejs/vike/commit/58f822b8f8880f9168478a1956ff8ed6997d06da))
 * be stricter about side exports ([8b553f8](https://github.com/vikejs/vike/commit/8b553f850d8c59782fe7567a5b00ea05fb08595c))
 * don't glob +files in dist/ ([b25fbb2](https://github.com/vikejs/vike/commit/b25fbb25b7d4d49eaea2127180ed8d070cd29d90))
 * don't glob page files in dist/ ([db783c9](https://github.com/vikejs/vike/commit/db783c9622827808fd8be179193d9da1fdf04e3d))
@@ -79,7 +79,7 @@
 
 ### Performance Improvements
 
-* dont use try catch in url parsing ([#1115](https://github.com/brillout/vite-plugin-ssr/issues/1115)) ([f1b34b0](https://github.com/brillout/vite-plugin-ssr/commit/f1b34b04c514d215d2102d280f0689331f95f168))
+* don't use try catch in url parsing ([#1115](https://github.com/brillout/vite-plugin-ssr/issues/1115)) ([f1b34b0](https://github.com/brillout/vite-plugin-ssr/commit/f1b34b04c514d215d2102d280f0689331f95f168))
 
 
 
@@ -108,7 +108,7 @@
 * improve serialization error message ([1bedc8a](https://github.com/brillout/vite-plugin-ssr/commit/1bedc8a76f7388fb269c188f3d0ba782e744713c))
 * improve wrong redirection usage error ([83f8586](https://github.com/brillout/vite-plugin-ssr/commit/83f8586f47f59eda03613fe5bd53a4eb2ab0dd44))
 * intercept log for `throw redirect()` ([950ebd0](https://github.com/brillout/vite-plugin-ssr/commit/950ebd0212c7717be5135c28d0e253ca4aacb561))
-* make inheritence check consider whole path segments (fix [#1109](https://github.com/brillout/vite-plugin-ssr/issues/1109)) ([5bd8c1e](https://github.com/brillout/vite-plugin-ssr/commit/5bd8c1e128cad87d04ba5d54af1eda788dc69f54))
+* make inheritance check consider whole path segments (fix [#1109](https://github.com/brillout/vite-plugin-ssr/issues/1109)) ([5bd8c1e](https://github.com/brillout/vite-plugin-ssr/commit/5bd8c1e128cad87d04ba5d54af1eda788dc69f54))
 * set Page type to unknown instead of any by default ([412a26a](https://github.com/brillout/vite-plugin-ssr/commit/412a26aed262b868ef250265173372525d706a07))
 * set pageContext.is404 upon throw render(404) (fix [#1107](https://github.com/brillout/vite-plugin-ssr/issues/1107)) ([9dd96c3](https://github.com/brillout/vite-plugin-ssr/commit/9dd96c31104e34f2cd9dc9313ccce0906a81dff1))
 * use colors instead of backtick in error messages ([a052d52](https://github.com/brillout/vite-plugin-ssr/commit/a052d52656fd084d2df5f44502ddfad892aec97b))
@@ -184,7 +184,7 @@
 
 ### Features
 
-* hook supressing by setting hook value to `null` (fix [#1075](https://github.com/brillout/vite-plugin-ssr/issues/1075)) ([11202d2](https://github.com/brillout/vite-plugin-ssr/commit/11202d24730af9e9477283f9e921609b421b6865))
+* hook suppressing by setting hook value to `null` (fix [#1075](https://github.com/brillout/vite-plugin-ssr/issues/1075)) ([11202d2](https://github.com/brillout/vite-plugin-ssr/commit/11202d24730af9e9477283f9e921609b421b6865))
 
 
 
@@ -193,9 +193,9 @@
 
 ### Bug Fixes
 
-* contentType migratation link ([588f5eb](https://github.com/brillout/vite-plugin-ssr/commit/588f5eb9ed10ab5b3f235e661cb85b355f545e08))
+* contentType migration link ([588f5eb](https://github.com/brillout/vite-plugin-ssr/commit/588f5eb9ed10ab5b3f235e661cb85b355f545e08))
 * ensure correct Node.js version (fix [#1068](https://github.com/brillout/vite-plugin-ssr/issues/1068)) ([3b305cb](https://github.com/brillout/vite-plugin-ssr/commit/3b305cbb83a3a9667c5ce1565520aaf5dca28033))
-* gracefully hanlde infinite loop of URL redirects/rewrites ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([522bd0f](https://github.com/brillout/vite-plugin-ssr/commit/522bd0fa3190e31aa4f59e781f7661d1a9569b12))
+* gracefully handle infinite loop of URL redirects/rewrites ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([522bd0f](https://github.com/brillout/vite-plugin-ssr/commit/522bd0fa3190e31aa4f59e781f7661d1a9569b12))
 * improve redirect logging ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([ec17c1f](https://github.com/brillout/vite-plugin-ssr/commit/ec17c1f2a2a92c209fba3676d30286ee84f7c3fa))
 * stop superfluous copying of publicDir for dist/server/ ([de43088](https://github.com/brillout/vite-plugin-ssr/commit/de4308860847d286af071f37157c11fb9e428a4d))
 
@@ -214,8 +214,8 @@
 * also skip assertPassToClient when previous read was __v_raw (fix [#1041](https://github.com/brillout/vite-plugin-ssr/issues/1041)) ([ec0122b](https://github.com/brillout/vite-plugin-ssr/commit/ec0122b5f300b2f41ca21c0dc979df22ec9654ec))
 * call onBeforeRender for the first render if it's client-only (fix [#1043](https://github.com/brillout/vite-plugin-ssr/issues/1043)) ([ddf2e39](https://github.com/brillout/vite-plugin-ssr/commit/ddf2e39ca8210ae17654dd4991a39d9605fe8110))
 * oven-sh/bun[#3743](https://github.com/brillout/vite-plugin-ssr/issues/3743) - Support Bun ([45aa3ec](https://github.com/brillout/vite-plugin-ssr/commit/45aa3ec3f3b622dd7aded0b75ca95f3b2ed3972b))
-* properly hanlde frame error with id windows path (fix [#1053](https://github.com/brillout/vite-plugin-ssr/issues/1053)) ([6a760d1](https://github.com/brillout/vite-plugin-ssr/commit/6a760d167f767546efe561e43685d0831a780902))
-* warn when tring to access the URL hash on the server-side (fix [#1042](https://github.com/brillout/vite-plugin-ssr/issues/1042)) ([f0f6c0a](https://github.com/brillout/vite-plugin-ssr/commit/f0f6c0a761d4a9a6dbe5ca7f556861cbff1975cd))
+* properly handle frame error with id windows path (fix [#1053](https://github.com/brillout/vite-plugin-ssr/issues/1053)) ([6a760d1](https://github.com/brillout/vite-plugin-ssr/commit/6a760d167f767546efe561e43685d0831a780902))
+* warn when trying to access the URL hash on the server-side (fix [#1042](https://github.com/brillout/vite-plugin-ssr/issues/1042)) ([f0f6c0a](https://github.com/brillout/vite-plugin-ssr/commit/f0f6c0a761d4a9a6dbe5ca7f556861cbff1975cd))
 
 
 
@@ -231,10 +231,10 @@
 * consolidate `throw renderErrorPage()` and `throw renderUrl()` into a single utility `throw render()` ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([3c2be02](https://github.com/brillout/vite-plugin-ssr/commit/3c2be027841d4b38cc5abfde6db9ea34f817b641))
 * fetch server-side pageContext before calling client-side onBeforeRender hook ([c7d574c](https://github.com/brillout/vite-plugin-ssr/commit/c7d574c8f6331e8146bda3d3ec00ef62f6736349))
 * fix error page client-side rendering ([cb82f14](https://github.com/brillout/vite-plugin-ssr/commit/cb82f14196959461a5b2012cfeb024663facea9f))
-* gracefully handle non-serilizable pageContext values ([9bedf61](https://github.com/brillout/vite-plugin-ssr/commit/9bedf61e7f0c00ee7ef7426faa30e5cb7fa75598))
+* gracefully handle non-serializable pageContext values ([9bedf61](https://github.com/brillout/vite-plugin-ssr/commit/9bedf61e7f0c00ee7ef7426faa30e5cb7fa75598))
 * hide redirect() statusCode option ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([5ae9243](https://github.com/brillout/vite-plugin-ssr/commit/5ae924312657ce60286806acdb0d2fdd7889c2f3))
 * improve 404 hint ([f9bd674](https://github.com/brillout/vite-plugin-ssr/commit/f9bd6746b603380c74077e0c9ac6e50c34295368))
-* improve client-side handling of non-serialiable/missing pageContext value ([ed5335f](https://github.com/brillout/vite-plugin-ssr/commit/ed5335f98ee26fd880f28bc22516f369f1e4f946))
+* improve client-side handling of non-serializable/missing pageContext value ([ed5335f](https://github.com/brillout/vite-plugin-ssr/commit/ed5335f98ee26fd880f28bc22516f369f1e4f946))
 * improve error message upon client runtime conflict ([#750](https://github.com/brillout/vite-plugin-ssr/issues/750)) ([62a4bf8](https://github.com/brillout/vite-plugin-ssr/commit/62a4bf848a20101e14392207f3599040fecbc463))
 * improve error upon aborting pre-rendering ([#926](https://github.com/brillout/vite-plugin-ssr/issues/926)) ([3226c3e](https://github.com/brillout/vite-plugin-ssr/commit/3226c3eb2ba8cb0cbf0df6823346a134f7e79ac0))
 * improve error upon invalid config.build.outDir (fix [#1046](https://github.com/brillout/vite-plugin-ssr/issues/1046)) ([d958a41](https://github.com/brillout/vite-plugin-ssr/commit/d958a41497477c3edb2f4d929f5caa015be47df6))
@@ -264,7 +264,7 @@
 
 * also convert resolved config.build.outDir to POSIX path ([#935](https://github.com/brillout/vite-plugin-ssr/issues/935)) ([9ae9aa2](https://github.com/brillout/vite-plugin-ssr/commit/9ae9aa21616527e1c72802adff0983780eaf3a38))
 * don't assume UserConfig.build.outDir to be a POSIX path ([#935](https://github.com/brillout/vite-plugin-ssr/issues/935)) ([3f235bc](https://github.com/brillout/vite-plugin-ssr/commit/3f235bc84becf2f6940a622bce633eb87c94dd07))
-* forbid config value files to live in different environements ([80ab2e2](https://github.com/brillout/vite-plugin-ssr/commit/80ab2e252d5280affd0459124075c3c39aa9e180))
+* forbid config value files to live in different environments ([80ab2e2](https://github.com/brillout/vite-plugin-ssr/commit/80ab2e252d5280affd0459124075c3c39aa9e180))
 * handle HMR for config dependency file removal/creation ([1880172](https://github.com/brillout/vite-plugin-ssr/commit/1880172a59d24e77ff286ec243842d031be3857e))
 * make CLI parsing more robust (fix [#990](https://github.com/brillout/vite-plugin-ssr/issues/990)) ([36ffa2b](https://github.com/brillout/vite-plugin-ssr/commit/36ffa2b3533864a2df6abbd3f415ae6426eef593))
 * remove isNpmPackage() assertions from client-side bundle ([2f35023](https://github.com/brillout/vite-plugin-ssr/commit/2f350236b0e3e809c2f5f292cdba6daa60d7ad9a))
@@ -272,7 +272,7 @@
 * support HMR for config file imports ([53616d0](https://github.com/brillout/vite-plugin-ssr/commit/53616d0b496d83ddcd1854c95c2b9b05f084e428))
 * tolerate missing global context ([150f3ea](https://github.com/brillout/vite-plugin-ssr/commit/150f3ea5f0a1f397b1a7e3c64820387a09612bb3))
 * tolerate non-conventional path aliases ([461ea84](https://github.com/brillout/vite-plugin-ssr/commit/461ea840e3a553c1907dd764f1151a952dab2315))
-* workaround Vite swallowing hanldeHotUpdate() errors ([81d2582](https://github.com/brillout/vite-plugin-ssr/commit/81d25820120e50d5664c1ed157b4025077edb8b2))
+* workaround Vite swallowing handleHotUpdate() errors ([81d2582](https://github.com/brillout/vite-plugin-ssr/commit/81d25820120e50d5664c1ed157b4025077edb8b2))
 
 
 ### Features
@@ -325,7 +325,7 @@
 
 * [V1 design] add config npm dependencies to optimizeDeps.include ([2b4a84a](https://github.com/brillout/vite-plugin-ssr/commit/2b4a84a0342011f06e604671ec9ebdbe68ee1da9))
 * [V1 design] ignore backup files ([062b064](https://github.com/brillout/vite-plugin-ssr/commit/062b0644613e8445f544fd16ace08e796d9a34a9))
-* [V1 design] implement filesystem routinng for npm package root imports ([ce04fdb](https://github.com/brillout/vite-plugin-ssr/commit/ce04fdb919ac63dc219a835568676b1620909706))
+* [V1 design] implement filesystem routing for npm package root imports ([ce04fdb](https://github.com/brillout/vite-plugin-ssr/commit/ce04fdb919ac63dc219a835568676b1620909706))
 * [V1 design] improve error handling when extends import cannot be ([e70b362](https://github.com/brillout/vite-plugin-ssr/commit/e70b3621fb8a38ff1385c3dd435a9c1842cae738))
 * [V1 design] improve type handling of non-header config files ([fa18331](https://github.com/brillout/vite-plugin-ssr/commit/fa1833156fef669f50bade0459771236f5d389bd))
 * add .page.server.js?extractAssets to Rollup entries (fix [#911](https://github.com/brillout/vite-plugin-ssr/issues/911)) ([078a2c7](https://github.com/brillout/vite-plugin-ssr/commit/078a2c70dd27bae4e03768ad0c5db40f4b552b1a))
@@ -379,7 +379,7 @@
 * [V1 design] make +meta.js work ([81f07c4](https://github.com/brillout/vite-plugin-ssr/commit/81f07c4d51821ab6258cea7d9ce64e437d91cd47))
 * [V1 design] make eager loading of value files optional ([cdfd079](https://github.com/brillout/vite-plugin-ssr/commit/cdfd0797b9937680e99304072b590f89366de6db))
 * [V1 design] refactor invalidation logic ([3fed5d2](https://github.com/brillout/vite-plugin-ssr/commit/3fed5d2e5b728d2dd7ed1a2b95318b137b1f3577))
-* fix error message upon unkown config (fix [#909](https://github.com/brillout/vite-plugin-ssr/issues/909)) ([4b02857](https://github.com/brillout/vite-plugin-ssr/commit/4b02857116408c3f2eaf7f1dcb9b9bff13e09919))
+* fix error message upon unknown config (fix [#909](https://github.com/brillout/vite-plugin-ssr/issues/909)) ([4b02857](https://github.com/brillout/vite-plugin-ssr/commit/4b02857116408c3f2eaf7f1dcb9b9bff13e09919))
 * improve require() shim ([f095b02](https://github.com/brillout/vite-plugin-ssr/commit/f095b02433f0af677a604a5646ae2b3d2fb2c557))
 
 
@@ -409,7 +409,7 @@
 * [V1 design] implement partial pre-rendering warning for V1 design ([2bd69f0](https://github.com/brillout/vite-plugin-ssr/commit/2bd69f0e6fa1422018845116a4758c44bb9beb29))
 * [V1 design] print real hook name ([189974c](https://github.com/brillout/vite-plugin-ssr/commit/189974c285a55434d5dc6eba54c961cde03aea04))
 * [V1 design] print real hook name ([dca30fd](https://github.com/brillout/vite-plugin-ssr/commit/dca30fd243bd7574c376e2d39146268caaf968b0))
-* expect pageId to be an npm package ([532ceaa](https://github.com/brillout/vite-plugin-ssr/commit/532ceaa648ab174f0ab581c883cebb642acfe1cc))
+* expect pageId to be a npm package ([532ceaa](https://github.com/brillout/vite-plugin-ssr/commit/532ceaa648ab174f0ab581c883cebb642acfe1cc))
 * improve handling of undefined and null HTML variables ([648ed9a](https://github.com/brillout/vite-plugin-ssr/commit/648ed9ad2ae2f82094aa8b3f0862eb435e383e9d))
 * in dev, warn when escaping HTML (fix [#865](https://github.com/brillout/vite-plugin-ssr/issues/865)) ([038f544](https://github.com/brillout/vite-plugin-ssr/commit/038f5447607d6fbf02fd7309c493f381c803e76b))
 
@@ -446,7 +446,7 @@
 
 * auto-add VPS's middleware at last ([f0abd07](https://github.com/brillout/vite-plugin-ssr/commit/f0abd07f242a4ac2db55ec1ed0999a375832ffa2))
 * improve filesystem apply root (fix [#858](https://github.com/brillout/vite-plugin-ssr/issues/858)) ([173cca0](https://github.com/brillout/vite-plugin-ssr/commit/173cca062ebd37e051a8cf91263935eace203d1f))
-* make filesystem inheritence conflict resolution more robust (fix [#858](https://github.com/brillout/vite-plugin-ssr/issues/858)) ([a5d0d5d](https://github.com/brillout/vite-plugin-ssr/commit/a5d0d5d266e7f297d31997063c52d3541380cedc))
+* make filesystem inheritance conflict resolution more robust (fix [#858](https://github.com/brillout/vite-plugin-ssr/issues/858)) ([a5d0d5d](https://github.com/brillout/vite-plugin-ssr/commit/a5d0d5d266e7f297d31997063c52d3541380cedc))
 * make filesystem root apply clearer ([4eb5f45](https://github.com/brillout/vite-plugin-ssr/commit/4eb5f4541e1518897bc6862481536bf790d3c4e3))
 * remove cyclic dependency (fix [#861](https://github.com/brillout/vite-plugin-ssr/issues/861)) ([80d4856](https://github.com/brillout/vite-plugin-ssr/commit/80d48564fa569670ace4e0a0f4ee6c14f69b218a))
 
@@ -468,10 +468,10 @@
 
 ### Bug Fixes
 
-* [V1 design] improve error hanlding upon wrong import path (fix [#843](https://github.com/brillout/vite-plugin-ssr/issues/843)) ([676b7e3](https://github.com/brillout/vite-plugin-ssr/commit/676b7e31c1dd5d3e236e9e159788093cec576242))
+* [V1 design] improve error handling upon wrong import path (fix [#843](https://github.com/brillout/vite-plugin-ssr/issues/843)) ([676b7e3](https://github.com/brillout/vite-plugin-ssr/commit/676b7e31c1dd5d3e236e9e159788093cec576242))
 * [V1 design] warn instead of fail upon unrespected export rule ([#844](https://github.com/brillout/vite-plugin-ssr/issues/844)) ([06b449e](https://github.com/brillout/vite-plugin-ssr/commit/06b449e447e09380fe83507388b1a1bd4095cc15))
 * ignore `export { _rerender_only }` (fix [#844](https://github.com/brillout/vite-plugin-ssr/issues/844)) ([7144fdb](https://github.com/brillout/vite-plugin-ssr/commit/7144fdb147e2d95e7b4d5a87d0b2f756cd58875d))
-* remove unnecessary error hanlding edge case ([#843](https://github.com/brillout/vite-plugin-ssr/issues/843)) ([92009e5](https://github.com/brillout/vite-plugin-ssr/commit/92009e54db7bd7804b29b4882e8b1aa9b58c7a30))
+* remove unnecessary error handling edge case ([#843](https://github.com/brillout/vite-plugin-ssr/issues/843)) ([92009e5](https://github.com/brillout/vite-plugin-ssr/commit/92009e54db7bd7804b29b4882e8b1aa9b58c7a30))
 
 
 
@@ -785,7 +785,7 @@
 ### Bug Fixes
 
 * add `'vite-plugin-ssr'` to `ssr.external` only if strictly needed ([68b1fcb](https://github.com/brillout/vite-plugin-ssr/commit/68b1fcb7574ec3d0ab5bc0f0c3f944a1e0498d64))
-* improve makeFilePathAsbolute assertion (fix [#703](https://github.com/brillout/vite-plugin-ssr/issues/703)) ([2d6489b](https://github.com/brillout/vite-plugin-ssr/commit/2d6489b30220c019feff41ef9b778b5cf906f311))
+* improve makeFilePathAbsolute assertion (fix [#703](https://github.com/brillout/vite-plugin-ssr/issues/703)) ([2d6489b](https://github.com/brillout/vite-plugin-ssr/commit/2d6489b30220c019feff41ef9b778b5cf906f311))
 * remove unreliable isFilesystemAbsolute() assertion (fix [#703](https://github.com/brillout/vite-plugin-ssr/issues/703)) ([41adc4a](https://github.com/brillout/vite-plugin-ssr/commit/41adc4ad408b124fee00991ef42875ece8147f79))
 * shim `require()` for ESM modules (fix [#701](https://github.com/brillout/vite-plugin-ssr/issues/701)) ([7b269e0](https://github.com/brillout/vite-plugin-ssr/commit/7b269e0504a413d276baa28960baa06804198004))
 * suppress not actionable Rollup warnings ([e6925c4](https://github.com/brillout/vite-plugin-ssr/commit/e6925c49609066e8ddd1d5be8884a76761e44965))
@@ -1004,7 +1004,7 @@
 
 ### Bug Fixes
 
-* package.json ./__itnernal/setup export ([d11401d](https://github.com/brillout/vite-plugin-ssr/commit/d11401dcee15aa6b0803c577d599c8bff608b062))
+* package.json ./__internal/setup export ([d11401d](https://github.com/brillout/vite-plugin-ssr/commit/d11401dcee15aa6b0803c577d599c8bff608b062))
 * remove early hint crossorigin property (fix [#618](https://github.com/brillout/vite-plugin-ssr/issues/618)) ([fd7f76e](https://github.com/brillout/vite-plugin-ssr/commit/fd7f76ed2170625fa6623f83f29518dd5a756060))
 * remove fallback assets from early hints (fix [#624](https://github.com/brillout/vite-plugin-ssr/issues/624)) ([693ff00](https://github.com/brillout/vite-plugin-ssr/commit/693ff006e5971ed310a3916304157586e255c896))
 
@@ -1098,7 +1098,7 @@
 
 ### Bug Fixes
 
-* tolerate superfluous globaContext setters (fix [#572](https://github.com/brillout/vite-plugin-ssr/issues/572)) ([74954c1](https://github.com/brillout/vite-plugin-ssr/commit/74954c1348f18ed29c178a4535faef362d43df5f))
+* tolerate superfluous globalContext setters (fix [#572](https://github.com/brillout/vite-plugin-ssr/issues/572)) ([74954c1](https://github.com/brillout/vite-plugin-ssr/commit/74954c1348f18ed29c178a4535faef362d43df5f))
 
 
 
@@ -1183,7 +1183,7 @@
 ### Bug Fixes
 
 * stop showing warning upon `$ vite-plugin-ssr prerender` ([659f28b](https://github.com/brillout/vite-plugin-ssr/commit/659f28beb116ec3c777ec922ddae751d3e6b2844))
-* tolerate hook file path to be an npm package module (fix [#550](https://github.com/brillout/vite-plugin-ssr/issues/550)) ([2215db7](https://github.com/brillout/vite-plugin-ssr/commit/2215db7120d5398c67303ffadbce7d0d6645ea5c))
+* tolerate hook file path to be a npm package module (fix [#550](https://github.com/brillout/vite-plugin-ssr/issues/550)) ([2215db7](https://github.com/brillout/vite-plugin-ssr/commit/2215db7120d5398c67303ffadbce7d0d6645ea5c))
 
 
 ### Features
@@ -1250,7 +1250,7 @@
 
 * allow user to control script preloading ([b0374b1](https://github.com/brillout/vite-plugin-ssr/commit/b0374b14881633fda79b24dbcc0669060c951a87))
 * only preload fonts and JavaScript by default ([00cbf39](https://github.com/brillout/vite-plugin-ssr/commit/00cbf392bb8608f7d52fee83ec8f325a80f80815))
-* remove superflous preload tag ([70cc112](https://github.com/brillout/vite-plugin-ssr/commit/70cc1121963ff0c8bcccb0025c9018139868198d))
+* remove superfluous preload tag ([70cc112](https://github.com/brillout/vite-plugin-ssr/commit/70cc1121963ff0c8bcccb0025c9018139868198d))
 * in dev, load scripts before static assets ([3358460](https://github.com/brillout/vite-plugin-ssr/commit/335846010d490d300f4074af671db53717d3cd87))
 
 
@@ -1288,7 +1288,7 @@
 * add Stem entries to optimizeDeps.include ([b65b639](https://github.com/brillout/vite-plugin-ssr/commit/b65b63995511f1d7d71f2c7f66609e2b16d6eec2))
 * avoid importBuild var collision ([43811ba](https://github.com/brillout/vite-plugin-ssr/commit/43811ba4dc09b7e9ada46761f085190460b3325e))
 * deprecate `package.json#vite-plugin-ssr.pageFilesDir` ([e0b2291](https://github.com/brillout/vite-plugin-ssr/commit/e0b2291ddc5a41de46202f36d56767c8278c6880))
-* enforce Stem npm packages to belong to an npm org ([c1a9bc4](https://github.com/brillout/vite-plugin-ssr/commit/c1a9bc44d3a194d7e78de47942eb690828200882))
+* enforce Stem npm packages to belong to a npm org ([c1a9bc4](https://github.com/brillout/vite-plugin-ssr/commit/c1a9bc44d3a194d7e78de47942eb690828200882))
 * fix `pageContext.exportsAll` type ([dda92b8](https://github.com/brillout/vite-plugin-ssr/commit/dda92b86fb51263964631012e5304878caafaf90))
 * improve Stem package resolver ([c929ab4](https://github.com/brillout/vite-plugin-ssr/commit/c929ab46a349c7e17abc4978171a21bec4381b9b))
 * warn instead of err upon wrong Stem package name ([7c198b9](https://github.com/brillout/vite-plugin-ssr/commit/7c198b9ce8e32dfae11412fed122ab171fbd3047))
@@ -1367,7 +1367,7 @@
 
 ### Bug Fixes
 
-* remove erronous assertions (fix [#469](https://github.com/brillout/vite-plugin-ssr/issues/469)) ([7e2bf51](https://github.com/brillout/vite-plugin-ssr/commit/7e2bf51c567a0698a74b14fa8a2ffe11e5eb6f32))
+* remove erroneous assertions (fix [#469](https://github.com/brillout/vite-plugin-ssr/issues/469)) ([7e2bf51](https://github.com/brillout/vite-plugin-ssr/commit/7e2bf51c567a0698a74b14fa8a2ffe11e5eb6f32))
 * skip autoFullBuild upon @vitejs/plugin-legacy internal build() ([#477](https://github.com/brillout/vite-plugin-ssr/issues/477)) ([d578381](https://github.com/brillout/vite-plugin-ssr/commit/d578381f3e353640a4e8618beaf21ed82af66966))
 * stop assuming build command ([9254b66](https://github.com/brillout/vite-plugin-ssr/commit/9254b6681cd4f8e56fed14ad6ab80082ce375979))
 * stop assuming Vite CLI command to occur first ([b9738b7](https://github.com/brillout/vite-plugin-ssr/commit/b9738b7ab9481aa5bb55ab3aa1a956036652e0cd))
@@ -1452,7 +1452,7 @@
 
 ### Bug Fixes
 
-* don't treat page as HTML-only if it define client renderer (fix [#446](https://github.com/brillout/vite-plugin-ssr/issues/446)) ([a89540f](https://github.com/brillout/vite-plugin-ssr/commit/a89540f824cc23fef4d6b73329395e385d340a22))
+* don't treat page as HTML-only if it defines client renderer (fix [#446](https://github.com/brillout/vite-plugin-ssr/issues/446)) ([a89540f](https://github.com/brillout/vite-plugin-ssr/commit/a89540f824cc23fef4d6b73329395e385d340a22))
 
 
 
@@ -1712,7 +1712,7 @@
 
 ### Bug Fixes
 
-* forbiden re-exports in page files ([6bd30c8](https://github.com/brillout/vite-plugin-ssr/commit/6bd30c89a635eee84f092a6743ff1acb2b7298b7))
+* forbidden re-exports in page files ([6bd30c8](https://github.com/brillout/vite-plugin-ssr/commit/6bd30c89a635eee84f092a6743ff1acb2b7298b7))
 * further improve error message upon wrong Vite config while using pre-rendering ([#380](https://github.com/brillout/vite-plugin-ssr/issues/380)) ([013cb92](https://github.com/brillout/vite-plugin-ssr/commit/013cb929725102678a45a53a308cd39136b0e838))
 * improve error message upon `prerender()` API usage with wrong Vite config (fix [#380](https://github.com/brillout/vite-plugin-ssr/issues/380)) ([4084c5a](https://github.com/brillout/vite-plugin-ssr/commit/4084c5aad2925a994cf4eeae0441dfa33a163fb2))
 * remove wildcard re-export wrong usage assertion ([db3c015](https://github.com/brillout/vite-plugin-ssr/commit/db3c0150b12661cb211422d6a6124fe680aacc8e))
@@ -1720,7 +1720,7 @@
 * support dynamic `doNotPrerender` values (fix [#382](https://github.com/brillout/vite-plugin-ssr/issues/382)) ([8a5b9a4](https://github.com/brillout/vite-plugin-ssr/commit/8a5b9a4af63c773bb38427be9985d95e05c33df2))
 * support wildcard re-exports (fix [#381](https://github.com/brillout/vite-plugin-ssr/issues/381)) ([64dc9a9](https://github.com/brillout/vite-plugin-ssr/commit/64dc9a9025d40061cf6f9151ba92789e163b731e))
 * tell user to not define `doNotPrerender` in `.page.client.js` files ([5863a99](https://github.com/brillout/vite-plugin-ssr/commit/5863a997257972ae1588c83d42303e68a77c2a1e))
-* use custom debug implemention instead of `debug` npm package ([b4bdf62](https://github.com/brillout/vite-plugin-ssr/commit/b4bdf624451af7816e50ccd7c74f4cf0e661735a))
+* use custom debug implementation instead of `debug` npm package ([b4bdf62](https://github.com/brillout/vite-plugin-ssr/commit/b4bdf624451af7816e50ccd7c74f4cf0e661735a))
 
 
 ### Features
@@ -1750,7 +1750,7 @@
 ### Performance Improvements
 
 * load less page files while pre-rendering ([611bb45](https://github.com/brillout/vite-plugin-ssr/commit/611bb45445cf75f00ce97393985808917163f825))
-* use `PageFile[exportNames]` while pre-rendering, in order to avoid unecessary loading of page files ([#373](https://github.com/brillout/vite-plugin-ssr/issues/373), [#378](https://github.com/brillout/vite-plugin-ssr/issues/378)) ([00db4f9](https://github.com/brillout/vite-plugin-ssr/commit/00db4f9c8db8b39ea71a28ab7990ce76e14c6fcb))
+* use `PageFile[exportNames]` while pre-rendering, in order to avoid unnecessary loading of page files ([#373](https://github.com/brillout/vite-plugin-ssr/issues/373), [#378](https://github.com/brillout/vite-plugin-ssr/issues/378)) ([00db4f9](https://github.com/brillout/vite-plugin-ssr/commit/00db4f9c8db8b39ea71a28ab7990ce76e14c6fcb))
 
 
 
@@ -1770,7 +1770,7 @@
 ### Bug Fixes
 
 * show the stack trace for warnings with a direct call stack from the user ([f5c22d4](https://github.com/brillout/vite-plugin-ssr/commit/f5c22d4cee29c62ca38070df77bf2c4c11c735fc))
-* treat `_default/` directories as empty for filesytem routing `_default.page.*` files ([da9af6e](https://github.com/brillout/vite-plugin-ssr/commit/da9af6e615d6377f14e2364f80e25cb0a002e778))
+* treat `_default/` directories as empty for filesystem routing `_default.page.*` files ([da9af6e](https://github.com/brillout/vite-plugin-ssr/commit/da9af6e615d6377f14e2364f80e25cb0a002e778))
 
 
 
@@ -1905,7 +1905,7 @@ Minor features:
 * ensure stream is always flushed ([5770d9f](https://github.com/brillout/vite-plugin-ssr/commit/5770d9fa8a845c16e137f7f4d37bc45fa4d3c8cf))
 * fix styling in development for browser back/fwd buttons ([d3d4190](https://github.com/brillout/vite-plugin-ssr/commit/d3d4190b16b1179578df9d04acb3d3d56a70830d))
 * handle destroyed Node.js writable proxy ([6488300](https://github.com/brillout/vite-plugin-ssr/commit/6488300cc1f4e5418ae178efa46ceef421f70995))
-* handle URLs with several trailing slahes ([#310](https://github.com/brillout/vite-plugin-ssr/issues/310)) ([551b020](https://github.com/brillout/vite-plugin-ssr/commit/551b0207d0b3440ed60f92f337e5c97fdc18552f))
+* handle URLs with several trailing slashes ([#310](https://github.com/brillout/vite-plugin-ssr/issues/310)) ([551b020](https://github.com/brillout/vite-plugin-ssr/commit/551b0207d0b3440ed60f92f337e5c97fdc18552f))
 * improve asset naming ([8791d66](https://github.com/brillout/vite-plugin-ssr/commit/8791d6643da73c7624329386dda73123d3e59c6f))
 * improve debug logs ([978a7c2](https://github.com/brillout/vite-plugin-ssr/commit/978a7c28f37ba59bcb81d8113a403a5ad240b9f7))
 * improve error message upon multiple versions loaded ([6bb206e](https://github.com/brillout/vite-plugin-ssr/commit/6bb206eef570b22647a4161eb64137a9921d8e0b))
@@ -1921,7 +1921,7 @@ Minor features:
 * make `navigate()` cross-bundle safe ([68a9e7a](https://github.com/brillout/vite-plugin-ssr/commit/68a9e7a6cc28936c29ef1ed1cb6997d63f107244))
 * make vps resilient against array prototype extensions ([2d09e75](https://github.com/brillout/vite-plugin-ssr/commit/2d09e75b0ce992c3342de6f9b4969771389b73b2))
 * only add vps dev middleware for Vite's CLI ([b0c3974](https://github.com/brillout/vite-plugin-ssr/commit/b0c3974f15a4508f99e6d22dedbf4e1b8f6c6d5e))
-* route precendence ([e2bfd5d](https://github.com/brillout/vite-plugin-ssr/commit/e2bfd5d13aa1846c5e6fd68a574ab4c43c5f47b9))
+* route precedence ([e2bfd5d](https://github.com/brillout/vite-plugin-ssr/commit/e2bfd5d13aa1846c5e6fd68a574ab4c43c5f47b9))
 * support `$ vite dev` command ([4ca3e39](https://github.com/brillout/vite-plugin-ssr/commit/4ca3e39f75da0482f2050f3ab73e7f649d1752dd))
 * support `vite preview` command for SSG ([a7c602a](https://github.com/brillout/vite-plugin-ssr/commit/a7c602a84d263dd9db84afc6bb59310f6cbf9cc3))
 * support rollup format synonyms ([1a7d4f7](https://github.com/brillout/vite-plugin-ssr/commit/1a7d4f7d65a5ec3aec354b1411a2f8cdc09f9e6b))
@@ -2074,7 +2074,7 @@ Minor features:
 
 * fix @brillout/json-s optimizeDeps entry ([4e45d08](https://github.com/brillout/vite-plugin-ssr/commit/4e45d084d05d3a473d7295143432493dcc50a248))
 * gracefully handle unexpected URL formats (fix [#252](https://github.com/brillout/vite-plugin-ssr/issues/252)) ([48ca1b1](https://github.com/brillout/vite-plugin-ssr/commit/48ca1b10ce9067e948425cbefc59072a206c000a))
-* improve DX around wrong environement ([4f705c4](https://github.com/brillout/vite-plugin-ssr/commit/4f705c4d3043479cefefebcb687abe3554da89f9))
+* improve DX around wrong environment ([4f705c4](https://github.com/brillout/vite-plugin-ssr/commit/4f705c4d3043479cefefebcb687abe3554da89f9))
 * use more robust Node.js env test ([7240263](https://github.com/brillout/vite-plugin-ssr/commit/724026366b41f811e9b20047419d17eda2a759e8))
 
 
@@ -2256,7 +2256,7 @@ More infos at https://vite-plugin-ssr.com/stream
 
 ### Bug Fixes
 
-* filesytemRoutingRoot living at root ([3f27e5d](https://github.com/brillout/vite-plugin-ssr/commit/3f27e5da55450a7d8f71195fe6c389e28f68e9b7))
+* filesystemRoutingRoot living at root ([3f27e5d](https://github.com/brillout/vite-plugin-ssr/commit/3f27e5da55450a7d8f71195fe6c389e28f68e9b7))
 
 
 
@@ -2284,7 +2284,7 @@ More infos at https://vite-plugin-ssr.com/stream
 
 ### Bug Fixes
 
-* don't assume Vite to noramlize `root` (fix [#208](https://github.com/brillout/vite-plugin-ssr/issues/208)) ([3b50083](https://github.com/brillout/vite-plugin-ssr/commit/3b5008337ebb346057f1cd0133d9dd5e244e2f6c))
+* don't assume Vite to normalize `root` (fix [#208](https://github.com/brillout/vite-plugin-ssr/issues/208)) ([3b50083](https://github.com/brillout/vite-plugin-ssr/commit/3b5008337ebb346057f1cd0133d9dd5e244e2f6c))
 * fix client routing deadlock when ensureHydration is set ([124c83c](https://github.com/brillout/vite-plugin-ssr/commit/124c83c692cfb8713e30af196a84bf91d9a98472))
 
 
@@ -2294,7 +2294,7 @@ More infos at https://vite-plugin-ssr.com/stream
 
 ### Bug Fixes
 
-* make `pageContext.pageProps.is404` more resillient ([765c5b3](https://github.com/brillout/vite-plugin-ssr/commit/765c5b3df4068a9b89c56a816d09285aea4d33f2))
+* make `pageContext.pageProps.is404` more resilient ([765c5b3](https://github.com/brillout/vite-plugin-ssr/commit/765c5b3df4068a9b89c56a816d09285aea4d33f2))
 
 
 
@@ -2306,7 +2306,7 @@ More infos at https://vite-plugin-ssr.com/stream
 * add support for `url === '/some-base-url' && baseUrl === '/some-base-url/'` ([bfac53b](https://github.com/brillout/vite-plugin-ssr/commit/bfac53b2055faa2ca395d762d3ee9f25a678c657))
 * Client Router + Base URL regression (fix [#205](https://github.com/brillout/vite-plugin-ssr/issues/205)) ([cb95ed4](https://github.com/brillout/vite-plugin-ssr/commit/cb95ed45a9b727a38105ce296b6cd0a6a10e486d))
 * improve argument handling of `useClientRouter()` ([8db8836](https://github.com/brillout/vite-plugin-ssr/commit/8db8836163c92b499cd74a787c41ff8d76c9a8ae))
-* regression pageProps.is404 overriden by user provided `pageContext` ([a796168](https://github.com/brillout/vite-plugin-ssr/commit/a7961686cdb9c834bd0bd70f33c70472e563258f))
+* regression pageProps.is404 overridden by user provided `pageContext` ([a796168](https://github.com/brillout/vite-plugin-ssr/commit/a7961686cdb9c834bd0bd70f33c70472e563258f))
 * skip Client Router for links that don't match Base URL ([bce64c5](https://github.com/brillout/vite-plugin-ssr/commit/bce64c5c49a6b595a54b6379aad50593a589a737))
 
 
@@ -2319,7 +2319,7 @@ More infos at https://vite-plugin-ssr.com/stream
 * add scss/sass/less to inferred types (fix [#196](https://github.com/brillout/vite-plugin-ssr/issues/196)) ([0a329cf](https://github.com/brillout/vite-plugin-ssr/commit/0a329cf9a7fd7c99a435f7ad861a48809ed51513))
 * always use camelCase for CLI options ([2ad6027](https://github.com/brillout/vite-plugin-ssr/commit/2ad60273c0b23d89afeccaafad36525806136282))
 * fix buggy CSS test ([8676afa](https://github.com/brillout/vite-plugin-ssr/commit/8676afa10436d55225e68a5644056d802cf943ed))
-* fix Route Function precendence value assertion ([f4d41c7](https://github.com/brillout/vite-plugin-ssr/commit/f4d41c7eb8d1d63ae21fc8620ac74b969a10e55f))
+* fix Route Function precedence value assertion ([f4d41c7](https://github.com/brillout/vite-plugin-ssr/commit/f4d41c7eb8d1d63ae21fc8620ac74b969a10e55f))
 * improve error message when client-side routing to 404 ([c036f51](https://github.com/brillout/vite-plugin-ssr/commit/c036f516c22c9dda65c92bb82b82a600835f7b94))
 * show warning instead of internal error upon relative link URLs ([83255e2](https://github.com/brillout/vite-plugin-ssr/commit/83255e260aed5ab4dd8a80a16e56e7236e76472d))
 
@@ -2421,7 +2421,7 @@ renamed to `$ vite-plugin-ssr prerender --noExtraDir`.
 ### Bug Fixes
 
 * ensure filesystem routing is skipped when there is a page route file ([95eff57](https://github.com/brillout/vite-plugin-ssr/commit/95eff57d0866e620cec5019acf11951abc34dad2))
-* improve overall precende algorithm ([4f84f4e](https://github.com/brillout/vite-plugin-ssr/commit/4f84f4e0777e2fc9f6ac3b9f6a04cd14b2373eaf))
+* improve overall precedence algorithm ([4f84f4e](https://github.com/brillout/vite-plugin-ssr/commit/4f84f4e0777e2fc9f6ac3b9f6a04cd14b2373eaf))
 
 
 
@@ -2469,7 +2469,7 @@ renamed to `$ vite-plugin-ssr prerender --noExtraDir`.
 
 ### Features
 
-* make `outDir` configurable instead of always beeing `dist/` ([#177](https://github.com/brillout/vite-plugin-ssr/pull/177))
+* make `outDir` configurable instead of always being `dist/` ([#177](https://github.com/brillout/vite-plugin-ssr/pull/177))
 
 
 ### BREAKING CHANGES
@@ -2616,7 +2616,7 @@ see https://vite-plugin-ssr.com/catch-all
 
 ### Bug Fixes
 
-* unkown exports warning ([324480c](https://github.com/brillout/vite-plugin-ssr/commit/324480c68f7a54e3e76a67eb83f1f25b1960b956))
+* unknown exports warning ([324480c](https://github.com/brillout/vite-plugin-ssr/commit/324480c68f7a54e3e76a67eb83f1f25b1960b956))
 
 
 
@@ -3070,8 +3070,8 @@ instead.
 
 ### BREAKING CHANGES
 
-- Replace all occurences in your source code of `addContextProps` to
-  `addPageContext`, and all occurences of `contextProps` to `pageContext`.
+- Replace all occurrences in your source code of `addContextProps` to
+  `addPageContext`, and all occurrences of `contextProps` to `pageContext`.
   There is no need for semantic replacing: you can simply replace
   text, for example with a linux terminal:
    1. `git ls-files | xargs sed -i "s/addContextProps/addPageContext/g"`

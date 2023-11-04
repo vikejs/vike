@@ -12,7 +12,7 @@ Example: <GithubRepo repo="brillout/vike-with-vercel" />.
 
 <Warning>Make sure to properly set `OUTPUT DIRECTORY` in your Vercel dashboard, see the example's `readme.md` instructions.</Warning>
 
-> Using a Vercel API Route is a sturdy way to deploy to Vercel, as API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's Build Output API is a moving target with occasional breaking changes.) Once we setup our server-side rendering API Route, we can expect it to work for the foreseeable future.
+> Using a Vercel API Route is a sturdy way to deploy to Vercel, as API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's Build Output API is a moving target with occasional breaking changes.) Once we set up our server-side rendering API Route, we can expect it to work for the foreseeable future.
 
 
 ## vite-plugin-vercel
@@ -51,4 +51,4 @@ In other words, we add a data layer by:
  - Creating a new Vercel API Route, integrating that single endpoint.
  - Creating a new route to our local development server (e.g. Express.js), integrating that single endpoint.
 
-> When using SSR, we recommend using [RPC instead of GraphQL](https://telefunc.com/RPC-vs-GraphQL-REST), which most of time leads to a drastic simplification and increased development speed.
+> When using SSR, we recommend using [RPC instead of GraphQL](https://telefunc.com/RPC-vs-GraphQL-REST), which most of the time leads to a drastic simplification and increased development speed.

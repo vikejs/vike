@@ -1,7 +1,7 @@
 export { getVirtualFilePageConfigs }
 export { getConfigValueSerialized }
 
-import { assert, assertUsage, getPropAccessNotation, hasProp, objectEntries } from '../../../utils.js'
+import { assert, assertUsage, getPropAccessNotation, objectEntries } from '../../../utils.js'
 import type {
   DefinedAt,
   PageConfigBuildTime,
@@ -158,6 +158,7 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAt:
     if (isJsonSerializerError(err)) {
       serializationErrMsg = err.messageCore
     } else {
+      // When a property getter throws an error
       console.error('Serialization error:')
       console.error(err)
       serializationErrMsg = 'see serialization error printed above'

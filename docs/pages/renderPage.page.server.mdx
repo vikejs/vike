@@ -78,8 +78,8 @@ automatically injected by Vike.
 For HTML streams use `httpResponse.pipe()` instead of `pageContext.httpResponse.body`, see <Link href="/stream" />.
 
 The `pageContext.httpResponse` value is `null` if:
-   - An error occured while rendering the page and no <Link text="error page" href="/error-page" noBreadcrumb /> is defined.
-   - An error occured while rendering the error page.
+   - An error occurred while rendering the page and no <Link text="error page" href="/error-page" noBreadcrumb /> is defined.
+   - An error occurred while rendering the error page.
    - Vike skips certain URLs, such as `/favicon.ico` (because browsers automatically make favicon requests).
 
 The `renderPage()` function doesn't depend on Node.js and you can use `renderPage()` (and therefore embed Vike) anywhere:

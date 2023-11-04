@@ -1,6 +1,7 @@
-export { useClientRouter }
+export { installClientRouter }
 export { disableClientRouting }
 export { isDisableAutomaticLinkInterception }
+export { renderPageClientSide }
 
 import {
   assert,
@@ -23,7 +24,6 @@ import { assertHook } from '../../shared/hooks/getHook.js'
 import { isClientSideRoutable, skipLink } from './skipLink.js'
 import { isErrorFetchingStaticAssets } from '../shared/loadPageFilesClientSide.js'
 import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history.js'
-import { defineNavigate } from './navigate.js'
 import {
   assertNoInfiniteAbortLoop,
   getPageContextFromAllRewrites,
@@ -36,308 +36,277 @@ const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   previousState: ReturnType<typeof getState>
   initialRenderIsDone?: true
-}>('useClientRouter.ts', { previousState: getState() })
+  renderingCounter: number
+  renderPromise?: Promise<void>
+  isTransitioning?: true
+}>('installClientRouter.ts', { previousState: getState(), renderingCounter: 0 })
 
-setupNativeScrollRestoration()
-initHistoryState()
-
-function disableClientRouting(err: unknown, log: boolean) {
-  assert(isErrorFetchingStaticAssets(err))
-
-  globalObject.clientRoutingIsDisabled = true
-
-  if (log) {
-    // We don't use console.error() to avoid flooding error trackers such as Sentry
-    console.log(err)
-  }
-  // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
-  const isProd: boolean = import.meta.env.PROD
-  assertInfo(
-    false,
-    [
-      'Failed to fetch static asset.',
-      isProd ? 'This usually happens when a new frontend is deployed.' : null,
-      'Falling back to Server Routing.',
-      '(The next page navigation will use Server Routing instead of Client Routing.)'
-    ]
-      .filter(Boolean)
-      .join(' '),
-    { onlyOnce: true }
-  )
-}
-
-function useClientRouter() {
+function installClientRouter() {
+  setupNativeScrollRestoration()
+  initHistoryState()
   autoSaveScrollPosition()
 
+  // Intercept <a> links
   onLinkClick((url: string, { keepScrollPosition }) => {
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
-    fetchAndRender({
+    renderPageClientSide({
       scrollTarget,
       urlOriginal: url,
       isBackwardNavigation: false,
-      checkClientSideRenderable: true
+      checkIfClientSideRenderable: true
     })
   })
+
+  // Handle back-/forward navigation
   onBrowserHistoryNavigation((scrollTarget, isBackwardNavigation) => {
-    fetchAndRender({ scrollTarget, isBackwardNavigation })
-  })
-  defineNavigate(async (url: string, { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {}) => {
-    const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
-    await fetchAndRender({
-      scrollTarget,
-      urlOriginal: url,
-      overwriteLastHistoryEntry,
-      isBackwardNavigation: false,
-      checkClientSideRenderable: true
-    })
+    renderPageClientSide({ scrollTarget, isBackwardNavigation })
   })
 
-  let renderingCounter = 0
-  let renderPromise: Promise<void> | undefined
-  let isTransitioning: boolean = false
-  fetchAndRender({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
+  // Intial render
+  renderPageClientSide({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
+}
 
-  return
-
-  async function fetchAndRender({
+type RenderArgs = {
+  scrollTarget: ScrollTarget
+  urlOriginal?: string
+  overwriteLastHistoryEntry?: boolean
+  isBackwardNavigation: boolean | null
+  checkIfClientSideRenderable?: boolean
+  pageContextsFromRewrite?: PageContextFromRewrite[]
+  redirectCount?: number
+}
+async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
+  const {
     scrollTarget,
     urlOriginal = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
     isBackwardNavigation,
-    checkClientSideRenderable,
+    checkIfClientSideRenderable,
     pageContextsFromRewrite = [],
     redirectCount = 0
-  }: {
-    scrollTarget: ScrollTarget
-    urlOriginal?: string
-    overwriteLastHistoryEntry?: boolean
-    isBackwardNavigation: boolean | null
-    checkClientSideRenderable?: boolean
-    pageContextsFromRewrite?: PageContextFromRewrite[]
-    redirectCount?: number
-  }): Promise<void> {
-    assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
+  } = renderArgs
 
-    if (globalObject.clientRoutingIsDisabled) {
+  assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
+
+  if (globalObject.clientRoutingIsDisabled) {
+    serverSideRouteTo(urlOriginal)
+    return
+  }
+
+  const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
+  if (checkIfClientSideRenderable) {
+    const urlLogical = pageContextFromAllRewrites._urlRewrite ?? urlOriginal
+    let isClientRoutable: boolean
+    try {
+      isClientRoutable = await isClientSideRoutable(urlLogical)
+    } catch (err) {
+      if (!isAbortError(err)) {
+        // If a route() hook has a bug
+        throw err
+      } else {
+        // If the user's route() hook throw redirect() / throw render()
+        // We handle the abort error down below: the user's route() hook is called again in getPageContext()
+        isClientRoutable = true
+      }
+    }
+    if (!isClientRoutable) {
       serverSideRouteTo(urlOriginal)
       return
     }
+  }
 
-    const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
-    if (checkClientSideRenderable) {
-      const urlLogical = pageContextFromAllRewrites._urlRewrite ?? urlOriginal
-      let isClientRoutable: boolean
-      try {
-        isClientRoutable = await isClientSideRoutable(urlLogical)
-      } catch (err) {
-        if (!isAbortError(err)) {
-          // If a route() hook has a bug
-          throw err
-        } else {
-          // If the user's route() hook throw redirect() / throw render()
-          // We handle the abort error down below: the user's route() hook is called again in getPageContext()
-          isClientRoutable = true
-        }
+  const pageContextBase = {
+    urlOriginal,
+    isBackwardNavigation,
+    ...pageContextFromAllRewrites
+  }
+
+  const renderingNumber = ++globalObject.renderingCounter
+  assert(renderingNumber >= 1)
+  let hydrationCanBeAborted = false
+  const shouldAbort = () => {
+    {
+      // We should never abort the hydration if `hydrationCanBeAborted` isn't `true`
+      const isHydration = renderingNumber === 1
+      if (isHydration && hydrationCanBeAborted === false) {
+        return false
       }
-      if (!isClientRoutable) {
-        serverSideRouteTo(urlOriginal)
+    }
+    // If there is a newer rendering, we should abort all previous renderings
+    if (renderingNumber !== globalObject.renderingCounter) {
+      return true
+    }
+    return false
+  }
+
+  // Start transition before any await's
+  if (renderingNumber > 1) {
+    if (!globalObject.isTransitioning) {
+      await globalObject.onPageTransitionStart?.(pageContextBase)
+      globalObject.isTransitioning = true
+    }
+  }
+  if (shouldAbort()) {
+    return
+  }
+
+  const pageContext = await createPageContext(pageContextBase)
+  if (shouldAbort()) {
+    return
+  }
+  const isFirstRenderAttempt = renderingNumber === 1
+  objectAssign(pageContext, {
+    _isFirstRenderAttempt: isFirstRenderAttempt
+  })
+
+  let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>> | undefined
+  let err: unknown
+  let hasError = false
+  try {
+    pageContextAddendum = await getPageContext(pageContext)
+  } catch (err_: unknown) {
+    hasError = true
+    err = err_
+  }
+  if (hasError) {
+    if (!isAbortError(err)) {
+      // We don't swallow 404 errors:
+      //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
+      //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
+      console.error(err)
+    } else {
+      // We swallow throw redirect()/render() called by client-side hooks onBeforeRender() and guard()
+      // We handle the abort error down below.
+    }
+
+    if (shouldSwallowAndInterrupt(err, pageContext)) return
+
+    if (isAbortError(err)) {
+      const errAbort = err
+      logAbortErrorHandled(err, pageContext._isProduction, pageContext)
+      const pageContextAbort = errAbort._pageContextAbort
+
+      // throw render('/some-url')
+      if (pageContextAbort._urlRewrite) {
+        await renderPageClientSide({
+          ...renderArgs,
+          scrollTarget: 'scroll-to-top-or-hash',
+          checkIfClientSideRenderable: true,
+          pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort]
+        })
+        return
+      }
+
+      // throw redirect('/some-url')
+      if (pageContextAbort._urlRedirect) {
+        const urlRedirect = pageContextAbort._urlRedirect.url
+        if (urlRedirect.startsWith('http')) {
+          // External redirection
+          window.location.href = urlRedirect
+          return
+        } else {
+          await renderPageClientSide({
+            ...renderArgs,
+            scrollTarget: 'scroll-to-top-or-hash',
+            urlOriginal: urlRedirect,
+            overwriteLastHistoryEntry: false,
+            isBackwardNavigation: false,
+            checkIfClientSideRenderable: true,
+            redirectCount: redirectCount + 1
+          })
+        }
+        return
+      }
+
+      // throw render(statusCode)
+      assert(pageContextAbort.abortStatusCode)
+      objectAssign(pageContext, pageContextAbort)
+      if (pageContextAbort.abortStatusCode === 404) {
+        objectAssign(pageContext, { is404: true })
+      }
+    } else {
+      objectAssign(pageContext, { is404: checkIf404(err) })
+    }
+
+    try {
+      pageContextAddendum = await getPageContextErrorPage(pageContext)
+    } catch (err2: unknown) {
+      // - When user hasn't defined a `_error.page.js` file
+      // - Some unpexected vike internal error
+
+      if (shouldSwallowAndInterrupt(err2, pageContext)) return
+
+      if (!isFirstRenderAttempt) {
+        setTimeout(() => {
+          // We let the server show the 404 page
+          window.location.pathname = urlOriginal
+        }, 0)
+      }
+
+      if (!isEquivalentError(err, err2)) {
+        throw err2
+      } else {
+        // Abort
         return
       }
     }
-
-    const pageContextBase = {
-      urlOriginal,
-      isBackwardNavigation,
-      ...pageContextFromAllRewrites
-    }
-
-    const renderingNumber = ++renderingCounter
-    assert(renderingNumber >= 1)
-
-    // Start transition before any await's
-    if (renderingNumber > 1) {
-      if (isTransitioning === false) {
-        await globalObject.onPageTransitionStart?.(pageContextBase)
-        isTransitioning = true
-      }
-    }
-
-    let hydrationCanBeAborted = false
-    const shouldAbort = () => {
-      {
-        // We should never abort the hydration if `hydrationCanBeAborted` isn't `true`
-        const isHydration = renderingNumber === 1
-        if (isHydration && hydrationCanBeAborted === false) {
-          return false
-        }
-      }
-      // If there is a newer rendering, we should abort all previous renderings
-      if (renderingNumber !== renderingCounter) {
-        return true
-      }
-      return false
-    }
-
-    const pageContext = await createPageContext(pageContextBase)
-    if (shouldAbort()) {
-      return
-    }
-    const isFirstRenderAttempt = renderingNumber === 1
-    objectAssign(pageContext, {
-      _isFirstRenderAttempt: isFirstRenderAttempt
-    })
-
-    let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>> | undefined
-    let err: unknown
-    let hasError = false
-    try {
-      pageContextAddendum = await getPageContext(pageContext)
-    } catch (err_: unknown) {
-      hasError = true
-      err = err_
-    }
-    if (hasError) {
-      if (!isAbortError(err)) {
-        // We don't swallow 404 errors:
-        //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
-        //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
-        console.error(err)
-      } else {
-        // We swallow throw redirect()/render() called by client-side hooks onBeforeRender() and guard()
-        // We handle the abort error down below.
-      }
-
-      if (shouldSwallowAndInterrupt(err, pageContext)) return
-
-      if (isAbortError(err)) {
-        const errAbort = err
-        logAbortErrorHandled(err, pageContext._isProduction, pageContext)
-        const pageContextAbort = errAbort._pageContextAbort
-
-        // throw render('/some-url')
-        if (pageContextAbort._urlRewrite) {
-          await fetchAndRender({
-            scrollTarget,
-            urlOriginal,
-            overwriteLastHistoryEntry,
-            isBackwardNavigation,
-            pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort],
-            redirectCount
-          })
-          return
-        }
-
-        // throw redirect('/some-url')
-        if (pageContextAbort._urlRedirect) {
-          const urlRedirect = pageContextAbort._urlRedirect.url
-          if (urlRedirect.startsWith('http')) {
-            // External redirection
-            window.location.href = urlRedirect
-            return
-          } else {
-            await fetchAndRender({
-              scrollTarget: 'scroll-to-top-or-hash',
-              urlOriginal: urlRedirect,
-              overwriteLastHistoryEntry: false,
-              isBackwardNavigation: false,
-              checkClientSideRenderable: true,
-              pageContextsFromRewrite,
-              redirectCount: redirectCount++
-            })
-          }
-          return
-        }
-
-        // throw render(statusCode)
-        assert(pageContextAbort.abortStatusCode)
-        objectAssign(pageContext, pageContextAbort)
-        if (pageContextAbort.abortStatusCode === 404) {
-          objectAssign(pageContext, { is404: true })
-        }
-      } else {
-        objectAssign(pageContext, { is404: checkIf404(err) })
-      }
-
-      try {
-        pageContextAddendum = await getPageContextErrorPage(pageContext)
-      } catch (err2: unknown) {
-        // - When user hasn't defined a `_error.page.js` file
-        // - Some unpexected vike internal error
-
-        if (shouldSwallowAndInterrupt(err2, pageContext)) return
-
-        if (!isFirstRenderAttempt) {
-          setTimeout(() => {
-            // We let the server show the 404 page
-            window.location.pathname = urlOriginal
-          }, 0)
-        }
-
-        if (!isEquivalentError(err, err2)) {
-          throw err2
-        } else {
-          // Abort
-          return
-        }
-      }
-    }
-    assert(pageContextAddendum)
-    objectAssign(pageContext, pageContextAddendum)
-    assertHook(pageContext, 'onPageTransitionStart')
-    globalObject.onPageTransitionStart = pageContext.exports.onPageTransitionStart
-    if (pageContext.exports.hydrationCanBeAborted) {
-      hydrationCanBeAborted = true
-    } else {
-      assertWarning(
-        !isReact(),
-        'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vike.dev/clientRouting',
-        { onlyOnce: true }
-      )
-    }
-
-    if (shouldAbort()) {
-      return
-    }
-
-    if (renderPromise) {
-      // Always make sure that the previous render has finished,
-      // otherwise that previous render may finish after this one.
-      await renderPromise
-    }
-    if (shouldAbort()) {
-      return
-    }
-
-    changeUrl(urlOriginal, overwriteLastHistoryEntry)
-    navigationState.markNavigationChange()
-    assert(renderPromise === undefined)
-    renderPromise = (async () => {
-      await executeOnRenderClientHook(pageContext, true)
-      addLinkPrefetchHandlers(pageContext)
-    })()
-    await renderPromise
-    renderPromise = undefined
-
-    if (pageContext._isFirstRenderAttempt) {
-      assertHook(pageContext, 'onHydrationEnd')
-      const { onHydrationEnd } = pageContext.exports
-      if (onHydrationEnd) {
-        const hookFilePath = pageContext.exportsAll.onHydrationEnd![0]!.exportSource
-        assert(hookFilePath)
-        await executeHook(() => onHydrationEnd(pageContext), 'onHydrationEnd', hookFilePath)
-      }
-    } else if (renderingNumber === renderingCounter) {
-      if (pageContext.exports.onPageTransitionEnd) {
-        assertHook(pageContext, 'onPageTransitionEnd')
-        await pageContext.exports.onPageTransitionEnd(pageContext)
-      }
-      isTransitioning = false
-    }
-
-    setScrollPosition(scrollTarget)
-    browserNativeScrollRestoration_disable()
-    globalObject.initialRenderIsDone = true
   }
+  assert(pageContextAddendum)
+  objectAssign(pageContext, pageContextAddendum)
+  assertHook(pageContext, 'onPageTransitionStart')
+  globalObject.onPageTransitionStart = pageContext.exports.onPageTransitionStart
+  if (pageContext.exports.hydrationCanBeAborted) {
+    hydrationCanBeAborted = true
+  } else {
+    assertWarning(
+      !isReact(),
+      'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vike.dev/clientRouting',
+      { onlyOnce: true }
+    )
+  }
+
+  if (shouldAbort()) {
+    return
+  }
+
+  if (globalObject.renderPromise) {
+    // Always make sure that the previous render has finished,
+    // otherwise that previous render may finish after this one.
+    await globalObject.renderPromise
+  }
+  if (shouldAbort()) {
+    return
+  }
+
+  changeUrl(urlOriginal, overwriteLastHistoryEntry)
+  navigationState.markNavigationChange()
+  assert(globalObject.renderPromise === undefined)
+  globalObject.renderPromise = (async () => {
+    await executeOnRenderClientHook(pageContext, true)
+    addLinkPrefetchHandlers(pageContext)
+  })()
+  await globalObject.renderPromise
+  globalObject.renderPromise = undefined
+
+  if (pageContext._isFirstRenderAttempt) {
+    assertHook(pageContext, 'onHydrationEnd')
+    const { onHydrationEnd } = pageContext.exports
+    if (onHydrationEnd) {
+      const hookFilePath = pageContext.exportsAll.onHydrationEnd![0]!.exportSource
+      assert(hookFilePath)
+      await executeHook(() => onHydrationEnd(pageContext), 'onHydrationEnd', hookFilePath)
+    }
+  } else if (renderingNumber === globalObject.renderingCounter) {
+    if (pageContext.exports.onPageTransitionEnd) {
+      assertHook(pageContext, 'onPageTransitionEnd')
+      await pageContext.exports.onPageTransitionEnd(pageContext)
+    }
+    globalObject.isTransitioning = undefined
+  }
+
+  setScrollPosition(scrollTarget)
+  browserNativeScrollRestoration_disable()
+  globalObject.initialRenderIsDone = true
 }
 
 function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => void) {
@@ -383,9 +352,16 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
 function onBrowserHistoryNavigation(
   callback: (scrollPosition: ScrollTarget, isBackwardNavigation: null | boolean) => void
 ) {
-  // The `event` of `window.addEventListener('popstate', (event) => /*...*/)` is useless:
-  //  - The History API doesn't provide the previous state (the popped state): https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
-  window.addEventListener('popstate', () => {
+  // - The popstate event is trigged upon:
+  //   - Back-/forward navigation.
+  //     - By user clicking on his browser's back-/forward navigation (or using a shortcut)
+  //     - By JavaScript: `history.back()` / `history.forward()`
+  //   - URL hash change.
+  //     - By user clicking on a hash link `<a href="#some-hash" />`
+  //       - The popstate event is *only* triggered if `href` starts with '#' (even if `href` is '/#some-hash' while the current URL's pathname is '/' then the popstate still isn't triggered)
+  //     - By JavaScript: `location.hash = 'some-hash'`
+  // - The `event` of `window.addEventListener('popstate', (event) => /*...*/)` is useless: the History API doesn't provide the previous state (the popped state), see https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
+  window.addEventListener('popstate', (): void => {
     const currentState = getState()
 
     const scrollTarget = currentState.historyState.scrollPosition || 'scroll-to-top-or-hash'
@@ -401,8 +377,8 @@ function onBrowserHistoryNavigation(
 
     if (isHashNavigation) {
       // - `history.state` is uninitialized (`null`) when:
-      //   - The vike app runs `window.location.hash = '#section'`.
-      //   - The user clicks on an anchor link `<a href="#section">Section</a>`. (Because Vike's `onLinkClick()` handler skips hash links.)
+      //   - The user's code runs `window.location.hash = '#section'`.
+      //   - The user clicks on an anchor link `<a href="#section">Section</a>` (because Vike's `onLinkClick()` handler skips hash links).
       // - `history.state` is `null` when uninitialized: https://developer.mozilla.org/en-US/docs/Web/API/History/state
       // - Alternatively, we completely take over hash navigation and reproduce the browser's native behavior upon hash navigation.
       //   - Problem: we cannot intercept `window.location.hash = '#section'`. (Or maybe we can with the `hashchange` event?)
@@ -501,6 +477,7 @@ function setScroll(scrollPosition: ScrollPosition) {
   })
 }
 
+// Save scroll position (needed for back-/forward navigation)
 function autoSaveScrollPosition() {
   // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/vikejs/vike/issues/46)
   window.addEventListener('scroll', throttle(saveScrollPosition, Math.ceil(1000 / 3)), { passive: true })
@@ -584,4 +561,29 @@ function isDisableAutomaticLinkInterception(): boolean {
   /* globalObject should be used if we want to make disableAutomaticLinkInterception a page-by-page setting
   return globalObject.disableAutomaticLinkInterception ?? false
   */
+}
+
+function disableClientRouting(err: unknown, log: boolean) {
+  assert(isErrorFetchingStaticAssets(err))
+
+  globalObject.clientRoutingIsDisabled = true
+
+  if (log) {
+    // We don't use console.error() to avoid flooding error trackers such as Sentry
+    console.log(err)
+  }
+  // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
+  const isProd: boolean = import.meta.env.PROD
+  assertInfo(
+    false,
+    [
+      'Failed to fetch static asset.',
+      isProd ? 'This usually happens when a new frontend is deployed.' : null,
+      'Falling back to Server Routing.',
+      '(The next page navigation will use Server Routing instead of Client Routing.)'
+    ]
+      .filter(Boolean)
+      .join(' '),
+    { onlyOnce: true }
+  )
 }

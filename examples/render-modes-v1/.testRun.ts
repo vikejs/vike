@@ -12,6 +12,7 @@ import {
   sleep
 } from '@brillout/test-e2e'
 import assert from 'assert'
+import { waitForNavigation } from '../../test/utils'
 
 export { testRun }
 
@@ -84,10 +85,10 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
           /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
           const navPromise = page.waitForURL(url)
           */
-          const navPromise = page.waitForNavigation()
+          const navPromise = await waitForNavigation()
           const file = isV1Design ? './pages/html-only/+Page.jsx' : './pages/html-only/index.page.server.jsx'
           editFile(file, (s) => s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'))
-          await navPromise
+          await navPromise()
           // But auto reload works
           expect(await page.textContent('h1')).toBe('HTML-only !')
         }
@@ -95,9 +96,9 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
           /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
           const navPromise = page.waitForURL(url)
           */
-          const navPromise = page.waitForNavigation()
+          const navPromise = await waitForNavigation()
           editFileRevert()
-          await navPromise
+          await navPromise()
           expect(await page.textContent('h1')).toBe('HTML-only')
         }
       }
@@ -177,32 +178,31 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
   })
   if (!isPreview) {
     test('HTML + JS - HMR', async () => {
-      // Page has finished loading and is interactive
       expect(await page.textContent('button')).toContain('Counter 1')
       // JS auto-reload
       {
-        const url = getServerUrl() + '/html-js'
         expect(await page.textContent('h1')).toBe('HTML + JS')
         // No HMR for HTML + JS
         {
-          /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
-          const navPromise = page.waitForURL(url)
-          */
-          const navPromise = page.waitForNavigation()
+          const navPromise = await waitForNavigation()
           const file = isV1Design ? './pages/html-js/+Page.jsx' : './pages/html-js/index.page.server.jsx'
+          expect(await page.textContent('button')).toContain('Counter 1')
           editFile(file, (s) => s.replace('<h1>HTML + JS</h1>', '<h1>HTML + JS !</h1>'))
-          await navPromise
+          await navPromise()
           // But auto-reload works
           expect(await page.textContent('h1')).toBe('HTML + JS !')
+          // Page was reloaded
+          expect(await page.textContent('button')).toContain('Counter 0')
+          await clickCounter()
         }
         {
-          /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
-          const navPromise = page.waitForURL(url)
-          */
-          const navPromise = page.waitForNavigation()
+          const navPromise = await waitForNavigation()
+          expect(await page.textContent('button')).toContain('Counter 1')
           editFileRevert()
-          await navPromise
+          await navPromise()
           expect(await page.textContent('h1')).toBe('HTML + JS')
+          // Page was reloaded
+          expect(await page.textContent('button')).toContain('Counter 0')
         }
       }
       // CSS HMR
@@ -289,7 +289,11 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     })
   }
   async function clickCounter() {
-    await page.waitForFunction(() => window.document.body.textContent!.includes('Counter')) // Wait until page has loaded
+    // Wait until page has loaded
+    await page.waitForFunction(() => {
+      const pageIsLoaded = window.document.body.textContent!.includes('Counter')
+      return pageIsLoaded
+    })
     expect(await page.textContent('button')).toContain('Counter 0')
     await autoRetry(async () => {
       await page.click('button')

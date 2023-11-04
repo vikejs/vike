@@ -4,7 +4,7 @@ export { isClientSideRoutable } from './skipLink/isClientSideRoutable.js'
 import { getBaseServer } from './getBaseServer.js'
 import { isExternalLink } from './isExternalLink.js'
 import { assert, parseUrl, isBaseServer, isParsable } from './utils.js'
-import { isDisableAutomaticLinkInterception } from './useClientRouter.js'
+import { isDisableAutomaticLinkInterception } from './installClientRouter.js'
 
 function skipLink(linkTag: HTMLElement): boolean {
   const url = linkTag.getAttribute('href')

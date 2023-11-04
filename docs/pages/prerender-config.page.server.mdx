@@ -13,7 +13,7 @@ export default {
   plugins: [
     vike({
       // Use the default pre-render config:
-      prerender: true
+      prerender: true,
       // Deviate from the default pre-render config:
       prerender: {
         partial: false,        // partial?: boolean
@@ -64,7 +64,7 @@ Set to `false` (or `1`) to disable concurrency.
 >
 > Disable concurrency if:
 > - You encounter `JavaScript heap out of memory` errors.
-> - If pre-rendering takes an abnormal high amount of time. (Caused by the very slow process of memory swapping that kicks-in when memory starts to saturates).
+> - If pre-rendering takes an abnormal high amount of time. (Caused by the very slow process of memory swapping that kicks-in when memory starts to saturate).
 
 
 ## `disableAutoRun`

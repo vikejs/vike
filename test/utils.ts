@@ -3,6 +3,7 @@ export { hydrationDone }
 export { ensureWasClientSideRouted }
 export { expectUrl }
 export { expectPageContextJsonRequest }
+export { waitForNavigation }
 
 import { page, expect, getServerUrl, autoRetry, partRegex } from '@brillout/test-e2e'
 
@@ -63,4 +64,24 @@ function expectPageContextJsonRequest(shouldExist: boolean) {
     const exists = count > 0
     expect(exists).toBe(shouldExist)
   }
+}
+
+/** Wait for a full page navigation/reload (i.e. complete DOM de-/reconstruction)
+ *
+ * Reliable alternative to Playwright's:
+ *  - page.waitForURL() which doesn't work for page reloads (https://github.com/microsoft/playwright/issues/20853)
+ *  - page.waitForNavigation() which is unreliable (https://github.com/microsoft/playwright/issues/20853#issuecomment-1698770812)
+ */
+async function waitForNavigation(): Promise<() => Promise<void>> {
+  // We need to await page.evaluate() before the page navigation is triggered, otherwise Playwright throws:
+  // ```bash
+  // proxy.evaluate: Execution context was destroyed, most likely because of a navigation
+  // ```
+  await page.evaluate(() => (window._stamp = true))
+  return async () => {
+    await page.waitForFunction(() => window._stamp === undefined)
+  }
+}
+declare global {
+  var _stamp: undefined | true
 }

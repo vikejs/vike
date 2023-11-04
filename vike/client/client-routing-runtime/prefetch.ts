@@ -7,7 +7,7 @@ import { isClientSideRoutable, skipLink } from './skipLink.js'
 import { getPageId } from './getPageId.js'
 import { getPrefetchSettings } from './prefetch/getPrefetchSettings.js'
 import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched.js'
-import { disableClientRouting } from './useClientRouter.js'
+import { disableClientRouting } from './installClientRouter.js'
 import { isExternalLink } from './isExternalLink.js'
 
 assertClientRouting()

@@ -19,6 +19,7 @@ function previewConfig(): Plugin {
     apply: 'serve',
     config(config) {
       return {
+        appType: 'custom',
         build: {
           outDir: resolveOutDir(config)
         }
@@ -29,6 +30,10 @@ function previewConfig(): Plugin {
       configVike = await getConfigVike(config)
     },
     configurePreviewServer(server) {
+      /* - Couldn't make `appType: 'mpa'` work as of npm:@brillout/vite@5.0.0-beta.14.0426910c
+         - This ugly hack to set appType for preview won't be need once https://github.com/vitejs/vite/pull/14855 is merged.
+      config.appType = 'mpa'
+      */
       markEnvAsPreview()
       return () => {
         assertDist()

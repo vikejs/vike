@@ -53,12 +53,10 @@ async function getPageContext(
   } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
   if (pageContext._isFirstRenderAttempt && navigationState.isFirstUrl(pageContext.urlOriginal)) {
-    assert(hasProp(pageContext, '_isFirstRenderAttempt', 'true'))
     const pageContextAddendum = await getPageContextFirstRender(pageContext)
     setPageContextInitHasClientData(pageContextAddendum)
     return pageContextAddendum
   } else {
-    assert(hasProp(pageContext, '_isFirstRenderAttempt', 'false'))
     const pageContextAddendum = await getPageContextUponNavigation(pageContext)
     setPageContextInitHasClientData(pageContextAddendum)
     return pageContextAddendum
@@ -69,7 +67,6 @@ async function getPageContextFirstRender(
   pageContext: {
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
-    _isFirstRenderAttempt: true
     urlOriginal: string
   } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
@@ -101,7 +98,6 @@ async function getPageContextErrorPage(
   pageContext: {
     urlOriginal: string
     _allPageIds: string[]
-    _isFirstRenderAttempt: boolean
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
   } & PageContextPassThrough
@@ -116,9 +112,7 @@ async function getPageContextErrorPage(
   return pageContextAddendum
 }
 
-async function getPageContextUponNavigation(
-  pageContext: { _isFirstRenderAttempt: false } & PageContextPassThrough
-): Promise<PageContextAddendum> {
+async function getPageContextUponNavigation(pageContext: PageContextPassThrough): Promise<PageContextAddendum> {
   const pageContextAddendum = {
     isHydration: false
   }
@@ -297,11 +291,14 @@ async function getPageContextFromRoute(
 ): Promise<{ _pageId: string; routeParams: Record<string, string> }> {
   const routeResult = await route(pageContext)
   const pageContextFromRoute = routeResult.pageContextAddendum
+
+  // We'll be able to remove this once async route functions are deprecated (because we'll be able to skip link hijacking if a link doesn't match a route (because whether to call event.preventDefault() needs to be determined synchronously))
   if (!pageContextFromRoute._pageId) {
     const err = new Error('No routing match')
     markIs404(err)
     throw err
   }
+
   assert(hasProp(pageContextFromRoute, '_pageId', 'string'))
   return pageContextFromRoute
 }
