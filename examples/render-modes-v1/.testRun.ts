@@ -177,7 +177,6 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
   })
   if (!isPreview) {
     test('HTML + JS - HMR', async () => {
-      // Page has finished loading and is interactive
       expect(await page.textContent('button')).toContain('Counter 1')
       // JS auto-reload
       {
@@ -188,6 +187,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
           /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
           const navPromise = page.waitForURL(url)
           */
+          // Is there a way to make waitForNavigation not timeout? https://github.com/microsoft/playwright/issues/20853#issuecomment-1698770812
           const navPromise = page.waitForNavigation()
           const file = isV1Design ? './pages/html-js/+Page.jsx' : './pages/html-js/index.page.server.jsx'
           editFile(file, (s) => s.replace('<h1>HTML + JS</h1>', '<h1>HTML + JS !</h1>'))
@@ -289,7 +289,11 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     })
   }
   async function clickCounter() {
-    await page.waitForFunction(() => window.document.body.textContent!.includes('Counter')) // Wait until page has loaded
+    // Wait until page has loaded
+    await page.waitForFunction(() => {
+      const pageIsLoaded = window.document.body.textContent!.includes('Counter')
+      return pageIsLoaded
+    })
     expect(await page.textContent('button')).toContain('Counter 0')
     await autoRetry(async () => {
       await page.click('button')
