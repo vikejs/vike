@@ -1,5 +1,6 @@
 export { route }
 export type { PageContextForRoute }
+export type { PageContextFromRoute }
 export type { PageRoutes }
 export type { RouteMatches }
 

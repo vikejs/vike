@@ -101,7 +101,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   })
   /*
   {
-    const { pageContextAddendum: pageContextFromRoute } = await route(pageContext)
+    const pageContextFromRoute = await route(pageContext)
     objectAssign(pageContext, pageContextFromRoute)
   }
   */
@@ -109,9 +109,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
   if (checkIfClientSideRenderable) {
     const urlLogical = pageContextFromAllRewrites._urlRewrite ?? urlOriginal
+    const pageContext = await createPageContext(urlLogical)
     let isClientRoutable: boolean
     try {
-      isClientRoutable = await isClientSideRoutable(urlLogical)
+      const pageContextFromRoute = await route(pageContext)
+      objectAssign(pageContext, pageContextFromRoute)
+      isClientRoutable = await isClientSideRoutable(pageContext)
     } catch (err) {
       if (!isAbortError(err)) {
         // If a route() hook has a bug
