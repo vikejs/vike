@@ -1,4 +1,4 @@
-// Internal functions needed by vite-plugin-vercel
+// Internals needed by vite-plugin-vercel
 export { route, getPagesAndRoutes }
 export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }
 
