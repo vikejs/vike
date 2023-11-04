@@ -99,6 +99,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   objectAssign(pageContext, {
     isBackwardNavigation
   })
+
+  {
+    const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
+    objectAssign(pageContext, pageContextFromAllRewrites)
+  }
+
   /*
   {
     const pageContextFromRoute = await route(pageContext)
@@ -106,10 +112,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   }
   */
 
-  const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
   if (checkIfClientSideRenderable) {
-    const urlLogical = pageContextFromAllRewrites._urlRewrite ?? urlOriginal
-    const pageContext = await createPageContext(urlLogical)
     let isClientRoutable: boolean
     try {
       const pageContextFromRoute = await route(pageContext)
@@ -130,7 +133,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       return
     }
   }
-  objectAssign(pageContext, pageContextFromAllRewrites)
 
   const renderingNumber = ++globalObject.renderingCounter
   assert(renderingNumber >= 1)
