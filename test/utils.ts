@@ -72,9 +72,15 @@ function expectPageContextJsonRequest(shouldExist: boolean) {
  *  - page.waitForURL() which doesn't work for page reloads (https://github.com/microsoft/playwright/issues/20853)
  *  - page.waitForNavigation() which is unreliable (https://github.com/microsoft/playwright/issues/20853#issuecomment-1698770812)
  */
-async function waitForNavigation() {
+async function waitForNavigation(): Promise<() => Promise<void>> {
+  // We need to await page.evaluate() before the page navigation is triggered, otherwise Playwright throws:
+  // ```bash
+  // proxy.evaluate: Execution context was destroyed, most likely because of a navigation
+  // ```
   await page.evaluate(() => (window._stamp = true))
-  await page.waitForFunction(() => window._stamp === undefined)
+  return async () => {
+    await page.waitForFunction(() => window._stamp === undefined)
+  }
 }
 declare global {
   var _stamp: undefined | true
