@@ -31,6 +31,7 @@ import {
   logAbortErrorHandled,
   PageContextFromRewrite
 } from '../../shared/route/abort.js'
+import { route } from '../../shared/route/index.js'
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
   clientRoutingIsDisabled?: true
@@ -93,6 +94,17 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     return
   }
 
+  const pageContext = {
+    isBackwardNavigation,
+    ...(await createPageContext({ urlOriginal: urlOriginal }))
+  }
+  /*
+  {
+    const { pageContextAddendum: pageContextFromRoute } = await route(pageContext)
+    objectAssign(pageContext, pageContextFromRoute)
+  }
+  */
+
   const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
   if (checkIfClientSideRenderable) {
     const urlLogical = pageContextFromAllRewrites._urlRewrite ?? urlOriginal
@@ -114,12 +126,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       return
     }
   }
-
-  const pageContextBase = {
-    urlOriginal,
-    isBackwardNavigation,
-    ...pageContextFromAllRewrites
-  }
+  objectAssign(pageContext, pageContextFromAllRewrites)
 
   const renderingNumber = ++globalObject.renderingCounter
   assert(renderingNumber >= 1)
@@ -142,7 +149,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   // Start transition before any await's
   if (renderingNumber > 1) {
     if (!globalObject.isTransitioning) {
-      await globalObject.onPageTransitionStart?.(pageContextBase)
+      await globalObject.onPageTransitionStart?.(pageContext)
       globalObject.isTransitioning = true
     }
   }
@@ -150,10 +157,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     return
   }
 
-  const pageContext = await createPageContext(pageContextBase)
-  if (shouldAbort()) {
-    return
-  }
   const isFirstRenderAttempt = renderingNumber === 1
   objectAssign(pageContext, {
     _isFirstRenderAttempt: isFirstRenderAttempt
