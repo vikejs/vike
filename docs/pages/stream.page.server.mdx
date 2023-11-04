@@ -21,7 +21,7 @@ Stream Docs & API:
 ## Basics
 
 ```js
-// renderer/_deault.page.server.js
+// renderer/_default.page.server.js
 
 export { render }
 
@@ -157,7 +157,7 @@ res.send(body)
 To be able to use stream pipes, we need to use `stampPipe()`:
 
 ```js
-// renderer/_deault.page.server.js
+// renderer/_default.page.server.js
 
 export { render }
 
@@ -207,7 +207,7 @@ const resp = new Response(readable)
 For some UI frameworks, such as Vue, we need a pipe wrapper:
 
 ```js
-// renderer/_deault.page.server.js
+// renderer/_default.page.server.js
 
 import { pipePageToWritable } from 'some-ui-framework'
 import { stampPipe, escapeInject } from 'vike/server'
@@ -242,7 +242,7 @@ Consequently, we can determine the initial data (passed to the browser) only aft
 In such situations, we can return a `pageContext` async function in our `render()` hook:
 
 ```js
-// renderer/_deault.page.server.js
+// renderer/_default.page.server.js
 
 export { render }
 export { passToClient }

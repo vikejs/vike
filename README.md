@@ -3,7 +3,7 @@
 
 *Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.*
 
-**Introducion & documentation** :arrow_right: [vike.dev](https://vike.dev)
+**Introduction & documentation** :arrow_right: [vike.dev](https://vike.dev)
 <br/>
 **Examples (official)** :arrow_right: [examples/](https://github.com/vikejs/vike/tree/main/examples)
 <br/>

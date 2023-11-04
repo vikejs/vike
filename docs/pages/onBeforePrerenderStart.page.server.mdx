@@ -39,7 +39,7 @@ const onBeforePrerenderStart: OnBeforePrerenderStartAsync = async (
     url: '/movies',
     pageContext: {
       pageProps: {
-        movieList: movies.map(({id, title}) => ({id, title})
+        movieList: movies.map(({id, title}) => ({id, title}))
       }
     }
   }

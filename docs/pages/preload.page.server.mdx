@@ -19,7 +19,7 @@ import { renderPage } from 'vike/server'
 app.get('*', async (req, res) => {
   const pageContext = await renderPage({ urlOriginal: req.originalUrl } )
   const { earlyHints } = pageContext.httpResponse
-  // For exampe with Node.js 18:
+  // For example with Node.js 18:
   res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
 })
 ```

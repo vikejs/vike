@@ -91,7 +91,7 @@ export default {
     onBeforeRender: {
       // By default, the onBeforeRender() hook is always loaded and executed only on the
       // server-side. By using the meta config we can make it isomorphic instead:
-      // onBeforeRender() is loaded and executed as well on the cient-side.
+      // onBeforeRender() is loaded and executed as well on the client-side.
       env: 'server-and-client'
     }
   }
@@ -107,7 +107,7 @@ For extra convenience, we can create a `onBeforeRenderIsomorph` toggle:
 
 import type { Config, Effect } from 'vike/types'
 
-const onBeforeRenderIsomorphEffect: Effect = ({ configDefinedAt, configValue }) {
+const onBeforeRenderIsomorphEffect: Effect = ({ configDefinedAt, configValue }) => {
   if (typeof configValue !== 'boolean') {
     throw new Error(`${configDefinedAt} should be a boolean`)
   }
@@ -134,5 +134,5 @@ export default {
 
 Example:
  - [/examples/react-full-v1/](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/)
-   - Config defintion: [/renderer/+config.h.ts > `meta.onBeforeRenderIsomorph`](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/renderer/+config.h.ts#L14-L33)
+   - Config definition: [/renderer/+config.h.ts > `meta.onBeforeRenderIsomorph`](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/renderer/+config.h.ts#L14-L33)
    - Config usage: [/pages/star-wars/@id/+onBeforeRenderIsomorph.ts](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts)

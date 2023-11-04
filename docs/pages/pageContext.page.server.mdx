@@ -62,7 +62,7 @@ Built-in properties:
  - **`pageContext.isHydration`**: Whether the current page is already rendered to HTML. When using <Link href="/client-routing" noBreadcrumb={true} />, the value is usually `true` for the first page the user navigates to, and `false` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.)
  - **`pageContext.isBackwardNavigation`**: Whether the user is navigating back in history. The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`. The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
  - **`pageContext.is404`**: If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see <Link href="/error-page" />.
- - **`pageContext.isClientSideNavigation`**: Whether the page was navigated by the the client-side router. In other words, when using <Link href="/client-routing" noBreadcrumb={true} />, the value is `false` for the first page the user visits, and `true` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `false`.)
+ - **`pageContext.isClientSideNavigation`**: Whether the page was navigated by the client-side router. In other words, when using <Link href="/client-routing" noBreadcrumb={true} />, the value is `false` for the first page the user visits, and `true` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `false`.)
  - **`pageContext.abortReason`**: Set by <Link href="/render" text={<code>throw render()</code>} /> and used by the <Link text="error page" href="/error-page" />.
  - **`pageContext.abortStatusCode`**: Set by <Link href="/render" text={<code>throw render()</code>} /> and used by the <Link text="error page" href="/error-page" />.
 
@@ -79,7 +79,7 @@ You can define custom `pageContext` properties.
           // **** Custom pageContext properties ****
           // ***************************************
           // Common use case: make fetched data available over pageContext
-          someData: { product: { id: 123, name: 'MacBook' } }
+          someData: { product: { id: 123, name: 'MacBook' } },
           // Or any other custom property you want
           someCustomProp: 'some-value'
         }
@@ -157,7 +157,7 @@ When using <Link href="/client-routing" noBreadcrumb={true} />, the following ar
 ```ts
 import type {
   // For code loaded in client and server
-  PageContext
+  PageContext,
   // For code loaded in client only
   PageContextClient,
   // For code loaded in server only

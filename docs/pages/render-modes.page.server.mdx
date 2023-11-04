@@ -35,7 +35,7 @@ Example:
 
 **2. `render()` hooks (SPA only)**
 
-If we only have SPA pages, then we adapt our `render()` hooks like the folllowing.
+If we only have SPA pages, then we adapt our `render()` hooks like the following.
 
 Client-side `render()` hook:
 
@@ -75,7 +75,7 @@ export function render() {
 }
 ```
 
-This is the key difference between SPA and SSR: in SPA `div#root` is empty, whereas with SSR `div#root` contains our Page's root component `pageContext.Page` rendererd to HTML.
+This is the key difference between SPA and SSR: in SPA `div#root` is empty, whereas with SSR `div#root` contains our Page's root component `pageContext.Page` rendered to HTML.
 
 This means that, with SPA, we use our server-side `render()` hook to generate HTML that is just an empty shell: the HTML doesn't contain the page's content.
 
@@ -117,7 +117,7 @@ export const meta = {
 
 Note how we define `pageContext.exports.meta` in `about.page.js` instead of `about.page.client.js`. That's because we need to be able to access `pageContext.exports.meta` from the server-side.
 
-This means that we define both `about.page.js` (defining meta data) and `about.page.client.js` (defining our page's root component `pageContext.Page`).
+This means that we define both `about.page.js` (defining metadata) and `about.page.client.js` (defining our page's root component `pageContext.Page`).
 
 
 **2. `render()` hooks (SPA + SSR)**
