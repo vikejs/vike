@@ -94,10 +94,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     return
   }
 
-  const pageContext = {
-    isBackwardNavigation,
-    ...(await createPageContext({ urlOriginal: urlOriginal }))
-  }
+  const pageContext = await createPageContext({ urlOriginal: urlOriginal })
+  objectAssign(pageContext, {
+    isBackwardNavigation
+  })
   /*
   {
     const { pageContextAddendum: pageContextFromRoute } = await route(pageContext)
