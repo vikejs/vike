@@ -9,7 +9,7 @@ we define a new page by creating a new `.page.jsx` file.
 // /pages/index.page.jsx
 // Environment: browser and server
 
-import React, { useState } from "react";
+import React from "react";
 import { Counter } from "../components/Counter";
 
 export { Page };
@@ -165,7 +165,7 @@ export async function onBeforeRender(pageContext) {
   };
 }
 
-// By default `pageContext` is available only on the server. But our hydrate function
+// By default, `pageContext` is available only on the server. But our hydrate function
 // we defined earlier runs in the browser and needs `pageContext.pageProps`; we use
 // `passToClient` to tell Vike to serialize and make `pageContext.pageProps`
 // available to the browser.

@@ -50,8 +50,6 @@ export { onPageTransitionEnd }
 // subsequent page navigation).
 export { onHydrationEnd }
 
-the user navigates to the render() hook the first page finishes rendering render())
-
 import { renderToDom, hydrateDom } from 'some-ui-framework'
 
 async function render(pageContext) {
@@ -65,7 +63,6 @@ async function render(pageContext) {
       // We render a new page. (When the user navigates to a new page.)
       await renderToDom(pageContext.Page)
     }
-  }
 }
 
 async function onPageTransitionStart(pageContext) {
@@ -271,8 +268,8 @@ export { onPageTransitionEnd }
 export { onHydrationEnd }
 
 import type {
-  OnPageTransitionStartAsync
-  OnPageTransitionEndAsync
+  OnPageTransitionStartAsync,
+  OnPageTransitionEndAsync,
   OnHydrationEndAsync
 } from 'vike/types'
 

@@ -33,7 +33,7 @@ function onBeforeRender(pageContext) {
 
 export { onBeforeRender }
 
-function onBeforeRender(pageContext) {
+async function onBeforeRender(pageContext) {
   if (Math.random() > 0.5) {
     // Run the `onBeforeRender()` hook of `some.page.server.js`
     const { pageContext: pageContextAddendum } =
@@ -57,7 +57,7 @@ export const skipOnBeforeRenderDefaultHook = false
 
 export { onBeforeRender }
 
-function onBeforeRender(pageContext) {
+async function onBeforeRender(pageContext) {
   if (Math.random() > 0.5) {
     // Run the `onBeforeRender()` hooks of `_default.page.server.js` and `some.page.server.js`.
     // (Note that unlike `pageContext.runOnBeforeRenderPageHook(pageContext)`, we cannot pass
@@ -75,7 +75,7 @@ function onBeforeRender(pageContext) {
 
 export { onBeforeRender }
 
-function onBeforeRender(pageContext) {
+async function onBeforeRender(pageContext) {
   if (Math.random() > 0.5) {
     // Run the `onBeforeRender()` hook of `some.page.js`
     const { pageContext: pageContextAddendum } =

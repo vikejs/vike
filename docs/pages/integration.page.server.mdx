@@ -29,7 +29,7 @@ export { render }
 async function render(pageContext) {
   // `Page` is the `export { Page }` of our `*.page.js` files;
   // Vike doesn't do anything with `Page` and just makes it available as
-  // `pageContex.Page`; we can export any `Page` value we want and do whatever we want with it.
+  // `pageContext.Page`; we can export any `Page` value we want and do whatever we want with it.
   const { Page } = pageContext
 
   // We control how we use our UI framework to render our pages to HTML
@@ -58,7 +58,7 @@ export { render }
 
 import { hydrateDom } from 'some-ui-framework'
 
-async render(pageContex) {
+async function render(pageContext) {
   const { Page } = pageContext
   // We control how our pages are hydrated
   await hydrateDom(Page)
@@ -87,16 +87,16 @@ Sentry.init()
 // And also for initializing a Service Worker.
 navigator.serviceWorker.register(/* ... */)
 
-async render(pageContex) {
+async function render(pageContext) {
   // Here we can integrate performance measurement tools, e.g. to measure hydration performance
-  const { Page } = pageContex
+  const { Page } = pageContext
   await hydrateDom(Page)
   init()
 }
 
 function init() {
   // After hydration we usually initialize vanilla JS component libraries, for example tooltips
-  tooltip.init(document.querySelectorAll('.tooltip')
+  tooltip.init(document.querySelectorAll('.tooltip'))
   // Or some vanilla JS modal library
   $('.my-modals').modal()
 }

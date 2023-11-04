@@ -3,8 +3,8 @@ import { Link } from '@brillout/docpress'
 There are no [gRPC](https://github.com/grpc) client for the browser.
 (Protocol Buffers does not support the browser.)
 
-This means we cannot call gRPC enpdoints directly from the browser;
-we always need to call gRPC enpdoints from our Node.js server.
+This means we cannot call gRPC endpoints directly from the browser;
+we always need to call gRPC endpoints from our Node.js server.
 
 For fetching data,
 we can simply use a <Link text={<code>onBeforeRender()</code>} href="/data-fetching" /> hook,

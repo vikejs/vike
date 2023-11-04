@@ -39,7 +39,7 @@ Instead of a Route String, you can also define a Route Function:
 
 export { route }
 
-function route(pageContext) => {
+function route(pageContext) {
   const parts = pageContext.urlPathname.split('/')
   if (parts[1] !== 'product') {
     return false
