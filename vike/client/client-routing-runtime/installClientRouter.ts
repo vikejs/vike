@@ -31,7 +31,7 @@ import {
   logAbortErrorHandled,
   PageContextFromRewrite
 } from '../../shared/route/abort.js'
-import { route } from '../../shared/route/index.js'
+import { PageContextFromRoute, route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
@@ -105,32 +105,26 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     objectAssign(pageContext, pageContextFromAllRewrites)
   }
 
-  /*
+  let hasError = false
+  let err: unknown
   {
-    const pageContextFromRoute = await route(pageContext)
-    objectAssign(pageContext, pageContextFromRoute)
-  }
-  */
-
-  if (checkIfClientSideRenderable) {
-    let isClientRoutable: boolean
+    let pageContextFromRoute: PageContextFromRoute | undefined
     try {
-      const pageContextFromRoute = await route(pageContext)
-      objectAssign(pageContext, pageContextFromRoute)
-      isClientRoutable = await isClientSideRoutable(pageContext)
-    } catch (err) {
-      if (!isAbortError(err)) {
-        // If a route() hook has a bug
-        throw err
-      } else {
-        // If the user's route() hook throw redirect() / throw render()
-        // We handle the abort error down below: the user's route() hook is called again in getPageContext()
-        isClientRoutable = true
-      }
+      pageContextFromRoute = await route(pageContext)
+    } catch (err_) {
+      hasError = true
+      err = err_
     }
-    if (!isClientRoutable) {
-      serverSideRouteTo(urlOriginal)
-      return
+    if (pageContextFromRoute) {
+      objectAssign(pageContext, pageContextFromRoute)
+
+      if (checkIfClientSideRenderable) {
+        const isClientRoutable = await isClientSideRoutable(pageContext)
+        if (!isClientRoutable) {
+          serverSideRouteTo(urlOriginal)
+          return
+        }
+      }
     }
   }
 
@@ -169,13 +163,13 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   })
 
   let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>> | undefined
-  let err: unknown
-  let hasError = false
-  try {
-    pageContextAddendum = await getPageContext(pageContext)
-  } catch (err_: unknown) {
-    hasError = true
-    err = err_
+  if (!hasError) {
+    try {
+      pageContextAddendum = await getPageContext(pageContext)
+    } catch (err_) {
+      hasError = true
+      err = err_
+    }
   }
   if (hasError) {
     if (!isAbortError(err)) {
@@ -262,6 +256,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   }
   assert(pageContextAddendum)
   objectAssign(pageContext, pageContextAddendum)
+
   assertHook(pageContext, 'onPageTransitionStart')
   globalObject.onPageTransitionStart = pageContext.exports.onPageTransitionStart
   if (pageContext.exports.hydrationCanBeAborted) {
