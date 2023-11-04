@@ -8,7 +8,15 @@ export { Page }
 function Page() {
   return (
     <>
-      <GlobalNote />
+      <GlobalNote>
+        <a href="https://vite-plugin-ssr.com">
+          <code>vite-plugin-ssr</code>
+        </a>{' '}
+        has been renamed Vike, see <a href="https://vite-plugin-ssr.com/vike">migration guide</a>.
+      </GlobalNote>
+      <GlobalNote>
+        The <i>V1 design</i> has been released, see <Link text="migration guide" href="/migration/v1-design" />.
+      </GlobalNote>
       <Header />
       <HorizontalLine primary={true} />
       <Features />
@@ -20,14 +28,12 @@ function Page() {
   )
 }
 
-function GlobalNote() {
+function GlobalNote({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
-        <blockquote>
-          <p>
-            The <i>V1 design</i> has been released, see <Link text="migration guide" href="/migration/v1-design" />.
-          </p>
+        <blockquote style={{ marginTop: 0 }}>
+          <p style={{ margin: 0 }}>{children}</p>
         </blockquote>
       </div>
     </>
