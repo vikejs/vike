@@ -1,14 +1,17 @@
 export { prefetch }
 export { addLinkPrefetchHandlers }
 
-import { assert, assertClientRouting, assertUsage, checkIfClientRouting } from './utils.js'
+import { assert, assertClientRouting, assertUsage, checkIfClientRouting, objectAssign } from './utils.js'
 import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../shared/loadPageFilesClientSide.js'
-import { isClientSideRoutable, skipLink } from './skipLink.js'
+import { skipLink } from './skipLink.js'
 import { getPageId } from './getPageId.js'
 import { getPrefetchSettings } from './prefetch/getPrefetchSettings.js'
 import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched.js'
 import { disableClientRouting } from './installClientRouter.js'
 import { isExternalLink } from './isExternalLink.js'
+import { isClientSideRoutable } from './isClientSideRoutable.js'
+import { createPageContext } from './createPageContext.js'
+import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 
 assertClientRouting()
 
@@ -99,11 +102,15 @@ function addLinkPrefetchHandlers(pageContext: {
 }
 
 async function prefetchIfClientSideRoutable(url: string): Promise<void> {
+  const pageContext = await createPageContext(url)
+  let pageContextFromRoute: PageContextFromRoute
   try {
-    if (!(await isClientSideRoutable(url))) return
+    pageContextFromRoute = await route(pageContext)
   } catch {
     // If a route() hook has a bug or `throw render()` / `throw redirect()`
     return
   }
+  objectAssign(pageContext, pageContextFromRoute)
+  if (!(await isClientSideRoutable(pageContext))) return
   await prefetch(url)
 }

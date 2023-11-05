@@ -1,6 +1,6 @@
 // https://vike.dev/config
 export default {
-  passToClient: ['pageProps', 'locale'],
+  passToClient: ['pageProps'],
   clientRouting: true,
   hydrationCanBeAborted: true
 }

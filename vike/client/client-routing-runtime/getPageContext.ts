@@ -289,8 +289,7 @@ async function onBeforeRenderClientOnlyExists(pageContext: {
 async function getPageContextFromRoute(
   pageContext: PageContextForRoute
 ): Promise<{ _pageId: string; routeParams: Record<string, string> }> {
-  const routeResult = await route(pageContext)
-  const pageContextFromRoute = routeResult.pageContextAddendum
+  const pageContextFromRoute = await route(pageContext)
 
   // We'll be able to remove this once async route functions are deprecated (because we'll be able to skip link hijacking if a link doesn't match a route (because whether to call event.preventDefault() needs to be determined synchronously))
   if (!pageContextFromRoute._pageId) {
@@ -312,11 +311,11 @@ function checkIf404(err: unknown): boolean {
 
 async function fetchPageContextFromServer(pageContext: {
   urlOriginal: string
+  urlLogical?: string
   _urlRewrite: string | null
-  _urlOriginalPristine?: string
 }) {
-  const urlLogical = pageContext._urlRewrite ?? pageContext._urlOriginalPristine ?? pageContext.urlOriginal
-  const pageContextUrl = getPageContextRequestUrl(urlLogical)
+  const urlLogicalOriginal = pageContext._urlRewrite ?? pageContext.urlOriginal
+  const pageContextUrl = getPageContextRequestUrl(urlLogicalOriginal)
   const response = await fetch(pageContextUrl)
 
   {

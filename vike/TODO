@@ -1,3 +1,5 @@
+- remove getPageId()
+
 - Improve https://vike.dev/header-file
 - Update all examples to not use PageContextBuiltIn but Vike.PageContext instead
 
@@ -74,6 +76,7 @@ Sometime:
 Release 1.0.0 breaking changes:
   - `import * from 'vike'`
   - pageContext.url
+  - Forbid async Route Functions
 
 After 1.0.0 release:
  - Remove 0.4 design examples

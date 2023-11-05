@@ -1,5 +1,6 @@
 export { route }
 export type { PageContextForRoute }
+export type { PageContextFromRoute }
 export type { PageRoutes }
 export type { RouteMatches }
 
@@ -49,9 +50,7 @@ type RouteMatch = {
 }
 type RouteMatches = 'CUSTOM_ROUTE' | RouteMatch[]
 
-async function route(pageContext: PageContextForRoute): Promise<{
-  pageContextAddendum: PageContextFromRoute
-}> {
+async function route(pageContext: PageContextForRoute): Promise<PageContextFromRoute> {
   addUrlComputedProps(pageContext)
 
   debug('Pages routes:', pageContext._pageRoutes)
@@ -72,7 +71,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
           _routingProvidedByOnBeforeRouteHook: true,
           _routeMatches: 'CUSTOM_ROUTE' as const
         })
-        return { pageContextAddendum }
+        return pageContextAddendum
       }
       // We already assign so that `pageContext.urlOriginal === pageContextAddendum.urlOriginal`; enabling the `onBeforeRoute()` hook to mutate `pageContext.urlOriginal` before routing.
       objectAssign(pageContext, pageContextAddendum)
@@ -153,7 +152,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
       _pageId: null,
       routeParams: {}
     })
-    return { pageContextAddendum }
+    return pageContextAddendum
   }
 
   {
@@ -165,5 +164,5 @@ async function route(pageContext: PageContextForRoute): Promise<{
     })
   }
 
-  return { pageContextAddendum }
+  return pageContextAddendum
 }

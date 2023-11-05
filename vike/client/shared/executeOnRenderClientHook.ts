@@ -38,12 +38,12 @@ async function executeOnRenderClientHook<
   }
 
   if (!hook) {
-    const urlLogical = getUrlLogical(pageContext)
+    const urlLogicalResolved = getUrlLogicalResolved(pageContext)
     if (pageContext._pageConfigs.length > 0) {
       // V1 design
       assertUsage(
         false,
-        `No onRenderClient() hook defined for URL '${urlLogical}', but it's needed, see https://vike.dev/onRenderClient`
+        `No onRenderClient() hook defined for URL '${urlLogicalResolved}', but it's needed, see https://vike.dev/onRenderClient`
       )
     } else {
       // TODO/v1-release: remove
@@ -51,7 +51,7 @@ async function executeOnRenderClientHook<
       const pageClientsFilesLoaded = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
       let errMsg: string
       if (pageClientsFilesLoaded.length === 0) {
-        errMsg = 'No file `*.page.client.*` found for URL ' + urlLogical
+        errMsg = 'No file `*.page.client.*` found for URL ' + urlLogicalResolved
       } else {
         errMsg =
           'One of the following files should export a `render()` hook: ' +
@@ -73,7 +73,7 @@ async function executeOnRenderClientHook<
   )
 }
 
-function getUrlLogical(pageContext: { urlOriginal?: string; urlPathname?: string }): string {
+function getUrlLogicalResolved(pageContext: { urlOriginal?: string; urlPathname?: string }): string {
   let url: string | undefined
   // try/catch to avoid passToClient assertUsage() (although: this may not be needed anymore, since we're now accessing pageContext and not pageContextForUserConsumption)
   try {

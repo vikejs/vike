@@ -8,7 +8,7 @@ export type { PageContextUrlComputedPropsServer }
 export type { PageContextUrlSources }
 export type { Url }
 
-import { assert, parseUrl, assertWarning, isPlainObject, hasPropertyGetter, isBrowser } from './utils.js'
+import { assert, parseUrl, assertWarning, isPlainObject, isPropertyGetter, isBrowser } from './utils.js'
 
 // Copy paste from https://vike.dev/pageContext
 type Url = {
@@ -67,25 +67,35 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
   assert(pageContext.urlOriginal)
 
   if ('urlPathname' in pageContext) {
-    assert(hasPropertyGetter(pageContext, 'urlPathname'))
+    assert(typeof pageContext.urlPathname === 'string')
+    /* If this assert() fails then it's most likely because Object.assign() was used instead of objectAssign(), i.e.:
+       ```js
+       // Add property getters such as pageContext.urlPathname to pageContext
+       addUrlComputedProps(pageContext)
+       // ❌ Breaks the property getters of pageContext set by addUrlComputedProps() such as pageContext.urlPathname
+       Object.assign(pageContext2, pageContext)
+       // ❌ Also breaks the property getters
+       const pageContext3 = { ...pageContext }
+       // ✅ Preserves property getters of pageContext (see objectAssign() implementation)
+       objectAssign(pageContext2, pageContext)
+       ```
+    */
+    assert(isPropertyGetter(pageContext, 'urlPathname'))
   }
+  if ('urlParsed' in pageContext) assert(isPropertyGetter(pageContext, 'urlParsed'))
+  // TODO/v1-release: move pageContext.urlParsed to pageContext.url
+  if ('url' in pageContext) assert(isPropertyGetter(pageContext, 'url'))
+
   Object.defineProperty(pageContext, 'urlPathname', {
     get: urlPathnameGetter,
     enumerable,
     configurable: true
   })
-
-  // TODO/v1-release: move pageContext.urlParsed to pageContext.url
-  if ('url' in pageContext) assert(hasPropertyGetter(pageContext, 'url'))
   Object.defineProperty(pageContext, 'url', {
     get: urlGetter,
     enumerable: false,
     configurable: true
   })
-
-  if ('urlParsed' in pageContext) {
-    assert(hasPropertyGetter(pageContext, 'urlParsed'))
-  }
   Object.defineProperty(pageContext, 'urlParsed', {
     get: urlParsedGetter,
     enumerable,
@@ -95,6 +105,7 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
 
 type PageContextUrlSources = {
   urlOriginal: string
+  urlLogical?: string
   _urlRewrite: string | null
   _baseServer: string
   _urlHandler: null | ((url: string) => string)
@@ -106,14 +117,14 @@ function getUrlParsed(pageContext: PageContextUrlSources) {
     urlHandler = (url: string) => url
   }
 
-  const url = pageContext._urlRewrite ?? pageContext.urlOriginal
+  const url = pageContext._urlRewrite ?? pageContext.urlLogical ?? pageContext.urlOriginal
   assert(url && typeof url === 'string')
-  const urlLogical = urlHandler(url)
+  const urlLogicalResolved = urlHandler(url)
 
   const baseServer = pageContext._baseServer
   assert(baseServer.startsWith('/'))
 
-  return parseUrl(urlLogical, baseServer)
+  return parseUrl(urlLogicalResolved, baseServer)
 }
 function urlPathnameGetter(this: PageContextUrlSources) {
   const { pathname } = getUrlParsed(this)

@@ -17,7 +17,7 @@ import {
   isObjectWithKeys,
   isCallable,
   getOutDirs,
-  hasPropertyGetter,
+  isPropertyGetter,
   assertPosixPath,
   urlToFile,
   executeHook,
@@ -600,7 +600,7 @@ async function callOnPrerenderStartHook(
       enumerable: false,
       configurable: true
     })
-    assert(hasPropertyGetter(pageContext, 'url'))
+    assert(isPropertyGetter(pageContext, 'url'))
     assert(pageContext.urlOriginal)
     pageContext._urlOriginalBeforeHook = pageContext.urlOriginal
   })
@@ -664,7 +664,7 @@ async function callOnPrerenderStartHook(
 
   prerenderContext.pageContexts.forEach((pageContext: { urlOriginal?: string; url?: string }) => {
     // TODO/v1-release: remove
-    if (!hasPropertyGetter(pageContext, 'url') && pageContext.url) {
+    if (pageContext.url && !isPropertyGetter(pageContext, 'url')) {
       assertWarning(
         false,
         msgPrefix +
@@ -704,12 +704,9 @@ async function routeAndPrerender(
       concurrencyLimit(async () => {
         const { urlOriginal } = pageContext
         assert(urlOriginal)
-        const routeResult = await route(pageContext)
-        assert(
-          hasProp(routeResult.pageContextAddendum, '_pageId', 'null') ||
-            hasProp(routeResult.pageContextAddendum, '_pageId', 'string')
-        )
-        if (routeResult.pageContextAddendum._pageId === null) {
+        const pageContextFromRoute = await route(pageContext)
+        assert(hasProp(pageContextFromRoute, '_pageId', 'null') || hasProp(pageContextFromRoute, '_pageId', 'string'))
+        if (pageContextFromRoute._pageId === null) {
           let hookName: string | undefined
           let hookFilePath: string | undefined
           if (pageContext._providedByHook) {
@@ -729,14 +726,14 @@ async function routeAndPrerender(
             )
           } else {
             // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
-            assert(routeResult.pageContextAddendum._routingProvidedByOnBeforeRouteHook)
+            assert(pageContextFromRoute._routingProvidedByOnBeforeRouteHook)
             // Abort since the URL doesn't correspond to any page
             return
           }
         }
 
-        assert(routeResult.pageContextAddendum._pageId)
-        objectAssign(pageContext, routeResult.pageContextAddendum)
+        assert(pageContextFromRoute._pageId)
+        objectAssign(pageContext, pageContextFromRoute)
         const { _pageId: pageId } = pageContext
 
         objectAssign(pageContext, await loadPageFilesServerSide(pageContext))

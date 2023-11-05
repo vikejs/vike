@@ -4,12 +4,12 @@ import { addUrlComputedProps } from '../../shared/addUrlComputedProps.js'
 import { getPageFilesAll } from '../../shared/getPageFiles.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { getBaseServer } from './getBaseServer.js'
-import { assert, isBaseServer, PromiseType, objectAssign, getGlobalObject } from './utils.js'
+import { assert, isBaseServer, PromiseType, getGlobalObject } from './utils.js'
 const globalObject = getGlobalObject<{
   pageFilesData?: PromiseType<ReturnType<typeof getPageFilesAll>>
 }>('createPageContext.ts', {})
 
-async function createPageContext<T extends { urlOriginal: string }>(pageContextBase?: T) {
+async function createPageContext(urlOriginal: string) {
   if (!globalObject.pageFilesData) {
     globalObject.pageFilesData = await getPageFilesAll(true)
   }
@@ -25,6 +25,7 @@ async function createPageContext<T extends { urlOriginal: string }>(pageContextB
   // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
   const isProd: boolean = import.meta.env.PROD
   const pageContext = {
+    urlOriginal,
     _objectCreatedByVike: true,
     _urlHandler: null,
     _urlRewrite: null,
@@ -38,7 +39,6 @@ async function createPageContext<T extends { urlOriginal: string }>(pageContextB
     _pageRoutes: pageRoutes,
     _onBeforeRouteHook: onBeforeRouteHook
   }
-  objectAssign(pageContext, pageContextBase)
   addUrlComputedProps(pageContext)
   return pageContext
 }
