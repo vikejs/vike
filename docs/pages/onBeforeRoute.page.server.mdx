@@ -12,10 +12,8 @@ async function onBeforeRoute(pageContext) {
   const { urlWithoutLocale, locale } = extractLocale(pageContext.urlOriginal)
   return {
     pageContext: {
-      // We make `locale` available as `pageContext.locale`
       locale,
-      // We overwrite the original URL
-      urlOriginal: urlWithoutLocale
+      urlLogical: urlWithoutLocale
     }
   }
 }
@@ -39,10 +37,8 @@ const onBeforeRoute: OnBeforeRouteAsync = async (pageContext): ReturnType<OnBefo
   const { urlWithoutLocale, locale } = extractLocale(pageContext.urlOriginal)
   return {
     pageContext: {
-      // We make `locale` available as `pageContext.locale`
       locale,
-      // We overwrite the original URL
-      urlOriginal: urlWithoutLocale
+      urlLogical: urlWithoutLocale
     }
   }
 }

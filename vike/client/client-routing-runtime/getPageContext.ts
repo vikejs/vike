@@ -311,11 +311,11 @@ function checkIf404(err: unknown): boolean {
 
 async function fetchPageContextFromServer(pageContext: {
   urlOriginal: string
+  urlLogical?: string
   _urlRewrite: string | null
-  _urlOriginalPristine?: string
 }) {
-  const urlLogical = pageContext._urlRewrite ?? pageContext._urlOriginalPristine ?? pageContext.urlOriginal
-  const pageContextUrl = getPageContextRequestUrl(urlLogical)
+  const urlLogicalOriginal = pageContext._urlRewrite ?? pageContext.urlOriginal
+  const pageContextUrl = getPageContextRequestUrl(urlLogicalOriginal)
   const response = await fetch(pageContextUrl)
 
   {

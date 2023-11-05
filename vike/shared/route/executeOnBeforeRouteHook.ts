@@ -27,12 +27,13 @@ async function executeOnBeforeRouteHook(
   }
 ): Promise<null | {
   urlOriginal?: string
-  _urlOriginalPristine?: string
+  urlLogical?: string
   _pageId?: string | null
   routeParams?: Record<string, string>
 }> {
   let hookReturn: unknown = onBeforeRouteHook.onBeforeRoute(pageContext)
   assertSyncRouting(hookReturn, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
+  // TODO/v1-release: make executeOnBeforeRouteHook() and route() sync
   hookReturn = await hookReturn
 
   const errPrefix = `The onBeforeRoute() hook defined by ${onBeforeRouteHook.hookFilePath}`
@@ -75,35 +76,27 @@ async function executeOnBeforeRouteHook(
     )
   }
 
-  const pageContextAddendumHook = {}
+  const deprecatedReturn = (prop: 'url' | 'urlOriginal') =>
+    `${errPrefix} returned ${pc.cyan(`{ pageContext: { ${prop} } }`)} which is deprecated. Return ${pc.cyan(
+      '{ pageContext: { urlLogical } }'
+    )} instead.`
 
   if (hasProp(hookReturn.pageContext, 'url')) {
-    assertWarning(
-      false,
-      `${errPrefix} returned ${pc.cyan('{ pageContext: { url } }')} but ${pc.cyan(
-        'pageContext.url'
-      )} has been renamed to ${pc.cyan('pageContext.urlOriginal')}. Return ${pc.cyan(
-        '{ pageContext: { urlOriginal } }'
-      )} instead. (See https://vike.dev/migration/0.4.23 for more information.)`,
-      { onlyOnce: true }
-    )
-    hookReturn.pageContext.urlOriginal = hookReturn.pageContext.url
+    assertWarning(false, deprecatedReturn('url'), { onlyOnce: true })
+    hookReturn.pageContext.urlLogical = hookReturn.pageContext.url
     delete hookReturn.pageContext.url
   }
   if (hasProp(hookReturn.pageContext, 'urlOriginal')) {
+    assertWarning(false, deprecatedReturn('urlOriginal'), { onlyOnce: true })
+    hookReturn.pageContext.urlLogical = hookReturn.pageContext.urlOriginal
+    delete hookReturn.pageContext.urlOriginal
+  }
+
+  if (hasProp(hookReturn.pageContext, 'urlLogical')) {
     assertUsageUrl(
-      hookReturn.pageContext.urlOriginal,
-      `${errPrefix} returned ${pc.cyan('{ pageContext: { urlOriginal } }')} but ${pc.cyan('urlOriginal')}`
+      hookReturn.pageContext.urlLogical,
+      `${errPrefix} returned ${pc.cyan('{ pageContext: { urlLogical } }')} but ${pc.cyan('urlLogical')}`
     )
-    // Ugly workaround: ideally urlOriginal should be immutable.
-    //  - Instead of using pageContext._urlOriginalPristine, maybe we can keep pageContext.urlOriginal immutable while re-using `pageContext._urlRewrite`.
-    //  - Or better yet we rename pageContext._urlRewrite to pageContext.urlLogical and we allow the user to override pageContext.urlLogical, and we rename pageContext.urlOriginal => `pageContext.urlReal`.
-    //    - pageContext.urlReal / pageContext.urlLogical
-    //                         VS
-    //      pageContext.urlReal / pageContext.urlModified
-    //                         VS
-    //      pageContext.urlOriginal / pageContext.urlModified
-    objectAssign(pageContextAddendumHook, { _urlOriginalPristine: pageContext.urlOriginal })
   }
 
   assertPageContextProvidedByUser(hookReturn.pageContext, {
@@ -111,7 +104,7 @@ async function executeOnBeforeRouteHook(
     hookName: 'onBeforeRoute'
   })
 
+  const pageContextAddendumHook = {}
   objectAssign(pageContextAddendumHook, hookReturn.pageContext)
-
   return pageContextAddendumHook
 }

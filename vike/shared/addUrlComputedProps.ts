@@ -105,6 +105,7 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
 
 type PageContextUrlSources = {
   urlOriginal: string
+  urlLogical?: string
   _urlRewrite: string | null
   _baseServer: string
   _urlHandler: null | ((url: string) => string)
@@ -116,14 +117,14 @@ function getUrlParsed(pageContext: PageContextUrlSources) {
     urlHandler = (url: string) => url
   }
 
-  const url = pageContext._urlRewrite ?? pageContext.urlOriginal
+  const url = pageContext._urlRewrite ?? pageContext.urlLogical ?? pageContext.urlOriginal
   assert(url && typeof url === 'string')
-  const urlLogical = urlHandler(url)
+  const urlLogicalResolved = urlHandler(url)
 
   const baseServer = pageContext._baseServer
   assert(baseServer.startsWith('/'))
 
-  return parseUrl(urlLogical, baseServer)
+  return parseUrl(urlLogicalResolved, baseServer)
 }
 function urlPathnameGetter(this: PageContextUrlSources) {
   const { pathname } = getUrlParsed(this)

@@ -18,7 +18,7 @@ async function resolveRouteFunction(
   assertPageContextUrlComputedProps(pageContext)
   let result: unknown = routeFunction(pageContext)
   assertSyncRouting(result, `The Route Function ${routeDefinedAt}`)
-  // TODO/v1-release
+  // TODO/v1-release: make resolveRouteFunction() and route() sync
   //* We disallow asynchronous routing, because we need to check whether a link is a Vike link in a synchronous fashion before calling ev.preventDefault() in the 'click' event listener
   result = await result
   //*/

@@ -13,8 +13,12 @@ function onBeforeRoute(pageContext) {
     pageContext: {
       // We make `locale` available as `pageContext.locale`
       locale,
-      // We overwrite `pageContext.urlOriginal`
-      urlOriginal: urlWithoutLocale
+      // When pageContext.urlLogical is set, then Vike's router uses the value of
+      // pageContext.urlLogical instead of pageContext.urlOriginal
+      // In other words:
+      //  - pageContext.urlOriginal => with locale, e.g. /en-US/movies
+      //  - pageContext.urlLogical => without locale, e.g. /movies
+      urlLogical: urlWithoutLocale
     }
   }
 }
