@@ -8,7 +8,7 @@ import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { PageShell } from './PageShell'
 import { locales, localeDefault } from '../locales'
 
-const passToClient = ['pageProps', 'locale']
+const passToClient = ['pageProps']
 
 function render(pageContext) {
   const { Page, pageProps } = pageContext
