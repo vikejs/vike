@@ -38,10 +38,10 @@ const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   previousState: ReturnType<typeof getState>
   initialRenderIsDone?: true
-  renderingCounter: number
+  renderCounter: number
   renderPromise?: Promise<void>
   isTransitioning?: true
-}>('installClientRouter.ts', { previousState: getState(), renderingCounter: 0 })
+}>('installClientRouter.ts', { previousState: getState(), renderCounter: 0 })
 
 function installClientRouter() {
   setupNativeScrollRestoration()
@@ -128,26 +128,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
   }
 
-  const renderingNumber = ++globalObject.renderingCounter
-  assert(renderingNumber >= 1)
-  let hydrationCanBeAborted = false
-  const shouldAbort = () => {
-    {
-      // We should never abort the hydration if `hydrationCanBeAborted` isn't `true`
-      const isHydration = renderingNumber === 1
-      if (isHydration && hydrationCanBeAborted === false) {
-        return false
-      }
-    }
-    // If there is a newer rendering, we should abort all previous renderings
-    if (renderingNumber !== globalObject.renderingCounter) {
-      return true
-    }
-    return false
-  }
+  const { renderNumber, shouldAbort, setHydrationCanBeAborted } = getRenderNumber()
+  const isFirstRenderAttempt = renderNumber === 1
+  objectAssign(pageContext, { _isFirstRenderAttempt: isFirstRenderAttempt })
 
   // Start transition before any await's
-  if (renderingNumber > 1) {
+  if (renderNumber > 1) {
     if (!globalObject.isTransitioning) {
       await globalObject.onPageTransitionStart?.(pageContext)
       globalObject.isTransitioning = true
@@ -156,11 +142,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   if (shouldAbort()) {
     return
   }
-
-  const isFirstRenderAttempt = renderingNumber === 1
-  objectAssign(pageContext, {
-    _isFirstRenderAttempt: isFirstRenderAttempt
-  })
 
   let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>> | undefined
   if (!hasError) {
@@ -260,7 +241,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   assertHook(pageContext, 'onPageTransitionStart')
   globalObject.onPageTransitionStart = pageContext.exports.onPageTransitionStart
   if (pageContext.exports.hydrationCanBeAborted) {
-    hydrationCanBeAborted = true
+    setHydrationCanBeAborted()
   } else {
     assertWarning(
       !isReact(),
@@ -300,7 +281,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       assert(hookFilePath)
       await executeHook(() => onHydrationEnd(pageContext), 'onHydrationEnd', hookFilePath)
     }
-  } else if (renderingNumber === globalObject.renderingCounter) {
+  } else if (renderNumber === globalObject.renderCounter) {
     if (pageContext.exports.onPageTransitionEnd) {
       assertHook(pageContext, 'onPageTransitionEnd')
       await pageContext.exports.onPageTransitionEnd(pageContext)
@@ -590,4 +571,31 @@ function disableClientRouting(err: unknown, log: boolean) {
       .join(' '),
     { onlyOnce: true }
   )
+}
+
+function getRenderNumber() {
+  const renderNumber = ++globalObject.renderCounter
+  assert(renderNumber >= 1)
+
+  let hydrationCanBeAborted = false
+  const setHydrationCanBeAborted = () => {
+    hydrationCanBeAborted = true
+  }
+
+  const shouldAbort = () => {
+    {
+      // We should never abort the hydration if `hydrationCanBeAborted` isn't `true`
+      const isHydration = renderNumber === 1
+      if (isHydration && hydrationCanBeAborted === false) {
+        return false
+      }
+    }
+    // If there is a newer rendering, we should abort all previous renderings
+    if (renderNumber !== globalObject.renderCounter) {
+      return true
+    }
+    return false
+  }
+
+  return { renderNumber, shouldAbort, setHydrationCanBeAborted }
 }
