@@ -1,15 +1,10 @@
+- remove dirty hack of directly assigning pageContext in executeOnBeforeRoute()
 - remove getPageId()
 - remove redundant route() call
 - rethink getRenderNumber()
 
-- Improve https://vike.dev/header-file
-- Update all examples to not use PageContextBuiltIn but Vike.PageContext instead
-
 - fix pageContext._renderHook.hookFilePath / replace with new prop hookSrc
 - refacor/fix skipConfigValue to differentiate between global/page virtual file
-- use json-s instead of JSON
-- replace configValueSources with configValues for global configs
-  - maybe add a _isGlobal option
 
 - Set env type to `{ client: boolean | 'eager', server: boolean | 'eager', config?: boolean }`
   - Eager means that the value is always loaded, no matter what page is being loaded. (By default only the values of the page being renderered are loaded.)
@@ -17,6 +12,9 @@
   - Values that are defined in `+config.h.js` are loaded at config-time even if `config: false`. (But they can be defined in a `+{configName}.js` and they won't be loaded then.)
     - But they can still be lazily loaded in the client/server runtime
   - Global page config values are always eager
+
+- Improve https://vike.dev/header-file
+- Update all examples to not use PageContextBuiltIn but Vike.PageContext instead
 
 - improve ignoring of dist/
 - client/shared/
@@ -66,6 +64,8 @@ After V1 design release:
           - The list of +client.js file paths (if two pages have a different list of +client.js => they have different clusterId)
           - onRenderClient() file path (e.g. if a page uses vike-react while another page uses vike-vue => they have different onRenderClient() => they have different clusterId)
           - Maybe: allow user to assign a "cluster name" with `config.clientRouting: string`. Is this needed?
+ - Check why some deps aren't discovered by Vite's depOptimizer:
+   - https://github.com/brillout/vike-react-query => why does Vite discover `part-regex` only later?
 
 Features:
  - multiple error pages
