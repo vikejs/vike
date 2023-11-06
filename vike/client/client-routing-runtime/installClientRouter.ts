@@ -49,30 +49,18 @@ function installClientRouter() {
   autoSaveScrollPosition()
 
   // Intercept <a> links
-  onLinkClick((url: string, { keepScrollPosition }) => {
-    const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
-    renderPageClientSide({
-      scrollTarget,
-      urlOriginal: url,
-      isBackwardNavigation: false,
-      checkIfClientSideRenderable: true
-    })
-  })
-
+  onLinkClick()
   // Handle back-/forward navigation
-  onBrowserHistoryNavigation((scrollTarget, isBackwardNavigation) => {
-    renderPageClientSide({ scrollTarget, isBackwardNavigation })
-  })
-
+  onBrowserHistoryNavigation()
   // Intial render
   renderPageClientSide({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
 }
 
 type RenderArgs = {
   scrollTarget: ScrollTarget
+  isBackwardNavigation: boolean | null
   urlOriginal?: string
   overwriteLastHistoryEntry?: boolean
-  isBackwardNavigation: boolean | null
   checkIfClientSideRenderable?: boolean
   pageContextsFromRewrite?: PageContextFromRewrite[]
   redirectCount?: number
@@ -294,7 +282,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   globalObject.initialRenderIsDone = true
 }
 
-function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => void) {
+function onLinkClick() {
   document.addEventListener('click', onClick)
 
   return
@@ -315,7 +303,13 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
 
     const keepScrollPosition = ![null, 'false'].includes(linkTag.getAttribute('keep-scroll-position'))
 
-    callback(url, { keepScrollPosition })
+    const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
+    renderPageClientSide({
+      scrollTarget,
+      urlOriginal: url,
+      isBackwardNavigation: false,
+      checkIfClientSideRenderable: true
+    })
   }
 
   function isNormalLeftClick(ev: MouseEvent): boolean {
@@ -334,9 +328,7 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
   }
 }
 
-function onBrowserHistoryNavigation(
-  callback: (scrollPosition: ScrollTarget, isBackwardNavigation: null | boolean) => void
-) {
+function onBrowserHistoryNavigation() {
   // - The popstate event is trigged upon:
   //   - Back-/forward navigation.
   //     - By user clicking on his browser's back-/forward navigation (or using a shortcut)
@@ -382,8 +374,7 @@ function onBrowserHistoryNavigation(
         setScrollPosition(scrollTarget)
       }
     } else {
-      // Fetch & render new page
-      callback(scrollTarget, isBackwardNavigation)
+      renderPageClientSide({ scrollTarget, isBackwardNavigation })
     }
   })
 }
