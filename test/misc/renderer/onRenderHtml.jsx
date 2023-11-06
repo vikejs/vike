@@ -1,3 +1,4 @@
+// https://vike.dev/onRenderHtml
 export default onRenderHtml
 
 import React from 'react'
@@ -7,6 +8,7 @@ import { PageLayout } from './PageLayout'
 
 async function onRenderHtml(pageContext) {
   const { Page } = pageContext
+  const title = pageContext.config.frontmatter?.title ?? ''
   const viewHtml = dangerouslySkipEscape(
     renderToString(
       <PageLayout>
@@ -17,6 +19,9 @@ async function onRenderHtml(pageContext) {
 
   return escapeInject`<!DOCTYPE html>
     <html>
+      <head>
+        <title>${title}</title>
+      </head>
       <body>
         <div id="page-view">${viewHtml}</div>
       </body>
