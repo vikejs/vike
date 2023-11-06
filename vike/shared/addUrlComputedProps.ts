@@ -111,20 +111,20 @@ type PageContextUrlSources = {
   _urlHandler: null | ((url: string) => string)
 }
 function getUrlParsed(pageContext: PageContextUrlSources) {
-  // We use a url handler function because the onBeforeRoute() hook may modify pageContext.urlOriginal (e.g. for i18n)
+  // We need a url handler function because the onBeforeRoute() hook may set pageContext.urlLogical (typically for i18n)
   let urlHandler = pageContext._urlHandler
   if (!urlHandler) {
     urlHandler = (url: string) => url
   }
 
-  const url = pageContext._urlRewrite ?? pageContext.urlLogical ?? pageContext.urlOriginal
-  assert(url && typeof url === 'string')
-  const urlLogicalResolved = urlHandler(url)
+  let urlResolved = pageContext._urlRewrite ?? pageContext.urlLogical ?? pageContext.urlOriginal
+  urlResolved = urlHandler(urlResolved)
 
   const baseServer = pageContext._baseServer
-  assert(baseServer.startsWith('/'))
 
-  return parseUrl(urlLogicalResolved, baseServer)
+  assert(urlResolved && typeof urlResolved === 'string')
+  assert(baseServer.startsWith('/'))
+  return parseUrl(urlResolved, baseServer)
 }
 function urlPathnameGetter(this: PageContextUrlSources) {
   const { pathname } = getUrlParsed(this)

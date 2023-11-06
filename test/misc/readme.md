@@ -4,3 +4,4 @@ Miscellaneous tests:
 - Route String defined over `+config.h.js > export default { route }` instead of `+route.js`. (See `/pages/markdown-page/+config.h.ts`.)
 - Changing `build.outDir` using an unresolved path. (See `vite.config.ts`.)
 - Defining meta over `+meta.js` instead of `+config.h.js > export default { meta }`. (See `/renderer/+meta.js`.)
+- Pre-rendering `noExtraDir` option.

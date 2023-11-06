@@ -1,4 +1,6 @@
 - remove getPageId()
+- remove redundant route() call
+- rethink getRenderNumber()
 
 - Improve https://vike.dev/header-file
 - Update all examples to not use PageContextBuiltIn but Vike.PageContext instead
