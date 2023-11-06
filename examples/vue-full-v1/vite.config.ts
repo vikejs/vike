@@ -5,7 +5,7 @@ import { UserConfig } from 'vite'
 
 const config: UserConfig = {
   plugins: [
-    vike({ prerender: { noExtraDir: true } }),
+    vike({ prerender: true }),
     vue({
       include: [/\.vue$/, /\.md$/]
     }),
