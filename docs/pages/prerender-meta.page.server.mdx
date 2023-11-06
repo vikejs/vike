@@ -68,6 +68,6 @@ called, regardless of `prerender`. If we want to call `onBeforePrerenderStart()`
 { /* NOTE(aurelien): rewrite this last part after Vike bug fixed where `prerender` seems to have no effect */ }
 
 ```js
-export const doNotPrerender = someCondition() ? true : false
-export const prerender = doNotPrerender ? undefined : myPrerenderHook
+export const prerender = someCondition() ? true : false
+export const onBeforePrerenderStart = !prerender ? undefined : myOnBeforePrerenderStartHook
 ```
