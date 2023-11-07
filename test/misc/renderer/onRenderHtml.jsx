@@ -7,12 +7,12 @@ import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { PageLayout } from './PageLayout'
 
 async function onRenderHtml(pageContext) {
-  const { Page } = pageContext
+  const { Page, pageProps } = pageContext
   const title = pageContext.config.frontmatter?.title ?? ''
   const viewHtml = dangerouslySkipEscape(
     renderToString(
       <PageLayout>
-        <Page />
+        <Page {...pageProps} />
       </PageLayout>
     )
   )

@@ -23,7 +23,14 @@ import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.j
 import { assertHook } from '../../shared/hooks/getHook.js'
 import { skipLink } from './skipLink.js'
 import { isErrorFetchingStaticAssets } from '../shared/loadPageFilesClientSide.js'
-import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history.js'
+import {
+  initHistoryState,
+  getHistoryState,
+  pushHistory,
+  ScrollPosition,
+  saveScrollPosition,
+  monkeyPatchHistoryPushState
+} from './history.js'
 import {
   assertNoInfiniteAbortLoop,
   getPageContextFromAllRewrites,
@@ -41,12 +48,14 @@ const globalObject = getGlobalObject<{
   renderCounter: number
   renderPromise?: Promise<void>
   isTransitioning?: true
+  previousPageContext?: { _pageId: string }
 }>('installClientRouter.ts', { previousState: getState(), renderCounter: 0 })
 
 function installClientRouter() {
   setupNativeScrollRestoration()
   initHistoryState()
   autoSaveScrollPosition()
+  monkeyPatchHistoryPushState()
 
   // Intercept <a> links
   onLinkClick()
@@ -64,6 +73,7 @@ type RenderArgs = {
   checkIfClientSideRenderable?: boolean
   pageContextsFromRewrite?: PageContextFromRewrite[]
   redirectCount?: number
+  isUserLandNavigation?: boolean
 }
 async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   const {
@@ -73,7 +83,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     isBackwardNavigation,
     checkIfClientSideRenderable,
     pageContextsFromRewrite = [],
-    redirectCount = 0
+    redirectCount = 0,
+    isUserLandNavigation
   } = renderArgs
 
   assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
@@ -112,6 +123,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           serverSideRouteTo(urlOriginal)
           return
         }
+      }
+
+      if (isUserLandNavigation && pageContextFromRoute._pageId === globalObject.previousPageContext?._pageId) {
+        // Skip's Vike's rendering; let the user handle the navigation
+        return
       }
     }
   }
@@ -253,6 +269,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
   changeUrl(urlOriginal, overwriteLastHistoryEntry)
   navigationState.markNavigationChange()
+  globalObject.previousPageContext = pageContext
   assert(globalObject.renderPromise === undefined)
   globalObject.renderPromise = (async () => {
     await executeOnRenderClientHook(pageContext, true)
@@ -343,6 +360,8 @@ function onBrowserHistoryNavigation() {
 
     const scrollTarget = currentState.historyState.scrollPosition || 'scroll-to-top-or-hash'
 
+    const isUserLandNavigation = currentState.historyState.triggedBy === 'user'
+
     const isHashNavigation = currentState.urlWithoutHash === globalObject.previousState.urlWithoutHash
 
     const isBackwardNavigation =
@@ -352,7 +371,7 @@ function onBrowserHistoryNavigation() {
 
     globalObject.previousState = currentState
 
-    if (isHashNavigation) {
+    if (isHashNavigation && !isUserLandNavigation) {
       // - `history.state` is uninitialized (`null`) when:
       //   - The user's code runs `window.location.hash = '#section'`.
       //   - The user clicks on an anchor link `<a href="#section">Section</a>` (because Vike's `onLinkClick()` handler skips hash links).
@@ -374,7 +393,7 @@ function onBrowserHistoryNavigation() {
         setScrollPosition(scrollTarget)
       }
     } else {
-      renderPageClientSide({ scrollTarget, isBackwardNavigation })
+      renderPageClientSide({ scrollTarget, isBackwardNavigation, isUserLandNavigation })
     }
   })
 }

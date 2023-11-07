@@ -1,11 +1,19 @@
-export { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition }
+export {
+  initHistoryState,
+  getHistoryState,
+  pushHistory,
+  ScrollPosition,
+  saveScrollPosition,
+  monkeyPatchHistoryPushState
+}
 
-import { assert, hasProp, isObject } from './utils.js'
+import { assert, assertUsage, hasProp, isObject } from './utils.js'
 
 // No way found to add TypeScript types to `history.state`: https://github.com/microsoft/TypeScript/issues/36178
 type HistoryState = {
   timestamp?: number
   scrollPosition?: null | ScrollPosition
+  triggedBy?: 'user' | 'vike' | 'browser'
 }
 type ScrollPosition = { x: number; y: number }
 
@@ -28,6 +36,9 @@ function initHistoryState() {
   if (!('scrollPosition' in state)) {
     hasModifications = true
     state.scrollPosition = getScrollPosition()
+  }
+  if (!('triggedBy' in state)) {
+    state.triggedBy = 'browser'
   }
   assertState(state)
   if (hasModifications) {
@@ -58,7 +69,7 @@ function saveScrollPosition() {
 function pushHistory(url: string, overwriteLastHistoryEntry: boolean) {
   if (!overwriteLastHistoryEntry) {
     const timestamp = getTimestamp()
-    pushHistoryState({ timestamp, scrollPosition: null }, url)
+    pushHistoryState({ timestamp, scrollPosition: null, triggedBy: 'vike' }, url)
   } else {
     replaceHistoryState(getHistoryState(), url)
   }
@@ -84,4 +95,22 @@ function replaceHistoryState(state: HistoryState, url?: string) {
 }
 function pushHistoryState(state: HistoryState, url: string) {
   window.history.pushState(state, '', url)
+}
+
+function monkeyPatchHistoryPushState() {
+  const pushStateOriginal = history.pushState
+  history.pushState = (stateFromUser: unknown = {}, ...rest) => {
+    assertUsage(
+      null === stateFromUser || undefined === stateFromUser || isObject(stateFromUser),
+      'history.pushState(state) argument state must be an object'
+    )
+    const state: HistoryState = {
+      scrollPosition: getScrollPosition(),
+      timestamp: getTimestamp(),
+      ...stateFromUser,
+      // Don't allow user to overwrite triggedBy as it would break Vike's handling of the 'popstate' event
+      triggedBy: 'user'
+    }
+    return pushStateOriginal.apply(history, [state, ...rest])
+  }
 }
