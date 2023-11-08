@@ -38,7 +38,7 @@ type PageContextForRoute = PageContextUrlComputedPropsInternal & {
 type PageContextFromRoute = {
   _pageId: string | null
   routeParams: Record<string, string>
-  _routingProvidedByOnBeforeRouteHook: boolean
+  _routingProvidedByOnBeforeRouteHook?: boolean
   _debugRouteMatches: RouteMatches
 }
 type RouteMatch = {
@@ -51,35 +51,20 @@ type RouteMatch = {
 type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
 async function route(pageContext: PageContextForRoute): Promise<PageContextFromRoute> {
-  addUrlComputedProps(pageContext)
-
   debug('Pages routes:', pageContext._pageRoutes)
-
+  addUrlComputedProps(pageContext)
   const pageContextAddendum = {}
-  if (pageContext._onBeforeRouteHook) {
-    const pageContextAddendumHook = await executeOnBeforeRouteHook(pageContext._onBeforeRouteHook, pageContext)
-    if (pageContextAddendumHook) {
-      objectAssign(pageContextAddendum, pageContextAddendumHook)
-      if (hasProp(pageContextAddendum, '_pageId', 'string') || hasProp(pageContextAddendum, '_pageId', 'null')) {
-        // We bypass Vike's routing
-        if (!hasProp(pageContextAddendum, 'routeParams')) {
-          objectAssign(pageContextAddendum, { routeParams: {} })
-        } else {
-          assert(hasProp(pageContextAddendum, 'routeParams', 'object'))
-        }
-        objectAssign(pageContextAddendum, {
-          _routingProvidedByOnBeforeRouteHook: true,
-          _debugRouteMatches: 'CUSTOM_ROUTING' as const
-        })
-        return pageContextAddendum
-      }
-      // We already assign so that `pageContext.urlOriginal === pageContextAddendum.urlOriginal`; enabling the `onBeforeRoute()` hook to mutate `pageContext.urlOriginal` before routing.
-      objectAssign(pageContext, pageContextAddendum)
+
+  // onBeforeRoute()
+  const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContext)
+  if (pageContextFromOnBeforeRouteHook) {
+    if (pageContextFromOnBeforeRouteHook._routingProvidedByOnBeforeRouteHook) {
+      assert(pageContextFromOnBeforeRouteHook._pageId)
+      return pageContextFromOnBeforeRouteHook
+    } else {
+      objectAssign(pageContextAddendum, pageContextFromOnBeforeRouteHook)
     }
   }
-  objectAssign(pageContextAddendum, {
-    _routingProvidedByOnBeforeRouteHook: false
-  })
 
   // Vike's routing
   const allPageIds = pageContext._allPageIds

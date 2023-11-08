@@ -6,10 +6,12 @@ import {
   objectAssign,
   assertWarning,
   assertUsageUrl,
-  joinEnglish
+  joinEnglish,
+  assert
 } from './utils.js'
 import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
 import pc from '@brillout/picocolors'
+import type { PageContextForRoute, PageContextFromRoute } from './index.js'
 
 export { executeOnBeforeRouteHook }
 export type { OnBeforeRouteHook }
@@ -20,6 +22,43 @@ type OnBeforeRouteHook = {
 }
 
 async function executeOnBeforeRouteHook(
+  pageContext: PageContextForRoute
+): Promise<
+  | null
+  | ({ _routingProvidedByOnBeforeRouteHook: true } & PageContextFromRoute)
+  | { _routingProvidedByOnBeforeRouteHook: false }
+> {
+  const pageContextFromOnBeforeRouteHook = {}
+  if (!pageContext._onBeforeRouteHook) return null
+  const pageContextFromHook = await executeHook(pageContext._onBeforeRouteHook, pageContext)
+  if (pageContextFromHook) {
+    objectAssign(pageContextFromOnBeforeRouteHook, pageContextFromHook)
+    if (
+      hasProp(pageContextFromOnBeforeRouteHook, '_pageId', 'string') ||
+      hasProp(pageContextFromOnBeforeRouteHook, '_pageId', 'null')
+    ) {
+      // We bypass Vike's routing
+      if (!hasProp(pageContextFromOnBeforeRouteHook, 'routeParams')) {
+        objectAssign(pageContextFromOnBeforeRouteHook, { routeParams: {} })
+      } else {
+        assert(hasProp(pageContextFromOnBeforeRouteHook, 'routeParams', 'object'))
+      }
+      objectAssign(pageContextFromOnBeforeRouteHook, {
+        _routingProvidedByOnBeforeRouteHook: true as const,
+        _debugRouteMatches: 'CUSTOM_ROUTING' as const
+      })
+      return pageContextFromOnBeforeRouteHook
+    }
+    // We already assign so that `pageContext.urlOriginal === pageContextAddendum.urlOriginal`; enabling the `onBeforeRoute()` hook to mutate `pageContext.urlOriginal` before routing.
+    objectAssign(pageContext, pageContextFromOnBeforeRouteHook)
+  }
+  objectAssign(pageContextFromOnBeforeRouteHook, {
+    _routingProvidedByOnBeforeRouteHook: false as const
+  })
+  return pageContextFromOnBeforeRouteHook
+}
+
+async function executeHook(
   onBeforeRouteHook: OnBeforeRouteHook,
   pageContext: {
     urlOriginal: string
