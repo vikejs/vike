@@ -49,8 +49,6 @@ async function executeOnBeforeRouteHook(
       })
       return pageContextFromOnBeforeRouteHook
     }
-    // We already assign so that `pageContext.urlOriginal === pageContextAddendum.urlOriginal`; enabling the `onBeforeRoute()` hook to mutate `pageContext.urlOriginal` before routing.
-    objectAssign(pageContext, pageContextFromOnBeforeRouteHook)
   }
   objectAssign(pageContextFromOnBeforeRouteHook, {
     _routingProvidedByOnBeforeRouteHook: false as const

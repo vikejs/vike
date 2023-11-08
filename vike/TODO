@@ -1,4 +1,3 @@
-- remove dirty hack of directly assigning pageContext in executeOnBeforeRoute()
 - remove getPageId()
 - remove redundant route() call
 - rethink getRenderNumber()

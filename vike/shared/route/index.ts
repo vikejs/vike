@@ -12,7 +12,7 @@ if (isBrowser()) {
 }
 
 import type { PageFile } from '../getPageFiles.js'
-import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils.js'
+import { assert, assertUsage, isPlainObject, objectAssign } from './utils.js'
 import {
   addUrlComputedProps,
   PageContextUrlComputedPropsInternal,
@@ -50,13 +50,13 @@ type RouteMatch = {
 }
 type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
-async function route(pageContext: PageContextForRoute): Promise<PageContextFromRoute> {
-  debug('Pages routes:', pageContext._pageRoutes)
-  addUrlComputedProps(pageContext)
+async function route(pageContextForRoute: PageContextForRoute): Promise<PageContextFromRoute> {
+  debug('Pages routes:', pageContextForRoute._pageRoutes)
+  addUrlComputedProps(pageContextForRoute)
   const pageContextFromRoute = {}
 
   // onBeforeRoute()
-  const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContext)
+  const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContextForRoute)
   if (pageContextFromOnBeforeRouteHook) {
     if (pageContextFromOnBeforeRouteHook._routingProvidedByOnBeforeRouteHook) {
       assert(pageContextFromOnBeforeRouteHook._pageId)
@@ -65,6 +65,11 @@ async function route(pageContext: PageContextForRoute): Promise<PageContextFromR
       objectAssign(pageContextFromRoute, pageContextFromOnBeforeRouteHook)
     }
   }
+
+  // We take into account pageContext.urlLogical set by onBeforeRoute()
+  const pageContext = {}
+  objectAssign(pageContext, pageContextForRoute)
+  objectAssign(pageContext, pageContextFromOnBeforeRouteHook)
 
   // Vike's routing
   const allPageIds = pageContext._allPageIds
