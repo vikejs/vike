@@ -105,7 +105,7 @@ type VikeConfig = {
 
 type ConfigDefinitionsIncludingCustom = Record<string, ConfigDefinitionInternal>
 
-type ImportedFilesLoaded = Map<string, Record<string, string>>
+type ImportedFilesLoaded = Record<string, Promise<Record<string, unknown>>>
 
 let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
@@ -264,8 +264,12 @@ async function loadImportedFile(
   filePath: FilePathResolved,
   userRootDir: string,
   importedFilesLoaded: ImportedFilesLoaded
-) {
-  const { fileExports } = await transpileAndExecuteFile(filePath, true, userRootDir)
+): Promise<Record<string, unknown>> {
+  const f = filePath.filePathAbsoluteFilesystem
+  if (!importedFilesLoaded[f]) {
+    importedFilesLoaded[f] = transpileAndExecuteFile(filePath, true, userRootDir).then((r) => r.fileExports)
+  }
+  const fileExports = await importedFilesLoaded[f]!
   return fileExports
 }
 function isConfigEnv(configDef: ConfigDefinitionInternal, configName: string) {
@@ -344,9 +348,13 @@ async function loadVikeConfig(
 ): Promise<VikeConfig> {
   const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, outDirRoot, isDev, extensions)
 
-  const importedFilesLoaded: ImportedFilesLoaded = new Map()
+  const importedFilesLoaded: ImportedFilesLoaded = {}
 
-  const { globalVikeConfig, pageConfigGlobal } = await getGlobalConfigs(interfaceFilesByLocationId, userRootDir)
+  const { globalVikeConfig, pageConfigGlobal } = await getGlobalConfigs(
+    interfaceFilesByLocationId,
+    userRootDir,
+    importedFilesLoaded
+  )
 
   const pageConfigs: PageConfigBuildTime[] = await Promise.all(
     Object.entries(interfaceFilesByLocationId)
@@ -385,7 +393,8 @@ async function loadVikeConfig(
                 configName,
                 configDef,
                 interfaceFilesRelevant,
-                userRootDir
+                userRootDir,
+                importedFilesLoaded
               )
               if (sources.length === 0) return
               configValueSources[configName] = sources
@@ -458,7 +467,11 @@ function getInterfaceFileList(interfaceFilesByLocationId: InterfaceFilesByLocati
   return interfaceFiles
 }
 
-async function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId, userRootDir: string) {
+async function getGlobalConfigs(
+  interfaceFilesByLocationId: InterfaceFilesByLocationId,
+  userRootDir: string,
+  importedFilesLoaded: ImportedFilesLoaded
+) {
   const locationIds = Object.keys(interfaceFilesByLocationId)
   const interfaceFilesGlobal = Object.fromEntries(
     Object.entries(interfaceFilesByLocationId).filter(([locationId]) => {
@@ -505,7 +518,13 @@ async function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLoca
   }
   await Promise.all(
     objectEntries(configDefinitionsBuiltInGlobal).map(async ([configName, configDef]) => {
-      const sources = await resolveConfigValueSources(configName, configDef, interfaceFilesGlobal, userRootDir)
+      const sources = await resolveConfigValueSources(
+        configName,
+        configDef,
+        interfaceFilesGlobal,
+        userRootDir,
+        importedFilesLoaded
+      )
       const configValueSource = sources[0]
       if (!configValueSource) return
       if (configName === 'onBeforeRoute' || configName === 'onPrerenderStart') {
@@ -536,7 +555,8 @@ async function resolveConfigValueSources(
   configName: string,
   configDef: ConfigDefinitionInternal,
   interfaceFilesRelevant: InterfaceFilesByLocationId,
-  userRootDir: string
+  userRootDir: string,
+  importedFilesLoaded: ImportedFilesLoaded
 ): Promise<ConfigValueSource[]> {
   const sourcesInfo: Parameters<typeof getConfigValueSource>[] = []
 
@@ -548,7 +568,7 @@ async function resolveConfigValueSources(
     const add = (interfaceFile: InterfaceFile) => {
       assert(!visited.has(interfaceFile))
       visited.add(interfaceFile)
-      sourcesInfo.push([configName, interfaceFile, configDef, userRootDir])
+      sourcesInfo.push([configName, interfaceFile, configDef, userRootDir, importedFilesLoaded])
     }
 
     // Main resolution logic
@@ -650,7 +670,8 @@ async function getConfigValueSource(
   configName: string,
   interfaceFile: InterfaceFile,
   configDef: ConfigDefinitionInternal,
-  userRootDir: string
+  userRootDir: string,
+  importedFilesLoaded: ImportedFilesLoaded
 ): Promise<ConfigValueSource> {
   const conf = interfaceFile.configMap[configName]
   assert(conf)
@@ -694,16 +715,24 @@ async function getConfigValueSource(
     const { configValue } = conf
     const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
     if (import_) {
-      if (isConfigEnv(configDef, configName)) {
-        /* TODO
-        const fileExports = await loadImportedFile(import_, userRootDir)
-        */
-      }
       const configValueSource: ConfigValueSource = {
         configEnv,
         valueIsImportedAtRuntime: true,
         definedAt: import_
       }
+
+      // Load config value
+      if (isConfigEnv(configDef, configName)) {
+        if (import_.filePathAbsoluteFilesystem) {
+          assert(hasProp(import_, 'filePathAbsoluteFilesystem', 'string')) // Help TS
+          const fileExports = await loadImportedFile(import_, userRootDir, importedFilesLoaded)
+          configValueSource.value = fileExports[import_.fileExportName]
+        } else {
+          const configDefinedAt = getConfigDefinedAtString('Config', configName, configValueSource)
+          assertUsage(!configDef.cumulative, `${configDefinedAt} cannot be defined over an aliased import`)
+        }
+      }
+
       return configValueSource
     } else {
       const configValueSource: ConfigValueSource = {
@@ -779,7 +808,7 @@ function resolveImport(
   userRootDir: string,
   configEnv: ConfigEnvInternal,
   configName: string
-): null | DefinedAtFileFullInfo {
+): null | (DefinedAtFileFullInfo & { fileExportName: string }) {
   if (typeof configValue !== 'string') return null
   const importData = parseImportData(configValue)
   if (!importData) return null
