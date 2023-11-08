@@ -45,7 +45,7 @@ import {
 import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime.js'
 import { isNewError } from './renderPage/isNewError.js'
 import { assertArguments } from './renderPage/assertArguments.js'
-import type { PageContextDebug } from './renderPage/debugPageFiles.js'
+import type { PageContextDebugRouteMatches } from './renderPage/debugPageFiles.js'
 import { log404 } from './renderPage/log404/index.js'
 import { isConfigInvalid } from './renderPage/isConfigInvalid.js'
 import pc from '@brillout/picocolors'
@@ -402,7 +402,8 @@ async function getPageContextErrorPageInit(
   }
 
   objectAssign(pageContext, {
-    _routeMatches: (pageContextNominalPagePartial as PageContextDebug)._routeMatches || 'ROUTE_ERROR'
+    _debugRouteMatches:
+      (pageContextNominalPagePartial as PageContextDebugRouteMatches)._debugRouteMatches || 'ROUTING_ERROR'
   })
 
   assert(pageContext.errorWhileRendering)

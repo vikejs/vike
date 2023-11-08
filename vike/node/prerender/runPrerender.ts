@@ -461,7 +461,7 @@ async function handlePagesWithStaticRoutes(
           _providedByHook: null,
           routeParams,
           _pageId: pageId,
-          _routeMatches: [
+          _debugRouteMatches: [
             {
               pageId,
               routeType: pageRoute.routeType,

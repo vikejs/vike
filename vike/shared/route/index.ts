@@ -39,7 +39,7 @@ type PageContextFromRoute = {
   _pageId: string | null
   routeParams: Record<string, string>
   _routingProvidedByOnBeforeRouteHook: boolean
-  _routeMatches: RouteMatches
+  _debugRouteMatches: RouteMatches
 }
 type RouteMatch = {
   pageId: string
@@ -48,7 +48,7 @@ type RouteMatch = {
   routeType: RouteType
   routeParams: Record<string, string>
 }
-type RouteMatches = 'CUSTOM_ROUTE' | RouteMatch[]
+type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
 async function route(pageContext: PageContextForRoute): Promise<PageContextFromRoute> {
   addUrlComputedProps(pageContext)
@@ -69,7 +69,7 @@ async function route(pageContext: PageContextForRoute): Promise<PageContextFromR
         }
         objectAssign(pageContextAddendum, {
           _routingProvidedByOnBeforeRouteHook: true,
-          _routeMatches: 'CUSTOM_ROUTE' as const
+          _debugRouteMatches: 'CUSTOM_ROUTING' as const
         })
         return pageContextAddendum
       }
@@ -145,7 +145,7 @@ async function route(pageContext: PageContextForRoute): Promise<PageContextFromR
 
   debug(`Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)
 
-  objectAssign(pageContextAddendum, { _routeMatches: routeMatches })
+  objectAssign(pageContextAddendum, { _debugRouteMatches: routeMatches })
 
   if (!winner) {
     objectAssign(pageContextAddendum, {

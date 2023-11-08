@@ -57,7 +57,10 @@ function assertIsDefined(pageContext: PageContextForPassToClientWarning, prop: s
     // <script id="vike_pageContext" type="application/json">{"_pageId":"/pages/admin","user":"!undefined","pageProps":"!undefined","title":"!undefined","abortReason":"!undefined","_urlRewrite":null}</script>
     // ```
     // Note how properties have "!undefined" values => we can tell whether an undefined pageContext value exists in passToClient.
-    assertUsage(false, `pageContext[${propName}] isn't available on the client-side because ${propName} is missing in passToClient, see https://vike.dev/passToClient`)
+    assertUsage(
+      false,
+      `pageContext[${propName}] isn't available on the client-side because ${propName} is missing in passToClient, see https://vike.dev/passToClient`
+    )
   } else {
     // Do nothing, not even a warning, because we don't know whether the user expects that the pageContext value can be undefined. (E.g. a pageContext value that is defined by an optional hook.)
   }

@@ -309,10 +309,7 @@ function checkIf404(err: unknown): boolean {
   return isObject(err) && err._is404 === true
 }
 
-async function fetchPageContextFromServer(pageContext: {
-  urlOriginal: string
-  _urlRewrite: string | null
-}) {
+async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _urlRewrite: string | null }) {
   const pageContextUrl = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
   const response = await fetch(pageContextUrl)
 
