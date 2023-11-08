@@ -53,7 +53,7 @@ type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 async function route(pageContext: PageContextForRoute): Promise<PageContextFromRoute> {
   debug('Pages routes:', pageContext._pageRoutes)
   addUrlComputedProps(pageContext)
-  const pageContextAddendum = {}
+  const pageContextFromRoute = {}
 
   // onBeforeRoute()
   const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContext)
@@ -62,7 +62,7 @@ async function route(pageContext: PageContextForRoute): Promise<PageContextFromR
       assert(pageContextFromOnBeforeRouteHook._pageId)
       return pageContextFromOnBeforeRouteHook
     } else {
-      objectAssign(pageContextAddendum, pageContextFromOnBeforeRouteHook)
+      objectAssign(pageContextFromRoute, pageContextFromOnBeforeRouteHook)
     }
   }
 
@@ -130,24 +130,24 @@ async function route(pageContext: PageContextForRoute): Promise<PageContextFromR
 
   debug(`Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)
 
-  objectAssign(pageContextAddendum, { _debugRouteMatches: routeMatches })
+  objectAssign(pageContextFromRoute, { _debugRouteMatches: routeMatches })
 
   if (!winner) {
-    objectAssign(pageContextAddendum, {
+    objectAssign(pageContextFromRoute, {
       _pageId: null,
       routeParams: {}
     })
-    return pageContextAddendum
+    return pageContextFromRoute
   }
 
   {
     const { routeParams } = winner
     assert(isPlainObject(routeParams))
-    objectAssign(pageContextAddendum, {
+    objectAssign(pageContextFromRoute, {
       _pageId: winner.pageId,
       routeParams: winner.routeParams
     })
   }
 
-  return pageContextAddendum
+  return pageContextFromRoute
 }
