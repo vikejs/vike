@@ -387,7 +387,7 @@ async function loadVikeConfig(
                 interfaceFilesRelevant,
                 userRootDir
               )
-              if (!sources) return
+              if (sources.length === 0) return
               configValueSources[configName] = sources
             })
         )
@@ -506,7 +506,7 @@ async function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLoca
   await Promise.all(
     objectEntries(configDefinitionsBuiltInGlobal).map(async ([configName, configDef]) => {
       const sources = await resolveConfigValueSources(configName, configDef, interfaceFilesGlobal, userRootDir)
-      const configValueSource = sources?.[0]
+      const configValueSource = sources[0]
       if (!configValueSource) return
       if (configName === 'onBeforeRoute' || configName === 'onPrerenderStart') {
         assert(!('value' in configValueSource))
@@ -537,20 +537,18 @@ async function resolveConfigValueSources(
   configDef: ConfigDefinitionInternal,
   interfaceFilesRelevant: InterfaceFilesByLocationId,
   userRootDir: string
-): Promise<null | ConfigValueSource[]> {
-  let sources: ConfigValueSource[] | null = null
+): Promise<ConfigValueSource[]> {
+  const sourcesInfo: Parameters<typeof getConfigValueSource>[] = []
 
   // interfaceFilesRelevant is sorted by sortAfterInheritanceOrder()
   for (const interfaceFiles of Object.values(interfaceFilesRelevant)) {
     const interfaceFilesDefiningConfig = interfaceFiles.filter((interfaceFile) => interfaceFile.configMap[configName])
     if (interfaceFilesDefiningConfig.length === 0) continue
-    sources = sources ?? []
     const visited = new WeakSet<InterfaceFile>()
     const add = (interfaceFile: InterfaceFile) => {
       assert(!visited.has(interfaceFile))
       visited.add(interfaceFile)
-      const configValueSource = getConfigValueSource(configName, interfaceFile, configDef, userRootDir)
-      sources!.push(configValueSource)
+      sourcesInfo.push([configName, interfaceFile, configDef, userRootDir])
     }
 
     // Main resolution logic
@@ -615,7 +613,9 @@ async function resolveConfigValueSources(
     })
   }
 
-  assert(sources === null || sources.length > 0)
+  const sources: ConfigValueSource[] = await Promise.all(
+    sourcesInfo.map(async (args) => await getConfigValueSource(...args))
+  )
   return sources
 }
 function makeOrderDeterministic(interfaceFile1: InterfaceFile, interfaceFile2: InterfaceFile): 0 | -1 | 1 {
@@ -646,12 +646,12 @@ function isInterfaceFileUserLand(interfaceFile: InterfaceFile) {
   return (interfaceFile.isConfigFile && !interfaceFile.isConfigExtend) || interfaceFile.isValueFile
 }
 
-function getConfigValueSource(
+async function getConfigValueSource(
   configName: string,
   interfaceFile: InterfaceFile,
   configDef: ConfigDefinitionInternal,
   userRootDir: string
-): ConfigValueSource {
+): Promise<ConfigValueSource> {
   const conf = interfaceFile.configMap[configName]
   assert(conf)
   const configEnv = configDef.env
