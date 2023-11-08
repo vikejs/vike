@@ -105,6 +105,8 @@ type VikeConfig = {
 
 type ConfigDefinitionsIncludingCustom = Record<string, ConfigDefinitionInternal>
 
+type ImportedFilesLoaded = Map<string, Record<string, string>>
+
 let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfig> | null = null
@@ -258,6 +260,10 @@ async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName:
     interfaceValueFile.configMap[configName_] = { configValue }
   })
 }
+async function loadImportedFile(filePath: FilePathResolved, userRootDir: string, importedFilesLoaded: ImportedFilesLoaded) {
+  const { fileExports } = await transpileAndExecuteFile(filePath, true, userRootDir)
+  return fileExports
+}
 function isConfigEnv(configDef: ConfigDefinitionInternal, configName: string) {
   if (configDef.cumulative) return true
   if (configDef.env === 'config-only') return true
@@ -334,7 +340,9 @@ async function loadVikeConfig(
 ): Promise<VikeConfig> {
   const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, outDirRoot, isDev, extensions)
 
-  const { globalVikeConfig, pageConfigGlobal } = getGlobalConfigs(interfaceFilesByLocationId, userRootDir)
+  const importedFilesLoaded: ImportedFilesLoaded = new Map()
+
+  const { globalVikeConfig, pageConfigGlobal } = await getGlobalConfigs(interfaceFilesByLocationId, userRootDir)
 
   const pageConfigs: PageConfigBuildTime[] = await Promise.all(
     Object.entries(interfaceFilesByLocationId)
@@ -365,13 +373,14 @@ async function loadVikeConfig(
         )
 
         const configValueSources: ConfigValueSources = {}
-        objectEntries(configDefinitionsRelevant)
+        await Promise.all(objectEntries(configDefinitionsRelevant)
           .filter(([configName]) => !isGlobalConfig(configName))
-          .forEach(([configName, configDef]) => {
-            const sources = resolveConfigValueSources(configName, configDef, interfaceFilesRelevant, userRootDir)
+          .map(async ([configName, configDef]) => {
+            const sources = await resolveConfigValueSources(configName, configDef, interfaceFilesRelevant, userRootDir)
             if (!sources) return
             configValueSources[configName] = sources
           })
+        )
 
         const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
 
@@ -439,7 +448,7 @@ function getInterfaceFileList(interfaceFilesByLocationId: InterfaceFilesByLocati
   return interfaceFiles
 }
 
-function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId, userRootDir: string) {
+async function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId, userRootDir: string) {
   const locationIds = Object.keys(interfaceFilesByLocationId)
   const interfaceFilesGlobal = Object.fromEntries(
     Object.entries(interfaceFilesByLocationId).filter(([locationId]) => {
@@ -484,8 +493,9 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
     configValueSources: {}
   }
-  objectEntries(configDefinitionsBuiltInGlobal).forEach(([configName, configDef]) => {
-    const sources = resolveConfigValueSources(configName, configDef, interfaceFilesGlobal, userRootDir)
+  await Promise.all(
+  objectEntries(configDefinitionsBuiltInGlobal).map(async ([configName, configDef]) => {
+    const sources = await resolveConfigValueSources(configName, configDef, interfaceFilesGlobal, userRootDir)
     const configValueSource = sources?.[0]
     if (!configValueSource) return
     if (configName === 'onBeforeRoute' || configName === 'onPrerenderStart') {
@@ -507,16 +517,17 @@ function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLocationId
       globalVikeConfig[configName] = configValueSource.value
     }
   })
+  )
 
   return { pageConfigGlobal, globalVikeConfig }
 }
 
-function resolveConfigValueSources(
+async function resolveConfigValueSources(
   configName: string,
   configDef: ConfigDefinitionInternal,
   interfaceFilesRelevant: InterfaceFilesByLocationId,
   userRootDir: string
-): null | ConfigValueSource[] {
+): Promise<null | ConfigValueSource[]> {
   let sources: ConfigValueSource[] | null = null
 
   // interfaceFilesRelevant is sorted by sortAfterInheritanceOrder()
@@ -562,7 +573,7 @@ function resolveConfigValueSources(
           (f) => f !== interfaceFileWinner
         )
         // A user-land conflict of interfaceFiles with the same locationId means that the user has superfluously defined the config twice; the user should remove such redundancy making things unnecessarily ambiguous
-        warnOverridenConfigValues(interfaceFileWinner, interfaceFilesOverriden, configName, configDef, userRootDir)
+        warnOverridenConfigValues(interfaceFileWinner, interfaceFilesOverriden, configName)
         ;[interfaceFileWinner, ...interfaceFilesOverriden].forEach((interfaceFile) => {
           add(interfaceFile)
         })
@@ -608,20 +619,16 @@ function makeOrderDeterministic(interfaceFile1: InterfaceFile, interfaceFile2: I
 function warnOverridenConfigValues(
   interfaceFileWinner: InterfaceFile,
   interfaceFilesOverriden: InterfaceFile[],
-  configName: string,
-  configDef: ConfigDefinitionInternal,
-  userRootDir: string
+  configName: string
 ) {
   interfaceFilesOverriden.forEach((interfaceFileLoser) => {
-    const configValueSourceLoser_ = getConfigValueSource(configName, interfaceFileLoser, configDef, userRootDir)
-    const configValueSourceWinner = getConfigValueSource(configName, interfaceFileWinner, configDef, userRootDir)
-    // prettier-ignore
-    const configLoser_DefinedAt: `Config ${string} defined ${string}` = getConfigDefinedAtString('Config', configName, configValueSourceLoser_)
-    // prettier-ignore
-    const configWinnerDefinedAt: `config ${string} defined ${string}` = getConfigDefinedAtString('config', configName, configValueSourceWinner)
-    const errMsg =
-      `${configLoser_DefinedAt} is overriden by another ${configWinnerDefinedAt}, remove one of the two` as const
-    assertWarning(false, errMsg, { onlyOnce: false })
+    const loserFilePath = interfaceFileLoser.filePath.filePathToShowToUser
+    const winnerFilePath = interfaceFileWinner.filePath.filePathToShowToUser
+    assertWarning(
+      false,
+      `Config ${configName} defined at ${loserFilePath} is always overwritten by ${configName} defined at ${winnerFilePath}, remove the superfluous ${configName} value defined at ${interfaceFileLoser}`,
+      { onlyOnce: false }
+    )
   })
 }
 
@@ -677,6 +684,11 @@ function getConfigValueSource(
     const { configValue } = conf
     const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
     if (import_) {
+      if (isConfigEnv(configDef, configName)) {
+        /* TODO
+        const fileExports = await loadImportedFile(import_, userRootDir)
+        */
+      }
       const configValueSource: ConfigValueSource = {
         configEnv,
         valueIsImportedAtRuntime: true,
@@ -1474,15 +1486,8 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
   let configValueSourcePrevious: ConfigValueSource | null = null
   configValueSources.forEach((configValueSource) => {
     const configDefinedAt = getConfigDefinedAtString('Config', configName, configValueSource)
-    const configNameColored = pc.cyan(configName)
-    // We could, in principle, also support cumulative values to be defined in +${configName}.js but it ins't completely trivial to implement
-    assertUsage(
-      'value' in configValueSource,
-      `${configDefinedAt} is only allowed to be defined in a +config.h.js file. (Because the values of ${configNameColored} are cumulative.)`
-    )
-    /* This is more confusing than adding value. For example, this explanation shouldn't be shown for the passToClient config.
-    const explanation = `(Because the values of ${configNameColored} are cumulative and therefore merged together.)` as const
-    */
+    // We could, in principle, also support cumulative for values that aren't loaded at config-time but it isn't completely trivial to implement.
+    assert('value' in configValueSource)
 
     // Make sure configValueSource.value is serializable
     getConfigValueSerialized(configValueSource.value, configName, getDefinedAt(configValueSource))
