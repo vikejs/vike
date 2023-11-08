@@ -4,7 +4,6 @@ export { addLinkPrefetchHandlers }
 import { assert, assertClientRouting, assertUsage, checkIfClientRouting, objectAssign } from './utils.js'
 import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../shared/loadPageFilesClientSide.js'
 import { skipLink } from './skipLink.js'
-import { getPageId } from './getPageId.js'
 import { getPrefetchSettings } from './prefetch/getPrefetchSettings.js'
 import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched.js'
 import { disableClientRouting } from './installClientRouter.js'
@@ -37,7 +36,10 @@ async function prefetch(url: string): Promise<void> {
   if (isAlreadyPrefetched(url)) return
   markAsAlreadyPrefetched(url)
 
-  const { pageId, pageFilesAll, pageConfigs } = await getPageId(url)
+  const pageContext = await createPageContext(url)
+  const pageContextFromRoute = await route(pageContext)
+  objectAssign(pageContext, pageContextFromRoute)
+  const { _pageId: pageId, _pageFilesAll: pageFilesAll, _pageConfigs: pageConfigs } = pageContext
   if (pageId) {
     try {
       await loadPageFilesClientSide(pageFilesAll, pageConfigs, pageId)

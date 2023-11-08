@@ -1,4 +1,3 @@
-- remove getPageId()
 - remove redundant route() call
 - rethink getRenderNumber()
 
