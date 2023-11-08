@@ -1,15 +1,16 @@
+export { loadPageFilesClientSide }
+export { isErrorFetchingStaticAssets }
+export type { PageContextPageFiles }
+
 import {
   getPageFilesClientSide,
   getExports,
   type PageFile,
-  type PageContextExports
+  type PageContextExports,
 } from '../../shared/getPageFiles.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import type { PageConfigRuntime, PageConfigRuntimeLoaded } from '../../shared/page-configs/PageConfig.js'
-
-export { loadPageFilesClientSide }
-export { isErrorFetchingStaticAssets }
 
 const stamp = '__whileFetchingAssets'
 

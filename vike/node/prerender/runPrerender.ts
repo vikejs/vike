@@ -722,7 +722,7 @@ async function routeAndPrerender(
               false,
               `The ${hookName}() hook defined by ${hookFilePath} returns a URL ${pc.cyan(
                 urlOriginal
-              )} that doesn't match any of your page routes. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
+              )} that doesn't match the route of any of your pages. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
             )
           } else {
             // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
