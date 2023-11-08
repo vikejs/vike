@@ -5,3 +5,5 @@ Miscellaneous tests:
 - Changing `build.outDir` using an unresolved path. (See `vite.config.ts`.)
 - Defining meta over `+meta.js` instead of `+config.h.js > export default { meta }`. (See `/renderer/+meta.js`.)
 - Pre-rendering `noExtraDir` option.
+- Defining `config.clientRouting` over `+clientRouting.ts` instead of `+config.h.js > export default { clientRouting }`. (See `/renderer/+clientRouting.ts`.)
+- TODO: Supports user direclty using `history.pushState()`.
