@@ -78,10 +78,7 @@ async function getPageContextFirstRender(
     _hasPageContextFromClient: false
   })
 
-  objectAssign(
-    pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
-  )
+  objectAssign(pageContextAddendum, await loadPageFilesClientSide(pageContextAddendum._pageId, pageContext))
 
   {
     const pageContextForHook = { ...pageContext, ...pageContextAddendum }
@@ -129,10 +126,7 @@ async function getPageContextAlreadyRouted(
   isErrorPage: boolean
 ): Promise<Omit<PageContextAddendum, '_pageId' | 'isHydration'>> {
   let pageContextAddendum = {}
-  objectAssign(
-    pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContext._pageId)
-  )
+  objectAssign(pageContextAddendum, await loadPageFilesClientSide(pageContext._pageId, pageContext))
 
   // Needs to be called before any client-side hook, because it may contain pageContextInit.user which is needed for guard() and onBeforeRender()
   if (
@@ -152,10 +146,7 @@ async function getPageContextAlreadyRouted(
         _pageId: errorPageId
       })
 
-      objectAssign(
-        pageContextAddendum,
-        await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
-      )
+      objectAssign(pageContextAddendum, await loadPageFilesClientSide(pageContextAddendum._pageId, pageContext))
 
       assert(hasProp(pageContextFromServer, 'is404', 'boolean'))
       assert(hasProp(pageContextFromServer, 'pageProps', 'object'))

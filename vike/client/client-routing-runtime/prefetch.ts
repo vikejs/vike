@@ -38,11 +38,9 @@ async function prefetch(url: string): Promise<void> {
 
   const pageContext = await createPageContext(url)
   const pageContextFromRoute = await route(pageContext)
-  objectAssign(pageContext, pageContextFromRoute)
-  const { _pageId: pageId, _pageFilesAll: pageFilesAll, _pageConfigs: pageConfigs } = pageContext
-  if (pageId) {
+  if (pageContextFromRoute._pageId) {
     try {
-      await loadPageFilesClientSide(pageFilesAll, pageConfigs, pageId)
+      await loadPageFilesClientSide(pageContextFromRoute._pageId, pageContext)
     } catch (err) {
       if (isErrorFetchingStaticAssets(err)) {
         disableClientRouting(err, true)

@@ -35,7 +35,7 @@ async function loadPageFiles(pageId: string) {
     _pageConfigs: pageConfigs
   })
 
-  objectAssign(pageContextAddendum, await loadPageFilesClientSide(pageFilesAll, pageConfigs, pageId))
+  objectAssign(pageContextAddendum, await loadPageFilesClientSide(pageId, pageContextAddendum))
 
   pageFilesAll
     .filter((p) => p.fileType !== '.page.server')
