@@ -215,11 +215,11 @@ async function loadInterfaceFiles(
         configName
       }
       {
-        // We don't have access to custom config definitions yet
-        //  - We load +{configName}.js later
-        //  - But we do need to eagerly load +meta.js (to get all the custom config definitions)
+        // We don't have access to the custom config definitions defined by the user yet.
+        //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
+        //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
         const configDef = getConfigDefinitionOptional(configDefinitionsBuiltIn, configName)
-        if (configDef?.env === 'config-only') {
+        if (configDef && isConfigEnv(configDef, configName)) {
           await loadValueFile(interfaceFile, configName, userRootDir)
         }
       }
@@ -257,6 +257,12 @@ async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName:
     const configName_ = exportName === 'default' ? configName : exportName
     interfaceValueFile.configMap[configName_] = { configValue }
   })
+}
+function isConfigEnv(configDef: ConfigDefinitionInternal, configName: string) {
+  if (configDef.cumulative) return true
+  if (configDef.env === 'config-only') return true
+  // TODO: replace with proper `env: { config: boolean }` implementation
+  return configName === 'clientRouting'
 }
 function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: boolean): InterfaceFile {
   const { fileExports, filePath, extendsFilePaths } = configFile
@@ -349,10 +355,10 @@ async function loadVikeConfig(
               configName,
               interfaceFile.filePath.filePathToShowToUser
             )
-            if (configDef.env !== 'config-only') return
+            if (!isConfigEnv(configDef, configName)) return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
-            // Value files for built-in confg-only configs should have already been loaded at loadInterfaceFiles()
+            // Value files of built-in configs should have already been loaded at loadInterfaceFiles()
             assert(!(configName in configDefinitionsBuiltIn))
             await loadValueFile(interfaceFile, configName, userRootDir)
           })
