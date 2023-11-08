@@ -260,7 +260,11 @@ async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName:
     interfaceValueFile.configMap[configName_] = { configValue }
   })
 }
-async function loadImportedFile(filePath: FilePathResolved, userRootDir: string, importedFilesLoaded: ImportedFilesLoaded) {
+async function loadImportedFile(
+  filePath: FilePathResolved,
+  userRootDir: string,
+  importedFilesLoaded: ImportedFilesLoaded
+) {
   const { fileExports } = await transpileAndExecuteFile(filePath, true, userRootDir)
   return fileExports
 }
@@ -373,13 +377,19 @@ async function loadVikeConfig(
         )
 
         const configValueSources: ConfigValueSources = {}
-        await Promise.all(objectEntries(configDefinitionsRelevant)
-          .filter(([configName]) => !isGlobalConfig(configName))
-          .map(async ([configName, configDef]) => {
-            const sources = await resolveConfigValueSources(configName, configDef, interfaceFilesRelevant, userRootDir)
-            if (!sources) return
-            configValueSources[configName] = sources
-          })
+        await Promise.all(
+          objectEntries(configDefinitionsRelevant)
+            .filter(([configName]) => !isGlobalConfig(configName))
+            .map(async ([configName, configDef]) => {
+              const sources = await resolveConfigValueSources(
+                configName,
+                configDef,
+                interfaceFilesRelevant,
+                userRootDir
+              )
+              if (!sources) return
+              configValueSources[configName] = sources
+            })
         )
 
         const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
@@ -494,29 +504,29 @@ async function getGlobalConfigs(interfaceFilesByLocationId: InterfaceFilesByLoca
     configValueSources: {}
   }
   await Promise.all(
-  objectEntries(configDefinitionsBuiltInGlobal).map(async ([configName, configDef]) => {
-    const sources = await resolveConfigValueSources(configName, configDef, interfaceFilesGlobal, userRootDir)
-    const configValueSource = sources?.[0]
-    if (!configValueSource) return
-    if (configName === 'onBeforeRoute' || configName === 'onPrerenderStart') {
-      assert(!('value' in configValueSource))
-      pageConfigGlobal.configValueSources[configName] = [configValueSource]
-    } else {
-      assert('value' in configValueSource)
-      if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
-      const { filePathToShowToUser } = configValueSource.definedAt
-      assertWarning(
-        false,
-        `Being able to define config ${pc.cyan(
-          configName
-        )} in ${filePathToShowToUser} is experimental and will likely be removed. Define the config ${pc.cyan(
-          configName
-        )} in Vike's Vite plugin options instead.`,
-        { onlyOnce: true }
-      )
-      globalVikeConfig[configName] = configValueSource.value
-    }
-  })
+    objectEntries(configDefinitionsBuiltInGlobal).map(async ([configName, configDef]) => {
+      const sources = await resolveConfigValueSources(configName, configDef, interfaceFilesGlobal, userRootDir)
+      const configValueSource = sources?.[0]
+      if (!configValueSource) return
+      if (configName === 'onBeforeRoute' || configName === 'onPrerenderStart') {
+        assert(!('value' in configValueSource))
+        pageConfigGlobal.configValueSources[configName] = [configValueSource]
+      } else {
+        assert('value' in configValueSource)
+        if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
+        const { filePathToShowToUser } = configValueSource.definedAt
+        assertWarning(
+          false,
+          `Being able to define config ${pc.cyan(
+            configName
+          )} in ${filePathToShowToUser} is experimental and will likely be removed. Define the config ${pc.cyan(
+            configName
+          )} in Vike's Vite plugin options instead.`,
+          { onlyOnce: true }
+        )
+        globalVikeConfig[configName] = configValueSource.value
+      }
+    })
   )
 
   return { pageConfigGlobal, globalVikeConfig }

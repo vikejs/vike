@@ -6,7 +6,7 @@ import {
   getPageFilesClientSide,
   getExports,
   type PageFile,
-  type PageContextExports,
+  type PageContextExports
 } from '../../shared/getPageFiles.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
