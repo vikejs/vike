@@ -55,6 +55,7 @@ import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesyst
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide.js'
 import { assertHookFn } from '../../shared/hooks/getHook.js'
+import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -722,7 +723,7 @@ async function routeAndPrerender(
               false,
               `The ${hookName}() hook defined by ${hookFilePath} returns a URL ${pc.cyan(
                 urlOriginal
-              )} that doesn't match the route of any of your pages. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
+              )} that ${noRouteMatch}. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
             )
           } else {
             // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.

@@ -22,6 +22,7 @@ import { isExternalLink } from './isExternalLink.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
+import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 
 assertClientRouting()
 const globalObject = getGlobalObject<{
@@ -68,7 +69,7 @@ async function prefetch(url: string): Promise<void> {
   const pageId = pageContextFromRoute._pageId
 
   if (!pageId) {
-    assertWarning(false, `${errPrefix} doesn't match the route of any of your pages`, {
+    assertWarning(false, `${errPrefix} ${noRouteMatch}`, {
       showStackTrace: true,
       onlyOnce: false
     })
