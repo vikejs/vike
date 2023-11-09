@@ -10,8 +10,7 @@ type PageContextPageFiles = {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfigRuntime[]
 }
-async function isClientSideRoutable(pageId: string | null, pageContext: PageContextPageFiles): Promise<boolean> {
-  if (!pageId) return false
+async function isClientSideRoutable(pageId: string, pageContext: PageContextPageFiles): Promise<boolean> {
   await analyzePageClientSideInit(pageContext._pageFilesAll, pageId, {
     sharedPageFilesAlreadyLoaded: false
   })

@@ -13,13 +13,20 @@ import {
   sleep,
   getGlobalObject,
   executeHook,
-  hasProp
+  hasProp,
+  isObject
 } from './utils.js'
 import { navigationState } from './navigationState.js'
-import { checkIf404, getPageContext, getPageContextErrorPage, isAlreadyServerSideRouted } from './getPageContext.js'
+import {
+  PageContextAddendum,
+  getPageContextForErrorPage,
+  getPageContextForFirstRender,
+  getPageContextForNavigation,
+  isAlreadyServerSideRouted
+} from './getPageContext.js'
 import { createPageContext } from './createPageContext.js'
 import { addLinkPrefetchHandlers } from './prefetch.js'
-import { assertInfo, assertWarning, isReact, PromiseType } from './utils.js'
+import { assertInfo, assertWarning, isReact } from './utils.js'
 import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { assertHook } from '../../shared/hooks/getHook.js'
 import { skipLink } from './skipLink.js'
@@ -39,8 +46,9 @@ import {
   logAbortErrorHandled,
   PageContextFromRewrite
 } from '../../shared/route/abort.js'
-import { PageContextFromRoute, route } from '../../shared/route/index.js'
+import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
+import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
   clientRoutingIsDisabled?: true
@@ -58,12 +66,15 @@ function installClientRouter() {
   autoSaveScrollPosition()
   monkeyPatchHistoryPushState()
 
+  // Intial render
+  assert(globalObject.renderCounter === (0 as number))
+  renderPageClientSide({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
+  assert(globalObject.renderCounter === 1)
+
   // Intercept <a> links
   onLinkClick()
   // Handle back-/forward navigation
   onBrowserHistoryNavigation()
-  // Intial render
-  renderPageClientSide({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
 }
 
 type RenderArgs = {
@@ -98,6 +109,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   if (abortRender()) return
   objectAssign(pageContext, {
     isBackwardNavigation,
+    // TODO: remove from pageContext
     _isFirstRender: isFirstRender
   })
 
@@ -106,29 +118,46 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     objectAssign(pageContext, pageContextFromAllRewrites)
   }
 
-  let renderState: { err: unknown } | { pageContextFromRoute: PageContextFromRoute }
-  try {
-    renderState = { pageContextFromRoute: await route(pageContext) }
-  } catch (err) {
-    renderState = { err }
-  }
-  if (abortRender()) return
+  let renderState: {
+    err?: unknown
+    pageContextFromRoute?: PageContextFromRoute
+    // TODO: rename
+    pageContextAddendum?: PageContextAddendum
+  } = {}
 
-  if ('pageContextFromRoute' in renderState) {
-    const { pageContextFromRoute } = renderState
-    objectAssign(pageContext, pageContextFromRoute)
-
-    const isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
-    if (abortRender()) return
-    if (!isClientRoutable) {
-      serverSideRouteTo(urlOriginal)
-      return
+  // TODO: simplify?
+  const isFirstRender2 = isFirstRender && navigationState.isFirstUrl(pageContext.urlOriginal)
+  if (!isFirstRender2) {
+    // Route
+    try {
+      renderState = { pageContextFromRoute: await route(pageContext) }
+    } catch (err) {
+      renderState = { err }
     }
-    assert(pageContextFromRoute._pageId)
+    if (abortRender()) return
 
-    if (isUserLandNavigation && pageContextFromRoute._pageId === globalObject.previousPageContext?._pageId) {
-      // Skip's Vike's rendering; let the user handle the navigation
-      return
+    // Check if whether rendering should be skipped
+    if (renderState.pageContextFromRoute) {
+      const { pageContextFromRoute } = renderState
+      objectAssign(pageContext, pageContextFromRoute)
+      if (!pageContextFromRoute._pageId) {
+        // We'll be able to remove this once async route functions are deprecated (because we'll be able to skip link hijacking if a link doesn't match a route (because whether to call event.preventDefault() needs to be determined synchronously))
+        const err = new Error(`${urlOriginal} ${noRouteMatch}`)
+        markIs404(err)
+        renderState.err = err
+      } else {
+        assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
+        const isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
+        if (abortRender()) return
+        if (!isClientRoutable) {
+          serverSideRouteTo(urlOriginal)
+          return
+        }
+        if (isUserLandNavigation && pageContextFromRoute._pageId === globalObject.previousPageContext?._pageId) {
+          // Skip's Vike's rendering; let the user handle the navigation
+          return
+        }
+      }
     }
   }
 
@@ -142,19 +171,31 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
   }
 
-  let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>> | undefined
-  if (!('err' in renderState)) {
-    const { pageContextFromRoute } = renderState
-    assert(pageContextFromRoute._pageId)
-    assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
-    objectAssign(pageContext, pageContextFromRoute)
+  if (isFirstRender2) {
+    assert(!renderState.pageContextFromRoute)
+    assert(!renderState.err)
     try {
-      pageContextAddendum = await getPageContext(pageContext)
+      renderState.pageContextAddendum = await getPageContextForFirstRender(pageContext)
     } catch (err) {
-      renderState = { err }
+      renderState.err = err
     }
     if (abortRender()) return
+  } else {
+    if (!renderState.err) {
+      const { pageContextFromRoute } = renderState
+      assert(pageContextFromRoute)
+      assert(pageContextFromRoute._pageId)
+      assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
+      objectAssign(pageContext, pageContextFromRoute)
+      try {
+        renderState.pageContextAddendum = await getPageContextForNavigation(pageContext)
+      } catch (err) {
+        renderState.err = err
+      }
+      if (abortRender()) return
+    }
   }
+
   if ('err' in renderState) {
     const { err } = renderState
     if (!isAbortError(err)) {
@@ -215,7 +256,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
 
     try {
-      pageContextAddendum = await getPageContextErrorPage(pageContext)
+      renderState.pageContextAddendum = await getPageContextForErrorPage(pageContext)
     } catch (err2: unknown) {
       // - When user hasn't defined a `_error.page.js` file
       // - Some unpexected vike internal error
@@ -238,6 +279,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
     if (abortRender()) return
   }
+  const { pageContextAddendum } = renderState
   assert(pageContextAddendum)
   objectAssign(pageContext, pageContextAddendum)
 
@@ -279,7 +321,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   */
 
   // onHydrationEnd()
-  if (pageContext._isFirstRender) {
+  if (isFirstRender) {
     assertHook(pageContext, 'onHydrationEnd')
     const { onHydrationEnd } = pageContext.exports
     if (onHydrationEnd) {
@@ -620,4 +662,11 @@ function getAbortRender() {
     setHydrationCanBeAborted,
     isFirstRender: renderNumber === 1
   }
+}
+
+function markIs404(err: Error) {
+  objectAssign(err, { _is404: true })
+}
+function checkIf404(err: unknown): boolean {
+  return isObject(err) && err._is404 === true
 }

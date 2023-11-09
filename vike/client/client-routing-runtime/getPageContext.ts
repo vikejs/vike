@@ -1,9 +1,9 @@
-export { getPageContext }
-export { getPageContextErrorPage }
-export { checkIf404 }
+export { getPageContextForFirstRender }
+export { getPageContextForNavigation }
+export { getPageContextForErrorPage }
 export { isAlreadyServerSideRouted }
+export type { PageContextAddendum }
 
-import { navigationState } from './navigationState.js'
 import {
   assert,
   assertUsage,
@@ -20,7 +20,7 @@ import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializ
 import type { PageContextExports, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
 import type { PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
-import { PageContextForRoute, route } from '../../shared/route/index.js'
+import type { PageContextForRoute } from '../../shared/route/index.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import { getHook } from '../../shared/hooks/getHook.js'
 import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide.js'
@@ -47,25 +47,7 @@ type PageContextPassThrough = PageContextUrlComputedPropsInternal &
     isBackwardNavigation: boolean | null
   }
 
-async function getPageContext(
-  pageContext: {
-    _pageId: string
-    _isFirstRender: boolean
-  } & PageContextPassThrough
-): Promise<PageContextAddendum> {
-  if (pageContext._isFirstRender && navigationState.isFirstUrl(pageContext.urlOriginal)) {
-    const pageContextAddendum = await getPageContextFirstRender(pageContext)
-    assert(pageContextAddendum._pageId === pageContext._pageId)
-    setPageContextInitHasClientData(pageContextAddendum)
-    return pageContextAddendum
-  } else {
-    const pageContextAddendum = await getPageContextUponNavigation(pageContext)
-    setPageContextInitHasClientData(pageContextAddendum)
-    return pageContextAddendum
-  }
-}
-
-async function getPageContextFirstRender(
+async function getPageContextForFirstRender(
   pageContext: {
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
@@ -90,10 +72,11 @@ async function getPageContextFirstRender(
     }
   }
 
+  setPageContextInitHasClientData(pageContextAddendum)
   return pageContextAddendum
 }
 
-async function getPageContextErrorPage(
+async function getPageContextForErrorPage(
   pageContext: {
     urlOriginal: string
     _allPageIds: string[]
@@ -111,15 +94,18 @@ async function getPageContextErrorPage(
   return pageContextAddendum
 }
 
-async function getPageContextUponNavigation(pageContext: PageContextPassThrough): Promise<PageContextAddendum> {
+async function getPageContextForNavigation(
+  pageContext: PageContextPassThrough & { _pageId: string }
+): Promise<PageContextAddendum> {
   const pageContextAddendum = {
-    isHydration: false
+    isHydration: false,
+    _pageId: pageContext._pageId
   }
-  objectAssign(pageContextAddendum, await getPageContextFromRoute(pageContext))
   objectAssign(
     pageContextAddendum,
     await getPageContextAlreadyRouted({ ...pageContext, ...pageContextAddendum }, false)
   )
+  setPageContextInitHasClientData(pageContextAddendum)
   return pageContextAddendum
 }
 
@@ -223,11 +209,6 @@ async function executeOnBeforeRenderHookClientSide(
   return pageContextAddendum
 }
 
-async function hasPageContextServer(
-  pageContext: Parameters<typeof onBeforeRenderServerOnlyExists>[0]
-): Promise<boolean> {
-  return !!globalObject.pageContextInitHasClientData || (await onBeforeRenderServerOnlyExists(pageContext))
-}
 // Workaround for the fact that the client-side cannot known whether a pageContext JSON request is needed in order to fetch pageContextInit data passed to the client.
 //  - The workaround is reliable as long as the user sets additional pageContextInit to undefined instead of not defining the property:
 //    ```diff
@@ -244,6 +225,11 @@ function setPageContextInitHasClientData(pageContext: Record<string, unknown>) {
   if (pageContext._pageContextInitHasClientData) {
     globalObject.pageContextInitHasClientData = true
   }
+}
+async function hasPageContextServer(
+  pageContext: Parameters<typeof onBeforeRenderServerOnlyExists>[0]
+): Promise<boolean> {
+  return !!globalObject.pageContextInitHasClientData || (await onBeforeRenderServerOnlyExists(pageContext))
 }
 
 async function onBeforeRenderServerOnlyExists(pageContext: {
@@ -277,29 +263,6 @@ async function onBeforeRenderClientOnlyExists(pageContext: {
     // TODO/v1-release: remove
     return false
   }
-}
-
-async function getPageContextFromRoute(
-  pageContext: PageContextForRoute
-): Promise<{ _pageId: string; routeParams: Record<string, string> }> {
-  const pageContextFromRoute = await route(pageContext)
-
-  // We'll be able to remove this once async route functions are deprecated (because we'll be able to skip link hijacking if a link doesn't match a route (because whether to call event.preventDefault() needs to be determined synchronously))
-  if (!pageContextFromRoute._pageId) {
-    const err = new Error('No routing match')
-    markIs404(err)
-    throw err
-  }
-
-  assert(hasProp(pageContextFromRoute, '_pageId', 'string'))
-  return pageContextFromRoute
-}
-
-function markIs404(err: Error) {
-  objectAssign(err, { _is404: true })
-}
-function checkIf404(err: unknown): boolean {
-  return isObject(err) && err._is404 === true
 }
 
 async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _urlRewrite: string | null }) {
