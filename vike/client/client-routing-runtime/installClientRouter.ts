@@ -107,33 +107,30 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     objectAssign(pageContext, pageContextFromAllRewrites)
   }
 
-  let hasError = false
-  let err: unknown
-  {
-    let pageContextFromRoute: PageContextFromRoute | undefined
-    try {
-      pageContextFromRoute = await route(pageContext)
-    } catch (err_) {
-      hasError = true
-      err = err_
-    }
-    if (abortRender()) return
-    if (pageContextFromRoute) {
-      objectAssign(pageContext, pageContextFromRoute)
+  let renderState: { err: unknown } | { pageContextFromRoute: PageContextFromRoute }
+  try {
+    renderState = { pageContextFromRoute: await route(pageContext) }
+  } catch (err) {
+    renderState = { err }
+  }
+  if (abortRender()) return
 
-      if (checkIfClientSideRenderable) {
-        const isClientRoutable = await isClientSideRoutable(pageContext)
-        if (abortRender()) return
-        if (!isClientRoutable) {
-          serverSideRouteTo(urlOriginal)
-          return
-        }
-      }
+  if ('pageContextFromRoute' in renderState) {
+    const { pageContextFromRoute } = renderState
+    objectAssign(pageContext, pageContextFromRoute)
 
-      if (isUserLandNavigation && pageContextFromRoute._pageId === globalObject.previousPageContext?._pageId) {
-        // Skip's Vike's rendering; let the user handle the navigation
+    if (checkIfClientSideRenderable) {
+      const isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
+      if (abortRender()) return
+      if (!isClientRoutable) {
+        serverSideRouteTo(urlOriginal)
         return
       }
+    }
+
+    if (isUserLandNavigation && pageContextFromRoute._pageId === globalObject.previousPageContext?._pageId) {
+      // Skip's Vike's rendering; let the user handle the navigation
+      return
     }
   }
 
@@ -148,17 +145,16 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   }
 
   let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>> | undefined
-  if (!hasError) {
+  if (!('err' in renderState)) {
     try {
       pageContextAddendum = await getPageContext(pageContext)
-    } catch (err_) {
-      hasError = true
-      err = err_
+    } catch (err) {
+      renderState = { err }
     }
     if (abortRender()) return
   }
-
-  if (hasError) {
+  if ('err' in renderState) {
+    const { err } = renderState
     if (!isAbortError(err)) {
       // We don't swallow 404 errors:
       //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)

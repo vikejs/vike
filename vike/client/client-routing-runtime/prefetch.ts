@@ -7,8 +7,7 @@ import {
   assertUsage,
   assertWarning,
   checkIfClientRouting,
-  getGlobalObject,
-  objectAssign
+  getGlobalObject
 } from './utils.js'
 import {
   type PageContextPageFiles,
@@ -138,8 +137,7 @@ async function prefetchIfPossible(url: string): Promise<void> {
     // If a route() hook has a bug or `throw render()` / `throw redirect()`
     return
   }
-  objectAssign(pageContext, pageContextFromRoute)
-  if (!pageContext._pageId) return
-  if (!(await isClientSideRoutable(pageContext))) return
-  await prefetchAssets(pageContext._pageId, pageContext)
+  if (!pageContextFromRoute?._pageId) return
+  if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
+  await prefetchAssets(pageContextFromRoute._pageId, pageContext)
 }
