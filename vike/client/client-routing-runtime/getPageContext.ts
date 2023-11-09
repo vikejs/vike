@@ -49,10 +49,10 @@ type PageContextPassThrough = PageContextUrlComputedPropsInternal &
 
 async function getPageContext(
   pageContext: {
-    _isFirstRenderAttempt: boolean
+    _isFirstRender: boolean
   } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
-  if (pageContext._isFirstRenderAttempt && navigationState.isFirstUrl(pageContext.urlOriginal)) {
+  if (pageContext._isFirstRender && navigationState.isFirstUrl(pageContext.urlOriginal)) {
     const pageContextAddendum = await getPageContextFirstRender(pageContext)
     setPageContextInitHasClientData(pageContextAddendum)
     return pageContextAddendum

@@ -86,8 +86,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     redirectCount = 0,
     isUserLandNavigation
   } = renderArgs
-  const { abortRender, setHydrationCanBeAborted, renderNumber } = getAbortRender()
-  const isFirstRenderAttempt = renderNumber === 1
+  const { abortRender, setHydrationCanBeAborted, isFirstRender } = getAbortRender()
 
   assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
 
@@ -100,7 +99,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   if (abortRender()) return
   objectAssign(pageContext, {
     isBackwardNavigation,
-    _isFirstRenderAttempt: isFirstRenderAttempt
+    _isFirstRender: isFirstRender
   })
 
   {
@@ -139,14 +138,14 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   }
 
   // Start transition before any await's
-  const callTransitionHooks = !isFirstRenderAttempt
+  const callTransitionHooks = !isFirstRender
   if (callTransitionHooks) {
     if (!globalObject.isTransitioning) {
       await globalObject.onPageTransitionStart?.(pageContext)
       globalObject.isTransitioning = true
+      if (abortRender()) return
     }
   }
-  if (abortRender()) return
 
   let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>> | undefined
   if (!hasError) {
@@ -156,8 +155,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       hasError = true
       err = err_
     }
+    if (abortRender()) return
   }
-  if (abortRender()) return
 
   if (hasError) {
     if (!isAbortError(err)) {
@@ -227,7 +226,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
       if (shouldSwallowAndInterrupt(err2, pageContext)) return
 
-      if (!isFirstRenderAttempt) {
+      if (!isFirstRender) {
         setTimeout(() => {
           // We let the server show the 404 page
           window.location.pathname = urlOriginal
@@ -265,9 +264,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     // Always make sure that the previous render has finished,
     await globalObject.renderPromise
     assert(globalObject.renderPromise === undefined)
+    if (abortRender()) return
   }
-  assert(globalObject.renderPromise === undefined)
-  if (abortRender()) return
 
   changeUrl(urlOriginal, overwriteLastHistoryEntry)
   navigationState.markNavigationChange()
@@ -276,24 +274,27 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   globalObject.renderPromise = (async () => {
     await executeOnRenderClientHook(pageContext, true)
     addLinkPrefetchHandlers(pageContext)
+    globalObject.renderPromise = undefined
   })()
   await globalObject.renderPromise
-  globalObject.renderPromise = undefined
-  /* We don't abort in order to ensure that onHydrationEnd() is called
+  assert(globalObject.renderPromise === undefined)
+  /* We don't abort in order to ensure that onHydrationEnd() is called: we abort only after onHydrationEnd() is called.
   if (abortRender(true)) return
   */
 
   // onHydrationEnd()
-  if (pageContext._isFirstRenderAttempt) {
+  if (pageContext._isFirstRender) {
     assertHook(pageContext, 'onHydrationEnd')
     const { onHydrationEnd } = pageContext.exports
     if (onHydrationEnd) {
       const hookFilePath = pageContext.exportsAll.onHydrationEnd![0]!.exportSource
       assert(hookFilePath)
       await executeHook(() => onHydrationEnd(pageContext), 'onHydrationEnd', hookFilePath)
+      if (abortRender(true)) return
     }
   }
 
+  // We abort only after onHydrationEnd() is called.
   if (abortRender(true)) return
 
   // onPageTransitionEnd()
@@ -301,10 +302,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (pageContext.exports.onPageTransitionEnd) {
       assertHook(pageContext, 'onPageTransitionEnd')
       await pageContext.exports.onPageTransitionEnd(pageContext)
+      if (abortRender(true)) return
     }
     globalObject.isTransitioning = undefined
   }
-  if (abortRender(true)) return
 
   // Page scrolling
   setScrollPosition(scrollTarget)
@@ -534,7 +535,7 @@ function onPageShow(listener: () => void) {
 
 function shouldSwallowAndInterrupt(
   err: unknown,
-  pageContext: { urlOriginal: string; _isFirstRenderAttempt: boolean }
+  pageContext: { urlOriginal: string; _isFirstRender: boolean }
 ): boolean {
   if (isAlreadyServerSideRouted(err)) return true
   if (handleErrorFetchingStaticAssets(err, pageContext)) return true
@@ -543,13 +544,13 @@ function shouldSwallowAndInterrupt(
 
 function handleErrorFetchingStaticAssets(
   err: unknown,
-  pageContext: { urlOriginal: string; _isFirstRenderAttempt: boolean }
+  pageContext: { urlOriginal: string; _isFirstRender: boolean }
 ): boolean {
   if (!isErrorFetchingStaticAssets(err)) {
     return false
   }
 
-  if (pageContext._isFirstRenderAttempt) {
+  if (pageContext._isFirstRender) {
     disableClientRouting(err, false)
     // This may happen if the frontend was newly deployed during hydration.
     // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
@@ -619,5 +620,9 @@ function getAbortRender() {
     return renderNumber !== globalObject.renderCounter
   }
 
-  return { renderNumber, abortRender, setHydrationCanBeAborted }
+  return {
+    abortRender,
+    setHydrationCanBeAborted,
+    isFirstRender: renderNumber === 1
+  }
 }
