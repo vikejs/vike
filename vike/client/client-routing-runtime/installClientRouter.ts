@@ -16,7 +16,6 @@ import {
   hasProp,
   isObject
 } from './utils.js'
-import { navigationState } from './navigationState.js'
 import {
   PageContextAddendum,
   getPageContextForErrorPage,
@@ -66,7 +65,7 @@ function installClientRouter() {
   autoSaveScrollPosition()
   monkeyPatchHistoryPushState()
 
-  // Intial render
+  // First initial render
   assert(globalObject.renderCounter === (0 as number))
   renderPageClientSide({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
   assert(globalObject.renderCounter === 1)
@@ -125,9 +124,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     pageContextAddendum?: PageContextAddendum
   } = {}
 
-  // TODO: simplify?
-  const isFirstRender2 = isFirstRender && navigationState.isFirstUrl(pageContext.urlOriginal)
-  if (!isFirstRender2) {
+  if (!isFirstRender) {
     // Route
     try {
       renderState = { pageContextFromRoute: await route(pageContext) }
@@ -171,7 +168,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
   }
 
-  if (isFirstRender2) {
+  if (isFirstRender) {
     assert(!renderState.pageContextFromRoute)
     assert(!renderState.err)
     try {
@@ -306,7 +303,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   }
 
   changeUrl(urlOriginal, overwriteLastHistoryEntry)
-  navigationState.markNavigationChange()
   globalObject.previousPageContext = pageContext
   assert(globalObject.renderPromise === undefined)
   globalObject.renderPromise = (async () => {
