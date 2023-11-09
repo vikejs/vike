@@ -1,5 +1,4 @@
 - remove redundant route() call
-- rethink getRenderNumber()
 
 - fix pageContext._renderHook.hookFilePath / replace with new prop hookSrc
 - refacor/fix skipConfigValue to differentiate between global/page virtual file
