@@ -124,6 +124,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       serverSideRouteTo(urlOriginal)
       return
     }
+    assert(pageContextFromRoute._pageId)
 
     if (isUserLandNavigation && pageContextFromRoute._pageId === globalObject.previousPageContext?._pageId) {
       // Skip's Vike's rendering; let the user handle the navigation
@@ -144,7 +145,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>> | undefined
   if (!('err' in renderState)) {
     const { pageContextFromRoute } = renderState
-    assert(hasProp(pageContextFromRoute, '_pageId', 'string'))
+    assert(pageContextFromRoute._pageId)
+    assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
     objectAssign(pageContext, pageContextFromRoute)
     try {
       pageContextAddendum = await getPageContext(pageContext)
@@ -618,10 +620,4 @@ function getAbortRender() {
     setHydrationCanBeAborted,
     isFirstRender: renderNumber === 1
   }
-}
-function hasProps(pageContextFromRoute: PageContextFromRoute, arg1: string): unknown {
-  function hasProps(pageContextFromRoute: PageContextFromRoute, arg1: string): unknown {
-    throw new Error('Function not implemented.')
-  }
-  throw new Error('Function not implemented.')
 }
