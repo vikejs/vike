@@ -12,7 +12,8 @@ import {
   throttle,
   sleep,
   getGlobalObject,
-  executeHook
+  executeHook,
+  hasProp
 } from './utils.js'
 import { navigationState } from './navigationState.js'
 import { checkIf404, getPageContext, getPageContextErrorPage, isAlreadyServerSideRouted } from './getPageContext.js'
@@ -142,6 +143,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
   let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>> | undefined
   if (!('err' in renderState)) {
+    const { pageContextFromRoute } = renderState
+    assert(hasProp(pageContextFromRoute, '_pageId', 'string'))
+    objectAssign(pageContext, pageContextFromRoute)
     try {
       pageContextAddendum = await getPageContext(pageContext)
     } catch (err) {
@@ -614,4 +618,10 @@ function getAbortRender() {
     setHydrationCanBeAborted,
     isFirstRender: renderNumber === 1
   }
+}
+function hasProps(pageContextFromRoute: PageContextFromRoute, arg1: string): unknown {
+  function hasProps(pageContextFromRoute: PageContextFromRoute, arg1: string): unknown {
+    throw new Error('Function not implemented.')
+  }
+  throw new Error('Function not implemented.')
 }
