@@ -1,6 +1,6 @@
 export { testRun as test }
 
-import { run, page, test, expect, getServerUrl, fetchHtml, expectLog } from '@brillout/test-e2e'
+import { run, page, test, expect, getServerUrl, fetchHtml, expectLog, autoRetry } from '@brillout/test-e2e'
 import { ensureWasClientSideRouted, expectPageContextJsonRequest, testCounter } from '../utils'
 
 function testRun(cmd: 'npm run dev' | 'npm run preview') {
@@ -22,11 +22,15 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
 
   test('wrong hook suppressing usage', async () => {
     await fetchHtml('/page-2')
-    expectLog(
-      '[Wrong Usage] Set onBeforeRender to null in a +config.h.js file instead of /pages/page-2/+onBeforeRender.tsx',
-      (log) => log.logSource === 'stderr'
-    )
-    expectLog('HTTP response', (log) => log.logSource === 'stderr')
+    await autoRetry(() => {
+      expectLog(
+        '[Wrong Usage] Set onBeforeRender to null in a +config.h.js file instead of /pages/page-2/+onBeforeRender.tsx',
+        (log) => log.logSource === 'stderr'
+      )
+    })
+    await autoRetry(() => {
+      expectLog('HTTP response', (log) => log.logSource === 'stderr')
+    })
     if (isDev) {
       expectLog('No error page found', (log) => log.logSource === 'stderr')
     }
