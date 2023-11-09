@@ -70,7 +70,6 @@ type RenderArgs = {
   isBackwardNavigation: boolean | null
   urlOriginal?: string
   overwriteLastHistoryEntry?: boolean
-  checkIfClientSideRenderable?: boolean
   pageContextsFromRewrite?: PageContextFromRewrite[]
   redirectCount?: number
   isUserLandNavigation?: boolean
@@ -81,7 +80,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     urlOriginal = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
     isBackwardNavigation,
-    checkIfClientSideRenderable,
     pageContextsFromRewrite = [],
     redirectCount = 0,
     isUserLandNavigation
@@ -119,13 +117,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     const { pageContextFromRoute } = renderState
     objectAssign(pageContext, pageContextFromRoute)
 
-    if (checkIfClientSideRenderable) {
-      const isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
-      if (abortRender()) return
-      if (!isClientRoutable) {
-        serverSideRouteTo(urlOriginal)
-        return
-      }
+    const isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
+    if (abortRender()) return
+    if (!isClientRoutable) {
+      serverSideRouteTo(urlOriginal)
+      return
     }
 
     if (isUserLandNavigation && pageContextFromRoute._pageId === globalObject.previousPageContext?._pageId) {
@@ -177,7 +173,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         await renderPageClientSide({
           ...renderArgs,
           scrollTarget: 'scroll-to-top-or-hash',
-          checkIfClientSideRenderable: true,
           pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort]
         })
         return
@@ -197,7 +192,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
             urlOriginal: urlRedirect,
             overwriteLastHistoryEntry: false,
             isBackwardNavigation: false,
-            checkIfClientSideRenderable: true,
             redirectCount: redirectCount + 1
           })
         }
@@ -334,8 +328,7 @@ function onLinkClick() {
     renderPageClientSide({
       scrollTarget,
       urlOriginal: url,
-      isBackwardNavigation: false,
-      checkIfClientSideRenderable: true
+      isBackwardNavigation: false
     })
   }
 

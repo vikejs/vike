@@ -42,8 +42,7 @@ async function navigate(
     scrollTarget,
     urlOriginal: url,
     overwriteLastHistoryEntry,
-    isBackwardNavigation: false,
-    checkIfClientSideRenderable: true
+    isBackwardNavigation: false
   })
 }
 
