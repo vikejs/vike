@@ -13,8 +13,7 @@ import {
   sleep,
   getGlobalObject,
   executeHook,
-  hasProp,
-  isObject
+  hasProp
 } from './utils.js'
 import {
   PageContextAddendum,
@@ -47,7 +46,6 @@ import {
 } from '../../shared/route/abort.js'
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
-import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
   clientRoutingIsDisabled?: true
@@ -137,23 +135,25 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (renderState.pageContextFromRoute) {
       const { pageContextFromRoute } = renderState
       objectAssign(pageContext, pageContextFromRoute)
+      let isClientRoutable: boolean
       if (!pageContextFromRoute._pageId) {
-        // We'll be able to remove this once async route functions are deprecated (because we'll be able to skip link hijacking if a link doesn't match a route (because whether to call event.preventDefault() needs to be determined synchronously))
-        const err = new Error(`${urlOriginal} ${noRouteMatch}`)
-        markIs404(err)
-        renderState.err = err
+        isClientRoutable = false
       } else {
         assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
-        const isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
+        isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
         if (abortRender()) return
-        if (!isClientRoutable) {
-          serverSideRouteTo(urlOriginal)
-          return
-        }
-        if (isUserLandNavigation && pageContextFromRoute._pageId === globalObject.previousPageContext?._pageId) {
-          // Skip's Vike's rendering; let the user handle the navigation
-          return
-        }
+      }
+      if (!isClientRoutable) {
+        serverSideRouteTo(urlOriginal)
+        return
+      }
+      const isSamePage =
+        pageContextFromRoute._pageId &&
+        globalObject.previousPageContext?._pageId &&
+        pageContextFromRoute._pageId === globalObject.previousPageContext._pageId
+      if (isUserLandNavigation && isSamePage) {
+        // Skip's Vike's rendering; let the user handle the navigation
+        return
       }
     }
   }
@@ -249,7 +249,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         objectAssign(pageContext, { is404: true })
       }
     } else {
-      objectAssign(pageContext, { is404: checkIf404(err) })
+      objectAssign(pageContext, { is404: false })
     }
 
     try {
@@ -658,11 +658,4 @@ function getAbortRender() {
     setHydrationCanBeAborted,
     isFirstRender: renderNumber === 1
   }
-}
-
-function markIs404(err: Error) {
-  objectAssign(err, { _is404: true })
-}
-function checkIf404(err: unknown): boolean {
-  return isObject(err) && err._is404 === true
 }
