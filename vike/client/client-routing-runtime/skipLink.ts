@@ -3,7 +3,7 @@ export { skipLink }
 import { getBaseServer } from './getBaseServer.js'
 import { isExternalLink } from './isExternalLink.js'
 import { assert, parseUrl, isBaseServer, isParsable } from './utils.js'
-import { isDisableAutomaticLinkInterception } from './installClientRouter.js'
+import { isDisableAutomaticLinkInterception } from './renderPageClientSide.js'
 
 function skipLink(linkTag: HTMLElement): boolean {
   const url = linkTag.getAttribute('href')

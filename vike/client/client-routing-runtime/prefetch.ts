@@ -17,7 +17,7 @@ import {
 import { skipLink } from './skipLink.js'
 import { getPrefetchSettings } from './prefetch/getPrefetchSettings.js'
 import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched.js'
-import { disableClientRouting } from './installClientRouter.js'
+import { disableClientRouting } from './renderPageClientSide.js'
 import { isExternalLink } from './isExternalLink.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
