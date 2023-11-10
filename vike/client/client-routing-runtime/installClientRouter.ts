@@ -105,9 +105,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   const pageContext = await createPageContext(urlOriginal)
   if (abortRender()) return
   objectAssign(pageContext, {
-    isBackwardNavigation,
-    // TODO: remove from pageContext
-    _isFirstRender: isFirstRender
+    isBackwardNavigation
   })
 
   {
@@ -205,7 +203,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // We handle the abort error down below.
     }
 
-    if (shouldSwallowAndInterrupt(err, pageContext)) return
+    if (shouldSwallowAndInterrupt(err, pageContext, isFirstRender)) return
 
     if (isAbortError(err)) {
       const errAbort = err
@@ -258,7 +256,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // - When user hasn't defined a `_error.page.js` file
       // - Some unpexected vike internal error
 
-      if (shouldSwallowAndInterrupt(err2, pageContext)) return
+      if (shouldSwallowAndInterrupt(err2, pageContext, isFirstRender)) return
 
       if (!isFirstRender) {
         setTimeout(() => {
@@ -568,22 +566,24 @@ function onPageShow(listener: () => void) {
 
 function shouldSwallowAndInterrupt(
   err: unknown,
-  pageContext: { urlOriginal: string; _isFirstRender: boolean }
+  pageContext: { urlOriginal: string },
+  isFirstRender: boolean
 ): boolean {
   if (isAlreadyServerSideRouted(err)) return true
-  if (handleErrorFetchingStaticAssets(err, pageContext)) return true
+  if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return true
   return false
 }
 
 function handleErrorFetchingStaticAssets(
   err: unknown,
-  pageContext: { urlOriginal: string; _isFirstRender: boolean }
+  pageContext: { urlOriginal: string },
+  isFirstRender: boolean
 ): boolean {
   if (!isErrorFetchingStaticAssets(err)) {
     return false
   }
 
-  if (pageContext._isFirstRender) {
+  if (isFirstRender) {
     disableClientRouting(err, false)
     // This may happen if the frontend was newly deployed during hydration.
     // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
