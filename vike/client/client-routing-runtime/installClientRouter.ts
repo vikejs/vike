@@ -21,7 +21,7 @@ import {
   getPageContextFromHooks_firstRender,
   getPageContextFromHooks_uponNavigation,
   isAlreadyServerSideRouted
-} from './getPageContext.js'
+} from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
 import { addLinkPrefetchHandlers } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
