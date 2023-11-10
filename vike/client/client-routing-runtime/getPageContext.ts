@@ -1,6 +1,6 @@
-export { getPageContextForFirstRender }
-export { getPageContextForNavigation }
-export { getPageContextForErrorPage }
+export { getPageContextFromHooks_firstRender }
+export { getPageContextFromHooks_uponNavigation }
+export { getPageContextFromHooks_errorPage }
 export { isAlreadyServerSideRouted }
 export type { PageContextFromHooks }
 
@@ -58,7 +58,7 @@ type PageContext = PageContextUrlComputedPropsInternal &
     isBackwardNavigation: boolean | null
   }
 
-async function getPageContextForFirstRender(
+async function getPageContextFromHooks_firstRender(
   pageContext: { urlOriginal: string } & PageContext
 ): Promise<PageContextFromHooks> {
   const pageContextFromHooks = getPageContextSerializedInHtml()
@@ -83,7 +83,7 @@ async function getPageContextForFirstRender(
   return pageContextFromHooks
 }
 
-async function getPageContextForErrorPage(
+async function getPageContextFromHooks_errorPage(
   pageContext: { urlOriginal: string } & PageContext
 ): Promise<PageContextFromHooks> {
   const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
@@ -99,7 +99,7 @@ async function getPageContextForErrorPage(
   return pageContextFromHooks
 }
 
-async function getPageContextForNavigation(
+async function getPageContextFromHooks_uponNavigation(
   pageContext: { _pageId: string } & PageContext
 ): Promise<PageContextFromHooks> {
   const pageContextFromHooks = {

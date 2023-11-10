@@ -17,9 +17,9 @@ import {
 } from './utils.js'
 import {
   PageContextFromHooks,
-  getPageContextForErrorPage,
-  getPageContextForFirstRender,
-  getPageContextForNavigation,
+  getPageContextFromHooks_errorPage,
+  getPageContextFromHooks_firstRender,
+  getPageContextFromHooks_uponNavigation,
   isAlreadyServerSideRouted
 } from './getPageContext.js'
 import { createPageContext } from './createPageContext.js'
@@ -170,7 +170,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     assert(!renderState.pageContextFromRoute)
     assert(!renderState.err)
     try {
-      renderState.pageContextFromHooks = await getPageContextForFirstRender(pageContext)
+      renderState.pageContextFromHooks = await getPageContextFromHooks_firstRender(pageContext)
     } catch (err) {
       renderState.err = err
     }
@@ -183,7 +183,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
       objectAssign(pageContext, pageContextFromRoute)
       try {
-        renderState.pageContextFromHooks = await getPageContextForNavigation(pageContext)
+        renderState.pageContextFromHooks = await getPageContextFromHooks_uponNavigation(pageContext)
       } catch (err) {
         renderState.err = err
       }
@@ -251,7 +251,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
 
     try {
-      renderState.pageContextFromHooks = await getPageContextForErrorPage(pageContext)
+      renderState.pageContextFromHooks = await getPageContextFromHooks_errorPage(pageContext)
     } catch (err2: unknown) {
       // - When user hasn't defined a `_error.page.js` file
       // - Some unpexected vike internal error
