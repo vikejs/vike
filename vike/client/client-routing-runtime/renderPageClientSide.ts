@@ -1,9 +1,6 @@
 export { renderPageClientSide }
 export { getRenderCount }
 export { disableClientRouting }
-export { isDisableAutomaticLinkInterception }
-export { setupNativeScrollRestoration }
-export { autoSaveScrollPosition }
 
 import {
   assert,
@@ -11,7 +8,6 @@ import {
   isEquivalentError,
   objectAssign,
   serverSideRouteTo,
-  throttle,
   getGlobalObject,
   executeHook,
   hasProp
@@ -29,7 +25,7 @@ import { assertInfo, assertWarning, isReact } from './utils.js'
 import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { assertHook } from '../../shared/hooks/getHook.js'
 import { isErrorFetchingStaticAssets } from '../shared/loadPageFilesClientSide.js'
-import { pushHistory, saveScrollPosition } from './history.js'
+import { pushHistory } from './history.js'
 import {
   assertNoInfiniteAbortLoop,
   getPageContextFromAllRewrites,
@@ -41,10 +37,10 @@ import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { updateState } from './onBrowserHistoryNavigation.js'
+import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
   clientRoutingIsDisabled?: true
-  initialRenderIsDone?: true
   renderCounter: number
   renderPromise?: Promise<void>
   isTransitioning?: true
@@ -320,7 +316,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   // Page scrolling
   setScrollPosition(scrollTarget)
   browserNativeScrollRestoration_disable()
-  globalObject.initialRenderIsDone = true
+  setInitialRenderIsDone()
 }
 
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
@@ -328,45 +324,6 @@ function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   browserNativeScrollRestoration_disable()
   pushHistory(url, overwriteLastHistoryEntry)
   updateState()
-}
-
-// Save scroll position (needed for back-/forward navigation)
-function autoSaveScrollPosition() {
-  // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/vikejs/vike/issues/46)
-  window.addEventListener('scroll', throttle(saveScrollPosition, Math.ceil(1000 / 3)), { passive: true })
-  onPageHide(saveScrollPosition)
-}
-
-// We use the browser's native scroll restoration mechanism only for the first render
-function setupNativeScrollRestoration() {
-  browserNativeScrollRestoration_enable()
-  onPageHide(browserNativeScrollRestoration_enable)
-  onPageShow(() => globalObject.initialRenderIsDone && browserNativeScrollRestoration_disable())
-}
-function browserNativeScrollRestoration_disable() {
-  if ('scrollRestoration' in window.history) {
-    window.history.scrollRestoration = 'manual'
-  }
-}
-function browserNativeScrollRestoration_enable() {
-  if ('scrollRestoration' in window.history) {
-    window.history.scrollRestoration = 'auto'
-  }
-}
-
-function onPageHide(listener: () => void) {
-  window.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') {
-      listener()
-    }
-  })
-}
-function onPageShow(listener: () => void) {
-  window.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-      listener()
-    }
-  })
 }
 
 function shouldSwallowAndInterrupt(
@@ -400,14 +357,6 @@ function handleErrorFetchingStaticAssets(
   serverSideRouteTo(pageContext.urlOriginal)
 
   return true
-}
-
-function isDisableAutomaticLinkInterception(): boolean {
-  // @ts-ignore
-  return !!window._disableAutomaticLinkInterception
-  /* globalObject should be used if we want to make disableAutomaticLinkInterception a page-by-page setting
-  return globalObject.disableAutomaticLinkInterception ?? false
-  */
 }
 
 function disableClientRouting(err: unknown, log: boolean) {

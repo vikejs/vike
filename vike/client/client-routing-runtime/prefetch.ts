@@ -7,7 +7,8 @@ import {
   assertUsage,
   assertWarning,
   checkIfClientRouting,
-  getGlobalObject
+  getGlobalObject,
+  isExternalLink
 } from './utils.js'
 import {
   type PageContextPageFiles,
@@ -18,7 +19,6 @@ import { skipLink } from './skipLink.js'
 import { getPrefetchSettings } from './prefetch/getPrefetchSettings.js'
 import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched.js'
 import { disableClientRouting } from './renderPageClientSide.js'
-import { isExternalLink } from './isExternalLink.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'

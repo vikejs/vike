@@ -1,8 +1,9 @@
 export { setScrollPosition }
+export { autoSaveScrollPosition }
 export type { ScrollTarget }
 
-import { assert, sleep } from './utils.js'
-import type { ScrollPosition } from './history.js'
+import { assert, onPageHide, sleep, throttle } from './utils.js'
+import { saveScrollPosition, type ScrollPosition } from './history.js'
 
 type ScrollTarget = ScrollPosition | 'scroll-to-top-or-hash' | 'preserve-scroll'
 function setScrollPosition(scrollTarget: ScrollTarget): void {
@@ -70,4 +71,11 @@ function getUrlHash(): string | null {
   assert(hash.startsWith('#'))
   hash = hash.slice(1)
   return hash
+}
+
+// Save scroll position (needed for back-/forward navigation)
+function autoSaveScrollPosition() {
+  // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/vikejs/vike/issues/46)
+  window.addEventListener('scroll', throttle(saveScrollPosition, Math.ceil(1000 / 3)), { passive: true })
+  onPageHide(saveScrollPosition)
 }

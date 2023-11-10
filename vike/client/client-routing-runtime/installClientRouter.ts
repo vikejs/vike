@@ -2,14 +2,11 @@ export { installClientRouter }
 
 import { assert } from './utils.js'
 import { initHistoryState, monkeyPatchHistoryPushState } from './history.js'
-import {
-  autoSaveScrollPosition,
-  getRenderCount,
-  renderPageClientSide,
-  setupNativeScrollRestoration
-} from './renderPageClientSide.js'
+import { getRenderCount, renderPageClientSide } from './renderPageClientSide.js'
 import { onBrowserHistoryNavigation } from './onBrowserHistoryNavigation.js'
 import { onLinkClick } from './onLinkClick.js'
+import { setupNativeScrollRestoration } from './scrollRestoration.js'
+import { autoSaveScrollPosition } from './setScrollPosition.js'
 
 function installClientRouter() {
   setupNativeScrollRestoration()
