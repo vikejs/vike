@@ -451,6 +451,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Grommet',
+    url: '/grommet'
+  },
+  {
+    level: 2,
     title: 'Sass / Less / Stylus',
     url: '/sass'
   },
