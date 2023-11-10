@@ -81,7 +81,8 @@ type RenderArgs = {
   overwriteLastHistoryEntry?: boolean
   pageContextsFromRewrite?: PageContextFromRewrite[]
   redirectCount?: number
-  isUserLandNavigation?: boolean
+  /** Whether the navigation was triggered by the user land calling `history.pushState()` */
+  isUserLandPushStateNavigation?: boolean
 }
 async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   const {
@@ -91,7 +92,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     isBackwardNavigation,
     pageContextsFromRewrite = [],
     redirectCount = 0,
-    isUserLandNavigation
+    isUserLandPushStateNavigation
   } = renderArgs
   const { abortRender, setHydrationCanBeAborted, isFirstRender } = getAbortRender()
 
@@ -116,7 +117,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   let renderState: {
     err?: unknown
     pageContextFromRoute?: PageContextFromRoute
-    // TODO: rename
     pageContextFromHooks?: PageContextFromHooks
   } = {}
 
@@ -129,7 +129,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
     if (abortRender()) return
 
-    // Check if whether rendering should be skipped
+    // Check whether rendering should be skipped
     if (renderState.pageContextFromRoute) {
       const { pageContextFromRoute } = renderState
       objectAssign(pageContext, pageContextFromRoute)
@@ -137,7 +137,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (!pageContextFromRoute._pageId) {
         isClientRoutable = false
       } else {
-        assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
         isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
         if (abortRender()) return
       }
@@ -149,14 +148,14 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         pageContextFromRoute._pageId &&
         globalObject.previousPageContext?._pageId &&
         pageContextFromRoute._pageId === globalObject.previousPageContext._pageId
-      if (isUserLandNavigation && isSamePage) {
+      if (isUserLandPushStateNavigation && isSamePage) {
         // Skip's Vike's rendering; let the user handle the navigation
         return
       }
     }
   }
 
-  // Start transition before any await's
+  // onPageTransitionStart()
   const callTransitionHooks = !isFirstRender
   if (callTransitionHooks) {
     if (!globalObject.isTransitioning) {
@@ -278,8 +277,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   assert(pageContextFromHooks)
   objectAssign(pageContext, pageContextFromHooks)
 
+  // Set global onPageTransitionStart()
   assertHook(pageContext, 'onPageTransitionStart')
   globalObject.onPageTransitionStart = pageContext.exports.onPageTransitionStart
+
+  // Set global hydrationCanBeAborted
   if (pageContext.exports.hydrationCanBeAborted) {
     setHydrationCanBeAborted()
   } else {
@@ -294,12 +296,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
   // We use globalObject.renderPromise in order to ensure that there is never two concurrent onRenderClient() calls
   if (globalObject.renderPromise) {
-    // Always make sure that the previous render has finished,
+    // Make sure that the previous render has finished
     await globalObject.renderPromise
     assert(globalObject.renderPromise === undefined)
     if (abortRender()) return
   }
-
   changeUrl(urlOriginal, overwriteLastHistoryEntry)
   globalObject.previousPageContext = pageContext
   assert(globalObject.renderPromise === undefined)
@@ -326,7 +327,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
   }
 
-  // We abort only after onHydrationEnd() is called.
+  // We abort only after onHydrationEnd() is called
   if (abortRender(true)) return
 
   // onPageTransitionEnd()
@@ -405,7 +406,7 @@ function onBrowserHistoryNavigation() {
 
     const scrollTarget = currentState.historyState.scrollPosition || 'scroll-to-top-or-hash'
 
-    const isUserLandNavigation = currentState.historyState.triggedBy === 'user'
+    const isUserLandPushStateNavigation = currentState.historyState.triggedBy === 'user'
 
     const isHashNavigation = currentState.urlWithoutHash === globalObject.previousState.urlWithoutHash
 
@@ -416,7 +417,7 @@ function onBrowserHistoryNavigation() {
 
     globalObject.previousState = currentState
 
-    if (isHashNavigation && !isUserLandNavigation) {
+    if (isHashNavigation && !isUserLandPushStateNavigation) {
       // - `history.state` is uninitialized (`null`) when:
       //   - The user's code runs `window.location.hash = '#section'`.
       //   - The user clicks on an anchor link `<a href="#section">Section</a>` (because Vike's `onLinkClick()` handler skips hash links).
@@ -438,7 +439,7 @@ function onBrowserHistoryNavigation() {
         setScrollPosition(scrollTarget)
       }
     } else {
-      renderPageClientSide({ scrollTarget, isBackwardNavigation, isUserLandNavigation })
+      renderPageClientSide({ scrollTarget, isBackwardNavigation, isUserLandPushStateNavigation })
     }
   })
 }
