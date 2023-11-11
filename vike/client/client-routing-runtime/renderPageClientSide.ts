@@ -92,13 +92,20 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     pageContextFromRoute?: PageContextFromRoute
     pageContextFromHooks?: PageContextFromHooks
   } = {}
+  const onError = (err: unknown) => {
+    assert(err)
+    assert(!('err' in renderState))
+    assert(!('errorWhileRendering' in pageContext))
+    renderState.err = err
+    pageContext.errorWhileRendering = err
+  }
 
   if (!isFirstRender) {
     // Route
     try {
       renderState = { pageContextFromRoute: await route(pageContext) }
     } catch (err) {
-      renderState = { err }
+      onError(err)
     }
     if (abortRender()) return
 
@@ -144,7 +151,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     try {
       renderState.pageContextFromHooks = await getPageContextFromHooks_firstRender(pageContext)
     } catch (err) {
-      renderState.err = err
+      onError(err)
     }
     if (abortRender()) return
   } else {
@@ -157,7 +164,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       try {
         renderState.pageContextFromHooks = await getPageContextFromHooks_uponNavigation(pageContext)
       } catch (err) {
-        renderState.err = err
+        onError(err)
       }
       if (abortRender()) return
     }
