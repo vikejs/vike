@@ -16,7 +16,10 @@ import path from 'path'
 import url from 'url'
 import { createRequire } from 'module'
 
-function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod', isCJS?: true) {
+function testRun(
+  cmd: 'npm run dev' | 'npm run preview' | 'npm run prod',
+  { isCJS, skipScreenshotTest }: { isCJS?: true; skipScreenshotTest?: true } = {}
+) {
   run(cmd)
 
   test('page content is rendered to HTML', async () => {
@@ -40,31 +43,33 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod', isCJS?
     })
   })
 
-  test('screenshot fixture', async () => {
-    {
-      const { platform } = process
-      if (!['linux', 'win32', 'darwin'].includes(platform))
-        throw new Error(`Unexpted platform operating system '${platform}'`)
-      if (platform !== 'linux') return
-    }
-    {
-      const dirname = path.dirname(url.fileURLToPath(import.meta.url))
-      // dirname isn't the directory of this file: because this file is bundled with the entry, e.g. dirname is the directory examples/react-streaming/ of the entry /examples/react-streaming/.test-dev.test.ts
-      const repoRoot = path.join(dirname, `../../`)
-      const screenshotFixturePathUnresolved = path.join(repoRoot, 'examples/react/.test-screenshot-fixture.png')
-      const require = createRequire(import.meta.url)
-      let screenshotFixturePath: string
-      try {
-        screenshotFixturePath = require.resolve(screenshotFixturePathUnresolved)
-      } catch (err) {
-        console.log('dirname:', dirname)
-        console.log('repoRoot:', repoRoot)
-        console.log('screenshotFixturePathUnresolved:', screenshotFixturePathUnresolved)
-        throw err
+  if (!skipScreenshotTest) {
+    test('screenshot fixture', async () => {
+      {
+        const { platform } = process
+        if (!['linux', 'win32', 'darwin'].includes(platform))
+          throw new Error(`Unexpted platform operating system '${platform}'`)
+        if (platform !== 'linux') return
       }
-      await testScreenshotFixture({ screenshotFixturePath, doNotTestLocally: true })
-    }
-  })
+      {
+        const dirname = path.dirname(url.fileURLToPath(import.meta.url))
+        // dirname isn't the directory of this file: because this file is bundled with the entry, e.g. dirname is the directory examples/react-streaming/ of the entry /examples/react-streaming/.test-dev.test.ts
+        const repoRoot = path.join(dirname, `../../`)
+        const screenshotFixturePathUnresolved = path.join(repoRoot, 'examples/react/.test-screenshot-fixture.png')
+        const require = createRequire(import.meta.url)
+        let screenshotFixturePath: string
+        try {
+          screenshotFixturePath = require.resolve(screenshotFixturePathUnresolved)
+        } catch (err) {
+          console.log('dirname:', dirname)
+          console.log('repoRoot:', repoRoot)
+          console.log('screenshotFixturePathUnresolved:', screenshotFixturePathUnresolved)
+          throw err
+        }
+        await testScreenshotFixture({ screenshotFixturePath, doNotTestLocally: true })
+      }
+    })
+  }
 
   test('about page', async () => {
     await page.click('a[href="/about"]')

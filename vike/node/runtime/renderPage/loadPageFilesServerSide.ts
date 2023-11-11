@@ -6,7 +6,7 @@ import { type PageFile, getExportUnion, getPageFilesServerSide, getExports } fro
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import { assertWarning, objectAssign, PromiseType } from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
-import { debugPageFiles, type PageContextDebug } from './debugPageFiles.js'
+import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFiles.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
@@ -15,7 +15,7 @@ import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
 
 type PageContext_loadPageFilesServerSide = PageContextGetPageAssets &
-  PageContextDebug & {
+  PageContextDebugRouteMatches & {
     urlOriginal: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]

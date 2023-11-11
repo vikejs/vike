@@ -12,7 +12,7 @@ if (isBrowser()) {
 }
 
 import type { PageFile } from '../getPageFiles.js'
-import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils.js'
+import { assert, assertUsage, isPlainObject, objectAssign } from './utils.js'
 import {
   addUrlComputedProps,
   PageContextUrlComputedPropsInternal,
@@ -38,8 +38,8 @@ type PageContextForRoute = PageContextUrlComputedPropsInternal & {
 type PageContextFromRoute = {
   _pageId: string | null
   routeParams: Record<string, string>
-  _routingProvidedByOnBeforeRouteHook: boolean
-  _routeMatches: RouteMatches
+  _routingProvidedByOnBeforeRouteHook?: boolean
+  _debugRouteMatches: RouteMatches
 }
 type RouteMatch = {
   pageId: string
@@ -48,38 +48,28 @@ type RouteMatch = {
   routeType: RouteType
   routeParams: Record<string, string>
 }
-type RouteMatches = 'CUSTOM_ROUTE' | RouteMatch[]
+type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
-async function route(pageContext: PageContextForRoute): Promise<PageContextFromRoute> {
-  addUrlComputedProps(pageContext)
+async function route(pageContextForRoute: PageContextForRoute): Promise<PageContextFromRoute> {
+  debug('Pages routes:', pageContextForRoute._pageRoutes)
+  addUrlComputedProps(pageContextForRoute)
+  const pageContextFromRoute = {}
 
-  debug('Pages routes:', pageContext._pageRoutes)
-
-  const pageContextAddendum = {}
-  if (pageContext._onBeforeRouteHook) {
-    const pageContextAddendumHook = await executeOnBeforeRouteHook(pageContext._onBeforeRouteHook, pageContext)
-    if (pageContextAddendumHook) {
-      objectAssign(pageContextAddendum, pageContextAddendumHook)
-      if (hasProp(pageContextAddendum, '_pageId', 'string') || hasProp(pageContextAddendum, '_pageId', 'null')) {
-        // We bypass Vike's routing
-        if (!hasProp(pageContextAddendum, 'routeParams')) {
-          objectAssign(pageContextAddendum, { routeParams: {} })
-        } else {
-          assert(hasProp(pageContextAddendum, 'routeParams', 'object'))
-        }
-        objectAssign(pageContextAddendum, {
-          _routingProvidedByOnBeforeRouteHook: true,
-          _routeMatches: 'CUSTOM_ROUTE' as const
-        })
-        return pageContextAddendum
-      }
-      // We already assign so that `pageContext.urlOriginal === pageContextAddendum.urlOriginal`; enabling the `onBeforeRoute()` hook to mutate `pageContext.urlOriginal` before routing.
-      objectAssign(pageContext, pageContextAddendum)
+  // onBeforeRoute()
+  const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContextForRoute)
+  if (pageContextFromOnBeforeRouteHook) {
+    if (pageContextFromOnBeforeRouteHook._routingProvidedByOnBeforeRouteHook) {
+      assert(pageContextFromOnBeforeRouteHook._pageId)
+      return pageContextFromOnBeforeRouteHook
+    } else {
+      objectAssign(pageContextFromRoute, pageContextFromOnBeforeRouteHook)
     }
   }
-  objectAssign(pageContextAddendum, {
-    _routingProvidedByOnBeforeRouteHook: false
-  })
+
+  // We take into account pageContext.urlLogical set by onBeforeRoute()
+  const pageContext = {}
+  objectAssign(pageContext, pageContextForRoute)
+  objectAssign(pageContext, pageContextFromOnBeforeRouteHook)
 
   // Vike's routing
   const allPageIds = pageContext._allPageIds
@@ -145,24 +135,24 @@ async function route(pageContext: PageContextForRoute): Promise<PageContextFromR
 
   debug(`Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)
 
-  objectAssign(pageContextAddendum, { _routeMatches: routeMatches })
+  objectAssign(pageContextFromRoute, { _debugRouteMatches: routeMatches })
 
   if (!winner) {
-    objectAssign(pageContextAddendum, {
+    objectAssign(pageContextFromRoute, {
       _pageId: null,
       routeParams: {}
     })
-    return pageContextAddendum
+    return pageContextFromRoute
   }
 
   {
     const { routeParams } = winner
     assert(isPlainObject(routeParams))
-    objectAssign(pageContextAddendum, {
+    objectAssign(pageContextFromRoute, {
       _pageId: winner.pageId,
       routeParams: winner.routeParams
     })
   }
 
-  return pageContextAddendum
+  return pageContextFromRoute
 }

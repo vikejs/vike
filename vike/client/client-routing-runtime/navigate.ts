@@ -1,7 +1,7 @@
 export { navigate }
 export { reload }
 
-import { renderPageClientSide } from './installClientRouter.js'
+import { renderPageClientSide } from './renderPageClientSide.js'
 import { assertUsage, isBrowser, assertClientRouting, checkIfClientRouting, getCurrentUrl } from './utils.js'
 
 assertClientRouting()
@@ -42,8 +42,7 @@ async function navigate(
     scrollTarget,
     urlOriginal: url,
     overwriteLastHistoryEntry,
-    isBackwardNavigation: false,
-    checkIfClientSideRenderable: true
+    isBackwardNavigation: false
   })
 }
 

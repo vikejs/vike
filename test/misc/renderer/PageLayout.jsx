@@ -14,6 +14,12 @@ function PageLayout({ children }) {
           <a className="navitem" href="/about">
             About
           </a>
+          <a className="navitem" href="/markdown">
+            Markdown
+          </a>
+          <a className="navitem" href="/pushState">
+            pushState
+          </a>
         </Sidebar>
         <Content>{children}</Content>
       </Layout>

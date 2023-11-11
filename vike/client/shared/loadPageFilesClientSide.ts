@@ -1,3 +1,7 @@
+export { loadPageFilesClientSide }
+export { isErrorFetchingStaticAssets }
+export type { PageContextPageFiles }
+
 import {
   getPageFilesClientSide,
   getExports,
@@ -8,18 +12,18 @@ import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import type { PageConfigRuntime, PageConfigRuntimeLoaded } from '../../shared/page-configs/PageConfig.js'
 
-export { loadPageFilesClientSide }
-export { isErrorFetchingStaticAssets }
-
 const stamp = '__whileFetchingAssets'
 
+type PageContextPageFiles = {
+  _pageFilesAll: PageFile[]
+  _pageConfigs: PageConfigRuntime[]
+}
 async function loadPageFilesClientSide(
-  pageFilesAll: PageFile[],
-  pageConfigs: PageConfigRuntime[],
-  pageId: string
+  pageId: string,
+  pageContext: PageContextPageFiles
 ): Promise<PageContextExports & { _pageFilesLoaded: PageFile[] }> {
-  const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
-  const pageConfig = findPageConfig(pageConfigs, pageId)
+  const pageFilesClientSide = getPageFilesClientSide(pageContext._pageFilesAll, pageId)
+  const pageConfig = findPageConfig(pageContext._pageConfigs, pageId)
   let pageConfigLoaded: null | PageConfigRuntimeLoaded
   // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
   const isDev: boolean = import.meta.env.DEV

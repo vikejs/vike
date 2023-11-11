@@ -4,6 +4,7 @@ export { log404 }
 export { getRoutesInfo }
 
 import type { PageRoutes } from '../../../../shared/route/index.js'
+import { noRouteMatch } from '../../../../shared/route/noRouteMatch.js'
 import { getGlobalContext } from '../../globalContext.js'
 import {
   assert,
@@ -35,7 +36,7 @@ async function log404(pageContext: {
   const globalContext = getGlobalContext()
   if (!globalContext.isProduction && !isFileRequest(urlPathname) && !pageContext.isClientSideNavigation) {
     const routesInfo = getRoutesInfo(pageRoutes)
-    let msg = `URL ${pc.cyan(urlPathname)} doesn't match the route of any of your pages`
+    let msg = `URL ${pc.cyan(urlPathname)} ${noRouteMatch}`
     const outro = 'See https://vike.dev/routing for more information about routing.'
     if (!routesInfo) {
       msg = `${msg}. ${pc.dim(outro)}`

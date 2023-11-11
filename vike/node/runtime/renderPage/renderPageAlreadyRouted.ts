@@ -155,7 +155,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
     routeParams: {},
     // `prerender404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
     _usesClientRouter: false,
-    _routeMatches: []
+    _debugRouteMatches: []
   }
 
   const pageContextInit = {

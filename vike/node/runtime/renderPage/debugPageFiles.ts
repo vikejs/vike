@@ -1,15 +1,15 @@
 export { debugPageFiles }
-export type { PageContextDebug }
+export type { PageContextDebugRouteMatches }
 
-import { RouteMatches } from '../../../shared/route/index.js'
+import type { RouteMatches } from '../../../shared/route/index.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import type { PageFile } from '../../../shared/getPageFiles.js'
 import pc from '@brillout/picocolors'
 import { assert, makeFirst, createDebugger } from '../utils.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 
-type PageContextDebug = {
-  _routeMatches: 'ROUTE_ERROR' | RouteMatches
+type PageContextDebugRouteMatches = {
+  _debugRouteMatches: 'ROUTING_ERROR' | RouteMatches
 }
 function debugPageFiles({
   pageContext,
@@ -26,7 +26,7 @@ function debugPageFiles({
     _pageId: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
-  } & PageContextDebug
+  } & PageContextDebugRouteMatches
   isHtmlOnly: boolean
   isClientRouting: boolean
   pageFilesLoaded: PageFile[]
@@ -40,7 +40,10 @@ function debugPageFiles({
 
   debug('All page files:', printPageFiles(pageContext._pageFilesAll, true)) // TODO
   debug(`URL:`, pageContext.urlOriginal)
-  debug.options({ serialization: { emptyArray: 'No match' } })(`Routing:`, printRouteMatches(pageContext._routeMatches))
+  debug.options({ serialization: { emptyArray: 'No match' } })(
+    `Routing:`,
+    printRouteMatches(pageContext._debugRouteMatches)
+  )
   debug(`pageId:`, pageContext._pageId)
   debug('Page type:', isHtmlOnly ? 'HTML-only' : 'SSR/SPA')
   debug(`Routing type:`, !isHtmlOnly && isClientRouting ? 'Client Routing' : 'Server Routing')
@@ -52,14 +55,14 @@ function debugPageFiles({
 
   return
 
-  function printRouteMatches(routeMatches: PageContextDebug['_routeMatches']) {
-    if (routeMatches === 'ROUTE_ERROR') {
+  function printRouteMatches(debugRouteMatches: PageContextDebugRouteMatches['_debugRouteMatches']) {
+    if (debugRouteMatches === 'ROUTING_ERROR') {
       return 'Routing Failed'
     }
-    if (routeMatches === 'CUSTOM_ROUTE') {
+    if (debugRouteMatches === 'CUSTOM_ROUTING') {
       return 'Custom Routing'
     }
-    return routeMatches
+    return debugRouteMatches
   }
 
   function printPageFiles(pageFiles: PageFile[], genericPageFilesLast = false): string {

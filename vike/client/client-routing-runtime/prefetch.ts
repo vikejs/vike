@@ -1,21 +1,45 @@
 export { prefetch }
 export { addLinkPrefetchHandlers }
 
-import { assert, assertClientRouting, assertUsage, checkIfClientRouting, objectAssign } from './utils.js'
-import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../shared/loadPageFilesClientSide.js'
+import {
+  assert,
+  assertClientRouting,
+  assertUsage,
+  assertWarning,
+  checkIfClientRouting,
+  getGlobalObject,
+  isExternalLink
+} from './utils.js'
+import {
+  type PageContextPageFiles,
+  isErrorFetchingStaticAssets,
+  loadPageFilesClientSide
+} from '../shared/loadPageFilesClientSide.js'
 import { skipLink } from './skipLink.js'
-import { getPageId } from './getPageId.js'
 import { getPrefetchSettings } from './prefetch/getPrefetchSettings.js'
 import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched.js'
-import { disableClientRouting } from './installClientRouter.js'
-import { isExternalLink } from './isExternalLink.js'
+import { disableClientRouting } from './renderPageClientSide.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
+import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 
 assertClientRouting()
+const globalObject = getGlobalObject<{
+  linkPrefetchHandlerAdded: Map<HTMLElement, true>
+}>('prefetch.ts', { linkPrefetchHandlerAdded: new Map() })
 
-const linkPrefetchHandlerAdded = new Map<HTMLElement, true>()
+async function prefetchAssets(pageId: string, pageContext: PageContextPageFiles): Promise<void> {
+  try {
+    await loadPageFilesClientSide(pageId, pageContext)
+  } catch (err) {
+    if (isErrorFetchingStaticAssets(err)) {
+      disableClientRouting(err, true)
+    } else {
+      throw err
+    }
+  }
+}
 
 /**
  * Programmatically prefetch client assets.
@@ -28,27 +52,31 @@ async function prefetch(url: string): Promise<void> {
   assertUsage(checkIfClientRouting(), 'prefetch() only works with Client Routing, see https://vike.dev/prefetch', {
     showStackTrace: true
   })
-  assertUsage(
-    !isExternalLink(url),
-    `You are trying to prefetch the URL ${url} of another domain which cannot be prefetched`,
-    { showStackTrace: true }
-  )
+  const errPrefix = `Cannot prefetch URL ${url} because it` as const
+  assertUsage(!isExternalLink(url), `${errPrefix} lives on another domain`, { showStackTrace: true })
 
   if (isAlreadyPrefetched(url)) return
   markAsAlreadyPrefetched(url)
 
-  const { pageId, pageFilesAll, pageConfigs } = await getPageId(url)
-  if (pageId) {
-    try {
-      await loadPageFilesClientSide(pageFilesAll, pageConfigs, pageId)
-    } catch (err) {
-      if (isErrorFetchingStaticAssets(err)) {
-        disableClientRouting(err, true)
-      } else {
-        throw err
-      }
-    }
+  const pageContext = await createPageContext(url)
+  let pageContextFromRoute: PageContextFromRoute
+  try {
+    pageContextFromRoute = await route(pageContext)
+  } catch {
+    // If a route() hook has a bug or `throw render()` / `throw redirect()`
+    return
   }
+  const pageId = pageContextFromRoute._pageId
+
+  if (!pageId) {
+    assertWarning(false, `${errPrefix} ${noRouteMatch}`, {
+      showStackTrace: true,
+      onlyOnce: false
+    })
+    return
+  }
+
+  await prefetchAssets(pageId, pageContext)
 }
 
 function addLinkPrefetchHandlers(pageContext: {
@@ -61,8 +89,8 @@ function addLinkPrefetchHandlers(pageContext: {
 
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
   linkTags.forEach((linkTag) => {
-    if (linkPrefetchHandlerAdded.has(linkTag)) return
-    linkPrefetchHandlerAdded.set(linkTag, true)
+    if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) return
+    globalObject.linkPrefetchHandlerAdded.set(linkTag, true)
 
     const url = linkTag.getAttribute('href')
 
@@ -76,12 +104,12 @@ function addLinkPrefetchHandlers(pageContext: {
 
     if (prefetchStaticAssets === 'hover') {
       linkTag.addEventListener('mouseover', () => {
-        prefetchIfClientSideRoutable(url)
+        prefetchIfPossible(url)
       })
       linkTag.addEventListener(
         'touchstart',
         () => {
-          prefetchIfClientSideRoutable(url)
+          prefetchIfPossible(url)
         },
         { passive: true }
       )
@@ -91,7 +119,7 @@ function addLinkPrefetchHandlers(pageContext: {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            prefetchIfClientSideRoutable(url)
+            prefetchIfPossible(url)
             observer.disconnect()
           }
         })
@@ -101,7 +129,7 @@ function addLinkPrefetchHandlers(pageContext: {
   })
 }
 
-async function prefetchIfClientSideRoutable(url: string): Promise<void> {
+async function prefetchIfPossible(url: string): Promise<void> {
   const pageContext = await createPageContext(url)
   let pageContextFromRoute: PageContextFromRoute
   try {
@@ -110,7 +138,7 @@ async function prefetchIfClientSideRoutable(url: string): Promise<void> {
     // If a route() hook has a bug or `throw render()` / `throw redirect()`
     return
   }
-  objectAssign(pageContext, pageContextFromRoute)
-  if (!(await isClientSideRoutable(pageContext))) return
-  await prefetch(url)
+  if (!pageContextFromRoute?._pageId) return
+  if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
+  await prefetchAssets(pageContextFromRoute._pageId, pageContext)
 }

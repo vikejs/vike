@@ -1,9 +1,7 @@
 export { skipLink }
 
 import { getBaseServer } from './getBaseServer.js'
-import { isExternalLink } from './isExternalLink.js'
-import { assert, parseUrl, isBaseServer, isParsable } from './utils.js'
-import { isDisableAutomaticLinkInterception } from './installClientRouter.js'
+import { assert, parseUrl, isBaseServer, isParsable, isExternalLink } from './utils.js'
 
 function skipLink(linkTag: HTMLElement): boolean {
   const url = linkTag.getAttribute('href')
@@ -24,7 +22,7 @@ function skipLink(linkTag: HTMLElement): boolean {
   return false
 }
 
-// TODO/v1-release: remove this in favor of synchronously checking whether URL matches the route of a page (possible since Async Route Functions are now deprecated)
+// TODO/v1-release: remove this in favor of synchronously checking whether URL matches the route of a page (possible since Async Route Functions will be deprecated)
 function isVikeLink(linkTag: HTMLElement) {
   const disableAutomaticLinkInterception = isDisableAutomaticLinkInterception()
   if (!disableAutomaticLinkInterception) {
@@ -55,4 +53,12 @@ function hasBaseServer(url: string): boolean {
   assert(isBaseServer(baseServer))
   const { hasBaseServer } = parseUrl(url, baseServer)
   return hasBaseServer
+}
+
+function isDisableAutomaticLinkInterception(): boolean {
+  // @ts-ignore
+  return !!window._disableAutomaticLinkInterception
+  /* globalObject should be used if we want to make disableAutomaticLinkInterception a page-by-page setting
+  return globalObject.disableAutomaticLinkInterception ?? false
+  */
 }

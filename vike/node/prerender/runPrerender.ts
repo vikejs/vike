@@ -55,6 +55,7 @@ import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesyst
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide.js'
 import { assertHookFn } from '../../shared/hooks/getHook.js'
+import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -461,7 +462,7 @@ async function handlePagesWithStaticRoutes(
           _providedByHook: null,
           routeParams,
           _pageId: pageId,
-          _routeMatches: [
+          _debugRouteMatches: [
             {
               pageId,
               routeType: pageRoute.routeType,
@@ -722,7 +723,7 @@ async function routeAndPrerender(
               false,
               `The ${hookName}() hook defined by ${hookFilePath} returns a URL ${pc.cyan(
                 urlOriginal
-              )} that doesn't match any of your page routes. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
+              )} that ${noRouteMatch}. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
             )
           } else {
             // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
@@ -810,20 +811,20 @@ function warnMissingPages(
   partial: boolean
 ) {
   const isV1 = renderContext.pageConfigs.length > 0
-  const hookName = isV1 ? 'prerender' : 'onBeforePrerenderStart'
-  const getPageAt = isV1 ? (pageId: string) => `defined at ${pageId}` : (pageId: string) => `\`${pageId}.page.*\``
-
+  const hookName = isV1 ? 'onBeforePrerenderStart' : 'prerender'
+  /* TODO/after-v1-design-release: document setting `prerender: false` as an alternative to using prerender.partial (both in the warnings and the docs)
+  const optOutName = isV1 ? 'prerender' : 'doNotPrerender'
+  const msgAddendum = `Explicitly opt-out by setting the config ${optOutName} to ${isV1 ? 'false' : 'true'} or use the option prerender.partial`
+  */
   renderContext.allPageIds
     .filter((pageId) => !prerenderPageIds[pageId])
     .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
     .filter((pageId) => !isErrorPage(pageId, renderContext.pageConfigs))
     .forEach((pageId) => {
-      const pageAt = getPageAt(pageId)
+      const pageAt = isV1 ? pageId : `\`${pageId}.page.*\``;
       assertWarning(
         partial,
-        `Cannot pre-render page ${pageAt} because it has a non-static route, and no ${hookName}() hook returned (an) URL(s) matching the page's route. Either use a ${hookName}() hook to pre-render the page, or use the option ${pc.cyan(
-          'prerender.partial'
-        )} to suppress this warning, see https://vike.dev/prerender-config`,
+        `Cannot pre-render page ${pageAt} because it has a non-static route, while no ${hookName}() hook returned any URL matching the page's route. You need to use a ${hookName}() hook (https://vike.dev/${hookName}) providing a list of URLs for ${pageAt} that should be pre-rendered. If you don't want to pre-render ${pageAt} then use the option prerender.partial (https://vike.dev/prerender-config#partial) to suppress this warning.`,
         { onlyOnce: true }
       )
     })

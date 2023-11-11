@@ -8,7 +8,7 @@ function onBeforeRoute(pageContext) {
     pageContext: {
       // We make `locale` available as `pageContext.locale`. We can then use https://vike.dev/pageContext-anywhere to access pageContext.locale in any React/Vue component.
       locale,
-      // We overwrite the original URL
+      // Tell Vike's router to use the value urlWithoutLocale instead of pageContext.urlOriginal
       urlLogical: urlWithoutLocale
     }
   }
