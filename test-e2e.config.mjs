@@ -80,7 +80,8 @@ function tolerateError({ logSource, logText }) {
     isTwitterEmbedsError() ||
     isGithubImageError() ||
     isSlowCrawlWarning() ||
-    isNodeExperimentalEsmLoader()
+    isNodeExperimentalEsmLoader() ||
+    isNodeExperimentalLoader()
   )
 
   function isViteCjsWarning() {
@@ -194,6 +195,11 @@ function tolerateError({ logSource, logText }) {
   function isNodeExperimentalEsmLoader() {
     return (
       logSource === 'stderr' && logText.includes('ExperimentalWarning: Custom ESM Loaders is an experimental feature')
+    )
+  }
+  function isNodeExperimentalLoader() {
+    return (
+      logSource === 'stderr' && logText.includes('ExperimentalWarning: `--experimental-loader` may be removed')
     )
   }
 }
