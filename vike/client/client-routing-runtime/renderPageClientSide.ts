@@ -71,7 +71,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   } = renderArgs
   const { abortRender, setHydrationCanBeAborted, isFirstRender } = getAbortRender()
 
-  assert(isClientSideNavigation === isFirstRender)
+  assert(isClientSideNavigation === !isFirstRender)
   assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
 
   if (globalObject.clientRoutingIsDisabled) {
