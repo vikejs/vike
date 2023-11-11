@@ -811,20 +811,20 @@ function warnMissingPages(
   partial: boolean
 ) {
   const isV1 = renderContext.pageConfigs.length > 0
-  const hookName = isV1 ? 'prerender' : 'onBeforePrerenderStart'
-  const getPageAt = isV1 ? (pageId: string) => `defined at ${pageId}` : (pageId: string) => `\`${pageId}.page.*\``
-
+  const hookName = isV1 ? 'onBeforePrerenderStart' : 'prerender'
+  /* TODO/after-v1-design-release: document setting `prerender: false` as an alternative to using prerender.partial (both in the warnings and the docs)
+  const optOutName = isV1 ? 'prerender' : 'doNotPrerender'
+  const msgAddendum = `Explicitly opt-out by setting the config ${optOutName} to ${isV1 ? 'false' : 'true'} or use the option prerender.partial`
+  */
   renderContext.allPageIds
     .filter((pageId) => !prerenderPageIds[pageId])
     .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
     .filter((pageId) => !isErrorPage(pageId, renderContext.pageConfigs))
     .forEach((pageId) => {
-      const pageAt = getPageAt(pageId)
+      const pageAt = isV1 ? pageId : `\`${pageId}.page.*\``;
       assertWarning(
         partial,
-        `Cannot pre-render page ${pageAt} because it has a non-static route, and no ${hookName}() hook returned (an) URL(s) matching the page's route. Either use a ${hookName}() hook to pre-render the page, or use the option ${pc.cyan(
-          'prerender.partial'
-        )} to suppress this warning, see https://vike.dev/prerender-config`,
+        `Cannot pre-render page ${pageAt} because it has a non-static route, while no ${hookName}() hook returned any URL matching the page's route. You need to use a ${hookName}() hook (https://vike.dev/${hookName}) providing a list of URLs for ${pageAt} that should be pre-rendered. If you don't want to pre-render ${pageAt} then use the option prerender.partial (https://vike.dev/prerender-config#partial) to suppress this warning.`,
         { onlyOnce: true }
       )
     })
