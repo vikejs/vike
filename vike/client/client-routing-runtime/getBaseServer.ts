@@ -1,5 +1,8 @@
+export { getBaseServer }
+
 import { assert } from '../server-routing-runtime/utils.js'
-export function getBaseServer(): string {
+
+function getBaseServer(): string {
   // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
   const baseServer: string = import.meta.env.BASE_SERVER
   assert(isBaseServer(baseServer))

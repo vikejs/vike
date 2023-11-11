@@ -31,7 +31,6 @@ async function createPageContext(urlOriginal: string) {
     _urlRewrite: null,
     _baseServer: baseServer,
     _isProduction: isProd,
-    // TODO: use GlobalContext instead
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,

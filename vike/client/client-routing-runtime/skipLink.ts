@@ -1,9 +1,7 @@
 export { skipLink }
 
 import { getBaseServer } from './getBaseServer.js'
-import { isExternalLink } from './isExternalLink.js'
-import { assert, parseUrl, isBaseServer, isParsable } from './utils.js'
-import { isDisableAutomaticLinkInterception } from './installClientRouter.js'
+import { assert, parseUrl, isBaseServer, isParsable, isExternalLink } from './utils.js'
 
 function skipLink(linkTag: HTMLElement): boolean {
   const url = linkTag.getAttribute('href')
@@ -55,4 +53,12 @@ function hasBaseServer(url: string): boolean {
   assert(isBaseServer(baseServer))
   const { hasBaseServer } = parseUrl(url, baseServer)
   return hasBaseServer
+}
+
+function isDisableAutomaticLinkInterception(): boolean {
+  // @ts-ignore
+  return !!window._disableAutomaticLinkInterception
+  /* globalObject should be used if we want to make disableAutomaticLinkInterception a page-by-page setting
+  return globalObject.disableAutomaticLinkInterception ?? false
+  */
 }
