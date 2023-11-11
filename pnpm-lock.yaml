@@ -23,8 +23,8 @@ importers:
         specifier: ^0.5.23
         version: 0.5.23
       '@brillout/test-types':
-        specifier: ^0.1.9
-        version: 0.1.9(typescript@4.8.4)
+        specifier: ^0.1.10
+        version: 0.1.10(typescript@4.8.4)
       vitest:
         specifier: ^0.34.1
         version: 0.34.6
@@ -2568,8 +2568,8 @@ packages:
       - encoding
     dev: true
 
-  /@brillout/test-types@0.1.9(typescript@4.8.4):
-    resolution: {integrity: sha512-r5Sr2/GOUwupU4uiMHn1tEfMCAyNMA9MAAm4jkL03SKR3FH5GV+Vuut9pVR9NttukDYJZfWICqmxsEqq+5MR7g==}
+  /@brillout/test-types@0.1.10(typescript@4.8.4):
+    resolution: {integrity: sha512-/cZb3xirQiDiPKrbE9hm8NHPRtvH+HifxVT7Z/QbdopwvYW7LS+6VloGqhWKHvFb/UWRfe+G3vg7xq191PyqmA==}
     hasBin: true
     peerDependencies:
       typescript: ^4.0.0
