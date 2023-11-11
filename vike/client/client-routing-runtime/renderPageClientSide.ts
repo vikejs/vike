@@ -56,6 +56,7 @@ type RenderArgs = {
   redirectCount?: number
   /** Whether the navigation was triggered by the user land calling `history.pushState()` */
   isUserLandPushStateNavigation?: boolean
+  isClientSideNavigation?: boolean
 }
 async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   const {
@@ -65,7 +66,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     isBackwardNavigation,
     pageContextsFromRewrite = [],
     redirectCount = 0,
-    isUserLandPushStateNavigation
+    isUserLandPushStateNavigation,
+    isClientSideNavigation = true
   } = renderArgs
   const { abortRender, setHydrationCanBeAborted, isFirstRender } = getAbortRender()
 
@@ -79,7 +81,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   const pageContext = await createPageContext(urlOriginal)
   if (abortRender()) return
   objectAssign(pageContext, {
-    isBackwardNavigation
+    isBackwardNavigation,
+    isClientSideNavigation
   })
 
   {
