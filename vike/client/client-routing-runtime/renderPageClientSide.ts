@@ -82,6 +82,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   if (abortRender()) return
   objectAssign(pageContext, {
     isBackwardNavigation,
+    // There is a descprency between the value set here and the value set on the server-side:
+    //  - On the server-side, the value is true if the request is a `.pageContext.json` request
+    //  - On the client-side, the value is true when the renderPageClientSide() isn't the initial renderPageClientSide() call
+    // The value won't match when the initial renderPageClientSide() call doesn't hydrate the page
     isClientSideNavigation
   })
 
