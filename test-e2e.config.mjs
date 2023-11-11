@@ -15,7 +15,7 @@ function getCiJobs() {
     // Pin until fix for the following is released
     //   - https://github.com/nodejs/node/issues/49497
     //   - https://github.com/vitejs/vite/issues/14299
-    node_version: '20.5'
+    node_version: '20'
   }
   const win16 = {
     os: 'windows-latest',
