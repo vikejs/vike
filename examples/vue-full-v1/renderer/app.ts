@@ -33,7 +33,7 @@ function createApp(pageContext: PageContext) {
 
   const app = createSSRApp(PageWithWrapper)
 
-  // We use `app.changePage()` to do Client Routing, see `_default.page.client.js`
+  // We use `app.changePage()` to do Client Routing, see `+onRenderClient.ts`
   objectAssign(app, {
     changePage: (pageContext: PageContext) => {
       Object.assign(pageContextReactive, pageContext)
@@ -42,7 +42,7 @@ function createApp(pageContext: PageContext) {
     }
   })
 
-  // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `_default.page.client.js`).
+  // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `+onRenderClient.ts`).
   // We therefore use a reactive pageContext.
   const pageContextReactive = reactive(pageContext)
 

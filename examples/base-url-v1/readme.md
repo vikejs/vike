@@ -12,7 +12,7 @@ npm run dev
 Highlights:
  - [vite.config.js#base](vite.config.js).
  - `<Link>` implementation using `import.meta.env.BASE_URL`: [components/Link.jsx](components/Link.jsx).
- - Referencing static assets: [renderer/_default.page.server.jsx](renderer/_default.page.server.jsx) (see `logoUrl` and `manifestUrl`).
+ - Referencing static assets: [renderer/+onRenderHtml.jsx](renderer/+onRenderHtml.jsx) (see `logoUrl` and `manifestUrl`).
 
 See also:
  - [vike.dev > Guides > Base URL](https://vike.dev/base-url)

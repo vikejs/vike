@@ -9,4 +9,4 @@ npm run start
 
 Highlights:
  - Setting the `baseAssets` Vike config: [vite.config.js](vite.config.js).
- - HTML referencing assets deployed to a CDN using `import.meta.env.BASE_ASSETS`: [renderer/_default.page.server.jsx](renderer/_default.page.server.jsx).
+ - HTML referencing assets deployed to a CDN using `import.meta.env.BASE_ASSETS`: [renderer/+onRenderHtml.jsx](renderer/+onRenderHtml.jsx).
