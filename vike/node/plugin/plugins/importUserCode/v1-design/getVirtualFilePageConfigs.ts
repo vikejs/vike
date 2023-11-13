@@ -37,10 +37,10 @@ async function getVirtualFilePageConfigs(
     configVike.extensions,
     true
   )
-  return getContent(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
+  return getCode(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
 }
 
-function getContent(
+function getCode(
   pageConfigs: PageConfigBuildTime[],
   pageConfigGlobal: PageConfigGlobalBuildTime,
   isForClientSide: boolean,
@@ -51,7 +51,25 @@ function getContent(
   const lines: string[] = []
   const importStatements: string[] = []
   const varCounterContainer = { varCounter: 0 }
+  lines.push(
+    getCodePageConfigsSerialized(pageConfigs, isForClientSide, isClientRouting, importStatements, varCounterContainer)
+  )
+  lines.push(
+    getCodePageConfigGlobalSerialized(pageConfigGlobal, isForClientSide, isDev, importStatements, varCounterContainer)
+  )
+  const code = [...importStatements, ...lines].join('\n')
+  debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
+  return code
+}
 
+function getCodePageConfigsSerialized(
+  pageConfigs: PageConfigBuildTime[],
+  isForClientSide: boolean,
+  isClientRouting: boolean,
+  importStatements: string[],
+  varCounterContainer: { varCounter: number }
+): string {
+  const lines: string[] = []
   lines.push('export const pageConfigsSerialized = [')
   pageConfigs.forEach((pageConfig) => {
     const { pageId, routeFilesystem, isErrorPage } = pageConfig
@@ -116,6 +134,18 @@ function getContent(
   })
   lines.push('];')
 
+  const code = lines.join('\n')
+  return code
+}
+
+function getCodePageConfigGlobalSerialized(
+  pageConfigGlobal: PageConfigGlobalBuildTime,
+  isForClientSide: boolean,
+  isDev: boolean,
+  importStatements: string[],
+  varCounterContainer: { varCounter: number }
+) {
+  const lines: string[] = []
   lines.push('export const pageConfigGlobalSerialized = {')
   /* Nothing (yet)
   lines.push(`  configValuesSerialized: {`)
@@ -143,8 +173,7 @@ function getContent(
   lines.push(`  ],`)
   lines.push('};')
 
-  const code = [...importStatements, ...lines].join('\n')
-  debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
+  const code = lines.join('\n')
   return code
 }
 
