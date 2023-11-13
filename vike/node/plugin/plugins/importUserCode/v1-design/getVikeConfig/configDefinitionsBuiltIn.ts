@@ -113,7 +113,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: 'server-and-client'
   },
   prerender: {
-    env: 'server-only'
+    env: 'config-only'
   },
   hydrationCanBeAborted: {
     env: 'client-only'

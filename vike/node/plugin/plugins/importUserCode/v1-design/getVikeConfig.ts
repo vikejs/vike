@@ -20,7 +20,8 @@ import {
   lowerFirst,
   scriptFileExtensions,
   mergeCumulativeValues,
-  requireResolve
+  requireResolve,
+  getOutDirs
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -72,6 +73,8 @@ import {
   assertExportsOfValueFile
 } from '../../../../../shared/page-configs/assertExports.js'
 import { getConfigValueSerialized } from './getVirtualFilePageConfigs.js'
+import type { ResolvedConfig } from 'vite'
+import { getConfigVike } from '../../../../shared/getConfigVike.js'
 
 assertIsNotProductionRuntime()
 
@@ -149,18 +152,19 @@ async function handleReloadSideEffects() {
   }
 }
 async function getVikeConfig(
-  userRootDir: string,
-  outDirRoot: string,
+  config: ResolvedConfig,
   isDev: boolean,
-  extensions: ExtensionResolved[],
-  tolerateInvalidConfig = false
+  tolerateInvalidConfig = false,
+  extensions?: ExtensionResolved[]
 ): Promise<VikeConfig> {
+  const { outDirRoot } = getOutDirs(config)
+  const userRootDir = config.root
   if (!vikeConfigPromise) {
     vikeConfigPromise = loadVikeConfig_withErrorHandling(
       userRootDir,
       outDirRoot,
       isDev,
-      extensions,
+      extensions ?? (await getConfigVike(config)).extensions,
       tolerateInvalidConfig
     )
   }

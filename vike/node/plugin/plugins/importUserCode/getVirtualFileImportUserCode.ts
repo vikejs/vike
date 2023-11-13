@@ -224,15 +224,7 @@ export const pageFilesList = [];
 export const neverLoaded = {};
 export const isGeneratedFile = true;
 
-${await getVirtualFilePageConfigs(
-  config.root,
-  getOutDirs(config).outDirRoot,
-  isForClientSide,
-  isDev,
-  id,
-  configVike,
-  isClientRouting
-)}
+${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting, config)}
 
 `
 

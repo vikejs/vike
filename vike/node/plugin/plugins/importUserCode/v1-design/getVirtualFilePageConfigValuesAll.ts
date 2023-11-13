@@ -9,19 +9,14 @@ import {
 import { getVikeConfig } from './getVikeConfig.js'
 import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
-import type { ConfigVikeResolved } from '../../../../../shared/ConfigVike.js'
 import { getConfigValue } from '../../../../../shared/page-configs/helpers.js'
 import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSourcesRelevant.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import { serializeConfigValueImported } from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
+import type { ResolvedConfig } from 'vite'
+import { getConfigVike } from '../../../../shared/getConfigVike.js'
 
-async function getVirtualFilePageConfigValuesAll(
-  id: string,
-  userRootDir: string,
-  outDirRoot: string,
-  isDev: boolean,
-  configVike: ConfigVikeResolved
-): Promise<string> {
+async function getVirtualFilePageConfigValuesAll(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
   const result = isVirtualFileIdPageConfigValuesAll(id)
   assert(result)
   /* This assertion fails when using includeAssetsImportedByServer
@@ -31,9 +26,10 @@ async function getVirtualFilePageConfigValuesAll(
   }
   */
   const { pageId, isForClientSide } = result
-  const { pageConfigs } = await getVikeConfig(userRootDir, outDirRoot, isDev, configVike.extensions, true)
+  const { pageConfigs } = await getVikeConfig(config, isDev, true)
   const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
   assert(pageConfig)
+  const configVike = await getConfigVike(config)
   const code = getLoadConfigValuesAll(
     pageConfig,
     isForClientSide,
