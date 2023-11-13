@@ -1,6 +1,6 @@
 export { testRun }
 
-import { test, expect, fetchHtml, page, getServerUrl } from '@brillout/test-e2e'
+import { test, expect, fetchHtml, page, getServerUrl, autoRetry } from '@brillout/test-e2e'
 import { testCounter } from '../utils'
 import { testRun as testRunClassic } from '../../examples/react/.testRun'
 import fs from 'fs'
@@ -89,7 +89,12 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
 }
 
 async function getTimestamp() {
-  const timestampStr = await page.evaluate(() => document.querySelector('#timestamp')?.textContent)
+  let timestampStr: string
+  await autoRetry(async () => {
+    const val = await page.evaluate(() => document.querySelector('#timestamp')?.textContent)
+    expect(val).toBeTruthy()
+    timestampStr = val!
+  })
   const timestamp = parseInt(timestampStr!, 10)
   const timestampNow = new Date('2023-11-11').getTime()
   expect(timestamp > timestampNow).toBe(true)
