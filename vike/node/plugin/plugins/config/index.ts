@@ -3,7 +3,7 @@ export { resolveVikeConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVikeUserProvided, ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { assertVikeConfig } from './assertVikeConfig.js'
-import { getOutDirs, isDev2 } from '../../utils.js'
+import { isDev2 } from '../../utils.js'
 import { findConfigVikeFromStemPackages } from './findConfigVikeFromStemPackages.js'
 import { pickFirst } from './pickFirst.js'
 import { resolveExtensions } from './resolveExtensions.js'
@@ -32,12 +32,7 @@ async function resolveConfig(vikeConfig: unknown, config: ResolvedConfig): Promi
 
   const extensions = resolveExtensions(configs, config)
 
-  const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(
-    config.root,
-    getOutDirs(config).outDirRoot,
-    isDev2(config),
-    extensions
-  )
+  const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config, isDev2(config), false, extensions)
   configs.push(fromPlusConfigFile)
 
   assertVikeConfig(fromPlusConfigFile, ({ prop, errMsg }) => {

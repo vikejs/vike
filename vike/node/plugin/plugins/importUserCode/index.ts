@@ -61,13 +61,7 @@ function importUserCode(): Plugin {
       id = getVirtualFileId(id)
 
       if (isVirtualFileIdPageConfigValuesAll(id)) {
-        const code = await getVirtualFilePageConfigValuesAll(
-          id,
-          config.root,
-          getOutDirs(config).outDirRoot,
-          isDev,
-          configVike
-        )
+        const code = await getVirtualFilePageConfigValuesAll(id, isDev, config)
         return code
       }
 

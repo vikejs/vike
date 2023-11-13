@@ -13,30 +13,22 @@ import { isJsonSerializerError, stringify } from '@brillout/json-serializer/stri
 import { getConfigEnv } from './helpers.js'
 import pc from '@brillout/picocolors'
 import { getVikeConfig } from './getVikeConfig.js'
-import type { ConfigVikeResolved } from '../../../../../shared/ConfigVike.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import { getConfigValueFilePathToShowToUser } from '../../../../../shared/page-configs/helpers.js'
 import {
   serializeConfigValue,
   serializeConfigValueImported
 } from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
+import type { ResolvedConfig } from 'vite'
 
 async function getVirtualFilePageConfigs(
-  userRootDir: string,
-  outDirRoot: string,
   isForClientSide: boolean,
   isDev: boolean,
   id: string,
-  configVike: ConfigVikeResolved,
-  isClientRouting: boolean
+  isClientRouting: boolean,
+  config: ResolvedConfig
 ): Promise<string> {
-  const { pageConfigs, pageConfigGlobal } = await getVikeConfig(
-    userRootDir,
-    outDirRoot,
-    isDev,
-    configVike.extensions,
-    true
-  )
+  const { pageConfigs, pageConfigGlobal } = await getVikeConfig(config, isDev, true)
   return getCode(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
 }
 
