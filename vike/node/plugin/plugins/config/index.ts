@@ -16,14 +16,14 @@ function resolveVikeConfig(vikeConfig: unknown): Plugin {
     name: 'vike:resolveVikeConfig',
     enforce: 'pre',
     async configResolved(config) {
-      const promise = resolveConfig(vikeConfig, config)
+      const promise = getConfigVikPromise(vikeConfig, config)
       ;(config as Record<string, unknown>).configVikePromise = promise
       await promise
     }
   }
 }
 
-async function resolveConfig(vikeConfig: unknown, config: ResolvedConfig): Promise<ConfigVikeResolved> {
+async function getConfigVikPromise(vikeConfig: unknown, config: ResolvedConfig): Promise<ConfigVikeResolved> {
   const fromPluginOptions = (vikeConfig ?? {}) as ConfigVikeUserProvided
   const fromViteConfig = ((config as Record<string, unknown>).vike ?? {}) as ConfigVikeUserProvided
   const fromStemPackages = await findConfigVikeFromStemPackages(config.root)
