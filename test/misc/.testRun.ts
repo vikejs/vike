@@ -5,6 +5,9 @@ import { testCounter } from '../utils'
 import { testRun as testRunClassic } from '../../examples/react/.testRun'
 import fs from 'fs'
 import assert from 'assert'
+import path from 'path'
+import { fileURLToPath } from 'url'
+const dir = path.dirname(fileURLToPath(import.meta.url))
 
 function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testRunClassic(cmd, { skipScreenshotTest: true })
@@ -37,8 +40,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
         ['index', false],
         ['about', false]
       ].forEach(([page, exists]) => {
-        expect(fs.existsSync(`./dist/nested/client/${page}.html`)).toBe(exists)
-        expect(fs.existsSync(`./dist/nested/client/${page}/index.pageContext.json`)).toBe(exists)
+        expect(fs.existsSync(path.join(dir, `./dist/nested/client/${page}.html`))).toBe(exists)
+        expect(fs.existsSync(path.join(dir, `./dist/nested/client/${page}/index.pageContext.json`))).toBe(exists)
       })
     })
   }
