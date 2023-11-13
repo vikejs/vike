@@ -1358,8 +1358,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       telefunc:
-        specifier: ^0.1.62
-        version: 0.1.62(@babel/core@7.23.3)(react@18.2.0)
+        specifier: ^0.1.63
+        version: 0.1.63(@babel/core@7.23.3)(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1394,8 +1394,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       telefunc:
-        specifier: ^0.1.62
-        version: 0.1.62(@babel/core@7.23.3)(react@18.2.0)
+        specifier: ^0.1.63
+        version: 0.1.63(@babel/core@7.23.3)(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -11475,8 +11475,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /telefunc@0.1.62(@babel/core@7.23.3)(react@18.2.0):
-    resolution: {integrity: sha512-WfRP5c4roSZuN5qt+tTDUle3Xae/jUMdl4sWQ2Xi7pODqIhjJHzpvIuz6Z7dCokwtBdWrbMaiwNYFBMo2rmBbA==}
+  /telefunc@0.1.63(@babel/core@7.23.3)(react@18.2.0):
+    resolution: {integrity: sha512-J/WalXdO8iooDUpEOws5FnFwDGBQ/WbuAE+LJMaRMU0RDBvgm2ez62TnwAO9zEehlBrLqxrnXdhc1Qn2z2yBZg==}
     engines: {node: '>=12.19.0'}
     peerDependencies:
       '@babel/core': ^7.0.0
