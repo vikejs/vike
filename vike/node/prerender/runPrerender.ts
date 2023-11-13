@@ -56,6 +56,8 @@ import { isAbortError } from '../../shared/route/abort.js'
 import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide.js'
 import { assertHookFn } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
+import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
+import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -211,7 +213,8 @@ async function runPrerender(
   })
 
   const doNotPrerenderList: DoNotPrerenderList = []
-  await collectDoNoPrerenderList(renderContext, doNotPrerenderList, concurrencyLimit)
+  const vikeConfig = await getVikeConfig(viteConfig, false)
+  await collectDoNoPrerenderList(renderContext, vikeConfig.pageConfigs, doNotPrerenderList, concurrencyLimit)
 
   await callOnBeforePrerenderStartHooks(prerenderContext, renderContext, concurrencyLimit)
 
@@ -242,10 +245,12 @@ async function runPrerender(
 
 async function collectDoNoPrerenderList(
   renderContext: RenderContext,
+  pageConfigs: PageConfigBuildTime[],
   doNotPrerenderList: DoNotPrerenderList,
   concurrencyLimit: PLimit
 ) {
-  renderContext.pageConfigs.forEach((pageConfig) => {
+  // V1 design
+  pageConfigs.forEach((pageConfig) => {
     const configName = 'prerender'
     const configValue = getConfigValue(pageConfig, configName, 'boolean')
     if (configValue?.value === false) {
@@ -260,6 +265,8 @@ async function collectDoNoPrerenderList(
     }
   })
 
+  // Old design
+  // TODO/v1-release: remove
   await Promise.all(
     renderContext.pageFilesAll
       .filter((p) => {
@@ -821,7 +828,7 @@ function warnMissingPages(
     .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
     .filter((pageId) => !isErrorPage(pageId, renderContext.pageConfigs))
     .forEach((pageId) => {
-      const pageAt = isV1 ? pageId : `\`${pageId}.page.*\``;
+      const pageAt = isV1 ? pageId : `\`${pageId}.page.*\``
       assertWarning(
         partial,
         `Cannot pre-render page ${pageAt} because it has a non-static route, while no ${hookName}() hook returned any URL matching the page's route. You need to use a ${hookName}() hook (https://vike.dev/${hookName}) providing a list of URLs for ${pageAt} that should be pre-rendered. If you don't want to pre-render ${pageAt} then use the option prerender.partial (https://vike.dev/prerender-config#partial) to suppress this warning.`,
