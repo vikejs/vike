@@ -36,7 +36,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
     test('pre-render settings', async () => {
       ;[
         ['markdown', true],
-        ['pushState', true],
+        ['pushState', false],
         ['index', false],
         ['about', false]
       ].forEach(([page, exists]) => {
