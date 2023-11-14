@@ -1,6 +1,6 @@
 export { testRun }
 
-import { test, expect, fetchHtml, page, getServerUrl, autoRetry } from '@brillout/test-e2e'
+import { test, expect, fetchHtml, page, getServerUrl, autoRetry, sleep } from '@brillout/test-e2e'
 import { testCounter } from '../utils'
 import { testRun as testRunClassic } from '../../examples/react/.testRun'
 import fs from 'fs'
@@ -48,10 +48,12 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
 
   test('history.pushState()', async () => {
     // Timestamp component works as expected
-    await page.goto(getServerUrl() + '/pushState')
-    const timestamp1 = await getTimestamp()
-    await page.click('a[href="/markdown"]')
+    await page.goto(getServerUrl() + '/')
     await testCounter()
+    await page.click('a[href="/pushState"]')
+    const timestamp1 = await getTimestamp()
+    await sleep(10)
+    await page.click('a[href="/markdown"]')
     await page.click('a[href="/pushState"]')
     const timestamp2 = await getTimestamp()
     expect(timestamp2 > timestamp1).toBe(true)
