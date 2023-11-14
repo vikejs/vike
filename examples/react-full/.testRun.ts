@@ -1,7 +1,7 @@
 export { testRun }
 
 import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, sleep } from '@brillout/test-e2e'
-import { ensureWasClientSideRouted } from '../../test/utils'
+import { ensureWasClientSideRouted, testCounter } from '../../test/utils'
 
 function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
   run(cmd)
@@ -16,15 +16,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
   test('page is rendered to the DOM and interactive', async () => {
     await page.goto(getServerUrl() + '/')
     expect(await page.textContent('h1')).toBe('Welcome to Vike')
-
-    // Interactive button
-    expect(await page.textContent('button')).toBe('Counter 0')
-    // `autoRetry` because browser-side code may not be loaded yet
-    await autoRetry(async () => {
-      await page.click('button')
-      expect(await page.textContent('button')).toContain('Counter 1')
-    })
-
+    await testCounter()
     // Client-side routing
     await page.click('a[href="/star-wars"]')
     await autoRetry(async () => {
@@ -34,17 +26,41 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
     await ensureWasClientSideRouted('/pages/index')
   })
 
-  test('supports route functions', async () => {
+  test('Route Functions - HTML', async () => {
     await page.goto(getServerUrl() + '/hello/alice')
-    expect(await page.textContent('h1')).toContain('Hello')
-    expect(await page.textContent('body')).toContain('Hi alice')
+    await expectHelloPage('alice')
 
     await page.goto(getServerUrl() + '/hello/evan')
-    expect(await page.textContent('h1')).toContain('Hello')
-    expect(await page.textContent('body')).toContain('Hi evan')
+    await expectHelloPage('evan')
 
     await page.goto(getServerUrl() + '/hello')
-    expect(await page.textContent('body')).toContain('Hi anonymous')
+    await expectHelloPage('anonymous')
+  })
+
+  test('Route Functions - DOM', async () => {
+    await page.goto(getServerUrl() + '/')
+    await testCounter()
+
+    await page.click('a[href="/hello"]')
+    await expectHelloPage('anonymous')
+
+    await page.click('a[href="/hello/eli"]')
+    await expectHelloPage('eli')
+
+    await page.click('a[href="/hello/jon"]')
+    await expectHelloPage('jon')
+
+    await page.goBack()
+    await expectHelloPage('eli')
+
+    await page.goBack()
+    await expectHelloPage('anonymous')
+
+    await page.goForward()
+    await expectHelloPage('eli')
+
+    await page.goForward()
+    await expectHelloPage('jon')
   })
 
   test('data fetching page, HTML', async () => {
@@ -88,12 +104,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
   test('markdown page DOM', async () => {
     await page.goto(getServerUrl() + '/markdown')
     expect(await page.textContent('body')).toContain('This page is written in Markdown')
-    expect(await page.textContent('button')).toBe('Counter 0')
-    // `autoRetry` because browser-side code may not be loaded yet
-    await autoRetry(async () => {
-      await page.click('button')
-      expect(await page.textContent('button')).toContain('Counter 1')
-    })
+    await testCounter()
   })
 
   test('test 404 page', async () => {
@@ -161,4 +172,11 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
       })
     }
   }
+}
+
+async function expectHelloPage(name: 'anonymous' | 'jon' | 'alice' | 'evan' | 'eli') {
+  await autoRetry(async () => {
+    expect(await page.textContent('h1')).toContain('Hello')
+    expect(await page.textContent('body')).toContain(`Hi ${name}`)
+  })
 }

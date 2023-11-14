@@ -16,24 +16,9 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(html).toContain(`<p>onBeforeRender() env: <!-- -->${v3}</p>`)
     }
     await t('/', 'true', 'undefined', 'server')
+    await t('/page-2', 'undefined', 'undefined', 'undefined')
     await t('/page-3', 'undefined', 'undefined', 'undefined')
     await t('/page-4', 'undefined', 'undefined', 'undefined')
-  })
-
-  test('wrong hook suppressing usage', async () => {
-    await fetchHtml('/page-2')
-    await autoRetry(() => {
-      expectLog(
-        '[Wrong Usage] Set onBeforeRender to null in a +config.h.js file instead of /pages/page-2/+onBeforeRender.tsx',
-        (log) => log.logSource === 'stderr'
-      )
-    })
-    await autoRetry(() => {
-      expectLog('HTTP response', (log) => log.logSource === 'stderr')
-    })
-    if (isDev) {
-      expectLog('No error page found', (log) => log.logSource === 'stderr')
-    }
   })
 
   test('Request pageContext JSON only if necessary', async () => {
@@ -55,8 +40,15 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     }
     {
       const done = expectPageContextJsonRequest(true)
-      await page.click('a[href="/"]')
+      await page.click('a[href="/page-2"]')
       await testCounter(3)
+      await ensureWasClientSideRouted('/pages/index')
+      done()
+    }
+    {
+      const done = expectPageContextJsonRequest(true)
+      await page.click('a[href="/"]')
+      await testCounter(4)
       await ensureWasClientSideRouted('/pages/index')
       done()
     }
@@ -69,7 +61,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     {
       const done = expectPageContextJsonRequest(false)
       await page.click('a[href="/page-4"]')
-      await testCounter(4)
+      await testCounter(5)
       ensureWasClientSideRouted('/pages/index')
       done()
     }
@@ -77,4 +69,22 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     expect(await page.textContent('body')).toContain('onBeforeRender() 2 called: 42')
     expect(await page.textContent('body')).toContain('onBeforeRender() env: client')
   })
+
+  /* Re-use this test for upcoming new error when requestPageContextOnNavigation is set to 'minimal' or false
+  test('wrong hook suppressing usage', async () => {
+    await fetchHtml('/page-2')
+    await autoRetry(() => {
+      expectLog(
+        '[Wrong Usage] Set onBeforeRender to null in a +config.h.js file instead of /pages/page-2/+onBeforeRender.tsx',
+        (log) => log.logSource === 'stderr'
+      )
+    })
+    await autoRetry(() => {
+      expectLog('HTTP response', (log) => log.logSource === 'stderr')
+    })
+    if (isDev) {
+      expectLog('No error page found', (log) => log.logSource === 'stderr')
+    }
+  })
+  */
 }

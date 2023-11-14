@@ -263,7 +263,7 @@ function assertImportsAreReExported(
   const importStatements = unique(fileImportsUnused.map((fi) => fi.importStatementCode))
   const importNamesUnused: string = fileImportsUnused.map((fi) => pc.cyan(fi.importLocalName)).join(', ')
   const singular = fileImportsUnused.length === 1
-  assertUsage(
+  assertWarning(
     fileImportsUnused.length === 0,
     [
       `${filePathToShowToUser} imports the following:`,
@@ -273,7 +273,8 @@ function assertImportsAreReExported(
       } re-exported at ${pc.cyan('export default { ... }')} and therefore ${
         singular ? 'has' : 'have'
       } no effect, see explanation at https://vike.dev/header-file`
-    ].join('\n')
+    ].join('\n'),
+    { onlyOnce: true }
   )
 }
 

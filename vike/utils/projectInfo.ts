@@ -3,7 +3,7 @@ export type { ProjectTag }
 
 import { onProjectInfo } from './assertSingleInstance.js'
 
-const PROJECT_VERSION = '0.4.145' as const
+const PROJECT_VERSION = '0.4.146' as const
 
 type PackageName = typeof projectInfo.npmPackageName
 type ProjectVersion = typeof projectInfo.projectVersion

@@ -7,7 +7,10 @@ export {
   monkeyPatchHistoryPushState
 }
 
-import { assert, assertUsage, hasProp, isObject } from './utils.js'
+import { assert, assertUsage, getGlobalObject, hasProp, isObject } from './utils.js'
+const globalObject = getGlobalObject<{
+  pushStateOriginal?: PushStateOriginal
+}>('history.ts', {})
 
 // No way found to add TypeScript types to `history.state`: https://github.com/microsoft/TypeScript/issues/36178
 type HistoryState = {
@@ -94,12 +97,12 @@ function replaceHistoryState(state: HistoryState, url?: string) {
   window.history.replaceState(state, '', url ?? /* Passing `undefined` chokes older Edge versions */ null)
 }
 function pushHistoryState(state: HistoryState, url: string) {
-  window.history.pushState(state, '', url)
+  pushStateOriginal(state, '', url)
 }
 
 function monkeyPatchHistoryPushState() {
-  const pushStateOriginal = history.pushState
-  history.pushState = (stateFromUser: unknown = {}, ...rest) => {
+  globalObject.pushStateOriginal = globalObject.pushStateOriginal ?? window.history.pushState
+  window.history.pushState = (stateFromUser: unknown = {}, ...rest) => {
     assertUsage(
       null === stateFromUser || undefined === stateFromUser || isObject(stateFromUser),
       'history.pushState(state) argument state must be an object'
@@ -111,6 +114,10 @@ function monkeyPatchHistoryPushState() {
       // Don't allow user to overwrite triggedBy as it would break Vike's handling of the 'popstate' event
       triggedBy: 'user'
     }
-    return pushStateOriginal.apply(history, [state, ...rest])
+    return pushStateOriginal!(state, ...rest)
   }
+}
+type PushStateOriginal = typeof history.pushState
+function pushStateOriginal(...args: Parameters<PushStateOriginal>): ReturnType<PushStateOriginal> {
+  globalObject.pushStateOriginal!.apply(history, args)
 }

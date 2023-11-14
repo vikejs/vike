@@ -1,3 +1,16 @@
+## [0.4.146](https://github.com/vikejs/vike/compare/v0.4.145...v0.4.146) (2023-11-14)
+
+
+### Bug Fixes
+
+* bin path for `$ vike` CLI ([3ee5592](https://github.com/vikejs/vike/commit/3ee55921ca738890d3d3854ec33450082a32e2e5))
+* define prerender value over +prerender.js file ([e6d8513](https://github.com/vikejs/vike/commit/e6d8513fad1f75a293eebd699edfb25199d674c7))
+* enable plus files to export null ([2520555](https://github.com/vikejs/vike/commit/25205552b5c216ba1b758d06414533fc48e67760))
+* fix back-/forward navigation regression ([#1231](https://github.com/vikejs/vike/issues/1231)) ([0678210](https://github.com/vikejs/vike/commit/06782109c7b94b9b54151335ca98fe6cf46dd3fc))
+* turn non re-exported imports error into a warning ([af313b7](https://github.com/vikejs/vike/commit/af313b7db20984241236e379bff212e298d4b954))
+
+
+
 ## [0.4.145](https://github.com/vikejs/vike/compare/v0.4.144...v0.4.145) (2023-11-13)
 
 
