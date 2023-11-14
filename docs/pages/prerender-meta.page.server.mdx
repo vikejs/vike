@@ -65,9 +65,23 @@ export const prerender = isCmsPreview() ? false : true
 Note that <Link text={<><code>onBeforePrerenderStart()</code> hooks</>} href="/onBeforePrerenderStart" /> are always
 called, regardless of `prerender`. If we want to call `onBeforePrerenderStart()` hooks conditionally as well:
 
-{ /* NOTE(aurelien): rewrite this last part after Vike bug fixed where `prerender` seems to have no effect */ }
+```js
+// /pages/movie/+prerender.js
+
+import { someCondition } from './someCondition'
+export const prerender = someCondition()
+```
 
 ```js
-export const prerender = someCondition() ? true : false
-export const onBeforePrerenderStart = !prerender ? undefined : myOnBeforePrerenderStartHook
+// /pages/movie/+onBeforePrerenderStart.js
+
+import { someCondition } from './someCondition'
+export { onBeforePrerenderStart }
+
+const onBeforePrerenderStart = someCondition()
+  ? async () => {
+      // ...
+      return listOfUrls
+    }
+  : null
 ```
