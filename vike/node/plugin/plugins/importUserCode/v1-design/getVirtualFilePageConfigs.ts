@@ -13,34 +13,26 @@ import { isJsonSerializerError, stringify } from '@brillout/json-serializer/stri
 import { getConfigEnv } from './helpers.js'
 import pc from '@brillout/picocolors'
 import { getVikeConfig } from './getVikeConfig.js'
-import type { ConfigVikeResolved } from '../../../../../shared/ConfigVike.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import { getConfigValueFilePathToShowToUser } from '../../../../../shared/page-configs/helpers.js'
 import {
   serializeConfigValue,
   serializeConfigValueImported
 } from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
+import type { ResolvedConfig } from 'vite'
 
 async function getVirtualFilePageConfigs(
-  userRootDir: string,
-  outDirRoot: string,
   isForClientSide: boolean,
   isDev: boolean,
   id: string,
-  configVike: ConfigVikeResolved,
-  isClientRouting: boolean
+  isClientRouting: boolean,
+  config: ResolvedConfig
 ): Promise<string> {
-  const { pageConfigs, pageConfigGlobal } = await getVikeConfig(
-    userRootDir,
-    outDirRoot,
-    isDev,
-    configVike.extensions,
-    true
-  )
-  return getContent(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
+  const { pageConfigs, pageConfigGlobal } = await getVikeConfig(config, isDev, true)
+  return getCode(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
 }
 
-function getContent(
+function getCode(
   pageConfigs: PageConfigBuildTime[],
   pageConfigGlobal: PageConfigGlobalBuildTime,
   isForClientSide: boolean,
@@ -51,7 +43,25 @@ function getContent(
   const lines: string[] = []
   const importStatements: string[] = []
   const varCounterContainer = { varCounter: 0 }
+  lines.push(
+    getCodePageConfigsSerialized(pageConfigs, isForClientSide, isClientRouting, importStatements, varCounterContainer)
+  )
+  lines.push(
+    getCodePageConfigGlobalSerialized(pageConfigGlobal, isForClientSide, isDev, importStatements, varCounterContainer)
+  )
+  const code = [...importStatements, ...lines].join('\n')
+  debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
+  return code
+}
 
+function getCodePageConfigsSerialized(
+  pageConfigs: PageConfigBuildTime[],
+  isForClientSide: boolean,
+  isClientRouting: boolean,
+  importStatements: string[],
+  varCounterContainer: { varCounter: number }
+): string {
+  const lines: string[] = []
   lines.push('export const pageConfigsSerialized = [')
   pageConfigs.forEach((pageConfig) => {
     const { pageId, routeFilesystem, isErrorPage } = pageConfig
@@ -116,6 +126,18 @@ function getContent(
   })
   lines.push('];')
 
+  const code = lines.join('\n')
+  return code
+}
+
+function getCodePageConfigGlobalSerialized(
+  pageConfigGlobal: PageConfigGlobalBuildTime,
+  isForClientSide: boolean,
+  isDev: boolean,
+  importStatements: string[],
+  varCounterContainer: { varCounter: number }
+) {
+  const lines: string[] = []
   lines.push('export const pageConfigGlobalSerialized = {')
   /* Nothing (yet)
   lines.push(`  configValuesSerialized: {`)
@@ -143,8 +165,7 @@ function getContent(
   lines.push(`  ],`)
   lines.push('};')
 
-  const code = [...importStatements, ...lines].join('\n')
-  debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
+  const code = lines.join('\n')
   return code
 }
 

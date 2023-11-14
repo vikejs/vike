@@ -26,7 +26,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     })
   })
 
-  test("`export const filesystemRoutingRoot = '/'` in `_default.page.route.js`", async () => {
+  test("`filesystemRoutingRoot: '/'` in `/marketing/+config.h.js`", async () => {
     await page.goto(getServerUrl() + '/about')
     expect(await page.textContent('#page-content')).toBe('About page')
     await page.click('a[href="/"]')

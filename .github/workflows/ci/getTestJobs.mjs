@@ -248,13 +248,14 @@ function getSetupName(setup) {
 
 // To debug `getInspectFile()` run `$ node ./getTestJobs.mjs --ci --debug`
 function getInspectFile() {
+  // File was previously named FOCUS
   const inspectFiles = projectFiles.filter((file) => file.endsWith('/INSPECT'))
   if (inspectFiles.length === 0) {
     return null
   }
   assert(
     inspectFiles.length === 1,
-    'There cannot be only one `focus` file but found multiple: ' + inspectFiles.join(' ')
+    'There cannot be only one INSPECT file but found multiple: ' + inspectFiles.join(' ')
   )
   return inspectFiles[0]
 }

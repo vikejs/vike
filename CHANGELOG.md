@@ -1,3 +1,37 @@
+## [0.4.145](https://github.com/vikejs/vike/compare/v0.4.144...v0.4.145) (2023-11-13)
+
+
+### Bug Fixes
+
+* [v1 design] allow cumulative values to be imported ([de18325](https://github.com/vikejs/vike/commit/de183259b297c691e254c0b34adefde061540302))
+* [v1 design] further enable configs to be defined in +{configName}.js files ([0b976a6](https://github.com/vikejs/vike/commit/0b976a6c08b003fd14885198e8c29cca89c48250))
+* [V1 design] improve meta wrong usage errors ([cf6997e](https://github.com/vikejs/vike/commit/cf6997e8bef38579cb77b677dbd5dfb45ae254d3))
+* [V1 design] improve/fix effect() wrong usage error messages ([ec3773f](https://github.com/vikejs/vike/commit/ec3773fbe1f17caffbebe9a0dda05a491ee515b6))
+* add client-side error to pageContext.errorWhileRendering ([d195f92](https://github.com/vikejs/vike/commit/d195f921cc76a84aa3cbc506889f03485c0dc5d5))
+* add warning when trying to prefetch non-routable URL ([a434afa](https://github.com/vikejs/vike/commit/a434afafa6c72e60459f91389b73e45d4699e858))
+* allow "constructor" search param in URL ([adfc183](https://github.com/vikejs/vike/commit/adfc183baea13f45b4c7cc92ec78f85e08a5da2a))
+* allow users to use `history.pushState()` ([#1231](https://github.com/vikejs/vike/issues/1231)) ([7f5e99a](https://github.com/vikejs/vike/commit/7f5e99ad7f030a51af9ca8abe7478b222d031b66))
+* always check client-side renderability ([aceaa35](https://github.com/vikejs/vike/commit/aceaa3531237492076093cbe9b5b95a715d73be0))
+* check whether URL rewrite is client-side renderable ([934c2ef](https://github.com/vikejs/vike/commit/934c2ef0dbd798117444e98abb94b95674a17d79))
+* don't show 404 table when terminal isn't width enough (fix [#1219](https://github.com/vikejs/vike/issues/1219)) ([6aef8a6](https://github.com/vikejs/vike/commit/6aef8a6764a32b47f202fdf8716a13105224bd88))
+* ensure boundary upon env var static replacing (fix [#1214](https://github.com/vikejs/vike/issues/1214)) ([d687042](https://github.com/vikejs/vike/commit/d68704223ebd50cde512a328788ea935eda2929d))
+* fallback to Server Routing if trying to client-side render URL not matching any route ([fb5337e](https://github.com/vikejs/vike/commit/fb5337ee0e8f0fbe63f4edbd2c9a49b27c4d01e2))
+* fix preview for partial pre-rendering ([31edf79](https://github.com/vikejs/vike/commit/31edf79f0519dc8138a855a747d8b994118b3b5f))
+* fix some typos ([752df95](https://github.com/vikejs/vike/commit/752df953aec60834400fb286cf1235260afdce13))
+* further abort outdated client rendering ([5893a2f](https://github.com/vikejs/vike/commit/5893a2f422ac0b887d270a4acb86dab2c1ffe489))
+* handle serialization errors caused by getter errors (fix [#1232](https://github.com/vikejs/vike/issues/1232)) ([8664301](https://github.com/vikejs/vike/commit/8664301b9a0baf09b63514d7d5fdce22ada5fc6a))
+* improve client-side error handling ([81c3bbd](https://github.com/vikejs/vike/commit/81c3bbd972ceb361d7c6fbc22e38770041193b43))
+* improve/fix not pre-renderable page warning (fix [#1252](https://github.com/vikejs/vike/issues/1252)) ([ca10f32](https://github.com/vikejs/vike/commit/ca10f32cd05c50d001c6acf6904deec543636bfa))
+* make i18n hook control more robust ([4b7b0b2](https://github.com/vikejs/vike/commit/4b7b0b2bc6ef308924a6b946b6a8f338ea84b53a))
+* properly handle eager/lazy config values (fix [#1208](https://github.com/vikejs/vike/issues/1208)) ([e40e9b1](https://github.com/vikejs/vike/commit/e40e9b189068a8936f094c57cfb752207dc6bb02))
+* scroll to top upon client-side `throw render()` ([f16cbe5](https://github.com/vikejs/vike/commit/f16cbe53fa93bb41b78aa91f1bec36163dac6140))
+* set pageContext.isClientSideNavigation on the client-side (fix [#1243](https://github.com/vikejs/vike/issues/1243)) ([a9895e8](https://github.com/vikejs/vike/commit/a9895e89088bf73719bafc5bebd9ae22452889da))
+* show more succint 404 table ([#1219](https://github.com/vikejs/vike/issues/1219)) ([aff81fa](https://github.com/vikejs/vike/commit/aff81fad2da918302ec9960bc7f1c564f1674cd1))
+* systematically abort client-side renderering if possible ([85207c9](https://github.com/vikejs/vike/commit/85207c9bec125b1d7b25f7ea87dad91a65d4d2ce))
+* workaround regression introduced by vitejs/vite[#14756](https://github.com/vikejs/vike/issues/14756) ([c56391d](https://github.com/vikejs/vike/commit/c56391dd8d7b93443cb650ff3dd128f46ca441ab))
+
+
+
 ## [0.4.144](https://github.com/vikejs/vike/compare/v0.4.143...v0.4.144) (2023-10-23)
 
 
