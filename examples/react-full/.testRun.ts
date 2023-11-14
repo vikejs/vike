@@ -1,7 +1,7 @@
 export { testRun }
 
 import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, sleep } from '@brillout/test-e2e'
-import { ensureWasClientSideRouted } from '../../test/utils'
+import { ensureWasClientSideRouted, testCounter } from '../../test/utils'
 
 function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
   run(cmd)
@@ -16,15 +16,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
   test('page is rendered to the DOM and interactive', async () => {
     await page.goto(getServerUrl() + '/')
     expect(await page.textContent('h1')).toBe('Welcome to Vike')
-
-    // Interactive button
-    expect(await page.textContent('button')).toBe('Counter 0')
-    // `autoRetry` because browser-side code may not be loaded yet
-    await autoRetry(async () => {
-      await page.click('button')
-      expect(await page.textContent('button')).toContain('Counter 1')
-    })
-
+    await testCounter()
     // Client-side routing
     await page.click('a[href="/star-wars"]')
     await autoRetry(async () => {
@@ -46,6 +38,10 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
   })
 
   test('Route Functions - DOM', async () => {
+    await page.goto(getServerUrl() + '/')
+    await testCounter()
+
+    await page.click('a[href="/hello"]')
     await expectHelloPage('anonymous')
 
     await page.click('a[href="/hello/eli"]')
@@ -108,12 +104,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
   test('markdown page DOM', async () => {
     await page.goto(getServerUrl() + '/markdown')
     expect(await page.textContent('body')).toContain('This page is written in Markdown')
-    expect(await page.textContent('button')).toBe('Counter 0')
-    // `autoRetry` because browser-side code may not be loaded yet
-    await autoRetry(async () => {
-      await page.click('button')
-      expect(await page.textContent('button')).toContain('Counter 1')
-    })
+    await testCounter()
   })
 
   test('test 404 page', async () => {
