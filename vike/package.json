@@ -1,6 +1,6 @@
 {
   "name": "vike",
-  "version": "0.4.145",
+  "version": "0.4.146",
   "scripts": {
     "dev": "tsc --watch",
     "build": "rimraf dist/ && pnpm run build:esm && pnpm run build:cjs",
