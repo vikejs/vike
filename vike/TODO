@@ -46,6 +46,7 @@ After V1 design release:
          }
      ```
      - By default, only call guard() hooks on the server-side (if requestPageContextOnNavigation.minimal isn't true)
+     - Re-apply assertNotNull() when requestPageContextOnNavigation is set to 'minimal' or false, see https://github.com/vikejs/vike/blob/a1b1ab4a250c564789358f7892d829eab6b17d27/vike/shared/page-configs/serialize/parseConfigValuesImported.ts#L52-L58
  - Make +client.js work for all render modes
    - In order to support [github.com/vikejs/vike-react#28 - Client-side init code](https://github.com/vikejs/vike-react/issues/28)
    - Use case: ad-hoc client-side scripts such as error tracking and analytics
