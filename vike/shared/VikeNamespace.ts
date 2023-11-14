@@ -24,7 +24,16 @@ declare global {
      *  - You can refine the type of `PageContext['Page']`.
      *
      */
-    interface PageContext {}
+    interface PageContext {
+      data: Data
+    }
+
+    /** Extend and/or refine the `Data` type (`import type { Data } from 'vike/types'`). LA_TODO
+     *
+     *  This type describes the data fetched by your `data` hooks (https://vike.dev/data) LA_TODO
+     *
+     */
+    interface Data {}
   }
 
   /** This namespace is only used by:
@@ -38,7 +47,7 @@ declare global {
   namespace VikePackages {
     // Enable vike-{react/vue/solid/svelte} to extend the type `Config`.
     //  - We need a different interface for each vike-{react/vue/solid/svelte} package because of conflicts.
-    //    - E.g. Config['Page'] is a React/Vue/Solid/Svelte componenent depending on which vike-{react/vue/solid/svelte} package is being used.
+    //    - E.g. Config['Page'] is a React/Vue/Solid/Svelte component depending on which vike-{react/vue/solid/svelte} package is being used.
     //      - The user can be using more than one vike-{react/vue/solid/svelte} package.
     interface ConfigVikeReact {} // For vike-react
     interface ConfigVikeVue {} // For vike-vue

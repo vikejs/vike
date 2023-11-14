@@ -26,7 +26,7 @@ import {
 } from './loadPageFilesServerSide.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook.js'
-import { executeOnBeforeRenderHooks } from './executeOnBeforeRenderHook.js'
+import { executeOnBeforeRenderAndDataHooks } from './executeOnBeforeRenderAndDataHooks.js'
 import { logRuntimeError } from './loggerRuntime.js'
 import { isNewError } from './isNewError.js'
 import { preparePageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide.js'
@@ -65,10 +65,10 @@ async function renderPageAlreadyRouted<
   }
 
   if (!isError) {
-    await executeOnBeforeRenderHooks(pageContext)
+    await executeOnBeforeRenderAndDataHooks(pageContext)
   } else {
     try {
-      await executeOnBeforeRenderHooks(pageContext)
+      await executeOnBeforeRenderAndDataHooks(pageContext)
     } catch (err) {
       if (isNewError(err, pageContext.errorWhileRendering)) {
         logRuntimeError(err, pageContext._httpRequestId)
@@ -121,7 +121,7 @@ async function prerenderPage(
   await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionServerSide(pageContext))
   */
 
-  await executeOnBeforeRenderHooks(pageContext)
+  await executeOnBeforeRenderAndDataHooks(pageContext)
 
   const { htmlRender, renderHook } = await executeOnRenderHtmlHook(pageContext)
   assertUsage(

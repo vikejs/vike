@@ -4,6 +4,8 @@ export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
 
+export type { DataAsync }
+export type { DataSync }
 export type { GuardAsync }
 export type { GuardSync }
 export type { OnBeforePrerenderStartAsync }
@@ -46,6 +48,7 @@ type HookName =
   | 'onRenderHtml'
   | 'onRenderClient'
   | 'guard'
+  | 'data'
   | 'render'
 
 type ConfigNameBuiltIn =
@@ -53,6 +56,7 @@ type ConfigNameBuiltIn =
   | 'prerender'
   | 'isClientSideRenderable'
   | 'onBeforeRenderEnv'
+  | 'dataEnv'
 
 type Config = ConfigBuiltIn &
   Vike.Config &
@@ -64,6 +68,16 @@ type Config = ConfigBuiltIn &
   )
 
 // Purposeful code duplication for improving QuickInfo IntelliSense
+/** Hook called for fetching data.
+ *
+ *  https://vike.dev/data
+ */
+type DataAsync = (pageContext: PageContextServer) => Promise<Partial<Vike.Data> | void>
+/** Hook called for fetching data.
+ *
+ *  https://vike.dev/data
+ */
+type DataSync = (pageContext: PageContextServer) => Partial<Vike.PageContext> | void
 /** Protect page(s), e.g. forbid unauthorized access.
  *
  *  https://vike.dev/guard
@@ -98,14 +112,14 @@ type OnBeforePrerenderStartSync = () => (
       pageContext: Partial<Vike.PageContext>
     }
 )[]
-/** Hook called before the page is rendered, usually for fetching data.
+/** Hook called before the page is rendered, usually for fetching data in frameworks.
  *
  *  https://vike.dev/onBeforeRender
  */
 type OnBeforeRenderAsync = (
   pageContext: PageContextServer
 ) => Promise<{ pageContext: Partial<Vike.PageContext> } | void>
-/** Hook called before the page is rendered, usually for fetching data.
+/** Hook called before the page is rendered, usually for fetching data in frameworks.
  *
  *  https://vike.dev/onBeforeRender
  */
@@ -280,11 +294,17 @@ type ConfigBuiltIn = {
    */
   extends?: Config | Config[] | ImportString | ImportString[]
 
-  /** Hook called before the page is rendered, usually for fetching data.
+  /** Hook called before the page is rendered, usually for fetching data in frameworks
    *
    *  https://vike.dev/onBeforeRender
    */
   onBeforeRender?: OnBeforeRenderAsync | OnBeforeRenderSync | ImportString | null
+
+  /** Hook called for fetching data
+   *
+   *  https://vike.dev/data
+   */
+  data?: DataAsync | DataSync | ImportString | null
 
   /** Determines what pageContext properties are sent to the client-side.
    *
