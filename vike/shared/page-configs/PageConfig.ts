@@ -56,9 +56,16 @@ type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
 }
 
-type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
+type ConfigEnv = {
+  client?: boolean
+  server?: boolean
+  config?: boolean
+}
 /** For Vike internal use */
-type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
+type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
+  client?: boolean | '_client-routing'
+  _eager?: boolean
+}
 
 type ConfigValueSource = {
   value?: unknown
