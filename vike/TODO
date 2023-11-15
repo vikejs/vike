@@ -6,18 +6,18 @@
     - But they can still be lazily loaded in the client/server runtime
   - Global page config values are always eager
 
-V1 design stable release:
- - Docs
-   - pageContext.config
-   - pageContext.configEntries
-   - update migration examples
-   - Replace boilerplates with Bati
-   - Rewrite documentation to assume usage of `vike-{react,vue,solid}` (while preserving custom integration docs)
+- Docs
+  - pageContext.config
+  - pageContext.configEntries
+  - update migration examples
+  - Replace boilerplates with Bati
+  - Rewrite documentation to assume usage of `vike-{react,vue,solid}` (while preserving custom integration docs)
 
 After V1 design release:
  - improve passToClient warning: https://github.com/vikejs/vike/tree/brillout/wip
  - Improve https://vike.dev/header-file
  - Update all examples to not use PageContextBuiltIn but Vike.PageContext instead
+ - Go through all TODOs in source code
  - Ensure what client-side loads is minimal
  - improve ignoring of dist/
  - Implement vike.config.js

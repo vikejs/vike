@@ -422,7 +422,6 @@ async function callOnBeforePrerenderStartHooks(
               hookName
             }
           })
-          // TODO
           prerenderContext.pageContexts.push(pageContextNew)
           if (pageContext) {
             objectAssign(pageContextNew, {
