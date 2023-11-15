@@ -216,7 +216,7 @@ async function runPrerender(
   const vikeConfig = await getVikeConfig(viteConfig, false)
   await collectDoNoPrerenderList(renderContext, vikeConfig.pageConfigs, doNotPrerenderList, concurrencyLimit)
 
-  await callOnBeforePrerenderStartHooks(prerenderContext, renderContext, concurrencyLimit)
+  await callOnBeforePrerenderStartHooks(prerenderContext, renderContext, concurrencyLimit, doNotPrerenderList)
 
   await handlePagesWithStaticRoutes(prerenderContext, renderContext, doNotPrerenderList, concurrencyLimit)
 
@@ -321,7 +321,8 @@ function assertExportNames(pageFile: PageFile) {
 async function callOnBeforePrerenderStartHooks(
   prerenderContext: PrerenderContext,
   renderContext: RenderContext,
-  concurrencyLimit: PLimit
+  concurrencyLimit: PLimit,
+  doNotPrerenderList: DoNotPrerenderList
 ) {
   const onBeforePrerenderStartHooks: {
     hookFn: Function
@@ -332,6 +333,7 @@ async function callOnBeforePrerenderStartHooks(
       // V1 design
       | 'onBeforePrerenderStart'
     hookFilePath: string
+    pageId: string
   }[] = []
 
   // V1 design
@@ -349,7 +351,8 @@ async function callOnBeforePrerenderStartHooks(
         onBeforePrerenderStartHooks.push({
           hookFn,
           hookName: 'onBeforePrerenderStart',
-          hookFilePath
+          hookFilePath,
+          pageId: pageConfig.pageId
         })
       })
     )
@@ -379,15 +382,20 @@ async function callOnBeforePrerenderStartHooks(
           onBeforePrerenderStartHooks.push({
             hookFn,
             hookName: 'prerender',
-            hookFilePath
+            hookFilePath,
+            pageId: p.pageId
           })
         })
       )
   )
 
   await Promise.all(
-    onBeforePrerenderStartHooks.map(({ hookFn, hookName, hookFilePath }) =>
+    onBeforePrerenderStartHooks.map(({ hookFn, hookName, hookFilePath, pageId }) =>
       concurrencyLimit(async () => {
+        if (doNotPrerenderList.find((p) => p.pageId === pageId)) {
+          return
+        }
+
         const prerenderResult: unknown = await hookFn()
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
         result.forEach(({ url, pageContext }) => {
@@ -414,6 +422,7 @@ async function callOnBeforePrerenderStartHooks(
               hookName
             }
           })
+          // TODO
           prerenderContext.pageContexts.push(pageContextNew)
           if (pageContext) {
             objectAssign(pageContextNew, {
