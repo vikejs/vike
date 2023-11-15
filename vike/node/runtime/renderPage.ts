@@ -470,10 +470,10 @@ function skipRequest(urlOriginal: string): boolean {
   )
 }
 function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
-  const { trailingSlash, disableUrlNormalization } = getGlobalContext()
+  const { trailingSlash, disableUrlNormalization, baseServer } = getGlobalContext()
   if (disableUrlNormalization) return null
   const { urlOriginal } = pageContextInit
-  const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash)
+  const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash, baseServer)
   if (!urlNormalized) return null
   logRuntimeInfo?.(
     `URL normalized from ${pc.cyan(urlOriginal)} to ${pc.cyan(urlNormalized)} (https://vike.dev/url-normalization)`,
