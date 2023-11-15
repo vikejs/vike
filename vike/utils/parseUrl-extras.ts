@@ -62,20 +62,29 @@ function isBaseAssets(base: string): boolean {
   return base.startsWith('/') || base.startsWith('http://') || base.startsWith('https://')
 }
 
-function normalizeUrlPathname(urlOriginal: string, trailingSlash: boolean): string | null {
+function normalizeUrlPathname(urlOriginal: string, trailingSlash: boolean, baseServer: string): string | null {
   const urlNormalized = modifyUrlPathname(urlOriginal, (urlPathname) => {
     assert(urlPathname.startsWith('/'))
-    let urlPathnameNormalized = '/' + urlPathname.split('/').filter(Boolean).join('/')
-    if (urlPathnameNormalized !== '/') {
-      assert(!urlPathnameNormalized.endsWith('/'))
-      if (trailingSlash) {
-        urlPathnameNormalized = urlPathnameNormalized + '/'
-      }
+    let urlPathnameNormalized = normalize(urlPathname)
+    if (urlPathnameNormalized === '/') {
+      return urlPathnameNormalized
+    }
+    // If the Base URL has a trailing slash, then Vite (as of vite@5.0.0-beta.19) expects the root URL to also have a trailing slash, see https://github.com/vikejs/vike/issues/1258#issuecomment-1812226260
+    if (baseServer.endsWith('/') && baseServer !== '/' && normalize(baseServer) === urlPathnameNormalized) {
+      trailingSlash = true
+    }
+    assert(!urlPathnameNormalized.endsWith('/'))
+    if (trailingSlash) {
+      urlPathnameNormalized = urlPathnameNormalized + '/'
     }
     return urlPathnameNormalized
   })
   if (urlNormalized === urlOriginal) return null
   return urlNormalized
+}
+function normalize(urlPathname: string): string {
+  assert(urlPathname.startsWith('/'))
+  return '/' + urlPathname.split('/').filter(Boolean).join('/')
 }
 
 function modifyUrlPathname(url: string, modifier: (urlPathname: string) => string | null): string {

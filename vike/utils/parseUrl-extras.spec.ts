@@ -3,20 +3,32 @@ import { expect, describe, it } from 'vitest'
 
 describe('normalizeUrlPathname()', () => {
   it('works', () => {
-    expect(normalizeUrlPathname('/bla/', false)).toBe('/bla')
-    expect(normalizeUrlPathname('/bla', false)).toBe(null)
-    expect(normalizeUrlPathname('/bla///', false)).toBe('/bla')
-    expect(normalizeUrlPathname('/bla///foo//', false)).toBe('/bla/foo')
-    expect(normalizeUrlPathname('/', false)).toBe(null)
-    expect(normalizeUrlPathname('//', false)).toBe('/')
-    expect(normalizeUrlPathname('/////', false)).toBe('/')
-    expect(normalizeUrlPathname('https://example.org/p/', false)).toBe('https://example.org/p')
-    expect(normalizeUrlPathname('/p/?foo=bar#bla', false)).toBe('/p?foo=bar#bla')
-    expect(normalizeUrlPathname('////?foo=bar#bla', false)).toBe('/?foo=bar#bla')
-    expect(normalizeUrlPathname('https://example.org/some-url/?foo=bar#bla', false)).toBe(
-      'https://example.org/some-url?foo=bar#bla'
-    )
+    expect(n('/bla/')).toBe('/bla')
+    expect(n('/bla')).toBe(null)
+    expect(n('/bla///')).toBe('/bla')
+    expect(n('/bla///foo//')).toBe('/bla/foo')
+    expect(n('/')).toBe(null)
+    expect(n('//')).toBe('/')
+    expect(n('/////')).toBe('/')
+    expect(n('https://example.org/p/')).toBe('https://example.org/p')
+    expect(n('/p/?foo=bar#bla')).toBe('/p?foo=bar#bla')
+    expect(n('////?foo=bar#bla')).toBe('/?foo=bar#bla')
+    expect(n('https://example.org/some-url/?foo=bar#bla')).toBe('https://example.org/some-url?foo=bar#bla')
   })
+  it('Base URL with trailing slash', () => {
+    // Adding a trailing slash is needed because of Vite, see comment in source code of normalizeUrlPathname()
+    expect(normalizeUrlPathname('/foo', false, '/foo/')).toBe('/foo/')
+    expect(normalizeUrlPathname('/foo', true, '/foo/')).toBe('/foo/')
+    expect(normalizeUrlPathname('/foo/', false, '/foo/')).toBe(null)
+    expect(normalizeUrlPathname('/foo/', true, '/foo/')).toBe(null)
+    // It's fine if URL has trailing slash but not the Base URL
+    expect(normalizeUrlPathname('/foo/', true, '/foo')).toBe(null)
+    // Works as usual
+    expect(normalizeUrlPathname('/foo/', false, '/foo')).toBe('/foo')
+  })
+  function n(urlOriginal: string) {
+    return normalizeUrlPathname(urlOriginal, false, '/')
+  }
 })
 
 describe('removeUrlOrigin() / addUrlOrigin()', () => {
