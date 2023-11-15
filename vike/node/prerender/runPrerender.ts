@@ -87,7 +87,7 @@ type TransformerHook = {
   hookFilePath: string
   hookName: 'onPrerenderStart' | 'onBeforePrerender'
 }
-type PrerenderedPageIds = Record<string, { urlOriginal: string; _providedByHook: ProvidedByHook }>
+type PrerenderedPages = Record<string, { urlOriginal: string; _providedByHook: ProvidedByHook }>
 
 type PrerenderContext = {
   pageContexts: PageContext[]
@@ -222,11 +222,11 @@ async function runPrerender(
 
   await callOnPrerenderStartHook(prerenderContext, renderContext)
 
-  const prerenderPageIds: PrerenderedPageIds = {}
+  const prerenderedPages: PrerenderedPages = {}
   const htmlFiles: HtmlFile[] = []
-  await routeAndPrerender(prerenderContext, htmlFiles, prerenderPageIds, concurrencyLimit)
+  await routeAndPrerender(prerenderContext, htmlFiles, prerenderedPages, concurrencyLimit)
 
-  warnContradictoryNoPrerenderList(prerenderPageIds, doNotPrerenderList)
+  warnContradictoryNoPrerenderList(prerenderedPages, doNotPrerenderList)
 
   await prerender404(htmlFiles, renderContext, prerenderContext)
 
@@ -240,7 +240,7 @@ async function runPrerender(
     )
   )
 
-  warnMissingPages(prerenderPageIds, doNotPrerenderList, renderContext, partial)
+  warnMissingPages(prerenderedPages, doNotPrerenderList, renderContext, partial)
 }
 
 async function collectDoNoPrerenderList(
@@ -700,7 +700,7 @@ async function callOnPrerenderStartHook(
 async function routeAndPrerender(
   prerenderContext: PrerenderContext,
   htmlFiles: HtmlFile[],
-  prerenderPageIds: PrerenderedPageIds,
+  prerenderedPages: PrerenderedPages,
   concurrencyLimit: PLimit
 ) {
   const globalContext = getGlobalContext()
@@ -779,17 +779,17 @@ async function routeAndPrerender(
           doNotCreateExtraDirectory: prerenderContext._noExtraDir,
           pageId
         })
-        prerenderPageIds[pageId] = pageContext
+        prerenderedPages[pageId] = pageContext
       })
     )
   )
 }
 
 function warnContradictoryNoPrerenderList(
-  prerenderPageIds: Record<string, { urlOriginal: string; _providedByHook: ProvidedByHook }>,
+  prerenderedPages: Record<string, { urlOriginal: string; _providedByHook: ProvidedByHook }>,
   doNotPrerenderList: DoNotPrerenderList
 ) {
-  Object.entries(prerenderPageIds).forEach(([pageId, pageContext]) => {
+  Object.entries(prerenderedPages).forEach(([pageId, pageContext]) => {
     const doNotPrerenderListEntry = doNotPrerenderList.find((p) => p.pageId === pageId)
     const { urlOriginal, _providedByHook: providedByHook } = pageContext
     {
@@ -812,7 +812,7 @@ function warnContradictoryNoPrerenderList(
 }
 
 function warnMissingPages(
-  prerenderPageIds: Record<string, unknown>,
+  prerenderedPages: Record<string, unknown>,
   doNotPrerenderList: DoNotPrerenderList,
   renderContext: RenderContext,
   partial: boolean
@@ -824,7 +824,7 @@ function warnMissingPages(
   const msgAddendum = `Explicitly opt-out by setting the config ${optOutName} to ${isV1 ? 'false' : 'true'} or use the option prerender.partial`
   */
   renderContext.allPageIds
-    .filter((pageId) => !prerenderPageIds[pageId])
+    .filter((pageId) => !prerenderedPages[pageId])
     .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
     .filter((pageId) => !isErrorPage(pageId, renderContext.pageConfigs))
     .forEach((pageId) => {
