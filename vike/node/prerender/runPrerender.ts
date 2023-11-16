@@ -59,9 +59,11 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 
+type PrerenderedPageContext = { urlOriginal: string; _providedByHook?: ProvidedByHook }
+
 type HtmlFile = {
   urlOriginal: string
-  pageContext: Record<string, unknown>
+  pageContext: PrerenderedPageContext & Record<string, unknown>
   htmlString: string
   pageContextSerialized: string | null
   doNotCreateExtraDirectory: boolean
@@ -87,7 +89,7 @@ type TransformerHook = {
   hookFilePath: string
   hookName: 'onPrerenderStart' | 'onBeforePrerender'
 }
-type PrerenderedPages = Record<string, { urlOriginal: string; _providedByHook: ProvidedByHook }>
+type PrerenderedPages = Record<string, PrerenderedPageContext>
 
 type PrerenderContext = {
   pageContexts: PageContext[]
@@ -223,22 +225,24 @@ async function runPrerender(
   await callOnPrerenderStartHook(prerenderContext, renderContext)
 
   const prerenderedPages: PrerenderedPages = {}
-  const htmlFiles: HtmlFile[] = []
-  await routeAndPrerender(prerenderContext, htmlFiles, prerenderedPages, concurrencyLimit)
+  let prerenderedCount = 0
+  const onComplete = async (htmlFile: HtmlFile) => {
+    prerenderedCount++
+    if (htmlFile.pageId) {
+      prerenderedPages[htmlFile.pageId] = htmlFile.pageContext
+    }
+    await writeHtmlFile(htmlFile, root, outDirClient, options.onPagePrerender, logLevel)
+  }
+
+  await routeAndPrerender(prerenderContext, concurrencyLimit, onComplete)
 
   warnContradictoryNoPrerenderList(prerenderedPages, doNotPrerenderList)
 
-  await prerender404(htmlFiles, renderContext, prerenderContext)
+  await prerender404(prerenderedPages, renderContext, prerenderContext, onComplete)
 
   if (logLevel === 'info') {
-    console.log(`${pc.green(`✓`)} ${htmlFiles.length} HTML documents pre-rendered.`)
+    console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
   }
-
-  await Promise.all(
-    htmlFiles.map((htmlFile) =>
-      writeHtmlFile(htmlFile, root, outDirClient, concurrencyLimit, options.onPagePrerender, logLevel)
-    )
-  )
 
   warnMissingPages(prerenderedPages, doNotPrerenderList, renderContext, partial)
 }
@@ -707,9 +711,8 @@ async function callOnPrerenderStartHook(
 
 async function routeAndPrerender(
   prerenderContext: PrerenderContext,
-  htmlFiles: HtmlFile[],
-  prerenderedPages: PrerenderedPages,
-  concurrencyLimit: PLimit
+  concurrencyLimit: PLimit,
+  onComplete: (htmlFile: HtmlFile) => Promise<void>
 ) {
   const globalContext = getGlobalContext()
   assert(globalContext.isPrerendering)
@@ -779,7 +782,7 @@ async function routeAndPrerender(
           throw err
         }
         const { documentHtml, pageContextSerialized } = res
-        htmlFiles.push({
+        await onComplete({
           urlOriginal,
           pageContext,
           htmlString: documentHtml,
@@ -787,16 +790,12 @@ async function routeAndPrerender(
           doNotCreateExtraDirectory: prerenderContext._noExtraDir,
           pageId
         })
-        prerenderedPages[pageId] = pageContext
       })
     )
   )
 }
 
-function warnContradictoryNoPrerenderList(
-  prerenderedPages: Record<string, { urlOriginal: string; _providedByHook: ProvidedByHook }>,
-  doNotPrerenderList: DoNotPrerenderList
-) {
+function warnContradictoryNoPrerenderList(prerenderedPages: PrerenderedPages, doNotPrerenderList: DoNotPrerenderList) {
   Object.entries(prerenderedPages).forEach(([pageId, pageContext]) => {
     const doNotPrerenderListEntry = doNotPrerenderList.find((p) => p.pageId === pageId)
     const { urlOriginal, _providedByHook: providedByHook } = pageContext
@@ -845,8 +844,13 @@ function warnMissingPages(
     })
 }
 
-async function prerender404(htmlFiles: HtmlFile[], renderContext: RenderContext, prerenderContext: PrerenderContext) {
-  if (!htmlFiles.find(({ urlOriginal }) => urlOriginal === '/404')) {
+async function prerender404(
+  prerenderedPages: Record<string, { urlOriginal: string }>,
+  renderContext: RenderContext,
+  prerenderContext: PrerenderContext,
+  onComplete: (htmlFile: HtmlFile) => Promise<void>
+) {
+  if (!Object.values(prerenderedPages).find(({ urlOriginal }) => urlOriginal === '/404')) {
     let result: Awaited<ReturnType<typeof prerender404Page>>
     try {
       result = await prerender404Page(renderContext, prerenderContext.pageContextInit)
@@ -857,7 +861,7 @@ async function prerender404(htmlFiles: HtmlFile[], renderContext: RenderContext,
     if (result) {
       const urlOriginal = '/404'
       const { documentHtml, pageContext } = result
-      htmlFiles.push({
+      await onComplete({
         urlOriginal,
         pageContext,
         htmlString: documentHtml,
@@ -873,7 +877,6 @@ async function writeHtmlFile(
   { urlOriginal, pageContext, htmlString, pageContextSerialized, doNotCreateExtraDirectory }: HtmlFile,
   root: string,
   outDirClient: string,
-  concurrencyLimit: PLimit,
   onPagePrerender: Function | undefined,
   logLevel: 'warn' | 'info'
 ) {
@@ -888,7 +891,6 @@ async function writeHtmlFile(
       root,
       outDirClient,
       doNotCreateExtraDirectory,
-      concurrencyLimit,
       onPagePrerender,
       logLevel
     )
@@ -903,7 +905,6 @@ async function writeHtmlFile(
         root,
         outDirClient,
         doNotCreateExtraDirectory,
-        concurrencyLimit,
         onPagePrerender,
         logLevel
       )
@@ -912,7 +913,7 @@ async function writeHtmlFile(
   await Promise.all(writeJobs)
 }
 
-function write(
+async function write(
   urlOriginal: string,
   pageContext: Record<string, unknown>,
   fileExtension: '.html' | '.pageContext.json',
@@ -920,51 +921,48 @@ function write(
   root: string,
   outDirClient: string,
   doNotCreateExtraDirectory: boolean,
-  concurrencyLimit: PLimit,
   onPagePrerender: Function | undefined,
   logLevel: 'info' | 'warn'
 ) {
-  return concurrencyLimit(async () => {
-    let fileUrl: string
-    if (fileExtension === '.html') {
-      fileUrl = urlToFile(urlOriginal, '.html', doNotCreateExtraDirectory)
-    } else {
-      fileUrl = getPageContextRequestUrl(urlOriginal)
-    }
+  let fileUrl: string
+  if (fileExtension === '.html') {
+    fileUrl = urlToFile(urlOriginal, '.html', doNotCreateExtraDirectory)
+  } else {
+    fileUrl = getPageContextRequestUrl(urlOriginal)
+  }
 
-    assertPosixPath(fileUrl)
-    assert(fileUrl.startsWith('/'))
-    const filePathRelative = fileUrl.slice(1)
-    assert(!filePathRelative.startsWith('/'))
-    assertPosixPath(outDirClient)
-    assertPosixPath(filePathRelative)
-    const filePath = path.posix.join(outDirClient, filePathRelative)
-    if (onPagePrerender) {
-      const prerenderPageContext = {}
-      objectAssign(prerenderPageContext, pageContext)
-      objectAssign(prerenderPageContext, {
-        _prerenderResult: {
-          filePath,
-          fileContent
-        }
-      })
-      await onPagePrerender(prerenderPageContext)
-    } else {
-      const { promises } = await import('fs')
-      const { writeFile, mkdir } = promises
-      await mkdir(path.posix.dirname(filePath), { recursive: true })
-      await writeFile(filePath, fileContent)
-      if (logLevel === 'info') {
-        assertPosixPath(root)
-        assertPosixPath(outDirClient)
-        let outDirClientRelative = path.posix.relative(root, outDirClient)
-        if (!outDirClientRelative.endsWith('/')) {
-          outDirClientRelative = outDirClientRelative + '/'
-        }
-        console.log(`${pc.dim(outDirClientRelative)}${pc.blue(filePathRelative)}`)
+  assertPosixPath(fileUrl)
+  assert(fileUrl.startsWith('/'))
+  const filePathRelative = fileUrl.slice(1)
+  assert(!filePathRelative.startsWith('/'))
+  assertPosixPath(outDirClient)
+  assertPosixPath(filePathRelative)
+  const filePath = path.posix.join(outDirClient, filePathRelative)
+  if (onPagePrerender) {
+    const prerenderPageContext = {}
+    objectAssign(prerenderPageContext, pageContext)
+    objectAssign(prerenderPageContext, {
+      _prerenderResult: {
+        filePath,
+        fileContent
       }
+    })
+    await onPagePrerender(prerenderPageContext)
+  } else {
+    const { promises } = await import('fs')
+    const { writeFile, mkdir } = promises
+    await mkdir(path.posix.dirname(filePath), { recursive: true })
+    await writeFile(filePath, fileContent)
+    if (logLevel === 'info') {
+      assertPosixPath(root)
+      assertPosixPath(outDirClient)
+      let outDirClientRelative = path.posix.relative(root, outDirClient)
+      if (!outDirClientRelative.endsWith('/')) {
+        outDirClientRelative = outDirClientRelative + '/'
+      }
+      console.log(`${pc.dim(outDirClientRelative)}${pc.blue(filePathRelative)}`)
     }
-  })
+  }
 }
 
 function normalizeOnPrerenderHookResult(
