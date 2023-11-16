@@ -66,6 +66,7 @@ function getCiJobs() {
 
 function tolerateError({ logSource, logText }) {
   return (
+    tolerateDeprecationWarning() ||
     isViteCjsWarning() ||
     isRenderErrorPageDeprecationWarning() ||
     isSlowHookWarning() ||
@@ -200,6 +201,13 @@ function tolerateError({ logSource, logText }) {
   function isNodeExperimentalLoader() {
     return (
       logSource === 'stderr' && logText.includes('ExperimentalWarning: `--experimental-loader` may be removed')
+    )
+  }
+  // TODO: revert
+  function tolerateDeprecationWarning() {
+    return (
+      // 10:57:24 AM [vike][Warning] Config meta defined at vike-react sets meta.lang.env to server-only which is deprecated and will be removed in the next major release
+      logSource === 'stderr' && logText.includes('which is deprecated and will be removed in the next major release')
     )
   }
 }

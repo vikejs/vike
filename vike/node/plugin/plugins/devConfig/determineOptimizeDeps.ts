@@ -49,7 +49,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
         if (!configValueSource.valueIsImportedAtRuntime) return
         const { definedAt, configEnv } = configValueSource
 
-        if (configEnv !== { client: true } && configEnv !== { server: true, client: true }) return
+        if (!configEnv.client) return
 
         if (definedAt.filePathRelativeToUserRootDir !== null) {
           const { filePathAbsoluteFilesystem } = definedAt

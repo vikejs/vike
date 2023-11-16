@@ -88,7 +88,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true, client: true }
   },
   passToClient: {
-    env: { server: true },
+    env: { server: true, config: true },
     cumulative: true
   },
   route: {
@@ -109,8 +109,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     _valueIsFilePath: true
   },
   clientRouting: {
-    // We could make it { server: true } (we don't yet because of some legacy V0.4 design code)
-    env: { server: true, client: true }
+    // We could make it { client: false } but we don't yet because of some legacy V0.4 design code
+    env: { server: true, client: true, config: true }
   },
   prerender: {
     env: { config: true }
@@ -132,7 +132,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     _computed: (configValueSources): boolean =>
       isConfigSet(configValueSources, 'onRenderClient') &&
       isConfigSet(configValueSources, 'Page') &&
-      getConfigEnv(configValueSources, 'Page') !== { server: true }
+      !!getConfigEnv(configValueSources, 'Page')?.client
   },
   onBeforeRenderEnv: {
     env: { client: true },
