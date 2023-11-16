@@ -22,7 +22,8 @@ import {
   mergeCumulativeValues,
   requireResolve,
   getOutDirs,
-  deepEqual
+  deepEqual,
+  assertKeys
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -1585,37 +1586,13 @@ function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnv
 
   assertUsage(isObject(val), `${errMsgIntro} an invalid type ${pc.cyan(typeof val)}`)
 
-  // TODO
-  assertUsage(
-    Object.keys(val).every((key) => ['config', 'server', 'client', '_eager'].includes(key)),
-    errInvalidValue
-  )
-/*
-function assertKeys<Keys extends readonly string[]>(
-  obj: Record<string, unknown>,
-  keysExpected: Keys,
-  errPrefix: string,
-): asserts obj is { [key in Keys[number]]?: unknown } {
-  const keysUnknown: string[] = []
-  const keys = Object.keys(obj)
-  for (const key of keys) {
-    if (!keysExpected.includes(key)) {
-      keysUnknown.push(key)
-    }
-  }
-  assertUsage(
-    keysUnknown.length === 0,
-    [
-      errPrefix,
-      'returned an object with unknown keys',
-      stringifyStringArray(keysUnknown) + '.',
-      'Only following keys are allowed:',
-      stringifyStringArray(keysExpected) + '.',
-    ].join(' '),
-  )
-}
-*/
+  assertKeys(val, ['config', 'server', 'client'] as const, `${errInvalidValue}:`)
+  assertUsage(hasProp(val, 'config', 'undefined') || hasProp(val, 'config', 'boolean'), errInvalidValue)
+  assertUsage(hasProp(val, 'server', 'undefined') || hasProp(val, 'server', 'boolean'), errInvalidValue)
+  assertUsage(hasProp(val, 'client', 'undefined') || hasProp(val, 'client', 'boolean'), errInvalidValue)
+  /* Uncomment to allow users to set an eager config. Same for `{ client: '_client-routing' }`.
+  assertUsage(hasProp(val, '_eager', 'undefined') || hasProp(val, '_eager', 'boolean'), errInvalidValue)
+  */
 
   return val
 }
-
