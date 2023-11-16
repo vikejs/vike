@@ -149,7 +149,7 @@ The error `Cannot read properties of undefined` is often caused by ESM/CJS issue
 
 <CodeBlockTransformer lineBreak="white-space">
 ```
-TypeError: Cannot read properties of undefined (reading 'someImport')
+TypeError: Cannot read properties of undefined (reading 'someProp')
     at someFunction (node_modules/some-good-lib/dist/index.js:1000:3)
     at someHook (renderer/+someHook.js:13:37)
 ```
@@ -165,14 +165,16 @@ TypeError: Cannot read properties of undefined (reading 'someImport')
 > // ...
 >
 > function someFunction() {
->   // TypeError: Cannot read properties of undefined (reading 'someImport')
+>   // TypeError: Cannot read properties of undefined (reading 'someProp')
 >   someImport.someProp
 > }
 > ```
 
 [Adding `some-broken-lib` to `vite.config.js > ssr.noExternal`](#solution) often solves the issue.
 
-Example: https://github.com/vikejs/vike/discussions/1235
+> Sometimes, when dependency injection is used, the `import` to `some-broken-lib` isn't in the file in which the
+> exception is being raised, making it harder to understand which library is broken. See
+> [here](https://github.com/vikejs/vike/discussions/1235) an example of this.
 
 
 ## See also
