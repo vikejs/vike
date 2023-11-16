@@ -141,3 +141,26 @@ Error: ERR_UNKNOWN_FILE_EXTENSION .css node_modules/some-library/dist/main.css
     at ESMLoader.load (node:internal/modules/esm/loader:605:26)
 ```
 </CodeBlockTransformer>
+
+### Cannot read properties of undefined
+
+Another possible error message looks like:
+
+<CodeBlockTransformer lineBreak="white-space">
+```
+TypeError: Cannot read properties of undefined (reading '__SOMETHING')
+    at someFunction (node_modules/some-good-lib/src/index.js:137:19)
+    at Object.h (node_modules/some-good-lib/src/index.js:320:16)
+    at Object.call (node_modules/some-broken-lib/lib/something.js:26:30)
+    at someHook (renderer/+someHook.jsx:12:29)
+```
+</CodeBlockTransformer>
+
+The [solution](#solution) is to then add `some-broken-lib` to `vite.config.js > ssr.noExternal`.
+
+Example: https://github.com/vikejs/vike/discussions/1235
+
+
+## See also
+
+- [List of examples](https://github.com/vikejs/vike/issues/621)
