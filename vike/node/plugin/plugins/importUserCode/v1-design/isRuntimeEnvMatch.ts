@@ -11,12 +11,12 @@ function isRuntimeEnvMatch(
     if (!configEnv.server) return false
   } else {
     if (!configEnv.client) return false
-    if (configEnv.client === '_client-routing' && !runtime.isClientRouting) return false
+    if (configEnv.client === 'if-client-routing' && !runtime.isClientRouting) return false
   }
 
   // TODO: always apply eager value
   // Eager
-  if (configEnv.client === '_client-routing') {
+  if (configEnv.client === 'if-client-routing') {
     if (runtime.isEager !== !!configEnv._eager) return false
   }
 

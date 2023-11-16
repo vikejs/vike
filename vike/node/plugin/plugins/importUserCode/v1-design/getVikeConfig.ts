@@ -1572,8 +1572,8 @@ function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnv
       if (val === 'server-only') return { server: true }
       if (val === 'server-and-client') return { server: true, client: true }
       if (val === 'config-only') return { config: true }
-      if (val === '_routing-lazy') return { server: true, client: '_client-routing' }
-      if (val === '_routing-eager') return { server: true, client: '_client-routing', _eager: true }
+      if (val === '_routing-lazy') return { server: true, client: 'if-client-routing' }
+      if (val === '_routing-eager') return { server: true, client: 'if-client-routing', _eager: true }
       assertUsage(false, errInvalidValue)
     })()
     assertWarning(
@@ -1590,7 +1590,7 @@ function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnv
   assertUsage(hasProp(val, 'config', 'undefined') || hasProp(val, 'config', 'boolean'), errInvalidValue)
   assertUsage(hasProp(val, 'server', 'undefined') || hasProp(val, 'server', 'boolean'), errInvalidValue)
   assertUsage(hasProp(val, 'client', 'undefined') || hasProp(val, 'client', 'boolean'), errInvalidValue)
-  /* Uncomment to allow users to set an eager config. Same for `{ client: '_client-routing' }`.
+  /* Uncomment to allow users to set an eager config. Same for `{ client: 'if-client-routing' }`.
   assertUsage(hasProp(val, '_eager', 'undefined') || hasProp(val, '_eager', 'boolean'), errInvalidValue)
   */
 

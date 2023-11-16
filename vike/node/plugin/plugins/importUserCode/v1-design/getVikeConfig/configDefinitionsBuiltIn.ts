@@ -92,13 +92,13 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     cumulative: true
   },
   route: {
-    env: { server: true, client: '_client-routing', _eager: true }
+    env: { server: true, client: 'if-client-routing', _eager: true }
   },
   guard: {
-    env: { server: true, client: '_client-routing' }
+    env: { server: true, client: 'if-client-routing' }
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    env: { server: true, client: '_client-routing', _eager: true }
+    env: { server: true, client: 'if-client-routing', _eager: true }
   },
   filesystemRoutingRoot: {
     env: { config: true }
@@ -158,7 +158,7 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionI
     env: { server: true }
   },
   onBeforeRoute: {
-    env: { server: true, client: '_client-routing', _eager: true }
+    env: { server: true, client: 'if-client-routing', _eager: true }
   },
   prerender: {
     env: { config: true }
