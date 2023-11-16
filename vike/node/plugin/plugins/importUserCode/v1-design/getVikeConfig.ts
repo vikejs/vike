@@ -787,7 +787,7 @@ function assertFileEnv(filePathForEnvCheck: string, configEnv: ConfigEnvInternal
         ...[configDifferentEnv, { configName, configEnv }].map(
           (c) => `  - config ${pc.cyan(c.configName)} which value lives in environment ${pc.cyan(c.configEnv)}`
         ),
-        'Defining config values in the same file is allowed only if they live in the same environment, see https://vike.dev/header-file/import-from-same-file'
+        'Defining config values in the same file is allowed only if they live in the same environment, see https://vike.dev/header-file'
       ].join('\n')
     )
   }

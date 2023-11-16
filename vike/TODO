@@ -15,7 +15,6 @@
 
 After V1 design release:
  - improve passToClient warning: https://github.com/vikejs/vike/tree/brillout/wip
- - Improve https://vike.dev/header-file
  - Update all examples to not use PageContextBuiltIn but Vike.PageContext instead
  - Go through all TODOs in source code
  - Ensure what client-side loads is minimal
