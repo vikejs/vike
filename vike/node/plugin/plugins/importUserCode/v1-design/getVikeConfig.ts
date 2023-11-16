@@ -757,6 +757,7 @@ async function getConfigValueSource(
     }
   } else if (interfaceFile.isValueFile) {
     const valueAlreadyLoaded = 'configValue' in conf
+    assert(valueAlreadyLoaded === !!configEnv.config)
     const configValueSource: ConfigValueSource = {
       configEnv,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
@@ -771,9 +772,6 @@ async function getConfigValueSource(
     }
     if (valueAlreadyLoaded) {
       configValueSource.value = conf.configValue
-    } else {
-      // TODO
-      // assert(configEnv.config)
     }
     return configValueSource
   }
