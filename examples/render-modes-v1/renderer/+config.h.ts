@@ -8,12 +8,12 @@ export default {
   // https://vike.dev/meta
   meta: {
     renderMode: {
-      env: 'config-only',
+      env: { config: true },
       effect({ configDefinedAt, configValue }) {
         let env: ConfigEnv | undefined
-        if (configValue == 'HTML') env = 'server-only'
-        if (configValue == 'SPA') env = 'client-only'
-        if (configValue == 'SSR') env = 'server-and-client'
+        if (configValue == 'HTML') env = { server: true }
+        if (configValue == 'SPA') env = { client: true }
+        if (configValue == 'SSR') env = { server: true, client: true }
         if (!env) throw new Error(`${configDefinedAt} should be 'SSR', 'SPA', or 'HTML'`)
         return {
           meta: {
