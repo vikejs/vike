@@ -409,6 +409,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'daisyUI',
+    url: '/daisyui'
+  },
+  {
+    level: 2,
     title: 'Windi CSS',
     url: '/windi-css'
   },
@@ -553,6 +558,16 @@ const headings = [
     level: 2,
     title: 'hapi',
     url: '/hapi'
+  },
+  {
+    level: 2,
+    title: 'H3',
+    url: '/h3'
+  },
+  {
+    level: 2,
+    title: 'HatTip',
+    url: '/hattip'
   },
   {
     level: 2,
