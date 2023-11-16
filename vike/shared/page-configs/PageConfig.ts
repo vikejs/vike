@@ -17,7 +17,7 @@ export type { DefinedAtFileFullInfo }
 export type { FilePathResolved }
 export type { FilePath }
 
-import type { ConfigValueImported } from './serialize/PageConfigSerialized.js'
+import type { ConfigValueImported, ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
 
 type PageConfigBase = {
   pageId: string
@@ -33,7 +33,10 @@ type PageConfigRuntime = PageConfigBase & {
   /** All loaded config values */
   configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
-  loadConfigValuesAll: () => Promise<{ configValuesImported: ConfigValueImported[] }>
+  loadConfigValuesAll: () => Promise<{
+    configValuesImported: ConfigValueImported[]
+    configValuesSerialized: Record<string, ConfigValueSerialized>
+  }>
 }
 /** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
 type PageConfigRuntimeLoaded = PageConfigRuntime & {
