@@ -142,21 +142,35 @@ Error: ERR_UNKNOWN_FILE_EXTENSION .css node_modules/some-library/dist/main.css
 ```
 </CodeBlockTransformer>
 
+
 ### Cannot read properties of undefined
 
-Another possible error message looks like:
+The error `Cannot read properties of undefined` is often caused by ESM/CJS issues.
 
 <CodeBlockTransformer lineBreak="white-space">
 ```
-TypeError: Cannot read properties of undefined (reading '__SOMETHING')
-    at someFunction (node_modules/some-good-lib/src/index.js:137:19)
-    at Object.h (node_modules/some-good-lib/src/index.js:320:16)
-    at Object.call (node_modules/some-broken-lib/lib/something.js:26:30)
-    at someHook (renderer/+someHook.jsx:12:29)
+TypeError: Cannot read properties of undefined (reading 'someImport')
+    at someFunction (node_modules/some-good-lib/dist/index.js:1000:3)
+    at someHook (renderer/+someHook.js:13:37)
 ```
 </CodeBlockTransformer>
 
-The [solution](#solution) is to then add `some-broken-lib` to `vite.config.js > ssr.noExternal`.
+> The underlying issue being:
+> ```js
+> // node_modules/some-good-lib/dist/index.js
+>
+> // Because of CJS/ESM issues, someImport is undefined
+> import { someImport } from 'some-broken-lib'
+>
+> // ...
+>
+> function someFunction() {
+>   // TypeError: Cannot read properties of undefined (reading 'someImport')
+>   someImport.someProp
+> }
+> ```
+
+[Adding `some-broken-lib` to `vite.config.js > ssr.noExternal`](#solution) often solves the issue.
 
 Example: https://github.com/vikejs/vike/discussions/1235
 
