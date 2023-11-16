@@ -108,7 +108,7 @@ function getCodePageConfigsSerialized(
       if (configValue) return
       const configValueSource = sources[0]
       assert(configValueSource)
-      if (!configValueSource.configEnv._eager) return
+      if (!configValueSource.configEnv.eager) return
       lines.push(
         ...serializeConfigValueImported(
           configValueSource,

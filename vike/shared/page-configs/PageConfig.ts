@@ -64,7 +64,7 @@ type ConfigEnv = {
 /** For Vike internal use */
 type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
   client?: boolean | 'if-client-routing'
-  _eager?: boolean
+  eager?: boolean
 }
 
 type ConfigValueSource = {

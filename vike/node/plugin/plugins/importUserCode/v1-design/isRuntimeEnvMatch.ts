@@ -17,7 +17,7 @@ function isRuntimeEnvMatch(
   // TODO: always apply eager value
   // Eager
   if (configEnv.client === 'if-client-routing') {
-    if (runtime.isEager !== !!configEnv._eager) return false
+    if (runtime.isEager !== !!configEnv.eager) return false
   }
 
   return true

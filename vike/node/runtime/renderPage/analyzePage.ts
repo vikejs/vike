@@ -35,7 +35,7 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRunt
         const { env } = configElement
         assert(env)
         const onlyAssets = env === { server: true }
-        const eagerlyImported = env === { server: true, client: 'if-client-routing', _eager: true }
+        const eagerlyImported = env === { server: true, client: 'if-client-routing', eager: true }
         if (onlyAssets || eagerlyImported) {
           clientDependencies.push({
             id: configElement.importPath,
