@@ -70,12 +70,7 @@ function getCodePageConfigsSerialized(
     lines.push(`    pageId: ${JSON.stringify(pageId)},`)
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
-    lines.push(
-      `    loadConfigValuesAll: async () => (await import(${JSON.stringify(
-        virtualFileIdPageConfigValuesAll
-      )})).default,`
-    )
-
+    lines.push(`    loadConfigValuesAll: () => import(${JSON.stringify(virtualFileIdPageConfigValuesAll)}),`)
     lines.push(`    configValuesSerialized: {`)
     Object.entries(pageConfig.configValuesComputed).forEach(([configName, configValuesComputed]) => {
       const { value, configEnv } = configValuesComputed

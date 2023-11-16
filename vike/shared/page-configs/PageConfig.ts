@@ -33,7 +33,7 @@ type PageConfigRuntime = PageConfigBase & {
   /** All loaded config values */
   configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
-  loadConfigValuesAll: () => Promise<ConfigValueImported[]>
+  loadConfigValuesAll: () => Promise<{ configValuesImported: ConfigValueImported[] }>
 }
 /** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
 type PageConfigRuntimeLoaded = PageConfigRuntime & {

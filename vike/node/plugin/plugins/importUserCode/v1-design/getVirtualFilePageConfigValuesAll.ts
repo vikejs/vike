@@ -52,7 +52,7 @@ function getLoadConfigValuesAll(
   const isClientRouting = configValue?.value ?? false
   const lines: string[] = []
   const importStatements: string[] = []
-  lines.push('export default [')
+  lines.push('export const configValuesImported = [')
   const varCounterContainer = { varCounter: 0 }
   getConfigValueSourcesRelevant(pageConfig).forEach((configValueSource) => {
     const { valueIsImportedAtRuntime, configEnv, configName } = configValueSource

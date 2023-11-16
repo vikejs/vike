@@ -12,7 +12,7 @@ async function loadConfigValues(pageConfig: PageConfigRuntime, isDev: boolean): 
   ) {
     return pageConfig as PageConfigRuntimeLoaded
   }
-  const configValuesImported = await pageConfig.loadConfigValuesAll()
+  const { configValuesImported } = await pageConfig.loadConfigValuesAll()
   const configValuesAddendum = parseConfigValuesImported(configValuesImported)
   Object.assign(pageConfig.configValues, configValuesAddendum)
   objectAssign(pageConfig, { isAllLoaded: true as const })
