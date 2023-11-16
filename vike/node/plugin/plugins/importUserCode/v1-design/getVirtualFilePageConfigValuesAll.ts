@@ -52,8 +52,35 @@ function getLoadConfigValuesAll(
   const isClientRouting = configValue?.value ?? false
   const lines: string[] = []
   const importStatements: string[] = []
-  lines.push('export const configValuesImported = [')
   const varCounterContainer = { varCounter: 0 }
+  lines.push(
+    getConfigValuesImported(
+      pageConfig,
+      isForClientSide,
+      isClientRouting,
+      pageId,
+      includeAssetsImportedByServer,
+      isDev,
+      varCounterContainer,
+      importStatements
+    )
+  )
+  const code = [...importStatements, ...lines].join('\n')
+  return code
+}
+
+function getConfigValuesImported(
+  pageConfig: PageConfigBuildTime,
+  isForClientSide: boolean,
+  isClientRouting: boolean,
+  pageId: string,
+  includeAssetsImportedByServer: boolean,
+  isDev: boolean,
+  varCounterContainer: { varCounter: number },
+  importStatements: string[]
+): string {
+  const lines: string[] = []
+  lines.push('export const configValuesImported = [')
   getConfigValueSourcesRelevant(pageConfig).forEach((configValueSource) => {
     const { valueIsImportedAtRuntime, configEnv, configName } = configValueSource
 
@@ -70,6 +97,6 @@ function getLoadConfigValuesAll(
   if (includeAssetsImportedByServer && isForClientSide && !isDev) {
     lines.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigValuesAll(pageId, false))}'`)
   }
-  const code = [...importStatements, ...lines].join('\n')
+  const code = lines.join('\n')
   return code
 }
