@@ -1,5 +1,5 @@
 export default {
   onBeforeRender: {
-    env: { client: true }
+    env: 'client-only'
   }
 }

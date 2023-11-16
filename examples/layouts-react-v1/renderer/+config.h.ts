@@ -7,7 +7,7 @@ export default {
   meta: {
     // Create new config 'Layout'
     Layout: {
-      env: { server: true, client: true }
+      env: 'server-and-client'
     }
   },
   clientRouting: true,
