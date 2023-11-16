@@ -1,5 +1,6 @@
 export { projectInfo }
 export type { ProjectTag }
+export { PROJECT_VERSION }
 
 import { onProjectInfo } from './assertSingleInstance.js'
 
