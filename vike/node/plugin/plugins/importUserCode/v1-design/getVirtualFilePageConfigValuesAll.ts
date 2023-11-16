@@ -1,7 +1,7 @@
 export { getVirtualFilePageConfigValuesAll }
 
 import { assert } from '../../../utils.js'
-import type { PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
+import type { ConfigValueSource, PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
 import {
   getVirtualFileIdPageConfigValuesAll,
   isVirtualFileIdPageConfigValuesAll
@@ -12,9 +12,13 @@ import { debug } from './debug.js'
 import { getConfigValue } from '../../../../../shared/page-configs/helpers.js'
 import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSourcesRelevant.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
-import { serializeConfigValueImported } from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
+import {
+  serializeConfigValue,
+  serializeConfigValueImported
+} from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
+import { getConfigValueSerialized } from './getVirtualFilePageConfigs.js'
 
 async function getVirtualFilePageConfigValuesAll(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
   const result = isVirtualFileIdPageConfigValuesAll(id)
@@ -50,6 +54,7 @@ function getLoadConfigValuesAll(
 ): string {
   const lines: string[] = []
   lines.push(getConfigValuesImported(pageConfig, isForClientSide, pageId, includeAssetsImportedByServer, isDev))
+  lines.push(getConfigValuesSerialized(pageConfig, isForClientSide))
   const code = lines.join('\n')
   return code
 }
@@ -64,27 +69,65 @@ function getConfigValuesImported(
   const lines: string[] = []
   const importStatements: string[] = []
   const varCounterContainer = { varCounter: 0 }
-  const configValue = getConfigValue(pageConfig, 'clientRouting', 'boolean')
-  const isClientRouting = configValue?.value ?? false
 
   lines.push('export const configValuesImported = [')
   getConfigValueSourcesRelevant(pageConfig).forEach((configValueSource) => {
-    const { valueIsImportedAtRuntime, configEnv, configName } = configValueSource
-
-    if (!valueIsImportedAtRuntime) return
-    if (configValueSource.valueIsFilePath) return
-    if (!isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: false })) return
-
+    if (!isEnvMatch(configValueSource, pageConfig, isForClientSide, true)) return
     const whitespace = '  '
     lines.push(
-      ...serializeConfigValueImported(configValueSource, configName, whitespace, varCounterContainer, importStatements)
+      ...serializeConfigValueImported(
+        configValueSource,
+        configValueSource.configName,
+        whitespace,
+        varCounterContainer,
+        importStatements
+      )
     )
   })
   lines.push('];')
+
   if (includeAssetsImportedByServer && isForClientSide && !isDev) {
     lines.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigValuesAll(pageId, false))}'`)
   }
 
   const code = [...importStatements, ...lines].join('\n')
   return code
+}
+
+function getConfigValuesSerialized(pageConfig: PageConfigBuildTime, isForClientSide: boolean): string {
+  const lines: string[] = []
+
+  lines.push('export const configValuesSerialized = {')
+  getConfigValueSourcesRelevant(pageConfig).forEach((configValueSource) => {
+    const { configName } = configValueSource
+    const configValue = pageConfig.configValues[configName]
+
+    if (!configValue) return
+    if (!isEnvMatch(configValueSource, pageConfig, isForClientSide, false)) return
+
+    const { value, definedAt } = configValue
+    const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
+    serializeConfigValue(lines, configName, { definedAt, valueSerialized })
+  })
+  lines.push('};')
+
+  const code = lines.join('\n')
+  return code
+}
+
+function isEnvMatch(
+  configValueSource: ConfigValueSource,
+  pageConfig: PageConfigBuildTime,
+  isForClientSide: boolean,
+  isImported: boolean
+): boolean {
+  const { valueIsImportedAtRuntime, configEnv } = configValueSource
+  const configValue = getConfigValue(pageConfig, 'clientRouting', 'boolean')
+  const isClientRouting = configValue?.value ?? false
+
+  if (valueIsImportedAtRuntime !== isImported) return false
+  if (configValueSource.valueIsFilePath) return false
+  if (!isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: false })) return false
+
+  return true
 }
