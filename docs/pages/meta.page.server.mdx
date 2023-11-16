@@ -20,11 +20,11 @@ export default {
   meta: {
     title: {
       // Make `title` value available on both the server and client
-      env: 'server-and-client'
+      env: { server: true, client: true }
     },
     description: {
       // Make `description` value available only on the server-side
-      env: 'server-only'
+      env: { server: true }
     }
   }
 } satisfies Config
@@ -68,7 +68,7 @@ async function onRenderHtml(pageContext) {
 export default onRenderClient
 
 async function onRenderClient(pageContext) {
-  // Because meta.title.env is 'server-and-client' we can access its value
+  // Because meta.title.env is { server: true, client: true } we can access its value
   // as well on the client-side.
   const { title } = pageContext.config
   // For client-side routing, we need to dynamically change the website's title
@@ -92,7 +92,7 @@ export default {
       // By default, the onBeforeRender() hook is always loaded and executed only on the
       // server-side. By using the meta config we can make it isomorphic instead:
       // onBeforeRender() is loaded and executed as well on the client-side.
-      env: 'server-and-client'
+      env: { server: true, client: true }
     }
   }
 } satisfies Config
@@ -115,7 +115,7 @@ const onBeforeRenderIsomorphEffect: Effect = ({ configDefinedAt, configValue }) 
     return {
       meta: {
         onBeforeRender: {
-          env: 'server-and-client'
+          env: { server: true, client: true }
         }
       }
     }
@@ -125,7 +125,7 @@ const onBeforeRenderIsomorphEffect: Effect = ({ configDefinedAt, configValue }) 
 export default {
   meta: {
     onBeforeRenderIsomorph: {
-      env: 'config-only',
+      env: { config: true },
       effect: onBeforeRenderIsomorphEffect
     }
   }

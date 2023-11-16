@@ -278,7 +278,7 @@ async function loadImportedFile(
 }
 function isConfigEnv(configDef: ConfigDefinitionInternal, configName: string) {
   if (configDef.cumulative) return true
-  if (configDef.env === 'config-only') return true
+  if (configDef.env === { config: true }) return true
   // TODO: replace with proper `env: { config: boolean }` implementation
   return configName === 'clientRouting'
 }
@@ -764,7 +764,7 @@ async function getConfigValueSource(
     if (valueAlreadyLoaded) {
       configValueSource.value = conf.configValue
     } else {
-      assert(configEnv !== 'config-only')
+      assert(configEnv !== { config: true })
     }
     return configValueSource
   }
@@ -966,10 +966,10 @@ function assertMetaValue(
     // env
     {
       const envValues: string[] = [
-        'client-only',
-        'server-only',
-        'server-and-client',
-        'config-only'
+        { client: true },
+        { server: true },
+        { server: true, client: true },
+        { config: true }
       ] satisfies ConfigEnv[]
       const fix = [
         `Set the value of ${pc.cyan(`meta.${configName}.env`)} to `,
@@ -1017,13 +1017,13 @@ function assertMetaValue(
           )}: it should be a function instead`
         )
       }
-      if (def.env !== 'config-only') {
+      if (def.env !== { config: true }) {
         assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
         assertUsage(
           false,
           `${configMetaDefinedAt} sets ${pc.cyan(
             `meta.${configName}.effect`
-          )} but it's only supported if meta.${configName}.env is ${pc.cyan('config-only')} (but it's ${pc.cyan(
+          )} but it's only supported if meta.${configName}.env is ${pc.cyan({ config: true })} (but it's ${pc.cyan(
             def.env
           )} instead)`
         )
@@ -1041,11 +1041,11 @@ function applyEffectsAll(
     // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
     // (We could support effect for non config-only by always loading its value at config time, regardless of the config's `env` value.)
     assertUsage(
-      configDef.env === 'config-only',
+      configDef.env === { config: true },
       [
         `Cannot add effect to ${pc.cyan(configName)} because its ${pc.cyan('env')} is ${pc.cyan(
           configDef.env
-        )}: effects can only be added to configs with an ${pc.cyan('env')} value of ${pc.cyan('config-only')}.`
+        )}: effects can only be added to configs with an ${pc.cyan('env')} value of ${pc.cyan({ config: true })}.`
       ].join(' ')
     )
     const source = configValueSources[configName]?.[0]
@@ -1422,7 +1422,7 @@ function getFilesystemRoutingRootEffect(
   configFilesystemRoutingRoot: ConfigValueSource,
   configName: 'filesystemRoutingRoot'
 ) {
-  assert(configFilesystemRoutingRoot.configEnv === 'config-only')
+  assert(configFilesystemRoutingRoot.configEnv === { config: true })
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot

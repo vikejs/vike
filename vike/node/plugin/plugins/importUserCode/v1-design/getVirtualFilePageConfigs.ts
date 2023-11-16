@@ -108,7 +108,7 @@ function getCodePageConfigsSerialized(
       if (configValue) return
       const configValueSource = sources[0]
       assert(configValueSource)
-      if (configValueSource.configEnv !== '_routing-eager') return
+      if (configValueSource.configEnv !== { server: true, client: '_client-routing', _eager: true }) return
       lines.push(
         ...serializeConfigValueImported(
           configValueSource,
