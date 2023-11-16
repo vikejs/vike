@@ -110,7 +110,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   clientRouting: {
     // We could make it { client: false } but we don't yet because of some legacy V0.4 design code
-    env: { server: true, client: true, config: true }
+    env: { server: true, client: true, config: true, eager: true }
   },
   prerender: {
     env: { config: true }
@@ -128,14 +128,14 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { config: true }
   },
   isClientSideRenderable: {
-    env: { server: true, client: true },
+    env: { server: true, client: true, eager: true },
     _computed: (configValueSources): boolean =>
       isConfigSet(configValueSources, 'onRenderClient') &&
       isConfigSet(configValueSources, 'Page') &&
       !!getConfigEnv(configValueSources, 'Page')?.client
   },
   onBeforeRenderEnv: {
-    env: { client: true },
+    env: { client: true, eager: true },
     _computed: (configValueSources): null | ConfigEnvInternal =>
       !isConfigSet(configValueSources, 'onBeforeRender') ? null : getConfigEnv(configValueSources, 'onBeforeRender')
   }
