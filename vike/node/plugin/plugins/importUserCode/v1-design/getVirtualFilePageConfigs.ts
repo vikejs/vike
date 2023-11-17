@@ -75,6 +75,7 @@ function getCodePageConfigsSerialized(
     Object.entries(pageConfig.configValuesComputed).forEach(([configName, configValuesComputed]) => {
       const { value, configEnv } = configValuesComputed
       if (!isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: true })) return
+      // configValeSources has higher precedence
       if (pageConfig.configValueSources[configName]) return
       const configValue = pageConfig.configValues[configName]
       assert(configValue)

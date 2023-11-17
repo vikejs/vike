@@ -135,7 +135,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
       !!getConfigEnv(configValueSources, 'Page')?.client
   },
   onBeforeRenderEnv: {
-    env: { client: true, eager: true },
+    env: { client: true },
     _computed: (configValueSources): null | ConfigEnvInternal =>
       !isConfigSet(configValueSources, 'onBeforeRender') ? null : getConfigEnv(configValueSources, 'onBeforeRender')
   }
