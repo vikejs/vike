@@ -664,8 +664,7 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: 'Configuration list',
-    title: 'Configuration list',
+    title: 'Config list',
     url: '/Config'
   },
   {
@@ -833,16 +832,11 @@ const headings = [
   },
   {
     level: 4,
-    title: 'Special pages'
+    title: 'Misc'
   },
   {
     level: 2,
-    title: 'Default `+*.js` files',
-    url: '/default-page'
-  },
-  {
-    level: 2,
-    title: '`_error` page',
+    title: 'Error page',
     url: '/error-page'
   }
 ] satisfies HeadingDefinition[]

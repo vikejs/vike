@@ -1,10 +1,12 @@
 import { Link } from '@brillout/docpress'
 import HeaderFileIntro from '../components/HeaderFileIntro.mdx'
 
-> For the exhaustive list of configurations, see <Link href="/Config" /> instead.
+Deep dive into Vike's configuration.
+
+> For the list of Vike's built-in configs, see <Link href="/Config" /> instead.
 
 
-## `+config.h.js` files
+## `+config.h.js`
 
 The `+config.h.js` files define the interface between your app and Vike.
 
@@ -46,8 +48,7 @@ export default pageContext => <>Information about product {pageContext.routePara
 
 <HeaderFileIntro />
 
-See also:
- - <Link href="/header-file" />
+See <Link href="/header-file" /> for more information.
 
 
 ## Other `+` files
@@ -87,19 +88,19 @@ export default pageContext => <>Information about product {pageContext.routePara
 
 ## Overridable defaults
 
-You can use `+config.h.js` to define default values for all (or only a group of) pages.
+`/pages/+*.js` files (directly under `/pages`) allows you to define hooks and settings that apply to all (<Link href="#different-defaults">or only a group of</Link>) pages.
 
 ```js
 // /pages/+config.h.js
 
-// Defaults for all pages
+// Default config values for all pages
 export default {
   // Default <title> value
   title: 'My Vike app'
 }
 ```
 
-> `config.title` is a custom config, see <Link href="/meta" />.
+> `config.title` is provided by the <Link text="UI framework integration" href="/vike-packages#ui-frameworks" />, otherwise if you don't use a integration package then you can define `config.title` yourself (see <Link href="/meta" />).
 
 The `+config.h.js` file of pages (`/pages/some-page/+config.h.js`) can override default values defined by `/pages/+config.h.js`.
 
@@ -115,9 +116,46 @@ export default {
 You can also define default values only for a group of pages. As shown, for example, at <Link href="/file-structure#domain-driven" />. You can even use different renderers: some pages can use Vue as SPA, while other pages can use React with SSR.
 
 
+## Different defaults
+
+There can be different multiple defaults that apply to different groups of pages:
+
+```
+# Defaults
+/marketing/pages/+title.js
+/marketing/pages/+ssr.js
+/marketing/pages/+prerender.js
+# Pages
+/marketing/pages/index/+Page.js
+/marketing/pages/about/+Page.js
+/marketing/pages/jobs/+Page.js
+
+# Defaults
+/admin-panel/pages/+title.js
+/admin-panel/pages/+config.h.js
+# Pages
+/admin-panel/pages/index/+Page.js
+```
+
+> We call such structure a <Link text="domain-driven file structure" href='/file-structure#domain-driven' />.
+
+The `marketing/+*.js` files apply as default to `marketing/**/+Page.js`, while `admin-panel/+*.js` apply as default to
+`admin-panel/**/+Page.js`.
+
+
 ## `renderer/`
 
-`/renderer/+config.h.js` is equivalent to `/pages/+config.h.js`: the `renderer/` directory is just an (optional) convenience for having renderer files live outside of `pages/` (instead of cluttering the `pages/` directory).
+We can use a `renderer/` directory:
+
+```
+admin-panel/renderer/+onRenderHtml.js
+admin-panel/renderer/+onRenderClient.js
+admin-panel/pages/index/+Page.js
+```
+
+The hooks `admin-panel/renderer/+onRender{Html,Client}.js` apply as default to all pages `admin-panel/**/+Page.js`.
+
+The `renderer/` directy doesn't add any functionality: `/renderer/+config.h.js` is equivalent to `/pages/+config.h.js`. It's just an (optional) convenience for moving renderer files outside of `pages/` (to avoid cluttering the `pages/` directory). That way, the entire renderer logic can be organized and tucked into a single place `renderer/`.
 
 > The `renderer/` directory is usually only used by users who don't use any <Link text="UI framework integration" href="/vike-packages#ui-frameworks" />.
 
