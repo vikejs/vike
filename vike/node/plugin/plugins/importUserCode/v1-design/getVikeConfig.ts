@@ -73,7 +73,7 @@ import {
   assertExportsOfConfigFile,
   assertExportsOfValueFile
 } from '../../../../../shared/page-configs/assertExports.js'
-import { getConfigValueSerialized } from './getVirtualFilePageConfigs.js'
+import { assertConfigValueIsSerializable } from './getVirtualFilePageConfigs.js'
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
 
@@ -1513,7 +1513,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
     assert('value' in configValueSource)
 
     // Make sure configValueSource.value is serializable
-    getConfigValueSerialized(configValueSource.value, configName, getDefinedAt(configValueSource))
+    assertConfigValueIsSerializable(configValueSource.value, configName, getDefinedAt(configValueSource))
 
     const assertNoMixing = (isSet: boolean) => {
       type T = 'a Set' | 'an array'

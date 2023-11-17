@@ -1,6 +1,6 @@
 export { getVirtualFilePageConfigs }
-export { getConfigValueSerialized }
 export { getConfigValuesSerialized }
+export { assertConfigValueIsSerializable }
 
 import { assert, assertUsage, getPropAccessNotation, objectEntries } from '../../../utils.js'
 import type {
@@ -163,9 +163,11 @@ function getConfigValuesSerialized(
   const lines: string[] = []
   Object.entries(pageConfig.configValuesComputed).forEach(([configName, configValuesComputed]) => {
     const { value, configEnv } = configValuesComputed
+
     if (!isEnvMatch(configEnv)) return
     // configValeSources has higher precedence
     if (pageConfig.configValueSources[configName]) return
+
     const configValue = pageConfig.configValues[configName]
     assert(configValue)
     const { definedAt } = configValue
@@ -187,6 +189,11 @@ function getConfigValuesSerialized(
   })
   const code = lines.join('\n')
   return code
+}
+
+function assertConfigValueIsSerializable(value: unknown, configName: string, definedAt: DefinedAt) {
+  // Contains asserts
+  getConfigValueSerialized(value, configName, definedAt)
 }
 
 function getConfigValueSerialized(value: unknown, configName: string, definedAt: DefinedAt): string {
