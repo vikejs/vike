@@ -10,7 +10,6 @@ import type {
 import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
 import { isJsonSerializerError, stringify } from '@brillout/json-serializer/stringify'
-import { getConfigEnv } from './helpers.js'
 import pc from '@brillout/picocolors'
 import { getVikeConfig } from './getVikeConfig.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'

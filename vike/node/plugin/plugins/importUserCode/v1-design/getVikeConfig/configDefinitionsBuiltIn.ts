@@ -9,10 +9,11 @@ import type {
   ConfigEnvInternal,
   ConfigEnv,
   ConfigValueSources,
-  DefinedAtFileFullInfo
+  DefinedAtFileFullInfo,
+  ConfigValueSource
 } from '../../../../../../shared/page-configs/PageConfig.js'
 import type { Config, ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
-import { getConfigEnv, isConfigSet } from '../helpers.js'
+import { assert } from '../../../../utils.js'
 
 // For users
 /** The meta definition of a config.
@@ -171,4 +172,23 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionI
   redirects: { env: { server: true } },
   trailingSlash: { env: { server: true } },
   disableUrlNormalization: { env: { server: true } }
+}
+
+function getConfigEnv(configValueSources: ConfigValueSources, configName: string): null | ConfigEnvInternal {
+  const configValueSource = getConfigValueSource(configValueSources, configName)
+  if (!configValueSource) return null
+  return configValueSource.configEnv
+}
+function isConfigSet(configValueSources: ConfigValueSources, configName: string): boolean {
+  const configValueSource = getConfigValueSource(configValueSources, configName)
+  // Enable users to suppress global config values by overriding the config's value to null
+  if (configValueSource?.value === null) return false
+  return !!configValueSource
+}
+function getConfigValueSource(configValueSources: ConfigValueSources, configName: string): null | ConfigValueSource {
+  const sources = configValueSources[configName]
+  if (!sources) return null
+  const configValueSource = sources[0]
+  assert(configValueSource)
+  return configValueSource
 }
