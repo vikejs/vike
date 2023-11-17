@@ -6,7 +6,7 @@ function isRuntimeEnvMatch(
   configEnv: ConfigEnvInternal,
   runtime: { isForClientSide: boolean; isClientRouting: boolean; isEager: boolean }
 ): boolean {
-  // Target
+  // Runtime
   if (!runtime.isForClientSide) {
     if (!configEnv.server) return false
   } else {
