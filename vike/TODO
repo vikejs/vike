@@ -1,3 +1,5 @@
+- Merge and make config lists exhaustive
+
 - Docs
   - pageContext.config
   - pageContext.configEntries

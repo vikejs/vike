@@ -17,7 +17,7 @@ List of built-in Vike configs. (You can <Link href="#custom">create your own con
 
 ##### Advanced
 
-> Most users don't need to know about these: these are usually only used by <Link href="/vike-packages" noBreadcrumb />.
+> Most users don't need to know about these configs. (They are usually only used by <Link href="/vike-packages" noBreadcrumb />.)
 
 - [**`meta`**](/meta): Create new or modify existing configurations.
 - [**`passToClient`**](/passToClient): <TextType>string[]</TextType> Determines what `pageContext` properties are sent to the client-side.
@@ -36,7 +36,7 @@ List of built-in Vike configs. (You can <Link href="#custom">create your own con
 
 ##### Advanced
 
-> Most users don't need to know about these: these are usually only used by <Link href="/vike-packages" noBreadcrumb />.
+> Most users don't need to know about these configs. (They are usually only used by <Link href="/vike-packages" noBreadcrumb />.)
 
 - [**`onBeforeRender`**](/onBeforeRender): <TextEnv>server-side (and potentially client-side)</TextEnv> Called before the page is rendered, usually for fetching data.
 - [**`onRenderHtml`**](/onRenderHtml): <TextEnv>server-side</TextEnv> Called when page is rendered to HTML on the server-side.
@@ -51,10 +51,11 @@ You can create new configurations by using <Link text="meta" href="/meta" />.
 
 ## TypeScript
 
+The list of configs is also available over TypeScript.
+
 ```ts
 // +config.h.ts
 
-// The list is also available over TypeScript
 import type { Config } from 'vike/types'
 
 export default {
