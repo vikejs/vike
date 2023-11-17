@@ -1,3 +1,5 @@
+- Hooks list
+  - Merge onBeforeRender() pages
 - Merge and make config lists exhaustive
 
 - Docs
