@@ -26,8 +26,102 @@ export default {
 }
 ```
 
+## Toggle
 
-## `partial`
+In some situations, a page shouldn't be pre-rendered.
+For example a news page that displays the latest news fetched from a database should be rendered at request-time and certainly not at build-time.
+
+> <Link href="/pre-rendering" /> explains in depth whether a page should be pre-rendered or not.
+
+You can use `prerender: false` to tell Vike to skip a page from pre-rendering.
+
+```js
+// /pages/news/+config.h.js
+
+export default {
+  prerender: false
+}
+```
+
+### Different defaults
+
+You can define `prerender` in <Link href="/config#different-defaults">higher levels so it applies to more/all pages</Link>.
+
+This is especially handy with <Link text="Domain-Driven File Structure" href='/file-structure#domain-driven' />:
+
+```js
+// /pages/marketing/+prerender.js
+
+// Using Domain-Driven File Structure, +prerender.js applies to
+// all marketing pages.
+
+// Enable pre-rendering for all marketing pages
+export const prerender = true
+```
+
+You can also make pre-rendering opt-in instead of opt-out:
+
+```js
+// /renderer/+config.h.js
+
+export default {
+  // By default, pages are not pre-rendered
+  prerender: false
+}
+```
+
+```js
+// /pages/about-us/+prerender.js
+
+// Opt-in pre-rendering
+export const prerender = true
+```
+
+### Conditional pre-rendering
+
+You can pre-render pages conditionally:
+
+```js
+// /renderer/+prerender.js
+
+export const prerender = isCmsPreview() ? false : true
+```
+
+> This is particularly useful for previewing CMS pages (you don't want to pre-renderer a CMS preview deploy).
+
+Note that <Link text={<><code>onBeforePrerenderStart()</code> hooks</>} href="/onBeforePrerenderStart" /> are always
+called, regardless of `prerender`.
+If you want to call `onBeforePrerenderStart()` hooks conditionally as well:
+
+```js
+// /pages/movie/+prerender.js
+
+export { prerender }
+
+import { someCondition } from './someCondition'
+
+const prerender = someCondition()
+```
+
+```js
+// /pages/movie/+onBeforePrerenderStart.js
+
+export { onBeforePrerenderStart }
+
+import { someCondition } from './someCondition'
+
+const onBeforePrerenderStart = someCondition()
+  ? async () => {
+      // ...
+      return listOfUrls
+    }
+  : null
+```
+
+
+## Settings
+
+### `partial`
 
 Optional, default value: `false`.
 
@@ -40,7 +134,7 @@ This setting doesn't affect the pre-rendering process: it merely suppresses the 
 > Vike shows a warning that a page cannot be pre-rendered, when the page has a parameterized route (e.g. a  <Link text="Route String" href="/route-string" /> `/movie/@movieId`, or a <Link text="Route Function" href="/route-function" />), and there isn't any <Link text={<><code>onBeforePrerenderStart()</code> hook</>} href="/onBeforePrerenderStart" /> that provides at least one URL matching the page's route (e.g. `/movie/42`).
 
 
-## `noExtraDir`
+### `noExtraDir`
 
 Optional, default value: `false`.
 
@@ -52,7 +146,7 @@ For example, generate `dist/client/about.html` instead of `dist/client/about/ind
 > But some static hosts prefer the other way.
 
 
-## `parallel`
+### `parallel`
 
 Optional, default value: [`os.cpus().length`](https://nodejs.org/api/os.html#os_os_cpus).
 
@@ -67,7 +161,7 @@ Set to `false` (or `1`) to disable concurrency.
 > - If pre-rendering takes an abnormal high amount of time. (Caused by the very slow process of memory swapping that kicks-in when memory starts to saturate).
 
 
-## `disableAutoRun`
+### `disableAutoRun`
 
 Optional, default value: `false`.
 
@@ -76,3 +170,4 @@ Disable the automatic initiation of the pre-rendering process when running `$ vi
 Use this if you want to programmatically initiate the pre-rendering process instead.
 
 See <Link href="/prerender-programmatic" />.
+

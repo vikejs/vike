@@ -637,8 +637,7 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: '`prerender`',
-    title: '`config.prerender`',
+    title: '`prerender`',
     url: '/prerender-config'
   },
   {
@@ -798,11 +797,6 @@ const headings = [
     level: 2,
     title: '`filesystemRoutingRoot`',
     url: '/filesystemRoutingRoot'
-  },
-  {
-    level: 2,
-    title: '`prerender`',
-    url: '/prerender-meta'
   },
   {
     level: 2,
