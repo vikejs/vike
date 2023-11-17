@@ -190,12 +190,6 @@ const headings = [
     url: '/build-your-own-framework'
   },
   {
-    level: 2,
-    title: '`vike-*` packages',
-    isListTitle: true,
-    url: '/vike-packages'
-  },
-  {
     level: 1,
     title: 'Routing',
     titleEmoji: 'road-fork'
@@ -679,20 +673,12 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Abort',
-    url: '/abort',
-    sectionTitles: ['`throw redirect()` VS `throw render()`']
-  },
-  {
-    level: 2,
     title: '`throw redirect()`',
-    isListTitle: true,
     url: '/redirect'
   },
   {
     level: 2,
     title: '`throw render()`',
-    isListTitle: true,
     url: '/render'
   },
   {

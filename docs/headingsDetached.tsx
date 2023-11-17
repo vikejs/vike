@@ -322,5 +322,14 @@ const headingsDetached = [
   {
     title: 'Press Kit',
     url: '/press'
-  }
+  },
+  {
+    title: '`vike-*` packages',
+    url: '/vike-packages'
+  },
+  {
+    title: 'Abort',
+    url: '/abort',
+    sectionTitles: ['`throw redirect()` VS `throw render()`']
+  },
 ] satisfies HeadingDetachedDefinition[]
