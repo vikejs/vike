@@ -1,6 +1,7 @@
 - Hooks list
   - Merge onBeforeRender() pages
 - Merge and make config lists exhaustive
+- Re-use screenshot fixture test
 
 - Docs
   - pageContext.config
