@@ -5,7 +5,7 @@ import { findPageFiles } from '../../shared/findPageFiles.js'
 import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageImport, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
-import { getConfigValueSourcesRelevant } from '../../shared/getConfigValueSourcesRelevant.js'
+import { getConfigValueSourcesNotOverriden } from '../../shared/getConfigValueSourcesNotOverriden.js'
 import { analyzeClientEntries } from '../buildConfig.js'
 import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
 import {
@@ -44,7 +44,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   // V1 design
   {
     pageConfigs.forEach((pageConfig) => {
-      const configValueSourcesRelevant = getConfigValueSourcesRelevant(pageConfig)
+      const configValueSourcesRelevant = getConfigValueSourcesNotOverriden(pageConfig)
       configValueSourcesRelevant.forEach((configValueSource) => {
         if (!configValueSource.valueIsImportedAtRuntime) return
         const { definedAt, configEnv } = configValueSource

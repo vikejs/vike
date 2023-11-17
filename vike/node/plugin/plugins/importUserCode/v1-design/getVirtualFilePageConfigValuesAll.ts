@@ -14,7 +14,7 @@ import { getVikeConfig } from './getVikeConfig.js'
 import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
 import { getConfigValue } from '../../../../../shared/page-configs/helpers.js'
-import { getConfigValueSourcesRelevant } from '../../../shared/getConfigValueSourcesRelevant.js'
+import { getConfigValueSourcesNotOverriden } from '../../../shared/getConfigValueSourcesNotOverriden.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import {
   serializeConfigValue,
@@ -82,7 +82,7 @@ function getConfigValuesImported(
   const varCounterContainer = { varCounter: 0 }
 
   lines.push('export const configValuesImported = [')
-  getConfigValueSourcesRelevant(pageConfig).forEach((configValueSource) => {
+  getConfigValueSourcesNotOverriden(pageConfig).forEach((configValueSource) => {
     if (
       !isEnvMatch(configValueSource.configEnv, checkWhetherIsImport(configValueSource), {
         isImport: true,
@@ -133,7 +133,7 @@ function getConfigValuesSerialized(
     const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
     serializeConfigValue(lines, configName, { definedAt, valueSerialized })
   })
-  getConfigValueSourcesRelevant(pageConfig).forEach((configValueSource) => {
+  getConfigValueSourcesNotOverriden(pageConfig).forEach((configValueSource) => {
     const { configName } = configValueSource
     const configValue = pageConfig.configValues[configName]
 
