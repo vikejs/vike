@@ -20,6 +20,7 @@ import {
   serializeConfigValueImported
 } from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
 import type { ResolvedConfig } from 'vite'
+import { getConfigValueSourcesNotOverriden } from '../../../shared/getConfigValueSourcesNotOverriden.js'
 
 async function getVirtualFilePageConfigs(
   isForClientSide: boolean,
@@ -83,17 +84,18 @@ function getCodePageConfigsSerialized(
       const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
       serializeConfigValue(lines, configName, { definedAt, valueSerialized })
     })
-    Object.entries(pageConfig.configValueSources).forEach(([configName]) => {
+    getConfigValueSourcesNotOverriden(pageConfig).forEach((configValueSource) => {
+      const { configName } = configValueSource
       const configValue = pageConfig.configValues[configName]
-      if (configValue) {
-        const configEnv = getConfigEnv(pageConfig.configValueSources, configName)
-        assert(configEnv, configName)
-        const isEnvMatch = isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: true })
-        if (!isEnvMatch) return
-        const { value, definedAt } = configValue
-        const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
-        serializeConfigValue(lines, configName, { definedAt, valueSerialized })
+
+      if (!configValue) return
+      if (!isRuntimeEnvMatch(configValueSource.configEnv, { isForClientSide, isClientRouting, isEager: true })) {
+        return
       }
+
+      const { value, definedAt } = configValue
+      const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
+      serializeConfigValue(lines, configName, { definedAt, valueSerialized })
     })
     lines.push(`    },`)
 
