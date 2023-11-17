@@ -9,10 +9,11 @@ import type {
   ConfigEnvInternal,
   ConfigEnv,
   ConfigValueSources,
-  DefinedAtFileFullInfo
+  DefinedAtFileFullInfo,
+  ConfigValueSource
 } from '../../../../../../shared/page-configs/PageConfig.js'
 import type { Config, ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
-import { getConfigEnv, isConfigSet } from '../helpers.js'
+import { assert } from '../../../../utils.js'
 
 // For users
 /** The meta definition of a config.
@@ -64,78 +65,78 @@ type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn, ConfigDefinitionInternal>
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
-    env: 'server-only'
+    env: { server: true }
   },
   onRenderClient: {
-    env: 'client-only'
+    env: { client: true }
   },
   onHydrationEnd: {
-    env: 'client-only'
+    env: { client: true }
   },
   onPageTransitionStart: {
-    env: 'client-only'
+    env: { client: true }
   },
   onPageTransitionEnd: {
-    env: 'client-only'
+    env: { client: true }
   },
   onBeforeRender: {
-    env: 'server-only'
+    env: { server: true }
   },
   onBeforePrerenderStart: {
-    env: 'server-only'
+    env: { server: true }
   },
   Page: {
-    env: 'server-and-client'
+    env: { server: true, client: true }
   },
   passToClient: {
-    env: 'server-only',
+    env: { server: true, config: true },
     cumulative: true
   },
   route: {
-    env: '_routing-eager'
+    env: { server: true, client: 'if-client-routing', eager: true }
   },
   guard: {
-    env: '_routing-lazy'
+    env: { server: true, client: 'if-client-routing' }
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    env: '_routing-eager'
+    env: { server: true, client: 'if-client-routing', eager: true }
   },
   filesystemRoutingRoot: {
-    env: 'config-only'
+    env: { config: true }
   },
   client: {
     // The value of the client config is merely the file path to the client entry file, which is only needed on the sever-side
-    env: 'server-only',
+    env: { server: true },
     _valueIsFilePath: true
   },
   clientRouting: {
-    // We could make it 'server-only' (we don't yet because of some legacy V0.4 design code)
-    env: 'server-and-client'
+    // We could make it { client: false } but we don't yet because of some legacy V0.4 design code
+    env: { server: true, client: true, config: true, eager: true }
   },
   prerender: {
-    env: 'config-only'
+    env: { config: true }
   },
   hydrationCanBeAborted: {
-    env: 'client-only'
+    env: { client: true }
   },
   prefetchStaticAssets: {
-    env: 'client-only'
+    env: { client: true }
   },
   extends: {
-    env: 'config-only'
+    env: { config: true }
   },
   meta: {
-    env: 'config-only'
+    env: { config: true }
   },
   isClientSideRenderable: {
-    env: 'server-and-client',
+    env: { server: true, client: true, eager: true },
     _computed: (configValueSources): boolean =>
       isConfigSet(configValueSources, 'onRenderClient') &&
       isConfigSet(configValueSources, 'Page') &&
-      getConfigEnv(configValueSources, 'Page') !== 'server-only'
+      !!getConfigEnv(configValueSources, 'Page')?.client
   },
   onBeforeRenderEnv: {
-    env: 'client-only',
+    env: { client: true },
     _computed: (configValueSources): null | ConfigEnvInternal =>
       !isConfigSet(configValueSources, 'onBeforeRender') ? null : getConfigEnv(configValueSources, 'onBeforeRender')
   }
@@ -155,20 +156,39 @@ type ConfigNameGlobal =
   | 'disableUrlNormalization'
 const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionInternal> = {
   onPrerenderStart: {
-    env: 'server-only'
+    env: { server: true }
   },
   onBeforeRoute: {
-    env: '_routing-eager'
+    env: { server: true, client: 'if-client-routing', eager: true }
   },
   prerender: {
-    env: 'config-only'
+    env: { config: true }
   },
-  extensions: { env: 'config-only' },
-  disableAutoFullBuild: { env: 'config-only' },
-  includeAssetsImportedByServer: { env: 'config-only' },
-  baseAssets: { env: 'config-only' },
-  baseServer: { env: 'config-only' },
-  redirects: { env: 'server-only' },
-  trailingSlash: { env: 'server-only' },
-  disableUrlNormalization: { env: 'server-only' }
+  extensions: { env: { config: true } },
+  disableAutoFullBuild: { env: { config: true } },
+  includeAssetsImportedByServer: { env: { config: true } },
+  baseAssets: { env: { config: true } },
+  baseServer: { env: { config: true } },
+  redirects: { env: { server: true } },
+  trailingSlash: { env: { server: true } },
+  disableUrlNormalization: { env: { server: true } }
+}
+
+function getConfigEnv(configValueSources: ConfigValueSources, configName: string): null | ConfigEnvInternal {
+  const configValueSource = getConfigValueSource(configValueSources, configName)
+  if (!configValueSource) return null
+  return configValueSource.configEnv
+}
+function isConfigSet(configValueSources: ConfigValueSources, configName: string): boolean {
+  const configValueSource = getConfigValueSource(configValueSources, configName)
+  // Enable users to suppress global config values by overriding the config's value to null
+  if (configValueSource?.value === null) return false
+  return !!configValueSource
+}
+function getConfigValueSource(configValueSources: ConfigValueSources, configName: string): null | ConfigValueSource {
+  const sources = configValueSources[configName]
+  if (!sources) return null
+  const configValueSource = sources[0]
+  assert(configValueSource)
+  return configValueSource
 }

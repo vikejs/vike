@@ -1,5 +1,5 @@
 export default {
   frontmatter: {
-    env: 'server-only'
+    env: { server: true }
   }
 }

@@ -1,10 +1,10 @@
-export { getConfigValueSourcesRelevant }
+export { getConfigValueSourcesNotOverriden }
 
 import type { ConfigValueSource, PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
 import { assert, assertIsNotBrowser } from '../../shared/utils.js'
 assertIsNotBrowser()
 
-function getConfigValueSourcesRelevant(
+function getConfigValueSourcesNotOverriden(
   pageConfig: PageConfigBuildTime
 ): (ConfigValueSource & { configName: string })[] {
   const configValueSourcesRelevant = Object.entries(pageConfig.configValueSources).map(([configName, sources]) => {

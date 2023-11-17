@@ -17,7 +17,7 @@ export type { DefinedAtFileFullInfo }
 export type { FilePathResolved }
 export type { FilePath }
 
-import type { ConfigValueImported } from './serialize/PageConfigSerialized.js'
+import type { ConfigValueImported, ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
 
 type PageConfigBase = {
   pageId: string
@@ -33,7 +33,10 @@ type PageConfigRuntime = PageConfigBase & {
   /** All loaded config values */
   configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
-  loadConfigValuesAll: () => Promise<ConfigValueImported[]>
+  loadConfigValuesAll: () => Promise<{
+    configValuesImported: ConfigValueImported[]
+    configValuesSerialized: Record<string, ConfigValueSerialized>
+  }>
 }
 /** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
 type PageConfigRuntimeLoaded = PageConfigRuntime & {
@@ -56,9 +59,16 @@ type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
 }
 
-type ConfigEnv = 'client-only' | 'server-only' | 'server-and-client' | 'config-only'
+type ConfigEnv = {
+  client?: boolean
+  server?: boolean
+  config?: boolean
+}
 /** For Vike internal use */
-type ConfigEnvInternal = ConfigEnv | '_routing-eager' | '_routing-lazy'
+type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
+  client?: boolean | 'if-client-routing'
+  eager?: boolean
+}
 
 type ConfigValueSource = {
   value?: unknown

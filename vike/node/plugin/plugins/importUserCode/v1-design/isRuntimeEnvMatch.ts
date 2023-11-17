@@ -6,12 +6,16 @@ function isRuntimeEnvMatch(
   configEnv: ConfigEnvInternal,
   runtime: { isForClientSide: boolean; isClientRouting: boolean; isEager: boolean }
 ): boolean {
-  const { isForClientSide, isClientRouting, isEager } = runtime
-  if (configEnv === 'config-only') return false
-  if (configEnv === (isForClientSide ? 'server-only' : 'client-only')) return false
-  if (configEnv === '_routing-eager' || configEnv === '_routing-lazy') {
-    if (isForClientSide && !isClientRouting) return false
-    if (isEager !== (configEnv === '_routing-eager')) return false
+  // Runtime
+  if (!runtime.isForClientSide) {
+    if (!configEnv.server) return false
+  } else {
+    if (!configEnv.client) return false
+    if (configEnv.client === 'if-client-routing' && !runtime.isClientRouting) return false
   }
+
+  // Eager
+  if (runtime.isEager !== !!configEnv.eager) return false
+
   return true
 }

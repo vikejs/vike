@@ -1,25 +1,14 @@
 export { getVirtualFilePageConfigs }
-export { getConfigValueSerialized }
 
-import { assert, assertUsage, getPropAccessNotation, objectEntries } from '../../../utils.js'
-import type {
-  DefinedAt,
-  PageConfigBuildTime,
-  PageConfigGlobalBuildTime
-} from '../../../../../shared/page-configs/PageConfig.js'
+import { assert, objectEntries } from '../../../utils.js'
+import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
 import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
-import { isJsonSerializerError, stringify } from '@brillout/json-serializer/stringify'
-import { getConfigEnv } from './helpers.js'
-import pc from '@brillout/picocolors'
 import { getVikeConfig } from './getVikeConfig.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
-import { getConfigValueFilePathToShowToUser } from '../../../../../shared/page-configs/helpers.js'
-import {
-  serializeConfigValue,
-  serializeConfigValueImported
-} from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
+import { serializeConfigValueImported } from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
 import type { ResolvedConfig } from 'vite'
+import { getConfigValuesSerialized } from './getConfigValuesSerialized.js'
 
 async function getVirtualFilePageConfigs(
   isForClientSide: boolean,
@@ -43,12 +32,19 @@ function getCode(
   const lines: string[] = []
   const importStatements: string[] = []
   const varCounterContainer = { varCounter: 0 }
+
+  lines.push('export const pageConfigsSerialized = [')
   lines.push(
     getCodePageConfigsSerialized(pageConfigs, isForClientSide, isClientRouting, importStatements, varCounterContainer)
   )
+  lines.push('];')
+
+  lines.push('export const pageConfigGlobalSerialized = {')
   lines.push(
     getCodePageConfigGlobalSerialized(pageConfigGlobal, isForClientSide, isDev, importStatements, varCounterContainer)
   )
+  lines.push('};')
+
   const code = [...importStatements, ...lines].join('\n')
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
   return code
@@ -62,7 +58,7 @@ function getCodePageConfigsSerialized(
   varCounterContainer: { varCounter: number }
 ): string {
   const lines: string[] = []
-  lines.push('export const pageConfigsSerialized = [')
+
   pageConfigs.forEach((pageConfig) => {
     const { pageId, routeFilesystem, isErrorPage } = pageConfig
     const virtualFileIdPageConfigValuesAll = getVirtualFileIdPageConfigValuesAll(pageId, isForClientSide)
@@ -70,45 +66,26 @@ function getCodePageConfigsSerialized(
     lines.push(`    pageId: ${JSON.stringify(pageId)},`)
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
-    lines.push(
-      `    loadConfigValuesAll: async () => (await import(${JSON.stringify(
-        virtualFileIdPageConfigValuesAll
-      )})).default,`
-    )
+    lines.push(`    loadConfigValuesAll: () => import(${JSON.stringify(virtualFileIdPageConfigValuesAll)}),`)
 
+    // Serialized config values
     lines.push(`    configValuesSerialized: {`)
-    Object.entries(pageConfig.configValuesComputed).forEach(([configName, configValuesComputed]) => {
-      const { value, configEnv } = configValuesComputed
-      if (!isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: true })) return
-      if (pageConfig.configValueSources[configName]) return
-      const configValue = pageConfig.configValues[configName]
-      assert(configValue)
-      const { definedAt } = configValue
-      const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
-      serializeConfigValue(lines, configName, { definedAt, valueSerialized })
-    })
-    Object.entries(pageConfig.configValueSources).forEach(([configName]) => {
-      const configValue = pageConfig.configValues[configName]
-      if (configValue) {
-        const configEnv = getConfigEnv(pageConfig.configValueSources, configName)
-        assert(configEnv, configName)
-        const isEnvMatch = isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: true })
-        if (!isEnvMatch) return
-        const { value, definedAt } = configValue
-        const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
-        serializeConfigValue(lines, configName, { definedAt, valueSerialized })
-      }
-    })
+    lines.push(
+      getConfigValuesSerialized(pageConfig, (configEnv) =>
+        isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: true })
+      )
+    )
     lines.push(`    },`)
 
-    let whitespace = '    '
+    // Imported config values
+    const whitespace = '    '
     lines.push(`${whitespace}configValuesImported: [`)
     Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
       const configValue = pageConfig.configValues[configName]
       if (configValue) return
       const configValueSource = sources[0]
       assert(configValueSource)
-      if (configValueSource.configEnv !== '_routing-eager') return
+      if (!configValueSource.configEnv.eager) return
       lines.push(
         ...serializeConfigValueImported(
           configValueSource,
@@ -121,10 +98,8 @@ function getCodePageConfigsSerialized(
     })
     lines.push(`${whitespace}],`)
 
-    // pageConfig end
     lines.push(`  },`)
   })
-  lines.push('];')
 
   const code = lines.join('\n')
   return code
@@ -138,7 +113,6 @@ function getCodePageConfigGlobalSerialized(
   varCounterContainer: { varCounter: number }
 ) {
   const lines: string[] = []
-  lines.push('export const pageConfigGlobalSerialized = {')
   /* Nothing (yet)
   lines.push(`  configValuesSerialized: {`)
   lines.push(`  },`)
@@ -163,40 +137,7 @@ function getCodePageConfigGlobalSerialized(
     )
   })
   lines.push(`  ],`)
-  lines.push('};')
 
   const code = lines.join('\n')
   return code
-}
-
-function getConfigValueSerialized(value: unknown, configName: string, definedAt: DefinedAt): string {
-  const valueName = `config${getPropAccessNotation(configName)}`
-  let configValueSerialized: string
-  try {
-    configValueSerialized = stringify(value, { valueName, forbidReactElements: true })
-  } catch (err) {
-    let serializationErrMsg = ''
-    if (isJsonSerializerError(err)) {
-      serializationErrMsg = err.messageCore
-    } else {
-      // When a property getter throws an error
-      console.error('Serialization error:')
-      console.error(err)
-      serializationErrMsg = 'see serialization error printed above'
-    }
-    const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser({ definedAt })
-    assert(configValueFilePathToShowToUser)
-    assertUsage(
-      false,
-      [
-        `The value of the config ${pc.cyan(
-          configName
-        )} cannot be defined inside the file ${configValueFilePathToShowToUser}:`,
-        `its value must be defined in an another file and then imported by ${configValueFilePathToShowToUser}. (Because its value isn't serializable: ${serializationErrMsg}.)`,
-        `Only serializable config values can be defined inside +config.h.js files, see https://vike.dev/header-file.`
-      ].join(' ')
-    )
-  }
-  configValueSerialized = JSON.stringify(configValueSerialized)
-  return configValueSerialized
 }

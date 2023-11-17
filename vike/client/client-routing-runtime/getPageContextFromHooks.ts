@@ -246,7 +246,9 @@ async function onBeforeRenderServerOnlyExists(pageContext: {
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
-    return getConfigValue(pageConfig, 'onBeforeRenderEnv')?.value === 'server-only'
+    const onBeforeRenderEnv = getConfigValue(pageConfig, 'onBeforeRenderEnv')?.value ?? {}
+    assert(isObject(onBeforeRenderEnv))
+    return !!onBeforeRenderEnv.server && !onBeforeRenderEnv.client
   } else {
     // TODO/v1-release: remove
     // V0.4
@@ -264,7 +266,9 @@ async function onBeforeRenderClientOnlyExists(pageContext: {
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
-    return getConfigValue(pageConfig, 'onBeforeRenderEnv')?.value === 'client-only'
+    const onBeforeRenderEnv = getConfigValue(pageConfig, 'onBeforeRenderEnv')?.value ?? {}
+    assert(isObject(onBeforeRenderEnv))
+    return !!onBeforeRenderEnv.client && !onBeforeRenderEnv.server
   } else {
     // TODO/v1-release: remove
     return false

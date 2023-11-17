@@ -21,7 +21,9 @@ import {
   scriptFileExtensions,
   mergeCumulativeValues,
   requireResolve,
-  getOutDirs
+  getOutDirs,
+  deepEqual,
+  assertKeys
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -29,7 +31,6 @@ import type {
   ConfigEnvInternal,
   ConfigValueSource,
   ConfigValueSources,
-  ConfigEnv,
   PageConfigBuildTime,
   ConfigValues,
   DefinedAt,
@@ -72,9 +73,9 @@ import {
   assertExportsOfConfigFile,
   assertExportsOfValueFile
 } from '../../../../../shared/page-configs/assertExports.js'
-import { getConfigValueSerialized } from './getVirtualFilePageConfigs.js'
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
+import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
 
 assertIsNotProductionRuntime()
 
@@ -276,11 +277,18 @@ async function loadImportedFile(
   const fileExports = await importedFilesLoaded[f]!
   return fileExports
 }
-function isConfigEnv(configDef: ConfigDefinitionInternal, configName: string) {
-  if (configDef.cumulative) return true
-  if (configDef.env === 'config-only') return true
-  // TODO: replace with proper `env: { config: boolean }` implementation
-  return configName === 'clientRouting'
+function isConfigEnv(configDef: ConfigDefinitionInternal, configName: string): boolean {
+  const configEnv = configDef.env
+  if (configDef.cumulative) {
+    // In principle we could lift that requirement (but it requires non-trivial modifications)
+    assertUsage(
+      configEnv.config,
+      `Config ${pc.cyan(configName)} needs its ${pc.cyan('env')} to have ${pc.cyan(
+        '{ config: true }'
+      )} (because ${pc.cyan(configName)} is a ${pc.cyan('cumulative')} config)`
+    )
+  }
+  return !!configEnv.config
 }
 function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: boolean): InterfaceFile {
   const { fileExports, filePath, extendsFilePaths } = configFile
@@ -749,6 +757,7 @@ async function getConfigValueSource(
     }
   } else if (interfaceFile.isValueFile) {
     const valueAlreadyLoaded = 'configValue' in conf
+    assert(valueAlreadyLoaded === !!configEnv.config)
     const configValueSource: ConfigValueSource = {
       configEnv,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
@@ -763,8 +772,6 @@ async function getConfigValueSource(
     }
     if (valueAlreadyLoaded) {
       configValueSource.value = conf.configValue
-    } else {
-      assert(configEnv !== 'config-only')
     }
     return configValueSource
   }
@@ -778,14 +785,17 @@ function assertFileEnv(filePathForEnvCheck: string, configEnv: ConfigEnvInternal
   }
   const fileEnv = filesEnv.get(filePathForEnvCheck)!
   fileEnv.push({ configEnv, configName })
-  const configDifferentEnv = fileEnv.filter((c) => c.configEnv !== configEnv)[0]
+  const configDifferentEnv = fileEnv.filter((c) => !deepEqual(c.configEnv, configEnv))[0]
   if (configDifferentEnv) {
     assertUsage(
       false,
       [
         `${filePathForEnvCheck} defines the value of configs living in different environments:`,
         ...[configDifferentEnv, { configName, configEnv }].map(
-          (c) => `  - config ${pc.cyan(c.configName)} which value lives in environment ${pc.cyan(c.configEnv)}`
+          (c) =>
+            `  - config ${pc.cyan(c.configName)} which value lives in environment ${pc.cyan(
+              JSON.stringify(c.configEnv)
+            )}`
         ),
         'Defining config values in the same file is allowed only if they live in the same environment, see https://vike.dev/header-file'
       ].join('\n')
@@ -964,46 +974,16 @@ function assertMetaValue(
     }
 
     // env
+    let configEnv: ConfigEnvInternal
     {
-      const envValues: string[] = [
-        'client-only',
-        'server-only',
-        'server-and-client',
-        'config-only'
-      ] satisfies ConfigEnv[]
-      const fix = [
-        `Set the value of ${pc.cyan(`meta.${configName}.env`)} to `,
-        joinEnglish(
-          envValues.map((s) => pc.cyan(`'${s}'`)),
-          'or'
-        ),
-        '.'
-      ].join('')
+      assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
       if (!('env' in def)) {
-        assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
-        assertUsage(
-          false,
-          `${configMetaDefinedAt} doesn't set ${pc.cyan(`meta.${configName}.env`)} but it's required. ${fix}`
-        )
+        assertUsage(false, `${configMetaDefinedAt} doesn't set ${pc.cyan(`meta.${configName}.env`)} but it's required.`)
       }
-      if (!hasProp(def, 'env', 'string')) {
-        assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
-        assertUsage(
-          false,
-          `${configMetaDefinedAt} sets ${pc.cyan(`meta.${configName}.env`)} to an invalid type ${pc.cyan(
-            typeof def.env
-          )}. ${fix}`
-        )
-      }
-      if (!envValues.includes(def.env)) {
-        assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
-        assertUsage(
-          false,
-          `${configMetaDefinedAt} sets ${pc.cyan(`meta.${configName}.env`)} to an unknown value ${pc.cyan(
-            `'${def.env}'`
-          )}. ${fix}`
-        )
-      }
+      configEnv = getConfigEnvValue(def.env, `${configMetaDefinedAt} sets ${pc.cyan(`meta.${configName}.env`)} to`)
+      // Overwrite deprecated value with valid value
+      // TODO/v1-release: remove once support for the deprecated values is removed
+      if (typeof def.env === 'string') def.env = configEnv
     }
 
     // effect
@@ -1017,14 +997,14 @@ function assertMetaValue(
           )}: it should be a function instead`
         )
       }
-      if (def.env !== 'config-only') {
+      if (!configEnv.config) {
         assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
         assertUsage(
           false,
           `${configMetaDefinedAt} sets ${pc.cyan(
             `meta.${configName}.effect`
-          )} but it's only supported if meta.${configName}.env is ${pc.cyan('config-only')} (but it's ${pc.cyan(
-            def.env
+          )} but it's only supported if meta.${configName}.env has ${pc.cyan('{ config: true }')} (but it's ${pc.cyan(
+            JSON.stringify(configEnv)
           )} instead)`
         )
       }
@@ -1041,11 +1021,11 @@ function applyEffectsAll(
     // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
     // (We could support effect for non config-only by always loading its value at config time, regardless of the config's `env` value.)
     assertUsage(
-      configDef.env === 'config-only',
+      configDef.env.config,
       [
         `Cannot add effect to ${pc.cyan(configName)} because its ${pc.cyan('env')} is ${pc.cyan(
-          configDef.env
-        )}: effects can only be added to configs with an ${pc.cyan('env')} value of ${pc.cyan('config-only')}.`
+          JSON.stringify(configDef.env)
+        )}: effects can only be added to configs with an ${pc.cyan('env')} with ${pc.cyan('{ config: true }')}.`
       ].join(' ')
     )
     const source = configValueSources[configName]?.[0]
@@ -1422,7 +1402,7 @@ function getFilesystemRoutingRootEffect(
   configFilesystemRoutingRoot: ConfigValueSource,
   configName: 'filesystemRoutingRoot'
 ) {
-  assert(configFilesystemRoutingRoot.configEnv === 'config-only')
+  assert(configFilesystemRoutingRoot.configEnv.config)
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
@@ -1533,7 +1513,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
     assert('value' in configValueSource)
 
     // Make sure configValueSource.value is serializable
-    getConfigValueSerialized(configValueSource.value, configName, getDefinedAt(configValueSource))
+    assertConfigValueIsSerializable(configValueSource.value, configName, getDefinedAt(configValueSource))
 
     const assertNoMixing = (isSet: boolean) => {
       type T = 'a Set' | 'an array'
@@ -1578,4 +1558,39 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
     return result
   }
   assert(false)
+}
+
+function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnvInternal {
+  const errInvalidValue = `${errMsgIntro} an invalid value ${pc.cyan(JSON.stringify(val))}`
+
+  // Legacy outdated values
+  if (typeof val === 'string') {
+    const valConverted: ConfigEnvInternal = (() => {
+      if (val === 'client-only') return { client: true }
+      if (val === 'server-only') return { server: true }
+      if (val === 'server-and-client') return { server: true, client: true }
+      if (val === 'config-only') return { config: true }
+      if (val === '_routing-lazy') return { server: true, client: 'if-client-routing' }
+      if (val === '_routing-eager') return { server: true, client: 'if-client-routing', eager: true }
+      assertUsage(false, errInvalidValue)
+    })()
+    assertWarning(
+      false,
+      `${errMsgIntro} ${pc.cyan(val)} which is deprecated and will be removed in the next major release`,
+      { onlyOnce: true }
+    )
+    return valConverted
+  }
+
+  assertUsage(isObject(val), `${errMsgIntro} an invalid type ${pc.cyan(typeof val)}`)
+
+  assertKeys(val, ['config', 'server', 'client'] as const, `${errInvalidValue}:`)
+  assertUsage(hasProp(val, 'config', 'undefined') || hasProp(val, 'config', 'boolean'), errInvalidValue)
+  assertUsage(hasProp(val, 'server', 'undefined') || hasProp(val, 'server', 'boolean'), errInvalidValue)
+  assertUsage(hasProp(val, 'client', 'undefined') || hasProp(val, 'client', 'boolean'), errInvalidValue)
+  /* Uncomment to allow users to set an eager config. Same for `{ client: 'if-client-routing' }`.
+  assertUsage(hasProp(val, 'eager', 'undefined') || hasProp(val, 'eager', 'boolean'), errInvalidValue)
+  */
+
+  return val
 }
