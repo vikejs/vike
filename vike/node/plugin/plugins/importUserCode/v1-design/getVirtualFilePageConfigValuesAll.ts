@@ -17,12 +17,11 @@ import { getConfigValue } from '../../../../../shared/page-configs/helpers.js'
 import { getConfigValueSourcesNotOverriden } from '../../../shared/getConfigValueSourcesNotOverriden.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import {
-  serializeConfigValue,
   serializeConfigValueImported
 } from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
-import { getConfigValueSerialized } from './getVirtualFilePageConfigs.js'
+import { getConfigValuesSerialized } from './getVirtualFilePageConfigs.js'
 
 async function getVirtualFilePageConfigValuesAll(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
   const result = isVirtualFileIdPageConfigValuesAll(id)
@@ -65,7 +64,15 @@ function getLoadConfigValuesAll(
   lines.push('];')
 
   lines.push('export const configValuesSerialized = {')
-  lines.push(getConfigValuesSerialized(pageConfig, isForClientSide, isClientRouting))
+  lines.push(
+    getConfigValuesSerialized(pageConfig, (configEnv, configValueSource) =>
+      isEnvMatch(configEnv, !configValueSource ? false : checkWhetherIsImport(configValueSource), {
+        isImport: false,
+        isForClientSide,
+        isClientRouting
+      })
+    )
+  )
   lines.push('};')
 
   if (includeAssetsImportedByServer && isForClientSide && !isDev) {
@@ -104,49 +111,6 @@ function getConfigValuesImported(
         importStatements
       )
     )
-  })
-
-  const code = lines.join('\n')
-  return code
-}
-
-function getConfigValuesSerialized(
-  pageConfig: PageConfigBuildTime,
-  isForClientSide: boolean,
-  isClientRouting: boolean
-): string {
-  const lines: string[] = []
-
-  Object.entries(pageConfig.configValuesComputed).forEach(([configName, configValuesComputed]) => {
-    const { value, configEnv } = configValuesComputed
-
-    if (!isEnvMatch(configEnv, false, { isImport: false, isForClientSide, isClientRouting })) return
-    // configValeSources has higher precedence
-    if (pageConfig.configValueSources[configName]) return
-
-    const configValue = pageConfig.configValues[configName]
-    assert(configValue)
-    const { definedAt } = configValue
-    const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
-    serializeConfigValue(lines, configName, { definedAt, valueSerialized })
-  })
-  getConfigValueSourcesNotOverriden(pageConfig).forEach((configValueSource) => {
-    const { configName } = configValueSource
-    const configValue = pageConfig.configValues[configName]
-
-    if (!configValue) return
-    if (
-      !isEnvMatch(configValueSource.configEnv, checkWhetherIsImport(configValueSource), {
-        isImport: false,
-        isForClientSide,
-        isClientRouting
-      })
-    )
-      return
-
-    const { value, definedAt } = configValue
-    const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
-    serializeConfigValue(lines, configName, { definedAt, valueSerialized })
   })
 
   const code = lines.join('\n')
