@@ -1,9 +1,11 @@
 import { Link } from '@brillout/docpress'
 
-In some situations we don't want to pre-render a page.
+In some situations, a page shouldn't be pre-rendered.
 For example a news page that displays the latest news fetched from a database should be rendered at request-time and certainly not at build-time.
 
-We can use `prerender: false` to tell Vike to skip a page from pre-rendering.
+> <Link href="/pre-rendering" /> explains in depth whether a page should be pre-rendered or not.
+
+You can use `prerender: false` to tell Vike to skip a page from pre-rendering.
 
 ```js
 // /pages/news/+config.h.js
@@ -13,19 +15,29 @@ export default {
 }
 ```
 
+## Different defaults
 
-## `/renderer/+config.h.js`
+You can define `prerender` in <Link href="/config#different-defaults">higher levels so it applies to more/all pages</Link>.
 
-We can define `prerender` in higher levels so it applies to more/all pages, e.g. in `/pages/+config.h.js`,
-`/pages/+prerender.js` or even `/renderer/+config.h.js` or `/renderer/+prerender.js`.
+This is especially handy with <Link text="Domain-Driven File Structure" href='/file-structure#domain-driven' />:
 
-For example, to make pre-rendering opt-in instead of opt-out:
+```js
+// /pages/marketing/+prerender.js
+
+// Using Domain-Driven File Structure, +prerender.js applies to
+// all marketing pages.
+
+// Enable pre-rendering for all marketing pages
+export const prerender = true
+```
+
+You can also make pre-rendering opt-in instead of opt-out:
 
 ```js
 // /renderer/+config.h.js
 
 export default {
-  // By default, our pages are not pre-rendered
+  // By default, pages are not pre-rendered
   prerender: false
 }
 ```
@@ -37,22 +49,9 @@ export default {
 export const prerender = true
 ```
 
-This is especially handy with <Link text="Domain-Driven File Structure" href='/file-structure#domain-driven' />:
-
-```js
-// /pages/marketing/+prerender.js
-
-// We use Domain-Driven File Structure and `+prerender.js` applies to
-// all our marketing pages.
-
-// Enable pre-rendering for all our marketing pages
-export const prerender = true
-```
-
-
 ## Conditional pre-rendering
 
-We can pre-render pages conditionally:
+You can pre-render pages conditionally:
 
 ```js
 // /renderer/+prerender.js
@@ -60,23 +59,28 @@ We can pre-render pages conditionally:
 export const prerender = isCmsPreview() ? false : true
 ```
 
-> This is particularly useful for previewing CMS pages (we don't want to pre-renderer a CMS preview deploy).
+> This is particularly useful for previewing CMS pages (you don't want to pre-renderer a CMS preview deploy).
 
 Note that <Link text={<><code>onBeforePrerenderStart()</code> hooks</>} href="/onBeforePrerenderStart" /> are always
-called, regardless of `prerender`. If we want to call `onBeforePrerenderStart()` hooks conditionally as well:
+called, regardless of `prerender`.
+If you want to call `onBeforePrerenderStart()` hooks conditionally as well:
 
 ```js
 // /pages/movie/+prerender.js
 
+export { prerender }
+
 import { someCondition } from './someCondition'
-export const prerender = someCondition()
+
+const prerender = someCondition()
 ```
 
 ```js
 // /pages/movie/+onBeforePrerenderStart.js
 
-import { someCondition } from './someCondition'
 export { onBeforePrerenderStart }
+
+import { someCondition } from './someCondition'
 
 const onBeforePrerenderStart = someCondition()
   ? async () => {
