@@ -118,7 +118,6 @@ function getConfigValuesSerialized(
   isClientRouting: boolean
 ): string {
   const lines: string[] = []
-  const configValueSources = getConfigValueSourcesRelevant(pageConfig)
 
   lines.push('export const configValuesSerialized = {')
   Object.entries(pageConfig.configValuesComputed).forEach(([configName, configValuesComputed]) => {
@@ -134,7 +133,7 @@ function getConfigValuesSerialized(
     const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
     serializeConfigValue(lines, configName, { definedAt, valueSerialized })
   })
-  configValueSources.forEach((configValueSource) => {
+  getConfigValueSourcesRelevant(pageConfig).forEach((configValueSource) => {
     const { configName } = configValueSource
     const configValue = pageConfig.configValues[configName]
 
