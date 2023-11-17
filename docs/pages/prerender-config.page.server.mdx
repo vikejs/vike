@@ -1,6 +1,7 @@
 import { Link } from '@brillout/docpress'
+import { TextType } from './Config/TextType'
 
-> See <Link href="/pre-rendering" /> for an overview of how to pre-render our app.
+> <Link href="/pre-rendering" /> explains what pre-rendering is and how to use it.
 
 By default, pre-rendering is disabled. To enable it:
 
@@ -12,14 +13,14 @@ import vike from 'vike/plugin'
 export default {
   plugins: [
     vike({
-      // Use the default pre-render config:
+      // Use default settings:
       prerender: true,
-      // Deviate from the default pre-render config:
+      // Or set settings:
       prerender: {
-        partial: false,        // partial?: boolean
-        noExtraDir: false,     // noExtraDir?: boolean
-        parallel: 4,           // parallel?: boolean | number
-        disableAutoRun: false  // disableAutoRun?: boolean
+        partial: false,
+        noExtraDir: false,
+        parallel: 4,
+        disableAutoRun: false
       }
     })
   ]
@@ -123,7 +124,7 @@ const onBeforePrerenderStart = someCondition()
 
 ### `partial`
 
-Optional, default value: `false`.
+`boolean` (default: `false`)
 
 Allow only some of our pages to be pre-rendered.
 
@@ -136,7 +137,7 @@ This setting doesn't affect the pre-rendering process: it merely suppresses the 
 
 ### `noExtraDir`
 
-Optional, default value: `false`.
+`boolean` (default: `false`)
 
 Don't create a new directory for each HTML file.
 
@@ -148,7 +149,7 @@ For example, generate `dist/client/about.html` instead of `dist/client/about/ind
 
 ### `parallel`
 
-Optional, default value: [`os.cpus().length`](https://nodejs.org/api/os.html#os_os_cpus).
+`boolean | number` (default: [`os.cpus().length`](https://nodejs.org/api/os.html#os_os_cpus))
 
 Number of concurrent pre-render jobs.
 
@@ -163,7 +164,7 @@ Set to `false` (or `1`) to disable concurrency.
 
 ### `disableAutoRun`
 
-Optional, default value: `false`.
+`boolean` (default: `false`)
 
 Disable the automatic initiation of the pre-rendering process when running `$ vite build`.
 
