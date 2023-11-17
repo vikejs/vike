@@ -162,7 +162,7 @@
     "vike": "./node/cli/bin-entry.js"
   },
   "devDependencies": {
-    "@brillout/release-me": "^0.1.8",
+    "@brillout/release-me": "^0.1.9",
     "@types/estree": "^1.0.0",
     "@types/jest": "^27.4.1",
     "@types/node": "^20.1.0",
