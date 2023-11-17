@@ -24,13 +24,13 @@ For example, we can render an admin panel as SPA while rendering marketing pages
 Rendering a page as SPA means that the page is loaded and rendered only in the browser.
 
 To achieve that:
- 1. We set the `Page` [meta config](/meta#modify-existing-configurations) to `client-only` instead of `server-and-client`.
+ 1. We set the `Page` [meta config](/meta#modify-existing-configurations) `env` to `{ server: false, client: true }` instead of `{ server: true, client: true }`.
  2. We adapt our `onRenderHtml()` and `onRenderClient()` hooks.
 
 
 **1. `Page` meta config**
 
-By setting the `Page` meta config to `client-only` we ensure that `+Page.js` is loaded only in the browser.
+By setting the `Page` meta config `env` to `{ client: true }` we ensure that `+Page.js` is loaded only in the browser.
 
 ```js
 // /renderer/+config.h.js
@@ -39,7 +39,7 @@ By setting the `Page` meta config to `client-only` we ensure that `+Page.js` is 
 export default {
   meta: {
     Page: {
-      env: 'client-only' // SPA for all pages
+      env: { server: false, client: true } // SPA for all pages
     }
   }
 }
@@ -147,13 +147,13 @@ export const description = 'My App is ...'
 export default {
   meta: {
     Page: {
-      env: 'client-only' // SPA for all pages
+      env: { server: false, client: true } // SPA for all pages
     },
     title: {
-      env: 'server-and-client'
+      env: { server: true, client: true }
     },
     description: {
-      env: 'server-and-client'
+      env: { server: true, client: true }
     }
   }
 }
@@ -193,8 +193,9 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-> If we set the `Page` meta config to `client-only` instead of `server-and-client` in `config.h.js`, then
-> `pageContext.Page` is only defined in the browser.
+> If we set the `Page` meta config `env` to `{ server: false, client: true }` instead of
+> `{ server: true, client: true }` in `config.h.js`, then `pageContext.Page` is
+> only defined in the browser.
 
 ```js
 // /renderer/+onRenderClient.js
