@@ -129,11 +129,11 @@ function getConfigValuesSerialized(
     serializeConfigValue(lines, configName, { definedAt, valueSerialized })
   })
   configValueSources.forEach((configValueSource) => {
-    const { configName, configEnv, valueIsImportedAtRuntime } = configValueSource
+    const { configName, configEnv, valueIsImportedAtRuntime, valueIsFilePath } = configValueSource
     const configValue = pageConfig.configValues[configName]
 
     if (!configValue) return
-    if (!isEnvMatch(configEnv, false, isForClientSide, isClientRouting, valueIsImportedAtRuntime))
+    if (!isEnvMatch(configEnv, false, isForClientSide, isClientRouting, valueIsImportedAtRuntime && !valueIsFilePath))
       return
 
     const { value, definedAt } = configValue
