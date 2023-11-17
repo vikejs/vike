@@ -3,6 +3,7 @@ export { plugin }
 // TODO/v1-release: remove
 export { plugin as ssr }
 export type { ConfigVikeUserProvided as UserConfig }
+export { PROJECT_VERSION as version } from './utils.js'
 
 import type { Plugin } from 'vite'
 import { assertUsage, markEnvAsVite } from './utils.js'

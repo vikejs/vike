@@ -141,3 +141,42 @@ Error: ERR_UNKNOWN_FILE_EXTENSION .css node_modules/some-library/dist/main.css
     at ESMLoader.load (node:internal/modules/esm/loader:605:26)
 ```
 </CodeBlockTransformer>
+
+
+### Cannot read properties of undefined
+
+The error `Cannot read properties of undefined` is often caused by ESM/CJS issues.
+
+<CodeBlockTransformer lineBreak="white-space">
+```
+TypeError: Cannot read properties of undefined (reading 'someProp')
+    at someFunction (node_modules/some-good-lib/dist/index.js:1000:3)
+    at someHook (renderer/+someHook.js:13:37)
+```
+</CodeBlockTransformer>
+
+> The underlying issue being:
+> ```js
+> // node_modules/some-good-lib/dist/index.js
+>
+> // Because of CJS/ESM issues, someImport is undefined
+> import { someImport } from 'some-broken-lib'
+>
+> // ...
+>
+> function someFunction() {
+>   // TypeError: Cannot read properties of undefined (reading 'someProp')
+>   someImport.someProp
+> }
+> ```
+
+[Adding `some-broken-lib` to `vite.config.js > ssr.noExternal`](#solution) often solves the issue.
+
+> Sometimes, when dependency injection is used, the `import` to `some-broken-lib` isn't in the file in which the
+> exception is being raised, making it harder to understand which library is broken. See
+> [here](https://github.com/vikejs/vike/discussions/1235) an example of this.
+
+
+## See also
+
+- [List of examples](https://github.com/vikejs/vike/issues/621)

@@ -1,3 +1,16 @@
+## [0.4.147](https://github.com/vikejs/vike/compare/v0.4.146...v0.4.147) (2023-11-17)
+
+
+### Bug Fixes
+
+* [V1 design] implement lazy serializable config values ([e358cc3](https://github.com/vikejs/vike/commit/e358cc3850a033ebb237e8ce19a78da6781a2d1e))
+* [V1 design] refactor config.meta[configName].env ([79116f5](https://github.com/vikejs/vike/commit/79116f53fedc1e4ffca16a8e88670470e309200d))
+* export version ([cfb9551](https://github.com/vikejs/vike/commit/cfb9551077fbcbef8e84508d494155236987999a))
+* make prerender opt-out precede over prerender hooks ([baead9d](https://github.com/vikejs/vike/commit/baead9d1d1fb210932eeef7c8ca3c3fc4d5e40d6))
+* support Base URLs with trailing slash (fix [#1258](https://github.com/vikejs/vike/issues/1258)) ([701e2e5](https://github.com/vikejs/vike/commit/701e2e5cf76a0ef73b528bb9d30ec9f6a0809b3d))
+
+
+
 ## [0.4.146](https://github.com/vikejs/vike/compare/v0.4.145...v0.4.146) (2023-11-14)
 
 

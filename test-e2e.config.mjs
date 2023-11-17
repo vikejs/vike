@@ -198,8 +198,6 @@ function tolerateError({ logSource, logText }) {
     )
   }
   function isNodeExperimentalLoader() {
-    return (
-      logSource === 'stderr' && logText.includes('ExperimentalWarning: `--experimental-loader` may be removed')
-    )
+    return logSource === 'stderr' && logText.includes('ExperimentalWarning: `--experimental-loader` may be removed')
   }
 }

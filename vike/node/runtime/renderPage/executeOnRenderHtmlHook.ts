@@ -60,8 +60,7 @@ async function executeOnRenderHtmlHook(
   renderHook: RenderHook
   htmlRender: null | HtmlRender
 }> {
-  const hookFound = getRenderHook(pageContext)
-  const { renderHook, hookFn } = hookFound
+  const { renderHook, hookFn } = getRenderHook(pageContext)
   objectAssign(pageContext, { _renderHook: renderHook })
 
   preparePageContextForUserConsumptionServerSide(pageContext)

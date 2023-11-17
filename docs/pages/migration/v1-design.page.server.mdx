@@ -221,7 +221,7 @@ export default {
     // We define a new config 'title'
     title: {
       // The value of 'title' should only be loaded on the server
-      env: 'server-only'
+      env: { server: true }
     }
   }
 } satisfies Config
@@ -271,7 +271,7 @@ export default {
     onBeforeRender: {
       // We tell Vike to load and execute onBeforeRender()
       // not only on the server-side but also on the client-side.
-      env: 'server-and-client'
+      env: { server: true, client: true }
     }
   }
 } satisfies Config

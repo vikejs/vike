@@ -5,7 +5,7 @@ export default {
   // https://vike.dev/meta
   meta: {
     Page: {
-      env: 'server-only'
+      env: { server: true }
     }
   }
 } satisfies Config

@@ -239,8 +239,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.5.16
-        version: 0.5.16(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.3.0)
+        specifier: ^0.5.17
+        version: 0.5.17(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.3.0)
       '@types/node':
         specifier: ^15.12.1
         version: 15.14.9
@@ -296,8 +296,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vike-react:
-        specifier: ^0.3.0
-        version: 0.3.0(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@4.5.0)
+        specifier: ^0.3.2
+        version: 0.3.2(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@4.5.0)
       vite:
         specifier: ^4.0.3
         version: 4.5.0(@types/node@17.0.45)
@@ -1358,8 +1358,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       telefunc:
-        specifier: ^0.1.63
-        version: 0.1.63(@babel/core@7.23.3)(react@18.2.0)
+        specifier: ^0.1.64
+        version: 0.1.64(@babel/core@7.23.3)(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1394,8 +1394,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       telefunc:
-        specifier: ^0.1.63
-        version: 0.1.63(@babel/core@7.23.3)(react@18.2.0)
+        specifier: ^0.1.64
+        version: 0.1.64(@babel/core@7.23.3)(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1448,8 +1448,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vike-react:
-        specifier: ^0.3.0
-        version: 0.3.0(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@4.5.0)
+        specifier: ^0.3.2
+        version: 0.3.2(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@4.5.0)
       vite:
         specifier: ^4.3.8
         version: 4.5.0(@types/node@17.0.45)
@@ -1469,8 +1469,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vike-react-simple:
-        specifier: ^0.1.0
-        version: 0.1.0(react-dom@18.2.0)(react@18.2.0)(vike@vike)
+        specifier: ^0.1.1
+        version: 0.1.1(react-dom@18.2.0)(react@18.2.0)(vike@vike)
       vite:
         specifier: ^4.0.3
         version: 4.5.0(@types/node@17.0.45)
@@ -2046,8 +2046,8 @@ importers:
         version: 0.5.21
     devDependencies:
       '@brillout/release-me':
-        specifier: ^0.1.8
-        version: 0.1.8
+        specifier: ^0.1.9
+        version: 0.1.9
       '@types/estree':
         specifier: ^1.0.0
         version: 1.0.5
@@ -2399,8 +2399,8 @@ packages:
     requiresBuild: true
     dev: true
 
-  /@brillout/docpress@0.5.16(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.3.0):
-    resolution: {integrity: sha512-JCTRWjkl7czlnbByGg8X/63DOycmGyug7TgfE34GHts9IoJi/wH0mzAqZ6sE3i2kRMTvyOLx50N35aJoj5Lsvg==}
+  /@brillout/docpress@0.5.17(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.3.0):
+    resolution: {integrity: sha512-JDb/RoHtHbTmyupfaoxpE4vzPHsDhc607vR3yn/vT5DYznRwXJRE7tAaKOt9gYiL/rheCSIBbjU5BX7lMI9okQ==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -2474,8 +2474,8 @@ packages:
       semver: 7.5.4
     dev: false
 
-  /@brillout/release-me@0.1.8:
-    resolution: {integrity: sha512-2kZ1afR6ZZxicPmOCkME9ko0REjORzlfpYydvv2vzhyxqCF92Rg5SSbjzOMKGOZIMrq0rTDASe2dyZLDYBr1lQ==}
+  /@brillout/release-me@0.1.9:
+    resolution: {integrity: sha512-PG42NBN+EBLWMxnngpTikNd/pOjovXEMti8S9H+1u9Dldj2UGK+nrJxBQkDLhpFcGojBDy4XnLjyxWSHjESm/g==}
     hasBin: true
     dependencies:
       conventional-changelog: 5.1.0
@@ -11478,8 +11478,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /telefunc@0.1.63(@babel/core@7.23.3)(react@18.2.0):
-    resolution: {integrity: sha512-J/WalXdO8iooDUpEOws5FnFwDGBQ/WbuAE+LJMaRMU0RDBvgm2ez62TnwAO9zEehlBrLqxrnXdhc1Qn2z2yBZg==}
+  /telefunc@0.1.64(@babel/core@7.23.3)(react@18.2.0):
+    resolution: {integrity: sha512-Qbjz2FmmAk6DslB9m45FXXxVUZvNouPuP0yTMa1/z+YRHf0l8SEN04FAvzgEQtROOBcTpL2WBMU2gFCsFywwFQ==}
     engines: {node: '>=12.19.0'}
     peerDependencies:
       '@babel/core': ^7.0.0
@@ -12193,8 +12193,8 @@ packages:
       vfile-message: 3.1.4
     dev: false
 
-  /vike-react-simple@0.1.0(react-dom@18.2.0)(react@18.2.0)(vike@vike):
-    resolution: {integrity: sha512-oTaWQCWa7Td5CPgaN9U8wcKGUsojkouN78LE7vtvyx7Td7lozHH5bQIfXUhJnqNNb9VuIkDi+3L+wndeGPXjdg==}
+  /vike-react-simple@0.1.1(react-dom@18.2.0)(react@18.2.0)(vike@vike):
+    resolution: {integrity: sha512-TgeSlhGQ6Ovj3+mHDwKYlr5Ov+8DhG4mi0b/6Sri2ymLN03SCnV2eqluRbDvq6KE7w75b/x9hALx3pV9cFxtpw==}
     peerDependencies:
       react: 18.x.x
       react-dom: 18.x.x
@@ -12205,8 +12205,8 @@ packages:
       vike: link:vike
     dev: false
 
-  /vike-react@0.3.0(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@4.5.0):
-    resolution: {integrity: sha512-7WuUkA4ECy7vZlEHxfPykyCUGOG/1RqP8i24ydbR11yMvmGBg6uELDYhH9miyE+YGgwEgAfFbvw/NhAolf9c7w==}
+  /vike-react@0.3.2(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@4.5.0):
+    resolution: {integrity: sha512-Yv30WPPYEw+ynfJVzHxVMZvCgyXBGKnAc6SdxgpaT2holNtjCoYAh600GQa2NJqNTufqUFg9FvZqvAs3sVUNXQ==}
     peerDependencies:
       react: 18.x.x
       react-dom: 18.x.x

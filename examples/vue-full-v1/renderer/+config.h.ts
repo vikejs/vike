@@ -13,7 +13,7 @@ export default {
   meta: {
     // Create new config 'title'
     title: {
-      env: 'server-and-client'
+      env: { server: true, client: true }
     }
   }
 } satisfies Config

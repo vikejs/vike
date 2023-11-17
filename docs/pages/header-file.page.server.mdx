@@ -11,7 +11,25 @@ import HeaderFileIntro from '../components/HeaderFileIntro.mdx'
 
 ## Why
 
-Instead of `+config.h.js` we can define `+config.js`:
+Consider this example:
+
+```js
+// +config.h.js
+
+// onRenderClient() should be loaded only on the client-side
+import onRenderClient from './some-file'
+// onRenderHtml() should be loaded only on the server-side
+import onRenderHtml from './some-other-file'
+
+export default { onRenderHtml, onRenderClient }
+```
+
+Using `'import:./some-file'` instead of a real import `import onRenderClient from './some-file'` enables Vike to load the hook `onRenderClient()` in the right environment.
+
+
+## Optional
+
+Instead of `+config.h.js` you can define a `+config.js` file (without `.h`):
 
 ```js
 // /pages/some-page/+config.js
@@ -22,55 +40,7 @@ export default {
 }
 ```
 
-But then we lose IntelliSense such as auto-import, refactoring, type safety, and go-to-definition. That's why we recommend to define `+config.h.js` instead of `+config.js`.
-
-> Real imports cannot be used. Consider this example:
->
-> ```js
-> // +config.h.js
->
-> // onRenderClient() should be loaded only on the client-side
-> import onRenderClient from './some-file'
-> // onRenderHtml() should be loaded only on the server-side
-> import onRenderHtml from './some-other-file'
->
-> export default { onRenderHtml, onRenderClient }
-> ```
->
-> Using `'import:./some-file'` instead of a real import `import onRenderClient from './some-file'` enables Vike to load the `onRenderClient()` hook only when needed and in the right environment.
-
-
-## Optional
-
-As mentioned in the previous section, `.h.js` files are optional.
-
-Instead of defining a `+config.h.ts` file:
-
-```ts
-// /pages/some-page/+config.h.ts
-
-import type { Config } from 'vike/types'
-import Page from './some-file'
-import { onBeforeRender } from './some-other-file'
-
-export default {
-  Page,
-  onBeforeRender
-} satisfies Config
-```
-
-We can define a `+config.ts` file (without `.h`):
-
-```ts
-// /pages/some-page/+config.ts
-
-import type { Config } from 'vike/types'
-
-export default {
-  Page: 'import:./some-file',
-  onBeforeRender: 'import:./some-other-file:onBeforeRender'
-} satisfies Config
-```
+But you lose IntelliSense (auto-import, refactoring, type safety, go-to-definition, ...) and that's why we recommend using `+config.h.js` instead of `+config.js`.
 
 
 ## Inline hooks code
@@ -114,16 +84,16 @@ If an import isn't re-exported by `export default { ... }`, then it won't be inc
 ```js
 // +config.h.js
 
-// These two imports aren't included in any runtime.
 import { something } from './some-file'
-// This import has no effect. (CSS should be imported in runtime code such as +Page.js instead.)
+// CSS imports have no effect at all here. (You should import CSS files in runtime code
+// such as +Page.js instead.)
 import './some.css'
 
-// This log is printed only when Vike reads +config.h.js files. It
-// isn't included in the client nor the server runtime.
+// This log is printed only when Vike reads +config.h.js files: it isn't included in the
+// client runtime nor server runtime.
 console.log(something) // Prints: 'import:./some-file:something'
 
 export default {
-  // `something` isn't re-exported here
+  // `something` isn't re-exported here => `something` isn't included in any runtime.
 }
 ```

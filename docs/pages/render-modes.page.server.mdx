@@ -1,3 +1,5 @@
+import { UseBatiInsteadHint } from '../components'
+
 import { Link, RepoLink, Warning } from '@brillout/docpress'
 
 For each page, we can choose a different render mode:
@@ -12,7 +14,10 @@ For example, we can render an admin panel as SPA while rendering marketing pages
 
 > The Vike boilerplates do SSR by default, which is a sensible default that works for most apps.
 
-> Instead of manually integrating render modes yourself, you can use <Link text={<><code>vike-*</code> packages</>} href="/vike-packages" /> and [Bati](https://batijs.github.io/): `vike-*` packages include an `ssr: boolean` config and Bati helps you scaffold projects. Bati and `vike-*` packages are going to get out of beta soon.
+<UseBatiInsteadHint
+  featureName="render modes"
+  additionalHint={<><code>vike-*</code> packages include an <code>ssr: boolean</code> config</>}
+/>
 
 ## SPA
 

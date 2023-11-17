@@ -2,10 +2,10 @@ export { parsePageConfigs }
 
 import type { ConfigValues, PageConfigRuntime, PageConfigGlobalRuntime } from '../PageConfig.js'
 import type { PageConfigGlobalRuntimeSerialized, PageConfigRuntimeSerialized } from './PageConfigSerialized.js'
-import { parse } from '@brillout/json-serializer/parse'
 import { parseConfigValuesImported } from './parseConfigValuesImported.js'
-import { assert, assertUsage, isCallable } from '../../utils.js'
+import { assertUsage, isCallable } from '../../utils.js'
 import { getConfigDefinedAtString } from '../helpers.js'
+import { parseConfigValuesSerialized } from './parseConfigValuesSerialized.js'
 
 function parsePageConfigs(
   pageConfigsSerialized: PageConfigRuntimeSerialized[],
@@ -15,17 +15,8 @@ function parsePageConfigs(
     const configValues: ConfigValues = {}
     {
       const { configValuesSerialized } = pageConfigSerialized
-      Object.entries(configValuesSerialized).forEach(([configName, configValueSeriliazed]) => {
-        {
-          const { valueSerialized, definedAt } = configValueSeriliazed
-          assert(valueSerialized)
-          assert(!configValues[configName])
-          configValues[configName] = {
-            value: parse(valueSerialized),
-            definedAt
-          }
-        }
-      })
+      const configValuesAddendum = parseConfigValuesSerialized(configValuesSerialized)
+      Object.assign(configValues, configValuesAddendum)
     }
     {
       const { configValuesImported } = pageConfigSerialized
