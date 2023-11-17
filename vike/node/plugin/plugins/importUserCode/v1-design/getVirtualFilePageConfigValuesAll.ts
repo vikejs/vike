@@ -57,15 +57,22 @@ function getLoadConfigValuesAll(
   isDev: boolean
 ): string {
   const lines: string[] = []
-  const configValue = getConfigValue(pageConfig, 'clientRouting', 'boolean')
-  const isClientRouting = configValue?.value ?? false
+  const importStatements: string[] = []
+  const isClientRouting = getConfigValue(pageConfig, 'clientRouting', 'boolean')?.value ?? false
 
-  lines.push(
-    getConfigValuesImported(pageConfig, isForClientSide, isClientRouting, pageId, includeAssetsImportedByServer, isDev)
-  )
+  lines.push('export const configValuesImported = [')
+  lines.push(getConfigValuesImported(pageConfig, isForClientSide, isClientRouting, importStatements))
+  lines.push('];')
+
+  lines.push('export const configValuesSerialized = {')
   lines.push(getConfigValuesSerialized(pageConfig, isForClientSide, isClientRouting))
+  lines.push('};')
 
-  const code = lines.join('\n')
+  if (includeAssetsImportedByServer && isForClientSide && !isDev) {
+    importStatements.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigValuesAll(pageId, false))}'`)
+  }
+
+  const code = [...importStatements, ...lines].join('\n')
   return code
 }
 
@@ -73,15 +80,11 @@ function getConfigValuesImported(
   pageConfig: PageConfigBuildTime,
   isForClientSide: boolean,
   isClientRouting: boolean,
-  pageId: string,
-  includeAssetsImportedByServer: boolean,
-  isDev: boolean
+  importStatements: string[]
 ): string {
   const lines: string[] = []
-  const importStatements: string[] = []
   const varCounterContainer = { varCounter: 0 }
 
-  lines.push('export const configValuesImported = [')
   getConfigValueSourcesNotOverriden(pageConfig).forEach((configValueSource) => {
     if (
       !isEnvMatch(configValueSource.configEnv, checkWhetherIsImport(configValueSource), {
@@ -102,13 +105,8 @@ function getConfigValuesImported(
       )
     )
   })
-  lines.push('];')
 
-  if (includeAssetsImportedByServer && isForClientSide && !isDev) {
-    lines.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigValuesAll(pageId, false))}'`)
-  }
-
-  const code = [...importStatements, ...lines].join('\n')
+  const code = lines.join('\n')
   return code
 }
 
@@ -119,7 +117,6 @@ function getConfigValuesSerialized(
 ): string {
   const lines: string[] = []
 
-  lines.push('export const configValuesSerialized = {')
   Object.entries(pageConfig.configValuesComputed).forEach(([configName, configValuesComputed]) => {
     const { value, configEnv } = configValuesComputed
 
@@ -151,7 +148,6 @@ function getConfigValuesSerialized(
     const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
     serializeConfigValue(lines, configName, { definedAt, valueSerialized })
   })
-  lines.push('};')
 
   const code = lines.join('\n')
   return code

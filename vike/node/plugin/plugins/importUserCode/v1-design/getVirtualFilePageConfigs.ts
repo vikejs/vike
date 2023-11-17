@@ -1,5 +1,6 @@
 export { getVirtualFilePageConfigs }
 export { getConfigValueSerialized }
+export { getConfigValuesSerialized }
 
 import { assert, assertUsage, getPropAccessNotation, objectEntries } from '../../../utils.js'
 import type {
