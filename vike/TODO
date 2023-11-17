@@ -1,3 +1,8 @@
+- Systematically remove:
+  ```
+  (using the <Link text="V1 design" href="/migration/v1-design" />).
+  ```
+
 - Docs
   - pageContext.config
   - pageContext.configEntries

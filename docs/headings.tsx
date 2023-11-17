@@ -196,12 +196,6 @@ const headings = [
     url: '/vike-packages'
   },
   {
-    level: 2,
-    title: 'Built-in renderers',
-    isListTitle: true,
-    url: '/renderers'
-  },
-  {
     level: 1,
     title: 'Routing',
     titleEmoji: 'road-fork'
