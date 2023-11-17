@@ -73,9 +73,9 @@ import {
   assertExportsOfConfigFile,
   assertExportsOfValueFile
 } from '../../../../../shared/page-configs/assertExports.js'
-import { assertConfigValueIsSerializable } from './getVirtualFilePageConfigs.js'
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
+import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
 
 assertIsNotProductionRuntime()
 
