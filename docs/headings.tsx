@@ -626,29 +626,14 @@ const headings = [
     url: '/pageContext'
   },
   {
-    level: 4,
-    title: 'Global config'
+    level: 2,
+    title: '`Page`',
+    url: '/Page'
   },
   {
     level: 2,
-    title: '`prerender`',
-    url: '/prerender-config'
-  },
-  {
-    level: 2,
-    titleInNav: '`disableAutoFullBuild`',
-    title: '`config.disableAutoFullBuild`',
-    url: '/disableAutoFullBuild'
-  },
-  {
-    level: 2,
-    titleInNav: '`redirects`',
-    title: '`config.redirects`',
-    url: '/redirects'
-  },
-  {
-    level: 4,
-    title: 'Server- & client-side'
+    title: '`route`',
+    url: '/route'
   },
   {
     level: 2,
@@ -657,19 +642,75 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Config list',
+    title: 'Config List',
     url: '/Config'
   },
   {
     level: 2,
-    title: '`export { Page }`',
-    url: '/Page'
+    title: 'Error Page',
+    url: '/error-page'
+  },
+  {
+    level: 2,
+    title: 'Client Entry',
+    url: '/client'
+  },
+  {
+    level: 4,
+    title: 'Hooks'
   },
   {
     level: 2,
     title: '`onBeforeRender()` hook (server- and client-side)',
-    titleInNav: '`export { onBeforeRender }`',
+    titleInNav: '`onBeforeRender()`',
     url: '/onBeforeRender-isomorphic'
+  },
+  {
+    level: 2,
+    title: '`onBeforeRender()` hook (server-side)',
+    titleInNav: '`onBeforeRender()`',
+    sectionTitles: ['Client Routing'],
+    url: '/onBeforeRender'
+  },
+  {
+    level: 2,
+    title: '`onBeforePrerenderStart()` hook',
+    titleInNav: '`onBeforePrerenderStart()`',
+    url: '/onBeforePrerenderStart'
+  },
+  {
+    level: 2,
+    title: '`onPrerenderStart()` hook',
+    titleInNav: '`onPrerenderStart()`',
+    url: '/onPrerenderStart'
+  },
+  {
+    level: 2,
+    title: '`onRenderHtml()` hook',
+    titleInNav: '`onRenderHtml()`',
+    url: '/onRenderHtml'
+  },
+  {
+    level: 2,
+    title: '`onRenderClient()` hook',
+    titleInNav: '`onRenderClient()`',
+    url: '/onRenderClient'
+  },
+  {
+    level: 2,
+    title: '`onBeforeRoute()` hook',
+    titleInNav: '`onBeforeRoute()`',
+    // titleInNav: '`onBeforeRoute`',
+    url: '/onBeforeRoute'
+  },
+  {
+    level: 4,
+    title: 'Utils (server- & client-side)'
+  },
+  {
+    level: 2,
+    title: '`usePageContext()`',
+    url: '/usePageContext'
   },
   {
     level: 2,
@@ -683,67 +724,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'Server-side'
-  },
-  {
-    level: 2,
-    title: '`onBeforeRender()` hook (server-side)',
-    titleInNav: '`export { onBeforeRender }`',
-    sectionTitles: ['Client Routing'],
-    url: '/onBeforeRender'
-  },
-  {
-    level: 2,
-    title: '`onRenderHtml()` hook',
-    titleInNav: '`export { onRenderHtml }`',
-    url: '/onRenderHtml'
-  },
-  {
-    level: 2,
-    title: '`onBeforePrerenderStart()` hook',
-    titleInNav: '`export { onBeforePrerenderStart }`',
-    url: '/onBeforePrerenderStart'
-  },
-  {
-    level: 2,
-    title: '`onPrerenderStart()` hook',
-    titleInNav: '`export { onPrerenderStart }`',
-    url: '/onPrerenderStart'
-  },
-  {
-    level: 2,
-    title: '`renderPage()`',
-    url: '/renderPage'
-  },
-  {
-    level: 2,
-    title: '`injectFilter()`',
-    url: '/injectFilter'
-  },
-  {
-    level: 2,
-    title: '`escapeInject`',
-    url: '/escapeInject'
-  },
-  {
-    level: 2,
-    title: '`prerender()` programmatic',
-    url: '/prerender-programmatic'
-  },
-  {
-    level: 4,
-    title: 'Client-side'
-  },
-  {
-    level: 2,
-    title: '`onRenderClient()` hook',
-    titleInNav: '`export { onRenderClient }`',
-    url: '/onRenderClient'
-  },
-  {
-    level: 2,
-    title: '`client`',
-    url: '/client'
+    title: 'Utils (client-side)'
   },
   {
     level: 2,
@@ -761,18 +742,48 @@ const headings = [
     url: '/prefetch'
   },
   {
+    level: 4,
+    title: 'Utils (server-side)'
+  },
+  {
     level: 2,
-    title: '`usePageContext()`',
-    url: '/usePageContext'
+    title: '`renderPage()`',
+    url: '/renderPage'
+  },
+  {
+    level: 2,
+    title: '`escapeInject`',
+    url: '/escapeInject'
+  },
+  {
+    level: 2,
+    title: '`injectFilter()`',
+    url: '/injectFilter'
+  },
+  {
+    level: 2,
+    title: '`prerender()`',
+    url: '/prerender-programmatic'
   },
   {
     level: 4,
-    title: 'Build-time'
+    title: 'Config'
   },
   {
     level: 2,
-    title: '`clientRouting`',
-    url: '/clientRouting'
+    title: '`prerender`',
+    url: '/prerender-config'
+  },
+  {
+    level: 2,
+    titleInNav: '`redirects`',
+    title: '`config.redirects`',
+    url: '/redirects'
+  },
+  {
+    level: 2,
+    title: '`filesystemRoutingRoot`',
+    url: '/filesystemRoutingRoot'
   },
   {
     level: 2,
@@ -781,8 +792,8 @@ const headings = [
   },
   {
     level: 2,
-    title: '`filesystemRoutingRoot`',
-    url: '/filesystemRoutingRoot'
+    title: '`clientRouting`',
+    url: '/clientRouting'
   },
   {
     level: 2,
@@ -795,28 +806,9 @@ const headings = [
     url: '/extends'
   },
   {
-    level: 4,
-    title: 'Routing'
-  },
-  {
     level: 2,
-    title: '`export { route }`',
-    url: '/route'
+    titleInNav: '`disableAutoFullBuild`',
+    title: '`config.disableAutoFullBuild`',
+    url: '/disableAutoFullBuild'
   },
-  {
-    level: 2,
-    title: '`onBeforeRoute()` hook',
-    titleInNav: '`export { onBeforeRoute }`',
-    // titleInNav: '`onBeforeRoute`',
-    url: '/onBeforeRoute'
-  },
-  {
-    level: 4,
-    title: 'Misc'
-  },
-  {
-    level: 2,
-    title: 'Error page',
-    url: '/error-page'
-  }
 ] satisfies HeadingDefinition[]
