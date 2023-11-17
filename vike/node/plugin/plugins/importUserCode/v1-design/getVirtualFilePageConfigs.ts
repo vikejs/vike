@@ -46,12 +46,19 @@ function getCode(
   const lines: string[] = []
   const importStatements: string[] = []
   const varCounterContainer = { varCounter: 0 }
+
+  lines.push('export const pageConfigsSerialized = [')
   lines.push(
     getCodePageConfigsSerialized(pageConfigs, isForClientSide, isClientRouting, importStatements, varCounterContainer)
   )
+  lines.push('];')
+
+  lines.push('export const pageConfigGlobalSerialized = {')
   lines.push(
     getCodePageConfigGlobalSerialized(pageConfigGlobal, isForClientSide, isDev, importStatements, varCounterContainer)
   )
+  lines.push('};')
+
   const code = [...importStatements, ...lines].join('\n')
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
   return code
@@ -65,7 +72,7 @@ function getCodePageConfigsSerialized(
   varCounterContainer: { varCounter: number }
 ): string {
   const lines: string[] = []
-  lines.push('export const pageConfigsSerialized = [')
+
   pageConfigs.forEach((pageConfig) => {
     const { pageId, routeFilesystem, isErrorPage } = pageConfig
     const virtualFileIdPageConfigValuesAll = getVirtualFileIdPageConfigValuesAll(pageId, isForClientSide)
@@ -74,6 +81,8 @@ function getCodePageConfigsSerialized(
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(`    loadConfigValuesAll: () => import(${JSON.stringify(virtualFileIdPageConfigValuesAll)}),`)
+
+    // Serialized config values
     lines.push(`    configValuesSerialized: {`)
     lines.push(
       getConfigValuesSerialized(pageConfig, (configEnv) =>
@@ -82,7 +91,8 @@ function getCodePageConfigsSerialized(
     )
     lines.push(`    },`)
 
-    let whitespace = '    '
+    // Imported config values
+    const whitespace = '    '
     lines.push(`${whitespace}configValuesImported: [`)
     Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
       const configValue = pageConfig.configValues[configName]
@@ -102,10 +112,8 @@ function getCodePageConfigsSerialized(
     })
     lines.push(`${whitespace}],`)
 
-    // pageConfig end
     lines.push(`  },`)
   })
-  lines.push('];')
 
   const code = lines.join('\n')
   return code
@@ -119,7 +127,6 @@ function getCodePageConfigGlobalSerialized(
   varCounterContainer: { varCounter: number }
 ) {
   const lines: string[] = []
-  lines.push('export const pageConfigGlobalSerialized = {')
   /* Nothing (yet)
   lines.push(`  configValuesSerialized: {`)
   lines.push(`  },`)
@@ -144,7 +151,6 @@ function getCodePageConfigGlobalSerialized(
     )
   })
   lines.push(`  ],`)
-  lines.push('};')
 
   const code = lines.join('\n')
   return code
