@@ -3,6 +3,8 @@ export { getConfigValueSerialized }
 
 import { assert, assertUsage, getPropAccessNotation, objectEntries } from '../../../utils.js'
 import type {
+  ConfigEnvInternal,
+  ConfigValueSource,
   DefinedAt,
   PageConfigBuildTime,
   PageConfigGlobalBuildTime
@@ -72,30 +74,11 @@ function getCodePageConfigsSerialized(
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(`    loadConfigValuesAll: () => import(${JSON.stringify(virtualFileIdPageConfigValuesAll)}),`)
     lines.push(`    configValuesSerialized: {`)
-    Object.entries(pageConfig.configValuesComputed).forEach(([configName, configValuesComputed]) => {
-      const { value, configEnv } = configValuesComputed
-      if (!isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: true })) return
-      // configValeSources has higher precedence
-      if (pageConfig.configValueSources[configName]) return
-      const configValue = pageConfig.configValues[configName]
-      assert(configValue)
-      const { definedAt } = configValue
-      const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
-      serializeConfigValue(lines, configName, { definedAt, valueSerialized })
-    })
-    getConfigValueSourcesNotOverriden(pageConfig).forEach((configValueSource) => {
-      const { configName } = configValueSource
-      const configValue = pageConfig.configValues[configName]
-
-      if (!configValue) return
-      if (!isRuntimeEnvMatch(configValueSource.configEnv, { isForClientSide, isClientRouting, isEager: true })) {
-        return
-      }
-
-      const { value, definedAt } = configValue
-      const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
-      serializeConfigValue(lines, configName, { definedAt, valueSerialized })
-    })
+    lines.push(
+      getConfigValuesSerialized(pageConfig, (configEnv) =>
+        isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: true })
+      )
+    )
     lines.push(`    },`)
 
     let whitespace = '    '
@@ -162,6 +145,39 @@ function getCodePageConfigGlobalSerialized(
   lines.push(`  ],`)
   lines.push('};')
 
+  const code = lines.join('\n')
+  return code
+}
+
+function getConfigValuesSerialized(
+  pageConfig: PageConfigBuildTime,
+  isEnvMatch: (configEnv: ConfigEnvInternal, configValueSource?: ConfigValueSource) => boolean
+): string {
+  const lines: string[] = []
+  Object.entries(pageConfig.configValuesComputed).forEach(([configName, configValuesComputed]) => {
+    const { value, configEnv } = configValuesComputed
+    if (!isEnvMatch(configEnv)) return
+    // configValeSources has higher precedence
+    if (pageConfig.configValueSources[configName]) return
+    const configValue = pageConfig.configValues[configName]
+    assert(configValue)
+    const { definedAt } = configValue
+    const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
+    serializeConfigValue(lines, configName, { definedAt, valueSerialized })
+  })
+  getConfigValueSourcesNotOverriden(pageConfig).forEach((configValueSource) => {
+    const { configName, configEnv } = configValueSource
+    const configValue = pageConfig.configValues[configName]
+
+    if (!configValue) return
+    if (!isEnvMatch(configEnv, configValueSource)) {
+      return
+    }
+
+    const { value, definedAt } = configValue
+    const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
+    serializeConfigValue(lines, configName, { definedAt, valueSerialized })
+  })
   const code = lines.join('\n')
   return code
 }
