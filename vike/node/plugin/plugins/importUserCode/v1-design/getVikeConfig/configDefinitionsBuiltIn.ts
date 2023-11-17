@@ -105,7 +105,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   client: {
     // The value of the client config is merely the file path to the client entry file, which is only needed on the sever-side
-    env: { server: true, eager: true },
+    env: { server: true },
     _valueIsFilePath: true
   },
   clientRouting: {

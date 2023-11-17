@@ -83,7 +83,7 @@ function getConfigValuesImported(
   lines.push('export const configValuesImported = [')
   getConfigValueSourcesRelevant(pageConfig).forEach((configValueSource) => {
     const { configEnv, valueIsImportedAtRuntime, valueIsFilePath } = configValueSource
-    if (!isEnvMatch(configEnv, true, isForClientSide, isClientRouting, valueIsImportedAtRuntime, valueIsFilePath))
+    if (!isEnvMatch(configEnv, true, isForClientSide, isClientRouting, valueIsImportedAtRuntime && !valueIsFilePath))
       return
     const whitespace = '  '
     lines.push(
@@ -118,7 +118,7 @@ function getConfigValuesSerialized(
   Object.entries(pageConfig.configValuesComputed).forEach(([configName, configValuesComputed]) => {
     const { value, configEnv } = configValuesComputed
 
-    if (!isEnvMatch(configEnv, false, isForClientSide, isClientRouting, false, false)) return
+    if (!isEnvMatch(configEnv, false, isForClientSide, isClientRouting, false)) return
     // configValeSources has higher precedence
     if (pageConfig.configValueSources[configName]) return
 
@@ -129,11 +129,11 @@ function getConfigValuesSerialized(
     serializeConfigValue(lines, configName, { definedAt, valueSerialized })
   })
   configValueSources.forEach((configValueSource) => {
-    const { configName, configEnv, valueIsImportedAtRuntime, valueIsFilePath } = configValueSource
+    const { configName, configEnv, valueIsImportedAtRuntime } = configValueSource
     const configValue = pageConfig.configValues[configName]
 
     if (!configValue) return
-    if (!isEnvMatch(configEnv, false, isForClientSide, isClientRouting, valueIsImportedAtRuntime, valueIsFilePath))
+    if (!isEnvMatch(configEnv, false, isForClientSide, isClientRouting, valueIsImportedAtRuntime))
       return
 
     const { value, definedAt } = configValue
@@ -152,11 +152,8 @@ function isEnvMatch(
   isForClientSide: boolean,
   isClientRouting: boolean,
   valueIsImportedAtRuntime: boolean,
-  valueIsFilePath: boolean | undefined
 ): boolean {
   if (valueIsImportedAtRuntime !== isImported) return false
-  if (valueIsFilePath) return false
   if (!isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: false })) return false
-
   return true
 }
