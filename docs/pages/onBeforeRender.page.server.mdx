@@ -1,18 +1,21 @@
 import { HookTypeScriptHints } from '../components'
 import { Link } from '@brillout/docpress'
 
-The `onBeforeRender()` hook is usually used together with [`passToClient`](/passToClient) to fetch data, see [Guides > Data Fetching](/data-fetching).
+The `onBeforeRender()` hook is usually used for fetching data, see <Link href="/data-fetching" />.
 
-By default it is only loaded in Node.js, so ORM/SQL database queries can be used.
+
+## Server-side
+
+By default `onBeforeRender()` is loaded and executed only on the server-side. Thus you can directly use ORM/SQL database queries:
 
 ```js
 // /pages/movies/+onBeforeRender.js
 
-// Note how we use `node-fetch`; this file is only run in Node.js by default, thus we don't need
+export { onBeforeRender }
+
+// Note how we use `node-fetch`; this file is only run on the server-side, thus we don't need
 // to use an isomorphic (aka universal) implementation such as `cross-fetch`.
 import fetch from 'node-fetch'
-
-export { onBeforeRender }
 
 async function onBeforeRender(pageContext){
   const response = await fetch("https://api.imdb.com/api/movies/")
@@ -31,31 +34,44 @@ async function onBeforeRender(pageContext){
 }
 ```
 
-Examples:
+## Examples
+
 - <Link href='/examples/react-full-v1/pages/star-wars/index/+onBeforeRender.ts' />
 - <Link href='/examples/vue-full-v1/pages/star-wars/index/+onBeforeRender.ts' />
 
-You can also provide initial `pageContext` values at your server middleware with <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
+
+## Initial `pageContext` values
+
+You can provide initial `pageContext` values at your server middleware with <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
 This is where you usually pass information about the authenticated user
 (see <Link href="/auth" />).
 
-> You can also suppress on a per-page basis globally defined `onBeforeRender()` hooks:
-> ```js
-> // /pages/+onBeforeRender.js
->
-> // Some global onBeforeRender() hook
-> export default () => {
->   // ...
-> }
-> ```
-> ```js
-> // /pages/some-page/+config.h.js
->
-> export default {
->   // Suppress the global onBeforeRender() hook
->   onBeforeRender: null
-> }
-> ```
+> For <Link href="/pre-rendering" >pre-rendered</Link> apps, see [#962 - New hook `onStartup()`](https://github.com/vikejs/vike/issues/962).
+
+
+## Override
+
+There can be only one `onBeforeRender()` hook per page. For example, if you define a global `onBeforeRender()` hook at `/pages/+onBeforeRender.js` as well as a page-specific one at `/pages/star-wars/+onBeforeRender.js` then the page-specific one overrides the global one.
+
+> If you want multiple `onBeforeRender()` hooks, consider <Link href="/exports">creating custom hooks</Link> instead: you can then use one global `onBeforeRender()` hook that orchestrates many custom hooks.
+
+You can also suppress globally defined `onBeforeRender()` hooks on a per-page basis:
+```js
+// /pages/+onBeforeRender.js
+
+// Some global onBeforeRender() hook
+export default () => {
+  // ...
+}
+```
+```js
+// /pages/some-page/+config.h.js
+
+export default {
+  // Suppress the global onBeforeRender() hook
+  onBeforeRender: null
+}
+```
 
 
 ## Client-side
@@ -64,18 +80,17 @@ By default, `onBeforeRender()` always runs on the server-side.
 But,
 by [using `meta`](/meta#modify-existing-configurations),
 you have the option to also run `onBeforeRender()` on the client-side;
-the hook is then called not only in Node.js but also in the browser.
+the hook is then called not only on the server but also in the browser.
 
-For the first page the user visits `onBeforeRender()` is called in Node.js
-while for any subsequent page navigation `onBeforeRender()` is called in the browser.
+For the first page the user visits `onBeforeRender()` is called on the server
+and for page navigations `onBeforeRender()` is called in the browser.
 
-> This option is only available if you use <Link href="/clientRouting" noBreadcrumb />.
+> This option is only available if you use <Link href="/client-routing" >Client Routing</Link>.
 
-In general, we recommend running `onBeforeRender()` only server-side since it's easier to write code that only runs
-in Node.js.
+In general, we recommend running `onBeforeRender()` only on the server-side because it's usually easier to write server-side only code.
 
-That said, if we want to minimize requests made to our Node.js server, then we may want to run `onBeforeRender()` client-side too.
-But then we need to ensure that our `onBeforeRender()` hook is isomorphic: it needs to be able to run in both Node.js and the browser.
+That said, if you want to minimize requests made to your server, then it makes sense to run `onBeforeRender()` in the client.
+Keep in mind that you'll then have to ensure that your `onBeforeRender()` hook is isomorphic: it needs to be able to run in the server as well as in the browser.
 
 Example:
  - [/examples/react-full-v1/](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/)
@@ -85,7 +100,6 @@ Example:
 
 
 ## TypeScript
-
 
 ```ts
 export { onBeforeRender }
