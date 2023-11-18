@@ -10,6 +10,7 @@ import { resolveExtensions } from './resolveExtensions.js'
 import { resolveBase } from './resolveBase.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
+import { readAndSetGitignoreLines } from '../../shared/readGitignore/index.js'
 
 function resolveVikeConfig(vikeConfig: unknown): Plugin {
   return {
@@ -29,6 +30,8 @@ async function getConfigVikPromise(vikeConfig: unknown, config: ResolvedConfig):
   const fromStemPackages = await findConfigVikeFromStemPackages(config.root)
 
   const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig]
+
+  await readAndSetGitignoreLines(config.root)
 
   const extensions = resolveExtensions(configs, config)
 
