@@ -238,6 +238,8 @@ async function loadInterfaceFiles(
     })
   )
 
+  assertAllConfigsAreKnown(interfaceFilesByLocationId)
+
   return interfaceFilesByLocationId
 }
 function getConfigDefinition(
@@ -306,6 +308,22 @@ function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: 
     interfaceFile.configMap[configName] = { configValue }
   })
   return interfaceFile
+}
+/** Show error message upon unknown config */
+function assertAllConfigsAreKnown(interfaceFilesByLocationId: InterfaceFilesByLocationId) {
+  Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
+    const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
+    const configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
+    interfaceFiles.forEach((interfaceFile) => {
+      Object.keys(interfaceFile.configMap).forEach((configName) => {
+        assertConfigExists(
+          configName,
+          Object.keys(configDefinitionsRelevant),
+          interfaceFile.filePath.filePathToShowToUser
+        )
+      })
+    })
+  })
 }
 
 async function loadVikeConfig_withErrorHandling(
@@ -431,20 +449,6 @@ async function loadVikeConfig(
       })
   )
 
-  // Show error message upon unknown config
-  Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
-    const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
-    const configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
-    interfaceFiles.forEach((interfaceFile) => {
-      Object.keys(interfaceFile.configMap).forEach((configName) => {
-        assertConfigExists(
-          configName,
-          Object.keys(configDefinitionsRelevant),
-          interfaceFile.filePath.filePathToShowToUser
-        )
-      })
-    })
-  })
   return { pageConfigs, pageConfigGlobal, globalVikeConfig }
 }
 
