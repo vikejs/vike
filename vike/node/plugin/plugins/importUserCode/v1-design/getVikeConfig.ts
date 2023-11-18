@@ -449,7 +449,27 @@ async function loadVikeConfig(
       })
   )
 
+  assertPageConfigs(pageConfigs)
+
   return { pageConfigs, pageConfigGlobal, globalVikeConfig }
+}
+function assertPageConfigs(pageConfigs: PageConfigBuildTime[]) {
+  pageConfigs.forEach((pageConfig) => {
+    assertOnBeforeRenderEnv(pageConfig)
+  })
+}
+function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
+  const onBeforeRenderConfig = pageConfig.configValueSources.onBeforeRender?.[0]
+  if (!onBeforeRenderConfig) return
+  const onBeforeRenderEnv = onBeforeRenderConfig.configEnv
+  const isClientRouting = !!pageConfig.configValues.clientRouting?.value
+  // When using Server Routing, loading a onBeforeRender() hook on the client-side hasn't any effect (the Server Routing's client runtime never calls it); it unnecessarily bloats client bundle sizes
+  assertUsage(
+    !(onBeforeRenderEnv.client && !isClientRouting),
+    `Page ${pageConfig.pageId} has an onBeforeRender() hook with env ${pc.cyan(
+      JSON.stringify(onBeforeRenderEnv)
+    )} which doesn't make sense because the page is using Server Routing: onBeforeRender() can be run in the client only when using Client Routing.`
+  )
 }
 
 function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {

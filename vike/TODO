@@ -1,4 +1,3 @@
-- Replace `Server Routing` section in vike.dev/onBeforeRender with a new assertUsage()
 - Hooks list
   - Merge onBeforeRender() pages
 - Merge and make config lists exhaustive
