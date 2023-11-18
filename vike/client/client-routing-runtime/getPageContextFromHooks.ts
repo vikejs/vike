@@ -119,15 +119,20 @@ async function getPageContextAlreadyRouted(
   isErrorPage: boolean
 ): Promise<Omit<PageContextFromHooks, '_pageId' | 'isHydration'>> {
   let pageContextFromHooks = {}
+  objectAssign(pageContextFromHooks, { _hasPageContextFromClient: false })
   objectAssign(pageContextFromHooks, await loadPageFilesClientSide(pageContext._pageId, pageContext))
+
+  let pageContextFetchedFromServer = false
 
   // Needs to be called before any client-side hook, because it may contain pageContextInit.user which is needed for guard() and onBeforeRender()
   if (
     // For the error page, we cannot fetch pageContext from the server because the pageContext JSON request is based on the URL
     !isErrorPage &&
+    // true if pageContextInit has some client data or the onBeforeRender hook is server-side only:
     (await hasPageContextServer({ ...pageContext, ...pageContextFromHooks }))
   ) {
     const pageContextFromServer = await fetchPageContextFromServer(pageContext)
+    pageContextFetchedFromServer = true
     if (!pageContextFromServer['_isError']) {
       objectAssign(pageContextFromHooks, pageContextFromServer)
     } else {
@@ -135,6 +140,7 @@ async function getPageContextAlreadyRouted(
       assert(errorPageId)
       pageContextFromHooks = {}
       objectAssign(pageContextFromHooks, {
+        _hasPageContextFromClient: false,
         isHydration: false,
         _pageId: errorPageId
       })
@@ -156,7 +162,6 @@ async function getPageContextAlreadyRouted(
       // Should we really call the guard() hook on the client-side? Shouldn't we make the guard() hook a server-side only hook? Or maybe make its env configurable like onBeforeRender()?
       await executeGuardHook(
         {
-          _hasPageContextFromClient: false,
           ...pageContext,
           ...pageContextFromHooks
         },
@@ -165,8 +170,9 @@ async function getPageContextAlreadyRouted(
     }
   }
 
-  {
+  if (!pageContextFetchedFromServer) {
     // For the error page, we also execute the client-side onBeforeRender() hook, but maybe we shouldn't? The server-side does it as well (but maybe it shouldn't).
+    // Note: this won't do anything if no hook has been defined or if the hook's env.client is false.
     const pageContextFromOnBeforeRender = await executeOnBeforeRenderHookClientSide({
       ...pageContext,
       ...pageContextFromHooks
@@ -188,6 +194,7 @@ async function executeOnBeforeRenderHookClientSide(
 ) {
   const hook = getHook(pageContext, 'onBeforeRender')
   if (!hook) {
+    // No hook defined or hook's env.client is false
     const pageContextFromOnBeforeRender = {
       _hasPageContextFromClient: false
     }
