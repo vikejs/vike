@@ -71,6 +71,7 @@ And lots of details:
   - Helpful error when different versions of Vike are loaded
   - Typo in an option name (with "Did you mean xxx instead?")
 - Proper development error handling (hard to achieve, especially since Vite is bogus about it)
+- User can use `history.pushState()`: Vike's router detects that and gets out of the user's way
 
 Misc:
 - `throw Render()`
