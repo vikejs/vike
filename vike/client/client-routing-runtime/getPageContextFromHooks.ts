@@ -186,7 +186,7 @@ async function getPageContextAlreadyRouted(
         const pageContextFromHook = await executeHookClientSide(hookName, pageContextForHook)
         objectAssign(pageContextFromHooks, pageContextFromHook)
       } else {
-        assert(!pageContextForHook._hasPageContextFromServer)
+        assert(pageContextForHook._hasPageContextFromServer)
       }
     }
   }
