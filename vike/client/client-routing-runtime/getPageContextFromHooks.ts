@@ -73,7 +73,7 @@ async function getPageContextFromHooks_firstRender(
 
   {
     const pageContextForHook = { ...pageContext, ...pageContextFromHooks }
-    if (await onBeforeRenderClientOnlyExists(pageContextForHook)) {
+    if (onBeforeRenderClientOnlyExists(pageContextForHook)) {
       const pageContextFromHook = await executeOnBeforeRenderHookClientSide(pageContextForHook)
       objectAssign(pageContextFromHooks, pageContextFromHook)
     }
@@ -170,14 +170,16 @@ async function getPageContextAlreadyRouted(
     }
   }
 
-  if (!pageContextFetchedFromServer) {
-    // For the error page, we also execute the client-side onBeforeRender() hook, but maybe we shouldn't? The server-side does it as well (but maybe it shouldn't).
-    // Note: this won't do anything if no hook has been defined or if the hook's env.client is false.
-    const pageContextFromOnBeforeRender = await executeOnBeforeRenderHookClientSide({
-      ...pageContext,
-      ...pageContextFromHooks
-    })
-    objectAssign(pageContextFromHooks, pageContextFromOnBeforeRender)
+  // For the error page, we also execute the client-side onBeforeRender() hook, but maybe we shouldn't? The server-side does it as well (but maybe it shouldn't).
+  {
+    const pageContextForHook = { ...pageContext, ...pageContextFromHooks }
+    if (onBeforeRenderClientOnlyExists(pageContextForHook) || !pageContextFetchedFromServer) {
+      // This won't do anything if no hook has been defined or if the hook's env.client is false.
+      const pageContextFromHook = await executeOnBeforeRenderHookClientSide(pageContextForHook)
+      objectAssign(pageContextFromHooks, pageContextFromHook)
+    } else {
+      assert(pageContextFetchedFromServer)
+    }
   }
 
   return pageContextFromHooks
@@ -266,10 +268,7 @@ async function onBeforeRenderServerOnlyExists(pageContext: {
     return hasOnBeforeRenderServerSideOnlyHook
   }
 }
-async function onBeforeRenderClientOnlyExists(pageContext: {
-  _pageId: string
-  _pageConfigs: PageConfigRuntime[]
-}): Promise<boolean> {
+function onBeforeRenderClientOnlyExists(pageContext: { _pageId: string; _pageConfigs: PageConfigRuntime[] }): boolean {
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
@@ -278,6 +277,7 @@ async function onBeforeRenderClientOnlyExists(pageContext: {
     return !!onBeforeRenderEnv.client && !onBeforeRenderEnv.server
   } else {
     // TODO/v1-release: remove
+    // Client-only onBeforeRender() hooks were never supported for the V0.4 design
     return false
   }
 }
