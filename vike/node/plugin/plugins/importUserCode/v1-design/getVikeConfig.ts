@@ -18,12 +18,13 @@ import {
   isNpmPackageImport,
   joinEnglish,
   lowerFirst,
-  scriptFileExtensions,
+  scriptFileExtensionList,
   mergeCumulativeValues,
   requireResolve,
   getOutDirs,
   deepEqual,
-  assertKeys
+  assertKeys,
+  scriptFileExtensions
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -76,7 +77,10 @@ import {
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
-import { getGitignoreLines } from '../../../shared/readGitignore/index.js'
+import { exec } from 'child_process'
+import { promisify } from 'util'
+
+const execA = promisify(exec)
 
 assertIsNotProductionRuntime()
 
@@ -1107,25 +1111,56 @@ async function findPlusFiles(
   const timeBase = new Date().getTime()
   assertPosixPath(userRootDir)
 
-  const ignorePatterns = getGitignoreLines().globs.exclude
+  const ignorePatterns = []
   for (const dir of ignoreDirs) {
     assertPosixPath(dir)
     ignorePatterns.push(`${path.posix.relative(userRootDir, dir)}/**`)
   }
-  const result = await glob(`**/+*.${scriptFileExtensions}`, {
-    ignore: [
-      '**/node_modules/**',
-      // Allow:
-      // ```
-      // +Page.js
-      // +Page.telefunc.js
-      // ```
-      '**/*.telefunc.*',
-      ...ignorePatterns
-    ],
-    cwd: userRootDir,
-    dot: false
-  })
+
+  const includePatterns = []
+  for (const ext of scriptFileExtensionList) {
+    includePatterns.push(`"**/+*.${ext}"`)
+  }
+
+  let result: string[] = []
+
+  try {
+    // -o lists untracked files only(but using .gitignore because --exclude-standard)
+    // -s adds the tracked files to the output
+    const { stdout } = await execA(
+      `git ls-files ${includePatterns.join(' ')} -os --exclude-standard --exclude="**/node_modules/**"`,
+      {
+        cwd: userRootDir
+      }
+    )
+
+    result = stdout
+      .split('\n')
+      .map((line) => line.split('\t').pop() || '')
+      .filter(
+        (line) =>
+          line.length &&
+          !line.startsWith('node_modules/') &&
+          !/.*\.telefunc\..*/.test(line) &&
+          !ignoreDirs.some((dir) => line.startsWith(`${dir}/`))
+      )
+  } catch (error) {
+    result = await glob(`**/+*.${scriptFileExtensions}`, {
+      ignore: [
+        '**/node_modules/**',
+        // Allow:
+        // ```
+        // +Page.js
+        // +Page.telefunc.js
+        // ```
+        '**/*.telefunc.*',
+        ...ignorePatterns
+      ],
+      cwd: userRootDir,
+      dot: false
+    })
+  }
+
   const time = new Date().getTime() - timeBase
   if (isDev) {
     // We only warn in dev, because while building it's expected to take a long time as fast-glob is competing for resources with other tasks
