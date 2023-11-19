@@ -1117,18 +1117,15 @@ async function findPlusFiles(
     ignorePatterns.push(`${path.posix.relative(userRootDir, dir)}/**`)
   }
 
-  const includePatterns = []
-  for (const ext of scriptFileExtensionList) {
-    includePatterns.push(`"**/+*.${ext}"`)
-  }
-
   let result: string[] = []
 
+  // If there is no .git folder, this will error
   try {
+    const gitIncludePatterns = scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`)
     // -o lists untracked files only(but using .gitignore because --exclude-standard)
     // -s adds the tracked files to the output
     const { stdout } = await execA(
-      `git ls-files ${includePatterns.join(' ')} -os --exclude-standard --exclude="**/node_modules/**"`,
+      `git ls-files ${gitIncludePatterns.join(' ')} -os --exclude-standard --exclude="**/node_modules/**"`,
       {
         cwd: userRootDir
       }
@@ -1141,7 +1138,7 @@ async function findPlusFiles(
         (line) =>
           line.length &&
           !line.startsWith('node_modules/') &&
-          !/.*\.telefunc\..*/.test(line) &&
+          !line.includes('.telefunc.') &&
           !ignoreDirs.some((dir) => line.startsWith(`${dir}/`))
       )
   } catch (error) {
