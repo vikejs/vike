@@ -5,6 +5,7 @@ import { promisify } from 'util'
 
 const execA = promisify(exec)
 
+// If there is no .git folder, this will error
 async function gitGlob(userRootDir: string, includePatterns: string[], ignoreDirs: string[] = []) {
   // -o lists untracked files only(but using .gitignore because --exclude-standard)
   // -c adds the tracked files to the output
@@ -20,7 +21,6 @@ async function gitGlob(userRootDir: string, includePatterns: string[], ignoreDir
     .split('\n')
     .filter(
       (line) =>
-        line.length &&
         !line.startsWith('node_modules/') &&
         !line.includes('.telefunc.') &&
         !ignoreDirs.some((dir) => line.startsWith(`${dir}/`))
