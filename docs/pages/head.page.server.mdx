@@ -30,120 +30,9 @@ async function onRenderHtml(pageContext) {
 ```
 
 
-## By page (static)
+## By page
 
-To define `<head>` tags for a specific page, we can use a <Link href="/exports" text="Custom Export" />.
-
-```js
-// /pages/about/+Page.js
-
-// Custom Export
-export const documentProps = {
-  // This title and description will override the defaults
-  title: 'About SpaceX',
-  description: 'Our mission is to explore the galaxy.'
-}
-```
-
-```js
-// /renderer/+onRenderHtml.js
-// Environment: server
-
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { renderToHtml } from 'some-ui-framework'
-
-export { onRenderHtml }
-
-async function onRenderHtml(pageContext) {
-  // Our custom export is available here as `pageContext.exports.documentProps`
-  const { documentProps } = pageContext.exports
-
-  // Defaults
-  const title = documentProps.title || 'SpaceX'
-  const description = documentProps.description || 'We deliver payload to space.'
-
-  return escapeInject`<html>
-    <head>
-      <title>${title}</title>
-      <meta name="description" content="${description}">
-    </head>
-    <body>
-      <div id="root">
-        ${dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
-      </div>
-    </body>
-  </html>`
-}
-```
-
-
-## By page (dynamic)
-
-To define `<head>` tags that are dynamic (determined at run-time),
-we can also use a <Link href="/exports" text="Custom Export" />.
-
-```js
-// /pages/rocket/+route.js
-export const '/rocket/@rocketSlug'
-```
-
-```js
-// /pages/rocket/+Page.js
-
-// Custom Export
-export { getDocumentProps }
-
-// getDocumentProps() can use fetched data to provide <title> and <meta name="description">
-function getDocumentProps(pageProps) {
-  return {
-    title: pageProps.product.name,
-    description: pageProps.product.description
-  }
-}
-```
-
-```js
-// /renderer/+onRenderHtml.js
-// Environment: server
-
-export { onRenderHtml }
-
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { renderToHtml } from 'some-ui-framework'
-
-async function onRenderHtml(pageContext) {
-  // `pageProps` is provided by our data fetching mechanism, see the "Data Fetching" Guide.
-  const { Page, pageProps } = pageContext
-
-  // Custom exports are available at pageContext.exports
-  const { getDocumentProps } = pageContext.exports
-
-  const title = (
-    // Conditional call in case a page doesn't define getDocumentProps()
-    getDocumentProps?.(pageProps).title ||
-    // Default for pages that don't define getDocumentProps()
-    'SpaceX'
-  )
-  const description = (
-    // Conditional call in case a page doesn't define getDocumentProps()
-    getDocumentProps?.(pageProps).description ||
-    // Default for pages that don't define getDocumentProps()
-    'We deliver payload to space.'
-  )
-
-  return escapeInject`<html>
-    <head>
-      <title>${title}</title>
-      <meta name="description" content="${description}">
-    </head>
-    <body>
-      <div id="root">
-        ${dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
-      </div>
-    </body>
-  </html>`
-}
-```
+To define `<head>` tags on page-by-page basis, you can create a custom config: see <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
 
 
 ## By component
@@ -256,5 +145,4 @@ async function onRenderHtml(pageContext) {
 
 ## Markdown
 
-For pages defined with markdown, see [Integration > Markdown > `<head>` (`pageContext.exports`)](/markdown#head-pagecontext-exports).
-
+For pages defined with markdown, see <Link href="/markdown#metadata-with-custom-config" />.

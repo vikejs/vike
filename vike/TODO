@@ -1,14 +1,16 @@
-- Hooks list
-  - Merge onBeforeRender() pages
 - Merge and make config lists exhaustive
-- Re-use screenshot fixture test
 
-- Docs
-  - pageContext.config
-  - pageContext.configEntries
-  - update migration examples
-  - Replace boilerplates with Bati
-  - Rewrite documentation to assume usage of `vike-{react,vue,solid}` (while preserving custom integration docs)
+- Re-use screenshot fixture test
+- Improve http://localhost:3000/header-file#inline-hooks-code by explaining that `+config.h.js > title` is fine if it's a string but won't work if it's a function
+- update migration examples
+
+- Add assertWarning() deprecations:
+  - `pageContext.exports`
+  - `pageContext.configEntries`
+  - Old design
+
+Docs (later / after V1 design release?)
+ - Rewrite /head
 
 After V1 design release:
  - improve passToClient warning: https://github.com/vikejs/vike/tree/brillout/wip
@@ -50,6 +52,8 @@ After V1 design release:
    - https://github.com/brillout/vike-react-query => why does Vite discover `part-regex` only later?
  - Check why dev startup is fairly slow, e.g. for /examples/react-full-v1/ (I belive it used to be faster, is it related to Vite's initial dep crawling?)
  - Transpile & bunlded server for production: https://github.com/vikejs/vike/issues/1165
+ - Replace boilerplates with Bati
+ - Rewrite documentation to assume usage of `vike-{react,vue,solid}` (while preserving custom integration docs)
 
 Features:
  - multiple error pages

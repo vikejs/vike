@@ -111,7 +111,7 @@ function Page(pageProps) {
 > Note that Vike doesn't know anything about `pageProps`: it's just an object we create in order to conveniently pass all the page's props at once.
 
 
-## Error Handling
+## Error handling
 
 To gracefully handle errors, use <Link href="/render" text={<code>throw render()</code>}></Link> or <Link href="/redirect" text={<code>throw redirect()</code>}></Link>.
 
@@ -147,39 +147,24 @@ Upon `throw render(404)`, the <Link text="error page" href="/error-page" /> is r
 Using `throw render('/movie/add')` instead of `throw redirect('/movie/add')` is a novel technique which we explain at <Link href="/auth#login-flow" />.
 
 
-## Custom Exports
+## Custom config
 
-For more convenience, instead of creating a new `onBeforeRender()` hook for each page, we can define `onBeforeRender()` only once in `/renderer/+onBeforeRender.js` while using a <Link text="Custom Export/Hook" href="/exports" />.
+For more convenience, instead of creating a new `onBeforeRender()` hook for each page, we can define `onBeforeRender()` only once in `/renderer/+onBeforeRender.js` while using a <Link text="custom config" href="/meta" />.
 
 For example:
 
 ```js
-// /pages/user/+query.js
+// /pages/user/+sql.js
 export default { modelName: 'User', select: ['firstName', 'lastName'] }
 ```
 
 ```js
-// /pages/product/+query.js
+// /pages/product/+sql.js
 export default { modelName: 'Product', select: ['name', 'price'] }
 ```
 
-```js
-// /renderer/+onBeforeRender.js
-// Environment: server
+See full implementation at <Link href="/meta#example-sql" doNotInferSectionTitle />.
 
-// We use a single global `onBeforeRender()` hook
-export { onBeforeRender }
-
-import { runQuery } from 'some-sql-engine'
-
-async function onBeforeRender(pageContext) {
-  // Our `query` export values are available at `pageContext.query`
-  const { query } = pageContext
-  const data = await runQuery(query)
-  const pageProps = { data }
-  return { pageContext: { pageProps } }
-}
-```
 
 ## Client Routing
 

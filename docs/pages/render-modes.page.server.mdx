@@ -115,7 +115,7 @@ import { escapeInject } from 'vike/server'
 export { onRenderHtml }
 
 async function onRenderHtml(pageContext) {
-  const { title, description } = pageContext.exports
+  const { title, description } = pageContext.config
   // Even though we load and render our page's components only in the browser,
   // we define our page's `<title>` and `<meta name="description">` on the server-side.
   return escapeInject`<html>
@@ -130,7 +130,7 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-> `pageContext.exports` is explained at <Link href="/exports" />.
+> `pageContext.config.title` and `pageContext.config.description` are custom configs, see <Link href="/meta" />.
 
 ```js
 // /pages/about/+title.js

@@ -23,7 +23,7 @@ Example:
 
 A somewhat unconventional, but simple yet powerful, way to define the metadata of your pages (title, publishing date, ...) is to define a `metadata.js` file that contains the metadata of all your markdown pages.
 
-> If you want to show the list of pages to your users, then we recommend this approach over <Link href="#metadata-with-frontmatter" /> and <Link href="#metadata-with-pagecontext-exports" doNotInferSectionTitle={true} />. See explanation at <Link href="#page-list" />.
+> If you want to show the list of pages to your users, then we recommend this approach over <Link href="#metadata-with-frontmatter" /> and <Link href="#metadata-with-custom-config" doNotInferSectionTitle={true} />. See explanation at <Link href="#page-list" />.
 
 ```js
 // /pages/metadata.js
@@ -126,43 +126,42 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-## Metadata with `pageContext.exports`
+## Metadata with custom config
 
 To set the `<head>` tags value of a markdown page,
-you can use <Link href="/exports" text="Custom Export" />.
+you can create custom configs, see <Link href="/meta" />.
+
+```ts
+// /pages/+config.h.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  meta: {
+    title: {
+      // Make `title` value available on both the server and client
+      env: { server: true, client: true }
+    },
+    description: {
+      // Make `description` value available only on the server-side
+      env: { server: true, client: false }
+    }
+  }
+} satisfies Config
+```
 
 ~~~md
 // /pages/some/+Page.md
 
-export const documentProps = {
-  title: 'A Markdown Page',
-  description: 'Example of setting `<title>` and `<meta name="description">`'
-}
+export const title = 'A Markdown Page'
+export const description = 'Example of setting `<title>` and `<meta name="description">`'
 
 # Markdown
 
 This page is written in _Markdown_.
 ~~~
 
-```js
-// /renderer/+onRenderHtml.js
-
-export { onRenderHtml }
-
-import { escapeInject } from 'vike/server'
-
-async function onRenderHtml(pageContext) {
-  // `pageContext.exports` holds all exports of the page's `+Page.md` file
-  const { title, description } = pageContext.exports.documentProps
-  return escapeInject`<html>
-    <head>
-      <title>${title}</title>
-      <meta name="description" content="${description}">
-    </head>
-    <!-- ... -->
-  </html>`
-}
-```
+See full implementation at <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
 
 Examples:
  - <RepoLink path='/examples/react-full-v1/pages/markdown/+Page.mdx' />
@@ -187,8 +186,7 @@ This page is written in _Markdown_.
 > Make sure the Vite markdown plugin you are using has frontmatter support.
 
 Markdown processors usually expose the frontmatter data as an export,
-which you can access at
-<Link href="/exports" text={<code>pageContext.exports</code>} />.
+which you can access by creating a custom config `nameOfTheFrontmatterExport`, see <Link href="/meta" />.
 
 ```js
 // /renderer/+onRenderHtml.js
@@ -201,7 +199,7 @@ async function onRenderHtml(pageContext) {
   // Read the documentation of your Vite markdown plugin or of its underlying markdown
   // processor to find the name of the export that holds the frontmatter data.
   const frontmatterExportName = 'nameOfTheFrontmatterExport'
-  const frontmatter = pageContext.exports[frontmatterExportName]
+  const frontmatter = pageContext.config[frontmatterExportName]
   const { title, description } = frontmatter
   return escapeInject`<html>
     <head>

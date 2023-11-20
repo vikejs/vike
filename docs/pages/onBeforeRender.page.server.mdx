@@ -53,7 +53,7 @@ This is where you usually pass information about the authenticated user
 
 There can be only one `onBeforeRender()` hook per page. For example, if you define a global `onBeforeRender()` hook at `/pages/+onBeforeRender.js` as well as a page-specific one at `/pages/star-wars/+onBeforeRender.js` then the page-specific one overrides the global one.
 
-> If you want multiple `onBeforeRender()` hooks, consider <Link href="/exports">creating custom hooks</Link> instead: you can then use one global `onBeforeRender()` hook that orchestrates many custom hooks.
+> If you want multiple `onBeforeRender()` hooks, consider <Link href="/meta">creating custom hooks</Link> instead: you can then use one global `onBeforeRender()` hook that orchestrates many custom hooks.
 
 You can also suppress globally defined `onBeforeRender()` hooks on a per-page basis:
 ```js

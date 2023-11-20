@@ -75,7 +75,7 @@ const headings = [
     level: 2,
     title: 'Data Fetching',
     url: '/data-fetching',
-    sectionTitles: ['`onBeforeRender()`', 'Error Handling']
+    sectionTitles: ['`onBeforeRender()`', 'Error handling']
   },
   {
     level: 2,
@@ -143,11 +143,6 @@ const headings = [
     level: 2,
     title: 'File Structure',
     url: '/file-structure'
-  },
-  {
-    level: 2,
-    title: 'Custom Exports/Hooks',
-    url: '/exports'
   },
   {
     level: 2,
@@ -791,7 +786,14 @@ const headings = [
   {
     level: 2,
     title: '`meta`',
-    url: '/meta'
+    url: '/meta',
+    sectionTitles: [
+      'Example: `dataEndpointUrl`',
+      'Example: `sql`',
+      'Example: `title` and `description`',
+      'Example: `Layout`',
+      'Example: modify `onBeforeRender()` env',
+    ]
   },
   {
     level: 2,

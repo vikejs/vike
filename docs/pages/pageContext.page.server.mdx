@@ -57,8 +57,7 @@ Built-in properties:
      hashOriginal: '#%C3%A2ge'
    }
    ```
- - **`pageContext.exports`**: See <Link href="/exports" />.
- - **`pageContext.exportsAll`**: Same as `pageContext.exports` but cumulative.
+ - **`pageContext.config`**: See <Link href="/meta" />.
  - **`pageContext.isHydration`**: Whether the current page is already rendered to HTML. When using <Link href="/client-routing" noBreadcrumb={true} />, the value is usually `true` for the first page the user navigates to, and `false` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.)
  - **`pageContext.isBackwardNavigation`**: Whether the user is navigating back in history. The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`. The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
  - **`pageContext.is404`**: If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see <Link href="/error-page" />.
@@ -142,11 +141,11 @@ While some `pageContext` values are also available on the client-side, most valu
 
 When using <Link href="/server-routing" noBreadcrumb={true} />, the following are also available in the browser by default:
  - `pageContext.Page`
- - `pageContext.exports`
+ - `pageContext.config`
 
 When using <Link href="/client-routing" noBreadcrumb={true} />, the following are also available in the browser by default:
  - `pageContext.Page`
- - `pageContext.exports`
+ - `pageContext.config`
  - `pageContext.isHydration`
  - `pageContext.isBackwardNavigation`
  - `pageContext.routeParams`

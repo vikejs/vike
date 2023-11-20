@@ -324,7 +324,7 @@ const headingsDetached = [
     url: '/press'
   },
   {
-    title: '`vike-*` packages',
+    title: 'Vike Packages',
     url: '/vike-packages'
   },
   {
@@ -332,4 +332,12 @@ const headingsDetached = [
     url: '/abort',
     sectionTitles: ['`throw redirect()` VS `throw render()`']
   },
+  {
+    title: '`.server.js` & `.client.js`',
+    url: '/file-env'
+  },
+  {
+    title: 'Custom Exports/Hooks',
+    url: '/exports'
+  }
 ] satisfies HeadingDetachedDefinition[]

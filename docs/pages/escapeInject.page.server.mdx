@@ -55,7 +55,7 @@ import { renderToHtml } from 'some-ui-framework'
 export { onRenderHtml }
 
 async function onRenderHtml(pageContext) {
-  const description = pageContext.exports.description
+  const description = pageContext.config.description
   const descriptionTag = !description ?
     '' :
     // We use `escapeInject` for an HTML fragment
@@ -75,7 +75,7 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-> `pageContext.exports.description` is a <Link text="Custom Export" href="/exports" />.
+> `pageContext.config.description` is a custom config, see <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
 
 Example:
 - <RepoLink path='/examples/html-fragments-v1/' />

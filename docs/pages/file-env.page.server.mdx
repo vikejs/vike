@@ -1,0 +1,36 @@
+import { Construction } from '@brillout/docpress'
+
+<Construction>This isn't implemented yet, see [#744](https://github.com/vikejs/vike/issues/744)</Construction>
+
+The file extensions `.server.js` and `.client.js` ensure in which environment a file is loaded.
+
+```js
+// /server/database/credentials.server.js
+
+// This should *never* be imported by client-side code. We use .server.js to guarentee that.
+export deault {
+  password: 'WLa!9HW?E10a'
+}
+```
+
+```js
+// /utils/someHeavyCode.server.js
+
+// Thanks to `.server.js`, this file is guarenteed to never load on the client-side: we
+// have the assurance this heavy file won't bloat the size of our client bundles.
+
+function someHeavyCode() {
+  // A *lot* of code
+}
+```
+
+```js
+// /utils/someClientCode.client.js
+
+// This code only works in the browser; we use .client.js to ensure this file is
+// never loaded on the server-side.
+
+window.onclick = () => {
+  // ...
+}
+```

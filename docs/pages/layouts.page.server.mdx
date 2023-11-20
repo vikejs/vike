@@ -43,77 +43,9 @@ function Page() {
 ```
 
 
-## Custom Export
+## Custom config
 
-Alternatively, we can use a <Link href="/exports" text="Custom Export" />.
-
-```js
-// /pages/admin/+Page.js
-
-// Set `pageContext.exports.Layout` to `LayoutDashboard`
-export { LayoutDashboard as Layout } from '../layouts/LayoutDashboard'
-export { Page }
-
-function Page() {
-  // ...
-}
-```
-
-Our renderer can then access `pageContext.exports.Layout` and render it accordingly:
-
-```js
-// /renderer/+onRenderHtml.js or /renderer/+onRenderClient.js
-
-export { onRenderHtml } // or onRenderClient
-
-import { LayoutDefault } from '../layouts/LayoutDefault'
-
-function onRenderHtml() { // or onRenderClient
-  const Layout = pageContext.exports.Layout || LayoutDefault
-  const { Page } = pageContext
-  // We render `<Layout><Page/></Layout>`
-  // ...
-}
-```
-
-```js
-// /pages/index/+Page.js
-
-// We don't need to `export { Layout }` because the landing page uses `<LayoutDefault>`
-export { Page }
-
-function Page() {
-  // As usual
-  // ...
-}
-```
-
-We can use a <Link href="/meta">`meta` config</Link> to set the layout for several pages at once:
-
-```ts
-// /renderer/+config.h.js
-
-export default {
-  meta: {
-    Layout: {
-      env: 'server-and-client'
-    }
-  }
-}
-```
-
-```js
-// /pages/product/+Layout.js
-
-// Set the Layout for all `/pages/product/**/+Page.js`
-export { LayoutProduct as Layout } from '../../layouts/LayoutProduct'
-```
-
-Which fits well with a <Link text="domain-driven file structure" href='/file-structure#domain-driven' />.
-
-Examples:
- - <RepoLink path="/examples/layouts-react-v1/" />
- - <RepoLink path="/examples/layouts-vue-v1/" />
+Alternatively, you can create a custom config `Layout`, see <Link href="/meta#example-layout" doNotInferSectionTitle />.
 
 
 ## Nested Layouts
