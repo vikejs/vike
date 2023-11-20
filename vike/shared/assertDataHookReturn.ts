@@ -1,7 +1,6 @@
 export { assertDataHookReturn }
 
 import { assertUsage, isPlainObject } from './utils.js'
-import { assertHookReturnedObject } from './assertHookReturnedObject.js'
 import pc from '@brillout/picocolors'
 
 function assertDataHookReturn<Keys extends readonly string[]>(
@@ -16,5 +15,4 @@ function assertDataHookReturn<Keys extends readonly string[]>(
     isPlainObject(hookReturnValue),
     `${errPrefix} should return a plain JavaScript object, ${pc.cyan('undefined')}, or ${pc.cyan('null')}`
   )
-  assertHookReturnedObject(hookReturnValue, [] as const, errPrefix)
 }
