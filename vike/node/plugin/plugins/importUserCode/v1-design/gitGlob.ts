@@ -21,6 +21,7 @@ async function gitGlob(userRootDir: string, includePatterns: string[], ignoreDir
     .split('\n')
     .filter(
       (line) =>
+        line.length &&
         !line.startsWith('node_modules/') &&
         !line.includes('.telefunc.') &&
         !ignoreDirs.some((dir) => line.startsWith(`${dir}/`))
