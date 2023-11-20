@@ -12,7 +12,6 @@
 
 After V1 design release:
  - improve passToClient warning: https://github.com/vikejs/vike/tree/brillout/wip
- - Update all examples to not use PageContextBuiltIn but Vike.PageContext instead
  - Go through all TODOs in source code
  - Ensure what client-side loads is minimal
  - improve ignoring of dist/
@@ -67,7 +66,6 @@ Release 1.0.0 breaking changes:
 
 After 1.0.0 release:
  - Remove 0.4 design examples
-   - Update all links to /examples/*-v1
  - Add deprecation warning for pageContext.exports
 
 Contact:
