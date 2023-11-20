@@ -21,7 +21,7 @@ async function executeOnBeforeRenderAndDataHooks(
     return
   }
   const onBeforeRenderHook = getHook(pageContext, 'onBeforeRender')
-  const dataHook = getHook(pageContext, 'onBeforeRender')
+  const dataHook = getHook(pageContext, 'data')
   if (!onBeforeRenderHook && !dataHook) {
     return
   }
