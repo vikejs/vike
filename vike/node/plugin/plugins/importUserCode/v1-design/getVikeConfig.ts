@@ -77,10 +77,7 @@ import {
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
-import { exec } from 'child_process'
-import { promisify } from 'util'
-
-const execA = promisify(exec)
+import { gitGlob } from './gitGlob.js'
 
 assertIsNotProductionRuntime()
 
@@ -1122,25 +1119,7 @@ async function findPlusFiles(
   // If there is no .git folder, this will error
   try {
     const gitIncludePatterns = scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`)
-    // -o lists untracked files only(but using .gitignore because --exclude-standard)
-    // -c adds the tracked files to the output
-    // --exclude only applies to untracked files
-    const { stdout } = await execA(
-      `git ls-files ${gitIncludePatterns.join(' ')} -oc --exclude-standard --exclude="**/node_modules/**"`,
-      {
-        cwd: userRootDir
-      }
-    )
-
-    result = stdout
-      .split('\n')
-      .filter(
-        (line) =>
-          line.length &&
-          !line.startsWith('node_modules/') &&
-          !line.includes('.telefunc.') &&
-          !ignoreDirs.some((dir) => line.startsWith(`${dir}/`))
-      )
+    result = await gitGlob(userRootDir, gitIncludePatterns, ignoreDirs)
   } catch (error) {
     result = await glob(`**/+*.${scriptFileExtensions}`, {
       ignore: [
