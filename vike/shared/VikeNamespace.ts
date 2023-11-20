@@ -20,17 +20,19 @@ declare global {
     /** Extend and/or refine the `PageContext` type (`import type { PageContext } from 'vike/types'`).
      *
      *  For example:
-     *  - You can define the type of fetched data, e.g. `PageContext['movies']`.
+     *  - You can define the type of fetched data, e.g. `PageContext['movies']`, which may be fetched by an
+     *    `onBeforeRender` hook.
      *  - You can refine the type of `PageContext['Page']`.
      *
      */
     interface PageContext {
-      data: Data
+      // NOTE(aurelien) `data` may not exist at all if the user doesn't use `data` hooks, thus the `?`.
+      data?: Data
     }
 
-    /** Extend and/or refine the `Data` type (`import type { Data } from 'vike/types'`). LA_TODO
+    /** Extend and/or refine the `Data` type (`PageContext['data']`).
      *
-     *  This type describes the data fetched by your `data` hooks (https://vike.dev/data) LA_TODO
+     *  This type describes the data fetched by your `data` hooks (https://vike.dev/data)
      *
      */
     interface Data {}
