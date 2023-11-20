@@ -1123,9 +1123,10 @@ async function findPlusFiles(
   try {
     const gitIncludePatterns = scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`)
     // -o lists untracked files only(but using .gitignore because --exclude-standard)
-    // -s adds the tracked files to the output
+    // -c adds the tracked files to the output
+    // --exclude only applies to untracked files
     const { stdout } = await execA(
-      `git ls-files ${gitIncludePatterns.join(' ')} -os --exclude-standard --exclude="**/node_modules/**"`,
+      `git ls-files ${gitIncludePatterns.join(' ')} -oc --exclude-standard --exclude="**/node_modules/**"`,
       {
         cwd: userRootDir
       }
@@ -1133,7 +1134,6 @@ async function findPlusFiles(
 
     result = stdout
       .split('\n')
-      .map((line) => line.split('\t').pop() || '')
       .filter(
         (line) =>
           line.length &&
