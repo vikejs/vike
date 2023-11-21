@@ -32,13 +32,13 @@ function copy(G: Graph): Graph {
 }
 
 // Adapted from: https://stackoverflow.com/questions/60904464/detect-cycle-in-directed-graph/60907076#60907076
+function validate(G: Graph) {
+  Object.keys(G).forEach((n) => check(G, n, []))
+}
 function check(G: Graph, n: string, path: string[]) {
   if (path.includes(n)) {
     const cycle = path.slice(path.indexOf(n)).concat(n)
     assertUsage(false, `Infinite loop of HTTP URL redirects: ${cycle.map(pc.cyan).join(' -> ')}`)
   }
   G[n]?.forEach((node) => check(G, node, [...path, n]))
-}
-function validate(G: Graph) {
-  Object.keys(G).forEach((n) => check(G, n, []))
 }
