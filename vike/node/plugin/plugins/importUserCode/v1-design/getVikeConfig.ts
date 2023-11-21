@@ -1187,7 +1187,7 @@ async function findPlusFiles(
 async function gitLsFiles(userRootDir: string, outDir: string) {
   const cmd = [
     'git ls-files',
-    scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
+    ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
     '--exclude="**/node_modules/**"',
     `--exclude="${outDir}/**"`,
     // Allow:
