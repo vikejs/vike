@@ -230,7 +230,7 @@ async function runPrerender(
     if (htmlFile.pageId) {
       prerenderedPageContexts[htmlFile.pageId] = htmlFile.pageContext
     }
-    await writeHtmlFile(htmlFile, root, outDirClient, options.onPagePrerender, logLevel)
+    await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, logLevel)
   }
 
   await routeAndPrerender(prerenderContext, concurrencyLimit, onComplete)
@@ -875,7 +875,7 @@ async function prerender404(
   }
 }
 
-async function writeHtmlFile(
+async function writeFiles(
   { urlOriginal, pageContext, htmlString, pageContextSerialized, doNotCreateExtraDirectory }: HtmlFile,
   root: string,
   outDirClient: string,
