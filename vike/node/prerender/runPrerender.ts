@@ -59,11 +59,9 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 
-type PrerenderedPageContext = { urlOriginal: string; _providedByHook?: ProvidedByHook }
-
 type HtmlFile = {
   urlOriginal: string
-  pageContext: PrerenderedPageContext & Record<string, unknown>
+  pageContext: PageContextPrerendered
   htmlString: string
   pageContextSerialized: string | null
   doNotCreateExtraDirectory: boolean
@@ -89,7 +87,8 @@ type TransformerHook = {
   hookFilePath: string
   hookName: 'onPrerenderStart' | 'onBeforePrerender'
 }
-type PrerenderedPages = Record<string, PrerenderedPageContext>
+type PageContextPrerendered = { urlOriginal: string; _providedByHook?: ProvidedByHook }
+type PrerenderedPageContexts = Record<string, PageContextPrerendered>
 
 type PrerenderContext = {
   pageContexts: PageContext[]
@@ -224,27 +223,27 @@ async function runPrerender(
 
   await callOnPrerenderStartHook(prerenderContext, renderContext)
 
-  const prerenderedPages: PrerenderedPages = {}
+  const prerenderedPageContexts: PrerenderedPageContexts = {}
   let prerenderedCount = 0
   const onComplete = async (htmlFile: HtmlFile) => {
     prerenderedCount++
     if (htmlFile.pageId) {
-      prerenderedPages[htmlFile.pageId] = htmlFile.pageContext
+      prerenderedPageContexts[htmlFile.pageId] = htmlFile.pageContext
     }
     await writeHtmlFile(htmlFile, root, outDirClient, options.onPagePrerender, logLevel)
   }
 
   await routeAndPrerender(prerenderContext, concurrencyLimit, onComplete)
 
-  warnContradictoryNoPrerenderList(prerenderedPages, doNotPrerenderList)
+  warnContradictoryNoPrerenderList(prerenderedPageContexts, doNotPrerenderList)
 
-  await prerender404(prerenderedPages, renderContext, prerenderContext, onComplete)
+  await prerender404(prerenderedPageContexts, renderContext, prerenderContext, onComplete)
 
   if (logLevel === 'info') {
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
   }
 
-  warnMissingPages(prerenderedPages, doNotPrerenderList, renderContext, partial)
+  warnMissingPages(prerenderedPageContexts, doNotPrerenderList, renderContext, partial)
 }
 
 async function collectDoNoPrerenderList(
@@ -795,8 +794,11 @@ async function routeAndPrerender(
   )
 }
 
-function warnContradictoryNoPrerenderList(prerenderedPages: PrerenderedPages, doNotPrerenderList: DoNotPrerenderList) {
-  Object.entries(prerenderedPages).forEach(([pageId, pageContext]) => {
+function warnContradictoryNoPrerenderList(
+  prerenderedPageContexts: PrerenderedPageContexts,
+  doNotPrerenderList: DoNotPrerenderList
+) {
+  Object.entries(prerenderedPageContexts).forEach(([pageId, pageContext]) => {
     const doNotPrerenderListEntry = doNotPrerenderList.find((p) => p.pageId === pageId)
     const { urlOriginal, _providedByHook: providedByHook } = pageContext
     {
@@ -819,7 +821,7 @@ function warnContradictoryNoPrerenderList(prerenderedPages: PrerenderedPages, do
 }
 
 function warnMissingPages(
-  prerenderedPages: Record<string, unknown>,
+  prerenderedPageContexts: Record<string, unknown>,
   doNotPrerenderList: DoNotPrerenderList,
   renderContext: RenderContext,
   partial: boolean
@@ -831,7 +833,7 @@ function warnMissingPages(
   const msgAddendum = `Explicitly opt-out by setting the config ${optOutName} to ${isV1 ? 'false' : 'true'} or use the option prerender.partial`
   */
   renderContext.allPageIds
-    .filter((pageId) => !prerenderedPages[pageId])
+    .filter((pageId) => !prerenderedPageContexts[pageId])
     .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
     .filter((pageId) => !isErrorPage(pageId, renderContext.pageConfigs))
     .forEach((pageId) => {
@@ -845,12 +847,12 @@ function warnMissingPages(
 }
 
 async function prerender404(
-  prerenderedPages: Record<string, { urlOriginal: string }>,
+  prerenderedPageContexts: Record<string, { urlOriginal: string }>,
   renderContext: RenderContext,
   prerenderContext: PrerenderContext,
   onComplete: (htmlFile: HtmlFile) => Promise<void>
 ) {
-  if (!Object.values(prerenderedPages).find(({ urlOriginal }) => urlOriginal === '/404')) {
+  if (!Object.values(prerenderedPageContexts).find(({ urlOriginal }) => urlOriginal === '/404')) {
     let result: Awaited<ReturnType<typeof prerender404Page>>
     try {
       result = await prerender404Page(renderContext, prerenderContext.pageContextInit)
