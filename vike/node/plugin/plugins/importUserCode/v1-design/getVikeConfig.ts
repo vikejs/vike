@@ -1212,9 +1212,9 @@ async function gitLsFiles(userRootDir: string, outDir: string) {
 
   let files = stdout.split('\n').filter(Boolean)
 
-  // --exclude only applies to untracked files
   assert(!outDir.startsWith('/'))
   files = files.filter(
+    // We have to repeat the same exclusion logic here because the `git ls-files` option --exclude only applies to untracked files. (We use --exclude only to speed up the command.)
     (line) => !line.includes('node_modules/') && !line.includes('.telefunc.') && !line.startsWith(`${outDir}/`)
   )
 
