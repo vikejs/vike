@@ -1103,39 +1103,36 @@ function getComputed(
 
 async function findPlusFiles(
   userRootDir: string,
-  outDirRoot: string,
+  outDirAbsoluteFilesystem: string,
   isDev: boolean,
   extensions: ExtensionResolved[]
 ): Promise<FilePathResolved[]> {
   assertPosixPath(userRootDir)
-  assertPosixPath(outDirRoot)
-
+  assertPosixPath(outDirAbsoluteFilesystem)
+  assert(outDirAbsoluteFilesystem.startsWith(userRootDir))
+  const outDir = path.posix.relative(userRootDir, outDirAbsoluteFilesystem)
+  assert(!outDir.startsWith('.'))
   const timeBase = new Date().getTime()
 
-  const ignoreDirs = [outDirRoot]
-  const ignorePatterns = []
-  for (const dir of ignoreDirs) {
-    assertPosixPath(dir)
-    ignorePatterns.push()
-  }
-
   let result: string[] = []
-
-  // If there is no .git folder, this will error
-  try {
-    const gitIncludePatterns = scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`)
-    result = await gitGlob(userRootDir, gitIncludePatterns, outDirRoot)
-  } catch (error) {
+  const res = await gitLsFiles(userRootDir, outDir)
+  if (
+    res &&
+    // Fallback to fast-glob for users that dynamically generate plus files (generetad plus files are skipped because they're usually included in .gitignore)
+    res.length > 0
+  ) {
+    result = res
+  } else {
     result = await glob(`**/+*.${scriptFileExtensions}`, {
       ignore: [
         '**/node_modules/**',
+        `${outDir}/**`,
         // Allow:
         // ```
         // +Page.js
         // +Page.telefunc.js
         // ```
-        '**/*.telefunc.*',
-        `${path.posix.relative(userRootDir, outDirRoot)}/**`
+        '**/*.telefunc.*'
       ],
       cwd: userRootDir,
       dot: false
@@ -1187,27 +1184,41 @@ async function findPlusFiles(
   return plusFiles
 }
 
-// If there is no .git folder, this will error
-async function gitGlob(userRootDir: string, includePatterns: string[], outDirRoot: string) {
-  // -o lists untracked files only(but using .gitignore because --exclude-standard)
-  // -c adds the tracked files to the output
+async function gitLsFiles(userRootDir: string, outDir: string) {
+  const cmd = [
+    'git ls-files',
+    scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
+    '--exclude="**/node_modules/**"',
+    `--exclude="${outDir}/**"`,
+    // Allow:
+    // ```
+    // +Page.js
+    // +Page.telefunc.js
+    // ```
+    '--exclude="**/*.telefunc.*"',
+    // --others lists untracked files only (but using .gitignore because --exclude-standard)
+    // --cached adds the tracked files to the output
+    '--others --cached --exclude-standard'
+  ].join(' ')
+
+  let stdout: string
+  try {
+    const res = await execA(cmd, { cwd: userRootDir })
+    stdout = res.stdout
+  } catch (err) {
+    if ((err as Error).message.includes('not a git repository')) return null
+    throw err
+  }
+
+  let files = stdout.split('\n').filter(Boolean)
+
   // --exclude only applies to untracked files
-  const { stdout } = await execA(
-    `git ls-files ${includePatterns.join(' ')} -oc --exclude-standard --exclude="**/node_modules/**"`,
-    {
-      cwd: userRootDir
-    }
+  assert(!outDir.startsWith('/'))
+  files = files.filter(
+    (line) => !line.includes('node_modules/') && !line.includes('.telefunc.') && !line.startsWith(`${outDir}/`)
   )
 
-  return stdout
-    .split('\n')
-    .filter(
-      (line) =>
-        line.length &&
-        !line.startsWith('node_modules/') &&
-        !line.includes('.telefunc.') &&
-        !line.startsWith(`${outDirRoot}/`)
-    )
+  return files
 }
 
 function getConfigName(filePath: string): string | null {
