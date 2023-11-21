@@ -182,7 +182,7 @@ async function loadInterfaceFiles(
   isDev: boolean,
   extensions: ExtensionResolved[]
 ): Promise<InterfaceFilesByLocationId> {
-  const plusFiles = await findPlusFiles(userRootDir, [outDirRoot], isDev, extensions)
+  const plusFiles = await findPlusFiles(userRootDir, outDirRoot, isDev, extensions)
   const configFiles: FilePathResolved[] = []
   const valueFiles: FilePathResolved[] = []
   plusFiles.forEach((f) => {
@@ -1103,17 +1103,20 @@ function getComputed(
 
 async function findPlusFiles(
   userRootDir: string,
-  ignoreDirs: string[],
+  outDirRoot: string,
   isDev: boolean,
   extensions: ExtensionResolved[]
 ): Promise<FilePathResolved[]> {
-  const timeBase = new Date().getTime()
   assertPosixPath(userRootDir)
+  assertPosixPath(outDirRoot)
 
+  const timeBase = new Date().getTime()
+
+  const ignoreDirs = [outDirRoot]
   const ignorePatterns = []
   for (const dir of ignoreDirs) {
     assertPosixPath(dir)
-    ignorePatterns.push(`${path.posix.relative(userRootDir, dir)}/**`)
+    ignorePatterns.push()
   }
 
   let result: string[] = []
@@ -1121,7 +1124,7 @@ async function findPlusFiles(
   // If there is no .git folder, this will error
   try {
     const gitIncludePatterns = scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`)
-    result = await gitGlob(userRootDir, gitIncludePatterns, ignoreDirs)
+    result = await gitGlob(userRootDir, gitIncludePatterns, outDirRoot)
   } catch (error) {
     result = await glob(`**/+*.${scriptFileExtensions}`, {
       ignore: [
@@ -1132,7 +1135,7 @@ async function findPlusFiles(
         // +Page.telefunc.js
         // ```
         '**/*.telefunc.*',
-        ...ignorePatterns
+        `${path.posix.relative(userRootDir, outDirRoot)}/**`
       ],
       cwd: userRootDir,
       dot: false
@@ -1185,7 +1188,7 @@ async function findPlusFiles(
 }
 
 // If there is no .git folder, this will error
-async function gitGlob(userRootDir: string, includePatterns: string[], ignoreDirs: string[] = []) {
+async function gitGlob(userRootDir: string, includePatterns: string[], outDirRoot: string) {
   // -o lists untracked files only(but using .gitignore because --exclude-standard)
   // -c adds the tracked files to the output
   // --exclude only applies to untracked files
@@ -1203,7 +1206,7 @@ async function gitGlob(userRootDir: string, includePatterns: string[], ignoreDir
         line.length &&
         !line.startsWith('node_modules/') &&
         !line.includes('.telefunc.') &&
-        !ignoreDirs.some((dir) => line.startsWith(`${dir}/`))
+        !line.startsWith(`${outDirRoot}/`)
     )
 }
 
