@@ -651,6 +651,12 @@ const headings = [
   },
   {
     level: 2,
+    title: '`guard()` hook',
+    titleInNav: '`guard()`',
+    url: '/guard'
+  },
+  {
+    level: 2,
     title: '`onBeforeRender()` hook',
     titleInNav: '`onBeforeRender()`',
     url: '/onBeforeRender'
@@ -798,11 +804,6 @@ const headings = [
       'Example: `Layout`',
       'Example: modify `onBeforeRender()` env',
     ]
-  },
-  {
-    level: 2,
-    title: '`extends`',
-    url: '/extends'
   },
   {
     level: 2,

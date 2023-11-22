@@ -3,6 +3,7 @@ import { TextType } from './settings/TextType'
 
 List of *built-in* Vike settings (you can <Link href="/meta">create your own settings</Link>).
 
+
 ## Basic
 
 - [**`Page`**](/Page): <TextType>unknown</TextType> The root UI component of the page.
@@ -12,15 +13,23 @@ List of *built-in* Vike settings (you can <Link href="/meta">create your own set
 - [**`redirects`**](/redirects): Permanent redirections.
 - [**`prefetchStaticAssets`**](/prefetchStaticAssets): Link prefetching settings.
 - [**`filesystemRoutingRoot`**](/filesystemRoutingRoot): Change the URL root of Filesystem Routing (usually for <Link href="/file-structure#domain-driven">domain-driven file structure</Link>).
+- [**`baseAssets`**](/base-url): The Base URL of your server.
+- [**`baseServer`**](/base-url): The Base URL of your static assets.
+
 
 ## Advanced
 
-> Most users don't need to know about these configs. (They are usually only used by <Link href="/vike-packages" noBreadcrumb />.)
+> Most users don't need to know about these settings.
 
 - [**`meta`**](/meta): Create new or modify existing configurations.
+- [**`extends`**](/extends): Use third-party configs.
 - [**`passToClient`**](/passToClient): <TextType>string[]</TextType> Determines what `pageContext` properties are sent to the client-side.
 - [**`clientRouting`**](/clientRouting): <TextType>boolean</TextType> Enable Client Routing.
 - [**`hydrationCanBeAborted`**](/hydrationCanBeAborted): <TextType>boolean</TextType>  Whether the <Link text="UI framework" href="/ui-framework" /> allows <Link href="/hydration">hydrations</Link> to be aborted.
+- [**`disableAutoFullBuild`**](/disableAutoFullBuild): Disable automatic chaining of all build steps.
+- [**`trailingSlash`**](/url-normalization): Whether URLs should end with a trailing slash.
+- [**`disableUrlNormalization`**](/url-normalization): Disable automatic URL normalization.
+
 
 ## See also
 

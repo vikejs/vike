@@ -1,14 +1,12 @@
 import { Link, Warning, RepoLink } from '@brillout/docpress'
 
-The `guard()` hook enables you to protect pages.
-
-The most common use cases being authentication and authorization, see <Link href="/auth#login-flow" />.
+The `guard()` hook enables you to protect pages from unauthorized access, see <Link href="/auth#login-flow" />.
 
 Note that:
 
 - It's always used together with <Link href="/render" text={<code>throw render()</code>} /> or <Link href="/redirect" text={<code>throw redirect()</code>} />. (The `guard()` hook doesn't accept any return value.)
 - It can be asynchronous. (Unlike Route Functions which are synchronous.)
-- A single `guard()` hook can apply to multiple pages. (By using the usual inheritance rules.)
+- A single `guard()` hook can <Link href="config#different-defaults">apply to multiple pages</Link>.
 
 ```js
 export { guard }

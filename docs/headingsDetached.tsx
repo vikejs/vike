@@ -361,4 +361,8 @@ const headingsDetached = [
     title: '`hydrationCanBeAborted`',
     url: '/hydrationCanBeAborted'
   },
+  {
+    title: '`extends`',
+    url: '/extends'
+  }
 ] satisfies HeadingDetachedDefinition[]
