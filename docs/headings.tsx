@@ -657,6 +657,24 @@ const headings = [
   },
   {
     level: 2,
+    title: '`onHydrationEnd()` hook',
+    titleInNav: '`onHydrationEnd()`',
+    url: '/onHydrationEnd'
+  },
+  {
+    level: 2,
+    title: '`onPageTransitionStart()` hook',
+    titleInNav: '`onPageTransitionStart()`',
+    url: '/onPageTransitionStart'
+  },
+  {
+    level: 2,
+    title: '`onPageTransitionEnd()` hook',
+    titleInNav: '`onPageTransitionEnd()`',
+    url: '/onPageTransitionEnd'
+  },
+  {
+    level: 2,
     title: '`onBeforePrerenderStart()` hook',
     titleInNav: '`onBeforePrerenderStart()`',
     url: '/onBeforePrerenderStart'
@@ -666,25 +684,6 @@ const headings = [
     title: '`onPrerenderStart()` hook',
     titleInNav: '`onPrerenderStart()`',
     url: '/onPrerenderStart'
-  },
-  {
-    level: 2,
-    title: '`onRenderHtml()` hook',
-    titleInNav: '`onRenderHtml()`',
-    url: '/onRenderHtml'
-  },
-  {
-    level: 2,
-    title: '`onRenderClient()` hook',
-    titleInNav: '`onRenderClient()`',
-    url: '/onRenderClient'
-  },
-  {
-    level: 2,
-    title: '`onBeforeRoute()` hook',
-    titleInNav: '`onBeforeRoute()`',
-    // titleInNav: '`onBeforeRoute`',
-    url: '/onBeforeRoute'
   },
   {
     level: 2,

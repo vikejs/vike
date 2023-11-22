@@ -1,0 +1,41 @@
+import { Link } from '@brillout/docpress'
+import { HookTypeScriptHints } from '../components'
+
+```js
+// /pages/+onHydrationEnd.js
+// Environment: browser
+
+export { onHydrationEnd }
+
+// The onHydrationEnd() hook is called after the onRenderClient() hook finishes rendering the
+// first page the user navigates to. (The onHydrationEnd() hook isn't called upon subsequent
+// page navigation.)
+async function onHydrationEnd(pageContext) {
+  console.log('The page is now interactive')
+}
+```
+
+## TypeScript
+
+```ts
+// /pages/+onHydrationEnd.ts
+// Environment: browser
+
+export { onHydrationEnd }
+
+import type { OnHydrationEndAsync } from 'vike/types'
+
+const onHydrationEnd: OnHydrationEndAsync = async (
+  pageContext
+): ReturnType<OnHydrationEndAsync> => {
+  console.log('The page is now interactive')
+}
+```
+
+<HookTypeScriptHints hookTypeName="OnHydrationEndAsync" />
+
+## See also
+
+ - <Link href="/clientRouting" />
+ - <Link href="/onPageTransitionStart" />
+ - <Link href="/onPageTransitionEnd" />

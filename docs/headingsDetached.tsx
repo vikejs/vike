@@ -339,5 +339,18 @@ const headingsDetached = [
   {
     title: 'Custom Exports/Hooks',
     url: '/exports'
-  }
+  },
+  {
+    title: '`onRenderHtml()` hook',
+    url: '/onRenderHtml'
+  },
+  {
+    title: '`onRenderClient()` hook',
+    url: '/onRenderClient'
+  },
+  {
+    title: '`onBeforeRoute()` hook',
+    // titleInNav: '`onBeforeRoute`',
+    url: '/onBeforeRoute'
+  },
 ] satisfies HeadingDetachedDefinition[]

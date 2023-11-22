@@ -26,7 +26,7 @@ Vue example:
  - <RepoLink path='/examples/vue-full-v1/pages/index/+Page.vue' /> (example of using <code>navigate()</code>)
 
 
-## Usage & options
+## Usage & settings
 
 ```js
 // /renderer/+onRenderClient.js
@@ -50,6 +50,16 @@ async function onRenderClient(pageContext) {
 }
 ```
 
+> Note that `pageContext` is completely discarded and created anew upon page navigation.
+> That's why it's called *page*Context (and not *app*Context).
+
+We can use following lifecycle hooks to implement post-hydration initialization and page transition animations.
+ - <Link href="/onHydrationEnd" />
+ - <Link href="/onPageTransitionStart" />
+ - <Link href="/onPageTransitionEnd" />
+
+Settings:
+
 ```js
 // /renderer/+config.h.js
 // Environment: build-time
@@ -68,53 +78,6 @@ export default {
   hydrationCanBeAborted: true
 }
 ```
-
-```js
-// /renderer/+onPageTransitionStart.js
-// Environment: browser
-
-export { onPageTransitionStart }
-
-// Create custom page transition animations
-async function onPageTransitionStart(pageContext) {
-  console.log('Page transition start')
-  // `pageContext.isBackwardNavigation` is also set at `onRenderClient(pageContext)`
-  // and `onPageTransitionEnd(pageContext)`.
-  console.log('Is backwards navigation?', pageContext.isBackwardNavigation)
-  // For example:
-  document.body.classList.add('page-transition')
-}
-```
-
-```js
-// /renderer/+onPageTransitionEnd.js
-// Environment: browser
-
-export { onPageTransitionEnd }
-
-async function onPageTransitionEnd(pageContext) {
-  console.log('Page transition end')
-  // For example:
-  document.body.classList.remove('page-transition')
-}
-```
-
-```js
-// /renderer/+onHydrationEnd.js
-// Environment: browser
-
-export { onHydrationEnd }
-
-// The onHydrationEnd() hook is called after the onRenderClient() hook finishes for the
-// first page the user navigates to (the onHydrationEnd() hook isn't called for
-// subsequent page navigation).
-async function onHydrationEnd() {
-  console.log('The page is now interactive')
-}
-```
-
-> Note that `pageContext` is completely discarded and created anew upon page navigation.
-> That's why it's called *page*Context (and not *app*Context).
 
 We can keep using `<a href="/some-url">` links: the Client Router automatically intercepts clicks on `<a>` elements.
 
@@ -246,6 +209,7 @@ async function onRenderClient(pageContext) {
 }
 ```
 
+
 ## Link prefetching
 
 By default,
@@ -297,61 +261,9 @@ See also:
  - [MDN > Web API > Window > matchMedia()](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia)
  - [Stack Overflow > Detecting that the browser has no mouse and is touch-only](https://stackoverflow.com/questions/7838680/detecting-that-the-browser-has-no-mouse-and-is-touch-only/52854585#52854585)
 
-## TypeScript
 
-```js
-// /renderer/+config.h.ts
-// Environment: build-time
+## See also
 
-import type { Config } from 'vike/types'
-
-export default {
-  clientRouting: true,
-  prefetchStaticAssets: 'viewport',
-  hydrationCanBeAborted: true
-} satisfies Config
-```
-
-```ts
-// /renderer/+onPageTransitionStart.ts
-// Environment: browser
-
-export { onPageTransitionStart }
-
-import type { OnPageTransitionStartAsync } from 'vike/types'
-
-const onPageTransitionStart: OnPageTransitionStartAsync = async (
-): ReturnType<OnPageTransitionStartAsync> => {
-  console.log('Page transition start')
-  console.log('Is backwards navigation?', pageContext.isBackwardNavigation)
-  document.body.classList.add('page-transition')
-}
-```
-
-```ts
-// /renderer/+onPageTransitionEnd.ts
-// Environment: browser
-
-export { onPageTransitionEnd }
-
-import type { OnPageTransitionEndAsync } from 'vike/types'
-
-const onPageTransitionEnd: OnPageTransitionEndAsync = async (
-): ReturnType<OnPageTransitionEndAsync> => {
-  console.log('Page transition end')
-  document.body.classList.remove('page-transition')
-}
-```
-
-```ts
-// /renderer/+onHydrationEnd.ts
-// Environment: browser
-
-export { onHydrationEnd }
-
-import type { OnHydrationEndAsync } from 'vike/types'
-
-const onHydrationEnd: OnHydrationEndAsync = async (): ReturnType<OnHydrationEndAsync> => {
-  console.log('The page is now interactive')
-}
-```
+ - <Link href="/onHydrationEnd" />
+ - <Link href="/onPageTransitionStart" />
+ - <Link href="/onPageTransitionEnd" />
