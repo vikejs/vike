@@ -211,11 +211,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Guard',
-    url: '/guard'
-  },
-  {
-    level: 2,
     title: 'Active Links',
     url: '/active-links'
   },
