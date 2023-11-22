@@ -9,13 +9,10 @@ function Page() {
   return (
     <>
       <GlobalNote>
-        <a href="https://vite-plugin-ssr.com">
-          <code>vite-plugin-ssr</code>
-        </a>{' '}
-        has been renamed Vike, see <a href="https://vite-plugin-ssr.com/vike">migration guide</a>.
+        The <i>V1 design</i> is released, see <Link text="migration guide" href="/migration/v1-design" />.
       </GlobalNote>
       <GlobalNote>
-        The <i>V1 design</i> has been released, see <Link text="migration guide" href="/migration/v1-design" />.
+        Vite-plugin-ssr has been renamed Vike, see <a href="https://vite-plugin-ssr.com/vike">migration guide</a>.
       </GlobalNote>
       <Header />
       <HorizontalLine primary={true} />
