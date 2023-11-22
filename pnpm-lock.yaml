@@ -2012,8 +2012,8 @@ importers:
         specifier: ^0.5.8
         version: 0.5.8
       '@brillout/picocolors':
-        specifier: ^1.0.9
-        version: 1.0.9
+        specifier: ^1.0.10
+        version: 1.0.10
       '@brillout/require-shim':
         specifier: ^0.1.2
         version: 0.1.2
@@ -2460,8 +2460,13 @@ packages:
     resolution: {integrity: sha512-ZyqtOYHvQs3Ca0xt9fb2OlGzCrKwXtMcAATDObkFmI4jKuObEORjWrqAslWTelquXlyEYLz7h1nt6jp50LDyJA==}
     dev: true
 
+  /@brillout/picocolors@1.0.10:
+    resolution: {integrity: sha512-dh+JJlsBf3QYX+91Ezma8RLKNOjGDoBBmORv/NzRpQuasdyzwQCMXGGjsDu12ZhGz92TqQbL9pv79rvbheI21A==}
+    dev: false
+
   /@brillout/picocolors@1.0.9:
     resolution: {integrity: sha512-Lt/W5JsA75hcDJ2cOAlE4TqSMl6c9K+rXGRo/cU2fApnmhbRcNdkR4UHQDAwtWfZyUKWaxdwSui+jp+74J1pZg==}
+    dev: true
 
   /@brillout/release-me@0.0.8:
     resolution: {integrity: sha512-sZUjOMkcQ2Eq3tDiL24t4Mgt93tMAs7oeNy/LHqPBlWGO+db8U+ZSpdAhae7rIyse53fBuXV9KLH0DdDkFkLGA==}
