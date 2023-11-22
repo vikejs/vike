@@ -2,10 +2,10 @@ import { Link } from '@brillout/docpress'
 import { TextType } from './Config/TextType'
 import { TextEnv } from './Config/TextEnv'
 
-List of built-in Vike configs. (You can <Link href="#custom">create your own configs</Link>.)
+List of *built-in* Vike configs (you can <Link href="#custom">create your own configs</Link>).
 
 
-## Options
+## Settings
 
 ##### Basic
 
@@ -28,6 +28,7 @@ List of built-in Vike configs. (You can <Link href="#custom">create your own con
 
 ##### Basic
 
+- [**`onBeforeRender`**](/onBeforeRender): <TextEnv>server-side (and potentially client-side)</TextEnv> Called before the page is rendered, usually for fetching data.
 - [**`onHydrationEnd`**](/clientRouting#usage-options): <TextEnv>client-side</TextEnv> Called after the page is hydrated.
 - [**`onPageTransitionStart`**](/clientRouting#usage-options): <TextEnv>client-side</TextEnv> Called before the user navigates to a new page.
 - [**`onPageTransitionEnd`**](/clientRouting#usage-options): <TextEnv>client-side</TextEnv> Called after the user navigates to a new page.
@@ -38,7 +39,6 @@ List of built-in Vike configs. (You can <Link href="#custom">create your own con
 
 > Most users don't need to know about these configs. (They are usually only used by <Link href="/vike-packages" noBreadcrumb />.)
 
-- [**`onBeforeRender`**](/onBeforeRender): <TextEnv>server-side (and potentially client-side)</TextEnv> Called before the page is rendered, usually for fetching data.
 - [**`onRenderHtml`**](/onRenderHtml): <TextEnv>server-side</TextEnv> Called when page is rendered to HTML on the server-side.
 - [**`onRenderClient`**](/onRenderClient): <TextEnv>client-side</TextEnv> Called when page is rendered on the client-side.
 - [**`onBeforeRoute`**](/onBeforeRoute): <TextEnv>server (and potentially client-side)</TextEnv> Called before the URL is routed to a page.
