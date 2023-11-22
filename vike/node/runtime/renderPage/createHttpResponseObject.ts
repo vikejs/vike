@@ -71,10 +71,10 @@ async function createHttpResponsePageContextJson(pageContextSerialized: string) 
 
 function createHttpResponseObjectRedirect(
   { url, statusCode }: UrlRedirect,
-  // The URL pathname we assume the redirect to be logically based on
-  urlPathnameLogical: string
+  // The URL we assume the redirect to be logically based on
+  urlLogical: string
 ): HttpResponse {
-  assertNoInfiniteHttpRedirect(url, urlPathnameLogical)
+  assertNoInfiniteHttpRedirect(url, urlLogical)
   assert(url)
   assert(statusCode)
   assert(300 <= statusCode && statusCode <= 399)

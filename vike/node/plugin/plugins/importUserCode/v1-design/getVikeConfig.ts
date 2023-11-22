@@ -18,12 +18,13 @@ import {
   isNpmPackageImport,
   joinEnglish,
   lowerFirst,
-  scriptFileExtensions,
+  scriptFileExtensionList,
   mergeCumulativeValues,
   requireResolve,
   getOutDirs,
   deepEqual,
-  assertKeys
+  assertKeys,
+  scriptFileExtensions
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -76,6 +77,9 @@ import {
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
+import { exec } from 'child_process'
+import { promisify } from 'util'
+const execA = promisify(exec)
 
 assertIsNotProductionRuntime()
 
@@ -178,7 +182,7 @@ async function loadInterfaceFiles(
   isDev: boolean,
   extensions: ExtensionResolved[]
 ): Promise<InterfaceFilesByLocationId> {
-  const plusFiles = await findPlusFiles(userRootDir, [outDirRoot], isDev, extensions)
+  const plusFiles = await findPlusFiles(userRootDir, outDirRoot, isDev, extensions)
   const configFiles: FilePathResolved[] = []
   const valueFiles: FilePathResolved[] = []
   plusFiles.forEach((f) => {
@@ -1123,32 +1127,42 @@ function getComputed(
 
 async function findPlusFiles(
   userRootDir: string,
-  ignoreDirs: string[],
+  outDirAbsoluteFilesystem: string,
   isDev: boolean,
   extensions: ExtensionResolved[]
 ): Promise<FilePathResolved[]> {
-  const timeBase = new Date().getTime()
   assertPosixPath(userRootDir)
+  assertPosixPath(outDirAbsoluteFilesystem)
+  assert(outDirAbsoluteFilesystem.startsWith(userRootDir))
+  const outDir = path.posix.relative(userRootDir, outDirAbsoluteFilesystem)
+  assert(!outDir.startsWith('.'))
+  const timeBase = new Date().getTime()
 
-  const ignorePatterns = []
-  for (const dir of ignoreDirs) {
-    assertPosixPath(dir)
-    ignorePatterns.push(`${path.posix.relative(userRootDir, dir)}/**`)
+  let result: string[] = []
+  const res = await gitLsFiles(userRootDir, outDir)
+  if (
+    res &&
+    // Fallback to fast-glob for users that dynamically generate plus files (generetad plus files are skipped because they're usually included in .gitignore)
+    res.length > 0
+  ) {
+    result = res
+  } else {
+    result = await glob(`**/+*.${scriptFileExtensions}`, {
+      ignore: [
+        '**/node_modules/**',
+        `${outDir}/**`,
+        // Allow:
+        // ```
+        // +Page.js
+        // +Page.telefunc.js
+        // ```
+        '**/*.telefunc.*'
+      ],
+      cwd: userRootDir,
+      dot: false
+    })
   }
-  const result = await glob(`**/+*.${scriptFileExtensions}`, {
-    ignore: [
-      '**/node_modules/**',
-      // Allow:
-      // ```
-      // +Page.js
-      // +Page.telefunc.js
-      // ```
-      '**/*.telefunc.*',
-      ...ignorePatterns
-    ],
-    cwd: userRootDir,
-    dot: false
-  })
+
   const time = new Date().getTime() - timeBase
   if (isDev) {
     // We only warn in dev, because while building it's expected to take a long time as fast-glob is competing for resources with other tasks
@@ -1192,6 +1206,43 @@ async function findPlusFiles(
   })
 
   return plusFiles
+}
+
+async function gitLsFiles(userRootDir: string, outDir: string) {
+  const cmd = [
+    'git ls-files',
+    ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
+    '--exclude="**/node_modules/**"',
+    `--exclude="${outDir}/**"`,
+    // Allow:
+    // ```
+    // +Page.js
+    // +Page.telefunc.js
+    // ```
+    '--exclude="**/*.telefunc.*"',
+    // --others lists untracked files only (but using .gitignore because --exclude-standard)
+    // --cached adds the tracked files to the output
+    '--others --cached --exclude-standard'
+  ].join(' ')
+
+  let stdout: string
+  try {
+    const res = await execA(cmd, { cwd: userRootDir })
+    stdout = res.stdout
+  } catch (err) {
+    if ((err as Error).message.includes('not a git repository')) return null
+    throw err
+  }
+
+  let files = stdout.split('\n').filter(Boolean)
+
+  assert(!outDir.startsWith('/'))
+  files = files.filter(
+    // We have to repeat the same exclusion logic here because the `git ls-files` option --exclude only applies to untracked files. (We use --exclude only to speed up the command.)
+    (line) => !line.includes('node_modules/') && !line.includes('.telefunc.') && !line.startsWith(`${outDir}/`)
+  )
+
+  return files
 }
 
 function getConfigName(filePath: string): string | null {
