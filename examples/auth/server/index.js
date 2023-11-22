@@ -72,7 +72,11 @@ function vike(app) {
     if (!httpResponse) {
       return next()
     } else {
-      const { body, statusCode, headers } = httpResponse
+      const { statusCode, headers } = httpResponse
+      const body = await httpResponse.getBody()
+      if (typeof body !== 'string') {
+        return next()
+      }
       headers.forEach(([name, value]) => res.setHeader(name, value))
       res.status(statusCode).send(body)
     }
