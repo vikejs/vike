@@ -9,7 +9,9 @@ List of *built-in* Vike settings (you can <Link href="/meta">create your own set
 - [**`route`**](/routing): <TextType>string | Function</TextType> The page's route.
 - [**`prerender`**](/prerender-config): Whether to <Link text="pre-render" href="/preredering" /> the page, and pre-rendering settings.
 - [**`client`**](/client): <TextType>string</TextType> Additional client entry.
-- [**`prefetchStaticAssets`**](/clientRouting#link-prefetching): Link prefetching settings.
+- [**`redirects`**](/redirects): Permanent redirections.
+- [**`prefetchStaticAssets`**](/prefetchStaticAssets): Link prefetching settings.
+- [**`filesystemRoutingRoot`**](/filesystemRoutingRoot): Change the URL root of Filesystem Routing (usually for <Link href="/file-structure#domain-driven">domain-driven file structure</Link>).
 
 ## Advanced
 
@@ -18,7 +20,7 @@ List of *built-in* Vike settings (you can <Link href="/meta">create your own set
 - [**`meta`**](/meta): Create new or modify existing configurations.
 - [**`passToClient`**](/passToClient): <TextType>string[]</TextType> Determines what `pageContext` properties are sent to the client-side.
 - [**`clientRouting`**](/clientRouting): <TextType>boolean</TextType> Enable Client Routing.
-- [**`hydrationCanBeAborted`**](/clientRouting#usage-settings): <TextType>boolean</TextType>  Whether the <Link text="UI framework" href="/ui-framework" /> allows hydrations to be aborted.
+- [**`hydrationCanBeAborted`**](/hydrationCanBeAborted): <TextType>boolean</TextType>  Whether the <Link text="UI framework" href="/ui-framework" /> allows <Link href="/hydration">hydrations</Link> to be aborted.
 
 ## See also
 

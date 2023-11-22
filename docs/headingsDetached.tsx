@@ -353,4 +353,12 @@ const headingsDetached = [
     // titleInNav: '`onBeforeRoute`',
     url: '/onBeforeRoute'
   },
+  {
+    title: '`disableAutoFullBuild`',
+    url: '/disableAutoFullBuild'
+  },
+  {
+    title: '`hydrationCanBeAborted`',
+    url: '/hydrationCanBeAborted'
+  },
 ] satisfies HeadingDetachedDefinition[]

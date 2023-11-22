@@ -1,6 +1,8 @@
 import { Link } from '@brillout/docpress'
 import { HookTypeScriptHints } from '../components'
 
+You can use the `onHydrationEnd()` hook to implement initialization that needs to be executed once the page has finished <Link href="/hydration">hydrating</Link>.
+
 ```js
 // /pages/+onHydrationEnd.js
 // Environment: browser
@@ -14,6 +16,9 @@ async function onHydrationEnd(pageContext) {
   console.log('The page is now interactive')
 }
 ```
+
+> The `onHydrationEnd()` hook is applicable only if you use <Link href="/client-routing">Client Routing</Link>.
+
 
 ## TypeScript
 

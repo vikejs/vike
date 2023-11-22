@@ -764,9 +764,13 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: '`redirects`',
-    title: '`config.redirects`',
+    title: '`redirects`',
     url: '/redirects'
+  },
+  {
+    level: 2,
+    title: '`prefetchStaticAssets`',
+    url: '/prefetchStaticAssets'
   },
   {
     level: 2,
@@ -799,12 +803,6 @@ const headings = [
     level: 2,
     title: '`extends`',
     url: '/extends'
-  },
-  {
-    level: 2,
-    titleInNav: '`disableAutoFullBuild`',
-    title: '`config.disableAutoFullBuild`',
-    url: '/disableAutoFullBuild'
   },
   {
     level: 2,

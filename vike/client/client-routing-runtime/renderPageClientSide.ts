@@ -271,7 +271,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   } else {
     assertWarning(
       !isReact(),
-      'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vike.dev/clientRouting',
+      'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vike.dev/hydrationCanBeAborted',
       { onlyOnce: true }
     )
   }
