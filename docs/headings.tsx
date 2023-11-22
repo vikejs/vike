@@ -689,7 +689,7 @@ const headings = [
   {
     level: 2,
     title: 'Hooks',
-    titleInNav: 'More',
+    titleInNav: 'more...',
     url: '/hooks'
   },
   {
@@ -803,7 +803,7 @@ const headings = [
   {
     level: 2,
     title: 'Settings',
-    titleInNav: 'More',
+    titleInNav: 'more...',
     url: '/settings'
   },
 ] satisfies HeadingDefinition[]
