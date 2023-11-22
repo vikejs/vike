@@ -4,12 +4,13 @@ import { headingsDetached } from './headingsDetached'
 import { projectInfo } from './utils'
 import vikeIcon from './images/icons/vike-square-gradient.svg'
 import React from 'react'
-import { NavHeader, NavHeaderMobile } from './NavHeader'
+import { NavHeader, NavHeaderMobile, navHeaderWrapperStyle } from './NavHeader'
 
 export default {
   projectInfo,
   faviconUrl: vikeIcon,
   navHeader: <NavHeader />,
+  navHeaderWrapperStyle,
   navHeaderMobile: <NavHeaderMobile />,
   headings,
   headingsDetached,
