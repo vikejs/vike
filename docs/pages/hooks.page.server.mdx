@@ -1,0 +1,26 @@
+import { Link } from '@brillout/docpress'
+import { TextEnv } from './hooks/TextEnv'
+
+List of *built-in* Vike hooks (you can <Link href="/meta">create your own hooks</Link>).
+
+## Basic
+
+- [**`onBeforeRender`**](/onBeforeRender): <TextEnv>server-side (and potentially client-side)</TextEnv> Called before the page is rendered, usually for fetching data.
+- [**`onHydrationEnd`**](/clientRouting#usage-options): <TextEnv>client-side</TextEnv> Called after the page is hydrated.
+- [**`onPageTransitionStart`**](/clientRouting#usage-options): <TextEnv>client-side</TextEnv> Called before the user navigates to a new page.
+- [**`onPageTransitionEnd`**](/clientRouting#usage-options): <TextEnv>client-side</TextEnv> Called after the user navigates to a new page.
+- [**`onPrerenderStart`**](/onPrerenderStart): <TextEnv>server-side</TextEnv> Global hook called when pre-rendering starts.
+- [**`onBeforePrerenderStart`**](/onBeforePrerenderStart): <TextEnv>server-side</TextEnv> Page hooks called before the whole pre-rendering process starts.
+
+## Advanced
+
+> Most users don't need to know about these configs. (They are usually only used by <Link href="/vike-packages" noBreadcrumb />.)
+
+- [**`onRenderHtml`**](/onRenderHtml): <TextEnv>server-side</TextEnv> Called when page is rendered to HTML on the server-side.
+- [**`onRenderClient`**](/onRenderClient): <TextEnv>client-side</TextEnv> Called when page is rendered on the client-side.
+- [**`onBeforeRoute`**](/onBeforeRoute): <TextEnv>server (and potentially client-side)</TextEnv> Called before the URL is routed to a page.
+
+## See also
+
+ - <Link href="/settings" />
+ - <Link href="/config" />

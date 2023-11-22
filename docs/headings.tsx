@@ -632,13 +632,8 @@ const headings = [
   },
   {
     level: 2,
-    title: '`+config.h.js`',
+    title: 'Config',
     url: '/config'
-  },
-  {
-    level: 2,
-    title: 'Config List',
-    url: '/Config'
   },
   {
     level: 2,
@@ -690,6 +685,12 @@ const headings = [
     titleInNav: '`onBeforeRoute()`',
     // titleInNav: '`onBeforeRoute`',
     url: '/onBeforeRoute'
+  },
+  {
+    level: 2,
+    title: 'Hooks',
+    titleInNav: 'More',
+    url: '/hooks'
   },
   {
     level: 4,
@@ -755,7 +756,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'Config'
+    title: 'Settings'
   },
   {
     level: 2,
@@ -805,5 +806,11 @@ const headings = [
     titleInNav: '`disableAutoFullBuild`',
     title: '`config.disableAutoFullBuild`',
     url: '/disableAutoFullBuild'
+  },
+  {
+    level: 2,
+    title: 'Settings',
+    titleInNav: 'More',
+    url: '/settings'
   },
 ] satisfies HeadingDefinition[]

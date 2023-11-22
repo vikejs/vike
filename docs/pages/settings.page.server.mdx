@@ -1,0 +1,26 @@
+import { Link } from '@brillout/docpress'
+import { TextType } from './settings/TextType'
+
+List of *built-in* Vike settings (you can <Link href="/meta">create your own settings</Link>).
+
+## Basic
+
+- [**`Page`**](/Page): <TextType>unknown</TextType> The root UI component of the page.
+- [**`route`**](/routing): <TextType>string | Function</TextType> The page's route.
+- [**`prerender`**](/prerender-config): Whether to <Link text="pre-render" href="/preredering" /> the page, and pre-rendering settings.
+- [**`client`**](/client): <TextType>string</TextType> Additional client entry.
+- [**`prefetchStaticAssets`**](/clientRouting#link-prefetching): Link prefetching settings.
+
+## Advanced
+
+> Most users don't need to know about these configs. (They are usually only used by <Link href="/vike-packages" noBreadcrumb />.)
+
+- [**`meta`**](/meta): Create new or modify existing configurations.
+- [**`passToClient`**](/passToClient): <TextType>string[]</TextType> Determines what `pageContext` properties are sent to the client-side.
+- [**`clientRouting`**](/clientRouting): <TextType>boolean</TextType> Enable Client Routing.
+- [**`hydrationCanBeAborted`**](/clientRouting#usage-options): <TextType>boolean</TextType>  Whether the <Link text="UI framework" href="/ui-framework" /> allows hydrations to be aborted.
+
+## See also
+
+ - <Link href="/hooks" />
+ - <Link href="/config" />
