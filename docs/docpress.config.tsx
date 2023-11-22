@@ -17,6 +17,7 @@ export default {
   titleNormalCase: false,
   twitterHandle: '@vike_js',
   websiteUrl: 'https://vike.dev',
+  sponsorGithubAccount: 'vikejs',
   algolia: {
     appId: 'YMV9Y4B58S',
     apiKey: '9ac178c1a29ba00e8afb98365015f677',
