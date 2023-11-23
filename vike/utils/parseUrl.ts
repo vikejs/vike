@@ -81,7 +81,7 @@ function parseUrl(
   })
 
   // Origin + pathname
-  const { origin, pathname: pathnameResolved } = parsePathname(urlWithoutHashNorSearch, baseServer)
+  const { origin, pathname: pathnameResolved } = getPathname(urlWithoutHashNorSearch, baseServer)
   assert(origin === null || origin === decodeSafe(origin)) // AFAICT decoding the origin is useless
   assert(pathnameResolved.startsWith('/'))
   assert(origin === null || url.startsWith(origin))
@@ -125,24 +125,29 @@ function decodePathname(urlPathname: string) {
   urlPathname = urlPathname.replace(/\s/g, '')
   return urlPathname
 }
-function parsePathname(
-  urlWithoutHashNorSearch: string,
-  baseServer: string
-): { origin: null | string; pathname: string } {
+function getPathname(url: string, baseServer: string): { origin: null | string; pathname: string } {
+  // Search and hash already extracted
+  assert(!url.includes('?') && !url.includes('#'))
+
+  // url has origin
   {
-    const { origin, pathname } = parseOrigin(urlWithoutHashNorSearch)
+    const { origin, pathname } = parseOrigin(url)
     if (origin) {
       return { origin, pathname }
     }
-    assert(pathname === urlWithoutHashNorSearch)
+    assert(pathname === url)
   }
 
-  if (urlWithoutHashNorSearch.startsWith('/')) {
-    return { origin: null, pathname: urlWithoutHashNorSearch }
+  // url doesn't have origin
+  if (url.startsWith('/')) {
+    return { origin: null, pathname: url }
   } else {
-    // In the browser, this is the Base URL of the current URL
+    // url is a relative path
+
+    // In the browser, this is the Base URL of the current URL.
     // Safe access `window?.document?.baseURI` for users who shim `window` in Node.js
     const baseURI: string | undefined = typeof window !== 'undefined' ? window?.document?.baseURI : undefined
+
     let base: string
     if (baseURI) {
       const baseURIPathaname = parseOrigin(baseURI.split('?')[0]!).pathname
@@ -150,10 +155,9 @@ function parsePathname(
     } else {
       base = baseServer
     }
-    const pathname = resolveUrlPathnameRelative(urlWithoutHashNorSearch, base)
-    // We need to parse the origin in case `base === window.document.baseURI`
-    const parsed = parseOrigin(pathname)
-    return parsed
+
+    const pathname = resolveUrlPathnameRelative(url, base)
+    return { origin: null, pathname }
   }
 }
 
