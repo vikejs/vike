@@ -72,11 +72,17 @@ function vike(app) {
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
     if (!httpResponse) {
+      // not a page
       return next()
     } else {
       const { statusCode, headers, earlyHints } = httpResponse
       if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
       headers.forEach(([name, value]) => res.setHeader(name, value))
+
+      // Disable browser-caching for all pages. This prevents stale pageContext in browser when hitting the back button.
+      // Relax this if your app allows. See https://github.com/vikejs/vike/issues/1275
+      res.setHeader('Cache-Control', 'no-store, max-age=0')
+
       res.status(statusCode)
       httpResponse.pipe(res)
     }
