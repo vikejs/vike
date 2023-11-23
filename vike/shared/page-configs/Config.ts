@@ -112,14 +112,14 @@ type OnBeforePrerenderStartSync = () => (
       pageContext: Partial<Vike.PageContext>
     }
 )[]
-/** Hook called before the page is rendered, usually for fetching data in frameworks.
+/** Hook called before the page is rendered.
  *
  *  https://vike.dev/onBeforeRender
  */
 type OnBeforeRenderAsync = (
   pageContext: PageContextServer
 ) => Promise<{ pageContext: Partial<Vike.PageContext> } | void>
-/** Hook called before the page is rendered, usually for fetching data in frameworks.
+/** Hook called before the page is rendered.
  *
  *  https://vike.dev/onBeforeRender
  */
@@ -294,7 +294,7 @@ type ConfigBuiltIn = {
    */
   extends?: Config | Config[] | ImportString | ImportString[]
 
-  /** Hook called before the page is rendered, usually for fetching data in frameworks
+  /** Hook called before the page is rendered.
    *
    *  https://vike.dev/onBeforeRender
    */

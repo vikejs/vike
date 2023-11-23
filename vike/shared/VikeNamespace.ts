@@ -20,13 +20,13 @@ declare global {
     /** Extend and/or refine the `PageContext` type (`import type { PageContext } from 'vike/types'`).
      *
      *  For example:
-     *  - You can define the type of fetched data, e.g. `PageContext['movies']`, which may be fetched by an
-     *    `onBeforeRender` hook.
      *  - You can refine the type of `PageContext['Page']`.
+     *  - You can define the type of custom `pageContext` values such as `pageContext.user`, see https://vike.dev/pageContext#custom
      *
+     *  https://vike.dev/pageContext#typescript
      */
     interface PageContext {
-      // NOTE(aurelien) `data` may not exist at all if the user doesn't use `data` hooks, thus the `?`.
+      // data is undefined if the page doesn't define a data hook
       data?: Data
     }
 
