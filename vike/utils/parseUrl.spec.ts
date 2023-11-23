@@ -394,6 +394,15 @@ describe('parseUrl', () => {
   })
   it('relative paths - browser-side', () => {
     // @ts-ignore
+    globalThis.window = { document: { baseURI: 'http://100.115.92.194:3000/?q=any' } }
+    expect(parseUrl('?q=any', '/')).toEqual({
+      ...resultBase,
+      pathnameOriginal: '',
+      search: { q: 'any' },
+      searchAll: { q: ['any'] },
+      searchOriginal: '?q=any'
+    })
+    // @ts-ignore
     globalThis.window = { document: { baseURI: 'http://localhost:3000/' } }
     expect(parseUrl('./markdown', '/')).toEqual({
       ...resultBase,
@@ -425,3 +434,9 @@ describe('parseUrl', () => {
     globalThis.window = undefined
   })
 })
+
+/* Doesn't work
+declare global {
+  var document: Document & { baseURI: string }
+}
+*/
