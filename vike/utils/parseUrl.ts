@@ -142,9 +142,14 @@ function parsePathname(
   } else {
     // In the browser, this is the Base URL of the current URL
     // Safe access `window?.document?.baseURI` for users who shim `window` in Node.js
-    let baseURI = typeof window !== 'undefined' && window?.document?.baseURI
-    if (baseURI) baseURI = parseOrigin(baseURI).pathname
-    const base = baseURI || baseServer
+    const baseURI: string | undefined = typeof window !== 'undefined' ? window?.document?.baseURI : undefined
+    let base: string
+    if (baseURI) {
+      const baseURIPathaname = parseOrigin(baseURI.split('?')[0]!).pathname
+      base = baseURIPathaname
+    } else {
+      base = baseServer
+    }
     const pathname = resolveUrlPathnameRelative(urlWithoutHashNorSearch, base)
     // We need to parse the origin in case `base === window.document.baseURI`
     const parsed = parseOrigin(pathname)
