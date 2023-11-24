@@ -1,8 +1,13 @@
-export default () => {
+// https://vike.dev/onBeforeRender
+export { onBeforeRender }
+
+import type { OnBeforeRenderAsync } from 'vike/types'
+
+const onBeforeRender: OnBeforeRenderAsync = async (pageContext): ReturnType<OnBeforeRenderAsync> => {
   return {
     pageContext: {
-      onBeforeRender2WasCalled: 42,
-      onBeforeRenderEnv: typeof window === 'undefined' ? 'server' : 'client'
+      perPageOnBeforeRenderWasCalled: true,
+      perPageOnBeforeRenderWasCalledInEnv: typeof window === 'undefined' ? 'server' : 'client'
     }
   }
 }

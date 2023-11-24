@@ -4,7 +4,7 @@ import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { PageLayout } from './PageLayout'
-import type { PageContextServer } from './types'
+import type { PageContextServer } from 'vike/types'
 
 function onRenderHtml(pageContext: PageContextServer) {
   const { Page } = pageContext

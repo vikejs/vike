@@ -5,13 +5,24 @@ import { usePageContext } from '../../renderer/usePageContext'
 
 function Page() {
   const pageContext = usePageContext()
-  const { onBeforeRender1WasCalled, onBeforeRender2WasCalled, onBeforeRenderEnv } = pageContext
+  const {
+    globalOnBeforeRenderWasCalled,
+    globalOnBeforeRenderWasCalledInEnv,
+    perPageOnBeforeRenderWasCalled,
+    perPageOnBeforeRenderWasCalledInEnv,
+    data
+  } = pageContext
   return (
     <>
       <h1>Page</h1>
-      <p>onBeforeRender() 1 called: {String(onBeforeRender1WasCalled)}</p>
-      <p>onBeforeRender() 2 called: {String(onBeforeRender2WasCalled)}</p>
-      <p>onBeforeRender() env: {String(onBeforeRenderEnv)}</p>
+      <p>global data() was called: {String(data?.globalDataWasCalled)}</p>
+      <p>global data() was called in env: {String(data?.globalDataWasCalledInEnv)}</p>
+      <p>per-page data() was called: {String(data?.perPageDataWasCalled)}</p>
+      <p>per-page data() was called in env: {String(data?.perPageDataWasCalledInEnv)}</p>
+      <p>global onBeforeRender() was called: {String(globalOnBeforeRenderWasCalled)}</p>
+      <p>global onBeforeRender() was called in env: {String(globalOnBeforeRenderWasCalledInEnv)}</p>
+      <p>per-page onBeforeRender() was called: {String(perPageOnBeforeRenderWasCalled)}</p>
+      <p>per-page onBeforeRender() was called in env: {String(perPageOnBeforeRenderWasCalledInEnv)}</p>
       <Counter />
     </>
   )
