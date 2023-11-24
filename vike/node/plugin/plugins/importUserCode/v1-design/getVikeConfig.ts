@@ -1112,47 +1112,38 @@ async function findPlusFiles(
   assert(outDirAbsoluteFilesystem.startsWith(userRootDir))
   const outDir = path.posix.relative(userRootDir, outDirAbsoluteFilesystem)
   assert(!outDir.startsWith('.'))
+
   const timeBase = new Date().getTime()
 
-  let result: string[] = []
+  let files: string[] = []
   const res = await gitLsFiles(userRootDir, outDir)
   if (
     res &&
     // Fallback to fast-glob for users that dynamically generate plus files (generetad plus files are skipped because they're usually included in .gitignore)
     res.length > 0
   ) {
-    result = res
+    files = res
   } else {
-    result = await glob(`**/+*.${scriptFileExtensions}`, {
-      ignore: [
-        '**/node_modules/**',
-        `${outDir}/**`,
-        // Allow:
-        // ```
-        // +Page.js
-        // +Page.telefunc.js
-        // ```
-        '**/*.telefunc.*'
-      ],
-      cwd: userRootDir,
-      dot: false
-    })
+    files = await fastGlob(userRootDir, outDir)
   }
 
-  const time = new Date().getTime() - timeBase
-  if (isDev) {
-    // We only warn in dev, because while building it's expected to take a long time as fast-glob is competing for resources with other tasks
-    assertWarning(
-      time < 2 * 1000,
-      `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on Vike's GitHub.`,
-      {
-        onlyOnce: 'slow-page-files-search'
-      }
-    )
+  {
+    const time = new Date().getTime() - timeBase
+    if (isDev) {
+      // We only warn in dev, because while building it's expected to take a long time as fast-glob is competing for resources with other tasks
+      assertWarning(
+        time < 2 * 1000,
+        `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on Vike's GitHub.`,
+        {
+          onlyOnce: 'slow-page-files-search'
+        }
+      )
+    }
   }
 
-  const plusFiles: FilePathResolved[] = result.map((p) => {
+  const plusFiles: FilePathResolved[] = files.map((p) => {
     p = toPosixPath(p)
+    assert(!p.startsWith(userRootDir))
     const filePathRelativeToUserRootDir = path.posix.join('/', p)
     const filePathAbsoluteFilesystem = path.posix.join(userRootDir, p)
     return {
@@ -1184,18 +1175,11 @@ async function findPlusFiles(
   return plusFiles
 }
 
-async function gitLsFiles(userRootDir: string, outDir: string) {
+async function gitLsFiles(userRootDir: string, outDir: string): Promise<string[] | null> {
   const cmd = [
     'git ls-files',
     ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
-    '--exclude="**/node_modules/**"',
-    `--exclude="${outDir}/**"`,
-    // Allow:
-    // ```
-    // +Page.js
-    // +Page.telefunc.js
-    // ```
-    '--exclude="**/*.telefunc.*"',
+    ...getIgnorePatterns(outDir).map((pattern) => `--exclude="${pattern}"`),
     // --others lists untracked files only (but using .gitignore because --exclude-standard)
     // --cached adds the tracked files to the output
     '--others --cached --exclude-standard'
@@ -1215,10 +1199,33 @@ async function gitLsFiles(userRootDir: string, outDir: string) {
   assert(!outDir.startsWith('/'))
   files = files.filter(
     // We have to repeat the same exclusion logic here because the `git ls-files` option --exclude only applies to untracked files. (We use --exclude only to speed up the command.)
-    (line) => !line.includes('node_modules/') && !line.includes('.telefunc.') && !line.startsWith(`${outDir}/`)
+    (file) => getIgnoreFilter(file, outDir)
   )
 
   return files
+}
+async function fastGlob(userRootDir: string, outDir: string): Promise<string[]> {
+  const files = await glob(`**/+*.${scriptFileExtensions}`, {
+    ignore: getIgnorePatterns(outDir),
+    cwd: userRootDir,
+    dot: false
+  })
+  return files
+}
+function getIgnorePatterns(outDir: string): string[] {
+  return [
+    '**/node_modules/**',
+    `${outDir}/**`,
+    // Allow:
+    // ```
+    // +Page.js
+    // +Page.telefunc.js
+    // ```
+    '**/*.telefunc.*'
+  ]
+}
+function getIgnoreFilter(file: string, outDir: string): boolean {
+  return !file.includes('node_modules/') && !file.includes('.telefunc.') && !file.startsWith(`${outDir}/`)
 }
 
 function getConfigName(filePath: string): string | null {
