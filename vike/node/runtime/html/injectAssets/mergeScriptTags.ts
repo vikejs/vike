@@ -34,7 +34,12 @@ function mergeScriptTags(scriptTagsHtml: string, isProduction: boolean): string 
         }
       })
       if (contents.length > 0) {
-        scriptTag += `<script type="module" defer>\n${contents.join('\n')}\n</script>`
+        // Note: we can't use `defer` here. With `defer`, the entry script won't start before `</body>` has been parsed,
+        // preventing partial hydration during SSR streaming. The entry script however must be executed after
+        // <script id="vike_pageContext" type="application/json">, otherwise we'll hit issues like #524 and #567. To
+        // guarantee that, special care is taken in getHtmlTags() to order these scripts properly.
+        // See https://github.com/vikejs/vike/pull/1271
+        scriptTag += `<script type="module" async>\n${contents.join('\n')}\n</script>`
       }
     }
   }

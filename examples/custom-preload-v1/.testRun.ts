@@ -9,7 +9,7 @@ function testRun(cmd: 'npm run preview') {
   const fontRE = partRegex`<link rel="preload" href="/assets/static/Sono-Light.${hash}.ttf" as="font" type="font/ttf" crossorigin>`
   const logoRE = partRegex`<link rel="preload" href="/assets/static/logo.${hash}.svg" as="image" type="image/svg+xml">`
   const styleRE = partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/onRenderClient.${hash}.css">`
-  const script1RE = partRegex`<script type="module" src="/assets/entries/entry-server-routing.${hash}.js" defer></script>`
+  const script1RE = partRegex`<script type="module" src="/assets/entries/entry-server-routing.${hash}.js" async></script>`
   const script2RE = partRegex`<link rel="modulepreload" href="/assets/chunks/chunk-${hash}.js" as="script" type="text/javascript">`
 
   const testCommon = (html: string) => {

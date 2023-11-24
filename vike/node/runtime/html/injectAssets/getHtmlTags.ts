@@ -125,27 +125,20 @@ async function getHtmlTags(
     }
   }
 
-  // JavaScript
-  const positionProd = injectJavaScriptDuringStream ? 'STREAM' : 'HTML_END'
-  const positionScript = !isProduction ? 'HTML_BEGIN' : positionProd
-  const positionJsonData =
-    !isProduction && !pageContext._pageContextPromise && !pageContext._isStream ? 'HTML_BEGIN' : positionProd
-  const jsScript = await getMergedScriptTag(pageAssets, isProduction)
-  if (jsScript) {
-    htmlTags.push({
-      htmlTag: jsScript,
-      position: positionScript
-    })
-  }
-  for (const asset of injectFilterEntries) {
-    if (asset.assetType === 'script' && asset.inject) {
-      const htmlTag = asset.isEntry ? inferAssetTag(asset) : inferPreloadTag(asset)
-      const position = asset.inject === 'HTML_END' ? positionScript : asset.inject
-      htmlTags.push({ htmlTag, position })
-    }
-  }
+  // In order to avoid the race-condition depicted in #527 and #567:
+  // 1. the `pageContext` JSON data must appear in the HTML before the entry <script> tag
+  // 2. the `pageContext` JSON data can't be async or defer
+  // Additionally:
+  // 3. the entry script can't be defer, otherwise progressive hydration while SSR streaming won't work
+  // 4. the entry script should be towards the end of the HTML as performance-wise it's more interesting to parse
+  //    the <div id="page-view"> before running the entry script responsible for hydration
+  // See https://github.com/vikejs/vike/pull/1271
 
-  // `pageContext` JSON data
+  // `pageContext` JSON data and JavaScript
+  const positionProd = injectJavaScriptDuringStream ? 'STREAM' : 'HTML_END'
+  const positionJsonDataAndEntryScript = positionProd
+  const positionOtherScripts = !isProduction ? 'HTML_BEGIN' : positionProd
+
   if (!isHtmlOnly) {
     // Don't allow the user to manipulate with injectFilter(): injecting <script type="application/json"> before the stream can break the app when:
     //  - using https://vike.dev/stream#initial-data-after-stream-end
@@ -154,8 +147,28 @@ async function getHtmlTags(
     htmlTags.push({
       // Needs to be called after `resolvePageContextPromise()`
       htmlTag: () => getPageContextTag(pageContext),
-      position: positionJsonData
+      position: positionJsonDataAndEntryScript
     })
+  }
+
+  const jsScript = await getMergedScriptTag(pageAssets, isProduction)
+  if (jsScript) {
+    htmlTags.push({
+      htmlTag: jsScript,
+      position: positionJsonDataAndEntryScript
+    })
+  }
+
+  for (const asset of injectFilterEntries) {
+    if (asset.assetType === 'script' && asset.inject) {
+      const htmlTag = asset.isEntry ? inferAssetTag(asset) : inferPreloadTag(asset)
+      const position = asset.isEntry
+        ? positionJsonDataAndEntryScript
+        : asset.inject === 'HTML_END'
+        ? positionOtherScripts
+        : asset.inject
+      htmlTags.push({ htmlTag, position })
+    }
   }
 
   return htmlTags

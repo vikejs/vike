@@ -162,8 +162,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
       expect(html).toContain('This page is rendered to HTML and has only few lines of browser-side JavaScript.')
       if (isPreview) {
         const jsImport = isV1Design
-          ? partRegex`<script type="module" src="/assets/entries/pages_html-js_client.${hash}.js" defer></script>`
-          : partRegex`<script type="module" src="/assets/entries/pages_html-js_default.page.client.${hash}.js" defer>`
+          ? partRegex`<script type="module" src="/assets/entries/pages_html-js_client.${hash}.js" async></script>`
+          : partRegex`<script type="module" src="/assets/entries/pages_html-js_default.page.client.${hash}.js" async>`
         expect(html).toMatch(jsImport)
       } else {
         const jsImport = isV1Design
@@ -303,7 +303,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
   function testClientRouting(html: string) {
     if (isPreview) {
       expect(html).toMatch(
-        partRegex`<script type="module" src="/assets/entries/entry-client-routing.${hash}.js" defer>`
+        partRegex`<script type="module" src="/assets/entries/entry-client-routing.${hash}.js" async>`
       )
     } else {
       expect(html).toMatch(partRegex`import("/@fs/${path}/vike/${path}/client-routing-runtime/${path}");`)
