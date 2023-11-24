@@ -8,21 +8,21 @@ const globalObject = getGlobalObject<{ redirectGraph: Graph }>('assertNoInfinite
   redirectGraph: {}
 })
 
-function assertNoInfiniteHttpRedirect(urlRedirectOriginal: string, urlRedirectPathnameLogical: string) {
-  if (urlRedirectOriginal.startsWith('http')) {
-    // We assume that the redirect points to an external origin, and we can therefore assume that the app doesn't define an infinite loop (in itself).
-    //  - There isn't a reliable way to check whether the redirect points to an external origin or the same origin: the user usually passes the URL without origin.
+function assertNoInfiniteHttpRedirect(urlRedirectTarget: string, urlLogical: string) {
+  if (urlRedirectTarget.startsWith('http')) {
+    // We assume that urlRedirectTarget points to an origin that is external (not the same origin), and we can therefore assume that the app doesn't define an infinite loop (in itself).
+    //  - There isn't a reliable way to check whether the redirect points to an external origin or the same origin. For same origins, we assume/hope the user to pass the URL without origin.
     //    ```js
-    //    // URL origin is usually missing
+    //    // For same-origin, the user usually/hopefully passes a URL without origin
     //    renderPage({ urlOriginal: '/some/pathname' })
     //    ```
     return
   }
-  assert(urlRedirectOriginal.startsWith('/'))
-  assert(urlRedirectPathnameLogical.startsWith('/'))
+  assert(urlRedirectTarget.startsWith('/'))
+  assert(urlLogical.startsWith('/'))
   const graph = copy(globalObject.redirectGraph)
-  graph[urlRedirectOriginal] ??= new Set()
-  graph[urlRedirectOriginal]!.add(urlRedirectPathnameLogical)
+  graph[urlRedirectTarget] ??= new Set()
+  graph[urlRedirectTarget]!.add(urlLogical)
   validate(graph)
   globalObject.redirectGraph = graph
 }
@@ -32,13 +32,13 @@ function copy(G: Graph): Graph {
 }
 
 // Adapted from: https://stackoverflow.com/questions/60904464/detect-cycle-in-directed-graph/60907076#60907076
+function validate(G: Graph) {
+  Object.keys(G).forEach((n) => check(G, n, []))
+}
 function check(G: Graph, n: string, path: string[]) {
   if (path.includes(n)) {
     const cycle = path.slice(path.indexOf(n)).concat(n)
     assertUsage(false, `Infinite loop of HTTP URL redirects: ${cycle.map(pc.cyan).join(' -> ')}`)
   }
   G[n]?.forEach((node) => check(G, node, [...path, n]))
-}
-function validate(G: Graph) {
-  Object.keys(G).forEach((n) => check(G, n, []))
 }

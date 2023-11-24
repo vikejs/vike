@@ -8,7 +8,6 @@ import {
   assert,
   isObject,
   assertUsage,
-  toPosixPath,
   assertWarning,
   objectEntries,
   hasProp,
@@ -18,7 +17,6 @@ import {
   isNpmPackageImport,
   joinEnglish,
   lowerFirst,
-  scriptFileExtensions,
   mergeCumulativeValues,
   requireResolve,
   getOutDirs,
@@ -47,7 +45,6 @@ import {
   configDefinitionsBuiltInGlobal,
   type ConfigNameGlobal
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
-import glob from 'fast-glob'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVike.js'
 import {
   getLocationId,
@@ -76,6 +73,7 @@ import {
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
+import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
 
 assertIsNotProductionRuntime()
 
@@ -178,7 +176,7 @@ async function loadInterfaceFiles(
   isDev: boolean,
   extensions: ExtensionResolved[]
 ): Promise<InterfaceFilesByLocationId> {
-  const plusFiles = await findPlusFiles(userRootDir, [outDirRoot], isDev, extensions)
+  const plusFiles = await findPlusFiles(userRootDir, outDirRoot, isDev, extensions)
   const configFiles: FilePathResolved[] = []
   const valueFiles: FilePathResolved[] = []
   plusFiles.forEach((f) => {
@@ -1099,48 +1097,13 @@ function getComputed(
 
 async function findPlusFiles(
   userRootDir: string,
-  ignoreDirs: string[],
+  outDirRoot: string,
   isDev: boolean,
   extensions: ExtensionResolved[]
 ): Promise<FilePathResolved[]> {
-  const timeBase = new Date().getTime()
-  assertPosixPath(userRootDir)
+  const files = await crawlPlusFiles(userRootDir, outDirRoot, isDev)
 
-  const ignorePatterns = []
-  for (const dir of ignoreDirs) {
-    assertPosixPath(dir)
-    ignorePatterns.push(`${path.posix.relative(userRootDir, dir)}/**`)
-  }
-  const result = await glob(`**/+*.${scriptFileExtensions}`, {
-    ignore: [
-      '**/node_modules/**',
-      // Allow:
-      // ```
-      // +Page.js
-      // +Page.telefunc.js
-      // ```
-      '**/*.telefunc.*',
-      ...ignorePatterns
-    ],
-    cwd: userRootDir,
-    dot: false
-  })
-  const time = new Date().getTime() - timeBase
-  if (isDev) {
-    // We only warn in dev, because while building it's expected to take a long time as fast-glob is competing for resources with other tasks
-    assertWarning(
-      time < 2 * 1000,
-      `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on Vike's GitHub.`,
-      {
-        onlyOnce: 'slow-page-files-search'
-      }
-    )
-  }
-
-  const plusFiles: FilePathResolved[] = result.map((p) => {
-    p = toPosixPath(p)
-    const filePathRelativeToUserRootDir = path.posix.join('/', p)
-    const filePathAbsoluteFilesystem = path.posix.join(userRootDir, p)
+  const plusFiles: FilePathResolved[] = files.map(({ filePathRelativeToUserRootDir, filePathAbsoluteFilesystem }) => {
     return {
       filePathRelativeToUserRootDir,
       filePathAbsoluteVite: filePathRelativeToUserRootDir,

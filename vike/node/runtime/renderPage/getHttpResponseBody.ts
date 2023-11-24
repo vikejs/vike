@@ -53,7 +53,7 @@ function getHttpResponseBody(htmlRender: HtmlRender, renderHook: null | RenderHo
         htmlRender,
         renderHook,
         'body',
-        `Use ${pc.cyan('pageContext.httpResponse.pipe()')} or ${pc.cyan('pageContext.httpResponse.getBody()')} instead`
+        `Use ${pc.cyan('pageContext.httpResponse.pipe()')} instead`
       )
     )
   }

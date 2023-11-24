@@ -25,7 +25,8 @@ import {
   modifyUrlPathname,
   prependBase,
   removeUrlOrigin,
-  addUrlOrigin
+  addUrlOrigin,
+  createUrlFromComponents
 } from './utils.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -49,7 +50,7 @@ import type { PageContextDebugRouteMatches } from './renderPage/debugPageFiles.j
 import { log404 } from './renderPage/log404/index.js'
 import { isConfigInvalid } from './renderPage/isConfigInvalid.js'
 import pc from '@brillout/picocolors'
-import type { PageContextBuiltInServer } from '../../types/index.js'
+import type { PageContextBuiltInServer, Url } from '../../types/index.js'
 import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
@@ -491,10 +492,8 @@ function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
 function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
   const { redirects, baseServer } = getGlobalContext()
   const urlWithoutBase = removeBaseServer(pageContextInit.urlOriginal, baseServer)
-  let urlOriginalPathnameWithouBase: undefined | string
   let origin: null | string = null
   let urlTarget = modifyUrlPathname(urlWithoutBase, (urlPathname) => {
-    urlOriginalPathnameWithouBase = urlPathname
     const urlTargetWithOrigin = resolveRedirects(redirects, urlPathname)
     if (urlTargetWithOrigin === null) return null
     const { urlModified, origin: origin_ } = removeUrlOrigin(urlTargetWithOrigin)
@@ -502,7 +501,6 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
     return urlModified
   })
   if (origin) urlTarget = addUrlOrigin(urlTarget, origin)
-  assert(urlOriginalPathnameWithouBase)
   if (urlTarget === urlWithoutBase) return null
   logRuntimeInfo?.(
     `Permanent redirect defined by your config.redirects (https://vike.dev/redirects)`,
@@ -511,10 +509,7 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
   )
   urlTarget = prependBase(urlTarget, baseServer)
   assert(urlTarget !== pageContextInit.urlOriginal)
-  const httpResponse = createHttpResponseObjectRedirect(
-    { url: urlTarget, statusCode: 301 },
-    urlOriginalPathnameWithouBase
-  )
+  const httpResponse = createHttpResponseObjectRedirect({ url: urlTarget, statusCode: 301 }, urlWithoutBase)
   const pageContextHttpResponse = { ...pageContextInit, httpResponse }
   return pageContextHttpResponse
 }
@@ -525,7 +520,7 @@ async function handleAbortError(
   pageContextInit: { urlOriginal: string },
   pageContextNominalPageInit: {
     urlOriginal: string
-    urlPathname: string
+    urlParsed: Url
     _urlRewrite: null | string
     isClientSideNavigation: boolean
   },
@@ -583,7 +578,17 @@ async function handleAbortError(
     }
     const httpResponse = createHttpResponseObjectRedirect(
       pageContextAbort._urlRedirect,
-      pageContextNominalPageInit.urlPathname
+      (() => {
+        const { pathname, searchOriginal } = pageContextNominalPageInit.urlParsed
+        const urlLogical = createUrlFromComponents(
+          null,
+          pathname,
+          searchOriginal,
+          // The server-side doesn't have access to the hash
+          null
+        )
+        return urlLogical
+      })()
     )
     objectAssign(pageContextReturn, { httpResponse })
     return { pageContextReturn }
