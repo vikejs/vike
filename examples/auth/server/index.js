@@ -62,8 +62,10 @@ async function assets(app) {
 
 function vike(app) {
   app.get('*', async (req, res, next) => {
+    const userAgent = req.headers['user-agent']
     const pageContextInit = {
       urlOriginal: req.originalUrl,
+      userAgent,
       user: req.user,
       userFullName: req.user?.fullName
     }
@@ -72,9 +74,11 @@ function vike(app) {
     if (!httpResponse) {
       return next()
     } else {
-      const { body, statusCode, headers } = httpResponse
+      const { statusCode, headers, earlyHints } = httpResponse
+      if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
       headers.forEach(([name, value]) => res.setHeader(name, value))
-      res.status(statusCode).send(body)
+      res.status(statusCode)
+      httpResponse.pipe(res)
     }
   })
 }
