@@ -72,7 +72,7 @@ async function getPageContextFromHooks_firstRender(
 
   objectAssign(pageContextFromHooks, await loadPageFilesClientSide(pageContextFromHooks._pageId, pageContext))
 
-  for (const hookName of ['onBeforeRender', 'data'] as const) {
+  for (const hookName of ['data', 'onBeforeRender'] as const) {
     const pageContextForHook = { ...pageContext, ...pageContextFromHooks }
     if (hookClientOnlyExists(hookName, pageContextForHook)) {
       const pageContextFromHook = await executeHookClientSide(hookName, pageContextForHook)
@@ -130,12 +130,12 @@ async function getPageContextAlreadyRouted(
   })
   objectAssign(pageContextFromHooks, await loadPageFilesClientSide(pageContext._pageId, pageContext))
 
-  // If pageContextInit has some client data or if one of the hooks guard(), onBeforeRender() or data() is server-side
+  // If pageContextInit has some client data or if one of the hooks guard(), data() or onBeforeRender() is server-side
   // only, then we need to fetch pageContext from the server.
   if (
     // For the error page, we cannot fetch pageContext from the server because the pageContext JSON request is based on the URL
     !isErrorPage &&
-    // true if pageContextInit has some client data or at least one of the onBeforeRender and data hooks is server-side only:
+    // true if pageContextInit has some client data or at least one of the data() and onBeforeRender() hooks is server-side only:
     (await hasPageContextServer({ ...pageContext, ...pageContextFromHooks }))
   ) {
     const pageContextFromServer = await fetchPageContextFromServer(pageContext)
@@ -164,23 +164,23 @@ async function getPageContextAlreadyRouted(
     }
   }
 
-  // At this point, we need to call the client-side guard(), onBeforeRender() and data() hooks, if they exist on client
+  // At this point, we need to call the client-side guard(), data() and onBeforeRender() hooks, if they exist on client
   // env. However if we have fetched pageContext from the server, some of them might have run already on the
   // server-side, so we run only the client-only ones in this case.
-  // Note: for the error page, we also execute the client-side onBeforeRender() and data() hooks, but maybe we
+  // Note: for the error page, we also execute the client-side data() and onBeforeRender() hooks, but maybe we
   // shouldn't? The server-side does it as well (but maybe it shouldn't).
-  for (const hookName of ['guard', 'onBeforeRender', 'data'] as const) {
+  for (const hookName of ['guard', 'data', 'onBeforeRender'] as const) {
     const pageContextForHook = { ...pageContext, ...pageContextFromHooks }
     if (hookName === 'guard') {
       if (!isErrorPage && !pageContextForHook._hasPageContextFromServer) {
         // Should we really call the guard() hook on the client-side? Shouldn't we make the guard() hook a server-side
-        // only hook? Or maybe make its env configurable like onBeforeRender() and data()?
+        // only hook? Or maybe make its env configurable like data() and onBeforeRender()?
         await executeGuardHook(pageContextForHook, (pageContext) =>
           preparePageContextForUserConsumptionClientSide(pageContext, true)
         )
       }
     } else {
-      assert(hookName === 'onBeforeRender' || hookName === 'data')
+      assert(hookName === 'data' || hookName === 'onBeforeRender')
       if (hookClientOnlyExists(hookName, pageContextForHook) || !pageContextForHook._hasPageContextFromServer) {
         // This won't do anything if no hook has been defined or if the hook's env.client is false.
         const pageContextFromHook = await executeHookClientSide(hookName, pageContextForHook)
@@ -195,7 +195,7 @@ async function getPageContextAlreadyRouted(
 }
 
 async function executeHookClientSide(
-  hookName: 'onBeforeRender' | 'data',
+  hookName: 'data' | 'onBeforeRender',
   pageContext: {
     _pageId: string
     _hasPageContextFromServer: boolean
@@ -261,8 +261,8 @@ function setPageContextInitHasClientData(pageContext: Record<string, unknown>) {
 async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnlyExists>[1]): Promise<boolean> {
   return (
     !!globalObject.pageContextInitHasClientData ||
-    (await hookServerOnlyExists('onBeforeRender', pageContext)) ||
-    (await hookServerOnlyExists('data', pageContext))
+    (await hookServerOnlyExists('data', pageContext)) ||
+    (await hookServerOnlyExists('onBeforeRender', pageContext))
   )
 }
 
@@ -272,7 +272,7 @@ async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnl
  * @returns `true` if the given page has a `hookName` hook defined with a server-only env.
  */
 async function hookServerOnlyExists(
-  hookName: 'onBeforeRender' | 'data',
+  hookName: 'data' | 'onBeforeRender',
   pageContext: {
     _pageId: string
     _pageFilesAll: PageFile[]
@@ -307,7 +307,7 @@ async function hookServerOnlyExists(
  * @returns `true` if the given page has a `hookName` hook defined with a client-only env.
  */
 function hookClientOnlyExists(
-  hookName: 'onBeforeRender' | 'data',
+  hookName: 'data' | 'onBeforeRender',
   pageContext: {
     _pageId: string
     _pageConfigs: PageConfigRuntime[]

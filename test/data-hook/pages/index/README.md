@@ -1,1 +1,1 @@
-This page doesn't override the global `onBeforeRender()` and `data()` hooks.
+This page doesn't override the global `data()` and `onBeforeRender()` hooks.

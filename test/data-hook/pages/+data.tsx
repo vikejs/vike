@@ -1,4 +1,4 @@
-// https://vike.dev/onBeforeRender
+// https://vike.dev/data
 export { data }
 
 import type { DataAsync } from 'vike/types'

@@ -20,13 +20,22 @@ async function executeOnBeforeRenderAndDataHooks(
   if (pageContext._pageContextAlreadyProvidedByOnPrerenderHook) {
     return
   }
-  const onBeforeRenderHook = getHook(pageContext, 'onBeforeRender')
   const dataHook = getHook(pageContext, 'data')
-  if (!onBeforeRenderHook && !dataHook) {
+  const onBeforeRenderHook = getHook(pageContext, 'onBeforeRender')
+  if (!dataHook && !onBeforeRenderHook) {
     return
   }
 
   preparePageContextForUserConsumptionServerSide(pageContext)
+
+  if (dataHook) {
+    const hookResult = await executeHook(() => dataHook.hookFn(pageContext), 'data', dataHook.hookFilePath)
+    assertDataHookReturn(hookResult, dataHook.hookFilePath)
+    const pageContextFromHook = {
+      data: hookResult
+    }
+    Object.assign(pageContext, pageContextFromHook)
+  }
 
   if (onBeforeRenderHook) {
     const hookResult = await executeHook(
@@ -36,15 +45,6 @@ async function executeOnBeforeRenderAndDataHooks(
     )
     assertOnBeforeRenderHookReturn(hookResult, onBeforeRenderHook.hookFilePath)
     const pageContextFromHook = hookResult?.pageContext
-    Object.assign(pageContext, pageContextFromHook)
-  }
-
-  if (dataHook) {
-    const hookResult = await executeHook(() => dataHook.hookFn(pageContext), 'data', dataHook.hookFilePath)
-    assertDataHookReturn(hookResult, dataHook.hookFilePath)
-    const pageContextFromHook = {
-      data: hookResult
-    }
     Object.assign(pageContext, pageContextFromHook)
   }
 }
