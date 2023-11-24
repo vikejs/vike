@@ -1103,10 +1103,47 @@ function getComputed(
 
 async function findPlusFiles(
   userRootDir: string,
-  outDirAbsoluteFilesystem: string,
+  outDirRoot: string,
   isDev: boolean,
   extensions: ExtensionResolved[]
 ): Promise<FilePathResolved[]> {
+  const files = await crawlPlusFiles(userRootDir, outDirRoot, isDev)
+
+  const plusFiles: FilePathResolved[] = files.map(({ filePathRelativeToUserRootDir, filePathAbsoluteFilesystem }) => {
+    return {
+      filePathRelativeToUserRootDir,
+      filePathAbsoluteVite: filePathRelativeToUserRootDir,
+      filePathAbsoluteFilesystem,
+      filePathToShowToUser: filePathRelativeToUserRootDir,
+      importPathAbsolute: null
+    }
+  })
+
+  // TODO/v1-release: remove
+  extensions.forEach((extension) => {
+    extension.pageConfigsDistFiles?.forEach((pageConfigDistFile) => {
+      if (!pageConfigDistFile.importPath.includes('+')) return
+      assert(pageConfigDistFile.importPath.includes('+'))
+      assert(path.posix.basename(pageConfigDistFile.importPath).startsWith('+'))
+      const { importPath, filePath } = pageConfigDistFile
+      plusFiles.push({
+        filePathRelativeToUserRootDir: null,
+        filePathAbsoluteVite: importPath,
+        filePathAbsoluteFilesystem: filePath,
+        filePathToShowToUser: importPath,
+        importPathAbsolute: importPath
+      })
+    })
+  })
+
+  return plusFiles
+}
+
+async function crawlPlusFiles(
+  userRootDir: string,
+  outDirAbsoluteFilesystem: string,
+  isDev: boolean
+): Promise<{ filePathRelativeToUserRootDir: string; filePathAbsoluteFilesystem: string }[]> {
   assertPosixPath(userRootDir)
   assertPosixPath(outDirAbsoluteFilesystem)
   assert(outDirAbsoluteFilesystem.startsWith(userRootDir))
@@ -1141,35 +1178,15 @@ async function findPlusFiles(
     }
   }
 
-  const plusFiles: FilePathResolved[] = files.map((p) => {
+  const plusFiles = files.map((p) => {
     p = toPosixPath(p)
     assert(!p.startsWith(userRootDir))
     const filePathRelativeToUserRootDir = path.posix.join('/', p)
     const filePathAbsoluteFilesystem = path.posix.join(userRootDir, p)
     return {
       filePathRelativeToUserRootDir,
-      filePathAbsoluteVite: filePathRelativeToUserRootDir,
-      filePathAbsoluteFilesystem,
-      filePathToShowToUser: filePathRelativeToUserRootDir,
-      importPathAbsolute: null
+      filePathAbsoluteFilesystem
     }
-  })
-
-  // TODO/v1-release: remove
-  extensions.forEach((extension) => {
-    extension.pageConfigsDistFiles?.forEach((pageConfigDistFile) => {
-      if (!pageConfigDistFile.importPath.includes('+')) return
-      assert(pageConfigDistFile.importPath.includes('+'))
-      assert(path.posix.basename(pageConfigDistFile.importPath).startsWith('+'))
-      const { importPath, filePath } = pageConfigDistFile
-      plusFiles.push({
-        filePathRelativeToUserRootDir: null,
-        filePathAbsoluteVite: importPath,
-        filePathAbsoluteFilesystem: filePath,
-        filePathToShowToUser: importPath,
-        importPathAbsolute: importPath
-      })
-    })
   })
 
   return plusFiles
