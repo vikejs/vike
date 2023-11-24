@@ -8,7 +8,6 @@ import {
   assert,
   isObject,
   assertUsage,
-  toPosixPath,
   assertWarning,
   objectEntries,
   hasProp,
@@ -18,13 +17,11 @@ import {
   isNpmPackageImport,
   joinEnglish,
   lowerFirst,
-  scriptFileExtensionList,
   mergeCumulativeValues,
   requireResolve,
   getOutDirs,
   deepEqual,
-  assertKeys,
-  scriptFileExtensions
+  assertKeys
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -48,7 +45,6 @@ import {
   configDefinitionsBuiltInGlobal,
   type ConfigNameGlobal
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
-import glob from 'fast-glob'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVike.js'
 import {
   getLocationId,
@@ -77,9 +73,7 @@ import {
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
-import { exec } from 'child_process'
-import { promisify } from 'util'
-const execA = promisify(exec)
+import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
 
 assertIsNotProductionRuntime()
 
@@ -1137,112 +1131,6 @@ async function findPlusFiles(
   })
 
   return plusFiles
-}
-
-async function crawlPlusFiles(
-  userRootDir: string,
-  outDirAbsoluteFilesystem: string,
-  isDev: boolean
-): Promise<{ filePathRelativeToUserRootDir: string; filePathAbsoluteFilesystem: string }[]> {
-  assertPosixPath(userRootDir)
-  assertPosixPath(outDirAbsoluteFilesystem)
-  assert(outDirAbsoluteFilesystem.startsWith(userRootDir))
-  const outDir = path.posix.relative(userRootDir, outDirAbsoluteFilesystem)
-  assert(!outDir.startsWith('.'))
-
-  const timeBase = new Date().getTime()
-
-  let files: string[] = []
-  const res = await gitLsFiles(userRootDir, outDir)
-  if (
-    res &&
-    // Fallback to fast-glob for users that dynamically generate plus files (generetad plus files are skipped because they're usually included in .gitignore)
-    res.length > 0
-  ) {
-    files = res
-  } else {
-    files = await fastGlob(userRootDir, outDir)
-  }
-
-  {
-    const time = new Date().getTime() - timeBase
-    if (isDev) {
-      // We only warn in dev, because while building it's expected to take a long time as fast-glob is competing for resources with other tasks
-      assertWarning(
-        time < 2 * 1000,
-        `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on Vike's GitHub.`,
-        {
-          onlyOnce: 'slow-page-files-search'
-        }
-      )
-    }
-  }
-
-  const plusFiles = files.map((p) => {
-    p = toPosixPath(p)
-    assert(!p.startsWith(userRootDir))
-    const filePathRelativeToUserRootDir = path.posix.join('/', p)
-    const filePathAbsoluteFilesystem = path.posix.join(userRootDir, p)
-    return {
-      filePathRelativeToUserRootDir,
-      filePathAbsoluteFilesystem
-    }
-  })
-
-  return plusFiles
-}
-
-async function gitLsFiles(userRootDir: string, outDir: string): Promise<string[] | null> {
-  const cmd = [
-    'git ls-files',
-    ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
-    ...getIgnorePatterns(outDir).map((pattern) => `--exclude="${pattern}"`),
-    // --others lists untracked files only (but using .gitignore because --exclude-standard)
-    // --cached adds the tracked files to the output
-    '--others --cached --exclude-standard'
-  ].join(' ')
-
-  let stdout: string
-  try {
-    const res = await execA(cmd, { cwd: userRootDir })
-    stdout = res.stdout
-  } catch (err) {
-    if ((err as Error).message.includes('not a git repository')) return null
-    throw err
-  }
-
-  let files = stdout.split('\n').filter(Boolean)
-
-  assert(!outDir.startsWith('/'))
-  files = files.filter(
-    // We have to repeat the same exclusion logic here because the `git ls-files` option --exclude only applies to untracked files. (We use --exclude only to speed up the command.)
-    (file) => getIgnoreFilter(file, outDir)
-  )
-
-  return files
-}
-async function fastGlob(userRootDir: string, outDir: string): Promise<string[]> {
-  const files = await glob(`**/+*.${scriptFileExtensions}`, {
-    ignore: getIgnorePatterns(outDir),
-    cwd: userRootDir,
-    dot: false
-  })
-  return files
-}
-function getIgnorePatterns(outDir: string): string[] {
-  return [
-    '**/node_modules/**',
-    `${outDir}/**`,
-    // Allow:
-    // ```
-    // +Page.js
-    // +Page.telefunc.js
-    // ```
-    '**/*.telefunc.*'
-  ]
-}
-function getIgnoreFilter(file: string, outDir: string): boolean {
-  return !file.includes('node_modules/') && !file.includes('.telefunc.') && !file.startsWith(`${outDir}/`)
 }
 
 function getConfigName(filePath: string): string | null {
