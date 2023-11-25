@@ -751,6 +751,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`ClientOnly`',
+    url: '/ClientOnly'
+  },
+  {
+    level: 2,
     title: '`Page` (client-side)',
     titleInNav: '`export { Page }`',
     isListTitle: true,
