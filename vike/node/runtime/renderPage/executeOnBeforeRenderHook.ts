@@ -8,6 +8,7 @@ import {
 } from './preparePageContextForUserConsumptionServerSide.js'
 import { executeHook } from '../utils.js'
 import { assertOnBeforeRenderHookReturn } from '../../../shared/assertOnBeforeRenderHookReturn.js'
+import { getTimeouts } from '../../../shared/hooks/getTimeouts.js'
 
 async function executeOnBeforeRenderHooks(
   pageContext: {
@@ -25,7 +26,9 @@ async function executeOnBeforeRenderHooks(
   }
   const onBeforeRender = hook.hookFn
   preparePageContextForUserConsumptionServerSide(pageContext)
-  const hookResult = await executeHook(() => onBeforeRender(pageContext), 'onBeforeRender', hook.hookFilePath)
+  const {timeoutErr, timeoutWarn} = getTimeouts(pageContext.config.timeouts, hook.hookName)
+  const hookResult = await executeHook(() => onBeforeRender(pageContext), 'onBeforeRender', hook.hookFilePath, timeoutErr, timeoutWarn)
+
 
   assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
   const pageContextFromHook = hookResult?.pageContext

@@ -1,6 +1,7 @@
 export { configDefinitionsBuiltIn }
 export { configDefinitionsBuiltInGlobal }
 export type { ConfigDefinition }
+export type { TimeoutDefinition }
 export type { ConfigDefinitionInternal }
 export type { ConfigNameGlobal }
 export type { ConfigEffect }
@@ -53,6 +54,12 @@ type ConfigEffect = (config: {
    */
   configDefinedAt: `Config ${string}`
 }) => Config | undefined
+
+/** Timeout definition of a config */
+type TimeoutDefinition = {
+  error?: number
+  warning?: number
+}
 
 /** For Vike internal use */
 type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
@@ -139,6 +146,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { client: true },
     _computed: (configValueSources): null | ConfigEnvInternal =>
       !isConfigSet(configValueSources, 'onBeforeRender') ? null : getConfigEnv(configValueSources, 'onBeforeRender')
+  },
+  timeouts: {
+    env: { config: true, server: true, client: true }
   }
 }
 

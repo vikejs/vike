@@ -3,6 +3,7 @@ export type { ConfigBuiltIn }
 export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
+export type { ConfigTimeout }
 
 export type { GuardAsync }
 export type { GuardSync }
@@ -28,7 +29,7 @@ export type { RouteAsync }
 export type { RouteSync }
 
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
-import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
+import type { ConfigDefinition, TimeoutDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
 import type { ConfigVikeUserProvided } from '../ConfigVike.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
@@ -53,6 +54,7 @@ type ConfigNameBuiltIn =
   | 'prerender'
   | 'isClientSideRenderable'
   | 'onBeforeRenderEnv'
+  | 'timeouts'
 
 type Config = ConfigBuiltIn &
   Vike.Config &
@@ -82,9 +84,9 @@ type OnBeforePrerenderStartAsync = () => Promise<
   (
     | string
     | {
-        url: string
-        pageContext: Partial<Vike.PageContext>
-      }
+      url: string
+      pageContext: Partial<Vike.PageContext>
+    }
   )[]
 >
 /** Global Hook called before the whole pre-rendering process starts.
@@ -94,9 +96,9 @@ type OnBeforePrerenderStartAsync = () => Promise<
 type OnBeforePrerenderStartSync = () => (
   | string
   | {
-      url: string
-      pageContext: Partial<Vike.PageContext>
-    }
+    url: string
+    pageContext: Partial<Vike.PageContext>
+  }
 )[]
 /** Hook called before the page is rendered, usually for fetching data.
  *
@@ -117,12 +119,12 @@ type OnBeforeRenderSync = (pageContext: PageContextServer) => { pageContext: Par
 type OnBeforeRouteAsync = (pageContext: PageContextServer) => Promise<{
   pageContext: Partial<
     | {
-        /** The URL you provided to Vike when calling `renderPage({ urlOriginal })` in your server middleware.
-         *
-         * https://vike.dev/renderPage
-         */
-        urlOriginal: string
-      }
+      /** The URL you provided to Vike when calling `renderPage({ urlOriginal })` in your server middleware.
+       *
+       * https://vike.dev/renderPage
+       */
+      urlOriginal: string
+    }
     | Vike.PageContext
   >
 }>
@@ -133,12 +135,12 @@ type OnBeforeRouteAsync = (pageContext: PageContextServer) => Promise<{
 type OnBeforeRouteSync = (pageContext: PageContextServer) => {
   pageContext: Partial<
     | {
-        /** The URL you provided to Vike when calling `renderPage({ urlOriginal })` in your server middleware.
-         *
-         * https://vike.dev/renderPage
-         */
-        urlOriginal: string
-      }
+      /** The URL you provided to Vike when calling `renderPage({ urlOriginal })` in your server middleware.
+       *
+       * https://vike.dev/renderPage
+       */
+      urlOriginal: string
+    }
     | Vike.PageContext
   >
 }
@@ -203,12 +205,12 @@ type OnRenderClientSync = (pageContext: PageContextClient) => void
 type OnRenderHtmlAsync = (pageContext: PageContextServer) => Promise<
   | DocumentHtml
   | {
-      documentHtml: DocumentHtml
-      pageContext:
-        | OnRenderHtmlPageContextReturn
-        // See https://vike.dev/stream#initial-data-after-stream-end
-        | (() => Promise<OnRenderHtmlPageContextReturn> | OnRenderHtmlPageContextReturn)
-    }
+    documentHtml: DocumentHtml
+    pageContext:
+    | OnRenderHtmlPageContextReturn
+    // See https://vike.dev/stream#initial-data-after-stream-end
+    | (() => Promise<OnRenderHtmlPageContextReturn> | OnRenderHtmlPageContextReturn)
+  }
 >
 /** Hook called when page is rendered to HTML on the server-side.
  *
@@ -217,12 +219,12 @@ type OnRenderHtmlAsync = (pageContext: PageContextServer) => Promise<
 type OnRenderHtmlSync = (pageContext: PageContextServer) =>
   | DocumentHtml
   | {
-      documentHtml: DocumentHtml
-      pageContext:
-        | OnRenderHtmlPageContextReturn
-        // See https://vike.dev/stream#initial-data-after-stream-end
-        | (() => Promise<OnRenderHtmlPageContextReturn> | OnRenderHtmlPageContextReturn)
-    }
+    documentHtml: DocumentHtml
+    pageContext:
+    | OnRenderHtmlPageContextReturn
+    // See https://vike.dev/stream#initial-data-after-stream-end
+    | (() => Promise<OnRenderHtmlPageContextReturn> | OnRenderHtmlPageContextReturn)
+  }
 type OnRenderHtmlPageContextReturn = Partial<
   Vike.PageContext & {
     /** See https://vike.dev/stream */
@@ -375,6 +377,10 @@ type ConfigBuiltIn = {
    * https://vike.dev/clientRouting#link-prefetching
    */
   prefetchStaticAssets?: PrefetchStaticAssets | ImportString
+
+  /** Modify Timeouts */
+  timeouts?: ConfigTimeout
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`
+type ConfigTimeout = Record<string, TimeoutDefinition>

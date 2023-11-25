@@ -2,6 +2,12 @@ import type { Config } from 'vike/types'
 
 // https://vike.dev/config
 export default {
+  timeouts: {
+    onBeforeRender: {
+      error: 30 * 1000,
+      warning: 3 * 1000
+    }
+  },
   passToClient: ['pageProps', 'title', 'someAsyncProps'],
   clientRouting: true,
   hydrationCanBeAborted: true,
