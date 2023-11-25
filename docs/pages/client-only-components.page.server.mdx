@@ -12,113 +12,42 @@ You can render a component only on the client-side by wrapping it with a `<Clien
 
 Common use cases:
 
- - **Library components that don't support SSR**. A solution is to render/load the component only on the client-side.
-   > Most component libraries nowadays support SSR but some don't. Some even crash when they're merely loaded on the server-side (for example, when libraries have hard references to browser-only APIs/objects such as `window`).
- - **Performance**. By using `<ClientOnly>` with a [dynamic `import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import), you can defer loading heavy components, such as a complex interactive map. That way, your users can already interact with your page before even the browser starts loading that heavy component.
-   > Vite automatically code-splits `const { SomeComponent } = await import('some-library')`. In other words, the code of `<SomeComponent />` isn't included in the initial JavaScript client-side bundle: it's loaded only when and if `import()` is executed.
-
+- **Library components that don't support SSR**. A solution is to render/load the component only on the client-side.
+  > Most component libraries nowadays support SSR but some don't. Some even crash when they're merely loaded on the server-side (for example, when libraries have hard references to browser-only APIs/objects such as `window`).
+- **Performance**. By using `<ClientOnly>` with a [dynamic `import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import), you can defer loading heavy components, such as a complex interactive map. That way, your users can already interact with your page before even the browser starts loading that heavy component.
+  > Vite automatically code-splits `const { SomeComponent } = await import('some-library')`. In other words, the code of `<SomeComponent />` isn't included in the initial JavaScript client-side bundle: it's loaded only when and if `import()` is executed.
 
 ## React
 
-To render and load a component only on the client-side:
+Use <Link text="ClientOnly" href="/ClientOnly" /> component.
+
+Here is an simple example of how to use the `ClientOnly` to wrap a dynamically loaded component:
 
 ```jsx
-// /pages/location/select.page.jsx
+import { ClientOnly } from 'vike-react/ClientOnly'
 
-import React from 'react'
-
-export function Page() {
-  // Users can see and interact with the button "Please select a location"
-  // before the browser starts loading the code of the lazy-loaded component.
-  return <>
-    <button>Please select a location</button>
-    <Map />
-  </>
-}
-
-// <Map> is:
-//  - Lazy-loaded
-//  - Loaded & rendered only in the browser
-function Map() {
-  const [Component, setComponent] = React.useState(() => Loading)
-
-  // useEffect() callbacks are only run in the browser, consequently the map component
-  // is loaded and rendered only in the browser.
-  React.useEffect(() => {
-    // @ts-expect-error The type provided by @types/react is wrong
-    setComponent(() => React.lazy(() => import('some-heavy-map-component')))
-  }, [])
-
+function MyComponent() {
   return (
-    <React.Suspense fallback={<Loading />}>
-      <Component />
-    </React.Suspense>
-  )
-}
-
-function Loading() {
-  return <div>Loading map...</div>
-}
-```
-
-The logic can be extracted into a generic `<ClientOnly>` component:
-
-```jsx
-// ClientOnly.jsx
-
-export { ClientOnly }
-
-import React from 'react'
-
-function ClientOnly(props) {
-  const [Component, setComponent] = React.useState(() => props.fallback)
-
-  React.useEffect(() => {
-    setComponent(() => React.lazy(props.component))
-  }, [])
-
-  return (
-    <React.Suspense fallback={props.fallback}>
-      <Component />
-    </React.Suspense>
+    <ClientOnly load={() => import('path-to-dynamic-component')} fallback={<Loading />}>
+      {(Component) => <Component {...props} />}
+    </ClientOnly>
   )
 }
 ```
-```jsx
-import { ClientOnly } from './ClientOnly'
-
-function Map() {
-  return (
-    <ClientOnly
-      component={() => import('some-heavy-map-component')}
-      fallback={<Loading />}
-    />
-  )
-}
-function Loading() {
-  return <div>Loading map...</div>
-}
-```
-
-See also:
- - [React Docs > API > `lazy`](https://react.dev/reference/react/lazy)
- - [GitHub > arthurgailes/vite-plugin-ssr_dynamic-import-example](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example)
-   - `<ClientOnly>` implementation: [/pages/index/index.page.jsx](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example/blob/ecf7cda9beac5cae7b0eb642bd77d25f71e0f2e5/pages/index/index.page.jsx#L20-L35)
-   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
-
 
 ## Vue
 
 See [#278](https://github.com/vikejs/vike/issues/278) and in particular:
- - [#278 - comment by @yuanoook](https://github.com/vikejs/vike/issues/278#issuecomment-1597251907)
- - [#278 - comment by @DoubleJ-G](https://github.com/vikejs/vike/issues/278#issuecomment-1072952681)
+
+- [#278 - comment by @yuanoook](https://github.com/vikejs/vike/issues/278#issuecomment-1597251907)
+- [#278 - comment by @DoubleJ-G](https://github.com/vikejs/vike/issues/278#issuecomment-1072952681)
 
 Contribution welcome to create an example repository.
 
 See also:
- - [Vue 3 Docs > Async Components](https://vuejs.org/guide/components/async.html)
- - [Vue 2 Docs > Dynamic & Async Components](https://v2.vuejs.org/v2/guide/components-dynamic-async.html)
 
+- [Vue 3 Docs > Async Components](https://vuejs.org/guide/components/async.html)
+- [Vue 2 Docs > Dynamic & Async Components](https://v2.vuejs.org/v2/guide/components-dynamic-async.html)
 
 ## Solid
 
