@@ -26,10 +26,11 @@ function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPat
     urlTarget.startsWith('/') ||
       urlTarget.startsWith('http://') ||
       urlTarget.startsWith('https://') ||
+      urlTarget.startsWith('mailto:') ||
       urlTarget === '*',
     `${configSrc} Invalid redirection target URL ${pc.cyan(urlTarget)}: the target URL should start with ${pc.cyan(
       '/'
-    )}, ${pc.cyan('http://')}, ${pc.cyan('https://')}, or be ${pc.cyan('*')}`
+    )}, ${pc.cyan('http://')}, ${pc.cyan('https://')}, ${pc.cyan('mailto:')}, or be ${pc.cyan('*')}`
   )
   assertParams(urlSource, urlTarget)
   const match = resolveRouteString(urlSource, urlPathname)
@@ -41,9 +42,11 @@ function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPat
     }
     urlResolved = urlResolved.replaceAll(key, val)
   })
-  assert(!urlResolved.includes('@'))
+  if (!urlResolved.startsWith('mailto:')) {
+    assert(!urlResolved.includes('@'), 'URL should not contain "@" unless it is a mailto link.')
+  }
   if (urlResolved === urlPathname) return null
-  assert(urlTarget.startsWith('/') || urlTarget.startsWith('http'))
+  assert(urlTarget.startsWith('/') || urlTarget.startsWith('http') || urlResolved.startsWith('mailto:'))
   return urlResolved
 }
 
