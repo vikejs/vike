@@ -26,9 +26,14 @@ async function executeOnBeforeRenderHooks(
   }
   const onBeforeRender = hook.hookFn
   preparePageContextForUserConsumptionServerSide(pageContext)
-  const {timeoutErr, timeoutWarn} = getTimeouts(pageContext.config.timeouts, hook.hookName)
-  const hookResult = await executeHook(() => onBeforeRender(pageContext), 'onBeforeRender', hook.hookFilePath, timeoutErr, timeoutWarn)
-
+  const { timeoutErr, timeoutWarn } = getTimeouts(pageContext.config.timeouts, hook.hookName)
+  const hookResult = await executeHook(
+    () => onBeforeRender(pageContext),
+    'onBeforeRender',
+    hook.hookFilePath,
+    timeoutErr,
+    timeoutWarn
+  )
 
   assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
   const pageContextFromHook = hookResult?.pageContext

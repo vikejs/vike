@@ -16,7 +16,13 @@ function isUserHookError(err: unknown): false | HookLoc {
   return globalObject.userHookErrors.get(err) ?? false
 }
 
-function executeHook<T = unknown>(hookFn: () => T, hookName: HookName, hookFilePath: string, setTimeoutErr?: number, setTimeoutWarn?: number): Promise<T> {
+function executeHook<T = unknown>(
+  hookFn: () => T,
+  hookName: HookName,
+  hookFilePath: string,
+  setTimeoutErr?: number,
+  setTimeoutWarn?: number
+): Promise<T> {
   // Temporary
   const fallbackTimeouts = getTimeouts(hookName)
   const timeoutErr = setTimeoutErr ?? fallbackTimeouts['timeoutErr']
