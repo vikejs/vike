@@ -20,21 +20,92 @@ Common use cases:
 
 ## React
 
-Use <Link text="ClientOnly" href="/ClientOnly" /> component.
-
-Here is an simple example of how to use the `ClientOnly` to wrap a dynamically loaded component:
+To render and load a component only on the client-side:
 
 ```jsx
-import { ClientOnly } from 'vike-react/ClientOnly'
+// /pages/location/select.page.jsx
 
-function MyComponent() {
+import React from 'react'
+
+export function Page() {
+  // Users can see and interact with the button "Please select a location"
+  // before the browser starts loading the code of the lazy-loaded component.
+  return <>
+    <button>Please select a location</button>
+    <Map />
+  </>
+}
+
+// <Map> is:
+//  - Lazy-loaded
+//  - Loaded & rendered only in the browser
+function Map() {
+  const [Component, setComponent] = React.useState(() => Loading)
+
+  // useEffect() callbacks are only run in the browser, consequently the map component
+  // is loaded and rendered only in the browser.
+  React.useEffect(() => {
+    // @ts-expect-error The type provided by @types/react is wrong
+    setComponent(() => React.lazy(() => import('some-heavy-map-component')))
+  }, [])
+
   return (
-    <ClientOnly load={() => import('path-to-dynamic-component')} fallback={<Loading />}>
-      {(Component) => <Component {...props} />}
-    </ClientOnly>
+    <React.Suspense fallback={<Loading />}>
+      <Component />
+    </React.Suspense>
+  )
+}
+
+function Loading() {
+  return <div>Loading map...</div>
+}
+```
+
+The logic can be extracted into a generic `<ClientOnly>` component:
+
+```jsx
+// ClientOnly.jsx
+
+export { ClientOnly }
+
+import React from 'react'
+
+function ClientOnly(props) {
+  const [Component, setComponent] = React.useState(() => props.fallback)
+
+  React.useEffect(() => {
+    setComponent(() => React.lazy(props.component))
+  }, [])
+
+  return (
+    <React.Suspense fallback={props.fallback}>
+      <Component />
+    </React.Suspense>
   )
 }
 ```
+```jsx
+import { ClientOnly } from './ClientOnly'
+
+function Map() {
+  return (
+    <ClientOnly
+      component={() => import('some-heavy-map-component')}
+      fallback={<Loading />}
+    />
+  )
+}
+function Loading() {
+  return <div>Loading map...</div>
+}
+```
+
+See also:
+ - <Link text="API > ClientOnly" href="/ClientOnly" />
+ - [React Docs > API > `lazy`](https://react.dev/reference/react/lazy)
+ - [GitHub > arthurgailes/vite-plugin-ssr_dynamic-import-example](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example)
+   - `<ClientOnly>` implementation: [/pages/index/index.page.jsx](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example/blob/ecf7cda9beac5cae7b0eb642bd77d25f71e0f2e5/pages/index/index.page.jsx#L20-L35)
+   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
 
 
 ## Vue
