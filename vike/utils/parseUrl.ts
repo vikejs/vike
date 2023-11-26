@@ -118,11 +118,11 @@ function decodeSafe(urlComponent: string): string {
   return urlComponent
 }
 function decodePathname(urlPathname: string) {
+  urlPathname = urlPathname.replace(/\s+$/, '')
   urlPathname = urlPathname
     .split('/')
     .map((dir) => decodeSafe(dir).split('/').join('%2F'))
     .join('/')
-  urlPathname = urlPathname.replace(/\s/g, '')
   return urlPathname
 }
 function getPathname(url: string, baseServer: string): { origin: null | string; pathname: string } {

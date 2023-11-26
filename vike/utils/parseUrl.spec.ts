@@ -249,11 +249,28 @@ describe('parseUrl', () => {
     })
 
     // #322
-    assert(encodeURIComponent(' ') === '%20')
-    expect(parseUrl('/product/car ', '/')).toEqual({
+    // Remove trailing white space
+    expect(parseUrl('/ab ', '/')).toEqual({
       ...resultBase,
-      pathnameOriginal: '/product/car ',
-      pathname: '/product/car'
+      pathnameOriginal: '/ab ',
+      pathname: '/ab'
+    })
+    // Preserve whitespace otherwise
+    assert(encodeURIComponent(' ') === '%20')
+    expect(parseUrl('/ab%20', '/')).toEqual({
+      ...resultBase,
+      pathnameOriginal: '/ab%20',
+      pathname: '/ab '
+    })
+    expect(parseUrl('/a b', '/')).toEqual({
+      ...resultBase,
+      pathnameOriginal: '/a b',
+      pathname: '/a b'
+    })
+    expect(parseUrl('/a%20b', '/')).toEqual({
+      ...resultBase,
+      pathnameOriginal: '/a%20b',
+      pathname: '/a b'
     })
 
     assert(encodeURIComponent('#') === '%23')
