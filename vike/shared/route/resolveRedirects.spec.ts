@@ -54,6 +54,12 @@ describe('resolveRouteStringRedirect', () => {
     expect(resolveRouteStringRedirect('/a/*', 'http://a.org/b/c/d/*', '/a/1/2/3')).toEqual('http://a.org/b/c/d/1/2/3')
     expect(resolveRouteStringRedirect('/a/b/c', 'http://a.com', '/a/b/c')).toEqual('http://a.com')
   })
+  it('mailto redirects', () => {
+    expect(resolveRouteStringRedirect('/contact', 'mailto:foo@bar.test', '/contact')).toEqual('mailto:foo@bar.test')
+    expect(resolveRouteStringRedirect('/contact', 'mailto:foo@bar.test?subject=Hello', '/contact')).toEqual(
+      'mailto:foo@bar.test?subject=Hello'
+    )
+  })
 })
 
 function expectErr(fn: Function, errMsg: string) {
