@@ -38,6 +38,8 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
+import type { ConfigTimeout } from '../../shared/page-configs/Config.js'
+
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Function
   clientRoutingIsDisabled?: true
@@ -305,8 +307,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     const { onHydrationEnd } = pageContext.exports
     if (onHydrationEnd) {
       const hookFilePath = pageContext.exportsAll.onHydrationEnd![0]!.exportSource
+      const configTimeouts = pageContext.config.timeouts as ConfigTimeout
       assert(hookFilePath)
-      await executeHook(() => onHydrationEnd(pageContext), 'onHydrationEnd', hookFilePath)
+      await executeHook(() => onHydrationEnd(pageContext), 'onHydrationEnd', hookFilePath, configTimeouts)
       if (abortRender(true)) return
     }
   }

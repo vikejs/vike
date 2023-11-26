@@ -67,7 +67,7 @@ async function executeOnRenderClientHook<
   assert(hookName)
 
   // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
-  const hookResult = await executeHook(() => renderHook(pageContextForUserConsumption), hookName, hook.hookFilePath)
+  const hookResult = await executeHook(() => renderHook(pageContextForUserConsumption), hookName, hook.hookFilePath, hook.configTimeouts)
   assertUsage(
     hookResult === undefined,
     `The ${hookName}() hook defined by ${hook.hookFilePath} isn't allowed to return a value`

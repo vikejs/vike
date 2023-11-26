@@ -5,7 +5,7 @@ export default {
   timeouts: {
     onBeforeRender: {
       error: 30 * 1000,
-      warning: 3 * 1000
+      warning: 10 * 1000
     }
   },
   passToClient: ['pageProps', 'title', 'someAsyncProps'],

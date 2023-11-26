@@ -5,7 +5,9 @@ import { getProjectError, assertWarning } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { humanizeTime } from '../../utils/humanizeTime.js'
 import { isObject } from '../../utils/isObject.js'
+import { ConfigTimeout } from '../page-configs/Config.js'
 import type { HookLoc, HookName } from './getHook.js'
+import { getTimeouts } from './getTimeouts.js'
 
 const globalObject = getGlobalObject('utils/executeHook.ts', {
   userHookErrors: new Map<object, HookLoc>()
@@ -20,13 +22,9 @@ function executeHook<T = unknown>(
   hookFn: () => T,
   hookName: HookName,
   hookFilePath: string,
-  setTimeoutErr?: number,
-  setTimeoutWarn?: number
+  configTimeouts?: ConfigTimeout
 ): Promise<T> {
-  // Temporary
-  const fallbackTimeouts = getTimeouts(hookName)
-  const timeoutErr = setTimeoutErr ?? fallbackTimeouts['timeoutErr']
-  const timeoutWarn = setTimeoutWarn ?? fallbackTimeouts['timeoutWarn']
+  const { timeoutErr, timeoutWarn } = getTimeouts(configTimeouts, hookName)
 
   let resolve!: (ret: T) => void
   let reject!: (err: unknown) => void
@@ -59,36 +57,17 @@ function executeHook<T = unknown>(
     reject(err)
   }, timeoutErr)
 
-  ;(async () => {
-    try {
-      const ret = await hookFn()
-      resolve(ret)
-    } catch (err) {
-      if (isObject(err)) {
-        globalObject.userHookErrors.set(err, { hookName, hookFilePath })
+    ; (async () => {
+      try {
+        const ret = await hookFn()
+        resolve(ret)
+      } catch (err) {
+        if (isObject(err)) {
+          globalObject.userHookErrors.set(err, { hookName, hookFilePath })
+        }
+        reject(err)
       }
-      reject(err)
-    }
-  })()
+    })()
 
   return promise
-}
-
-function getTimeouts(hookName: HookName): { timeoutErr: number; timeoutWarn: number } {
-  if (hookName === 'onBeforeRoute') {
-    return {
-      timeoutErr: 5 * 1000,
-      timeoutWarn: 1 * 1000
-    }
-  }
-  if (hookName === 'onBeforePrerender') {
-    return {
-      timeoutErr: 10 * 60 * 1000,
-      timeoutWarn: 30 * 1000
-    }
-  }
-  return {
-    timeoutErr: 40 * 1000,
-    timeoutWarn: 4 * 1000
-  }
 }

@@ -1,6 +1,6 @@
 export { getTimeouts }
 
-import { ConfigTimeout, HookName } from '../page-configs/Config.js'
+import type { ConfigTimeout, HookName } from '../page-configs/Config.js'
 
 type Timeouts = {
   timeoutErr: number

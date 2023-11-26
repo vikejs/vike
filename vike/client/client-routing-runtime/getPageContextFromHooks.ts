@@ -216,7 +216,8 @@ async function executeOnBeforeRenderHookClientSide(
   const hookResult = await executeHook(
     () => onBeforeRender(pageContextForUserConsumption),
     'onBeforeRender',
-    hook.hookFilePath
+    hook.hookFilePath,
+    hook.configTimeouts
   )
   assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
   const pageContextFromHook = hookResult?.pageContext
