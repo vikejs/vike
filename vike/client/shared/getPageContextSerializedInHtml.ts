@@ -8,7 +8,7 @@ function getPageContextSerializedInHtml(): { _pageId: string; _hasPageContextFro
   const elem = document.getElementById(id)
   assertUsage(
     elem,
-    `The element #${id} (which vike automatically injects into the HTML) is missing from the DOM. This may happen if your HTML is malformed. Make sure your HTML isn't malformed, and make sure you don't remove #${id} from the HTML nor from the DOM.`
+    `The element #${id} (which Vike automatically injects into the HTML) is missing from the DOM. This may happen if your HTML is malformed. Make sure your HTML isn't malformed, and make sure you don't remove #${id} from the HTML nor from the DOM.`
   )
   const pageContextJson = elem.textContent
   assert(pageContextJson)
