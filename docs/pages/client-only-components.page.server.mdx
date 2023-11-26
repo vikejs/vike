@@ -12,10 +12,11 @@ You can render a component only on the client-side by wrapping it with a `<Clien
 
 Common use cases:
 
-- **Library components that don't support SSR**. A solution is to render/load the component only on the client-side.
-  > Most component libraries nowadays support SSR but some don't. Some even crash when they're merely loaded on the server-side (for example, when libraries have hard references to browser-only APIs/objects such as `window`).
-- **Performance**. By using `<ClientOnly>` with a [dynamic `import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import), you can defer loading heavy components, such as a complex interactive map. That way, your users can already interact with your page before even the browser starts loading that heavy component.
-  > Vite automatically code-splits `const { SomeComponent } = await import('some-library')`. In other words, the code of `<SomeComponent />` isn't included in the initial JavaScript client-side bundle: it's loaded only when and if `import()` is executed.
+ - **Library components that don't support SSR**. A solution is to render/load the component only on the client-side.
+   > Most component libraries nowadays support SSR but some don't. Some even crash when they're merely loaded on the server-side (for example, when libraries have hard references to browser-only APIs/objects such as `window`).
+ - **Performance**. By using `<ClientOnly>` with a [dynamic `import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import), you can defer loading heavy components, such as a complex interactive map. That way, your users can already interact with your page before even the browser starts loading that heavy component.
+   > Vite automatically code-splits `const { SomeComponent } = await import('some-library')`. In other words, the code of `<SomeComponent />` isn't included in the initial JavaScript client-side bundle: it's loaded only when and if `import()` is executed.
+
 
 ## React
 
@@ -35,19 +36,19 @@ function MyComponent() {
 }
 ```
 
+
 ## Vue
 
 See [#278](https://github.com/vikejs/vike/issues/278) and in particular:
-
-- [#278 - comment by @yuanoook](https://github.com/vikejs/vike/issues/278#issuecomment-1597251907)
-- [#278 - comment by @DoubleJ-G](https://github.com/vikejs/vike/issues/278#issuecomment-1072952681)
+ - [#278 - comment by @yuanoook](https://github.com/vikejs/vike/issues/278#issuecomment-1597251907)
+ - [#278 - comment by @DoubleJ-G](https://github.com/vikejs/vike/issues/278#issuecomment-1072952681)
 
 Contribution welcome to create an example repository.
 
 See also:
+ - [Vue 3 Docs > Async Components](https://vuejs.org/guide/components/async.html)
+ - [Vue 2 Docs > Dynamic & Async Components](https://v2.vuejs.org/v2/guide/components-dynamic-async.html)
 
-- [Vue 3 Docs > Async Components](https://vuejs.org/guide/components/async.html)
-- [Vue 2 Docs > Dynamic & Async Components](https://v2.vuejs.org/v2/guide/components-dynamic-async.html)
 
 ## Solid
 
