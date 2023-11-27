@@ -9,7 +9,7 @@ const globalObject = getGlobalObject<{ redirectGraph: Graph }>('assertNoInfinite
 })
 
 function assertNoInfiniteHttpRedirect(urlRedirectTarget: string, urlLogical: string) {
-  if (urlRedirectTarget.startsWith('http') || urlRedirectTarget.startsWith('mailto:')) {
+  if (/^[a-zA-Z]+:/.test(urlRedirectTarget)) {
     // We assume that urlRedirectTarget points to an origin that is external (not the same origin), and we can therefore assume that the app doesn't define an infinite loop (in itself).
     //  - There isn't a reliable way to check whether the redirect points to an external origin or the same origin. For same origins, we assume/hope the user to pass the URL without origin.
     //    ```js
