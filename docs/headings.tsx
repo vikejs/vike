@@ -131,11 +131,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Header file (`.h.js`)',
-    url: '/header-file'
-  },
-  {
-    level: 2,
     title: 'Internationalization (i18n)',
     url: '/i18n'
   },
@@ -629,6 +624,11 @@ const headings = [
     level: 2,
     title: 'Config',
     url: '/config'
+  },
+  {
+    level: 2,
+    title: 'Header file (`.h.js`)',
+    url: '/header-file'
   },
   {
     level: 2,
