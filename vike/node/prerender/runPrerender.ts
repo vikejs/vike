@@ -57,6 +57,7 @@ import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServ
 import { assertHookFn } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
+import type { ConfigTimeout } from '../../shared/page-configs/Config.js'
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 
 type HtmlFile = {
@@ -70,14 +71,14 @@ type HtmlFile = {
 
 type DoNotPrerenderList = ({ pageId: string; setByConfigFile: string } & (
   | {
-      // TODO/v1-release: remove 0.4 case
-      setByConfigName: 'doNotPrerender'
-      setByConfigValue: true
-    }
+    // TODO/v1-release: remove 0.4 case
+    setByConfigName: 'doNotPrerender'
+    setByConfigValue: true
+  }
   | {
-      setByConfigName: 'prerender'
-      setByConfigValue: false
-    }
+    setByConfigName: 'prerender'
+    setByConfigValue: false
+  }
 ))[]
 type ProvidedByHook = null | {
   hookFilePath: string
@@ -331,10 +332,10 @@ async function callOnBeforePrerenderStartHooks(
     hookFn: Function
     // prettier-ignore
     hookName:
-      // 0.4 design
-      | 'prerender'
-      // V1 design
-      | 'onBeforePrerenderStart'
+    // 0.4 design
+    | 'prerender'
+    // V1 design
+    | 'onBeforePrerenderStart'
     hookFilePath: string
     pageId: string
   }[] = []
@@ -527,20 +528,24 @@ async function callOnPrerenderStartHook(
   let onPrerenderStartHook:
     | undefined
     | {
-        hookFn: unknown
-        hookFilePath: string
-        // prettier-ignore
-        hookName:
-          // V1 design
-          'onPrerenderStart' |
-          // Old design
-          'onBeforePrerender'
-      }
+      hookFn: unknown
+      hookFilePath: string
+      // prettier-ignore
+      hookName:
+      // V1 design
+      'onPrerenderStart' |
+      // Old design
+      'onBeforePrerender'
+    }
+  let configTimeouts: ConfigTimeout | undefined;
 
   // V1 design
   if (renderContext.pageConfigs.length > 0) {
-    const { pageConfigGlobal } = renderContext
+    const { pageConfigGlobal, pageConfigs } = renderContext
     const configValue = pageConfigGlobal.configValues.onPrerenderStart
+    pageConfigs.map((pageConfig) => {
+      configTimeouts = getConfigValue(pageConfig, "timeouts")?.value as ConfigTimeout
+    })
     if (configValue?.value) {
       const { value: hookFn } = configValue
       // config.onPrerenderStart isn't a computed nor a cumulative config => definedAt should always be defined
@@ -611,7 +616,7 @@ async function callOnPrerenderStartHook(
         assertWarning(
           false,
           msgPrefix +
-            ' uses pageContext.url but it should use pageContext.urlOriginal instead, see https://vike.dev/migration/0.4.23',
+          ' uses pageContext.url but it should use pageContext.urlOriginal instead, see https://vike.dev/migration/0.4.23',
           { showStackTrace: true, onlyOnce: true }
         )
         return pageContext.urlOriginal
@@ -640,7 +645,8 @@ async function callOnPrerenderStartHook(
         }
       }),
     hookName,
-    hookFilePath
+    hookFilePath,
+    configTimeouts
   )
   if (result === null || result === undefined) {
     return
@@ -655,8 +661,8 @@ async function callOnPrerenderStartHook(
   if (hasProp(result, 'globalContext')) {
     assertUsage(
       isObjectWithKeys(result, ['globalContext'] as const) &&
-        hasProp(result, 'globalContext', 'object') &&
-        hasProp(result.globalContext, 'prerenderPageContexts', 'array'),
+      hasProp(result, 'globalContext', 'object') &&
+      hasProp(result.globalContext, 'prerenderPageContexts', 'array'),
       rightUsage
     )
     assertWarning(
@@ -675,8 +681,8 @@ async function callOnPrerenderStartHook(
 
   assertUsage(
     isObjectWithKeys(result, ['prerenderContext'] as const) &&
-      hasProp(result, 'prerenderContext', 'object') &&
-      hasProp(result.prerenderContext, 'pageContexts', 'array'),
+    hasProp(result, 'prerenderContext', 'object') &&
+    hasProp(result.prerenderContext, 'pageContexts', 'array'),
     rightUsage
   )
   prerenderContext.pageContexts = result.prerenderContext.pageContexts as PageContext[]
@@ -687,7 +693,7 @@ async function callOnPrerenderStartHook(
       assertWarning(
         false,
         msgPrefix +
-          ' provided pageContext.url but it should provide pageContext.urlOriginal instead, see https://vike.dev/migration/0.4.23',
+        ' provided pageContext.url but it should provide pageContext.urlOriginal instead, see https://vike.dev/migration/0.4.23',
         { onlyOnce: true }
       )
       pageContext.urlOriginal = pageContext.url
@@ -1047,27 +1053,27 @@ function checkOutdatedOptions(options: {
     'Option `prerender({ configFile })` deprecated: set `prerender({ viteConfig: { configFile }})` instead.',
     { showStackTrace: true }
   )
-  ;(['noExtraDir', 'partial', 'parallel'] as const).forEach((prop) => {
-    assertUsage(
-      options[prop] === undefined,
-      `[prerender()] Option ${pc.cyan(prop)} is deprecated. Define ${pc.cyan(
-        prop
-      )} in vite.config.js instead. See https://vike.dev/prerender-config`,
-      { showStackTrace: true }
-    )
-  })
-  ;(['base', 'outDir'] as const).forEach((prop) => {
-    assertWarning(
-      options[prop] === undefined,
-      `[prerender()] Option ${pc.cyan(prop)} is outdated and has no effect (vike now automatically determines ${pc.cyan(
-        prop
-      )})`,
-      {
-        showStackTrace: true,
-        onlyOnce: true
-      }
-    )
-  })
+    ; (['noExtraDir', 'partial', 'parallel'] as const).forEach((prop) => {
+      assertUsage(
+        options[prop] === undefined,
+        `[prerender()] Option ${pc.cyan(prop)} is deprecated. Define ${pc.cyan(
+          prop
+        )} in vite.config.js instead. See https://vike.dev/prerender-config`,
+        { showStackTrace: true }
+      )
+    })
+    ; (['base', 'outDir'] as const).forEach((prop) => {
+      assertWarning(
+        options[prop] === undefined,
+        `[prerender()] Option ${pc.cyan(prop)} is outdated and has no effect (vike now automatically determines ${pc.cyan(
+          prop
+        )})`,
+        {
+          showStackTrace: true,
+          onlyOnce: true
+        }
+      )
+    })
 }
 
 async function disableReactStreaming() {
