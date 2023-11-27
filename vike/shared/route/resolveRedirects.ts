@@ -46,7 +46,7 @@ function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPat
     assert(!urlResolved.includes('@'), 'URL should not contain "@" unless it is a mailto link.')
   }
   if (urlResolved === urlPathname) return null
-  assert(urlTarget.startsWith('/') || urlTarget.startsWith('http') || urlResolved.startsWith('mailto:'))
+  assertUsage(urlTarget.startsWith('/') || urlTarget.startsWith('http') || urlResolved.startsWith('mailto:'))
   return urlResolved
 }
 
