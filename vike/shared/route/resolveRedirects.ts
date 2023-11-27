@@ -24,7 +24,10 @@ function resolveRedirects(redirects: Record<string, string>, urlPathname: string
 function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPathname: string): null | string {
   assertRouteString(urlSource, `${configSrc} Invalid`)
   assertUsage(
-    urlTarget.startsWith('/') || isUriWithProtocol(urlTarget) || urlTarget === '*',
+    urlTarget.startsWith('/') ||
+      // Is allowing any protocol a safety issue? https://github.com/vikejs/vike/pull/1292#issuecomment-1828043917
+      isUriWithProtocol(urlTarget) ||
+      urlTarget === '*',
     `${configSrc} Invalid redirection target URL ${pc.cyan(urlTarget)}: the target URL should start with ${pc.cyan(
       '/'
     )}, a valid protocol (${pc.cyan('https:')}, ${pc.cyan('http:')}, ${pc.cyan('ipfs:')}, ${pc.cyan(
