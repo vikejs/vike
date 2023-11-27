@@ -112,6 +112,6 @@ function addUrlOrigin(url: string, origin: string | null): string {
 }
 
 function isUriWithProtocol(uri: string): boolean {
-  // Is it correct to assume that all protocols (http:, https:, ipfs:, magnet:, ...) match this RegExp?
-  return /^[a-zA-Z]+:/.test(uri)
+  // https://en.wikipedia.org/wiki/List_of_URI_schemes
+  return /^[a-z0-9][a-z0-9\.\+\-]*:/i.test(uri)
 }

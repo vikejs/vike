@@ -1,4 +1,5 @@
-import { normalizeUrlPathname, removeUrlOrigin, addUrlOrigin } from './parseUrl-extras.js'
+import { isUtf8 } from 'buffer'
+import { normalizeUrlPathname, removeUrlOrigin, addUrlOrigin, isUriWithProtocol } from './parseUrl-extras.js'
 import { expect, describe, it } from 'vitest'
 
 describe('normalizeUrlPathname()', () => {
@@ -47,5 +48,27 @@ describe('removeUrlOrigin() / addUrlOrigin()', () => {
       expect(urlModified[0]).toBe('/')
       expect(addUrlOrigin(urlModified, origin)).toEqual(url)
     })
+  })
+})
+
+describe('isUriWithProtocol()', () => {
+  it('works', () => {
+    // Basics
+    expect(isUriWithProtocol('/bla')).toBe(false)
+    expect(isUriWithProtocol('/bla:')).toBe(false)
+    expect(isUriWithProtocol('bla:')).toBe(true)
+
+    // Valid
+    expect(isUriWithProtocol('a:')).toBe(true)
+    expect(isUriWithProtocol('a-b:')).toBe(true)
+    expect(isUriWithProtocol('a+b:')).toBe(true)
+    expect(isUriWithProtocol('a.b:')).toBe(true)
+    expect(isUriWithProtocol('a2:')).toBe(true)
+    expect(isUriWithProtocol('2a:')).toBe(true)
+
+    // Invalid
+    expect(isUriWithProtocol('a!b:')).toBe(false)
+    expect(isUriWithProtocol('a_b:')).toBe(false)
+    expect(isUriWithProtocol('.ab:')).toBe(false)
   })
 })
