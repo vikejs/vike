@@ -4,6 +4,7 @@ export { resolveRedirects }
 export { resolveRouteStringRedirect }
 
 import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
+import { isUriWithProtocol } from '../../utils/parseUrl-extras.js'
 import { assert, assertUsage } from '../utils.js'
 import { assertRouteString, resolveRouteString } from './resolveRouteString.js'
 import pc from '@brillout/picocolors'
@@ -23,10 +24,12 @@ function resolveRedirects(redirects: Record<string, string>, urlPathname: string
 function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPathname: string): null | string {
   assertRouteString(urlSource, `${configSrc} Invalid`)
   assertUsage(
-    urlTarget.startsWith('/') || /^[a-zA-Z]+:/.test(urlTarget) || urlTarget === '*',
+    urlTarget.startsWith('/') || isUriWithProtocol(urlTarget) || urlTarget === '*',
     `${configSrc} Invalid redirection target URL ${pc.cyan(urlTarget)}: the target URL should start with ${pc.cyan(
       '/'
-    )}, a valid protocol, or be ${pc.cyan('*')}`
+    )}, a valid protocol (${pc.cyan('https:')}, ${pc.cyan('http:')}, ${pc.cyan('ipfs:')}, ${pc.cyan(
+      'magnet:'
+    )}, ...), or be ${pc.cyan('*')}`
   )
   assertParams(urlSource, urlTarget)
   const match = resolveRouteString(urlSource, urlPathname)
@@ -42,7 +45,7 @@ function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPat
     assertUsage(!urlResolved.includes('@'), 'URL should not contain "@" unless it is a mailto link.')
   }
   if (urlResolved === urlPathname) return null
-  assert(urlTarget.startsWith('/') || /^[a-zA-Z]+:/.test(urlTarget))
+  assert(urlResolved.startsWith('/') || isUriWithProtocol(urlResolved))
   return urlResolved
 }
 

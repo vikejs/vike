@@ -5,6 +5,7 @@ export { removeBaseServer }
 export { modifyUrlPathname }
 export { removeUrlOrigin }
 export { addUrlOrigin }
+export { isUriWithProtocol }
 
 import { assertUrlComponents, createUrlFromComponents, isBaseServer, parseUrl } from './parseUrl.js'
 import { assert } from './assert.js'
@@ -108,4 +109,9 @@ function addUrlOrigin(url: string, origin: string | null): string {
   assert(origin === null || origin.startsWith('http'))
   const urlModified = createUrlFromComponents(origin, pathnameOriginal, searchOriginal, hashOriginal)
   return urlModified
+}
+
+function isUriWithProtocol(uri: string): boolean {
+  // Is it correct to assume that all protocols (http:, https:, ipfs:, magnet:, ...) match this RegExp?
+  return /^[a-zA-Z]+:/.test(uri)
 }
