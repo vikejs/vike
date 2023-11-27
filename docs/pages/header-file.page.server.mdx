@@ -62,22 +62,6 @@ export default { Page, onBeforeRender }
 > Importing runtime code works because <Link href="#transform">Vike transforms `.h.js`</Link> files.
 
 
-## Optional
-
-Instead of `+config.h.js` you can define a `+config.js` file (without `.h`):
-
-```js
-// +config.js
-
-export default {
-  Page: 'import:./some-file:someExport',
-  onBeforeRender: 'import:./some-other-file:someOtherExport'
-}
-```
-
-But you lose IntelliSense (auto-import, refactoring, type safety, go-to-definition, ...) and that's why we recommend using `+config.h.js` instead of `+config.js`.
-
-
 ## Not re-exported imports
 
 If an import isn't re-exported then it won't be included in any runtime:
