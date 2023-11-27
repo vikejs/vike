@@ -4,6 +4,7 @@ export { resolveRedirects }
 export { resolveRouteStringRedirect }
 
 import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
+import { isUriWithProtocol } from '../../utils/parseUrl-extras.js'
 import { assert, assertUsage } from '../utils.js'
 import { assertRouteString, resolveRouteString } from './resolveRouteString.js'
 import pc from '@brillout/picocolors'
@@ -24,12 +25,14 @@ function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPat
   assertRouteString(urlSource, `${configSrc} Invalid`)
   assertUsage(
     urlTarget.startsWith('/') ||
-      urlTarget.startsWith('http://') ||
-      urlTarget.startsWith('https://') ||
+      // Is allowing any protocol a safety issue? https://github.com/vikejs/vike/pull/1292#issuecomment-1828043917
+      isUriWithProtocol(urlTarget) ||
       urlTarget === '*',
     `${configSrc} Invalid redirection target URL ${pc.cyan(urlTarget)}: the target URL should start with ${pc.cyan(
       '/'
-    )}, ${pc.cyan('http://')}, ${pc.cyan('https://')}, or be ${pc.cyan('*')}`
+    )}, a valid protocol (${pc.cyan('https:')}, ${pc.cyan('http:')}, ${pc.cyan('ipfs:')}, ${pc.cyan(
+      'magnet:'
+    )}, ...), or be ${pc.cyan('*')}`
   )
   assertParams(urlSource, urlTarget)
   const match = resolveRouteString(urlSource, urlPathname)
@@ -41,9 +44,11 @@ function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPat
     }
     urlResolved = urlResolved.replaceAll(key, val)
   })
-  assert(!urlResolved.includes('@'))
+  if (!urlResolved.startsWith('mailto:')) {
+    assertUsage(!urlResolved.includes('@'), 'URL should not contain "@" unless it is a mailto link.')
+  }
   if (urlResolved === urlPathname) return null
-  assert(urlTarget.startsWith('/') || urlTarget.startsWith('http'))
+  assert(urlResolved.startsWith('/') || isUriWithProtocol(urlResolved))
   return urlResolved
 }
 
