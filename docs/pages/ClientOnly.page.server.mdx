@@ -4,15 +4,15 @@ Environment: browser.
 
 The `ClientOnly` is a component that allows you to defer the rendering of components until they are required only on the client-side.
 
-> This component is currently available only for React.
+> This component is currently available through [`vike-react`](https://github.com/vikejs/vike-react) and [`vike-solid`](https://github.com/vikejs/vike-solid).
 
 This is particularly useful for optimizing performance with heavy components, and for components that are meant for client-side only, such as those using browser-specific features.
 
 > For more details, See <Link href="/client-only-components" />.
 
-## Usage
+## React
 
-Use the ClientOnly to wrap the component that needs to be loaded dynamically:
+### Usage
 
 ```jsx
 import { ClientOnly } from 'vike-react/ClientOnly'
@@ -26,7 +26,7 @@ function MyComponent() {
 }
 ```
 
-## Props
+### Props
 
 - load: A function that returns a promise resolving to import the specified component's path, dynamically loading it.
 - children: A function that takes the loaded component and returns the JSX to be rendered.
@@ -34,7 +34,8 @@ function MyComponent() {
 - deps (optional): An array of dependencies that, when changed, will trigger a reload of the dynamic component. This array is passed directly to the dependency array of the useEffect hook used internally in ClientOnly, controlling the refresh timing of the component.
   > See also: [React Docs > API > Hooks > useEffect](https://react.dev/reference/react/useEffect)
 
-## Example
+
+### Example
 
 In this example, the map component is only loaded when geoLocation state changes, which optimizes the performance by not loading the component until it's needed:
 
@@ -53,3 +54,26 @@ function MapContainer(props) {
   )
 }
 ```
+
+## Solid
+
+### Usage
+
+```jsx
+import { ClientOnly } from "vike-solid/ClientOnly";
+
+function MyComponent() {
+  return (
+    <ClientOnly load={() => import('path-to-dynamic-component')} fallback={<Loading />}>
+      {(Component) => <Component {...props} />}
+    </ClientOnly>
+  );
+}
+
+```
+
+### Props
+
+- load: A function that returns a promise resolving to import the specified component's path, dynamically loading it.
+- children: A function that takes the loaded component and returns the JSX to be rendered.
+- fallback: A JSX element that is displayed while the dynamic component is being loaded.
