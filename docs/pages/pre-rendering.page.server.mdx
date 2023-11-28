@@ -50,7 +50,7 @@ Your pages' HTML will be rendered when you run `$ vite build` and the generated 
 
 For a page with a parameterized route (e.g. `/movie/@movieId`), you have to use the [`onBeforePrerenderStart()` hook](/onBeforePrerenderStart) in order to provide the list of URLs that are to be pre-rendered. The `onBeforePrerenderStart()` hook can also be used to accelerate the pre-rendering process.
 
-By default, all pages are pre-rendered. To pre-render only some pages, use the <Link href="/prerender-config#partial" text={<><code>partial</code> option</>} /> with <Link href="/prerender#toggle" text={<code>prerender: false</code>} />.
+By default, all pages are pre-rendered. To pre-render only some pages, use the <Link href="/prerender-config#partial" text={<><code>partial</code> option</>} /> with <Link href="/prerender-config#toggle" text={<code>prerender: false</code>} />.
 
 If you pre-render all your pages, then you can use Vite's CLI instead of a server (`$ vite dev` and `$ vite preview`). See linked examples below.
 
