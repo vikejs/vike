@@ -1,37 +1,10 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link, Danger } from '@brillout/docpress'
 
-<Warning>
+<Danger>
   `*.page*.js` files are deprecated in favor of `+*.js` files, see
   <ul>
+    <li><Link href="/migration/v1-design" /></li>
     <li><Link href="/Page" /></li>
     <li><Link href="/client" /></li>
-    <li><Link href="/migration/v1-design" /></li>
   </ul>
-</Warning>
-
-Environment: browser.
-
-The `.page.client.js` file defines the page's browser-side code.
-
-It represents the entire browser-side code. This means that if we don't create any `.page.client.js` files, then our app has zero browser-side JavaScript.
-(Except for Vite's dev code when not in production.)
-
-This also means that we have full control over the browser-side code. Not only can we render/hydrate our pages as we wish, but we can also easily & naturally integrate browser libraries.
-
-```js
-// _default.page.client.js
-
-export { onRenderClient }
-
-import { hydrate } from 'some-ui-framework'
-
-async function onRenderClient(pageContext) {
-  const { Page } = pageContext
-  await hydrate(Page)
-}
-```
-
-The browser-side is usually about [hydrating](/hydration) the page,
-but we can also do partial/island hydration,
-only install a couple of JavaScript event handlers,
-etc.
+</Danger>

@@ -1,20 +1,9 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link, Danger } from '@brillout/docpress'
 
-<Warning>
+<Danger>
   `*.page*.js` files are deprecated in favor of `+*.js` files, see
   <ul>
-    <li><Link href="/Page" /></li>
     <li><Link href="/migration/v1-design" /></li>
+    <li><Link href="/Page" /></li>
   </ul>
-</Warning>
-
-Environment: browser and server.
-
-A `.page.js` file can export the following:
-- `export { Page }` (or `export default`)
-- `export { onBeforeRender }`
-- <Link href="/exports" />
-
-The `.page.js` file is isomorphic: it can run in the browser as well as in Node.js.
-
-The `.page.js` file is lazy-loaded: it is loaded only when needed which means that if no URL request were to match the page's route then `.page.js` is never loaded in the browser nor in the Node.js process' memory.
+</Danger>

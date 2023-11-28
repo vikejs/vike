@@ -1,15 +1,9 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link, Danger } from '@brillout/docpress'
 
-<Warning>
+<Danger>
   `*.page*.js` files are deprecated in favor of `+*.js` files, see
   <ul>
-    <li><Link href="/route" /></li>
     <li><Link href="/migration/v1-design" /></li>
+    <li><Link href="/route" /></li>
   </ul>
-</Warning>
-
-Environment: server (and browser if using <Link text="Client Routing" href="/client-routing"/>).
-
-The `*.page.route.js` files enable us further control over routing with:
- - [Route Strings](/route-string)
- - [Route Functions](/route-function)
+</Danger>
