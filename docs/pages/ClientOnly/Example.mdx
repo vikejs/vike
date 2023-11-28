@@ -1,0 +1,11 @@
+```tsx
+function MapContainer(props) {
+  const { geoLocation } = props
+
+  return (
+    <ClientOnly load={() => import('heavy-map-library')} fallback={<Loading />} deps={[geoLocation]}>
+      {(Map) => <Map geoLocation={geoLocation} />}
+    </ClientOnly>
+  )
+}
+```

@@ -1,4 +1,7 @@
 import React from 'react'
+import Example from './Example.mdx'
+import ReactUsage from './ReactUsage.mdx'
+import SolidUsage from './SolidUsage.mdx'
 
 export const ClientOnlyCommon = ({
   packageName,
@@ -10,19 +13,8 @@ export const ClientOnlyCommon = ({
   return (
     <div>
       <h3>Usage</h3>
-      <pre>
-        <code>
-          {`import { ClientOnly } from '${packageName}/ClientOnly'
-  function MyComponent(props) {
-    return (
-      <ClientOnly load={() => import('path-to-dynamic-component')} fallback={<Loading />}>
-        {Component => <Component {...props} />}
-      </ClientOnly>
-    );
-  }`}
-        </code>
-      </pre>
-
+      {packageName === 'vike-react' && <ReactUsage />}
+      {packageName === 'vike-solid' && <SolidUsage />}
       <h3>Props</h3>
       <ul>
         <li>
@@ -46,23 +38,7 @@ export const ClientOnlyCommon = ({
       {hasDepsArgument && (
         <>
           <h3>Example</h3>
-          <pre>
-            <code>
-              {`function MapContainer(props) {
-  const { geoLocation } = props;
-
-  return (
-    <ClientOnly
-      load={() => import('heavy-map-library')}
-      fallback={<Loading />}
-      deps={[geoLocation]}
-    >
-      {Map => <Map geoLocation={geoLocation} />}
-    </ClientOnly>
-  );
-}`}
-            </code>
-          </pre>
+          <Example />
         </>
       )}
     </div>
