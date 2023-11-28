@@ -703,6 +703,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`ClientOnly`',
+    url: '/ClientOnly'
+  },
+  {
+    level: 2,
     title: '`throw redirect()`',
     url: '/redirect'
   },
