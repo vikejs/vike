@@ -1,4 +1,5 @@
 import { Link } from '@brillout/docpress'
+import { ClientOnlyCommon } from './ClientOnly/ClientOnlyCommon.tsx'
 
 Environment: browser.
 
@@ -12,68 +13,8 @@ This is particularly useful for optimizing performance with heavy components, an
 
 ## React
 
-### Usage
-
-```jsx
-import { ClientOnly } from 'vike-react/ClientOnly'
-
-function MyComponent() {
-  return (
-    <ClientOnly load={() => import('path-to-dynamic-component')} fallback={<Loading />}>
-      {(Component) => <Component {...props} />}
-    </ClientOnly>
-  )
-}
-```
-
-### Props
-
-- load: A function that returns a promise resolving to import the specified component's path, dynamically loading it.
-- children: A function that takes the loaded component and returns the JSX to be rendered.
-- fallback: A JSX element that is displayed while the dynamic component is being loaded.
-- deps (optional): An array of dependencies that, when changed, will trigger a reload of the dynamic component. This array is passed directly to the dependency array of the useEffect hook used internally in ClientOnly, controlling the refresh timing of the component.
-  > See also: [React Docs > API > Hooks > useEffect](https://react.dev/reference/react/useEffect)
-
-
-### Example
-
-In this example, the map component is only loaded when geoLocation state changes, which optimizes the performance by not loading the component until it's needed:
-
-```jsx
-function MapContainer(props) {
-  const { geoLocation } = props
-
-  return (
-    <ClientOnly
-      load={() => import('heavy-map-library')}
-      fallback={<Loading />}
-      deps={[geoLocation]} // The component will refresh when geoLocation changes
-    >
-      {(Map) => <Map geoLocation={geoLocation} />}
-    </ClientOnly>
-  )
-}
-```
+<ClientOnlyCommon packageName="vike-react" hasDepsArgument={true} />
 
 ## Solid
 
-### Usage
-
-```jsx
-import { ClientOnly } from "vike-solid/ClientOnly";
-
-function MyComponent() {
-  return (
-    <ClientOnly load={() => import('path-to-dynamic-component')} fallback={<Loading />}>
-      {(Component) => <Component {...props} />}
-    </ClientOnly>
-  );
-}
-
-```
-
-### Props
-
-- load: A function that returns a promise resolving to import the specified component's path, dynamically loading it.
-- children: A function that takes the loaded component and returns the JSX to be rendered.
-- fallback: A JSX element that is displayed while the dynamic component is being loaded.
+<ClientOnlyCommon packageName="vike-solid" hasDepsArgument={false} />
