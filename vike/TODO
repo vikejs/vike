@@ -8,6 +8,15 @@
 - Re-use screenshot fixture test
 
 After V1 design release:
+ - Replace in docs:
+   ```diff
+   - Environement: browser
+   + Environement: client.
+   ```
+   ```diff
+   - Environement: Node.js
+   + Environement: server.
+   ```
  - improve passToClient warning: https://github.com/vikejs/vike/tree/brillout/wip
  - Remove 0.4 design examples
  - [docs] Rewrite /head
