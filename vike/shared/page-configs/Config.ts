@@ -51,6 +51,7 @@ type HookName =
   | 'onRenderClient'
   | 'guard'
   | 'render'
+  | 'prerender' // v0.4 design
 
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
