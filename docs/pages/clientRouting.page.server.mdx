@@ -1,4 +1,4 @@
-import { UseBatiInsteadHint } from '../components'
+import { UseIntegrationPackageAnyHint } from '../components'
 
 import { Link, RepoLink, ReadingRecommendation } from '@brillout/docpress'
 
@@ -16,10 +16,7 @@ By default, Vike does <Link text="Server Routing" href="/server-routing" /> but 
  2. Adapting the <Link text={<><code>onRenderClient()</code> hook</>} href="/onRenderClient" /> to
     hydrate the DOM only when rendering the first page.
 
-<UseBatiInsteadHint
-  featureName="Client Routing"
-  additionalHint={<><code>vike-*</code> packages use Client Routing</>}
-/>
+<UseIntegrationPackageAnyHint featureName="Client Routing" />
 
 React example:
  - <RepoLink path='/examples/react-full-v1/renderer/+onRenderClient.tsx' />
