@@ -1,5 +1,5 @@
 import { Link } from '@brillout/docpress'
-import HeaderFileIntro from '../components/HeaderFileIntro.mdx'
+import { HeaderFileIntro } from '../components'
 
 
 ## Transform
@@ -74,12 +74,16 @@ import { something } from './some-file'
 // such as +Page.js instead.
 import './some.css'
 
-// This log is printed only when Vike reads +config.h.js files: the log isn't included
-// in the client runtime nor server runtime.
+// These logs are printed only when Vike reads +config.h.js files (at development and when
+// building your app). The logs aren't included in the client runtime nor server runtime.
+// Consequently, you won't see these logs in production.
 console.log(something) // Prints: 'import:./some-file:something'
+console.log("I will never be shown in production")
 
 export default {
   // The import something isn't re-exported and, therefore, the
   // code defined in some-file.js isn't included in any runtime.
 }
 ```
+
+The server and client runtimes don't include code defined inside `+config.h.js` files: they only include the code of re-exported imports.

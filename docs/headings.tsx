@@ -622,7 +622,7 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Config',
+    title: 'Config files',
     url: '/config'
   },
   {
@@ -797,7 +797,7 @@ const headings = [
       'Example: `sql`',
       'Example: `title` and `description`',
       'Example: `Layout`',
-      'Example: modify `onBeforeRender()` env',
+      'Example: modify `onBeforeRender()` env'
     ]
   },
   {
@@ -805,5 +805,5 @@ const headings = [
     title: 'Settings',
     titleInNav: 'more...',
     url: '/settings'
-  },
+  }
 ] satisfies HeadingDefinition[]

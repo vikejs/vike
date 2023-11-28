@@ -1,46 +1,69 @@
 import { Link } from '@brillout/docpress'
-import HeaderFileIntro from '../components/HeaderFileIntro.mdx'
+import { HeaderFileIntro, IntegrationPackage } from '../components'
 
-Deep dive about configuring Vike.
+Everything there is to know about config files.
 
 
 ## `+config.h.js`
 
-The `+config.h.js` files define the interface between your app and Vike.
+The `+config.h.js` files is the interface between Vike and your code.
+
+You can use `+config.h.js` to define a new page:
 
 ```js
 // /pages/about/+config.h.js
 
-// Define a new page with URL /about
-import { Page } from './Page'
-export default { Page }
-```
-```jsx
-// /pages/about/Page.jsx
+// The file defines a new page with URL /about
 
-export default () => <>Vike Demo</>
-```
+import { AboutPage } from './AboutPage'
 
-> The URL `/about` is determined by <Link text="Filesystem Routing" href="/filesystem-routing" />.
-
-```js
-// /pages/product/+config.h.ts
-
-import Page from './Page'
-import type { Config } from 'vike/types'
-
-// Define a new page with URL '/product/@id'
 export default {
-   Page,
-   // Parameterized route for URLs such as /product/1337 and /product/macbook
-   route: '/product/@id'
-} satisfies Config
+  Page: AboutPage
+}
 ```
-```js
-// /pages/product/Page.jsx
 
-export default pageContext => <>Information about product {pageContext.routeParams.id}</>
+> The URL `/about` is determined by the filesystem location of `/pages/about/+config.h.js`, see <Link href="/filesystem-routing" />.
+
+```jsx
+// /pages/about/AboutPage.jsx
+
+export const AboutPage = () => <>Vike Demo</>
 ```
+
+Another example:
+
+```js
+// /pages/product/+config.h.js
+
+// This file defines a new page with URL '/product/@id'
+
+import { ProductPage } from './ProductPage'
+
+export default {
+   Page: ProductPage,
+   // Parameterized route that matches URLs such as /product/1337 and /product/macbook
+   route: '/product/@id'
+}
+```
+
+> Setting the `route` value overrides Filesystem Routing.
+
+```js
+// /pages/product/ProductPage.jsx
+
+export { ProductPage }
+
+function ProductPage() {
+  return (
+    <>
+      <h1>Product Information</h1>
+      ...
+    </>
+  )
+}
+```
+
+> You can also create a file `/pages/product/+Page.js` instead of setting `/pages/product/+config.h.js > export default { Page }`, see <Link href="#other-files" doNotInferSectionTitle />.
 
 
 ## `.h.js`
@@ -52,7 +75,7 @@ See <Link href="/header-file" /> for more information.
 
 ## Other `+` files
 
-For convenience, instead of defining `+config.h.js`, you can define `+Page.js` and `+route.js`.
+For convenience, instead of defining <Link href="#config-h-js">`+config.h.js`</Link>, you can define `+Page.js` and `+route.js`:
 
 ```js
 // /pages/product/+route.js
@@ -62,7 +85,16 @@ export default '/product/@id'
 ```js
 // /pages/product/+Page.jsx
 
-export default pageContext => <>Information about product {pageContext.routeParams.id}</>
+export { ProductPage as Page }
+
+function ProductPage() {
+  return (
+    <>
+      <h1>Product Information</h1>
+      ...
+    </>
+  )
+}
 ```
 
 Which is equivalent to:
@@ -71,18 +103,30 @@ Which is equivalent to:
 ```js
 // /pages/product/+config.h.js
 
-import Page from './Page.jsx'
+import { ProductPage } from './ProductPage'
 
 export default {
-   Page,
+   Page: ProductPage,
    route: '/product/@id'
 }
 ```
-```js
-// /pages/product/Page.jsx
 
-export default pageContext => <>Information about product {pageContext.routeParams.id}</>
+```js
+// /pages/product/ProductPage.jsx
+
+export { ProductPage }
+
+function ProductPage() {
+  return (
+    <>
+      <h1>Product Information</h1>
+      ...
+    </>
+  )
+}
 ```
+
+> While it doesn't make a difference whether you define the `Page` value by creating a plus file `+Page.js` or by setting `+config.h.js > export default { Page }`, we usually showcase plus files in the documentation because plus files are a slightly more succint way to define values.
 
 
 ## Overridable defaults
@@ -119,7 +163,7 @@ You can also define default values only for a group of pages. As shown, for exam
 
 There can be different multiple defaults that apply to different groups of pages:
 
-```
+```bash
 # Defaults
 /marketing/pages/+title.js
 /marketing/pages/+ssr.js
@@ -144,7 +188,7 @@ The `marketing/+*.js` files apply as default to `marketing/**/+Page.js`, while `
 
 ## `renderer/`
 
-We can use a `renderer/` directory:
+The `renderer/` directory is convenient way to organize and put all code related to rendering in one place:
 
 ```
 admin-panel/renderer/+onRenderHtml.js
@@ -156,27 +200,4 @@ The hooks `admin-panel/renderer/+onRender{Html,Client}.js` apply as default to a
 
 The `renderer/` directory doesn't add any functionality: `/renderer/+config.h.js` is equivalent to `/pages/+config.h.js`. It's just an (optional) convenience for moving renderer files outside of `pages/` (to avoid cluttering the `pages/` directory). That way, the entire renderer logic can be organized and tucked into a single place `renderer/`.
 
-> The `renderer/` directory is usually only used by users who don't use any <Link text="UI framework integration" href="/vike-packages#ui-frameworks" />.
-
-
-## Build-time
-
-All `+config.h.js` files are loaded at build-time:
-
-```js
-// /pages/some-page/+config.h.js
-
-import Page from './Page.js'
-
-// This log will only be shown:
-//  - At development
-//  - When building your app
-console.log("I will never be shown in production")
-
-export default {
-  // However, the code of ./Page.js is included in production runtimes
-  Page
-}
-```
-
-The server and client runtimes don't include the code of `+config.h.js` files but do include the imported code. To understand why see <Link href="/header-file" />.
+> The `renderer/` directory is usually only used by users who don't use a <IntegrationPackage />.
