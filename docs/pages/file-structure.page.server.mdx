@@ -18,12 +18,13 @@ while for basic apps we recommend a single `pages/` directory.
 /pages/about/SomeComponentForAboutPage.js
 /pages/about/**/* # More files specific to the about page
 # Other pages
-/pages/*/+Page.js
-# Special pages
+/pages/**/+Page.js
+
+# Error page
 /pages/_error/+Page.js
 
 # Components shared by several pages
-/components/*
+/components/
 
 # Code that specifies how our pages are rendered
 /renderer/+onRenderHtml.js
@@ -35,7 +36,7 @@ while for basic apps we recommend a single `pages/` directory.
 /renderer/logo.svg # Our website logo
 
 # Express.js/Fastify/... code
-/server/*
+/server/
 ```
 
 Examples:
