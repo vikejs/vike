@@ -1,0 +1,17 @@
+```tsx
+import { ClientOnly } from 'vike-solid/ClientOnly'
+
+function MyComponent(props) {
+  return (
+    <ClientOnly
+      load={() => import('path-to-dynamic-component')}
+      /* Or:
+      load={async () => (await import('path-to-dynamic-component')).Map}
+      */
+      fallback={<Loading />}
+    >
+      {(Component) => <Component {...props} />}
+    </ClientOnly>
+  )
+}
+```
