@@ -1,13 +1,16 @@
-import { RepoLink, Link } from '@brillout/docpress'
+import { HookTypeScriptHints, IntegrationPackage, IntegrationPackageNames } from '../components'
+import { Link, RepoLink } from '@brillout/docpress'
 
 Environment: server.
 
-The `escapeInject` string template tag sanitizes HTML (to prevent so-called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting) security breaches).
+The `escapeInject` string template tag sanitizes HTML to prevent security risks commmonly called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting).
 
-It's usually used in the `onRenderHtml()` hook defined in `/renderer/+onRenderHtml.js`.
+> If you use a <IntegrationPackage/>, then you don't need to use `escapeInject` yourself as <IntegrationPackageNames /> already sanitizes its HTML.
+
+It's usually used by the `onRenderHtml()` hook.
 
 ```js
-// /renderer/+onRenderHtml.js
+// +onRenderHtml.js
 // Environment: server
 
 export { onRenderHtml }
@@ -46,7 +49,7 @@ We can assemble the overall HTML document from several HTML fragments.
 For example, if we want some HTML parts to be included only for certain pages:
 
 ```js
-// /renderer/+onRenderHtml.js
+// +onRenderHtml.js
 // Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
