@@ -1,9 +1,14 @@
-import { HookTypeScriptHints } from '../components'
+import { HookTypeScriptHints, IntegrationPackage, IntegrationPackageNames } from '../components'
+import { Link } from '@brillout/docpress'
 
-The `onRenderHtml()` hook defines how a page is rendered to HTML.
+Environment: server.
+
+The `onRenderHtml()` hook defines how <Link href="/Page">`Page`</Link> is rendered to HTML.
+
+> If you use a <IntegrationPackage/>, then you don't need to define `onRenderHtml()` as it's already defined by <IntegrationPackageNames />.
 
 ```js
-// /**/+onRenderHtml.js (usually /renderer/+onRenderHtml.js)
+// +onRenderHtml.js
 // Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
@@ -28,13 +33,13 @@ async function onRenderHtml(pageContext){
   return {
     documentHtml,
     pageContext: {
-      // We can add some `pageContext` here
+      // We can define pageContext values here
     }
   }
 }
 ```
 
-> `pageContext.Page` is the `export { Page }` of the page's `+Page.js` file that is being rendered.
+Where `pageContext.Page` is the `Page` value of the page that is being rendered, see <Link href="/Page" />.
 
 
 ## TypeScript
@@ -50,25 +55,7 @@ import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml, createElement } from 'some-ui-framework'
 
 const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
-  const { Page, pageProps } = pageContext
-  const pageHtml = await renderToHtml(createElement(Page, pageProps))
-
-  const documentHtml = escapeInject`<!DOCTYPE html>
-    <html>
-      <head>
-        <title>My SSR App</title>
-      </head>
-      <body>
-        <div id="page-root">${dangerouslySkipEscape(pageHtml)}</div>
-      </body>
-    </html>`
-
-  return {
-    documentHtml,
-    pageContext: {
-      // We can add some `pageContext` here
-    }
-  }
+  // ...
 }
 ```
 
