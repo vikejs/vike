@@ -4,7 +4,7 @@ import { Link, RepoLink, ReadingRecommendation } from '@brillout/docpress'
 
 Environment: browser.
 
-By default, Vike does <Link text="Server Routing" href="/server-routing" /> but we can opt into <Link text="Client Routing" href="/client-routing" /> by:
+By default, Vike does <Link text="Server Routing" href="/server-routing" /> but you can opt into <Link text="Client Routing" href="/client-routing" /> by:
  1. Setting `clientRouting: true`.
     ```js
     // +config.h.js
@@ -18,72 +18,102 @@ By default, Vike does <Link text="Server Routing" href="/server-routing" /> but 
 
 <UseIntegrationPackageAnyHint featureName="Client Routing" />
 
+
+## Examples
+
+Generic example:
+ - See <Link href="#usage" />.
+
 React example:
  - <RepoLink path='/examples/react-full-v1/renderer/+onRenderClient.tsx' />
- - <RepoLink path='/examples/react-full-v1/pages/index/+Page.tsx' /> (example of using <code>navigate()</code>)
+ - <RepoLink path='/examples/react-full-v1/pages/index/+Page.tsx' /> (example of using <Link href="#programmatic-navigation">`navigate()`</Link>)
 
 Vue example:
  - <RepoLink path='/examples/vue-full-v1/renderer/+onRenderClient.ts' />
  - <RepoLink path='/examples/vue-full-v1/renderer/app.ts' />
- - <RepoLink path='/examples/vue-full-v1/pages/index/+Page.vue' /> (example of using <code>navigate()</code>)
+ - <RepoLink path='/examples/vue-full-v1/pages/index/+Page.vue' /> (example of using <Link href="#programmatic-navigation">`navigate()`</Link>)
 
 
-## Usage & settings
+## Usage
 
-```js
-// /renderer/+onRenderClient.js
-// Environment: browser
+1. Set `clientRouting` to `true`:
+   ```js
+   // /pages/+config.h.js
+   export default {
+     clientRouting: true
+   }
+   ```
 
-export { onRenderClient }
+2. Adapt your <Link text={<><code>onRenderClient()</code></>} href="/onRenderClient" /> hook:
 
-import { renderToDom, hydrateDom } from 'some-ui-framework'
+   ```js
+   // /renderer/+onRenderClient.js
+   // Environment: browser
 
-async function onRenderClient(pageContext) {
-  // `pageContext.isHydration` is set by Vike and is `true` when the page
-  // is already rendered to HTML.
-  if (pageContext.isHydration) {
-    // We hydrate the first page. (Since we do SSR, the first page is already
-    // rendered to HTML and we merely have to hydrate it.)
-    await hydrate(pageContext.Page)
-  } else {
-    // We render a new page. (When the user navigates to a new page.)
-    await renderToDom(pageContext.Page)
-  }
-}
-```
+   export { onRenderClient }
 
-> Note that `pageContext` is completely discarded and created anew upon page navigation.
-> That's why it's called *page*Context (and not *app*Context).
+   import { renderToDom, hydrateDom } from 'some-ui-framework'
 
-We can use following lifecycle hooks to implement post-<Link href="/hydration">hydration</Link> initialization and page transition animations:
+   async function onRenderClient(pageContext) {
+     // `pageContext.isHydration` is set by Vike and is `true` when the page
+     // is already rendered to HTML.
+     if (pageContext.isHydration) {
+       // We hydrate the first page. (Since we do SSR, the first page is already
+       // rendered to HTML and we merely have to hydrate it.)
+       await hydrate(pageContext.Page)
+     } else {
+       // We render a new page. (When the user navigates to a new page.)
+       await renderToDom(pageContext.Page)
+     }
+   }
+   ```
+
+   > Note that `pageContext` is completely discarded and created anew upon page navigation.
+   > That's why it's called *page*Context (and not *app*Context).
+
+   > See [Render Modes](/render-modes) for another illustration of conditional DOM hydration.
+
+## Links intercepting
+
+You can keep using `<a href="/some-url">` links: the Client Router automatically intercepts clicks on `<a>` elements.
+
+You can skip the Client Router for individual `<a>` links by adding the `rel="external"` attribute, e.g. `<a rel="external" href="/some/url">The Client Router won't intercept me</a>`.
+
+
+## Hooks
+
+You can use the following hook to implement initialization after the <Link href="/hydration">hydration</Link> has finished:
  - <Link href="/onHydrationEnd" noBreadcrumb />
+
+And following hooks ot implement page transition animations:
  - <Link href="/onPageTransitionStart" noBreadcrumb />
  - <Link href="/onPageTransitionEnd" noBreadcrumb />
 
-Settings:
- - <Link href="/prefetchStaticAssets" noBreadcrumb />
- - <Link href="/hydrationCanBeAborted" noBreadcrumb />
+> These hooks are only available if you use Client Routing.
 
-We can keep using `<a href="/some-url">` links: the Client Router automatically intercepts clicks on `<a>` elements.
 
-We can skip the Client Router by adding the `rel="external"` attribute, e.g. `<a rel="external" href="/some/url">The Client Router won't intercept me</a>`.
+## Settings
 
-We can use <Link text={<code>navigate('/some/url')</code>} href="/navigate"/> to programmatically navigate the user to a new page.
+- `prefetchStaticAssets`: Link prefetching settings, see <Link href="/prefetchStaticAssets" />.
+- `hydrationCanBeAborted`: Whether the <Link text="UI framework" href="/ui-framework" /> allows <Link href="/hydration">hydrations</Link> to be aborted, see <Link href="/hydrationCanBeAborted" />.
+- `<a keep-scroll-position>`: By default, the Client Router scrolls to the top of the page upon page change; you can use `<a href="/some/url" keep-scroll-position />` if you want to preserve the scroll position instead. (Useful for <Link text="Nested Layouts" href="/layouts#nested-layouts" />.)
+- `<a rel="external">`: Skip Client Routing, see <Link href="#links-intercepting" />.
 
-By default, the Client-side Router scrolls to the top of the page upon page change;
-we can use `<a href="/some/url" keep-scroll-position />` / `navigate('/some/url', { keepScrollPosition: true })`
-if we want to preserve the scroll position instead. (Useful for <Link text="Nested Layouts" href="/layouts#nested-layouts" />.)
 
-> See [Render Modes](/render-modes) for another illustration of conditional DOM hydration.
+## Programmatic navigation
+
+You can use the function `navigate('/some/url')` to programmatically navigate the user to a new page.
+
+See <Link href="/navigate"/>.
 
 
 ## State initialization
 
-Usually, when using tools such as Apollo GraphQL, Redux or Vuex, we determine the initial state of our UI on the server-side while rendering HTML, and then initialize the client-side with that initial state.
+Usually, when using tools such as Apollo GraphQL, Redux or Vuex, you determine the initial state of your UI on the server-side while rendering HTML, and then initialize the client-side with that initial state.
 
-Depending on the tool, we do either one of the following:
- - We initialize the state once.
- - We re-initialize the state on every page navigation.
+Depending on the tool, you do either one of the following:
+ - You initialize the state once.
+ - You re-initialize the state on every page navigation.
 
 <ReadingRecommendation tour={true} links={['/data-fetching', '/data-fetching-tools', '/store']} />
 
@@ -198,6 +228,7 @@ async function onRenderClient(pageContext) {
 ## See also
 
  - <Link href="/client-routing" />
+ - <Link href="/navigate" />
  - <Link href="/onHydrationEnd" />
  - <Link href="/onPageTransitionStart" />
  - <Link href="/onPageTransitionEnd" />
