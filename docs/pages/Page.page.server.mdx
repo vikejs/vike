@@ -1,19 +1,65 @@
-The `+Page.js` files can export an object representing the page's root (React/Vue/...) component, either as
-`export { Page }` or `export default`. Vike doesn't do anything with this object and just makes it available at
-`pageContext.Page`:
+import { Link } from '@brillout/docpress'
+import { IntegrationPackage } from '../components'
+
+The `Page` value determines the page's root component.
+
+```js
+// /pages/index/+Page.jsx
+
+export { Page }
+/* Or:
+export default Page
+*/
+
+function Page() {
+  return <>
+    <h1>Hi</h1>
+    <p>Hello World</p>
+  </>
+}
+```
+
+With Vue:
+```vue
+<!-- /pages/index/+Page.vue -->
+
+<template>
+  <h1>Hi</h1>
+  <p>Hello World</p>
+</template>
+```
+
+> You can also define the `Page` value by using <Link href="/config#config-h-js">`+config.h.js`</Link>. While it doesn't make a difference whether you define the `Page` value by creating a plus file `+Page.js` or by setting `+config.h.js > export default { Page }`, we usually showcase plus files in the documentation because plus files are a slightly more succint way to define values.
+
+What happens with the `Page` value is determined by the <IntegrationPackage />. Alternatively, for complete control over the UI framework integration, you can <Link href="#manual-integration">manually integrate</Link> the UI framework yourself.
+
+
+
+## Manual integration
+
+Vike in itself never uses the `Page` value: it just makes the value available at `pageContext.Page`.
+The `pageContext.Page` value is typically used by the <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> hooks: these two hooks essentially determine how the `Page` value is rendered to HTML and the [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model).
+
+The <IntegrationPackage /> implements the `onRenderHtml()` and `onRenderClient()` hooks, so that you don't have to implement them: everything just works like a regular framework such as Next.js or Nuxt.
+
+Instead of using a UI framework integration package, you can integrate your favorite UI framework yourself: you then have complete control over the UI framework integration.
+
+Here is a minimal example of manually integrating a UI framework:
 
 ```js
 // /pages/hello/+Page.js
-// Environment: browser and server
+// Environment: browser and server (configurable)
 
 export { Page }
 
-// We export a JSX component, but we can export anything we want since Vike doesn't
-// do anything with `Page`: it just makes it available at `pageContext.Page`.
 function Page() {
-  return <>Hello</>
+  // Here we export a JSX component, but we can export anything we want since Vike doesn't
+  // do anything with `Page`: it just makes it available at `pageContext.Page`.
+  return <>Hello World</>
 }
 ```
+
+> You can configure in which environment the `Page` value is loaded by using <Link href="/meta">`meta`</Link>.
 
 ```js
 // /renderer/+onRenderHtml.js
@@ -22,10 +68,10 @@ function Page() {
 export { onRenderHtml }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import renderToHtml from 'some-ui-framework'
+import { renderToHtml } from 'my-favorite-ui-framework/server'
 
 async function onRenderHtml(pageContext) {
-  // `Page` is available at `pageContext.Page`
+  // The Page value is available at pageContext.Page
   const { Page } = pageContext
   const pageHtml = await renderToHtml(Page)
 
@@ -45,10 +91,10 @@ async function onRenderHtml(pageContext) {
 
 export { onRenderClient }
 
-import { hydrateDom } from 'some-ui-framework'
+import { hydrateDom } from 'my-favorite-ui-framework/client'
 
 async function onRenderClient(pageContext) {
-  // `pageContext.Page` is also available in the browser.
+  // pageContext.Page is also available in the browser
   const { Page } = pageContext
   await hydrateDom(Page, document.getElementById('root'))
 }
