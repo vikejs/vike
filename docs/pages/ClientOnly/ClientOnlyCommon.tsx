@@ -1,20 +1,19 @@
 import React from 'react'
-import Example from './Example.mdx'
 import ReactUsage from './ReactUsage.mdx'
 import SolidUsage from './SolidUsage.mdx'
 
 export const ClientOnlyCommon = ({
   packageName,
-  hasDepsArgument
 }: {
   packageName: string
-  hasDepsArgument: boolean
 }) => {
+  const isReact = packageName === 'vike-react'
+  const isSolid = packageName === 'vike-solid'
   return (
     <div>
       <h3>Usage</h3>
-      {packageName === 'vike-react' && <ReactUsage />}
-      {packageName === 'vike-solid' && <SolidUsage />}
+      {isReact && <ReactUsage />}
+      {isSolid && <SolidUsage />}
       <h3>Props</h3>
       <ul>
         <li>
@@ -27,20 +26,13 @@ export const ClientOnlyCommon = ({
         <li>
           <strong>fallback</strong>: A JSX element that is displayed while the dynamic component is being loaded.
         </li>
-        {hasDepsArgument && (
+        {isReact && (
           <li>
-            <strong>deps</strong> (optional): An array of dependencies that, when changed, will trigger a reload of the
-            dynamic component.
+            <strong>deps</strong> (optional): An array of dependencies that, when changed, will trigger a re-render of the
+            dynamic component. The <code>deps</code> prop of <code>{'<ClientOnly>'}</code> is passed as-is to the <a href="https://react.dev/reference/react/useEffect#parameters"><code>dependencies</code> parameter</a> of React's <a href="https://react.dev/reference/react/useEffect">useEffect() hook</a>.
           </li>
         )}
       </ul>
-
-      {hasDepsArgument && (
-        <>
-          <h3>Example</h3>
-          <Example />
-        </>
-      )}
     </div>
   )
 }

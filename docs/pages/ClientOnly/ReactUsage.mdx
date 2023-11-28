@@ -1,10 +1,19 @@
 ```tsx
 import { ClientOnly } from 'vike-react/ClientOnly'
 
-function MyComponent(props) {
+function MapWrapper(props) {
+  const { geoLocation } = props
   return (
-    <ClientOnly load={() => import('path-to-dynamic-component')} fallback={<Loading />}>
-      {(Component) => <Component {...props} />}
+    <ClientOnly
+      load={() => import('heavy-map-library')}
+      /* Or:
+      load={async () => (await import('heavy-map-library')).Map}
+      */
+      fallback={<Loading />}
+      // The map should be re-rendered if geoLocation changes
+      deps={[geoLocation]}
+    >
+      {(Map) => <Map geoLocation={geoLocation} />}
     </ClientOnly>
   )
 }
