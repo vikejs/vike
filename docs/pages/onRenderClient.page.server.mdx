@@ -1,11 +1,14 @@
-import { HookTypeScriptHints } from '../components'
+import { HookTypeScriptHints, IntegrationPackage, IntegrationPackageNames } from '../components'
 import { Link } from '@brillout/docpress'
 
-The client-side `onRenderClient()` hook exported in `+onRenderClient.js` files (usually `/renderer/+onRenderClient.js`)
-defines how a page is rendered/<Link text="hydrated" href="/hydration" /> on the browser-side.
+Environment: client.
+
+The `onRenderClient()` hook defines how <Link href="/Page">`Page`</Link> is rendered/<Link text="hydrated" href="/hydration" /> on the client-side.
+
+> If you use a <IntegrationPackage/>, then you don't need to define `onRenderClient()` as it's already defined by <IntegrationPackageNames />.
 
 ```js
-// /**/+onRenderClient.js (usually /renderer/+onRenderClient.js)
+// +onRenderClient.js
 // Environment: browser
 
 import { renderToDom, hydrateDom } from 'some-ui-framework'
@@ -24,12 +27,12 @@ async function onRenderClient(pageContext) {
 ```
 
 Where:
- - `Page` is the <Link text={<>page's <code>{'export { Page }'}</code></>} href="/Page" />.
- - `pageContext` is a subset of the `pageContext` defined on the server-side.
+ - `pageContext.Page` is the `Page` value of the page that is being rendered, see <Link href="/Page" />.
+ - `pageContext` is a subset of the <Link href="/pageContext">`pageContext`</Link> defined on the server-side.
 
-We use [`passToClient`](/passToClient) to determine what subset of `pageContext` is sent to the browser.
+You can use [`passToClient`](/passToClient) to determine what subset of `pageContext` is sent to the browser.
 
-> See [Render Modes](/render-modes) and [`clientRouting`](/clientRouting) for illustrations of conditional DOM
+> See <Link href="/render-modes" /> and <Link href="/clientRouting">Client Routing</Link> for illustrations of conditional DOM
 > hydration, for supporting both SPA and SSR.
 
 
@@ -49,11 +52,9 @@ See <Link href='/render-modes' />.
 
 ## Multiple `onRenderClient()` hooks
 
-If we `export { onRenderClient }` in `/pages/star-wars/+onRenderClient.js` then we define how
-`/pages/star-wars/+Page.js` is rendered while overriding `/renderer/+onRenderClient.js`.
+If you create `/pages/star-wars/+onRenderClient.js` then you define how `/pages/star-wars/+Page.js` is rendered while overriding the global `onRenderClient()` hook.
 
-And, defining multiple `onRenderClient()` hooks, with multiple `+onRenderClient.js` files, enables us to define
-different rendering for different pages. See <Link href='/multiple-renderer' />.
+By defining multiple `onRenderClient()` hooks, you can define different rendering for different pages. See <Link href='/multiple-renderer' />.
 
 
 ## TypeScript
@@ -70,8 +71,7 @@ import { hydrateDom } from 'some-ui-framework'
 const onRenderClient: OnRenderClientAsync = async (
   pageContext
 ): ReturnType<OnRenderClientAsync> => {
-  const { Page } = pageContext
-  await hydrateDom(Page) // SSR
+  // ...
 }
 ```
 
