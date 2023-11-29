@@ -1,16 +1,17 @@
+import { IntegrationPackage, IntegrationPackageNames } from '../components'
 import { Link, Warning, RepoLink } from '@brillout/docpress'
 
-<Warning>Using `meta` is meant for experienced developers: in general, we recommend using <Link href="/vike-packages">Vike packages</Link> instead.</Warning>
+<Warning>`meta` is meant for advanced usage: generally, we recommend using <Link href="/vike-packages">Vike packages</Link> instead.</Warning>
 
-The `meta` config enables you to extend and modify Vike with:
- - **New configurations**.
+`meta` enables you to define:
+ - **New settings**.
    - <Link href="#example-dataendpointurl" doNotInferSectionTitle />
    - <Link href="#example-sql" doNotInferSectionTitle />
    - <Link href="#example-title-and-description" doNotInferSectionTitle />
    - <Link href="#example-layout" doNotInferSectionTitle />
  - **New hooks**.
    - Example: `onInit()` or `onBeforeFetchingData()`.
- - **Modifications to existing configurations**.
+ - **Modifications to existing hooks**.
    - <Link href="#example-modify-onbeforerender-env" doNotInferSectionTitle />
 
 ## Example: `dataEndpointUrl`
@@ -101,13 +102,13 @@ async function onBeforeRender(pageContext) {
 
 ## Example: `title` and `description`
 
-In order to define the tags `<title>` and `<meta name="description">` of a page's HTML, you can define custom configs `title` and `description`.
+In order to define the tags `<title>` and `<meta name="description">` of a page's HTML, you can create new settings `title` and `description`.
 
-> The <Link text="integration packages" href="/vike-packages#ui-framework" /> for React/Vue/Solid already implement the `title` and `description` configs: if you use one of these packages then you don't need to define `title` nor `description` yourself. We still recommend reading this section as it's a neat example showcasing `meta`.
+> If you use a <IntegrationPackage/>, then you don't need to create the `title` and `description` settings as they are already created by <IntegrationPackageNames />. You can still read this section as it's a good example for showcasing `meta`.
 
-We first show how your custom configs `title` and `description` are used, and we then show the implementation of `title` and `description`.
+We first show how the settings `title` and `description` are used and then their implementation.
 
-This is how your pages use `title` and `description`:
+#### Usage
 
 ```js
 // /pages/about-us/+title.js
@@ -134,7 +135,7 @@ export default 'Who we are, our values, and what we stand for.'
 >
 > See <Link href="/config" />.
 
-Your pages can also use dynamically fetched data to set `<title>` and `<meta name="description">`:
+Your pages can also use data that was dynamically fetched in order to determine `<title>` and `<meta name="description">`:
 
 ```js
 // /pages/product/+title.js
@@ -150,7 +151,7 @@ export default pageContext => {
 }
 ```
 
-This is how you can implement `title` and `description`:
+#### Implementation
 
 ```ts
 // /pages/+config.h.ts
@@ -160,11 +161,11 @@ import type { Config } from 'vike/types'
 export default {
   meta: {
     title: {
-      // Make `title` value available on both the server and client
+      // Make the value of `title` available on both the server and client-side
       env: { server: true, client: true }
     },
     description: {
-      // Make `description` value available only on the server
+      // Make the value of `description` available only on the server-side
       env: { server: true }
     }
   }
@@ -239,7 +240,7 @@ async function onRenderHtml(pageContext) {
 
 ## Example: `Layout`
 
-> The <Link text="integration packages" href="/vike-packages#ui-framework" /> for React/Vue/Solid already implement the `Layout` config: if you use one of these integration packages then you can skip reading this.
+> If you use a <IntegrationPackage/>, then you don't need to create the `Layout` setting as it's already created by <IntegrationPackageNames />.
 
 Another common use case is to create a component `<Layout>` that defines the layout of a page.
 
@@ -326,7 +327,7 @@ Examples:
 
 ## Example: modify `onBeforeRender()` env
 
-You can use `meta` to change the environment in which built-in configs are loaded. For example you can change `onBeforeRender()` from `{ server: true, client: false }` to `{ server: true, client: true }`.
+You can use `meta` to change the environment in which built-in hooks are loaded. For example you can change `onBeforeRender()` from `{ server: true, client: false }` to `{ server: true, client: true }`.
 
 ```ts
 // /pages/some-page/+config.h.ts
@@ -381,5 +382,5 @@ export default {
 
 Example:
  - [/examples/react-full-v1/](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/)
-   - Config definition: [/renderer/+config.h.ts > `meta.onBeforeRenderIsomorph`](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/renderer/+config.h.ts#L14-L33)
-   - Config usage: [/pages/star-wars/@id/+onBeforeRenderIsomorph.ts](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts)
+   - Toggle definition: [/renderer/+config.h.ts > `meta.onBeforeRenderIsomorph`](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/renderer/+config.h.ts#L14-L33)
+   - Toggle usage: [/pages/star-wars/@id/+onBeforeRenderIsomorph.ts](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts)

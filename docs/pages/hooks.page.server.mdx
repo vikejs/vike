@@ -1,24 +1,24 @@
 import { Link } from '@brillout/docpress'
 import { TextEnv } from './hooks/TextEnv'
 
-List of *built-in* Vike hooks (you can <Link href="/meta">create your own hooks</Link>).
+List of built-in hooks. (You can <Link href="/meta">create your own hooks</Link>.)
 
 ## Basic
 
-- [**`guard()`**](/guard): <TextEnv>server-side (and potentially client-side)</TextEnv> Protect pages from unprivileged access.
-- [**`onBeforeRender()`**](/onBeforeRender): <TextEnv>server-side (and potentially client-side)</TextEnv> Called before the page is rendered, usually for fetching data.
+- [**`guard()`**](/guard): <TextEnv>server-side (configurable)</TextEnv> Protect pages from unprivileged access.
+- [**`onBeforeRender()`**](/onBeforeRender): <TextEnv>server-side (configurable)</TextEnv> Called before the page is rendered, usually for fetching data.
 - [**`onHydrationEnd()`**](/onHydrationEnd): <TextEnv>client-side</TextEnv> Called after the page is <Link href="/hydration">hydrated</Link>.
-- [**`onPageTransitionStart()`**](/onPageTransitionStart): <TextEnv>client-side</TextEnv> Called before the user navigates to a new page.
-- [**`onPageTransitionEnd()`**](/onPageTransitionEnd): <TextEnv>client-side</TextEnv> Called after the user navigates to a new page.
-- [**`onBeforePrerenderStart()`**](/onBeforePrerenderStart): <TextEnv>server-side</TextEnv> Page hooks called before the whole pre-rendering process starts.
+- [**`onPageTransitionStart()`**](/onPageTransitionStart): <TextEnv>client-side</TextEnv> Called upon page navigation, before the new page starts rendering.
+- [**`onPageTransitionEnd()`**](/onPageTransitionEnd): <TextEnv>client-side</TextEnv> Called upon page navigation, after the new page has finished rendering.
+- [**`onBeforePrerenderStart()`**](/onBeforePrerenderStart): <TextEnv>server-side</TextEnv> Called before the whole pre-rendering process starts.
 - [**`onPrerenderStart()`**](/onPrerenderStart): <TextEnv>server-side</TextEnv> Global hook called when pre-rendering starts.
 
 ## Advanced
 
 > Most users don't need to know about these hooks.
 
-- [**`onRenderHtml()`**](/onRenderHtml): <TextEnv>server-side</TextEnv> Called when page is rendered to HTML on the server-side.
-- [**`onRenderClient()`**](/onRenderClient): <TextEnv>client-side</TextEnv> Called when page is rendered on the client-side.
+- [**`onRenderHtml()`**](/onRenderHtml): <TextEnv>server-side</TextEnv> Called when a page is rendered to HTML on the server-side.
+- [**`onRenderClient()`**](/onRenderClient): <TextEnv>client-side</TextEnv> Called when a page is rendered on the client-side.
 - [**`onBeforeRoute()`**](/onBeforeRoute): <TextEnv>server (and potentially client-side)</TextEnv> Called before the URL is routed to a page.
 
 ## See also
