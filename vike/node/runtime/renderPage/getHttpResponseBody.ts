@@ -49,12 +49,7 @@ function getHttpResponseBody(htmlRender: HtmlRender, renderHook: null | RenderHo
   if (typeof htmlRender !== 'string') {
     assertUsage(
       false,
-      getErrMsg(
-        htmlRender,
-        renderHook,
-        'body',
-        `Use ${pc.cyan('pageContext.httpResponse.pipe()')} instead`
-      )
+      getErrMsg(htmlRender, renderHook, 'body', `Use ${pc.cyan('pageContext.httpResponse.pipe()')} instead`)
     )
   }
   const body = htmlRender

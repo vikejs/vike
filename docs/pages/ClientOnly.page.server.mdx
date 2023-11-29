@@ -1,0 +1,23 @@
+import { Link } from '@brillout/docpress'
+import { ClientOnlyCommon } from './ClientOnly/ClientOnlyCommon.tsx'
+
+Environment: browser.
+
+The `<ClientOnly>` wrapper enables you to load and render a component only on the client-side.
+
+> It is currently available through [`vike-react`](https://github.com/vikejs/vike-react) and [`vike-solid`](https://github.com/vikejs/vike-solid), and [contribution welcome](https://github.com/vikejs/vike-vue/issues/27) for [`vike-vue`](https://github.com/vikejs/vike-vue).
+
+It is particularly useful for optimizing performance with heavy components, and for components that are meant for client-side only, such as those using browser-specific features. See <Link href="/client-only-components" />.
+
+## React
+
+<ClientOnlyCommon packageName="vike-react" />
+
+## Solid
+
+<ClientOnlyCommon packageName="vike-solid" />
+
+## Vue
+
+[Contribution welcome](https://github.com/vikejs/vike-vue/issues/27) to implement a built-in <Link href="/ClientOnly">`<ClientOnly>`</Link> implementation for [`vike-vue`](https://github.com/vikejs/vike-vue).
+

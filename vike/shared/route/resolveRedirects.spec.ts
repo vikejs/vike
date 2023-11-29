@@ -25,7 +25,7 @@ describe('resolveRouteStringRedirect', () => {
     )
     expectErr(
       () => resolveRouteStringRedirect('/a', 'b', '/'),
-      '[vike][Wrong Usage][vite.config.js > vike({ redirects })] Invalid redirection target URL b: the target URL should start with /, http://, https://, or be *'
+      '[vike][Wrong Usage][vite.config.js > vike({ redirects })] Invalid redirection target URL b: the target URL should start with /, a valid protocol (https:, http:, ipfs:, magnet:, ...), or be *'
     )
     expectErr(
       () => resolveRouteStringRedirect('/a', '/@i', '/'),
@@ -53,6 +53,17 @@ describe('resolveRouteStringRedirect', () => {
     expect(resolveRouteStringRedirect('/a/*', 'https://a.org/*', '/a/1')).toEqual('https://a.org/1')
     expect(resolveRouteStringRedirect('/a/*', 'http://a.org/b/c/d/*', '/a/1/2/3')).toEqual('http://a.org/b/c/d/1/2/3')
     expect(resolveRouteStringRedirect('/a/b/c', 'http://a.com', '/a/b/c')).toEqual('http://a.com')
+  })
+  it('any protocol redirects', () => {
+    expect(resolveRouteStringRedirect('/contact', 'mailto:foo@bar.test', '/contact')).toEqual('mailto:foo@bar.test')
+    expect(resolveRouteStringRedirect('/contact', 'mailto:foo@bar.test?subject=Hello', '/contact')).toEqual(
+      'mailto:foo@bar.test?subject=Hello'
+    )
+    expect(resolveRouteStringRedirect('/ipfs', 'ipfs://example.com', '/ipfs')).toEqual('ipfs://example.com')
+    expect(resolveRouteStringRedirect('/ipns', 'ipns://example.com', '/ipns')).toEqual('ipns://example.com')
+    expect(resolveRouteStringRedirect('/magnet', 'magnet:?xt=urn:btih:example', '/magnet')).toEqual(
+      'magnet:?xt=urn:btih:example'
+    )
   })
 })
 
