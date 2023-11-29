@@ -1,7 +1,7 @@
 import { IntegrationPackage, IntegrationPackageNames } from '../components'
-import { Link, Warning, RepoLink } from '@brillout/docpress'
+import { Link, RepoLink } from '@brillout/docpress'
 
-<Warning>`meta` is meant for advanced usage: generally, we recommend using <Link href="/vike-packages">Vike packages</Link> instead.</Warning>
+> Using `meta` is a powerful and advanced technique: generally, we recommend using <Link href="/vike-packages">Vike packages</Link> instead.
 
 `meta` enables you to define:
  - **New settings**.
@@ -161,7 +161,7 @@ import type { Config } from 'vike/types'
 export default {
   meta: {
     title: {
-      // Make the value of `title` available on both the server and client-side
+      // Make the value of `title` available on both the server- and client-side
       env: { server: true, client: true }
     },
     description: {

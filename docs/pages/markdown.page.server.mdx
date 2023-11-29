@@ -24,7 +24,7 @@ Example:
 
 A somewhat unconventional, but simple yet powerful, way to define the metadata of your pages (title, publishing date, ...) is to define a `metadata.js` file that contains the metadata of all your markdown pages.
 
-> If you want to show the list of pages to your users, then we recommend this approach over <Link href="#metadata-with-frontmatter" /> and <Link href="#metadata-with-custom-config" doNotInferSectionTitle={true} />. See explanation at <Link href="#page-list" />.
+> If you want to show the list of pages to your users, then we recommend this approach over <Link href="#metadata-with-frontmatter" /> and <Link href="#metadata-with-custom-settings" doNotInferSectionTitle={true} />. See explanation at <Link href="#page-list" />.
 
 ```js
 // /pages/metadata.js
@@ -127,28 +127,25 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-## Metadata with custom config
+## Metadata with new settings
 
-To set the `<head>` tags value of a markdown page,
-you can create custom configs, see <Link href="/meta" />.
+You can create new settings for setting the value of `<head>` tags, see <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
 
 ```ts
-// /pages/+config.h.ts
-
-import type { Config } from 'vike/types'
+// /pages/+config.h.js
 
 export default {
   meta: {
     title: {
-      // Make `title` value available on both the server and client
+      // Make value of `title` available on both the server- and client-side
       env: { server: true, client: true }
     },
     description: {
-      // Make `description` value available only on the server-side
+      // Make value of `description` available only on the server-side
       env: { server: true, client: false }
     }
   }
-} satisfies Config
+}
 ```
 
 ~~~md
