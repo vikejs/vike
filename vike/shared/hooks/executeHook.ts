@@ -5,7 +5,7 @@ import { getProjectError, assertWarning } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { humanizeTime } from '../../utils/humanizeTime.js'
 import { isObject } from '../../utils/isObject.js'
-import { ConfigTimeout } from '../page-configs/Config.js'
+import type { ConfigTimeout } from '../page-configs/Config.js'
 import type { HookLoc, HookName } from './getHook.js'
 import { getTimeouts } from './getTimeouts.js'
 
@@ -57,17 +57,17 @@ function executeHook<T = unknown>(
     reject(err)
   }, timeoutErr)
 
-    ; (async () => {
-      try {
-        const ret = await hookFn()
-        resolve(ret)
-      } catch (err) {
-        if (isObject(err)) {
-          globalObject.userHookErrors.set(err, { hookName, hookFilePath })
-        }
-        reject(err)
+  ;(async () => {
+    try {
+      const ret = await hookFn()
+      resolve(ret)
+    } catch (err) {
+      if (isObject(err)) {
+        globalObject.userHookErrors.set(err, { hookName, hookFilePath })
       }
-    })()
+      reject(err)
+    }
+  })()
 
   return promise
 }
