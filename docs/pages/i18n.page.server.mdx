@@ -63,7 +63,7 @@ This technique also works with:
 ## Pre-rendering
 
 If we use <Link text="pre-rendering" href="/pre-rendering" /> then, in addition to defining `onBeforeRoute()`, we also
-define a second hook called `onPrerenderStart()`:
+define the `onPrerenderStart()` hook:
 
 ```js
 // /renderer/+onPrerenderStart.js
@@ -116,11 +116,10 @@ async function onBeforePrerenderStart() {
 }
 ```
 
-We basically use `onBeforePrerenderStart()` to determine URLs and/or load data, and use `onPrerenderStart()` merely to
-manipulate the URLs and set `pageContext.locale`.
+Essentially, we use `onBeforePrerenderStart()` to determine URLs and/or load data, and use `onPrerenderStart()` to
+manipulate localized URLs and set `pageContext.locale`.
 
-> Note that `onPrerenderStart(prerenderContext)` is a global hook we can define only once, while
-> `onBeforePrerenderStart()` (it doesn't have any argument) is a per-page hook we can define multiple times.
+> `onPrerenderStart()` is a global hook we can define only once, while `onBeforePrerenderStart()` is a per-page hook we can define multiple times.
 
 Alternatively, if we need to load data that depends on localization, instead of `onPrerenderStart()` we can use
 `onBeforePrerenderStart()` to localize `pageContext`:
@@ -129,8 +128,7 @@ Alternatively, if we need to load data that depends on localization, instead of 
 // /pages/product/+onBeforePrerenderStart.js
 
 // In this example, we don't use onPrerenderStart() but, instead,
-// we use onBeforePrerenderStart() to duplicate and localize URLs and their
-// pageContext
+// we use onBeforePrerenderStart() to duplicate and localize URLs and their pageContext
 export { onBeforePrerenderStart }
 
 async function onBeforePrerenderStart() {

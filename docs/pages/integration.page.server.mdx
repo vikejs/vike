@@ -27,7 +27,7 @@ import renderToHtml from 'some-ui-framework'
 export { onRenderHtml }
 
 async function onRenderHtml(pageContext) {
-  // `Page` is the `export { Page }` of our `+Page.js` files;
+  // `Page` is the `export { Page }` of our +Page.js files;
   // Vike doesn't do anything with `Page` and just makes it available as
   // `pageContext.Page`; we can export any `Page` value we want and do whatever we want with it.
   const { Page } = pageContext

@@ -137,17 +137,7 @@ function Page() {
 
 > `usePageContext()` allows us to access `pageContext` in any component, see <Link href="/pageContext-anywhere" noBreadcrumb={true} />.
 
-For smooth nested layout navigation, we recommend using <Link href="/client-routing" noBreadcrumb={true} />.
-
-```js
-// /renderer/+config.h.js
-
-export default {
-  clientRouting: true
-}
-```
-
-We use `<a href="/product/42/reviews" keep-scroll-position />` (or `navigate('/product/42/reviews', { keepScrollPosition: true })`) to avoid the browser to scroll to the top.
+For smooth nested layout navigation, we recommend using <Link href="/client-routing" noBreadcrumb={true} />. We can then use `<a href="/product/42/reviews" keep-scroll-position />` (or `navigate('/product/42/reviews', { keepScrollPosition: true })`) to avoid the browser to scroll to the top.
 
 Examples (see the `/starship` page):
  - <RepoLink path="/examples/layouts-react-v1/" />

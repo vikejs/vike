@@ -4,10 +4,12 @@ With Vike, you control how your pages are rendered:
 // /pages/about/+Page.js
 // Environment: browser and server
 
+export { Page }
+
 // Vike uses Filesystem Routing: the file `/pages/about/+Page.js` matches the URL `/about`.
 
 // `Page` can be anything you want — typically a React/Vue/Svelte/... component.
-export function Page() {
+function Page() {
   return <>
     <h1>About</h1>
     <p>This is our first Vike app.</p>
@@ -19,11 +21,11 @@ export function Page() {
 // /renderer/+onRenderHtml.js
 // Environment: server
 
+export { onRenderHtml }
+
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 // This can be any UI framework (React, Vue, Svelte, ...)
 import { renderToHtml } from 'my-favorite-ui-framework'
-
-export { onRenderHtml }
 
 // You control how `Page` is rendered to HTML
 async function onRenderHtml({ Page }) {
@@ -45,9 +47,9 @@ async function onRenderHtml({ Page }) {
 // /renderer/+onRenderClient.js
 // Environment: browser
 
-import { hydrateDom } from 'my-favorite-ui-framework'
-
 export { onRenderClient }
+
+import { hydrateDom } from 'my-favorite-ui-framework'
 
 // You control how `Page` is hydrated
 async function onRenderClient({ Page }) {

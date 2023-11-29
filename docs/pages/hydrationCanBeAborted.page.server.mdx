@@ -13,6 +13,6 @@ export default {
 
 Whether your UI framework allows the <Link href="/hydration">hydration</Link> to be aborted.
 
-Setting `hydrationCanBeAborted` to `true` tells Vike that the hydration can be aborted when the user clicks on a link before the hydration finished.
+Setting `hydrationCanBeAborted` to `true` tells Vike that the hydration can be aborted when the user clicks on a link before the hydration has finished.
 
-React users should set `hydrationCanBeAborted` to `true`. Other frameworks, such as Vue, crash if the hydration is aborted.
+React users should set `hydrationCanBeAborted` to `true`. Other frameworks, such as Vue, crash if the hydration is aborted; `hydrationCanBeAborted` should be set to `false`.
