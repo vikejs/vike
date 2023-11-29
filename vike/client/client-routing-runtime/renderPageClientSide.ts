@@ -40,13 +40,13 @@ import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
 
 const globalObject = getGlobalObject<{
-  onPageTransitionStart?: Hook
+  onPageTransitionStart: null | Hook
   clientRoutingIsDisabled?: true
   renderCounter: number
   renderPromise?: Promise<void>
   isTransitioning?: true
   previousPageContext?: { _pageId: string }
-}>('renderPageClientSide.ts', { renderCounter: 0 })
+}>('renderPageClientSide.ts', { renderCounter: 0, onPageTransitionStart: null })
 
 type RenderArgs = {
   scrollTarget: ScrollTarget
@@ -144,9 +144,16 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   const callTransitionHooks = !isFirstRender
   if (callTransitionHooks) {
     if (!globalObject.isTransitioning) {
-      if (!globalObject.onPageTransitionStart) return
-      const { hookFn, hookName, hookFilePath, configTimeouts } = globalObject.onPageTransitionStart
-      await executeHook(() => hookFn(pageContext), 'onPageTransitionStart', hookFilePath, configTimeouts)
+      if (globalObject.onPageTransitionStart) {
+        const hook = globalObject.onPageTransitionStart
+        const onPageTransitionStart = hook.hookFn
+        await executeHook(
+          () => onPageTransitionStart(pageContext),
+          'onPageTransitionStart',
+          hook.hookFilePath,
+          hook.configTimeouts
+        )
+      }
       globalObject.isTransitioning = true
       if (abortRender()) return
     }
@@ -266,9 +273,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
   // Set global onPageTransitionStart()
   assertHook(pageContext, 'onPageTransitionStart')
-  const onPageTransitionStartHook = getHook(pageContext, 'onPageTransitionStart') as Hook
-  // globalObject.onPageTransitionStart = pageContext.exports.onPageTransitionStart
-
+  const onPageTransitionStartHook = getHook(pageContext, 'onPageTransitionStart')
   globalObject.onPageTransitionStart = onPageTransitionStartHook
 
   // Set global hydrationCanBeAborted
