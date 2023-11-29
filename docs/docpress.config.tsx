@@ -15,7 +15,6 @@ export default {
   headings,
   headingsDetached,
   tagline: 'Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.',
-  titleNormalCase: false,
   twitterHandle: '@vike_js',
   websiteUrl: 'https://vike.dev',
   sponsorGithubAccount: 'vikejs',
