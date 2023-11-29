@@ -9,7 +9,7 @@ By default `pageContext` is available only on the server-side. We use `passToCli
 // Environment: config
 
 export default {
-  // Example of `pageContext` often passed to the browser
+  // Example of pageContext values that usually need to be passed to the browser
   passToClient: [
     'pageProps',
     'routeParams',
@@ -21,7 +21,7 @@ export default {
 ```
 
 ```js
-// /**/+onRenderClient.js
+// +onRenderClient.js
 // Environment: browser
 
 export { onRenderClient }

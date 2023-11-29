@@ -87,11 +87,11 @@ async function onBeforePrerenderStart() {
   // Here we provide the `pageContext` of the `/movies` page since
   // we already have the data.
   const movieListPage = {
-    url: '/movies', // Note how the URL `/movies` isn't part of the page's route `/movie/@movieId`
+    url: '/movies', // Note how this URL '/movies' doesn't match the page's route /movie/@movieId
     pageContext: {
       pageProps: {
-        // We filter out the data we don't need in order to minimize what is sent to the browser.
-        // We explain this practice at https://vike.dev/data-fetching
+        // We filter out the data we don't need in order to minimize what is sent
+        // to the browser. We explain this practice at https://vike.dev/data-fetching
         movieList: movies.map(({id, title}) => ({id, title})
       }
     }
@@ -132,31 +132,7 @@ import type { OnBeforePrerenderStartAsync } from 'vike/types'
 
 const onBeforePrerenderStart: OnBeforePrerenderStartAsync = async (
 ): ReturnType<OnBeforePrerenderStartAsync> => {
-  const movies = await Movie.findAll()
-
-  const moviePages = (
-    movies
-    .map(movie => {
-      const url = '/movie/' + movie.id
-      const pageProps = { movie }
-      const pageContext = { pageProps }
-      return {
-        url,
-        pageContext
-      }
-    })
-  )
-
-  const movieListPage = {
-    url: '/movies',
-    pageContext: {
-      pageProps: {
-        movieList: movies.map(({id, title}) => ({id, title}))
-      }
-    }
-  }
-
-  return [movieListPage, ...moviePages]
+  // ...
 }
 ```
 

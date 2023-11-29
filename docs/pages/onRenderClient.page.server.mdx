@@ -3,7 +3,7 @@ import { Link } from '@brillout/docpress'
 
 Environment: client.
 
-The `onRenderClient()` hook defines how <Link href="/Page">`Page`</Link> is rendered/<Link text="hydrated" href="/hydration" /> on the client-side.
+The `onRenderClient()` hook defines how pages are <Link text="hydrated" href="/hydration" /> and rendered on the client-side.
 
 > If you use a <IntegrationPackage/>, then you don't need to define `onRenderClient()` as it's already defined by <IntegrationPackageNames />.
 
@@ -76,3 +76,10 @@ const onRenderClient: OnRenderClientAsync = async (
 ```
 
 {/* NOTE(aurelien) no HookTypeScriptHints here because onRenderClient has no return value */}
+
+
+## See also
+
+ - <Link href="/onRenderHtml" />
+ - <Link href="/Page" />
+ - <Link href="/pageContext" />

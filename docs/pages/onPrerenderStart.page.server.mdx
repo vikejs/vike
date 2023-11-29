@@ -1,9 +1,9 @@
 import { HookTypeScriptHints } from '../components'
 import { Link } from '@brillout/docpress'
 
-The `onPrerenderStart()` hook is called once when <Link href="/pre-rendering">pre-rendering</Link> starts. Conceptually
-it receives as argument an array of all <Link href="/pageContext">page contexts</Link> to be pre-rendered, and returns
-a new array of page contexts, giving you a chance to add/remove/modify pages. This is especially useful for
+The `onPrerenderStart()` hook is called once when <Link href="/pre-rendering">pre-rendering</Link> starts.
+It receives as argument an array of all <Link href="/pageContext">page contexts</Link> to be pre-rendered, and returns
+a new array of page contexts, giving you a chance to add/remove/modify pages. This is usually used for
 <Link href="/i18n">internationalization</Link>.
 
 ```js

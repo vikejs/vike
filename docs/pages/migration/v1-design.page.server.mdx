@@ -207,9 +207,9 @@ Old name | New name
 
 ## Custom hooks/exports
 
-If you use [custom hooks/exports](https://vite-plugin-ssr.com/exports), then replace them with custom configs.
+If you use [custom hooks/exports](https://vite-plugin-ssr.com/exports), then replace them with custom hooks/settings.
 
-You define custom configs by using `meta`:
+You can create your own hooks and settings by using `meta`:
 
 ```ts
 // /renderer/+config.h.ts
@@ -218,9 +218,9 @@ import type { Config } from 'vike/types'
 
 export default {
   meta: {
-    // We define a new config 'title'
+    // We create a new setting called `title`
     title: {
-      // The value of 'title' should only be loaded on the server
+      // The value of `title` should be loaded only on the server
       env: { server: true }
     }
   }

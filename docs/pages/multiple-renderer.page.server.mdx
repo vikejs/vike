@@ -25,21 +25,21 @@ admin-panel/renderer/+onRenderHtml.js
 admin-panel/renderer/+onRenderClient.js
 ```
 
-(We use `+config.h.js` to change the Filesystem Routing Root, see <Link href="/filesystemRoutingRoot" />.)
+> We call such structure a <Link text="domain-driven file structure" href='/file-structure#domain-driven' />.
 
 ## Partial
 
 We can also override only a subset of `renderer/`.
 
 ```bash
-# Our "default" renderer
+# Our default renderer
 renderer/+onRenderHtml.js
 renderer/+onRenderClient.js
 
 pages/some-page/index/+Page.js # Rendered with our default renderer
 
 # Our Product pages need a slightly different client-side.
-# We only override `+onRenderClient.js` while `+onRenderHtml.js` stays the same.
+# We only override onRenderClient() while onRenderHtml() stays the same.
 pages/product/+onRenderClient.js
 pages/product/@productId/+Page.js
 pages/product/index/+Page.js

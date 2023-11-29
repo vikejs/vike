@@ -108,10 +108,9 @@ You can define custom `pageContext` properties.
     ```
     > A common use case is to integrate authentication tools: <Link href="/auth" />.
 
- - Using the [`onRenderHtml()`](/onRenderHtml) hook:
+ - Using the <Link href="/">`onRenderHtml()`</Link> hook:
     ```js
-    export { onRenderHtml }
-    async function onRenderHtml() {
+    function onRenderHtml() {
       return {
         documentHtml: escapeInject`<html><!--...--></html>`,
         pageContext: {
