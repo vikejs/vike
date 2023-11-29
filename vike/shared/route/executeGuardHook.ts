@@ -29,7 +29,12 @@ async function executeGuardHook<
   const res = prepareForUserConsumption(pageContext)
   if (res) pageContextForUserConsumption = res
 
-  const hookResult = await executeHook(() => guard(pageContextForUserConsumption), 'guard', hook.hookFilePath, hook.configTimeouts)
+  const hookResult = await executeHook(
+    () => guard(pageContextForUserConsumption),
+    'guard',
+    hook.hookFilePath,
+    hook.configTimeouts
+  )
   assertUsage(
     hookResult === undefined,
     `The guard() hook of ${hook.hookFilePath} returns a value, but guard() doesn't accept any return value`

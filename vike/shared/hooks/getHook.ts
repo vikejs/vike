@@ -9,7 +9,7 @@ import { PageContextExports } from '../getPageFiles.js'
 import type { ConfigBuiltIn, ConfigTimeout, HookName } from '../page-configs/Config.js'
 import { assert, assertUsage, checkType, isCallable } from '../utils.js'
 
-type Hook = HookLoc & { hookFn: HookFn, configTimeouts?: ConfigTimeout }
+type Hook = HookLoc & { hookFn: HookFn; configTimeouts?: ConfigTimeout }
 type HookLoc = { hookName: HookName; hookFilePath: string }
 type HookFn = (arg: unknown) => unknown
 

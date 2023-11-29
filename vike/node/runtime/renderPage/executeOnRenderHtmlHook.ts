@@ -66,7 +66,12 @@ async function executeOnRenderHtmlHook(
   const configTimeouts = pageContext.config.timeouts
 
   preparePageContextForUserConsumptionServerSide(pageContext)
-  const hookReturnValue = await executeHook(() => hookFn(pageContext), renderHook.hookName, renderHook.hookFilePath, configTimeouts)
+  const hookReturnValue = await executeHook(
+    () => hookFn(pageContext),
+    renderHook.hookName,
+    renderHook.hookFilePath,
+    configTimeouts
+  )
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
     hookReturnValue,
     renderHook
