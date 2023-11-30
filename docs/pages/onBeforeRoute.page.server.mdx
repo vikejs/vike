@@ -34,13 +34,7 @@ export { onBeforeRoute }
 import type { OnBeforeRouteAsync } from 'vike/types'
 
 const onBeforeRoute: OnBeforeRouteAsync = async (pageContext): ReturnType<OnBeforeRouteAsync> => {
-  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlOriginal)
-  return {
-    pageContext: {
-      locale,
-      urlLogical: urlWithoutLocale
-    }
-  }
+  // ...
 }
 ```
 

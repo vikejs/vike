@@ -59,16 +59,7 @@ export { route }
 import type { Route } from 'vike/types'
 
 const route: Route = (pageContext): ReturnType<Route> => {
-  const parts = pageContext.urlPathname.split('/')
-  if (parts[1] !== 'product') {
-    return false
-  } else {
-    return {
-      routeParams: {
-        id: parts[2]
-      }
-    }
-  }
+  // ...
 }
 ```
 

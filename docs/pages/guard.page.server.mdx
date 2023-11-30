@@ -30,8 +30,6 @@ import type { GuardAsync } from 'vike/types'
 import { render } from 'vike/abort'
 
 const guard: GuardAsync = async (pageContext): ReturnType<GuardAsync> => {
-  if (pageContext.urlPathname === '/hello/forbidden') {
-    throw render(401, 'This page is forbidden.')
-  }
+  // ...
 }
 ```

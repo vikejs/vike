@@ -38,20 +38,7 @@ import type { OnPrerenderStartAsync, PageContextServer } from 'vike/types'
 const onPrerenderStart: OnPrerenderStartAsync = async (
   prerenderContext
 ): ReturnType<OnPrerenderStartAsync> => {
-  // new page contexts
-  const pageContexts: PageContextServer[] = []
-
-  // for each original page context:
-  prerenderContext.pageContexts.forEach((pageContext) => {
-    // for each locale, push a new page context to pageContexts
-    // ...
-  })
-
-  return {
-    prerenderContext: {
-      pageContexts
-    }
-  }
+  // ...
 }
 ```
 

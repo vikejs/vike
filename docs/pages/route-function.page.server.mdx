@@ -109,10 +109,7 @@ import type { RouteSync } from 'vike/types'
 import { resolveRoute } from 'vike/routing'
 
 const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
-  if (!pageContext.user.isAdmin) {
-    return false
-  }
-  return resolveRoute('/product/@id/edit', pageContext.urlPathname)
+  // ..
 }
 ```
 
