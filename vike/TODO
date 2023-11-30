@@ -5,8 +5,6 @@
   - `pageContext.configEntries`
   - Old design
 
-- Re-use screenshot fixture test
-
 After V1 design release:
  - Replace in docs:
    ```diff

@@ -58,10 +58,8 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(await locator.isHidden()).toBe(false)
   })
 
-  /* TODO: re-use
   test('screenshot fixture', async () => {
     await page.locator('#version-number').evaluate((element) => (element.innerHTML = 'v9.9.99'))
     await testScreenshotFixture({ doNotTestLocally: true })
   })
-  */
 }
