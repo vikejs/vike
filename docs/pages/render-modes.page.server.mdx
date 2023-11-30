@@ -21,13 +21,13 @@ For example, we can render an admin panel as SPA while rendering marketing pages
 Rendering a page as SPA means that the page is loaded and rendered only in the browser.
 
 To achieve that:
- 1. We set the `Page` [meta config](/meta#modify-existing-configurations) `env` to `{ server: false, client: true }` instead of `{ server: true, client: true }`.
+ 1. We set `Page`'s <Link href="/meta">meta config</Link> `env` to `{ server: false, client: true }` instead of `{ server: true, client: true }`.
  2. We adapt our `onRenderHtml()` and `onRenderClient()` hooks.
 
 
 **1. `Page` meta config**
 
-By setting the `Page` meta config `env` to `{ client: true }` we ensure that `+Page.js` is loaded only in the browser.
+By setting `Page`'s meta config `env` to `{ client: true, server: false }` we tell Vike to load `+Page.js` only in the browser.
 
 ```js
 // /renderer/+config.h.js
@@ -127,7 +127,7 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-> `pageContext.config.title` and `pageContext.config.description` are custom configs, see <Link href="/meta" />.
+> `pageContext.config.title` and `pageContext.config.description` are custom settings, see <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
 
 ```js
 // /pages/about/+title.js
@@ -147,17 +147,14 @@ export default {
       env: { server: false, client: true } // SPA for all pages
     },
     title: {
-      env: { server: true, client: true }
+      env: { server: true, client: false }
     },
     description: {
-      env: { server: true, client: true }
+      env: { server: true, client: false }
     }
   }
 }
 ```
-
-Note how we declare `title` and `description` to be `server-and-client`. That's because we need to be able to access
-them from the server-side too.
 
 
 **2. Render hooks (SPA + SSR)**
@@ -251,8 +248,8 @@ See <Link href="/pre-rendering" />.
 
 To render a page to HTML-only:
 
- 1. We set the `Page` [meta config](/meta#modify-existing-configurations) to `server-only` instead of `server-and-client`.
- 1. (Optional) We define `+client.js` (e.g. to add minimal amount of JavaScript surgically injecting bits of interactivity).
+ 1. We set `Page`'s <Link href="/meta">meta config</Link> `env` to `{ server: true, client: false }` instead of `{ server: true, client: true }`.
+ 1. (Optional) We define <Link href="/client">`+client.js`</Link> (e.g. to add a minimal amount of JavaScript surgically injecting bits of interactivity).
 
 
 ```js
@@ -262,7 +259,7 @@ To render a page to HTML-only:
 export default {
   meta: {
     Page: {
-      env: 'server-only' // HTML-only for all pages
+      env: { server: true, client: false } // HTML-only for all pages
     }
   }
 }
