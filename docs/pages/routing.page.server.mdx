@@ -16,11 +16,17 @@ The guide <Link href="/server-routing-vs-client-routing" noBreadcrumb /> helps y
 
 By default, Vike does Filesystem Routing:
 
-```
-FILESYSTEM                   URL
-pages/+Page.js               /
-pages/about/+Page.js         /about
-pages/movie/@id/+Page.js     /movie/1, /movie/2, /movie/3, ...
+```bash
+FILESYSTEM                      URL
+========================        =================================
+pages/about/+Page.js            /about
+pages/faq/+Page.js              /faq
+
+# index/ is mapped to the empty string
+pages/index/+Page.js            /
+
+# Parameterized route
+pages/movie/@id/+Page.js        /movie/1, /movie/2, /movie/3, ...
 ```
 
 We can also define so-called "Route Strings" and "Route Functions".

@@ -152,7 +152,7 @@ Route Functions should be lightweight and fast.
 Async Route Functions are forbidden.
 
 ```js
-// */+route.js
+// +route.js
 
 // ❌ This is forbidden
 export default async () => { /* ... */ }
@@ -176,7 +176,7 @@ See <Link href="/redirect" />.
 Using Route Functions to provide `pageContext` values is forbidden.
 
 ```js
-// */+route.js
+// +route.js
 
 export default () => {
   return {
@@ -196,7 +196,7 @@ implement complex logic in `+route.js` files.
 That said, you can work around it by misusing `pageContext.routeParams` to provide data.
 
 ```js
-// */+route.js
+// +route.js
 
 export default () => {
   return {

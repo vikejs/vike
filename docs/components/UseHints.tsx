@@ -22,8 +22,8 @@ function UseIntegrationPackageHint({ uiFrameworkName }: { uiFrameworkName: 'Reac
   return (
     <blockquote>
       <p>
-        Instead of manually integrating {uiFrameworkName} yourself, you can use {pkgWithLink} which already integrates{' '}
-        {uiFrameworkName}. And you can use <Bati /> to scaffold an app that uses {pkg}.
+        Instead of manually integrating {uiFrameworkName} yourself, you can use {pkgWithLink} which integrates{' '}
+        {uiFrameworkName} in a full-fledged manner. And you can use <Bati /> to scaffold an app that uses {pkg}.
       </p>
     </blockquote>
   )

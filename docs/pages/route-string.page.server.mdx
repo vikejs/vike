@@ -1,7 +1,7 @@
 import { Link } from '@brillout/docpress'
 import RouteDomainDriven from '../components/RouteDomainDriven.mdx'
 
-For a page `/pages/film/+Page.js`, a Route String can be defined in a `/pages/film/+route.js` adjacent file.
+For a page `/pages/film/+Page.js`, a Route String can be defined in an adjacent file `/pages/film/+route.js` .
 
 ```js
 // /pages/film/+route.js
@@ -29,11 +29,11 @@ For more advanced routing logic, consider using a [Route Function](/route-functi
 ```js
 // /pages/product/+route.js
 
-// Match URLs that start with `/product/*`:
-// `/product/42`
-// `/product/1337/details`
-// `/product/2048/some/deeply/nested/path`
-//  ...
+// Match URLs that start with /product/* such as:
+//   /product/42
+//   /product/1337/details
+//   /product/2048/some/deeply/nested/path
+//   ...
 export default '/product/*'
 ```
 

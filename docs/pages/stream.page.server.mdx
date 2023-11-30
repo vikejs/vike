@@ -21,7 +21,7 @@ Stream Docs & API:
 ## Basics
 
 ```js
-// renderer/+onRenderHtml.js
+// /renderer/+onRenderHtml.js
 
 export { onRenderHtml }
 
@@ -92,9 +92,11 @@ By default, the HTML template (we provide in our `onRenderHtml()` hook) isn't im
 instead, Vike awaits for our UI framework to start writing to the stream.
 
 ```js
-import { renderToStream } from 'some-ui-framework' // React, Vue, ...
+// /renderer/+onRenderHtml.js
 
 export { onRenderHtml }
+
+import { renderToStream } from 'some-ui-framework' // React, Vue, ...
 
 async function onRenderHtml(pageContext) {
   const { Page } = pageContext
@@ -212,10 +214,10 @@ For some UI frameworks, such as Vue, we need a pipe wrapper:
 ```js
 // /renderer/+onRenderHtml.js
 
+export { onRenderHtml }
+
 import { pipePageToWritable } from 'some-ui-framework'
 import { stampPipe, escapeInject } from 'vike/server'
-
-export { onRenderHtml }
 
 async function onRenderHtml(pageContext) {
   const { Page } = pageContext
@@ -277,13 +279,5 @@ async function onRenderHtml(pageContext) {
     documentHtml,
     pageContext: pageContextPromise
   }
-}
-```
-
-```js
-// /renderer/+config.h.js
-
-export default {
-  passToClient: ['initialData']
 }
 ```
