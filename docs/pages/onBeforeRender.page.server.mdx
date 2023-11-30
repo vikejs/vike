@@ -77,20 +77,19 @@ export default {
 ## Client-side
 
 By default, `onBeforeRender()` always runs on the server-side.
+
 But,
 by <Link href="/meta#example-modify-onbeforerender-env">using `meta`</Link>,
-you have the option to also run `onBeforeRender()` on the client-side;
-the hook is then called not only on the server but also in the browser.
-
-For the first page the user visits `onBeforeRender()` is called on the server
-and for page navigations `onBeforeRender()` is called in the browser.
+you can tell Vike to run `onBeforeRender()` also on the client-side: Vike calls `onBeforeRender()` on the server-side for the first page the user visits
+and then, for subsequent page navigations, Vike calls `onBeforeRender()` on the client-side.
 
 > This option is only available if you use <Link href="/client-routing" >Client Routing</Link>.
 
-In general, we recommend running `onBeforeRender()` only on the server-side because it's usually easier to write server-side only code.
+In general, we recommend running `onBeforeRender()` only on the server-side because it's usually easier to write code that only runs on the server-side.
+That said, if you want to minimize requests made to your server, then it makes sense to run `onBeforeRender()` on the client-side.
+Keep in mind that you'll then have to ensure that your `onBeforeRender()` hook is isomorphic: it needs to be able to run on the server-side as well as on the client-side.
 
-That said, if you want to minimize requests made to your server, then it makes sense to run `onBeforeRender()` in the client.
-Keep in mind that you'll then have to ensure that your `onBeforeRender()` hook is isomorphic: it needs to be able to run in the server as well as in the browser.
+You can also set `onBeforeRender()`'s meta config `env` to `{ client: true, server: false}`: Vike will then always call `onBeforeRender()` on the client-side and never on the server-side.
 
 Example:
  - [/examples/react-full-v1/](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/)
