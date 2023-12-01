@@ -91,7 +91,7 @@ async function renderPage<
   assert(hasProp(pageContextInit, 'urlOriginal', 'string'))
   assertEnv()
 
-  if (skipRequest(pageContextInit.urlOriginal)) {
+  if (isIgnoredUrl(pageContextInit.urlOriginal)) {
     const pageContextHttpReponseNull = getPageContextHttpResponseNull(pageContextInit)
     checkType<PageContextAfterRender>(pageContextHttpReponseNull)
     return pageContextHttpReponseNull as any
@@ -456,7 +456,7 @@ function getRequestId(): number {
   return httpRequestId
 }
 
-function skipRequest(urlOriginal: string): boolean {
+function isIgnoredUrl(urlOriginal: string): boolean {
   const isViteClientRequest = urlOriginal.endsWith('/@vite/client') || urlOriginal.startsWith('/@fs/')
   assertWarning(
     !isViteClientRequest,
