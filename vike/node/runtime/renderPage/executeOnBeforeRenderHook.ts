@@ -30,7 +30,7 @@ async function executeOnBeforeRenderHooks(
     () => onBeforeRender(pageContext),
     'onBeforeRender',
     hook.hookFilePath,
-    hook.configTimeouts
+    hook.configHooksTimeouts
   )
 
   assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)

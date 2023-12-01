@@ -1,7 +1,7 @@
 export { configDefinitionsBuiltIn }
 export { configDefinitionsBuiltInGlobal }
 export type { ConfigDefinition }
-export type { TimeoutDefinition }
+export type { HookTimeoutsDefinition }
 export type { ConfigDefinitionInternal }
 export type { ConfigNameGlobal }
 export type { ConfigEffect }
@@ -56,7 +56,7 @@ type ConfigEffect = (config: {
 }) => Config | undefined
 
 /** Timeout definition of a config */
-type TimeoutDefinition = {
+type HookTimeoutsDefinition = {
   error?: number
   warning?: number
 }
@@ -147,7 +147,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     _computed: (configValueSources): null | ConfigEnvInternal =>
       !isConfigSet(configValueSources, 'onBeforeRender') ? null : getConfigEnv(configValueSources, 'onBeforeRender')
   },
-  timeouts: {
+  hooksTimeouts: {
     env: { config: true, server: true, client: true }
   }
 }

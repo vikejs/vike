@@ -57,7 +57,7 @@ import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServ
 import { assertHookFn } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
-import type { ConfigTimeout } from '../../shared/page-configs/Config.js'
+import type { ConfigHooksTimeouts } from '../../shared/page-configs/Config.js'
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 
 type HtmlFile = {
@@ -338,7 +338,7 @@ async function callOnBeforePrerenderStartHooks(
     | 'onBeforePrerenderStart'
     hookFilePath: string
     pageId: string
-    configTimeouts?: ConfigTimeout
+    configHooksTimeouts?: ConfigHooksTimeouts
   }[] = []
 
   // V1 design
@@ -348,7 +348,7 @@ async function callOnBeforePrerenderStartHooks(
         const hookName = 'onBeforePrerenderStart'
         const pageConfigLoaded = await loadConfigValues(pageConfig, false)
         const configValue = getConfigValue(pageConfigLoaded, hookName)
-        const configTimeouts = getConfigValue(pageConfig, 'timeouts')?.value as ConfigTimeout
+        const configHooksTimeouts = getConfigValue(pageConfig, 'hooksTimeouts')?.value as ConfigHooksTimeouts
         if (!configValue) return
         const hookFn = configValue.value
         const hookFilePath = getHookFilePathToShowToUser(configValue)
@@ -359,7 +359,7 @@ async function callOnBeforePrerenderStartHooks(
           hookName: 'onBeforePrerenderStart',
           hookFilePath,
           pageId: pageConfig.pageId,
-          configTimeouts
+          configHooksTimeouts
         })
       })
     )
@@ -397,13 +397,13 @@ async function callOnBeforePrerenderStartHooks(
   )
 
   await Promise.all(
-    onBeforePrerenderStartHooks.map(({ hookFn, hookName, hookFilePath, pageId, configTimeouts }) =>
+    onBeforePrerenderStartHooks.map(({ hookFn, hookName, hookFilePath, pageId, configHooksTimeouts }) =>
       concurrencyLimit(async () => {
         if (doNotPrerenderList.find((p) => p.pageId === pageId)) {
           return
         }
 
-        const prerenderResult: unknown = await executeHook(() => hookFn(), hookName, hookFilePath, configTimeouts)
+        const prerenderResult: unknown = await executeHook(() => hookFn(), hookName, hookFilePath, configHooksTimeouts)
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
         result.forEach(({ url, pageContext }) => {
           {
@@ -540,14 +540,14 @@ async function callOnPrerenderStartHook(
       // Old design
       'onBeforePrerender'
       }
-  let configTimeouts: ConfigTimeout | undefined
+  let configHooksTimeouts: ConfigHooksTimeouts | undefined
 
   // V1 design
   if (renderContext.pageConfigs.length > 0) {
     const { pageConfigGlobal, pageConfigs } = renderContext
     const configValue = pageConfigGlobal.configValues.onPrerenderStart
     pageConfigs.map((pageConfig) => {
-      configTimeouts = getConfigValue(pageConfig, 'timeouts')?.value as ConfigTimeout
+      configHooksTimeouts = getConfigValue(pageConfig, 'hooksTimeouts')?.value as ConfigHooksTimeouts
     })
     if (configValue?.value) {
       const { value: hookFn } = configValue
@@ -649,7 +649,7 @@ async function callOnPrerenderStartHook(
       }),
     hookName,
     hookFilePath,
-    configTimeouts
+    configHooksTimeouts
   )
   if (result === null || result === undefined) {
     return

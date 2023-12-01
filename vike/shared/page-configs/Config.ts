@@ -3,7 +3,7 @@ export type { ConfigBuiltIn }
 export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
-export type { ConfigTimeout }
+export type { ConfigHooksTimeouts }
 
 export type { GuardAsync }
 export type { GuardSync }
@@ -31,7 +31,7 @@ export type { RouteSync }
 import type { PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
 import type {
   ConfigDefinition,
-  TimeoutDefinition
+  HookTimeoutsDefinition
 } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
 import type { ConfigVikeUserProvided } from '../ConfigVike.js'
@@ -58,7 +58,7 @@ type ConfigNameBuiltIn =
   | 'prerender'
   | 'isClientSideRenderable'
   | 'onBeforeRenderEnv'
-  | 'timeouts'
+  | 'hooksTimeouts'
 
 type Config = ConfigBuiltIn &
   Vike.Config &
@@ -382,9 +382,9 @@ type ConfigBuiltIn = {
    */
   prefetchStaticAssets?: PrefetchStaticAssets | ImportString
 
-  /** Modify Timeouts */
-  timeouts?: ConfigTimeout
+  /** Modify Hooks Timeouts */
+  hooksTimeouts?: ConfigHooksTimeouts
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`
-type ConfigTimeout = Record<string, TimeoutDefinition>
+type ConfigHooksTimeouts = Partial<Record<HookName, HookTimeoutsDefinition>>

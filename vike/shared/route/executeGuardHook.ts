@@ -33,7 +33,7 @@ async function executeGuardHook<
     () => guard(pageContextForUserConsumption),
     'guard',
     hook.hookFilePath,
-    hook.configTimeouts
+    hook.configHooksTimeouts
   )
   assertUsage(
     hookResult === undefined,

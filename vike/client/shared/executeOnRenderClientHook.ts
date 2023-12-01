@@ -71,7 +71,7 @@ async function executeOnRenderClientHook<
     () => renderHook(pageContextForUserConsumption),
     hookName,
     hook.hookFilePath,
-    hook.configTimeouts
+    hook.configHooksTimeouts
   )
   assertUsage(
     hookResult === undefined,

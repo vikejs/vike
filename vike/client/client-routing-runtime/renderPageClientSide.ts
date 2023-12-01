@@ -151,7 +151,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           () => onPageTransitionStart(pageContext),
           'onPageTransitionStart',
           hook.hookFilePath,
-          hook.configTimeouts
+          hook.configHooksTimeouts
         )
       }
       globalObject.isTransitioning = true
@@ -315,8 +315,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     assertHook(pageContext, 'onHydrationEnd')
     const onHydrationEnd = getHook(pageContext, 'onHydrationEnd')
     if (onHydrationEnd) {
-      const { hookFn, hookFilePath, hookName, configTimeouts } = onHydrationEnd
-      await executeHook(() => hookFn(pageContext), hookName, hookFilePath, configTimeouts)
+      const { hookFn, hookFilePath, hookName, configHooksTimeouts } = onHydrationEnd
+      await executeHook(() => hookFn(pageContext), hookName, hookFilePath, configHooksTimeouts)
       if (abortRender(true)) return
     }
   }
@@ -329,8 +329,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     assertHook(pageContext, 'onPageTransitionEnd')
     const onPageTransitionEnd = getHook(pageContext, 'onPageTransitionEnd')
     if (onPageTransitionEnd) {
-      const { hookFn, hookFilePath, hookName, configTimeouts } = onPageTransitionEnd
-      await executeHook(() => hookFn(pageContext), hookName, hookFilePath, configTimeouts)
+      const { hookFn, hookFilePath, hookName, configHooksTimeouts } = onPageTransitionEnd
+      await executeHook(() => hookFn(pageContext), hookName, hookFilePath, configHooksTimeouts)
       if (abortRender(true)) return
     }
     globalObject.isTransitioning = undefined

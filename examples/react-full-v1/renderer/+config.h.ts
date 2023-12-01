@@ -2,7 +2,7 @@ import type { Config } from 'vike/types'
 
 // https://vike.dev/config
 export default {
-  timeouts: {
+  hooksTimeouts: {
     onBeforeRender: {
       error: 30 * 1000,
       warning: 10 * 1000

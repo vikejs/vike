@@ -1,13 +1,13 @@
 export { getTimeouts }
+export type { HookTimeouts }
+import type { ConfigHooksTimeouts, HookName } from '../page-configs/Config.js'
 
-import type { ConfigTimeout, HookName } from '../page-configs/Config.js'
-
-type Timeouts = {
+type HookTimeouts = {
   timeoutErr: number
   timeoutWarn: number
 }
 
-function getDefaultTimeouts(hookName: HookName): Timeouts {
+function getDefaultTimeouts(hookName: HookName): HookTimeouts {
   if (hookName === 'onBeforeRoute') {
     return {
       timeoutErr: 5 * 1000,
@@ -26,13 +26,13 @@ function getDefaultTimeouts(hookName: HookName): Timeouts {
   }
 }
 
-function getTimeouts(configTimeouts: undefined | ConfigTimeout, hookName: HookName): Timeouts {
-  const defaultTimeouts = getDefaultTimeouts(hookName)
-  if (!configTimeouts || !(hookName in configTimeouts)) {
-    return defaultTimeouts
+function getTimeouts(configHooksTimeouts: undefined | ConfigHooksTimeouts, hookName: HookName): HookTimeouts {
+  const defaultHooksTimeouts = getDefaultTimeouts(hookName)
+  if (!configHooksTimeouts || !(hookName in configHooksTimeouts)) {
+    return defaultHooksTimeouts
   }
-  const timeoutErr = configTimeouts[hookName]?.error || defaultTimeouts.timeoutErr
-  const timeoutWarn = configTimeouts[hookName]?.warning || defaultTimeouts.timeoutWarn
+  const timeoutErr = configHooksTimeouts[hookName]?.error || defaultHooksTimeouts.timeoutErr
+  const timeoutWarn = configHooksTimeouts[hookName]?.warning || defaultHooksTimeouts.timeoutWarn
   return {
     timeoutErr,
     timeoutWarn
