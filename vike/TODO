@@ -1,4 +1,5 @@
 - update migration examples
+- add vike-react-query to /vike-packages
 
 - Add assertWarning() deprecations:
   - `pageContext.exports`
