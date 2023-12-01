@@ -27,22 +27,35 @@ function devConfig(): Plugin[] {
       config() {
         return {
           appType: 'custom',
+          // TODO:v1-release: remove (AFAICT we only need to use config.optimizeDeps for the old design)
           optimizeDeps: {
             exclude: [
-              // We exclude the vike client to be able to use `import.meta.glob()`
+              // We exclude Vike's client runtime to be able to use Vite's import.meta.glob()
               'vike/client',
               'vike/client/router',
               'vike/routing',
-              // - We also exclude @brillout/json-serializer and @brillout/picocolors to avoid:
-              //   ```
-              //   9:28:58 AM [vite] ✨ new dependencies optimized: @brillout/json-serializer/parse
-              //   9:28:58 AM [vite] ✨ optimized dependencies changed. reloading
-              //   ```
-              // - Previously, we had to exclude @brillout/json-serializer and @brillout/picocolors because of pnpm, but this doesn't seem to be the case anymore.
-              //   - Actually, this should be still the case? How can Vite resolve @brillout/json-serializer when using pnpm?
+
+              // We exclude @brillout/json-serializer and @brillout/picocolors to avoid:
+              // ```
+              // 9:28:58 AM [vite] ✨ new dependencies optimized: @brillout/json-serializer/parse
+              // 9:28:58 AM [vite] ✨ optimized dependencies changed. reloading
+              // ```
               '@brillout/json-serializer/parse',
               '@brillout/json-serializer/stringify',
-              '@brillout/picocolors'
+              '@brillout/picocolors',
+
+              // We exclude all packages that depend on any optimizeDeps.exclude entry because, otherwise, the entry cannot be resolved when using pnpm. For example:
+              // ```
+              // Failed to resolve import "@brillout/json-serializer/parse" from "../../packages/vike-react-query/dist/renderer/VikeReactQueryWrapper.js". Does the file exist?
+              // 343|  // ../../node_modules/.pnpm/react-streaming@0.3.16_react-dom@18.2.0_react@18.2.0/node_modules/react-streaming/dist/esm/client/useAsync.js
+              // 344|  import { parse as parse2 } from "@brillout/json-serializer/parse";
+              // ```
+              // The source map is confusing, the import actually lives at node_modules/.vite/deps/vike-react-query_renderer_VikeReactQueryWrapper.js which contains:
+              // ```js
+              // // ../../node_modules/.pnpm/react-streaming@0.3.16_react-dom@18.2.0_react@18.2.0/node_modules/react-streaming/dist/esm/client/useAsync.js
+              // import { parse as parse2 } from "@brillout/json-serializer/parse";
+              // ```
+              'react-streaming'
             ]
           }
         } satisfies UserConfig
