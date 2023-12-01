@@ -146,11 +146,19 @@ async function renderPageAndPrepare(
     // From now on, renderContext.pageConfigs contains all the configuration data; getVikeConfig() isn't called anymore for this request
   }
 
+  // Check Base URL
+  {
+    const pageContextHttpReponse = checkBaseUrl(pageContextInit, httpRequestId)
+    if (pageContextHttpReponse) return pageContextHttpReponse
+  }
+
+  // Normalize URL
   {
     const pageContextHttpReponse = normalizeUrl(pageContextInit, httpRequestId)
     if (pageContextHttpReponse) return pageContextHttpReponse
   }
 
+  // Permanent redirects (HTTP status code `301`)
   {
     const pageContextHttpReponse = getPermanentRedirect(pageContextInit, httpRequestId)
     if (pageContextHttpReponse) return pageContextHttpReponse
@@ -301,10 +309,19 @@ async function renderPageAlreadyPrepared(
 
 function logHttpRequest(urlToShowToUser: string, httpRequestId: number) {
   const clearErrors = globalObject.pendingRequestsCount === 0
-  logRuntimeInfo?.(`HTTP request: ${pc.bold(urlToShowToUser)}`, httpRequestId, 'info', clearErrors)
+  logRuntimeInfo?.(getRequestInfoMessage(urlToShowToUser), httpRequestId, 'info', clearErrors)
+}
+function getRequestInfoMessage(urlToShowToUser: string) {
+  return `HTTP request: ${pc.bold(urlToShowToUser)}`
 }
 function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageContextReturn: PageContextAfterRender) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
+  {
+    // If URL doesn't include Base URL
+    const { errorWhileRendering } = pageContextReturn
+    const isSkipped = statusCode === null && (errorWhileRendering === null || errorWhileRendering === undefined)
+    if (isSkipped) return
+  }
   const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
   const isNominal = isSuccess || statusCode === 404
   const color = (s: number | string) => pc.bold(isSuccess ? pc.green(String(s)) : pc.red(String(s)))
@@ -350,17 +367,6 @@ async function renderPageNominal(
   pageContext: { _urlRewrite: null | string; _httpRequestId: number } & PageContextInitEnhanced
 ) {
   objectAssign(pageContext, { errorWhileRendering: null })
-
-  // Check Base URL
-  {
-    const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(pageContext.urlOriginal)
-    const hasBaseServer =
-      parseUrl(urlWithoutPageContextRequestSuffix, pageContext._baseServer).hasBaseServer || !!pageContext._urlRewrite
-    if (!hasBaseServer) {
-      objectAssign(pageContext, { httpResponse: null })
-      return pageContext
-    }
-  }
 
   // Route
   {
@@ -595,4 +601,23 @@ async function handleAbortError(
   }
   assert(pageContextAbort.abortStatusCode)
   return { pageContextAbort }
+}
+
+function checkBaseUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+  const { baseServer } = getGlobalContext()
+  const { urlOriginal } = pageContextInit
+  const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(urlOriginal)
+  const { hasBaseServer } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
+  if (!hasBaseServer) {
+    logRuntimeInfo?.(
+      `${getRequestInfoMessage(urlOriginal)} skipped because URL ${pc.bold(
+        urlOriginal
+      )} doesn't start with Base URL ${pc.bold(baseServer)} (https://vike.dev/base-url)`,
+      httpRequestId,
+      'info'
+    )
+    const pageContextHttpResponseNull = getPageContextHttpResponseNull(pageContextInit)
+    return pageContextHttpResponseNull
+  }
+  return null
 }
