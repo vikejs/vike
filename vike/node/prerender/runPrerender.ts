@@ -339,7 +339,7 @@ async function callOnBeforePrerenderStartHooks(
     | 'onBeforePrerenderStart'
     hookFilePath: string
     pageId: string
-    hookTimeouts: HookTimeouts
+    hookTimeout: HookTimeouts
   }[] = []
 
   // V1 design
@@ -350,7 +350,7 @@ async function callOnBeforePrerenderStartHooks(
         const pageConfigLoaded = await loadConfigValues(pageConfig, false)
         const configValue = getConfigValue(pageConfigLoaded, hookName)
         const configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeout')?.value as HooksTimeout
-        const hookTimeouts = getHookTimeouts(configHooksTimeouts, hookName)
+        const hookTimeout = getHookTimeouts(configHooksTimeouts, hookName)
         if (!configValue) return
         const hookFn = configValue.value
         const hookFilePath = getHookFilePathToShowToUser(configValue)
@@ -361,7 +361,7 @@ async function callOnBeforePrerenderStartHooks(
           hookName: 'onBeforePrerenderStart',
           hookFilePath,
           pageId: pageConfig.pageId,
-          hookTimeouts
+          hookTimeout
         })
       })
     )
@@ -393,7 +393,7 @@ async function callOnBeforePrerenderStartHooks(
             hookName: 'prerender',
             hookFilePath,
             pageId: p.pageId,
-            hookTimeouts: {
+            hookTimeout: {
               timeoutErr: 30 * 1000,
               timeoutWarn: 4 * 1000
             } // temporary
@@ -403,13 +403,13 @@ async function callOnBeforePrerenderStartHooks(
   )
 
   await Promise.all(
-    onBeforePrerenderStartHooks.map(({ hookFn, hookName, hookFilePath, pageId, hookTimeouts }) =>
+    onBeforePrerenderStartHooks.map(({ hookFn, hookName, hookFilePath, pageId, hookTimeout }) =>
       concurrencyLimit(async () => {
         if (doNotPrerenderList.find((p) => p.pageId === pageId)) {
           return
         }
 
-        const prerenderResult: unknown = await executeHook(() => hookFn(), { hookName, hookFilePath, hookTimeouts })
+        const prerenderResult: unknown = await executeHook(() => hookFn(), { hookName, hookFilePath, hookTimeout })
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
         result.forEach(({ url, pageContext }) => {
           {
@@ -545,7 +545,7 @@ async function callOnPrerenderStartHook(
       'onPrerenderStart' |
       // Old design
       'onBeforePrerender',
-        hookTimeouts: HookTimeouts
+        hookTimeout: HookTimeouts
       }
 
   let configHooksTimeouts: HooksTimeout | undefined
@@ -557,7 +557,7 @@ async function callOnPrerenderStartHook(
       configHooksTimeouts = getConfigValue(pageConfig, 'hooksTimeout')?.value as HooksTimeout
     })
     if (configValue?.value) {
-      const hookTimeouts = getHookTimeouts(configHooksTimeouts, 'onPrerenderStart')
+      const hookTimeout = getHookTimeouts(configHooksTimeouts, 'onPrerenderStart')
       const { value: hookFn } = configValue
       // config.onPrerenderStart isn't a computed nor a cumulative config => definedAt should always be defined
       const hookFilePath = getHookFilePathToShowToUser(configValue)
@@ -566,7 +566,7 @@ async function callOnPrerenderStartHook(
         hookFn,
         hookName: 'onPrerenderStart',
         hookFilePath,
-        hookTimeouts
+        hookTimeout
       }
     }
   }
@@ -574,7 +574,7 @@ async function callOnPrerenderStartHook(
   // Old design
   // TODO/v1-release: remove
   if (renderContext.pageConfigs.length === 0) {
-    const hookTimeouts = getHookTimeouts(configHooksTimeouts, 'onBeforePrerender')
+    const hookTimeout = getHookTimeouts(configHooksTimeouts, 'onBeforePrerender')
 
     const pageFilesWithOnBeforePrerenderHook = renderContext.pageFilesAll.filter((p) => {
       assertExportNames(p)
@@ -610,7 +610,7 @@ async function callOnPrerenderStartHook(
       hookFn: hook.onBeforePrerender,
       hookFilePath: hook.hookFilePath,
       hookName: 'onBeforePrerender',
-      hookTimeouts
+      hookTimeout
     }
   }
 

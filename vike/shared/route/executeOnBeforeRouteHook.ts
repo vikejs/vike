@@ -81,7 +81,7 @@ async function getPageContextFromHook(
     const pageConfigLoaded = await loadConfigValues(pageConfig, false)
     configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeout')?.value as HooksTimeout
   })
-  const hookTimeouts = getHookTimeouts(configHooksTimeouts, 'onBeforeRoute')
+  const hookTimeout = getHookTimeouts(configHooksTimeouts, 'onBeforeRoute')
 
   let hookFn: unknown = onBeforeRouteHook.onBeforeRoute(pageContext)
   assertSyncRouting(hookFn, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
@@ -89,7 +89,7 @@ async function getPageContextFromHook(
   const hookReturn = await executeHook(() => hookFn, {
     hookName: 'onBeforeRoute',
     hookFilePath: onBeforeRouteHook.hookFilePath,
-    hookTimeouts
+    hookTimeout
   })
 
   const errPrefix = `The onBeforeRoute() hook defined by ${onBeforeRouteHook.hookFilePath}`

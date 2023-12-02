@@ -48,8 +48,8 @@ function findPageGuard(pageId: string, pageFilesAll: PageFile[]): null | PageGua
   const hookFn = fileExports.guard
   if (!hookFn) return null
   const hookFilePath = filePath
-  const hookTimeouts = getHookTimeouts(undefined, 'guard')
+  const hookTimeout = getHookTimeouts(undefined, 'guard')
 
   assertUsage(isCallable(hookFn), `guard() defined by ${hookFilePath} should be a function`)
-  return { hookFn, hookName: 'guard', hookFilePath, hookTimeouts }
+  return { hookFn, hookName: 'guard', hookFilePath, hookTimeout }
 }

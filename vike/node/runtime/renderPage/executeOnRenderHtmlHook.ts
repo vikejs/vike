@@ -40,7 +40,7 @@ type GetPageAssets = () => Promise<PageAsset[]>
 type RenderHook = {
   hookFilePath: string
   hookName: HookName
-  hookTimeouts: HookTimeouts
+  hookTimeout: HookTimeouts
 }
 type HookName =
   | 'onRenderHtml'
@@ -116,10 +116,10 @@ function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
     }
     if (hook) {
       assert(hookName)
-      const { hookFilePath, hookFn, hookTimeouts } = hook
+      const { hookFilePath, hookFn, hookTimeout } = hook
       hookFound = {
         hookFn,
-        renderHook: { hookFilePath, hookName, hookTimeouts }
+        renderHook: { hookFilePath, hookName, hookTimeout }
       }
     }
   }
