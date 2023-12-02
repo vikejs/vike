@@ -59,7 +59,7 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import type { ConfigHooksTimeouts } from '../../shared/page-configs/Config.js'
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
-import { type HookTimeouts, getHookTimeouts } from '../../shared/hooks/getHookTimeouts.js'
+import { type HookTimeouts, getHookTimeouts } from '../../shared/hooks/getHook.js'
 
 type HtmlFile = {
   urlOriginal: string

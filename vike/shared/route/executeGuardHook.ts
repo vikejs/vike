@@ -4,7 +4,7 @@ import { getHook, Hook } from '../hooks/getHook.js'
 import { assert, assertUsage, executeHook, isCallable } from './utils.js'
 import type { PageContextExports, PageFile } from '../getPageFiles.js'
 import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
-import { getHookTimeouts } from '../hooks/getHookTimeouts.js'
+import { getHookTimeouts } from '../hooks/getHook.js'
 
 async function executeGuardHook<
   T extends PageContextExports & {

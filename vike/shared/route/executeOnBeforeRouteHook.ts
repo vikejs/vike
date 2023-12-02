@@ -13,7 +13,7 @@ import {
 import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
 import pc from '@brillout/picocolors'
 import type { PageContextForRoute, PageContextFromRoute } from './index.js'
-import { getHookTimeouts } from '../hooks/getHookTimeouts.js'
+import { getHookTimeouts } from '../hooks/getHook.js'
 import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { loadConfigValues } from '../page-configs/loadConfigValues.js'
 import { getConfigValue } from '../page-configs/helpers.js'

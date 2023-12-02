@@ -33,7 +33,7 @@ import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObje
 import { logRuntimeError } from './loggerRuntime.js'
 import type { PageContextSerialization } from '../html/serializePageContextClientSide.js'
 import pc from '@brillout/picocolors'
-import type { HookTimeouts } from '../../../shared/hooks/getHookTimeouts.js'
+import type { HookTimeouts } from '../../../shared/hooks/getHook.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
