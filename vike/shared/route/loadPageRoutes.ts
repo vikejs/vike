@@ -8,14 +8,9 @@ import { assert, assertUsage, hasProp, slice } from './utils.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 import { isCallable } from '../utils.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
-import {
-  getConfigDefinedAtString,
-  getConfigValue,
-  getDefinedAtString,
-  getHookFilePathToShowToUser
-} from '../page-configs/helpers.js'
+import { getConfigValue, getDefinedAtString } from '../page-configs/helpers.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
-import { getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
+import { getHookFromPageConfigGlobal, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 
 type PageRoute = {
   pageId: string
@@ -185,23 +180,8 @@ function getGlobalHooks(
 } {
   // V1 Design
   if (pageConfigs.length > 0) {
-    const hookName = 'onBeforeRoute'
-    if (pageConfigGlobal.configValues[hookName]?.value) {
-      const configValue = pageConfigGlobal.configValues[hookName]
-      const { value: hookFn } = configValue
-      const hookFilePath = getHookFilePathToShowToUser(configValue)
-      const hookDefinedAt = getConfigDefinedAtString('Hook', hookName, configValue)
-      assertUsage(isCallable(hookFn), `${hookDefinedAt} should be a function.`)
-      const onBeforeRouteHook: Hook = {
-        hookFilePath,
-        hookFn,
-        hookName,
-        // We could use the global value of config.hooksTimeout but it would require some refactoring
-        hookTimeout: getHookTimeoutDefault(hookName)
-      }
-      return { onBeforeRouteHook, filesystemRoots: null }
-    }
-    return { onBeforeRouteHook: null, filesystemRoots: null }
+    const hook = getHookFromPageConfigGlobal(pageConfigGlobal, 'onBeforeRoute')
+    return { onBeforeRouteHook: hook, filesystemRoots: null }
   }
 
   // Old design
