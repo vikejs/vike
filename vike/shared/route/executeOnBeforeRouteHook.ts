@@ -15,11 +15,8 @@ import {
 import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
 import pc from '@brillout/picocolors'
 import type { PageContextForRoute, PageContextFromRoute } from './index.js'
-import { type Hook, getHookTimeout } from '../hooks/getHook.js'
+import type { Hook } from '../hooks/getHook.js'
 import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
-import { loadConfigValues } from '../page-configs/loadConfigValues.js'
-import { getConfigValue } from '../page-configs/helpers.js'
-import type { HooksTimeout } from '../page-configs/Config.js'
 
 async function executeOnBeforeRouteHook(
   pageContext: PageContextForRoute

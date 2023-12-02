@@ -15,7 +15,7 @@ import {
   getHookFilePathToShowToUser
 } from '../page-configs/helpers.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
-import { getHookTimeout, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
+import { getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 
 type PageRoute = {
   pageId: string
