@@ -57,9 +57,8 @@ import {
 } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
-import type { HooksTimeout } from '../../shared/page-configs/Config.js'
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
-import { type HookTimeout, getHookTimeout } from '../../shared/hooks/getHook.js'
+import type { HookTimeout } from '../../shared/hooks/getHook.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -543,23 +542,16 @@ async function callOnPrerenderStartHook(
         hookTimeout: HookTimeout
       }
 
-  let configHooksTimeouts: HooksTimeout | undefined
   // V1 design
   if (renderContext.pageConfigs.length > 0) {
-    const { pageConfigGlobal, pageConfigs } = renderContext
-    pageConfigs.map((pageConfig) => {
-      configHooksTimeouts = getConfigValue(pageConfig, 'hooksTimeout')?.value as HooksTimeout
-    })
     const hookName = 'onPrerenderStart'
-    const hook = getHookFromPageConfigGlobal(pageConfigGlobal, hookName)
+    const hook = getHookFromPageConfigGlobal(renderContext.pageConfigGlobal, hookName)
     if (hook) {
-      const hookTimeout = getHookTimeout(configHooksTimeouts, hookName)
-      const { hookFn, hookFilePath } = hook
+      assert(hook.hookName === 'onPrerenderStart')
       onPrerenderStartHook = {
-        hookFn,
-        hookName: 'onPrerenderStart',
-        hookFilePath,
-        hookTimeout
+        ...hook,
+        // Make TypeScript happy
+        hookName
       }
     }
   }

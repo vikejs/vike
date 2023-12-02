@@ -2,7 +2,6 @@ export { getHook }
 export { getHookFromPageConfig }
 export { getHookFromPageConfigGlobal }
 export { assertHook }
-export { getHookTimeout }
 export type { Hook }
 export type { HookName }
 export type { HookLoc }
