@@ -2,11 +2,14 @@ export { getHook }
 export { getHookFromPageConfig }
 export { assertHook }
 export { getHookTimeout }
-export { getHookTimeoutDefault }
 export type { Hook }
 export type { HookName }
 export type { HookLoc }
 export type { HookTimeout }
+
+// TODO/v1-release: remove
+// We export for old V0.4 design which doesn't support config.hooksTimeout
+export { getHookTimeoutDefault }
 
 import { PageContextExports } from '../getPageFiles.js'
 import type { ConfigBuiltIn, HookName, HookNamePage, HooksTimeout } from '../page-configs/Config.js'
@@ -83,8 +86,6 @@ function getHookTimeout(configHooksTimeouts: HooksTimeout | undefined, hookName:
   }
 }
 
-// TODO/v1-release: remove
-// For old V0.4 design which doesn't support config.hooksTimeout
 function getHookTimeoutDefault(hookName: HookName): HookTimeout {
   if (hookName === 'onBeforeRoute') {
     return {
