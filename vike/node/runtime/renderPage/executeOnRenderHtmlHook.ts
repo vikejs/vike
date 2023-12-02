@@ -33,15 +33,10 @@ import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObje
 import { logRuntimeError } from './loggerRuntime.js'
 import type { PageContextSerialization } from '../html/serializePageContextClientSide.js'
 import pc from '@brillout/picocolors'
-import type { HookTimeout } from '../../../shared/hooks/getHook.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
-type RenderHook = {
-  hookFilePath: string
-  hookName: HookName
-  hookTimeout: HookTimeout
-}
+type RenderHook = Hook & { hookName: HookName }
 type HookName =
   | 'onRenderHtml'
   // TODO/v1-release: remove this line + remove all occurences of string literal 'render' in source code
@@ -119,7 +114,7 @@ function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
       const { hookFilePath, hookFn, hookTimeout } = hook
       hookFound = {
         hookFn,
-        renderHook: { hookFilePath, hookName, hookTimeout }
+        renderHook: { hookFn, hookFilePath, hookName, hookTimeout }
       }
     }
   }
