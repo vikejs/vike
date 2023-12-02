@@ -40,13 +40,13 @@ import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
 
 const globalObject = getGlobalObject<{
-  onPageTransitionStart: null | Hook
+  onPageTransitionStart?: Hook | null
   clientRoutingIsDisabled?: true
   renderCounter: number
   renderPromise?: Promise<void>
   isTransitioning?: true
   previousPageContext?: { _pageId: string }
-}>('renderPageClientSide.ts', { renderCounter: 0, onPageTransitionStart: null })
+}>('renderPageClientSide.ts', { renderCounter: 0 })
 
 type RenderArgs = {
   scrollTarget: ScrollTarget

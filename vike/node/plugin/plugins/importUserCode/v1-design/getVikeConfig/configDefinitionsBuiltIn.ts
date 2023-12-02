@@ -1,7 +1,6 @@
 export { configDefinitionsBuiltIn }
 export { configDefinitionsBuiltInGlobal }
 export type { ConfigDefinition }
-export type { HookTimeoutsDefinition }
 export type { ConfigDefinitionInternal }
 export type { ConfigNameGlobal }
 export type { ConfigEffect }
@@ -54,12 +53,6 @@ type ConfigEffect = (config: {
    */
   configDefinedAt: `Config ${string}`
 }) => Config | undefined
-
-/** Timeout definition of a config */
-type HookTimeoutsDefinition = {
-  error?: number
-  warning?: number
-}
 
 /** For Vike internal use */
 type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
