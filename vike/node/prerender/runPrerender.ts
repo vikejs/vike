@@ -57,7 +57,7 @@ import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServ
 import { assertHookFn } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
-import type { ConfigHooksTimeouts } from '../../shared/page-configs/Config.js'
+import type { HooksTimeout } from '../../shared/page-configs/Config.js'
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import { type HookTimeouts, getHookTimeouts } from '../../shared/hooks/getHook.js'
 
@@ -349,7 +349,7 @@ async function callOnBeforePrerenderStartHooks(
         const hookName = 'onBeforePrerenderStart'
         const pageConfigLoaded = await loadConfigValues(pageConfig, false)
         const configValue = getConfigValue(pageConfigLoaded, hookName)
-        const configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeouts')?.value as ConfigHooksTimeouts
+        const configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeouts')?.value as HooksTimeout
         const hookTimeouts = getHookTimeouts(configHooksTimeouts, hookName)
         if (!configValue) return
         const hookFn = configValue.value
@@ -548,13 +548,13 @@ async function callOnPrerenderStartHook(
         hookTimeouts: HookTimeouts
       }
 
-  let configHooksTimeouts: ConfigHooksTimeouts | undefined
+  let configHooksTimeouts: HooksTimeout | undefined
   // V1 design
   if (renderContext.pageConfigs.length > 0) {
     const { pageConfigGlobal, pageConfigs } = renderContext
     const configValue = pageConfigGlobal.configValues.onPrerenderStart
     pageConfigs.map((pageConfig) => {
-      configHooksTimeouts = getConfigValue(pageConfig, 'hooksTimeouts')?.value as ConfigHooksTimeouts
+      configHooksTimeouts = getConfigValue(pageConfig, 'hooksTimeouts')?.value as HooksTimeout
     })
     if (configValue?.value) {
       const hookTimeouts = getHookTimeouts(configHooksTimeouts, 'onPrerenderStart')

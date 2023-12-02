@@ -3,7 +3,7 @@ export type { ConfigBuiltIn }
 export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
-export type { ConfigHooksTimeouts }
+export type { HooksTimeout }
 
 export type { GuardAsync }
 export type { GuardSync }
@@ -383,8 +383,8 @@ type ConfigBuiltIn = {
   prefetchStaticAssets?: PrefetchStaticAssets | ImportString
 
   /** Modify Hooks Timeouts */
-  hooksTimeouts?: ConfigHooksTimeouts
+  hooksTimeouts?: HooksTimeout
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`
-type ConfigHooksTimeouts = Partial<Record<HookName, HookTimeoutsDefinition>>
+type HooksTimeout = Partial<Record<HookName, HookTimeoutsDefinition>>

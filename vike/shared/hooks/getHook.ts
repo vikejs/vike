@@ -8,7 +8,7 @@ export type { HookLoc }
 export type { HookTimeouts }
 
 import { PageContextExports } from '../getPageFiles.js'
-import type { ConfigBuiltIn, HookName, ConfigHooksTimeouts } from '../page-configs/Config.js'
+import type { ConfigBuiltIn, HookName, HooksTimeout } from '../page-configs/Config.js'
 import { assert, assertUsage, checkType, isCallable } from '../utils.js'
 
 type Hook = HookLoc & { hookFn: HookFn; hookTimeouts: HookTimeouts }
@@ -72,7 +72,7 @@ function getDefaultTimeouts(hookName: HookName): HookTimeouts {
   }
 }
 
-function getHookTimeouts(configHooksTimeouts: ConfigHooksTimeouts | undefined, hookName: HookName): HookTimeouts {
+function getHookTimeouts(configHooksTimeouts: HooksTimeout | undefined, hookName: HookName): HookTimeouts {
   const defaultHookTimeouts = getDefaultTimeouts(hookName)
   if (!configHooksTimeouts || !(hookName in configHooksTimeouts)) {
     return defaultHookTimeouts

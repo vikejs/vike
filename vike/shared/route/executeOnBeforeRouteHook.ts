@@ -17,7 +17,7 @@ import { getHookTimeouts } from '../hooks/getHook.js'
 import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { loadConfigValues } from '../page-configs/loadConfigValues.js'
 import { getConfigValue } from '../page-configs/helpers.js'
-import type { ConfigHooksTimeouts } from '../page-configs/Config.js'
+import type { HooksTimeout } from '../page-configs/Config.js'
 
 export { executeOnBeforeRouteHook }
 export type { OnBeforeRouteHook }
@@ -75,11 +75,11 @@ async function getPageContextFromHook(
   _pageId?: string | null
   routeParams?: Record<string, string>
 }> {
-  let configHooksTimeouts: ConfigHooksTimeouts | undefined
+  let configHooksTimeouts: HooksTimeout | undefined
 
   pageContext._pageConfigs.map(async (pageConfig) => {
     const pageConfigLoaded = await loadConfigValues(pageConfig, false)
-    configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeouts')?.value as ConfigHooksTimeouts
+    configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeouts')?.value as HooksTimeout
   })
   const hookTimeouts = getHookTimeouts(configHooksTimeouts, 'onBeforeRoute')
 
