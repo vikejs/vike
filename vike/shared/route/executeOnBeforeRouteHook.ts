@@ -69,22 +69,10 @@ async function getPageContextFromHook(
   _pageId?: string | null
   routeParams?: Record<string, string>
 }> {
-  let configHooksTimeouts: HooksTimeout | undefined
-
-  pageContext._pageConfigs.map(async (pageConfig) => {
-    const pageConfigLoaded = await loadConfigValues(pageConfig, false)
-    configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeout')?.value as HooksTimeout
-  })
-  const hookTimeout = getHookTimeout(configHooksTimeouts, 'onBeforeRoute')
-
   let hookResult: unknown = onBeforeRouteHook.hookFn(pageContext)
   assertSyncRouting(hookResult, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
   // TODO/v1-release: make executeOnBeforeRouteHook() and route() sync
-  const hookReturn = await executeHook(() => hookResult, {
-    hookName: 'onBeforeRoute',
-    hookFilePath: onBeforeRouteHook.hookFilePath,
-    hookTimeout
-  })
+  const hookReturn = await executeHook(() => hookResult, onBeforeRouteHook)
 
   const errPrefix = `The onBeforeRoute() hook defined by ${onBeforeRouteHook.hookFilePath}`
 
