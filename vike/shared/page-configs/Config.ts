@@ -383,7 +383,7 @@ type ConfigBuiltIn = {
    */
   prefetchStaticAssets?: PrefetchStaticAssets | ImportString
 
-  /** Modify Hooks Timeouts */
+  /** Modify the tiemouts of hooks. */
   hooksTimeout?: HooksTimeout
 }
 type ConfigMeta = Record<string, ConfigDefinition>
