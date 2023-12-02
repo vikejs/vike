@@ -17,8 +17,11 @@ function isUserHookError(err: unknown): false | HookLoc {
 }
 
 function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookFn'>): Promise<T> {
-  const { hookName, hookFilePath, hookTimeout } = hook
-  const { timeoutErr, timeoutWarn } = hookTimeout
+  const {
+    hookName,
+    hookFilePath,
+    hookTimeout: { timeoutErr, timeoutWarn }
+  } = hook
 
   let resolve!: (ret: T) => void
   let reject!: (err: unknown) => void

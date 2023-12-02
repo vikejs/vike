@@ -11,9 +11,9 @@ export type { HookTimeout }
 // We export for old V0.4 design which doesn't support config.hooksTimeout
 export { getHookTimeoutDefault }
 
-import { PageContextExports } from '../getPageFiles.js'
+import type { PageContextExports } from '../getPageFiles.js'
 import type { ConfigBuiltIn, HookName, HookNamePage, HookNameGlobal, HooksTimeout } from '../page-configs/Config.js'
-import { PageConfigBuildTime, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
+import type { PageConfigBuildTime, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { getConfigValue, getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { assert, assertUsage, checkType, isCallable } from '../utils.js'
 
