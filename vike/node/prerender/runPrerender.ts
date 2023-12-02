@@ -545,7 +545,7 @@ async function callOnPrerenderStartHook(
       'onPrerenderStart' |
       // Old design
       'onBeforePrerender',
-        hookTimeouts: HookTimeouts // temporarily undefined
+        hookTimeouts: HookTimeouts
       }
 
   let configHooksTimeouts: ConfigHooksTimeouts | undefined

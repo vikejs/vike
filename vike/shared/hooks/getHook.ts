@@ -10,7 +10,7 @@ import type { ConfigBuiltIn, HookName } from '../page-configs/Config.js'
 import { assert, assertUsage, checkType, isCallable } from '../utils.js'
 import { getHookTimeouts, type HookTimeouts } from './getHookTimeouts.js'
 
-type Hook = HookLoc & { hookFn: HookFn; hookTimeouts: HookTimeouts } // hookTimeouts temporarily could be undefined
+type Hook = HookLoc & { hookFn: HookFn; hookTimeouts: HookTimeouts }
 type HookLoc = { hookName: HookName; hookFilePath: string }
 type HookFn = (arg: unknown) => unknown
 
