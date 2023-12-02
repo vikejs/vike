@@ -387,10 +387,7 @@ async function callOnBeforePrerenderStartHooks(
             hookName: 'prerender',
             hookFilePath,
             pageId: p.pageId,
-            hookTimeout: {
-              timeoutErr: 30 * 1000,
-              timeoutWarn: 4 * 1000
-            } // temporary
+            hookTimeout: getHookTimeoutDefault('onBeforePrerenderStart')
           })
         })
       )

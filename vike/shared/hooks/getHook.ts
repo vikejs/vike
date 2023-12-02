@@ -108,7 +108,7 @@ function getHookTimeoutDefault(hookName: HookName): HookTimeout {
       timeoutWarn: 1 * 1000
     }
   }
-  if (hookName === 'onBeforePrerender') {
+  if (hookName === 'onBeforePrerender' || hookName === 'onBeforePrerenderStart' || hookName === 'prerender') {
     return {
       timeoutErr: 10 * 60 * 1000,
       timeoutWarn: 30 * 1000
