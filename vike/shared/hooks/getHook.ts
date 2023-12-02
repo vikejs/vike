@@ -29,8 +29,8 @@ function getHook(pageContext: { config: ConfigBuiltIn } & PageContextExports, ho
   if (!(hookName in pageContext.exports)) {
     return null
   }
-  const configHooksTimeouts = pageContext.config.hooksTimeout
-  const hookTimeout = getHookTimeout(configHooksTimeouts, hookName)
+  const { hooksTimeout } = pageContext.config
+  const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   const hookFn = pageContext.exports[hookName]
   const file = pageContext.exportsAll[hookName]![0]!
   assert(file.exportValue === hookFn)
@@ -46,7 +46,7 @@ function getHookFromPageConfig(
   hookName: HookNamePage
 ): null | Hook {
   const configValue = getConfigValue(pageConfig, hookName)
-  const configHooksTimeouts = getConfigValue(pageConfig, 'hooksTimeout')?.value as HooksTimeout
+  const hooksTimeout = getConfigValue(pageConfig, 'hooksTimeout')?.value as HooksTimeout
   if (!configValue) return null
   const hookFn = configValue.value
   if (!hookFn) return null
@@ -54,7 +54,7 @@ function getHookFromPageConfig(
   // hook isn't a computed nor a cumulative config => definedAt should always be defined
   assert(hookFilePath)
   assertHookFn(hookFn, { hookName, hookFilePath })
-  const hookTimeout = getHookTimeout(configHooksTimeouts, hookName)
+  const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   return { hookFn, hookName, hookFilePath, hookTimeout }
 }
 function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, hookName: HookNameGlobal): null | Hook {
@@ -88,13 +88,13 @@ function assertHookFn(
   checkType<HookFn>(hookFn)
 }
 
-function getHookTimeout(configHooksTimeouts: HooksTimeout | undefined, hookName: HookName): HookTimeout {
+function getHookTimeout(hooksTimeout: HooksTimeout | undefined, hookName: HookName): HookTimeout {
   const defaultHookTimeout = getHookTimeoutDefault(hookName)
-  if (!configHooksTimeouts || !(hookName in configHooksTimeouts)) {
+  if (!hooksTimeout || !(hookName in hooksTimeout)) {
     return defaultHookTimeout
   }
-  const timeoutErr = configHooksTimeouts[hookName]?.error || defaultHookTimeout.timeoutErr
-  const timeoutWarn = configHooksTimeouts[hookName]?.warning || defaultHookTimeout.timeoutWarn
+  const timeoutErr = hooksTimeout[hookName]?.error || defaultHookTimeout.timeoutErr
+  const timeoutWarn = hooksTimeout[hookName]?.warning || defaultHookTimeout.timeoutWarn
   return {
     timeoutErr,
     timeoutWarn
