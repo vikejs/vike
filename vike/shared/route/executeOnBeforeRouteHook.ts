@@ -16,7 +16,6 @@ import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
 import pc from '@brillout/picocolors'
 import type { PageContextForRoute, PageContextFromRoute } from './index.js'
 import type { Hook } from '../hooks/getHook.js'
-import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
 
 async function executeOnBeforeRouteHook(
   pageContext: PageContextForRoute
@@ -58,7 +57,6 @@ async function getPageContextFromHook(
   pageContext: {
     urlOriginal: string
     _allPageIds: string[]
-    _pageConfigs: PageConfigRuntime[]
   }
 ): Promise<null | {
   urlOriginal?: string
@@ -66,10 +64,10 @@ async function getPageContextFromHook(
   _pageId?: string | null
   routeParams?: Record<string, string>
 }> {
-  let hookResult: unknown = onBeforeRouteHook.hookFn(pageContext)
-  assertSyncRouting(hookResult, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
+  let hookReturn: unknown = onBeforeRouteHook.hookFn(pageContext)
+  assertSyncRouting(hookReturn, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
   // TODO/v1-release: make executeOnBeforeRouteHook() and route() sync
-  const hookReturn = await executeHook(() => hookResult, onBeforeRouteHook)
+  hookReturn = await executeHook(() => hookReturn, onBeforeRouteHook)
 
   const errPrefix = `The onBeforeRoute() hook defined by ${onBeforeRouteHook.hookFilePath}`
 
