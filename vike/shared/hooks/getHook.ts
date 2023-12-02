@@ -23,7 +23,7 @@ function getHook(pageContext: { config: ConfigBuiltIn } & PageContextExports, ho
   if (!(hookName in pageContext.exports)) {
     return null
   }
-  const configHooksTimeouts = pageContext.config.hooksTimeouts
+  const configHooksTimeouts = pageContext.config.hooksTimeout
   const hookTimeouts = getHookTimeouts(configHooksTimeouts, hookName)
   const hookFn = pageContext.exports[hookName]
   const file = pageContext.exportsAll[hookName]![0]!

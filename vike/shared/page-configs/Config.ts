@@ -58,7 +58,7 @@ type ConfigNameBuiltIn =
   | 'prerender'
   | 'isClientSideRenderable'
   | 'onBeforeRenderEnv'
-  | 'hooksTimeouts'
+  | 'hooksTimeout'
 
 type Config = ConfigBuiltIn &
   Vike.Config &
@@ -383,7 +383,7 @@ type ConfigBuiltIn = {
   prefetchStaticAssets?: PrefetchStaticAssets | ImportString
 
   /** Modify Hooks Timeouts */
-  hooksTimeouts?: HooksTimeout
+  hooksTimeout?: HooksTimeout
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`

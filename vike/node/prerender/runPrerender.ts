@@ -349,7 +349,7 @@ async function callOnBeforePrerenderStartHooks(
         const hookName = 'onBeforePrerenderStart'
         const pageConfigLoaded = await loadConfigValues(pageConfig, false)
         const configValue = getConfigValue(pageConfigLoaded, hookName)
-        const configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeouts')?.value as HooksTimeout
+        const configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeout')?.value as HooksTimeout
         const hookTimeouts = getHookTimeouts(configHooksTimeouts, hookName)
         if (!configValue) return
         const hookFn = configValue.value
@@ -554,7 +554,7 @@ async function callOnPrerenderStartHook(
     const { pageConfigGlobal, pageConfigs } = renderContext
     const configValue = pageConfigGlobal.configValues.onPrerenderStart
     pageConfigs.map((pageConfig) => {
-      configHooksTimeouts = getConfigValue(pageConfig, 'hooksTimeouts')?.value as HooksTimeout
+      configHooksTimeouts = getConfigValue(pageConfig, 'hooksTimeout')?.value as HooksTimeout
     })
     if (configValue?.value) {
       const hookTimeouts = getHookTimeouts(configHooksTimeouts, 'onPrerenderStart')

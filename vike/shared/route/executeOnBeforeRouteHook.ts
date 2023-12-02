@@ -79,7 +79,7 @@ async function getPageContextFromHook(
 
   pageContext._pageConfigs.map(async (pageConfig) => {
     const pageConfigLoaded = await loadConfigValues(pageConfig, false)
-    configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeouts')?.value as HooksTimeout
+    configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeout')?.value as HooksTimeout
   })
   const hookTimeouts = getHookTimeouts(configHooksTimeouts, 'onBeforeRoute')
 
