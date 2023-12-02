@@ -200,7 +200,7 @@ function getGlobalHooks(
         const { onBeforeRoute } = fileExports
         const hookName = 'onBeforeRoute'
         onBeforeRouteHook = {
-          hookFilePath: `${filePath} > \`export { onBeforeRoute }\``,
+          hookFilePath: filePath,
           hookFn: onBeforeRoute,
           hookName,
           hookTimeout: getHookTimeoutDefault(hookName)
