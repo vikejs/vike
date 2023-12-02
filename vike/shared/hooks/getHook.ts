@@ -1,20 +1,20 @@
 export { getHook }
 export { assertHook }
 export { assertHookFn }
-export { getHookTimeouts }
+export { getHookTimeout }
 export type { Hook }
 export type { HookName }
 export type { HookLoc }
-export type { HookTimeouts }
+export type { HookTimeout }
 
 import { PageContextExports } from '../getPageFiles.js'
 import type { ConfigBuiltIn, HookName, HooksTimeout } from '../page-configs/Config.js'
 import { assert, assertUsage, checkType, isCallable } from '../utils.js'
 
-type Hook = HookLoc & { hookFn: HookFn; hookTimeout: HookTimeouts }
+type Hook = HookLoc & { hookFn: HookFn; hookTimeout: HookTimeout }
 type HookLoc = { hookName: HookName; hookFilePath: string }
 type HookFn = (arg: unknown) => unknown
-type HookTimeouts = {
+type HookTimeout = {
   timeoutErr: number
   timeoutWarn: number
 }
@@ -24,7 +24,7 @@ function getHook(pageContext: { config: ConfigBuiltIn } & PageContextExports, ho
     return null
   }
   const configHooksTimeouts = pageContext.config.hooksTimeout
-  const hookTimeout = getHookTimeouts(configHooksTimeouts, hookName)
+  const hookTimeout = getHookTimeout(configHooksTimeouts, hookName)
   const hookFn = pageContext.exports[hookName]
   const file = pageContext.exportsAll[hookName]![0]!
   assert(file.exportValue === hookFn)
@@ -53,7 +53,7 @@ function assertHookFn(
   checkType<HookFn>(hookFn)
 }
 
-function getDefaultTimeouts(hookName: HookName): HookTimeouts {
+function getDefaultTimeouts(hookName: HookName): HookTimeout {
   if (hookName === 'onBeforeRoute') {
     return {
       timeoutErr: 5 * 1000,
@@ -72,13 +72,13 @@ function getDefaultTimeouts(hookName: HookName): HookTimeouts {
   }
 }
 
-function getHookTimeouts(configHooksTimeouts: HooksTimeout | undefined, hookName: HookName): HookTimeouts {
-  const defaultHookTimeouts = getDefaultTimeouts(hookName)
+function getHookTimeout(configHooksTimeouts: HooksTimeout | undefined, hookName: HookName): HookTimeout {
+  const defaultHookTimeout = getDefaultTimeouts(hookName)
   if (!configHooksTimeouts || !(hookName in configHooksTimeouts)) {
-    return defaultHookTimeouts
+    return defaultHookTimeout
   }
-  const timeoutErr = configHooksTimeouts[hookName]?.error || defaultHookTimeouts.timeoutErr
-  const timeoutWarn = configHooksTimeouts[hookName]?.warning || defaultHookTimeouts.timeoutWarn
+  const timeoutErr = configHooksTimeouts[hookName]?.error || defaultHookTimeout.timeoutErr
+  const timeoutWarn = configHooksTimeouts[hookName]?.warning || defaultHookTimeout.timeoutWarn
   return {
     timeoutErr,
     timeoutWarn

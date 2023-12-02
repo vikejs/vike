@@ -59,7 +59,7 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import type { HooksTimeout } from '../../shared/page-configs/Config.js'
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
-import { type HookTimeouts, getHookTimeouts } from '../../shared/hooks/getHook.js'
+import { type HookTimeout, getHookTimeout } from '../../shared/hooks/getHook.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -339,7 +339,7 @@ async function callOnBeforePrerenderStartHooks(
     | 'onBeforePrerenderStart'
     hookFilePath: string
     pageId: string
-    hookTimeout: HookTimeouts
+    hookTimeout: HookTimeout
   }[] = []
 
   // V1 design
@@ -350,7 +350,7 @@ async function callOnBeforePrerenderStartHooks(
         const pageConfigLoaded = await loadConfigValues(pageConfig, false)
         const configValue = getConfigValue(pageConfigLoaded, hookName)
         const configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeout')?.value as HooksTimeout
-        const hookTimeout = getHookTimeouts(configHooksTimeouts, hookName)
+        const hookTimeout = getHookTimeout(configHooksTimeouts, hookName)
         if (!configValue) return
         const hookFn = configValue.value
         const hookFilePath = getHookFilePathToShowToUser(configValue)
@@ -545,7 +545,7 @@ async function callOnPrerenderStartHook(
       'onPrerenderStart' |
       // Old design
       'onBeforePrerender',
-        hookTimeout: HookTimeouts
+        hookTimeout: HookTimeout
       }
 
   let configHooksTimeouts: HooksTimeout | undefined
@@ -557,7 +557,7 @@ async function callOnPrerenderStartHook(
       configHooksTimeouts = getConfigValue(pageConfig, 'hooksTimeout')?.value as HooksTimeout
     })
     if (configValue?.value) {
-      const hookTimeout = getHookTimeouts(configHooksTimeouts, 'onPrerenderStart')
+      const hookTimeout = getHookTimeout(configHooksTimeouts, 'onPrerenderStart')
       const { value: hookFn } = configValue
       // config.onPrerenderStart isn't a computed nor a cumulative config => definedAt should always be defined
       const hookFilePath = getHookFilePathToShowToUser(configValue)
@@ -574,7 +574,7 @@ async function callOnPrerenderStartHook(
   // Old design
   // TODO/v1-release: remove
   if (renderContext.pageConfigs.length === 0) {
-    const hookTimeout = getHookTimeouts(configHooksTimeouts, 'onBeforePrerender')
+    const hookTimeout = getHookTimeout(configHooksTimeouts, 'onBeforePrerender')
 
     const pageFilesWithOnBeforePrerenderHook = renderContext.pageFilesAll.filter((p) => {
       assertExportNames(p)

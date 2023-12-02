@@ -13,7 +13,7 @@ import {
 import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
 import pc from '@brillout/picocolors'
 import type { PageContextForRoute, PageContextFromRoute } from './index.js'
-import { getHookTimeouts } from '../hooks/getHook.js'
+import { getHookTimeout } from '../hooks/getHook.js'
 import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { loadConfigValues } from '../page-configs/loadConfigValues.js'
 import { getConfigValue } from '../page-configs/helpers.js'
@@ -81,7 +81,7 @@ async function getPageContextFromHook(
     const pageConfigLoaded = await loadConfigValues(pageConfig, false)
     configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeout')?.value as HooksTimeout
   })
-  const hookTimeout = getHookTimeouts(configHooksTimeouts, 'onBeforeRoute')
+  const hookTimeout = getHookTimeout(configHooksTimeouts, 'onBeforeRoute')
 
   let hookFn: unknown = onBeforeRouteHook.onBeforeRoute(pageContext)
   assertSyncRouting(hookFn, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)

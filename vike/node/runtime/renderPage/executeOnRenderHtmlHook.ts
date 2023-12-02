@@ -33,14 +33,14 @@ import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObje
 import { logRuntimeError } from './loggerRuntime.js'
 import type { PageContextSerialization } from '../html/serializePageContextClientSide.js'
 import pc from '@brillout/picocolors'
-import type { HookTimeouts } from '../../../shared/hooks/getHook.js'
+import type { HookTimeout } from '../../../shared/hooks/getHook.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
 type RenderHook = {
   hookFilePath: string
   hookName: HookName
-  hookTimeout: HookTimeouts
+  hookTimeout: HookTimeout
 }
 type HookName =
   | 'onRenderHtml'
