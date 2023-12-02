@@ -4,6 +4,7 @@ export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
 export type { HookNamePage }
+export type { HookNameGlobal }
 export type { HooksTimeout }
 
 export type { GuardAsync }

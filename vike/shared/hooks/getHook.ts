@@ -1,5 +1,6 @@
 export { getHook }
 export { getHookFromPageConfig }
+export { getHookFromPageConfigGlobal }
 export { assertHook }
 export { getHookTimeout }
 export type { Hook }
@@ -12,8 +13,8 @@ export type { HookTimeout }
 export { getHookTimeoutDefault }
 
 import { PageContextExports } from '../getPageFiles.js'
-import type { ConfigBuiltIn, HookName, HookNamePage, HooksTimeout } from '../page-configs/Config.js'
-import { PageConfigBuildTime, PageConfigRuntime } from '../page-configs/PageConfig.js'
+import type { ConfigBuiltIn, HookName, HookNamePage, HookNameGlobal, HooksTimeout } from '../page-configs/Config.js'
+import { PageConfigBuildTime, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { getConfigValue, getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { assert, assertUsage, checkType, isCallable } from '../utils.js'
 
@@ -47,12 +48,27 @@ function getHookFromPageConfig(
 ): null | Hook {
   const configValue = getConfigValue(pageConfig, hookName)
   const configHooksTimeouts = getConfigValue(pageConfig, 'hooksTimeout')?.value as HooksTimeout
-  const hookTimeout = getHookTimeout(configHooksTimeouts, hookName)
   if (!configValue) return null
   const hookFn = configValue.value
+  if (!hookFn) return null
   const hookFilePath = getHookFilePathToShowToUser(configValue)
+  // hook isn't a computed nor a cumulative config => definedAt should always be defined
   assert(hookFilePath)
   assertHookFn(hookFn, { hookName, hookFilePath })
+  const hookTimeout = getHookTimeout(configHooksTimeouts, hookName)
+  return { hookFn, hookName, hookFilePath, hookTimeout }
+}
+function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, hookName: HookNameGlobal): null | Hook {
+  const configValue = pageConfigGlobal.configValues[hookName]
+  if (!configValue) return null
+  const hookFn = configValue.value
+  if (!hookFn) return null
+  const hookFilePath = getHookFilePathToShowToUser(configValue)
+  // hook isn't a computed nor a cumulative config => definedAt should always be defined
+  assert(hookFilePath)
+  assertHookFn(hookFn, { hookName, hookFilePath })
+  // We could use the global value of config.hooksTimeout but it would require some refactoring
+  const hookTimeout = getHookTimeoutDefault(hookName)
   return { hookFn, hookName, hookFilePath, hookTimeout }
 }
 

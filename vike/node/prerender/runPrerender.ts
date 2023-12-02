@@ -43,18 +43,18 @@ import type { InlineConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
-import {
-  getConfigValue,
-  getConfigValueFilePathToShowToUser,
-  getHookFilePathToShowToUser
-} from '../../shared/page-configs/helpers.js'
+import { getConfigValue, getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
 import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide.js'
-import { getHookFromPageConfig, getHookTimeoutDefault } from '../../shared/hooks/getHook.js'
+import {
+  getHookFromPageConfig,
+  getHookFromPageConfigGlobal,
+  getHookTimeoutDefault
+} from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import type { HooksTimeout } from '../../shared/page-configs/Config.js'
@@ -547,16 +547,14 @@ async function callOnPrerenderStartHook(
   // V1 design
   if (renderContext.pageConfigs.length > 0) {
     const { pageConfigGlobal, pageConfigs } = renderContext
-    const configValue = pageConfigGlobal.configValues.onPrerenderStart
     pageConfigs.map((pageConfig) => {
       configHooksTimeouts = getConfigValue(pageConfig, 'hooksTimeout')?.value as HooksTimeout
     })
-    if (configValue?.value) {
-      const hookTimeout = getHookTimeout(configHooksTimeouts, 'onPrerenderStart')
-      const { value: hookFn } = configValue
-      // config.onPrerenderStart isn't a computed nor a cumulative config => definedAt should always be defined
-      const hookFilePath = getHookFilePathToShowToUser(configValue)
-      assert(hookFilePath)
+    const hookName = 'onPrerenderStart'
+    const hook = getHookFromPageConfigGlobal(pageConfigGlobal, hookName)
+    if (hook) {
+      const hookTimeout = getHookTimeout(configHooksTimeouts, hookName)
+      const { hookFn, hookFilePath } = hook
       onPrerenderStartHook = {
         hookFn,
         hookName: 'onPrerenderStart',
