@@ -54,7 +54,7 @@ import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide.js'
-import { getHookFromPageConfig } from '../../shared/hooks/getHook.js'
+import { getHookFromPageConfig, getHookTimeoutDefault } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import type { HooksTimeout } from '../../shared/page-configs/Config.js'
@@ -569,7 +569,7 @@ async function callOnPrerenderStartHook(
   // Old design
   // TODO/v1-release: remove
   if (renderContext.pageConfigs.length === 0) {
-    const hookTimeout = getHookTimeout(configHooksTimeouts, 'onBeforePrerender')
+    const hookTimeout = getHookTimeoutDefault('onBeforePrerender')
 
     const pageFilesWithOnBeforePrerenderHook = renderContext.pageFilesAll.filter((p) => {
       assertExportNames(p)

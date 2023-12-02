@@ -2,6 +2,7 @@ export { getHook }
 export { getHookFromPageConfig }
 export { assertHook }
 export { getHookTimeout }
+export { getHookTimeoutDefault }
 export type { Hook }
 export type { HookName }
 export type { HookLoc }
@@ -69,7 +70,22 @@ function assertHookFn(
   checkType<HookFn>(hookFn)
 }
 
-function getDefaultTimeouts(hookName: HookName): HookTimeout {
+function getHookTimeout(configHooksTimeouts: HooksTimeout | undefined, hookName: HookName): HookTimeout {
+  const defaultHookTimeout = getHookTimeoutDefault(hookName)
+  if (!configHooksTimeouts || !(hookName in configHooksTimeouts)) {
+    return defaultHookTimeout
+  }
+  const timeoutErr = configHooksTimeouts[hookName]?.error || defaultHookTimeout.timeoutErr
+  const timeoutWarn = configHooksTimeouts[hookName]?.warning || defaultHookTimeout.timeoutWarn
+  return {
+    timeoutErr,
+    timeoutWarn
+  }
+}
+
+// TODO/v1-release: remove
+// For old V0.4 design which doesn't support config.hooksTimeout
+function getHookTimeoutDefault(hookName: HookName): HookTimeout {
   if (hookName === 'onBeforeRoute') {
     return {
       timeoutErr: 5 * 1000,
@@ -85,18 +101,5 @@ function getDefaultTimeouts(hookName: HookName): HookTimeout {
   return {
     timeoutErr: 30 * 1000,
     timeoutWarn: 4 * 1000
-  }
-}
-
-function getHookTimeout(configHooksTimeouts: HooksTimeout | undefined, hookName: HookName): HookTimeout {
-  const defaultHookTimeout = getDefaultTimeouts(hookName)
-  if (!configHooksTimeouts || !(hookName in configHooksTimeouts)) {
-    return defaultHookTimeout
-  }
-  const timeoutErr = configHooksTimeouts[hookName]?.error || defaultHookTimeout.timeoutErr
-  const timeoutWarn = configHooksTimeouts[hookName]?.warning || defaultHookTimeout.timeoutWarn
-  return {
-    timeoutErr,
-    timeoutWarn
   }
 }
