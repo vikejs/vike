@@ -49,14 +49,9 @@ type HookNamePage =
   | 'onRenderHtml'
   | 'onRenderClient'
   | 'guard'
-type HookNameGlobal =
-  | 'onBeforePrerender'
-  | 'onBeforeRoute'
-  | 'onPrerenderStart'
+type HookNameGlobal = 'onBeforePrerender' | 'onBeforeRoute' | 'onPrerenderStart'
 // v0.4 design TODO/v1-release: remove
-type HookNameOldDesign =
-  | 'render'
-  | 'prerender'
+type HookNameOldDesign = 'render' | 'prerender'
 
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
