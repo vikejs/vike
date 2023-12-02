@@ -5,9 +5,7 @@ import { getProjectError, assertWarning } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { humanizeTime } from '../../utils/humanizeTime.js'
 import { isObject } from '../../utils/isObject.js'
-import type { ConfigHooksTimeouts } from '../page-configs/Config.js'
-import type { HookLoc, HookName } from './getHook.js'
-import { getTimeouts } from './getTimeouts.js'
+import type { Hook, HookLoc } from './getHook.js'
 
 const globalObject = getGlobalObject('utils/executeHook.ts', {
   userHookErrors: new Map<object, HookLoc>()
@@ -18,13 +16,9 @@ function isUserHookError(err: unknown): false | HookLoc {
   return globalObject.userHookErrors.get(err) ?? false
 }
 
-function executeHook<T = unknown>(
-  hookFn: () => T,
-  hookName: HookName,
-  hookFilePath: string,
-  configHooksTimeouts?: ConfigHooksTimeouts
-): Promise<T> {
-  const { timeoutErr, timeoutWarn } = getTimeouts(configHooksTimeouts, hookName)
+function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookFn'>): Promise<T> {
+  const { hookName, hookFilePath, hookTimeouts } = hook
+  const { timeoutErr, timeoutWarn } = hookTimeouts
 
   let resolve!: (ret: T) => void
   let reject!: (err: unknown) => void
@@ -59,7 +53,7 @@ function executeHook<T = unknown>(
 
   ;(async () => {
     try {
-      const ret = await hookFn()
+      const ret = await hookFnCaller()
       resolve(ret)
     } catch (err) {
       if (isObject(err)) {

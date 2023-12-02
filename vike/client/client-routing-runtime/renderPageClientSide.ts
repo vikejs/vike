@@ -146,13 +146,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (!globalObject.isTransitioning) {
       if (globalObject.onPageTransitionStart) {
         const hook = globalObject.onPageTransitionStart
-        const onPageTransitionStart = hook.hookFn
-        await executeHook(
-          () => onPageTransitionStart(pageContext),
-          'onPageTransitionStart',
-          hook.hookFilePath,
-          hook.configHooksTimeouts
-        )
+        const { hookFn } = hook
+        await executeHook(() => hookFn(pageContext), hook)
       }
       globalObject.isTransitioning = true
       if (abortRender()) return
@@ -313,10 +308,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   // onHydrationEnd()
   if (isFirstRender) {
     assertHook(pageContext, 'onHydrationEnd')
-    const onHydrationEnd = getHook(pageContext, 'onHydrationEnd')
-    if (onHydrationEnd) {
-      const { hookFn, hookFilePath, hookName, configHooksTimeouts } = onHydrationEnd
-      await executeHook(() => hookFn(pageContext), hookName, hookFilePath, configHooksTimeouts)
+    const hook = getHook(pageContext, 'onHydrationEnd')
+    if (hook) {
+      const { hookFn } = hook
+      await executeHook(() => hookFn(pageContext), hook)
       if (abortRender(true)) return
     }
   }
@@ -327,10 +322,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   // onPageTransitionEnd()
   if (callTransitionHooks) {
     assertHook(pageContext, 'onPageTransitionEnd')
-    const onPageTransitionEnd = getHook(pageContext, 'onPageTransitionEnd')
-    if (onPageTransitionEnd) {
-      const { hookFn, hookFilePath, hookName, configHooksTimeouts } = onPageTransitionEnd
-      await executeHook(() => hookFn(pageContext), hookName, hookFilePath, configHooksTimeouts)
+    const hook = getHook(pageContext, 'onPageTransitionEnd')
+    if (hook) {
+      const { hookFn } = hook
+      await executeHook(() => hookFn(pageContext), hook)
       if (abortRender(true)) return
     }
     globalObject.isTransitioning = undefined

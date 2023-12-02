@@ -59,6 +59,7 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import type { ConfigHooksTimeouts } from '../../shared/page-configs/Config.js'
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+import { type HookTimeouts, getHookTimeouts } from '../../shared/hooks/getHookTimeouts.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -338,7 +339,7 @@ async function callOnBeforePrerenderStartHooks(
     | 'onBeforePrerenderStart'
     hookFilePath: string
     pageId: string
-    configHooksTimeouts?: ConfigHooksTimeouts
+    hookTimeouts: HookTimeouts
   }[] = []
 
   // V1 design
@@ -348,7 +349,8 @@ async function callOnBeforePrerenderStartHooks(
         const hookName = 'onBeforePrerenderStart'
         const pageConfigLoaded = await loadConfigValues(pageConfig, false)
         const configValue = getConfigValue(pageConfigLoaded, hookName)
-        const configHooksTimeouts = getConfigValue(pageConfig, 'hooksTimeouts')?.value as ConfigHooksTimeouts
+        const configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeouts')?.value as ConfigHooksTimeouts
+        const hookTimeouts = getHookTimeouts(configHooksTimeouts, hookName)
         if (!configValue) return
         const hookFn = configValue.value
         const hookFilePath = getHookFilePathToShowToUser(configValue)
@@ -359,7 +361,7 @@ async function callOnBeforePrerenderStartHooks(
           hookName: 'onBeforePrerenderStart',
           hookFilePath,
           pageId: pageConfig.pageId,
-          configHooksTimeouts
+          hookTimeouts
         })
       })
     )
@@ -390,20 +392,24 @@ async function callOnBeforePrerenderStartHooks(
             hookFn,
             hookName: 'prerender',
             hookFilePath,
-            pageId: p.pageId
+            pageId: p.pageId,
+            hookTimeouts: {
+              timeoutErr: 30 * 1000,
+              timeoutWarn: 4 * 1000
+            } // temporary
           })
         })
       )
   )
 
   await Promise.all(
-    onBeforePrerenderStartHooks.map(({ hookFn, hookName, hookFilePath, pageId, configHooksTimeouts }) =>
+    onBeforePrerenderStartHooks.map(({ hookFn, hookName, hookFilePath, pageId, hookTimeouts }) =>
       concurrencyLimit(async () => {
         if (doNotPrerenderList.find((p) => p.pageId === pageId)) {
           return
         }
 
-        const prerenderResult: unknown = await executeHook(() => hookFn(), hookName, hookFilePath, configHooksTimeouts)
+        const prerenderResult: unknown = await executeHook(() => hookFn(), { hookName, hookFilePath, hookTimeouts })
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
         result.forEach(({ url, pageContext }) => {
           {
@@ -538,10 +544,11 @@ async function callOnPrerenderStartHook(
       // V1 design
       'onPrerenderStart' |
       // Old design
-      'onBeforePrerender'
+      'onBeforePrerender',
+        hookTimeouts: HookTimeouts // temporarily undefined
       }
-  let configHooksTimeouts: ConfigHooksTimeouts | undefined
 
+  let configHooksTimeouts: ConfigHooksTimeouts | undefined
   // V1 design
   if (renderContext.pageConfigs.length > 0) {
     const { pageConfigGlobal, pageConfigs } = renderContext
@@ -550,6 +557,7 @@ async function callOnPrerenderStartHook(
       configHooksTimeouts = getConfigValue(pageConfig, 'hooksTimeouts')?.value as ConfigHooksTimeouts
     })
     if (configValue?.value) {
+      const hookTimeouts = getHookTimeouts(configHooksTimeouts, 'onPrerenderStart')
       const { value: hookFn } = configValue
       // config.onPrerenderStart isn't a computed nor a cumulative config => definedAt should always be defined
       const hookFilePath = getHookFilePathToShowToUser(configValue)
@@ -557,7 +565,8 @@ async function callOnPrerenderStartHook(
       onPrerenderStartHook = {
         hookFn,
         hookName: 'onPrerenderStart',
-        hookFilePath
+        hookFilePath,
+        hookTimeouts
       }
     }
   }
@@ -565,6 +574,8 @@ async function callOnPrerenderStartHook(
   // Old design
   // TODO/v1-release: remove
   if (renderContext.pageConfigs.length === 0) {
+    const hookTimeouts = getHookTimeouts(configHooksTimeouts, 'onBeforePrerender')
+
     const pageFilesWithOnBeforePrerenderHook = renderContext.pageFilesAll.filter((p) => {
       assertExportNames(p)
       if (!p.exportNames?.includes('onBeforePrerender')) return false
@@ -598,7 +609,8 @@ async function callOnPrerenderStartHook(
     onPrerenderStartHook = {
       hookFn: hook.onBeforePrerender,
       hookFilePath: hook.hookFilePath,
-      hookName: 'onBeforePrerender'
+      hookName: 'onBeforePrerender',
+      hookTimeouts
     }
   }
 
@@ -647,9 +659,7 @@ async function callOnPrerenderStartHook(
           return prerenderContext.pageContexts
         }
       }),
-    hookName,
-    hookFilePath,
-    configHooksTimeouts
+    onPrerenderStartHook
   )
   if (result === null || result === undefined) {
     return

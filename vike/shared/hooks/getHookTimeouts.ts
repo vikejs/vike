@@ -1,4 +1,4 @@
-export { getTimeouts }
+export { getHookTimeouts, getDefaultTimeouts }
 export type { HookTimeouts }
 import type { ConfigHooksTimeouts, HookName } from '../page-configs/Config.js'
 
@@ -26,13 +26,13 @@ function getDefaultTimeouts(hookName: HookName): HookTimeouts {
   }
 }
 
-function getTimeouts(configHooksTimeouts: undefined | ConfigHooksTimeouts, hookName: HookName): HookTimeouts {
-  const defaultHooksTimeouts = getDefaultTimeouts(hookName)
+function getHookTimeouts(configHooksTimeouts: ConfigHooksTimeouts | undefined, hookName: HookName): HookTimeouts {
+  const defaultHookTimeouts = getDefaultTimeouts(hookName)
   if (!configHooksTimeouts || !(hookName in configHooksTimeouts)) {
-    return defaultHooksTimeouts
+    return defaultHookTimeouts
   }
-  const timeoutErr = configHooksTimeouts[hookName]?.error || defaultHooksTimeouts.timeoutErr
-  const timeoutWarn = configHooksTimeouts[hookName]?.warning || defaultHooksTimeouts.timeoutWarn
+  const timeoutErr = configHooksTimeouts[hookName]?.error || defaultHookTimeouts.timeoutErr
+  const timeoutWarn = configHooksTimeouts[hookName]?.warning || defaultHookTimeouts.timeoutWarn
   return {
     timeoutErr,
     timeoutWarn

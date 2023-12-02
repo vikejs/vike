@@ -6,10 +6,11 @@ export type { HookName }
 export type { HookLoc }
 
 import { PageContextExports } from '../getPageFiles.js'
-import type { ConfigBuiltIn, ConfigHooksTimeouts, HookName } from '../page-configs/Config.js'
+import type { ConfigBuiltIn, HookName } from '../page-configs/Config.js'
 import { assert, assertUsage, checkType, isCallable } from '../utils.js'
+import { getHookTimeouts, type HookTimeouts } from './getHookTimeouts.js'
 
-type Hook = HookLoc & { hookFn: HookFn; configHooksTimeouts?: ConfigHooksTimeouts }
+type Hook = HookLoc & { hookFn: HookFn; hookTimeouts: HookTimeouts } // hookTimeouts temporarily could be undefined
 type HookLoc = { hookName: HookName; hookFilePath: string }
 type HookFn = (arg: unknown) => unknown
 
@@ -18,6 +19,7 @@ function getHook(pageContext: { config: ConfigBuiltIn } & PageContextExports, ho
     return null
   }
   const configHooksTimeouts = pageContext.config.hooksTimeouts
+  const hookTimeouts = getHookTimeouts(configHooksTimeouts, hookName)
   const hookFn = pageContext.exports[hookName]
   const file = pageContext.exportsAll[hookName]![0]!
   assert(file.exportValue === hookFn)
@@ -26,7 +28,7 @@ function getHook(pageContext: { config: ConfigBuiltIn } & PageContextExports, ho
   assert(hookFilePath)
   assert(!hookFilePath.endsWith(' '))
   assertHookFn(hookFn, { hookName, hookFilePath })
-  return { hookFn, hookName, hookFilePath, configHooksTimeouts }
+  return { hookFn, hookName, hookFilePath, hookTimeouts }
 }
 
 function assertHook<TPageContext extends PageContextExports, THookName extends PropertyKey & HookName>(
