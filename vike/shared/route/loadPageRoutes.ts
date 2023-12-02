@@ -5,7 +5,6 @@ export type { RouteType }
 import type { PageFile } from '../getPageFiles.js'
 import { isErrorPageId } from '../error-page.js'
 import { assert, assertUsage, hasProp, slice } from './utils.js'
-import type { OnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 import { isCallable } from '../utils.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
@@ -16,6 +15,7 @@ import {
   getHookFilePathToShowToUser
 } from '../page-configs/helpers.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
+import { getHookTimeout, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 
 type PageRoute = {
   pageId: string
@@ -34,7 +34,7 @@ async function loadPageRoutes(
   pageConfigs: PageConfigRuntime[],
   pageConfigGlobal: PageConfigGlobalRuntime,
   allPageIds: string[]
-): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
+): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | Hook }> {
   await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
   const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll, pageConfigs, pageConfigGlobal)
   const pageRoutes = getPageRoutes(filesystemRoots, pageFilesAll, pageConfigs, allPageIds)
@@ -180,7 +180,7 @@ function getGlobalHooks(
   pageConfigs: PageConfigRuntime[],
   pageConfigGlobal: PageConfigGlobalRuntime
 ): {
-  onBeforeRouteHook: null | OnBeforeRouteHook
+  onBeforeRouteHook: null | Hook
   filesystemRoots: null | FilesystemRoot[]
 } {
   // V1 Design
@@ -192,9 +192,12 @@ function getGlobalHooks(
       const hookFilePath = getHookFilePathToShowToUser(configValue)
       const hookDefinedAt = getConfigDefinedAtString('Hook', hookName, configValue)
       assertUsage(isCallable(hookFn), `${hookDefinedAt} should be a function.`)
-      const onBeforeRouteHook: OnBeforeRouteHook = {
-        hookFilePath: hookFilePath,
-        onBeforeRoute: hookFn
+      const onBeforeRouteHook: Hook = {
+        hookFilePath,
+        hookFn,
+        hookName,
+        // We could use the global value of config.hooksTimeout but it would require some refactoring
+        hookTimeout: getHookTimeoutDefault(hookName)
       }
       return { onBeforeRouteHook, filesystemRoots: null }
     }
@@ -203,7 +206,7 @@ function getGlobalHooks(
 
   // Old design
   // TODO/v1-release: remove
-  let onBeforeRouteHook: null | OnBeforeRouteHook = null
+  let onBeforeRouteHook: null | Hook = null
   const filesystemRoots: FilesystemRoot[] = []
   pageFilesAll
     .filter((p) => p.fileType === '.page.route' && p.isDefaultPageFile)
@@ -215,7 +218,13 @@ function getGlobalHooks(
           `\`export { onBeforeRoute }\` of ${filePath} should be a function.`
         )
         const { onBeforeRoute } = fileExports
-        onBeforeRouteHook = { hookFilePath: `${filePath} > \`export { onBeforeRoute }\``, onBeforeRoute }
+        const hookName = 'onBeforeRoute'
+        onBeforeRouteHook = {
+          hookFilePath: `${filePath} > \`export { onBeforeRoute }\``,
+          hookFn: onBeforeRoute,
+          hookName,
+          hookTimeout: getHookTimeoutDefault(hookName)
+        }
       }
       if ('filesystemRoutingRoot' in fileExports) {
         assertUsage(

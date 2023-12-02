@@ -1,3 +1,5 @@
+export { executeOnBeforeRouteHook }
+
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser.js'
 import {
   assertUsage,
@@ -13,19 +15,11 @@ import {
 import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
 import pc from '@brillout/picocolors'
 import type { PageContextForRoute, PageContextFromRoute } from './index.js'
-import { getHookTimeout } from '../hooks/getHook.js'
+import { type Hook, getHookTimeout } from '../hooks/getHook.js'
 import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { loadConfigValues } from '../page-configs/loadConfigValues.js'
 import { getConfigValue } from '../page-configs/helpers.js'
 import type { HooksTimeout } from '../page-configs/Config.js'
-
-export { executeOnBeforeRouteHook }
-export type { OnBeforeRouteHook }
-
-type OnBeforeRouteHook = {
-  hookFilePath: string
-  onBeforeRoute: (pageContext: { urlOriginal: string } & Record<string, unknown>) => unknown
-}
 
 async function executeOnBeforeRouteHook(
   pageContext: PageContextForRoute
@@ -63,7 +57,7 @@ async function executeOnBeforeRouteHook(
 }
 
 async function getPageContextFromHook(
-  onBeforeRouteHook: OnBeforeRouteHook,
+  onBeforeRouteHook: Hook,
   pageContext: {
     urlOriginal: string
     _allPageIds: string[]
@@ -83,10 +77,10 @@ async function getPageContextFromHook(
   })
   const hookTimeout = getHookTimeout(configHooksTimeouts, 'onBeforeRoute')
 
-  let hookFn: unknown = onBeforeRouteHook.onBeforeRoute(pageContext)
-  assertSyncRouting(hookFn, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
+  let hookResult: unknown = onBeforeRouteHook.hookFn(pageContext)
+  assertSyncRouting(hookResult, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
   // TODO/v1-release: make executeOnBeforeRouteHook() and route() sync
-  const hookReturn = await executeHook(() => hookFn, {
+  const hookReturn = await executeHook(() => hookResult, {
     hookName: 'onBeforeRoute',
     hookFilePath: onBeforeRouteHook.hookFilePath,
     hookTimeout
