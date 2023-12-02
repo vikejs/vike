@@ -3,6 +3,7 @@ export type { ConfigBuiltIn }
 export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
+export type { HookNamePage }
 export type { HooksTimeout }
 
 export type { GuardAsync }
@@ -38,20 +39,24 @@ import type { ConfigVikeUserProvided } from '../ConfigVike.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 import type { PageContextClient, PageContextServer } from '../types.js'
 
-type HookName =
+type HookName = HookNamePage | HookNameGlobal | HookNameOldDesign
+type HookNamePage =
   | 'onHydrationEnd'
-  | 'onBeforePrerender'
   | 'onBeforePrerenderStart'
   | 'onBeforeRender'
-  | 'onBeforeRoute'
   | 'onPageTransitionStart'
   | 'onPageTransitionEnd'
-  | 'onPrerenderStart'
   | 'onRenderHtml'
   | 'onRenderClient'
   | 'guard'
+type HookNameGlobal =
+  | 'onBeforePrerender'
+  | 'onBeforeRoute'
+  | 'onPrerenderStart'
+// v0.4 design TODO/v1-release: remove
+type HookNameOldDesign =
   | 'render'
-  | 'prerender' // v0.4 design
+  | 'prerender'
 
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>

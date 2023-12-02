@@ -54,7 +54,7 @@ import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide.js'
-import { assertHookFn } from '../../shared/hooks/getHook.js'
+import { getHookFromPageConfig } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import type { HooksTimeout } from '../../shared/page-configs/Config.js'
@@ -348,14 +348,9 @@ async function callOnBeforePrerenderStartHooks(
       concurrencyLimit(async () => {
         const hookName = 'onBeforePrerenderStart'
         const pageConfigLoaded = await loadConfigValues(pageConfig, false)
-        const configValue = getConfigValue(pageConfigLoaded, hookName)
-        const configHooksTimeouts = getConfigValue(pageConfigLoaded, 'hooksTimeout')?.value as HooksTimeout
-        const hookTimeout = getHookTimeout(configHooksTimeouts, hookName)
-        if (!configValue) return
-        const hookFn = configValue.value
-        const hookFilePath = getHookFilePathToShowToUser(configValue)
-        assert(hookFilePath)
-        assertHookFn(hookFn, { hookName, hookFilePath })
+        const hook = getHookFromPageConfig(pageConfigLoaded, hookName)
+        if (!hook) return
+        const { hookFn, hookFilePath, hookTimeout } = hook
         onBeforePrerenderStartHooks.push({
           hookFn,
           hookName: 'onBeforePrerenderStart',
