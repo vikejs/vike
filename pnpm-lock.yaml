@@ -25,6 +25,9 @@ importers:
       '@brillout/test-types':
         specifier: ^0.1.10
         version: 0.1.10(typescript@4.8.4)
+      prettier:
+        specifier: ^3.1.0
+        version: 3.1.0
       vitest:
         specifier: ^0.34.1
         version: 0.34.6
@@ -10308,6 +10311,12 @@ packages:
   /prepend-http@2.0.0:
     resolution: {integrity: sha512-ravE6m9Atw9Z/jjttRUZ+clIXogdghyZAuWJ3qEzjT+jI/dL1ifAqhZeC5VHzQp1MSt1+jxKkFNemj/iO7tVUA==}
     engines: {node: '>=4'}
+    dev: true
+
+  /prettier@3.1.0:
+    resolution: {integrity: sha512-TQLvXjq5IAibjh8EpBIkNKxO749UEWABoiIZehEPiY4GNpVdhaFKqSTu+QrlU6D2dPAfubRmtJTi4K4YkQ5eXw==}
+    engines: {node: '>=14'}
+    hasBin: true
     dev: true
 
   /pretty-format@27.5.1:

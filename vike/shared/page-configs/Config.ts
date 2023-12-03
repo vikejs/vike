@@ -3,6 +3,9 @@ export type { ConfigBuiltIn }
 export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
+export type { HookNamePage }
+export type { HookNameGlobal }
+export type { HooksTimeout }
 
 export type { GuardAsync }
 export type { GuardSync }
@@ -34,25 +37,26 @@ import type { ConfigVikeUserProvided } from '../ConfigVike.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 import type { PageContextClient, PageContextServer } from '../types.js'
 
-type HookName =
+type HookName = HookNamePage | HookNameGlobal | HookNameOldDesign
+type HookNamePage =
   | 'onHydrationEnd'
-  | 'onBeforePrerender'
   | 'onBeforePrerenderStart'
   | 'onBeforeRender'
-  | 'onBeforeRoute'
   | 'onPageTransitionStart'
   | 'onPageTransitionEnd'
-  | 'onPrerenderStart'
   | 'onRenderHtml'
   | 'onRenderClient'
   | 'guard'
-  | 'render'
+type HookNameGlobal = 'onBeforePrerender' | 'onBeforeRoute' | 'onPrerenderStart'
+// v0.4 design TODO/v1-release: remove
+type HookNameOldDesign = 'render' | 'prerender'
 
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
   | 'prerender'
   | 'isClientSideRenderable'
   | 'onBeforeRenderEnv'
+  | 'hooksTimeout'
 
 type Config = ConfigBuiltIn &
   Vike.Config &
@@ -375,6 +379,18 @@ type ConfigBuiltIn = {
    * https://vike.dev/clientRouting#link-prefetching
    */
   prefetchStaticAssets?: PrefetchStaticAssets | ImportString
+
+  /** Modify the tiemouts of hooks. */
+  hooksTimeout?: HooksTimeout
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`
+type HooksTimeout = Partial<
+  Record<
+    HookName,
+    {
+      error?: number
+      warning?: number
+    }
+  >
+>

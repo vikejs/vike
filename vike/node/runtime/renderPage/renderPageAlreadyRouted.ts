@@ -32,9 +32,9 @@ import { isNewError } from './isNewError.js'
 import { preparePageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide.js'
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageRoutes.js'
-import type { OnBeforeRouteHook } from '../../../shared/route/executeOnBeforeRouteHook.js'
 import pc from '@brillout/picocolors'
 import { getConfigValueFilePathToShowToUser } from '../../../shared/page-configs/helpers.js'
+import type { Hook } from '../../../shared/hooks/getHook.js'
 
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 
@@ -225,7 +225,7 @@ type RenderContext = {
   pageConfigGlobal: PageConfigGlobalRuntime
   allPageIds: string[]
   pageRoutes: PageRoutes
-  onBeforeRouteHook: OnBeforeRouteHook | null
+  onBeforeRouteHook: Hook | null
 }
 // TODO: remove getRenderContext() in favor of getGlobalObject() + reloadGlobalContext()
 // TODO: impl GlobalNodeContext + GlobalClientContext + GloablContext, and use GlobalContext instead of RenderContext

@@ -36,10 +36,7 @@ import pc from '@brillout/picocolors'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
-type RenderHook = {
-  hookFilePath: string
-  hookName: HookName
-}
+type RenderHook = Hook & { hookName: HookName }
 type HookName =
   | 'onRenderHtml'
   // TODO/v1-release: remove this line + remove all occurences of string literal 'render' in source code
@@ -64,7 +61,7 @@ async function executeOnRenderHtmlHook(
   objectAssign(pageContext, { _renderHook: renderHook })
 
   preparePageContextForUserConsumptionServerSide(pageContext)
-  const hookReturnValue = await executeHook(() => hookFn(pageContext), renderHook.hookName, renderHook.hookFilePath)
+  const hookReturnValue = await executeHook(() => hookFn(pageContext), renderHook)
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
     hookReturnValue,
     renderHook
@@ -114,10 +111,10 @@ function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
     }
     if (hook) {
       assert(hookName)
-      const { hookFilePath, hookFn } = hook
+      const { hookFilePath, hookFn, hookTimeout } = hook
       hookFound = {
         hookFn,
-        renderHook: { hookFilePath, hookName }
+        renderHook: { hookFn, hookFilePath, hookName, hookTimeout }
       }
     }
   }
