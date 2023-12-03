@@ -241,7 +241,7 @@ async function getRenderContext(): Promise<RenderContext> {
     pageConfigGlobal,
     allPageIds
   )
-  assertNonMixedDesign(pageFilesAll, pageConfigs)
+  assertV1Design(pageFilesAll, pageConfigs)
   const renderContext = {
     pageFilesAll: pageFilesAll,
     pageConfigs,
@@ -253,8 +253,10 @@ async function getRenderContext(): Promise<RenderContext> {
   return renderContext
 }
 
-function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]) {
-  if (pageFilesAll.length === 0 || pageConfigs.length === 0) return
+function assertV1Design(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]) {
+  const isV1Design = pageConfigs.length !== 0
+  const isDesignOld = pageFilesAll.length !== 0
+  if (isV1Design && isDesignOld) {
   const indent = '- '
   const v1Files: string[] = unique(
     pageConfigs
@@ -276,4 +278,5 @@ function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfigR
       ...pageFilesAll.map((p) => indent + p.filePath)
     ].join('\n')
   )
+  }
 }
