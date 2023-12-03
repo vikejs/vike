@@ -22,25 +22,13 @@ import pc from '@brillout/picocolors'
 type Hook = HookLoc & { hookFn: HookFn; hookTimeout: HookTimeout }
 type HookLoc = { hookName: HookName; hookFilePath: string }
 type HookFn = (arg: unknown) => unknown
-// After validation and normalization
 type HookTimeout = {
   error: number | false
   warning: number | false
 }
-type HooksTimeout = Partial<Record<HookName, HookTimeout>>
 // User Interface
-type HooksTimeoutProvidedByUser =
-  | false
-  | Partial<
-      Record<
-        HookName,
-        | false
-        | {
-            error?: false | number
-            warning?: false | number
-          }
-      >
-    >
+type HooksTimeoutProvidedByUser = false | Partial<Record<HookName, false | Partial<HookTimeout>>>
+type HooksTimeoutProvidedByUserNormalized = false | Partial<Record<HookName, Partial<HookTimeout>>>
 
 function getHook(pageContext: PageContextExports, hookName: HookName): null | Hook {
   if (!(hookName in pageContext.exports)) {
@@ -106,48 +94,47 @@ function assertHookFn(
 }
 
 function getHookTimeout(hooksTimeoutProvidedByUser: unknown, hookName: HookName): HookTimeout {
-  const hooksTimeout = validateAndNormalizeHooksTimeout(hooksTimeoutProvidedByUser)
-
-  const defaultHookTimeout = getHookTimeoutDefault(hookName)
-  if (!hooksTimeout) return defaultHookTimeout
-  const error = hooksTimeout[hookName]?.error ?? defaultHookTimeout.error
-  const warning = hooksTimeout[hookName]?.warning ?? defaultHookTimeout.warning
-
-  return {
-    error,
-    warning
-  }
+  const hooksTimeoutProvidedbyUserNormalized = getHooksTimeoutProvidedByUserNormalized(hooksTimeoutProvidedByUser)
+  if (hooksTimeoutProvidedbyUserNormalized === false) return { error: false, warning: false }
+  const providedbyUser = hooksTimeoutProvidedbyUserNormalized[hookName]
+  const hookTimeout = getHookTimeoutDefault(hookName)
+  if (providedbyUser?.error !== undefined) hookTimeout.error = providedbyUser.error
+  if (providedbyUser?.warning !== undefined) hookTimeout.warning = providedbyUser.warning
+  return hookTimeout
 }
 
 // Ideally this should be called only once and at build-time (to avoid bloating the client-side bundle), but we didn't implement any mechanism to valide config values at build-time yet
-function validateAndNormalizeHooksTimeout(hooksTimeoutProvidedByUser: unknown): HooksTimeout {
-  const hooksTimeout: HooksTimeout = {}
-  if (!hooksTimeoutProvidedByUser) return hooksTimeout
-  assert(
-    hooksTimeoutProvidedByUser === undefined || isObject(hooksTimeoutProvidedByUser),
-    `Setting ${pc.cyan('hooksTimeout')} should be an object`
+function getHooksTimeoutProvidedByUserNormalized(
+  hooksTimeoutProvidedByUser: unknown
+): HooksTimeoutProvidedByUserNormalized {
+  if (hooksTimeoutProvidedByUser === undefined) return {}
+  if (hooksTimeoutProvidedByUser === false) return false
+  assertUsage(
+    isObject(hooksTimeoutProvidedByUser),
+    `Setting ${pc.cyan('hooksTimeout')} should be ${pc.cyan('false')} or an object`
   )
-  Object.entries(hooksTimeoutProvidedByUser).forEach(([hookName, hookTimeout]) => {
-    if (!hookTimeout) return
-    assert(isObject(hookTimeout), `Setting ${pc.cyan(`hooksTimeout.${hookName}`)} should be an object`)
-    const [timeoutErr, timeoutWarn] = (['error', 'warning'] as const).map((timeoutName) => {
-      const timeoutVal = hookTimeout[timeoutName]
-      const errPrefix = `Setting ${pc.cyan(`hooksTimeout.${hookName}.${timeoutName}`)}` as const
-      assert(
-        timeoutVal === false || typeof timeoutVal === 'number',
-        `${errPrefix} should be ${pc.cyan('false')} or a number`
-      )
-      if (timeoutVal) {
-        assert(timeoutVal > 0, `${errPrefix} should be a positive number`)
-      }
+
+  const hooksTimeoutProvidedByUserNormalized: HooksTimeoutProvidedByUserNormalized = {}
+  Object.entries(hooksTimeoutProvidedByUser).forEach(([hookName, hookTimeoutProvidedbyUser]) => {
+    if (hookTimeoutProvidedbyUser === false) {
+      hooksTimeoutProvidedByUserNormalized[hookName as HookName] = { error: false, warning: false }
+      return
+    }
+    assertUsage(
+      isObject(hookTimeoutProvidedbyUser),
+      `Setting ${pc.cyan(`hooksTimeout.${hookName}`)} should be ${pc.cyan('false')} or an object`
+    )
+    const [error, warning] = ['error', 'warning'].map((timeoutName) => {
+      const timeoutVal = hookTimeoutProvidedbyUser[timeoutName]
+      if (timeoutVal === undefined || timeoutVal === false) return timeoutVal
+      const errPrefix = `Setting ${pc.cyan(`hooksTimeout.${hookName}.${timeoutName}`)} should be` as const
+      assertUsage(typeof timeoutVal === 'number', `${errPrefix} ${pc.cyan('false')} or a number`)
+      assertUsage(timeoutVal > 0, `${errPrefix} a positive number`)
       return timeoutVal
     })
-    hooksTimeout[hookName as HookName] = {
-      error: timeoutErr!,
-      warning: timeoutWarn!
-    }
+    hooksTimeoutProvidedByUserNormalized[hookName as HookName] = { error, warning }
   })
-  return hooksTimeout
+  return hooksTimeoutProvidedByUserNormalized
 }
 
 function getHookTimeoutDefault(hookName: HookName): HookTimeout {
