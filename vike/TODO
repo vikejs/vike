@@ -4,7 +4,6 @@
 - Add assertWarning() deprecations:
   - `pageContext.exports`
   - `pageContext.configEntries`
-  - Old design
 
 After V1 design release:
  - Replace in docs:
