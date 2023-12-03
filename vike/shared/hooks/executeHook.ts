@@ -37,10 +37,10 @@ function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookF
   })
 
   const clearTimeouts = () => {
-    if (t1) clearTimeout(t1)
-    if (t2) clearTimeout(t2)
+    if (currentTimeoutWarn) clearTimeout(currentTimeoutWarn)
+    if (currentTimeoutErr) clearTimeout(currentTimeoutErr)
   }
-  const t1 =
+  const currentTimeoutWarn =
     isNumber(timeoutWarn) &&
     setTimeout(() => {
       assertWarning(
@@ -49,7 +49,7 @@ function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookF
         { onlyOnce: false }
       )
     }, timeoutWarn)
-  const t2 =
+  const currentTimeoutErr =
     isNumber(timeoutErr) &&
     setTimeout(() => {
       const err = getProjectError(
