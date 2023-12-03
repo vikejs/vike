@@ -257,26 +257,26 @@ function assertV1Design(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime
   const isV1Design = pageConfigs.length !== 0
   const isDesignOld = pageFilesAll.length !== 0
   if (isV1Design && isDesignOld) {
-  const indent = '- '
-  const v1Files: string[] = unique(
-    pageConfigs
-      .map((p) =>
-        Object.values(p.configValues)
-          .map(getConfigValueFilePathToShowToUser)
-          .filter(isNotNullish)
-          .map((filePathToShowToUser) => indent + filePathToShowToUser)
-      )
-      .flat(2)
-  )
-  assertUsage(
-    false,
-    [
-      'Mixing the new V1 design with the old V0.4 design is forbidden.',
-      'V1 files:',
-      ...v1Files,
-      'V0.4 files:',
-      ...pageFilesAll.map((p) => indent + p.filePath)
-    ].join('\n')
-  )
+    const indent = '- '
+    const v1Files: string[] = unique(
+      pageConfigs
+        .map((p) =>
+          Object.values(p.configValues)
+            .map(getConfigValueFilePathToShowToUser)
+            .filter(isNotNullish)
+            .map((filePathToShowToUser) => indent + filePathToShowToUser)
+        )
+        .flat(2)
+    )
+    assertUsage(
+      false,
+      [
+        'Mixing the new V1 design with the old V0.4 design is forbidden.',
+        'V1 files:',
+        ...v1Files,
+        'V0.4 files:',
+        ...pageFilesAll.map((p) => indent + p.filePath)
+      ].join('\n')
+    )
   }
 }
