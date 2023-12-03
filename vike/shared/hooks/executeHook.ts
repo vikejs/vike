@@ -45,7 +45,9 @@ function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookF
     setTimeout(() => {
       assertWarning(
         false,
-        `The ${hookName}() hook defined by ${hookFilePath} is taking more than ${humanizeTime(timeoutWarn)}`,
+        `The ${hookName}() hook defined by ${hookFilePath} is slow: it's taking more than ${humanizeTime(
+          timeoutWarn
+        )} (https://vike.dev/hooksTimeout)`,
         { onlyOnce: false }
       )
     }, timeoutWarn)
@@ -53,9 +55,9 @@ function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookF
     isNotDisabled(timeoutErr) &&
     setTimeout(() => {
       const err = getProjectError(
-        `Hook timeout: the ${hookName}() hook defined by ${hookFilePath} didn't finish after ${humanizeTime(
+        `The ${hookName}() hook defined by ${hookFilePath} timed out: it didn't finish after ${humanizeTime(
           timeoutErr
-        )}`
+        )} (https://vike.dev/hooksTimeout)`
       )
       reject(err)
     }, timeoutErr)
