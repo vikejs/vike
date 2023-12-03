@@ -10,7 +10,7 @@ export type { PageContextInitEnhanced }
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
 import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles.js'
-import { assert, assertUsage, hasProp, isNotNullish, objectAssign, unique } from '../utils.js'
+import { assert, assertUsage, assertWarning, hasProp, isNotNullish, objectAssign, unique } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
 import { addUrlComputedProps, type PageContextUrlComputedPropsInternal } from '../../../shared/addUrlComputedProps.js'
 import { getGlobalContext } from '../globalContext.js'
@@ -279,4 +279,9 @@ function assertV1Design(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime
       ].join('\n')
     )
   }
+  assertWarning(
+    !isDesignOld,
+    'You are using the old deprecated design, update to the new V1 design, see https://vike.dev/migration/v1-design',
+    { onlyOnce: true }
+  )
 }
