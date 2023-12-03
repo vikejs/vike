@@ -37,22 +37,28 @@ function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookF
   })
 
   const clearTimeouts = () => {
-    clearTimeout(t1)
-    clearTimeout(t2)
+    if (t1) clearTimeout(t1)
+    if (t2) clearTimeout(t2)
   }
-  const t1 = setTimeout(() => {
-    assertWarning(
-      false,
-      `The ${hookName}() hook defined by ${hookFilePath} is taking more than ${humanizeTime(timeoutWarn)}`,
-      { onlyOnce: false }
-    )
-  }, timeoutWarn)
-  const t2 = setTimeout(() => {
-    const err = getProjectError(
-      `Hook timeout: the ${hookName}() hook defined by ${hookFilePath} didn't finish after ${humanizeTime(timeoutErr)}`
-    )
-    reject(err)
-  }, timeoutErr)
+  const t1 =
+    isNumber(timeoutWarn) &&
+    setTimeout(() => {
+      assertWarning(
+        false,
+        `The ${hookName}() hook defined by ${hookFilePath} is taking more than ${humanizeTime(timeoutWarn)}`,
+        { onlyOnce: false }
+      )
+    }, timeoutWarn)
+  const t2 =
+    isNumber(timeoutErr) &&
+    setTimeout(() => {
+      const err = getProjectError(
+        `Hook timeout: the ${hookName}() hook defined by ${hookFilePath} didn't finish after ${humanizeTime(
+          timeoutErr
+        )}`
+      )
+      reject(err)
+    }, timeoutErr)
 
   ;(async () => {
     try {
@@ -67,4 +73,8 @@ function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookF
   })()
 
   return promise
+}
+
+function isNumber(timeout: false | number): timeout is number {
+  return !!timeout && timeout !== Infinity
 }

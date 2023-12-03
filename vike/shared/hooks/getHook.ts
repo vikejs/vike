@@ -21,8 +21,8 @@ type Hook = HookLoc & { hookFn: HookFn; hookTimeout: HookTimeout }
 type HookLoc = { hookName: HookName; hookFilePath: string }
 type HookFn = (arg: unknown) => unknown
 type HookTimeout = {
-  timeoutErr: number
-  timeoutWarn: number
+  timeoutErr: number | false
+  timeoutWarn: number | false
 }
 
 function getHook(pageContext: { config: ConfigBuiltIn } & PageContextExports, hookName: HookName): null | Hook {
