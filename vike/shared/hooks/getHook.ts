@@ -110,8 +110,10 @@ function getHookTimeoutDefault(hookName: HookName): HookTimeout {
   }
   if (
     hookName === 'onPrerenderStart' ||
-    hookName === 'onBeforePrerender' ||
     hookName === 'onBeforePrerenderStart' ||
+    // TODO/v1-release: remove
+    // Old V0.4 design hooks (https://vike.dev/migration/v1-design#renamed-hooks)
+    hookName === 'onBeforePrerender' ||
     hookName === 'prerender'
   ) {
     return {
