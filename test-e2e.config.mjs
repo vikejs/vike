@@ -81,7 +81,8 @@ function tolerateError({ logSource, logText }) {
     isGithubImageError() ||
     isSlowCrawlWarning() ||
     isNodeExperimentalEsmLoader() ||
-    isNodeExperimentalLoader()
+    isNodeExperimentalLoader() ||
+    isNotV1Design()
   )
 
   function isViteCjsWarning() {
@@ -199,5 +200,13 @@ function tolerateError({ logSource, logText }) {
   }
   function isNodeExperimentalLoader() {
     return logSource === 'stderr' && logText.includes('ExperimentalWarning: `--experimental-loader` may be removed')
+  }
+  function isNotV1Design() {
+    return (
+      logSource === 'stderr' &&
+      logText.includes(
+        'You are using the old deprecated design, update to the new V1 design, see https://vike.dev/migration/v1-design'
+      )
+    )
   }
 }
