@@ -6,26 +6,43 @@ export type { Hook }
 export type { HookName }
 export type { HookLoc }
 export type { HookTimeout }
+export type { HooksTimeoutProvidedByUser }
 
 // TODO/v1-release: remove
 // We export for old V0.4 design which doesn't support config.hooksTimeout
 export { getHookTimeoutDefault }
 
 import type { PageContextExports } from '../getPageFiles.js'
-import type { ConfigBuiltIn, HookName, HookNamePage, HookNameGlobal, HooksTimeout } from '../page-configs/Config.js'
+import type { HookName, HookNamePage, HookNameGlobal } from '../page-configs/Config.js'
 import type { PageConfigBuildTime, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { getConfigValue, getHookFilePathToShowToUser } from '../page-configs/helpers.js'
-import { assert, assertUsage, checkType, isCallable } from '../utils.js'
+import { assert, assertUsage, checkType, isCallable, isObject } from '../utils.js'
+import pc from '@brillout/picocolors'
 
 type Hook = HookLoc & { hookFn: HookFn; hookTimeout: HookTimeout }
 type HookLoc = { hookName: HookName; hookFilePath: string }
 type HookFn = (arg: unknown) => unknown
+// After validation and normalization
 type HookTimeout = {
-  timeoutErr: number | false
-  timeoutWarn: number | false
+  error: number | false
+  warning: number | false
 }
+type HooksTimeout = Partial<Record<HookName, HookTimeout>>
+// User Interface
+type HooksTimeoutProvidedByUser =
+  | false
+  | Partial<
+      Record<
+        HookName,
+        | false
+        | {
+            error?: false | number
+            warning?: false | number
+          }
+      >
+    >
 
-function getHook(pageContext: { config: ConfigBuiltIn } & PageContextExports, hookName: HookName): null | Hook {
+function getHook(pageContext: PageContextExports, hookName: HookName): null | Hook {
   if (!(hookName in pageContext.exports)) {
     return null
   }
@@ -46,7 +63,7 @@ function getHookFromPageConfig(
   hookName: HookNamePage
 ): null | Hook {
   const configValue = getConfigValue(pageConfig, hookName)
-  const hooksTimeout = getConfigValue(pageConfig, 'hooksTimeout')?.value as HooksTimeout
+  const hooksTimeout = getConfigValue(pageConfig, 'hooksTimeout')?.value
   if (!configValue) return null
   const hookFn = configValue.value
   if (!hookFn) return null
@@ -88,24 +105,56 @@ function assertHookFn(
   checkType<HookFn>(hookFn)
 }
 
-function getHookTimeout(hooksTimeout: HooksTimeout | undefined, hookName: HookName): HookTimeout {
+function getHookTimeout(hooksTimeoutProvidedByUser: unknown, hookName: HookName): HookTimeout {
+  const hooksTimeout = validateAndNormalizeHooksTimeout(hooksTimeoutProvidedByUser)
+
   const defaultHookTimeout = getHookTimeoutDefault(hookName)
-  if (!hooksTimeout || !(hookName in hooksTimeout)) {
-    return defaultHookTimeout
-  }
-  const timeoutErr = hooksTimeout[hookName]?.error || defaultHookTimeout.timeoutErr
-  const timeoutWarn = hooksTimeout[hookName]?.warning || defaultHookTimeout.timeoutWarn
+  if (!hooksTimeout) return defaultHookTimeout
+  const error = hooksTimeout[hookName]?.error ?? defaultHookTimeout.error
+  const warning = hooksTimeout[hookName]?.warning ?? defaultHookTimeout.warning
+
   return {
-    timeoutErr,
-    timeoutWarn
+    error,
+    warning
   }
+}
+
+// Ideally this should be called only once and at build-time (to avoid bloating the client-side bundle), but we didn't implement any mechanism to valide config values at build-time yet
+function validateAndNormalizeHooksTimeout(hooksTimeoutProvidedByUser: unknown): HooksTimeout {
+  const hooksTimeout: HooksTimeout = {}
+  if (!hooksTimeoutProvidedByUser) return hooksTimeout
+  assert(
+    hooksTimeoutProvidedByUser === undefined || isObject(hooksTimeoutProvidedByUser),
+    `Setting ${pc.cyan('hooksTimeout')} should be an object`
+  )
+  Object.entries(hooksTimeoutProvidedByUser).forEach(([hookName, hookTimeout]) => {
+    if (!hookTimeout) return
+    assert(isObject(hookTimeout), `Setting ${pc.cyan(`hooksTimeout.${hookName}`)} should be an object`)
+    const [timeoutErr, timeoutWarn] = (['error', 'warning'] as const).map((timeoutName) => {
+      const timeoutVal = hookTimeout[timeoutName]
+      const errPrefix = `Setting ${pc.cyan(`hooksTimeout.${hookName}.${timeoutName}`)}` as const
+      assert(
+        timeoutVal === false || typeof timeoutVal === 'number',
+        `${errPrefix} should be ${pc.cyan('false')} or a number`
+      )
+      if (timeoutVal) {
+        assert(timeoutVal > 0, `${errPrefix} should be a positive number`)
+      }
+      return timeoutVal
+    })
+    hooksTimeout[hookName as HookName] = {
+      error: timeoutErr!,
+      warning: timeoutWarn!
+    }
+  })
+  return hooksTimeout
 }
 
 function getHookTimeoutDefault(hookName: HookName): HookTimeout {
   if (hookName === 'onBeforeRoute') {
     return {
-      timeoutErr: 5 * 1000,
-      timeoutWarn: 1 * 1000
+      error: 5 * 1000,
+      warning: 1 * 1000
     }
   }
   if (
@@ -117,12 +166,12 @@ function getHookTimeoutDefault(hookName: HookName): HookTimeout {
     hookName === 'prerender'
   ) {
     return {
-      timeoutErr: 10 * 60 * 1000,
-      timeoutWarn: 30 * 1000
+      error: 10 * 60 * 1000,
+      warning: 30 * 1000
     }
   }
   return {
-    timeoutErr: 30 * 1000,
-    timeoutWarn: 4 * 1000
+    error: 30 * 1000,
+    warning: 4 * 1000
   }
 }

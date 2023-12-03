@@ -5,7 +5,6 @@ export type { ConfigMeta }
 export type { HookName }
 export type { HookNamePage }
 export type { HookNameGlobal }
-export type { HooksTimeout }
 
 export type { GuardAsync }
 export type { GuardSync }
@@ -35,6 +34,7 @@ import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/
 import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
 import type { ConfigVikeUserProvided } from '../ConfigVike.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
+import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
 import type { PageContextClient, PageContextServer } from '../types.js'
 
 type HookName = HookNamePage | HookNameGlobal | HookNameOldDesign
@@ -381,16 +381,7 @@ type ConfigBuiltIn = {
   prefetchStaticAssets?: PrefetchStaticAssets | ImportString
 
   /** Modify the tiemouts of hooks. */
-  hooksTimeout?: HooksTimeout
+  hooksTimeout?: HooksTimeoutProvidedByUser
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`
-type HooksTimeout = Partial<
-  Record<
-    HookName,
-    {
-      error?: number
-      warning?: number
-    }
-  >
->

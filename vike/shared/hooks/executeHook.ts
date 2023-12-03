@@ -20,7 +20,7 @@ function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookF
   const {
     hookName,
     hookFilePath,
-    hookTimeout: { timeoutErr, timeoutWarn }
+    hookTimeout: { error: timeoutErr, warning: timeoutWarn }
   } = hook
 
   let resolve!: (ret: T) => void
@@ -41,7 +41,7 @@ function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookF
     if (currentTimeoutErr) clearTimeout(currentTimeoutErr)
   }
   const currentTimeoutWarn =
-    isNumber(timeoutWarn) &&
+    isNumberReal(timeoutWarn) &&
     setTimeout(() => {
       assertWarning(
         false,
@@ -50,7 +50,7 @@ function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookF
       )
     }, timeoutWarn)
   const currentTimeoutErr =
-    isNumber(timeoutErr) &&
+    isNumberReal(timeoutErr) &&
     setTimeout(() => {
       const err = getProjectError(
         `Hook timeout: the ${hookName}() hook defined by ${hookFilePath} didn't finish after ${humanizeTime(
@@ -75,6 +75,6 @@ function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookF
   return promise
 }
 
-function isNumber(timeout: false | number): timeout is number {
+function isNumberReal(timeout: false | number): timeout is number {
   return !!timeout && timeout !== Infinity
 }
