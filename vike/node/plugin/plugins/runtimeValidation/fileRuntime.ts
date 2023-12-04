@@ -1,7 +1,7 @@
 export { assertFileRuntime }
 
 import { Plugin } from 'vite'
-import { assertUsage } from '../utils.js'
+import { assertUsage } from '../../utils.js'
 
 function assertFileRuntime(): Plugin {
   return {
