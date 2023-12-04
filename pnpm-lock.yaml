@@ -2073,8 +2073,8 @@ importers:
         version: 0.5.21
     devDependencies:
       '@brillout/release-me':
-        specifier: ^0.1.9
-        version: 0.1.9
+        specifier: ^0.1.10
+        version: 0.1.10
       '@types/estree':
         specifier: ^1.0.0
         version: 1.0.5
@@ -2506,8 +2506,8 @@ packages:
       semver: 7.5.4
     dev: false
 
-  /@brillout/release-me@0.1.9:
-    resolution: {integrity: sha512-PG42NBN+EBLWMxnngpTikNd/pOjovXEMti8S9H+1u9Dldj2UGK+nrJxBQkDLhpFcGojBDy4XnLjyxWSHjESm/g==}
+  /@brillout/release-me@0.1.10:
+    resolution: {integrity: sha512-NgXSXV7lQQj8bySkfgkZEEYUUDl5N01Oc9g3U7KW/8sUD2fxiDcbZneBBwCQxl1dnMPE62nToJnlyqa6G9rOFA==}
     hasBin: true
     dependencies:
       conventional-changelog: 5.1.0
@@ -4620,7 +4620,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.3)
       '@types/babel__core': 7.20.4
       react-refresh: 0.14.0
-      vite: 4.5.0(@types/node@17.0.45)
+      vite: 4.5.0(@types/node@20.9.0)
     transitivePeerDependencies:
       - supports-color
     dev: false
