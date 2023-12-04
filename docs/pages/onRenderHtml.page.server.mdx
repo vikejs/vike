@@ -1,26 +1,22 @@
-import { HookTypeScriptHints } from '../components'
+import { HookTypeScriptHints, IntegrationPackage, IntegrationPackageNames } from '../components'
 import { Link } from '@brillout/docpress'
 
-The `render()` hook of `.page.server.js` has been renamed to `onRenderHtml()` for the V1 design.
+Environment: server.
 
-> It's just a rename: the hook is equivalent and its documentation is the same as <Link href="/render-hook" />.
->
-> The documentation will be moved to this page after the stable release of the V1 design.
+The `onRenderHtml()` hook defines how pages are rendered to HTML.
 
-See <Link href="/migration/v1-design#renamed-hooks" />.
+> If you use a <IntegrationPackage/>, then you don't need to define `onRenderHtml()` as it's already defined by <IntegrationPackageNames />.
 
-{ /*NOTE(aurelien) move the content of render-hook.page.server.mdx here*/ }
+```js
+// +onRenderHtml.js
+// Environment: server
 
-## TypeScript
-
-```ts
-export { onRenderHtml }
-
-import type { OnRenderHtmlAsync } from 'vike/types'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml, createElement } from 'some-ui-framework'
 
-const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
+export { onRenderHtml }
+
+async function onRenderHtml(pageContext){
   const { Page, pageProps } = pageContext
   const pageHtml = await renderToHtml(createElement(Page, pageProps))
 
@@ -37,10 +33,37 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
   return {
     documentHtml,
     pageContext: {
-      // We can add some `pageContext` here
+      // We can define pageContext values here
     }
   }
 }
 ```
 
+Where `pageContext.Page` is the `Page` value of the page that is being rendered, see <Link href="/Page" />.
+
+
+## TypeScript
+
+```ts
+// /**/+onRenderHtml.ts (usually /renderer/+onRenderHtml.ts)
+// Environment: server
+
+export { onRenderHtml }
+
+import type { OnRenderHtmlAsync } from 'vike/types'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
+import { renderToHtml, createElement } from 'some-ui-framework'
+
+const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
+  // ...
+}
+```
+
 <HookTypeScriptHints hookTypeName="OnRenderHtmlAsync" />
+
+
+## See also
+
+ - <Link href="/onRenderClient" />
+ - <Link href="/Page" />
+ - <Link href="/pageContext" />

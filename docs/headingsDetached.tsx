@@ -184,49 +184,68 @@ const headingsDetached = [
     url: '/common-problems'
   },
   {
-    title: <code>onBeforePrerenderStart()</code>,
-    url: '/onBeforePrerenderStart'
+    title: (
+      <>
+        <code>prerender()</code> hook
+      </>
+    ),
+    url: '/prerender'
   },
   {
-    title: <code>onPrerenderStart()</code>,
-    url: '/onPrerenderStart'
+    title: <code>doNotPrerender</code>,
+    url: '/doNotPrerender'
   },
   {
-    title: <code>onRenderHtml()</code>,
-    url: '/onRenderHtml'
+    title: (
+      <>
+        <code>render()</code> hook (server-side)
+      </>
+    ),
+    url: '/render-hook'
   },
   {
-    title: <code>onRenderClient()</code>,
-    url: '/onRenderClient'
+    title: (
+      <>
+        <code>render()</code> hook (client-side)
+      </>
+    ),
+    url: '/render-client'
   },
   {
-    title: <code>meta</code>,
-    url: '/meta'
+    title: <code>.page.js</code>,
+    url: '/.page.js'
   },
   {
-    title: <code>+config.h.js</code>,
-    url: '/config'
+    title: <code>.page.server.js</code>,
+    url: '/.page.server.js'
   },
   {
-    title: 'Config',
-    url: '/Config'
+    title: <code>.page.client.js</code>,
+    url: '/.page.client.js'
   },
   {
-    title: 'Architecture',
-    url: '/architecture',
-    sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', 'Do-one-thing-do-it-well']
+    title: (
+      <>
+        <code>Page</code> (server-side)
+      </>
+    ),
+    url: '/Page-server'
   },
   {
-    title: <code>client</code>,
-    url: '/client'
+    title: (
+      <>
+        <code>Page</code> (client-side)
+      </>
+    ),
+    url: '/Page-client'
   },
   {
-    title: <code>route</code>,
-    url: '/route'
+    title: <code>.page.route.js</code>,
+    url: '/.page.route.js'
   },
   {
-    title: 'Built-in renderers',
-    url: '/renderers'
+    title: <code>_default.page.route.js</code>,
+    url: '/_default.page.route.js'
   },
   {
     title: 'Vue Router & React Router',
@@ -239,26 +258,6 @@ const headingsDetached = [
   {
     title: 'React Router',
     url: '/react-router'
-  },
-  {
-    title: (
-      <>
-        <code>vike-*</code> packages
-      </>
-    ),
-    url: '/vike-packages'
-  },
-  {
-    title: <code>extends</code>,
-    url: '/extends'
-  },
-  {
-    title: (
-      <>
-        Header file (<code>.h.js</code>)
-      </>
-    ),
-    url: '/header-file'
   },
   {
     title: <code>throw RenderErrorPage()</code>,
@@ -293,15 +292,6 @@ const headingsDetached = [
     url: '/migration/0.4.134'
   },
   {
-    title: <code>usePageContext()</code>,
-    url: '/usePageContext'
-  },
-  {
-    title: 'Abort',
-    url: '/abort',
-    sectionTitles: ['`throw redirect()` VS `throw render()`']
-  },
-  {
     title: 'Page Redirection',
     url: '/page-redirection'
   },
@@ -334,7 +324,45 @@ const headingsDetached = [
     url: '/press'
   },
   {
-    title: '`ClientOnly`',
-    url: '/ClientOnly'
+    title: 'Vike Packages',
+    url: '/vike-packages'
+  },
+  {
+    title: 'Abort',
+    url: '/abort',
+    sectionTitles: ['`throw redirect()` VS `throw render()`']
+  },
+  {
+    title: '`.server.js` & `.client.js`',
+    url: '/file-env'
+  },
+  {
+    title: 'Custom Exports/Hooks',
+    url: '/exports'
+  },
+  {
+    title: '`onRenderHtml()` hook',
+    url: '/onRenderHtml'
+  },
+  {
+    title: '`onRenderClient()` hook',
+    url: '/onRenderClient'
+  },
+  {
+    title: '`onBeforeRoute()` hook',
+    // titleInNav: '`onBeforeRoute`',
+    url: '/onBeforeRoute'
+  },
+  {
+    title: '`disableAutoFullBuild`',
+    url: '/disableAutoFullBuild'
+  },
+  {
+    title: '`hydrationCanBeAborted`',
+    url: '/hydrationCanBeAborted'
+  },
+  {
+    title: '`extends`',
+    url: '/extends'
   }
 ] satisfies HeadingDetachedDefinition[]

@@ -1,4 +1,4 @@
-// https://vike.dev/clientRouting
+// https://vike.dev/onPageTransitionStart
 export { onPageTransitionStart }
 
 import type { OnPageTransitionStartAsync } from 'vike/types'

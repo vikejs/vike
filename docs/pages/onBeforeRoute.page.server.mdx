@@ -24,7 +24,7 @@ We can also use it to [implement a custom router](https://github.com/vikejs/vike
 <Warning>For use cases other than i18n, open a GitHub ticket or reach out on Discord: `onBeforeRoute()` is purposely limited but the limitations can be lifted in order to unlock new capabilities.</Warning>
 
 Example:
-- <Link href='/examples/i18n/renderer/_default.page.route.js' />
+- <Link href='/examples/i18n-v1/renderer/+onBeforeRoute.js' />
 
 ## TypeScript
 
@@ -34,13 +34,7 @@ export { onBeforeRoute }
 import type { OnBeforeRouteAsync } from 'vike/types'
 
 const onBeforeRoute: OnBeforeRouteAsync = async (pageContext): ReturnType<OnBeforeRouteAsync> => {
-  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlOriginal)
-  return {
-    pageContext: {
-      locale,
-      urlLogical: urlWithoutLocale
-    }
-  }
+  // ...
 }
 ```
 

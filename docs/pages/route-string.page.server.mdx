@@ -1,10 +1,10 @@
 import { Link } from '@brillout/docpress'
 import RouteDomainDriven from '../components/RouteDomainDriven.mdx'
 
-For a page `/pages/film.page.js`, a Route String can be defined in a `/pages/film.page.route.js` adjacent file.
+For a page `/pages/film/+Page.js`, a Route String can be defined in an adjacent file `/pages/film/+route.js` .
 
 ```js
-// /pages/film.page.route.js
+// /pages/film/+route.js
 
 // Matches the URLs:
 //  /film/1
@@ -27,13 +27,13 @@ For more advanced routing logic, consider using a [Route Function](/route-functi
 ## Globs
 
 ```js
-// product.page.route.js
+// /pages/product/+route.js
 
-// Match URLs that start with `/product/*`:
-// `/product/42`
-// `/product/1337/details`
-// `/product/2048/some/deeply/nested/path`
-//  ...
+// Match URLs that start with /product/* such as:
+//   /product/42
+//   /product/1337/details
+//   /product/2048/some/deeply/nested/path
+//   ...
 export default '/product/*'
 ```
 
@@ -50,13 +50,14 @@ If you define multiple globs, then the glob values are available at `pageContext
 You can use a <Link href="#globs">glob</Link> to catch all URLs:
 
 ```js
-// catch-all.page.route.js
+// /pages/catch-all/+route.js
 
 // Route all URLs to a single page
 export default '*'
 ```
+
 ```js
-// catch-all.page.js
+// /pages/catch-all/+Page.js
 
 // The only page of our app.
 export { Page }

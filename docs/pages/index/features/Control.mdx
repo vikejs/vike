@@ -1,29 +1,34 @@
 With Vike, you control how your pages are rendered:
 
 ```jsx
-// /pages/about.page.js
+// /pages/about/+Page.js
 // Environment: browser and server
 
-// Vike uses Filesystem Routing: the file `/pages/about.page.js` matches the URL `/about`.
+export { Page }
+
+// Vike uses Filesystem Routing: the file `/pages/about/+Page.js` matches the URL `/about`.
 
 // `Page` can be anything you want — typically a React/Vue/Svelte/... component.
-export function Page() {
+function Page() {
   return <>
     <h1>About</h1>
     <p>This is our first Vike app.</p>
   </>
 }
 ```
+
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
+
+export { onRenderHtml }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 // This can be any UI framework (React, Vue, Svelte, ...)
 import { renderToHtml } from 'my-favorite-ui-framework'
 
 // You control how `Page` is rendered to HTML
-export async function render({ Page }) {
+async function onRenderHtml({ Page }) {
   const pageHtml = await renderToHtml(Page)
   const title = 'My first Vike app'
   return escapeInject`<!DOCTYPE html>
@@ -37,14 +42,17 @@ export async function render({ Page }) {
     </html>`
 }
 ```
+
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+onRenderClient.js
 // Environment: browser
+
+export { onRenderClient }
 
 import { hydrateDom } from 'my-favorite-ui-framework'
 
 // You control how `Page` is hydrated
-export async function render({ Page }) {
+async function onRenderClient({ Page }) {
   await hydrateDom(Page)
 }
 ```

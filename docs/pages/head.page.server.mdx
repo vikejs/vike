@@ -1,20 +1,20 @@
 import { Link } from '@brillout/docpress'
 
 The `<head>` tags (e.g. `<title>` or `<meta name="description">`)
-are defined by our [server-side `render()` hook](/render-hook).
+are defined by our [server-side `onRenderHtml()` hook](/onRenderHtml).
 
 > We can also define `<head>` tags on a page-by-page basis and on a component-by-component basis, see sections below.
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
-export { render }
+export { onRenderHtml }
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   return escapeInject`<html>
     <head>
       <title>SpaceX</title>
@@ -30,117 +30,9 @@ async function render(pageContext) {
 ```
 
 
-## By page (static)
+## By page
 
-To define `<head>` tags for a specific page, we can use a <Link href="/exports" text="Custom Export" />.
-
-```js
-// /pages/about.page.js
-
-// Custom Export
-export const documentProps = {
-  // This title and description will override the defaults
-  title: 'About SpaceX',
-  description: 'Our mission is to explore the galaxy.'
-}
-```
-```js
-// /renderer/_default.page.server.js
-// Environment: server
-
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { renderToHtml } from 'some-ui-framework'
-
-export { render }
-
-async function render(pageContext) {
-  // Our custom export is available here as `pageContext.exports.documentProps`
-  const { documentProps } = pageContext.exports
-
-  // Defaults
-  const title = documentProps.title || 'SpaceX'
-  const description = documentProps.description || 'We deliver payload to space.'
-
-  return escapeInject`<html>
-    <head>
-      <title>${title}</title>
-      <meta name="description" content="${description}">
-    </head>
-    <body>
-      <div id="root">
-        ${dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
-      </div>
-    </body>
-  </html>`
-}
-```
-
-
-## By page (dynamic)
-
-To define `<head>` tags that are dynamic (determined at run-time),
-we can also use a <Link href="/exports" text="Custom Export" />.
-
-```js
-// /pages/rocket.page.route.js
-export const '/rocket/@rocketSlug'
-```
-```js
-// /pages/rocket.page.js
-
-// Custom Export
-export { getDocumentProps }
-
-// getDocumentProps() can use fetched data to provide <title> and <meta name="description">
-function getDocumentProps(pageProps) {
-  return {
-    title: pageProps.product.name,
-    description: pageProps.product.description
-  }
-}
-```
-```js
-// /renderer/_default.page.server.js
-// Environment: server
-
-export { render }
-
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { renderToHtml } from 'some-ui-framework'
-
-async function render(pageContext) {
-  // `pageProps` is provided by our data fetching mechanism, see the "Data Fetching" Guide.
-  const { Page, pageProps } = pageContext
-
-  // Custom exports are available at pageContext.exports
-  const { getDocumentProps } = pageContext.exports
-
-  const title = (
-    // Conditional call in case a page doesn't define getDocumentProps()
-    getDocumentProps?.(pageProps).title ||
-    // Default for pages that don't define getDocumentProps()
-    'SpaceX'
-  )
-  const description = (
-    // Conditional call in case a page doesn't define getDocumentProps()
-    getDocumentProps?.(pageProps).description ||
-    // Default for pages that don't define getDocumentProps()
-    'We deliver payload to space.'
-  )
-
-  return escapeInject`<html>
-    <head>
-      <title>${title}</title>
-      <meta name="description" content="${description}">
-    </head>
-    <body>
-      <div id="root">
-        ${dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
-      </div>
-    </body>
-  </html>`
-}
-```
+To define `<head>` tags on page-by-page basis, you can create a new setting, see <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
 
 
 ## By component
@@ -153,13 +45,15 @@ To define `<head>` tags by some deeply nested view (React/Vue/...) component:
 For example:
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
+
+export { onRenderHtml }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import renderToHtml from 'some-ui-framework'
 
-export async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   // We use our UI framework to pass `pageContext.documentProps` to all components
   // of our component tree. (E.g. React Context or Vue's `app.config.globalProperties`.)
   const pageHtml = await renderToHtml(
@@ -200,19 +94,22 @@ documentProps.description = 'Me too.'
 If we use Client Routing, we need to make sure to update `document.title` upon page navigation:
 
 ```js
-// /renderer/_default.page.server.js
-// Environment: server
+// /renderer/+config.h.js
+// Environment: config
 
-// We make `pageContext.documentProps` available in the browser.
-export const passToClient = ['documentProps', 'pageProps']
+export default {
+  // We make `pageContext.documentProps` available in the browser.
+  passToClient: ['documentProps', 'pageProps']
+}
 ```
+
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+onRenderClient.js
 // Environment: browser
 
-export { render }
+export { onRenderClient }
 
-function render(pageContext) {
+async function onRenderClient(pageContext) {
   if (!pageContext.isHydration) {
     // Page navigation — we update the website's title
     document.title = pageContext.documentProps.title
@@ -232,13 +129,15 @@ the aforementioned solutions are simpler and work for most use cases.
 Head libraries already sanitize the HTML `<head>`, this means we can skip `escapeInject` and wrap the overall result with `dangerouslySkipEscape()`.
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
+
+export { onRenderHtml }
 
 import { dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
-export async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   return dangerouslySkipEscape(await renderToHtml(pageContext.Page))
 }
 ```
@@ -246,5 +145,4 @@ export async function render(pageContext) {
 
 ## Markdown
 
-For pages defined with markdown, see [Integration > Markdown > `<head>` (`pageContext.exports`)](/markdown#head-pagecontext-exports).
-
+For pages defined with markdown, see <Link href="/markdown#metadata-with-new-settings" />.

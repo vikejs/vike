@@ -15,8 +15,8 @@ To change the Base URL we:
      base: '/some-base/'
    }
    ```
-1. Use [<ImportMeta prop='env.BASE_URL' />](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link>` component that prepends the Base URL. Example: <RepoLink path='/examples/base-url/components/Link.jsx' />.
-1. Use <ImportMeta prop='env.BASE_URL' /> for referencing static assets living in [`public/`](/static-directory#public). Example: <RepoLink path='/examples/base-url/renderer/_default.page.server.jsx' />.
+1. Use [<ImportMeta prop='env.BASE_URL' />](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link>` component that prepends the Base URL. Example: <RepoLink path='/examples/base-url-v1/components/Link.jsx' />.
+1. Use <ImportMeta prop='env.BASE_URL' /> for referencing static assets living in [`public/`](/static-directory#public). Example: <RepoLink path='/examples/base-url-v1/renderer/+onRenderHtml.jsx' />.
 
 ```html
 <!-- view-source:https://my-website.com/some-base/ -->
@@ -40,7 +40,7 @@ To change the Base URL we:
 ```
 
 Example:
- - <RepoLink path='/examples/base-url/' />
+ - <RepoLink path='/examples/base-url-v1/' />
 
 
 ## `baseAssets`
@@ -96,7 +96,7 @@ Note how the Base URL of our page URLs isn't changed: our app is still served at
 > We can use `process.env.BASE_ASSETS` and <ImportMeta prop='env.BASE_ASSETS' /> to access the `baseAssets` value in our code.
 
 Example:
- - <RepoLink path='/examples/base-url-cdn/' />
+ - <RepoLink path='/examples/base-url-cdn-v1/' />
 
 
 ## `baseServer`
@@ -151,4 +151,4 @@ export default {
 > We can use `process.env.BASE_SERVER` and <ImportMeta prop='env.BASE_SERVER' /> to access the `baseServer` value in our code.
 
 Example:
- - <RepoLink path='/examples/base-url-server/' />
+ - <RepoLink path='/examples/base-url-server-v1/' />

@@ -5,28 +5,28 @@ Usually, `passToClient` is used with <Link text={<code>onBeforeRender()</code>} 
 By default `pageContext` is available only on the server-side. We use `passToClient` to make parts of `pageContext` available in the browser.
 
 ```js
-// *.page.server.js
-// Environment: server
+// /renderer/+config.h.js
+// Environment: config
 
-export { passToClient }
-
-// Example of `pageContext` often passed to the browser
-const passToClient = [
-  'pageProps',
-  'routeParams',
-  // (Deep selection isn't implemented yet; open a GitHub ticket if you want this.)
-  'user.id',
-  'user.name'
-]
+export default {
+  // Example of pageContext values that usually need to be passed to the browser
+  passToClient: [
+    'pageProps',
+    'routeParams',
+    // (Deep selection isn't implemented yet; open a GitHub ticket if you want this.)
+    'user.id',
+    'user.name'
+  ]
+}
 ```
 
 ```js
-// *.page.client.js
+// +onRenderClient.js
 // Environment: browser
 
-export { render }
+export { onRenderClient }
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   // Thanks to `passToClient`, these `pageContext` are available here in the browser
   pageContext.pageProps
   pageContext.routeParams

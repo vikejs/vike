@@ -1,19 +1,68 @@
-import { HookTypeScriptHints } from '../components'
+import { HookTypeScriptHints, IntegrationPackage, IntegrationPackageNames } from '../components'
 import { Link } from '@brillout/docpress'
 
-The `render()` hook of `.page.client.js` has been renamed to `onRenderClient()` for the V1 design.
+Environment: client.
 
-> It's just a rename: the hook is equivalent and its documentation is the same as <Link href="/render-client" />.
->
-> The documentation will be moved to this page after the stable release of the V1 design.
+The `onRenderClient()` hook defines how pages are <Link text="hydrated" href="/hydration" /> and rendered on the client-side.
 
-See <Link href="/migration/v1-design#renamed-hooks" />.
+> If you use a <IntegrationPackage/>, then you don't need to define `onRenderClient()` as it's already defined by <IntegrationPackageNames />.
 
-{ /*NOTE(aurelien) move the content of render-client.page.server.mdx here*/ }
+```js
+// +onRenderClient.js
+// Environment: browser
+
+import { renderToDom, hydrateDom } from 'some-ui-framework'
+
+export { onRenderClient }
+
+async function onRenderClient(pageContext) {
+  const { Page } = pageContext
+
+  // SPA:
+  await renderToDom(Page)
+
+  // SSR:
+  await hydrateDom(Page)
+}
+```
+
+Where:
+ - `pageContext.Page` is the `Page` value of the page that is being rendered, see <Link href="/Page" />.
+ - `pageContext` is a subset of the <Link href="/pageContext">`pageContext`</Link> defined on the server-side.
+
+You can use [`passToClient`](/passToClient) to determine what subset of `pageContext` is sent to the browser.
+
+> See <Link href="/render-modes" /> and <Link href="/clientRouting">Client Routing</Link> for illustrations of conditional DOM
+> hydration, for supporting both SPA and SSR.
+
+
+## SPA vs SSR
+
+When implementing SSR, the client-side `onRenderClient()` hook works in tandem with the
+<Link text={<>server-side <code>onRenderHtml()</code> hook</>} href="/onRenderHtml" />: the server-side `onRenderHtml()`
+hook renders the page to HTML and the client-side `onRenderClient()` hook <Link text="hydrates" href="/hydration" /> the
+HTML.
+
+When implementing an SPA, then the client-side `onRenderClient()` hook is solely responsible for rendering the page.
+(There is still a server-side `onRenderHtml()` hook but it only renders the HTML shell; it doesn't render
+`pageContext.Page` to HTML.)
+
+See <Link href='/render-modes' />.
+
+
+## Multiple `onRenderClient()` hooks
+
+If you create `/pages/star-wars/+onRenderClient.js` then you define how `/pages/star-wars/+Page.js` is rendered while overriding the global `onRenderClient()` hook.
+
+By defining multiple `onRenderClient()` hooks, you can define different renderings for different pages. See <Link href='/multiple-renderer' />.
+
 
 ## TypeScript
 
 ```ts
+// /**/+onRenderClient.ts (usually /renderer/+onRenderClient.ts)
+// Environment: browser
+
 export { onRenderClient }
 
 import type { OnRenderClientAsync } from 'vike/types'
@@ -22,7 +71,15 @@ import { hydrateDom } from 'some-ui-framework'
 const onRenderClient: OnRenderClientAsync = async (
   pageContext
 ): ReturnType<OnRenderClientAsync> => {
-  const { Page } = pageContext
-  await hydrateDom(Page) // SSR
+  // ...
 }
 ```
+
+{/* NOTE(aurelien) no HookTypeScriptHints here because onRenderClient has no return value */}
+
+
+## See also
+
+ - <Link href="/onRenderHtml" />
+ - <Link href="/Page" />
+ - <Link href="/pageContext" />

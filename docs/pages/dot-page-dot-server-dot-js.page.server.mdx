@@ -1,16 +1,9 @@
-import { Link } from '@brillout/docpress'
+import { Link, Danger } from '@brillout/docpress'
 
-Environment: server.
-
-A `.page.server.js` file can export the following:
-- `export { Page }`
-- `export { onBeforeRender }`
-- `export { passToClient }`
-- `export { render }`
-- `export { prerender }`
-- `export { doNoPrerender }`
-- <Link href="/exports" />
-
-The `.page.server.js` file is lazy-loaded: it is loaded only when needed which means that if no URL request were to match the page's route then `.page.server.js` is never loaded in our Node.js process' memory.
-
-The `.page.server.js` file is always loaded & executed in Node.js.
+<Danger>
+  `*.page*.js` files are deprecated in favor of `+*.js` files, see
+  <ul>
+    <li><Link href="/migration/v1-design" /></li>
+    <li><Link href="/Page" /></li>
+  </ul>
+</Danger>

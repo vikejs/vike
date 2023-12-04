@@ -29,7 +29,7 @@ Not only can you manually integrate with any UI framework you want and however y
 // /renderer/+onRenderHtml.js
 // Environment: server
 
-export default onRenderHtml
+export { onRenderHtml }
 
 import { renderToHtml } from 'some-ui-framework'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
@@ -53,7 +53,7 @@ async function onRenderHtml(pageContext) {
 // /renderer/+onRenderClient.js
 // Environment: browser
 
-export default onRenderClient
+export { onRenderClient }
 
 import { renderToDom } from 'some-ui-framework'
 

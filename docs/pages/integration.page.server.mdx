@@ -17,17 +17,17 @@ In principle, you should be able to use Vike with any tool you want.
 ## UI tools
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 // This can be any UI framework (React, Vue, Solid, Svelte, ...)
 import renderToHtml from 'some-ui-framework'
 
-export { render }
+export { onRenderHtml }
 
-async function render(pageContext) {
-  // `Page` is the `export { Page }` of our `*.page.js` files;
+async function onRenderHtml(pageContext) {
+  // `Page` is the `export { Page }` of our +Page.js files;
   // Vike doesn't do anything with `Page` and just makes it available as
   // `pageContext.Page`; we can export any `Page` value we want and do whatever we want with it.
   const { Page } = pageContext
@@ -51,14 +51,14 @@ async function render(pageContext) {
 ```
 
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+onRenderClient.js
 // Environment: browser
 
-export { render }
+export { onRenderClient }
 
 import { hydrateDom } from 'some-ui-framework'
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   const { Page } = pageContext
   // We control how our pages are hydrated
   await hydrateDom(Page)
@@ -75,10 +75,10 @@ Integrating a UI tool is usually only a matter of following its official install
 ## Client-side tools
 
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+onRenderClient.js
 // Environment: browser
 
-export { render }
+export { onRenderClient }
 
 import { hydrateDom } from 'some-ui-framework'
 
@@ -87,7 +87,7 @@ Sentry.init()
 // And also for initializing a Service Worker.
 navigator.serviceWorker.register(/* ... */)
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   // Here we can integrate performance measurement tools, e.g. to measure hydration performance
   const { Page } = pageContext
   await hydrateDom(Page)

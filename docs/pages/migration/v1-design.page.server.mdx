@@ -1,12 +1,10 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
 
-<Warning>The V1 design is in beta.</Warning>
+Despite being a simple change, the V1 design introduces new foundational capabilities. If you're curious: <Link href="/why-the-v1-design" />
 
-The overall architecture stays the same: the V1 design only replaces `.page.js` files with `+` files: `+config.h.js`, `+Page.js`, `+route.js`, ...
+The overall architecture stays the same: the V1 design is mostly about replacing `.page.js` files with `+` files: `+config.h.js`, `+Page.js`, `+route.js`, ...
 
-Despite being simple, it introduces new foundational capabilities. If you're curious: <Link href="/why-the-v1-design" />
-
-The migration is straightforward and usually quick to implement. We encourage to migrate sooner rather than later.
+The migration is straightforward and typically quick to implement. We encourage you to migrate sooner rather than later.
 
 > Don't hesitate to reach out if you run into any issue.
 
@@ -209,9 +207,9 @@ Old name | New name
 
 ## Custom hooks/exports
 
-If you use <Link text="custom hooks/exports" href="/exports" />, then replace them with custom configs.
+If you use [custom hooks/exports](https://vite-plugin-ssr.com/exports), then replace them with custom hooks/settings.
 
-You define custom configs by using `meta`:
+You can create your own hooks and settings by using `meta`:
 
 ```ts
 // /renderer/+config.h.ts
@@ -220,9 +218,9 @@ import type { Config } from 'vike/types'
 
 export default {
   meta: {
-    // We define a new config 'title'
+    // We create a new setting called `title`
     title: {
-      // The value of 'title' should only be loaded on the server
+      // The value of `title` should be loaded only on the server
       env: { server: true }
     }
   }
@@ -232,7 +230,9 @@ export default {
 ```js
 // /renderer/+onRenderHtml.js
 
-export default function(pageContext) {
+export { onRenderHtml }
+
+async function onRenderHtml(pageContext) {
   // Config values are available at pageContext.config
   const { title } = pageContext.config
   return escapeInject`<html>
@@ -284,7 +284,7 @@ For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> in o
 
 The new config <Link text={<code>client</code>} href="/client" /> allows you to define client-side initialization code.
 
-> You can also keep using <Link text={<code>onHydrationEnd()</code>} href="/clientRouting#usage-options" />.
+> You can also keep using <Link text={<code>onHydrationEnd()</code>} href="/onHydrationEnd" />.
 
 ```js
 // +config.h.js
@@ -302,15 +302,11 @@ console.log("I'm run when the client-side JavaScript is loaded.")
 
  - [#578 [RFC] V1 Design](https://github.com/vikejs/vike/issues/578)
  - <Link href="/why-the-v1-design" />
- - <Link href="/config" />
  - <Link href="/header-file" />
- - <Link href="/Config" />
- - <Link href="/renderers" />
- - <Link href="/architecture" />
+ - <Link href="/config" />
+ - <Link href="/vike-packages" />
  - <Link href="/client" />
  - <Link href="/meta" />
  - <Link href="/extends" />
- - <Link href="/onRenderHtml" />
- - <Link href="/onRenderClient" />
  - <Link href="/onPrerenderStart" />
  - <Link href="/onBeforePrerenderStart" />

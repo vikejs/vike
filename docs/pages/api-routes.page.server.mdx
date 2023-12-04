@@ -1,6 +1,8 @@
 import { Link, Warning } from '@brillout/docpress'
 
-Vike doesn't implement [API routes](https://nextjs.org/docs/api-routes/introduction) by design. We believe decoupling the API is a more robust approach.
+Vike doesn't implement [API routes](https://nextjs.org/docs/api-routes/introduction) by design.
+
+> We believe decoupling API tools from the frontend framework is a more robust and future-proof approach.
 
 Instead use:
 
@@ -19,7 +21,7 @@ Instead use:
 - GraphQL
   <Warning>
     If you aren't a *very* large team, then GraphQL is most likely over-engineering. RPC (such as Telefunc and tRPC) is simpler, and
-    actually more flexible as long as you aren't a very large team.
+    actually more flexible (as long as you aren't a very large team).
 
     We recommend getting started with RPC and use GraphQL only later if/when the need arises.
   </Warning>

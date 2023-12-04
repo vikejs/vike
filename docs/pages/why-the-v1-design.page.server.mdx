@@ -1,51 +1,31 @@
 import { Link } from '@brillout/docpress'
 
-The <Link text="V1 design" href="/migration/v1-design" /> introduces new foundational capabilities. For example, it enables you to create <Link text="custom configs" href="/meta" /> such as `ssr: boolean`.
+The <Link text="V1 design" href="/migration/v1-design" /> enables <Link href="/vike-packages">Vike packages</Link> to extend Vike for deeply integrating tools.
 
 ```js
 // /pages/admin/+config.h.js
+
+import vue from 'vike-vue'
+import graphql from 'vike-vue-apollo'
 
 export default {
   // Render the Admin Panel as SPA
-  ssr: false
+  ssr: false,
+  // Use Vue + GraphQL for the Admin Panel
+  extends: [vue, graphql]
 }
 ```
 
-> Vike will soon release <Link text="built-in renderers" href="/renderers" /> for React/Vue/Solid which already implement such `ssr` toggle. (Except for React since RSC supersedes such `ssr` toggle.)
-
-You'll even be able to choose and switch renderers on a page-by-page basis:
-
-```js
-// /pages/admin/+config.h.js
-
-import graphqlRenderer from 'vike-react-relay'
-
-export default {
-  // Use GraphQL for the Admin Panel
-  ...graphqlRenderer
-}
-```
+You can even choose packages on a page-by-page basis:
 
 ```js
 // /pages/product/@id/+config.h.js
 
-import rpc from 'vike-react-telefunc'
+import react from 'vike-react'
+import telefunc from 'vike-react-telefunc'
 
 export default {
-  // Use React + RPC for the product pages
-  ...rpc
+  // Use React + Telefunc for the product pages
+  extends: [react, telefunc]
 }
 ```
-
-```js
-// /pages/live-ticker/+config.h.js
-
-import solid from 'vike-solid'
-
-export default {
-  // Use Solid for this page while the rest of our app uses React
-  ...solid
-}
-```
-
-This is only the tip of the iceberg. The V1 design also brings new capabilities for building meta frameworks on top of Vike.

@@ -37,7 +37,7 @@ By using [`guard()`](/guard) with [`throw redirect()`](/redirect) or [`throw ren
  - Protect private pages from unprivileged access.
 
 ```js
-// /pages/admin/index.page.route.js
+// /pages/admin/+guard.js
 
 import { render, redirect } from 'vike/abort'
 
@@ -68,10 +68,10 @@ export const guard = (pageContext) => {
 We can also define a `guard()` hook that applies to multiple pages:
 
 ```js
-// /pages/index.page.route.js
+// /pages/+guard.js
 
 // We define a guard() that applies to all pages: the file lives at /pages/ and
-// therefore applies to all /pages/**/*.page.js
+// therefore applies to all /pages/**/+Page.js
 
 import { render } from 'vike/abort'
 
@@ -85,7 +85,7 @@ export const guard = (pageContext) => {
 
 ## Example
 
-- <RepoLink text="example" path="/examples/auth/" />
+- <RepoLink path="/examples/auth/" />
 
 
 ## Tools

@@ -1,9 +1,10 @@
 import { Link } from '@brillout/docpress'
 
-The error page, which is defined by `/renderer/_error.page.tsx`, is rendered when an error occurs. It's also rendered when you call <Link href="/render" text={<code>throw render(abortStatusCode)</code>}></Link>.
+The error page, which is defined by `/pages/_error/+Page.js`, is rendered when an error occurs. It's also rendered when
+you call <Link href="/render" text={<code>throw render(abortStatusCode)</code>}></Link>.
 
 ```ts
-// /renderer/_error.page.ts
+// /pages/_error/+Page.ts
 
 export { Page }
 
@@ -61,11 +62,12 @@ The error page is rendered if:
  2. One of your hooks threw an error (`500 Internal Error`).
  3. You called <Link href="/render" text={<code>throw render(abortStatusCode)</code>} />.
 
-> The error page is also rendered when Vike throws an unexpected error (it has a bug), but since Vike has no known bug this is very rare.
+> The error page is also rendered when Vike throws an unexpected error (it has a bug), but since Vike has [no known bug](https://github.com/vikejs/vike/issues?q=is%3Aissue+is%3Aopen+label%3A%22bug+%3Aboom%3A%22) this is very rare.
 
 
 ## Pre-rendering
 
-If you use <Link text="pre-rendering" href="/pre-rendering" />, then Vike uses `_error.page.js` to generate `/dist/client/404.html`.
+If you use <Link text="pre-rendering" href="/pre-rendering" />, then Vike uses the error page to generate
+`/dist/client/404.html`.
 
 > Most Static Hosts follow the convention of using the file `404.html` as 404 page.

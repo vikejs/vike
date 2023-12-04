@@ -2,6 +2,7 @@ import React from 'react'
 import vikeIcon from './images/icons/vike-square-gradient.svg'
 
 export { NavHeader }
+export { navHeaderWrapperStyle }
 export { NavHeaderMobile }
 
 function NavHeaderMobile() {
@@ -14,12 +15,13 @@ function NavHeaderMobile() {
   )
 }
 
+const navHeaderWrapperStyle: React.CSSProperties = { paddingTop: 16, paddingBottom: 1 }
 function NavHeader() {
-  const LOGO_SIZE = 55
+  const LOGO_SIZE = 80
   return (
     <>
       <img src={vikeIcon} height={LOGO_SIZE} width={LOGO_SIZE} />
-      <HeaderTitle fontSize={'2.55em'} marginLeft={10} />
+      <HeaderTitle fontSize={'3.3em'} marginLeft={14} />
     </>
   )
 }

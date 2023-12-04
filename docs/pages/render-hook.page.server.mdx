@@ -1,35 +1,9 @@
-The `render()` hook defines how a page is rendered to HTML.
+import { Link, Danger } from '@brillout/docpress'
 
-```js
-// /**/*.page.server.js (usually /renderer/_default.page.server.js)
-// Environment: server
-
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { renderToHtml, createElement } from 'some-ui-framework'
-
-export { render }
-
-async function render(pageContext){
-  const { Page, pageProps } = pageContext
-  const pageHtml = await renderToHtml(createElement(Page, pageProps))
-
-  const documentHtml = escapeInject`<!DOCTYPE html>
-    <html>
-      <head>
-        <title>My SSR App</title>
-      </head>
-      <body>
-        <div id="page-root">${dangerouslySkipEscape(pageHtml)}</div>
-      </body>
-    </html>`
-
-  return {
-    documentHtml,
-    pageContext: {
-      // We can add some `pageContext` here
-    }
-  }
-}
-```
-
-> `pageContext.Page` is the `export { Page }` of the page's `.page.js` file that is being rendered.
+<Danger>
+  `render()` has been renamed `onRenderHtml()`, see
+  <ul>
+    <li><Link href="/migration/v1-design#renamed-hooks" /></li>
+    <li><Link href="/onRenderHtml" /></li>
+  </ul>
+</Danger>

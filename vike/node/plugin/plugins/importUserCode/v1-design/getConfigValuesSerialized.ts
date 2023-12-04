@@ -60,6 +60,7 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAt:
   try {
     configValueSerialized = stringify(value, { valueName, forbidReactElements: true })
   } catch (err) {
+    /*
     let serializationErrMsg = ''
     if (isJsonSerializerError(err)) {
       serializationErrMsg = err.messageCore
@@ -69,16 +70,19 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAt:
       console.error(err)
       serializationErrMsg = 'see serialization error printed above'
     }
+    */
     const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser({ definedAt })
     assert(configValueFilePathToShowToUser)
     assertUsage(
       false,
       [
-        `The value of the config ${pc.cyan(
+        `The code of ${pc.cyan(configName)} cannot live inside ${configValueFilePathToShowToUser},`,
+        'see https://vike.dev/header-file#runtime-code'
+        /* I guess showing this is more confusing than adding value.
+        `(technically speaking: the value of ${pc.cyan(
           configName
-        )} cannot be defined inside the file ${configValueFilePathToShowToUser}:`,
-        `its value must be defined in an another file and then imported by ${configValueFilePathToShowToUser}. (Because its value isn't serializable: ${serializationErrMsg}.)`,
-        `Only serializable config values can be defined inside +config.h.js files, see https://vike.dev/header-file.`
+        )} isn't serializable (${serializationErrMsg}) and it's therefore runtime code that needs to be imported).`
+        //*/
       ].join(' ')
     )
   }

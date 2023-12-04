@@ -1,9 +1,9 @@
 import { RepoLink, Link } from '@brillout/docpress'
 
-We can internationalize (i18n) a Vike app by using a <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
+We can internationalize (i18n) a Vike app by using an <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
 
 ```js
-// /renderer/_default.page.route.js
+// /renderer/+onBeforeRoute.js
 
 export { onBeforeRoute }
 
@@ -56,23 +56,24 @@ This technique also works with:
 
 ## Examples
 
- - <RepoLink path='/examples/i18n/' />
+ - <RepoLink path='/examples/i18n-v1/' />
  - [github.com/crummy/vite-ssr-i18n](https://github.com/crummy/vite-ssr-i18n)
    > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
 
 ## Pre-rendering
 
-If we use <Link text="pre-rendering" href="/pre-rendering" /> then, in addition to defining `onBeforeRoute()`, we also define a second hook `onBeforePrerender()`:
+If we use <Link text="pre-rendering" href="/pre-rendering" /> then, in addition to defining `onBeforeRoute()`, we also
+define the `onPrerenderStart()` hook:
 
 ```js
-// _default.page.server.js
+// /renderer/+onPrerenderStart.js
 
-export { onBeforePrerender }
+export { onPrerenderStart }
 
 const locales = ['en-US', 'de-DE', 'fr-FR']
 const localeDefault = 'en-US'
 
-function onBeforePrerender(prerenderContext) {
+function onPrerenderStart(prerenderContext) {
   const pageContexts = []
   prerenderContext.pageContexts.forEach((pageContext) => {
     // Duplicate pageContext for each locale
@@ -98,37 +99,39 @@ function onBeforePrerender(prerenderContext) {
 }
 ```
 
-See <RepoLink path='/examples/i18n/' /> for an example using `onBeforePrerender()`.
+See <RepoLink path='/examples/i18n-v1/' /> for an example using `onPrerenderStart()`.
 
-Our <Link text={<><code>prerender()</code> hooks</>} href="/prerender" /> (if we use any) return URLs without any locale (e.g. `prerender()` returning `/product/42`). Instead, it's our `onBeforePrerender()` hook that duplicates and modifies URLs for each locale (e.g. duplicating `/product/42` into `/en-US/product/42`, `/de-DE/product/42`, `/fr-FR/product/42`).
+Our <Link text={<><code>onBeforePrerenderStart()</code> hooks</>} href="/onBeforePrerenderStart" /> (if we use any) return URLs without any locale (e.g. `onBeforePrerenderStart()` returning `/product/42`). Instead, it's our `onPrerenderStart()` hook that duplicates and modifies URLs for each locale (e.g. duplicating `/product/42` into `/en-US/product/42`, `/de-DE/product/42`, `/fr-FR/product/42`).
 
 ```js
-// /pages/product.page.server.js
+// /pages/product/+onBeforePrerenderStart.js
 
-export { prerender }
+export { onBeforePrerenderStart }
 
-async function prerender() {
+async function onBeforePrerenderStart() {
   const products = await Product.findAll()
   const URLs = products.map(({ id }) => '/product/' + id)
-  // We don't add the locale here, instead we let onBeforePrerender() add the locales
+  // We don't add the locale here, instead we let onPrerenderStart() add the locales
   return URLs
 }
 ```
 
-We basically use `prerender()` to determine URLs and/or load data, and use `onBeforePrerender()` merely to manipulate the URLs and set `pageContext.locale`.
+Essentially, we use `onBeforePrerenderStart()` to determine URLs and/or load data, and use `onPrerenderStart()` to
+manipulate localized URLs and set `pageContext.locale`.
 
-> Despite what the naming suggests, note that Vike calls our `onBeforePrerender()` hook *after* our `prerender()` hooks. Also note that `onBeforePrerender(prerenderContext)` is a global hook we can define only once, while `prerender()` (it doesn't have any argument) is a per-page hook we can define multiple times.
+> `onPrerenderStart()` is a global hook we can define only once, while `onBeforePrerenderStart()` is a per-page hook we can define multiple times.
 
-Alternatively, if we need to load data that depends on localization, instead of `onBeforePrerender()` we can use `prerender()` to localize `pageContext`:
+Alternatively, if we need to load data that depends on localization, instead of `onPrerenderStart()` we can use
+`onBeforePrerenderStart()` to localize `pageContext`:
 
 ```js
-// /pages/product.page.server.js
+// /pages/product/+onBeforePrerenderStart.js
 
-// In this example, we don't use onBeforePrerender() but, instead,
-// we use prerender() to duplicate and localize URLs and their pageContext
-export { prerender }
+// In this example, we don't use onPrerenderStart() but, instead,
+// we use onBeforePrerenderStart() to duplicate and localize URLs and their pageContext
+export { onBeforePrerenderStart }
 
-async function prerender() {
+async function onBeforePrerenderStart() {
   // Load data
   const products = await Product.findAll()
 
@@ -158,22 +161,22 @@ async function prerender() {
 }
 ```
 
-We may still need to use `onBeforePrerender()` for localizing static pages that don't load data:
+We may still need to use `onPrerenderStart()` for localizing static pages that don't load data:
 
 ```js
-// _default.page.server.js
+// /renderer/+onPrerenderStart.js
 
-export { onBeforePrerender }
+export { onPrerenderStart }
 
 import assert from 'assert'
 
 const locales = ['en-US', 'de-DE', 'fr-FR']
 
-function onBeforePrerender(prerenderContext) {
+function onPrerenderStart(prerenderContext) {
   const pageContexts = []
   prerenderContext.pageContexts.forEach((pageContext) => {
     if(pageContext.locale) {
-      // Already localized by one of our prerender() hooks
+      // Already localized by one of our onBeforePrerenderStart() hooks
       assert(pageContext.urlOriginal.startsWith(`/${pagecontext.locale}/`))
       pageContexts.push(pageContext)
     } else {

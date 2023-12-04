@@ -16,9 +16,8 @@ function ScaffoldCallToActionTour() {
         </div>
         <div style={{ fontSize: '0.83rem', marginTop: 9, display: 'flex' }}>
           <div style={{ width: 0, flexGrow: 1, color: '#888' }}>
-            Run <CodeInline>$ npm init vike</CodeInline> to scaffold a new Vite/
-            <CodeInline>vike</CodeInline> app, or add <CodeInline>vike</CodeInline> to your existing app by following
-            the instructions <a href="/add">here</a>.
+            Run <CodeInline>$ npm init vike</CodeInline> to scaffold a new Vike app. Or add Vike to your existing Vite
+            app by following the instructions <a href="/add">here</a>.
           </div>
         </div>
       </div>

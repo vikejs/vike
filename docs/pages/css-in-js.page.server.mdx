@@ -4,16 +4,16 @@ import { CSSinJSTool } from '../components'
 <CSSinJSTool prefix="Some CSS-in-JS tools allows us to" />
 
 ```jsx
-// renderer/_default.page.server.jsx
+// /renderer/+onRenderHtml.jsx
 
 import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { escapeInject, dangerouslySkipEscape } from "vike/server";
 import { CssCollector } from 'some-css-in-js-tool'
 
-export { render };
+export { onRenderHtml };
 
-function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page } = pageContext;
   const page = <Page />;
 

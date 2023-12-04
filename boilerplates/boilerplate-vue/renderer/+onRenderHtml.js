@@ -1,21 +1,19 @@
-export { render }
-// See https://vike.dev/data-fetching
-export const passToClient = ['pageProps', 'urlPathname']
+// https://vike.dev/onRenderHtml
+export { onRenderHtml }
 
-import ReactDOMServer from 'react-dom/server'
-import { PageShell } from './PageShell'
+import { renderToString as renderToString_ } from '@vue/server-renderer'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
+import { createApp } from './app'
 import logoUrl from './logo.svg'
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext
-  // This render() hook only supports SSR, see https://vike.dev/render-modes for how to modify render() to support SPA
+  // This onRenderHtml() hook only supports SSR, see https://vike.dev/render-modes for how to modify
+  // onRenderHtml() to support SPA
   if (!Page) throw new Error('My render() hook expects pageContext.Page to be defined')
-  const pageHtml = ReactDOMServer.renderToString(
-    <PageShell pageContext={pageContext}>
-      <Page {...pageProps} />
-    </PageShell>
-  )
+  const app = createApp(Page, pageProps, pageContext)
+
+  const appHtml = await renderToString(app)
 
   // See https://vike.dev/head
   const { documentProps } = pageContext.exports
@@ -32,7 +30,7 @@ async function render(pageContext) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="react-root">${dangerouslySkipEscape(pageHtml)}</div>
+        <div id="app">${dangerouslySkipEscape(appHtml)}</div>
       </body>
     </html>`
 
@@ -42,4 +40,15 @@ async function render(pageContext) {
       // We can add some `pageContext` here, which is useful if we want to do page redirection https://vike.dev/page-redirection
     }
   }
+}
+
+async function renderToString(app) {
+  let err
+  // Workaround: renderToString_() swallows errors in production, see https://github.com/vuejs/core/issues/7876
+  app.config.errorHandler = (err_) => {
+    err = err_
+  }
+  const appHtml = await renderToString_(app)
+  if (err) throw err
+  return appHtml
 }

@@ -1,4 +1,4 @@
-import { UseBatiInsteadHint } from '../components'
+import { UseIntegrationPackageAnyHint } from '../components'
 
 import { Link, RepoLink, Warning } from '@brillout/docpress'
 
@@ -14,45 +14,57 @@ For example, we can render an admin panel as SPA while rendering marketing pages
 
 > The Vike boilerplates do SSR by default, which is a sensible default that works for most apps.
 
-<UseBatiInsteadHint
-  featureName="render modes"
-  additionalHint={<><code>vike-*</code> packages include an <code>ssr: boolean</code> config</>}
-/>
+<UseIntegrationPackageAnyHint featureName="Render Modes" />
 
 ## SPA
 
 Rendering a page as SPA means that the page is loaded and rendered only in the browser.
 
 To achieve that:
- 1. We define `.page.client.js` instead of `.page.js`.
- 2. We adapt our `render()` hooks.
+ 1. We set `Page`'s <Link href="/meta">meta config</Link> `env` to `{ server: false, client: true }` instead of `{ server: true, client: true }`.
+ 2. We adapt our `onRenderHtml()` and `onRenderClient()` hooks.
 
 
-**1. `.page.js` => `.page.client.js`**
+**1. `Page` meta config**
 
-By defining `/pages/about.page.client.js` instead of `/pages/about.page.js` we ensure that the page is loaded only in the browser.
-
-Example:
- - React Example: <RepoLink path="/examples/render-modes/pages/spa/index.page.client.jsx" />
- - Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example` > `/pages/spa.page.client.vue`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/spa.page.client.vue)
-   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
-
-
-**2. `render()` hooks (SPA only)**
-
-If we only have SPA pages, then we adapt our `render()` hooks like the following.
-
-Client-side `render()` hook:
+By setting `Page`'s meta config `env` to `{ client: true, server: false }` we tell Vike to load `+Page.js` only in the browser.
 
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+config.h.js
+// Environment: config
+
+export default {
+  meta: {
+    Page: {
+      env: { server: false, client: true } // SPA for all pages
+    }
+  }
+}
+```
+
+SPA + SSR React example:
+ - Custom `renderMode` config: <RepoLink path="/examples/render-modes-v1/renderer/+config.h.ts" />
+ - SPA page: <RepoLink path="/examples/render-modes-v1/pages/spa/+Page.jsx" />
+ - SPA page's `renderMode` config value: <RepoLink path="/examples/render-modes-v1/pages/spa/+renderMode.js" />
+ - SSR page: <RepoLink path="/examples/render-modes-v1/pages/ssr/+Page.jsx" />
+ - SSR page's `renderMode` config value: <RepoLink path="/examples/render-modes-v1/pages/ssr/+renderMode.js" />
+
+
+**2. Render hooks (SPA only)**
+
+If we only have SPA pages, then we adapt our `onRenderHtml()` and `onRenderClient()` hooks like the following.
+
+Client-side `onRenderClient()` hook:
+
+```js
+// /renderer/+onRenderClient.js
 // Environment: browser
 
 import { renderToDom } from 'some-ui-framework'
 
-export { render }
+export { onRenderClient }
 
-async function render(pageContext) {
+async function onRenderClient(pageContext) {
   const { Page } = pageContext
   // UI frameworks usually have two methods, such as `renderToDom()` and `hydrateDom()`.
   // Note how we use `renderToDom()` and not `hydrateDom()`.
@@ -62,15 +74,17 @@ async function render(pageContext) {
 
 > See <Link href="/hydration" /> for understanding the difference between "rendering to the DOM" and "hydrating the DOM".
 
-We also adapt our server-side `render()` hook:
+We also adapt our server-side `onRenderHtml()` hook:
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 import { escapeInject } from 'vike/server'
 
-export function render() {
+export { onRenderHtml }
+
+async function onRenderHtml() {
   // Note that `div#root` is empty
   return escapeInject`<html>
     <body>
@@ -82,20 +96,23 @@ export function render() {
 
 This is the key difference between SPA and SSR: in SPA `div#root` is empty, whereas with SSR `div#root` contains our Page's root component `pageContext.Page` rendered to HTML.
 
-This means that, with SPA, we use our server-side `render()` hook to generate HTML that is just an empty shell: the HTML doesn't contain the page's content.
+This means that, with SPA, we use our server-side `onRenderHtml()` hook to generate HTML that is just an empty shell:
+the HTML doesn't contain the page's content.
 
 For production, we usually want to <Link text="pre-render" href="/pre-rendering" /> the HTML of our SPA pages in order to remove the need for a production Node.js server.
 
-We can also use our server-side `render()` hook to render `<head>`:
+We can also use our server-side `onRenderHtml()` hook to render `<head>`:
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 import { escapeInject } from 'vike/server'
 
-export function render(pageContext) {
-  const { title, description } = pageContext.exports.meta
+export { onRenderHtml }
+
+async function onRenderHtml(pageContext) {
+  const { title, description } = pageContext.config
   // Even though we load and render our page's components only in the browser,
   // we define our page's `<title>` and `<meta name="description">` on the server-side.
   return escapeInject`<html>
@@ -110,33 +127,50 @@ export function render(pageContext) {
 }
 ```
 
-> `pageContext.exports` is explained at <Link href="/exports" />.
+> `pageContext.config.title` and `pageContext.config.description` are custom settings, see <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
 
 ```js
-// /pages/about.page.js
-export const meta = {
-  title: 'About | My App',
-  description: 'My App is ...'
+// /pages/about/+title.js
+export const title = 'About | My App'
+```
+
+```js
+// /pages/about/+description.js
+export const description = 'My App is ...'
+```
+
+```js
+// /renderer/+config.h.js
+export default {
+  meta: {
+    Page: {
+      env: { server: false, client: true } // SPA for all pages
+    },
+    title: {
+      env: { server: true, client: false }
+    },
+    description: {
+      env: { server: true, client: false }
+    }
+  }
 }
 ```
 
-Note how we define `pageContext.exports.meta` in `about.page.js` instead of `about.page.client.js`. That's because we need to be able to access `pageContext.exports.meta` from the server-side.
 
-This means that we define both `about.page.js` (defining metadata) and `about.page.client.js` (defining our page's root component `pageContext.Page`).
+**2. Render hooks (SPA + SSR)**
 
-
-**2. `render()` hooks (SPA + SSR)**
-
-If we have both SPA and SSR pages, then we adapt our `render()` hooks like this:
+If we have both SPA and SSR pages, then we adapt our `onRenderHtml()` and `onRenderClient()` hooks like this:
 
 ```js
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 // Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
-export function render(pageContext) {
+export { onRenderHtml }
+
+async function onRenderHtml(pageContext) {
   let pageHtml
   if (pageContext.Page) {
     // For SSR pages
@@ -153,15 +187,19 @@ export function render(pageContext) {
 }
 ```
 
-> If we define a page's root component (`pageContext.Page`) in `.page.client.js` instead of `.page.js`, then `pageContext.Page` is only defined in the browser.
+> If we set the `Page` meta config `env` to `{ server: false, client: true }` instead of
+> `{ server: true, client: true }` in `config.h.js`, then `pageContext.Page` is
+> only defined in the browser.
 
 ```js
-// /renderer/_default.page.client.js
+// /renderer/+onRenderClient.js
 // Environment: browser
 
 import { renderToDom, hydrateDom } from 'some-ui-framework'
 
-export async function render(pageContext) {
+export { onRenderClient }
+
+async function onRenderClient(pageContext) {
   const { Page } = pageContext
   const root = document.getElementById('root')
   if (
@@ -181,19 +219,14 @@ export async function render(pageContext) {
 }
 ```
 
-React example: <Link href="/examples/render-modes/" />.
- - Server-side hook: <Link text="/renderer/_default.page.server.jsx" href="/examples/render-modes/renderer/_default.page.server.jsx" />
- - Client-side hook: <Link text="/renderer/_default.page.client.jsx" href="/examples/render-modes/renderer/_default.page.client.jsx" />
- - SPA page: <Link text="/pages/spa/index.page.client.jsx" href="/examples/render-modes/pages/spa/index.page.client.jsx" />
- - SSR page: <Link text="/pages/ssr/index.page.jsx" href="/examples/render-modes/pages/ssr/index.page.jsx" />
-
-Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example).
- - Server-side hook: [/pages/_default/_default.page.server.ts](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/_default/_default.page.server.ts)
- - Client-side hook: [/pages/_default/_default.page.client.ts](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/_default/_default.page.client.ts)
- - SPA page: [/pages/spa.page.client.vue](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/spa.page.client.vue)
- - SSR page: [/pages/ssr.page.vue](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/ssr.page.vue)
-
-> vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
+React example: <Link href="/examples/render-modes-v1/" />.
+ - Server-side hook: <RepoLink path="/examples/render-modes-v1/renderer/+onRenderHtml.jsx" />
+ - Client-side hook: <RepoLink path="/examples/render-modes-v1/renderer/+onRenderClient.jsx" />
+ - Custom `renderMode` config: <RepoLink path="/examples/render-modes-v1/renderer/+config.h.ts" />
+ - SPA page: <RepoLink path="/examples/render-modes-v1/pages/spa/+Page.jsx" />
+ - SPA page's `renderMode` config value: <RepoLink path="/examples/render-modes-v1/pages/spa/+renderMode.js" />
+ - SSR page: <RepoLink path="/examples/render-modes-v1/pages/ssr/+Page.jsx" />
+ - SSR page's `renderMode` config value: <RepoLink path="/examples/render-modes-v1/pages/ssr/+renderMode.js" />
 
 ## SSR
 
@@ -215,16 +248,27 @@ See <Link href="/pre-rendering" />.
 
 To render a page to HTML-only:
 
- 1. We define `.page.server.js` instead of `.page.js`.
- 1. (Optional) We define `.page.client.js` (e.g. to add minimal amount of JavaScript surgically injecting bits of interactivity).
+ 1. We set `Page`'s <Link href="/meta">meta config</Link> `env` to `{ server: true, client: false }` instead of `{ server: true, client: true }`.
+ 1. (Optional) We define <Link href="/client">`+client.js`</Link> (e.g. to add a minimal amount of JavaScript surgically injecting bits of interactivity).
 
 
 ```js
-// /pages/about.page.server.js
+// /renderer/+config.h.js
+// Environment: config
+
+export default {
+  meta: {
+    Page: {
+      env: { server: true, client: false } // HTML-only for all pages
+    }
+  }
+}
+```
+
+```js
+// /pages/about/+Page.js
 // Environment: server
 
-// Usually `Page` is defined in `*.page.js` but for HTML-only we
-// define `Page` in `*.page.server.js` instead.
 export { Page }
 
 function Page() {
@@ -238,18 +282,17 @@ function Page() {
 ```
 
 ```js
-// /pages/about.page.client.js
+// /pages/about/+client.js
 // Environment: browser
 
 // This file represents the entire browser-side JavaScript.
-// We can omit defining `.page.client.js` in which case the page has zero browser-side JavaScript.
+// We can omit defining `+client.js` in which case the page has zero browser-side JavaScript.
 
 console.log("I'm the page's only browser-side JavaScript line.")
 ```
 
-Examples:
- - React Example (zero JavaScript): <RepoLink path="/examples/render-modes/pages/html-only/" />
- - React Example (minimal JavaScript): <RepoLink path="/examples/render-modes/pages/html-js/" />
- - Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example` > `/pages/html.page.server.vue`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/html.page.server.vue)
-   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
- - [@brillout/docpress](https://github.com/brillout/docpress) which powers this website `https://vike.dev` (this website uses the HTML-only technique).
+React example:
+ - Zero JavaScript: <RepoLink path="/examples/render-modes-v1/pages/html-only/" />
+ - Minimal JavaScript: <RepoLink path="/examples/render-modes-v1/pages/html-js/" />
+
+See also <Link href="/client" />.

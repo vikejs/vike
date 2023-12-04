@@ -6,8 +6,8 @@ See <Link href="/preload" />.
 
 ## Examples
 
- - <Link href="/examples/custom-preload/renderer/_default.page.server.tsx" />.
- - <Link href="/test/preload/renderer/_default.page.server.tsx" />.
+ - <Link href="/examples/custom-preload-v1/renderer/+onRenderHtml.tsx" />
+ - <Link href="/test/preload-v1/renderer/+onRenderHtml.tsx" />
 
 ## Usage
 
@@ -15,11 +15,13 @@ See <Link href="/preload" />.
 <Warning>Note that `injectFilter()` is called only in production and has no effect in development.</Warning>
 
 ```ts
-// /renderer/_default.page.server.ts
+// /renderer/+onRenderHtml.ts
+
+export { onRenderHtml }
 
 import type { InjectFilterEntry } from 'vike/types'
 
-export async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   // ...
 
   const documentHtml = escapeInject`<!DOCTYPE html>
@@ -60,6 +62,7 @@ export async function render(pageContext) {
   return { documentHtml, injectFilter }
 }
 ```
+
 ```ts
 type InjectFilterEntry = {
   inject: false | 'HTML_BEGIN' | 'HTML_END' // Whether and where to inject

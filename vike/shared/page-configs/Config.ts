@@ -148,32 +148,32 @@ type OnBeforeRouteSync = (pageContext: PageContextServer) => {
 }
 /** Hook called after the page is hydrated.
  *
- * https://vike.dev/clientRouting
+ * https://vike.dev/onHydrationEnd
  */
 type OnHydrationEndAsync = (pageContext: PageContextClient) => Promise<void>
 /** Hook called after the page is hydrated.
  *
- * https://vike.dev/clientRouting
+ * https://vike.dev/onHydrationEnd
  */
 type OnHydrationEndSync = (pageContext: PageContextClient) => void
 /** Hook called after the user navigates to a new page.
  *
- * https://vike.dev/clientRouting
+ * https://vike.dev/onPageTransitionEnd
  */
 type OnPageTransitionEndAsync = (pageContext: PageContextClient) => Promise<void>
 /** Hook called after the user navigates to a new page.
  *
- * https://vike.dev/clientRouting
+ * https://vike.dev/onPageTransitionEnd
  */
 type OnPageTransitionEndSync = (pageContext: PageContextClient) => void
 /** Hook called before the user navigates to a new page.
  *
- * https://vike.dev/clientRouting
+ * https://vike.dev/onPageTransitionStart
  */
 type OnPageTransitionStartAsync = (pageContext: PageContextClient) => Promise<void>
 /** Hook called before the user navigates to a new page.
  *
- * https://vike.dev/clientRouting
+ * https://vike.dev/onPageTransitionStart
  */
 type OnPageTransitionStartSync = (pageContext: PageContextClient) => void
 /** Page Hook called when pre-rendering starts.
@@ -338,23 +338,23 @@ type ConfigBuiltIn = {
 
   /** Hook called after the page is hydrated.
    *
-   * https://vike.dev/clientRouting
+   * https://vike.dev/onHydrationEnd
    */
   onHydrationEnd?: OnHydrationEndAsync | OnHydrationEndSync | ImportString
   /** Hook called before the user navigates to a new page.
    *
-   * https://vike.dev/clientRouting
+   * https://vike.dev/onPageTransitionStart
    */
   onPageTransitionStart?: OnPageTransitionStartAsync | OnPageTransitionStartSync | ImportString
   /** Hook called after the user navigates to a new page.
    *
-   * https://vike.dev/clientRouting
+   * https://vike.dev/onPageTransitionEnd
    */
   onPageTransitionEnd?: OnPageTransitionEndAsync | OnPageTransitionEndSync | ImportString
 
   /** Whether the UI framework (React/Vue/Solid/...) allows the page's hydration to be aborted.
    *
-   * https://vike.dev/clientRouting
+   * https://vike.dev/hydrationCanBeAborted
    */
   hydrationCanBeAborted?: boolean | ImportString
   /** Additional client code.
@@ -376,7 +376,7 @@ type ConfigBuiltIn = {
 
   /** Prefetch links.
    *
-   * https://vike.dev/clientRouting#link-prefetching
+   * https://vike.dev/prefetchStaticAssets
    */
   prefetchStaticAssets?: PrefetchStaticAssets | ImportString
 
