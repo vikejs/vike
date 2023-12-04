@@ -1,3 +1,25 @@
+## [0.4.148](https://github.com/vikejs/vike/compare/v0.4.147...v0.4.148) (2023-12-04)
+
+
+### Bug Fixes
+
+* [v1 design] improve DX around header files ([fb58692](https://github.com/vikejs/vike/commit/fb586923ec73b2c15ed25edcbe4cd839f6c8e177))
+* assertUsage() wrong onBeforeRender() env ([0826fb4](https://github.com/vikejs/vike/commit/0826fb4319ae39842ecadf640fb60f8cc9461aec))
+* edge case URL handling (fix [#1281](https://github.com/vikejs/vike/issues/1281)) ([3d1a786](https://github.com/vikejs/vike/commit/3d1a78670b751b1616c28acba8c7e8d1beb98a5a))
+* fix Base URL check (fix [#1302](https://github.com/vikejs/vike/issues/1302)) ([0848f62](https://github.com/vikejs/vike/commit/0848f620cffbc8ef69e2ca1aa57d533691d87378))
+* improve onBeforeRender() env logic ([#1266](https://github.com/vikejs/vike/issues/1266)) ([2580d69](https://github.com/vikejs/vike/commit/2580d69b532a125edfd65e5fa04336e62a690b7b))
+* improve stream warning ([74d84f5](https://github.com/vikejs/vike/commit/74d84f54c2f024cd9b47b1fa7582dfb710003035))
+* improve the logical URL that is considered when catching infinite redirect loops (fix [#1270](https://github.com/vikejs/vike/issues/1270)) ([8397523](https://github.com/vikejs/vike/commit/839752366946277744218db32c4a8f1bf8c2da72))
+* improve white space handling in URLs ([2fa53b2](https://github.com/vikejs/vike/commit/2fa53b26bc16a812de0faa2e20b68923de4d2e44))
+* show deprecating warning for old deprecated design ([6bcd2d0](https://github.com/vikejs/vike/commit/6bcd2d0e3935a998bc075e2e23c9efb1ff6e71ac))
+
+
+### Features
+
+* enable user to configure hook timeouts ([#1290](https://github.com/vikejs/vike/issues/1290)) ([27229c5](https://github.com/vikejs/vike/commit/27229c5753b1d63187bbde182a1e5abf0e3eeb05))
+
+
+
 ## [0.4.147](https://github.com/vikejs/vike/compare/v0.4.146...v0.4.147) (2023-11-17)
 
 
