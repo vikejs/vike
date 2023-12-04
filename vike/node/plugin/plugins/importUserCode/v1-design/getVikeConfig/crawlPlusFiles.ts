@@ -69,6 +69,18 @@ async function crawlPlusFiles(
 
 // Same as fastGlob() but using `$ git ls-files`
 async function gitLsFiles(userRootDir: string, outDir: string): Promise<string[] | null> {
+  // Test if Git is installed
+  {
+    let stdout: string
+    try {
+      const res = await execA('git --version', { cwd: userRootDir })
+      stdout = res.stdout
+    } catch {
+      return null
+    }
+    assert(stdout.startsWith('git version '))
+  }
+
   const cmd = [
     'git ls-files',
     ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
