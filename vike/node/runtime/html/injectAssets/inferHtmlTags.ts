@@ -1,9 +1,13 @@
 export { inferAssetTag }
 export { inferPreloadTag }
 export { inferEarlyHintLink }
+export { scriptAttrs }
 
 import { assert } from '../../utils.js'
 import type { PageAsset } from '../../renderPage/getPageAssets.js'
+
+// We can't use `defer` here. With `defer`, the entry script won't start before `</body>` has been parsed, preventing partial hydration during SSR streaming, see https://github.com/vikejs/vike/pull/1271
+const scriptAttrs = 'type="module" async'
 
 function inferPreloadTag(pageAsset: PageAsset): string {
   const { src, assetType, mediaType } = pageAsset
@@ -25,12 +29,7 @@ function inferAssetTag(pageAsset: PageAsset): string {
   const { src, assetType, mediaType } = pageAsset
   if (assetType === 'script') {
     assert(mediaType === 'text/javascript')
-    // Note: we can't use `defer` here. With `defer`, the entry script won't start before `</body>` has been parsed,
-    // preventing partial hydration during SSR streaming. The entry script however must be executed after
-    // <script id="vike_pageContext" type="application/json">, otherwise we'll hit issues like #524 and #567. To
-    // guarantee that, special care is taken in getHtmlTags() to order these scripts properly.
-    // See https://github.com/vikejs/vike/pull/1271
-    return `<script type="module" src="${src}" async></script>`
+    return `<script src="${src}" ${scriptAttrs}></script>`
   }
   if (assetType === 'style') {
     return `<link rel="stylesheet" type="text/css" href="${src}">`
