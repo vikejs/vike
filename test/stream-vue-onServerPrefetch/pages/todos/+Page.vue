@@ -20,6 +20,9 @@ const todo = computed(() => todosStore.todoById(todoId))
 const loadTodo = async () => {
   await todosStore.fetchTodoById(todoId)
 }
+
+// Actually not guaranteed to work, see https://github.com/vikejs/vike/discussions/1319
 onServerPrefetch(loadTodo)
+
 onMounted(loadTodo)
 </script>
