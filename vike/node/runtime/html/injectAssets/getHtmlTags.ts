@@ -82,7 +82,7 @@ async function getHtmlTags(
       }
       return entry
     })
-  assertInjectFilterEntries(injectFilterEntries, stamp)
+  assertInjectFilterEntries(injectFilterEntries)
 
   // ==============
   // injectFilter()
@@ -100,7 +100,7 @@ async function getHtmlTags(
         String(res)
       )}: it should return the list of assets instead, see https://vike.dev/injectFilter`
     )
-    assertInjectFilterUsage(injectFilterEntries, stamp)
+    assertInjectFilterUsage(injectFilterEntries)
   }
 
   const htmlTags: HtmlTag[] = []
@@ -187,9 +187,9 @@ function getPageContextJsonScriptTag(pageContext: PageContextSerialization): str
   return htmlTag
 }
 
-function assertInjectFilterEntries(injectFilterEntries: InjectFilterEntry[], stamp: string) {
+function assertInjectFilterEntries(injectFilterEntries: InjectFilterEntry[]) {
   try {
-    checkForWrongUsage(injectFilterEntries, stamp)
+    checkForWrongUsage(injectFilterEntries)
   } catch (err) {
     if ((err as undefined | { message: string })?.message.includes('[Wrong Usage]')) {
       assert(false)
@@ -198,11 +198,11 @@ function assertInjectFilterEntries(injectFilterEntries: InjectFilterEntry[], sta
   }
 }
 
-function assertInjectFilterUsage(injectFilterEntries: InjectFilterEntry[], stamp: string) {
-  checkForWrongUsage(injectFilterEntries, stamp)
+function assertInjectFilterUsage(injectFilterEntries: InjectFilterEntry[]) {
+  checkForWrongUsage(injectFilterEntries)
   checkForWarnings(injectFilterEntries)
 }
-function checkForWrongUsage(injectFilterEntries: InjectFilterEntry[], stamp: string) {
+function checkForWrongUsage(injectFilterEntries: InjectFilterEntry[]) {
   injectFilterEntries.forEach((entry, i) => {
     assertUsage(isObject(entry), `[injectFilter()] Entry ${i} isn't an object`)
     assertUsage(typeof entry.src === 'string', `[injectFilter()] Entry ${i} is missing property ${pc.cyan('src')}`)
