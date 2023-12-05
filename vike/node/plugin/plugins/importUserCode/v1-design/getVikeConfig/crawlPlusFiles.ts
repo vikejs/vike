@@ -22,13 +22,13 @@ async function crawlPlusFiles(
   assertPosixPath(userRootDir)
   assertPosixPath(outDirAbsoluteFilesystem)
   assert(outDirAbsoluteFilesystem.startsWith(userRootDir))
-  const outDir = path.posix.relative(userRootDir, outDirAbsoluteFilesystem)
-  assert(!outDir.startsWith('.'))
+  const outDirRelativeFromUserRootDir = path.posix.relative(userRootDir, outDirAbsoluteFilesystem)
+  assert(!outDirRelativeFromUserRootDir.startsWith('.'))
 
   const timeBase = new Date().getTime()
 
   let files: string[] = []
-  const res = await gitLsFiles(userRootDir, outDir)
+  const res = await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir)
   if (
     res &&
     // Fallback to fast-glob for users that dynamically generate plus files (we assume generetad plus files to be skipped because they are usually included in .gitignore)
@@ -36,7 +36,7 @@ async function crawlPlusFiles(
   ) {
     files = res
   } else {
-    files = await fastGlob(userRootDir, outDir)
+    files = await fastGlob(userRootDir, outDirRelativeFromUserRootDir)
   }
 
   {
@@ -68,7 +68,7 @@ async function crawlPlusFiles(
 }
 
 // Same as fastGlob() but using `$ git ls-files`
-async function gitLsFiles(userRootDir: string, outDir: string): Promise<string[] | null> {
+async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: string): Promise<string[] | null> {
   // Test whether Git is installed and whether userRootDir is inside a Git repository
   {
     let stdout: string
@@ -84,7 +84,7 @@ async function gitLsFiles(userRootDir: string, outDir: string): Promise<string[]
   const cmd = [
     'git ls-files',
     ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
-    ...getIgnorePatterns(outDir).map((pattern) => `--exclude="${pattern}"`),
+    ...getIgnorePatterns(outDirRelativeFromUserRootDir).map((pattern) => `--exclude="${pattern}"`),
     // --others lists untracked files only (but using .gitignore because --exclude-standard)
     // --cached adds the tracked files to the output
     '--others --cached --exclude-standard'
@@ -101,18 +101,18 @@ async function gitLsFiles(userRootDir: string, outDir: string): Promise<string[]
 
   let files = stdout.split('\n').filter(Boolean)
 
-  assert(!outDir.startsWith('/'))
+  assert(!outDirRelativeFromUserRootDir.startsWith('/'))
   files = files.filter(
     // We have to repeat the same exclusion logic here because the `git ls-files` option --exclude only applies to untracked files. (We use --exclude only to speed up the command.)
-    (file) => getIgnoreFilter(file, outDir)
+    (file) => getIgnoreFilter(file, outDirRelativeFromUserRootDir)
   )
 
   return files
 }
 // Same as gitLsFiles() but using fast-glob
-async function fastGlob(userRootDir: string, outDir: string): Promise<string[]> {
+async function fastGlob(userRootDir: string, outDirRelativeFromUserRootDir: string): Promise<string[]> {
   const files = await glob(`**/+*.${scriptFileExtensions}`, {
-    ignore: getIgnorePatterns(outDir),
+    ignore: getIgnorePatterns(outDirRelativeFromUserRootDir),
     cwd: userRootDir,
     dot: false
   })
@@ -120,10 +120,10 @@ async function fastGlob(userRootDir: string, outDir: string): Promise<string[]> 
 }
 
 // Same as getIgnoreFilter() but as glob pattern
-function getIgnorePatterns(outDir: string): string[] {
+function getIgnorePatterns(outDirRelativeFromUserRootDir: string): string[] {
   return [
     '**/node_modules/**',
-    `${outDir}/**`,
+    `${outDirRelativeFromUserRootDir}/**`,
     // Allow:
     // ```
     // +Page.js
@@ -133,6 +133,10 @@ function getIgnorePatterns(outDir: string): string[] {
   ]
 }
 // Same as getIgnorePatterns() but for Array.filter()
-function getIgnoreFilter(file: string, outDir: string): boolean {
-  return !file.includes('node_modules/') && !file.includes('.telefunc.') && !file.startsWith(`${outDir}/`)
+function getIgnoreFilter(file: string, outDirRelativeFromUserRootDir: string): boolean {
+  return (
+    !file.includes('node_modules/') &&
+    !file.includes('.telefunc.') &&
+    !file.startsWith(`${outDirRelativeFromUserRootDir}/`)
+  )
 }
