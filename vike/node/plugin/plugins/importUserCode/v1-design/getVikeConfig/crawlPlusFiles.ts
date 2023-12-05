@@ -21,9 +21,14 @@ async function crawlPlusFiles(
 ): Promise<{ filePathRelativeToUserRootDir: string; filePathAbsoluteFilesystem: string }[]> {
   assertPosixPath(userRootDir)
   assertPosixPath(outDirAbsoluteFilesystem)
+  // Vike prepends userRootDir without resolving, e.g. outDirRelativeFromUserRootDir can be /home/rom/my-monorepo/my-app/../my-build/dist/ while userRootDir is /home/rom/my-monorepo/my-app/
   assert(outDirAbsoluteFilesystem.startsWith(userRootDir))
-  const outDirRelativeFromUserRootDir = path.posix.relative(userRootDir, outDirAbsoluteFilesystem)
-  assert(!outDirRelativeFromUserRootDir.startsWith('.'))
+  let outDirRelativeFromUserRootDir: string | null = path.posix.relative(userRootDir, outDirAbsoluteFilesystem)
+  if (outDirRelativeFromUserRootDir.startsWith('../')) {
+    // config.outDir is outside of config.root => it's going to be ignored anyways
+    outDirRelativeFromUserRootDir = null
+  }
+  assert(outDirRelativeFromUserRootDir === null || !outDirRelativeFromUserRootDir.startsWith('.'))
 
   const timeBase = new Date().getTime()
 
@@ -68,7 +73,7 @@ async function crawlPlusFiles(
 }
 
 // Same as fastGlob() but using `$ git ls-files`
-async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: string): Promise<string[] | null> {
+async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: string | null): Promise<string[] | null> {
   // Test whether Git is installed and whether userRootDir is inside a Git repository
   {
     let stdout: string
@@ -101,7 +106,6 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
 
   let files = stdout.split('\n').filter(Boolean)
 
-  assert(!outDirRelativeFromUserRootDir.startsWith('/'))
   files = files.filter(
     // We have to repeat the same exclusion logic here because the `git ls-files` option --exclude only applies to untracked files. (We use --exclude only to speed up the command.)
     (file) => getIgnoreFilter(file, outDirRelativeFromUserRootDir)
@@ -110,7 +114,7 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
   return files
 }
 // Same as gitLsFiles() but using fast-glob
-async function fastGlob(userRootDir: string, outDirRelativeFromUserRootDir: string): Promise<string[]> {
+async function fastGlob(userRootDir: string, outDirRelativeFromUserRootDir: string | null): Promise<string[]> {
   const files = await glob(`**/+*.${scriptFileExtensions}`, {
     ignore: getIgnorePatterns(outDirRelativeFromUserRootDir),
     cwd: userRootDir,
@@ -120,10 +124,9 @@ async function fastGlob(userRootDir: string, outDirRelativeFromUserRootDir: stri
 }
 
 // Same as getIgnoreFilter() but as glob pattern
-function getIgnorePatterns(outDirRelativeFromUserRootDir: string): string[] {
-  return [
+function getIgnorePatterns(outDirRelativeFromUserRootDir: string | null): string[] {
+  const ignorePatterns = [
     '**/node_modules/**',
-    `${outDirRelativeFromUserRootDir}/**`,
     // Allow:
     // ```
     // +Page.js
@@ -131,12 +134,19 @@ function getIgnorePatterns(outDirRelativeFromUserRootDir: string): string[] {
     // ```
     '**/*.telefunc.*'
   ]
+  if (outDirRelativeFromUserRootDir) {
+    assert(!outDirRelativeFromUserRootDir.startsWith('/'))
+    ignorePatterns.push(`${outDirRelativeFromUserRootDir}/**`)
+  }
+  return ignorePatterns
 }
 // Same as getIgnorePatterns() but for Array.filter()
-function getIgnoreFilter(file: string, outDirRelativeFromUserRootDir: string): boolean {
+function getIgnoreFilter(file: string, outDirRelativeFromUserRootDir: string | null): boolean {
+  assert(!file.startsWith('/'))
+  assert(outDirRelativeFromUserRootDir === null || !outDirRelativeFromUserRootDir.startsWith('/'))
   return (
     !file.includes('node_modules/') &&
     !file.includes('.telefunc.') &&
-    !file.startsWith(`${outDirRelativeFromUserRootDir}/`)
+    (!outDirRelativeFromUserRootDir || !file.startsWith(`${outDirRelativeFromUserRootDir}/`))
   )
 }
