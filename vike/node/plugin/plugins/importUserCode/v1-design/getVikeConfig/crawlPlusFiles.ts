@@ -69,16 +69,16 @@ async function crawlPlusFiles(
 
 // Same as fastGlob() but using `$ git ls-files`
 async function gitLsFiles(userRootDir: string, outDir: string): Promise<string[] | null> {
-  // Test if Git is installed
+  // Test whether Git is installed and whether userRootDir is inside a Git repository
   {
     let stdout: string
     try {
-      const res = await execA('git --version', { cwd: userRootDir })
+      const res = await execA('git rev-parse --is-inside-work-tree', { cwd: userRootDir })
       stdout = res.stdout
     } catch {
       return null
     }
-    assert(stdout.startsWith('git version '))
+    assert(stdout.trim() === 'true')
   }
 
   const cmd = [
