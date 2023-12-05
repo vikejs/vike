@@ -95,10 +95,8 @@ async function getHtmlTags(
     // Call the user's injectFilter() hook https://vike.dev/injectFilter
     const res = injectFilter(injectFilterEntries)
     assertUsage(
-      res,
-      `injectFilter() shouldn't return ${pc.cyan(
-        String(res)
-      )}: it should return the list of assets instead, see https://vike.dev/injectFilter`
+      res === undefined,
+      `injectFilter() should return ${pc.cyan('undefined')}, see https://vike.dev/injectFilter`
     )
     assertInjectFilterUsage(injectFilterEntries)
   }
