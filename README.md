@@ -2,6 +2,8 @@
 
 ## Getting started
 ```
+pnpm install
+pnpm run build
 cd docs
 pnpm install
 pnpm run dev
