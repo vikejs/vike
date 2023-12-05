@@ -127,6 +127,11 @@ async function getHtmlTags(
   // See https://github.com/vikejs/vike/pull/1271
   const positionJavaScriptEntry = (() => {
     if (pageContext._pageContextPromise) {
+      assertWarning(
+        !injectToStream,
+        "[getHtmlTags()] We recommend against using streaming and a pageContext promise at the same time as partial hydration won't work",
+        { onlyOnce: true }
+      )
       // If there is a pageContext._pageContextPromise (which is resolved after the stream has ended) then the pageContext JSON data needs to await for it: https://vike.dev/stream#initial-data-after-stream-end
       return 'HTML_END'
     }
