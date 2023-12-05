@@ -214,7 +214,7 @@ function checkForWrongUsage(injectFilterEntries: InjectFilterEntry[]) {
     assert(entry.assetType === null || typeof entry.assetType === 'string')
     assert(entry.mediaType === null || typeof entry.mediaType === 'string')
     assert(typeof entry.isEntry === 'boolean')
-    assert(Object.keys(entry).length === 5)
+    assert(Object.keys(entry).length === 6)
   })
 }
 function checkForWarnings(injectFilterEntries: InjectFilterEntry[]) {
