@@ -1,6 +1,6 @@
 import { Link, Warning } from '@brillout/docpress'
 
-The `injectFilter()` hook allows us to control which and where preload/asset tags are injected in our HTML.
+The `injectFilter()` hook allows you to control which and where preload/asset tags are injected in the HTML.
 
 See <Link href="/preload" />.
 
@@ -11,8 +11,8 @@ See <Link href="/preload" />.
 
 ## Usage
 
-<Warning>`injectFilter()` is a beta feature.</Warning>
-<Warning>Note that `injectFilter()` is called only in production and has no effect in development.</Warning>
+> `injectFilter()` is called only in production: it has no effect in development. (Because, in development, the dependency graph is <Link href="/lazy-transpiling" >lazily discovered</Link> and therefore not fully known upon rendering HTML.)
+<Warning>`injectFilter()` is a beta feature. (Which means breaking changes may occur during any minor version update.)</Warning>
 
 ```ts
 // /renderer/+onRenderHtml.ts

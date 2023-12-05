@@ -1234,6 +1234,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      cross-fetch:
+        specifier: ^4.0.0
+        version: 4.0.0
       express:
         specifier: ^4.18.1
         version: 4.18.2
