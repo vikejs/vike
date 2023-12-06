@@ -85,7 +85,7 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
     '--others --cached --exclude-standard'
   ].join(' ')
 
-  let files = (await runCmd(cmd, userRootDir)).split('\n')
+  let files = await runCmd(cmd, userRootDir)
   files = files.filter(
     // We have to repeat the same exclusion logic here because the `git ls-files` option --exclude only applies to untracked files. (We use --exclude only to speed up the command.)
     (file) => getIgnoreFilter(file, outDirRelativeFromUserRootDir)
@@ -144,8 +144,8 @@ async function isUsingGit(userRootDir: string) {
   assert(stdout.toString().trim() === 'true')
   return true
 }
-async function runCmd(cmd: string, cwd: string): Promise<string> {
+async function runCmd(cmd: string, cwd: string): Promise<string[]> {
   const res = await execA(cmd, { cwd })
   assert(res.stderr === '')
-  return res.stdout.toString().trim()
+  return res.stdout.toString().trim().split('\n')
 }
