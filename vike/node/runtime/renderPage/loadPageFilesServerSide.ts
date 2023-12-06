@@ -67,7 +67,7 @@ async function loadPageFilesServerSide(pageContext: { _pageId: string } & PageCo
         src: string
         assetType: 'script' | 'style' | 'preload'
         mediaType: null | NonNullable<MediaType>['mediaType']
-        preloadType: null | 'image' | 'script' | 'font' | 'style'
+        preloadType: null | NonNullable<MediaType>['assetType']
       }[] = []
 
       ;(await pageContextAddendum.__getPageAssets()).forEach((p) => {
