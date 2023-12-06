@@ -74,17 +74,7 @@ async function crawlPlusFiles(
 
 // Same as fastGlob() but using `$ git ls-files`
 async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: string | null): Promise<string[] | null> {
-  // Test whether Git is installed and whether userRootDir is inside a Git repository
-  {
-    let stdout: string
-    try {
-      const res = await execA('git rev-parse --is-inside-work-tree', { cwd: userRootDir })
-      stdout = res.stdout
-    } catch {
-      return null
-    }
-    assert(stdout.trim() === 'true')
-  }
+  if (!(await isUsingGit(userRootDir))) return null
 
   const cmd = [
     'git ls-files',
@@ -95,17 +85,7 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
     '--others --cached --exclude-standard'
   ].join(' ')
 
-  let stdout: string
-  try {
-    const res = await execA(cmd, { cwd: userRootDir })
-    stdout = res.stdout
-  } catch (err) {
-    if ((err as Error).message.includes('not a git repository')) return null
-    throw err
-  }
-
-  let files = stdout.split('\n').filter(Boolean)
-
+  let files = (await runCmd(cmd, userRootDir)).split('\n')
   files = files.filter(
     // We have to repeat the same exclusion logic here because the `git ls-files` option --exclude only applies to untracked files. (We use --exclude only to speed up the command.)
     (file) => getIgnoreFilter(file, outDirRelativeFromUserRootDir)
@@ -149,4 +129,23 @@ function getIgnoreFilter(file: string, outDirRelativeFromUserRootDir: string | n
     !file.includes('.telefunc.') &&
     (!outDirRelativeFromUserRootDir || !file.startsWith(`${outDirRelativeFromUserRootDir}/`))
   )
+}
+
+// Whether Git is installed and whether userRootDir is inside a Git repository
+async function isUsingGit(userRootDir: string) {
+  let res: Awaited<ReturnType<typeof execA>>
+  try {
+    res = await execA('git rev-parse --is-inside-work-tree', { cwd: userRootDir })
+  } catch {
+    return false
+  }
+  const { stdout, stderr } = res
+  assert(stderr.toString().trim() === '')
+  assert(stdout.toString().trim() === 'true')
+  return true
+}
+async function runCmd(cmd: string, cwd: string): Promise<string> {
+  const res = await execA(cmd, { cwd })
+  assert(res.stderr === '')
+  return res.stdout.toString().trim()
 }
