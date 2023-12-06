@@ -1,3 +1,16 @@
+## [0.4.149](https://github.com/vikejs/vike/compare/v0.4.148...v0.4.149) (2023-12-06)
+
+
+### Bug Fixes
+
+* add react-streaming to optimizeDeps.exclude ([3073c89](https://github.com/vikejs/vike/commit/3073c8955f52f2c4bf5ad612dc5feccd163611f4))
+* fix regression for config.outDir outside of config.root (fix [#1317](https://github.com/vikejs/vike/issues/1317)) ([70e7518](https://github.com/vikejs/vike/commit/70e7518b2eb9b7d767b2463c5174af1b5a63f8c3))
+* make Git test more reliable (fix [#1320](https://github.com/vikejs/vike/issues/1320)) ([bd1f159](https://github.com/vikejs/vike/commit/bd1f159d425d7bc01bfcc292af006c0ff9566327))
+* stop crawling tracked but deleted plus files ([7bae6de](https://github.com/vikejs/vike/commit/7bae6de5c530634d89f1e6f82ce1120c53f496ec))
+* test whether git is installed (fix [#1313](https://github.com/vikejs/vike/issues/1313)) ([7596dcd](https://github.com/vikejs/vike/commit/7596dcd57d846db8adaded4a7bd34353e205ea7f))
+
+
+
 ## [0.4.148](https://github.com/vikejs/vike/compare/v0.4.147...v0.4.148) (2023-12-04)
 
 
