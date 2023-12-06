@@ -91,7 +91,7 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
     (file) => getIgnoreFilter(file, outDirRelativeFromUserRootDir)
   )
 
-  // Removed tracked but deleted files
+  // Remove tracked but deleted files
   const filesIgnore = await runCmd('git ls-files --deleted', userRootDir)
   files = files.filter((file) => !filesIgnore.includes(file))
 
