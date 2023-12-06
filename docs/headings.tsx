@@ -785,6 +785,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`hooksTimeout`',
+    url: '/hooksTimeout'
+  },
+  {
+    level: 2,
     title: '`filesystemRoutingRoot`',
     url: '/filesystemRoutingRoot'
   },
