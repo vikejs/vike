@@ -95,7 +95,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   test('assertFileRuntime plugin - invalid import', async () => {
     await page.goto(getServerUrl() + '/forbidden-import')
     expectLog(
-      'Client-only module "/absolute/path/to/ClientOnly.client.jsx" included in server bundle (imported by /absolute/path/to/forbidden-import/Page.jsx) '
+      'Client-only module "/Users/usk/works/vike/test/misc/pages/forbidden-import/ClientOnly.client.jsx" included in server bundle (imported by /Users/usk/works/vike/test/misc/pages/forbidden-import/Page.jsx)'
     )
   })
 }
