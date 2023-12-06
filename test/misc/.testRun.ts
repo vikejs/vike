@@ -1,6 +1,6 @@
 export { testRun }
 
-import { test, expect, fetchHtml, page, getServerUrl, autoRetry, sleep } from '@brillout/test-e2e'
+import { test, expect, fetchHtml, page, getServerUrl, autoRetry, sleep, expectLog } from '@brillout/test-e2e'
 import { testCounter } from '../utils'
 import { testRun as testRunClassic } from '../../examples/react/.testRun'
 import fs from 'fs'
@@ -90,6 +90,13 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
     await expectUrl('/pushState?query')
     const timestamp7 = await getTimestamp()
     expect(timestamp7).toBe(timestamp6)
+  })
+
+  test('assertFileRuntime plugin - invalid import', async () => {
+    await page.goto(getServerUrl() + '/forbidden-import')
+    expectLog(
+      'Client-only module "/absolute/path/to/ClientOnly.client.jsx" included in server bundle (imported by /absolute/path/to/forbidden-import/Page.jsx) '
+    )
   })
 }
 
