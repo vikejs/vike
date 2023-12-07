@@ -1,6 +1,6 @@
 {
   "name": "vike",
-  "version": "0.4.147",
+  "version": "0.4.149",
   "scripts": {
     "dev": "tsc --watch",
     "build": "rimraf dist/ && pnpm run build:esm && pnpm run build:cjs",
@@ -162,7 +162,7 @@
     "vike": "./node/cli/bin-entry.js"
   },
   "devDependencies": {
-    "@brillout/release-me": "^0.1.9",
+    "@brillout/release-me": "^0.1.11",
     "@types/estree": "^1.0.0",
     "@types/jest": "^27.4.1",
     "@types/node": "^20.1.0",

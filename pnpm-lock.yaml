@@ -25,6 +25,9 @@ importers:
       '@brillout/test-types':
         specifier: ^0.1.10
         version: 0.1.10(typescript@4.8.4)
+      prettier:
+        specifier: ^3.1.0
+        version: 3.1.0
       vitest:
         specifier: ^0.34.1
         version: 0.34.6
@@ -239,8 +242,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.5.17
-        version: 0.5.17(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1)
+        specifier: ^0.5.24
+        version: 0.5.24(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1)
       '@types/node':
         specifier: ^15.12.1
         version: 15.14.9
@@ -1231,6 +1234,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      cross-fetch:
+        specifier: ^4.0.0
+        version: 4.0.0
       express:
         specifier: ^4.18.1
         version: 4.18.2
@@ -2070,8 +2076,8 @@ importers:
         version: 0.5.21
     devDependencies:
       '@brillout/release-me':
-        specifier: ^0.1.9
-        version: 0.1.9
+        specifier: ^0.1.11
+        version: 0.1.11
       '@types/estree':
         specifier: ^1.0.0
         version: 1.0.5
@@ -2423,8 +2429,8 @@ packages:
     requiresBuild: true
     dev: true
 
-  /@brillout/docpress@0.5.17(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1):
-    resolution: {integrity: sha512-JDb/RoHtHbTmyupfaoxpE4vzPHsDhc607vR3yn/vT5DYznRwXJRE7tAaKOt9gYiL/rheCSIBbjU5BX7lMI9okQ==}
+  /@brillout/docpress@0.5.24(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1):
+    resolution: {integrity: sha512-b3x3MhqmbHc29ORY5tzOab0o+ETMoaL/6lyJEpdvIfYiZRAr1bCkrv282Jw2w//4CMfqHbFO09ExlE2hovrr6Q==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -2503,10 +2509,11 @@ packages:
       semver: 7.5.4
     dev: false
 
-  /@brillout/release-me@0.1.9:
-    resolution: {integrity: sha512-PG42NBN+EBLWMxnngpTikNd/pOjovXEMti8S9H+1u9Dldj2UGK+nrJxBQkDLhpFcGojBDy4XnLjyxWSHjESm/g==}
+  /@brillout/release-me@0.1.11:
+    resolution: {integrity: sha512-lDih32OeTkHBGhO/V2Q6oywyjhfK9CGVxX9cBHMEYdD5cBuuA+TkOrOGjjKz0n55caQRnsFyHRCx6L+TSnFJsg==}
     hasBin: true
     dependencies:
+      commander: 11.1.0
       conventional-changelog: 5.1.0
       execa: 5.1.1
       js-yaml: 4.1.0
@@ -5777,6 +5784,11 @@ packages:
     resolution: {integrity: sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==}
     engines: {node: '>=14'}
     dev: false
+
+  /commander@11.1.0:
+    resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
+    engines: {node: '>=16'}
+    dev: true
 
   /commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -10308,6 +10320,12 @@ packages:
   /prepend-http@2.0.0:
     resolution: {integrity: sha512-ravE6m9Atw9Z/jjttRUZ+clIXogdghyZAuWJ3qEzjT+jI/dL1ifAqhZeC5VHzQp1MSt1+jxKkFNemj/iO7tVUA==}
     engines: {node: '>=4'}
+    dev: true
+
+  /prettier@3.1.0:
+    resolution: {integrity: sha512-TQLvXjq5IAibjh8EpBIkNKxO749UEWABoiIZehEPiY4GNpVdhaFKqSTu+QrlU6D2dPAfubRmtJTi4K4YkQ5eXw==}
+    engines: {node: '>=14'}
+    hasBin: true
     dev: true
 
   /pretty-format@27.5.1:

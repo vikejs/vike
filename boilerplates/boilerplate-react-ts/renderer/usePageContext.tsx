@@ -2,7 +2,7 @@
 // See https://vike.dev/pageContext-anywhere
 
 import React, { useContext } from 'react'
-import type { PageContext } from './types'
+import type { PageContext } from 'vike/types'
 
 export { PageContextProvider }
 // eslint-disable-next-line react-refresh/only-export-components

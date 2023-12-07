@@ -1,0 +1,46 @@
+import { Link } from '@brillout/docpress'
+import { HookTypeScriptHints } from '../components'
+
+The `onPageTransitionStart()` hook, together with <Link href="/onPageTransitionEnd">`onPageTransitionEnd()`</Link>, enables you to implement page transition animations.
+
+> The `onPageTransitionStart()` hook requires <Link href="/client-routing">Client Routing</Link>.
+
+```js
+// /pages/+onPageTransitionStart.js
+// Environment: browser
+
+export { onPageTransitionStart }
+
+// Create custom page transition animations
+async function onPageTransitionStart(pageContext) {
+  console.log('Page transition start')
+  console.log('Is backwards navigation?', pageContext.isBackwardNavigation)
+  document.body.classList.add('page-transition')
+}
+```
+
+
+## TypeScript
+
+```ts
+// /pages/+onPageTransitionStart.ts
+// Environment: browser
+
+export { onPageTransitionStart }
+
+import type { OnPageTransitionStartAsync } from 'vike/types'
+
+const onPageTransitionStart: OnPageTransitionStartAsync = async (
+  pageContext
+): ReturnType<OnPageTransitionStartAsync> => {
+  // ...
+}
+```
+
+<HookTypeScriptHints hookTypeName="OnPageTransitionStartAsync" />
+
+## See also
+
+ - <Link href="/clientRouting" />
+ - <Link href="/onHydrationEnd" />
+ - <Link href="/onPageTransitionEnd" />

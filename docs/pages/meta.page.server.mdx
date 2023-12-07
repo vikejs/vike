@@ -1,29 +1,171 @@
-import { Link } from '@brillout/docpress'
+import { IntegrationPackage, IntegrationPackageNames } from '../components'
+import { Link, RepoLink } from '@brillout/docpress'
 
-> The `meta` config is part of the <Link text="V1 design" href="/migration/v1-design" />.
+> Using `meta` is a powerful and advanced technique: generally, we recommend using <Link href="/vike-packages">Vike packages</Link> instead.
 
-The `meta` config enables you to:
- - <Link href="#create-new-configurations" />
- - <Link href="#modify-existing-configurations" />
+`meta` enables:
+ - **New settings**.
+   - <Link href="#example-dataendpointurl" doNotInferSectionTitle />
+   - <Link href="#example-sql" doNotInferSectionTitle />
+   - <Link href="#example-title-and-description" doNotInferSectionTitle />
+   - <Link href="#example-layout" doNotInferSectionTitle />
+ - **New hooks**.
+   - Example: `onInit()` or `onBeforeFetchingData()`.
+ - **Modifying the environment of existing hooks**.
+   - <Link href="#example-modify-onbeforerender-env" doNotInferSectionTitle />
+
+## Example: `dataEndpointUrl`
+
+This example showcases a simple data fetching logic that uses URL data endpoints (e.g. a RESTful API).
+
+```js
+// /pages/countries/+dataEndpointUrl.js
+// Environment: server
+
+export default 'https://restcountries.com/v3.1/all'
+```
+
+```js
+// /pages/+config.h.js
+// Environment: config
+
+export default {
+  meta: {
+    dataEndpointUrl: {
+      // Load the value of /pages/**/+dataEndpointUrl.js only on the server
+      env: { server: true, client: false }
+    }
+  }
+}
+```
+
+```js
+// /pages/+onBeforeRender.js
+// Environment: server
+
+export { onBeforeRender }
+
+import fetch from 'node-fetch'
+
+async function onBeforeRender(pageContext) {
+  // The value exported by /pages/countries/+dataEndpointUrl.js is
+  // available at pageContext.config.dataEndpointUrl
+  const response = await fetch(pageContext.config.dataEndpointUrl)
+  // ...
+}
+```
+
+## Example: `sql`
+
+Similarly to the previous example, another common use case is to enable pages to define their data requirements as SQL queries.
+
+```js
+// /pages/product/+sql.js
+export const sql = { modelName: 'Product', select: ['name', 'price'] }
+```
+
+```js
+// /pages/user/+sql.js
+export const sql = { modelName: 'User', select: ['firstName', 'lastName'] }
+```
+
+```js
+// /pages/+config.h.js
+// Environment: config
+
+export default {
+  meta: {
+    sql: {
+      // Load the value of /pages/**/+sql.js only on the server
+      env: { server: true, client: false }
+    }
+  }
+}
+```
+
+```js
+// /pages/+onBeforeRender.js
+// Environment: server
+
+export { onBeforeRender }
+
+import { runQuery } from 'some-sql-engine'
+
+async function onBeforeRender(pageContext) {
+  // The value exported by /pages/**/+sql.js is available at pageContext.config.sql
+  const { sql } = pageContext.config
+  const data = await runQuery(sql)
+  // ...
+}
+```
 
 
-## Create new configurations
+## Example: `title` and `description`
 
-Example:
+In order to define the tags `<title>` and `<meta name="description">` of a page's HTML, you can create new settings `title` and `description`.
+
+> If you use a <IntegrationPackage/>, then you don't need to create the `title` and `description` settings as they are already created by <IntegrationPackageNames />. You can still read this section as it's a good example for showcasing `meta`.
+
+We first show how the settings `title` and `description` are used and then their implementation.
+
+#### Usage
+
+```js
+// /pages/about-us/+title.js
+
+export default 'About Us'
+```
+
+```js
+// /pages/about-us/+description.js
+
+export default 'Who we are, our values, and what we stand for.'
+```
+
+> You can also use `+config.h.js` instead of creating the files `+title.js` and `+description.js`:
+>
+> ```js
+> // /pages/about/+config.h.js
+>
+> export default {
+>   title: 'About Us',
+>   description: 'Who we are, our values, and what we stand for.'
+> }
+> ```
+>
+> See <Link href="/config" />.
+
+Your pages can also use data that was dynamically fetched in order to determine `<title>` and `<meta name="description">`:
+
+```js
+// /pages/product/+title.js
+
+export default pageContext => pageContext.data.product.name
+```
+```js
+// /pages/product/+description.js
+
+export default pageContext => {
+  const { product } = pageContext.data
+  return `${product.name} - ${product.description}`
+}
+```
+
+#### Implementation
 
 ```ts
-// /renderer/+config.h.ts
+// /pages/+config.h.ts
 
 import type { Config } from 'vike/types'
 
 export default {
   meta: {
     title: {
-      // Make `title` value available on both the server and client
+      // Make the value of `title` available on both the server- and client-side
       env: { server: true, client: true }
     },
     description: {
-      // Make `description` value available only on the server-side
+      // Make the value of `description` available only on the server-side
       env: { server: true }
     }
   }
@@ -31,55 +173,161 @@ export default {
 ```
 
 ```js
-// /pages/some-page/+config.h.js
+// /pages/+onRenderClient.js
+// Environment: client
 
-export default {
-  // Set <title>
-  title: 'My Vike app',
-  // Set <meta name="description" />
-  description: 'This app showcases using Vike'
+export { onRenderClient }
+
+import { getTitle } from './utils'
+
+function onRenderClient(pageContext) {
+  // Update the value of <title> upon page navigation
+  if (!pageContext.isHydration) {
+    document.title = getTitle(pageContext)
+  }
+  // ...
 }
 ```
 
-```ts
-// /renderer/+onRenderHtml.js
 
-export default onRenderHtml
+```js
+// /pages/utils.js
+// Environment: server & client
 
+export { getTitle, getDescription }
+
+function getTitle(pageContext) {
+  // The value exported by /pages/**/+title.js is available at pageContext.config.title
+  const val = pageContext.config.title
+  if (!val) return 'Some default title'
+  if (typeof val === 'string') return val
+  if (typeof val === 'function') return val(pageContext)
+}
+function getDescription(pageContext) {
+  // Same as getTitle()
+  // ...
+}
+```
+
+```js
+// /pages/+onRenderHtml.js
+// Environment: server
+
+export { onRenderHtml }
+
+import { getTitle, getDescription } from './utils'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
+import { renderToHtml } from 'some-ui-framework'
 
 async function onRenderHtml(pageContext) {
-  // The page's config is available at pageContext.config
-  const { title, description } = pageContext.config
-  return escapeInject`
+  const title = getTitle(pageContext)
+  const description = getDescription(pageContext)
+  return escapeInject`<!DOCTYPE html>
     <html>
       <head>
         <title>${title}</title>
         <meta name="description" content="${description}" />
       </head>
-      <!-- ... -->
+      <body>
+        <div id="root">${dataEndpointUrl(renderToHtml(<Page {...pageContext.data} />))}</div>
+      </body>
     </html>`
 }
 ```
 
-```ts
-// /renderer/+onRenderClient.js
+> This implementation can be improved: the file `/pages/utils.js` is loaded on both the server- and client-side but `getDescription()` is only used by the server-side. This means `getDescription()` unnecessarily bloats the size of your client-side bundles. It would be cleaner to split `/pages/utils.js` in two seperate files: one for the client-side and another one for the server-side. In general, be extra careful in which environment each file is loaded; consider using <Link href="/file-env">`.server.js` and `.client.js`</Link> to ensure the environment of files.
 
-export default onRenderClient
 
-async function onRenderClient(pageContext) {
-  // Because meta.title.env is { server: true, client: true } we can access its value
-  // as well on the client-side.
-  const { title } = pageContext.config
-  // For client-side routing, we need to dynamically change the website's title
-  document.title = title
+## Example: `Layout`
+
+> If you use a <IntegrationPackage/>, then you don't need to create the `Layout` setting as it's already created by <IntegrationPackageNames />.
+
+Another common use case is to create a component `<Layout>` that defines the layout of a page.
+
+```js
+// /pages/product/+Layout.js
+// Environment: browser and server
+
+export { Layout } from '../layouts/Responsive'
+```
+
+```js
+// /pages/admin/+Layout.js
+// Environment: browser and server
+
+export { Layout } from '../layouts/Dashboard'
+```
+
+```js
+// /pages/+Layout.js
+// Environment: browser and server
+
+// The default layout in case the page doesn't set one
+export { Layout } from '../layouts/LayoutDefault'
+```
+
+```js
+// /pages/+config.h.js
+// Environment: config
+
+export default {
+  meta: {
+    Layout: {
+      // Load the value of /pages/**/+Layout.js on both the server and client
+      env: { server: true, client: true }
+    }
+  }
 }
 ```
 
+```js
+// /pages/+onRenderHtml.js
+// Environment: server
 
-## Modify existing configurations
+export { onRenderHtml }
 
-Example:
+import { renderToHtml } from 'some-ui-framework'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
+
+async function onRenderHtml(pageContext) {
+  const { Page, Layout } = pageContext.config
+  const pageHtml = renderToHtml(<Layout><Page/></Layout>)
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="root">${dangerouslySkipEscape(pageHtml)}</div>
+      </body>
+    </html>`
+}
+```
+
+> Note how we use `pageContext.config.Page` instead of `pageContext.Page`: that's because `pageContext.Page` is just an alias for `pageContext.config.Page`.
+
+```js
+// /pages/+onRenderClient.jsx
+// Environment: browser
+
+export { onRenderClient }
+
+import { renderDom } from 'some-ui-framework'
+
+async function onRenderClient(pageContext) {
+  const { Page, Layout } = pageContext.config
+  renderDom(
+    <Layout><Page/></Layout>,
+    document.getElementById("root")
+  )
+}
+```
+
+Examples:
+ - <RepoLink path="/examples/layouts-react-v1/" />
+ - <RepoLink path="/examples/layouts-vue-v1/" />
+
+
+## Example: modify `onBeforeRender()` env
+
+You can use `meta` to change the environment in which built-in hooks are loaded. For example you can change `onBeforeRender()` from `{ server: true, client: false }` to `{ server: true, client: true }`.
 
 ```ts
 // /pages/some-page/+config.h.ts
@@ -89,8 +337,8 @@ import type { Config } from 'vike/types'
 export default {
   meta: {
     onBeforeRender: {
-      // By default, the onBeforeRender() hook is always loaded and executed only on the
-      // server-side. By using the meta config we can make it isomorphic instead:
+      // By default, the onBeforeRender() hook is loaded and executed only on the
+      // server-side. By using meta we can make it isomorphic instead:
       // onBeforeRender() is loaded and executed as well on the client-side.
       env: { server: true, client: true }
     }
@@ -98,12 +346,12 @@ export default {
 } satisfies Config
 ```
 
-> Making `onBeforeRender()` isomorphic allows us to fetch data directly between the user's browser and the data source (without involving our SSR server). See <Link href="/onBeforeRender#client-routing" doNotInferSectionTitle={true} />.
+> Making `onBeforeRender()` isomorphic allows you to fetch data directly between the user's browser and the data source (without involving your server), see <Link href="/onBeforeRender#client-side" />.
 
-For extra convenience, we can create a `onBeforeRenderIsomorph` toggle:
+For more convenience, you can create an `onBeforeRenderIsomorph` toggle:
 
 ```ts
-// /pages/some-page/+config.h.ts
+// /pages/+config.h.ts
 
 import type { Config, Effect } from 'vike/types'
 
@@ -134,5 +382,5 @@ export default {
 
 Example:
  - [/examples/react-full-v1/](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/)
-   - Config definition: [/renderer/+config.h.ts > `meta.onBeforeRenderIsomorph`](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/renderer/+config.h.ts#L14-L33)
-   - Config usage: [/pages/star-wars/@id/+onBeforeRenderIsomorph.ts](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts)
+   - Toggle definition: [/renderer/+config.h.ts > `meta.onBeforeRenderIsomorph`](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/renderer/+config.h.ts#L14-L33)
+   - Toggle usage: [/pages/star-wars/@id/+onBeforeRenderIsomorph.ts](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRenderIsomorph.ts)

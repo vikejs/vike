@@ -15,7 +15,7 @@ describe('renderPage()', () => {
       expect(statusCode).toBe(200)
       expect(headers).toStrictEqual([['Content-Type', 'text/html;charset=utf-8']])
       expect(body).toMatchInlineSnapshot(
-        '"<html><head><script type=\\"module\\" src=\\"/@vite/client\\"></script></head><body><p>hello</p></body></html>"'
+        '"<html><head></head><body><p>hello</p><script type=\\"module\\" src=\\"/@vite/client\\"></script></body></html>"'
       )
     }
     /*

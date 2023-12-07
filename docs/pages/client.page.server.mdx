@@ -1,10 +1,11 @@
 import { Link, RepoLink } from '@brillout/docpress'
 
-> The `client` config is part of the <Link text="V1 design" href="/migration/v1-design" />.
-
 The `client` config adds client-side code executed at load time.
 
-> For executing code upon page lifecycle changes, see following hooks instead: <Link text={<><code>onHydrationEnd()</code>, <code>onPageTransitionStart()</code>, and <code>onPageTransitionEnd()</code></>} href="/clientRouting#usage-options" doNotInferSectionTitle={true} />.
+> For executing code upon page lifecycle changes, see following hooks instead:
+> - <Link href="/onHydrationEnd" />
+> - <Link href="/onPageTransitionStart" />
+> - <Link href="/onPageTransitionEnd" />
 
 ```js
 // +config.h.js
@@ -18,6 +19,7 @@ export default {
 console.log("I'm run when the client-side JavaScript is loaded.")
 ```
 
-## Example
+## Examples
 
-See <RepoLink path="/examples/render-modes-v1/pages/html-js/+client.js" />.
+* <RepoLink path="/examples/render-modes-v1/pages/html-js/+client.js" />
+* <Link href="/render-modes#html-only" />

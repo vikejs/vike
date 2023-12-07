@@ -1,4 +1,4 @@
-// https://vike.dev/clientRouting
+// https://vike.dev/onHydrationEnd
 export { onHydrationEnd }
 
 import type { OnHydrationEndAsync } from 'vike/types'

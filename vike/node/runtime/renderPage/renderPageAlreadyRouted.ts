@@ -10,7 +10,7 @@ export type { PageContextInitEnhanced }
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
 import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles.js'
-import { assert, assertUsage, hasProp, isNotNullish, objectAssign, unique } from '../utils.js'
+import { assert, assertUsage, assertWarning, hasProp, isNotNullish, objectAssign, unique } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
 import { addUrlComputedProps, type PageContextUrlComputedPropsInternal } from '../../../shared/addUrlComputedProps.js'
 import { getGlobalContext } from '../globalContext.js'
@@ -32,9 +32,9 @@ import { isNewError } from './isNewError.js'
 import { preparePageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide.js'
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageRoutes.js'
-import type { OnBeforeRouteHook } from '../../../shared/route/executeOnBeforeRouteHook.js'
 import pc from '@brillout/picocolors'
 import { getConfigValueFilePathToShowToUser } from '../../../shared/page-configs/helpers.js'
+import type { Hook } from '../../../shared/hooks/getHook.js'
 
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 
@@ -225,7 +225,7 @@ type RenderContext = {
   pageConfigGlobal: PageConfigGlobalRuntime
   allPageIds: string[]
   pageRoutes: PageRoutes
-  onBeforeRouteHook: OnBeforeRouteHook | null
+  onBeforeRouteHook: Hook | null
 }
 // TODO: remove getRenderContext() in favor of getGlobalObject() + reloadGlobalContext()
 // TODO: impl GlobalNodeContext + GlobalClientContext + GloablContext, and use GlobalContext instead of RenderContext
@@ -241,7 +241,7 @@ async function getRenderContext(): Promise<RenderContext> {
     pageConfigGlobal,
     allPageIds
   )
-  assertNonMixedDesign(pageFilesAll, pageConfigs)
+  assertV1Design(pageFilesAll, pageConfigs)
   const renderContext = {
     pageFilesAll: pageFilesAll,
     pageConfigs,
@@ -253,27 +253,35 @@ async function getRenderContext(): Promise<RenderContext> {
   return renderContext
 }
 
-function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]) {
-  if (pageFilesAll.length === 0 || pageConfigs.length === 0) return
-  const indent = '- '
-  const v1Files: string[] = unique(
-    pageConfigs
-      .map((p) =>
-        Object.values(p.configValues)
-          .map(getConfigValueFilePathToShowToUser)
-          .filter(isNotNullish)
-          .map((filePathToShowToUser) => indent + filePathToShowToUser)
-      )
-      .flat(2)
-  )
-  assertUsage(
-    false,
-    [
-      'Mixing the new V1 design with the old V0.4 design is forbidden.',
-      'V1 files:',
-      ...v1Files,
-      'V0.4 files:',
-      ...pageFilesAll.map((p) => indent + p.filePath)
-    ].join('\n')
+function assertV1Design(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]) {
+  const isV1Design = pageConfigs.length !== 0
+  const isDesignOld = pageFilesAll.length !== 0
+  if (isV1Design && isDesignOld) {
+    const indent = '- '
+    const v1Files: string[] = unique(
+      pageConfigs
+        .map((p) =>
+          Object.values(p.configValues)
+            .map(getConfigValueFilePathToShowToUser)
+            .filter(isNotNullish)
+            .map((filePathToShowToUser) => indent + filePathToShowToUser)
+        )
+        .flat(2)
+    )
+    assertUsage(
+      false,
+      [
+        'Mixing the new V1 design with the old V0.4 design is forbidden.',
+        'V1 files:',
+        ...v1Files,
+        'V0.4 files:',
+        ...pageFilesAll.map((p) => indent + p.filePath)
+      ].join('\n')
+    )
+  }
+  assertWarning(
+    !isDesignOld,
+    'You are using the old deprecated design, update to the new V1 design, see https://vike.dev/migration/v1-design',
+    { onlyOnce: true }
   )
 }

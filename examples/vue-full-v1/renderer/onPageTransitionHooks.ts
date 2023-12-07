@@ -1,5 +1,9 @@
-// https://vike.dev/clientRouting
-export { onHydrationEnd, onPageTransitionStart, onPageTransitionEnd }
+// https://vike.dev/onHydrationEnd
+export { onHydrationEnd }
+// https://vike.dev/onPageTransitionStart
+export { onPageTransitionStart }
+// https://vike.dev/onPageTransitionEnd
+export { onPageTransitionEnd }
 
 import type { OnHydrationEndAsync, OnPageTransitionEndAsync, OnPageTransitionStartAsync } from 'vike/types'
 

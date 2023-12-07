@@ -1,7 +1,9 @@
-import { Link } from '@brillout/docpress'
+import { Link, Danger } from '@brillout/docpress'
 
-To define an SPA page, we `export { Page }` in `.page.client.js` instead of `.page.js`. See:
- - <Link href="/Page" />.
- - <Link href="/render-modes#spa" />.
-
-> This also works for SFC components, e.g. `.page.client.vue`.
+<Danger>
+  `*.page*.js` files are deprecated in favor of `+*.js` files, see
+  <ul>
+    <li><Link href="/migration/v1-design" /></li>
+    <li><Link href="/Page" /></li>
+  </ul>
+</Danger>

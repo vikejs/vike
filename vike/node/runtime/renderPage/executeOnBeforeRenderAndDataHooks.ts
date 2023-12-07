@@ -29,7 +29,7 @@ async function executeOnBeforeRenderAndDataHooks(
   preparePageContextForUserConsumptionServerSide(pageContext)
 
   if (dataHook) {
-    const hookResult = await executeHook(() => dataHook.hookFn(pageContext), 'data', dataHook.hookFilePath)
+    const hookResult = await executeHook(() => dataHook.hookFn(pageContext), dataHook)
     assertDataHookReturn(hookResult, dataHook.hookFilePath)
     const pageContextFromHook = {
       data: hookResult
@@ -40,8 +40,7 @@ async function executeOnBeforeRenderAndDataHooks(
   if (onBeforeRenderHook) {
     const hookResult = await executeHook(
       () => onBeforeRenderHook.hookFn(pageContext),
-      'onBeforeRender',
-      onBeforeRenderHook.hookFilePath
+      onBeforeRenderHook
     )
     assertOnBeforeRenderHookReturn(hookResult, onBeforeRenderHook.hookFilePath)
     const pageContextFromHook = hookResult?.pageContext

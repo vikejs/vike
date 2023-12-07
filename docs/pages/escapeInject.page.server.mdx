@@ -1,20 +1,23 @@
-import { RepoLink, Link } from '@brillout/docpress'
+import { HookTypeScriptHints, IntegrationPackage, IntegrationPackageNames } from '../components'
+import { Link, RepoLink } from '@brillout/docpress'
 
 Environment: server.
 
-The `escapeInject` string template tag sanitizes HTML (to prevent so-called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting) security breaches).
+The `escapeInject` string template tag sanitizes HTML to prevent security risks commmonly called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting).
 
-It's usually used in the `render()` hook defined in `renderer/_default.page.server.js`.
+> If you use a <IntegrationPackage/>, then you don't need to use `escapeInject` yourself as <IntegrationPackageNames /> already sanitizes its HTML.
+
+It's usually used by the `onRenderHtml()` hook.
 
 ```js
-// renderer/_default.page.server.js
+// +onRenderHtml.js
 // Environment: server
 
-export { render }
+export { onRenderHtml }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 
-async function render() {
+async function onRenderHtml() {
   const title = 'Hello<script src="https://devil.org/evil-code"></script>'
 
   // This HTML is safe thanks to `escapeInject` which sanitizes `title`
@@ -46,16 +49,16 @@ We can assemble the overall HTML document from several HTML fragments.
 For example, if we want some HTML parts to be included only for certain pages:
 
 ```js
-// _default.page.server.js
+// +onRenderHtml.js
 // Environment: server
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
-export { render }
+export { onRenderHtml }
 
-async function render(pageContext) {
-  const description = pageContext.exports.description
+async function onRenderHtml(pageContext) {
+  const description = pageContext.config.description
   const descriptionTag = !description ?
     '' :
     // We use `escapeInject` for an HTML fragment
@@ -75,7 +78,7 @@ async function render(pageContext) {
 }
 ```
 
-> `pageContext.exports.description` is a <Link text="Custom Export" href="/exports" />.
+> `pageContext.config.description` is a custom config, see <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
 
 Example:
-- <RepoLink path='/examples/html-fragments/' />
+- <RepoLink path='/examples/html-fragments-v1/' />

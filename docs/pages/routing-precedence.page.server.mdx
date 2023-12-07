@@ -23,15 +23,17 @@ Upon conflicts between Filesystem Routing, Route Strings and Route Functions, Vi
 **Example (4) + (6) + (7)**:
 
 ```js
-// product/list.page.route.js
+// product/list/+route.js
 export default '/product'
 ```
+
 ```js
-// product/item.page.route.js
+// product/item/+route.js
 export default '/product/@productId'
 ```
+
 ```js
-// product/catch-all.page.route.js
+// product/catch-all/+route.js
 export default pageContext => {
   if (!pageContext.urlPathname.startsWith('/product/')) return false
   return {
@@ -45,21 +47,23 @@ export default pageContext => {
 ```
 
 ```
-URL                           MATCHES                                    WINNER
-==================            ===================================        ======
-/product/42                   product/item.page.route.js      (6)        ⬅️
-                              product/catch-all.page.route.js (7)
+URL                           MATCHES                                WINNER
+==================            ===============================        ======
+/product/42                   product/item/+route.js      (6)        ⬅️
+                              product/catch-all/+route.js (7)
 ```
+
 ```
-URL                           MATCHES                                    WINNER
-==================            ===================================        ======
-/product                      product/list.page.route.js      (4)        ⬅️
-                              product/catch-all.page.route.js (7)
+URL                           MATCHES                                WINNER
+==================            ===============================        ======
+/product                      product/list/+route.js      (4)        ⬅️
+                              product/catch-all/+route.js (7)
 ```
+
 ```
-URL                           MATCHES                                    WINNER
-==================            ===================================        ======
-/product/wrong/url            product/catch-all.page.route.js (7)        ⬅️
+URL                           MATCHES                                WINNER
+==================            ===============================        ======
+/product/wrong/url            product/catch-all/+route.js (7)        ⬅️
 ```
 
 4: Route String, static (without `@param` segment, e.g. `/about/company`)  
@@ -69,11 +73,12 @@ URL                           MATCHES                                    WINNER
 **Example (1) + (4)**:
 
 ```js
-// admin.page.route.js
+// admin/+route.js
 export default '/admin'
 ```
+
 ```js
-// login.page.route.js
+// login/+route.js
 
 export default pageContext => {
   if( pageContext.user === null ) {
@@ -86,15 +91,16 @@ export default pageContext => {
 ```
 
 ```
-URL                   pageContext.user       MATCHES                       WINNER
-======                ================       =======================       ======
-/admin                null                   login.page.route.js (1)       ⬅️
-                                             admin.page.route.js (4)
+URL                   pageContext.user       MATCHES                   WINNER
+======                ================       ===================       ======
+/admin                null                   login/+route.js (1)       ⬅️
+                                             admin/+route.js (4)
 ```
+
 ```
-URL                   pageContext.user       MATCHES                       WINNER
-======                ================       =======================       ======
-/admin                'brillout'             admin.page.route.js (4)       ⬅️
+URL                   pageContext.user       MATCHES                   WINNER
+======                ================       ===================       ======
+/admin                'brillout'             admin/+route.js (4)       ⬅️
 ```
 
 1: Route Function, returned high positive `precedence` number  

@@ -147,6 +147,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { client: true },
     _computed: (configValueSources): null | ConfigEnvInternal =>
       !isConfigSet(configValueSources, 'data') ? null : getConfigEnv(configValueSources, 'data')
+  },
+  hooksTimeout: {
+    env: { server: true, client: true }
   }
 }
 

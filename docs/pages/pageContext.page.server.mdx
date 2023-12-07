@@ -9,7 +9,7 @@ The `pageContext` object holds information about the current page.
 
 Built-in properties:
 
- - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
+ - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `+Page.js` file.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
  - **`pageContext.urlOriginal`**: the current URL.
 
@@ -57,8 +57,7 @@ Built-in properties:
      hashOriginal: '#%C3%A2ge'
    }
    ```
- - **`pageContext.exports`**: See <Link href="/exports" />.
- - **`pageContext.exportsAll`**: Same as `pageContext.exports` but cumulative.
+ - **`pageContext.config`**: See <Link href="/meta" />.
  - **`pageContext.isHydration`**: Whether the current page is already rendered to HTML. When using <Link href="/client-routing" noBreadcrumb={true} />, the value is usually `true` for the first page the user navigates to, and `false` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.)
  - **`pageContext.isBackwardNavigation`**: Whether the user is navigating back in history. The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`. The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
  - **`pageContext.is404`**: If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see <Link href="/error-page" />.
@@ -87,6 +86,7 @@ You can define custom `pageContext` properties.
     }
     ```
     > A common use case for `onBeforeRender()` is to fetch data: <Link href="/data-fetching" />.
+
  - At your <Link text="Vike server middleware" href="/renderPage" />:
     ```js
     app.get('*', async (req, res, next) => {
@@ -107,9 +107,10 @@ You can define custom `pageContext` properties.
     })
     ```
     > A common use case is to integrate authentication tools: <Link href="/auth" />.
- - Using the [`render()`](/render-hook) hook:
+
+ - Using the <Link href="/">`onRenderHtml()`</Link> hook:
     ```js
-    export function render() {
+    function onRenderHtml() {
       return {
         documentHtml: escapeInject`<html><!--...--></html>`,
         pageContext: {
@@ -139,11 +140,11 @@ While some `pageContext` values are also available on the client-side, most valu
 
 When using <Link href="/server-routing" noBreadcrumb={true} />, the following are also available in the browser by default:
  - `pageContext.Page`
- - `pageContext.exports`
+ - `pageContext.config`
 
 When using <Link href="/client-routing" noBreadcrumb={true} />, the following are also available in the browser by default:
  - `pageContext.Page`
- - `pageContext.exports`
+ - `pageContext.config`
  - `pageContext.isHydration`
  - `pageContext.isBackwardNavigation`
  - `pageContext.routeParams`

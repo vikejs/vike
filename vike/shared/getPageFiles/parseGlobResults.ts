@@ -8,7 +8,7 @@ import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs
 import {
   assertPageConfigGlobalSerialized,
   assertPageConfigsSerialized
-} from '../page-configs/serialize/assertPageConfigs.js'
+} from '../page-configs/serialize/assertPageConfigsSerialized.js'
 import { parsePageConfigs } from '../page-configs/serialize/parsePageConfigs.js'
 
 function parseGlobResults(pageFilesExports: unknown): {

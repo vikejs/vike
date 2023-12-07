@@ -48,25 +48,25 @@ List of options: <Link href="/prerender-config" />.
 
 Your pages' HTML will be rendered when you run `$ vite build` and the generated HTML files are available at `dist/client/`.
 
-For a page with a parameterized route (e.g. `/movie/@movieId`), you have to use the [`prerender()` hook](/prerender) in order to provide the list of URLs that are to be pre-rendered. The `prerender()` hook can also be used to accelerate the pre-rendering process.
+For a page with a parameterized route (e.g. `/movie/@movieId`), you have to use the [`onBeforePrerenderStart()` hook](/onBeforePrerenderStart) in order to provide the list of URLs that are to be pre-rendered. The `onBeforePrerenderStart()` hook can also be used to accelerate the pre-rendering process.
 
-By default, all pages are pre-rendered. To pre-render only some pages, use the <Link href="/prerender-config#partial" text={<><code>partial</code> option</>} /> with <Link href="/doNotPrerender" text={<code>.page.server.js#doNotPrerender</code>} />.
+By default, all pages are pre-rendered. To pre-render only some pages, use the <Link href="/prerender-config#partial" text={<><code>partial</code> option</>} /> with <Link href="/prerender-config#toggle" text={<code>prerender: false</code>} />.
 
 If you pre-render all your pages, then you can use Vite's CLI instead of a server (`$ vite dev` and `$ vite preview`). See linked examples below.
 
 You can programmatically invoke the pre-rendering process, see <Link href="/prerender-programmatic" />.
 
 React Example:
- - <RepoLink path='/examples/react-full/vite.config.ts' /> (see setting <code>prerender</code> option to `true`)
- - <RepoLink path='/examples/react-full/pages/hello/index.page.server.ts' /> (see <code>prerender()</code> hook)
- - <RepoLink path='/examples/react-full/pages/star-wars/index/index.page.server.ts' /> (see <code>prerender()</code> hook)
- - <RepoLink path='/examples/react-full/package.json' /> (see Vite CLI usage)
+ - <RepoLink path='/examples/react-full-v1/vite.config.ts' /> (see setting <code>prerender</code> option to `true`)
+ - <RepoLink path='/examples/react-full-v1/pages/hello/+onBeforePrerenderStart.ts' />
+ - <RepoLink path='/examples/react-full-v1/pages/star-wars/index/+onBeforePrerenderStart.ts' />
+ - <RepoLink path='/examples/react-full-v1/package.json' /> (see Vite CLI usage)
 
 Vue Example:
- - <RepoLink path='/examples/vue-full/vite.config.ts' /> (see setting <code>prerender</code> option to `true`)
- - <RepoLink path='/examples/vue-full/pages/hello/index.page.server.ts' /> (see <code>prerender()</code> hook)
- - <RepoLink path='/examples/vue-full/pages/star-wars/index/index.page.server.ts' /> (see <code>prerender()</code> hook)
- - <RepoLink path='/examples/vue-full/package.json' /> (see Vite CLI usage)
+ - <RepoLink path='/examples/vue-full-v1/vite.config.ts' /> (see setting <code>prerender</code> option to `true`)
+ - <RepoLink path='/examples/vue-full-v1/pages/hello/+onBeforePrerenderStart.ts' />
+ - <RepoLink path='/examples/vue-full-v1/pages/star-wars/index/+onBeforePrerenderStart.ts' />
+ - <RepoLink path='/examples/vue-full-v1/package.json' /> (see Vite CLI usage)
 
 
 ## SSG vs SSR

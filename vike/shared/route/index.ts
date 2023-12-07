@@ -21,11 +21,12 @@ import {
 import { resolvePrecendence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'
 import { resolveRouteFunction } from './resolveRouteFunction.js'
-import { executeOnBeforeRouteHook, type OnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
+import { executeOnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
 import type { PageRoutes, RouteType } from './loadPageRoutes.js'
 import { debug } from './debug.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 import pc from '@brillout/picocolors'
+import type { Hook } from '../hooks/getHook.js'
 
 type PageContextForRoute = PageContextUrlComputedPropsInternal & {
   _pageFilesAll: PageFile[]
@@ -33,7 +34,7 @@ type PageContextForRoute = PageContextUrlComputedPropsInternal & {
   _allPageIds: string[]
   _pageConfigGlobal: PageConfigGlobalRuntime
   _pageRoutes: PageRoutes
-  _onBeforeRouteHook: OnBeforeRouteHook | null
+  _onBeforeRouteHook: Hook | null
 } & PageContextUrlSources
 type PageContextFromRoute = {
   _pageId: string | null

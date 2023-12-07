@@ -222,7 +222,7 @@ async function executeHookClientSide(
     },
     true
   )
-  const hookResult = await executeHook(() => hook.hookFn(pageContextForUserConsumption), hookName, hook.hookFilePath)
+  const hookResult = await executeHook(() => hook.hookFn(pageContextForUserConsumption), hook)
 
   if (hookName === 'onBeforeRender') {
     assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)

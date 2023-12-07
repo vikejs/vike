@@ -18,7 +18,11 @@ import { createRequire } from 'module'
 
 function testRun(
   cmd: 'npm run dev' | 'npm run preview' | 'npm run prod',
-  { isCJS, skipScreenshotTest }: { isCJS?: true; skipScreenshotTest?: true } = {}
+  {
+    isCJS,
+    skipScreenshotTest,
+    screenshotFixture
+  }: { isCJS?: true; skipScreenshotTest?: true; screenshotFixture?: string } = {}
 ) {
   run(cmd)
 
@@ -55,7 +59,10 @@ function testRun(
         const dirname = path.dirname(url.fileURLToPath(import.meta.url))
         // dirname isn't the directory of this file: because this file is bundled with the entry, e.g. dirname is the directory examples/react-streaming/ of the entry /examples/react-streaming/.test-dev.test.ts
         const repoRoot = path.join(dirname, `../../`)
-        const screenshotFixturePathUnresolved = path.join(repoRoot, 'examples/react/.test-screenshot-fixture.png')
+        const screenshotFixturePathUnresolved = path.join(
+          repoRoot,
+          screenshotFixture || 'examples/react/.test-screenshot-fixture.png'
+        )
         const require = createRequire(import.meta.url)
         let screenshotFixturePath: string
         try {

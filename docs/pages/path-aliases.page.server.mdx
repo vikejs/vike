@@ -17,7 +17,7 @@ You may need to define your path aliases at up to three different places:
  - `tsconfig.json#compilerOptions.paths` (for TypeScript)
 
 Example:
- - <RepoLink path='/examples/path-aliases' />
+ - <RepoLink path='/examples/path-aliases-v1' />
 
 
 ## Vite
@@ -46,7 +46,7 @@ We recommend following the [Node.js convention](https://nodejs.org/api/packages.
 
 See also:
  - [Vite Docs > `resolve.alias`](https://vitejs.dev/config/shared-options.html#resolve-alias)
- - <RepoLink path='/examples/path-aliases/vite.config.ts' />
+ - <RepoLink path='/examples/path-aliases-v1/vite.config.ts' />
 
 
 ## Node.js
@@ -66,10 +66,10 @@ See also:
 
 See also:
  - [NodeJS > Subpath imports](https://nodejs.org/api/packages.html#subpath-imports)
- - <RepoLink path='/examples/path-aliases/package.json' />
+ - <RepoLink path='/examples/path-aliases-v1/package.json' />
 
 Vite's `vite.config.js#resolve.alias` only applies to files that are processed by Vite.
-(In other words: the files `*.page.js`, `*.page.server.js`,`*.page.client.js`, `*.page.route.js`, and their imports.)
+(In other words: the `+*.js` files and their imports.)
 
 Browser files are always processed by Vite,
 but this isn't always the case for Node.js server files,
@@ -96,4 +96,4 @@ If you use TypeScript, then TypeScript needs to know about your path aliases.
 
 See also:
  - [TypeScript > `tsconfig.json#compilerOptions.paths`](https://www.typescriptlang.org/tsconfig#paths)
- - <RepoLink path='/examples/path-aliases/tsconfig.json' />
+ - <RepoLink path='/examples/path-aliases-v1/tsconfig.json' />

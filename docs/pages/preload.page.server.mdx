@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 
 > **What is preloading?** Preloading denotes the practice of loading assets (JavaScript, CSS, images, etc.) before the browser discovers them in HTML/CSS/JavaScript code. That way we reduce the network round trips required before the browser starts discovering and loading all dependencies.
 
-By default, Vike automatically inject tags to our HTML, such as `<script type="module" stc="script.js">`, `<link rel="stylesheet" type="text/css" href="style.css">`, and `<link rel="preload" href="font.ttf" as="font" type="font/ttf">`. It does so using a preload strategy that works for most users, but we can use `injectFilter()` to implement a custom preload strategy.
+By default, Vike automatically inject tags to our HTML, such as `<script type="module" src="script.js">`, `<link rel="stylesheet" type="text/css" href="style.css">`, and `<link rel="preload" href="font.ttf" as="font" type="font/ttf">`. It does so using a preload strategy that works for most users, but we can use `injectFilter()` to implement a custom preload strategy.
 
 To improve preloading performance, we can use [Early Hints](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) which Vike automatically generates.
 
@@ -23,12 +23,13 @@ app.get('*', async (req, res) => {
   res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
 })
 ```
+
 ```ts
 type PageContext = {
   httpResponse: {
     earlyHints: {
       earlyHintLink: string, // Header Line for the Early Hint Header
-      assetType: "image" | "script" | "font" | "style" | null
+      assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" | "fetch" | "track" | "worker" | "embed" | "object" | null
       mediaType: string // MIME type
       src: string // Asset's URL
       isEntry: boolean // true  ⇒ asset is an entry
@@ -50,9 +51,11 @@ See also:
 If Vike's default preload strategy doesn't work for us, we can customize which and where preload/asset tags are injected.
 
 ```ts
-// /renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 
-export async function render(pageContext) {
+export { onRenderHtml }
+
+async function onRenderHtml(pageContext) {
   // ...
 
   const documentHtml = escapeInject`<!DOCTYPE html>

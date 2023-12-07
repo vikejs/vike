@@ -1,7 +1,7 @@
-Vike transforms `.h.js` files such as:
+Vike transforms `.h.js` files from this:
 
 ```js
-// /pages/some-page/+config.h.js
+// +config.h.js
 
 import Page from './some-file'
 import onBeforeRender from './some-other-file'
@@ -12,13 +12,11 @@ export default {
 }
 ```
 
-Into:
+Into that:
 
 ```js
-// /pages/some-page/+config.h.js
-
-const Page = 'import:./some-file';
-const onBeforeRender = 'import:./some-other-file';
+const Page = 'import:./some-file:default';
+const onBeforeRender = 'import:./some-other-file:default';
 
 export default {
   Page,
@@ -26,4 +24,4 @@ export default {
 }
 ```
 
-> `.h.js` files are only meant for config files (i.e. any `.h.js` file should be a `+config.h.js` file).
+> The `.h.js` transformation is only meant for config files. (Vike throws an error if a `.h.js` file isn't a `+config.h.js` file.)

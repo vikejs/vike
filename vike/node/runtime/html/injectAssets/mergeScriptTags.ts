@@ -1,6 +1,7 @@
 export { mergeScriptTags }
 
 import { assert } from '../../utils.js'
+import { scriptAttrs } from './inferHtmlTags.js'
 
 const scriptRE = /(<script\b(?:\s[^>]*>|>))(.*?)<\/script>/gims
 const srcRE = /\bsrc\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s'">]+))/im
@@ -34,7 +35,7 @@ function mergeScriptTags(scriptTagsHtml: string, isProduction: boolean): string 
         }
       })
       if (contents.length > 0) {
-        scriptTag += `<script type="module" defer>\n${contents.join('\n')}\n</script>`
+        scriptTag += `<script ${scriptAttrs}>\n${contents.join('\n')}\n</script>`
       }
     }
   }

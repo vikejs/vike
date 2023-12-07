@@ -4,14 +4,14 @@ import { RepoLink, Link } from '@brillout/docpress'
 ## Examples & docs
 
 React Examples:
- - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Node.js: <RepoLink path='/examples/react-full/' />
- - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-react-full/' />
+ - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Node.js: <RepoLink path='/examples/react-full-v1/' />
+ - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-react-full-v1/' />
  - React 18 + Relay: [Vilay](https://github.com/XiNiHa/vilay)
  - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + [Telefunc](https://telefunc.com/) + [TigrisDB](https://www.tigrisdata.com/) + [Blueprint](https://blueprintjs.com/): [GitHub > `pyrossh/react-streaming-tigris`](https://github.com/pyrossh/react-streaming-tigris)
 
 Vue Examples:
- - Vue's `renderToNodeStream()` + Node.js: <RepoLink path='/examples/vue-full/' />
- - Vue's `pipeToWebWritable()` + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-vue/' />
+ - Vue's `renderToNodeStream()` + Node.js: <RepoLink path='/examples/vue-full-v1/' />
+ - Vue's `pipeToWebWritable()` + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-vue-v1/' />
 
 Stream Docs & API:
  - [Node.js Streams](https://nodejs.org/api/stream.html)
@@ -21,14 +21,14 @@ Stream Docs & API:
 ## Basics
 
 ```js
-// renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 
-export { render }
+export { onRenderHtml }
 
 import { escapeInject } from 'vike/server'
 import { renderToStream } from 'some-ui-framework' // React, Vue, ...
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page } = pageContext
 
   const stream = renderToStream(Page)
@@ -88,12 +88,17 @@ async function handleFetchEvent(event) {
 
 ## `enableEagerStreaming`
 
-By default, the HTML template (we provide in our `render()` hook) isn't immediately written to the stream: instead, Vike awaits for our UI framework to start writing to the stream.
+By default, the HTML template (we provide in our `onRenderHtml()` hook) isn't immediately written to the stream:
+instead, Vike awaits for our UI framework to start writing to the stream.
 
 ```js
+// /renderer/+onRenderHtml.js
+
+export { onRenderHtml }
+
 import { renderToStream } from 'some-ui-framework' // React, Vue, ...
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page } = pageContext
 
   const stream = renderToStream(Page)
@@ -115,7 +120,7 @@ async function render(pageContext) {
 If we set `pageContext.enableEagerStreaming` to `true` then Vike starts writing the HTML template right away.
 
 ```js
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   // The HTML template (e.g. `<title>`) is immediately written to the stream
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html>
@@ -157,14 +162,14 @@ res.send(body)
 To be able to use stream pipes, we need to use `stampPipe()`:
 
 ```js
-// renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 
-export { render }
+export { onRenderHtml }
 
 import { renderToStreamPipe } from 'some-ui-framework' // React, Vue, ...
 import { escapeInject, stampPipe } from 'vike/server'
 
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page } = pageContext
 
   const pipe = renderToStreamPipe(Page)
@@ -207,12 +212,14 @@ const resp = new Response(readable)
 For some UI frameworks, such as Vue, we need a pipe wrapper:
 
 ```js
-// renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
+
+export { onRenderHtml }
 
 import { pipePageToWritable } from 'some-ui-framework'
 import { stampPipe, escapeInject } from 'vike/server'
 
-export function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page } = pageContext
 
   // We use a pipe wrapper so that `pipePageToWritable()` can access `Page`
@@ -230,7 +237,7 @@ export function render(pageContext) {
 }
 ```
 
-See <RepoLink path='/examples/cloudflare-workers-vue' /> for an example of using a pipe wrapper with Vue's `pipeToWebWritable()`/`pipeToNodeWritable()`, and using `new TransformStream()` for Cloudflare Workers.
+See <RepoLink path='/examples/cloudflare-workers-vue-v1' /> for an example of using a pipe wrapper with Vue's `pipeToWebWritable()`/`pipeToNodeWritable()`, and using `new TransformStream()` for Cloudflare Workers.
 
 
 ## Initial data after stream end
@@ -239,20 +246,17 @@ Some data fetching tools, such as <Link href="/relay">Relay</Link> and [Vue's `o
 
 Consequently, we can determine the initial data (passed to the browser) only after the stream has ended.
 
-In such situations, we can return a `pageContext` async function in our `render()` hook:
+In such situations, we can return a `pageContext` async function in our `onRenderHtml()` hook:
 
 ```js
-// renderer/_default.page.server.js
+// /renderer/+onRenderHtml.js
 
-export { render }
-export { passToClient }
+export { onRenderHtml }
 
 import { escapeInject } from 'vike/server'
 import { renderToStream } from 'some-ui-framework' // React, Vue, ...
 
-const passToClient = ['initialData']
-
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page } = pageContext
 
   const stream = renderToStream(Page)
