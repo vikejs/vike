@@ -5,18 +5,18 @@ import type { HeadingDefinition } from '@brillout/docpress'
 const headings = [
   {
     level: 1,
-    title: 'Overview',
+    title: '概要',
     titleEmoji: 'compass'
   },
   {
     level: 2,
-    title: 'Introduction',
+    title: 'Vikeについて',
     titleDocument: 'Vike',
     url: '/'
   },
   {
     level: 2,
-    title: 'Next.js Comparison',
+    title: 'Next.jsとの比較',
     url: '/nextjs-comparison'
   },
   /*
@@ -28,205 +28,205 @@ const headings = [
   */
   {
     level: 2,
-    title: 'Vue Tour',
+    title: 'Vue ツアー',
     url: '/vue-tour'
   },
   {
     level: 2,
-    title: 'React Tour',
+    title: 'React ツアー',
     url: '/react-tour'
   },
   {
     level: 2,
-    title: 'Architecture',
+    title: 'アーキテクチャ',
     url: '/architecture',
     sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', 'Do-one-thing-do-it-well']
   },
   {
     level: 1,
-    title: 'Get Started',
+    title: '導入方法',
     titleEmoji: 'seedling'
   },
   {
     level: 2,
-    title: 'Scaffold new app',
+    title: '新規でアプリケーションに導入',
     url: '/scaffold'
   },
   {
     level: 2,
-    title: 'Add to existing app',
+    title: '既存アプリケーションに導入',
     url: '/add'
   },
   {
     level: 1,
-    title: 'Guides',
+    title: 'ガイド',
     titleEmoji: 'books'
   },
   {
     level: 4,
-    title: 'Basics'
+    title: '基本'
   },
   {
     level: 2,
-    title: 'Routing',
+    title: 'ルーティング',
     url: '/routing'
   },
   {
     level: 2,
-    title: 'Data Fetching',
+    title: 'データフェッチ',
     url: '/data-fetching',
     sectionTitles: ['`onBeforeRender()`', 'Error handling']
   },
   {
     level: 2,
-    title: 'Pre-rendering (SSG)',
+    title: 'プリレンダリング (SSG)',
     url: '/pre-rendering'
   },
   {
     level: 2,
-    title: 'Access `pageContext` anywhere',
+    title: 'どこからでも `pageContext` にアクセス',
     url: '/pageContext-anywhere'
   },
   {
     level: 2,
-    title: 'Common Issues',
+    title: 'よくある課題',
     url: '/common-issues'
   },
   {
     level: 4,
-    title: 'More'
+    title: '詳細'
   },
   {
     level: 2,
-    title: '`<head>` meta tags',
+    title: '`<head>` メタタグ',
     url: '/head'
   },
   {
     level: 2,
-    title: 'Authentication',
+    title: '認証',
     url: '/auth',
     sectionTitles: ['Login flow']
   },
   {
     level: 2,
-    title: 'Layouts',
+    title: 'レイアウト',
     url: '/layouts'
   },
   {
     level: 2,
-    title: 'Static Directory (`public/`)',
+    title: '静的ディレクトリ (`public/`)',
     url: '/static-directory'
   },
   {
     level: 2,
-    title: 'Render Modes (SPA, SSR, SSG, HTML-only)',
+    title: 'レンダーモード (SPA, SSR, SSG, HTML-only)',
     titleInNav: 'SPA, SSR, SSG, HTML-only',
     url: '/render-modes',
     sectionTitles: ['HTML-only', 'SPA', 'SSR']
   },
   {
     level: 2,
-    title: 'Environment Variables',
+    title: '環境変数',
     url: '/env'
   },
   {
     level: 2,
-    title: 'Internationalization (i18n)',
+    title: '国際化対応 (i18n)',
     url: '/i18n'
   },
   {
     level: 2,
-    title: 'File Structure',
+    title: 'ファイル構成',
     url: '/file-structure'
   },
   {
     level: 2,
-    title: 'Paths Aliases',
+    title: 'パスのエイリアス',
     url: '/path-aliases'
   },
   {
     level: 2,
-    title: 'Preload',
+    title: 'プリロード',
     url: '/preload'
   },
   {
     level: 2,
-    title: 'HTML Streaming',
+    title: 'HTMLストリーミング',
     url: '/stream'
   },
   {
     level: 2,
-    title: 'API Routes',
+    title: 'APIルート',
     url: '/api-routes'
   },
   {
     level: 2,
-    title: 'Client-only Components',
+    title: 'Client-onlyコンポーネント',
     url: '/client-only-components'
   },
   {
     level: 2,
-    title: 'Error Handling',
+    title: 'エラーハンドリング',
     url: '/errors'
   },
   {
     level: 2,
-    title: 'Debug',
+    title: 'デバッグ',
     url: '/debug'
   },
   {
     level: 2,
-    title: 'Build Your Own Framework',
+    title: '独自のフレームワークを構築',
     url: '/build-your-own-framework'
   },
   {
     level: 1,
-    title: 'Routing',
+    title: 'ルーティング',
     titleEmoji: 'road-fork'
   },
   {
     level: 2,
-    title: 'Server Routing VS Client Routing',
+    title: 'サーバー vs クライアント',
     url: '/server-routing-vs-client-routing'
   },
   {
     level: 2,
-    title: 'Filesystem Routing',
+    title: 'ファイルシステム ルーティング',
     url: '/filesystem-routing'
   },
   {
     level: 2,
-    title: 'Route String',
+    title: 'ルート文字列',
     url: '/route-string'
   },
   {
     level: 2,
-    title: 'Route Function',
+    title: 'ルート関数',
     url: '/route-function'
   },
   {
     level: 2,
-    title: 'Active Links',
+    title: 'アクティブリンク',
     url: '/active-links'
   },
   {
     level: 2,
-    title: 'Base URL',
+    title: 'ベースURL',
     url: '/base-url'
   },
   {
     level: 2,
-    title: 'Routing Precedence',
+    title: 'ルーティングの優先順位',
     url: '/routing-precedence'
   },
   {
     level: 1,
-    title: 'Deploy',
+    title: 'デプロイ',
     titleEmoji: 'earth'
   },
   {
     level: 4,
-    title: 'Static hosts'
+    title: '静的ホスト'
   },
   {
     level: 2,
@@ -246,12 +246,12 @@ const headings = [
   {
     level: 2,
     title: 'Static Hosts',
-    titleInNav: 'Other',
+    titleInNav: 'その他',
     url: '/static-hosts'
   },
   {
     level: 4,
-    title: 'Serverless'
+    title: 'サーバーレス'
   },
   {
     level: 2,
@@ -276,7 +276,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'Full-stack'
+    title: 'フルスタック'
   },
   {
     level: 2,
@@ -291,17 +291,17 @@ const headings = [
   {
     level: 2,
     title: 'Deploy',
-    titleInNav: 'Other',
+    titleInNav: 'その他',
     url: '/deploy'
   },
   {
     level: 1,
-    title: 'Integration',
+    title: 'インテグレーション',
     titleEmoji: 'plug'
   },
   {
     level: 4,
-    title: 'Data fetching'
+    title: 'データフェッチ'
   },
   {
     level: 2,
@@ -351,13 +351,13 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: 'Other',
+    titleInNav: 'その他',
     title: 'Data Fetching Tools',
     url: '/data-fetching-tools'
   },
   {
     level: 4,
-    title: 'Data store'
+    title: 'データストア'
   },
   {
     level: 2,
@@ -382,12 +382,12 @@ const headings = [
   {
     level: 2,
     title: 'Data Store',
-    titleInNav: 'Other',
+    titleInNav: 'その他',
     url: '/store'
   },
   {
     level: 4,
-    title: 'Authentication'
+    title: '認証'
   },
   {
     level: 2,
@@ -396,7 +396,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'CSS, styling, CSS frameworks'
+    title: 'CSS・スタイリング・CSSフレームワーク'
   },
   {
     level: 2,
@@ -467,13 +467,13 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: 'Other',
+    titleInNav: 'その他',
     title: 'CSS Frameworks',
     url: '/css-frameworks'
   },
   {
     level: 4,
-    title: 'UI frameworks'
+    title: 'UIフレームワーク'
   },
   {
     level: 2,
@@ -507,13 +507,13 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: 'Other',
+    titleInNav: 'その他',
     title: 'UI Framework',
     url: '/ui-framework'
   },
   {
     level: 4,
-    title: 'Server'
+    title: 'サーバー'
   },
   {
     level: 2,
@@ -573,12 +573,12 @@ const headings = [
   {
     level: 2,
     title: 'Server Integration',
-    titleInNav: 'Other',
+    titleInNav: 'その他',
     url: '/server'
   },
   {
     level: 4,
-    title: 'Other'
+    title: 'その他'
   },
   {
     level: 2,
@@ -598,7 +598,7 @@ const headings = [
   {
     level: 2,
     title: 'Other Integrations',
-    titleInNav: 'Other',
+    titleInNav: 'その他',
     url: '/integration'
   },
   {
@@ -608,7 +608,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'Core'
+    title: 'コア'
   },
   {
     level: 2,
@@ -627,27 +627,27 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Config files',
+    title: 'Configファイル',
     url: '/config'
   },
   {
     level: 2,
-    title: 'Header file (`.h.js`)',
+    title: 'ヘッダーファイル (`.h.js`)',
     url: '/header-file'
   },
   {
     level: 2,
-    title: 'Error Page',
+    title: 'エラーページ',
     url: '/error-page'
   },
   {
     level: 2,
-    title: 'Client Entry',
+    title: 'クライアントエントリ',
     url: '/client'
   },
   {
     level: 4,
-    title: 'Hooks'
+    title: 'フック'
   },
   {
     level: 2,
@@ -694,12 +694,12 @@ const headings = [
   {
     level: 2,
     title: 'Hooks',
-    titleInNav: 'more...',
+    titleInNav: 'もっと見る',
     url: '/hooks'
   },
   {
     level: 4,
-    title: 'Utils (server- & client-side)'
+    title: 'ユーティリティ (サーバー & クライアントサイド)'
   },
   {
     level: 2,
@@ -723,7 +723,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'Utils (client-side)'
+    title: 'ユーティリティ (クライアントサイド)'
   },
   {
     level: 2,
@@ -742,7 +742,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'Utils (server-side)'
+    title: 'ユーティリティ (サーバーサイド)'
   },
   {
     level: 2,
@@ -766,7 +766,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'Settings'
+    title: '設定'
   },
   {
     level: 2,
@@ -818,7 +818,7 @@ const headings = [
   {
     level: 2,
     title: 'Settings',
-    titleInNav: 'more...',
+    titleInNav: 'もっと見る',
     url: '/settings'
   }
 ] satisfies HeadingDefinition[]
