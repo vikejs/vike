@@ -1,2 +1,2 @@
-import { testRun } from '../react-full/.testRun'
+import { testRun } from './.testRun'
 testRun('react', 'npm run dev', true)
