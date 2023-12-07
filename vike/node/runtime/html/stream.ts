@@ -339,7 +339,10 @@ async function processStream(
         writeStream(chunk)
       })
     },
-    async onEnd() {
+    async onEnd(
+      // Should we use this information? Maybe we can skip injectStringAtEnd()?
+      isCancel
+    ) {
       try {
         assert(!onEndWasCalled)
         onEndWasCalled = true
@@ -453,7 +456,7 @@ async function createStreamWrapper({
   streamOriginal: StreamProviderAny
   onError: (err: unknown) => void
   onData: (chunk: unknown) => void
-  onEnd: () => Promise<void>
+  onEnd: (isCancel?: boolean) => Promise<void>
   onFlush: () => void
   onReadyToWrite: () => void
 }): Promise<{
@@ -620,6 +623,16 @@ async function createStreamWrapper({
 
     const readableOriginal: StreamReadableWeb = streamOriginal
 
+    let controllerProxyIsClosed = false
+    let isClosed = false
+    let isCancel = false
+    const closeStream = async () => {
+      if (isClosed) return
+      isClosed = true
+      await onEnd(isCancel)
+      controllerProxy.close()
+      controllerProxyIsClosed = true
+    }
     let controllerProxy: ReadableStreamController<unknown>
     assertReadableStreamConstructor()
     const readableProxy = new ReadableStream<unknown>({
@@ -633,17 +646,31 @@ async function createStreamWrapper({
             controllerProxy.close()
           },
           async onEnd() {
-            await onEnd()
-            controllerProxy.close()
+            await closeStream()
           }
         })
+      },
+      async cancel(...args) {
+        isCancel = true
+        await readableOriginal.cancel(...args)
+        // Dependening on how readableOriginal.cancel() is implemented, the onEnd() callback and therfore closeStream() may already have been called at this point
+        await closeStream()
       }
     })
 
     const writeChunk = (chunk: unknown) => {
-      controllerProxy.enqueue(encodeForWebStream(chunk) as any)
-      if (debug.isEnabled) {
-        debug('data written (Web Readable)', String(chunk))
+      if (
+        // If readableOriginal doesn't implement readableOriginal.cancel() then it may still emit data after we close the stream. We therefore need to check whether we closed `controllerProxy`.
+        !controllerProxyIsClosed
+      ) {
+        controllerProxy.enqueue(encodeForWebStream(chunk) as any)
+        if (debug.isEnabled) {
+          debug('data written (Web Readable)', String(chunk))
+        }
+      } else {
+        if (debug.isEnabled) {
+          debug('data emitted but not written (Web Readable)', String(chunk))
+        }
       }
     }
     // Readables don't have the notion of flushing
