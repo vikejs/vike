@@ -283,7 +283,7 @@ async function processStream(
 ): Promise<StreamProviderNormalized> {
   const buffer: unknown[] = []
   let streamOriginalHasStartedEmitting = false
-  let streamEnded = false
+  let streamOriginalEnded = false
   let isReadyToWrite = false
   let wrapperCreated = false
   let shouldFlushStream = false
@@ -309,6 +309,14 @@ async function processStream(
     flushStream() // Sets shouldFlushStream to true
   }
 
+  // We call onStreamEvent() also when the stream ends in order to properly handle the situation when the stream didn't emit any data
+  const onStreamDataOrEnd = (cb: () => void) => {
+    assert(streamOriginalEnded === false)
+    streamOriginalHasStartedEmitting = true
+    cb()
+    if (wrapperCreated) resolvePromise()
+  }
+
   const { streamWrapper, streamWrapperOperations } = await createStreamWrapper({
     streamOriginal,
     onReadyToWrite() {
@@ -325,17 +333,17 @@ async function processStream(
       }
     },
     onData(chunk: unknown) {
-      assert(streamEnded === false)
-      streamOriginalHasStartedEmitting = true
-      writeStream(chunk)
-      if (wrapperCreated) resolvePromise()
+      onStreamDataOrEnd(() => {
+        writeStream(chunk)
+      })
     },
     async onEnd() {
       try {
         debug('stream end')
-        streamEnded = true
-        streamOriginalHasStartedEmitting = true // In case original stream (stream provided by user) emits no data
-        if (wrapperCreated) resolvePromise() //    In case original stream (stream provided by user) emits no data
+        // We call onStreamEvent() also here in case the stream didn't emit any data
+        onStreamDataOrEnd(() => {
+          streamOriginalEnded = true
+        })
         if (injectStringAtEnd) {
           const injectEnd = await injectStringAtEnd()
           writeStream(injectEnd)
@@ -345,11 +353,14 @@ async function processStream(
         flushBuffer()
         debug('stream ended')
       } catch (err) {
-        // We should catch and gracefully handle user land errors, as any error thrown here kills the server
+        // Ideally, we should catch and gracefully handle user land errors, as any error thrown here kills the server. (I assume that the fact it kills the server is a Node.js bug?)
+
+        // Show "[vike][Bug] You stumbled upon a bug in Vike's source code" to user while printing original error
         if (!isBug(err)) {
           console.error(err)
           assert(false)
         }
+
         throw err
       }
     },
