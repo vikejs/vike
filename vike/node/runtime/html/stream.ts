@@ -284,6 +284,8 @@ async function processStream(
   const buffer: unknown[] = []
   let streamOriginalHasStartedEmitting = false
   let streamOriginalEnded = false
+  let streamClosed = false
+  let onEndWasCalled = false
   let isReadyToWrite = false
   let wrapperCreated = false
   let shouldFlushStream = false
@@ -339,6 +341,8 @@ async function processStream(
     },
     async onEnd() {
       try {
+        assert(!onEndWasCalled)
+        onEndWasCalled = true
         debug('stream end')
         // We call onStreamEvent() also here in case the stream didn't emit any data
         onStreamDataOrEnd(() => {
@@ -351,6 +355,7 @@ async function processStream(
         await promiseReadyToWrite // E.g. if the user calls the pipe wrapper after the original writable has ended
         assert(isReady())
         flushBuffer()
+        streamClosed = true
         debug('stream ended')
       } catch (err) {
         // Ideally, we should catch and gracefully handle user land errors, as any error thrown here kills the server. (I assume that the fact it kills the server is a Node.js bug?)
@@ -383,6 +388,7 @@ async function processStream(
 
   function flushBuffer() {
     if (!isReady()) return
+    assert(!streamClosed)
     buffer.forEach((chunk) => {
       streamWrapperOperations.writeChunk(chunk)
     })
