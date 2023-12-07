@@ -340,7 +340,7 @@ async function processStream(
       })
     },
     async onEnd(
-      // Should we use this information? Maybe we can skip injectStringAtEnd()?
+      // Should we use this `isCancel`? Maybe we can skip `injectStringAtEnd()`?
       isCancel
     ) {
       try {
@@ -653,7 +653,7 @@ async function createStreamWrapper({
       async cancel(...args) {
         isCancel = true
         await readableOriginal.cancel(...args)
-        // Dependening on how readableOriginal.cancel() is implemented, the onEnd() callback and therfore closeStream() may already have been called at this point
+        // If readableOriginal has implemented readableOriginal.cancel() then the onEnd() callback and therfore closeStream() may already have been called at this point
         await closeStream()
       }
     })
