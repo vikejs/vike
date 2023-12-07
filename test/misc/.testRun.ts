@@ -1,6 +1,18 @@
 export { testRun }
 
-import { test, expect, fetchHtml, page, getServerUrl, autoRetry, sleep, expectLog } from '@brillout/test-e2e'
+import {
+  test,
+  expect,
+  fetchHtml,
+  page,
+  getServerUrl,
+  autoRetry,
+  sleep,
+  expectLog,
+  partRegex,
+  editFile,
+  editFileRevert
+} from '@brillout/test-e2e'
 import { testCounter } from '../utils'
 import { testRun as testRunClassic } from '../../examples/react/.testRun'
 import fs from 'fs'
@@ -92,15 +104,20 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
     expect(timestamp7).toBe(timestamp6)
   })
 
-  test('assertFileRuntime plugin - invalid import', async () => {
-    await page.goto(getServerUrl() + '/forbidden-import')
-    const timestamp = new Date().toLocaleTimeString()
+  if (isDev) {
+    test('assertFileRuntime plugin - invalid import', async () => {
+      editFile('./pages/forbidden-import/Page.jsx', (s) =>
+        s.replace(
+          `import React from 'react'`,
+          `import React from 'react'; import ClientOnly from './ClientOnly.client'`
+        )
+      )
+      await page.goto(getServerUrl() + '/forbidden-import')
 
-    expectLog(
-      `${timestamp} [vite][request(13)][vike][Wrong Usage] Client-only module "/Users/usk/works/vike/test/misc/pages/forbidden-import/ClientOnly.client.jsx" included in server bundle (imported by /Users/usk/works/vike/test/misc/pages/forbidden-import/Page.jsx) .\\n`,
-      (log) => log.logSource === 'stderr'
-    )
-  })
+      expectLog(`Client-only module included in server bundle.`, (log) => log.logSource === 'stderr')
+      editFileRevert()
+    })
+  }
 }
 
 async function getTimestamp() {
