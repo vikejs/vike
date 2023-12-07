@@ -151,5 +151,5 @@ async function isUsingGit(userRootDir: string) {
 async function runCmd(cmd: string, cwd: string): Promise<string[]> {
   const res = await execA(cmd, { cwd })
   assert(res.stderr === '')
-  return res.stdout.toString().trim().split('\n')
+  return res.stdout.toString().split('\n').filter(Boolean)
 }
