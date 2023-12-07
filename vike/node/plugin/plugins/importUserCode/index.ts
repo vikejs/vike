@@ -126,7 +126,9 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVike: Co
   }
 
   if (isVikeConfig) {
+    /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
     assert(!isViteModule)
+    */
     reloadConfig(file, config, configVike, 'modified')
     const virtualModules = getVirtualModules(server)
     return virtualModules
