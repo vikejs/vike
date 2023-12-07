@@ -1088,6 +1088,42 @@ importers:
         specifier: ^4.0.3
         version: 4.5.0(@types/node@17.0.45)
 
+  examples/react-data-fetching:
+    dependencies:
+      '@types/node':
+        specifier: ^20.6.3
+        version: 20.9.0
+      '@types/node-fetch':
+        specifier: ^2.6.5
+        version: 2.6.9
+      '@types/react':
+        specifier: ^18.2.37
+        version: 18.2.37
+      '@types/react-dom':
+        specifier: ^18.2.15
+        version: 18.2.15
+      '@vitejs/plugin-react-swc':
+        specifier: ^3.3.2
+        version: 3.4.1(vite@4.5.0)
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vite:
+        specifier: ^4.4.9
+        version: 4.5.0(@types/node@20.9.0)
+
   examples/react-full:
     dependencies:
       '@mdx-js/mdx':
