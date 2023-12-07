@@ -457,6 +457,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Mantine',
+    url: '/mantine'
+  },
+  {
+    level: 2,
     title: 'Sass / Less / Stylus',
     url: '/sass'
   },
@@ -777,6 +782,11 @@ const headings = [
     level: 2,
     title: '`prefetchStaticAssets`',
     url: '/prefetchStaticAssets'
+  },
+  {
+    level: 2,
+    title: '`hooksTimeout`',
+    url: '/hooksTimeout'
   },
   {
     level: 2,

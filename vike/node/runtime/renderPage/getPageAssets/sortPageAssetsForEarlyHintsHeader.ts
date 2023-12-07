@@ -24,6 +24,10 @@ function sortPageAssetsForEarlyHintsHeader(pageAssets: PageAsset[]) {
       priority--
       if (assetType === 'image') return priority
       priority--
+      if (assetType === 'video') return priority
+      priority--
+      if (assetType === 'audio') return priority
+      priority--
 
       // Others
       if (assetType !== 'script') return priority

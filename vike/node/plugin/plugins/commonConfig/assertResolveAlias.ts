@@ -35,6 +35,9 @@ function assertResolveAlias(config: ResolvedConfig) {
       // Allow un-distinguishable aliases set by @preact/preset-vite
       if (find.startsWith('react')) return
 
+      // Allow un-distinguishable aliases set by @vitejs/plugin-vue2 https://github.com/vikejs/vike/issues/1329
+      if (find === 'vue') return
+
       {
         const msg = `${errPrefix} defines an invalid ${pc.cyan(
           'resolve.alias'

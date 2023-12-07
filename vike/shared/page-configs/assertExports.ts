@@ -48,11 +48,18 @@ function assertExports(fileExports: Record<string, unknown>, filePathToShowToUse
   if (exportsInvalid.length === 0) {
     if (exportsRelevant.length === 1) {
       return
-    } else {
-      assert(exportsRelevant.length === 0)
-      let errMsg = `${filePathToShowToUser} doesn't export any value, but it should have a ${pc.cyan('export default')}`
-      if (configName) errMsg += ` or ${pc.cyan(`export { ${configName} }`)}`
+    }
+    const exportDefault = pc.cyan('export default')
+    const exportConfigName = pc.cyan(`export { ${configName} }`)
+    if (exportsRelevant.length === 0) {
+      let errMsg = `${filePathToShowToUser} doesn't export any value, but it should have a ${exportDefault}`
+      if (configName) errMsg += ` or ${exportConfigName}`
       assertUsage(false, errMsg)
+    } else {
+      assert(exportsRelevant.length === 2)
+      assertWarning(false, `${filePathToShowToUser} remove ${exportConfigName} or ${exportDefault}`, {
+        onlyOnce: true
+      })
     }
   } else {
     // !configName => isConfigFile

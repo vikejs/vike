@@ -5,14 +5,14 @@
     "preview": "docpress build && docpress preview"
   },
   "dependencies": {
-    "@brillout/docpress": "^0.5.23",
+    "@brillout/docpress": "^0.5.24",
     "@types/node": "^15.12.1",
     "@types/react": "^17.0.45",
     "@types/react-dom": "^17.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^5.0.3",
-    "vike": "0.4.148"
+    "vike": "0.4.149"
   },
   "type": "module"
 }

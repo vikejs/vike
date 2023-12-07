@@ -17,14 +17,14 @@ describe('renderPage()', () => {
     const body = await render(false)
     expect(body).toMatchInlineSnapshot(
       `
-      "<html><head><script type=\\"module\\" defer>
+      "<html><head></head><body><div><p>Hello</p></div><script type=\\"module\\" async>
       import RefreshRuntime from \\"/@react-refresh\\"
       RefreshRuntime.injectIntoGlobalHook(window)
       window.$RefreshReg$ = () => {}
       window.$RefreshSig$ = () => (type) => type
       window.__vite_plugin_react_preamble_installed__ = true
       import(\\"/@vite/client\\");
-      </script></head><body><div><p>Hello</p></div></body></html>"
+      </script></body></html>"
     `
     )
   })
@@ -43,14 +43,14 @@ describe('renderPage()', () => {
       const body = await render(true)
       expect(body).toMatchInlineSnapshot(
         `
-        "<html><head><script type=\\"module\\" defer>
+        "<html><head></head><body><div><p>Hello</p></div><script type=\\"module\\" async>
         import RefreshRuntime from \\"/@react-refresh\\"
         RefreshRuntime.injectIntoGlobalHook(window)
         window.$RefreshReg$ = () => {}
         window.$RefreshSig$ = () => (type) => type
         window.__vite_plugin_react_preamble_installed__ = true
         import(\\"/@vite/client\\");
-        </script></head><body><div><p>Hello</p></div></body></html>"
+        </script></body></html>"
       `
       )
     })

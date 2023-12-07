@@ -29,7 +29,7 @@ type PageContext = {
   httpResponse: {
     earlyHints: {
       earlyHintLink: string, // Header Line for the Early Hint Header
-      assetType: "image" | "script" | "font" | "style" | null
+      assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" | "fetch" | "track" | "worker" | "embed" | "object" | null
       mediaType: string // MIME type
       src: string // Asset's URL
       isEntry: boolean // true  ⇒ asset is an entry
