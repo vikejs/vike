@@ -25,10 +25,7 @@ declare global {
      *
      *  https://vike.dev/pageContext#typescript
      */
-    interface PageContext {
-      // Can be set by the data() hook
-      data: unknown
-    }
+    interface PageContext {}
   }
 
   /** This namespace is only used by:
