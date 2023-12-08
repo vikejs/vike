@@ -304,7 +304,7 @@ type ConfigBuiltIn = {
    */
   onBeforeRender?: OnBeforeRenderAsync | OnBeforeRenderSync | ImportString | null
 
-  /** Hook called for fetching data
+  /** Hook called for fetching data.
    *
    *  https://vike.dev/data
    */
