@@ -3,7 +3,8 @@ export { Github }
 import React from 'react'
 import { assert } from '@brillout/docpress'
 
-function Github({ repo }: { repo: `${string}/${string}` }) {
+function Github({ children }: { children: `${string}/${string}` }) {
+  const repo = children
   assert(repo)
   assert(repo.split('/').length === 2)
   return (
