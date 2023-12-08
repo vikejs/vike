@@ -1,3 +1,18 @@
+## [0.4.150](https://github.com/vikejs/vike/compare/v0.4.149...v0.4.150) (2023-12-08)
+
+
+### Bug Fixes
+
+* avoid FOUC for virtual style modules (fix [#1327](https://github.com/vikejs/vike/issues/1327)) ([761fec4](https://github.com/vikejs/vike/commit/761fec4191aac3ed986abf1719bc05dfbe67e30b))
+* fix pipe() assertion ([#1325](https://github.com/vikejs/vike/issues/1325)) ([aa0ab7b](https://github.com/vikejs/vike/commit/aa0ab7be919e94a946b3907e5880169767989c6d))
+* handle cancel() of Web Readable Stream (fix [#1325](https://github.com/vikejs/vike/issues/1325)) ([e18675e](https://github.com/vikejs/vike/commit/e18675e6571b6cbc82f6446ec3102b0c2b6a8ee7))
+* remove empty lines from crawl result (fix [#1328](https://github.com/vikejs/vike/issues/1328)) ([544b031](https://github.com/vikejs/vike/commit/544b031eb7b0cab32a1520961eb69533781a09e4))
+* support Tailwind edge case (fix [#1330](https://github.com/vikejs/vike/issues/1330)) ([19b2220](https://github.com/vikejs/vike/commit/19b2220f309fe95218db97a067b2ca252694ba3c))
+* warn instead of failure upon redundant export (fix [#1323](https://github.com/vikejs/vike/issues/1323)) ([c44ab60](https://github.com/vikejs/vike/commit/c44ab608b328d8376bcf7e57c5586d33aa711eb7))
+* whitelist vue alias (fix [#1329](https://github.com/vikejs/vike/issues/1329)) ([d815556](https://github.com/vikejs/vike/commit/d815556d187ed78d637ebe153f79ecedca9c82af))
+
+
+
 ## [0.4.149](https://github.com/vikejs/vike/compare/v0.4.148...v0.4.149) (2023-12-06)
 
 

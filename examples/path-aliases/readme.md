@@ -1,3 +1,6 @@
+> [!NOTE]
+> This example is deprecated. See [`path-aliases-v1`](../path-aliases-v1/) instead.
+
 Example of defining import path aliases for Vike apps.
 
 We use:

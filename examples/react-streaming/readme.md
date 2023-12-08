@@ -1,3 +1,6 @@
+> [!NOTE]
+> This example is deprecated. See [`react-streaming-v1`](../react-streaming-v1/) instead.
+
 Example of using Vike with React and [react-streaming](https://github.com/brillout/react-streaming).
 
 ```bash

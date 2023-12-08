@@ -1,3 +1,6 @@
+> [!NOTE]
+> This example is deprecated. See [`base-url-server-v1`](../base-url-server-v1/) instead.
+
 Example of deploying static assets to a CDN + setting a Base URL for the server.
 
 ```bash
