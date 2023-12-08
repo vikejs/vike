@@ -26,16 +26,9 @@ declare global {
      *  https://vike.dev/pageContext#typescript
      */
     interface PageContext {
-      // data is undefined if the page doesn't define a data hook
-      data?: Data
+      // Can be set by the data() hook
+      data: unknown
     }
-
-    /** Extend and/or refine the `Data` type (`PageContext['data']`).
-     *
-     *  This type describes the data fetched by your `data` hooks (https://vike.dev/data)
-     *
-     */
-    interface Data {}
   }
 
   /** This namespace is only used by:

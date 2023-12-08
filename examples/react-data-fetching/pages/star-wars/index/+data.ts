@@ -2,10 +2,10 @@
 export { data }
 
 import type { DataAsync } from 'vike/types'
+import type { Data } from './types'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
-import { Movie } from '../types'
 
-const data: DataAsync = async (pageContext): ReturnType<DataAsync> => {
+const data: DataAsync = async (pageContext): Promise<Data> => {
   await sleep(700) // Simulate slow network
   const movies = await getStarWarsMovies()
   return {
@@ -19,12 +19,4 @@ const data: DataAsync = async (pageContext): ReturnType<DataAsync> => {
 
 function sleep(milliseconds: number): Promise<void> {
   return new Promise((r) => setTimeout(r, milliseconds))
-}
-
-declare global {
-  namespace Vike {
-    interface Data {
-      movies?: Movie[]
-    }
-  }
 }

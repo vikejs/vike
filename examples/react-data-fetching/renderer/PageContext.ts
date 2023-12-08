@@ -1,3 +1,5 @@
+export type { GlobalData }
+
 // https://vike.dev/pageContext#typescript
 declare global {
   namespace Vike {
@@ -8,15 +10,16 @@ declare global {
         title?: string
       }
     }
-
-    interface Data {
-      /** Title defined dynamically by the `data()` hook */
-      title?: string
-    }
   }
 }
 
-type Page = (data: Vike.Data) => React.ReactElement
+type Page = () => React.ReactElement
 
-// Tell TypeScript that this file isn't an ambient module
-export {}
+/**
+ * `data()` hook return type common to all pages.
+ *
+ * See https://vike.dev/data
+ */
+type GlobalData = {
+  title: string
+}

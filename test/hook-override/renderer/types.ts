@@ -1,4 +1,4 @@
-export {}
+export type { GlobalData, PerPageData }
 
 type Page = (pageProps: PageProps) => React.ReactElement
 type PageProps = Record<string, unknown>
@@ -13,13 +13,14 @@ declare global {
       perPageOnBeforeRenderWasCalled?: boolean
       perPageOnBeforeRenderWasCalledInEnv?: 'client' | 'server'
     }
-
-    // https://vike.dev/data
-    interface Data {
-      globalDataWasCalled?: boolean
-      globalDataWasCalledInEnv?: 'client' | 'server'
-      perPageDataWasCalled?: boolean
-      perPageDataWasCalledInEnv?: 'client' | 'server'
-    }
   }
+}
+
+type GlobalData = {
+  globalDataWasCalled?: boolean
+  globalDataWasCalledInEnv?: 'client' | 'server'
+}
+type PerPageData = {
+  perPageDataWasCalled?: boolean
+  perPageDataWasCalledInEnv?: 'client' | 'server'
 }

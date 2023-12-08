@@ -5,10 +5,11 @@ import fetch from 'node-fetch'
 import { filterMovieData } from '../filterMovieData'
 import type { DataAsync } from 'vike/types'
 import type { MovieDetails } from '../types'
+import type { Data } from './types'
 import { render } from 'vike/abort'
 import React from 'react'
 
-const data: DataAsync = async (pageContext): ReturnType<DataAsync> => {
+const data: DataAsync = async (pageContext): Promise<Data> => {
   const dataUrl = `https://star-wars.brillout.com/api/films/${pageContext.routeParams?.id}.json`
   let movie: MovieDetails
   try {
@@ -29,13 +30,5 @@ const data: DataAsync = async (pageContext): ReturnType<DataAsync> => {
     movie,
     // The page's <title>
     title
-  }
-}
-
-declare global {
-  namespace Vike {
-    interface Data {
-      movie?: MovieDetails
-    }
   }
 }
