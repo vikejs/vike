@@ -364,5 +364,9 @@ const headingsDetached = [
   {
     title: '`extends`',
     url: '/extends'
+  },
+  {
+    title: 'RPC',
+    url: '/RPC'
   }
 ] satisfies HeadingDetachedDefinition[]

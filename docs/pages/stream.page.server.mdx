@@ -281,3 +281,15 @@ async function onRenderHtml(pageContext) {
   }
 }
 ```
+
+## Partial hydration
+
+Some UI frameworks, such as React, support *partial hydration*: while some data-fetching parts of the UI are being loaded and rendered, other parts of the UI are arleady loaded, rendered, and <Link href="/hydration">hydrated</Link>.
+
+For example:
+
+<video src="https://private-user-images.githubusercontent.com/1005638/288431058-6d9cda01-5ec6-46fc-bb93-bd0d7f7dcf1e.webm?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTEiLCJleHAiOjE3MDIwNDAwNDIsIm5iZiI6MTcwMjAzOTc0MiwicGF0aCI6Ii8xMDA1NjM4LzI4ODQzMTA1OC02ZDljZGEwMS01ZWM2LTQ2ZmMtYmI5My1iZDBkN2Y3ZGNmMWUud2VibT9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFJV05KWUFYNENTVkVINTNBJTJGMjAyMzEyMDglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjMxMjA4VDEyNDkwMlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWY1NTVmMjVhYzkzNWVkYzFkOTJhM2QwMTA3Y2I0MzI2ODQxZjhlMjcxNDU3ZGQ4ZjMxYWU1NzRlZTQwOGUxYmYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.b4HY1ysAFZXEeIeFYEpe2nMisjLEyf4flDoN9cCI_Wc" controls="controls" muted="muted" width="500"></video>
+
+Vike has first-class support for partial hydration and there is usually nothing for you to do: it just works.
+
+See also: <Link href="/react#react-server-components" doNotInferSectionTitle />.
