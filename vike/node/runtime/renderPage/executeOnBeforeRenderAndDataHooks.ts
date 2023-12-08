@@ -8,7 +8,6 @@ import {
 } from './preparePageContextForUserConsumptionServerSide.js'
 import { executeHook } from '../utils.js'
 import { assertOnBeforeRenderHookReturn } from '../../../shared/assertOnBeforeRenderHookReturn.js'
-import { assertDataHookReturn } from '../../../shared/assertDataHookReturn.js'
 
 async function executeOnBeforeRenderAndDataHooks(
   pageContext: {
@@ -30,7 +29,7 @@ async function executeOnBeforeRenderAndDataHooks(
 
   if (dataHook) {
     const hookResult = await executeHook(() => dataHook.hookFn(pageContext), dataHook)
-    assertDataHookReturn(hookResult, dataHook.hookFilePath)
+    // Note: hookResult can be anything (e.g. an object) and is to be assigned to pageContext.data
     const pageContextFromHook = {
       data: hookResult
     }

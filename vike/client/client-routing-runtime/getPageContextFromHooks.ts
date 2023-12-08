@@ -30,7 +30,6 @@ import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getConfigValue, getPageConfig } from '../../shared/page-configs/helpers.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.js'
-import { assertDataHookReturn } from '../../shared/assertDataHookReturn.js'
 import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import type { PageContextForPassToClientWarning } from '../shared/getPageContextProxyForUser.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
@@ -231,8 +230,7 @@ async function executeHookClientSide(
     objectAssign(pageContextFromHook, pageContextFromOnBeforeRender)
   } else {
     assert(hookName === 'data')
-    assertDataHookReturn(hookResult, hook.hookFilePath)
-    // Note: hookResult is an object to be assigned to pageContext.data
+    // Note: hookResult can be anything (e.g. an object) and is to be assigned to pageContext.data
     const pageContextFromData = {
       data: hookResult
     }
