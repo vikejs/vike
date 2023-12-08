@@ -1,3 +1,6 @@
+> [!NOTE]
+> This example is deprecated. See [`layouts-react-v1`](../layouts-react-v1/) instead.
+
 Example of defining (nested) layouts.
 
 See [vike.dev/layouts](https://vike.dev/layouts).

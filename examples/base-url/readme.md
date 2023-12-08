@@ -1,3 +1,6 @@
+> [!NOTE]
+> This example is deprecated. See [`base-url-v1`](../base-url-v1/) instead.
+
 Example of changing the [Base URL](https://vike.dev/base-url).
 
 ```bash
