@@ -72,12 +72,12 @@ type Config = ConfigBuiltIn &
   )
 
 // Purposeful code duplication for improving QuickInfo IntelliSense
-/** Hook called for fetching data.
+/** Hook for fetching data.
  *
  *  https://vike.dev/data
  */
 type DataAsync = (pageContext: PageContextServer) => Promise<unknown>
-/** Hook called for fetching data.
+/** Hook for fetching data.
  *
  *  https://vike.dev/data
  */
@@ -304,7 +304,7 @@ type ConfigBuiltIn = {
    */
   onBeforeRender?: OnBeforeRenderAsync | OnBeforeRenderSync | ImportString | null
 
-  /** Hook called for fetching data.
+  /** Hook for fetching data.
    *
    *  https://vike.dev/data
    */
