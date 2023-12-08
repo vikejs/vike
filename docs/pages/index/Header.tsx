@@ -27,7 +27,7 @@ function LeftSide() {
         <img src={iconVike} />
         <div>
           <h1>Vike</h1>
-          <p id="header-tagline">Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
+          <p id="header-tagline">Next.js/Nuxtの様で、<br/>do-one-thing-and-do-it-wellなViteプラグイン</p>
         </div>
       </div>
     </div>
@@ -37,7 +37,7 @@ function LeftSide() {
 function RightSide() {
   return (
     <div id="header-right-side" style={{ marginLeft: 40, flexShrink: 0 }}>
-      <CallToActionDescription style={{ marginTop: 0 }}>Scaffold a new Vike app</CallToActionDescription>
+      <CallToActionDescription style={{ marginTop: 0 }}>Vikeでappを立ち上げる</CallToActionDescription>
       <ScaffoldCallToAction />
       <div style={{ width: 1, height: 1, margin: 12 }} />
       <TourCallToAction />
@@ -48,7 +48,7 @@ function RightSide() {
 function TourCallToAction({ style }: { style?: React.CSSProperties }) {
   return (
     <div style={style}>
-      <CallToActionDescription>Explore how it's like to use Vike</CallToActionDescription>
+      <CallToActionDescription>Vikeの使い心地を体感する</CallToActionDescription>
       <div
         style={{
           display: 'grid',
@@ -58,8 +58,8 @@ function TourCallToAction({ style }: { style?: React.CSSProperties }) {
           height: 50
         }}
       >
-        <CallToAction href="/vue-tour" text="Vue Tour" icon={iconVue} />
-        <CallToAction href="/react-tour" text="React Tour" icon={iconReact} />
+        <CallToAction href="/vue-tour" text="Vue ツアー" icon={iconVue} />
+        <CallToAction href="/react-tour" text="React ツアー" icon={iconReact} />
       </div>
     </div>
   )
