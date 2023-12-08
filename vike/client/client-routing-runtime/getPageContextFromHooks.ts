@@ -144,9 +144,7 @@ async function getPageContextAlreadyRouted(
     } else {
       const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
       assert(errorPageId)
-      pageContextFromHooks = {
-        _hasPageContextFromClient: false
-      }
+      pageContextFromHooks = {}
       objectAssign(pageContextFromHooks, {
         _hasPageContextFromClient: false,
         isHydration: false,
@@ -199,21 +197,16 @@ async function executeHookClientSide(
   pageContext: {
     _pageId: string
     _hasPageContextFromServer: boolean
-    _hasPageContextFromClient: boolean
   } & PageContextExports &
     PageContext
 ) {
   const hook = getHook(pageContext, hookName)
   if (!hook) {
     // No hook defined or hook's env.client is false
-    const pageContextFromHook = {
-      // Keep value set by previous hook
-      _hasPageContextFromClient: pageContext._hasPageContextFromClient
-    }
-    return pageContextFromHook
+    return null
   }
   const pageContextFromHook = {
-    _hasPageContextFromClient: true
+    _hasPageContextFromClient: true as const
   }
   const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(
     {
@@ -364,7 +357,7 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
 
   assert(hasProp(pageContextFromServer, '_pageId', 'string'))
   removeBuiltInOverrides(pageContextFromServer)
-  objectAssign(pageContextFromServer, { _hasPageContextFromServer: true })
+  objectAssign(pageContextFromServer, { _hasPageContextFromServer: true as const })
 
   return pageContextFromServer
 }
