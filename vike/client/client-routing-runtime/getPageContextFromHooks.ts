@@ -131,6 +131,7 @@ async function getPageContextAlreadyRouted(
 
   // If pageContextInit has some client data or if one of the hooks guard(), data() or onBeforeRender() is server-side
   // only, then we need to fetch pageContext from the server.
+  // We do it before executing any client-side hook, because it may contain pageContextInit.user which may be needed for guard(), data(), or onBeforeRender()
   if (
     // For the error page, we cannot fetch pageContext from the server because the pageContext JSON request is based on the URL
     !isErrorPage &&
@@ -256,6 +257,7 @@ function setPageContextInitHasClientData(pageContext: Record<string, unknown>) {
     globalObject.pageContextInitHasClientData = true
   }
 }
+// TODO/v1-release: make it sync
 async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnlyExists>[1]): Promise<boolean> {
   return (
     !!globalObject.pageContextInitHasClientData ||
@@ -264,6 +266,7 @@ async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnl
   )
 }
 
+// TODO/v1-release: make it sync
 /**
  * @param hookName
  * @param pageContext
