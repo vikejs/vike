@@ -2,6 +2,7 @@ export { startDevServer }
 
 import http from 'http'
 import { onSsrHotUpdate } from '../plugin/plugins/serverEntryPlugin.js'
+import { createServer } from 'vite'
 
 async function startDevServer() {
   console.log('startDevServer called')
@@ -27,8 +28,6 @@ async function startDevServer() {
 
     return httpServer
   }
-
-  const { createServer } = await import('vite')
 
   const viteServer = await createServer({
     server: {
