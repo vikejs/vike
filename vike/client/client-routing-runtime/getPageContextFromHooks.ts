@@ -115,11 +115,7 @@ async function getPageContextFromHooks_uponNavigation(
 }
 
 async function getPageContextAlreadyRouted(
-  pageContext: {
-    _pageId: string
-    _pageConfigs: PageConfigRuntime[]
-    isHydration: false
-  } & PageContext,
+  pageContext: { _pageId: string; isHydration: false } & PageContext,
   isErrorPage: boolean
 ): Promise<Omit<PageContextFromHooks, '_pageId' | 'isHydration'>> {
   const getPageContextFromHooksInit = async (pageId: string) => {
