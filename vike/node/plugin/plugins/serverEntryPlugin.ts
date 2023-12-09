@@ -1,10 +1,12 @@
+import http from 'http'
+import { nextTick } from 'process'
 import { Plugin, ViteDevServer } from 'vite'
 import { ConfigVikeUserProvided } from '../../../shared/ConfigVike.js'
-import { standalone } from './standalonePlugin.js'
+import { logWithVikeTag } from '../shared/loggerNotProd/log.js'
 import { getGlobalObject } from '../utils.js'
-import { nextTick } from 'process'
+import { standalone } from './standalonePlugin.js'
 
-export const globalObject = getGlobalObject('serverEntryPlugin.ts', {
+const globalObject = getGlobalObject('serverEntryPlugin.ts', {
   onSsrHotUpdate: () => {}
 })
 
@@ -25,14 +27,14 @@ export const serverEntryPlugin = (configVike?: ConfigVikeUserProvided): Plugin[]
 
   const serverEntryPlugin = (): Plugin => {
     async function loadEntry() {
-      console.log('Loading server entry')
+      logWithVikeTag('Loading server entry', 'info', null, true)
 
       const resolved = await viteServer.pluginContainer.resolveId(serverEntry!, undefined, {
         ssr: true
       })
 
       if (!resolved) {
-        console.error(`Server entry "${serverEntry}" not found`)
+        logWithVikeTag(`Server entry "${serverEntry}" not found`, 'error', null, false)
         return
       }
 
@@ -95,8 +97,28 @@ export const serverEntryPlugin = (configVike?: ConfigVikeUserProvided): Plugin[]
       },
       configureServer(server) {
         viteServer = server
-        nextTick(() => {
-          loadEntry()
+        nextTick(async () => {
+          const originalCreateServer = http.createServer.bind(http.createServer)
+
+          http.createServer = (...args) => {
+            //@ts-ignore
+            const httpServer = originalCreateServer(...args)
+            const listeners = httpServer.listeners('request')
+            httpServer.removeAllListeners('request')
+            httpServer.on('request', (req, res) => {
+              viteServer.middlewares(req, res, () => {
+                for (const listener of listeners) {
+                  listener(req, res)
+                }
+              })
+            })
+
+            return httpServer
+          }
+
+          await loadEntry()
+
+          http.createServer = originalCreateServer
         })
       },
       handleHotUpdate(ctx) {
