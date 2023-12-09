@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "vite",
+    "dev": "vike dev",
     "prod": "npm run build && npm run server:prod",
     "build": "vite build",
     "server:prod": "cross-env NODE_ENV=production node ./dist/server/index.mjs"

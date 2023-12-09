@@ -17,15 +17,6 @@ async function startServer() {
 
   if (isProduction) {
     app.use(express.static(`${root}/dist/client`))
-  } else {
-    const vite = await import('vite')
-    const viteDevMiddleware = (
-      await vite.createServer({
-        root,
-        server: { middlewareMode: true }
-      })
-    ).middlewares
-    app.use(viteDevMiddleware)
   }
 
   app.use(express.text()) // Parse & make HTTP request body available at `req.body`
@@ -37,6 +28,7 @@ async function startServer() {
   })
 
   app.get('*', async (req, res, next) => {
+    console.log('Server is called')
     const pageContextInit = {
       urlOriginal: req.originalUrl
     }

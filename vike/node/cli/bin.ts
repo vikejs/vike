@@ -18,8 +18,22 @@ cli
     runPrerender_forceExit()
   })
 
-cli.command('dev', 'Start the development server', { allowUnknownOptions: true }).action((options) => {
-  startDevServer()
+cli.command('dev', 'Start the development server', { allowUnknownOptions: true }).action(async (options) => {
+  const config = await resolveConfig({}, 'serve')
+  const root = config.root
+  const scriptPath = join(root, 'node_modules/vike/dist/esm/node/dev/startDevServer.js')
+  const onRestart = () => {
+    try {
+      execSync(`node ${scriptPath}`, { stdio: 'inherit' })
+    } catch (error) {
+      if (!error || typeof error !== 'object' || !('status' in error) || error.status !== 33) {
+        throw error
+      }
+      onRestart()
+    }
+  }
+
+  onRestart()
 })
 
 function assertOptions() {
