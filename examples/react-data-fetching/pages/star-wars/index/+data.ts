@@ -5,7 +5,7 @@ import type { DataAsync } from 'vike/types'
 import type { Data } from './types'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
 
-const data: DataAsync = async (pageContext): Promise<Data> => {
+const data: DataAsync<Data> = async (pageContext): ReturnType<DataAsync<Data>> => {
   await sleep(700) // Simulate slow network
   const movies = await getStarWarsMovies()
   return {

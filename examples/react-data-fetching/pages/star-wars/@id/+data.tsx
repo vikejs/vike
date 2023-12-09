@@ -9,7 +9,7 @@ import type { Data } from './types'
 import { render } from 'vike/abort'
 import React from 'react'
 
-const data: DataAsync = async (pageContext): Promise<Data> => {
+const data: DataAsync<Data> = async (pageContext): ReturnType<DataAsync<Data>> => {
   const dataUrl = `https://star-wars.brillout.com/api/films/${pageContext.routeParams?.id}.json`
   let movie: MovieDetails
   try {
