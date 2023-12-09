@@ -7,5 +7,7 @@ async function startDevServer() {
 
   const config = await resolveConfig({}, 'serve')
 
-  console.log(config)
+  //@ts-ignore
+  const serverEntry = globalThis.__vike_serverEntry
+  console.log(serverEntry)
 }

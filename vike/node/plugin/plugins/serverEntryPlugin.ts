@@ -25,6 +25,9 @@ export const serverEntry = (configVike?: ConfigVikeUserProvided): Plugin[] => {
             }
           }
         }
+
+        //@ts-ignore
+        globalThis.__vike_serverEntry = server
       }
     }
   }
