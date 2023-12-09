@@ -222,12 +222,18 @@ async function executeHookClientSide(
     assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
     // Note: hookResult looks like { pageContext: { ... } }
     const pageContextFromOnBeforeRender = hookResult?.pageContext
-    objectAssign(pageContextFromHook, pageContextFromOnBeforeRender)
+    if (pageContextFromOnBeforeRender) {
+      objectAssign(pageContextFromHook, { _hasPageContextFromClient: true })
+      objectAssign(pageContextFromHook, pageContextFromOnBeforeRender)
+    }
   } else {
     assert(hookName === 'data')
     // Note: hookResult can be anything (e.g. an object) and is to be assigned to pageContext.data
     const pageContextFromData = {
       data: hookResult
+    }
+    if (hookResult) {
+      objectAssign(pageContextFromHook, { _hasPageContextFromClient: true })
     }
     objectAssign(pageContextFromHook, pageContextFromData)
   }
