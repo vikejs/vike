@@ -27,6 +27,7 @@ import { commonConfig } from './plugins/commonConfig.js'
 import { extensionsAssets } from './plugins/extensionsAssets.js'
 import { baseUrls } from './plugins/baseUrls.js'
 import { envVarsPlugin } from './plugins/envVars.js'
+import { assertFileRuntime } from './plugins/fileRuntime.js'
 import pc from '@brillout/picocolors'
 
 markEnvAsVite()
@@ -52,7 +53,8 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     ...importBuild(),
     extensionsAssets(),
     baseUrls(vikeConfig),
-    envVarsPlugin()
+    envVarsPlugin(),
+    assertFileRuntime()
   ]
   return plugins
 }
