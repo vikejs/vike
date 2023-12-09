@@ -53,14 +53,14 @@ export const standalone = (): Plugin => {
       }
 
       //TODO: do we need this?
-      const banner = `
-import { dirname as dirname2 } from 'path';
-import { fileURLToPath as fileURLToPath2 } from 'url';
-import { createRequire as createRequire2 } from 'module';
-var __filename = fileURLToPath2(import.meta.url);
-var __dirname = dirname2(__filename);
-var require = createRequire2(import.meta.url);
-      `
+//       const banner = `
+// import { dirname as dirname2 } from 'path';
+// import { fileURLToPath as fileURLToPath2 } from 'url';
+// import { createRequire as createRequire2 } from 'module';
+// var __filename = fileURLToPath2(import.meta.url);
+// var __dirname = dirname2(__filename);
+// var require = createRequire2(import.meta.url);
+//       `
 
       const { nodeFileTrace } = await import('@vercel/nft')
       const result = await nodeFileTrace([entry], {
