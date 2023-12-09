@@ -4,8 +4,14 @@ import http from 'http'
 import { onSsrHotUpdate } from '../plugin/plugins/serverEntryPlugin.js'
 import { createServer } from 'vite'
 
+startDevServer()
+
 async function startDevServer() {
   console.log('startDevServer called')
+
+  onSsrHotUpdate(() => {
+    process.exit(33)
+  })
 
   const originalCreateServer = http.createServer.bind(http.createServer)
 
@@ -22,10 +28,6 @@ async function startDevServer() {
       })
     })
 
-    onSsrHotUpdate(() => {
-      process.exit(33)
-    })
-
     return httpServer
   }
 
@@ -36,5 +38,3 @@ async function startDevServer() {
     appType: 'custom'
   })
 }
-
-startDevServer()
