@@ -16,7 +16,7 @@ async function startServer() {
   const app = express()
 
   if (isProduction) {
-    app.use(express.static(`${root}/dist/client`))
+    app.use(express.static(`${root}/client`))
   }
 
   app.use(express.text()) // Parse & make HTTP request body available at `req.body`
