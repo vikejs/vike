@@ -3,6 +3,7 @@ import { resolve } from 'path'
 import { runPrerenderFromCLI, runPrerender_forceExit } from '../prerender/runPrerender.js'
 import { projectInfo, assertUsage, assertWarning } from './utils.js'
 import pc from '@brillout/picocolors'
+import { startDevServer } from '../dev/serverEntry.js'
 
 const cli = cac(projectInfo.projectName)
 
@@ -16,6 +17,10 @@ cli
     await runPrerenderFromCLI({ partial, noExtraDir, base, root, parallel, outDir, configFile })
     runPrerender_forceExit()
   })
+
+cli.command('dev', 'dev', { allowUnknownOptions: true }).action(async (options) => {
+  startDevServer()
+})
 
 function assertOptions() {
   // Using process.argv because cac convert names to camelCase

@@ -59,6 +59,7 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     envVarsPlugin(),
     fileEnv()
   ]
+
   return plugins
 }
 

@@ -1,0 +1,27 @@
+{
+  "scripts": {
+    "dev": "vite",
+    "prod": "npm run build && npm run server:prod",
+    "build": "vite build",
+    "server:prod": "cross-env NODE_ENV=production node ./dist/server/index.mjs"
+  },
+  "dependencies": {
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@vitejs/plugin-react": "^4.1.1",
+    "cross-env": "^7.0.3",
+    "express": "^4.18.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "telefunc": "^0.1.64",
+    "typescript": "^5.2.2",
+    "vite": "^4.5.0",
+    "vike": "0.4.150",
+    "vavite": "^3.0.0",
+    "@prisma/client": "^5.7.0",
+    "prisma": "^5.7.0",
+    "sharp": "0.32.x",
+    "argon2": "^0.31.2"
+  },
+  "type": "module"
+}
