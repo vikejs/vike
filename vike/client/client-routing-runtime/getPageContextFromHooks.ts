@@ -205,6 +205,7 @@ async function executeHookClientSide(
   pageContext: {
     _pageId: string
     _hasPageContextFromServer: boolean
+    _hasPageContextFromClient: boolean
   } & PageContextExports &
     PageContext
 ) {
@@ -213,18 +214,10 @@ async function executeHookClientSide(
     // No hook defined or hook's env.client is false
     return null
   }
-  const pageContextFromHook = {
-    _hasPageContextFromClient: true as const
-  }
-  const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(
-    {
-      ...pageContext,
-      ...pageContextFromHook
-    },
-    true
-  )
+  const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext, true)
   const hookResult = await executeHook(() => hook.hookFn(pageContextForUserConsumption), hook)
 
+  const pageContextFromHook = {}
   if (hookName === 'onBeforeRender') {
     assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
     // Note: hookResult looks like { pageContext: { ... } }
