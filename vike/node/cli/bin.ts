@@ -18,7 +18,7 @@ cli
     runPrerender_forceExit()
   })
 
-cli.command('dev', 'dev', { allowUnknownOptions: true }).action(async (options) => {
+cli.command('dev', 'Start the development server', { allowUnknownOptions: true }).action((options) => {
   startDevServer()
 })
 
