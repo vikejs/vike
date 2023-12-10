@@ -308,7 +308,7 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/data
    */
-  data?: DataAsync | DataSync | ImportString | null
+  data?: DataAsync<unknown> | DataSync<unknown> | ImportString | null
 
   /** Determines what pageContext properties are sent to the client-side.
    *
