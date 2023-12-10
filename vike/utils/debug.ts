@@ -47,8 +47,19 @@ function createDebugger(namespace: Namespace, optionsGlobal?: Options) {
         const position = i === msgsRest.length - 1 ? 'LAST' : 'MIDDLE'
         return formatMsg(msg, optionsResolved, padding, position)
       })
-      console.log('\x1b[1m%s\x1b[0m', namespace, msgFirst)
-      msgsRest.forEach((msg) => {
+      let logFirst: unknown[]
+      let logsRest: unknown[]
+      const noNewLine =
+        msgsRest.length <= 1 && [msgFirst, ...msgsRest].every((m) => typeof m === 'string' && m.includes('\n'))
+      if (noNewLine) {
+        logFirst = [msgFirst, ...msgsRest]
+        logsRest = []
+      } else {
+        logFirst = [msgFirst]
+        logsRest = msgsRest
+      }
+      console.log('\x1b[1m%s\x1b[0m', namespace, ...logFirst)
+      logsRest.forEach((msg) => {
         console.log(msg)
       })
     }
