@@ -1,3 +1,5 @@
+export { standalonePlugin }
+
 import { existsSync } from 'fs'
 import fs from 'fs/promises'
 import { builtinModules } from 'module'
@@ -5,7 +7,7 @@ import path from 'path'
 import { Plugin, searchForWorkspaceRoot } from 'vite'
 import { pLimit } from '../../../utils/pLimit.js'
 
-export const standalonePlugin = (): Plugin => {
+function standalonePlugin(): Plugin {
   let root = ''
   let outDir = ''
 

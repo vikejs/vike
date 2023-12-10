@@ -1,3 +1,5 @@
+export { getServerEntry, serverEntryPlugin }
+
 import type { Plugin } from 'vite'
 import type { ConfigVikeUserProvided } from '../../../shared/ConfigVike.js'
 import { getGlobalObject } from '../utils.js'
@@ -7,11 +9,11 @@ const globalObject = getGlobalObject('serverEntryPlugin.ts', {
   serverEntry: ''
 })
 
-export const getServerEntry = () => {
+function getServerEntry() {
   return globalObject.serverEntry
 }
 
-export const serverEntryPlugin = (configVike?: ConfigVikeUserProvided): Plugin[] => {
+function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
   const serverEntry = configVike?.server
   if (!serverEntry) {
     return []

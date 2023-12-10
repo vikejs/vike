@@ -1,14 +1,14 @@
+export { devServerPlugin }
+
 import http from 'http'
 import { nextTick } from 'process'
 import type { Plugin, ViteDevServer } from 'vite'
 import { getServerEntry } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 
-export const devServerPlugin = ({ onServerHotUpdate }: { onServerHotUpdate: () => void }): Plugin => {
+async function devServerPlugin({ onServerHotUpdate }: { onServerHotUpdate: () => void }): Promise<Plugin> {
   let viteServer: ViteDevServer
-
   let entryDeps: Set<string>
-  let resolvedEntry: string
 
   async function loadEntry() {
     const entry = getServerEntry()
@@ -24,9 +24,8 @@ export const devServerPlugin = ({ onServerHotUpdate }: { onServerHotUpdate: () =
       return
     }
 
-    resolvedEntry = resolved.id
-    await viteServer.ssrLoadModule(resolvedEntry)
-    entryDeps = new Set<string>([resolvedEntry])
+    await viteServer.ssrLoadModule(resolved.id)
+    entryDeps = new Set<string>([resolved.id])
 
     for (const id of entryDeps) {
       const module = await viteServer.moduleGraph.getModuleById(id)
