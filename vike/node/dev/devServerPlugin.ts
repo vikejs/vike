@@ -1,21 +1,18 @@
 import http from 'http'
-import type { ViteDevServer, Plugin } from 'vite'
-import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 import { nextTick } from 'process'
+import type { Plugin, ViteDevServer } from 'vite'
+import { getServerEntry } from '../plugin/plugins/serverEntryPlugin.js'
+import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 
-export const devServerPlugin = ({
-  entry,
-  onServerHotUpdate
-}: {
-  entry: string
-  onServerHotUpdate: () => void
-}): Plugin => {
+export const devServerPlugin = ({ onServerHotUpdate }: { onServerHotUpdate: () => void }): Plugin => {
   let viteServer: ViteDevServer
 
   let entryDeps: Set<string>
   let resolvedEntry: string
 
   async function loadEntry() {
+    const entry = getServerEntry()
+
     logViteAny('Loading server entry', 'info', null, true)
 
     const resolved = await viteServer.pluginContainer.resolveId(entry, undefined, {
