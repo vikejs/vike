@@ -17,7 +17,8 @@ function standalonePlugin(): Plugin {
     '@generated/prisma',
     '@prisma/client',
     '@node-rs/argon2',
-    '@brillout/vite-plugin-import-build',
+    // The importBuild.cjs needs to know where vike is
+    'vike',
     ...builtinModules,
     ...builtinModules.map((m) => `node:${m}`)
   ]
@@ -48,6 +49,7 @@ function standalonePlugin(): Plugin {
       const outDirAbs = path.join(root, outDir)
       const workspaceRoot = searchForWorkspaceRoot(root)
       const relativeRoot = path.relative(workspaceRoot, root)
+      const relativeDistDir = path.relative(workspaceRoot, outDir.split('/')[0]!)
 
       const entryNames = ['index.js', 'main.js', 'index.mjs', 'main.mjs']
       const entry = entryNames.map((e) => path.join(outDirAbs, e)).find((e) => existsSync(e))
@@ -68,7 +70,11 @@ function standalonePlugin(): Plugin {
       const { nodeFileTrace } = await import('@vercel/nft')
       const result = await nodeFileTrace([entry], {
         base: workspaceRoot,
-        processCwd: workspaceRoot
+        processCwd: workspaceRoot,
+        ignore(path) {
+          // Don't include itself
+          return path.startsWith(relativeDistDir)
+        }
       })
 
       const tracedDeps = new Set<string>()
