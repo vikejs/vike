@@ -7,7 +7,7 @@ import path from 'path'
 import { Plugin, searchForWorkspaceRoot } from 'vite'
 import { pLimit } from '../../../utils/pLimit.js'
 
-function standalonePlugin(): Plugin {
+function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let root = ''
   let outDir = ''
 
@@ -17,8 +17,6 @@ function standalonePlugin(): Plugin {
     '@generated/prisma',
     '@prisma/client',
     '@node-rs/argon2',
-    // The importBuild.cjs needs to know where vike is
-    'vike',
     ...builtinModules,
     ...builtinModules.map((m) => `node:${m}`)
   ]
@@ -39,6 +37,22 @@ function standalonePlugin(): Plugin {
         }
       }
     },
+
+    /*
+    transform(code, id, options) {
+      if (id === path.join(root, serverEntry)) {
+        const banner = `
+        import { setImportBuildGetters } from 'vike/__internals/loadImportBuild';
+        setImportBuildGetters({
+          pageFiles: () => import('./pageFiles.mjs'),
+          clientManifest: () => require('../assets.json'),
+          pluginManifest: () => require('../client/vike.json'),
+        });
+        `
+        return banner + code
+      }
+    },
+    */
 
     configResolved(config) {
       root = config.root
@@ -70,11 +84,11 @@ function standalonePlugin(): Plugin {
       const { nodeFileTrace } = await import('@vercel/nft')
       const result = await nodeFileTrace([entry], {
         base: workspaceRoot,
-        processCwd: workspaceRoot,
-        ignore(path) {
-          // Don't include itself
-          return path.startsWith(relativeDistDir)
-        }
+        processCwd: workspaceRoot
+        // ignore(path) {
+        //   // Don't include itself
+        //   return path.startsWith(relativeDistDir)
+        // }
       })
 
       const tracedDeps = new Set<string>()
@@ -97,7 +111,7 @@ function standalonePlugin(): Plugin {
             ///////////////////////////////////
             // This is to support pnpm monorepo
             let segments = 0
-            if (relativeFile.startsWith(`${relativeRoot}/`)) {
+            if (relativeFile.startsWith(`${relativeRoot}/`) && !relativeFile.startsWith(relativeDistDir)) {
               segments = `${relativeRoot}/`.match(/\//g)?.length ?? 0
               relativeFile = relativeFile.replace(`${relativeRoot}/`, '')
             }
