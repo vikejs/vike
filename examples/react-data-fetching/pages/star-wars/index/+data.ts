@@ -1,11 +1,14 @@
 // https://vike.dev/data
 export { data }
+export type { Data }
 
-import type { DataAsync } from 'vike/types'
-import type { Data } from './types'
+// Note(brillout): is there a way to use DataAsync instead of PageContextServer ?
+import type { DataAsync, PageContextServer } from 'vike/types'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
 
-const data: DataAsync<Data> = async (pageContext): ReturnType<DataAsync<Data>> => {
+type Data = Awaited<ReturnType<typeof data>>
+
+const data = async (pageContext: PageContextServer) => {
   await sleep(700) // Simulate slow network
   const movies = await getStarWarsMovies()
   return {

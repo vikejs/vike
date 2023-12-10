@@ -1,5 +1,3 @@
-export type { GlobalData }
-
 // https://vike.dev/pageContext#typescript
 declare global {
   namespace Vike {
@@ -15,11 +13,4 @@ declare global {
 
 type Page = () => React.ReactElement
 
-/**
- * `data()` hook return type common to all pages.
- *
- * See https://vike.dev/data
- */
-type GlobalData = {
-  title: string
-}
+export {}

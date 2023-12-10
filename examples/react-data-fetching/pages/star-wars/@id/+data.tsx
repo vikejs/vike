@@ -1,15 +1,18 @@
 // https://vike.dev/data
 export { data }
+export type { Data }
 
 import fetch from 'node-fetch'
 import { filterMovieData } from '../filterMovieData'
-import type { DataAsync } from 'vike/types'
+// Note(brillout): is there a way to use DataAsync instead of PageContextServer ?
+import type { DataAsync, PageContextServer } from 'vike/types'
 import type { MovieDetails } from '../types'
-import type { Data } from './types'
 import { render } from 'vike/abort'
 import React from 'react'
 
-const data: DataAsync<Data> = async (pageContext): ReturnType<DataAsync<Data>> => {
+type Data = Awaited<ReturnType<typeof data>>
+
+const data = async (pageContext: PageContextServer) => {
   const dataUrl = `https://star-wars.brillout.com/api/films/${pageContext.routeParams?.id}.json`
   let movie: MovieDetails
   try {

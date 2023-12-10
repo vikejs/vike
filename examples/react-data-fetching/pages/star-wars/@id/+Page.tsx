@@ -2,7 +2,7 @@ export default Page
 
 import React from 'react'
 import { useData } from '../../../renderer/useData'
-import type { Data } from './types'
+import type { Data } from './+data'
 
 function Page() {
   const { movie } = useData<Data>()

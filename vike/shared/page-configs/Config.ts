@@ -76,12 +76,12 @@ type Config = ConfigBuiltIn &
  *
  *  https://vike.dev/data
  */
-type DataAsync<Data> = (pageContext: PageContextServer) => Promise<Data>
+type DataAsync<Data = unknown> = (pageContext: PageContextServer) => Promise<Data>
 /** Hook for fetching data.
  *
  *  https://vike.dev/data
  */
-type DataSync<Data> = (pageContext: PageContextServer) => Data
+type DataSync<Data = unknown> = (pageContext: PageContextServer) => Data
 /** Protect page(s), e.g. forbid unauthorized access.
  *
  *  https://vike.dev/guard
