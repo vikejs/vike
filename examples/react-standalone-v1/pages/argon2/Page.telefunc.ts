@@ -9,9 +9,8 @@ const argon2Opts = {
   key_length: 32
 }
 
-const correctPassword = 'correct-password'
-
-async function onValidatePassword({ password }) {
+async function onValidatePassword({ password }: { password: string }) {
+  const correctPassword = 'correct-password'
   const correctPasswordHashed = hashSync(correctPassword, argon2Opts)
   if (verifySync(correctPasswordHashed, password, argon2Opts)) {
     return { isValid: true }
