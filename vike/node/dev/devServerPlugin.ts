@@ -3,7 +3,7 @@ export { devServerPlugin }
 import http from 'http'
 import { nextTick } from 'process'
 import type { Plugin, ViteDevServer } from 'vite'
-import { nativeDependecies } from '../../shared/nativeDependencies.js'
+import { nativeDependecies } from '../plugin/shared/nativeDependencies.js'
 import { getServerEntry } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 

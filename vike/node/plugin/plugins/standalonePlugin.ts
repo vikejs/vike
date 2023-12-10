@@ -6,7 +6,7 @@ import { builtinModules } from 'module'
 import path from 'path'
 import { Plugin, searchForWorkspaceRoot } from 'vite'
 import { pLimit } from '../../../utils/pLimit.js'
-import { nativeDependecies } from '../../../shared/nativeDependencies.js'
+import { nativeDependecies } from '../shared/nativeDependencies.js'
 
 function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let root = ''
