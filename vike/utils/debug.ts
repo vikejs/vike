@@ -24,6 +24,7 @@ type Namespace =
   | 'vike:virtual-files'
   | 'vike:stem'
   | 'vike:stream'
+  | 'vike:outDir'
 type Debug = ReturnType<typeof createDebugger>
 
 type Options = {

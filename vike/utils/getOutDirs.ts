@@ -7,6 +7,8 @@ import { assert, assertUsage } from './assert.js'
 import { pathJoin } from './path-shim.js'
 import { assertPosixPath, toPosixPath } from './filesystemPathHandling.js'
 import pc from '@brillout/picocolors'
+import { createDebugger } from './debug.js'
+const debug = createDebugger('vike:outDir')
 
 type OutDirs = {
   /** Absolute path to `outDir` */
@@ -18,6 +20,7 @@ type OutDirs = {
 }
 
 function getOutDirs(config: ResolvedConfig): OutDirs {
+  debug('getOutDirs()', new Error().stack)
   let outDirRoot: string
   {
     const outDir = getOutDirFromViteResolvedConfig(config)
@@ -30,12 +33,17 @@ function getOutDirs(config: ResolvedConfig): OutDirs {
       outDirRoot = outDir.slice(0, -1 * '/client'.length)
     }
   }
-  return getOutDirsAll(outDirRoot, config.root)
+  const outDirs = getOutDirsAll(outDirRoot, config.root)
+  debug('outDirRoot', outDirRoot)
+  debug('outDirs', outDirs)
+  return outDirs
 }
 
 /** Appends `client/` or `server/` to `config.build.outDir` */
 function resolveOutDir(config: UserConfig): string {
+  debug('resolveOutDir()', new Error().stack)
   const outDir = getOutDirFromViteUserConfig(config) || 'dist'
+  debug('outDir', 'outDir')
   // outDir may already be resolved when using Telefunc + vike (because both Telefunc and vike use this logic)
   if (!isOutDirRoot(outDir)) {
     assertOutDirResolved(outDir, config)
@@ -43,8 +51,10 @@ function resolveOutDir(config: UserConfig): string {
   } else {
     const { outDirClient, outDirServer } = determineOutDirs(outDir)
     if (viteIsSSR(config)) {
+      debug('outDirServer', 'outDirServer')
       return outDirServer
     } else {
+      debug('outDirClient', 'outDirClient')
       return outDirClient
     }
   }
