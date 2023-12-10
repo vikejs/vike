@@ -6,20 +6,13 @@ import { builtinModules } from 'module'
 import path from 'path'
 import { Plugin, searchForWorkspaceRoot } from 'vite'
 import { pLimit } from '../../../utils/pLimit.js'
+import { nativeDependecies } from '../../../shared/nativeDependencies.js'
 
 function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let root = ''
   let outDir = ''
 
-  // Need to list native dependencies here
-  const external = [
-    'sharp',
-    '@generated/prisma',
-    '@prisma/client',
-    '@node-rs/argon2',
-    ...builtinModules,
-    ...builtinModules.map((m) => `node:${m}`)
-  ]
+  const external = [...nativeDependecies, ...builtinModules, ...builtinModules.map((m) => `node:${m}`)]
   const noExternalRegex = new RegExp(`^(?!(${external.join('|')})$)`)
 
   return {
@@ -28,35 +21,42 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       //@ts-expect-error Vite 5 || Vite 4
       return !!(env.isSsrBuild || env.ssrBuild)
     },
-    enforce: 'post',
+    enforce: 'pre',
     config(config, env) {
       return {
         ssr: {
           external,
           noExternal: [noExternalRegex]
+        },
+        vitePluginImportBuild: {
+          _disableAutoImporter: true
         }
       }
     },
 
-    /*
-    transform(code, id, options) {
-      if (id === path.join(root, serverEntry)) {
-        const banner = `
-        import { setImportBuildGetters } from 'vike/__internals/loadImportBuild';
-        setImportBuildGetters({
-          pageFiles: () => import('./pageFiles.mjs'),
-          clientManifest: () => require('../assets.json'),
-          pluginManifest: () => require('../client/vike.json'),
-        });
-        `
-        return banner + code
-      }
-    },
-    */
-
     configResolved(config) {
       root = config.root
       outDir = config.build.outDir
+    },
+
+    renderChunk(code, chunk) {
+      if (chunk.facadeModuleId === path.join(root, serverEntry)) {
+        code = "import './importBuild.cjs'\n" + code
+      }
+
+      const needsRequire = !/require =/.test(code)
+      const needsFilename = !/__filename =/.test(code)
+      const needsDirname = !/__dirname =/.test(code)
+
+      return (
+        `import { dirname as dirname2 } from 'path';
+      import { fileURLToPath as fileURLToPath2 } from 'url';
+      import { createRequire as createRequire2 } from 'module';
+      ${needsRequire ? 'var require = createRequire2(import.meta.url);' : ''}
+      ${needsFilename ? 'var __filename = fileURLToPath2(import.meta.url);' : ''}
+      ${needsDirname ? 'var __dirname = dirname2(__filename);' : ''}
+      ` + code
+      )
     },
 
     async closeBundle() {
@@ -71,24 +71,10 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         return
       }
 
-      //TODO: do we need this?
-      //       const banner = `
-      // import { dirname as dirname2 } from 'path';
-      // import { fileURLToPath as fileURLToPath2 } from 'url';
-      // import { createRequire as createRequire2 } from 'module';
-      // var __filename = fileURLToPath2(import.meta.url);
-      // var __dirname = dirname2(__filename);
-      // var require = createRequire2(import.meta.url);
-      //       `
-
       const { nodeFileTrace } = await import('@vercel/nft')
       const result = await nodeFileTrace([entry], {
         base: workspaceRoot,
         processCwd: workspaceRoot
-        // ignore(path) {
-        //   // Don't include itself
-        //   return path.startsWith(relativeDistDir)
-        // }
       })
 
       const tracedDeps = new Set<string>()
@@ -98,7 +84,9 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         }
         tracedDeps.add(file.replace(/\\/g, '/'))
       }
-      const files = [...tracedDeps]
+
+      //TODO: Remove filter when import { setImportBuildGetters } from 'vike/__internals/loadImportBuild';
+      const files = [...tracedDeps].filter((path) => !path.startsWith(relativeDistDir))
 
       const concurrencyLimit = pLimit(10)
       const copiedFiles = new Set<string>()
@@ -148,6 +136,23 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
           })
         )
       )
+
+      ///TODO: Remove when import { setImportBuildGetters } from 'vike/__internals/loadImportBuild';
+      const importBuildCjsFile = path.join(outDirAbs, 'importBuild.cjs')
+      const hasImportBuildCjs = existsSync(importBuildCjsFile)
+      if (hasImportBuildCjs) {
+        let code = await fs.readFile(importBuildCjsFile, 'utf-8')
+
+        const matches = code.matchAll(/const.*'(.*)'/gm)
+        for (const match of matches) {
+          const line = match[1]
+          if (line) {
+            code = code.replace(line, `./${line.replaceAll('../', '')}`)
+          }
+        }
+
+        await fs.writeFile(importBuildCjsFile, code, 'utf-8')
+      }
     }
   }
 }

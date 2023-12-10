@@ -17,6 +17,9 @@ function PageLayout({ children }) {
           <a className="navitem" href="/argon2">
             Argon2
           </a>
+          <a className="navitem" href="/sharp">
+            Sharp
+          </a>
         </Sidebar>
         <Content>{children}</Content>
       </Layout>

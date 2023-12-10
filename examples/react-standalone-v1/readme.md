@@ -19,3 +19,6 @@ npm run build
 ```
 
 After build, the `dist` folder will contain everything needed for the production deployment.
+```bash
+zip --symlinks -r dist.zip dist/
+```

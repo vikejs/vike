@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "vike dev",
     "build": "vite build",
-    "prod": "NODE_ENV=production node index.mjs"
+    "prod": "npm run build && NODE_ENV=production node dist/server/index.mjs"
   },
   "dependencies": {
     "@types/react": "^18.2.37",
