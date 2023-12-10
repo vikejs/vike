@@ -5,7 +5,7 @@ import path from 'path'
 import { Plugin, searchForWorkspaceRoot } from 'vite'
 import { pLimit } from '../../../utils/pLimit.js'
 
-export const standalone = (): Plugin => {
+export const standalonePlugin = (): Plugin => {
   let root = ''
   let outDir = ''
 
