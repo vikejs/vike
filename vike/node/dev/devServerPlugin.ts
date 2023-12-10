@@ -20,7 +20,7 @@ async function devServerPlugin({ onServerHotUpdate }: { onServerHotUpdate: () =>
     })
 
     if (!resolved) {
-      logViteAny(`Server entry "${entry}" not found`, 'error', null, false)
+      logViteAny(`Server entry "${entry}" not found`, 'error', null, true)
       return
     }
 

@@ -19,10 +19,9 @@ cli
   })
 
 cli.command('dev', 'Start the development server', { allowUnknownOptions: true }).action(async (options) => {
-  const config = await resolveConfig({}, 'serve')
-  const root = config.root
-  const scriptPath = join(root, 'node_modules/vike/dist/esm/node/dev/startDevServer.js')
-  const onRestart = () => {
+  logViteAny('Starting development server', 'info', null, true)
+  const scriptPath = 'node_modules/vike/dist/esm/node/dev/startDevServer.js'
+  function onRestart() {
     try {
       execSync(`node ${scriptPath}`, { stdio: 'inherit' })
     } catch (error) {
