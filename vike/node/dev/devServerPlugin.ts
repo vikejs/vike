@@ -98,6 +98,7 @@ export const devServerPlugin = ({ onServerHotUpdate }: { onServerHotUpdate: () =
       }
       if (ctx.modules.some((module) => module.id && entryDeps.has(module.id))) {
         onServerHotUpdate()
+        return []
       }
     }
   }
