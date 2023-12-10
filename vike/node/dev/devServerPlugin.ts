@@ -65,6 +65,14 @@ async function devServerPlugin({ onServerHotUpdate }: { onServerHotUpdate: () =>
 
   return {
     name: 'vike:devServer',
+    enforce: 'pre',
+    config(config, env) {
+      return {
+        server: {
+          middlewareMode: true
+        }
+      }
+    },
     configureServer(server) {
       viteServer = server
       nextTick(async () => {

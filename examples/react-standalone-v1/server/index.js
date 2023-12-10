@@ -28,7 +28,6 @@ async function startServer() {
   })
 
   app.get('*', async (req, res, next) => {
-    console.log('Server is called')
     const pageContextInit = {
       urlOriginal: req.originalUrl
     }

@@ -21,7 +21,7 @@
     "@prisma/client": "^5.7.0",
     "prisma": "^5.7.0",
     "sharp": "0.32.x",
-    "argon2": "^0.31.2"
+    "@node-rs/argon2": "^1.5.2"
   },
   "type": "module"
 }
