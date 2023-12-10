@@ -59,9 +59,9 @@ function debug_(namespace: Namespace, options: Options, ...msgs: unknown[]) {
   let logFirst: unknown[]
   let logsRest: unknown[]
   const noNewLine =
-    msgsRest.length <= 1 && [msgFirst, ...msgsRest].every((m) => typeof m === 'string' && m.includes('\n'))
+    msgsRest.length <= 1 && [msgFirst, ...msgsRest].every((m) => typeof m === 'string' && !m.includes('\n'))
   if (noNewLine) {
-    logFirst = [msgFirst, ...msgsRest]
+    logFirst = [msgFirst, ...msgsRest].map((m) => String(m).trim())
     logsRest = []
   } else {
     logFirst = [msgFirst]
