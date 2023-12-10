@@ -18,22 +18,52 @@ cli
     runPrerender_forceExit()
   })
 
-cli.command('dev', 'Start the development server', { allowUnknownOptions: true }).action(async (options) => {
-  logViteAny('Starting development server', 'info', null, true)
-  const scriptPath = 'node_modules/vike/dist/esm/node/dev/startDevServer.js'
-  function onRestart() {
-    try {
-      execSync(`node ${scriptPath}`, { stdio: 'inherit' })
-    } catch (error) {
-      if (!error || typeof error !== 'object' || !('status' in error) || error.status !== 33) {
-        throw error
-      }
-      onRestart()
-    }
-  }
+cli
+  .command('[root]', 'Start the development server', { allowUnknownOptions: true })
+  .alias('serve') // the command is called 'serve' in Vite's API
+  .alias('dev') // alias to align with the script name
+  .option('--host [host]', `[string] specify hostname`)
+  .option('--port <port>', `[number] specify port`)
+  .option('--open [path]', `[boolean | string] open browser on startup`)
+  .option('--cors', `[boolean] enable CORS`)
+  .option('--strictPort', `[boolean] exit if specified port is already in use`)
+  .option('--force', `[boolean] force the optimizer to ignore the cache and re-bundle`)
+  .action(async (root, options) => {
+    logViteAny('Starting development server', 'info', null, true)
 
-  onRestart()
-})
+    await resolveConfig({}, 'serve')
+    const serverEntry = getServerEntry()
+    if (!serverEntry) {
+      let command = 'vite dev'
+      if (root) {
+        command = command + ` ${root}`
+      }
+      for (const [key, value] of Object.entries(options).slice(1)) {
+        command = command + ` --${key}=${value}`
+      }
+
+      try {
+        execSync(command, { stdio: 'inherit' })
+      } catch (error) {
+        // { stdio: 'inherit' } already logged the error
+      }
+      return
+    }
+
+    const scriptPath = 'node_modules/vike/dist/esm/node/dev/startDevServer.js'
+    function onRestart() {
+      try {
+        execSync(`node ${scriptPath}`, { stdio: 'inherit' })
+      } catch (error) {
+        if (error && typeof error === 'object' && 'status' in error && error.status === 33) {
+          onRestart()
+        }
+        // { stdio: 'inherit' } already logged the error
+      }
+    }
+
+    onRestart()
+  })
 
 function assertOptions() {
   // Using process.argv because cac convert names to camelCase
