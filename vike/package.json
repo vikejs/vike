@@ -105,6 +105,11 @@
       "require": "./dist/cjs/node/runtime/page-files/setup.js",
       "node": "./dist/esm/node/runtime/page-files/setup.js",
       "types": "./dist/esm/node/runtime/page-files/setup.d.ts"
+    },
+    "./__internal/loadImportBuild": {
+      "require": "./dist/cjs/node/runtime/globalContext/loadImportBuild.js",
+      "node": "./dist/esm/node/runtime/globalContext/loadImportBuild.js",
+      "types": "./dist/esm/node/runtime/globalContext/loadImportBuild.d.ts"
     }
   },
   "peerDependencies": {

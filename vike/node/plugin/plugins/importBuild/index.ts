@@ -50,11 +50,19 @@ function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
   return importerCode
 }
 function getImportPath(config: ResolvedConfig) {
+  // We resolve filePathAbsolute even if we don't use it: we use require.resolve() as an assertion that the relative path is correct
   const filePathAbsolute = toPosixPath(
     // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/plugins/importBuild/index.js
     require_.resolve(`../../../../../../dist/esm/node/runtime/globalContext/loadImportBuild.js`)
   )
-  const { outDirServer } = getOutDirs(config)
-  const filePathRelative = path.posix.relative(outDirServer, filePathAbsolute)
-  return filePathRelative
+  if (
+    // Let's implement a new config if a user needs the import to be a relative path instead of 'vike/__internal/loadImportBuild' (AFAIK a relative path is needed only if a framework has npm package 'vike' as direct dependency instead of a peer dependency and if the user of that framework uses pnpm)
+    true as boolean
+  ) {
+    return 'vike/__internal/loadImportBuild'
+  } else {
+    const { outDirServer } = getOutDirs(config)
+    const filePathRelative = path.posix.relative(outDirServer, filePathAbsolute)
+    return filePathRelative
+  }
 }
