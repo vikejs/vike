@@ -85,7 +85,6 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         tracedDeps.add(file.replace(/\\/g, '/'))
       }
 
-      //TODO: Remove filter when import { setImportBuildGetters } from 'vike/__internals/loadImportBuild';
       const files = [...tracedDeps].filter((path) => !path.startsWith(relativeDistDir))
 
       const concurrencyLimit = pLimit(10)
@@ -136,23 +135,6 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
           })
         )
       )
-
-      ///TODO: Remove when import { setImportBuildGetters } from 'vike/__internals/loadImportBuild';
-      const importBuildCjsFile = path.join(outDirAbs, 'importBuild.cjs')
-      const hasImportBuildCjs = existsSync(importBuildCjsFile)
-      if (hasImportBuildCjs) {
-        let code = await fs.readFile(importBuildCjsFile, 'utf-8')
-
-        const matches = code.matchAll(/const.*'(.*)'/gm)
-        for (const match of matches) {
-          const line = match[1]
-          if (line) {
-            code = code.replace(line, `./${line.replaceAll('../', '')}`)
-          }
-        }
-
-        await fs.writeFile(importBuildCjsFile, code, 'utf-8')
-      }
     }
   }
 }
