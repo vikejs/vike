@@ -2,7 +2,7 @@ Example of defining import path aliases for Vike apps.
 
 We use:
  - [`vite.config.js#resolve.alias`](https://vitejs.dev/config/#resolve-alias) for files processed by Vite.
-   (All following files and their imports: `*.page.js`, `*.page.server.js`, `*.page.client.js`, `*.page.route.js`.)
+   (All `+` files and their imports)
  - [`package.json#imports`](https://nodejs.org/api/packages.html#subpath-patterns) for Node.js files not processed by Vite.
  - [`tsconfig.json#compilerOptions.paths`](https://www.typescriptlang.org/tsconfig#paths) for TypeScript.
 
@@ -13,7 +13,7 @@ If we don't use TypeScript, we can skip defining `tsconfig.json#compilerOptions.
 If we don't plan to use path aliases for Node.js server code, we can skip defining `package.json#imports`.
 
 Path alias usage examples:
- - [pages/index.page.tsx](pages/index.page.tsx)
+ - [pages/index/+Page.tsx](pages/index/+Page.tsx)
  - [server/index.ts](server/index.ts)
 
 To run the example:
