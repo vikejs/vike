@@ -43,10 +43,19 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       if (chunk.facadeModuleId === path.join(root, serverEntry)) {
         code = "import './importBuild.cjs'\n" + code
       }
-
-      const needsRequire = !/require =/.test(code)
-      const needsFilename = !/__filename =/.test(code)
-      const needsDirname = !/__dirname =/.test(code)
+      let needsRequire = true
+      let needsFilename = true
+      let needsDirname = true
+      const matches = code.matchAll(/(require ?=)|(__filename ?=)|(__dirname ?=)/gm)
+      for (const match of matches) {
+        if (match[1]) {
+          needsRequire = false
+        } else if (match[2]) {
+          needsFilename = false
+        } else if (match[3]) {
+          needsDirname = false
+        }
+      }
 
       return (
         `import { dirname as dirname2 } from 'path';
@@ -64,15 +73,9 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       const workspaceRoot = searchForWorkspaceRoot(root)
       const relativeRoot = path.relative(workspaceRoot, root)
       const relativeDistDir = path.relative(workspaceRoot, outDir.split('/')[0]!)
-
-      const entryNames = ['index.js', 'main.js', 'index.mjs', 'main.mjs']
-      const entry = entryNames.map((e) => path.join(outDirAbs, e)).find((e) => existsSync(e))
-      if (!entry) {
-        return
-      }
-
+      const builtEntry = serverEntry.split('/').pop()!.split('.')[0] + '.mjs'
       const { nodeFileTrace } = await import('@vercel/nft')
-      const result = await nodeFileTrace([entry], {
+      const result = await nodeFileTrace([builtEntry], {
         base: workspaceRoot,
         processCwd: workspaceRoot
       })
