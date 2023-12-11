@@ -3,7 +3,7 @@ export default onRenderClient
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { PageLayout } from './PageLayout'
-import type { PageContextClient } from './types'
+import type { PageContextClient } from 'vike/types'
 
 let root: ReactDOM.Root
 async function onRenderClient(pageContext: PageContextClient) {

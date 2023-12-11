@@ -98,6 +98,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   guard: {
     env: { server: true, client: 'if-client-routing' }
   },
+  data: {
+    env: { server: true }
+  },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
     env: { server: true, client: 'if-client-routing', eager: true }
   },
@@ -139,6 +142,11 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { client: true },
     _computed: (configValueSources): null | ConfigEnvInternal =>
       !isConfigSet(configValueSources, 'onBeforeRender') ? null : getConfigEnv(configValueSources, 'onBeforeRender')
+  },
+  dataEnv: {
+    env: { client: true },
+    _computed: (configValueSources): null | ConfigEnvInternal =>
+      !isConfigSet(configValueSources, 'data') ? null : getConfigEnv(configValueSources, 'data')
   },
   hooksTimeout: {
     env: { server: true, client: true }
