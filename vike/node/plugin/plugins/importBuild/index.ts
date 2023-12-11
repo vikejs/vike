@@ -30,16 +30,12 @@ function importBuild(): Plugin[] {
 }
 
 function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
-  const filePathAbsolute = toPosixPath(
-    // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/plugins/importBuild/index.js
-    require_.resolve(`../../../../../../dist/esm/node/runtime/globalContext/loadImportBuild.js`)
-  )
-  const { outDirServer } = getOutDirs(config)
-  const filePathRelative = path.posix.relative(outDirServer, filePathAbsolute)
+  const importPath = getImportPath(config)
+
   // The only reason we went for using CJS require() instead of ESM import() is because import() doesn't support .json files
   const importerCode = [
     '(async () => {',
-    `  const { setImportBuildGetters } = await import('${filePathRelative}');`,
+    `  const { setImportBuildGetters } = await import('${importPath}');`,
     '  setImportBuildGetters({',
     `    pageFiles: () => import('./${pageFilesEntry}'),`,
     // TODO: rename clientManifest -> assetManifest
@@ -52,4 +48,13 @@ function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
     ''
   ].join('\n')
   return importerCode
+}
+function getImportPath(config: ResolvedConfig) {
+  const filePathAbsolute = toPosixPath(
+    // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/plugins/importBuild/index.js
+    require_.resolve(`../../../../../../dist/esm/node/runtime/globalContext/loadImportBuild.js`)
+  )
+  const { outDirServer } = getOutDirs(config)
+  const filePathRelative = path.posix.relative(outDirServer, filePathAbsolute)
+  return filePathRelative
 }
