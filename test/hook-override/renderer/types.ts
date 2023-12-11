@@ -1,24 +1,26 @@
-export type { PageContextServer }
-export type { PageContextClient }
-export type { PageContext }
-export type { PageProps }
-
-import type {
-  PageContextBuiltInServer,
-  PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
-} from 'vike/types'
+export type { GlobalData, PerPageData }
 
 type Page = (pageProps: PageProps) => React.ReactElement
 type PageProps = Record<string, unknown>
 
-export type PageContextCustom = {
-  Page: Page
-  onBeforeRender1WasCalled?: unknown
-  onBeforeRender2WasCalled?: unknown
-  onBeforeRenderEnv?: unknown
+// https://vike.dev/pageContext#typescript
+declare global {
+  namespace Vike {
+    interface PageContext {
+      Page: Page
+      globalOnBeforeRenderWasCalled?: boolean
+      globalOnBeforeRenderWasCalledInEnv?: 'client' | 'server'
+      perPageOnBeforeRenderWasCalled?: boolean
+      perPageOnBeforeRenderWasCalledInEnv?: 'client' | 'server'
+    }
+  }
 }
 
-type PageContextServer = PageContextBuiltInServer<Page> & PageContextCustom
-type PageContextClient = PageContextBuiltInClient<Page> & PageContextCustom
-
-type PageContext = PageContextClient | PageContextServer
+type GlobalData = {
+  globalDataWasCalled?: boolean
+  globalDataWasCalledInEnv?: 'client' | 'server'
+}
+type PerPageData = {
+  perPageDataWasCalled?: boolean
+  perPageDataWasCalledInEnv?: 'client' | 'server'
+}

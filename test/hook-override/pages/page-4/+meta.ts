@@ -1,5 +1,8 @@
 export default {
+  data: {
+    env: { server: false, client: true }
+  },
   onBeforeRender: {
-    env: { client: true }
+    env: { server: true, client: true }
   }
 }

@@ -6,6 +6,8 @@ export type { HookName }
 export type { HookNamePage }
 export type { HookNameGlobal }
 
+export type { DataAsync }
+export type { DataSync }
 export type { GuardAsync }
 export type { GuardSync }
 export type { OnBeforePrerenderStartAsync }
@@ -47,6 +49,7 @@ type HookNamePage =
   | 'onRenderHtml'
   | 'onRenderClient'
   | 'guard'
+  | 'data'
 type HookNameGlobal = 'onBeforePrerender' | 'onBeforeRoute' | 'onPrerenderStart'
 // v0.4 design TODO/v1-release: remove
 type HookNameOldDesign = 'render' | 'prerender'
@@ -56,6 +59,7 @@ type ConfigNameBuiltIn =
   | 'prerender'
   | 'isClientSideRenderable'
   | 'onBeforeRenderEnv'
+  | 'dataEnv'
   | 'hooksTimeout'
 
 type Config = ConfigBuiltIn &
@@ -68,6 +72,16 @@ type Config = ConfigBuiltIn &
   )
 
 // Purposeful code duplication for improving QuickInfo IntelliSense
+/** Hook for fetching data.
+ *
+ *  https://vike.dev/data
+ */
+type DataAsync<Data> = (pageContext: PageContextServer) => Promise<Data>
+/** Hook for fetching data.
+ *
+ *  https://vike.dev/data
+ */
+type DataSync<Data> = (pageContext: PageContextServer) => Data
 /** Protect page(s), e.g. forbid unauthorized access.
  *
  *  https://vike.dev/guard
@@ -102,14 +116,14 @@ type OnBeforePrerenderStartSync = () => (
       pageContext: Partial<Vike.PageContext>
     }
 )[]
-/** Hook called before the page is rendered, usually for fetching data.
+/** Hook called before the page is rendered.
  *
  *  https://vike.dev/onBeforeRender
  */
 type OnBeforeRenderAsync = (
   pageContext: PageContextServer
 ) => Promise<{ pageContext: Partial<Vike.PageContext> } | void>
-/** Hook called before the page is rendered, usually for fetching data.
+/** Hook called before the page is rendered.
  *
  *  https://vike.dev/onBeforeRender
  */
@@ -284,11 +298,17 @@ type ConfigBuiltIn = {
    */
   extends?: Config | Config[] | ImportString | ImportString[]
 
-  /** Hook called before the page is rendered, usually for fetching data.
+  /** Hook called before the page is rendered.
    *
    *  https://vike.dev/onBeforeRender
    */
   onBeforeRender?: OnBeforeRenderAsync | OnBeforeRenderSync | ImportString | null
+
+  /** Hook for fetching data.
+   *
+   *  https://vike.dev/data
+   */
+  data?: DataAsync<unknown> | DataSync<unknown> | ImportString | null
 
   /** Determines what pageContext properties are sent to the client-side.
    *

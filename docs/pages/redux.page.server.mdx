@@ -1,5 +1,5 @@
-import { RepoLink } from '@brillout/docpress'
-import { DataArchitecture, Github } from '../components'
+import { Link } from '@brillout/docpress'
+import { DataArchitecture, Example } from '../components'
 
 <DataArchitecture
   toolName={'Redux'}
@@ -9,6 +9,7 @@ import { DataArchitecture, Github } from '../components'
   toolType="data-store"
 />
 
-## Example
+## Examples
 
-See <Github>brillout/vike-with-redux</Github>.
+- <Example timestamp="2023.12" repo="brillout/vike-with-redux" description={<>Example using <Link href="/client-routing">Client Routing</Link>.</>} />
+- <Example timestamp="2023.10" repo="brillout/vike-with-redux_minimal-example" description={<>Minimal example using <Link href="/server-routing">Server Routing</Link>.</>} />

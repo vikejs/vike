@@ -10,23 +10,32 @@ function UseIntegrationPackageAnyHint({ featureName }: { featureName: string }) 
     <blockquote>
       <p>
         Instead of manually integrating {featureName} yourself, you can use a <IntegrationPackage /> which already
-        integrates {featureName}. And you can use <Bati /> to scaffold an app that uses <IntegrationPackageNames />.
+        integrates {featureName}. You can use <Bati /> to scaffold an app that uses <IntegrationPackageNames />.
       </p>
     </blockquote>
   )
 }
 
-function UseIntegrationPackageHint({ uiFrameworkName }: { uiFrameworkName: 'React' | 'Vue' | 'Solid' }) {
+function UseIntegrationPackageHint({
+  uiFrameworkName,
+  noQuote
+}: {
+  uiFrameworkName: 'React' | 'Vue' | 'Solid'
+  noQuote?: true
+}) {
   const pkg = <code>vike-{uiFrameworkName.toLowerCase()}</code>
   const pkgWithLink = <a href="/vike-packages#ui-framework">{pkg}</a>
-  return (
-    <blockquote>
-      <p>
-        Instead of manually integrating {uiFrameworkName} yourself, you can use {pkgWithLink} which integrates{' '}
-        {uiFrameworkName} in a full-fledged manner. And you can use <Bati /> to scaffold an app that uses {pkg}.
-      </p>
-    </blockquote>
+  const hint = (
+    <p>
+      Instead of manually integrating {uiFrameworkName} yourself, you can use {pkgWithLink} which integrates{' '}
+      {uiFrameworkName} in a full-fledged manner. You can use <Bati /> to scaffold an app that uses {pkg}.
+    </p>
   )
+  if (noQuote) {
+    return hint
+  } else {
+    return <blockquote>{hint}</blockquote>
+  }
 }
 
 function UseBatiHint({ toolName }: { toolName: string }) {

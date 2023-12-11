@@ -2,7 +2,7 @@ export { PageContextProvider }
 export { usePageContext }
 
 import React, { useContext } from 'react'
-import type { PageContext } from './types'
+import type { PageContext } from 'vike/types'
 
 const Context = React.createContext<PageContext>(undefined as any)
 
