@@ -44,9 +44,11 @@ function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPat
     }
     urlResolved = urlResolved.replaceAll(key, val)
   })
+  /* We comment this assertion in order allow URL /npm/@my-team/my-package with redirect /npm/* -> https://cdn.jsdelivr.net/npm/* (https://github.com/vikejs/vike/issues/1347)
   if (!urlResolved.startsWith('mailto:')) {
     assertUsage(!urlResolved.includes('@'), 'URL should not contain "@" unless it is a mailto link.')
   }
+  */
   if (urlResolved === urlPathname) return null
   assert(urlResolved.startsWith('/') || isUriWithProtocol(urlResolved))
   return urlResolved
