@@ -1,5 +1,5 @@
 import { Link } from '@brillout/docpress'
-import { DataArchitecture, Github, Timestamp } from '../components'
+import { DataArchitecture, Example } from '../components'
 
 <DataArchitecture
   toolName={'Redux'}
@@ -11,5 +11,5 @@ import { DataArchitecture, Github, Timestamp } from '../components'
 
 ## Examples
 
-- <Timestamp>2023.12</Timestamp> <Github>brillout/vike-with-redux</Github> - Example using <Link href="/client-routing">Client Routing</Link>.
-- <Timestamp>2023.10</Timestamp> <Github>brillout/vike-with-redux_minimal-example</Github> - Minimal example using <Link href="/server-routing">Server Routing</Link>.
+- <Example timestamp="2023.12" repo="brillout/vike-with-redux" description={<>Example using <Link href="/client-routing">Client Routing</Link>.</>} />
+- <Example timestamp="2023.10" repo="brillout/vike-with-redux_minimal-example" description={<>Minimal example using <Link href="/server-routing">Server Routing</Link>.</>} />
