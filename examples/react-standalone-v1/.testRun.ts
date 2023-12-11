@@ -5,6 +5,7 @@ import { page, test, expect, run, getServerUrl, autoRetry, fetchHtml } from '@br
 import * as fs from 'fs'
 import * as cp from 'child_process'
 import * as path from 'path'
+import * as os from 'os'
 import { fileURLToPath } from 'url'
 //@ts-ignore
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -13,19 +14,21 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
   if (cmd === 'npm run dev') {
     run(cmd)
   } else {
+    const tmpDir = os.tmpdir()
+    const tmpTestDir = path.join(tmpDir, `vite-tmp-${Date.now()}`)
     process.once('exit', (code) => {
-      fs.rmSync(path.join(__dirname, 'folder1'), { recursive: true, force: true })
+      fs.rmSync(tmpTestDir, { recursive: true, force: true })
       process.exit(code)
     })
     cp.execSync('npm run build', { cwd: __dirname })
+    fs.mkdirSync(tmpTestDir)
+    fs.cpSync(path.join(__dirname, 'dist'), tmpTestDir, { recursive: true })
 
-    // This will surely break the relative symlinks that point outside of dist(there shouldn't be any)
-    const testDistPath = path.join(__dirname, 'folder1/folder2/folder3/folder4/folder5/folder6/folder7/dist/')
-
-    fs.mkdirSync(testDistPath, { recursive: true })
-    fs.cpSync(path.join(__dirname, 'dist/'), testDistPath, { recursive: true })
-
-    run('npm run test-standalone')
+    // run(`cd ${tmpTestDir} && node dist/server/index.mjs`, {
+    //   env: {
+    //     NODE_ENV: 'production'
+    //   }
+    // })
   }
 
   test('HTML', async () => {
