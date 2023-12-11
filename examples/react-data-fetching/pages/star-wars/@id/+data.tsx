@@ -4,8 +4,7 @@ export type { Data }
 
 import fetch from 'node-fetch'
 import { filterMovieData } from '../filterMovieData'
-// Note(brillout): is there a way to use DataAsync instead of PageContextServer ?
-import type { DataAsync, PageContextServer } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 import type { MovieDetails } from '../types'
 import { render } from 'vike/abort'
 import React from 'react'

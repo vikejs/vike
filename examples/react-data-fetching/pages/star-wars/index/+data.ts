@@ -2,8 +2,7 @@
 export { data }
 export type { Data }
 
-// Note(brillout): is there a way to use DataAsync instead of PageContextServer ?
-import type { DataAsync, PageContextServer } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
 
 type Data = Awaited<ReturnType<typeof data>>
