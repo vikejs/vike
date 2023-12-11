@@ -107,6 +107,8 @@
       "types": "./dist/esm/node/runtime/page-files/setup.d.ts"
     },
     "./__internal/loadImportBuild": {
+      "worker": "./dist/esm/node/runtime/globalContext/loadImportBuild.js",
+      "edge-light": "./dist/esm/node/runtime/globalContext/loadImportBuild.js",
       "require": "./dist/cjs/node/runtime/globalContext/loadImportBuild.js",
       "node": "./dist/esm/node/runtime/globalContext/loadImportBuild.js",
       "types": "./dist/esm/node/runtime/globalContext/loadImportBuild.d.ts"
