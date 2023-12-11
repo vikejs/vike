@@ -42,8 +42,10 @@ function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
     `  const { setImportBuildGetters } = await import('${filePathRelative}');`,
     '  setImportBuildGetters({',
     `    pageFiles: () => import('./${pageFilesEntry}'),`,
-    "    clientManifest: () => require('../assets.json'),",
+    // TODO: rename clientManifest -> assetManifest
+    // TODO: rename PluginManifest -> vikeManifest
     // TODO: use virtual file instead of generating vike.json
+    "    clientManifest: () => require('../assets.json'),",
     "    pluginManifest: () => require('../client/vike.json'),",
     '  });',
     '})()',
