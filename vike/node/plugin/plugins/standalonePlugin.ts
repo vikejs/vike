@@ -1,6 +1,5 @@
 export { standalonePlugin }
 
-import { existsSync } from 'fs'
 import fs from 'fs/promises'
 import { builtinModules } from 'module'
 import path from 'path'
@@ -11,6 +10,8 @@ import { nativeDependecies } from '../shared/nativeDependencies.js'
 function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let root = ''
   let outDir = ''
+  let outDirAbs = ''
+  let builtEntryAbs = ''
 
   const external = [...nativeDependecies, ...builtinModules, ...builtinModules.map((m) => `node:${m}`)]
   const noExternalRegex = new RegExp(`^(?!(${external.join('|')})$)`)
@@ -37,11 +38,13 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
     configResolved(config) {
       root = config.root
       outDir = config.build.outDir
+      outDirAbs = path.join(root, outDir)
     },
 
     renderChunk(code, chunk) {
       if (chunk.facadeModuleId === path.join(root, serverEntry)) {
         code = "import './importBuild.cjs'\n" + code
+        builtEntryAbs = path.join(outDirAbs, chunk.fileName)
       }
       let needsRequire = true
       let needsFilename = true
@@ -69,13 +72,11 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
     },
 
     async closeBundle() {
-      const outDirAbs = path.join(root, outDir)
       const workspaceRoot = searchForWorkspaceRoot(root)
       const relativeRoot = path.relative(workspaceRoot, root)
       const relativeDistDir = path.relative(workspaceRoot, outDir.split('/')[0]!)
-      const builtEntry = serverEntry.split('/').pop()!.split('.')[0] + '.mjs'
       const { nodeFileTrace } = await import('@vercel/nft')
-      const result = await nodeFileTrace([builtEntry], {
+      const result = await nodeFileTrace([builtEntryAbs], {
         base: workspaceRoot,
         processCwd: workspaceRoot
       })

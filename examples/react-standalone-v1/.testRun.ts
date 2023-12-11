@@ -2,8 +2,31 @@ export { testRun }
 
 import { page, test, expect, run, getServerUrl, autoRetry, fetchHtml } from '@brillout/test-e2e'
 
+import * as fs from 'fs'
+import * as cp from 'child_process'
+import * as path from 'path'
+import { fileURLToPath } from 'url'
+//@ts-ignore
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
 function testRun(cmd: 'npm run dev' | 'npm run prod') {
-  run(cmd)
+  if (cmd === 'npm run dev') {
+    run(cmd)
+  } else {
+    process.once('exit', (code) => {
+      fs.rmSync(path.join(__dirname, 'folder1'), { recursive: true, force: true })
+      process.exit(code)
+    })
+    cp.execSync('npm run build', { cwd: __dirname })
+
+    // This will surely break the relative symlinks that point outside of dist(there shouldn't be any)
+    const testDistPath = path.join(__dirname, 'folder1/folder2/folder3/folder4/folder5/folder6/folder7/dist/')
+
+    fs.mkdirSync(testDistPath, { recursive: true })
+    fs.cpSync(path.join(__dirname, 'dist/'), testDistPath, { recursive: true })
+
+    run('npm run test-standalone')
+  }
 
   test('HTML', async () => {
     const html = await fetchHtml('/')
