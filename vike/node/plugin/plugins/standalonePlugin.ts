@@ -16,9 +16,9 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let outDir = ''
   let outDirAbs = ''
   let builtEntryAbs = ''
+
   const platform = os.platform()
   const external = [...nativeDependecies, ...builtinModules, ...builtinModules.map((m) => `node:${m}`)]
-  const noExternalRegex = new RegExp(`^(?!(${external.join('|')})$)`)
 
   return {
     name: 'vike:standalone',
@@ -30,8 +30,6 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
     config(config, env) {
       return {
         ssr: {
-          // external,
-          // Do we bundle this with rollup or esbuild??
           // esbuild warning:
           // noExternal: [noExternalRegex]
           //   ▲ [WARNING] Ignoring this import because "../../node_modules/.pnpm/@brillout+picocolors@1.0.10/node_modules/@brillout/picocolors/picocolors.js" was marked as having no side effects [ignored-bare-import]
@@ -57,6 +55,11 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       outDir = config.build.outDir
       distDir = outDir.split('/')[0]!
       outDirAbs = path.posix.join(root, outDir)
+      if (config.ssr.external) {
+        for (const id of config.ssr.external) {
+          external.push(id)
+        }
+      }
     },
 
     renderChunk(code, chunk) {
@@ -72,10 +75,12 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         platform: 'node',
         format: 'esm',
         bundle: true,
+        // These will be copied using nft
+        external,
         entryPoints: { index: builtEntryAbs },
-        external: [...nativeDependecies],
         outfile: builtEntryAbs,
         allowOverwrite: true,
+        metafile: true,
         banner: {
           js: [
             "import { dirname as dirname987 } from 'path';",
@@ -85,8 +90,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
             'var __filename = fileURLToPath987(import.meta.url);',
             'var __dirname = dirname987(__filename);'
           ].join('\n')
-        },
-        metafile: true
+        }
       })
 
       // The bundled files are safe to remove
@@ -141,7 +145,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
             /////////////////////////////////
             // This is to support pnpm monorepo
             let segments = 0
-            if (relativeFile.startsWith(`${relativeRoot}/`) && !relativeFile.startsWith(relativeDistDir)) {
+            if (relativeFile?.startsWith(`${relativeRoot}/`) && !relativeFile.startsWith(relativeDistDir)) {
               segments = `${relativeRoot}/`.match(/\//g)?.length ?? 0
               relativeFile = relativeFile.replace(`${relativeRoot}/`, '')
             }
@@ -159,7 +163,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
               // This is to convert the absolute symlink to relative on Windows
               if (platform === 'win32' && symlink) {
                 symlink = symlink.replace(/\\/g, '/')
-                symlink = path.posix.relative(tracedFilePath + '/', symlink).replace('../', '')
+                symlink = path.posix.relative(`${tracedFilePath}/`, symlink).replace('../', '')
               }
               /////////////////////////////////
 
