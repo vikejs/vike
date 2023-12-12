@@ -88,6 +88,11 @@ async function renderPage<
   // Partial because rendering may fail at any user hook. Also Partial when httpResponse !== null because .pageContext.json requests may fail while still returning the HTTP response `JSON.stringify({ serverSideError: true })`.
   PageContextInit & { httpResponse: HttpResponse | null } & Partial<PageContextBuiltInServer & PageContextUserAdded>
 > {
+  //TODO: find a better solution for the logs to show in dev
+  if (process.env.__VIKE__DEV_SERVER) {
+    await import('../plugin/shared/loggerNotProd.js')
+  }
+
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string'))
   assertEnv()

@@ -77,6 +77,8 @@ async function devServerPlugin({ onServerHotUpdate }: { onServerHotUpdate: () =>
     },
     configureServer(server) {
       viteServer = server
+      //TODO: find a better solution for the logs to show in dev
+      process.env.__VIKE__DEV_SERVER = 'true'
       nextTick(async () => {
         const originalCreateServer = http.createServer.bind(http.createServer)
 
