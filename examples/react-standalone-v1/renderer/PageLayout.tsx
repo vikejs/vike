@@ -1,9 +1,9 @@
 export { PageLayout }
 
-import React from 'react'
+import React, { ReactNode } from 'react'
 import './PageLayout.css'
 
-function PageLayout({ children }) {
+function PageLayout({ children }: { children: ReactNode }) {
   return (
     <React.StrictMode>
       <Layout>
@@ -27,7 +27,7 @@ function PageLayout({ children }) {
   )
 }
 
-function Layout({ children }) {
+function Layout({ children }: { children: ReactNode }) {
   return (
     <div
       style={{
@@ -41,7 +41,7 @@ function Layout({ children }) {
   )
 }
 
-function Sidebar({ children }) {
+function Sidebar({ children }: { children: ReactNode }) {
   return (
     <div
       style={{
@@ -59,7 +59,7 @@ function Sidebar({ children }) {
   )
 }
 
-function Content({ children }) {
+function Content({ children }: { children: ReactNode }) {
   return (
     <div
       style={{

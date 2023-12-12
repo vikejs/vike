@@ -5,8 +5,9 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { PageLayout } from './PageLayout'
+import type { PageContextServer } from 'vike/types'
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   const { Page, pageProps } = pageContext
   const page = (
     <PageLayout>

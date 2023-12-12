@@ -32,7 +32,19 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         ssr: {
           // external,
           // Do we bundle this with rollup or esbuild??
+          // esbuild warning:
           // noExternal: [noExternalRegex]
+          //   ▲ [WARNING] Ignoring this import because "../../node_modules/.pnpm/@brillout+picocolors@1.0.10/node_modules/@brillout/picocolors/picocolors.js" was marked as having no side effects [ignored-bare-import]
+
+          //   dist/server/entries/pages_about.mjs:6:7:
+          //     6 │ import "@brillout/picocolors";
+          //       ╵        ~~~~~~~~~~~~~~~~~~~~~~
+
+          // "sideEffects" is false in the enclosing "package.json" file:
+
+          //   ../../node_modules/@brillout/picocolors/package.json:10:2:
+          //     10 │   "sideEffects": false,
+          noExternal: ['@brillout/picocolors']
         },
         vitePluginImportBuild: {
           _disableAutoImporter: true
