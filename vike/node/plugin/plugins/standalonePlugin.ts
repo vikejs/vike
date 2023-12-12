@@ -43,9 +43,6 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
           //   ../../node_modules/@brillout/picocolors/package.json:10:2:
           //     10 │   "sideEffects": false,
           noExternal: ['@brillout/picocolors']
-        },
-        vitePluginImportBuild: {
-          _disableAutoImporter: true
         }
       }
     },
@@ -64,7 +61,6 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
 
     renderChunk(code, chunk) {
       if (chunk.facadeModuleId === path.posix.join(root, serverEntry)) {
-        code = "import './importBuild.cjs'\n" + code
         builtEntryAbs = path.posix.join(outDirAbs, chunk.fileName)
       }
       return code

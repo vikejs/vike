@@ -4,6 +4,7 @@ import type { Plugin } from 'vite'
 import type { ConfigVikeUserProvided } from '../../../shared/ConfigVike.js'
 import { getGlobalObject } from '../utils.js'
 import { standalonePlugin } from './standalonePlugin.js'
+import path from 'path'
 
 const globalObject = getGlobalObject('serverEntryPlugin.ts', {
   serverEntry: ''
@@ -19,6 +20,7 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
     return []
   }
   globalObject.serverEntry = serverEntry
+  let root = ''
 
   const serverEntryProdPlugin = (): Plugin => {
     return {
@@ -34,8 +36,20 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
             rollupOptions: {
               input: { index: serverEntry }
             }
+          },
+          vitePluginImportBuild: {
+            _disableAutoImporter: true
           }
         }
+      },
+      configResolved(config) {
+        root = config.root
+      },
+      renderChunk(code, chunk) {
+        if (chunk.facadeModuleId === path.posix.join(root, serverEntry)) {
+          code = "import './importBuild.cjs'\n" + code
+        }
+        return code
       }
     }
   }
