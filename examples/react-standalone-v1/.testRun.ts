@@ -2,35 +2,8 @@ export { testRun }
 
 import { page, test, expect, run, getServerUrl, autoRetry, fetchHtml } from '@brillout/test-e2e'
 
-import * as fs from 'fs'
-import * as cp from 'child_process'
-import * as path from 'path'
-import * as os from 'os'
-import { fileURLToPath } from 'url'
-//@ts-ignore
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
 function testRun(cmd: 'npm run dev' | 'npm run prod') {
-  if (cmd === 'npm run dev') {
-    run(cmd)
-  } else {
-    run(cmd)
-    // const tmpDir = os.tmpdir()
-    // const tmpTestDir = path.join(tmpDir, `vite-tmp-${Date.now()}`)
-    // process.once('exit', (code) => {
-    //   fs.rmSync(tmpTestDir, { recursive: true, force: true })
-    //   process.exit(code)
-    // })
-    // cp.execSync('npm run build', { cwd: __dirname })
-    // fs.mkdirSync(tmpTestDir)
-    // fs.cpSync(path.join(__dirname, 'dist'), tmpTestDir, { recursive: true })
-
-    // run(`cd ${tmpTestDir} && node dist/server/index.mjs`, {
-    //   env: {
-    //     NODE_ENV: 'production'
-    //   }
-    // })
-  }
+  run(cmd)
 
   test('HTML', async () => {
     const html = await fetchHtml('/')
