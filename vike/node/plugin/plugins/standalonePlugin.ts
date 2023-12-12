@@ -77,13 +77,14 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         outfile: builtEntryAbs,
         allowOverwrite: true,
         banner: {
-          js: `
-          import { dirname as dirname987 } from 'path';
-          import { fileURLToPath as fileURLToPath987 } from 'url';
-          import { createRequire as createRequire987 } from 'module';
-          var require = createRequire987(import.meta.url);
-          var __filename = fileURLToPath987(import.meta.url);
-          var __dirname = dirname987(__filename);`
+          js: [
+            "import { dirname as dirname987 } from 'path';",
+            "import { fileURLToPath as fileURLToPath987 } from 'url';",
+            "import { createRequire as createRequire987 } from 'module';",
+            'var require = createRequire987(import.meta.url);',
+            'var __filename = fileURLToPath987(import.meta.url);',
+            'var __dirname = dirname987(__filename);'
+          ].join('\n')
         },
         metafile: true
       })
