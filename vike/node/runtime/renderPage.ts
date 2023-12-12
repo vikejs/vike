@@ -89,7 +89,7 @@ async function renderPage<
   PageContextInit & { httpResponse: HttpResponse | null } & Partial<PageContextBuiltInServer & PageContextUserAdded>
 > {
   //TODO: find a better solution for the logs to show in dev
-  if (process.env.__VIKE__DEV_SERVER) {
+  if (typeof process !== 'undefined' && process.env.__VIKE__DEV_SERVER) {
     await import('../plugin/shared/loggerNotProd.js')
   }
 
