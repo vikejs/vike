@@ -14,15 +14,16 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
   if (cmd === 'npm run dev') {
     run(cmd)
   } else {
-    const tmpDir = os.tmpdir()
-    const tmpTestDir = path.join(tmpDir, `vite-tmp-${Date.now()}`)
-    process.once('exit', (code) => {
-      fs.rmSync(tmpTestDir, { recursive: true, force: true })
-      process.exit(code)
-    })
-    cp.execSync('npm run build', { cwd: __dirname })
-    fs.mkdirSync(tmpTestDir)
-    fs.cpSync(path.join(__dirname, 'dist'), tmpTestDir, { recursive: true })
+    run(cmd)
+    // const tmpDir = os.tmpdir()
+    // const tmpTestDir = path.join(tmpDir, `vite-tmp-${Date.now()}`)
+    // process.once('exit', (code) => {
+    //   fs.rmSync(tmpTestDir, { recursive: true, force: true })
+    //   process.exit(code)
+    // })
+    // cp.execSync('npm run build', { cwd: __dirname })
+    // fs.mkdirSync(tmpTestDir)
+    // fs.cpSync(path.join(__dirname, 'dist'), tmpTestDir, { recursive: true })
 
     // run(`cd ${tmpTestDir} && node dist/server/index.mjs`, {
     //   env: {

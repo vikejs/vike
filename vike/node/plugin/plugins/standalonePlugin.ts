@@ -2,6 +2,7 @@ export { standalonePlugin }
 
 import fs from 'fs/promises'
 import { builtinModules } from 'module'
+import os from 'os'
 import path from 'path'
 import { Plugin, searchForWorkspaceRoot } from 'vite'
 import { pLimit } from '../../../utils/pLimit.js'
@@ -12,7 +13,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let outDir = ''
   let outDirAbs = ''
   let builtEntryAbs = ''
-
+  const platform = os.platform()
   const external = [...nativeDependecies, ...builtinModules, ...builtinModules.map((m) => `node:${m}`)]
   const noExternalRegex = new RegExp(`^(?!(${external.join('|')})$)`)
 
@@ -38,13 +39,13 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
     configResolved(config) {
       root = config.root
       outDir = config.build.outDir
-      outDirAbs = path.join(root, outDir)
+      outDirAbs = path.posix.join(root, outDir)
     },
 
     renderChunk(code, chunk) {
-      if (chunk.facadeModuleId === path.join(root, serverEntry)) {
+      if (chunk.facadeModuleId === path.posix.join(root, serverEntry)) {
         code = "import './importBuild.cjs'\n" + code
-        builtEntryAbs = path.join(outDirAbs, chunk.fileName)
+        builtEntryAbs = path.posix.join(outDirAbs, chunk.fileName)
       }
       let needsRequire = true
       let needsFilename = true
@@ -72,9 +73,10 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
     },
 
     async closeBundle() {
-      const workspaceRoot = searchForWorkspaceRoot(root)
-      const relativeRoot = path.relative(workspaceRoot, root)
-      const relativeDistDir = path.relative(workspaceRoot, outDir.split('/')[0]!)
+      const workspaceRoot = path.posix.normalize(searchForWorkspaceRoot(root)).replace(/\\/g, '/')
+      const relativeRoot = path.relative(workspaceRoot, root).replace(/\\/g, '/')
+      const relativeDistDir = path.relative(workspaceRoot, outDir.split('/')[0]!).replace(/\\/g, '/')
+
       const { nodeFileTrace } = await import('@vercel/nft')
       const result = await nodeFileTrace([builtEntryAbs], {
         base: workspaceRoot,
@@ -97,36 +99,46 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       await Promise.all(
         files.map((relativeFile) =>
           concurrencyLimit(async () => {
-            const tracedFilePath = path.join(workspaceRoot, relativeFile)
+            const tracedFilePath = path.posix.join(workspaceRoot, relativeFile)
 
-            ///////////////////////////////////
+            /////////////////////////////////
             // This is to support pnpm monorepo
             let segments = 0
             if (relativeFile.startsWith(`${relativeRoot}/`) && !relativeFile.startsWith(relativeDistDir)) {
               segments = `${relativeRoot}/`.match(/\//g)?.length ?? 0
               relativeFile = relativeFile.replace(`${relativeRoot}/`, '')
             }
-            ///////////////////////////////////
+            /////////////////////////////////
 
-            const fileOutputPath = path.join(outDirAbs, relativeFile)
+            const fileOutputPath = path.posix.join(outDirAbs, relativeFile)
 
             if (!copiedFiles.has(fileOutputPath)) {
               copiedFiles.add(fileOutputPath)
 
-              await fs.mkdir(path.dirname(fileOutputPath), { recursive: true })
+              await fs.mkdir(path.posix.dirname(fileOutputPath), { recursive: true })
+
               let symlink = await fs.readlink(tracedFilePath).catch(() => null)
+              /////////////////////////////////
+              // This is to convert the absolute symlink to relative on Windows
+              if (platform === 'win32' && symlink) {
+                symlink = symlink.replace(/\\/g, '/')
+                symlink = path.posix.relative(tracedFilePath + '/', symlink).replace('../', '')
+              }
+              /////////////////////////////////
 
               if (symlink) {
-                ///////////////////////////////////
+                /////////////////////////////////
                 // This is to support pnpm monorepo
                 if (segments) {
                   const idx = symlink.split('/', segments).join('/').length + 1
                   symlink = symlink.substring(idx)
                 }
-                ///////////////////////////////////
+                /////////////////////////////////
 
                 try {
-                  await fs.symlink(symlink, fileOutputPath)
+                  const realPath = await fs.realpath(tracedFilePath)
+                  const isDir = (await fs.stat(realPath)).isDirectory()
+                  await fs.symlink(symlink, fileOutputPath, isDir ? 'dir' : 'file')
                 } catch (e: any) {
                   if (e.code !== 'EEXIST') {
                     throw e
