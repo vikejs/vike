@@ -93,12 +93,11 @@ async function devServerPlugin({ onServerHotUpdate }: { onServerHotUpdate: () =>
             })
           })
 
+          http.createServer = originalCreateServer
           return httpServer
         }
 
         await loadEntry()
-
-        http.createServer = originalCreateServer
       })
     },
     handleHotUpdate(ctx) {

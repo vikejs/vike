@@ -16,9 +16,6 @@
     "typescript": "^5.2.2",
     "vite": "^4.5.0",
     "vike": "0.4.150",
-    "vavite": "^3.0.0",
-    "@prisma/client": "^5.7.0",
-    "prisma": "^5.7.0",
     "sharp": "0.32.x",
     "@node-rs/argon2": "^1.5.2"
   },
