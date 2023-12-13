@@ -1,46 +1,46 @@
 import { ViteLogo } from './ViteLogo'
 
-### Fast HMR
+### 高速なHMR
 
-Blazing fast HMR powered by Vite <ViteLogo />.
+とても高速なHMR。powered by Vite <ViteLogo />
 
-HMR stays fast as you scale thanks to Vite's novel lazy-transpiling approach.
+HMRは、Viteの斬新なlazy-transpilingのおかげで、スケールを拡大しても高速を維持します。
 
-### Routing
+### ルーティング
 
-Pages are automatically routed:
+ページは自動的にルーティングされます：
 
 ```
-FILESYSTEM                   URL
+ファイル                      URL
 pages/index/+Page.js         /
 pages/about/+Page.js         /about
 pages/movie/@id/+Page.js     /movie/1, /movie/2, /movie/3, ...
 ```
 
-You can also use so-called *Route Strings* and *Route Functions*.
+いわゆる _Route Strings_ や _Route Functions_ も使えます。
 
 ```js
 // Route String
 export default '/movie/@id'
 
-// Route Function — for full flexibility
+// Route Function — より柔軟
 export default pageContext => pageContext.urlPathname === '/admin' && pageContext.isAdmin
 ```
 
-You can choose between:
+どちらかを選択可能：
 
-- Client Routing for a faster page navigation. (DOM mutation upon page navigation.)
-- Server Routing for a simpler app architecture. (Full HTML reload upon page navigation.)
+- より高速なページナビゲーションのためのクライアントルーティング。（ページナビゲーション時にDOMの変異が発生します。）
+- よりシンプルなアプリのアーキテクチャのためのサーバールーティング。（ページナビゲーション時にHTMLをフルリロード）
 
-### Render Modes (SSR, SPA, SSG, HTML-only)
+### レンダリングモード (SSR, SPA, SSG, HTML-only)
 
-For each page, you can choose between:
- - SSR: the page's HTML is rendered at request-time.
- - SSG: the page's HTML is pre-rendered at build-time.
- - SPA: the page isn't rendered to HTML; it's only loaded & rendered in the browser.
- - HTML-only: the page is rendered only to HTML with zero/minimal browser-side JavaScript.
+各ページで、以下のいずれかを選択できます：
 
-For example, you can render an admin panel as an SPA while rendering marketing pages only to HTML with zero browser-side JavaScript.
+- SSR: ページのHTMLはリクエスト時にレンダリングされます。
+- SSG: ページのHTMLはビルド時にプリレンダリングされます。
+- SPA: ページはHTMLにレンダリングされません。ブラウザで読み込まれ、レンダリングされるだけです。
+- HTML-only: ページはHTMLのみにレンダリングされ、ブラウザサイドのJavaScriptはゼロまたは最小限になります。
 
-This very website, `https://vike.dev`, is HTML-only and loads only few KBs of JavaScript (which implements the few bits of interactivity such as
-the collapsible `LEARN MORE` sections of this page).
+例えば、管理画面をSPAとしてレンダリングする一方で、マーケティングページをHTMLのみにレンダリングし、ブラウザ側のJavaScriptをゼロにすることができます。
+
+このウェブサイト`https://vike.dev`はHTMLのみで、数KBのJavaScript（このページの折りたたみ可能なLEARN MOREセクションなど、わずかなインタラクティブ機能を実装している）しか読み込んでいません。

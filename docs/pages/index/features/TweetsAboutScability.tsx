@@ -6,7 +6,7 @@ function TweetsAboutScability() {
   return (
     <>
       <div style={{ textAlign: 'center', fontSize: '0.9em', color: '#888', marginTop: 30 }}>
-        Large production apps are using Vite for its speed.
+        大規模なプロダクション・アプリケーションは、そのスピードのためにViteを使用しています。
       </div>
       <TweetRow tweetId1={'1398240747661533184'} tweetId2={'1392901819135795202'} />
       <TweetRow tweetId1={'1409983946201370626'} tweetId2={'1423324336845426691'} />

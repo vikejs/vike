@@ -1,33 +1,35 @@
-With Vike, you control how your pages are rendered:
+Vikeでは、ページのレンダリング方法をコントロールできます：
 
 ```jsx
 // /pages/about/+Page.js
-// Environment: browser and server
+// 環境：ブラウザとサーバー
 
 export { Page }
 
-// Vike uses Filesystem Routing: the file `/pages/about/+Page.js` matches the URL `/about`.
+// Vikeはファイルシステムルーティングを使用します。 ファイル`/pages/about/+Page.js` はURLの `/about`となります。
 
-// `Page` can be anything you want — typically a React/Vue/Svelte/... component.
+// `Page` 何にでもなることができます。 — 一般的にはReact/Vue/Svelte/... のコンポーネントになります。
 function Page() {
-  return <>
-    <h1>About</h1>
-    <p>This is our first Vike app.</p>
-  </>
+  return (
+    <>
+      <h1>About</h1>
+      <p>This is our first Vike app.</p>
+    </>
+  )
 }
 ```
 
 ```js
 // /renderer/+onRenderHtml.js
-// Environment: server
+// 環境：サーバー
 
 export { onRenderHtml }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-// This can be any UI framework (React, Vue, Svelte, ...)
+// これはどのようなUIフレームワークでも構いません。 (React, Vue, Svelte, ...)
 import { renderToHtml } from 'my-favorite-ui-framework'
 
-// You control how `Page` is rendered to HTML
+// `Page` がどのようにHTMLへレンダリングされるかコントロールできます。
 async function onRenderHtml({ Page }) {
   const pageHtml = await renderToHtml(Page)
   const title = 'My first Vike app'
@@ -45,16 +47,16 @@ async function onRenderHtml({ Page }) {
 
 ```js
 // /renderer/+onRenderClient.js
-// Environment: browser
+// 環境：ブラウザ
 
 export { onRenderClient }
 
 import { hydrateDom } from 'my-favorite-ui-framework'
 
-// You control how `Page` is hydrated
+// `Page`がどのようにハイドレートされるかコントロールできます。
 async function onRenderClient({ Page }) {
   await hydrateDom(Page)
 }
 ```
 
-This level of control means you can use and integrate any tool you want.
+このレベルのコントロールは、どのようなツールでも使用・統合できることを意味します。

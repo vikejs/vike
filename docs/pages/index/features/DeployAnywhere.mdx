@@ -2,17 +2,18 @@ import { Emoji } from '@brillout/docpress'
 import { PrerenderPreview } from './PrerenderPreview'
 import { JustAMiddleware } from '../../../components'
 
-### It's just a middleware
+### 単なるミドルウェア
 
 <JustAMiddleware />
 
-### Pre-rendering (aka SSG)
+### プリレンダリング (aka SSG)
 
-You can also pre-render your app to remove the need for a production Node.js server and deploy to any static host
-(Cloudflare Pages, GitHub Pages, Netlify, ...).
+アプリをプリレンダリングして本番のNode.jsサーバーを不要にし、任意の静的ホスト（Cloudflare Pages、GitHub Pages、Netlifyなど）にデプロイすることもできます。
 
 <PrerenderPreview />
 
-<h3>Cloudflare Workers + Vike = <Emoji name="red-heart" /></h3>
+<h3>
+  Cloudflare Workers + Vike = <Emoji name="red-heart" />
+</h3>
 
-Thanks to Vike's lean architecture, your app is much less limited by Cloudflare Workers' 1MB bundle size limit.
+Vikeの無駄のないアーキテクチャのおかげで、あなたのアプリはCloudflare Workersの1MBバンドルサイズ制限に制限されることが少なくなります。

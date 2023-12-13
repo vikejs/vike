@@ -27,7 +27,11 @@ function LeftSide() {
         <img src={iconVike} />
         <div>
           <h1>Vike</h1>
-          <p id="header-tagline">Next.js/Nuxtの様で、<br/>do-one-thing-and-do-it-wellなViteプラグイン</p>
+          <p id="header-tagline">
+            Next.js/Nuxtの様で、
+            <br />
+            一つのことをうまくやるViteプラグイン
+          </p>
         </div>
       </div>
     </div>
