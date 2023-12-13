@@ -2,7 +2,6 @@ export { standalonePlugin }
 
 import esbuild from 'esbuild'
 import fs from 'fs/promises'
-import { builtinModules } from 'module'
 import os from 'os'
 import path from 'path'
 import { Plugin, searchForWorkspaceRoot } from 'vite'
@@ -18,7 +17,6 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let builtEntryAbs = ''
 
   const platform = os.platform()
-  const external = [...nativeDependecies, ...builtinModules, ...builtinModules.map((m) => `node:${m}`)]
 
   return {
     name: 'vike:standalone',
@@ -52,11 +50,6 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       outDir = config.build.outDir
       distDir = outDir.split('/')[0]!
       outDirAbs = path.posix.join(root, outDir)
-      if (config.ssr.external) {
-        for (const id of config.ssr.external) {
-          external.push(id)
-        }
-      }
     },
 
     renderChunk(code, chunk) {
@@ -72,7 +65,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         format: 'esm',
         bundle: true,
         // These will be copied using nft
-        external,
+        external: nativeDependecies,
         entryPoints: { index: builtEntryAbs },
         outfile: builtEntryAbs,
         allowOverwrite: true,
@@ -103,16 +96,18 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         const absDir = path.posix.join(root, relativeDir)
         const files = await fs.readdir(absDir)
         if (!files.length) {
-          await fs.rm(absDir, { recursive: true, force: true })
+          await fs.rm(absDir, { recursive: true })
         }
       }
 
       //TODO: do we need this file?
-      await fs.rm(path.posix.join(outDirAbs, 'importBuild.mjs'))
+      try {
+        await fs.rm(path.posix.join(outDirAbs, 'importBuild.mjs'))
+      } catch (error) {}
 
-      const workspaceRoot = path.posix.normalize(searchForWorkspaceRoot(root)).replace(/\\/g, '/')
+      const workspaceRoot = searchForWorkspaceRoot(root).replace(/\\/g, '/')
       const relativeRoot = path.relative(workspaceRoot, root).replace(/\\/g, '/')
-      const relativeDistDir = path.relative(workspaceRoot, outDir.split('/')[0]!).replace(/\\/g, '/')
+      const relativeDistDir = path.relative(workspaceRoot, distDir).replace(/\\/g, '/')
 
       const { nodeFileTrace } = await import('@vercel/nft')
       const result = await nodeFileTrace([builtEntryAbs], {
@@ -173,8 +168,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
                 /////////////////////////////////
 
                 try {
-                  const realPath = await fs.realpath(tracedFilePath)
-                  const isDir = (await fs.stat(realPath)).isDirectory()
+                  const isDir = (await fs.stat(tracedFilePath)).isDirectory()
                   await fs.symlink(symlink, fileOutputPath, isDir ? 'dir' : 'file')
                 } catch (e: any) {
                   if (e.code !== 'EEXIST') {
