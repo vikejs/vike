@@ -147,10 +147,11 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
               }
 
               if (symlink) {
-                const symlinkPointsOutsideProjectRoot = relativeFile.startsWith(relativeRoot)
-                if (symlinkPointsOutsideProjectRoot) {
-                  // the link would point outside of the project root, into ../../../node_modules/.pnpm
-                  // the link needs to be changed, so it will point to ../node_modules/.pnpm
+                const maximumAllowedUpDirs = path.posix.relative(outDirAbs, fileOutputPath).split('/').length
+                const symlinkPointsOutsideDist = symlink.split("../").length -1 > maximumAllowedUpDirs;
+                if (symlinkPointsOutsideDist) {
+                  // the link would point outside of dist, into ../../../node_modules/.pnpm
+                  // the link needs to be changed, so it will point to ../node_modules/.pnpm, inside dist
                   // count the occurences of / from the monorepo base to the project root
                   let projectDepthInMonorepo = 0
                   if (commonAncestor) {
