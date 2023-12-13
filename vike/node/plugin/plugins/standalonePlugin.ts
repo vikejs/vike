@@ -7,7 +7,7 @@ import path from 'path'
 import { Plugin, searchForWorkspaceRoot } from 'vite'
 import { pLimit } from '../../../utils/pLimit.js'
 import { nativeDependecies } from '../shared/nativeDependencies.js'
-import { toPosixPath, unique } from '../utils.js'
+import { assert, toPosixPath, unique } from '../utils.js'
 
 function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let root = ''
@@ -118,50 +118,56 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         tracedDeps.add(toPosixPath(file))
       }
 
-      const files = [...tracedDeps].filter((path) => !path.startsWith(relativeDistDir))
+      const files = [...tracedDeps].filter((path) => !path.startsWith(relativeDistDir) && !path.startsWith('usr/'))
+      const commonAncestor = findCommonAncestor(files)
 
       const concurrencyLimit = pLimit(10)
       const copiedFiles = new Set<string>()
-
       await Promise.all(
         files.map((relativeFile) =>
           concurrencyLimit(async () => {
             const tracedFilePath = path.posix.join(base, relativeFile)
 
-            /////////////////////////////////
-            // This is to support pnpm monorepo
-            let segments = 0
-            if (relativeFile.startsWith(`${relativeRoot}/`) && !relativeFile.startsWith(relativeDistDir)) {
-              segments = `${relativeRoot}/`.match(/\//g)?.length ?? 0
-              relativeFile = relativeFile.replace(`${relativeRoot}/`, '')
-            }
-            /////////////////////////////////
-
-            const fileOutputPath = path.posix.join(outDirAbs, relativeFile)
+            const fileOutputPath = path.posix.join(
+              outDirAbs,
+              relativeFile.replace(relativeRoot, '').replace(commonAncestor, '')
+            )
+            const isMonorepoSymlink = relativeFile.startsWith(relativeRoot)
 
             if (!copiedFiles.has(fileOutputPath)) {
               copiedFiles.add(fileOutputPath)
-
               await fs.mkdir(path.posix.dirname(fileOutputPath), { recursive: true })
+              let symlink = await fs
+                .readlink(tracedFilePath)
+                .then(toPosixPath)
+                .catch(() => null)
 
-              let symlink = await fs.readlink(tracedFilePath).catch(() => null)
-              /////////////////////////////////
-              // This is to convert the absolute symlink(which pnpm creates) to relative on Windows
+              // Convert the absolute symlink(which pnpm creates) to relative on Windows
               if (platform === 'win32' && symlink) {
-                symlink = toPosixPath(symlink)
-                symlink = path.posix.relative(`${tracedFilePath}/`, symlink).replace('../', '')
+                symlink = path.posix.relative(tracedFilePath, symlink).replace('../', '')
               }
-              /////////////////////////////////
 
               if (symlink) {
-                /////////////////////////////////
-                // This is to support pnpm monorepo
-                if (segments) {
-                  const idx = symlink.split('/', segments).join('/').length + 1
-                  symlink = symlink.substring(idx)
-                }
-                /////////////////////////////////
+                if (isMonorepoSymlink) {
+                  // the link would point outside of the project root, into ../../../node_modules/.pnpm
+                  // the link needs to be changed, so it will point to ../node_modules/.pnpm
+                  // count the occurences of / from the monorepo base to the project root
+                  let projectDepthInMonorepo = 0
+                  if (commonAncestor) {
+                    projectDepthInMonorepo = relativeRoot.replace(`${commonAncestor}/`, '').split('/').length
+                  } else {
+                    projectDepthInMonorepo = relativeRoot.split('/').length
+                  }
+                  // for example ['../../../node_modules/.pnpm/sharp@0.32.6/node_modules/sharp'] will become
+                  //             ['../node_modules/.pnpm/sharp@0.32.6/node_modules/sharp']
+                  // remove [projectDepthInMonorepo times '../'] from the symlink
+                  for (let index = 0; index < projectDepthInMonorepo; index++) {
+                    symlink = symlink.substring(symlink.indexOf('/') + 1)
+                  }
 
+                  // another solution would be to just look for the first occurence of ['*./node_modules/.pnpm'] in the symlink,
+                  // and  replace it with ['.pnpm']
+                }
                 try {
                   const isDir = (await fs.stat(tracedFilePath)).isDirectory()
                   await fs.symlink(symlink, fileOutputPath, isDir ? 'dir' : 'file')
@@ -179,4 +185,28 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       )
     }
   }
+}
+function findCommonAncestor(paths: string[]) {
+  // Split each path into its components
+  const pathsComponents = paths.map((path) => path.split('/'))
+
+  let commonAncestor = ''
+  let index = 0
+
+  assert(pathsComponents.length)
+
+  // While there is a common component at the current index
+  while (pathsComponents.every((components) => components[index] === pathsComponents[0]![index])) {
+    // Add the common component to the common ancestor path
+    commonAncestor += pathsComponents[0]![index] + '/'
+    index++
+  }
+
+  // If no common ancestor was found, return an empty string
+  if (commonAncestor === '') {
+    return ''
+  }
+
+  // Otherwise, return the common ancestor path, removing the trailing slash
+  return commonAncestor.slice(0, -1)
 }
