@@ -44,21 +44,17 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         }
       }
     },
-
     configResolved(config) {
       root = toPosixPath(config.root)
       outDir = toPosixPath(config.build.outDir)
       distDir = outDir.split('/')[0]!
       outDirAbs = path.posix.join(root, outDir)
     },
-
     renderChunk(code, chunk) {
       if (chunk.facadeModuleId === path.posix.join(root, serverEntry)) {
         builtEntryAbs = path.posix.join(outDirAbs, chunk.fileName)
       }
-      return code
     },
-
     async closeBundle() {
       const res = await esbuild.build({
         platform: 'node',
