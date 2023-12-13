@@ -37,10 +37,7 @@ async function executeOnBeforeRenderAndDataHooks(
   }
 
   if (onBeforeRenderHook) {
-    const hookResult = await executeHook(
-      () => onBeforeRenderHook.hookFn(pageContext),
-      onBeforeRenderHook
-    )
+    const hookResult = await executeHook(() => onBeforeRenderHook.hookFn(pageContext), onBeforeRenderHook)
     assertOnBeforeRenderHookReturn(hookResult, onBeforeRenderHook.hookFilePath)
     const pageContextFromHook = hookResult?.pageContext
     Object.assign(pageContext, pageContextFromHook)

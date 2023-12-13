@@ -16,6 +16,8 @@ function IntegrationPackage() {
 
 function IntegrationPackageNames() {
   return (
-    <><code>vike-react</code>/<code>vike-vue</code>/<code>vike-solid</code></>
+    <>
+      <code>vike-react</code>/<code>vike-vue</code>/<code>vike-solid</code>
+    </>
   )
 }
