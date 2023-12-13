@@ -18,17 +18,17 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="wrench" /> Control
+              <Emoji name="wrench" /> コントロール
             </>
           ),
           desc: (
             <>
               <p>
-                Use <b>any UI framework</b> (React, Vue, Svelte, Solid, ...) and <b>any tool</b> you want (any frontend
-                library, web technology, deploy environment, Vite plugin, ...).
+                <b>お好みのUI framework</b> （React、 Vue、 Svelte、 Solid、 ...） と <b>お好みのツール</b>
+                （フロントエンドライブラリ、 web技術、 デプロイ環境、 Vite プラグイン、 ...）を使うことができます。
               </p>
               <p>
-                With Vike, you integrate tools manually and keep <b>architectural control</b>.
+                Vikeを使えば、手動でツールを統合し、<b>アーキテクチャをコントロール</b>し続けることができます。
               </p>
             </>
           ),
@@ -37,16 +37,16 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="package" /> Zero-config
+              <Emoji name="package" /> ゼロコンフィグ
             </>
           ),
           desc: (
             <>
               <p>
-                Vike gives you <b>control only where it matters</b>.
+                Vikeは<b>重要なところだけをコントロール</b>できます。
               </p>
               <p>
-                Everything else <b>just works</b> without the need to configure anything.
+                それ以外のすべては、何も設定することなく<b>機能します</b>。
               </p>
             </>
           )
@@ -54,54 +54,45 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="dizzy" /> Simple
+              <Emoji name="dizzy" /> シンプル
             </>
           ),
           desc: (
             <>
               <p>
-                With Vike you integrate tools manually; while it means more work, it gives you a{' '}
-                <b>fundamentally simpler & more stable foundation</b> to build upon.
+                Vikeでは、手動でツールを統合します。そのため作業は増えますが、
+                <b>根本的にはシンプルで安定した基盤を構築</b>することができます。
               </p>
               <p>
-                The clean cut between Vike and your UI framework (React/Vue/...) makes reasoning about your app easier.
+                VikeとあなたのUI framework （React/Vue/...）が混合されないことで、 アプリに関する推論が簡単になります。
               </p>
             </>
           ),
           learnMore: (
             <>
-              <h3>Less easy, but simpler</h3>
+              <h3>簡単ではないが、よりシンプル</h3>
+              <p>Vikeでは、自分でツールを統合します。これは通常、より多くの作業を意味し、簡単ではありません。</p>
               <p>
-                With Vike you integrate tools yourself. This usually means more work and it's less easy; getting started
-                is often slower.
+                しかし、Next.js/Nuxtのようなフレームワークのブラックボックス的な性質は制限的で、もろい回避策を必要とします。その結果、フレームワークと戦って時間を浪費することになります。
               </p>
               <p>
-                But the black box nature of frameworks like Next.js/Nuxt is limiting and requires brittle workarounds.
-                In the end, you waste time fighting the framework.
+                対照的に、Vikeは透明です。邪魔にならず、ツールの統合は単にツールの公式インストールガイドに従うだけで大丈夫です。
+              </p>
+              <p>一言で言えば、Vikeは簡単ではないが、よりシンプルです。</p>
+              <h3>安定した基盤</h3>
+              <p>
+                フレームワークは常にエコシステムに対応する必要がありますが、「1つのことをうまくやる」ツールはすぐに安定します。
               </p>
               <p>
-                In contrast, Vike is transparent: it gets out of your way and integrating tools is simply a matter of
-                following the tool's official installation guide.
+                実際、Vikeはすでに安定しています。変更を加えるのはVikeのデザインを改善するためだけで、統合は将来も機能し続けることが期待できます。
               </p>
-              <p>In a nutshell: Vike is less easy, but simpler.</p>
-              <h3>Stable foundation</h3>
+              <h3>クリーンカット</h3>
               <p>
-                Frameworks need to constantly keep up with the ecosystem, whereas do-one-thing-do-it-well tools can
-                quickly stabilize.
+                VikeとあなたのUIフレームワーク（React/Vue/...）は混同されません。これにより、アプリの推論がより簡単になります。
               </p>
+              <h3>楽しい</h3>
               <p>
-                Actually, Vike is already stable: breaking changes are only about improving the design of Vike which
-                means that you can expect your integrations to keep working in the future.
-              </p>
-              <h3>Clean cut</h3>
-              <p>
-                There is no conflation between Vike and your UI framework (React/Vue/...). This makes reasoning about
-                your app a lot easier.
-              </p>
-              <h3>Fun</h3>
-              <p>
-                Last but not least, manual integration is fun & insightful! (Whereas fighting a framework is unnecessary
-                & pesky.)
+                最後になりましたが、手作業での統合は楽しく、洞察に富んでいます！（フレームワークと戦うのは不要で厄介ですが）
               </p>
             </>
           )
@@ -109,21 +100,22 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="mechanical-arm" /> Full-fledged
+              <Emoji name="mechanical-arm" /> 本格的
             </>
           ),
           desc: (
             <>
               <p>
-                <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>Pre-rendering</b>, <b>Layouts</b>, <b>HMR</b>,{' '}
-                <b>i18n</b>, <b>Link Prefetching</b>, <b>HTML Streaming</b>.
+                <b>ファイルシステムルーティング</b>、<b>データフェッチ</b>、<b>プリレンダリング</b>、<b>レイアウト</b>、
+                <b>HMR</b>、<b>i18n</b>、<b>リンクプリフェッチ</b>、<b>HTMLストリーミング</b>。
               </p>
               <p>
-                <b>Client Routing</b> (fast page navigation) or <b>Server Routing</b> (simple architecture).
+                <b>クライアントルーティング</b> （高速なページナビゲーション） または<b>サーバールーティング</b>{' '}
+                （シンプルなアーキテクチャ）。
               </p>
               <p>
-                All render modes: <b>SSR</b>, <b>SPA</b>, <b>MPA</b>, <b>SSG</b>, <b>HTML-only</b>. Each page can use a
-                different mode.
+                各ページは<b>SSR</b>、<b>SPA</b>、<b>MPA</b>、<b>SSG</b>、<b>HTML-only</b>
+                の異なるモードでレンダリングできます。
               </p>
             </>
           ),
@@ -132,21 +124,21 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="earth" /> Deploy anywhere
+              <Emoji name="earth" /> どこにでもデプロイ
             </>
           ),
           desc: (
             <>
               <p>
-                <b>Deploy anywhere</b> (Vercel Serverless/Edge/ISR, Cloudflare Workers, AWS EC2/Lambda, Netlify
-                Functions/Edge, Firebase, Google Cloud, ...).
+                Vercel Serverless/Edge/ISR、Cloudflare Workers、AWS EC2/Lambda、Netlify Functions/Edge、Firebase、Google
+                Cloudなど、<b>どこにでもデプロイできます</b>。
               </p>
               <p>
-                Pre-render your app and deploy it to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare Pages,
-                ...).
+                アプリをプリレンダリングし、任意の静的ホスト（Netlify、GitHub Pages、Cloudflare
+                Pagesなど）にデプロイできます。
               </p>
               <p>
-                Fits <b>Cloudflare Workers</b>'s small worker size requirement like a glove.
+                <b>Cloudflare Workers</b>の小規模要件にぴったりです。
               </p>
             </>
           ),
@@ -155,14 +147,15 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="gem-stone" /> Rock-solid
+              <Emoji name="gem-stone" /> 非常に安定
             </>
           ),
           desc: (
             <>
               <p>
-                The source code of Vike has <b>no known bugs</b>, every release is assailed against a heavy suite of{' '}
-                <b>automated tests</b>, and it's <b>used in production</b> by many comp&shy;anies.
+                Vikeのソースコードには<b>既知のバグがなく</b>
+                、すべてのリリースは重厚な<b>自動テスト</b>群に照らし合わされており、<b>多くの企業で実運用</b>
+                されています。
               </p>
             </>
           )
@@ -170,18 +163,16 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="rocket" /> Scalable
+              <Emoji name="rocket" /> スケーラブル
             </>
           ),
           desc: (
             <>
               <p>
-                <b>DX that scales</b> to hundreds of kLOCs with HMR & development startup that stays fast. Powered by
-                Vite <ViteLogo />.
+                HMRで数百kLOCにスケールする<b>DX</b>と、高速を維持する開発スタートアップ。Powered by Vite <ViteLogo />
               </p>
               <p>
-                <b>Architectural flexibility that scales</b> from small hobby projects to large-scale enterprise
-                projects.
+                小さな趣味のプロジェクトから大規模な企業プロジェクトまで、<b>柔軟に対応できるアーキテクチャ。</b>
               </p>
             </>
           ),
@@ -189,31 +180,28 @@ function Features() {
             <>
               <h3>Lazy-transpiling</h3>
               <p>
-                One of Vite's foundational novelty is lazy-transpiled development: instead of transpiling your entire
-                codebase before starting developing, Vite transpiles only loaded code.
+                基本的な新しさのひとつは、lazy-transpilingの開発です。
+                開発を始める前にコードベース全体をトランスパイルする代わりに、Viteはロードされたコードだけをトランスパイルします。
               </p>
               <p>
-                For example, if you define 100 pages and then open a page in the browser, then only the code for that
-                one page is transpiled while the code for all other 99 pages is left untouched.
+                例えば、100ページを定義し、ブラウザでページを開くと、その1ページのコードだけがトランスパイルされ、他の99ページのコードはそのまま残されます。
               </p>
               <p>
-                Thanks to lazy-transpiling, you can scale to a (very) large codebase while keeping fast HMR &
-                development start.
+                lazy-transpilingのおかげで、高速なHMRと開発体験を維持しながら、（非常に）大規模なコードベースに拡張することができます。
               </p>
-              <h3>No black box</h3>
-              <p>At scale, Next.js/Nuxt's black-box nature become painfully limiting.</p>
-              <p>In contrast, Vike is transparent: you keep control over both the server- and browser-side.</p>
+              <h3>ブラックボックスなし</h3>
+              <p>規模が大きくなると、Next.js/Nuxtのブラックボックス的な性質は、痛いほど制限的になります。</p>
+              <p>対照的に、Vikeは透過的であり、サーバー側とブラウザ側の両方をコントロールし続けることができます。</p>
               <p>
-                As you scale, you usually need increasingly custom SSR integrations; Vike's flexibility accommodates
-                such needs.
+                規模が大きくなるにつれて、カスタムSSRの統合が必要になってきますが、Vikeの柔軟性はそのようなニーズにも対応します。
               </p>
               <h3>
                 Vite + SSR + Scale = <Emoji name="red-heart" />
               </h3>
               <p>
-                At (very) large scale, you can progressively replace Vike with Vite's native SSR API which is
-                lower-level and highly flexible. If you're Netflix and perfecting UX leads to a substantial revenue
-                increase, then Vike and Vite's native SSR API are what you are looking for.
+                （非常に）大規模な場合、VikeをViteのネイティブSSR
+                APIに徐々に置き換えていくことができます。もしあなたがNetflixで、UXを完璧にすることが大幅な収益増加につながるのであれば、VikeとViteのネイティブSSR
+                APIはあなたが探しているものです。
               </p>
               <TweetsAboutScability />
             </>
@@ -223,37 +211,35 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="high-voltage" /> Fast
+              <Emoji name="high-voltage" /> 高速
             </>
           ),
           desc: (
             <>
               <p>
-                State-of-the-art performance with <b>Code Splitting</b>, <b>Client-side Routing</b>,{' '}
-                <b>Link Prefetching</b>, and <b>Fast Production Cold Starts</b>.
+                <b>コード分割</b>、<b>クライアントルーティング</b>、<b>リンクプリフェッチ</b>、
+                <b>高速コールドスタート</b>による最先端のパフォーマンス。
               </p>
-              <p>Lighthouse Score: 100%.</p>
+              <p>Lighthouseスコア: 100%</p>
             </>
           ),
           isSecondaryFeature: true,
           learnMore: (
             <>
-              <h3>Code Splitting</h3>
+              <h3>コード分割</h3>
               <p>
-                The browser-side of each page loads only the code it needs, while sharing common chunks between pages
-                for optimal cacheability. Powered by Rollup <RollupLogo />.
+                各ページのブラウザ側では必要なコードのみをロードし、ページ間で共通のチャンクを共有することで最適なキャッシュを実現します。
+                Powered by Rollup <RollupLogo />
               </p>
-              <h3>Client Routing</h3>
+              <h3>クライアントルーティング</h3>
               <p>
-                Upon page navigation, instead of loading and rendering the next page on both the server-side and
-                browser-side, the next page is loaded & rendered only on the browser-side.
+                ページナビゲーション時に、サーバーサイドとブラウザサイドの両方で次のページをロードしてレンダリングするのではなく、ブラウザサイドのみで次のページをロードしてレンダリングします。
               </p>
-              <h3>Link Prefetching</h3>
-              <p>You can preload links for instantaneous page navigation.</p>
-              <h3>Fast Cold Starts</h3>
+              <h3>リンクプリフェッチ</h3>
+              <p>瞬時にページナビゲーションを行うために、リンクをプリロードすることができます。</p>
+              <h3>高速コールドスタート</h3>
               <p>
-                On the server-side, pages are also lazy-loaded: adding pages doesn't increase the cold start of your
-                (serverless) deployment.
+                サーバーサイドでは、ページも遅延ロードされる。ページを追加しても、（サーバーレスの）デプロイのコールドスタートが増えることはありません。
               </p>
             </>
           )
@@ -261,17 +247,16 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="sparkling-heart" /> Fun
+              <Emoji name="sparkling-heart" /> 楽しい
             </>
           ),
           desc: (
             <>
               <p>
-                Vike is simple, clear, and robust: no magic, no unexpected behavior, no conflation, no bugs (known in
-                Vike's source code).
+                Vikeはシンプルで明快、そしてロバスト。マジックも、予期せぬ動作も、コンフリクトも、（Vikeのソースコードで知られている）バグもない。
               </p>
               <p>
-                With Vike, <b>you are under control which is addictively fun</b>.
+                Vikeを使えば、<b>コントロールが効くので病みつきになる面白い。</b>
               </p>
             </>
           ),
@@ -280,18 +265,19 @@ function Features() {
         {
           title: (
             <>
-              <VikeLogo /> Build Your Own Framework
+              <VikeLogo /> 独自のフレームワークを構築
             </>
           ),
           desc: (
             <>
               <p>
-                Use Vike to <a href="https://vike.land/">Build Your Own Framework</a>. Hundreds of lines of code are
-                enough to build your own Next.js / Nuxt.
+                Vikeを使って<a href="https://vike.land/">独自のフレームワークを構築しよう。</a>数百行のコードでNext.js /
+                Nuxtを構築できます。
               </p>
               <p>
-                Build <b>internal company frameworks</b> to scale your teams, or <b>enhance your product</b> with a
-                bespoke framework to delight your users, or just <b>keep architectural control</b>.
+                <b>社内でフレームワークを構築</b>
+                してチームを拡張したり、特注のフレームワークで<b>製品を強化</b>
+                してユーザーを喜ばせたり、<b>アーキテクチャを管理</b>したりすることができます。
               </p>
             </>
           ),
@@ -300,19 +286,17 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="red-heart" /> Craftsmanship
+              <Emoji name="red-heart" /> クラフトマンシップ
             </>
           ),
           desc: (
             <>
               <p>
-                Crafted with <b>attention to details</b> and <b>care for simplicity</b>.
+                <b>ディテールにこだわり</b>、<b>シンプルであること</b>を大切にしています。
               </p>
+              <p>上流ではViteなどにコントリビュートしています。</p>
               <p>
-                <b>Upstream contributions</b> to Vite and others.
-              </p>
-              <p>
-                GitHub and Discord <b>conversations are welcome</b>.
+                GitHubやDiscordでの<b>会話を歓迎しています</b>
               </p>
             </>
           ),
@@ -321,14 +305,13 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="lab" /> Cutting Edge
+              <Emoji name="lab" /> 最先端
             </>
           ),
           desc: (
             <>
               <p>
-                We regularly participate in RFCs and we are usually <b>among the first to support the latest</b>{' '}
-                techniques.
+                私たちは定期的にRFCに参加しており、最新技術を<b>いち早くサポート</b>しています。
               </p>
             </>
           ),
