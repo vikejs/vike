@@ -132,7 +132,6 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
               outDirAbs,
               relativeFile.replace(relativeRoot, '').replace(commonAncestor, '')
             )
-            const isMonorepoSymlink = relativeFile.startsWith(relativeRoot)
 
             if (!copiedFiles.has(fileOutputPath)) {
               copiedFiles.add(fileOutputPath)
@@ -148,7 +147,8 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
               }
 
               if (symlink) {
-                if (isMonorepoSymlink) {
+                const symlinkPointsOutsideProjectRoot = relativeFile.startsWith(relativeRoot)
+                if (symlinkPointsOutsideProjectRoot) {
                   // the link would point outside of the project root, into ../../../node_modules/.pnpm
                   // the link needs to be changed, so it will point to ../node_modules/.pnpm
                   // count the occurences of / from the monorepo base to the project root
