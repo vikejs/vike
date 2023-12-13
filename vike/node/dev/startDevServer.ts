@@ -7,6 +7,6 @@ createServer({
       onServerHotUpdate() {
         process.exit(33)
       }
-    }),
+    })
   ]
 })
