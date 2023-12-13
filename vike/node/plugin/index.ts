@@ -11,7 +11,6 @@ import { buildConfig } from './plugins/buildConfig.js'
 import { previewConfig } from './plugins/previewConfig.js'
 import { autoFullBuild } from './plugins/autoFullBuild.js'
 import { devConfig } from './plugins/devConfig/index.js'
-import { manifest } from './plugins/manifest.js'
 import { packageJsonFile } from './plugins/packageJsonFile.js'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin.js'
 import { importUserCode } from './plugins/importUserCode/index.js'
@@ -41,7 +40,6 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     buildConfig(),
     previewConfig(),
     ...autoFullBuild(),
-    ...manifest(),
     packageJsonFile(),
     removeRequireHookPlugin(),
     distFileNames(),

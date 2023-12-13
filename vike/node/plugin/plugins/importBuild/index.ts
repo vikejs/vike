@@ -5,32 +5,39 @@ import { importBuild as importBuild_ } from '@brillout/vite-plugin-import-build/
 import { getOutDirs, projectInfo, toPosixPath } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
+import { getConfigVike } from '../../../shared/getConfigVike.js'
+import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
+import { getVikeManifest } from './getVikeManifest.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 
 function importBuild(): Plugin[] {
   let config: ResolvedConfig
+  let configVike: ConfigVikeResolved
   return [
     {
       name: 'vike:importBuild:config',
       enforce: 'post',
-      configResolved(config_) {
+      async configResolved(config_) {
         config = config_
+        configVike = await getConfigVike(config)
       }
     },
     importBuild_({
       getImporterCode: ({ findBuildEntry }) => {
         const pageFilesEntry = findBuildEntry('pageFiles')
-        return getImporterCode(config, pageFilesEntry)
+        return getImporterCode(pageFilesEntry, config, configVike)
       },
       libraryName: projectInfo.projectName
     })
   ]
 }
 
-function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
+function getImporterCode(pageFilesEntry: string, config: ResolvedConfig, configVike: ConfigVikeResolved) {
   const importPath = getImportPath(config)
+
+  const vikeManifest = getVikeManifest(config, configVike)
 
   // The only reason we went for using CJS require() instead of ESM import() is because import() doesn't support .json files
   const importerCode = [
@@ -39,10 +46,9 @@ function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
     '  setImportBuildGetters({',
     `    pageFiles: () => import('./${pageFilesEntry}'),`,
     // TODO: rename clientManifest -> assetManifest
-    // TODO: rename PluginManifest -> vikeManifest
-    // TODO: use virtual file instead of generating vike.json
     "    clientManifest: () => require('../assets.json'),",
-    "    pluginManifest: () => require('../client/vike.json'),",
+    // TODO: rename pluginManifest -> vikeManifest
+    `    pluginManifest: () => (${JSON.stringify(vikeManifest, null, 2)}),`,
     '  });',
     '})()',
     ''
