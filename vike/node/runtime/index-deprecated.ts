@@ -1,6 +1,14 @@
 // TODO/v1-release: replace this with:
 // assertUsage(false, "`import { something } from 'vike'` doesn't exist: instead import from 'vike/server', 'vike/client', 'vike/plugin', ...")
 
+import { isBrowser } from '../../utils/isBrowser.js'
+import { assertUsage } from '../../utils/assert.js'
+assertUsage(
+  !isBrowser(),
+  "It's forbidden to `import { something } from 'vike'` on the client-side: the module 'vike' is a server-only module.",
+  { showStackTrace: true }
+)
+
 export * from './index-common.js'
 export * from '../../types/index-dreprecated.js'
 
@@ -47,11 +55,4 @@ assertWarning(
     "Make sure to import renderPage(), escapeInject, html, dangerouslySkipEscape(), pipeWebStream(), pipeNodeStream(), pipeStream(), stampPipe() from 'vike/server'. (Or inspect the error stack below to find the import causing this warning.)"
   ].join('\n'),
   { showStackTrace: true, onlyOnce: true }
-)
-
-import { isBrowser, assertUsage } from './utils.js'
-assertUsage(
-  !isBrowser(),
-  "It's forbidden to `import { something } from 'vike'` in code loaded in the browser: the module 'vike' is a server-only module.",
-  { showStackTrace: true }
 )

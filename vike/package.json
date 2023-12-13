@@ -16,7 +16,7 @@
     "@brillout/json-serializer": "^0.5.8",
     "@brillout/picocolors": "^1.0.10",
     "@brillout/require-shim": "^0.1.2",
-    "@brillout/vite-plugin-import-build": "^0.2.20",
+    "@brillout/vite-plugin-import-build": "^0.2.22",
     "acorn": "^8.8.2",
     "cac": "^6.7.14",
     "es-module-lexer": "^1.3.0",
@@ -105,6 +105,13 @@
       "require": "./dist/cjs/node/runtime/page-files/setup.js",
       "node": "./dist/esm/node/runtime/page-files/setup.js",
       "types": "./dist/esm/node/runtime/page-files/setup.d.ts"
+    },
+    "./__internal/loadImportBuild": {
+      "worker": "./dist/esm/node/runtime/globalContext/loadImportBuild.js",
+      "edge-light": "./dist/esm/node/runtime/globalContext/loadImportBuild.js",
+      "require": "./dist/cjs/node/runtime/globalContext/loadImportBuild.js",
+      "node": "./dist/esm/node/runtime/globalContext/loadImportBuild.js",
+      "types": "./dist/esm/node/runtime/globalContext/loadImportBuild.d.ts"
     }
   },
   "peerDependencies": {

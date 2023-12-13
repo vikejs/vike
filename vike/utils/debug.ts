@@ -24,6 +24,7 @@ type Namespace =
   | 'vike:virtual-files'
   | 'vike:stem'
   | 'vike:stream'
+  | 'vike:outDir'
 type Debug = ReturnType<typeof createDebugger>
 
 type Options = {
@@ -35,26 +36,41 @@ type Options = {
 function createDebugger(namespace: Namespace, optionsGlobal?: Options) {
   checkType<`vike:${string}`>(namespace)
 
-  const debugWithOptions = (options: Options) => {
+  const debugWithOptions = (optionsLocal: Options) => {
     return (...msgs: unknown[]) => {
-      if (!isDebugEnabled(namespace)) return
-      let [msgFirst, ...msgsRest] = msgs
-      const padding = ' '.repeat(namespace.length + 1)
-      const optionsResolved = { ...optionsGlobal, ...options }
-      msgFirst = formatMsg(msgFirst, optionsResolved, padding, 'FIRST')
-      msgsRest = msgsRest.map((msg, i) => {
-        const position = i === msgsRest.length - 1 ? 'LAST' : 'MIDDLE'
-        return formatMsg(msg, optionsResolved, padding, position)
-      })
-      console.log('\x1b[1m%s\x1b[0m', namespace, msgFirst)
-      msgsRest.forEach((msg) => {
-        console.log(msg)
-      })
+      const options = { ...optionsGlobal, ...optionsLocal }
+      debug_(namespace, options, ...msgs)
     }
   }
   const debug = (...msgs: unknown[]) => debugWithOptions({})(...msgs)
   objectAssign(debug, { options: debugWithOptions, isEnabled: isDebugEnabled(namespace) })
   return debug
+}
+
+function debug_(namespace: Namespace, options: Options, ...msgs: unknown[]) {
+  if (!isDebugEnabled(namespace)) return
+  let [msgFirst, ...msgsRest] = msgs
+  const padding = ' '.repeat(namespace.length + 1)
+  msgFirst = formatMsg(msgFirst, options, padding, 'FIRST')
+  msgsRest = msgsRest.map((msg, i) => {
+    const position = i === msgsRest.length - 1 ? 'LAST' : 'MIDDLE'
+    return formatMsg(msg, options, padding, position)
+  })
+  let logFirst: unknown[]
+  let logsRest: unknown[]
+  const noNewLine =
+    msgsRest.length <= 1 && [msgFirst, ...msgsRest].every((m) => typeof m === 'string' && !m.includes('\n'))
+  if (noNewLine) {
+    logFirst = [msgFirst, ...msgsRest].map((m) => String(m).trim())
+    logsRest = []
+  } else {
+    logFirst = [msgFirst]
+    logsRest = msgsRest
+  }
+  console.log('\x1b[1m%s\x1b[0m', namespace, ...logFirst)
+  logsRest.forEach((msg) => {
+    console.log(msg)
+  })
 }
 
 function isDebugEnabled(namespace: Namespace): boolean {

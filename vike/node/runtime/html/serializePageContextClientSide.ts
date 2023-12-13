@@ -21,7 +21,8 @@ const PASS_TO_CLIENT: string[] = [
   '_abortCaller',
   */
   '_pageContextInitHasClientData',
-  '_pageId'
+  '_pageId',
+  'data' // for data() hook
 ]
 const PASS_TO_CLIENT_ERROR_PAGE = ['pageProps', 'is404', '_isError']
 

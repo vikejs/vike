@@ -20,9 +20,10 @@ declare global {
     /** Extend and/or refine the `PageContext` type (`import type { PageContext } from 'vike/types'`).
      *
      *  For example:
-     *  - You can define the type of fetched data, e.g. `PageContext['movies']`.
      *  - You can refine the type of `PageContext['Page']`.
+     *  - You can define the type of custom `pageContext` values such as `pageContext.user`, see https://vike.dev/pageContext#custom
      *
+     *  https://vike.dev/pageContext#typescript
      */
     interface PageContext {}
   }
@@ -38,7 +39,7 @@ declare global {
   namespace VikePackages {
     // Enable vike-{react/vue/solid/svelte} to extend the type `Config`.
     //  - We need a different interface for each vike-{react/vue/solid/svelte} package because of conflicts.
-    //    - E.g. Config['Page'] is a React/Vue/Solid/Svelte componenent depending on which vike-{react/vue/solid/svelte} package is being used.
+    //    - E.g. Config['Page'] is a React/Vue/Solid/Svelte component depending on which vike-{react/vue/solid/svelte} package is being used.
     //      - The user can be using more than one vike-{react/vue/solid/svelte} package.
     interface ConfigVikeReact {} // For vike-react
     interface ConfigVikeVue {} // For vike-vue

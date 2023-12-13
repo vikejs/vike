@@ -6,6 +6,7 @@ export { resolveRouteStringRedirect }
 import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
 import { isUriWithProtocol } from '../../utils/parseUrl-extras.js'
 import { assert, assertUsage } from '../utils.js'
+import { resolveUrlPathname } from './resolveUrlPathname.js'
 import { assertRouteString, resolveRouteString } from './resolveRouteString.js'
 import pc from '@brillout/picocolors'
 assertIsNotBrowser() // Don't bloat the client
@@ -37,16 +38,7 @@ function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPat
   assertParams(urlSource, urlTarget)
   const match = resolveRouteString(urlSource, urlPathname)
   if (!match) return null
-  let urlResolved = urlTarget
-  Object.entries(match.routeParams).forEach(([key, val]) => {
-    if (key !== '*') {
-      key = `@${key}`
-    }
-    urlResolved = urlResolved.replaceAll(key, val)
-  })
-  if (!urlResolved.startsWith('mailto:')) {
-    assertUsage(!urlResolved.includes('@'), 'URL should not contain "@" unless it is a mailto link.')
-  }
+  const urlResolved = resolveUrlPathname(urlTarget, match.routeParams)
   if (urlResolved === urlPathname) return null
   assert(urlResolved.startsWith('/') || isUriWithProtocol(urlResolved))
   return urlResolved

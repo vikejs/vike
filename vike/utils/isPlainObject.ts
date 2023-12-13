@@ -11,7 +11,7 @@ function isPlainObject(value: unknown): value is PlainObject {
     return true
   }
   return (
-    /* Doesn't work in Cloudlfare Pages workers
+    /* Doesn't work in Cloudflare Pages workers
     value.constructor === Object
     */
     value.constructor.name === 'Object'

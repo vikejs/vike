@@ -68,7 +68,7 @@ async function onRenderHtml(pageContext) {
 type InjectFilterEntry = {
   inject: false | 'HTML_BEGIN' | 'HTML_END' // Whether and where to inject
   src: string // Asset's URL
-  assetType: "image" | "script" | "font" | "style" | null
+  assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" | "fetch" | "track" | "worker" | "embed" | "object" | null
   mediaType: string // MIME type
   isEntry: boolean // true  ⇒ <script> or <link rel="stylesheet" type="text/css">
                    // false ⇒ preload tag, e.g. <link rel="preload" as="font">

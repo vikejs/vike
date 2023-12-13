@@ -478,7 +478,8 @@ const headings = [
   {
     level: 2,
     title: 'React',
-    url: '/react'
+    url: '/react',
+    sectionTitles: ['React Server Components']
   },
   {
     level: 2,

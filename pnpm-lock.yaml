@@ -242,8 +242,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.5.24
-        version: 0.5.24(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1)
+        specifier: ^0.5.25
+        version: 0.5.25(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1)
       '@types/node':
         specifier: ^15.12.1
         version: 15.14.9
@@ -1086,6 +1086,42 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^4.0.3
+        version: 4.5.0(@types/node@20.9.0)
+
+  examples/react-data-fetching:
+    dependencies:
+      '@types/node':
+        specifier: ^20.6.3
+        version: 20.9.0
+      '@types/node-fetch':
+        specifier: ^2.6.5
+        version: 2.6.9
+      '@types/react':
+        specifier: ^18.2.37
+        version: 18.2.37
+      '@types/react-dom':
+        specifier: ^18.2.15
+        version: 18.2.15
+      '@vitejs/plugin-react-swc':
+        specifier: ^3.3.2
+        version: 3.4.1(vite@4.5.0)
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vite:
+        specifier: ^4.4.9
         version: 4.5.0(@types/node@20.9.0)
 
   examples/react-full:
@@ -2048,8 +2084,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       '@brillout/vite-plugin-import-build':
-        specifier: ^0.2.20
-        version: 0.2.20
+        specifier: ^0.2.22
+        version: 0.2.22
       acorn:
         specifier: ^8.8.2
         version: 8.11.2
@@ -2564,8 +2600,8 @@ packages:
     requiresBuild: true
     dev: true
 
-  /@brillout/docpress@0.5.24(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1):
-    resolution: {integrity: sha512-b3x3MhqmbHc29ORY5tzOab0o+ETMoaL/6lyJEpdvIfYiZRAr1bCkrv282Jw2w//4CMfqHbFO09ExlE2hovrr6Q==}
+  /@brillout/docpress@0.5.25(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1):
+    resolution: {integrity: sha512-gyez+Q2vAmuKnmffsaknHTfpfDDTtNzleHSE7bPH096MOI5ycOls8vrSKIv+jPZnI9Jm59jilHlcDBS429NN1g==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -2715,6 +2751,12 @@ packages:
 
   /@brillout/vite-plugin-import-build@0.2.20:
     resolution: {integrity: sha512-/bdw1dg+H1nOYSy2PzYInQoZlIFP2uwyaF2GX64fyBqVAEWGopiMlnx294CbysjmP9Z+fJe48TkMzyogkyIDLw==}
+    dependencies:
+      '@brillout/import': 0.2.3
+    dev: false
+
+  /@brillout/vite-plugin-import-build@0.2.22:
+    resolution: {integrity: sha512-n5sv0HdCB5WC2QJSnTN6iS/F+sJsF0AmtsCCaQ+5+dRjgsoGGsa3auinJV8tuEog5WsX+3MF8RIwn3A/u0e04w==}
     dependencies:
       '@brillout/import': 0.2.3
     dev: false
