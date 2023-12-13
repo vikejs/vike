@@ -44,9 +44,8 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
       },
       renderChunk(code, chunk) {
         if (chunk.facadeModuleId === path.posix.join(root, serverEntry)) {
-          code = "import './importBuild.cjs'\n" + code
+          return "import './importBuild.cjs'\n" + code
         }
-        return code
       }
     }
   }
