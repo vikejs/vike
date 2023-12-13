@@ -1,21 +1,14 @@
-// This file isn't processed by Vite, see https://github.com/vikejs/vike/issues/562
-// Consequently:
-//  - When changing this file, you needed to manually restart your server for your changes to take effect.
-//  - To use your environment variables defined in your .env files, you need to install dotenv, see https://vike.dev/env
-//  - To use your path aliases defined in your vite.config.js, you need to tell Node.js about them, see https://vike.dev/path-aliases
-
 import express from 'express'
 import { renderPage } from 'vike/server'
 import { telefunc } from 'telefunc'
 import { root } from './root'
-const isProduction = process.env.NODE_ENV === 'production'
 
 startServer()
 
 async function startServer() {
   const app = express()
 
-  if (isProduction) {
+  if (import.meta.env.PROD) {
     app.use(express.static(`${root}/client`))
   }
 
