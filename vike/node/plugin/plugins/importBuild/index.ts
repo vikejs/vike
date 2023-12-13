@@ -11,7 +11,7 @@ import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { getVikeManifest } from './getVikeManifest.js'
 import fs from 'fs/promises'
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
+// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 type Bundle = Rollup.OutputBundle

@@ -7,7 +7,7 @@ import path from 'path'
 import { Plugin, searchForWorkspaceRoot } from 'vite'
 import { pLimit } from '../../../utils/pLimit.js'
 import { nativeDependecies } from '../shared/nativeDependencies.js'
-import { unique } from '../utils.js'
+import { toPosixPath, unique } from '../utils.js'
 
 function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let root = ''
@@ -46,8 +46,8 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
     },
 
     configResolved(config) {
-      root = config.root
-      outDir = config.build.outDir
+      root = toPosixPath(config.root)
+      outDir = toPosixPath(config.build.outDir)
       distDir = outDir.split('/')[0]!
       outDirAbs = path.posix.join(root, outDir)
     },
@@ -64,7 +64,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         platform: 'node',
         format: 'esm',
         bundle: true,
-        // These will be copied using nft
+        // Native dependencies can't be bundled, they will be discovered using nft, then copied
         external: nativeDependecies,
         entryPoints: { index: builtEntryAbs },
         outfile: builtEntryAbs,
@@ -82,7 +82,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         }
       })
 
-      // The bundled files are safe to remove
+      // The inputs of the bundled files are safe to remove
       const filesToRemove = Object.keys(res.metafile.inputs).filter(
         (relativeFile) => !builtEntryAbs.endsWith(relativeFile) && relativeFile.startsWith(distDir)
       )
@@ -90,7 +90,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         await fs.rm(path.posix.join(root, relativeFile))
       }
 
-      // Remove empty dirs of the removed bundled files
+      // Remove leftover empty dirs
       const relativeDirs = unique(filesToRemove.map((file) => path.dirname(file)))
       for (const relativeDir of relativeDirs) {
         const absDir = path.posix.join(root, relativeDir)
@@ -105,14 +105,13 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         await fs.rm(path.posix.join(outDirAbs, 'importBuild.mjs'))
       } catch (error) {}
 
-      const workspaceRoot = searchForWorkspaceRoot(root).replace(/\\/g, '/')
-      const relativeRoot = path.relative(workspaceRoot, root).replace(/\\/g, '/')
-      const relativeDistDir = path.relative(workspaceRoot, distDir).replace(/\\/g, '/')
+      const base = toPosixPath(searchForWorkspaceRoot(root))
+      const relativeRoot = path.posix.relative(base, root)
+      const relativeDistDir = path.posix.relative(base, distDir)
 
       const { nodeFileTrace } = await import('@vercel/nft')
       const result = await nodeFileTrace([builtEntryAbs], {
-        base: workspaceRoot,
-        processCwd: workspaceRoot
+        base
       })
 
       const tracedDeps = new Set<string>()
@@ -120,7 +119,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         if (result.reasons.get(file)?.type.includes('initial')) {
           continue
         }
-        tracedDeps.add(file.replace(/\\/g, '/'))
+        tracedDeps.add(toPosixPath(file))
       }
 
       const files = [...tracedDeps].filter((path) => !path.startsWith(relativeDistDir))
@@ -131,7 +130,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       await Promise.all(
         files.map((relativeFile) =>
           concurrencyLimit(async () => {
-            const tracedFilePath = path.posix.join(workspaceRoot, relativeFile)
+            const tracedFilePath = path.posix.join(base, relativeFile)
 
             /////////////////////////////////
             // This is to support pnpm monorepo
@@ -151,9 +150,9 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
 
               let symlink = await fs.readlink(tracedFilePath).catch(() => null)
               /////////////////////////////////
-              // This is to convert the absolute symlink to relative on Windows
+              // This is to convert the absolute symlink(which pnpm creates) to relative on Windows
               if (platform === 'win32' && symlink) {
-                symlink = symlink.replace(/\\/g, '/')
+                symlink = toPosixPath(symlink)
                 symlink = path.posix.relative(`${tracedFilePath}/`, symlink).replace('../', '')
               }
               /////////////////////////////////

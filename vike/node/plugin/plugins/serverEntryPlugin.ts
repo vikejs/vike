@@ -36,9 +36,6 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
             rollupOptions: {
               input: { index: serverEntry }
             }
-          },
-          vitePluginImportBuild: {
-            _disableAutoImporter: true
           }
         }
       },

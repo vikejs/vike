@@ -7,7 +7,7 @@
 import express from 'express'
 import { renderPage } from 'vike/server'
 import { telefunc } from 'telefunc'
-import { root } from './root.js'
+import { root } from './root'
 const isProduction = process.env.NODE_ENV === 'production'
 
 startServer()
