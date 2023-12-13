@@ -135,7 +135,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
             /////////////////////////////////
             // This is to support pnpm monorepo
             let segments = 0
-            if (relativeFile?.startsWith(`${relativeRoot}/`) && !relativeFile.startsWith(relativeDistDir)) {
+            if (relativeFile.startsWith(`${relativeRoot}/`) && !relativeFile.startsWith(relativeDistDir)) {
               segments = `${relativeRoot}/`.match(/\//g)?.length ?? 0
               relativeFile = relativeFile.replace(`${relativeRoot}/`, '')
             }

@@ -112,17 +112,13 @@ type ConfigVikeUserProvided = {
    */
   disableUrlNormalization?: boolean
 
-  /** Server entry.
+  /** Server entry path.
    *
-   *
-   *
-   * @default false
    */
   server?: string
 
-  /** Standalone build.
-   *
-   *
+  /** Enable standalone build.
+   *  Setting `server` is required. 
    *
    * @default false
    */
