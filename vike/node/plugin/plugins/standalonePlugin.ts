@@ -119,6 +119,12 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       }
 
       const files = [...tracedDeps].filter((path) => !path.startsWith(relativeDistDir) && !path.startsWith('usr/'))
+
+      // We are done, no native dependencies need to be copied
+      if (!files.length) {
+        return
+      }
+
       const commonAncestor = findCommonAncestor(files)
 
       const concurrencyLimit = pLimit(10)
@@ -148,7 +154,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
 
               if (symlink) {
                 const maximumAllowedUpDirs = path.posix.relative(outDirAbs, fileOutputPath).split('/').length
-                const symlinkPointsOutsideDist = symlink.split("../").length -1 > maximumAllowedUpDirs;
+                const symlinkPointsOutsideDist = symlink.split('../').length - 1 > maximumAllowedUpDirs
                 if (symlinkPointsOutsideDist) {
                   // the link would point outside of dist, into ../../../node_modules/.pnpm
                   // the link needs to be changed, so it will point to ../node_modules/.pnpm, inside dist
