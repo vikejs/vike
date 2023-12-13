@@ -29,7 +29,7 @@ import { createRequire } from 'module'
 import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
 import fs from 'fs/promises'
 import path from 'path'
-// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 
@@ -94,12 +94,13 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     'At least one page should be defined, see https://vike.dev/add'
   )
   if (viteIsSSR(config)) {
-    const serverEntries = analyzeServerEntries(pageConfigs)
+    const pageEntries = getPageEntries(pageConfigs)
     const entries = {
       pageFiles: virtualFileIdImportUserCodeServer, // TODO/next-major-release: rename to configFiles
       importBuild: resolve('dist/esm/node/importBuild.js'), // TODO/next-major-release: remove
       ...pageFileEntries,
-      ...serverEntries
+      // Ensure Rollup generates a bundle per page: https://github.com/vikejs/vike/issues/349#issuecomment-1166247275
+      ...pageEntries
     }
     return entries
   } else {
@@ -123,7 +124,14 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     return entries
   }
 }
-
+function getPageEntries(pageConfigs: PageConfigBuildTime[]) {
+  const pageEntries: Record<string, string> = {}
+  pageConfigs.forEach((pageConfig) => {
+    const { entryName, entryTarget } = getEntryFromPageConfig(pageConfig, false)
+    pageEntries[entryName] = entryTarget
+  })
+  return pageEntries
+}
 function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: ResolvedConfig) {
   let hasClientRouting = false
   let hasServerRouting = false
@@ -137,6 +145,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
       hasServerRouting = true
     }
     {
+      // Ensure Rollup generates a bundle per page: https://github.com/vikejs/vike/issues/349#issuecomment-1166247275
       const { entryName, entryTarget } = getEntryFromPageConfig(pageConfig, true)
       clientEntries[entryName] = entryTarget
     }
@@ -154,14 +163,6 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
   })
 
   return { hasClientRouting, hasServerRouting, clientEntries }
-}
-function analyzeServerEntries(pageConfigs: PageConfigBuildTime[]) {
-  const serverEntries: Record<string, string> = {}
-  pageConfigs.forEach((pageConfig) => {
-    const { entryName, entryTarget } = getEntryFromPageConfig(pageConfig, false)
-    serverEntries[entryName] = entryTarget
-  })
-  return serverEntries
 }
 
 // Ensure Rollup creates entries for each page file, see https://github.com/vikejs/vike/issues/350

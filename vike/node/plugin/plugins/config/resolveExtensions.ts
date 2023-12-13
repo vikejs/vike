@@ -16,7 +16,7 @@ import fs from 'fs'
 import { isValidFileType } from '../../../../shared/getPageFiles/fileTypes.js'
 import { createRequire } from 'module'
 import pc from '@brillout/picocolors'
-// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 

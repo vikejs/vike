@@ -18,7 +18,9 @@ describe('resolveRouteStringRedirect', () => {
     expect(resolveRouteStringRedirect('/@id', '/b/@id/@id', '/1')).toEqual('/b/1/1')
     expect(resolveRouteStringRedirect('/@a/@b', '/c', '/b')).toEqual(null)
     // https://github.com/vikejs/vike/issues/1347
-    expect(resolveRouteStringRedirect('/npm/*', 'https://cdn.jsdelivr.net/npm/*', '/npm/@my-team/my-package')).toEqual('https://cdn.jsdelivr.net/npm/@my-team/my-package')
+    expect(resolveRouteStringRedirect('/npm/*', 'https://cdn.jsdelivr.net/npm/*', '/npm/@my-team/my-package')).toEqual(
+      'https://cdn.jsdelivr.net/npm/@my-team/my-package'
+    )
     expect(resolveRouteStringRedirect('/@a', '/a/@a', '/@a')).toEqual('/a/@a')
     expect(resolveRouteStringRedirect('/@a/@b', '/a/@a/@b', '/@b/1')).toEqual('/a/@b/1')
   })

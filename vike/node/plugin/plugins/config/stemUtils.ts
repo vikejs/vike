@@ -15,7 +15,7 @@ import {
 } from '../../utils.js'
 import { import_ } from '@brillout/import'
 import { createRequire } from 'module'
-// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 
