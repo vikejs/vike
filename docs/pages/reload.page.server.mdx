@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 
 The `reload()` function enables you to reload the page. The difference with [`window.location.reload`](https://developer.mozilla.org/en-US/docs/Web/API/Location/reload) is that `reload()` is much faster as it uses Vike's <Link text="Client Router" href="/client-routing" />.
 
-> `navigate()` works only with <Link text="Client Routing" href="/client-routing" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.reload()` instead.
+> `reload()` works only with <Link text="Client Routing" href="/client-routing" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.reload()` instead.
 
 The most common use case for `reload()` is to refresh the page when an authentication cookie is updated, see <Link href="/auth" />.
 
