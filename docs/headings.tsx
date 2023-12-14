@@ -447,6 +447,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'NextUI',
+    url: '/nextui'
+  },
+  {
+    level: 2,
     title: 'Bootstrap',
     url: '/bootstrap'
   },
