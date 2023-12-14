@@ -50,7 +50,10 @@ cli
       return
     }
 
-    const scriptPath = 'node_modules/vike/dist/esm/node/dev/startDevServer.js'
+    // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+    const importMetaUrl: string = import.meta.url
+    const __dirname_ = path.dirname(fileURLToPath(importMetaUrl))
+    const scriptPath = path.join(__dirname_, '..', 'dev/startDevServer.js')
     function onRestart() {
       try {
         execSync(`node ${scriptPath}`, { stdio: 'inherit' })

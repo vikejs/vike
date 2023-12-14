@@ -147,14 +147,14 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
                 .then(toPosixPath)
                 .catch(() => null)
 
-              // Convert the absolute symlink(which pnpm creates) to relative on Windows
-              if (platform === 'win32' && symlink) {
-                symlink = path.posix.relative(tracedFilePath, symlink).replace('../', '')
-              }
-
               if (symlink) {
+                // Convert the absolute symlink(which pnpm creates) to relative on Windows
+                if (platform === 'win32' && /^\w:/.test(symlink)) {
+                  symlink = path.posix.relative(tracedFilePath, symlink).replace('../', '')
+                }
+
                 const maximumAllowedUpDirs = path.posix.relative(outDirAbs, fileOutputPath).split('/').length
-                const symlinkPointsOutsideDist = symlink.split('../').length - 1 > maximumAllowedUpDirs
+                let symlinkPointsOutsideDist = symlink.split('../').length - 1 > maximumAllowedUpDirs
                 if (symlinkPointsOutsideDist) {
                   // the link would point outside of dist, into ../../../node_modules/.pnpm
                   // the link needs to be changed, so it will point to ../node_modules/.pnpm, inside dist
@@ -172,8 +172,22 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
                     symlink = symlink.substring(symlink.indexOf('/') + 1)
                   }
 
-                  // another solution would be to just look for the first occurence of ['*./node_modules/.pnpm'] in the symlink,
-                  // and  replace it with ['.pnpm']
+                  symlinkPointsOutsideDist = symlink.split('../').length - 1 > maximumAllowedUpDirs
+
+                  assert(!symlinkPointsOutsideDist, {
+                    base,
+                    root,
+                    relativeRoot,
+                    relativeFile,
+                    outDirAbs,
+                    projectDepthInMonorepo,
+                    tracedFilePath,
+                    symlink,
+                    fileOutputPath
+                  })
+
+                  // another solution would be to just look for the first occurence of ['^../../{1-n}node_modules'] in the symlink,
+                  // and replace it with ['./']
                 }
                 try {
                   const isDir = (await fs.stat(tracedFilePath)).isDirectory()
@@ -194,13 +208,18 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   }
 }
 function findCommonAncestor(paths: string[]) {
+  // There is no common anchestor of 0 or 1 path
+  if (paths.length <= 1) {
+    return ''
+  }
+
   // Split each path into its components
   const pathsComponents = paths.map((path) => path.split('/'))
 
   let commonAncestor = ''
   let index = 0
 
-  assert(pathsComponents.length)
+  assert(pathsComponents.length, { paths })
 
   // While there is a common component at the current index
   while (pathsComponents.every((components) => components[index] === pathsComponents[0]![index])) {
