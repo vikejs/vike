@@ -160,20 +160,26 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
                 const maximumAllowedUpDirs = path.posix.relative(outDirAbs, fileOutputPath).split('/').length
                 let symlinkPointsOutsideDist = symlink.split('../').length - 1 > maximumAllowedUpDirs
                 if (symlinkPointsOutsideDist) {
-                  // the link would point outside of dist, into ../../../node_modules/.pnpm
-                  // the link needs to be changed, so it will point to ../node_modules/.pnpm, inside dist
-                  // count the occurences of / from the monorepo base to the project root
                   let projectDepthInMonorepo = 0
-                  if (commonAncestor) {
-                    projectDepthInMonorepo = relativeRoot.replace(`${commonAncestor}/`, '').split('/').length
+                  // First, try a reliable method to detect node_modules symlinks
+                  if (symlink.replaceAll('../', '').startsWith('node_modules')) {
+                    symlink = symlink.replaceAll('../', '').replace('node_modules', '.')
                   } else {
-                    projectDepthInMonorepo = relativeRoot.split('/').length
-                  }
-                  // for example ['../../../node_modules/.pnpm/sharp@0.32.6/node_modules/sharp'] will become
-                  //             ['../node_modules/.pnpm/sharp@0.32.6/node_modules/sharp']
-                  // remove [projectDepthInMonorepo times '../'] from the symlink
-                  for (let index = 0; index < projectDepthInMonorepo; index++) {
-                    symlink = symlink.substring(symlink.indexOf('/') + 1)
+                    // This is unlikely, but if the previous check didn't work out (symlink doesn't point to node_modules), try to guess the right path
+                    // the link would point outside of dist, into ../../../node_modules/.pnpm
+                    // the link needs to be changed, so it will point to ../node_modules/.pnpm, inside dist
+                    // count the occurences of / from the monorepo base to the project root
+                    if (commonAncestor) {
+                      projectDepthInMonorepo = relativeRoot.replace(`${commonAncestor}/`, '').split('/').length
+                    } else {
+                      projectDepthInMonorepo = relativeRoot.split('/').length
+                    }
+                    // for example ['../../../node_modules/.pnpm/sharp@0.32.6/node_modules/sharp'] will become
+                    //             ['../node_modules/.pnpm/sharp@0.32.6/node_modules/sharp']
+                    // remove [projectDepthInMonorepo times '../'] from the symlink
+                    for (let index = 0; index < projectDepthInMonorepo; index++) {
+                      symlink = symlink.substring(symlink.indexOf('/') + 1)
+                    }
                   }
 
                   symlinkPointsOutsideDist = symlink.split('../').length - 1 > maximumAllowedUpDirs
@@ -189,9 +195,6 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
                     symlink,
                     fileOutputPath
                   })
-
-                  // another solution would be to just look for the first occurence of ['^../../{1-n}node_modules'] in the symlink,
-                  // and replace it with ['./']
                 }
                 try {
                   const isDir = (await fs.stat(tracedFilePath)).isDirectory()
