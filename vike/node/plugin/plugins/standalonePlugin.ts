@@ -110,7 +110,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         base
       })
 
-      if (result.warnings) {
+      if (result.warnings.size) {
         if (isYarnPnP()) {
           assertUsage(false, 'Yarn PnP is not supported when using native dependencies.')
         } else {
