@@ -110,12 +110,8 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         base
       })
 
-      if (result.warnings.size) {
-        if (isYarnPnP()) {
-          assertUsage(false, 'Yarn PnP is not supported when using native dependencies.')
-        } else {
-          assert(false, { base, relativeRoot, relativeDistDir, result })
-        }
+      if (result.warnings.size && isYarnPnP()) {
+        assertUsage(false, 'Yarn PnP is not supported when using native dependencies.')
       }
 
       const tracedDeps = new Set<string>()
