@@ -7,7 +7,7 @@ import path from 'path'
 import { Plugin, searchForWorkspaceRoot } from 'vite'
 import { pLimit } from '../../../utils/pLimit.js'
 import { nativeDependecies } from '../shared/nativeDependencies.js'
-import { assert, toPosixPath, unique } from '../utils.js'
+import { assert, assertUsage, toPosixPath, unique } from '../utils.js'
 
 function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let root = ''
@@ -109,6 +109,14 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       const result = await nodeFileTrace([builtEntryAbs], {
         base
       })
+
+      if (result.warnings) {
+        if (isYarnPnP()) {
+          assertUsage(false, 'Yarn PnP is not supported when using native dependencies.')
+        } else {
+          assert(false, { base, relativeRoot, relativeDistDir, result })
+        }
+      }
 
       const tracedDeps = new Set<string>()
       for (const file of result.fileList) {
@@ -235,4 +243,13 @@ function findCommonAncestor(paths: string[]) {
 
   // Otherwise, return the common ancestor path, removing the trailing slash
   return commonAncestor.slice(0, -1)
+}
+
+function isYarnPnP(): boolean {
+  try {
+    require('pnpapi')
+    return true
+  } catch {
+    return false
+  }
 }
