@@ -11920,6 +11920,37 @@ packages:
       ts-morph: 19.0.0
     dev: false
 
+  /telefunc@0.1.66-commit-f4abc42(@babel/core@7.23.5)(react@18.2.0):
+    resolution: {integrity: sha512-g/mNLWb0VPXXWMk0QJsYmx75S0/vPMe6I0xw07IxtpiGEaDvkRAwCcx4TqHBWucL4ifHHOEL8B8FnR8Sw8OGLw==}
+    engines: {node: '>=12.19.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0
+      '@babel/parser': ^7.0.0
+      '@babel/types': ^7.0.0
+      react: ^18.0.0
+      react-streaming: ^0.3.3
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@babel/parser':
+        optional: true
+      '@babel/types':
+        optional: true
+      react:
+        optional: true
+      react-streaming:
+        optional: true
+    dependencies:
+      '@babel/core': 7.23.5
+      '@brillout/import': 0.2.3
+      '@brillout/json-serializer': 0.5.8
+      '@brillout/vite-plugin-import-build': 0.2.22-commit-7f1bb0a
+      es-module-lexer: 0.7.1
+      picocolors: 1.0.0
+      react: 18.2.0
+      ts-morph: 19.0.0
+    dev: false
+
   /terser-webpack-plugin@5.3.9(webpack@5.89.0):
     resolution:
       { integrity: sha512-ZuXsqE07EcggTWQjXUj+Aot/OMcD0bMKGgF63f7UxYcu5/AJF53aIpK1YoP5xR9l6s/Hy2b+t1AM0bLNPRuhwA== }
