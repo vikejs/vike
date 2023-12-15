@@ -32,8 +32,8 @@ cli
     logViteAny('Starting development server', 'info', null, true)
 
     await resolveConfig({}, 'serve')
-    const serverEntry = getServerEntry()
-    if (!serverEntry) {
+    const serverConfig = getServerConfig()
+    if (!serverConfig?.entry) {
       let command = 'vite dev'
       if (root) {
         command = command + ` ${root}`

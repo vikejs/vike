@@ -115,10 +115,10 @@ type ConfigVikeUserProvided = {
   /** Server entry path.
    *
    */
-  server?: string
+  server?: string | { entry: string; reload: 'fast' | 'reliable' }
 
   /** Enable standalone build.
-   *  Setting `server` is required. 
+   *  Setting `server` is required.
    *
    * @default false
    */

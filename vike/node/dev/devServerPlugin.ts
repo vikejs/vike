@@ -4,7 +4,7 @@ import http from 'http'
 import { nextTick } from 'process'
 import type { Plugin, ViteDevServer } from 'vite'
 import { nativeDependecies } from '../plugin/shared/nativeDependencies.js'
-import { getServerEntry } from '../plugin/plugins/serverEntryPlugin.js'
+import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 
 async function devServerPlugin({ onServerHotUpdate }: { onServerHotUpdate: () => void }): Promise<Plugin> {
@@ -12,7 +12,7 @@ async function devServerPlugin({ onServerHotUpdate }: { onServerHotUpdate: () =>
   let entryDeps: Set<string>
 
   async function loadEntry() {
-    const entry = getServerEntry()
+    const { entry } = getServerConfig()!
 
     logViteAny('Loading server entry', 'info', null, true)
 
@@ -64,6 +64,48 @@ async function devServerPlugin({ onServerHotUpdate }: { onServerHotUpdate: () =>
     }
   }
 
+  const originalCreateServer = http.createServer.bind(http.createServer)
+
+  const patchCreateServer = () => {
+    http.createServer = (...args) => {
+      // @ts-ignore
+      // Create the original server in user code
+      const httpServer = originalCreateServer(...args)
+
+      // Get the fresh listeners from the new module
+      const listeners = httpServer.listeners('request')
+
+      // Remove the stale listeners
+      viteServer.httpServer ??= httpServer
+      viteServer.httpServer.removeAllListeners('request')
+
+      // Add the fresh listeners
+      viteServer.httpServer.on('request', (req, res) => {
+        viteServer.middlewares(req, res, () => {
+          for (const listener of listeners) {
+            listener(req, res)
+          }
+        })
+      })
+
+      const originalListen = httpServer.listen.bind(httpServer)
+      httpServer.listen = (...args) => {
+        restoreCreateServer()
+        if (viteServer.httpServer?.listening) {
+          return httpServer
+        }
+
+        // @ts-ignore
+        return originalListen(...args)
+      }
+      return viteServer.httpServer
+    }
+  }
+
+  const restoreCreateServer = () => {
+    http.createServer = originalCreateServer
+  }
+
   return {
     name: 'vike:devServer',
     enforce: 'pre',
@@ -78,25 +120,7 @@ async function devServerPlugin({ onServerHotUpdate }: { onServerHotUpdate: () =>
     configureServer(server) {
       viteServer = server
       nextTick(async () => {
-        const originalCreateServer = http.createServer.bind(http.createServer)
-
-        http.createServer = (...args) => {
-          //@ts-ignore
-          const httpServer = originalCreateServer(...args)
-          const listeners = httpServer.listeners('request')
-          httpServer.removeAllListeners('request')
-          httpServer.on('request', (req, res) => {
-            viteServer.middlewares(req, res, () => {
-              for (const listener of listeners) {
-                listener(req, res)
-              }
-            })
-          })
-
-          http.createServer = originalCreateServer
-          return httpServer
-        }
-
+        patchCreateServer()
         await loadEntry()
       })
     },
@@ -105,7 +129,15 @@ async function devServerPlugin({ onServerHotUpdate }: { onServerHotUpdate: () =>
         return []
       }
       if (ctx.modules.some((module) => module.id && entryDeps.has(module.id))) {
-        onServerHotUpdate()
+        const { reload } = getServerConfig()!
+
+        if (reload === 'fast') {
+          patchCreateServer()
+          loadEntry()
+        } else {
+          onServerHotUpdate()
+        }
+
         return []
       }
     }

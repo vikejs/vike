@@ -1,25 +1,35 @@
-export { getServerEntry, serverEntryPlugin }
+export type { ServerConfigResolved }
+export { getServerConfig, serverEntryPlugin }
 
 import type { Plugin } from 'vite'
 import type { ConfigVikeUserProvided } from '../../../shared/ConfigVike.js'
-import { getGlobalObject } from '../utils.js'
+import { assertUsage, getGlobalObject } from '../utils.js'
 import { standalonePlugin } from './standalonePlugin.js'
 import path from 'path'
 
-const globalObject = getGlobalObject('serverEntryPlugin.ts', {
-  serverEntry: ''
+type ServerConfigResolved =
+  | {
+      entry: string
+      reload: 'reliable' | 'fast'
+    }
+  | undefined
+
+const globalObject = getGlobalObject<{
+  serverConfig: ServerConfigResolved
+}>('serverEntryPlugin.ts', {
+  serverConfig: undefined
 })
 
-function getServerEntry() {
-  return globalObject.serverEntry
+function getServerConfig() {
+  return globalObject.serverConfig
 }
 
 function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
-  const serverEntry = configVike?.server
-  if (!serverEntry) {
+  const serverConfig = configVike && resolveServerConfig(configVike)
+  if (!serverConfig) {
     return []
   }
-  globalObject.serverEntry = serverEntry
+  globalObject.serverConfig = serverConfig
   let root = ''
 
   const serverEntryProdPlugin = (): Plugin => {
@@ -34,7 +44,7 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
         return {
           build: {
             rollupOptions: {
-              input: { index: serverEntry }
+              input: { index: serverConfig.entry }
             }
           }
         }
@@ -43,14 +53,31 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
         root = config.root
       },
       renderChunk(code, chunk) {
-        if (chunk.facadeModuleId === path.posix.join(root, serverEntry)) {
+        if (chunk.facadeModuleId === path.posix.join(root, serverConfig.entry)) {
           return "import './importBuild.cjs'\n" + code
         }
       }
     }
   }
 
-  return [serverEntryProdPlugin(), configVike.standalone && standalonePlugin({ serverEntry })].filter(
-    Boolean
-  ) as Plugin[]
+  return [
+    serverEntryProdPlugin(),
+    configVike.standalone && standalonePlugin({ serverEntry: serverConfig.entry })
+  ].filter(Boolean) as Plugin[]
+}
+
+function resolveServerConfig(configVike?: ConfigVikeUserProvided) {
+  if (!configVike?.server) {
+    return undefined
+  }
+
+  if (typeof configVike.server === 'object') {
+    assertUsage(typeof configVike.server.entry === 'string', 'server.entry should be a string')
+    assertUsage(['reliable', 'fast'].includes(configVike.server.reload), 'server.reload should be "reliable" or "fast"')
+
+    return { entry: configVike.server.entry, reload: configVike.server.reload } as const
+  }
+
+  assertUsage(typeof configVike.server === 'string', 'server should be a string')
+  return { entry: configVike.server, reload: 'reliable' } as const
 }
