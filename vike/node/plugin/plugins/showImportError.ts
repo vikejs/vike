@@ -1,6 +1,9 @@
 export { showImportError }
 
+import pc from '@brillout/picocolors'
+import { nextTick } from 'process'
 import type { Plugin } from 'vite'
+import { logViteAny } from '../shared/loggerNotProd.js'
 
 function showImportError(): Plugin {
   return {
@@ -17,15 +20,22 @@ function showImportError(): Plugin {
         try {
           return await (this as any)(id)
         } catch (error) {
-          const snippet = {
-            ssr: {
-              noExternal: [id]
-            }
-          }
+          const packageName = id.split('/').slice(0, 2).join('/')
 
-          console.error(`[Error]: failed to import ${id}. Please include ${id} in ssr.noExternal, in vite config.`)
+          logViteAny(
+            `Please include ${pc.green(packageName)} in ${pc.green('ssr.noExternal')} ${pc.green(
+              'https://vike.dev/broken-npm-package'
+            )}`,
+            'error',
+            null,
+            true
+          )
 
-          process.exit(1)
+          nextTick(() => {
+            server.moduleGraph.invalidateAll()
+          })
+
+          throw error
         }
       }
       server.transformRequest = async (...args) => {
