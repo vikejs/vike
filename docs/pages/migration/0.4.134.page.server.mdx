@@ -21,9 +21,8 @@ See the sections below for how to migrate.
    const pageContext = await renderPage(pageContextInit)
    const { httpResponse } = pageContext
    if (!httpResponse) return next()
--  const { body, statusCode, contentType, earlyHints } = httpResponse
-+  const { body, statusCode, headers, earlyHints } = httpResponse
-   if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
+-  const { body, statusCode, contentType } = httpResponse
++  const { body, statusCode, headers } = httpResponse
    res.status(statusCode)
 -  res.type(contentType)
 +  headers.forEach(([name, value]) => res.setHeader(name, value))
