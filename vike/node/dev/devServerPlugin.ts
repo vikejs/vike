@@ -7,7 +7,7 @@ import { nativeDependecies } from '../plugin/shared/nativeDependencies.js'
 import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 
-async function devServerPlugin({ onServerHotUpdate }: { onServerHotUpdate: () => void }): Promise<Plugin> {
+function devServerPlugin(): Plugin {
   let viteServer: ViteDevServer
   let entryDeps: Set<string>
 
@@ -135,7 +135,7 @@ async function devServerPlugin({ onServerHotUpdate }: { onServerHotUpdate: () =>
           patchCreateServer()
           loadEntry()
         } else {
-          onServerHotUpdate()
+          process.exit(33)
         }
 
         return []
