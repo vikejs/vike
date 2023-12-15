@@ -21,8 +21,6 @@ async function crawlPlusFiles(
 ): Promise<{ filePathRelativeToUserRootDir: string; filePathAbsoluteFilesystem: string }[]> {
   assertPosixPath(userRootDir)
   assertPosixPath(outDirAbsoluteFilesystem)
-  // Vike prepends userRootDir without resolving, e.g. outDirRelativeFromUserRootDir can be /home/rom/my-monorepo/my-app/../my-build/dist/ while userRootDir is /home/rom/my-monorepo/my-app/
-  assert(outDirAbsoluteFilesystem.startsWith(userRootDir))
   let outDirRelativeFromUserRootDir: string | null = path.posix.relative(userRootDir, outDirAbsoluteFilesystem)
   if (outDirRelativeFromUserRootDir.startsWith('../')) {
     // config.outDir is outside of config.root => it's going to be ignored anyways
