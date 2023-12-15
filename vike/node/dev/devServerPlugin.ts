@@ -35,10 +35,10 @@ function devServerPlugin(): Plugin {
       }
 
       if (!module.ssrTransformResult) {
-        continue
+        module.ssrTransformResult = await viteServer.transformRequest(id, { ssr: true })
       }
 
-      for (const newDep of module.ssrTransformResult.deps || []) {
+      for (const newDep of module.ssrTransformResult?.deps || []) {
         if (!newDep.startsWith('/')) {
           continue
         }
@@ -51,11 +51,9 @@ function devServerPlugin(): Plugin {
           const resolved = await viteServer.pluginContainer.resolveId(newDep, id, {
             ssr: true
           })
-
           if (!resolved) {
             continue
           }
-
           newId = resolved.id
         }
 
@@ -125,20 +123,16 @@ function devServerPlugin(): Plugin {
       })
     },
     handleHotUpdate(ctx) {
-      if (!entryDeps) {
-        return []
-      }
       if (ctx.modules.some((module) => module.id && entryDeps.has(module.id))) {
         const { reload } = getServerConfig()!
 
         if (reload === 'fast') {
+          viteServer.moduleGraph.invalidateAll()
           patchCreateServer()
           loadEntry()
         } else {
           process.exit(33)
         }
-
-        return []
       }
     }
   }
