@@ -5,26 +5,26 @@ export { analyzeClientEntries }
 import {
   assert,
   resolveOutDir,
-  isObject,
   viteIsSSR,
   getFilePathAbsolute,
   addOnBeforeLogHook,
   removeFileExtention,
   unique,
   assertPosixPath,
-  assertUsage
+  assertUsage,
+  injectRollupInputs,
+  normalizeRollupInput
 } from '../utils.js'
 import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValue } from '../../../shared/page-configs/helpers.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
-import type { ResolvedConfig, Plugin, Rollup, UserConfig } from 'vite'
+import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
 import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
-type InputOption = Rollup.InputOption
 import { createRequire } from 'module'
 import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
 import fs from 'fs/promises'
@@ -45,14 +45,9 @@ function buildConfig(): Plugin {
       order: 'post',
       async handler(config) {
         assertRollupInput(config)
-        const userInputs = normalizeRollupInput(config.build.rollupOptions.input)
         const entries = await getEntries(config)
         assert(Object.keys(entries).length > 0)
-        const input = {
-          ...entries,
-          ...userInputs
-        }
-        config.build.rollupOptions.input = input
+        config.build.rollupOptions.input = injectRollupInputs(entries, config)
         addLogHook()
       }
     },
@@ -96,8 +91,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
   if (viteIsSSR(config)) {
     const pageEntries = getPageEntries(pageConfigs)
     const entries = {
-      pageFiles: virtualFileIdImportUserCodeServer, // TODO/next-major-release: rename to configFiles
-      importBuild: resolve('dist/esm/node/importBuild.js'), // TODO/next-major-release: remove
+      // importBuild: resolve('dist/esm/node/importBuild.js'), // TODO/next-major-release: remove
       ...pageFileEntries,
       // Ensure Rollup generates a bundle per page: https://github.com/vikejs/vike/issues/349#issuecomment-1166247275
       ...pageEntries
@@ -225,21 +219,6 @@ function resolve(filePath: string) {
   return require_.resolve(`../../../../../${filePath}`)
 }
 
-function normalizeRollupInput(input?: InputOption): Record<string, string> {
-  if (!input) {
-    return {}
-  }
-  // Usually `input` is an oject, but the user can set it as a `string` or `string[]`
-  if (typeof input === 'string') {
-    input = [input]
-  }
-  if (Array.isArray(input)) {
-    return Object.fromEntries(input.map((input) => [input, input]))
-  }
-  assert(isObject(input))
-  return input
-}
-
 function addLogHook() {
   const tty = process.stdout.isTTY && !process.env.CI // Equals https://github.com/vitejs/vite/blob/193d55c7b9cbfec5b79ebfca276d4a721e7de14d/packages/vite/src/node/plugins/reporter.ts#L27
   if (!tty) return
@@ -273,6 +252,6 @@ function assertRollupInput(config: ResolvedConfig): void {
   const htmlInput = htmlInputs[0]
   assertUsage(
     htmlInput === undefined,
-    `The entry ${htmlInput} of config build.rollupOptions.input is an HTML entry which is forbidden when using vike, instead follow https://vike.dev/add`
+    `The entry ${htmlInput} of config build.rollupOptions.input is an HTML entry which is forbidden when using Vike, instead follow https://vike.dev/add`
   )
 }

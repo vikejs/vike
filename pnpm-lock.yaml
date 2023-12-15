@@ -1400,8 +1400,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       telefunc:
-        specifier: ^0.1.64
-        version: 0.1.64(@babel/core@7.23.3)(react@18.2.0)
+        specifier: 0.1.66-commit-f4abc42
+        version: 0.1.66-commit-f4abc42(@babel/core@7.23.3)(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1436,8 +1436,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       telefunc:
-        specifier: ^0.1.64
-        version: 0.1.64(@babel/core@7.23.3)(react@18.2.0)
+        specifier: 0.1.66-commit-f4abc42
+        version: 0.1.66-commit-f4abc42(@babel/core@7.23.3)(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -2084,8 +2084,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       '@brillout/vite-plugin-import-build':
-        specifier: ^0.2.22
-        version: 0.2.22
+        specifier: 0.2.22-commit-7f1bb0a
+        version: 0.2.22-commit-7f1bb0a
       acorn:
         specifier: ^8.8.2
         version: 8.11.2
@@ -2749,14 +2749,8 @@ packages:
       typescript: 4.8.4
     dev: true
 
-  /@brillout/vite-plugin-import-build@0.2.20:
-    resolution: {integrity: sha512-/bdw1dg+H1nOYSy2PzYInQoZlIFP2uwyaF2GX64fyBqVAEWGopiMlnx294CbysjmP9Z+fJe48TkMzyogkyIDLw==}
-    dependencies:
-      '@brillout/import': 0.2.3
-    dev: false
-
-  /@brillout/vite-plugin-import-build@0.2.22:
-    resolution: {integrity: sha512-n5sv0HdCB5WC2QJSnTN6iS/F+sJsF0AmtsCCaQ+5+dRjgsoGGsa3auinJV8tuEog5WsX+3MF8RIwn3A/u0e04w==}
+  /@brillout/vite-plugin-import-build@0.2.22-commit-7f1bb0a:
+    resolution: {integrity: sha512-TKfwEtW8a++FL3xz6iF7aBaMr9qAmjV0TLSn/7sl/4fcgRLuxzsJDc7iq+FAnM2FHn/dtZRCqEIlG/NBPIluwg==}
     dependencies:
       '@brillout/import': 0.2.3
     dev: false
@@ -4857,7 +4851,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.5)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.0
-      vite: 4.5.1(@types/node@15.14.9)
+      vite: 4.5.1(@types/node@20.10.4)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -11895,8 +11889,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /telefunc@0.1.64(@babel/core@7.23.3)(react@18.2.0):
-    resolution: {integrity: sha512-Qbjz2FmmAk6DslB9m45FXXxVUZvNouPuP0yTMa1/z+YRHf0l8SEN04FAvzgEQtROOBcTpL2WBMU2gFCsFywwFQ==}
+  /telefunc@0.1.66-commit-f4abc42(@babel/core@7.23.3)(react@18.2.0):
+    resolution: {integrity: sha512-g/mNLWb0VPXXWMk0QJsYmx75S0/vPMe6I0xw07IxtpiGEaDvkRAwCcx4TqHBWucL4ifHHOEL8B8FnR8Sw8OGLw==}
     engines: {node: '>=12.19.0'}
     peerDependencies:
       '@babel/core': ^7.0.0
@@ -11919,7 +11913,7 @@ packages:
       '@babel/core': 7.23.3
       '@brillout/import': 0.2.3
       '@brillout/json-serializer': 0.5.8
-      '@brillout/vite-plugin-import-build': 0.2.20
+      '@brillout/vite-plugin-import-build': 0.2.22-commit-7f1bb0a
       es-module-lexer: 0.7.1
       picocolors: 1.0.0
       react: 18.2.0
