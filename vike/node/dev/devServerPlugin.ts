@@ -127,7 +127,6 @@ function devServerPlugin(): Plugin {
         const { reload } = getServerConfig()!
 
         if (reload === 'fast') {
-          viteServer.moduleGraph.invalidateAll()
           patchCreateServer()
           loadEntry()
         } else {
