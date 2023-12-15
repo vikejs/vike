@@ -37,7 +37,7 @@ function onSomeHook() {
   - [`503` Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) - Server is overloaded and/or a third-party API isn't responding.
 - The `abortReason` and `abortStatusCode` arguments are made available at `pageContext.abortReason` and `pageContext.abortStatusCode` which is useful for enabling the error page to show a useful error message to the user, see <Link href="/error-page" />.
 
-While it's most commonly used with [`guard()`](/guard) or [`onBeforeRender()`](/onBeforeRender) you can use it with any hook.
+While it's most commonly used with [`guard()`](/guard), [`data()`](/data) or [`onBeforeRender()`](/onBeforeRender) you can use it with any hook.
 
 Common use cases:
 

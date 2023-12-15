@@ -59,9 +59,9 @@ import { escapeInject, dangerouslySkipEscape } from "vike/server";
 export { onRenderHtml };
 
 async function onRenderHtml(pageContext) {
-  const { Page, pageProps } = pageContext;
+  const { Page, data } = pageContext;
   const viewHtml = ReactDOMServer.renderToString(
-    <Page {...pageProps} />
+    <Page {...data} />
   );
 
   const title = "Vite SSR";
@@ -88,10 +88,10 @@ import React from "react";
 export { onRenderClient };
 
 async function onRenderClient(pageContext) {
-  const { Page, pageProps } = pageContext
+  const { Page, data } = pageContext
   ReactDOM.hydrateRoot(
     document.getElementById("page-view"),
-    <Page {...pageProps} />
+    <Page {...data} />
   );
 }
 ```
@@ -118,8 +118,8 @@ import React from "react";
 
 export { Page };
 
-function Page(pageProps) {
-  const { movie } = pageProps;
+function Page(data) {
+  const { movie } = data;
   return <>
     <h1>{movie.title}</h1>
     <p>Release Date: {movie.release_date}</p>
@@ -137,43 +137,25 @@ export default "/star-wars/@movieId";
 ```
 
 ```js
-// /pages/star-wars/movie/+onBeforeRender.js
+// /pages/star-wars/movie/+data.js
 // Environment: server
 
 import fetch from "node-fetch";
 
-export async function onBeforeRender(pageContext) {
+export async function data(pageContext) {
   // The route parameter of `/star-wars/@movieId` is available at `pageContext.routeParams`
   const { movieId } = pageContext.routeParams;
 
-  // By default, +onBeforeRender.js files are loaded and exectued only on the server-side
+  // By default, +data.js files are loaded and executed only on the server-side
   // which means we can use SQL/ORM queries here.
   const response = await fetch(`https://swapi.dev/api/films/${movieId}`);
   let movie = await response.json();
 
-  // Our render and hydrate functions we defined earlier pass `pageContext.pageProps` to
-  // the root React component `Page`; this is where we define `pageProps`.
-  const pageProps = { movie };
-
-  // We make `pageProps` available as `pageContext.pageProps`
+  // Our render and hydrate functions we defined earlier pass `pageContext.data` to
+  // the root React component `Page`; this is where we define it.
   return {
-    pageContext: {
-      pageProps
-    }
+    movie
   };
-}
-```
-
-```js
-// /renderer/+config.h.js
-// Environment: config
-
-// By default, pageContext values are available only on the server, but our onRenderClient()
-// hook we defined earlier runs in the browser and needs the pageContext.pageProps value.
-// We use passToClient to tell Vike to serialize and make pageContext.pageProps available
-// in the browser.
-export default {
-  passToClient: ['pageProps']
 }
 ```
 

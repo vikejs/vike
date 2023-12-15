@@ -158,7 +158,10 @@ Async Route Functions are forbidden.
 export default async () => { /* ... */ }
 ```
 
-The motivation for having an asynchronous Route Function is usually to implement redirection and/or protecting a private page. Instead, use <Link href="/render" text={<code>throw render()</code>} /> or <Link href="/redirect" text={<code>throw redirect()</code>} /> with an async <Link text={<code>guard()</code>} href="/guard" /> or <Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" /> hook.
+The motivation for having an asynchronous Route Function is usually to implement redirection and/or protecting a private
+page. Instead, use <Link href="/render" text={<code>throw render()</code>} /> or<Link href="/redirect" text={<code>throw redirect()</code>} />
+with an async <Link text={<code>guard()</code>} href="/guard" />, <Link text={<code>data()</code>} href="/data" /> or
+<Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" /> hook.
 
 > An asynchronous Route Function would slow down your entire app: as explained in [Lightweight & fast](#lightweight-fast), every time the user navigates to a new page *all* Route Functions are called. This means that a slow Route Function slows down *all* pages.
 
@@ -207,4 +210,7 @@ export default () => {
 }
 ```
 
-But this isn't recommended: `pageContext.routeParams` is supposed to hold only a minimal amount of information. Instead, we recommend to implement complex logic in <Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" />, <Link text={<code>guard()</code>} href="/guard" />, or in a <Link text="custom hook" href="/meta" />.
+But this isn't recommended: `pageContext.routeParams` is supposed to hold only a minimal amount of information. Instead,
+we recommend to implement complex logic in <Link text={<code>data()</code>} href="/data" />,
+<Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" />, <Link text={<code>guard()</code>} href="/guard" />,
+or in a <Link text="custom hook" href="/meta" />.

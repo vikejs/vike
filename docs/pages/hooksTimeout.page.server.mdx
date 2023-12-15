@@ -5,14 +5,14 @@ If a <Link href="/hooks">hook</Link> returns a promise that takes too much time 
 <CodeBlockTransformer lineBreak="white-space">
 ```bash
 # Vike first logs a warning (still awaiting your hook)
-[vike][Warning] The onBeforeRender() hook defined by /pages/movies/+onBeforeRender.js is slow: it's taking more than 4 seconds
+[vike][Warning] The data() hook defined by /pages/movies/+data.js is slow: it's taking more than 4 seconds
 ```
 </CodeBlockTransformer>
 
 <CodeBlockTransformer lineBreak="white-space">
 ```bash
 # Then Vike logs an error (and renders your error page)
-[vike][Error] The onBeforeRender() hook defined by /pages/movies/+onBeforeRender.js timed out: it didn't finish after 30 seconds
+[vike][Error] The data() hook defined by /pages/movies/+data.js timed out: it didn't finish after 30 seconds
 ```
 </CodeBlockTransformer>
 
@@ -23,7 +23,7 @@ You can configure the timeout of hooks:
 
 export default {
   hooksTimeout: {
-    onBeforeRender: {
+    data: {
       // Increase warning timeout to 5 seconds
       warning: 5 * 1000,
       // Increase error timeout to one minute
@@ -42,7 +42,7 @@ You can disable timeouts:
 
 export default {
   hooksTimeout: {
-    onBeforeRender: {
+    data: {
       // Disable the warning timeout
       warning: false
     }

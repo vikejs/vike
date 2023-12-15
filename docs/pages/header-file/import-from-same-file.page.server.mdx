@@ -8,25 +8,25 @@ Importing from the same file is usually forbidden:
 // /pages/some-page/+config.h.js
 
 // ❌ Usually forbidden
-import { Page, onBeforeRender } from './same-file'
+import { Page, data } from './same-file'
 
-export default { Page, onBeforeRender }
+export default { Page, data }
 ```
 
-This is only allowed if `Page` and `onBeforeRender` live in the same environment (which isn't the case by default).
+This is only allowed if `Page` and `data` live in the same environment (which isn't the case by default).
 
-> By default, `Page` is loaded on both the client-side and server-side, while `onBeforeRender` is loaded only on the server-side.
+> By default, `Page` is loaded on both the client-side and server-side, while `data` is loaded only on the server-side.
 
-To share code between `Page` and `onBeforeRender`, do this instead:
+To share code between `Page` and `data`, do this instead:
 
 ```js
 // /pages/some-page/+config.h.js
 
 // ✅ Importing from two different files
 import { Page } from './Page'
-import { onBeforeRender } from './onBeforeRender'
+import { data } from './data'
 
-export default { Page, onBeforeRender }
+export default { Page, data }
 ```
 
 ```js
@@ -37,7 +37,7 @@ import { sharedCode } from './shared'
 // ...
 ```
 ```js
-// /pages/some-page/onBeforeRender.js
+// /pages/some-page/data.js
 
 import { sharedCode } from './shared'
 
@@ -46,7 +46,7 @@ import { sharedCode } from './shared'
 ```js
 // /pages/some-page/shared.js
 
-// Code used by both Page and onBeforeRender
+// Code used by both Page and data
 export { sharedCode }
 
 // ...

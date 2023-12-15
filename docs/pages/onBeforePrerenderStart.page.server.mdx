@@ -74,7 +74,7 @@ async function onBeforePrerenderStart() {
         pageContext
       }
       /* We could also only return `url` and not provide `pageContext`. In that case
-       * Vike would call the `onBeforeRender()` hook. But that would be wasteful
+       * Vike would call the `data()` and `onBeforeRender()` hooks. But that would be wasteful
        * since we already have all the data of all movies from our `await Movie.findAll()` call.
        * Instead, we provide `pageContext` to make the pre-rendering build step faster.
        */
@@ -107,7 +107,7 @@ Essentially, the `onBeforePrerenderStart()` hook allows us to prefetch data for 
 > we recommend against using <code>onBeforePrerenderStart()</code> hooks for other purposes.</p>
 >
 > For example, we should avoid providing additional `pageContext` in `onBeforePrerenderStart()` hooks that wouldn't otherwise exist.
-> Instead, we should make sure that our `onBeforeRender()` hooks provide all the `pageContext` we need.
+> Instead, we should make sure that our `data()` and `onBeforeRender()` hooks provide all the `pageContext` we need.
 >
 > The reason being that `onBeforePrerenderStart()` hooks are never called in development and we should keep our app consistent between development and production.
 

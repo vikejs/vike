@@ -40,6 +40,9 @@ async function onRenderClient(pageContext) {
 `passToClient` is usually used together with the `onBeforeRender()` hook:
 data is fetched in `async onBeforeRender()` and then made available to the browser with `passToClient`, see [Data Fetching](/data-fetching).
 
+> This is not needed when using the <Link href="/data">`data()`</Link> hook as `pageContext.data` is by default part of
+> `passToClient`.
+
 Serialization is done with [`@brillout/json-serializer`](https://github.com/brillout/json-serializer).
 
 

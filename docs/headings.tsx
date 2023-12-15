@@ -663,6 +663,12 @@ const headings = [
   },
   {
     level: 2,
+    title: '`data()` hook',
+    titleInNav: '`data()`',
+    url: '/data'
+  },
+  {
+    level: 2,
     title: '`onBeforeRender()` hook',
     titleInNav: '`onBeforeRender()`',
     url: '/onBeforeRender'

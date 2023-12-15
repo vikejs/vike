@@ -14,6 +14,8 @@ import { Link, RepoLink } from '@brillout/docpress'
  - **Modifying the environment of existing hooks**.
    - <Link href="#example-modify-onbeforerender-env" doNotInferSectionTitle />
 
+> In this page we use the <Link href="/data">`data()`</Link> and <Link href="/onBeforeRender">`onBeforeRender()`</Link> hooks interchangeably.
+
 ## Example: `dataEndpointUrl`
 
 This example showcases a simple data fetching logic that uses URL data endpoints (e.g. a RESTful API).
@@ -40,14 +42,14 @@ export default {
 ```
 
 ```js
-// /pages/+onBeforeRender.js
+// /pages/+data.js
 // Environment: server
 
-export { onBeforeRender }
+export { data }
 
 import fetch from 'node-fetch'
 
-async function onBeforeRender(pageContext) {
+async function data(pageContext) {
   // The value exported by /pages/countries/+dataEndpointUrl.js is
   // available at pageContext.config.dataEndpointUrl
   const response = await fetch(pageContext.config.dataEndpointUrl)
