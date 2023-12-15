@@ -37,7 +37,7 @@ function showImportError(): Plugin {
             )
 
             nextTick(() => {
-              server.moduleGraph.invalidateAll()
+              process.exit(1)
             })
           }
 
