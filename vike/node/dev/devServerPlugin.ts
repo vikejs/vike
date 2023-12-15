@@ -119,9 +119,9 @@ async function devServerPlugin({ onServerHotUpdate }: { onServerHotUpdate: () =>
     },
     configureServer(server) {
       viteServer = server
-      nextTick(async () => {
+      nextTick(() => {
         patchCreateServer()
-        await loadEntry()
+        loadEntry()
       })
     },
     handleHotUpdate(ctx) {
