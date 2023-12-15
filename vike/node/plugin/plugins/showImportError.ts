@@ -20,20 +20,26 @@ function showImportError(): Plugin {
         try {
           return await (this as any)(id)
         } catch (error) {
-          const packageName = id.split('/').slice(0, 2).join('/')
+          if (
+            /SyntaxError|TypeError|ERR_MODULE_NOT_FOUND|ERR_UNSUPPORTED_DIR_IMPORT|ERR_UNKNOWN_FILE_EXTENSION/.test(
+              String(error)
+            )
+          ) {
+            const packageName = id.split('/').slice(0, 2).join('/')
 
-          logViteAny(
-            `Please include ${pc.green(packageName)} in ${pc.green('ssr.noExternal')} ${pc.green(
-              'https://vike.dev/broken-npm-package'
-            )}`,
-            'error',
-            null,
-            true
-          )
+            logViteAny(
+              `Please include ${pc.green(packageName)} in ${pc.green('ssr.noExternal')} ${pc.green(
+                'https://vike.dev/broken-npm-package'
+              )}`,
+              'error',
+              null,
+              true
+            )
 
-          nextTick(() => {
-            server.moduleGraph.invalidateAll()
-          })
+            nextTick(() => {
+              server.moduleGraph.invalidateAll()
+            })
+          }
 
           throw error
         }
@@ -41,7 +47,7 @@ function showImportError(): Plugin {
       server.transformRequest = async (...args) => {
         const result = await originalTransformRequest(...args)
         if (result?.code) {
-          result.code = result.code.replaceAll('__vite_ssr_import__', '__vike_ssr_import__.bind(__vite_ssr_import__)')
+          result.code = result.code.replaceAll('__vite_ssr_import__(', '__vike_ssr_import__.bind(__vite_ssr_import__)(')
         }
         return result
       }
