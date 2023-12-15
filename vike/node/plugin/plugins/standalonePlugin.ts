@@ -161,25 +161,21 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
                 let symlinkPointsOutsideDist = symlink.split('../').length - 1 > maximumAllowedUpDirs
                 if (symlinkPointsOutsideDist) {
                   let projectDepthInMonorepo = 0
-                  // First, try a reliable method to detect node_modules symlinks
-                  if (symlink.replaceAll('../', '').startsWith('node_modules')) {
-                    symlink = symlink.replaceAll('../', '').replace('node_modules', '.')
+
+                  // This is unlikely, but if the previous check didn't work out (symlink doesn't point to node_modules), try to guess the right path
+                  // the link would point outside of dist, into ../../../node_modules/.pnpm
+                  // the link needs to be changed, so it will point to ../node_modules/.pnpm, inside dist
+                  // count the occurences of / from the monorepo base to the project root
+                  if (commonAncestor) {
+                    projectDepthInMonorepo = relativeRoot.replace(`${commonAncestor}/`, '').split('/').length
                   } else {
-                    // This is unlikely, but if the previous check didn't work out (symlink doesn't point to node_modules), try to guess the right path
-                    // the link would point outside of dist, into ../../../node_modules/.pnpm
-                    // the link needs to be changed, so it will point to ../node_modules/.pnpm, inside dist
-                    // count the occurences of / from the monorepo base to the project root
-                    if (commonAncestor) {
-                      projectDepthInMonorepo = relativeRoot.replace(`${commonAncestor}/`, '').split('/').length
-                    } else {
-                      projectDepthInMonorepo = relativeRoot.split('/').length
-                    }
-                    // for example ['../../../node_modules/.pnpm/sharp@0.32.6/node_modules/sharp'] will become
-                    //             ['../node_modules/.pnpm/sharp@0.32.6/node_modules/sharp']
-                    // remove [projectDepthInMonorepo times '../'] from the symlink
-                    for (let index = 0; index < projectDepthInMonorepo; index++) {
-                      symlink = symlink.substring(symlink.indexOf('/') + 1)
-                    }
+                    projectDepthInMonorepo = relativeRoot.split('/').length
+                  }
+                  // for example ['../../../node_modules/.pnpm/sharp@0.32.6/node_modules/sharp'] will become
+                  //             ['../node_modules/.pnpm/sharp@0.32.6/node_modules/sharp']
+                  // remove [projectDepthInMonorepo times '../'] from the symlink
+                  for (let index = 0; index < projectDepthInMonorepo; index++) {
+                    symlink = symlink.substring(symlink.indexOf('/') + 1)
                   }
 
                   symlinkPointsOutsideDist = symlink.split('../').length - 1 > maximumAllowedUpDirs
