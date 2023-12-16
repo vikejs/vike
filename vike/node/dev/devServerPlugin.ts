@@ -63,9 +63,6 @@ function devServerPlugin(): Plugin {
       // @ts-ignore
       const httpServer = originalCreateServer(...args)
 
-      const listeners = httpServer.listeners('request')
-      httpServer.removeAllListeners('request')
-
       httpServer.on('connection', (socket) => {
         sockets.push(socket)
         socket.on('close', () => {
@@ -73,14 +70,17 @@ function devServerPlugin(): Plugin {
         })
       })
 
-      httpServer.on('request', (req, res) => {
-        viteServer.middlewares(req, res, () => {
-          for (const listener of listeners) {
-            listener(req, res)
-          }
+      httpServer.on('listening', () => {
+        const listeners = httpServer.listeners('request')
+        httpServer.removeAllListeners('request')
+        httpServer.on('request', (req, res) => {
+          viteServer.middlewares(req, res, () => {
+            for (const listener of listeners) {
+              listener(req, res)
+            }
+          })
         })
       })
-
       httpServers.push(httpServer)
       return httpServer
     }
