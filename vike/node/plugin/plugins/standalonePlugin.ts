@@ -162,7 +162,6 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
                 if (symlinkPointsOutsideDist) {
                   let projectDepthInMonorepo = 0
 
-                  // This is unlikely, but if the previous check didn't work out (symlink doesn't point to node_modules), try to guess the right path
                   // the link would point outside of dist, into ../../../node_modules/.pnpm
                   // the link needs to be changed, so it will point to ../node_modules/.pnpm, inside dist
                   // count the occurences of / from the monorepo base to the project root
