@@ -113,9 +113,7 @@ function devServerPlugin(): Plugin {
         patchHttp()
       }
 
-      process.nextTick(() => {
-        loadEntry()
-      })
+      loadEntry()
     },
     // on vite config update
     async buildEnd() {
