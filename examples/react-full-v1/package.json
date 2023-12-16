@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:server": "vite build --ssr",
     "preview": "vite build && vite preview"
   },
   "dependencies": {

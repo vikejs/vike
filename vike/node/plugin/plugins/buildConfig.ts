@@ -24,7 +24,6 @@ import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
 import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
-import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { createRequire } from 'module'
 import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
 import fs from 'fs/promises'
@@ -171,26 +170,19 @@ async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedB
   const pageFileEntries: Record<string, string> = {}
   pageFiles = unique(pageFiles)
   pageFiles.forEach((pageFile) => {
-    let addExtractAssetsQuery = false
-    if (isForClientSide && pageFile.includes('.page.server.')) {
-      assert(includeAssetsImportedByServer)
-      addExtractAssetsQuery = true
-    }
-    const { entryName, entryTarget } = getEntryFromFilePath(pageFile, config, addExtractAssetsQuery)
+    const { entryName, entryTarget } = getEntryFromFilePath(pageFile, config)
     pageFileEntries[entryName] = entryTarget
   })
   return pageFileEntries
 }
 
-function getEntryFromFilePath(filePath: string, config: ResolvedConfig, addExtractAssetsQuery?: boolean) {
+function getEntryFromFilePath(filePath: string, config: ResolvedConfig) {
   assertPosixPath(filePath)
   assert(filePath.startsWith('/'))
 
   let entryTarget = getFilePathAbsolute(filePath, config)
-  if (addExtractAssetsQuery) entryTarget = extractAssetsAddQuery(entryTarget)
 
   let entryName = filePath
-  if (addExtractAssetsQuery) entryName = extractAssetsAddQuery(entryName)
   entryName = removeFileExtention(entryName)
   entryName = prependEntriesDir(entryName)
 

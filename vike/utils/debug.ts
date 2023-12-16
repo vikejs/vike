@@ -15,7 +15,6 @@ assert(!isBrowser())
 
 type Namespace =
   | 'vike:error'
-  | 'vike:extractAssets'
   | 'vike:extractExportNames'
   | 'vike:glob'
   | 'vike:pageFiles'

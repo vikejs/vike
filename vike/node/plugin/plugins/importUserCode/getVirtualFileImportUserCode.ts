@@ -247,7 +247,7 @@ ${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting, c
       }
     })
   if (configVike.includeAssetsImportedByServer && isForClientSide) {
-    fileContent += getGlobs(globRoots, isBuild, '.page.server', 'extractAssets')
+    fileContent += getGlobs(globRoots, isBuild, '.page.server')
   }
 
   return fileContent
@@ -264,7 +264,7 @@ function getGlobs(
   globRoots: GlobRoot[],
   isBuild: boolean,
   fileType: Exclude<FileType, '.css'>,
-  query?: 'extractExportNames' | 'extractAssets'
+  query?: 'extractExportNames'
 ): string {
   const isEager = isBuild && (query === 'extractExportNames' || fileType === '.page.route')
 
@@ -275,9 +275,6 @@ function getGlobs(
     } else {
       pageFilesVar = 'pageFilesExportNamesEager'
     }
-  } else if (query === 'extractAssets') {
-    assert(!isEager)
-    pageFilesVar = 'neverLoaded'
   } else if (!query) {
     if (!isEager) {
       pageFilesVar = 'pageFilesLazy'

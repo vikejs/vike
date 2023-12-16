@@ -11,7 +11,6 @@ import {
   isVirtualFileIdPageConfigValuesAll
 } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { getVikeConfig } from './getVikeConfig.js'
-import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
 import { getConfigValue } from '../../../../../shared/page-configs/helpers.js'
 import { getConfigValueSourcesNotOverriden } from '../../../shared/getConfigValueSourcesNotOverriden.js'
@@ -73,9 +72,7 @@ function getLoadConfigValuesAll(
   )
   lines.push('};')
 
-  if (includeAssetsImportedByServer && isForClientSide && !isDev) {
-    importStatements.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigValuesAll(pageId, false))}'`)
-  }
+
 
   const code = [...importStatements, ...lines].join('\n')
   return code
