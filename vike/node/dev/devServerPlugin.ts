@@ -106,7 +106,7 @@ function devServerPlugin(): Plugin {
         optimizeDeps: { exclude: nativeDependecies }
       }
     },
-    async configureServer(server) {
+    configureServer(server) {
       viteServer = server
       if (!patchedHttp) {
         patchedHttp = true
