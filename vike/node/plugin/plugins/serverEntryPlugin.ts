@@ -1,21 +1,13 @@
-export type { ServerConfigResolved }
 export { getServerConfig, serverEntryPlugin }
 
 import type { Plugin } from 'vite'
-import type { ConfigVikeUserProvided } from '../../../shared/ConfigVike.js'
+import type { ConfigVikeUserProvided, ServerResolved } from '../../../shared/ConfigVike.js'
 import { assertUsage, getGlobalObject } from '../utils.js'
 import { standalonePlugin } from './standalonePlugin.js'
 import path from 'path'
 
-type ServerConfigResolved =
-  | {
-      entry: string
-      reload: 'reliable' | 'fast'
-    }
-  | undefined
-
 const globalObject = getGlobalObject<{
-  serverConfig: ServerConfigResolved
+  serverConfig: ServerResolved
 }>('serverEntryPlugin.ts', {
   serverConfig: undefined
 })
@@ -66,18 +58,18 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
   ].filter(Boolean) as Plugin[]
 }
 
-function resolveServerConfig(configVike?: ConfigVikeUserProvided) {
+function resolveServerConfig(configVike?: ConfigVikeUserProvided): ServerResolved {
   if (!configVike?.server) {
     return undefined
   }
 
   if (typeof configVike.server === 'object') {
     assertUsage(typeof configVike.server.entry === 'string', 'server.entry should be a string')
-    assertUsage(['reliable', 'fast'].includes(configVike.server.reload), 'server.reload should be "reliable" or "fast"')
+    assertUsage(['full', 'fast'].includes(configVike.server.reload), 'server.reload should be "full" or "fast"')
 
-    return { entry: configVike.server.entry, reload: configVike.server.reload } as const
+    return { entry: configVike.server.entry, reload: configVike.server.reload }
   }
 
   assertUsage(typeof configVike.server === 'string', 'server should be a string')
-  return { entry: configVike.server, reload: 'reliable' } as const
+  return { entry: configVike.server, reload: 'full' }
 }

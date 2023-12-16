@@ -97,7 +97,7 @@ function devServerPlugin(): Plugin {
 
   return {
     name: 'vike:devServer',
-    enforce: 'pre',
+    enforce: 'post',
     config() {
       return {
         server: {
@@ -107,22 +107,17 @@ function devServerPlugin(): Plugin {
       }
     },
     configureServer(server) {
+      // This is only true if the vite config was changed
+      // We need a full reload
+      if (viteServer) {
+        process.exit(33)
+      }
       viteServer = server
       if (!patchedHttp) {
         patchedHttp = true
         patchHttp()
       }
-
       loadEntry()
-    },
-    // on vite config update
-    async buildEnd() {
-      const { reload } = getServerConfig()!
-      if (reload === 'fast') {
-        await closeAllServers()
-      } else {
-        process.exit(33)
-      }
     },
     async handleHotUpdate(ctx) {
       if (ctx.modules.some((module) => module.id && entryDeps.has(module.id))) {

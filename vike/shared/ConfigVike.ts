@@ -1,5 +1,10 @@
 export type { ConfigVikeUserProvided }
 export type { ConfigVikeResolved }
+export type { ServerResolved }
+
+type ReloadStrategy = 'fast' | 'full'
+type ServerUserProvided = string | { entry: string; reload: ReloadStrategy }
+type ServerResolved = undefined | { entry: string; reload: ReloadStrategy }
 
 type ConfigVikeResolved = {
   prerender:
@@ -115,7 +120,7 @@ type ConfigVikeUserProvided = {
   /** Server entry path.
    *
    */
-  server?: string | { entry: string; reload: 'fast' | 'reliable' }
+  server?: ServerUserProvided
 
   /** Enable standalone build.
    *  Setting `server` is required.

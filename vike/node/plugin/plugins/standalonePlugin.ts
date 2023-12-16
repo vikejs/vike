@@ -96,10 +96,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         }
       }
 
-      //TODO: do we need this file?
-      try {
-        await fs.rm(path.posix.join(outDirAbs, 'importBuild.mjs'))
-      } catch (error) {}
+      await fs.rm(path.posix.join(outDirAbs, 'importBuild.mjs')).catch(() => {})
 
       const base = toPosixPath(searchForWorkspaceRoot(root))
       const relativeRoot = path.posix.relative(base, root)
@@ -109,10 +106,6 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       const result = await nodeFileTrace([builtEntryAbs], {
         base
       })
-
-      if (result.warnings.size && isYarnPnP()) {
-        assertUsage(false, 'Yarn PnP is not supported when using native dependencies.')
-      }
 
       const tracedDeps = new Set<string>()
       for (const file of result.fileList) {
@@ -127,6 +120,10 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       // We are done, no native dependencies need to be copied
       if (!files.length) {
         return
+      }
+
+      if (result.warnings.size && isYarnPnP()) {
+        assertUsage(false, 'Standalone build is not supported when using Yarn PnP and native dependencies.')
       }
 
       const commonAncestor = findCommonAncestor(files)
