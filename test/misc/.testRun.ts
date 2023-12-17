@@ -105,7 +105,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   })
 
   if (isDev) {
-    test('assertFileRuntime plugin - invalid import', async () => {
+    test('forbidden client-only module import', async () => {
       editFile('./pages/forbidden-import/Page.jsx', (s) =>
         s.replace(
           `import React from 'react'`,
@@ -114,7 +114,24 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
       )
       await page.goto(getServerUrl() + '/forbidden-import')
 
-      expectLog(`Client-only module included in server bundle.`, (log) => log.logSource === 'stderr')
+      expectLog(`HTTP response /forbidden-import 500`, (log) => log.logSource === 'stderr')
+      expectLog(
+        'Failed to load resource: the server responded with a status of 500 (Internal Server Error)',
+        (log) => log.logSource === 'Browser Error'
+      )
+      expectLog(
+        'Client-only module',
+        (log) =>
+          log.logSource === 'stderr' &&
+          log.logText.includes('/forbidden-import/ClientOnly.client.jsx') &&
+          log.logText.includes('included in server bundle ')
+      )
+      expectLog(
+        '┌──────────────────────────────────────────────────────────┐\n' +
+          "│ Error isn't helpful? See https://vike.dev/errors#verbose │\n" +
+          '└──────────────────────────────────────────────────────────┘\n',
+        (log) => log.logSource === 'stderr'
+      )
       editFileRevert()
     })
   }

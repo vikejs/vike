@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react'
 import vike from 'vike/plugin'
-import { assertFileRuntime } from '../../vike/node/plugin/plugins/runtimeValidation/fileRuntime'
+import { assertFileRuntime } from '../../vike/node/plugin/plugins/fileRuntime'
 
 export default {
   build: {
