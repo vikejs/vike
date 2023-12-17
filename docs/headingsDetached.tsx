@@ -368,5 +368,9 @@ const headingsDetached = [
   {
     title: 'RPC',
     url: '/RPC'
+  },
+  {
+    title: 'Image Optimizing',
+    url: '/img'
   }
 ] satisfies HeadingDetachedDefinition[]
