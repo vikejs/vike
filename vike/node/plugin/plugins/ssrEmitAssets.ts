@@ -19,7 +19,9 @@ function ssrEmitAssetsPlugin(): Plugin {
     config(config, env) {
       return {
         build: {
-          ssrEmitAssets: true
+          ssrEmitAssets: true,
+          ssrManifest: true,
+          cssMinify: 'esbuild'
         }
       }
     },
@@ -36,7 +38,7 @@ function ssrEmitAssetsPlugin(): Plugin {
       }
 
       await fs.cp(assetsDirServerAbs, assetsDirClientAbs, { recursive: true, force: true })
-      await fs.rm(assetsDirServerAbs, { recursive: true })
+      // await fs.rm(assetsDirServerAbs, { recursive: true })
     }
   }
 }
