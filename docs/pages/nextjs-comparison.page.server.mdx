@@ -1,117 +1,111 @@
 import { Link } from '@brillout/docpress'
 
-Vike differs from Next.js in three fundamental ways:
- 1. Vike is UI Framework agnostic.
-    > Vike is completely agnostic to React and its source code has zero dependency on React. You can actually use Vike with any other UI Framework (Vue, Preact, Solid, etc.).
+VikeはNext.jsには異なる点が3つあります:
+
+1.  VikeはUIフレームワークに囚われない。
+    > VikeはReactに完全に依存せず、ソースコードもReactへの依存はゼロです。Vikeは他のUIフレームワーク（Vue、Preact、Solidなど）と一緒に使うことができます。
     >
-    > With Vike, you implement and fully control the React integration, which has many benefits. For example, you can use Relay in the same way that Facebook does (with a render-as-you-fetch stream) which isn't possible with Next.js.
- 1. Vike is server and deployment agnostic.
-    > With Vike, you keep full control over your server and you can use any deployment strategy.
- 1. Vike is full-fledged yet minimal.
-    > [All dependencies](https://github.com/vikejs/vike/blob/89073c8375d46af7cc05057a8f2efcd833273be6/vike/package.json#L4-L13) are either shared with Vite (e.g. [`fast-glob`](https://github.com/mrmlnc/fast-glob)) or fully/transitively owned (e.g. [`@brillout/json-serializer`](https://github.com/brillout/json-serializer)). Adding Vike to your Vite app doesn't add any frivolous dependency.
+    > Vikeでは、Reactインテグレーションを実装し、完全にコントロールすることができます。例えば、Next.jsでは不可能な、Facebookと同じ方法（render-as-you-fetchストリーム）でRelayを使用することができます。
+1.  Vikeはサーバーやデプロイメントに囚われない。
+    > Vikeを使えば、サーバーを完全にコントロールでき、どのようなデプロイメント戦略も利用できます。
+1.  Vikeは本格的でありながらミニマル。
+    > [すべての依存関係](https://github.com/vikejs/vike/blob/89073c8375d46af7cc05057a8f2efcd833273be6/vike/package.json#L4-L13)はViteと共有されるか （e.g. [`fast-glob`](https://github.com/mrmlnc/fast-glob)）、完全/移行的に所有されます（e.g. [`@brillout/json-serializer`](https://github.com/brillout/json-serializer)）。 VikeをViteアプリに追加しても、軽薄な依存関係は追加されません。
     >
-    > We believe Vike hits the sweet spot of being a full-fledged frontend tool while avoiding unnecessary bells and whistles.
+    > 私たちは、Vikeが本格的なフロントエンドツールであると同時に、無駄なな課題やエラーを避けるというスイートスポットに当たると信じています。
 
-Beyond these structural differences,
-Vike introduces features such as blazing fast HMR (powered by Vite), first-class SPA support (especially with the upcoming new Vike design), Domain-driven File Structure, state-of-the-art Code Splitting (powered by Vite/Rollup), Automatic Deployment Synchronization, [Build Your Own Framework](https://vike.land), etc.
+このような構造的な違いに加え、Vikeは、Viteによる超高速HMR、 最先端のSPAサポート（特に今後の新しいVikeデザインによる）、ドメイン駆動型ファイル構造、最先端のコード分割（Vite/Rollupによる）、自動デプロイ同期、[独自のフレームワークの構築](https://vike.land)などの機能を導入しています。
 
-> Turbopack replicates some of Vite's blazing fast DX techniques, but it's still in its infancy and it'll take a while until Turbopack is production-ready. With Vite, you can use lightning fast DX today.
+> TurbopackはViteの超高速なDXテクニックの一部を再現していますが、まだ発展途上であり、Turbopackが本番に対応するまでにはしばらく時間がかかるでしょう。Viteを使えば、今すぐ光速なDXを使うことができます。
 
-Finally, Vike is a community project: instead of leaning on a framework with business interests that are fundamentally at odds with yours, use a community-driven project that is sponsored by and made for the community.
+最後に、Vikeはコミュニティ・プロジェクトである。ビジネス上の利害が根本的に対立するフレームワークに依存するのではなく、コミュニティが主催し、コミュニティのために作られたコミュニティ主導のプロジェクトを利用しませんか？
 
+## UIフレームワークに囚われない
 
-## UI Framework agnostic
+Vikeでは、Reactを自分で統合します。つまり、もう少し定型文を書く必要がありますが、その代わりに柔軟性が増します。
 
-With Vike, you integrate React yourself. This means you need to write a little bit more boilerplate but, in exchange, you get a lot more flexibility.
+Reactを自分で統合するため、お気に入りのツールを用いたフロントエンドの統合（データ取得、状態管理、認証など）を完全に制御できます。
 
-Because you integrate React yourself, you have full control over the frontend integration of your favorite tools (data fetching, state management, authentication, etc.).
+たとえば、Next.jsでは不可能な方法でRelayやApolloを使用できます。
 
-For example, you can use Relay and Apollo in ways that aren't possible with Next.js.
+> Relayは、（GraphQLを発明した）Facebookによって開発され、大規模に使用されている最先端のGraphQLクライアントである。YouTubeのビデオ 「[Re-introducing Relay](https://www.youtube.com/watch?v=lhVGdErZuN4) 」では、Relayの利点について詳しく説明しています。
 
-> Relay is a state-of-the-art GraphQL client developed and used at scale by Facebook (which invented GraphQL). The [YouTube video "Re-introducing Relay"](https://www.youtube.com/watch?v=lhVGdErZuN4) explains in detail the benefits of Relay.
->
-> Many users and sponsors leverage Vike's flexibility to integrate Relay with SSR Streaming.
+> 多くのユーザーやスポンサーが、RelayとSSR Streamingを統合するVikeの柔軟性を活用しています。
 
-Except of React, Vike includes everything you'd expect from a frontend framework: Client-side Routing, HMR, Filesystem Routing, Pre-rendering, Data Fetching, Code Splitting, Layouts, i18n, etc.
+Reactを除けば、Vikeにはクライアントサイドルーティング、HMR、ファイルシステムルーティング、プリレンダリング、データフェッチ、コード分割、レイアウト、i18nなどのフロントエンドフレームワークに期待されるものが全て含まれています。
 
+## サーバーやデプロイメントに囚われない
 
-## Server/deployment agnostic
+サーバーの観点から言えば、Vikeはどこでも（AWS、Vercel、Cloudflare、Deno Deployなど）実行できる<Link text="ミドルウェア" href="/deploy" />に過ぎません。
 
-From a server perspective, <Link text="Vike is just a middleware" href="/deploy" /> that can run anywhere (AWS, Vercel, Cloudflare, Deno Deploy, etc.).
+Vikeを統合するには、Vikeのミドルウェアをサーバーに追加するだけです（Express.js、Fastify、Edge Worker、Serverless Functionなど）。
 
-To integrate Vike, you simply add Vike's middleware to your server (Express.js, Fastify, Edge Worker, Serverless Function,  etc.).
+Vikeでは、アーキテクチャの最も重要な側面の1つであるサーバーとデプロイメントを完全にコントロールできます。
 
-With Vike, you have full control over your server and deployment, one of the most critical aspects of your architecture.
+## 手動での統合
 
+上述の通り、Vikeの哲学は、フレームワークの決定に縛られることなく、手動でツールを統合できることげある。好きなツールを好きなように使えます。
 
-## Manual integrations
+総合的に見て、Vikeは簡単ではないが、よりシンプルです。大規模なプロジェクトでは、「簡単」であることよりも 「シンプル」であることの方が基本的に重要です。
 
-As depicted above, Vike's philosophy is that you integrate tools manually instead of being locked into decisions made by your framework. Use any tool you want, however you want.
+最後になりますが、フレームワークと戦うのは厄介ですが、手動での統合は楽しく、洞察力に富みます。
 
-All-in-all, Vike is less easy, but simpler. For large scale projects, simplicity is *fundamentally* more important than being "easy".
+## 独自のフレームワークを構築
 
-Last but not least, manual integration is fun and insightful. (Whereas fighting a framework is pesky.)
+Vikeは、ユーザーがVikeの上にフレームワークを構築できるようにゼロから設計されています。
 
+わずか数百行のコードで、あなた自身のNext.jsを構築することができます。
 
-## Build your own framework
+> 独自のフレームワークを構築する[ユースケース](https://vike.land)はたくさんありますが、最も顕著なのは[企業内のフレームワークを構築](https://vike.land#scale)することです。
 
-Vike is designed from the ground up to enable users to build frameworks on top of Vike.
+私たちは、特定のユースケースに高度に調整されたReactフレームワークの普及を促進しています。
 
-You can build your own Next.js with only hundreds of lines of code.
+## ユーザーの声
 
-> While there are many [uses cases for building your own framework](https://vike.land), the most prominent one is [building company internal frameworks](https://vike.land#scale).
+[@Axxxx0nより](https://github.com/vikejs/vike/issues/158#issuecomment-934224512):
 
-We foster the proliferation of React frameworks, highly-tailored to specific use cases.
+1. Vite (オンデマンドトランスパイル、ネイティブESM)による高速開発。
+1. Next.jsには多くのサンプルが必要であり、Next.jsとライブラリを統合するためのライブラリが数多く存在します（たとえば[next-i18next](https://github.com/isaachinman/next-i18next)）。Vikeなら、統合したいライブラリのドキュメントを読むだけでOKです。
+1. Reactの新機能が登場したら、すぐに使い始めることができ、Next.jsチームが統合するのを待つ必要がありません。(ストリーミングAPI、サーバーコンポーネント、サーバー上のサスペンス、部分的なハイドレーションなど）。
+1. Next.jsは、ビルド後に`/public`ディレクトリにあるファイル（ユーザーがアップロードした画像など）を読み込むことができません。
+1. `getServerSideProps()`で、Next.jsはクライアントサイドのレンダリングをブロックします。
+1. クライアントサイドのナビゲーション（[Next.js - &#35;23921](https://github.com/vercel/next.js/discussions/23921)）でデータ取得をバイパスすることはできません。
+1. Next.jsはVercelプラットフォームを強力にプッシュしており、最近の機能アップデートに現れ始めています。Next.jsに沿った機能が優先される一方で、重要な修正は遅れています。
+1. Next.jsはサーバーレスに傾倒しており、必要ないのに使い方が複雑になっています。
 
+## 詳細の比較表
 
-## User feedback
+[@patryk-smc と @redbar0nによる](https://github.com/vikejs/vike/issues/158#issuecomment-1250068578):
 
-[From @Axxxx0n](https://github.com/vikejs/vike/issues/158#issuecomment-934224512):
+|                                                                                               | Vike                                                                                       | Next.js                                                                                                                                                                                                                                               |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UI フレームワーク                                                                             | すべて (React, Preact, Solid, etc.)                                                        | React のみ                                                                                                                                                                                                                                            |
+| コード分割とバンドル                                                                          | 可能                                                                                       | 可能                                                                                                                                                                                                                                                  |
+| HMR                                                                                           | 可能 速い                                                                                  | 可能, 遅い                                                                                                                                                                                                                                            |
+| SPA                                                                                           | 可能                                                                                       | 限定的                                                                                                                                                                                                                                                |
+| <p align="center">**SSR**</p>                                                                 |                                                                                            |                                                                                                                                                                                                                                                       |
+| コントロール                                                                                  | フルコントロール                                                                           | 限定的 / ブラックボックス                                                                                                                                                                                                                             |
+| レンダラー                                                                                    | 可能、好きなだけ                                                                           | 一つのみ (`_app.ts` ファイル)                                                                                                                                                                                                                         |
+| RSC (React サーバーコンポーネント)                                                            | 可能, <Link href="/react#react-server-components">部分的に</Link>                          | 可能、実験段階                                                                                                                                                                                                                                        |
+| <p align="center">**ルーティング**</p>                                                        |                                                                                            |                                                                                                                                                                                                                                                       |
+| ファイルシステムルーティング                                                                  | 可能                                                                                       | 可能                                                                                                                                                                                                                                                  |
+| <Link text="ドメイン駆動ファイルシステムルーティング" href="/file-structure#domain-driven" /> | 可能                                                                                       | 不可                                                                                                                                                                                                                                                  |
+| <Link text="クライアントルーティング" href="/client-routing" />                               | 可能                                                                                       | 可能                                                                                                                                                                                                                                                  |
+| <Link text="サーバールーティング" href="/server-routing" />                                   | 可能                                                                                       | 不可                                                                                                                                                                                                                                                  |
+| <Link text="ベースURL" href="/base-url" />                                                    | 可能                                                                                       | 限定的                                                                                                                                                                                                                                                |
+| <p align="center">**統合**</p>                                                                |                                                                                            |                                                                                                                                                                                                                                                       |
+| HTTP サーバー                                                                                 | なし\*、 自分で実装してください                                                            | カスタムサーバーは、注意事項とともに部分的にサポートされます[[1]](https://github.com/vikejs/vike/issues/158#issuecomment-1355306156)[[2]](https://stackoverflow.com/questions/58742343/do-i-have-to-use-express-in-next-js-project/70945468#70945468) |
+| Apollo Client with SSR                                                                        | フルサポート                                                                               | 部分的にサポート                                                                                                                                                                                                                                      |
+| Relay with SSR                                                                                | フルサポート                                                                               | 部分的にサポート                                                                                                                                                                                                                                      |
+| <p align="center">**その他**</p>                                                              |                                                                                            |                                                                                                                                                                                                                                                       |
+| Headコンポーネント                                                                            | なし\*、 [react-helmet](https://github.com/nfl/react-helmet)などのツールを使用してください | あり、 next/head                                                                                                                                                                                                                                      |
+| Image component                                                                               | なし\*、 <Link href="/img">画像最適化ツール</Link>を用いてください                         | あり、 next/image                                                                                                                                                                                                                                     |
+| API routes                                                                                    | なし\*、 自分のサーバーか<Link text="RPCツール" href="/api-routes" />を使用してください    | あり                                                                                                                                                                                                                                                  |
+| Internationalization (i18n)                                                                   | 可能                                                                                       | 限定的                                                                                                                                                                                                                                                |
+| <Link href="/deploy-sync" >デプロイの同期</Link>                                              | 可能                                                                                       | 不可                                                                                                                                                                                                                                                  |
+| [独自のフレームワークを構築](https://vike.land)                                               | 可能                                                                                       | 不可                                                                                                                                                                                                                                                  |
+| <p align="center">**デプロイオプション**</p>                                                  |                                                                                            |                                                                                                                                                                                                                                                       |
+| Vercel                                                                                        | 最低限の設定で可能                                                                         | 設定なしで可能                                                                                                                                                                                                                                        |
+| Cloudflare Workers                                                                            | 最低限の設定で可能                                                                         | 不可、 [作業中](https://github.com/vercel/next.js/discussions/34179#discussioncomment-3578259)                                                                                                                                                        |
+| Node server (Docker, Heroku, Digital Ocean etc.)                                              | 最低限の設定で可能                                                                         | 制限はあるが可能                                                                                                                                                                                                                                      |
 
-1. Blazing fast development speed powered by Vite (on-demand transpiling, native ESM).
-1. Next.js has to have many examples and a whole plethora of libraries are existing just to integrate some library with Next.js because it's not trivial (for example [next-i18next](https://github.com/isaachinman/next-i18next)). With Vike, you just read the documentation of the library you want to integrate and you're good to go.
-1. When new React features arrive you can start to use it right away and don't have to wait for the Next.js team to integrate it. (Streaming API, server components, suspense on server, partial hydration, etc.)
-1. Next.js can't read files in `/public` directory after it was built, i.e. user uploaded images.
-1. With `getServerSideProps()`, Next.js blocks client-side rendering.
-1. You cannot bypass data fetching on client-side navigation ([Next.js - 	&#35;23921](https://github.com/vercel/next.js/discussions/23921)) while with Vike you're flexible and can choose what you want.
-1. Next.js is really pushing the Vercel platform and is starting to show in recent feature updates. Features that align with this are getting priority while important fixes are delayed.
-1. Next.js is leaning on serverless and complicates usage when you don't want it.
-
-
-## Detailed comparison table
-
-[From @patryk-smc and @redbar0n](https://github.com/vikejs/vike/issues/158#issuecomment-1250068578):
-
-|                                                                 | Vike                                                       | Next.js                       |
-| --------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------- |
-| UI Framework                                                    | Any (React, Preact, Solid, etc.)                           | React only                    |
-| Code-splitting and bundling                                     | Yes                                                        | Yes                           |
-| HMR                                                             | Yes, fast                                                  | Yes, slow                     |
-| SPA                                                             | Yes                                                        | Limited                       |
-| <p align="center">**SSR**</p>                                   |                                                            |                               |
-| Control                                                         | Full control                                               | Limited / Black box                      |
-| Renderers                                                       | Yes, create as many you need                               | Just one (`_app.ts` file)      |
-| RSC (React Server Components)                                   | Yes, <Link href="/react#react-server-components">partially</Link> | Yes, experimental       |
-| <p align="center">**Routing**</p>                                                        |                                                            |                               |
-| Filesystem Routing                                              | Yes                                                        | Yes                           |
-| <Link text="Domain-driven Filesystem Routing" href="/file-structure#domain-driven" />                                        | Yes                                                        | No                            |
-| <Link text="Client Routing" href="/client-routing" />           | Yes                                                        | Yes                           |
-| <Link text="Server Routing" href="/server-routing" />           | Yes                                                        | No                            |
-| <Link text="Base URL" href="/base-url" />                       | Yes                                                        | Limited                       |
-| <p align="center">**Integrations**</p>                                                    |                                                            |                               |
-HTTP server | No*, bring your own | Baked-in, custom server partially supported with caveats[[1]](https://github.com/vikejs/vike/issues/158#issuecomment-1355306156)[[2]](https://stackoverflow.com/questions/58742343/do-i-have-to-use-express-in-next-js-project/70945468#70945468) |
-| Apollo Client with SSR                                          | Fully supported                                            | Partially supported           |
-| Relay with SSR                                                  | Fully supported                                            | Partially supported           |
-| <p align="center">**Extras**</p>                                |                                                            |                               |
-| Head component                                                  | No*, use a tool like [react-helmet](https://github.com/nfl/react-helmet). | Yes, next/head                |
-| Image component                                                 | No*, use an <Link href="/img">image optimizer tool</Link>. | Yes, next/image               |
-| API routes                                                      | No*, use your server or an <Link text="RPC tool" href="/api-routes" />.   | Yes                           |
-| Internationalization (i18n)                                     | Yes                                                         | Limited                       |
-| <Link href="/deploy-sync" />                                    | Yes                                                         | No                            |
-| [Build your own framework](https://vike.land)                   | Yes                                                         | No                            |
-| <p align="center">**Deployment options**</p>                                              |                                                            |                               |
-| Vercel                                                          | Yes, minimal config                                        | Yes, zero config              |
-| Cloudflare Workers                                              | Yes, minimal config                                        | No, [work in progress](https://github.com/vercel/next.js/discussions/34179#discussioncomment-3578259)                            |
-| Node server (Docker, Heroku, Digital Ocean etc.)                | Yes, minimal config                                        | Yes, but limited              |
-
-(\*) Vike doesn't ship those extras by design.
+(\*) Vikeははデザイン上、そのような余分なものは行いません。
