@@ -38,6 +38,13 @@ function ssrEmitAssetsPlugin(): Plugin {
       }
 
       await fs.cp(assetsDirServerAbs, assetsDirClientAbs, { recursive: true, force: true })
+
+
+      // read ssrManifest
+      // find css files for each page
+      // inject the css file to dist/client/[page]/index.html head (if its not there)
+
+
       // await fs.rm(assetsDirServerAbs, { recursive: true })
     }
   }
