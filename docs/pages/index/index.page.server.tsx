@@ -9,10 +9,19 @@ function Page() {
   return (
     <>
       <GlobalNote>
-        The <i>V1 design</i> is released, see <Link text="migration guide" href="/migration/v1-design" />.
+        こちらは、日本語版のVikeのドキュメントです。 <br />
+        誤訳・表記ゆれ・未修正箇所などありましたら
+        <a href="https://github.com/vike-ja-support/vike-docs-ja/issues">こちらのIssue</a>
+        にお願いします。
       </GlobalNote>
       <GlobalNote>
-        Vite-plugin-ssr has been renamed Vike, see <a href="https://vite-plugin-ssr.com/vike">migration guide</a>.
+        <i>V1デザイン</i>がリリースされました。
+        <Link text="マイグレーションガイド" href="/migration/v1-design" />
+        をご覧ください。
+      </GlobalNote>
+      <GlobalNote>
+        Vite-plugin-ssrはVikeへと名称が変更されました。
+        <a href="https://vite-plugin-ssr.com/vike">マイグレーションガイド</a>をご覧ください。
       </GlobalNote>
       <Header />
       <HorizontalLine primary={true} />
