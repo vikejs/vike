@@ -246,8 +246,6 @@ async function runPrerender(
   }
 
   warnMissingPages(prerenderedPageContexts, doNotPrerenderList, renderContext, partial)
-
-  await injectCssAfterPrerender()
 }
 
 async function collectDoNoPrerenderList(

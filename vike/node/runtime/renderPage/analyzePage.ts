@@ -22,13 +22,13 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRunt
       eagerlyImported: false
     })
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
-    if (!getGlobalContext().isProduction) {
-      clientDependencies.push({
-        id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, false),
-        onlyAssets: true,
-        eagerlyImported: false
-      })
-    }
+    // if (!getGlobalContext().isProduction) {
+    clientDependencies.push({
+      id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, false),
+      onlyAssets: true,
+      eagerlyImported: false
+    })
+    // }
     /* Remove?
     Object.values(pageConfig.configElements).forEach((configElement) => {
       if (configElement.importPath) {

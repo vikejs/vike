@@ -246,9 +246,6 @@ ${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting, c
         fileContent += getGlobs(globRoots, isBuild, fileType, 'extractExportNames')
       }
     })
-  if (configVike.includeAssetsImportedByServer && isForClientSide) {
-    fileContent += getGlobs(globRoots, isBuild, '.page.server')
-  }
 
   return fileContent
 }

@@ -13,11 +13,12 @@ import {
   assertWarning,
   getGlobalObject,
   getNodeEnv,
+  getOutDirs,
   isPlainObject,
   objectAssign
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
-import type { ResolvedConfig, ViteDevServer, PreviewServer as VitePreviewServer } from 'vite'
+import { resolveConfig, type ResolvedConfig, type ViteDevServer, type PreviewServer as VitePreviewServer } from 'vite'
 import { loadImportBuild } from './globalContext/loadImportBuild.js'
 import { setPageFiles } from '../../shared/getPageFiles.js'
 import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest.js'
@@ -25,6 +26,10 @@ import type { ConfigVikeResolved } from '../../shared/ConfigVike.js'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
+
+import fs from 'fs/promises'
+import path from 'path'
+
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   viteDevServer?: ViteDevServer
@@ -129,7 +134,15 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
   } else {
     const buildEntries = await loadImportBuild(outDir)
     assertBuildEntries(buildEntries, isPrerendering ?? false)
-    const { pageFiles, clientManifest, pluginManifest } = buildEntries
+    const { pageFiles, clientManifest: __clientManifest, pluginManifest } = buildEntries
+
+    //TODO: remove
+    const config = await resolveConfig({ build: { ssr: true } }, 'build')
+
+    const outDirs = getOutDirs(config)
+
+    const clientManifest = JSON.parse(await fs.readFile(path.posix.join(outDirs.outDirRoot, 'assets.json'), 'utf-8'))
+
     setPageFiles(pageFiles)
     assertViteManifest(clientManifest)
     assertPluginManifest(pluginManifest)

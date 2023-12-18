@@ -163,9 +163,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
 async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedByServer: boolean) {
   const isForClientSide = !viteIsSSR(config)
   const fileTypes: FileType[] = isForClientSide ? ['.page', '.page.client'] : ['.page', '.page.server']
-  if (isForClientSide && includeAssetsImportedByServer) {
-    fileTypes.push('.page.server')
-  }
+
   let pageFiles = await findPageFiles(config, fileTypes, false)
   const pageFileEntries: Record<string, string> = {}
   pageFiles = unique(pageFiles)

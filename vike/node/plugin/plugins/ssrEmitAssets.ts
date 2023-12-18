@@ -7,6 +7,7 @@ import { existsSync } from 'fs'
 import { ViteManifestEntry } from '../../shared/ViteManifest.js'
 import fg from 'fast-glob'
 import { assert, getGlobalObject } from '../utils.js'
+import { getGlobalContext } from '../../runtime/globalContext.js'
 
 const globalObject = getGlobalObject('ssrEmitAssets.ts', {
   outDirServerAbs: '',
@@ -37,6 +38,18 @@ function ssrEmitAssetsPlugin(): Plugin {
     async closeBundle() {
       const assetsDirServerAbs = path.posix.join(globalObject.outDirServerAbs, 'assets')
       const assetsDirClientAbs = path.posix.join(globalObject.outDirClientAbs, 'assets')
+
+      const clientManifestPath = path.posix.join(globalObject.outDirClientAbs, '..', 'assets.json')
+      const clientManifestParsed = JSON.parse(await fs.readFile(clientManifestPath, 'utf-8'))
+
+      const serverManifestPath = path.posix.join(globalObject.outDirServerAbs, 'manifest.json')
+      const serverManifestParsed = JSON.parse(await fs.readFile(serverManifestPath, 'utf-8'))
+
+      //TODO: deduplicate assets
+      const mergedManifest = { ...clientManifestParsed, ...serverManifestParsed }
+      await fs.writeFile(clientManifestPath, JSON.stringify(mergedManifest), 'utf-8')
+
+      // getGlobalContext().clientManifest = mergeManifests
       if (!existsSync(assetsDirServerAbs)) {
         return
       }
@@ -45,6 +58,17 @@ function ssrEmitAssetsPlugin(): Plugin {
       await fs.rm(assetsDirServerAbs, { recursive: true })
     }
   }
+}
+
+async function mergeManifests() {
+  const clientManifestPath = path.posix.join(globalObject.outDirClientAbs, '..', 'assets.json')
+  const clientManifestParsed = JSON.parse(await fs.readFile(clientManifestPath, 'utf-8'))
+
+  const serverManifestPath = path.posix.join(globalObject.outDirServerAbs, 'manifest.json')
+  const serverManifestParsed = JSON.parse(await fs.readFile(serverManifestPath, 'utf-8'))
+
+  //TODO: deduplicate assets
+  return [...clientManifestParsed, ...serverManifestParsed]
 }
 
 async function injectCssAfterPrerender() {
