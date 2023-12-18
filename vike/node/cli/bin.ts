@@ -61,8 +61,9 @@ cli
         if (error && typeof error === 'object' && 'status' in error && error.status === 33) {
           onRestart()
 
-          // Unhandled exceptions don't close the cli process
-          // Restart the dev server on the next file(avoid infinite restart loop)
+          // Unhandled exceptions propagate as exit code 1
+          // don't close the cli process
+          // Restart the dev server on the next file change (avoid infinite restart loop)
         } else {
           const watcher = chokidar.watch('**/*.ts', { cwd: config.root })
           watcher.once('change', () => {
