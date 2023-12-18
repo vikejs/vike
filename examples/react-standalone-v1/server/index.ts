@@ -9,22 +9,23 @@ foo;
 
 startServer()
 
-process.on('unhandledRejection', (rejectValue) => {
-  console.log('CATCHED by user-land unhandledRejection event')
-  console.error(rejectValue)
-})
-process.on('uncaughtException', (err) => {
-  console.log('CATCHED by user-land uncaughtException event')
-  console.error(err)
-})
-setTimeout(() => {
-  throw new Error("I'm caught")
-}, 2000)
-setTimeout(() => {
-  ;(async () => {
-    throw new Error("I'm caught as well")
-  })()
-}, 2000)
+// process.on('unhandledRejection', (rejectValue) => {
+//   console.log('CATCHED by user-land unhandledRejection event')
+//   console.error(rejectValue)
+// })
+// process.on('uncaughtException', (err) => {
+//   console.log('CATCHED by user-land uncaughtException event')
+//   console.error(err)
+// })
+
+// setTimeout(() => {
+//   throw new Error("I'm caught")
+// }, 2000)
+// setTimeout(() => {
+//   ;(async () => {
+//     throw new Error("I'm caught as well")
+//   })()
+// }, 2000)
 
 async function startServer() {
   const app = express()

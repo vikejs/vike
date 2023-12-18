@@ -58,8 +58,6 @@ cli
       try {
         execSync(`node ${scriptPath}`, { stdio: 'inherit' })
       } catch (error) {
-        console.log('ALMAFA', error)
-
         if (error && typeof error === 'object' && 'status' in error && error.status === 33) {
           onRestart()
 
@@ -117,19 +115,19 @@ cli.version(projectInfo.projectVersion)
 
 cli.parse(process.argv.length === 2 ? [...process.argv, '--help'] : process.argv)
 
-process.on('unhandledRejection', (rejectValue) => {
-  /* TODO: use `throw` again for commmands other than `$ vike dev`
-  throw rejectValue
-  */
+// process.on('unhandledRejection', (rejectValue) => {
+//   /* TODO: use `throw` again for commmands other than `$ vike dev`
+//   throw rejectValue
+//   */
 
-  // TODO: remove this as it doesn't seem useful?
-  // This isn't called: Vite seems to execute user-land code in a way that prevents user-land unhandled rejections to propagate to vike-land.
-  console.log('CATCHED by vike-land unhandledRejection event')
-  console.error(rejectValue)
-})
+//   // TODO: remove this as it doesn't seem useful?
+//   // This isn't called: Vite seems to execute user-land code in a way that prevents user-land unhandled rejections to propagate to vike-land.
+//   console.log('CATCHED by vike-land unhandledRejection event')
+//   console.error(rejectValue)
+// })
 
-process.on('uncaughtException', (err) => {
-  // This also isn't called.
-  console.log('CATCHED by vike-land uncaughtException event')
-  console.error(err)
-})
+// process.on('uncaughtException', (err) => {
+//   // This also isn't called.
+//   console.log('CATCHED by vike-land uncaughtException event')
+//   console.error(err)
+// })
