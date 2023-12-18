@@ -125,9 +125,10 @@ function devServerPlugin(): Plugin {
         if (reload === 'fast') {
           await closeAllServers()
           try {
+            // This only catches top-level errors
+            // doestn't catch unhandled async errors(we do that in the outer cli process)
             await loadEntry()
           } catch (err) {
-            console.log('CATCHED')
             console.error(err)
           }
         } else {

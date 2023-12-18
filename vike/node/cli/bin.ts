@@ -31,7 +31,7 @@ cli
   .action(async (root, options) => {
     logViteAny('Starting development server', 'info', null, true)
 
-    await resolveConfig({}, 'serve')
+    const config = await resolveConfig({}, 'serve')
     const serverConfig = getServerConfig()
     if (!serverConfig?.entry) {
       let command = 'vite dev'
@@ -58,8 +58,19 @@ cli
       try {
         execSync(`node ${scriptPath}`, { stdio: 'inherit' })
       } catch (error) {
+        console.log('ALMAFA', error)
+
         if (error && typeof error === 'object' && 'status' in error && error.status === 33) {
           onRestart()
+
+          // Unhandled exceptions don't close the cli process
+          // Restart the dev server on the next file(avoid infinite restart loop)
+        } else {
+          const watcher = chokidar.watch('**/*.ts', { cwd: config.root })
+          watcher.once('change', () => {
+            watcher.close()
+            onRestart()
+          })
         }
         // { stdio: 'inherit' } already logged the error
       }
