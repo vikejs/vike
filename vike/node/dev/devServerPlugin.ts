@@ -14,7 +14,6 @@ function devServerPlugin(): Plugin {
   let entryDeps: Set<string>
   let httpServers: http.Server[] = []
   let sockets: net.Socket[] = []
-  let patchedHttp = false
 
   async function loadEntry() {
     const { entry } = getServerConfig()!
@@ -113,24 +112,23 @@ function devServerPlugin(): Plugin {
         process.exit(33)
       }
       viteServer = server
-      if (!patchedHttp) {
-        patchedHttp = true
-        patchHttp()
-      }
+
+      // The code below only runs once, on initial start
+      process.on('unhandledRejection', (rejectValue) => {
+        console.error(rejectValue)
+      })
+      process.on('uncaughtException', (err) => {
+        console.error(err)
+      })
+      patchHttp()
       loadEntry()
     },
     async handleHotUpdate(ctx) {
-      if (ctx.modules.some((module) => module.id && entryDeps.has(module.id))) {
+      if (!entryDeps || ctx.modules.some((module) => module.id && entryDeps.has(module.id))) {
         const { reload } = getServerConfig()!
         if (reload === 'fast') {
           await closeAllServers()
-          try {
-            // This only catches top-level errors
-            // doestn't catch unhandled async errors(we do that in the outer cli process)
-            await loadEntry()
-          } catch (err) {
-            console.error(err)
-          }
+          await loadEntry()
         } else {
           process.exit(33)
         }

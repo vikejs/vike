@@ -60,16 +60,6 @@ cli
       } catch (error) {
         if (error && typeof error === 'object' && 'status' in error && error.status === 33) {
           onRestart()
-
-          // Unhandled exceptions propagate as exit code 1
-          // don't close the cli process
-          // Restart the dev server on the next file change (avoid infinite restart loop)
-        } else {
-          const watcher = chokidar.watch('**/*.ts', { cwd: config.root })
-          watcher.once('change', () => {
-            watcher.close()
-            onRestart()
-          })
         }
         // { stdio: 'inherit' } already logged the error
       }
@@ -115,20 +105,3 @@ cli.help()
 cli.version(projectInfo.projectVersion)
 
 cli.parse(process.argv.length === 2 ? [...process.argv, '--help'] : process.argv)
-
-// process.on('unhandledRejection', (rejectValue) => {
-//   /* TODO: use `throw` again for commmands other than `$ vike dev`
-//   throw rejectValue
-//   */
-
-//   // TODO: remove this as it doesn't seem useful?
-//   // This isn't called: Vite seems to execute user-land code in a way that prevents user-land unhandled rejections to propagate to vike-land.
-//   console.log('CATCHED by vike-land unhandledRejection event')
-//   console.error(rejectValue)
-// })
-
-// process.on('uncaughtException', (err) => {
-//   // This also isn't called.
-//   console.log('CATCHED by vike-land uncaughtException event')
-//   console.error(err)
-// })

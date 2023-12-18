@@ -3,20 +3,10 @@ import { renderPage } from 'vike/server'
 import { telefunc } from 'telefunc'
 import { root } from './root'
 
-/* Start the server, then uncomment this line to see that an error doesn't completely shut down the server.
-foo;
-//*/
+// Caught before / after server start
+// foo
 
 startServer()
-
-// process.on('unhandledRejection', (rejectValue) => {
-//   console.log('CATCHED by user-land unhandledRejection event')
-//   console.error(rejectValue)
-// })
-// process.on('uncaughtException', (err) => {
-//   console.log('CATCHED by user-land uncaughtException event')
-//   console.error(err)
-// })
 
 // setTimeout(() => {
 //   throw new Error("I'm caught")
@@ -43,10 +33,6 @@ async function startServer() {
   })
 
   app.get('*', async (req, res, next) => {
-    // This error is caught as well. But the HTTP request hangs forever. I guess the proper way to handle this is to tell users to use an Express.js error middleware that gracefully handles errors.
-    /* Start the server, then uncomment this line to see that an error doesn't completely shut down the server.
-    foo;
-    //*/
     const pageContextInit = {
       urlOriginal: req.originalUrl
     }
