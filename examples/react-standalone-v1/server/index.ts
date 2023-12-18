@@ -3,6 +3,10 @@ import { renderPage } from 'vike/server'
 import { telefunc } from 'telefunc'
 import { root } from './root'
 
+/* Start the server, then uncomment this line to see that an error doesn't completely shut down the server.
+foo;
+//*/
+
 startServer()
 
 async function startServer() {

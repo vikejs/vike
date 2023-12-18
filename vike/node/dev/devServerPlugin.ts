@@ -124,7 +124,12 @@ function devServerPlugin(): Plugin {
         const { reload } = getServerConfig()!
         if (reload === 'fast') {
           await closeAllServers()
-          loadEntry()
+          try {
+            await loadEntry()
+          } catch (err) {
+            console.log('CATCHED')
+            console.error(err)
+          }
         } else {
           process.exit(33)
         }
