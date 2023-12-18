@@ -9,6 +9,23 @@ foo;
 
 startServer()
 
+process.on('unhandledRejection', (rejectValue) => {
+  console.log('CATCHED by user-land unhandledRejection event')
+  console.error(rejectValue)
+})
+process.on('uncaughtException', (err) => {
+  console.log('CATCHED by user-land uncaughtException event')
+  console.error(err)
+})
+setTimeout(() => {
+  throw new Error("I'm caught")
+}, 2000)
+setTimeout(() => {
+  ;(async () => {
+    throw new Error("I'm caught as well")
+  })()
+}, 2000)
+
 async function startServer() {
   const app = express()
 
@@ -25,6 +42,10 @@ async function startServer() {
   })
 
   app.get('*', async (req, res, next) => {
+    // This error is caught as well. But the HTTP request hangs forever. I guess the proper way to handle this is to tell users to use an Express.js error middleware that gracefully handles errors.
+    /* Start the server, then uncomment this line to see that an error doesn't completely shut down the server.
+    foo;
+    //*/
     const pageContextInit = {
       urlOriginal: req.originalUrl
     }
