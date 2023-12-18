@@ -242,8 +242,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.5.25
-        version: 0.5.25(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1)
+        specifier: ^0.5.27
+        version: 0.5.27(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1)
       '@types/node':
         specifier: ^15.12.1
         version: 15.14.9
@@ -2600,8 +2600,8 @@ packages:
     requiresBuild: true
     dev: true
 
-  /@brillout/docpress@0.5.25(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1):
-    resolution: {integrity: sha512-gyez+Q2vAmuKnmffsaknHTfpfDDTtNzleHSE7bPH096MOI5ycOls8vrSKIv+jPZnI9Jm59jilHlcDBS429NN1g==}
+  /@brillout/docpress@0.5.27(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1):
+    resolution: {integrity: sha512-yuDDlwXSQIyLQwvDw19g0+PQqOXPN/59C9ZWpFzi9FJuxQHHy4QX7Gl7Qt5nVl0zpZCp/LD1B3joYQIa8XFz5A==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -4851,7 +4851,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.5)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.0
-      vite: 4.5.1(@types/node@20.10.4)
+      vite: 4.5.1(@types/node@15.14.9)
     transitivePeerDependencies:
       - supports-color
     dev: false
