@@ -2,9 +2,14 @@ export { getServerConfig, serverEntryPlugin }
 
 import type { Plugin } from 'vite'
 import type { ConfigVikeUserProvided, ServerResolved } from '../../../shared/ConfigVike.js'
-import { assertUsage, getGlobalObject } from '../utils.js'
+import { assertUsage, getGlobalObject, assert, injectRollupInputs } from '../utils.js'
 import { standalonePlugin } from './standalonePlugin.js'
 import path from 'path'
+import pc from '@brillout/picocolors'
+import { createRequire } from 'module'
+// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
+const importMetaUrl: string = import.meta.url
+const require_ = createRequire(importMetaUrl)
 
 const globalObject = getGlobalObject<{
   serverConfig: ServerResolved
@@ -28,21 +33,25 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
     return {
       name: 'vike:serverEntry',
       enforce: 'pre',
-      apply(config, env) {
+      apply(_config, env) {
         //@ts-expect-error Vite 5 || Vite 4
         return !!(env.isSsrBuild || env.ssrBuild)
       },
-      config(config, env) {
-        return {
-          build: {
-            rollupOptions: {
-              input: { index: serverConfig.entry }
-            }
-          }
-        }
-      },
       configResolved(config) {
         root = config.root
+        let serverEntryFilePath = path.join(config.root, serverConfig.entry)
+        try {
+          serverEntryFilePath = require.resolve(serverEntryFilePath)
+        } catch (err) {
+          assert((err as Record<string, unknown>).code === 'MODULE_NOT_FOUND')
+          assertUsage(
+            false,
+            `No file found at ${serverEntryFilePath}. Does the value ${pc.cyan(`'${serverConfig.entry}'`)} of ${pc.cyan(
+              'server.entry'
+            )} point to an existing file?`
+          )
+        }
+        config.build.rollupOptions.input = injectRollupInputs({ index: serverEntryFilePath }, config)
       },
       renderChunk(code, chunk) {
         if (chunk.facadeModuleId === path.posix.join(root, serverConfig.entry)) {
