@@ -25,7 +25,6 @@ import { commonConfig } from './plugins/commonConfig.js'
 import { extensionsAssets } from './plugins/extensionsAssets.js'
 import { baseUrls } from './plugins/baseUrls.js'
 import { envVarsPlugin } from './plugins/envVars.js'
-import { ssrEmitAssetsPlugin } from './plugins/ssrEmitAssets.js'
 import pc from '@brillout/picocolors'
 
 markEnvAsVite()
@@ -43,7 +42,6 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     packageJsonFile(),
     removeRequireHookPlugin(),
     distFileNames(),
-    ssrEmitAssetsPlugin(),
     extractExportNamesPlugin(),
     suppressRollupWarning(),
     setGlobalContext(),

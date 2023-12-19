@@ -13,7 +13,8 @@ import {
   assertPosixPath,
   assertUsage,
   injectRollupInputs,
-  normalizeRollupInput
+  normalizeRollupInput,
+  getOutDirs
 } from '../utils.js'
 import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
@@ -28,6 +29,7 @@ import { createRequire } from 'module'
 import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
 import fs from 'fs/promises'
 import path from 'path'
+import { existsSync } from 'fs'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -36,6 +38,8 @@ const manifestTempFile = '_temp_manifest.json'
 
 function buildConfig(): Plugin {
   let generateManifest: boolean
+  let isSsrBuild = false
+  let outDirs: ReturnType<typeof getOutDirs>
   return {
     name: 'vike:buildConfig',
     apply: 'build',
@@ -48,15 +52,18 @@ function buildConfig(): Plugin {
         assert(Object.keys(entries).length > 0)
         config.build.rollupOptions.input = injectRollupInputs(entries, config)
         addLogHook()
+        outDirs = getOutDirs(config)
       }
     },
     config(config) {
-      generateManifest = !viteIsSSR(config)
+      isSsrBuild = viteIsSSR(config)
       return {
         build: {
           outDir: resolveOutDir(config),
-          manifest: generateManifest ? manifestTempFile : false,
-          copyPublicDir: !viteIsSSR(config)
+          manifest: manifestTempFile,
+          copyPublicDir: !isSsrBuild,
+          ssrEmitAssets: true,
+          cssMinify: 'esbuild'
         }
       } satisfies UserConfig
     },
@@ -73,8 +80,30 @@ function buildConfig(): Plugin {
         //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
         //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
         const manifestFilePathNew = path.join(dir, '..', 'assets.json')
+        if (isSsrBuild) {
+          const clientManifest = JSON.parse(await fs.readFile(manifestFilePathNew, 'utf-8').catch(() => '{}'))
+          const serverManifest = JSON.parse(await fs.readFile(manifestFilePathOld, 'utf-8'))
+          console.log({
+            clientManifest,
+            serverManifest
+          })
+
+          const mergedManifest = { ...clientManifest, ...serverManifest }
+          await fs.writeFile(manifestFilePathOld, JSON.stringify(mergedManifest), 'utf-8')
+        }
         await fs.rename(manifestFilePathOld, manifestFilePathNew)
       }
+    },
+    async closeBundle() {
+      if (!isSsrBuild) return
+      const assetsDirServerAbs = path.posix.join(outDirs.outDirServer, 'assets')
+      const assetsDirClientAbs = path.posix.join(outDirs.outDirClient, 'assets')
+      if (!existsSync(assetsDirServerAbs)) {
+        return
+      }
+      //TODO: This can create duplicates
+      await fs.cp(assetsDirServerAbs, assetsDirClientAbs, { recursive: true, force: true })
+      await fs.rm(assetsDirServerAbs, { recursive: true })
     }
   }
 }

@@ -134,14 +134,14 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
   } else {
     const buildEntries = await loadImportBuild(outDir)
     assertBuildEntries(buildEntries, isPrerendering ?? false)
-    const { pageFiles, clientManifest: __clientManifest, pluginManifest } = buildEntries
+    const { pageFiles, clientManifest, pluginManifest } = buildEntries
 
-    //TODO: remove
-    const config = await resolveConfig({ build: { ssr: true } }, 'build')
+    // //TODO: remove
+    // const config = await resolveConfig({ build: { ssr: true } }, 'build')
 
-    const outDirs = getOutDirs(config)
+    // const outDirs = getOutDirs(config)
 
-    const clientManifest = JSON.parse(await fs.readFile(path.posix.join(outDirs.outDirRoot, 'assets.json'), 'utf-8'))
+    // const clientManifest = JSON.parse(await fs.readFile(path.posix.join(outDirs.outDirRoot, 'assets.json'), 'utf-8'))
 
     setPageFiles(pageFiles)
     assertViteManifest(clientManifest)

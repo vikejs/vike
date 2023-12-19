@@ -59,7 +59,6 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
-import { injectCssAfterPrerender } from '../plugin/plugins/ssrEmitAssets.js'
 
 type HtmlFile = {
   urlOriginal: string
