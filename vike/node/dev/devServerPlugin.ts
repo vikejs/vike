@@ -8,6 +8,7 @@ import type { Plugin, ViteDevServer } from 'vite'
 import { nativeDependecies } from '../plugin/shared/nativeDependencies.js'
 import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
+import pc from '@brillout/picocolors'
 
 function devServerPlugin(): Plugin {
   let viteServer: ViteDevServer
@@ -86,12 +87,27 @@ function devServerPlugin(): Plugin {
   }
 
   const closeAllServers = async () => {
-    await Promise.all([
+    const anHttpServerWasClosed = httpServers.length > 0
+    const promise = Promise.all([
       ...sockets.map((socket) => socket.destroy()),
       ...httpServers.map((httpServer) => util.promisify(httpServer.close.bind(httpServer))())
     ])
     sockets = []
     httpServers = []
+    await promise
+    return anHttpServerWasClosed
+  }
+
+  const onError = (err: unknown) => {
+    console.error(err)
+    closeAllServers().then((anHttpServerWasClosed) => {
+      if (anHttpServerWasClosed) {
+        // Note(brillout): we can do such polishing at the end of the PR, once we have nailed the overall structure. (I'm happy to help with the polishing.)
+        // TODO: polish log (e.g. use [vike] prefix logging)
+        // TODO: implement `r` shortcut
+        console.log(`Server shutdown. Update a server file, or press ${pc.cyan('r')}, to restart.`)
+      }
+    })
   }
 
   return {
@@ -114,12 +130,9 @@ function devServerPlugin(): Plugin {
       viteServer = server
 
       // The code below only runs once, on initial start
-      process.on('unhandledRejection', (rejectValue) => {
-        console.error(rejectValue)
-      })
-      process.on('uncaughtException', (err) => {
-        console.error(err)
-      })
+      process.on('unhandledRejection', onError)
+      process.on('uncaughtException', onError)
+
       patchHttp()
       loadEntry()
     },

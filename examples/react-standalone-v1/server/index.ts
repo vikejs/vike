@@ -4,7 +4,7 @@ import { telefunc } from 'telefunc'
 import { root } from './root'
 
 // Caught before / after server start
-// foo
+// foo;
 
 startServer()
 
@@ -33,6 +33,9 @@ async function startServer() {
   })
 
   app.get('*', async (req, res, next) => {
+    // Caught as well
+    // foo;
+
     const pageContextInit = {
       urlOriginal: req.originalUrl
     }
