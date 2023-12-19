@@ -41,7 +41,7 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
         root = config.root
         let serverEntryFilePath = path.join(config.root, serverConfig.entry)
         try {
-          serverEntryFilePath = require.resolve(serverEntryFilePath)
+          serverEntryFilePath = require_.resolve(serverEntryFilePath)
         } catch (err) {
           assert((err as Record<string, unknown>).code === 'MODULE_NOT_FOUND')
           assertUsage(
