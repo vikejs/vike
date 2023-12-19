@@ -9,12 +9,14 @@ import { nativeDependecies } from '../plugin/shared/nativeDependencies.js'
 import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 import pc from '@brillout/picocolors'
+import { assert } from '../runtime/utils.js'
 
 function devServerPlugin(): Plugin {
   let viteServer: ViteDevServer
   let entryDeps: Set<string>
   let httpServers: http.Server[] = []
   let sockets: net.Socket[] = []
+  let configureServerWasCalled = false
 
   async function loadEntry() {
     const { entry } = getServerConfig()!
@@ -129,7 +131,8 @@ function devServerPlugin(): Plugin {
       }
       viteServer = server
 
-      // The code below only runs once, on initial start
+      assert(!configureServerWasCalled)
+      configureServerWasCalled = true
       process.on('unhandledRejection', onError)
       process.on('uncaughtException', onError)
 
