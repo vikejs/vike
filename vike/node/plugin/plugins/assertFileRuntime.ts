@@ -28,12 +28,12 @@ function assertFileRuntime(): Plugin {
       assert(resolved)
 
       const additionalMessage = importer ? ` (imported by ${importer.split('?')[0]})` : ''
-      const modulePath = resolved.id.split('?')[0] || ''
-      if (options?.ssr && modulePath.includes('.client')) {
-        assertUsage(false, `Client-only module "${modulePath}" included in server bundle${additionalMessage}.`)
+      const filePath = resolved.id.split('?')[0] || ''
+      if (options?.ssr && filePath.includes('.client')) {
+        assertUsage(false, `Client-only module "${filePath}" included in server bundle${additionalMessage}.`)
       }
-      if (!options?.ssr && modulePath.includes('.server')) {
-        assertUsage(false, `Server-only module "${modulePath}" included in client bundle${additionalMessage}.`)
+      if (!options?.ssr && filePath.includes('.server')) {
+        assertUsage(false, `Server-only module "${filePath}" included in client bundle${additionalMessage}.`)
       }
     }
   }
