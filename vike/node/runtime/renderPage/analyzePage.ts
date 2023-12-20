@@ -7,7 +7,6 @@ import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.
 import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.js'
-import { getGlobalContext } from '../globalContext.js'
 import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
 
 function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRuntime, pageId: string): AnalysisResult {
@@ -21,14 +20,12 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRunt
       onlyAssets: false,
       eagerlyImported: false
     })
-    // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
-    // if (!getGlobalContext().isProduction) {
     clientDependencies.push({
       id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, false),
       onlyAssets: true,
       eagerlyImported: false
     })
-    // }
+
     /* Remove?
     Object.values(pageConfig.configElements).forEach((configElement) => {
       if (configElement.importPath) {

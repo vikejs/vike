@@ -72,8 +72,6 @@ function getLoadConfigValuesAll(
   )
   lines.push('};')
 
-
-
   const code = [...importStatements, ...lines].join('\n')
   return code
 }

@@ -11,22 +11,20 @@ function getVirtualFileIdPageConfigValuesAll(pageId: string, isForClientSide: bo
   const id = `${isForClientSide ? idBaseClient : idBaseServer}${pageId}` as const
   return id
 }
-function isVirtualFileIdPageConfigValuesAll(
-  id: string
-): false | { isForClientSide: boolean; pageId: string; } {
+function isVirtualFileIdPageConfigValuesAll(id: string): false | { isForClientSide: boolean; pageId: string } {
   id = getVirtualFileId(id)
   if (!id.includes(idBase)) return false
   assert(id.startsWith(idBase))
   if (id.startsWith(idBaseClient)) {
     return {
       pageId: id.slice(idBaseClient.length),
-      isForClientSide: true,
+      isForClientSide: true
     }
   }
   if (id.startsWith(idBaseServer)) {
     return {
       pageId: id.slice(idBaseServer.length),
-      isForClientSide: false,
+      isForClientSide: false
     }
   }
   assert(false)
