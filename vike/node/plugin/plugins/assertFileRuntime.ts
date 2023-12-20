@@ -18,8 +18,12 @@ function assertFileRuntime(): Plugin {
         return
       }
 
-      // I don't know why and who sets importer to '<stdin>' (I guess Vite?).
-      if (importer === '<stdin>') {
+      if (
+        // Don't show Vike's virtual modules that import plus files such as /pages/about/+Page.js
+        importer?.includes('virtual:vike:') ||
+        // I don't know why and who sets importer to '<stdin>' (I guess Vite?).
+        importer === '<stdin>'
+      ) {
         importer = undefined
       }
 
