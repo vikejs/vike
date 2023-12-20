@@ -246,6 +246,7 @@ ${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting, c
         fileContent += getGlobs(globRoots, isBuild, fileType, 'extractExportNames')
       }
     })
+  // TODO: remove ?extractAssets code
 
   return fileContent
 }

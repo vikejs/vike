@@ -32,7 +32,7 @@ function distFileNames(): Plugin {
     }
   }
 }
-
+// TODO: remove ?extractAssets code
 function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): string {
   const assetsDir = getAssetsDir(config)
   const dir = assetsDir + '/static'
@@ -97,6 +97,7 @@ function removePathSeperators(name: string) {
   return name
 }
 
+// TODO: remove ?extractAssets code
 function clean(name: string, removePathSep?: boolean, fixGlob?: boolean): string {
   if (fixGlob) {
     name = workaroundGlob(name)

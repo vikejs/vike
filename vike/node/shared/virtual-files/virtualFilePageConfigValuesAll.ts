@@ -11,6 +11,8 @@ function getVirtualFileIdPageConfigValuesAll(pageId: string, isForClientSide: bo
   const id = `${isForClientSide ? idBaseClient : idBaseServer}${pageId}` as const
   return id
 }
+
+// TODO: remove ?extractAssets code
 function isVirtualFileIdPageConfigValuesAll(id: string): false | { isForClientSide: boolean; pageId: string } {
   id = getVirtualFileId(id)
   if (!id.includes(idBase)) return false

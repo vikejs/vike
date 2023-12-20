@@ -13,6 +13,8 @@ import { getTerminalWidth } from './getTerminWidth.js'
 assert(!isBrowser())
 ;(globalThis as any).__brillout_debug_createDebugger = createDebugger
 
+
+// TODO: remove ?extractAssets code
 type Namespace =
   | 'vike:error'
   | 'vike:extractExportNames'

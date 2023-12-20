@@ -71,6 +71,7 @@ function getLoadConfigValuesAll(
     )
   )
   lines.push('};')
+  // TODO: remove ?extractAssets code
 
   const code = [...importStatements, ...lines].join('\n')
   return code

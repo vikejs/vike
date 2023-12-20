@@ -45,6 +45,7 @@ function assertResolveAlias(config: ResolvedConfig) {
         assertUsage(find !== '', msg)
       }
 
+      // TODO: remove ?extractAssets code
       // Ensure path alias are distinguishable from npm package names, which is needed by:
       //  - determineOptimizeDeps()
       //  - in general: using un-distinguishable path aliases is asking for trouble
