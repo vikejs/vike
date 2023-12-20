@@ -26,9 +26,12 @@ function assertFileRuntime(): Plugin {
       const resolved = await this.resolve(source, importer, options)
       // Is there a situation when resolved is null?
       assert(resolved)
+      const filePath = resolved.id.split('?')[0]!
+
+      // TODO/v1-release: remove
+      if (filePath.endsWith('.css')) return
 
       const additionalMessage = importer ? ` (imported by ${importer.split('?')[0]})` : ''
-      const filePath = resolved.id.split('?')[0]!
       if (options?.ssr && filePath.includes('.client.')) {
         assertUsage(false, `Client-only module "${filePath}" included in server bundle${additionalMessage}.`)
       }
