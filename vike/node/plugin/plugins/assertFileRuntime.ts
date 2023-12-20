@@ -32,6 +32,8 @@ function assertFileRuntime(): Plugin {
       assert(resolved)
       const modulePath = resolved.id.split('?')[0]!
 
+      // `.server.js` and `.client.js` should only apply to user files
+      if (modulePath.includes('/node_modules/')) return
       // TODO/v1-release: remove
       if (modulePath.endsWith('.css')) return
 
