@@ -355,6 +355,7 @@ function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManife
     }
   }
 
+  // TODO: (maybe)remove for v1
   // Add the completely missing entries to the client manifest, from the server manifest
   for (const [serverEntryKey, serverEntryValue] of Object.entries(serverManifest)) {
     if (!clientManifest[serverEntryKey]) {
@@ -367,6 +368,8 @@ function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManife
 
 function getPageIdFromManifestEntry(entry: string) {
   let pageId = determinePageIdV1(entry)
+
+  // TODO: remove for v1
   if (!pageId) {
     pageId = determinePageIdOld(entry)
   }
@@ -375,8 +378,12 @@ function getPageIdFromManifestEntry(entry: string) {
 }
 
 function determinePageIdV1(entry: string) {
-  const pageId = entry.split(':/pages').pop()!
-  return pageId
+  const splitEntry = entry.split(':/pages')
+  const isV1 = splitEntry.length === 2
+  if (!isV1) {
+    return ''
+  }
+  return splitEntry.pop()
 }
 
 function collectAssetsForEntry(manifest: ViteManifest, entry: ViteManifestEntry) {
