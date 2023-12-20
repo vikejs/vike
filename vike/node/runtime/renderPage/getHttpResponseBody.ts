@@ -133,7 +133,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
         if (success) {
           return
         } else {
-          assert(isStreamReadableWeb(htmlRender) || isStreamPipeWeb(htmlRender))
+          assert(isStreamReadableNode(htmlRender) || isStreamPipeNode(htmlRender))
           assertUsage(false, getErrMsgMixingStreamTypes('Web Writable'))
         }
       }
@@ -142,7 +142,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
         if (success) {
           return
         } else {
-          assert(isStreamReadableNode(htmlRender) || isStreamPipeNode(htmlRender))
+          assert(isStreamReadableWeb(htmlRender) || isStreamPipeWeb(htmlRender))
           assertUsage(false, getErrMsgMixingStreamTypes('Node.js Writable'))
         }
       }

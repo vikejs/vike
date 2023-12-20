@@ -3,7 +3,11 @@ export type { ConfigBuiltIn }
 export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
 export type { HookName }
+export type { HookNamePage }
+export type { HookNameGlobal }
 
+export type { DataAsync }
+export type { DataSync }
 export type { GuardAsync }
 export type { GuardSync }
 export type { OnBeforePrerenderStartAsync }
@@ -32,27 +36,31 @@ import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/
 import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
 import type { ConfigVikeUserProvided } from '../ConfigVike.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
+import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
 import type { PageContextClient, PageContextServer } from '../types.js'
 
-type HookName =
+type HookName = HookNamePage | HookNameGlobal | HookNameOldDesign
+type HookNamePage =
   | 'onHydrationEnd'
-  | 'onBeforePrerender'
   | 'onBeforePrerenderStart'
   | 'onBeforeRender'
-  | 'onBeforeRoute'
   | 'onPageTransitionStart'
   | 'onPageTransitionEnd'
-  | 'onPrerenderStart'
   | 'onRenderHtml'
   | 'onRenderClient'
   | 'guard'
-  | 'render'
+  | 'data'
+type HookNameGlobal = 'onBeforePrerender' | 'onBeforeRoute' | 'onPrerenderStart'
+// v0.4 design TODO/v1-release: remove
+type HookNameOldDesign = 'render' | 'prerender'
 
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
   | 'prerender'
   | 'isClientSideRenderable'
   | 'onBeforeRenderEnv'
+  | 'dataEnv'
+  | 'hooksTimeout'
 
 type Config = ConfigBuiltIn &
   Vike.Config &
@@ -64,6 +72,16 @@ type Config = ConfigBuiltIn &
   )
 
 // Purposeful code duplication for improving QuickInfo IntelliSense
+/** Hook for fetching data.
+ *
+ *  https://vike.dev/data
+ */
+type DataAsync<Data> = (pageContext: PageContextServer) => Promise<Data>
+/** Hook for fetching data.
+ *
+ *  https://vike.dev/data
+ */
+type DataSync<Data> = (pageContext: PageContextServer) => Data
 /** Protect page(s), e.g. forbid unauthorized access.
  *
  *  https://vike.dev/guard
@@ -98,14 +116,14 @@ type OnBeforePrerenderStartSync = () => (
       pageContext: Partial<Vike.PageContext>
     }
 )[]
-/** Hook called before the page is rendered, usually for fetching data.
+/** Hook called before the page is rendered.
  *
  *  https://vike.dev/onBeforeRender
  */
 type OnBeforeRenderAsync = (
   pageContext: PageContextServer
 ) => Promise<{ pageContext: Partial<Vike.PageContext> } | void>
-/** Hook called before the page is rendered, usually for fetching data.
+/** Hook called before the page is rendered.
  *
  *  https://vike.dev/onBeforeRender
  */
@@ -144,32 +162,32 @@ type OnBeforeRouteSync = (pageContext: PageContextServer) => {
 }
 /** Hook called after the page is hydrated.
  *
- * https://vike.dev/clientRouting
+ * https://vike.dev/onHydrationEnd
  */
 type OnHydrationEndAsync = (pageContext: PageContextClient) => Promise<void>
 /** Hook called after the page is hydrated.
  *
- * https://vike.dev/clientRouting
+ * https://vike.dev/onHydrationEnd
  */
 type OnHydrationEndSync = (pageContext: PageContextClient) => void
 /** Hook called after the user navigates to a new page.
  *
- * https://vike.dev/clientRouting
+ * https://vike.dev/onPageTransitionEnd
  */
 type OnPageTransitionEndAsync = (pageContext: PageContextClient) => Promise<void>
 /** Hook called after the user navigates to a new page.
  *
- * https://vike.dev/clientRouting
+ * https://vike.dev/onPageTransitionEnd
  */
 type OnPageTransitionEndSync = (pageContext: PageContextClient) => void
 /** Hook called before the user navigates to a new page.
  *
- * https://vike.dev/clientRouting
+ * https://vike.dev/onPageTransitionStart
  */
 type OnPageTransitionStartAsync = (pageContext: PageContextClient) => Promise<void>
 /** Hook called before the user navigates to a new page.
  *
- * https://vike.dev/clientRouting
+ * https://vike.dev/onPageTransitionStart
  */
 type OnPageTransitionStartSync = (pageContext: PageContextClient) => void
 /** Page Hook called when pre-rendering starts.
@@ -280,11 +298,17 @@ type ConfigBuiltIn = {
    */
   extends?: Config | Config[] | ImportString | ImportString[]
 
-  /** Hook called before the page is rendered, usually for fetching data.
+  /** Hook called before the page is rendered.
    *
    *  https://vike.dev/onBeforeRender
    */
   onBeforeRender?: OnBeforeRenderAsync | OnBeforeRenderSync | ImportString | null
+
+  /** Hook for fetching data.
+   *
+   *  https://vike.dev/data
+   */
+  data?: DataAsync<unknown> | DataSync<unknown> | ImportString | null
 
   /** Determines what pageContext properties are sent to the client-side.
    *
@@ -334,23 +358,23 @@ type ConfigBuiltIn = {
 
   /** Hook called after the page is hydrated.
    *
-   * https://vike.dev/clientRouting
+   * https://vike.dev/onHydrationEnd
    */
   onHydrationEnd?: OnHydrationEndAsync | OnHydrationEndSync | ImportString
   /** Hook called before the user navigates to a new page.
    *
-   * https://vike.dev/clientRouting
+   * https://vike.dev/onPageTransitionStart
    */
   onPageTransitionStart?: OnPageTransitionStartAsync | OnPageTransitionStartSync | ImportString
   /** Hook called after the user navigates to a new page.
    *
-   * https://vike.dev/clientRouting
+   * https://vike.dev/onPageTransitionEnd
    */
   onPageTransitionEnd?: OnPageTransitionEndAsync | OnPageTransitionEndSync | ImportString
 
   /** Whether the UI framework (React/Vue/Solid/...) allows the page's hydration to be aborted.
    *
-   * https://vike.dev/clientRouting
+   * https://vike.dev/hydrationCanBeAborted
    */
   hydrationCanBeAborted?: boolean | ImportString
   /** Additional client code.
@@ -372,9 +396,12 @@ type ConfigBuiltIn = {
 
   /** Prefetch links.
    *
-   * https://vike.dev/clientRouting#link-prefetching
+   * https://vike.dev/prefetchStaticAssets
    */
   prefetchStaticAssets?: PrefetchStaticAssets | ImportString
+
+  /** Modify the tiemouts of hooks. */
+  hooksTimeout?: HooksTimeoutProvidedByUser
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`

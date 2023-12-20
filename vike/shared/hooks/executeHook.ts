@@ -5,7 +5,7 @@ import { getProjectError, assertWarning } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { humanizeTime } from '../../utils/humanizeTime.js'
 import { isObject } from '../../utils/isObject.js'
-import type { HookLoc, HookName } from './getHook.js'
+import type { Hook, HookLoc } from './getHook.js'
 
 const globalObject = getGlobalObject('utils/executeHook.ts', {
   userHookErrors: new Map<object, HookLoc>()
@@ -16,8 +16,12 @@ function isUserHookError(err: unknown): false | HookLoc {
   return globalObject.userHookErrors.get(err) ?? false
 }
 
-function executeHook<T = unknown>(hookFn: () => T, hookName: HookName, hookFilePath: string): Promise<T> {
-  const { timeoutErr, timeoutWarn } = getTimeouts(hookName)
+function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookFn'>): Promise<T> {
+  const {
+    hookName,
+    hookFilePath,
+    hookTimeout: { error: timeoutErr, warning: timeoutWarn }
+  } = hook
 
   let resolve!: (ret: T) => void
   let reject!: (err: unknown) => void
@@ -33,26 +37,34 @@ function executeHook<T = unknown>(hookFn: () => T, hookName: HookName, hookFileP
   })
 
   const clearTimeouts = () => {
-    clearTimeout(t1)
-    clearTimeout(t2)
+    if (currentTimeoutWarn) clearTimeout(currentTimeoutWarn)
+    if (currentTimeoutErr) clearTimeout(currentTimeoutErr)
   }
-  const t1 = setTimeout(() => {
-    assertWarning(
-      false,
-      `The ${hookName}() hook defined by ${hookFilePath} is taking more than ${humanizeTime(timeoutWarn)}`,
-      { onlyOnce: false }
-    )
-  }, timeoutWarn)
-  const t2 = setTimeout(() => {
-    const err = getProjectError(
-      `Hook timeout: the ${hookName}() hook defined by ${hookFilePath} didn't finish after ${humanizeTime(timeoutErr)}`
-    )
-    reject(err)
-  }, timeoutErr)
+  const currentTimeoutWarn =
+    isNotDisabled(timeoutWarn) &&
+    setTimeout(() => {
+      assertWarning(
+        false,
+        `The ${hookName}() hook defined by ${hookFilePath} is slow: it's taking more than ${humanizeTime(
+          timeoutWarn
+        )} (https://vike.dev/hooksTimeout)`,
+        { onlyOnce: false }
+      )
+    }, timeoutWarn)
+  const currentTimeoutErr =
+    isNotDisabled(timeoutErr) &&
+    setTimeout(() => {
+      const err = getProjectError(
+        `The ${hookName}() hook defined by ${hookFilePath} timed out: it didn't finish after ${humanizeTime(
+          timeoutErr
+        )} (https://vike.dev/hooksTimeout)`
+      )
+      reject(err)
+    }, timeoutErr)
 
   ;(async () => {
     try {
-      const ret = await hookFn()
+      const ret = await hookFnCaller()
       resolve(ret)
     } catch (err) {
       if (isObject(err)) {
@@ -65,21 +77,6 @@ function executeHook<T = unknown>(hookFn: () => T, hookName: HookName, hookFileP
   return promise
 }
 
-function getTimeouts(hookName: HookName): { timeoutErr: number; timeoutWarn: number } {
-  if (hookName === 'onBeforeRoute') {
-    return {
-      timeoutErr: 5 * 1000,
-      timeoutWarn: 1 * 1000
-    }
-  }
-  if (hookName === 'onBeforePrerender') {
-    return {
-      timeoutErr: 10 * 60 * 1000,
-      timeoutWarn: 30 * 1000
-    }
-  }
-  return {
-    timeoutErr: 40 * 1000,
-    timeoutWarn: 4 * 1000
-  }
+function isNotDisabled(timeout: false | number): timeout is number {
+  return !!timeout && timeout !== Infinity
 }

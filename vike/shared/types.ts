@@ -57,6 +57,11 @@ type PageContextBuiltInCommon<
    * https://vike.dev/route-string
    */
   routeParams: Record<string, string>
+  /** The page's data which was fetched using the data() hook.
+   *
+   * https://vike.dev/data
+   */
+  data?: unknown
   /** The page's configuration values.
    *
    * https://vike.dev/config

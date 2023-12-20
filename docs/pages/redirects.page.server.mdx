@@ -5,6 +5,8 @@ See also:
 - <Link href="/redirect" noBreadcrumb={true} />
 - <Link href="/render" noBreadcrumb={true} />
 
+Permanent redirections (HTTP status code `301`):
+
 ```js
 // vite.config.js
 
@@ -13,7 +15,6 @@ import vike from 'vike/plugin'
 export default {
   plugins: [
     vike({
-      // Permanent redirections (HTTP status code 301)
       redirects: {
         '/about-us': '/about',
         // Parameterized redirections

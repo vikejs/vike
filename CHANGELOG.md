@@ -1,3 +1,53 @@
+## [0.4.150](https://github.com/vikejs/vike/compare/v0.4.149...v0.4.150) (2023-12-08)
+
+
+### Bug Fixes
+
+* avoid FOUC for virtual style modules (fix [#1327](https://github.com/vikejs/vike/issues/1327)) ([761fec4](https://github.com/vikejs/vike/commit/761fec4191aac3ed986abf1719bc05dfbe67e30b))
+* fix pipe() assertion ([#1325](https://github.com/vikejs/vike/issues/1325)) ([aa0ab7b](https://github.com/vikejs/vike/commit/aa0ab7be919e94a946b3907e5880169767989c6d))
+* handle cancel() of Web Readable Stream (fix [#1325](https://github.com/vikejs/vike/issues/1325)) ([e18675e](https://github.com/vikejs/vike/commit/e18675e6571b6cbc82f6446ec3102b0c2b6a8ee7))
+* remove empty lines from crawl result (fix [#1328](https://github.com/vikejs/vike/issues/1328)) ([544b031](https://github.com/vikejs/vike/commit/544b031eb7b0cab32a1520961eb69533781a09e4))
+* support Tailwind edge case (fix [#1330](https://github.com/vikejs/vike/issues/1330)) ([19b2220](https://github.com/vikejs/vike/commit/19b2220f309fe95218db97a067b2ca252694ba3c))
+* warn instead of failure upon redundant export (fix [#1323](https://github.com/vikejs/vike/issues/1323)) ([c44ab60](https://github.com/vikejs/vike/commit/c44ab608b328d8376bcf7e57c5586d33aa711eb7))
+* whitelist vue alias (fix [#1329](https://github.com/vikejs/vike/issues/1329)) ([d815556](https://github.com/vikejs/vike/commit/d815556d187ed78d637ebe153f79ecedca9c82af))
+
+
+
+## [0.4.149](https://github.com/vikejs/vike/compare/v0.4.148...v0.4.149) (2023-12-06)
+
+
+### Bug Fixes
+
+* add react-streaming to optimizeDeps.exclude ([3073c89](https://github.com/vikejs/vike/commit/3073c8955f52f2c4bf5ad612dc5feccd163611f4))
+* fix regression for config.outDir outside of config.root (fix [#1317](https://github.com/vikejs/vike/issues/1317)) ([70e7518](https://github.com/vikejs/vike/commit/70e7518b2eb9b7d767b2463c5174af1b5a63f8c3))
+* make Git test more reliable (fix [#1320](https://github.com/vikejs/vike/issues/1320)) ([bd1f159](https://github.com/vikejs/vike/commit/bd1f159d425d7bc01bfcc292af006c0ff9566327))
+* stop crawling tracked but deleted plus files ([7bae6de](https://github.com/vikejs/vike/commit/7bae6de5c530634d89f1e6f82ce1120c53f496ec))
+* test whether git is installed (fix [#1313](https://github.com/vikejs/vike/issues/1313)) ([7596dcd](https://github.com/vikejs/vike/commit/7596dcd57d846db8adaded4a7bd34353e205ea7f))
+
+
+
+## [0.4.148](https://github.com/vikejs/vike/compare/v0.4.147...v0.4.148) (2023-12-04)
+
+
+### Bug Fixes
+
+* [v1 design] improve DX around header files ([fb58692](https://github.com/vikejs/vike/commit/fb586923ec73b2c15ed25edcbe4cd839f6c8e177))
+* assertUsage() wrong onBeforeRender() env ([0826fb4](https://github.com/vikejs/vike/commit/0826fb4319ae39842ecadf640fb60f8cc9461aec))
+* edge case URL handling (fix [#1281](https://github.com/vikejs/vike/issues/1281)) ([3d1a786](https://github.com/vikejs/vike/commit/3d1a78670b751b1616c28acba8c7e8d1beb98a5a))
+* fix Base URL check (fix [#1302](https://github.com/vikejs/vike/issues/1302)) ([0848f62](https://github.com/vikejs/vike/commit/0848f620cffbc8ef69e2ca1aa57d533691d87378))
+* improve onBeforeRender() env logic ([#1266](https://github.com/vikejs/vike/issues/1266)) ([2580d69](https://github.com/vikejs/vike/commit/2580d69b532a125edfd65e5fa04336e62a690b7b))
+* improve stream warning ([74d84f5](https://github.com/vikejs/vike/commit/74d84f54c2f024cd9b47b1fa7582dfb710003035))
+* improve the logical URL that is considered when catching infinite redirect loops (fix [#1270](https://github.com/vikejs/vike/issues/1270)) ([8397523](https://github.com/vikejs/vike/commit/839752366946277744218db32c4a8f1bf8c2da72))
+* improve white space handling in URLs ([2fa53b2](https://github.com/vikejs/vike/commit/2fa53b26bc16a812de0faa2e20b68923de4d2e44))
+* show deprecating warning for old deprecated design ([6bcd2d0](https://github.com/vikejs/vike/commit/6bcd2d0e3935a998bc075e2e23c9efb1ff6e71ac))
+
+
+### Features
+
+* enable user to configure hook timeouts ([#1290](https://github.com/vikejs/vike/issues/1290)) ([27229c5](https://github.com/vikejs/vike/commit/27229c5753b1d63187bbde182a1e5abf0e3eeb05))
+
+
+
 ## [0.4.147](https://github.com/vikejs/vike/compare/v0.4.146...v0.4.147) (2023-11-17)
 
 

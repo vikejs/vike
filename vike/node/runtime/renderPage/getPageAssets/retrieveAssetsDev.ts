@@ -40,13 +40,20 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
   if (isStyle(mod) && (!importer || !isStyle(importer))) {
     if (mod.url.startsWith('/')) {
       styleUrls.add(mod.url)
+    } else if (mod.url.startsWith('\0')) {
+      // Virtual modules
+      //  - https://vitejs.dev/guide/api-plugin.html#virtual-modules-convention
+      //    - I believe some Vite plugins don't respect the \0 virtual module convention. What should we do then?
+      //  - https://github.com/vikejs/vike/issues/1327
+      //  - https://github.com/vikejs/vike/commit/3f7b9916dddc84e29e2c20d2b0df7211b6f1acbd
+      styleUrls.add(`/@id/${mod.url.substring(1)}`)
     } else {
-      // Vuetify uses virtual SCSS modules which we skip
-      //  - We skip because `<link rel="stylesheet" type="text/css" href="virtual-module.css">` doesn't work
-      //  - Reproduction: https://github.com/vikejs/vike/issues/479
-      //  - Possible workaround: `<script>import 'virtual-module.css'</script>`
-      // logModule(mod)
+      // Is this useful? Maybe for virtual modules that don't respect the \0 virtual module convention?
+      styleUrls.add(`/@id/${mod.url}`)
     }
+    /* Debug:
+    logModule(mod)
+    //*/
   }
   mod.importedModules.forEach((dep) => {
     collectCss(dep, styleUrls, visitedModules, mod)

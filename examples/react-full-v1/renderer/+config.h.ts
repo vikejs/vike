@@ -31,5 +31,11 @@ export default {
         }
       }
     }
+  },
+  hooksTimeout: {
+    onBeforeRender: {
+      error: 30 * 1000,
+      warning: 10 * 1000
+    }
   }
 } satisfies Config

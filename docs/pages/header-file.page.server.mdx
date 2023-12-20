@@ -1,10 +1,8 @@
 import { Link } from '@brillout/docpress'
-import HeaderFileIntro from '../components/HeaderFileIntro.mdx'
-
-> `+config.h.js` files are part of the <Link text="V1 design" href="/migration/v1-design" />.
+import { HeaderFileIntro } from '../components'
 
 
-## Transformation
+## Transform
 
 <HeaderFileIntro />
 
@@ -24,32 +22,17 @@ import onRenderHtml from './some-other-file'
 export default { onRenderHtml, onRenderClient }
 ```
 
-Using `'import:./some-file'` instead of a real import `import onRenderClient from './some-file'` enables Vike to load the hook `onRenderClient()` in the right environment.
+The <Link href="#transform">`.h.js` transformation</Link> enables Vike to load the hooks `onRenderClient()` and `onRenderHtml()` in the right environment.
 
 
-## Optional
+## Runtime code
 
-Instead of `+config.h.js` you can define a `+config.js` file (without `.h`):
-
-```js
-// /pages/some-page/+config.js
-
-export default {
-  Page: 'import:./some-file',
-  onBeforeRender: 'import:./some-other-file'
-}
-```
-
-But you lose IntelliSense (auto-import, refactoring, type safety, go-to-definition, ...) and that's why we recommend using `+config.h.js` instead of `+config.js`.
-
-
-## Inline hooks code
-
-Following is forbidden:
+Runtime code cannot live inside `+config.h.js` files.
 
 ```js
-// /pages/some-page/+config.h.js
+// +config.h.js
 
+// ❌ The runtime code of Page and onBeforeRender cannot live here.
 export default {
   Page() {
     // ...
@@ -62,13 +45,13 @@ export default {
 
 Vike throws:
 ```
-[Wrong Usage] The code of config 'Page' cannot live inside /pages/some-page/+config.h.js
+[Wrong Usage] The code of Page cannot live inside +config.h.js
 ```
 
-Do this instead:
+Instead, runtime code always needs to be imported:
 
 ```js
-// /pages/some-page/+config.h.js
+// +config.h.js
 
 import Page from './some-file'
 import onBeforeRender from './some-other-file'
@@ -76,24 +59,31 @@ import onBeforeRender from './some-other-file'
 export default { Page, onBeforeRender }
 ```
 
+> Importing runtime code works because <Link href="#transform">Vike transforms `.h.js`</Link> files.
+
 
 ## Not re-exported imports
 
-If an import isn't re-exported by `export default { ... }`, then it won't be included in any runtime.
+If an import isn't re-exported then it won't be included in any runtime:
 
 ```js
 // +config.h.js
 
 import { something } from './some-file'
-// CSS imports have no effect at all here. (You should import CSS files in runtime code
-// such as +Page.js instead.)
+// CSS imports don't have any effect here. You should import CSS files in runtime code
+// such as +Page.js instead.
 import './some.css'
 
-// This log is printed only when Vike reads +config.h.js files: it isn't included in the
-// client runtime nor server runtime.
+// These logs are printed only when Vike reads +config.h.js files (at development and when
+// building your app). The logs aren't included in the client runtime nor server runtime.
+// Consequently, you won't see these logs in production.
 console.log(something) // Prints: 'import:./some-file:something'
+console.log("I will never be shown in production")
 
 export default {
-  // `something` isn't re-exported here => `something` isn't included in any runtime.
+  // The import something isn't re-exported and, therefore, the
+  // code defined in some-file.js isn't included in any runtime.
 }
 ```
+
+The server and client runtimes don't include code defined inside `+config.h.js` files: they only include the code of re-exported imports.

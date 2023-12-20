@@ -1,0 +1,37 @@
+import { Link } from '@brillout/docpress'
+import { TextType } from './settings/TextType'
+
+List of built-in settings. (You can <Link href="/meta">create your own settings</Link>.)
+
+
+## Basic
+
+- [**`Page`**](/Page): <TextType>unknown</TextType> The page's root UI component.
+- [**`route`**](/routing): <TextType>string | Function</TextType> The page's route.
+- [**`prerender`**](/prerender-config): Whether to <Link text="pre-render" href="/preredering" /> the page, and pre-rendering settings.
+- [**`client`**](/client): <TextType>string</TextType> Additional client entry.
+- [**`redirects`**](/redirects): Permanent redirections (HTTP status code `301`).
+- [**`prefetchStaticAssets`**](/prefetchStaticAssets): Link prefetching settings.
+- [**`filesystemRoutingRoot`**](/filesystemRoutingRoot): URL root for <Link href="/filesystem-routing">Filesystem Routing</Link> (usually for <Link href="/file-structure#domain-driven">domain-driven file structure</Link>).
+- [**`baseAssets`**](/base-url): Base URL of server.
+- [**`baseServer`**](/base-url): Base URL of static assets.
+- [**`extends`**](/extends): Install <Link href="/vike-packages">Vike packages</Link>.
+
+
+## Advanced
+
+> Most users don't need to know about these settings.
+
+- [**`meta`**](/meta): Create new hooks or settings, or modify existing ones.
+- [**`passToClient`**](/passToClient): <TextType>string[]</TextType> Determines what `pageContext` values are sent to the client-side.
+- [**`clientRouting`**](/clientRouting): <TextType>boolean</TextType> Enable <Link href="/client-routing">Client Routing</Link>.
+- [**`hydrationCanBeAborted`**](/hydrationCanBeAborted): <TextType>boolean</TextType>  Whether your <Link text="UI framework" href="/ui-framework" /> allows the <Link href="/hydration">hydration</Link> to be aborted.
+- [**`disableAutoFullBuild`**](/disableAutoFullBuild): Disable automatic chaining of build steps.
+- [**`trailingSlash`**](/url-normalization): Whether URLs should end with a trailing slash.
+- [**`disableUrlNormalization`**](/url-normalization): Disable automatic URL normalization.
+
+
+## See also
+
+ - <Link href="/hooks" />
+ - <Link href="/config" />

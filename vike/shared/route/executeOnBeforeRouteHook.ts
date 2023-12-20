@@ -1,3 +1,5 @@
+export { executeOnBeforeRouteHook }
+
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser.js'
 import {
   assertUsage,
@@ -7,19 +9,13 @@ import {
   assertWarning,
   assertUsageUrl,
   joinEnglish,
-  assert
+  assert,
+  executeHook
 } from './utils.js'
 import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
 import pc from '@brillout/picocolors'
 import type { PageContextForRoute, PageContextFromRoute } from './index.js'
-
-export { executeOnBeforeRouteHook }
-export type { OnBeforeRouteHook }
-
-type OnBeforeRouteHook = {
-  hookFilePath: string
-  onBeforeRoute: (pageContext: { urlOriginal: string } & Record<string, unknown>) => unknown
-}
+import type { Hook } from '../hooks/getHook.js'
 
 async function executeOnBeforeRouteHook(
   pageContext: PageContextForRoute
@@ -30,7 +26,7 @@ async function executeOnBeforeRouteHook(
 > {
   const pageContextFromOnBeforeRouteHook = {}
   if (!pageContext._onBeforeRouteHook) return null
-  const pageContextFromHook = await executeHook(pageContext._onBeforeRouteHook, pageContext)
+  const pageContextFromHook = await getPageContextFromHook(pageContext._onBeforeRouteHook, pageContext)
   if (pageContextFromHook) {
     objectAssign(pageContextFromOnBeforeRouteHook, pageContextFromHook)
     if (
@@ -56,8 +52,8 @@ async function executeOnBeforeRouteHook(
   return pageContextFromOnBeforeRouteHook
 }
 
-async function executeHook(
-  onBeforeRouteHook: OnBeforeRouteHook,
+async function getPageContextFromHook(
+  onBeforeRouteHook: Hook,
   pageContext: {
     urlOriginal: string
     _allPageIds: string[]
@@ -68,10 +64,10 @@ async function executeHook(
   _pageId?: string | null
   routeParams?: Record<string, string>
 }> {
-  let hookReturn: unknown = onBeforeRouteHook.onBeforeRoute(pageContext)
+  let hookReturn: unknown = onBeforeRouteHook.hookFn(pageContext)
   assertSyncRouting(hookReturn, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
   // TODO/v1-release: make executeOnBeforeRouteHook() and route() sync
-  hookReturn = await hookReturn
+  hookReturn = await executeHook(() => hookReturn, onBeforeRouteHook)
 
   const errPrefix = `The onBeforeRoute() hook defined by ${onBeforeRouteHook.hookFilePath}`
 

@@ -4,19 +4,20 @@ import { headingsDetached } from './headingsDetached'
 import { projectInfo } from './utils'
 import vikeIcon from './images/icons/vike-square-gradient.svg'
 import React from 'react'
-import { NavHeader, NavHeaderMobile } from './NavHeader'
+import { NavHeader, NavHeaderMobile, navHeaderWrapperStyle } from './NavHeader'
 
 export default {
   projectInfo,
   faviconUrl: vikeIcon,
   navHeader: <NavHeader />,
+  navHeaderWrapperStyle,
   navHeaderMobile: <NavHeaderMobile />,
   headings,
   headingsDetached,
   tagline: 'Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.',
-  titleNormalCase: false,
   twitterHandle: '@vike_js',
   websiteUrl: 'https://vike.dev',
+  sponsorGithubAccount: 'vikejs',
   algolia: {
     appId: 'YMV9Y4B58S',
     apiKey: '9ac178c1a29ba00e8afb98365015f677',

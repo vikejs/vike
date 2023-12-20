@@ -10,7 +10,7 @@
     "react-dom": "^18.2.0",
     "vike-react-simple": "^0.1.1",
     "vite": "^4.0.3",
-    "vike": "0.4.147"
+    "vike": "0.4.150"
   },
   "type": "module"
 }

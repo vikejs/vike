@@ -27,6 +27,9 @@ const { todoList } = storeToRefs(todosStore)
 const loadTodos = async () => {
   await todosStore.fetchTodoList()
 }
+
+// Actually not guaranteed to work, see https://github.com/vikejs/vike/discussions/1319
 onServerPrefetch(loadTodos)
+
 onMounted(loadTodos)
 </script>

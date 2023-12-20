@@ -43,21 +43,22 @@ import type { InlineConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
-import {
-  getConfigValue,
-  getConfigValueFilePathToShowToUser,
-  getHookFilePathToShowToUser
-} from '../../shared/page-configs/helpers.js'
+import { getConfigValue, getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
 import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide.js'
-import { assertHookFn } from '../../shared/hooks/getHook.js'
+import {
+  getHookFromPageConfig,
+  getHookFromPageConfigGlobal,
+  getHookTimeoutDefault
+} from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+import type { HookTimeout } from '../../shared/hooks/getHook.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -331,12 +332,13 @@ async function callOnBeforePrerenderStartHooks(
     hookFn: Function
     // prettier-ignore
     hookName:
-      // 0.4 design
-      | 'prerender'
-      // V1 design
-      | 'onBeforePrerenderStart'
+    // 0.4 design
+    | 'prerender'
+    // V1 design
+    | 'onBeforePrerenderStart'
     hookFilePath: string
     pageId: string
+    hookTimeout: HookTimeout
   }[] = []
 
   // V1 design
@@ -345,17 +347,15 @@ async function callOnBeforePrerenderStartHooks(
       concurrencyLimit(async () => {
         const hookName = 'onBeforePrerenderStart'
         const pageConfigLoaded = await loadConfigValues(pageConfig, false)
-        const configValue = getConfigValue(pageConfigLoaded, hookName)
-        if (!configValue) return
-        const hookFn = configValue.value
-        const hookFilePath = getHookFilePathToShowToUser(configValue)
-        assert(hookFilePath)
-        assertHookFn(hookFn, { hookName, hookFilePath })
+        const hook = getHookFromPageConfig(pageConfigLoaded, hookName)
+        if (!hook) return
+        const { hookFn, hookFilePath, hookTimeout } = hook
         onBeforePrerenderStartHooks.push({
           hookFn,
           hookName: 'onBeforePrerenderStart',
           hookFilePath,
-          pageId: pageConfig.pageId
+          pageId: pageConfig.pageId,
+          hookTimeout
         })
       })
     )
@@ -386,20 +386,21 @@ async function callOnBeforePrerenderStartHooks(
             hookFn,
             hookName: 'prerender',
             hookFilePath,
-            pageId: p.pageId
+            pageId: p.pageId,
+            hookTimeout: getHookTimeoutDefault('onBeforePrerenderStart')
           })
         })
       )
   )
 
   await Promise.all(
-    onBeforePrerenderStartHooks.map(({ hookFn, hookName, hookFilePath, pageId }) =>
+    onBeforePrerenderStartHooks.map(({ hookFn, hookName, hookFilePath, pageId, hookTimeout }) =>
       concurrencyLimit(async () => {
         if (doNotPrerenderList.find((p) => p.pageId === pageId)) {
           return
         }
 
-        const prerenderResult: unknown = await hookFn()
+        const prerenderResult: unknown = await executeHook(() => hookFn(), { hookName, hookFilePath, hookTimeout })
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
         result.forEach(({ url, pageContext }) => {
           {
@@ -531,25 +532,23 @@ async function callOnPrerenderStartHook(
         hookFilePath: string
         // prettier-ignore
         hookName:
-          // V1 design
-          'onPrerenderStart' |
-          // Old design
-          'onBeforePrerender'
+      // V1 design
+      'onPrerenderStart' |
+      // Old design
+      'onBeforePrerender',
+        hookTimeout: HookTimeout
       }
 
   // V1 design
   if (renderContext.pageConfigs.length > 0) {
-    const { pageConfigGlobal } = renderContext
-    const configValue = pageConfigGlobal.configValues.onPrerenderStart
-    if (configValue?.value) {
-      const { value: hookFn } = configValue
-      // config.onPrerenderStart isn't a computed nor a cumulative config => definedAt should always be defined
-      const hookFilePath = getHookFilePathToShowToUser(configValue)
-      assert(hookFilePath)
+    const hookName = 'onPrerenderStart'
+    const hook = getHookFromPageConfigGlobal(renderContext.pageConfigGlobal, hookName)
+    if (hook) {
+      assert(hook.hookName === 'onPrerenderStart')
       onPrerenderStartHook = {
-        hookFn,
-        hookName: 'onPrerenderStart',
-        hookFilePath
+        ...hook,
+        // Make TypeScript happy
+        hookName
       }
     }
   }
@@ -557,6 +556,8 @@ async function callOnPrerenderStartHook(
   // Old design
   // TODO/v1-release: remove
   if (renderContext.pageConfigs.length === 0) {
+    const hookTimeout = getHookTimeoutDefault('onBeforePrerender')
+
     const pageFilesWithOnBeforePrerenderHook = renderContext.pageFilesAll.filter((p) => {
       assertExportNames(p)
       if (!p.exportNames?.includes('onBeforePrerender')) return false
@@ -590,7 +591,8 @@ async function callOnPrerenderStartHook(
     onPrerenderStartHook = {
       hookFn: hook.onBeforePrerender,
       hookFilePath: hook.hookFilePath,
-      hookName: 'onBeforePrerender'
+      hookName: 'onBeforePrerender',
+      hookTimeout
     }
   }
 
@@ -639,8 +641,7 @@ async function callOnPrerenderStartHook(
           return prerenderContext.pageContexts
         }
       }),
-    hookName,
-    hookFilePath
+    onPrerenderStartHook
   )
   if (result === null || result === undefined) {
     return

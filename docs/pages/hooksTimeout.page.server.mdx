@@ -1,0 +1,75 @@
+import { Link, Warning, CodeBlockTransformer } from '@brillout/docpress'
+
+<Warning>This is a V1 design only feature: make sure to 1. update Vike to the latest version and 2. <Link href="/migration/v1-design">migrate to the V1 design</Link>.</Warning>
+
+If a <Link href="/hooks">hook</Link> returns a promise that takes too much time to resolve, then Vike logs an error and your <Link href="/error-page">error page</Link> is rendered.
+
+<CodeBlockTransformer lineBreak="white-space">
+```bash
+# Vike first logs a warning (still awaiting your hook)
+[vike][Warning] The onBeforeRender() hook defined by /pages/movies/+onBeforeRender.js is slow: it's taking more than 4 seconds
+```
+</CodeBlockTransformer>
+
+<CodeBlockTransformer lineBreak="white-space">
+```bash
+# Then Vike logs an error (and renders your error page)
+[vike][Error] The onBeforeRender() hook defined by /pages/movies/+onBeforeRender.js timed out: it didn't finish after 30 seconds
+```
+</CodeBlockTransformer>
+
+You can configure the timeout of hooks:
+
+```js
+// +config.h.js
+
+export default {
+  hooksTimeout: {
+    onBeforeRender: {
+      // Increase warning timeout to 5 seconds
+      warning: 5 * 1000,
+      // Increase error timeout to one minute
+      error: 60 * 1000
+    }
+  }
+}
+```
+
+## Disable
+
+You can disable timeouts:
+
+```js
+// +config.h.js
+
+export default {
+  hooksTimeout: {
+    onBeforeRender: {
+      // Disable the warning timeout
+      warning: false
+    }
+    // No timeout at all: Vike won't warn and will indefinitely await the
+    // promise returned by onRenderClient()
+    onRenderClient: false
+  }
+}
+```
+
+<Warning>
+  We strongly discourage this practice:
+   - You may always want to be informed when one of your hooks is slowing down your UI.
+   - Showing an error page is usually a better UX than displaying a UI that hangs indefinitely.
+   - If your server doesn't time out long running HTTP requests, then you have a memory leak.
+  Instead, consider increasing timeouts as the need arises.
+</Warning>
+
+You can also disable timeouts for all hooks:
+
+```js
+// +config.h.js
+
+export default {
+  // We strongly recommend against this
+  hooksTimeout: false
+}
+```

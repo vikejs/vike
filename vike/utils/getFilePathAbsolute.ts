@@ -9,7 +9,7 @@ import { assertIsNotProductionRuntime } from './assertIsNotProductionRuntime.js'
 import { isNpmPackageImport } from './isNpmPackage.js'
 import { assertPathIsFilesystemAbsolute } from './assertPathIsFilesystemAbsolute.js'
 import { createRequire } from 'module'
-// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 assertIsNotProductionRuntime()

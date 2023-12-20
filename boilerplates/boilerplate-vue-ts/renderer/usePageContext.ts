@@ -3,7 +3,7 @@
 
 import { inject } from 'vue'
 import type { App, InjectionKey } from 'vue'
-import { PageContext } from './types'
+import { PageContext } from 'vike/types'
 
 export { usePageContext }
 export { setPageContext }

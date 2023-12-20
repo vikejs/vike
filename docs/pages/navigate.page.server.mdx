@@ -1,10 +1,10 @@
 import { RepoLink, Link, Warning } from '@brillout/docpress'
 
-Environment: Browser, <Link text="Client Routing" href="/client-routing" />.
+Environment: Browser, <Link text="Client Routing" href="/clientRouting" />.
 
 The `navigate('/some/url')` function enables you to programmatically switch pages.
 
-> `navigate()` works only with <Link text="Client Routing" href="/client-routing" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.href = '/some/url'` instead.
+> `navigate()` requires <Link text="Client Routing" href="/clientRouting" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.href = '/some/url'` instead.
 
 With `navigate()`, you can implement navigations that aren't triggered by the user clicking on a `<a>` link:
 for example, when redirecting a user after a successful form submission.
@@ -70,10 +70,10 @@ window.addEventListener('popstate', (event) => {
 ## Examples
 
 Vue example:
- - <RepoLink path='/examples/vue-full/pages/index.page.vue' />
+ - <RepoLink path='/examples/vue-full-v1/pages/index/+Page.vue' />
 
 React example:
- - <RepoLink path='/examples/react-full/pages/index.page.tsx' />
+ - <RepoLink path='/examples/react-full-v1/pages/index/+Page.tsx' />
 
 
 ## See also

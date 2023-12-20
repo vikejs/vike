@@ -1,32 +1,34 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 
-The `export { filesystemRoutingRoot }` of `_default.page.route.js` allows us to change the URL root of Filesystem Routing.
+The `filesystemRoutingRoot` setting enables you to change the URL root of Filesystem Routing.
 
-> **Don't use `filesystemRoutingRoot` to change the base URL**, see <Link href="/base-url" /> instead.
+> `filesystemRoutingRoot` is usually used for <Link href="/file-structure#domain-driven">domain-driven file structure</Link>.
 
-> `filesystemRoutingRoot` is usually used for [domain-driven file structure](/file-structure#domain-driven).
+<Warning>Don't use `filesystemRoutingRoot` to change the base URL, see <Link href="/base-url" /> instead.</Warning>
 
 ## Example
 
 ```js
-// /marketing/_default.page.route.js
+// /marketing/+config.h.js
 
-// We route our marketing pages to `/*` instead of `/marketing/*`
-export const filesystemRoutingRoot = '/'
+export default {
+  // We route our marketing pages to `/*` instead of `/marketing/*`
+  filesystemRoutingRoot: '/'
+}
 ```
 
 ```
-/marketing/_default.page.route.js
-/marketing/pages/index/index.page.js
-/marketing/pages/about/index.page.js
-/marketing/pages/jobs/index.page.js
+/marketing/+config.h.js
+/marketing/pages/index/+Page.js
+/marketing/pages/about/+Page.js
+/marketing/pages/jobs/+Page.js
 ```
 
 Result:
 
 ```
-PROJECT FILES                                    URL
-/marketing/pages/index/index.page.js             /
-/marketing/pages/about/index.page.js             /about
-/marketing/pages/jobs/index.page.js              /jobs
+PROJECT FILES                               URL
+/marketing/pages/index/+Page.js             /
+/marketing/pages/about/+Page.js             /about
+/marketing/pages/jobs/+Page.js              /jobs
 ```

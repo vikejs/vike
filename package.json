@@ -35,6 +35,8 @@
     "// Remove all generated files": "",
     "clean": "git clean -Xdf",
     "reset": "pnpm run clean && pnpm install && pnpm run build",
+    "========= Formatting": "",
+    "prettier": "git ls-files | egrep '\\.(json|js|jsx|css|ts|tsx|vue|mjs|cjs)$' | grep --invert-match package.json | xargs pnpm exec prettier --write",
     "========= Only allow pnpm; forbid yarn & npm": "",
     "preinstall": "npx only-allow pnpm"
   },
@@ -43,6 +45,7 @@
     "@brillout/dev-my-dep": "^0.1.5",
     "@brillout/test-e2e": "^0.5.25",
     "@brillout/test-types": "^0.1.10",
+    "prettier": "^3.1.0",
     "vitest": "^0.34.1"
   },
   "pnpm": {

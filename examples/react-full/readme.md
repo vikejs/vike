@@ -1,3 +1,6 @@
+> [!NOTE]
+> This example is deprecated. See [`react-full-v1`](../react-full-v1/) instead.
+
 React example showcasing many features.
 
 For a simpler example, check out [/examples/react/](/examples/react/).

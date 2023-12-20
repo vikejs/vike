@@ -11,7 +11,7 @@ import { RepoLink, Link } from '@brillout/docpress'
 Import and use the right layout for each page:
 
 ```jsx
-// /pages/index.page.js
+// /pages/index/+Page.js
 
 export { Page }
 
@@ -27,7 +27,7 @@ function Page() {
 ```
 
 ```jsx
-// /pages/admin.page.js
+// /pages/admin/+Page.js
 
 export { Page }
 
@@ -43,65 +43,9 @@ function Page() {
 ```
 
 
-## Custom Export
+## Custom config
 
-Alternatively, we can use a <Link href="/exports" text="Custom Export" />.
-
-```js
-// /pages/admin.page.js
-
-// Set `pageContext.exports.Layout` to `LayoutDashboard`
-export { LayoutDashboard as Layout } from '../layouts/LayoutDashboard'
-export { Page }
-
-function Page() {
-  // ...
-}
-```
-
-Our renderer can then access `pageContext.exports.Layout` and render it accordingly:
-
-```js
-// /renderer/_default.page.{server|client}.js
-
-export { render }
-
-import { LayoutDefault } from '../layouts/LayoutDefault'
-
-function render() {
-  const Layout = pageContext.exports.Layout || LayoutDefault
-  const { Page } = pageContext
-  // We render `<Layout><Page/></Layout>`
-  // ...
-}
-```
-
-```js
-// /pages/index.page.js
-
-// We don't need to `export { Layout }` because the landing page uses `<LayoutDefault>`
-export { Page }
-
-function Page() {
-  // As usual
-  // ...
-}
-```
-
-We can use `_default.page.js` to set the layout for several pages at once:
-
-```js
-// /pages/product/_default.page.js
-
-// Set the Layout for all `/pages/product/**/*.page.js`
-export { LayoutProduct as Layout } from '../../layouts/LayoutProduct'
-```
-
-Which fits well <Link text="Domain-driven file structure" href='/file-structure#domain-driven' />.
-
-Examples:
- - <RepoLink path="/examples/layouts-react/" />
- - <RepoLink path="/examples/layouts-vue/" />
+Alternatively, you can create a custom config `Layout`, see <Link href="/meta#example-layout" doNotInferSectionTitle />.
 
 
 ## Nested Layouts
@@ -135,11 +79,13 @@ Until [#346](https://github.com/vikejs/vike/issues/346) is implemented,
 a way to implement a nested layout is to use a Route Function:
 
 ```js
-// /pages/product/index.page.route.js
+// /pages/product/+route.js
+
+export { route }
 
 import { resolveRoute } from 'vike/routing'
 
-export default (pageContext) => {
+const route = (pageContext) => {
   {
     const result = resolveRoute('/product/@id', pageContext.urlPathname)
     if (result.match) {
@@ -166,7 +112,7 @@ export default (pageContext) => {
 ```
 
 ```jsx
-// /pages/product/index.page.js
+// /pages/product/+Page.js
 
 export { Page }
 
@@ -191,17 +137,8 @@ function Page() {
 
 > `usePageContext()` allows us to access `pageContext` in any component, see <Link href="/pageContext-anywhere" noBreadcrumb={true} />.
 
-For smooth nested layout navigation, we recommend using <Link href="/client-routing" noBreadcrumb={true} />.
-
-```js
-// pages/product/index.page.client.js
-
-// We can omit this if our app already uses Client Routing.
-export const clientRouting = true
-```
-
-We use `<a href="/product/42/reviews" keep-scroll-position />` (or `navigate('/product/42/reviews', { keepScrollPosition: true })`) to avoid the browser to scroll to the top.
+For smooth nested layout navigation, we recommend using <Link href="/client-routing" noBreadcrumb={true} />. We can then use `<a href="/product/42/reviews" keep-scroll-position />` (or `navigate('/product/42/reviews', { keepScrollPosition: true })`) to avoid the browser to scroll to the top.
 
 Examples (see the `/starship` page):
- - <RepoLink path="/examples/layouts-react/" />
- - <RepoLink path="/examples/layouts-vue/" />
+ - <RepoLink path="/examples/layouts-react-v1/" />
+ - <RepoLink path="/examples/layouts-vue-v1/" />

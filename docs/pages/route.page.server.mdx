@@ -1,8 +1,6 @@
 import { HookTypeScriptHints } from '../components'
 import { Link } from '@brillout/docpress'
 
-> This page is part of the <Link text="V1 design" href="/migration/v1-design" />.
-
 The `route` config determines the page's <Link text="routing" href="/routing" />.
 
 ```js
@@ -61,16 +59,7 @@ export { route }
 import type { Route } from 'vike/types'
 
 const route: Route = (pageContext): ReturnType<Route> => {
-  const parts = pageContext.urlPathname.split('/')
-  if (parts[1] !== 'product') {
-    return false
-  } else {
-    return {
-      routeParams: {
-        id: parts[2]
-      }
-    }
-  }
+  // ...
 }
 ```
 

@@ -1,3 +1,6 @@
+> [!NOTE]
+> This example is deprecated. See [`cloudflare-workers-react-v1`](../cloudflare-workers-react-v1/) instead.
+
 [Cloudflare Workers](https://workers.cloudflare.com/) with:
  - Vite
  - Vike

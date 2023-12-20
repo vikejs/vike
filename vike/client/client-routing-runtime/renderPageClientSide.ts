@@ -23,7 +23,7 @@ import { createPageContext } from './createPageContext.js'
 import { addLinkPrefetchHandlers } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
-import { assertHook } from '../../shared/hooks/getHook.js'
+import { type Hook, assertHook, getHook } from '../../shared/hooks/getHook.js'
 import { isErrorFetchingStaticAssets } from '../shared/loadPageFilesClientSide.js'
 import { pushHistory } from './history.js'
 import {
@@ -38,8 +38,9 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
+
 const globalObject = getGlobalObject<{
-  onPageTransitionStart?: Function
+  onPageTransitionStart?: Hook | null
   clientRoutingIsDisabled?: true
   renderCounter: number
   renderPromise?: Promise<void>
@@ -143,7 +144,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   const callTransitionHooks = !isFirstRender
   if (callTransitionHooks) {
     if (!globalObject.isTransitioning) {
-      await globalObject.onPageTransitionStart?.(pageContext)
+      if (globalObject.onPageTransitionStart) {
+        const hook = globalObject.onPageTransitionStart
+        const { hookFn } = hook
+        await executeHook(() => hookFn(pageContext), hook)
+      }
       globalObject.isTransitioning = true
       if (abortRender()) return
     }
@@ -182,7 +187,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
       console.error(err)
     } else {
-      // We swallow throw redirect()/render() called by client-side hooks onBeforeRender() and guard()
+      // We swallow throw redirect()/render() called by client-side hooks onBeforeRender(), data() and guard()
       // We handle the abort error down below.
     }
 
@@ -263,7 +268,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
   // Set global onPageTransitionStart()
   assertHook(pageContext, 'onPageTransitionStart')
-  globalObject.onPageTransitionStart = pageContext.exports.onPageTransitionStart
+  const onPageTransitionStartHook = getHook(pageContext, 'onPageTransitionStart')
+  globalObject.onPageTransitionStart = onPageTransitionStartHook
 
   // Set global hydrationCanBeAborted
   if (pageContext.exports.hydrationCanBeAborted) {
@@ -271,7 +277,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   } else {
     assertWarning(
       !isReact(),
-      'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vike.dev/clientRouting',
+      'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vike.dev/hydrationCanBeAborted',
       { onlyOnce: true }
     )
   }
@@ -302,11 +308,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   // onHydrationEnd()
   if (isFirstRender) {
     assertHook(pageContext, 'onHydrationEnd')
-    const { onHydrationEnd } = pageContext.exports
-    if (onHydrationEnd) {
-      const hookFilePath = pageContext.exportsAll.onHydrationEnd![0]!.exportSource
-      assert(hookFilePath)
-      await executeHook(() => onHydrationEnd(pageContext), 'onHydrationEnd', hookFilePath)
+    const hook = getHook(pageContext, 'onHydrationEnd')
+    if (hook) {
+      const { hookFn } = hook
+      await executeHook(() => hookFn(pageContext), hook)
       if (abortRender(true)) return
     }
   }
@@ -316,9 +321,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
   // onPageTransitionEnd()
   if (callTransitionHooks) {
-    if (pageContext.exports.onPageTransitionEnd) {
-      assertHook(pageContext, 'onPageTransitionEnd')
-      await pageContext.exports.onPageTransitionEnd(pageContext)
+    assertHook(pageContext, 'onPageTransitionEnd')
+    const hook = getHook(pageContext, 'onPageTransitionEnd')
+    if (hook) {
+      const { hookFn } = hook
+      await executeHook(() => hookFn(pageContext), hook)
       if (abortRender(true)) return
     }
     globalObject.isTransitioning = undefined

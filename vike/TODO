@@ -1,13 +1,23 @@
-- Docs
-  - pageContext.config
-  - pageContext.configEntries
-  - update migration examples
-  - Replace boilerplates with Bati
-  - Rewrite documentation to assume usage of `vike-{react,vue,solid}` (while preserving custom integration docs)
+- update migration examples
+- add vike-react-query to /vike-packages
+
+- Add assertWarning() deprecations:
+  - `pageContext.exports`
+  - `pageContext.configEntries`
 
 After V1 design release:
+ - Replace in docs:
+   ```diff
+   - Environement: browser
+   + Environement: client.
+   ```
+   ```diff
+   - Environement: Node.js
+   + Environement: server.
+   ```
  - improve passToClient warning: https://github.com/vikejs/vike/tree/brillout/wip
- - Update all examples to not use PageContextBuiltIn but Vike.PageContext instead
+ - Remove 0.4 design examples
+ - [docs] Rewrite /head
  - Go through all TODOs in source code
  - Ensure what client-side loads is minimal
  - improve ignoring of dist/
@@ -46,6 +56,8 @@ After V1 design release:
    - https://github.com/brillout/vike-react-query => why does Vite discover `part-regex` only later?
  - Check why dev startup is fairly slow, e.g. for /examples/react-full-v1/ (I belive it used to be faster, is it related to Vite's initial dep crawling?)
  - Transpile & bunlded server for production: https://github.com/vikejs/vike/issues/1165
+ - Replace boilerplates with Bati
+ - Rewrite documentation to assume usage of `vike-{react,vue,solid}` (while preserving custom integration docs)
 
 Features:
  - multiple error pages
@@ -59,11 +71,6 @@ Release 1.0.0 breaking changes:
   - `import * from 'vike'`
   - pageContext.url
   - Forbid async Route Functions
-
-After 1.0.0 release:
- - Remove 0.4 design examples
-   - Update all links to /examples/*-v1
- - Add deprecation warning for pageContext.exports
 
 Contact:
  - Bun

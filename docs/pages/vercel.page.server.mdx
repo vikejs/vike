@@ -1,16 +1,16 @@
 import { Link, Warning } from '@brillout/docpress'
-import { GithubRepo, UseBatiInsteadHint } from '../components'
+import { Github, UseBatiHint } from '../components'
 
 We can deploy Vike to [Vercel](https://vercel.com) simply by using a Vercel API Route, or we can use `vite-plugin-vercel` if we want advanced Vercel features such as ISR and Edge Middleware.
 
-<UseBatiInsteadHint featureName="Vercel" />
+<UseBatiHint toolName="Vercel" />
 
 
 ## API Route
 
 We can deploy our Vike app to Vercel simply by creating a Vercel API Route `api/ssr.js` that server-side renders our app.
 
-Example: <GithubRepo repo="brillout/vike-with-vercel" />.
+Example: <Github>brillout/vike-with-vercel</Github>.
 
 <Warning>Make sure to properly set `OUTPUT DIRECTORY` in your Vercel dashboard, see the example's `readme.md` instructions.</Warning>
 

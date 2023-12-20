@@ -64,8 +64,10 @@ async function triggerFullBuild(
 ) {
   if (config.build.ssr) return // already triggered
   if (isDisabled(configVike)) return
+  /* Is this @vitejs/plugin-legacy workaround still needed? Should we re-implement it?
   // vike.json missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's build() API) => skip
   if (!bundle['vike.json']) return
+  */
 
   const configFromCli = !isViteCliCall() ? null : getViteConfigFromCli()
   const configInline = {

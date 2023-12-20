@@ -91,22 +91,22 @@ async function renderPage<
   assert(hasProp(pageContextInit, 'urlOriginal', 'string'))
   assertEnv()
 
-  if (skipRequest(pageContextInit.urlOriginal)) {
-    const pageContextHttpReponseNull = getPageContextHttpResponseNull(pageContextInit)
-    checkType<PageContextAfterRender>(pageContextHttpReponseNull)
-    return pageContextHttpReponseNull as any
+  if (isIgnoredUrl(pageContextInit.urlOriginal)) {
+    const pageContextHttpResponseNull = getPageContextHttpResponseNull(pageContextInit)
+    checkType<PageContextAfterRender>(pageContextHttpResponseNull)
+    return pageContextHttpResponseNull as any
   }
 
   const httpRequestId = getRequestId()
-  const urlToShowToUser = pageContextInit.urlOriginal
-  logHttpRequest(urlToShowToUser, httpRequestId)
+  const { urlOriginal } = pageContextInit
+  logHttpRequest(urlOriginal, httpRequestId)
   globalObject.pendingRequestsCount++
 
   const { pageContextReturn, onRequestDone } = await renderPage_wrapper(httpRequestId, () =>
     renderPageAndPrepare(pageContextInit, httpRequestId)
   )
 
-  logHttpResponse(urlToShowToUser, httpRequestId, pageContextReturn)
+  logHttpResponse(urlOriginal, httpRequestId, pageContextReturn)
   globalObject.pendingRequestsCount--
   onRequestDone()
 
@@ -120,8 +120,8 @@ async function renderPageAndPrepare(
   // Invalid config
   const handleInvalidConfig = () => {
     logRuntimeInfo?.(pc.bold(pc.red("Couldn't load configuration: see error above.")), httpRequestId, 'error')
-    const pageContextHttpReponseNull = getPageContextHttpResponseNull(pageContextInit)
-    return pageContextHttpReponseNull
+    const pageContextHttpResponseNull = getPageContextHttpResponseNull(pageContextInit)
+    return pageContextHttpResponseNull
   }
   if (isConfigInvalid) {
     return handleInvalidConfig()
@@ -137,8 +137,8 @@ async function renderPageAndPrepare(
     // initGlobalContext() and getRenderContext() don't call any user hooks => err isn't thrown from user code
     assert(!isAbortError(err))
     logRuntimeError(err, httpRequestId)
-    const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(err, pageContextInit)
-    return pageContextHttpReponseNull
+    const pageContextHttpResponseNull = getPageContextHttpResponseNullWithError(err, pageContextInit)
+    return pageContextHttpResponseNull
   }
   if (isConfigInvalid) {
     return handleInvalidConfig()
@@ -146,14 +146,22 @@ async function renderPageAndPrepare(
     // From now on, renderContext.pageConfigs contains all the configuration data; getVikeConfig() isn't called anymore for this request
   }
 
+  // Check Base URL
   {
-    const pageContextHttpReponse = normalizeUrl(pageContextInit, httpRequestId)
-    if (pageContextHttpReponse) return pageContextHttpReponse
+    const pageContextHttpResponse = checkBaseUrl(pageContextInit, httpRequestId)
+    if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
+  // Normalize URL
   {
-    const pageContextHttpReponse = getPermanentRedirect(pageContextInit, httpRequestId)
-    if (pageContextHttpReponse) return pageContextHttpReponse
+    const pageContextHttpResponse = normalizeUrl(pageContextInit, httpRequestId)
+    if (pageContextHttpResponse) return pageContextHttpResponse
+  }
+
+  // Permanent redirects (HTTP status code `301`)
+  {
+    const pageContextHttpResponse = getPermanentRedirect(pageContextInit, httpRequestId)
+    if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
   return await renderPageAlreadyPrepared(pageContextInit, httpRequestId, renderContext, [])
@@ -283,8 +291,8 @@ async function renderPageAlreadyPrepared(
             )} doesn't occur while the error page is being rendered.`,
             { onlyOnce: false }
           )
-          const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(errNominalPage, pageContextInit)
-          return pageContextHttpReponseNull
+          const pageContextHttpResponseNull = getPageContextHttpResponseNullWithError(errNominalPage, pageContextInit)
+          return pageContextHttpResponseNull
         }
         // `throw redirect()` / `throw render(url)`
         return handled.pageContextReturn
@@ -292,19 +300,28 @@ async function renderPageAlreadyPrepared(
       if (isNewError(errErrorPage, errNominalPage)) {
         logRuntimeError(errErrorPage, httpRequestId)
       }
-      const pageContextHttpReponseNull = getPageContextHttpResponseNullWithError(errNominalPage, pageContextInit)
-      return pageContextHttpReponseNull
+      const pageContextHttpResponseNull = getPageContextHttpResponseNullWithError(errNominalPage, pageContextInit)
+      return pageContextHttpResponseNull
     }
     return pageContextErrorPage
   }
 }
 
-function logHttpRequest(urlToShowToUser: string, httpRequestId: number) {
+function logHttpRequest(urlOriginal: string, httpRequestId: number) {
   const clearErrors = globalObject.pendingRequestsCount === 0
-  logRuntimeInfo?.(`HTTP request: ${pc.bold(urlToShowToUser)}`, httpRequestId, 'info', clearErrors)
+  logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), httpRequestId, 'info', clearErrors)
 }
-function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageContextReturn: PageContextAfterRender) {
+function getRequestInfoMessage(urlOriginal: string) {
+  return `HTTP request: ${pc.bold(urlOriginal)}`
+}
+function logHttpResponse(urlOriginal: string, httpRequestId: number, pageContextReturn: PageContextAfterRender) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
+  {
+    // If URL doesn't include Base URL
+    const { errorWhileRendering } = pageContextReturn
+    const isSkipped = statusCode === null && (errorWhileRendering === null || errorWhileRendering === undefined)
+    if (isSkipped) return
+  }
   const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
   const isNominal = isSuccess || statusCode === 404
   const color = (s: number | string) => pc.bold(isSuccess ? pc.green(String(s)) : pc.red(String(s)))
@@ -318,49 +335,38 @@ function logHttpResponse(urlToShowToUser: string, httpRequestId: number, pageCon
       .find((header) => header[0] === 'Location')
     assert(headerRedirect)
     const urlRedirect = headerRedirect[1]
-    urlToShowToUser = urlRedirect
+    urlOriginal = urlRedirect
   }
   logRuntimeInfo?.(
-    `HTTP ${type} ${pc.bold(urlToShowToUser)} ${color(statusCode ?? 'ERR')}`,
+    `HTTP ${type} ${pc.bold(urlOriginal)} ${color(statusCode ?? 'ERR')}`,
     httpRequestId,
     isNominal ? 'info' : 'error'
   )
 }
 
 function getPageContextHttpResponseNullWithError(err: unknown, pageContextInit: Record<string, unknown>) {
-  const pageContextHttpReponseNull = {}
-  objectAssign(pageContextHttpReponseNull, pageContextInit)
-  objectAssign(pageContextHttpReponseNull, {
+  const pageContextHttpResponseNull = {}
+  objectAssign(pageContextHttpResponseNull, pageContextInit)
+  objectAssign(pageContextHttpResponseNull, {
     httpResponse: null,
     errorWhileRendering: err
   })
-  return pageContextHttpReponseNull
+  return pageContextHttpResponseNull
 }
 function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>): PageContextAfterRender {
-  const pageContextHttpReponseNull = {}
-  objectAssign(pageContextHttpReponseNull, pageContextInit)
-  objectAssign(pageContextHttpReponseNull, {
+  const pageContextHttpResponseNull = {}
+  objectAssign(pageContextHttpResponseNull, pageContextInit)
+  objectAssign(pageContextHttpResponseNull, {
     httpResponse: null,
     errorWhileRendering: null
   })
-  return pageContextHttpReponseNull
+  return pageContextHttpResponseNull
 }
 
 async function renderPageNominal(
   pageContext: { _urlRewrite: null | string; _httpRequestId: number } & PageContextInitEnhanced
 ) {
   objectAssign(pageContext, { errorWhileRendering: null })
-
-  // Check Base URL
-  {
-    const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(pageContext.urlOriginal)
-    const hasBaseServer =
-      parseUrl(urlWithoutPageContextRequestSuffix, pageContext._baseServer).hasBaseServer || !!pageContext._urlRewrite
-    if (!hasBaseServer) {
-      objectAssign(pageContext, { httpResponse: null })
-      return pageContext
-    }
-  }
 
   // Route
   {
@@ -456,7 +462,7 @@ function getRequestId(): number {
   return httpRequestId
 }
 
-function skipRequest(urlOriginal: string): boolean {
+function isIgnoredUrl(urlOriginal: string): boolean {
   const isViteClientRequest = urlOriginal.endsWith('/@vite/client') || urlOriginal.startsWith('/@fs/')
   assertWarning(
     !isViteClientRequest,
@@ -595,4 +601,23 @@ async function handleAbortError(
   }
   assert(pageContextAbort.abortStatusCode)
   return { pageContextAbort }
+}
+
+function checkBaseUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+  const { baseServer } = getGlobalContext()
+  const { urlOriginal } = pageContextInit
+  const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(urlOriginal)
+  const { hasBaseServer } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
+  if (!hasBaseServer) {
+    logRuntimeInfo?.(
+      `${getRequestInfoMessage(urlOriginal)} skipped because URL ${pc.bold(
+        urlOriginal
+      )} doesn't start with Base URL ${pc.bold(baseServer)} (https://vike.dev/base-url)`,
+      httpRequestId,
+      'info'
+    )
+    const pageContextHttpResponseNull = getPageContextHttpResponseNull(pageContextInit)
+    return pageContextHttpResponseNull
+  }
+  return null
 }

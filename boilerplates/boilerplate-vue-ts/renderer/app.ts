@@ -1,7 +1,8 @@
 import { createSSRApp, defineComponent, h } from 'vue'
 import PageShell from './PageShell.vue'
 import { setPageContext } from './usePageContext'
-import type { Component, PageContext, PageProps } from './types'
+import type { PageContext } from 'vike/types'
+import type { Component, PageProps } from './types'
 
 export { createApp }
 

@@ -1,6 +1,38 @@
-import { UseBatiInsteadHint } from '../components'
+import { UseIntegrationPackageHint } from '../components'
+import { Link } from '@brillout/docpress'
 
-<UseBatiInsteadHint featureName="React" />
+## Official integration
 
-Official examples of using Vike with [React](https://reactjs.org/):
- - [GitHub > `vikejs/vike` > `examples/`](https://github.com/vikejs/vike/tree/main/examples)
+<UseIntegrationPackageHint uiFrameworkName="React" noQuote={true} />
+
+
+## React Server Components
+
+[React Server Components (RSC)](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components) is a new application architecture designed by the React team.
+
+The design can be broken down into three parts:
+ - :construction: Server Components
+ -	✅ Server Actions
+ -	✅ Partial Hydration
+
+Vike supports <Link href="/stream#partial-hydration">Partial Hydration</Link> as well as <Link href="/RPC">Server Actions</Link>. Server Components is work-in-progress.
+
+> Instead of using [Server Actions using `'use server'`](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations), we recommend using [Telefunc](https://telefunc.com/) which we believe to be a superior design. That said, a [`vike-react`](https://github.com/vikejs/vike-react) fork can be developed that supports `'use server'`.
+
+> While [we are thrilled about Server Components](https://github.com/reactjs/rfcs/pull/188#issuecomment-754815233), we believe it isn't production ready yet.
+>
+> There are multiple reasons for that. For example, use cases that are essential such as infinite scroll aren't supported yet, [RFC: injectToStream](https://github.com/reactjs/rfcs/pull/219) is a major blocker, and there doesn't seem to be a clear recommendation (yet) where to set the [`'use client'`](https://react.dev/reference/react/use-client) boundaries (minimizing the number of client components is, counterintuitively, [not always the best strategy](https://twitter.com/cyco130/status/1663515982218838017)).
+>
+> Also, while the added value of Server Components which is to reduce the size of client-side bundles is definitely a nice-to-have, we believe the slight performance gain isn't worth the added DX complexity. We are hopeful this is going to change as the Server Components design matures: there are a couple of React frameworks that are experimenting and pushing the Server Components design forward. In the meantime, we recommend sticking to the classical and battle tested SSR/SPA/SSG approaches.
+
+The most significant added value of the RSC architecture is its novel approach to SSR streaming which unlocks many exciting features around data fetching. Not only does Vike has first-class support for SSR streaming, but it also supports it in a unique way that enables both an easy DX as well as flexibility: you can integrate tools with the SSR stream manually yourself (e.g. using [react-streaming](https://github.com/brillout/react-streaming#readme)), or you can use built-in integrations such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [Telefunc](https://telefunc.com).
+
+> SSR streaming enables you to define components that can fetch data, while each of these data-fetching components are loaded and rendered independently of each other: the user sees a UI with non-data-fetching parts that are rendered quickly, and data-fetching parts that are rendered as data comes in. This leads to a significantly improved (perceived) page speed. See <Link href="/stream#partial-hydration">Partial Hydration</Link>.
+
+
+
+## Examples
+
+Examples of manually integrating React:
+ - For official examples, see [GitHub > `vikejs/vike` > `examples/`](https://github.com/vikejs/vike/tree/main/examples).
+ - For community examples, browse the examples at the integration guides such as <Link href="/react-query" />.

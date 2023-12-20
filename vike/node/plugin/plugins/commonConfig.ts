@@ -8,7 +8,7 @@ import pc from '@brillout/picocolors'
 import path from 'path'
 import { createRequire } from 'module'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
-// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 

@@ -283,7 +283,9 @@ async function processStream(
 ): Promise<StreamProviderNormalized> {
   const buffer: unknown[] = []
   let streamOriginalHasStartedEmitting = false
-  let streamEnded = false
+  let streamOriginalEnded = false
+  let streamClosed = false
+  let onEndWasCalled = false
   let isReadyToWrite = false
   let wrapperCreated = false
   let shouldFlushStream = false
@@ -309,6 +311,14 @@ async function processStream(
     flushStream() // Sets shouldFlushStream to true
   }
 
+  // We call onStreamEvent() also when the stream ends in order to properly handle the situation when the stream didn't emit any data
+  const onStreamDataOrEnd = (cb: () => void) => {
+    assert(streamOriginalEnded === false)
+    streamOriginalHasStartedEmitting = true
+    cb()
+    if (wrapperCreated) resolvePromise()
+  }
+
   const { streamWrapper, streamWrapperOperations } = await createStreamWrapper({
     streamOriginal,
     onReadyToWrite() {
@@ -325,17 +335,22 @@ async function processStream(
       }
     },
     onData(chunk: unknown) {
-      assert(streamEnded === false)
-      streamOriginalHasStartedEmitting = true
-      writeStream(chunk)
-      if (wrapperCreated) resolvePromise()
+      onStreamDataOrEnd(() => {
+        writeStream(chunk)
+      })
     },
-    async onEnd() {
+    async onEnd(
+      // Should we use this `isCancel`? Maybe we can skip `injectStringAtEnd()`?
+      isCancel
+    ) {
       try {
+        assert(!onEndWasCalled)
+        onEndWasCalled = true
         debug('stream end')
-        streamEnded = true
-        streamOriginalHasStartedEmitting = true // In case original stream (stream provided by user) emits no data
-        if (wrapperCreated) resolvePromise() //    In case original stream (stream provided by user) emits no data
+        // We call onStreamEvent() also here in case the stream didn't emit any data
+        onStreamDataOrEnd(() => {
+          streamOriginalEnded = true
+        })
         if (injectStringAtEnd) {
           const injectEnd = await injectStringAtEnd()
           writeStream(injectEnd)
@@ -343,13 +358,17 @@ async function processStream(
         await promiseReadyToWrite // E.g. if the user calls the pipe wrapper after the original writable has ended
         assert(isReady())
         flushBuffer()
+        streamClosed = true
         debug('stream ended')
       } catch (err) {
-        // We should catch and gracefully handle user land errors, as any error thrown here kills the server
+        // Ideally, we should catch and gracefully handle user land errors, as any error thrown here kills the server. (I assume that the fact it kills the server is a Node.js bug?)
+
+        // Show "[vike][Bug] You stumbled upon a bug in Vike's source code" to user while printing original error
         if (!isBug(err)) {
           console.error(err)
           assert(false)
         }
+
         throw err
       }
     },
@@ -372,6 +391,7 @@ async function processStream(
 
   function flushBuffer() {
     if (!isReady()) return
+    assert(!streamClosed)
     buffer.forEach((chunk) => {
       streamWrapperOperations.writeChunk(chunk)
     })
@@ -436,7 +456,7 @@ async function createStreamWrapper({
   streamOriginal: StreamProviderAny
   onError: (err: unknown) => void
   onData: (chunk: unknown) => void
-  onEnd: () => Promise<void>
+  onEnd: (isCancel?: boolean) => Promise<void>
   onFlush: () => void
   onReadyToWrite: () => void
 }): Promise<{
@@ -603,6 +623,16 @@ async function createStreamWrapper({
 
     const readableOriginal: StreamReadableWeb = streamOriginal
 
+    let controllerProxyIsClosed = false
+    let isClosed = false
+    let isCancel = false
+    const closeStream = async () => {
+      if (isClosed) return
+      isClosed = true
+      await onEnd(isCancel)
+      controllerProxy.close()
+      controllerProxyIsClosed = true
+    }
     let controllerProxy: ReadableStreamController<unknown>
     assertReadableStreamConstructor()
     const readableProxy = new ReadableStream<unknown>({
@@ -616,17 +646,31 @@ async function createStreamWrapper({
             controllerProxy.close()
           },
           async onEnd() {
-            await onEnd()
-            controllerProxy.close()
+            await closeStream()
           }
         })
+      },
+      async cancel(...args) {
+        isCancel = true
+        await readableOriginal.cancel(...args)
+        // If readableOriginal has implemented readableOriginal.cancel() then the onEnd() callback and therfore closeStream() may already have been called at this point
+        await closeStream()
       }
     })
 
     const writeChunk = (chunk: unknown) => {
-      controllerProxy.enqueue(encodeForWebStream(chunk) as any)
-      if (debug.isEnabled) {
-        debug('data written (Web Readable)', String(chunk))
+      if (
+        // If readableOriginal doesn't implement readableOriginal.cancel() then it may still emit data after we close the stream. We therefore need to check whether we closed `controllerProxy`.
+        !controllerProxyIsClosed
+      ) {
+        controllerProxy.enqueue(encodeForWebStream(chunk) as any)
+        if (debug.isEnabled) {
+          debug('data written (Web Readable)', String(chunk))
+        }
+      } else {
+        if (debug.isEnabled) {
+          debug('data emitted but not written (Web Readable)', String(chunk))
+        }
       }
     }
     // Readables don't have the notion of flushing

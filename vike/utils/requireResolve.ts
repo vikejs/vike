@@ -6,7 +6,7 @@ import { assertIsNotProductionRuntime } from './assertIsNotProductionRuntime.js'
 import { assertPosixPath, toPosixPath } from './filesystemPathHandling.js'
 import { scriptFileExtensionList } from './isScriptFile.js'
 import { createRequire } from 'module'
-// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 
