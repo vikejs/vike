@@ -1,8 +1,7 @@
 {
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite build && vite preview"
+    "build": "vite build"
   },
   "dependencies": {
     "@types/react": "^18.0.8",
