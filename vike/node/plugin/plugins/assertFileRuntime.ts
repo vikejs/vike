@@ -74,7 +74,7 @@ function assertFileRuntime(): Plugin {
           const modulePathPretty = modulePath.replaceAll(suffix, pc.bold(suffix))
           let msg = `${capitalizeFirstLetter(
             envExpect
-          )}-only module "${modulePathPretty}" imported on the ${envActual}-side`
+          )}-only module "${modulePathPretty}" (https://vike.dev/file-env) imported on the ${envActual}-side`
           if (importer) {
             const importerPath = getFilePathRelativeToUserRootDir(importer.split('?')[0]!, config.root)
             msg += `by ${importerPath}`
