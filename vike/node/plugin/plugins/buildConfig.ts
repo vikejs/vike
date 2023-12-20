@@ -30,6 +30,7 @@ import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
 import fs from 'fs/promises'
 import path from 'path'
 import { existsSync } from 'fs'
+import { ViteManifest, ViteManifestEntry } from '../../shared/ViteManifest.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -68,7 +69,7 @@ function buildConfig(): Plugin {
       } satisfies UserConfig
     },
     writeBundle: {
-      sequential: true,
+      sequential: false,
       async handler(options, bundle) {
         const manifestEntry = bundle[manifestTempFile]
         /* Fails with @vitejs/plugin-legacy because writeBundle() is called twice during the client build (once for normal client assets and a second time for legacy assets), see reproduction at https://github.com/vikejs/vike/issues/1154
@@ -85,10 +86,9 @@ function buildConfig(): Plugin {
           if (isSsrBuild) {
             const clientManifest = JSON.parse(await fs.readFile(manifestFilePathNew, 'utf-8').catch(() => '{}'))
             const serverManifest = JSON.parse(await fs.readFile(manifestFilePathOld, 'utf-8'))
+            const correctedClientManifest = addMissingAssets(clientManifest, serverManifest)
 
-            // TODO: smarter merge and avoid duplicates
-            const mergedManifest = { ...clientManifest, ...serverManifest }
-            await fs.writeFile(manifestFilePathOld, JSON.stringify(mergedManifest), 'utf-8')
+            await fs.writeFile(manifestFilePathOld, JSON.stringify(correctedClientManifest), 'utf-8')
           }
           await fs.rename(manifestFilePathOld, manifestFilePathNew)
         }
@@ -273,4 +273,110 @@ function assertRollupInput(config: ResolvedConfig): void {
     htmlInput === undefined,
     `The entry ${htmlInput} of config build.rollupOptions.input is an HTML entry which is forbidden when using Vike, instead follow https://vike.dev/add`
   )
+}
+
+// This implementation assumes that even if a page is server-only,
+// it's still included in the original client manifest (server-routing at least needs to be imported)
+// The missing assets in the clientManifest are added to the existing entries.
+// No new entries are added to the clientManifest. Only the missing assets are added.
+function addMissingAssets(clientManifest: ViteManifest, serverManifest: ViteManifest) {
+  const entriesToAssetsClient = new Map<
+    string,
+    {
+      css: { src: string; hash: string }[]
+      assets: { src: string; hash: string }[]
+    }
+  >()
+
+  const entriesToAssetsServer = new Map<
+    string,
+    {
+      css: { src: string; hash: string }[]
+      assets: { src: string; hash: string }[]
+    }
+  >()
+
+  for (const [key, entry] of Object.entries(clientManifest).filter(([, { isEntry }]) => isEntry)) {
+    const assets = collectAssetsForEntry(clientManifest, entry)
+    entriesToAssetsClient.set(key, assets)
+  }
+
+  for (const [key, entry] of Object.entries(serverManifest).filter(([, { isEntry }]) => isEntry)) {
+    const assets = collectAssetsForEntry(serverManifest, entry)
+    entriesToAssetsServer.set(key, assets)
+  }
+
+  for (const [clientEntryKey, clientEntryValue] of entriesToAssetsClient.entries()) {
+    const cssToAdd: string[] = []
+    const assetsToAdd: string[] = []
+    const pageIdClient = getPageIdFromManifestEntry(clientEntryKey)
+
+    for (const [serverEntryKey, serverEntryValue] of entriesToAssetsServer.entries()) {
+      const pageIdServer = getPageIdFromManifestEntry(serverEntryKey)
+      if (pageIdClient !== pageIdServer) {
+        continue
+      }
+
+      cssToAdd.push(
+        ...serverEntryValue.css
+          .filter((serverCss) => clientEntryValue.css.every((clientCss) => serverCss.hash !== clientCss.hash))
+          .map((css) => css.src)
+      )
+      assetsToAdd.push(
+        ...serverEntryValue.assets
+          .filter((serverAsset) =>
+            clientEntryValue.assets.every((clientAsset) => serverAsset.hash !== clientAsset.hash)
+          )
+          .map((asset) => asset.src)
+      )
+    }
+
+    if (cssToAdd.length) {
+      clientManifest[clientEntryKey]!.css ??= []
+      clientManifest[clientEntryKey]!.css?.push(...cssToAdd)
+    }
+
+    if (assetsToAdd.length) {
+      clientManifest[clientEntryKey]!.assets ??= []
+      clientManifest[clientEntryKey]!.assets?.push(...assetsToAdd)
+    }
+  }
+
+  return clientManifest
+}
+
+function getPageIdFromManifestEntry(entry: string) {
+  return entry.split(':').pop()!.replace('/pages', '')
+}
+
+function collectAssetsForEntry(manifest: ViteManifest, entry: ViteManifestEntry) {
+  const css = []
+  const assets = []
+
+  const entries = new Set([entry])
+  for (const entry of entries) {
+    for (const import_ of entry.imports ?? []) {
+      entries.add(manifest[import_]!)
+    }
+    for (let id of entry.css ?? []) {
+      const hash = hashCss(id)
+      assert(hash)
+      css.push({ src: id, hash })
+    }
+
+    for (let id of entry.assets ?? []) {
+      const hash = hashOtherAsset(id)
+      assert(hash)
+      assets.push({ src: id, hash })
+    }
+  }
+  return { css, assets }
+}
+
+function hashCss(id: string) {
+  return id.split('.').at(-2)
+}
+
+function hashOtherAsset(id: string) {
+  return id.split('.').at(-2)
 }

@@ -21,7 +21,7 @@ type AnalysisResult = {
 }
 
 // TODO/v1-release: remove analyzePageClientSide(), use analyzeClientSide() instead
-function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string): AnalysisResult {
+function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string, includeServerPage: boolean): AnalysisResult {
   let pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const { isHtmlOnly, isClientRouting } = analyzeExports({ pageFilesClientSide, pageFilesServerSide, pageId })
@@ -38,7 +38,8 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string): Analys
     pageFilesClientSide,
     pageFilesServerSide,
     isHtmlOnly,
-    isClientRouting
+    isClientRouting,
+    includeServerPage
   })
   return { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide }
 }
