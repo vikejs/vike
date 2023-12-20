@@ -119,6 +119,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`.server.js` / `.client.js`',
+    url: '/file-env'
+  },
+  {
+    level: 2,
     title: 'Render Modes (SPA, SSR, SSG, HTML-only)',
     titleInNav: 'SPA, SSR, SSG, HTML-only',
     url: '/render-modes',
