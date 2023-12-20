@@ -93,6 +93,12 @@ function assertFileRuntime(): Plugin {
     },
     configureServer() {
       isDev = true
+    },
+    // Ensure that this plugin works
+    transform(_code, id, options) {
+      const isServerSide = options?.ssr
+      const envWrong = isServerSide ? 'client' : 'server'
+      assert(!id.includes(`.${envWrong}.`))
     }
   }
 }
