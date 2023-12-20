@@ -23,7 +23,7 @@ function assertFileRuntime(): Plugin {
     enforce: 'pre',
     resolveId: {
       order: 'pre',
-      // @ts-ignore already true by default
+      // @ts-expect-error already true by default
       sequential: true,
       async handler(source, importer, options) {
         // TODO/v1-release: remove
