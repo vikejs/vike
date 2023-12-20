@@ -1,18 +1,6 @@
 export { testRun }
 
-import {
-  test,
-  expect,
-  fetchHtml,
-  page,
-  getServerUrl,
-  autoRetry,
-  sleep,
-  expectLog,
-  partRegex,
-  editFile,
-  editFileRevert
-} from '@brillout/test-e2e'
+import { test, expect, fetchHtml, page, getServerUrl, autoRetry, sleep, expectLog } from '@brillout/test-e2e'
 import { testCounter } from '../utils'
 import { testRun as testRunClassic } from '../../examples/react/.testRun'
 import fs from 'fs'
@@ -106,12 +94,6 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
 
   if (isDev) {
     test('forbidden client-only module import', async () => {
-      editFile('./pages/forbidden-import/Page.jsx', (s) =>
-        s.replace(
-          `import React from 'react'`,
-          `import React from 'react'; import ClientOnly from './ClientOnly.client'`
-        )
-      )
       await page.goto(getServerUrl() + '/forbidden-import')
 
       expectLog(`HTTP response /forbidden-import 500`, (log) => log.logSource === 'stderr')
@@ -132,7 +114,6 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
           '└──────────────────────────────────────────────────────────┘\n',
         (log) => log.logSource === 'stderr'
       )
-      editFileRevert()
     })
   }
 }
