@@ -1,13 +1,14 @@
 export { assertFileRuntime }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertUsage, getFilePathRelativeToUserRootDir } from '../utils.js'
+import { assert, assertUsage, assertWarning, getFilePathRelativeToUserRootDir } from '../utils.js'
 import { extractAssetsRE } from './extractAssetsPlugin.js'
 import { extractExportNamesRE } from './extractExportNamesPlugin.js'
 import pc from '@brillout/picocolors'
 
 function assertFileRuntime(): Plugin {
   let config: ResolvedConfig
+  let isDev = false
   return {
     name: 'vike:assertFileRuntime',
     // - We need to set `enforce: 'pre'` because, otherwise, the resolvedId() hook of Vite's internal plugin `vite:resolve` is called before and it doesn't seem to call `this.resolve()` which means that the resolveId() hook below is never called.
@@ -66,16 +67,29 @@ function assertFileRuntime(): Plugin {
         }
         if (options?.ssr && modulePath.includes('.client.')) {
           const modulePathPretty = modulePath.replaceAll('.client.', pc.bold('.client.'))
-          assertUsage(false, `Client-only module "${modulePathPretty}" imported by server-side code${importerPretty}.`)
+          const msg = `Client-only module "${modulePathPretty}" imported by server-side code${importerPretty}.`
+          if (isDev) {
+            assertWarning(false, msg, { onlyOnce: true })
+          } else {
+            assertUsage(false, msg)
+          }
         }
         if (!options?.ssr && modulePath.includes('.server.')) {
           const modulePathPretty = modulePath.replaceAll('.server.', pc.bold('.server.'))
-          assertUsage(false, `Server-only module "${modulePathPretty}" imported by client-side code${importerPretty}.`)
+          const msg = `Server-only module "${modulePathPretty}" imported by client-side code${importerPretty}.`
+          if (isDev) {
+            assertWarning(false, msg, { onlyOnce: true })
+          } else {
+            assertUsage(false, msg)
+          }
         }
       }
     },
     configResolved(config_) {
       config = config_
+    },
+    configureServer() {
+      isDev = true
     }
   }
 }
