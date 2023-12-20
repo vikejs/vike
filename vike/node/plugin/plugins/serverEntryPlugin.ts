@@ -27,8 +27,6 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
     return []
   }
   globalObject.serverConfig = serverConfig
-  let root = ''
-
   const serverEntryProdPlugin = (): Plugin => {
     return {
       name: 'vike:serverEntry',
@@ -38,7 +36,6 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
         return !!(env.isSsrBuild || env.ssrBuild)
       },
       configResolved(config) {
-        root = config.root
         let serverEntryFilePath = path.join(config.root, serverConfig.entry)
         try {
           serverEntryFilePath = require_.resolve(serverEntryFilePath)
@@ -52,11 +49,6 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
           )
         }
         config.build.rollupOptions.input = injectRollupInputs({ index: serverEntryFilePath }, config)
-      },
-      renderChunk(code, chunk) {
-        if (chunk.facadeModuleId === path.posix.join(root, serverConfig.entry)) {
-          return ["import './importBuild.cjs';", "process.env.NODE_ENV = 'production';"].join('\n') + code
-        }
       }
     }
   }
