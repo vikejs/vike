@@ -6,6 +6,7 @@ import { assertUsage } from '../utils.js'
 function assertFileRuntime(): Plugin {
   return {
     name: 'vike:assertFileRuntime',
+    enforce: 'pre',
     async resolveId(source, importer, options) {
       const resolved = await this.resolve(source, importer, { skipSelf: true, ...options })
       if (!resolved) return
