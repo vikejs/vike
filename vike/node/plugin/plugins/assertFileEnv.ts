@@ -102,6 +102,7 @@ function assertFileEnv(): Plugin {
     },
     // Ensure this plugin works
     transform(_code, id, options) {
+      if (isDev) return
       const isServerSide = options?.ssr
       const envWrong = isServerSide ? 'client' : 'server'
       assert(!id.includes(`.${envWrong}.`))
