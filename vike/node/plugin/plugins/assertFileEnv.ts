@@ -1,5 +1,7 @@
 export { assertFileEnv }
 
+// Implementation for https://vike.dev/file-env
+
 import type { Plugin, ResolvedConfig } from 'vite'
 import {
   assert,
