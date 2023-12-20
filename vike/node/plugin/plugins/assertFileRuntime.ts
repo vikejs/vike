@@ -71,16 +71,14 @@ function assertFileRuntime(): Plugin {
         const suffix = `.${envExpect}.` as const
 
         if (modulePath.includes(suffix)) {
-          let importerPretty = ''
-          if (importer) {
-            importerPretty = importer.split('?')[0]!
-            importerPretty = getFilePathRelativeToUserRootDir(importerPretty, config.root)
-            importerPretty = `by ${importerPretty}`
-          }
           const modulePathPretty = modulePath.replaceAll(suffix, pc.bold(suffix))
           let msg = `${capitalizeFirstLetter(
             envExpect
-          )}-only module "${modulePathPretty}" imported on the ${envActual}-side${importerPretty}.`
+          )}-only module "${modulePathPretty}" imported on the ${envActual}-side`
+          if (importer) {
+            const importerPath = getFilePathRelativeToUserRootDir(importer.split('?')[0]!, config.root)
+            msg += `by ${importerPath}`
+          }
           if (isDev) {
             msg += ' (building your app for production will be prevented and an error will be thrown)'
             assertWarning(false, msg, { onlyOnce: true })
