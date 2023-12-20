@@ -18,7 +18,7 @@ function analyzeClientSide(
   } else {
     // TODO/v1-release: remove
     // V0.4 design
-    const { isHtmlOnly, isClientRouting } = analyzePageClientSide(pageFilesAll, pageId, true)
+    const { isHtmlOnly, isClientRouting } = analyzePageClientSide(pageFilesAll, pageId)
     return { isClientSideRenderable: !isHtmlOnly, isClientRouting }
   }
 }

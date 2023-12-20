@@ -16,7 +16,6 @@ import {
   normalizeRollupInput,
   getOutDirs
 } from '../utils.js'
-import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValue } from '../../../shared/page-configs/helpers.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
@@ -31,6 +30,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import { existsSync } from 'fs'
 import { ViteManifest, ViteManifestEntry } from '../../shared/ViteManifest.js'
+import { determinePageIdOld } from '../../../shared/determinePageIdOld.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -86,7 +86,7 @@ function buildConfig(): Plugin {
           if (isSsrBuild) {
             const clientManifest = JSON.parse(await fs.readFile(manifestFilePathNew, 'utf-8').catch(() => '{}'))
             const serverManifest = JSON.parse(await fs.readFile(manifestFilePathOld, 'utf-8'))
-            const correctedClientManifest = addMissingAssets(clientManifest, serverManifest)
+            const correctedClientManifest = mergeManifests(clientManifest, serverManifest)
 
             await fs.writeFile(manifestFilePathOld, JSON.stringify(correctedClientManifest), 'utf-8')
           }
@@ -275,14 +275,14 @@ function assertRollupInput(config: ResolvedConfig): void {
   )
 }
 
-// This implementation assumes that even if a page is server-only,
-// it's still included in the original client manifest (server-routing at least needs to be imported)
 // The missing assets in the clientManifest are added to the existing entries.
-// No new entries are added to the clientManifest. Only the missing assets are added.
-function addMissingAssets(clientManifest: ViteManifest, serverManifest: ViteManifest) {
+// Page entries that don't exist in the client manifest are also added, along with their
+// asset dependencies (flattened onto the entry)
+function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManifest) {
   const entriesToAssetsClient = new Map<
     string,
     {
+      pageId: string
       css: { src: string; hash: string }[]
       assets: { src: string; hash: string }[]
     }
@@ -291,29 +291,42 @@ function addMissingAssets(clientManifest: ViteManifest, serverManifest: ViteMani
   const entriesToAssetsServer = new Map<
     string,
     {
+      pageId: string
       css: { src: string; hash: string }[]
       assets: { src: string; hash: string }[]
     }
   >()
 
   for (const [key, entry] of Object.entries(clientManifest).filter(([, { isEntry }]) => isEntry)) {
+    const pageId = getPageIdFromManifestEntry(key)
+    if (!pageId) {
+      continue
+    }
     const assets = collectAssetsForEntry(clientManifest, entry)
-    entriesToAssetsClient.set(key, assets)
+    entriesToAssetsClient.set(key, { ...assets, pageId })
   }
 
   for (const [key, entry] of Object.entries(serverManifest).filter(([, { isEntry }]) => isEntry)) {
+    const pageId = getPageIdFromManifestEntry(key)
+    if (!pageId) {
+      continue
+    }
     const assets = collectAssetsForEntry(serverManifest, entry)
-    entriesToAssetsServer.set(key, assets)
+    entriesToAssetsServer.set(key, { ...assets, pageId })
   }
 
+  // Add the missing assets to the client manifest, from the server manifest
   for (const [clientEntryKey, clientEntryValue] of entriesToAssetsClient.entries()) {
     const cssToAdd: string[] = []
     const assetsToAdd: string[] = []
-    const pageIdClient = getPageIdFromManifestEntry(clientEntryKey)
 
-    for (const [serverEntryKey, serverEntryValue] of entriesToAssetsServer.entries()) {
-      const pageIdServer = getPageIdFromManifestEntry(serverEntryKey)
-      if (pageIdClient !== pageIdServer) {
+    for (const [, serverEntryValue] of entriesToAssetsServer.entries()) {
+      console.log({
+        clientEntryValue,
+        serverEntryValue
+      })
+
+      if (!clientEntryValue.pageId || !serverEntryValue.pageId || clientEntryValue.pageId !== serverEntryValue.pageId) {
         continue
       }
 
@@ -342,11 +355,28 @@ function addMissingAssets(clientManifest: ViteManifest, serverManifest: ViteMani
     }
   }
 
+  // Add the completely missing entries to the client manifest, from the server manifest
+  for (const [serverEntryKey, serverEntryValue] of Object.entries(serverManifest)) {
+    if (!clientManifest[serverEntryKey]) {
+      clientManifest[serverEntryKey] = serverEntryValue
+    }
+  }
+
   return clientManifest
 }
 
 function getPageIdFromManifestEntry(entry: string) {
-  return entry.split(':').pop()!.replace('/pages', '')
+  let pageId = determinePageIdV1(entry)
+  if (!pageId) {
+    pageId = determinePageIdOld(entry)
+  }
+
+  return pageId
+}
+
+function determinePageIdV1(entry: string) {
+  const pageId = entry.split(':/pages').pop()!
+  return pageId
 }
 
 function collectAssetsForEntry(manifest: ViteManifest, entry: ViteManifestEntry) {

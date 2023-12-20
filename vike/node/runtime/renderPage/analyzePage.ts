@@ -65,6 +65,6 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRunt
       pageFilesServerSide: []
     }
   } else {
-    return analyzePageClientSide(pageFilesAll, pageId, !getGlobalContext().isProduction)
+    return analyzePageClientSide(pageFilesAll, pageId)
   }
 }
