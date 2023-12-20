@@ -65,10 +65,11 @@ function assertFileEnv(): Plugin {
         // Show error message
         let errMsg: string
 
-        const modulePathPretty = modulePath.replaceAll(suffix, pc.bold(suffix))
+        let modulePathPretty = getFilePathRelativeToUserRootDir(modulePath, config.root)
+        modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
         errMsg = `${capitalizeFirstLetter(
           envExpect
-        )}-only module "${modulePathPretty}" (https://vike.dev/file-env) imported on the ${envActual}-side`
+        )}-only module ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
 
         if (
           importer &&
@@ -83,6 +84,10 @@ function assertFileEnv(): Plugin {
 
         if (isDev) {
           errMsg += ' (building your app for production will be prevented and an error will be thrown)'
+        }
+        errMsg += '.'
+
+        if (isDev) {
           assertWarning(false, errMsg, { onlyOnce: true })
         } else {
           assertUsage(false, errMsg)
