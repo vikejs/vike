@@ -28,7 +28,7 @@ import { extensionsAssets } from './plugins/extensionsAssets.js'
 import { baseUrls } from './plugins/baseUrls.js'
 import { envVarsPlugin } from './plugins/envVars.js'
 import pc from '@brillout/picocolors'
-import { assertFileRuntime } from './plugins/fileRuntime.js'
+import { assertFileRuntime } from './plugins/assertFileRuntime.js'
 
 markEnvAsVite()
 
