@@ -42,15 +42,6 @@ function assertFileEnv(): Plugin {
           return
         }
 
-        if (
-          // Don't show Vike's virtual modules that import the entry plus files such as /pages/about/+Page.js
-          importer?.includes('virtual:vike:') ||
-          // I don't know why and who sets importer to '<stdin>' (I guess Vite?)
-          importer === '<stdin>'
-        ) {
-          importer = undefined
-        }
-
         const resolved = await this.resolve(source, importer, {
           // Rollup says that skipSelf is true by default but that doesn't seem to be the case
           skipSelf: true,
@@ -75,10 +66,18 @@ function assertFileEnv(): Plugin {
           let msg = `${capitalizeFirstLetter(
             envExpect
           )}-only module "${modulePathPretty}" (https://vike.dev/file-env) imported on the ${envActual}-side`
-          if (importer) {
+
+          if (
+            importer &&
+            // Don't show Vike's virtual modules that import the entry plus files such as /pages/about/+Page.js
+            !importer.includes('virtual:vike:') &&
+            // I don't know why and who sets importer to '<stdin>' (I guess Vite?)
+            importer !== '<stdin>'
+          ) {
             const importerPath = getFilePathRelativeToUserRootDir(importer.split('?')[0]!, config.root)
             msg += `by ${importerPath}`
           }
+
           if (isDev) {
             msg += ' (building your app for production will be prevented and an error will be thrown)'
             assertWarning(false, msg, { onlyOnce: true })
