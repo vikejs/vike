@@ -1,4 +1,4 @@
-export { assertFileRuntime }
+export { assertFileEnv }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import {
@@ -12,11 +12,11 @@ import { extractAssetsRE } from './extractAssetsPlugin.js'
 import { extractExportNamesRE } from './extractExportNamesPlugin.js'
 import pc from '@brillout/picocolors'
 
-function assertFileRuntime(): Plugin {
+function assertFileEnv(): Plugin {
   let config: ResolvedConfig
   let isDev = false
   return {
-    name: 'vike:assertFileRuntime',
+    name: 'vike:assertFileEnv',
     // - We need to set `enforce: 'pre'` because, otherwise, the resolvedId() hook of Vite's internal plugin `vite:resolve` is called before and it doesn't seem to call `this.resolve()` which means that the resolveId() hook below is never called.
     //   - Vite's `vite:resolve` plugin: https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/resolve.ts#L105
     // - It's actually a good thing if the resolveId() hook below is the first one to be called because it doesn't actually resolve any ID, so all other resolveId() hooks will be called as normal. And with `this.resolve()` we get the information we want from all other resolvedId() hooks.
