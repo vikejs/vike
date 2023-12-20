@@ -23,7 +23,11 @@ function assertFileRuntime(): Plugin {
         importer = undefined
       }
 
-      const resolved = await this.resolve(source, importer, { skipSelf: true, ...options })
+      const resolved = await this.resolve(source, importer, {
+        // Rollup says that skipSelf is true by default but that doesn't seem to be the case
+        skipSelf: true,
+        ...options
+      })
       // Is there a situation where resolved is null?
       assert(resolved)
       const modulePath = resolved.id.split('?')[0]!
