@@ -79,7 +79,7 @@ function assertFileEnv(): Plugin {
           importer !== '<stdin>'
         ) {
           const importerPath = getFilePathRelativeToUserRootDir(importer.split('?')[0]!, config.root)
-          errMsg += `by ${importerPath}`
+          errMsg += ` by ${importerPath}`
         }
 
         if (isDev) {
