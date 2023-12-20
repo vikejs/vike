@@ -275,91 +275,43 @@ function assertRollupInput(config: ResolvedConfig): void {
   )
 }
 
-// The missing assets in the clientManifest are added to the existing entries.
-// Page entries that don't exist in the client manifest are also added, along with their
-// asset dependencies (flattened onto the entry)
 function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManifest) {
-  const entriesToAssetsClient = new Map<
+  const uniqueAssets = new Map<string, string>()
+  const entriesToFlattenedAssets = new Map<
     string,
     {
-      pageId: string
-      css: { src: string; hash: string }[]
-      assets: { src: string; hash: string }[]
+      cssHashes: string[]
+      assetHashes: string[]
     }
   >()
 
-  const entriesToAssetsServer = new Map<
-    string,
-    {
-      pageId: string
-      css: { src: string; hash: string }[]
-      assets: { src: string; hash: string }[]
+  const mergedManifest = { ...clientManifest, ...serverManifest }
+  for (const [key, entry] of Object.entries(mergedManifest).filter(([, { isEntry }]) => isEntry)) {
+    const assets = collectAssetsForEntry(mergedManifest, entry)
+    for (const css of assets.css) {
+      if (!uniqueAssets.has(css.hash)) {
+        uniqueAssets.set(css.hash, css.src)
+      }
     }
-  >()
-
-  for (const [key, entry] of Object.entries(clientManifest).filter(([, { isEntry }]) => isEntry)) {
-    const pageId = getPageIdFromManifestEntry(key)
-    if (!pageId) {
-      continue
+    for (const asset of assets.assets) {
+      if (!uniqueAssets.has(asset.hash)) {
+        uniqueAssets.set(asset.hash, asset.src)
+      }
     }
-    const assets = collectAssetsForEntry(clientManifest, entry)
-    entriesToAssetsClient.set(key, { ...assets, pageId })
+    entriesToFlattenedAssets.set(key, {
+      cssHashes: assets.css.map((css) => css.hash),
+      assetHashes: assets.assets.map((asset) => asset.hash)
+    })
   }
 
   for (const [key, entry] of Object.entries(serverManifest).filter(([, { isEntry }]) => isEntry)) {
-    const pageId = getPageIdFromManifestEntry(key)
-    if (!pageId) {
-      continue
-    }
-    const assets = collectAssetsForEntry(serverManifest, entry)
-    entriesToAssetsServer.set(key, { ...assets, pageId })
-  }
-
-  // Add the missing assets to the client manifest, from the server manifest
-  for (const [clientEntryKey, clientEntryValue] of entriesToAssetsClient.entries()) {
-    const cssToAdd: string[] = []
-    const assetsToAdd: string[] = []
-
-    for (const [, serverEntryValue] of entriesToAssetsServer.entries()) {
-      console.log({
-        clientEntryValue,
-        serverEntryValue
-      })
-
-      if (!clientEntryValue.pageId || !serverEntryValue.pageId || clientEntryValue.pageId !== serverEntryValue.pageId) {
-        continue
-      }
-
-      cssToAdd.push(
-        ...serverEntryValue.css
-          .filter((serverCss) => clientEntryValue.css.every((clientCss) => serverCss.hash !== clientCss.hash))
-          .map((css) => css.src)
-      )
-      assetsToAdd.push(
-        ...serverEntryValue.assets
-          .filter((serverAsset) =>
-            clientEntryValue.assets.every((clientAsset) => serverAsset.hash !== clientAsset.hash)
-          )
-          .map((asset) => asset.src)
-      )
-    }
-
-    if (cssToAdd.length) {
-      clientManifest[clientEntryKey]!.css ??= []
-      clientManifest[clientEntryKey]!.css?.push(...cssToAdd)
-    }
-
-    if (assetsToAdd.length) {
-      clientManifest[clientEntryKey]!.assets ??= []
-      clientManifest[clientEntryKey]!.assets?.push(...assetsToAdd)
-    }
-  }
-
-  // TODO: (maybe)remove for v1
-  // Add the completely missing entries to the client manifest, from the server manifest
-  for (const [serverEntryKey, serverEntryValue] of Object.entries(serverManifest)) {
-    if (!clientManifest[serverEntryKey]) {
-      clientManifest[serverEntryKey] = serverEntryValue
+    if (!(key in clientManifest)) {
+      clientManifest[key] = entry
+      clientManifest[key]!.imports = []
+      clientManifest[key]!.css = entriesToFlattenedAssets.get(key)!.cssHashes.map((hash) => uniqueAssets.get(hash)!)
+      clientManifest[key]!.assets = entriesToFlattenedAssets
+        .get(key)!
+        .assetHashes.map((hash) => uniqueAssets.get(hash)!)
     }
   }
 
