@@ -21,11 +21,14 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRunt
       onlyAssets: false,
       eagerlyImported: false
     })
-    clientDependencies.push({
-      id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, false),
-      onlyAssets: true,
-      eagerlyImported: false
-    })
+    // In production we add the assets of server-only pages to the client manifest
+    if (!getGlobalContext().isProduction) {
+      clientDependencies.push({
+        id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, false),
+        onlyAssets: true,
+        eagerlyImported: false
+      })
+    }
     /* Remove?
     Object.values(pageConfig.configElements).forEach((configElement) => {
       if (configElement.importPath) {

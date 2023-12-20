@@ -48,11 +48,11 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
         } catch {
           // rollup@3.25.2
           expect(html).toMatch(
-            partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/default.page.${/(client|server)/}.${hash}.css">`
+            partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/default.page.server.${hash}.css">`
           )
         }
         expect(html).toMatch(
-          partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/index.page.${/(client|server)/}.${hash}.css">`
+          partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/index.page.server.${hash}.css">`
         )
       }
     } else {

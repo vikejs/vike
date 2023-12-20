@@ -275,47 +275,91 @@ function assertRollupInput(config: ResolvedConfig): void {
   )
 }
 
+// The missing assets in the clientManifest are added from the serverManifest, based on V1 pageId.
+// Page entries that don't exist in the client manifest are NOT added
+// This assumes that there is a page entry in the client manifest for every page(not compatible with v0.4)
+// because v0.4 doesn't include html-only pages in the client manifest
 function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManifest) {
-  const uniqueAssets = new Map<string, string>()
-  const entriesToFlattenedAssets = new Map<
+  const entriesToAssetsClient = new Map<
     string,
     {
-      cssHashes: string[]
-      assetHashes: string[]
+      pageId: string
+      css: { src: string; hash: string }[]
+      assets: { src: string; hash: string }[]
     }
   >()
 
-  const mergedManifest = { ...clientManifest, ...serverManifest }
-  for (const [key, entry] of Object.entries(mergedManifest)) {
-    const assets = collectAssetsForEntry(mergedManifest, entry)
-    for (const css of assets.css) {
-      if (!uniqueAssets.has(css.hash)) {
-        uniqueAssets.set(css.hash, css.src)
-      }
+  const entriesToAssetsServer = new Map<
+    string,
+    {
+      pageId: string
+      css: { src: string; hash: string }[]
+      assets: { src: string; hash: string }[]
     }
-    for (const asset of assets.assets) {
-      if (!uniqueAssets.has(asset.hash)) {
-        uniqueAssets.set(asset.hash, asset.src)
-      }
+  >()
+
+  for (const [key, entry] of Object.entries(clientManifest).filter(([, { isEntry }]) => isEntry)) {
+    const pageId = determinePageIdV1(key)
+    if (!pageId) {
+      continue
     }
-    entriesToFlattenedAssets.set(key, {
-      cssHashes: assets.css.map((css) => css.hash),
-      assetHashes: assets.assets.map((asset) => asset.hash)
-    })
+    const assets = collectAssetsForEntry(clientManifest, entry)
+    entriesToAssetsClient.set(key, { ...assets, pageId })
   }
 
-  for (const [key, entry] of Object.entries(serverManifest)) {
-    if (!(key in clientManifest)) {
-      clientManifest[key] = entry
-      clientManifest[key]!.imports = []
-      clientManifest[key]!.css = entriesToFlattenedAssets.get(key)!.cssHashes.map((hash) => uniqueAssets.get(hash)!)
-      clientManifest[key]!.assets = entriesToFlattenedAssets
-        .get(key)!
-        .assetHashes.map((hash) => uniqueAssets.get(hash)!)
+  for (const [key, entry] of Object.entries(serverManifest).filter(([, { isEntry }]) => isEntry)) {
+    const pageId = determinePageIdV1(key)
+    if (!pageId) {
+      continue
+    }
+    const assets = collectAssetsForEntry(serverManifest, entry)
+    entriesToAssetsServer.set(key, { ...assets, pageId })
+  }
+
+  for (const [clientEntryKey, clientEntryValue] of entriesToAssetsClient.entries()) {
+    const cssToAdd: string[] = []
+    const assetsToAdd: string[] = []
+
+    for (const [, serverEntryValue] of entriesToAssetsServer.entries()) {
+      if (clientEntryValue.pageId !== serverEntryValue.pageId) {
+        continue
+      }
+
+      cssToAdd.push(
+        ...serverEntryValue.css
+          .filter((serverCss) => clientEntryValue.css.every((clientCss) => serverCss.hash !== clientCss.hash))
+          .map((css) => css.src)
+      )
+      assetsToAdd.push(
+        ...serverEntryValue.assets
+          .filter((serverAsset) =>
+            clientEntryValue.assets.every((clientAsset) => serverAsset.hash !== clientAsset.hash)
+          )
+          .map((asset) => asset.src)
+      )
+    }
+
+    if (cssToAdd.length) {
+      clientManifest[clientEntryKey]!.css ??= []
+      clientManifest[clientEntryKey]!.css?.push(...cssToAdd)
+    }
+
+    if (assetsToAdd.length) {
+      clientManifest[clientEntryKey]!.assets ??= []
+      clientManifest[clientEntryKey]!.assets?.push(...assetsToAdd)
     }
   }
 
   return clientManifest
+}
+
+function determinePageIdV1(entry: string) {
+  const splitEntry = entry.split(':/pages')
+  const isV1 = splitEntry.length === 2
+  if (!isV1) {
+    return ''
+  }
+  return splitEntry.pop()
 }
 
 function collectAssetsForEntry(manifest: ViteManifest, entry: ViteManifestEntry) {
