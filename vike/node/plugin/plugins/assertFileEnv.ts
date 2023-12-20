@@ -47,8 +47,8 @@ function assertFileEnv(): Plugin {
           skipSelf: true,
           ...options
         })
-        // Is there a situation where `resolved` is null?
-        assert(resolved, { source, importer })
+        // resolved is null when import path is erroneous and doesn't actually point to a file
+        if (!resolved) return
         const modulePath = resolved.id.split('?')[0]!
 
         // `.server.js` and `.client.js` should only apply to user files
@@ -107,7 +107,7 @@ function assertFileEnv(): Plugin {
       if (isDev) return
       // TODO/v1-release: remove
       if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return
-      if (id.endsWith('.css')) return
+      if (id.split('?')[0]!.endsWith('.css')) return
 
       const isServerSide = options?.ssr
       const envWrong = isServerSide ? 'client' : 'server'
