@@ -11,7 +11,7 @@ function assertFileRuntime(): Plugin {
       const resolved = await this.resolve(source, importer, { skipSelf: true, ...options })
       if (!resolved) return
 
-      const additionalMessage = importer ? ` (imported by ${importer.split('?')[0]}) ` : ''
+      const additionalMessage = importer ? ` (imported by ${importer.split('?')[0]})` : ''
       const modulePath = resolved.id.split('?')[0] || ''
       if (options?.ssr && modulePath.includes('.client')) {
         assertUsage(false, `Client-only module "${modulePath}" included in server bundle${additionalMessage}.`)
