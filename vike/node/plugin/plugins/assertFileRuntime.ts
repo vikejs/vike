@@ -23,7 +23,7 @@ function assertFileRuntime(): Plugin {
         importer = undefined
       }
 
-      const resolved = await this.resolve(source, importer, options)
+      const resolved = await this.resolve(source, importer, { skipSelf: true, ...options })
       // Is there a situation where resolved is null?
       assert(resolved)
       const modulePath = resolved.id.split('?')[0]!
