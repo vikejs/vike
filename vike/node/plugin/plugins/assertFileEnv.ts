@@ -105,6 +105,9 @@ function assertFileEnv(): Plugin {
     // Ensure this plugin works
     transform(_code, id, options) {
       if (isDev) return
+      // TODO/v1-release: remove
+      if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return
+
       const isServerSide = options?.ssr
       const envWrong = isServerSide ? 'client' : 'server'
       assert(!id.includes(`.${envWrong}.`))
