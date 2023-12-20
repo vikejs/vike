@@ -78,10 +78,11 @@ function assertFileRuntime(): Plugin {
             importerPretty = `by ${importerPretty}`
           }
           const modulePathPretty = modulePath.replaceAll(suffix, pc.bold(suffix))
-          const msg = `${capitalizeFirstLetter(
+          let msg = `${capitalizeFirstLetter(
             envExpect
           )}-only module "${modulePathPretty}" imported on the ${envActual}-side${importerPretty}.`
           if (isDev) {
+            msg += ' (building your app for production will be prevented and an error will be thrown)'
             assertWarning(false, msg, { onlyOnce: true })
           } else {
             assertUsage(false, msg)
