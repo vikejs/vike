@@ -197,6 +197,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
 
 // Ensure Rollup creates entries for each page file, see https://github.com/vikejs/vike/issues/350
 // (Otherwise the page files may be missing in the client manifest.json)
+// TODO: remove ?extractAssets code
 async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedByServer: boolean) {
   const isForClientSide = !viteIsSSR(config)
   const fileTypes: FileType[] = isForClientSide ? ['.page', '.page.client'] : ['.page', '.page.server']
@@ -211,6 +212,7 @@ async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedB
   return pageFileEntries
 }
 
+// TODO: remove ?extractAssets code
 function getEntryFromFilePath(filePath: string, config: ResolvedConfig) {
   assertPosixPath(filePath)
   assert(filePath.startsWith('/'))
