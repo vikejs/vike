@@ -23,7 +23,7 @@ function assertFileRuntime(): Plugin {
         importer = undefined
       }
 
-      const resolved = await this.resolve(source, importer, { skipSelf: true, ...options })
+      const resolved = await this.resolve(source, importer, options)
       // Is there a situation when resolved is null?
       assert(resolved)
 
