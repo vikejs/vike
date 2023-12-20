@@ -144,10 +144,12 @@ function logImportError(error: unknown) {
   ) {
     let packageName = ''
     if (error instanceof Error) {
+      // Development - Vite loads it from node_modules ("node_modules/some-library")
       if (String(error.stack).includes('node_modules/')) {
         packageName = String(error.stack).split('node_modules/').pop()!.split('/').slice(0, 2).join('/')
         packageName = `"${packageName}"`
       } else {
+        // Development/Prod - loaded from bundle (file://some-module.js)
         const match = /import .* from (".*")/.exec(String(error.stack))
         if (match?.length && typeof match[1] === 'string') {
           packageName = match[1]
