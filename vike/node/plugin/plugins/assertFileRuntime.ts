@@ -24,7 +24,7 @@ function assertFileRuntime(): Plugin {
       }
 
       const resolved = await this.resolve(source, importer, options)
-      // Is there a situation when resolved is null?
+      // Is there a situation where resolved is null?
       assert(resolved)
       const modulePath = resolved.id.split('?')[0]!
 
