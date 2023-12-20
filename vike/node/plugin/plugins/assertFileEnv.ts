@@ -48,7 +48,7 @@ function assertFileEnv(): Plugin {
           ...options
         })
         // Is there a situation where `resolved` is null?
-        assert(resolved)
+        assert(resolved, { source, importer })
         const modulePath = resolved.id.split('?')[0]!
 
         // `.server.js` and `.client.js` should only apply to user files
