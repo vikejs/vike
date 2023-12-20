@@ -1,7 +1,7 @@
 export { assertFileRuntime }
 
 import { Plugin } from 'vite'
-import { assertUsage } from '../utils.js'
+import { assert, assertUsage } from '../utils.js'
 import { extractAssetsRE } from './extractAssetsPlugin.js'
 import { extractExportNamesRE } from './extractExportNamesPlugin.js'
 
@@ -24,7 +24,8 @@ function assertFileRuntime(): Plugin {
       }
 
       const resolved = await this.resolve(source, importer, { skipSelf: true, ...options })
-      if (!resolved) return
+      // Is there a situation when resolved is null?
+      assert(resolved)
 
       const additionalMessage = importer ? ` (imported by ${importer.split('?')[0]})` : ''
       const modulePath = resolved.id.split('?')[0] || ''
