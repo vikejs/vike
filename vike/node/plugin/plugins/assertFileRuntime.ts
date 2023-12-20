@@ -75,12 +75,12 @@ function assertFileRuntime(): Plugin {
           if (importer) {
             importerPretty = importer.split('?')[0]!
             importerPretty = getFilePathRelativeToUserRootDir(importerPretty, config.root)
-            importerPretty = ` ${importerPretty}`
+            importerPretty = `by ${importerPretty}`
           }
           const modulePathPretty = modulePath.replaceAll(suffix, pc.bold(suffix))
           const msg = `${capitalizeFirstLetter(
             envExpect
-          )}-only module "${modulePathPretty}" imported by ${envActual}-side code${importerPretty}.`
+          )}-only module "${modulePathPretty}" imported on the ${envActual}-side${importerPretty}.`
           if (isDev) {
             assertWarning(false, msg, { onlyOnce: true })
           } else {
