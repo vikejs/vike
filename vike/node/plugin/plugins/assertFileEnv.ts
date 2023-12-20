@@ -20,7 +20,7 @@ function assertFileEnv(): Plugin {
     // - We need to set `enforce: 'pre'` because, otherwise, the resolvedId() hook of Vite's internal plugin `vite:resolve` is called before and it doesn't seem to call `this.resolve()` which means that the resolveId() hook below is never called.
     //   - Vite's `vite:resolve` plugin: https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/resolve.ts#L105
     // - It's actually a good thing if the resolveId() hook below is the first one to be called because it doesn't actually resolve any ID, so all other resolveId() hooks will be called as normal. And with `this.resolve()` we get the information we want from all other resolvedId() hooks.
-    // - Path aliases are already resolved even when using `enforce: 'pre'`. For example:
+    // - Path aliases are already resolved, even when using `enforce: 'pre'`. For example:
     //   ```js
     //   // /pages/index/+Page.tsx
     //
@@ -30,7 +30,7 @@ function assertFileEnv(): Plugin {
     //   ```
     enforce: 'pre',
     resolveId: {
-      /* I don't know why, but aliases aren't resolved anymore when setting `order: 'pre'`. (In principle, I'd assume that `this.resolve()` would resolve the alias but it doesn't seem like it.)
+      /* I don't know why, but path aliases aren't resolved anymore when setting `order: 'pre'`. (In principle, I'd assume that `this.resolve()` would resolve the alias but it doesn't.)
       order: 'pre',
       */
       async handler(source, importer, options) {
@@ -43,9 +43,9 @@ function assertFileEnv(): Plugin {
         }
 
         if (
-          // Don't show Vike's virtual modules that import plus files such as /pages/about/+Page.js
+          // Don't show Vike's virtual modules that import the entry plus files such as /pages/about/+Page.js
           importer?.includes('virtual:vike:') ||
-          // I don't know why and who sets importer to '<stdin>' (I guess Vite?).
+          // I don't know why and who sets importer to '<stdin>' (I guess Vite?)
           importer === '<stdin>'
         ) {
           importer = undefined
