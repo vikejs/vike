@@ -27,7 +27,6 @@ import { extensionsAssets } from './plugins/extensionsAssets.js'
 import { baseUrls } from './plugins/baseUrls.js'
 import { envVarsPlugin } from './plugins/envVars.js'
 import pc from '@brillout/picocolors'
-import { showImportError } from './plugins/showImportError.js'
 
 markEnvAsVite()
 
@@ -51,8 +50,7 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     ...importBuild(),
     extensionsAssets(),
     baseUrls(vikeConfig),
-    envVarsPlugin(),
-    showImportError()
+    envVarsPlugin()
   ]
   return plugins
 }

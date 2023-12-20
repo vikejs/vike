@@ -13,6 +13,7 @@ import { analyzePage } from './analyzePage.js'
 import { getGlobalContext } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
+import pc from '@brillout/picocolors'
 
 type PageContext_loadPageFilesServerSide = PageContextGetPageAssets &
   PageContextDebugRouteMatches & {
@@ -112,17 +113,56 @@ async function loadPageFiles(
   pageId: string,
   isDev: boolean
 ) {
-  const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
-  const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
-  await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-  const { config, configEntries, exports, exportsAll, pageExports } = getExports(pageFilesServerSide, pageConfigLoaded)
-  return {
-    config,
-    configEntries,
-    exports,
-    exportsAll,
-    pageExports,
-    pageFilesLoaded: pageFilesServerSide,
-    pageConfigLoaded
+  try {
+    const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
+    const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
+    await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
+    const { config, configEntries, exports, exportsAll, pageExports } = getExports(
+      pageFilesServerSide,
+      pageConfigLoaded
+    )
+    return {
+      config,
+      configEntries,
+      exports,
+      exportsAll,
+      pageExports,
+      pageFilesLoaded: pageFilesServerSide,
+      pageConfigLoaded
+    }
+  } catch (error) {
+    logImportError(error)
+    throw error
+  }
+}
+
+function logImportError(error: unknown) {
+  if (
+    /SyntaxError|TypeError|ERR_MODULE_NOT_FOUND|ERR_UNSUPPORTED_DIR_IMPORT|ERR_UNKNOWN_FILE_EXTENSION/.test(
+      String(error)
+    )
+  ) {
+    let packageName = ''
+    if (error instanceof Error) {
+      if (String(error.stack).includes('node_modules/')) {
+        packageName = String(error.stack).split('node_modules/').pop()!.split('/').slice(0, 2).join('/')
+        packageName = `"${packageName}"`
+      } else {
+        const match = /import .* from (".*")/.exec(String(error.stack))
+        if (match?.length && typeof match[1] === 'string') {
+          packageName = match[1]
+        }
+      }
+    }
+
+    if (packageName) {
+      console.log(
+        `Please include ${pc.green(packageName)} in ${pc.green('ssr.noExternal')} ${pc.green(
+          'https://vike.dev/broken-npm-package'
+        )}`
+      )
+    } else {
+      console.log(`Failed to import a package. To fix this: ${pc.green('https://vike.dev/broken-npm-package')}`)
+    }
   }
 }
