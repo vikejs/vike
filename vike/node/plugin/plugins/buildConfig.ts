@@ -30,7 +30,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import { existsSync } from 'fs'
 import { ViteManifest, ViteManifestEntry } from '../../shared/ViteManifest.js'
-import { determinePageIdOld } from '../../../shared/determinePageIdOld.js'
+import { pLimit } from '../../../utils/pLimit.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -38,9 +38,9 @@ const require_ = createRequire(importMetaUrl)
 const manifestTempFile = '_temp_manifest.json'
 
 function buildConfig(): Plugin {
-  let generateManifest: boolean
   let isSsrBuild = false
   let outDirs: ReturnType<typeof getOutDirs>
+  let filesToCopy: string[] = []
   return {
     name: 'vike:buildConfig',
     apply: 'build',
@@ -86,9 +86,9 @@ function buildConfig(): Plugin {
           if (isSsrBuild) {
             const clientManifest = JSON.parse(await fs.readFile(manifestFilePathNew, 'utf-8').catch(() => '{}'))
             const serverManifest = JSON.parse(await fs.readFile(manifestFilePathOld, 'utf-8'))
-            const correctedClientManifest = mergeManifests(clientManifest, serverManifest)
-
-            await fs.writeFile(manifestFilePathOld, JSON.stringify(correctedClientManifest), 'utf-8')
+            const result = mergeManifests(clientManifest, serverManifest)
+            await fs.writeFile(manifestFilePathOld, JSON.stringify(result.clientManifest), 'utf-8')
+            filesToCopy = result.filesToCopy
           }
           await fs.rename(manifestFilePathOld, manifestFilePathNew)
         }
@@ -97,12 +97,18 @@ function buildConfig(): Plugin {
     async closeBundle() {
       if (!isSsrBuild) return
       const assetsDirServerAbs = path.posix.join(outDirs.outDirServer, 'assets')
-      const assetsDirClientAbs = path.posix.join(outDirs.outDirClient, 'assets')
       if (!existsSync(assetsDirServerAbs)) {
         return
       }
-      //TODO: This can create duplicates
-      await fs.cp(assetsDirServerAbs, assetsDirClientAbs, { recursive: true, force: true })
+      const concurrencyLimit = pLimit(10)
+      await Promise.all(
+        filesToCopy.map((file) =>
+          concurrencyLimit(() =>
+            fs.copyFile(path.posix.join(outDirs.outDirServer, file), path.posix.join(outDirs.outDirClient, file))
+          )
+        )
+      )
+
       await fs.rm(assetsDirServerAbs, { recursive: true })
     }
   }
@@ -316,6 +322,8 @@ function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManife
     entriesToAssetsServer.set(key, { ...assets, pageId })
   }
 
+  const filesToCopy = []
+
   for (const [clientEntryKey, clientEntryValue] of entriesToAssetsClient.entries()) {
     const cssToAdd: string[] = []
     const assetsToAdd: string[] = []
@@ -340,17 +348,19 @@ function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManife
     }
 
     if (cssToAdd.length) {
+      filesToCopy.push(...cssToAdd)
       clientManifest[clientEntryKey]!.css ??= []
       clientManifest[clientEntryKey]!.css?.push(...cssToAdd)
     }
 
     if (assetsToAdd.length) {
+      filesToCopy.push(...assetsToAdd)
       clientManifest[clientEntryKey]!.assets ??= []
       clientManifest[clientEntryKey]!.assets?.push(...assetsToAdd)
     }
   }
 
-  return clientManifest
+  return { clientManifest, filesToCopy: unique(filesToCopy) }
 }
 
 function determinePageIdV1(entry: string) {
