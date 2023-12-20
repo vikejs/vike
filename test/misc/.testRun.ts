@@ -1,18 +1,6 @@
 export { testRun }
 
-import {
-  test,
-  expect,
-  fetchHtml,
-  page,
-  getServerUrl,
-  autoRetry,
-  sleep,
-  expectLog,
-  partRegex,
-  editFile,
-  editFileRevert
-} from '@brillout/test-e2e'
+import { test, expect, fetchHtml, page, getServerUrl, autoRetry, sleep } from '@brillout/test-e2e'
 import { testCounter } from '../utils'
 import { testRun as testRunClassic } from '../../examples/react/.testRun'
 import fs from 'fs'
@@ -103,33 +91,6 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
     const timestamp7 = await getTimestamp()
     expect(timestamp7).toBe(timestamp6)
   })
-
-  if (isDev) {
-    test('forbidden client-only module import', async () => {
-      editFile('./pages/forbidden-import/Page.jsx', (s) =>
-        s.replace(
-          `import React from 'react'`,
-          `import React from 'react'; import ClientOnly from './ClientOnly.client'`
-        )
-      )
-      await page.goto(getServerUrl() + '/forbidden-import')
-
-      expectLog(`HTTP response /forbidden-import 500`, (log) => log.logSource === 'stderr')
-      expectLog(
-        'Failed to load resource: the server responded with a status of 500 (Internal Server Error)',
-        (log) => log.logSource === 'Browser Error'
-      )
-      expectLog(
-        'Client-only module',
-        (log) =>
-          log.logSource === 'stderr' &&
-          log.logText.includes('/forbidden-import/ClientOnly.client.jsx') &&
-          log.logText.includes('included in server bundle ')
-      )
-      expectLog("Error isn't helpful? See https://vike.dev/errors#verbose", (log) => log.logSource === 'stderr')
-      editFileRevert()
-    })
-  }
 }
 
 async function getTimestamp() {
