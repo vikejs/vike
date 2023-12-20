@@ -104,7 +104,9 @@ function buildConfig(): Plugin {
       await Promise.all(
         filesToCopy.map((file) =>
           concurrencyLimit(() =>
-            fs.copyFile(path.posix.join(outDirs.outDirServer, file), path.posix.join(outDirs.outDirClient, file))
+            fs.cp(path.posix.join(outDirs.outDirServer, file), path.posix.join(outDirs.outDirClient, file), {
+              recursive: true
+            })
           )
         )
       )
