@@ -107,6 +107,7 @@ function assertFileEnv(): Plugin {
       if (isDev) return
       // TODO/v1-release: remove
       if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return
+      if (id.endsWith('.css')) return
 
       const isServerSide = options?.ssr
       const envWrong = isServerSide ? 'client' : 'server'
