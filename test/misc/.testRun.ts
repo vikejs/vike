@@ -126,12 +126,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
           log.logText.includes('/forbidden-import/ClientOnly.client.jsx') &&
           log.logText.includes('included in server bundle ')
       )
-      expectLog(
-        '┌──────────────────────────────────────────────────────────┐\n' +
-          "│ Error isn't helpful? See https://vike.dev/errors#verbose │\n" +
-          '└──────────────────────────────────────────────────────────┘\n',
-        (log) => log.logSource === 'stderr'
-      )
+      expectLog("Error isn't helpful? See https://vike.dev/errors#verbose", (log) => log.logSource === 'stderr')
       editFileRevert()
     })
   }
