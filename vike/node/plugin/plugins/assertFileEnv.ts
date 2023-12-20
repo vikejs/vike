@@ -38,12 +38,10 @@ function assertFileEnv(): Plugin {
         if (extractAssetsRE.test(source) || extractExportNamesRE.test(source)) return
 
         // Seems like Vite is doing some funky stuff here.
-        if (importer?.endsWith('.html')) {
-          return
-        }
+        if (importer?.endsWith('.html')) return
 
         const resolved = await this.resolve(source, importer, {
-          // Rollup says that skipSelf is true by default but that doesn't seem to be the case
+          // Rollup's docs say that skipSelf is true by default but that doesn't seem to be the case
           skipSelf: true,
           ...options
         })
@@ -53,6 +51,7 @@ function assertFileEnv(): Plugin {
 
         // `.server.js` and `.client.js` should only apply to user files
         if (modulePath.includes('/node_modules/')) return
+
         // TODO/v1-release: remove
         if (modulePath.endsWith('.css')) return
 
@@ -60,30 +59,33 @@ function assertFileEnv(): Plugin {
         const envActual = isServerSide ? 'server' : 'client'
         const envExpect = isServerSide ? 'client' : 'server'
         const suffix = `.${envExpect}.` as const
+        // Everything nonimal
+        if (!modulePath.includes(suffix)) return
 
-        if (modulePath.includes(suffix)) {
-          const modulePathPretty = modulePath.replaceAll(suffix, pc.bold(suffix))
-          let msg = `${capitalizeFirstLetter(
-            envExpect
-          )}-only module "${modulePathPretty}" (https://vike.dev/file-env) imported on the ${envActual}-side`
+        // Show error message
+        let errMsg: string
 
-          if (
-            importer &&
-            // Don't show Vike's virtual modules that import the entry plus files such as /pages/about/+Page.js
-            !importer.includes('virtual:vike:') &&
-            // I don't know why and who sets importer to '<stdin>' (I guess Vite?)
-            importer !== '<stdin>'
-          ) {
-            const importerPath = getFilePathRelativeToUserRootDir(importer.split('?')[0]!, config.root)
-            msg += `by ${importerPath}`
-          }
+        const modulePathPretty = modulePath.replaceAll(suffix, pc.bold(suffix))
+        errMsg = `${capitalizeFirstLetter(
+          envExpect
+        )}-only module "${modulePathPretty}" (https://vike.dev/file-env) imported on the ${envActual}-side`
 
-          if (isDev) {
-            msg += ' (building your app for production will be prevented and an error will be thrown)'
-            assertWarning(false, msg, { onlyOnce: true })
-          } else {
-            assertUsage(false, msg)
-          }
+        if (
+          importer &&
+          // Don't show Vike's virtual modules that import the entry plus files such as /pages/about/+Page.js
+          !importer.includes('virtual:vike:') &&
+          // I don't know why and who sets importer to '<stdin>' (I guess Vite?)
+          importer !== '<stdin>'
+        ) {
+          const importerPath = getFilePathRelativeToUserRootDir(importer.split('?')[0]!, config.root)
+          errMsg += `by ${importerPath}`
+        }
+
+        if (isDev) {
+          errMsg += ' (building your app for production will be prevented and an error will be thrown)'
+          assertWarning(false, errMsg, { onlyOnce: true })
+        } else {
+          assertUsage(false, errMsg)
         }
       }
     },
@@ -93,7 +95,7 @@ function assertFileEnv(): Plugin {
     configureServer() {
       isDev = true
     },
-    // Ensure that this plugin works
+    // Ensure this plugin works
     transform(_code, id, options) {
       const isServerSide = options?.ssr
       const envWrong = isServerSide ? 'client' : 'server'
