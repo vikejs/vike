@@ -1,7 +1,13 @@
 export { assertFileRuntime }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertUsage, assertWarning, getFilePathRelativeToUserRootDir } from '../utils.js'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  capitalizeFirstLetter,
+  getFilePathRelativeToUserRootDir
+} from '../utils.js'
 import { extractAssetsRE } from './extractAssetsPlugin.js'
 import { extractExportNamesRE } from './extractExportNamesPlugin.js'
 import pc from '@brillout/picocolors'
@@ -59,24 +65,22 @@ function assertFileRuntime(): Plugin {
         // TODO/v1-release: remove
         if (modulePath.endsWith('.css')) return
 
-        let importerPretty = ''
-        if (importer) {
-          importerPretty = importer.split('?')[0]!
-          importerPretty = getFilePathRelativeToUserRootDir(importerPretty, config.root)
-          importerPretty = ` ${importerPretty}`
-        }
-        if (options?.ssr && modulePath.includes('.client.')) {
-          const modulePathPretty = modulePath.replaceAll('.client.', pc.bold('.client.'))
-          const msg = `Client-only module "${modulePathPretty}" imported by server-side code${importerPretty}.`
-          if (isDev) {
-            assertWarning(false, msg, { onlyOnce: true })
-          } else {
-            assertUsage(false, msg)
+        const isServerSide = options?.ssr
+        const envActual = isServerSide ? 'server' : 'client'
+        const envExpect = isServerSide ? 'client' : 'server'
+        const suffix = `.${envExpect}.` as const
+
+        if (modulePath.includes(suffix)) {
+          let importerPretty = ''
+          if (importer) {
+            importerPretty = importer.split('?')[0]!
+            importerPretty = getFilePathRelativeToUserRootDir(importerPretty, config.root)
+            importerPretty = ` ${importerPretty}`
           }
-        }
-        if (!options?.ssr && modulePath.includes('.server.')) {
-          const modulePathPretty = modulePath.replaceAll('.server.', pc.bold('.server.'))
-          const msg = `Server-only module "${modulePathPretty}" imported by client-side code${importerPretty}.`
+          const modulePathPretty = modulePath.replaceAll(suffix, pc.bold(suffix))
+          const msg = `${capitalizeFirstLetter(
+            envExpect
+          )}-only module "${modulePathPretty}" imported by ${envActual}-side code${importerPretty}.`
           if (isDev) {
             assertWarning(false, msg, { onlyOnce: true })
           } else {
