@@ -1,11 +1,13 @@
 export { assertFileRuntime }
 
-import { Plugin } from 'vite'
-import { assert, assertUsage } from '../utils.js'
+import type { Plugin, ResolvedConfig } from 'vite'
+import { assert, assertUsage, getFilePathRelativeToUserRootDir } from '../utils.js'
 import { extractAssetsRE } from './extractAssetsPlugin.js'
 import { extractExportNamesRE } from './extractExportNamesPlugin.js'
+import pc from '@brillout/picocolors'
 
 function assertFileRuntime(): Plugin {
+  let config: ResolvedConfig
   return {
     name: 'vike:assertFileRuntime',
     // - We need to set `enforce: 'pre'` because, otherwise, the resolvedId() hook of Vite's internal plugin `vite:resolve` is called before and it doesn't seem to call `this.resolve()` which means that the resolveId() hook below is never called.
@@ -56,14 +58,24 @@ function assertFileRuntime(): Plugin {
         // TODO/v1-release: remove
         if (modulePath.endsWith('.css')) return
 
-        const additionalMessage = importer ? ` (imported by ${importer.split('?')[0]})` : ''
+        let importerPretty = ''
+        if (importer) {
+          importerPretty = importer.split('?')[0]!
+          importerPretty = getFilePathRelativeToUserRootDir(importerPretty, config.root)
+          importerPretty = ` ${importerPretty}`
+        }
         if (options?.ssr && modulePath.includes('.client.')) {
-          assertUsage(false, `Client-only module "${modulePath}" included in server bundle${additionalMessage}.`)
+          const modulePathPretty = modulePath.replaceAll('.client.', pc.bold('.client.'))
+          assertUsage(false, `Client-only module "${modulePathPretty}" imported by server-side code${importerPretty}.`)
         }
         if (!options?.ssr && modulePath.includes('.server.')) {
-          assertUsage(false, `Server-only module "${modulePath}" included in client bundle${additionalMessage}.`)
+          const modulePathPretty = modulePath.replaceAll('.server.', pc.bold('.server.'))
+          assertUsage(false, `Server-only module "${modulePathPretty}" imported by client-side code${importerPretty}.`)
         }
       }
+    },
+    configResolved(config_) {
+      config = config_
     }
   }
 }
