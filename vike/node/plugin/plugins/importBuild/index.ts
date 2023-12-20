@@ -28,9 +28,13 @@ function importBuild(): Plugin[] {
         config = config_
         configVike = await getConfigVike(config)
       },
-      async writeBundle(options, bundle) {
-        if (!viteIsSSR(config)) return
-        await replace_ASSETS_MAP(options, bundle)
+      writeBundle: {
+        sequential: true,
+        async handler(options, bundle) {
+          if (!viteIsSSR(config)) return
+
+          await replace_ASSETS_MAP(options, bundle)
+        }
       }
     },
     importBuild_({
