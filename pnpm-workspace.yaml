@@ -5,3 +5,4 @@ packages:
   - 'boilerplates/*'
   - 'examples/*'
   - 'test/*'
+  - 'test-deprecated-design/*'
