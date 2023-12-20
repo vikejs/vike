@@ -21,9 +21,9 @@ function assertFileRuntime(): Plugin {
     //   ```
     enforce: 'pre',
     resolveId: {
+      /* I don't know why, but aliases aren't resolved anymore when setting `order: 'pre'`. (In principle, I'd assume that `this.resolve()` would resolve the alias but it doesn't seem like it.)
       order: 'pre',
-      // @ts-expect-error already true by default
-      sequential: true,
+      */
       async handler(source, importer, options) {
         // TODO/v1-release: remove
         if (extractAssetsRE.test(source) || extractExportNamesRE.test(source)) return
