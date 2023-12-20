@@ -286,7 +286,7 @@ function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManife
   >()
 
   const mergedManifest = { ...clientManifest, ...serverManifest }
-  for (const [key, entry] of Object.entries(mergedManifest).filter(([, { isEntry }]) => isEntry)) {
+  for (const [key, entry] of Object.entries(mergedManifest)) {
     const assets = collectAssetsForEntry(mergedManifest, entry)
     for (const css of assets.css) {
       if (!uniqueAssets.has(css.hash)) {
@@ -304,7 +304,7 @@ function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManife
     })
   }
 
-  for (const [key, entry] of Object.entries(serverManifest).filter(([, { isEntry }]) => isEntry)) {
+  for (const [key, entry] of Object.entries(serverManifest)) {
     if (!(key in clientManifest)) {
       clientManifest[key] = entry
       clientManifest[key]!.imports = []
