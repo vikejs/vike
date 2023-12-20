@@ -318,26 +318,6 @@ function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManife
   return clientManifest
 }
 
-function getPageIdFromManifestEntry(entry: string) {
-  let pageId = determinePageIdV1(entry)
-
-  // TODO: remove for v1
-  if (!pageId) {
-    pageId = determinePageIdOld(entry)
-  }
-
-  return pageId
-}
-
-function determinePageIdV1(entry: string) {
-  const splitEntry = entry.split(':/pages')
-  const isV1 = splitEntry.length === 2
-  if (!isV1) {
-    return ''
-  }
-  return splitEntry.pop()
-}
-
 function collectAssetsForEntry(manifest: ViteManifest, entry: ViteManifestEntry) {
   const css = []
   const assets = []
