@@ -56,7 +56,7 @@ function assertFileRuntime(): Plugin {
           skipSelf: true,
           ...options
         })
-        // Is there a situation where resolved is null?
+        // Is there a situation where `resolved` is null?
         assert(resolved)
         const modulePath = resolved.id.split('?')[0]!
 
