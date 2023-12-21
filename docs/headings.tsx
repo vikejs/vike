@@ -84,6 +84,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'FAQ',
+    url: '/faq'
+  },
+  {
+    level: 2,
     title: 'Access `pageContext` anywhere',
     url: '/pageContext-anywhere'
   },

@@ -1,0 +1,74 @@
+import { Link, Construction } from '@brillout/docpress'
+
+> We recommend reading the entire FAQ.
+
+
+## Can I reach out for help?
+
+Yes, you can reach out on Discord and GitHub. If you use GitHub Discussions, then you'll always get an answer from a Vike team member.
+
+
+## Can I use Vike to achieve what I want?
+
+Vike praises itself of being a highly (if not the most) flexible frontend framework: if you stumble upon a use case you believe you cannot achieve with Vike then [let us know](https://github.com/vikejs/vike/discussions).
+
+
+## Why is CSS leaked to other pages?
+
+With <Link href="/client-routing">Client Routing</Link>, when navigating from one page to another, the CSS of the previous page isn't removed. This means the CSS of the previous page will also apply to the next page.
+
+In a nutshell: CSS is leaky.
+
+For example:
+
+```jsx
+// /pages/terms-of-service/+Page.jsx
+
+import './style.css'
+
+export const Page = () => <>
+  <h1>Terms of Service</h1>
+  <div id="terms-of-service">
+    {/* ... */}
+  </div>
+</>
+```
+
+```css
+/* /pages/terms-of-service/style.css */
+
+/* ❌ Bad: the CSS selector `body` can apply to any page. */
+body {
+  font-size: 0.8em;
+}
+```
+
+Narrow down the CSS selector instead:
+
+```css
+/* /pages/terms-of-service/style.css */
+
+/* ✅ Good: the CSS selector #terms-of-service only applies to the "Terms of Service" page. */
+#terms-of-service {
+  font-size: 0.8em;
+}
+```
+
+> If you use **Vue** with `.vue` files, then Vue already scopes the CSS for you: the CSS you define in a `.vue` file is guaranteed to apply only to the component defined in that `.vue` file.
+
+> If you use **React** or **Solid**, then we recommend using inline styles and/or CSS-in-JS libraries (or Tailwind), while minimizing global CSS. Inline style aren't global and, therfore, aren't leaky.
+
+> **CSS is injected by Vite** in the form of `<style>` tags. If you're curious why Vite doesn't remove old `<style>` tags, consider that removing CSS is problematic during the transient state upon page navigation (it would lead to [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content)). In general, regardless of Vite's behavior, it's a good practice to narrow down CSS selectors.
+
+
+## Why are there a lot of HTTP requests in dev?
+
+In development, you may observe a lot of HTTP requests fetching a lot JavaScript files.
+That's because <Link href="/lazy-transpiling">Vite does lazy transpiling</Link>.
+
+While it's true that doing a lot of HTTP requests slows down page load (and Vite is working on optimizing that aspect), Vite's lazy transpiling approach enables unparalleled development speed.
+
+
+## How can I contribute and/or support?
+
+Contributions in forms of [code](https://github.com/vikejs/vike/issues/1349) and/or [sponsoring](https://github.com/vikejs/vike/issues/1350) are much welcome.

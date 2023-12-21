@@ -304,7 +304,7 @@ const headingsDetached = [
     url: '/migration/0.5'
   },
   {
-    title: "Vite's Lazy Transpiling",
+    title: "Lazy Transpiling",
     url: '/lazy-transpiling'
   },
   {
