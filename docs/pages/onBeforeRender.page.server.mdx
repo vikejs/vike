@@ -27,6 +27,8 @@ async function onBeforeRender(pageContext) {
   const movies = Movie.findAll() */
   /* Or with SQL:
   const movies = sql`SELECT * FROM movies;` */
+
+  // We make `movies` available as pageContext.pageProps.movies
   return {
     pageContext: {
       pageProps: {
@@ -36,6 +38,82 @@ async function onBeforeRender(pageContext) {
   }
 }
 ```
+
+```js
+// /renderer/+onRenderHtml.js
+// Environment: server
+
+export { onRenderHtml }
+
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
+import { renderToHtml, createElement } from 'some-ui-framework'
+
+async function onRenderHtml(pageContext) {
+  const { Page, pageProps } = pageContext
+  const pageHtml = await renderToHtml(
+    // We pass pageContext.pageProps to the <Page> component
+    createElement(Page, pageProps)
+  )
+  /* JSX:
+  const pageHtml = await renderToHtml(<Page {...pageProps} />)
+  */
+
+  return escapeInject`<html>
+    <div id='view-root'>
+      ${dangerouslySkipEscape(pageHtml)}
+    </div>
+  </html>`
+}
+```
+
+```js
+// /renderer/+config.h.js
+// Environment: config
+
+export default {
+  // Make pageContext.pageProps available in the browser
+  passToClient: ['pageProps']
+}
+```
+
+```js
+// /renderer/+onRenderClient.js
+// Environment: browser
+
+export { onRenderClient }
+
+import { hydrateDom, createElement } from 'some-ui-framework'
+
+async function onRenderClient(pageContext) {
+  // Thanks to `passToClient = ['pageProps']` our pageContext.pageProps is
+  // available here in the browser.
+  const { Page, pageProps } = pageContext
+  await hydrateDom(
+    // We pass pageContext.pageProps to the <Page> component
+    createElement(Page, pageProps),
+    document.getElementById('view-root')
+  )
+  /* JSX:
+  await hydrateDom(<Page {...pageProps} />, document.getElementById('view-root'))
+  */
+}
+```
+
+```js
+// /pages/movies/+Page.js
+// Environment: browser and server
+
+export { Page }
+
+// In the onRenderHtml() and onRenderClient() hooks above, we pass
+// pageContext.pageProps to the <Page> component
+function Page(pageProps) {
+  const { movies } = pageProps
+  // ...
+}
+```
+
+> Note that Vike doesn't know anything about `pageProps`: it's just an object we create in order to conveniently pass all the page's props at once.
 
 ## Examples
 
@@ -81,7 +159,7 @@ export default {
 
 ## Client-side
 
-By default, `onBeforeRender()` always runs on the server-side. The fetched data can be made available on the client-side
+By default, `onBeforeRender()` always runs on the server-side and the fetched data is made available on the client-side
 by setting <Link href="/passToClient">`passToClient`</Link>.
 
 But,
