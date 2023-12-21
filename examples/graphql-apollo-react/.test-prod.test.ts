@@ -1,2 +1,2 @@
-import { testRun } from '../../examples/graphql-apollo-vue-v1/.testRun'
+import { testRun } from '../../examples/graphql-apollo-react-v1/.testRun'
 testRun('npm run prod')
