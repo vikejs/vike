@@ -1691,24 +1691,6 @@ importers:
         specifier: ^4.0.3
         version: 4.5.0(@types/node@20.9.0)
 
-  test/build.outDir:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^3.0.0
-        version: 3.1.0(vite@4.5.0)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.5.0(@types/node@20.9.0)
-
   test/build.outDir-v1:
     dependencies:
       '@vitejs/plugin-react':
@@ -1754,21 +1736,6 @@ importers:
         specifier: ^4.0.3
         version: 4.5.0(@types/node@20.9.0)
 
-  test/contra:
-    dependencies:
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.5.0(@types/node@20.9.0)
-
   test/contra-v1:
     dependencies:
       react:
@@ -1782,24 +1749,6 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^4.3.1
-        version: 4.5.0(@types/node@20.9.0)
-
-  test/disableAutoImporter:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^3.0.0
-        version: 3.1.0(vite@4.5.0)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
         version: 4.5.0(@types/node@20.9.0)
 
   test/disableAutoImporter-v1:
@@ -1865,15 +1814,6 @@ importers:
         specifier: ^4.0.3
         version: 4.5.0(@types/node@20.9.0)
 
-  test/includeAssetsImportedByServer:
-    dependencies:
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.5.0(@types/node@20.9.0)
-
   test/includeAssetsImportedByServer-v1:
     dependencies:
       vike:
@@ -1919,15 +1859,6 @@ importers:
         specifier: ^4.0.3
         version: 4.5.0(@types/node@20.9.0)
 
-  test/renderPage:
-    dependencies:
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.5.0(@types/node@20.9.0)
-
   test/renderPage-v1:
     dependencies:
       vike:
@@ -1936,39 +1867,6 @@ importers:
       vite:
         specifier: ^4.0.3
         version: 4.5.0(@types/node@20.9.0)
-
-  test/require-shim:
-    dependencies:
-      '@apollo/client':
-        specifier: 3.6.9
-        version: 3.6.9(graphql@16.5.0)(react-dom@18.2.0)(react@18.2.0)
-      '@vitejs/plugin-react':
-        specifier: 3.0.0
-        version: 3.0.0(vite@4.0.3)
-      cross-env:
-        specifier: 7.0.3
-        version: 7.0.3
-      express:
-        specifier: 4.18.1
-        version: 4.18.1
-      graphql:
-        specifier: 16.5.0
-        version: 16.5.0
-      node-fetch:
-        specifier: 2.6.1
-        version: 2.6.1
-      react:
-        specifier: 18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: 18.2.0
-        version: 18.2.0(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: 4.0.3
-        version: 4.0.3
 
   test/require-shim-v1:
     dependencies:
@@ -2002,27 +1900,6 @@ importers:
       vite:
         specifier: 4.0.3
         version: 4.0.3
-
-  test/stream:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^3.0.0
-        version: 3.1.0(vite@4.5.0)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      react-streaming:
-        specifier: ^0.3.9
-        version: 0.3.15(react-dom@18.2.0)(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^4.0.3
-        version: 4.5.0(@types/node@20.9.0)
 
   test/stream-v1:
     dependencies:
