@@ -1,2 +1,2 @@
-import { testRun } from '../vike-react/.testRun'
+import { testRun } from '../../examples/vike-react/.testRun'
 testRun('npm run preview', true)
