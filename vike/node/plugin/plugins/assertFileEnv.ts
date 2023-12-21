@@ -43,7 +43,7 @@ function assertFileEnv(): Plugin {
         if (importer?.endsWith('.html')) return
 
         const resolved = await this.resolve(source, importer, {
-          // Rollup's docs say that skipSelf is true by default but that doesn't seem to be the case
+          // Needed for old Vite plugins: https://vitejs.dev/guide/migration#rollup-4:~:text=For%20Vite%20plugins%2C%20this.resolve%20skipSelf%20option%20is%20now%20true%20by%20default.
           skipSelf: true,
           ...options
         })
