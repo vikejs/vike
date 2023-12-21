@@ -333,10 +333,6 @@ const headingsDetached = [
     sectionTitles: ['`throw redirect()` VS `throw render()`']
   },
   {
-    title: '`.server.js` & `.client.js`',
-    url: '/file-env'
-  },
-  {
     title: 'Custom Exports/Hooks',
     url: '/exports'
   },
