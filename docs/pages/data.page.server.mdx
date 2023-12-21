@@ -36,8 +36,18 @@ async function data(pageContext) {
 >
 > <Link href="/passToClient">`passToClient`</Link> contains `data` by default, thus `data` is automatically available on
 > the client-side.
->
-> As for the `onBeforeRender()` hook, you can tell Vike to run `data()` also on the client-side. See <Link href="/onBeforeRender#client-side" />.
+
+
+## Client Routing
+
+By default, the `data()` and `onBeforeRender()` hooks are loaded only in Node.js;
+our data fetching code is always executed in Node.js.
+This is convenient as it makes writing data fetching code easier.
+
+If we use [Client Routing](/clientRouting),
+then we have the option to [also run these hooks in the client](/onBeforeRender#client-side), i.e. it is not only
+called in Node.js but also in the browser (upon page navigation).
+
 
 ## Examples
 

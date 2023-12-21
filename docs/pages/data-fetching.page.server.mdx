@@ -132,17 +132,6 @@ Upon `throw render(404)`, the <Link text="error page" href="/error-page" /> is r
 
 Using `throw render('/movie/add')` instead of `throw redirect('/movie/add')` is a novel technique which we explain at <Link href="/auth#login-flow" />.
 
-
-## Client Routing
-
-By default, the `data()` and `onBeforeRender()` hooks are loaded only in Node.js;
-our data fetching code is always executed in Node.js.
-This is convenient as it makes writing data fetching code easier.
-
-If we use [Client Routing](/clientRouting),
-then we have the option to [also run these hooks in the client](/onBeforeRender#client-side), i.e. it is not only
-called in Node.js but also in the browser (upon page navigation).
-
 ## GraphQL
 
 When using GraphQL, we define GraphQL queries/fragments on a component-level, while we fetch the GraphQL data in a single global `data()` hook.
