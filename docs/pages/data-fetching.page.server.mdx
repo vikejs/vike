@@ -67,8 +67,6 @@ export { onRenderClient }
 import { hydrateDom, createElement } from 'some-ui-framework'
 
 async function onRenderClient(pageContext) {
-  // Because pageContext.data is part of `passToClient` by default, it is
-  // available here in the browser.
   const { Page, data } = pageContext
   await hydrateDom(
     // We pass pageContext.data to the <Page> component
