@@ -61,7 +61,7 @@ function testRun(
         const repoRoot = path.join(dirname, `../../`)
         const screenshotFixturePathUnresolved = path.join(
           repoRoot,
-          screenshotFixture || 'examples/react/.test-screenshot-fixture.png'
+          screenshotFixture || 'examples/react-v1/.test-screenshot-fixture.png'
         )
         const require = createRequire(import.meta.url)
         let screenshotFixturePath: string
