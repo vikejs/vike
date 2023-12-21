@@ -6,5 +6,5 @@ import React from 'react'
 export { Page }
 
 function Page() {
-  return <p>This liltle app uses path aliases.</p>
+  return <p>This app uses path aliases.</p>
 }
