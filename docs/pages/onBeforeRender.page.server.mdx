@@ -182,6 +182,26 @@ Example:
    - Hook: [/pages/star-wars/@id/+onBeforeRender.tsx](https://github.com/vikejs/vike/blob/01cc674498ea8baa289bfccb633d04b4d6cc7958/examples/react-full-v1/pages/star-wars/@id/+onBeforeRender.tsx)
 
 
+## Custom settings
+
+For more convenience, instead of creating a new `onBeforeRender()` hook for each page, we can define `onBeforeRender()`
+only once in `/renderer/+onBeforeRender.js` while <Link text="creating new settings" href="/meta" />.
+
+For example:
+
+```js
+// /pages/user/+sql.js
+export default { modelName: 'User', select: ['firstName', 'lastName'] }
+```
+
+```js
+// /pages/product/+sql.js
+export default { modelName: 'Product', select: ['name', 'price'] }
+```
+
+See full implementation at <Link href="/meta#example-sql" doNotInferSectionTitle />.
+
+
 ## TypeScript
 
 ```ts
