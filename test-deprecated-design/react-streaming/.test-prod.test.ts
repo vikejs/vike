@@ -1,2 +1,2 @@
-import { testRun } from '../../examples/react-v1/.testRun'
+import { testRun } from '../../examples/react/.testRun'
 testRun('npm run prod')

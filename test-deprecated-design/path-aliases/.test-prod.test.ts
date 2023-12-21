@@ -1,2 +1,2 @@
-import { testRun } from '../../examples/path-aliases-v1/.testRun'
+import { testRun } from '../../examples/path-aliases/.testRun'
 testRun('npm run prod')

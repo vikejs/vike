@@ -1,3 +1,3 @@
-import { testRun } from '../../examples/base-url-v1/.testRun'
+import { testRun } from '../../examples/base-url/.testRun'
 
 testRun('npm run start', { baseAssets: 'http://localhost:8080/cdn/', baseServer: '/' })

@@ -2,7 +2,7 @@ export { testRun }
 
 import { test, expect, fetchHtml, page, getServerUrl, autoRetry, sleep } from '@brillout/test-e2e'
 import { testCounter } from '../utils'
-import { testRun as testRunClassic } from '../../examples/react-v1/.testRun'
+import { testRun as testRunClassic } from '../../examples/react/.testRun'
 import fs from 'fs'
 import assert from 'assert'
 import path from 'path'
