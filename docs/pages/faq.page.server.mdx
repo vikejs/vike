@@ -15,9 +15,7 @@ Vike praises itself of being a highly (if not the most) flexible frontend framew
 
 ## Why is CSS leaked to other pages?
 
-With <Link href="/client-routing">Client Routing</Link>, when navigating from one page to another, the CSS of the previous page isn't removed. This means the CSS of the previous page will also apply to the next page.
-
-In a nutshell: CSS is leaky.
+With <Link href="/client-routing">Client Routing</Link>, when navigating from one page to another, the CSS of the previous page isn't removed. This means the CSS of the previous page will also apply to the next page. In other words: CSS is leaky.
 
 For example:
 
@@ -56,7 +54,7 @@ Narrow down the CSS selector instead:
 
 > If you use **Vue** with `.vue` files, then Vue already scopes the CSS for you: the CSS you define in a `.vue` file is guaranteed to apply only to the component defined in that `.vue` file.
 
-> If you use **React** or **Solid**, then we recommend using inline styles and/or CSS-in-JS libraries (or Tailwind), while minimizing global CSS. Inline style aren't global and, therfore, aren't leaky.
+> If you use **React** or **Solid**, then we recommend using inline styles and/or a CSS-in-JS library (or Tailwind), while minimizing global CSS. Inline style aren't global and, therfore, aren't leaky.
 
 > **CSS is injected by Vite** in the form of `<style>` tags. If you're curious why Vite doesn't remove old `<style>` tags, consider that removing CSS is problematic during the transient state upon page navigation (it would lead to [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content)). In general, regardless of Vite's behavior, it's a good practice to narrow down CSS selectors.
 
