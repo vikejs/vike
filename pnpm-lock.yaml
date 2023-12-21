@@ -1691,6 +1691,30 @@ importers:
         specifier: ^4.0.3
         version: 4.5.1(@types/node@17.0.45)
 
+  test/assertFileEnv:
+    dependencies:
+      '@types/react':
+        specifier: ^18.0.8
+        version: 18.2.42
+      '@vitejs/plugin-react':
+        specifier: ^4.0.0
+        version: 4.2.1(vite@4.5.1)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vike-react:
+        specifier: ^0.3.4
+        version: 0.3.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@4.5.1)
+      vite:
+        specifier: ^4.3.8
+        version: 4.5.1(@types/node@17.0.45)
+
   test/cjs:
     dependencies:
       '@vitejs/plugin-react':
@@ -12446,6 +12470,21 @@ packages:
       react-streaming: 0.3.16(react-dom@18.2.0)(react@18.2.0)
       vike: link:vike
       vite: 4.5.0(@types/node@20.9.0)
+    dev: false
+
+  /vike-react@0.3.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@4.5.1):
+    resolution: {integrity: sha512-ca8uTlV5RSJaSRGcN7C2wkViMElPV+HxKOyJufHwAtB8XkGI23Z6kffqZHqL2wBWdG9gjtDml6dZ/YVlRSruaQ==}
+    peerDependencies:
+      react: 18.x.x
+      react-dom: 18.x.x
+      vike: link:./vike/
+      vite: ^4.3.8
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      react-streaming: 0.3.16(react-dom@18.2.0)(react@18.2.0)
+      vike: link:vike
+      vite: 4.5.1(@types/node@17.0.45)
     dev: false
 
   /vite-node@0.34.6(@types/node@20.10.4):
