@@ -1,2 +1,2 @@
-import { testRun } from '../html-fragments-v1/.testRun'
+import { testRun } from '../../examples/html-fragments-v1/.testRun'
 testRun('npm run dev')
