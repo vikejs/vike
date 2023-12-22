@@ -10,6 +10,7 @@ import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 import pc from '@brillout/picocolors'
 import { assert } from '../runtime/utils.js'
+import { bindCLIShortcuts } from './shortcuts.js'
 
 function devServerPlugin(): Plugin {
   let viteServer: ViteDevServer
@@ -105,11 +106,28 @@ function devServerPlugin(): Plugin {
     closeAllServers().then((anHttpServerWasClosed) => {
       if (anHttpServerWasClosed) {
         // Note(brillout): we can do such polishing at the end of the PR, once we have nailed the overall structure. (I'm happy to help with the polishing.)
-        // TODO: polish log (e.g. use [vike] prefix logging)
-        // TODO: implement `r` shortcut
-        console.log(`Server shutdown. Update a server file, or press ${pc.cyan('r')}, to restart.`)
+        logViteAny(
+          `Server shutdown. Update a server file, or press ${pc.cyan('r + Enter')}, to restart.`,
+          'info',
+          null,
+          true
+        )
       }
     })
+  }
+
+  const onRestart = async () => {
+    const { reload } = getServerConfig()!
+    if (reload === 'fast') {
+      await onFastRestart()
+    } else {
+      process.exit(33)
+    }
+  }
+
+  const onFastRestart = async () => {
+    await closeAllServers()
+    await loadEntry()
   }
 
   return {
@@ -135,19 +153,18 @@ function devServerPlugin(): Plugin {
       configureServerWasCalled = true
       process.on('unhandledRejection', onError)
       process.on('uncaughtException', onError)
-
+      bindCLIShortcuts({
+        onRestart: () => {
+          viteServer.moduleGraph.invalidateAll()
+          onRestart()
+        }
+      })
       patchHttp()
       loadEntry()
     },
     async handleHotUpdate(ctx) {
       if (!entryDeps || ctx.modules.some((module) => module.id && entryDeps.has(module.id))) {
-        const { reload } = getServerConfig()!
-        if (reload === 'fast') {
-          await closeAllServers()
-          await loadEntry()
-        } else {
-          process.exit(33)
-        }
+        await onRestart()
       }
     }
   }

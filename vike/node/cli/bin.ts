@@ -31,7 +31,7 @@ cli
   .action(async (root, options) => {
     logViteAny('Starting development server', 'info', null, true)
 
-    const config = await resolveConfig({}, 'serve')
+    await resolveConfig({}, 'serve')
     const serverConfig = getServerConfig()
     if (!serverConfig?.entry) {
       let command = 'vite dev'
@@ -50,7 +50,7 @@ cli
       return
     }
 
-    // @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+    // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
     const importMetaUrl: string = import.meta.url
     const __dirname_ = path.dirname(fileURLToPath(importMetaUrl))
     const scriptPath = path.join(__dirname_, '..', 'dev/startDevServer.js')
