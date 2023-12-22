@@ -1,3 +1,36 @@
+## [0.4.151](https://github.com/vikejs/vike/compare/v0.4.150...v0.4.151) (2023-12-22)
+
+
+### Bug Fixes
+
+* add 'data' to default passToClient ([ada3fd9](https://github.com/vikejs/vike/commit/ada3fd941add022738f7cb1ec0e861661977ffd1))
+* add vike:outDir debug logs ([92240b6](https://github.com/vikejs/vike/commit/92240b65573b0d22555245e5b3d57859bb46d489))
+* enable URL redirection that resolves to a URL with @ (fix [#1347](https://github.com/vikejs/vike/issues/1347)) ([469866a](https://github.com/vikejs/vike/commit/469866a3f8a30f8332c7aad002f69d9479250d96))
+* fix error message upon loading server-only module on the client-side ([#1335](https://github.com/vikejs/vike/issues/1335)) ([09d362e](https://github.com/vikejs/vike/commit/09d362eb1ab3932d0d994682b865f7be18fda7f8))
+* improve debug logs visual formatting ([222b1b2](https://github.com/vikejs/vike/commit/222b1b247a537d0fd02e6cc72dcd03cacf71442a))
+* make standalone builds easier ([#1165](https://github.com/vikejs/vike/issues/1165), [#1342](https://github.com/vikejs/vike/issues/1342)) ([f555646](https://github.com/vikejs/vike/commit/f5556463959a35f82b9c78a29ecd15e809ce8401))
+* remove assertion (fix [#1359](https://github.com/vikejs/vike/issues/1359)) ([63b1c32](https://github.com/vikejs/vike/commit/63b1c32b10ed90694c8722430cd829c13e0790ef))
+* remove wrong assertion ([f91537e](https://github.com/vikejs/vike/commit/f91537ed9869af7cd8407b9c6899819b7b090d28))
+* sound URL pathname resolution implementation ([#1347](https://github.com/vikejs/vike/issues/1347)) ([42c1df1](https://github.com/vikejs/vike/commit/42c1df1462a923b954d254e81960370a5ae19cfc))
+* update @brillout/vite-plugin-import-build ([c954cbc](https://github.com/vikejs/vike/commit/c954cbc49da08f805e96cdb6d9a7b8bd16504be4))
+* update @brillout/vite-plugin-import-build ([687f3b7](https://github.com/vikejs/vike/commit/687f3b7cfe1fb808a622c118ce7e04fecf1a119d))
+* update @brillout/vite-plugin-import-build ([27d13be](https://github.com/vikejs/vike/commit/27d13be4ee4de71666f2e6f889e8c7e26648e133))
+* update @brillout/vite-plugin-import-build ([9b93e4f](https://github.com/vikejs/vike/commit/9b93e4fc46fd1c31b07bd0b26306d3aee7376a49))
+
+
+### Features
+
+* `.server.js` and `.client.js` [#1296](https://github.com/vikejs/vike/issues/1296) (closes [#744](https://github.com/vikejs/vike/issues/744)) ([6178b40](https://github.com/vikejs/vike/commit/6178b403fd08bc9c4ea90483b3808a5b70bc330c))
+* data hook ([b61a87e](https://github.com/vikejs/vike/commit/b61a87e70cb4b6cb3c6fe86b58085e4c42239ff4))
+* execute data() before onBeforeRender() ([c58642c](https://github.com/vikejs/vike/commit/c58642ca749108ee98f020ad69ce07fd3caa55b9))
+
+
+### Performance Improvements
+
+* improve crawl speed ([77e1875](https://github.com/vikejs/vike/commit/77e1875cee7fd92e41b1ff5f0d7a7e521f506a12))
+
+
+
 ## [0.4.150](https://github.com/vikejs/vike/compare/v0.4.149...v0.4.150) (2023-12-08)
 
 
