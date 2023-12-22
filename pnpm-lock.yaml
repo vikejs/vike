@@ -1844,6 +1844,45 @@ importers:
         specifier: 4.0.3
         version: 4.0.3
 
+  test/standaloneBuild:
+    dependencies:
+      '@node-rs/argon2':
+        specifier: ^1.5.2
+        version: 1.5.2
+      '@types/react':
+        specifier: ^18.2.37
+        version: 18.2.42
+      '@types/react-dom':
+        specifier: ^18.2.15
+        version: 18.2.17
+      '@vitejs/plugin-react':
+        specifier: ^4.1.1
+        version: 4.2.1(vite@4.5.1)
+      express:
+        specifier: ^4.18.2
+        version: 4.18.2
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      sharp:
+        specifier: 0.32.x
+        version: 0.32.6
+      telefunc:
+        specifier: 0.1.66-commit-f4abc42
+        version: 0.1.66-commit-f4abc42(@babel/core@7.23.5)(react@18.2.0)
+      typescript:
+        specifier: ^5.2.2
+        version: 5.3.3
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vite:
+        specifier: ^4.5.0
+        version: 4.5.1(@types/node@17.0.45)
+
   test/stream:
     dependencies:
       '@vitejs/plugin-react':
@@ -10998,37 +11037,6 @@ packages:
       '@brillout/json-serializer': 0.5.8
       '@brillout/picocolors': 1.0.10
       '@brillout/vite-plugin-server-entry': 0.4.2
-      es-module-lexer: 0.7.1
-      picocolors: 1.0.0
-      react: 18.2.0
-      ts-morph: 19.0.0
-    dev: false
-
-  /telefunc@0.1.66-commit-f4abc42(@babel/core@7.23.5)(react@18.2.0):
-    resolution: {integrity: sha512-g/mNLWb0VPXXWMk0QJsYmx75S0/vPMe6I0xw07IxtpiGEaDvkRAwCcx4TqHBWucL4ifHHOEL8B8FnR8Sw8OGLw==}
-    engines: {node: '>=12.19.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0
-      '@babel/parser': ^7.0.0
-      '@babel/types': ^7.0.0
-      react: ^18.0.0
-      react-streaming: ^0.3.3
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      '@babel/parser':
-        optional: true
-      '@babel/types':
-        optional: true
-      react:
-        optional: true
-      react-streaming:
-        optional: true
-    dependencies:
-      '@babel/core': 7.23.5
-      '@brillout/import': 0.2.3
-      '@brillout/json-serializer': 0.5.8
-      '@brillout/vite-plugin-import-build': 0.2.22-commit-7f1bb0a
       es-module-lexer: 0.7.1
       picocolors: 1.0.0
       react: 18.2.0
