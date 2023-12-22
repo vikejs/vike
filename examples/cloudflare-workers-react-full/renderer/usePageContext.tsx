@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import type { PageContext } from './PageContext'
+import type { PageContext } from 'vike/types'
 
 export { PageContextProvider }
 export { usePageContext }

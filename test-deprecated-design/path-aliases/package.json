@@ -1,0 +1,32 @@
+{
+  "imports": {
+    "#root/*": "./*.ts"
+  },
+  "scripts": {
+    "dev": "npm run server:dev",
+    "prod": "npm run build && npm run server:prod",
+    "prod:static": "npm run build && npm run server:static",
+    "build": "vite build",
+    "server": "node --loader ts-node/esm ./server/index.ts",
+    "server:dev": "npm run server",
+    "server:prod": "cross-env NODE_ENV=production npm run server",
+    "server:static": "serve dist/client/ --listen 3000"
+  },
+  "dependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.31",
+    "@types/react": "^18.0.8",
+    "@types/react-dom": "^18.0.3",
+    "@vitejs/plugin-react": "^3.0.0",
+    "cross-env": "^7.0.3",
+    "express": "^4.18.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "serve": "^13.0.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.6.4",
+    "vite": "^4.0.3",
+    "vike": "0.4.150"
+  },
+  "type": "module"
+}

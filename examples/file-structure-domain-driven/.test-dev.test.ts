@@ -1,2 +1,2 @@
-import { testRun } from '../file-structure-domain-driven-v1/.testRun'
+import { testRun } from './.testRun'
 testRun('npm run dev')

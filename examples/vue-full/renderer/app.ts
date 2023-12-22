@@ -1,14 +1,15 @@
 import { createSSRApp, defineComponent, h, markRaw, reactive } from 'vue'
 import PageShell from './PageShell.vue'
-import type { Component, PageContext } from './types'
+import type { Component, PageProps } from './types'
 import { setPageContext } from './usePageContext'
+import type { PageContext } from 'vike/types'
 
 export { createApp }
 
 function createApp(pageContext: PageContext) {
   const { Page } = pageContext
 
-  let rootComponent: Component
+  let rootComponent: Component & { Page: Component; pageProps: PageProps }
   const PageWithWrapper = defineComponent({
     data: () => ({
       Page: markRaw(Page),
@@ -32,7 +33,7 @@ function createApp(pageContext: PageContext) {
 
   const app = createSSRApp(PageWithWrapper)
 
-  // We use `app.changePage()` to do Client Routing, see `_default.page.client.js`
+  // We use `app.changePage()` to do Client Routing, see `+onRenderClient.ts`
   objectAssign(app, {
     changePage: (pageContext: PageContext) => {
       Object.assign(pageContextReactive, pageContext)
@@ -41,7 +42,7 @@ function createApp(pageContext: PageContext) {
     }
   })
 
-  // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `_default.page.client.js`).
+  // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `+onRenderClient.ts`).
   // We therefore use a reactive pageContext.
   const pageContextReactive = reactive(pageContext)
 

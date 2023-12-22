@@ -19,11 +19,11 @@ import { errPostcss } from './fixture-errors/errPostcss.js'
 
 describe('getPrettyErrorWithCodeSnippet() - success', () => {
   it('real use case - @vitejs/plugin-react-swc', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(errSwc, '/home/rom/code/vike/examples/react-full-v1')
+    const formatted = getPrettyErrorWithCodeSnippet(errSwc, '/home/rom/code/vike/examples/react-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /pages/hello/+Page.tsx because:
       × Expected ';', '}' or <eof>
-         ╭─[/home/rom/code/vike/examples/react-full-v1/pages/hello/+Page.tsx:1:1]
+         ╭─[/home/rom/code/vike/examples/react-full/pages/hello/+Page.tsx:1:1]
        1 │ export default Page
        2 │ 
        3 │ impeort React from 'react'
@@ -39,11 +39,11 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   })
 
   it('real use case - @vitejs/plugin-react-swc - big JSX error', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(errSwcBig, '/home/rom/code/vike/examples/react-full-v1')
+    const formatted = getPrettyErrorWithCodeSnippet(errSwcBig, '/home/rom/code/vike/examples/react-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /pages/index/+Page.tsx because:
       × Expression expected
-          ╭─[/home/rom/code/vike/examples/react-full-v1/pages/index/+Page.tsx:6:1]
+          ╭─[/home/rom/code/vike/examples/react-full/pages/index/+Page.tsx:6:1]
         6 │ 
         7 │ function Page() {
         8 │   return (
@@ -54,7 +54,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
        12 │       <h1>
           ╰────
         × Unexpected token. Did you mean \`{'}'}\` or \`&rbrace;\`?
-          ╭─[/home/rom/code/vike/examples/react-full-v1/pages/index/+Page.tsx:29:1]
+          ╭─[/home/rom/code/vike/examples/react-full/pages/index/+Page.tsx:29:1]
        29 │       </p>
        30 │     </>
        31 │   )
@@ -62,7 +62,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
           · ▲
           ╰────
         × Unterminated JSX contents
-          ╭─[/home/rom/code/vike/examples/react-full-v1/pages/index/+Page.tsx:27:1]
+          ╭─[/home/rom/code/vike/examples/react-full/pages/index/+Page.tsx:27:1]
        27 │               Random Page
        28 │             </button>
        29 │           </p>
@@ -76,7 +76,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   })
 
   it('real use case - @vitejs/plugin-vue - SFC HTML', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(errVueHtml, '/home/rom/code/vike/examples/vue-full-v1')
+    const formatted = getPrettyErrorWithCodeSnippet(errVueHtml, '/home/rom/code/vike/examples/vue-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /pages/index/+Page.vue because:
       Element is missing end tag.
@@ -89,7 +89,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   })
 
   it('real use case - @vitejs/plugin-vue - SFC JavaScript', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(errVueJavascript, '/home/rom/code/vike/examples/vue-full-v1')
+    const formatted = getPrettyErrorWithCodeSnippet(errVueJavascript, '/home/rom/code/vike/examples/vue-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /pages/index/+Page.vue because:
       [@vue/compiler-sfc] Missing semicolon. 
@@ -103,7 +103,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   })
 
   it('real use case - @vitejs/plugin-vue - SFC CSS', () => {
-    const formatted = getPrettyErrorWithCodeSnippet(errVueCss, '/home/rom/code/vike/examples/vue-full-v1')
+    const formatted = getPrettyErrorWithCodeSnippet(errVueCss, '/home/rom/code/vike/examples/vue-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /renderer/PageShell.vue because:
       Unexpected }

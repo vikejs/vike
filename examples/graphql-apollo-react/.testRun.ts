@@ -1,6 +1,7 @@
 export { testRun }
 
-import { autoRetry, fetchHtml, page, test, expect, run, getServerUrl } from '@brillout/test-e2e'
+import { fetchHtml, page, test, expect, run, getServerUrl } from '@brillout/test-e2e'
+import { testCounter } from '../../test/utils'
 
 function testRun(cmd: 'npm run dev' | 'npm run prod') {
   run(cmd)
@@ -13,12 +14,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
 
   test('page is hydrated to DOM', async () => {
     page.goto(`${getServerUrl()}/`)
-    expect(await page.textContent('button')).toBe('Counter 0')
-    // `autoRetry` because browser-side code may not be loaded yet
-    await autoRetry(async () => {
-      await page.click('button')
-      expect(await page.textContent('button')).toBe('Counter 1')
-    })
+    await testCounter()
     expect(await page.textContent('body')).toContain('Antarctica')
   })
 }

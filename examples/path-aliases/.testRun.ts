@@ -1,9 +1,11 @@
-import { autoRetry, page, test, expect, run, getServerUrl } from '@brillout/test-e2e'
+import { autoRetry, page, test, expect, run, getServerUrl, fetchHtml } from '@brillout/test-e2e'
 
 export { testRun }
 
-function testRun(npmScript: 'npm run dev' | 'npm run prod' | 'npm run prod:static') {
-  run(npmScript)
+function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run prod:static') {
+  run(cmd)
+
+  const isProd = cmd !== 'npm run dev'
 
   test(`Counter works`, async () => {
     page.goto(`${getServerUrl()}/`)
@@ -25,7 +27,21 @@ function testRun(npmScript: 'npm run dev' | 'npm run prod' | 'npm run prod:stati
 
   test(`About page`, async () => {
     await page.click('a[href="/about"]')
-    expect(await page.textContent('body')).toContain('This liltle app uses path aliases.')
+    expect(await page.textContent('body')).toContain('This app uses path aliases.')
+  })
+
+  test('About page is HTML-only', async () => {
+    const script = '<script'
+    {
+      const html = await fetchHtml('/')
+      expect(html).toContain(script)
+    }
+    {
+      const html = await fetchHtml('/about')
+      if (isProd) {
+        expect(html).not.toContain(script)
+      }
+    }
   })
 
   // This tests the `vike:extractAssets` plugin.
