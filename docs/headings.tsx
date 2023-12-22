@@ -834,7 +834,7 @@ const headings = [
       'Example: `sql`',
       'Example: `title` and `description`',
       'Example: `Layout`',
-      'Example: modify `onBeforeRender()` env'
+      'Example: modify `data()` env'
     ]
   },
   {
