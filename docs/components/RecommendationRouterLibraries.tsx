@@ -22,7 +22,7 @@ function RecommendationRouterLibraries({ libraryName, githubRepo }: { libraryNam
           {libraryName} to Vike's router.
         </p>
         <p>
-          Create a new feature request if you want a feature provided by {libraryName} that Vike's router is missing.
+          Create a new feature request if you need a {libraryName} feature that Vike's router is missing.
         </p>
       </Warning>
       <blockquote>
