@@ -667,21 +667,24 @@ const headings = [
   },
   {
     level: 2,
-    title: '`guard()` hook',
-    titleInNav: '`guard()`',
-    url: '/guard'
-  },
-  {
-    level: 2,
     title: '`data()` hook',
     titleInNav: '`data()`',
     url: '/data'
   },
   {
     level: 2,
+    title: '`guard()` hook',
+    titleInNav: '`guard()`',
+    url: '/guard'
+  },
+  {
+    level: 2,
     title: '`onBeforeRender()` hook',
     titleInNav: '`onBeforeRender()`',
-    url: '/onBeforeRender'
+    url: '/onBeforeRender',
+    sectionTitles: [
+      '`onBeforeRender()` + `meta`'
+    ]
   },
   {
     level: 2,

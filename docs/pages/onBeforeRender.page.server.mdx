@@ -1,133 +1,77 @@
-import { HookTypeScriptHints } from '../components'
+import { HookTypeScriptHints, IntegrationPackageNames } from '../components'
 import { Link } from '@brillout/docpress'
 
 > The `onBeforeRender()` hook is for expert Vike users. If you're new to Vike, we recommend using the
-> <Link href="/data">`data()` hook</Link> instead, and/or <Link href="/vike-packages">Vike extensions</Link> for deep
-> integrations with GraphQL, RPC, Tanstack Query, etc.
+> <Link href="/data">`data()` hook</Link> instead, and/or <Link href="/vike-packages">Vike extensions</Link> for
+> automatically integrating with data fetching tools (RPC with Telefunc/tRPC, REST with Tanstack Query, GraphQL with Apollo/Relay, etc).
 
-The `onBeforeRender()` hook is usually used for fetching data, see <Link href="/data-fetching" />.
+The `onBeforeRender()` hook is used for deep and complex integrations with data fetching tools.
 
-## Server-side
+For simple data fetching needs, use the <Link href="/data">`data()` hook</Link> instead.
 
-By default `onBeforeRender()` is loaded and executed only on the server-side. Thus you can directly use ORM/SQL database queries:
+As a strategy to decide which one to use, first try to use the `data()` hook, and use `onBeforeRender()` only as a fallback if `data()` doesn't work out for you.
+
+The `onBeforeRender()` is usually used to orchestrate mutliple <Link href="/meta">custom hooks and settings</Link>, see:
+ - <Link href="#onbeforerender-meta" doNotInferSectionTitle />
+ - <Link href="#advanced-example" />
+
+
+## `onBeforeRender()` VS `data()`
+
+The difference between the two hooks is that the value returned by the `data()` hook always sets the value of `pageContext.data`, whereas `onBeforeRender()` can set any and multiple `pageContext` values.
 
 ```js
-// /pages/movies/+onBeforeRender.js
+// /pages/some-page/+data.js
 
-export { onBeforeRender }
+export function data() {
+  const someValue = /* ... */
+  // pageContext.data === someValue
+  return someValue
+}
+```
 
-// Note how we use `node-fetch`; this file is only run on the server-side, thus we don't need
-// to use an isomorphic (aka universal) implementation such as `cross-fetch`.
-import fetch from 'node-fetch'
+```js
+// /pages/some-page/+onBeforeRender.js
 
-async function onBeforeRender(pageContext) {
-  const response = await fetch("https://api.imdb.com/api/movies/")
-  const { movies } = await response.json()
-  /* Or with an ORM:
-  const movies = Movie.findAll() */
-  /* Or with SQL:
-  const movies = sql`SELECT * FROM movies;` */
-
-  // We make `movies` available as pageContext.pageProps.movies
+export function data() {
+  const someValue1 = /* ... */
+  const someValue2 = /* ... */
+  // pageContext.prop1 === someValue1
+  // pageContext.prop2 === someValue2
   return {
     pageContext: {
-      pageProps: {
-        movies
-      }
+      prop1: someValue1,
+      prop2: someValue2
     }
   }
 }
 ```
 
+Another difference is that the entire `pageContext.data` value is always sent to the client-side, whereas with `onBeforeRender()` you can (and have to) decide which values are sent to the client-side by using <Link href="/passToClient">`passToClient`</Link>.
+
+While `onBeforeRender()` requires more manual work, it also gives you more control.
+
+Also, a common use case is to use `onBeforeRender()` as a global initializing hook.
+
+
+## `onBeforeRender()` + `meta`
+
+For more convenience, instead of creating a new `onBeforeRender()` hook for each page, you can define `onBeforeRender()`
+only once in `/pages/+onBeforeRender.js` while <Link text="creating new settings" href="/meta" />.
+
+For example:
+
 ```js
-// /renderer/+onRenderHtml.js
-// Environment: server
-
-export { onRenderHtml }
-
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { renderToHtml, createElement } from 'some-ui-framework'
-
-async function onRenderHtml(pageContext) {
-  const { Page, pageProps } = pageContext
-  const pageHtml = await renderToHtml(
-    // We pass pageContext.pageProps to the <Page> component
-    createElement(Page, pageProps)
-  )
-  /* JSX:
-  const pageHtml = await renderToHtml(<Page {...pageProps} />)
-  */
-
-  return escapeInject`<html>
-    <div id='view-root'>
-      ${dangerouslySkipEscape(pageHtml)}
-    </div>
-  </html>`
-}
+// /pages/user/+sql.js
+export default { modelName: 'User', select: ['firstName', 'lastName'] }
 ```
 
 ```js
-// /renderer/+config.h.js
-// Environment: config
-
-export default {
-  // Make pageContext.pageProps available in the browser
-  passToClient: ['pageProps']
-}
+// /pages/product/+sql.js
+export default { modelName: 'Product', select: ['name', 'price'] }
 ```
 
-```js
-// /renderer/+onRenderClient.js
-// Environment: browser
-
-export { onRenderClient }
-
-import { hydrateDom, createElement } from 'some-ui-framework'
-
-async function onRenderClient(pageContext) {
-  // Thanks to `passToClient = ['pageProps']` our pageContext.pageProps is
-  // available here in the browser.
-  const { Page, pageProps } = pageContext
-  await hydrateDom(
-    // We pass pageContext.pageProps to the <Page> component
-    createElement(Page, pageProps),
-    document.getElementById('view-root')
-  )
-  /* JSX:
-  await hydrateDom(<Page {...pageProps} />, document.getElementById('view-root'))
-  */
-}
-```
-
-```js
-// /pages/movies/+Page.js
-// Environment: browser and server
-
-export { Page }
-
-// In the onRenderHtml() and onRenderClient() hooks above, we pass
-// pageContext.pageProps to the <Page> component
-function Page(pageProps) {
-  const { movies } = pageProps
-  // ...
-}
-```
-
-> Note that Vike doesn't know anything about `pageProps`: it's just an object we create in order to conveniently pass all the page's props at once.
-
-## Examples
-
-- <Link href='/examples/react-full/pages/star-wars/index/+onBeforeRender.ts' />
-- <Link href='/examples/vue-full/pages/star-wars/index/+onBeforeRender.ts' />
-
-
-## Initial `pageContext` values
-
-You can provide initial `pageContext` values at your server middleware with <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
-This is where you usually pass information about the authenticated user
-(see <Link href="/auth" />).
-
-> For <Link href="/pre-rendering" >pre-rendered</Link> apps, see [#962 - New hook `onStartup()`](https://github.com/vikejs/vike/issues/962).
+See full implementation at <Link href="/meta#example-sql" doNotInferSectionTitle />.
 
 
 ## Override
@@ -135,8 +79,8 @@ This is where you usually pass information about the authenticated user
 There can be only one `onBeforeRender()` hook per page. For example, if you define a global `onBeforeRender()` hook at `/pages/+onBeforeRender.js` as well as a page-specific one at `/pages/star-wars/+onBeforeRender.js` then the page-specific one overrides the global one.
 
 > If you want multiple `onBeforeRender()` hooks, consider:
-> * <Link href="/meta">creating custom hooks</Link> instead: you can then use one global `onBeforeRender()` hook that orchestrates many custom hooks.
-> * also using <Link href="/data">`data()` hooks</Link>: you can then use one global `onBeforeRender()` and a page-specific `data()` hook.
+> - <Link href="/meta">Creating custom hooks</Link> instead: you can then use one global `onBeforeRender()` hook that orchestrates many custom hooks.
+> - Using <Link href="/data">`data()` hooks</Link>: you can then use one global `onBeforeRender()` and page-specific `data()` hooks.
 
 You can also suppress globally defined `onBeforeRender()` hooks on a per-page basis:
 ```js
@@ -157,49 +101,92 @@ export default {
 ```
 
 
-## Client-side
+## Advanced example
 
-By default, `onBeforeRender()` always runs on the server-side and the fetched data is made available on the client-side
-by setting <Link href="/passToClient">`passToClient`</Link>.
+The following is an advanced example of using `onBeforeRender()` with `meta` to integrate data fetching tools. This approach can be used to integrate GraphQL tools.
 
-But,
-by <Link href="/meta#example-modify-onbeforerender-env">using `meta`</Link>,
-you can tell Vike to run `onBeforeRender()` also on the client-side: Vike calls `onBeforeRender()` on the server-side for the first page the user visits
-and then, for subsequent page navigations, Vike calls `onBeforeRender()` on the client-side.
-
-> This option is only available if you use <Link href="/client-routing" >Client Routing</Link>.
-
-In general, we recommend running `onBeforeRender()` only on the server-side because it's usually easier to write code that only runs on the server-side.
-That said, if you want to minimize requests made to your server, then it makes sense to run `onBeforeRender()` on the client-side.
-Keep in mind that you'll then have to ensure that your `onBeforeRender()` hook is isomorphic: it needs to be able to run on the server-side as well as on the client-side.
-
-You can also set `onBeforeRender()`'s meta config `env` to `{ client: true, server: false}`: Vike will then always call `onBeforeRender()` on the client-side and never on the server-side.
-
-Example:
- - [/examples/react-full/](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/react-full/)
-   - Config defintion: [/renderer/+config.h.ts > `meta.onBeforeRenderIsomorph`](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/react-full/renderer/+config.h.ts#L14-L33)
-   - Config usage: [/pages/star-wars/@id/+onBeforeRenderIsomorph.ts](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/react-full/pages/star-wars/@id/+onBeforeRenderIsomorph.ts)
-   - Hook: [/pages/star-wars/@id/+onBeforeRender.tsx](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/react-full/pages/star-wars/@id/+onBeforeRender.tsx)
-
-
-## Custom settings
-
-For more convenience, instead of creating a new `onBeforeRender()` hook for each page, we can define `onBeforeRender()`
-only once in `/renderer/+onBeforeRender.js` while <Link text="creating new settings" href="/meta" />.
-
-For example:
+> If you use a custom renderer instead of <IntegrationPackageNames />, then you can modify your `onRenderHtml()` and `onRenderClient()` hooks instead of doing the following.
 
 ```js
-// /pages/user/+sql.js
-export default { modelName: 'User', select: ['firstName', 'lastName'] }
+// /pages/+config.h.js
+// Environment: config
+
+export default {
+  // Pass the GraphQL cache to the client-side
+  passToClient: ['cache'],
+  // Modify/create hooks
+  meta: {
+    onBeforeRender: {
+      // Modify built-in onBeforeRender() hook to run on both server- and client-side
+      env: { client: true, server: true }
+    },
+    // Create a new hook
+    onBeforeRenderHtml: {
+      env: { server: true }
+    },
+    // Create a new hook
+    onBeforeRenderClient: {
+      env: { client: true }
+    }
+  }
+}
+```
+> See:
+>  - <Link href="/meta" />
+>  - <Link href="/passToClient" />
+
+```js
+// /pages/+onBeforeRender.js
+// Environment: server or client
+
+export function async onBeforeRender(pageContext) {
+  // When run on the server-side
+  if (pageContext.config.onBeforeRenderHtml) {
+    const { pageContext } = await onBeforeRenderHtml(pageContext)
+    return { pageContext }
+  }
+  // When run on the client-side
+  if (pageContext.config.onBeforeRenderClient) {
+    onBeforeRenderClient(pageContext)
+  }
+}
 ```
 
 ```js
-// /pages/product/+sql.js
-export default { modelName: 'Product', select: ['name', 'price'] }
+// /pages/+onBeforeRenderHtml.jsx
+// Environment: server
+
+import { renderToHtml } from 'my-graphql-tool/server'
+
+export async function onBeforeRenderHtml(pageContext) {
+  const { Page } = pageContext
+  // `cache` contains the data fetched by GraphQL
+  const { cache, html } = await renderToHtml(<Page>)
+  return {
+    pageHtml: html,
+    cache
+  }
+}
 ```
 
-See full implementation at <Link href="/meta#example-sql" doNotInferSectionTitle />.
+```js
+// /pages/+onBeforeRenderClient.jsx
+// Environment: client
+
+import { hydrate } from 'my-ui-framework/client'
+import { CacheProvider } from 'my-graphql-tool/client'
+
+export function onBeforeRenderClient(pageContext) {
+  const { Page, cache } = pageContext
+  hydrate(
+    // Re-use the `cache` data that was fetched on the server-side
+    <CacheProvider cache={cache}>
+      <Page>
+    </CacheProvider>,
+    document.getElementById('root')
+  )
+}
+```
 
 
 ## TypeScript

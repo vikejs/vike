@@ -5,9 +5,18 @@ The `data()` hook is used for fetching data, see <Link href="/data-fetching" />.
 > For a lower-level hook with more control, see <Link href="/onBeforeRender" />.
 
 
+## Initial `pageContext` values
+
+You can set initial `pageContext` values, such as information about the authenticated user, at <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
+
+See also <Link href="/auth" />.
+
+> For <Link href="/pre-rendering" >pre-rendered</Link> apps, see [#962 - New hook `onStartup()`](https://github.com/vikejs/vike/issues/962).
+
+
 ## Server-side
 
-By default `data()` is loaded and executed only on the server-side. Thus you can directly use ORM/SQL database queries:
+By default, the `data()` hook always runs the server-side. Thus you can directly use ORM/SQL database queries:
 
 ```js
 // /pages/movies/+data.js
@@ -31,21 +40,25 @@ async function data(pageContext) {
 }
 ```
 
-> The value returned by `data()` can be of any type. It will be stored in `pageContext.data`. See
-> <Link href="/pageContext" />.
 
+## Client-side
 
-## Client Routing
+By default, `data()` always runs on the server-side.
 
-By default, the `data()` and `onBeforeRender()` hooks are loaded only in Node.js;
-our data fetching code is always executed in Node.js.
-This is convenient as it makes writing data fetching code easier.
+But,
+by using `meta`,
+you can tell Vike to run `data()` also on the client-side: Vike calls `data()` on the server-side for the first page the user visits
+and then, for subsequent page navigations, Vike calls `data()` on the client-side.
 
-If we use [Client Routing](/clientRouting),
-then we have the option to [also run these hooks in the client](/onBeforeRender#client-side), i.e. it is not only
-called in Node.js but also in the browser (upon page navigation).
+See <Link href="/meta#example-modify-data-env" doNotInferSectionTitle />.
+
+In general, we recommend running `data()` only on the server-side because it's usually easier to write code that only runs on the server-side.
+That said, if you want to minimize requests made to your server, then it makes sense to run `data()` on the client-side.
+Keep in mind that you'll then have to ensure that your `data()` hook is isomorphic: it needs to be able to run on the server-side as well as on the client-side.
+
+You can also set `data()`'s meta config `env` to `{ client: true, server: false}`: Vike will then always call `data()` on the client-side and never on the server-side.
 
 
 ## Examples
 
-- <Link href='/examples/react-data-fetching/pages/star-wars/index/+data.ts' />
+- <Link href='/examples/react-full/pages/star-wars/index/+data.ts' />

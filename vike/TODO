@@ -1,3 +1,9 @@
+- Remove all pageProps occurence in docs/ and examples/
+- Use data() instead of onBeforeRender() in examples/
+- Add vue example to `/data` docs: <Link href='/examples/vue-full/pages/star-wars/index/+data.ts' />
+- Implement `dataIsomorph` (or a better name?) as a built-in config (so that juniors don't have to use `meta`)
+- Minimize `/renderer/` occurence in docs
+
 - update migration examples
 - add vike-react-query to /vike-packages
 

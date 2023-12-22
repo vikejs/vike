@@ -24,7 +24,6 @@ async function data(pageContext) {
   // need in order to minimize what is sent to the browser.
   movies = movies.map(({ title, release_date }) => ({ title, release_date }))
 
-  // We make `movies` available as pageContext.data
   return {
     movies
   }
@@ -41,6 +40,7 @@ import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml, createElement } from 'some-ui-framework'
 
 async function onRenderHtml(pageContext) {
+  // Our data is available at pageContext.data
   const { Page, data } = pageContext
   const pageHtml = await renderToHtml(
     // We pass pageContext.data to the <Page> component
