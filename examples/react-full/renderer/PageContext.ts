@@ -3,12 +3,12 @@ declare global {
   namespace Vike {
     interface PageContext {
       Page: Page
-      pageProps?: PageProps
+      data?: Data
       config: {
         /** Title defined statically by /pages/some-page/+title.js (or by `export default { title }` in /pages/some-page/+config.js) */
         title?: string
       }
-      /** Title defined dynamically by onBeforeRender() */
+      /** Title defined dynamically by data() */
       title?: string
       abortReason?: string
       someAsyncProps?: number
@@ -16,8 +16,8 @@ declare global {
   }
 }
 
-type Page = (pageProps: PageProps) => React.ReactElement
-type PageProps = Record<string, unknown>
+type Page = (data: Data) => React.ReactElement
+type Data = Record<string, unknown> & { title?: string }
 
 // Tell TypeScript that this file isn't an ambient module
 export {}

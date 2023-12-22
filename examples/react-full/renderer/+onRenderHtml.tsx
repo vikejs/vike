@@ -9,11 +9,11 @@ import { getPageTitle } from './getPageTitle'
 import type { OnRenderHtmlAsync } from 'vike/types'
 
 const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
-  const { Page, pageProps } = pageContext
+  const { Page, data } = pageContext
 
   const stream = await renderToStream(
     <PageShell pageContext={pageContext}>
-      <Page {...pageProps} />
+      <Page {...data} />
     </PageShell>,
     // We don't need react-streaming for this app. (We use it merely to showcase that Vike can handle react-streaming with a pre-rendered app. Note that using react-streaming with pre-rendering can make sense if we want to be able to use React's latest <Suspsense> techniques.)
     { disable: true }

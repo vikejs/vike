@@ -18,7 +18,7 @@ function Page({ movies }: { movies: Movie[] }) {
         Source: <a href="https://star-wars.brillout.com">star-wars.brillout.com</a>.
       </p>
       <p>
-        Data can be fetched by using the <code>onBeforeRender()</code> hook.
+        Data can be fetched by using the <code>data()</code> hook.
       </p>
     </>
   )
