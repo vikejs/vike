@@ -1,7 +1,5 @@
 import { Link, Construction } from '@brillout/docpress'
 
-> We recommend reading the entire FAQ.
-
 
 ## Can I reach out for help?
 
@@ -10,33 +8,45 @@ Yes, you can reach out on Discord and GitHub. If you use GitHub Discussions, the
 
 ## Can I use Vike to achieve what I want?
 
-Vike praises itself of being a highly (if not the most) flexible frontend framework: if you stumble upon a use case you believe you cannot achieve with Vike then [let us know](https://github.com/vikejs/vike/discussions).
+Vike supports all frontend use cases:
+ - <Link href="/deploy">Deploy anywhere</Link> (VPS, AWS, GCP, Cloudflare, Vercel, etc.).
+ - <Link href="/ui-framework">Any UI framework</Link> (React, Vue, Solid, etc.), <Link href="/integration">any UI tool</Link> (state mangement, data fetching, CSS framework).
+ - <Link href="/pre-rendering#should-i-pre-render">Without backend</Link>, with <Link href="/server">any JavaScript backend</Link> (Express.js, Hono, Fastify, Adonis, Nest, Deno, Bun, ...), with other backends (Java, Ruby on Rails, etc.).
+ - <Link href="/data-fetching-tools">Any data fetching tool</Link> (REST, RPC, GraphQL, etc.).
+ - <Link href="/pre-rendering#ssg-vs-ssr">Server-side rendered HTML (SSR)</Link>, <Link href="/pre-rendering">pre-rendered HTML (SSG)</Link>, <Link href="/vercel#vite-plugin-vercel">incremental pre-rendering (ISR)</Link>.
+ - Simple <Link href="/renderPage">HTML string</Link>, advanced <Link href="/stream">HTML streaming</Link> (with <Link href="/stream#partial-hydration">Partial Hydration</Link>).
+
+Vike praises itself of being a highly (if not the most) adaptable frontend framework: if you have a use case you believe you cannot achieve with Vike then [let us know](https://github.com/vikejs/vike/discussions).
+
+Also, Vike has been designed from the ground up to be extensible, so that you can <Link href="/build-your-own-framework">Build Your Own Framework</Link>.
 
 
 ## Why is CSS leaked to other pages?
 
-With <Link href="/client-routing">Client Routing</Link>, when navigating from one page to another, the CSS of the previous page isn't removed. This means the CSS of the previous page will also apply to the next page. In other words: CSS is leaky.
+With <Link href="/client-routing">Client Routing</Link>, when navigating from one page to another, the CSS of the previous page isn't removed. This means that any CSS loaded by the previous page will also apply to the next page. In other words: CSS cumulates upon page navigation.
 
 For example:
 
 ```jsx
-// /pages/terms-of-service/+Page.jsx
+// /pages/terms/+Page.jsx
 
 import './style.css'
 
-export const Page = () => <>
-  <h1>Terms of Service</h1>
-  <div id="terms-of-service">
-    {/* ... */}
+export const Page = () => (
+  <div id="#terms">
+    <h1>Terms of Service</h1>
+    <section>
+      {/* ... */}
+    </section>
   </div>
-</>
+)
 ```
 
 ```css
-/* /pages/terms-of-service/style.css */
+/* /pages/terms/style.css */
 
-/* ❌ Bad: the CSS selector `body` can apply to any page. */
-body {
+/* ❌ Bad: the CSS selector `section` can apply to any page */
+section {
   font-size: 0.8em;
 }
 ```
@@ -44,19 +54,19 @@ body {
 Narrow down the CSS selector instead:
 
 ```css
-/* /pages/terms-of-service/style.css */
+/* /pages/terms/style.css */
 
-/* ✅ Good: the CSS selector #terms-of-service only applies to the "Terms of Service" page. */
-#terms-of-service {
+/* ✅ Good: the CSS selector `#terms section` only applies to our terms page */
+#terms section {
   font-size: 0.8em;
 }
 ```
 
 > If you use **Vue** with `.vue` files, then Vue already scopes the CSS for you: the CSS you define in a `.vue` file is guaranteed to apply only to the component defined in that `.vue` file.
 
-> If you use **React** or **Solid**, then we recommend using inline styles and/or a CSS-in-JS library (or Tailwind), while minimizing global CSS. Inline style aren't global and, therfore, aren't leaky.
+> If you use **React** or **Solid**, then we recommend using inline styles and/or a CSS-in-JS library (or Tailwind), while minimizing CSS files. Inline style aren't global and, therefore, aren't leaky.
 
-> **CSS is injected by Vite** in the form of `<style>` tags. If you're curious why Vite doesn't remove old `<style>` tags, consider that removing CSS is problematic during the transient state upon page navigation (it would lead to [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content)). In general, regardless of Vite's behavior, it's a good practice to narrow down CSS selectors.
+> **CSS is injected by Vite** in the form of `<style>` tags. If you're curious why Vite doesn't remove old `<style>` tags, consider that removing CSS is problematic during the transient state upon page navigation. (It would lead to [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content) because there is no transaction primitive for DOM manipulation.) In general, regardless of Vite's behavior, it's a good practice to narrow down CSS selectors.
 
 
 ## Why are there a lot of HTTP requests in dev?
@@ -64,7 +74,7 @@ Narrow down the CSS selector instead:
 In development, you may observe a lot of HTTP requests fetching a lot JavaScript files.
 That's because <Link href="/lazy-transpiling">Vite does lazy transpiling</Link>.
 
-While it's true that doing a lot of HTTP requests slows down page load (and Vite is working on optimizing that aspect), Vite's lazy transpiling approach enables unparalleled development speed.
+While it's true that doing a lot of HTTP requests slows down page load (and optimizing that aspect is on Vite's radar), Vite's lazy transpiling approach enables unparalleled development speed.
 
 
 ## How can I contribute and/or support?
