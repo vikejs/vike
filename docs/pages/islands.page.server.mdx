@@ -1,0 +1,13 @@
+import { Example } from '../components'
+
+> The general idea of an “Islands” architecture is deceptively simple: render HTML pages on the server, and inject placeholders or slots around highly dynamic regions. These placeholders/slots contain the server-rendered HTML output from their corresponding widget. They denote regions that can then be "hydrated" on the client into small self-contained widgets, reusing their server-rendered initial HTML.
+>
+> — Jason Miller, Creator of Preact
+
+Examples of using Vike with [Islands Architecture](https://jasonformat.com/islands-architecture/):
+ - <Example timestamp="2023.12" repo="luisfloat/vike-island-example" />
+
+See also:
+- [Jason Miller's Blog > Islands Architecture](https://jasonformat.com/islands-architecture/)
+- [Astro > Concepts > Islands](https://docs.astro.build/en/concepts/islands/)
+- [vike-island-example > Issues > Vike Implementation](https://github.com/luisfloat/vike-island-example/issues/1).
