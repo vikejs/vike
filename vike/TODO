@@ -54,7 +54,7 @@ After V1 design release:
           - Maybe: allow user to assign a "cluster name" with `config.clientRouting: string`. Is this needed?
  - Check why some deps aren't discovered by Vite's depOptimizer:
    - https://github.com/brillout/vike-react-query => why does Vite discover `part-regex` only later?
- - Check why dev startup is fairly slow, e.g. for /examples/react-full-v1/ (I belive it used to be faster, is it related to Vite's initial dep crawling?)
+ - Check why dev startup is fairly slow, e.g. for /examples/react-full/ (I belive it used to be faster, is it related to Vite's initial dep crawling?)
  - Transpile & bunlded server for production: https://github.com/vikejs/vike/issues/1165
  - Replace boilerplates with Bati
  - Rewrite documentation to assume usage of `vike-{react,vue,solid}` (while preserving custom integration docs)

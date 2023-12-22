@@ -84,6 +84,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'FAQ',
+    url: '/faq'
+  },
+  {
+    level: 2,
     title: 'Access `pageContext` anywhere',
     url: '/pageContext-anywhere'
   },
@@ -116,6 +121,11 @@ const headings = [
     level: 2,
     title: 'Static Directory (`public/`)',
     url: '/static-directory'
+  },
+  {
+    level: 2,
+    title: '`.server.js` / `.client.js`',
+    url: '/file-env'
   },
   {
     level: 2,

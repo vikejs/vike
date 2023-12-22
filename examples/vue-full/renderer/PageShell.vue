@@ -46,6 +46,7 @@ code {
   padding: 20px;
   padding-bottom: 50px;
   min-height: 100vh;
+  flex-grow: 1;
 }
 .navigation {
   padding: 20px;

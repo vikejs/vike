@@ -6,7 +6,8 @@ import { LayoutDefault } from './LayoutDefault'
 import { PageContextProvider } from './usePageContext'
 
 function PageShell({ children, pageContext }) {
-  const Layout = pageContext.exports.Layout || LayoutDefault
+  // The config 'Layout' is a custom config we defined at ./+config.ts
+  const Layout = pageContext.config.Layout || LayoutDefault
   return (
     <React.StrictMode>
       <PageContextProvider pageContext={pageContext}>

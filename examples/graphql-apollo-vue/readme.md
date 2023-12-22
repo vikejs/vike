@@ -1,6 +1,3 @@
-> [!NOTE]
-> This example is deprecated. See [`graphql-apollo-vue-v1`](../graphql-apollo-vue-v1/) instead.
-
 Example of using Vike with Vue and Apollo GraphQL.
 
 ```bash

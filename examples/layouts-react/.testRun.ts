@@ -1,6 +1,6 @@
-import { page, test, expect, run, autoRetry, getServerUrl } from '@brillout/test-e2e'
-
 export { testRun }
+
+import { page, test, expect, run, autoRetry, getServerUrl } from '@brillout/test-e2e'
 
 function testRun(cmd: 'npm run dev' | 'npm run preview', uiFrameworkRoot: 'react-root' | 'app' = 'react-root') {
   run(cmd)

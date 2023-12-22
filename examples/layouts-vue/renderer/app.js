@@ -12,7 +12,8 @@ function createApp(pageContext) {
     data: () => ({
       Page: markRaw(Page),
       pageProps: markRaw(pageContext.pageProps || {}),
-      Layout: markRaw(pageContext.exports.Layout || LayoutDefault)
+      // The config 'Layout' is a custom config we defined at ./+config.ts
+      Layout: markRaw(pageContext.config.Layout || LayoutDefault)
     }),
     created() {
       rootComponent = this
@@ -32,15 +33,16 @@ function createApp(pageContext) {
 
   const app = createSSRApp(PageWithWrapper)
 
-  // We use `app.changePage()` to do Client Routing, see `_default.page.client.js`
+  // We use `app.changePage()` to do Client Routing, see `+onRenderClient.js`
   app.changePage = (pageContext) => {
     Object.assign(pageContextReactive, pageContext)
     rootComponent.Page = markRaw(pageContext.Page)
     rootComponent.pageProps = markRaw(pageContext.pageProps || {})
-    rootComponent.Layout = markRaw(pageContext.exports.Layout || LayoutDefault)
+    // The config 'Layout' is a custom config we defined at ./+config.ts
+    rootComponent.Layout = markRaw(pageContext.config.Layout || LayoutDefault)
   }
 
-  // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `_default.page.client.js`).
+  // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `+onRenderClient.js`).
   // We therefore use a reactive pageContext.
   const pageContextReactive = reactive(pageContext)
 
