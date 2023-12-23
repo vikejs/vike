@@ -40,15 +40,12 @@ function logHintForCjsEsmError(error: unknown) {
       packageName = parsePackageName(errString)
     }
 
-    if (packageName) {
-      console.log(
-        `Please include ${pc.green(packageName)} in ${pc.green('ssr.noExternal')} ${pc.green(
-          'https://vike.dev/broken-npm-package'
-        )}`
-      )
-    } else {
-      console.log(`Failed to import a package. To fix this: ${pc.green('https://vike.dev/broken-npm-package')}`)
-    }
+    const errMsg = [
+      `The error above seems to be a CJS/ESM issue${!packageName ? '' : ` with the package ${pc.cyan(packageName)}`}`,
+      `consider ${!packageName ? 'using' : `adding ${pc.cyan(`'${packageName}'`)} to`} ${pc.cyan('ssr.noExternal')}`,
+      'see https://vike.dev/broken-npm-package'
+    ].join(', ')
+    console.error(errMsg)
 
     return packageName
   }

@@ -13,7 +13,6 @@ import { analyzePage } from './analyzePage.js'
 import { getGlobalContext } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
-import { logHintForCjsEsmError } from './logHintForCjsEsmError.js'
 
 type PageContext_loadPageFilesServerSide = PageContextGetPageAssets &
   PageContextDebugRouteMatches & {
@@ -113,7 +112,6 @@ async function loadPageFiles(
   pageId: string,
   isDev: boolean
 ) {
-  try {
     const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
     const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
     await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
@@ -130,8 +128,4 @@ async function loadPageFiles(
       pageFilesLoaded: pageFilesServerSide,
       pageConfigLoaded
     }
-  } catch (error) {
-    logHintForCjsEsmError(error)
-    throw error
-  }
 }
