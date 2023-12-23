@@ -142,6 +142,31 @@ function logImportError(error: unknown) {
     return
   }
 
+  const shouldShowMessage = new RegExp(
+    [
+      `Error: Element type is invalid`,
+      `TypeError: require is not a function`,
+      // `TypeError: Cannot read properties of undefined`,
+      `SyntaxError: Named export`,
+      `SyntaxError: Cannot use import statement outside a module`,
+      `ReferenceError: exports is not defined.*node_modules`,
+      `ERR_UNSUPPORTED_DIR_IMPORT.*node_modules`,
+      `ERR_UNKNOWN_FILE_EXTENSION.*node_modules`,
+      `ERR_REQUIRE_ESM`
+    ].join('|'),
+    's'
+  )
+  const shouldParsePackageName = new RegExp(
+    [
+      `SyntaxError: Cannot use import statement outside a module`,
+      `SyntaxError: Named export`,
+      `ERR_UNSUPPORTED_DIR_IMPORT.*node_modules`,
+      `ERR_UNKNOWN_FILE_EXTENSION.*node_modules`,
+      `ReferenceError: exports is not defined.*node_modules`
+    ].join('|'),
+    's'
+  )
+
   if (shouldShowMessage.test(errString)) {
     let packageName = ''
 
@@ -216,28 +241,3 @@ const parsePackageName = (errString: string) => {
   }
   return packageName
 }
-
-const shouldParsePackageName = new RegExp(
-  [
-    `SyntaxError: Cannot use import statement`,
-    `SyntaxError: Named export`,
-    `ERR_UNSUPPORTED_DIR_IMPORT`,
-    `ERR_UNKNOWN_FILE_EXTENSION`,
-    `ReferenceError: exports is not defined`
-  ].join('|')
-)
-
-const shouldShowMessage = new RegExp(
-  [
-    `Error: Element type is invalid`,
-    `TypeError: require is not a function`,
-    // `TypeError: Cannot read properties of undefined`,
-    `SyntaxError: Named export`,
-    `SyntaxError: Cannot use import statement outside a module`,
-    `ReferenceError: exports is not defined`,
-    `ERR_MODULE_NOT_FOUND`,
-    `ERR_UNSUPPORTED_DIR_IMPORT`,
-    `ERR_UNKNOWN_FILE_EXTENSION`,
-    `ERR_REQUIRE_ESM`
-  ].join('|')
-)

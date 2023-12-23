@@ -247,5 +247,94 @@ describe('logImportError', () => {
       const packageName = logImportError(error)
       expect(packageName).toEqual('')
     }
+
+    {
+      const error = {
+        stack: `
+        file:///home/xxx/projects/vike/xxx/server/index.js:20
+          console.log(a.b);
+                        ^
+
+        TypeError: Cannot read properties of undefined (reading 'b')
+            at startServer (file:///home/xxx/projects/vike/xxx/server/index.js:20:17)
+            at file:///home/xxx/projects/vike/xxx/server/index.js:13:1
+            at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
+        `
+      }
+      const packageName = logImportError(error)
+      expect(packageName).toEqual(undefined)
+    }
+    {
+      const error = {
+        stack: `
+        TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".123" for /home/xxx/projects/vike/xxx/server/root.123
+        at new NodeError (node:internal/errors:399:5)
+        at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:79:11)
+        at defaultGetFormat (node:internal/modules/esm/get_format:121:38)
+        at defaultLoad (node:internal/modules/esm/load:81:20)
+        at nextLoad (node:internal/modules/esm/loader:163:28)
+        at ESMLoader.load (node:internal/modules/esm/loader:605:26)
+        at ESMLoader.moduleProvider (node:internal/modules/esm/loader:457:22)
+        at new ModuleJob (node:internal/modules/esm/module_job:64:26)
+        at #createModuleJob (node:internal/modules/esm/loader:480:17)
+        at ESMLoader.getModuleJob (node:internal/modules/esm/loader:434:34) {
+        code: 'ERR_UNKNOWN_FILE_EXTENSION'
+        }
+        `
+      }
+      const packageName = logImportError(error)
+      expect(packageName).toEqual(undefined)
+    }
+    {
+      const error = {
+        stack: `
+        Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import '/Users/xxx/xxx/src/models' is not supported resolving ES modules imported from /Users/xxx/xxx/src/index.js
+          at finalizeResolution (internal/modules/esm/resolve.js:272:17)
+          at moduleResolve (internal/modules/esm/resolve.js:699:10)
+          at Loader.defaultResolve [as _resolve] (internal/modules/esm/resolve.js:810:11)
+          at Loader.resolve (internal/modules/esm/loader.js:85:40)
+          at Loader.getModuleJob (internal/modules/esm/loader.js:229:28)
+          at ModuleWrap.<anonymous> (internal/modules/esm/module_job.js:51:40)
+          at link (internal/modules/esm/module_job.js:50:36) {
+        code: 'ERR_UNSUPPORTED_DIR_IMPORT',
+        url: 'file:///Users/xxx/xxx/src/models'
+        }
+        `
+      }
+      const packageName = logImportError(error)
+      expect(packageName).toEqual(undefined)
+    }
+    {
+      const error = {
+        stack: `
+          Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'aaaa' imported from /home/xxx/projects/vike/xxx/server/index.js
+            at new NodeError (node:internal/errors:399:5)
+            at packageResolve (node:internal/modules/esm/resolve:889:9)
+            at moduleResolve (node:internal/modules/esm/resolve:938:20)
+            at defaultResolve (node:internal/modules/esm/resolve:1153:11)
+            at nextResolve (node:internal/modules/esm/loader:163:28)
+            at ESMLoader.resolve (node:internal/modules/esm/loader:838:30)
+            at ESMLoader.getModuleJob (node:internal/modules/esm/loader:424:18)
+            at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:77:40)
+            at link (node:internal/modules/esm/module_job:76:36) {
+          code: 'ERR_MODULE_NOT_FOUND'
+        }
+        `
+      }
+      const packageName = logImportError(error)
+      expect(packageName).toEqual(undefined)
+    }
+    {
+      const error = {
+        stack: `
+        ReferenceError: exports is not defined in ES module scope
+        This file is being treated as an ES module because it has a '.js' file extension and '/home/xxx/projects/vike/xxx/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+            at file:///home/xxx/projects/vike/xxx/server/index.js:14:1
+            at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
+        `
+      }
+      const packageName = logImportError(error)
+      expect(packageName).toEqual(undefined)
+    }
   })
 })
