@@ -150,6 +150,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   hooksTimeout: {
     env: { server: true, client: true }
+  },
+  cacheControl: {
+    env: { server: true }
   }
 }
 
