@@ -1,10 +1,10 @@
-import { logImportError } from './loadPageFilesServerSide'
+import { logHintForCjsEsmError } from './logHintForCjsEsmError'
 import { expect, describe, it } from 'vitest'
 
 // packageName: undefined -> noop
 // packageName: "" -> generic message
 // packageName: "xxx" -> add xxx to ssr.noExternal
-describe('logImportError', () => {
+describe('logHintForCjsEsmError', () => {
   it('works', () => {
     {
       // https://github.com/vitejs/vite/issues/11299
@@ -16,7 +16,7 @@ describe('logImportError', () => {
         `
       }
 
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual(undefined)
     }
 
@@ -38,7 +38,7 @@ describe('logImportError', () => {
         `
       }
 
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual('"vuetify"')
     }
 
@@ -56,7 +56,7 @@ describe('logImportError', () => {
         `
       }
 
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual('"vue-i18n"')
     }
 
@@ -77,7 +77,7 @@ describe('logImportError', () => {
             at ESMLoader.load (node:internal/modules/esm/loader:605:26)
           `
       }
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       // it was imported by @adobe/react-spectrum (but we can't parse that from the error)
       expect(packageName).toEqual('"@react-spectrum/actiongroup"')
     }
@@ -95,7 +95,7 @@ describe('logImportError', () => {
         const { ApolloClient } = pkg;
         `
       }
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual('"@apollo/client"')
     }
 
@@ -109,7 +109,7 @@ describe('logImportError', () => {
             at processTicksAndRejections (node:internal/process/task_queues:95:5)
         `
       }
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual('')
     }
 
@@ -130,7 +130,7 @@ describe('logImportError', () => {
                   at nextResolve (node:internal/modules/esm/loader:165:28)
               `
       }
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual('"@aws-amplify/datastore"')
     }
 
@@ -154,7 +154,7 @@ describe('logImportError', () => {
                 at async Promise.all (index 0)
             `
       }
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual('"react-runner"')
     }
 
@@ -169,7 +169,7 @@ describe('logImportError', () => {
             `
         }
       }
-      const packageName = logImportError(error.error)
+      const packageName = logHintForCjsEsmError(error.error)
       expect(packageName).toEqual('"react-simple-code-editor"')
     }
 
@@ -190,7 +190,7 @@ describe('logImportError', () => {
             at renderNodeDestructiveImpl (/home/xxx/Projects/xxx/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6145:7)
         `
       }
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual('')
     }
     {
@@ -220,7 +220,7 @@ describe('logImportError', () => {
             at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/plugin/shared/addSsrMiddleware.js:18:27
         `
       }
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual(undefined)
     }
 
@@ -244,7 +244,7 @@ describe('logImportError', () => {
             at Module.load (internal/modules/cjs/loader.js:928:32)
             `
       }
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual('')
     }
 
@@ -261,7 +261,7 @@ describe('logImportError', () => {
             at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
         `
       }
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual(undefined)
     }
     {
@@ -282,7 +282,7 @@ describe('logImportError', () => {
         }
         `
       }
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual(undefined)
     }
     {
@@ -301,7 +301,7 @@ describe('logImportError', () => {
         }
         `
       }
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual(undefined)
     }
     {
@@ -321,7 +321,7 @@ describe('logImportError', () => {
         }
         `
       }
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual(undefined)
     }
     {
@@ -333,7 +333,7 @@ describe('logImportError', () => {
             at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
         `
       }
-      const packageName = logImportError(error)
+      const packageName = logHintForCjsEsmError(error)
       expect(packageName).toEqual(undefined)
     }
   })
