@@ -176,11 +176,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Islands',
-    url: '/islands'
-  },
-  {
-    level: 2,
     title: 'Error Handling',
     url: '/errors'
   },
