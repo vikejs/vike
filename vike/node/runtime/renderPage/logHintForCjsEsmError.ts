@@ -3,6 +3,7 @@ export { logHintForCjsEsmError }
 export { isCjsEsmError }
 
 import pc from '@brillout/picocolors'
+import { assert } from '../utils.js'
 
 function logHintForCjsEsmError(error: unknown): void {
   const res = isCjsEsmError(error)
@@ -22,10 +23,8 @@ function logHintForCjsEsmError(error: unknown): void {
  * `'some-npm-package'` -> add some-npm-package to `ssr.noExternal`
  */
 function isCjsEsmError(error: unknown): boolean | string {
-  const errString = parseError(error)
-  if (!errString) {
-    return false
-  }
+  const errString = getErrorAsString(error)
+  if (!errString) return false
 
   const shouldShowMessage = new RegExp(
     [
@@ -41,6 +40,8 @@ function isCjsEsmError(error: unknown): boolean | string {
     ].join('|'),
     's'
   )
+  if (!shouldShowMessage.test(errString)) return false
+
   const shouldParsePackageName = new RegExp(
     [
       `SyntaxError: Cannot use import statement outside a module`,
@@ -51,18 +52,14 @@ function isCjsEsmError(error: unknown): boolean | string {
     ].join('|'),
     's'
   )
+  if (!shouldParsePackageName.test(errString)) return true
 
-  if (shouldShowMessage.test(errString)) {
-    if (shouldParsePackageName.test(errString)) {
-      return parsePackageName(errString)
-    }
-    return true
-  }
-
-  return false
+  const packageName = extractPackageName(errString)
+  assert(packageName)
+  return packageName
 }
 
-function parseError(error: unknown) {
+function getErrorAsString(error: unknown) {
   if (!error) {
     return
   }
@@ -87,7 +84,7 @@ function parseError(error: unknown) {
   return parsed
 }
 
-function parsePackageName(errString: string) {
+function extractPackageName(errString: string) {
   let packageName = ''
   const match = /import.*?from ?"(.*?)"/.exec(errString)
   if (match?.length && typeof match[1] === 'string') {
