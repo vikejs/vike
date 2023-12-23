@@ -112,20 +112,17 @@ async function loadPageFiles(
   pageId: string,
   isDev: boolean
 ) {
-    const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
-    const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
-    await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-    const { config, configEntries, exports, exportsAll, pageExports } = getExports(
-      pageFilesServerSide,
-      pageConfigLoaded
-    )
-    return {
-      config,
-      configEntries,
-      exports,
-      exportsAll,
-      pageExports,
-      pageFilesLoaded: pageFilesServerSide,
-      pageConfigLoaded
-    }
+  const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
+  const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
+  await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
+  const { config, configEntries, exports, exportsAll, pageExports } = getExports(pageFilesServerSide, pageConfigLoaded)
+  return {
+    config,
+    configEntries,
+    exports,
+    exportsAll,
+    pageExports,
+    pageFilesLoaded: pageFilesServerSide,
+    pageConfigLoaded
+  }
 }
