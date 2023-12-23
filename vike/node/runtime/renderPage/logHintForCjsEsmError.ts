@@ -11,7 +11,7 @@ function logHintForCjsEsmError(error: unknown): void {
   const packageName = res === true ? null : res
   const errMsg = [
     `The error above seems to be a CJS/ESM issue${!packageName ? '' : ` with the package ${pc.cyan(packageName)}`}`,
-    `consider ${!packageName ? 'using' : `adding ${pc.cyan(`'${packageName}'`)} to`} ${pc.cyan('ssr.noExternal')}`,
+    `consider ${!packageName ? 'using' : `adding ${pc.cyan(packageName)} to`} ${pc.cyan('ssr.noExternal')}`,
     'see https://vike.dev/broken-npm-package'
   ].join(', ')
   console.error(errMsg)
