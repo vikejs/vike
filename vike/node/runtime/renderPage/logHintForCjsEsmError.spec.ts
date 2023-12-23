@@ -4,16 +4,6 @@ import { expect, describe, it } from 'vitest'
 describe('isCjsEsmError', () => {
   it('works', () => {
     expectResult(
-      false,
-      // https://github.com/vitejs/vite/issues/11299
-      `
-        TypeError: Cannot read properties of undefined (reading 'extendTheme')
-            at eval (/home/projects/llqijrlvr.github/src/entry.js:5:35)
-            at async instantiateModule (file://file:///home/projects/llqijrlvr.github/node_modules/.pnpm/vite@4.0.0/node_modules/vite/dist/node/chunks/dep-ed9cb113.js:53295:9)
-        `
-    )
-
-    expectResult(
       '"vuetify"',
       // https://github.com/vikejs/vike/discussions/682
       `
@@ -156,6 +146,128 @@ describe('isCjsEsmError', () => {
     )
 
     expectResult(
+      true,
+      `
+        Error [ERR_REQUIRE_ESM]: Must use import to load ES Module: E:\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\dist\\index.js
+        require() of ES modules is not supported.
+        require() of E:\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\dist\\index.js from E:\\Javascript\\xxx\\vite.config.js is an ES module file as it is a .js file whose nearest parent package.json contains "type": "module" which defines all .js files in that package scope as ES modules.
+        Instead rename index.js to end in .cjs, change the requiring code to use import(), or remove "type": "module" from E:\\xxx\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\package.json.
+        
+            at Module._extensions..js (internal/modules/cjs/loader.js:1080:13)
+            at Object.require.extensions.<computed> [as .js] (E:\\Javascript\\xxx\\node_modules\\vite\\dist\\node\\chunks\\dep-36bf480c.js:77286:13)
+            at Module.load (internal/modules/cjs/loader.js:928:32)
+            at Function.Module._load (internal/modules/cjs/loader.js:769:14)
+            at Module.require (internal/modules/cjs/loader.js:952:19)
+            at require (internal/modules/cjs/helpers.js:88:18)
+            at Object.<anonymous> (E:\\xxx\\Javascript\\xxx\\vite.config.js:30:37)
+            at Module._compile (internal/modules/cjs/loader.js:1063:30)
+            at Object.require.extensions.<computed> [as .js] (E:\\Javascript\\xxx\\node_modules\\vite\\dist\\node\\chunks\\dep-36bf480c.js:77283:20)
+            at Module.load (internal/modules/cjs/loader.js:928:32)
+            `
+    )
+  })
+
+  it('skips user land errors', () => {
+    expectResult(
+      false,
+      // User land JavaScript error
+      `
+        file:///home/xxx/projects/vike/xxx/server/index.js:20
+          console.log(a.b);
+                        ^
+
+        TypeError: Cannot read properties of undefined (reading 'b')
+            at startServer (file:///home/xxx/projects/vike/xxx/server/index.js:20:17)
+            at file:///home/xxx/projects/vike/xxx/server/index.js:13:1
+            at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
+        `
+    )
+
+    expectResult(
+      false,
+      // User land ESM error
+      `
+        TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".123" for /home/xxx/projects/vike/xxx/server/root.123
+        at new NodeError (node:internal/errors:399:5)
+        at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:79:11)
+        at defaultGetFormat (node:internal/modules/esm/get_format:121:38)
+        at defaultLoad (node:internal/modules/esm/load:81:20)
+        at nextLoad (node:internal/modules/esm/loader:163:28)
+        at ESMLoader.load (node:internal/modules/esm/loader:605:26)
+        at ESMLoader.moduleProvider (node:internal/modules/esm/loader:457:22)
+        at new ModuleJob (node:internal/modules/esm/module_job:64:26)
+        at #createModuleJob (node:internal/modules/esm/loader:480:17)
+        at ESMLoader.getModuleJob (node:internal/modules/esm/loader:434:34) {
+        code: 'ERR_UNKNOWN_FILE_EXTENSION'
+        }
+        `
+    )
+
+    expectResult(
+      false,
+      // User land ESM error
+      `
+        Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import '/Users/xxx/xxx/src/models' is not supported resolving ES modules imported from /Users/xxx/xxx/src/index.js
+          at finalizeResolution (internal/modules/esm/resolve.js:272:17)
+          at moduleResolve (internal/modules/esm/resolve.js:699:10)
+          at Loader.defaultResolve [as _resolve] (internal/modules/esm/resolve.js:810:11)
+          at Loader.resolve (internal/modules/esm/loader.js:85:40)
+          at Loader.getModuleJob (internal/modules/esm/loader.js:229:28)
+          at ModuleWrap.<anonymous> (internal/modules/esm/module_job.js:51:40)
+          at link (internal/modules/esm/module_job.js:50:36) {
+        code: 'ERR_UNSUPPORTED_DIR_IMPORT',
+        url: 'file:///Users/xxx/xxx/src/models'
+        }
+        `
+    )
+
+    expectResult(
+      false,
+      // Package not installed
+      `
+          Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'aaaa' imported from /home/xxx/projects/vike/xxx/server/index.js
+            at new NodeError (node:internal/errors:399:5)
+            at packageResolve (node:internal/modules/esm/resolve:889:9)
+            at moduleResolve (node:internal/modules/esm/resolve:938:20)
+            at defaultResolve (node:internal/modules/esm/resolve:1153:11)
+            at nextResolve (node:internal/modules/esm/loader:163:28)
+            at ESMLoader.resolve (node:internal/modules/esm/loader:838:30)
+            at ESMLoader.getModuleJob (node:internal/modules/esm/loader:424:18)
+            at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:77:40)
+            at link (node:internal/modules/esm/module_job:76:36) {
+          code: 'ERR_MODULE_NOT_FOUND'
+        }
+        `
+    )
+
+    expectResult(
+      false,
+      // User land ESM error
+      `
+        ReferenceError: exports is not defined in ES module scope
+        This file is being treated as an ES module because it has a '.js' file extension and '/home/xxx/projects/vike/xxx/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+            at file:///home/xxx/projects/vike/xxx/server/index.js:14:1
+            at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
+        `
+    )
+  })
+
+  it('handles edge cases', () => {
+    expectResult(
+      // Not enough information => is this user land or node_modules/ land?
+      false,
+      // https://github.com/vitejs/vite/issues/11299
+      `
+        TypeError: Cannot read properties of undefined (reading 'extendTheme')
+            at eval (/home/projects/llqijrlvr.github/src/entry.js:5:35)
+            at async instantiateModule (file://file:///home/projects/llqijrlvr.github/node_modules/.pnpm/vite@4.0.0/node_modules/vite/dist/node/chunks/dep-ed9cb113.js:53295:9)
+        `
+    )
+  })
+
+  it("isn't perfect", () => {
+    expectResult(
+      // Should be `true`: https://github.com/vikejs/vike/discussions/1235#discussioncomment-7586473
       false,
       // https://github.com/vikejs/vike/discussions/1235
       `
@@ -180,105 +292,6 @@ describe('isCjsEsmError', () => {
             at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/plugin/shared/getHttpRequestAsyncStore.js:68:35
             at renderPage (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:46:50)
             at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/plugin/shared/addSsrMiddleware.js:18:27
-        `
-    )
-
-    expectResult(
-      true,
-      `
-        Error [ERR_REQUIRE_ESM]: Must use import to load ES Module: E:\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\dist\\index.js
-        require() of ES modules is not supported.
-        require() of E:\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\dist\\index.js from E:\\Javascript\\xxx\\vite.config.js is an ES module file as it is a .js file whose nearest parent package.json contains "type": "module" which defines all .js files in that package scope as ES modules.
-        Instead rename index.js to end in .cjs, change the requiring code to use import(), or remove "type": "module" from E:\\xxx\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\package.json.
-        
-            at Module._extensions..js (internal/modules/cjs/loader.js:1080:13)
-            at Object.require.extensions.<computed> [as .js] (E:\\Javascript\\xxx\\node_modules\\vite\\dist\\node\\chunks\\dep-36bf480c.js:77286:13)
-            at Module.load (internal/modules/cjs/loader.js:928:32)
-            at Function.Module._load (internal/modules/cjs/loader.js:769:14)
-            at Module.require (internal/modules/cjs/loader.js:952:19)
-            at require (internal/modules/cjs/helpers.js:88:18)
-            at Object.<anonymous> (E:\\xxx\\Javascript\\xxx\\vite.config.js:30:37)
-            at Module._compile (internal/modules/cjs/loader.js:1063:30)
-            at Object.require.extensions.<computed> [as .js] (E:\\Javascript\\xxx\\node_modules\\vite\\dist\\node\\chunks\\dep-36bf480c.js:77283:20)
-            at Module.load (internal/modules/cjs/loader.js:928:32)
-            `
-    )
-
-    expectResult(
-      false,
-      `
-        file:///home/xxx/projects/vike/xxx/server/index.js:20
-          console.log(a.b);
-                        ^
-
-        TypeError: Cannot read properties of undefined (reading 'b')
-            at startServer (file:///home/xxx/projects/vike/xxx/server/index.js:20:17)
-            at file:///home/xxx/projects/vike/xxx/server/index.js:13:1
-            at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
-        `
-    )
-
-    expectResult(
-      false,
-      `
-        TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".123" for /home/xxx/projects/vike/xxx/server/root.123
-        at new NodeError (node:internal/errors:399:5)
-        at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:79:11)
-        at defaultGetFormat (node:internal/modules/esm/get_format:121:38)
-        at defaultLoad (node:internal/modules/esm/load:81:20)
-        at nextLoad (node:internal/modules/esm/loader:163:28)
-        at ESMLoader.load (node:internal/modules/esm/loader:605:26)
-        at ESMLoader.moduleProvider (node:internal/modules/esm/loader:457:22)
-        at new ModuleJob (node:internal/modules/esm/module_job:64:26)
-        at #createModuleJob (node:internal/modules/esm/loader:480:17)
-        at ESMLoader.getModuleJob (node:internal/modules/esm/loader:434:34) {
-        code: 'ERR_UNKNOWN_FILE_EXTENSION'
-        }
-        `
-    )
-
-    expectResult(
-      false,
-      `
-        Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import '/Users/xxx/xxx/src/models' is not supported resolving ES modules imported from /Users/xxx/xxx/src/index.js
-          at finalizeResolution (internal/modules/esm/resolve.js:272:17)
-          at moduleResolve (internal/modules/esm/resolve.js:699:10)
-          at Loader.defaultResolve [as _resolve] (internal/modules/esm/resolve.js:810:11)
-          at Loader.resolve (internal/modules/esm/loader.js:85:40)
-          at Loader.getModuleJob (internal/modules/esm/loader.js:229:28)
-          at ModuleWrap.<anonymous> (internal/modules/esm/module_job.js:51:40)
-          at link (internal/modules/esm/module_job.js:50:36) {
-        code: 'ERR_UNSUPPORTED_DIR_IMPORT',
-        url: 'file:///Users/xxx/xxx/src/models'
-        }
-        `
-    )
-
-    expectResult(
-      false,
-      `
-          Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'aaaa' imported from /home/xxx/projects/vike/xxx/server/index.js
-            at new NodeError (node:internal/errors:399:5)
-            at packageResolve (node:internal/modules/esm/resolve:889:9)
-            at moduleResolve (node:internal/modules/esm/resolve:938:20)
-            at defaultResolve (node:internal/modules/esm/resolve:1153:11)
-            at nextResolve (node:internal/modules/esm/loader:163:28)
-            at ESMLoader.resolve (node:internal/modules/esm/loader:838:30)
-            at ESMLoader.getModuleJob (node:internal/modules/esm/loader:424:18)
-            at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:77:40)
-            at link (node:internal/modules/esm/module_job:76:36) {
-          code: 'ERR_MODULE_NOT_FOUND'
-        }
-        `
-    )
-
-    expectResult(
-      false,
-      `
-        ReferenceError: exports is not defined in ES module scope
-        This file is being treated as an ES module because it has a '.js' file extension and '/home/xxx/projects/vike/xxx/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
-            at file:///home/xxx/projects/vike/xxx/server/index.js:14:1
-            at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
         `
     )
   })
