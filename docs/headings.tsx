@@ -75,7 +75,7 @@ const headings = [
     level: 2,
     title: 'Data Fetching',
     url: '/data-fetching',
-    sectionTitles: ['Error handling']
+    sectionTitles: ['`data()` error handling']
   },
   {
     level: 2,

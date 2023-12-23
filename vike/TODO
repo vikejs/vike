@@ -3,6 +3,8 @@
 - Add vue example to `/data` docs: <Link href='/examples/vue-full/pages/star-wars/index/+data.ts' />
 - Implement `dataIsomorph` (or a better name?) as a built-in config (so that juniors don't have to use `meta`)
 - Minimize `/renderer/` occurence in docs
+- Remove `onRender{Html,Client}` code snippets from /data-fetching (showcase `useData()` instead).
+  - Also remove reading recommendation "React Tour or Vue Tour".
 
 - update migration examples
 - add vike-react-query to /vike-packages
