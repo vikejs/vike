@@ -1,9 +1,24 @@
-import { UseIntegrationPackageHint } from '../components'
+import { Link } from '@brillout/docpress'
+import { UseIntegrationPackageHint, Example } from '../components'
 
-<UseIntegrationPackageHint uiFrameworkName="Vue" />
+## Vike Extension
 
-Official examples of using Vike with [Vue](https://vuejs.org/):
- - [GitHub > `vikejs/vike` > `examples/`](https://github.com/vikejs/vike/tree/main/examples)
+<UseIntegrationPackageHint uiFrameworkName="Vue" noQuote={true} />
 
-Community example:
- - [Vike + Vue 3 + TSX](https://github.com/justwiner/vue3-tsx)
+
+## Manual Integration
+
+Instead of using a Vike extension, you can manually integrate Vue yourself, giving you full control over the integration of not only Vue itself but also Vue libraries.
+
+Official examples:
+ - <Link href="/examples/vue" /> - Basic Vue integration, using <Link href="/server-routing">Server Routing</Link>.
+ - <Link href="/examples/vue-full" /> - Full-fledged Vue integration, using <Link href="/client-routing">Client Routing</Link> and HTML streaming.
+ - <Link href="/examples/graphql-apollo-vue" /> - Vue integration with GraphQL Apollo.
+
+> For more official examples, see [GitHub > `vikejs/vike` > `examples/`](https://github.com/vikejs/vike/tree/main/examples).
+
+Community examples:
+ - <Example timestamp="2023.12" repo="luisfloat/vike-island-example" description={<><a href="https://jasonformat.com/islands-architecture/">Islands Architecture</a> implementation, mixing React and Vue.</>} />
+ - <Example timestamp="2022.08" repo="AaronBeaudoin/vite-plugin-ssr-example" description={<>Vue integration supporting all <Link href="/render-modes">render modes</Link> (SSR, SPA, and HTML-only).</>} />
+
+> For more community examples, see integration guides such as <Link href="/vue-query" />.
