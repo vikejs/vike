@@ -1,10 +1,7 @@
-import { logHintForCjsEsmError } from './logHintForCjsEsmError'
+import { isCjsEsmError } from './logHintForCjsEsmError'
 import { expect, describe, it } from 'vitest'
 
-// packageName: undefined -> noop
-// packageName: "" -> generic message
-// packageName: "xxx" -> add xxx to ssr.noExternal
-describe('logHintForCjsEsmError', () => {
+describe('isCjsEsmError', () => {
   it('works', () => {
     {
       // https://github.com/vitejs/vite/issues/11299
@@ -16,8 +13,8 @@ describe('logHintForCjsEsmError', () => {
         `
       }
 
-      const packageName = logHintForCjsEsmError(error)
-      expect(packageName).toEqual(undefined)
+      const packageName = isCjsEsmError(error)
+      expect(packageName).toEqual(false)
     }
 
     {
@@ -38,7 +35,7 @@ describe('logHintForCjsEsmError', () => {
         `
       }
 
-      const packageName = logHintForCjsEsmError(error)
+      const packageName = isCjsEsmError(error)
       expect(packageName).toEqual('"vuetify"')
     }
 
@@ -56,7 +53,7 @@ describe('logHintForCjsEsmError', () => {
         `
       }
 
-      const packageName = logHintForCjsEsmError(error)
+      const packageName = isCjsEsmError(error)
       expect(packageName).toEqual('"vue-i18n"')
     }
 
@@ -77,7 +74,7 @@ describe('logHintForCjsEsmError', () => {
             at ESMLoader.load (node:internal/modules/esm/loader:605:26)
           `
       }
-      const packageName = logHintForCjsEsmError(error)
+      const packageName = isCjsEsmError(error)
       // it was imported by @adobe/react-spectrum (but we can't parse that from the error)
       expect(packageName).toEqual('"@react-spectrum/actiongroup"')
     }
@@ -95,7 +92,7 @@ describe('logHintForCjsEsmError', () => {
         const { ApolloClient } = pkg;
         `
       }
-      const packageName = logHintForCjsEsmError(error)
+      const packageName = isCjsEsmError(error)
       expect(packageName).toEqual('"@apollo/client"')
     }
 
@@ -109,8 +106,8 @@ describe('logHintForCjsEsmError', () => {
             at processTicksAndRejections (node:internal/process/task_queues:95:5)
         `
       }
-      const packageName = logHintForCjsEsmError(error)
-      expect(packageName).toEqual('')
+      const packageName = isCjsEsmError(error)
+      expect(packageName).toEqual(true)
     }
 
     {
@@ -130,7 +127,7 @@ describe('logHintForCjsEsmError', () => {
                   at nextResolve (node:internal/modules/esm/loader:165:28)
               `
       }
-      const packageName = logHintForCjsEsmError(error)
+      const packageName = isCjsEsmError(error)
       expect(packageName).toEqual('"@aws-amplify/datastore"')
     }
 
@@ -154,7 +151,7 @@ describe('logHintForCjsEsmError', () => {
                 at async Promise.all (index 0)
             `
       }
-      const packageName = logHintForCjsEsmError(error)
+      const packageName = isCjsEsmError(error)
       expect(packageName).toEqual('"react-runner"')
     }
 
@@ -169,7 +166,7 @@ describe('logHintForCjsEsmError', () => {
             `
         }
       }
-      const packageName = logHintForCjsEsmError(error.error)
+      const packageName = isCjsEsmError(error.error)
       expect(packageName).toEqual('"react-simple-code-editor"')
     }
 
@@ -190,8 +187,8 @@ describe('logHintForCjsEsmError', () => {
             at renderNodeDestructiveImpl (/home/xxx/Projects/xxx/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6145:7)
         `
       }
-      const packageName = logHintForCjsEsmError(error)
-      expect(packageName).toEqual('')
+      const packageName = isCjsEsmError(error)
+      expect(packageName).toEqual(true)
     }
     {
       // https://github.com/vikejs/vike/discussions/1235
@@ -220,8 +217,8 @@ describe('logHintForCjsEsmError', () => {
             at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/plugin/shared/addSsrMiddleware.js:18:27
         `
       }
-      const packageName = logHintForCjsEsmError(error)
-      expect(packageName).toEqual(undefined)
+      const packageName = isCjsEsmError(error)
+      expect(packageName).toEqual(false)
     }
 
     {
@@ -244,8 +241,8 @@ describe('logHintForCjsEsmError', () => {
             at Module.load (internal/modules/cjs/loader.js:928:32)
             `
       }
-      const packageName = logHintForCjsEsmError(error)
-      expect(packageName).toEqual('')
+      const packageName = isCjsEsmError(error)
+      expect(packageName).toEqual(true)
     }
 
     {
@@ -261,8 +258,8 @@ describe('logHintForCjsEsmError', () => {
             at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
         `
       }
-      const packageName = logHintForCjsEsmError(error)
-      expect(packageName).toEqual(undefined)
+      const packageName = isCjsEsmError(error)
+      expect(packageName).toEqual(false)
     }
     {
       const error = {
@@ -282,8 +279,8 @@ describe('logHintForCjsEsmError', () => {
         }
         `
       }
-      const packageName = logHintForCjsEsmError(error)
-      expect(packageName).toEqual(undefined)
+      const packageName = isCjsEsmError(error)
+      expect(packageName).toEqual(false)
     }
     {
       const error = {
@@ -301,8 +298,8 @@ describe('logHintForCjsEsmError', () => {
         }
         `
       }
-      const packageName = logHintForCjsEsmError(error)
-      expect(packageName).toEqual(undefined)
+      const packageName = isCjsEsmError(error)
+      expect(packageName).toEqual(false)
     }
     {
       const error = {
@@ -321,8 +318,8 @@ describe('logHintForCjsEsmError', () => {
         }
         `
       }
-      const packageName = logHintForCjsEsmError(error)
-      expect(packageName).toEqual(undefined)
+      const packageName = isCjsEsmError(error)
+      expect(packageName).toEqual(false)
     }
     {
       const error = {
@@ -333,8 +330,8 @@ describe('logHintForCjsEsmError', () => {
             at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
         `
       }
-      const packageName = logHintForCjsEsmError(error)
-      expect(packageName).toEqual(undefined)
+      const packageName = isCjsEsmError(error)
+      expect(packageName).toEqual(false)
     }
   })
 })

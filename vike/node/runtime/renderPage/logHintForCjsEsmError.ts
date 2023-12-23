@@ -1,11 +1,30 @@
 export { logHintForCjsEsmError }
+// For ./logHintForCjsEsmError.spec.ts
+export { isCjsEsmError }
 
 import pc from '@brillout/picocolors'
 
-function logHintForCjsEsmError(error: unknown) {
+function logHintForCjsEsmError(error: unknown): void {
+  const res = isCjsEsmError(error)
+  if (!res) return
+  const packageName = res === true ? null : res
+  const errMsg = [
+    `The error above seems to be a CJS/ESM issue${!packageName ? '' : ` with the package ${pc.cyan(packageName)}`}`,
+    `consider ${!packageName ? 'using' : `adding ${pc.cyan(`'${packageName}'`)} to`} ${pc.cyan('ssr.noExternal')}`,
+    'see https://vike.dev/broken-npm-package'
+  ].join(', ')
+  console.error(errMsg)
+}
+
+/**
+ * `false` -> noop
+ * `true` -> generic message
+ * `'some-npm-package'` -> add some-npm-package to `ssr.noExternal`
+ */
+function isCjsEsmError(error: unknown): boolean | string {
   const errString = parseError(error)
   if (!errString) {
-    return
+    return false
   }
 
   const shouldShowMessage = new RegExp(
@@ -34,24 +53,16 @@ function logHintForCjsEsmError(error: unknown) {
   )
 
   if (shouldShowMessage.test(errString)) {
-    let packageName = ''
-
     if (shouldParsePackageName.test(errString)) {
-      packageName = parsePackageName(errString)
+      return parsePackageName(errString)
     }
-
-    const errMsg = [
-      `The error above seems to be a CJS/ESM issue${!packageName ? '' : ` with the package ${pc.cyan(packageName)}`}`,
-      `consider ${!packageName ? 'using' : `adding ${pc.cyan(`'${packageName}'`)} to`} ${pc.cyan('ssr.noExternal')}`,
-      'see https://vike.dev/broken-npm-package'
-    ].join(', ')
-    console.error(errMsg)
-
-    return packageName
+    return true
   }
+
+  return false
 }
 
-const parseError = (error: unknown) => {
+function parseError(error: unknown) {
   if (!error) {
     return
   }
@@ -76,7 +87,7 @@ const parseError = (error: unknown) => {
   return parsed
 }
 
-const parsePackageName = (errString: string) => {
+function parsePackageName(errString: string) {
   let packageName = ''
   const match = /import.*?from ?"(.*?)"/.exec(errString)
   if (match?.length && typeof match[1] === 'string') {
