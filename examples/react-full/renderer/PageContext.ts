@@ -8,8 +8,6 @@ declare global {
         /** Title defined statically by /pages/some-page/+title.js (or by `export default { title }` in /pages/some-page/+config.js) */
         title?: string
       }
-      /** Title defined dynamically by data() */
-      title?: string
       abortReason?: string
       someAsyncProps?: number
     }

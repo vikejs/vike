@@ -67,35 +67,53 @@ function DataPassToClient({
   assert(isGenericDoc === undefined || isGenericDoc === true || isGenericDoc === false)
   const dataName = toolType === 'data-store' ? 'state' : 'data'
   const pageContextName = toolType === 'data-store' ? 'initialStoreState' : 'initialData'
-  return <>
-    { toolType === 'data-store' && <p>
-      When using a state mangement store such as {toolName}, your components don't access fetched data directly: your
-      components can only access the store. The fetched data merely determines the initial state of the store.
-    </p> }
-    { toolType === 'graphql' && <p>
-      When using a GraphQL tool such as {toolName}, you define GraphQL queries/fragments on a component-level, while fetching the GraphQL data in
-      a single global hook (usually <Link href="/onBeforeRender"><code>onBeforeRender()</code></Link>/<Link href="/onRenderHtml"><code>onRenderHtml()</code></Link>/<Link href="/onRenderClient"><code>onRenderClient()</code></Link>).
-    </p> }
-    <P>
-      On a high-level, {isGenericDoc ? 'an' : 'the'} integration {isGenericDoc ? 'usually ' : ''}works like this:
-      <ol>
-        <li>
-          You {toolType === 'data-store' ? 'set the initial state of the store' : 'fetch the initial data'} on the
-          server-side. (You do it on the server-side so that the initial{' '}
-          {toolType === 'data-store' ? 'state' : 'data'} is rendered to HTML.)
-        </li>
-        <li>
-          You make the initial {dataName} available as <code>pageContext.{pageContextName}</code>.
-        </li>
-        <li>
-          You make <code>pageContext.{pageContextName}</code> available on the client-side by adding{' '}
-          <code>{`'${pageContextName}'`}</code> to <Link href="/passToClient" text={<code>passToClient</code>} />.
-        </li>
-        <li>
-          You initialize {toolType === 'data-store' ? 'the store' : toolName.replace(/^any /, 'your ')} on the
-          client-side using <code>pageContext.{pageContextName}</code>.
-        </li>
-      </ol>
-    </P>
-  </>
+  return (
+    <>
+      {toolType === 'data-store' && (
+        <p>
+          When using a state management store such as {toolName}, your components don't access fetched data directly:
+          your components can only access the store. The fetched data merely determines the initial state of the store.
+        </p>
+      )}
+      {toolType === 'graphql' && (
+        <p>
+          When using a GraphQL tool such as {toolName}, you define GraphQL queries/fragments on a component-level, while
+          fetching the GraphQL data in a single global hook (usually{' '}
+          <Link href="/onBeforeRender">
+            <code>onBeforeRender()</code>
+          </Link>
+          /
+          <Link href="/onRenderHtml">
+            <code>onRenderHtml()</code>
+          </Link>
+          /
+          <Link href="/onRenderClient">
+            <code>onRenderClient()</code>
+          </Link>
+          ).
+        </p>
+      )}
+      <P>
+        On a high-level, {isGenericDoc ? 'an' : 'the'} integration {isGenericDoc ? 'usually ' : ''}works like this:
+        <ol>
+          <li>
+            You {toolType === 'data-store' ? 'set the initial state of the store' : 'fetch the initial data'} on the
+            server-side. (You do it on the server-side so that the initial{' '}
+            {toolType === 'data-store' ? 'state' : 'data'} is rendered to HTML.)
+          </li>
+          <li>
+            You make the initial {dataName} available as <code>pageContext.{pageContextName}</code>.
+          </li>
+          <li>
+            You make <code>pageContext.{pageContextName}</code> available on the client-side by adding{' '}
+            <code>{`'${pageContextName}'`}</code> to <Link href="/passToClient" text={<code>passToClient</code>} />.
+          </li>
+          <li>
+            You initialize {toolType === 'data-store' ? 'the store' : toolName.replace(/^any /, 'your ')} on the
+            client-side using <code>pageContext.{pageContextName}</code>.
+          </li>
+        </ol>
+      </P>
+    </>
+  )
 }
