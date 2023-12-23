@@ -65,16 +65,19 @@ async function onBeforePrerenderStart() {
     movies
     .map(movie => {
       const url = '/movie/' + movie.id
-      const pageProps = { movie }
-      const pageContext = { pageProps }
+      const pageContext = {
+        data: {
+          movie
+        }
+      }
       return {
         url,
         // Because we already provide the `pageContext`, Vike will *not* call
-        // the `onBeforeRender()` hook for `url`.
+        // the `data()` (nor the `onBeforeRender()`) hook for `url`.
         pageContext
       }
       /* We could also only return `url` and not provide `pageContext`. In that case
-       * Vike would call the `data()` and `onBeforeRender()` hooks. But that would be wasteful
+       * Vike would call the `data()` (and `onBeforeRender()`) hook. But that would be wasteful
        * since we already have all the data of all movies from our `await Movie.findAll()` call.
        * Instead, we provide `pageContext` to make the pre-rendering build step faster.
        */
@@ -89,7 +92,7 @@ async function onBeforePrerenderStart() {
   const movieListPage = {
     url: '/movies', // Note how this URL '/movies' doesn't match the page's route /movie/@movieId
     pageContext: {
-      pageProps: {
+      data: {
         // We filter out the data we don't need in order to minimize what is sent
         // to the browser. We explain this practice at https://vike.dev/data-fetching
         movieList: movies.map(({id, title}) => ({id, title})

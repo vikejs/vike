@@ -7,9 +7,7 @@ The `data()` hook is used for fetching data, see <Link href="/data-fetching" />.
 
 ## Initial `pageContext` values
 
-You can set initial `pageContext` values, such as information about the authenticated user, at <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
-
-See also <Link href="/auth" />.
+You can set initial `pageContext` values, such as information about the authenticated user, at <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />. See <Link href="/auth" />.
 
 > For <Link href="/pre-rendering" >pre-rendered</Link> apps, see [#962 - New hook `onStartup()`](https://github.com/vikejs/vike/issues/962).
 
@@ -54,7 +52,7 @@ See <Link href="/meta#example-modify-data-env" doNotInferSectionTitle />.
 
 In general, we recommend running `data()` only on the server-side because it's usually easier to write code that only runs on the server-side.
 That said, if you want to minimize requests made to your server, then it makes sense to run `data()` on the client-side.
-Keep in mind that you'll then have to ensure that your `data()` hook is isomorphic: it needs to be able to run on the server-side as well as on the client-side.
+Keep in mind that you'll have to make sure that your `data()` hook is isomorphic: it needs to be able to run on the server-side as well as on the client-side.
 
 You can also set `data()`'s meta config `env` to `{ client: true, server: false}`: Vike will then always call `data()` on the client-side and never on the server-side.
 

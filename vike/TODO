@@ -5,6 +5,7 @@
 - Minimize `/renderer/` occurence in docs
 - Remove `onRender{Html,Client}` code snippets from /data-fetching (showcase `useData()` instead).
   - Also remove reading recommendation "React Tour or Vue Tour".
+- use `useData()` in React/Vue Tour.
 
 - update migration examples
 - add vike-react-query to /vike-packages
