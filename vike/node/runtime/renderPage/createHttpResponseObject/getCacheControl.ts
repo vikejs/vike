@@ -1,7 +1,7 @@
 export { getCacheControl }
 
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
-import { getConfigValue, getPageConfig } from '../../../shared/page-configs/helpers.js'
+import type { PageConfigRuntime } from '../../../../shared/page-configs/PageConfig.js'
+import { getConfigValue, getPageConfig } from '../../../../shared/page-configs/helpers.js'
 const defaultValue = 'no-store, max-age=0'
 
 function getCacheControl(pageId: string, pageConfigs: PageConfigRuntime[]): string {

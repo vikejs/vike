@@ -12,7 +12,7 @@ import type { RenderHook } from './executeOnRenderHtmlHook.js'
 import type { RedirectStatusCode, AbortStatusCode, UrlRedirect } from '../../../shared/route/abort.js'
 import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody.js'
 import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
-import { getCacheControl } from './getCacheControl.js'
+import { getCacheControl } from './createHttpResponseObject/getCacheControl.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponseObject/assertNoInfiniteHttpRedirect.js'
 
 type HttpResponse = {
@@ -62,9 +62,9 @@ async function createHttpResponseObject(
 
   const earlyHints = getEarlyHints(await pageContext.__getPageAssets())
 
+  const headers: ResponseHeaders = []
   assert(pageContext._pageId)
   const cacheControl = getCacheControl(pageContext._pageId, pageContext._pageConfigs)
-  const headers: [string, string][] = []
   if (cacheControl) {
     headers.push(['Cache-Control', cacheControl])
   }
