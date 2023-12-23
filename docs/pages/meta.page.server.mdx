@@ -12,7 +12,8 @@ import { Link, RepoLink } from '@brillout/docpress'
  - **New hooks**.
    - Example: `onInit()` or `onBeforeFetchingData()`.
  - **Modifying the environment of existing hooks**.
-   - <Link href="#example-modify-onbeforerender-env" doNotInferSectionTitle />
+   - <Link href="#example-modify-data-env" doNotInferSectionTitle />
+
 
 ## Example: `dataEndpointUrl`
 
@@ -40,14 +41,14 @@ export default {
 ```
 
 ```js
-// /pages/+onBeforeRender.js
+// /pages/+data.js
 // Environment: server
 
-export { onBeforeRender }
+export { data }
 
 import fetch from 'node-fetch'
 
-async function onBeforeRender(pageContext) {
+async function data(pageContext) {
   // The value exported by /pages/countries/+dataEndpointUrl.js is
   // available at pageContext.config.dataEndpointUrl
   const response = await fetch(pageContext.config.dataEndpointUrl)
@@ -325,9 +326,9 @@ Examples:
  - <RepoLink path="/examples/layouts-vue/" />
 
 
-## Example: modify `onBeforeRender()` env
+## Example: modify `data()` env
 
-You can use `meta` to change the environment in which built-in hooks are loaded. For example you can change `onBeforeRender()` from `{ server: true, client: false }` to `{ server: true, client: true }`.
+You can use `meta` to change the environment in which built-in hooks are loaded. For example you can change the environment of `data()` from `{ server: true, client: false }` to `{ server: true, client: true }`.
 
 ```ts
 // /pages/some-page/+config.h.ts
@@ -336,33 +337,33 @@ import type { Config } from 'vike/types'
 
 export default {
   meta: {
-    onBeforeRender: {
-      // By default, the onBeforeRender() hook is loaded and executed only on the
+    data: {
+      // By default, the data() hook is loaded and executed only on the
       // server-side. By using meta we can make it isomorphic instead:
-      // onBeforeRender() is loaded and executed as well on the client-side.
+      // data() is loaded and executed as well on the client-side.
       env: { server: true, client: true }
     }
   }
 } satisfies Config
 ```
 
-> Making `onBeforeRender()` isomorphic allows you to fetch data directly between the user's browser and the data source (without involving your server), see <Link href="/onBeforeRender#client-side" />.
+> Making `data()` isomorphic allows you to fetch data directly between the user's browser and the data source (without involving your server), see <Link href="/data#client-side" />.
 
-For more convenience, you can create an `onBeforeRenderIsomorph` toggle:
+For more convenience, you can create a `dataIsomorph` toggle:
 
 ```ts
 // /pages/+config.h.ts
 
 import type { Config, Effect } from 'vike/types'
 
-const onBeforeRenderIsomorphEffect: Effect = ({ configDefinedAt, configValue }) => {
+const effect: Effect = ({ configDefinedAt, configValue }) => {
   if (typeof configValue !== 'boolean') {
     throw new Error(`${configDefinedAt} should be a boolean`)
   }
   if (configValue === true) {
     return {
       meta: {
-        onBeforeRender: {
+        data: {
           env: { server: true, client: true }
         }
       }
@@ -372,15 +373,17 @@ const onBeforeRenderIsomorphEffect: Effect = ({ configDefinedAt, configValue }) 
 
 export default {
   meta: {
-    onBeforeRenderIsomorph: {
+    dataIsomorph: {
       env: { config: true },
-      effect: onBeforeRenderIsomorphEffect
+      effect
     }
   }
 } satisfies Config
 ```
 
 Example:
- - [/examples/react-full/](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/react-full/)
-   - Toggle definition: [/renderer/+config.h.ts > `meta.onBeforeRenderIsomorph`](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/react-full/renderer/+config.h.ts#L14-L33)
-   - Toggle usage: [/pages/star-wars/@id/+onBeforeRenderIsomorph.ts](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/react-full/pages/star-wars/@id/+onBeforeRenderIsomorph.ts)
+ - [/examples/react-full/](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/)
+   - Toggle definition: [/renderer/+config.h.ts > `meta.dataIsomorph`](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/renderer/+config.h.ts#L14-L33)
+   - Toggle usage: [/pages/star-wars/@id/+dataIsomorph.ts](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/pages/star-wars/@id/+dataIsomorph.ts)
+   - Hook: [/pages/star-wars/@id/+data.tsx](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/pages/star-wars/@id/+data.tsx)
+

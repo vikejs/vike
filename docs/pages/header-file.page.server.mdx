@@ -32,12 +32,12 @@ Runtime code cannot live inside `+config.h.js` files.
 ```js
 // +config.h.js
 
-// ❌ The runtime code of Page and onBeforeRender cannot live here.
+// ❌ The runtime code of Page and data cannot live here.
 export default {
   Page() {
     // ...
   },
-  onBeforeRender() {
+  data() {
     // ...
   }
 }
@@ -54,9 +54,9 @@ Instead, runtime code always needs to be imported:
 // +config.h.js
 
 import Page from './some-file'
-import onBeforeRender from './some-other-file'
+import data from './some-other-file'
 
-export default { Page, onBeforeRender }
+export default { Page, data }
 ```
 
 > Importing runtime code works because <Link href="#transform">Vike transforms `.h.js`</Link> files.

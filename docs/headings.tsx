@@ -75,7 +75,7 @@ const headings = [
     level: 2,
     title: 'Data Fetching',
     url: '/data-fetching',
-    sectionTitles: ['`onBeforeRender()`', 'Error handling']
+    sectionTitles: ['`data()` error handling']
   },
   {
     level: 2,
@@ -667,6 +667,12 @@ const headings = [
   },
   {
     level: 2,
+    title: '`data()` hook',
+    titleInNav: '`data()`',
+    url: '/data'
+  },
+  {
+    level: 2,
     title: '`guard()` hook',
     titleInNav: '`guard()`',
     url: '/guard'
@@ -675,7 +681,10 @@ const headings = [
     level: 2,
     title: '`onBeforeRender()` hook',
     titleInNav: '`onBeforeRender()`',
-    url: '/onBeforeRender'
+    url: '/onBeforeRender',
+    sectionTitles: [
+      '`onBeforeRender()` + `meta`'
+    ]
   },
   {
     level: 2,
@@ -828,7 +837,7 @@ const headings = [
       'Example: `sql`',
       'Example: `title` and `description`',
       'Example: `Layout`',
-      'Example: modify `onBeforeRender()` env'
+      'Example: modify `data()` env'
     ]
   },
   {
