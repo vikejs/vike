@@ -70,6 +70,7 @@ async function getHtmlTags(
           return 'HTML_BEGIN'
         }
         if (asset.assetType === 'script') {
+          if (isHtmlOnly) return false
           return 'HTML_END'
         }
         return false
