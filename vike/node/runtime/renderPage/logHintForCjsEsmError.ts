@@ -34,7 +34,7 @@ function isCjsEsmError(error: unknown): boolean | string {
     `ReferenceError: exports is not defined.*node_modules`
   ]
   const shouldShowHint = [
-    `Error: Element type is invalid`,
+    `Error: Element type is invalid.*but got: undefined`,
     `TypeError: require is not a function`,
     // `TypeError: Cannot read properties of undefined`,
     `ERR_REQUIRE_ESM`,
