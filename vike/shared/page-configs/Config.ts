@@ -69,6 +69,7 @@ type Config = ConfigBuiltIn &
     | VikePackages.ConfigVikeVue
     | VikePackages.ConfigVikeSolid
     | VikePackages.ConfigVikeSvelte
+    | VikePackages.ConfigVikeAngular
   )
 
 // Purposeful code duplication for improving QuickInfo IntelliSense
