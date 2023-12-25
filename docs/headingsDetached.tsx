@@ -304,7 +304,7 @@ const headingsDetached = [
     url: '/migration/0.5'
   },
   {
-    title: "Vite's Lazy Transpiling",
+    title: "Lazy Transpiling",
     url: '/lazy-transpiling'
   },
   {
@@ -331,10 +331,6 @@ const headingsDetached = [
     title: 'Abort',
     url: '/abort',
     sectionTitles: ['`throw redirect()` VS `throw render()`']
-  },
-  {
-    title: '`.server.js` & `.client.js`',
-    url: '/file-env'
   },
   {
     title: 'Custom Exports/Hooks',
@@ -368,5 +364,9 @@ const headingsDetached = [
   {
     title: 'RPC',
     url: '/RPC'
+  },
+  {
+    title: 'Image Optimizing',
+    url: '/img'
   }
 ] satisfies HeadingDetachedDefinition[]

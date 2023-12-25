@@ -56,7 +56,7 @@ This technique also works with:
 
 ## Examples
 
- - <RepoLink path='/examples/i18n-v1/' />
+ - <RepoLink path='/examples/i18n/' />
  - [github.com/crummy/vite-ssr-i18n](https://github.com/crummy/vite-ssr-i18n)
    > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
 
@@ -99,7 +99,7 @@ function onPrerenderStart(prerenderContext) {
 }
 ```
 
-See <RepoLink path='/examples/i18n-v1/' /> for an example using `onPrerenderStart()`.
+See <RepoLink path='/examples/i18n/' /> for an example using `onPrerenderStart()`.
 
 Our <Link text={<><code>onBeforePrerenderStart()</code> hooks</>} href="/onBeforePrerenderStart" /> (if we use any) return URLs without any locale (e.g. `onBeforePrerenderStart()` returning `/product/42`). Instead, it's our `onPrerenderStart()` hook that duplicates and modifies URLs for each locale (e.g. duplicating `/product/42` into `/en-US/product/42`, `/de-DE/product/42`, `/fr-FR/product/42`).
 

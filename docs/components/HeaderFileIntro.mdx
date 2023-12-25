@@ -4,11 +4,11 @@ Vike transforms `.h.js` files from this:
 // +config.h.js
 
 import Page from './some-file'
-import onBeforeRender from './some-other-file'
+import data from './some-other-file'
 
 export default {
   Page,
-  onBeforeRender
+  data
 }
 ```
 
@@ -16,11 +16,11 @@ Into that:
 
 ```js
 const Page = 'import:./some-file:default';
-const onBeforeRender = 'import:./some-other-file:default';
+const data = 'import:./some-other-file:default';
 
 export default {
   Page,
-  onBeforeRender
+  data
 }
 ```
 

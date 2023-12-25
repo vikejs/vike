@@ -1,11 +1,12 @@
 {
   "scripts": {
-    "dev": "vite dev"
+    "dev": "vite dev",
+    "preview": "vite build && vite preview"
   },
   "dependencies": {
     "typescript": "^4.6.4",
     "vite": "^4.0.3",
-    "vike": "0.4.150"
+    "vike": "0.4.151"
   },
   "type": "module"
 }

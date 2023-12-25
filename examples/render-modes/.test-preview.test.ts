@@ -1,2 +1,2 @@
-import { testRun } from '../render-modes-v1/.testRun'
-testRun('npm run preview')
+import { testRun } from './.testRun'
+testRun('npm run preview', true)

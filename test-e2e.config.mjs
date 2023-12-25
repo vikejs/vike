@@ -122,7 +122,7 @@ function tolerateError({ logSource, logText }) {
   // [16:38:26.428][\examples\i18n][npm run dev][stderr] Error: The service was stopped
   //     at D:\a\vike\vike\node_modules\.pnpm\esbuild@0.14.47\node_modules\esbuild\lib\main.js:1381:29
   // ```
-  // [08:35:12.487][/examples/preact-client-routing-v1][npm run preview][stderr] The service is no longer running: write EPIPE
+  // [08:35:12.487][/examples/preact-client-routing][npm run preview][stderr] The service is no longer running: write EPIPE
   // ```
   function isServiceExit() {
     return (

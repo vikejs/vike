@@ -1,0 +1,84 @@
+import { Link, Construction } from '@brillout/docpress'
+
+
+## Can I reach out for help?
+
+Yes, you can reach out on Discord and GitHub. If you use GitHub Discussions, then you'll always get an answer from a Vike team member.
+
+For extra help, the Vike team also offers consulting. Reach out if you want to know more details.
+
+
+## Can I use Vike to achieve what I want?
+
+Vike supports all frontend use cases:
+ - <Link href="/deploy">Deploy anywhere</Link> (VPS, AWS, GCP, Cloudflare, Vercel, etc.).
+ - <Link href="/ui-framework">Any UI framework</Link> (React, Vue, Solid, etc.), <Link href="/integration">any UI tool</Link> (state management, data fetching, CSS framework, etc.).
+ - <Link href="/pre-rendering#should-i-pre-render">Without backend</Link>, with <Link href="/server">any JavaScript backend</Link> (Express.js, Hono, Fastify, Adonis, Nest, Deno, Bun, etc.), with other backends (Java, Ruby on Rails, etc.).
+ - <Link href="/data-fetching-tools">Any data fetching tool</Link> (REST, RPC, GraphQL, etc.).
+ - <Link href="/pre-rendering#ssg-vs-ssr">Server-side rendered HTML (SSR)</Link>, <Link href="/pre-rendering">pre-rendered HTML (SSG)</Link>, <Link href="/vercel#vite-plugin-vercel">incremental pre-rendering (ISR)</Link>.
+ - Simple <Link href="/renderPage">HTML string</Link>, advanced <Link href="/stream">HTML streaming</Link> (with <Link href="/stream#partial-hydration">Partial Hydration</Link>).
+
+Vike praises itself of being a highly (if not the most) adaptable frontend framework: if you have a use case you believe you cannot achieve with Vike then [let us know](https://github.com/vikejs/vike/discussions).
+
+Also, Vike has been designed from the ground up to be extensible, so that you can <Link href="/build-your-own-framework">Build Your Own Framework</Link>.
+
+
+## Why is CSS leaked to other pages?
+
+With <Link href="/client-routing">Client Routing</Link>, when navigating from one page to another, the CSS of the previous page isn't removed. This means that any CSS loaded by the previous page will also apply to the next page. In other words: CSS cumulates upon page navigation.
+
+For example:
+
+```jsx
+// /pages/terms/+Page.jsx
+
+import './style.css'
+
+export const Page = () => (
+  <div id="#terms">
+    <h1>Terms of Service</h1>
+    <section>
+      {/* ... */}
+    </section>
+  </div>
+)
+```
+
+```css
+/* /pages/terms/style.css */
+
+/* ❌ Bad: the CSS selector `section` can apply to any page */
+section {
+  font-size: 0.8em;
+}
+```
+
+Narrow down the CSS selector instead:
+
+```css
+/* /pages/terms/style.css */
+
+/* ✅ Good: the CSS selector `#terms section` only applies to our terms page */
+#terms section {
+  font-size: 0.8em;
+}
+```
+
+> If you use **Vue** with `.vue` files, then Vue already scopes the CSS for you: the CSS you define in a `.vue` file is guaranteed to apply only to the component defined in that `.vue` file.
+
+> If you use **React** or **Solid**, then we recommend using inline styles and/or a CSS-in-JS library (or Tailwind), while minimizing CSS files. Inline style aren't global and, therefore, aren't leaky.
+
+> **CSS is injected by Vite** in the form of `<style>` tags. If you're curious why Vite doesn't remove old `<style>` tags, consider that removing CSS is problematic during the transient state upon page navigation. (It would lead to [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content) because there is no transaction primitive for DOM manipulation.) In general, regardless of Vite's behavior, it's a good practice to narrow down CSS selectors.
+
+
+## Why are there a lot of HTTP requests in dev?
+
+In development, you may observe a lot of HTTP requests fetching a lot JavaScript files.
+That's because <Link href="/lazy-transpiling">Vite does lazy transpiling</Link>.
+
+While it's true that doing a lot of HTTP requests slows down page load (and optimizing that aspect is on Vite's radar), Vite's lazy transpiling approach enables unparalleled development speed.
+
+
+## How can I contribute and/or support?
+
+Contributions in forms of [code](https://github.com/vikejs/vike/issues/1349) and/or [sponsoring](https://github.com/vikejs/vike/issues/1350) are much welcome.

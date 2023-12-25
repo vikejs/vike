@@ -1,7 +1,7 @@
-import { UseIntegrationPackageHint } from '../components'
+import { UseIntegrationPackageHint, Example } from '../components'
 import { Link } from '@brillout/docpress'
 
-## Official integration
+## Vike Extension
 
 <UseIntegrationPackageHint uiFrameworkName="React" noQuote={true} />
 
@@ -11,9 +11,9 @@ import { Link } from '@brillout/docpress'
 [React Server Components (RSC)](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components) is a new application architecture designed by the React team.
 
 The design can be broken down into three parts:
- - :construction: Server Components
  -	✅ Server Actions
  -	✅ Partial Hydration
+ - :construction: Server Components
 
 Vike supports <Link href="/stream#partial-hydration">Partial Hydration</Link> as well as <Link href="/RPC">Server Actions</Link>. Server Components is work-in-progress.
 
@@ -30,9 +30,19 @@ The most significant added value of the RSC architecture is its novel approach t
 > SSR streaming enables you to define components that can fetch data, while each of these data-fetching components are loaded and rendered independently of each other: the user sees a UI with non-data-fetching parts that are rendered quickly, and data-fetching parts that are rendered as data comes in. This leads to a significantly improved (perceived) page speed. See <Link href="/stream#partial-hydration">Partial Hydration</Link>.
 
 
+## Manual Integration
 
-## Examples
+Instead of using a Vike extension, you can manually integrate React yourself, giving you full control over the integration of not only React itself but also React libraries.
 
-Examples of manually integrating React:
- - For official examples, see [GitHub > `vikejs/vike` > `examples/`](https://github.com/vikejs/vike/tree/main/examples).
- - For community examples, browse the examples at the integration guides such as <Link href="/react-query" />.
+Official examples:
+ - <Link href="/examples/react" /> - Basic React integration, using <Link href="/server-routing">Server Routing</Link>.
+ - <Link href="/examples/react-full" /> - Full-fledged React integration, using <Link href="/client-routing">Client Routing</Link> and HTML streaming.
+ - <Link href="/examples/graphql-apollo-react" /> - React integration with GraphQL Apollo.
+ - <Link href="/examples/render-modes" /> - React integration supporting all <Link href="/render-modes">render modes</Link> (SSR, SPA, and HTML-only).
+
+> For more official examples, see [GitHub > `vikejs/vike` > `examples/`](https://github.com/vikejs/vike/tree/main/examples).
+
+Community examples:
+ - <Example timestamp="2023.12" repo="luisfloat/vike-island-example" description={<><a href="https://jasonformat.com/islands-architecture/">Islands Architecture</a> implementation, mixing React and Vue.</>} />
+
+> For more community examples, see integration guides such as <Link href="/react-query" />.

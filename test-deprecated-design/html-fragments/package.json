@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "dev": "vite dev"
+  },
+  "dependencies": {
+    "typescript": "^4.6.4",
+    "vite": "^4.0.3",
+    "vike": "0.4.151"
+  },
+  "type": "module"
+}

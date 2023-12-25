@@ -42,12 +42,16 @@ export default {
 }
 ```
 
-SPA + SSR React example:
- - Custom `renderMode` config: <RepoLink path="/examples/render-modes-v1/renderer/+config.h.ts" />
- - SPA page: <RepoLink path="/examples/render-modes-v1/pages/spa/+Page.jsx" />
- - SPA page's `renderMode` config value: <RepoLink path="/examples/render-modes-v1/pages/spa/+renderMode.js" />
- - SSR page: <RepoLink path="/examples/render-modes-v1/pages/ssr/+Page.jsx" />
- - SSR page's `renderMode` config value: <RepoLink path="/examples/render-modes-v1/pages/ssr/+renderMode.js" />
+React example (SPA + SSR):
+ - Custom `renderMode` config: <RepoLink path="/examples/render-modes/renderer/+config.h.ts" />
+ - SPA page: <RepoLink path="/examples/render-modes/pages/spa/+Page.jsx" />
+ - SPA page's `renderMode` config value: <RepoLink path="/examples/render-modes/pages/spa/+renderMode.js" />
+ - SSR page: <RepoLink path="/examples/render-modes/pages/ssr/+Page.jsx" />
+ - SSR page's `renderMode` config value: <RepoLink path="/examples/render-modes/pages/ssr/+renderMode.js" />
+
+Vue example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example` > `/pages/spa.page.client.vue`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/spa.page.client.vue)
+
+> vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike). Contribution welcome to fork and update the Vue example.
 
 
 **2. Render hooks (SPA only)**
@@ -219,14 +223,23 @@ async function onRenderClient(pageContext) {
 }
 ```
 
-React example: <Link href="/examples/render-modes-v1/" />.
- - Server-side hook: <RepoLink path="/examples/render-modes-v1/renderer/+onRenderHtml.jsx" />
- - Client-side hook: <RepoLink path="/examples/render-modes-v1/renderer/+onRenderClient.jsx" />
- - Custom `renderMode` config: <RepoLink path="/examples/render-modes-v1/renderer/+config.h.ts" />
- - SPA page: <RepoLink path="/examples/render-modes-v1/pages/spa/+Page.jsx" />
- - SPA page's `renderMode` config value: <RepoLink path="/examples/render-modes-v1/pages/spa/+renderMode.js" />
- - SSR page: <RepoLink path="/examples/render-modes-v1/pages/ssr/+Page.jsx" />
- - SSR page's `renderMode` config value: <RepoLink path="/examples/render-modes-v1/pages/ssr/+renderMode.js" />
+React example: <Link href="/examples/render-modes/" />.
+ - Server-side hook: <RepoLink path="/examples/render-modes/renderer/+onRenderHtml.jsx" />
+ - Client-side hook: <RepoLink path="/examples/render-modes/renderer/+onRenderClient.jsx" />
+ - Custom `renderMode` config: <RepoLink path="/examples/render-modes/renderer/+config.h.ts" />
+ - SPA page: <RepoLink path="/examples/render-modes/pages/spa/+Page.jsx" />
+ - SPA page's `renderMode` config value: <RepoLink path="/examples/render-modes/pages/spa/+renderMode.js" />
+ - SSR page: <RepoLink path="/examples/render-modes/pages/ssr/+Page.jsx" />
+ - SSR page's `renderMode` config value: <RepoLink path="/examples/render-modes/pages/ssr/+renderMode.js" />
+
+Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example).
+ - Server-side hook: [/pages/_default/_default.page.server.ts](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/_default/_default.page.server.ts)
+ - Client-side hook: [/pages/_default/_default.page.client.ts](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/_default/_default.page.client.ts)
+ - SPA page: [/pages/spa.page.client.vue](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/spa.page.client.vue)
+ - SSR page: [/pages/ssr.page.vue](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/ssr.page.vue)
+
+> vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike). Contribution welcome to fork and update the Vue example.
+
 
 ## SSR
 
@@ -292,7 +305,9 @@ console.log("I'm the page's only browser-side JavaScript line.")
 ```
 
 React example:
- - Zero JavaScript: <RepoLink path="/examples/render-modes-v1/pages/html-only/" />
- - Minimal JavaScript: <RepoLink path="/examples/render-modes-v1/pages/html-js/" />
+ - Zero JavaScript: <RepoLink path="/examples/render-modes/pages/html-only/" />
+ - Minimal JavaScript: <RepoLink path="/examples/render-modes/pages/html-js/" />
 
-See also <Link href="/client" />.
+Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example` > `/pages/html.page.server.vue`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/html.page.server.vue)
+
+> vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike). Contribution welcome to fork and update the Vue example.

@@ -400,8 +400,18 @@ type ConfigBuiltIn = {
    */
   prefetchStaticAssets?: PrefetchStaticAssets | ImportString
 
-  /** Modify the tiemouts of hooks. */
+  /** Modify the timeouts of hooks. */
   hooksTimeout?: HooksTimeoutProvidedByUser
+
+  /** `Cache-Control` HTTP header value.
+   *
+   * Default: `no-store, max-age=0`
+   *
+   * Set to an empty string to not send the header.
+   *
+   * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+   */
+  cacheControl?: string
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`

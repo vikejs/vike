@@ -10,6 +10,7 @@ The `pageContext` object holds information about the current page.
 Built-in properties:
 
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `+Page.js` file.
+ - **`pageContext.data`**: the value returned by the <Link href="/data">`data()` hook</Link>.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
  - **`pageContext.urlOriginal`**: the current URL.
 
@@ -77,15 +78,12 @@ You can define custom `pageContext` properties.
           // ***************************************
           // **** Custom pageContext properties ****
           // ***************************************
-          // Common use case: make fetched data available over pageContext
-          someData: { product: { id: 123, name: 'MacBook' } },
-          // Or any other custom property you want
+          // Any custom property
           someCustomProp: 'some-value'
         }
       }
     }
     ```
-    > A common use case for `onBeforeRender()` is to fetch data: <Link href="/data-fetching" />.
 
  - At your <Link text="Vike server middleware" href="/renderPage" />:
     ```js

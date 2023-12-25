@@ -1,2 +1,2 @@
-import { testRun } from '../includeAssetsImportedByServer-v1/.testRun'
+import { testRun } from './.testRun'
 testRun('npm run preview')

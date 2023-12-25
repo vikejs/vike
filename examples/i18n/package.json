@@ -6,11 +6,10 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "^3.0.0",
-    "node-fetch": "^2.6.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "vite": "^4.0.3",
-    "vike": "0.4.150"
+    "vike": "0.4.151"
   },
   "type": "module"
 }

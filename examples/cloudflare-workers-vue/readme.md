@@ -1,6 +1,3 @@
-> [!NOTE]
-> This example is deprecated. See [`cloudflare-workers-vue-v1`](../cloudflare-workers-vue-v1/) instead.
-
 [Cloudflare Workers](https://workers.cloudflare.com/) with:
  - Vite
  - Vike

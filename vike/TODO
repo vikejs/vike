@@ -1,3 +1,12 @@
+- Remove all pageProps occurence in docs/ and examples/
+- Use data() instead of onBeforeRender() in examples/
+- Add vue example to `/data` docs: <Link href='/examples/vue-full/pages/star-wars/index/+data.ts' />
+- Implement `dataIsomorph` (or a better name?) as a built-in config (so that juniors don't have to use `meta`)
+- Minimize `/renderer/` occurence in docs
+- Remove `onRender{Html,Client}` code snippets from /data-fetching (showcase `useData()` instead).
+  - Also remove reading recommendation "React Tour or Vue Tour".
+- use `useData()` in React/Vue Tour.
+
 - update migration examples
 - add vike-react-query to /vike-packages
 
@@ -54,7 +63,7 @@ After V1 design release:
           - Maybe: allow user to assign a "cluster name" with `config.clientRouting: string`. Is this needed?
  - Check why some deps aren't discovered by Vite's depOptimizer:
    - https://github.com/brillout/vike-react-query => why does Vite discover `part-regex` only later?
- - Check why dev startup is fairly slow, e.g. for /examples/react-full-v1/ (I belive it used to be faster, is it related to Vite's initial dep crawling?)
+ - Check why dev startup is fairly slow, e.g. for /examples/react-full/ (I belive it used to be faster, is it related to Vite's initial dep crawling?)
  - Transpile & bunlded server for production: https://github.com/vikejs/vike/issues/1165
  - Replace boilerplates with Bati
  - Rewrite documentation to assume usage of `vike-{react,vue,solid}` (while preserving custom integration docs)
