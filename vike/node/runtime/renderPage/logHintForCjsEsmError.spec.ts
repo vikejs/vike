@@ -127,7 +127,7 @@ describe('isCjsEsmError', () => {
             `
     )
 
-    expect(
+    expectResult(
       true,
       // https://github.com/vikejs/vike/discussions/830
       `
