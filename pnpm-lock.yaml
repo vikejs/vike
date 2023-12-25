@@ -87,7 +87,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   boilerplates/boilerplate-react-ts:
     dependencies:
@@ -186,7 +186,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       vue:
         specifier: ^3.3.10
         version: 3.3.10(typescript@4.8.4)
@@ -303,7 +303,7 @@ importers:
         version: 0.3.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.10)
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/base-url:
     dependencies:
@@ -321,7 +321,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/base-url-cdn:
     dependencies:
@@ -351,7 +351,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/base-url-server:
     dependencies:
@@ -381,7 +381,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/cloudflare-workers-react:
     dependencies:
@@ -402,7 +402,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       wrangler:
         specifier: ^2.9.1
         version: 2.20.1
@@ -438,7 +438,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       wrangler:
         specifier: ^2.9.1
         version: 2.20.1
@@ -462,7 +462,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       vue:
         specifier: ^3.2.47
         version: 3.3.10(typescript@4.8.4)
@@ -486,7 +486,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/file-structure-domain-driven:
     dependencies:
@@ -504,7 +504,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/graphql-apollo-react:
     dependencies:
@@ -537,7 +537,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/graphql-apollo-vue:
     dependencies:
@@ -576,7 +576,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       vue:
         specifier: ^3.2.47
         version: 3.3.10(typescript@4.8.4)
@@ -591,7 +591,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/i18n:
     dependencies:
@@ -609,7 +609,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/layouts-react:
     dependencies:
@@ -627,7 +627,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/layouts-vue:
     dependencies:
@@ -645,7 +645,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       vue:
         specifier: ^3.2.33
         version: 3.3.10(typescript@4.8.4)
@@ -711,7 +711,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/react-data-fetching:
     dependencies:
@@ -834,7 +834,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/render-modes:
     dependencies:
@@ -852,7 +852,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/telefunc:
     dependencies:
@@ -888,7 +888,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/vanilla:
     dependencies:
@@ -900,24 +900,24 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/vike-react:
     dependencies:
       '@types/react':
-        specifier: ^18.0.8
-        version: 18.2.37
+        specifier: ^18.2.45
+        version: 18.2.45
       '@types/react-dom':
-        specifier: ^18.0.3
-        version: 18.2.15
+        specifier: ^18.2.18
+        version: 18.2.18
       '@vitejs/plugin-react':
         specifier: ^4.2.1
         version: 4.2.1(vite@5.0.10)
       cross-fetch:
-        specifier: ^3.1.5
-        version: 3.1.8
+        specifier: ^4.0.0
+        version: 4.0.0
       node-fetch:
-        specifier: ^3.3.1
+        specifier: ^3.3.2
         version: 3.3.2
       react:
         specifier: ^18.2.0
@@ -926,17 +926,17 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       typescript:
-        specifier: ^5.0.2
-        version: 5.2.2
+        specifier: ^5.3.3
+        version: 5.3.3
       vike:
         specifier: link:../../vike
         version: link:../../vike
       vike-react:
-        specifier: ^0.3.4
-        version: 0.3.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.10)
+        specifier: ^0.3.8
+        version: 0.3.8(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.10)
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/vike-react-simple:
     dependencies:
@@ -957,7 +957,7 @@ importers:
         version: 0.1.1(react-dom@18.2.0)(react@18.2.0)(vike@vike)
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   examples/vue:
     dependencies:
@@ -975,7 +975,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       vue:
         specifier: ^3.2.47
         version: 3.3.10(typescript@4.8.4)
@@ -1038,7 +1038,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       webpack:
         specifier: ^5.79.0
         version: 5.89.0(webpack-cli@5.1.4)
@@ -1062,7 +1062,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test-deprecated-design/base-url-cdn:
     dependencies:
@@ -1092,7 +1092,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test-deprecated-design/base-url-server:
     dependencies:
@@ -1122,7 +1122,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test-deprecated-design/cloudflare-workers-react:
     dependencies:
@@ -1143,7 +1143,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       wrangler:
         specifier: ^2.9.1
         version: 2.20.1
@@ -1179,7 +1179,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       wrangler:
         specifier: ^2.9.1
         version: 2.20.1
@@ -1203,7 +1203,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       vue:
         specifier: ^3.2.47
         version: 3.3.10(typescript@4.8.4)
@@ -1227,7 +1227,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test-deprecated-design/graphql-apollo-react:
     dependencies:
@@ -1260,7 +1260,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test-deprecated-design/graphql-apollo-vue:
     dependencies:
@@ -1299,7 +1299,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       vue:
         specifier: ^3.2.47
         version: 3.3.10(typescript@4.8.4)
@@ -1314,7 +1314,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test-deprecated-design/i18n:
     dependencies:
@@ -1335,7 +1335,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test-deprecated-design/layouts-react:
     dependencies:
@@ -1353,7 +1353,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test-deprecated-design/layouts-vue:
     dependencies:
@@ -1371,7 +1371,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       vue:
         specifier: ^3.2.33
         version: 3.3.10(typescript@4.8.4)
@@ -1437,7 +1437,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test-deprecated-design/react-full:
     dependencies:
@@ -1521,7 +1521,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test-deprecated-design/render-modes:
     dependencies:
@@ -1539,7 +1539,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test-deprecated-design/stem-react:
     dependencies:
@@ -1566,7 +1566,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test-deprecated-design/telefunc:
     dependencies:
@@ -1602,7 +1602,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test-deprecated-design/vue:
     dependencies:
@@ -1620,7 +1620,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       vue:
         specifier: ^3.2.47
         version: 3.3.10(typescript@4.8.4)
@@ -1689,7 +1689,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test/assertFileEnv:
     dependencies:
@@ -1713,7 +1713,7 @@ importers:
         version: 0.3.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.10)
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test/cjs:
     dependencies:
@@ -1740,7 +1740,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test/contra:
     dependencies:
@@ -1755,7 +1755,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test/disableAutoImporter:
     dependencies:
@@ -1773,7 +1773,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test/env:
     dependencies:
@@ -1791,7 +1791,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test/hook-override:
     dependencies:
@@ -1818,7 +1818,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test/includeAssetsImportedByServer:
     dependencies:
@@ -1827,7 +1827,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test/misc:
     dependencies:
@@ -1848,7 +1848,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test/preload:
     dependencies:
@@ -1863,7 +1863,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test/require-shim:
     dependencies:
@@ -1917,7 +1917,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
 
   test/stream-vue-onServerPrefetch:
     dependencies:
@@ -1938,7 +1938,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.9.0)
+        version: 5.0.10(@types/node@20.10.5)
       vue:
         specifier: ^3.2.37
         version: 3.3.8(typescript@4.8.4)
@@ -2471,7 +2471,7 @@ packages:
       '@brillout/release-me': 0.0.8
       react: 18.2.0
       vike: link:vike
-      vite: 5.0.10(@types/node@20.9.0)
+      vite: 5.0.10(@types/node@20.10.5)
     dev: false
 
   /@brillout/test-e2e@0.5.25:
@@ -4668,7 +4668,7 @@ packages:
       vite: ^4 || ^5
     dependencies:
       '@swc/core': 1.3.96
-      vite: 5.0.10(@types/node@20.10.5)
+      vite: 5.0.10(@types/node@20.9.0)
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: false
@@ -4700,7 +4700,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.5)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.0
-      vite: 5.0.10(@types/node@20.9.0)
+      vite: 5.0.10(@types/node@20.10.5)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -4723,7 +4723,7 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.0.10(@types/node@20.9.0)
+      vite: 5.0.10(@types/node@20.10.5)
       vue: 3.3.10(typescript@4.8.4)
     dev: false
 
@@ -4734,7 +4734,7 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.0.10(@types/node@20.9.0)
+      vite: 5.0.10(@types/node@20.10.5)
       vue: 3.3.8(typescript@4.8.4)
     dev: false
 
@@ -13111,7 +13111,22 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       react-streaming: 0.3.16(react-dom@18.2.0)(react@18.2.0)
       vike: link:vike
-      vite: 5.0.10(@types/node@20.9.0)
+      vite: 5.0.10(@types/node@20.10.5)
+    dev: false
+
+  /vike-react@0.3.8(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.10):
+    resolution: {integrity: sha512-SZ5IlA2tVbxncDmsZ66TB6a1BTGcJ7DsP6mPNxmVpiy3xopVR+IcbaZCgeOxLM1/1lHlcD40cTVufZZUD/fLiA==}
+    peerDependencies:
+      react: 18.x.x
+      react-dom: 18.x.x
+      vike: link:./vike/
+      vite: ^4.3.8
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      react-streaming: 0.3.18(react-dom@18.2.0)(react@18.2.0)
+      vike: link:vike
+      vite: 5.0.10(@types/node@20.10.5)
     dev: false
 
   /vite-node@0.34.6(@types/node@20.10.5):
