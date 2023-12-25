@@ -3,7 +3,7 @@ import { expect, describe, it } from 'vitest'
 
 describe('isCjsEsmError', () => {
   it('works', () => {
-    expectResult(
+    t(
       'vuetify',
       // https://github.com/vikejs/vike/discussions/682
       `
@@ -21,7 +21,7 @@ describe('isCjsEsmError', () => {
         `
     )
 
-    expectResult(
+    t(
       'vue-i18n',
       // https://github.com/vikejs/vike/discussions/635
       `
@@ -35,7 +35,7 @@ describe('isCjsEsmError', () => {
         `
     )
 
-    expectResult(
+    t(
       '@react-spectrum/actiongroup',
       // https://github.com/vikejs/vike/discussions/791
       `
@@ -53,7 +53,7 @@ describe('isCjsEsmError', () => {
           `
     )
 
-    expectResult(
+    t(
       '@apollo/client',
       // https://github.com/vikejs/vike/discussions/872
       `
@@ -67,7 +67,7 @@ describe('isCjsEsmError', () => {
         `
     )
 
-    expectResult(
+    t(
       true,
       // https://github.com/brillout/vps-mui/tree/reprod-2
       `
@@ -78,7 +78,7 @@ describe('isCjsEsmError', () => {
         `
     )
 
-    expectResult(
+    t(
       '@aws-amplify/datastore',
       // https://github.com/vikejs/vike/discussions/934
       `
@@ -96,7 +96,7 @@ describe('isCjsEsmError', () => {
               `
     )
 
-    expectResult(
+    t(
       'react-runner',
       // https://github.com/vikejs/vike/discussions/571
       `
@@ -117,7 +117,7 @@ describe('isCjsEsmError', () => {
             `
     )
 
-    expectResult(
+    t(
       'react-simple-code-editor',
       // https://github.com/vikejs/vike/discussions/571#discussioncomment-6137618
       `
@@ -127,7 +127,7 @@ describe('isCjsEsmError', () => {
             `
     )
 
-    expectResult(
+    t(
       true,
       // https://github.com/vikejs/vike/discussions/830
       `
@@ -145,7 +145,7 @@ describe('isCjsEsmError', () => {
         `
     )
 
-    expectResult(
+    t(
       true,
       `
         Error [ERR_REQUIRE_ESM]: Must use import to load ES Module: E:\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\dist\\index.js
@@ -168,7 +168,7 @@ describe('isCjsEsmError', () => {
   })
 
   it('skips user land errors', () => {
-    expectResult(
+    t(
       false,
       // User land JavaScript error
       `
@@ -183,7 +183,7 @@ describe('isCjsEsmError', () => {
         `
     )
 
-    expectResult(
+    t(
       false,
       // User land ESM error
       `
@@ -203,7 +203,7 @@ describe('isCjsEsmError', () => {
         `
     )
 
-    expectResult(
+    t(
       false,
       // User land ESM error
       `
@@ -221,7 +221,7 @@ describe('isCjsEsmError', () => {
         `
     )
 
-    expectResult(
+    t(
       false,
       // Package not installed
       `
@@ -240,7 +240,7 @@ describe('isCjsEsmError', () => {
         `
     )
 
-    expectResult(
+    t(
       false,
       // User land ESM error
       `
@@ -253,7 +253,7 @@ describe('isCjsEsmError', () => {
   })
 
   it('handles edge cases', () => {
-    expectResult(
+    t(
       // Not enough information => is this user land or node_modules/ land?
       false,
       // https://github.com/vitejs/vite/issues/11299
@@ -266,7 +266,7 @@ describe('isCjsEsmError', () => {
   })
 
   it("isn't perfect", () => {
-    expectResult(
+    t(
       // Should be `true`: https://github.com/vikejs/vike/discussions/1235#discussioncomment-7586473
       false,
       // https://github.com/vikejs/vike/discussions/1235
@@ -297,7 +297,7 @@ describe('isCjsEsmError', () => {
   })
 })
 
-function expectResult(expectedResult: boolean | string, stack: string) {
+function t(expectedResult: boolean | string, stack: string) {
   const error = { stack }
   const res = isCjsEsmError(error)
   expect(res).toEqual(expectedResult)
