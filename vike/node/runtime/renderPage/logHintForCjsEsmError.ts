@@ -48,6 +48,7 @@ function isCjsEsmError(error: unknown): boolean | string {
   if (!shouldParsePackageNameRegex.test(errString)) return true
 
   const packageName = extractPackageName(errString)
+  // TODO: this assertion may fail
   assert(packageName)
   return packageName
 }
@@ -79,22 +80,29 @@ function getErrorAsString(error: unknown) {
 
 function extractPackageName(errString: string) {
   let packageName = ''
+
+  // Extract package name from code snippet in error message
   const match = /import.*?from ?"(.*?)"/.exec(errString)
   if (match?.length && typeof match[1] === 'string') {
     packageName = match[1]
   }
+
+  // Extract package name from stack trace
   if (!packageName) {
     const firstNodeModulesLine = errString.split('\n').find((line) => line.includes('node_modules/'))
-
     if (firstNodeModulesLine) {
+      // pnpm
       packageName = firstNodeModulesLine.split('node_modules/').pop()!.split('/').slice(0, 2).join('/')
     }
   }
+
+  // Remove import path
   const isNamespacedPackage = packageName.startsWith('@')
   if (!isNamespacedPackage) {
     packageName = packageName.split('/').shift()!
   }
 
+  // Remove quotes
   if (packageName) {
     if (packageName.startsWith('"')) {
       packageName = packageName.slice(1)
@@ -103,5 +111,6 @@ function extractPackageName(errString: string) {
       packageName = packageName.slice(0, -1)
     }
   }
+
   return packageName
 }
