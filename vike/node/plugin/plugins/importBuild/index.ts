@@ -63,7 +63,7 @@ async function replace_ASSETS_MAP(options: Options, bundle: Bundle) {
   const { dir } = options
   assert(dir)
   // I guess importBuild won't be found in the bundle when using @vitejs/plugin-legacy
-  const importBuildEntry = findImportBuildBundleEntry(bundle)
+  const importBuildEntry = findImportBuildBundleEntry(bundle as any)
   const importBuildFilePath = path.join(dir, importBuildEntry.fileName)
   const assetsJsonFilePath = path.join(dir, '..', 'assets.json')
   const [assetsJsonString, importBuildFileContent] = await Promise.all([
