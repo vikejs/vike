@@ -26,33 +26,26 @@ function isCjsEsmError(error: unknown): boolean | string {
   const errString = getErrorAsString(error)
   if (!errString) return false
 
-  const shouldShowMessage = new RegExp(
-    [
-      `Error: Element type is invalid`,
-      `TypeError: require is not a function`,
-      // `TypeError: Cannot read properties of undefined`,
-      `SyntaxError: Named export`,
-      `SyntaxError: Cannot use import statement outside a module`,
-      `ReferenceError: exports is not defined.*node_modules`,
-      `ERR_UNSUPPORTED_DIR_IMPORT.*node_modules`,
-      `ERR_UNKNOWN_FILE_EXTENSION.*node_modules`,
-      `ERR_REQUIRE_ESM`
-    ].join('|'),
-    's'
-  )
-  if (!shouldShowMessage.test(errString)) return false
+  const shouldParsePackageName = [
+    `SyntaxError: Cannot use import statement outside a module`,
+    `SyntaxError: Named export`,
+    `ERR_UNSUPPORTED_DIR_IMPORT.*node_modules`,
+    `ERR_UNKNOWN_FILE_EXTENSION.*node_modules`,
+    `ReferenceError: exports is not defined.*node_modules`
+  ]
+  const shouldShowHint = [
+    `Error: Element type is invalid`,
+    `TypeError: require is not a function`,
+    // `TypeError: Cannot read properties of undefined`,
+    `ERR_REQUIRE_ESM`,
+    ...shouldParsePackageName
+  ]
 
-  const shouldParsePackageName = new RegExp(
-    [
-      `SyntaxError: Cannot use import statement outside a module`,
-      `SyntaxError: Named export`,
-      `ERR_UNSUPPORTED_DIR_IMPORT.*node_modules`,
-      `ERR_UNKNOWN_FILE_EXTENSION.*node_modules`,
-      `ReferenceError: exports is not defined.*node_modules`
-    ].join('|'),
-    's'
-  )
-  if (!shouldParsePackageName.test(errString)) return true
+  const shouldShowHingRegex = new RegExp(shouldShowHint.join('|'), 's')
+  if (!shouldShowHingRegex.test(errString)) return false
+
+  const shouldParsePackageNameRegex = new RegExp(shouldParsePackageName.join('|'), 's')
+  if (!shouldParsePackageNameRegex.test(errString)) return true
 
   const packageName = extractPackageName(errString)
   assert(packageName)
