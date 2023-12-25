@@ -23,6 +23,18 @@ function logHintForCjsEsmError(error: unknown): void {
  * `'some-npm-package'` -> add some-npm-package to `ssr.noExternal`
  */
 function isCjsEsmError(error: unknown): boolean | string {
+  /* Collect errors for ./logHintForCjsEsmError.spec.ts
+  console.log(
+    [
+      '{',
+      `  message: ${JSON.stringify((error as Error).message)},`,
+      `  code: ${JSON.stringify((error as any).code)},`,
+      '  stack: `\n' + (error as Error).stack + '\n`',
+      '}'
+    ].join('\n')
+  )
+  //*/
+
   const errString = getErrorAsString(error)
   if (!errString) return false
 
