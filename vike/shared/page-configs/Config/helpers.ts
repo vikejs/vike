@@ -1,5 +1,5 @@
 export type { IsNotEmpty }
-export type { XOR4 }
+export type { XOR5 }
 export type { Combine }
 
 type IsNotEmpty<T> = Not<IsEmpty<T>>
@@ -14,19 +14,27 @@ type Combine<T1, T2> = {
 
 // Unit test playground: https://www.typescriptlang.org/play?#code/C4TwDgpgBAGg8gJQCwB4AqBGKEAewIB2AJgM5QBGA9pQDYQCGBANFGgEzZ6GkXV2Ms0AZk75iZKrQbNWSUdwl9pAPigBeKAAoAsACgorLLjE9gAJwCuEPQYMB+Vh2MKo5qzdv2oAM3o0S1vqeUABcrCLO4q6WgcG2Dr7+sXGhUABylMDoSMoeBmHs8lFuyZ4OwkWmMXnBCX4BNZ5hGVloOY2pFZFV7kFxDi3ZuX3BBUh6AJR6oJDpmeiVilKMqhpoi9FWUHVJqSV60+DQaBAkwAAMBhrwyCiJASz3EI-1zz6vygDcBgD0P1AAZQAFpQLDQiBRoE9DrMTmcsOpYIhUE8Xkk0Q9NtAvr9-sDQeDIViYcdTsAOIibijXhi3iUoLScVA-oCQWCIeRoPtdDNSWcRJTkXcae90ViGeKmSz8eyidCeUdWGS5ILbqjxbTGd9mXi2YTOcSFbCyQBWK5ItUi+mayXa6V6jlQ14kpVnABs5qpwrF1o1ooCUt1BMd-sCvNdwAA7J6herffGYlBA6zg3LnUa+cAABwx26+9UFj52oOyg3c8Nw4AATlzqHzIrjieTMv1TqSLsrGEu1yF9Z9ia1uJTpbbDQzEYwWB7eYHoZYCa2zYdafb487HGnddnfcxTyXqYN8orZIwIk3KAX0Bt9P3I9DHZPcnPl4lO4gt9b97XJ7Nz+3-62ecm2LYdPyeIA
 // prettier-ignore
-type XOR4<T1 extends boolean, T2 extends boolean, T3 extends boolean, T4 extends boolean> = (
+type XOR5<T1 extends boolean, T2 extends boolean, T3 extends boolean, T4 extends boolean, T5 extends boolean> = (
   T1 extends true
     ? T2 extends true
       ? false
       : T3 extends true
         ? false
-        : Not<T4>
+        : T4 extends true
+          ? false
+          : Not<T5>
     : T2 extends true
       ? T3 extends true
         ? false
-        : Not<T4>
+        : T4 extends true
+          ? false
+          : Not<T5>
       : T3 extends true
-        ? Not<T4>
-        : T4
+        ? T4 extends true
+          ? false
+          : Not<T5>
+        : T4 extends true
+          ? Not<T5>
+          : T5
 )
 type Not<T extends boolean> = T extends true ? false : true
