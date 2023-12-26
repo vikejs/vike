@@ -5,8 +5,7 @@ describe('isCjsEsmError', () => {
   it('works: ERR_MODULE_NOT_FOUND / ERR_LOAD_URL', () => {
     // Classic broken npm package: file extension missing in import path.
     t(
-      // TODO: it should be `vike-react`
-      false,
+      'vike-react',
       // - Wrong import path, missing file extension. It should be:
       //   ```diff
       //   - import { getPageElement } from './getPageElement';

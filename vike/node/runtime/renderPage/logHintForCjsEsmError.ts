@@ -3,7 +3,7 @@ export { logHintForCjsEsmError }
 export { isCjsEsmError }
 
 import pc from '@brillout/picocolors'
-import { assert } from '../utils.js'
+import { assert, isObject } from '../utils.js'
 
 function logHintForCjsEsmError(error: unknown): void {
   const res = isCjsEsmError(error)
@@ -35,6 +35,43 @@ function isCjsEsmError(error: unknown): boolean | string {
   )
   //*/
 
+  {
+    const packageName = precise(error)
+    if (packageName) return packageName
+  }
+
+  {
+    const packageName = fuzzy(error)
+    return packageName
+  }
+}
+
+function precise(error: unknown): string | null {
+  if (getErrCode(error) === 'ERR_MODULE_NOT_FOUND') {
+    const errMsg = getErrMessage(error)
+    assert(errMsg)
+    const match = /Cannot find \S+ '(\S+)' imported from (\S+)/.exec(errMsg)
+    assert(match, errMsg)
+    const filePathCannotFind = extractFromPath(match[1]!)
+    const filePathFrom = extractFromPath(match[2]!)
+    return filePathCannotFind
+  }
+  return null
+}
+function getErrMessage(err: unknown): null | string {
+  if (!isObject(err)) return null
+  if (!err.message) return null
+  if (typeof err.message !== 'string') return null
+  return err.message
+}
+function getErrCode(err: unknown): null | string {
+  if (!isObject(err)) return null
+  if (!err.code) return null
+  if (typeof err.code !== 'string') return null
+  return err.code
+}
+
+function fuzzy(error: unknown) {
   const errString = getErrorAsString(error)
   if (!errString) return false
 
@@ -102,7 +139,7 @@ function extractPackageName(errString: string, error: unknown): string | null {
   {
     const match = /import.*?from ?"(.*?)"/.exec(errString)
     if (match?.length && typeof match[1] === 'string') {
-      packageName = extractFromPath(match[1])
+      packageName = extractFromPath(match[1], true)
       return packageName
     }
   }
@@ -118,12 +155,13 @@ function extractPackageName(errString: string, error: unknown): string | null {
 
   return null
 }
-function extractFromPath(filePath: string): string | null {
+function extractFromPath(filePath: string, doNotExpectNodeModules?: true): string | null {
   assert(filePath)
 
+  if (!doNotExpectNodeModules && !filePath.includes('node_modules/')) return null
   let packageName = filePath.split('node_modules/').pop()!.split('/').slice(0, 2).join('/')
   if (!packageName) return null
-  assert(!packageName.startsWith('/'))
+  assert(!packageName.startsWith('/'), packageName)
   if (!packageName.startsWith('@')) {
     packageName = packageName.split('/')[0]!
   }
