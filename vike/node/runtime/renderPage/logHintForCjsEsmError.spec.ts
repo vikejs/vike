@@ -374,8 +374,12 @@ TypeError: Cannot read properties of undefined (reading '__H')
   })
 })
 
-function t(expectedResult: boolean | string, arg: string | { message: string; code: string; stack: string }) {
+function t(
+  expectedResult: boolean | string | string[],
+  arg: string | { message: string; code: string; stack: string }
+) {
   const error = typeof arg === 'string' ? { stack: arg } : arg
   const res = isCjsEsmError(error)
+  if (typeof expectedResult === 'string') expectedResult = [expectedResult]
   expect(res).toEqual(expectedResult)
 }

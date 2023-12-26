@@ -3,17 +3,21 @@ export { logHintForCjsEsmError }
 export { isCjsEsmError }
 
 import pc from '@brillout/picocolors'
-import { assert, isObject } from '../utils.js'
+import { assert, isNotNullish, isObject, unique } from '../utils.js'
 
 function logHintForCjsEsmError(error: unknown): void {
   const res = isCjsEsmError(error)
   if (!res) return
-  const packageName = res === true ? null : res
+  const packageNames = res === true ? null : res
+  const packageName = packageNames && packageNames[0]
   const errMsg = [
-    `The error above seems to be a CJS/ESM issue${!packageName ? '' : ` with the package ${pc.cyan(packageName)}`}`,
-    `consider ${!packageName ? 'using' : `adding ${pc.cyan(`'${packageName}'`)} to`} ${pc.cyan('ssr.noExternal')}`,
-    'see https://vike.dev/broken-npm-package'
-  ].join(', ')
+    'The error above seems to be a CJS/ESM issue',
+    !packageName ? '' : ` with the package ${pc.cyan(packageName)}`,
+    ', consider ',
+    !packageName ? 'using' : `adding ${pc.cyan(`'${packageName}'`)} to`,
+    ` ${pc.cyan('ssr.noExternal')}`,
+    ', see https://vike.dev/broken-npm-package'
+  ].join('')
   console.error(errMsg)
 }
 
@@ -22,7 +26,7 @@ function logHintForCjsEsmError(error: unknown): void {
  * `true` -> generic message
  * `'some-npm-package'` -> add some-npm-package to `ssr.noExternal`
  */
-function isCjsEsmError(error: unknown): boolean | string {
+function isCjsEsmError(error: unknown): boolean | string[] {
   /* Collect errors for ./logHintForCjsEsmError.spec.ts
   console.log(
     [
@@ -36,17 +40,18 @@ function isCjsEsmError(error: unknown): boolean | string {
   //*/
 
   {
-    const packageName = precise(error)
-    if (packageName) return packageName
+    const packageNames = precise(error)
+    if (packageNames.length) return packageNames
   }
 
   {
-    const packageName = fuzzy(error)
-    return packageName
+    const result = fuzzy(error)
+    if (typeof result === 'string') return [result]
+    return result
   }
 }
 
-function precise(error: unknown): string | null {
+function precise(error: unknown): string[] {
   if (getErrCode(error) === 'ERR_MODULE_NOT_FOUND') {
     const errMsg = getErrMessage(error)
     assert(errMsg)
@@ -54,9 +59,9 @@ function precise(error: unknown): string | null {
     assert(match, errMsg)
     const filePathCannotFind = extractFromPath(match[1]!)
     const filePathFrom = extractFromPath(match[2]!)
-    return filePathCannotFind
+    return unique([filePathCannotFind, filePathFrom].filter(isNotNullish))
   }
-  return null
+  return []
 }
 function getErrMessage(err: unknown): null | string {
   if (!isObject(err)) return null
@@ -95,8 +100,8 @@ function fuzzy(error: unknown) {
     ...shouldParsePackageName
   ]
 
-  const shouldShowHingRegex = new RegExp(shouldShowHint.join('|'), 's')
-  if (!shouldShowHingRegex.test(errString)) return false
+  const shouldShowHintRegex = new RegExp(shouldShowHint.join('|'), 's')
+  if (!shouldShowHintRegex.test(errString)) return false
 
   const shouldParsePackageNameRegex = new RegExp(shouldParsePackageName.join('|'), 's')
   if (!shouldParsePackageNameRegex.test(errString)) return true
