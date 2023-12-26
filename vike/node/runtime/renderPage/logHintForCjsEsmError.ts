@@ -45,6 +45,11 @@ function isCjsEsmError(error: unknown): boolean | string {
     `ERR_UNKNOWN_FILE_EXTENSION.*node_modules`,
     `ReferenceError: exports is not defined.*node_modules`
   ]
+  /*
+  const shouldShowHintOnlyIfPackageName = [
+      // `Cannot find module`,
+  ]
+  */
   const shouldShowHint = [
     `Error: Element type is invalid.*but got: undefined`,
     `TypeError: require is not a function`,
@@ -123,6 +128,9 @@ function extractPackageName(errString: string) {
       packageName = packageName.slice(0, -1)
     }
   }
+
+  // TODO
+  assert(!['vite'].includes(packageName))
 
   return packageName
 }
