@@ -21,9 +21,7 @@ function RecommendationRouterLibraries({ libraryName, githubRepo }: { libraryNam
           sense to start using Vike with {libraryName} and, after your migration is done, to progressively migrate from{' '}
           {libraryName} to Vike's router.
         </p>
-        <p>
-          Create a new feature request if you need a {libraryName} feature that Vike's router is missing.
-        </p>
+        <p>Create a new feature request if you need a {libraryName} feature that Vike's router is missing.</p>
       </Warning>
       <blockquote>
         <p>

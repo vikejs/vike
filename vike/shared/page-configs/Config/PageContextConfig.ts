@@ -19,10 +19,7 @@ type ConfigVikePackagesCombined = Combine<
   VikePackages.ConfigVikeReact,
   Combine<
     VikePackages.ConfigVikeVue,
-    Combine<
-      VikePackages.ConfigVikeSolid,
-      Combine<VikePackages.ConfigVikeSvelte, VikePackages.ConfigVikeAngular>
-    >
+    Combine<VikePackages.ConfigVikeSolid, Combine<VikePackages.ConfigVikeSvelte, VikePackages.ConfigVikeAngular>>
   >
 >
 
