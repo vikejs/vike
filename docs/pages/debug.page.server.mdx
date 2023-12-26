@@ -2,18 +2,20 @@ import { Link } from '@brillout/docpress'
 
 In general, if you run into an issue with Vike, then we recommend <Link href="/faq#can-i-reach-out-for-help" doNotInferSectionTitle>reaching out</Link>.
 
-That said, in some situations, you may want to dig into a problem yourself. For example, we may ask you to provide us a with a minimal reproduction but, sometimes, digging into Vike's source code is faster than constructing a minimal reproduction. Also, exploring the source code written by Open Source developers can be a lot of fun.
+That said, in some situations, you may want to dig into a problem yourself. For example, we may ask you to provide us a minimal reproduction but, sometimes, digging into Vike's source code can be faster than constructing a minimal reproduction. (And reading high-quality source code written by Open Source developers can be fun.)
 
-Also note the debug logs of Vike and Vite which can be very insightful.
+Also, note the debug logs of Vike and Vite to easily gather insights.
 
 
 ## Dig
 
-The quickest way to inspect Vike is to inject a bunch of `console.log()` inside `node_modules/vike/dist/**/*.js`.
+The quickest way to dig into Vike is to inject a bunch of `console.log()` inside `node_modules/vike/dist/**/*.js`.
 
-> It may sound scary to dig into Vike's source code, but it's sometimes quicker to find the root cause of your problem than treating Vike as a black box. Also:
+> It may sound scary to dig into foreign source code, but it's sometimes quicker to find the root cause of your problem than treating Vike as a black box. Also:
 > - It's more interesting. (Vike's source code is usually well-written and pleasurable to read.)
-> - You may end up being able to do a Vike PR solving your problem (while helping the whole community!).
+> - You may end up being able to do a Vike PR solving your problem (while helping the whole community).
+>
+> We recommend digging not only into Vike, but also into other tools such as Vite (wich is very well-written).
 
 > Instead of:
 > ```bash
@@ -22,7 +24,7 @@ The quickest way to inspect Vike is to inject a bunch of `console.log()` inside 
 > $ pnpm install
 > $ pnpm run dev
 > $ cd ../../../my-app/
-> $ npm link ../vike/vike/
+> $ pnpm link ../vike/vike/
 > ```
 > We recommend to:
 > - Browse the source code of `$ git clone git@github.com:vikejs/vike`.
