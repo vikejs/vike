@@ -7,8 +7,10 @@ import type { Data as DataMovie } from '../@id/+data'
 import { filterMovieData } from '../filterMovieData'
 import { filterMoviesData, getStarWarsMovies, getTitle } from './getStarWarsMovies'
 
-const onBeforePrerenderStart: OnBeforePrerenderStartAsync<DataMovie | DataMovies> = async (): ReturnType<
-  OnBeforePrerenderStartAsync<DataMovie | DataMovies>
+type Data = DataMovie | DataMovies
+
+const onBeforePrerenderStart: OnBeforePrerenderStartAsync<Data> = async (): ReturnType<
+  OnBeforePrerenderStartAsync<Data>
 > => {
   const movies = await getStarWarsMovies()
 
