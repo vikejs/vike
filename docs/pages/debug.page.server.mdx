@@ -1,12 +1,41 @@
-## Vike
+import { Link } from '@brillout/docpress'
 
-To use Vike's debug logs:
+In general, if you run into an issue with Vike, then we recommend <Link href="/faq#can-i-reach-out-for-help" doNotInferSectionTitle>reaching out</Link>.
+
+That said, in some situations, you may want to dig into a problem yourself. For example, we may ask you to provide us a with a minimal reproduction but, sometimes, digging into Vike's source code is faster than constructing a minimal reproduction. Also, exploring the source code written by Open Source developers can be a lot of fun.
+
+Also note the debug logs of Vike and Vite which can be very insightful.
+
+
+## Dig
+
+The quickest way to inspect Vike is to inject a bunch of `console.log()` inside `node_modules/vike/dist/**/*.js`.
+
+> It may sound scary to dig into Vike's source code, but it's sometimes quicker to find the root cause of your problem than treating Vike as a black box. Also:
+> - It's more interesting. (Vike's source code is usually well-written and pleasurable to read.)
+> - You may end up being able to do a Vike PR solving your problem (while helping the whole community!).
+
+> Instead of:
+> ```bash
+> $ git clone git@github.com:vikejs/vike
+> $ cd vike/vike/
+> $ pnpm install
+> $ pnpm run dev
+> $ cd ../../../my-app/
+> $ npm link ../vike/vike/
+> ```
+> We recommend to:
+> - Browse the source code of `$ git clone git@github.com:vikejs/vike`.
+> - For an increased feedback loop, inject `console.log()` directly inside `my-app/node_modules/vike/dist/**/*.js`.
+
+
+## Vike debug logs
+
+You can use Vike's debug logs to gather insights.
 
 ```shell
-# Inspect the routing
+# Inspect Vike's routing
 DEBUG=vike:routing npm run dev
-# Inspect which page files are found and how they are treated
-DEBUG=vike:pageFiles npm run dev
 # Inspect HTTP Streaming
 DEBUG=vike:stream npm run dev
 # Inspect errors
@@ -17,35 +46,17 @@ DEBUG=vike:log npm run dev
 DEBUG=vike:log,vike:error,vike:stream npm run dev
 ```
 
-> These debug logs allow you to understand how Vike thinks of your app. For example, to figure out why your app returns a `404`, use `vike:routing` and `vike:pageFiles`.
+> These debug logs allow you to understand how Vike thinks of your app. For example, to figure out why your app returns a `404`, use `vike:routing`.
 
-There are more debug logs (`vike:glob`, `vike:extractAssets`, ...) but these aren't user-friendly as they are meant for Vike maintainers.
+There are more debug logs but these aren't user-friendly as they are meant for Vike maintainers.
 
-> If you want more debug logs, add a comment at [#249](https://github.com/vikejs/vike/issues/249).
+> For more debug logs, add a comment at [#249](https://github.com/vikejs/vike/issues/249).
 
-## Vite
+
+## Vite debug logs
 
 To enable Vite's debug logs, set the environment variable `DEBUG` to `vite:*`.
 
 ```shell
 $ DEBUG=vite:* npm run dev
 ```
-
-If you have a problem with Vite, we recommend considering injecting a bunch of `console.log()` inside `node_modules/vite/dist/**/*.js` in order to inspect what's going on.
-
-> It may sound scary to dig into Vite's source code, but it's sometimes quicker to find the root cause of your problem than treating Vite as a black box. Also:
-> - It's more interesting. (Vite's source code is well-written and pleasurable to read.)
-> - You may end up being able to do a Vite PR solving your problem (while helping the whole community!). (If you open a Vite PR, feel free to reach out to Vike maintainers to get your PR merged quicker.)
-
-> Instead of:
-> ```bash
-> $ git clone git@github.com:vitejs/vite
-> $ cd vite/packages/vite/
-> $ pnpm install
-> $ pnpm run dev
-> $ cd ../../../my-app/
-> $ npm link ../vite/packages/vite/
-> ```
-> We recommend to:
-> - Browse the source code of `$ git clone git@github.com:vitejs/vite`.
-> - But, for an increased feedback loop, inject `console.log()` directly inside `my-app/node_modules/vite/dist/**/*.js`.
