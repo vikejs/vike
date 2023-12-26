@@ -8,5 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-defineProps(['movie'])
+import type { Data } from './+data'
+import { useData } from '../../../renderer/useData'
+const { movie } = useData<Data>()
 </script>
