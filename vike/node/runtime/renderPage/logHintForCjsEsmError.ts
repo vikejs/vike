@@ -64,7 +64,7 @@ function isCjsEsmError(error: unknown): boolean | string {
   const shouldParsePackageNameRegex = new RegExp(shouldParsePackageName.join('|'), 's')
   if (!shouldParsePackageNameRegex.test(errString)) return true
 
-  const packageName = extractPackageName(errString)
+  const packageName = extractPackageName(errString, error)
   // TODO: this assertion may fail
   assert(packageName)
   return packageName
@@ -95,31 +95,49 @@ function getErrorAsString(error: unknown) {
   return parsed
 }
 
-function extractPackageName(errString: string) {
-  let packageName = ''
+function extractPackageName(errString: string, error: unknown): string | null {
+  let packageName: string | null = null
 
   // Extract package name from code snippet in error message
-  const match = /import.*?from ?"(.*?)"/.exec(errString)
-  if (match?.length && typeof match[1] === 'string') {
-    packageName = match[1]
-  }
-
-  // Extract package name from stack trace
-  if (!packageName) {
-    const firstNodeModulesLine = errString.split('\n').find((line) => line.includes('node_modules/'))
-    if (firstNodeModulesLine) {
-      // pnpm
-      packageName = firstNodeModulesLine.split('node_modules/').pop()!.split('/').slice(0, 2).join('/')
+  {
+    const match = /import.*?from ?"(.*?)"/.exec(errString)
+    if (match?.length && typeof match[1] === 'string') {
+      packageName = extractFromPath(match[1])
+      return packageName
     }
   }
 
-  // Remove import path
-  const isNamespacedPackage = packageName.startsWith('@')
-  if (!isNamespacedPackage) {
-    packageName = packageName.split('/').shift()!
+  // Extract package name from stack trace
+  {
+    const firstNodeModulesLine = errString.split('\n').find((line) => line.includes('node_modules/'))
+    if (firstNodeModulesLine) {
+      packageName = extractFromPath(firstNodeModulesLine)
+      return packageName
+    }
   }
 
-  // Remove quotes
+  return null
+}
+function extractFromPath(filePath: string): string | null {
+  assert(filePath)
+
+  let packageName = filePath.split('node_modules/').pop()!.split('/').slice(0, 2).join('/')
+  if (!packageName) return null
+  assert(!packageName.startsWith('/'))
+  if (!packageName.startsWith('@')) {
+    packageName = packageName.split('/')[0]!
+  }
+  if (packageName.startsWith('.')) return null
+  assert(!packageName.startsWith('/'))
+
+  packageName = removeQuotes(packageName)
+
+  // TODO
+  assert(!['vite'].includes(packageName))
+
+  return packageName
+}
+function removeQuotes(packageName: string) {
   if (packageName) {
     if (packageName.startsWith('"')) {
       packageName = packageName.slice(1)
@@ -128,9 +146,5 @@ function extractPackageName(errString: string) {
       packageName = packageName.slice(0, -1)
     }
   }
-
-  // TODO
-  assert(!['vite'].includes(packageName))
-
   return packageName
 }
