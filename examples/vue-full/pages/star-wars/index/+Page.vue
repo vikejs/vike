@@ -6,9 +6,11 @@
     </li>
   </ol>
   <p>Source: <a href="https://star-wars.brillout.com">star-wars.brillout.com</a>.</p>
-  <p>Data can be fetched by using the <code>onBeforeRender()</code> hook.</p>
+  <p>Data can be fetched by using the <code>data()</code> hook.</p>
 </template>
 
 <script lang="ts" setup>
-defineProps(['movies'])
+import type { Data } from './+data'
+import { useData } from '../../../renderer/useData'
+const { movies } = useData<Data>()
 </script>

@@ -19,5 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-defineProps(['name'])
+import type { Data } from './+data'
+import { useData } from '../../renderer/useData'
+const { name } = useData<Data>()
 </script>

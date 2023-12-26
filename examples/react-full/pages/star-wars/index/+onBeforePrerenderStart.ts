@@ -34,7 +34,7 @@ const onBeforePrerenderStart: OnBeforePrerenderStartAsync<Data> = async (): Retu
         // Note that we can also provide the `pageContext` of other pages.
         // This means that Vike will not call any
         // `data()` hook and the Star Wars API will be called
-        // only once (in this `prerender()` hook).
+        // only once (in this `onBeforePrerenderStart()` hook).
         pageContext: {
           data: {
             movie: filterMovieData(movie),
