@@ -10,10 +10,10 @@ import type { OnRenderClientAsync } from 'vike/types'
 
 let root: ReactDOM.Root
 const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRenderClientAsync> => {
-  const { Page, data } = pageContext
+  const { Page } = pageContext
   const page = (
     <PageShell pageContext={pageContext}>
-      <Page {...data} />
+      <Page />
     </PageShell>
   )
   const container = document.getElementById('page-view')!

@@ -1,6 +1,6 @@
 // https://vike.dev/data
 export { data }
-export type Data = ReturnType<typeof data>
+export type Data = Awaited<ReturnType<typeof data>>
 
 import fetch from 'cross-fetch'
 import { filterMovieData } from '../filterMovieData'
