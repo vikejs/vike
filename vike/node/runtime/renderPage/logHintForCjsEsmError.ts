@@ -4,17 +4,23 @@ export { isCjsEsmError }
 
 import pc from '@brillout/picocolors'
 import { assert, isNotNullish, isObject, unique } from '../utils.js'
+import { joinEnglish } from '../../plugin/utils.js'
 
 function logHintForCjsEsmError(error: unknown): void {
   const res = isCjsEsmError(error)
   if (!res) return
   const packageNames = res === true ? null : res
-  const packageName = packageNames && packageNames[0]
+  const noPkg = !packageNames || packageNames.length === 0
   const errMsg = [
     'The error above seems to be a CJS/ESM issue',
-    !packageName ? '' : ` with the package ${pc.cyan(packageName)}`,
+    !noPkg ? '' : ` with the package ${packageNames!.map(pc.cyan).join('/')}`,
     ', consider ',
-    !packageName ? 'using' : `adding ${pc.cyan(`'${packageName}'`)} to`,
+    !noPkg
+      ? 'using'
+      : `adding ${joinEnglish(
+          packageNames!.map((p) => pc.cyan(`'${p}'`)),
+          'or'
+        )} to`,
     ` ${pc.cyan('ssr.noExternal')}`,
     ', see https://vike.dev/broken-npm-package'
   ].join('')
