@@ -26,7 +26,8 @@ import {
   prependBase,
   removeUrlOrigin,
   addUrlOrigin,
-  createUrlFromComponents
+  createUrlFromComponents,
+  isUriWithProtocol
 } from './utils.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -499,22 +500,33 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
   const { redirects, baseServer } = getGlobalContext()
   const urlWithoutBase = removeBaseServer(pageContextInit.urlOriginal, baseServer)
   let origin: null | string = null
+  let urlTargetExternal: null | string = null
   let urlTarget = modifyUrlPathname(urlWithoutBase, (urlPathname) => {
-    const urlTargetWithOrigin = resolveRedirects(redirects, urlPathname)
-    if (urlTargetWithOrigin === null) return null
-    const { urlModified, origin: origin_ } = removeUrlOrigin(urlTargetWithOrigin)
+    const urlTarget = resolveRedirects(redirects, urlPathname)
+    if (urlTarget === null) return null
+    if (!isParsable(urlTarget)) {
+      // E.g. `urlTarget === 'mailto:some@example.com'`
+      assert(isUriWithProtocol(urlTarget) && !urlTarget.startsWith('http'))
+      urlTargetExternal = urlTarget
+      return null
+    }
+    const { urlModified, origin: origin_ } = removeUrlOrigin(urlTarget)
     origin = origin_
     return urlModified
   })
-  if (origin) urlTarget = addUrlOrigin(urlTarget, origin)
-  if (urlTarget === urlWithoutBase) return null
+  if (urlTargetExternal) {
+    urlTarget = urlTargetExternal
+  } else {
+    if (origin) urlTarget = addUrlOrigin(urlTarget, origin)
+    if (urlTarget === urlWithoutBase) return null
+    urlTarget = prependBase(urlTarget, baseServer)
+    assert(urlTarget !== pageContextInit.urlOriginal)
+  }
   logRuntimeInfo?.(
     `Permanent redirect defined by your config.redirects (https://vike.dev/redirects)`,
     httpRequestId,
     'info'
   )
-  urlTarget = prependBase(urlTarget, baseServer)
-  assert(urlTarget !== pageContextInit.urlOriginal)
   const httpResponse = createHttpResponseObjectRedirect({ url: urlTarget, statusCode: 301 }, urlWithoutBase)
   const pageContextHttpResponse = { ...pageContextInit, httpResponse }
   return pageContextHttpResponse

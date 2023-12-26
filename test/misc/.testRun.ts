@@ -1,6 +1,6 @@
 export { testRun }
 
-import { test, expect, fetchHtml, page, getServerUrl, autoRetry, sleep } from '@brillout/test-e2e'
+import { test, expect, fetch, fetchHtml, page, getServerUrl, autoRetry, sleep } from '@brillout/test-e2e'
 import { testCounter } from '../utils'
 import { testRun as testRunClassic } from '../../examples/react/.testRun'
 import fs from 'fs'
@@ -90,6 +90,11 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
     await expectUrl('/pushState?query')
     const timestamp7 = await getTimestamp()
     expect(timestamp7).toBe(timestamp6)
+  })
+
+  test('Redirect to URI without http protocol (e.g. `mailto:`)', async () => {
+    const resp = await fetch(getServerUrl() + '/mail', { redirect: 'manual' })
+    expect(resp.headers.get('Location')).toBe('mailto:some@example.com')
   })
 }
 
