@@ -93,6 +93,25 @@ function precise(error: unknown): boolean | string[] {
     }
   }
 
+  if (code === 'ERR_REQUIRE_ESM') {
+    const stackFirstLine = getErrStackFirstLine(error)
+    if (stackFirstLine) {
+      /* Not reliable as stack traces have different formats:
+       * ```
+       * at file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:10:1
+       * ```
+       * Or:
+       * ```
+       * at onRenderHtml (file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:21:49)
+       * ```
+      const match = /at \S+ (\S+)/.exec(stackFirstLine)
+      */
+      const packageName = extractFromPath(stackFirstLine)
+      const packageNames = clean([packageName])
+      return packageNames
+    }
+  }
+
   if (message?.startsWith('Cannot read properties of undefined')) {
     const stackFirstLine = getErrStackFirstLine(error)
     if (stackFirstLine?.includes('node_modules')) {
