@@ -1,9 +1,11 @@
 import { isCjsEsmError } from './logHintForCjsEsmError'
+import { isReactUndefinedComponentError } from './logHintForCjsEsmError'
 import { expect, describe, it } from 'vitest'
 
 describe('isCjsEsmError()', () => {
   ERR_MODULE_NOT_FOUND()
   ERR_UNKNOWN_FILE_EXTENSION()
+  react_undefined_component()
   fuzzy()
   skipsUserLandErrors()
   handlesEdgeCases()
@@ -12,7 +14,7 @@ describe('isCjsEsmError()', () => {
 
 function t(
   expectedResult: boolean | string | string[],
-  arg: string | { message: string; code: string; stack: string }
+  arg: string | { message: string; code: string | undefined; stack: string }
 ) {
   const error = typeof arg === 'string' ? { stack: arg } : arg
   const res = isCjsEsmError(error)
@@ -209,6 +211,41 @@ at ESMLoader.getModuleJob (node:internal/modules/esm/loader:434:34) {
 code: 'ERR_UNKNOWN_FILE_EXTENSION'
 }
 `
+    )
+  })
+}
+
+function react_undefined_component() {
+  it('React: undefined component', () => {
+    expect(true).toBe(
+      isReactUndefinedComponentError(
+        /* node_modules/ land
+         * - Error artificially created:
+         *   ```diff
+         *   // node_modules/vike-react/dist/renderer/onRenderHtml.js:
+         *   - import { PageContextProvider } from './PageContextProvider.js';
+         *   + const PageContextProvider = undefined
+         *   ```
+         */
+        {
+          message:
+            "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
+          code: undefined,
+          stack: `
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at renderElement (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6047:9)
+    at renderNodeDestructiveImpl (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
+    at renderNodeDestructive (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
+    at renderElement (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5975:9)
+    at renderNodeDestructiveImpl (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
+    at renderNodeDestructive (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
+    at retryTask (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6532:5)
+    at performWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6580:7)
+    at /home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6904:12
+    at scheduleWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:78:3)
+`
+        }
+      )
     )
   })
 }

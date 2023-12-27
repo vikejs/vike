@@ -1,27 +1,40 @@
 export { logHintForCjsEsmError }
 // For ./logHintForCjsEsmError.spec.ts
 export { isCjsEsmError }
+export { isReactUndefinedComponentError }
 
 import pc from '@brillout/picocolors'
 import { assert, formatHintLog, isNotNullish, isObject, unique, joinEnglish } from '../utils.js'
 
 function logHintForCjsEsmError(error: unknown): void {
+  if (isReactUndefinedComponentError(error)) {
+    const hint = 'To fix this error, see https://vike.dev/broken-npm-package#react-undefined-component'
+    logHint(hint)
+    return
+  }
+
   const res = isCjsEsmError(error)
-  if (!res) return
-  const packageNames = res === true ? null : res
-  let errMsg = [
-    'Error could be a CJS/ESM issue, consider ',
-    !packageNames || packageNames.length === 0
-      ? 'using'
-      : `adding ${joinEnglish(
-          packageNames!.map((p) => pc.cyan(`'${p}'`)),
-          'or'
-        )} to`,
-    ` ${pc.cyan('ssr.noExternal')}`,
-    ', see https://vike.dev/broken-npm-package'
-  ].join('')
-  errMsg = formatHintLog(errMsg)
-  console.error(errMsg)
+  if (res) {
+    const packageNames = res === true ? null : res
+    const hint = [
+      'Error could be a CJS/ESM issue, consider ',
+      !packageNames || packageNames.length === 0
+        ? 'using'
+        : `adding ${joinEnglish(
+            packageNames!.map((p) => pc.cyan(`'${p}'`)),
+            'or'
+          )} to`,
+      ` ${pc.cyan('ssr.noExternal')}`,
+      ', see https://vike.dev/broken-npm-package'
+    ].join('')
+    logHint(hint)
+    return
+  }
+}
+
+function logHint(hint: string) {
+  hint = formatHintLog(hint)
+  console.error(hint)
 }
 
 /**
@@ -208,4 +221,12 @@ function removeQuotes(packageName: string) {
     }
   }
   return packageName
+}
+
+function isReactUndefinedComponentError(err: unknown): boolean {
+  const errMsg = getErrMessage(err)
+  if (!errMsg) return false
+  return errMsg.includes(
+    'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)'
+  )
 }

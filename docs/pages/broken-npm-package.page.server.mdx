@@ -1,4 +1,4 @@
-import { Warning, CodeBlockTransformer } from '@brillout/docpress'
+import { Warning, CodeBlockTransformer, Link } from '@brillout/docpress'
 
 Some npm packages contain code that isn't valid JavaScript, which makes Node.js crash.
 
@@ -17,6 +17,12 @@ export default {
   }
 }
 ```
+
+You may need to add several npm packages to `ssr.noExternal`, because CJS/ESM issues sometime cascade down along the "`noExternal` boundary" as you add npm packages to `ssr.noExternal`.
+
+If you were to add all your npm packages to `ssr.noExternal` then you'd likely get rid of all CJS/ESM issues, but you'd slow down development speed in a non-negligible way (because of <Link href="/lazy-transpiling">Vite's lazy transpiling approach</Link>). Therefore, a sensible strategy is to eagerly add npm packages to `ssr.noExternal` until you get rid of all your CJS/ESM issues and, then, remove npm packages from `ssr.noExternal` to fasten development speed.
+
+> Don't hesitate to <Link href="/faq#can-i-reach-out-for-help">reach out for help</Link> if you run into CJS/ESM issues.
 
 > The reason why many npm packages contain erroneous code is because frameworks like Next.js transpile the server-side code of npm packages. (Whereas Vite lets Node.js directly execute npm packages in order to improve DX speed: Vite transpiles only what is strictly needed). Where Next.js is permissive and is able to process invalid code, Node.js is strict and crashes upon invalid code. By adding npm packages to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal) we replicate the behavior of frameworks like Next.js.
 
@@ -175,6 +181,78 @@ TypeError: Cannot read properties of undefined (reading 'someProp')
 > Sometimes, when dependency injection is used, the `import` to `some-broken-lib` isn't in the file in which the
 > exception is being raised, making it harder to understand which library is broken. See
 > [here](https://github.com/vikejs/vike/discussions/1235) an example of this.
+
+
+
+### React undefined component
+
+The following is a very common React error and the root cause is usually a CJS/ESM issue.
+
+<CodeBlockTransformer lineBreak="white-space">
+```
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at renderElement (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6047:9)
+    at renderNodeDestructiveImpl (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
+    at renderNodeDestructive (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
+    at renderElement (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5975:9)
+    at renderNodeDestructiveImpl (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
+    at renderNodeDestructive (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
+    at retryTask (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6532:5)
+    at performWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6580:7)
+    at /home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6904:12
+    at scheduleWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:78:3)
+```
+</CodeBlockTransformer>
+
+Inject the following to gather further information.
+
+```js
+// node_modules/react/cjs/react.production.min.js
+
+// ...
+
+// Insert this at this end of the file
+exports.createElement = debugEl(exports.createElement)
+function debugEl(fn) {
+  return (...args) => {
+    const el = args[0]
+    if (typeof el === 'object' && !el.$$typeof && !el.getModuleId) {
+      console.error('Error: INVALID REACT ELEMENT:');
+      console.error(el)
+      console.error(new Error('INVALID REACT ELEMENT, ORIGIN:'));
+      globalThis.process?.exit?.(1)
+    }
+    return fn(...args)
+  }
+}
+```
+
+```js
+// node_modules/react/cjs/react-jsx-runtime.production.min.js
+
+// ...
+
+// Insert this at this end of the file
+exports.jsx = debugEl(exports.jsx)
+function debugEl(fn) {
+  return (...args) => {
+    const el = args[0]
+    if (typeof el === 'object' && !el.$$typeof && !el.getModuleId) {
+      console.error('Error: INVALID REACT ELEMENT:');
+      console.error(el)
+      console.error(new Error('INVALID REACT ELEMENT, ORIGIN:'));
+      globalThis.process?.exit?.(1)
+    }
+    return fn(...args)
+  }
+}
+```
+
+> This patch works with React `18.0.2` (and probably with most other React versions). Let us know if it doesn't work with your React version.
+
+The debug logs will help you know why the React component is `undefined`. You'll likely discover that the React component is imported, while the import value is `undefined` because of some CJS/ESM interoperability quirks.
+
+If the component lives inside `node_modules/`, then consider <Link href="#solution">adding the npm package(s) to `ssr.noExternal`</Link>.
 
 
 ## See also
