@@ -72,5 +72,5 @@ function resolveServerConfig(configVike?: ConfigVikeUserProvided): ServerResolve
   }
 
   assertUsage(typeof configVike.server === 'string', 'server should be a string')
-  return { entry: configVike.server, reload: 'full' }
+  return { entry: configVike.server, reload: 'fast' }
 }
