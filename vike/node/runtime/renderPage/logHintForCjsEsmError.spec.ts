@@ -1,9 +1,28 @@
 import { isCjsEsmError } from './logHintForCjsEsmError'
 import { expect, describe, it } from 'vitest'
 
-describe('isCjsEsmError', () => {
+describe('isCjsEsmError()', () => {
+  ERR_MODULE_NOT_FOUND()
+  ERR_UNKNOWN_FILE_EXTENSION()
+  fuzzy()
+  skipsUserLandErrors()
+  handlesEdgeCases()
+  isntPerfect()
+})
+
+function t(
+  expectedResult: boolean | string | string[],
+  arg: string | { message: string; code: string; stack: string }
+) {
+  const error = typeof arg === 'string' ? { stack: arg } : arg
+  const res = isCjsEsmError(error)
+  if (typeof expectedResult === 'string') expectedResult = [expectedResult]
+  expect(res).toEqual(expectedResult)
+}
+
+function ERR_MODULE_NOT_FOUND() {
   // Classic: file extension missing in import path.
-  it('works: ERR_MODULE_NOT_FOUND / ERR_LOAD_URL', () => {
+  it('ERR_MODULE_NOT_FOUND / ERR_LOAD_URL', () => {
     t(
       'vike-react',
       /* node_modules/ land, wrong import path: missing file extension.
@@ -98,9 +117,11 @@ Error: Failed to load url some-not-installed-package (resolved id: some-not-inst
 `
     })
   })
+}
 
+function ERR_UNKNOWN_FILE_EXTENSION() {
   // Classic: server-side code importing CSS.
-  it('works: ERR_UNKNOWN_FILE_EXTENSION', () => {
+  it('ERR_UNKNOWN_FILE_EXTENSION', () => {
     t(
       'vike-react',
       /* node_modules/ land
@@ -190,8 +211,106 @@ code: 'ERR_UNKNOWN_FILE_EXTENSION'
 `
     )
   })
+}
 
-  it('works', () => {
+function skipsUserLandErrors() {
+  it('skips user land errors', () => {
+    t(
+      false,
+      // User land JavaScript error
+      `
+file:///home/xxx/projects/vike/xxx/server/index.js:20
+  console.log(a.b);
+                ^
+
+TypeError: Cannot read properties of undefined (reading 'b')
+    at startServer (file:///home/xxx/projects/vike/xxx/server/index.js:20:17)
+    at file:///home/xxx/projects/vike/xxx/server/index.js:13:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
+`
+    )
+
+    t(
+      false,
+      // User land ESM error
+      `
+Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import '/Users/xxx/xxx/src/models' is not supported resolving ES modules imported from /Users/xxx/xxx/src/index.js
+  at finalizeResolution (internal/modules/esm/resolve.js:272:17)
+  at moduleResolve (internal/modules/esm/resolve.js:699:10)
+  at Loader.defaultResolve [as _resolve] (internal/modules/esm/resolve.js:810:11)
+  at Loader.resolve (internal/modules/esm/loader.js:85:40)
+  at Loader.getModuleJob (internal/modules/esm/loader.js:229:28)
+  at ModuleWrap.<anonymous> (internal/modules/esm/module_job.js:51:40)
+  at link (internal/modules/esm/module_job.js:50:36) {
+code: 'ERR_UNSUPPORTED_DIR_IMPORT',
+url: 'file:///Users/xxx/xxx/src/models'
+}
+`
+    )
+
+    t(
+      false,
+      // User land ESM error
+      `
+ReferenceError: exports is not defined in ES module scope
+This file is being treated as an ES module because it has a '.js' file extension and '/home/xxx/projects/vike/xxx/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+    at file:///home/xxx/projects/vike/xxx/server/index.js:14:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
+`
+    )
+  })
+}
+
+function handlesEdgeCases() {
+  it('handles edge cases', () => {
+    t(
+      // Not enough information => is this user land or node_modules/ land?
+      false,
+      // https://github.com/vitejs/vite/issues/11299
+      `
+TypeError: Cannot read properties of undefined (reading 'extendTheme')
+    at eval (/home/projects/llqijrlvr.github/src/entry.js:5:35)
+    at async instantiateModule (file://file:///home/projects/llqijrlvr.github/node_modules/.pnpm/vite@4.0.0/node_modules/vite/dist/node/chunks/dep-ed9cb113.js:53295:9)
+`
+    )
+  })
+}
+
+function isntPerfect() {
+  it("isn't perfect", () => {
+    t(
+      // Should be `true`: https://github.com/vikejs/vike/discussions/1235#discussioncomment-7586473
+      false,
+      // https://github.com/vikejs/vike/discussions/1235
+      `
+TypeError: Cannot read properties of undefined (reading '__H')
+    at getHookState (/Users/xxx/Code/Repos/xxx/node_modules/preact/hooks/src/index.js:137:19)
+    at Object.h (/Users/xxx/Code/Repos/xxx/node_modules/preact/hooks/src/index.js:320:16)
+    at Object.call (/Users/xxx/Code/Repos/xxx/node_modules/react-redux/lib/components/Provider.js:26:30)
+    at renderFunctionComponent (file:///Users/xxx/Code/Repos/xxx/node_modules/preact-render-to-string/src/index.js:119:25)
+    at _renderToString (file:///Users/xxx/Code/Repos/xxx/node_modules/preact-render-to-string/src/index.js:282:16)
+    at _renderToString (file:///Users/xxx/Code/Repos/xxx/node_modules/preact-render-to-string/src/index.js:298:15)
+    at Proxy.S (file:///Users/xxx/Code/Repos/xxx/node_modules/preact-render-to-string/src/index.js:80:9)
+    at onRenderHtml (/Users/xxx/Code/Repos/xxx/renderer/+onRenderHtml.jsx:12:29)
+    at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage/executeOnRenderHtmlHook.js:16:53
+    at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/shared/hooks/executeHook.js:42:31
+    at executeHook (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/shared/hooks/executeHook.js:51:7)
+    at executeOnRenderHtmlHook (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage/executeOnRenderHtmlHook.js:16:35)
+    at renderPageAlreadyRouted (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage/renderPageAlreadyRouted.js:56:36)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at renderPageNominal (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:257:36)
+    at renderPageAlreadyPrepared (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:113:45)
+    at renderPageAndPrepare (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:93:12)
+    at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/plugin/shared/getHttpRequestAsyncStore.js:68:35
+    at renderPage (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:46:50)
+    at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/plugin/shared/addSsrMiddleware.js:18:27
+`
+    )
+  })
+}
+
+function fuzzy() {
+  it('fuzzy', () => {
     t(
       'vue-i18n',
       // https://github.com/vikejs/vike/discussions/635
@@ -319,104 +438,4 @@ Instead rename index.js to end in .cjs, change the requiring code to use import(
 `
     )
   })
-
-  it('skips user land errors', () => {
-    t(
-      false,
-      // User land JavaScript error
-      `
-file:///home/xxx/projects/vike/xxx/server/index.js:20
-  console.log(a.b);
-                ^
-
-TypeError: Cannot read properties of undefined (reading 'b')
-    at startServer (file:///home/xxx/projects/vike/xxx/server/index.js:20:17)
-    at file:///home/xxx/projects/vike/xxx/server/index.js:13:1
-    at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
-`
-    )
-
-    t(
-      false,
-      // User land ESM error
-      `
-Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import '/Users/xxx/xxx/src/models' is not supported resolving ES modules imported from /Users/xxx/xxx/src/index.js
-  at finalizeResolution (internal/modules/esm/resolve.js:272:17)
-  at moduleResolve (internal/modules/esm/resolve.js:699:10)
-  at Loader.defaultResolve [as _resolve] (internal/modules/esm/resolve.js:810:11)
-  at Loader.resolve (internal/modules/esm/loader.js:85:40)
-  at Loader.getModuleJob (internal/modules/esm/loader.js:229:28)
-  at ModuleWrap.<anonymous> (internal/modules/esm/module_job.js:51:40)
-  at link (internal/modules/esm/module_job.js:50:36) {
-code: 'ERR_UNSUPPORTED_DIR_IMPORT',
-url: 'file:///Users/xxx/xxx/src/models'
-}
-`
-    )
-
-    t(
-      false,
-      // User land ESM error
-      `
-ReferenceError: exports is not defined in ES module scope
-This file is being treated as an ES module because it has a '.js' file extension and '/home/xxx/projects/vike/xxx/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
-    at file:///home/xxx/projects/vike/xxx/server/index.js:14:1
-    at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
-`
-    )
-  })
-
-  it('handles edge cases', () => {
-    t(
-      // Not enough information => is this user land or node_modules/ land?
-      false,
-      // https://github.com/vitejs/vite/issues/11299
-      `
-TypeError: Cannot read properties of undefined (reading 'extendTheme')
-    at eval (/home/projects/llqijrlvr.github/src/entry.js:5:35)
-    at async instantiateModule (file://file:///home/projects/llqijrlvr.github/node_modules/.pnpm/vite@4.0.0/node_modules/vite/dist/node/chunks/dep-ed9cb113.js:53295:9)
-`
-    )
-  })
-
-  it("isn't perfect", () => {
-    t(
-      // Should be `true`: https://github.com/vikejs/vike/discussions/1235#discussioncomment-7586473
-      false,
-      // https://github.com/vikejs/vike/discussions/1235
-      `
-TypeError: Cannot read properties of undefined (reading '__H')
-    at getHookState (/Users/xxx/Code/Repos/xxx/node_modules/preact/hooks/src/index.js:137:19)
-    at Object.h (/Users/xxx/Code/Repos/xxx/node_modules/preact/hooks/src/index.js:320:16)
-    at Object.call (/Users/xxx/Code/Repos/xxx/node_modules/react-redux/lib/components/Provider.js:26:30)
-    at renderFunctionComponent (file:///Users/xxx/Code/Repos/xxx/node_modules/preact-render-to-string/src/index.js:119:25)
-    at _renderToString (file:///Users/xxx/Code/Repos/xxx/node_modules/preact-render-to-string/src/index.js:282:16)
-    at _renderToString (file:///Users/xxx/Code/Repos/xxx/node_modules/preact-render-to-string/src/index.js:298:15)
-    at Proxy.S (file:///Users/xxx/Code/Repos/xxx/node_modules/preact-render-to-string/src/index.js:80:9)
-    at onRenderHtml (/Users/xxx/Code/Repos/xxx/renderer/+onRenderHtml.jsx:12:29)
-    at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage/executeOnRenderHtmlHook.js:16:53
-    at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/shared/hooks/executeHook.js:42:31
-    at executeHook (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/shared/hooks/executeHook.js:51:7)
-    at executeOnRenderHtmlHook (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage/executeOnRenderHtmlHook.js:16:35)
-    at renderPageAlreadyRouted (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage/renderPageAlreadyRouted.js:56:36)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at renderPageNominal (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:257:36)
-    at renderPageAlreadyPrepared (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:113:45)
-    at renderPageAndPrepare (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:93:12)
-    at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/plugin/shared/getHttpRequestAsyncStore.js:68:35
-    at renderPage (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:46:50)
-    at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/plugin/shared/addSsrMiddleware.js:18:27
-`
-    )
-  })
-})
-
-function t(
-  expectedResult: boolean | string | string[],
-  arg: string | { message: string; code: string; stack: string }
-) {
-  const error = typeof arg === 'string' ? { stack: arg } : arg
-  const res = isCjsEsmError(error)
-  if (typeof expectedResult === 'string') expectedResult = [expectedResult]
-  expect(res).toEqual(expectedResult)
 }
