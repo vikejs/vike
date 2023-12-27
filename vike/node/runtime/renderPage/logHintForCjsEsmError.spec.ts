@@ -133,9 +133,7 @@ TypeError: Unknown file extension ".css" for /home/romu/code/vike/node_modules/.
 `
       }
     )
-  })
 
-  it('works', () => {
     t(
       'vuetify',
       // https://github.com/vikejs/vike/discussions/682
@@ -155,20 +153,6 @@ TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".css" for /Users
     )
 
     t(
-      'vue-i18n',
-      // https://github.com/vikejs/vike/discussions/635
-      `
-import { useI18n, createI18n } from "vue-i18n/dist/vue-i18n.runtime.esm-bundler.js";
-                    ^^^^^^^^^^
-SyntaxError: Named export 'createI18n' not found. The requested module 'vue-i18n/dist/vue-i18n.runtime.esm-bundler.js' is a CommonJS module, which may not support all module.exports as named exports.
-CommonJS modules can always be imported via the default export, for example using:
-
-import pkg from 'vue-i18n/dist/vue-i18n.runtime.esm-bundler.js';
-const { useI18n, createI18n } = pkg;
-`
-    )
-
-    t(
       '@react-spectrum/actiongroup',
       // https://github.com/vikejs/vike/discussions/791
       `
@@ -183,6 +167,42 @@ Error: ERR_UNKNOWN_FILE_EXTENSION .css /home/xxx/tmp/vite-ssr-example/node_modul
     at load (/home/xxx/tmp/vite-ssr-example/node_modules/.pnpm/ts-node@10.9.1_@types+node@18.15.11_typescript@4.9.5/node_modules/ts-node/src/child/child-loader.ts:18:36)
     at nextLoad (node:internal/modules/esm/loader:163:28)
     at ESMLoader.load (node:internal/modules/esm/loader:605:26)
+`
+    )
+
+    t(
+      false,
+      // User land ESM error
+      `
+TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".123" for /home/xxx/projects/vike/xxx/server/root.123
+at new NodeError (node:internal/errors:399:5)
+at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:79:11)
+at defaultGetFormat (node:internal/modules/esm/get_format:121:38)
+at defaultLoad (node:internal/modules/esm/load:81:20)
+at nextLoad (node:internal/modules/esm/loader:163:28)
+at ESMLoader.load (node:internal/modules/esm/loader:605:26)
+at ESMLoader.moduleProvider (node:internal/modules/esm/loader:457:22)
+at new ModuleJob (node:internal/modules/esm/module_job:64:26)
+at #createModuleJob (node:internal/modules/esm/loader:480:17)
+at ESMLoader.getModuleJob (node:internal/modules/esm/loader:434:34) {
+code: 'ERR_UNKNOWN_FILE_EXTENSION'
+}
+`
+    )
+  })
+
+  it('works', () => {
+    t(
+      'vue-i18n',
+      // https://github.com/vikejs/vike/discussions/635
+      `
+import { useI18n, createI18n } from "vue-i18n/dist/vue-i18n.runtime.esm-bundler.js";
+                    ^^^^^^^^^^
+SyntaxError: Named export 'createI18n' not found. The requested module 'vue-i18n/dist/vue-i18n.runtime.esm-bundler.js' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'vue-i18n/dist/vue-i18n.runtime.esm-bundler.js';
+const { useI18n, createI18n } = pkg;
 `
     )
 
@@ -313,26 +333,6 @@ TypeError: Cannot read properties of undefined (reading 'b')
     at startServer (file:///home/xxx/projects/vike/xxx/server/index.js:20:17)
     at file:///home/xxx/projects/vike/xxx/server/index.js:13:1
     at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
-`
-    )
-
-    t(
-      false,
-      // User land ESM error
-      `
-TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".123" for /home/xxx/projects/vike/xxx/server/root.123
-at new NodeError (node:internal/errors:399:5)
-at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:79:11)
-at defaultGetFormat (node:internal/modules/esm/get_format:121:38)
-at defaultLoad (node:internal/modules/esm/load:81:20)
-at nextLoad (node:internal/modules/esm/loader:163:28)
-at ESMLoader.load (node:internal/modules/esm/loader:605:26)
-at ESMLoader.moduleProvider (node:internal/modules/esm/loader:457:22)
-at new ModuleJob (node:internal/modules/esm/module_job:64:26)
-at #createModuleJob (node:internal/modules/esm/loader:480:17)
-at ESMLoader.getModuleJob (node:internal/modules/esm/loader:434:34) {
-code: 'ERR_UNKNOWN_FILE_EXTENSION'
-}
 `
     )
 
