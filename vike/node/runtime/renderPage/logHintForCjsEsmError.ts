@@ -10,12 +10,9 @@ function logHintForCjsEsmError(error: unknown): void {
   const res = isCjsEsmError(error)
   if (!res) return
   const packageNames = res === true ? null : res
-  const noPkg = !packageNames || packageNames.length === 0
   let errMsg = [
-    'The error above seems to be a CJS/ESM issue',
-    noPkg ? '' : ` with the package ${packageNames!.map(pc.cyan).join('/')}`,
-    ', consider ',
-    noPkg
+    'Error could be a CJS/ESM issue, consider ',
+    !packageNames || packageNames.length === 0
       ? 'using'
       : `adding ${joinEnglish(
           packageNames!.map((p) => pc.cyan(`'${p}'`)),
