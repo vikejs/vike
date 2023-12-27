@@ -14,8 +14,6 @@ export function bindCLIShortcuts({ onRestart }: { onRestart?: () => void }): voi
   let actionRunning = false
 
   const onInput = async (input: string) => {
-    console.log("INPUT", input);
-    
     if (actionRunning) return
 
     const shortcut = shortcuts.find((shortcut) => shortcut.key === input)
