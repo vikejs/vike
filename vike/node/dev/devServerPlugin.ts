@@ -121,13 +121,17 @@ function devServerPlugin(): Plugin {
     if (reload === 'fast') {
       await onFastRestart()
     } else {
-      process.exit(33)
+      onFullRestart()
     }
   }
 
   const onFastRestart = async () => {
     await closeAllServers()
     await loadEntry()
+  }
+
+  const onFullRestart = async () => {
+    process.exit(33)
   }
 
   return {
@@ -145,7 +149,7 @@ function devServerPlugin(): Plugin {
       // This is only true if the vite config was changed
       // We need a full reload
       if (viteServer) {
-        process.exit(33)
+        onFullRestart()
       }
       viteServer = server
 
@@ -154,10 +158,7 @@ function devServerPlugin(): Plugin {
       process.on('unhandledRejection', onError)
       process.on('uncaughtException', onError)
       bindCLIShortcuts({
-        onRestart: () => {
-          viteServer.moduleGraph.invalidateAll()
-          onRestart()
-        }
+        onRestart: onFullRestart
       })
       patchHttp()
       loadEntry()
