@@ -1,9 +1,11 @@
 export default Page
 
 import React from 'react'
-import type { Movie } from '../types'
+import { useData } from '../../../renderer/useData'
+import type { Data } from './+data'
 
-function Page({ movies }: { movies: Movie[] }) {
+function Page() {
+  const { movies } = useData<Data>()
   return (
     <>
       <h1>Star Wars Movies</h1>

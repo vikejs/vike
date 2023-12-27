@@ -13,44 +13,43 @@ import { getTerminalWidth } from './getTerminWidth.js'
 assert(!isBrowser())
 ;(globalThis as any).__brillout_debug_createDebugger = createDebugger
 
-type Namespace =
+type Flag =
+  | 'vike:routing'
   | 'vike:error'
-  | 'vike:extractAssets'
+  | 'vike:stream'
+  | 'vike:log'
+  | 'vike:virtual-files'
+  | 'vike:outDir'
   | 'vike:extractExportNames'
+  | 'vike:extractAssets'
   | 'vike:glob'
   | 'vike:pageFiles'
-  | 'vike:log'
-  | 'vike:routing'
-  | 'vike:virtual-files'
   | 'vike:stem'
-  | 'vike:stream'
-  | 'vike:outDir'
 type Debug = ReturnType<typeof createDebugger>
-
 type Options = {
   serialization?: {
     emptyArray?: string
   }
 }
 
-function createDebugger(namespace: Namespace, optionsGlobal?: Options) {
-  checkType<`vike:${string}`>(namespace)
+function createDebugger(flag: Flag, optionsGlobal?: Options) {
+  checkType<`vike:${string}`>(flag)
 
   const debugWithOptions = (optionsLocal: Options) => {
     return (...msgs: unknown[]) => {
       const options = { ...optionsGlobal, ...optionsLocal }
-      debug_(namespace, options, ...msgs)
+      debug_(flag, options, ...msgs)
     }
   }
   const debug = (...msgs: unknown[]) => debugWithOptions({})(...msgs)
-  objectAssign(debug, { options: debugWithOptions, isEnabled: isDebugEnabled(namespace) })
+  objectAssign(debug, { options: debugWithOptions, isEnabled: isDebugEnabled(flag) })
   return debug
 }
 
-function debug_(namespace: Namespace, options: Options, ...msgs: unknown[]) {
-  if (!isDebugEnabled(namespace)) return
+function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
+  if (!isDebugEnabled(flag)) return
   let [msgFirst, ...msgsRest] = msgs
-  const padding = ' '.repeat(namespace.length + 1)
+  const padding = ' '.repeat(flag.length + 1)
   msgFirst = formatMsg(msgFirst, options, padding, 'FIRST')
   msgsRest = msgsRest.map((msg, i) => {
     const position = i === msgsRest.length - 1 ? 'LAST' : 'MIDDLE'
@@ -67,14 +66,14 @@ function debug_(namespace: Namespace, options: Options, ...msgs: unknown[]) {
     logFirst = [msgFirst]
     logsRest = msgsRest
   }
-  console.log('\x1b[1m%s\x1b[0m', namespace, ...logFirst)
+  console.log('\x1b[1m%s\x1b[0m', flag, ...logFirst)
   logsRest.forEach((msg) => {
     console.log(msg)
   })
 }
 
-function isDebugEnabled(namespace: Namespace): boolean {
-  checkType<`vike:${string}`>(namespace)
+function isDebugEnabled(flag: Flag): boolean {
+  checkType<`vike:${string}`>(flag)
 
   let DEBUG: undefined | string
   // - `process` can be undefined in edge workers
@@ -82,7 +81,7 @@ function isDebugEnabled(namespace: Namespace): boolean {
   try {
     DEBUG = process.env.DEBUG
   } catch {}
-  return DEBUG?.includes(namespace) ?? false
+  return DEBUG?.includes(flag) ?? false
 }
 
 function formatMsg(

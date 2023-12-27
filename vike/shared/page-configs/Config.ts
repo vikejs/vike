@@ -97,12 +97,12 @@ type GuardSync = (pageContext: PageContextServer) => void
  *
  * https://vike.dev/onBeforePrerenderStart
  */
-type OnBeforePrerenderStartAsync = () => Promise<
+type OnBeforePrerenderStartAsync<Data = unknown> = () => Promise<
   (
     | string
     | {
         url: string
-        pageContext: Partial<Vike.PageContext>
+        pageContext: Partial<Vike.PageContext & { data: Data }>
       }
   )[]
 >
@@ -110,11 +110,11 @@ type OnBeforePrerenderStartAsync = () => Promise<
  *
  * https://vike.dev/onBeforePrerenderStart
  */
-type OnBeforePrerenderStartSync = () => (
+type OnBeforePrerenderStartSync<Data = unknown> = () => (
   | string
   | {
       url: string
-      pageContext: Partial<Vike.PageContext>
+      pageContext: Partial<Vike.PageContext & { data: Data }>
     }
 )[]
 /** Hook called before the page is rendered.
@@ -259,10 +259,6 @@ type RouteAsync = (
 type RouteSync = (
   pageContext: PageContextServer | PageContextClient
 ) => { routeParams?: Record<string, string>; precedence?: number } | boolean
-/** The page's URL(s).
- *
- *  https://vike.dev/route
- */
 
 // TODO: write docs of links below
 

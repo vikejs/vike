@@ -1,3 +1,19 @@
+## [0.4.152](https://github.com/vikejs/vike/compare/v0.4.151...v0.4.152) (2023-12-26)
+
+
+### Bug Fixes
+
+* don't inject script preload tags for HTML-only pages (fix [#1379](https://github.com/vikejs/vike/issues/1379)) ([e8c6494](https://github.com/vikejs/vike/commit/e8c6494ca56befed80af98b987bf7be7582e3a44))
+
+
+### Features
+
+* cacheControl setting ([bb7fd09](https://github.com/vikejs/vike/commit/bb7fd09c46730d638b45a89f5db35f2ac4188f6b))
+* generic `<Data>` type for `onBeforePrerenderStart()` ([29f265b](https://github.com/vikejs/vike/commit/29f265b35832c7b882ab1a6414afef88f5cbc0b4))
+* redirect to URI without http protocal (closes [#1380](https://github.com/vikejs/vike/issues/1380)) ([58f404c](https://github.com/vikejs/vike/commit/58f404c2ebf82ca86b56d6cc603603d2008cc9cf))
+
+
+
 ## [0.4.151](https://github.com/vikejs/vike/compare/v0.4.150...v0.4.151) (2023-12-22)
 
 

@@ -1,8 +1,11 @@
 export default Page
 
 import React from 'react'
+import { useData } from '../../renderer/useData'
+import type { Data } from './+data'
 
-function Page({ name }: { name: string }) {
+function Page() {
+  const { name } = useData<Data>()
   return (
     <>
       <h1>Hello</h1>

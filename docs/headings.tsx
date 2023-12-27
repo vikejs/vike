@@ -85,7 +85,8 @@ const headings = [
   {
     level: 2,
     title: 'FAQ',
-    url: '/faq'
+    url: '/faq',
+    sectionTitles: ['Can I reach out for help?']
   },
   {
     level: 2,
@@ -682,9 +683,7 @@ const headings = [
     title: '`onBeforeRender()` hook',
     titleInNav: '`onBeforeRender()`',
     url: '/onBeforeRender',
-    sectionTitles: [
-      '`onBeforeRender()` + `meta`'
-    ]
+    sectionTitles: ['`onBeforeRender()` + `meta`']
   },
   {
     level: 2,
