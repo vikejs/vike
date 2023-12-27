@@ -56,8 +56,8 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   //*/
 
   {
-    const packageNames = precise(error)
-    if (packageNames.length) return packageNames
+    const result = precise(error)
+    if (result) return result
   }
 
   {
@@ -67,18 +67,18 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   }
 }
 
-function precise(error: unknown): string[] {
+function precise(error: unknown): boolean | string[] {
   const code = getErrCode(error)
-  let packageNames: (string | null)[] = []
+  const message = getErrMessage(error)
 
   if (code === 'ERR_MODULE_NOT_FOUND') {
     const errMsg = getErrMessage(error)
     assert(errMsg)
     const match = /Cannot find \S+ '(\S+)' imported from (\S+)/.exec(errMsg)
     if (match) {
-      const filePathCannotFind = extractFromPath(match[1]!)
-      const filePathFrom = extractFromPath(match[2]!)
-      packageNames = [filePathCannotFind, filePathFrom]
+      const packageNameCannotFind = extractFromPath(match[1]!)
+      const packageNameFrom = extractFromPath(match[2]!)
+      return clean([packageNameCannotFind, packageNameFrom])
     }
   }
 
@@ -87,12 +87,25 @@ function precise(error: unknown): string[] {
     assert(errMsg)
     const match = /Unknown file extension "\S+" for (\S+)/.exec(errMsg)
     if (match) {
-      const filePath = extractFromPath(match[1]!)
-      packageNames = [filePath]
+      const filePath = match[1]!
+      const packageName = extractFromPath(filePath)
+      return clean([packageName])
     }
   }
 
-  return unique(packageNames.filter(isNotNullish))
+  if (message?.startsWith('Cannot read properties of undefined')) {
+    const stackFirstLine = getErrStackFirstLine(error)
+    if (stackFirstLine?.includes('node_modules')) {
+      return true
+    }
+  }
+
+  return false
+}
+function clean(packageNames: (string | null)[]): string[] | false {
+  const result = unique(packageNames.filter(isNotNullish))
+  if (result.length === 0) return false
+  return result
 }
 function getErrMessage(err: unknown): null | string {
   if (!isObject(err)) return null
@@ -105,6 +118,18 @@ function getErrCode(err: unknown): null | string {
   if (!err.code) return null
   if (typeof err.code !== 'string') return null
   return err.code
+}
+function getErrStack(err: unknown): null | string {
+  if (!isObject(err)) return null
+  if (!err.stack) return null
+  if (typeof err.stack !== 'string') return null
+  return err.stack
+}
+function getErrStackFirstLine(err: unknown): null | string {
+  const errStack = getErrStack(err)
+  if (!errStack) return null
+  const match = errStack.split('\n').filter((line) => line.startsWith('    at '))[0]
+  return match ?? null
 }
 
 function fuzzy(error: unknown) {

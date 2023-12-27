@@ -6,6 +6,7 @@ describe('isCjsEsmError()', () => {
   ERR_MODULE_NOT_FOUND()
   ERR_UNKNOWN_FILE_EXTENSION()
   react_undefined_component()
+  TypeError_undefined()
   fuzzy()
   skipsUserLandErrors()
   handlesEdgeCases()
@@ -22,8 +23,8 @@ function t(
   expect(res).toEqual(expectedResult)
 }
 
+// Classic: file extension missing in import path.
 function ERR_MODULE_NOT_FOUND() {
-  // Classic: file extension missing in import path.
   it('ERR_MODULE_NOT_FOUND / ERR_LOAD_URL', () => {
     t(
       'vike-react',
@@ -121,8 +122,8 @@ Error: Failed to load url some-not-installed-package (resolved id: some-not-inst
   })
 }
 
+// Classic: server-side code importing CSS.
 function ERR_UNKNOWN_FILE_EXTENSION() {
-  // Classic: server-side code importing CSS.
   it('ERR_UNKNOWN_FILE_EXTENSION', () => {
     t(
       'vike-react',
@@ -215,6 +216,7 @@ code: 'ERR_UNKNOWN_FILE_EXTENSION'
   })
 }
 
+// Classic: React's infamous undefined component error.
 function react_undefined_component() {
   it('React: undefined component', () => {
     expect(true).toBe(
@@ -246,6 +248,44 @@ Error: Element type is invalid: expected a string (for built-in components) or a
 `
         }
       )
+    )
+  })
+}
+
+// Classic: reading the property of an import value that is undefined because of a CJS/ESM issue
+function TypeError_undefined() {
+  it('TypeError: Cannot read properties of undefined', () => {
+    t(
+      // true instead of 'vike-react' because the problem is the importee and not the importer
+      true,
+      /* node_modules/ land
+       * - Error artificially created:
+       *   ```diff
+       *   // node_modules/vike-react/dist/renderer/onRenderHtml.js:
+       *   - import { PageContextProvider } from './PageContextProvider.js';
+       *   + const PageContextProvider = undefined
+       *   // ...
+       *   - React.createElement(PageContextProvider, { pageContext: pageContext },
+       *   + React.createElement(PageContextProvider.foo, { pageContext: pageContext },
+       *   ```
+       */
+      {
+        message: "Cannot read properties of undefined (reading 'foo')",
+        code: undefined,
+        stack: `
+TypeError: Cannot read properties of undefined (reading 'foo')
+    at onRenderHtml (file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:21:49)
+    at file:///home/romu/code/vike/vike/dist/esm/node/runtime/renderPage/executeOnRenderHtmlHook.js:15:53
+    at file:///home/romu/code/vike/vike/dist/esm/shared/hooks/executeHook.js:46:31
+    at executeHook (file:///home/romu/code/vike/vike/dist/esm/shared/hooks/executeHook.js:55:7)
+    at executeOnRenderHtmlHook (file:///home/romu/code/vike/vike/dist/esm/node/runtime/renderPage/executeOnRenderHtmlHook.js:15:35)
+    at renderPageAlreadyRouted (file:///home/romu/code/vike/vike/dist/esm/node/runtime/renderPage/renderPageAlreadyRouted.js:57:36)
+    at renderPageNominal (file:///home/romu/code/vike/vike/dist/esm/node/runtime/renderPage.js:266:36)
+    at renderPageAlreadyPrepared (file:///home/romu/code/vike/vike/dist/esm/node/runtime/renderPage.js:121:45)
+    at renderPageAndPrepare (file:///home/romu/code/vike/vike/dist/esm/node/runtime/renderPage.js:101:12)
+    at file:///home/romu/code/vike/vike/dist/esm/node/plugin/shared/getHttpRequestAsyncStore.js:68:35
+`
+      }
     )
   })
 }
