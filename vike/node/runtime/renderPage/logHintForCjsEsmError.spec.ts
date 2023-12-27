@@ -99,6 +99,42 @@ Error: Failed to load url some-not-installed-package (resolved id: some-not-inst
     })
   })
 
+  // Classic: server-side code importing CSS.
+  it('works: ERR_UNKNOWN_FILE_EXTENSION', () => {
+    t(
+      'vike-react',
+      /* node_modules/ land
+       * - Error artificially created:
+       *   ```diff
+       *   // node_modules/vike-react/dist/renderer/onRenderHtml.js:
+       *   + import './foo.css'
+       *   // node_modules/vike-react/dist/renderer/foo.css
+       *   + body {
+       *   +   background-color: blue;
+       *   + }
+       *   ```
+       */
+      {
+        message:
+          'Unknown file extension ".css" for /home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/foo.css',
+        code: 'ERR_UNKNOWN_FILE_EXTENSION',
+        stack: `
+TypeError: Unknown file extension ".css" for /home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/foo.css
+    at new NodeError (node:internal/errors:399:5)
+    at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:79:11)
+    at defaultGetFormat (node:internal/modules/esm/get_format:121:38)
+    at defaultLoad (node:internal/modules/esm/load:81:20)
+    at nextLoad (node:internal/modules/esm/loader:163:28)
+    at ESMLoader.load (node:internal/modules/esm/loader:605:26)
+    at ESMLoader.moduleProvider (node:internal/modules/esm/loader:457:22)
+    at new ModuleJob (node:internal/modules/esm/module_job:64:26)
+    at ESMLoader.#createModuleJob (node:internal/modules/esm/loader:480:17)
+    at ESMLoader.getModuleJob (node:internal/modules/esm/loader:434:34)
+`
+      }
+    )
+  })
+
   it('works', () => {
     t(
       'vuetify',

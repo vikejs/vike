@@ -58,16 +58,31 @@ function isCjsEsmError(error: unknown): boolean | string[] {
 }
 
 function precise(error: unknown): string[] {
-  if (getErrCode(error) === 'ERR_MODULE_NOT_FOUND') {
+  const code = getErrCode(error)
+  let packageNames: (string | null)[] = []
+
+  if (code === 'ERR_MODULE_NOT_FOUND') {
     const errMsg = getErrMessage(error)
     assert(errMsg)
     const match = /Cannot find \S+ '(\S+)' imported from (\S+)/.exec(errMsg)
-    assert(match, errMsg)
-    const filePathCannotFind = extractFromPath(match[1]!)
-    const filePathFrom = extractFromPath(match[2]!)
-    return unique([filePathCannotFind, filePathFrom].filter(isNotNullish))
+    if (match) {
+      const filePathCannotFind = extractFromPath(match[1]!)
+      const filePathFrom = extractFromPath(match[2]!)
+      packageNames = [filePathCannotFind, filePathFrom]
+    }
   }
-  return []
+
+  if (code === 'ERR_UNKNOWN_FILE_EXTENSION') {
+    const errMsg = getErrMessage(error)
+    assert(errMsg)
+    const match = /Unknown file extension "\S+" for (\S+)/.exec(errMsg)
+    if (match) {
+      const filePath = extractFromPath(match[1]!)
+      packageNames = [filePath]
+    }
+  }
+
+  return unique(packageNames.filter(isNotNullish))
 }
 function getErrMessage(err: unknown): null | string {
   if (!isObject(err)) return null
