@@ -2,17 +2,18 @@ import { isCjsEsmError } from './logHintForCjsEsmError'
 import { expect, describe, it } from 'vitest'
 
 describe('isCjsEsmError', () => {
+  // Classic: file extension missing in import path.
   it('works: ERR_MODULE_NOT_FOUND / ERR_LOAD_URL', () => {
-    // Classic broken npm package: file extension missing in import path.
     t(
       'vike-react',
-      // - Wrong import path, missing file extension. It should be:
-      //   ```diff
-      //   - import { getPageElement } from './getPageElement';
-      //   + import { getPageElement } from './getPageElement.js';
-      //   ```
-      //   (This error was artificially created by modifying node_modules/vike-react/dist/renderer/onRenderHtml.js)
-      // - node_modules/ land
+      /* node_modules/ land, wrong import path: missing file extension.
+       * - Error artificially created:
+       *   ```diff
+       *   // node_modules/vike-react/dist/renderer/onRenderHtml.js:
+       *   - import { getPageElement } from './getPageElement.js';
+       *   + import { getPageElement } from './getPageElement';
+       *   ```
+       */
       {
         message:
           "Cannot find module '/home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/getPageElement' imported from /home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js",
