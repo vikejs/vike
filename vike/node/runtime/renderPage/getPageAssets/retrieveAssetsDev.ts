@@ -46,7 +46,8 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
       //    - I believe some Vite plugins don't respect the \0 virtual module convention. What should we do then?
       //  - https://github.com/vikejs/vike/issues/1327
       //  - https://github.com/vikejs/vike/commit/3f7b9916dddc84e29e2c20d2b0df7211b6f1acbd
-      styleUrls.add(`/@id/${mod.url.substring(1)}`)
+      //  - https://github.com/vikejs/vike/issues/479#issuecomment-1870043943
+      styleUrls.add(`/@id/__x00__${mod.url.substring(1)}`)
     } else {
       // Is this useful? Maybe for virtual modules that don't respect the \0 virtual module convention?
       styleUrls.add(`/@id/${mod.url}`)
