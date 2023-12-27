@@ -3,7 +3,7 @@ export { logHintForCjsEsmError }
 export { isCjsEsmError }
 
 import pc from '@brillout/picocolors'
-import { assert, isNotNullish, isObject, unique } from '../utils.js'
+import { assert, formatHintLog, isNotNullish, isObject, unique } from '../utils.js'
 import { joinEnglish } from '../../plugin/utils.js'
 
 function logHintForCjsEsmError(error: unknown): void {
@@ -11,7 +11,7 @@ function logHintForCjsEsmError(error: unknown): void {
   if (!res) return
   const packageNames = res === true ? null : res
   const noPkg = !packageNames || packageNames.length === 0
-  const errMsg = [
+  let errMsg = [
     'The error above seems to be a CJS/ESM issue',
     !noPkg ? '' : ` with the package ${packageNames!.map(pc.cyan).join('/')}`,
     ', consider ',
@@ -24,6 +24,7 @@ function logHintForCjsEsmError(error: unknown): void {
     ` ${pc.cyan('ssr.noExternal')}`,
     ', see https://vike.dev/broken-npm-package'
   ].join('')
+  errMsg = formatHintLog(errMsg)
   console.error(errMsg)
 }
 

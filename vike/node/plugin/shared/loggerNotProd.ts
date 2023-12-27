@@ -25,6 +25,7 @@ import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/logge
 import {
   assert,
   assertIsNotProductionRuntime,
+  formatHintLog,
   getAssertErrMsg,
   isUserHookError,
   overwriteAssertProductionLogger,
@@ -249,13 +250,7 @@ function logErrorDebugNote() {
     if (store.errorDebugNoteAlreadyShown) return
     store.errorDebugNoteAlreadyShown = true
   }
-  const msg = pc.dim(
-    [
-      '┌──────────────────────────────────────────────────────────┐',
-      "│ Error isn't helpful? See https://vike.dev/errors#verbose │",
-      '└──────────────────────────────────────────────────────────┘'
-    ].join('\n')
-  )
+  const msg = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/errors#verbose"))
   logDirectly(msg, 'error')
 }
 
