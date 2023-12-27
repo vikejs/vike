@@ -3,8 +3,7 @@ export { logHintForCjsEsmError }
 export { isCjsEsmError }
 
 import pc from '@brillout/picocolors'
-import { assert, formatHintLog, isNotNullish, isObject, unique } from '../utils.js'
-import { joinEnglish } from '../../plugin/utils.js'
+import { assert, formatHintLog, isNotNullish, isObject, unique, joinEnglish } from '../utils.js'
 
 function logHintForCjsEsmError(error: unknown): void {
   const res = isCjsEsmError(error)
