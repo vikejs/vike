@@ -466,12 +466,16 @@ const { ApolloClient } = pkg;
     t(
       true,
       // https://github.com/brillout/vps-mui/tree/reprod-2
-      `
+      {
+        message: 'require is not a function',
+        code: undefined,
+        stack: `
 TypeError: require is not a function
-    at /home/xxx/tmp/vps-mui/node_modules/.pnpm/@mui+icons-material@5.11.16_@mui+material@5.13.2_@types+react@18.2.6_react@18.2.0/node_modules/@mui/icons-material/Menu.js:3:30
-    at instantiateModule (file:///home/xxx/tmp/vps-mui/node_modules/.pnpm/vite@4.3.8_@types+node@18.16.14/node_modules/vite/dist/node/chunks/dep-4d3eff22.js:54399:15)
-  at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at eval (/home/romu/tmp/vps-mui/node_modules/.pnpm/@mui+icons-material@5.11.16_@mui+material@5.13.2_@types+react@18.2.6_react@18.2.0/node_modules/@mui/icons-material/Menu.js:5:30)
+    at instantiateModule (file:///home/romu/tmp/vps-mui/node_modules/.pnpm/vite@4.3.8_@types+node@18.16.14/node_modules/vite/dist/node/chunks/dep-4d3eff22.js:54399:15)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
 `
+      }
     )
 
     t(
