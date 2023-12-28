@@ -7,20 +7,10 @@ import { assert } from '@brillout/docpress'
 type Repo = `${string}/${string}`
 type TimestampType = `${number}.${number}`
 
-function Example({
-  repo,
-  timestamp,
-  description
-}: {
-  repo: Repo
-  timestamp: TimestampType
-  description?: string | React.ReactNode
-}) {
-  let descriptionEl = !description ? null : <> - {description}</>
+function Example({ repo, timestamp }: { repo: Repo; timestamp: TimestampType }) {
   return (
     <>
       <Timestamp>{timestamp}</Timestamp> <Github>{repo}</Github>
-      {descriptionEl}
     </>
   )
 }
