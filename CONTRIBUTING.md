@@ -2,7 +2,7 @@
 
 - [System requirements](#system-requirements)
 - [Basics](#basics)
-- [Ceate new example](#create-new-example)
+- [Create new example](#create-new-example)
 - [Modify existing example](#modify-existing-example)
 
 <br/>
