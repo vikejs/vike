@@ -50,12 +50,13 @@ function logHint(hint: string) {
  */
 function isCjsEsmError(error: unknown): boolean | string[] {
   /* Collect errors for ./logHintForCjsEsmError.spec.ts
+  const err = error as any
   console.log(
     [
       '{',
-      `  message: ${JSON.stringify((error as Error).message)},`,
-      `  code: ${JSON.stringify((error as any).code)},`,
-      '  stack: `\n' + (error as Error).stack + '\n`',
+      `  message: ${JSON.stringify(err.message)},`,
+      `  code: ${JSON.stringify(err.code)},`,
+      '  stack: `\n' + err.stack + '\n`',
       '}'
     ].join('\n')
   )
