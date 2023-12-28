@@ -50,18 +50,8 @@ function logHint(hint: string) {
  */
 function isCjsEsmError(error: unknown): boolean | string[] {
   /* Collect errors for ./logHintForCjsEsmError.spec.ts
-  const err = error as any
-  console.log(
-    [
-      '{',
-      `  message: ${JSON.stringify(err.message)},`,
-      `  code: ${JSON.stringify(err.code)},`,
-      '  stack: `\n' + err.stack + '\n`',
-      '}'
-    ].join('\n')
-  )
+  collectError(error)
   //*/
-
   {
     const result = precise(error)
     if (result) return result
@@ -280,4 +270,33 @@ function isReactUndefinedComponentError(err: unknown): boolean {
   return errMsg.includes(
     'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)'
   )
+}
+
+function collectError(error: any) {
+  console.log(
+    [
+      '{',
+      `  message: ${JSON.stringify(error.message)},`,
+      `  code: ${JSON.stringify(error.code)},`,
+      '  stack: `\n' + error.stack + '\n`',
+      '}'
+    ].join('\n')
+  )
+  /* For reproductions using older vite-plugin-ssr versions, inject the following at `configResolved(config_)` in node_modules/vite-plugin-ssr/dist/cjs/node/plugin/plugins/devConfig/index.js
+       ```js
+       config_.logger.error = (msg, options) => {
+         const { error } = options;
+         if (error) return;
+         console.log(
+           [
+             '{',
+             `  message: ${JSON.stringify((error).message)},`,
+             `  code: ${JSON.stringify((error).code)},`,
+             '  stack: `\n' + (error).stack + '\n`',
+             '}'
+           ].join('\n')
+         );
+       };
+       ```
+  */
 }
