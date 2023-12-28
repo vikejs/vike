@@ -184,7 +184,7 @@ TypeError: Cannot read properties of undefined (reading 'someProp')
 
 
 
-### React undefined component
+### React invalid component
 
 The following is a very common React error and the root cause is usually a CJS/ESM issue.
 
@@ -212,17 +212,17 @@ Inject the following to gather further information.
 // ...
 
 // Insert this at this end of the file
-exports.createElement = debugEl(exports.createElement)
+exports.createElement = debugEl(exports.createElement);
 function debugEl(fn) {
   return (...args) => {
-    const el = args[0]
+    const el = args[0];
     if (typeof el === 'object' && !el.$$typeof && !el.getModuleId) {
       console.error('Error: INVALID REACT ELEMENT:');
-      console.error(el)
+      console.error(el);
       console.error(new Error('INVALID REACT ELEMENT, ORIGIN:'));
-      globalThis.process?.exit?.(1)
+      globalThis.process?.exit?.(1);
     }
-    return fn(...args)
+    return fn(...args);
   }
 }
 ```
@@ -233,17 +233,17 @@ function debugEl(fn) {
 // ...
 
 // Insert this at this end of the file
-exports.jsx = debugEl(exports.jsx)
+exports.jsx = debugEl(exports.jsx);
 function debugEl(fn) {
   return (...args) => {
-    const el = args[0]
+    const el = args[0];
     if (typeof el === 'object' && !el.$$typeof && !el.getModuleId) {
       console.error('Error: INVALID REACT ELEMENT:');
-      console.error(el)
+      console.error(el);
       console.error(new Error('INVALID REACT ELEMENT, ORIGIN:'));
-      globalThis.process?.exit?.(1)
+      globalThis.process?.exit?.(1);
     }
-    return fn(...args)
+    return fn(...args);
   }
 }
 ```

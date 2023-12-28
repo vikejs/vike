@@ -1,8 +1,9 @@
 export { logHintForCjsEsmError }
+
 // For ./logHintForCjsEsmError.spec.ts
 export { isCjsEsmError }
 export { getHintForCjsEsmError }
-export { isReactUndefinedComponentError }
+export { isReactInvalidComponentError }
 
 import pc from '@brillout/picocolors'
 import { assert, formatHintLog, isNotNullish, isObject, unique, joinEnglish } from '../utils.js'
@@ -13,8 +14,8 @@ function logHintForCjsEsmError(error: unknown): void {
 }
 
 function getHintForCjsEsmError(error: unknown): null | string {
-  if (isReactUndefinedComponentError(error)) {
-    const hint = 'To fix this error, see https://vike.dev/broken-npm-package#react-undefined-component'
+  if (isReactInvalidComponentError(error)) {
+    const hint = 'To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component'
     return hint
   }
 
@@ -159,15 +160,9 @@ function fuzzy(error: unknown) {
     `ERR_UNKNOWN_FILE_EXTENSION.*node_modules`,
     `ReferenceError: exports is not defined.*node_modules`
   ]
-  /*
-  const shouldShowHintOnlyIfPackageName = [
-      // `Cannot find module`,
-  ]
-  */
   const shouldShowHint = [
     `Error: Element type is invalid.*but got: undefined`,
     `TypeError: require is not a function`,
-    // `TypeError: Cannot read properties of undefined`,
     `ERR_REQUIRE_ESM`,
     ...shouldParsePackageName
   ]
@@ -264,7 +259,7 @@ function removeQuotes(packageName: string) {
   return packageName
 }
 
-function isReactUndefinedComponentError(err: unknown): boolean {
+function isReactInvalidComponentError(err: unknown): boolean {
   const errMsg = getErrMessage(err)
   if (!errMsg) return false
   return errMsg.includes(

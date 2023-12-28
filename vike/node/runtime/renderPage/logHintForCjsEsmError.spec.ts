@@ -1,11 +1,11 @@
 import { stripAnsi } from '../utils'
-import { isCjsEsmError, isReactUndefinedComponentError, getHintForCjsEsmError } from './logHintForCjsEsmError'
+import { isCjsEsmError, isReactInvalidComponentError, getHintForCjsEsmError } from './logHintForCjsEsmError'
 import { expect, describe, it, assert } from 'vitest'
 
 describe('isCjsEsmError()', () => {
   ERR_MODULE_NOT_FOUND()
   ERR_UNKNOWN_FILE_EXTENSION()
-  react_undefined_component()
+  react_invalid_component()
   TypeError_undefined()
   ERR_REQUIRE_ESM()
   fuzzy()
@@ -221,11 +221,11 @@ code: 'ERR_UNKNOWN_FILE_EXTENSION'
   })
 }
 
-// Classic: React's infamous undefined component error.
-function react_undefined_component() {
-  it('React: undefined component', () => {
+// Classic: React's infamous invalid component error.
+function react_invalid_component() {
+  it('React: invalid component', () => {
     expect(true).toBe(
-      isReactUndefinedComponentError(
+      isReactInvalidComponentError(
         /* node_modules/ land
          * - Error artificially created:
          *   ```diff
@@ -251,6 +251,28 @@ Error: Element type is invalid: expected a string (for built-in components) or a
     at /home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6904:12
     at scheduleWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:78:3)
 `
+        }
+      )
+    )
+    expect(true).toBe(
+      isReactInvalidComponentError(
+        // Also catch `but got: object`
+        {
+          message:
+            "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
+          code: undefined,
+          stack: ``
+        }
+      )
+    )
+    expect(true).toBe(
+      isReactInvalidComponentError(
+        // Or any other invalid value
+        {
+          message:
+            "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: foo. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
+          code: undefined,
+          stack: ``
         }
       )
     )
@@ -570,16 +592,28 @@ Instead rename index.js to end in .cjs, change the requiring code to use import(
 
 function logFixtures() {
   it('log fixtures', () => {
-    const log = getHintForCjsEsmError({
-      message:
-        "Cannot find module 'node_modules/vike-react/dist/renderer/getPageElement' imported from node_modules/vike-react/dist/renderer/onRenderHtml.js",
-      code: 'ERR_MODULE_NOT_FOUND',
-      stack: ''
-    })
-    expect(log).toBeTruthy()
-    assert(log)
-    expect(stripAnsi(log)).toMatchInlineSnapshot(
+    expect(
+      getLog({
+        message:
+          "Cannot find module 'node_modules/vike-react/dist/renderer/getPageElement' imported from node_modules/vike-react/dist/renderer/onRenderHtml.js",
+        code: 'ERR_MODULE_NOT_FOUND'
+      })
+    ).toMatchInlineSnapshot(
       '"Error could be a CJS/ESM issue, consider adding \'vike-react\' to ssr.noExternal, see https://vike.dev/broken-npm-package"'
     )
+
+    expect(
+      getLog({
+        message:
+          "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports."
+      })
+    ).toMatchInlineSnapshot('"To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component"')
   })
+}
+function getLog(error: Parameters<typeof getHintForCjsEsmError>[0]): string {
+  let log = getHintForCjsEsmError(error)
+  expect(log).toBeTruthy()
+  assert(log)
+  log = stripAnsi(log)
+  return log
 }
