@@ -544,6 +544,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Hono',
+    url: '/hono'
+  },
+  {
+    level: 2,
     title: 'Deno',
     url: '/deno'
   },
