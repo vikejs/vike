@@ -1,16 +1,21 @@
 export { logHintForCjsEsmError }
 // For ./logHintForCjsEsmError.spec.ts
 export { isCjsEsmError }
+export { getHintForCjsEsmError }
 export { isReactUndefinedComponentError }
 
 import pc from '@brillout/picocolors'
 import { assert, formatHintLog, isNotNullish, isObject, unique, joinEnglish } from '../utils.js'
 
 function logHintForCjsEsmError(error: unknown): void {
+  const hint = getHintForCjsEsmError(error)
+  if (hint) logHint(hint)
+}
+
+function getHintForCjsEsmError(error: unknown): null | string {
   if (isReactUndefinedComponentError(error)) {
     const hint = 'To fix this error, see https://vike.dev/broken-npm-package#react-undefined-component'
-    logHint(hint)
-    return
+    return hint
   }
 
   const res = isCjsEsmError(error)
@@ -27,9 +32,10 @@ function logHintForCjsEsmError(error: unknown): void {
       ` ${pc.cyan('ssr.noExternal')}`,
       ', see https://vike.dev/broken-npm-package'
     ].join('')
-    logHint(hint)
-    return
+    return hint
   }
+
+  return null
 }
 
 function logHint(hint: string) {

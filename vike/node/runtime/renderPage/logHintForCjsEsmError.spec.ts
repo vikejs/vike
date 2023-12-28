@@ -1,6 +1,6 @@
-import { isCjsEsmError } from './logHintForCjsEsmError'
-import { isReactUndefinedComponentError } from './logHintForCjsEsmError'
-import { expect, describe, it } from 'vitest'
+import { stripAnsi } from '../utils'
+import { isCjsEsmError, isReactUndefinedComponentError, getHintForCjsEsmError } from './logHintForCjsEsmError'
+import { expect, describe, it, assert } from 'vitest'
 
 describe('isCjsEsmError()', () => {
   ERR_MODULE_NOT_FOUND()
@@ -12,6 +12,10 @@ describe('isCjsEsmError()', () => {
   skipsUserLandErrors()
   handlesEdgeCases()
   isntPerfect()
+})
+
+describe('getHintForCjsEsmError()', () => {
+  logFixtures()
 })
 
 function t(
@@ -556,6 +560,22 @@ Instead rename index.js to end in .cjs, change the requiring code to use import(
     at Object.require.extensions.<computed> [as .js] (E:\\Javascript\\xxx\\node_modules\\vite\\dist\\node\\chunks\\dep-36bf480c.js:77283:20)
     at Module.load (internal/modules/cjs/loader.js:928:32)
 `
+    )
+  })
+}
+
+function logFixtures() {
+  it('log fixtures', () => {
+    const log = getHintForCjsEsmError({
+      message:
+        "Cannot find module 'node_modules/vike-react/dist/renderer/getPageElement' imported from node_modules/vike-react/dist/renderer/onRenderHtml.js",
+      code: 'ERR_MODULE_NOT_FOUND',
+      stack: ''
+    })
+    expect(log).toBeTruthy()
+    assert(log)
+    expect(stripAnsi(log)).toMatchInlineSnapshot(
+      '"Error could be a CJS/ESM issue, consider adding \'vike-react\' to ssr.noExternal, see https://vike.dev/broken-npm-package"'
     )
   })
 }
