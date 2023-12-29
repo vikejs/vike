@@ -17,7 +17,7 @@ import {
   getPageContextFromHooks_errorPage,
   getPageContextFromHooks_firstRender,
   getPageContextFromHooks_uponNavigation,
-  isAlreadyServerSideRouted
+  isServerSideRouted
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
 import { addLinkPrefetchHandlers } from './prefetch.js'
@@ -349,7 +349,7 @@ function shouldSwallowAndInterrupt(
   pageContext: { urlOriginal: string },
   isFirstRender: boolean
 ): boolean {
-  if (isAlreadyServerSideRouted(err)) return true
+  if (isServerSideRouted(err)) return true
   if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return true
   return false
 }

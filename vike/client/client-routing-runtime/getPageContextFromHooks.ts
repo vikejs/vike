@@ -1,7 +1,7 @@
 export { getPageContextFromHooks_firstRender }
 export { getPageContextFromHooks_uponNavigation }
 export { getPageContextFromHooks_errorPage }
-export { isAlreadyServerSideRouted }
+export { isServerSideRouted as isServerSideRouted }
 export type { PageContextFromHooks }
 
 import {
@@ -339,7 +339,7 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
     // Static hosts + page doesn't exist
     if (!isCorrect && response.status === 404) {
       serverSideRouteTo(pageContext.urlOriginal)
-      throw AlreadyServerSideRouted()
+      throw ServerSideRouted()
     }
 
     assertUsage(
@@ -368,10 +368,10 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
   return pageContextFromServer
 }
 
-function isAlreadyServerSideRouted(err: unknown): boolean {
+function isServerSideRouted(err: unknown): boolean {
   return isObject(err) && !!err._alreadyServerSideRouted
 }
-function AlreadyServerSideRouted() {
+function ServerSideRouted() {
   const err = new Error("Page doesn't exist")
   Object.assign(err, { _alreadyServerSideRouted: true })
   return err
