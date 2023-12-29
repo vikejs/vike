@@ -240,11 +240,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     try {
       renderState.pageContextFromHooks = await getPageContextFromHooks_errorPage(pageContext)
-    } catch (err2: unknown) {
+    } catch (errErrorPage: unknown) {
       // - When user hasn't defined a `_error.page.js` file
       // - Some unpexected vike internal error
 
-      if (shouldSwallowAndInterrupt(err2, pageContext, isFirstRender)) return
+      if (shouldSwallowAndInterrupt(errErrorPage, pageContext, isFirstRender)) return
 
       if (!isFirstRender) {
         setTimeout(() => {
@@ -253,9 +253,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         }, 0)
       }
 
-      if (!isSameErrorMessage(err, err2)) {
+      if (!isSameErrorMessage(err, errErrorPage)) {
         // We `throw err2` instead of `console.error(err2)` so that, when using `navigate()`, the error propagates to the user `navigate()` call
-        throw err2
+        throw errErrorPage
       } else {
         // Abort
         return
