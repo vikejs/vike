@@ -267,6 +267,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     const { pageContextFromHooks } = renderState
     assert(pageContextFromHooks)
+    assert(!('urlOriginal' in pageContextFromHooks))
     objectAssign(pageContext, pageContextFromHooks)
     await startRendering(pageContext)
   }
