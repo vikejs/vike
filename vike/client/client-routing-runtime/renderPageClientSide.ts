@@ -5,7 +5,7 @@ export { disableClientRouting }
 import {
   assert,
   getCurrentUrl,
-  isSameError,
+  isSameErrorMessage,
   objectAssign,
   serverSideRouteTo,
   getGlobalObject,
@@ -253,7 +253,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         }, 0)
       }
 
-      if (!isSameError(err, err2)) {
+      if (!isSameErrorMessage(err, err2)) {
         throw err2
       } else {
         // Abort
