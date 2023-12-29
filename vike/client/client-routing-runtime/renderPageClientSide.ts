@@ -71,6 +71,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     isClientSideNavigation = true
   } = renderArgs
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
+  const callTransitionHooks = !isFirstRender
 
   assert(isClientSideNavigation === !isFirstRender)
   assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
@@ -141,7 +142,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   }
 
   // onPageTransitionStart()
-  const callTransitionHooks = !isFirstRender
   if (callTransitionHooks) {
     if (!globalObject.isTransitioning) {
       if (globalObject.onPageTransitionStart) {
