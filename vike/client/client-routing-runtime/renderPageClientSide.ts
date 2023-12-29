@@ -242,7 +242,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       renderState.pageContextFromHooks = await getPageContextFromHooks_errorPage(pageContext)
     } catch (errErrorPage: unknown) {
       // - When user hasn't defined a `_error.page.js` file
-      // - Some unpexected vike internal error
+      // - Some Vike unpexected internal error
 
       if (shouldSwallowAndInterrupt(errErrorPage, pageContext, isFirstRender)) return
 
@@ -257,7 +257,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         // We `throw err2` instead of `console.error(err2)` so that, when using `navigate()`, the error propagates to the user `navigate()` call
         throw errErrorPage
       } else {
-        // Abort
+        /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
+         * - We risk running into an infinite loop of reloads which would overload the server.
+         * - An infinite reloading page is a even worse UX than a blank page.
+        serverSideRouteTo(urlOriginal)
+        */
         return
       }
     }
