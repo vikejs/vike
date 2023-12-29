@@ -149,26 +149,26 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
       if (isRenderOutdated()) return
     } else {
-        const { pageContextFromRoute } = renderState
-        assert(pageContextFromRoute)
-        assert(pageContextFromRoute._pageId)
-        assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
-        assert(!('urlOriginal' in pageContextFromRoute))
-        objectAssign(pageContext, pageContextFromRoute)
-        try {
-          renderState.pageContextFromHooks = await getPageContextFromHooks_uponNavigation(pageContext)
-        } catch (err) {
-          renderErrorPage(err)
-          await renderErrorPage(err)
-        }
-        if (isRenderOutdated()) return
+      const { pageContextFromRoute } = renderState
+      assert(pageContextFromRoute)
+      assert(pageContextFromRoute._pageId)
+      assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
+      assert(!('urlOriginal' in pageContextFromRoute))
+      objectAssign(pageContext, pageContextFromRoute)
+      try {
+        renderState.pageContextFromHooks = await getPageContextFromHooks_uponNavigation(pageContext)
+      } catch (err) {
+        renderErrorPage(err)
+        await renderErrorPage(err)
+      }
+      if (isRenderOutdated()) return
     }
 
-      const { pageContextFromHooks } = renderState
-      assert(pageContextFromHooks)
-      assert(!('urlOriginal' in pageContextFromHooks))
-      objectAssign(pageContext, pageContextFromHooks)
-      await startRendering(pageContext)
+    const { pageContextFromHooks } = renderState
+    assert(pageContextFromHooks)
+    assert(!('urlOriginal' in pageContextFromHooks))
+    objectAssign(pageContext, pageContextFromHooks)
+    await startRendering(pageContext)
   }
 
   return
