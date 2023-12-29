@@ -1,13 +1,12 @@
 export { getPrefetchSettings }
-export type { PrefetchStaticAssets }
 
+import type { PrefetchStaticAssets } from '../../../shared/types/PrefetchStaticAssets.js'
 import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '../utils.js'
 
 type PageContextPrefetch = {
   exports: Record<string, unknown>
 }
 
-type PrefetchStaticAssets = false | 'hover' | 'viewport'
 type PrefetchSettings = {
   prefetchStaticAssets: PrefetchStaticAssets
 }

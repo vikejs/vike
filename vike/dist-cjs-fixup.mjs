@@ -20,11 +20,6 @@ async function shimImportMetaUrl() {
   console.log(`✅ ${sourceDir}/ shimmed import.meta.url`)
 }
 
-async function slim() {
-  await removeDirectory(sourceDir + '/client')
-  console.log(`✅ ${sourceDir}/ slimmed down by removing ${sourceDir}/client/`)
-}
-
 async function replaceImportMetaWithFilename(filePath) {
   const fileContent = await fs.readFile(filePath, 'utf8')
   const modifiedContent = fileContent.replace(/import\.meta\.url/g, '`file://${__filename}`')
@@ -44,21 +39,4 @@ async function processFiles(directoryPath) {
       await replaceImportMetaWithFilename(filePath)
     }
   }
-}
-
-async function removeDirectory(dirPath) {
-  const files = await fs.readdir(dirPath)
-
-  for (const file of files) {
-    const filePath = path.join(dirPath, file)
-    const stats = await fs.lstat(filePath)
-
-    if (stats.isDirectory()) {
-      await removeDirectory(filePath)
-    } else {
-      await fs.unlink(filePath)
-    }
-  }
-
-  await fs.rmdir(dirPath)
 }
