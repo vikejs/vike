@@ -86,24 +86,16 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (isRenderOutdated()) return
 
     let renderState: {
-      err?: unknown
       pageContextFromRoute?: PageContextFromRoute
       pageContextFromHooks?: PageContextFromHooks
     } = {}
-    const onError = (err: unknown) => {
-      assert(err)
-      assert(!('err' in renderState))
-      assert(!('errorWhileRendering' in pageContext))
-      renderState.err = err
-      pageContext.errorWhileRendering = err
-    }
-
     if (!isFirstRender) {
       // Route
       try {
         renderState = { pageContextFromRoute: await route(pageContext) }
       } catch (err) {
-        onError(err)
+        await renderErrorPage(err)
+        return
       }
       if (isRenderOutdated()) return
 
@@ -149,15 +141,14 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     if (isFirstRender) {
       assert(!renderState.pageContextFromRoute)
-      assert(!renderState.err)
       try {
         renderState.pageContextFromHooks = await getPageContextFromHooks_firstRender(pageContext)
       } catch (err) {
-        onError(err)
+        await renderErrorPage(err)
+        return
       }
       if (isRenderOutdated()) return
     } else {
-      if (!renderState.err) {
         const { pageContextFromRoute } = renderState
         assert(pageContextFromRoute)
         assert(pageContextFromRoute._pageId)
@@ -167,21 +158,17 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         try {
           renderState.pageContextFromHooks = await getPageContextFromHooks_uponNavigation(pageContext)
         } catch (err) {
-          onError(err)
+          renderErrorPage(err)
+          await renderErrorPage(err)
         }
         if (isRenderOutdated()) return
-      }
     }
 
-    if ('err' in renderState) {
-      await renderErrorPage(renderState.err)
-    } else {
       const { pageContextFromHooks } = renderState
       assert(pageContextFromHooks)
       assert(!('urlOriginal' in pageContextFromHooks))
       objectAssign(pageContext, pageContextFromHooks)
       await startRendering(pageContext)
-    }
   }
 
   return
@@ -203,6 +190,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   async function renderErrorPage(err: unknown) {
     const pageContext = await getPageContextBegin()
     if (isRenderOutdated()) return
+
+    assert(err)
+    assert(!('errorWhileRendering' in pageContext))
+    pageContext.errorWhileRendering = err
 
     if (!isAbortError(err)) {
       // We don't swallow 404 errors:
