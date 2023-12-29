@@ -162,8 +162,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       try {
         renderState.pageContextFromHooks = await getPageContextFromHooks_uponNavigation(pageContext)
       } catch (err) {
-        renderErrorPage(err)
         await renderErrorPage(err)
+        return
       }
       if (isRenderOutdated()) return
     }
