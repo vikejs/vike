@@ -40,7 +40,6 @@ import {
   assertWarning,
   isCallable,
   createDebugger,
-  dynamicImport,
   isBug
 } from '../utils.js'
 import { HtmlRender } from './renderHtml.js'
@@ -50,6 +49,7 @@ import {
   StreamReactStreaming,
   streamReactStreamingToString
 } from './stream/react-streaming.js'
+import { import_ } from '@brillout/import'
 import type { Readable as Readable_, Writable as Writable_ } from 'node:stream'
 import pc from '@brillout/picocolors'
 
@@ -915,7 +915,7 @@ async function loadStreamNodeModule(): Promise<{
   Readable: typeof Readable_
   Writable: typeof Writable_
 }> {
-  const streamModule = await dynamicImport<typeof import('stream')>('stream')
+  const streamModule = (await import_('stream')).default as Awaited<typeof import('stream')>
   const { Readable, Writable } = streamModule
   return { Readable, Writable }
 }
