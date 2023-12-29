@@ -279,10 +279,13 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     assert(pageContextFromHooks)
     assert(!('urlOriginal' in pageContextFromHooks))
     objectAssign(pageContext, pageContextFromHooks)
-    await renderPageView(pageContext)
+    await renderPageView(pageContext, true)
   }
 
-  async function renderPageView(pageContext: PageContextBeforeRenderClient & { urlPathname: string }) {
+  async function renderPageView(
+    pageContext: PageContextBeforeRenderClient & { urlPathname: string },
+    isErrorPage?: true
+  ) {
     // Set global onPageTransitionStart()
     assertHook(pageContext, 'onPageTransitionStart')
     const onPageTransitionStartHook = getHook(pageContext, 'onPageTransitionStart')
@@ -312,7 +315,15 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     globalObject.previousPageContext = pageContext
     assert(globalObject.renderPromise === undefined)
     globalObject.renderPromise = (async () => {
-      await executeOnRenderClientHook(pageContext, true)
+      try {
+        await executeOnRenderClientHook(pageContext, true)
+      } catch (err) {
+        if (!isErrorPage) {
+          renderErrorPage(err)
+        } else {
+          throw err
+        }
+      }
       addLinkPrefetchHandlers(pageContext)
       globalObject.renderPromise = undefined
     })()
