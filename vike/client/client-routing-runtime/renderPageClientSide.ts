@@ -259,79 +259,86 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
     if (isRenderOutdated()) return
   }
-  const { pageContextFromHooks } = renderState
-  assert(pageContextFromHooks)
-  objectAssign(pageContext, pageContextFromHooks)
 
-  // Set global onPageTransitionStart()
-  assertHook(pageContext, 'onPageTransitionStart')
-  const onPageTransitionStartHook = getHook(pageContext, 'onPageTransitionStart')
-  globalObject.onPageTransitionStart = onPageTransitionStartHook
+  await startRendering()
 
-  // Set global hydrationCanBeAborted
-  if (pageContext.exports.hydrationCanBeAborted) {
-    setHydrationCanBeAborted()
-  } else {
-    assertWarning(
-      !isReact(),
-      'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vike.dev/hydrationCanBeAborted',
-      { onlyOnce: true }
-    )
-  }
-  // There wasn't any `await` but result may change because we just called setHydrationCanBeAborted()
-  if (isRenderOutdated()) return
+  return
 
-  // We use globalObject.renderPromise in order to ensure that there is never two concurrent onRenderClient() calls
-  if (globalObject.renderPromise) {
-    // Make sure that the previous render has finished
+  async function startRendering() {
+    const { pageContextFromHooks } = renderState
+    assert(pageContextFromHooks)
+    objectAssign(pageContext, pageContextFromHooks)
+
+    // Set global onPageTransitionStart()
+    assertHook(pageContext, 'onPageTransitionStart')
+    const onPageTransitionStartHook = getHook(pageContext, 'onPageTransitionStart')
+    globalObject.onPageTransitionStart = onPageTransitionStartHook
+
+    // Set global hydrationCanBeAborted
+    if (pageContext.exports.hydrationCanBeAborted) {
+      setHydrationCanBeAborted()
+    } else {
+      assertWarning(
+        !isReact(),
+        'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vike.dev/hydrationCanBeAborted',
+        { onlyOnce: true }
+      )
+    }
+    // There wasn't any `await` but result may change because we just called setHydrationCanBeAborted()
+    if (isRenderOutdated()) return
+
+    // We use globalObject.renderPromise in order to ensure that there is never two concurrent onRenderClient() calls
+    if (globalObject.renderPromise) {
+      // Make sure that the previous render has finished
+      await globalObject.renderPromise
+      assert(globalObject.renderPromise === undefined)
+      if (isRenderOutdated()) return
+    }
+    changeUrl(urlOriginal, overwriteLastHistoryEntry)
+    globalObject.previousPageContext = pageContext
+    assert(globalObject.renderPromise === undefined)
+    globalObject.renderPromise = (async () => {
+      await executeOnRenderClientHook(pageContext, true)
+      addLinkPrefetchHandlers(pageContext)
+      globalObject.renderPromise = undefined
+    })()
     await globalObject.renderPromise
     assert(globalObject.renderPromise === undefined)
-    if (isRenderOutdated()) return
-  }
-  changeUrl(urlOriginal, overwriteLastHistoryEntry)
-  globalObject.previousPageContext = pageContext
-  assert(globalObject.renderPromise === undefined)
-  globalObject.renderPromise = (async () => {
-    await executeOnRenderClientHook(pageContext, true)
-    addLinkPrefetchHandlers(pageContext)
-    globalObject.renderPromise = undefined
-  })()
-  await globalObject.renderPromise
-  assert(globalObject.renderPromise === undefined)
-  /* We don't abort in order to ensure that onHydrationEnd() is called: we abort only after onHydrationEnd() is called.
+    /* We don't abort in order to ensure that onHydrationEnd() is called: we abort only after onHydrationEnd() is called.
   if (isRenderOutdated(true)) return
   */
 
-  // onHydrationEnd()
-  if (isFirstRender) {
-    assertHook(pageContext, 'onHydrationEnd')
-    const hook = getHook(pageContext, 'onHydrationEnd')
-    if (hook) {
-      const { hookFn } = hook
-      await executeHook(() => hookFn(pageContext), hook)
-      if (isRenderOutdated(true)) return
+    // onHydrationEnd()
+    if (isFirstRender) {
+      assertHook(pageContext, 'onHydrationEnd')
+      const hook = getHook(pageContext, 'onHydrationEnd')
+      if (hook) {
+        const { hookFn } = hook
+        await executeHook(() => hookFn(pageContext), hook)
+        if (isRenderOutdated(true)) return
+      }
     }
-  }
 
-  // We abort only after onHydrationEnd() is called
-  if (isRenderOutdated(true)) return
+    // We abort only after onHydrationEnd() is called
+    if (isRenderOutdated(true)) return
 
-  // onPageTransitionEnd()
-  if (callTransitionHooks) {
-    assertHook(pageContext, 'onPageTransitionEnd')
-    const hook = getHook(pageContext, 'onPageTransitionEnd')
-    if (hook) {
-      const { hookFn } = hook
-      await executeHook(() => hookFn(pageContext), hook)
-      if (isRenderOutdated(true)) return
+    // onPageTransitionEnd()
+    if (callTransitionHooks) {
+      assertHook(pageContext, 'onPageTransitionEnd')
+      const hook = getHook(pageContext, 'onPageTransitionEnd')
+      if (hook) {
+        const { hookFn } = hook
+        await executeHook(() => hookFn(pageContext), hook)
+        if (isRenderOutdated(true)) return
+      }
+      globalObject.isTransitioning = undefined
     }
-    globalObject.isTransitioning = undefined
-  }
 
-  // Page scrolling
-  setScrollPosition(scrollTarget)
-  browserNativeScrollRestoration_disable()
-  setInitialRenderIsDone()
+    // Page scrolling
+    setScrollPosition(scrollTarget)
+    browserNativeScrollRestoration_disable()
+    setInitialRenderIsDone()
+  }
 }
 
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
