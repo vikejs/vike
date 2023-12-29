@@ -82,18 +82,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   }
 
   {
-    const pageContext = await createPageContext(urlOriginal)
+    const pageContext = await getPageContextBegin()
     if (isRenderOutdated()) return
-    objectAssign(pageContext, {
-      isBackwardNavigation,
-      isClientSideNavigation
-    })
-
-    {
-      const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
-      assert(!('urlOriginal' in pageContextFromAllRewrites))
-      objectAssign(pageContext, pageContextFromAllRewrites)
-    }
 
     let renderState: {
       err?: unknown
@@ -274,9 +264,21 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
   return
 
-  async function startRendering(
-    pageContext: PageContextBeforeRenderClient & { urlPathname: string }
-  ) {
+  async function getPageContextBegin() {
+    const pageContext = await createPageContext(urlOriginal)
+    objectAssign(pageContext, {
+      isBackwardNavigation,
+      isClientSideNavigation
+    })
+    {
+      const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
+      assert(!('urlOriginal' in pageContextFromAllRewrites))
+      objectAssign(pageContext, pageContextFromAllRewrites)
+    }
+    return pageContext
+  }
+
+  async function startRendering(pageContext: PageContextBeforeRenderClient & { urlPathname: string }) {
     // Set global onPageTransitionStart()
     assertHook(pageContext, 'onPageTransitionStart')
     const onPageTransitionStartHook = getHook(pageContext, 'onPageTransitionStart')
