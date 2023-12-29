@@ -174,7 +174,22 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
 
     if ('err' in renderState) {
-      const { err } = renderState
+      await renderErrorPage(renderState.err)
+    } else {
+    const { pageContextFromHooks } = renderState
+    assert(pageContextFromHooks)
+    assert(!('urlOriginal' in pageContextFromHooks))
+    objectAssign(pageContext, pageContextFromHooks)
+    await startRendering(pageContext)
+    }
+  }
+
+  return
+
+  async function renderErrorPage(err: unknown) {
+    const pageContext = await getPageContextBegin()
+    if (isRenderOutdated()) return
+
       if (!isAbortError(err)) {
         // We don't swallow 404 errors:
         //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
@@ -233,8 +248,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         objectAssign(pageContext, { is404: false })
       }
 
+      let pageContextFromHooks: PageContextFromHooks
       try {
-        renderState.pageContextFromHooks = await getPageContextFromHooks_errorPage(pageContext)
+        pageContextFromHooks = await getPageContextFromHooks_errorPage(pageContext)
       } catch (errErrorPage: unknown) {
         // - When user hasn't defined a `_error.page.js` file
         // - Some Vike unpexected internal error
@@ -253,16 +269,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         throw errErrorPage
       }
       if (isRenderOutdated()) return
-    }
 
-    const { pageContextFromHooks } = renderState
     assert(pageContextFromHooks)
     assert(!('urlOriginal' in pageContextFromHooks))
     objectAssign(pageContext, pageContextFromHooks)
     await startRendering(pageContext)
   }
-
-  return
 
   async function getPageContextBegin() {
     const pageContext = await createPageContext(urlOriginal)
