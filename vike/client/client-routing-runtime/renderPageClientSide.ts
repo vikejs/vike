@@ -72,7 +72,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   } = renderArgs
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
   const callTransitionHooks = !isFirstRender
-
   assert(isClientSideNavigation === !isFirstRender)
   assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
 
@@ -172,7 +171,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     assert(pageContextFromHooks)
     assert(!('urlOriginal' in pageContextFromHooks))
     objectAssign(pageContext, pageContextFromHooks)
-    await startRendering(pageContext)
+    await renderPageView(pageContext)
   }
 
   async function getPageContextBegin() {
@@ -280,10 +279,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     assert(pageContextFromHooks)
     assert(!('urlOriginal' in pageContextFromHooks))
     objectAssign(pageContext, pageContextFromHooks)
-    await startRendering(pageContext)
+    await renderPageView(pageContext)
   }
 
-  async function startRendering(pageContext: PageContextBeforeRenderClient & { urlPathname: string }) {
+  async function renderPageView(pageContext: PageContextBeforeRenderClient & { urlPathname: string }) {
     // Set global onPageTransitionStart()
     assertHook(pageContext, 'onPageTransitionStart')
     const onPageTransitionStartHook = getHook(pageContext, 'onPageTransitionStart')
