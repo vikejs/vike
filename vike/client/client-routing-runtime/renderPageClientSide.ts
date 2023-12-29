@@ -187,7 +187,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
       console.error(err)
     } else {
-      // We swallow throw redirect()/render() called by client-side hooks onBeforeRender(), data() and guard()
+      // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
       // We handle the abort error down below.
     }
 
@@ -254,6 +254,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
 
       if (!isSameErrorMessage(err, err2)) {
+        // We `throw err2` instead of `console.error(err2)` so that, when using `navigate()`, the error propagates to the user `navigate()` call
         throw err2
       } else {
         // Abort
