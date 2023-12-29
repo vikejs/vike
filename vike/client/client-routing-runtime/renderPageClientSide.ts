@@ -38,7 +38,6 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
-import type { PageContextExports } from '../../shared/getPageFiles.js'
 
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Hook | null
@@ -92,6 +91,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     {
       const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
+      assert(!('urlOriginal' in pageContextFromAllRewrites))
       objectAssign(pageContext, pageContextFromAllRewrites)
     }
 
@@ -120,6 +120,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // Check whether rendering should be skipped
       if (renderState.pageContextFromRoute) {
         const { pageContextFromRoute } = renderState
+        assert(!('urlOriginal' in pageContextFromRoute))
         objectAssign(pageContext, pageContextFromRoute)
         let isClientRoutable: boolean
         if (!pageContextFromRoute._pageId) {
@@ -171,6 +172,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         assert(pageContextFromRoute)
         assert(pageContextFromRoute._pageId)
         assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
+        assert(!('urlOriginal' in pageContextFromRoute))
         objectAssign(pageContext, pageContextFromRoute)
         try {
           renderState.pageContextFromHooks = await getPageContextFromHooks_uponNavigation(pageContext)
@@ -232,6 +234,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
         // throw render(statusCode)
         assert(pageContextAbort.abortStatusCode)
+        assert(!('urlOriginal' in pageContextAbort))
         objectAssign(pageContext, pageContextAbort)
         if (pageContextAbort.abortStatusCode === 404) {
           objectAssign(pageContext, { is404: true })
