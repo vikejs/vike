@@ -1,9 +1,9 @@
 import { isObject } from './isObject.js'
 import { deepEqual } from './deepEqual.js'
 
-export { isEquivalentError }
+export { isSameError }
 
-function isEquivalentError(err1: unknown, err2: unknown) {
+function isSameError(err1: unknown, err2: unknown) {
   return (
     isObject(err1) &&
     isObject(err2) &&
