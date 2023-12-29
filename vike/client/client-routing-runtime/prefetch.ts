@@ -81,7 +81,6 @@ async function prefetch(url: string): Promise<void> {
 
 function addLinkPrefetchHandlers(pageContext: {
   exports: Record<string, unknown>
-  _isProduction: boolean
   urlPathname: string
 }) {
   // Current URL is already prefetched

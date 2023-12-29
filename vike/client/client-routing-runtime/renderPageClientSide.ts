@@ -199,7 +199,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
       if (isAbortError(err)) {
         const errAbort = err
-        logAbortErrorHandled(err, pageContext._isProduction, pageContext)
+        logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
         const pageContextAbort = errAbort._pageContextAbort
 
         // throw render('/some-url')
@@ -275,7 +275,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   return
 
   async function startRendering(
-    pageContext: PageContextBeforeRenderClient & { _isProduction: boolean; urlPathname: string }
+    pageContext: PageContextBeforeRenderClient & { urlPathname: string }
   ) {
     // Set global onPageTransitionStart()
     assertHook(pageContext, 'onPageTransitionStart')

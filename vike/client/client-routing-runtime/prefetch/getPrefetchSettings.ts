@@ -5,7 +5,6 @@ import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '.
 
 type PageContextPrefetch = {
   exports: Record<string, unknown>
-  _isProduction: boolean
 }
 
 type PrefetchStaticAssets = false | 'hover' | 'viewport'
@@ -15,7 +14,7 @@ type PrefetchSettings = {
 
 function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchSettings {
   let prefetchStaticAssets = getPrefetchStaticAssets(pageContext, linkTag)
-  if (prefetchStaticAssets === 'viewport' && !pageContext._isProduction) {
+  if (prefetchStaticAssets === 'viewport' && import.meta.env.DEV) {
     assertInfo(false, 'Viewport prefetching is disabled in development', { onlyOnce: true })
     prefetchStaticAssets = 'hover'
   }

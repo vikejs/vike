@@ -22,15 +22,12 @@ async function createPageContext(urlOriginal: string) {
   )
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))
-  // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
-  const isProd: boolean = import.meta.env.PROD
   const pageContext = {
     urlOriginal,
     _objectCreatedByVike: true,
     _urlHandler: null,
     _urlRewrite: null,
     _baseServer: baseServer,
-    _isProduction: isProd,
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
