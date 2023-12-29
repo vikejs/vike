@@ -245,18 +245,17 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // - Some Vike unpexected internal error
 
       if (shouldSwallowAndInterrupt(errErrorPage, pageContext, isFirstRender)) return
-
-      if (!isSameErrorMessage(err, errErrorPage)) {
-        // We `throw err2` instead of `console.error(err2)` so that, when using `navigate()`, the error propagates to the user `navigate()` call
-        throw errErrorPage
-      } else {
+      if (isSameErrorMessage(err, errErrorPage)) {
         /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
-         * - We risk running into an infinite loop of reloads which would overload the server.
-         * - An infinite reloading page is a even worse UX than a blank page.
+           - We risk running into an infinite loop of reloads which would overload the server.
+           - An infinite reloading page is a even worse UX than a blank page.
         serverSideRouteTo(urlOriginal)
         */
         return
       }
+
+      // We `throw err2` instead of `console.error(err2)` so that, when using `navigate()`, the error propagates to the user `navigate()` call
+      throw errErrorPage
     }
     if (isRenderOutdated()) return
   }
