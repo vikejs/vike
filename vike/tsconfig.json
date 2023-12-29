@@ -20,5 +20,5 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "exclude": ["**/*.spec.ts", "**/node_modules", "**/dist/", "**/.*/"]
+  "exclude": ["**/*.spec.ts", "./node_modules/", "./dist/"]
 }
