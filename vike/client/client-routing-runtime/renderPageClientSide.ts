@@ -22,7 +22,7 @@ import {
 import { createPageContext } from './createPageContext.js'
 import { addLinkPrefetchHandlers } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
-import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
+import { PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { type Hook, assertHook, getHook } from '../../shared/hooks/getHook.js'
 import { isErrorFetchingStaticAssets } from '../shared/loadPageFilesClientSide.js'
 import { pushHistory } from './history.js'
@@ -31,13 +31,14 @@ import {
   getPageContextFromAllRewrites,
   isAbortError,
   logAbortErrorHandled,
-  PageContextFromRewrite
+  type PageContextFromRewrite
 } from '../../shared/route/abort.js'
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
+import type {PageContextExports} from '../../shared/getPageFiles.js'
 
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Hook | null
@@ -81,6 +82,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     return
   }
 
+  {
   const pageContext = await createPageContext(urlOriginal)
   if (isRenderOutdated()) return
   objectAssign(pageContext, {
@@ -260,15 +262,15 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (isRenderOutdated()) return
   }
 
-  await startRendering()
-
-  return
-
-  async function startRendering() {
     const { pageContextFromHooks } = renderState
     assert(pageContextFromHooks)
     objectAssign(pageContext, pageContextFromHooks)
+    await startRendering(pageContext)
+  }
 
+  return
+
+  async function startRendering(pageContext: PageContextBeforeRenderClient & { _isProduction: boolean, urlPathname: string }) {
     // Set global onPageTransitionStart()
     assertHook(pageContext, 'onPageTransitionStart')
     const onPageTransitionStartHook = getHook(pageContext, 'onPageTransitionStart')
