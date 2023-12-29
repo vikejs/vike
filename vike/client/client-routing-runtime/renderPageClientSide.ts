@@ -176,105 +176,15 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if ('err' in renderState) {
       await renderErrorPage(renderState.err)
     } else {
-    const { pageContextFromHooks } = renderState
-    assert(pageContextFromHooks)
-    assert(!('urlOriginal' in pageContextFromHooks))
-    objectAssign(pageContext, pageContextFromHooks)
-    await startRendering(pageContext)
+      const { pageContextFromHooks } = renderState
+      assert(pageContextFromHooks)
+      assert(!('urlOriginal' in pageContextFromHooks))
+      objectAssign(pageContext, pageContextFromHooks)
+      await startRendering(pageContext)
     }
   }
 
   return
-
-  async function renderErrorPage(err: unknown) {
-    const pageContext = await getPageContextBegin()
-    if (isRenderOutdated()) return
-
-      if (!isAbortError(err)) {
-        // We don't swallow 404 errors:
-        //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
-        //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
-        console.error(err)
-      } else {
-        // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
-        // We handle the abort error down below.
-      }
-
-      if (shouldSwallowAndInterrupt(err, pageContext, isFirstRender)) return
-
-      if (isAbortError(err)) {
-        const errAbort = err
-        logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
-        const pageContextAbort = errAbort._pageContextAbort
-
-        // throw render('/some-url')
-        if (pageContextAbort._urlRewrite) {
-          await renderPageClientSide({
-            ...renderArgs,
-            scrollTarget: 'scroll-to-top-or-hash',
-            pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort]
-          })
-          return
-        }
-
-        // throw redirect('/some-url')
-        if (pageContextAbort._urlRedirect) {
-          const urlRedirect = pageContextAbort._urlRedirect.url
-          if (urlRedirect.startsWith('http')) {
-            // External redirection
-            window.location.href = urlRedirect
-            return
-          } else {
-            await renderPageClientSide({
-              ...renderArgs,
-              scrollTarget: 'scroll-to-top-or-hash',
-              urlOriginal: urlRedirect,
-              overwriteLastHistoryEntry: false,
-              isBackwardNavigation: false,
-              redirectCount: redirectCount + 1
-            })
-          }
-          return
-        }
-
-        // throw render(statusCode)
-        assert(pageContextAbort.abortStatusCode)
-        assert(!('urlOriginal' in pageContextAbort))
-        objectAssign(pageContext, pageContextAbort)
-        if (pageContextAbort.abortStatusCode === 404) {
-          objectAssign(pageContext, { is404: true })
-        }
-      } else {
-        objectAssign(pageContext, { is404: false })
-      }
-
-      let pageContextFromHooks: PageContextFromHooks
-      try {
-        pageContextFromHooks = await getPageContextFromHooks_errorPage(pageContext)
-      } catch (errErrorPage: unknown) {
-        // - When user hasn't defined a `_error.page.js` file
-        // - Some Vike unpexected internal error
-
-        if (shouldSwallowAndInterrupt(errErrorPage, pageContext, isFirstRender)) return
-        if (isSameErrorMessage(err, errErrorPage)) {
-          /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
-           - We risk running into an infinite loop of reloads which would overload the server.
-           - An infinite reloading page is a even worse UX than a blank page.
-        serverSideRouteTo(urlOriginal)
-        */
-          return
-        }
-
-        // We `throw err2` instead of `console.error(err2)` so that, when using `navigate()`, the error propagates to the user `navigate()` call
-        throw errErrorPage
-      }
-      if (isRenderOutdated()) return
-
-    assert(pageContextFromHooks)
-    assert(!('urlOriginal' in pageContextFromHooks))
-    objectAssign(pageContext, pageContextFromHooks)
-    await startRendering(pageContext)
-  }
 
   async function getPageContextBegin() {
     const pageContext = await createPageContext(urlOriginal)
@@ -288,6 +198,96 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, pageContextFromAllRewrites)
     }
     return pageContext
+  }
+
+  async function renderErrorPage(err: unknown) {
+    const pageContext = await getPageContextBegin()
+    if (isRenderOutdated()) return
+
+    if (!isAbortError(err)) {
+      // We don't swallow 404 errors:
+      //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
+      //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
+      console.error(err)
+    } else {
+      // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
+      // We handle the abort error down below.
+    }
+
+    if (shouldSwallowAndInterrupt(err, pageContext, isFirstRender)) return
+
+    if (isAbortError(err)) {
+      const errAbort = err
+      logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
+      const pageContextAbort = errAbort._pageContextAbort
+
+      // throw render('/some-url')
+      if (pageContextAbort._urlRewrite) {
+        await renderPageClientSide({
+          ...renderArgs,
+          scrollTarget: 'scroll-to-top-or-hash',
+          pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort]
+        })
+        return
+      }
+
+      // throw redirect('/some-url')
+      if (pageContextAbort._urlRedirect) {
+        const urlRedirect = pageContextAbort._urlRedirect.url
+        if (urlRedirect.startsWith('http')) {
+          // External redirection
+          window.location.href = urlRedirect
+          return
+        } else {
+          await renderPageClientSide({
+            ...renderArgs,
+            scrollTarget: 'scroll-to-top-or-hash',
+            urlOriginal: urlRedirect,
+            overwriteLastHistoryEntry: false,
+            isBackwardNavigation: false,
+            redirectCount: redirectCount + 1
+          })
+        }
+        return
+      }
+
+      // throw render(statusCode)
+      assert(pageContextAbort.abortStatusCode)
+      assert(!('urlOriginal' in pageContextAbort))
+      objectAssign(pageContext, pageContextAbort)
+      if (pageContextAbort.abortStatusCode === 404) {
+        objectAssign(pageContext, { is404: true })
+      }
+    } else {
+      objectAssign(pageContext, { is404: false })
+    }
+
+    let pageContextFromHooks: PageContextFromHooks
+    try {
+      pageContextFromHooks = await getPageContextFromHooks_errorPage(pageContext)
+    } catch (errErrorPage: unknown) {
+      // - When user hasn't defined a `_error.page.js` file
+      // - Some Vike unpexected internal error
+
+      if (shouldSwallowAndInterrupt(errErrorPage, pageContext, isFirstRender)) return
+      if (isSameErrorMessage(err, errErrorPage)) {
+        /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
+           - We risk running into an infinite loop of reloads which would overload the server.
+           - An infinite reloading page is a even worse UX than a blank page.
+        serverSideRouteTo(urlOriginal)
+        */
+        return
+      }
+
+      // We `throw err2` instead of `console.error(err2)` so that, when using `navigate()`, the error propagates to the user `navigate()` call
+      throw errErrorPage
+    }
+    if (isRenderOutdated()) return
+
+    assert(pageContextFromHooks)
+    assert(!('urlOriginal' in pageContextFromHooks))
+    objectAssign(pageContext, pageContextFromHooks)
+    await startRendering(pageContext)
   }
 
   async function startRendering(pageContext: PageContextBeforeRenderClient & { urlPathname: string }) {
