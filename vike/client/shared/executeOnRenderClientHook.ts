@@ -18,6 +18,7 @@ type PageContextBeforeRenderClient = {
   _pageConfigs: PageConfigRuntime[]
 } & PageContextExports &
   PageContextForUserConsumptionClientSide
+
 async function executeOnRenderClientHook<PC extends PageContextBeforeRenderClient>(
   pageContext: PC,
   isClientRouting: boolean
