@@ -249,7 +249,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (!isFirstRender) {
         setTimeout(() => {
           // We let the server show the 404 page
-          window.location.pathname = urlOriginal
+          serverSideRouteTo(urlOriginal)
         }, 0)
       }
 
