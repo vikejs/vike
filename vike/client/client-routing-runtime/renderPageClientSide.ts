@@ -81,7 +81,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     return
   }
 
-  {
+  await renderPageNominal()
+
+  return
+
+  async function renderPageNominal() {
     const pageContext = await getPageContextBegin()
     if (isRenderOutdated()) return
 
@@ -170,8 +174,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     objectAssign(pageContext, pageContextFromHooks)
     await startRendering(pageContext)
   }
-
-  return
 
   async function getPageContextBegin() {
     const pageContext = await createPageContext(urlOriginal)
