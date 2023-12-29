@@ -246,13 +246,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
       if (shouldSwallowAndInterrupt(errErrorPage, pageContext, isFirstRender)) return
 
-      if (!isFirstRender) {
-        setTimeout(() => {
-          // We let the server show the 404 page
-          serverSideRouteTo(urlOriginal)
-        }, 0)
-      }
-
       if (!isSameErrorMessage(err, errErrorPage)) {
         // We `throw err2` instead of `console.error(err2)` so that, when using `navigate()`, the error propagates to the user `navigate()` call
         throw errErrorPage
