@@ -7,7 +7,6 @@ main()
 async function main() {
   await generatePackageJson()
   await shimImportMetaUrl()
-  await slim()
 }
 
 async function generatePackageJson() {
