@@ -13,7 +13,7 @@ import {
   hasProp
 } from './utils.js'
 import {
-  PageContextFromHooks,
+  type PageContextFromHooks,
   getPageContextFromHooks_errorPage,
   getPageContextFromHooks_firstRender,
   getPageContextFromHooks_uponNavigation,
@@ -22,7 +22,7 @@ import {
 import { createPageContext } from './createPageContext.js'
 import { addLinkPrefetchHandlers } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
-import { PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
+import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { type Hook, assertHook, getHook } from '../../shared/hooks/getHook.js'
 import { isErrorFetchingStaticAssets } from '../shared/loadPageFilesClientSide.js'
 import { pushHistory } from './history.js'

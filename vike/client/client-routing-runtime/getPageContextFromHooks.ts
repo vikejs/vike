@@ -1,7 +1,7 @@
 export { getPageContextFromHooks_firstRender }
 export { getPageContextFromHooks_uponNavigation }
 export { getPageContextFromHooks_errorPage }
-export { isServerSideRouted as isServerSideRouted }
+export { isServerSideRouted }
 export type { PageContextFromHooks }
 
 import {
