@@ -99,27 +99,27 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
       if (isRenderOutdated()) return
-        assert(!('urlOriginal' in pageContextFromRoute))
-        objectAssign(pageContext, pageContextFromRoute)
-        let isClientRoutable: boolean
-        if (!pageContextFromRoute._pageId) {
-          isClientRoutable = false
-        } else {
-          isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
-          if (isRenderOutdated()) return
-        }
-        if (!isClientRoutable) {
-          serverSideRouteTo(urlOriginal)
-          return
-        }
-        const isSamePage =
-          pageContextFromRoute._pageId &&
-          globalObject.previousPageContext?._pageId &&
-          pageContextFromRoute._pageId === globalObject.previousPageContext._pageId
-        if (isUserLandPushStateNavigation && isSamePage) {
-          // Skip's Vike's rendering; let the user handle the navigation
-          return
-        }
+      assert(!('urlOriginal' in pageContextFromRoute))
+      objectAssign(pageContext, pageContextFromRoute)
+      let isClientRoutable: boolean
+      if (!pageContextFromRoute._pageId) {
+        isClientRoutable = false
+      } else {
+        isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
+        if (isRenderOutdated()) return
+      }
+      if (!isClientRoutable) {
+        serverSideRouteTo(urlOriginal)
+        return
+      }
+      const isSamePage =
+        pageContextFromRoute._pageId &&
+        globalObject.previousPageContext?._pageId &&
+        pageContextFromRoute._pageId === globalObject.previousPageContext._pageId
+      if (isUserLandPushStateNavigation && isSamePage) {
+        // Skip's Vike's rendering; let the user handle the navigation
+        return
+      }
     }
 
     // onPageTransitionStart()
