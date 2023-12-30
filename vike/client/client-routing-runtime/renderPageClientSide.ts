@@ -88,23 +88,17 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     const pageContext = await getPageContextBegin()
     if (isRenderOutdated()) return
 
-    let renderState: {
-      pageContextFromRoute?: PageContextFromRoute
-      pageContextFromHooks?: PageContextFromHooks
-    } = {}
+    // Route
+    let pageContextFromRoute: PageContextFromRoute | null = null
     if (!isFirstRender) {
       // Route
       try {
-        renderState = { pageContextFromRoute: await route(pageContext) }
+        pageContextFromRoute = await route(pageContext)
       } catch (err) {
         await renderErrorPage(err)
         return
       }
       if (isRenderOutdated()) return
-
-      // Check whether rendering should be skipped
-      if (renderState.pageContextFromRoute) {
-        const { pageContextFromRoute } = renderState
         assert(!('urlOriginal' in pageContextFromRoute))
         objectAssign(pageContext, pageContextFromRoute)
         let isClientRoutable: boolean
@@ -126,7 +120,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           // Skip's Vike's rendering; let the user handle the navigation
           return
         }
-      }
     }
 
     // onPageTransitionStart()
@@ -142,35 +135,35 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
+    // Get and/or fetch pageContext
+    let pageContextFromHooks: PageContextFromHooks
     if (isFirstRender) {
-      assert(!renderState.pageContextFromRoute)
+      assert(!pageContextFromRoute)
       try {
-        renderState.pageContextFromHooks = await getPageContextFromHooks_firstRender(pageContext)
+        pageContextFromHooks = await getPageContextFromHooks_firstRender(pageContext)
       } catch (err) {
         await renderErrorPage(err)
         return
       }
       if (isRenderOutdated()) return
     } else {
-      const { pageContextFromRoute } = renderState
       assert(pageContextFromRoute)
       assert(pageContextFromRoute._pageId)
       assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
       assert(!('urlOriginal' in pageContextFromRoute))
       objectAssign(pageContext, pageContextFromRoute)
       try {
-        renderState.pageContextFromHooks = await getPageContextFromHooks_uponNavigation(pageContext)
+        pageContextFromHooks = await getPageContextFromHooks_uponNavigation(pageContext)
       } catch (err) {
         await renderErrorPage(err)
         return
       }
       if (isRenderOutdated()) return
     }
-
-    const { pageContextFromHooks } = renderState
-    assert(pageContextFromHooks)
     assert(!('urlOriginal' in pageContextFromHooks))
     objectAssign(pageContext, pageContextFromHooks)
+
+    // Render page view
     await renderPageView(pageContext)
   }
 
