@@ -7,7 +7,6 @@ main()
 async function main() {
   await generatePackageJson()
   await shimImportMetaUrl()
-  await slim()
 }
 
 async function generatePackageJson() {
@@ -18,11 +17,6 @@ async function generatePackageJson() {
 async function shimImportMetaUrl() {
   await processFiles(sourceDir)
   console.log(`✅ ${sourceDir}/ shimmed import.meta.url`)
-}
-
-async function slim() {
-  await removeDirectory(sourceDir + '/client')
-  console.log(`✅ ${sourceDir}/ slimmed down by removing ${sourceDir}/client/`)
 }
 
 async function replaceImportMetaWithFilename(filePath) {
@@ -44,21 +38,4 @@ async function processFiles(directoryPath) {
       await replaceImportMetaWithFilename(filePath)
     }
   }
-}
-
-async function removeDirectory(dirPath) {
-  const files = await fs.readdir(dirPath)
-
-  for (const file of files) {
-    const filePath = path.join(dirPath, file)
-    const stats = await fs.lstat(filePath)
-
-    if (stats.isDirectory()) {
-      await removeDirectory(filePath)
-    } else {
-      await fs.unlink(filePath)
-    }
-  }
-
-  await fs.rmdir(dirPath)
 }

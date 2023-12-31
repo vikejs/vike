@@ -22,7 +22,8 @@ import {
   urlToFile,
   executeHook,
   isPlainObject,
-  setNodeEnvToProduction
+  setNodeEnvToProduction,
+  isUserHookError
 } from './utils.js'
 import { pLimit, PLimit } from '../../utils/pLimit.js'
 import {
@@ -49,7 +50,7 @@ import { isErrorPage } from '../../shared/error-page.js'
 import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute.js'
 import { isAbortError } from '../../shared/route/abort.js'
-import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide.js'
+import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServerSide.js'
 import {
   getHookFromPageConfig,
   getHookFromPageConfigGlobal,
@@ -490,7 +491,7 @@ async function handlePagesWithStaticRoutes(
             }
           ]
         })
-        objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
+        objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 
         prerenderContext.pageContexts.push(pageContext)
       })
@@ -755,7 +756,7 @@ async function routeAndPrerender(
         objectAssign(pageContext, pageContextFromRoute)
         const { _pageId: pageId } = pageContext
 
-        objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
+        objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 
         let usesClientRouter: boolean
         {
@@ -1135,10 +1136,21 @@ function prerenderForceExit() {
 function assertIsNotAbort(err: unknown, urlOr404: string) {
   if (!isAbortError(err)) return
   const pageContextAbort = err._pageContextAbort
+
+  const hookLoc = isUserHookError(err)
+  assert(hookLoc)
+  const thrownBy = ` by ${pc.cyan(`${hookLoc.hookName}()`)} hook defined at ${hookLoc.hookFilePath}`
+
+  const abortCaller = pageContextAbort._abortCaller
+  assert(abortCaller)
+
+  const abortCall = pageContextAbort._abortCall
+  assert(abortCall)
+
   assertUsage(
     false,
-    `${pc.cyan(pageContextAbort._abortCall)} intercepted while pre-rendering ${urlOr404} but ${pc.cyan(
-      pageContextAbort._abortCaller
+    `${pc.cyan(abortCall)} thrown${thrownBy} while pre-rendering ${urlOr404} but ${pc.cyan(
+      abortCaller
     )} isn't supported for pre-rendered pages`
   )
 }

@@ -1,4 +1,5 @@
 export { executeOnRenderClientHook }
+export type { PageContextBeforeRenderClient }
 
 import { assert, assertUsage, executeHook } from '../server-routing-runtime/utils.js'
 import { getHook, type Hook } from '../../shared/hooks/getHook.js'
@@ -9,16 +10,19 @@ import {
 } from './preparePageContextForUserConsumptionClientSide.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 
-async function executeOnRenderClientHook<
-  PC extends {
-    _pageFilesLoaded: PageFile[]
-    urlOriginal?: string
-    urlPathname?: string
-    _pageId: string
-    _pageConfigs: PageConfigRuntime[]
-  } & PageContextExports &
-    PageContextForUserConsumptionClientSide
->(pageContext: PC, isClientRouting: boolean): Promise<void> {
+type PageContextBeforeRenderClient = {
+  _pageFilesLoaded: PageFile[]
+  urlOriginal?: string
+  urlPathname?: string
+  _pageId: string
+  _pageConfigs: PageConfigRuntime[]
+} & PageContextExports &
+  PageContextForUserConsumptionClientSide
+
+async function executeOnRenderClientHook<PC extends PageContextBeforeRenderClient>(
+  pageContext: PC,
+  isClientRouting: boolean
+): Promise<void> {
   const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext, isClientRouting)
 
   let hook: null | Hook = null

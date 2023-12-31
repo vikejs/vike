@@ -55,7 +55,7 @@ import type { PageContextBuiltInServer, Url } from '../../types/index.js'
 import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
-import { loadPageFilesServerSide } from './renderPage/loadPageFilesServerSide.js'
+import { loadUserFilesServerSide } from './renderPage/loadUserFilesServerSide.js'
 import { resolveRedirects } from '../../shared/route/resolveRedirects.js'
 import { PageContextBuiltInServerInternal } from '../../shared/types.js'
 
@@ -570,7 +570,7 @@ async function handleAbortError(
         ...pageContextErrorPageInit,
         ...renderContext
       }
-      objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
+      objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
       pageContextSerialized = serializePageContextClientSide(pageContext)
     } else {

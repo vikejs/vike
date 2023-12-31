@@ -1,8 +1,7 @@
-export { getPageContextFromHooks_firstRender }
-export { getPageContextFromHooks_uponNavigation }
-export { getPageContextFromHooks_errorPage }
-export { isAlreadyServerSideRouted }
-export type { PageContextFromHooks }
+export { getPageContextFromHooks_isHydration }
+export { getPageContextFromHooks_isNotHydration }
+export { getPageContextFromHooks_serialized }
+export { isServerSideRouted }
 
 import {
   assert,
@@ -19,116 +18,64 @@ import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
 import type { PageContextExports, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
-import type { PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
-import type { PageContextForRoute } from '../../shared/route/index.js'
-import { getErrorPageId } from '../../shared/error-page.js'
 import { getHook } from '../../shared/hooks/getHook.js'
 import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide.js'
-import { loadPageFilesClientSide } from '../shared/loadPageFilesClientSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getConfigValue, getPageConfig } from '../../shared/page-configs/helpers.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.js'
 import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
-import type { PageContextForPassToClientWarning } from '../shared/getPageContextProxyForUser.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
-const globalObject = getGlobalObject<{ pageContextInitHasClientData?: true }>('router/getPageContext.ts', {})
+import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
+import { isRenderFailure } from '../../shared/misc/isRenderFailure.js'
+const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>('router/getPageContext.ts', {})
 
-/** - pageContext set by user hooks
- *  - pageContext set by loadPageFilesClientSide()
- *  - misc:
- *    - pageContext.isHydration
- *    - pageContext._pageId
- *    - pageContext._hasPageContextFromClient
- *    - pageContext._hasPageContextFromServer
- */
-type PageContextFromHooks = {
+type PageContext = {
+  urlOriginal: string
+  _urlRewrite: string | null
+  _pageFilesAll: PageFile[]
+  _pageConfigs: PageConfigRuntime[]
+}
+
+type PageContextSerialized = {
   _pageId: string
-  isHydration: boolean
-  _pageFilesLoaded: PageFile[]
-} & PageContextExports &
-  PageContextForPassToClientWarning
-
-type PageContext = PageContextUrlComputedPropsInternal &
-  PageContextForRoute & {
-    _allPageIds: string[]
-    _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfigRuntime[]
-    isBackwardNavigation: boolean | null
-  }
-
-async function getPageContextFromHooks_firstRender(
-  pageContext: { urlOriginal: string } & PageContext
-): Promise<PageContextFromHooks> {
-  const pageContextFromHooks = getPageContextSerializedInHtml()
-  removeBuiltInOverrides(pageContextFromHooks)
-
-  objectAssign(pageContextFromHooks, {
-    isHydration: true,
-    _hasPageContextFromClient: false
+  _hasPageContextFromServer: true
+}
+function getPageContextFromHooks_serialized(): PageContextSerialized {
+  const pageContextSerialized = getPageContextSerializedInHtml()
+  processPageContextFromServer(pageContextSerialized)
+  objectAssign(pageContextSerialized, {
+    _hasPageContextFromServer: true as const
   })
-
-  objectAssign(pageContextFromHooks, await loadPageFilesClientSide(pageContextFromHooks._pageId, pageContext))
-
+  return pageContextSerialized
+}
+async function getPageContextFromHooks_isHydration(
+  pageContext: PageContextSerialized & PageContext & PageContextExports
+) {
+  const pageContextFromHooks = {
+    isHydration: true as const,
+    _hasPageContextFromClient: false as const,
+    _hasPageContextFromServer: true as const
+  }
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     const pageContextForHook = { ...pageContext, ...pageContextFromHooks }
     if (hookClientOnlyExists(hookName, pageContextForHook)) {
       const pageContextFromHook = await executeHookClientSide(hookName, pageContextForHook)
-      objectAssign(pageContextFromHooks, pageContextFromHook)
+      Object.assign(pageContextFromHooks, pageContextFromHook)
     }
   }
-
-  setPageContextInitHasClientData(pageContextFromHooks)
   return pageContextFromHooks
 }
 
-async function getPageContextFromHooks_errorPage(
-  pageContext: { urlOriginal: string } & PageContext
-): Promise<PageContextFromHooks> {
-  const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
-  if (!errorPageId) throw new Error('No error page defined.')
-  const pageContextFromHooks = {
-    isHydration: false as const,
-    _pageId: errorPageId
-  }
-  objectAssign(
-    pageContextFromHooks,
-    await getPageContextAlreadyRouted({ ...pageContext, ...pageContextFromHooks }, true)
-  )
-  return pageContextFromHooks
-}
-
-async function getPageContextFromHooks_uponNavigation(
-  pageContext: { _pageId: string } & PageContext
-): Promise<PageContextFromHooks> {
-  const pageContextFromHooks = {
-    isHydration: false as const,
-    _pageId: pageContext._pageId
-  }
-  objectAssign(
-    pageContextFromHooks,
-    await getPageContextAlreadyRouted({ ...pageContext, ...pageContextFromHooks }, false)
-  )
-  setPageContextInitHasClientData(pageContextFromHooks)
-  return pageContextFromHooks
-}
-
-async function getPageContextAlreadyRouted(
-  pageContext: { _pageId: string; isHydration: false } & PageContext,
+async function getPageContextFromHooks_isNotHydration(
+  pageContext: { _pageId: string } & PageContext & PageContextExports,
   isErrorPage: boolean
-): Promise<Omit<PageContextFromHooks, '_pageId' | 'isHydration'>> {
-  const getPageContextFromHooksInit = async (pageId: string) => {
-    const pageContextFromHooks = {
-      _hasPageContextFromClient: false,
-      _pageId: pageId
-    }
-    const pageContextFromPageFiles = await loadPageFilesClientSide(pageId, pageContext)
-    objectAssign(pageContextFromHooks, pageContextFromPageFiles)
-    return pageContextFromHooks
+) {
+  const pageContextFromHooks = {
+    isHydration: false as const,
+    _hasPageContextFromClient: false
   }
-
-  let pageContextFromHooks = await getPageContextFromHooksInit(pageContext._pageId)
 
   let hasPageContextFromServer = false
   // If pageContextInit has some client data or if one of the hooks guard(), data() or onBeforeRender() is server-side
@@ -142,19 +89,19 @@ async function getPageContextAlreadyRouted(
   ) {
     const pageContextFromServer = await fetchPageContextFromServer(pageContext)
     hasPageContextFromServer = true
-    if (!pageContextFromServer['_isError']) {
+    if (!pageContextFromServer[isRenderFailure] || isErrorPage) {
       objectAssign(pageContextFromHooks, pageContextFromServer)
     } else {
-      const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
-      assert(errorPageId)
-      pageContextFromHooks = await getPageContextFromHooksInit(errorPageId)
-
+      // When the user hasn't define a `_error.page.js` file: the mechanism with `serverSideError: true` is used instead
+      assert(!('serverSideError' in pageContextFromServer))
       assert(hasProp(pageContextFromServer, 'is404', 'boolean'))
       assert(hasProp(pageContextFromServer, 'pageProps', 'object'))
       assert(hasProp(pageContextFromServer.pageProps, 'is404', 'boolean'))
-      // When the user hasn't define a `_error.page.js` file: the mechanism with `serverSideError: true` is used instead
-      assert(!('serverSideError' in pageContextFromServer))
-      objectAssign(pageContextFromHooks, pageContextFromServer)
+      objectAssign(pageContextFromServer, {
+        _hasPageContextFromServer: true as const,
+        _hasPageContextFromClient: false as const
+      })
+      return pageContextFromServer
     }
   }
 
@@ -252,15 +199,16 @@ async function executeHookClientSide(
 // - We can show a warning to users when the pageContextInit keys aren't always the same. (We didn't implement the waning yet because it would require a new doc page https://vike.dev/pageContextInit#avoid-conditional-properties
 // - Workaround cannot be made completely reliable because the workaround assumes that passToClient is always the same, but the user may set a different passToClient value for another page
 // - Alternatively, we could define a new config `alwaysFetchPageContextFromServer: boolean`
-function setPageContextInitHasClientData(pageContext: Record<string, unknown>) {
-  if (pageContext._pageContextInitHasClientData) {
-    globalObject.pageContextInitHasClientData = true
+function setPageContextInitIsPassedToClient(pageContext: Record<string, unknown>) {
+  if (pageContext[pageContextInitIsPassedToClient]) {
+    globalObject.pageContextInitIsPassedToClient = true
   }
 }
+
 // TODO/v1-release: make it sync
 async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnlyExists>[1]): Promise<boolean> {
   return (
-    !!globalObject.pageContextInitHasClientData ||
+    !!globalObject.pageContextInitIsPassedToClient ||
     (await hookServerOnlyExists('data', pageContext)) ||
     (await hookServerOnlyExists('onBeforeRender', pageContext))
   )
@@ -339,7 +287,7 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
     // Static hosts + page doesn't exist
     if (!isCorrect && response.status === 404) {
       serverSideRouteTo(pageContext.urlOriginal)
-      throw AlreadyServerSideRouted()
+      throw ServerSideRouted()
     }
 
     assertUsage(
@@ -363,15 +311,20 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
   }
 
   assert(hasProp(pageContextFromServer, '_pageId', 'string'))
-  removeBuiltInOverrides(pageContextFromServer)
+  processPageContextFromServer(pageContextFromServer)
 
   return pageContextFromServer
 }
 
-function isAlreadyServerSideRouted(err: unknown): boolean {
+function processPageContextFromServer(pageContextFromServer: Record<string, unknown>) {
+  setPageContextInitIsPassedToClient(pageContextFromServer)
+  removeBuiltInOverrides(pageContextFromServer)
+}
+
+function isServerSideRouted(err: unknown): boolean {
   return isObject(err) && !!err._alreadyServerSideRouted
 }
-function AlreadyServerSideRouted() {
+function ServerSideRouted() {
   const err = new Error("Page doesn't exist")
   Object.assign(err, { _alreadyServerSideRouted: true })
   return err

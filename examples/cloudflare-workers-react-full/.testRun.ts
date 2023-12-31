@@ -11,6 +11,14 @@ import { testCounter } from '../../test/utils'
 function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { hasStarWarsPage: boolean }) {
   const isWrangler = cmd === 'npm run preview'
 
+  //* TODO: revert me
+  // Manually disabled because of exeeded rate limit
+  if (isWrangler) {
+    skip('SKIPPED: temporarily skip wrangler tests.')
+    return
+  }
+  //*/
+
   // - `CLOUDFLARE_ACCOUNT_ID`/`CLOUDFLARE_API_TOKEN` not available for:
   //   - Vite's ecosystem CI
   //   - Pull Requests
@@ -28,14 +36,6 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
     expect(process.env['CLOUDFLARE_ACCOUNT_ID']).toBeTruthy()
     expect(process.env['CLOUDFLARE_API_TOKEN']).toBeTruthy()
   }
-
-  /*
-  // Cloudflare Workers servers aren't reliable lately
-  if (isWrangler) {
-    skip('SKIPPED: temporarily skip wrangler tests.')
-    return
-  }
-  //*/
 
   {
     const additionalTimeout = !isWrangler ? 0 : (isCI() ? 2 : 1) * 10 * 1000

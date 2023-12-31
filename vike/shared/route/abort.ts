@@ -20,6 +20,7 @@ import {
   assertWarning,
   checkType,
   hasProp,
+  isUserHookError,
   joinEnglish,
   objectAssign,
   projectInfo,
@@ -62,7 +63,7 @@ function redirect(url: `/${string}` | `https://${string}` | `http://${string}`, 
   const pageContextAbort = {}
   objectAssign(pageContextAbort, {
     _abortCaller: abortCaller,
-    _abortCall: `throw redirect(${args.join(', ')})` as const,
+    _abortCall: `redirect(${args.join(', ')})` as const,
     _urlRedirect: {
       url,
       statusCode
@@ -101,7 +102,7 @@ function render(value: string | number, abortReason?: unknown): Error {
   const args = [typeof value === 'number' ? String(value) : JSON.stringify(value)]
   if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30))
   const abortCaller = 'throw render()'
-  const abortCall = `throw render(${args.join(', ')})` as const
+  const abortCall = `render(${args.join(', ')})` as const
   return render_(value, abortReason, abortCall, abortCaller)
 }
 
@@ -138,7 +139,7 @@ function render_(
   }
 }
 
-type AbortCall = `throw redirect(${string})` | `throw render(${string})` | `throw RenderErrorPage()`
+type AbortCall = `redirect(${string})` | `render(${string})` | `RenderErrorPage()`
 type PageContextAbort = {
   _abortCall: AbortCall
 } & (
@@ -189,7 +190,7 @@ function RenderErrorPage({ pageContext = {} }: { pageContext?: Record<string, un
     abortReason = 'Something went wrong'
   }
   objectAssign(pageContext, { _isLegacyRenderErrorPage: true as const })
-  return render_(abortStatusCode, abortReason, 'throw RenderErrorPage()', 'throw RenderErrorPage()', pageContext)
+  return render_(abortStatusCode, abortReason, 'RenderErrorPage()', 'throw RenderErrorPage()', pageContext)
 }
 
 const stamp = '_isAbortError'
@@ -218,7 +219,19 @@ function logAbortErrorHandled(
   const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal
   assert(urlCurrent)
   const abortCall = err._pageContextAbort._abortCall
-  assertInfo(false, `${pc.cyan(abortCall)} intercepted while rendering ${pc.cyan(urlCurrent)}`, { onlyOnce: false })
+  assert(abortCall)
+
+  const hookLoc = isUserHookError(err)
+  let thrownBy = ''
+  if (hookLoc) {
+    thrownBy = ` by ${pc.cyan(`${hookLoc.hookName}()`)} hook defined at ${hookLoc.hookFilePath}`
+  } else {
+    // hookLoc is missing when serializing abort errors from server to client
+  }
+
+  assertInfo(false, `${pc.cyan(abortCall)} thrown${thrownBy} while rendering ${pc.cyan(urlCurrent)}`, {
+    onlyOnce: false
+  })
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {

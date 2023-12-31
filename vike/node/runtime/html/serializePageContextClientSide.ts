@@ -10,6 +10,8 @@ import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
 import pc from '@brillout/picocolors'
 import { notSerializable } from '../../../shared/notSerializable.js'
 import type { UrlRedirect } from '../../../shared/route/abort.js'
+import { pageContextInitIsPassedToClient } from '../../../shared/misc/pageContextInitIsPassedToClient.js'
+import { isRenderFailure } from '../../../shared/misc/isRenderFailure.js'
 
 const PASS_TO_CLIENT: string[] = [
   'abortReason',
@@ -20,11 +22,11 @@ const PASS_TO_CLIENT: string[] = [
   /* Not needed on the client-side
   '_abortCaller',
   */
-  '_pageContextInitHasClientData',
+  pageContextInitIsPassedToClient,
   '_pageId',
   'data' // for data() hook
 ]
-const PASS_TO_CLIENT_ERROR_PAGE = ['pageProps', 'is404', '_isError']
+const PASS_TO_CLIENT_ERROR_PAGE = ['pageProps', 'is404', isRenderFailure]
 
 type PageContextSerialization = {
   _pageId: string
@@ -32,7 +34,6 @@ type PageContextSerialization = {
   _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
   pageProps?: Record<string, unknown>
-  _isError?: true
   _pageContextInit: Record<string, unknown>
 }
 function serializePageContextClientSide(pageContext: PageContextSerialization) {
@@ -43,7 +44,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     pageContextClient[prop] = (pageContext as Record<string, unknown>)[prop]
   })
   if (Object.keys(pageContext._pageContextInit).some((p) => passToClient.includes(p))) {
-    pageContextClient._pageContextInitHasClientData = true
+    pageContextClient._pageContextInitIsPassedToClient = true
   }
 
   let pageContextSerialized: string

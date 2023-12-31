@@ -10,7 +10,7 @@ function onLinkClick() {
   document.addEventListener('click', handler)
 }
 
-function handler(ev: MouseEvent) {
+async function handler(ev: MouseEvent) {
   if (!isNormalLeftClick(ev)) return
 
   const linkTag = findLinkTag(ev.target as HTMLElement)
@@ -25,7 +25,7 @@ function handler(ev: MouseEvent) {
   const keepScrollPosition = ![null, 'false'].includes(linkTag.getAttribute('keep-scroll-position'))
 
   const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
-  renderPageClientSide({
+  await renderPageClientSide({
     scrollTarget,
     urlOriginal: url,
     isBackwardNavigation: false
