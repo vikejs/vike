@@ -47,7 +47,7 @@ type PageContextSerialized = {
 }
 function getPageContextFromHooks_serialized(): PageContextSerialized {
   const pageContextSerialized = getPageContextSerializedInHtml()
-  removeBuiltInOverrides(pageContextSerialized)
+  processPageContextFromServer(pageContextSerialized)
   objectAssign(pageContextSerialized, {
     isHydration: true as const,
     _hasPageContextFromClient: false as const,
@@ -71,7 +71,6 @@ async function getPageContextFromHooks_firstRender(
       Object.assign(pageContextFromHooks, pageContextFromHook)
     }
   }
-  setPageContextInitHasClientData({ ...pageContext, ...pageContextFromHooks })
   return pageContextFromHooks
 }
 
@@ -98,7 +97,6 @@ async function getPageContextFromHooks_uponNavigation(pageContext: { _pageId: st
     pageContextFromHooks,
     await getPageContextAlreadyRouted({ ...pageContext, ...pageContextFromHooks }, false)
   )
-  setPageContextInitHasClientData(pageContextFromHooks)
   return pageContextFromHooks
 }
 
@@ -351,9 +349,14 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
   }
 
   assert(hasProp(pageContextFromServer, '_pageId', 'string'))
-  removeBuiltInOverrides(pageContextFromServer)
+  processPageContextFromServer(pageContextFromServer)
 
   return pageContextFromServer
+}
+
+function processPageContextFromServer(pageContextFromServer: Record<string, unknown>) {
+  setPageContextInitHasClientData(pageContextFromServer)
+  removeBuiltInOverrides(pageContextFromServer)
 }
 
 function isServerSideRouted(err: unknown): boolean {
