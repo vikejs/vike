@@ -9,7 +9,7 @@ import {
   expectPageContextJsonRequest
 } from '../utils'
 
-function testRun(cmd: string, pageContextInitHasClientData = false) {
+function testRun(cmd: string, pageContextInitIsPassedToClient = false) {
   run(cmd)
 
   test('HTML', async () => {
@@ -37,7 +37,7 @@ function testRun(cmd: string, pageContextInitHasClientData = false) {
     await page.goto(getServerUrl() + '/about')
     expect(await page.textContent('h1')).toBe('About')
     await hydrationDone()
-    const done = expectPageContextJsonRequest(pageContextInitHasClientData)
+    const done = expectPageContextJsonRequest(pageContextInitIsPassedToClient)
     await page.click('a[href="/render-homepage"]')
     await autoRetry(async () => {
       expect(await page.textContent('h1')).toBe('Welcome')
@@ -56,7 +56,7 @@ function testRun(cmd: string, pageContextInitHasClientData = false) {
     await page.goto(getServerUrl() + '/about')
     expectUrl('/about')
     await hydrationDone()
-    const done = expectPageContextJsonRequest(pageContextInitHasClientData)
+    const done = expectPageContextJsonRequest(pageContextInitIsPassedToClient)
     await page.click('a[href="/redirect"]')
     await autoRetry(async () => {
       expectUrl('/')
@@ -97,7 +97,7 @@ function testRun(cmd: string, pageContextInitHasClientData = false) {
       await page.goto(getServerUrl() + '/about')
       expectUrl('/about')
       await hydrationDone()
-      const done = expectPageContextJsonRequest(pageContextInitHasClientData)
+      const done = expectPageContextJsonRequest(pageContextInitIsPassedToClient)
       await page.click('a[href="/show-error-page"]')
       await testCounter()
       done()
