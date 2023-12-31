@@ -20,7 +20,7 @@ const PASS_TO_CLIENT: string[] = [
   /* Not needed on the client-side
   '_abortCaller',
   */
-  '_pageContextInitHasClientData',
+  '_pageContextInitIsPassedToClient',
   '_pageId',
   'data' // for data() hook
 ]
@@ -43,7 +43,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     pageContextClient[prop] = (pageContext as Record<string, unknown>)[prop]
   })
   if (Object.keys(pageContext._pageContextInit).some((p) => passToClient.includes(p))) {
-    pageContextClient._pageContextInitHasClientData = true
+    pageContextClient._pageContextInitIsPassedToClient = true
   }
 
   let pageContextSerialized: string

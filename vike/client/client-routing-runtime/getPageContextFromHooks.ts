@@ -30,7 +30,7 @@ import { getConfigValue, getPageConfig } from '../../shared/page-configs/helpers
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.js'
 import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
-const globalObject = getGlobalObject<{ pageContextInitHasClientData?: true }>('router/getPageContext.ts', {})
+const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>('router/getPageContext.ts', {})
 
 type PageContext = {
   urlOriginal: string
@@ -238,15 +238,15 @@ async function executeHookClientSide(
 // - We can show a warning to users when the pageContextInit keys aren't always the same. (We didn't implement the waning yet because it would require a new doc page https://vike.dev/pageContextInit#avoid-conditional-properties
 // - Workaround cannot be made completely reliable because the workaround assumes that passToClient is always the same, but the user may set a different passToClient value for another page
 // - Alternatively, we could define a new config `alwaysFetchPageContextFromServer: boolean`
-function setPageContextInitHasClientData(pageContext: Record<string, unknown>) {
-  if (pageContext._pageContextInitHasClientData) {
-    globalObject.pageContextInitHasClientData = true
+function setPageContextInitIsPassedToClient(pageContext: Record<string, unknown>) {
+  if (pageContext._pageContextInitIsPassedToClient) {
+    globalObject.pageContextInitIsPassedToClient = true
   }
 }
 // TODO/v1-release: make it sync
 async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnlyExists>[1]): Promise<boolean> {
   return (
-    !!globalObject.pageContextInitHasClientData ||
+    !!globalObject.pageContextInitIsPassedToClient ||
     (await hookServerOnlyExists('data', pageContext)) ||
     (await hookServerOnlyExists('onBeforeRender', pageContext))
   )
@@ -355,7 +355,7 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
 }
 
 function processPageContextFromServer(pageContextFromServer: Record<string, unknown>) {
-  setPageContextInitHasClientData(pageContextFromServer)
+  setPageContextInitIsPassedToClient(pageContextFromServer)
   removeBuiltInOverrides(pageContextFromServer)
 }
 
