@@ -134,9 +134,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         await loadUserFilesClientSide(pageContext._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
       )
     } catch (err) {
-      // TODO? Can't we be more precise here?
-      await renderErrorPage({ err })
-      return
+      if (handleErrorFetchingStaticAssets(err, pageContext, isHydrationRender)) {
+        return
+      } else {
+        throw err
+      }
     }
     if (isRenderOutdated()) return
 
@@ -250,7 +252,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         // We handle the abort error down below.
       }
 
-      if (shouldSwallowAndInterrupt(err, pageContext, isHydrationRender)) return
+      if (shouldSwallowAndInterrupt(err)) return
 
       if (isAbortError(err)) {
         const errAbort = err
@@ -311,9 +313,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         await loadUserFilesClientSide(pageContext._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
       )
     } catch (err) {
-      // TODO? Can't we be more precise here?
-      await renderErrorPage({ err })
-      return
+      if (handleErrorFetchingStaticAssets(err, pageContext, isHydrationRender)) {
+        return
+      } else {
+        throw err
+      }
     }
     if (isRenderOutdated()) return
 
@@ -324,7 +328,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // - When user hasn't defined a `_error.page.js` file
       // - Some Vike unpexected internal error
 
-      if (shouldSwallowAndInterrupt(errErrorPage, pageContext, isHydrationRender)) return
+      if (shouldSwallowAndInterrupt(errErrorPage)) return
       if (isSameErrorMessage(args.err, errErrorPage)) {
         /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
            - We risk running into an infinite loop of reloads which would overload the server.
@@ -334,7 +338,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
 
-      // We `throw err2` instead of `console.error(err2)` so that, when using `navigate()`, the error propagates to the user `navigate()` call
+      // TODO
+      // We `throw errErrorPage` instead of `console.error(err2)` so that, when using `navigate()`, the error propagates to the user `navigate()` call
       throw errErrorPage
     }
     if (isRenderOutdated()) return
@@ -434,13 +439,8 @@ function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   updateState()
 }
 
-function shouldSwallowAndInterrupt(
-  err: unknown,
-  pageContext: { urlOriginal: string },
-  isHydrationRender: boolean
-): boolean {
+function shouldSwallowAndInterrupt(err: unknown): boolean {
   if (isServerSideRouted(err)) return true
-  if (handleErrorFetchingStaticAssets(err, pageContext, isHydrationRender)) return true
   return false
 }
 
