@@ -38,7 +38,7 @@ import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
-import {isRenderFailure} from '../../shared/misc/isRenderFailure.js'
+import { isRenderFailure } from '../../shared/misc/isRenderFailure.js'
 
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Hook | null
@@ -184,7 +184,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
       if (isRenderOutdated()) return
-      if( isRenderFailure in pageContextFromHooks ) {
+      if (isRenderFailure in pageContextFromHooks) {
         await renderErrorPage({ pageContextError: pageContextFromHooks })
         return
       }
@@ -211,73 +211,73 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     return pageContext
   }
 
-  async function renderErrorPage(args:{ err?: unknown, pageContextError?: Record<string, unknown> }) {
+  async function renderErrorPage(args: { err?: unknown; pageContextError?: Record<string, unknown> }) {
     const pageContext = await getPageContextBegin()
     if (isRenderOutdated()) return
 
-    if( 'err' in args ) {
+    if ('err' in args) {
       const { err } = args
-    assert(err)
-    assert(!('errorWhileRendering' in pageContext))
-    pageContext.errorWhileRendering = err
+      assert(err)
+      assert(!('errorWhileRendering' in pageContext))
+      pageContext.errorWhileRendering = err
 
-    if (!isAbortError(err)) {
-      // We don't swallow 404 errors:
-      //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
-      //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
-      console.error(err)
-    } else {
-      // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
-      // We handle the abort error down below.
-    }
-
-    if (shouldSwallowAndInterrupt(err, pageContext, isHydrationRender)) return
-
-    if (isAbortError(err)) {
-      const errAbort = err
-      logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
-      const pageContextAbort = errAbort._pageContextAbort
-
-      // throw render('/some-url')
-      if (pageContextAbort._urlRewrite) {
-        await renderPageClientSide({
-          ...renderArgs,
-          scrollTarget: 'scroll-to-top-or-hash',
-          pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort]
-        })
-        return
+      if (!isAbortError(err)) {
+        // We don't swallow 404 errors:
+        //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
+        //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
+        console.error(err)
+      } else {
+        // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
+        // We handle the abort error down below.
       }
 
-      // throw redirect('/some-url')
-      if (pageContextAbort._urlRedirect) {
-        const urlRedirect = pageContextAbort._urlRedirect.url
-        if (urlRedirect.startsWith('http')) {
-          // External redirection
-          window.location.href = urlRedirect
-          return
-        } else {
+      if (shouldSwallowAndInterrupt(err, pageContext, isHydrationRender)) return
+
+      if (isAbortError(err)) {
+        const errAbort = err
+        logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
+        const pageContextAbort = errAbort._pageContextAbort
+
+        // throw render('/some-url')
+        if (pageContextAbort._urlRewrite) {
           await renderPageClientSide({
             ...renderArgs,
             scrollTarget: 'scroll-to-top-or-hash',
-            urlOriginal: urlRedirect,
-            overwriteLastHistoryEntry: false,
-            isBackwardNavigation: false,
-            redirectCount: redirectCount + 1
+            pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort]
           })
+          return
         }
-        return
-      }
 
-      // throw render(statusCode)
-      assert(pageContextAbort.abortStatusCode)
-      assert(!('urlOriginal' in pageContextAbort))
-      objectAssign(pageContext, pageContextAbort)
-      if (pageContextAbort.abortStatusCode === 404) {
-        objectAssign(pageContext, { is404: true })
+        // throw redirect('/some-url')
+        if (pageContextAbort._urlRedirect) {
+          const urlRedirect = pageContextAbort._urlRedirect.url
+          if (urlRedirect.startsWith('http')) {
+            // External redirection
+            window.location.href = urlRedirect
+            return
+          } else {
+            await renderPageClientSide({
+              ...renderArgs,
+              scrollTarget: 'scroll-to-top-or-hash',
+              urlOriginal: urlRedirect,
+              overwriteLastHistoryEntry: false,
+              isBackwardNavigation: false,
+              redirectCount: redirectCount + 1
+            })
+          }
+          return
+        }
+
+        // throw render(statusCode)
+        assert(pageContextAbort.abortStatusCode)
+        assert(!('urlOriginal' in pageContextAbort))
+        objectAssign(pageContext, pageContextAbort)
+        if (pageContextAbort.abortStatusCode === 404) {
+          objectAssign(pageContext, { is404: true })
+        }
+      } else {
+        objectAssign(pageContext, { is404: false })
       }
-    } else {
-      objectAssign(pageContext, { is404: false })
-    }
     } else {
       objectAssign(pageContext, args.pageContextError)
     }
