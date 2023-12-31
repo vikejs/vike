@@ -62,13 +62,13 @@ async function getPageContextFromHooks_firstRender(
   } & PageContextSerialized &
     PageContext &
     PageContextExports
-) {
+): Promise<Record<string, unknown>> {
   const pageContextFromHooks = {}
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     const pageContextForHook = { ...pageContext, ...pageContextFromHooks }
     if (hookClientOnlyExists(hookName, pageContextForHook)) {
       const pageContextFromHook = await executeHookClientSide(hookName, pageContextForHook)
-      objectAssign(pageContextFromHooks, pageContextFromHook)
+      Object.assign(pageContextFromHooks, pageContextFromHook)
     }
   }
   setPageContextInitHasClientData(pageContextFromHooks)
