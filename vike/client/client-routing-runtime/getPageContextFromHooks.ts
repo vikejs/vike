@@ -38,13 +38,20 @@ type PageContext = {
   _pageConfigs: PageConfigRuntime[]
 }
 
-function getPageContextFromHooks_serialized() {
+type PageContextSerialized = {
+  _pageId: string
+  _hasPageContextFromServer: true
+}
+function getPageContextFromHooks_serialized(): PageContextSerialized {
   const pageContextSerialized = getPageContextSerializedInHtml()
   processPageContextFromServer(pageContextSerialized)
+  objectAssign(pageContextSerialized, {
+    _hasPageContextFromServer: true as const
+  })
   return pageContextSerialized
 }
 async function getPageContextFromHooks_isHydration(
-  pageContext: { _pageId: string } & PageContext & PageContextExports
+  pageContext: PageContextSerialized & PageContext & PageContextExports
 ) {
   const pageContextFromHooks = {
     isHydration: true as const,

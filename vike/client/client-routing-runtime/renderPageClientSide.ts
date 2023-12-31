@@ -157,6 +157,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
       if (isRenderOutdated()) return
 
+      assert(hasProp(pageContext, '_hasPageContextFromServer', 'true'))
       let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_isHydration>>
       try {
         pageContextFromHooks = await getPageContextFromHooks_isHydration(pageContext)
