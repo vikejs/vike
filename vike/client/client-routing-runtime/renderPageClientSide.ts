@@ -330,18 +330,16 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
       if (shouldSwallowAndInterrupt(errErrorPage)) return
 
-      if (isSameErrorMessage(args.err, errErrorPage)) {
+      if (!isSameErrorMessage(args.err, errErrorPage)) {
         /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
            - We risk running into an infinite loop of reloads which would overload the server.
            - An infinite reloading page is a even worse UX than a blank page.
         serverSideRouteTo(urlOriginal)
         */
-        return
+        console.error(errErrorPage)
       }
 
-      // TODO
-      // We `throw errErrorPage` instead of `console.error(err2)` so that, when using `navigate()`, the error propagates to the user `navigate()` call
-      throw errErrorPage
+      return
     }
     if (isRenderOutdated()) return
 
