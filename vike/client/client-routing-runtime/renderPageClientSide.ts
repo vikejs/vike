@@ -14,7 +14,7 @@ import {
 } from './utils.js'
 import {
   getPageContextFromHooks_errorPage,
-  getPageContextFromHooks_firstRender,
+  getPageContextFromHooks_hydration,
   getPageContextFromHooks_uponNavigation,
   isServerSideRouted,
   getPageContextFromHooks_serialized
@@ -70,9 +70,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     isUserLandPushStateNavigation,
     isClientSideNavigation = true
   } = renderArgs
-  const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
-  const callTransitionHooks = !isFirstRender
-  assert(isClientSideNavigation === !isFirstRender)
+
+  // isHydrationRender <=> the first render attempt
+  const { isRenderOutdated, setHydrationCanBeAborted, isHydrationRender } = getIsRenderOutdated()
+  const callTransitionHooks = !isHydrationRender
+  assert(isClientSideNavigation === !isHydrationRender)
   assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
 
   if (globalObject.clientRoutingIsDisabled) {
@@ -90,7 +92,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     // Route
     let pageContextFromRoute: PageContextFromRoute | null = null
-    if (!isFirstRender) {
+    if (!isHydrationRender) {
       try {
         pageContextFromRoute = await route(pageContext)
       } catch (err) {
@@ -135,7 +137,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
 
     // Get and/or fetch pageContext
-    if (isFirstRender) {
+    if (isHydrationRender) {
       assert(!pageContextFromRoute)
 
       const pageContextSerialized = getPageContextFromHooks_serialized()
@@ -150,9 +152,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
       if (isRenderOutdated()) return
 
-      let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_firstRender>>
+      let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_hydration>>
       try {
-        pageContextFromHooks = await getPageContextFromHooks_firstRender(pageContext)
+        pageContextFromHooks = await getPageContextFromHooks_hydration(pageContext)
       } catch (err) {
         await renderErrorPage(err)
         return
@@ -219,7 +221,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // We handle the abort error down below.
     }
 
-    if (shouldSwallowAndInterrupt(err, pageContext, isFirstRender)) return
+    if (shouldSwallowAndInterrupt(err, pageContext, isHydrationRender)) return
 
     if (isAbortError(err)) {
       const errAbort = err
@@ -274,7 +276,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // - When user hasn't defined a `_error.page.js` file
       // - Some Vike unpexected internal error
 
-      if (shouldSwallowAndInterrupt(errErrorPage, pageContext, isFirstRender)) return
+      if (shouldSwallowAndInterrupt(errErrorPage, pageContext, isHydrationRender)) return
       if (isSameErrorMessage(err, errErrorPage)) {
         /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
            - We risk running into an infinite loop of reloads which would overload the server.
@@ -347,7 +349,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   */
 
     // onHydrationEnd()
-    if (isFirstRender) {
+    if (isHydrationRender) {
       assertHook(pageContext, 'onHydrationEnd')
       const hook = getHook(pageContext, 'onHydrationEnd')
       if (hook) {
@@ -389,23 +391,23 @@ function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
 function shouldSwallowAndInterrupt(
   err: unknown,
   pageContext: { urlOriginal: string },
-  isFirstRender: boolean
+  isHydrationRender: boolean
 ): boolean {
   if (isServerSideRouted(err)) return true
-  if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return true
+  if (handleErrorFetchingStaticAssets(err, pageContext, isHydrationRender)) return true
   return false
 }
 
 function handleErrorFetchingStaticAssets(
   err: unknown,
   pageContext: { urlOriginal: string },
-  isFirstRender: boolean
+  isHydrationRender: boolean
 ): boolean {
   if (!isErrorFetchingStaticAssets(err)) {
     return false
   }
 
-  if (isFirstRender) {
+  if (isHydrationRender) {
     disableClientRouting(err, false)
     // This may happen if the frontend was newly deployed during hydration.
     // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
@@ -470,7 +472,7 @@ function getIsRenderOutdated() {
   return {
     isRenderOutdated,
     setHydrationCanBeAborted,
-    isFirstRender: renderNumber === 1
+    isHydrationRender: renderNumber === 1
   }
 }
 

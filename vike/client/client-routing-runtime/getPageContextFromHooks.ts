@@ -1,4 +1,4 @@
-export { getPageContextFromHooks_firstRender }
+export { getPageContextFromHooks_hydration }
 export { getPageContextFromHooks_uponNavigation }
 export { getPageContextFromHooks_serialized }
 export { getPageContextFromHooks_errorPage }
@@ -56,8 +56,7 @@ function getPageContextFromHooks_serialized(): PageContextSerialized {
   })
   return pageContextSerialized
 }
-// TODO: rename to getPageContextFromHooks_hydration
-async function getPageContextFromHooks_firstRender(
+async function getPageContextFromHooks_hydration(
   pageContext: {
     urlOriginal: string
   } & PageContextSerialized &
