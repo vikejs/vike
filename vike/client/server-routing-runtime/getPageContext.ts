@@ -12,7 +12,8 @@ async function getPageContext() {
   objectAssign(pageContext, {
     isHydration: true as const,
     isBackwardNavigation: null,
-    _hasPageContextFromClient: false
+    _hasPageContextFromServer: true as const,
+    _hasPageContextFromClient: false as const
   })
   objectAssign(pageContext, await loadPageFiles(pageContext._pageId))
   assertPristineUrl()
