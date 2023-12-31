@@ -1,3 +1,19 @@
+## [0.4.153](https://github.com/vikejs/vike/compare/v0.4.152...v0.4.153) (2023-12-31)
+
+
+### Bug Fixes
+
+* improve handling of redundant errors ([c410699](https://github.com/vikejs/vike/commit/c410699680a70de59abec3d90fe36bc88d1acd99))
+* improve handling of virtual modules ([#479](https://github.com/vikejs/vike/issues/479)) ([3d25618](https://github.com/vikejs/vike/commit/3d2561887127a5ba8564ba1a98309c77a5325922))
+* improve render abort logging ([415899b](https://github.com/vikejs/vike/commit/415899bf77d58d474b99f1c2c5dda41ee705a1f0))
+* mitigate risk of infinite reloading page ([c21cea2](https://github.com/vikejs/vike/commit/c21cea215cea832930563a1380f2e40f1b61ceea))
+* properly handle errors thrown in onHydrationEnd() and onPageTransition{Start,End}() ([ad532e0](https://github.com/vikejs/vike/commit/ad532e08272392afa150e2a25549657c8a346e24))
+* properly handle errors thrown in onRenderClient ([6f928f9](https://github.com/vikejs/vike/commit/6f928f9ee6c1eeaf8279e9ee3b8180d987ba10c0))
+* update some text ([4a089ae](https://github.com/vikejs/vike/commit/4a089ae5aa2962da0ff7c550350a64ee76b2780d))
+* use simplier dynamic import (fix [#1393](https://github.com/vikejs/vike/issues/1393)) ([06c1fd5](https://github.com/vikejs/vike/commit/06c1fd57376891766792ecc2a3ae248ff0b231df))
+
+
+
 ## [0.4.152](https://github.com/vikejs/vike/compare/v0.4.151...v0.4.152) (2023-12-26)
 
 
