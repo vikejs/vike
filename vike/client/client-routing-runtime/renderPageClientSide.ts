@@ -176,6 +176,19 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
       assert(!('urlOriginal' in pageContextFromRoute))
       objectAssign(pageContext, pageContextFromRoute)
+
+      try {
+        objectAssign(
+          pageContext,
+          await loadUserFilesClientSide(pageContext._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
+        )
+      } catch (err) {
+        // TODO? Can't we be more precise here?
+        await renderErrorPage({ err })
+        return
+      }
+      if (isRenderOutdated()) return
+
       let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
       try {
         pageContextFromHooks = await getPageContextFromHooks_isNotHydration(pageContext, false)
@@ -289,6 +302,18 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     objectAssign(pageContext, {
       _pageId: errorPageId
     })
+
+    try {
+      objectAssign(
+        pageContext,
+        await loadUserFilesClientSide(pageContext._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
+      )
+    } catch (err) {
+      // TODO? Can't we be more precise here?
+      await renderErrorPage({ err })
+      return
+    }
+    if (isRenderOutdated()) return
 
     let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
     try {

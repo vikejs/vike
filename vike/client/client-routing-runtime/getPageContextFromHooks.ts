@@ -18,10 +18,8 @@ import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
 import type { PageContextExports, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
-import { getErrorPageId } from '../../shared/error-page.js'
 import { getHook } from '../../shared/hooks/getHook.js'
 import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide.js'
-import { loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
@@ -75,25 +73,14 @@ async function getPageContextFromHooks_isHydration(
 }
 
 async function getPageContextFromHooks_isNotHydration(
-  pageContext: { _pageId: string } & PageContext,
+  pageContext: { _pageId: string } & PageContext & PageContextExports,
   isErrorPage: boolean
 ) {
-  const getPageContextFromHooksInit = async (pageId: string) => {
-    const pageContextFromHooks = {
-      isHydration: false as const,
-      _hasPageContextFromClient: false,
-      _pageId: pageId
-    }
-    const pageContextFromPageFiles = await loadUserFilesClientSide(
-      pageId,
-      pageContext._pageFilesAll,
-      pageContext._pageConfigs
-    )
-    objectAssign(pageContextFromHooks, pageContextFromPageFiles)
-    return pageContextFromHooks
+  const pageContextFromHooks = {
+    isHydration: false as const,
+    _hasPageContextFromClient: false,
+    _pageId: pageContext._pageId
   }
-
-  let pageContextFromHooks = await getPageContextFromHooksInit(pageContext._pageId)
 
   let hasPageContextFromServer = false
   // If pageContextInit has some client data or if one of the hooks guard(), data() or onBeforeRender() is server-side
@@ -115,12 +102,11 @@ async function getPageContextFromHooks_isNotHydration(
       assert(hasProp(pageContextFromServer, 'is404', 'boolean'))
       assert(hasProp(pageContextFromServer, 'pageProps', 'object'))
       assert(hasProp(pageContextFromServer.pageProps, 'is404', 'boolean'))
-      //return pageContextFromServer
-      const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
-      assert(errorPageId)
-      pageContextFromHooks = await getPageContextFromHooksInit(errorPageId)
-      objectAssign(pageContextFromHooks, { _hasPageContextFromServer: true as const })
-      return pageContextFromHooks
+      objectAssign(pageContextFromServer, {
+        _hasPageContextFromServer: true as const,
+        _hasPageContextFromClient: false as const
+      })
+      return pageContextFromServer
     }
   }
 
