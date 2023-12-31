@@ -46,14 +46,14 @@ type PageContextSerialized = {
   isHydration: true
 }
 function getPageContextFromHooks_serialized(): PageContextSerialized {
-  const pageContextFromHooks = getPageContextSerializedInHtml()
-  removeBuiltInOverrides(pageContextFromHooks)
-  objectAssign(pageContextFromHooks, {
+  const pageContextSerialized = getPageContextSerializedInHtml()
+  removeBuiltInOverrides(pageContextSerialized)
+  objectAssign(pageContextSerialized, {
     isHydration: true as const,
     _hasPageContextFromClient: false as const,
     _hasPageContextFromServer: true as const
   })
-  return pageContextFromHooks
+  return pageContextSerialized
 }
 // TODO: rename to getPageContextFromHooks_hydration
 async function getPageContextFromHooks_firstRender(
