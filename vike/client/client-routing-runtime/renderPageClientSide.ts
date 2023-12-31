@@ -144,6 +144,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, pageContextSerialized)
 
       objectAssign(pageContext, await loadPageFilesClientSide(pageContext._pageId, pageContext))
+      if (isRenderOutdated()) return
 
         pageContextFromHooks = await getPageContextFromHooks_firstRender(pageContext)
       } catch (err) {
