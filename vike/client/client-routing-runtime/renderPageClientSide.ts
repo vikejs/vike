@@ -13,11 +13,10 @@ import {
   hasProp
 } from './utils.js'
 import {
-  getPageContextFromHooks_errorPage,
-  getPageContextFromHooks_hydration,
-  getPageContextFromHooks_uponNavigation,
-  isServerSideRouted,
-  getPageContextFromHooks_serialized
+  getPageContextFromHooks_isHydration,
+  getPageContextFromHooks_isNotHydration,
+  getPageContextFromHooks_serialized,
+  isServerSideRouted
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
 import { addLinkPrefetchHandlers } from './prefetch.js'
@@ -38,6 +37,7 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
+import { getErrorPageId } from '../../shared/error-page.js'
 
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Hook | null
@@ -152,9 +152,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
       if (isRenderOutdated()) return
 
-      let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_hydration>>
+      let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_isHydration>>
       try {
-        pageContextFromHooks = await getPageContextFromHooks_hydration(pageContext)
+        pageContextFromHooks = await getPageContextFromHooks_isHydration(pageContext)
       } catch (err) {
         await renderErrorPage(err)
         return
@@ -172,9 +172,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
       assert(!('urlOriginal' in pageContextFromRoute))
       objectAssign(pageContext, pageContextFromRoute)
-      let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_uponNavigation>>
+      let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
       try {
-        pageContextFromHooks = await getPageContextFromHooks_uponNavigation(pageContext)
+        pageContextFromHooks = await getPageContextFromHooks_isNotHydration(pageContext, false)
       } catch (err) {
         await renderErrorPage(err)
         return
@@ -269,9 +269,15 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, { is404: false })
     }
 
-    let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_errorPage>>
+    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
+    if (!errorPageId) throw new Error('No error page defined.')
+    objectAssign(pageContext, {
+      _pageId: errorPageId
+    })
+
+    let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
     try {
-      pageContextFromHooks = await getPageContextFromHooks_errorPage(pageContext)
+      pageContextFromHooks = await getPageContextFromHooks_isNotHydration(pageContext, true)
     } catch (errErrorPage: unknown) {
       // - When user hasn't defined a `_error.page.js` file
       // - Some Vike unpexected internal error

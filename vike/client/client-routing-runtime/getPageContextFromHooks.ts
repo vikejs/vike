@@ -1,7 +1,6 @@
-export { getPageContextFromHooks_hydration }
-export { getPageContextFromHooks_uponNavigation }
+export { getPageContextFromHooks_isHydration }
+export { getPageContextFromHooks_isNotHydration }
 export { getPageContextFromHooks_serialized }
-export { getPageContextFromHooks_errorPage }
 export { isServerSideRouted }
 
 import {
@@ -56,7 +55,7 @@ function getPageContextFromHooks_serialized(): PageContextSerialized {
   })
   return pageContextSerialized
 }
-async function getPageContextFromHooks_hydration(
+async function getPageContextFromHooks_isHydration(
   pageContext: {
     urlOriginal: string
   } & PageContextSerialized &
@@ -74,38 +73,13 @@ async function getPageContextFromHooks_hydration(
   return pageContextFromHooks
 }
 
-async function getPageContextFromHooks_errorPage(pageContext: { urlOriginal: string } & PageContext) {
-  const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
-  if (!errorPageId) throw new Error('No error page defined.')
-  const pageContextFromHooks = {
-    isHydration: false as const,
-    _pageId: errorPageId
-  }
-  objectAssign(
-    pageContextFromHooks,
-    await getPageContextAlreadyRouted({ ...pageContext, ...pageContextFromHooks }, true)
-  )
-  return pageContextFromHooks
-}
-
-async function getPageContextFromHooks_uponNavigation(pageContext: { _pageId: string } & PageContext) {
-  const pageContextFromHooks = {
-    isHydration: false as const,
-    _pageId: pageContext._pageId
-  }
-  objectAssign(
-    pageContextFromHooks,
-    await getPageContextAlreadyRouted({ ...pageContext, ...pageContextFromHooks }, false)
-  )
-  return pageContextFromHooks
-}
-
-async function getPageContextAlreadyRouted(
-  pageContext: { _pageId: string; isHydration: false } & PageContext,
+async function getPageContextFromHooks_isNotHydration(
+  pageContext: { _pageId: string } & PageContext,
   isErrorPage: boolean
 ) {
   const getPageContextFromHooksInit = async (pageId: string) => {
     const pageContextFromHooks = {
+      isHydration: false as const,
       _hasPageContextFromClient: false,
       _pageId: pageId
     }
