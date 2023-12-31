@@ -38,30 +38,19 @@ type PageContext = {
   _pageConfigs: PageConfigRuntime[]
 }
 
-type PageContextSerialized = {
-  _pageId: string
-  _hasPageContextFromServer: true
-  _hasPageContextFromClient: false
-  isHydration: true
-}
-function getPageContextFromHooks_serialized(): PageContextSerialized {
+function getPageContextFromHooks_serialized() {
   const pageContextSerialized = getPageContextSerializedInHtml()
   processPageContextFromServer(pageContextSerialized)
-  objectAssign(pageContextSerialized, {
-    isHydration: true as const,
-    _hasPageContextFromClient: false as const,
-    _hasPageContextFromServer: true as const
-  })
   return pageContextSerialized
 }
 async function getPageContextFromHooks_isHydration(
-  pageContext: {
-    urlOriginal: string
-  } & PageContextSerialized &
-    PageContext &
-    PageContextExports
-): Promise<Record<string, unknown>> {
-  const pageContextFromHooks = {}
+  pageContext: { _pageId: string } & PageContext & PageContextExports
+) {
+  const pageContextFromHooks = {
+    isHydration: true as const,
+    _hasPageContextFromClient: false as const,
+    _hasPageContextFromServer: true as const
+  }
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     const pageContextForHook = { ...pageContext, ...pageContextFromHooks }
     if (hookClientOnlyExists(hookName, pageContextForHook)) {

@@ -92,37 +92,43 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (isRenderOutdated()) return
 
     // Route
-    let pageContextRouted: PageContextFromRoute | null = null
-    if (!isHydrationRender) {
+    let pageContextRouted: { _pageId: string }
+    if (isHydrationRender) {
+      const pageContextSerialized = getPageContextFromHooks_serialized()
+      pageContextRouted = pageContextSerialized
+    } else {
+      let pageContextFromRoute: Awaited<ReturnType<typeof route>>
       try {
-        pageContextRouted = await route(pageContext)
+        pageContextFromRoute = await route(pageContext)
       } catch (err) {
         await renderErrorPage({ err })
         return
       }
       if (isRenderOutdated()) return
-      assert(!('urlOriginal' in pageContextRouted))
-      objectAssign(pageContext, pageContextRouted)
       let isClientRoutable: boolean
-      if (!pageContextRouted._pageId) {
+      if (!pageContextFromRoute._pageId) {
         isClientRoutable = false
       } else {
-        isClientRoutable = await isClientSideRoutable(pageContextRouted._pageId, pageContext)
+        isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
         if (isRenderOutdated()) return
       }
+      assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
       if (!isClientRoutable) {
         serverSideRouteTo(urlOriginal)
         return
       }
       const isSamePage =
-        pageContextRouted._pageId &&
+        pageContextFromRoute._pageId &&
         globalObject.previousPageContext?._pageId &&
-        pageContextRouted._pageId === globalObject.previousPageContext._pageId
+        pageContextFromRoute._pageId === globalObject.previousPageContext._pageId
       if (isUserLandPushStateNavigation && isSamePage) {
         // Skip's Vike's rendering; let the user handle the navigation
         return
       }
+      pageContextRouted = pageContextFromRoute
     }
+    assert(!('urlOriginal' in pageContextRouted))
+    objectAssign(pageContext, pageContextRouted)
 
     // onPageTransitionStart()
     if (callTransitionHooks) {
@@ -139,11 +145,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     // Get and/or fetch pageContext
     if (isHydrationRender) {
-      assert(!pageContextRouted)
-
-      const pageContextSerialized = getPageContextFromHooks_serialized()
-      objectAssign(pageContext, pageContextSerialized)
-
       try {
         objectAssign(
           pageContext,
@@ -171,12 +172,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // Render page view
       await renderPageView(pageContext)
     } else {
-      assert(pageContextRouted)
-      assert(pageContextRouted._pageId)
-      assert(hasProp(pageContextRouted, '_pageId', 'string')) // Help TS
-      assert(!('urlOriginal' in pageContextRouted))
-      objectAssign(pageContext, pageContextRouted)
-
       try {
         objectAssign(
           pageContext,
