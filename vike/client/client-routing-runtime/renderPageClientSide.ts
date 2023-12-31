@@ -242,6 +242,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       assert(!('errorWhileRendering' in pageContext))
       pageContext.errorWhileRendering = err
 
+      if (shouldSwallowAndInterrupt(err)) return
+
       if (!isAbortError(err)) {
         // We don't swallow 404 errors:
         //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
@@ -251,8 +253,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
         // We handle the abort error down below.
       }
-
-      if (shouldSwallowAndInterrupt(err)) return
 
       if (isAbortError(err)) {
         const errAbort = err
@@ -329,6 +329,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // - Some Vike unpexected internal error
 
       if (shouldSwallowAndInterrupt(errErrorPage)) return
+
       if (isSameErrorMessage(args.err, errErrorPage)) {
         /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
            - We risk running into an infinite loop of reloads which would overload the server.
