@@ -9,7 +9,6 @@
 * mitigate risk of infinite reloading page ([c21cea2](https://github.com/vikejs/vike/commit/c21cea215cea832930563a1380f2e40f1b61ceea))
 * properly handle errors thrown in onHydrationEnd() and onPageTransition{Start,End}() ([ad532e0](https://github.com/vikejs/vike/commit/ad532e08272392afa150e2a25549657c8a346e24))
 * properly handle errors thrown in onRenderClient ([6f928f9](https://github.com/vikejs/vike/commit/6f928f9ee6c1eeaf8279e9ee3b8180d987ba10c0))
-* update some text ([4a089ae](https://github.com/vikejs/vike/commit/4a089ae5aa2962da0ff7c550350a64ee76b2780d))
 * use simplier dynamic import (fix [#1393](https://github.com/vikejs/vike/issues/1393)) ([06c1fd5](https://github.com/vikejs/vike/commit/06c1fd57376891766792ecc2a3ae248ff0b231df))
 
 
