@@ -215,6 +215,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     const pageContext = await getPageContextBegin()
     if (isRenderOutdated()) return
 
+    if (args.pageContextError) {
+      objectAssign(pageContext, args.pageContextError)
+    }
+
     if ('err' in args) {
       const { err } = args
       assert(err)
@@ -278,8 +282,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       } else {
         objectAssign(pageContext, { is404: false })
       }
-    } else {
-      objectAssign(pageContext, args.pageContextError)
     }
 
     const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
