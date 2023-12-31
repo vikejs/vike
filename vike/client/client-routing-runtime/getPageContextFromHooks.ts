@@ -71,7 +71,7 @@ async function getPageContextFromHooks_firstRender(
       Object.assign(pageContextFromHooks, pageContextFromHook)
     }
   }
-  setPageContextInitHasClientData(pageContextFromHooks)
+  setPageContextInitHasClientData({ ...pageContext, ...pageContextFromHooks })
   return pageContextFromHooks
 }
 
