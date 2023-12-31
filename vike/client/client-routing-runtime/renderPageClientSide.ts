@@ -130,6 +130,18 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     assert(!('urlOriginal' in pageContextRouted))
     objectAssign(pageContext, pageContextRouted)
 
+    try {
+      objectAssign(
+        pageContext,
+        await loadUserFilesClientSide(pageContext._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
+      )
+    } catch (err) {
+      // TODO? Can't we be more precise here?
+      await renderErrorPage({ err })
+      return
+    }
+    if (isRenderOutdated()) return
+
     // onPageTransitionStart()
     if (callTransitionHooks) {
       if (!globalObject.isTransitioning) {
@@ -145,18 +157,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     // Get and/or fetch pageContext
     if (isHydrationRender) {
-      try {
-        objectAssign(
-          pageContext,
-          await loadUserFilesClientSide(pageContext._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
-        )
-      } catch (err) {
-        // TODO? Can't we be more precise here?
-        await renderErrorPage({ err })
-        return
-      }
-      if (isRenderOutdated()) return
-
       assert(hasProp(pageContext, '_hasPageContextFromServer', 'true'))
       let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_isHydration>>
       try {
@@ -173,18 +173,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // Render page view
       await renderPageView(pageContext)
     } else {
-      try {
-        objectAssign(
-          pageContext,
-          await loadUserFilesClientSide(pageContext._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
-        )
-      } catch (err) {
-        // TODO? Can't we be more precise here?
-        await renderErrorPage({ err })
-        return
-      }
-      if (isRenderOutdated()) return
-
       let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
       try {
         pageContextFromHooks = await getPageContextFromHooks_isNotHydration(pageContext, false)
