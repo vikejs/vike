@@ -15,7 +15,7 @@ async function getPageContext() {
     _hasPageContextFromServer: true as const,
     _hasPageContextFromClient: false as const
   })
-  objectAssign(pageContext, await loadPageFiles(pageContext._pageId))
+  objectAssign(pageContext, await loadPageUserFiles(pageContext._pageId))
   assertPristineUrl()
   return pageContext
 }
@@ -28,7 +28,7 @@ function assertPristineUrl() {
   )
 }
 
-async function loadPageFiles(pageId: string) {
+async function loadPageUserFiles(pageId: string) {
   const pageContextAddendum = {}
   const { pageFilesAll, pageConfigs } = await getPageFilesAll(true)
   objectAssign(pageContextAddendum, {

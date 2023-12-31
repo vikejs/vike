@@ -26,7 +26,7 @@ async function loadUserFilesServerSide(pageContext: { _pageId: string } & PageCo
 
   const [{ config, configEntries, exports, exportsAll, pageExports, pageFilesLoaded, pageConfigLoaded }] =
     await Promise.all([
-      loadPageFiles(pageContext._pageFilesAll, pageConfig, pageContext._pageId, !getGlobalContext().isProduction),
+      loadPageUserFiles(pageContext._pageFilesAll, pageConfig, pageContext._pageId, !getGlobalContext().isProduction),
       analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
     ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
@@ -106,7 +106,7 @@ async function loadUserFilesServerSide(pageContext: { _pageId: string } & PageCo
   return pageContextAddendum
 }
 
-async function loadPageFiles(
+async function loadPageUserFiles(
   pageFilesAll: PageFile[],
   pageConfig: null | PageConfigRuntime,
   pageId: string,
