@@ -30,6 +30,7 @@ import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRende
 import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
+import { isRenderFailure } from '../../shared/misc/isRenderFailure.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>('router/getPageContext.ts', {})
 
 type PageContext = {
@@ -106,7 +107,7 @@ async function getPageContextFromHooks_isNotHydration(
   ) {
     const pageContextFromServer = await fetchPageContextFromServer(pageContext)
     hasPageContextFromServer = true
-    if (!pageContextFromServer['_isError']) {
+    if (!pageContextFromServer[isRenderFailure]) {
       objectAssign(pageContextFromHooks, pageContextFromServer)
     } else {
       const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
