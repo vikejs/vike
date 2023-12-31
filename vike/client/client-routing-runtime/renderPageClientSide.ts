@@ -162,7 +162,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         if (onPageTransitionStartHook) {
           const hook = onPageTransitionStartHook
           const { hookFn } = hook
-          await executeHook(() => hookFn(pageContext), hook)
+          try {
+            await executeHook(() => hookFn(pageContext), hook)
+          } catch (err) {
+            await renderErrorPage({ err })
+            return
+          }
           if (isRenderOutdated()) return
         }
       }
@@ -379,7 +384,15 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       const hook = getHook(pageContext, 'onHydrationEnd')
       if (hook) {
         const { hookFn } = hook
-        await executeHook(() => hookFn(pageContext), hook)
+        try {
+          await executeHook(() => hookFn(pageContext), hook)
+        } catch (err) {
+          if (!isErrorPage) {
+            renderErrorPage({ err })
+          } else {
+            throw err
+          }
+        }
         if (isRenderOutdated(true)) return
       }
     }
@@ -394,7 +407,15 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       const hook = getHook(pageContext, 'onPageTransitionEnd')
       if (hook) {
         const { hookFn } = hook
-        await executeHook(() => hookFn(pageContext), hook)
+        try {
+          await executeHook(() => hookFn(pageContext), hook)
+        } catch (err) {
+          if (!isErrorPage) {
+            renderErrorPage({ err })
+          } else {
+            throw err
+          }
+        }
         if (isRenderOutdated(true)) return
       }
     }
