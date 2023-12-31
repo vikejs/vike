@@ -78,8 +78,7 @@ async function getPageContextFromHooks_isNotHydration(
 ) {
   const pageContextFromHooks = {
     isHydration: false as const,
-    _hasPageContextFromClient: false,
-    _pageId: pageContext._pageId
+    _hasPageContextFromClient: false
   }
 
   let hasPageContextFromServer = false
