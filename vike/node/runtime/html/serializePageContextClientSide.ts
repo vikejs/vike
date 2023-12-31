@@ -10,6 +10,7 @@ import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
 import pc from '@brillout/picocolors'
 import { notSerializable } from '../../../shared/notSerializable.js'
 import type { UrlRedirect } from '../../../shared/route/abort.js'
+import { pageContextInitIsPassedToClient } from '../../../shared/misc/pageContextInitIsPassedToClient.js'
 
 const PASS_TO_CLIENT: string[] = [
   'abortReason',
@@ -20,7 +21,7 @@ const PASS_TO_CLIENT: string[] = [
   /* Not needed on the client-side
   '_abortCaller',
   */
-  '_pageContextInitIsPassedToClient',
+  pageContextInitIsPassedToClient,
   '_pageId',
   'data' // for data() hook
 ]

@@ -30,6 +30,7 @@ import { getConfigValue, getPageConfig } from '../../shared/page-configs/helpers
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.js'
 import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
+import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>('router/getPageContext.ts', {})
 
 type PageContext = {
@@ -239,10 +240,11 @@ async function executeHookClientSide(
 // - Workaround cannot be made completely reliable because the workaround assumes that passToClient is always the same, but the user may set a different passToClient value for another page
 // - Alternatively, we could define a new config `alwaysFetchPageContextFromServer: boolean`
 function setPageContextInitIsPassedToClient(pageContext: Record<string, unknown>) {
-  if (pageContext._pageContextInitIsPassedToClient) {
+  if (pageContext[pageContextInitIsPassedToClient]) {
     globalObject.pageContextInitIsPassedToClient = true
   }
 }
+
 // TODO/v1-release: make it sync
 async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnlyExists>[1]): Promise<boolean> {
   return (
