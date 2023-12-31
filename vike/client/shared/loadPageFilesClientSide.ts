@@ -14,14 +14,17 @@ import type { PageConfigRuntime, PageConfigRuntimeLoaded } from '../../shared/pa
 
 const stamp = '__whileFetchingAssets'
 
+type PageContextUserFilesLoaded = PageContextExports & { _pageFilesLoaded: PageFile[] }
+// TODO: rename to PageContextUserFiles
 type PageContextPageFiles = {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfigRuntime[]
 }
+// TODO: rename to loadUserFilesClientSide
 async function loadPageFilesClientSide(
   pageId: string,
   pageContext: PageContextPageFiles
-): Promise<PageContextExports & { _pageFilesLoaded: PageFile[] }> {
+): Promise<PageContextUserFilesLoaded> {
   const pageFilesClientSide = getPageFilesClientSide(pageContext._pageFilesAll, pageId)
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageId)
   let pageConfigLoaded: null | PageConfigRuntimeLoaded

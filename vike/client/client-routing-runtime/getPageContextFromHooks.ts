@@ -1,8 +1,8 @@
 export { getPageContextFromHooks_firstRender }
 export { getPageContextFromHooks_uponNavigation }
+export { getPageContextFromHooks_serialized }
 export { getPageContextFromHooks_errorPage }
 export { isServerSideRouted }
-export type { PageContextFromHooks }
 
 import {
   assert,
@@ -19,8 +19,6 @@ import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
 import type { PageContextExports, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
-import type { PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
-import type { PageContextForRoute } from '../../shared/route/index.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import { getHook } from '../../shared/hooks/getHook.js'
 import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide.js'
@@ -31,45 +29,38 @@ import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getConfigValue, getPageConfig } from '../../shared/page-configs/helpers.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.js'
 import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
-import type { PageContextForPassToClientWarning } from '../shared/getPageContextProxyForUser.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 const globalObject = getGlobalObject<{ pageContextInitHasClientData?: true }>('router/getPageContext.ts', {})
 
-/** - pageContext set by user hooks
- *  - pageContext set by loadPageFilesClientSide()
- *  - misc:
- *    - pageContext.isHydration
- *    - pageContext._pageId
- *    - pageContext._hasPageContextFromClient
- *    - pageContext._hasPageContextFromServer
- */
-type PageContextFromHooks = {
+type PageContext = {
+  urlOriginal: string
+  _urlRewrite: string | null
+  _pageFilesAll: PageFile[]
+  _pageConfigs: PageConfigRuntime[]
+}
+
+type PageContextSerialized = {
   _pageId: string
-  isHydration: boolean
-  _pageFilesLoaded: PageFile[]
-} & PageContextExports &
-  PageContextForPassToClientWarning
-
-type PageContext = PageContextUrlComputedPropsInternal &
-  PageContextForRoute & {
-    _allPageIds: string[]
-    _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfigRuntime[]
-    isBackwardNavigation: boolean | null
-  }
-
-async function getPageContextFromHooks_firstRender(
-  pageContext: { urlOriginal: string } & PageContext
-): Promise<PageContextFromHooks> {
+  _hasPageContextFromServer: true
+}
+function getPageContextFromHooks_serialized(): PageContextSerialized {
   const pageContextFromHooks = getPageContextSerializedInHtml()
   removeBuiltInOverrides(pageContextFromHooks)
-
-  objectAssign(pageContextFromHooks, {
-    isHydration: true,
-    _hasPageContextFromClient: false
-  })
-
-  objectAssign(pageContextFromHooks, await loadPageFilesClientSide(pageContextFromHooks._pageId, pageContext))
+  return pageContextFromHooks
+}
+async function getPageContextFromHooks_firstRender(
+  pageContext: {
+    urlOriginal: string
+  } & PageContextSerialized &
+    PageContext &
+    PageContextExports
+) {
+  const pageContextFromHooks = {
+    isHydration: false as const,
+    _pageId: pageContext._pageId,
+    _hasPageContextFromClient: false,
+    _hasPageContextFromServer: true
+  }
 
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     const pageContextForHook = { ...pageContext, ...pageContextFromHooks }
@@ -83,9 +74,7 @@ async function getPageContextFromHooks_firstRender(
   return pageContextFromHooks
 }
 
-async function getPageContextFromHooks_errorPage(
-  pageContext: { urlOriginal: string } & PageContext
-): Promise<PageContextFromHooks> {
+async function getPageContextFromHooks_errorPage(pageContext: { urlOriginal: string } & PageContext) {
   const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
   if (!errorPageId) throw new Error('No error page defined.')
   const pageContextFromHooks = {
@@ -99,9 +88,7 @@ async function getPageContextFromHooks_errorPage(
   return pageContextFromHooks
 }
 
-async function getPageContextFromHooks_uponNavigation(
-  pageContext: { _pageId: string } & PageContext
-): Promise<PageContextFromHooks> {
+async function getPageContextFromHooks_uponNavigation(pageContext: { _pageId: string } & PageContext) {
   const pageContextFromHooks = {
     isHydration: false as const,
     _pageId: pageContext._pageId
@@ -117,7 +104,7 @@ async function getPageContextFromHooks_uponNavigation(
 async function getPageContextAlreadyRouted(
   pageContext: { _pageId: string; isHydration: false } & PageContext,
   isErrorPage: boolean
-): Promise<Omit<PageContextFromHooks, '_pageId' | 'isHydration'>> {
+) {
   const getPageContextFromHooksInit = async (pageId: string) => {
     const pageContextFromHooks = {
       _hasPageContextFromClient: false,

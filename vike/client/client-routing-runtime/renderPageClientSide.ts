@@ -13,18 +13,18 @@ import {
   hasProp
 } from './utils.js'
 import {
-  type PageContextFromHooks,
   getPageContextFromHooks_errorPage,
   getPageContextFromHooks_firstRender,
   getPageContextFromHooks_uponNavigation,
-  isServerSideRouted
+  isServerSideRouted,
+  getPageContextFromHooks_serialized
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
 import { addLinkPrefetchHandlers } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { type Hook, assertHook, getHook } from '../../shared/hooks/getHook.js'
-import { isErrorFetchingStaticAssets } from '../shared/loadPageFilesClientSide.js'
+import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../shared/loadPageFilesClientSide.js'
 import { pushHistory } from './history.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -91,7 +91,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     // Route
     let pageContextFromRoute: PageContextFromRoute | null = null
     if (!isFirstRender) {
-      // Route
       try {
         pageContextFromRoute = await route(pageContext)
       } catch (err) {
@@ -136,9 +135,16 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
 
     // Get and/or fetch pageContext
-    let pageContextFromHooks: PageContextFromHooks
     if (isFirstRender) {
       assert(!pageContextFromRoute)
+
+      const pageContextSerialized = getPageContextFromHooks_serialized()
+      objectAssign(pageContext, pageContextSerialized)
+
+      objectAssign(pageContext, await loadPageFilesClientSide(pageContext._pageId, pageContext))
+      if (isRenderOutdated()) return
+
+      let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_firstRender>>
       try {
         pageContextFromHooks = await getPageContextFromHooks_firstRender(pageContext)
       } catch (err) {
@@ -146,12 +152,19 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
       if (isRenderOutdated()) return
+
+      assert(!('urlOriginal' in pageContextFromHooks))
+      objectAssign(pageContext, pageContextFromHooks)
+
+      // Render page view
+      await renderPageView(pageContext)
     } else {
       assert(pageContextFromRoute)
       assert(pageContextFromRoute._pageId)
       assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
       assert(!('urlOriginal' in pageContextFromRoute))
       objectAssign(pageContext, pageContextFromRoute)
+      let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_uponNavigation>>
       try {
         pageContextFromHooks = await getPageContextFromHooks_uponNavigation(pageContext)
       } catch (err) {
@@ -159,12 +172,13 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
       if (isRenderOutdated()) return
-    }
-    assert(!('urlOriginal' in pageContextFromHooks))
-    objectAssign(pageContext, pageContextFromHooks)
 
-    // Render page view
-    await renderPageView(pageContext)
+      assert(!('urlOriginal' in pageContextFromHooks))
+      objectAssign(pageContext, pageContextFromHooks)
+
+      // Render page view
+      await renderPageView(pageContext)
+    }
   }
 
   async function getPageContextBegin() {
@@ -247,7 +261,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, { is404: false })
     }
 
-    let pageContextFromHooks: PageContextFromHooks
+    let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_errorPage>>
     try {
       pageContextFromHooks = await getPageContextFromHooks_errorPage(pageContext)
     } catch (errErrorPage: unknown) {
