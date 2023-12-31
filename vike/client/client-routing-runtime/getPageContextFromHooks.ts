@@ -56,7 +56,7 @@ async function getPageContextFromHooks_firstRender(
     PageContextExports
 ) {
   const pageContextFromHooks = {
-    isHydration: false as const,
+    isHydration: true as const,
     _pageId: pageContext._pageId,
     _hasPageContextFromClient: false,
     _hasPageContextFromServer: true
