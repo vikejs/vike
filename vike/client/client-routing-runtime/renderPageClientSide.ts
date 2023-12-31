@@ -112,11 +112,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
         if (isRenderOutdated()) return
       }
-      assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
       if (!isClientRoutable) {
         serverSideRouteTo(urlOriginal)
         return
       }
+      assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
       const isSamePage =
         pageContextFromRoute._pageId &&
         globalObject.previousPageContext?._pageId &&
