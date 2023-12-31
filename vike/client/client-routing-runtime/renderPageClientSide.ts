@@ -138,14 +138,20 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (isFirstRender) {
       assert(!pageContextFromRoute)
 
-      let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_firstRender>>
-      try {
       const pageContextSerialized = getPageContextFromHooks_serialized()
       objectAssign(pageContext, pageContextSerialized)
 
-      objectAssign(pageContext, await loadPageFilesClientSide(pageContext._pageId, pageContext))
+      try {
+        objectAssign(pageContext, await loadPageFilesClientSide(pageContext._pageId, pageContext))
+      } catch (err) {
+        // TODO? Can't we be more precise here?
+        await renderErrorPage(err)
+        return
+      }
       if (isRenderOutdated()) return
 
+      let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_firstRender>>
+      try {
         pageContextFromHooks = await getPageContextFromHooks_firstRender(pageContext)
       } catch (err) {
         await renderErrorPage(err)
