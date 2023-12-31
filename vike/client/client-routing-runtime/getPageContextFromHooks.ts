@@ -119,6 +119,8 @@ async function getPageContextFromHooks_isNotHydration(
       const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
       assert(errorPageId)
       pageContextFromHooks = await getPageContextFromHooksInit(errorPageId)
+      objectAssign(pageContextFromHooks, { _hasPageContextFromServer: true as const })
+      return pageContextFromHooks
     }
   }
 
