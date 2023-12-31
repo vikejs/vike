@@ -218,6 +218,7 @@ function logAbortErrorHandled(
   const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal
   assert(urlCurrent)
   const abortCall = err._pageContextAbort._abortCall
+  // TODO: add hook location
   assertInfo(false, `${pc.cyan(abortCall)} intercepted while rendering ${pc.cyan(urlCurrent)}`, { onlyOnce: false })
 }
 

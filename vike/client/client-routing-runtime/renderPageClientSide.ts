@@ -156,9 +156,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     // onPageTransitionStart()
     if (!isHydrationRender) {
       assertHook(pageContext, 'onPageTransitionStart')
-      const onPageTransitionStartHook = getHook(pageContext, 'onPageTransitionStart')
       if (!globalObject.isTransitioning) {
         globalObject.isTransitioning = true
+        const onPageTransitionStartHook = getHook(pageContext, 'onPageTransitionStart')
         if (onPageTransitionStartHook) {
           const hook = onPageTransitionStartHook
           const { hookFn } = hook
@@ -370,8 +370,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     await globalObject.renderPromise
     assert(globalObject.renderPromise === undefined)
     /* We don't abort in order to ensure that onHydrationEnd() is called: we abort only after onHydrationEnd() is called.
-  if (isRenderOutdated(true)) return
-  */
+    if (isRenderOutdated(true)) return
+    */
 
     // onHydrationEnd()
     if (isHydrationRender) {
