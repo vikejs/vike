@@ -23,7 +23,7 @@ import { addLinkPrefetchHandlers } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { type Hook, assertHook, getHook } from '../../shared/hooks/getHook.js'
-import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../shared/loadPageFilesClientSide.js'
+import { isErrorFetchingStaticAssets, loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
 import { pushHistory } from './history.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -144,7 +144,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, pageContextSerialized)
 
       try {
-        objectAssign(pageContext, await loadPageFilesClientSide(pageContext._pageId, pageContext))
+        objectAssign(
+          pageContext,
+          await loadUserFilesClientSide(pageContext._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
+        )
       } catch (err) {
         // TODO? Can't we be more precise here?
         await renderErrorPage(err)

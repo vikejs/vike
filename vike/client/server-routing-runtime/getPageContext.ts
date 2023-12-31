@@ -1,7 +1,7 @@
 import { assertUsage, assertWarning, getCurrentUrl, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
 import { getPageFilesAll } from '../../shared/getPageFiles.js'
-import { loadPageFilesClientSide } from '../shared/loadPageFilesClientSide.js'
+import { loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
 
 export { getPageContext }
 
@@ -36,7 +36,10 @@ async function loadPageFiles(pageId: string) {
     _pageConfigs: pageConfigs
   })
 
-  objectAssign(pageContextAddendum, await loadPageFilesClientSide(pageId, pageContextAddendum))
+  objectAssign(
+    pageContextAddendum,
+    await loadUserFilesClientSide(pageId, pageContextAddendum._pageFilesAll, pageContextAddendum._pageConfigs)
+  )
 
   pageFilesAll
     .filter((p) => p.fileType !== '.page.server')

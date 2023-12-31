@@ -21,7 +21,7 @@ import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServ
 import { getErrorPageId } from '../../shared/error-page.js'
 import { getHook } from '../../shared/hooks/getHook.js'
 import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide.js'
-import { loadPageFilesClientSide } from '../shared/loadPageFilesClientSide.js'
+import { loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
@@ -83,7 +83,11 @@ async function getPageContextFromHooks_isNotHydration(
       _hasPageContextFromClient: false,
       _pageId: pageId
     }
-    const pageContextFromPageFiles = await loadPageFilesClientSide(pageId, pageContext)
+    const pageContextFromPageFiles = await loadUserFilesClientSide(
+      pageId,
+      pageContext._pageFilesAll,
+      pageContext._pageConfigs
+    )
     objectAssign(pageContextFromHooks, pageContextFromPageFiles)
     return pageContextFromHooks
   }
