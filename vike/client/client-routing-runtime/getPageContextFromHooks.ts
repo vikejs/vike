@@ -107,19 +107,18 @@ async function getPageContextFromHooks_isNotHydration(
   ) {
     const pageContextFromServer = await fetchPageContextFromServer(pageContext)
     hasPageContextFromServer = true
-    if (!pageContextFromServer[isRenderFailure]) {
+    if (!pageContextFromServer[isRenderFailure] || isErrorPage) {
       objectAssign(pageContextFromHooks, pageContextFromServer)
     } else {
-      const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
-      assert(errorPageId)
-      pageContextFromHooks = await getPageContextFromHooksInit(errorPageId)
-
+      // When the user hasn't define a `_error.page.js` file: the mechanism with `serverSideError: true` is used instead
+      assert(!('serverSideError' in pageContextFromServer))
       assert(hasProp(pageContextFromServer, 'is404', 'boolean'))
       assert(hasProp(pageContextFromServer, 'pageProps', 'object'))
       assert(hasProp(pageContextFromServer.pageProps, 'is404', 'boolean'))
-      // When the user hasn't define a `_error.page.js` file: the mechanism with `serverSideError: true` is used instead
-      assert(!('serverSideError' in pageContextFromServer))
-      objectAssign(pageContextFromHooks, pageContextFromServer)
+      //return pageContextFromServer
+      const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
+      assert(errorPageId)
+      pageContextFromHooks = await getPageContextFromHooksInit(errorPageId)
     }
   }
 

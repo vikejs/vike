@@ -38,6 +38,7 @@ import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
+import {isRenderFailure} from '../../shared/misc/isRenderFailure.js'
 
 const globalObject = getGlobalObject<{
   onPageTransitionStart?: Hook | null
@@ -96,7 +97,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       try {
         pageContextFromRoute = await route(pageContext)
       } catch (err) {
-        await renderErrorPage(err)
+        await renderErrorPage({ err })
         return
       }
       if (isRenderOutdated()) return
@@ -150,7 +151,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         )
       } catch (err) {
         // TODO? Can't we be more precise here?
-        await renderErrorPage(err)
+        await renderErrorPage({ err })
         return
       }
       if (isRenderOutdated()) return
@@ -159,7 +160,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       try {
         pageContextFromHooks = await getPageContextFromHooks_isHydration(pageContext)
       } catch (err) {
-        await renderErrorPage(err)
+        await renderErrorPage({ err })
         return
       }
       if (isRenderOutdated()) return
@@ -179,10 +180,14 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       try {
         pageContextFromHooks = await getPageContextFromHooks_isNotHydration(pageContext, false)
       } catch (err) {
-        await renderErrorPage(err)
+        await renderErrorPage({ err })
         return
       }
       if (isRenderOutdated()) return
+      if( isRenderFailure in pageContextFromHooks ) {
+        await renderErrorPage({ pageContextError: pageContextFromHooks })
+        return
+      }
 
       assert(!('urlOriginal' in pageContextFromHooks))
       objectAssign(pageContext, pageContextFromHooks)
@@ -206,10 +211,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     return pageContext
   }
 
-  async function renderErrorPage(err: unknown) {
+  async function renderErrorPage(args:{ err?: unknown, pageContextError?: Record<string, unknown> }) {
     const pageContext = await getPageContextBegin()
     if (isRenderOutdated()) return
 
+    if( 'err' in args ) {
+      const { err } = args
     assert(err)
     assert(!('errorWhileRendering' in pageContext))
     pageContext.errorWhileRendering = err
@@ -271,6 +278,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     } else {
       objectAssign(pageContext, { is404: false })
     }
+    } else {
+      objectAssign(pageContext, args.pageContextError)
+    }
 
     const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
     if (!errorPageId) throw new Error('No error page defined.')
@@ -286,7 +296,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // - Some Vike unpexected internal error
 
       if (shouldSwallowAndInterrupt(errErrorPage, pageContext, isHydrationRender)) return
-      if (isSameErrorMessage(err, errErrorPage)) {
+      if (isSameErrorMessage(args.err, errErrorPage)) {
         /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
            - We risk running into an infinite loop of reloads which would overload the server.
            - An infinite reloading page is a even worse UX than a blank page.
@@ -343,7 +353,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         await executeOnRenderClientHook(pageContext, true)
       } catch (err) {
         if (!isErrorPage) {
-          renderErrorPage(err)
+          renderErrorPage({ err })
         } else {
           throw err
         }
