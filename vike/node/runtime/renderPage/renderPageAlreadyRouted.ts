@@ -20,10 +20,10 @@ import {
   HttpResponse
 } from './createHttpResponseObject.js'
 import {
-  loadPageFilesServerSide,
-  PageContext_loadPageFilesServerSide,
+  loadUserFilesServerSide,
+  PageContext_loadUserFilesServerSide,
   type PageFiles
-} from './loadPageFilesServerSide.js'
+} from './loadUserFilesServerSide.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook.js'
 import { executeOnBeforeRenderAndDataHooks } from './executeOnBeforeRenderAndDataHooks.js'
@@ -48,7 +48,7 @@ async function renderPageAlreadyRouted<
     _httpRequestId: number
   } & PageContextInitEnhanced &
     PageContextUrlComputedPropsInternal &
-    PageContext_loadPageFilesServerSide
+    PageContext_loadUserFilesServerSide
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   // pageContext._pageId can either be the:
   //  - ID of the page matching the routing, or the
@@ -58,7 +58,7 @@ async function renderPageAlreadyRouted<
   const isError: boolean = pageContext.is404 || !!pageContext.errorWhileRendering
   assert(isError === (pageContext._pageId === getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)))
 
-  objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
+  objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 
   if (!isError) {
     await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionServerSide(pageContext))
@@ -167,7 +167,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
     objectAssign(pageContext, pageContextInitEnhanced)
   }
 
-  objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
+  objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 
   return prerenderPage(pageContext)
 }

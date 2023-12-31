@@ -49,7 +49,7 @@ import { isErrorPage } from '../../shared/error-page.js'
 import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute.js'
 import { isAbortError } from '../../shared/route/abort.js'
-import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide.js'
+import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServerSide.js'
 import {
   getHookFromPageConfig,
   getHookFromPageConfigGlobal,
@@ -490,7 +490,7 @@ async function handlePagesWithStaticRoutes(
             }
           ]
         })
-        objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
+        objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 
         prerenderContext.pageContexts.push(pageContext)
       })
@@ -755,7 +755,7 @@ async function routeAndPrerender(
         objectAssign(pageContext, pageContextFromRoute)
         const { _pageId: pageId } = pageContext
 
-        objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
+        objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 
         let usesClientRouter: boolean
         {
