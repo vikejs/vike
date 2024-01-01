@@ -179,8 +179,10 @@ export async function onBeforeRenderHtml(pageContext) {
   // `cache` contains the data fetched by GraphQL
   const { cache, html } = await renderToHtml(<Page />)
   return {
-    pageHtml: html,
-    cache
+    pageContext: {
+      pageHtml: html,
+      cache
+    }
   }
 }
 ```
