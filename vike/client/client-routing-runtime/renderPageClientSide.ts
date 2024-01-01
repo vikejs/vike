@@ -175,7 +175,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    // Get and/or fetch pageContext
+    // Get pageContext from hooks (fetched from server, and/or directly called on the client-side)
     if (isHydrationRender) {
       assert(hasProp(pageContext, '_hasPageContextFromServer', 'true'))
       let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_isHydration>>
@@ -401,7 +401,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    // We abort only after onHydrationEnd() is called
+    // We abort *after* onHydrationEnd() is called
     if (isRenderOutdated(true)) return
 
     // onPageTransitionEnd()
