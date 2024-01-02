@@ -54,7 +54,8 @@ import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServ
 import {
   getHookFromPageConfig,
   getHookFromPageConfigGlobal,
-  getHookTimeoutDefault
+  getHookTimeoutDefault,
+  setIsPrerenderering
 } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
@@ -169,6 +170,8 @@ async function runPrerender(
   manuallyTriggered: null | '$ vike prerender' | 'prerender()'
 ): Promise<void> {
   checkOutdatedOptions(options)
+
+  setIsPrerenderering()
 
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
   if (logLevel === 'info') {
