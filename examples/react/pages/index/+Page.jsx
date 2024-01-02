@@ -4,6 +4,7 @@ import React from 'react'
 import { Counter } from './Counter'
 
 function Page() {
+  console.log(new Error().stack)
   return (
     <>
       <h1>Welcome</h1>
