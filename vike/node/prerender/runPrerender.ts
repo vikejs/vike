@@ -1,7 +1,7 @@
-export { prerenderFromAPI }
-export { prerenderFromCLI }
-export { prerenderFromAutoFullBuild }
-export { prerenderForceExit }
+export { runPrerenderFromAPI }
+export { runPrerenderFromCLI }
+export { runPrerenderFromAutoFullBuild }
+export { runPrerender_forceExit }
 export type { PrerenderOptions }
 
 import '../runtime/page-files/setup.js'
@@ -155,13 +155,13 @@ type PrerenderOptions = {
   base?: string
 }
 
-async function prerenderFromAPI(options: PrerenderOptions = {}): Promise<void> {
+async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<void> {
   await runPrerender(options, 'prerender()')
 }
-async function prerenderFromCLI(options: PrerenderOptions): Promise<void> {
+async function runPrerenderFromCLI(options: PrerenderOptions): Promise<void> {
   await runPrerender(options, '$ vike prerender')
 }
-async function prerenderFromAutoFullBuild(options: PrerenderOptions): Promise<void> {
+async function runPrerenderFromAutoFullBuild(options: PrerenderOptions): Promise<void> {
   await runPrerender(options, null)
 }
 async function runPrerender(
@@ -1121,7 +1121,7 @@ function normalizeUrl(url: string) {
   return '/' + url.split('/').filter(Boolean).join('/')
 }
 
-function prerenderForceExit() {
+function runPrerender_forceExit() {
   // Force exit; known situations where pre-rendering is hanging:
   //  - https://github.com/vikejs/vike/discussions/774#discussioncomment-5584551
   //  - https://github.com/vikejs/vike/issues/807#issuecomment-1519010902
