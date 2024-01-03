@@ -71,6 +71,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
 function precise(error: unknown): boolean | string[] {
   const code = getErrCode(error)
   const message = getErrMessage(error)
+  const stack = getErrStack(error)
 
   if (code === 'ERR_MODULE_NOT_FOUND') {
     const errMsg = getErrMessage(error)
@@ -117,6 +118,23 @@ function precise(error: unknown): boolean | string[] {
     const stackFirstLine = getErrStackFirstLine(error)
     if (stackFirstLine?.includes('node_modules')) {
       return true
+    }
+  }
+
+  if (message?.includes('require is not a function')) {
+    const stackFirstLine = getErrStackFirstLine(error)
+    if (stackFirstLine?.includes('node_modules')) {
+      const packageName = extractFromPath(stackFirstLine)
+      return clean([packageName])
+    }
+  }
+
+  if (stack) {
+    const match = /\bimport\b.*\bfrom\b.*"(\S+)"/.exec(stack)
+    if (match) {
+      const importPath = match[1]!
+      const packageName = extractFromPath(importPath, true)
+      return clean([packageName])
     }
   }
 
