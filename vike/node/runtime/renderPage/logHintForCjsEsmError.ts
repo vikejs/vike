@@ -68,30 +68,42 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   }
 }
 
+function parseCannotFind(str: string): false | string[] {
+  const match = /Cannot find \S+ '(\S+)' imported from (\S+)/.exec(str)
+  if (!match) return false
+  const packageNameCannotFind = extractFromPath(match[1]!)
+  const packageNameFrom = extractFromPath(match[2]!)
+  return clean([packageNameCannotFind, packageNameFrom])
+}
+function parseUnkownFileExtension(str: string): false | string[] {
+  const match = /Unknown file extension "\S+" for (\S+)/.exec(str)
+  if (!match) return false
+  const filePath = match[1]!
+  const packageName = extractFromPath(filePath)
+  return clean([packageName])
+}
+function parseImportFrom(str: string): false | string[] {
+  const match = /\bimport\b.*?\bfrom\b\s*?"(\S+?)"/.exec(str)
+  if (!match) return false
+  const importPath = match[1]!
+  const packageName = extractFromPath(importPath, true)
+  return clean([packageName])
+}
+
 function precise(error: unknown): boolean | string[] {
   const code = getErrCode(error)
   const message = getErrMessage(error)
   const stack = getErrStack(error)
   const stackFirstLine = getErrStackFirstLine(error)
 
-  if (code === 'ERR_MODULE_NOT_FOUND') {
-    assert(message)
-    const match = /Cannot find \S+ '(\S+)' imported from (\S+)/.exec(message)
-    if (match) {
-      const packageNameCannotFind = extractFromPath(match[1]!)
-      const packageNameFrom = extractFromPath(match[2]!)
-      return clean([packageNameCannotFind, packageNameFrom])
-    }
+  if (code === 'ERR_MODULE_NOT_FOUND' && message) {
+    const packageNames = parseCannotFind(message)
+    if (packageNames) return packageNames
   }
 
-  if (code === 'ERR_UNKNOWN_FILE_EXTENSION') {
-    assert(message)
-    const match = /Unknown file extension "\S+" for (\S+)/.exec(message)
-    if (match) {
-      const filePath = match[1]!
-      const packageName = extractFromPath(filePath)
-      return clean([packageName])
-    }
+  if (code === 'ERR_UNKNOWN_FILE_EXTENSION' && message) {
+    const packageNames = parseUnkownFileExtension(message)
+    if (packageNames) return packageNames
   }
 
   if (code === 'ERR_REQUIRE_ESM') {
@@ -106,6 +118,7 @@ function precise(error: unknown): boolean | string[] {
        * ```
       const match = /at \S+ (\S+)/.exec(stackFirstLine)
       */
+
       const packageName = extractFromPath(stackFirstLine)
       const packageNames = clean([packageName])
       return packageNames
@@ -126,12 +139,8 @@ function precise(error: unknown): boolean | string[] {
   }
 
   if (stack) {
-    const match = /\bimport\b.*?\bfrom\b\s*?"(\S+?)"/.exec(stack)
-    if (match) {
-      const importPath = match[1]!
-      const packageName = extractFromPath(importPath, true)
-      return clean([packageName])
-    }
+    const packageNames = parseImportFrom(stack)
+    if (packageNames) return packageNames
   }
 
   return false
