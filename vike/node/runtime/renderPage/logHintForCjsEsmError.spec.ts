@@ -462,7 +462,7 @@ function fuzzy() {
       // https://github.com/vikejs/vike/discussions/635
       `
 import { useI18n, createI18n } from "vue-i18n/dist/vue-i18n.runtime.esm-bundler.js";
-                    ^^^^^^^^^^
+                  ^^^^^^^^^^
 SyntaxError: Named export 'createI18n' not found. The requested module 'vue-i18n/dist/vue-i18n.runtime.esm-bundler.js' is a CommonJS module, which may not support all module.exports as named exports.
 CommonJS modules can always be imported via the default export, for example using:
 
@@ -474,15 +474,32 @@ const { useI18n, createI18n } = pkg;
     t(
       '@apollo/client',
       // https://github.com/vikejs/vike/discussions/872
-      `
+      {
+        message:
+          "Named export 'ApolloClient' not found. The requested module '@apollo/client' is a CommonJS module, which may not support all module.exports as named exports.\nCommonJS modules can always be imported via the default export, for example using:\n\nimport pkg from '@apollo/client';\nconst { ApolloClient } = pkg;\n",
+        code: undefined,
+        stack: `
+file:///home/romu/tmp/vite-ssr-test/dist/server/entries/pages_about_index-page.mjs:2
 import { ApolloClient } from "@apollo/client";
-        ^^^^^^^^^^^^
+         ^^^^^^^^^^^^
 SyntaxError: Named export 'ApolloClient' not found. The requested module '@apollo/client' is a CommonJS module, which may not support all module.exports as named exports.
 CommonJS modules can always be imported via the default export, for example using:
 
 import pkg from '@apollo/client';
 const { ApolloClient } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:131:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:213:5)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)
+    at async pageFile.loadFile (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/shared/getPageFiles/parseGlobResults.js:31:40)
+    at async Promise.all (index 0)
+    at async loadPageFiles (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage/loadPageFilesServerSide.js:86:5)
+    at async Promise.all (index 0)
+    at async loadPageFilesServerSide (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage/loadPageFilesServerSide.js:13:110)
+    at async renderPageAlreadyRouted (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage/renderPageAlreadyRouted.js:30:31)
+    at async renderPageNominal (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage.js:267:36)
 `
+      }
     )
 
     t(
