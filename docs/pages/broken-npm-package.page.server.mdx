@@ -212,7 +212,7 @@ Error: Element type is invalid: expected a string (for built-in components) or a
 ```
 </CodeBlockTransformer>
 
-Inject the following to gather further information.
+The problem here is that the stack trace doesn't say which React component is invalid. The following patch will provide you with that information.
 
 ```js
 // node_modules/react/cjs/react.production.min.js
@@ -258,9 +258,11 @@ function debugEl(fn) {
 
 > This patch works with React `18.2.0` (and probably with most other React versions). Let us know if it doesn't work with your React version.
 
-The debug logs will help you know which React component is `undefined` (or an `object`). You'll likely discover that the React component is imported, while the import value is `undefined` (or an object instead of a React component function/class) because of some CJS/ESM interoperability quirks.
+The debug logs will help you find which React component is `undefined` (or an `object`). You'll likely discover that the React component is imported, while the import value is `undefined` (or an object instead of a React component function/class) because of some CJS/ESM interoperability quirks.
 
 If the component lives inside `node_modules/`, then consider <Link href="#solution">adding the npm package(s) to `ssr.noExternal`</Link>.
+
+Once you fixed the problem, you can remove the patch.
 
 
 ## See also
