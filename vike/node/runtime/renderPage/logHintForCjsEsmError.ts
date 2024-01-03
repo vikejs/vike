@@ -1,6 +1,8 @@
 export { logHintForCjsEsmError }
 
 // For ./logHintForCjsEsmError.spec.ts
+export { precise }
+export { fuzzy }
 export { isCjsEsmError }
 export { getHintForCjsEsmError }
 export { isReactInvalidComponentError }
@@ -59,7 +61,8 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   }
 
   {
-    const result = fuzzy(error)
+    const errString = getErrorAsString(error)
+    const result = fuzzy(errString)
     if (typeof result === 'string') return [result]
     return result
   }
@@ -149,8 +152,7 @@ function getErrStackFirstLine(err: unknown): null | string {
   return match ?? null
 }
 
-function fuzzy(error: unknown) {
-  const errString = getErrorAsString(error)
+function fuzzy(errString: string | undefined) {
   if (!errString) return false
 
   const shouldParsePackageName = [
@@ -173,7 +175,7 @@ function fuzzy(error: unknown) {
   const shouldParsePackageNameRegex = new RegExp(shouldParsePackageName.join('|'), 's')
   if (!shouldParsePackageNameRegex.test(errString)) return true
 
-  const packageName = extractPackageName(errString, error)
+  const packageName = extractPackageName(errString)
   // TODO: this assertion may fail
   assert(packageName)
   return packageName
@@ -204,7 +206,7 @@ function getErrorAsString(error: unknown) {
   return parsed
 }
 
-function extractPackageName(errString: string, error: unknown): string | null {
+function extractPackageName(errString: string): string | null {
   let packageName: string | null = null
 
   // Extract package name from code snippet in error message
