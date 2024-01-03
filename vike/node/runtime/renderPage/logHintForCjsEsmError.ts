@@ -72,6 +72,7 @@ function precise(error: unknown): boolean | string[] {
   const code = getErrCode(error)
   const message = getErrMessage(error)
   const stack = getErrStack(error)
+  const stackFirstLine = getErrStackFirstLine(error)
 
   if (code === 'ERR_MODULE_NOT_FOUND') {
     assert(message)
@@ -94,7 +95,6 @@ function precise(error: unknown): boolean | string[] {
   }
 
   if (code === 'ERR_REQUIRE_ESM') {
-    const stackFirstLine = getErrStackFirstLine(error)
     if (stackFirstLine) {
       /* Not reliable as stack traces have different formats:
        * ```
@@ -113,14 +113,12 @@ function precise(error: unknown): boolean | string[] {
   }
 
   if (message?.startsWith('Cannot read properties of undefined')) {
-    const stackFirstLine = getErrStackFirstLine(error)
     if (stackFirstLine?.includes('node_modules')) {
       return true
     }
   }
 
   if (message?.includes('require is not a function')) {
-    const stackFirstLine = getErrStackFirstLine(error)
     if (stackFirstLine?.includes('node_modules')) {
       const packageName = extractFromPath(stackFirstLine)
       return clean([packageName])
