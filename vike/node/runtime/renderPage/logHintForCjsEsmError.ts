@@ -61,11 +61,51 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   }
 
   {
+    const result = fuzzy2(error)
+    if (result) return result
+  }
+
+  {
     const errString = getErrorAsString(error)
     const result = fuzzy(errString)
     if (typeof result === 'string') return [result]
     return result
   }
+}
+
+function fuzzy2(error: unknown): boolean | string[] {
+  const code = getErrCode(error)
+  const message = getErrMessage(error)
+  const stack = getErrStack(error)
+  const anywhere = [code, message, stack].join('\n')
+  const stackFirstLine = getErrStackFirstLine(error)
+  const fromNodeModules = stackFirstLine?.includes('node_modules') || message?.includes('node_modules') || false
+
+  // ERR_UNKNOWN_FILE_EXTENSION
+  if (
+    /*
+    fromNodeModules
+    /*/
+    true
+    //*/
+  ) {
+    const packageNames = parseUnkownFileExtension(anywhere)
+    if (packageNames) return packageNames
+  }
+
+  // ERR_MODULE_NOT_FOUND
+  if (fromNodeModules) {
+    const packageNames = parseCannotFind(anywhere)
+    if (packageNames) return packageNames
+  }
+
+  // CJS named export
+  if (fromNodeModules) {
+    const packageNames = parseImportFrom(anywhere)
+    if (packageNames) return packageNames
+  }
+
+  return false
 }
 
 function parseCannotFind(str: string): false | string[] {
