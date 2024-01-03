@@ -277,21 +277,15 @@ function collectError(error: any) {
       '}'
     ].join('\n')
   )
-  /* For reproductions using older vite-plugin-ssr versions, inject the following at `configResolved(config_)` in node_modules/vite-plugin-ssr/dist/cjs/node/plugin/plugins/devConfig/index.js
-       ```js
-       config_.logger.error = (msg, options) => {
-         const { error } = options;
-         if (error) return;
-         console.log(
-           [
-             '{',
-             `  message: ${JSON.stringify((error).message)},`,
-             `  code: ${JSON.stringify((error).code)},`,
-             '  stack: `\n' + (error).stack + '\n`',
-             '}'
-           ].join('\n')
-         );
-       };
-       ```
+  /* For reproductions using older vite-plugin-ssr versions, do one of the following.
+      - Inject the logger inside `catch` in node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage.js
+      - Inject the following inside `configResolved(config_)` at node_modules/vite-plugin-ssr/dist/cjs/node/plugin/plugins/devConfig/index.js
+        ```js
+        config_.logger.error = (msg, options) => {
+          const { error } = options;
+          if (error) return;
+          console.log(...);
+        };
+        ```
   */
 }
