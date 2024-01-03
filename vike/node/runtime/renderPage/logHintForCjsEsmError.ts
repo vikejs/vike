@@ -71,9 +71,12 @@ function isCjsEsmError(error: unknown): boolean | string[] {
 function parseCannotFind(str: string): false | string[] {
   const match = /Cannot find \S+ '(\S+)' imported from (\S+)/.exec(str)
   if (!match) return false
-  const packageNameCannotFind = extractFromPath(match[1]!)
+  // const packageNameCannotFind = extractFromPath(match[1]!)
   const packageNameFrom = extractFromPath(match[2]!)
-  return clean([packageNameCannotFind, packageNameFrom])
+  return clean([
+    // packageNameCannotFind,
+    packageNameFrom
+  ])
 }
 function parseUnkownFileExtension(str: string): false | string[] {
   const match = /Unknown file extension "\S+" for (\S+)/.exec(str)
@@ -86,7 +89,7 @@ function parseImportFrom(str: string): false | string[] {
   const match = /\bimport\b.*?\bfrom\b\s*?"(\S+?)"/.exec(str)
   if (!match) return false
   const importPath = match[1]!
-  const packageName = extractFromPath(importPath, true)
+  const packageName = extractFromPath(importPath)
   return clean([packageName])
 }
 
@@ -107,7 +110,7 @@ function precise(error: unknown): boolean | string[] {
   }
 
   if (code === 'ERR_REQUIRE_ESM') {
-    if (stackFirstLine) {
+    if (stackFirstLine?.includes('node_modules')) {
       /* Not reliable as stack traces have different formats:
        * ```
        * at file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:10:1
@@ -119,7 +122,7 @@ function precise(error: unknown): boolean | string[] {
       const match = /at \S+ (\S+)/.exec(stackFirstLine)
       */
 
-      const packageName = extractFromPath(stackFirstLine)
+      const packageName = extractFromStackTraceLine(stackFirstLine)
       const packageNames = clean([packageName])
       return packageNames
     }
@@ -133,7 +136,7 @@ function precise(error: unknown): boolean | string[] {
 
   if (message?.includes('require is not a function')) {
     if (stackFirstLine?.includes('node_modules')) {
-      const packageName = extractFromPath(stackFirstLine)
+      const packageName = extractFromStackTraceLine(stackFirstLine)
       return clean([packageName])
     }
   }
@@ -236,7 +239,7 @@ function extractPackageName(errString: string): string | null {
   {
     const match = /import.*?from ?"(.*?)"/.exec(errString)
     if (match?.length && typeof match[1] === 'string') {
-      packageName = extractFromPath(match[1], true)
+      packageName = extractFromPath(match[1])
       return packageName
     }
   }
@@ -245,39 +248,55 @@ function extractPackageName(errString: string): string | null {
   {
     const firstNodeModulesLine = errString.split('\n').find((line) => line.includes('node_modules/'))
     if (firstNodeModulesLine) {
-      packageName = extractFromPath(firstNodeModulesLine)
+      packageName = extractFromStackTraceLine(firstNodeModulesLine)
       return packageName
     }
   }
 
   return null
 }
-function extractFromPath(filePath: string, doNotExpectNodeModules?: true): string | null {
+
+function extractFromPath(filePath: string): string | null {
   assert(filePath)
 
-  if (!doNotExpectNodeModules && !filePath.includes('node_modules/')) return null
-  let packageName = filePath.split('node_modules/').pop()!.split('/').slice(0, 2).join('/')
+  filePath = removeQuotes(filePath)
+
+  let packageName: string
+  if (!filePath.includes('node_modules/')) {
+    packageName = filePath
+    if (packageName.startsWith('/')) return null
+    if (packageName.startsWith('.')) return null
+  } else {
+    packageName = filePath.split('node_modules/').pop()!
+    assert(!packageName.startsWith('.'))
+    assert(!packageName.startsWith('/'))
+  }
   if (!packageName) return null
-  assert(!packageName.startsWith('/'), packageName)
+
+  packageName = packageName.split('/').slice(0, 2).join('/')
   if (!packageName.startsWith('@')) {
     packageName = packageName.split('/')[0]!
   }
-  if (packageName.startsWith('.')) return null
+
   assert(!packageName.startsWith('/'))
-
-  packageName = removeQuotes(packageName)
-
-  // TODO
-  assert(!['vite'].includes(packageName))
-
+  assert(!packageName.startsWith('.'))
+  assert(!packageName.endsWith(')'))
+  assert(!['vite', 'vike'].includes(packageName))
   return packageName
 }
+function extractFromStackTraceLine(stackTraceLine: string): string {
+  assert(stackTraceLine.includes('node_modules/'))
+  const packageName = extractFromPath(stackTraceLine)
+  assert(packageName)
+  return packageName
+}
+
 function removeQuotes(packageName: string) {
   if (packageName) {
-    if (packageName.startsWith('"')) {
+    if (packageName.startsWith('"') || packageName.startsWith("'")) {
       packageName = packageName.slice(1)
     }
-    if (packageName.endsWith('"')) {
+    if (packageName.endsWith('"') || packageName.endsWith("'")) {
       packageName = packageName.slice(0, -1)
     }
   }
