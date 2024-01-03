@@ -130,7 +130,7 @@ function precise(error: unknown): boolean | string[] {
   }
 
   if (stack) {
-    const match = /\bimport\b.*\bfrom\b.*"(\S+)"/.exec(stack)
+    const match = /\bimport\b.*?\bfrom\b\s*?"(\S+?)"/.exec(stack)
     if (match) {
       const importPath = match[1]!
       const packageName = extractFromPath(importPath, true)

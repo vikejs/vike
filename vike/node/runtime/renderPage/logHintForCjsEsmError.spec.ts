@@ -36,9 +36,7 @@ function tFuzzy(
   errString: string
 ) {
   expectRes(fuzzy(errString), resExpected)
-  /* TODO
   expectRes(isCjsEsmError({ stack: errString}), resExpected)
-  */
 }
 type Res = boolean | string | string[]
 function expectRes(res: Res, resExpected: Res) {
