@@ -74,9 +74,8 @@ function precise(error: unknown): boolean | string[] {
   const stack = getErrStack(error)
 
   if (code === 'ERR_MODULE_NOT_FOUND') {
-    const errMsg = getErrMessage(error)
-    assert(errMsg)
-    const match = /Cannot find \S+ '(\S+)' imported from (\S+)/.exec(errMsg)
+    assert(message)
+    const match = /Cannot find \S+ '(\S+)' imported from (\S+)/.exec(message)
     if (match) {
       const packageNameCannotFind = extractFromPath(match[1]!)
       const packageNameFrom = extractFromPath(match[2]!)
@@ -85,9 +84,8 @@ function precise(error: unknown): boolean | string[] {
   }
 
   if (code === 'ERR_UNKNOWN_FILE_EXTENSION') {
-    const errMsg = getErrMessage(error)
-    assert(errMsg)
-    const match = /Unknown file extension "\S+" for (\S+)/.exec(errMsg)
+    assert(message)
+    const match = /Unknown file extension "\S+" for (\S+)/.exec(message)
     if (match) {
       const filePath = match[1]!
       const packageName = extractFromPath(filePath)
@@ -280,9 +278,9 @@ function removeQuotes(packageName: string) {
 }
 
 function isReactInvalidComponentError(err: unknown): boolean {
-  const errMsg = getErrMessage(err)
-  if (!errMsg) return false
-  return errMsg.includes(
+  const message = getErrMessage(err)
+  if (!message) return false
+  return message.includes(
     'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)'
   )
 }
