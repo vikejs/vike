@@ -374,6 +374,29 @@ Instead change the require of getPageElement.js in /home/romu/code/vike/node_mod
       }
     )
   })
+
+  tPrecise(
+    'react-dom',
+    /* Error artificially created:
+    ```diff
+    // node_modules/react-dom/server.node.js
+    + require('vike-react')
+    ``` */
+    {
+      message:
+        'require() of ES Module /home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.4_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/+config.js from /home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/server.node.js not supported.\nInstead change the require of +config.js in /home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/server.node.js to a dynamic import() which is available in all CommonJS modules.',
+      code: 'ERR_REQUIRE_ESM',
+      stack: `
+Error [ERR_REQUIRE_ESM]: require() of ES Module /home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.4_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/+config.js from /home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/server.node.js not supported.
+Instead change the require of +config.js in /home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/server.node.js to a dynamic import() which is available in all CommonJS modules.
+    at Object.<anonymous> (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/server.node.js:13:1)
+    at async nodeImport (file:///home/romu/code/vike/node_modules/.pnpm/vite@5.0.10_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-R0I0XnyH.js:50544:17)
+    at async ssrImport (file:///home/romu/code/vike/node_modules/.pnpm/vite@5.0.10_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-R0I0XnyH.js:50444:24)
+    at async eval (virtual:vike:pageConfigValuesAll:server:/pages/index:3:44)
+    at async instantiateModule (file:///home/romu/code/vike/node_modules/.pnpm/vite@5.0.10_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-R0I0XnyH.js:50506:9)
+`
+    }
+  )
 }
 
 // Classic: importing CJS from ESM code
