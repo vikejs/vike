@@ -4,7 +4,8 @@ import {
   getHintForCjsEsmError,
   precise,
   fuzzy,
-  isCjsEsmError
+  isCjsEsmError,
+  fuzzy2
 } from './logHintForCjsEsmError'
 import { expect, describe, it, assert } from 'vitest'
 
@@ -19,7 +20,7 @@ describe('isCjsEsmError()', () => {
   fuzzyTests()
   skipsUserLandErrors()
   handlesEdgeCases()
-  isntPerfect()
+  isNotPerfect()
 })
 
 describe('getHintForCjsEsmError()', () => {
@@ -36,6 +37,10 @@ function tPartial(resExpected: Res, error: { message?: string; code?: string; st
 }
 function tFuzzy(resExpected: boolean | string, errString: string) {
   expectRes(fuzzy(errString), resExpected)
+  expectRes(isCjsEsmError({ stack: errString }), resExpected)
+}
+function tFuzzy2(resExpected: boolean | string, errString: string) {
+  expectRes(fuzzy2({ stack: errString }), resExpected)
   expectRes(isCjsEsmError({ stack: errString }), resExpected)
 }
 type Res = boolean | string | string[]
@@ -561,11 +566,11 @@ TypeError: Cannot read properties of undefined (reading 'extendTheme')
   })
 }
 
-function isntPerfect() {
-  it("isn't perfect", () => {
-    tFuzzy(
+function isNotPerfect() {
+  it("isNotPerfect", () => {
+    tFuzzy2(
       // Should be `true`: https://github.com/vikejs/vike/discussions/1235#discussioncomment-7586473
-      false,
+      true,
       // https://github.com/vikejs/vike/discussions/1235
       `
 TypeError: Cannot read properties of undefined (reading '__H')

@@ -3,6 +3,7 @@ export { logHintForCjsEsmError }
 // For ./logHintForCjsEsmError.spec.ts
 export { precise }
 export { fuzzy }
+export { fuzzy2 }
 export { isCjsEsmError }
 export { getHintForCjsEsmError }
 export { isReactInvalidComponentError }
@@ -55,6 +56,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   /* Collect errors for ./logHintForCjsEsmError.spec.ts
   collectError(error)
   //*/
+
   {
     const result = precise(error)
     if (result) return result
@@ -103,6 +105,19 @@ function fuzzy2(error: unknown): boolean | string[] {
   if (fromNodeModules) {
     const packageNames = parseImportFrom(anywhere)
     if (packageNames) return packageNames
+  }
+
+  if (fromNodeModules) {
+    if (anywhere.includes('Cannot read properties of undefined')) {
+      return true
+    }
+  }
+
+  if (anywhere.includes('require is not a function')) {
+    if (stackFirstLine?.includes('node_modules')) {
+      const packageName = extractFromStackTraceLine(stackFirstLine)
+      return clean([packageName])
+    }
   }
 
   return false
