@@ -21,11 +21,14 @@ describe('getHintForCjsEsmError()', () => {
 
 function t(
   expectedResult: Res,
-  arg: string | { message: string; code: string | undefined; stack: string }
+  error: { message: string; code: string | undefined; stack: string }
 ) {
-  const error = typeof arg === 'string' ? { stack: arg } : arg
   //expectRes(precise(error), expectedResult)
   expectRes(isCjsEsmError(error), expectedResult)
+}
+/** We use this we don't have the full infomration about the error (users report the error as a string without a reproduction). */
+function tOnlyMessage(resExpected: Res, message: string) {
+  t(resExpected, { message, stack: '', code: undefined })
 }
 /** We use this we don't have the full infomration about the error (users report the error as a string without a reproduction). */
 function tOnlyStack(resExpected: Res, stack: string) {
@@ -180,7 +183,7 @@ TypeError: Unknown file extension ".css" for /home/romu/code/vike/node_modules/.
       }
     )
 
-    t(
+    tOnlyStack(
       'vuetify',
       // https://github.com/vikejs/vike/discussions/682
       `
@@ -198,7 +201,7 @@ TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".css" for /Users
 `
     )
 
-    t(
+    tOnlyStack(
       '@react-spectrum/actiongroup',
       // https://github.com/vikejs/vike/discussions/791
       `
@@ -216,7 +219,7 @@ Error: ERR_UNKNOWN_FILE_EXTENSION .css /home/xxx/tmp/vite-ssr-example/node_modul
 `
     )
 
-    t(
+    tOnlyStack(
       false,
       // User land ESM error
       `
@@ -456,7 +459,7 @@ const { useI18n, createI18n } = pkg;
 
 function skipsUserLandErrors() {
   it('skips user land errors', () => {
-    t(
+    tOnlyStack(
       false,
       // User land JavaScript error
       `
@@ -471,7 +474,7 @@ TypeError: Cannot read properties of undefined (reading 'b')
 `
     )
 
-    t(
+    tOnlyStack(
       false,
       // User land ESM error
       `
@@ -489,7 +492,7 @@ url: 'file:///Users/xxx/xxx/src/models'
 `
     )
 
-    t(
+    tOnlyStack(
       false,
       // User land ESM error
       `
@@ -504,7 +507,7 @@ This file is being treated as an ES module because it has a '.js' file extension
 
 function handlesEdgeCases() {
   it('handles edge cases', () => {
-    t(
+    tOnlyStack(
       // Not enough information => is this user land or node_modules/ land?
       false,
       // https://github.com/vitejs/vite/issues/11299
@@ -519,7 +522,7 @@ TypeError: Cannot read properties of undefined (reading 'extendTheme')
 
 function isntPerfect() {
   it("isn't perfect", () => {
-    t(
+    tOnlyStack(
       // Should be `true`: https://github.com/vikejs/vike/discussions/1235#discussioncomment-7586473
       false,
       // https://github.com/vikejs/vike/discussions/1235
