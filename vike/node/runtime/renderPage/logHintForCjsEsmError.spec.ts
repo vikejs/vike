@@ -14,7 +14,7 @@ describe('isCjsEsmError()', () => {
   react_invalid_component()
   TypeError_undefined()
   ERR_REQUIRE_ESM()
-  import_cjs_from_esm()
+  cjs_named_export()
   require_is_not_a_function()
   fuzzyTests()
   skipsUserLandErrors()
@@ -399,9 +399,9 @@ Instead change the require of +config.js in /home/romu/code/vike/node_modules/.p
   )
 }
 
-// Classic: importing CJS from ESM code
-function import_cjs_from_esm() {
-  it('import_cjs_from_esm', () => {
+// Classic: Importing CJS named export from ESM
+function cjs_named_export() {
+  it('cjs_named_export', () => {
     tPrecise(
       '@apollo/client',
       // https://github.com/vikejs/vike/discussions/872
