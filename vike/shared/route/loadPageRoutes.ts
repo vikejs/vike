@@ -44,8 +44,6 @@ function getPageRoutes(
 ): PageRoutes {
   const pageRoutes: PageRoutes = []
 
-  let pageIds = [...allPageIds]
-
   // V1 Design
   if (pageConfigs.length > 0) {
     assert(filesystemRoots === null)
@@ -54,7 +52,6 @@ function getPageRoutes(
       .filter((p) => !p.isErrorPage)
       .forEach((pageConfig) => {
         const pageId = pageConfig.pageId
-        pageIds = removePageId(pageIds, pageId)
 
         let pageRoute: null | PageRoute = null
         {
@@ -111,7 +108,7 @@ function getPageRoutes(
   if (pageConfigs.length === 0) {
     assert(filesystemRoots)
     const comesFromV1PageConfig = false
-    pageIds
+    allPageIds
       .filter((pageId) => !isErrorPageId(pageId, false))
       .forEach((pageId) => {
         const pageRouteFile = pageFilesAll.find((p) => p.pageId === pageId && p.fileType === '.page.route')
@@ -233,11 +230,4 @@ function dirname(filePath: string): string {
   assert(dirPath.startsWith('/'))
   assert(!dirPath.endsWith('/') || dirPath === '/')
   return dirPath
-}
-
-function removePageId(pageIds: string[], pageId: string): string[] {
-  const { length } = pageIds
-  pageIds = pageIds.filter((id) => id !== pageId)
-  assert(pageIds.length === length - 1)
-  return pageIds
 }
