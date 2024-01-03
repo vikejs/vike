@@ -1,5 +1,11 @@
 import { stripAnsi } from '../utils'
-import { isReactInvalidComponentError, getHintForCjsEsmError, precise, fuzzy, isCjsEsmError } from './logHintForCjsEsmError'
+import {
+  isReactInvalidComponentError,
+  getHintForCjsEsmError,
+  precise,
+  fuzzy,
+  isCjsEsmError
+} from './logHintForCjsEsmError'
 import { expect, describe, it, assert } from 'vitest'
 
 describe('isCjsEsmError()', () => {
@@ -20,23 +26,17 @@ describe('getHintForCjsEsmError()', () => {
   logFixtures()
 })
 
-function tPrecise(
-  expectedResult: Res,
-  error: { message: string; code: string | undefined; stack: string }
-) {
+function tPrecise(expectedResult: Res, error: { message: string; code: string | undefined; stack: string }) {
   expectRes(precise(error), expectedResult)
   expectRes(isCjsEsmError(error), expectedResult)
 }
 /** We use this we don't have the full infomration about the error (users report the error as a string without a reproduction). */
-function tPartial(resExpected: Res, error: { message?: string, code?: string, stack?: string }) {
+function tPartial(resExpected: Res, error: { message?: string; code?: string; stack?: string }) {
   tPrecise(resExpected, { message: error.message || '', stack: error.stack || '', code: error.code || undefined })
 }
-function tFuzzy(
-  resExpected: boolean | string,
-  errString: string
-) {
+function tFuzzy(resExpected: boolean | string, errString: string) {
   expectRes(fuzzy(errString), resExpected)
-  expectRes(isCjsEsmError({ stack: errString}), resExpected)
+  expectRes(isCjsEsmError({ stack: errString }), resExpected)
 }
 type Res = boolean | string | string[]
 function expectRes(res: Res, resExpected: Res) {
@@ -436,10 +436,11 @@ const { ApolloClient } = pkg;
     tPrecise(
       'react-live-runner',
       // https://github.com/vikejs/vike/discussions/571#discussioncomment-6144329
-    {
-  message: "Named export 'LiveEditor' not found. The requested module 'react-live-runner' is a CommonJS module, which may not support all module.exports as named exports.\nCommonJS modules can always be imported via the default export, for example using:\n\nimport pkg from 'react-live-runner';\nconst { LiveProvider, LiveEditor } = pkg;\n",
-  code: undefined,
-  stack: `
+      {
+        message:
+          "Named export 'LiveEditor' not found. The requested module 'react-live-runner' is a CommonJS module, which may not support all module.exports as named exports.\nCommonJS modules can always be imported via the default export, for example using:\n\nimport pkg from 'react-live-runner';\nconst { LiveProvider, LiveEditor } = pkg;\n",
+        code: undefined,
+        stack: `
 file:///home/romu/tmp/vite-ssr-redux-react-live-runner-example/dist/server/entries/pages_index-page.mjs:4
 import { LiveProvider, LiveEditor } from "react-live-runner";
                        ^^^^^^^^^^
@@ -459,7 +460,8 @@ const { LiveProvider, LiveEditor } = pkg;
     at async loadPageFilesServer (/home/romu/tmp/vite-ssr-redux-react-live-runner-example/node_modules/.pnpm/vite-plugin-ssr@0.4.131_vite@4.3.9/node_modules/vite-plugin-ssr/dist/cjs/node/runtime/renderPage/loadPageFilesServer.js:15:110)
     at async /home/romu/tmp/vite-ssr-redux-react-live-runner-example/node_modules/.pnpm/vite-plugin-ssr@0.4.131_vite@4.3.9/node_modules/vite-plugin-ssr/dist/cjs/node/prerender/runPrerender.js:247:48
 `
-})
+      }
+    )
 
     tFuzzy(
       'vue-i18n',
@@ -493,7 +495,6 @@ TypeError: require is not a function
 `
       }
     )
-
   })
 }
 
@@ -664,6 +665,7 @@ Error: Element type is invalid: expected a string (for built-in components) or a
 
     tFuzzy(
       true,
+      // Cannot reproduce this error, I guess it comes from an older Node.js version
       `
 Error [ERR_REQUIRE_ESM]: Must use import to load ES Module: E:\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\dist\\index.js
 require() of ES modules is not supported.
