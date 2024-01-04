@@ -406,6 +406,18 @@ Instead change the require of getPageElement.js in /home/romu/code/vike/node_mod
 
     t2(
       false,
+      // https://github.com/vikejs/vike/issues/621#issuecomment-1466175125
+      `
+Error [ERR_REQUIRE_ESM]: require() of ES Module
+/home/rom/code/vite-plugin-ssr/node_modules/.pnpm/node-fetch@3.3.1/node_modules/node-fetch/src/index.js
+from
+/home/rom/code/vite-plugin-ssr/examples/graphql-apollo-react/server/index.js
+not supported.
+      `
+    )
+
+    t2(
+      false,
       // Cannot reproduce this error, I guess it comes from an older Node.js version?
       `
 Error [ERR_REQUIRE_ESM]: Must use import to load ES Module: E:\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\dist\\index.js
