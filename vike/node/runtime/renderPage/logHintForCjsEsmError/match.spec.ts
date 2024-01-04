@@ -23,7 +23,7 @@ function ERR_MODULE_NOT_FOUND() {
   it('ERR_MODULE_NOT_FOUND / ERR_LOAD_URL', () => {
     t2(
       '@aws-amplify/ui-react',
-      // https://github.com/aws-amplify/amplify-ui/issues/3155
+      // https://github.com/aws-amplify/amplify-ui/issues/3155#issue-1488517976
       `
 Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'node_modules/lodash/debounce' imported from node_modules/@aws-amplify/ui-react/dist/esm/primitives/Collection/Collection.js
 Did you mean to import lodash@4.17.21/node_modules/lodash/debounce.js?
@@ -167,7 +167,7 @@ TypeError: Unknown file extension ".css" for /home/romu/code/vike/node_modules/.
 
     t2(
       'vuetify',
-      // https://github.com/vikejs/vike/discussions/682
+      // https://github.com/vikejs/vike/discussions/682#discussion-4927859
       `
 TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".css" for /Users/xxx/Projects/xxx/xxx/node_modules/vuetify/lib/components/VGrid/VGrid.css
     at new NodeError (node:internal/errors:387:5)
@@ -354,7 +354,7 @@ TypeError: Cannot read properties of undefined (reading 'b')
     t2(
       // Not enough information => is this user land or node_modules/ land?
       false,
-      // https://github.com/vitejs/vite/issues/11299
+      // https://github.com/vitejs/vite/issues/11299#issue-1487867332
       `
 TypeError: Cannot read properties of undefined (reading 'extendTheme')
     at eval (/home/projects/llqijrlvr.github/src/entry.js:5:35)
@@ -529,7 +529,8 @@ const { LiveProvider, LiveEditor } = pkg;
 
     t2(
       'vue-i18n',
-      // https://github.com/vikejs/vike/discussions/635
+      // https://github.com/vikejs/vike/discussions/635#discussion-4828827
+      // https://github.com/vikejs/vike/discussions/635#discussioncomment-5029275
       `
 import { useI18n, createI18n } from "vue-i18n/dist/vue-i18n.runtime.esm-bundler.js";
                   ^^^^^^^^^^
@@ -635,7 +636,7 @@ function react_invalid_component() {
         - import { PageContextProvider } from './PageContextProvider.js';
         + const PageContextProvider = undefined
         ``` */
-        // Also matches the error in https://github.com/vikejs/vike/discussions/830
+        // https://github.com/vikejs/vike/discussions/830#discussion-5143519
         {
           message:
             "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
