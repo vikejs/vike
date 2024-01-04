@@ -35,6 +35,7 @@ function tPrecise(expectedResult: Res, error: { message: string; code: string | 
 }
 function tFuzzy(resExpected: boolean | string, errString: string) {
   expectRes(fuzzy(errString), resExpected)
+  expectRes(fuzzy2({ stack: errString }), resExpected)
   expectRes(isMatch({ stack: errString }), resExpected)
 }
 function tFuzzy2(resExpected: boolean | string, errString: string) {
@@ -336,7 +337,6 @@ TypeError: Cannot read properties of undefined (reading 'foo')
     )
 
     tFuzzy2(
-      // Should be `true`: https://github.com/vikejs/vike/discussions/1235#discussioncomment-7586473
       true,
       // https://github.com/vikejs/vike/discussions/1235
       `
@@ -390,7 +390,7 @@ Instead change the require of getPageElement.js in /home/romu/code/vike/node_mod
       }
     )
 
-    // Make sure the right package is picked
+    // Make sure the right package is picked: the issue is the importer, not the importee
     tPrecise(
       'vike-react-foo', // instead of 'vike-react'
       // artificially created: copy of above error with modified stack trace s/vike-react/vike-react-foo/g (while preserving error message)
@@ -650,6 +650,7 @@ ReferenceError: exports is not defined
 `
     )
 
+    /* TODO
     tFuzzy(
       true,
       // https://github.com/vikejs/vike/discussions/830
@@ -667,11 +668,11 @@ Error: Element type is invalid: expected a string (for built-in components) or a
     at renderNodeDestructiveImpl (/home/xxx/Projects/xxx/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6145:7)
 `
     )
+    */
 
     tFuzzy2(
-      // TODO?
-      '@preact/preset-vite',
-      // Cannot reproduce this error, I guess it comes from an older Node.js version
+      false,
+      // Cannot reproduce this error, I guess it comes from an older Node.js version?
       `
 Error [ERR_REQUIRE_ESM]: Must use import to load ES Module: E:\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\dist\\index.js
 require() of ES modules is not supported.

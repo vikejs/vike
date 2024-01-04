@@ -9,7 +9,7 @@ export { getHintForCjsEsmError }
 export { isReactInvalidComponentError }
 
 import pc from '@brillout/picocolors'
-import { assert, formatHintLog, isNotNullish, isObject, unique, joinEnglish, toPosixPath } from '../utils.js'
+import { assert, formatHintLog, isNotNullish, isObject, unique, joinEnglish } from '../utils.js'
 
 function logHintForCjsEsmError(error: unknown): void {
   const hint = getHintForCjsEsmError(error)
@@ -91,41 +91,46 @@ function fuzzy2(error: unknown): boolean | string[] {
   const message = getErrMessage(error)
   const anywhere = getAnywhere(error)
   const stackFirstLine = getErrStackFirstLine(error)
-  const fromNodeModules = stackFirstLine?.includes('node_modules') || message?.includes('node_modules') || false
+  const fromNodeModules = includesNodeModules(stackFirstLine) || includesNodeModules(message)
+  const relatedNpmPackages = clean([extractNpmPackageOptional(message), extractNpmPackageOptional(stackFirstLine)])
 
   // ERR_UNKNOWN_FILE_EXTENSION
   {
-    const packageNames = parseUnkownFileExtension(anywhere)
+    const packageNames = parseUnkownFileExtensionMessage(anywhere)
     if (packageNames) return packageNames
   }
   {
-    const packageNames = parseUnkownFileExtension2(anywhere)
+    const packageNames = parseNodeModulesPathMessage('ERR_UNKNOWN_FILE_EXTENSION', anywhere)
     if (packageNames) return packageNames
   }
 
   // ERR_MODULE_NOT_FOUND
   {
-    const packageNames = parseCannotFind(anywhere)
+    const packageNames = parseCannotFindMessage(anywhere)
     if (packageNames) return packageNames
   }
 
   // ERR_REQUIRE_ESM
-  if (fromNodeModules && anywhere.includes('ERR_REQUIRE_ESM')) {
-    if (stackFirstLine?.includes('node_modules')) {
-      const packageName = extractFromNodeModulesPath(stackFirstLine)
-      const packageNames = clean([packageName])
-      assert(packageNames)
-      return packageNames
+  if (includes(anywhere, 'ERR_REQUIRE_ESM')) {
+    /* The issue is the importer, not the importee.
+    if (relatedNpmPackages) return relatedNpmPackages
+    */
+    {
+      const packageName = clean([extractNpmPackageOptional(stackFirstLine)])
+      if (packageName) return packageName
     }
+    if (fromNodeModules) return true
   }
+  /* The following two wrongfully match user land errors
   {
-    const packageNames = parseErrRequireEsm(anywhere)
+    const packageNames = parseNodeModulesPath('ERR_REQUIRE_ESM', anywhere)
     if (packageNames) return packageNames
   }
   {
-    const packageNames = parseMustUseImport(anywhere)
+    const packageNames = parseNodeModulesPath('Must use import', anywhere)
     if (packageNames) return packageNames
   }
+  */
 
   // CJS named export
   {
@@ -133,29 +138,71 @@ function fuzzy2(error: unknown): boolean | string[] {
     if (packageNames) return packageNames
   }
 
-  if (fromNodeModules) {
-    if (anywhere.includes('Cannot read properties of undefined')) {
+  // ERR_UNSUPPORTED_DIR_IMPORT
+  {
+    const packageNames = parseNodeModulesPathMessage('ERR_UNSUPPORTED_DIR_IMPORT', anywhere)
+    if (packageNames) return packageNames
+  }
+
+  // Using CJS inside ESM modules
+  const exportsIsNotDefined = 'exports is not defined'
+  {
+    const packageNames = parseNodeModulesPathMessage(exportsIsNotDefined, anywhere)
+    if (packageNames) return packageNames
+  }
+  if (includes(anywhere, 'require is not a function') || includes(anywhere, exportsIsNotDefined)) {
+    if (includesNodeModules(stackFirstLine)) {
+      const packageName = extractNpmPackage(stackFirstLine)
+      return packageName
+    }
+  }
+
+  if (includes(anywhere, 'Cannot read properties of undefined')) {
+    if (fromNodeModules) {
+      /* We return true because relatedNpmPackages points to the importer but the problematic npm package is the importee
+      if (relatedNpmPackages) return relatedNpmPackages
+      */
       return true
     }
   }
 
-  // ERR_UNSUPPORTED_DIR_IMPORT
-  {
-    const packageNames = parseUnsupportedDirImport(anywhere)
-    if (packageNames) return packageNames
-  }
-
-  if (anywhere.includes('require is not a function') || anywhere.includes('exports is not defined')) {
-    if (stackFirstLine?.includes('node_modules')) {
-      const packageName = extractFromNodeModulesPath(stackFirstLine)
-      return clean([packageName])
-    }
+  // Cannot use import statement outside a module
+  if (
+    // Since user code is always ESM, this error must always originate from an npm package
+    includes(anywhere, 'Cannot use import statement') ||
+    // I guess `SyntaxError: Named export '${packageName}' not found.` always points to an npm package import
+    /Named export.*not found/i.test(anywhere)
+  ) {
+    /* We return true even if fromNodeModules is false because these errors always relate to npm packages
+    if (fromNodeModules) return true
+    */
+    return true
   }
 
   return false
 }
 
-function parseCannotFind(str: string): false | string[] {
+function includes(str1: string | null, str2: string): boolean {
+  return !!str1 && str1.toLowerCase().includes(str2.toLowerCase())
+}
+function includesNodeModules(str: string | null): boolean {
+  if (!str) return false
+  str = str.replaceAll('\\', '/')
+  if (!str.includes('node_modules/')) return false
+  if (str.includes('node_modules/vite/')) return false
+  return true
+}
+function extractNpmPackage(str: string | null): [string] {
+  assert(str)
+  assert(includesNodeModules(str))
+  return [extractFromNodeModulesPath(str)]
+}
+function extractNpmPackageOptional(str: string | null): null | string {
+  if (!str || !includesNodeModules(str)) return null
+  return extractFromNodeModulesPath(str)
+}
+
+function parseCannotFindMessage(str: string): false | string[] {
   const match = /Cannot find \S+ '(\S+)' imported from (\S+)/.exec(str)
   if (!match) return false
   // const packageNameCannotFind = extractFromPath(match[1]!)
@@ -165,15 +212,12 @@ function parseCannotFind(str: string): false | string[] {
     packageNameFrom
   ])
 }
-function parseUnkownFileExtension(str: string): false | string[] {
+function parseUnkownFileExtensionMessage(str: string): false | string[] {
   const match = /Unknown file extension "\S+" for (\S+)/.exec(str)
   if (!match) return false
   const filePath = match[1]!
   const packageName = extractFromPath(filePath)
   return clean([packageName])
-}
-function parseUnkownFileExtension2(str: string): false | string[] {
-  return parseNodeModulesPath('ERR_UNKNOWN_FILE_EXTENSION', str)
 }
 function parseImportFrom(str: string): false | string[] {
   const match = /\bimport\b.*?\bfrom\b\s*?"(\S+?)"/.exec(str)
@@ -182,20 +226,9 @@ function parseImportFrom(str: string): false | string[] {
   const packageName = extractFromPath(importPath)
   return clean([packageName])
 }
-function parseMustUseImport(str: string) {
-  return parseNodeModulesPath('Must use import', str)
-}
-function parseErrRequireEsm(str: string) {
-  return parseNodeModulesPath('ERR_REQUIRE_ESM', str)
-}
-function parseUnsupportedDirImport(str: string) {
-  return parseNodeModulesPath('ERR_UNSUPPORTED_DIR_IMPORT', str)
-}
-function parseNodeModulesPath(prefix: string, str: string) {
-  /* TODO
-  const match = new RegExp(`${prefix}.*(node_modules\\/\\S+)`).exec(str)
-  */
-  const match = new RegExp(`${prefix}.*(node_modules\\S+)`).exec(str)
+function parseNodeModulesPathMessage(sentenceBegin: string, str: string) {
+  str = str.replaceAll('\\', '/')
+  const match = new RegExp(`${sentenceBegin}.*(node_modules\\S+)`).exec(str)
   if (!match) return false
   const importPath = match[1]!
   const packageName = extractFromNodeModulesPath(importPath)
@@ -209,17 +242,17 @@ function precise(error: unknown): boolean | string[] {
   const stackFirstLine = getErrStackFirstLine(error)
 
   if (code === 'ERR_MODULE_NOT_FOUND' && message) {
-    const packageNames = parseCannotFind(message)
+    const packageNames = parseCannotFindMessage(message)
     if (packageNames) return packageNames
   }
 
   if (code === 'ERR_UNKNOWN_FILE_EXTENSION' && message) {
-    const packageNames = parseUnkownFileExtension(message)
+    const packageNames = parseUnkownFileExtensionMessage(message)
     if (packageNames) return packageNames
   }
 
   if (code === 'ERR_REQUIRE_ESM') {
-    if (stackFirstLine?.includes('node_modules')) {
+    if (includesNodeModules(stackFirstLine)) {
       /* Not reliable as stack traces have different formats:
        * ```
        * at file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:10:1
@@ -231,9 +264,8 @@ function precise(error: unknown): boolean | string[] {
       const match = /at \S+ (\S+)/.exec(stackFirstLine)
       */
 
-      const packageName = extractFromNodeModulesPath(stackFirstLine)
-      const packageNames = clean([packageName])
-      return packageNames
+      const packageName = extractNpmPackage(stackFirstLine!)
+      return packageName
     }
   }
 
@@ -336,10 +368,9 @@ function extractPackageName(errString: string): string | null {
 
   // Extract package name from stack trace
   {
-    /* TODO
-    const firstNodeModulesLine = errString.split('\n').find((line) => line.includes('node_modules/'))
-    */
-    const firstNodeModulesLine = errString.split('\n').find((line) => line.includes('node_modules'))
+    const firstNodeModulesLine = errString
+      .split('\n')
+      .find((line) => line.replaceAll('\\', '/').includes('node_modules/'))
     if (firstNodeModulesLine) {
       packageName = extractFromNodeModulesPath(firstNodeModulesLine)
       return packageName
@@ -353,7 +384,7 @@ function extractFromPath(filePath: string): string | null {
   assert(filePath)
 
   filePath = removeQuotes(filePath)
-  filePath = toPosixPath(filePath)
+  filePath = filePath.replaceAll('\\', '/')
 
   let packageName: string
   if (!filePath.includes('node_modules/')) {
@@ -379,10 +410,7 @@ function extractFromPath(filePath: string): string | null {
   return packageName
 }
 function extractFromNodeModulesPath(stackTraceLine: string): string {
-  assert(stackTraceLine.includes('node_modules'))
-  /* TODO
-  assert(stackTraceLine.includes('node_modules/'))
-  */
+  assert(includesNodeModules(stackTraceLine))
   const packageName = extractFromPath(stackTraceLine)
   assert(packageName)
   return packageName
@@ -402,7 +430,8 @@ function removeQuotes(packageName: string) {
 
 function isReactInvalidComponentError(error: unknown): boolean {
   const anywhere = getAnywhere(error)
-  return anywhere.includes(
+  return includes(
+    anywhere,
     'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)'
   )
 }
