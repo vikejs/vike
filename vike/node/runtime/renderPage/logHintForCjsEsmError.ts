@@ -86,12 +86,11 @@ function isCjsEsmError(error: unknown): boolean | string[] {
 
   // Using CJS inside ESM modules
   {
-    const exportsIsNotDefined = 'exports is not defined'
-    {
-      const packageNames = parseNodeModulesPathMessage(exportsIsNotDefined, anywhere)
-      if (packageNames) return packageNames
-    }
-    if (includes(anywhere, 'require is not a function') || includes(anywhere, exportsIsNotDefined)) {
+    if (
+      includes(anywhere, 'require is not a function') ||
+      includes(anywhere, 'exports is not defined') ||
+      includes(anywhere, 'module is not defined')
+    ) {
       if (includesNodeModules(stackFirstLine)) {
         const packageName = extractNpmPackage(stackFirstLine)
         return packageName

@@ -9,9 +9,8 @@ describe('isCjsEsmError()', () => {
   cannot_read_property_of_undefined()
   ERR_REQUIRE_ESM()
   cjs_named_export()
-  require_is_not_a_function()
   cannot_use_import_outside_of_module()
-  exports_is_not_defined()
+  is_not_defined()
 })
 
 describe('isReactInvalidComponentError()', () => {
@@ -544,25 +543,6 @@ const { useI18n, createI18n } = pkg;
   })
 }
 
-function require_is_not_a_function() {
-  it('require is not a function', () => {
-    t1(
-      '@mui/icons-material',
-      // https://github.com/brillout/vps-mui/tree/reprod-2
-      {
-        message: 'require is not a function',
-        code: undefined,
-        stack: `
-TypeError: require is not a function
-    at eval (/home/romu/tmp/vps-mui/node_modules/.pnpm/@mui+icons-material@5.11.16_@mui+material@5.13.2_@types+react@18.2.6_react@18.2.0/node_modules/@mui/icons-material/Menu.js:5:30)
-    at instantiateModule (file:///home/romu/tmp/vps-mui/node_modules/.pnpm/vite@4.3.8_@types+node@18.16.14/node_modules/vite/dist/node/chunks/dep-4d3eff22.js:54399:15)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-`
-      }
-    )
-  })
-}
-
 function cannot_use_import_outside_of_module() {
   it('Cannot use import statement outside a module', () => {
     t2(
@@ -590,7 +570,7 @@ import{useRunner as e}from"react-runner";export*from"react-runner";import t,{use
   })
 }
 
-function exports_is_not_defined() {
+function is_not_defined() {
   it('exports is not defined', () => {
     t2(
       'react-simple-code-editor',
@@ -623,6 +603,35 @@ This file is being treated as an ES module because it has a '.js' file extension
 `
     )
   })
+
+  it('require is not a function', () => {
+    t1(
+      '@mui/icons-material',
+      // https://github.com/brillout/vps-mui/tree/reprod-2
+      {
+        message: 'require is not a function',
+        code: undefined,
+        stack: `
+TypeError: require is not a function
+    at eval (/home/romu/tmp/vps-mui/node_modules/.pnpm/@mui+icons-material@5.11.16_@mui+material@5.13.2_@types+react@18.2.6_react@18.2.0/node_modules/@mui/icons-material/Menu.js:5:30)
+    at instantiateModule (file:///home/romu/tmp/vps-mui/node_modules/.pnpm/vite@4.3.8_@types+node@18.16.14/node_modules/vite/dist/node/chunks/dep-4d3eff22.js:54399:15)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+`
+      }
+    )
+  })
+
+  it('module is not defined', () => {
+    t2(
+      '@mdi/react',
+      // https://github.com/vikejs/vike/discussions/830#discussioncomment-5763039
+      `
+    ReferenceError: module is not defined
+    at eval (/@fs/home/rui/Projects/binedge-website/node_modules/@mdi/react/Icon.js:3:14)
+    at instantiateModule (file:///home/rui/Projects/binedge-website/node_modules/vite/dist/node/chunks/dep-24daf00c.js:54351:15)
+`
+    )
+  })
 }
 
 // Classic: React's infamous invalid component error.
@@ -637,6 +646,7 @@ function react_invalid_component() {
         + const PageContextProvider = undefined
         ``` */
         // https://github.com/vikejs/vike/discussions/830#discussion-5143519
+        // https://github.com/vikejs/vike/discussions/830#discussioncomment-5763136
         {
           message:
             "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
