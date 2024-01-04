@@ -94,6 +94,12 @@ function fuzzy2(error: unknown): boolean | string[] {
   const fromNodeModules = includesNodeModules(stackFirstLine) || includesNodeModules(message)
   const relatedNpmPackages = clean([extractNpmPackageOptional(message), extractNpmPackageOptional(stackFirstLine)])
 
+  // ERR_UNSUPPORTED_DIR_IMPORT
+  {
+    const packageNames = parseNodeModulesPathMessage('ERR_UNSUPPORTED_DIR_IMPORT', anywhere)
+    if (packageNames) return packageNames
+  }
+
   // ERR_UNKNOWN_FILE_EXTENSION
   {
     const packageNames = parseUnkownFileExtensionMessage(anywhere)
@@ -104,10 +110,19 @@ function fuzzy2(error: unknown): boolean | string[] {
     if (packageNames) return packageNames
   }
 
-  // ERR_MODULE_NOT_FOUND
+  // Using CJS inside ESM modules
   {
-    const packageNames = parseCannotFindMessage(anywhere)
-    if (packageNames) return packageNames
+    const exportsIsNotDefined = 'exports is not defined'
+    {
+      const packageNames = parseNodeModulesPathMessage(exportsIsNotDefined, anywhere)
+      if (packageNames) return packageNames
+    }
+    if (includes(anywhere, 'require is not a function') || includes(anywhere, exportsIsNotDefined)) {
+      if (includesNodeModules(stackFirstLine)) {
+        const packageName = extractNpmPackage(stackFirstLine)
+        return packageName
+      }
+    }
   }
 
   // ERR_REQUIRE_ESM
@@ -132,29 +147,10 @@ function fuzzy2(error: unknown): boolean | string[] {
   }
   */
 
-  // CJS named export
+  // SyntaxError: Named export '${exportName}' not found. The requested module '${packageName}' is a CommonJS module, which may not support all module.exports as named exports.
   {
     const packageNames = parseImportFrom(anywhere)
     if (packageNames) return packageNames
-  }
-
-  // ERR_UNSUPPORTED_DIR_IMPORT
-  {
-    const packageNames = parseNodeModulesPathMessage('ERR_UNSUPPORTED_DIR_IMPORT', anywhere)
-    if (packageNames) return packageNames
-  }
-
-  // Using CJS inside ESM modules
-  const exportsIsNotDefined = 'exports is not defined'
-  {
-    const packageNames = parseNodeModulesPathMessage(exportsIsNotDefined, anywhere)
-    if (packageNames) return packageNames
-  }
-  if (includes(anywhere, 'require is not a function') || includes(anywhere, exportsIsNotDefined)) {
-    if (includesNodeModules(stackFirstLine)) {
-      const packageName = extractNpmPackage(stackFirstLine)
-      return packageName
-    }
   }
 
   if (includes(anywhere, 'Cannot read properties of undefined')) {
@@ -166,11 +162,18 @@ function fuzzy2(error: unknown): boolean | string[] {
     }
   }
 
-  // Cannot use import statement outside a module
+  // ERR_MODULE_NOT_FOUND
+  {
+    const packageNames = parseCannotFindMessage(anywhere)
+    if (packageNames) return packageNames
+  }
+
   if (
+    // SyntaxError: Cannot use import statement outside a module
     // Since user code is always ESM, this error must always originate from an npm package
     includes(anywhere, 'Cannot use import statement') ||
-    // I guess `SyntaxError: Named export '${packageName}' not found.` always points to an npm package import
+    // SyntaxError: Named export '${exportName}' not found. The requested module '${packageName}' is a CommonJS module, which may not support all module.exports as named exports.
+    // It seems that this always points to an npm package import
     /Named export.*not found/i.test(anywhere)
   ) {
     /* We return true even if fromNodeModules is false because these errors always relate to npm packages
