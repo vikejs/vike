@@ -21,6 +21,18 @@ describe('isReactInvalidComponentError()', () => {
 // Classic: file extension missing in import path.
 function ERR_MODULE_NOT_FOUND() {
   it('ERR_MODULE_NOT_FOUND / ERR_LOAD_URL', () => {
+    t2(
+      '@aws-amplify/ui-react',
+      // https://github.com/aws-amplify/amplify-ui/issues/3155
+      `
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'node_modules/lodash/debounce' imported from node_modules/@aws-amplify/ui-react/dist/esm/primitives/Collection/Collection.js
+Did you mean to import lodash@4.17.21/node_modules/lodash/debounce.js?
+    at new NodeError (node:internal/errors:372:5)
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+`
+    )
+
     t1(
       'vike-react',
       /* node_modules/ land, wrong import path: missing file extension.
