@@ -1,7 +1,6 @@
 export { logHintForCjsEsmError }
 
 // For ./logHintForCjsEsmError/*.spec.ts
-export { precise }
 export { fuzzy }
 export { isMatch }
 export { getHintForCjsEsmError }
@@ -63,27 +62,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   /* Collect errors for ./logHintForCjsEsmError.spec.ts
   collectError(error)
   //*/
-
-  {
-    const result = precise(error)
-    if (result) return result
-  }
-
-  {
-    const result = fuzzy(error)
-    if (result) return result
-  }
-
-  /* TODO: remove?
-  {
-    const errString = getErrorAsString(error)
-    const result = fuzzy(errString)
-    if (typeof result === 'string') return [result]
-    return result
-  }
-  */
-
-  return false
+  return fuzzy(error)
 }
 
 function fuzzy(error: unknown): boolean | string[] {
@@ -237,6 +216,7 @@ function parseNodeModulesPathMessage(sentenceBegin: string, str: string) {
   return clean([packageName])
 }
 
+/* Do we still really need this? Let's see how well fuzzy() performs in real life.
 function precise(error: unknown): boolean | string[] {
   const code = getErrCode(error)
   const message = getErrMessage(error)
@@ -255,16 +235,15 @@ function precise(error: unknown): boolean | string[] {
 
   if (code === 'ERR_REQUIRE_ESM') {
     if (includesNodeModules(stackFirstLine)) {
-      /* Not reliable as stack traces have different formats:
-       * ```
-       * at file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:10:1
-       * ```
-       * Or:
-       * ```
-       * at onRenderHtml (file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:21:49)
-       * ```
-      const match = /at \S+ (\S+)/.exec(stackFirstLine)
-      */
+      // Not reliable as stack traces have different formats:
+      // ```
+      // at file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:10:1
+      // ```
+      // Or:
+      // ```
+      // at onRenderHtml (file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:21:49)
+      // ```
+      // const match = /at \S+ (\S+)/.exec(stackFirstLine)
 
       const packageName = extractNpmPackage(stackFirstLine!)
       return packageName
@@ -291,6 +270,7 @@ function precise(error: unknown): boolean | string[] {
 
   return false
 }
+*/
 function clean(packageNames: (string | null)[]): string[] | false {
   const result = unique(packageNames.filter(isNotNullish))
   if (result.length === 0) return false
