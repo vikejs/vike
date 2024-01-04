@@ -1,12 +1,11 @@
-import { isReactInvalidComponentError, isMatch } from '../logHintForCjsEsmError'
+import { isReactInvalidComponentError, isCjsEsmError } from '../logHintForCjsEsmError'
 import { expect, describe, it } from 'vitest'
 import { errror_cannot_use_import_outside_of_module } from './errors'
 
-describe('isMatch()', () => {
+describe('isCjsEsmError()', () => {
   ERR_MODULE_NOT_FOUND()
   ERR_UNKNOWN_FILE_EXTENSION()
   ERR_UNSUPPORTED_DIR_IMPORT()
-  react_invalid_component()
   cannot_read_property_of_undefined()
   ERR_REQUIRE_ESM()
   cjs_named_export()
@@ -15,18 +14,9 @@ describe('isMatch()', () => {
   exports_is_not_defined()
 })
 
-function t1(expectedResult: Res, error: { message: string; code: string | undefined; stack: string }) {
-  expectRes(isMatch(error), expectedResult)
-}
-function t2(resExpected: boolean | string, errString: string) {
-  expectRes(isMatch({ stack: errString }), resExpected)
-}
-type Res = boolean | string | string[]
-function expectRes(res: Res, resExpected: Res) {
-  if (typeof res === 'string') res = [res]
-  if (typeof resExpected === 'string') resExpected = [resExpected]
-  expect(res).toEqual(resExpected)
-}
+describe('isReactInvalidComponentError()', () => {
+  react_invalid_component()
+})
 
 // Classic: file extension missing in import path.
 function ERR_MODULE_NOT_FOUND() {
@@ -258,63 +248,6 @@ code: 'ERR_UNSUPPORTED_DIR_IMPORT',
 url: 'file:///Users/xxx/xxx/src/models'
 }
 `
-    )
-  })
-}
-
-// Classic: React's infamous invalid component error.
-function react_invalid_component() {
-  it('React: invalid component', () => {
-    expect(true).toBe(
-      isReactInvalidComponentError(
-        /* Error artificially created:
-        ```diff
-        // node_modules/vike-react/dist/renderer/onRenderHtml.js:
-        - import { PageContextProvider } from './PageContextProvider.js';
-        + const PageContextProvider = undefined
-        ``` */
-        // Also matches the error in https://github.com/vikejs/vike/discussions/830
-        {
-          message:
-            "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
-          code: undefined,
-          stack: `
-Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
-    at renderElement (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6047:9)
-    at renderNodeDestructiveImpl (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
-    at renderNodeDestructive (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
-    at renderElement (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5975:9)
-    at renderNodeDestructiveImpl (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
-    at renderNodeDestructive (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
-    at retryTask (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6532:5)
-    at performWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6580:7)
-    at /home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6904:12
-    at scheduleWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:78:3)
-`
-        }
-      )
-    )
-    expect(true).toBe(
-      isReactInvalidComponentError(
-        // Also catch `but got: object`
-        {
-          message:
-            "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
-          code: undefined,
-          stack: ``
-        }
-      )
-    )
-    expect(true).toBe(
-      isReactInvalidComponentError(
-        // Or any other invalid value
-        {
-          message:
-            "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: foo. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
-          code: undefined,
-          stack: ``
-        }
-      )
     )
   })
 }
@@ -647,4 +580,74 @@ This file is being treated as an ES module because it has a '.js' file extension
 `
     )
   })
+}
+
+// Classic: React's infamous invalid component error.
+function react_invalid_component() {
+  it('React: invalid component', () => {
+    expect(true).toBe(
+      isReactInvalidComponentError(
+        /* Error artificially created:
+        ```diff
+        // node_modules/vike-react/dist/renderer/onRenderHtml.js:
+        - import { PageContextProvider } from './PageContextProvider.js';
+        + const PageContextProvider = undefined
+        ``` */
+        // Also matches the error in https://github.com/vikejs/vike/discussions/830
+        {
+          message:
+            "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
+          code: undefined,
+          stack: `
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at renderElement (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6047:9)
+    at renderNodeDestructiveImpl (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
+    at renderNodeDestructive (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
+    at renderElement (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5975:9)
+    at renderNodeDestructiveImpl (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
+    at renderNodeDestructive (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
+    at retryTask (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6532:5)
+    at performWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6580:7)
+    at /home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6904:12
+    at scheduleWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:78:3)
+`
+        }
+      )
+    )
+    expect(true).toBe(
+      isReactInvalidComponentError(
+        // Also catch `but got: object`
+        {
+          message:
+            "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
+          code: undefined,
+          stack: ``
+        }
+      )
+    )
+    expect(true).toBe(
+      isReactInvalidComponentError(
+        // Or any other invalid value
+        {
+          message:
+            "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: foo. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
+          code: undefined,
+          stack: ``
+        }
+      )
+    )
+  })
+}
+
+function t1(expectedResult: Res, error: { message: string; code: string | undefined; stack: string }) {
+  expectRes(isCjsEsmError(error), expectedResult)
+}
+function t2(resExpected: boolean | string, errString: string) {
+  expectRes(isCjsEsmError({ stack: errString }), resExpected)
+}
+type Res = boolean | string | string[]
+function expectRes(res: Res, resExpected: Res) {
+  if (typeof res === 'string') res = [res]
+  if (typeof resExpected === 'string') resExpected = [resExpected]
+  expect(res).toEqual(resExpected)
 }

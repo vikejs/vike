@@ -1,7 +1,7 @@
 export { logHintForCjsEsmError }
 
 // For ./logHintForCjsEsmError/*.spec.ts
-export { fuzzy }
+export { isCjsEsmError }
 export { isMatch }
 export { getHintForCjsEsmError }
 export { isReactInvalidComponentError }
@@ -10,6 +10,9 @@ import pc from '@brillout/picocolors'
 import { assert, formatHintLog, isNotNullish, isObject, unique, joinEnglish } from '../utils.js'
 
 function logHintForCjsEsmError(error: unknown): void {
+  /* Collect errors for ./logHintForCjsEsmError.spec.ts
+  collectError(error)
+  //*/
   const hint = getHintForCjsEsmError(error)
   if (hint) logHint(hint)
 }
@@ -59,13 +62,6 @@ function isMatch(error: unknown): boolean | string[] {
  * `'some-npm-package'` -> add some-npm-package to `ssr.noExternal`
  */
 function isCjsEsmError(error: unknown): boolean | string[] {
-  /* Collect errors for ./logHintForCjsEsmError.spec.ts
-  collectError(error)
-  //*/
-  return fuzzy(error)
-}
-
-function fuzzy(error: unknown): boolean | string[] {
   const message = getErrMessage(error)
   const anywhere = getAnywhere(error)
   const stackFirstLine = getErrStackFirstLine(error)
