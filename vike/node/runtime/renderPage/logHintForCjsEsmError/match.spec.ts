@@ -245,6 +245,14 @@ Error: ERR_UNSUPPORTED_DIR_IMPORT /Users/xxx/Documents/Github/xxx/node_modules/@
     )
 
     t2(
+      '@mui/material',
+      // https://github.com/vikejs/vike/discussions/700#discussioncomment-5283034
+      `
+Error: ERR_UNSUPPORTED_DIR_IMPORT ...\\vite-ssr-app\\node_modules\\@mui\\material\\styles from ...\\vite-ssr-app\\dist\\server\\renderer\\default-page-server.js
+    `
+    )
+
+    t2(
       false,
       // User land ESM error
       `
