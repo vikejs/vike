@@ -11,6 +11,7 @@ describe('isCjsEsmError()', () => {
   cjs_named_export()
   cannot_use_import_outside_of_module()
   is_not_defined()
+  is_not_exported()
 })
 
 describe('isReactInvalidComponentError()', () => {
@@ -218,6 +219,12 @@ at ESMLoader.getModuleJob (node:internal/modules/esm/loader:434:34) {
 code: 'ERR_UNKNOWN_FILE_EXTENSION'
 }
 `
+    )
+
+    t2(
+      false,
+      // https://github.com/vikejs/vike/discussions/901#discussioncomment-6733600
+      `TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".ts" for /media/oem/MyFiles/8_DEVELOPMENT/vite-ssr-ts-project/server/index.ts`
     )
   })
 }
@@ -467,7 +474,8 @@ function cjs_named_export() {
   it('cjs_named_export', () => {
     t1(
       '@apollo/client',
-      // https://github.com/vikejs/vike/discussions/872
+      // https://github.com/brillout/cjs-esm-bug_apollo
+      // https://github.com/vikejs/vike/discussions/872#discussion-5177942
       {
         message:
           "Named export 'ApolloClient' not found. The requested module '@apollo/client' is a CommonJS module, which may not support all module.exports as named exports.\nCommonJS modules can always be imported via the default export, for example using:\n\nimport pkg from '@apollo/client';\nconst { ApolloClient } = pkg;\n",
@@ -629,6 +637,29 @@ TypeError: require is not a function
     ReferenceError: module is not defined
     at eval (/@fs/home/rui/Projects/binedge-website/node_modules/@mdi/react/Icon.js:3:14)
     at instantiateModule (file:///home/rui/Projects/binedge-website/node_modules/vite/dist/node/chunks/dep-24daf00c.js:54351:15)
+`
+    )
+  })
+}
+
+function is_not_exported() {
+  it('is_not_exported', () => {
+    t2(
+      '@mui/icons-material',
+      // https://github.com/vikejs/vike/discussions/901#discussioncomment-6498270
+      `
+RollupError: "MenuIcon" is not exported by "node_modules/.pnpm/@mui+icons-material@5.11.16_@mui+material@5.13.2_@types+react@18.2.6_react@18.2.0/node_modules/@mui/icons-material/esm/index.js", imported by "pages/index/index.page.tsx".
+    at error (file:///home/rom/tmp/vps-mui/node_modules/.pnpm/rollup@3.23.0/node_modules/rollup/dist/es/shared/node-entry.js:2124:30)
+    at Module.error (file:///home/rom/tmp/vps-mui/node_modules/.pnpm/rollup@3.23.0/node_modules/rollup/dist/es/shared/node-entry.js:13463:16)
+    at Module.traceVariable (file:///home/rom/tmp/vps-mui/node_modules/.pnpm/rollup@3.23.0/node_modules/rollup/dist/es/shared/node-entry.js:13884:29)
+    at ModuleScope.findVariable (file:///home/rom/tmp/vps-mui/node_modules/.pnpm/rollup@3.23.0/node_modules/rollup/dist/es/shared/node-entry.js:12429:39)
+    at Identifier.bind (file:///home/rom/tmp/vps-mui/node_modules/.pnpm/rollup@3.23.0/node_modules/rollup/dist/es/shared/node-entry.js:8127:40)
+    at CallExpression.bind (file:///home/rom/tmp/vps-mui/node_modules/.pnpm/rollup@3.23.0/node_modules/rollup/dist/es/shared/node-entry.js:5734:28)
+    at CallExpression.bind (file:///home/rom/tmp/vps-mui/node_modules/.pnpm/rollup@3.23.0/node_modules/rollup/dist/es/shared/node-entry.js:9680:15)
+    at ExpressionStatement.bind (file:///home/rom/tmp/vps-mui/node_modules/.pnpm/rollup@3.23.0/node_modules/rollup/dist/es/shared/node-entry.js:5738:23)
+    at Program.bind (file:///home/rom/tmp/vps-mui/node_modules/.pnpm/rollup@3.23.0/node_modules/rollup/dist/es/shared/node-entry.js:5734:28)
+    at Module.bindReferences (file:///home/rom/tmp/vps-mui/node_modules/.pnpm/rollup@3.23.0/node_modules/rollup/dist/es/shared/node-entry.js:13459:18)
+ ELIFECYCLE  Command failed with exit code 1.
 `
     )
   })

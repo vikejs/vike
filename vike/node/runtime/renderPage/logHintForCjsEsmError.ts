@@ -84,6 +84,11 @@ function isCjsEsmError(error: unknown): boolean | string[] {
     if (packageNames) return packageNames
   }
 
+  {
+    const packageNames = parseNodeModulesPathMessage('is not exported', anywhere)
+    if (packageNames) return packageNames
+  }
+
   // Using CJS inside ESM modules
   {
     if (
