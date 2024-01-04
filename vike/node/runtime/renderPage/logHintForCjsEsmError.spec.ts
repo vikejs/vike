@@ -4,12 +4,12 @@ import {
   getHintForCjsEsmError,
   precise,
   fuzzy,
-  isCjsEsmError,
+  isMatch,
   fuzzy2
 } from './logHintForCjsEsmError'
 import { expect, describe, it, assert } from 'vitest'
 
-describe('isCjsEsmError()', () => {
+describe('isMatch()', () => {
   ERR_MODULE_NOT_FOUND()
   ERR_UNKNOWN_FILE_EXTENSION()
   react_invalid_component()
@@ -29,7 +29,7 @@ describe('getHintForCjsEsmError()', () => {
 function tPrecise(expectedResult: Res, error: { message: string; code: string | undefined; stack: string }) {
   expectRes(precise(error), expectedResult)
   expectRes(fuzzy2(error), expectedResult)
-  expectRes(isCjsEsmError(error), expectedResult)
+  expectRes(isMatch(error), expectedResult)
 }
 /** We use this we don't have the full infomration about the error (users report the error as a string without a reproduction). */
 function tPartial(resExpected: Res, error: { message?: string; code?: string; stack?: string }) {
@@ -37,11 +37,11 @@ function tPartial(resExpected: Res, error: { message?: string; code?: string; st
 }
 function tFuzzy(resExpected: boolean | string, errString: string) {
   expectRes(fuzzy(errString), resExpected)
-  expectRes(isCjsEsmError({ stack: errString }), resExpected)
+  expectRes(isMatch({ stack: errString }), resExpected)
 }
 function tFuzzy2(resExpected: boolean | string, errString: string) {
   expectRes(fuzzy2({ stack: errString }), resExpected)
-  expectRes(isCjsEsmError({ stack: errString }), resExpected)
+  expectRes(isMatch({ stack: errString }), resExpected)
 }
 type Res = boolean | string | string[]
 function expectRes(res: Res, resExpected: Res) {
@@ -664,8 +664,9 @@ Error: Element type is invalid: expected a string (for built-in components) or a
 `
     )
 
-    tFuzzy(
-      true,
+    tFuzzy2(
+      // TODO?
+      '@preact/preset-vite',
       // Cannot reproduce this error, I guess it comes from an older Node.js version
       `
 Error [ERR_REQUIRE_ESM]: Must use import to load ES Module: E:\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\dist\\index.js

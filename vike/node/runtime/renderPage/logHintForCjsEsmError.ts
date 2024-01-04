@@ -4,12 +4,12 @@ export { logHintForCjsEsmError }
 export { precise }
 export { fuzzy }
 export { fuzzy2 }
-export { isCjsEsmError }
+export { isMatch }
 export { getHintForCjsEsmError }
 export { isReactInvalidComponentError }
 
 import pc from '@brillout/picocolors'
-import { assert, formatHintLog, isNotNullish, isObject, unique, joinEnglish } from '../utils.js'
+import { assert, formatHintLog, isNotNullish, isObject, unique, joinEnglish, toPosixPath } from '../utils.js'
 
 function logHintForCjsEsmError(error: unknown): void {
   const hint = getHintForCjsEsmError(error)
@@ -47,6 +47,14 @@ function logHint(hint: string) {
   console.error(hint)
 }
 
+function isMatch(error: unknown): boolean | string[] {
+  if (isReactInvalidComponentError(error)) {
+    return true
+  } else {
+    return isCjsEsmError(error)
+  }
+}
+
 /**
  * `false` -> noop
  * `true` -> generic message
@@ -67,25 +75,33 @@ function isCjsEsmError(error: unknown): boolean | string[] {
     if (result) return result
   }
 
+  /* TODO: remove?
   {
     const errString = getErrorAsString(error)
     const result = fuzzy(errString)
     if (typeof result === 'string') return [result]
     return result
   }
+  */
+
+  return false
 }
 
 function fuzzy2(error: unknown): boolean | string[] {
   const code = getErrCode(error)
   const message = getErrMessage(error)
   const stack = getErrStack(error)
-  const anywhere = [code, message, stack].join('\n')
+  const anywhere = getAnywhere(error)
   const stackFirstLine = getErrStackFirstLine(error)
   const fromNodeModules = stackFirstLine?.includes('node_modules') || message?.includes('node_modules') || false
 
   // ERR_UNKNOWN_FILE_EXTENSION
   {
     const packageNames = parseUnkownFileExtension(anywhere)
+    if (packageNames) return packageNames
+  }
+  {
+    const packageNames = parseUnkownFileExtension2(anywhere)
     if (packageNames) return packageNames
   }
 
@@ -96,12 +112,21 @@ function fuzzy2(error: unknown): boolean | string[] {
   }
 
   // ERR_REQUIRE_ESM
-  if (fromNodeModules && (anywhere.includes('ERR_REQUIRE_ESM') || anywhere.includes('require() of ES Module'))) {
+  if (fromNodeModules && anywhere.includes('ERR_REQUIRE_ESM')) {
     if (stackFirstLine?.includes('node_modules')) {
-      const packageName = extractFromStackTraceLine(stackFirstLine)
+      const packageName = extractFromNodeModulesPath(stackFirstLine)
       const packageNames = clean([packageName])
+      assert(packageNames)
       return packageNames
     }
+  }
+  {
+    const packageNames = parseErrRequireEsm(anywhere)
+    if (packageNames) return packageNames
+  }
+  {
+    const packageNames = parseMustUseImport(anywhere)
+    if (packageNames) return packageNames
   }
 
   // CJS named export
@@ -116,9 +141,15 @@ function fuzzy2(error: unknown): boolean | string[] {
     }
   }
 
-  if (anywhere.includes('require is not a function')) {
+  // ERR_UNSUPPORTED_DIR_IMPORT
+  {
+    const packageNames = parseUnsupportedDirImport(anywhere)
+    if (packageNames) return packageNames
+  }
+
+  if (anywhere.includes('require is not a function') || anywhere.includes('exports is not defined')) {
     if (stackFirstLine?.includes('node_modules')) {
-      const packageName = extractFromStackTraceLine(stackFirstLine)
+      const packageName = extractFromNodeModulesPath(stackFirstLine)
       return clean([packageName])
     }
   }
@@ -143,11 +174,33 @@ function parseUnkownFileExtension(str: string): false | string[] {
   const packageName = extractFromPath(filePath)
   return clean([packageName])
 }
+function parseUnkownFileExtension2(str: string): false | string[] {
+  return parseNodeModulesPath('ERR_UNKNOWN_FILE_EXTENSION', str)
+}
 function parseImportFrom(str: string): false | string[] {
   const match = /\bimport\b.*?\bfrom\b\s*?"(\S+?)"/.exec(str)
   if (!match) return false
   const importPath = match[1]!
   const packageName = extractFromPath(importPath)
+  return clean([packageName])
+}
+function parseMustUseImport(str: string) {
+  return parseNodeModulesPath('Must use import', str)
+}
+function parseErrRequireEsm(str: string) {
+  return parseNodeModulesPath('ERR_REQUIRE_ESM', str)
+}
+function parseUnsupportedDirImport(str: string) {
+  return parseNodeModulesPath('ERR_UNSUPPORTED_DIR_IMPORT', str)
+}
+function parseNodeModulesPath(prefix: string, str: string) {
+  /* TODO
+  const match = new RegExp(`${prefix}.*(node_modules\\/\\S+)`).exec(str)
+  */
+  const match = new RegExp(`${prefix}.*(node_modules\\S+)`).exec(str)
+  if (!match) return false
+  const importPath = match[1]!
+  const packageName = extractFromNodeModulesPath(importPath)
   return clean([packageName])
 }
 
@@ -180,7 +233,7 @@ function precise(error: unknown): boolean | string[] {
       const match = /at \S+ (\S+)/.exec(stackFirstLine)
       */
 
-      const packageName = extractFromStackTraceLine(stackFirstLine)
+      const packageName = extractFromNodeModulesPath(stackFirstLine)
       const packageNames = clean([packageName])
       return packageNames
     }
@@ -194,7 +247,7 @@ function precise(error: unknown): boolean | string[] {
 
   if (message?.includes('require is not a function')) {
     if (stackFirstLine?.includes('node_modules')) {
-      const packageName = extractFromStackTraceLine(stackFirstLine)
+      const packageName = extractFromNodeModulesPath(stackFirstLine)
       return clean([packageName])
     }
   }
@@ -235,7 +288,13 @@ function getErrStackFirstLine(err: unknown): null | string {
   const match = errStack.split('\n').filter((line) => line.startsWith('    at '))[0]
   return match ?? null
 }
-
+function getAnywhere(error: unknown): string {
+  const code = getErrCode(error)
+  const message = getErrMessage(error)
+  const stack = getErrStack(error)
+  const anywhere = [code, message, stack].filter(Boolean).join('\n')
+  return anywhere
+}
 function fuzzy(errString: string | undefined) {
   if (!errString) return false
 
@@ -304,9 +363,12 @@ function extractPackageName(errString: string): string | null {
 
   // Extract package name from stack trace
   {
+    /* TODO
     const firstNodeModulesLine = errString.split('\n').find((line) => line.includes('node_modules/'))
+    */
+    const firstNodeModulesLine = errString.split('\n').find((line) => line.includes('node_modules'))
     if (firstNodeModulesLine) {
-      packageName = extractFromStackTraceLine(firstNodeModulesLine)
+      packageName = extractFromNodeModulesPath(firstNodeModulesLine)
       return packageName
     }
   }
@@ -316,8 +378,10 @@ function extractPackageName(errString: string): string | null {
 
 function extractFromPath(filePath: string): string | null {
   assert(filePath)
+  const f = filePath
 
   filePath = removeQuotes(filePath)
+  filePath = toPosixPath(filePath)
 
   let packageName: string
   if (!filePath.includes('node_modules/')) {
@@ -342,8 +406,11 @@ function extractFromPath(filePath: string): string | null {
   assert(!['vite', 'vike'].includes(packageName))
   return packageName
 }
-function extractFromStackTraceLine(stackTraceLine: string): string {
+function extractFromNodeModulesPath(stackTraceLine: string): string {
+  assert(stackTraceLine.includes('node_modules'))
+  /* TODO
   assert(stackTraceLine.includes('node_modules/'))
+  */
   const packageName = extractFromPath(stackTraceLine)
   assert(packageName)
   return packageName
@@ -361,10 +428,9 @@ function removeQuotes(packageName: string) {
   return packageName
 }
 
-function isReactInvalidComponentError(err: unknown): boolean {
-  const message = getErrMessage(err)
-  if (!message) return false
-  return message.includes(
+function isReactInvalidComponentError(error: unknown): boolean {
+  const anywhere = getAnywhere(error)
+  return anywhere.includes(
     'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)'
   )
 }
