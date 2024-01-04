@@ -5,6 +5,7 @@ import { errror_cannot_use_import_outside_of_module } from './errors'
 describe('isMatch()', () => {
   ERR_MODULE_NOT_FOUND()
   ERR_UNKNOWN_FILE_EXTENSION()
+  ERR_UNSUPPORTED_DIR_IMPORT()
   react_invalid_component()
   cannot_read_property_of_undefined()
   ERR_REQUIRE_ESM()
@@ -12,7 +13,6 @@ describe('isMatch()', () => {
   require_is_not_a_function()
   cannot_use_import_outside_of_module()
   exports_is_not_defined()
-  fuzzyTests()
   skipsUserLandErrors()
   handlesEdgeCases()
 })
@@ -231,6 +231,47 @@ code: 'ERR_UNKNOWN_FILE_EXTENSION'
   })
 }
 
+// Classic: server-side code importing CSS.
+function ERR_UNSUPPORTED_DIR_IMPORT() {
+  it('ERR_UNSUPPORTED_DIR_IMPORT', () => {
+    tFuzzy(
+      '@aws-amplify/datastore',
+      // https://github.com/vikejs/vike/discussions/934
+      `
+Error: ERR_UNSUPPORTED_DIR_IMPORT /Users/xxx/Documents/Github/xxx/node_modules/@aws-amplify/datastore/ssr /Users/xxx/Documents/Github/xxx/dist/server/renderer/default-page-server.js
+    at finalizeResolution (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/dist-raw/node-internal-modules-esm-resolve.js:362:17)
+    at moduleResolve (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/dist-raw/node-internal-modules-esm-resolve.js:801:10)
+    at Object.defaultResolve (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/dist-raw/node-internal-modules-esm-resolve.js:912:11)
+    at /Users/xxx/Documents/Github/xxx/node_modules/ts-node/src/esm.ts:218:35
+    at entrypointFallback (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/src/esm.ts:168:34)
+    at /Users/xxx/Documents/Github/xxx/node_modules/ts-node/src/esm.ts:217:14
+    at addShortCircuitFlag (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/src/esm.ts:409:21)
+    at resolve (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/src/esm.ts:197:12)
+    at resolve (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/src/child/child-loader.ts:15:39)
+    at nextResolve (node:internal/modules/esm/loader:165:28)
+`
+    )
+
+    tFuzzy(
+      false,
+      // User land ESM error
+      `
+Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import '/Users/xxx/xxx/src/models' is not supported resolving ES modules imported from /Users/xxx/xxx/src/index.js
+  at finalizeResolution (internal/modules/esm/resolve.js:272:17)
+  at moduleResolve (internal/modules/esm/resolve.js:699:10)
+  at Loader.defaultResolve [as _resolve] (internal/modules/esm/resolve.js:810:11)
+  at Loader.resolve (internal/modules/esm/loader.js:85:40)
+  at Loader.getModuleJob (internal/modules/esm/loader.js:229:28)
+  at ModuleWrap.<anonymous> (internal/modules/esm/module_job.js:51:40)
+  at link (internal/modules/esm/module_job.js:50:36) {
+code: 'ERR_UNSUPPORTED_DIR_IMPORT',
+url: 'file:///Users/xxx/xxx/src/models'
+}
+`
+    )
+  })
+}
+
 // Classic: React's infamous invalid component error.
 function react_invalid_component() {
   it('React: invalid component', () => {
@@ -392,6 +433,28 @@ Instead change the require of getPageElement.js in /home/romu/code/vike/node_mod
     at file:///home/romu/code/vike/node_modules/.pnpm/vike-react-foo@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react-foo/dist/renderer/onRenderHtml.js:10:1
 `
       }
+    )
+
+    tFuzzy2(
+      false,
+      // Cannot reproduce this error, I guess it comes from an older Node.js version?
+      `
+Error [ERR_REQUIRE_ESM]: Must use import to load ES Module: E:\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\dist\\index.js
+require() of ES modules is not supported.
+require() of E:\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\dist\\index.js from E:\\Javascript\\xxx\\vite.config.js is an ES module file as it is a .js file whose nearest parent package.json contains "type": "module" which defines all .js files in that package scope as ES modules.
+Instead rename index.js to end in .cjs, change the requiring code to use import(), or remove "type": "module" from E:\\xxx\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\package.json.
+
+    at Module._extensions..js (internal/modules/cjs/loader.js:1080:13)
+    at Object.require.extensions.<computed> [as .js] (E:\\Javascript\\xxx\\node_modules\\vite\\dist\\node\\chunks\\dep-36bf480c.js:77286:13)
+    at Module.load (internal/modules/cjs/loader.js:928:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:769:14)
+    at Module.require (internal/modules/cjs/loader.js:952:19)
+    at require (internal/modules/cjs/helpers.js:88:18)
+    at Object.<anonymous> (E:\\xxx\\Javascript\\xxx\\vite.config.js:30:37)
+    at Module._compile (internal/modules/cjs/loader.js:1063:30)
+    at Object.require.extensions.<computed> [as .js] (E:\\Javascript\\xxx\\node_modules\\vite\\dist\\node\\chunks\\dep-36bf480c.js:77283:20)
+    at Module.load (internal/modules/cjs/loader.js:928:32)
+`
     )
   })
 
@@ -586,24 +649,6 @@ TypeError: Cannot read properties of undefined (reading 'b')
     at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
 `
     )
-
-    tFuzzy(
-      false,
-      // User land ESM error
-      `
-Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import '/Users/xxx/xxx/src/models' is not supported resolving ES modules imported from /Users/xxx/xxx/src/index.js
-  at finalizeResolution (internal/modules/esm/resolve.js:272:17)
-  at moduleResolve (internal/modules/esm/resolve.js:699:10)
-  at Loader.defaultResolve [as _resolve] (internal/modules/esm/resolve.js:810:11)
-  at Loader.resolve (internal/modules/esm/loader.js:85:40)
-  at Loader.getModuleJob (internal/modules/esm/loader.js:229:28)
-  at ModuleWrap.<anonymous> (internal/modules/esm/module_job.js:51:40)
-  at link (internal/modules/esm/module_job.js:50:36) {
-code: 'ERR_UNSUPPORTED_DIR_IMPORT',
-url: 'file:///Users/xxx/xxx/src/models'
-}
-`
-    )
   })
 }
 
@@ -617,50 +662,6 @@ function handlesEdgeCases() {
 TypeError: Cannot read properties of undefined (reading 'extendTheme')
     at eval (/home/projects/llqijrlvr.github/src/entry.js:5:35)
     at async instantiateModule (file://file:///home/projects/llqijrlvr.github/node_modules/.pnpm/vite@4.0.0/node_modules/vite/dist/node/chunks/dep-ed9cb113.js:53295:9)
-`
-    )
-  })
-}
-
-function fuzzyTests() {
-  it('fuzzy', () => {
-    tFuzzy(
-      '@aws-amplify/datastore',
-      // https://github.com/vikejs/vike/discussions/934
-      `
-Error: ERR_UNSUPPORTED_DIR_IMPORT /Users/xxx/Documents/Github/xxx/node_modules/@aws-amplify/datastore/ssr /Users/xxx/Documents/Github/xxx/dist/server/renderer/default-page-server.js
-    at finalizeResolution (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/dist-raw/node-internal-modules-esm-resolve.js:362:17)
-    at moduleResolve (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/dist-raw/node-internal-modules-esm-resolve.js:801:10)
-    at Object.defaultResolve (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/dist-raw/node-internal-modules-esm-resolve.js:912:11)
-    at /Users/xxx/Documents/Github/xxx/node_modules/ts-node/src/esm.ts:218:35
-    at entrypointFallback (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/src/esm.ts:168:34)
-    at /Users/xxx/Documents/Github/xxx/node_modules/ts-node/src/esm.ts:217:14
-    at addShortCircuitFlag (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/src/esm.ts:409:21)
-    at resolve (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/src/esm.ts:197:12)
-    at resolve (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/src/child/child-loader.ts:15:39)
-    at nextResolve (node:internal/modules/esm/loader:165:28)
-`
-    )
-
-    tFuzzy2(
-      false,
-      // Cannot reproduce this error, I guess it comes from an older Node.js version?
-      `
-Error [ERR_REQUIRE_ESM]: Must use import to load ES Module: E:\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\dist\\index.js
-require() of ES modules is not supported.
-require() of E:\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\dist\\index.js from E:\\Javascript\\xxx\\vite.config.js is an ES module file as it is a .js file whose nearest parent package.json contains "type": "module" which defines all .js files in that package scope as ES modules.
-Instead rename index.js to end in .cjs, change the requiring code to use import(), or remove "type": "module" from E:\\xxx\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\package.json.
-
-    at Module._extensions..js (internal/modules/cjs/loader.js:1080:13)
-    at Object.require.extensions.<computed> [as .js] (E:\\Javascript\\xxx\\node_modules\\vite\\dist\\node\\chunks\\dep-36bf480c.js:77286:13)
-    at Module.load (internal/modules/cjs/loader.js:928:32)
-    at Function.Module._load (internal/modules/cjs/loader.js:769:14)
-    at Module.require (internal/modules/cjs/loader.js:952:19)
-    at require (internal/modules/cjs/helpers.js:88:18)
-    at Object.<anonymous> (E:\\xxx\\Javascript\\xxx\\vite.config.js:30:37)
-    at Module._compile (internal/modules/cjs/loader.js:1063:30)
-    at Object.require.extensions.<computed> [as .js] (E:\\Javascript\\xxx\\node_modules\\vite\\dist\\node\\chunks\\dep-36bf480c.js:77283:20)
-    at Module.load (internal/modules/cjs/loader.js:928:32)
 `
     )
   })
