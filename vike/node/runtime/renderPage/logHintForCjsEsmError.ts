@@ -1,6 +1,6 @@
 export { logHintForCjsEsmError }
 
-// For ./logHintForCjsEsmError.spec.ts
+// For ./logHintForCjsEsmError/index.spec.ts
 export { precise }
 export { fuzzy }
 export { fuzzy2 }
