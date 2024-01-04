@@ -11,6 +11,7 @@ describe('isMatch()', () => {
   cjs_named_export()
   require_is_not_a_function()
   cannot_use_import_outside_of_module()
+  exports_is_not_defined()
   fuzzyTests()
   skipsUserLandErrors()
   handlesEdgeCases()
@@ -235,14 +236,13 @@ function react_invalid_component() {
   it('React: invalid component', () => {
     expect(true).toBe(
       isReactInvalidComponentError(
-        /* node_modules/ land
-         * - Error artificially created:
-         *   ```diff
-         *   // node_modules/vike-react/dist/renderer/onRenderHtml.js:
-         *   - import { PageContextProvider } from './PageContextProvider.js';
-         *   + const PageContextProvider = undefined
-         *   ```
-         */
+        /* Error artificially created:
+        ```diff
+        // node_modules/vike-react/dist/renderer/onRenderHtml.js:
+        - import { PageContextProvider } from './PageContextProvider.js';
+        + const PageContextProvider = undefined
+        ``` */
+        // Also matches the error in https://github.com/vikejs/vike/discussions/830
         {
           message:
             "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
@@ -545,6 +545,31 @@ import{useRunner as e}from"react-runner";export*from"react-runner";import t,{use
   })
 }
 
+function exports_is_not_defined() {
+  it('exports is not defined', () => {
+    tFuzzy(
+      'react-simple-code-editor',
+      // https://github.com/vikejs/vike/discussions/571#discussioncomment-6137618
+      `
+ReferenceError: exports is not defined
+    at eval (/Users/xxx/git/xxx/xxx/node_modules/react-simple-code-editor/lib/index.js:64:23)
+    at instantiateModule (file:///Users/xxx/git/xxx/xxx/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:54405:15)
+`
+    )
+
+    tFuzzy(
+      false,
+      // User land ESM error
+      `
+ReferenceError: exports is not defined in ES module scope
+This file is being treated as an ES module because it has a '.js' file extension and '/home/xxx/projects/vike/xxx/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+    at file:///home/xxx/projects/vike/xxx/server/index.js:14:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
+`
+    )
+  })
+}
+
 function skipsUserLandErrors() {
   it('skips user land errors', () => {
     tFuzzy(
@@ -577,17 +602,6 @@ Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import '/Users/xxx/xxx/src/models'
 code: 'ERR_UNSUPPORTED_DIR_IMPORT',
 url: 'file:///Users/xxx/xxx/src/models'
 }
-`
-    )
-
-    tFuzzy(
-      false,
-      // User land ESM error
-      `
-ReferenceError: exports is not defined in ES module scope
-This file is being treated as an ES module because it has a '.js' file extension and '/home/xxx/projects/vike/xxx/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
-    at file:///home/xxx/projects/vike/xxx/server/index.js:14:1
-    at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
 `
     )
   })
@@ -627,36 +641,6 @@ Error: ERR_UNSUPPORTED_DIR_IMPORT /Users/xxx/Documents/Github/xxx/node_modules/@
     at nextResolve (node:internal/modules/esm/loader:165:28)
 `
     )
-
-    tFuzzy(
-      'react-simple-code-editor',
-      // https://github.com/vikejs/vike/discussions/571#discussioncomment-6137618
-      `
-ReferenceError: exports is not defined
-    at eval (/Users/xxx/git/xxx/xxx/node_modules/react-simple-code-editor/lib/index.js:64:23)
-    at instantiateModule (file:///Users/xxx/git/xxx/xxx/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:54405:15)
-`
-    )
-
-    /* TODO
-    tFuzzy(
-      true,
-      // https://github.com/vikejs/vike/discussions/830
-      `
-Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
-    at renderElement (/home/xxx/Projects/xxx/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6047:9)
-    at renderNodeDestructiveImpl (/home/xxx/Projects/xxx/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
-    at renderNodeDestructive (/home/xxx/Projects/xxx/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
-    at renderIndeterminateComponent (/home/xxx/Projects/xxx/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5789:7)
-    at renderElement (/home/xxx/Projects/xxx/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5950:7)
-    at renderNodeDestructiveImpl (/home/xxx/Projects/xxx/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
-    at renderNodeDestructive (/home/xxx/Projects/xxx/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
-    at renderNode (/home/xxx/Projects/xxx/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6263:12)
-    at renderChildrenArray (/home/xxx/Projects/xxx/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6215:7)
-    at renderNodeDestructiveImpl (/home/xxx/Projects/xxx/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6145:7)
-`
-    )
-    */
 
     tFuzzy2(
       false,
