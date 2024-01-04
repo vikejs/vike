@@ -28,6 +28,7 @@ describe('getHintForCjsEsmError()', () => {
 
 function tPrecise(expectedResult: Res, error: { message: string; code: string | undefined; stack: string }) {
   expectRes(precise(error), expectedResult)
+  expectRes(fuzzy2(error), expectedResult)
   expectRes(isCjsEsmError(error), expectedResult)
 }
 /** We use this we don't have the full infomration about the error (users report the error as a string without a reproduction). */

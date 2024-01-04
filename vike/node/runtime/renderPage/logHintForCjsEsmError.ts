@@ -84,25 +84,28 @@ function fuzzy2(error: unknown): boolean | string[] {
   const fromNodeModules = stackFirstLine?.includes('node_modules') || message?.includes('node_modules') || false
 
   // ERR_UNKNOWN_FILE_EXTENSION
-  if (
-    /*
-    fromNodeModules
-    /*/
-    true
-    //*/
-  ) {
+  {
     const packageNames = parseUnkownFileExtension(anywhere)
     if (packageNames) return packageNames
   }
 
   // ERR_MODULE_NOT_FOUND
-  if (fromNodeModules) {
+  {
     const packageNames = parseCannotFind(anywhere)
     if (packageNames) return packageNames
   }
 
+  // ERR_REQUIRE_ESM
+  if (fromNodeModules && (anywhere.includes('ERR_REQUIRE_ESM') || anywhere.includes('require() of ES Module'))) {
+    if (stackFirstLine?.includes('node_modules')) {
+      const packageName = extractFromStackTraceLine(stackFirstLine)
+      const packageNames = clean([packageName])
+      return packageNames
+    }
+  }
+
   // CJS named export
-  if (fromNodeModules) {
+  {
     const packageNames = parseImportFrom(anywhere)
     if (packageNames) return packageNames
   }
