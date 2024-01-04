@@ -12,6 +12,7 @@ describe('isCjsEsmError()', () => {
   cannot_use_import_outside_of_module()
   is_not_defined()
   is_not_exported()
+  unexpected_token_export()
 })
 
 describe('isReactInvalidComponentError()', () => {
@@ -661,6 +662,39 @@ RollupError: "MenuIcon" is not exported by "node_modules/.pnpm/@mui+icons-materi
     at Module.bindReferences (file:///home/rom/tmp/vps-mui/node_modules/.pnpm/rollup@3.23.0/node_modules/rollup/dist/es/shared/node-entry.js:13459:18)
  ELIFECYCLE  Command failed with exit code 1.
 `
+    )
+  })
+}
+
+function unexpected_token_export() {
+  it("Unexpected token 'export'", () => {
+    t1(
+      /* TODO
+      '@mui/material',
+      */
+      false,
+      // https://github.com/brillout/repro_node-syntax-error
+      // https://github.com/vikejs/vike/discussions/901#discussioncomment-6643299
+      {
+        message: "Unexpected token 'export'",
+        code: undefined,
+        // The preamble with the node_modules file path is injected by Node.js, see https://github.com/brillout/repro_node-syntax-error#nodejs-behavior
+        stack: `
+/home/romu/tmp/vite-ssr-project/node_modules/.pnpm/@mui+material@5.14.4_@emotion+react@11.11.1_@emotion+styled@11.11.0_@types+react@18.2.20_react-dom@18.2.0_react@18.2.0/node_modules/@mui/material/Button/index.js:3
+export { default } from './Button';
+^^^^^^
+
+SyntaxError: Unexpected token 'export'
+    at internalCompileFunction (node:internal/vm:73:18)
+    at wrapSafe (node:internal/modules/cjs/loader:1176:20)
+    at Module._compile (node:internal/modules/cjs/loader:1218:27)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1308:10)
+    at Module.load (node:internal/modules/cjs/loader:1117:32)
+    at Module._load (node:internal/modules/cjs/loader:958:12)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:169:29)
+    at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
+`
+      }
     )
   })
 }

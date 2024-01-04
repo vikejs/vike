@@ -310,17 +310,18 @@ function isReactInvalidComponentError(error: unknown): boolean {
   )
 }
 
-function collectError(error: any) {
+function collectError(err: any) {
   console.log(
     [
       '{',
-      `  message: ${JSON.stringify(error.message)},`,
-      `  code: ${JSON.stringify(error.code)},`,
-      '  stack: `\n' + error.stack + '\n`',
+      `  message: ${JSON.stringify(err.message)},`,
+      `  code: ${JSON.stringify(err.code)},`,
+      '  stack: `\n' + err.stack + '\n`',
       '}'
     ].join('\n')
   )
   /* For reproductions using older vite-plugin-ssr versions, do one of the following.
+      - If upon pre-rendering:https: //github.com/brillout/repro_node-syntax-error#error-catched-by-vite-plugin-ssr
       - Inject the logger inside `catch` in node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage.js
       - Inject the following inside `configResolved(config_)` at node_modules/vite-plugin-ssr/dist/cjs/node/plugin/plugins/devConfig/index.js
         ```js
