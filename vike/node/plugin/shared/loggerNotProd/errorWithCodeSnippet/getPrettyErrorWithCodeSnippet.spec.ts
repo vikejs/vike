@@ -94,7 +94,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
       "Failed to transpile /pages/index/+Page.vue because:
       [@vue/compiler-sfc] Missing semicolon. 
       12 |  
-      13 |  <script lang=\\"ts\\" setup>
+      13 |  <script lang="ts" setup>
       14 |  imeport Counter from '../../components/Counter.vue'
          |         ^
       15 |  import { navigate } from 'vike/client/router.js'
@@ -120,7 +120,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
     const formatted = getPrettyErrorWithCodeSnippet(errEsbuild, '/home/rom/code/vike/examples/react-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
       "Failed to transpile /renderer/PageShell.tsx because:
-      Unexpected \\"}\\"
+      Unexpected "}"
       5  |  import type { PageContext } from './types'
       6  |  
       7  |  export { PageShell }}
