@@ -222,7 +222,7 @@ function parseUnkownFileExtensionMessage(str: string): false | string[] {
   return clean([packageName])
 }
 function parseImportFrom(str: string): false | string[] {
-  const match = /\bimport\b.*?\bfrom\b\s*?"(\S+?)"/.exec(str)
+  const match = /\bimport\b.*?\bfrom\b\s*?"(.+?)"/.exec(str)
   if (!match) return false
   const importPath = match[1]!
   const packageName = extractFromPath(importPath)
