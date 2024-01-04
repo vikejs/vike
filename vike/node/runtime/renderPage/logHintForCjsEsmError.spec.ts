@@ -31,10 +31,6 @@ function tPrecise(expectedResult: Res, error: { message: string; code: string | 
   expectRes(fuzzy2(error), expectedResult)
   expectRes(isMatch(error), expectedResult)
 }
-/** We use this we don't have the full infomration about the error (users report the error as a string without a reproduction). */
-function tPartial(resExpected: Res, error: { message?: string; code?: string; stack?: string }) {
-  tPrecise(resExpected, { message: error.message || '', stack: error.stack || '', code: error.code || undefined })
-}
 function tFuzzy(resExpected: boolean | string, errString: string) {
   expectRes(fuzzy(errString), resExpected)
   expectRes(isMatch({ stack: errString }), resExpected)

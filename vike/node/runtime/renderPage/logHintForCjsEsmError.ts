@@ -88,9 +88,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
 }
 
 function fuzzy2(error: unknown): boolean | string[] {
-  const code = getErrCode(error)
   const message = getErrMessage(error)
-  const stack = getErrStack(error)
   const anywhere = getAnywhere(error)
   const stackFirstLine = getErrStackFirstLine(error)
   const fromNodeModules = stackFirstLine?.includes('node_modules') || message?.includes('node_modules') || false
@@ -324,31 +322,6 @@ function fuzzy(errString: string | undefined) {
   return packageName
 }
 
-function getErrorAsString(error: unknown) {
-  if (!error) {
-    return
-  }
-  let parsed = ''
-
-  if (typeof error === 'string') {
-    parsed = error
-  } else if (typeof error === 'object') {
-    if ('name' in error && typeof error.name === 'string') {
-      parsed = `${parsed}\n${error.name}`
-    }
-
-    if ('message' in error && typeof error.message === 'string') {
-      parsed = `${parsed}\n${error.message}`
-    }
-
-    if ('stack' in error && typeof error.stack === 'string') {
-      parsed = `${parsed}\n${error.stack}`
-    }
-  }
-
-  return parsed
-}
-
 function extractPackageName(errString: string): string | null {
   let packageName: string | null = null
 
@@ -378,7 +351,6 @@ function extractPackageName(errString: string): string | null {
 
 function extractFromPath(filePath: string): string | null {
   assert(filePath)
-  const f = filePath
 
   filePath = removeQuotes(filePath)
   filePath = toPosixPath(filePath)
