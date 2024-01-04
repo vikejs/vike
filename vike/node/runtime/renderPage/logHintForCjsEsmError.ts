@@ -3,7 +3,6 @@ export { logHintForCjsEsmError }
 // For ./logHintForCjsEsmError/*.spec.ts
 export { precise }
 export { fuzzy }
-export { fuzzy2 }
 export { isMatch }
 export { getHintForCjsEsmError }
 export { isReactInvalidComponentError }
@@ -71,7 +70,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   }
 
   {
-    const result = fuzzy2(error)
+    const result = fuzzy(error)
     if (result) return result
   }
 
@@ -87,7 +86,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   return false
 }
 
-function fuzzy2(error: unknown): boolean | string[] {
+function fuzzy(error: unknown): boolean | string[] {
   const message = getErrMessage(error)
   const anywhere = getAnywhere(error)
   const stackFirstLine = getErrStackFirstLine(error)
@@ -327,60 +326,6 @@ function getAnywhere(error: unknown): string {
   const stack = getErrStack(error)
   const anywhere = [code, message, stack].filter(Boolean).join('\n')
   return anywhere
-}
-function fuzzy(errString: string | undefined) {
-  if (!errString) return false
-
-  const shouldParsePackageName = [
-    `SyntaxError: Cannot use import statement outside a module`,
-    `SyntaxError: Named export`,
-    `ERR_UNSUPPORTED_DIR_IMPORT.*node_modules`,
-    `ERR_UNKNOWN_FILE_EXTENSION.*node_modules`,
-    `ReferenceError: exports is not defined.*node_modules`
-  ]
-  const shouldShowHint = [
-    `Error: Element type is invalid.*but got: undefined`,
-    `TypeError: require is not a function`,
-    `ERR_REQUIRE_ESM`,
-    ...shouldParsePackageName
-  ]
-
-  const shouldShowHintRegex = new RegExp(shouldShowHint.join('|'), 's')
-  if (!shouldShowHintRegex.test(errString)) return false
-
-  const shouldParsePackageNameRegex = new RegExp(shouldParsePackageName.join('|'), 's')
-  if (!shouldParsePackageNameRegex.test(errString)) return true
-
-  const packageName = extractPackageName(errString)
-  // TODO: this assertion may fail
-  assert(packageName)
-  return packageName
-}
-
-function extractPackageName(errString: string): string | null {
-  let packageName: string | null = null
-
-  // Extract package name from code snippet in error message
-  {
-    const match = /import.*?from ?"(.*?)"/.exec(errString)
-    if (match?.length && typeof match[1] === 'string') {
-      packageName = extractFromPath(match[1])
-      return packageName
-    }
-  }
-
-  // Extract package name from stack trace
-  {
-    const firstNodeModulesLine = errString
-      .split('\n')
-      .find((line) => line.replaceAll('\\', '/').includes('node_modules/'))
-    if (firstNodeModulesLine) {
-      packageName = extractFromNodeModulesPath(firstNodeModulesLine)
-      return packageName
-    }
-  }
-
-  return null
 }
 
 function extractFromPath(filePath: string): string | null {

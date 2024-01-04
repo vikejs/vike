@@ -1,4 +1,4 @@
-import { isReactInvalidComponentError, precise, fuzzy, isMatch, fuzzy2 } from '../logHintForCjsEsmError'
+import { isReactInvalidComponentError, precise, isMatch, fuzzy } from '../logHintForCjsEsmError'
 import { expect, describe, it } from 'vitest'
 import { errror_cannot_use_import_outside_of_module } from './errors'
 
@@ -17,16 +17,11 @@ describe('isMatch()', () => {
 
 function tPrecise(expectedResult: Res, error: { message: string; code: string | undefined; stack: string }) {
   expectRes(precise(error), expectedResult)
-  expectRes(fuzzy2(error), expectedResult)
+  expectRes(fuzzy(error), expectedResult)
   expectRes(isMatch(error), expectedResult)
 }
 function tFuzzy(resExpected: boolean | string, errString: string) {
-  expectRes(fuzzy(errString), resExpected)
-  expectRes(fuzzy2({ stack: errString }), resExpected)
-  expectRes(isMatch({ stack: errString }), resExpected)
-}
-function tFuzzy2(resExpected: boolean | string, errString: string) {
-  expectRes(fuzzy2({ stack: errString }), resExpected)
+  expectRes(fuzzy({ stack: errString }), resExpected)
   expectRes(isMatch({ stack: errString }), resExpected)
 }
 type Res = boolean | string | string[]
@@ -363,7 +358,7 @@ TypeError: Cannot read properties of undefined (reading 'foo')
       }
     )
 
-    tFuzzy2(
+    tFuzzy(
       true,
       // https://github.com/vikejs/vike/discussions/1235
       `
@@ -459,7 +454,7 @@ Instead change the require of getPageElement.js in /home/romu/code/vike/node_mod
       }
     )
 
-    tFuzzy2(
+    tFuzzy(
       false,
       // Cannot reproduce this error, I guess it comes from an older Node.js version?
       `
