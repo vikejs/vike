@@ -13,8 +13,6 @@ describe('isMatch()', () => {
   require_is_not_a_function()
   cannot_use_import_outside_of_module()
   exports_is_not_defined()
-  skipsUserLandErrors()
-  handlesEdgeCases()
 })
 
 function tPrecise(expectedResult: Res, error: { message: string; code: string | undefined; stack: string }) {
@@ -392,6 +390,32 @@ TypeError: Cannot read properties of undefined (reading '__H')
     at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/plugin/shared/addSsrMiddleware.js:18:27
 `
     )
+
+    tFuzzy(
+      false,
+      // User land JavaScript error
+      `
+file:///home/xxx/projects/vike/xxx/server/index.js:20
+  console.log(a.b);
+                ^
+
+TypeError: Cannot read properties of undefined (reading 'b')
+    at startServer (file:///home/xxx/projects/vike/xxx/server/index.js:20:17)
+    at file:///home/xxx/projects/vike/xxx/server/index.js:13:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
+`
+    )
+
+    tFuzzy(
+      // Not enough information => is this user land or node_modules/ land?
+      false,
+      // https://github.com/vitejs/vite/issues/11299
+      `
+TypeError: Cannot read properties of undefined (reading 'extendTheme')
+    at eval (/home/projects/llqijrlvr.github/src/entry.js:5:35)
+    at async instantiateModule (file://file:///home/projects/llqijrlvr.github/node_modules/.pnpm/vite@4.0.0/node_modules/vite/dist/node/chunks/dep-ed9cb113.js:53295:9)
+`
+    )
   })
 }
 
@@ -628,40 +652,6 @@ ReferenceError: exports is not defined in ES module scope
 This file is being treated as an ES module because it has a '.js' file extension and '/home/xxx/projects/vike/xxx/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
     at file:///home/xxx/projects/vike/xxx/server/index.js:14:1
     at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
-`
-    )
-  })
-}
-
-function skipsUserLandErrors() {
-  it('skips user land errors', () => {
-    tFuzzy(
-      false,
-      // User land JavaScript error
-      `
-file:///home/xxx/projects/vike/xxx/server/index.js:20
-  console.log(a.b);
-                ^
-
-TypeError: Cannot read properties of undefined (reading 'b')
-    at startServer (file:///home/xxx/projects/vike/xxx/server/index.js:20:17)
-    at file:///home/xxx/projects/vike/xxx/server/index.js:13:1
-    at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
-`
-    )
-  })
-}
-
-function handlesEdgeCases() {
-  it('handles edge cases', () => {
-    tFuzzy(
-      // Not enough information => is this user land or node_modules/ land?
-      false,
-      // https://github.com/vitejs/vite/issues/11299
-      `
-TypeError: Cannot read properties of undefined (reading 'extendTheme')
-    at eval (/home/projects/llqijrlvr.github/src/entry.js:5:35)
-    at async instantiateModule (file://file:///home/projects/llqijrlvr.github/node_modules/.pnpm/vite@4.0.0/node_modules/vite/dist/node/chunks/dep-ed9cb113.js:53295:9)
 `
     )
   })
