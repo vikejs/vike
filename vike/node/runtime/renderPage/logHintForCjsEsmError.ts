@@ -213,61 +213,6 @@ function parseNodeModulesPathMessage(sentenceBegin: string, str: string) {
   return clean([packageName])
 }
 
-/* Do we still really need this? Let's see how well fuzzy() performs in real life.
-function precise(error: unknown): boolean | string[] {
-  const code = getErrCode(error)
-  const message = getErrMessage(error)
-  const stack = getErrStack(error)
-  const stackFirstLine = getErrStackFirstLine(error)
-
-  if (code === 'ERR_MODULE_NOT_FOUND' && message) {
-    const packageNames = parseCannotFindMessage(message)
-    if (packageNames) return packageNames
-  }
-
-  if (code === 'ERR_UNKNOWN_FILE_EXTENSION' && message) {
-    const packageNames = parseUnkownFileExtensionMessage(message)
-    if (packageNames) return packageNames
-  }
-
-  if (code === 'ERR_REQUIRE_ESM') {
-    if (includesNodeModules(stackFirstLine)) {
-      // Not reliable as stack traces have different formats:
-      // ```
-      // at file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:10:1
-      // ```
-      // Or:
-      // ```
-      // at onRenderHtml (file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:21:49)
-      // ```
-      // const match = /at \S+ (\S+)/.exec(stackFirstLine)
-
-      const packageName = extractNpmPackage(stackFirstLine!)
-      return packageName
-    }
-  }
-
-  if (message?.startsWith('Cannot read properties of undefined')) {
-    if (stackFirstLine?.includes('node_modules')) {
-      return true
-    }
-  }
-
-  if (message?.includes('require is not a function')) {
-    if (stackFirstLine?.includes('node_modules')) {
-      const packageName = extractFromNodeModulesPath(stackFirstLine)
-      return clean([packageName])
-    }
-  }
-
-  if (stack) {
-    const packageNames = parseImportFrom(stack)
-    if (packageNames) return packageNames
-  }
-
-  return false
-}
-*/
 function clean(packageNames: (string | null)[]): string[] | false {
   const result = unique(packageNames.filter(isNotNullish))
   if (result.length === 0) return false
