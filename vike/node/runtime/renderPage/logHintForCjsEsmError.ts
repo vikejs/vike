@@ -58,6 +58,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   const packageName_stack1 = getPackageName_stack1(error)
   const packageName_stack2 = getPackageName_stack2(error)
   const isRelatedToNodeModules = !!packageName_stack1 || !!packageName_stack2 || includesNodeModules(message)
+  // const relatedNpmPackages = normalize([packageName_stack1, packageName_stack2, extractFromNodeModulesPath(message)])
 
   // ERR_UNSUPPORTED_DIR_IMPORT
   {
@@ -80,7 +81,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
     if (packageNames) return packageNames
   }
 
-  // Using CJS inside ESM modules
+  // Using CJS inside ESM modules.
   if (
     includes(anywhere, 'require is not a function') ||
     includes(anywhere, 'exports is not defined') ||
@@ -117,7 +118,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   }
   */
 
-  // SyntaxError: Named export '${exportName}' not found. The requested module '${packageName}' is a CommonJS module, which may not support all module.exports as named exports.
+  // `SyntaxError: Named export '${exportName}' not found. The requested module '${packageName}' is a CommonJS module, which may not support all module.exports as named exports.`
   {
     const packageNames = parseImportFrom(anywhere)
     if (packageNames) return packageNames
@@ -139,14 +140,14 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   }
 
   if (
-    // SyntaxError: Cannot use import statement outside a module
-    // Since user code is always ESM, this error must always originate from an npm package
+    // `SyntaxError: Cannot use import statement outside a module`.
+    // Since user code is always ESM, this error must always originate from an npm package.
     includes(anywhere, 'Cannot use import statement') ||
-    // SyntaxError: Named export '${exportName}' not found. The requested module '${packageName}' is a CommonJS module, which may not support all module.exports as named exports.
-    // It seems that this always points to an npm package import
+    // `SyntaxError: Named export '${exportName}' not found. The requested module '${packageName}' is a CommonJS module, which may not support all module.exports as named exports.`
+    // It seems that this always points to an npm package import.
     /Named export.*not found/i.test(anywhere)
   ) {
-    /* We return true even if fromNodeModules is false because these errors always relate to npm packages
+    /* We return true even if fromNodeModules is false because the errors always relate to npm packages.
     if (fromNodeModules) return true
     */
     return true
@@ -190,9 +191,9 @@ function parseImportFrom(str: string): false | string[] {
   const packageName = extractFromPath(importPath)
   return normalize([packageName])
 }
-function parseNodeModulesPathMessage(sentenceBegin: string, str: string) {
+function parseNodeModulesPathMessage(begin: string, str: string) {
   str = str.replaceAll('\\', '/')
-  const regex = new RegExp(`${sentenceBegin}.*(node_modules\\/\\S+)`)
+  const regex = new RegExp(`${begin}.*(node_modules\\/\\S+)`)
   const match = regex.exec(str)
   if (!match) return false
   const importPath = match[1]!
