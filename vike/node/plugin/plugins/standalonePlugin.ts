@@ -105,6 +105,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       }
 
       await fs.rm(path.posix.join(outDirAbs, 'importBuild.mjs')).catch(() => {})
+      await fs.rm(path.posix.join(outDirAbs, 'importBuild.cjs')).catch(() => {})
 
       const base = toPosixPath(searchForWorkspaceRoot(root))
       const relativeRoot = path.posix.relative(base, root)
