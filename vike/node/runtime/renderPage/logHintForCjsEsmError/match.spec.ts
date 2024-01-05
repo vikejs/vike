@@ -585,6 +585,8 @@ const { useI18n, createI18n } = pkg;
     //  - https://github.com/vikejs/vike/discussions/934#discussioncomment-6091849
     //  - https://github.com/vikejs/vike/discussions/1021#discussion-5416877
     //  - https://github.com/vikejs/vike/discussions/1023#discussion-5421060
+    //  - https://github.com/vikejs/vike/discussions/1084#discussion-5536319
+    //  - https://github.com/vikejs/vike/discussions/1149#discussion-5676567
   })
 }
 
@@ -614,6 +616,9 @@ import{useRunner as e}from"react-runner";export*from"react-runner";import t,{use
 
     // https://github.com/vikejs/vike/discussions/571#discussioncomment-6137618
     t2('react-runner', errror_cannot_use_import_outside_of_module)
+
+    // More similar errors:
+    //  - https://github.com/vikejs/vike/discussions/1153#discussion-5682749
   })
 }
 
@@ -778,6 +783,7 @@ function react_invalid_component() {
         // https://github.com/vikejs/vike/discussions/830#discussioncomment-5763136
         // https://github.com/vikejs/vike/discussions/571#discussioncomment-6141003
         // https://github.com/vikejs/vike/discussions/1031#discussion-5426053
+        // https://github.com/vikejs/vike/discussions/1080#discussion-5535121
         {
           message:
             "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
