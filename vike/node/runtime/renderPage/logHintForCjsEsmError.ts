@@ -57,7 +57,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   const anywhere = getAnywhere(error)
   const packageName_stack1 = getPackageName_stack1(error)
   const packageName_stack2 = getPackageName_stack2(error)
-  const fromNodeModules = !!packageName_stack1 || includesNodeModules(message)
+  const fromNodeModules = !!packageName_stack1 || !!packageName_stack2 || includesNodeModules(message)
 
   // ERR_UNSUPPORTED_DIR_IMPORT
   {
