@@ -10,7 +10,6 @@ import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 import pc from '@brillout/picocolors'
 import { assert } from '../runtime/utils.js'
 import { bindCLIShortcuts } from './shortcuts.js'
-import { getConfigVike } from '../shared/getConfigVike.js'
 
 function devServerPlugin(): Plugin {
   let viteServer: ViteDevServer
@@ -143,11 +142,6 @@ function devServerPlugin(): Plugin {
           middlewareMode: true
         }
       }
-    },
-    async configResolved(config) {
-      const configVike = await getConfigVike(config)
-      config.optimizeDeps.exclude ??= []
-      config.optimizeDeps.exclude.push(...configVike.native)
     },
     configureServer(server) {
       // This is only true if the vite config was changed
