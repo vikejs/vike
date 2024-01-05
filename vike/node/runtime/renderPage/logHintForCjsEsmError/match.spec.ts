@@ -345,7 +345,7 @@ TypeError: Cannot read properties of undefined (reading 'foo')
 
     t2(
       true,
-      // https://github.com/vikejs/vike/discussions/1235
+      // https://github.com/vikejs/vike/discussions/1235#discussion-5806578
       `
 TypeError: Cannot read properties of undefined (reading '__H')
     at getHookState (/Users/xxx/Code/Repos/xxx/node_modules/preact/hooks/src/index.js:137:19)
@@ -712,6 +712,9 @@ ReferenceError: window is not defined
     )
   })
 
+  // The issue here is the other way around: the library shouldn't be ssr.noExternal, see https://github.com/vikejs/vike/issues/621#issuecomment-1781661083
+  //  - Therefore, the hint we show is actually wrong. But we keep it in order to communicate the user that this is a CJS/ESM issue.
+  //    - Ideally, we should implement a new hint for this error.
   it('__dirname is not defined', () => {
     t1(
       'vike-react',
