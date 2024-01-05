@@ -165,7 +165,7 @@ function includesNodeModules(str: string | null): boolean {
   if (str.includes('node_modules/vite/')) return false
   return true
 }
-function extractNpmPackageOptional(str: string | null): null | string {
+function extractFromNodeModulesPathOptional(str: string | null): null | string {
   if (!str || !includesNodeModules(str)) return null
   return extractFromNodeModulesPath(str)
 }
@@ -232,7 +232,7 @@ function getPackageName_stack1(err: unknown): false | string[] {
   if (!errStack) return false
   const firstLineStackTrace = errStack.split('\n').filter((line) => line.startsWith('    at '))[0]
   if (!firstLineStackTrace) return false
-  return normalize([extractNpmPackageOptional(firstLineStackTrace)])
+  return normalize([extractFromNodeModulesPathOptional(firstLineStackTrace)])
 }
 /** See https://github.com/brillout/repro_node-syntax-error#nodejs-behavior */
 function getPackageName_stack2(err: unknown): false | string[] {
@@ -240,7 +240,7 @@ function getPackageName_stack2(err: unknown): false | string[] {
   if (!errStack) return false
   const firstLine = errStack.trim().split('\n')[0]!
   if (!includesNodeModules(firstLine)) return false
-  return normalize([extractNpmPackageOptional(firstLine)])
+  return normalize([extractFromNodeModulesPathOptional(firstLine)])
 }
 function getAnywhere(error: unknown): string {
   const code = getErrCode(error)
