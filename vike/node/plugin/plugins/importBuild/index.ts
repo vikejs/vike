@@ -48,13 +48,18 @@ function getEntryCode(config: ResolvedConfig, configVike: ConfigVikeResolved): s
   const importerCode = [
     `  import { setImportBuildGetters } from '${importPath}';`,
     `  import * as pageFiles from '${virtualFileIdImportUserCodeServer}';`,
-    '  setImportBuildGetters({',
-    `    pageFiles: () => pageFiles,`,
+    `  {`,
+    // We first set the values to a variable because of a Rollup bug, and this workaround doesn't work: https://github.com/vikejs/vike/commit/d5f3a4f7aae5a8bc44192e6cbb2bcb9007be188d
+    `    const clientManifest = ${ASSETS_MAP};`,
+    `    const pluginManifest = ${JSON.stringify(vikeManifest, null, 2)};`,
+    '    setImportBuildGetters({',
+    `      pageFiles: () => pageFiles,`,
     // TODO: rename clientManifest -> assetManifest
-    `    clientManifest: () => { return ${ASSETS_MAP} },`,
+    `      clientManifest: () => clientManifest,`,
     // TODO: rename pluginManifest -> vikeManifest
-    `    pluginManifest: () => (${JSON.stringify(vikeManifest, null, 2)}),`,
-    '  });',
+    `      pluginManifest: () => pluginManifest,`,
+    '    });',
+    `  }`,
     ''
   ].join('\n')
   return importerCode
