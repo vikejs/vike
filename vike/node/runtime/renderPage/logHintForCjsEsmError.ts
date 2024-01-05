@@ -15,7 +15,6 @@ function logHintForCjsEsmError(error: unknown): void {
   const hint = getHint(error)
   if (hint) logHint(hint)
 }
-
 function getHint(error: unknown): null | string {
   if (isReactInvalidComponentError(error)) {
     const hint = 'To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component'
@@ -41,10 +40,17 @@ function getHint(error: unknown): null | string {
 
   return null
 }
-
 function logHint(hint: string) {
   hint = formatHintLog(hint)
   console.error(hint)
+}
+
+function isReactInvalidComponentError(error: unknown): boolean {
+  const anywhere = getAnywhere(error)
+  return includes(
+    anywhere,
+    'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)'
+  )
 }
 
 /**
@@ -156,17 +162,6 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   return false
 }
 
-function includes(str1: string | null, str2: string): boolean {
-  return !!str1 && str1.toLowerCase().includes(str2.toLowerCase())
-}
-function includesNodeModules(str: string | null): boolean {
-  if (!str) return false
-  str = str.replaceAll('\\', '/')
-  if (!str.includes('node_modules/')) return false
-  if (str.includes('node_modules/vite/')) return false
-  return true
-}
-
 function parseCannotFindMessage(str: string): false | string[] {
   const match = /Cannot find \S+ '(\S+)' imported from (\S+)/.exec(str)
   if (!match) return false
@@ -200,29 +195,6 @@ function parseNodeModulesPathMessage(begin: string, str: string) {
   return extractFromNodeModulesPath(importPath)
 }
 
-function normalize(packageNames: (string | null)[]): string[] | false {
-  const result = unique(packageNames.filter(isNotNullish))
-  if (result.length === 0) return false
-  return result
-}
-function getErrMessage(err: unknown): null | string {
-  if (!isObject(err)) return null
-  if (!err.message) return null
-  if (typeof err.message !== 'string') return null
-  return err.message
-}
-function getErrCode(err: unknown): null | string {
-  if (!isObject(err)) return null
-  if (!err.code) return null
-  if (typeof err.code !== 'string') return null
-  return err.code
-}
-function getErrStack(err: unknown): null | string {
-  if (!isObject(err)) return null
-  if (!err.stack) return null
-  if (typeof err.stack !== 'string') return null
-  return err.stack
-}
 function getPackageName_stack1(err: unknown): false | string[] {
   const errStack = getErrStack(err)
   if (!errStack) return false
@@ -236,13 +208,6 @@ function getPackageName_stack2(err: unknown): false | string[] {
   if (!errStack) return false
   const firstLine = errStack.trim().split('\n')[0]!
   return extractFromNodeModulesPath(firstLine)
-}
-function getAnywhere(error: unknown): string {
-  const code = getErrCode(error)
-  const message = getErrMessage(error)
-  const stack = getErrStack(error)
-  const anywhere = [code, message, stack].filter(Boolean).join('\n')
-  return anywhere
 }
 
 function extractFromPath(filePath: string): string | null {
@@ -275,13 +240,6 @@ function extractFromPath(filePath: string): string | null {
   assert(!['vite', 'vike'].includes(packageName))
   return packageName
 }
-function extractFromNodeModulesPath(str: string): false | string[] {
-  if (!includesNodeModules(str)) return false
-  const packageName = extractFromPath(str)
-  assert(packageName)
-  return normalize([packageName])
-}
-
 function clean(packageName: string) {
   const b = ['"', "'", '(', ')']
   if (b.includes(packageName[0]!)) {
@@ -292,13 +250,54 @@ function clean(packageName: string) {
   }
   return packageName
 }
+function extractFromNodeModulesPath(str: string): false | string[] {
+  if (!includesNodeModules(str)) return false
+  const packageName = extractFromPath(str)
+  assert(packageName)
+  return normalize([packageName])
+}
 
-function isReactInvalidComponentError(error: unknown): boolean {
-  const anywhere = getAnywhere(error)
-  return includes(
-    anywhere,
-    'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)'
-  )
+function includes(str1: string | null, str2: string): boolean {
+  return !!str1 && str1.toLowerCase().includes(str2.toLowerCase())
+}
+function includesNodeModules(str: string | null): boolean {
+  if (!str) return false
+  str = str.replaceAll('\\', '/')
+  if (!str.includes('node_modules/')) return false
+  if (str.includes('node_modules/vite/')) return false
+  return true
+}
+
+function normalize(packageNames: (string | null)[]): string[] | false {
+  const result = unique(packageNames.filter(isNotNullish))
+  if (result.length === 0) return false
+  return result
+}
+
+function getErrMessage(err: unknown): null | string {
+  if (!isObject(err)) return null
+  if (!err.message) return null
+  if (typeof err.message !== 'string') return null
+  return err.message
+}
+function getErrCode(err: unknown): null | string {
+  if (!isObject(err)) return null
+  if (!err.code) return null
+  if (typeof err.code !== 'string') return null
+  return err.code
+}
+function getErrStack(err: unknown): null | string {
+  if (!isObject(err)) return null
+  if (!err.stack) return null
+  if (typeof err.stack !== 'string') return null
+  return err.stack
+}
+function getAnywhere(error: unknown): string {
+  const code = getErrCode(error)
+  const message = getErrMessage(error)
+  const stack = getErrStack(error)
+  const anywhere = [code, message, stack].filter(Boolean).join('\n')
+  return anywhere
 }
 
 function collectError(err: any) {
