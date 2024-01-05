@@ -21,7 +21,7 @@ function setImportBuildGetters(getters: BuildGetters) {
 async function loadImportBuild(outDir?: string) {
   if (!buildGetters.getters) {
     await loadServerBuild(outDir)
-    // Await dist/server/importBuild.cjs
+    // https://github.com/vikejs/vike/commit/178a69765f5e8f8e7ba2a76b5e7e0e193be08c87
     await autoRetry(() => {
       assert(buildGetters.getters)
     }, 2000)
