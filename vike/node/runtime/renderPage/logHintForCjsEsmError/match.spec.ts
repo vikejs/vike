@@ -225,6 +225,8 @@ code: 'ERR_UNKNOWN_FILE_EXTENSION'
     t2(
       false,
       // https://github.com/vikejs/vike/discussions/901#discussioncomment-6733600
+      // https://github.com/vikejs/vike/discussions/1067
+      // https://github.com/vikejs/vike/issues/877
       `TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".ts" for /media/oem/MyFiles/8_DEVELOPMENT/vite-ssr-ts-project/server/index.ts`
     )
   })
@@ -549,6 +551,11 @@ import pkg from 'vue-i18n/dist/vue-i18n.runtime.esm-bundler.js';
 const { useI18n, createI18n } = pkg;
 `
     )
+
+    // More similar errors:
+    //  - https://github.com/vikejs/vike/discussions/934#discussioncomment-6085697
+    //  - https://github.com/vikejs/vike/discussions/934#discussioncomment-6091261
+    //  - https://github.com/vikejs/vike/discussions/934#discussioncomment-6091849
   })
 }
 
@@ -672,6 +679,7 @@ function unexpected_token_export() {
       '@mui/material',
       // https://github.com/brillout/repro_node-syntax-error
       // https://github.com/vikejs/vike/discussions/901#discussioncomment-6643299
+      // https://github.com/vikejs/vike/discussions/901#discussioncomment-6704554
       {
         message: "Unexpected token 'export'",
         code: undefined,
@@ -707,6 +715,7 @@ function react_invalid_component() {
         - import { PageContextProvider } from './PageContextProvider.js';
         + const PageContextProvider = undefined
         ``` */
+        // https://github.com/brillout/vps-mui/tree/reprod-1
         // https://github.com/vikejs/vike/discussions/830#discussion-5143519
         // https://github.com/vikejs/vike/discussions/830#discussioncomment-5763136
         {
@@ -732,9 +741,11 @@ Error: Element type is invalid: expected a string (for built-in components) or a
     expect(true).toBe(
       isReactInvalidComponentError(
         // Also catch `but got: object`
+        // https://github.com/brillout/vps-mui/tree/reprod-1
         {
           message:
             "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
+          // Fake error obejct
           code: undefined,
           stack: ``
         }
@@ -746,6 +757,7 @@ Error: Element type is invalid: expected a string (for built-in components) or a
         {
           message:
             "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: foo. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
+          // Fake error obejct
           code: undefined,
           stack: ``
         }
