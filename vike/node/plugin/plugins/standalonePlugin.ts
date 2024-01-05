@@ -16,7 +16,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let outDirAbs = ''
   let builtEntryAbs = ''
 
-  // Native dependencies always need to be ssr.external
+  // Native dependencies always need to be esbuild external
   let external = [...nativeDependecies]
 
   const platform = os.platform()
@@ -30,7 +30,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
     enforce: 'pre',
     config(config, env) {
       if (config.ssr?.external) {
-        // Include ssr.external from the user config
+        // Add ssr.external to esbuild external from the user config
         // These packages won't be bundled by esbuild, they will be copied to dist/server/node_modules instead
         external.push(...config.ssr.external)
       }
