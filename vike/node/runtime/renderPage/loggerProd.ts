@@ -25,7 +25,7 @@ function logErrorProd(err: unknown, _httpRquestId: null | number): void {
   onRuntimeError(err)
 }
 
-// Every user land runtime error is expected to go through onRuntimeError(). (In principle, any user land runtime error is (or at least should) be catched by Vike, otherwise Vike couldn't render the error page.)
+// Every server-side runtime error is expected to go through onRuntimeError(). (In principle, any runtime error is (or at least should) be catched by Vike, otherwise Vike couldn't render the error page.)
 function onRuntimeError(err: unknown) {
   // The more runtime errors we pass to logHintForCjsEsmError() the better.
   logHintForCjsEsmError(err)
