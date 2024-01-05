@@ -17,15 +17,15 @@ describe('renderPage()', () => {
     const body = await render(false)
     expect(body).toMatchInlineSnapshot(
       `
-      "<html><head></head><body><div><p>Hello</p></div><script type=\\"module\\" async>
-      import RefreshRuntime from \\"/@react-refresh\\"
-      RefreshRuntime.injectIntoGlobalHook(window)
-      window.$RefreshReg$ = () => {}
-      window.$RefreshSig$ = () => (type) => type
-      window.__vite_plugin_react_preamble_installed__ = true
-      import(\\"/@vite/client\\");
-      </script></body></html>"
-    `
+    "<html><head></head><body><div><p>Hello</p></div><script type="module" async>
+    import RefreshRuntime from "/@react-refresh"
+    RefreshRuntime.injectIntoGlobalHook(window)
+    window.$RefreshReg$ = () => {}
+    window.$RefreshSig$ = () => (type) => type
+    window.__vite_plugin_react_preamble_installed__ = true
+    import("/@vite/client");
+    </script></body></html>"
+  `
     )
   })
 

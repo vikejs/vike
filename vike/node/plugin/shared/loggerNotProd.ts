@@ -25,6 +25,7 @@ import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/logge
 import {
   assert,
   assertIsNotProductionRuntime,
+  formatHintLog,
   getAssertErrMsg,
   isUserHookError,
   overwriteAssertProductionLogger,
@@ -53,6 +54,7 @@ import {
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError.js'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid.js'
+import { onRuntimeError } from '../../runtime/renderPage/loggerProd.js'
 
 assertIsNotProductionRuntime()
 overwriteRuntimeProductionLogger(logRuntimeError, logRuntimeInfo)
@@ -148,7 +150,10 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
   } else if (category) {
     logFallbackErrIntro(category)
   }
+
   logDirectly(err, 'error')
+
+  onRuntimeError(err)
 }
 
 function logConfigError(err: unknown): void {
@@ -245,13 +250,7 @@ function logErrorDebugNote() {
     if (store.errorDebugNoteAlreadyShown) return
     store.errorDebugNoteAlreadyShown = true
   }
-  const msg = pc.dim(
-    [
-      '┌──────────────────────────────────────────────────────────┐',
-      "│ Error isn't helpful? See https://vike.dev/errors#verbose │",
-      '└──────────────────────────────────────────────────────────┘'
-    ].join('\n')
-  )
+  const msg = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/errors#verbose"))
   logDirectly(msg, 'error')
 }
 

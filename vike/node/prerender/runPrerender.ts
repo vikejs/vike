@@ -61,6 +61,7 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
+import { logHintForCjsEsmError } from '../runtime/renderPage/logHintForCjsEsmError.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -160,10 +161,22 @@ async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<void
   await runPrerender(options, 'prerender()')
 }
 async function runPrerenderFromCLI(options: PrerenderOptions): Promise<void> {
-  await runPrerender(options, '$ vike prerender')
+  try {
+    await runPrerender(options, '$ vike prerender')
+  } catch (err) {
+    console.error(err)
+    logHintForCjsEsmError(err)
+    process.exit(1)
+  }
 }
 async function runPrerenderFromAutoFullBuild(options: PrerenderOptions): Promise<void> {
-  await runPrerender(options, null)
+  try {
+    await runPrerender(options, null)
+  } catch (err) {
+    console.error(err)
+    logHintForCjsEsmError(err)
+    process.exit(1)
+  }
 }
 async function runPrerender(
   options: PrerenderOptions,

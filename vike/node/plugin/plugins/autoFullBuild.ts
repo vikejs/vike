@@ -8,6 +8,7 @@ import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
+import { logHintForCjsEsmError } from '../../runtime/renderPage/logHintForCjsEsmError.js'
 
 let forceExit = false
 
@@ -79,13 +80,19 @@ async function triggerFullBuild(
     }
   } satisfies InlineConfig
 
-  await build({
-    ...configInline,
-    build: {
-      ...configInline.build,
-      ssr: true
-    }
-  })
+  try {
+    await build({
+      ...configInline,
+      build: {
+        ...configInline.build,
+        ssr: true
+      }
+    })
+  } catch (err) {
+    console.error(err)
+    logHintForCjsEsmError(err)
+    process.exit(1)
+  }
 
   if (configVike.prerender && !configVike.prerender.disableAutoRun) {
     await runPrerenderFromAutoFullBuild({ viteConfig: configInline })
