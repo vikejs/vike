@@ -669,10 +669,7 @@ RollupError: "MenuIcon" is not exported by "node_modules/.pnpm/@mui+icons-materi
 function unexpected_token_export() {
   it("Unexpected token 'export'", () => {
     t1(
-      /* TODO
       '@mui/material',
-      */
-      false,
       // https://github.com/brillout/repro_node-syntax-error
       // https://github.com/vikejs/vike/discussions/901#discussioncomment-6643299
       {

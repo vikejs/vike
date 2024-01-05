@@ -65,6 +65,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   const message = getErrMessage(error)
   const anywhere = getAnywhere(error)
   const packageName_stack1 = getPackageName_stack1(error)
+  const packageName_stack2 = getPackageName_stack2(error)
   const fromNodeModules = !!packageName_stack1 || includesNodeModules(message)
 
   // ERR_UNSUPPORTED_DIR_IMPORT
@@ -94,6 +95,11 @@ function isCjsEsmError(error: unknown): boolean | string[] {
     includes(anywhere, 'exports is not defined') ||
     includes(anywhere, 'module is not defined')
   ) {
+    if (packageName_stack1) return packageName_stack1
+  }
+
+  if (includes(anywhere, "Unexpected token 'export'")) {
+    if (packageName_stack2) return packageName_stack2
     if (packageName_stack1) return packageName_stack1
   }
 
@@ -239,6 +245,14 @@ function getPackageName_stack1(err: unknown): false | string[] {
   const firstLineStackTrace = errStack.split('\n').filter((line) => line.startsWith('    at '))[0]
   if (!firstLineStackTrace) return false
   return clean([extractNpmPackageOptional(firstLineStackTrace)])
+}
+/** See https://github.com/brillout/repro_node-syntax-error#nodejs-behavior */
+function getPackageName_stack2(err: unknown): false | string[] {
+  const errStack = getErrStack(err)
+  if (!errStack) return false
+  const firstLine = errStack.trim().split('\n')[0]!
+  if (!includesNodeModules(firstLine)) return false
+  return clean([extractNpmPackageOptional(firstLine)])
 }
 function getAnywhere(error: unknown): string {
   const code = getErrCode(error)
