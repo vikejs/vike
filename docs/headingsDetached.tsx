@@ -5,6 +5,10 @@ import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
 const headingsDetached = [
   {
+    title: 'Next.js Comparison',
+    url: '/nextjs-comparison'
+  },
+  {
     title: <code>useClientRouter()</code>,
     url: '/useClientRouter'
   },

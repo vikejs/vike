@@ -17,7 +17,7 @@ const headings = [
   {
     level: 2,
     title: 'Next.js Comparison',
-    url: '/nextjs-comparison'
+    url: '/nextjs'
   },
   /*
   {
@@ -541,6 +541,11 @@ const headings = [
     level: 2,
     title: 'Express.js',
     url: '/express'
+  },
+  {
+    level: 2,
+    title: 'Hono',
+    url: '/hono'
   },
   {
     level: 2,

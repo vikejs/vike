@@ -1,7 +1,7 @@
 <template>
   <h1>Hello</h1>
   <p>
-    Hi <b>{{ name }}</b
+    Hi <b>{{ data.name }}</b
     >.
   </p>
   <ul>
@@ -19,5 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-defineProps(['name'])
+import type { Data } from './+data'
+import { useData } from '../../renderer/useData'
+const data = useData<Data>()
 </script>

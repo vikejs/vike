@@ -1,6 +1,6 @@
 import { createSSRApp, defineComponent, h, markRaw, reactive } from 'vue'
 import PageShell from './PageShell.vue'
-import type { Component, PageProps } from './types'
+import type { Component } from './types'
 import { setPageContext } from './usePageContext'
 import type { PageContext } from 'vike/types'
 
@@ -9,11 +9,10 @@ export { createApp }
 function createApp(pageContext: PageContext) {
   const { Page } = pageContext
 
-  let rootComponent: Component & { Page: Component; pageProps: PageProps }
+  let rootComponent: Component & { Page: Component }
   const PageWithWrapper = defineComponent({
     data: () => ({
-      Page: markRaw(Page),
-      pageProps: markRaw(pageContext.pageProps || {})
+      Page: markRaw(Page)
     }),
     created() {
       rootComponent = this
@@ -24,7 +23,7 @@ function createApp(pageContext: PageContext) {
         {},
         {
           default: () => {
-            return h(this.Page, this.pageProps)
+            return h(this.Page)
           }
         }
       )
@@ -38,7 +37,6 @@ function createApp(pageContext: PageContext) {
     changePage: (pageContext: PageContext) => {
       Object.assign(pageContextReactive, pageContext)
       rootComponent.Page = markRaw(pageContext.Page)
-      rootComponent.pageProps = markRaw(pageContext.pageProps || {})
     }
   })
 

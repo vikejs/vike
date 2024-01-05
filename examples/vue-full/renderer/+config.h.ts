@@ -3,7 +3,6 @@ import { onHydrationEnd, onPageTransitionStart, onPageTransitionEnd } from './on
 
 // https://vike.dev/config
 export default {
-  passToClient: ['pageProps', 'title'],
   clientRouting: true,
   prefetchStaticAssets: 'viewport',
   onHydrationEnd,

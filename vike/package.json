@@ -1,12 +1,12 @@
 {
   "name": "vike",
-  "version": "0.4.152",
+  "version": "0.4.153",
   "scripts": {
     "dev": "tsc --watch",
     "build": "rimraf dist/ && pnpm run build:esm && pnpm run build:cjs",
     "build:esm": "tsc",
     "build:cjs": "pnpm run build:cjs:ts && pnpm run build:cjs:fixup",
-    "build:cjs:ts": "tsc --outDir ./dist/cjs/ --module CommonJS --target ES2020 --moduleResolution Node10 --declaration false",
+    "build:cjs:ts": "tsc --project ./tsconfig.cjs.json",
     "build:cjs:fixup": "node ./dist-cjs-fixup.mjs",
     "release": "release-me patch",
     "release:commit": "release-me commit"

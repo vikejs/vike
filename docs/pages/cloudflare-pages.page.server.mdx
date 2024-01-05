@@ -1,5 +1,6 @@
 import { Link } from '@brillout/docpress'
 import { StaticHostDocIntro, StaticHostDocOutro, StaticHostDocStrategies } from '../components/static-host'
+import { Example } from '../components'
 
 <StaticHostDocIntro
   staticHostLink={<>, such as <a href="https://pages.cloudflare.com/">Cloudflare Pages</a></>}
@@ -17,8 +18,10 @@ With [wrangler v2](https://github.com/cloudflare/wrangler2), you can deploy a Cl
 
 See <Link href="/cloudflare-workers#cloudflare-pages" doNotInferSectionTitle={true} />.
 
-## Example
+## Examples
 
-Example of using Vike with Cloudflare Pages and Cloudflare Workers:
- - [GitHub > `Immortalin/vite-plugin-ssr-cloudflare-pages-demo`](https://github.com/Immortalin/vite-plugin-ssr-cloudflare-pages-demo)
+Example of using Vike with Cloudflare Pages with a Cloudflare worker:
+ - <Example timestamp="2024.01" repo="travis-r6s/vike-cf-pages" /> - Advanced demo showcasing a lot of integrations such as REST, tRPC, GraphQL, Sentry, and Thumbprint.
+ - <Example timestamp="2024.01" repo="osseonews/vike-app-cfp" />
+ - <Example timestamp="2022.04" repo="Immortalin/vite-plugin-ssr-cloudflare-pages-demo" />
    > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).

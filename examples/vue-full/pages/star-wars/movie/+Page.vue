@@ -1,12 +1,14 @@
 <template>
-  <h1>{{ movie.title }}</h1>
-  Release Date: {{ movie.release_date }}
+  <h1>{{ data.movie.title }}</h1>
+  Release Date: {{ data.movie.release_date }}
   <br />
-  Director: {{ movie.director }}
+  Director: {{ data.movie.director }}
   <br />
-  Producer: {{ movie.producer }}
+  Producer: {{ data.movie.producer }}
 </template>
 
 <script lang="ts" setup>
-defineProps(['movie'])
+import type { Data } from './+data'
+import { useData } from '../../../renderer/useData'
+const data = useData<Data>()
 </script>

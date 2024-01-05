@@ -10,50 +10,50 @@ import { Link, Construction } from '@brillout/docpress'
 **Technical**
 
 - <Link href="#can-i-reach-out-for-help" doNotInferSectionTitle />
-- <Link href="#what-are-these-criptic-javascript-errors" doNotInferSectionTitle />
+- <Link href="#what-are-these-cryptic-javascript-errors" doNotInferSectionTitle />
 - <Link href="#why-is-css-leaked-to-other-pages" doNotInferSectionTitle />
 - <Link href="#why-are-there-a-lot-of-http-requests-in-dev" doNotInferSectionTitle />
 
 
 ## Can I use Vike in production?
 
-Yes. Many companies, from small startups to large corporations, are successfully using Vike in production in a wide range of diverse scenarios.
+Yes. Many companies, from small startups to large corporations, are using Vike in production in a wide range of diverse scenarios.
 
-For example these Vike sponsors:
+Consider, for example, some of Vike sponsors:
  - Alignable (professional social network), with a custom React integration with their Ruby on Rails backend.
    ([Substantially sponsoring `brillout`, the creator of Vike's creator.](https://github.com/AlignableUser#:~:text=www.alignable.com-,Sponsoring,-Achievements))
- - Contra (freelance work market), with a custom React rendering strategy.
+ - Contra (freelance market), large codebase (>150 routes) with a custom React rendering strategy and a deep GraphQL integration with Relay.
    ([Substantially sponsoring `brillout`, the creator of Vike's creator.](https://github.com/contra#:~:text=of%20this%20organization.-,Sponsoring,-Top%20languages))
  - Ecosia (search engine), migrating their entire frontend from Nuxt to Vike with Vue 2.
    (Substantial sponsorship is coming in the next weeks.)
  - Burda (large publishing house), migrating all their online newspapers to a tailored Solid framework built on top of Vike.
    ([Substantially sponsoring `brillout`, the creator of Vike's creator.](https://github.com/BurdaForward#:~:text=People-,Sponsoring,-Top%20languages))
 
-These are just a tiny fraction of the companies using Vike in production.
-
 
 ## Will Vike survive?
 
-Yes. While predicting the future is always difficult, we are confident Vike will stand the test of time. We are a group of passionate developers: for us, working on Vike is the thrill of a liftime and there is no reason for us to stop.
+Yes. While predicting the future is difficult, we are confident Vike will stand the test of time. We are a group of passionate developers: for us, working on Vike is the thrill of a liftime and there is no reason for us to stop.
 
 We're making significant progress on being able to financially sustain ourselfes. (Through sponsorships and upcoming innovative open-source business models, without relying on investor money, making Vike financially independent which is paramount in the long-term.) As a company, you can secure Vike's future by [sponsoring](https://github.com/vikejs/vike/issues/1350).
 
 
 ## Can I use Vike to achieve what I want?
 
-Vike supports all frontend use cases:
+Vike prides itself on being a highly, if not the most, adaptable frontend framework. See for example <Link href="#can-i-use-vike-in-production">the use case of these companies</Link>.
+
+Vike supports all common use cases:
  - <Link href="/deploy">Deploy anywhere</Link> (VPS, AWS, GCP, Cloudflare, Vercel, etc.).
  - <Link href="/ui-framework">Any UI framework</Link> (React, Vue, Solid, etc.), <Link href="/integration">any UI tool</Link> (state management, data fetching, CSS framework, etc.).
  - <Link href="/pre-rendering#should-i-pre-render">Without backend</Link>, with <Link href="/server">any JavaScript backend</Link> (Express.js, Hono, Fastify, Adonis, Nest, Deno, Bun, etc.), with other backends (Java, Ruby on Rails, etc.).
  - <Link href="/data-fetching-tools">Any data fetching tool</Link> (REST, RPC, GraphQL, etc.).
  - <Link href="/pre-rendering#ssg-vs-ssr">Server-side rendered HTML (SSR)</Link>, <Link href="/pre-rendering">pre-rendered HTML (SSG)</Link>, <Link href="/vercel#vite-plugin-vercel">incremental pre-rendering (ISR)</Link>.
- - Simple <Link href="/renderPage">HTML string</Link>, advanced <Link href="/stream">HTML streaming</Link> (with <Link href="/stream#partial-hydration">Partial Hydration</Link>).
+ - <Link href="/stream">HTML streaming</Link> (with <Link href="/stream#partial-hydration">Partial Hydration</Link>).
 
-Vike praises itself of being a highly (if not the most) adaptable frontend framework: if you have a use case you believe you cannot achieve with Vike then [let us know](https://github.com/vikejs/vike/discussions).
+A common source of blockers with other frontend frameworks are bugs. Vike is unique in that regard because we quickly fix bugs. We highly value clean abstractions and correctness and we believe that's why, to this date, [we have been able to fix all bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue+is%3Aopen+label%3A%22bug+%3Aboom%3A%22).
 
-Also, Vike has been designed from the ground up to be extensible, so that you can <Link href="/build-your-own-framework">Build Your Own Framework</Link>.
+Vike has been designed from the ground up to be extensible, so that you can <Link href="/build-your-own-framework">Build Your Own Framework</Link>.
 
-As depicted by <Link href="#will-vike-survive">these company's Vike use cases</Link>, Vike is adaptable.
+If you have a use case you believe you cannot achieve with Vike, then [let us know](https://github.com/vikejs/vike/discussions).
 
 
 ## How can I contribute and/or support?
@@ -68,9 +68,9 @@ Yes, you can reach out on Discord and GitHub. If you use GitHub Discussions, the
 For extra help, the Vike team also offers consulting. Reach out if you want to know more details.
 
 
-## What are these criptic JavaScript errors?
+## What are these cryptic JavaScript errors?
 
-Many criptic errors come from CJS/ESM issues around npm packages that distribute invalid code, for a solution see <Link href="/broken-npm-package" />.
+Many cryptic errors come from CJS/ESM issues around npm packages that distribute invalid code, for a solution see <Link href="/broken-npm-package" />.
 
 > There is, unfortunately, not much we can do beyond pushing tools to address CJS/ESM issues which we repeatedly do.
 

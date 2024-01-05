@@ -1,13 +1,15 @@
-// https://vike.dev/onBeforeRender
-export { onBeforeRender }
+// https://vike.dev/data
+export { data }
+export type Data = Awaited<ReturnType<typeof data>>
 
 import fetch from 'cross-fetch'
 import { filterMovieData } from '../filterMovieData'
+import type { PageContextClient, PageContextServer } from 'vike/types'
 import type { MovieDetails } from '../types'
 import type { OnBeforeRenderAsync } from 'vike/types'
 
-const onBeforeRender: OnBeforeRenderAsync = async (pageContext): ReturnType<OnBeforeRenderAsync> => {
-  const response = await fetch(`https://star-wars.brillout.com/api/films/${pageContext.routeParams.movieId}.json`)
+const data = async (pageContext: PageContextServer | PageContextClient) => {
+  const response = await fetch(`https://star-wars.brillout.com/api/films/${pageContext.routeParams?.movieId}.json`)
   let movie = (await response.json()) as MovieDetails
 
   // We remove data we don't need because the data is passed to the client; we should
@@ -18,12 +20,8 @@ const onBeforeRender: OnBeforeRenderAsync = async (pageContext): ReturnType<OnBe
   const { title } = movie
 
   return {
-    pageContext: {
-      pageProps: {
-        movie
-      },
-      // The page's <title>
-      title
-    }
+    movie,
+    // The page's <title>
+    title
   }
 }

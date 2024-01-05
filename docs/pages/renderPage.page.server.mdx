@@ -3,7 +3,9 @@ import { JustAMiddleware } from '../components'
 
 Environment: server.
 
-The `renderPage()` function enables you to embed Vike into your server. ([You only need it if you want SSR](#optional).)
+The `renderPage()` function enables you to embed Vike into any server.
+
+You only need `renderPage()` if you use SSR, see [Optional](#optional).
 
 <JustAMiddleware />
 
@@ -96,7 +98,7 @@ See also:
 ## Optional
 
 If you <Link text="pre-render" href="/pre-rendering" /> all your pages then you don't need to use `renderPage()`, because:
- - Vike automatically embeds itself into Vite's development server (`$ vite`/`$ vite dev`) and Vite's preview server (`$ vite preview`).
- - During pre-rendering (`$ vite build`/`$ vike prerender`) Vike automatically renders your pages.
+ - Upon development, Vike automatically embeds itself into Vite's development server (`$ vite`/`$ vite dev`).
+ - Upon pre-rendering (`$ vite build`/`$ vike prerender`) Vike renders all your pages.
 
-If you use Server-Side Rendering (SSR) and you don't pre-render *all* your pages, then you need a production server and you need to use `renderPage()` to embed Vike into your server.
+But, if you use Server-Side Rendering (SSR) and you don't pre-render *all* your pages, then you need a production server and you need to use `renderPage()` in order to embed Vike into your server. See <Link href="/pre-rendering"/>.

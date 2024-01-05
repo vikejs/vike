@@ -1161,7 +1161,7 @@ function getConfigName(filePath: string): string | null {
   assertPosixPath(filePath)
   if (isTmpFile(filePath)) return null
   const fileName = path.posix.basename(filePath)
-  assertNoUnexpectedPlusSign(filePath, fileName)
+  // assertNoUnexpectedPlusSign(filePath, fileName)
   const basename = fileName.split('.')[0]!
   if (!basename.startsWith('+')) {
     return null
@@ -1170,6 +1170,7 @@ function getConfigName(filePath: string): string | null {
     return configName
   }
 }
+/* https://github.com/vikejs/vike/issues/1407
 function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
   const dirs = path.posix.dirname(filePath).split('/')
   dirs.forEach((dir, i) => {
@@ -1184,6 +1185,7 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
     `Character '+' is only allowed at the beginning of filenames: make sure ${filePath} doesn't contain any '+' in its filename other than its first letter`
   )
 }
+*/
 
 type ConfigFile = {
   fileExports: Record<string, unknown>

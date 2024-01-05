@@ -5,7 +5,7 @@ For a simpler example, check out [/examples/react/](/examples/react/) instead.
 Features:
  - Client Routing (+ usage of `navigate()`)
  - Data Fetching (server-side fetching + isomorphic fetching)
- - Pre-rendering (+ usage of the `prerender()` hook)
+ - Pre-rendering (+ usage of the `onBeforePrerenderStart()` hook)
  - Route Function
  - TypeScript
  - Markdown

@@ -1,1 +1,1 @@
-export { prerenderFromAPI as prerender } from './runPrerender.js'
+export { runPrerenderFromAPI as prerender } from './runPrerender.js'

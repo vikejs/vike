@@ -57,12 +57,10 @@ declare global {
 
 The `pageContext.abortReason` and `pageContext.abortStatusCode` values are set by <Link href="/render" text={<code>throw render(abortStatusCode, abortReason)</code>} />, and `pageContext.is404` is set by Vike.
 
-The error page is rendered if:
+The error page is rendered when:
  1. The URL didn't match the route of any of your pages (`404 Page Not Found`).
- 2. One of your hooks threw an error (`500 Internal Error`).
- 3. You called <Link href="/render" text={<code>throw render(abortStatusCode)</code>} />.
-
-> The error page is also rendered when Vike throws an unexpected error (it has a bug), but since Vike has [no known bug](https://github.com/vikejs/vike/issues?q=is%3Aissue+is%3Aopen+label%3A%22bug+%3Aboom%3A%22) this is very rare.
+ 2. Your code has a bug (`500 Internal Error`), technically speaking: one of your hooks threw an error.
+ 3. One of your hooks used <Link href="/render" text={<code>throw render(abortStatusCode)</code>} />, for examle: `throw render(401, "You don't have the permission to access this page.")`.
 
 
 ## Pre-rendering

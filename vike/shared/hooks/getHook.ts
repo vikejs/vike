@@ -2,6 +2,7 @@ export { getHook }
 export { getHookFromPageConfig }
 export { getHookFromPageConfigGlobal }
 export { assertHook }
+export { setIsPrerenderering }
 export type { Hook }
 export type { HookName }
 export type { HookLoc }
@@ -12,12 +13,16 @@ export type { HooksTimeoutProvidedByUser }
 // We export for old V0.4 design which doesn't support config.hooksTimeout
 export { getHookTimeoutDefault }
 
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { PageContextExports } from '../getPageFiles.js'
 import type { HookName, HookNamePage, HookNameGlobal } from '../page-configs/Config.js'
 import type { PageConfigBuildTime, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { getConfigValue, getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { assert, assertUsage, checkType, isCallable, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
+const globalObject = getGlobalObject('getHook.ts', {
+  isPrerendering: false
+})
 
 type Hook = HookLoc & { hookFn: HookFn; hookTimeout: HookTimeout }
 type HookLoc = { hookName: HookName; hookFilePath: string }
@@ -144,21 +149,21 @@ function getHookTimeoutDefault(hookName: HookName): HookTimeout {
       warning: 1 * 1000
     }
   }
-  if (
-    hookName === 'onPrerenderStart' ||
-    hookName === 'onBeforePrerenderStart' ||
-    // TODO/v1-release: remove
-    // Old V0.4 design hooks (https://vike.dev/migration/v1-design#renamed-hooks)
-    hookName === 'onBeforePrerender' ||
-    hookName === 'prerender'
-  ) {
+
+  if (globalObject.isPrerendering) {
     return {
-      error: 10 * 60 * 1000,
+      error: 2 * 60 * 1000,
       warning: 30 * 1000
     }
+  } else {
+    assert(!hookName.toLowerCase().includes('prerender'))
   }
+
   return {
     error: 30 * 1000,
     warning: 4 * 1000
   }
+}
+function setIsPrerenderering() {
+  globalObject.isPrerendering = true
 }

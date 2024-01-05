@@ -8,7 +8,7 @@ import { onLinkClick } from './onLinkClick.js'
 import { setupNativeScrollRestoration } from './scrollRestoration.js'
 import { autoSaveScrollPosition } from './setScrollPosition.js'
 
-function installClientRouter() {
+async function installClientRouter() {
   setupNativeScrollRestoration()
   initHistoryState()
   autoSaveScrollPosition()
@@ -16,11 +16,18 @@ function installClientRouter() {
 
   // First initial render
   assert(getRenderCount() === 0)
-  renderPageClientSide({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null, isClientSideNavigation: false })
+  const promise = renderPageClientSide({
+    scrollTarget: 'preserve-scroll',
+    isBackwardNavigation: null,
+    isClientSideNavigation: false
+  })
   assert(getRenderCount() === 1)
 
   // Intercept <a> links
   onLinkClick()
   // Handle back-/forward navigation
   onBrowserHistoryNavigation()
+
+  // Only for full stack straces
+  await promise
 }

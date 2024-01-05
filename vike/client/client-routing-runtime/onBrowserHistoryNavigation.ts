@@ -20,7 +20,7 @@ function onBrowserHistoryNavigation() {
   //       - The popstate event is *only* triggered if `href` starts with '#' (even if `href` is '/#some-hash' while the current URL's pathname is '/' then the popstate still isn't triggered)
   //     - By JavaScript: `location.hash = 'some-hash'`
   // - The `event` argument of `window.addEventListener('popstate', (event) => /*...*/)` is useless: the History API doesn't provide the previous state (the popped state), see https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
-  window.addEventListener('popstate', (ev): void => {
+  window.addEventListener('popstate', async (): Promise<undefined> => {
     const currentState = getState()
 
     const scrollTarget = currentState.historyState.scrollPosition || 'scroll-to-top-or-hash'
@@ -58,7 +58,7 @@ function onBrowserHistoryNavigation() {
         setScrollPosition(scrollTarget)
       }
     } else {
-      renderPageClientSide({ scrollTarget, isBackwardNavigation, isUserLandPushStateNavigation })
+      await renderPageClientSide({ scrollTarget, isBackwardNavigation, isUserLandPushStateNavigation })
     }
   })
 }
