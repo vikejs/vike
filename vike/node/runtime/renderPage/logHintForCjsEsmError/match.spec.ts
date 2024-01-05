@@ -278,6 +278,9 @@ url: 'file:///Users/xxx/xxx/src/models'
 }
 `
     )
+
+    // More similar errors:
+    //  - https://github.com/vikejs/vike/discussions/571#discussioncomment-6145155
   })
 }
 
@@ -509,6 +512,7 @@ const { ApolloClient } = pkg;
 
     t1(
       'react-live-runner',
+      // https://github.com/brillout/vite-ssr-redux-react-live-runner-example
       // https://github.com/vikejs/vike/discussions/571#discussioncomment-6144329
       {
         message:
@@ -556,6 +560,8 @@ const { useI18n, createI18n } = pkg;
     //  - https://github.com/vikejs/vike/discussions/934#discussioncomment-6085697
     //  - https://github.com/vikejs/vike/discussions/934#discussioncomment-6091261
     //  - https://github.com/vikejs/vike/discussions/934#discussioncomment-6091849
+    //  - https://github.com/vikejs/vike/discussions/1021#discussion-5416877
+    //  - https://github.com/vikejs/vike/discussions/1023#discussion-5421060
   })
 }
 
@@ -564,6 +570,7 @@ function cannot_use_import_outside_of_module() {
     t2(
       'react-runner',
       // Same as errror_cannot_use_import_outside_of_module but slimmed down
+      // https://github.com/vikejs/vike/discussions/571#discussioncomment-6137618
       `
 import{useRunner as e}from"react-runner";export*from"react-runner";import t,{useState as r,useEffect as n,Fragment as a,useCallback as l,useRef as o,useMemo as c,createContext as s,useContext as i}from"react";import p from"react-simple-code-editor";
 ^^^^^^
@@ -582,6 +589,7 @@ import{useRunner as e}from"react-runner";export*from"react-runner";import t,{use
 `
     )
 
+    // https://github.com/vikejs/vike/discussions/571#discussioncomment-6137618
     t2('react-runner', errror_cannot_use_import_outside_of_module)
   })
 }
@@ -618,6 +626,10 @@ This file is being treated as an ES module because it has a '.js' file extension
     at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
 `
     )
+
+    // More similar errors:
+    //  - https://github.com/vikejs/vike/discussions/571#discussioncomment-6145155
+    //  - https://github.com/vikejs/vike/discussions/1071#discussioncomment-6728731
   })
 
   it('require is not a function', () => {
@@ -647,6 +659,9 @@ TypeError: require is not a function
     at instantiateModule (file:///home/rui/Projects/binedge-website/node_modules/vite/dist/node/chunks/dep-24daf00c.js:54351:15)
 `
     )
+
+    // More similar errors:
+    //  - https://github.com/vikejs/vike/issues/984#issuecomment-1640267319
   })
 
   it('window is not defined', () => {
@@ -738,6 +753,8 @@ function react_invalid_component() {
         // https://github.com/brillout/vps-mui/tree/reprod-1
         // https://github.com/vikejs/vike/discussions/830#discussion-5143519
         // https://github.com/vikejs/vike/discussions/830#discussioncomment-5763136
+        // https://github.com/vikejs/vike/discussions/571#discussioncomment-6141003
+        // https://github.com/vikejs/vike/discussions/1031#discussion-5426053
         {
           message:
             "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
@@ -761,7 +778,6 @@ Error: Element type is invalid: expected a string (for built-in components) or a
     expect(true).toBe(
       isReactInvalidComponentError(
         // Also catch `but got: object`
-        // https://github.com/brillout/vps-mui/tree/reprod-1
         {
           message:
             "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
