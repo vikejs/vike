@@ -57,7 +57,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   const anywhere = getAnywhere(error)
   const packageName_stack1 = getPackageName_stack1(error)
   const packageName_stack2 = getPackageName_stack2(error)
-  const fromNodeModules = !!packageName_stack1 || !!packageName_stack2 || includesNodeModules(message)
+  const isRelatedToNodeModules = !!packageName_stack1 || !!packageName_stack2 || includesNodeModules(message)
 
   // ERR_UNSUPPORTED_DIR_IMPORT
   {
@@ -104,7 +104,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
     {
       if (packageName_stack1) return packageName_stack1
     }
-    if (fromNodeModules) return true
+    if (isRelatedToNodeModules) return true
   }
   /* The following two wrongfully match user land errors
   {
@@ -124,7 +124,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   }
 
   if (includes(anywhere, 'Cannot read properties of undefined')) {
-    if (fromNodeModules) {
+    if (isRelatedToNodeModules) {
       /* We return true because relatedNpmPackages points to the importer but the problematic npm package is the importee
       if (relatedNpmPackages) return relatedNpmPackages
       */
@@ -175,7 +175,7 @@ function parseCannotFindMessage(str: string): false | string[] {
   if (!match) return false
   // const packageNameCannotFind = extractFromPath(match[1]!)
   const packageNameFrom = extractFromPath(match[2]!)
-  return clean([
+  return normalize([
     // packageNameCannotFind,
     packageNameFrom
   ])
@@ -185,14 +185,14 @@ function parseUnkownFileExtensionMessage(str: string): false | string[] {
   if (!match) return false
   const filePath = match[1]!
   const packageName = extractFromPath(filePath)
-  return clean([packageName])
+  return normalize([packageName])
 }
 function parseImportFrom(str: string): false | string[] {
   const match = /\bimport\b.*?\bfrom\b\s*?"(.+?)"/.exec(str)
   if (!match) return false
   const importPath = match[1]!
   const packageName = extractFromPath(importPath)
-  return clean([packageName])
+  return normalize([packageName])
 }
 function parseNodeModulesPathMessage(sentenceBegin: string, str: string) {
   str = str.replaceAll('\\', '/')
@@ -201,10 +201,10 @@ function parseNodeModulesPathMessage(sentenceBegin: string, str: string) {
   if (!match) return false
   const importPath = match[1]!
   const packageName = extractFromNodeModulesPath(importPath)
-  return clean([packageName])
+  return normalize([packageName])
 }
 
-function clean(packageNames: (string | null)[]): string[] | false {
+function normalize(packageNames: (string | null)[]): string[] | false {
   const result = unique(packageNames.filter(isNotNullish))
   if (result.length === 0) return false
   return result
@@ -232,7 +232,7 @@ function getPackageName_stack1(err: unknown): false | string[] {
   if (!errStack) return false
   const firstLineStackTrace = errStack.split('\n').filter((line) => line.startsWith('    at '))[0]
   if (!firstLineStackTrace) return false
-  return clean([extractNpmPackageOptional(firstLineStackTrace)])
+  return normalize([extractNpmPackageOptional(firstLineStackTrace)])
 }
 /** See https://github.com/brillout/repro_node-syntax-error#nodejs-behavior */
 function getPackageName_stack2(err: unknown): false | string[] {
@@ -240,7 +240,7 @@ function getPackageName_stack2(err: unknown): false | string[] {
   if (!errStack) return false
   const firstLine = errStack.trim().split('\n')[0]!
   if (!includesNodeModules(firstLine)) return false
-  return clean([extractNpmPackageOptional(firstLine)])
+  return normalize([extractNpmPackageOptional(firstLine)])
 }
 function getAnywhere(error: unknown): string {
   const code = getErrCode(error)
@@ -263,7 +263,9 @@ function extractFromPath(filePath: string): string | null {
     if (packageName.startsWith('.')) return null
   } else {
     packageName = filePath.split('node_modules/').pop()!
+    // This assert is fairly risk, we should eventually remove it
     assert(!packageName.startsWith('.'))
+    // This assert is fairly risk, we should eventually remove it
     assert(!packageName.startsWith('/'))
   }
   if (!packageName) return null
@@ -275,7 +277,12 @@ function extractFromPath(filePath: string): string | null {
 
   assert(!packageName.startsWith('/'))
   assert(!packageName.startsWith('.'))
+
+  // This assert is fairly risk, we should eventually remove it
   assert(!packageName.endsWith(')'))
+  assert(!packageName.endsWith('"'))
+  assert(!packageName.endsWith("'"))
+
   assert(!['vite', 'vike'].includes(packageName))
   return packageName
 }
