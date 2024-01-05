@@ -11,7 +11,7 @@ describe('getHintForCjsEsmError()', () => {
         code: 'ERR_MODULE_NOT_FOUND'
       })
     ).toMatchInlineSnapshot(
-      '"Error could be a CJS/ESM issue, consider adding \'vike-react\' to ssr.noExternal, see https://vike.dev/broken-npm-package"'
+      '"Error could be a CJS/ESM issue, consider adding vike-react to ssr.noExternal, see https://vike.dev/broken-npm-package"'
     )
 
     expect(

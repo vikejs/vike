@@ -31,7 +31,7 @@ function getHintForCjsEsmError(error: unknown): null | string {
       !packageNames || packageNames.length === 0
         ? 'using'
         : `adding ${joinEnglish(
-            packageNames!.map((p) => pc.cyan(`'${p}'`)),
+            packageNames!.map((p) => pc.cyan(p)),
             'or'
           )} to`,
       ` ${pc.cyan('ssr.noExternal')}`,
