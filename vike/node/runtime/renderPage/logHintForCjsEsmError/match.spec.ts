@@ -648,6 +648,26 @@ TypeError: require is not a function
 `
     )
   })
+
+  it('window is not defined', () => {
+    t1(
+      'vike-react',
+      /* Error artificially created:
+      ```diff
+      // node_modules/vike-react/dist/renderer/onRenderHtml.js:
+      + window;
+      ``` */
+      {
+        message: 'window is not defined',
+        code: undefined,
+        stack: `
+ReferenceError: window is not defined
+    at file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:10:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
+`
+      }
+    )
+  })
 }
 
 function is_not_exported() {

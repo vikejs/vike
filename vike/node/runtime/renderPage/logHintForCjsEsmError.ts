@@ -93,7 +93,8 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   if (
     includes(anywhere, 'require is not a function') ||
     includes(anywhere, 'exports is not defined') ||
-    includes(anywhere, 'module is not defined')
+    includes(anywhere, 'module is not defined') ||
+    includes(anywhere, 'window is not defined')
   ) {
     if (packageName_stack1) return packageName_stack1
   }
