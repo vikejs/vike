@@ -5,20 +5,20 @@ import { Link } from '@brillout/docpress'
 > <Link href="/data">`data()` hook</Link> instead, and/or <Link href="/vike-packages">Vike extensions</Link> for
 > automatically integrating data fetching tools (RPC with Telefunc/tRPC, REST with Tanstack Query, GraphQL with Apollo/Relay, etc).
 
-The `onBeforeRender()` hook enables deep and complex integrations with data fetching tools and techniques.
+The most notable use case for the `onBeforeRender()` hook is deep integration with data fetching tools.
 
-For simple data fetching needs, use the <Link href="/data">`data()` hook</Link> instead.
+For simple data fetching needs, use the <Link href="/data">`data()` hook</Link> instead. As a strategy to decide which one to use, always first try to use `data()` and only use `onBeforeRender()` as a fallback if `data()` doesn't work out.
 
-As a strategy to decide which one to use, first try to use the `data()` hook: use `onBeforeRender()` only as a fallback if `data()` doesn't work out for you.
-
-You can use the `onBeforeRender()` hook to orchestrate multiple <Link href="/meta">custom hooks and settings</Link>, see:
+The `onBeforeRender()` hook can be used to orchestrate multiple <Link href="/meta">custom hooks and settings</Link>, see:
  - <Link href="#onbeforerender-meta" doNotInferSectionTitle />
  - <Link href="#advanced-example" />
+
+Another common use case is to use `onBeforeRender()` as a global initializing hook. (As a temporary workaround until [#962 - New hook `onBoot()`](https://github.com/vikejs/vike/issues/962) is implemented.)
 
 
 ## `onBeforeRender()` VS `data()`
 
-The central difference between the two hooks is that the value returned by the `data()` hook always sets the value of `pageContext.data`, whereas `onBeforeRender()` can set any and multiple `pageContext` values.
+The central difference between the two hooks is that the value returned by `data()` always sets the value of `pageContext.data`, whereas `onBeforeRender()` can set multiple `pageContext` values.
 
 ```js
 // /pages/some-page/+data.js
@@ -50,8 +50,6 @@ export function onBeforeRender() {
 Another difference is that the entire `pageContext.data` value is always sent to the client-side, whereas with `onBeforeRender()` you can (and have to) decide which values are sent to the client-side by using <Link href="/passToClient">`passToClient`</Link>.
 
 In a nutshell: while `onBeforeRender()` requires more manual work, it also gives you more control.
-
-Also, a common use case is to use `onBeforeRender()` as a global initializing hook.
 
 
 ## `onBeforeRender()` + `meta`
