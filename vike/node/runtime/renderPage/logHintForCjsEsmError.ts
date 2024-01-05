@@ -253,7 +253,7 @@ function getAnywhere(error: unknown): string {
 function extractFromPath(filePath: string): string | null {
   assert(filePath)
 
-  filePath = removeQuotes(filePath)
+  filePath = clean(filePath)
   filePath = filePath.replaceAll('\\', '/')
 
   let packageName: string
@@ -275,13 +275,7 @@ function extractFromPath(filePath: string): string | null {
     packageName = packageName.split('/')[0]!
   }
 
-  assert(!packageName.startsWith('/'))
-  assert(!packageName.startsWith('.'))
-
-  // This assert is fairly risk, we should eventually remove it
-  assert(!packageName.endsWith(')'))
-  assert(!packageName.endsWith('"'))
-  assert(!packageName.endsWith("'"))
+  packageName = clean(packageName)
 
   assert(!['vite', 'vike'].includes(packageName))
   return packageName
@@ -293,14 +287,13 @@ function extractFromNodeModulesPath(stackTraceLine: string): string {
   return packageName
 }
 
-function removeQuotes(packageName: string) {
-  if (packageName) {
-    if (packageName.startsWith('"') || packageName.startsWith("'")) {
-      packageName = packageName.slice(1)
-    }
-    if (packageName.endsWith('"') || packageName.endsWith("'")) {
-      packageName = packageName.slice(0, -1)
-    }
+function clean(packageName: string) {
+  const b = ['"', "'", '(', ')']
+  if (b.includes(packageName[0]!)) {
+    packageName = packageName.slice(1)
+  }
+  if (b.includes(packageName[packageName.length - 1]!)) {
+    packageName = packageName.slice(0, -1)
   }
   return packageName
 }
