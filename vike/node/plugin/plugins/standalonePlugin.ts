@@ -16,6 +16,9 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let outDirAbs = ''
   let builtEntryAbs = ''
 
+  // Native dependencies always need to be ssr.external
+  let external = [...nativeDependecies]
+
   const platform = os.platform()
 
   return {
@@ -26,6 +29,12 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
     },
     enforce: 'pre',
     config(config, env) {
+      if (config.ssr?.external) {
+        // Include ssr.external from the user config
+        // These packages won't be bundled by esbuild, they will be copied to dist/server/node_modules instead
+        external.push(...config.ssr.external)
+      }
+
       return {
         ssr: {
           // esbuild warning:
@@ -60,8 +69,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         platform: 'node',
         format: 'esm',
         bundle: true,
-        // Native dependencies can't be bundled, they will be discovered using nft, then copied
-        external: nativeDependecies,
+        external,
         entryPoints: { index: builtEntryAbs },
         outfile: builtEntryAbs,
         allowOverwrite: true,
