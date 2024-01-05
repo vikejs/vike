@@ -711,6 +711,28 @@ ReferenceError: window is not defined
       }
     )
   })
+
+  it('__dirname is not defined', () => {
+    t1(
+      'vike-react',
+      /* Error artificially created:
+      ```diff
+      // node_modules/vike-react/dist/renderer/onRenderHtml.js:
+      + __dirname;
+      ``` */
+      {
+        message:
+          "__dirname is not defined in ES module scope\nThis file is being treated as an ES module because it has a '.js' file extension and '/home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/package.json' contains \"type\": \"module\". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.",
+        code: undefined,
+        stack: `
+ReferenceError: __dirname is not defined in ES module scope
+This file is being treated as an ES module because it has a '.js' file extension and '/home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+    at file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:10:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
+`
+      }
+    )
+  })
 }
 
 function is_not_exported() {

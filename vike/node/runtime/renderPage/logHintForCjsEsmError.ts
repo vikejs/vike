@@ -94,7 +94,8 @@ function isCjsEsmError(error: unknown): boolean | string[] {
     includes(anywhere, 'require is not a function') ||
     includes(anywhere, 'exports is not defined') ||
     includes(anywhere, 'module is not defined') ||
-    includes(anywhere, 'window is not defined')
+    includes(anywhere, 'window is not defined') ||
+    includes(anywhere, 'not defined in ES')
   ) {
     if (packageName_stack1) return packageName_stack1
   }
@@ -172,11 +173,6 @@ function includesNodeModules(str: string | null): boolean {
   if (!str.includes('node_modules/')) return false
   if (str.includes('node_modules/vite/')) return false
   return true
-}
-function extractNpmPackage(str: string | null): [string] {
-  assert(str)
-  assert(includesNodeModules(str))
-  return [extractFromNodeModulesPath(str)]
 }
 function extractNpmPackageOptional(str: string | null): null | string {
   if (!str || !includesNodeModules(str)) return null
