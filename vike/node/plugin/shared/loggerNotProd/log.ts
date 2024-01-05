@@ -4,6 +4,7 @@ export { logDirectly }
 export { isFirstLog }
 export { clearScreen }
 export { screenHasErrors }
+export { applyViteSourceMapToStackTrace }
 
 import { assert, projectInfo, type ProjectTag, stripAnsi, hasProp, assertIsNotProductionRuntime } from '../../utils.js'
 import pc from '@brillout/picocolors'

@@ -49,7 +49,8 @@ import {
   logDirectly,
   isFirstLog,
   screenHasErrors,
-  clearScreen
+  clearScreen,
+  applyViteSourceMapToStackTrace
 } from './loggerNotProd/log.js'
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError.js'
@@ -210,6 +211,7 @@ function handleAssertMsg(err: unknown, category: LogCategory | null): boolean {
   return true
 }
 function assertLogger(thing: string | Error, logType: LogType): void {
+  applyViteSourceMapToStackTrace(thing)
   const category = getCategory()
   const res = getAssertErrMsg(thing)
   /* Risk of infinite loop
