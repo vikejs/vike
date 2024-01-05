@@ -64,9 +64,8 @@ function isMatch(error: unknown): boolean | string[] {
 function isCjsEsmError(error: unknown): boolean | string[] {
   const message = getErrMessage(error)
   const anywhere = getAnywhere(error)
-  const stackFirstLine = getErrStackFirstLine(error)
-  const fromNodeModules = includesNodeModules(stackFirstLine) || includesNodeModules(message)
-  const relatedNpmPackages = clean([extractNpmPackageOptional(message), extractNpmPackageOptional(stackFirstLine)])
+  const packageName_stack1 = getPackageName_stack1(error)
+  const fromNodeModules = !!packageName_stack1 || includesNodeModules(message)
 
   // ERR_UNSUPPORTED_DIR_IMPORT
   {
@@ -90,17 +89,12 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   }
 
   // Using CJS inside ESM modules
-  {
-    if (
-      includes(anywhere, 'require is not a function') ||
-      includes(anywhere, 'exports is not defined') ||
-      includes(anywhere, 'module is not defined')
-    ) {
-      if (includesNodeModules(stackFirstLine)) {
-        const packageName = extractNpmPackage(stackFirstLine)
-        return packageName
-      }
-    }
+  if (
+    includes(anywhere, 'require is not a function') ||
+    includes(anywhere, 'exports is not defined') ||
+    includes(anywhere, 'module is not defined')
+  ) {
+    if (packageName_stack1) return packageName_stack1
   }
 
   // ERR_REQUIRE_ESM
@@ -109,8 +103,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
     if (relatedNpmPackages) return relatedNpmPackages
     */
     {
-      const packageName = clean([extractNpmPackageOptional(stackFirstLine)])
-      if (packageName) return packageName
+      if (packageName_stack1) return packageName_stack1
     }
     if (fromNodeModules) return true
   }
@@ -240,11 +233,12 @@ function getErrStack(err: unknown): null | string {
   if (typeof err.stack !== 'string') return null
   return err.stack
 }
-function getErrStackFirstLine(err: unknown): null | string {
+function getPackageName_stack1(err: unknown): false | string[] {
   const errStack = getErrStack(err)
-  if (!errStack) return null
-  const match = errStack.split('\n').filter((line) => line.startsWith('    at '))[0]
-  return match ?? null
+  if (!errStack) return false
+  const firstLineStackTrace = errStack.split('\n').filter((line) => line.startsWith('    at '))[0]
+  if (!firstLineStackTrace) return false
+  return clean([extractNpmPackageOptional(firstLineStackTrace)])
 }
 function getAnywhere(error: unknown): string {
   const code = getErrCode(error)
