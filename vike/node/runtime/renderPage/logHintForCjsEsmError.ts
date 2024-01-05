@@ -2,9 +2,8 @@ export { logHintForCjsEsmError }
 
 // For ./logHintForCjsEsmError/*.spec.ts
 export { isCjsEsmError }
-export { isMatch }
-export { getHintForCjsEsmError }
 export { isReactInvalidComponentError }
+export { getHint }
 
 import pc from '@brillout/picocolors'
 import { assert, formatHintLog, isNotNullish, isObject, unique, joinEnglish } from '../utils.js'
@@ -13,11 +12,11 @@ function logHintForCjsEsmError(error: unknown): void {
   /* Collect errors for ./logHintForCjsEsmError.spec.ts
   collectError(error)
   //*/
-  const hint = getHintForCjsEsmError(error)
+  const hint = getHint(error)
   if (hint) logHint(hint)
 }
 
-function getHintForCjsEsmError(error: unknown): null | string {
+function getHint(error: unknown): null | string {
   if (isReactInvalidComponentError(error)) {
     const hint = 'To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component'
     return hint
@@ -46,14 +45,6 @@ function getHintForCjsEsmError(error: unknown): null | string {
 function logHint(hint: string) {
   hint = formatHintLog(hint)
   console.error(hint)
-}
-
-function isMatch(error: unknown): boolean | string[] {
-  if (isReactInvalidComponentError(error)) {
-    return true
-  } else {
-    return isCjsEsmError(error)
-  }
 }
 
 /**

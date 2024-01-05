@@ -1,8 +1,8 @@
-import { getHintForCjsEsmError } from '../logHintForCjsEsmError'
+import { getHint } from '../logHintForCjsEsmError'
 import { expect, describe, it, assert } from 'vitest'
 import { stripAnsi } from '../../utils'
 
-describe('getHintForCjsEsmError()', () => {
+describe('getHint()', () => {
   it('log fixtures', () => {
     expect(
       getLog({
@@ -23,8 +23,8 @@ describe('getHintForCjsEsmError()', () => {
   })
 })
 
-function getLog(error: Parameters<typeof getHintForCjsEsmError>[0]): string {
-  let log = getHintForCjsEsmError(error)
+function getLog(error: Parameters<typeof getHint>[0]): string {
+  let log = getHint(error)
   expect(log).toBeTruthy()
   assert(log)
   log = stripAnsi(log)
