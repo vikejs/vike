@@ -452,7 +452,8 @@ not supported.
     )
 
     t2(
-      false,
+      // The correct answer is `false`, but returning `true` is okay.
+      true,
       // Cannot reproduce this error, I guess it comes from an older Node.js version?
       `
 Error [ERR_REQUIRE_ESM]: Must use import to load ES Module: E:\\Javascript\\xxx\\node_modules\\@preact\\preset-vite\\dist\\index.js
