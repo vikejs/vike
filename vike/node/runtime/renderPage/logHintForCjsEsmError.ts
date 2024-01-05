@@ -196,9 +196,7 @@ function parseNodeModulesPathMessage(sentenceBegin: string, str: string) {
   const match = regex.exec(str)
   if (!match) return false
   const importPath = match[1]!
-  if (!includesNodeModules(importPath)) return false
-  const packageName = extractFromNodeModulesPath(importPath)
-  return normalize([packageName])
+  return extractFromNodeModulesPath(importPath)
 }
 
 function normalize(packageNames: (string | null)[]): string[] | false {
@@ -229,16 +227,14 @@ function getPackageName_stack1(err: unknown): false | string[] {
   if (!errStack) return false
   const firstLineStackTrace = errStack.split('\n').filter((line) => line.startsWith('    at '))[0]
   if (!firstLineStackTrace) return false
-  if (!includesNodeModules(firstLineStackTrace)) return false
-  return normalize([extractFromNodeModulesPath(firstLineStackTrace)])
+  return extractFromNodeModulesPath(firstLineStackTrace)
 }
 /** See https://github.com/brillout/repro_node-syntax-error#nodejs-behavior */
 function getPackageName_stack2(err: unknown): false | string[] {
   const errStack = getErrStack(err)
   if (!errStack) return false
   const firstLine = errStack.trim().split('\n')[0]!
-  if (!includesNodeModules(firstLine)) return false
-  return normalize([extractFromNodeModulesPath(firstLine)])
+  return extractFromNodeModulesPath(firstLine)
 }
 function getAnywhere(error: unknown): string {
   const code = getErrCode(error)
@@ -278,11 +274,11 @@ function extractFromPath(filePath: string): string | null {
   assert(!['vite', 'vike'].includes(packageName))
   return packageName
 }
-function extractFromNodeModulesPath(stackTraceLine: string): string {
-  assert(includesNodeModules(stackTraceLine))
-  const packageName = extractFromPath(stackTraceLine)
+function extractFromNodeModulesPath(str: string): false | string[] {
+  if (!includesNodeModules(str)) return false
+  const packageName = extractFromPath(str)
   assert(packageName)
-  return packageName
+  return normalize([packageName])
 }
 
 function clean(packageName: string) {
