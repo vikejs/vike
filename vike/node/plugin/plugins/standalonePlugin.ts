@@ -6,8 +6,8 @@ import os from 'os'
 import path from 'path'
 import { Plugin, searchForWorkspaceRoot } from 'vite'
 import { pLimit } from '../../../utils/pLimit.js'
-import { nativeDependecies } from '../shared/nativeDependencies.js'
 import { assert, assertUsage, toPosixPath, unique } from '../utils.js'
+import { getConfigVike } from '../../shared/getConfigVike.js'
 
 function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let root = ''
@@ -17,7 +17,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let builtEntryAbs = ''
 
   // Native dependencies always need to be esbuild external
-  let external = [...nativeDependecies]
+  let native: string[] = []
 
   const platform = os.platform()
 
@@ -29,12 +29,6 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
     },
     enforce: 'pre',
     config(config, env) {
-      if (config.ssr?.external) {
-        // Add ssr.external to esbuild external from the user config
-        // These packages won't be bundled by esbuild, they will be copied to dist/server/node_modules instead
-        external.push(...config.ssr.external)
-      }
-
       return {
         ssr: {
           // esbuild warning:
@@ -53,7 +47,9 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         }
       }
     },
-    configResolved(config) {
+    async configResolved(config) {
+      const configVike = await getConfigVike(config)
+      native = configVike.native
       root = toPosixPath(config.root)
       outDir = toPosixPath(config.build.outDir)
       distDir = outDir.split('/')[0]!
@@ -69,7 +65,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         platform: 'node',
         format: 'esm',
         bundle: true,
-        external,
+        external: native,
         entryPoints: { index: builtEntryAbs },
         outfile: builtEntryAbs,
         allowOverwrite: true,

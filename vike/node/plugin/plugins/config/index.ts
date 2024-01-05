@@ -3,11 +3,12 @@ export { resolveVikeConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVikeUserProvided, ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { assertVikeConfig } from './assertVikeConfig.js'
-import { isDev2 } from '../../utils.js'
+import { isDev2, unique } from '../../utils.js'
 import { pickFirst } from './pickFirst.js'
 import { resolveBase } from './resolveBase.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
+import { nativeDependecies } from '../../shared/nativeDependencies.js'
 
 function resolveVikeConfig(vikeConfig: unknown): Plugin {
   return {
@@ -48,7 +49,8 @@ async function getConfigVikPromise(vikeConfig: unknown, config: ResolvedConfig):
     baseAssets,
     redirects: merge(configs.map((c) => c.redirects)) ?? {},
     disableUrlNormalization: pickFirst(configs.map((c) => c.disableUrlNormalization)) ?? false,
-    trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false
+    trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false,
+    native: unique([...(configs.flatMap((c) => c.native).filter(Boolean) ?? []), ...nativeDependecies]) as string[]
   }
 
   return configVike

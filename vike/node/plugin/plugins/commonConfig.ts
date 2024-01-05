@@ -8,6 +8,7 @@ import pc from '@brillout/picocolors'
 import path from 'path'
 import { createRequire } from 'module'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
+import { getConfigVike } from '../../shared/getConfigVike.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -35,6 +36,15 @@ function commonConfig(): Plugin[] {
           assertResolveAlias(config)
           assertEsm(config.root)
         }
+      }
+    },
+    {
+      name: 'vike-commonConfig-native',
+      enforce: 'post',
+      async configResolved(config) {
+        const configVike = await getConfigVike(config)
+        config.ssr.external ??= []
+        config.ssr.external.push(...configVike.native)
       }
     }
   ]
