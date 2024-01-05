@@ -34,6 +34,29 @@ Did you mean to import lodash@4.17.21/node_modules/lodash/debounce.js?
 `
     )
 
+    t2(
+      '@mdxeditor/editor',
+      // https://github.com/vikejs/vike/discussions/1084#discussion-5536319
+      `
+Error: Cannot find package '/test/node_modules/@mdxeditor/editor/dist/node_modules/react-diff-view/' imported from /test/node_modules/@mdxeditor/editor/dist/plugins/diff-source/DiffViewer.js
+    at legacyMainResolve (/test/node_modules/ts-node/dist-raw/node-internal-modules-esm-resolve.js:286:9)
+    at packageResolve (/test/node_modules/ts-node/dist-raw/node-internal-modules-esm-resolve.js:750:14)
+    at moduleResolve (/test/node_modules/ts-node/dist-raw/node-internal-modules-esm-resolve.js:798:18)
+    at Object.defaultResolve (/test/node_modules/ts-node/dist-raw/node-internal-modules-esm-resolve.js:912:11)
+    at /test/node_modules/ts-node/src/esm.ts:218:35
+    at entrypointFallback (/test/node_modules/ts-node/src/esm.ts:168:34)
+    at /test/node_modules/ts-node/src/esm.ts:217:14
+    at addShortCircuitFlag (/test/node_modules/ts-node/src/esm.ts:409:21)
+    at resolve (/test/node_modules/ts-node/src/esm.ts:197:12)
+    at resolve (/test/node_modules/ts-node/src/child/child-loader.ts:15:39)
+    at nextResolve (node:internal/modules/esm/loader:163:28)
+    at ESMLoader.resolve (node:internal/modules/esm/loader:838:30)
+    at ESMLoader.getModuleJob (node:internal/modules/esm/loader:424:18)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:77:40)
+    at link (node:internal/modules/esm/module_job:76:36)
+`
+    )
+
     t1(
       'vike-react',
       /* node_modules/ land, wrong import path: missing file extension.
