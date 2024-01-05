@@ -51,7 +51,7 @@ function getEntryCode(config: ResolvedConfig, configVike: ConfigVikeResolved): s
     '  setImportBuildGetters({',
     `    pageFiles: () => pageFiles,`,
     // TODO: rename clientManifest -> assetManifest
-    `    clientManifest: () => (${ASSETS_MAP}),`,
+    `    clientManifest: () => { return ${ASSETS_MAP} },`,
     // TODO: rename pluginManifest -> vikeManifest
     `    pluginManifest: () => (${JSON.stringify(vikeManifest, null, 2)}),`,
     '  });',
