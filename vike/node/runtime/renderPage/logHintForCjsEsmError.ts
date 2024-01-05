@@ -192,10 +192,11 @@ function parseImportFrom(str: string): false | string[] {
 }
 function parseNodeModulesPathMessage(sentenceBegin: string, str: string) {
   str = str.replaceAll('\\', '/')
-  const regex = new RegExp(`${sentenceBegin}.*(node_modules\\S+)`)
+  const regex = new RegExp(`${sentenceBegin}.*(node_modules\\/\\S+)`)
   const match = regex.exec(str)
   if (!match) return false
   const importPath = match[1]!
+  if (!includesNodeModules(importPath)) return false
   const packageName = extractFromNodeModulesPath(importPath)
   return normalize([packageName])
 }
