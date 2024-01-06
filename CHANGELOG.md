@@ -1,3 +1,22 @@
+## [0.4.154](https://github.com/vikejs/vike/compare/v0.4.153...v0.4.154) (2024-01-06)
+
+
+### Bug Fixes
+
+* apply vite.ssrFixStackTrace() to warning stack trace (fix [#1355](https://github.com/vikejs/vike/issues/1355)) ([6415b1c](https://github.com/vikejs/vike/commit/6415b1c3031b360e8fb77c4b70c0fe30aeca1fc7))
+* improve slow crawling warning ([5865113](https://github.com/vikejs/vike/commit/58651134ec827307c6aa67ce227995733fd4ebcd))
+* increase hook timeouts upon pre-rendering ([61f05c0](https://github.com/vikejs/vike/commit/61f05c0e4ed42ba72b226e6f0f52a14f4b51ecab))
+* reliable workaround for Rollup bug ([3e842bb](https://github.com/vikejs/vike/commit/3e842bbe6ef4a19bb0a3a0eb980a333ea2cbbb15))
+* remove superfluous and misleading assertion ([fe12f96](https://github.com/vikejs/vike/commit/fe12f966f76fd9a27c63432abe484370fa969076))
+* remove superfluous importBuild await ([#1404](https://github.com/vikejs/vike/issues/1404)) ([7fdfa41](https://github.com/vikejs/vike/commit/7fdfa410772baf71322dd347616cfa077f32b9fe))
+* show hint upon CJS/ESM errors ([#1358](https://github.com/vikejs/vike/issues/1358), fixes [#621](https://github.com/vikejs/vike/issues/621)) ([2043733](https://github.com/vikejs/vike/commit/2043733a2892bcbea35154fdcd7426c1b5e033da))
+* tolerate + anywhere in file paths (fix [#1407](https://github.com/vikejs/vike/issues/1407)) ([159c659](https://github.com/vikejs/vike/commit/159c6595199547db558248d8a3ebc2ca02be356d))
+* update @brillout/vite-plugin-import-build ([5f01f30](https://github.com/vikejs/vike/commit/5f01f30259cc90e6b85bf327104718a153f74544))
+* update @brillout/vite-plugin-import-build (fix [#1404](https://github.com/vikejs/vike/issues/1404)) ([f84370a](https://github.com/vikejs/vike/commit/f84370a310272636c87be93bdcc28b8e9e4a6ac3))
+* workaround Rollup bug ([01ab602](https://github.com/vikejs/vike/commit/01ab6020e6a46f80b1b4e6e0ca3c1f498aac5251))
+
+
+
 ## [0.4.153](https://github.com/vikejs/vike/compare/v0.4.152...v0.4.153) (2023-12-31)
 
 
