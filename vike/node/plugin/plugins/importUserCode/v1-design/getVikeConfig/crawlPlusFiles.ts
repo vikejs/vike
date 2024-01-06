@@ -7,7 +7,8 @@ import {
   assertWarning,
   scriptFileExtensionList,
   scriptFileExtensions,
-  getGlobalObject
+  getGlobalObject,
+  humanizeTime
 } from '../../../../utils.js'
 import path from 'path'
 import glob from 'fast-glob'
@@ -52,9 +53,12 @@ async function crawlPlusFiles(
     const timeSpent = timeAfter - timeBefore
     if (isDev) {
       // We only warn in dev, because while building it's expected to take a long time as crawling is competing for resources with other tasks.
+      // Although, in dev, it's also competing for resources e.g. with Vite's `optimizeDeps`.
       assertWarning(
-        timeSpent < 2 * 1000,
-        `Crawling your user files took an unexpected long time (${timeSpent}ms). Create a new issue on Vike's GitHub.`,
+        timeSpent < 3 * 1000,
+        `Crawling your user files took an unexpected long time (${humanizeTime(
+          timeSpent
+        )}). If you repeatedly get this warning, then consider creating a new issue on Vike's GitHub.`,
         {
           onlyOnce: 'slow-page-files-search'
         }
