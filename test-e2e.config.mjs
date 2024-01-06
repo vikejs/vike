@@ -190,7 +190,7 @@ function tolerateError({ logSource, logText }) {
     )
   }
   function isSlowCrawlWarning() {
-    return logSource === 'stderr' && logText.includes('Crawling your user files took an unexpected long time')
+    return logSource === 'stderr' && logText.includes('Crawling your + files took an unexpected long time')
   }
 
   function isNodeExperimentalEsmLoader() {

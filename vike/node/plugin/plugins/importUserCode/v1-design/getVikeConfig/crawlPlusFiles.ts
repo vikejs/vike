@@ -14,6 +14,7 @@ import path from 'path'
 import glob from 'fast-glob'
 import { exec } from 'child_process'
 import { promisify } from 'util'
+import pc from '@brillout/picocolors'
 const execA = promisify(exec)
 
 const globalObject = getGlobalObject('crawlPlusFiles.ts', {
@@ -56,7 +57,7 @@ async function crawlPlusFiles(
       // Although, in dev, it's also competing for resources e.g. with Vite's `optimizeDeps`.
       assertWarning(
         timeSpent < 3 * 1000,
-        `Crawling your user files took an unexpected long time (${humanizeTime(
+        `Crawling your ${pc.cyan('+')} files took an unexpected long time (${humanizeTime(
           timeSpent
         )}). If you repeatedly get this warning, then consider creating a new issue on Vike's GitHub.`,
         {
