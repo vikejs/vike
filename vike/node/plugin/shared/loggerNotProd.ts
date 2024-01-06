@@ -211,6 +211,7 @@ function handleAssertMsg(err: unknown, category: LogCategory | null): boolean {
   return true
 }
 function assertLogger(thing: string | Error, logType: LogType): void {
+  // vite.ssrFixStacktrace() is needed for `assertWarning(..., { showStackTrace: true })`
   applyViteSourceMapToStackTrace(thing)
   const category = getCategory()
   const res = getAssertErrMsg(thing)
