@@ -5,6 +5,9 @@ import { projectInfo, assertUsage, assertWarning } from './utils.js'
 import pc from '@brillout/picocolors'
 import { startDevServer } from '../dev/serverEntry.js'
 
+// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
+const importMetaUrl: string = import.meta.url
+const __dirname_ = path.dirname(fileURLToPath(importMetaUrl))
 const cli = cac(projectInfo.projectName)
 
 cli
@@ -34,35 +37,27 @@ cli
     await resolveConfig({}, 'serve')
     const serverConfig = getServerConfig()
     if (!serverConfig?.entry) {
-      let command = 'vite dev'
+      const command = ['dev']
       if (root) {
-        command = command + ` ${root}`
+        command.push(root)
       }
       for (const [key, value] of Object.entries(options).slice(1)) {
-        command = command + ` --${key}=${value}`
+        command.push(`--${key}=${value}`)
       }
 
-      try {
-        execSync(command, { stdio: 'inherit' })
-      } catch (error) {
-        // { stdio: 'inherit' } already logged the error
-      }
+      fork('node_modules/vite/bin/vite', command, { stdio: 'inherit' })
       return
     }
 
-    // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
-    const importMetaUrl: string = import.meta.url
-    const __dirname_ = path.dirname(fileURLToPath(importMetaUrl))
     const scriptPath = path.join(__dirname_, '..', 'dev/startDevServer.js')
+
     function onRestart() {
-      try {
-        execSync(`node ${scriptPath}`, { stdio: 'inherit' })
-      } catch (error) {
-        if (error && typeof error === 'object' && 'status' in error && error.status === 33) {
+      const cp = fork(scriptPath, { stdio: 'inherit' })
+      cp.once('exit', (code) => {
+        if (code === 33) {
           onRestart()
         }
-        // { stdio: 'inherit' } already logged the error
-      }
+      })
     }
 
     onRestart()
