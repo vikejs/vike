@@ -842,8 +842,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       telefunc:
-        specifier: ^0.1.67
-        version: 0.1.67(@babel/core@7.23.5)(react@18.2.0)
+        specifier: ^0.1.69
+        version: 0.1.69(@babel/core@7.23.5)(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.3.3
@@ -1556,8 +1556,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       telefunc:
-        specifier: ^0.1.67
-        version: 0.1.67(@babel/core@7.23.5)(react@18.2.0)
+        specifier: ^0.1.69
+        version: 0.1.69(@babel/core@7.23.5)(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.3.3
@@ -2468,12 +2468,6 @@ packages:
       source-map-support: 0.5.21
       typescript: 4.8.4
     dev: true
-
-  /@brillout/vite-plugin-import-build@0.3.1:
-    resolution: {integrity: sha512-ynQfW8o8a/WKaWn4r2y6t7dwzGj9t3KIWv2N4BJAr+3lqjlCP9+YVtoshMziLprlctpMnKzOOKqVMjwLWzx0Eg==}
-    dependencies:
-      '@brillout/import': 0.2.3
-    dev: false
 
   /@brillout/vite-plugin-server-entry@0.4.1:
     resolution: {integrity: sha512-WN45/rSp0mwMUdtueWbHVhnxecQnPJiYjh9864yijJlDYZo4g+sW0alcE7DTvsGXDrMYB5nQJSDHDqm2gepGQQ==}
@@ -12276,8 +12270,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /telefunc@0.1.67(@babel/core@7.23.5)(react@18.2.0):
-    resolution: {integrity: sha512-jowRBcTLXiYc2tjkCfqFeD+O6UZyb6/0Qw5Xi/9gvehCh2CPTd00kf90/Kpe4TgNR/vi4jPpqXedyoF1RnABEA==}
+  /telefunc@0.1.69(@babel/core@7.23.5)(react@18.2.0):
+    resolution: {integrity: sha512-1HIWVKWAVO6rydXx7LIPQbTpwUUlk2VBWmD7I7Koxo2/UFbWMpdnqngqCYx8KPlzOBHQCstzwnLWdsSBLnnaDQ==}
     engines: {node: '>=12.19.0'}
     peerDependencies:
       '@babel/core': ^7.0.0
@@ -12300,7 +12294,8 @@ packages:
       '@babel/core': 7.23.5
       '@brillout/import': 0.2.3
       '@brillout/json-serializer': 0.5.8
-      '@brillout/vite-plugin-import-build': 0.3.1
+      '@brillout/picocolors': 1.0.10
+      '@brillout/vite-plugin-server-entry': 0.4.1
       es-module-lexer: 0.7.1
       picocolors: 1.0.0
       react: 18.2.0
