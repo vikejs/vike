@@ -67,17 +67,18 @@ function getEntryCode(config: ResolvedConfig, configVike: ConfigVikeResolved): s
 async function replace_ASSETS_MAP(options: Options, bundle: Bundle) {
   const { dir } = options
   assert(dir)
-  // I guess importBuild won't be found in the bundle when using @vitejs/plugin-legacy
-  const importBuildEntry = findServerEntry(bundle as any)
-  const importBuildFilePath = path.join(dir, importBuildEntry.fileName)
+  // This will probably fail with @vitejs/plugin-legacy
+  //  - See `git log -p` for how we used to workaround the @vitejs/plugin-legacy issue.
+  const serverEntry = findServerEntry(bundle)
+  const serverEntryFilePath = path.join(dir, serverEntry.fileName)
   const assetsJsonFilePath = path.join(dir, '..', 'assets.json')
-  const [assetsJsonString, importBuildFileContent] = await Promise.all([
+  const [assetsJsonString, serverEntryFileContent] = await Promise.all([
     await fs.readFile(assetsJsonFilePath, 'utf8'),
-    await fs.readFile(importBuildFilePath, 'utf8')
+    await fs.readFile(serverEntryFilePath, 'utf8')
   ])
-  const importBuildFileContentFixed = importBuildFileContent.replace(ASSETS_MAP, assetsJsonString)
-  assert(importBuildFileContentFixed !== importBuildFileContent)
-  await fs.writeFile(importBuildFilePath, importBuildFileContentFixed)
+  const serverEntryFileContentPatched = serverEntryFileContent.replace(ASSETS_MAP, assetsJsonString)
+  assert(serverEntryFileContentPatched !== serverEntryFileContent)
+  await fs.writeFile(serverEntryFilePath, serverEntryFileContentPatched)
 }
 function getImportPath(config: ResolvedConfig) {
   // We resolve filePathAbsolute even if we don't use it: we use require.resolve() as an assertion that the relative path is correct
