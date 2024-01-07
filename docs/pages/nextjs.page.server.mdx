@@ -22,7 +22,7 @@ Finally, Vike is a community project: instead of leaning on a framework with bus
 
 ## UI Framework agnostic
 
-With Vike, you integrate React yourself. This means you need to write a little bit more boilerplate but, in exchange, you get a lot more flexibility.
+With Vike, you integrate React yourself. This means you need to write a little bit more boilerplate, but in exchange you get a lot more flexibility.
 
 Because you integrate React yourself, you have full control over the frontend integration of your favorite tools (data fetching, state management, authentication, etc.).
 
@@ -32,14 +32,24 @@ For example, you can use Relay and Apollo in ways that aren't possible with Next
 >
 > Many users and sponsors leverage Vike's flexibility to integrate Relay with SSR Streaming.
 
-Except of React, Vike includes everything you'd expect from a frontend framework: Client-side Routing, HMR, Filesystem Routing, Pre-rendering, Data Fetching, Code Splitting, Layouts, i18n, etc.
+Apart from of the render library itself (like React), Vike includes everything you'd expect from a frontend framework: Client-side Routing, HMR, Filesystem Routing, Pre-rendering, Data Fetching, Code Splitting, Layouts, i18n, etc.
 
 
 ## Server/deployment agnostic
 
+Next.js is made by Vercel, the serverless hosting provider. It is therefore naturally optimised to run in their environment and infrastructure (which becomes pricey at scale).
+You can self-host Next.js as a Node.js server, for example placed in a Docker container. But it won't work precisely the same way as on Vercel.
+Furthermore, self-hosting Next.js as a Serverless or Edge application (i.e. replacing Vercel) is worse.
+
+An illustration of the problem: "with [Next.js] server actions you no longer handwrite API endpoints - which means you don't have the ability to explicitly control versioning" according to [Dax (@thdxr)](https://twitter.com/thdxr/status/1718308244383228124). So requests from old clients can fail. Vercel solved this with their deployment infrastructure, insted of in Next.js itself. So if you use Next.js but not Vercel then you'll have to deal with this problem yourself.
+
+These kinds of difficulties led the open source community to make [Open-Next.js](https://open-next.js.org/), to make Serverless deployment of Next.js easier on your own AWS infrastructure. It would eliminate the need to use Vercel, and/or allow reusing any AWS back-end one may already have. To simplify (abstract away) serverless deployment to AWS (similar to what Vercel does), the community made the framework-agnostic infrastructure-as-code tool [SST](https://github.com/sst/sst). Edge deployment is another story. [Cloudflare](https://blog.cloudflare.com/next-on-pages), the most prominent edge hosting provider, uses the JavaScript runtime V8 instead of Node. Meaning that some Next.js apps built to run on Node.js won't immediately work on the Edge. So Next.js has an Edge runtime mode/toolkit that uses only a subset of the Node.js API. But it has [issues](https://github.com/search?q=repo%3Avercel%2Fnext.js+edge+runtime&type=issues) on it's own.
+
+Vike is server/deployment agnostic (use any hosting provider), and built with seamless Serverless / Edge compatibility from the start.
+
 From a server perspective, <Link text="Vike is just a middleware" href="/deploy" /> that can run anywhere (AWS, Vercel, Cloudflare, Deno Deploy, etc.).
 
-To integrate Vike, you simply add Vike's middleware to your server (Express.js, Fastify, Edge Worker, Serverless Function,  etc.).
+To integrate Vike, you simply add Vike's middleware to your server side (Express.js, Fastify, Edge Worker, Serverless Function, etc.).
 
 With Vike, you have full control over your server and deployment, one of the most critical aspects of your architecture.
 
