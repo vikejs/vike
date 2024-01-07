@@ -8,7 +8,6 @@ import { Plugin, searchForWorkspaceRoot } from 'vite'
 import { pLimit } from '../../../utils/pLimit.js'
 import { assert, assertUsage, toPosixPath, unique } from '../utils.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
-import {findServerEntry} from '@brillout/vite-plugin-server-entry/plugin.js'
 
 function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let root = ''
@@ -56,15 +55,17 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       outDirAbs = path.posix.join(root, outDir)
     },
     async writeBundle(_, bundle) {
-      const serverEntry = findServerEntry(bundle)
-      const serverEntryFilePath = path.join(outDirAbs, serverEntry.fileName)
+      const serverIndex = findRollupBundleEntry('index', bundle)
+      assert(serverIndex)
+      const serverIndexFileName = serverIndex.fileName
+      const serverIndexFilePath = path.posix.join(outDirAbs, serverIndexFileName)
       const res = await esbuild.build({
         platform: 'node',
         format: 'esm',
         bundle: true,
         external: native,
-        entryPoints: { index: serverEntryFilePath },
-        outfile: serverEntryFilePath,
+        entryPoints: { index: serverIndexFilePath },
+        outfile: serverIndexFilePath,
         allowOverwrite: true,
         metafile: true,
         banner: {
@@ -81,7 +82,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
 
       // The inputs of the bundled files are safe to remove
       const filesToRemove = Object.keys(res.metafile.inputs).filter(
-        (relativeFile) => !serverEntryFilePath.endsWith(relativeFile) && relativeFile.startsWith(distDir)
+        (relativeFile) => !serverIndexFilePath.endsWith(relativeFile) && relativeFile.startsWith(distDir)
       )
       for (const relativeFile of filesToRemove) {
         await fs.rm(path.posix.join(root, relativeFile))
@@ -102,7 +103,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       const relativeDistDir = path.posix.relative(base, distDir)
 
       const { nodeFileTrace } = await import('@vercel/nft')
-      const result = await nodeFileTrace([serverEntryFilePath], {
+      const result = await nodeFileTrace([serverIndexFilePath], {
         base
       })
 
@@ -242,4 +243,16 @@ function isYarnPnP(): boolean {
   } catch {
     return false
   }
+}
+
+function findRollupBundleEntry<OutputBundle extends Record<string, { name: string | undefined }>>(
+  entryName: string,
+  bundle: OutputBundle
+): OutputBundle[string] | null {
+  for (const key in bundle) {
+    if (key.endsWith('.map')) continue // https://github.com/brillout/vite-plugin-ssr/issues/612
+    const entry = bundle[key]!
+    if (entry.name === entryName) return entry
+  }
+  return null
 }
