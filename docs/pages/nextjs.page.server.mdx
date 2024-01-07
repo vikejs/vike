@@ -37,6 +37,8 @@ Apart from of the render library itself (like React), Vike includes everything y
 
 ## Server/deployment agnostic
 
+### Next.js
+
 Next.js is made by Vercel, the serverless hosting provider. It is therefore naturally optimised to run in their environment and infrastructure (which becomes pricey at scale).
 You can self-host Next.js as a Node.js server, for example placed in a Docker container. But it won't work precisely the same way as on Vercel.
 Furthermore, self-hosting Next.js as a Serverless or Edge application (i.e. replacing Vercel) is worse.
@@ -48,6 +50,8 @@ These kinds of difficulties led the open source community to make [Open-Next.js]
 The community also made the framework-agnostic toolkit [SST](https://sst.dev/) to ease Serverless deployment to AWS in particular (since AWS infrastructure is a pain to deal with directly/non-programmatically). So SST [attempts to replicate](https://open-next.js.org/advanced/architecture) Vercel's infrastructure and ease-of-deployment for Serverless, in a free, open-source, and self-hostable manner. Open-Next is typically used with SST if deployed to AWS Lambda.
 
 Edge deployment with Next.js is another story. [Cloudflare](https://blog.cloudflare.com/next-on-pages), the most prominent edge hosting provider, uses the JavaScript runtime V8 instead of Node. Meaning that some Next.js apps built to run on Node.js won't immediately work on the Edge. So Next.js has an Edge runtime mode/toolkit that uses only a subset of the Node.js API. But it has [issues](https://github.com/search?q=repo%3Avercel%2Fnext.js+edge+runtime&type=issues) on it's own.
+
+### Vike
 
 Vike is server/deployment agnostic (use any hosting provider), and built with seamless Serverless / Edge compatibility from the start.
 
