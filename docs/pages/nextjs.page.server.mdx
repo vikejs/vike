@@ -86,7 +86,7 @@ Next.js aggressively uses [caching](https://nextjs.org/docs/app/building-your-ap
 
 ### Server-first mentality
 
-Next.js - made by Vercel, a hosting provider - is server-focused. It now defaults to interpreting all React components as React Server Components, so you have to mark React components with "use client" to opt-out of always hitting the server. This can reduce the bundle size for a lot of regular web-sites, as the client doesn't need to download JS libraries that now by default run on the server (e.g. markdown). But leaning more on the server may not be what you want.
+Next.js - made by Vercel, a hosting provider - is server-focused. It now defaults to interpreting all React components as React Server Components, so you have to mark React components with "use client" to opt-out of always hitting the server. While it reducess the side of client-side bundles, as the client doesn't need to download JS libraries that now by default run on the server (e.g. markdown), it leans more on the server which may not be what you want.
 
 If your product either:
 
@@ -96,7 +96,7 @@ If your product either:
 - is a cross-platform app (reusing code between web and native), since native platforms are typically client-centered (React Server Components currently don't work on React Native)
 - should use less server resources (scalability, cost-wise), in favor of requiring slightly more processing power on the client
 
-then the server-first mentality of Next.js and Vercel could be to hindrance more than help.
+then the server-first mentality of Next.js and Vercel is more a hindrance than help.
 
 
 ## Detailed comparison table
@@ -135,7 +135,7 @@ HTTP server | No*, bring your own | Baked-in, custom server partially supported 
 | Vercel                                                          | Yes, minimal config                                        | Yes, zero config              |
 | Cloudflare Workers                                              | Yes, minimal config                                        | No, [work in progress](https://github.com/vercel/next.js/discussions/34179#discussioncomment-3578259)                            |
 | Node server (Docker, Heroku, Digital Ocean etc.)                | Yes, minimal config                                        | Yes, but limited              |
-| Caching                                                         | None by default                                            | App Router [caching](https://nextjs.org/docs/app/building-your-application/caching), [opt-out](https://www.reddit.com/r/nextjs/comments/15wc4nt/nextjs_caching_opt_out/)   |
+| Caching                                                         | No*, use one of the many industry-standard caching tools.  | App Router [caching](https://nextjs.org/docs/app/building-your-application/caching), [opt-out](https://www.reddit.com/r/nextjs/comments/15wc4nt/nextjs_caching_opt_out/)   |
 
 
 (\*) Vike doesn't ship those extras by design.
