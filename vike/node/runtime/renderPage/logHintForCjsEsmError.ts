@@ -269,7 +269,8 @@ function includesNodeModules(str: string | null): boolean {
 }
 
 function normalize(packageNames: (string | null)[]): string[] | false {
-  const result = unique(packageNames.filter(isNotNullish))
+  const result = unique(packageNames.filter(isNotNullish).filter((packageName) => packageName !== '@brillout/import'))
+
   if (result.length === 0) return false
   return result
 }
