@@ -8,13 +8,13 @@ import { Plugin, searchForWorkspaceRoot } from 'vite'
 import { pLimit } from '../../../utils/pLimit.js'
 import { assert, assertUsage, toPosixPath, unique } from '../utils.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
+import {findServerEntry} from '@brillout/vite-plugin-server-entry/plugin.js'
 
 function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let root = ''
   let distDir = ''
   let outDir = ''
   let outDirAbs = ''
-  let builtEntryAbs = ''
 
   // Native dependencies always need to be esbuild external
   let native: string[] = []
@@ -55,19 +55,16 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       distDir = outDir.split('/')[0]!
       outDirAbs = path.posix.join(root, outDir)
     },
-    renderChunk(code, chunk) {
-      if (chunk.facadeModuleId === path.posix.join(root, serverEntry)) {
-        builtEntryAbs = path.posix.join(outDirAbs, chunk.fileName)
-      }
-    },
-    async closeBundle() {
+    async writeBundle(_, bundle) {
+      const serverEntry = findServerEntry(bundle)
+      const serverEntryFilePath = path.join(outDirAbs, serverEntry.fileName)
       const res = await esbuild.build({
         platform: 'node',
         format: 'esm',
         bundle: true,
         external: native,
-        entryPoints: { index: builtEntryAbs },
-        outfile: builtEntryAbs,
+        entryPoints: { index: serverEntryFilePath },
+        outfile: serverEntryFilePath,
         allowOverwrite: true,
         metafile: true,
         banner: {
@@ -84,7 +81,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
 
       // The inputs of the bundled files are safe to remove
       const filesToRemove = Object.keys(res.metafile.inputs).filter(
-        (relativeFile) => !builtEntryAbs.endsWith(relativeFile) && relativeFile.startsWith(distDir)
+        (relativeFile) => !serverEntryFilePath.endsWith(relativeFile) && relativeFile.startsWith(distDir)
       )
       for (const relativeFile of filesToRemove) {
         await fs.rm(path.posix.join(root, relativeFile))
@@ -105,7 +102,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       const relativeDistDir = path.posix.relative(base, distDir)
 
       const { nodeFileTrace } = await import('@vercel/nft')
-      const result = await nodeFileTrace([builtEntryAbs], {
+      const result = await nodeFileTrace([serverEntryFilePath], {
         base
       })
 
