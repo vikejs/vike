@@ -1,3 +1,13 @@
+## [0.4.155](https://github.com/vikejs/vike/compare/v0.4.154...v0.4.155) (2024-01-07)
+
+
+### Bug Fixes
+
+* update @brillout/vite-plugin-import-build -> @brillout/vite-plugin-server-entry ([81d8de1](https://github.com/vikejs/vike/commit/81d8de160354b565ceeccdf15f1efc7a99453db3))
+* whitelist @brillout/import from CJS/ESM error hint ([bb14de3](https://github.com/vikejs/vike/commit/bb14de39ed32ce31fa9362de9705bee79c16f748))
+
+
+
 ## [0.4.154](https://github.com/vikejs/vike/compare/v0.4.153...v0.4.154) (2024-01-06)
 
 
