@@ -842,8 +842,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       telefunc:
-        specifier: ^0.1.69
-        version: 0.1.69(@babel/core@7.23.5)(react@18.2.0)
+        specifier: ^0.1.70
+        version: 0.1.70(@babel/core@7.23.5)(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.3.3
@@ -1556,8 +1556,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       telefunc:
-        specifier: ^0.1.69
-        version: 0.1.69(@babel/core@7.23.5)(react@18.2.0)
+        specifier: ^0.1.70
+        version: 0.1.70(@babel/core@7.23.5)(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.3.3
@@ -2468,12 +2468,6 @@ packages:
       source-map-support: 0.5.21
       typescript: 4.8.4
     dev: true
-
-  /@brillout/vite-plugin-server-entry@0.4.1:
-    resolution: {integrity: sha512-WN45/rSp0mwMUdtueWbHVhnxecQnPJiYjh9864yijJlDYZo4g+sW0alcE7DTvsGXDrMYB5nQJSDHDqm2gepGQQ==}
-    dependencies:
-      '@brillout/import': 0.2.3
-    dev: false
 
   /@brillout/vite-plugin-server-entry@0.4.2:
     resolution: {integrity: sha512-kZwvU3pZGc6trzEPw7K3PgEnRpPE+MriQ8ku+Q0UGZFEa1nQB6QS8Wesr1oE4uyr2dFjDpeqZBUP4YWAvhp9qg==}
@@ -12282,8 +12276,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /telefunc@0.1.69(@babel/core@7.23.5)(react@18.2.0):
-    resolution: {integrity: sha512-1HIWVKWAVO6rydXx7LIPQbTpwUUlk2VBWmD7I7Koxo2/UFbWMpdnqngqCYx8KPlzOBHQCstzwnLWdsSBLnnaDQ==}
+  /telefunc@0.1.70(@babel/core@7.23.5)(react@18.2.0):
+    resolution: {integrity: sha512-Ylv2351ahqH4oe1qsubTDrpCfoPSd5XyMLJckMMvSoe4Hk8dHagb0AzVP5KZAp9dv988GzIYVEwOaE6FeHiYcw==}
     engines: {node: '>=12.19.0'}
     peerDependencies:
       '@babel/core': ^7.0.0
@@ -12307,7 +12301,7 @@ packages:
       '@brillout/import': 0.2.3
       '@brillout/json-serializer': 0.5.8
       '@brillout/picocolors': 1.0.10
-      '@brillout/vite-plugin-server-entry': 0.4.1
+      '@brillout/vite-plugin-server-entry': 0.4.2
       es-module-lexer: 0.7.1
       picocolors: 1.0.0
       react: 18.2.0
