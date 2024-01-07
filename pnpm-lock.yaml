@@ -1871,8 +1871,8 @@ importers:
         specifier: 0.32.x
         version: 0.32.6
       telefunc:
-        specifier: ^0.1.69
-        version: 0.1.69(@babel/core@7.23.5)(react@18.2.0)
+        specifier: ^0.1.70
+        version: 0.1.70(@babel/core@7.23.5)(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.3.3
