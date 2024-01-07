@@ -1,7 +1,7 @@
 export { importBuild }
 
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
-import { importBuild as importBuild_, findImportBuildBundleEntry } from '@brillout/vite-plugin-import-build/plugin.js'
+import { serverEntryPlugin, findServerEntry } from '@brillout/vite-plugin-server-entry/plugin.js'
 import { assert, getOutDirs, projectInfo, toPosixPath, viteIsSSR } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
@@ -33,7 +33,7 @@ function importBuild(): Plugin[] {
         await replace_ASSETS_MAP(options, bundle)
       }
     },
-    importBuild_({
+    serverEntryPlugin({
       getImporterCode: () => {
         return getEntryCode(config, configVike)
       },
@@ -68,7 +68,7 @@ async function replace_ASSETS_MAP(options: Options, bundle: Bundle) {
   const { dir } = options
   assert(dir)
   // I guess importBuild won't be found in the bundle when using @vitejs/plugin-legacy
-  const importBuildEntry = findImportBuildBundleEntry(bundle as any)
+  const importBuildEntry = findServerEntry(bundle as any)
   const importBuildFilePath = path.join(dir, importBuildEntry.fileName)
   const assetsJsonFilePath = path.join(dir, '..', 'assets.json')
   const [assetsJsonString, importBuildFileContent] = await Promise.all([

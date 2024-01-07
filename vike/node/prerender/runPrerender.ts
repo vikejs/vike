@@ -218,7 +218,7 @@ async function runPrerender(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel
   )
 
-  assertPathIsFilesystemAbsolute(outDirRoot) // Needed for loadServerBuild(outDir) of @brillout/vite-plugin-import-build
+  assertPathIsFilesystemAbsolute(outDirRoot) // Needed for loadImportBuild(outDir) of @brillout/vite-plugin-server-entry
   await initGlobalContext(true, outDirRoot)
   const renderContext = await getRenderContext()
   renderContext.pageFilesAll.forEach(assertExportNames)
