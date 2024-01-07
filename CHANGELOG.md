@@ -1,3 +1,12 @@
+## [0.4.156](https://github.com/vikejs/vike/compare/v0.4.155...v0.4.156) (2024-01-07)
+
+
+### Bug Fixes
+
+* update @brillout/vite-plugin-server-entry ([6fc93be](https://github.com/vikejs/vike/commit/6fc93be09ac4062e925e7ee9dd7339026384d6b6))
+
+
+
 ## [0.4.155](https://github.com/vikejs/vike/compare/v0.4.154...v0.4.155) (2024-01-07)
 
 
