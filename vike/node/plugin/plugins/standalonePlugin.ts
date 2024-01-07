@@ -14,6 +14,7 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
   let distDir = ''
   let outDir = ''
   let outDirAbs = ''
+  let serverIndexFilePath: string
 
   // Native dependencies always need to be esbuild external
   let native: string[] = []
@@ -26,7 +27,6 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       //@ts-expect-error Vite 5 || Vite 4
       return !!(env.isSsrBuild || env.ssrBuild)
     },
-    enforce: 'pre',
     config(config, env) {
       return {
         ssr: {
@@ -54,11 +54,15 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
       distDir = outDir.split('/')[0]!
       outDirAbs = path.posix.join(root, outDir)
     },
-    async writeBundle(_, bundle) {
+    writeBundle(_, bundle) {
       const serverIndex = findRollupBundleEntry('index', bundle)
       assert(serverIndex)
       const serverIndexFileName = serverIndex.fileName
-      const serverIndexFilePath = path.posix.join(outDirAbs, serverIndexFileName)
+      serverIndexFilePath = path.posix.join(outDirAbs, serverIndexFileName)
+    },
+    // closeBundle() + `enforce: 'post'` in order to start the final build step as late as possible
+    enforce: 'post',
+    async closeBundle() {
       const res = await esbuild.build({
         platform: 'node',
         format: 'esm',
