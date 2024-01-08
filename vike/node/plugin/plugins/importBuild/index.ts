@@ -33,7 +33,7 @@ function importBuild(): Plugin[] {
         await replace_ASSETS_MAP(options, bundle)
       }
     },
-    serverEntryPlugin({
+    ...serverEntryPlugin({
       getImporterCode: () => {
         return getEntryCode(config, configVike)
       },
