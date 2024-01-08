@@ -291,12 +291,12 @@ async function onRenderHtml(pageContext) {
 
 ## Progressive hydration
 
-Some UI frameworks, such as React, support *progressive hydration*: while some data-fetching parts of the UI are being loaded and rendered, other parts of the UI are already loaded, rendered, and <Link href="/hydration">hydrated</Link>.
+Some UI frameworks, such as React, support *progressive hydration*: while some parts of the UI are being loaded, other parts are already <Link href="/hydration">hydrated</Link>.
 
 For example:
 
 <video src={progressiveHydrationDemo} controls="controls" muted="muted" width="500"></video>
 
-Vike has first-class support for progressive hydration and there is usually nothing for you to do: it just works.
+Vike supports progressive hydration.
 
 See also: <Link href="/react#react-server-components" doNotInferSectionTitle />.
