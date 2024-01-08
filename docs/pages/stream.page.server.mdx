@@ -1,5 +1,5 @@
 import { RepoLink, Link } from '@brillout/docpress'
-import partialHydrationDemo from './stream/partial-hydration-demo.webm'
+import progressiveHydrationDemo from './stream/progressive-hydration-demo.webm'
 import { UseIntegrationPackageAnyHint } from '../components'
 
 Vike has first-class support for HTML Streaming.
@@ -289,14 +289,14 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-## Partial hydration
+## Progressive hydration
 
-Some UI frameworks, such as React, support *partial hydration*: while some data-fetching parts of the UI are being loaded and rendered, other parts of the UI are already loaded, rendered, and <Link href="/hydration">hydrated</Link>.
+Some UI frameworks, such as React, support *progressive hydration*: while some data-fetching parts of the UI are being loaded and rendered, other parts of the UI are already loaded, rendered, and <Link href="/hydration">hydrated</Link>.
 
 For example:
 
-<video src={partialHydrationDemo} controls="controls" muted="muted" width="500"></video>
+<video src={progressiveHydrationDemo} controls="controls" muted="muted" width="500"></video>
 
-Vike has first-class support for partial hydration and there is usually nothing for you to do: it just works.
+Vike has first-class support for progressive hydration and there is usually nothing for you to do: it just works.
 
 See also: <Link href="/react#react-server-components" doNotInferSectionTitle />.

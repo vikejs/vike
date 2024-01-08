@@ -130,14 +130,14 @@ async function getHtmlTags(
     if (pageContext._pageContextPromise) {
       assertWarning(
         !injectToStream,
-        "[getHtmlTags()] We recommend against using streaming and a pageContext promise at the same time as partial hydration won't work",
+        "[getHtmlTags()] We recommend against using streaming and a pageContext promise at the same time as progressive hydration won't work",
         { onlyOnce: true }
       )
       // If there is a pageContext._pageContextPromise (which is resolved after the stream has ended) then the pageContext JSON data needs to await for it: https://vike.dev/stream#initial-data-after-stream-end
       return 'HTML_END'
     }
     if (injectToStream) {
-      // If there is a stream then, in order to support partial hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary
+      // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary
       return 'STREAM'
     } else {
       return 'HTML_END'
