@@ -55,11 +55,11 @@ Last but not least, manual integration is fun and insightful. (Whereas fighting 
 
 ## Server Components
 
-React 18 introduced a [new architecture](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components) that unlocks many capabilities.
+React 18 introduced novel techniques that unlock many capabilities.
 
-Vike, and in particular <Link href="/react#vike-extension">`vike-react`</Link>, implements and leverages the new architecture. (<Link href="/stream">Streaming</Link>, <Link href="/stream#progressive-hydration">Progressive Hydration</Link>, independent and collocated data fetching, <Link href="/RCP">RPC</Link>, etc.) Vike's implementation is unique in the sense that it provides users with <Link href="/why#optional-control">optional control</Link>.
+Vike, and in particular <Link href="/react#vike-extension">`vike-react`</Link>, extensively leverages React's 18 new techniques. (<Link href="/stream">Streaming</Link>, <Link href="/stream#progressive-hydration">Progressive Hydration</Link>, independent and collocated data fetching, <Link href="/RCP">RPC</Link>, etc.) Vike's implementation is unique in the sense that it provides users with <Link href="/why#optional-control">optional control</Link>.
 
-That said, one aspect isn't implemented yet which are components that are loaded only on the server-side. (Such server-only components is only a tiny fraction of what that new architecture enables.) While we are researching a DX for such components we believe it's too early for this aspect of React 18 to be used in production. See <Link href="/react#react-server-components"/> for more information.
+One aspect we didn't implement yet are components that are loaded only on the server-side. While we are researching a DX for such components, we believe this technology is too early for being used in production. See <Link href="/react#react-server-components"/> for more information.
 
 
 ## Build your own framework
