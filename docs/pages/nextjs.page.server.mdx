@@ -8,7 +8,7 @@ Vike differs from Next.js in three fundamental ways:
  1. Vike is server and deployment agnostic.
     > With Vike, you keep full control over your server and you can use any deployment strategy.
  1. Vike is full-fledged yet minimal.
-    > [All dependencies](https://github.com/vikejs/vike/blob/89073c8375d46af7cc05057a8f2efcd833273be6/vike/package.json#L4-L13) are either shared with Vite (e.g. [`fast-glob`](https://github.com/mrmlnc/fast-glob)) or fully/transitively owned (e.g. [`@brillout/json-serializer`](https://github.com/brillout/json-serializer)). Adding Vike to your Vite app doesn't add any frivolous dependency.
+    > [All dependencies](https://github.com/vikejs/vike/blob/89073c8375d46af7cc05057a8f2efcd833273be6/vike/package.json#L4-L13) are either shared with Vite (e.g. [`fast-glob`](https://github.com/mrmlnc/fast-glob)) or fully owned (e.g. we own [`@brillout/json-serializer`](https://github.com/brillout/json-serializer)). Adding Vike to your Vite app doesn't add any frivolous dependency.
     >
     > We believe Vike hits the sweet spot of being a full-fledged frontend tool while avoiding unnecessary bells and whistles.
 
@@ -51,6 +51,13 @@ As depicted above, Vike's philosophy is that you integrate tools manually instea
 All-in-all, Vike is less easy, but simpler. For large scale projects, simplicity is *fundamentally* more important than being "easy".
 
 Last but not least, manual integration is fun and insightful. (Whereas fighting a framework is pesky.)
+
+
+## Server Components
+
+React 18 introduced a [new architecture](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components) that unlocks many capabilities.
+
+Vike, and in particular <Link href="/react#vike-extension">`vike-react`</Link>, implements and leverages the new architecture (streaming, progressive hydration, independent and collocated data fetching, RPC, etc.). Vike's implementation is unique because it gives users <Link href="/why#optional-control">optional control</Link>. The only aspect that isn't implemented yet are components that are loaded only on the server-side (such server-only components is only a tiny fraction of what that new architecture enables) and, while we are researching a DX for it, we believe it's too early for such components to be used in production. See <Link href="/react#react-server-components"/> for more information.
 
 
 ## Build your own framework
@@ -111,7 +118,7 @@ HTTP server | No*, bring your own | Baked-in, custom server partially supported 
 | [Build your own framework](https://vike.land)                   | Yes                                                         | No                            |
 | <p align="center">**Deployment options**</p>                                              |                                                            |                               |
 | Vercel                                                          | Yes, minimal config                                        | Yes, zero config              |
-| Cloudflare Workers                                              | Yes, minimal config                                        | No, [work in progress](https://github.com/vercel/next.js/discussions/34179#discussioncomment-3578259)                            |
+| Cloudflare Workers                                              | Yes, minimal config                                        | Yes, but limited              |
 | Node server (Docker, Heroku, Digital Ocean etc.)                | Yes, minimal config                                        | Yes, but limited              |
 
 (\*) Vike doesn't ship those extras by design.
