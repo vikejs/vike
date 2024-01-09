@@ -40,6 +40,13 @@ function UseVikeExtensionUiFrameworkHint({
   }
 }
 
+function UseBatiHint({ feature }: { feature: string | React.ReactElement }) {
+  return (
+    <>
+      Use <a href="https://batijs.github.io/">Bati</a> to scaffold a Vike app using {feature}.
+    </>
+  )
+}
 function UseBatiHint_insteadOfManuelIntegration({ toolName }: { toolName: string }) {
   return (
     <>
@@ -49,14 +56,6 @@ function UseBatiHint_insteadOfManuelIntegration({ toolName }: { toolName: string
           integrates {toolName}.
         </p>
       </blockquote>
-    </>
-  )
-}
-
-function UseBatiHint({ feature }: { feature: string | React.ReactElement }) {
-  return (
-    <>
-      Use <a href="https://batijs.github.io/">Bati</a> to scaffold a Vike app using {feature}.
     </>
   )
 }
