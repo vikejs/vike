@@ -33,21 +33,35 @@ For example, you can use Relay and Apollo in ways that aren't possible with Next
 >
 > Many users and sponsors leverage Vike's flexibility to integrate Relay with SSR Streaming.
 
-Apart from allowing you to use any rendering library, Vike includes everything you'd expect from a frontend framework: Client-side Routing, HMR, Filesystem Routing, Pre-rendering, Data Fetching, Code Splitting, Layouts, i18n, etc.
+Vike includes everything you'd expect from a frontend framework: Client-side Routing, HMR, Filesystem Routing, Pre-rendering, Data Fetching, Code Splitting, Layouts, i18n, etc.
 
 
 ## Server/deployment agnostic
 
 ### Next.js
 
-Next.js is made by [Vercel](https://vercel.com), a serverless hosting provider. It is therefore naturally optimised to run in their environment and infrastructure. But Vercel is [known](https://eightify.app/summary/web-development/the-shift-from-vercel-to-aws-amplify-cost-and-scaling-benefits) to [become](https://www.reddit.com/r/nextjs/comments/12t5nhi/needed_alternatives_for_vercel/) [very](https://x.com/zackerydev/status/1717556827569660378) [expensive](https://www.reddit.com/r/nextjs/comments/q7vw6p/cheaper_vercel_alternatives_specifically_to/hgm7d1t/) at scale (pay-per-developer + exceeded invocations/memory + exdeeded bandwidth; must have enterprise plan when >10 developers), and their pricing is [opaque](https://www.reddit.com/r/nextjs/search?q=vercel+pricing&restrict_sr=on&include_over_18=on) and hard to predict (which is a turn-off, and a no-go for large enterprise customers).
+Next.js is made by [Vercel](https://vercel.com), a hosting provider. It is therefore naturally optimised to run in their environment and infrastructure. But Vercel
+is
+[known](https://eightify.app/summary/web-development/the-shift-from-vercel-to-aws-amplify-cost-and-scaling-benefits)
+to
+[become](https://www.reddit.com/r/nextjs/comments/12t5nhi/needed_alternatives_for_vercel/)
+very
+[expensive](https://x.com/zackerydev/status/1717556827569660378)
+at
+[scale](https://www.reddit.com/r/nextjs/comments/q7vw6p/cheaper_vercel_alternatives_specifically_to/hgm7d1t/).
+What's worse is that [Vercel's pricing](https://vercel.com/pricing) is
+misleading (the pay-per-developer make it seem cheap but you usually pay for very expensive exceeded limits fees),
+[opaque](https://www.reddit.com/r/nextjs/search?q=vercel+pricing&restrict_sr=on&include_over_18=on) (e.g. you must have an enterprise plan if you have >10 team members which is [hidden in the fine print](https://vercel.com/docs/limits/overview#:~:text=Team%20Members%20per,Custom)),
+hard to understand
+and hard to predict.
+Such pricing design is a no-go for many enterprises.
 
 You can self-host Next.js as a Node.js server, for example placed in a Docker container. But it won't work precisely the same way as on Vercel.
 Furthermore, self-hosting Next.js as a Serverless or Edge application (i.e. replacing Vercel) is worse.
 
 An illustration of the problem: [with Next.js server actions you no longer handwrite API endpoints - which means you don't have the ability to explicitly control versioning](https://twitter.com/thdxr/status/1718308244383228124). So requests from old clients can fail. Vercel solved this with their deployment infrastructure, instead of in Next.js itself. So if you use Next.js but not Vercel then you'll have to deal with this major problem yourself.
 
-These kinds of difficulties led the open source community to make the build-script [Open-Next.js](https://open-next.js.org/), to make Serverless deployment of Next.js on generic Functions-as-a-Service (FaaS) platforms easier (specifically on AWS Lambda). It allows easier reuse/integration with any AWS back-end / account one may already have, and reduces Next.js's ties to Vercel's own platform. But that is a moving target with things breaking on every patch release / new features, [according](https://x.com/thdxr/status/1740115107005280592) to Dax (@thxdr), a person working closely with the matter.
+These kinds of difficulties led the open source community to make the build-script [Open-Next.js](https://open-next.js.org/), to make Serverless deployment of Next.js on generic Functions-as-a-Service (FaaS) platforms easier (specifically on AWS Lambda). It allows easier reuse/integration with any AWS back-end / account one may already have, and reduces Next.js's ties to Vercel's own platform. But that is a moving target with things breaking on every patch release / new features, [according to a person](https://x.com/thdxr/status/1740115107005280592) working closely with the matter.
 
 Serverless deployment of Next.js (or Vike) outside Vercel can f.ex. be done on AWS Lambda by using the framework-agnostic toolkit [SST](https://sst.dev/). SST [attempts to replicate](https://open-next.js.org/advanced/architecture) Vercel's infrastructure on AWS, in an open-source manner. Such self-hosting has less compute costs (no middle-man; less pricey at scale) and is [potentially more performant](https://twitter.com/thdxr/status/1655617129469583360) than using Vercel. SST significantly simplifies AWS, which is otherwise a pain to deal with directly/non-programmatically. But self-hosting still comes at a cost of convenience and some engineering time.
 
