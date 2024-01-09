@@ -140,7 +140,8 @@ HTTP server | No*, bring your own | Baked-in, custom server partially supported 
 | Vercel                                                          | Yes, minimal config                                        | Yes, zero config              |
 | Cloudflare Workers                                              | Yes, minimal config                                        | No, [work in progress](https://github.com/vercel/next.js/discussions/34179#discussioncomment-3578259)                            |
 | Node server (Docker, Heroku, Digital Ocean etc.)                | Yes, minimal config                                        | Yes, but limited              |
-| Caching                                                         | No*, use one of the many industry-standard caching tools.  | App Router [caching](https://nextjs.org/docs/app/building-your-application/caching), [opt-out](https://www.reddit.com/r/nextjs/comments/15wc4nt/nextjs_caching_opt_out/)   |
+| Caching (see own section above)                                 | No*, if needed, use industry-standard caching**.           | App Router [caching](https://nextjs.org/docs/app/building-your-application/caching), [opt-out](https://www.reddit.com/r/nextjs/comments/15wc4nt/nextjs_caching_opt_out/)   |
 
 
 (\*) Vike doesn't ship those extras by design.
+(\**) Industry-standard ways of caching is to use the HTTP Cache-Control header to [cache in the client's browser](https://web.dev/articles/http-cache) and potentially also on a shared/public [CDN](https://www.cloudflare.com/lp/ppc/cdn-x/) cache in front of your server side. Additionally, if you ever need even more caching than that, it's possible to have an in-memory cache on your server-side using e.g. [Redis](https://developer.redis.com/howtos/solutions/microservices/caching/) or Memcached.
