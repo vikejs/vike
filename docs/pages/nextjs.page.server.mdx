@@ -84,9 +84,12 @@ We foster the proliferation of React frameworks, highly-tailored to specific use
 
 Next.js aggressively uses [caching](https://nextjs.org/docs/app/building-your-application/caching), for performance and cost-saving reasons. Less server load means your app uses less compute resources, which saves you money on Vercel's paid plans, but saves Vercel money on their free tier (which most developers will be on; Vercel's long-tail). Next.js leans towards making as many routes as possible statically rendered (SSG over SSR wherever possible). Caching is enabled by default (both on the server and the client), and you have to **explicitly opt-out** to disable it (using more or less hacky solutions) each time you don't want it. But people are [finding](https://www.reddit.com/r/nextjs/comments/18tkmdb/has_anyone_abandoned_nextjs_after_using_it_on_a/kffjox2/) the aggressive [caching to be a nightmare](https://www.reddit.com/r/nextjs/comments/18tkmdb/has_anyone_abandoned_nextjs_after_using_it_on_a/kfh6nh2/), and hard to disable. Caching can give a wrong/stale view of your app, and cost precious development time hunting for the cause. As the saying goes, _"There are only two hard things in Computer Science: cache invalidation and naming things."_ -- Phil Karlton
 
+Vike does not cache, by design, so by default your app will behave as you expect. If you do want caching however, you can opt-in to it, by using one of the many industry-standard caching tools.
+
+
 ### Server-first mentality
 
-Next.js - made by Vercel, a hosting provider - is server-focused. It now defaults to interpreting all React components as React Server Components, so you have to mark React components with "use client" to opt-out of always hitting the server. It reduces the side of client-side bundles, as the client doesn't need to download JS libraries that now by default run on the server (e.g. markdown). But it leans more on the server which may not be what you want.
+Next.js - made by Vercel, a hosting provider - is server-focused. It now defaults to interpreting all React components as React Server Components, so you have to mark React components with "use client" to opt-out of always hitting the server. It reduces the side of client-side bundles, as the client doesn't need to download JS libraries that now by default run on the server (e.g. markdown). But it leans more on the server, which may not be what you want.
 
 If your product either:
 
@@ -97,6 +100,8 @@ If your product either:
 - should use less server resources (scalability, cost-wise), in favor of requiring slightly more processing power on the client
 
 then the server-first mentality of Next.js and Vercel is more a hindrance than help.
+
+Vike is made by the community, with no conflict of interests. You can solve the aforementioned use cases by f.ex. using SSR for the first page, and then use client routing/navigation from there. You may take this one additional step, and turn your app into a [PWA](https://github.com/vite-pwa/vite-plugin-pwa) / offline-first app. If you go even further on the spectrum, you may not even have any server-side process (for less operating costs, and/or to have no JS running on the back-end). F.ex. by [pre-rendering](https://vike.dev/pre-rendering) all pages to static HTML. In all of these cases, Vike lets you use React components normally, without having to always opt-in with "use client" directives to run them on the client. Vike lets you keep the high-interactivity use case - which React etc. was made for - as first-class, without standing in your way. Simultaneously, Vike is tailor-made to let you do simple and straightforward SSR/SSG/pre-rendering. But Vike has no incentive to favor any side of the work-split between the client and your potential server side.
 
 
 ## Detailed comparison table
