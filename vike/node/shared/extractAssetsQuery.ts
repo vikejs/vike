@@ -19,9 +19,8 @@ function extractAssetsAddQuery(id: string): string {
 }
 
 function extractAssetsRemoveQuery(id: string): string {
-  if (!id.includes('?')) return id
-  const suffix = `?${query}`
   // Only supports 'virtual:vike:' IDs
-  assert(id.endsWith(query))
-  return id.slice(0, -1 * suffix.length)
+  return !id.includes('?')
+    ? id
+    : id.slice(0, id.indexOf('?'))
 }
