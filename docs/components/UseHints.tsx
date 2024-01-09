@@ -1,22 +1,22 @@
 export { UseBatiHint }
-export { UseIntegrationPackageHint }
-export { UseIntegrationPackageAnyHint }
+export { UseVikeExtensionsUiFrameworksHint }
+export { UseVikeExtensionsUiFrameworksAnyHint }
 
 import React from 'react'
-import { IntegrationPackage, IntegrationPackageNames } from '../components'
+import { VikeExtensionsUiFrameworks, VikeExtensionsUiFrameworksNames } from '../components'
 
-function UseIntegrationPackageAnyHint({ featureName }: { featureName: string }) {
+function UseVikeExtensionsUiFrameworksAnyHint({ featureName }: { featureName: string }) {
   return (
     <blockquote>
       <p>
-        Instead of manually integrating {featureName} yourself, you can use a <IntegrationPackage /> which already
-        integrates {featureName}. You can use <Bati /> to scaffold an app that uses <IntegrationPackageNames />.
+        Instead of manually integrating {featureName} yourself, you can use a <VikeExtensionsUiFrameworks /> which already
+        integrates {featureName}. You can use <Bati /> to scaffold an app that uses <VikeExtensionsUiFrameworksNames />.
       </p>
     </blockquote>
   )
 }
 
-function UseIntegrationPackageHint({
+function UseVikeExtensionsUiFrameworksHint({
   uiFrameworkName,
   noQuote
 }: {
@@ -24,7 +24,7 @@ function UseIntegrationPackageHint({
   noQuote?: true
 }) {
   const pkg = <code>vike-{uiFrameworkName.toLowerCase()}</code>
-  const pkgWithLink = <a href="/vike-packages#ui-framework">{pkg}</a>
+  const pkgWithLink = <a href="/extensions#ui-framework">{pkg}</a>
   const hint = (
     <p>
       Instead of manually integrating {uiFrameworkName} yourself, you can use {pkgWithLink} which integrates{' '}

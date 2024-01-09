@@ -1,6 +1,6 @@
 export * from './CSSinJSTool'
 export * from './DataArchitecture'
-export * from './IntegrationPackage'
+export * from './VikeExtensionsUiFrameworks'
 export * from './UseHints'
 export { default as ClientRouting } from './routing/ClientRouting.mdx'
 export { default as ServerRouting } from './routing/ServerRouting.mdx'

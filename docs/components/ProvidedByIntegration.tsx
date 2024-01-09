@@ -8,10 +8,10 @@ function ProvidedByIntegration({ what, manual }: { what: JSX.Element; manual: JS
     <blockquote>
       <p>
         The {what} is provided by{' '}
-        <Link href="/vike-packages#ui-frameworks">
+        <Link href="/extensions#ui-frameworks">
           <code>vike-react</code>/<code>vike-vue</code>/<code>vike-solid</code>
         </Link>
-        . If you don't use one of these integration packages, you can implement the {what} yourself as shown at {manual}
+        . If you don't use one of these Vike extension, you can implement the {what} yourself as shown at {manual}
         .
       </p>
     </blockquote>

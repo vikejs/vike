@@ -1,5 +1,5 @@
 import { Link } from '@brillout/docpress'
-import { IntegrationPackage } from '../components'
+import { VikeExtensionsUiFrameworks, VikeExtensionsUiFrameworksNames } from '../components'
 
 The `Page` value determines the page's root component.
 
@@ -31,18 +31,18 @@ With Vue:
 
 > You can also define the `Page` value by setting <Link href="/config#config-h-js">`+config.h.js > export default { Page }`</Link>.
 
-What happens with the `Page` value is determined by the <IntegrationPackage />. Alternatively, for complete control over the UI framework integration, you can <Link href="#manual-integration">manually integrate</Link> the UI framework yourself.
+What happens with the `Page` value is determined by the <VikeExtensionsUiFrameworks />. Alternatively, for complete control over the UI framework integration, you can <Link href="#manual-integration">manually integrate</Link> the UI framework yourself.
 
 
 
 ## Manual integration
 
-Vike in itself never uses the `Page` value: it just makes the value available at `pageContext.Page`.
+Vike itself never uses the `Page` value: it just makes the value available at `pageContext.Page`.
 The `pageContext.Page` value is typically used by the <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> hooks: these two hooks essentially determine how the `Page` value is rendered to HTML and the [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model).
 
-The <IntegrationPackage /> implements the `onRenderHtml()` and `onRenderClient()` hooks, so that you don't have to implement them: everything just works like a regular framework such as Next.js or Nuxt.
+The <VikeExtensionsUiFrameworks /> implements the `onRenderHtml()` and `onRenderClient()` hooks, so that you don't have to implement them: everything just works like a regular framework such as Next.js or Nuxt.
 
-Instead of using a UI framework integration package, you can integrate your favorite UI framework yourself: you then have complete control over the UI framework integration.
+Instead of using <VikeExtensionsUiFrameworksNames />, you can integrate your favorite UI framework yourself: you then have complete control over the UI framework integration.
 
 Here is a minimal example of manually integrating a UI framework:
 

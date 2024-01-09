@@ -336,6 +336,10 @@ const headingsDetached = [
     url: '/vike-packages'
   },
   {
+    title: 'Vike Extensions',
+    url: '/extensions'
+  },
+  {
     title: 'Abort',
     url: '/abort',
     sectionTitles: ['`throw redirect()` VS `throw render()`']

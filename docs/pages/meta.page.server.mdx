@@ -1,7 +1,7 @@
-import { IntegrationPackage, IntegrationPackageNames } from '../components'
+import { VikeExtensionsUiFrameworks, VikeExtensionsUiFrameworksNames } from '../components'
 import { Link, RepoLink } from '@brillout/docpress'
 
-> Using `meta` is a powerful and advanced technique: generally, we recommend using <Link href="/vike-packages">Vike packages</Link> instead.
+> Using `meta` is a powerful and advanced technique: generally, we recommend using <Link href="/extensions">Vike extensions</Link> instead.
 
 `meta` enables:
  - **New settings**.
@@ -105,7 +105,7 @@ async function onBeforeRender(pageContext) {
 
 In order to define the tags `<title>` and `<meta name="description">` of a page's HTML, you can create new settings `title` and `description`.
 
-> If you use a <IntegrationPackage/>, then you don't need to create the `title` and `description` settings as they are already created by <IntegrationPackageNames />. You can still read this section as it's a good example for showcasing `meta`.
+> If you use a <VikeExtensionsUiFrameworks/>, then you don't need to create the `title` and `description` settings as they are already created by <VikeExtensionsUiFrameworksNames />. You can still read this section as it's a good example for showcasing `meta`.
 
 We first show how the settings `title` and `description` are used and then their implementation.
 
@@ -241,7 +241,7 @@ async function onRenderHtml(pageContext) {
 
 ## Example: `Layout`
 
-> If you use a <IntegrationPackage/>, then you don't need to create the `Layout` setting as it's already created by <IntegrationPackageNames />.
+> If you use a <VikeExtensionsUiFrameworks/>, then you don't need to create the `Layout` setting as it's already created by <VikeExtensionsUiFrameworksNames />.
 
 Another common use case is to create a component `<Layout>` that defines the layout of a page.
 
