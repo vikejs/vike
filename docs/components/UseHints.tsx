@@ -1,5 +1,5 @@
-export { UseBati }
 export { UseBatiHint }
+export { UseBatiHint_insteadOfManuelIntegration }
 export { UseVikeExtensionsUiFrameworksHint }
 export { UseVikeExtensionsUiFrameworksAnyHint }
 
@@ -40,7 +40,7 @@ function UseVikeExtensionsUiFrameworksHint({
   }
 }
 
-function UseBatiHint({ toolName }: { toolName: string }) {
+function UseBatiHint_insteadOfManuelIntegration({ toolName }: { toolName: string }) {
   return (
     <>
       <blockquote>
@@ -53,7 +53,7 @@ function UseBatiHint({ toolName }: { toolName: string }) {
   )
 }
 
-function UseBati({ feature }: { feature: string | React.ReactElement }) {
+function UseBatiHint({ feature }: { feature: string | React.ReactElement }) {
   return (
     <>
       Use <a href="https://batijs.github.io/">Bati</a> to scaffold a Vike app using {feature}.
