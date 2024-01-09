@@ -1,28 +1,28 @@
-export { VikeExtensionUiFramework }
-export { VikeExtensionUiFrameworkNames }
-export { VikeExtensionUiFrameworkNamesEnglish }
-export { ProvidedByVikeExtensionUiFramework }
+export { UiFrameworkVikeExtension }
+export { UiFrameworkVikeExtensionNames }
+export { UiFrameworkVikeExtensionNamesEnglish }
+export { UiFrameworkVikeExtensionProvidedBy }
 
 import React from 'react'
 import { Link } from '@brillout/docpress'
 
-function VikeExtensionUiFramework() {
+function UiFrameworkVikeExtension() {
   return (
     <>
       <Link href="/extensions#ui-framework">
-        UI framework Vike extension (<VikeExtensionUiFrameworkNames />)
+        UI framework Vike extension (<UiFrameworkVikeExtensionNames />)
       </Link>
     </>
   )
 }
-function VikeExtensionUiFrameworkNames() {
+function UiFrameworkVikeExtensionNames() {
   return (
     <>
       <code>vike-react</code>/<code>vike-vue</code>/<code>vike-solid</code>
     </>
   )
 }
-function VikeExtensionUiFrameworkNamesEnglish() {
+function UiFrameworkVikeExtensionNamesEnglish() {
   return (
     <>
       <code>vike-react</code>, <code>vike-vue</code>, and <code>vike-solid</code>
@@ -30,7 +30,7 @@ function VikeExtensionUiFrameworkNamesEnglish() {
   )
 }
 
-function ProvidedByVikeExtensionUiFramework({ what, manual }: { what: JSX.Element; manual: JSX.Element }) {
+function UiFrameworkVikeExtensionProvidedBy({ what, manual }: { what: JSX.Element; manual: JSX.Element }) {
   return (
     <blockquote>
       <p>

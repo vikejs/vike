@@ -1,24 +1,24 @@
 export { UseBatiHint }
 export { UseBatiHint_insteadOfManuelIntegration }
-export { UseVikeExtensionUiFrameworkHint }
-export { UseVikeExtensionUiFrameworkAnyHint }
+export { UseUiFrameworkVikeExtensionHint }
+export { UseUiFrameworkVikeExtensionAnyHint }
 
 import React from 'react'
-import { VikeExtensionUiFramework, VikeExtensionUiFrameworkNames } from '../components'
+import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../components'
 
-function UseVikeExtensionUiFrameworkAnyHint({ featureName }: { featureName: string }) {
+function UseUiFrameworkVikeExtensionAnyHint({ featureName }: { featureName: string }) {
   return (
     <blockquote>
       <p>
-        Instead of manually integrating {featureName} yourself, you can use a <VikeExtensionUiFramework /> which
+        Instead of manually integrating {featureName} yourself, you can use a <UiFrameworkVikeExtension /> which
         already integrates {featureName}. You can use <Bati /> to scaffold an app that uses{' '}
-        <VikeExtensionUiFrameworkNames />.
+        <UiFrameworkVikeExtensionNames />.
       </p>
     </blockquote>
   )
 }
 
-function UseVikeExtensionUiFrameworkHint({
+function UseUiFrameworkVikeExtensionHint({
   uiFrameworkName,
   noQuote
 }: {

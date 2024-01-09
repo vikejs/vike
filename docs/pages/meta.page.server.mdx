@@ -1,4 +1,4 @@
-import { VikeExtensionUiFramework, VikeExtensionUiFrameworkNames } from '../components'
+import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../components'
 import { Link, RepoLink } from '@brillout/docpress'
 
 > Using `meta` is a powerful and advanced technique: generally, we recommend using <Link href="/extensions">Vike extensions</Link> instead.
@@ -105,7 +105,7 @@ async function onBeforeRender(pageContext) {
 
 In order to define the tags `<title>` and `<meta name="description">` of a page's HTML, you can create new settings `title` and `description`.
 
-> If you use a <VikeExtensionUiFramework/>, then you don't need to create the `title` and `description` settings as they are already created by <VikeExtensionUiFrameworkNames />. You can still read this section as it's a good example for showcasing `meta`.
+> If you use a <UiFrameworkVikeExtension/>, then you don't need to create the `title` and `description` settings as they are already created by <UiFrameworkVikeExtensionNames />. You can still read this section as it's a good example for showcasing `meta`.
 
 We first show how the settings `title` and `description` are used and then their implementation.
 
@@ -241,7 +241,7 @@ async function onRenderHtml(pageContext) {
 
 ## Example: `Layout`
 
-> If you use a <VikeExtensionUiFramework/>, then you don't need to create the `Layout` setting as it's already created by <VikeExtensionUiFrameworkNames />.
+> If you use a <UiFrameworkVikeExtension/>, then you don't need to create the `Layout` setting as it's already created by <UiFrameworkVikeExtensionNames />.
 
 Another common use case is to create a component `<Layout>` that defines the layout of a page.
 
