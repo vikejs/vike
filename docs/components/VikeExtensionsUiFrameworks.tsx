@@ -1,5 +1,6 @@
 export { VikeExtensionsUiFrameworks }
 export { VikeExtensionsUiFrameworksNames }
+export { VikeExtensionsUiFrameworksNamesEnglish }
 
 import React from 'react'
 import { Link } from '@brillout/docpress'
@@ -13,11 +14,17 @@ function VikeExtensionsUiFrameworks() {
     </>
   )
 }
-
 function VikeExtensionsUiFrameworksNames() {
   return (
     <>
       <code>vike-react</code>/<code>vike-vue</code>/<code>vike-solid</code>
+    </>
+  )
+}
+function VikeExtensionsUiFrameworksNamesEnglish() {
+  return (
+    <>
+      <code>vike-react</code>, <code>vike-vue</code>, and <code>vike-solid</code>
     </>
   )
 }
