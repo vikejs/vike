@@ -10,7 +10,7 @@ function VikeExtensionUiFramework() {
   return (
     <>
       <Link href="/extensions#ui-framework">
-        Vike extension <VikeExtensionUiFrameworkNames />
+        UI framework Vike extension (<VikeExtensionUiFrameworkNames />)
       </Link>
     </>
   )
