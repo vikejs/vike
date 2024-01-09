@@ -39,7 +39,8 @@ Apart from rendering (React), Vike includes everything you'd expect from a front
 
 ### Next.js
 
-Next.js is made by [Vercel](https://vercel.com), a serverless hosting provider. It is therefore naturally optimised to run in their environment and infrastructure (which becomes pricey at scale).
+Next.js is made by [Vercel](https://vercel.com), a serverless hosting provider. It is therefore naturally optimised to run in their environment and infrastructure. But Vercel is [known](https://eightify.app/summary/web-development/the-shift-from-vercel-to-aws-amplify-cost-and-scaling-benefits) to [become](https://www.reddit.com/r/nextjs/comments/12t5nhi/needed_alternatives_for_vercel/) very [expensive](https://www.reddit.com/r/nextjs/comments/q7vw6p/cheaper_vercel_alternatives_specifically_to/hgm7d1t/) at scale (pay-per-developer + exceeded invocations/memory + exdeeded bandwidth; must have enterprise plan when >10 developers), and their pricing is [opaque](https://www.reddit.com/r/nextjs/search?q=vercel+pricing&restrict_sr=on&include_over_18=on) and hard to predict (which is a turn-off, and a no-go for large enterprise customers).
+
 You can self-host Next.js as a Node.js server, for example placed in a Docker container. But it won't work precisely the same way as on Vercel.
 Furthermore, self-hosting Next.js as a Serverless or Edge application (i.e. replacing Vercel) is worse.
 
