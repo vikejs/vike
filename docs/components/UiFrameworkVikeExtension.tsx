@@ -1,6 +1,5 @@
 export { UiFrameworkVikeExtension }
 export { UiFrameworkVikeExtensionNames }
-export { UiFrameworkVikeExtensionNamesEnglish }
 export { UiFrameworkVikeExtensionProvidedBy }
 
 import React from 'react'
@@ -22,14 +21,6 @@ function UiFrameworkVikeExtensionNames() {
     </>
   )
 }
-function UiFrameworkVikeExtensionNamesEnglish() {
-  return (
-    <>
-      <code>vike-react</code>, <code>vike-vue</code>, and <code>vike-solid</code>
-    </>
-  )
-}
-
 function UiFrameworkVikeExtensionProvidedBy({ what, manual }: { what: JSX.Element; manual: JSX.Element }) {
   return (
     <blockquote>

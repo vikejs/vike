@@ -1,7 +1,8 @@
 import { Link } from '@brillout/docpress'
-import { JustAMiddleware, UiFrameworkVikeExtensionNamesEnglish } from '../components'
+import { JustAMiddleware, UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../components'
 
 Vike provides an frontend architecture that is both flexible and robust.
+
 
 ## Do-one-thing-do-it-well
 
@@ -19,9 +20,7 @@ We believe it's paramount for the web that these core constituents are developed
 
 ## `onRenderHtml()` & `onRenderClient()`
 
-Vike extensions such as <UiFrameworkVikeExtensionNamesEnglish /> integrate UI frameworks so that you don't have to write the integration.
-
-But, if you want, instead of using <Link href="/extensions">Vike extensions</Link> you can use the hooks `onRenderHtml()` and `onRenderClient()` for complete control over how pages are rendered.
+The <UiFrameworkVikeExtension /> integrate UI frameworks. But, if you want, instead of using <UiFrameworkVikeExtensionNames /> you can use the hooks `onRenderHtml()` and `onRenderClient()` for complete control over how pages are rendered.
 
 Not only can you manually integrate with any UI framework you want and however you want, you can also deeply integrate with your favorite data fetching tools. For example, you can integrate with Relay in ways that aren't possible with other frameworks.
 
