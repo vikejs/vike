@@ -58,7 +58,7 @@ Vike is server and deployment agnostic (use any hosting provider), and built wit
 
 From a server perspective, <Link text="Vike is just a middleware" href="/deploy" /> that doesn't depend on Node.js and that can run anywhere where JavaScript runs (AWS, Vercel, Cloudflare, Deno Deploy, etc.), even in the browser.
 
-> You do need Node.js for local development, as [Vite (the compiler used by Vike)](https://vitejs.dev/) depends on it. But Vike's runtime doesn't depend on Node.js which means that in production, once your app is built, there are no dependencies on Node.js anymore. In other words: you can develop apps that don't depend on Node.js and deploy them anywhere.
+> You do need Node.js for local development, as [Vite (the local dev server used by Vike)](https://vitejs.dev/) depends on it. But Vike's runtime doesn't depend on Node.js which means that in production, once your app is built, there are no dependencies on Node.js anymore. In other words: you can develop apps that don't depend on Node.js and deploy them anywhere.
 
 To integrate Vike, you simply add Vike's middleware to your server side (Express.js, Fastify, Edge Worker, Serverless Function, etc.).
 
