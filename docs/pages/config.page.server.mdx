@@ -1,5 +1,5 @@
 import { Link } from '@brillout/docpress'
-import { HeaderFileIntro, VikeExtensionsUiFrameworks, VikeExtensionsUiFrameworksNames } from '../components'
+import { HeaderFileIntro, VikeExtensionUiFramework, VikeExtensionUiFrameworkNames } from '../components'
 
 Everything there is to know about config files.
 
@@ -143,7 +143,7 @@ export default {
 }
 ```
 
-> `config.title` is provided by the <VikeExtensionsUiFrameworks />. If you don't use <VikeExtensionsUiFrameworksNames /> then you can define `config.title` yourself, see <Link href="/meta" />.
+> `config.title` is provided by the <VikeExtensionUiFramework />. If you don't use <VikeExtensionUiFrameworkNames /> then you can define `config.title` yourself, see <Link href="/meta" />.
 
 The `+config.h.js` file of pages (`/pages/some-page/+config.h.js`) can override default values defined by `/pages/+config.h.js`.
 
@@ -200,4 +200,4 @@ The hooks `admin-panel/renderer/+onRender{Html,Client}.js` apply as default to a
 
 The `renderer/` directory doesn't add any functionality: `/renderer/+config.h.js` is equivalent to `/pages/+config.h.js`. It's just an (optional) convenience for moving renderer files outside of `pages/` (to avoid cluttering the `pages/` directory). That way, the entire renderer logic can be organized and tucked into a single place `renderer/`.
 
-> The `renderer/` directory is usually only used by users who don't use a <VikeExtensionsUiFrameworks />.
+> The `renderer/` directory is usually only used by users who don't use a <VikeExtensionUiFramework />.

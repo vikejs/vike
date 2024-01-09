@@ -1,11 +1,11 @@
-import { HookTypeScriptHints, VikeExtensionsUiFrameworks, VikeExtensionsUiFrameworksNames } from '../components'
+import { HookTypeScriptHints, VikeExtensionUiFramework, VikeExtensionUiFrameworkNames } from '../components'
 import { Link } from '@brillout/docpress'
 
 Environment: client.
 
 The `onRenderClient()` hook defines how pages are <Link text="hydrated" href="/hydration" /> and rendered on the client-side.
 
-> If you use a <VikeExtensionsUiFrameworks/>, then you don't need to define `onRenderClient()` as it's already defined by <VikeExtensionsUiFrameworksNames />.
+> If you use a <VikeExtensionUiFramework/>, then you don't need to define `onRenderClient()` as it's already defined by <VikeExtensionUiFrameworkNames />.
 
 ```js
 // +onRenderClient.js
