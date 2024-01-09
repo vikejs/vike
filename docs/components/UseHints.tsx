@@ -1,3 +1,4 @@
+export { UseBati }
 export { UseBatiHint }
 export { UseVikeExtensionsUiFrameworksHint }
 export { UseVikeExtensionsUiFrameworksAnyHint }
@@ -9,8 +10,9 @@ function UseVikeExtensionsUiFrameworksAnyHint({ featureName }: { featureName: st
   return (
     <blockquote>
       <p>
-        Instead of manually integrating {featureName} yourself, you can use a <VikeExtensionsUiFrameworks /> which already
-        integrates {featureName}. You can use <Bati /> to scaffold an app that uses <VikeExtensionsUiFrameworksNames />.
+        Instead of manually integrating {featureName} yourself, you can use a <VikeExtensionsUiFrameworks /> which
+        already integrates {featureName}. You can use <Bati /> to scaffold an app that uses{' '}
+        <VikeExtensionsUiFrameworksNames />.
       </p>
     </blockquote>
   )
@@ -47,6 +49,14 @@ function UseBatiHint({ toolName }: { toolName: string }) {
           integrates {toolName}.
         </p>
       </blockquote>
+    </>
+  )
+}
+
+function UseBati({ feature }: { feature: string | React.ReactElement }) {
+  return (
+    <>
+      Use <a href="https://batijs.github.io/">Bati</a> to scaffold a Vike app using {feature}.
     </>
   )
 }
