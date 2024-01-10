@@ -13,7 +13,7 @@ Vike differs from Next.js in three fundamental ways:
     > We believe Vike hits the sweet spot of being a full-fledged frontend tool while avoiding unnecessary bells and whistles.
 
 Beyond these structural differences,
-Vike introduces features such as blazing fast HMR (powered by Vite), first-class SPA support, Domain-driven File Structure, state-of-the-art Code Splitting (powered by Vite/Rollup), Automatic Deployment Synchronization, [Build Your Own Framework](https://vike.land), etc.
+Vike introduces features such as blazing fast HMR (powered by Vite), optinal SSR, Domain-driven File Structure, state-of-the-art Code Splitting (powered by Vite/Rollup), Automatic Deployment Synchronization, [Build Your Own Framework](https://vike.land), etc.
 
 > Turbopack replicates some of Vite's techniques, but it's still in its infancy and it will take a while until Turbopack is production-ready. With Vite, you can use lightning fast DX today.
 
@@ -89,28 +89,25 @@ Vike does not cache, by design, so by default your app will behave as you expect
 
 ### Server-first mentality
 
-Next.js - made by Vercel, a hosting provider - is server-focused. It now defaults to interpreting all React components as React Server Components, so you have to mark React components with "use client" to opt-out of always hitting the server. It reduces the side of client-side bundles, as the client doesn't need to download JS libraries that now by default run on the server (e.g. markdown). But it leans more on the server, which may not be what you want.
+Next.js - made by Vercel, a hosting provider - is server-focused. It now defaults to interpreting all React components as Server Components, so you have to mark React components with "use client" to opt-out of always hitting the server. It makes sense for many types of apps as it reduces the size of client-side bundles (the client doesn't need to download JS libraries that now by default run on the server, e.g. markdown). But the fact that Next.js leans more on the server may not be what you want.
 
 If your product either:
 
 - leans more towards being an app than a site/page
 - has a lot of dynamically generated and/or frequently updating content (coming from a DB), where caching doesn't give a lot of gains
 - is a [PWA](https://web.dev/learn/pwa/assets-and-data#platform-specific_apps_vs_pwa) and/or local/offline-first
-- is a cross-platform app (reusing code between web and native), since native platforms are typically client-centered (React Server Components currently don't work on React Native)
+- is a cross-platform app (reusing code between web and native), since native platforms are typically client-centered (and Server Components don't work on React Native)
 - should use less server resources (scalability, cost-wise), in favor of requiring slightly more processing power on the client
 
-then the server-first mentality of Next.js and Vercel is more a hindrance than help.
+then the server-first mentality of Next.js and Vercel isn't helpful and can be a hindrance.
 
-Vike is made by the community, with no conflict of interests.
-You can solve the aforementioned use cases by f.ex. using SSR for the first page, and then use client routing/navigation from there.
-You may take this one additional step, and turn your app into a [PWA](https://github.com/vite-pwa/vite-plugin-pwa) / offline-first app.
-If you go even further on the spectrum, you may not even have any server-side process (for less operating costs, and/or to have no JS running on the back-end).
-F.ex. by [pre-rendering](https://vike.dev/pre-rendering) all pages to static HTML.
-In all of these cases, Vike lets you use React components normally, without having to always opt-in with "use client" directives to be able to also run them on the client.
-With Vike you can even really easily [render individual components _only_ on the client, skipping their server rendering](https://vike.dev/ClientOnly).
-Vike lets you keep the high-interactivity use case - which React etc. was made for - as first-class, without standing in your way.
-Simultaneously, Vike is tailor-made to let you do simple and straightforward SSR/SSG/pre-rendering.
-But Vike has no incentive to favor any side of the work-split between the client and your potential server side.
+With Vike, you can choose setups that fits the aforementioned use cases.
+You can completely opt out of SSR, for example by setting the `ssr` setting of <Link href="/href#vike-extension">`vike-react`</Link> to `false`.
+You can also use SSR for the first page and then, from there on, use client-only navigation while fetching data directly between the client and the data source (without involving the SSR server).
+
+Vike has first-class support for leaning towards the client-side with features such as optional SSR, direct data fetching, pre-rendering, [PWA](https://github.com/vite-pwa/vite-plugin-pwa), and <Link href="/ClientOnly">ClientOnly</Link>.
+At the same time, Vike also has first-class support for SSR use cases.
+Vike is made by the community and has no incentive to favor any side of the work-split between the client and the server.
 
 
 ## Detailed comparison table
@@ -123,7 +120,7 @@ But Vike has no incentive to favor any side of the work-split between the client
 | UI Framework                                                    | Any (React, Preact, Solid, etc.)                           | React only                    |
 | Code-splitting and bundling                                     | Yes                                                        | Yes                           |
 | HMR                                                             | Yes, fast                                                  | Yes, slow                     |
-| SPA                                                             | Yes                                                        | Limited                       |
+| Optional SSR                                                    | Yes                                                        | No                            |
 | <p align="center">**SSR**</p>                                   |                                                            |                               |
 | Control                                                         | Full control                                               | Limited / Black box                      |
 | Renderers                                                       | Yes, create as many you need                               | Just one (`_app.ts` file)      |
