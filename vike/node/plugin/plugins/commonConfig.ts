@@ -1,6 +1,7 @@
 export { commonConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
+import { version } from 'vite'
 import { assert, assertWarning, findUserPackageJsonPath } from '../utils.js'
 import { assertRollupInput } from './buildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
@@ -26,7 +27,8 @@ function commonConfig(): Plugin[] {
       configResolved: {
         order: 'post',
         handler(config) {
-          overrideViteDefaults(config)
+          overrideViteDefaultPort(config)
+          overrideViteDefaultSsrExternal(config)
           workaroundCI(config)
           assertRollupInput(config)
           assertResolveAlias(config)
@@ -37,14 +39,16 @@ function commonConfig(): Plugin[] {
   ]
 }
 
-function overrideViteDefaults(config: ResolvedConfig) {
+function overrideViteDefaultPort(config: ResolvedConfig) {
   // @ts-ignore
   config.server ??= {}
   config.server.port ??= 3000
   // @ts-ignore
   config.preview ??= {}
   config.preview.port ??= 3000
-
+}
+function overrideViteDefaultSsrExternal(config: ResolvedConfig) {
+  if (isViteVersionWithSsrExternalTrue()) return
   // @ts-ignore Not released yet: https://github.com/vitejs/vite/pull/10939/files#diff-5a3d42620df2c6b17e25f440ffdb67683dee7ef57317674d19f41d5f30502310L5
   config.ssr.external ??= true
 }
@@ -73,4 +77,13 @@ function assertEsm(userViteRoot: string) {
     `We recommend setting ${dir}package.json#type to "module", see https://vike.dev/CJS`,
     { onlyOnce: true }
   )
+}
+
+function isViteVersionWithSsrExternalTrue(): boolean {
+  const versionParts = version.split('.').map((s) => parseInt(s, 10)) as [number, number, number]
+  assert(versionParts.length === 3)
+  if (versionParts[0] > 5) return true
+  if (versionParts[1] > 0) return true
+  if (versionParts[2] >= 12) return true
+  return false
 }
