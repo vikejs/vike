@@ -48,7 +48,7 @@ function overrideViteDefaultPort(config: ResolvedConfig) {
   config.preview.port ??= 3000
 }
 function overrideViteDefaultSsrExternal(config: ResolvedConfig) {
-  if (isViteVersionWithSsrExternalTrue()) return
+  if (!isViteVersionWithSsrExternalTrue()) return
   // @ts-ignore Not released yet: https://github.com/vitejs/vite/pull/10939/files#diff-5a3d42620df2c6b17e25f440ffdb67683dee7ef57317674d19f41d5f30502310L5
   config.ssr.external ??= true
 }
