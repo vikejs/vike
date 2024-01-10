@@ -101,7 +101,16 @@ If your product either:
 
 then the server-first mentality of Next.js and Vercel is more a hindrance than help.
 
-Vike is made by the community, with no conflict of interests. You can solve the aforementioned use cases by f.ex. using SSR for the first page, and then use client routing/navigation from there. You may take this one additional step, and turn your app into a [PWA](https://github.com/vite-pwa/vite-plugin-pwa) / offline-first app. If you go even further on the spectrum, you may not even have any server-side process (for less operating costs, and/or to have no JS running on the back-end). F.ex. by [pre-rendering](https://vike.dev/pre-rendering) all pages to static HTML. In all of these cases, Vike lets you use React components normally, without having to always opt-in with "use client" directives to be able to also run them on the client. With Vike you can even really easily [render individual components _only_ on the client, skipping their server rendering](https://vike.dev/ClientOnly). Vike lets you keep the high-interactivity use case - which React etc. was made for - as first-class, without standing in your way. Simultaneously, Vike is tailor-made to let you do simple and straightforward SSR/SSG/pre-rendering. But Vike has no incentive to favor any side of the work-split between the client and your potential server side.
+Vike is made by the community, with no conflict of interests.
+You can solve the aforementioned use cases by f.ex. using SSR for the first page, and then use client routing/navigation from there.
+You may take this one additional step, and turn your app into a [PWA](https://github.com/vite-pwa/vite-plugin-pwa) / offline-first app.
+If you go even further on the spectrum, you may not even have any server-side process (for less operating costs, and/or to have no JS running on the back-end).
+F.ex. by [pre-rendering](https://vike.dev/pre-rendering) all pages to static HTML.
+In all of these cases, Vike lets you use React components normally, without having to always opt-in with "use client" directives to be able to also run them on the client.
+With Vike you can even really easily [render individual components _only_ on the client, skipping their server rendering](https://vike.dev/ClientOnly).
+Vike lets you keep the high-interactivity use case - which React etc. was made for - as first-class, without standing in your way.
+Simultaneously, Vike is tailor-made to let you do simple and straightforward SSR/SSG/pre-rendering.
+But Vike has no incentive to favor any side of the work-split between the client and your potential server side.
 
 
 ## Detailed comparison table
