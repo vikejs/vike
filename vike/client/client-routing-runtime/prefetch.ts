@@ -26,8 +26,8 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 
 assertClientRouting()
 const globalObject = getGlobalObject<{
-  linkPrefetchHandlerAdded: Map<HTMLElement, true>
-}>('prefetch.ts', { linkPrefetchHandlerAdded: new Map() })
+  linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
+}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap() })
 
 async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
   try {

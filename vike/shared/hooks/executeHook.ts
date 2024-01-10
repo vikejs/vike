@@ -8,7 +8,7 @@ import { isObject } from '../../utils/isObject.js'
 import type { Hook, HookLoc } from './getHook.js'
 
 const globalObject = getGlobalObject('utils/executeHook.ts', {
-  userHookErrors: new Map<object, HookLoc>()
+  userHookErrors: new WeakMap<object, HookLoc>()
 })
 
 function isUserHookError(err: unknown): false | HookLoc {
