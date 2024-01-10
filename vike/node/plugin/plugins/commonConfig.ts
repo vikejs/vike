@@ -26,7 +26,7 @@ function commonConfig(): Plugin[] {
       configResolved: {
         order: 'post',
         handler(config) {
-          setDefaultPort(config)
+          overrideViteDefaults(config)
           workaroundCI(config)
           assertRollupInput(config)
           assertResolveAlias(config)
@@ -37,13 +37,16 @@ function commonConfig(): Plugin[] {
   ]
 }
 
-function setDefaultPort(config: ResolvedConfig) {
+function overrideViteDefaults(config: ResolvedConfig) {
   // @ts-ignore
   config.server ??= {}
   config.server.port ??= 3000
   // @ts-ignore
   config.preview ??= {}
   config.preview.port ??= 3000
+
+  // @ts-ignore Not released yet: https://github.com/vitejs/vite/pull/10939/files#diff-5a3d42620df2c6b17e25f440ffdb67683dee7ef57317674d19f41d5f30502310L5
+  config.ssr.external ??= true
 }
 
 // Workaround GitHub Action failing to access the server
