@@ -59,10 +59,8 @@ function vikeReactZustandPlugin(): Plugin {
       const modules = ctx.modules.filter((m) => m.id && m.id in idToStoreKeys)
       if (!modules.length) return
 
-      for (const module of modules) {
-        if (!module.id) {
-          continue
-        }
+      for (const module of modules.filter((m) => m.id)) {
+        assert(module.id)
         const storeKeysInFile = idToStoreKeys[module.id]
         assert(storeKeysInFile)
         for (const key of storeKeysInFile) {
