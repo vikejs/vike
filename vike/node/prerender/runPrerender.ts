@@ -62,6 +62,8 @@ import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.j
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { logHintForCjsEsmError } from '../runtime/renderPage/logHintForCjsEsmError.js'
+import { getRedirectsStatic } from '../../shared/route/resolveRedirects.js'
+import { escapeHtml } from '../runtime/html/renderHtml.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -220,6 +222,8 @@ async function runPrerender(
 
   assertPathIsFilesystemAbsolute(outDirRoot) // Needed for loadImportBuild(outDir) of @brillout/vite-plugin-server-entry
   await initGlobalContext(true, outDirRoot)
+  const globalContext = getGlobalContext()
+  assert(globalContext.isPrerendering)
   const renderContext = await getRenderContext()
   renderContext.pageFilesAll.forEach(assertExportNames)
 
@@ -256,6 +260,7 @@ async function runPrerender(
   warnContradictoryNoPrerenderList(prerenderedPageContexts, doNotPrerenderList)
 
   await prerender404(prerenderedPageContexts, renderContext, prerenderContext, onComplete)
+  await prerenderRedirects(globalContext.redirects, prerenderedPageContexts, renderContext, prerenderContext, onComplete)
 
   if (logLevel === 'info') {
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
@@ -870,6 +875,61 @@ async function prerender404(
   prerenderContext: PrerenderContext,
   onComplete: (htmlFile: HtmlFile) => Promise<void>
 ) {
+  if (!Object.values(prerenderedPageContexts).find(({ urlOriginal }) => urlOriginal === '/404')) {
+    let result: Awaited<ReturnType<typeof prerender404Page>>
+    try {
+      result = await prerender404Page(renderContext, prerenderContext.pageContextInit)
+    } catch (err) {
+      assertIsNotAbort(err, 'the 404 page')
+      throw err
+    }
+    if (result) {
+      const urlOriginal = '/404'
+      const { documentHtml, pageContext } = result
+      await onComplete({
+        urlOriginal,
+        pageContext,
+        htmlString: documentHtml,
+        pageContextSerialized: null,
+        doNotCreateExtraDirectory: true,
+        pageId: null
+      })
+    }
+  }
+}
+
+async function prerenderRedirects(
+  redirects: Record<string, string>,
+  prerenderedPageContexts: Record<string, { urlOriginal: string }>,
+  renderContext: RenderContext,
+  prerenderContext: PrerenderContext,
+  onComplete: (htmlFile: HtmlFile) => Promise<void>,
+) {
+  const redirectsStatic = getRedirectsStatic(redirects)
+  for (const [urlSource, urlTarget] of Object.entries(redirectsStatic)) {
+    const urlTargetSafe = escapeHtml(urlTarget)
+    const htmlString = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0;url=${urlTargetSafe}">
+  <title>Redirect to ${urlTargetSafe}</title>
+</head>
+<body>
+  <p>If you aren't redirected, <a href="${urlTargetSafe}">click here</a>.</p>
+</body>
+</html>`
+    const urlOriginal = urlSource
+    await onComplete({
+      urlOriginal,
+      pageContext: { urlOriginal },
+      htmlString,
+      pageContextSerialized: null,
+      doNotCreateExtraDirectory: true,
+      pageId: null
+    })
+  }
+
   if (!Object.values(prerenderedPageContexts).find(({ urlOriginal }) => urlOriginal === '/404')) {
     let result: Awaited<ReturnType<typeof prerender404Page>>
     try {

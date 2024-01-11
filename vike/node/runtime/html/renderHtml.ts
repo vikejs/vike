@@ -3,6 +3,7 @@ export { dangerouslySkipEscape }
 export { renderDocumentHtml }
 export { isDocumentHtml }
 export { getHtmlString }
+export { escapeHtml }
 export type { HtmlRender }
 export type { HtmlPart }
 export type { DocumentHtml }
