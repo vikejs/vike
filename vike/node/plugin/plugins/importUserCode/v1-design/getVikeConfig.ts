@@ -1167,6 +1167,7 @@ function getConfigName(filePath: string): string | null {
     return null
   } else {
     const configName = basename.slice(1)
+    assertUsage(configName !== '', `${filePath} Invalid filename ${fileName}`)
     return configName
   }
 }
