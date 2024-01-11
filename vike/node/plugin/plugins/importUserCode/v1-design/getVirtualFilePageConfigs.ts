@@ -86,6 +86,7 @@ function getCodePageConfigsSerialized(
       const configValueSource = sources[0]
       assert(configValueSource)
       if (!configValueSource.configEnv.eager) return
+      if (!isRuntimeEnvMatch(configValueSource.configEnv, { isForClientSide, isClientRouting, isEager: true })) return
       lines.push(
         ...serializeConfigValueImported(
           configValueSource,

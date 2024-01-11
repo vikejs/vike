@@ -8,7 +8,7 @@ import type {
   DefinedAt,
   PageConfigBuildTime
 } from '../../../../../shared/page-configs/PageConfig.js'
-import { isJsonSerializerError, stringify } from '@brillout/json-serializer/stringify'
+import { stringify } from '@brillout/json-serializer/stringify'
 import pc from '@brillout/picocolors'
 import { getConfigValueFilePathToShowToUser } from '../../../../../shared/page-configs/helpers.js'
 import { serializeConfigValue } from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
