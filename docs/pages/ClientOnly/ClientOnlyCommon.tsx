@@ -15,6 +15,14 @@ export const ClientOnlyCommon = ({ packageName }: { packageName: string }) => {
       {isSolid && <SolidUsage />}
       {isVue && <VueUsage />}
       <h3>Props</h3>
+        {isVue && (
+          <blockquote>
+            <p>
+              All props other than <code>load</code> are passed to the loaded component.
+              Unfortunately, type inference does not work as of now, however, there is a <a href="https://github.com/vikejs/vike-vue/issues/67">Github Issue</a> addressing this.
+            </p>
+          </blockquote>
+        )}
       <ul>
         <li>
           <strong>load</strong>: The function that imports the component.
