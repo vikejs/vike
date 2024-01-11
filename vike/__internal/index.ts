@@ -1,5 +1,7 @@
 // Internals needed by vite-plugin-vercel
 export { route, getPagesAndRoutes }
+export { getGlobalObject }
+export { VIKE_REACT_ZUSTAND_GLOBAL_KEY }
 export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }
 
 import { route as routeInternal, type PageRoutes } from '../shared/route/index.js'
@@ -9,7 +11,8 @@ import { setNodeEnvToProduction } from '../utils/nodeEnv.js'
 import { assert } from '../utils/assert.js'
 import { getRenderContext } from '../node/runtime/renderPage/renderPageAlreadyRouted.js'
 import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
-
+import { getGlobalObject } from '../utils/getGlobalObject.js'
+import { VIKE_REACT_ZUSTAND_GLOBAL_KEY } from '../node/plugin/extensions/vike-react-zustand/constants.js'
 /**
  * Used by {@link https://github.com/magne4000/vite-plugin-vercel|vite-plugin-vercel}
  * to compute some rewrite rules and extract { isr } configs.

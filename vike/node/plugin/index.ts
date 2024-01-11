@@ -28,6 +28,7 @@ import { baseUrls } from './plugins/baseUrls.js'
 import { envVarsPlugin } from './plugins/envVars.js'
 import pc from '@brillout/picocolors'
 import { fileEnv } from './plugins/fileEnv.js'
+import { vikeReactZustandPlugin } from './extensions/vike-react-zustand/plugin.js'
 
 markEnvAsVite()
 
@@ -52,7 +53,9 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     extensionsAssets(),
     baseUrls(vikeConfig),
     envVarsPlugin(),
-    fileEnv()
+    fileEnv(),
+    // Extensions
+    vikeReactZustandPlugin()
   ]
   return plugins
 }
