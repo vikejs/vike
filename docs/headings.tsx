@@ -75,7 +75,7 @@ const headings = [
     level: 2,
     title: 'Data Fetching',
     url: '/data-fetching',
-    sectionTitles: ['`data()` error handling']
+    sectionTitles: ['`data()`', '`data()` error handling']
   },
   {
     level: 2,
@@ -680,7 +680,8 @@ const headings = [
     level: 2,
     title: '`data()` hook',
     titleInNav: '`data()`',
-    url: '/data'
+    url: '/data',
+    sectionTitles: ['Without `useData()`']
   },
   {
     level: 2,
@@ -734,6 +735,12 @@ const headings = [
   {
     level: 4,
     title: 'Utils (server- & client-side)'
+  },
+  {
+    level: 2,
+    title: '`useData()`',
+    url: '/useData',
+    sectionTitles: ['TypeScript']
   },
   {
     level: 2,

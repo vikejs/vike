@@ -1,0 +1,97 @@
+import { Link } from '@brillout/docpress'
+import { ProvidedByUiFrameworkVikeExtension } from '../components'
+
+<ProvidedByUiFrameworkVikeExtension
+  what={
+    <>
+      <code>useData()</code> hook
+    </>
+  }
+  manual={<Link href="/data#without-usedata" />}
+/>
+
+The `useData()` hook allows you to access the data that is returned by <Link href="/data">`data()` hooks</Link>.
+
+```js
+// /pages/product/@id/components/SomeComponent.js
+// Environment: server, client
+
+import { useData } from 'vike-react'
+/* Or:
+import { useData } from 'vike-vue'
+import { useData } from 'vike-solid'
+*/
+
+// ...
+
+  // Inside any UI component
+  const data = useData()
+  const { name, price } = data
+```
+
+```js
+// /pages/product/@id/+data.js
+// Environment: server
+
+export { data }
+
+async function data(pageContext) {
+  const product = await Product.findById(pagContext.routeParams.id)
+  const { name, price } = product
+  return { name, price }
+}
+```
+
+See <Link href="/data-fetching" /> for more information about data fetching.
+
+
+## TypeScript
+
+```ts
+// SomeComponent.ts
+
+import type { Data } from './+data'
+
+// ...
+
+  // Inside any UI component
+  const data = useData<Data>()
+  // ...
+```
+
+```ts
+// +data.ts
+
+export { data }
+export type Data = Awaited<ReturnType<typeof data>>
+
+import type { PageContextServer } from 'vike/types'
+
+async function data(pageContext: PageContextServer) {
+  // ...
+}
+```
+
+Using type inference as shown above is usually what you want, but if you want to enforce a type instead:
+
+```ts
+// +data.ts
+
+export { data }
+export type { Data }
+
+type Data = /* the type you want to enforce */
+
+import type { DataAsync } from 'vike/types'
+
+const data: DataAsync = async (pageContext): Promise<Data> => {
+  // ...
+}
+```
+
+
+## See also
+
+- <Link href="/data-fetching" />
+- <Link href="/data" />
+- <Link href="/usePageContext" />

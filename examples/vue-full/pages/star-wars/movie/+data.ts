@@ -9,7 +9,7 @@ import type { MovieDetails } from '../types'
 import type { OnBeforeRenderAsync } from 'vike/types'
 
 const data = async (pageContext: PageContextServer | PageContextClient) => {
-  const response = await fetch(`https://star-wars.brillout.com/api/films/${pageContext.routeParams?.movieId}.json`)
+  const response = await fetch(`https://star-wars.brillout.com/api/films/${pageContext.routeParams!.movieId}.json`)
   let movie = (await response.json()) as MovieDetails
 
   // We remove data we don't need because the data is passed to the client; we should
