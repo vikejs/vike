@@ -71,7 +71,6 @@ function vikeReactZustandPlugin(): Plugin {
             assert('initializers' in globalObject)
             assert(globalObject.initializers)
             assert(typeof globalObject.initializers === 'object')
-            //@ts-ignore
             delete globalObject.initializers[key]
           }
         }
