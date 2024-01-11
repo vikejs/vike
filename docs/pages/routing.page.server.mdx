@@ -52,13 +52,13 @@ Route Functions give us full programmatic flexibility to implement advanced rout
 import { resolveRoute } from 'vike/routing'
 
 export default async (pageContext) => {
-  // Ensure that `/product/@id/edit` can be accessed only by admins
+  // Ensure that `/product/edit/@id` can be accessed only by admins
   if (!pageContext.user.isAdmin) {
     return false
   }
 
   // We can use Vike's Route String resolver
-  return resolveRoute('/product/@id/edit', pageContext.urlPathname)
+  return resolveRoute('/product/edit/@id', pageContext.urlPathname)
 }
 ```
 
