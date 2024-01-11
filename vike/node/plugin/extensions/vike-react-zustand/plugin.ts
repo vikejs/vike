@@ -55,7 +55,7 @@ function vikeReactZustandPlugin(): Plugin {
 
       return code
     },
-    async handleHotUpdate(ctx) {
+    handleHotUpdate(ctx) {
       const modules = ctx.modules.filter((m) => m.id && m.id in idToStoreKeys)
       if (!modules.length) return
 
