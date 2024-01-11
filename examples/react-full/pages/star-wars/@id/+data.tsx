@@ -9,23 +9,14 @@ import type { MovieDetails } from '../types'
 import { render } from 'vike/abort'
 
 async function data(pageContext: PageContextServer | PageContextClient) {
-  const dataUrl = `https://star-wars.brillout.com/api/films/${pageContext.routeParams?.id}.json`
+  const dataUrl = `https://star-wars.brillout.com/api/films/${pageContext.routeParams!.id}.json`
   let movie: MovieDetails
   try {
     const response = await fetch(dataUrl)
     movie = (await response.json()) as MovieDetails
   } catch (err) {
     console.error(err)
-    //*/
     throw render(503, `Couldn't fetch data, because failed HTTP GET request to ${dataUrl}`)
-    /*/
-    throw render(
-      503,
-      <>
-        Couldn't fetch data, because failed HTTP GET request to <code>{dataUrl}</code>.
-      </>
-    )
-    //*/
   }
 
   // We remove data we don't need because the data is passed to the client; we should
