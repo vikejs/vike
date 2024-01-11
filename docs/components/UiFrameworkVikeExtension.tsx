@@ -1,6 +1,6 @@
 export { UiFrameworkVikeExtension }
 export { UiFrameworkVikeExtensionNames }
-export { UiFrameworkVikeExtensionProvidedBy }
+export { ProvidedByUiFrameworkVikeExtension }
 
 import React from 'react'
 import { Link } from '@brillout/docpress'
@@ -21,7 +21,7 @@ function UiFrameworkVikeExtensionNames() {
     </>
   )
 }
-function UiFrameworkVikeExtensionProvidedBy({ what, manual }: { what: JSX.Element; manual: JSX.Element }) {
+function ProvidedByUiFrameworkVikeExtension({ what, manual }: { what: JSX.Element; manual: JSX.Element }) {
   return (
     <blockquote>
       <p>
