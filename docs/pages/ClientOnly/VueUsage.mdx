@@ -1,7 +1,10 @@
 ```vue
 <template>
   <ClientOnly :load="() => import('./MyComponent.vue')">
-    <template #fallback> Loading... </template>
+  <!-- Or:
+  <ClientOnly :load="() => (await import('some-library')).SomeComponent">
+  -->
+    <template #fallback>Loading...</template>
   </ClientOnly>
 </template>
 
@@ -13,6 +16,6 @@ import ClientOnly from 'vike-vue/ClientOnly'
 <h3>Slots</h3>
 <ul>
   <li>
-    <strong>fallback</strong>: A component that is displayed while the dynamic component is being loaded.
+    <strong>fallback</strong>: The component that is displayed while the dynamic component is being loaded.
   </li>
 </ul>

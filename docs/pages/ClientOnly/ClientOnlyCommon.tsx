@@ -17,23 +17,22 @@ export const ClientOnlyCommon = ({ packageName }: { packageName: string }) => {
       <h3>Props</h3>
       <ul>
         <li>
-          <strong>load</strong>: A function that returns a promise resolving to import the specified component's path,
-          dynamically loading it.
+          <strong>load</strong>: The function that imports the component.
         </li>
         {!isVue && (
           <>
             <li>
-              <strong>children</strong>: A function that takes the loaded component and returns the JSX to be rendered.
+              <strong>children</strong>: The function that renders the component.
             </li>
             <li>
-              <strong>fallback</strong>: A JSX element that is displayed while the dynamic component is being loaded.
+              <strong>fallback</strong>: The element that is displayed while the component is being loaded.
             </li>
           </>
         )}
         {isReact && (
           <li>
-            <strong>deps</strong> (optional): An array of dependencies that, when changed, will trigger a re-render of
-            the dynamic component. The <code>deps</code> prop of <code>{'<ClientOnly>'}</code> is passed as-is to the{' '}
+            <strong>deps</strong> (optional): An array of dependencies that, when changed, triggers a re-render of
+            the component. The <code>deps</code> prop of <code>{'<ClientOnly>'}</code> is passed as-is to the{' '}
             <a href="https://react.dev/reference/react/useEffect#parameters">
               <code>dependencies</code> parameter
             </a>{' '}
