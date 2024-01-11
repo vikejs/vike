@@ -66,9 +66,11 @@ function vikeReactZustandPlugin(): Plugin {
         const storeKeysInFile = idToStoreKeys[module.id]
         assert(storeKeysInFile)
         for (const key of storeKeysInFile) {
-          const globalObject = getGlobalObject(VIKE_REACT_ZUSTAND_GLOBAL_KEY, {})
-          if ('initializers' in globalObject) {
-            assert(globalObject.initializers && typeof globalObject.initializers === 'object')
+          const globalObject = getGlobalObject<any>(VIKE_REACT_ZUSTAND_GLOBAL_KEY)
+          if (globalObject) {
+            assert('initializers' in globalObject)
+            assert(globalObject.initializers)
+            assert(typeof globalObject.initializers === 'object')
             //@ts-ignore
             delete globalObject.initializers[key]
           }
