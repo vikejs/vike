@@ -166,7 +166,7 @@
     }
   },
   "bin": {
-    "vike": "./node/cli/bin-entry.js"
+    "vike": "./node/cli/vike.js"
   },
   "devDependencies": {
     "@brillout/import": "^0.2.3",
