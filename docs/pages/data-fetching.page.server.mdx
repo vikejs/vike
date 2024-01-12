@@ -17,6 +17,7 @@ import fetch from 'node-fetch'
 async function data(pageContext) {
   const { id } = pageContext.routeParams
   const response = await fetch(`https://star-wars.brillout.com/api/films/${id}.json`)
+
   let movies = await response.json()
   // `movies` is serialized and passed to the client. Therefore, we pick only the
   // data the client needs in order to minimize what is sent over the network.
@@ -36,8 +37,10 @@ async function data(pageContext) {
 
 > The `@id` in the path `/pages/movie/@id/+data.js` denotes a route parameter which value is available at `pageContext.routeParams.id`, see <Link href="/routing" />.
 
+> `pageContext` holds contextual information, see <Link href="/data#pagecontext" doNotInferSectionTitle/>.
+
 ```js
-// /pages/movies/@id/components/SomeComponent.js
+// SomeComponent.js
 // Environment: server, client
 
 import { useData } from 'vike-react'
@@ -53,42 +56,7 @@ import { useData } from 'vike-solid'
   const { name, price } = data
 ```
 
-> `useData()` is provided by the <UiFrameworkVikeExtension />. If you don't use <UiFrameworkVikeExtensionNames /> then see <Link href="/data#without-usedata" doNotInferSectionTitle />.
-
-
-## `data()` error handling
-
-To gracefully handle errors, use <Link href="/render" text={<code>throw render()</code>}></Link> and/or <Link href="/redirect" text={<code>throw redirect()</code>}></Link>:
-
-```js
-// /pages/movies/+data.js
-// Environment: server
-
-export { data }
-
-import fetch from 'node-fetch'
-
-async function data(pageContext) {
-  const response = await fetch('https://movies.example.org/api')
-
-  if (response.status === 404) {
-    // Render the error page and show error message
-    throw render(404, `Movie with ID ${movieId} doesn't exist.`)
-    /* Or redirect the user:
-    throw redirect('/movie/add')
-    */
-    /* Or render the movie submission form while preserving the URL:
-    throw render('/movie/add')
-    */
-  }
-
-  // ...
-}
-```
-
-Vike renders the <Link text="error page" href="/error-page" /> upon `throw render(404)`.
-
-> Using `throw render('/movie/add')` instead of `throw redirect('/movie/add')` is a technique explained at <Link href="/auth#login-flow" />.
+> `useData()` is provided by the <UiFrameworkVikeExtension />. If you don't use <UiFrameworkVikeExtensionNames /> then see <Link href="/data#without-vike-extension" doNotInferSectionTitle />.
 
 
 ## RPC
@@ -125,11 +93,7 @@ With Vike, you can manually integrate state management stores yourself, giving y
 
 ## See also
 
-- <Link href="/api-routes" />
-- <Link href="/RPC" />
 - <Link href="/data" />
 - <Link href="/useData" />
-- <Link href="/pageContext" />
-- <Link href="/onBeforeRender" />
-- <Link href="/render" />
-- <Link href="/redirect" />
+- <Link href="/api-routes" />
+- <Link href="/RPC" />

@@ -27,7 +27,9 @@ app.get('*', async (req, res) => {
 })
 ```
 
-You can then access `pageContext.user` <Link text="from any UI component" href="/usePageContext" />.
+You can then access `pageContext.user` from any UI component using <Link href="/usePageContext" >`usePageContext()`</Link>.
+
+> You can pass any custom `pageContext` property to `renderPage()`, see <Link href="/pageContext#custom" />.
 
 
 ## Login flow
