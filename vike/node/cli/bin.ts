@@ -80,3 +80,7 @@ cli.help()
 cli.version(projectInfo.projectVersion)
 
 cli.parse()
+
+process.on('unhandledRejection', (rejectValue) => {
+  throw rejectValue
+})
