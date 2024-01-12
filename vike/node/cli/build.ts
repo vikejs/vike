@@ -16,13 +16,12 @@ async function build(root: string, options: BuildOptions & GlobalCLIOptions) {
     build: buildOptions
   }
 
-  // TODO: if this is run, prerender throws TypeError: jsxDEV is not a function
-  // const initialConfig = await resolveConfig(inlineConfig, 'build').catch((error) => {
-  //   console.error(pc.red(`error resolving config:\n${error.stack}`), {
-  //     error
-  //   })
-  //   process.exit(1)
-  // })
+  const initialConfig = await resolveConfig(inlineConfig, 'build', 'custom', 'production', false).catch((error) => {
+    console.error(pc.red(`error resolving config:\n${error.stack}`), {
+      error
+    })
+    process.exit(1)
+  })
 
   // function isViteCliCall() {
   //   let execPath = process.argv[1]
@@ -40,8 +39,8 @@ async function build(root: string, options: BuildOptions & GlobalCLIOptions) {
   //   )
   // }
 
-  await buildVite(inlineConfig).catch((error) => {
-    // initialConfig.logger.error(pc.red(`error during build:\n${error.stack}`), { error })
+  await buildVite({}).catch((error) => {
+    initialConfig.logger.error(pc.red(`error during build:\n${error.stack}`), { error })
     process.exit(1)
   })
 }
