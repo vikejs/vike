@@ -10,7 +10,7 @@ import { ProvidedByUiFrameworkVikeExtension } from '../components'
   manual={<Link href="/data#without-vike-extension" />}
 />
 
-The `useData()` hook allows you to access the data that is returned by <Link href="/data">`data()` hooks</Link>.
+The `useData()` component hook allows you to access the data that is returned by a <Link href="/data">`data()` hook</Link>.
 
 ```js
 // SomeComponent.js
@@ -36,9 +36,13 @@ import { useData } from 'vike-solid'
 export { data }
 
 async function data(pageContext) {
-  const product = await Product.findById(pagContext.routeParams.id)
-  const { name, price } = product
-  return { name, price }
+  let product = await Product.findById(pagContext.routeParams.id)
+
+  // `product` is serialized and passed to the client. Therefore, we pick only the
+  // data the client needs in order to minimize what is sent over the network.
+  product = { name: product.name, price: product.price }
+
+  return product
 }
 ```
 
@@ -48,7 +52,8 @@ See <Link href="/data-fetching" /> for more information about data fetching.
 ## TypeScript
 
 ```ts
-// SomeComponent.ts
+// /pages/product/SomeComponent.ts
+// Environment: server, client
 
 import type { Data } from './+data'
 
@@ -60,7 +65,8 @@ import type { Data } from './+data'
 ```
 
 ```ts
-// +data.ts
+// /pages/product/+data.ts
+// Environment: server
 
 export { data }
 export type Data = Awaited<ReturnType<typeof data>>

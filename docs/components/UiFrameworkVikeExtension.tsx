@@ -25,11 +25,8 @@ function ProvidedByUiFrameworkVikeExtension({ what, manual }: { what: JSX.Elemen
   return (
     <blockquote>
       <p>
-        The {what} is provided by{' '}
-        <Link href="/extensions#ui-frameworks">
-          <code>vike-react</code>/<code>vike-vue</code>/<code>vike-solid</code>
-        </Link>
-        . If you don't use one of these <Link href="/extensions">Vike extension</Link>, you can implement the {what} yourself as shown at {manual}.
+        The {what} is provided by the <UiFrameworkVikeExtension />. If you don't use such Vike extension, you can
+        implement the {what} yourself as shown at {manual}.
       </p>
     </blockquote>
   )

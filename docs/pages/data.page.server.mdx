@@ -1,5 +1,5 @@
 import { Link, RepoLink } from '@brillout/docpress'
-import { UiFrameworkVikeExtensionNames } from '../components'
+import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../components'
 
 The `data()` hook is used for fetching data. See <Link href="/data-fetching" /> for an introduction about `data()` and about data fetching in general.
 
@@ -14,20 +14,20 @@ The `data()` hook is used for fetching data. See <Link href="/data-fetching" /> 
 
 ## `pageContext`
 
-`pageContext` provides contextual information.
+<Link href="/pageContext">`pageContext`</Link> provides contextual information.
 
 ```js
 // /pages/product/+data.js
 
 export async function data(pageContext) {
-  // pageContext.routeParams
-  // pageContext.urlParsed
-  // pageContext.user
-  // ...
+  // Commonly used pageContext properties in data()
+  pageContext.routeParams.id
+  pageContext.user.id
+  pageContext.urlParsed.search.query
 }
 ```
 
-> `pageContext.user` is a custom property, see:
+> `pageContext.user` is a custom `pageContext` property, see:
 > - <Link href="/pageContext#custom" />
 > - <Link href="/auth#integration" />
 
@@ -39,7 +39,7 @@ See <Link href="/useData#typescript" doNotInferSectionTitle />.
 
 ## Error handling
 
-If an error is thrown by `data()`, then Vike renders your <Link text="error page" href="/error-page" /> and there is usually nothing for you to do (beyond defining `/pages/_error/+Page.js`).
+If an error is thrown by `data()`, then Vike renders your <Link text="error page" href="/error-page" /> and there is usually nothing for you to do (beyond defining an error page `/pages/_error/+Page.js`).
 
 But if you want a more precise error handling (such as showing an insightful error message to the user instead of some generic "Something went wrong"), then use <Link href="/render" text={<code>throw render()</code>}></Link> and/or <Link href="/redirect" text={<code>throw redirect()</code>}></Link>.
 
@@ -52,11 +52,12 @@ export { data }
 import fetch from 'node-fetch'
 
 async function data(pageContext) {
-  const response = await fetch('https://star-wars.brillout.com/api/films.json')
+  const { id } = pageContext.routeParams
+  const response = await fetch(`https://star-wars.brillout.com/api/films/${id}.json`)
 
   if (response.status === 404) {
-    // Tell the user exactly what wrong
-    throw render(404, `Movie with ID ${movieId} doesn't exist.`)
+    // Tell the user what went wrong
+    throw render(404, `Movie with ID ${id} doesn't exist.`)
     /* Or redirect the user:
     throw redirect('/movie/add') */
     /* Or render the movie submission form while preserving the URL:
@@ -87,11 +88,16 @@ import fetch from 'node-fetch'
 
 async function data(pageContext) {
   const response = await fetch('https://star-wars.brillout.com/api/films.json')
-  const { movies } = await response.json()
+  let { movies } = await response.json()
   /* Or with an ORM:
-  const movies = await Movie.findAll() */
+  let movies = await Movie.findAll() */
   /* Or with SQL:
-  const movies = await sql.run('SELECT * FROM movies;') */
+  let movies = await sql.run('SELECT * FROM movies;') */
+
+  // `movies` is serialized and passed to the client. Therefore, we pick only the
+  // data the client needs in order to minimize what is sent over the network.
+  movies = movies.map(({ title, release_date }) => ({ title, release_date }))
+
   return {
     movies
   }
@@ -121,12 +127,12 @@ You can also set `data()`'s meta config `env` to `{ client: true, server: false}
 
 The `data()` hook sets the value of `pageContext.data`. (While `useData()` exposes the value of `pageContext.data`.)
 
-This means that, beyond using <Link href="/useData">`useData()`</Link>, you can also access the data in other hooks over `pageContext.data`, see <Link href="/pageContext" />.
+This means that, beyond using <Link href="/useData">`useData()`</Link>, you can also access the data in other hooks over `pageContext.data`.
 
 
 ## Without Vike extension
 
-The `data()` hook is usually used togther with <Link href="/useData">`useData()`</Link> which is provided by <UiFrameworkVikeExtensionNames />.
+The `data()` hook is usually used togther with the component hook <Link href="/useData">`useData()`</Link> which is provided by the <UiFrameworkVikeExtension />.
 
 If you don't use <UiFrameworkVikeExtensionNames />, you can implement `useData()` yourself. For example:
  - <RepoLink path='/examples/react-full/renderer/useData.tsx' />
@@ -135,7 +141,7 @@ If you don't use <UiFrameworkVikeExtensionNames />, you can implement `useData()
  - [`vike-vue` > /components/useData.ts](https://github.com/vikejs/vike-vue/blob/main/vike-vue/components/useData.ts)
  - [`vike-solid` > /renderer/PageContextProvider.tsx](https://github.com/vikejs/vike-solid/blob/main/vike-solid/renderer/PageContextProvider.tsx)
 
-In general, for improved DX, we recommend to always use `data()` together with a `useData()` implementation. That said, you can also use `data()` without `useData()`:
+In general, for improved DX, we recommend always using `data()` together with a `useData()` implementation. That said, you can also use `data()` without `useData()`:
 
 ```js
 // /renderer/+onRenderHtml.js

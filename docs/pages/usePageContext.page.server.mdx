@@ -2,7 +2,16 @@ import { Link } from '@brillout/docpress'
 
 import { ProvidedByUiFrameworkVikeExtension } from '../components'
 
-The `usePageContext()` hook allows you to access <Link href="/pageContext" noBreadcrumb /> from any UI
+<ProvidedByUiFrameworkVikeExtension
+  what={
+    <>
+      <code>usePageContext()</code> hook
+    </>
+  }
+  manual={<Link href="/pageContext-anywhere" />}
+/>
+
+The `usePageContext()` component hook allows you to access <Link href="/pageContext" noBreadcrumb /> from any UI
 component.
 
 ```js
@@ -17,12 +26,3 @@ import { usePageContext } from 'vike-solid'
   // Inside any UI component:
   const pageContext = usePageContext()
 ```
-
-<ProvidedByUiFrameworkVikeExtension
-  what={
-    <>
-      <code>usePageContext()</code> hook
-    </>
-  }
-  manual={<Link href="/pageContext-anywhere" />}
-/>

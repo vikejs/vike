@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-The `pageContext` object holds information about the current page.
+The `pageContext` object holds contextual information about the current page.
 
 > Once the page is rendered we recommend treating `pageContext` as immutable, see <Link href="#lifecycle" />.
 
@@ -10,7 +10,7 @@ The `pageContext` object holds information about the current page.
 Built-in properties:
 
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the `+Page.js` file.
- - **`pageContext.data`**: the value returned by the `data()` hook, see <Link href="/data#pagecontext-data" />.
+ - **`pageContext.data`**: the value returned by the `data()` hook, see <Link href="/data#pagecontext-data" doNotInferSectionTitle/>.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
  - **`pageContext.urlOriginal`**: the current URL.
 
@@ -84,20 +84,20 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
         // Common use cases:
         // pageContext.user – information about logged-in user
         user: req.user,
-        // pageContext.headers – make the cookies available over pageContext.headers.cookies
+        // pageContext.headers – e.g. make cookies available over pageContext.headers.cookies
         headers: req.headers,
 
-        // Or make any other value available over pageContext:
-        // pageContext.someCustomProp
-        someCustomProp: 'some-value',
+        // Or any other value:
+        // pageContext.anyCustomProp
+        anyCustomProp: 'some-value'
       }
       const pageContext = await renderPage(pageContextInit)
       // ...
     })
     ```
-    > A common use case is to integrate authentication tools: <Link href="/auth#integration" />.
+    > Setting `pageContext.user` is a common use case for integrating authentication tools, see <Link href="/auth#integration" />.
 
- - The upcoming hook [#962 - New hook `onStartup()`](https://github.com/vikejs/vike/issues/962). It isn't implement yet, add a comment to the GitHub issue if you need it. (We expct `onStartup()` to b particularly useful for <Link href="/pre-rendering" >pre-rendered</Link> apps.)
+ - Using the upcoming [hook `onBoot()` (#962)](https://github.com/vikejs/vike/issues/962). It isn't implement yet, add a comment to the GitHub issue if you need it. (We expect `onBoot()` to be particularly useful for <Link href="/pre-rendering" >pre-rendered</Link> apps.)
 
  - Using the [`onBeforeRender()`](/onBeforeRender) hook:
     ```js
@@ -112,13 +112,13 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
           // pageContext.initialStoreState – initial store state
           initialStoreState: pageRendered.store.state,
 
-          // pageContext.someCustomProp
-          someCustomProp: 'some-value'
+          // pageContext.anyCustomProp
+          anyCustomProp: 'some-value'
         }
       }
     }
     ```
-    > A common use case is to integrate state management tools: <Link href="/store" />.
+    > Setting `pageContext.initialStoreState` is a common use case for integrating state management tools, see <Link href="/store" />.
 
  - Using the <Link href="/onRenderHtml">`onRenderHtml()`</Link> hook:
     ```js
@@ -129,8 +129,8 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
           // ***************************************
           // **** Custom pageContext properties ****
           // ***************************************
-          // pageContext.someCustomProp
-          someCustomProp: 'some-value'
+          // pageContext.anyCustomProp
+          anyCustomProp: 'some-value'
         }
       }
     }
