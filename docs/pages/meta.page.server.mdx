@@ -4,16 +4,31 @@ import { Link, RepoLink } from '@brillout/docpress'
 > Using `meta` is a powerful and advanced technique: generally, we recommend using <Link href="/extensions">Vike extensions</Link> instead.
 
 `meta` enables:
- - **New settings**.
-   - <Link href="#example-dataendpointurl" doNotInferSectionTitle />
-   - <Link href="#example-sql" doNotInferSectionTitle />
-   - <Link href="#example-title-and-description" doNotInferSectionTitle />
-   - <Link href="#example-layout" doNotInferSectionTitle />
- - **New hooks**.
-   - Example: `onInit()` or `onBeforeFetchingData()`.
- - **Modifying the environment of existing hooks**.
-   - <Link href="#example-modify-data-env" doNotInferSectionTitle />
 
+- **New settings**.
+  - <Link href="#example-dataendpointurl" doNotInferSectionTitle />
+  - <Link href="#example-sql" doNotInferSectionTitle />
+  - <Link href="#example-title-and-description" doNotInferSectionTitle />
+  - <Link href="#example-layout" doNotInferSectionTitle />
+- **New hooks**.
+  - Example: `onInit()` or `onBeforeFetchingData()`.
+- **Modifying the environment of existing hooks**.
+  - <Link href="#example-modify-data-env" doNotInferSectionTitle />
+
+## Properties
+
+Every object key in `meta` may define the following properties:
+
+- **`env`**: An object that defines the environment in which the config value is loaded. It may contain the following properties:
+  - **`server`**: Load the config value on the server.
+  - **`client`**: Load the config value on the client.
+  - **`config`**: Load value at config time. Required for `cumulative` and `effect`.
+- **`cumulative`**: If set to `true` config values will be merged instead of overwritten.
+  The values have to be serializable but [we're working on removing that restriction](https://github.com/vikejs/vike/issues/1283).
+  Requires `{ config: true }`.
+- **`effect`**: A function that is called when the config value is defined. Can be used to modify existing config values.
+  The function should return a config object that will be merged with the current one. Requires `{ config: true }`.
+  See <Link href="#example-modify-data-env" doNotInferSectionTitle />.
 
 ## Example: `dataEndpointUrl`
 
