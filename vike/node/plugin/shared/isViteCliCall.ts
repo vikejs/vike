@@ -1,4 +1,5 @@
 export { isViteCliCall }
+export { isVikeCliCall }
 export { getViteConfigFromCli }
 
 import { assert, isObject, toPosixPath } from '../utils.js'
@@ -14,7 +15,23 @@ function isViteCliCall(): boolean {
     // npm & yarn
     execPath.endsWith('/.bin/vite') ||
     // Global install
-    execPath.endsWith('/bin/vite')
+    execPath.endsWith('/bin/vite') ||
+    // TODO: refactor
+    isVikeCliCall()
+  )
+}
+
+function isVikeCliCall() {
+  let execPath = process.argv[1]
+  assert(execPath)
+  execPath = toPosixPath(execPath)
+  return (
+    // pnpm
+    execPath.endsWith('/node/cli/vike.js') ||
+    // npm & yarn
+    execPath.endsWith('/.node/cli/vike') ||
+    // Global install
+    execPath.endsWith('/node/cli/vike')
   )
 }
 
