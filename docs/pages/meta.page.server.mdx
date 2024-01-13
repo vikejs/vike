@@ -387,3 +387,45 @@ Example:
    - Toggle usage: [/pages/star-wars/@id/+dataIsomorph.ts](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/pages/star-wars/@id/+dataIsomorph.ts)
    - Hook: [/pages/star-wars/@id/+data.tsx](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/pages/star-wars/@id/+data.tsx)
 
+
+## API
+
+```js
+// /pages/+config.h.js
+// Environment: config
+
+export default {
+  meta: {
+    someSettingOrHook: {
+      // Required. Defines the environment in which the config value is loaded.
+      env: {
+        //  Load the config value on the server.
+        server: true,
+        //  Load the config value on the client.
+        client: true,
+        // Load the config value at config time. Required for `effect`. Optional.
+        config: false // default value
+      },
+
+      // Optional. Whether config values should be merged instead of overwritten.
+      cumulative: false, // default value
+
+      // Optional. Function called when the config value is defined.
+      // Requires `env.config` to be `true`.
+      effect({ configDefinedAt, configValue }) {
+        if (someCondition) {
+          // This config object is merged with the current one.
+          return {
+            meta: {
+              // This can be the same or another hook/setting.
+              someOtherSettingOrHook: {
+                env: { server: true, client: false }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
