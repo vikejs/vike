@@ -391,7 +391,7 @@ Example:
 ## API
 
 ```js
-// +meta.js
+// /pages/+config.h.js
 // Environment: config
 
 export default {
@@ -403,12 +403,12 @@ export default {
         server: true,
         //  Load the config value on the client.
         client: true,
-        // Load the config value at config time. Required for `effect`.
-        config: false
+        // Load the config value at config time. Required for `effect`. Optional.
+        config: false // default value
       },
 
       // Optional. Whether config values should be merged instead of overwritten.
-      cumulative: false,
+      cumulative: false, // default value
 
       // Optional. Function called when the config value is defined.
       // Requires `env.config` to be `true`.
