@@ -1418,6 +1418,7 @@ function resolveImportPath(importData: ImportData, importerFilePath: FilePathRes
   const importerFilePathAbsolute = importerFilePath.filePathAbsoluteFilesystem
   assertPosixPath(importerFilePathAbsolute)
   const cwd = path.posix.dirname(importerFilePathAbsolute)
+  // We can't use import.meta.resolve() as of Junary 2023 (and probably for a lot longer): https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment137174954_62272600:~:text=But%20the%20argument%20parent%20(aka%20cwd)%20still%20requires%20a%20flag
   // filePathAbsoluteFilesystem is expected to be null when importData.importPath is a Vite path alias
   const filePathAbsoluteFilesystem = requireResolve(importData.importPath, cwd)
   return filePathAbsoluteFilesystem
