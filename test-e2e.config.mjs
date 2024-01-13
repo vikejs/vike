@@ -205,7 +205,7 @@ function tolerateError({ logSource, logText }) {
     return (
       logSource === 'stderr' &&
       logText.includes(
-        'You are using the old deprecated design, update to the new V1 design, see https://vike.dev/migration/v1-design'
+        "You are using Vike's deprecated design. Update to the new V1 design, see https://vike.dev/migration/v1-design for how to migrate."
       )
     )
   }
