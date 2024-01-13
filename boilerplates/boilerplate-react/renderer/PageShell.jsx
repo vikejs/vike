@@ -1,12 +1,13 @@
+export { PageShell }
+
 import React from 'react'
 import PropTypes from 'prop-types'
-import logo from './logo.svg'
-import './PageShell.css'
+import { childrenPropType } from './PropTypeValues'
+import logoUrl from './logo.svg'
 import { PageContextProvider } from './usePageContext'
 import { Link } from './Link'
-import { childrenPropType } from './PropTypeValues'
-
-export { PageShell }
+import './css/index.css'
+import './PageShell.css'
 
 PageShell.propTypes = {
   pageContext: PropTypes.any,
@@ -19,12 +20,9 @@ function PageShell({ pageContext, children }) {
         <Layout>
           <Sidebar>
             <Logo />
-            <Link className="navitem" href="/">
-              Home
-            </Link>
-            <Link className="navitem" href="/about">
-              About
-            </Link>
+            <Link href="/">Welcome</Link>
+            <Link href="/about">About</Link>
+            <Link href="/star-wars">Data Fetching</Link>
           </Sidebar>
           <Content>{children}</Content>
         </Layout>
@@ -56,13 +54,14 @@ Sidebar.propTypes = {
 function Sidebar({ children }) {
   return (
     <div
+      id="sidebar"
       style={{
         padding: 20,
         flexShrink: 0,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        lineHeight: '1.8em'
+        lineHeight: '1.8em',
+        borderRight: '2px solid #eee'
       }}
     >
       {children}
@@ -75,15 +74,17 @@ Content.propTypes = {
 }
 function Content({ children }) {
   return (
-    <div
-      style={{
-        padding: 20,
-        paddingBottom: 50,
-        borderLeft: '2px solid #eee',
-        minHeight: '100vh'
-      }}
-    >
-      {children}
+    <div id="page-container">
+      <div
+        id="page-content"
+        style={{
+          padding: 20,
+          paddingBottom: 50,
+          minHeight: '100vh'
+        }}
+      >
+        {children}
+      </div>
     </div>
   )
 }
@@ -97,7 +98,7 @@ function Logo() {
       }}
     >
       <a href="/">
-        <img src={logo} height={64} width={64} alt="logo" />
+        <img src={logoUrl} height={64} width={64} alt="logo" />
       </a>
     </div>
   )

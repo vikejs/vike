@@ -7,11 +7,11 @@ export default {
   hydrationCanBeAborted: true,
   // https://vike.dev/meta
   meta: {
-    // Create new config 'title'
+    // Define new setting 'title'
     title: {
       env: { server: true, client: true }
     },
-    // Create new config 'dataIsomorph'
+    // Define new setting 'dataIsomorph'
     dataIsomorph: {
       env: { config: true },
       effect({ configDefinedAt, configValue }) {

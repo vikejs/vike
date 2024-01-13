@@ -5,19 +5,20 @@ import { renderToString as renderToString_ } from '@vue/server-renderer'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { createApp } from './app'
 import logoUrl from './logo.svg'
+import { getPageTitle } from './getPageTitle'
 
 async function onRenderHtml(pageContext) {
-  const { Page, data } = pageContext
   // This onRenderHtml() hook only supports SSR, see https://vike.dev/render-modes for how to modify
   // onRenderHtml() to support SPA
-  if (!Page) throw new Error('My render() hook expects pageContext.Page to be defined')
-  const app = createApp(Page, data, pageContext)
+  if (!pageContext.Page) throw new Error('My render() hook expects pageContext.Page to be defined')
+
+  const app = createApp(pageContext)
+
   const appHtml = await renderToString(app)
 
-  // See https://vike.dev/head
-  const { documentProps } = pageContext.exports
-  const title = (documentProps && documentProps.title) || 'Vite SSR app'
-  const desc = (documentProps && documentProps.description) || 'App using Vite + Vike'
+  // https://vike.dev/head
+  const title = getPageTitle(pageContext)
+  const desc = pageContext.data?.description || pageContext.config.description || 'Demo of using Vike'
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html lang="en">
@@ -36,7 +37,7 @@ async function onRenderHtml(pageContext) {
   return {
     documentHtml,
     pageContext: {
-      // We can add some `pageContext` here, which is useful if we want to do page redirection https://vike.dev/page-redirection
+      // We can add custom pageContext properties here, see https://vike.dev/pageContext#custom
     }
   }
 }

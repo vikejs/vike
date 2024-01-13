@@ -16,12 +16,13 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "express": "^4.18.2",
+    "node-fetch": "^3.3.2",
     "prop-types": "15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sirv": "^2.0.3",
-    "vite": "^5.0.10",
-    "vike": "^0.4.156"
+    "vike": "^0.4.156",
+    "vite": "^5.0.10"
   },
   "type": "module"
 }

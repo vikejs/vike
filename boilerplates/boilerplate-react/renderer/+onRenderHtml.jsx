@@ -5,23 +5,25 @@ import ReactDOMServer from 'react-dom/server'
 import { PageShell } from './PageShell'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import logoUrl from './logo.svg'
+import { getPageTitle } from './getPageTitle'
 
-async function onRenderHtml(pageContext) {
-  const { Page, data } = pageContext
+function onRenderHtml(pageContext) {
+  const { Page } = pageContext
+
   // This onRenderHtml() hook only supports SSR, see https://vike.dev/render-modes for how to modify
   // onRenderHtml() to support SPA
-  if (!Page) throw new Error('My render() hook expects pageContext.Page to be defined')
+  if (!Page) throw new Error('My onRenderHtml() hook expects pageContext.Page to be defined')
+
+  // Alternativly, we can use an HTML stream, see https://vike.dev/stream
   const pageHtml = ReactDOMServer.renderToString(
-    // https://vike.dev/data#without-vike-extension
     <PageShell pageContext={pageContext}>
-      <Page data={data} />
+      <Page />
     </PageShell>
   )
 
   // See https://vike.dev/head
-  const { documentProps } = pageContext.exports
-  const title = (documentProps && documentProps.title) || 'Vite SSR app'
-  const desc = (documentProps && documentProps.description) || 'App using Vite + Vike'
+  const title = getPageTitle(pageContext)
+  const desc = pageContext.data?.description || pageContext.config.description || 'Demo of using Vike'
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html lang="en">
@@ -40,7 +42,8 @@ async function onRenderHtml(pageContext) {
   return {
     documentHtml,
     pageContext: {
-      // We can add some `pageContext` here, which is useful if we want to do page redirection https://vike.dev/page-redirection
+      // We can add custom pageContext properties here, see https://vike.dev/pageContext#custom
     }
   }
 }
+

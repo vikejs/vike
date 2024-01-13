@@ -10,7 +10,7 @@ export default {
   onPageTransitionEnd,
   // https://vike.dev/meta
   meta: {
-    // Create new config 'title'
+    // Define new setting 'title'
     title: {
       env: { server: true, client: true }
     }

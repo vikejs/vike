@@ -1,19 +1,7 @@
-/* This CSS is common to all pages */
-
-body {
-  margin: 0;
-  font-family: sans-serif;
+#sidebar a {
+  padding: 2px 10px;
+  margin-left: -10px;
 }
-* {
-  box-sizing: border-box;
-}
-a {
-  text-decoration: none;
-}
-
-.navitem {
-  padding: 3px 10px;
-}
-.navitem.is-active {
+#sidebar a.is-active {
   background-color: #eee;
 }

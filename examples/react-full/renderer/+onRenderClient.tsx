@@ -1,7 +1,6 @@
 // https://vike.dev/onRenderClient
 export { onRenderClient }
 
-import './css/index.css'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { PageShell } from './PageShell'
@@ -16,7 +15,7 @@ const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRe
       <Page />
     </PageShell>
   )
-  const container = document.getElementById('page-view')!
+  const container = document.getElementById('react-root')!
   if (pageContext.isHydration) {
     root = ReactDOM.hydrateRoot(container, page)
   } else {
