@@ -10,5 +10,8 @@
 </template>
 
 <script setup>
+import { usePageContext } from '../../renderer/usePageContext'
+const pageContext = usePageContext()
+const { is404 } = pageContext
 defineProps(['is404'])
 </script>

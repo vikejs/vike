@@ -1,7 +1,10 @@
 export { Page }
 
-function Page({ is404 }: { is404: boolean }) {
-  if (is404) {
+import { usePageContext } from '../../renderer/usePageContext'
+
+function Page() {
+  const pageContext = usePageContext()
+  if (pageContext.is404) {
     return (
       <>
         <h1>404 Page Not Found</h1>
