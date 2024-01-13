@@ -4,7 +4,7 @@ import { setPageContext } from './usePageContext'
 
 export { createApp }
 
-function createApp(Page, pageProps, pageContext) {
+function createApp(Page, data, pageContext) {
   const PageWithLayout = {
     render() {
       return h(
@@ -12,7 +12,8 @@ function createApp(Page, pageProps, pageContext) {
         {},
         {
           default() {
-            return h(Page, pageProps || {})
+            // https://vike.dev/data#without-vike-extension
+            return h(Page, data || {})
           }
         }
       )

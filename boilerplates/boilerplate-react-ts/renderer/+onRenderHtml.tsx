@@ -8,13 +8,14 @@ import logoUrl from './logo.svg'
 import type { OnRenderHtmlAsync } from 'vike/types'
 
 const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
-  const { Page, pageProps } = pageContext
+  const { Page, data } = pageContext
   // This onRenderHtml() hook only supports SSR, see https://vike.dev/render-modes for how to modify
   // onRenderHtml() to support SPA
   if (!Page) throw new Error('My render() hook expects pageContext.Page to be defined')
   const pageHtml = ReactDOMServer.renderToString(
     <PageShell pageContext={pageContext}>
-      <Page {...pageProps} />
+      // https://vike.dev/data#without-vike-extension
+      <Page data={data} />
     </PageShell>
   )
 

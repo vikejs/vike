@@ -2,11 +2,11 @@ import { createSSRApp, defineComponent, h } from 'vue'
 import PageShell from './PageShell.vue'
 import { setPageContext } from './usePageContext'
 import type { PageContext } from 'vike/types'
-import type { Component, PageProps } from './types'
+import type { Component } from './types'
 
 export { createApp }
 
-function createApp(Page: Component, pageProps: PageProps | undefined, pageContext: PageContext) {
+function createApp(Page: Component, data: unknown, pageContext: PageContext) {
   const PageWithLayout = defineComponent({
     render() {
       return h(
@@ -14,7 +14,8 @@ function createApp(Page: Component, pageProps: PageProps | undefined, pageContex
         {},
         {
           default() {
-            return h(Page, pageProps || {})
+            // https://vike.dev/data#without-vike-extension
+            return h(Page, data || {})
           }
         }
       )

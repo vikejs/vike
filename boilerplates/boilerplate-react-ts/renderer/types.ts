@@ -1,11 +1,8 @@
-export type { PageProps }
-
 // https://vike.dev/pageContext#typescript
 declare global {
   namespace Vike {
     interface PageContext {
       Page: Page
-      pageProps?: PageProps
       urlPathname: string
       exports: {
         documentProps?: {
@@ -17,5 +14,7 @@ declare global {
   }
 }
 
-type Page = (pageProps: PageProps) => React.ReactElement
-type PageProps = Record<string, unknown>
+type Page = ({ data }: { data: unknown }) => React.ReactElement
+
+// Tell TypeScript this file isn't an ambient module
+export {}

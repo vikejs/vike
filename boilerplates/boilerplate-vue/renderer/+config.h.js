@@ -4,6 +4,6 @@ export default {
   clientRouting: true,
   // !! WARNING !! Before doing so, read https://vike.dev/clientRouting */
 
-  // See https://vike.dev/data-fetching
-  passToClient: ['pageProps', 'urlPathname']
+  // See https://vike.dev/passToClient
+  passToClient: ['urlPathname']
 }
