@@ -13,8 +13,8 @@ async function onRenderClient(pageContext) {
   if (!root) throw new Error('DOM element #react-root not found')
   hydrateRoot(
     root,
+    // https://vike.dev/data#without-vike-extension
     <PageShell pageContext={pageContext}>
-      // https://vike.dev/data#without-vike-extension
       <Page data={data} />
     </PageShell>
   )

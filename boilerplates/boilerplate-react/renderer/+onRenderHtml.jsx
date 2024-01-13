@@ -12,8 +12,8 @@ async function onRenderHtml(pageContext) {
   // onRenderHtml() to support SPA
   if (!Page) throw new Error('My render() hook expects pageContext.Page to be defined')
   const pageHtml = ReactDOMServer.renderToString(
+    // https://vike.dev/data#without-vike-extension
     <PageShell pageContext={pageContext}>
-      // https://vike.dev/data#without-vike-extension
       <Page data={data} />
     </PageShell>
   )
