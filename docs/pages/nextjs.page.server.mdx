@@ -105,7 +105,7 @@ With Vike, you can choose setups that fit the aforementioned use cases.
 You can completely opt out of SSR, for example by setting the `ssr` setting of <Link href="/href#vike-extension">`vike-react`</Link> to `false`.
 You can also use SSR for the first page and then, from there on, use client-only navigation while fetching data directly between the client and the data source (without involving the SSR server).
 
-Vike has first-class support for leaning towards the client-side with features such as optional SSR, direct data fetching, pre-rendering, [PWA](https://github.com/vite-pwa/vite-plugin-pwa), and <Link href="/ClientOnly">ClientOnly components</Link>.
+Vike has first-class support for leaning towards the client-side, with features such as fully optional SSR (turn on/off for whole app, <Link href="/render-modes>by page</Link>, or <Link href="/ClientOnly">by component</Link>), direct data fetching, pre-rendering (SSG), or PWA integration with [vite-plugin-pwa](https://github.com/vite-pwa/vite-plugin-pwa).
 At the same time, Vike also has first-class support for SSR use cases.
 Vike is made by the community and has no incentive to favor any side of the work-split between the client and the server.
 
