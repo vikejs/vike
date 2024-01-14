@@ -70,6 +70,11 @@
       "node": "./dist/esm/node/cli/index.js",
       "types": "./dist/esm/node/cli/index.d.ts"
     },
+    "./build": {
+      "require": "./dist/cjs/node/build/index.js",
+      "node": "./dist/esm/node/build/index.js",
+      "types": "./dist/esm/node/build/index.d.ts"
+    },
     "./prerender": {
       "require": "./dist/cjs/node/prerender/index.js",
       "node": "./dist/esm/node/prerender/index.js",
@@ -145,6 +150,9 @@
       "cli": [
         "./dist/esm/node/cli/index.d.ts"
       ],
+      "build": [
+        "./dist/esm/node/build/index.d.ts"
+      ],
       "prerender": [
         "./dist/esm/node/prerender/index.d.ts"
       ],
@@ -166,7 +174,7 @@
     }
   },
   "bin": {
-    "vike": "./node/cli/vike.js"
+    "vike": "./bin/vike.js"
   },
   "devDependencies": {
     "@brillout/import": "^0.2.3",
