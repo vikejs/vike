@@ -7,8 +7,8 @@ async function prerender(options: PrerenderOptions) {
   const { partial, noExtraDir, base, parallel, outDir, configFile } = options
   const root = options.root && resolve(options.root)
 
-  const { isVikeCliCall } = await import('./utils.js')
-  if (isVikeCliCall()) {
+  const { isCliCall } = await import('./utils.js')
+  if (isCliCall) {
     const { runPrerender_forceExit, runPrerenderFromCLI } = await import('../prerender/runPrerender.js')
     await runPrerenderFromCLI({ partial, noExtraDir, base, root, parallel, outDir, configFile })
     runPrerender_forceExit()

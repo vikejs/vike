@@ -1,11 +1,9 @@
 export type { Options }
 export { resolveConfig }
-export { isVikeCliCall }
+export { isCliCall, setCliCall }
 
 import type { InlineConfig } from 'vite'
 import type { ConfigVikeResolved, ConfigVikeUserProvided } from '../../shared/ConfigVike.js'
-import { assert } from '../../utils/assert.js'
-import { toPosixPath } from '../plugin/utils.js'
 
 type Options = ConfigVikeUserProvided & { vite?: InlineConfig }
 
@@ -62,16 +60,7 @@ async function resolveConfig(options: Options, command: 'build' | 'serve' | 'pre
   }
 }
 
-function isVikeCliCall() {
-  let execPath = process.argv[1]
-  assert(execPath)
-  execPath = toPosixPath(execPath)
-  return (
-    // pnpm
-    execPath.endsWith('/bin/vike.js') ||
-    // npm & yarn
-    execPath.endsWith('/.bin/vike') ||
-    // Global install
-    execPath.endsWith('/bin/vike')
-  )
+let isCliCall = false
+function setCliCall() {
+  isCliCall = true
 }

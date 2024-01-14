@@ -4,10 +4,10 @@ import type { Options } from './utils.js'
 
 async function serve(options: Options = {}) {
   const { createServer: createServerVite } = await import('vite')
-  const { resolveConfig, isVikeCliCall } = await import('./utils.js')
+  const { resolveConfig, isCliCall } = await import('./utils.js')
   // Adds vike to viteConfig if not present
   const { viteConfig, viteConfigResolved: resolvedConfig } = await resolveConfig(options, 'serve')
-  if (!isVikeCliCall()) return createServerVite(viteConfig)
+  if (!isCliCall) return createServerVite(viteConfig)
 
   const { default: pc } = await import('@brillout/picocolors')
   const { startTime } = await import('../cli/bin.js')

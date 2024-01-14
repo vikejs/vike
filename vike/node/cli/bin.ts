@@ -1,7 +1,9 @@
 import { cac } from 'cac'
 import { projectInfo } from '../../utils/projectInfo.js'
 import { assertUsage } from '../../utils/assert.js'
-import type { Options } from '../api/utils.js'
+import { setCliCall, type Options } from '../api/utils.js'
+
+setCliCall()
 
 const cli = cac(projectInfo.projectName)
 export const startTime = performance.now()
