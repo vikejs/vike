@@ -1,6 +1,6 @@
 import { Link, RepoLink } from '@brillout/docpress'
 
-The `client` config adds client-side code executed at load time.
+The `+client.js` file adds client-side JavaScript. It's usually used for initializing client-side code, such as <Link href="/errors">error tracking</Link>.
 
 > For executing code upon page lifecycle changes, see following hooks instead:
 > - <Link href="/onHydrationEnd" />
@@ -8,15 +8,10 @@ The `client` config adds client-side code executed at load time.
 > - <Link href="/onPageTransitionEnd" />
 
 ```js
-// +config.h.js
-export default {
-  client: './some-client-code.js'
-}
-```
+// /pages/+client.js
+// Environment: client
 
-```js
-// some-client-code.js
-console.log("I'm run when the client-side JavaScript is loaded.")
+console.log("I'm the first line of executed client-side JavaScript.")
 ```
 
 ## Examples

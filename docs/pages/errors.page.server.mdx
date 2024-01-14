@@ -1,26 +1,70 @@
-## Error tracking
+import { Link } from '@brillout/docpress'
 
-Errors can be tracked with `pageContext.errorWhileRendering`:
+
+## Server-side
+
+Server-side errors are exposed over `pageContext.errorWhileRendering` at <Link href="/renderPage">`renderPage()`</Link>:
 
 ```js
 // server.js
 
-import { someErrorTracker } from 'some-error-tracker'
 import { renderPage } from 'vike/server'
 
-app.get('*', async (req, res) => {
-  const pageContext = await renderPage({ urlOriginal: req.url })
+// Any server: Express.js, Cloudflare Worker, AWS Lambda Function, Fastify, Hono, Nitro, ...
+server.addMiddleware({
+  method: 'GET',
+  route: '*', // catch-all
+  async handler(request) {
+    const pageContext = await renderPage({ urlOriginal: request.url })
 
-  // An error occurred during server-side rendering
-  if (pageContext.errorWhileRendering) {
-    someErrorTracker(pageContext.errorWhileRendering)
+    if (pageContext.errorWhileRendering) {
+      console.error(pageContext.errorWhileRendering)
+      /* Or if you're using a server middleware that handles errors:
+      throw pageContext.errorWhileRendering
+      */
+      /* Or an error tracker:
+      myErrorTracker.intercept(pageContext.errorWhileRendering)
+      */
+    }
+
+    // pageContext.httpResponse is missing if:
+    //  - You didn't define an error page.
+    //  - Your error page has a bug and, therefore, couldn't be rendered.
+    if (!pageContext.httpResponse) return null
   }
-
-  // ...
 })
 ```
 
-Allowing you to install the error tracking code of services such as [Sentry](https://sentry.io/), [Bugsnag](https://www.bugsnag.com/), [Rollbar](https://rollbar.com/), or your own custom error tracking.
+See also <Link href="/error-page" />.
+
+You can use any error tracker, such as [Sentry](https://sentry.io/), [Bugsnag](https://www.bugsnag.com/), [Rollbar](https://rollbar.com/), or your own custom error tracking. For that, make sure to use the error tracker's server-side interceptor. For example with Sentry:
+
+```js
+import * as Sentry from "@sentry/node";
+
+// ...
+
+    if (pageContext.errorWhileRendering) {
+      Sentry.captureException(e)
+    }
+
+// ...
+```
+
+
+## Client-side
+
+Use <Link href="/client">`+client.js`</Link> in order to make sure that your error handling code is initialized before any other code executes.
+
+```js
+// /pages/+client.js
+
+// The first lines of JavaScript executed on the website.
+
+window.addEventListener('error', (err) => {
+   console.error('An error occured:', err)
+})
+```
 
 
 ## Verbose
@@ -40,3 +84,11 @@ For even more verbose errors:
 # Usually only used by Vike maintainers
 DEBUG=vike:error,vike:log npm run dev
 ```
+
+
+## See also
+
+ - <Link href="/renderPage" />
+ - <Link href="/error-page" />
+ - <Link href="/client" />
+ - <Link href="/pageContext" />
