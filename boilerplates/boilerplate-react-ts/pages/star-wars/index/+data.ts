@@ -8,6 +8,7 @@ import fetch from 'node-fetch'
 import type { MovieDetails, Movie } from '../types'
 import type { PageContextServer } from 'vike/types'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const data = async (pageContext: PageContextServer) => {
   await sleep(700) // Simulate slow network
 

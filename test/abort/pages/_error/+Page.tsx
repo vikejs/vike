@@ -6,7 +6,7 @@ import { Counter } from '../index/Counter'
 
 function Page() {
   const pageContext = usePageContext()
-  let { is404, abortReason } = ctx
+  let { is404, abortReason } = pageContext
   if (!abortReason) {
     abortReason = is404 ? 'Page not found.' : 'Something went wrong.'
   }
