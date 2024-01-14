@@ -160,7 +160,7 @@ type PrerenderOptions = {
 async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<void> {
   await runPrerender(options, 'prerender()')
   // - We purposely propagate the error to the user land, so that the error interrupts the user land. It's also, I guess, a nice-to-have that the user has control over the error.
-  // - We don't use logHintForCjsEsmError() because we don't have control over what happens with the error. For example, if the user land purposely swallows the error then the hint shouldn't be logged. Also, it'ss best if the hint is shown to the user *after* the error, but we cannot do/guarentee that.
+  // - We don't use logHintForCjsEsmError() because we don't have control over what happens with the error. For example, if the user land purposely swallows the error then the hint shouldn't be logged. Also, it's best if the hint is shown to the user *after* the error, but we cannot do/guarentee that.
 }
 async function runPrerenderFromCLI(options: PrerenderOptions): Promise<void> {
   try {
