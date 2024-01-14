@@ -5,7 +5,7 @@ export { data }
 // this file always runs on the server-side, see https://vike.dev/data#server-side
 import fetch from 'node-fetch'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line no-unused-vars
 const data = async (pageContext) => {
   await sleep(700) // Simulate slow network
 
