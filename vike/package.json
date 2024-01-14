@@ -207,6 +207,7 @@
   "repository": "https://github.com/vikejs/vike",
   "files": [
     "dist/",
+    "bin/",
     "cli.js",
     "api.js",
     "client.js",
