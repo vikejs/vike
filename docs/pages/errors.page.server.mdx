@@ -19,10 +19,12 @@ server.addMiddleware({
 
     if (pageContext.errorWhileRendering) {
       console.error(pageContext.errorWhileRendering)
-      /* Or if you're using a server middleware that handles errors:
-      throw pageContext.errorWhileRendering
+      /* If you're using a server middleware that handles errors:
+      if (!pageContext.httpResponse) {
+        throw pageContext.errorWhileRendering
+      }
       */
-      /* Or an error tracker:
+      /* If you're using a error tracker:
       myErrorTracker.intercept(pageContext.errorWhileRendering)
       */
     }
