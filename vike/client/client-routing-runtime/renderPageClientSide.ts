@@ -38,7 +38,7 @@ import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
-import { isRenderFailure } from '../../shared/misc/isRenderFailure.js'
+import { isServerSideError } from '../../shared/misc/isServerSideError.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
@@ -201,7 +201,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
       if (isRenderOutdated()) return
-      if (isRenderFailure in pageContextFromHooks) {
+      if (isServerSideError in pageContextFromHooks) {
         await renderErrorPage({ pageContextError: pageContextFromHooks })
         return
       }

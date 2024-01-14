@@ -11,7 +11,7 @@ import pc from '@brillout/picocolors'
 import { notSerializable } from '../../../shared/notSerializable.js'
 import type { UrlRedirect } from '../../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../../shared/misc/pageContextInitIsPassedToClient.js'
-import { isRenderFailure } from '../../../shared/misc/isRenderFailure.js'
+import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 
 const PASS_TO_CLIENT: string[] = [
   'abortReason',
@@ -26,7 +26,7 @@ const PASS_TO_CLIENT: string[] = [
   '_pageId',
   'data' // for data() hook
 ]
-const PASS_TO_CLIENT_ERROR_PAGE = ['pageProps', 'is404', isRenderFailure]
+const PASS_TO_CLIENT_ERROR_PAGE = ['pageProps', 'is404', isServerSideError]
 
 type PageContextSerialization = {
   _pageId: string

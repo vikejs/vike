@@ -28,7 +28,7 @@ import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRende
 import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
-import { isRenderFailure } from '../../shared/misc/isRenderFailure.js'
+import { isServerSideError } from '../../shared/misc/isServerSideError.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>('router/getPageContext.ts', {})
 
 type PageContext = {
@@ -89,7 +89,7 @@ async function getPageContextFromHooks_isNotHydration(
   ) {
     const pageContextFromServer = await fetchPageContextFromServer(pageContext)
     hasPageContextFromServer = true
-    if (!pageContextFromServer[isRenderFailure] || isErrorPage) {
+    if (!pageContextFromServer[isServerSideError] || isErrorPage) {
       objectAssign(pageContextFromHooks, pageContextFromServer)
     } else {
       // When the user hasn't define a `_error.page.js` file: the mechanism with `serverSideError: true` is used instead

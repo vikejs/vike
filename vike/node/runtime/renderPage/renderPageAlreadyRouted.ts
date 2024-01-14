@@ -35,7 +35,7 @@ import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageR
 import pc from '@brillout/picocolors'
 import { getConfigValueFilePathToShowToUser } from '../../../shared/page-configs/helpers.js'
 import type { Hook } from '../../../shared/hooks/getHook.js'
-import { isRenderFailure } from '../../../shared/misc/isRenderFailure.js'
+import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 
@@ -79,7 +79,7 @@ async function renderPageAlreadyRouted<
 
   if (pageContext.isClientSideNavigation) {
     if (isError) {
-      objectAssign(pageContext, { [isRenderFailure]: true })
+      objectAssign(pageContext, { [isServerSideError]: true })
     }
     const pageContextSerialized: string = serializePageContextClientSide(pageContext)
     const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
