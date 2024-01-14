@@ -1,7 +1,6 @@
 export { getPageContextFromHooks_isHydration }
 export { getPageContextFromHooks_isNotHydration }
 export { getPageContextFromHooks_serialized }
-export { isServerSideRouted }
 
 import {
   assert,
@@ -87,22 +86,16 @@ async function getPageContextFromHooks_isNotHydration(
     // true if pageContextInit has some client data or at least one of the data() and onBeforeRender() hooks is server-side only:
     (await hasPageContextServer({ ...pageContext, ...pageContextFromHooks }))
   ) {
-    const pageContextFromServer = await fetchPageContextFromServer(pageContext)
+    const res = await fetchPageContextFromServer(pageContext)
+    if ('is404ServerSideRouted' in res) return { is404ServerSideRouted: true }
+    const { pageContextFromServer } = res
     hasPageContextFromServer = true
-    if (!pageContextFromServer[isServerSideError] || isErrorPage) {
-      objectAssign(pageContextFromHooks, pageContextFromServer)
-    } else {
-      // When the user hasn't define a `_error.page.js` file: the mechanism with `serverSideError: true` is used instead
-      assert(!('serverSideError' in pageContextFromServer))
-      assert(hasProp(pageContextFromServer, 'is404', 'boolean'))
-      assert(hasProp(pageContextFromServer, 'pageProps', 'object'))
-      assert(hasProp(pageContextFromServer.pageProps, 'is404', 'boolean'))
-      objectAssign(pageContextFromServer, {
-        _hasPageContextFromServer: true as const,
-        _hasPageContextFromClient: false as const
-      })
-      return pageContextFromServer
-    }
+
+    // Already handled
+    assert(!(isServerSideError in pageContextFromServer))
+    assert(!('serverSideError' in pageContextFromServer))
+
+    objectAssign(pageContextFromHooks, pageContextFromServer)
   }
 
   // At this point, we need to call the client-side guard(), data() and onBeforeRender() hooks, if they exist on client
@@ -144,7 +137,7 @@ async function getPageContextFromHooks_isNotHydration(
     _hasPageContextFromServer: hasPageContextFromServer
   })
 
-  return pageContextFromHooks
+  return { pageContextFromHooks }
 }
 
 async function executeHookClientSide(
@@ -287,7 +280,7 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
     // Static hosts + page doesn't exist
     if (!isCorrect && response.status === 404) {
       serverSideRouteTo(pageContext.urlOriginal)
-      throw ServerSideRouted()
+      return { is404ServerSideRouted: true }
     }
 
     assertUsage(
@@ -300,7 +293,8 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
   const pageContextFromServer: unknown = parse(responseText)
   assert(isObject(pageContextFromServer))
 
-  if ('serverSideError' in pageContextFromServer) {
+  // Is there a reason for having two different properties? Can't we use only one property? I guess/think the isServerSideError property was an attempt (a bad idea really) for rendering the error page even though an error occured on the server-side (which is a bad idea because the added complexity is non-negligible while the added value is minuscule since the error page usually doesn't have any (meaningful / server-side) hooks).
+  if ('serverSideError' in pageContextFromServer || isServerSideError in pageContextFromServer) {
     throw getProjectError(
       `The pageContext object couldn't be fetched from the server as an error occurred on the server-side. Check your server logs.`
     )
@@ -313,19 +307,10 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
   assert(hasProp(pageContextFromServer, '_pageId', 'string'))
   processPageContextFromServer(pageContextFromServer)
 
-  return pageContextFromServer
+  return { pageContextFromServer }
 }
 
 function processPageContextFromServer(pageContextFromServer: Record<string, unknown>) {
   setPageContextInitIsPassedToClient(pageContextFromServer)
   removeBuiltInOverrides(pageContextFromServer)
-}
-
-function isServerSideRouted(err: unknown): boolean {
-  return isObject(err) && !!err._alreadyServerSideRouted
-}
-function ServerSideRouted() {
-  const err = new Error("Page doesn't exist")
-  Object.assign(err, { _alreadyServerSideRouted: true })
-  return err
 }

@@ -15,8 +15,7 @@ import {
 import {
   getPageContextFromHooks_isHydration,
   getPageContextFromHooks_isNotHydration,
-  getPageContextFromHooks_serialized,
-  isServerSideRouted
+  getPageContextFromHooks_serialized
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
 import { addLinkPrefetchHandlers } from './prefetch.js'
@@ -38,7 +37,6 @@ import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
-import { isServerSideError } from '../../shared/misc/isServerSideError.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
@@ -86,6 +84,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   return
 
   async function renderPageNominal() {
+    const onError = async (err: unknown) => {
+      await renderErrorPage({ err })
+    }
+
     const pageContext = await getPageContextBegin()
     if (isRenderOutdated()) return
 
@@ -99,7 +101,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       try {
         pageContextFromRoute = await route(pageContext)
       } catch (err) {
-        await renderErrorPage({ err })
+        await onError(err)
         return
       }
       if (isRenderOutdated()) return
@@ -137,7 +139,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (handleErrorFetchingStaticAssets(err, pageContext, isHydrationRender)) {
         return
       } else {
-        throw err
+        // A user file has a syntax error
+        await onError(err)
+        return
       }
     }
     if (isRenderOutdated()) return
@@ -167,7 +171,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           try {
             await executeHook(() => hookFn(pageContext), hook)
           } catch (err) {
-            await renderErrorPage({ err })
+            await onError(err)
             return
           }
           if (isRenderOutdated()) return
@@ -182,7 +186,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       try {
         pageContextFromHooks = await getPageContextFromHooks_isHydration(pageContext)
       } catch (err) {
-        await renderErrorPage({ err })
+        await onError(err)
         return
       }
       if (isRenderOutdated()) return
@@ -193,18 +197,16 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // Render page view
       await renderPageView(pageContext)
     } else {
-      let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
+      let res: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
       try {
-        pageContextFromHooks = await getPageContextFromHooks_isNotHydration(pageContext, false)
+        res = await getPageContextFromHooks_isNotHydration(pageContext, false)
       } catch (err) {
-        await renderErrorPage({ err })
+        await onError(err)
         return
       }
       if (isRenderOutdated()) return
-      if (isServerSideError in pageContextFromHooks) {
-        await renderErrorPage({ pageContextError: pageContextFromHooks })
-        return
-      }
+      if ('is404ServerSideRouted' in res) return
+      const pageContextFromHooks = res.pageContextFromHooks
 
       assert(!('urlOriginal' in pageContextFromHooks))
       objectAssign(pageContext, pageContextFromHooks)
@@ -229,20 +231,20 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   }
 
   async function renderErrorPage(args: { err?: unknown; pageContextError?: Record<string, unknown> }) {
-    const pageContext = await getPageContextBegin()
-    if (isRenderOutdated()) return
-
-    if (args.pageContextError) {
-      objectAssign(pageContext, args.pageContextError)
+    const onError = (err: unknown) => {
+      if (!isSameErrorMessage(err, args.err)) {
+        /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
+           - We risk running into an infinite loop of reloads which would overload the server.
+           - An infinite reloading page is a even worse UX than a blank page.
+        serverSideRouteTo(urlOriginal)
+        */
+        console.error(err)
+      }
     }
 
     if ('err' in args) {
       const { err } = args
       assert(err)
-      assert(!('errorWhileRendering' in pageContext))
-      pageContext.errorWhileRendering = err
-
-      if (shouldSwallowAndInterrupt(err)) return
 
       if (!isAbortError(err)) {
         // We don't swallow 404 errors:
@@ -253,6 +255,19 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
         // We handle the abort error down below.
       }
+    }
+
+    const pageContext = await getPageContextBegin()
+    if (isRenderOutdated()) return
+
+    if (args.pageContextError) {
+      objectAssign(pageContext, args.pageContextError)
+    }
+
+    if ('err' in args) {
+      const { err } = args
+      assert(!('errorWhileRendering' in pageContext))
+      pageContext.errorWhileRendering = err
 
       if (isAbortError(err)) {
         const errAbort = err
@@ -316,43 +331,46 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (handleErrorFetchingStaticAssets(err, pageContext, isHydrationRender)) {
         return
       } else {
-        throw err
+        // A user file has a syntax error
+        onError(err)
+        return
       }
     }
     if (isRenderOutdated()) return
 
-    let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
+    let res: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
     try {
-      pageContextFromHooks = await getPageContextFromHooks_isNotHydration(pageContext, true)
-    } catch (errErrorPage: unknown) {
+      res = await getPageContextFromHooks_isNotHydration(pageContext, true)
+    } catch (err: unknown) {
       // - When user hasn't defined a `_error.page.js` file
       // - Some Vike unpexected internal error
-
-      if (shouldSwallowAndInterrupt(errErrorPage)) return
-
-      if (!isSameErrorMessage(args.err, errErrorPage)) {
-        /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
-           - We risk running into an infinite loop of reloads which would overload the server.
-           - An infinite reloading page is a even worse UX than a blank page.
-        serverSideRouteTo(urlOriginal)
-        */
-        console.error(errErrorPage)
-      }
-
+      onError(err)
       return
     }
     if (isRenderOutdated()) return
+    if ('is404ServerSideRouted' in res) return
+    const pageContextFromHooks = res.pageContextFromHooks
 
     assert(pageContextFromHooks)
     assert(!('urlOriginal' in pageContextFromHooks))
     objectAssign(pageContext, pageContextFromHooks)
-    await renderPageView(pageContext, true)
+    await renderPageView(pageContext, args)
   }
 
   async function renderPageView(
     pageContext: PageContextBeforeRenderClient & { urlPathname: string },
-    isErrorPage?: true
+    isErrorPage?: { err?: unknown }
   ) {
+    const onError = async (err: unknown) => {
+      if (!isErrorPage) {
+        await renderErrorPage({ err })
+      } else {
+        if (!isSameErrorMessage(err, isErrorPage.err)) {
+          console.error(err)
+        }
+      }
+    }
+
     // We use globalObject.renderPromise in order to ensure that there is never two concurrent onRenderClient() calls
     if (globalObject.renderPromise) {
       // Make sure that the previous render has finished
@@ -367,11 +385,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       try {
         await executeOnRenderClientHook(pageContext, true)
       } catch (err) {
-        if (!isErrorPage) {
-          renderErrorPage({ err })
-        } else {
-          throw err
-        }
+        await onError(err)
+        return
       }
       addLinkPrefetchHandlers(pageContext)
       globalObject.renderPromise = undefined
@@ -391,11 +406,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         try {
           await executeHook(() => hookFn(pageContext), hook)
         } catch (err) {
-          if (!isErrorPage) {
-            renderErrorPage({ err })
-          } else {
-            throw err
-          }
+          await onError(err)
+          if (!isErrorPage) return
         }
         if (isRenderOutdated(true)) return
       }
@@ -414,11 +426,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         try {
           await executeHook(() => hookFn(pageContext), hook)
         } catch (err) {
-          if (!isErrorPage) {
-            renderErrorPage({ err })
-          } else {
-            throw err
-          }
+          await onError(err)
+          if (!isErrorPage) return
         }
         if (isRenderOutdated(true)) return
       }
@@ -436,11 +445,6 @@ function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   browserNativeScrollRestoration_disable()
   pushHistory(url, overwriteLastHistoryEntry)
   updateState()
-}
-
-function shouldSwallowAndInterrupt(err: unknown): boolean {
-  if (isServerSideRouted(err)) return true
-  return false
 }
 
 function handleErrorFetchingStaticAssets(

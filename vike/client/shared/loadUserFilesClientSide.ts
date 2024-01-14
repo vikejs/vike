@@ -37,9 +37,10 @@ async function loadUserFilesClientSide(
     ])
     pageConfigLoaded = result[0]
   } catch (err: any) {
-    // To trigger this catch: add `throw new Error()` in the global scope of +onRenderClient.js
     if (isFetchError(err)) {
       Object.assign(err, { [stamp]: true })
+    } else {
+      // A user file has a syntax error
     }
     throw err
   }
