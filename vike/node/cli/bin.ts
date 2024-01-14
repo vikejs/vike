@@ -1,7 +1,7 @@
 import { cac } from 'cac'
 import { projectInfo } from '../../utils/projectInfo.js'
 import { assertUsage } from '../../utils/assert.js'
-import type { Options } from '../build/utils.js'
+import type { Options } from '../api/utils.js'
 
 const cli = cac(projectInfo.projectName)
 export const startTime = performance.now()
@@ -15,7 +15,7 @@ cli.command('prerender', 'Pre-render the HTML of your pages', { allowUnknownOpti
     assertDeprecatedPrerenderOptions()
   }
   const prerenderConfig = config.prerender ?? options
-  const { prerender } = await import('../build/prerender.js')
+  const { prerender } = await import('../api/prerender.js')
   await prerender(prerenderConfig)
 })
 
@@ -25,19 +25,19 @@ cli
   .alias('dev')
   .action(async (options) => {
     const config = parseConfigString(options.config)
-    const { serve } = await import('../build/serve.js')
+    const { serve } = await import('../api/serve.js')
     return serve(config)
   })
 
 cli.command('build', 'Build for production').action(async (options) => {
   const config = parseConfigString(options.config)
-  const { build } = await import('../build/build.js')
+  const { build } = await import('../api/build.js')
   return build(config)
 })
 
 cli.command('preview', 'Start a preview server using production build').action(async (options) => {
   const config = parseConfigString(options.config)
-  const { preview } = await import('../build/preview.js')
+  const { preview } = await import('../api/preview.js')
   return preview(config)
 })
 

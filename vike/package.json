@@ -70,10 +70,10 @@
       "node": "./dist/esm/node/cli/index.js",
       "types": "./dist/esm/node/cli/index.d.ts"
     },
-    "./build": {
-      "require": "./dist/cjs/node/build/index.js",
-      "node": "./dist/esm/node/build/index.js",
-      "types": "./dist/esm/node/build/index.d.ts"
+    "./api": {
+      "require": "./dist/cjs/node/api/index.js",
+      "node": "./dist/esm/node/api/index.js",
+      "types": "./dist/esm/node/api/index.d.ts"
     },
     "./prerender": {
       "require": "./dist/cjs/node/prerender/index.js",
@@ -150,8 +150,8 @@
       "cli": [
         "./dist/esm/node/cli/index.d.ts"
       ],
-      "build": [
-        "./dist/esm/node/build/index.d.ts"
+      "api": [
+        "./dist/esm/node/api/index.d.ts"
       ],
       "prerender": [
         "./dist/esm/node/prerender/index.d.ts"
@@ -208,6 +208,7 @@
   "files": [
     "dist/",
     "cli.js",
+    "api.js",
     "client.js",
     "client/router.js",
     "plugin.js",

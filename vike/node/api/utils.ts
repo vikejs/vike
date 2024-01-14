@@ -10,7 +10,7 @@ import { toPosixPath } from '../plugin/utils.js'
 type Options = ConfigVikeUserProvided & { vite?: InlineConfig }
 
 async function resolveConfig(options: Options, command: 'build' | 'serve' | 'preview') {
-  const pc = await import('@brillout/picocolors')
+  const { default: pc } = await import('@brillout/picocolors')
   const { resolveConfig: resolveViteConfig, mergeConfig } = await import('vite')
   const { vite: viteConfig = {}, ...vikeConfig } = options
 
@@ -24,7 +24,7 @@ async function resolveConfig(options: Options, command: 'build' | 'serve' | 'pre
     command === 'preview' ? 'serve' : command,
     'custom',
     nodeEnv,
-    false
+    command === 'preview'
   ).catch((error) => {
     console.error(pc.red(`error resolving config:\n${error.stack}`), {
       error
