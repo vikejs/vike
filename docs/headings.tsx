@@ -124,13 +124,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Render Modes (SPA, SSR, SSG, HTML-only)',
-    titleInNav: 'SPA, SSR, SSG, HTML-only',
-    url: '/render-modes',
-    sectionTitles: ['HTML-only', 'SPA', 'SSR']
-  },
-  {
-    level: 2,
     title: 'Environment Variables',
     url: '/env'
   },
@@ -163,11 +156,6 @@ const headings = [
     level: 2,
     title: 'API Routes',
     url: '/api-routes'
-  },
-  {
-    level: 2,
-    title: 'Client-only Components',
-    url: '/client-only-components'
   },
   {
     level: 2,
@@ -802,6 +790,11 @@ const headings = [
   {
     level: 4,
     title: 'Settings'
+  },
+  {
+    level: 2,
+    title: '`ssr`',
+    url: '/ssr'
   },
   {
     level: 2,

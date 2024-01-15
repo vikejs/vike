@@ -141,7 +141,7 @@ const headingsDetached = [
     ),
     url: '/pageContext-manipulation'
   },
-  { title: 'Server-Side Rendering (SSR)', url: '/ssr' },
+  { title: 'Server-Side Rendering (SSR)', url: '/SSR' },
   { title: 'TypeScript', url: '/typescript' },
   {
     title: (
@@ -384,5 +384,14 @@ const headingsDetached = [
   {
     title: 'Access `pageContext` anywhere',
     url: '/pageContext-anywhere'
+  },
+  {
+    title: 'Client-only Components',
+    url: '/client-only-components'
+  },
+  {
+    title: 'Render Modes (SPA, SSR, SSG, HTML-only)',
+    url: '/render-modes',
+    sectionTitles: ['HTML-only', 'SPA', 'SSR']
   }
 ] satisfies HeadingDetachedDefinition[]
