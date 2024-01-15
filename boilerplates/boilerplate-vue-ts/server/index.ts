@@ -55,6 +55,9 @@ async function startServer() {
       urlOriginal: req.originalUrl
     }
     const pageContext = await renderPage(pageContextInit)
+    if (pageContext.errorWhileRendering) {
+      // Install error tracking here, see https://vike.dev/errors
+    }
     const { httpResponse } = pageContext
     if (!httpResponse) {
       return next()
