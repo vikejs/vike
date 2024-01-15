@@ -384,5 +384,5 @@ const headingsDetached = [
   {
     title: 'Access `pageContext` anywhere',
     url: '/pageContext-anywhere'
-  },
+  }
 ] satisfies HeadingDetachedDefinition[]
