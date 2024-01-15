@@ -18,24 +18,34 @@ server.addMiddleware({
     const pageContext = await renderPage({ urlOriginal: request.url })
 
     if (pageContext.errorWhileRendering) {
+      /* Vike already calls console.error() so we don't need the following line.
       console.error(pageContext.errorWhileRendering)
-      /* If you're using a server middleware that handles errors:
+      */
+
+      // If you're using an error tracker:
+      myErrorTracker.intercept(pageContext.errorWhileRendering)
+
+      // If you're using a server middleware that handles errors:
       if (!pageContext.httpResponse) {
+        // Don't throw if there is a pageContext.httpResponse, otherwise
+        // the error page won't be rendered.
         throw pageContext.errorWhileRendering
       }
-      */
-      /* If you're using a error tracker:
-      myErrorTracker.intercept(pageContext.errorWhileRendering)
-      */
+
     }
 
     // pageContext.httpResponse is missing if:
-    //  - You didn't define an error page.
+    //  - There is an error and you didn't define an error page.
     //  - Your error page has a bug and, therefore, couldn't be rendered.
     if (!pageContext.httpResponse) return null
+
+    // The HTTP response of the page. This can be the error page.
+    return pageContext.httpResponse
   }
 })
 ```
+
+> Vike calls `console.error(err)` for any error it encounters. With the upcoming [new hook `onLog()` (#1439)](https://github.com/vikejs/vike/issues/1438) you'll have control over Vike's logging.
 
 See also <Link href="/error-page" />.
 
