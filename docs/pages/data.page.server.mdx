@@ -3,13 +3,40 @@ import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../comp
 
 The `data()` hook is used for fetching data. See <Link href="/data-fetching" /> for an introduction about `data()` and about data fetching in general.
 
+It's most commonly used with <Link href="/useData">useData()</Link>.
+
 > For a lower-level hook with more control, see <Link href="/onBeforeRender" />.
 
 
 ## Examples
 
-- <Link href='/examples/react-full/pages/star-wars/index/+data.ts' />
-- <Link href='/examples/vue-full/pages/star-wars/index/+data.ts' />
+React + JavaScript:
+
+- <Link href='/boilerplates/boilerplate-react/pages/star-wars/index/+data.js' />
+- <Link href='/boilerplates/boilerplate-react/pages/star-wars/index/+Page.jsx' /> (`useData()` usage)
+- <Link href='/boilerplates/boilerplate-react/pages/star-wars/@id/+data.js' />
+- <Link href='/boilerplates/boilerplate-react/pages/star-wars/@id/+Page.jsx' /> (`useData()` usage)
+
+React + TypeScript:
+
+- <Link href='/boilerplates/boilerplate-react-ts/pages/star-wars/index/+data.ts' />
+- <Link href='/boilerplates/boilerplate-react-ts/pages/star-wars/index/+Page.tsx' /> (`useData()` usage)
+- <Link href='/boilerplates/boilerplate-react-ts/pages/star-wars/@id/+data.ts' />
+- <Link href='/boilerplates/boilerplate-react-ts/pages/star-wars/@id/+Page.tsx' /> (`useData()` usage)
+
+Vue + JavaScript:
+
+- <Link href='/boilerplates/boilerplate-vue/pages/star-wars/index/+data.js' />
+- <Link href='/boilerplates/boilerplate-vue/pages/star-wars/index/+Page.vue' /> (`useData()` usage)
+- <Link href='/boilerplates/boilerplate-vue/pages/star-wars/@id/+data.js' />
+- <Link href='/boilerplates/boilerplate-vue/pages/star-wars/@id/+Page.vue' /> (`useData()` usage)
+
+Vue + TypeScript:
+
+- <Link href='/boilerplates/boilerplate-vue-ts/pages/star-wars/index/+data.ts' />
+- <Link href='/boilerplates/boilerplate-vue-ts/pages/star-wars/index/+Page.vue' /> (`useData()` usage)
+- <Link href='/boilerplates/boilerplate-vue-ts/pages/star-wars/@id/+data.ts' />
+- <Link href='/boilerplates/boilerplate-vue-ts/pages/star-wars/@id/+Page.vue' /> (`useData()` usage)
 
 
 ## `pageContext`
@@ -135,8 +162,10 @@ This means that, beyond using <Link href="/useData">`useData()`</Link>, you can 
 The `data()` hook is usually used togther with the component hook <Link href="/useData">`useData()`</Link> which is provided by the <UiFrameworkVikeExtension />.
 
 If you don't use <UiFrameworkVikeExtensionNames />, you can implement `useData()` yourself. For example:
- - <RepoLink path='/examples/react-full/renderer/useData.tsx' />
- - <RepoLink path='/examples/vue-full/renderer/useData.ts' />
+ - <Link href='/boilerplates/boilerplate-react/renderer/useData.js' /> (React + JavaScript)
+ - <Link href='/boilerplates/boilerplate-react-ts/renderer/useData.ts' /> (React + TypeScript)
+ - <Link href='/boilerplates/boilerplate-vue/renderer/useData.js' /> (Vue + JavaScript)
+ - <Link href='/boilerplates/boilerplate-vue-ts/renderer/useData.ts' /> (Vue + TypeScript)
  - [`vike-react` > /renderer/PageContextProvider.tsx](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/renderer/PageContextProvider.tsx)
  - [`vike-vue` > /components/useData.ts](https://github.com/vikejs/vike-vue/blob/main/vike-vue/components/useData.ts)
  - [`vike-solid` > /renderer/PageContextProvider.tsx](https://github.com/vikejs/vike-solid/blob/main/vike-solid/renderer/PageContextProvider.tsx)

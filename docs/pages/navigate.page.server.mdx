@@ -43,7 +43,7 @@ If you want to change the URL completely independently of Vike then use [`histor
 
 Make sure you implement your navigation handling by listening to the [`popstate` event](https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event).
 
-<Warning>It's paramount you handle the `popstate` event, otherwise you'll break the browser's back- and forward history button.</Warning>
+<Warning>You need to handle the `popstate` event yourself, otherwise you'll break the browser's back- and forward history button.</Warning>
 
 ```js
 window.addEventListener('popstate', (event) => {
@@ -53,27 +53,18 @@ window.addEventListener('popstate', (event) => {
   const { triggeredBy } = event.state
   */
 
-  // Navigation event triggered by Vike or the browser
+  // Navigation triggered by Vike or the browser
   if (triggeredBy === 'vike' || triggeredBy === 'browser') {
-    // Abort: let Vike handle that navigation event
+    // Abort: let Vike handle the navigation
     return
   }
 
-  // Navigation event triggered by your history.pushState() call
+  // Navigation triggered by your history.pushState() call
   if (triggeredBy === 'user') {
-    // TODO: implement your navigation handling here
+    // Implement your navigation handling here
   }
 })
 ```
-
-
-## Examples
-
-Vue example:
- - <RepoLink path='/examples/vue-full/pages/index/+Page.vue' />
-
-React example:
- - <RepoLink path='/examples/react-full/pages/index/+Page.tsx' />
 
 
 ## See also
