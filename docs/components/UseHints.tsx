@@ -29,7 +29,7 @@ function UseUiFrameworkVikeExtensionHint({
   const hint = (
     <p>
       Instead of manually integrating {uiFrameworkName} yourself, you can use {pkgWithLink} which integrates{' '}
-      {uiFrameworkName} in a full-fledged manner. You can use <Bati /> to scaffold an app that uses {pkg}.
+      {uiFrameworkName} in a full-featured manner. You can use <Bati /> to scaffold an app that uses {pkg}.
     </p>
   )
   if (noQuote) {
