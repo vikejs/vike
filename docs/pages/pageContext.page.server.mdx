@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-The `pageContext` object holds information about the current page.
+The `pageContext` object holds contextual information about the current page.
 
 > Once the page is rendered we recommend treating `pageContext` as immutable, see <Link href="#lifecycle" />.
 
@@ -9,8 +9,8 @@ The `pageContext` object holds information about the current page.
 
 Built-in properties:
 
- - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `+Page.js` file.
- - **`pageContext.data`**: the value returned by the <Link href="/data">`data()` hook</Link>.
+ - **`pageContext.Page`**: the `export { Page }` or `export default` of the `+Page.js` file.
+ - **`pageContext.data`**: the value returned by the `data()` hook, see <Link href="/data#pagecontext-data" doNotInferSectionTitle/>.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
  - **`pageContext.urlOriginal`**: the current URL.
 
@@ -70,7 +70,36 @@ Built-in properties:
 
 ## Custom
 
-You can define custom `pageContext` properties.
+You can define custom `pageContext` properties. (See <Link href="#typescript" /> for how to define their types.)
+
+ - At your <Link href="/renderPage">Vike server middleware `renderPage()`</Link>:
+    ```js
+    app.get('*', async (req, res, next) => {
+      const pageContextInit = {
+        urlOriginal: req.url,
+
+        // ***************************************
+        // **** Custom pageContext properties ****
+        // ***************************************
+
+        // Common use cases:
+        // pageContext.user – information about logged-in user
+        user: req.user,
+        // pageContext.headers – e.g. make cookies available over pageContext.headers.cookies
+        headers: req.headers,
+
+        // Or any other value:
+        // pageContext.anyCustomProp
+        anyCustomProp: 'some-value'
+      }
+      const pageContext = await renderPage(pageContextInit)
+      // ...
+    })
+    ```
+    > Setting `pageContext.user` is a common use case for integrating authentication tools, see <Link href="/auth#integration" />.
+
+ - Using the upcoming [hook `onBoot()` (#962)](https://github.com/vikejs/vike/issues/962). It isn't implement yet, add a comment to the GitHub issue if you need it. (We expect `onBoot()` to be particularly useful for <Link href="/pre-rendering" >pre-rendered</Link> apps.)
+
  - Using the [`onBeforeRender()`](/onBeforeRender) hook:
     ```js
     export async function onBeforeRender() {
@@ -79,35 +108,20 @@ You can define custom `pageContext` properties.
           // ***************************************
           // **** Custom pageContext properties ****
           // ***************************************
-          // Any custom property
-          someCustomProp: 'some-value'
+
+          // Common use case: make the state management's initial state available.
+          // pageContext.initialStoreState – initial store state
+          initialStoreState: pageRendered.store.state,
+
+          // pageContext.anyCustomProp
+          anyCustomProp: 'some-value'
         }
       }
     }
     ```
+    > Setting `pageContext.initialStoreState` is a common use case for integrating state management tools, see <Link href="/store" />.
 
- - At your <Link text="Vike server middleware" href="/renderPage" />:
-    ```js
-    app.get('*', async (req, res, next) => {
-      const pageContextInit = {
-        urlOriginal: req.url,
-        // ***************************************
-        // **** Custom pageContext properties ****
-        // ***************************************
-        // Common use case: make information about logged-in user available over pageContext
-        user: req.user,
-        // Common use case: make the cookies available over pageContext.headers.cookies
-        headers: req.headers,
-        // Or any other custom property you want
-        someCustomProp: 'some-value',
-      }
-      const pageContext = await renderPage(pageContextInit)
-      /* ... */
-    })
-    ```
-    > A common use case is to integrate authentication tools: <Link href="/auth" />.
-
- - Using the <Link href="/">`onRenderHtml()`</Link> hook:
+ - Using the <Link href="/onRenderHtml">`onRenderHtml()`</Link> hook:
     ```js
     function onRenderHtml() {
       return {
@@ -116,15 +130,12 @@ You can define custom `pageContext` properties.
           // ***************************************
           // **** Custom pageContext properties ****
           // ***************************************
-          // Common use case: make the state management's initial store state available
-          initialStoreState: pageRendered.store.state,
-          // Or any other custom property you want
-          someCustomProp: 'some-value'
+          // pageContext.anyCustomProp
+          anyCustomProp: 'some-value'
         }
       }
     }
     ```
-    > A common use case is to integrate state management tools: <Link href="/store" />.
 
 
 ## Anywhere
@@ -167,7 +178,6 @@ import type {
 
 To extend and/or refine the `PageContext` type, use the global interface `Vike.PageContext`:
 
-
 ```ts
 declare global {
   namespace Vike {
@@ -178,18 +188,10 @@ declare global {
         id: string
         isAdmin: boolean
       }
-      // Define type of pageContext.pageProps
-      pageProps?: PageProps
       // Refine type of pageContext.Page (it's `unknown` by default)
-      Page: (pageProps) => JSX.Element
+      Page: () => JSX.Element
     }
   }
-}
-type PageProps = {
-  movies: {
-    title: string
-    releaseDate: Date
-  }[]
 }
 
 // Tell TypeScript this file isn't an ambient module

@@ -17,8 +17,8 @@ import { renderToHtml, createElement } from 'some-ui-framework'
 export { onRenderHtml }
 
 async function onRenderHtml(pageContext){
-  const { Page, pageProps } = pageContext
-  const pageHtml = await renderToHtml(createElement(Page, pageProps))
+  const { Page, data } = pageContext
+  const pageHtml = await renderToHtml(createElement(Page, data))
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html>

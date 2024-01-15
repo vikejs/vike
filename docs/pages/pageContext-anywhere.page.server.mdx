@@ -12,19 +12,19 @@ To make `pageContext` available in the browser, we use [`passToClient`](/passToC
 
 ## React
 
-> If we use <Link href="/extensions#ui-frameworks">`vike-react`</Link>, then we can use its <Link href="/usePageContext">`usePageContext`</Link> hook.
+> If we use <Link href="/extensions#ui-framework">`vike-react`</Link>, then we can use its <Link href="/usePageContext">`usePageContext()`</Link> component hook.
 
 We can use [React Context](https://reactjs.org/docs/context.html)
 to make `pageContext` accessible from any React component.
 
 Example:
- - <RepoLink path='/boilerplates/boilerplate-react/renderer/usePageContext.jsx' /> (hook <code>usePageContext()</code> implementation)
+ - <RepoLink path='/boilerplates/boilerplate-react/renderer/usePageContext.jsx' /> (component hook <code>usePageContext()</code> implementation)
  - <RepoLink path='/boilerplates/boilerplate-react/renderer/Link.jsx' /> (using <code>usePageContext()</code> to access <code>pageContext</code> from any React component)
  - <RepoLink path='/boilerplates/boilerplate-react/renderer/PageShell.jsx' /> (<code>{'<PageContextProvider>'}</code> integration)
 
 ## Vue 3 - Composition API
 
-> If we use <Link href="/extensions#ui-frameworks">`vike-vue`</Link>, then we can use its <Link href="/usePageContext">`usePageContext`</Link> hook.
+> If we use <Link href="/extensions#ui-framework">`vike-vue`</Link>, then we can use its <Link href="/usePageContext">`usePageContext()`</Link> component hook.
 
 We can use
 [`app.provide()`](https://v3.vuejs.org/api/application-api.html#provide)
@@ -53,7 +53,7 @@ const pageContext = inject('pageContext')
 </script>
 ```
 
-We can also implement a `usePageContext()` hook:
+We can also implement a `usePageContext()` component hook:
 
 ```js
 // usePageContext.js
@@ -96,7 +96,7 @@ If we use <Link href="/client-routing" noBreadcrumb={true} />, we need to make `
 
 ## Vue 3 - `globalProperties`
 
-> If we use <Link href="/extensions#ui-frameworks">`vike-vue`</Link>, then we can use its <Link href="/usePageContext">`usePageContext`</Link> hook.
+> If we use <Link href="/extensions#ui-framework">`vike-vue`</Link>, then we can use its <Link href="/usePageContext">`usePageContext()`</Link> component hook.
 
 Alternatively, we can make `pageContext` available to all Vue components by using [app.config.globalProperties](https://v3.vuejs.org/api/application-config.html#globalproperties).
 

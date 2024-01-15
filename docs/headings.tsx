@@ -75,7 +75,7 @@ const headings = [
     level: 2,
     title: 'Data Fetching',
     url: '/data-fetching',
-    sectionTitles: ['`data()` error handling']
+    sectionTitles: ['`data()`']
   },
   {
     level: 2,
@@ -110,8 +110,7 @@ const headings = [
   {
     level: 2,
     title: 'Authentication',
-    url: '/auth',
-    sectionTitles: ['Login flow']
+    url: '/auth'
   },
   {
     level: 2,
@@ -680,7 +679,8 @@ const headings = [
     level: 2,
     title: '`data()` hook',
     titleInNav: '`data()`',
-    url: '/data'
+    url: '/data',
+    sectionTitles: ['Without Vike extension', '`pageContext.data`', '`pageContext`']
   },
   {
     level: 2,
@@ -734,6 +734,12 @@ const headings = [
   {
     level: 4,
     title: 'Utils (server- & client-side)'
+  },
+  {
+    level: 2,
+    title: '`useData()`',
+    url: '/useData',
+    sectionTitles: ['TypeScript']
   },
   {
     level: 2,

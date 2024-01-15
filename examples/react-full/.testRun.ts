@@ -3,7 +3,7 @@ export { testRun }
 import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, sleep } from '@brillout/test-e2e'
 import { ensureWasClientSideRouted, testCounter } from '../../test/utils'
 
-function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
+function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
   run(cmd)
 
   const isDev = cmd === 'npm run dev'
@@ -75,8 +75,8 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
     expect(text).toContain('Revenge of the Sith')
     expect(text).toContain('The Phantom Menace')
 
-    if (viewFramework === 'vue') {
-      // Attempt to make `examples/vue-full/.dev.test.ts` less flaky: it some times throws a "Hydration Mismatch" error (I don't know why).
+    if (uiFramework === 'vue') {
+      // Attempt to make test less flaky: it some times throws a "Hydration Mismatch" error (I don't know why).
       await sleep(1000)
     }
     await page.click('a[href="/star-wars/4"]')
@@ -84,7 +84,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
       expect(await page.textContent('h1')).toBe('The Phantom Menace')
     })
     const pageContent =
-      viewFramework === 'vue'
+      uiFramework === 'vue'
         ? 'The Phantom Menace Release Date: 1999-05-19  Director: George Lucas  Producer: Rick McCallum'
         : 'The Phantom MenaceRelease Date: 1999-05-19Director: George LucasProducer: Rick McCallum'
     expect(await page.textContent('body')).toContain(pageContent)
@@ -94,7 +94,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
     const html = await fetchHtml('/markdown')
     expect(html).toContain('<title>Some Markdown Page</title>')
     expect(html).toContain('This page is written in <em>Markdown</em>')
-    if (viewFramework === 'react') {
+    if (uiFramework === 'react') {
       expect(html).toContain('<button>Counter <!-- -->0</button>')
     } else {
       expect(html).toContain('<button>Counter 0</button>')
@@ -117,7 +117,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
     }
   })
 
-  if (viewFramework === 'react') {
+  if (uiFramework === 'react') {
     test('async pageContext', async () => {
       const html = await fetchHtml('/')
       expect(html).toContain('"someAsyncProps":42')
@@ -146,7 +146,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
       const html = await fetchHtml('/hello/bob')
       expect(html).toContain(txt)
     })
-    if (viewFramework === 'react') {
+    if (uiFramework === 'react') {
       test('guard()', async () => {
         await page.goto(getServerUrl() + '/hello/forbidden')
         if (!isV1Design) {

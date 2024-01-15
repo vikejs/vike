@@ -10,9 +10,9 @@ import {
   expectLog,
   editFile,
   editFileRevert,
-  sleep,
   test,
-  expect
+  expect,
+  sleep
 } from '@brillout/test-e2e'
 import assert from 'assert'
 
@@ -37,8 +37,8 @@ function testRun(
     const html = await fetchHtml('/')
     // Solid injects attribute: <h1 data-hk="0-0-2-1-0">Welcome</h1>
     expect(html).toMatch(partRegex`<h1${/[^\>]*/}>Welcome</h1>`)
-    // Vue injects: `<!--[-->Home<!--]-->`
-    expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}Home${/.*/}</a>`)
+    // Vue injects: `<!--[-->Welcome<!--]-->`
+    expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}Welcome${/.*/}</a>`)
     expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}About${/.*/}</a>`)
   })
 
@@ -107,11 +107,37 @@ function testRun(
 
   test('error page', async () => {
     await page.goto(getServerUrl() + '/does-not-exist')
-    expect(await page.textContent('h1')).toBe('404 Page Not Found')
-    expect(await page.textContent('p')).toBe('This page could not be found.')
+    expect(await page.textContent('#page-content')).toBe('Page not found.')
     expectLog(
       'Failed to load resource: the server responded with a status of 404 (Not Found)',
       (log) => log.logSource === 'Browser Error' && partRegex`http://${/[^\/]+/}:3000/does-not-exist`.test(log.logText)
     )
+  })
+
+  test('data fetching page, HTML', async () => {
+    const html = await fetchHtml('/star-wars')
+    expect(html).toContain('<a href="/star-wars/6">Revenge of the Sith</a>')
+    expect(html).toContain('<a href="/star-wars/4">The Phantom Menace</a>')
+  })
+
+  test('data fetching page, DOM', async () => {
+    await page.goto(getServerUrl() + '/star-wars')
+    const text = await page.textContent('body')
+    expect(text).toContain('Revenge of the Sith')
+    expect(text).toContain('The Phantom Menace')
+
+    if (uiFramewok === 'vue') {
+      // Attempt to make test less flaky: it some times throws a "Hydration Mismatch" error (I don't know why).
+      await sleep(1000)
+    }
+    await page.click('a[href="/star-wars/4"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('The Phantom Menace')
+    })
+    const pageContent =
+      uiFramewok === 'vue'
+        ? 'The Phantom Menace Release Date: 1999-05-19  Director: George Lucas  Producer: Rick McCallum'
+        : 'The Phantom MenaceRelease Date: 1999-05-19Director: George LucasProducer: Rick McCallum'
+    expect(await page.textContent('body')).toContain(pageContent)
   })
 }

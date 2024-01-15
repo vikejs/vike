@@ -5,8 +5,8 @@ import { usePageContext } from '../../renderer/usePageContext'
 import { Counter } from '../index/Counter'
 
 function Page() {
-  const ctx = usePageContext()
-  let { is404, abortReason } = ctx
+  const pageContext = usePageContext()
+  let { is404, abortReason } = pageContext
   if (!abortReason) {
     abortReason = is404 ? 'Page not found.' : 'Something went wrong.'
   }

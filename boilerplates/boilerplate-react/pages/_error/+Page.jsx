@@ -1,24 +1,31 @@
-import PropTypes from 'prop-types'
-
 export { Page }
 
-Page.propTypes = {
-  is404: PropTypes.bool
-}
-function Page({ is404 }) {
-  if (is404) {
-    return (
-      <>
-        <h1>404 Page Not Found</h1>
-        <p>This page could not be found.</p>
-      </>
-    )
-  } else {
-    return (
-      <>
-        <h1>500 Internal Error</h1>
-        <p>Something went wrong.</p>
-      </>
-    )
+import { usePageContext } from '../../renderer/usePageContext'
+
+function Page() {
+  const pageContext = usePageContext()
+  let { abortReason } = pageContext
+  if (!abortReason) {
+    abortReason = pageContext.is404 ? 'Page not found.' : 'Something went wrong.'
   }
+  return (
+    <Center>
+      <p style={{ fontSize: '1.3em' }}>{abortReason}</p>
+    </Center>
+  )
+}
+
+function Center({ children }) {
+  return (
+    <div
+      style={{
+        height: 'calc(100vh - 100px)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      {children}
+    </div>
+  )
 }

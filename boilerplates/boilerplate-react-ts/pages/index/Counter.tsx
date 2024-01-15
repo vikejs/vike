@@ -1,6 +1,6 @@
-import { useState } from 'react'
-
 export { Counter }
+
+import { useState } from 'react'
 
 function Counter() {
   const [count, setCount] = useState(0)

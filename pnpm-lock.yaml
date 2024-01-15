@@ -70,6 +70,9 @@ importers:
       express:
         specifier: ^4.18.2
         version: 4.18.2
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
       prop-types:
         specifier: 15.8.1
         version: 15.8.1
@@ -136,6 +139,9 @@ importers:
       express:
         specifier: ^4.18.2
         version: 4.18.2
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -178,6 +184,9 @@ importers:
       express:
         specifier: ^4.18.2
         version: 4.18.2
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
       sirv:
         specifier: ^2.0.3
         version: 2.0.3
@@ -220,6 +229,9 @@ importers:
       express:
         specifier: ^4.18.2
         version: 4.18.2
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
       sirv:
         specifier: ^2.0.3
         version: 2.0.3

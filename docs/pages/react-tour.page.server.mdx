@@ -148,7 +148,7 @@ export async function data(pageContext) {
 
   // By default, +data.js files are loaded and executed only on the server-side
   // which means we can use SQL/ORM queries here.
-  const response = await fetch(`https://swapi.dev/api/films/${movieId}`);
+  const response = await fetch(`https://star-wars.brillout.com/api/films/${id}.json`)
   let movie = await response.json();
 
   // Our render and hydrate functions we defined earlier pass `pageContext.data` to

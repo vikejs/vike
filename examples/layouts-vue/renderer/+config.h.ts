@@ -5,7 +5,7 @@ export default {
   passToClient: ['pageProps', 'routeParams'],
   // https://vike.dev/meta
   meta: {
-    // Create new config 'Layout'
+    // Define new setting 'Layout'
     Layout: {
       env: { server: true, client: true }
     }
