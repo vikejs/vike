@@ -173,6 +173,8 @@ async function isGitMissing(userRootDir: string) {
 
 async function runCmd(cmd: string, cwd: string): Promise<string[]> {
   const res = await execA(cmd, { cwd })
+  /* Not always true: https://github.com/vikejs/vike/issues/1440#issuecomment-1892831303
   assert(res.stderr === '')
+  */
   return res.stdout.toString().split('\n').filter(Boolean)
 }
