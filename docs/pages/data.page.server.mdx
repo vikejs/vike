@@ -3,7 +3,7 @@ import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../comp
 
 The `data()` hook is used for fetching data. See <Link href="/data-fetching" /> for an introduction about `data()` and about data fetching in general.
 
-It's most commonly used with <Link href="/useData">useData()</Link>.
+It's commonly used together with <Link href="/useData">useData()</Link>.
 
 > For a lower-level hook with more control, see <Link href="/onBeforeRender" />.
 
@@ -157,20 +157,15 @@ The `data()` hook sets the value of `pageContext.data`. (While `useData()` expos
 This means that, beyond using <Link href="/useData">`useData()`</Link>, you can also access the data in other hooks over `pageContext.data`.
 
 
-## Without Vike extension
+## Without `useData()`
 
-The `data()` hook is usually used togther with the component hook <Link href="/useData">`useData()`</Link> which is provided by the <UiFrameworkVikeExtension />.
+The `data()` hook is usually used together with the component hook <Link href="/useData">`useData()`</Link> which is provided by the <UiFrameworkVikeExtension />.
 
-If you don't use <UiFrameworkVikeExtensionNames />, you can implement `useData()` yourself. For example:
- - <Link href='/boilerplates/boilerplate-react/renderer/useData.js' /> (React + JavaScript)
- - <Link href='/boilerplates/boilerplate-react-ts/renderer/useData.ts' /> (React + TypeScript)
- - <Link href='/boilerplates/boilerplate-vue/renderer/useData.js' /> (Vue + JavaScript)
- - <Link href='/boilerplates/boilerplate-vue-ts/renderer/useData.ts' /> (Vue + TypeScript)
- - [`vike-react` > /renderer/PageContextProvider.tsx](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/renderer/PageContextProvider.tsx)
- - [`vike-vue` > /components/useData.ts](https://github.com/vikejs/vike-vue/blob/main/vike-vue/components/useData.ts)
- - [`vike-solid` > /renderer/PageContextProvider.tsx](https://github.com/vikejs/vike-solid/blob/main/vike-solid/renderer/PageContextProvider.tsx)
+In general, for improved DX, we recommend using `data()` together with a `useData()` implementation.
 
-In general, for improved DX, we recommend always using `data()` together with a `useData()` implementation. That said, you can also use `data()` without `useData()`:
+> In case you don't use <UiFrameworkVikeExtensionNames />, you can implement `useData()` yourself as shown at <Link href="/useData#without-vike-extension" doNotInferSectionTitle />
+
+That said, you can also use `data()` without `useData()`:
 
 ```js
 // /renderer/+onRenderHtml.js

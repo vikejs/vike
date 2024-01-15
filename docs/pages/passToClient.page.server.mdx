@@ -1,47 +1,57 @@
 import { Link } from '@brillout/docpress'
 
-By default `pageContext` is available only on the server-side. We use `passToClient` to make parts of `pageContext` available in the browser.
+Most <Link href="/pageContext">`pageContext`</Link> values are available only on the server-side, but you can use `passToClient` to make them available on the client-side.
 
 ```js
-// /renderer/+config.h.js
+// /pages/+config.h.js
 // Environment: config
 
 export default {
-  // Example of pageContext values that usually need to be passed to the browser
   passToClient: [
-    'pageProps',
-    'routeParams',
-    // (Deep selection isn't implemented yet; open a GitHub ticket if you want this.)
-    'user.id',
-    'user.name'
+    'user'
   ]
 }
 ```
 
 ```js
-// +onRenderClient.js
-// Environment: browser
+// /pages/+onHydrationEnd.js
+// Environment: client
 
-export { onRenderClient }
+export { onHydrationEnd }
 
-async function onRenderClient(pageContext) {
-  // Thanks to `passToClient`, these `pageContext` are available here in the browser
-  pageContext.pageProps
-  pageContext.routeParams
-  pageContext.user.id
-  pageContext.user.name
+async function onHydrationEnd(pageContext) {
+  // pageContext.user is available here thanks to passToClient
+  console.log(pageContext.user)
 
-  /* ... */
+  // ...
 }
 ```
 
-> This is not needed when using the <Link href="/data">`data()`</Link> hook as `pageContext.data` is by default part of
-> `passToClient`.
+Some values, such as `pageContext.data`, are already passed to the client-side by <Link href="#default">default</Link>.
+
+
+## Default
+
+When using <Link href="/client-routing" noBreadcrumb={true} />, the following are also available on the client-side by default:
+ - `pageContext.Page`
+ - `pageContext.data`
+ - `pageContext.config`
+ - `pageContext.isHydration`
+ - `pageContext.isBackwardNavigation`
+ - `pageContext.routeParams`
+ - `pageContext.urlOriginal`
+ - `pageContext.urlPathname`
+ - `pageContext.urlParsed`
+
+When using <Link href="/server-routing" noBreadcrumb={true} />, the following are also available on the client-side by default:
+ - `pageContext.Page`
+ - `pageContext.data`
+ - `pageContext.config`
+
+
+## Serialization
 
 Serialization is done with [`@brillout/json-serializer`](https://github.com/brillout/json-serializer).
-
-
-## User-defined classes
 
 User-defined classes are lost during serialization:
 
@@ -61,3 +71,9 @@ console.log(obj instanceof MyClass) // false
 ```
 
 See [GitHub > `brillout/json-serializer` > #3 Support user-defined classes](https://github.com/brillout/json-serializer/issues/3).
+
+
+## See also
+
+ - <Link href="/pageContext" />
+ - <Link href="/usePageContext" />

@@ -336,7 +336,7 @@ const headingsDetached = [
     url: '/vike-packages'
   },
   {
-    title: 'Vike Extensions',
+    title: 'Extensions',
     url: '/extensions'
   },
   {
@@ -380,5 +380,9 @@ const headingsDetached = [
   {
     title: 'Image Optimizing',
     url: '/img'
-  }
+  },
+  {
+    title: 'Access `pageContext` anywhere',
+    url: '/pageContext-anywhere'
+  },
 ] satisfies HeadingDetachedDefinition[]

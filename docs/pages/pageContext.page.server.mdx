@@ -138,29 +138,9 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
     ```
 
 
-## Anywhere
+## Access anywhere
 
-**Any component**
-
-The `pageContext` object can be accessed from within any UI component, see <Link href="/pageContext-anywhere" />.
-
-**Client-side**
-
-While some `pageContext` values are also available on the client-side, most values are only available in Node.js and you have to use [`passToClient`](/passToClient) to make them available in the browser.
-
-When using <Link href="/server-routing" noBreadcrumb={true} />, the following are also available in the browser by default:
- - `pageContext.Page`
- - `pageContext.config`
-
-When using <Link href="/client-routing" noBreadcrumb={true} />, the following are also available in the browser by default:
- - `pageContext.Page`
- - `pageContext.config`
- - `pageContext.isHydration`
- - `pageContext.isBackwardNavigation`
- - `pageContext.routeParams`
- - `pageContext.urlOriginal`
- - `pageContext.urlPathname`
- - `pageContext.urlParsed`
+By using <Link href="/usePageContext">`usePageContext()`</Link> and <Link href="/passToClient">`passToClient`</Link>, you can access `pageContext` from anywhere.
 
 
 ## TypeScript

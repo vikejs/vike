@@ -1,14 +1,8 @@
 import { Link } from '@brillout/docpress'
-import { ProvidedByUiFrameworkVikeExtension } from '../components'
+import { UiFrameworkVikeExtension } from '../components'
 
-<ProvidedByUiFrameworkVikeExtension
-  what={
-    <>
-      <code>useData()</code> component hook
-    </>
-  }
-  manual={<Link href="/data#without-vike-extension" />}
-/>
+Environment: server, client.  
+Provided by: <UiFrameworkVikeExtension /> (or <Link href="#without-vike-extension">yourself</Link>).
 
 The `useData()` component hook allows you to access the data that is returned by a <Link href="/data">`data()` hook</Link>.
 
@@ -22,9 +16,7 @@ import { useData } from 'vike-vue'
 import { useData } from 'vike-solid'
 */
 
-// ...
-
-  // Inside any UI component
+  // Inside a UI component
   const data = useData()
   const { name, price } = data
 ```
@@ -62,11 +54,8 @@ See <Link href="/data#examples" />.
 
 import type { Data } from './+data'
 
-// ...
-
-  // Inside any UI component
+  // Inside a UI component
   const data = useData<Data>()
-  // ...
 ```
 
 ```ts
@@ -99,6 +88,21 @@ const data: DataAsync = async (pageContext): Promise<Data> => {
   // ...
 }
 ```
+
+## Without Vike extension
+
+In case you don't use a <UiFrameworkVikeExtension />, you can implement `useData()` yourself.
+
+> In general, for improved DX, we recommend using a `useData()` implementation. But you don't have to as shown at <Link href="/data#without-usedata" doNotInferSectionTitle />.
+
+Implementation examples:
+ - <Link href='/boilerplates/boilerplate-react/renderer/useData.js' /> (React + JavaScript)
+ - <Link href='/boilerplates/boilerplate-react-ts/renderer/useData.ts' /> (React + TypeScript)
+ - <Link href='/boilerplates/boilerplate-vue/renderer/useData.js' /> (Vue + JavaScript)
+ - <Link href='/boilerplates/boilerplate-vue-ts/renderer/useData.ts' /> (Vue + TypeScript)
+ - [`vike-react` > /renderer/PageContextProvider.tsx](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/renderer/PageContextProvider.tsx)
+ - [`vike-vue` > /components/useData.ts](https://github.com/vikejs/vike-vue/blob/main/vike-vue/components/useData.ts)
+ - [`vike-solid` > /renderer/PageContextProvider.tsx](https://github.com/vikejs/vike-solid/blob/main/vike-solid/renderer/PageContextProvider.tsx)
 
 
 ## See also

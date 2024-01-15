@@ -90,11 +90,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Access `pageContext` anywhere',
-    url: '/pageContext-anywhere'
-  },
-  {
-    level: 2,
     title: 'Common Issues',
     url: '/common-issues'
   },
@@ -680,7 +675,7 @@ const headings = [
     title: '`data()` hook',
     titleInNav: '`data()`',
     url: '/data',
-    sectionTitles: ['Without Vike extension', '`pageContext.data`', '`pageContext`']
+    sectionTitles: ['Without `useData()`', '`pageContext.data`', '`pageContext`']
   },
   {
     level: 2,
@@ -739,7 +734,7 @@ const headings = [
     level: 2,
     title: '`useData()`',
     url: '/useData',
-    sectionTitles: ['TypeScript']
+    sectionTitles: ['TypeScript', 'Without Vike extension']
   },
   {
     level: 2,
