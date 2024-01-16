@@ -26,9 +26,9 @@ Built-in properties:
     })
     ```
 
-    On the client-side, when using <Link text="Server Routing" href="/server-routing-vs-client-routing" />, the `pageContext.urlOriginal` value is `undefined` (unless you use [`passToClient`](/passToClient)).
-
-    On the client-side, when using <Link href="/client-routing" noBreadcrumb={true} />, the value of `pageContext.urlOriginal` is the browser's current URL (`window.location.href`).
+    On the client-side:
+     - When using <Link href="/client-routing">Client Routing</Link>, the value of `pageContext.urlOriginal` is the browser's current URL (`window.location.href`).
+     - When using <Link href="/server-routing">Server Routing</Link>, the value of `pageContext.urlOriginal` is `undefined` (unless you use [`passToClient`](/passToClient)).
  - **`pageContext.urlPathname`**: alias of `pageContext.urlParsed.pathname`.
  - **`pageContext.urlParsed`**: URL information:
    ```ts
