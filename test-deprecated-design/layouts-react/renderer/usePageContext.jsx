@@ -1,7 +1,6 @@
-// `usePageContext` allows us to access `pageContext` in any React component.
-// See https://vike.dev/pageContext-anywhere
-export { PageContextProvider }
+// https://vike.dev/usePageContext
 export { usePageContext }
+export { PageContextProvider }
 
 import React, { useContext } from 'react'
 

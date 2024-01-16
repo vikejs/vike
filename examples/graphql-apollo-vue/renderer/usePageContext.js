@@ -1,13 +1,11 @@
-// Hook `usePageContext()` to make `pageContext` available from any Vue component.
-// See https://vike.dev/pageContext-anywhere
-
-import { inject } from 'vue'
-
+// https://vike.dev/usePageContext
 export { usePageContext }
 export { setPageContext }
 
+import { inject } from 'vue'
 const key = Symbol()
 
+/** https://vike.dev/usePageContext */
 function usePageContext() {
   const pageContext = inject(key)
   return pageContext
