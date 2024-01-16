@@ -8,16 +8,12 @@ We can internationalize (i18n) a Vike app by using an <Link text={<><code>onBefo
 export { onBeforeRoute }
 
 function onBeforeRoute(pageContext) {
-  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlOriginal)
+  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlPathname)
   return {
     pageContext: {
       // We make `locale` available as `pageContext.locale`
       locale,
-      // When pageContext.urlLogical is set, then Vike's router uses the value of
-      // pageContext.urlLogical instead of pageContext.urlOriginal
-      // In other words:
-      //  - pageContext.urlOriginal => with locale, e.g. /en-US/movies
-      //  - pageContext.urlLogical => without locale, e.g. /movies
+      // Vike's router will use pageContext.urlLogical instead of pageContext.urlOriginal
       urlLogical: urlWithoutLocale
     }
   }

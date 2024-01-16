@@ -9,7 +9,7 @@ It is usually used for [internationalization](/i18n):
 export { onBeforeRoute }
 
 async function onBeforeRoute(pageContext) {
-  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlOriginal)
+  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlPathname)
   return {
     pageContext: {
       locale,
