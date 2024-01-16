@@ -1,4 +1,5 @@
 import { RepoLink } from '@brillout/docpress'
+import { projectInfo } from '../utils'
 
 Instead of using relative import paths,
 which can be cumbersome,
@@ -42,7 +43,7 @@ We recommend following the [Node.js convention](https://nodejs.org/api/packages.
 
 > While your path aliases don't need to follow the `#` convention, they do need to start with a special character (`!root`, `/root`, `$root`, ...).
 >
-> Path aliases must start with a special character so that Vike can distinguish between path alias imports and npm package imports. If it's an issue for you then elaborate your use case in a new [GitHub Discussion](https://github.com/vikejs/vike/discussions).
+> Path aliases must start with a special character so that Vike can distinguish between path alias imports and npm package imports. If it's an issue for you then elaborate your use case in a new <a href={projectInfo.githubDiscussions}>GitHub Discussion</a>.
 
 See also:
  - [Vite Docs > `resolve.alias`](https://vitejs.dev/config/shared-options.html#resolve-alias)
