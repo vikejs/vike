@@ -68,7 +68,7 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
 
   if ('urlPathname' in pageContext) {
     assert(typeof pageContext.urlPathname === 'string')
-    /* If this assert() fails then it's most likely because Object.assign() was used instead of objectAssign(), i.e.:
+    /* If the following assert() fails then it's most likely because Object.assign() was used instead of objectAssign(), i.e.:
        ```js
        // Add property getters such as pageContext.urlPathname to pageContext
        addUrlComputedProps(pageContext)

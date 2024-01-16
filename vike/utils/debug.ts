@@ -81,7 +81,8 @@ function isDebugEnabled(flag: Flag): boolean {
   try {
     DEBUG = process.env.DEBUG
   } catch {}
-  return DEBUG?.includes(flag) ?? false
+  const isEnabled = DEBUG?.includes(flag) ?? false
+  return isEnabled
 }
 
 function formatMsg(
