@@ -235,6 +235,7 @@ async function renderPageAlreadyPrepared(
       httpRequestId
     )
 
+    // Handle `throw redirect()` and `throw render()` while rendering nominal page
     if (isAbortError(errNominalPage)) {
       const handled = await handleAbortError(
         errNominalPage,
@@ -270,6 +271,7 @@ async function renderPageAlreadyPrepared(
     try {
       pageContextErrorPage = await renderPageAlreadyRouted(pageContextErrorPageInit)
     } catch (errErrorPage) {
+      // Handle `throw redirect()` and `throw render()` while rendering error page
       if (isAbortError(errErrorPage)) {
         const handled = await handleAbortError(
           errErrorPage,
@@ -536,6 +538,7 @@ async function handleAbortError(
   errAbort: ErrorAbort,
   pageContextsFromRewrite: PageContextFromRewrite[],
   pageContextInit: { urlOriginal: string },
+  // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageInit to it: we only use some pageContextNominalPageInit information.
   pageContextNominalPageInit: {
     urlOriginal: string
     urlParsed: Url
