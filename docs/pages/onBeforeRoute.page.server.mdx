@@ -8,7 +8,7 @@ It is usually used for [internationalization](/i18n):
 ```js
 export { onBeforeRoute }
 
-async function onBeforeRoute(pageContext) {
+function onBeforeRoute(pageContext) {
   const { urlWithoutLocale, locale } = extractLocale(pageContext.urlPathname)
   return {
     pageContext: {
@@ -31,11 +31,11 @@ Example:
 ```ts
 export { onBeforeRoute }
 
-import type { OnBeforeRouteAsync } from 'vike/types'
+import type { OnBeforeRouteSync } from 'vike/types'
 
-const onBeforeRoute: OnBeforeRouteAsync = async (pageContext): ReturnType<OnBeforeRouteAsync> => {
+const onBeforeRoute: OnBeforeRouteSync = (pageContext): ReturnType<OnBeforeRouteSync> => {
   // ...
 }
 ```
 
-<HookTypeScriptHints hookTypeName="OnBeforeRouteAsync" />
+<HookTypeScriptHints hookTypeName="OnBeforeRouteSync" />
