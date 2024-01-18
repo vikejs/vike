@@ -18,7 +18,10 @@ cli.command('prerender', 'Pre-render the HTML of your pages', { allowUnknownOpti
   }
   const prerenderConfig = config.prerender ?? options
   const { prerender } = await import('../api/prerender.js')
-  await prerender(prerenderConfig)
+  await prerender({
+    ...prerenderConfig,
+    viteConfig: config.vite
+  })
 })
 
 cli

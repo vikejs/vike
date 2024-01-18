@@ -34,13 +34,8 @@ async function build(options: Options = {}) {
     return { clientOutput, serverOutput }
   }
 
-  const { prerender } = await import('./prerender.js')
-  //@ts-ignore
-  const prerenderConfig: Parameters<typeof prerender>[0] = {
-    ...(typeof options.prerender === 'object' && options.prerender),
-    viteConfig
-  }
-  await prerender(prerenderConfig)
+  const { _prerender, getPrerenderOptions } = await import('./prerender.js')
+  await _prerender(getPrerenderOptions({ ...options, vite: viteConfig }))
 
   return { clientOutput, serverOutput }
 }
