@@ -1,4 +1,4 @@
-import { parseUrl } from './parseUrl.js'
+import { parseUrl, isUriWithProtocol } from './parseUrl.js'
 import { expect, describe, it } from 'vitest'
 import assert from 'assert'
 
@@ -451,9 +451,30 @@ describe('parseUrl', () => {
     globalThis.window = undefined
   })
 })
-
 /* Doesn't work
 declare global {
   var document: Document & { baseURI: string }
 }
 */
+
+describe('isUriWithProtocol()', () => {
+  it('works', () => {
+    // Basics
+    expect(isUriWithProtocol('/bla')).toBe(false)
+    expect(isUriWithProtocol('/bla:')).toBe(false)
+    expect(isUriWithProtocol('bla:')).toBe(true)
+
+    // Valid
+    expect(isUriWithProtocol('a:')).toBe(true)
+    expect(isUriWithProtocol('a-b:')).toBe(true)
+    expect(isUriWithProtocol('a+b:')).toBe(true)
+    expect(isUriWithProtocol('a.b:')).toBe(true)
+    expect(isUriWithProtocol('a2:')).toBe(true)
+    expect(isUriWithProtocol('2a:')).toBe(true)
+
+    // Invalid
+    expect(isUriWithProtocol('a!b:')).toBe(false)
+    expect(isUriWithProtocol('a_b:')).toBe(false)
+    expect(isUriWithProtocol('.ab:')).toBe(false)
+  })
+})

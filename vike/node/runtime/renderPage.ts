@@ -426,7 +426,7 @@ function getPageContextInitEnhancedSSR(
   urlRewrite: null | string,
   httpRequestId: number
 ) {
-  const { isClientSideNavigation, _urlHandler } = handleUrl(pageContextInit.urlOriginal, urlRewrite)
+  const { isClientSideNavigation, _urlHandler } = handlePageContextUrl(pageContextInit.urlOriginal)
   const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext, {
     ssr: {
       urlRewrite,
@@ -438,25 +438,15 @@ function getPageContextInitEnhancedSSR(
   return pageContextInitEnhanced
 }
 
-function handleUrl(
-  urlOriginal: string,
-  urlRewrite: string | null
-): {
+function handlePageContextUrl(urlOriginal: string): {
   isClientSideNavigation: boolean
   _urlHandler: (urlOriginal: string) => string
 } {
-  assert(isUrlValid(urlOriginal))
-  assert(urlRewrite === null || isUrlValid(urlRewrite))
   const { isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
-  const pageContextAddendum = {
+  return {
     isClientSideNavigation: isPageContextRequest,
     _urlHandler: (url: string) => handlePageContextRequestUrl(url).urlWithoutPageContextRequestSuffix
   }
-  return pageContextAddendum
-}
-
-function isUrlValid(url: string) {
-  return url.startsWith('/') || url.startsWith('http')
 }
 
 function getRequestId(): number {

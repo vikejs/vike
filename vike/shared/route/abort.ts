@@ -20,6 +20,7 @@ import {
   assertWarning,
   checkType,
   hasProp,
+  isUriWithProtocol,
   isUserHookError,
   joinEnglish,
   objectAssign,
@@ -51,8 +52,9 @@ type AbortReason = Required<({ abortReason?: unknown } & Vike.PageContext)['abor
  * @param url The URL to redirect to.
  * @param statusCode By default a temporary redirection (`302`) is performed. For permanent redirections (`301`), use `config.redirects` https://vike.dev/redirects instead or, alternatively, set the `statusCode` argument to `301`.
  */
-function redirect(url: `/${string}` | `https://${string}` | `http://${string}`, statusCode?: 301 | 302): AbortRedirect {
+function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
   const abortCaller = 'throw redirect()' as const
+  assertUrl(url, abortCaller, true)
   const args = [JSON.stringify(url)]
   if (!statusCode) {
     statusCode = 302
@@ -109,7 +111,7 @@ function render(urlOrStatusCode: string | number, abortReason?: unknown): Error 
 function render_(
   urlOrStatusCode: string | number,
   abortReason: unknown | undefined,
-  abortCall: AbortCall,
+  abortCall: `render(${string})` | `RenderErrorPage()`,
   abortCaller: 'throw render()' | 'throw RenderErrorPage()',
   pageContextAddendum?: { _isLegacyRenderErrorPage: true } & Record<string, unknown>
 ): Error {
@@ -124,6 +126,7 @@ function render_(
   }
   if (typeof urlOrStatusCode === 'string') {
     const url = urlOrStatusCode
+    assertUrl(url, abortCaller)
     objectAssign(pageContextAbort, {
       _urlRewrite: url
     })
@@ -140,19 +143,24 @@ function render_(
 }
 
 type AbortCall = `redirect(${string})` | `render(${string})` | `RenderErrorPage()`
+type AbortCaller = `throw redirect()` | `throw render()` | `throw RenderErrorPage()`
 type PageContextAbort = {
   _abortCall: AbortCall
+  _abortCaller: AbortCaller
 } & (
   | ({
+      _abortCall: `redirect(${string})`
       _abortCaller: 'throw redirect()'
       _urlRedirect: UrlRedirect
     } & Omit<AbortUndefined, '_urlRedirect'>)
   | ({
+      _abortCall: `render(${string})` | `RenderErrorPage()`
       _abortCaller: 'throw render()' | 'throw RenderErrorPage()'
       abortReason: undefined | unknown
       _urlRewrite: string
     } & Omit<AbortUndefined, '_urlRewrite'>)
   | ({
+      _abortCall: `render(${string})` | `RenderErrorPage()`
       _abortCaller: 'throw render()' | 'throw RenderErrorPage()'
       abortReason: undefined | unknown
       abortStatusCode: number
@@ -282,5 +290,18 @@ function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) 
   assertUsage(
     rewriteCount + redirectCount <= 7,
     `Maximum chain length of 7 ${abortCalls} exceeded. Did you define an infinite loop of ${abortCalls}?`
+  )
+}
+
+function assertUrl(url: string, abortCaller: AbortCaller, allowAbsoluteUrl?: true) {
+  assertUsage(
+    url.startsWith('/') || (allowAbsoluteUrl && isUriWithProtocol(url)),
+    [
+      `Invalid URL ${pc.cyan(url)} passed to ${pc.cyan(abortCaller)}:`,
+      `the URL should start with ${pc.cyan('/')}`,
+      allowAbsoluteUrl && `or a valid protocol (${pc.cyan('https:')}, ${pc.cyan('ipfs:')}, ...)`
+    ]
+      .filter(Boolean)
+      .join(' ')
   )
 }

@@ -4,8 +4,7 @@ export { resolveRedirects }
 export { resolveRouteStringRedirect }
 
 import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
-import { isUriWithProtocol } from '../../utils/parseUrl-extras.js'
-import { assert, assertUsage } from '../utils.js'
+import { assert, assertUsage, isUriWithProtocol } from '../utils.js'
 import { resolveUrlPathname } from './resolveUrlPathname.js'
 import { assertRouteString, resolveRouteString } from './resolveRouteString.js'
 import pc from '@brillout/picocolors'
