@@ -132,11 +132,13 @@ async function route(pageContextForRoute: PageContextForRoute): Promise<PageCont
   )
 
   resolvePrecendence(routeMatches)
-  const winner = routeMatches[0]
+  const winner = routeMatches[0] ?? null
 
   debug(`Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)
 
   objectAssign(pageContextFromRoute, { _debugRouteMatches: routeMatches })
+  // For vite-plugin-vercel https://github.com/magne4000/vite-plugin-vercel/blob/main/packages/vike-integration/vike.ts#L173
+  objectAssign(pageContextFromRoute, { _routeMatch: winner })
 
   if (!winner) {
     objectAssign(pageContextFromRoute, {
