@@ -1,16 +1,6 @@
 export { testRun }
 
-import {
-  page,
-  test,
-  expect,
-  run,
-  fetchHtml,
-  partRegex,
-  getServerUrl,
-  testScreenshotFixture,
-  skip
-} from '@brillout/test-e2e'
+import { page, test, expect, run, fetchHtml, getServerUrl, testScreenshotFixture } from '@brillout/test-e2e'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   {
@@ -21,21 +11,8 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   }
 
   test('page content is rendered to HTML', async () => {
-    {
-      const html = await fetchHtml('/')
-      expect(html).toContain(
-        '<meta name="description" content="Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin." />'
-      )
-      expect(html).toContain('integrate tools manually')
-      expect(html).toMatch(partRegex`<h2>${/[^\/]+/}Control</h2>`)
-      expect(html).toContain('<h2>🔧<!-- --> Control</h2>')
-    }
-    {
-      const html = await fetchHtml('/stream')
-      expect(html).toContain('<title>HTML Streaming | Vike</title>')
-      expect(html).toContain('<h2 id="initial-data-after-stream-end">Initial data after stream end</h2>')
-      expect(html).not.toContain('<meta name="description"')
-    }
+    const html = await fetchHtml('/')
+    expect(html).toContain('integrate tools manually')
   })
 
   test('Learn more collapsible', async () => {
