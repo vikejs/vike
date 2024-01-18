@@ -1,3 +1,12 @@
+## [0.4.158](https://github.com/vikejs/vike/compare/v0.4.157...v0.4.158) (2024-01-18)
+
+
+### Features
+
+* pageContext.httpResponse.getReadableNodeStream() ([09af9e7](https://github.com/vikejs/vike/commit/09af9e7d0e375577fe7b097fbce1cd3cf2182b7d))
+
+
+
 ## [0.4.157](https://github.com/vikejs/vike/compare/v0.4.156...v0.4.157) (2024-01-18)
 
 
