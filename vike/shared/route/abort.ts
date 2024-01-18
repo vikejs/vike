@@ -98,16 +98,16 @@ function render(abortStatusCode: 401 | 403 | 404 | 410 | 429 | 500 | 503, abortR
  * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vike.dev/error-page
  */
 function render(url: `/${string}`, abortReason?: AbortReason): Error
-function render(value: string | number, abortReason?: unknown): Error {
-  const args = [typeof value === 'number' ? String(value) : JSON.stringify(value)]
+function render(urlOrStatusCode: string | number, abortReason?: unknown): Error {
+  const args = [typeof urlOrStatusCode === 'number' ? String(urlOrStatusCode) : JSON.stringify(urlOrStatusCode)]
   if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30))
   const abortCaller = 'throw render()'
   const abortCall = `render(${args.join(', ')})` as const
-  return render_(value, abortReason, abortCall, abortCaller)
+  return render_(urlOrStatusCode, abortReason, abortCall, abortCaller)
 }
 
 function render_(
-  value: string | number,
+  urlOrStatusCode: string | number,
   abortReason: unknown | undefined,
   abortCall: AbortCall,
   abortCaller: 'throw render()' | 'throw RenderErrorPage()',
@@ -122,15 +122,15 @@ function render_(
     assert(pageContextAddendum._isLegacyRenderErrorPage === true)
     objectAssign(pageContextAbort, pageContextAddendum)
   }
-  if (typeof value === 'string') {
-    const url = value
+  if (typeof urlOrStatusCode === 'string') {
+    const url = urlOrStatusCode
     objectAssign(pageContextAbort, {
       _urlRewrite: url
     })
     return AbortRender(pageContextAbort)
   } else {
-    const abortStatusCode = value
-    assertStatusCode(value, [401, 403, 404, 410, 429, 500, 503], 'render')
+    const abortStatusCode = urlOrStatusCode
+    assertStatusCode(urlOrStatusCode, [401, 403, 404, 410, 429, 500, 503], 'render')
     objectAssign(pageContextAbort, {
       abortStatusCode,
       is404: abortStatusCode === 404
