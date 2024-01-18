@@ -9,6 +9,10 @@ const headingsDetached = [
     url: '/why'
   },
   {
+    title: 'Consulting',
+    url: '/consulting'
+  },
+  {
     title: 'Next.js Comparison',
     url: '/nextjs-comparison'
   },
