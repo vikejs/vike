@@ -66,7 +66,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
     async getNodeStream() {
       assertWarning(
         false,
-        '`pageContext.httpResponse.getNodeStream()` is outdated, use `pageContext.httpResponse.pipe()` instead. ' +
+        '`pageContext.httpResponse.getNodeStream()` is outdated, use `pageContext.httpResponse.getReadableNodeStream()` instead. ' +
           streamDocs,
         { onlyOnce: true, showStackTrace: true }
       )
@@ -89,6 +89,13 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
         assertUsage(false, getErrMsg(htmlRender, renderHook, 'getWebStream()', getFixMsg('readable', 'web')))
       }
       return webStream
+    },
+    async getReadableNodeStream() {
+      const nodeStream = await getStreamReadableNode(htmlRender)
+      if (nodeStream === null) {
+        assertUsage(false, getErrMsg(htmlRender, renderHook, 'getReadableNodeStream()', getFixMsg('readable', 'node')))
+      }
+      return nodeStream
     },
     getReadableWebStream() {
       const webStream = getStreamReadableWeb(htmlRender)
