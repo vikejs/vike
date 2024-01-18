@@ -89,11 +89,11 @@ async function handleFetchEvent(event) {
 }
 ```
 
-We recommend using `pageContext.httpResponse.pipe()` whenever possible. Because:
-  - `pipe()` is able to flush streams. In other words: the stream provided by your UI framework can say "now is a good time to flush the buffer and send it to the user".
-  - `pipe()` works with both Web Streams and Node.js streams, which means you can change the type of the stream inside your `onRenderHtml()` hook without having to adapt your server integration.
+In general, we recommend using `pageContext.httpResponse.pipe()` because `pipe()` is able to flush streams. In other words: the stream provided by your UI framework can say "now is a good time to flush the buffer and send it to the user".
 
-But if your server doesn't expose a writable stream then you cannot use `pipe()`. In that case you can fallback to:
+> As far as we know, only React leverages the flush capability. Thus, the recommendation may be irrelevant if you use a UI framework other than React.
+
+If your server doesn't expose a writable stream then you cannot use `pipe()`. In that case you can fallback to:
  - `pageContext.httpResponse.getReadableWebStream()`
  - `pageContext.httpResponse.getReadableNodeStream()`
 
