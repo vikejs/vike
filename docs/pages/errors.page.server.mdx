@@ -18,14 +18,14 @@ server.addMiddleware({
     const pageContext = await renderPage({ urlOriginal: request.url })
 
     if (pageContext.errorWhileRendering) {
-      /* Vike already calls console.error() so we don't need the following line.
+      /* Vike already calls console.error() so the following line isn't needed.
       console.error(pageContext.errorWhileRendering)
       */
 
-      // If you're using an error tracker:
+      // If you use an error tracker (e.g. Sentry):
       myErrorTracker.intercept(pageContext.errorWhileRendering)
 
-      // If you're using a server middleware that handles errors:
+      // If you use a server middleware that handles errors:
       if (!pageContext.httpResponse) {
         // Don't throw if there is a pageContext.httpResponse, otherwise
         // the error page won't be rendered.
