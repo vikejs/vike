@@ -1,3 +1,23 @@
+## [0.4.157](https://github.com/vikejs/vike/compare/v0.4.156...v0.4.157) (2024-01-18)
+
+
+### Bug Fixes
+
+* apply env check also to eager imports (fix [#1423](https://github.com/vikejs/vike/issues/1423)) ([20674a7](https://github.com/vikejs/vike/commit/20674a7faf32d3854bf32eb29a348b32cfe36009))
+* enable user to opt-out Vike's rollupOutput.*Names settings ([#1421](https://github.com/vikejs/vike/issues/1421)) ([d07fbe8](https://github.com/vikejs/vike/commit/d07fbe827118677177ef1226afb5ba23fc86fd43))
+* fix and improve URL validation for `throw render()` and `throw redirect()` (fix [#1445](https://github.com/vikejs/vike/issues/1445)) ([4b753b8](https://github.com/vikejs/vike/commit/4b753b85143ffda30a0d8c5063f1acc1a429eb68))
+* fix root cause for extractAssetsRemoveQuery() bug (fix [#1420](https://github.com/vikejs/vike/issues/1420)) ([3275e1c](https://github.com/vikejs/vike/commit/3275e1c7921c715c4e8dd65331334f34ca1bcbbe))
+* improve client-side error handling ([9dcb1e1](https://github.com/vikejs/vike/commit/9dcb1e1f4354d4c81e9aaf04cc63dce8b183ef6b))
+* improve deprecation warning ([f230cb3](https://github.com/vikejs/vike/commit/f230cb35d811e20337c8fd8199a0ba018a71ebde))
+* improve error message upon invalid filename (fix [#1425](https://github.com/vikejs/vike/issues/1425)) ([04acbac](https://github.com/vikejs/vike/commit/04acbacf2c261b52963bccce9c5fa87019ebbe52))
+* pageContext._routeMatch for vite-plugin-vercel ([ad0534c](https://github.com/vikejs/vike/commit/ad0534cb45479408c6e63eccb8f313abb978ac31))
+* pick pageContext.urlLogical first (fix [#1436](https://github.com/vikejs/vike/issues/1436)) ([d8d55d2](https://github.com/vikejs/vike/commit/d8d55d27b018eddb55d1c7205d7fcb366bf4a1e5))
+* remove faulty crawl assert (fix [#1440](https://github.com/vikejs/vike/issues/1440)) ([e46716d](https://github.com/vikejs/vike/commit/e46716d832215f25148dd57d6d9cc1c2193c0970))
+* set ssr.external to true by default ([07b92e3](https://github.com/vikejs/vike/commit/07b92e3c2600c0874aa3101e4042503ba6ef2a31))
+* temporarily don't make ssr.external true by default ([1b7b3c5](https://github.com/vikejs/vike/commit/1b7b3c531035d3c4735a343f450a29e52bc87f15))
+
+
+
 ## [0.4.156](https://github.com/vikejs/vike/compare/v0.4.155...v0.4.156) (2024-01-07)
 
 
