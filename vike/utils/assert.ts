@@ -53,7 +53,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   const link = `${projectInfo.githubRepository}/issues/new`
   let errMsg = [
     `You stumbled upon a bug in ${projectInfo.projectName}'s source code.`,
-    `Go to ${pc.blue(link)} and copy-paste this error; a maintainer will fix the bug (usually under 24 hours).`,
+    `Go to ${pc.blue(link)} and copy-paste this error. A maintainer will fix the bug (usually under 24 hours).`,
     debugStr
   ]
     .filter(Boolean)
