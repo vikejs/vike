@@ -33,7 +33,7 @@ For example, you can use Relay and Apollo in ways that aren't possible with Next
 >
 > Many users and sponsors leverage Vike's flexibility to integrate Relay with SSR Streaming.
 
-Vike includes everything you'd expect from a frontend framework: Client-side Routing, HMR, Filesystem Routing, Pre-rendering, Data Fetching, Code Splitting, Layouts, i18n, etc.
+Vike includes everything you'd expect from a frontend framework: Client-side Routing, HMR, Filesystem Routing, Pre-rendering (SSG), Data Fetching, Code Splitting, Layouts, i18n, etc.
 
 
 ## Server/deployment agnostic
@@ -50,18 +50,18 @@ very
 at
 [scale](https://www.reddit.com/r/nextjs/comments/q7vw6p/cheaper_vercel_alternatives_specifically_to/hgm7d1t/).
 What's worse is that [Vercel's pricing](https://vercel.com/pricing) is
-misleading (the pay-per-developer make it seem cheap but you usually pay for very expensive exceeded limits fees),
+misleading (the pay-per-developer make it seem cheap but you usually pay for very expensive fees for exceeding limits),
 [opaque](https://www.reddit.com/r/nextjs/search?q=vercel+pricing&restrict_sr=on&include_over_18=on) (e.g. you must have an enterprise plan if you have >10 team members which is [hidden in the fine print](https://vercel.com/docs/limits/overview#:~:text=Team%20Members%20per,Custom)),
-hard to understand
+hard to understand,
 and hard to predict.
-Such pricing design is a no-go for many enterprises.
+Such complex pricing is usually a no-go for large enterprises.
 
 You can self-host Next.js as a Node.js server, for example placed in a Docker container. But it won't work precisely the same way as on Vercel.
 Furthermore, self-hosting Next.js as a Serverless or Edge application (i.e. replacing Vercel) is worse.
 
-An illustration of the problem: [with Next.js server actions you no longer handwrite API endpoints - which means you don't have the ability to explicitly control versioning](https://twitter.com/thdxr/status/1718308244383228124). So requests from old clients can fail. Vercel solved this with their deployment infrastructure, instead of in Next.js itself. So if you use Next.js but not Vercel then you'll have to deal with this major problem yourself.
+An illustration of the problem: with Next.js server actions you no longer handwrite API endpoints - which means [you don't have the ability to explicitly control versioning](https://twitter.com/thdxr/status/1718308244383228124). So requests from old clients can fail. Vercel solved this with their deployment infrastructure, instead of in Next.js itself. So if you use Next.js but not Vercel then you'll have to deal with this major problem yourself.
 
-These kinds of difficulties led the open source community to make the build-script [Open-Next.js](https://open-next.js.org/), to make Serverless deployment of Next.js on generic Functions-as-a-Service (FaaS) platforms easier (specifically on AWS Lambda). It allows easier reuse/integration with any AWS back-end / account one may already have, and reduces Next.js's ties to Vercel's own platform. But that is a moving target with things breaking on every patch release / new features, [according to a person](https://x.com/thdxr/status/1740115107005280592) working closely with the matter.
+These kinds of difficulties led the open source community to develop [Open-Next.js](https://open-next.js.org/), a project to make Serverless deployment of Next.js on generic Functions-as-a-Service (FaaS) platforms easier (specifically on AWS Lambda). It allows easier integration with AWS and reduces Next.js's ties to Vercel. But that is a moving target with things breaking frequently, [according to a person](https://x.com/thdxr/status/1740115107005280592) working closely with the matter.
 
 Edge deployment with Next.js is another story. [Cloudflare](https://blog.cloudflare.com/next-on-pages), the most prominent edge hosting provider, uses its own runtime instead of Node.js. Meaning that some Next.js apps built to run on Node.js won't immediately work on the Edge. So Next.js has an Edge Runtime toolkit/mode that uses only a subset of the Node.js API, but it has [a lot of issues](https://github.com/search?q=repo%3Avercel%2Fnext.js+edge+runtime&type=issues).
 
@@ -70,11 +70,15 @@ Edge deployment with Next.js is another story. [Cloudflare](https://blog.cloudfl
 
 Vike is server and deployment agnostic (use any server and any hosting provider), and built with Serverless and Edge compatibility from the start.
 
-From a server perspective, <Link text="Vike is just a middleware" href="/deploy" /> that doesn't depend on Node.js and that can run anywhere where JavaScript runs (AWS, Vercel, Cloudflare, Deno Deploy, etc.) and even in the browser.
+From a server perspective, <Link text="Vike is just a middleware" href="/deploy" /> that doesn't depend on Node.js and that can run anywhere where JavaScript runs such as AWS, Vercel, Cloudflare, Deno Deploy, or even in the browser.
 
-> You do need Node.js for *local development*, as the development runtime of [Vite (the dev- and build-toolkit used by Vike)](https://vitejs.dev/) depends on Node.js. But Vite's runtime isn't needed in production. Consequently, since Vike's (production) runtime doesn't depend on Node.js, there are no dependencies on Node.js in production. In other words: you can develop apps that don't depend on Node.js and deploy them anywhere.
+You can develop apps with a server that doesn't depend on Node.js and deploy it anywhere.
 
-To integrate Vike, you simply add Vike's middleware to your server side (Express.js, Fastify, Edge Worker, Serverless Function, etc.).
+> You can also <Link href="/pre-rendering">pre-render</Link> your app to remove the need for a production server: your app consists only of static assets (HTML, JS, CSS, images, ...) that can be deployed to any static host such as GitHub Pages.
+
+> You do need Node.js for local development, as the development runtime of [Vite (the dev- and build-toolkit used by Vike)](https://vitejs.dev/) depends on Node.js. But Vite's runtime isn't needed in production. Consequently, since Vike's runtime doesn't depend on Node.js, there are no dependencies on Node.js in production.
+
+To integrate Vike, you simply add Vike's middleware to your server (Express.js, Fastify, Edge Worker, Serverless Function, etc.).
 
 With Vike, you have full control over your server and over your deployment strategy, two critical aspects of your business.
 
@@ -88,20 +92,22 @@ All-in-all, Vike is less easy, but simpler. For large scale projects, simplicity
 Last but not least, manual integration is fun and insightful. (Whereas fighting a framework is pesky.)
 
 
-## Server Components
+## React Server Components
 
 React 18 introduced novel techniques that unlock many capabilities.
 
-Vike, and in particular <Link href="/react#vike-extension">`vike-react`</Link>, extensively leverages React's 18 new techniques. (<Link href="/stream">Streaming</Link>, <Link href="/stream#progressive-hydration">Progressive Hydration</Link>, independent and collocated data fetching, <Link href="/RPC">RPC</Link>, etc.) Vike's implementation is unique in the sense that it provides users with <Link href="/why#optional-control">optional control</Link>.
+Vike, and in particular <Link href="/react#vike-extension">`vike-react`</Link>, extensively leverages React's 18 new techniques. (<Link href="/stream">Streaming</Link>, <Link href="/stream#progressive-hydration">Progressive Hydration</Link>, independent and collocated data fetching, <Link href="/RPC">RPC</Link>, etc.)
 
-One aspect we didn't implement yet are components that are loaded only on the server-side. While we are researching a DX for such components, we believe this technology is too early for being used in production. See <Link href="/react#react-server-components"/> for more information.
+Vike provides you with extensive control for integrating tools as you see fit, such as control over React's SSR <Link href="/stream">stream</Link>. At the same time <a href="/extensions">Vike extensions</a> provide built-in integrations for a quick start. We call this dual approach <Link href="/why#optional-control">optional control</Link>.
+
+One aspect `vie-react` doesn't support yet are components that are loaded only on the server-side. While we are researching a DX for such components, we believe this new paradigm is too early for being used in production. See <Link href="/react#react-server-components" doNotInferSectionTitle />.
 
 
 ## Build your own framework
 
 Vike is designed from the ground up to enable users to build frameworks on top of Vike.
 
-You can build your own Next.js with only hundreds of lines of code.
+You can build your own framework with only hundreds of lines of code.
 
 > While there are many [uses cases for building your own framework](https://vike.land), the most prominent one is [building company internal frameworks](https://vike.land#scale).
 
@@ -128,7 +134,7 @@ We foster the proliferation of React frameworks, highly-tailored to specific use
 
 Next.js aggressively uses [caching](https://nextjs.org/docs/app/building-your-application/caching), for performance and cost-saving reasons. Less server load means your app uses less compute resources, which saves you money on Vercel's paid plans, but saves Vercel money on their free tier (which most developers will be on; Vercel's long-tail). Next.js leans towards making as many routes as possible statically rendered (SSG over SSR wherever possible). Caching is enabled by default (both on the server and the client), and you have to **explicitly opt-out** to disable it (using more or less hacky solutions) each time you don't want it. But people are [finding](https://www.reddit.com/r/nextjs/comments/18tkmdb/has_anyone_abandoned_nextjs_after_using_it_on_a/kffjox2/) the aggressive [caching to be a nightmare](https://www.reddit.com/r/nextjs/comments/18tkmdb/has_anyone_abandoned_nextjs_after_using_it_on_a/kfh6nh2/), and hard to disable. Caching can give a wrong/stale view of your app, and cost precious development time hunting for the cause. As the saying goes, _"There are only two hard things in Computer Science: cache invalidation and naming things."_ -- Phil Karlton
 
-Vike does not cache, by design, so by default your app will behave as you expect. If you do want caching however, you can opt-in to it, by using one of the many industry-standard caching tools.
+Vike does not cache, by design, so by default your app will behave as you expect. If you do want caching, you can opt into it by using one of the many industry-standard caching tools.
 
 
 ### Server-first mentality
@@ -146,11 +152,10 @@ If your product either:
 then the server-first mentality of Next.js and Vercel isn't helpful and can be a hindrance.
 
 With Vike, you can choose setups that fit the aforementioned use cases.
-You can completely opt out of SSR, for example by setting the `ssr` setting of <Link href="/href#vike-extension">`vike-react`</Link> to `false`.
-You can also use SSR for the first page and then, from there on, use client-only navigation while fetching data directly between the client and the data source (without involving the SSR server).
+You can partially or completely opt out of SSR (turn on/off for whole app, <Link href="/ssr">for some pages</Link>, or <Link href="/ClientOnly">for some components</Link>).
+You can also use SSR for the first page and then, from there on, use client-only navigation while fetching data directly from the data source (without involving your SSR server).
 
-Vike has first-class support for leaning towards the client-side, with features such as fully optional SSR (turn on/off for whole app, <Link href="/ssr">for some page</Link>, or <Link href="/ClientOnly">for some component</Link>), direct data fetching, pre-rendering (SSG), and [PWA](https://github.com/vite-pwa/vite-plugin-pwa).
-At the same time, Vike also has first-class support for SSR use cases.
+Vike has first-class support for leaning towards the client-side, as well as first-class support for SSR use cases.
 Vike is made by the community and has no incentive to favor any side of the work-split between the client and the server.
 
 
