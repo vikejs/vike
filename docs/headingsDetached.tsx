@@ -397,5 +397,9 @@ const headingsDetached = [
     title: 'Render Modes (SPA, SSR, SSG, HTML-only)',
     url: '/render-modes',
     sectionTitles: ['HTML-only', 'SPA', 'SSR']
-  }
+  },
+  {
+    title: '`lang`',
+    url: '/lang'
+  },
 ] satisfies HeadingDetachedDefinition[]

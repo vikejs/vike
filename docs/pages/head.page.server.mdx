@@ -1,14 +1,18 @@
 import { Link } from '@brillout/docpress'
 import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../components'
 
-To set `<head>` tags, such as `<title>` and `<meta name="description">`, you can use:
+To add `<head>` tags, such as `<title>` and `<meta name="description">`, you can use:
 
-- <Link href="#head-title">The settings `<Head>` and `title`</Link> (page-by-page basis)
-- :construction: <Link href="#usehead">The `useHead()` component hook</Link> (component-by-component basis)
+- The page setting <Link href="#head">`Head`</Link>.
+- The page settings <Link href="#title-favicon">`title` & `favicon`</Link>.
+- :construction: The <Link href="#usehead">`useHead()`</Link> component hook.
 
-## `<Head>` + `title`
+> These options are provided by the <UiFrameworkVikeExtension />. See <Link href="#without-vike-extension" /> if you don't use such extension.
 
-To set `<head>` tags applied to all pages by default:
+
+## `Head`
+
+To add `<head>` tags to all your pages:
 
 ```jsx
 // /pages/+Head.jsx or
@@ -17,74 +21,81 @@ To set `<head>` tags applied to all pages by default:
 
 export { Head }
 
-import { socialImage } from '../assets/images/socialImage.jpg'
-import { favicon } from '../assets/images/favicon.png'
+import socialImage from '../assets/images/socialImage.jpg'
+import favicon from '../assets/images/favicon.png'
 
 function Head() {
   return <>
-    <meta charset="utf-8" />
-    {/* Don't do this:
+    <meta charset="utf-8">
     <title>SpaceX</title>
-    */}
     <meta name="description" content="We deliver payload to space.">
-    <meta property="og:image" content={socialImage} />
-    <link rel="icon" href={favicon} />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:image" content={socialImage}>
+    <link rel="icon" href={favicon}>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </>
 }
 ```
 
-Don't set `<title>SpaceX<title>` in `<Head>`, use the setting `title` instead:
+Setting `<head>` tags only to one page and based on <Link href="/data-fetching">fetched data</Link>:
 
 ```js
-// /pages/+title.js
-// Environment: server, client
-
-export const title = 'SpaceX'
-```
-
-> The setting `title` does two things:
->  - It sets the page's title by adding the HTML tag `<title>Space</title>` upon rendering the page to HTML.
->  - It updates the page's title by calling [`document.tilte = 'SpaceX'`](https://developer.mozilla.org/en-US/docs/Web/API/Document/title) upon client-side navigation.
->
-> Setting `<title>SpaceX</title>` using `<Head>` would correctly set the page's title for the first page the user visits, but it wouldn't update the page's title upon <Link href="/client-routing">client-side navigation</Link>.
->
-> A tag such as the social image tag `<meta property="og:image">` is read only by crawlers (browsers don't do anything with it). Crawlers only fetch HTML and don't execute JavaScript and don't client-side navigate. This means that `<meta property="og:image">` doesn't need to be updated upon client-side navigation.
-
-To set page-specific `<head>` tags based on <Link href="/data-fetching">fetched data</Link>:
-
-```js
-// /pages/product/starship/+data.js
+// /pages/rocket/starship/+data.js
 // Environment: server
 
 export { data }
 
 async function data() {
-  const product = await sql.run(
-    'SELECT { title, description, social_image } FROM products WHERE name = "starship";'
+  const rocket = await sql.run(
+    'SELECT { title, description, social_image } FROM rockets WHERE name = "starship";'
   )
-  return { product }
+  return rocket
 }
 ```
 ```jsx
-// /pages/product/starship/+Head.jsx
+// /pages/rocket/starship/+Head.jsx
 // Environment: server
 
 export { Head }
 
 import { useData } from 'vike/react' // or 'vike-vue' / 'vike-solid'
 
-// Overrides the default <Head> above set by /pages/+Head.jsx
 function Head() {
-  const { product } = useData()
+  const rocket = useData()
   return <>
-    <meta name="description" content={product.description}>
-    <meta property="og:image" content={product.social_image}>
+    <meta name="description" content={rocket.description}>
+    <meta property="og:image" content={rocket.social_image}>
   </>
 }
 ```
+
+
+## `title` & `favicon`
+
+If your pages can have different `<title>` values, then use the setting `title` instead of the <Link href="#head">`Head`</Link> setting:
+
 ```js
-// /pages/product/starship/+title.jsx
+// /pages/rocket/starship/+title.js
+// Environment: server, client
+export const title = 'SpaceX | Rocket Starship'
+```
+```js
+// /pages/rocket/falcon-9/+title.js
+// Environment: server, client
+export const title = 'SpaceX | Rocket Falcon 9'
+```
+
+Upon <Link href="/client-routing">client-side navigating</Link> from the URL `/rocket/starship` to `/rocket/falcon-9`, the page's title is dynamically updated from `SpaceX | Rocket Starship` to `SpaceX | Rocket Falcon 9`. (By mutating the DOM with [`document.tilte = 'SpaceX | Rocket Falcon 9'`](https://developer.mozilla.org/en-US/docs/Web/API/Document/title).)
+
+While defining `<title>` by using the `Head` setting correctly sets the page's title for the first page the user visits, it doesn't update the page's title upon <Link href="/client-routing">client-side navigation</Link>.
+
+> Most `<head>` tags, such as [the social image tag `<meta property="og:image">`](https://ogp.me/), don't need to be updated upon client-side navigation because they are only used by crawlers. (Browsers don't do anything with `<meta property="og:image">`.) Crawlers don't execute JavaScript and, therefore, don't client-side navigate.
+
+Likewise, if your [favicon](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML#adding_custom_icons_to_your_site) can change from page to page, then define `/pages/rocket/starship/+favicon.png` instead of using the `Head` setting.
+
+You can set `title` and `favicon` based on <Link href="/data-fetching">fetched data</Link>, for example:
+
+```js
+// /pages/rocket/starship/+title.jsx
 // Environment: server, client
 
 export { title }
@@ -94,13 +105,10 @@ import { useData } from 'vike/react' // or 'vike-vue' / 'vike-solid'
 // Instead of setting title to a string, we set it to function,
 // enabling us to use component hooks such as useData()
 function title() {
-  const { product } = useData()
-  return product.title
+  const { rocket } = useData()
+  return rocket.title
 }
 ```
-
-> The settings `<Head>` and `title` are provided by the <UiFrameworkVikeExtension />.
-> See <Link href="#without-vike-extension" /> if you don't use <UiFrameworkVikeExtensionNames />.
 
 
 ## `useHead()`
@@ -146,7 +154,7 @@ To define `<head>` tags on page-by-page basis, we recommend creating new setting
 
 To define `<head>` tags by any UI component:
  1. Add `'headProps'` to [`passToClient`](/passToClient).
- 2. Access `pageContext.headProps` (using <Link href="/usePageContext">`usePageContext()`</Link>) and modify it in the UI component.
+ 2. Use <Link href="/usePageContext">`usePageContext()`</Link> so that `pageContext.headProps` can be accessed and modified by any component.
 
 For example:
 
@@ -187,9 +195,9 @@ async function onRenderHtml(pageContext) {
 ```js
 // SomeComponent.js
 
-
   // Inside a UI component
   const pageContext = usePageContext()
+  const { headProps } = pageContext
   headProps.title = 'I was set by some component.'
   headProps.description = 'Me too.'
 ```
@@ -252,3 +260,4 @@ async function onRenderHtml(pageContext) {
 
 - <Link href="/data-fetching" />
 - <Link href="/markdown#metadata" />
+- <Link href="/lang" />
