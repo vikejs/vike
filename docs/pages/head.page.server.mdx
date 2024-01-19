@@ -1,10 +1,10 @@
 import { Link } from '@brillout/docpress'
 import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../components'
 
-To set [`<head>` tags](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/head) such as [`<title>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title) and [`<meta name="description">`](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions) you can use:
+To set `<head>` tags, such as `<title>` and `<meta name="description">`, you can use:
 
-- <Link href="#head-title">The settings `<Head>` and `title`</Link>. (Page-by-page basis.)
-- :construction: <Link href="#usehead">The `useHead()` component hook</Link>. (Component-by-component basis.)
+- <Link href="#head-title">The settings `<Head>` and `title`</Link> (page-by-page basis)
+- :construction: <Link href="#usehead">The `useHead()` component hook</Link> (component-by-component basis)
 
 ## `<Head>` + `title`
 
@@ -51,7 +51,7 @@ export const title = 'SpaceX'
 >
 > A tag such as the social image tag `<meta property="og:image">` is read only by crawlers (browsers don't do anything with it). Crawlers only fetch HTML and don't execute JavaScript and don't client-side navigate. This means that `<meta property="og:image">` doesn't need to be updated upon client-side navigation.
 
-Page specific `<head>` tags based on <Link href="/data-fetching">fetched data</Link>:
+To set page-specific `<head>` tags based on <Link href="/data-fetching">fetched data</Link>:
 
 ```js
 // /pages/product/starship/+data.js
@@ -106,11 +106,6 @@ function title() {
 ## `useHead()`
 
 The upcoming `useHead()` component hook will enable any UI component to add `<head>` tags, see: [New component hook `useHead()`](https://github.com/vikejs/vike-react/issues/67).
-
-
-## Markdown
-
-For pages defined with markdown, see <Link href="/markdown#metadata-with-new-settings" />.
 
 
 ## Without Vike extension
@@ -252,6 +247,8 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
+
 ## See also
 
 - <Link href="/data-fetching" />
+- <Link href="/markdown#metadata" />
