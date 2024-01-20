@@ -1,14 +1,10 @@
 export type { PageContext } from '../shared/types.js'
 export type { PageContextServer } from '../shared/types.js'
 export type { PageContextClient } from '../shared/types.js'
-
-// For users who don't use Client Routing
 export type { PageContextWithServerRouting } from '../shared/types.js'
 export type { PageContextClientWithServerRouting } from '../shared/types.js'
 
-// TODO/eventually: add @deprecated to these types (ideally before v1 release)
-// TODO/v1-release: remove these
-// Legacy way of enabling users to construct their own `PageContext` type.
+// TODO/v1-release: remove these three exports
 export type { PageContextBuiltInServer } from '../shared/types.js'
 export type { PageContextBuiltInClientWithClientRouting } from '../shared/types.js'
 export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
