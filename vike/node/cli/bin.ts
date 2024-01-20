@@ -13,7 +13,6 @@ cli.option('-c, --config [string]', `[string] use specified config`)
 cli.command('prerender', 'Pre-render the HTML of your pages').action(async (options) => {
   const config = parseConfigString(options.config)
   const { prerender } = await import('../api/prerender.js')
-  const { setInlineCliConfig } = await import('../api/utils.js')
   setInlineCliConfig(config)
   await prerender({
     viteConfig: config.vite
@@ -32,7 +31,6 @@ cli
 
 cli.command('build', 'Build for production').action(async (options) => {
   const config = parseConfigString(options.config)
-  const { setInlineCliConfig } = await import('../api/utils.js')
   setInlineCliConfig(config)
   const { build } = await import('../api/build.js')
   return build(config)

@@ -1,7 +1,6 @@
 export type { InlineCliConfig }
 export { resolveConfig }
 export { isCliCall, setCliCall }
-export { setInlineCliConfig }
 
 import type { InlineConfig } from 'vite'
 import type { ConfigVikeResolved, ConfigVikeUserProvided } from '../../shared/ConfigVike.js'
@@ -63,12 +62,4 @@ async function resolveConfig(config: InlineCliConfig, command: 'build' | 'serve'
 let isCliCall = false
 function setCliCall() {
   isCliCall = true
-}
-
-function setInlineCliConfig(config: InlineCliConfig) {
-  // skip the api layer of the prerender function and directly pass the prerender config to vike
-  // so the exposed prerender api can be preserved
-  config.vite ??= {}
-  //@ts-ignore
-  config.vite._vike_cli = { prerender: config.prerender }
 }
