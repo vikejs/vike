@@ -95,21 +95,24 @@ Likewise, if your [favicon](https://developer.mozilla.org/en-US/docs/Learn/HTML/
 You can set `title` and `favicon` based on <Link href="/data-fetching">fetched data</Link>, for example:
 
 ```js
-// /pages/rocket/starship/+title.jsx
+// /pages/rocket/starship/+title.js
 // Environment: server, client
 
-export { title }
-
-import { useData } from 'vike/react' // or 'vike-vue' / 'vike-solid'
-
-// Instead of setting title to a string, we set it to function,
-// enabling us to use usePageContext() and useData()
-function title() {
-  const rocket = useData()
+export function title(pageContext) {
+  const rocket = pageContext.data
   return rocket.title
 }
 ```
+```tsx
+// With TypeScript:
 
+import type { Data } from './+data'
+import type { PageContext } from 'vike/types'
+export function title(pageContext: PageContext<Data>) {
+  const rocket = pageContext.data
+  return rocket.title
+}
+```
 > As shown [here](https://gist.github.com/brillout/e7fe603bd44c9ec1be7e98f3ae28636a) you can define the logic, of using `data.title` to set the page's title, once and apply it to all your pages.
 
 
@@ -141,17 +144,10 @@ function Head() {
 }
 ```
 ```js
-// /pages/+title.jsx
+// /pages/+title.js
 // Environment: server, client
 
-export { title }
-
-import { usePageContext } from 'vike/react' // or 'vike-vue' / 'vike-solid'
-
-// Setting the title value to a function instead of a string,
-// in order to be able to use usePageContext() and useData()
-function title() {
-  const pageContext = usePageContext()
+export function title(pageContext) {
   const title = pageContext.locale === 'de-DE' ?
     'SpaceX | Das Weltall Unternehmen' :
     'SpaceX | The space company'
@@ -311,3 +307,4 @@ async function onRenderHtml(pageContext) {
 - <Link href="/lang" />
 - <Link href="/usePageContext" />
 - <Link href="/useData" />
+- <Link href="/pageContext" />
