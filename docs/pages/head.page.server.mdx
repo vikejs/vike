@@ -84,7 +84,7 @@ export const title = 'SpaceX | Rocket Starship'
 export const title = 'SpaceX | Rocket Falcon 9'
 ```
 
-Upon <Link href="/client-routing">client-side navigating</Link> from the URL `/rocket/starship` to `/rocket/falcon-9`, the page's title is dynamically updated from `SpaceX | Rocket Starship` to `SpaceX | Rocket Falcon 9`. (By mutating the DOM with [`document.tilte = 'SpaceX | Rocket Falcon 9'`](https://developer.mozilla.org/en-US/docs/Web/API/Document/title).)
+Upon <Link href="/client-routing">client-side navigating</Link> from the URL `/rocket/starship` to `/rocket/falcon-9`, the page's title is dynamically updated from `SpaceX | Rocket Starship` to `SpaceX | Rocket Falcon 9`. (By mutating the DOM with [`document.title = 'SpaceX | Rocket Falcon 9'`](https://developer.mozilla.org/en-US/docs/Web/API/Document/title).)
 
 While defining `<title>` by using the `Head` setting correctly sets the page's title for the first page the user visits, it doesn't update the page's title upon <Link href="/client-routing">client-side navigation</Link>.
 

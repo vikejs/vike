@@ -21,7 +21,7 @@ After V1 design release:
  - Implement vike.config.js
    - Move all globals there and add migration warnings
  - Implement data() hook
-   - Update `vike-{react,vue,solid}` +tilte.js config
+   - Update `vike-{react,vue,solid}` +title.js config
    - New config requestPageContextOnNavigation
      ```ts
      type requestPageContextOnNavigation =
