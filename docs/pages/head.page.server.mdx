@@ -103,7 +103,7 @@ export { title }
 import { useData } from 'vike/react' // or 'vike-vue' / 'vike-solid'
 
 // Instead of setting title to a string, we set it to function,
-// enabling us to use component hooks such as useData()
+// enabling us to use usePageContext() and useData()
 function title() {
   const rocket = useData()
   return rocket.title
@@ -149,12 +149,12 @@ export { title }
 import { usePageContext } from 'vike/react' // or 'vike-vue' / 'vike-solid'
 
 // Setting the title value to a function instead of a string,
-// in order to be able to use component hooks such as usePageContext()
+// in order to be able to use usePageContext() and useData()
 function title() {
   const pageContext = usePageContext()
   const title = pageContext.locale === 'de-DE' ?
-    'SpaceX | Das Weltall Unternehmen.' :
-    'SpaceX | The space company.'
+    'SpaceX | Das Weltall Unternehmen' :
+    'SpaceX | The space company'
   return title
 }
 ```
