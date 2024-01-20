@@ -1,3 +1,14 @@
+## [0.4.159](https://github.com/vikejs/vike/compare/v0.4.158...v0.4.159) (2024-01-20)
+
+
+### Bug Fixes
+
+* add <Data> generic to PageContext types ([7e44992](https://github.com/vikejs/vike/commit/7e44992518df7f5b0303b85f9dbc8bcafb89b0d4))
+* deprecated old PageContext types ([c6fddba](https://github.com/vikejs/vike/commit/c6fddbafd5d03bb9df0401c8cf6e32111fdcd304))
+* remove <Page> generic ([7cb2120](https://github.com/vikejs/vike/commit/7cb21201ac49fd6ba768347312da1339dc23fec2))
+
+
+
 ## [0.4.158](https://github.com/vikejs/vike/compare/v0.4.157...v0.4.158) (2024-01-18)
 
 
