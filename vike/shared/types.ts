@@ -26,19 +26,14 @@ import type { AbortStatusCode } from './route/abort.js'
 
 type PageContextServer = PageContextBuiltInServer & Vike.PageContext
 
-// When user uses Client Routing
-// Because of vike-{react/vue/solid} most users will be using Client Routing => we give out the succint type names `PageContext` and `PageContextClient` to these users
+// With Client Routing
+//  - Because of vike-{react/vue/solid} most users will eventually be using Client Routing => we give out the succint type names `PageContext` and `PageContextClient` to these users
 type PageContext = PageContextClient | PageContextServer
 type PageContextClient = PageContextBuiltInClientWithClientRouting & Vike.PageContext
 
-// When user uses Server Routing
+// With Server Routing
 type PageContextWithServerRouting = PageContextClientWithServerRouting | PageContextServer
 type PageContextClientWithServerRouting = PageContextBuiltInClientWithServerRouting & Vike.PageContext
-
-type PageContextBuiltInServer = PageContextBuiltInCommon & PageContextUrlComputedPropsServer
-
-/** For Vike internal use */
-type PageContextBuiltInServerInternal = PageContextBuiltInCommon & PageContextUrlComputedPropsInternal
 
 type PageContextBuiltInCommon = {
   /** The `export { Page }` of your `.page.js` file.
@@ -124,6 +119,8 @@ type PageContextBuiltInCommon = {
   pageExports: Record<string, unknown>
 }
 
+type PageContextBuiltInServer = PageContextBuiltInCommon & PageContextUrlComputedPropsServer
+
 type PageContextBuiltInClientWithClientRouting = Partial<PageContextBuiltInCommon> &
   Pick<
     PageContextBuiltInCommon,
@@ -154,6 +151,9 @@ type PageContextBuiltInClientWithServerRouting = Partial<PageContextBuiltInCommo
      */
     isBackwardNavigation: null
   }
+
+/** For Vike internal use */
+type PageContextBuiltInServerInternal = PageContextBuiltInCommon & PageContextUrlComputedPropsInternal
 
 /** @deprecated
  * Replace:
