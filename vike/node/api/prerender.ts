@@ -1,18 +1,7 @@
 export { prerender }
-export { prerenderFromCLI }
 export { _prerender }
 
 import type { PrerenderOptions } from '../prerender/runPrerender.js'
-import type { InlineCliConfig } from './utils.js'
-
-async function prerenderFromCLI(config: InlineCliConfig) {
-  // skip the api layer of the prerender function and directly pass the prerender config to vike
-  // so the exposed prerender api can be preserved
-  config.vite ??= {}
-  //@ts-ignore
-  config.vite._vike_cli = { prerender: config.prerender }
-  return prerender({ viteConfig: config.vite })
-}
 
 // only called programatically on user-land or by running vike prerender
 // adds the vike plugin if not present

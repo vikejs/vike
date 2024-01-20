@@ -34,15 +34,10 @@ async function build(config: InlineCliConfig = {}) {
     return { clientOutput, serverOutput }
   }
 
-  if (isCliCall) {
-    const { prerenderFromCLI } = await import('./prerender.js')
-    await prerenderFromCLI(config)
-  } else {
-    const { _prerender } = await import('./prerender.js')
-    await _prerender({
-      viteConfig
-    })
-  }
+  const { _prerender } = await import('./prerender.js')
+  await _prerender({
+    viteConfig
+  })
 
   return { clientOutput, serverOutput }
 }

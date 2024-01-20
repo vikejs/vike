@@ -12,8 +12,12 @@ cli.option('-c, --config [string]', `[string] use specified config`)
 
 cli.command('prerender', 'Pre-render the HTML of your pages').action(async (options) => {
   const config = parseConfigString(options.config)
-  const { prerenderFromCLI } = await import('../api/prerender.js')
-  await prerenderFromCLI(config)
+  const { prerender } = await import('../api/prerender.js')
+  const { setInlineCliConfig } = await import('../api/utils.js')
+  setInlineCliConfig(config)
+  await prerender({
+    viteConfig: config.vite
+  })
 })
 
 cli
@@ -28,6 +32,8 @@ cli
 
 cli.command('build', 'Build for production').action(async (options) => {
   const config = parseConfigString(options.config)
+  const { setInlineCliConfig } = await import('../api/utils.js')
+  setInlineCliConfig(config)
   const { build } = await import('../api/build.js')
   return build(config)
 })
@@ -58,4 +64,12 @@ function parseConfigString(configString?: string): InlineCliConfig {
   }
   const config = eval(`(${configString})`)
   return config
+}
+
+function setInlineCliConfig(config: InlineCliConfig) {
+  // skip the api layer of the prerender function and directly pass the prerender config to vike
+  // so the exposed prerender api can be preserved
+  config.vite ??= {}
+  //@ts-ignore
+  config.vite._vike_cli = { prerender: config.prerender }
 }
