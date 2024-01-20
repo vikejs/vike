@@ -116,6 +116,52 @@ function title() {
 The upcoming `useHead()` component hook will enable any UI component to add `<head>` tags, see: [New component hook `useHead()`](https://github.com/vikejs/vike-react/issues/67).
 
 
+## Internationalization
+
+Example of internationalizing (i18n) `<head>` tags:
+
+```jsx
+// /pages/+Head.js
+// Environment: server
+
+export { Head }
+
+import { usePageContext } from 'vike/react' // or 'vike-vue' / 'vike-solid'
+
+function Head() {
+  const pageContext = usePageContext()
+  const description = pageContext.locale === 'de-DE' ?
+    'Wir liefern zum Weltall.' :
+    'We deliver payload to space.'
+  return <>
+    <meta name="description" content={description}>
+  </>
+}
+```
+```js
+// /pages/+title.jsx
+// Environment: server, client
+
+export { title }
+
+import { usePageContext } from 'vike/react' // or 'vike-vue' / 'vike-solid'
+
+// Setting the title value to a function instead of a string,
+// in order to be able to use component hooks such as usePageContext()
+function title() {
+  const pageContext = usePageContext()
+  const title = pageContext.locale === 'de-DE' ?
+    'SpaceX | Das Weltall Unternehmen.' :
+    'SpaceX | The space company.'
+  return title
+}
+```
+
+See also:
+ - <Link href="/i18n" />
+ - <Link href="/usePageContext" />
+
+
 ## Without Vike extension
 
 If you don't use a Vike extension, then you have direct control over `<head>` tags in your [`onRenderHtml()` hook](/onRenderHtml).
@@ -258,6 +304,8 @@ async function onRenderHtml(pageContext) {
 
 ## See also
 
-- <Link href="/data-fetching" />
 - <Link href="/markdown#metadata" />
+- <Link href="/data-fetching" />
 - <Link href="/lang" />
+- <Link href="/usePageContext" />
+- <Link href="/useData" />
