@@ -82,7 +82,11 @@ function tolerateError({ logSource, logText }) {
     isSlowCrawlWarning() ||
     isNodeExperimentalEsmLoader() ||
     isNodeExperimentalLoader() ||
-    isNotV1Design()
+    isNotV1Design() ||
+    [
+      // TODO: use new API
+      'The glob option "as" has been deprecated in favour of "query"'
+    ].some((t) => logText.includes(t))
   )
 
   function isViteCjsWarning() {
