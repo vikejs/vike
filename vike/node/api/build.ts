@@ -1,12 +1,12 @@
 export { build }
 
-import type { Options } from './utils.js'
+import type { InlineCliConfig } from './utils.js'
 
-async function build(options: Options = {}) {
+async function build(config: InlineCliConfig = {}) {
   const { default: pc } = await import('@brillout/picocolors')
   const { build: buildVite } = await import('vite')
   const { resolveConfig, isCliCall } = await import('./utils.js')
-  const { viteConfig, vikeConfigResolved, viteConfigResolved: resolvedConfig } = await resolveConfig(options, 'build')
+  const { viteConfig, vikeConfigResolved, viteConfigResolved: resolvedConfig } = await resolveConfig(config, 'build')
 
   const clientOutput = await buildVite(viteConfig).catch((error) => {
     if (!isCliCall) {
@@ -34,8 +34,15 @@ async function build(options: Options = {}) {
     return { clientOutput, serverOutput }
   }
 
-  const { _prerender, getPrerenderOptions } = await import('./prerender.js')
-  await _prerender(getPrerenderOptions({ ...options, vite: viteConfig }))
+  if (isCliCall) {
+    const { prerenderFromCLI } = await import('./prerender.js')
+    await prerenderFromCLI(config)
+  } else {
+    const { _prerender } = await import('./prerender.js')
+    await _prerender({
+      viteConfig
+    })
+  }
 
   return { clientOutput, serverOutput }
 }

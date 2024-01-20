@@ -1,17 +1,16 @@
-export type { Options }
+export type { InlineCliConfig }
 export { resolveConfig }
 export { isCliCall, setCliCall }
 
 import type { InlineConfig } from 'vite'
 import type { ConfigVikeResolved, ConfigVikeUserProvided } from '../../shared/ConfigVike.js'
 
-type Options = ConfigVikeUserProvided & { vite?: InlineConfig }
+type InlineCliConfig = ConfigVikeUserProvided & { vite?: InlineConfig }
 
-async function resolveConfig(options: Options, command: 'build' | 'serve' | 'preview') {
+async function resolveConfig(config: InlineCliConfig, command: 'build' | 'serve' | 'preview') {
   const { default: pc } = await import('@brillout/picocolors')
   const { resolveConfig: resolveViteConfig, mergeConfig } = await import('vite')
-  const { vite: viteConfig = {}, ...vikeConfig } = options
-
+  const { vite: viteConfig = {}, ...vikeConfig } = config
   let nodeEnv = 'development'
   if (['build', 'preview'].includes(command)) {
     nodeEnv = 'production'
@@ -34,11 +33,11 @@ async function resolveConfig(options: Options, command: 'build' | 'serve' | 'pre
   if (!viteConfigResolved.plugins.some((p) => p.name === 'vike:resolveVikeConfig')) {
     const { plugin } = await import('../plugin/index.js')
 
-    options.vite ??= {}
-    options.vite.plugins ??= []
-    options.vite.plugins.push(plugin(vikeConfig))
+    config.vite ??= {}
+    config.vite.plugins ??= []
+    config.vite.plugins.push(plugin(vikeConfig))
 
-    return resolveConfig(options, command)
+    return resolveConfig(config, command)
   }
 
   const { getConfigVike } = await import('../shared/getConfigVike.js')
@@ -48,7 +47,7 @@ async function resolveConfig(options: Options, command: 'build' | 'serve' | 'pre
   // vike.config.js -> prerender:false
   // --config={prerender:true}
   // merged - {prerender:true}
-  const mergedConfig = mergeConfig(vikeConfigResolved, options) as ConfigVikeResolved & {
+  const mergedConfig = mergeConfig(vikeConfigResolved, config) as ConfigVikeResolved & {
     vite?: InlineConfig
   }
   const { vite: viteConfigMerged, ...mergedVikeConfigResolved } = mergedConfig

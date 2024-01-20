@@ -1,7 +1,7 @@
 import { cac } from 'cac'
 import { projectInfo } from '../../utils/projectInfo.js'
 import { assertUsage } from '../../utils/assert.js'
-import { setCliCall, type Options } from '../api/utils.js'
+import { setCliCall, type InlineCliConfig } from '../api/utils.js'
 
 setCliCall()
 
@@ -10,18 +10,10 @@ export const startTime = performance.now()
 
 cli.option('-c, --config [string]', `[string] use specified config`)
 
-cli.command('prerender', 'Pre-render the HTML of your pages', { allowUnknownOptions: true }).action(async (options) => {
+cli.command('prerender', 'Pre-render the HTML of your pages').action(async (options) => {
   const config = parseConfigString(options.config)
-  //TODO: remove flags in favor of options.config.prerender
-  if (!options.config) {
-    assertDeprecatedPrerenderOptions()
-  }
-  const prerenderConfig = config.prerender ?? options
-  const { prerender } = await import('../api/prerender.js')
-  await prerender({
-    ...prerenderConfig,
-    viteConfig: config.vite
-  })
+  const { prerenderFromCLI } = await import('../api/prerender.js')
+  await prerenderFromCLI(config)
 })
 
 cli
@@ -60,31 +52,10 @@ process.on('unhandledRejection', (rejectValue) => {
   throw rejectValue
 })
 
-function parseConfigString(configString?: string): Options {
+function parseConfigString(configString?: string): InlineCliConfig {
   if (!configString) {
     return {}
   }
   const config = eval(`(${configString})`)
   return config
-}
-
-function assertDeprecatedPrerenderOptions() {
-  // Using process.argv because cac convert names to camelCase
-  const rawOptions = process.argv.slice(3)
-  Object.values(rawOptions).forEach((option) => {
-    assertUsage(
-      !option.startsWith('--') ||
-        [
-          '--root',
-          '--partial',
-          '--noExtraDir',
-          '--clientRouter',
-          '--base',
-          '--parallel',
-          '--outDir',
-          '--configFile'
-        ].includes(option),
-      'Unknown option: ' + option
-    )
-  })
 }

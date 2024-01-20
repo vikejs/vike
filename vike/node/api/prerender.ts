@@ -1,43 +1,41 @@
 export { prerender }
+export { prerenderFromCLI }
 export { _prerender }
-export { getPrerenderOptions }
 
 import type { PrerenderOptions } from '../prerender/runPrerender.js'
-import type { Options } from './utils.js'
+import type { InlineCliConfig } from './utils.js'
+
+async function prerenderFromCLI(config: InlineCliConfig) {
+  // skip the api layer of the prerender function and directly pass the prerender config to vike
+  // so the exposed prerender api can be preserved
+  config.vite ??= {}
+  //@ts-ignore
+  config.vite._vike_cli = { prerender: config.prerender ?? true }
+  return prerender({ viteConfig: config.vite })
+}
 
 // only called programatically on user-land or by running vike prerender
 // adds the vike plugin if not present
-// TODO: change the prerender api for v1 : PrerenderOptions -> Options ?????
 async function prerender(options: PrerenderOptions) {
   const { resolveConfig } = await import('./utils.js')
-  const { viteConfig, ...rest } = options
-  const resolved = await resolveConfig({ vite: viteConfig, prerender: rest }, 'build')
-  options.viteConfig = resolved.viteConfig
-  return _prerender(options)
+  const { viteConfig, pageContextInit, onPagePrerender } = options
+  const resolved = await resolveConfig({ vite: viteConfig }, 'build')
+  return _prerender({ viteConfig: resolved.viteConfig, pageContextInit, onPagePrerender })
 }
 
 async function _prerender(options: PrerenderOptions) {
-  const { resolve } = await import('path')
-  const { partial, noExtraDir, base, parallel, outDir, configFile, viteConfig } = options
-  const root = options.root && resolve(options.root)
-
+  const { pageContextInit, onPagePrerender, viteConfig } = options
   const { isCliCall } = await import('./utils.js')
   if (isCliCall) {
     const { runPrerender_forceExit, runPrerenderFromCLI } = await import('../prerender/runPrerender.js')
-    await runPrerenderFromCLI({ partial, noExtraDir, base, root, parallel, outDir, configFile, viteConfig })
+    await runPrerenderFromCLI({ pageContextInit, onPagePrerender, viteConfig })
     runPrerender_forceExit()
   } else {
     const { runPrerenderFromAPI } = await import('../prerender/runPrerender.js')
-    await runPrerenderFromAPI({ partial, noExtraDir, base, root, parallel, outDir, configFile, viteConfig })
+    await runPrerenderFromAPI({
+      pageContextInit,
+      onPagePrerender,
+      viteConfig
+    })
   }
-}
-
-function getPrerenderOptions(options: Options): PrerenderOptions {
-  //@ts-ignore
-  const prerenderConfig: Parameters<typeof prerender>[0] = {
-    ...(typeof options.prerender === 'object' && options.prerender),
-    viteConfig: options.vite
-  }
-
-  return prerenderConfig
 }
