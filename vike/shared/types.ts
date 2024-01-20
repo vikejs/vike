@@ -2,14 +2,14 @@ export { PageContext }
 export { PageContextServer }
 export { PageContextClient }
 
-// For users who don't use Client Routing
-export { PageContextWithServerRouting }
-export { PageContextClientWithServerRouting }
-
+// TODO/v1-release: deprecate and remove all exports below
 export { PageContextBuiltInServer }
 export { PageContextBuiltInServerInternal }
 export { PageContextBuiltInClientWithClientRouting }
 export { PageContextBuiltInClientWithServerRouting }
+// For users who don't use Client Routing
+export { PageContextWithServerRouting }
+export { PageContextClientWithServerRouting }
 
 import type {
   PageContextUrlComputedPropsInternal,
@@ -36,22 +36,17 @@ type PageContextClientWithServerRouting = PageContextBuiltInClientWithServerRout
  *
  * https://vike.dev/pageContext
  */
-type PageContextBuiltInServer<Page = [never]> = PageContextBuiltInCommon<Page> & PageContextUrlComputedPropsServer
+type PageContextBuiltInServer<Page = never> = PageContextBuiltInCommon & PageContextUrlComputedPropsServer
 
 /** For Vike internal use */
-type PageContextBuiltInServerInternal<Page = [never]> = PageContextBuiltInCommon<Page> &
-  PageContextUrlComputedPropsInternal
+type PageContextBuiltInServerInternal = PageContextBuiltInCommon & PageContextUrlComputedPropsInternal
 
-type PageContextBuiltInCommon<
-  // TODO/v1-design-release: deprecate PageContextBuilt{Server,Client}<Page> in favor of interface merging
-  // `= [never]` instead of `= never` because: https://github.com/microsoft/TypeScript/issues/31751#issuecomment-498526919
-  Page = [never]
-> = {
+type PageContextBuiltInCommon = {
   /** The `export { Page }` of your `.page.js` file.
    *
    * https://vike.dev/Page
    */
-  Page: Page extends [never] ? Config['Page'] : Page
+  Page: Config['Page']
   /** Route Parameters, e.g. `pageContext.routeParams.productId` for a Route String `/product/@productId`.
    *
    * https://vike.dev/route-string
@@ -134,9 +129,9 @@ type PageContextBuiltInCommon<
  *
  * https://vike.dev/pageContext
  */
-type PageContextBuiltInClientWithClientRouting<Page = unknown> = Partial<PageContextBuiltInCommon<Page>> &
+type PageContextBuiltInClientWithClientRouting<Page = never> = Partial<PageContextBuiltInCommon> &
   Pick<
-    PageContextBuiltInCommon<Page>,
+    PageContextBuiltInCommon,
     'Page' | 'pageExports' | 'config' | 'configEntries' | 'exports' | 'exportsAll' | 'abortReason'
   > & {
     /** Whether the current page is already rendered to HTML */
@@ -153,8 +148,8 @@ type PageContextBuiltInClientWithClientRouting<Page = unknown> = Partial<PageCon
  *
  * https://vike.dev/pageContext
  */
-type PageContextBuiltInClientWithServerRouting<Page = unknown> = Partial<PageContextBuiltInCommon<Page>> &
-  Pick<PageContextBuiltInCommon<Page>, 'Page' | 'pageExports' | 'exports' | 'abortReason'> & {
+type PageContextBuiltInClientWithServerRouting<Page = never> = Partial<PageContextBuiltInCommon> &
+  Pick<PageContextBuiltInCommon, 'Page' | 'pageExports' | 'exports' | 'abortReason'> & {
     /**
      * Whether the current page is already rendered to HTML.
      *
