@@ -56,6 +56,7 @@ This technique also works with:
  - [github.com/crummy/vite-ssr-i18n](https://github.com/crummy/vite-ssr-i18n)
    > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
 
+
 ## Pre-rendering
 
 If we use <Link text="pre-rendering" href="/pre-rendering" /> then, in addition to defining `onBeforeRoute()`, we also
@@ -194,3 +195,15 @@ function onPrerenderStart(prerenderContext) {
   }
 }
 ```
+
+
+## `lang`
+
+You can use the `lang` setting to define the value of the `<html lang>` attribute, see <Link href="/lang" />.
+
+
+## See also
+
+- <Link href="/head#internationalization" />
+- <Link href="/lang" />
+- <Link href="/onBeforeRoute" />
