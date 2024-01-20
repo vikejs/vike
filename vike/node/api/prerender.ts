@@ -10,7 +10,7 @@ async function prerenderFromCLI(config: InlineCliConfig) {
   // so the exposed prerender api can be preserved
   config.vite ??= {}
   //@ts-ignore
-  config.vite._vike_cli = { prerender: config.prerender ?? true }
+  config.vite._vike_cli = { prerender: config.prerender }
   return prerender({ viteConfig: config.vite })
 }
 
