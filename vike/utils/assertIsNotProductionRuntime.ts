@@ -46,11 +46,13 @@ function markEnvAsVikePluginLoaded() {
 function assertEnv(): void | undefined {
   if (debug.isEnabled) debug('assertEnv()', new Error().stack)
   if (isVitest()) return
-  if (env.isViteDev || env.isVitePreview) {
-    assert(env.isVikePluginLoaded)
-    assert(env.shouldNotBeProduction)
-  } else {
+  const isProduction = !env.isViteDev && !env.isVitePreview
+  if (isProduction) {
     assert(!env.isVikePluginLoaded)
     assert(!env.shouldNotBeProduction)
+  } else {
+    // This assert() is boring/obvious
+    assert(env.shouldNotBeProduction)
+    assert(env.isVikePluginLoaded)
   }
 }
