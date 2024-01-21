@@ -36,7 +36,10 @@ import pc from '@brillout/picocolors'
 import { fileEnv } from './plugins/fileEnv.js'
 
 assertUsage(
-  isNodeEnvDev(),
+  isNodeEnvDev() ||
+    // TODO: enable this assertion after the vike CLI is implemented
+    (true as boolean),
+
   [
     pc.cyan(`process.env.NODE_ENV === ${JSON.stringify(getNodeEnv())}`),
     '(which Vike interprets as a non-development environment https://vike.dev/NODE_ENV)',
