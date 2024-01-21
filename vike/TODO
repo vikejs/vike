@@ -1,3 +1,5 @@
+- improve vike.dev/head
+- Remove `pageContext.data.title` from boilerplates
 - cumulative
   - Make `<Head>` cumulative
   - passToClient.dev/cumulative => point to it from vike.dev/passToClient
