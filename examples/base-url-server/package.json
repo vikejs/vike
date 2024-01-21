@@ -4,7 +4,7 @@
     "// Build": "",
     "build": "vite build",
     "// Server + CDN": "",
-    "serve": "concurrently \"npm run serve:cdn \" \"npm run serve:ssr\"",
+    "serve": "cross-env NODE_ENV=production concurrently \"npm run serve:cdn \" \"npm run serve:ssr\"",
     "serve:ssr": "node ./server/ssr",
     "serve:cdn": "node ./server/cdn"
   },
