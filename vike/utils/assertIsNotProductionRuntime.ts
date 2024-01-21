@@ -6,7 +6,7 @@ export { markEnvAsVitePreview }
 export { markEnvAsVikePluginLoaded }
 export { assertEnv }
 
-import { assert } from './assert.js'
+import { assert, assertUsage } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 import { createDebugger } from './debug.js'
 import { getGlobalObject } from './getGlobalObject.js'
@@ -48,7 +48,10 @@ function assertEnv(): void | undefined {
   if (isVitest()) return
   const isProduction = !env.isViteDev && !env.isVitePreview
   if (isProduction) {
-    assert(!env.isVikePluginLoaded)
+    assertUsage(
+      !env.isVikePluginLoaded,
+      `Vike's Vite plugin (the vike/plugin module) is being loaded in production which is forbidden`
+    )
     assert(!env.shouldNotBeProduction)
   } else {
     // This assert() is boring/obvious
