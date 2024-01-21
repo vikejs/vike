@@ -32,8 +32,8 @@ const globalObject = getGlobalObject<{
 })
 type Logger = (msg: string | Error, logType: 'warn' | 'info') => void
 
-const projectTag = `[${projectInfo.npmPackageName}]` as const
-const projectTagWithVersion = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]` as const
+const projectTag = `[vike]` as const
+const projectTagWithVersion = `[vike@${projectInfo.projectVersion}]` as const
 
 const numberOfStackTraceLinesToRemove = 2
 
@@ -45,15 +45,14 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
       return null
     }
     const debugInfoSerialized = typeof debugInfo === 'string' ? debugInfo : JSON.stringify(debugInfo)
-    return pc.dim(
-      `Debug info (for ${projectInfo.projectName} maintainers; you can ignore this): ${debugInfoSerialized}`
-    )
+    return pc.dim(`Debug info (for Vike maintainers; you can ignore this): ${debugInfoSerialized}`)
   })()
 
-  const link = `${projectInfo.githubRepository}/issues/new`
   let errMsg = [
-    `You stumbled upon a bug in ${projectInfo.projectName}'s source code.`,
-    `Go to ${pc.blue(link)} and copy-paste this error. A maintainer will fix the bug (usually under 24 hours).`,
+    `You stumbled upon a Vike bug.`,
+    `Go to ${pc.blue(
+      'https://github.com/vikejs/vike/issues/new'
+    )} and copy-paste this error. A maintainer will fix the bug (usually under 24 hours).`,
     debugStr
   ]
     .filter(Boolean)
