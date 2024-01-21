@@ -5,7 +5,7 @@ import { determineOptimizeDeps } from './determineOptimizeDeps.js'
 import { determineFsAllowList } from './determineFsAllowList.js'
 import { getConfigVike } from '../../../shared/getConfigVike.js'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware.js'
-import { markEnvAsDev } from '../../utils.js'
+import { markEnvAsViteDev } from '../../utils.js'
 import { improveViteLogs } from '../../shared/loggerVite.js'
 import { isErrorDebug } from '../../shared/isErrorDebug.js'
 import { installHttpRequestAsyncStore } from '../../shared/getHttpRequestAsyncStore.js'
@@ -71,7 +71,7 @@ function devConfig(): Plugin[] {
         }
       },
       configureServer() {
-        markEnvAsDev()
+        markEnvAsViteDev()
       }
     },
     {

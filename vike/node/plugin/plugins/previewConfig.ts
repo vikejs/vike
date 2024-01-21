@@ -1,7 +1,7 @@
 export { previewConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assertUsage, getOutDirs, resolveOutDir, markEnvAsPreview } from '../utils.js'
+import { assertUsage, getOutDirs, resolveOutDir, markEnvAsVitePreview } from '../utils.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 import fs from 'fs'
 import path from 'path'
@@ -34,7 +34,7 @@ function previewConfig(): Plugin {
          - This ugly hack to set appType for preview won't be need once https://github.com/vitejs/vite/pull/14855 is merged.
       config.appType = 'mpa'
       */
-      markEnvAsPreview()
+      markEnvAsVitePreview()
       return () => {
         assertDist()
 

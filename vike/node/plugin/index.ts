@@ -6,7 +6,7 @@ export type { ConfigVikeUserProvided as UserConfig }
 export { PROJECT_VERSION as version } from './utils.js'
 
 import type { Plugin } from 'vite'
-import { assertUsage, markEnvAsVite } from './utils.js'
+import { assertUsage, markEnvAsVikePluginLoaded } from './utils.js'
 import { buildConfig } from './plugins/buildConfig.js'
 import { previewConfig } from './plugins/previewConfig.js'
 import { autoFullBuild } from './plugins/autoFullBuild.js'
@@ -29,7 +29,7 @@ import { envVarsPlugin } from './plugins/envVars.js'
 import pc from '@brillout/picocolors'
 import { fileEnv } from './plugins/fileEnv.js'
 
-markEnvAsVite()
+markEnvAsVikePluginLoaded()
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
 function plugin(vikeConfig?: ConfigVikeUserProvided): any {
