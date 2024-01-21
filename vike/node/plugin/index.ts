@@ -35,18 +35,7 @@ import { envVarsPlugin } from './plugins/envVars.js'
 import pc from '@brillout/picocolors'
 import { fileEnv } from './plugins/fileEnv.js'
 
-assertUsage(
-  isNodeEnvDev() ||
-    // TODO: enable this assertion after the vike CLI is implemented
-    (true as boolean),
-
-  [
-    pc.cyan(`process.env.NODE_ENV === ${JSON.stringify(getNodeEnv())}`),
-    '(which Vike interprets as a non-development environment https://vike.dev/NODE_ENV)',
-    'while the vike/plugin module is loaded.',
-    vikeVitePluginLoadedInProductionError
-  ].join(' ')
-)
+assertNodeEnv()
 markEnvAsVikePluginLoaded()
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
@@ -95,3 +84,22 @@ Object.defineProperty(plugin, 'apply', {
     )
   }
 })
+
+function assertNodeEnv() {
+  const nodeEnv = getNodeEnv()
+  if (nodeEnv === 'test') return
+  // We should change this to be a warning if it blocks users (e.g. if a bad-citizen tool sets a wrong process.env.NODE_ENV value).
+  assertUsage(
+    /* We can enable this assertion after Vike's CLI is implemented and using Vite's CLI is deprecated (we can then check whether the context is a `$ vike build`).
+    isNodeEnvDev() || isVikeCliBuild(),
+    /*/
+    isNodeEnvDev() || (true as boolean),
+    ///*/
+    [
+      pc.cyan(`process.env.NODE_ENV === ${JSON.stringify(nodeEnv)}`),
+      '(which Vike interprets as a non-development environment https://vike.dev/NODE_ENV)',
+      'while the vike/plugin module is loaded.',
+      vikeVitePluginLoadedInProductionError
+    ].join(' ')
+  )
+}

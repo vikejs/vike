@@ -13,6 +13,7 @@ import {
   assertWarning,
   getGlobalObject,
   getNodeEnv,
+  isNodeEnvDev,
   isPlainObject,
   objectAssign
 } from './utils.js'
@@ -209,15 +210,15 @@ function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest
 function assertNodeEnv(hasViteDevServer: boolean) {
   const nodeEnv = getNodeEnv()
   if (nodeEnv === null || nodeEnv === 'test') return
-  const isDevNodeEnv = [undefined, '', 'dev', 'development'].includes(nodeEnv)
-  // calling Vite's createServer() is enough for hasViteDevServer to be true, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
-  assertWarning(
+  const isDevNodeEnv = isNodeEnvDev()
+  // - Calling Vite's createServer() is enough for hasViteDevServer to be true, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
+  // - We should change this to be a warning if it blocks users (e.g. if a bad-citizen tool sets a wrong process.env.NODE_ENV value).
+  assertUsage(
     hasViteDevServer === isDevNodeEnv,
     `Vite's development server was${hasViteDevServer ? '' : "n't"} instantiated while the environment is set to be a ${
       isDevNodeEnv ? 'development' : 'production'
     } environment by ${pc.cyan(
       `process.env.NODE_ENV === ${JSON.stringify(nodeEnv)}`
-    )} which is contradictory, see https://vike.dev/NODE_ENV`,
-    { onlyOnce: true }
+    )} which is contradictory, see https://vike.dev/NODE_ENV`
   )
 }
