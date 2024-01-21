@@ -6,7 +6,13 @@ export type { ConfigVikeUserProvided as UserConfig }
 export { PROJECT_VERSION as version } from './utils.js'
 
 import type { Plugin } from 'vite'
-import { assertUsage, markEnvAsVikePluginLoaded } from './utils.js'
+import {
+  assertUsage,
+  getNodeEnv,
+  isNodeEnvDev,
+  markEnvAsVikePluginLoaded,
+  vikeVitePluginLoadedInProductionError
+} from './utils.js'
 import { buildConfig } from './plugins/buildConfig.js'
 import { previewConfig } from './plugins/previewConfig.js'
 import { autoFullBuild } from './plugins/autoFullBuild.js'
@@ -29,6 +35,15 @@ import { envVarsPlugin } from './plugins/envVars.js'
 import pc from '@brillout/picocolors'
 import { fileEnv } from './plugins/fileEnv.js'
 
+assertUsage(
+  isNodeEnvDev(),
+  [
+    pc.cyan(`process.env.NODE_ENV === ${JSON.stringify(getNodeEnv())}`),
+    '(which Vike interprets as a non-development environment https://vike.dev/NODE_ENV)',
+    'while the vike/plugin module is loaded.',
+    vikeVitePluginLoadedInProductionError
+  ].join(' ')
+)
 markEnvAsVikePluginLoaded()
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed

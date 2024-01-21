@@ -5,6 +5,7 @@ export { markEnvAsViteDev }
 export { markEnvAsVitePreview }
 export { markEnvAsVikePluginLoaded }
 export { assertEnv }
+export { vikeVitePluginLoadedInProductionError }
 
 import { assert, assertUsage } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -13,6 +14,7 @@ import { getGlobalObject } from './getGlobalObject.js'
 import { isVitest } from './isVitest.js'
 assertIsNotBrowser()
 const debug = createDebugger('vike:setup')
+const vikeVitePluginLoadedInProductionError = `Loading Vike's Vite plugin (the vike/plugin module) is prohibited in production.`
 
 const env = getGlobalObject<{
   shouldNotBeProduction?: true
@@ -48,13 +50,15 @@ function assertEnv(): void | undefined {
   if (isVitest()) return
   const isProduction = !env.isViteDev && !env.isVitePreview
   if (isProduction) {
+    // Seems to be the only reliable way to assert that the user doesn't load Vike's Vite plugin in production. (The other assert() that uses process.env.NODE_ENV doesn't work if the user sets the process.env.NODE_ENV value later.)
     assertUsage(
       !env.isVikePluginLoaded,
-      `Vike's Vite plugin (the vike/plugin module) is being loaded in production which is forbidden`
+      vikeVitePluginLoadedInProductionError
     )
+    // This assert() is the main goal of this file: it ensures assertIsNotProductionRuntime()
     assert(!env.shouldNotBeProduction)
   } else {
-    // This assert() is boring/obvious
+    // This assert() is obious and boring
     assert(env.shouldNotBeProduction)
     assert(env.isVikePluginLoaded)
   }
