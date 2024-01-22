@@ -1,10 +1,9 @@
 export { parseConfigValuesImported }
 
-import { assert, assertUsage } from '../../utils.js'
+import { assert } from '../../utils.js'
 import { assertExportsOfValueFile } from '../assertExports.js'
 import type { ConfigValues } from '../PageConfig.js'
 import type { ConfigValueImported } from './PageConfigSerialized.js'
-import pc from '@brillout/picocolors'
 
 function parseConfigValuesImported(configValuesImported: ConfigValueImported[]): ConfigValues {
   const configValues: ConfigValues = {}

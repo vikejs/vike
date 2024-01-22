@@ -66,14 +66,12 @@ import {
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAtString } from '../../../../../shared/page-configs/helpers.js'
-import {
-  assertExportsOfConfigFile,
-  assertExportsOfValueFile
-} from '../../../../../shared/page-configs/assertExports.js'
+import { assertExportsOfValueFile } from '../../../../../shared/page-configs/assertExports.js'
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
 import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
+import { getConfigFileExport } from './getConfigFileExport.js'
 
 assertIsNotProductionRuntime()
 
@@ -300,9 +298,8 @@ function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: 
     isConfigExtend,
     extendsFilePaths
   }
-  const { filePathToShowToUser } = filePath
-  assertExportsOfConfigFile(fileExports, filePathToShowToUser)
-  Object.entries(fileExports.default).forEach(([configName, configValue]) => {
+  const fileExport = getConfigFileExport(fileExports, filePath.filePathToShowToUser)
+  Object.entries(fileExport).forEach(([configName, configValue]) => {
     interfaceFile.configMap[configName] = { configValue }
   })
   return interfaceFile
@@ -1300,18 +1297,17 @@ function getExtendsImportData(
   configFilePath: FilePathResolved
 ): ImportData[] {
   const { filePathToShowToUser } = configFilePath
-  assertExportsOfConfigFile(configFileExports, filePathToShowToUser)
-  const defaultExports = configFileExports.default
+  const configFileExport = getConfigFileExport(configFileExports, filePathToShowToUser)
   const wrongUsage = `${filePathToShowToUser} sets the config ${pc.cyan(
     'extends'
   )} to an invalid value, see https://vike.dev/extends`
   let extendList: string[]
-  if (!('extends' in defaultExports)) {
+  if (!('extends' in configFileExport)) {
     return []
-  } else if (hasProp(defaultExports, 'extends', 'string')) {
-    extendList = [defaultExports.extends]
-  } else if (hasProp(defaultExports, 'extends', 'string[]')) {
-    extendList = defaultExports.extends
+  } else if (hasProp(configFileExport, 'extends', 'string')) {
+    extendList = [configFileExport.extends]
+  } else if (hasProp(configFileExport, 'extends', 'string[]')) {
+    extendList = configFileExport.extends
   } else {
     assertUsage(false, wrongUsage)
   }

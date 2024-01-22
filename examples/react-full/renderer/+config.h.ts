@@ -1,7 +1,7 @@
 import type { Config } from 'vike/types'
 
 // https://vike.dev/config
-export default {
+export const config = {
   passToClient: ['someAsyncProps'],
   clientRouting: true,
   hydrationCanBeAborted: true,

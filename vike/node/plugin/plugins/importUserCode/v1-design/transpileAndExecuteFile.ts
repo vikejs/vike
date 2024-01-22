@@ -16,14 +16,13 @@ import {
   unique,
   assertWarning,
   isObject,
-  toPosixPath,
-  assertUsage
+  toPosixPath
 } from '../../../utils.js'
 import { isImportData, replaceImportStatements, type FileImport } from './replaceImportStatements.js'
 import { vikeConfigDependencies } from './getVikeConfig.js'
 import 'source-map-support/register.js'
-import { assertExportsOfConfigFile } from '../../../../../shared/page-configs/assertExports.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/PageConfig.js'
+import { getConfigFileExport } from './getConfigFileExport.js'
 
 assertIsNotProductionRuntime()
 
@@ -244,8 +243,8 @@ function assertImportsAreReExported(
   fileExports: Record<string, unknown>,
   filePathToShowToUser: string
 ) {
-  assertExportsOfConfigFile(fileExports, filePathToShowToUser)
-  const exportedStrings = getExportedStrings(fileExports.default)
+  const fileExport = getConfigFileExport(fileExports, filePathToShowToUser)
+  const exportedStrings = getExportedStrings(fileExport)
   Object.values(exportedStrings).forEach((exportVal) => {
     if (typeof exportVal !== 'string') return
     if (!isImportData(exportVal)) return
