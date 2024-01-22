@@ -25,6 +25,9 @@ function replaceImportStatements(
   const spliceOperations: SpliceOperation[] = []
   const fileImports: FileImport[] = []
 
+  // Performance trick
+  if (!code.includes('import')) return { noImportStatement: true }
+
   const imports = getImports(code)
   if (imports.length === 0) return { noImportStatement: true }
 
