@@ -41,7 +41,7 @@ function Page() {
   return <p>{msg}</p>
 }
 
-// If you use TypeScript, you can define the type of `abortReason`
+// When using TypeScript you can define the type of `abortReason`
 declare global {
   namespace Vike {
     interface PageContext {
@@ -54,6 +54,8 @@ declare global {
 ```
 
 > The <Link href="/usePageContext" /> UI component hook allows you to access <Link href="/pageContext" noBreadcrumb /> from any UI component.
+
+> The global interface `Vike.PageContext` allows you to define `pageContext` types in a global fashion, see <Link href="/pageContext#typescript" />.
 
 The `pageContext.abortReason` and `pageContext.abortStatusCode` values are set by <Link href="/render" text={<code>throw render(abortStatusCode, abortReason)</code>} />, and `pageContext.is404` is set by Vike.
 
@@ -69,3 +71,8 @@ If you use <Link text="pre-rendering" href="/pre-rendering" />, then Vike uses t
 `/dist/client/404.html`.
 
 > Most Static Hosts follow the convention of using the file `404.html` as 404 page.
+
+## See also
+
+ - <Link href="/errors" />
+ - <Link href="/pageContext#typescript" />
