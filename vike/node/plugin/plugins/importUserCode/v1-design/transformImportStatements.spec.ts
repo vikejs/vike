@@ -1,11 +1,9 @@
 import { expect, describe, it } from 'vitest'
 import { transformImportStatements } from './transformImportStatements.js'
 
-const file = '/fake-file.js'
-
 describe('getErrMsg()', () => {
   it('basics', () => {
-    expect(transformImportStatements("import { something } from './bla.js'", file)).toMatchInlineSnapshot(`
+    expect(t("import { something } from './bla.js'")).toMatchInlineSnapshot(`
       {
         "code": "const something = '​import:./bla.js:something';",
         "fileImportsTransformed": [
@@ -18,7 +16,7 @@ describe('getErrMsg()', () => {
         "noTransformation": false,
       }
     `)
-    expect(transformImportStatements("import def from './bla.js'", file)).toMatchInlineSnapshot(`
+    expect(t("import def from './bla.js'")).toMatchInlineSnapshot(`
       {
         "code": "const def = '​import:./bla.js:default';",
         "fileImportsTransformed": [
@@ -31,7 +29,7 @@ describe('getErrMsg()', () => {
         "noTransformation": false,
       }
     `)
-    expect(transformImportStatements("import { bla as blu } from './bla.js'", file)).toMatchInlineSnapshot(`
+    expect(t("import { bla as blu } from './bla.js'")).toMatchInlineSnapshot(`
       {
         "code": "const blu = '​import:./bla.js:bla';",
         "fileImportsTransformed": [
@@ -44,7 +42,7 @@ describe('getErrMsg()', () => {
         "noTransformation": false,
       }
     `)
-    expect(transformImportStatements("import * as blo from './bla.js'", file)).toMatchInlineSnapshot(`
+    expect(t("import * as blo from './bla.js'")).toMatchInlineSnapshot(`
       {
         "code": "const blo = '​import:./bla.js:*';",
         "fileImportsTransformed": [
@@ -59,3 +57,7 @@ describe('getErrMsg()', () => {
     `)
   })
 })
+
+function t(code: string) {
+  return transformImportStatements(code, '/fake-file.js')
+}
