@@ -18,7 +18,7 @@ import {
   isObject,
   toPosixPath
 } from '../../../utils.js'
-import { isImportData, replaceImportStatements, type FileImport } from './replaceImportStatements.js'
+import { isImportData, transformImportStatements, type FileImport } from './transformImportStatements.js'
 import { vikeConfigDependencies } from './getVikeConfig.js'
 import 'source-map-support/register.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/PageConfig.js'
@@ -70,7 +70,7 @@ function transformImports(codeOriginal: string, filePath: FilePathResolved, isVa
   )
 
   // Remove the imports
-  const res = replaceImportStatements(codeOriginal, filePathToShowToUser2)
+  const res = transformImportStatements(codeOriginal, filePathToShowToUser2)
   if (res.noTransformation) {
     return null
   }
@@ -318,6 +318,7 @@ function triggerPrepareStackTrace(err: unknown) {
 function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePathResolved) {
   const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
   const msg = [
+    // prettier ignore
     pc.red(`Failed to ${operation}`),
     pc.bold(pc.red(filePathToShowToUser2)),
     pc.red(`because:`)

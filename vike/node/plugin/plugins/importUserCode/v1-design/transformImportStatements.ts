@@ -1,4 +1,4 @@
-export { replaceImportStatements }
+export { transformImportStatements }
 export { parseImportData }
 export { isImportData }
 export type { FileImport }
@@ -18,7 +18,7 @@ type FileImport = {
   importString: string
   importLocalName: string
 }
-function replaceImportStatements(
+function transformImportStatements(
   code: string,
   filePathToShowToUser2: string
 ): { noTransformation: true } | { noTransformation: false; code: string; fileImportsTransformed: FileImport[] } {
