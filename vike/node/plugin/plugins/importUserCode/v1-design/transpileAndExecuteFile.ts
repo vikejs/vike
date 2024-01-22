@@ -31,8 +31,8 @@ async function transpileAndExecuteFile(
   isValueFile: boolean,
   userRootDir: string
 ): Promise<{ fileExports: Record<string, unknown> }> {
-  const { code, fileImports } = await transpileFile(filePath, isValueFile, userRootDir)
-  const { fileExports } = await executeFile(filePath, code, fileImports, isValueFile)
+  const { code, fileImportsTransformed } = await transpileFile(filePath, isValueFile, userRootDir)
+  const { fileExports } = await executeFile(filePath, code, fileImportsTransformed, isValueFile)
   return { fileExports }
 }
 
@@ -42,18 +42,18 @@ async function transpileFile(filePath: FilePathResolved, isValueFile: boolean, u
   vikeConfigDependencies.add(filePathAbsoluteFilesystem)
   let code = await transpileWithEsbuild(filePath, isValueFile, userRootDir)
 
-  let fileImports: FileImport[] | null = null
+  let fileImportsTransformed: FileImport[] | null = null
   {
-    const res = transpileImports(code, filePath, isValueFile)
+    const res = transformImports(code, filePath, isValueFile)
     if (res) {
       code = res.code
-      fileImports = res.fileImports
+      fileImportsTransformed = res.fileImportsTransformed
     }
   }
-  return { code, fileImports }
+  return { code, fileImportsTransformed }
 }
 
-function transpileImports(codeOriginal: string, filePath: FilePathResolved, isValueFile: boolean) {
+function transformImports(codeOriginal: string, filePath: FilePathResolved, isValueFile: boolean) {
   // Do we need to remove the imports?
   const { filePathAbsoluteFilesystem, filePathToShowToUser } = filePath
   assertPosixPath(filePathAbsoluteFilesystem)
@@ -73,14 +73,14 @@ function transpileImports(codeOriginal: string, filePath: FilePathResolved, isVa
   if (res.noTransformation) {
     return null
   }
-  const { code, fileImports } = res
+  const { code, fileImportsTransformed } = res
   if (!isHeader) {
     const filePathCorrect = appendHeaderFileExtension(filePathToShowToUser)
     assertWarning(false, `Rename ${filePathToShowToUser} to ${filePathCorrect}, see https://vike.dev/header-file`, {
       onlyOnce: true
     })
   }
-  return { code, fileImports }
+  return { code, fileImportsTransformed }
 }
 
 async function transpileWithEsbuild(filePath: FilePathResolved, bundle: boolean, userRootDir: string) {
@@ -161,7 +161,7 @@ async function transpileWithEsbuild(filePath: FilePathResolved, bundle: boolean,
 async function executeFile(
   filePath: FilePathResolved,
   code: string,
-  fileImports: FileImport[] | null,
+  fileImportsTransformed: FileImport[] | null,
   isValueFile: boolean
 ) {
   const { filePathAbsoluteFilesystem, filePathRelativeToUserRootDir } = filePath
@@ -186,10 +186,10 @@ async function executeFile(
   //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
   //  - We don't need this special object
   fileExports = { ...fileExports }
-  if (fileImports && !isValueFile) {
+  if (fileImportsTransformed && !isValueFile) {
     assert(filePathRelativeToUserRootDir !== undefined)
     const filePathToShowToUser = filePathRelativeToUserRootDir ?? filePathAbsoluteFilesystem
-    assertImportsAreReExported(fileImports, fileExports, filePathToShowToUser)
+    assertImportsAreReExported(fileImportsTransformed, fileExports, filePathToShowToUser)
   }
   return { fileExports }
 }
@@ -239,7 +239,7 @@ function isTmpFile(filePath: string): boolean {
 }
 
 function assertImportsAreReExported(
-  fileImports: (FileImport & { isReExported?: true })[],
+  fileImportsTransformed: (FileImport & { isReExported?: true })[],
   fileExports: Record<string, unknown>,
   filePathToShowToUser: string
 ) {
@@ -249,21 +249,21 @@ function assertImportsAreReExported(
     if (typeof exportVal !== 'string') return
     if (!isImportData(exportVal)) return
     const importString = exportVal
-    fileImports.forEach((fileImport) => {
+    fileImportsTransformed.forEach((fileImport) => {
       if (fileImport.importString === importString) {
         fileImport.isReExported = true
       }
     })
   })
 
-  const fileImportsUnused = fileImports.filter((fi) => !fi.isReExported)
-  if (fileImportsUnused.length === 0) return
+  const fileImportsTransformedUnused = fileImportsTransformed.filter((fi) => !fi.isReExported)
+  if (fileImportsTransformedUnused.length === 0) return
 
-  const importStatements = unique(fileImportsUnused.map((fi) => fi.importStatementCode))
-  const importNamesUnused: string = fileImportsUnused.map((fi) => pc.cyan(fi.importLocalName)).join(', ')
-  const singular = fileImportsUnused.length === 1
+  const importStatements = unique(fileImportsTransformedUnused.map((fi) => fi.importStatementCode))
+  const importNamesUnused: string = fileImportsTransformedUnused.map((fi) => pc.cyan(fi.importLocalName)).join(', ')
+  const singular = fileImportsTransformedUnused.length === 1
   assertWarning(
-    fileImportsUnused.length === 0,
+    fileImportsTransformedUnused.length === 0,
     [
       `${filePathToShowToUser} imports the following:`,
       ...importStatements.map((s) => pc.cyan(`  ${s}`)),

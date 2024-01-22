@@ -8,7 +8,7 @@ describe('getErrMsg()', () => {
     expect(replaceImportStatements("import { something } from './bla.js'", file)).toMatchInlineSnapshot(`
       {
         "code": "const something = '​import:./bla.js:something';",
-        "fileImports": [
+        "fileImportsTransformed": [
           {
             "importLocalName": "something",
             "importStatementCode": "import { something } from './bla.js'",
@@ -21,7 +21,7 @@ describe('getErrMsg()', () => {
     expect(replaceImportStatements("import def from './bla.js'", file)).toMatchInlineSnapshot(`
       {
         "code": "const def = '​import:./bla.js:default';",
-        "fileImports": [
+        "fileImportsTransformed": [
           {
             "importLocalName": "def",
             "importStatementCode": "import def from './bla.js'",
@@ -34,7 +34,7 @@ describe('getErrMsg()', () => {
     expect(replaceImportStatements("import { bla as blu } from './bla.js'", file)).toMatchInlineSnapshot(`
       {
         "code": "const blu = '​import:./bla.js:bla';",
-        "fileImports": [
+        "fileImportsTransformed": [
           {
             "importLocalName": "blu",
             "importStatementCode": "import { bla as blu } from './bla.js'",
@@ -47,7 +47,7 @@ describe('getErrMsg()', () => {
     expect(replaceImportStatements("import * as blo from './bla.js'", file)).toMatchInlineSnapshot(`
       {
         "code": "const blo = '​import:./bla.js:*';",
-        "fileImports": [
+        "fileImportsTransformed": [
           {
             "importLocalName": "blo",
             "importStatementCode": "import * as blo from './bla.js'",

@@ -21,9 +21,9 @@ type FileImport = {
 function replaceImportStatements(
   code: string,
   filePathToShowToUser: string
-): { noTransformation: true } | { noTransformation: false; code: string; fileImports: FileImport[] } {
+): { noTransformation: true } | { noTransformation: false; code: string; fileImportsTransformed: FileImport[] } {
   const spliceOperations: SpliceOperation[] = []
-  const fileImports: FileImport[] = []
+  const fileImportsTransformed: FileImport[] = []
 
   // Performance trick
   if (!code.includes('import')) return { noTransformation: true }
@@ -79,7 +79,7 @@ function replaceImportStatements(
       })()
       const importString = serializeImportData({ importPath, exportName, importStringWasGenerated: true })
       replacement += `const ${importLocalName} = '${importString}';`
-      fileImports.push({
+      fileImportsTransformed.push({
         importStatementCode,
         importString,
         importLocalName
@@ -94,7 +94,7 @@ function replaceImportStatements(
   })
 
   const codeMod = spliceMany(code, spliceOperations)
-  return { code: codeMod, fileImports, noTransformation: false }
+  return { code: codeMod, fileImportsTransformed, noTransformation: false }
 }
 function getImports(code: string): ImportDeclaration[] {
   const { body } = parse(code, {
