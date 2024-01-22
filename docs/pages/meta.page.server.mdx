@@ -33,8 +33,11 @@ export default 'https://restcountries.com/v3.1/all'
 export default {
   meta: {
     dataEndpointUrl: {
-      // Load the value of /pages/**/+dataEndpointUrl.js only on the server
-      env: { server: true, client: false }
+      env: {
+        server: true,
+        // Load the value of /pages/**/+dataEndpointUrl.js only on the server
+        client: false
+      }
     }
   }
 }
@@ -81,8 +84,11 @@ export const sql = { modelName: 'User', select: ['firstName', 'lastName'], where
 export default {
   meta: {
     sql: {
-      // Load the value of /pages/**/+sql.js only on the server
-      env: { server: true, client: false }
+      env: {
+        server: true,
+        // Load the value of /pages/**/+sql.js only on the server
+        client: false
+      }
     }
   }
 }
@@ -442,6 +448,17 @@ export default {
 Similar to <Link href="/pageContext#typescript">`Vike.PageContext`</Link>, you can extend (or refine) Vike's `Config` type by using the global interface `Vike.Config`.
 
 ```ts
+// /pages/+config.h.ts
+// Environment: config
+
+export default {
+  meta: {
+    sqlQuery: {
+      env: { server: true }
+    }
+  }
+}
+
 declare global {
   namespace Vike {
     interface Config {
@@ -451,7 +468,9 @@ declare global {
   }
 }
 
-// Tell TypeScript this file isn't an ambient module
+// The following isn't needed in this example, but if you define Vike.Config
+// in a .d.ts file then make sure there is at least one export/import statment.
+// Tell TypeScript this file isn't an ambient module:
 export {}
 ```
 
@@ -466,6 +485,7 @@ export default {
 } satisfies Config
 ```
 
+> `sqlQuery` is a custom setting, see <Link href="#example-sql" doNotInferSectionTitle />.
 
 ## See also
 
