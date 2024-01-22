@@ -60,8 +60,8 @@ import type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 type Env = ConfigEnv
 export type { Env }
 
-// TODO/v1-release: remove
 import type { ConfigEffect } from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
+// TODO/v1-release: remove
 /** @deprecated Replace:
  *   `import type { Effect } from 'vike/types'`
  * With:

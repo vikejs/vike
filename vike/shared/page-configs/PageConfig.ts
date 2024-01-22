@@ -59,6 +59,10 @@ type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
 }
 
+/** In what environment(s) the config value is loaded.
+ *
+ * https://vike.dev/meta
+ */
 type ConfigEnv = {
   client?: boolean
   server?: boolean

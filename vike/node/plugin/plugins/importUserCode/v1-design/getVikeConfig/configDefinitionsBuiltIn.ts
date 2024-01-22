@@ -34,13 +34,18 @@ type ConfigDefinition = {
    */
   cumulative?: boolean
   /**
-   * Define a so-called "Shortcut Config".
+   * Function called when the config value is defined.
    *
    * https://vike.dev/meta
    */
   effect?: ConfigEffect
 }
 
+/**
+ * Function called when the config value is defined.
+ *
+ * https://vike.dev/meta
+ */
 type ConfigEffect = (config: {
   /** The config value.
    *
