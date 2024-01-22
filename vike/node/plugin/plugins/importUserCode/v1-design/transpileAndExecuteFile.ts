@@ -55,7 +55,9 @@ async function transpileFile(filePath: FilePathResolved, isValueFile: boolean, u
 
 function transformImports(codeOriginal: string, filePath: FilePathResolved, isValueFile: boolean) {
   // Do we need to remove the imports?
-  const { filePathAbsoluteFilesystem, filePathToShowToUser } = filePath
+  const { filePathAbsoluteFilesystem, filePathRelativeToUserRootDir } = filePath
+  // filePathToShowToUser may show the import path of a package, but we want to always show a file path
+  const filePathToShowToUser2: string = filePathRelativeToUserRootDir || filePathAbsoluteFilesystem
   assertPosixPath(filePathAbsoluteFilesystem)
   const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
   const isPageConfigFile = !isValueFile
@@ -64,19 +66,19 @@ function transformImports(codeOriginal: string, filePath: FilePathResolved, isVa
   }
   assertWarning(
     isPageConfigFile,
-    `${filePathToShowToUser} is a JavaScript header file (.h.js), but JavaScript header files should only be used for +config.h.js, see https://vike.dev/header-file`,
+    `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files should only be used for +config.h.js, see https://vike.dev/header-file`,
     { onlyOnce: true }
   )
 
   // Remove the imports
-  const res = replaceImportStatements(codeOriginal, filePathToShowToUser)
+  const res = replaceImportStatements(codeOriginal, filePathToShowToUser2)
   if (res.noTransformation) {
     return null
   }
   const { code, fileImportsTransformed } = res
   if (!isHeader) {
-    const filePathCorrect = appendHeaderFileExtension(filePathToShowToUser)
-    assertWarning(false, `Rename ${filePathToShowToUser} to ${filePathCorrect}, see https://vike.dev/header-file`, {
+    const filePathCorrect = appendHeaderFileExtension(filePathToShowToUser2)
+    assertWarning(false, `Rename ${filePathToShowToUser2} to ${filePathCorrect}, see https://vike.dev/header-file`, {
       onlyOnce: true
     })
   }
