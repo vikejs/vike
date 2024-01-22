@@ -1,14 +1,14 @@
 export { getConfigFileExport }
 
 import pc from '@brillout/picocolors'
-import { assertExportsOfValueFile } from '../../../../../shared/page-configs/assertExports.js'
+import { assertPlusFileExport } from '../../../../../shared/page-configs/assertPlusFileExport.js'
 import { assert, assertUsage, isObject } from '../../../utils.js'
 
 function getConfigFileExport(
   fileExports: Record<string, unknown>,
   filePathToShowToUser: string
 ): Record<string, unknown> {
-  assertExportsOfValueFile(fileExports, filePathToShowToUser, 'config')
+  assertPlusFileExport(fileExports, filePathToShowToUser, 'config')
   const fileExport = fileExports.default || fileExports.config
   assert('default' in fileExports !== 'config' in fileExports)
   const exportName = pc.cyan('default' in fileExports ? 'export default' : 'export { config }')

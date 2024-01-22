@@ -1,4 +1,4 @@
-export { assertExportsOfValueFile }
+export { assertPlusFileExport }
 
 import { assert, assertUsage, assertWarning } from '../utils.js'
 import pc from '@brillout/picocolors'
@@ -13,11 +13,7 @@ const EXPORTS_IGNORE = [
 // Tolerate `export { frontmatter }` in .mdx files
 const TOLERATE_SIDE_EXPORTS = ['.md', '.mdx'] as const
 
-function assertExportsOfValueFile(
-  fileExports: Record<string, unknown>,
-  filePathToShowToUser: string,
-  configName: string
-) {
+function assertPlusFileExport(fileExports: Record<string, unknown>, filePathToShowToUser: string, configName: string) {
   const exportsAll = Object.keys(fileExports).filter((exportName) => !EXPORTS_IGNORE.includes(exportName))
   const exportsInvalid = exportsAll.filter((e) => e !== 'default' && e !== configName)
   if (exportsInvalid.length === 0) {

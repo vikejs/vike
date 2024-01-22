@@ -66,7 +66,7 @@ import {
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAtString } from '../../../../../shared/page-configs/helpers.js'
-import { assertExportsOfValueFile } from '../../../../../shared/page-configs/assertExports.js'
+import { assertPlusFileExport } from '../../../../../shared/page-configs/assertPlusFileExport.js'
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
@@ -257,7 +257,7 @@ function getConfigDefinitionOptional(
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName: string, userRootDir: string) {
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, true, userRootDir)
   const { filePathToShowToUser } = interfaceValueFile.filePath
-  assertExportsOfValueFile(fileExports, filePathToShowToUser, configName)
+  assertPlusFileExport(fileExports, filePathToShowToUser, configName)
   Object.entries(fileExports).forEach(([exportName, configValue]) => {
     const configName_ = exportName === 'default' ? configName : exportName
     interfaceValueFile.configMap[configName_] = { configValue }

@@ -1,7 +1,7 @@
 export { parseConfigValuesImported }
 
 import { assert } from '../../utils.js'
-import { assertExportsOfValueFile } from '../assertExports.js'
+import { assertPlusFileExport } from '../assertPlusFileExport.js'
 import type { ConfigValues } from '../PageConfig.js'
 import type { ConfigValueImported } from './PageConfigSerialized.js'
 
@@ -27,7 +27,7 @@ function parseConfigValuesImported(configValuesImported: ConfigValueImported[]):
     if (configValueLoaded.isValueFile) {
       const { exportValues, importPath, configName } = configValueLoaded
       if (configName !== 'client') {
-        assertExportsOfValueFile(exportValues, importPath, configName)
+        assertPlusFileExport(exportValues, importPath, configName)
       }
       Object.entries(exportValues).forEach(([exportName, exportValue]) => {
         const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
