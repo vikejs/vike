@@ -55,9 +55,8 @@ async function transpileFile(filePath: FilePathResolved, isValueFile: boolean, u
 
 function transformImports(codeOriginal: string, filePath: FilePathResolved, isValueFile: boolean) {
   // Do we need to remove the imports?
-  const { filePathAbsoluteFilesystem, filePathRelativeToUserRootDir } = filePath
-  // filePathToShowToUser may show the import path of a package, but we want to always show a file path
-  const filePathToShowToUser2: string = filePathRelativeToUserRootDir || filePathAbsoluteFilesystem
+  const { filePathAbsoluteFilesystem } = filePath
+  const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
   assertPosixPath(filePathAbsoluteFilesystem)
   const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
   const isPageConfigFile = !isValueFile
@@ -190,8 +189,8 @@ async function executeFile(
   fileExports = { ...fileExports }
   if (fileImportsTransformed && !isValueFile) {
     assert(filePathRelativeToUserRootDir !== undefined)
-    const filePathToShowToUser = filePathRelativeToUserRootDir ?? filePathAbsoluteFilesystem
-    assertImportsAreReExported(fileImportsTransformed, fileExports, filePathToShowToUser)
+    const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
+    assertImportsAreReExported(fileImportsTransformed, fileExports, filePathToShowToUser2)
   }
   return { fileExports }
 }
@@ -243,9 +242,9 @@ function isTmpFile(filePath: string): boolean {
 function assertImportsAreReExported(
   fileImportsTransformed: (FileImport & { isReExported?: true })[],
   fileExports: Record<string, unknown>,
-  filePathToShowToUser: string
+  filePathToShowToUser2: string
 ) {
-  const fileExport = getConfigFileExport(fileExports, filePathToShowToUser)
+  const fileExport = getConfigFileExport(fileExports, filePathToShowToUser2)
   const exportedStrings = getExportedStrings(fileExport)
   Object.values(exportedStrings).forEach((exportVal) => {
     if (typeof exportVal !== 'string') return
@@ -267,7 +266,7 @@ function assertImportsAreReExported(
   assertWarning(
     fileImportsTransformedUnused.length === 0,
     [
-      `${filePathToShowToUser} imports the following:`,
+      `${filePathToShowToUser2} imports the following:`,
       ...importStatements.map((s) => pc.cyan(`  ${s}`)),
       `But the import${singular ? '' : 's'} ${importNamesUnused} ${
         singular ? "isn't" : "aren't"
@@ -317,10 +316,19 @@ function triggerPrepareStackTrace(err: unknown) {
 }
 
 function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePathResolved) {
+  const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
   const msg = [
     pc.red(`Failed to ${operation}`),
-    pc.bold(pc.red(filePath.filePathToShowToUser)),
+    pc.bold(pc.red(filePathToShowToUser2)),
     pc.red(`because:`)
   ].join(' ')
   return msg
+}
+
+/** `filePath.filePathToShowToUser` may show the import path of a package, use `filePathToShowToUser2` instead always show a file path instead. */
+function getFilePathToShowToUser2(filePath: FilePathResolved): string {
+  const { filePathAbsoluteFilesystem, filePathRelativeToUserRootDir } = filePath
+  const filePathToShowToUser2 = filePathRelativeToUserRootDir || filePathAbsoluteFilesystem
+  assert(filePathToShowToUser2)
+  return filePathToShowToUser2
 }

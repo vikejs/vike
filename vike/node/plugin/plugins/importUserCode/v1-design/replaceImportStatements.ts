@@ -20,7 +20,7 @@ type FileImport = {
 }
 function replaceImportStatements(
   code: string,
-  filePathToShowToUser: string
+  filePathToShowToUser2: string
 ): { noTransformation: true } | { noTransformation: false; code: string; fileImportsTransformed: FileImport[] } {
   const spliceOperations: SpliceOperation[] = []
   const fileImportsTransformed: FileImport[] = []
@@ -51,7 +51,7 @@ function replaceImportStatements(
         quote = pc.bold(pc.red(quote))
       }
       const errMsg = [
-        `As explained in https://vike.dev/header-file the following import in ${filePathToShowToUser} has no effect:`,
+        `As explained in https://vike.dev/header-file the following import in ${filePathToShowToUser2} has no effect:`,
         quote
       ].join('\n')
       if (!isWarning) {
