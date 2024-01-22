@@ -1,8 +1,10 @@
+export { config }
+
 import type { Config } from 'vike/types'
 import { onHydrationEnd, onPageTransitionStart, onPageTransitionEnd } from './onPageTransitionHooks'
 
 // https://vike.dev/config
-export default {
+const config = {
   clientRouting: true,
   prefetchStaticAssets: 'viewport',
   onHydrationEnd,
@@ -16,3 +18,13 @@ export default {
     }
   }
 } satisfies Config
+
+// https://vike.dev/meta#typescript
+declare global {
+  namespace Vike {
+    interface Config {
+      /** The page's `<title>` */
+      title?: string
+    }
+  }
+}

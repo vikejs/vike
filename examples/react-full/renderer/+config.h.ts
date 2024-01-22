@@ -39,3 +39,13 @@ export const config = {
     }
   }
 } satisfies Config
+
+// https://vike.dev/meta#typescript
+declare global {
+  namespace Vike {
+    interface Config {
+      /** The page's `<title>` */
+      title?: string
+    }
+  }
+}

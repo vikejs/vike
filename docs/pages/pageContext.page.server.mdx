@@ -156,13 +156,13 @@ import type {
 } from 'vike/types'
 ```
 
-To extend and/or refine the `PageContext` type, use the global interface `Vike.PageContext`:
+To extend and/or refine Vike's types `PageContext`/`PageContextServer`/`PageContextClient`, use the global interface `Vike.PageContext`:
 
 ```ts
 declare global {
   namespace Vike {
     interface PageContext {
-      // Define type of pageContext.user
+      // Type of pageContext.user
       user?: {
         name: string
         id: string

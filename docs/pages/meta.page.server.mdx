@@ -61,13 +61,17 @@ async function data(pageContext) {
 Similarly to the previous example, another common use case is to enable pages to define their data requirements as SQL queries.
 
 ```js
-// /pages/product/+sql.js
-export const sql = { modelName: 'Product', select: ['name', 'price'] }
+// /pages/product/@id/+sql.js
+export const sql = (id) => `SELECT { name, price } FROM products WHERE id = "${id}";`
+/* Or with an ORM:
+export const sql = { modelName: 'Product', select: ['name', 'price'], where: { id } } */
 ```
 
 ```js
-// /pages/user/+sql.js
-export const sql = { modelName: 'User', select: ['firstName', 'lastName'] }
+// /pages/user/@id/+sql.js
+export const sql = (id) => `SELECT { firstName, lastName } FROM users WHERE id = "${id}";`
+/* Or with an ORM:
+export const sql = { modelName: 'User', select: ['firstName', 'lastName'], where: { id } } */
 ```
 
 ```js
@@ -94,8 +98,10 @@ import { runQuery } from 'some-sql-engine'
 
 async function onBeforeRender(pageContext) {
   // The value exported by /pages/**/+sql.js is available at pageContext.config.sql
+  const { id } = pageContext.routeParams
   const { sql } = pageContext.config
-  const data = await runQuery(sql)
+  const query = sql(id)
+  const data = await runQuery(query)
   // ...
 }
 ```
@@ -429,3 +435,38 @@ export default {
   }
 }
 ```
+
+
+## TypeScript
+
+Similar to <Link href="/pageContext#typescript">`Vike.PageContext`</Link>, you can extend (or refine) Vike's `Config` type by using the global interface `Vike.Config`.
+
+```ts
+declare global {
+  namespace Vike {
+    interface Config {
+      /** The SQL query that retrieves the page's data */
+      sqlQuery?: (id: number) => string
+    }
+  }
+}
+
+// Tell TypeScript this file isn't an ambient module
+export {}
+```
+
+```ts
+// /pages/product/@id/+config.h.ts
+
+import { Config } from 'vike/types'
+
+export default {
+  // ✅ Typed
+  sqlQuery: (id) => `SELECT { name, price } FROM products WHERE id = "${id}";`
+} satisfies Config
+```
+
+
+## See also
+
+- <Link href="/migration/v1-design" />
