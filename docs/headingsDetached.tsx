@@ -401,5 +401,5 @@ const headingsDetached = [
   {
     title: '`lang`',
     url: '/lang'
-  },
+  }
 ] satisfies HeadingDetachedDefinition[]

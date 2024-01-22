@@ -51,10 +51,7 @@ function assertEnv(): void | undefined {
   const isProduction = !env.isViteDev && !env.isVitePreview
   if (isProduction) {
     // Seems to be the only reliable way to assert that the user doesn't load Vike's Vite plugin in production. (The other assert() that uses process.env.NODE_ENV doesn't work if the user sets the process.env.NODE_ENV value later.)
-    assertUsage(
-      !env.isVikePluginLoaded,
-      vikeVitePluginLoadedInProductionError
-    )
+    assertUsage(!env.isVikePluginLoaded, vikeVitePluginLoadedInProductionError)
     // This assert() is the main goal of this file: it ensures assertIsNotProductionRuntime()
     assert(!env.shouldNotBeProduction)
   } else {
