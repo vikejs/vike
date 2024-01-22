@@ -5,6 +5,8 @@ export type { FileImport }
 export type { ImportData }
 
 // Playground: https://github.com/brillout/acorn-playground
+// Import attributes support: https://github.com/acornjs/acorn/issues/983
+//  - Isn't stage 4 yet: https://github.com/tc39/proposal-import-attributes
 
 import { parse } from 'acorn'
 import type { Program, Identifier, ImportDeclaration } from 'estree'
