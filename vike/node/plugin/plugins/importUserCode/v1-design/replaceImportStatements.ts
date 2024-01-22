@@ -21,15 +21,15 @@ type FileImport = {
 function replaceImportStatements(
   code: string,
   filePathToShowToUser: string
-): { noImportStatement: true } | { noImportStatement: false; code: string; fileImports: FileImport[] } {
+): { noTransformation: true } | { noTransformation: false; code: string; fileImports: FileImport[] } {
   const spliceOperations: SpliceOperation[] = []
   const fileImports: FileImport[] = []
 
   // Performance trick
-  if (!code.includes('import')) return { noImportStatement: true }
+  if (!code.includes('import')) return { noTransformation: true }
 
   const imports = getImports(code)
-  if (imports.length === 0) return { noImportStatement: true }
+  if (imports.length === 0) return { noTransformation: true }
 
   imports.forEach((node) => {
     if (node.type !== 'ImportDeclaration') return
@@ -94,7 +94,7 @@ function replaceImportStatements(
   })
 
   const codeMod = spliceMany(code, spliceOperations)
-  return { code: codeMod, fileImports, noImportStatement: false }
+  return { code: codeMod, fileImports, noTransformation: false }
 }
 function getImports(code: string): ImportDeclaration[] {
   const { body } = parse(code, {

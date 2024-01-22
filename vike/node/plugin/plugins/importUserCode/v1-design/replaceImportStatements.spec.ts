@@ -15,7 +15,7 @@ describe('getErrMsg()', () => {
             "importString": "​import:./bla.js:something",
           },
         ],
-        "noImportStatement": false,
+        "noTransformation": false,
       }
     `)
     expect(replaceImportStatements("import def from './bla.js'", file)).toMatchInlineSnapshot(`
@@ -28,7 +28,7 @@ describe('getErrMsg()', () => {
             "importString": "​import:./bla.js:default",
           },
         ],
-        "noImportStatement": false,
+        "noTransformation": false,
       }
     `)
     expect(replaceImportStatements("import { bla as blu } from './bla.js'", file)).toMatchInlineSnapshot(`
@@ -41,7 +41,7 @@ describe('getErrMsg()', () => {
             "importString": "​import:./bla.js:bla",
           },
         ],
-        "noImportStatement": false,
+        "noTransformation": false,
       }
     `)
     expect(replaceImportStatements("import * as blo from './bla.js'", file)).toMatchInlineSnapshot(`
@@ -54,7 +54,7 @@ describe('getErrMsg()', () => {
             "importString": "​import:./bla.js:*",
           },
         ],
-        "noImportStatement": false,
+        "noTransformation": false,
       }
     `)
   })

@@ -70,7 +70,7 @@ function transpileImports(codeOriginal: string, filePath: FilePathResolved, isVa
 
   // Remove the imports
   const res = replaceImportStatements(codeOriginal, filePathToShowToUser)
-  if (res.noImportStatement) {
+  if (res.noTransformation) {
     return null
   }
   const { code, fileImports } = res
