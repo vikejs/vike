@@ -41,6 +41,10 @@ const headingsDetached = [
     url: '/preload'
   },
   {
+    title: 'Layouts',
+    url: '/layouts'
+  },
+  {
     title: 'SPA vs SSR vs HTML',
     url: '/SPA-vs-SSR-vs-HTML'
   },
@@ -409,5 +413,9 @@ const headingsDetached = [
   {
     title: '`lang`',
     url: '/lang'
+  },
+  {
+    title: '`<Wrapper>`',
+    url: '/Wrapper'
   }
 ] satisfies HeadingDetachedDefinition[]

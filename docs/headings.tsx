@@ -110,11 +110,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Layouts',
-    url: '/layouts'
-  },
-  {
-    level: 2,
     title: 'Static Directory (`public/`)',
     url: '/static-directory'
   },
@@ -627,13 +622,20 @@ const headings = [
   },
   {
     level: 2,
-    title: '`Page`',
+    titleInNav: '`Page`',
+    title: '`<Page>`',
     url: '/Page'
   },
   {
     level: 2,
     title: '`route`',
     url: '/route'
+  },
+  {
+    level: 2,
+    titleInNav: '`Layout`',
+    title: '`<Layout>`',
+    url: '/Layout'
   },
   {
     level: 2,

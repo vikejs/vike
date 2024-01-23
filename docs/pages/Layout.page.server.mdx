@@ -1,0 +1,215 @@
+import { Link, RepoLink } from '@brillout/docpress'
+import { ClientOnlyCommon } from './ClientOnly/ClientOnlyCommon.tsx'
+import { UiFrameworkVikeExtension } from '../components'
+
+Provided by: <UiFrameworkVikeExtension /> (or <Link href="#without-vike-extension">yourself</Link>).
+
+> **What are layouts?**
+> Pages can have different layouts:
+> for example, if admin panel pages (`/admin/product/@id` and `/admin/user/@id`) have a sidebar while marketing pages (`/` and `/about-us`) have a sticky header instead. The admin pages can share the same `<Layout>` component that includes the sidebar, while the marketing pages can share the `<Layout>` component that includes the sticky header.
+
+The `Layout` setting wraps your <Link href="/Page">Page component</Link> with another component (the *layout component*).
+
+```jsx
+<Layout>    <- component defined by the setting "Layout"
+  <Page />  <- component defined by the setting "Page"
+</Layout>
+```
+
+You can apply a layout as default to all pages:
+
+```js
+// /pages/+Layout.js
+
+// This layout component is the default layout
+export { Layout }
+
+// ...
+```
+
+> See also: <Link href="#examples" />.
+
+You can then override the default layout on a page-by-page basis:
+
+```js
+// pages/product/@id/+Layout.js
+
+// This layout component overrides the default layout and
+// applies to the product page /product/@id
+export { Layout }
+
+// ...
+```
+
+You can also define a layout for a group of pages:
+
+```js
+// /pages/admin/+Layout.js
+
+// This layout applies to:
+//  - /admin
+//  - /admin/user/@id
+//  - /admin/product/@id
+//  - ...
+export { Layout }
+
+// ...
+```
+
+> See also <Link href="/Wrapper">`<Wrapper>`</Link> which also wraps `<Page>`, but for different use cases.
+
+
+## Examples
+
+[React](https://github.com/vikejs/vike-react/blob/main/examples/basic/pages/%2BLayout.ts) / [Vue](https://github.com/vikejs/vike-vue/blob/main/examples/basic/pages/%2BLayout.ts) / [Solid](https://github.com/vikejs/vike-solid/blob/main/examples/basic/pages/%2BLayout.ts)
+
+
+## Nested Layouts
+
+> **What are nested layouts?** A nested layout is, essentially, when a page has a route with multiple parameters.
+>
+> For example `/product/@id/@view`.
+> ```
+> URL                        id            view
+> =====================      ====          =======
+> /product/1337              1337          null
+> /product/1337/pricing      1337          pricing
+> /product/42/reviews        42            reviews
+> ```
+> ```
+> /product/42/pricing                   /product/42/reviews
+> +------------------+                  +-----------------+
+> | Product          |                  | Product         |
+> | +--------------+ |                  | +-------------+ |
+> | | Pricing      | |  +------------>  | | Reviews     | |
+> | |              | |                  | |             | |
+> | +--------------+ |                  | +-------------+ |
+> +------------------+                  +-----------------+
+> ```
+
+> If your nested layout isn't associated with a URL (in other words the pricing page and the reviews page share the same URL `/product/42`), then you can simply use a stateful component instead of the following.
+
+You can implement a nested layout by using a route with multiple parameters:
+
+```js
+// /pages/product/+route.js
+
+export const '/product/@id/@view'
+```
+
+> Instead of a <Link href="/route-string">Route String</Link>, you can use a <Link href="/route-function">Route Function</Link> for full programmatic flexibility, see [this example](https://gist.github.com/brillout/a75fd8430dbc562dd10e69007121fea0).
+
+
+To ensure `@view` matches a list pre-defined values, use a <Link href="/guard">`guard()`</Link> hook with <Link href="/render">`throw render(404)`</Link>:
+
+```js
+// /pages/product/+guard.js
+
+import { render } from 'vike/abort'
+
+export function guard(pageContext) {
+  const { view } = pageContext.routeParams
+  if (!['reviews', 'pricing'].includes(view)) {
+    throw render(404)
+  }
+}
+```
+
+You then use `pageContext.routeParams.view` to route the nested layout:
+
+```jsx
+// /pages/product/+Page.js
+
+export { Page }
+
+import { usePageContext } from 'vike-react' // or 'vike-vue' / 'vike-solid'
+
+function Page() {
+  const pageContext = usePageContext()
+  const viewElement = (() => {
+    const { view } = pageContext.routeParams
+    if (view === 'reviews') return <Reviews />
+    if (view === 'pricing') return <Pricing />
+  })()
+  return <>
+     {/* ... */}
+       {/* Somewhere deep */ }
+       { viewElement }
+     {/* ... */}
+  </>
+}
+```
+
+> See <Link href="/usePageContext" />.
+
+Finally, make sure to use <Link href="/clientRouting#settings">`<a href="/product/42/reviews" keep-scroll-position />`</Link> (or <Link href="/navigate#options">`navigate('/product/42/reviews', { keepScrollPosition: true })`</Link>) to avoid the browser to scroll to the top.
+
+Examples:
+ - <RepoLink path="/examples/layouts-react/" />
+   - [Nested Layout implementation](https://github.com/vikejs/vike/blob/main/examples/layouts-react/pages/starship/%2BPage.jsx)
+ - <RepoLink path="/examples/layouts-vue/" />
+   - [Nested Layout implementation](https://github.com/vikejs/vike/blob/main/examples/layouts-vue/pages/starship/%2BPage.vue)
+
+
+## Without Vike extension
+
+The following is for users that don't use a <UiFrameworkVikeExtension />.
+
+### The simple way
+
+A simple way to implement layouts is to manually wrap your `<Page>` components:
+
+```jsx
+// /pages/index/+Page.js
+
+export { Page }
+
+import { LayoutDefault } from '../layouts/LayoutDefault'
+
+function Page() {
+  return <>
+    <LayoutDefault>
+      {/* ... */}
+    </LayoutDefault>
+  </>
+}
+```
+
+```jsx
+// /pages/admin/+Page.js
+
+export { Page }
+
+import { LayoutDashboard } from '../layouts/LayoutDashboard'
+
+function Page() {
+  return <>
+    <LayoutDashboard>
+      {/* ... */}
+    </LayoutDashboard>
+  </>
+}
+```
+
+### With a custom setting
+
+In case you don't use a <UiFrameworkVikeExtension />, you can implement the `Layout` setting yourself by using <Link href="/meta">meta</Link>.
+
+Examples:
+ - <Link href="/meta#example-layout" doNotInferSectionTitle />
+ - [`vike-react` source code](https://github.com/vikejs/vike-react/blob/main/packages/vike-react)
+ - [`vike-vue` source code](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue)
+ - [`vike-solid` source code](https://github.com/vikejs/vike-solid/blob/main/vike-solid)
+
+
+### Nested Layout
+
+See <Link href="#nested-layouts" />.
+
+For smooth nested layout navigation, we recommend using <Link href="/clientRouting">Client Routing</Link>. (Using <Link href="/server-routing">Server Routing</Link> would lead to a full page reload upon nested layout navigation which usually isn't an acceptable UX.)
+
+
+## See also
+
+- <Link href="/Wrapper" />
+- <Link href="/Page" />

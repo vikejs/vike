@@ -1,7 +1,9 @@
 import { Link } from '@brillout/docpress'
 import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../components'
 
-The `Page` value determines the page's root component.
+The `Page` setting determines the root component of the page.
+
+With JSX (React/Solid):
 
 ```js
 // /pages/index/+Page.jsx
@@ -99,3 +101,8 @@ async function onRenderClient(pageContext) {
   await hydrateDom(Page, document.getElementById('root'))
 }
 ```
+
+
+## See also
+
+- <Link href="/Layout" />
