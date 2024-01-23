@@ -32,23 +32,30 @@ async function transpileAndExecuteFile(
   userRootDir: string,
   isConfigOfExtension = false
 ): Promise<{ fileExports: Record<string, unknown> }> {
-  const { code, fileImportsTransformed } = await transpileFile(filePath, isValueFile, userRootDir, isConfigOfExtension)
+  if (isConfigOfExtension) {
+    const fileExports = await executeFile(filePath.filePathAbsoluteFilesystem, filePath)
+    if (isHeaderFile(filePath.filePathAbsoluteFilesystem)) {
+      const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
+      assertWarning(
+        false,
+        `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files don't apply to the config files of extensions`,
+        { onlyOnce: true }
+      )
+    }
+    return { fileExports }
+  }
+  const { code, fileImportsTransformed } = await transpileFile(filePath, isValueFile, userRootDir)
   const fileExports = await executeTranspiledFile(filePath, code, fileImportsTransformed, isValueFile)
   return { fileExports }
 }
 
-async function transpileFile(
-  filePath: FilePathResolved,
-  isValueFile: boolean,
-  userRootDir: string,
-  isConfigOfExtension: boolean
-) {
+async function transpileFile(filePath: FilePathResolved, isValueFile: boolean, userRootDir: string) {
   const { filePathAbsoluteFilesystem } = filePath
   const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
   assertPosixPath(filePathAbsoluteFilesystem)
   vikeConfigDependencies.add(filePathAbsoluteFilesystem)
 
-  const importsAreTransformed = !isConfigOfExtension && !isValueFile
+  const importsAreTransformed = !isValueFile
 
   let code = await transpileWithEsbuild(filePath, userRootDir, importsAreTransformed, isValueFile)
 
@@ -65,12 +72,6 @@ async function transpileFile(
         assertWarning(
           false,
           `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files only apply to +config.h.js, see https://vike.dev/header-file`,
-          { onlyOnce: true }
-        )
-      } else if (isConfigOfExtension) {
-        assertWarning(
-          false,
-          `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files don't apply to the config files of extensions`,
           { onlyOnce: true }
         )
       } else {
