@@ -1,4 +1,4 @@
-// Files loadded at config time
+// Files loadded at config time:
 
 export { loadImportedFile }
 export { loadValueFile }
@@ -33,6 +33,7 @@ type ConfigFile = {
   extendsFilePaths: string[]
 }
 
+// Load fake import
 async function loadImportedFile(
   filePath: FilePathResolved,
   userRootDir: string,
@@ -46,6 +47,7 @@ async function loadImportedFile(
   return fileExports
 }
 
+// Load +{configName}.js
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName: string, userRootDir: string) {
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, true, userRootDir)
   const { filePathToShowToUser } = interfaceValueFile.filePath
@@ -56,6 +58,7 @@ async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName:
   })
 }
 
+// Load +config.js, including all its extends fake imports
 async function loadConfigFile(
   configFilePath: FilePathResolved,
   userRootDir: string,
@@ -84,7 +87,6 @@ function assertNoInfiniteLoop(visited: string[], filePathAbsoluteFilesystem: str
   assert(loop[0] === filePathAbsoluteFilesystem)
   assertUsage(idx === -1, `Infinite extends loop ${[...loop, filePathAbsoluteFilesystem].join('>')}`)
 }
-
 async function loadExtendsConfigs(
   configFileExports: Record<string, unknown>,
   configFilePath: FilePathResolved,
@@ -135,7 +137,6 @@ function determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem: string, 
     filePathRelativeToUserRootDir = '/' + filePathRelativeToUserRootDir
   return filePathRelativeToUserRootDir
 }
-
 function warnUserLandExtension(importPath: string, configFilePath: FilePathResolved) {
   assertWarning(
     isNpmPackageImport(importPath),
@@ -145,7 +146,6 @@ function warnUserLandExtension(importPath: string, configFilePath: FilePathResol
     { onlyOnce: true }
   )
 }
-
 function getExtendsImportData(
   configFileExports: Record<string, unknown>,
   configFilePath: FilePathResolved
