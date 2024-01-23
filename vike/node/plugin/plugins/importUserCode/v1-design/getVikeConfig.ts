@@ -190,7 +190,7 @@ async function loadInterfaceFiles(
   // Config files
   await Promise.all(
     configFiles.map(async (filePath) => {
-      const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [])
+      const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false)
       const interfaceFile = getInterfaceFileFromConfigFile(configFile, false)
 
       const locationId = getLocationId(filePath.filePathAbsoluteVite)
@@ -1194,11 +1194,12 @@ type ConfigFile = {
 async function loadConfigFile(
   configFilePath: FilePathResolved,
   userRootDir: string,
-  visited: string[]
+  visited: string[],
+  isConfigOfExtension: boolean
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
   const { filePathAbsoluteFilesystem } = configFilePath
   assertNoInfiniteLoop(visited, filePathAbsoluteFilesystem)
-  const { fileExports } = await transpileAndExecuteFile(configFilePath, false, userRootDir)
+  const { fileExports } = await transpileAndExecuteFile(configFilePath, false, userRootDir, isConfigOfExtension)
   const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir, [
     ...visited,
     filePathAbsoluteFilesystem
@@ -1248,7 +1249,7 @@ async function loadExtendsConfigs(
   const extendsConfigs: ConfigFile[] = []
   await Promise.all(
     extendsConfigFiles.map(async (configFilePath) => {
-      const result = await loadConfigFile(configFilePath, userRootDir, visited)
+      const result = await loadConfigFile(configFilePath, userRootDir, visited, true)
       extendsConfigs.push(result.configFile)
       extendsConfigs.push(...result.extendsConfigs)
     })

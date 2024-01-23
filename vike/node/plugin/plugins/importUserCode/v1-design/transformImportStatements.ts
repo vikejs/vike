@@ -39,6 +39,7 @@ function transformImportStatements(
     const importPath = node.source.value
     assert(typeof importPath === 'string')
 
+    // This doesn't work
     if (importPath.endsWith('?real')) {
       const { start, end } = node.source
       spliceOperations.push({

@@ -29,45 +29,61 @@ assertIsNotProductionRuntime()
 async function transpileAndExecuteFile(
   filePath: FilePathResolved,
   isValueFile: boolean,
-  userRootDir: string
+  userRootDir: string,
+  isConfigOfExtension = false
 ): Promise<{ fileExports: Record<string, unknown> }> {
-  const { code, fileImportsTransformed } = await transpileFile(filePath, isValueFile, userRootDir)
+  const { code, fileImportsTransformed } = await transpileFile(filePath, isValueFile, userRootDir, isConfigOfExtension)
   const { fileExports } = await executeFile(filePath, code, fileImportsTransformed, isValueFile)
   return { fileExports }
 }
 
-async function transpileFile(filePath: FilePathResolved, isValueFile: boolean, userRootDir: string) {
+async function transpileFile(
+  filePath: FilePathResolved,
+  isValueFile: boolean,
+  userRootDir: string,
+  isConfigOfExtension: boolean
+) {
   const { filePathAbsoluteFilesystem } = filePath
+  const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
   assertPosixPath(filePathAbsoluteFilesystem)
   vikeConfigDependencies.add(filePathAbsoluteFilesystem)
-  let code = await transpileWithEsbuild(filePath, isValueFile, userRootDir)
+
+  const importsAreTransformed = !isConfigOfExtension && !isValueFile
+
+  let code = await transpileWithEsbuild(filePath, userRootDir, importsAreTransformed, isValueFile)
 
   let fileImportsTransformed: FileImport[] | null = null
-  {
-    const res = transformImports(code, filePath, isValueFile)
+  if (importsAreTransformed) {
+    const res = transformImports(code, filePath)
     if (res) {
       code = res.code
       fileImportsTransformed = res.fileImportsTransformed
+    }
+  } else {
+    if (isHeaderFile(filePathAbsoluteFilesystem)) {
+      if (isValueFile) {
+        assertWarning(
+          false,
+          `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files only apply to +config.h.js, see https://vike.dev/header-file`,
+          { onlyOnce: true }
+        )
+      } else if (isConfigOfExtension) {
+        assertWarning(
+          false,
+          `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files don't apply to the config files of extensions`,
+          { onlyOnce: true }
+        )
+      } else {
+        assert(false)
+      }
     }
   }
   return { code, fileImportsTransformed }
 }
 
-function transformImports(codeOriginal: string, filePath: FilePathResolved, isValueFile: boolean) {
-  // Do we need to remove the imports?
+function transformImports(codeOriginal: string, filePath: FilePathResolved) {
   const { filePathAbsoluteFilesystem } = filePath
   const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
-  assertPosixPath(filePathAbsoluteFilesystem)
-  const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
-  const isPageConfigFile = !isValueFile
-  if (!isHeader && !isPageConfigFile) {
-    return null
-  }
-  assertWarning(
-    isPageConfigFile,
-    `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files should only be used for +config.h.js, see https://vike.dev/header-file`,
-    { onlyOnce: true }
-  )
 
   // Replace import statements with import strings
   const res = transformImportStatements(codeOriginal, filePathToShowToUser2)
@@ -75,16 +91,25 @@ function transformImports(codeOriginal: string, filePath: FilePathResolved, isVa
     return null
   }
   const { code, fileImportsTransformed } = res
-  if (!isHeader) {
+
+  if (!isHeaderFile(filePathAbsoluteFilesystem)) {
     const filePathCorrect = appendHeaderFileExtension(filePathToShowToUser2)
     assertWarning(false, `Rename ${filePathToShowToUser2} to ${filePathCorrect}, see https://vike.dev/header-file`, {
       onlyOnce: true
     })
   }
+
   return { code, fileImportsTransformed }
 }
 
-async function transpileWithEsbuild(filePath: FilePathResolved, bundle: boolean, userRootDir: string) {
+async function transpileWithEsbuild(
+  filePath: FilePathResolved,
+  userRootDir: string,
+  importsAreTransformed: boolean,
+  isValueFile: boolean
+) {
+  const isConfigFile = !isValueFile
+
   const entryFilePath = filePath.filePathAbsoluteFilesystem
   const entryFileDir = path.posix.dirname(entryFilePath)
   const options: BuildOptions = {
@@ -101,22 +126,27 @@ async function transpileWithEsbuild(filePath: FilePathResolved, bundle: boolean,
     ),
     logLevel: 'silent',
     format: 'esm',
-    bundle,
+    absWorkingDir: userRootDir,
+    // Avoid dead-code elimination to ensure unused imports aren't removed.
+    // Esbuild still sometimes removes unused imports because of TypeScript: https://github.com/evanw/esbuild/issues/3034
+    treeShaking: false,
     minify: false,
-    metafile: bundle,
-    absWorkingDir: userRootDir
+    metafile: isConfigFile,
+    // We cannot bundle imports that are meant to be transformed
+    bundle: !importsAreTransformed
   }
-  if (bundle) {
-    options.bundle = true
+
+  // Track dependencies
+  if (isConfigFile) {
     options.packages = 'external'
     options.plugins = [
       {
-        name: 'vike:import-hook',
+        name: 'vike:dependency-tracker',
         setup(b) {
           b.onLoad({ filter: /./ }, (args) => {
+            // We collect the dependency `args.path` in case the bulid fails (upon build error => error is thrown => no metafile)
             let { path } = args
             path = toPosixPath(path)
-            // We collect the dependency args.path in case it fails to build (upon build error => error is thrown => no metafile)
             vikeConfigDependencies.add(path)
             return undefined
           })
@@ -132,10 +162,6 @@ async function transpileWithEsbuild(filePath: FilePathResolved, bundle: boolean,
         }
       }
     ]
-  } else {
-    // Avoid dead-code elimination to ensure unused imports aren't removed.
-    // Esbuild still sometimes removes unused imports because of TypeScript: https://github.com/evanw/esbuild/issues/3034
-    options.treeShaking = false
   }
 
   let result: BuildResult
@@ -145,7 +171,9 @@ async function transpileWithEsbuild(filePath: FilePathResolved, bundle: boolean,
     await formatBuildErr(err, filePath)
     throw err
   }
-  if (bundle) {
+
+  // Track dependencies
+  if (isConfigFile) {
     assert(result.metafile)
     Object.keys(result.metafile.inputs).forEach((filePathRelative) => {
       filePathRelative = toPosixPath(filePathRelative)
@@ -154,6 +182,7 @@ async function transpileWithEsbuild(filePath: FilePathResolved, bundle: boolean,
       vikeConfigDependencies.add(filePathAbsoluteFilesystem)
     })
   }
+
   const code = result.outputFiles![0]!.text
   assert(typeof code === 'string')
   return code
@@ -295,6 +324,7 @@ function getExportedStrings(obj: Record<string, unknown>): string[] {
 }
 
 function isHeaderFile(filePath: string) {
+  assertPosixPath(filePath)
   const basenameParts = path.posix.basename(filePath).split('.')
   return basenameParts.includes('h')
 }
