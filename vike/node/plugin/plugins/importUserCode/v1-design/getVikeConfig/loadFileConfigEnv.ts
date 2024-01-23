@@ -54,7 +54,7 @@ async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName:
   assertPlusFileExport(fileExports, filePathToShowToUser, configName)
   Object.entries(fileExports).forEach(([exportName, configValue]) => {
     const configName_ = exportName === 'default' ? configName : exportName
-    interfaceValueFile.configMap[configName_] = { configValue }
+    interfaceValueFile.fileExportsByConfigName[configName_] = { configValue }
   })
 }
 
