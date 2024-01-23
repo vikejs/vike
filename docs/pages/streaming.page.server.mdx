@@ -1,0 +1,328 @@
+import { RepoLink, Link } from '@brillout/docpress'
+import progressiveHydrationDemo from './streaming/progressive-hydration-demo.webm'
+import { UseUiFrameworkVikeExtensionAnyHint } from '../components'
+
+Vike has first-class support for HTML streaming, and provides you with extensive control over the HTML stream.
+
+<UseUiFrameworkVikeExtensionAnyHint featureName="HTML streaming" />
+
+## Examples
+
+**React**
+ - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Node.js: <RepoLink path='/examples/react-full/' />
+ - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-react-full/' />
+ - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + server agnostic: [`vike-react` source code](https://github.com/vikejs/vike-react/blob/main/packages/vike-react)
+ - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + [Telefunc](https://telefunc.com/) + [TigrisDB](https://www.tigrisdata.com/) + [Blueprint](https://blueprintjs.com/): [GitHub > `pyrossh/react-streaming-tigris`](https://github.com/pyrossh/react-streaming-tigris)
+ - React 18 + Relay: [Vilay](https://github.com/XiNiHa/vilay)
+
+**Vue**
+ - Vue's `renderToNodeStream()` + Node.js:
+   - <RepoLink path='/examples/vue-full/' />
+   - [`vike-vue` source code](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue)
+ - Vue's `pipeToWebWritable()` + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-vue/' />
+
+
+## Basics
+
+```js
+// /renderer/+onRenderHtml.js
+
+export { onRenderHtml }
+
+import { escapeInject } from 'vike/server'
+import { renderToStream } from 'some-ui-framework' // React, Vue, ...
+
+async function onRenderHtml(pageContext) {
+  const { Page } = pageContext
+
+  const stream = renderToStream(Page)
+
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${stream}</div>
+      </body>
+    </html>`
+}
+```
+
+Node.js platforms (Vercel, AWS EC2, AWS Lambda, ...):
+
+```js
+// server.js
+
+import { renderPage } from 'vike/server'
+
+app.get("*", async (req, res, next) => {
+  const pageContextInit = { urlOriginal: req.url }
+  const pageContext = await renderPage(pageContextInit)
+  const { httpResponse } = pageContext
+  if (!httpResponse) return next()
+  // httpResponse.pipe() works with Node.js Streams as well as Web Streams
+  httpResponse.pipe(res)
+})
+```
+
+Edge platforms (e.g. Cloudflare Workers):
+
+```js
+// worker.js
+
+import { renderPage } from 'vike/server'
+
+addEventListener('fetch', (event) => {
+  event.respondWith(handleFetchEvent(event))
+})
+
+async function handleFetchEvent(event) {
+  const pageContextInit = { urlOriginal: event.request.url }
+  const pageContext = await renderPage(pageContextInit)
+  const { httpResponse } = pageContext
+  if (!httpResponse) {
+    return null
+  } else {
+    // httpResponse.getReadableWebStream() only works with Web Streams
+    const readable = httpResponse.getReadableWebStream()
+    const { statusCode: status, headers } = httpResponse
+    return new Response(readable, { headers, status })
+  }
+}
+```
+
+In general, we recommend using `pageContext.httpResponse.pipe()` because `pipe()` is able to flush streams. In other words: the stream provided by your UI framework can say "now is a good time to flush the buffer and send it to the user".
+
+> As far as we know, only React leverages the flush capability. Thus, the recommendation may be irrelevant if you use a UI framework other than React.
+
+If your server doesn't expose a writable stream then you cannot use `pipe()`. In that case you can fallback to:
+ - `pageContext.httpResponse.getReadableWebStream()`
+ - `pageContext.httpResponse.getReadableNodeStream()`
+
+For example, Cloudflare Workers doesn't expose any writable stream and the only option is to use `getReadableWebStream()`.
+
+## API
+
+- <Link href="#basics" >**`pageContext.httpResponse.pipe()`**</Link>: The recommended way of integrating the stream into your server.
+- <Link href="#basics" >**`pageContext.httpResponse.getReadableWebStream()`**</Link>: Only use if you cannot use `pipe()`.
+- <Link href="#basics" >**`pageContext.httpResponse.getReadableNodeStream()`**</Link>: Only use if you cannot use `pipe()`.
+- <Link href="#enableeagerstreaming">**`enableEagerStreaming`**</Link>: Start the stream as soon as possible.
+- <Link href="#stamppipe">**`stampPipe()`**</Link>: Only needed if your UI framework provides a stream pipe.
+- <Link href="#pagecontext-httpresponse-getbody" >**`pageContext.httpResponse.getBody()`**</Link>: Convert the stream into a string.
+- <Link href="#initial-data-after-stream-end">**`pageContext`** promise</Link>: You can return a `pageContext` promise, in order to send initial data to the client after the stream ends.
+
+### `enableEagerStreaming`
+
+By default, the HTML stream isn't immediately sent to the user.
+Instead, Vike awaits for your UI framework to start its stream.
+
+```js
+// /renderer/+onRenderHtml.js
+
+export { onRenderHtml }
+
+import { renderToStream } from 'some-ui-framework' // React, Vue, ...
+
+async function onRenderHtml(pageContext) {
+  const { Page } = pageContext
+
+  const stream = renderToStream(Page)
+
+  // The HTML template below isn't immediately sent to the user.
+  // Instead, Vike awaits for `stream` to start emitting.
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>Hello</title>
+      </head>
+      <body>
+        <div id="page-view">${stream}</div>
+      </body>
+    </html>`
+}
+```
+
+If you set `pageContext.enableEagerStreaming` to `true` then Vike starts emitting the HTML template right away.
+
+```js
+async function onRenderHtml(pageContext) {
+  // The HTML template below is immediately sent to the user.
+  const documentHtml = escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>Hello</title>
+      </head>
+      <body>
+        <div id="page-view">${renderToStream(pageContext.Page)}</div>
+      </body>
+    </html>`
+
+  return {
+    documentHtml,
+    pageContext: {
+      enableEagerStreaming: true
+    }
+  }
+}
+```
+
+> Make sure your server (or any proxy between your server and the user) doesn't buffer the stream, otherwise you may still notice a delay.
+
+
+### `stampPipe()`
+
+If your UI framework provides a stream pipe, then you need to use `stampPipe()`.
+
+```js
+// /renderer/+onRenderHtml.js
+
+export { onRenderHtml }
+
+import { renderToStreamPipe } from 'some-ui-framework' // React, Vue, ...
+import { escapeInject, stampPipe } from 'vike/server'
+
+async function onRenderHtml(pageContext) {
+  const { Page } = pageContext
+
+  const pipe = renderToStreamPipe(Page)
+
+  // If `pipe(writable)` expects `writable` to be a Writable Node.js Stream
+  stampPipe(pipe, 'node-stream')
+  // If `pipe(writable)` expects `writable` to be a Writable Web Stream
+  stampPipe(pipe, 'web-stream')
+
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${pipe}</div>
+      </body>
+    </html>`
+}
+```
+
+For Node.js:
+
+```js
+// server.js
+
+const pageContext = await renderPage(pageContextInit)
+const { httpResponse } = pageContext
+// Using pageContext.httpResponse.pipe() as usual
+httpResponse.pipe(res)
+```
+
+If your server expects a readable stream (e.g. Cloudflare Workers) you can use `new TransformStream()`:
+
+```js
+// worker.js
+
+const { readable, writable } = new TransformStream()
+httpResponse.pipe(writable)
+const resp = new Response(readable)
+```
+
+For some UI frameworks, such as Vue, you need a pipe wrapper:
+
+```js
+// /renderer/+onRenderHtml.js
+
+export { onRenderHtml }
+
+import { pipePageToWritable } from 'some-ui-framework'
+import { stampPipe, escapeInject } from 'vike/server'
+
+async function onRenderHtml(pageContext) {
+  // Using a pipe wrapper so that pipePageToWritable() can access pageContext.Page
+  const pipeWrapper = (writable) => {
+    pipePageToWritable(pageContext.Page, writable)
+  }
+  stampPipe(pipeWrapper, 'node-stream')
+
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${pipeWrapper}</div>
+      </body>
+    </html>`
+}
+```
+
+See <RepoLink path='/examples/cloudflare-workers-vue' /> for an example of using a pipe wrapper with Vue's `pipeToWebWritable()`/`pipeToNodeWritable()`, as well as using `new TransformStream()` for Cloudflare Workers.
+
+
+### `pageContext.httpResponse.getBody()`
+
+You can convert the stream to a string:
+
+```js
+/* This won't work: (a stream cannot be consumed synchronously)
+const { body } = httpResponse
+res.send(body)
+*/
+
+// But this works:
+const body = await httpResponse.getBody()
+assert(typeof body === 'string')
+res.send(body)
+```
+
+
+### Initial data after stream end
+
+Some data fetching tools, such as <Link href="/relay">Relay</Link> and [Vue's `onServerPrefetch()`](https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch), collect data during the stream.
+
+Consequently, you can determine the initial data (which needs to be passed to the client-side) only after the stream has ended.
+
+In such situations, you can return a `pageContext` async function in your `onRenderHtml()` hook:
+
+```js
+// /renderer/+onRenderHtml.js
+
+export { onRenderHtml }
+
+import { escapeInject } from 'vike/server'
+import { renderToStream } from 'some-ui-framework' // React, Vue, ...
+
+async function onRenderHtml(pageContext) {
+  const { Page } = pageContext
+
+  const stream = renderToStream(Page)
+
+  const documentHtml = escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${stream}</div>
+      </body>
+    </html>`
+
+  const pageContextPromise = async () => {
+     // I'm called after the stream has ended
+     return {
+       initialData,
+     }
+  }
+
+  return {
+    documentHtml,
+    pageContext: pageContextPromise
+  }
+}
+```
+
+## Progressive Hydration
+
+Some UI frameworks, such as React, support *progressive hydration*: while some parts of the UI are being loaded, other parts are already <Link href="/hydration">hydrated</Link>.
+
+Demo:
+
+<video src={progressiveHydrationDemo} width="500" controls muted autoPlay loop></video>
+
+Vike has first-class support for progressive hydration. (Make sure your UI framework also supports progressive hydration.)
+
+See also: <Link href="/react#react-server-components" doNotInferSectionTitle />.
+
+
+## See also
+
+- [Node.js Streams](https://nodejs.org/api/stream.html) (Node.js documentation)
+- [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) (MDN documentation)
+
+

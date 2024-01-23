@@ -151,7 +151,7 @@ const headings = [
   {
     level: 2,
     title: 'HTML Streaming',
-    url: '/stream'
+    url: '/streaming'
   },
   {
     level: 2,

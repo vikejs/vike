@@ -34,7 +34,7 @@ The design can be broken down into three parts:
  -	✅ Progressive Hydration
  - :construction: Server Components
 
-Vike supports <Link href="/stream#progressive-hydration">Progressive Hydration</Link> as well as <Link href="/RPC">Server Actions</Link>. Server Components is work-in-progress.
+Vike supports <Link href="/streaming#progressive-hydration">Progressive Hydration</Link> as well as <Link href="/RPC">Server Actions</Link>. Server Components is work-in-progress.
 
 > Instead of using [Server Actions using `'use server'`](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations), we recommend using [Telefunc](https://telefunc.com/) which we believe to be a superior design. That said, a [`vike-react`](https://github.com/vikejs/vike-react) fork can be developed that supports `'use server'`.
 
@@ -46,6 +46,6 @@ Vike supports <Link href="/stream#progressive-hydration">Progressive Hydration</
 
 The most significant added value of the RSC architecture is its novel approach to SSR streaming which unlocks many exciting features around data fetching. Not only does Vike has first-class support for SSR streaming, but it also supports it in a unique way that enables both an easy DX as well as flexibility: you can integrate tools with the SSR stream manually yourself (e.g. using [react-streaming](https://github.com/brillout/react-streaming#readme)), or you can use built-in integrations such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [Telefunc](https://telefunc.com).
 
-> SSR streaming enables you to define components that can fetch data, while each of these data-fetching components are loaded and rendered independently of each other: the user sees a UI with non-data-fetching parts that are rendered quickly, and data-fetching parts that are rendered as data comes in. This leads to a significantly improved (perceived) page speed. See <Link href="/stream#progressive-hydration">Progressive Hydration</Link>.
+> SSR streaming enables you to define components that can fetch data, while each of these data-fetching components are loaded and rendered independently of each other: the user sees a UI with non-data-fetching parts that are rendered quickly, and data-fetching parts that are rendered as data comes in. This leads to a significantly improved (perceived) page speed. See <Link href="/streaming#progressive-hydration">Progressive Hydration</Link>.
 
 See also <Link href="/nextjs#react-server-components" doNotInferSectionTitle />.

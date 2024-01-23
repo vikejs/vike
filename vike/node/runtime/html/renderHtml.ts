@@ -284,7 +284,7 @@ async function renderTemplate(
       const varType = typeof templateVar
       const streamNote = ['boolean', 'number', 'bigint', 'symbol'].includes(varType)
         ? null
-        : '(See https://vike.dev/stream for HTML streaming.)'
+        : '(See https://vike.dev/streaming for HTML streaming.)'
       assertUsage(varType === 'string', getErrMsg(pc.cyan(`typeof htmlVar === "${varType}"`), streamNote))
     }
 

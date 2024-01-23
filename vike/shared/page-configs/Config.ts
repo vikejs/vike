@@ -225,7 +225,7 @@ type OnRenderHtmlAsync = (pageContext: PageContextServer) => Promise<
       documentHtml: DocumentHtml
       pageContext:
         | OnRenderHtmlPageContextReturn
-        // See https://vike.dev/stream#initial-data-after-stream-end
+        // See https://vike.dev/streaming#initial-data-after-stream-end
         | (() => Promise<OnRenderHtmlPageContextReturn> | OnRenderHtmlPageContextReturn)
     }
 >
@@ -239,12 +239,12 @@ type OnRenderHtmlSync = (pageContext: PageContextServer) =>
       documentHtml: DocumentHtml
       pageContext:
         | OnRenderHtmlPageContextReturn
-        // See https://vike.dev/stream#initial-data-after-stream-end
+        // See https://vike.dev/streaming#initial-data-after-stream-end
         | (() => Promise<OnRenderHtmlPageContextReturn> | OnRenderHtmlPageContextReturn)
     }
 type OnRenderHtmlPageContextReturn = Partial<
   Vike.PageContext & {
-    /** See https://vike.dev/stream */
+    /** See https://vike.dev/streaming */
     enableEagerStreaming: boolean
   }
 >

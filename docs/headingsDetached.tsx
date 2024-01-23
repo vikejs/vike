@@ -33,6 +33,10 @@ const headingsDetached = [
     url: '/html-streaming'
   },
   {
+    title: 'HTML Streaming',
+    url: '/stream'
+  },
+  {
     title: 'SPA vs SSR vs HTML',
     url: '/SPA-vs-SSR-vs-HTML'
   },

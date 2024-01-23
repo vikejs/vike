@@ -773,7 +773,7 @@ const __streamPipeWeb = '__streamPipeWeb'
 type StreamPipeWebWrapped = { [__streamPipeWeb]: StreamPipeWeb }
 /** @deprecated */
 function pipeWebStream(pipe: StreamPipeWeb): StreamPipeWebWrapped {
-  assertWarning(false, 'pipeWebStream() is outdated, use stampPipe() instead. See https://vike.dev/stream', {
+  assertWarning(false, 'pipeWebStream() is outdated, use stampPipe() instead. See https://vike.dev/streaming', {
     onlyOnce: true,
     showStackTrace: true
   })
@@ -811,7 +811,7 @@ const __streamPipeNode = '__streamPipeNode'
 type StreamPipeNodeWrapped = { [__streamPipeNode]: StreamPipeNode }
 /** @deprecated */
 function pipeNodeStream(pipe: StreamPipeNode): StreamPipeNodeWrapped {
-  assertWarning(false, 'pipeNodeStream() is outdated, use stampPipe() instead. See https://vike.dev/stream', {
+  assertWarning(false, 'pipeNodeStream() is outdated, use stampPipe() instead. See https://vike.dev/streaming', {
     onlyOnce: true,
     showStackTrace: true
   })

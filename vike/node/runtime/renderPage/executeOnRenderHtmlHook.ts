@@ -212,14 +212,14 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
     if (isPromise(val) || isCallable(val)) {
       assertWarning(
         !isPromise(val),
-        `${errBegin} is a promise which is deprecated in favor of async functions, see https://vike.dev/stream#initial-data-after-stream-end`,
+        `${errBegin} is a promise which is deprecated in favor of async functions, see https://vike.dev/streaming#initial-data-after-stream-end`,
         { onlyOnce: true }
       )
       pageContextPromise = val
     } else {
       assertUsage(
         isObject(val),
-        `${errBegin} should be an object or an async function, see https://vike.dev/stream#initial-data-after-stream-end`
+        `${errBegin} should be an object or an async function, see https://vike.dev/streaming#initial-data-after-stream-end`
       )
       assertPageContextProvidedByUser(val, renderHook)
       pageContextProvidedByRenderHook = val
