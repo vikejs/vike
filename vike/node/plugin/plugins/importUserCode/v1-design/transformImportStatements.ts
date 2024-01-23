@@ -208,7 +208,7 @@ function spliceMany(str: string, operations: SpliceOperation[]): string {
         .join('')
     endPrev = end
   })
-  strMod += str.slice(endPrev, str.length - 1)
+  strMod += str.slice(endPrev, str.length)
   return strMod
 }
 
