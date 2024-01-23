@@ -43,10 +43,11 @@ async function transpileAndExecuteFile(
       )
     }
     return { fileExports }
+  } else {
+    const { code, fileImportsTransformed } = await transpileFile(filePath, isValueFile, userRootDir)
+    const fileExports = await executeTranspiledFile(filePath, code, fileImportsTransformed, isValueFile)
+    return { fileExports }
   }
-  const { code, fileImportsTransformed } = await transpileFile(filePath, isValueFile, userRootDir)
-  const fileExports = await executeTranspiledFile(filePath, code, fileImportsTransformed, isValueFile)
-  return { fileExports }
 }
 
 async function transpileFile(filePath: FilePathResolved, isValueFile: boolean, userRootDir: string) {
