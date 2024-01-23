@@ -1232,7 +1232,7 @@ async function loadExtendsConfigs(
     const { importPath: importPath } = importData
     const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
     assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
-    assertExtendsImportPath(importPath, filePathAbsoluteFilesystem, configFilePath)
+    warnUserLandExtension(importPath, configFilePath)
     // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
     // - Using importPath would be visually nicer but it's ambigous => we rather pick filePathAbsoluteFilesystem for added clarity
     const filePathRelativeToUserRootDir = determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem, userRootDir)
@@ -1272,25 +1272,14 @@ function determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem: string, 
   return filePathRelativeToUserRootDir
 }
 
-function assertExtendsImportPath(importPath: string, filePath: string, configFilePath: FilePathResolved) {
-  if (isNpmPackageImport(importPath)) {
-    const fileDir = path.posix.dirname(filePath) + '/'
-    const fileName = path.posix.basename(filePath)
-    const fileNameBaseCorrect = '+config'
-    const [fileNameBase, ...fileNameRest] = fileName.split('.')
-    const fileNameCorrect = [fileNameBaseCorrect, ...fileNameRest].join('.')
-    assertWarning(fileNameBase === fileNameBaseCorrect, `Rename ${fileName} to ${fileNameCorrect} in ${fileDir}`, {
-      onlyOnce: true
-    })
-  } else {
-    assertWarning(
-      false,
-      `${configFilePath.filePathToShowToUser} uses ${pc.cyan('extends')} to inherit from ${pc.cyan(
-        importPath
-      )} which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this feature.`,
-      { onlyOnce: true }
-    )
-  }
+function warnUserLandExtension(importPath: string, configFilePath: FilePathResolved) {
+  assertWarning(
+    isNpmPackageImport(importPath),
+    `${configFilePath.filePathToShowToUser} uses ${pc.cyan('extends')} to inherit from ${pc.cyan(
+      importPath
+    )} which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this.`,
+    { onlyOnce: true }
+  )
 }
 
 function getExtendsImportData(
