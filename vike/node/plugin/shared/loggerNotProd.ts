@@ -42,7 +42,7 @@ import {
 import {
   getConfigExecutionErrorIntroMsg,
   getConfigBuildErrorFormatted
-} from '../plugins/importUserCode/v1-design/transpileAndExecuteFile.js'
+} from '../plugins/importUserCode/v1-design/getVikeConfig/transpileAndExecuteFile.js'
 import {
   logWithVikeTag,
   logWithViteTag,

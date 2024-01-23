@@ -16,7 +16,7 @@ import {
   isNpmPackageImport
 } from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/PageConfig.js'
-import { transpileAndExecuteFile } from '../transpileAndExecuteFile.js'
+import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import type { InterfaceValueFile } from '../getVikeConfig.js'
 import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'

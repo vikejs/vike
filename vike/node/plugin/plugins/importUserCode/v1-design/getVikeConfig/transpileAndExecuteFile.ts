@@ -1,6 +1,6 @@
 export { transpileAndExecuteFile }
 export { getConfigBuildErrorFormatted }
-export { getConfigExecutionErrorIntroMsg as getConfigExecutionErrorIntroMsg }
+export { getConfigExecutionErrorIntroMsg }
 export { isTmpFile }
 
 import { build, type BuildResult, type BuildOptions, formatMessages } from 'esbuild'
@@ -17,12 +17,12 @@ import {
   assertWarning,
   isObject,
   toPosixPath
-} from '../../../utils.js'
-import { isImportData, transformImports, type FileImport } from './transformImports.js'
-import { vikeConfigDependencies } from './getVikeConfig.js'
+} from '../../../../utils.js'
+import { isImportData, transformImports, type FileImport } from '../transformImports.js'
+import { vikeConfigDependencies } from '../getVikeConfig.js'
 import 'source-map-support/register.js'
-import type { FilePathResolved } from '../../../../../shared/page-configs/PageConfig.js'
-import { getConfigFileExport } from './getConfigFileExport.js'
+import type { FilePathResolved } from '../../../../../../shared/page-configs/PageConfig.js'
+import { getConfigFileExport } from '../getConfigFileExport.js'
 
 assertIsNotProductionRuntime()
 
