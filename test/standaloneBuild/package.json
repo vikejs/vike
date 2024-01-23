@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "vike dev",
     "build": "vite build",
+    "prepare": "npx prisma generate && npx prisma db push",
     "prod": "npm run build && cp ./prisma/test.db ./dist/server/node_modules/.prisma/client && node dist/server/index.mjs"
   },
   "dependencies": {
