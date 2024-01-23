@@ -253,10 +253,10 @@ function getConfigExecutionErrorIntroMsg(err: unknown): string | null {
 }
 
 const tmpPrefix = `[build-`
-function getFilePathTmp(filePath: string): string {
-  assertPosixPath(filePath)
-  const dirname = path.posix.dirname(filePath)
-  const filename = path.posix.basename(filePath)
+function getFilePathTmp(filePathAbsoluteFilesystem: string): string {
+  assertPosixPath(filePathAbsoluteFilesystem)
+  const dirname = path.posix.dirname(filePathAbsoluteFilesystem)
+  const filename = path.posix.basename(filePathAbsoluteFilesystem)
   // Syntax with semicolon `[build:${/*...*/}]` doesn't work on Windows: https://github.com/vikejs/vike/issues/800#issuecomment-1517329455
   const tag = `${tmpPrefix}${getRandomId(12)}]`
   const filePathTmp = path.posix.join(dirname, `${tag}${filename}.mjs`)
