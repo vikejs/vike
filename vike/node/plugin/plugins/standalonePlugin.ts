@@ -138,71 +138,16 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
         files.map((relativeFile) =>
           concurrencyLimit(async () => {
             const tracedFilePath = path.posix.join(base, relativeFile)
+            const isNodeModules = relativeFile.includes('node_modules')
 
-            const fileOutputPath = path.posix.join(
-              outDirAbs,
-              relativeFile.replace(relativeRoot, '').replace(commonAncestor, '')
-            )
+            relativeFile = relativeFile.replace(relativeRoot, '').replace(commonAncestor, '')
+            const fileOutputPathHoisted = `node_modules${relativeFile.split('node_modules').pop()}`
+            const fileOutputPath = path.posix.join(outDirAbs, isNodeModules ? fileOutputPathHoisted : relativeFile)
+            const isDir = (await fs.stat(tracedFilePath)).isDirectory()
 
-            if (!copiedFiles.has(fileOutputPath)) {
+            if (!isDir && !copiedFiles.has(fileOutputPath)) {
               copiedFiles.add(fileOutputPath)
-              await fs.mkdir(path.posix.dirname(fileOutputPath), { recursive: true })
-              let symlink = await fs
-                .readlink(tracedFilePath)
-                .then(toPosixPath)
-                .catch(() => null)
-
-              if (symlink) {
-                // Convert the absolute symlink(which pnpm creates) to relative on Windows
-                if (platform === 'win32' && /^\w:/.test(symlink)) {
-                  symlink = path.posix.relative(tracedFilePath, symlink).replace('../', '')
-                }
-
-                const maximumAllowedUpDirs = path.posix.relative(outDirAbs, fileOutputPath).split('/').length
-                let symlinkPointsOutsideDist = symlink.split('../').length - 1 > maximumAllowedUpDirs
-                if (symlinkPointsOutsideDist) {
-                  let projectDepthInMonorepo = 0
-
-                  // the link would point outside of dist, into ../../../node_modules/.pnpm
-                  // the link needs to be changed, so it will point to ../node_modules/.pnpm, inside dist
-                  // count the occurences of / from the monorepo base to the project root
-                  if (commonAncestor) {
-                    projectDepthInMonorepo = relativeRoot.replace(`${commonAncestor}/`, '').split('/').length
-                  } else {
-                    projectDepthInMonorepo = relativeRoot.split('/').length
-                  }
-                  // for example ['../../../node_modules/.pnpm/sharp@0.32.6/node_modules/sharp'] will become
-                  //             ['../node_modules/.pnpm/sharp@0.32.6/node_modules/sharp']
-                  // remove [projectDepthInMonorepo times '../'] from the symlink
-                  for (let index = 0; index < projectDepthInMonorepo; index++) {
-                    symlink = symlink.substring(symlink.indexOf('/') + 1)
-                  }
-
-                  symlinkPointsOutsideDist = symlink.split('../').length - 1 > maximumAllowedUpDirs
-
-                  assert(!symlinkPointsOutsideDist, {
-                    base,
-                    root,
-                    relativeRoot,
-                    relativeFile,
-                    outDirAbs,
-                    projectDepthInMonorepo,
-                    tracedFilePath,
-                    symlink,
-                    fileOutputPath
-                  })
-                }
-                try {
-                  const isDir = (await fs.stat(tracedFilePath)).isDirectory()
-                  await fs.symlink(symlink, fileOutputPath, isDir ? 'dir' : 'file')
-                } catch (e: any) {
-                  if (e.code !== 'EEXIST') {
-                    throw e
-                  }
-                }
-              } else {
-                await fs.copyFile(tracedFilePath, fileOutputPath)
-              }
+              await fs.cp(await fs.realpath(tracedFilePath), fileOutputPath, { recursive: true })
             }
           })
         )

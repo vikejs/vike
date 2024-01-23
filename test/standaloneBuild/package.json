@@ -2,21 +2,25 @@
   "scripts": {
     "dev": "vike dev",
     "build": "vite build",
-    "prod": "npm run build && node dist/server/index.mjs"
+    "prod": "npm run build && cp ./prisma/test.db ./dist/server/node_modules/.prisma/client && node dist/server/index.mjs"
   },
   "dependencies": {
+    "@node-rs/argon2": "^1.5.2",
+    "@prisma/client": "^5.8.1",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@vitejs/plugin-react": "^4.1.1",
     "express": "^4.18.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "sharp": "0.32.x",
     "telefunc": "^0.1.70",
     "typescript": "^5.2.2",
-    "vite": "^4.5.0",
     "vike": "0.4.150",
-    "sharp": "0.32.x",
-    "@node-rs/argon2": "^1.5.2"
+    "vite": "^4.5.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "prisma": "^5.8.1"
+  }
 }

@@ -3,6 +3,10 @@ import { renderPage } from 'vike/server'
 import { telefunc } from 'telefunc'
 import { root } from './root'
 
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
 // Caught before / after server start
 // foo;
 
@@ -18,6 +22,8 @@ startServer()
 // }, 2000)
 
 async function startServer() {
+  console.log(await prisma.post.findMany())
+
   const app = express()
 
   if (import.meta.env.PROD) {
