@@ -135,7 +135,7 @@ function tolerateError({ logSource, logText }) {
     )
   }
 
-  // [vike@0.4.51][Warning] pageContext._getPageAssets() deprecated, see https://vike.dev/preload
+  // [vike@0.4.51][Warning] pageContext._getPageAssets() deprecated, see https://vike.dev/preloading
   function isGetPageAssetsDeprecationWarning() {
     return (
       logSource === 'stderr' &&

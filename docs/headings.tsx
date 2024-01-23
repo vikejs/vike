@@ -145,8 +145,8 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Preload',
-    url: '/preload'
+    title: 'Preloading',
+    url: '/preloading'
   },
   {
     level: 2,

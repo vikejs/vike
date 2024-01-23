@@ -37,6 +37,10 @@ const headingsDetached = [
     url: '/stream'
   },
   {
+    title: 'Preloading',
+    url: '/preload'
+  },
+  {
     title: 'SPA vs SSR vs HTML',
     url: '/SPA-vs-SSR-vs-HTML'
   },
