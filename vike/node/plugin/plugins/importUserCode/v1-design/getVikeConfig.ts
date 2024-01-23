@@ -3,6 +3,8 @@ export { reloadVikeConfig }
 export { vikeConfigDependencies }
 export { isVikeConfigFile }
 
+export type { InterfaceValueFile }
+
 import {
   assertPosixPath,
   assert,
@@ -14,13 +16,10 @@ import {
   arrayIncludes,
   assertIsNotProductionRuntime,
   getMostSimilar,
-  isNpmPackageImport,
   joinEnglish,
   lowerFirst,
   mergeCumulativeValues,
-  requireResolve,
   getOutDirs,
-  deepEqual,
   assertKeys
 } from '../../../utils.js'
 import path from 'path'
@@ -35,8 +34,7 @@ import type {
   DefinedAtFileFullInfo,
   DefinedAtFile,
   ConfigValuesComputed,
-  FilePathResolved,
-  FilePath
+  FilePathResolved
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -55,8 +53,7 @@ import {
   isGlobalLocation,
   applyFilesystemRoutingRootEffect
 } from './getVikeConfig/filesystemRouting.js'
-import { isTmpFile, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
-import { ImportData, parseImportData } from './transformImports.js'
+import { isTmpFile } from './transpileAndExecuteFile.js'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid.js'
 import { getViteDevServer } from '../../../../runtime/globalContext.js'
 import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd.js'
@@ -66,12 +63,19 @@ import {
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAtString } from '../../../../../shared/page-configs/helpers.js'
-import { assertPlusFileExport } from '../../../../../shared/page-configs/assertPlusFileExport.js'
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
 import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
+import {
+  type ConfigFile,
+  ImportedFilesLoaded,
+  loadConfigFile,
+  loadImportedFile,
+  loadValueFile
+} from './getVikeConfig/loadFileConfigEnv.js'
+import { clearFilesEnvMap, resolveImport } from './getVikeConfig/resolveImportPath.js'
 
 assertIsNotProductionRuntime()
 
@@ -105,16 +109,13 @@ type VikeConfig = {
 
 type ConfigDefinitionsIncludingCustom = Record<string, ConfigDefinitionInternal>
 
-type ImportedFilesLoaded = Record<string, Promise<Record<string, unknown>>>
-
 let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfig> | null = null
 const vikeConfigDependencies: Set<string> = new Set()
-const filesEnv: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
 function reloadVikeConfig(userRootDir: string, outDirRoot: string, extensions: ExtensionResolved[]) {
   vikeConfigDependencies.clear()
-  filesEnv.clear()
+  clearFilesEnvMap()
   vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, outDirRoot, true, extensions, true)
   handleReloadSideEffects()
 }
@@ -253,27 +254,6 @@ function getConfigDefinitionOptional(
   configName: string
 ): null | ConfigDefinitionInternal {
   return configDefinitions[configName] ?? null
-}
-async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName: string, userRootDir: string) {
-  const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, true, userRootDir)
-  const { filePathToShowToUser } = interfaceValueFile.filePath
-  assertPlusFileExport(fileExports, filePathToShowToUser, configName)
-  Object.entries(fileExports).forEach(([exportName, configValue]) => {
-    const configName_ = exportName === 'default' ? configName : exportName
-    interfaceValueFile.configMap[configName_] = { configValue }
-  })
-}
-async function loadImportedFile(
-  filePath: FilePathResolved,
-  userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded
-): Promise<Record<string, unknown>> {
-  const f = filePath.filePathAbsoluteFilesystem
-  if (!importedFilesLoaded[f]) {
-    importedFilesLoaded[f] = transpileAndExecuteFile(filePath, true, userRootDir).then((r) => r.fileExports)
-  }
-  const fileExports = await importedFilesLoaded[f]!
-  return fileExports
 }
 function isConfigEnv(configDef: ConfigDefinitionInternal, configName: string): boolean {
   const configEnv = configDef.env
@@ -797,31 +777,6 @@ async function getConfigValueSource(
   assert(false)
 }
 
-function assertFileEnv(filePathForEnvCheck: string, configEnv: ConfigEnvInternal, configName: string) {
-  assertPosixPath(filePathForEnvCheck)
-  if (!filesEnv.has(filePathForEnvCheck)) {
-    filesEnv.set(filePathForEnvCheck, [])
-  }
-  const fileEnv = filesEnv.get(filePathForEnvCheck)!
-  fileEnv.push({ configEnv, configName })
-  const configDifferentEnv = fileEnv.filter((c) => !deepEqual(c.configEnv, configEnv))[0]
-  if (configDifferentEnv) {
-    assertUsage(
-      false,
-      [
-        `${filePathForEnvCheck} defines the value of configs living in different environments:`,
-        ...[configDifferentEnv, { configName, configEnv }].map(
-          (c) =>
-            `  - config ${pc.cyan(c.configName)} which value lives in environment ${pc.cyan(
-              JSON.stringify(c.configEnv)
-            )}`
-        ),
-        'Defining config values in the same file is allowed only if they live in the same environment, see https://vike.dev/header-file'
-      ].join('\n')
-    )
-  }
-}
-
 function isDefiningPage(interfaceFiles: InterfaceFile[]): boolean {
   for (const interfaceFile of interfaceFiles) {
     const configNames = Object.keys(interfaceFile.configMap)
@@ -833,110 +788,6 @@ function isDefiningPage(interfaceFiles: InterfaceFile[]): boolean {
 }
 function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
-}
-
-function resolveImport(
-  configValue: unknown,
-  importerFilePath: FilePathResolved,
-  userRootDir: string,
-  configEnv: ConfigEnvInternal,
-  configName: string
-): null | (DefinedAtFileFullInfo & { fileExportName: string }) {
-  if (typeof configValue !== 'string') return null
-  const importData = parseImportData(configValue)
-  if (!importData) return null
-
-  const { importPath, exportName } = importData
-  const filePathAbsoluteFilesystem = resolveImportPath(importData, importerFilePath)
-
-  assertFileEnv(filePathAbsoluteFilesystem ?? importPath, configEnv, configName)
-
-  const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
-
-  if (importPath.startsWith('.')) {
-    // We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
-    // ```
-    // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
-    // ```
-    assertImportPath(filePathAbsoluteFilesystem, importData, importerFilePath)
-    const filePathRelativeToUserRootDir = resolveImportPath_relativeToUserRootDir(
-      filePathAbsoluteFilesystem,
-      importData,
-      importerFilePath,
-      userRootDir
-    )
-    const filePath: FilePath = {
-      filePathAbsoluteFilesystem,
-      filePathRelativeToUserRootDir,
-      filePathAbsoluteVite: filePathRelativeToUserRootDir,
-      filePathToShowToUser: filePathRelativeToUserRootDir,
-      importPathAbsolute: null
-    }
-    return {
-      ...filePath,
-      fileExportName: exportName,
-      fileExportPathToShowToUser
-    }
-  } else {
-    // importPath can be:
-    //  - an npm package import
-    //  - a path alias
-    const filePath: FilePath = {
-      filePathAbsoluteFilesystem,
-      filePathRelativeToUserRootDir: null,
-      filePathAbsoluteVite: importPath,
-      filePathToShowToUser: importPath,
-      importPathAbsolute: importPath
-    }
-    return {
-      ...filePath,
-      fileExportName: exportName,
-      fileExportPathToShowToUser
-    }
-  }
-}
-
-function resolveImportPath_relativeToUserRootDir(
-  filePathAbsoluteFilesystem: string,
-  importData: ImportData,
-  configFilePath: FilePathResolved,
-  userRootDir: string
-) {
-  assertPosixPath(userRootDir)
-  let filePathRelativeToUserRootDir: string
-  if (filePathAbsoluteFilesystem.startsWith(userRootDir)) {
-    filePathRelativeToUserRootDir = getVitePathFromAbsolutePath(filePathAbsoluteFilesystem, userRootDir)
-  } else {
-    assertUsage(
-      false,
-      `${configFilePath.filePathToShowToUser} imports from a relative path ${pc.cyan(
-        importData.importPath
-      )} outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir}, or import from a dependency's package.json#exports entry instead`
-    )
-    // None of the following works. Seems to be a Vite bug?
-    // /*
-    // assert(filePathAbsoluteFilesystem.startsWith('/'))
-    // filePath = `/@fs${filePathAbsoluteFilesystem}`
-    // /*/
-    // filePathRelativeToUserRootDir = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
-    // assert(filePathRelativeToUserRootDir.startsWith('../'))
-    // filePathRelativeToUserRootDir = '/' + filePathRelativeToUserRootDir
-    // //*/
-  }
-
-  assertPosixPath(filePathRelativeToUserRootDir)
-  assert(filePathRelativeToUserRootDir.startsWith('/'))
-  return filePathRelativeToUserRootDir
-}
-
-function getVitePathFromAbsolutePath(filePathAbsoluteFilesystem: string, root: string): string {
-  assertPosixPath(filePathAbsoluteFilesystem)
-  assertPosixPath(root)
-  assert(filePathAbsoluteFilesystem.startsWith(root))
-  let vitePath = path.posix.relative(root, filePathAbsoluteFilesystem)
-  assert(!vitePath.startsWith('/') && !vitePath.startsWith('.'))
-  vitePath = '/' + vitePath
-  return vitePath
 }
 
 function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId): ConfigDefinitionsIncludingCustom {
@@ -1185,130 +1036,6 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 }
 */
 
-type ConfigFile = {
-  fileExports: Record<string, unknown>
-  filePath: FilePathResolved
-  extendsFilePaths: string[]
-}
-
-async function loadConfigFile(
-  configFilePath: FilePathResolved,
-  userRootDir: string,
-  visited: string[],
-  isConfigOfExtension: boolean
-): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
-  const { filePathAbsoluteFilesystem } = configFilePath
-  assertNoInfiniteLoop(visited, filePathAbsoluteFilesystem)
-  const { fileExports } = await transpileAndExecuteFile(configFilePath, false, userRootDir, isConfigOfExtension)
-  const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir, [
-    ...visited,
-    filePathAbsoluteFilesystem
-  ])
-
-  const configFile: ConfigFile = {
-    fileExports,
-    filePath: configFilePath,
-    extendsFilePaths
-  }
-  return { configFile, extendsConfigs }
-}
-function assertNoInfiniteLoop(visited: string[], filePathAbsoluteFilesystem: string) {
-  const idx = visited.indexOf(filePathAbsoluteFilesystem)
-  if (idx === -1) return
-  const loop = visited.slice(idx)
-  assert(loop[0] === filePathAbsoluteFilesystem)
-  assertUsage(idx === -1, `Infinite extends loop ${[...loop, filePathAbsoluteFilesystem].join('>')}`)
-}
-
-async function loadExtendsConfigs(
-  configFileExports: Record<string, unknown>,
-  configFilePath: FilePathResolved,
-  userRootDir: string,
-  visited: string[]
-) {
-  const extendsImportData = getExtendsImportData(configFileExports, configFilePath)
-  const extendsConfigFiles: FilePathResolved[] = []
-  extendsImportData.map((importData) => {
-    const { importPath: importPath } = importData
-    const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
-    assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
-    warnUserLandExtension(importPath, configFilePath)
-    // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
-    // - Using importPath would be visually nicer but it's ambigous => we rather pick filePathAbsoluteFilesystem for added clarity
-    const filePathRelativeToUserRootDir = determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem, userRootDir)
-    const filePathAbsoluteVite = filePathRelativeToUserRootDir ?? importPath
-    extendsConfigFiles.push({
-      filePathAbsoluteFilesystem,
-      filePathAbsoluteVite,
-      filePathRelativeToUserRootDir,
-      filePathToShowToUser: filePathAbsoluteVite,
-      importPathAbsolute: importPath
-    })
-  })
-
-  const extendsConfigs: ConfigFile[] = []
-  await Promise.all(
-    extendsConfigFiles.map(async (configFilePath) => {
-      const result = await loadConfigFile(configFilePath, userRootDir, visited, true)
-      extendsConfigs.push(result.configFile)
-      extendsConfigs.push(...result.extendsConfigs)
-    })
-  )
-
-  const extendsFilePaths = extendsConfigFiles.map((f) => f.filePathAbsoluteFilesystem)
-
-  return { extendsConfigs, extendsFilePaths }
-}
-
-function determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem: string, userRootDir: string): null | string {
-  assertPosixPath(filePathAbsoluteFilesystem)
-  assertPosixPath(userRootDir)
-  if (!filePathAbsoluteFilesystem.startsWith(userRootDir)) {
-    return null
-  }
-  let filePathRelativeToUserRootDir = filePathAbsoluteFilesystem.slice(userRootDir.length)
-  if (!filePathRelativeToUserRootDir.startsWith('/'))
-    filePathRelativeToUserRootDir = '/' + filePathRelativeToUserRootDir
-  return filePathRelativeToUserRootDir
-}
-
-function warnUserLandExtension(importPath: string, configFilePath: FilePathResolved) {
-  assertWarning(
-    isNpmPackageImport(importPath),
-    `${configFilePath.filePathToShowToUser} uses ${pc.cyan('extends')} to inherit from ${pc.cyan(
-      importPath
-    )} which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this.`,
-    { onlyOnce: true }
-  )
-}
-
-function getExtendsImportData(
-  configFileExports: Record<string, unknown>,
-  configFilePath: FilePathResolved
-): ImportData[] {
-  const { filePathToShowToUser } = configFilePath
-  const configFileExport = getConfigFileExport(configFileExports, filePathToShowToUser)
-  const wrongUsage = `${filePathToShowToUser} sets the config ${pc.cyan(
-    'extends'
-  )} to an invalid value, see https://vike.dev/extends`
-  let extendList: string[]
-  if (!('extends' in configFileExport)) {
-    return []
-  } else if (hasProp(configFileExport, 'extends', 'string')) {
-    extendList = [configFileExport.extends]
-  } else if (hasProp(configFileExport, 'extends', 'string[]')) {
-    extendList = configFileExport.extends
-  } else {
-    assertUsage(false, wrongUsage)
-  }
-  const extendsImportData = extendList.map((importDataSerialized) => {
-    const importData = parseImportData(importDataSerialized)
-    assertUsage(importData, wrongUsage)
-    return importData
-  })
-  return extendsImportData
-}
-
 function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
   if (configName === 'prerender') return false
   const configNamesGlobal = getConfigNamesGlobal()
@@ -1398,37 +1125,6 @@ function getFilesystemRoutingRootEffect(
 function determineIsErrorPage(routeFilesystem: string) {
   assertPosixPath(routeFilesystem)
   return routeFilesystem.split('/').includes('_error')
-}
-
-function resolveImportPath(importData: ImportData, importerFilePath: FilePathResolved): string | null {
-  const importerFilePathAbsolute = importerFilePath.filePathAbsoluteFilesystem
-  assertPosixPath(importerFilePathAbsolute)
-  const cwd = path.posix.dirname(importerFilePathAbsolute)
-  // We can't use import.meta.resolve() as of Junary 2023 (and probably for a lot longer): https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment137174954_62272600:~:text=But%20the%20argument%20parent%20(aka%20cwd)%20still%20requires%20a%20flag
-  // filePathAbsoluteFilesystem is expected to be null when importData.importPath is a Vite path alias
-  const filePathAbsoluteFilesystem = requireResolve(importData.importPath, cwd)
-  return filePathAbsoluteFilesystem
-}
-function assertImportPath(
-  filePathAbsoluteFilesystem: string | null,
-  importData: ImportData,
-  importerFilePath: FilePathResolved
-): asserts filePathAbsoluteFilesystem is string {
-  const { importPath: importPath, importStringWasGenerated, importString } = importData
-  const { filePathToShowToUser } = importerFilePath
-
-  if (!filePathAbsoluteFilesystem) {
-    const importPathString = pc.cyan(`'${importPath}'`)
-    const errIntro = importStringWasGenerated
-      ? (`The import path ${importPathString} in ${filePathToShowToUser}` as const)
-      : (`The import ${pc.cyan(importString)} defined in ${filePathToShowToUser}` as const)
-    const errIntro2 = `${errIntro} couldn't be resolved: does ${importPathString}` as const
-    if (importPath.startsWith('.')) {
-      assertUsage(false, `${errIntro2} point to an existing file?`)
-    } else {
-      assertUsage(false, `${errIntro2} exist?`)
-    }
-  }
 }
 
 function isVikeConfigFile(filePath: string): boolean {
