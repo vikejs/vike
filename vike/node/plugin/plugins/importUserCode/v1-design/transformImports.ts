@@ -39,7 +39,19 @@ function transformImports(
     const importPath = node.source.value
     assert(typeof importPath === 'string')
 
-    // This doesn't work
+    // - This doesn't work. To make it work we would need to run esbuild twice: esbuild for TypeScript to JavaScript => transformImports() => esbuild for bundling.
+    //   - Or we use an esbuild plugin to apply transformImports(). Maybe we can completely skip the need for acorn?
+    // - ?real breaks TypeScript, and TypeScript isn't working on supporting query params: https://github.com/microsoft/TypeScript/issues/10988#issuecomment-867135453
+    // - Import attributes would be the best.
+    //   - But it only works with Node.js >=21: https://nodejs.org/api/esm.html#import-attributes
+    //     - But it's probably ok to tell users "to use real imports you need Node.js 21 or above".
+    //   - It works well with TypeScript: it doesn't complain upon `with { type: 'unknown-to-typescript' }` and go-to-definition & types are preserved: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-3.html#import-attributes
+    //   - Esbuid seems to support it: https://esbuild.github.io/plugins/#on-load-arguments:~:text=This%20contains%20a%20map%20of%20the%20import%20attributes%20that
+    //   - acorn supports it over an acorn plugin: https://github.com/acornjs/acorn/issues/983
+    //     - Maybe we can use an esbuild plugin instead of acorn to apply transformImports()?
+    // - Using a magic comment `// @vike-real-import` is tricky:
+    //   - Esbuild removes comments: https://github.com/evanw/esbuild/issues/1439#issuecomment-877656182
+    //   - Using source maps to track these magic comments is brittle (source maps can easily break)
     if (importPath.endsWith('?real')) {
       const { start, end } = node.source
       spliceOperations.push({
