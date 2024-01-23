@@ -18,7 +18,7 @@ import {
   isObject,
   toPosixPath
 } from '../../../../utils.js'
-import { isImportData, transformImports, type FileImport } from '../transformImports.js'
+import { isImportData, transformImports, type FileImport } from './transformImports.js'
 import { vikeConfigDependencies } from '../getVikeConfig.js'
 import 'source-map-support/register.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/PageConfig.js'

@@ -10,7 +10,7 @@ export type { ImportData }
 
 import { parse } from 'acorn'
 import type { Program, Identifier, ImportDeclaration } from 'estree'
-import { assert, assertUsage, assertWarning, styleFileRE } from '../../../utils.js'
+import { assert, assertUsage, assertWarning, styleFileRE } from '../../../../utils.js'
 import pc from '@brillout/picocolors'
 
 type FileImport = {
