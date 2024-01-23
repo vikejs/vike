@@ -1,8 +1,8 @@
 import { expect, describe, it } from 'vitest'
 import { transformImportStatements } from './transformImportStatements.js'
 
-describe('getErrMsg()', () => {
-  it('basics', () => {
+describe('transformImportStatements()', () => {
+  it('works', () => {
     expect(t("import { something } from './bla.js'")).toMatchInlineSnapshot(`
       {
         "code": "const something = '​import:./bla.js:something';",

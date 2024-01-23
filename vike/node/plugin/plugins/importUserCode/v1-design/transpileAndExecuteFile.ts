@@ -69,7 +69,7 @@ function transformImports(codeOriginal: string, filePath: FilePathResolved, isVa
     { onlyOnce: true }
   )
 
-  // Remove the imports
+  // Replace import statements with import strings
   const res = transformImportStatements(codeOriginal, filePathToShowToUser2)
   if (res.noTransformation) {
     return null
