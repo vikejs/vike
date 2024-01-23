@@ -35,16 +35,17 @@ type ConfigFile = {
 
 // Load fake import
 async function loadImportedFile(
-  filePath: FilePathResolved,
+  import_: FilePathResolved & { fileExportName: string },
   userRootDir: string,
   importedFilesLoaded: ImportedFilesLoaded
-): Promise<Record<string, unknown>> {
-  const f = filePath.filePathAbsoluteFilesystem
+): Promise<unknown> {
+  const f = import_.filePathAbsoluteFilesystem
   if (!importedFilesLoaded[f]) {
-    importedFilesLoaded[f] = transpileAndExecuteFile(filePath, true, userRootDir).then((r) => r.fileExports)
+    importedFilesLoaded[f] = transpileAndExecuteFile(import_, true, userRootDir).then((r) => r.fileExports)
   }
   const fileExports = await importedFilesLoaded[f]!
-  return fileExports
+  const fileExport = fileExports[import_.fileExportName]
+  return fileExport
 }
 
 // Load +{configName}.js

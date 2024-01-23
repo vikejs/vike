@@ -738,8 +738,8 @@ async function getConfigValueSource(
       if (isConfigEnv(configDef, configName)) {
         if (import_.filePathAbsoluteFilesystem) {
           assert(hasProp(import_, 'filePathAbsoluteFilesystem', 'string')) // Help TS
-          const fileExports = await loadImportedFile(import_, userRootDir, importedFilesLoaded)
-          configValueSource.value = fileExports[import_.fileExportName]
+          const fileExport = await loadImportedFile(import_, userRootDir, importedFilesLoaded)
+          configValueSource.value = fileExport
         } else {
           const configDefinedAt = getConfigDefinedAtString('Config', configName, configValueSource)
           assertUsage(!configDef.cumulative, `${configDefinedAt} cannot be defined over an aliased import`)
