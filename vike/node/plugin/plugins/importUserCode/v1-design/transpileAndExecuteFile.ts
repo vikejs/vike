@@ -33,7 +33,7 @@ async function transpileAndExecuteFile(
   isConfigOfExtension = false
 ): Promise<{ fileExports: Record<string, unknown> }> {
   const { code, fileImportsTransformed } = await transpileFile(filePath, isValueFile, userRootDir, isConfigOfExtension)
-  const { fileExports } = await executeFile(filePath, code, fileImportsTransformed, isValueFile)
+  const fileExports = await executeTranspiledFile(filePath, code, fileImportsTransformed, isValueFile)
   return { fileExports }
 }
 
@@ -188,7 +188,7 @@ async function transpileWithEsbuild(
   return code
 }
 
-async function executeFile(
+async function executeTranspiledFile(
   filePath: FilePathResolved,
   code: string,
   fileImportsTransformed: FileImport[] | null,
@@ -202,26 +202,34 @@ async function executeFile(
   const clean = () => fs.unlinkSync(filePathTmp)
   let fileExports: Record<string, unknown> = {}
   try {
-    fileExports = await import_(filePathTmp)
-  } catch (err) {
-    triggerPrepareStackTrace(err)
-    const errIntroMsg = getErrIntroMsg('execute', filePath)
-    assert(isObject(err))
-    execErrIntroMsg.set(err, errIntroMsg)
-    throw err
+    fileExports = await executeFile(filePathTmp, filePath)
   } finally {
     clean()
   }
-  // Return a plain JavaScript object
-  //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
-  //  - We don't need this special object
-  fileExports = { ...fileExports }
   if (fileImportsTransformed && !isValueFile) {
     assert(filePathRelativeToUserRootDir !== undefined)
     const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
     assertImportsAreReExported(fileImportsTransformed, fileExports, filePathToShowToUser2)
   }
-  return { fileExports }
+  return fileExports
+}
+
+async function executeFile(filePathToExecuteAbsoluteFilesystem: string, filePathSourceFile: FilePathResolved) {
+  let fileExports: Record<string, unknown> = {}
+  try {
+    fileExports = await import_(filePathToExecuteAbsoluteFilesystem)
+  } catch (err) {
+    triggerPrepareStackTrace(err)
+    const errIntroMsg = getErrIntroMsg('execute', filePathSourceFile)
+    assert(isObject(err))
+    execErrIntroMsg.set(err, errIntroMsg)
+    throw err
+  }
+  // Return a plain JavaScript object:
+  //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
+  //  - We don't need this special object.
+  fileExports = { ...fileExports }
+  return fileExports
 }
 
 const formatted = '_formatted'
