@@ -695,6 +695,7 @@ async function getConfigValueSource(
     fileExportPathToShowToUser: ['default', configName]
   }
 
+  // +client.js
   if (configDef._valueIsFilePath) {
     let definedAt: DefinedAtFileFullInfo
     let valueFilePath: string
@@ -723,9 +724,12 @@ async function getConfigValueSource(
     return configValueSource
   }
 
+  // +config.js
   if (interfaceFile.isConfigFile) {
     assert('configValue' in conf)
     const { configValue } = conf
+
+    // fake import
     const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
     if (import_) {
       const configValueSource: ConfigValueSource = {
@@ -733,8 +737,7 @@ async function getConfigValueSource(
         valueIsImportedAtRuntime: true,
         definedAt: import_
       }
-
-      // Load config value
+      // Load fake import
       if (isConfigEnv(configDef, configName)) {
         if (import_.filePathAbsoluteFilesystem) {
           assert(hasProp(import_, 'filePathAbsoluteFilesystem', 'string')) // Help TS
@@ -747,16 +750,20 @@ async function getConfigValueSource(
       }
 
       return configValueSource
-    } else {
-      const configValueSource: ConfigValueSource = {
-        value: configValue,
-        configEnv,
-        valueIsImportedAtRuntime: false,
-        definedAt: definedAtConfigFile
-      }
-      return configValueSource
     }
-  } else if (interfaceFile.isValueFile) {
+
+    // Defined by config file, i.e. +config.js file
+    const configValueSource: ConfigValueSource = {
+      value: configValue,
+      configEnv,
+      valueIsImportedAtRuntime: false,
+      definedAt: definedAtConfigFile
+    }
+    return configValueSource
+  }
+
+  // Defined by value file, i.e. +{configName}.js
+  if (interfaceFile.isValueFile) {
     const valueAlreadyLoaded = 'configValue' in conf
     assert(valueAlreadyLoaded === !!configEnv.config)
     const configValueSource: ConfigValueSource = {
@@ -776,6 +783,7 @@ async function getConfigValueSource(
     }
     return configValueSource
   }
+
   assert(false)
 }
 
