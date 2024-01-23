@@ -54,7 +54,7 @@ async function transpileFile(
 
   let fileImportsTransformed: FileImport[] | null = null
   if (importsAreTransformed) {
-    const res = transformImports(code, filePath)
+    const res = transformImports_(code, filePath)
     if (res) {
       code = res.code
       fileImportsTransformed = res.fileImportsTransformed
@@ -81,7 +81,7 @@ async function transpileFile(
   return { code, fileImportsTransformed }
 }
 
-function transformImports(codeOriginal: string, filePath: FilePathResolved) {
+function transformImports_(codeOriginal: string, filePath: FilePathResolved) {
   const { filePathAbsoluteFilesystem } = filePath
   const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
 
@@ -127,7 +127,7 @@ async function transpileWithEsbuild(
     logLevel: 'silent',
     format: 'esm',
     absWorkingDir: userRootDir,
-    // Avoid dead-code elimination to ensure unused imports aren't removed.
+    // Disable tree-shaking to avoid dead-code elimination, so that unused imports aren't removed.
     // Esbuild still sometimes removes unused imports because of TypeScript: https://github.com/evanw/esbuild/issues/3034
     treeShaking: false,
     minify: false,
