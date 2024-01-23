@@ -1,8 +1,17 @@
 import { expect, describe, it } from 'vitest'
 import { transformImportStatements } from './transformImportStatements.js'
 
+function t(code: string) {
+  return transformImportStatements(code, '/fake-file.js')
+}
+
 describe('transformImportStatements()', () => {
-  it('works', () => {
+  it('basics', () => {
+    expect(t('bla')).toMatchInlineSnapshot(`
+      {
+        "noTransformation": true,
+      }
+    `)
     expect(t("import { something } from './bla.js'")).toMatchInlineSnapshot(`
       {
         "code": "const something = '​import:./bla.js:something';",
@@ -56,8 +65,13 @@ describe('transformImportStatements()', () => {
       }
     `)
   })
+  it('real imports', () => {
+    expect(t("import { something } from './bla.js?real'")).toMatchInlineSnapshot(`
+      {
+        "code": "import { something } from ./bla.js",
+        "fileImportsTransformed": [],
+        "noTransformation": false,
+      }
+    `)
+  })
 })
-
-function t(code: string) {
-  return transformImportStatements(code, '/fake-file.js')
-}

@@ -37,6 +37,16 @@ function transformImportStatements(
     const importPath = node.source.value
     assert(typeof importPath === 'string')
 
+    if (importPath.endsWith('?real')) {
+      const { start, end } = node.source
+      spliceOperations.push({
+        start,
+        end,
+        replacement: importPath.slice(0, -1 * '?real'.length)
+      })
+      return
+    }
+
     const { start, end } = node
 
     const importStatementCode = code.slice(start, end)
