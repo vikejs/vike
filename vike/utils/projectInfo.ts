@@ -3,7 +3,7 @@ export { PROJECT_VERSION }
 
 import { onProjectInfo } from './assertSingleInstance.js'
 
-const PROJECT_VERSION = '0.4.159' as const
+const PROJECT_VERSION = '0.4.160' as const
 
 const projectInfo = {
   projectName: 'Vike' as const,

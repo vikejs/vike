@@ -1,3 +1,23 @@
+## [0.4.160](https://github.com/vikejs/vike/compare/v0.4.159...v0.4.160) (2024-01-23)
+
+
+### Bug Fixes
+
+* add debug logs for faulty setups ([#1450](https://github.com/vikejs/vike/issues/1450)) ([2746aa6](https://github.com/vikejs/vike/commit/2746aa64056ae432fce093fb2211102354909034))
+* allow `+config.js` to `export { config }` instead of `export default` ([fbfe1bd](https://github.com/vikejs/vike/commit/fbfe1bdaf3173abfb317caacdfc0a3e4cf99d90e))
+* avoid loading extension config files twice ([d73533a](https://github.com/vikejs/vike/commit/d73533a4e4ad0c09feb4959d4d9965fde02b2185))
+* fix header file warning ([3e25ac7](https://github.com/vikejs/vike/commit/3e25ac7ae74f6858f4e5fc6306a5c9762b684eb4))
+* further add JSDoc ([1ab632f](https://github.com/vikejs/vike/commit/1ab632faa925b7a9e8c85029582c43ddc3ec3bc7))
+* implement more straightforward assertUsage() upon loading vike/plugin in production ([#1450](https://github.com/vikejs/vike/issues/1450)) ([0304246](https://github.com/vikejs/vike/commit/03042466c25bb73f0017ac3ec4ad3e4c69902c75))
+* improve error message upon loading vike/plugin in production (fix [#1450](https://github.com/vikejs/vike/issues/1450)) ([4ed9533](https://github.com/vikejs/vike/commit/4ed95339121486983c3f877def91c1f5e638d007))
+* improve logic deciding when imports are transform ([62f4450](https://github.com/vikejs/vike/commit/62f44507619971908cbc435e33ae48e34209aa45))
+* make wrong process.env.NODE_ENV value a hard failure ([f3926bd](https://github.com/vikejs/vike/commit/f3926bd78ad345656ccd329177db056d1c67cfa3))
+* remove superfluous warning upon non-standard extension config file name ([dc46063](https://github.com/vikejs/vike/commit/dc46063d60efa9327bb3281af4e5570a3a2ea00c))
+* skip transpiling config files of extensions ([5e86965](https://github.com/vikejs/vike/commit/5e8696539a04f75938d90129389caf205d53664c))
+* small performance boost ([d754c6d](https://github.com/vikejs/vike/commit/d754c6dd0ded676575b592b78d538f8205057a13))
+
+
+
 ## [0.4.159](https://github.com/vikejs/vike/compare/v0.4.158...v0.4.159) (2024-01-20)
 
 
