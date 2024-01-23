@@ -4,9 +4,6 @@ export { isImportData }
 export type { FileImport }
 export type { ImportData }
 
-// For ./transformImportStatements.spec.ts
-export { isVikeRealImport }
-
 // Playground: https://github.com/brillout/acorn-playground
 // Import attributes support: https://github.com/acornjs/acorn/issues/983
 //  - Isn't stage 4 yet: https://github.com/tc39/proposal-import-attributes
@@ -41,10 +38,6 @@ function transformImportStatements(
     assert(typeof importPath === 'string')
 
     const { start, end } = node
-
-    // TODO: doesn't work because esbuild removes comments: https://github.com/evanw/esbuild/issues/1439#issuecomment-877656182
-    // - Using import attributes only works with Node.js >=21: https://nodejs.org/api/esm.html#import-attributes
-    if (isVikeRealImport(code, end)) return
 
     const importStatementCode = code.slice(start, end)
 
@@ -99,11 +92,6 @@ function transformImportStatements(
       replacement
     })
   })
-
-  if (fileImportsTransformed.length === 0) {
-    assert(spliceOperations.length === 0)
-    return { noTransformation: true }
-  }
 
   const codeMod = spliceMany(code, spliceOperations)
   return { code: codeMod, fileImportsTransformed, noTransformation: false }
@@ -219,11 +207,4 @@ function indent(str: string) {
     .split('\n')
     .map((s) => `  ${s}`)
     .join('\n')
-}
-
-function isVikeRealImport(code: string, posStart: number): boolean {
-  let posEnd = code.indexOf('\n', posStart)
-  if (posEnd === -1) posEnd = code.length
-  const lineEnd = code.slice(posStart, posEnd)
-  return lineEnd.includes('@vike-real-import')
 }

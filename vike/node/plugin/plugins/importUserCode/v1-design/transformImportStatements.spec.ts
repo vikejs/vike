@@ -1,5 +1,5 @@
 import { expect, describe, it } from 'vitest'
-import { isVikeRealImport, transformImportStatements } from './transformImportStatements.js'
+import { transformImportStatements } from './transformImportStatements.js'
 
 describe('transformImportStatements()', () => {
   it('works', () => {
@@ -55,39 +55,6 @@ describe('transformImportStatements()', () => {
         "noTransformation": false,
       }
     `)
-  })
-})
-
-describe('transformImportStatements()', () => {
-  it('basics', () => {
-    expect(isVikeRealImport('bla', 0)).toBe(false)
-    expect(isVikeRealImport('// @vike-real-import', 0)).toBe(true)
-    expect(isVikeRealImport('// @vike-real-impor', 0)).toBe(false)
-    expect(
-      isVikeRealImport(
-        `// @vike-real-import
-    something`,
-        0
-      )
-    ).toBe(true)
-    expect(
-      isVikeRealImport(
-        `bla
-    // @vike-real-import
-    something`,
-        0
-      )
-    ).toBe(false)
-  })
-  it('edge cases', () => {
-    expect(isVikeRealImport('', 0)).toBe(false)
-    expect(isVikeRealImport('', 1)).toBe(false)
-    expect(isVikeRealImport('@vike-real-import', 1)).toBe(false)
-    expect(isVikeRealImport('@vike-real-import', 0)).toBe(true)
-    expect(isVikeRealImport('@vike-real-import\n', 0)).toBe(true)
-    expect(isVikeRealImport('@vike-real\n-import', 0)).toBe(false)
-    expect(isVikeRealImport('\n@vike-real-import', 0)).toBe(false)
-    expect(isVikeRealImport(' @vike-real-import', 0)).toBe(true)
   })
 })
 
