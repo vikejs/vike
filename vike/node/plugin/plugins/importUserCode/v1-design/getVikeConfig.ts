@@ -738,7 +738,11 @@ async function getConfigValueSource(
         definedAt: import_
       }
       // Load fake import
-      if (isConfigEnv(configDef, configName)) {
+      if (
+        isConfigEnv(configDef, configName) &&
+        // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
+        configName !== 'extends'
+      ) {
         if (import_.filePathAbsoluteFilesystem) {
           assert(hasProp(import_, 'filePathAbsoluteFilesystem', 'string')) // Help TS
           const fileExport = await loadImportedFile(import_, userRootDir, importedFilesLoaded)
