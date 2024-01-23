@@ -56,7 +56,7 @@ import {
   applyFilesystemRoutingRootEffect
 } from './getVikeConfig/filesystemRouting.js'
 import { isTmpFile, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
-import { ImportData, parseImportData } from './transformImportStatements.js'
+import { ImportData, parseImportData } from './transformImports.js'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid.js'
 import { getViteDevServer } from '../../../../runtime/globalContext.js'
 import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd.js'

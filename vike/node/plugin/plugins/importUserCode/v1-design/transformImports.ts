@@ -1,4 +1,4 @@
-export { transformImportStatements }
+export { transformImports }
 export { parseImportData }
 export { isImportData }
 export type { FileImport }
@@ -18,10 +18,10 @@ type FileImport = {
   importString: string
   importLocalName: string
 }
-function transformImportStatements(
+function transformImports(
   code: string,
   filePathToShowToUser2: string,
-  // For ./transformImportStatements.spec.ts
+  // For ./transformImports.spec.ts
   skipWarnings?: true
 ): { noTransformation: true } | { noTransformation: false; code: string; fileImportsTransformed: FileImport[] } {
   const spliceOperations: SpliceOperation[] = []

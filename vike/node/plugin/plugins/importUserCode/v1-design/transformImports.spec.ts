@@ -1,11 +1,11 @@
 import { expect, describe, it } from 'vitest'
-import { transformImportStatements } from './transformImportStatements.js'
+import { transformImports } from './transformImports.js'
 
 function t(code: string) {
-  return transformImportStatements(code, '/fake-file.js', true)
+  return transformImports(code, '/fake-file.js', true)
 }
 
-describe('transformImportStatements()', () => {
+describe('transformImports()', () => {
   it('basics', () => {
     expect(t('bla')).toMatchInlineSnapshot(`
       {

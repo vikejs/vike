@@ -18,7 +18,7 @@ import {
   isObject,
   toPosixPath
 } from '../../../utils.js'
-import { isImportData, transformImportStatements, type FileImport } from './transformImportStatements.js'
+import { isImportData, transformImports, type FileImport } from './transformImports.js'
 import { vikeConfigDependencies } from './getVikeConfig.js'
 import 'source-map-support/register.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/PageConfig.js'
@@ -86,7 +86,7 @@ function transformImports_(codeOriginal: string, filePath: FilePathResolved) {
   const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
 
   // Replace import statements with import strings
-  const res = transformImportStatements(codeOriginal, filePathToShowToUser2)
+  const res = transformImports(codeOriginal, filePathToShowToUser2)
   if (res.noTransformation) {
     return null
   }
