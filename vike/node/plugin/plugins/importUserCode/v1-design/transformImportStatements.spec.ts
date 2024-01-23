@@ -2,7 +2,7 @@ import { expect, describe, it } from 'vitest'
 import { transformImportStatements } from './transformImportStatements.js'
 
 function t(code: string) {
-  return transformImportStatements(code, '/fake-file.js')
+  return transformImportStatements(code, '/fake-file.js', true)
 }
 
 describe('transformImportStatements()', () => {
@@ -38,6 +38,24 @@ describe('transformImportStatements()', () => {
         "noTransformation": false,
       }
     `)
+  })
+  it('removes unused imports', () => {
+    expect(t("import './style.css'")).toMatchInlineSnapshot(`
+      {
+        "code": "",
+        "fileImportsTransformed": [],
+        "noTransformation": false,
+      }
+    `)
+    expect(t("import './script.js'")).toMatchInlineSnapshot(`
+      {
+        "code": "",
+        "fileImportsTransformed": [],
+        "noTransformation": false,
+      }
+    `)
+  })
+  it('import as', () => {
     expect(t("import { bla as blu } from './bla.js'")).toMatchInlineSnapshot(`
       {
         "code": "const blu = '​import:./bla.js:bla';",

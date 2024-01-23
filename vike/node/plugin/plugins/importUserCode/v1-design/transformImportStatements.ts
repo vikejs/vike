@@ -20,7 +20,9 @@ type FileImport = {
 }
 function transformImportStatements(
   code: string,
-  filePathToShowToUser2: string
+  filePathToShowToUser2: string,
+  // For ./transformImportStatements.spec.ts
+  skipWarnings?: true
 ): { noTransformation: true } | { noTransformation: false; code: string; fileImportsTransformed: FileImport[] } {
   const spliceOperations: SpliceOperation[] = []
   const fileImportsTransformed: FileImport[] = []
@@ -64,10 +66,12 @@ function transformImportStatements(
         `As explained in https://vike.dev/header-file the following import in ${filePathToShowToUser2} has no effect:`,
         quote
       ].join('\n')
-      if (!isWarning) {
-        assertUsage(false, errMsg)
+      if (!skipWarnings) {
+        if (!isWarning) {
+          assertUsage(false, errMsg)
+        }
+        assertWarning(false, errMsg, { onlyOnce: true })
       }
-      assertWarning(false, errMsg, { onlyOnce: true })
     }
 
     let replacement = ''
