@@ -2,9 +2,9 @@ export default Page
 
 import React, { useState } from 'react'
 import { TodoList } from './TodoList'
-import type { TodoItem } from '../../database/todoItems'
+import type { Todo } from '@prisma/client'
 
-function Page({ todoItemsInitial }: { todoItemsInitial: TodoItem[] }) {
+function Page({ todoItemsInitial }: { todoItemsInitial: Todo[] }) {
   return (
     <>
       <h1>To-do List</h1>

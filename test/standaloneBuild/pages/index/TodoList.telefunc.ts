@@ -1,8 +1,9 @@
 export { onNewTodo }
 
-import { todoItems } from '../../database/todoItems'
+import { createTodoItem, getTodoItems } from '../../database/todoItems'
 
 async function onNewTodo({ text }: { text: string }) {
-  todoItems.push({ text })
+  await createTodoItem({ text })
+  const todoItems = await getTodoItems()
   return { todoItems }
 }

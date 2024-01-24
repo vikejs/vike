@@ -1,12 +1,16 @@
-export { todoItems }
-export type { TodoItem }
+export { getTodoItems, createTodoItem }
 
-type TodoItem = { text: string }
-const todoItems: TodoItem[] = []
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
+const getTodoItems = () => prisma.todo.findMany()
+const createTodoItem = ({ text }: { text: string }) => prisma.todo.create({ data: { text } })
 init()
 
 // Initial data
-function init() {
-  todoItems.push({ text: 'Buy milk' })
-  todoItems.push({ text: 'Buy strawberries' })
+async function init() {
+  await prisma.todo.deleteMany()
+  await prisma.todo.create({ data: { text: 'Buy milk' } })
+  await prisma.todo.create({ data: { text: 'Buy strawberries' } })
 }

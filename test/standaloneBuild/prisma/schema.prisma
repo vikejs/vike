@@ -10,6 +10,7 @@ datasource db {
   url      = "file:./test.db"
 }
 
-model Post {
-  id String @id @default(cuid())
+model Todo {
+  id   String @id @default(cuid())
+  text String
 }

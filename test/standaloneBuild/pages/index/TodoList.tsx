@@ -2,9 +2,9 @@ export { TodoList }
 
 import React, { useState } from 'react'
 import { onNewTodo } from './TodoList.telefunc.js'
-import type { TodoItem } from '../../database/todoItems.js'
+import type { Todo } from '@prisma/client'
 
-function TodoList({ todoItemsInitial }: { todoItemsInitial: TodoItem[] }) {
+function TodoList({ todoItemsInitial }: { todoItemsInitial: Todo[] }) {
   const [todoItems, setTodoItems] = useState(todoItemsInitial)
   const [draft, setDraft] = useState('')
   return (

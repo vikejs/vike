@@ -2,10 +2,10 @@
 export { onBeforeRender }
 
 import type { OnBeforeRenderAsync } from 'vike/types'
-import { todoItems } from '../../database/todoItems'
+import { getTodoItems } from '../../database/todoItems'
 
 const onBeforeRender: OnBeforeRenderAsync = async (pageContext): ReturnType<OnBeforeRenderAsync> => {
-  const todoItemsInitial = todoItems
+  const todoItemsInitial = await getTodoItems()
   return {
     pageContext: {
       pageProps: {

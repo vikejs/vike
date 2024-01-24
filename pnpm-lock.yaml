@@ -1864,6 +1864,9 @@ importers:
       express:
         specifier: ^4.18.2
         version: 4.18.2
+      prisma:
+        specifier: ^5.8.1
+        version: 5.8.1
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1885,10 +1888,6 @@ importers:
       vite:
         specifier: ^4.5.0
         version: 4.5.1(@types/node@15.14.9)
-    devDependencies:
-      prisma:
-        specifier: ^5.8.1
-        version: 5.8.1
 
   test/stream:
     dependencies:
