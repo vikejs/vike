@@ -141,8 +141,8 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
             const isNodeModules = relativeFile.includes('node_modules')
 
             relativeFile = relativeFile.replace(relativeRoot, '').replace(commonAncestor, '')
-            const fileOutputPathHoisted = `node_modules${relativeFile.split('node_modules').pop()}`
-            const fileOutputPath = path.posix.join(outDirAbs, isNodeModules ? fileOutputPathHoisted : relativeFile)
+            const relativeFileHoisted = `node_modules${relativeFile.split('node_modules').pop()}`
+            const fileOutputPath = path.posix.join(outDirAbs, isNodeModules ? relativeFileHoisted : relativeFile)
             const isDir = (await fs.stat(tracedFilePath)).isDirectory()
 
             if (!isDir && !copiedFiles.has(fileOutputPath)) {
