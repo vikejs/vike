@@ -53,10 +53,7 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
     }
   }
 
-  return [
-    serverEntryProdPlugin(),
-    configVike.standalone && standalonePlugin({ serverEntry: serverConfig.entry })
-  ].filter(Boolean) as Plugin[]
+  return [serverEntryProdPlugin(), configVike.standalone && standalonePlugin()].filter(Boolean) as Plugin[]
 }
 
 function resolveServerConfig(configVike?: ConfigVikeUserProvided): ServerResolved {

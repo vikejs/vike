@@ -2,14 +2,13 @@ export { standalonePlugin }
 
 import esbuild from 'esbuild'
 import fs from 'fs/promises'
-import os from 'os'
 import path from 'path'
 import { Plugin, searchForWorkspaceRoot } from 'vite'
 import { pLimit } from '../../../utils/pLimit.js'
 import { assert, assertUsage, toPosixPath, unique } from '../utils.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 
-function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
+function standalonePlugin(): Plugin {
   let root = ''
   let distDir = ''
   let outDir = ''
@@ -18,8 +17,6 @@ function standalonePlugin({ serverEntry }: { serverEntry: string }): Plugin {
 
   // Native dependencies always need to be esbuild external
   let native: string[] = []
-
-  const platform = os.platform()
 
   return {
     name: 'vike:standalone',
