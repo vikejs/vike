@@ -311,8 +311,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vike-react:
-        specifier: ^0.3.4
-        version: 0.3.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.10)
+        specifier: ^0.4.4
+        version: 0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.10)
       vite:
         specifier: ^5.0.10
         version: 5.0.10(@types/node@20.10.5)
@@ -908,8 +908,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vike-react:
-        specifier: ^0.3.8
-        version: 0.3.8(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.10)
+        specifier: ^0.4.4
+        version: 0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.10)
       vite:
         specifier: ^5.0.10
         version: 5.0.10(@types/node@20.10.5)
@@ -1685,8 +1685,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vike-react:
-        specifier: ^0.3.4
-        version: 0.3.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.10)
+        specifier: ^0.4.4
+        version: 0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.10)
       vite:
         specifier: ^5.0.10
         version: 5.0.10(@types/node@20.10.5)
@@ -11252,6 +11252,19 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
+  /react-streaming@0.3.19(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-kpxnj/nynMbdVVLUZKAI+AlSx7bJNX0WZO14LSJNtfIcbQJd7YH0ilnP+AFwKkvrjuG8zuNL36W5WCsczM62zg==}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+    dependencies:
+      '@brillout/import': 0.2.3
+      '@brillout/json-serializer': 0.5.8
+      isbot-fast: 1.2.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /react@18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
     engines: {node: '>=0.10.0'}
@@ -13107,32 +13120,17 @@ packages:
       vike: link:vike
     dev: false
 
-  /vike-react@0.3.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.10):
-    resolution: {integrity: sha512-ca8uTlV5RSJaSRGcN7C2wkViMElPV+HxKOyJufHwAtB8XkGI23Z6kffqZHqL2wBWdG9gjtDml6dZ/YVlRSruaQ==}
+  /vike-react@0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.10):
+    resolution: {integrity: sha512-d5+dgs7sWfTZ/L1co3SIReFSNrJYHcfxBTtjDtk5MPHVfpkZFtfIRufslWjK5NN/tJYxsDFwqZjLeWmA/s6V1A==}
     peerDependencies:
       react: 18.x.x
       react-dom: 18.x.x
       vike: link:./vike/
-      vite: ^4.3.8
+      vite: ^4.3.8 || ^5.0.10
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      react-streaming: 0.3.16(react-dom@18.2.0)(react@18.2.0)
-      vike: link:vike
-      vite: 5.0.10(@types/node@20.10.5)
-    dev: false
-
-  /vike-react@0.3.8(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.10):
-    resolution: {integrity: sha512-SZ5IlA2tVbxncDmsZ66TB6a1BTGcJ7DsP6mPNxmVpiy3xopVR+IcbaZCgeOxLM1/1lHlcD40cTVufZZUD/fLiA==}
-    peerDependencies:
-      react: 18.x.x
-      react-dom: 18.x.x
-      vike: link:./vike/
-      vite: ^4.3.8
-    dependencies:
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      react-streaming: 0.3.18(react-dom@18.2.0)(react@18.2.0)
+      react-streaming: 0.3.19(react-dom@18.2.0)(react@18.2.0)
       vike: link:vike
       vite: 5.0.10(@types/node@20.10.5)
     dev: false
