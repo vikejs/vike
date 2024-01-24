@@ -254,8 +254,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.5.36
-        version: 0.5.36(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1)
+        specifier: ^0.5.37
+        version: 0.5.37(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1)
       '@types/node':
         specifier: ^15.12.1
         version: 15.14.9
@@ -2332,8 +2332,8 @@ packages:
     requiresBuild: true
     dev: true
 
-  /@brillout/docpress@0.5.36(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1):
-    resolution: {integrity: sha512-Vx/fjWAxEuxTl/KlVy8h91RimNvjaAnF+8sfoksDlZ/C/o682qHS/VTICmCMvqMXHbJCwBVdp304kL7nxbycdg==}
+  /@brillout/docpress@0.5.37(@types/node@15.14.9)(react-dom@18.2.0)(react@18.2.0)(rollup@4.5.1):
+    resolution: {integrity: sha512-4VDbZKzOsioVMinhv5k/gCQKLkxakvghtT99GhfBT1NPqnT/LEECbDCbv9I59tQ8PmTAPau0qjrree3FKt1AzA==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -2352,7 +2352,7 @@ packages:
       shiki: 0.10.1
       twemoji: 13.1.1
       vike: link:vike
-      vike-contributors: 0.0.6
+      vike-contributors: 0.0.7
       vite: 4.5.1(@types/node@15.14.9)
     transitivePeerDependencies:
       - '@swc/helpers'
@@ -13090,8 +13090,8 @@ packages:
       vfile-message: 4.0.2
     dev: false
 
-  /vike-contributors@0.0.6:
-    resolution: {integrity: sha512-KWn1FudirXoJlsoY5sHeCjVnbV5Uv+c45/3KkY4Dbm0lI3E0GjYXGMF/y9NJl9jEZ4XTz+YP3Usxtl4Mazr+bA==}
+  /vike-contributors@0.0.7:
+    resolution: {integrity: sha512-nGD3ELtUXRQJgbgghQp1MPlzfT/890NgDKckukvIBUBsSYVgQ12UZeWLusELJ616CjO08nNP3B3p8gERAy257A==}
     requiresBuild: true
     dev: false
 
