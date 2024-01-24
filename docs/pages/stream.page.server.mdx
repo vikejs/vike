@@ -1,3 +1,54 @@
 import { Link } from '@brillout/docpress'
 
-Page moved to <Link href="/streaming" />.
+import { UiFrameworkVikeExtension } from '../components'
+
+Default value: `false`. (Or `true` is using a <Link href="/extensions">Vike extension</Link> that requires streaming.)  
+Requires: <Link href="/ssr">`ssr: true`</Link>.  
+Provided by: <UiFrameworkVikeExtension /> (or <Link href="#without-vike-extension">yourself</Link>).
+
+Setting to disable/enable <Link href="/streaming">HTML Streaming</Link>.
+
+Disable for all your pages:
+
+```js
+// /pages/+config.h.js
+
+// This config applies to all pages (/pages/**).
+export default {
+  stream: false
+}
+```
+
+Disable only for some pages:
+
+```js
+// /pages/admin/+config.h.js
+
+/* This config applies only to admin pages (/pages/admin/**) such as:
+   FILESYSTEM                            URL
+   /pages/admin/+Page.js                 /admin
+   /pages/admin/user/@id/+Page.js        /admin/user/@id
+   /pages/admin/product/@id/+Page.js     /admin/product/@id
+*/
+export default {
+  stream: false
+}
+```
+
+
+
+## Without Vike extension
+
+In case you don't use a <UiFrameworkVikeExtension />, you can implement the `stream` setting yourself by using <Link href="/meta">meta</Link>.
+
+Examples:
+
+ - [`vike-react` source code](https://github.com/vikejs/vike-react/blob/main/packages/vike-react)
+ - [`vike-vue` source code](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue)
+ - [`vike-solid` source code](https://github.com/vikejs/vike-solid/blob/main/vike-solid)
+
+
+## See also
+
+- <Link href="/streaming" />
+- <Link href="/ssr" />

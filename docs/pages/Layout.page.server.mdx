@@ -46,11 +46,12 @@ You can also define a layout for a group of pages:
 ```js
 // /pages/admin/+Layout.js
 
-// This layout applies to:
-//  - /admin
-//  - /admin/user/@id
-//  - /admin/product/@id
-//  - ...
+/* This layout applies only to admin pages (/pages/admin/**) such as:
+   URL                     FILESYSTEM
+   /admin                  /pages/admin/+Page.js
+   /admin/user/@id         /pages/admin/user/@id/+Page.js
+   /admin/product/@id      /pages/admin/product/@id/+Page.js
+*/
 export { Layout }
 
 // ...

@@ -4,11 +4,9 @@ import { UiFrameworkVikeExtension } from '../components'
 Default value: `true`.  
 Provided by: <UiFrameworkVikeExtension /> (or <Link href="#without-vike-extension">yourself</Link>).
 
-The `ssr` setting allows you to toggle Server-Side Rendering (SSR). You can disable SSR for all your pages, or only for some pages while still using SSR for your other pages.
+Setting to enable/disable Server-Side Rendering (SSR). You can disable SSR for all your pages, or only for some pages while still using SSR for your other pages.
 
 > Alternatively, you can use <Link href="/ClientOnly">`ClientOnly`</Link> to render and load some components only on the client-side while rendering the rest of the page with SSR.
-
-## Global
 
 To disable SSR for all your pages:
 
@@ -20,8 +18,6 @@ export default {
   ssr: false
 }
 ```
-
-## Local
 
 To disable SSR only for some pages:
 
@@ -53,3 +49,9 @@ Examples:
  - [`vike-react` source code](https://github.com/vikejs/vike-react/blob/main/packages/vike-react)
  - [`vike-vue` source code](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue)
  - [`vike-solid` source code](https://github.com/vikejs/vike-solid/blob/main/vike-solid)
+
+
+## See also
+
+- <Link href="/stream" />
+- <Link href="/streaming" />

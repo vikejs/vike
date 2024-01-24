@@ -33,7 +33,7 @@ const headingsDetached = [
     url: '/html-streaming'
   },
   {
-    title: 'HTML Streaming',
+    title: '`stream`',
     url: '/stream'
   },
   {
