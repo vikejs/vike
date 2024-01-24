@@ -1,0 +1,53 @@
+import { Link } from '@brillout/docpress'
+import {
+  TextType,
+  UiFrameworkVikeExtensionUsageIntro,
+  UiFrameworkVikeExtensionUsageConf,
+  UiFrameworkVikeExtensionUsageHooks,
+  UiFrameworkVikeExtensionUsageCoreSettings,
+  UiFrameworkVikeExtensionUsageNewSettings,
+  UiFrameworkVikeExtensionUsageComponentHooks,
+  UiFrameworkVikeExtensionUsageComponents,
+  UiFrameworkVikeExtensionUsageSeeAlso
+} from '../components'
+
+{/*
+In order to get syntax highlighting in the current setup, code blocks can't be programmatically built. They need to be
+hard-coded in a markdown file. Thus the slight duplication of blocks here across extensions.
+*/}
+
+<UiFrameworkVikeExtensionUsageIntro packageName="vike-vue" />
+
+```bash
+npm install vike-vue
+```
+
+<UiFrameworkVikeExtensionUsageConf packageName="vike-vue" />
+
+```diff
+ // /pages/+config.h.js
+
++import vikeVue from 'vike-vue'
++
+ export default {
+   // Existing Vike Core settings
+   // ...
++
++  // New setting introduced by vike-vue:
++  title: 'My Vike + Vue App',
++
++  extends: vikeVue
+ }
+```
+
+<UiFrameworkVikeExtensionUsageHooks packageName="vike-vue" uiFrameworkName="Vue" />
+
+<UiFrameworkVikeExtensionUsageCoreSettings packageName="vike-vue" uiFrameworkName="Vue" />
+
+<UiFrameworkVikeExtensionUsageNewSettings packageName="vike-vue" />
+
+<UiFrameworkVikeExtensionUsageComponentHooks packageName="vike-vue" />
+
+<UiFrameworkVikeExtensionUsageComponents packageName="vike-vue" />
+
+<UiFrameworkVikeExtensionUsageSeeAlso packageName="vike-vue" />

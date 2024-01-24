@@ -352,6 +352,18 @@ const headingsDetached = [
     url: '/vike-packages'
   },
   {
+    title: 'Vike extension for React',
+    url: '/vike-react'
+  },
+  {
+    title: 'Vike extension for Vue',
+    url: '/vike-vue'
+  },
+  {
+    title: 'Vike extension for Solid',
+    url: '/vike-solid'
+  },
+  {
     title: 'Extensions',
     url: '/extensions'
   },

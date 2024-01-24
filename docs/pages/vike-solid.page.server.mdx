@@ -1,0 +1,53 @@
+import { Link } from '@brillout/docpress'
+import {
+  TextType,
+  UiFrameworkVikeExtensionUsageIntro,
+  UiFrameworkVikeExtensionUsageConf,
+  UiFrameworkVikeExtensionUsageHooks,
+  UiFrameworkVikeExtensionUsageCoreSettings,
+  UiFrameworkVikeExtensionUsageNewSettings,
+  UiFrameworkVikeExtensionUsageComponentHooks,
+  UiFrameworkVikeExtensionUsageComponents,
+  UiFrameworkVikeExtensionUsageSeeAlso
+} from '../components'
+
+{/*
+In order to get syntax highlighting in the current setup, code blocks can't be programmatically built. They need to be
+hard-coded in a markdown file. Thus the slight duplication of blocks here across extensions.
+*/}
+
+<UiFrameworkVikeExtensionUsageIntro packageName="vike-solid" />
+
+```bash
+npm install vike-solid
+```
+
+<UiFrameworkVikeExtensionUsageConf packageName="vike-solid" />
+
+```diff
+ // /pages/+config.h.js
+
++import vikeSolid from 'vike-solid'
++
+ export default {
+   // Existing Vike Core settings
+   // ...
++
++  // New setting introduced by vike-solid:
++  title: 'My Vike + Solid App',
++
++  extends: vikeSolid
+ }
+```
+
+<UiFrameworkVikeExtensionUsageHooks packageName="vike-solid" uiFrameworkName="Solid" />
+
+<UiFrameworkVikeExtensionUsageCoreSettings packageName="vike-solid" uiFrameworkName="Solid" />
+
+<UiFrameworkVikeExtensionUsageNewSettings packageName="vike-solid" />
+
+<UiFrameworkVikeExtensionUsageComponentHooks packageName="vike-solid" />
+
+<UiFrameworkVikeExtensionUsageComponents packageName="vike-solid" />
+
+<UiFrameworkVikeExtensionUsageSeeAlso packageName="vike-solid" />

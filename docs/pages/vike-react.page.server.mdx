@@ -1,0 +1,55 @@
+import { Link } from '@brillout/docpress'
+import {
+  TextType,
+  UiFrameworkVikeExtensionUsageIntro,
+  UiFrameworkVikeExtensionUsageConf,
+  UiFrameworkVikeExtensionUsageHooks,
+  UiFrameworkVikeExtensionUsageCoreSettings,
+  UiFrameworkVikeExtensionUsageNewSettings,
+  UiFrameworkVikeExtensionUsageComponentHooks,
+  UiFrameworkVikeExtensionUsageComponents,
+  UiFrameworkVikeExtensionUsageSeeAlso
+} from '../components'
+
+{/*
+In order to get syntax highlighting in the current setup, code blocks can't be programmatically built. They need to be
+hard-coded in a markdown file. Thus the slight duplication of blocks here across extensions.
+*/}
+
+<UiFrameworkVikeExtensionUsageIntro packageName="vike-react" />
+
+```bash
+npm install vike-react
+```
+
+<UiFrameworkVikeExtensionUsageConf packageName="vike-react" />
+
+```diff
+ // /pages/+config.h.js
+
++import vikeReact from 'vike-react'
++
+ export default {
+   // Existing Vike Core settings
+   // ...
++
++  // New setting introduced by vike-react:
++  title: 'My Vike + React App',
++
++  extends: vikeReact
+ }
+```
+
+<UiFrameworkVikeExtensionUsageHooks packageName="vike-react" uiFrameworkName="React" />
+
+<UiFrameworkVikeExtensionUsageCoreSettings packageName="vike-react" uiFrameworkName="React" />
+
+<UiFrameworkVikeExtensionUsageNewSettings packageName="vike-react">
+  <li>[**`Wrapper`**](/Wrapper): <TextType>Component</TextType> Another wrapper for your <Link href="/Page">Page component</Link>.</li>
+</UiFrameworkVikeExtensionUsageNewSettings>
+
+<UiFrameworkVikeExtensionUsageComponentHooks packageName="vike-react" />
+
+<UiFrameworkVikeExtensionUsageComponents packageName="vike-react" />
+
+<UiFrameworkVikeExtensionUsageSeeAlso packageName="vike-react" />
