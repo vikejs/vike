@@ -23,25 +23,27 @@ function parseConfigValuesImported(configValuesImported: ConfigValueImported[]):
     assertIsNotNull(value, configName, importPath)
   }
 
-  configValuesImported.filter(c => c.configName !== 'client').forEach((configValueLoaded) => {
-    if (configValueLoaded.isValueFile) {
-      const { exportValues, importPath, configName } = configValueLoaded
-      assertPlusFileExport(exportValues, importPath, configName)
-      Object.entries(exportValues).forEach(([exportName, exportValue]) => {
-        const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
-        const configName = isSideExport ? exportName : configValueLoaded.configName
-        if (isSideExport && configName in configValues) {
-          // We can't avoid side-export conflicts upstream. (Because we cannot know about side-exports upstream at build-time.)
-          // Side-exports have the lowest priority.
-          return
-        }
+  configValuesImported
+    .filter((c) => c.configName !== 'client')
+    .forEach((configValueLoaded) => {
+      if (configValueLoaded.isValueFile) {
+        const { exportValues, importPath, configName } = configValueLoaded
+        assertPlusFileExport(exportValues, importPath, configName)
+        Object.entries(exportValues).forEach(([exportName, exportValue]) => {
+          const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
+          const configName = isSideExport ? exportName : configValueLoaded.configName
+          if (isSideExport && configName in configValues) {
+            // We can't avoid side-export conflicts upstream. (Because we cannot know about side-exports upstream at build-time.)
+            // Side-exports have the lowest priority.
+            return
+          }
+          addConfigValue(configName, exportValue, importPath, exportName)
+        })
+      } else {
+        const { configName, importPath, exportValue, exportName } = configValueLoaded
         addConfigValue(configName, exportValue, importPath, exportName)
-      })
-    } else {
-      const { configName, importPath, exportValue, exportName } = configValueLoaded
-      addConfigValue(configName, exportValue, importPath, exportName)
-    }
-  })
+      }
+    })
 
   return configValues
 }
