@@ -13,6 +13,7 @@ describe('isCjsEsmError()', () => {
   is_not_defined()
   is_not_exported()
   unexpected_token_export()
+  misc()
 })
 
 function t1(expectedResult: Res, error: { message: string; code: string | undefined; stack: string }) {
@@ -820,6 +821,25 @@ SyntaxError: Unexpected token 'export'
     at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
 `
       }
+    )
+  })
+}
+
+function misc() {
+  it('misc', () => {
+    t2(
+      false,
+      `
+Error: [vike][Wrong Usage] The guard() hook of /pages/maps/ingestion/@id/+guard.js returns a value, but guard() doesn't accept any return value
+    at executeGuardHook (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/shared/route/executeGuardHook.js:23:5)
+    at async renderPageAlreadyRouted (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage/renderPageAlreadyRouted.js:34:9)
+    at async renderPageNominal (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:268:36)
+    at async renderPageAlreadyPrepared (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:121:45)
+    at async renderPageAndPrepare (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:101:12)
+    at async renderPage_wrapper (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:26:24)
+    at async renderPage (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:46:50)
+    at async file:///usr/src/app/server/index.js:75:25
+      `
     )
   })
 }
