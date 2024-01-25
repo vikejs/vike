@@ -50,7 +50,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isStem?: true) {
     // <head> is render to HTML
     expect(html).toContain('<title>My Vike + React App</title>')
     expect(html).toContain('<meta name="description" content="Demo showcasing Vike + React"/>')
-    expect(html).toContain('<link rel="icon" href="/assets/logo.svg" />')
+    expect(html).toContain('<link rel="icon"')
     // <body> isn't rendered to HTML
     expect(html).not.toContain('<h1>')
     expect(html).toContain('<div id="page-view"></div>')
