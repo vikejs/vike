@@ -4,6 +4,7 @@ import { getHook, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 import { assert, assertUsage, executeHook, isCallable } from './utils.js'
 import type { PageContextExports, PageFile } from '../getPageFiles.js'
 import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
+const errIntro = 'The guard() hook defined by'
 
 async function executeGuardHook<
   T extends PageContextExports & {
@@ -32,7 +33,7 @@ async function executeGuardHook<
   const hookResult = await executeHook(() => guard(pageContextForUserConsumption), hook)
   assertUsage(
     hookResult === undefined,
-    `The guard() hook of ${hook.hookFilePath} returns a value, but guard() doesn't accept any return value`
+    `${errIntro} ${hook.hookFilePath} returns a value, but guard() shouldn't return any value`
   )
 }
 
@@ -49,6 +50,6 @@ function findPageGuard(pageId: string, pageFilesAll: PageFile[]): null | PageGua
   const hookFilePath = filePath
   const hookTimeout = getHookTimeoutDefault('guard')
 
-  assertUsage(isCallable(hookFn), `guard() defined by ${hookFilePath} should be a function`)
+  assertUsage(isCallable(hookFn), `${errIntro} ${hookFilePath} should be a function`)
   return { hookFn, hookName: 'guard', hookFilePath, hookTimeout }
 }

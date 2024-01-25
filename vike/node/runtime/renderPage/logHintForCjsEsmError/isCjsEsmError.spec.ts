@@ -1,4 +1,4 @@
-import { isReactInvalidComponentError, isCjsEsmError } from '../logHintForCjsEsmError'
+import { isCjsEsmError } from '../logHintForCjsEsmError'
 import { expect, describe, it } from 'vitest'
 import { errror_cannot_use_import_outside_of_module } from './errors'
 
@@ -13,11 +13,21 @@ describe('isCjsEsmError()', () => {
   is_not_defined()
   is_not_exported()
   unexpected_token_export()
+  misc()
 })
 
-describe('isReactInvalidComponentError()', () => {
-  react_invalid_component()
-})
+function t1(expectedResult: Res, error: { message: string; code: string | undefined; stack: string }) {
+  expectRes(isCjsEsmError(error), expectedResult)
+}
+function t2(resExpected: boolean | string, errString: string) {
+  expectRes(isCjsEsmError({ stack: errString }), resExpected)
+}
+type Res = boolean | string | string[]
+function expectRes(res: Res, resExpected: Res) {
+  if (typeof res === 'string') res = [res]
+  if (typeof resExpected === 'string') resExpected = [resExpected]
+  expect(res).toEqual(resExpected)
+}
 
 // Classic: file extension missing in import path.
 function ERR_MODULE_NOT_FOUND() {
@@ -815,79 +825,21 @@ SyntaxError: Unexpected token 'export'
   })
 }
 
-// Classic: React's infamous invalid component error.
-function react_invalid_component() {
-  it('React: invalid component', () => {
-    expect(true).toBe(
-      isReactInvalidComponentError(
-        /* Error artificially created:
-        ```diff
-        // node_modules/vike-react/dist/renderer/onRenderHtml.js:
-        - import { PageContextProvider } from './PageContextProvider.js';
-        + const PageContextProvider = undefined
-        ``` */
-        // https://github.com/brillout/vps-mui/tree/reprod-1
-        // https://github.com/vikejs/vike/discussions/830#discussion-5143519
-        // https://github.com/vikejs/vike/discussions/830#discussioncomment-5763136
-        // https://github.com/vikejs/vike/discussions/571#discussioncomment-6141003
-        // https://github.com/vikejs/vike/discussions/1031#discussion-5426053
-        // https://github.com/vikejs/vike/discussions/1080#discussion-5535121
-        {
-          message:
-            "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
-          code: undefined,
-          stack: `
-Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
-    at renderElement (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6047:9)
-    at renderNodeDestructiveImpl (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
-    at renderNodeDestructive (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
-    at renderElement (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5975:9)
-    at renderNodeDestructiveImpl (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
-    at renderNodeDestructive (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
-    at retryTask (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6532:5)
-    at performWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6580:7)
-    at /home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6904:12
-    at scheduleWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:78:3)
-`
-        }
-      )
-    )
-    expect(true).toBe(
-      isReactInvalidComponentError(
-        // Also catch `but got: object`
-        {
-          message:
-            "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
-          // Fake error obejct
-          code: undefined,
-          stack: ``
-        }
-      )
-    )
-    expect(true).toBe(
-      isReactInvalidComponentError(
-        // Or any other invalid value
-        {
-          message:
-            "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: foo. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
-          // Fake error obejct
-          code: undefined,
-          stack: ``
-        }
-      )
+function misc() {
+  it('misc', () => {
+    t2(
+      false,
+      `
+Error: [vike][Wrong Usage] The guard() hook of /pages/maps/ingestion/@id/+guard.js returns a value, but guard() doesn't accept any return value
+    at executeGuardHook (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/shared/route/executeGuardHook.js:23:5)
+    at async renderPageAlreadyRouted (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage/renderPageAlreadyRouted.js:34:9)
+    at async renderPageNominal (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:268:36)
+    at async renderPageAlreadyPrepared (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:121:45)
+    at async renderPageAndPrepare (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:101:12)
+    at async renderPage_wrapper (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:26:24)
+    at async renderPage (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:46:50)
+    at async file:///usr/src/app/server/index.js:75:25
+      `
     )
   })
-}
-
-function t1(expectedResult: Res, error: { message: string; code: string | undefined; stack: string }) {
-  expectRes(isCjsEsmError(error), expectedResult)
-}
-function t2(resExpected: boolean | string, errString: string) {
-  expectRes(isCjsEsmError({ stack: errString }), resExpected)
-}
-type Res = boolean | string | string[]
-function expectRes(res: Res, resExpected: Res) {
-  if (typeof res === 'string') res = [res]
-  if (typeof resExpected === 'string') resExpected = [resExpected]
-  expect(res).toEqual(resExpected)
 }

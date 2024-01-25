@@ -806,32 +806,34 @@ function isDefiningPageConfig(configName: string): boolean {
 
 function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId): ConfigDefinitionsIncludingCustom {
   const configDefinitions: ConfigDefinitionsIncludingCustom = { ...configDefinitionsBuiltIn }
-  Object.entries(interfaceFilesRelevant).reverse().forEach(([_locationId, interfaceFiles]) => {
-    interfaceFiles.forEach((interfaceFile) => {
-      const configMeta = interfaceFile.fileExportsByConfigName['meta']
-      if (!configMeta) return
-      const meta = configMeta.configValue
-      assertMetaValue(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
+  Object.entries(interfaceFilesRelevant)
+    .reverse()
+    .forEach(([_locationId, interfaceFiles]) => {
+      interfaceFiles.forEach((interfaceFile) => {
+        const configMeta = interfaceFile.fileExportsByConfigName['meta']
+        if (!configMeta) return
+        const meta = configMeta.configValue
+        assertMetaValue(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
 
-      // Set configDef._userEffectDefinedAt
-      Object.entries(meta).forEach(([configName, configDef]) => {
-        if (!configDef.effect) return
-        assert(interfaceFile.isConfigFile)
-        configDef._userEffectDefinedAt = {
-          ...interfaceFile.filePath,
-          fileExportPathToShowToUser: ['default', 'meta', configName, 'effect']
-        }
-      })
+        // Set configDef._userEffectDefinedAt
+        Object.entries(meta).forEach(([configName, configDef]) => {
+          if (!configDef.effect) return
+          assert(interfaceFile.isConfigFile)
+          configDef._userEffectDefinedAt = {
+            ...interfaceFile.filePath,
+            fileExportPathToShowToUser: ['default', 'meta', configName, 'effect']
+          }
+        })
 
-      objectEntries(meta).forEach(([configName, configDefinition]) => {
-        // User can override an existing config definition
-        configDefinitions[configName] = {
-          ...configDefinitions[configName],
-          ...configDefinition
-        }
+        objectEntries(meta).forEach(([configName, configDefinition]) => {
+          // User can override an existing config definition
+          configDefinitions[configName] = {
+            ...configDefinitions[configName],
+            ...configDefinition
+          }
+        })
       })
     })
-  })
   return configDefinitions
 }
 
