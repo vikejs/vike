@@ -15,6 +15,19 @@ describe('isCjsEsmError()', () => {
   unexpected_token_export()
 })
 
+function t1(expectedResult: Res, error: { message: string; code: string | undefined; stack: string }) {
+  expectRes(isCjsEsmError(error), expectedResult)
+}
+function t2(resExpected: boolean | string, errString: string) {
+  expectRes(isCjsEsmError({ stack: errString }), resExpected)
+}
+type Res = boolean | string | string[]
+function expectRes(res: Res, resExpected: Res) {
+  if (typeof res === 'string') res = [res]
+  if (typeof resExpected === 'string') resExpected = [resExpected]
+  expect(res).toEqual(resExpected)
+}
+
 // Classic: file extension missing in import path.
 function ERR_MODULE_NOT_FOUND() {
   it('ERR_MODULE_NOT_FOUND / ERR_LOAD_URL', () => {
@@ -809,17 +822,4 @@ SyntaxError: Unexpected token 'export'
       }
     )
   })
-}
-
-function t1(expectedResult: Res, error: { message: string; code: string | undefined; stack: string }) {
-  expectRes(isCjsEsmError(error), expectedResult)
-}
-function t2(resExpected: boolean | string, errString: string) {
-  expectRes(isCjsEsmError({ stack: errString }), resExpected)
-}
-type Res = boolean | string | string[]
-function expectRes(res: Res, resExpected: Res) {
-  if (typeof res === 'string') res = [res]
-  if (typeof resExpected === 'string') resExpected = [resExpected]
-  expect(res).toEqual(resExpected)
 }
