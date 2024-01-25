@@ -48,7 +48,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isStem?: true) {
     const html = await fetchHtml('/star-wars/4')
     expect(html).toContain('<html')
     // <head> is render to HTML
-    expect(html).toContain('<title>My Vike + React App</title>')
+    expect(html).toContain('<title>The Phantom Menace</title>')
     expect(html).toContain('<meta name="description" content="Demo showcasing Vike + React"/>')
     expect(html).toContain('<link rel="icon"')
     // <body> isn't rendered to HTML
