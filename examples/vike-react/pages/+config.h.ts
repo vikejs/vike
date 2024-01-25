@@ -6,6 +6,7 @@ import vikeReact from 'vike-react/config'
 
 // Default configs (can be overriden by pages)
 export default {
+  ssr: true,
   Layout,
   Head,
   // <title>
