@@ -24,6 +24,9 @@ function getHint(error: unknown): null | string {
   const res = isCjsEsmError(error)
   if (res) {
     const packageNames = res === true ? null : res
+    packageNames?.forEach((packageName) => {
+      assert(!['vite', 'vike'].includes(packageName))
+    })
     const hint = [
       'Error could be a CJS/ESM issue, consider ',
       !packageNames || packageNames.length === 0
@@ -237,7 +240,6 @@ function extractFromPath(filePath: string): string | null {
 
   packageName = clean(packageName)
 
-  assert(!['vite', 'vike'].includes(packageName))
   return packageName
 }
 function clean(packageName: string) {
