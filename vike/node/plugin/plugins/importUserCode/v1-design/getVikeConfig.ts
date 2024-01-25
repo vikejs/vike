@@ -806,7 +806,7 @@ function isDefiningPageConfig(configName: string): boolean {
 
 function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId): ConfigDefinitionsIncludingCustom {
   const configDefinitions: ConfigDefinitionsIncludingCustom = { ...configDefinitionsBuiltIn }
-  Object.entries(interfaceFilesRelevant).forEach(([_locationId, interfaceFiles]) => {
+  Object.entries(interfaceFilesRelevant).reverse().forEach(([_locationId, interfaceFiles]) => {
     interfaceFiles.forEach((interfaceFile) => {
       const configMeta = interfaceFile.fileExportsByConfigName['meta']
       if (!configMeta) return

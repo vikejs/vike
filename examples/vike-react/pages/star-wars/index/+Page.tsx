@@ -1,4 +1,4 @@
-export default Page
+export { Page }
 
 import React from 'react'
 import type { Data } from './+data'

@@ -10,11 +10,11 @@ const data = async () => {
   const moviesData = (await response.json()) as MovieDetails[]
   // We remove data we don't need because the data is passed to the client; we should
   // minimize what is sent over the network.
-  const movies = minimize(moviesData)
+  const movies = minimizeData(moviesData)
   return movies
 }
 
-function minimize(movies: MovieDetails[]): Movie[] {
+function minimizeData(movies: MovieDetails[]): Movie[] {
   return movies.map((movie) => {
     const { title, release_date, id } = movie
     return { title, release_date, id }
