@@ -58,40 +58,53 @@ function isReactInvalidComponentError(error: unknown): boolean {
 // `'some-npm-package'` -> add some-npm-package to `ssr.noExternal`
 function isCjsEsmError(error: unknown): boolean | string[] {
   const res = check(error)
-  if (res !== true && res !== false) {
-    res.forEach((packageName) => {
-      assert(!['vite', 'vike'].includes(packageName))
-    })
-  }
-  return res
+  if (res === true || res === false) return res
+  const packageNames = normalizeRes(res)
+  if (packageNames === false) return packageNames
+  packageNames.forEach((packageName) => {
+    assert(!['vite', 'vike'].includes(packageName))
+  })
+  return packageNames
 }
-function check(error: unknown): boolean | string[] {
+function normalizeRes(res: string | string[]): string[] | false {
+  let packageNames: string[] = Array.isArray(res) ? res : [res]
+  packageNames = unique(packageNames.filter(isNotNullish).filter((packageName) => packageName !== '@brillout/import'))
+  if (packageNames.length === 0) return false
+  return packageNames
+}
+function check(error: unknown): boolean | string | string[] {
   const message = getErrMessage(error)
   const anywhere = getAnywhere(error)
   const packageName_stack1 = getPackageName_stack1(error)
   const packageName_stack2 = getPackageName_stack2(error)
   const isRelatedToNodeModules = !!packageName_stack1 || !!packageName_stack2 || includesNodeModules(message)
-  // const relatedNpmPackages = normalize([packageName_stack1, packageName_stack2, extractFromNodeModulesPath(message)])
+  /*
+  const relatedNpmPackages = normalizeArray([
+    packageName_stack1 || null,
+    packageName_stack2 || null,
+    (message && extractFromNodeModulesPath(message)) || null
+  ])
+  */
 
   // ERR_UNSUPPORTED_DIR_IMPORT
   {
-    const packageNames = parseNodeModulesPathMessage('ERR_UNSUPPORTED_DIR_IMPORT', anywhere)
-    if (packageNames) return packageNames
+    const packageName = parseNodeModulesPathMessage('ERR_UNSUPPORTED_DIR_IMPORT', anywhere)
+    if (packageName) return packageName
   }
 
   // ERR_UNKNOWN_FILE_EXTENSION
   {
-    const packageNames = parseUnkownFileExtensionMessage(anywhere)
-    if (packageNames) return packageNames
+    const packageName = parseUnkownFileExtensionMessage(anywhere)
+    if (packageName) return packageName
   }
   {
-    const packageNames = parseNodeModulesPathMessage('ERR_UNKNOWN_FILE_EXTENSION', anywhere)
-    if (packageNames) return packageNames
+    const packageName = parseNodeModulesPathMessage('ERR_UNKNOWN_FILE_EXTENSION', anywhere)
+    if (packageName) return packageName
   }
 
   {
-    const packageNames = parseNodeModulesPathMessage('is not exported', anywhere)
-    if (packageNames) return packageNames
+    const packageName = parseNodeModulesPathMessage('is not exported', anywhere)
+    if (packageName) return packageName
   }
 
   // Using CJS inside ESM modules.
@@ -114,7 +127,7 @@ function check(error: unknown): boolean | string[] {
   if (includes(anywhere, 'ERR_REQUIRE_ESM')) {
     /* The issue is the importer, not the importee.
     if (relatedNpmPackages) return relatedNpmPackages
-    */
+     */
     {
       if (packageName_stack1) return packageName_stack1
     }
@@ -133,8 +146,8 @@ function check(error: unknown): boolean | string[] {
 
   // `SyntaxError: Named export '${exportName}' not found. The requested module '${packageName}' is a CommonJS module, which may not support all module.exports as named exports.`
   {
-    const packageNames = parseImportFrom(anywhere)
-    if (packageNames) return packageNames
+    const packageName = parseImportFrom(anywhere)
+    if (packageName) return packageName
   }
 
   if (includes(anywhere, 'Cannot read properties of undefined')) {
@@ -169,29 +182,29 @@ function check(error: unknown): boolean | string[] {
   return false
 }
 
-function parseCannotFindMessage(str: string): false | string[] {
+function parseCannotFindMessage(str: string) {
   const match = /Cannot find \S+ '(\S+)' imported from (\S+)/.exec(str)
   if (!match) return false
   // const packageNameCannotFind = extractFromPath(match[1]!)
   const packageNameFrom = extractFromPath(match[2]!)
-  return normalize([
+  return normalizeArray([
     // packageNameCannotFind,
     packageNameFrom
   ])
 }
-function parseUnkownFileExtensionMessage(str: string): false | string[] {
+function parseUnkownFileExtensionMessage(str: string) {
   const match = /Unknown file extension "\S+" for (\S+)/.exec(str)
   if (!match) return false
   const filePath = match[1]!
   const packageName = extractFromPath(filePath)
-  return normalize([packageName])
+  return packageName
 }
-function parseImportFrom(str: string): false | string[] {
+function parseImportFrom(str: string) {
   const match = /\bimport\b.*?\bfrom\b\s*?"(.+?)"/.exec(str)
   if (!match) return false
   const importPath = match[1]!
   const packageName = extractFromPath(importPath)
-  return normalize([packageName])
+  return packageName
 }
 function parseNodeModulesPathMessage(begin: string, str: string) {
   str = str.replaceAll('\\', '/')
@@ -202,7 +215,7 @@ function parseNodeModulesPathMessage(begin: string, str: string) {
   return extractFromNodeModulesPath(importPath)
 }
 
-function getPackageName_stack1(err: unknown): false | string[] {
+function getPackageName_stack1(err: unknown) {
   const errStack = getErrStack(err)
   if (!errStack) return false
   const firstLineStackTrace = errStack.split('\n').filter((line) => line.startsWith('    at '))[0]
@@ -210,7 +223,7 @@ function getPackageName_stack1(err: unknown): false | string[] {
   return extractFromNodeModulesPath(firstLineStackTrace)
 }
 /** See https://github.com/brillout/repro_node-syntax-error#nodejs-behavior */
-function getPackageName_stack2(err: unknown): false | string[] {
+function getPackageName_stack2(err: unknown) {
   const errStack = getErrStack(err)
   if (!errStack) return false
   const firstLine = errStack.trim().split('\n')[0]!
@@ -256,11 +269,11 @@ function clean(packageName: string) {
   }
   return packageName
 }
-function extractFromNodeModulesPath(str: string): false | string[] {
+function extractFromNodeModulesPath(str: string) {
   if (!includesNodeModules(str)) return false
   const packageName = extractFromPath(str)
   assert(packageName)
-  return normalize([packageName])
+  return packageName
 }
 
 function includes(str1: string | null, str2: string): boolean {
@@ -274,11 +287,10 @@ function includesNodeModules(str: string | null): boolean {
   return true
 }
 
-function normalize(packageNames: (string | null)[]): string[] | false {
-  const result = unique(packageNames.filter(isNotNullish).filter((packageName) => packageName !== '@brillout/import'))
-
-  if (result.length === 0) return false
-  return result
+function normalizeArray(arr: (string | null)[]): string[] | null {
+  const arrNormalized = arr.filter(isNotNullish)
+  if (arrNormalized.length === 0) return null
+  return arrNormalized
 }
 
 function getErrMessage(err: unknown): null | string {
