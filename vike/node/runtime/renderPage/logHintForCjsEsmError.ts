@@ -24,9 +24,6 @@ function getHint(error: unknown): null | string {
   const res = isCjsEsmError(error)
   if (res) {
     const packageNames = res === true ? null : res
-    packageNames?.forEach((packageName) => {
-      assert(!['vite', 'vike'].includes(packageName))
-    })
     const hint = [
       'Error could be a CJS/ESM issue, consider ',
       !packageNames || packageNames.length === 0
@@ -56,12 +53,19 @@ function isReactInvalidComponentError(error: unknown): boolean {
   )
 }
 
-/**
- * `false` -> noop
- * `true` -> generic message
- * `'some-npm-package'` -> add some-npm-package to `ssr.noExternal`
- */
+// `false` -> noop
+// `true` -> generic message
+// `'some-npm-package'` -> add some-npm-package to `ssr.noExternal`
 function isCjsEsmError(error: unknown): boolean | string[] {
+  const res = check(error)
+  if (res !== true && res !== false) {
+    res.forEach((packageName) => {
+      assert(!['vite', 'vike'].includes(packageName))
+    })
+  }
+  return res
+}
+function check(error: unknown): boolean | string[] {
   const message = getErrMessage(error)
   const anywhere = getAnywhere(error)
   const packageName_stack1 = getPackageName_stack1(error)
