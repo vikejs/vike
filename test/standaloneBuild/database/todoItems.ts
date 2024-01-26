@@ -1,4 +1,4 @@
-export { getTodoItems, createTodoItem }
+export { init, getTodoItems, createTodoItem }
 
 import { PrismaClient } from '@prisma/client'
 
@@ -6,7 +6,6 @@ const prisma = new PrismaClient()
 
 const getTodoItems = () => prisma.todo.findMany()
 const createTodoItem = ({ text }: { text: string }) => prisma.todo.create({ data: { text } })
-init()
 
 // Initial data
 async function init() {

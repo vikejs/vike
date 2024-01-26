@@ -2,6 +2,7 @@ import express from 'express'
 import { renderPage } from 'vike/server'
 import { telefunc } from 'telefunc'
 import { root } from './root'
+import { init } from '../database/todoItems'
 
 // Caught before / after server start
 // foo;
@@ -18,6 +19,7 @@ startServer()
 // }, 2000)
 
 async function startServer() {
+  await init()
   const app = express()
 
   if (import.meta.env.PROD) {
