@@ -50,13 +50,8 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Scaffold new app',
+    title: 'Scaffold new Vike app',
     url: '/scaffold'
-  },
-  {
-    level: 2,
-    title: 'Add to existing app',
-    url: '/add'
   },
   {
     level: 1,
@@ -172,11 +167,6 @@ const headings = [
     level: 1,
     title: 'Routing',
     titleEmoji: 'road-fork'
-  },
-  {
-    level: 2,
-    title: 'Server Routing VS Client Routing',
-    url: '/server-routing-vs-client-routing'
   },
   {
     level: 2,

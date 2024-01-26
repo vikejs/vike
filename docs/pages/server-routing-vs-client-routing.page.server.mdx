@@ -1,21 +1,15 @@
 import { Link } from '@brillout/docpress'
-import { ServerRouting, ClientRouting, DefaultRouting, UiFrameworkVikeExtension } from '../components'
+import { DefaultRouting, UiFrameworkVikeExtension } from '../components'
 
-Vike has first-class support for both *Server(-side) Routing* and *Client(-side) Routing*.
+Vike has first-class support for both:
+ - <Link href="/server-routing">Server(-side) Routing</Link>, and
+ - <Link href="/client-routing">Client(-side) Routing</Link>.
 
 <DefaultRouting />
 
-## Server Routing
-
-<ServerRouting />
-
-## Client Routing
-
-<ClientRouting />
-
 ## Which one to choose?
 
-If you don't use a <UiFrameworkVikeExtension />, then we recommend to use Server Routing by default as it leads to a significantly simpler architecture.
+If you don't use a <UiFrameworkVikeExtension />, then we recommend to use Server Routing by default as it leads to a simpler architecture.
 
 In general, there are two things to consider:
  - There is a trade-off between simplicity (Server Routing) and performance (Client Routing).

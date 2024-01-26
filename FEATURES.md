@@ -36,6 +36,7 @@ Unique Vike features:
  - Low-level primitives allowing users to deeply integrate with data fetching tools.
    - For example, Vike sponsors use it to deeply integrate Relay. (Facebook's internal framework deeply integrates with Relay in ways that aren't possible with Next.js.)
  - URL rewriting for both [novel DX and novel UX](https://twitter.com/brillout/status/1687431520569425920) around authentication and authorization
+ - Domain-driven file structure
 
 Marketing boost of using "Vike - The Open Framework" &mdash; collaboration and openness being one of Vike's core value.
 

@@ -1,9 +1,11 @@
 import { Link, RepoLink, ReadingRecommendation } from '@brillout/docpress'
-import { UseUiFrameworkVikeExtensionAnyHint } from '../components'
+import { UseUiFrameworkVikeExtensionAnyHint, UiFrameworkVikeExtension } from '../components'
 
-Environment: browser.
+Environment: client.
 
-By default, Vike does <Link text="Server Routing" href="/server-routing" /> but you can opt into <Link text="Client Routing" href="/client-routing" /> by:
+If you don't use a <UiFrameworkVikeExtension /> then Vike does <Link text="Server Routing" href="/server-routing" /> by default.
+
+You can opt into <Link text="Client Routing" href="/client-routing" /> by:
  1. Setting `clientRouting: true`.
     ```js
     // +config.h.js

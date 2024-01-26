@@ -1,12 +1,23 @@
 import { Link } from '@brillout/docpress'
-import { ClientRouting, DefaultRouting } from '../components'
+import { DefaultRouting } from '../components'
 
-<ClientRouting />
-
-We further discuss these use cases at <Link href="/server-routing-vs-client-routing#which-one-to-choose" />.
+*Client(-side) Routing* denotes the practice of implementing page navigation on the client-side:
+when the user navigates to a new page,
+instead of completely discarding the current page and requesting the HTML of the new page,
+the new page is rendered by manipulating the DOM of the current page.
 
 <DefaultRouting />
 
-See also:
+Client Routing enables:
+- Faster page navigation.
+- Client-side state preserved across navigation.
+- Nested Layouts.
+- Custom page transition animations.
+
+We further discuss these use cases at <Link href="/server-routing-vs-client-routing#which-one-to-choose" />.
+
+## See also
+
+ - <Link href="/clientRouting" />
  - <Link href="/server-routing" />
  - <Link href="/server-routing-vs-client-routing" />

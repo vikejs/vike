@@ -4,10 +4,12 @@ export { UiFrameworkVikeExtensionNames }
 import React from 'react'
 import { Link } from '@brillout/docpress'
 
-function UiFrameworkVikeExtension() {
+function UiFrameworkVikeExtension({ plural, noLink }: { plural?: true; noLink?: true }) {
+  const linkText = `Vike extension${plural ? 's' : ''}`
+  const linkOrText = noLink ? linkText : <Link href="/extensions">{linkText}</Link>
   return (
     <>
-      UI framework <Link href="/extensions">Vike extension</Link> (<UiFrameworkVikeExtensionNames />)
+      UI framework {linkOrText} (<UiFrameworkVikeExtensionNames />)
     </>
   )
 }

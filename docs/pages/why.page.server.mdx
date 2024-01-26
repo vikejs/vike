@@ -7,6 +7,10 @@ import { UiFrameworkVikeExtension } from '../components'
 
 A core belief of Vike is what we call *optional control*: you begin with a full-fledged and zero-config setup enabling you to quickly ship prototypes while later, as the need arises while scaling, you can eject and take control over integration code that was initially hidden from you.
 
-For example, you can use a <UiFrameworkVikeExtension /> to get a quick start similar to frameworks such as Next.js or Nuxt. Later, at scale, you can replace `vike-react` with a custom React integration. If you use Vike without any Vike extension, then you have complete control over the integration code of your tools.
+For example, you can use a <UiFrameworkVikeExtension /> to get a quick start similar to frameworks such as Next.js or Nuxt. Later you can replace `vike-react` with a custom React integration. If you use Vike without any Vike extension, then you have complete control over integration code.
 
 Start quick while optionally take control as the need arises.
+
+> Vike extensions use the same interface than Vike users. This means everything a Vike extension can do, you can also do it without using a Vike extension. Consequently, Vike extensions are fully ejectable.
+
+This is particularly relevant for large enterprises that often end up needing a lot more control than what frameworks offer. For example, `facebook.com` uses React but doesn't use a framework like Next.js. Vike is special in that regard because, when it's used without any Vike extension, it prescribes only very few things. This is also relevant for small companies with expert developers who prefer control over integration code instead of being hindered by the framework.

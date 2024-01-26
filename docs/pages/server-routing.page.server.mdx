@@ -1,12 +1,17 @@
 import { Link } from '@brillout/docpress'
 import { ServerRouting, DefaultRouting } from '../components'
 
-<ServerRouting />
-
-We further discuss the pros and cons of Server Routing at <Link href="/server-routing-vs-client-routing#which-one-to-choose" />.
+Server(-side) Routing is the "old school way" of doing routing:
+when the user navigates to a new page,
+the old page is completely discarded and the HTML of the new page is loaded.
 
 <DefaultRouting />
 
-See also:
+The advantage of Server Routing is that it leads to a simpler architecture. The drawback is that some use cases aren't implementable with Server Routing.
+
+We further discuss the pros and cons of Server Routing at <Link href="/server-routing-vs-client-routing#which-one-to-choose" />.
+
+## See also
+
  - <Link href="/client-routing" />
  - <Link href="/server-routing-vs-client-routing" />

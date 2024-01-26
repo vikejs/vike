@@ -1,13 +1,11 @@
 import { RepoLink, Link, Warning } from '@brillout/docpress'
+import { UiFrameworkVikeExtension } from '../components'
 
-Environment: Browser, <Link text="Client Routing" href="/clientRouting" />.
+Environment: client.
 
-The `navigate('/some/url')` function enables you to programmatically switch pages.
+The `navigate('/some/url')` function enables you to programmatically switch pages. In other words, you can implement navigations that aren't triggered by the user clicking on an anchor link `<a>`.
 
-> `navigate()` requires <Link text="Client Routing" href="/clientRouting" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.href = '/some/url'` instead.
-
-With `navigate()`, you can implement navigations that aren't triggered by the user clicking on a `<a>` link:
-for example, when redirecting a user after a successful form submission.
+For example, you can use `navigate()` to redirect the user after a successful form submission:
 
 ```jsx
 import { navigate } from 'vike/client/router'
@@ -28,7 +26,9 @@ async function onSubmit() {
 }
 ```
 
-> If you want to redirect users *before* the page finished rendering (e.g. to redirect non-authenticated users to a login page), then use <Link href='/redirect' noBreadcrumb /> instead.
+> If you want to redirect while rendering a page (e.g. redirect non-authenticated users to a login page), then use <Link href='/redirect' noBreadcrumb /> instead.
+
+> If you want to navigate back, then use [`window.history.back()`](https://developer.mozilla.org/en-US/docs/Web/API/History/back) instead.
 
 
 ## Options
@@ -67,7 +67,13 @@ window.addEventListener('popstate', (event) => {
 ```
 
 
+## Without Vike extension
+
+If you don't use a <UiFrameworkVikeExtension /> and if you use <Link text="Server Routing" href="/server-routing" /> then use `window.location.href = '/some/url'` instead of `navigate()` (because `navigate()` requires <Link text="Client Routing" href="/client-routing" />).
+
+> The <UiFrameworkVikeExtension plural noLink /> use Client Routing.
+
+
 ## See also
 
  - <Link href="/redirect" />
- - <Link href="/client-routing" />

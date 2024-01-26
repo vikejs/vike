@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header, MobileCallToAction } from './Header'
+import { Header } from './Header'
 import { Features } from './features/Features'
 import { Consulting, Contributors, HorizontalLine, Link, Sponsors } from '@brillout/docpress'
 
@@ -17,7 +17,6 @@ function Page() {
       <Header />
       <HorizontalLine primary={true} />
       <Features />
-      <MobileCallToAction />
       <HorizontalLine />
       <Sponsors />
       <HorizontalLine />
