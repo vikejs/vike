@@ -20,23 +20,6 @@ const headings = [
     url: '/nextjs',
     sectionTitles: ['React Server Components']
   },
-  /*
-  {
-    level: 2,
-    title: 'What is Server-side Rendering (SSR)?',
-    url: '/ssr',
-  },
-  */
-  {
-    level: 2,
-    title: 'Vue Tour',
-    url: '/vue-tour'
-  },
-  {
-    level: 2,
-    title: 'React Tour',
-    url: '/react-tour'
-  },
   {
     level: 2,
     title: 'Architecture',

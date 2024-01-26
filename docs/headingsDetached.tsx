@@ -426,4 +426,12 @@ const headingsDetached = [
     title: 'Add to existing Vite app',
     url: '/add'
   },
+  {
+    title: 'Vue Tour',
+    url: '/vue-tour'
+  },
+  {
+    title: 'React Tour',
+    url: '/react-tour'
+  }
 ] satisfies HeadingDetachedDefinition[]
