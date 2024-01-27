@@ -69,6 +69,7 @@ Vue example:
 
    > See [Render Modes](/render-modes) for another illustration of conditional DOM hydration.
 
+
 ## Links intercepting
 
 You can keep using `<a href="/some-url">` links: the Client Router automatically intercepts clicks on `<a>` elements.
@@ -90,10 +91,13 @@ And following hooks ot implement page transition animations:
 
 ## Settings
 
+Page settings:
 - `prefetchStaticAssets`: Link prefetching settings, see <Link href="/prefetchStaticAssets" />.
-- `hydrationCanBeAborted`: Whether the <Link text="UI framework" href="/ui-framework" /> allows <Link href="/hydration">hydrations</Link> to be aborted, see <Link href="/hydrationCanBeAborted" />.
-- `<a keep-scroll-position>`: By default, the Client Router scrolls to the top of the page upon page change; you can use `<a href="/some/url" keep-scroll-position />` if you want to preserve the scroll position instead. (Useful for <Link text="Nested Layouts" href="/layouts#nested-layouts" />.)
-- `<a rel="external">`: Skip Client Routing, see <Link href="#links-intercepting" />.
+- `hydrationCanBeAborted`: Whether the <Link text="UI framework" href="/ui-framework" /> allows the <Link href="/hydration">hydration</Link> to be aborted, see <Link href="/hydrationCanBeAborted" />.
+
+Anchor link options:
+- `<a href="/some/url" keep-scroll-position>`: Don't scroll to the top of the page, preserve the scroll position instead. See also <Link href="/navigate#options">`navigate('/some-url', { keepScrollPosition: true })`</Link>.
+- `<a href="/some/url" rel="external">`: Skip Client Routing, see <Link href="#links-intercepting" />.
 
 
 ## Programmatic navigation

@@ -33,7 +33,7 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Scaffold new Vike app',
+    title: 'Scaffold new app',
     url: '/scaffold'
   },
   {

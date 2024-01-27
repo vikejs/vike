@@ -67,9 +67,7 @@ export { Layout }
 
 ## Nested Layouts
 
-> **What are nested layouts?** A nested layout is, essentially, when a page has a route with multiple parameters.
->
-> For example `/product/@id/@view`.
+> **What are nested layouts?** A nested layout is, essentially, when a page has a route with multiple parameters. For example `/product/@id/@view`:
 > ```
 > URL                        id            view
 > =====================      ====          =======
@@ -95,13 +93,13 @@ You can implement a nested layout by using a route with multiple parameters:
 ```js
 // /pages/product/+route.js
 
-export const '/product/@id/@view'
+export default '/product/@id/@view'
 ```
 
-> Instead of a <Link href="/route-string">Route String</Link>, you can use a <Link href="/route-function">Route Function</Link> for full programmatic flexibility, see [this example](https://gist.github.com/brillout/a75fd8430dbc562dd10e69007121fea0).
+> You can also use a <Link href="/route-function">Route Function</Link> for full programmatic flexibility, see [this example](https://gist.github.com/brillout/a75fd8430dbc562dd10e69007121fea0).
 
 
-To ensure `@view` matches a list pre-defined values, use a <Link href="/guard">`guard()`</Link> hook with <Link href="/render">`throw render(404)`</Link>:
+To ensure `@view` matches a list of pre-defined values, you can use a <Link href="/guard">`guard()`</Link> hook with <Link href="/render">`throw render(404)`</Link>:
 
 ```js
 // /pages/product/+guard.js
@@ -116,7 +114,7 @@ export function guard(pageContext) {
 }
 ```
 
-You then use `pageContext.routeParams.view` to route the nested layout:
+You can then use `pageContext.routeParams.view` to implement the nested layout:
 
 ```jsx
 // /pages/product/+Page.js
@@ -127,7 +125,7 @@ import { usePageContext } from 'vike-react' // or 'vike-vue' / 'vike-solid'
 
 function Page() {
   const pageContext = usePageContext()
-  const viewElement = (() => {
+  const nestedLayout = (() => {
     const { view } = pageContext.routeParams
     if (view === 'reviews') return <Reviews />
     if (view === 'pricing') return <Pricing />
@@ -135,15 +133,13 @@ function Page() {
   return <>
      {/* ... */}
        {/* Somewhere deep */ }
-       { viewElement }
+       { nestedLayout }
      {/* ... */}
   </>
 }
 ```
 
-> See <Link href="/usePageContext" />.
-
-Finally, make sure to use <Link href="/clientRouting#settings">`<a href="/product/42/reviews" keep-scroll-position />`</Link> (or <Link href="/navigate#options">`navigate('/product/42/reviews', { keepScrollPosition: true })`</Link>) to avoid the browser to scroll to the top.
+Finally, make sure to use <Link href="/clientRouting#settings">`<a href="/product/42/reviews" keep-scroll-position />`</Link> (and <Link href="/navigate#options">`navigate('/product/42/reviews', { keepScrollPosition: true })`</Link>) to avoid the browser to scroll to the top.
 
 Examples:
  - <RepoLink path="/examples/layouts-react/" />
@@ -213,4 +209,6 @@ For smooth nested layout navigation, we recommend using <Link href="/clientRouti
 ## See also
 
 - <Link href="/Wrapper" />
+- <Link href="/usePageContext" />
 - <Link href="/Page" />
+- [#1459 - Nested Routes](https://github.com/vikejs/vike/issues/1459)
