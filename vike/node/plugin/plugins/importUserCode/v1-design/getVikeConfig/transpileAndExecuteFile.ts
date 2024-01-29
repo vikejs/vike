@@ -58,7 +58,7 @@ async function transpileFile(filePath: FilePathResolved, isValueFile: boolean, u
 
   const importsAreTransformed = !isValueFile
 
-  let code = await transpileWithEsbuild(filePath, userRootDir, importsAreTransformed, isValueFile)
+  let code = await transpileWithEsbuild(filePath, userRootDir, importsAreTransformed)
 
   let fileImportsTransformed: FileImport[] | null = null
   if (importsAreTransformed) {
@@ -110,7 +110,7 @@ async function transpileWithEsbuild(
   importsAreTransformed: boolean,
   isValueFile: boolean
 ) {
-  const isConfigFile = !isValueFile
+  const isConfigFile = importsAreTransformed
 
   const entryFilePath = filePath.filePathAbsoluteFilesystem
   const entryFileDir = path.posix.dirname(entryFilePath)
