@@ -33,6 +33,7 @@ async function transpileAndExecuteFile(
   isConfigOfExtension = false
 ): Promise<{ fileExports: Record<string, unknown> }> {
   if (isConfigOfExtension) {
+    assert(!transformImports)
     const fileExports = await executeFile(filePath.filePathAbsoluteFilesystem, filePath)
     if (isHeaderFile(filePath.filePathAbsoluteFilesystem)) {
       const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
