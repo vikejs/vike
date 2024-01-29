@@ -11,7 +11,7 @@ import type {
   FilePathResolved
 } from '../../../../../../shared/page-configs/PageConfig.js'
 import { assert, assertPosixPath, assertUsage, deepEqual, requireResolve } from '../../../../utils.js'
-import { type ImportData, parseImportData } from './transformImports.js'
+import { type ImportData, parseImportData } from './transformFileImports.js'
 import path from 'path'
 
 const filesEnvMap: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()

@@ -18,7 +18,7 @@ import {
   isObject,
   toPosixPath
 } from '../../../../utils.js'
-import { isImportData, transformImports, type FileImport } from './transformImports.js'
+import { isImportData, transformFileImports, type FileImport } from './transformFileImports.js'
 import { vikeConfigDependencies } from '../getVikeConfig.js'
 import 'source-map-support/register.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/PageConfig.js'
@@ -62,7 +62,7 @@ async function transpileFile(filePath: FilePathResolved, isValueFile: boolean, u
 
   let fileImportsTransformed: FileImport[] | null = null
   if (importsAreTransformed) {
-    const res = transformImports_(code, filePath)
+    const res = transformFileImports_(code, filePath)
     if (res) {
       code = res.code
       fileImportsTransformed = res.fileImportsTransformed
@@ -83,12 +83,12 @@ async function transpileFile(filePath: FilePathResolved, isValueFile: boolean, u
   return { code, fileImportsTransformed }
 }
 
-function transformImports_(codeOriginal: string, filePath: FilePathResolved) {
+function transformFileImports_(codeOriginal: string, filePath: FilePathResolved) {
   const { filePathAbsoluteFilesystem } = filePath
   const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
 
   // Replace import statements with import strings
-  const res = transformImports(codeOriginal, filePathToShowToUser2)
+  const res = transformFileImports(codeOriginal, filePathToShowToUser2)
   if (res.noTransformation) {
     return null
   }
