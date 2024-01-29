@@ -28,7 +28,7 @@ assertIsNotProductionRuntime()
 
 async function transpileAndExecuteFile(
   filePath: FilePathResolved,
-  isValueFile: boolean,
+  transformImports: boolean,
   userRootDir: string,
   isConfigOfExtension = false
 ): Promise<{ fileExports: Record<string, unknown> }> {
@@ -44,19 +44,19 @@ async function transpileAndExecuteFile(
     }
     return { fileExports }
   } else {
-    const { code, fileImportsTransformed } = await transpileFile(filePath, isValueFile, userRootDir)
+    const { code, fileImportsTransformed } = await transpileFile(filePath, transformImports, userRootDir)
     const fileExports = await executeTranspiledFile(filePath, code, fileImportsTransformed)
     return { fileExports }
   }
 }
 
-async function transpileFile(filePath: FilePathResolved, isValueFile: boolean, userRootDir: string) {
+async function transpileFile(filePath: FilePathResolved, transformImports: boolean, userRootDir: string) {
   const { filePathAbsoluteFilesystem } = filePath
   const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
   assertPosixPath(filePathAbsoluteFilesystem)
   vikeConfigDependencies.add(filePathAbsoluteFilesystem)
 
-  const importsAreTransformed = !isValueFile
+  const importsAreTransformed = transformImports
 
   let code = await transpileWithEsbuild(filePath, userRootDir, importsAreTransformed)
 
@@ -69,7 +69,7 @@ async function transpileFile(filePath: FilePathResolved, isValueFile: boolean, u
     }
   } else {
     if (isHeaderFile(filePathAbsoluteFilesystem)) {
-      if (isValueFile) {
+      if (!transformImports) {
         assertWarning(
           false,
           `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files only apply to +config.h.js, see https://vike.dev/header-file`,
