@@ -11,7 +11,7 @@ import {
   toPosixPath,
   assertPosixPath,
   getDependencyRootDir,
-  findUserPackageJsonPath
+  findFile
 } from '../../utils.js'
 import { import_ } from '@brillout/import'
 import { createRequire } from 'module'
@@ -71,7 +71,7 @@ async function getStemPackages(userAppRootDir: string): Promise<StemPackage[]> {
 }
 
 function findUserRootDir(userAppRootDir: string): string {
-  const userPkgJsonPath = findUserPackageJsonPath(userAppRootDir)
+  const userPkgJsonPath = findFile('package.json', userAppRootDir)
   assertUsage(userPkgJsonPath, `Couldn't find package.json in any parent directory starting from ${userAppRootDir}`)
   return toPosixPath(path.dirname(userPkgJsonPath))
 }

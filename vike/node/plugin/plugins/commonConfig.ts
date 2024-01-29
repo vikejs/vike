@@ -1,7 +1,7 @@
 export { commonConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertWarning, findUserPackageJsonPath } from '../utils.js'
+import { assert, assertWarning, findFile } from '../utils.js'
 import { assertRollupInput } from './buildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
@@ -74,7 +74,7 @@ function workaroundCI(config: ResolvedConfig) {
 }
 
 function assertEsm(userViteRoot: string) {
-  const packageJsonPath = findUserPackageJsonPath(userViteRoot)
+  const packageJsonPath = findFile('package.json', userViteRoot)
   if (!packageJsonPath) return
   const packageJson = require_(packageJsonPath)
   let dir = path.dirname(packageJsonPath)
