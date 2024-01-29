@@ -74,7 +74,7 @@ import {
   loadConfigFile,
   loadImportedFile,
   loadValueFile
-} from './getVikeConfig/loadFileConfigEnv.js'
+} from './getVikeConfig/loadFileAtConfigTime.js'
 import { clearFilesEnvMap, resolveImport } from './getVikeConfig/resolveImportPath.js'
 
 assertIsNotProductionRuntime()
