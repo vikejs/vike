@@ -1,11 +1,16 @@
 import { Link } from '@brillout/docpress'
-import { UseUiFrameworkVikeExtensionHint, Example } from '../components'
+import { Example, UseBatiHint } from '../components'
 
-## Vike Extension
+## `vike-solid`
 
-<UseUiFrameworkVikeExtensionHint uiFrameworkName="Solid" noQuote={true} />
+We recommend using <Link href="/extensions">`vike-solid`</Link> which integrates Solid in a full-fledged manner.
 
-## Manual Integration
+> <p><UseBatiHint feature={<code>vike-solid</code>} /></p>
+
+You can also <Link href="#without-vike-extension">integrate Solid yourself</Link> if you want full control over the Solid integration.
+
+
+## Without Vike extension
 
 Instead of using a Vike extension, you can manually integrate Solid yourself, giving you full control over the integration of not only Solid itself but also Solid libraries.
 
@@ -18,3 +23,9 @@ Community examples:
  - <Example timestamp="2023.06" repo="inlang/monorepo" /> - Source code of [`inlang.com`](https://inlang.com/) which is built with Vike and Solid.
  - <Example timestamp="2023.02" repo="vchirikov/vite-plugin-ssr-solidjs-blog-example" /> - Homepage + Blog example.
    > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
+
+
+## See also
+
+ - <Link href="/react" />
+ - <Link href="/vue" />

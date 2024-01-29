@@ -1,18 +1,22 @@
-import { UseUiFrameworkVikeExtensionHint, Example } from '../components'
 import { Link } from '@brillout/docpress'
+import { Example, UseBatiHint } from '../components'
 
-## Vike Extension
+## `vike-react`
 
-<UseUiFrameworkVikeExtensionHint uiFrameworkName="React" noQuote={true} />
+We recommend using <Link href="/extensions">`vike-react`</Link> which integrates React in a full-fledged manner.
+
+> <p><UseBatiHint feature={<code>vike-react</code>} /></p>
+
+You can also <Link href="#without-vike-extension">integrate React yourself</Link> if you want full control over the React integration.
 
 
-## Manual Integration
+## Without Vike extension
 
-Instead of using a Vike extension, you can manually integrate React yourself, giving you full control over the integration of not only React itself but also React libraries.
+Instead of using a Vike extension, you can manually integrate React yourself and have full control over the integration of not only React itself but also React libraries.
 
 Official examples:
- - <Link href="/examples/react" /> - Minimalistic integration, using <Link href="/server-routing">Server Routing</Link>.
  - <Link href="/boilerplates/boilerplate-react-ts" /> - Classic integration, using <Link href="/client-routing">Client Routing</Link>.
+ - <Link href="/examples/react" /> - Minimalistic integration, using <Link href="/server-routing">Server Routing</Link>.
  - [`vike-react` source code](https://github.com/vikejs/vike-react/tree/main/packages/vike-react) - Full-featured integeration.
  - <Link href="/examples/graphql-apollo-react" /> - Integration with GraphQL Apollo.
  - <Link href="/examples/render-modes" /> - Integration supporting all <Link href="/render-modes">render modes</Link> (SSR, SPA, and HTML-only).
@@ -49,3 +53,9 @@ The most significant added value of the RSC architecture is its novel approach t
 > SSR streaming enables you to define components that can fetch data, while each of these data-fetching components are loaded and rendered independently of each other: the user sees a UI with non-data-fetching parts that are rendered quickly, and data-fetching parts that are rendered as data comes in. This leads to a significantly improved (perceived) page speed. See <Link href="/streaming#progressive-hydration">Progressive Hydration</Link>.
 
 See also <Link href="/nextjs#react-server-components" doNotInferSectionTitle />.
+
+
+## See also
+
+ - <Link href="/vue" />
+ - <Link href="/solid" />

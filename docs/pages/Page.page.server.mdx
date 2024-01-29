@@ -33,11 +33,11 @@ With Vue:
 
 > You can also define the `Page` value by setting <Link href="/config#config-h-js">`+config.h.js > export default { Page }`</Link>.
 
-What happens with the `Page` value is determined by the <UiFrameworkVikeExtension />. Alternatively, for complete control over the UI framework integration, you can <Link href="#manual-integration">manually integrate</Link> the UI framework yourself.
+What happens with the `Page` value is determined by the <UiFrameworkVikeExtension />. Alternatively, for complete control over the <Link href="/ui-framework">UI framework</Link> integration, you can <Link href="#without-vike-extension">manually integrate</Link> the UI framework yourself.
 
 
 
-## Manual integration
+## Without Vike extension
 
 Vike itself never uses the `Page` value: it just makes the value available at `pageContext.Page`.
 The `pageContext.Page` value is typically used by the <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> hooks: these two hooks essentially determine how the `Page` value is rendered to HTML and the [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model).
