@@ -126,13 +126,13 @@ async function transpileWithEsbuild(filePath: FilePathResolved, userRootDir: str
     // Esbuild still sometimes removes unused imports because of TypeScript: https://github.com/evanw/esbuild/issues/3034
     treeShaking: false,
     minify: false,
-    metafile: importsAreTransformed,
+    metafile: !importsAreTransformed,
     // We cannot bundle imports that are meant to be transformed
     bundle: !importsAreTransformed
   }
 
   // Track dependencies
-  if (importsAreTransformed) {
+  if (!importsAreTransformed) {
     options.packages = 'external'
     options.plugins = [
       {
@@ -168,7 +168,7 @@ async function transpileWithEsbuild(filePath: FilePathResolved, userRootDir: str
   }
 
   // Track dependencies
-  if (importsAreTransformed) {
+  if (!importsAreTransformed) {
     assert(result.metafile)
     Object.keys(result.metafile.inputs).forEach((filePathRelative) => {
       filePathRelative = toPosixPath(filePathRelative)
