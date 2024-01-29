@@ -10,6 +10,9 @@
 Docs:
  - Improve /nextjs
  - Add /{react,vue,solid} links under "Overview"
+   - Add "Server Actions" section to /react
+   - UPDATE: actually, it's maybe a bad idea because there won't be much content at /vue and /solid if we apply the change described in the next bullet piont
+     - Maybe we can move sections like "Server Actions" to /nextjs instead?
    - What should happen to the "Integration > React,Vue,Solid" links? How about making them a different page? E.g. moving `## Without Vike extension` there (while using <UseUiFrameworkVikeExtensionHint uiFrameworkName="React" noQuote={true} />).
    - Improve /{react,vue,solid}
 
