@@ -5,9 +5,9 @@ import fs from 'fs'
 
 type Filename = 'package.json' | 'vike.config.js' | 'vike.config.ts'
 
-function findFile(arg: Filename | Filename[], userRootDir: string): null | string {
+function findFile(arg: Filename | Filename[], cwd: string): null | string {
   const filenames = Array.isArray(arg) ? arg : [arg]
-  let dir = userRootDir
+  let dir = cwd
   while (true) {
     for (const filename of filenames) {
       const configFilePath = path.join(dir, `./${filename}`)
