@@ -3,13 +3,18 @@ export { findFile }
 import path from 'path'
 import fs from 'fs'
 
-function findFile(fileName: 'package.json', userRootDir: string): null | string {
+type Filename = 'package.json' | 'vike.config.js' | 'vike.config.ts'
+
+function findFile(arg: Filename | Filename[], userRootDir: string): null | string {
+  const filenames = Array.isArray(arg) ? arg : [arg]
   let dir = userRootDir
   while (true) {
-    const configFilePath = path.join(dir, `./${fileName}`)
-    if (fs.existsSync(configFilePath)) {
-      // return toPosixPath(configFilePath)
-      return configFilePath
+    for (const filename of filenames) {
+      const configFilePath = path.join(dir, `./${filename}`)
+      if (fs.existsSync(configFilePath)) {
+        // return toPosixPath(configFilePath)
+        return configFilePath
+      }
     }
     const dirPrevious = dir
     dir = path.dirname(dir)
