@@ -45,7 +45,7 @@ async function transpileAndExecuteFile(
     return { fileExports }
   } else {
     const { code, fileImportsTransformed } = await transpileFile(filePath, isValueFile, userRootDir)
-    const fileExports = await executeTranspiledFile(filePath, code, fileImportsTransformed, isValueFile)
+    const fileExports = await executeTranspiledFile(filePath, code, fileImportsTransformed)
     return { fileExports }
   }
 }
@@ -193,8 +193,7 @@ async function transpileWithEsbuild(
 async function executeTranspiledFile(
   filePath: FilePathResolved,
   code: string,
-  fileImportsTransformed: FileImport[] | null,
-  isValueFile: boolean
+  fileImportsTransformed: FileImport[] | null
 ) {
   const { filePathAbsoluteFilesystem, filePathRelativeToUserRootDir } = filePath
   // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
@@ -208,7 +207,7 @@ async function executeTranspiledFile(
   } finally {
     clean()
   }
-  if (fileImportsTransformed && !isValueFile) {
+  if (fileImportsTransformed) {
     assert(filePathRelativeToUserRootDir !== undefined)
     const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
     assertImportsAreReExported(fileImportsTransformed, fileExports, filePathToShowToUser2)
