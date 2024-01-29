@@ -57,12 +57,10 @@ async function transpileFile(filePath: FilePathResolved, transformImports: boole
   assertPosixPath(filePathAbsoluteFilesystem)
   vikeConfigDependencies.add(filePathAbsoluteFilesystem)
 
-  const importsAreTransformed = transformImports
-
-  let code = await transpileWithEsbuild(filePath, userRootDir, importsAreTransformed)
+  let code = await transpileWithEsbuild(filePath, userRootDir, transformImports)
 
   let fileImportsTransformed: FileImport[] | null = null
-  if (importsAreTransformed) {
+  if (transformImports) {
     const res = transformFileImports_(code, filePath)
     if (res) {
       code = res.code
@@ -70,15 +68,11 @@ async function transpileFile(filePath: FilePathResolved, transformImports: boole
     }
   } else {
     if (isHeaderFile(filePathAbsoluteFilesystem)) {
-      if (!transformImports) {
-        assertWarning(
-          false,
-          `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files only apply to +config.h.js, see https://vike.dev/header-file`,
-          { onlyOnce: true }
-        )
-      } else {
-        assert(false)
-      }
+      assertWarning(
+        false,
+        `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files only apply to +config.h.js, see https://vike.dev/header-file`,
+        { onlyOnce: true }
+      )
     }
   }
   return { code, fileImportsTransformed }
@@ -105,7 +99,7 @@ function transformFileImports_(codeOriginal: string, filePath: FilePathResolved)
   return { code, fileImportsTransformed }
 }
 
-async function transpileWithEsbuild(filePath: FilePathResolved, userRootDir: string, importsAreTransformed: boolean) {
+async function transpileWithEsbuild(filePath: FilePathResolved, userRootDir: string, transformImports: boolean) {
   const entryFilePath = filePath.filePathAbsoluteFilesystem
   const entryFileDir = path.posix.dirname(entryFilePath)
   const options: BuildOptions = {
@@ -127,13 +121,13 @@ async function transpileWithEsbuild(filePath: FilePathResolved, userRootDir: str
     // Esbuild still sometimes removes unused imports because of TypeScript: https://github.com/evanw/esbuild/issues/3034
     treeShaking: false,
     minify: false,
-    metafile: !importsAreTransformed,
+    metafile: !transformImports,
     // We cannot bundle imports that are meant to be transformed
-    bundle: !importsAreTransformed
+    bundle: !transformImports
   }
 
   // Track dependencies
-  if (!importsAreTransformed) {
+  if (!transformImports) {
     options.packages = 'external'
     options.plugins = [
       {
@@ -169,7 +163,7 @@ async function transpileWithEsbuild(filePath: FilePathResolved, userRootDir: str
   }
 
   // Track dependencies
-  if (!importsAreTransformed) {
+  if (!transformImports) {
     assert(result.metafile)
     Object.keys(result.metafile.inputs).forEach((filePathRelative) => {
       filePathRelative = toPosixPath(filePathRelative)
