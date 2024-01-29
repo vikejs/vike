@@ -1,9 +1,0 @@
-Things we can polish:
- - What is SSR?
- - CJS/ESM compatibility issues and how to resolve them
- - Add warning when user tries to read `pageContext.url` and pageContext.url is `/fake-404-url` /fake-404-url, https://discord.com/channels/815937377888632913/815937377888632916/941287549152944228
- - Add `assertUsage()` when `dist/server/pageFiles.js` not found because `rollupOptions.output.entryFileNames` has been modified, https://discord.com/channels/815937377888632913/815937377888632916/940787485422788639
- - Add `HTML Transformers` guide and explain prod fallback, https://discord.com/channels/815937377888632913/815937377888632916/941708755651944458
-   - Eventually check if HTML transfomers are applied and show a warning message
- - Add comparison table with Next.js / Nuxt (https://github.com/vikejs/vike/issues/209#issuecomment-1041573876)
-   - Add migration table
