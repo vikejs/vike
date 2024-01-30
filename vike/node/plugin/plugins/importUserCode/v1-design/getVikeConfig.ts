@@ -189,9 +189,9 @@ async function loadInterfaceFiles(
 
   let interfaceFilesByLocationId: InterfaceFilesByLocationId = {}
 
-  // Config files
-  await Promise.all(
-    configFiles.map(async (filePath) => {
+  await Promise.all([
+    // Config files
+    ...configFiles.map(async (filePath) => {
       const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false)
       const interfaceFile = getInterfaceFileFromConfigFile(configFile, false)
 
@@ -202,12 +202,9 @@ async function loadInterfaceFiles(
         const interfaceFile = getInterfaceFileFromConfigFile(extendsConfig, true)
         interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       })
-    })
-  )
-
-  // Value files
-  await Promise.all(
-    valueFiles.map(async (filePath) => {
+    }),
+    // Value files
+    ...valueFiles.map(async (filePath) => {
       const configName = getConfigName(filePath.filePathAbsoluteVite)
       assert(configName)
       const interfaceFile: InterfaceValueFile = {
@@ -234,7 +231,7 @@ async function loadInterfaceFiles(
         interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       }
     })
-  )
+  ])
 
   assertAllConfigsAreKnown(interfaceFilesByLocationId)
 
