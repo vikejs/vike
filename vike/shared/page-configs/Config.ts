@@ -1,4 +1,5 @@
 export type { Config }
+export type { ConfigGlobal }
 export type { ConfigBuiltIn }
 export type { ConfigNameBuiltIn }
 export type { ConfigMeta }
@@ -336,18 +337,21 @@ type ConfigBuiltIn = {
    */
   filesystemRoutingRoot?: string | ImportString
 
-  /** Page Hook called when pre-rendering starts.
+  // TODO/v1-release: remove
+  /** @deprecated Define `onPrerenderStart()` in `vike.config.js` (instead of `+config.h.js`).
    *
    * https://vike.dev/onPrerenderStart
    */
   onPrerenderStart?: OnPrerenderStartAsync | OnPrerenderStartSync | ImportString
+
   /** Global Hook called before the whole pre-rendering process starts.
    *
    * https://vike.dev/onBeforePrerenderStart
    */
   onBeforePrerenderStart?: OnBeforePrerenderStartAsync | OnBeforePrerenderStartSync | ImportString
 
-  /** Hook called before the URL is routed to a page.
+  // TODO/v1-release: remove
+  /** @deprecated Define `onBeforeRoute()` in `vike.config.js` (instead of `+config.h.js`).
    *
    * https://vike.dev/onBeforeRoute
    */
@@ -418,3 +422,110 @@ type ConfigBuiltIn = {
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`
+
+type ConfigGlobal = Omit<Config, 'onPrerenderStart' | 'onBeforeRoute'> & {
+  /**
+   * Enable pre-rendering.
+   *
+   * https://vike.dev/pre-rendering
+   * https://vike.dev/prerender-config
+   *
+   * @default false
+   */
+  prerender?:
+    | boolean
+    | {
+        /**
+         * Don't create a new directory for each HTML file.
+         *
+         * For example, generate `dist/client/about.html` instead of `dist/client/about/index.html`.
+         *
+         * @default false
+         */
+        noExtraDir?: boolean
+        /**
+         * Number of concurrent pre-render jobs.
+         *
+         * Set to `false` to disable concurrency.
+         *
+         * @default os.cpus().length
+         */
+        parallel?: boolean | number
+        /**
+         * Allow only some of your pages to be pre-rendered.
+         *
+         * This setting doesn't affect the pre-rendering process: it merely suppresses the warnings when some of your pages cannot be pre-rendered.
+
+         * @default false
+         */
+        partial?: boolean
+        /**
+         * Disable the automatic initiation of the pre-rendering process when running `$ vite build`.
+         *
+         * Use this if you want to programmatically initiate the pre-rendering process instead.
+         *
+         * https://vike.dev/prerender-programmatic
+         *
+         * @default false
+         */
+        disableAutoRun?: boolean
+      }
+
+  /** Page Hook called when pre-rendering starts.
+   *
+   * https://vike.dev/onPrerenderStart
+   */
+  onPrerenderStart?: OnPrerenderStartAsync | OnPrerenderStartSync | ImportString
+
+  /** The Base URL of your server.
+   *
+   * https://vike.dev/base-url
+   */
+  baseServer?: string
+  /** The Base URL of your static assets.
+   *
+   * https://vike.dev/base-url
+   */
+  baseAssets?: string
+
+  /** Permanent redirections (HTTP status code 301)
+   *
+   * https://vike.dev/redirects
+   */
+  redirects?: Record<string, string>
+
+  /** Hook called before the URL is routed to a page.
+   *
+   * https://vike.dev/onBeforeRoute
+   */
+  onBeforeRoute?: OnBeforeRouteAsync | OnBeforeRouteSync | ImportString
+
+  /** Whether URLs should end with a trailing slash.
+   *
+   * https://vike.dev/url-normalization
+   *
+   * @default false
+   */
+  trailingSlash?: boolean
+
+  /** Disable automatic URL normalization.
+   *
+   * https://vike.dev/url-normalization
+   *
+   * @default false
+   */
+  disableUrlNormalization?: boolean
+
+  /**
+   * Set to `true` to disable the automatic chaining of all the build steps.
+   *
+   * https://vike.dev/disableAutoFullBuild
+   *
+   * @default false
+   */
+  disableAutoFullBuild?: boolean
+
+  // We don't remove this option in case there is a bug with includeAssetsImportedByServer and the user needs to disable it.
+  /** @deprecated */
+  includeAssetsImportedByServer?: boolean
+}

@@ -3,13 +3,25 @@ export { resolveVikeConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVikeUserProvided, ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { assertVikeConfig } from './assertVikeConfig.js'
-import { isDev2 } from '../../utils.js'
+import { assertWarning, isDev2, isObject, joinEnglish } from '../../utils.js'
 import { pickFirst } from './pickFirst.js'
 import { resolveBase } from './resolveBase.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 
 function resolveVikeConfig(vikeConfig: unknown): Plugin {
+  if (isObject(vikeConfig)) {
+    const settingsList = Object.keys(vikeConfig)
+    const s = settingsList.length > 1 ? 's' : ''
+    assertWarning(
+      false,
+      `Defining the global setting${s} ${joinEnglish(settingsList.map(pc.bold), 'and')} in ${pc.cyan(
+        'vite.config.js'
+      )} is deprecated: define them in ${pc.cyan(`vi${pc.bold('k')}e.config.js`)} instead (https://vike.dev/config).`,
+      { onlyOnce: true }
+    )
+  }
+
   return {
     name: 'vike:resolveVikeConfig',
     enforce: 'pre',
@@ -58,7 +70,7 @@ function resolvePrerenderOptions(configs: ConfigVikeUserProvided[]): ConfigVikeR
   if (!configs.some((c) => c.prerender)) {
     return false
   }
-  const configsPrerender = configs.map((c) => c.prerender).filter(isObject)
+  const configsPrerender = configs.map((c) => c.prerender).filter(isOptionObject)
   return {
     partial: pickFirst(configsPrerender.map((c) => c.partial)) ?? false,
     noExtraDir: pickFirst(configsPrerender.map((c) => c.noExtraDir)) ?? false,
@@ -67,7 +79,7 @@ function resolvePrerenderOptions(configs: ConfigVikeUserProvided[]): ConfigVikeR
   }
 }
 
-function isObject<T>(p: T | boolean | undefined): p is T {
+function isOptionObject<T>(p: T | boolean | undefined): p is T {
   return typeof p === 'object'
 }
 

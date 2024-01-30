@@ -1,9 +1,10 @@
+export { config }
+
 import type { Config } from 'vike/types'
 
 // https://vike.dev/config
-export const config = {
+const config = {
   passToClient: ['someAsyncProps'],
-  clientRouting: true,
   hydrationCanBeAborted: true,
   // https://vike.dev/meta
   meta: {
@@ -30,12 +31,6 @@ export const config = {
           }
         }
       }
-    }
-  },
-  hooksTimeout: {
-    data: {
-      error: 30 * 1000,
-      warning: 10 * 1000
     }
   }
 } satisfies Config

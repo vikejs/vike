@@ -8,23 +8,17 @@ See also:
 Permanent redirections (HTTP status code `301`):
 
 ```js
-// vite.config.js
-
-import vike from 'vike/plugin'
+// vike.config.js
 
 export default {
-  plugins: [
-    vike({
-      redirects: {
-        '/about-us': '/about',
-        // Parameterized redirections
-        '/product/@id': '/buy/@id',
-        // Glob redirections
-        '/admin/*': '/private/*',
-        // External redirections
-        '/admin/*': 'https://admin.example.org/*'
-      }
-    })
-  ]
+  redirects: {
+    '/about-us': '/about',
+    // Parameterized redirections
+    '/product/@id': '/buy/@id',
+    // Glob redirections
+    '/admin/*': '/private/*',
+    // External redirections
+    '/admin/*': 'https://admin.example.org/*'
+  }
 }
 ```

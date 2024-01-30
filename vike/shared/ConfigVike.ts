@@ -1,6 +1,8 @@
 export type { ConfigVikeUserProvided }
 export type { ConfigVikeResolved }
 
+// TODO/v1-release: remove all this
+
 type ConfigVikeResolved = {
   prerender:
     | false
@@ -21,66 +23,34 @@ type ConfigVikeResolved = {
 
 type ConfigVikeUserProvided = {
   /**
-   * Enable pre-rendering.
+   * @deprecated Define `prerender` options in `vike.config.js` (instead of `+config.h.js`).
    *
-   * https://vike.dev/pre-rendering
-   *
-   * @default false
+   * https://vike.dev/prerender-config
    */
   prerender?:
     | boolean
     | {
-        /**
-         * Don't create a new directory for each HTML file.
-         *
-         * For example, generate `dist/client/about.html` instead of `dist/client/about/index.html`.
-         *
-         * @default false
-         */
         noExtraDir?: boolean
-        /**
-         * Number of concurrent pre-render jobs.
-         *
-         * Set to `false` to disable concurrency.
-         *
-         * @default os.cpus().length
-         */
         parallel?: boolean | number
-        /**
-         * Allow only some of your pages to be pre-rendered.
-         *
-         * This setting doesn't affect the pre-rendering process: it merely suppresses the warnings when some of your pages cannot be pre-rendered.
-
-         * @default false
-         */
         partial?: boolean
-        /**
-         * Disable the automatic initiation of the pre-rendering process when running `$ vite build`.
-         *
-         * Use this if you want to programmatically initiate the pre-rendering process instead.
-         *
-         * https://vike.dev/prerender-programmatic
-         *
-         * @default false
-         */
         disableAutoRun?: boolean
       }
 
   /**
-   * Set to `true` to disable the automatic chaining of all the build steps.
+   * @deprecated Define the `disableAutoFullBuild` option in `vike.config.js` (instead of `+config.h.js`).
    *
    * https://vike.dev/disableAutoFullBuild
-   *
-   * @default false
    */
   disableAutoFullBuild?: boolean
 
-  /** The Base URL of your server.
+  /**
+   * @deprecated Define the `baseServer` option in `vike.config.js` (instead of `+config.h.js`).
    *
    * https://vike.dev/base-url
    */
   baseServer?: string
-  /** The Base URL of your static assets.
+  /**
+   * @deprecated Define the `baseAssets` option in `vike.config.js` (instead of `+config.h.js`).
    *
    * https://vike.dev/base-url
    */
@@ -90,25 +60,24 @@ type ConfigVikeUserProvided = {
   /** @deprecated It's now `true` by default. You can remove this option. */
   includeAssetsImportedByServer?: boolean
 
-  /** Permanent redirections (HTTP status code 301)
+  /**
+   * @deprecated Define the `redireects` option in `vike.config.js` (instead of `+config.h.js`).
    *
    * https://vike.dev/redirects
    */
   redirects?: Record<string, string>
 
-  /** Whether URLs should end with a trailing slash.
+  /**
+   * @deprecated Define the `trailingSlash` option in `vike.config.js` (instead of `+config.h.js`).
    *
    * https://vike.dev/url-normalization
-   *
-   * @default false
    */
   trailingSlash?: boolean
 
-  /** Disable automatic URL normalization.
+  /**
+   * @deprecated Define the `disableUrlNormalization` option in `vike.config.js` (instead of `+config.h.js`).
    *
    * https://vike.dev/url-normalization
-   *
-   * @default false
    */
   disableUrlNormalization?: boolean
 }

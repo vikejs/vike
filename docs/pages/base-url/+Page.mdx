@@ -50,16 +50,10 @@ We can change the Base URL *only* of our assets by using the `baseAssets` config
 > The most common use case for using `baseAssets` is when deploying assets to a CDN.
 
 ```js
-// vite.config.js
-
-import vike from 'vike/plugin'
+// vike.config.js
 
 export default {
-  plugins: [
-    vike({
-      baseAssets: 'https://cdn.example.org/my-website-assets/'
-    })
-  ]
+  baseAssets: 'https://cdn.example.org/my-website-assets/'
 }
 ```
 
@@ -106,17 +100,11 @@ We can do both:
  - Change the Base URL of our server using the `baseServer` configuration.
 
 ```js
-// vite.config.js
-
-import vike from 'vike/plugin'
+// vike.config.js
 
 export default {
-  plugins: [
-    vike({
-      baseAssets: 'https://cdn.example.org/my-website-assets/',
-      baseServer: '/some-base/'
-    })
-  ]
+  baseAssets: 'https://cdn.example.org/my-website-assets/',
+  baseServer: '/some-base/'
 }
 ```
 

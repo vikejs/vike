@@ -9,21 +9,15 @@ By default, URLs are normalized:
 You can configure whether URLs are normalized and whether URLs should end with a trailing slash:
 
 ```js
-// vite.config.js
-
-import vike from 'vike/plugin'
+// vike.config.js
 
 export default {
-  plugins: [
-    vike({
-      // Make URLs end with a trailing slash.
-      // For example: /some//path -> /some/path/
-      trailingSlash: true,
+  // Make URLs end with a trailing slash.
+  // For example: /some//path -> /some/path/
+  trailingSlash: true,
 
-      // Or completely disable automatic URL normalization.
-      // For example keep URL /some//path/
-      disableUrlNormalization: true
-    })
-  ]
+  // Or completely disable automatic URL normalization.
+  // For example keep URL /some//path/
+  disableUrlNormalization: true
 }
 ```

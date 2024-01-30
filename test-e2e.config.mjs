@@ -85,6 +85,10 @@ function tolerateError({ logSource, logText }) {
     isNotV1Design() ||
     [
       // TODO: move everything to this array
+      // 9:50:42 PM [vike][Warning] Defining the global settings prerender and redirects in vite.config.js is deprecated: define them in vike.config.js instead (https://vike.dev/config).
+      'define them in vike.config.js instead',
+      // 9:50:42 PM [vike][config][Warning] /renderer/+onBeforeRoute.js wrongfully defines the global config onBeforeRoute: create vike.config.js and define onBeforeRoute there instead (https://vike.dev/vike.config.js
+      'wrongfully defines a global config',
       'The glob option "as" has been deprecated in favour of "query"'
     ].some((t) => logText.includes(t))
   )

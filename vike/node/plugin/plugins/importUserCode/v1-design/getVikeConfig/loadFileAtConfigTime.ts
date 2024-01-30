@@ -3,6 +3,7 @@
 export { loadImportedFile }
 export { loadValueFile }
 export { loadConfigFile }
+export { findVikeConfigFile }
 export type { ImportedFilesLoaded }
 export type { ConfigFile }
 
@@ -13,7 +14,9 @@ import {
   assertWarning,
   hasProp,
   assertIsNotProductionRuntime,
-  isNpmPackageImport
+  isNpmPackageImport,
+  findFile,
+  toPosixPath
 } from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/PageConfig.js'
 import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
@@ -23,6 +26,8 @@ import pc from '@brillout/picocolors'
 import { type ImportData, parseImportData } from './transformFileImports.js'
 import { getConfigFileExport } from '../getConfigFileExport.js'
 import { assertImportPath, resolveImportPath } from './resolveImportPath.js'
+import path from 'path'
+import { resolveFilePathAbsoluteFilesystem } from './resolveFilePath.js'
 
 assertIsNotProductionRuntime()
 
@@ -57,6 +62,24 @@ async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName:
     const configName_ = exportName === 'default' ? configName : exportName
     interfaceValueFile.fileExportsByConfigName[configName_] = { configValue }
   })
+}
+
+// Load vike.config.js
+// Not needed yet: will we need this?
+async function loadVikeConfigFile() {
+  const found = findVikeConfigFile(process.cwd())
+  if (!found) return null
+  const { vikeConfigFilePath, userRootDir } = found
+  const { fileExports } = await transpileAndExecuteFile(vikeConfigFilePath, true, userRootDir)
+  return { fileExports }
+}
+function findVikeConfigFile(cwd: string): { vikeConfigFilePath: FilePathResolved; userRootDir: string } | null {
+  let filePathAbsoluteFilesystem = findFile(['vike.config.js', 'vike.config.ts'], cwd)
+  if (!filePathAbsoluteFilesystem) return null
+  filePathAbsoluteFilesystem = toPosixPath(filePathAbsoluteFilesystem)
+  const userRootDir = path.posix.dirname(filePathAbsoluteFilesystem)
+  const vikeConfigFilePath = resolveFilePathAbsoluteFilesystem(filePathAbsoluteFilesystem, userRootDir)
+  return { vikeConfigFilePath, userRootDir }
 }
 
 // Load +config.js, including all its extends fake imports
