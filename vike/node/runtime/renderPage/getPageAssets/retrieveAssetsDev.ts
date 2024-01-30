@@ -27,7 +27,7 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
       collectCss(mod, assetUrls, visitedModules)
     })
   )
-  return Array.from(assetUrls)
+  return sortStyleUrls(Array.from(assetUrls))
 }
 
 // Collect the CSS to be injected to the HTML to avoid FLOUC
@@ -69,6 +69,18 @@ function isStyle(mod: ModuleNode) {
     return true
   }
   return false
+}
+
+function sortStyleUrls(styleUrls: string[]) {
+  styleUrls.sort((a, b) => {
+    const aIsVirtual = a.startsWith('/@id/')
+    const bIsVirtual = b.startsWith('/@id/')
+    if (aIsVirtual && !bIsVirtual) return 1
+    if (bIsVirtual && !aIsVirtual) return -1
+    return 0
+  })
+
+  return styleUrls
 }
 
 /*
