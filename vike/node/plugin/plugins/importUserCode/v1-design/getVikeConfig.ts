@@ -386,7 +386,7 @@ async function loadVikeConfig(
           })
         )
 
-        const configValueSources: ConfigValueSources = {}
+        let configValueSources: ConfigValueSources = {}
         await Promise.all(
           objectEntries(configDefinitions)
             .filter(([configName]) => !isGlobalConfig(configName))
@@ -402,6 +402,8 @@ async function loadVikeConfig(
               configValueSources[configName] = sources
             })
         )
+
+        configValueSources = sortConfigValueSources(configValueSources)
 
         const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
 
@@ -1296,4 +1298,45 @@ function assertConfigExists(configName: string, configNamesRelevant: string[], f
   if (configNames.includes(configName)) return
   handleUnknownConfig(configName, configNames, filePathToShowToUser)
   assert(false)
+}
+
+function sortConfigValueSources(configValueSources: ConfigValueSources) {
+  return Object.fromEntries(
+    Object.entries(configValueSources).sort(([, [a]], [, [b]]) => {
+      if (!a || !b) {
+        return 0
+      }
+      const dirA = a.definedAt.filePathAbsoluteVite
+      const dirB = b.definedAt.filePathAbsoluteVite
+
+      assert(dirA)
+      assert(dirB)
+
+      // Npm package imports come first
+      const isNpmPackageA = !dirA.startsWith('/')
+      const isNpmPackageB = !dirB.startsWith('/')
+
+      if (isNpmPackageA && !isNpmPackageB) {
+        return -1
+      }
+
+      if (!isNpmPackageA && isNpmPackageB) {
+        return 1
+      }
+
+      // Sort import order by config inheritance: least specifc configs come first.
+      const orderA = dirA.split('/').length
+      const orderB = dirB.split('/').length
+
+      if (orderA > orderB) {
+        return 1
+      }
+
+      if (orderA < orderB) {
+        return -1
+      }
+
+      return 0
+    })
+  )
 }
