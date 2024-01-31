@@ -4,9 +4,11 @@ import { UiFrameworkVikeExtension } from '../components'
 Default value: `true`.  
 Provided by: <UiFrameworkVikeExtension /> (or <Link href="#without-vike-extension">yourself</Link>).
 
-Setting to enable/disable Server-Side Rendering (SSR). You can disable SSR for all your pages, or only for some pages while still using SSR for your other pages.
+Setting to enable/disable Server-Side Rendering (SSR). You can disable SSR for all your pages or only for some pages.
 
-> Alternatively, you can use <Link href="/ClientOnly">`ClientOnly`</Link> to render and load some components only on the client-side while rendering the rest of the page with SSR.
+> Alternatively:
+>  - You can use <Link href="/ClientOnly">`ClientOnly`</Link> to render and load some components only on the client-side while rendering the rest of the page with SSR.
+>  - You can <Link href="/pre-rendering">pre-render</Link> some of (or all) your pages.
 
 To disable SSR for all your pages:
 
@@ -55,3 +57,4 @@ Examples:
 
 - <Link href="/stream" />
 - <Link href="/streaming" />
+- <Link href="/pre-rendering" />
