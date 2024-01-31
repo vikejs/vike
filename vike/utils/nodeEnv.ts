@@ -2,6 +2,9 @@ export { getNodeEnv }
 export { setNodeEnvToProduction }
 export { isNodeEnvDev }
 
+import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+assertIsNotBrowser()
+
 function getNodeEnv(): null | undefined | string {
   if (typeof process === 'undefined') return null
   return process.env.NODE_ENV
