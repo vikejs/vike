@@ -17,6 +17,17 @@ function standalonePlugin(): Plugin {
 
   // Native dependencies always need to be esbuild external
   let native: string[] = []
+  let rollupResolve: any
+
+  // Support Nestjs
+  // https://github.com/nestjs/nest-cli/blob/edbd64d1eb186c49c28b7594e5d8269a5b125385/lib/compiler/defaults/webpack-defaults.ts#L69
+  const lazyNpmImports = [
+    '@nestjs/microservices',
+    '@nestjs/websockets',
+    'cache-manager',
+    'class-validator',
+    'class-transformer'
+  ]
 
   return {
     name: 'vike:standalone',
@@ -51,6 +62,9 @@ function standalonePlugin(): Plugin {
       distDir = outDir.split('/')[0]!
       outDirAbs = path.posix.join(root, outDir)
     },
+    buildStart() {
+      rollupResolve = this.resolve.bind(this)
+    },
     writeBundle(_, bundle) {
       const serverIndex = findRollupBundleEntry('index', bundle)
       assert(serverIndex)
@@ -78,7 +92,32 @@ function standalonePlugin(): Plugin {
             'var __filename = fileURLToPath987(import.meta.url);',
             'var __dirname = dirname987(__filename);'
           ].join('\n')
-        }
+        },
+        plugins: [
+          {
+            name: 'standalone-ignore',
+            setup(build) {
+              build.onResolve({ filter: /.*/, namespace: 'ignore' }, (args) => ({
+                path: args.path,
+                namespace: 'ignore'
+              }))
+              build.onResolve({ filter: new RegExp(`^(${lazyNpmImports.join('|')})`) }, async (args) => {
+                const resolved = await rollupResolve(args.path)
+                // if the package is not installed, ignore the import
+                // if the package is installed, try to bundle it
+                if (!resolved) {
+                  return {
+                    path: args.path,
+                    namespace: 'ignore'
+                  }
+                }
+              })
+              build.onLoad({ filter: /.*/, namespace: 'ignore' }, () => ({
+                contents: ''
+              }))
+            }
+          }
+        ]
       })
 
       // The inputs of the bundled files are safe to remove
