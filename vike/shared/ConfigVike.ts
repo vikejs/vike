@@ -3,8 +3,8 @@ export type { ConfigVikeResolved }
 export type { ServerResolved }
 
 type ReloadStrategy = 'fast' | 'full'
-type ServerUserProvided = string | { entry: string; reload: ReloadStrategy; workers?: string[] }
-type ServerResolved = undefined | { entry: string; reload: ReloadStrategy; workers: { [name: string]: string } }
+type ServerUserProvided = string | { entry: string | { [name: string]: string }; reload: ReloadStrategy }
+type ServerResolved = undefined | { entry: { [name: string]: string }; reload: ReloadStrategy }
 
 type ConfigVikeResolved = {
   prerender:

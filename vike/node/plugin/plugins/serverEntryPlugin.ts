@@ -35,31 +35,29 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
         //@ts-expect-error Vite 5 || Vite 4
         return !!(env.isSsrBuild || env.ssrBuild)
       },
-      config() {
-        return {
-          build: {
-            rollupOptions: {
-              // add extra entries for server-only usage
-              // for example child_process.fork
-              input: serverConfig.workers
-            }
+
+      configResolved(config) {
+        const entries = Object.entries(serverConfig.entry)
+        assert(entries.length)
+        const resolvedEntries: { [name: string]: string } = {}
+        for (const [name, path_] of entries) {
+          let entryFilePath = path.join(config.root, path_)
+          try {
+            resolvedEntries[name] = require_.resolve(entryFilePath)
+          } catch (err) {
+            assert((err as Record<string, unknown>).code === 'MODULE_NOT_FOUND')
+            assertUsage(
+              false,
+              `No file found at ${entryFilePath}. Does the value ${pc.cyan(`'${serverConfig.entry}'`)} of ${pc.cyan(
+                'server.entry'
+              )} point to an existing file?`
+            )
           }
         }
-      },
-      configResolved(config) {
-        let serverEntryFilePath = path.join(config.root, serverConfig.entry)
-        try {
-          serverEntryFilePath = require_.resolve(serverEntryFilePath)
-        } catch (err) {
-          assert((err as Record<string, unknown>).code === 'MODULE_NOT_FOUND')
-          assertUsage(
-            false,
-            `No file found at ${serverEntryFilePath}. Does the value ${pc.cyan(`'${serverConfig.entry}'`)} of ${pc.cyan(
-              'server.entry'
-            )} point to an existing file?`
-          )
-        }
-        config.build.rollupOptions.input = injectRollupInputs({ index: serverEntryFilePath }, config)
+
+        console.log({ resolvedEntries })
+
+        config.build.rollupOptions.input = injectRollupInputs(resolvedEntries, config)
       }
     }
   }
@@ -73,31 +71,26 @@ function resolveServerConfig(configVike?: ConfigVikeUserProvided): ServerResolve
   }
 
   if (typeof configVike.server === 'object') {
-    assertUsage(typeof configVike.server.entry === 'string', 'server.entry should be a string')
     assertUsage(['full', 'fast'].includes(configVike.server.reload), 'server.reload should be "full" or "fast"')
-    if (configVike.server.workers) {
+    if (configVike.server.entry) {
       assertUsage(
-        Array.isArray(configVike.server.workers) && configVike.server.workers.every((e) => typeof e === 'string'),
-        'server.workers should be a string array'
+        typeof configVike.server.entry === 'string' ||
+          Object.entries(configVike.server.entry).every(([name, value]) => typeof value === 'string'),
+        'server.entry should be a string or an entry mapping { name: path }'
       )
     }
 
-    const workersProvided = configVike.server.workers ?? []
-    const workersResolved: { [name: string]: string } = {}
-    for (const worker of workersProvided) {
-      const name = getEntryName(worker)
-      workersResolved[name] = worker
-    }
+    const entriesProvided =
+      typeof configVike.server.entry === 'string' ? { index: configVike.server.entry } : configVike.server.entry
 
     return {
-      entry: configVike.server.entry,
-      reload: configVike.server.reload,
-      workers: workersResolved
+      entry: entriesProvided,
+      reload: configVike.server.reload
     }
   }
 
   assertUsage(typeof configVike.server === 'string', 'server should be a string')
-  return { entry: configVike.server, reload: 'fast', workers: {} }
+  return { entry: { index: configVike.server }, reload: 'fast' }
 }
 
 export const getEntryName = (input: string) => {

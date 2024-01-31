@@ -29,13 +29,17 @@ function standalonePlugin(): Plugin {
     'class-transformer'
   ]
 
+  // react-streaming -> @brillout/import -> import("react-dom")
+  // would load react-dom from outside of the bundle
+  const esbuildExternals = ['react', 'react-dom']
+
   return {
     name: 'vike:standalone',
-    apply(config, env) {
+    apply(_, env) {
       //@ts-expect-error Vite 5 || Vite 4
       return !!(env.isSsrBuild || env.ssrBuild)
     },
-    config(config, env) {
+    config() {
       return {
         ssr: {
           // esbuild warning:
@@ -86,7 +90,7 @@ function standalonePlugin(): Plugin {
           platform: 'node',
           format: 'esm',
           bundle: true,
-          external: native,
+          external: [...native, ...esbuildExternals],
           entryPoints: { index: entryFilePath },
           outfile: entryFilePath,
           allowOverwrite: true,
@@ -244,12 +248,15 @@ function findRollupBundleEntries<OutputBundle extends Record<string, { name: str
 ): OutputBundle[string][] {
   const entries: OutputBundle[string][] = []
   for (const key in bundle) {
-    if (key.endsWith('.map')) continue // https://github.com/brillout/vite-plugin-ssr/issues/612
+    // https://github.com/brillout/vite-plugin-ssr/issues/612
+    if (key.endsWith('.map') || key.endsWith('.json')) continue
     const entry = bundle[key]!
     if ('isEntry' in entry && entry.isEntry) {
       entries.push(entry)
     }
   }
+
+  // bundle the index entry first
   return entries.sort((a, b) => {
     const isIndexA = a.name === 'index'
     const isIndexB = a.name === 'index'

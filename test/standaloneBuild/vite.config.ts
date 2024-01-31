@@ -5,7 +5,10 @@ import vike from 'vike/plugin'
 export default {
   plugins: [
     react(),
-    vike({ server: { entry: './server/index.ts', reload: 'fast', workers: ['./server/worker.mjs'] }, standalone: true }),
+    vike({
+      server: { entry: { index: './server/index.ts', worker: './server/worker.mjs' }, reload: 'fast' },
+      standalone: true
+    }),
     telefunc()
   ]
 }

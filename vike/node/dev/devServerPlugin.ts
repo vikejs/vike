@@ -20,8 +20,10 @@ function devServerPlugin(): Plugin {
 
   async function loadEntry() {
     const { entry } = getServerConfig()!
+    const defaultEntry = entry['index']
+    assert(defaultEntry)
     logViteAny('Loading server entry', 'info', null, true)
-    const resolved = await viteServer.pluginContainer.resolveId(entry, undefined, {
+    const resolved = await viteServer.pluginContainer.resolveId(defaultEntry, undefined, {
       ssr: true
     })
     if (!resolved) {
