@@ -1,7 +1,9 @@
 export { getNodeEnv }
 export { setNodeEnvToProduction }
 export { isNodeEnvDev }
+export { getNodeEnvDesc }
 
+import pc from '@brillout/picocolors'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 assertIsNotBrowser()
 
@@ -23,4 +25,13 @@ function isNodeEnvDev(): boolean {
   if (['development', 'dev'].includes(nodeEnv)) return true
   // That's quite aggressive, let's see if some user complains
   return false
+}
+
+function getNodeEnvDesc(): `environment is set to be a ${string} environment by process.env.NODE_ENV === ${string}` {
+  const nodeEnv = getNodeEnv()
+  const isDev = isNodeEnvDev()
+  const nodeEnvDesc = `environment is set to be a ${
+    (isDev ? 'development' : 'production') as string
+  } environment by ${pc.cyan(`process.env.NODE_ENV === ${JSON.stringify(nodeEnv)}`)}` as const
+  return nodeEnvDesc
 }
