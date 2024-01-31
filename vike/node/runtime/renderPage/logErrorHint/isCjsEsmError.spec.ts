@@ -1,4 +1,4 @@
-import { isCjsEsmError } from '../logHintForCjsEsmError'
+import { isCjsEsmError } from '../logErrorHint'
 import { expect, describe, it } from 'vitest'
 import { errror_cannot_use_import_outside_of_module } from './errors'
 

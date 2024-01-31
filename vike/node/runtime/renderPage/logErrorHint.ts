@@ -1,6 +1,6 @@
-export { logHintForCjsEsmError }
+export { logErrorHint }
 
-// For ./logHintForCjsEsmError/*.spec.ts
+// For ./logErrorHint/*.spec.ts
 export { isCjsEsmError }
 export { isKnownError }
 export { getHint }
@@ -16,8 +16,8 @@ const knownErrors = [
   }
 ]
 
-function logHintForCjsEsmError(error: unknown): void {
-  /* Collect errors for ./logHintForCjsEsmError.spec.ts
+function logErrorHint(error: unknown): void {
+  /* Collect errors for ./logErrorHint.spec.ts
   collectError(error)
   //*/
   const hint = getHint(error)

@@ -1,4 +1,4 @@
-import { getHint } from '../logHintForCjsEsmError'
+import { getHint } from '../logErrorHint'
 import { expect, describe, it, assert } from 'vitest'
 import { stripAnsi } from '../../utils'
 

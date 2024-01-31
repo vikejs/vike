@@ -8,7 +8,7 @@ import { isAbortError } from '../../../shared/route/abort.js'
 import { setAlreadyLogged } from './isNewError.js'
 import { isObject, warnIfErrorIsNotObject } from '../utils.js'
 import pc from '@brillout/picocolors'
-import { logHintForCjsEsmError } from './logHintForCjsEsmError.js'
+import { logErrorHint } from './logErrorHint.js'
 
 function logErrorProd(err: unknown, _httpRquestId: null | number): void {
   warnIfErrorIsNotObject(err)
@@ -27,6 +27,6 @@ function logErrorProd(err: unknown, _httpRquestId: null | number): void {
 
 // Every server-side runtime error is expected to go through onRuntimeError(). (In principle, any runtime error is (or at least should) be catched by Vike, otherwise Vike couldn't render the error page.)
 function onRuntimeError(err: unknown) {
-  // The more runtime errors we pass to logHintForCjsEsmError() the better.
-  logHintForCjsEsmError(err)
+  // The more runtime errors we pass to logErrorHint() the better.
+  logErrorHint(err)
 }

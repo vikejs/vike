@@ -1,4 +1,4 @@
-import { isKnownError } from '../logHintForCjsEsmError'
+import { isKnownError } from '../logErrorHint'
 import { expect, describe, it } from 'vitest'
 
 describe('isKnownError()', () => {

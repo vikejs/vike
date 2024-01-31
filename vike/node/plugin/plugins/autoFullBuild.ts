@@ -8,7 +8,7 @@ import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
-import { logHintForCjsEsmError } from '../../runtime/renderPage/logHintForCjsEsmError.js'
+import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
 
 let forceExit = false
 
@@ -90,7 +90,7 @@ async function triggerFullBuild(
     })
   } catch (err) {
     console.error(err)
-    logHintForCjsEsmError(err)
+    logErrorHint(err)
     process.exit(1)
   }
 
